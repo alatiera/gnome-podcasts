@@ -18,5 +18,6 @@ pub fn run() -> Result<()> {
     let foo = args;
     info!("{:?}", foo);
 
+    ::init()?;
     Ok(())
 }
