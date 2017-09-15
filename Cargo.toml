@@ -16,3 +16,7 @@ time = "0.1.38"
 xdg = "2.1.0"
 lazy_static = "0.2.8"
 chrono = "0.4.0"
+rss = { version = "1.1.0", features = ["from_url"]}
+# overide diesel's dependancy that would otherwise turn a dotenv feature of
+# that rss depends upon
+dotenv = "*"

@@ -19,5 +19,7 @@ pub fn run() -> Result<()> {
     info!("{:?}", foo);
 
     ::init()?;
+    ::parse_feeds::foo();
+
     Ok(())
 }

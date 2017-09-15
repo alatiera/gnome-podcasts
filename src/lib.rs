@@ -21,10 +21,12 @@ extern crate diesel_codegen;
 
 extern crate xdg;
 extern crate reqwest;
+extern crate rss;
 
 pub mod cli;
 pub mod schema;
 pub mod models;
+pub mod parse_feeds;
 
 pub mod errors {
 
@@ -58,11 +60,15 @@ lazy_static!{
     static ref HAMMOND_CONFIG: PathBuf = HAMMOND_XDG.create_config_directory(HAMMOND_XDG.get_config_home()).unwrap();
     static ref HAMMOND_CACHE: PathBuf = HAMMOND_XDG.create_cache_directory(HAMMOND_XDG.get_cache_home()).unwrap();
     
-    static ref DB_PATH: std::path::PathBuf = HAMMOND_XDG.place_data_file("hammond.db").unwrap();
+    static ref DB_PATH: PathBuf = {
+        // Ensure that xdg_data is created.
+        &HAMMOND_DATA;
+
+        HAMMOND_XDG.place_data_file("hammond.db").unwrap()
+        };
 }
 
 pub fn init() -> Result<()> {
-    &HAMMOND_DATA;
     let conn = establish_connection();
     // embedded_migrations::run(&conn)?;
     embedded_migrations::run_with_output(&conn, &mut std::io::stdout())?;
