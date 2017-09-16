@@ -11,9 +11,11 @@ pub struct Episode {
     uri: String,
     local_uri: Option<String>,
     description: Option<String>,
+    published_date: String,
     thumbnail: Option<String>,
-    lenght: Option<i32>,
+    length: Option<i32>,
     guid: Option<String>,
+    epoch: i32,
     podcast_id: i32,
 }
 
@@ -36,14 +38,15 @@ pub struct Podcast {
 #[table_name = "episode"]
 #[derive(Debug, Clone)]
 pub struct NewEpisode<'a> {
-    title: &'a str,
-    uri: &'a str,
-    local_uri: Option<&'a str>,
-    description: Option<&'a str>,
-    thumbnail: Option<&'a str>,
-    lenght: Option<i32>,
-    guid: Option<&'a str>,
-    podcast_id: i32,
+    pub title: &'a str,
+    pub uri: &'a str,
+    pub local_uri: Option<&'a str>,
+    pub description: Option<&'a str>,
+    pub published_date: &'a str,
+    pub length: Option<i32>,
+    pub guid: Option<&'a str>,
+    pub epoch: i32,
+    pub podcast_id: i32,
 }
 
 #[derive(Insertable)]

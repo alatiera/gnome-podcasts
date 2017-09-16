@@ -1,4 +1,4 @@
-use rss::Channel;
+use rss::{Channel, Item};
 use models;
 
 pub fn parse_podcast<'a>(pd_chan: &'a Channel, uri: &'a str) -> models::NewPodcast<'a> {
@@ -26,6 +26,40 @@ pub fn parse_podcast<'a>(pd_chan: &'a Channel, uri: &'a str) -> models::NewPodca
         last_modified,
         http_etag,
         image_uri,
+    }
+}
+
+pub fn parse_episode<'a>(item: &'a Item, parent_id: i32) -> models::NewEpisode<'a> {
+
+    let title = item.title().unwrap();
+
+    let description = item.description();
+    let guid = Some(item.guid().unwrap().value());
+
+    let uri = item.enclosure().unwrap().url();
+
+    // FIXME:
+    // probably needs to be removed from NewEpisode,
+    // and have seperate logic to handle local_files
+    let local_uri = None;
+
+    let pub_date = item.pub_date().unwrap();
+
+    // FIXME: parse pub_date to epoch later
+    let epoch = 0;
+
+    let length = Some(item.enclosure().unwrap().length().parse().unwrap());
+
+    models::NewEpisode {
+        title,
+        uri,
+        local_uri,
+        description,
+        length,
+        published_date: pub_date,
+        epoch,
+        guid,
+        podcast_id: parent_id,
     }
 }
 
@@ -95,7 +129,28 @@ mod tests {
         assert_eq!(pd.description, Some(descr));
         assert_eq!(pd.last_modified, None);
         assert_eq!(pd.http_etag, None);
-        assert_eq!(pd.image_uri, Some("https://assets.propublica.org/propublica-rss-logo.png"));
+        assert_eq!(
+            pd.image_uri,
+            Some("https://assets.propublica.org/propublica-rss-logo.png")
+        );
     }
 
+    #[test]
+    fn test_parse_episode() {
+        let file = File::open("tests/feeds/Intercepted.xml").unwrap();
+        let channel = Channel::read_from(BufReader::new(file)).unwrap();
+        let firstitem = channel.items().first().unwrap();
+        let descr = "NSA whistleblower Edward Snowden discusses the massive Equifax data breach and allegations of Russian interference in the US election. Commentator Shaun King explains his call for a boycott of the NFL and talks about his campaign to bring violent neo-Nazis to justice. Rapper Open Mike Eagle performs.";
+
+        // println!("{:#?}", firstitem);
+        let it = parse_episode(&firstitem, 0);
+
+        assert_eq!(it.title, "The Super Bowl of Racism");
+        assert_eq!(it.uri, "http://traffic.megaphone.fm/PPY6458293736.mp3");
+        assert_eq!(it.description, Some(descr));
+        assert_eq!(it.length, Some(66738886));
+        assert_eq!(it.guid, Some("7df4070a-9832-11e7-adac-cb37b05d5e24"));
+        assert_eq!(it.published_date, "Wed, 13 Sep 2017 10:00:00 -0000");
+
+    }
 }

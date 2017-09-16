@@ -5,6 +5,7 @@ table! {
         uri -> Text,
         local_uri -> Nullable<Text>,
         description -> Nullable<Text>,
+        published_date -> Text,
         epoch -> Integer,
         length -> Integer,
         guid -> Nullable<Text>,

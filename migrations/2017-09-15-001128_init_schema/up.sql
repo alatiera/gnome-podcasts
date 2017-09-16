@@ -4,6 +4,7 @@ CREATE TABLE `episode` (
 	`uri`	TEXT NOT NULL,
 	`local_uri`	TEXT,
 	`description`	TEXT,
+	`published_date` TEXT NOT NULL,
 	`epoch`	INTEGER NOT NULL DEFAULT 0,
 	`length`	INTEGER NOT NULL DEFAULT 0,
 	`guid`	TEXT,
