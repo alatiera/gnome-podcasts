@@ -3,10 +3,10 @@ table! {
         id -> Integer,
         title -> Text,
         uri -> Text,
-        description -> Nullable<Text>,
         local_uri -> Nullable<Text>,
-        thumbnail -> Nullable<Text>,
-        lenght -> Nullable<Integer>,
+        description -> Nullable<Text>,
+        epoch -> Integer,
+        length -> Integer,
         guid -> Nullable<Text>,
         podcast_id -> Integer,
     }

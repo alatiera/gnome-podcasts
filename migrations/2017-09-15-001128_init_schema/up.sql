@@ -2,10 +2,10 @@ CREATE TABLE `episode` (
 	`id`	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
 	`title`	TEXT NOT NULL,
 	`uri`	TEXT NOT NULL,
-	`description`	TEXT,
 	`local_uri`	TEXT,
-	`thumbnail`	TEXT,
-	`lenght`	INTEGER,
+	`description`	TEXT,
+	`epoch`	INTEGER NOT NULL DEFAULT 0,
+	`length`	INTEGER NOT NULL DEFAULT 0,
 	`guid`	TEXT,
 	`podcast_id`	INTEGER NOT NULL
 );
