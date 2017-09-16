@@ -29,7 +29,6 @@ pub struct Podcast {
     last_modified: Option<String>,
     http_etag: Option<String>,
     image_uri: Option<String>,
-    image_local: Option<String>,
 }
 
 
@@ -58,5 +57,4 @@ pub struct NewPodcast<'a> {
     pub last_modified: Option<&'a str>,
     pub http_etag: Option<&'a str>,
     pub image_uri: Option<&'a str>,
-    pub image_local: Option<&'a str>,
 }

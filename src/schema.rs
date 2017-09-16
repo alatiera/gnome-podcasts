@@ -22,6 +22,5 @@ table! {
         last_modified -> Nullable<Text>,
         http_etag -> Nullable<Text>,
         image_uri -> Nullable<Text>,
-        image_local -> Nullable<Text>,
     }
 }

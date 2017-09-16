@@ -18,6 +18,5 @@ CREATE TABLE `podcast` (
 	`description`	TEXT,
 	`last_modified`	TEXT,
 	`http_etag`	TEXT,
-	`image_uri`	TEXT,
-	`image_local`	TEXT
+	`image_uri`	TEXT
 );
