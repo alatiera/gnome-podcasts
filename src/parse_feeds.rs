@@ -152,5 +152,20 @@ mod tests {
         assert_eq!(it.guid, Some("7df4070a-9832-11e7-adac-cb37b05d5e24"));
         assert_eq!(it.published_date, "Wed, 13 Sep 2017 10:00:00 -0000");
 
+        let second = channel.items().iter().nth(1).unwrap();
+        // println!("{:#?}", second);
+        let i2 = parse_episode(&second, 0);
+
+        let descr = "This week on Intercepted: Jeremy gives an update on the aftermath of Blackwater’s 2007 massacre of Iraqi civilians. Intercept reporter Lee Fang lays out how a network of libertarian think tanks called the Atlas Network is insidiously shaping political infrastructure in Latin America. We speak with attorney and former Hugo Chavez adviser Eva Golinger about the Venezuela\'s political turmoil.And we hear Claudia Lizardo of the Caracas-based band, La Pequeña Revancha, talk about her music and hopes for Venezuela.";
+        assert_eq!(
+            i2.title,
+            "Atlas Golfed — U.S.-Backed Think Tanks Target Latin America"
+        );
+        assert_eq!(i2.uri, "http://traffic.megaphone.fm/FL5331443769.mp3");
+        assert_eq!(i2.description, Some(descr));
+        assert_eq!(i2.length, Some(67527575));
+        assert_eq!(i2.guid, Some("7c207a24-e33f-11e6-9438-eb45dcf36a1d"));
+        assert_eq!(i2.published_date, "Wed, 09 Aug 2017 10:00:00 -0000");
+
     }
 }
