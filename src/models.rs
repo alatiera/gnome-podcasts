@@ -51,12 +51,12 @@ pub struct NewEpisode<'a> {
 #[table_name = "podcast"]
 #[derive(Debug, Clone)]
 pub struct NewPodcast<'a> {
-    title: &'a str,
-    uri: &'a str,
-    link: Option<&'a str>,
-    description: Option<&'a str>,
-    last_modified: Option<&'a str>,
-    http_etag: Option<&'a str>,
-    image_uri: Option<&'a str>,
-    image_local: Option<&'a str>,
+    pub title: &'a str,
+    pub uri: &'a str,
+    pub link: Option<&'a str>,
+    pub description: Option<&'a str>,
+    pub last_modified: Option<&'a str>,
+    pub http_etag: Option<&'a str>,
+    pub image_uri: Option<&'a str>,
+    pub image_local: Option<&'a str>,
 }
