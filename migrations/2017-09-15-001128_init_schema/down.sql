@@ -1,2 +1,3 @@
-Drop Table Episode;
-Drop Table Podcast;
+Drop Table episode;
+Drop Table podcast;
+Drop Table source;

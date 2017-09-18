@@ -27,12 +27,16 @@ pub mod cli;
 pub mod schema;
 pub mod models;
 pub mod parse_feeds;
+pub mod index_feed;
+pub mod dbqueries;
 
 pub mod errors {
 
     use reqwest;
     use std::io;
+    use rss;
     use diesel::migrations::RunMigrationsError;
+    use diesel::result;
 
     error_chain! {
         foreign_links {
@@ -40,6 +44,8 @@ pub mod errors {
             IoError(io::Error);
             Log(::log::SetLoggerError);
             MigrationError(RunMigrationsError);
+            RSSError(rss::Error);
+            DieselResultError(result::Error);
         }
     }
 }

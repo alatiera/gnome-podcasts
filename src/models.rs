@@ -1,4 +1,8 @@
-use schema::{episode, podcast};
+use reqwest;
+use rss::Channel;
+
+use schema::{episode, podcast, source};
+use errors::*;
 
 #[derive(Queryable, Identifiable)]
 #[derive(Associations)]
@@ -12,14 +16,15 @@ pub struct Episode {
     local_uri: Option<String>,
     description: Option<String>,
     published_date: String,
-    thumbnail: Option<String>,
+    epoch: i32,
     length: Option<i32>,
     guid: Option<String>,
-    epoch: i32,
     podcast_id: i32,
 }
 
 #[derive(Queryable, Identifiable)]
+#[derive(Associations)]
+#[belongs_to(Source, foreign_key = "source_id")]
 #[table_name = "podcast"]
 #[derive(Debug, Clone)]
 pub struct Podcast {
@@ -28,9 +33,18 @@ pub struct Podcast {
     uri: String,
     link: Option<String>,
     description: Option<String>,
+    image_uri: Option<String>,
+    source_id: i32,
+}
+
+#[derive(Queryable, Identifiable)]
+#[table_name = "source"]
+#[derive(Debug, Clone)]
+pub struct Source {
+    id: i32,
+    uri: String,
     last_modified: Option<String>,
     http_etag: Option<String>,
-    image_uri: Option<String>,
 }
 
 
@@ -57,7 +71,49 @@ pub struct NewPodcast<'a> {
     pub uri: &'a str,
     pub link: Option<&'a str>,
     pub description: Option<&'a str>,
-    pub last_modified: Option<&'a str>,
-    pub http_etag: Option<&'a str>,
     pub image_uri: Option<&'a str>,
+}
+
+
+impl<'a> NewPodcast<'a> {
+    // fn from_url(uri: &'a str) -> Result<NewPodcast> {
+    //     let chan = Channel::from_url(uri)?;
+    //     let foo = ::parse_feeds::parse_podcast(&chan, uri)?;
+    //     Ok(foo)
+    // }
+
+    // Ignore this atm
+    // pub fn from_url(uri: &str) -> Result<()> {
+
+    //     use std::io::Read;
+    //     use reqwest::header::*;
+    //     use std::str::FromStr;
+    //     use parse_feeds;
+
+    //     let mut req = reqwest::get(uri)?;
+
+    //     let mut buf = String::new();
+    //     req.read_to_string(&mut buf)?;
+    //     info!("{}", buf);
+
+    //     let headers = req.headers();
+    //     info!("{:#?}", headers);
+
+    //     // for h in headers.iter() {
+    //     //     info!("{}: {}", h.name(), h.value_string());
+    //     // }
+
+    //     // Sometimes dsnt work
+    //     // let etag = headers.get::<ETag>();
+    //     let etag = headers.get_raw("ETag").unwrap();
+    //     let lst_mod = headers.get::<LastModified>().unwrap();
+    //     info!("Etag: {:?}", etag);
+    //     info!("Last mod: {}", lst_mod);
+
+    //     let pd_chan = Channel::from_str(buf.as_str())?;
+    //     // let bar = parse_feeds::parse_podcast(&foo)?;
+    //     // let baz = bar.clone();
+
+    //     Ok(())
+    // }
 }

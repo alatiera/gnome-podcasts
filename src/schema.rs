@@ -7,7 +7,7 @@ table! {
         description -> Nullable<Text>,
         published_date -> Text,
         epoch -> Integer,
-        length -> Integer,
+        length -> Nullable<Integer>,
         guid -> Nullable<Text>,
         podcast_id -> Integer,
     }
@@ -20,8 +20,16 @@ table! {
         uri -> Text,
         link -> Nullable<Text>,
         description -> Nullable<Text>,
+        image_uri -> Nullable<Text>,
+        source_id -> Integer,
+    }
+}
+
+table! {
+    source (id) {
+        id -> Integer,
+        url -> Text,
         last_modified -> Nullable<Text>,
         http_etag -> Nullable<Text>,
-        image_uri -> Nullable<Text>,
     }
 }
