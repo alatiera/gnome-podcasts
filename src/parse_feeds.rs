@@ -5,9 +5,9 @@ use errors::*;
 pub fn parse_podcast(chan: &Channel, uri: &str) -> Result<models::NewPodcast> {
 
     let title = chan.title().to_owned();
+    let link = chan.link().to_owned();
 
-    let link = Some(chan.link().to_owned());
-    let description = Some(chan.description().to_owned());
+    let description = chan.description().to_owned();
 
     // let image_uri = match chan.image() {
     //     Some(foo) => Some(foo.url().to_owned()),
@@ -86,11 +86,8 @@ mod tests {
             pd.uri,
             "https://feeds.feedburner.com/InterceptedWithJeremyScahill".to_string()
         );
-        assert_eq!(
-            pd.link,
-            Some("https://theintercept.com/podcasts".to_string())
-        );
-        assert_eq!(pd.description, Some(descr.to_string()));
+        assert_eq!(pd.link, "https://theintercept.com/podcasts".to_string());
+        assert_eq!(pd.description, descr.to_string());
         assert_eq!(pd.image_uri, None);
 
 
@@ -104,11 +101,8 @@ mod tests {
         let pd = parse_podcast(&channel, uri).unwrap();
 
         assert_eq!(pd.title, "LINUX Unplugged Podcast".to_string());
-        assert_eq!(
-            pd.link,
-            Some("http://www.jupiterbroadcasting.com/".to_string())
-        );
-        assert_eq!(pd.description, Some(descr.to_string()));
+        assert_eq!(pd.link, "http://www.jupiterbroadcasting.com/".to_string());
+        assert_eq!(pd.description, descr.to_string());
         assert_eq!(
             pd.image_uri,
             Some(
@@ -132,9 +126,9 @@ mod tests {
         );
         assert_eq!(
             pd.link,
-            Some("https://www.propublica.org/feeds/54Ghome".to_string())
+            "https://www.propublica.org/feeds/54Ghome".to_string()
         );
-        assert_eq!(pd.description, Some(descr.to_string()));
+        assert_eq!(pd.description, descr.to_string());
         assert_eq!(
             pd.image_uri,
             Some(

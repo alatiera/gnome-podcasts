@@ -31,8 +31,8 @@ pub struct Podcast {
     id: i32,
     title: String,
     uri: String,
-    link: Option<String>,
-    description: Option<String>,
+    link: String,
+    description: String,
     image_uri: Option<String>,
     source_id: i32,
 }
@@ -77,8 +77,8 @@ pub struct NewEpisode<'a> {
 pub struct NewPodcast {
     pub title: String,
     pub uri: String,
-    pub link: Option<String>,
-    pub description: Option<String>,
+    pub link: String,
+    pub description: String,
     pub image_uri: Option<String>,
 }
 

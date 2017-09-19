@@ -18,8 +18,8 @@ table! {
         id -> Integer,
         title -> Text,
         uri -> Text,
-        link -> Nullable<Text>,
-        description -> Nullable<Text>,
+        link -> Text,
+        description -> Text,
         image_uri -> Nullable<Text>,
         source_id -> Integer,
     }

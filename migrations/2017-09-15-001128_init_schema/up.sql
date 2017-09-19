@@ -22,8 +22,8 @@ CREATE TABLE `podcast` (
 	`id`	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
 	`title`	TEXT NOT NULL,
 	`uri`	TEXT UNIQUE NOT NULL,
-	`link`	TEXT,
-	`description`	TEXT,
+	`link`	TEXT NOT NULL,
+	`description`	TEXT NOT NULL,
 	`image_uri`	TEXT,
 	`source_id`	INTEGER NOT NULL
 );
