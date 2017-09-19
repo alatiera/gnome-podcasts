@@ -28,7 +28,7 @@ table! {
 table! {
     source (id) {
         id -> Integer,
-        url -> Text,
+        uri -> Text,
         last_modified -> Nullable<Text>,
         http_etag -> Nullable<Text>,
     }

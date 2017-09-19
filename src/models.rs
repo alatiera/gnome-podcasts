@@ -47,6 +47,14 @@ pub struct Source {
     http_etag: Option<String>,
 }
 
+#[derive(Insertable)]
+#[table_name = "source"]
+#[derive(Debug, Clone)]
+pub struct NewSource<'a> {
+    pub uri: &'a str,
+    pub last_modified: Option<&'a str>,
+    pub http_etag: Option<&'a str>,
+}
 
 #[derive(Insertable)]
 #[table_name = "episode"]
@@ -66,21 +74,21 @@ pub struct NewEpisode<'a> {
 #[derive(Insertable)]
 #[table_name = "podcast"]
 #[derive(Debug, Clone)]
-pub struct NewPodcast<'a> {
-    pub title: &'a str,
-    pub uri: &'a str,
-    pub link: Option<&'a str>,
-    pub description: Option<&'a str>,
-    pub image_uri: Option<&'a str>,
+pub struct NewPodcast {
+    pub title: String,
+    pub uri: String,
+    pub link: Option<String>,
+    pub description: Option<String>,
+    pub image_uri: Option<String>,
 }
 
 
-impl<'a> NewPodcast<'a> {
-    // fn from_url(uri: &'a str) -> Result<NewPodcast> {
-    //     let chan = Channel::from_url(uri)?;
-    //     let foo = ::parse_feeds::parse_podcast(&chan, uri)?;
-    //     Ok(foo)
-    // }
+impl<'a> NewPodcast {
+    pub fn from_url(uri: &'a str) -> Result<NewPodcast> {
+        let chan = Channel::from_url(uri)?;
+        let foo = ::parse_feeds::parse_podcast(&chan, uri)?;
+        Ok(foo)
+    }
 
     // Ignore this atm
     // pub fn from_url(uri: &str) -> Result<()> {

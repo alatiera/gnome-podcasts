@@ -2,20 +2,23 @@ use rss::{Channel, Item};
 use models;
 use errors::*;
 
-pub fn parse_podcast<'a>(pd_chan: &'a Channel, uri: &'a str) -> Result<models::NewPodcast<'a>> {
-    let title = pd_chan.title();
+pub fn parse_podcast(chan: &Channel, uri: &str) -> Result<models::NewPodcast> {
 
-    let link = Some(pd_chan.link());
-    let description = Some(pd_chan.description());
+    let title = chan.title().to_owned();
 
-    let image_uri = match pd_chan.image() {
-        Some(foo) => Some(foo.url()),
-        None => None,
-    };
+    let link = Some(chan.link().to_owned());
+    let description = Some(chan.description().to_owned());
+
+    // let image_uri = match chan.image() {
+    //     Some(foo) => Some(foo.url().to_owned()),
+    //     None => None,
+    // };
+
+    let image_uri = chan.image().map(|foo| foo.url().to_owned());
 
     let foo = models::NewPodcast {
+        uri: uri.to_owned(),
         title,
-        uri,
         link,
         description,
         image_uri,
@@ -78,13 +81,16 @@ mod tests {
         let descr = "The people behind The Intercept’s fearless reporting and incisive commentary—Jeremy Scahill, Glenn Greenwald, Betsy Reed and others—discuss the crucial issues of our time: national security, civil liberties, foreign policy, and criminal justice.  Plus interviews with artists, thinkers, and newsmakers who challenge our preconceptions about the world we live in.";
         let pd = parse_podcast(&channel, uri).unwrap();
 
-        assert_eq!(pd.title, "Intercepted with Jeremy Scahill");
-        // assert_eq!(
-        //     pd.uri,
-        //     "https://feeds.feedburner.com/InterceptedWithJeremyScahill"
-        // );
-        assert_eq!(pd.link, Some("https://theintercept.com/podcasts"));
-        assert_eq!(pd.description, Some(descr));
+        assert_eq!(pd.title, "Intercepted with Jeremy Scahill".to_string());
+        assert_eq!(
+            pd.uri,
+            "https://feeds.feedburner.com/InterceptedWithJeremyScahill".to_string()
+        );
+        assert_eq!(
+            pd.link,
+            Some("https://theintercept.com/podcasts".to_string())
+        );
+        assert_eq!(pd.description, Some(descr.to_string()));
         assert_eq!(pd.image_uri, None);
 
 
@@ -97,12 +103,17 @@ mod tests {
         let descr = "An open show powered by community LINUX Unplugged takes the best attributes of open collaboration and focuses them into a weekly lifestyle show about Linux.";
         let pd = parse_podcast(&channel, uri).unwrap();
 
-        assert_eq!(pd.title, "LINUX Unplugged Podcast");
-        assert_eq!(pd.link, Some("http://www.jupiterbroadcasting.com/"));
-        assert_eq!(pd.description, Some(descr));
+        assert_eq!(pd.title, "LINUX Unplugged Podcast".to_string());
+        assert_eq!(
+            pd.link,
+            Some("http://www.jupiterbroadcasting.com/".to_string())
+        );
+        assert_eq!(pd.description, Some(descr.to_string()));
         assert_eq!(
             pd.image_uri,
-            Some("http://michaeltunnell.com/images/linux-unplugged.jpg")
+            Some(
+                "http://michaeltunnell.com/images/linux-unplugged.jpg".to_string(),
+            )
         );
 
 
@@ -115,12 +126,20 @@ mod tests {
         let descr = "Latest Articles and Investigations from ProPublica, an independent, non-profit newsroom that produces investigative journalism in the public interest.";
         let pd = parse_podcast(&channel, uri).unwrap();
 
-        assert_eq!(pd.title, "Articles and Investigations - ProPublica");
-        assert_eq!(pd.link, Some("https://www.propublica.org/feeds/54Ghome"));
-        assert_eq!(pd.description, Some(descr));
+        assert_eq!(
+            pd.title,
+            "Articles and Investigations - ProPublica".to_string()
+        );
+        assert_eq!(
+            pd.link,
+            Some("https://www.propublica.org/feeds/54Ghome".to_string())
+        );
+        assert_eq!(pd.description, Some(descr.to_string()));
         assert_eq!(
             pd.image_uri,
-            Some("https://assets.propublica.org/propublica-rss-logo.png")
+            Some(
+                "https://assets.propublica.org/propublica-rss-logo.png".to_string(),
+            )
         );
     }
 

@@ -1,6 +1,6 @@
 CREATE TABLE `source` (
 	`id`	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
-	`url`	TEXT NOT NULL UNIQUE,
+	`uri`	TEXT NOT NULL UNIQUE,
 	`last_modified`	TEXT,
 	`http_etag`	TEXT
 );
