@@ -20,8 +20,8 @@ CREATE TABLE `episode` (
 
 CREATE TABLE `podcast` (
 	`id`	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
-	`title`	TEXT NOT NULL,
-	`uri`	TEXT UNIQUE NOT NULL,
+	`title`	TEXT NOT NULL UNIQUE,
+	`uri`	TEXT NOT NULL UNIQUE,
 	`link`	TEXT NOT NULL,
 	`description`	TEXT NOT NULL,
 	`image_uri`	TEXT,

@@ -1,10 +1,9 @@
 use diesel::prelude::*;
 use diesel;
-use rss::Channel;
 use schema;
 use dbqueries;
 use errors::*;
-use models::NewPodcast;
+use models::{NewPodcast, NewSource};
 
 pub fn foo() {
     let inpt = vec![
@@ -15,7 +14,7 @@ pub fn foo() {
 
     let db = ::establish_connection();
     for feed in inpt.iter() {
-        match insert_feed(&db, feed) {
+        match insert_source(&db, feed) {
             Ok(_) => {}
             Err(foo) => {
                 debug!("Error: {}", foo);
@@ -24,26 +23,17 @@ pub fn foo() {
             }
         }
     }
-    update_podcasts(&db);
+
+    let f = dbqueries::get_sources(&db);
+    info!("{:?}", f);
 }
 
-fn insert_feed(connection: &SqliteConnection, url: &str) -> Result<()> {
-    let foo = NewPodcast::from_url(url)?;
+fn insert_source(connection: &SqliteConnection, url: &str) -> Result<()> {
+    let foo = NewSource::new_with_uri(url);
 
-    diesel::insert(&foo).into(schema::podcast::table).execute(
+    diesel::insert(&foo).into(schema::source::table).execute(
         connection,
     )?;
 
     Ok(())
-}
-
-
-fn update_podcasts(connection: &SqliteConnection) {
-    let pds = dbqueries::get_podcasts(connection).unwrap();
-    info!("{:?}", pds);
-
-    // for pd in pds {
-    //     println!("{:?}" pd.uri);
-    // }
-
 }

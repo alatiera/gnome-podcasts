@@ -1,7 +1,7 @@
 use structopt::StructOpt;
 use loggerv;
 use errors::*;
-use models::NewPodcast;
+// use models::NewPodcast;
 
 #[derive(StructOpt, Debug)]
 #[structopt(name = "example", about = "An example of StructOpt usage.")]
@@ -20,8 +20,7 @@ pub fn run() -> Result<()> {
     info!("{:?}", foo);
 
     ::init()?;
-    // ::parse_feeds::foo();
-    // ::index_feed::foo();
+    ::index_feed::foo();
 
     Ok(())
 }

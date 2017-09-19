@@ -1,10 +1,9 @@
 use diesel::prelude::*;
-use schema::podcast::dsl::*;
-// use schema::episode::dsl::*;
-use models::{Podcast, Episode};
+use schema::source::dsl::*;
+use models::{Podcast, Episode, Source};
 
-pub fn get_podcasts(con: &SqliteConnection) -> QueryResult<Vec<Podcast>> {
-    let pds = podcast.load::<Podcast>(con);
+pub fn get_podcasts(con: &SqliteConnection, parent: &Source) -> QueryResult<Vec<Podcast>> {
+    let pds = Podcast::belonging_to(parent).load::<Podcast>(con);
     // debug!("Returned Podcasts:\n{:?}", pds);
     pds
 }
@@ -14,3 +13,8 @@ pub fn get_pd_episodes(con: &SqliteConnection, parent: &Podcast) -> QueryResult<
     eps
 }
  
+
+ pub fn get_sources(con: &SqliteConnection) -> QueryResult<Vec<Source>>{
+     let s = source.load::<Source>(con);
+     s
+ }

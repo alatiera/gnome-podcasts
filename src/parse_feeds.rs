@@ -13,7 +13,7 @@ pub fn parse_podcast(chan: &Channel, uri: &str) -> Result<models::NewPodcast> {
     //     Some(foo) => Some(foo.url().to_owned()),
     //     None => None,
     // };
-
+    // Same as the above match expression.
     let image_uri = chan.image().map(|foo| foo.url().to_owned());
 
     let foo = models::NewPodcast {
@@ -26,6 +26,7 @@ pub fn parse_podcast(chan: &Channel, uri: &str) -> Result<models::NewPodcast> {
     Ok(foo)
 }
 
+// This is also an initial prototype mess.
 pub fn parse_episode<'a>(item: &'a Item, parent_id: i32) -> Result<models::NewEpisode<'a>> {
 
     let title = item.title().unwrap();
