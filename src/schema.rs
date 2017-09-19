@@ -17,7 +17,6 @@ table! {
     podcast (id) {
         id -> Integer,
         title -> Text,
-        uri -> Text,
         link -> Text,
         description -> Text,
         image_uri -> Nullable<Text>,

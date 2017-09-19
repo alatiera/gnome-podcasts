@@ -2,7 +2,7 @@ use rss::{Channel, Item};
 use models;
 use errors::*;
 
-pub fn parse_podcast(chan: &Channel, uri: &str) -> Result<models::NewPodcast> {
+pub fn parse_podcast(chan: &Channel, source_id: i32) -> Result<models::NewPodcast> {
 
     let title = chan.title().to_owned();
     let link = chan.link().to_owned();
@@ -17,11 +17,11 @@ pub fn parse_podcast(chan: &Channel, uri: &str) -> Result<models::NewPodcast> {
     let image_uri = chan.image().map(|foo| foo.url().to_owned());
 
     let foo = models::NewPodcast {
-        uri: uri.to_owned(),
         title,
         link,
         description,
         image_uri,
+        source_id,
     };
     Ok(foo)
 }
@@ -80,13 +80,9 @@ mod tests {
 
         // println!("{:#?}", channel);
         let descr = "The people behind The Intercept’s fearless reporting and incisive commentary—Jeremy Scahill, Glenn Greenwald, Betsy Reed and others—discuss the crucial issues of our time: national security, civil liberties, foreign policy, and criminal justice.  Plus interviews with artists, thinkers, and newsmakers who challenge our preconceptions about the world we live in.";
-        let pd = parse_podcast(&channel, uri).unwrap();
+        let pd = parse_podcast(&channel, 0).unwrap();
 
         assert_eq!(pd.title, "Intercepted with Jeremy Scahill".to_string());
-        assert_eq!(
-            pd.uri,
-            "https://feeds.feedburner.com/InterceptedWithJeremyScahill".to_string()
-        );
         assert_eq!(pd.link, "https://theintercept.com/podcasts".to_string());
         assert_eq!(pd.description, descr.to_string());
         assert_eq!(pd.image_uri, None);
@@ -99,7 +95,7 @@ mod tests {
 
         // println!("{:#?}", channel);
         let descr = "An open show powered by community LINUX Unplugged takes the best attributes of open collaboration and focuses them into a weekly lifestyle show about Linux.";
-        let pd = parse_podcast(&channel, uri).unwrap();
+        let pd = parse_podcast(&channel, 0).unwrap();
 
         assert_eq!(pd.title, "LINUX Unplugged Podcast".to_string());
         assert_eq!(pd.link, "http://www.jupiterbroadcasting.com/".to_string());
@@ -119,7 +115,7 @@ mod tests {
 
         // println!("{:#?}", channel);
         let descr = "Latest Articles and Investigations from ProPublica, an independent, non-profit newsroom that produces investigative journalism in the public interest.";
-        let pd = parse_podcast(&channel, uri).unwrap();
+        let pd = parse_podcast(&channel, 0).unwrap();
 
         assert_eq!(
             pd.title,

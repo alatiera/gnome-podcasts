@@ -30,7 +30,6 @@ pub struct Episode {
 pub struct Podcast {
     id: i32,
     title: String,
-    uri: String,
     link: String,
     description: String,
     image_uri: Option<String>,
@@ -48,6 +47,22 @@ pub struct Source {
 }
 
 impl<'a> Source {
+    pub fn id(&self) -> i32 {
+        self.id
+    }
+
+    pub fn uri(&self) -> &str {
+        &self.uri
+    }
+
+    pub fn last_modified(self) -> Option<String> {
+        self.last_modified
+    }
+
+    pub fn http_etag(self) -> Option<String> {
+        self.http_etag
+    }
+
     // This is a mess
     pub fn get_podcast(&mut self) -> Result<NewPodcast> {
         use std::io::Read;
@@ -73,13 +88,16 @@ impl<'a> Source {
         info!("Etag: {:?}", etag);
         info!("Last mod: {:?}", lst_mod);
 
+        // This is useless atm since theres no db passed to save the change
+        // but I needed to have it somewhere implemented for later.
         self.http_etag = etag.map(|x| x.tag().to_string().to_owned());
         self.last_modified = lst_mod.map(|x| format!("{}", x));
         info!("Self etag: {:?}", self.http_etag);
         info!("Self last_mod: {:?}", self.last_modified);
 
+        // Maybe it would be better to just return buf
         let chan = Channel::from_str(&buf)?;
-        let foo = ::parse_feeds::parse_podcast(&chan, &self.uri)?;
+        let foo = ::parse_feeds::parse_podcast(&chan, self.id())?;
 
         Ok(foo)
     }
@@ -125,17 +143,18 @@ pub struct NewEpisode<'a> {
 #[derive(Debug, Clone)]
 pub struct NewPodcast {
     pub title: String,
-    pub uri: String,
     pub link: String,
     pub description: String,
     pub image_uri: Option<String>,
+    pub source_id: i32,
 }
 
-
 impl<'a> NewPodcast {
-    pub fn from_url(uri: &'a str) -> Result<NewPodcast> {
+    // pub fn new(parent: &Source) {}
+
+    pub fn from_url(uri: &'a str, parent: &Source) -> Result<NewPodcast> {
         let chan = Channel::from_url(uri)?;
-        let foo = ::parse_feeds::parse_podcast(&chan, uri)?;
+        let foo = ::parse_feeds::parse_podcast(&chan, parent.id())?;
         Ok(foo)
     }
 }
