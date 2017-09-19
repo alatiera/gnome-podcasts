@@ -3,7 +3,7 @@ use diesel;
 use schema;
 use dbqueries;
 use errors::*;
-use models::{NewPodcast, NewSource};
+use models::{NewPodcast, NewSource, Source};
 
 pub fn foo() {
     let inpt = vec![
@@ -24,8 +24,7 @@ pub fn foo() {
         }
     }
 
-    let f = dbqueries::get_sources(&db);
-    info!("{:?}", f);
+    index_loop(db);
 }
 
 fn insert_source(connection: &SqliteConnection, url: &str) -> Result<()> {
@@ -35,5 +34,25 @@ fn insert_source(connection: &SqliteConnection, url: &str) -> Result<()> {
         connection,
     )?;
 
+    Ok(())
+}
+
+
+pub fn index_loop(db: SqliteConnection) -> Result<()> {
+    // let db = ::establish_connection();
+    use parse_feeds;
+
+    let f = dbqueries::get_sources(&db);
+
+    for feed in f.unwrap().iter_mut() {
+        info!("{:?}", feed.id());
+        // This method will defently get split and nuked
+        // but for now its poc
+        let chan = feed.get_podcast_chan(&db)?;
+        let pd = parse_feeds::parse_podcast(&chan, feed.id())?;
+        info!("{:#?}", pd);
+        // info!("{:?}", chan);
+
+    }
     Ok(())
 }

@@ -12,8 +12,8 @@ CREATE TABLE `episode` (
 	`local_uri`	TEXT,
 	`description`	TEXT,
 	`published_date` TEXT NOT NULL,
-	`epoch`	INTEGER NOT NULL DEFAULT 0,
-	`length`	INTEGER DEFAULT 0,
+	`epoch`	INTEGER NOT NULL,
+	`length`	INTEGER,
 	`guid`	TEXT,
 	`podcast_id`	INTEGER NOT NULL
 );

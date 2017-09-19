@@ -12,7 +12,6 @@ pub fn get_pd_episodes(con: &SqliteConnection, parent: &Podcast) -> QueryResult<
     let eps = Episode::belonging_to(parent).load::<Episode>(con);
     eps
 }
- 
 
  pub fn get_sources(con: &SqliteConnection) -> QueryResult<Vec<Source>>{
      let s = source.load::<Source>(con);

@@ -1,5 +1,8 @@
 use reqwest;
 use rss::Channel;
+use diesel::SaveChangesDsl;
+use SqliteConnection;
+use reqwest::header::{ETag, LastModified};
 
 use schema::{episode, podcast, source};
 use errors::*;
@@ -63,10 +66,10 @@ impl<'a> Source {
         self.http_etag
     }
 
-    // This is a mess
-    pub fn get_podcast(&mut self) -> Result<NewPodcast> {
+    /// Fetch the xml feed from the source url, update the etag headers,
+    /// and parse the feed into an rss:Channel and return it.
+    pub fn get_podcast_chan(&mut self, con: &SqliteConnection) -> Result<Channel> {
         use std::io::Read;
-        use reqwest::header::*;
         use std::str::FromStr;
 
         let mut req = reqwest::get(&self.uri)?;
@@ -78,28 +81,31 @@ impl<'a> Source {
         let headers = req.headers();
         debug!("{:#?}", headers);
 
-        // for h in headers.iter() {
-        //     info!("{}: {}", h.name(), h.value_string());
-        // }
-
         // let etag = headers.get_raw("ETag").unwrap();
         let etag = headers.get::<ETag>();
         let lst_mod = headers.get::<LastModified>();
-        info!("Etag: {:?}", etag);
-        info!("Last mod: {:?}", lst_mod);
+        self.update(con, etag, lst_mod)?;
 
-        // This is useless atm since theres no db passed to save the change
-        // but I needed to have it somewhere implemented for later.
+        let chan = Channel::from_str(&buf)?;
+        // let foo = ::parse_feeds::parse_podcast(&chan, self.id())?;
+
+        Ok(chan)
+    }
+
+    pub fn update(
+        &mut self,
+        con: &SqliteConnection,
+        etag: Option<&ETag>,
+        lmod: Option<&LastModified>,
+    ) -> Result<()> {
+
         self.http_etag = etag.map(|x| x.tag().to_string().to_owned());
-        self.last_modified = lst_mod.map(|x| format!("{}", x));
+        self.last_modified = lmod.map(|x| format!("{}", x));
         info!("Self etag: {:?}", self.http_etag);
         info!("Self last_mod: {:?}", self.last_modified);
 
-        // Maybe it would be better to just return buf
-        let chan = Channel::from_str(&buf)?;
-        let foo = ::parse_feeds::parse_podcast(&chan, self.id())?;
-
-        Ok(foo)
+        self.save_changes::<Source>(con)?;
+        Ok(())
     }
 }
 
