@@ -24,7 +24,7 @@ pub fn foo() {
         }
     }
 
-    index_loop(db);
+    index_loop(db).unwrap();
 }
 
 fn insert_source(connection: &SqliteConnection, url: &str) -> Result<()> {
@@ -50,7 +50,15 @@ pub fn index_loop(db: SqliteConnection) -> Result<()> {
         // but for now its poc
         let chan = feed.get_podcast_chan(&db)?;
         let pd = parse_feeds::parse_podcast(&chan, feed.id())?;
+
+        // Holy shit this works!
+        let episodes: Vec<_> = chan.items()
+            .iter()
+            .map(|x| parse_feeds::parse_episode(x, feed.id()))
+            .collect();
+
         info!("{:#?}", pd);
+        info!("{:#?}", episodes);
         // info!("{:?}", chan);
 
     }

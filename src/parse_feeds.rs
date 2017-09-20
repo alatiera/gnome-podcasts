@@ -29,24 +29,25 @@ pub fn parse_podcast(chan: &Channel, source_id: i32) -> Result<models::NewPodcas
 // This is also an initial prototype mess.
 pub fn parse_episode<'a>(item: &'a Item, parent_id: i32) -> Result<models::NewEpisode<'a>> {
 
-    let title = item.title().unwrap();
+    let title = item.title().map(|x| x);
 
-    let description = item.description();
-    let guid = Some(item.guid().unwrap().value());
+    let description = item.description().map(|x| x);
+    let guid = item.guid().map(|x| x.value());
 
-    let uri = item.enclosure().unwrap().url();
+    let uri = item.enclosure().map(|x| x.url());
 
     // FIXME:
     // probably needs to be removed from NewEpisode,
     // and have seperate logic to handle local_files
     let local_uri = None;
 
-    let pub_date = item.pub_date().unwrap();
+    let pub_date = item.pub_date().map(|x| x);
 
     // FIXME: parse pub_date to epoch later
     let epoch = 0;
 
-    let length = Some(item.enclosure().unwrap().length().parse().unwrap());
+    // let length = Some(item.enclosure().unwrap().length().parse().unwrap());
+    let length = item.enclosure().map(|x| x.length().parse().unwrap());
 
     let foo = models::NewEpisode {
         title,
@@ -144,12 +145,15 @@ mod tests {
         // println!("{:#?}", firstitem);
         let it = parse_episode(&firstitem, 0).unwrap();
 
-        assert_eq!(it.title, "The Super Bowl of Racism");
-        assert_eq!(it.uri, "http://traffic.megaphone.fm/PPY6458293736.mp3");
+        assert_eq!(it.title, Some("The Super Bowl of Racism"));
+        assert_eq!(
+            it.uri,
+            Some("http://traffic.megaphone.fm/PPY6458293736.mp3")
+        );
         assert_eq!(it.description, Some(descr));
         assert_eq!(it.length, Some(66738886));
         assert_eq!(it.guid, Some("7df4070a-9832-11e7-adac-cb37b05d5e24"));
-        assert_eq!(it.published_date, "Wed, 13 Sep 2017 10:00:00 -0000");
+        assert_eq!(it.published_date, Some("Wed, 13 Sep 2017 10:00:00 -0000"));
 
         let second = channel.items().iter().nth(1).unwrap();
         // println!("{:#?}", second);
@@ -158,13 +162,15 @@ mod tests {
         let descr = "This week on Intercepted: Jeremy gives an update on the aftermath of Blackwater’s 2007 massacre of Iraqi civilians. Intercept reporter Lee Fang lays out how a network of libertarian think tanks called the Atlas Network is insidiously shaping political infrastructure in Latin America. We speak with attorney and former Hugo Chavez adviser Eva Golinger about the Venezuela\'s political turmoil.And we hear Claudia Lizardo of the Caracas-based band, La Pequeña Revancha, talk about her music and hopes for Venezuela.";
         assert_eq!(
             i2.title,
-            "Atlas Golfed — U.S.-Backed Think Tanks Target Latin America"
+            Some(
+                "Atlas Golfed — U.S.-Backed Think Tanks Target Latin America",
+            )
         );
-        assert_eq!(i2.uri, "http://traffic.megaphone.fm/FL5331443769.mp3");
+        assert_eq!(i2.uri, Some("http://traffic.megaphone.fm/FL5331443769.mp3"));
         assert_eq!(i2.description, Some(descr));
         assert_eq!(i2.length, Some(67527575));
         assert_eq!(i2.guid, Some("7c207a24-e33f-11e6-9438-eb45dcf36a1d"));
-        assert_eq!(i2.published_date, "Wed, 09 Aug 2017 10:00:00 -0000");
+        assert_eq!(i2.published_date, Some("Wed, 09 Aug 2017 10:00:00 -0000"));
 
     }
 }

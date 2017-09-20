@@ -14,12 +14,12 @@ use errors::*;
 #[derive(Debug, Clone)]
 pub struct Episode {
     id: i32,
-    title: String,
-    uri: String,
+    title: Option<String>,
+    uri: Option<String>,
     local_uri: Option<String>,
     description: Option<String>,
-    published_date: String,
-    epoch: i32,
+    published_date: Option<String>,
+    epoch: Option<i32>,
     length: Option<i32>,
     guid: Option<String>,
     podcast_id: i32,
@@ -133,11 +133,11 @@ impl<'a> NewSource<'a> {
 #[table_name = "episode"]
 #[derive(Debug, Clone)]
 pub struct NewEpisode<'a> {
-    pub title: &'a str,
-    pub uri: &'a str,
+    pub title: Option<&'a str>,
+    pub uri: Option<&'a str>,
     pub local_uri: Option<&'a str>,
     pub description: Option<&'a str>,
-    pub published_date: &'a str,
+    pub published_date: Option<&'a str>,
     pub length: Option<i32>,
     pub guid: Option<&'a str>,
     pub epoch: i32,

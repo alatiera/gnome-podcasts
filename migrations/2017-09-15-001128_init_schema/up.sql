@@ -7,12 +7,12 @@ CREATE TABLE `source` (
 
 CREATE TABLE `episode` (
 	`id`	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
-	`title`	TEXT NOT NULL,
-	`uri`	TEXT NOT NULL,
+	`title`	TEXT,
+	`uri`	TEXT,
 	`local_uri`	TEXT,
 	`description`	TEXT,
-	`published_date` TEXT NOT NULL,
-	`epoch`	INTEGER NOT NULL,
+	`published_date` TEXT ,
+	`epoch`	INTEGER,
 	`length`	INTEGER,
 	`guid`	TEXT,
 	`podcast_id`	INTEGER NOT NULL

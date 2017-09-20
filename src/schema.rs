@@ -1,12 +1,12 @@
 table! {
     episode (id) {
         id -> Integer,
-        title -> Text,
-        uri -> Text,
+        title -> Nullable<Text>,
+        uri -> Nullable<Text>,
         local_uri -> Nullable<Text>,
         description -> Nullable<Text>,
-        published_date -> Text,
-        epoch -> Integer,
+        published_date -> Nullable<Text>,
+        epoch -> Nullable<Integer>,
         length -> Nullable<Integer>,
         guid -> Nullable<Text>,
         podcast_id -> Integer,
