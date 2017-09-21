@@ -10,9 +10,10 @@ use models::{NewSource, Source, Podcast, Episode};
 
 pub fn foo() {
     let inpt = vec![
+        "https://request-for-explanation.github.io/podcast/rss.xml",
         "https://feeds.feedburner.com/InterceptedWithJeremyScahill",
-        "http://feeds.feedburner.com/linuxunplugged",
         "http://feeds.propublica.org/propublica/main",
+        "http://feeds.feedburner.com/linuxunplugged",
     ];
 
     let db = ::establish_connection();
@@ -20,8 +21,7 @@ pub fn foo() {
         match insert_source(&db, feed) {
             Ok(_) => {}
             Err(foo) => {
-                debug!("Error: {}", foo);
-                debug!("Skipping...");
+                error!("Error: {}", foo);
                 continue;
             }
         }
