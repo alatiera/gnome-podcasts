@@ -8,7 +8,7 @@ CREATE TABLE `source` (
 CREATE TABLE `episode` (
 	`id`	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
 	`title`	TEXT,
-	`uri`	TEXT,
+	`uri`	TEXT UNIQUE,
 	`local_uri`	TEXT,
 	`description`	TEXT,
 	`published_date` TEXT ,

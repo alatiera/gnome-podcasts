@@ -51,6 +51,7 @@ pub fn index_loop(db: SqliteConnection) -> Result<()> {
         let chan = feed.get_podcast_chan(&db)?;
         let pd = parse_feeds::parse_podcast(&chan, feed.id())?;
 
+        // TODO: Separate the insert/update logic
         diesel::insert_or_replace(&pd)
             .into(schema::podcast::table)
             .execute(&db)?;

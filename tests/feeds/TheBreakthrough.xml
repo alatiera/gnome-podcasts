@@ -12,8 +12,8 @@
     <description>Latest Articles and Investigations from ProPublica, an independent, non-profit newsroom that produces investigative journalism in the public interest.</description>
     <language>en-us</language>
     <copyright>Copyright 2017 Pro Publica Inc.</copyright>
-    <pubDate>Fri, 15 Sep 2017 23:20:44 +0000</pubDate>
-    <dc:date>2017-09-15T23:20:44+00:00</dc:date>
+    <pubDate>Thu, 21 Sep 2017 04:23:07 +0000</pubDate>
+    <dc:date>2017-09-21T04:23:07+00:00</dc:date>
     <dc:language>en-us</dc:language>
     <dc:rights>Copyright 2017 Pro Publica Inc.</dc:rights>
     <image>
@@ -21,6 +21,535 @@
       <url>https://assets.propublica.org/propublica-rss-logo.png</url>
       <link>https://www.propublica.org/</link>
     </image>
+    <item>
+      <title>California Regulators Require Auto Insurers to Adjust Rates</title>
+      <link>http://tracking.feedpress.it/link/9499/6854328</link>
+      <pubDate>Wed, 20 Sep 2017 19:56:00 +0000</pubDate>
+      <guid isPermaLink="false">https://www.propublica.org/article/california-regulators-require-auto-insurers-to-adjust-rates#134766</guid>
+      <description><![CDATA[
+                <p class="byline">
+                by <a class="name" href="https://www.propublica.org/people/julia-angwin">Julia Angwin</a> and <a class="name" href="https://www.propublica.org/people/jeff-larson">Jeff Larson</a>                </p>
+                                <p>California regulators said they have required Nationwide and USAA to adjust their auto insurance rates as a result of <a href="https://www.propublica.org/article/minority-neighborhoods-higher-car-insurance-premiums-white-areas-same-risk">a report by ProPublica and Consumer Reports</a> that many minority neighborhoods were paying more than white areas with the same risk.</p>
+
+<p>The regulators said their review confirmed our finding that linked the pricing disparities to incorrect applications of a provision in California law. The statute allows insurers to cluster neighboring zip codes together into a single rating territory.</p>
+
+<p>“The companies were making some subjective determinations,” as a basis for calculating rates in some zip codes, said Ken Allen, deputy commissioner of the rate regulation branch of the California Department of Insurance. Nationwide and USAA are two of the 10 largest auto insurance providers in the country by market share.</p>
+
+<p>The department said that the adjustments would largely erase the racial disparities we found in the two companies’ pricing. According to our analysis, USAA charged 18 percent more on average, and Nationwide 14 percent more, in poor, minority neighborhoods than in whiter neighborhoods with similarly high accident costs. Allen said it’s not possible to quantify how these adjustments would affect customers’ premiums because the revisions are too complex. In addition, they’re taking effect at the same time as an overall rate increase.</p>
+
+<p>Allen said the department is now requiring more justification from insurers for their measurements of risk in the poor, minority neighborhoods that California designates as “underserved” for auto coverage.</p>
+
+<p>California’s action marks a rare regulatory rebuke of the insurance industry for its longtime practice of charging higher premiums to drivers living in predominantly minority-urban neighborhoods than to drivers with similar safety records living in majority-white neighborhoods. Insurers have traditionally defended their pricing by saying that the risk is greater in those neighborhoods, even for motorists who have never had an accident. </p>
+
+<p>The department’s investigation was prompted by a ProPublica and Consumer Reports <a href="https://www.propublica.org/article/minority-neighborhoods-higher-car-insurance-premiums-methodology">analysis published in April of car insurance premiums</a> in California, Texas, Missouri and Illinois. ProPublica found that some major insurers were charging minority neighborhoods rates as much as 30 percent more than in other areas with similar accident costs.</p>
+
+<p>The disparities were not as widespread in California, which is a highly regulated insurance market, as in the other states. Even so, within California, we found that units of Nationwide, USAA and Liberty Mutual were charging prices in risky minority neighborhoods that were more than 10 percent above similar risky zip codes where more residents were white.</p>
+    
+    <p>California regulators said they approved rate increases from Nationwide and USAA last week that contained corrections to the disparities revealed by ProPublica. The regulators said they are still investigating the proposed rates of Liberty Mutual, which had the largest disparities in ProPublica’s analysis. Liberty Mutual spokesman Glenn Greenberg said the company is cooperating with the investigation.</p>
+
+<p>The rate changes will only affect premiums charged from now on. The insurance commission chose not to look into whether, or the extent to which, drivers in California’s underserved neighborhoods may have been mischarged in the past.</p>
+
+<p>Department spokeswoman Nancy Kincaid said there was no need to examine past rates. “After hundreds of hours of additional analysis, department actuaries and analysts did not find any indication the ProPublica analysis revealed valid legal issues,” she said.</p>
+
+<p>Some consumer advocates disagreed with this approach. “We think the commissioner should go back and seek refunds for people who were covertly overcharged by the discriminatory practices that ProPublica uncovered,” said Harvey Rosenfield, founder of Consumer Watchdog. Consumers Union, the policy and action arm of Consumer Reports, <a href="https://www.documentcloud.org/documents/4056435-Final-Consumers-Union-Letter-to-CDI-Sept-2017.html">has also sent a letter</a> to the department, urging it to examine if any rates were calculated improperly in the past.</p>
+
+<p>The insurance commissions in Missouri, Texas and Illinois did not respond to questions about whether they had taken any actions to address the disparities highlighted in ProPublica’s article. A spokesman for the Illinois Department of Insurance said in a statement that it urges consumers to shop around for the best price on automobile insurance.</p>
+
+<p>ProPublica and Consumer reports analyzed more than 100,000 premiums charged for liability insurance — the combination of bodily injury and property damage that represents the minimum coverage drivers buy in each of the states. To equalize driver-related variables such as age and accident history, we limited our study to one type of customer: a 30-year-old woman with a safe driving record. We then compared those premiums, which were provided by Quadrant Information Services, to the average amounts paid out by insurers for liability claims in each zip code.</p>
+
+<p>When ProPublica published its investigation, the California Department of Insurance criticized the article’s approach and findings, saying that “the study’s flawed methodology results in a flawed conclusion” that some insurers discriminate in rate-setting. Nevertheless, the department subsequently used ProPublica’s methodology as a basis for developing a new way to analyze rate filings. It used its new method to examine the recent Nationwide and USAA rate filings.</p>
+
+<p>In California, when insurers set rates for sparsely populated rural zip codes, which tend to be relatively white, they are allowed to consider risk in contiguous zip codes of their own choosing. In some cases, these clusters led higher risk zip codes to be assigned a lower risk — and therefore, lower premium prices — than the state’s comprehensive analysis of accident costs warranted. The use of contiguous zip codes is also common in Missouri, Texas and Illinois but is less regulated there than in California.</p>
+
+<p>In an interview, deputy insurance commissioner Allen said that Nationwide had made a “procedural error” in its use of the contiguous zip codes provision, and that the regulators required the company to rely more heavily on the state’s risk estimates in those areas.</p>
+
+<p>Nationwide acknowledged that the state required a rate adjustment, but disputed the association with ProPublica’s reporting. “It is inaccurate and misleading for anyone to conclude or imply any connection between Nationwide’s recently approved rating plan and ProPublica’s unsubstantiated findings,” spokesman Eric Hardgrove said. He added that Nationwide is committed to nondiscriminatory rates and “disagrees with any assertion to the contrary.”</p>
+
+<p>On page 2,025 of Nationwide’s most recent California insurance filing, the company disclosed that it provided premium quotes for the “ProPublica risk example” to the California insurance commission.</p>
+
+<p>The improper use of the contiguous zip codes provision was also a factor in the USAA filing, Allen said in an interview. “USAA had failed to apply the updated industry wide factors where they had insufficient data,” he said.</p>
+
+<p>USAA spokesman Roger Wildermuth acknowledged when the company filed its rate plan in August 2016, it did not use California’s most up-to-date risk numbers, which were published eight months earlier in December 2015. The reason, he said, was that the insurer had already “completed months of calculations prior to that update.”</p>
+
+<p>He noted that the department approved that filing, including USAA’s decision to rely on its own data, and has now approved the company’s revised calculations using updated data.</p>
+
+<p>“The department has consistently validated our approach to this rate filing,” he said.</p>
+
+<p>California officials said they will more closely police the clustering algorithms, and their impact on poor and minority neighborhoods, as they review future rate filing applications.</p>
+
+<p>“We will use this analysis going forward,” said Joel Laucher, chief deputy commissioner of the department. “We don’t need to change any rules to do that.” </p>
+                            <img src="http://feedpress.me/9499/6854328.gif" height="1" width="1"/>]]></description>
+      <dc:subject/>
+      <dc:date>2017-09-20T19:56:00+00:00</dc:date>
+      <dc:creator>by Julia Angwin and Jeff Larson</dc:creator>
+    </item>
+    <item>
+      <title>Failing Charter Schools Have a Reincarnation Plan</title>
+      <link>http://tracking.feedpress.it/link/9499/6841866</link>
+      <pubDate>Tue, 19 Sep 2017 10:00:00 +0000</pubDate>
+      <guid isPermaLink="false">https://www.propublica.org/article/failing-charter-schools-have-a-reincarnation-plan#134669</guid>
+      <description><![CDATA[
+                <p class="byline">
+                by <a class="name" href="https://www.propublica.org/people/annie-waldman">Annie Waldman</a>                </p>
+                                <p>This past June, Florida’s top education agency delivered a failing grade to the Orange Park Performing Arts Academy in suburban Jacksonville for the second year in a row. It designated the charter school for kindergarten through fifth grade as the worst public school in Clay County, and one of the lowest performing in the state.</p>
+
+<p>Two-thirds of the academy’s students failed the state exams last year, and only a third of them were making any academic progress at all. The school had had four principals in three years, and teacher turnover was high, too.</p>
+
+<p>“My fourth grader was learning stuff that my second grader was learning — it shouldn't be that way,” said Tanya Bullard, who moved her three daughters from the arts academy this past summer to a traditional public school. “The school has completely failed me and my children.”</p>
+
+<p>The district terminated the academy’s charter contract. Surprisingly, Orange Park didn’t shut down — and even found a way to stay on the public dime. It reopened last month as a private school charging $5,000 a year, below the $5,886 <a href="http://www.fldoe.org/schools/school-choice/k-12-scholarship-programs/ftc/ftc-faqs.stml">maximum</a> that low-income students receive to attend the school of their choice under a state voucher program. Academy officials expect all of its students to pay tuition with the publicly backed coupons.</p>
+
+<p>Reverend Alesia Ford-Burse, an African Methodist Episcopal pastor who founded the academy, told ProPublica that the school deserves a second chance, because families love its dance and art lessons, which they otherwise couldn’t afford. “Kids are saying, ‘F or not, we’re staying,’” she said.</p>
+
+<hr />
+
+<p>While it’s widely known that private schools <a href="https://www.mackinac.org/3745">convert</a> to charter status to take advantage of public dollars, more schools are now heading in the opposite direction. As voucher programs across the country proliferate, shuttered charter schools, like the Orange Park Performing Arts Academy, have begun to privatize in order to stay open with state assistance.</p>
+
+<p>A ProPublica nationwide review found that at least 16 failing or struggling charter schools in five states — Florida, Wisconsin, Indiana, Ohio and Georgia — have gone private with the help of publicly funded voucher programs, including 13 since 2010. Four of them specialize in the arts, including Orange Park, and five serve students with special needs.</p>
+
+<p>“The voucher just is a pass through in order to provide additional funding for private schools to thrive and to continue to work,” said Addison Davis, superintendent of schools in Clay County. Changing a school’s status “isn’t going to stop the process where we continue to see kids who are declining academically and not being able to demonstrate mastery and proficiency.”</p>
+    <figure class="image full left">
+                                                <img alt="" src="https://assets.propublica.org/images/articles/_threeTwo400w/20170919-charter-school-vouchers-inline-sign.jpg" srcset="https://assets.propublica.org/images/articles/_threeTwo400w/20170919-charter-school-vouchers-inline-sign.jpg 400w, https://assets.propublica.org/images/articles/_threeTwo800w/20170919-charter-school-vouchers-inline-sign.jpg 800w, https://assets.propublica.org/images/articles/_threeTwo1600w/20170919-charter-school-vouchers-inline-sign.jpg 1600w, https://assets.propublica.org/images/articles/_threeTwo2000w/20170919-charter-school-vouchers-inline-sign.jpg 2000w" />
+        
+                    <figcaption>The Orange Park Performing Arts Academy was the only charter school in Clay County, Florida, that focused on the arts.
+                                    <span class="credit">(Charlotte Kesl for ProPublica)</span>
+                            </figcaption>
+            </figure>
+    <p>Two key factors underlie these conversions. The number of voucher and voucher-like programs across the country has more than <a href="https://www.edchoice.org/school-choice/school-choice-in-america/#map-overlay">tripled</a> over the past decade from 16 to 53. And charter schools, which became popular as a way to spur educational innovation with reduced regulation, have increasingly faced more stringent oversight. Jeanne Allen, founder and CEO of the Center for Education Reform and a longtime supporter of charter schools, lamented <a href="http://www.edweek.org/ew/articles/2017/02/08/regulations-are-strangling-charter-schools.html">in a recent op-ed</a> that increased government regulation is turning them into “bureaucratic, risk-averse organizations fixated on process over experimentation.”</p>
+
+<p>“Why not just be a private school if the kids qualify for the scholarships?” said Christopher Norwood, a consultant for the Orange Park school, in an interview. “With 90 percent fewer regulations, schools can be independent and free, and just deal with the students.”</p>
+
+<p>As private schools, the ex-charters are less accountable both to the government and the public. It can be nearly impossible to find out how well some of them are performing. About half of the <a href="http://www.federationforchildren.org/wp-content/uploads/2016/02/2015-16-Yearbook-Accountability-check.pdf">voucher and voucher-like programs</a> in the country require academic assessments of their students, but few states publish the complete test results, or use that data to hold schools accountable.</p>
+
+<p>While most states have provisions for <a href="http://credo.stanford.edu/pdfs/Closure_FINAL_Executive_Summary.pdf">closing low-quality charter</a> schools, few, if any, have the power to shut down low-performing voucher schools.</p>
+
+<p>“Public money is being handed out without oversight,” said Diane Ravitch, a New York University education historian and public schools advocate, who served as assistant secretary of education under President George H.W. Bush. “The fundamental voucher idea is that parents are choosing the schools and they know better than the state. If they want to send their kids to a snake-charming school, then that’s their choice.”</p>
+
+<hr />
+
+<p>The type of voucher program that rescues failed charter schools like Orange Park in Florida may soon be replicated nationwide. Visiting a religious school in Miami last April, Secretary of Education Betsy DeVos <a href="http://www.kansascity.com/news/politics-government/article143676449.html">praised</a> the state’s approach as a possible model for a federal initiative.</p>
+
+<p>Typically, voucher programs are directly funded with taxpayer dollars. Florida’s largest program pursues a different strategy. Its “tax-credit scholarships” are <a href="https://www.stepupforstudents.org/for-donors/">backed</a> by donations from corporations. They contribute to nonprofit organizations, which, in turn, <a href="http://www.fldoe.org/schools/school-choice/k-12-scholarship-programs/ftc/ftc-faqs.stml">distribute</a> the money to the private schools. In exchange, the donors receive generous <a href="http://www.latimes.com/local/education/la-na-trump-florida-vouchers-20170302-story.html">dollar-for-dollar</a> tax credits from the state. This subsidy indirectly <a href="https://itep.org/state-tax-subsidies-for-private-k-12-education/">shifts</a> hundreds of millions of dollars annually from the state’s coffers to private schools. More than 100,000 students whose families meet the income eligibility requirements have <a href="https://www.usnews.com/news/best-states/florida/articles/2017-08-04/more-than-100-000-florida-students-receiving-school-vouchers">received</a> the tax-credit coupons this year.</p>
+
+<p>Of the <a href="http://www.floridaschoolchoice.org/Information/PrivateSchoolDirectory/">nearly 2,900</a> private schools in Florida, over 1,730 participated in the tax-credit voucher program during 2016-17, according to the most recent state Department of Education data. On average, each school received about $300,000 last year.</p>
+
+<p>While more than two-thirds of these schools are <a href="http://www.orlandosentinel.com/features/education/os-vouchers-florida-schools-tax-credits-20170118-story.html">religious</a>, the roundabout funding approach <a href="http://www.ajc.com/news/state--regional-education/georgia-supreme-court-rules-for-tax-credit-scholarships/UXK0nj7BwjBjfOhXQVWZGL/">protects</a> the vouchers against legal challenges that they violate the separation of church and state. Earlier this year, the state Supreme Court <a href="http://www.orlandosentinel.com/features/education/os-vouchers-florida-schools-tax-credits-20170118-story.html">dismissed a lawsuit</a> by the Florida Education Association, a teacher’s union, challenging the constitutionality of the voucher program.</p>
+
+<p>In an education budget proposal from May, DeVos <a href="https://www.washingtonpost.com/local/education/trumps-first-full-education-budget-deep-cuts-to-public-school-programs-in-pursuit-of-school-choice/2017/05/17/2a25a2cc-3a41-11e7-8854-21f359183e8c_story.html">detailed</a> her voucher plans, pitching a $250 million plan to study and expand individual state initiatives. She has since suggested that the administration may also <a href="https://www.usnews.com/news/politics/articles/2017-08-11/school-choice-program-raises-questions-about-accountability">create a federal tax-credit voucher</a> scheme through an impending tax overhaul.</p>
+
+<p>School choice advocates like DeVos have long <a href="https://www.federationforchildren.org/school-choice-america/">contended</a> that vouchers improve educational opportunities for low-income families. They reason that competition raises school quality, and that parents, given more options, will select the best school for their children.</p>
+
+<p>A growing body of <a href="https://www.nytimes.com/2017/02/23/upshot/dismal-results-from-vouchers-surprise-researchers-as-devos-era-begins.html?mcubz=3&amp;_r=0">research</a>, though, casts doubt on this argument. It shows voucher-backed students may not be performing better than their public school counterparts, and may do worse.</p>
+
+<p>A recent Department of Education study compared students who attended private schools with vouchers in Washington, D.C., from 2012 through 2014 with those who qualified for the program but were turned down due to a lack of available slots. The private schoolers <a href="https://www.usnews.com/news/politics/articles/2017-04-27/study-dc-voucher-program-shows-poorer-math-results">performed significantly worse than their public school peers in math, and no better in reading.</a></p>
+
+<p>According to a February 2017 analysis by Martin Carnoy, a Stanford University education professor, most studies of voucher programs over the past quarter-century <a href="http://news.stanford.edu/2017/02/28/vouchers-not-improve-student-achievement-stanford-researcher-finds/">found little evidence</a> that students who receive the coupons perform better than their public school peers.</p>
+
+<p><a href="http://www.epi.org/publication/school-vouchers-are-not-a-proven-strategy-for-improving-student-achievement/">The lack of evidence</a> on the benefits of vouchers, Carnoy wrote, “suggests that an ideological preference for education markets over equity and public accountability is what is driving the push to expand voucher programs.”</p>
+
+<hr />
+
+<p>Across the Florida panhandle from Orange Park, another troubled charter school for the arts has reinvented itself as a voucher-funded private school.</p>
+
+<p>Founded in 2010, the A.A. Dixon Charter School of Excellence had the worst <a href="http://schoolgrades.fldoe.org/reports/index.asp">academic</a> record in Escambia County, and the school board raised <a href="http://jeffbergoshblog.blogspot.com/2011/09/aa-dixon-corrective-action-plan.html">questions</a> about its financial accounting.</p>
+
+<p>“Every month they came before the board and there was a problem,” said Jeff Bergosh, a school board <a href="http://jeffbergoshblog.blogspot.com/2012/03/aa-dixon-charter-school-update.html">member</a> at the time, adding that he supports school choice. “They tried to make it work, but they didn’t. There were serious issues that jeopardized student safety, like sanitation issues and not having supervision [for the students].”</p>
+
+<p>After Dixon received two failing grades from the state — which triggers termination of a school’s charter under Florida rules — Reverend Lutimothy May, a Baptist pastor who chaired its board, <a href="http://www.fldoe.org/policy/state-board-of-edu/meetings/2012/november-6-2012-agenda.stml">appealed</a> to state education authorities. They <a href="http://www1.escambia.k12.fl.us/board/PDF%2012/December/minutes_11_16_12_wrkshp.pdf">allowed</a> the school to operate for at least one more year, but he began to seek other options.</p>
+
+<p>Around the same time, a local beverage distributor, David Bear of the Lewis Bear Company, told May that he was considering contributing to the state tax-credit program. If the Dixon school privatized, Bear told May, donations could help save it. In 2013, May turned the <a href="http://www.fldoe.org/core/fileparse.php/7695/urlt/closed_charter_schools.pdf">charter</a>, which had <a href="http://www.escambia.k12.fl.us/board/PDF%2012/September/minutes_08_15_12_wrkshp.pdf">recently</a> been renamed the Dixon School of the Arts, into a <a href="http://studeri.org/2013/06/dixon-school-of-the-arts-to-become-private/">private</a> Christian arts academy located inside his church. Nearly all current students at Dixon receive the tax-credit vouchers, bringing the school more than $500,000 a year, according to the most recent data from the state’s department of education.</p>
+
+<p>“Our goal is still the same,” but the conversion has “untied some of the strings on education,” May said.</p>
+
+<hr />
+    <figure class="image medium right">
+                                                <img alt="" src="https://assets.propublica.org/images/articles/_threeTwo400w/20170919-charter-school-vouchers-inline-dixon.JPG" srcset="https://assets.propublica.org/images/articles/_threeTwo400w/20170919-charter-school-vouchers-inline-dixon.JPG 400w, https://assets.propublica.org/images/articles/_threeTwo800w/20170919-charter-school-vouchers-inline-dixon.JPG 800w, https://assets.propublica.org/images/articles/_threeTwo1600w/20170919-charter-school-vouchers-inline-dixon.JPG 1600w" />
+            
+                    <figcaption>Dixon School of the Arts, a private arts academy in Pensacola, Florida. Dixon began as a public charter school, but after receiving two failing grades from the state, it converted to a private school with the help of tax-credit vouchers. 
+                                    <span class="credit">(Annie Waldman/ProPublica)</span>
+                            </figcaption>
+            </figure>
+    <p>Some of the untied “strings” to which May referred were state educational requirements. By converting from a charter to private status, Dixon and other schools largely shield themselves from accountability.</p>
+
+<p>For instance, while Florida requires all private schools to <a href="http://www.fldoe.org/schools/school-choice/k-12-scholarship-programs/ftc/annual-assessment-requirement.stml">test</a> students who receive vouchers, the schools face no consequences for weak academic performance. The University of Florida publishes an annual report analyzing the test scores of students that receive vouchers, but data from only a small fraction of the schools is made public. The report excludes many schools that don’t have test results for enough students in consecutive years.</p>
+
+<p>The latest report released the academic performance of only <a href="https://www.documentcloud.org/documents/3963290-FTC-FinalReport-14-15.html#document/p23/a371733">198 schools</a> in 2014-15, out of the more than 1,500 schools that enrolled voucher-funded students that year. Most Florida families that receive vouchers do not have access to test data on their schools. The Dixon data was not published. Dixon’s principal, Donna Curry, maintained that the school has improved since its conversion from charter status, but declined to provide exam results to ProPublica, saying they were “for internal use.”</p>
+
+<p>Curry added that state test results are not necessarily reflective of student success. “I will not accept the fact that our children are not learning because they are not normalized on the state test,” she said. Her staff “knows more than what the test evaluates.”</p>
+
+<p>The state also has little control over how private, voucher-funded schools foster learning. There are no <a href="http://www.fldoe.org/schools/school-choice/private-schools/requirements-for-participating-in-state-scholarship-programs.stml">requirements</a> on curriculum or teacher certification, other than the criminal background checks that are required for personnel at all private schools.</p>
+
+<p>Because Dixon receives more than $250,000 in voucher money, it does have to file a financial <a href="https://www.stepupforstudents.org/wp-content/uploads/2015/09/agreed-upon-procedures2015-update.pdf">accountability report</a>. Only about 40 percent of all voucher-funded schools met this threshold to undergo such an audit in 2016. The reports, including Dixon’s, aren’t publicly posted.</p>
+
+<p>Even an official at Step Up For Students, the largest nonprofit distributor of voucher money to Florida’s private schools, acknowledges the need for closer supervision of educational quality. “As the program matures and more students are enrolled and as inevitably we see some schools continue to have what most people would consider to be poor performance year-in and year-out, we will be having more and more discussions about whether there should be some kind of regulatory accountability mechanisms to respond to that,” said Ron Matus, the organization’s director of policy and public affairs.</p>
+
+<hr />
+
+<p>Indiana’s largest voucher program, unlike Florida’s, is directly backed by taxpayer dollars and has <a href="https://www.theatlantic.com/education/archive/2017/05/how-indiana-holds-private-schools-accountable/526461/">stricter</a> accountability requirements. A private school that accepts vouchers can be sanctioned if its performance dips low <a href="https://www.theatlantic.com/education/archive/2017/05/how-indiana-holds-private-schools-accountable/526461/">enough</a>. Last year, 10 schools lost their <a href="https://www.theatlantic.com/education/archive/2017/05/how-indiana-holds-private-schools-accountable/526461/">access</a> to new vouchers, according to Adam Baker, the spokesman for the Indiana Department of Education.</p>
+
+<p>The tighter supervision, though, didn’t deter Padua Academy in Indianapolis. Originally a private Catholic school, Padua had become a “<a href="http://oei.indy.gov/padua-academy/">purely secular</a>” charter in 2010, under an unusual arrangement between the local archdiocese and the mayor’s office. The school initially performed well, but soon sank from a solid A-rating to <a href="https://www.doe.in.gov/accountability/find-school-and-corporation-data-reports">two consecutive F-ratings</a>.</p>
+
+<p>“These performance issues sounded alarm bells at the mayor's office,” said Brandon Brown, who led the mayor’s charter office at the time. Leadership issues with the school’s board and at the archdiocese, he added, caused the school to falter. After receiving $702,000 from a federal program that provided <a href="http://www.journalgazette.net/News/Local/Indiana/Study--Charter-funds-wasted-9469006">seed money</a> for new charter schools, the school’s board <a href="http://fox59.com/2014/08/25/parents-move-kids-as-charter-latest-closure-in-checkered-few-years/">relinquished its charter</a>.</p>
+
+<p>In the meantime, Indiana had established a voucher program. So, instead of shutting down, the school rebranded itself as St. Anthony Catholic School, nailing its crucifixes back onto the walls and bringing the Bible back into the curriculum. Last year, more than 80 percent of its students were on vouchers, from which the school <a href="https://www.doe.in.gov/sites/default/files/choice/2016-2017-choice-scholarship-program-report-spring-revision-final-0811.pdf">garnered</a> at least $1.2 million.</p>
+
+<p>Its academic performance has improved, but still lags behind the state average. Only 25 percent of St. Anthony students passed both math and reading assessments this year, versus about <a href="http://www.doe.in.gov/accountability/find-school-and-corporation-data-reports">half</a> of all publicly funded students on average at both private and public schools, according to the state’s education data from 2017. Last year, the state gave St. Anthony a C grade.</p>
+
+<p>Gina Fleming, superintendent of schools for the Archdiocese of Indianapolis, said through a spokesman that “significant staff turnover” at St. Anthony’s “made for a difficult start these past two years.” As a result, the archdiocese “has been studying ways in which we can recruit, retain and reward high-quality teachers and leaders.” It has also “made shifts in scheduling, resources, diagnostic analyses and personnel to better accommodate the learning needs of our students.”</p>
+    
+    <p>In Fort Wayne, Indiana, two other charter schools went private. Both Imagine MASTer Academy and Imagine Schools on Broadway were associated with a national for-profit charter chain, Imagine Schools, which has been under scrutiny elsewhere. In 2012, the Missouri Board of Education <a href="http://www.stltoday.com/news/local/education/missouri-calls-it-quits-on-imagine-charter-schools-in-st/article_e721e842-1a93-5e15-a673-f9766d19ee37.html">shut down</a> all six Imagine charter schools in St. Louis for financial and academic woes. In response to such setbacks, Imagine Schools has moved toward “an even deeper commitment to increasing the consistency of our network-wide performance,” said Rhonda Cagle, a spokeswoman for the chain.</p>
+
+<p>The two Fort Wayne schools performed well initially, but by the time their charters were up for renewal, they had some of the worst test results in the area, said Robert Marra, executive director of the charter office at Ball State University, which was responsible for the schools’ oversight. Imagine MASTer received a D grade from the state in 2013 and Imagine Schools on Broadway, an F.</p>
+
+<p>The data for the two schools “showed clear room for improvement but indicated consistent growth,” Cagle told ProPublica.</p>
+
+<p>In 2013, Imagine <a href="http://www.frostillustrated.com/2013/fort-waynes-imagine-master-academy-and-imagine-broadway-academy-to-re-open-as-horizon-christian-academy-campuses/">merged</a> its two failing charters with a local parochial school, Horizon Christian Academy. Since then, the Christian academy’s <a href="https://compass.doe.in.gov/dashboard/enrollment.aspx?type=school&amp;id=A307">enrollment</a> has soared from 23 students to 492. About <a href="http://www.doe.in.gov/sites/default/files/choice/2016-2017-choice-scholarship-program-report-spring-revision-final-0811.pdf">430 students paid their tuition with the help of state vouchers</a> last year, totaling about $2.4 million in public funds.</p>
+
+<p>While some of Imagine’s students and staff have stayed on, Cagle said that Imagine has no involvement in the merged academy, other than owning the building.</p>
+
+<p>“We could have allowed the buildings to just be empty, but we felt like if there was an interest by another entity for the purposes of education, that would be doing the right thing,” she said. Imagine “does not utilize vouchers for any of our schools,” she added.</p>
+
+<p>Academically, Horizon Christian is far below average. Only 7 percent of its students passed both state exams this year, according to state data. One of its campuses received a D grade last year, and its other two failed. The academy did not respond to questions.</p>
+
+<p>“Low-performing operators in Indiana and elsewhere have skirted accountability by converting their charter schools to private schools either right before or right after a charter revocation or nonrenewal,” said Brown, the former Indianapolis official. “I can say unequivocally that any attempt to keep a low-performing school open by evading rigorous accountability is not good for students, families, or the broader school choice movement.”</p>
+
+<hr />
+    <figure class="image full left">
+                                                <img alt="" src="https://assets.propublica.org/images/articles/_threeTwo400w/20170919-charter-school-vouchers-inline-school-building.jpg" srcset="https://assets.propublica.org/images/articles/_threeTwo400w/20170919-charter-school-vouchers-inline-school-building.jpg 400w, https://assets.propublica.org/images/articles/_threeTwo800w/20170919-charter-school-vouchers-inline-school-building.jpg 800w, https://assets.propublica.org/images/articles/_threeTwo1600w/20170919-charter-school-vouchers-inline-school-building.jpg 1600w, https://assets.propublica.org/images/articles/_threeTwo2000w/20170919-charter-school-vouchers-inline-school-building.jpg 2000w" />
+        
+                    <figcaption>“Sometimes when you&#039;re knocked down the hardest, you come back the hardest,” said Kelly Kenney, who started as the new principal of the Orange Park Performing Arts Academy this year, after the district terminated its charter contract this summer.
+                                    <span class="credit">(Charlotte Kesl for ProPublica)</span>
+                            </figcaption>
+            </figure>
+    <p>As it awaits its first infusion of voucher funds later this month, the Orange Park Performing Arts Academy is strapped. The district has repossessed most of the former charter school’s instructional supplies, including 200 Chromebooks, 34 laptops, 27 iPads and hundreds of textbooks. The arts — the school’s core mission — have been cleaned out: ten easels, nine digital pianos, eight heartwood djembes and four conga drums, all gone. Once lined with silver bleachers, the walls of the cavernous gym are now bare.</p>
+
+<p>Many children have left, too. While the school had about 170 students last year, only 94 enrolled this fall. At least one quarter are kindergarteners, who didn’t attend the charter school. Tanya Bullard, who pulled her three daughters out of Orange Park, predicted it would slide further as a private school, because there will be “no one to keep an eye on it and issues will be swept under the rug.”</p>
+
+<p>The school’s new principal, Kelly Kenney, isn’t deterred. She said that she has already made significant strides to separate the school from its failed days as a charter. Most of the teachers and administrators are new hires, although half of the teachers are uncertified. Kenney plans to get the school accredited, and strengthen the board of directors. “It can’t be a board of friends,” she said. She has been working with each teacher individually to raise standards and improve curriculum.</p>
+
+<p>“Most people would have been defeated,” Kenney said. “Sometimes when you're knocked down the hardest, you come back the hardest. And so for parents that have been skeptical, I'm like ‘This will be the best year of education your child will ever have. We're going to be looking at every detail of their progress, every detail of their learning gap to make sure that we're closing it.’”</p>
+
+<p>Even though it’s not required, Kenney intends to publish her students’ performance data on the school’s website. “It’s important for us to show how we did compared to last year,” she said.</p>
+
+<p>To recruit students this past summer, Kenney went door to door in nearby apartment complexes, hosting information sessions in laundry rooms. Believing that they couldn’t afford a private school, many families were reluctant to send their children to Orange Park — until Kenney told them about vouchers. For weeks, she and her staff have worked around the clock to sign up all the students in the voucher program, even helping them organize, fill out and fax in the necessary paperwork.</p>
+
+<p>Bria Joyce is a loyalist. When her son started kindergarten at the local public school, she says he was “bumping heads” with classmates and she worried that he wasn’t receiving enough attention from teachers. She transferred him to the Orange Park charter school, where he took piano lessons and played Grandpa Joe in a production of “Charlie and the Chocolate Factory.”</p>
+
+<p>When Joyce heard that the school was converting to a private school, she was nervous that she wouldn’t be able to afford the tuition. But the school reached out to her immediately and walked Joyce through the voucher process. Now Joyce’s son is starting fourth grade there.</p>
+
+<p>“They were prepared and made it as easy as they could, considering everything,” she said. “I believe in what they’re trying to get done.”</p>
+                            <img src="http://feedpress.me/9499/6841866.gif" height="1" width="1"/>]]></description>
+      <dc:subject>Education</dc:subject>
+      <dc:date>2017-09-19T10:00:00+00:00</dc:date>
+      <dc:creator>by Annie Waldman</dc:creator>
+    </item>
+    <item>
+      <title>Attorneys General in 37 States Urge Insurance Industry to Do More to Curb Opioid Epidemic</title>
+      <link>http://tracking.feedpress.it/link/9499/6832038</link>
+      <pubDate>Mon, 18 Sep 2017 21:30:00 +0000</pubDate>
+      <guid isPermaLink="false">https://www.propublica.org/article/attorneys-general-urge-insurance-industry-do-more-to-curb-opioid-epidemic#134756</guid>
+      <description><![CDATA[
+                <p class="byline">
+                by <a class="name" href="https://www.propublica.org/people/charles-ornstein">Charles Ornstein</a>                </p>
+                                <p>Attorneys general for 37 states <a href="https://ag.ny.gov/sites/default/files/final_naag_opioid_letter_to_ahip.pdf">sent a letter Monday</a> to the health insurance industry’s main trade group, urging its members to reconsider coverage policies that may be fueling the opioid crisis.</p>
+
+<p>The letter is part of an ongoing investigation by the state officials into the causes of the opioid epidemic and the parties that are most responsible. The group is also focusing on the marketing and sales practices of drug makers and the role of drug distributors.</p>
+
+<p>On Sunday, ProPublica and The New York Times <a href="https://www.propublica.org/article/insurers-limit-coverage-of-pricey-less-addictive-painkillers">reported that many insurance companies</a> limit access to pain medications that carry a lower risk of addiction or dependence, even as they provide comparatively easy access to generic opioid medications. The safer drugs are more expensive.</p>
+
+<p>In their letter to America’s Health Insurance Plans, the trade group based in Washington, D.C., the attorneys general urged insurers to revise their rules “to encourage healthcare providers to prioritize non-opioid pain management options over opioid prescriptions for the treatment of chronic, non-cancer pain.”</p>
+
+<p>“The status quo, in which there may be financial incentives to prescribe opioids for pain which they are ill-suited to treat, is unacceptable,” the letter said. “We ask that you quickly initiate additional efforts so that you can play an important role in stopping further deaths.”</p>
+
+<p>The signatories include the attorneys general of California, Florida, New York, Pennsylvania and Michigan.</p>
+
+<p>While opioids, such as hydrocodone and morphine, are often prescribed to relieve pain, they also have been linked to abuse and dependence. Drug overdoses are now the leading cause of death among Americans under 50, and <a href="http://www.jwatch.org/fw113158/2017/08/01/estimated-2-million-us-adults-have-opioid-use-disorder">more than 2 million Americans</a> are estimated to misuse opioids. While the crisis has placed the practices of drug makers, pharmaceutical distributors, pharmacies and doctors under scrutiny, the role of insurers in enabling access to cheap, addictive opioids has received less attention.</p>
+
+<p>The Department of Health and Human Services is now studying whether insurance companies make opioids more accessible than other pain treatments. An early analysis suggests that insurers are placing fewer restrictions on opioids than on less addictive, non-opioid medications and non-drug treatments like physical therapy, said Christopher M. Jones, a senior policy official at the department.</p>
+
+<p>Last week, the New York state attorney general’s office sent letters to the three largest pharmacy benefit managers — CVS Caremark, Express Scripts and OptumRx — asking how they were addressing the crisis.</p>
+
+<p>In a written statement to ProPublica, Cathryn Donaldson, a spokeswoman for America’s Health Insurance Plans, said that, “We share the state attorneys general’s commitment to eradicating the opioid epidemic in America.”</p>
+
+<p>“Health plans cover comprehensive, effective approaches to pain management that include evidence-based treatments, more cautious opioid prescribing, and careful patient monitoring,” Donaldson wrote. “Recent research shows that non-opioid medications, even over-the-counter medication like ibuprofen, can provide just as much relief as opioids.”</p>
+
+<p>Insurers say they have been addressing the issue on many fronts, including monitoring patients’ opioid prescriptions, as well as doctors’ prescribing patterns. A number of companies say they have seen marked declines in monthly opioid prescriptions in the past year or so. Moreover, at least two large pharmacy benefit managers, which run insurers’ drug plans, <a href="http://lab.express-scripts.com/lab/insights/industry-updates/a-comprehensive-solution-to-reduce-opioid-abuse">announced</a> <a href="https://payorsolutions.cvshealth.com/insights/balancing-act">this year</a> that they would limit coverage of new prescriptions for pain pills to a seven- or 10-day supply.</p>
+
+<p>“Patients and their care providers should talk openly and honestly about pain and how to manage it — from lifestyle changes and exercise to over-the-counter options and clearly understanding the dangers of opioids,” Donaldson said.</p>
+    
+    <p>Nonetheless, ProPublica and The New York Times found that companies are sometimes refusing to cover less risky drugs prescribed by doctors while putting no such restrictions on opioids.</p>
+
+<p>We analyzed Medicare prescription drug plans covering 35.7 million people in the second quarter of this year. Only one-third of the people covered, for example, had any access to Butrans, a painkilling skin patch that contains a less-risky opioid, buprenorphine. And every drug plan that covered lidocaine patches, which are not addictive but cost more than other generic pain drugs, required that patients get prior approval from the insurer for them.</p>
+
+<p>Moreover, we found that many plans make it easier to get opioids than medications to treat addiction, such as Suboxone. Drug plans covering 33.6 million people include Suboxone, but two-thirds require prior authorization. And even if they do approve coverage, some insurance companies have set a high out-of-pocket cost for Suboxone, rendering it unaffordable for many addicts, a number of pharmacists and doctors said.</p>
+
+<p>“Everyone — including and especially insurance companies — have an obligation to address the opioid epidemic,” New York Attorney General Eric T. Schneiderman said in a press release today. “Insurers must take a hard look at the systemic problems in our healthcare system that result in the over-prescription of opioids and fuel the cycle of addiction.”</p>
+                            <img src="http://feedpress.me/9499/6832038.gif" height="1" width="1"/>]]></description>
+      <dc:subject>Health Care</dc:subject>
+      <dc:date>2017-09-18T21:30:00+00:00</dc:date>
+      <dc:creator>by Charles Ornstein</dc:creator>
+    </item>
+    <item>
+      <title>The Trumps Say They’re Opening Hotels in Dallas, Nashville and Elsewhere. We Couldn’t Find Evidence of Them.</title>
+      <link>http://tracking.feedpress.it/link/9499/6829437</link>
+      <pubDate>Mon, 18 Sep 2017 16:00:00 +0000</pubDate>
+      <guid isPermaLink="false">https://www.propublica.org/article/no-evidence-trump-hotels-in-dallas-nashville-elsewhere#134657</guid>
+      <description><![CDATA[
+                <p class="byline">
+                by <span class="name">Matt Drange</span>, Forbes, <span class="name">Alan Huffman</span>, special to ProPublica, and <a class="name" href="https://www.propublica.org/people/derek-kravitz">Derek Kravitz</a>, ProPublica                </p>
+                                <p>Earlier this summer, the Trump Organization <a href="https://www.bloomberg.com/news/articles/2017-06-05/trump-hotels-unveils-plans-for-american-idea-mid-tier-properties">announced</a> big plans to open a line of hotels across the country. The new brand, American IDEA, would be modestly priced and patriotically themed. “The product is very hometown and fits in every hometown in the United States,” Trump Hotels CEO Eric Danziger said during a presentation at Trump Tower in Manhattan, the same place where Donald Trump had announced his presidential campaign two years earlier.</p>
+
+<p>American IDEA would be part of a wider rollout with another higher-end hotel line, Scion, that the Trumps had already unveiled. Progress on the hotels would be swift, Danziger said.</p>
+
+<p>The Trump Organization had <a href="https://www.wsj.com/articles/trump-hotels-ceo-says-17-deals-in-the-works-for-new-scion-brand-1485381869?mg=prod/accounts-wsj&amp;mg=prod/accounts-wsj">said</a> it signed deals for Scion hotels in Nashville, Dallas, Cincinnati, Austin and New York. At various times, company officials have cited anywhere from <a href="https://www.reuters.com/article/us-usa-trump-hotels-idUSKBN1AC3BL">10</a> to <a href="https://www.washingtonpost.com/amphtml/politics/trumps-hotel-company-moves-into-his-political-territory-beginning-with-mississippi/2017/06/05/34c94df8-4a5b-11e7-a186-60c031eab644_story.html">39</a> impending deals.</p>
+
+<p>The Trumps declined to release any details about the deals. The Trump Organization wouldn’t name the developers partnering with it, or where the planned hotels would be. So we <a href="https://projects.propublica.org/graphics/trump-hotels">asked readers and journalists to help us figure out who the president’s company was working with and where.</a></p>
+
+<p>What we’ve found are false starts, fizzled-out partnerships and, for a number of cities that the Trumps said they had deals in, no evidence of deals at all.</p>
+    <aside class="promo small right">
+                
+    
+                                        <div class="story-entry">
+            <!-- if Featured Image -->
+                
+                                                                                                        <div class="lead-art">
+                                    <a class="aspect-3-2" href="https://projects.propublica.org/graphics/trump-hotels">
+                                        <img alt="" src="https://assets.propublica.org/images/externals/_threeTwo400w/20170718-trump-hotels-graphic.png" srcset="https://assets.propublica.org/images/externals/_threeTwo400w/20170718-trump-hotels-graphic.png 400w, https://assets.propublica.org/images/externals/_threeTwo800w/20170718-trump-hotels-graphic.png 800w, https://assets.propublica.org/images/externals/_threeTwo1200w/20170718-trump-hotels-graphic.png 1200w"/>
+                                    </a>
+                                </div>
+                            
+                    
+                           <!-- end if Featured Image -->
+
+            <div class="description">
+                <h3 class="hed"><a href="https://projects.propublica.org/graphics/trump-hotels">We Found New Details About the New Trump-Branded Hotels. Now We Want Your Help to Find the Rest.</a></h3>
+                <h4 class="dek">We’re recruiting local reporters and civically engaged citizens. We have a few ideas on how you can find these deals, who to talk to about them, and what documents to look for.</h4>
+            </div>
+        </div>
+
+    
+    </aside>
+    
+    <p>Nashville faced petitions after the Trump Organization said it was coming to town. But development and tourism officials we spoke to said they were unaware of any Trump hotel being planned. Bobby Bowers, senior vice president of operations for Hendersonville, Tennessee-based hotel industry research firm STR, said his company has no information about a Trump hotel partnership in Nashville, even among its “unconfirmed” listings. A spokesperson for the city’s convention and visitors bureau said the same thing.</p>
+
+<p>In Dallas, a developer who had been working with the Trumps had declared the deal dead <a href="https://www.dallasnews.com/news/investigations/2017/04/12/trump-brand-dallas-hotel-dead">two months before</a> the Trump Organization identified the city as a hotel site. (He also had plans for a Trump hotel in downtown St. Louis <a href="http://www.stltoday.com/business/columns/building-blocks/no-trump-hotel-at-jefferson-arms-building-in-downtown-st/article_4a23e071-2c57-53a5-86f8-b9dee15ca68d.html">before political pressure and protests derailed it</a>.)</p>
+
+<p>The developer, Mukemmel “Mike” Sarimsakci, did not respond to a request for comment. If the plan is back on with Sarimsakci or a different partner in Dallas, city officials don’t appear to know about it. Requests for correspondence between the city and representatives of the Trump Organization, as well as requests submitted to Dallas’ Office of Economic Development, turned up no records.</p>
+
+<p>Officials and hotel developers in Cincinnati also said they had not heard of any deals involving Trump.</p>
+
+<p>And in Austin, the deal “died before Trump was elected,” the head of a firm that had been working on the project <a href="https://www.bizjournals.com/austin/news/2017/03/22/another-high-rise-hotel-pegged-for-austin-trump.html">told</a> the Austin Business Journal. “It’s absolutely 100 percent dead.”</p>
+
+<p>Danziger declined to comment for this story. Other representatives for the Trump Organization’s hotel business did not respond to requests for comment.</p>
+
+<p><a href="https://www.propublica.org/article/hotelier-in-chief-here-are-the-trumps-new-hotels">As we previously detailed</a>, the Trumps are moving forward on four hotels in the Mississippi Delta. The deals are in partnership with a pair of Indian-American hoteliers, one of whom had met Donald Trump on the campaign trail and later gave money to his presidential campaign.</p>
+
+<p>Suresh Chawla met Trump at a private fundraiser in August 2016 and donated $50,000, split between Trump’s campaign and the Republican National Committee. Months later, Chawla, along with his business partner and brother Dinesh, reached an agreement with the Trump Organization on a $20 million Scion hotel and three other franchise agreements to convert existing hotels to the American IDEA brand.</p>
+
+<p>We also found a few other cities where the Trumps have had early conversations about partnering with local developers.</p>
+
+<p>Jon Willis, a politically active developer in Mesa, Arizona, said he met Donald Trump Jr. through a mutual connection at Turning Point USA, a nonprofit group that promotes conservative causes, and started working on the Trump campaign last year. When Willis spent time with Donald Jr. at a campaign event in Arizona last year, he said they discussed expansion plans that the Trump Organization had in Las Vegas, where it has a condo-hotel tower in partnership with billionaire Phil Ruffin. “That was the extent of what we talked about,” Willis said, adding that the two “mostly just talked about our kids.”</p>
+
+<p>Willis added that while he wasn’t working with the Trumps on their new hotel line, he would be more than open to it: “I’d love to be involved.”</p>
+
+<p>Three other established hoteliers and financiers in the South told us they’d also welcome working with the Trumps. The Trump Organization has said it is meeting with potential partners in Mississippi.</p>
+
+<p>Len Blackwell, an attorney in Gulfport, Mississippi, said he had heard rumors of the Trumps “poking around” on the coast. (The Trump Organization has said it is meeting with potential partners in Mississippi.)</p>
+
+<p>Blackwell has had experience working with the Trumps. He represented Trump in a planned $80 million casino and hotel project in Gulfport in the mid-1990s. Trump abandoned the deal before ground was broken.</p>
+
+<p>One issue, according to Blackwell, was that Trump’s representatives were reticent about following through on a required $250,000 deposit they had negotiated with the city.</p>
+
+<p>“My experience with the Trump Organization and its attempt to put a casino in Gulfport was: Its representatives, including Mr. Trump, came to town and had a lot of public relations activity, and did in fact work toward a project but, when it came down to it, chose not to go forward,” he said.</p>
+                            <img src="http://feedpress.me/9499/6829437.gif" height="1" width="1"/>]]></description>
+      <dc:subject>The Trump Administration</dc:subject>
+      <dc:date>2017-09-18T16:00:00+00:00</dc:date>
+      <dc:creator>by Matt Drange, Forbes, Alan Huffman, special to ProPublica, and Derek Kravitz, ProPublica</dc:creator>
+    </item>
+    <item>
+      <title>Amid Opioid Crisis, Insurers Restrict Pricey, Less Addictive Painkillers</title>
+      <link>http://tracking.feedpress.it/link/9499/6821549</link>
+      <pubDate>Sun, 17 Sep 2017 23:00:00 +0000</pubDate>
+      <guid isPermaLink="false">https://www.propublica.org/article/insurers-limit-coverage-of-pricey-less-addictive-painkillers#134698</guid>
+      <description><![CDATA[
+                <p class="byline">
+                by <span class="name">Katie Thomas</span>, <a href="https://www.nytimes.com/">The New York Times</a> and <a class="name" href="https://www.propublica.org/people/charles-ornstein">Charles Ornstein</a>, ProPublica                </p>
+                                <p>At a time when the United States is in the grip of an <a href="https://www.nytimes.com/interactive/2017/08/03/upshot/opioid-drug-overdose-epidemic.html?mcubz=1">opioid epidemic</a>, many insurers are limiting access to pain medications that carry a lower risk of addiction or dependence, even as they provide comparatively easy access to generic opioid medications.</p>
+
+<p>The reason, experts say: Opioid drugs are generally cheap while safer alternatives are often more expensive.</p>
+
+<p>Drugmakers, pharmaceutical distributors, pharmacies and doctors have come under intense scrutiny in recent years, but the role that insurers — and the pharmacy benefit managers that run their drug plans — have played in the opioid crisis has received less attention. That may be changing, however. The New York state attorney general’s office sent letters last week to the three largest pharmacy benefit managers — CVS Caremark, Express Scripts and OptumRx — asking how they were addressing the crisis.</p>
+
+<p>ProPublica and The New York Times analyzed Medicare prescription drug plans covering 35.7 million people in the second quarter of this year. Only one-third of the people covered, for example, had any access to Butrans, a painkilling skin patch that contains a less-risky opioid, buprenorphine. And every drug plan that covered lidocaine patches, which are not addictive but cost more than other generic pain drugs, required that patients get prior approval for them.</p>
+
+<p>In contrast, almost every plan covered common opioids and very few required any prior approval.</p>
+
+<p>The insurers have also erected more hurdles to approving addiction treatments than for the addictive substances themselves, the analysis found.</p>
+
+<p>Alisa Erkes lives with stabbing pain in her abdomen that, for more than two years, was made tolerable by Butrans. But in January, her insurer, UnitedHealthcare, <a href="https://broker.uhc.com/assets/UHC_Jan.1.2017_PDLUpdates_ASO%20Brainshark_Connections.pdf">stopped covering the drug</a>, which had cost the company $342 for a four-week supply. After <a href="http://www.propublica.org/documents/item/4052224-Butrans-denials.html">unsuccessfully appealing the denial</a>, Erkes and her doctor scrambled to find a replacement that would quiet her excruciating stomach pains. They eventually settled on long-acting morphine, a cheaper opioid that UnitedHealthcare covered with no questions asked. It costs her and her insurer a total of $29 for a month’s supply.</p>
+    <figure class="image small left">
+                                                <img alt="" src="https://assets.propublica.org/images/articles/_threeTwo400w/20170917-opioids-1.jpg" srcset="https://assets.propublica.org/images/articles/_threeTwo400w/20170917-opioids-1.jpg 400w, https://assets.propublica.org/images/articles/_threeTwo800w/20170917-opioids-1.jpg 800w" />
+            
+                    <figcaption>Erkes, who is 28, is afraid of becoming addicted and has asked her husband to keep a close watch on her. “Because my Butrans was denied, I have had to jump into addictive drugs,” she said.
+                                    <span class="credit">(Kevin D. Liles for The New York Times)</span>
+                            </figcaption>
+            </figure>
+    <p>The Drug Enforcement Administration places morphine <a href="https://www.deadiversion.usdoj.gov/schedules/">in a higher category</a> than Butrans for risk of abuse and dependence. Addiction experts say that buprenorphine also carries a <a href="https://www.samhsa.gov/medication-assisted-treatment/treatment/buprenorphine">lower risk of overdose</a>.</p>
+
+<p><a href="https://www.uhc.com/content/dam/uhcdotcom/en/Pharmacy/PDFs/Traditional3TierPlans.pdf">UnitedHealthcare</a>, the nation’s largest health insurer, places morphine on its lowest-cost drug coverage tier with no prior permission required, while in many cases excluding Butrans. And it places Lyrica, a non-opioid, brand-name drug that treats nerve pain, on its most expensive tier, requiring patients to try other drugs first.</p>
+
+<p>Erkes, who is 28 and lives in Smyrna, Georgia, is afraid of becoming addicted and has asked her husband to keep a close watch on her. “Because my Butrans was denied, I have had to jump into addictive drugs,” she said.</p>
+
+<p>UnitedHealthcare said Erkes had not exhausted her appeals, including the right to ask a third party to review her case. It said in a statement, “We will work with her physician to find the best option for her current health status.”</p>
+
+<p>Matthew N. Wiggin, a spokesman for UnitedHealthcare, said that the company was trying to reduce long-term use of opioids. “All opioids are addictive, which is why we work with care providers and members to promote non-opioid treatment options for people suffering from chronic pain,” he said.</p>
+
+<p>Dr. Thomas R. Frieden, who led the Centers for Disease Control and Prevention under President Obama, said that insurance companies, with few exceptions, had “not done what they need to do to address” the opioid epidemic. Right now, he noted, it is easier for most patients to get opioids than treatment for addiction.</p>
+    <aside class="promo small right">
+                    <h3>Read More</h3>
+                
+    
+                                    <div class="story-entry">
+            <!-- if Featured Image -->
+                
+                                                                                                        <div class="lead-art">
+                                    <a class="aspect-3-2" href="https://www.propublica.org/article/take-the-generic-drug-patients-are-told-unless-insurers-say-no">
+                                        <img alt="" src="https://assets.propublica.org/images/articles/_threeTwo400w/20170806-brand-name-drugs-3x2.jpg" srcset="https://assets.propublica.org/images/articles/_threeTwo400w/20170806-brand-name-drugs-3x2.jpg 400w, https://assets.propublica.org/images/articles/_threeTwo800w/20170806-brand-name-drugs-3x2.jpg 800w, https://assets.propublica.org/images/articles/_threeTwo1200w/20170806-brand-name-drugs-3x2.jpg 1200w"/>
+                                    </a>
+                                </div>
+                            
+                    
+                           <!-- end if Featured Image -->
+
+            <div class="description">
+                <h3 class="hed"><a href="https://www.propublica.org/article/take-the-generic-drug-patients-are-told-unless-insurers-say-no">Take the Generic Drug, Patients Are Told — Unless Insurers Say No</a></h3>
+                <h4 class="dek">Faced with competition, some pharmaceutical companies are cutting deals with insurance companies to favor their brand-name products over cheaper generics. Insurers pay less, but sometimes consumers pay more. </h4>
+            </div>
+        </div>
+
+    
+    </aside>
+    
+    <p>Leo Beletsky, an associate professor of law and health sciences at Northeastern University, went further, calling the insurance system “one of the major causes of the crisis” because doctors are given incentives to use less expensive treatments that provide fast relief.</p>
+
+<p>The Department of Health and Human Services is studying whether insurance companies make opioids more accessible than other pain treatments. An early analysis suggests that they are placing fewer restrictions on opioids than on less addictive, non-opioid medications and <a href="https://www.nytimes.com/2016/06/23/business/new-ways-to-treat-pain-without-opioids-meet-resistance.html?mcubz=1">non-drug treatments like physical therapy</a>, said Christopher M. Jones, a senior policy official at the department.</p>
+
+<p>Insurers say they have been addressing the issue on many fronts, including monitoring patients’ opioid prescriptions, as well as doctors’ prescribing patterns. “We have a very comprehensive approach toward identifying in advance who might be getting into trouble, and who may be on that trajectory toward becoming dependent on opioids,” said Dr. Mark Friedlander, the chief medical officer of Aetna Behavioral Health who participates on its opioid task force.</p>
+
+<p>Aetna and other insurers say they have seen marked declines in monthly opioid prescriptions in the past year or so. At least two large pharmacy benefit managers <a href="http://lab.express-scripts.com/lab/insights/industry-updates/a-comprehensive-solution-to-reduce-opioid-abuse">announced</a> <a href="https://payorsolutions.cvshealth.com/insights/balancing-act">this year</a> that they would limit coverage of new prescriptions for pain pills to a seven- or 10-day supply. And bowing to public pressure — not to mention <a href="https://www.usatoday.com/story/news/politics/2017/01/19/anthem-change-opioid-treatment-policy-under-deal-ny-regulators/96771566/">government investigations</a> — several insurers have removed barriers that had made it difficult to get coverage for drugs that treat addiction, like Suboxone.</p>
+
+<p>Experts in addiction note that the opioid epidemic has been changing and that the problem now appears to be rooted more in the illicit trade of heroin and fentanyl. But the potential for addiction to prescribed opioids is real: 20 percent of patients who receive an initial 10-day prescription for opioids will still be using the drugs after a year, <a href="https://www.cdc.gov/mmwr/volumes/66/wr/mm6610a1.htm#F1_up">according to a study</a> by researchers at the University of Arkansas for Medical Sciences.</p>
+
+<p>Several patients said in interviews that they were terrified of becoming dependent on opioid medications and were unwilling to take them, despite their pain.</p>
+
+<p>In 2009, Amanda Jantzi weaned herself off opioids by switching to the more expensive Lyrica to treat the pain associated with interstitial cystitis, <a href="http://www.mayoclinic.org/diseases-conditions/interstitial-cystitis/home/ovc-20251830">a chronic bladder condition</a>.</p>
+
+<p>But earlier this year, Jantzi, who is 33 and lives in Virginia, switched jobs and got a new insurer — Anthem — which said it would not cover Lyrica because there was not sufficient evidence to prove that it worked for interstitial cystitis. Jantzi’s appeal was denied. She cannot afford <a href="https://www.goodrx.com/lyrica">the roughly $520 monthly retail price</a> of Lyrica, she said, so she takes generic gabapentin, a related, cheaper drug. She said it does not manage the pain as well as Lyrica, which she took for eight years. “It’s infuriating,” she said.</p>
+
+<p>Jantzi said she wanted to avoid returning to opioids. However, “I could see other people, faced with a similar situation, saying, ‘I can’t live like this, I’m going to need to go back to painkillers,’” she said.</p>
+
+<p>In a statement, Anthem said that its members have to meet certain requirements before it will pay for Lyrica. Members can apply for an exception, the insurer said. Jantzi said she did just that and was turned down.</p>
+    <figure class="image large left">
+                                                <img alt="" src="https://assets.propublica.org/images/articles/_threeTwo400w/20170917-opioids-2.jpg" srcset="https://assets.propublica.org/images/articles/_threeTwo400w/20170917-opioids-2.jpg 400w, https://assets.propublica.org/images/articles/_threeTwo800w/20170917-opioids-2.jpg 800w, https://assets.propublica.org/images/articles/_threeTwo1600w/20170917-opioids-2.jpg 1600w, https://assets.propublica.org/images/articles/_threeTwo2000w/20170917-opioids-2.jpg 2000w" />
+        
+                    <figcaption>Erkes, who is petting her dog, Kallie, once visited her pain doctor every two months. Since her insurer denied coverage of Butrans, she has gone back much more frequently, and once went to the emergency room because she could not control her pain.
+                                    <span class="credit">(Kevin D. Liles for The New York Times)</span>
+                            </figcaption>
+            </figure>
+    <p>With Butrans, the drug that Erkes was denied, several insurers either do not cover it, require a high out-of-pocket payment, or will pay for it only after a patient has tried other opioids and failed to get relief.</p>
+
+<p>In one case, OptumRx, which is owned by UnitedHealth Group, suggested that a member taking Butrans consider switching to a “lower cost alternative,” such as OxyContin or extended-release morphine, according to a letter provided by the member.</p>
+
+<p>Wiggin, the UnitedHealthcare spokesman, said the company’s rules and preferred drug list “are designed to ensure members have access to drugs they need for acute situations, such as post-surgical care or serious injury, or ongoing cancer treatment and end of life care,” as well as for long-term use after alternatives are tried.</p>
+
+<p>Butrans is sold by Purdue Pharma, which has been <a href="https://www.amazon.com/Pain-Killer-Wonder-Drugs-Addiction/dp/1579546382">accused of</a> <a href="http://www.latimes.com/projects/la-me-oxycontin-full-coverage/">fueling the opioid epidemic</a> through its aggressive marketing of OxyContin. Butrans is meant for patients for whom other medications, like immediate-release opioids or anti-inflammatory pain drugs, have failed to work, and <a href="http://onlinelibrary.wiley.com/doi/10.1002/14651858.CD009596.pub4/pdf">some scientific analyses</a> say there is not enough evidence to show it works better than other drugs for pain.</p>
+
+<p>Dr. Andrew Kolodny is a critic of widespread opioid prescribing and a co-director of opioid policy research at the Heller School for Social Policy and Management at Brandeis University. Kolodny said he was no fan of Butrans because he did not believe it was effective for chronic pain, but he objected to insurers suggesting that patients instead take a “cheaper, more dangerous opioid.”</p>
+
+<p>“That’s stupid,” he said.</p>
+    <figure class="tweet large right">
+        <blockquote class="twitter-tweet" data-lang="en"><p lang="en" dir="ltr">and I am now forced to be on stronger pain meds after dealing with out of control pain for weeks. How is this ok?</p>&mdash; Alisa Erkes (@alisa2089) <a href="https://twitter.com/alisa2089/status/857729171597934592">April 27, 2017</a></blockquote> <script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+    </figure>
+    <p>Erkes’s pain specialist, Dr. Jordan Tate, said her patient had been stable on the Butrans patch until January, when UnitedHealthcare stopped covering the product and denied Erkes’s appeal.</p>
+
+<p>Without Butrans, Erkes, who once visited the doctor every two months, was now in Tate’s office much more frequently, and once went to the emergency room because she could not control her pain, thought to be related to an autoimmune disorder, <a href="http://www.mayoclinic.org/diseases-conditions/behcets-disease/home/ovc-20178984">Behcet’s disease</a>.</p>
+
+<p>Tate said she and Erkes reluctantly settled on extended-release morphine, a drug that UnitedHealthcare approved without any prior authorization, even though morphine is considered more addictive than the Butrans patch. She also takes hydrocodone when the pain spikes and Lyrica, which UnitedHealthcare approved after requiring a prior authorization.</p>
+
+<p>Erkes acknowledged that she could have continued with further appeals, but said the process exhausted her and she eventually gave up.</p>
+
+<p>While Tate said Erkes had not shown signs of abusing painkillers, her situation was far from ideal. “She’s in her 20s and she’s on extended-release morphine — it’s just not the pretty story that it was six months ago.” </p>
+    <figure class="image small right">
+                                                <img alt="" src="https://assets.propublica.org/images/articles/_threeTwo400w/20170917-opioids-3.jpg" srcset="https://assets.propublica.org/images/articles/_threeTwo400w/20170917-opioids-3.jpg 400w, https://assets.propublica.org/images/articles/_threeTwo800w/20170917-opioids-3.jpg 800w" />
+            
+                    <figcaption>Dr. Shawn Ryan, who runs an addiction treatment practice in Cincinnati, said too many insurance companies put onerous barriers on patients needing medications to treat their addictions.
+                                    <span class="credit">(Andrew Spear for The New York Times)</span>
+                            </figcaption>
+            </figure>
+    <p>Many experts who study opioid abuse say they also are concerned about insurers’ limits on addiction treatments. Some state Medicaid programs for the poor, which pay for a large share of addiction treatments, continue to require advance approval before Suboxone can be prescribed or they place time limits on its use, both of which interfere with treatment, said Lindsey Vuolo, associate director of health law and policy at the National Center on Addiction and Substance Abuse. Drugs like Suboxone, or its generic equivalent, are used to wean people off opioids but <a href="http://www.nytimes.com/2013/11/17/health/in-demand-in-clinics-and-on-the-street-bupe-can-be-savior-or-menace.html?mcubz=0">can also be misused</a>.</p>
+
+<p>The analysis by ProPublica and the Times found that restrictions remain prevalent in Medicare plans, as well. Drug plans covering 33.6 million people include Suboxone, but two-thirds require prior authorization. Even when such requirements do not exist, the out-of-pocket costs of the drugs are often unaffordable, a number of pharmacists and doctors said.</p>
+
+<p>At Dr. Shawn Ryan’s addiction-treatment practice in Cincinnati, called BrightView, staff members often take patients to the pharmacy to fill their prescriptions for addiction medications and then watch them take their first dose. Research has shown that such oversight improves the odds of success. But when it takes hours to gain approval, some patients leave, said Ryan, who is also president of the Ohio Society of Addiction Medicine.</p>
+
+<p>“The guy walks out, and you can’t blame him,” Ryan said. “He’s like, ‘Hey man, I’m here to get help. What’s the deal?’”</p>
+                            <img src="http://feedpress.me/9499/6821549.gif" height="1" width="1"/>]]></description>
+      <dc:subject>Health Care</dc:subject>
+      <dc:date>2017-09-17T23:00:00+00:00</dc:date>
+      <dc:creator>by Katie Thomas, The New York Times and Charles Ornstein, ProPublica</dc:creator>
+    </item>
+    <item>
+      <title>Why Are Drug Prices So High? We’re Curious, Too.</title>
+      <link>http://tracking.feedpress.it/link/9499/6821700</link>
+      <pubDate>Sun, 17 Sep 2017 23:00:00 +0000</pubDate>
+      <guid isPermaLink="false">https://www.propublica.org/article/why-are-drug-prices-so-high-were-curious-too#134708</guid>
+      <description><![CDATA[
+                <p class="byline">
+                by <span class="name">Katie Thomas</span>, <a href="https://www.nytimes.com/">The New York Times</a> and <a class="name" href="https://www.propublica.org/people/charles-ornstein">Charles Ornstein</a>, ProPublica                </p>
+                                <p>This much is clear: The public is angry about the skyrocketing cost of prescription drugs. <a href="http://www.kff.org/health-costs/report/kaiser-health-tracking-poll-september-2016/">Surveys have shown</a> that high drug prices rank near the top of consumers’ health care concerns.</p>
+
+<p>What’s not as clear is exactly why prices have been rising, and who is to blame.</p>
+
+<p>For the last four months, The New York Times and ProPublica, the nonprofit investigative journalism organization, have <a href="https://www.propublica.org/article/drug-quintupled-in-price-now-drug-industry-players-feuding-over-windfall">teamed up to answer these questions</a>, and to shed light on the games that are being played to keep prices high, often without consumers’ knowledge or consent. Katie reports from the health desk at The Times, and Charles is a senior reporter at ProPublica.</p>
+
+<p>Our reporting journey has turned up some counterintuitive stories, like how insurance companies sometimes require patients <a href="https://www.propublica.org/article/take-the-generic-drug-patients-are-told-unless-insurers-say-no">to take brand-name drugs</a> — and refuse to cover generic alternatives — even when that means patients have to pay more out of pocket.</p>
+
+<p>Along the way, <a href="https://www.propublica.org/getinvolved/difficulty-paying-for-accessing-prescription-drugs-new-york-times">we’ve asked readers to share</a> their stories about their struggles with high drug costs. We’ve heard from nearly 1,000 people.</p>
+
+<p>In recent weeks, a few stories caught our eye. A woman in Texas, for example, told us that the company that manages her drug benefits, OptumRx, was going to start asking her to pay more out of pocket for Butrans, a painkilling patch that contains the drug buprenorphine. As a “lower cost alternative,” OptumRx, which is owned by UnitedHealth Group, suggested she try painkillers like OxyContin, even though they carry a higher risk of dependence.</p>
+    <figure class="image large left">
+                                                <img alt="" src="https://assets.propublica.org/images/articles/_threeTwo400w/20170918-drug-prices-butrans-border.jpg" srcset="https://assets.propublica.org/images/articles/_threeTwo400w/20170918-drug-prices-butrans-border.jpg 400w, https://assets.propublica.org/images/articles/_threeTwo800w/20170918-drug-prices-butrans-border.jpg 800w, https://assets.propublica.org/images/articles/_threeTwo1600w/20170918-drug-prices-butrans-border.jpg 1600w, https://assets.propublica.org/images/articles/_threeTwo2000w/20170918-drug-prices-butrans-border.jpg 2000w" />
+        
+                    <figcaption>A letter sent by OptumRx, a pharmacy benefit manager, to a member in Texas, suggesting she consider switching from the Butrans painkilling skin patch to drugs that carry a higher risk of abuse and dependence.
+                                    <span class="credit">(Letter obtained by ProPublica)</span>
+                            </figcaption>
+            </figure>
+    <p>“The whole point of pain management is to take the least amount of medication possible to manage your pain, so that you always have somewhere to go when the pain increases or changes,” she wrote to us. “This is irresponsible and scary ‘cost management.’” She did not want to use her name, saying her employer prohibited her from identifying herself, but she allowed us to share OptumRx’s redacted letter.</p>
+
+<p>Her pharmacy benefit manager, she wrote, is “effectively contributing to the ‘opioid crisis’ with its own policies.”</p>
+
+<p>A spokesman for UnitedHealth, Matthew N. Wiggin, said it <a href="https://broker.uhc.com/articleView-17825">takes the crisis seriously</a> and wants to ensure that people with chronic pain get the appropriate treatment.</p>
+
+<p>We’ve closely followed the <a href="https://www.nytimes.com/interactive/2017/08/03/upshot/opioid-drug-overdose-epidemic.html?mcubz=1">opioid crisis</a> and efforts to hold various parties accountable, among them <a href="https://www.nytimes.com/2017/05/31/us/ohio-sues-pharmaceutical-drug-opioid-epidemic-mike-dewine.html?mcubz=1">drug manufacturers</a>, <a href="https://www.justice.gov/usao-ma/pr/cvs-pay-35-million-resolve-allegations-pharmacists-filled-fake-prescriptions">pharmacies</a> and <a href="https://www.nytimes.com/2017/02/15/health/long-term-opioid-use-doctors-prescriptions.html?mcubz=1">emergency room doctors</a>.</p>
+
+<p>But these stories — about patients who believed their insurers were placing roadblocks in the way of less risky painkillers — felt new to us.</p>
+
+<p>We followed up with several of the readers, and searched social media to see if other patients were talking about this.</p>
+    
+    <p>Then we asked for documents: billing statements from insurers, denial letters, call logs and doctors’ records. In the case of our lead example, a woman named Alisa Erkes, she also agreed to sign a privacy waiver allowing her insurer, UnitedHealthcare, to comment on her case.</p>
+
+<p>Charles enlisted ProPublica’s deputy data editor, Ryann Grochowski Jones, to analyze data from Medicare prescription drug plans. The results showed that insurers were indeed placing more barriers to drugs like Butrans and lidocaine patches than to cheaper generic opioids.</p>
+
+<p>Insurers say that they are doing their part by placing limits on new prescriptions for addictive painkillers, and that they are also doing more to monitor doctors’ prescribing patterns and to catch abuse by patients. Several insurers said <a href="https://news.aetna.com/2017/05/aetna-sees-opioid-prescriptions-decrease/">they had seen declines</a> in monthly opioid prescriptions, a sign of progress.</p>
+
+<p>But their behavior has infuriated many patients, who say they want to avoid taking opioids if possible. They argue that insurers are too focused on a drug’s cost, since many of the painkillers with a lower risk of addiction are more expensive.</p>
+
+<p>Our project examining high drug costs is not over. We are already digging into other corners of the prescription drug world, hoping to shed light on more of the hidden forces that are keeping drug costs high. Stay tuned, as well, for more stories that were inspired by our readers.</p>
+                            <img src="http://feedpress.me/9499/6821700.gif" height="1" width="1"/>]]></description>
+      <dc:subject>Health Care</dc:subject>
+      <dc:date>2017-09-17T23:00:00+00:00</dc:date>
+      <dc:creator>by Katie Thomas, The New York Times and Charles Ornstein, ProPublica</dc:creator>
+    </item>
     <item>
       <title>Experts Say the Use of Private Email by Trump’s Voter Fraud Commission Isn’t Legal</title>
       <link>http://tracking.feedpress.it/link/9499/6802300</link>
@@ -31,7 +560,7 @@
                 by <a class="name" href="https://www.propublica.org/people/jessica-huseman">Jessica Huseman</a>                </p>
                                 <p>President Donald Trump’s voter fraud commission came under fire earlier this month when a lawsuit and media reports revealed that the commissioners were using private emails to conduct public business. Commission co-chair Kris Kobach confirmed this week that most of them continue to do so.</p>
 
-<p>Experts say the commission’s email practices do not appear to comport with federal law. “The statute here is clear,” said Jason Baron, a lawyer at Drinker Biddle and former director of litigation at the National Archives and Records Administration.</p>
+<p>Experts say the commission’s email practices do not appear to comport with federal law. “The statute here is clear,” said Jason R. Baron, a lawyer at Drinker Biddle and former director of litigation at the National Archives and Records Administration.</p>
 
 <p>Essentially, Baron said, the commissioners have <a href="http://uscode.house.gov/view.xhtml?req=granuleid:USC-prelim-title44-section2209&amp;num=0&amp;edition=prelim">three options</a>: 1. They can use a government email address; 2. They can use a private email address but copy every message to a government account; or 3. They can use a private email address and forward each message to a government account within 20 days. According to Baron, those are the requirements of the Presidential Records Act of 1978, which the commission must comply with <a href="https://www.whitehouse.gov/sites/whitehouse.gov/files/docs/commission-charter.pdf">under its charter</a>.</p>
 
@@ -738,641 +1267,6 @@
       <dc:subject>Environment</dc:subject>
       <dc:date>2017-09-08T17:38:00+00:00</dc:date>
       <dc:creator>by Andrew Revkin</dc:creator>
-    </item>
-    <item>
-      <title>The Breakthrough: Hopelessness and Exploitation Inside Homes for Mentally Ill</title>
-      <link>http://tracking.feedpress.it/link/9499/6726889</link>
-      <pubDate>Fri, 08 Sep 2017 12:00:00 +0000</pubDate>
-      <guid isPermaLink="false">https://www.propublica.org/podcast/the-breakthrough-hopelessness-exploitation-homes-for-mentally-ill#134472</guid>
-      <description><![CDATA[
-                <p class="byline">
-                by <a class="name" href="https://www.propublica.org/people/joaquin-sapien">Joaquin Sapien</a>                </p>
-                                <p>In the 1960s, New York began to clear out its scandal-ridden psychiatric hospitals. In their place, a new system emerged. Thousands of mentally ill New Yorkers moved into “adult homes,” large apartment complexes concentrated mostly in New York City and its surrounding suburbs. The homes were meant to provide a safer, more humane alternative to the hospitals; they were closer to where many of the patients lived, and promised modest psychiatric care and other services.</p>
-
-<p>But decades later, that grand vision had devolved into something that looked more like a nightmare.</p>
-    <figure class="audio small right">
-                    <h3>Listen to the Episode</h3>
-                        <div class="">
-            <iframe width="100%" height="166" scrolling="no" frameborder="no" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/341359627&amp;color=%23ff5500&amp;auto_play=false&amp;hide_related=false&amp;show_comments=true&amp;show_user=true&amp;show_reposts=false"></iframe>
-        </div>
-            </figure>
-    <p>In 2001, New York Times metro reporter Cliff Levy spent a year investigating conditions of the homes. He found that more than 1,000 people died in a six-year period. Some threw themselves off of rooftops. Others succumbed to extreme heat, only to be found days later, decomposing in fetid rooms. He found that the homes were often staffed by unqualified workers paid a pittance to look after a population in desperate need.</p>
-
-<p>Today, Cliff is a deputy managing editor at the Times. He has joined us on this episode of The Breakthrough to discuss the 2001 series, “<a href="http://www.nytimes.com/ref/nyregion/BROKEN_HOMES.html?mcubz=0">Broken Homes</a>.”</p>
-
-<p>He describes how he developed his own novel way of obtaining records of deaths in the facilities, and how he tracked down former workers who detailed schemes invented by the home’s operators to maximize profits. He tells us how he made cold call after cold call to reach the relatives of dead residents.</p>
-
-<p>“It’s exhausting, and it’s really depressing,” Levy said in describing the effort. “And you ask yourself, like, ‘Maybe I’m just wasting my time.’ But then, at some point, you reach someone.”</p>
-
-<p>The stories helped prompt a class-action lawsuit, which led to a federal court order requiring New York state’s Department of Health to move as many as 4,000 mentally ill residents into their own apartments, where they can live more independently with individualized services.</p>
-
-<p>ProPublica is now examining that transition and the effort to improve conditions at the homes. Thus far, the state’s progress has been slow and controversial:</p>
-
-<p>Earlier this summer, we reported that the Department of Health is <a href="https://www.propublica.org/article/independent-monitor-faults-ny-state-for-delays-in-aiding-mentally-ill">behind in its deadlines</a> to move the residents. We learned that <a href="https://www.propublica.org/article/federal-judge-sees-new-york-state-conspiracy-to-thwart-care-mentally-ill">a federal judge has accused</a> the state of trying to evade the regulations at the heart of his order by colluding with industry. We spent parts of <a href="https://www.propublica.org/article/in-a-lonely-corner-of-coney-island-a-fight-over-care-for-the-vulnerable">several weeks at a home called Oceanview Manor</a> in Coney Island, where residents wander around outside the facility drinking malt liquor, begging for change and eating from garbage cans, looking ill and unkempt. Workers seemed outmatched, and the home’s owners declined to be interviewed.</p>
-
-<p>We are looking to continue our reporting on this subject.</p>
-
-<p><em>Listen to this podcast on <a href="http://itunes.apple.com/WebObjects/MZStore.woa/wa/viewPodcast?id=352685624">iTunes</a>, <a href="https://soundcloud.com/propublica">SoundCloud</a> or <a href="https://www.stitcher.com/podcast/20308">Stitcher</a>.</em></p>
-                            <img src="http://feedpress.me/9499/6726889.gif" height="1" width="1"/>]]></description>
-      <dc:subject/>
-      <dc:date>2017-09-08T12:00:00+00:00</dc:date>
-      <dc:creator>by Joaquin Sapien</dc:creator>
-    </item>
-    <item>
-      <title>Help Us Monitor Political Ads Online</title>
-      <link>http://tracking.feedpress.it/link/9499/6726890</link>
-      <pubDate>Thu, 07 Sep 2017 14:00:00 +0000</pubDate>
-      <guid isPermaLink="false">https://www.propublica.org/article/help-us-monitor-political-ads-online#134385</guid>
-      <description><![CDATA[
-                <p class="byline">
-                by <a class="name" href="https://www.propublica.org/people/julia-angwin">Julia Angwin</a> and <a class="name" href="https://www.propublica.org/people/jeff-larson">Jeff Larson</a>                </p>
-                                <p>During the 2016 presidential campaign, President Donald Trump’s operatives bragged to the press that they tried to dissuade African Americans from voting by <a href="https://www.bloomberg.com/news/articles/2016-10-27/inside-the-trump-bunker-with-12-days-to-go">targeting them with Facebook posts</a> titled “Hillary Thinks African Americans are Super Predators.”</p>
-
-<p>If similar ads had appeared on TV, radio or in newspapers, journalists and advocacy groups would have fact-checked them. Negative ads in those media are closely monitored because historically they have influenced elections — most notably in 1988, when a television ad accused presidential candidate Michael Dukakis of “weak-on-crime” policies that enabled a furloughed prisoner named Willie Horton to commit rape.</p>
-
-<p>The Trump ads may have been effective as well. But since they supposedly appeared on Facebook, nobody can say for sure if they ran, what they said or whom they targeted. Even though it’s the world’s largest social network, what happens on Facebook stays on Facebook.</p>
-
-<p>The nature of online advertising is such that ads appear on people’s screens for just a few hours, and are limited to the audience that the advertiser has chosen. So, for example, if an advertiser micro-targets a group such as 40-year-old female motorcyclists in Nashville, Tennessee, (Facebook audience estimate: 1,300 people) with a misleading ad, it’s unlikely anyone other than the bikers will ever see those ads. Yesterday, 10 months after Trump was elected, Facebook officials acknowledged discovering that a Russian “troll farm” paid $100,000 during the campaign to place political ads on issues such as gun rights and immigration, The Washington Post <a href="https://www.washingtonpost.com/amphtml/politics/facebook-says-it-sold-political-ads-to-russian-company-during-2016-election/2017/09/06/32f01fd2-931e-11e7-89fa-bb822a46da5b_story.html">reported</a>. </p>
-
-<p>With online ads, “you can go as narrow as you want, as false as you want and there is no accountability,” said Craig Aaron, president and CEO of Free Press, a public interest media and technology advocacy group.</p>
-
-<p>ProPublica wants to change that. Today we are launching a crowdsourcing tool that will gather political ads from Facebook, the biggest online platform for political discourse. We’re calling it the Political Ad Collector — or PAC, in a nod to the Political Action Committees that fund many of today’s political ads.</p>
-    <aside class="text small right">
-        <h3>Download the Extension</h3>
-
-<p>You can download the Facebook Political Ad Collector from the <a href="https://chrome.google.com/webstore/detail/facebook-political-ad-col/enliecaalhkhhihcmnbjfmmjkljlcinl">Chrome Web Store</a>.</p>
-
-    </aside>
-    <p>We will begin using the PAC this month to track ads during the run-up to the German parliamentary election, which will be held on Sept. 24. The election has drawn international attention as a referendum on Chancellor Angela Merkel’s refugee policies, and a test of the strength of an anti-immigration party, Alternative for Germany (AfD).</p>
-
-<p>We plan to monitor other elections, including the midterm elections in the U.S. In the U.S., information about politicians’ use of online ads is especially sparse because of loopholes in the campaign finance laws that allow candidates to report fewer details about their online advertising than about other types of advertising.</p>
-
-<p>We are working with three news outlets in Germany — <a href="http://www.spiegel.de/">Spiegel Online</a>, <a href="http://www.sueddeutsche.de/">Süddeutsche Zeitung</a> and <a href="http://www.tagesschau.de/">Tagesschau</a>. They will ask their readers to install our tool, and will use it themselves to monitor ads during the election.</p>
-
-<p>The tool is a small piece of software that users can add to their web browser (<a href="https://chrome.google.com/webstore/detail/facebook-political-ad-col/enliecaalhkhhihcmnbjfmmjkljlcinl">Chrome</a>). When users log into Facebook, the tool will collect the ads displayed on the user’s news feed and guess which ones are political based on an algorithm built by ProPublica.</p>
-
-<p>One benefit for interested users is that the tool will show them Facebook political ads that weren’t aimed at their demographic group, and that they wouldn’t ordinarily see.</p>
-    
-    <p>The tool does not collect any personally identifiable information, and we will not know which ads are shown to which user. The political ads that we collect will be contributed to a public database that will allow the public to see them all.</p>
-
-<p>Facebook gives users more information about why a particular ad is targeted to them than other online platforms provide to their customers. Our tool will also collect that targeting information provided by Facebook, which may help illuminate what viewership the ads are trying to reach.</p>
-
-<p>After the U.S. presidential election, Facebook launched its own transparency efforts. Facebook CEO Mark Zuckerberg has rolled out a <a href="https://newsroom.fb.com/news/category/news-feed-fyi/">series of initiatives</a> to <a href="https://www.facebook.com/zuck/posts/10103269806149061">tackle fake news</a> on its site. And although it doesn’t fact-check ads, Facebook does require <a href="https://www.facebook.com/policies/ads/">advertisers to comply with the law</a>, which includes prohibitions against deceptive advertising. This week Facebook said it <a href="https://newsroom.fb.com/news/2017/09/information-operations-update/amp/">had shut down the “inauthentic accounts”</a> affiliated with Russia that had placed ads during the 2016 election cycle and is taking steps to prevent similar accounts from popping up in the future.</p>
-
-<p>Still, more can be done to hold politicians, PACs and others accountable for the messages they spread online. We hope that by monitoring political advertising on Facebook, we can increase the transparency and accountability of elections around the world.</p>
-
-<p>Please join us!</p>
-                            <img src="http://feedpress.me/9499/6726890.gif" height="1" width="1"/>]]></description>
-      <dc:subject>Machine Bias</dc:subject>
-      <dc:date>2017-09-07T14:00:00+00:00</dc:date>
-      <dc:creator>by Julia Angwin and Jeff Larson</dc:creator>
-    </item>
-    <item>
-      <title>What Does an Innocent Man Have to Do to Go Free? Plead Guilty.</title>
-      <link>http://tracking.feedpress.it/link/9499/6726891</link>
-      <pubDate>Thu, 07 Sep 2017 12:00:00 +0000</pubDate>
-      <guid isPermaLink="false">https://www.propublica.org/article/what-does-an-innocent-man-have-to-do-alford-plea-guilty#134395</guid>
-      <description><![CDATA[
-                <p class="byline">
-                by <a class="name" href="https://www.propublica.org/people/megan-rose">Megan Rose</a>                </p>
-                                <p>On Oct. 15, 2008, James Owens shuffled, head high despite his shackles, into a Baltimore courtroom, eager for his new trial to begin. Two decades into a life sentence, he would finally have his chance to prove what he’d been saying all along: The state had the wrong man.</p>
-
-<p>Owens had been convicted of murdering a 24-year-old college student, who was found raped and stabbed in her home. Then he’d been shunted off to state prison until DNA testing — the scientific marvel that he’d watched for years free other men — finally caught up with his case in 2006. The semen that had been found inside the victim wasn’t his. A Maryland court tossed his conviction and granted Owens a rare do-over trial.</p>
-
-<p>State prosecutors balked, insisting they still had enough evidence to keep Owens locked away and vowed to retry him. But they had also offered him an unusual deal. He could guarantee his immediate release from prison with no retrial and no danger of a new conviction — if he’d agree to plead guilty. The deal, known as an Alford plea, came with what seemed like an additional carrot: Despite pleading guilty, the Alford plea would allow Owens to say on the record that he was innocent. The Alford plea was an enticing chance for Owens, by then 43, to move on as a free man. But he’d give up a chance at exoneration. To the world, and legally, he’d still be a killer.</p>
-    <p>Owens refused the deal. He told his lawyer he wanted to clear his name, and he was willing to take his chances in court and wait in prison however long it took for a new trial to begin. It was a startling choice for an incarcerated defendant — even those with persuasive stories of innocence typically don’t trust the system enough to roll the dice again with 12 jurors or an appellate court. Most defendants, lawyers say, instinctively and rationally, grab any deal they can to win their freedom back.</p>
-
-<p>The decision cost Owens 16 more months behind bars. Then, on that fall day in 2008, when the trial was set to begin, the prosecutor stood and, without a glance at Owens, told the judge, “The state declines to prosecute.”</p>
-
-<p>In a legal gamble in which the prosecution typically holds the winning cards, Owens had called the state’s bluff. He walked out that day exonerated — and with the right to sue the state for the 21 years he spent wrongly imprisoned.</p>
-
-<p>It seemed the ultimate victory in a city like Baltimore, with its deeply rooted and often justified mistrust of police and prosecutors. But Owens wasn’t the only man convicted of murdering that 24-year-old college student. Another white Baltimore man, James Thompson, had also been put away for life. Tests showed that his DNA didn’t match the semen either, but the state’s attorney’s office refused to drop the charges. Instead, as it had with Owens, it offered Thompson an Alford plea. Thompson grabbed the deal and walked out of prison a convicted murderer.</p>
-
-<p>Same crime. Same evidence. Very different endings.</p>
-
-<hr />
-
-<p>Ever since DNA ushered in a new era in criminal justice, even the toughest law-and-order advocates have come to acknowledge a hard truth: Sometimes innocent people are locked away for crimes they didn’t commit. Less widely understood is just how reluctant the system is to righting those wrongs.</p>
-
-<p>Courts only assess guilt or innocence before a conviction. After that, appellate courts focus solely on fairness. Did everyone follow the rules and live up to their duties? Getting a re-hearing of the facts is a monumental, often decades-long quest through a legal thicket. Most defendants never get to start the process, let alone win. Even newly discovered evidence is not enough in many cases to prompt a review. And, for the tiny percentage of defendants who get one, the prosecutors still have the advantage: They have final discretion about whether to press charges and how severe they’ll be. Powerful influence over the pace of a case, the sentence and bail. And, compared with an incarcerated defendant, vast resources.</p>
-
-<p>No one tracks how often the wrongly convicted are pressured to accept plea deals in lieu of exonerations. But in Baltimore City and County alone — two separate jurisdictions with their own state’s attorneys — ProPublica identified at least 10 cases in the last 19 years in which defendants with viable innocence claims ended up signing Alford pleas or time-served deals. In each case, exculpatory evidence was uncovered, persuasive enough to garner new trials, evidentiary hearings or writs of actual innocence. Prosecutors defend the original convictions, arguing, then and now, that the deals were made for valid reasons — such as the death of a key witness or a victim’s unwillingness to weather a retrial. The current state’s attorney in Baltimore County, Scott Schellenberger, said that “prosecutors take their oath to get it right very seriously” and wouldn’t stand in the way of exoneration if the facts called for it.</p>
-    
-    <p>The menace of such deals, though, is clear: At worst, innocent people are stigmatized and unable to sue the state for false imprisonment, prosecutors keep unearned wins on their case records and those of the department, and no one re-investigates the crime — the real suspect is never brought to justice.</p>
-
-<p>The plea deals ProPublica examined in Baltimore City involved two prior state’s attorneys. A spokeswoman for Marilyn Mosby, the current chief, didn’t respond to numerous requests for comment or for interviews with prosecutors in those cases.</p>
-
-<p>The pleas in two of these Baltimore cases were later overturned after misconduct was uncovered in the original convictions, and the men won full exonerations. One, Walter Lomax, a black man convicted by an all-white jury shortly after the 1968 race riots in the city, served 38 years of a life sentence before taking a time-served deal in 2006. The state didn’t concede he was innocent until 2014.</p>
-
-<p>Wrongful convictions are bad enough, Lomax said, but they’re even more “horrible when it becomes obvious the person is innocent and the state won’t at the very least acknowledge that.”</p>
-
-<p>Some legal and cognitive science experts suggest that once detectives and prosecutors commit to a suspect and a theory of the crime, it changes how they evaluate evidence, and then the system itself exacerbates that focus at every step. Prosecutors are rewarded for proving and defending their theories, leaving little incentive to acknowledge weaknesses in cases, particularly in high-stakes crimes such as rape and murder. This mind-set is bolstered by one of the great positives of the system, one which legal experts, even those dedicated to exposing wrongful convictions, acknowledge: Prosecutors generally get it right.</p>
-
-<p>Psychologists have a myriad of terms for the powerful, largely subconscious biases at play, but most people would call the collective phenomenon “tunnel vision.”</p>
-
-<p>Wrongful convictions involving violent crimes typically involve poor, often minority defendants, sometimes with limited education or IQs, who are convicted on scant evidence or flawed forensics. The cases are fueled by an early theory of the crime that relentlessly drives the investigation and prosecution — even, in some cases, to official misconduct.</p>
-
-<p>“At some point psychologically, you go from figuring out what happened to figuring out how to prove it happened the way you said it did,” Barbara O’Brien, a law professor involved with the National Registry of Exonerations at the University of Michigan, said. “It’s very difficult to take a step back from that.”</p>
-<p>Marty Stroud, a former Louisiana prosecutor, made national headlines in 2015 when he penned a rare public apology for putting an innocent man on death row for 31 years. He told me recently that the system comes down hardest on those without the means to defend themselves. “It’s easy to prosecute those people and put them away and not think twice about it because no one is speaking for them,” he said.</p>
-
-<p>The certitude of detectives and prosecutors hardens when their theory is validated by a judge or jury, and later, by an appellate court. Time, instead of allowing for fresh eyes, often makes biases worse. When a defendant like Owens gets a new hearing, the district or state’s attorney’s office — long committed to his guilt — has to re-justify that decision.</p>
-
-<p>If they admit they got it wrong, prosecutors have to accept that a person was robbed of years of his life, the real perpetrator was never found, the victim’s family was let down, and, to top it off, they now have a cold case that’s unlikely to be solved. With the Alford plea, not only is the real perpetrator not caught but the case is officially closed on the books. It also dings their won-loss record on typically high-profile cases. The idea of a wrongful conviction, Stroud said, assaults a prosecutor’s sense of identity that “we’re the good guys. We have the white hats and are putting the bad guys in jail.”</p>
-
-<p>Exonerations are also like a Pandora’s box in two important and unsettling ways. First, looking closely at why wrongful convictions happen — even in cases when everyone worked in good faith — could force a reckoning about deeply held beliefs on what is required to solve and punish crimes. False confessions, for example, often are a result of time-honored, and perfectly legal, tactics to soften up a suspect, such as lying or conducting questioning in the dead of night, said Steven Drizin, the former director of Northwestern University’s Center on Wrongful Convictions. When wrongful convictions are a result of misconduct, there could be a string of other bad convictions connected to that prosecutor or detective.</p>
-
-<p>It’s no coincidence, many defense lawyers across the country say, that when misconduct comes up, prosecutors are quicker to propose an Alford plea or similar deal, effectively quashing any further inquiry into the behavior. One ACLU attorney told me about a galling Alabama case in which prosecutors insisted they would re-seek the death penalty, and it was “only because we were continuing to expose prosecutorial misconduct that they finally agreed to settle the case.”</p>
-
-<hr />
-    <figure class="image medium right">
-                                                <img alt="" src="https://assets.propublica.org/images/articles/_threeTwo400w/20170907-knife-inline.jpg" srcset="https://assets.propublica.org/images/articles/_threeTwo400w/20170907-knife-inline.jpg 400w, https://assets.propublica.org/images/articles/_threeTwo800w/20170907-knife-inline.jpg 800w, https://assets.propublica.org/images/articles/_threeTwo1600w/20170907-knife-inline.jpg 1600w" />
-            
-                    <figcaption>After James Thompson brought police a knife that he claimed to have picked up near a murder victim’s home, a Baltimore police officer posed with the weapon. A local TV news station filmed police taking the photo and erroneously reported that the police had found it. “There’s a real danger in staging things like this,” said Stephen Mercer, a Maryland public defender.
-                                    <span class="credit">(Baltimore Police Department file, courtesy of Stephen Mercer)</span>
-                            </figcaption>
-            </figure>
-    <p>On a muggy August evening in 1987, police officers swarmed a block of squat brick rowhouses in a mostly white, working-class neighborhood in southeast Baltimore. A young woman had been raped, strangled with a sock and stabbed to death in her second-floor bedroom. Detective Thomas Pellegrini, who’d been assigned to homicide only the year before and, who, by his own admission, was green enough not to sweat the details, caught the case as lead detective. He was assisted by Detective Gary Dunnigan and the squad’s boss, Sgt. Jay Landsman. The trio would become famous a few years later when David Simon heralded them in his book “Homicide: A Year on the Killing Streets” and on the subsequent prime-time TV show it inspired.</p>
-
-<p>The next morning, the neighborhood reverberated with the choppy drone of police helicopters circling overhead. Thompson, a gas station attendant who’d suffered a brain injury in childhood, lived down the street with his wife and their two young boys. He’d heard detectives were looking for a knife and offering a $1,000 reward. It seemed a prime opportunity for a quick buck. The short, stocky 27-year-old wandered over to the yellow police tape and handed Pellegrini a large switchblade. Thompson said he’d found the bloody weapon in the grass the night before, pocketed it, and cleaned it at home — somehow unaware of the massive overnight police presence. At Pellegrini’s urging, he fetched a pair of cut-off jeans he said he’d been wearing at the time, which had a small bloodstain on the back right pocket.</p>
-
-<p>Forensics showed a possible presence of blood or other unknown substance on a small area of the knife and no evidence to suggest it was used in a violent struggle, such as a broken tip from hitting bone. The detectives moved forward on the assumption it was the murder weapon.</p>
-
-<p>Two days later, rather than being thanked and handed the reward money, Thompson found himself under suspicion. In a panic, he fingered Owens. The two had been casual friends, but they’d had a falling out over accusations of theft when they’d briefly worked together at the gas station. In a thoughtless burst of vengeance, Thompson gave an official statement at the police station; he said the knife was actually his but claimed Owens had stolen it and then told him where to find it the day after the murder. Thompson noticed the detectives ate up everything and realized they had nothing else to go on. At the time, there seemed to be no risk in just making it up as he went along. After he retrieved the knife, Thompson told detectives, Owens washed it in the kitchen sink. Thompson didn’t give the police any details about the murder, but he said Owens had told him he’d had sex with the victim.</p>
-
-<p>Owens, 22 at the time, was arrested and charged with burglary, rape and first-degree murder. In just 72 hours, the detectives had closed the case. There was no forensic evidence, motive or eyewitnesses linking Owens to the crime. Landsman and Pellegrini would later say they had believed at the time that without Thompson, Owens would walk. Even the prosecutor, Marvin “Sam” Brave, said he viewed Thompson’s story as “implausible” and didn’t think he had the truth, but he nevertheless pressed charges.</p>
-
-<p>Brave recently told me that “if you think you’ve got the right guy, but not that you can necessarily prove it beyond reasonable doubt, it doesn’t mean you don’t go forward.”</p>
-
-<hr />
-    <figure class="image medium right">
-                                                <img alt="" src="https://assets.propublica.org/images/articles/_threeTwo400w/20170907-james-owens-past-inline.jpg" srcset="https://assets.propublica.org/images/articles/_threeTwo400w/20170907-james-owens-past-inline.jpg 400w, https://assets.propublica.org/images/articles/_threeTwo800w/20170907-james-owens-past-inline.jpg 800w, https://assets.propublica.org/images/articles/_threeTwo1600w/20170907-james-owens-past-inline.jpg 1600w" />
-            
-                    <figcaption>A Baltimore Police Department photo of James Owens from August 5, 1987, the day  Owens, 22, was arrested for murder.
-                                    <span class="credit">(Baltimore Police Department file, courtesy of Stephen Mercer)</span>
-                            </figcaption>
-            </figure>
-    <p>When Owens’ trial began in February 1988, Thompson was the star witness. He’d considered coming clean several times but was afraid he’d be sent to jail. He’d lied to the cops during a previous encounter and had been arrested for making a false police report. Despite that history, the detectives in this case had made him feel like a hero. Pellegrini didn’t think Thompson was “the sharpest pencil in the box,” but at that point in his career, he said in a recent deposition, he thought only suspects would lie to him. Brave also was unconcerned. “If the part that you think he is telling the truth &#91;about&#93; contributes to your case, you use it,” he said. “He doesn’t have to be telling the truth about everything.” The rest of the case relied mainly on minor scratches Owens, a factory worker, had on his arm and a spot of possible blood that had been swabbed from his hand. Two jailhouse snitches who’d been Owens’ cellmates while he awaited trial claimed he had separately confessed to them, though the story Owens purportedly told them contradicted the version Thompson had given police.</p>
-
-<p>In his opening statement, Brave told the jury that any notion that police had “bungled the investigation” and the defendant was innocent was from the fantastical realm of television. But Brave was concerned enough about Thompson’s story that he took him aside the morning of his testimony and warned he was going to “look silly” and it was time he “told us the truth about how that knife really got back into his possession,” according to testimony Brave later gave about the conversation. He even assured Thompson he wouldn’t be prosecuted for making a false statement.</p>
-
-<p>When Thompson took the stand, he told the jury he’d had a “heart to heart” with the prosecutor and was “ready to tell the truth.” In this new version of events — which Brave described later as “sellable” to a jury — Thompson said that around 8 a.m. the morning after the murder, Owens had come by his house and given him the bloody knife. Except this story, too, was a lie. As one of the detectives noted to Brave afterward, Owens’ boss had told police he’d been at work by that point in the morning. “The more I tried to fix things to go in my favor, the bigger hole I dug for myself,” Thompson told me recently.</p>
-
-<p>That Friday Brave went home “really worried about the case,” and stewed over the weekend that he was on “a sinking ship.” Late Sunday evening, he met with Pellegrini and told him to take blood and hair samples from Thompson for testing to exclude him as a suspect and bolster his credibility as a witness. Brave already knew the pubic hairs found on the victim didn’t match Owens. Neither did saliva on a cigarette found at the scene.</p>
-
-<p>During a lunch break at trial the next day, Brave and the three detectives met with the city’s forensics expert who, they said, told them the hair was a match to Thompson. Detectives brought Thompson in, read him his rights, and told him “he was in a lot of trouble” and might be charged. His hair, Landsman told him, had been found in the victim’s house. Thompson later contended he knew this couldn’t possibly be true — he hadn’t been there at all. But at the time, he said, he was scared and thought if he just said what pleased the detectives and got Owens convicted, he’d be alright.</p>
-    <figure class="image large left">
-                                                <img alt="" src="https://assets.propublica.org/images/articles/_threeTwo400w/20170907-match-hair-inline.jpg" srcset="https://assets.propublica.org/images/articles/_threeTwo400w/20170907-match-hair-inline.jpg 400w, https://assets.propublica.org/images/articles/_threeTwo800w/20170907-match-hair-inline.jpg 800w, https://assets.propublica.org/images/articles/_threeTwo1600w/20170907-match-hair-inline.jpg 1600w, https://assets.propublica.org/images/articles/_threeTwo2000w/20170907-match-hair-inline.jpg 2000w" />
-        
-                    <figcaption>In 1988, Baltimore&#039;s forensic examiner wrote on the back of a picture of Thompson&#039;s hair that his hair matched one found at the crime scene. In 2010, the same examiner said pictures of the hair showed that they didn&#039;t match, moreover that type of hair analysis was no longer considered valid. 
-                                    <span class="credit">(Baltimore Police Department file, courtesy of Stephen Mercer)</span>
-                            </figcaption>
-            </figure>
-    <p>Like an actor doing take after take to accommodate the wishes of a director, Thompson went through several more versions about what supposedly happened, adjusting his story to reflect additional pieces of evidence the detectives told him about. Thompson first said he broke into the house but didn’t go upstairs. After the detectives told him his hair had been found on the second floor, Thompson then said he did go upstairs but hid in the bathroom while Owens attacked the victim after she unexpectedly came home. Detectives then told him his pubic hair had been found on the victim’s buttocks, suggesting his pants must have been down. After several hours of this back and forth, Landsman went to the courtroom and handed Brave a note, saying Thompson had admitted to burglarizing the house with Owens.</p>
-
-<p>Thompson was taken directly from the interrogation room to the witness stand to testify a second time. Now, speaking so softly at first that the judge twice had to tell him to raise his voice, Thompson said he and Owens had broken into the apartment to steal jewelry, and Owens attacked the victim when she came home unexpectedly. Then, while Owens raped her, Thompson testified that he masturbated over her back — his newly concocted explanation for how the pubic hair the state claimed was his had ended up on the victim. Owens, Thompson said, then stabbed her and threw the knife on the ground, which Thompson picked up on the way out.</p>
-
-<p>This was, unbeknownst to Owens or his lawyer, Thompson’s eighth version of events — the one that satisfied the officers that they had enough “to get James Owens,” as one detective later put it.</p>
-
-<p>Even on the stand implicating himself in the crime, with both Brave and Owens’ lawyer stressing charges he might face, Thompson said the full ramifications of his lies didn’t dawn on him. He thought he’d be fine once the trial was over.</p>
-
-<p>“I never hurt anyone. I never touched that young lady,” Thompson said again and again on the stand, adding at one point that he’d take a polygraph to “prove my innocence on that particular behalf.”</p>
-
-<p>Owens was convicted of the burglary and the murder but found not guilty of the rape. Thompson’s changing stories had cast enough doubt that Brave acknowledged in his closing argument that either man could have committed the rape. Thompson, who had been arrested right after testifying and immediately recanted his confession, was later convicted of burglary, rape and murder. Thompson’s multiple different stories of the crime had been accepted as truth, but his multiple attempts to protest his innocence were taken as lies.</p>
-
-<p>Both men were sentenced to life without parole. Owens was the first in Maryland to receive such a punishment.</p>
-
-<hr />
-    <figure class="image x-large left">
-                                                <img alt="" src="https://assets.propublica.org/images/articles/_threeTwo400w/20170907-owens-interlude-inline.jpg" srcset="https://assets.propublica.org/images/articles/_threeTwo400w/20170907-owens-interlude-inline.jpg 400w, https://assets.propublica.org/images/articles/_threeTwo800w/20170907-owens-interlude-inline.jpg 800w, https://assets.propublica.org/images/articles/_threeTwo1600w/20170907-owens-interlude-inline.jpg 1600w, https://assets.propublica.org/images/articles/_threeTwo2000w/20170907-owens-interlude-inline.jpg 2000w" />
-        
-                    <figcaption>
-                <span class="credit">Lexey Swall, special to ProPublica</span>
-            </figcaption>
-            </figure>
-    <p>Owens never resigned himself to his fate. A few years into his sentence, he read about DNA in a magazine and implored everyone he could think of to test the evidence in his case. He eagerly conferred over coffee with Kirk Bloodsworth, the inmate across the hall, then cheered Bloodsworth’s exoneration by DNA in 1993, the first of its kind in the nation involving a death sentence. Shaking Bloodsworth’s hand when he left prison, Owens thought, “Man, one day I’ll be out there.” Then the O.J. Simpson trial introduced him to Barry Scheck, the founder of the Innocence Project, and Owens sent his office a letter. Shunned by his family and cut off from the way most convicts got cash, he traded chicken sandwiches from his kitchen job for stamps to mail it. Still, no one took up the cause. The semen found in the victim and the blood on Thompson’s shorts sat undisturbed in the Baltimore medical examiner’s office for 19 years.</p>
-
-<p>Finally, after a special division within the Maryland public defender’s office became interested, he got a new lawyer and a hearing. A judge ordered DNA testing in 2006 — over the objections of prosecutors — and the results dismantled the state’s theory of the crime. At both trials, the state had argued that the break-in, the rape and the murder were inextricably linked. At Owens’s trial, the prosecutor told the jury Owens had leered at the victim as she sunbathed and “decided that he wanted her.” He broke into her house, laid in wait for her to return, raped her, strangled her and “for good measure … mutilate&#91;d&#93; her with multiple stab wounds.” The prosecution doubled down on this narrative at Thompson’s trial, telling the jury he and Owens “had to humiliate &#91;the victim&#93; by taking turns raping her.” And the blood on the back pocket of Thompson’s shorts, the prosecutor said, was definitively the victim’s.</p>
-
-<p>DNA proved most of those arguments false. The semen found in the victim didn’t come from Owens or Thompson, and the blood on the shorts wasn’t even from a woman. It was Thompson’s own. When Owens heard the news at Jessup Correctional Institution, just southwest of Baltimore, he sat on the floor of his cell and cried.</p>
-<p>The Baltimore City State’s Attorney’s Office was unmoved. Prosecutors fought both Thompson and Owens as the two separately sought to have their convictions overturned.</p>
-
-<p>Owens’ case moved faster through the courts. His new attorney was Stephen Mercer, a Maryland defense attorney with an earnestness that had survived more than 20 years in the trenches. Mercer knew the state, with its evidence decimated, was going to push for a deal. He fumed that prosecutors were using psychological warfare to do it — opposing bail and slowing the case, so Owens would spend more time on the inside thinking about being on the outside. Owens’ evidentiary hearing was moved from January to March to May. Only then, nine months after the DNA showed Owens wasn’t the rapist, did the state agree to a new trial while insisting that Owens was still guilty of murder.</p>
-
-<p>The state’s attorney’s office, run at the time by Patricia Jessamy, argued that the rape was immaterial to the murder, and, a spokeswoman said, the DNA evidence was “trivial.” Mark Cohen, the new prosecutor, told Mercer that other evidence in the case, including Thompson’s confession and the testimony of jailhouse informants, was still persuasive. (Jessamy didn’t respond to several phone messages requesting comment and Cohen has since died.)</p>
-
-<p>Mercer said the prosecutor’s stance was “very cynical. It really seemed that the desire to keep the conviction was for reasons that had nothing to do with the evidence.” The state’s guiding star, Mercer knew, was a rigid belief that what was long ago decided by a jury, and upheld by an appellate court, shouldn’t be continually second-guessed.</p>
-    <figure class="image large left">
-                                                <img alt="" src="https://assets.propublica.org/images/articles/_threeTwo400w/20170907-mercer-inline.jpg" srcset="https://assets.propublica.org/images/articles/_threeTwo400w/20170907-mercer-inline.jpg 400w, https://assets.propublica.org/images/articles/_threeTwo800w/20170907-mercer-inline.jpg 800w, https://assets.propublica.org/images/articles/_threeTwo1600w/20170907-mercer-inline.jpg 1600w, https://assets.propublica.org/images/articles/_threeTwo2000w/20170907-mercer-inline.jpg 2000w" />
-        
-                    <figcaption>Stephen Mercer, chief of the forensics division of the Maryland Office of the Public Defender, dug up exculpatory evidence for three defendants — James Owens, James Thompson and Wendell Griffin — who had been sentenced to life and secured their release from prison. 
-                                    <span class="credit">(Lexey Swall, special to ProPublica)</span>
-                            </figcaption>
-            </figure>
-    <p>In Owens’ case, it wasn’t just the semen and the blood that didn’t hold up 20 years later. The type of hair analysis done on the pubic hair had subsequently been dismissed as junk science. The hair, along with the knife, had been destroyed. But the state’s own expert, who’d inspected the hair at the time of the original trials, said at a hearing that the scientific community no longer does a visual hair comparison to “draw the conclusions we drew back in 1988 with a microscope.” Now analysts use DNA analysis.</p>
-
-<p>Not long after Owens was granted a new trial in May 2007, Cohen proposed a deal. It wasn’t surprising. The plea bargain is the lifeblood of the overburdened criminal-justice system. About 95 percent of cases never go before a jury. Instead, most defendants agree to plead guilty in exchange for lesser sentences. In cases like Owens’, in which new evidence undermines old, legal advocates question whether incarcerated defendants should even be offered a plea. In every case, prosecutors “need to really inspect their own motivations,” Thiru Vignarajah, a former federal and Baltimore City prosecutor who later served as deputy attorney general of Maryland, said. “Are they offering a plea or time served because that’s in the best interest of the case, or are they allowing some institutional interest of preserving the conviction to trump a prosecutor’s duty to seek justice?”</p>
-
-<p>A year before Owens’ retrial, Jessamy’s office had convinced another defendant to take an Alford plea. Locked up for 20 years, that defendant had at first refused a deal after he, too, was granted a new trial because of DNA evidence. As the trial was set to begin, the prosecution requested a postponement. When the state again delayed the subsequent trial date, the defendant broke down. He accepted the plea.</p>
-
-<p>Afterward, Jessamy’s spokeswoman scoffed at the defendant in a news story, saying it was “inconceivable” that after 20 years the defendant couldn’t wait a little longer, and “if he truly believes he is innocent, he should have gone to trial to see that justice is served.”</p>
-
-<p>As Owens’ trial got closer, Cohen kept sweetening the deal, knocking down the charge and requiring less probation. Finally, they offered Owens an Alford plea for second-degree murder, time served and no probation. Mercer lost sleep over whether Owens should take it. A trial was risky and a chance at guaranteed freedom was rare for any defendant. Owens repeatedly asked himself: “Why are they doing this to me? Why should I have to plead guilty to something I didn’t do?” Now mostly bald and with a moustache, he’d grown up in the foster care system. He’d been viciously attacked while in prison. He didn’t have much to hold onto except his resolute insistence from day one that he was innocent. He wasn’t about to “admit there was sufficient evidence to convict him while playing this wink-and-nod game that he was claiming his innocence,” Mercer said. So the Alford plea, like all the others Mercer had passed to Owens through the Plexiglass, was flatly rejected: “Mr. Mercer, there is no way. I am going to trial.”</p>
-
-<p>Cohen, suspicious that the deal hadn’t been properly relayed, had Owens and Mercer join him for a bench conference, so that the Alford plea could be offered in front of the judge. <strong>“</strong>I’m not taking nothing, dude,” Owens recalled saying. “I will die in the penitentiary if I have to.”</p>
-
-<p>In October 2008, Owens was vindicated. Cohen was forced to tell the court he didn’t have the goods for a retrial. Owens stepped out of prison free for the first time in 21 years, telling gathered reporters, “You can’t give me that time back.”</p>
-
-<hr />
-    <figure class="image medium right">
-                                                <img alt="" src="https://assets.propublica.org/images/articles/_threeTwo400w/20170907-thompson-inline-one.jpg" srcset="https://assets.propublica.org/images/articles/_threeTwo400w/20170907-thompson-inline-one.jpg 400w, https://assets.propublica.org/images/articles/_threeTwo800w/20170907-thompson-inline-one.jpg 800w, https://assets.propublica.org/images/articles/_threeTwo1600w/20170907-thompson-inline-one.jpg 1600w" />
-            
-                    <figcaption>James Thompson, 57, has been out of prison for less than six months and is trying to get his life back on track. After DNA cleared him of the rape, he took an Alford plea to be released from prison. “Did I want to take that? Absolutely not. But I wanted to go home.”
-                                    <span class="credit">(Lexey Swall, special to ProPublica)</span>
-                            </figcaption>
-            </figure>
-    <p>Thompson, meanwhile, was fighting the same battles while incarcerated about 75 miles away at Roxbury Correctional Institution in Hagerstown, Maryland. But in his case, prosecutors were employing a perplexing logic. They’d agreed that the DNA evidence from the semen warranted a new trial for Owens, who had not been convicted of rape, but they refused a new trial for Thompson, who had been.</p>
-
-<p>Thompson, by now gray-haired and hard of hearing, was dismayed. He’d saved the newspaper clipping about the DNA findings, and when he read that Owens had gone free, he was certain he’d be next. He couldn’t understand why the DNA could clear Owens of all charges while it did nothing for him, even though the DNA excluded him as well. But Mercer, who’d picked up Thompson’s case after freeing Owens, did. Thompson had confessed, and that was prosecutorial gold. In Simon’s book about the Baltimore detectives who’d secured Thompson’s confession, he detailed the interrogation tactics they had commonly employed. To get confessions, he wrote, the detective became a “huckster … thieving and silver-tongued,” and without the “chance for a detective to manipulate a suspect’s mind, a lot of bad people would simply go free.”</p>
-
-<p>Poorly understood at the time is that such manipulation can also compel innocent people to agree to whatever the police want. As the U.S. Supreme Court noted in 2009, “a frighteningly high percentage of people … confess to crimes they never committed.” According to the Innocence Project, 28 percent of defendants later exonerated by DNA had falsely confessed.</p>
-
-<p>During the initial trials in 1988, prosecutors had argued that the pubic hair and the blood on the jeans proved Thompson was telling the truth, but in 2009 the Maryland Court of Appeals wrote that the DNA finding “usurps the State’s arguments all together.” In essence this meant none of Thompson’s statements to police or prosecutors throughout the case were corroborated by evidence.</p>
-
-<p>Despite the statistics, convincing a jury that someone would falsely confess to a crime — particularly to something as heinous as a murder or a rape — is incredibly hard. Juries want to believe that people are rational actors, like themselves, with an almost primal instinct toward self-protection. It wouldn’t matter that the state no longer had the evidence to prove it, Mercer knew, a jury would most likely myopically focus on the confession.</p>
-
-<p>Thompson told me he’d been happy for Owens when he was released — he’d always wished he could apologize to him for what he did — but that feeling had faded into self-pity as the calendar went from 2008 to 2009 to 2010 and his case stalled in the courts. Now he was mostly anxious. He just wanted relief, whatever it might be, so when Sharon Holback, the new prosecutor on the case, eventually offered him an Alford plea — 23 years after he’d first fatefully approached police — his excitement overwhelmed his sense of injustice.</p>
-
-<p>Mercer worked to make it the best deal he could. If Thompson took the plea, it meant the state would let him go, but the deal had some risky strings attached. Any charge that carried a life sentence had to come off the table, because in Maryland, a probation violation — even something as relatively minor as a DUI — sends the defendant back to prison to serve the remainder of his sentence. The two sides agreed to second-degree murder, which carries a maximum of 30 years. That way if Thompson violated probation, he’d only have seven and a half years over his head, since he had served more than 22.</p>
-
-<p>Gregg Bernstein, Baltimore City state’s attorney from 2011 to 2015, oversaw at least two similar deals. He couldn’t remember the details but said he’d thought a lot about whether it was okay for an innocent man to take an Alford plea. In the end, he said, most cases lack black-and-white certainty, regardless of evidence suggesting innocence. “It’s not that simple to say yay or nay,” he said. “Pleas are a way to resolve them.”</p>
-
-<p>Former prosecutor Vignarajah, though, told me he wonders if that kind of resolution only looks like a win for everyone on paper. “In reality everyone lost,” he said. “The victim sees no justice. The defendant is walking away with a conviction. And the prosecution didn’t get anyone to take responsibility &#91;for the crime&#93;.”</p>
-
-<p>On July 29, 2010, when Thompson left prison under the Alford plea, Holback got the last word: Thompson “is in no way exonerated.”</p>
-
-<hr />
-
-<p>Since their releases, Thompson and Owens have led dramatically different lives.</p>
-
-<p>Thompson thought he could go back to the person he was almost 23 years earlier, before the murder rap, but society didn’t look at him that way. When he applied for a job, he put a question mark where the form asked if he’d been convicted of a felony.</p>
-
-<p>“I tried to explain I was wrongfully convicted, but people don’t want to hear that,” Thompson said. “There’s no reasoning with somebody. ‘Innocent people do not go to prison’ is just the motto.”</p>
-
-<p>Thompson held onto his freedom for only a little over a year. In October 2011 he was arrested after his ex-girlfriend claimed that he had molested her young daughter. Thompson, who’d recently kicked the girlfriend out of his apartment, denied the charge, saying he’d spanked the girl’s bare butt to discipline her. The state reduced the charges to a misdemeanor for touching the girl’s buttocks and gave him time served for the five months he’d been in jail.</p>
-
-<p>It didn’t end there, though. Because the misdemeanor violated his probation attached to his Alford plea, Thompson went from a local jail to a state prison to serve the remaining seven and a half years.</p>
-
-<p>Mercer said he believes the Alford plea made it very difficult for Thompson to defend himself. “It was a question of credibility,” Mercer said. “Who’s going to believe him? He was stuck having to do damage control.”</p>
-    <figure class="image large left">
-                                                <img alt="" src="https://assets.propublica.org/images/articles/_threeTwo400w/20170907-thompson-inline-two.jpg" srcset="https://assets.propublica.org/images/articles/_threeTwo400w/20170907-thompson-inline-two.jpg 400w, https://assets.propublica.org/images/articles/_threeTwo800w/20170907-thompson-inline-two.jpg 800w, https://assets.propublica.org/images/articles/_threeTwo1600w/20170907-thompson-inline-two.jpg 1600w, https://assets.propublica.org/images/articles/_threeTwo2000w/20170907-thompson-inline-two.jpg 2000w" />
-        
-                    <figcaption>Thompson set into motion the prosecution of Owens, and eventually himself, when he lied about finding the murder weapon to get a $1,000 police reward. He then falsely testified that he saw Owens commit the rape and murder. “I’m really ashamed,” he said. “Why I did what I did, I can’t explain it.”
-                                    <span class="credit">(Lexey Swall, special to ProPublica)</span>
-                            </figcaption>
-            </figure>
-    <p>Owens has fared better. He has been embraced by what little family he had. He has moved into a cousin’s house and has begun working with him cleaning gutters and doing landscaping. And he has grown close to his nieces and nephews, a bittersweet feeling for someone who’d had no chance to build a family of his own. Owens told me he has tried not to let the anger sink him, but he struggles. His exoneration came without compensation or even an apology. “What’s striking in these cases is a total lack of accountability,” said Michele Nethercott, of the Innocence Project in Baltimore. “Nothing ever really happens” to the police and prosecutors whose actions led to wrongful convictions.</p>
-
-<p>Owens wonders today if his prosecution became all about keeping the win. “Instead of focusing on me and getting me to take a deal for something I didn’t do, they need to focus on the victim. Her murder has never been solved,” he said. “I think they should go back and look and do something for this girl.”</p>
-
-<p>In 2011, Owens found a lawyer, Charles Curlett, to sue Baltimore. Curlett determined that there were several issues of misconduct involved in Owens’ conviction. First, his lawyer had been told nothing of the changing stories Thompson gave the detectives. The information could have been used to undermine Thompson’s credibility and failing to share it was likely a violation of Owens’ due-process rights. Such failures are known as Brady violations, after a 1963 Supreme Court case in which the justices determined that withholding favorable information from the defense is unconstitutional. Also, one of the jailhouse snitches who testified that Owens had confessed had been a police informant for years and said he recruited the other snitch. This, too, wasn’t revealed to the defense, nor were the informant’s letters asking for favors in exchange for his testimony.</p>
-
-<p>Brady violations had become so prevalent in Baltimore’s courts that the Fourth Circuit Court of Appeals recently admonished the city’s prosecutors to remember their legal obligations: “Only this practice ensures the fair trial that our justice system aspires to provide” and makes it so “no one has to worry after the fact whether the jury convicted the wrong person.”</p>
-
-<p>The city furiously fought Owens. Dodging such suits, many defense lawyers contend, is part of what drives these plea offers. “If not expressly that, it’s implicit in a lot of decisions made in this setting,” said Michael Imbroscio, an attorney who had a client in Baltimore City take a time-served deal. The city won dismissal of Owens’ suit against the state’s attorney’s office and Brave, who the court ruled had immunity, and the Baltimore Police Department. But the case is going to trial in federal court, likely early next year, against detectives Pellegrini, Landsman and Dunnigan as individuals. There’s millions in compensation at stake for Owens and a public airing of misdeeds for the city.</p>
-
-<p>Civil litigation is “so important,” Mercer said. “Often, that’s the only time there’s scrutiny into what wrongs were done.”</p>
-    <figure class="image x-large left">
-                                                <img alt="" src="https://assets.propublica.org/images/articles/_threeTwo400w/20170907-owens-inline.jpg" srcset="https://assets.propublica.org/images/articles/_threeTwo400w/20170907-owens-inline.jpg 400w, https://assets.propublica.org/images/articles/_threeTwo800w/20170907-owens-inline.jpg 800w, https://assets.propublica.org/images/articles/_threeTwo1600w/20170907-owens-inline.jpg 1600w, https://assets.propublica.org/images/articles/_threeTwo2000w/20170907-owens-inline.jpg 2000w" />
-        
-                    <figcaption>Owens will go to court early next year in his lawsuit against the detectives who investigated him. He alleges the detectives violated his constitutional right to a fair trial by withholding key material from his lawyer. 
-                                    <span class="credit">(Lexey Swall, special to ProPublica)</span>
-                            </figcaption>
-            </figure>
-    <p>The type of misconduct alleged in Owens’ case is echoed in nine more of the 14 exonerations out of Baltimore City and County since 2002, according to the National Registry of Exonerations. The 2014 exoneration of Sabein Burgess, for example, came after it emerged that Baltimore detectives never revealed a key detail to the defense: that a young witness had told them he saw the murder suspect and it wasn’t Burgess. The detectives even submitted a report falsely stating that the witness had been asleep during the crime. Like Owens, Burgess is suing, claiming that detectives “cut corners and rushed to judgment.” His trial is set for this fall and names a different group of detectives.</p>
-
-<p>Misconduct can also be found in the cases of some of the remaining exonerated defendants who, like Thompson, aren’t officially considered exonerated at all but who were released under Alford pleas or time-served deals after questions were raised about their initial convictions. Curlett is representing one such man, Wendell Griffin, who was convicted of murder in Baltimore in 1982. Decades later, it came to light that three detectives — two also featured in Simon’s book and a third who is Landsman’s brother — had buried photo lineups and witness statements pointing to Griffin’s innocence. He was let out on a time-served deal in 2012.</p>
-
-<p>The detectives named in the Owens and Burgess lawsuits have denied allegations of misconduct. Michael Marshall, who represents the detectives in Owens’ and Griffin’s suits, declined to comment, referring questions to the chief of legal affairs for the Baltimore City Police Department, who didn’t return several calls.</p>
-
-<p>Thompson, whose parents died while he was in prison, has been abandoned by the rest of his family. He was released early for good behavior in February after serving a little more than five of his remaining seven and a half years, and as much as he blames himself for his mistakes, he now thinks his plea was a “bum deal.” He wishes there was a way to prove to his loved ones that “although I served 30 years … I didn’t commit the crime.”</p>
-
-<p>The strain of the Alford plea proved too much for one of Baltimore’s wrongly convicted. Chris Conover left prison under the plea in 2003 after DNA called into question his murder conviction in Baltimore County. On the outside, he suffered from severe panic attacks and depression, but his wife told the local newspaper that he couldn’t face in-patient treatment, which meant being back behind locked doors. His petition for a pardon from Maryland’s governor was turned down in 2012. Three years later, Conover killed himself.</p>
-
-<p>“Having been convicted really defines who you are — it becomes itself a prison,” Mercer said. “Once out, with a conviction still on your shoulders, having maintained your innocence in a Alford plea is of little comfort and of very little practical benefit.”</p>
-                            <img src="http://feedpress.me/9499/6726891.gif" height="1" width="1"/>]]></description>
-      <dc:subject>Criminal Justice</dc:subject>
-      <dc:date>2017-09-07T12:00:00+00:00</dc:date>
-      <dc:creator>by Megan Rose</dc:creator>
-    </item>
-    <item>
-      <title>The Freedom Plea: How Prosecutors Deny Exonerations by Dangling the Prison Keys</title>
-      <link>http://tracking.feedpress.it/link/9499/6726892</link>
-      <pubDate>Thu, 07 Sep 2017 12:00:00 +0000</pubDate>
-      <guid isPermaLink="false">https://www.propublica.org/article/freedom-plea-prosecutors-deny-exonerations-dangling-prison-keys#134410</guid>
-      <description><![CDATA[
-                <p class="byline">
-                by <a class="name" href="https://www.propublica.org/people/megan-rose">Megan Rose</a>                </p>
-                                <p>Despite new evidence undermining the convictions of at least eight men for violent crimes in both Baltimore City and County over the last two decades, none were exonerated. Instead, they left prison only after agreeing to plea deals with state prosecutors. In each case, the men took either Alford pleas, in which defendants can maintain their innocence for the record, or were given time-served arrangements. With these deals, the defendants were granted their freedom, but gave up the right to clear their names. (Two additional men took similar deals but years later were fully exonerated after more exculpatory evidence was found in the police files.)</p>
-    
-    <p>ProPublica’s examination of these cases reveals a troubling pattern — one that legal experts say plays out across the country. Persuasive innocence claims were met with refusals by the state’s attorney’s office to reexamine the cases, sometimes despite — or perhaps because of — discoveries of official misconduct. Prosecutors often fought for years to prevent the consideration of any new evidence or the testing of old evidence for DNA. Or they accommodated contrary new facts by stretching their theories of crimes. If the DNA in a rape case, for example, didn’t match the defendant, prosecutors would assert that another unknown assailant was involved, too. When judges ordered new trials or granted writs of innocence, prosecutors started bargaining for plea deals that would maintain the convictions.</p>
-
-<p>Over time, prosecutors have defended their decision to seek deals, claiming in each case that they still believed in the defendants’ guilt. They also argued that given the amount of time passed, the cases would be difficult to retry.</p>
-
-<p>But Michele Nethercott, the head of the Innocence Project Clinic at the University of Baltimore School of Law, said with these cases, “often, the truth doesn’t seem to matter much.”</p>
-
-<hr />
-    <figure class="image medium right">
-                                                <img alt="" src="https://assets.propublica.org/images/articles/_threeTwo400w/20170917-george-seward-inline-8x10.jpg" srcset="https://assets.propublica.org/images/articles/_threeTwo400w/20170917-george-seward-inline-8x10.jpg 400w, https://assets.propublica.org/images/articles/_threeTwo800w/20170917-george-seward-inline-8x10.jpg 800w, https://assets.propublica.org/images/articles/_threeTwo1600w/20170917-george-seward-inline-8x10.jpg 1600w" />
-            
-                    <figcaption>George Seward with his mother on the day of he got out of prison after 32 years. A judge had granted him a writ of innocence, but prosecutors vowed to retry him. He took an Alford plea to guarantee his immediate release.
-                                    <span class="credit">(Booth Ripke, courtesy of the Mid-Atlantic Innocence Project)</span>
-                            </figcaption>
-            </figure>
-    <h3>George Seward</h3>
-
-<ul>
-<li>Convicted: 1985</li>
-<li>Released: 2016</li>
-<li>Type of Deal: Alford plea</li>
-<li>Crime: Rape</li>
-</ul>
-
-<h4>The Original Case</h4>
-
-<p>The white victim identified him 10 weeks after the crime. The victim’s ID of Seward, an 18-year-old black man who had a moustache and goatee at the time of the murder, conflicted with her contemporaneous description after the attack of a clean-shaven assailant. Neither the fingerprints nor biological evidence from the crime matched Seward.</p>
-
-<h4>New Evidence Later Discovered</h4>
-
-<p>Seward’s employment records as a part-time dog washer, which were discovered 12 years after the trial, showed he’d been at work the day of the shooting. His boss also testified she kept the shop locked and it would have been “impossible” for him to have left.</p>
-
-<h4>Prosecution Reaction</h4>
-
-<p>Fought for the next 19 years, arguing, in turn, that the records weren’t admissible as new evidence and shouldn’t be given any consideration; that they didn’t provide an alibi because no hours were specified; and that they bolstered the case against Seward because the shop was near the victim’s house. One of the prosecutors on the case, John Cox, also told ProPublica that the records’ discovery so long after the trial meant they couldn’t be trusted.</p>
-
-<p>Baltimore County State’s Attorney Scott Shellenberger said recently that because the victim saw her attacker up close, he wasn’t concerned that the case rested on a cross-racial identification. (That type of ID has been shown to be less reliable because people are generally bad at distinguishing facial features of people who aren’t their own race. Of the 351 people exonerated by DNA evidence since 1989, the national Innocence Project found that 41 percent had been convicted on mistaken cross-racial identification.)</p>
-
-<h4>How the Deal Happened</h4>
-
-<p>Judge said the employment records “thoroughly exculpate[d]” Seward and granted a writ of innocence. The state appealed and eventually lost. “The state’s immediate reaction was to offer a plea,” said Shawn Armbrust, of the Mid-Atlantic Innocence Project and one of Seward’s lawyers.</p>
-
-<p>Shellenberger said that he’d been confident about the case and wanted to go to trial, but the victim didn’t want to testify again. “Keeping something on the record was extremely important to us.”</p>
-
-<h4>Why Defendant Agreed to Deal</h4>
-
-<p>Seward first turned prosecutors down, but then, as he awaited a new trial, a close friend was stabbed in prison. Seward had nine months before the trial began, so he reconsidered.</p>
-
-<hr />
-    <figure class="image medium right">
-                                                <img alt="" src="https://assets.propublica.org/images/articles/_threeTwo400w/20170907-barnes-inline2.jpg" srcset="https://assets.propublica.org/images/articles/_threeTwo400w/20170907-barnes-inline2.jpg 400w, https://assets.propublica.org/images/articles/_threeTwo800w/20170907-barnes-inline2.jpg 800w, https://assets.propublica.org/images/articles/_threeTwo1600w/20170907-barnes-inline2.jpg 1600w" />
-            
-                    <figcaption>Barnes was convicted of murder when he was 17 based off of nothing more than his uncorroborated confession, which also described a violent rape.
-                                    <span class="credit">(Lexey Swall, special to ProPublica)</span>
-                            </figcaption>
-            </figure>
-    <h3>Jesse Barnes</h3>
-
-<ul>
-<li>Convicted: 1972</li>
-<li>Released: 2011</li>
-<li>Type of Deal: Time served</li>
-<li>Crime: Murder</li>
-</ul>
-
-<h4>The Original Case</h4>
-
-<p>Based solely on Barnes’ confession made after 31 hours in custody. A largely illiterate 17-year-old with a low IQ and no prior record, Barnes’ police-typed statement conflicted with the evidence in the case in major ways, such as how and where the 15-year-old female victim was killed. And he had an alibi for the time of the murder. (Barnes’ confession also incriminated two others, but no one else was charged.)</p>
-
-<h4>New Evidence Later Discovered</h4>
-
-<p>In 2009, 37 years after Barnes’ conviction, DNA evidence collected from the victim’s body was tested and excluded him from any sexual assault, further undermining his confession, which had described a violent gang rape that included Barnes and another man ejaculating. The DNA, which only came from one male, also excluded one of the other teenagers implicated in Barnes’ statement.</p>
-
-<h4>Prosecution Reaction</h4>
-
-<p>Prosecutor Sharon Holback said at the time that the state “vehemently and firmly believes that [Barnes] was fairly and properly convicted.” She argued that his confession was sound and that the third person implicated in it must have been the source for the DNA. That man couldn’t be found for comparison testing. (Holback was also the prosecutor who handled the post-conviction hearings in the case of James Thompson, whose rape and murder conviction was undermined by DNA testing, but was offered an Alford plea.)</p>
-
-<h4>How the Deal Happened</h4>
-
-<p>Judge Yvette Bryant went many months without issuing a ruling on the case, so Barnes’ lawyer took the innocence claims directly to Gregg Bernstein, who recently had been elected as Baltimore City state’s attorney on a reform agenda and had started a conviction integrity unit. The fighting over Barnes’ post-conviction motions had happened under Bernstein’s predecessor, so he had not publicly committed to any position. He was also free of one common concern prosecutors face when dealing with potentially wrong convictions: angry relatives of the victim who don’t want the case to unravel. With Barnes, the victim’s family so believed in his innocence that they had hired a lawyer to defend him.</p>
-
-<p>Bernstein, who said recently that he didn’t recall the case, would concede only that Barnes didn’t deserve to be in prison anymore, seizing on a mistake in sentencing. The judge who had sentenced Barnes had thought wrongly that his only option was life.</p>
-
-<h4>Why Defendant Agreed to Deal</h4>
-
-<p>Barnes was 57 years old, had been in prison for more than 40 years and was in failing health. “I had to say to him ‘I’m confident in the end we will vindicate you, but it might be 1, 2 years or even 4 to 5 years, and there’s no guarantee,’” said Barnes’ pro bono lawyer, Michael Imbroscio, noting it was “the most difficult conversation I’ve ever had in my 22-year legal career.”</p>
-
-<hr />
-    <figure class="video medium right">
-                        <div class="aspect-9-16">
-            <iframe width="560" height="315" src="https://www.youtube.com/embed/5pWG8so4fXo?rel=0&amp;showinfo=0" frameborder="0" allowfullscreen></iframe>
-        </div>
-                    <figcaption>Wendell Griffin walked out the back door of a Baltimore courtroom on May 23, 2012, free for the first time in nearly 31 years. Griffin, who’d been convicted of murder, was let out on a time-served deal after evidence pointing to his innocence was discovered buried in a police file. 
-                                    <span class="credit">(Courtesy of Stephen Mercer)</span>
-                            </figcaption>
-            </figure>
-    <h3>Wendell Griffin</h3>
-
-<ul>
-<li>Convicted: 1982</li>
-<li>Released: 2012</li>
-<li>Type of Deal: Time served</li>
-<li>Crime: Murder</li>
-</ul>
-
-<h4>The Original Case</h4>
-
-<p>A neighbor testified that she saw Griffin before and after the murder with a gun, and a second neighbor, who was 150 feet away, said she heard Griffin make threatening remarks the night of the murder. A set of keys found about 90 feet from the crime scene was connected to Griffin, who lived in the neighborhood.</p>
-
-<h4>New Evidence Later Discovered</h4>
-
-<p>In 2011, significant evidence was found in the police’s files that had never been given to the defense: three photo lineups in which eyewitnesses failed to identify Griffin and eight witness statements that either incriminated another suspect or contradicted the testimony used to prosecute Griffin.</p>
-
-<p>One eyewitness pointed to Griffin’s picture in the lineup and said that he looked like the suspect, “but it’s not him.” Griffin’s picture was nine years old, so detectives went back to that witness and showed her another array with a current picture. She still did not identify him. Nonetheless, detectives used her description of the suspect to get a search warrant for Griffin’s home — never mentioning that she’d twice failed to pick him out of a photo array. The warrant also cited a neighbor who saw a man with a gun, but left out that he said the man wasn’t Griffin.</p>
-
-<p>“There was pretty powerful evidence of innocence that was buried by the state,” Steve Mercer, Griffin’s attorney, said.</p>
-
-<h4>Prosecution Reaction</h4>
-
-<p>Baltimore City prosecutor Michael Leedy denied that the evidence represented a Constitutional violation. (In 1963, the U.S. Supreme Court declared that the state must turn over all favorable information to the defense in order for a trial to be fair, which has come to be known as the “Brady” requirement.) Leedy wouldn’t agree to a new trial.</p>
-
-<h4>How the Deal Happened</h4>
-
-<p>When a judge, who called the evidence “earth shattering,” indicated she’d be ordering a new trial, Leedy shifted, saying that although he didn’t believe “there were, in fact, any Brady violations” the allegations were “plausible enough” that he’d “concede to a resentencing on this matter.” This was the “best course,” Leedy said, to “ensure that Mr. Griffin will for the rest of his life remain convicted for the murder of James Wise.”</p>
-
-<p>Leedy also wanted it on record that by accepting the deal Griffin gave up the right to an actual innocence ruling.</p>
-
-<h4>Why Defendant Agreed to Deal</h4>
-
-<p>Griffin was 61, knew his best years were gone and he might “die in here.” Having spent nearly 31 years in prison, he didn’t have it in him, he said recently, to wait another year-and-a-half for a new trial. But he is now trying to withdraw his deal, so he can clear his name and sue over the Brady violations. Marilyn Mosby, the current state’s attorney who ran in part on a platform of police accountability, is fighting his motion. (Her spokeswoman didn’t respond to multiple requests for comment.) A hearing is set for November.</p>
-
-<hr />
-    <figure class="image medium right">
-                                                <img alt="" src="https://assets.propublica.org/images/articles/_threeTwo400w/20170907-antoine-pettiford-8x10.jpg" srcset="https://assets.propublica.org/images/articles/_threeTwo400w/20170907-antoine-pettiford-8x10.jpg 400w, https://assets.propublica.org/images/articles/_threeTwo800w/20170907-antoine-pettiford-8x10.jpg 800w, https://assets.propublica.org/images/articles/_threeTwo1600w/20170907-antoine-pettiford-8x10.jpg 1600w" />
-            
-                    <figcaption>Antoine Pettiford was convicted of murder in 1995, but was let out on an Alford plea three years later when a court ruled that the detectives and prosecutors deliberately withheld evidence from the defense. He was fully exonerated in 2000 after more evidence came to light. Pettiford was killed in 2015.
-                                    <span class="credit">(Jed Kirschbaum, permission from The Baltimore Sun)</span>
-                            </figcaption>
-            </figure>
-    <h3>Antoine Pettiford</h3>
-
-<ul>
-<li>Convicted: 1995</li>
-<li>Released: 1998</li>
-<li>Type of Deal: Alford plea (exonerated in 2000)</li>
-<li>Crime: Murder</li>
-</ul>
-
-<h4>Original Case</h4>
-
-<p>Pettiford, 23 and with a record, was identified as one of two shooters by two eyewitnesses and was tied to the murder weapon by a suspect in a related crime. But at trial, the witnesses said they’d been mistaken and the suspect said he’d lied about the weapon. Late in the trial, prosecutors produced a new witness who identified Pettiford. Pettiford had an alibi and no motive.</p>
-
-<p>According to The Baltimore Sun, before the judge sentenced Pettiford to life plus 20 years, he said: “I don't care if every witness that appeared in the trial — including the detectives — come back here and say it was all a farce and it was all false and it was all wrong. I think justice was done.”</p>
-
-<h4>New Evidence Later Discovered</h4>
-
-<p>A year later, a separate federal drug investigation led to a different suspect in the murder, who pleaded guilty in federal court and told investigators that Pettiford had nothing to do with the crime.</p>
-
-<p>There was also evidence that had never been given to the defense: a three-page statement from a friend of the victim that said he was the intended target and pointed to the same suspect prosecuted by the feds; a police bulletin that named that same suspect in connection to the murder; a statement from an eyewitness who identified the second shooter as someone the federal prosecutors thought was involved; and a police report naming that second person as a suspect.</p>
-
-<h4>Prosecution Reaction</h4>
-
-<p>Baltimore City prosecutor Nancy Pollack, who had handled the trial, didn’t act on the information federal prosecutors gave her suggesting Pettiford was innocent. Michelle Martz, Pettiford’s lawyer, said she went repeatedly “to beg and plead for [prosecutors at the time] to do something. I was floored the state wouldn’t be more concerned that they might have the wrong guy.”</p>
-
-<h4>How the Deal Happened</h4>
-
-<p>At the end of a post-conviction hearing, at which a detective revealed the existence of the three-page statement implicating someone else, the judge ordered Pollack to turn over everything in her files. Pollack agreed to a new trial and offered the plea.</p>
-
-<h4>Why Defendant Agreed to Deal</h4>
-
-<p>Pettiford, scared of what the prosecutors might do during a second round, had only one question: “Do I have to go back to prison if I take it?” He accepted the Alford plea, walked down the courthouse steps and into his family’s waiting car.</p>
-
-<h4>How He Was Later Exonerated</h4>
-
-<p>A year after the Alford plea, The Baltimore Sun newspaper <a href="http://articles.baltimoresun.com/1999-07-11/news/9907110223_1_pettiford-secret-evidence-homicide-detectives/">exposed</a> that the state had suppressed even more evidence and that a detective had misled the defense. In response, the judge vacated the Alford plea, saying it had been “a miscarriage of justice,” and the state declined to prosecute again. Pollack, who declined to comment, had already resigned, but the Baltimore Police Department found that the detective did nothing wrong. That detective was also named in a <a href="https://www.documentcloud.org/documents/3241868-Burgess-Complaint.html">lawsuit</a> filed by Sabein Burgess, who was wrongfully convicted in 1995 and exonerated in 2014.</p>
-                            <img src="http://feedpress.me/9499/6726892.gif" height="1" width="1"/>]]></description>
-      <dc:subject>Criminal Justice</dc:subject>
-      <dc:date>2017-09-07T12:00:00+00:00</dc:date>
-      <dc:creator>by Megan Rose</dc:creator>
-    </item>
-    <item>
-      <title>ProPublica, NPR and BPL Presents to Host Maternal Health Forum With Advice for Expectant Families</title>
-      <link>http://tracking.feedpress.it/link/9499/6726893</link>
-      <pubDate>Thu, 07 Sep 2017 12:00:00 +0000</pubDate>
-      <guid isPermaLink="false">https://www.propublica.org/atpropublica/propublica-npr-bpl-maternal-health-forum-advice-expectant-families#134406</guid>
-      <description><![CDATA[
-                <p class="byline">
-                by <a class="name" href="https://www.propublica.org/people/propublica">ProPublica</a>                </p>
-                                <p>By many measures, the U.S. has become the most dangerous place to give birth in the affluent world. Each year 700 to 900 American women die from pregnancy or childbirth-related causes – up to 60 percent of which are preventable – and some 65,000 women nearly die.</p>
-
-<p>ProPublica and NPR have shined a light on this issue through the joint investigative series <a href="https://www.propublica.org/series/lost-mothers">Lost Mothers</a>, shifting the national conversation on maternal mortality from one of private tragedy to public health crisis. Now the news organizations are teaming up, in partnership with the Brooklyn Public Library’s <a href="https://www.bklynlibrary.org/bpl-presents">BPL Presents</a>, to host a community forum about protecting more women from harm.</p>
-
-<p>Titled “<a href="https://www.bklynlibrary.org/calendar/propublica-bpl-presents-central-library-dweck-102417">Lost Mothers: Key Ways to Improve Maternal Health</a>,” the event will bring together leading medical experts, survivors and impacted families. Panelists will share insights on topics including:</p>
-
-<ul>
-<li>finding the best possible provider</li>
-<li>strategies for self-advocacy and conveying levels of pain</li>
-<li>changing the culture of the “perfect birth story”</li>
-<li>preparing for an emergency</li>
-<li>paying attention to symptoms even after the delivery</li>
-</ul>
-
-<p>The expert panel will also take questions from audience members seeking answers and support, and refreshments will be provided. This one-of-a-kind event encourages women and families to share their stories and connect with one another, and elevates a much-needed national dialogue.</p>
-
-<p><a href="https://www.bklynlibrary.org/calendar/propublica-bpl-presents-central-library-dweck-102417">This event is free. RSVP here.</a></p>
-
-<p><strong>What:</strong> Lost Mothers: Key Ways to Improve Maternal Health</p>
-
-<p><strong>When:</strong> Tuesday, October 24, 7:30–9 p.m. (Doors open at 7 p.m.)</p>
-
-<p><strong>Where:</strong> Brooklyn Public Library, Central Library, 10 Grand Army Plaza, Brooklyn, NY 11238 (Stevan Dweck Auditorium)</p>
-
-<p><strong>Who:</strong></p>
-
-<ul>
-<li><strong>Mary D’Alton</strong>, MD, chair of Columbia University Medical Center’s department of obstetrics &amp; gynecology</li>
-<li><strong>Chanel Porchia-Albert</strong>, founder and executive director of Ancient Song Doula Services</li>
-<li><strong>Larry Bloomstein</strong>, widower of Lauren Bloomstein, featured in <a href="https://www.propublica.org/article/die-in-childbirth-maternal-death-rate-health-care-system">the first article of the series</a></li>
-<li><strong>Nina Martin</strong>, reporter for ProPublica</li>
-<li><strong>Renee Montagne</strong>, special correspondent for NPR</li>
-<li>Other invited guests</li>
-</ul>
-
-<p>This event will be livestreamed on both the <a href="https://www.facebook.com/propublica/">ProPublica</a> and <a href="https://www.facebook.com/BPLPresents/">BPL Presents</a> Facebook pages at 7:30 p.m. EST. For more information, contact Cynthia Gordy at <a href="mailto:cynthia.gordy@propublica.org">cynthia.gordy@propublica.org</a>.</p>
-                            <img src="http://feedpress.me/9499/6726893.gif" height="1" width="1"/>]]></description>
-      <dc:subject>Lost Mothers</dc:subject>
-      <dc:date>2017-09-07T12:00:00+00:00</dc:date>
-      <dc:creator>by ProPublica</dc:creator>
-    </item>
-    <item>
-      <title>Another Thing Disappearing From Rural America: Maternal Care</title>
-      <link>http://tracking.feedpress.it/link/9499/6726894</link>
-      <pubDate>Tue, 05 Sep 2017 20:01:41 +0000</pubDate>
-      <guid isPermaLink="false">https://www.propublica.org/article/another-thing-disappearing-from-rural-america-maternal-care#134362</guid>
-      <description><![CDATA[
-                <p class="byline">
-                by <a class="name" href="https://www.propublica.org/people/adriana-gallardo">Adriana Gallardo</a> and <a class="name" href="https://www.propublica.org/people/nina-martin">Nina Martin</a>                </p>
-                                <p>Maternity care is disappearing from America’s rural counties, and for the 28 million women of reproductive age living in those areas, pregnancy and childbirth are becoming more complicated — and more dangerous. That’s the upshot of a <a href="http://bit.ly/2wGCoZD">new report</a> from the <a href="http://rhrc.umn.edu/">Rural Health Research Center</a> at the University of Minnesota that examined obstetric services in the nation’s 1,984 rural counties over a 10-year period. In 2004, 45 percent of rural counties had no hospitals with obstetric services; by 2014, that figure had jumped to 54 percent. The decline was greatest in heavily black counties and in states with the strictest eligibility rules for Medicaid.</p>
-
-<p>The decrease in services has enormous implications for women and families, says <a href="https://directory.sph.umn.edu/bio/sph-a-z/katy-kozhimannil">Katy B. Kozhimannil</a>, an associate professor in health policy who directs the Minnesota center’s research efforts. Rural areas have higher rates of chronic conditions that make pregnancy more challenging, higher rates of childbirth-related hemorrhages — and <a href="https://www.scientificamerican.com/article/maternal-health-care-is-disappearing-in-rural-america/">higher rates</a> of maternal and infant deaths. And because rural counties tend to be poorer, any efforts to revamp or slash Medicaid could hit rural mothers especially hard. We spoke with Kozhimannil about the new study and the implications for maternal care. (The conversation has been edited and condensed.)</p>
-
-<p><strong>You and your colleagues have been looking at maternal health issues for several years. What’s the most surprising part of this new study?</strong></p>
-
-<p>I was surprised about the findings on race. Being aware of structural racism in U.S. health care, I shouldn’t have been. But we found that hospitals are more likely to close their doors entirely or close their obstetric units in communities that have more black residents. Rural black communities also experience some of the poorest birth outcomes in the country, especially in the Southeast.</p>
-
-<p>I think [the race findings] are new and really important. In all the discussions I've had around maternity care access, I think there's often a false association of “rural” with white communities and with farming, but that doesn't represent the demographic reality of rural America, which is very diverse. There are 10 million people of color in rural America, that’s about 20 percent of all rural Americans.</p>
-
-<p><strong>What has led to the decline in rural obstetric services more broadly over this 10-year period?</strong></p>
-
-<p>We didn’t choose this period because we thought it was particularly unique. We chose it because it was the most recent decade of data we could get. That said, this was a period when there was a substantial shift in the health care delivery system. The debates around Obamacare, the implementation, the threats to repeal — all that really created instability with respect to what hospitals and clinicians were expecting around payments.</p>
-
-<p>And the role of finances is key. If hospitals want to offer obstetric services, they need to be ready for a baby to be born at any time — they need to have a bed available, the equipment available for mom and for baby, clinicians and staff available that have the necessary skills. That's a substantial expense. If a hospital’s revenues are limited because it has a low volume of births — as many rural hospitals do — or if revenues are unpredictable, that creates a really difficult administrative problem.</p>
-    <figure class="image full left">
-                                                <img alt="" src="https://assets.propublica.org/images/articles/_threeTwo400w/20170905-rural-care-QA-graphic.jpg" srcset="https://assets.propublica.org/images/articles/_threeTwo400w/20170905-rural-care-QA-graphic.jpg 400w, https://assets.propublica.org/images/articles/_threeTwo800w/20170905-rural-care-QA-graphic.jpg 800w, https://assets.propublica.org/images/articles/_threeTwo1600w/20170905-rural-care-QA-graphic.jpg 1600w, https://assets.propublica.org/images/articles/_threeTwo2000w/20170905-rural-care-QA-graphic.jpg 2000w" />
-        
-                    <figcaption>There were 898 counties that had no in-county hospital obstetric services in the study period (“no services”). There were 907 counties that had at least one in-county hospital that provided obstetric services in the study period (“continual services”). There were 179 counties in which all in-county hospital obstetric services closed during the study period (“full closure”). Significance refers to differences in county characteristics in the same year compared to counties with continual hospital obstetric services during 2004-14. Urban counties are not in the study sample.
-                                    <span class="credit">(Health Affairs)</span>
-                            </figcaption>
-            </figure>
-    <p><strong>How does Medicaid play into this?</strong></p>
-
-<p>Medicaid funds about half of all births in the United States, and an even greater percentage of births in rural hospitals. Medicaid funding for births is incredibly important and it’s one factor in hospitals’ decisions around whether to keep obstetric services. We found that rural counties in states with more generous Medicaid programs — with higher income eligibility limits for pregnant women — were less likely to lose hospital-based obstetric services.</p>
-
-<p><strong>Meanwhile, there’s talk of allowing states to impose new rules that could restrict access to Medicaid.</strong></p>
-
-<p>Changes to the financing of Medicaid would likely have big negative effects on the availability of obstetric services in rural areas. Based on our study, the generosity of a state’s Medicaid program seems directly linked to access to maternity care in rural counties. As such, any new reductions or restrictions on Medicaid funding or services may affect rural hospital financing.</p>
-
-<p><strong>What is it like to be pregnant in a rural area that doesn’t have adequate maternity care? What do women do?</strong></p>
-
-<p>For some women, there may be a nearby clinic or their general practitioner may be able to see them for prenatal visits if they have a low-risk pregnancy. But then they need to give birth in a more distant area with a different set of providers.</p>
-
-<p>That may not even be a choice for women who live in communities that don't have any providers that see pregnant patients, or for women that have higher risk complications that require more specialized care.</p>
-
-<p>I remember talking to one woman who lived in rural northern Minnesota and who had a preterm birth with her first pregnancy. For her second pregnancy, she had to drive two hours to the nearest hospital with a high-risk obstetrician. With one child at home already, and a full-time job and a partner who worked, it was almost untenable. It would take a whole day for her to drop her child off at daycare, drive all the way to the hospital, wait for a 15-minute visit that felt rushed, then drive all the way back.</p>
-
-<p>I just heard on the radio this morning that a truck ran into a railroad bridge that goes over the highway that this woman would take to go back and forth to the hospital. So if she was pregnant right now, there's a 27-mile detour on three dirt roads to get around this broken bridge. That adds probably another 45 minutes to an already two-hour drive. Things like that can happen, you know, all the time.</p>
-    
-    <p><strong>What about giving birth? How does living in a remote area affect the kinds of choices doctors and women make?</strong></p>
-
-<p>In a typical childbirth education class in an urban area, childbirth educators say things like, “Go to the hospital when your contractions are five minutes apart.” None of that makes any sense in a rural context where women give birth far from home.</p>
-
-<p>For rural moms, a lot of the conversation in childbirth education and in prenatal care revolves around logistics and transportation: “Do you know how you’re going to get to your appointment? Do you have access to a car? Is your car reliable? Do you have money for gas? Do you have a backup plan if your car doesn't start? Do you have someone that you can call if you need to go in quickly?”</p>
-
-<p>Anecdotally, I hear a lot about labor induction. The rural physicians I’ve talked to are like, “I can't believe I am trying to talk patients into having an induction.” They believe in letting labor start naturally, but given the long drive, induction is often better for patients clinically. So that if complications come up, someone’s there, monitoring your blood pressure and vital signs. It’s not, you know, your partner or friend desperately driving down dirt roads as fast as they can while you yell in the back seat.</p>
-
-<p><strong>How does all this affect outcomes for babies?</strong></p>
-
-<p>We have good information from Canada that the women who have to drive long distances to give birth have higher rates of the babies being in the neonatal intensive care unit, and even of infant mortality. And so we know that distance is associated with outcomes of care. When rural hospitals close the doors of their maternity units, women have to drive longer distances.</p>
-
-<p><strong>These seem like pretty huge hurdles for rural mothers and babies. Is there any way to address these problems to improve maternity care?</strong></p>
-
-<p>One idea is programs to support pregnant women and families, especially with respect to their housing and transportation needs when they live far away from where they're going to give birth. Alaska has actually done a tremendous job of this.</p>
-
-<p>Another is for states to allow midwives and nurse practitioners to play a greater role in offering prenatal and postpartum care, without having to be under a doctor’s supervision. That would be useful. Our prior research shows that midwives, for example, attend births at about one-third of all rural hospitals, and that hospital administrators would like to expand the role midwives play.</p>
-
-<p>State and federal programs to support the rural maternity workforce are crucial. There ought to be programs to support training in emergency births in rural communities that lose obstetric care, and to support the costs of providing maternity care in communities where there are willing providers.</p>
-                            <img src="http://feedpress.me/9499/6726894.gif" height="1" width="1"/>]]></description>
-      <dc:subject>Lost Mothers</dc:subject>
-      <dc:date>2017-09-05T20:01:41+00:00</dc:date>
-      <dc:creator>by Adriana Gallardo and Nina Martin</dc:creator>
     </item>
   </channel>
 </rss>
