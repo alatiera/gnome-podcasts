@@ -6,7 +6,7 @@ use schema;
 use dbqueries;
 use feedparser;
 use errors::*;
-use models::{NewEpisode, NewSource, Source, Podcast, Episode};
+use models::{NewSource, Source, Podcast, Episode};
 
 pub fn foo() {
     let inpt = vec![
@@ -30,7 +30,7 @@ pub fn foo() {
     index_loop(db).unwrap();
 }
 
-fn insert_source(con: &SqliteConnection, url: &str) -> Result<()> {
+fn insert_source(con: &SqliteConnection, url: &str) -> Result<Source> {
     let foo = NewSource::new_with_uri(url);
 
     match dbqueries::load_source(con, foo.uri) {
@@ -48,10 +48,14 @@ fn insert_source(con: &SqliteConnection, url: &str) -> Result<()> {
         }
     }
 
-    Ok(())
+    Ok(dbqueries::load_source(con, foo.uri)?)
 }
 
-fn index_podcast(con: &SqliteConnection, channel: &rss::Channel, parent: &Source) -> Result<()> {
+fn index_podcast(
+    con: &SqliteConnection,
+    channel: &rss::Channel,
+    parent: &Source,
+) -> Result<Podcast> {
     let pd = feedparser::parse_podcast(channel, parent.id())?;
 
     match dbqueries::load_podcast(con, &pd.title) {
@@ -69,10 +73,10 @@ fn index_podcast(con: &SqliteConnection, channel: &rss::Channel, parent: &Source
         }
     }
 
-    Ok(())
+    Ok(dbqueries::load_podcast(con, &pd.title)?)
 }
 
-fn index_episode(con: &SqliteConnection, item: &rss::Item, parent: &Podcast) -> Result<()> {
+fn index_episode(con: &SqliteConnection, item: &rss::Item, parent: &Podcast) -> Result<Episode> {
     let ep = feedparser::parse_episode(item, parent.id())?;
 
     match dbqueries::load_episode(con, &ep.uri.unwrap()) {
@@ -93,12 +97,11 @@ fn index_episode(con: &SqliteConnection, item: &rss::Item, parent: &Podcast) -> 
         }
     }
 
-    Ok(())
+    Ok(dbqueries::load_episode(con, &ep.uri.unwrap())?)
 }
 
 pub fn index_loop(db: SqliteConnection) -> Result<()> {
     // let db = ::establish_connection();
-    use feedparser;
 
     let f = dbqueries::get_sources(&db);
 
@@ -109,11 +112,7 @@ pub fn index_loop(db: SqliteConnection) -> Result<()> {
         // but for now its poc
         let chan = feed.get_podcast_chan(&db)?;
 
-        index_podcast(&db, &chan, &feed)?;
-
-        // Ignore this for the moment
-        let p = feedparser::parse_podcast(&chan, feed.id())?;
-        let pd = dbqueries::load_podcast(&db, &p.title)?;
+        let pd = index_podcast(&db, &chan, &feed)?;
 
         let _: Vec<_> = chan.items()
             .iter()
