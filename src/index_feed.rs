@@ -3,7 +3,7 @@ use diesel;
 use schema;
 use dbqueries;
 use errors::*;
-use models::{NewPodcast, NewSource, Source};
+use models::{NewEpisode, NewSource, Source};
 
 pub fn foo() {
     let inpt = vec![
@@ -51,11 +51,22 @@ pub fn index_loop(db: SqliteConnection) -> Result<()> {
         let chan = feed.get_podcast_chan(&db)?;
         let pd = parse_feeds::parse_podcast(&chan, feed.id())?;
 
+        diesel::insert_or_replace(&pd)
+            .into(schema::podcast::table)
+            .execute(&db)?;
+
         // Holy shit this works!
         let episodes: Vec<_> = chan.items()
             .iter()
-            .map(|x| parse_feeds::parse_episode(x, feed.id()))
+            .map(|x| parse_feeds::parse_episode(x, feed.id()).unwrap())
             .collect();
+
+        // lazy invoking the compiler to check for the Vec type :3
+        // let first: &NewEpisode = episodes.first().unwrap();
+
+        diesel::insert_or_replace(&episodes)
+            .into(schema::episode::table)
+            .execute(&db)?;
 
         info!("{:#?}", pd);
         info!("{:#?}", episodes);
