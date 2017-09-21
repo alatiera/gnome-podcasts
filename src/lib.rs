@@ -26,7 +26,7 @@ extern crate rss;
 pub mod cli;
 pub mod schema;
 pub mod models;
-pub mod parse_feeds;
+pub mod feedparser;
 pub mod index_feed;
 pub mod dbqueries;
 

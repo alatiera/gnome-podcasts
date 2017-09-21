@@ -30,9 +30,9 @@ pub fn foo() {
 fn insert_source(connection: &SqliteConnection, url: &str) -> Result<()> {
     let foo = NewSource::new_with_uri(url);
 
-    diesel::insert(&foo).into(schema::source::table).execute(
-        connection,
-    )?;
+    diesel::insert_or_replace(&foo)
+        .into(schema::source::table)
+        .execute(connection)?;
 
     Ok(())
 }
@@ -40,16 +40,17 @@ fn insert_source(connection: &SqliteConnection, url: &str) -> Result<()> {
 
 pub fn index_loop(db: SqliteConnection) -> Result<()> {
     // let db = ::establish_connection();
-    use parse_feeds;
+    use feedparser;
 
     let f = dbqueries::get_sources(&db);
 
     for feed in f.unwrap().iter_mut() {
-        info!("{:?}", feed.id());
+        // info!("{:?}", feed.id());
+
         // This method will defently get split and nuked
         // but for now its poc
         let chan = feed.get_podcast_chan(&db)?;
-        let pd = parse_feeds::parse_podcast(&chan, feed.id())?;
+        let pd = feedparser::parse_podcast(&chan, feed.id())?;
 
         // TODO: Separate the insert/update logic
         diesel::insert_or_replace(&pd)
@@ -59,7 +60,7 @@ pub fn index_loop(db: SqliteConnection) -> Result<()> {
         // Holy shit this works!
         let episodes: Vec<_> = chan.items()
             .iter()
-            .map(|x| parse_feeds::parse_episode(x, feed.id()).unwrap())
+            .map(|x| feedparser::parse_episode(x, feed.id()).unwrap())
             .collect();
 
         // lazy invoking the compiler to check for the Vec type :3
@@ -70,7 +71,7 @@ pub fn index_loop(db: SqliteConnection) -> Result<()> {
             .execute(&db)?;
 
         info!("{:#?}", pd);
-        info!("{:#?}", episodes);
+        // info!("{:#?}", episodes);
         // info!("{:?}", chan);
 
     }

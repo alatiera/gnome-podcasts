@@ -87,7 +87,7 @@ impl<'a> Source {
         self.update(con, etag, lst_mod)?;
 
         let chan = Channel::from_str(&buf)?;
-        // let foo = ::parse_feeds::parse_podcast(&chan, self.id())?;
+        // let foo = ::feedparser::parse_podcast(&chan, self.id())?;
 
         Ok(chan)
     }
@@ -160,7 +160,7 @@ impl<'a> NewPodcast {
 
     pub fn from_url(uri: &'a str, parent: &Source) -> Result<NewPodcast> {
         let chan = Channel::from_url(uri)?;
-        let foo = ::parse_feeds::parse_podcast(&chan, parent.id())?;
+        let foo = ::feedparser::parse_podcast(&chan, parent.id())?;
         Ok(foo)
     }
 }
