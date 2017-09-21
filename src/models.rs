@@ -7,7 +7,7 @@ use reqwest::header::{ETag, LastModified};
 use schema::{episode, podcast, source};
 use errors::*;
 
-#[derive(Queryable, Identifiable)]
+#[derive(Queryable, Identifiable, AsChangeset)]
 #[derive(Associations)]
 #[table_name = "episode"]
 #[belongs_to(Podcast, foreign_key = "podcast_id")]
@@ -23,6 +23,82 @@ pub struct Episode {
     length: Option<i32>,
     guid: Option<String>,
     podcast_id: i32,
+}
+
+impl Episode {
+    pub fn id(&self) -> i32 {
+        self.id
+    }
+
+    // FIXME: Return &str instead of String
+    pub fn title(self) -> Option<String> {
+        self.title
+    }
+
+    pub fn set_title(&mut self, value: Option<String>) {
+        self.title = value;
+    }
+
+    // FIXME: Return &str instead of String
+    pub fn uri(self) -> Option<String> {
+        self.uri
+    }
+
+    pub fn set_uri(&mut self, value: Option<String>) {
+        self.uri = value;
+    }
+
+    // FIXME: Return &str instead of String
+    pub fn local_uri(self) -> Option<String> {
+        self.local_uri
+    }
+
+    pub fn set_local_uri(&mut self, value: Option<String>) {
+        self.local_uri = value;
+    }
+
+    // FIXME: Return &str instead of String
+    pub fn description(self) -> Option<String> {
+        self.description
+    }
+
+    pub fn set_description(&mut self, value: Option<String>) {
+        self.description = value;
+    }
+
+    // FIXME: Return &str instead of String
+    pub fn published_date(self) -> Option<String> {
+        self.published_date
+    }
+
+    pub fn set_published_date(&mut self, value: Option<String>) {
+        self.published_date = value;
+    }
+
+    // FIXME: Return &str instead of String
+    pub fn guid(self) -> Option<String> {
+        self.guid
+    }
+
+    pub fn set_guid(&mut self, value: Option<String>) {
+        self.guid = value;
+    }
+
+    pub fn epoch(&self) -> Option<i32> {
+        self.epoch
+    }
+
+    pub fn set_epoch(&mut self, value: Option<i32>) {
+        self.epoch = value;
+    }
+
+    pub fn length(&self) -> Option<i32> {
+        self.length
+    }
+
+    pub fn set_length(&mut self, value: Option<i32>) {
+        self.length = value;
+    }
 }
 
 #[derive(Queryable, Identifiable, AsChangeset)]
@@ -42,6 +118,10 @@ pub struct Podcast {
 impl Podcast {
     pub fn id(&self) -> i32 {
         self.id
+    }
+
+    pub fn title(&self) -> &str {
+        &self.title
     }
 
     pub fn link(&self) -> &str {

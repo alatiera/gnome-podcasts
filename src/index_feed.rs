@@ -6,7 +6,7 @@ use schema;
 use dbqueries;
 use feedparser;
 use errors::*;
-use models::{NewEpisode, NewSource, Source, Podcast};
+use models::{NewEpisode, NewSource, Source, Podcast, Episode};
 
 pub fn foo() {
     let inpt = vec![
@@ -35,6 +35,7 @@ fn insert_source(con: &SqliteConnection, url: &str) -> Result<()> {
 
     match dbqueries::load_source(con, foo.uri) {
         Ok(mut bar) => {
+            // TODO: Cmp first before replacing
             // FIXME: NewSource has None values for etag, and last_mod atm
             // bar.set_http_etag(foo.http_etag.map(|x| x.to_string()));
             // bar.set_last_modified(foo.last_modified.map(|x| x.to_string()));
@@ -54,11 +55,12 @@ fn index_podcast(con: &SqliteConnection, channel: &rss::Channel, parent: &Source
     let pd = feedparser::parse_podcast(channel, parent.id())?;
 
     match dbqueries::load_podcast(con, &pd.title) {
-        Ok(mut bar) => {
-            bar.set_link(pd.link);
-            bar.set_description(pd.description);
-            bar.set_image_uri(pd.image_uri.map(|x| x.to_string()));
-            bar.save_changes::<Podcast>(con)?;
+        Ok(mut foo) => {
+            // TODO: Cmp first before replacing
+            foo.set_link(pd.link);
+            foo.set_description(pd.description);
+            foo.set_image_uri(pd.image_uri.map(|x| x.to_string()));
+            foo.save_changes::<Podcast>(con)?;
         } 
         Err(_) => {
             diesel::insert(&pd).into(schema::podcast::table).execute(
@@ -70,6 +72,29 @@ fn index_podcast(con: &SqliteConnection, channel: &rss::Channel, parent: &Source
     Ok(())
 }
 
+fn index_episode(con: &SqliteConnection, item: &rss::Item, parent: &Podcast) -> Result<()> {
+    let ep = feedparser::parse_episode(item, parent.id())?;
+
+    match dbqueries::load_episode(con, &ep.uri.unwrap()) {
+        Ok(mut foo) => {
+            // TODO: Cmp first before replacing
+            foo.set_title(ep.title.map(|x| x.to_string()));
+            foo.set_description(ep.description.map(|x| x.to_string()));
+            foo.set_published_date(ep.published_date.map(|x| x.to_string()));
+            foo.set_guid(ep.guid.map(|x| x.to_string()));
+            foo.set_length(ep.length);
+            foo.set_epoch(ep.length);
+            foo.save_changes::<Episode>(con)?;
+        } 
+        Err(_) => {
+            diesel::insert(&ep).into(schema::episode::table).execute(
+                con,
+            )?;
+        }
+    }
+
+    Ok(())
+}
 
 pub fn index_loop(db: SqliteConnection) -> Result<()> {
     // let db = ::establish_connection();
@@ -83,27 +108,17 @@ pub fn index_loop(db: SqliteConnection) -> Result<()> {
         // This method will defently get split and nuked
         // but for now its poc
         let chan = feed.get_podcast_chan(&db)?;
-        let pd = feedparser::parse_podcast(&chan, feed.id())?;
 
         index_podcast(&db, &chan, &feed)?;
 
-        // TODO: Separate the insert/update logic
-        // diesel::insert_or_replace(&pd)
-        //     .into(schema::podcast::table)
-        //     .execute(&db)?;
+        // Ignore this for the moment
+        let p = feedparser::parse_podcast(&chan, feed.id())?;
+        let pd = dbqueries::load_podcast(&db, &p.title)?;
 
-        // Holy shit this works!
-        let episodes: Vec<_> = chan.items()
+        let _: Vec<_> = chan.items()
             .iter()
-            .map(|x| feedparser::parse_episode(x, feed.id()).unwrap())
+            .map(|x| index_episode(&db, &x, &pd))
             .collect();
-
-        // lazy invoking the compiler to check for the Vec type :3
-        // let first: &NewEpisode = episodes.first().unwrap();
-
-        diesel::insert_or_replace(&episodes)
-            .into(schema::episode::table)
-            .execute(&db)?;
 
         info!("{:#?}", pd);
         // info!("{:#?}", episodes);
