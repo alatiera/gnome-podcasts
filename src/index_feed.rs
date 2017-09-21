@@ -1,9 +1,12 @@
 use diesel::prelude::*;
 use diesel;
+use rss;
+
 use schema;
 use dbqueries;
+use feedparser;
 use errors::*;
-use models::{NewEpisode, NewSource, Source};
+use models::{NewEpisode, NewSource, Source, Podcast};
 
 pub fn foo() {
     let inpt = vec![
@@ -27,17 +30,39 @@ pub fn foo() {
     index_loop(db).unwrap();
 }
 
-fn insert_source(connection: &SqliteConnection, url: &str) -> Result<()> {
+fn insert_source(con: &SqliteConnection, url: &str) -> Result<()> {
     let foo = NewSource::new_with_uri(url);
 
-    match dbqueries::load_source(connection, foo.uri) {
+    match dbqueries::load_source(con, foo.uri) {
         Ok(mut bar) => {
-            bar.set_http_etag(foo.http_etag.map(|x| x.to_string()));
-            bar.set_last_modified(foo.last_modified.map(|x| x.to_string()));
+            // FIXME: NewSource has None values for etag, and last_mod atm
+            // bar.set_http_etag(foo.http_etag.map(|x| x.to_string()));
+            // bar.set_last_modified(foo.last_modified.map(|x| x.to_string()));
+            // bar.save_changes::<Source>(con)?;
         }
         Err(_) => {
             diesel::insert(&foo).into(schema::source::table).execute(
-                connection,
+                con,
+            )?;
+        }
+    }
+
+    Ok(())
+}
+
+fn index_podcast(con: &SqliteConnection, channel: &rss::Channel, parent: &Source) -> Result<()> {
+    let pd = feedparser::parse_podcast(channel, parent.id())?;
+
+    match dbqueries::load_podcast(con, &pd.title) {
+        Ok(mut bar) => {
+            bar.set_link(pd.link);
+            bar.set_description(pd.description);
+            bar.set_image_uri(pd.image_uri.map(|x| x.to_string()));
+            bar.save_changes::<Podcast>(con)?;
+        } 
+        Err(_) => {
+            diesel::insert(&pd).into(schema::podcast::table).execute(
+                con,
             )?;
         }
     }
@@ -60,10 +85,12 @@ pub fn index_loop(db: SqliteConnection) -> Result<()> {
         let chan = feed.get_podcast_chan(&db)?;
         let pd = feedparser::parse_podcast(&chan, feed.id())?;
 
+        index_podcast(&db, &chan, &feed)?;
+
         // TODO: Separate the insert/update logic
-        diesel::insert_or_replace(&pd)
-            .into(schema::podcast::table)
-            .execute(&db)?;
+        // diesel::insert_or_replace(&pd)
+        //     .into(schema::podcast::table)
+        //     .execute(&db)?;
 
         // Holy shit this works!
         let episodes: Vec<_> = chan.items()

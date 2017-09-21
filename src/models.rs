@@ -25,7 +25,7 @@ pub struct Episode {
     podcast_id: i32,
 }
 
-#[derive(Queryable, Identifiable)]
+#[derive(Queryable, Identifiable, AsChangeset)]
 #[derive(Associations)]
 #[belongs_to(Source, foreign_key = "source_id")]
 #[table_name = "podcast"]
@@ -37,6 +37,36 @@ pub struct Podcast {
     description: String,
     image_uri: Option<String>,
     source_id: i32,
+}
+
+impl Podcast {
+    pub fn id(&self) -> i32 {
+        self.id
+    }
+
+    pub fn link(&self) -> &str {
+        &self.link
+    }
+
+    pub fn set_link(&mut self, value: String) {
+        self.link = value;
+    }
+
+    pub fn description(&self) -> &str {
+        &self.description
+    }
+
+    pub fn set_description(&mut self, value: String) {
+        self.description = value;
+    }
+
+    pub fn image_uri(self) -> Option<String> {
+        self.image_uri
+    }
+
+    pub fn set_image_uri(&mut self, value: Option<String>) {
+        self.image_uri = value;
+    }
 }
 
 #[derive(Queryable, Identifiable, AsChangeset)]
