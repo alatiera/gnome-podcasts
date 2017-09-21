@@ -30,9 +30,17 @@ pub fn foo() {
 fn insert_source(connection: &SqliteConnection, url: &str) -> Result<()> {
     let foo = NewSource::new_with_uri(url);
 
-    diesel::insert_or_replace(&foo)
-        .into(schema::source::table)
-        .execute(connection)?;
+    match dbqueries::load_source(connection, foo.uri) {
+        Ok(mut bar) => {
+            bar.set_http_etag(foo.http_etag.map(|x| x.to_string()));
+            bar.set_last_modified(foo.last_modified.map(|x| x.to_string()));
+        }
+        Err(_) => {
+            diesel::insert(&foo).into(schema::source::table).execute(
+                connection,
+            )?;
+        }
+    }
 
     Ok(())
 }

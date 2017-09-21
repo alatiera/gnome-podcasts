@@ -62,8 +62,16 @@ impl<'a> Source {
         self.last_modified
     }
 
+    pub fn set_last_modified(&mut self, value: Option<String>) {
+        self.last_modified = value;
+    }
+
     pub fn http_etag(self) -> Option<String> {
         self.http_etag
+    }
+
+    pub fn set_http_etag(&mut self, value: Option<String>) {
+        self.http_etag = value;
     }
 
     /// Fetch the xml feed from the source url, update the etag headers,

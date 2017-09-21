@@ -1,6 +1,12 @@
 use diesel::prelude::*;
-use schema::source::dsl::*;
 use models::{Podcast, Episode, Source};
+
+pub fn get_sources(con: &SqliteConnection) -> QueryResult<Vec<Source>> {
+    use schema::source::dsl::*;
+
+    let s = source.load::<Source>(con);
+    s
+}
 
 pub fn get_podcasts(con: &SqliteConnection, parent: &Source) -> QueryResult<Vec<Podcast>> {
     let pds = Podcast::belonging_to(parent).load::<Podcast>(con);
@@ -13,7 +19,23 @@ pub fn get_pd_episodes(con: &SqliteConnection, parent: &Podcast) -> QueryResult<
     eps
 }
 
- pub fn get_sources(con: &SqliteConnection) -> QueryResult<Vec<Source>>{
-     let s = source.load::<Source>(con);
-     s
- }
+pub fn load_source(con: &SqliteConnection, uri_: &str) -> QueryResult<Source> {
+    use schema::source::dsl::*;
+
+    let s = source.filter(uri.eq(uri_)).get_result::<Source>(con);
+    s
+}
+
+pub fn load_podcast(con: &SqliteConnection, title_: &str) -> QueryResult<Podcast> {
+    use schema::podcast::dsl::*;
+
+    let pd = podcast.filter(title.eq(title_)).get_result::<Podcast>(con);
+    pd
+}
+
+pub fn load_episode(con: &SqliteConnection, uri_: &str) -> QueryResult<Episode> {
+    use schema::episode::dsl::*;
+
+    let ep = episode.filter(uri.eq(uri_)).get_result::<Episode>(con);
+    ep
+}
