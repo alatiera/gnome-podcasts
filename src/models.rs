@@ -30,54 +30,48 @@ impl Episode {
         self.id
     }
 
-    // FIXME: Return &str instead of String
-    pub fn title(self) -> Option<String> {
-        self.title
+    pub fn title(&self) -> Option<&str> {
+        self.title.as_ref().map(|s| s.as_str())
     }
 
     pub fn set_title(&mut self, value: Option<String>) {
         self.title = value;
     }
 
-    // FIXME: Return &str instead of String
-    pub fn uri(self) -> Option<String> {
-        self.uri
+    pub fn uri(&self) -> Option<&str> {
+        self.uri.as_ref().map(|s| s.as_str())
     }
 
     pub fn set_uri(&mut self, value: Option<String>) {
         self.uri = value;
     }
 
-    // FIXME: Return &str instead of String
-    pub fn local_uri(self) -> Option<String> {
-        self.local_uri
+    pub fn local_uri(&self) -> Option<&str> {
+        self.local_uri.as_ref().map(|s| s.as_str())
     }
 
     pub fn set_local_uri(&mut self, value: Option<String>) {
         self.local_uri = value;
     }
 
-    // FIXME: Return &str instead of String
-    pub fn description(self) -> Option<String> {
-        self.description
+    pub fn description(&self) -> Option<&str> {
+        self.description.as_ref().map(|s| s.as_str())
     }
 
     pub fn set_description(&mut self, value: Option<String>) {
         self.description = value;
     }
 
-    // FIXME: Return &str instead of String
-    pub fn published_date(self) -> Option<String> {
-        self.published_date
+    pub fn published_date(&self) -> Option<&str> {
+        self.published_date.as_ref().map(|s| s.as_str())
     }
 
     pub fn set_published_date(&mut self, value: Option<String>) {
         self.published_date = value;
     }
 
-    // FIXME: Return &str instead of String
-    pub fn guid(self) -> Option<String> {
-        self.guid
+    pub fn guid(&self) -> Option<&str> {
+        self.guid.as_ref().map(|s| s.as_str())
     }
 
     pub fn set_guid(&mut self, value: Option<String>) {
@@ -140,8 +134,8 @@ impl Podcast {
         self.description = value;
     }
 
-    pub fn image_uri(self) -> Option<String> {
-        self.image_uri
+    pub fn image_uri(&self) -> Option<&str> {
+        self.image_uri.as_ref().map(|s| s.as_str())
     }
 
     pub fn set_image_uri(&mut self, value: Option<String>) {
@@ -168,16 +162,16 @@ impl<'a> Source {
         &self.uri
     }
 
-    pub fn last_modified(self) -> Option<String> {
-        self.last_modified
+    pub fn last_modified(&self) -> Option<&str> {
+        self.last_modified.as_ref().map(|s| s.as_str())
     }
 
     pub fn set_last_modified(&mut self, value: Option<String>) {
         self.last_modified = value;
     }
 
-    pub fn http_etag(self) -> Option<String> {
-        self.http_etag
+    pub fn http_etag(&self) -> Option<&str> {
+        self.http_etag.as_ref().map(|s| s.as_str())
     }
 
     pub fn set_http_etag(&mut self, value: Option<String>) {
@@ -185,37 +179,30 @@ impl<'a> Source {
     }
 
     /// Fetch the xml feed from the source url, update the etag headers,
-    /// and parse the feed into an rss:Channel and return it.
+    /// parse the feed into an rss:Channel and return it.
     pub fn get_podcast_chan(&mut self, con: &SqliteConnection) -> Result<Channel> {
         use std::io::Read;
         use std::str::FromStr;
 
         let mut req = reqwest::get(&self.uri)?;
+        self.update_etag(con, &req)?;
 
         let mut buf = String::new();
-        req.read_to_string(&mut buf)?;
         // info!("{}", buf);
+        req.read_to_string(&mut buf)?;
+        let chan = Channel::from_str(&buf)?;
+
+        Ok(chan)
+    }
+
+    fn update_etag(&mut self, con: &SqliteConnection, req: &reqwest::Response) -> Result<()> {
 
         let headers = req.headers();
         debug!("{:#?}", headers);
 
         // let etag = headers.get_raw("ETag").unwrap();
         let etag = headers.get::<ETag>();
-        let lst_mod = headers.get::<LastModified>();
-        self.update(con, etag, lst_mod)?;
-
-        let chan = Channel::from_str(&buf)?;
-        // let foo = ::feedparser::parse_podcast(&chan, self.id())?;
-
-        Ok(chan)
-    }
-
-    pub fn update(
-        &mut self,
-        con: &SqliteConnection,
-        etag: Option<&ETag>,
-        lmod: Option<&LastModified>,
-    ) -> Result<()> {
+        let lmod = headers.get::<LastModified>();
 
         self.http_etag = etag.map(|x| x.tag().to_string().to_owned());
         self.last_modified = lmod.map(|x| format!("{}", x));
