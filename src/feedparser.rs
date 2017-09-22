@@ -50,7 +50,15 @@ pub fn parse_episode<'a>(item: &'a Item, parent_id: i32) -> Result<models::NewEp
     let epoch = match pub_date{
         Some(foo) => {
             // info!("{}", foo);
-            let date = DateTime::parse_from_rfc2822(foo);
+            // let date = DateTime::parse_from_rfc2822(&foo);
+
+            // rss::Item::pub_date() returns dates formated according to rfc822
+            // But, chrono::DateTime has support only for rfc2822 or rfc3339 atm.
+            // FIXME: Figure out the format sequence of rfc822.
+            // This is the closest I got it,
+            // its also a direct copy of the sequence of rfc2822.
+            let date = DateTime::parse_from_str(&foo, "%a, %e %b %Y %H:%M:%S %z");
+
             match date {
                 Ok(bar) => bar.timestamp() as i32,
                 Err(baz) => {
@@ -181,6 +189,7 @@ mod tests {
         assert_eq!(i.length, Some(66738886));
         assert_eq!(i.guid, Some("7df4070a-9832-11e7-adac-cb37b05d5e24"));
         assert_eq!(i.published_date, Some("Wed, 13 Sep 2017 10:00:00 -0000"));
+        assert_eq!(i.epoch, 1505296800);
 
         let second = channel.items().iter().nth(1).unwrap();
         let i2 = parse_episode(&second, 0).unwrap();
@@ -197,6 +206,7 @@ mod tests {
         assert_eq!(i2.length, Some(67527575));
         assert_eq!(i2.guid, Some("7c207a24-e33f-11e6-9438-eb45dcf36a1d"));
         assert_eq!(i2.published_date, Some("Wed, 09 Aug 2017 10:00:00 -0000"));
+        assert_eq!(i2.epoch, 1502272800);
     }
 
     #[test]
@@ -227,6 +237,7 @@ mod tests {
             )
         );
         assert_eq!(i.published_date, Some("Wed, 20 Sep 2017 19:56:00 +0000"));
+        // assert_eq!(i.epoch, 1505280282);
 
         let second = channel.items().iter().nth(1).unwrap();
         // println!("{:#?}", second);
@@ -250,6 +261,7 @@ mod tests {
             )
         );
         assert_eq!(i2.published_date, Some("Tue, 19 Sep 2017 10:00:00 +0000"));
+        // assert_eq!(i.epoch, 1505280282);
     }
 
     #[test]
@@ -272,6 +284,7 @@ mod tests {
         assert_eq!(i.length, Some(46479789));
         assert_eq!(i.guid, Some("78A682B4-73E8-47B8-88C0-1BE62DD4EF9D"));
         assert_eq!(i.published_date, Some("Tue, 12 Sep 2017 22:24:42 -0700"));
+        assert_eq!(i.epoch, 1505280282);
 
         let second = channel.items().iter().nth(1).unwrap();
         let i2 = parse_episode(&second, 0).unwrap();
@@ -290,6 +303,7 @@ mod tests {
         assert_eq!(i2.length, Some(36544272));
         assert_eq!(i2.guid, Some("1CE57548-B36C-4F14-832A-5D5E0A24E35B"));
         assert_eq!(i2.published_date, Some("Tue, 05 Sep 2017 20:57:27 -0700"));
+        assert_eq!(i2.epoch, 1504670247);
     }
 
     #[test]
