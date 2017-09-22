@@ -27,7 +27,6 @@ pub fn parse_podcast(chan: &Channel, source_id: i32) -> Result<models::NewPodcas
     Ok(foo)
 }
 
-// This is also an initial prototype mess.
 pub fn parse_episode<'a>(item: &'a Item, parent_id: i32) -> Result<models::NewEpisode<'a>> {
 
     let title = item.title();
@@ -47,11 +46,23 @@ pub fn parse_episode<'a>(item: &'a Item, parent_id: i32) -> Result<models::NewEp
     let local_uri = None;
 
     let pub_date = item.pub_date();
-    let date = DateTime::parse_from_rfc2822(&pub_date.unwrap())?;
-    // info!("{}", date);
 
-    let epoch = date.timestamp() as i32;
-    // info!("{}", epoch);
+    let epoch = match pub_date{
+        Some(foo) => {
+            // info!("{}", foo);
+            let date = DateTime::parse_from_rfc2822(foo);
+            match date {
+                Ok(bar) => bar.timestamp() as i32,
+                Err(baz) => {
+                    error!("Error while trying to parse \"{}\" as date.", foo);
+                    error!("{}", baz);
+                    debug!("Falling back to default 0");
+                    0
+                }
+            }
+        }
+        _ => 0
+    };
 
     let length = item.enclosure().map(|x| x.length().parse().unwrap_or_default());
 

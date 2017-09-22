@@ -12,7 +12,7 @@ pub fn foo() {
     let inpt = vec![
         "https://request-for-explanation.github.io/podcast/rss.xml",
         "https://feeds.feedburner.com/InterceptedWithJeremyScahill",
-        "http://feeds.propublica.org/propublica/main",
+        "http://feeds.propublica.org/propublica/podcast",
         "http://feeds.feedburner.com/linuxunplugged",
     ];
 
