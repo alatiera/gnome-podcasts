@@ -19,7 +19,7 @@ pub struct Episode {
     local_uri: Option<String>,
     description: Option<String>,
     published_date: Option<String>,
-    epoch: Option<i32>,
+    epoch: i32,
     length: Option<i32>,
     guid: Option<String>,
     podcast_id: i32,
@@ -78,11 +78,11 @@ impl Episode {
         self.guid = value.map(|x| x.to_string());
     }
 
-    pub fn epoch(&self) -> Option<i32> {
+    pub fn epoch(&self) -> i32 {
         self.epoch
     }
 
-    pub fn set_epoch(&mut self, value: Option<i32>) {
+    pub fn set_epoch(&mut self, value: i32) {
         self.epoch = value;
     }
 

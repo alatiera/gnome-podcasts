@@ -12,7 +12,7 @@ CREATE TABLE `episode` (
 	`local_uri`	TEXT,
 	`description`	TEXT,
 	`published_date` TEXT ,
-	`epoch`	INTEGER,
+	`epoch`	INTEGER NOT NULL DEFAULT 0,
 	`length`	INTEGER,
 	`guid`	TEXT,
 	`podcast_id`	INTEGER NOT NULL

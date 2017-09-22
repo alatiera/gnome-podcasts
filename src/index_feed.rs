@@ -87,7 +87,7 @@ fn index_episode(con: &SqliteConnection, item: &rss::Item, parent: &Podcast) -> 
             foo.set_published_date(ep.published_date);
             foo.set_guid(ep.guid);
             foo.set_length(ep.length);
-            foo.set_epoch(ep.length);
+            foo.set_epoch(ep.epoch);
             foo.save_changes::<Episode>(con)?;
         } 
         Err(_) => {

@@ -1,4 +1,5 @@
 use rss::{Channel, Item};
+use chrono::DateTime;
 use models;
 use errors::*;
 
@@ -46,12 +47,13 @@ pub fn parse_episode<'a>(item: &'a Item, parent_id: i32) -> Result<models::NewEp
     let local_uri = None;
 
     let pub_date = item.pub_date();
+    let date = DateTime::parse_from_rfc2822(&pub_date.unwrap())?;
+    // info!("{}", date);
 
-    // FIXME: parse pub_date to epoch later
-    let epoch = 0;
+    let epoch = date.timestamp() as i32;
+    // info!("{}", epoch);
 
-    // let length = Some(item.enclosure().unwrap().length().parse().unwrap());
-    let length = item.enclosure().map(|x| x.length().parse().unwrap());
+    let length = item.enclosure().map(|x| x.length().parse().unwrap_or_default());
 
     let foo = models::NewEpisode {
         title,

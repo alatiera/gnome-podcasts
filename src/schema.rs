@@ -6,7 +6,7 @@ table! {
         local_uri -> Nullable<Text>,
         description -> Nullable<Text>,
         published_date -> Nullable<Text>,
-        epoch -> Nullable<Integer>,
+        epoch -> Integer,
         length -> Nullable<Integer>,
         guid -> Nullable<Text>,
         podcast_id -> Integer,
