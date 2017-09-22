@@ -34,48 +34,48 @@ impl Episode {
         self.title.as_ref().map(|s| s.as_str())
     }
 
-    pub fn set_title(&mut self, value: Option<String>) {
-        self.title = value;
+    pub fn set_title(&mut self, value: Option<&str>) {
+        self.title = value.map(|x| x.to_string());
     }
 
     pub fn uri(&self) -> Option<&str> {
         self.uri.as_ref().map(|s| s.as_str())
     }
 
-    pub fn set_uri(&mut self, value: Option<String>) {
-        self.uri = value;
+    pub fn set_uri(&mut self, value: Option<&str>) {
+        self.uri = value.map(|x| x.to_string());
     }
 
     pub fn local_uri(&self) -> Option<&str> {
         self.local_uri.as_ref().map(|s| s.as_str())
     }
 
-    pub fn set_local_uri(&mut self, value: Option<String>) {
-        self.local_uri = value;
+    pub fn set_local_uri(&mut self, value: Option<&str>) {
+        self.local_uri = value.map(|x| x.to_string());
     }
 
     pub fn description(&self) -> Option<&str> {
         self.description.as_ref().map(|s| s.as_str())
     }
 
-    pub fn set_description(&mut self, value: Option<String>) {
-        self.description = value;
+    pub fn set_description(&mut self, value: Option<&str>) {
+        self.description = value.map(|x| x.to_string());
     }
 
     pub fn published_date(&self) -> Option<&str> {
         self.published_date.as_ref().map(|s| s.as_str())
     }
 
-    pub fn set_published_date(&mut self, value: Option<String>) {
-        self.published_date = value;
+    pub fn set_published_date(&mut self, value: Option<&str>) {
+        self.published_date = value.map(|x| x.to_string());
     }
 
     pub fn guid(&self) -> Option<&str> {
         self.guid.as_ref().map(|s| s.as_str())
     }
 
-    pub fn set_guid(&mut self, value: Option<String>) {
-        self.guid = value;
+    pub fn set_guid(&mut self, value: Option<&str>) {
+        self.guid = value.map(|x| x.to_string());
     }
 
     pub fn epoch(&self) -> Option<i32> {
@@ -122,24 +122,24 @@ impl Podcast {
         &self.link
     }
 
-    pub fn set_link(&mut self, value: String) {
-        self.link = value;
+    pub fn set_link(&mut self, value: &str) {
+        self.link = value.to_string();
     }
 
     pub fn description(&self) -> &str {
         &self.description
     }
 
-    pub fn set_description(&mut self, value: String) {
-        self.description = value;
+    pub fn set_description(&mut self, value: &str) {
+        self.description = value.to_string();
     }
 
     pub fn image_uri(&self) -> Option<&str> {
         self.image_uri.as_ref().map(|s| s.as_str())
     }
 
-    pub fn set_image_uri(&mut self, value: Option<String>) {
-        self.image_uri = value;
+    pub fn set_image_uri(&mut self, value: Option<&str>) {
+        self.image_uri = value.map(|x| x.to_string());
     }
 }
 
@@ -166,16 +166,16 @@ impl<'a> Source {
         self.last_modified.as_ref().map(|s| s.as_str())
     }
 
-    pub fn set_last_modified(&mut self, value: Option<String>) {
-        self.last_modified = value;
+    pub fn set_last_modified(&mut self, value: Option<&str>) {
+        self.last_modified = value.map(|x| x.to_string());
     }
 
     pub fn http_etag(&self) -> Option<&str> {
         self.http_etag.as_ref().map(|s| s.as_str())
     }
 
-    pub fn set_http_etag(&mut self, value: Option<String>) {
-        self.http_etag = value;
+    pub fn set_http_etag(&mut self, value: Option<&str>) {
+        self.http_etag = value.map(|x| x.to_string());
     }
 
     /// Fetch the xml feed from the source url, update the etag headers,
@@ -195,6 +195,7 @@ impl<'a> Source {
         Ok(chan)
     }
 
+    /// Extract Etag and LastModifier from req, and update self and the corresponding db row.
     fn update_etag(&mut self, con: &SqliteConnection, req: &reqwest::Response) -> Result<()> {
 
         let headers = req.headers();
@@ -260,10 +261,8 @@ pub struct NewPodcast {
     pub source_id: i32,
 }
 
-impl<'a> NewPodcast {
-    // pub fn new(parent: &Source) {}
-
-    pub fn from_url(uri: &'a str, parent: &Source) -> Result<NewPodcast> {
+impl NewPodcast {
+    pub fn from_url(uri: &str, parent: &Source) -> Result<NewPodcast> {
         let chan = Channel::from_url(uri)?;
         let foo = ::feedparser::parse_podcast(&chan, parent.id())?;
         Ok(foo)

@@ -37,8 +37,8 @@ fn insert_source(con: &SqliteConnection, url: &str) -> Result<Source> {
         Ok(mut bar) => {
             // TODO: Cmp first before replacing
             // FIXME: NewSource has None values for etag, and last_mod atm
-            // bar.set_http_etag(foo.http_etag.map(|x| x.to_string()));
-            // bar.set_last_modified(foo.last_modified.map(|x| x.to_string()));
+            // bar.set_http_etag(foo.http_etag);
+            // bar.set_last_modified(foo.last_modified);
             // bar.save_changes::<Source>(con)?;
         }
         Err(_) => {
@@ -61,11 +61,11 @@ fn index_podcast(
     match dbqueries::load_podcast(con, &pd.title) {
         Ok(mut foo) => {
             // TODO: Cmp first before replacing
-            foo.set_link(pd.link);
-            foo.set_description(pd.description);
-            foo.set_image_uri(pd.image_uri.map(|x| x.to_string()));
+            foo.set_link(&pd.link);
+            foo.set_description(&pd.description);
+            foo.set_image_uri(pd.image_uri.as_ref().map(|s| s.as_str()));
             foo.save_changes::<Podcast>(con)?;
-        } 
+        }
         Err(_) => {
             diesel::insert(&pd).into(schema::podcast::table).execute(
                 con,
@@ -82,10 +82,10 @@ fn index_episode(con: &SqliteConnection, item: &rss::Item, parent: &Podcast) -> 
     match dbqueries::load_episode(con, &ep.uri.unwrap()) {
         Ok(mut foo) => {
             // TODO: Cmp first before replacing
-            foo.set_title(ep.title.map(|x| x.to_string()));
-            foo.set_description(ep.description.map(|x| x.to_string()));
-            foo.set_published_date(ep.published_date.map(|x| x.to_string()));
-            foo.set_guid(ep.guid.map(|x| x.to_string()));
+            foo.set_title(ep.title);
+            foo.set_description(ep.description);
+            foo.set_published_date(ep.published_date);
+            foo.set_guid(ep.guid);
             foo.set_length(ep.length);
             foo.set_epoch(ep.length);
             foo.save_changes::<Episode>(con)?;
