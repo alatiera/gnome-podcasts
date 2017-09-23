@@ -101,7 +101,11 @@ mod tests {
         let file = File::open("tests/feeds/Intercepted.xml").unwrap();
         let channel = Channel::read_from(BufReader::new(file)).unwrap();
 
-        let descr = "The people behind The Intercept’s fearless reporting and incisive commentary—Jeremy Scahill, Glenn Greenwald, Betsy Reed and others—discuss the crucial issues of our time: national security, civil liberties, foreign policy, and criminal justice.  Plus interviews with artists, thinkers, and newsmakers who challenge our preconceptions about the world we live in.";
+        let descr = "The people behind The Intercept’s fearless reporting and incisive \
+                     commentary—Jeremy Scahill, Glenn Greenwald, Betsy Reed and others—discuss \
+                     the crucial issues of our time: national security, civil liberties, foreign \
+                     policy, and criminal justice.  Plus interviews with artists, thinkers, and \
+                     newsmakers who challenge our preconceptions about the world we live in.";
         let pd = parse_podcast(&channel, 0).unwrap();
 
         assert_eq!(pd.title, "Intercepted with Jeremy Scahill".to_string());
@@ -115,7 +119,9 @@ mod tests {
         let file = File::open("tests/feeds/TheBreakthrough.xml").unwrap();
         let channel = Channel::read_from(BufReader::new(file)).unwrap();
 
-        let descr = "Latest Articles and Investigations from ProPublica, an independent, non-profit newsroom that produces investigative journalism in the public interest.";
+        let descr = "Latest Articles and Investigations from ProPublica, an independent, \
+                     non-profit newsroom that produces investigative journalism in the public \
+                     interest.";
         let pd = parse_podcast(&channel, 0).unwrap();
 
         assert_eq!(pd.title, "The Breakthrough".to_string());
@@ -129,7 +135,9 @@ mod tests {
         let file = File::open("tests/feeds/LinuxUnplugged.xml").unwrap();
         let channel = Channel::read_from(BufReader::new(file)).unwrap();
 
-        let descr = "An open show powered by community LINUX Unplugged takes the best attributes of open collaboration and focuses them into a weekly lifestyle show about Linux.";
+        let descr = "An open show powered by community LINUX Unplugged takes the best attributes \
+                     of open collaboration and focuses them into a weekly lifestyle show about \
+                     Linux.";
         let pd = parse_podcast(&channel, 0).unwrap();
 
         assert_eq!(pd.title, "LINUX Unplugged Podcast".to_string());
@@ -167,7 +175,11 @@ mod tests {
         let channel = Channel::read_from(BufReader::new(file)).unwrap();
 
         let firstitem = channel.items().first().unwrap();
-        let descr = "NSA whistleblower Edward Snowden discusses the massive Equifax data breach and allegations of Russian interference in the US election. Commentator Shaun King explains his call for a boycott of the NFL and talks about his campaign to bring violent neo-Nazis to justice. Rapper Open Mike Eagle performs.";
+        let descr = "NSA whistleblower Edward Snowden discusses the massive Equifax data breach \
+                     and allegations of Russian interference in the US election. Commentator \
+                     Shaun King explains his call for a boycott of the NFL and talks about his \
+                     campaign to bring violent neo-Nazis to justice. Rapper Open Mike Eagle \
+                     performs.";
         let i = parse_episode(&firstitem, 0).unwrap();
 
         assert_eq!(i.title, Some("The Super Bowl of Racism"));
@@ -181,7 +193,14 @@ mod tests {
         let second = channel.items().iter().nth(1).unwrap();
         let i2 = parse_episode(&second, 0).unwrap();
 
-        let descr2 = "This week on Intercepted: Jeremy gives an update on the aftermath of Blackwater’s 2007 massacre of Iraqi civilians. Intercept reporter Lee Fang lays out how a network of libertarian think tanks called the Atlas Network is insidiously shaping political infrastructure in Latin America. We speak with attorney and former Hugo Chavez adviser Eva Golinger about the Venezuela\'s political turmoil.And we hear Claudia Lizardo of the Caracas-based band, La Pequeña Revancha, talk about her music and hopes for Venezuela.";
+        let descr2 = "This week on Intercepted: Jeremy gives an update on the aftermath of \
+                      Blackwater’s 2007 massacre of Iraqi civilians. Intercept reporter Lee Fang \
+                      lays out how a network of libertarian think tanks called the Atlas Network \
+                      is insidiously shaping political infrastructure in Latin America. We speak \
+                      with attorney and former Hugo Chavez adviser Eva Golinger about the \
+                      Venezuela\'s political turmoil.And we hear Claudia Lizardo of the \
+                      Caracas-based band, La Pequeña Revancha, talk about her music and hopes for \
+                      Venezuela.";
         assert_eq!(
             i2.title,
             Some("Atlas Golfed — U.S.-Backed Think Tanks Target Latin America",)
@@ -200,10 +219,10 @@ mod tests {
         let channel = Channel::read_from(BufReader::new(file)).unwrap();
 
         let firstitem = channel.items().first().unwrap();
-        let descr = "
-                               <p>A reporter finds that homes meant to replace New York’s troubled psychiatric hospitals might be just as bad.</p>
-                
-            ";
+        let descr = "\n                               \
+                     <p>A reporter finds that homes meant to replace New York’s troubled \
+                     psychiatric hospitals might be just as bad.</p>\
+                     \n                \n            ";
         let i = parse_episode(&firstitem, 0).unwrap();
 
         assert_eq!(
@@ -219,7 +238,8 @@ mod tests {
         assert_eq!(
             i.guid,
             Some(
-                "https://www.propublica.org/podcast/the-breakthrough-hopelessness-exploitation-homes-for-mentally-ill#134472",
+                "https://www.propublica.org/podcast/\
+                 the-breakthrough-hopelessness-exploitation-homes-for-mentally-ill#134472",
             )
         );
         assert_eq!(i.published_date, Some("Fri, 08 Sep 2017 12:00:00 +0000"));
@@ -227,10 +247,11 @@ mod tests {
 
         let second = channel.items().iter().nth(1).unwrap();
         let i2 = parse_episode(&second, 0).unwrap();
-        let descr2 = "
-                               <p>Jonathan Allen and Amie Parnes didn’t know their book would be called ‘Shattered,’ or that their extraordinary access would let them chronicle the mounting signs of a doomed campaign.</p>
-                
-            ";
+        let descr2 = "\n                               \
+                      <p>Jonathan Allen and Amie Parnes didn’t know their \
+                      book would be called ‘Shattered,’ or that their extraordinary access would \
+                      let them chronicle the mounting signs of a doomed campaign.</p>\
+                      \n                \n            ";
 
         assert_eq!(
             i2.title,
@@ -247,7 +268,8 @@ mod tests {
         assert_eq!(
             i2.guid,
             Some(
-                "https://www.propublica.org/podcast/the-breakthrough-hillary-clinton-failed-presidential-bid#133721",
+                "https://www.propublica.\
+                 org/podcast/the-breakthrough-hillary-clinton-failed-presidential-bid#133721",
             )
         );
         assert_eq!(i2.published_date, Some("Fri, 25 Aug 2017 12:00:00 +0000"));
@@ -260,7 +282,10 @@ mod tests {
         let channel = Channel::read_from(BufReader::new(file)).unwrap();
 
         let firstitem = channel.items().first().unwrap();
-        let descr = "Audit your network with a couple of easy commands on Kali Linux. Chris decides to blow off a little steam by attacking his IoT devices, Wes has the scope on Equifax blaming open source & the Beard just saved the show. It’s a really packed episode!";
+        let descr = "Audit your network with a couple of easy commands on Kali Linux. Chris \
+                     decides to blow off a little steam by attacking his IoT devices, Wes \
+                     has the scope on Equifax blaming open source & the Beard just saved \
+                     the show. It’s a really packed episode!";
         let i = parse_episode(&firstitem, 0).unwrap();
 
         assert_eq!(i.title, Some("Hacking Devices with Kali Linux | LUP 214"));
@@ -277,9 +302,14 @@ mod tests {
         let second = channel.items().iter().nth(1).unwrap();
         let i2 = parse_episode(&second, 0).unwrap();
 
-        let descr2 = "<p>The Gnome project is about to solve one of our audience's biggest Wayland’s concerns. But as the project takes on a new level of relevance, decisions for the next version of Gnome have us worried about the future.</p>
+        let descr2 = "<p>The Gnome project is about to solve one of our audience's biggest \
+                      Wayland’s concerns. But as the project takes on a new level of relevance, \
+                      decisions for the next version of Gnome have us worried about the \
+                      future.</p>
 
-<p>Plus we chat with Wimpy about the Ubuntu Rally in NYC, Microsoft’s sneaky move to turn Windows 10 into the “ULTIMATE LINUX RUNTIME”, community news & more!</p>";
+<p>Plus we chat with Wimpy about the Ubuntu Rally in NYC, \
+                      Microsoft’s sneaky move to turn Windows 10 into the “ULTIMATE LINUX \
+                      RUNTIME”, community news & more!</p>";
         assert_eq!(i2.title, Some("Gnome Does it Again | LUP 213"));
         assert_eq!(
             i2.uri,
@@ -298,14 +328,17 @@ mod tests {
         let channel = Channel::read_from(BufReader::new(file)).unwrap();
 
         let firstitem = channel.items().iter().nth(9).unwrap();
-        let descr = "This week we look at <a href=\"https://github.com/rust-lang/rfcs/pull/2094\">RFC 2094</a> \"Non-lexical lifetimes\"";
+        let descr = "This week we look at <a \
+                     href=\"https://github.com/rust-lang/rfcs/pull/2094\">RFC 2094</a> \
+                     \"Non-lexical lifetimes\"";
         let i = parse_episode(&firstitem, 0).unwrap();
 
         assert_eq!(i.title, Some("Episode #9 - A Once in a Lifetime RFC"));
         assert_eq!(
             i.uri,
             Some(
-                "http://request-for-explanation.github.io/podcast/ep9-a-once-in-a-lifetime-rfc/episode.mp3",
+                "http://request-for-explanation.github.\
+                 io/podcast/ep9-a-once-in-a-lifetime-rfc/episode.mp3",
             )
         );
         assert_eq!(i.description, Some(descr));
@@ -321,12 +354,15 @@ mod tests {
         let second = channel.items().iter().nth(8).unwrap();
         let i2 = parse_episode(&second, 0).unwrap();
 
-        let descr2 = "This week we look at <a href=\"https://github.com/rust-lang/rfcs/pull/2071\">RFC 2071</a> \"Add impl Trait type alias and variable declarations\"";
+        let descr2 = "This week we look at <a \
+                      href=\"https://github.com/rust-lang/rfcs/pull/2071\">RFC 2071</a> \"Add \
+                      impl Trait type alias and variable declarations\"";
         assert_eq!(i2.title, Some("Episode #8 - An Existential Crisis"));
         assert_eq!(
             i2.uri,
             Some(
-                "http://request-for-explanation.github.io/podcast/ep8-an-existential-crisis/episode.mp3",
+                "http://request-for-explanation.github.\
+                 io/podcast/ep8-an-existential-crisis/episode.mp3",
             )
         );
         assert_eq!(i2.description, Some(descr2));
