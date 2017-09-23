@@ -176,26 +176,9 @@ impl<'a> Source {
         self.http_etag = value.map(|x| x.to_string());
     }
 
-    /// Fetch the xml feed from the source url, update the etag headers,
-    /// parse the feed into an rss:Channel and return it.
-    pub fn get_podcast_chan(&mut self, con: &SqliteConnection) -> Result<Channel> {
-        use std::io::Read;
-        use std::str::FromStr;
-
-        let mut req = reqwest::get(&self.uri)?;
-        self.update_etag(con, &req)?;
-
-        let mut buf = String::new();
-        // info!("{}", buf);
-        req.read_to_string(&mut buf)?;
-        let chan = Channel::from_str(&buf)?;
-
-        Ok(chan)
-    }
-
     /// Extract Etag and LastModifier from req, and update self and the
     /// corresponding db row.
-    fn update_etag(&mut self, con: &SqliteConnection, req: &reqwest::Response) -> Result<()> {
+    pub fn update_etag(&mut self, con: &SqliteConnection, req: &reqwest::Response) -> Result<()> {
         let headers = req.headers();
         debug!("{:#?}", headers);
 
@@ -203,12 +186,16 @@ impl<'a> Source {
         let etag = headers.get::<ETag>();
         let lmod = headers.get::<LastModified>();
 
-        self.http_etag = etag.map(|x| x.tag().to_string().to_owned());
-        self.last_modified = lmod.map(|x| format!("{}", x));
-        info!("Self etag: {:?}", self.http_etag);
-        info!("Self last_mod: {:?}", self.last_modified);
+        if self.http_etag() != etag.map(|x| x.tag())
+            || self.last_modified != lmod.map(|x| format!("{}", x))
+        {
+            self.http_etag = etag.map(|x| x.tag().to_string().to_owned());
+            self.last_modified = lmod.map(|x| format!("{}", x));
+            info!("Self etag: {:?}", self.http_etag);
+            info!("Self last_mod: {:?}", self.last_modified);
+            self.save_changes::<Source>(con)?;
+        }
 
-        self.save_changes::<Source>(con)?;
         Ok(())
     }
 }

@@ -344,9 +344,7 @@ mod tests {
         assert_eq!(i.length, Some(15077388));
         assert_eq!(
             i.guid,
-            Some(
-                "https://request-for-explanation.github.io/podcast/ep9-a-once-in-a-lifetime-rfc/",
-            )
+            Some("https://request-for-explanation.github.io/podcast/ep9-a-once-in-a-lifetime-rfc/",)
         );
         assert_eq!(i.published_date, Some("Mon, 28 Aug 2017 15:00:00 PDT"));
         // Need to fix datetime parser first
