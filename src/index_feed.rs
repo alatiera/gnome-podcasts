@@ -119,19 +119,40 @@ pub fn index_loop(db: &SqliteConnection) -> Result<()> {
 }
 
 // TODO: make it into an iterator that yields reqwest::response
+// TODO: After fixing etag/lmod, add sent_etag:bool arg and logic to bypass it.
 pub fn fetch_feeds(connection: &SqliteConnection) -> Result<Vec<(reqwest::Response, Source)>> {
+    use reqwest::header::{ETag, EntityTag, Headers, HttpDate, LastModified};
+
     let mut results = Vec::new();
 
     let mut feeds = dbqueries::get_sources(connection)?;
 
     for feed in feeds.iter_mut() {
-        // TODO sent etag headers
-        let req = reqwest::get(feed.uri())?;
+        let client = reqwest::Client::new()?;
+        let mut headers = Headers::new();
 
-        // TODO match on status()
-        if req.status() == reqwest::StatusCode::NotModified {
-            continue;
+        if let Some(foo) = feed.http_etag() {
+            headers.set(ETag(EntityTag::new(true, foo.to_owned())));
         }
+
+        if let Some(foo) = feed.last_modified() {
+            headers.set(LastModified(foo.parse::<HttpDate>()?));
+        }
+
+        info!("{:?}", headers);
+        // FIXME: I have fucked up something here.
+        // Getting back 200 codes even though I supposedly sent etags.
+        let req = client.get(feed.uri())?.headers(headers).send()?;
+        info!("{}", req.status());
+
+        // TODO match on more stuff
+        match req.status() {
+            reqwest::StatusCode::NotModified => {
+                continue;
+            }
+            _ => (),
+        };
+
         feed.update_etag(connection, &req)?;
         results.push((req, feed.clone()));
     }

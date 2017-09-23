@@ -10,6 +10,7 @@ structopt-derive = "0.1.0"
 log = "0.3.8"
 loggerv = "0.3.0"
 reqwest = "0.7.3"
+hyper = "0.11.2"
 diesel = { version = "0.16.0", features = ["sqlite", "deprecated-time", "chrono"] }
 diesel_codegen = { version = "0.16.0", features = ["sqlite"] }
 time = "0.1.38"

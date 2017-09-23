@@ -20,8 +20,10 @@ extern crate diesel;
 extern crate diesel_codegen;
 
 extern crate chrono;
+extern crate hyper;
 extern crate reqwest;
 extern crate rss;
+extern crate time;
 extern crate xdg;
 
 pub mod cli;
@@ -37,6 +39,8 @@ pub mod errors {
     use std::io;
     use rss;
     use chrono;
+    use hyper;
+    use time;
     use diesel::migrations::RunMigrationsError;
     use diesel::result;
 
@@ -49,6 +53,8 @@ pub mod errors {
             RSSError(rss::Error);
             DieselResultError(result::Error);
             ChronoError(chrono::ParseError);
+            DurationError(time::OutOfRangeError);
+            HyperError(hyper::error::Error);
         }
     }
 }
