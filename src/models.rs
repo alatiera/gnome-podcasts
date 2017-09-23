@@ -7,8 +7,7 @@ use reqwest::header::{ETag, LastModified};
 use schema::{episode, podcast, source};
 use errors::*;
 
-#[derive(Queryable, Identifiable, AsChangeset)]
-#[derive(Associations)]
+#[derive(Queryable, Identifiable, AsChangeset, Associations)]
 #[table_name = "episode"]
 #[belongs_to(Podcast, foreign_key = "podcast_id")]
 #[derive(Debug, Clone)]
@@ -95,8 +94,7 @@ impl Episode {
     }
 }
 
-#[derive(Queryable, Identifiable, AsChangeset)]
-#[derive(Associations)]
+#[derive(Queryable, Identifiable, AsChangeset, Associations)]
 #[belongs_to(Source, foreign_key = "source_id")]
 #[table_name = "podcast"]
 #[derive(Debug, Clone)]
@@ -195,9 +193,9 @@ impl<'a> Source {
         Ok(chan)
     }
 
-    /// Extract Etag and LastModifier from req, and update self and the corresponding db row.
+    /// Extract Etag and LastModifier from req, and update self and the
+    /// corresponding db row.
     fn update_etag(&mut self, con: &SqliteConnection, req: &reqwest::Response) -> Result<()> {
-
         let headers = req.headers();
         debug!("{:#?}", headers);
 

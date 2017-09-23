@@ -1,5 +1,5 @@
 use diesel::prelude::*;
-use models::{Podcast, Episode, Source};
+use models::{Episode, Podcast, Source};
 
 pub fn get_sources(con: &SqliteConnection) -> QueryResult<Vec<Source>> {
     use schema::source::dsl::*;

@@ -19,10 +19,10 @@ extern crate diesel;
 #[macro_use]
 extern crate diesel_codegen;
 
-extern crate xdg;
+extern crate chrono;
 extern crate reqwest;
 extern crate rss;
-extern crate chrono;
+extern crate xdg;
 
 pub mod cli;
 pub mod schema;
@@ -68,7 +68,7 @@ lazy_static!{
     static ref HAMMOND_DATA: PathBuf = HAMMOND_XDG.create_data_directory(HAMMOND_XDG.get_data_home()).unwrap();
     static ref HAMMOND_CONFIG: PathBuf = HAMMOND_XDG.create_config_directory(HAMMOND_XDG.get_config_home()).unwrap();
     static ref HAMMOND_CACHE: PathBuf = HAMMOND_XDG.create_cache_directory(HAMMOND_XDG.get_cache_home()).unwrap();
-    
+
     static ref DB_PATH: PathBuf = {
         // Ensure that xdg_data is created.
         &HAMMOND_DATA;
@@ -88,10 +88,8 @@ pub fn init() -> Result<()> {
 pub fn establish_connection() -> SqliteConnection {
     let database_url = DB_PATH.to_str().unwrap();
     // let database_url = &String::from(".random/foo.db");
-    SqliteConnection::establish(database_url).expect(&format!(
-        "Error connecting to {}",
-        database_url
-    ))
+    SqliteConnection::establish(database_url)
+        .expect(&format!("Error connecting to {}", database_url))
 }
 
 #[cfg(test)]

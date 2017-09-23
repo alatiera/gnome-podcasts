@@ -4,7 +4,6 @@ use models;
 use errors::*;
 
 pub fn parse_podcast(chan: &Channel, source_id: i32) -> Result<models::NewPodcast> {
-
     let title = chan.title().to_owned();
     let link = chan.link().to_owned();
 
@@ -28,7 +27,6 @@ pub fn parse_podcast(chan: &Channel, source_id: i32) -> Result<models::NewPodcas
 }
 
 pub fn parse_episode<'a>(item: &'a Item, parent_id: i32) -> Result<models::NewEpisode<'a>> {
-
     let title = item.title();
 
     let description = item.description();
@@ -72,9 +70,8 @@ pub fn parse_episode<'a>(item: &'a Item, parent_id: i32) -> Result<models::NewEp
         _ => 0,
     };
 
-    let length = item.enclosure().map(
-        |x| x.length().parse().unwrap_or_default(),
-    );
+    let length = item.enclosure()
+        .map(|x| x.length().parse().unwrap_or_default());
 
     let foo = models::NewEpisode {
         title,
@@ -140,9 +137,7 @@ mod tests {
         assert_eq!(pd.description, descr.to_string());
         assert_eq!(
             pd.image_uri,
-            Some(
-                "http://michaeltunnell.com/images/linux-unplugged.jpg".to_string(),
-            )
+            Some("http://michaeltunnell.com/images/linux-unplugged.jpg".to_string(),)
         );
     }
 
@@ -162,9 +157,7 @@ mod tests {
         assert_eq!(pd.description, descr.to_string());
         assert_eq!(
             pd.image_uri,
-            Some(
-                "https://request-for-explanation.github.io/podcast/podcast.png".to_string(),
-            )
+            Some("https://request-for-explanation.github.io/podcast/podcast.png".to_string(),)
         );
     }
 
@@ -191,9 +184,7 @@ mod tests {
         let descr2 = "This week on Intercepted: Jeremy gives an update on the aftermath of Blackwater’s 2007 massacre of Iraqi civilians. Intercept reporter Lee Fang lays out how a network of libertarian think tanks called the Atlas Network is insidiously shaping political infrastructure in Latin America. We speak with attorney and former Hugo Chavez adviser Eva Golinger about the Venezuela\'s political turmoil.And we hear Claudia Lizardo of the Caracas-based band, La Pequeña Revancha, talk about her music and hopes for Venezuela.";
         assert_eq!(
             i2.title,
-            Some(
-                "Atlas Golfed — U.S.-Backed Think Tanks Target Latin America",
-            )
+            Some("Atlas Golfed — U.S.-Backed Think Tanks Target Latin America",)
         );
         assert_eq!(i2.uri, Some("http://traffic.megaphone.fm/FL5331443769.mp3"));
         assert_eq!(i2.description, Some(descr2));
@@ -217,15 +208,11 @@ mod tests {
 
         assert_eq!(
             i.title,
-            Some(
-                "The Breakthrough: Hopelessness and Exploitation Inside Homes for Mentally Ill",
-            )
+            Some("The Breakthrough: Hopelessness and Exploitation Inside Homes for Mentally Ill",)
         );
         assert_eq!(
             i.uri,
-            Some(
-                "http://tracking.feedpress.it/link/10581/6726758/20170908-cliff-levy.mp3",
-            )
+            Some("http://tracking.feedpress.it/link/10581/6726758/20170908-cliff-levy.mp3",)
         );
         assert_eq!(i.description, Some(descr));
         assert_eq!(i.length, Some(33396551));
@@ -253,9 +240,7 @@ mod tests {
         );
         assert_eq!(
             i2.uri,
-            Some(
-                "http://tracking.feedpress.it/link/10581/6726759/16_JohnAllen-CRAFT.mp3",
-            )
+            Some("http://tracking.feedpress.it/link/10581/6726759/16_JohnAllen-CRAFT.mp3",)
         );
         assert_eq!(i2.description, Some(descr2));
         assert_eq!(i2.length, Some(17964071));
@@ -281,9 +266,7 @@ mod tests {
         assert_eq!(i.title, Some("Hacking Devices with Kali Linux | LUP 214"));
         assert_eq!(
             i.uri,
-            Some(
-                "http://www.podtrac.com/pts/redirect.mp3/traffic.libsyn.com/jnite/lup-0214.mp3",
-            )
+            Some("http://www.podtrac.com/pts/redirect.mp3/traffic.libsyn.com/jnite/lup-0214.mp3",)
         );
         assert_eq!(i.description, Some(descr));
         assert_eq!(i.length, Some(46479789));
@@ -300,9 +283,7 @@ mod tests {
         assert_eq!(i2.title, Some("Gnome Does it Again | LUP 213"));
         assert_eq!(
             i2.uri,
-            Some(
-                "http://www.podtrac.com/pts/redirect.mp3/traffic.libsyn.com/jnite/lup-0213.mp3",
-            )
+            Some("http://www.podtrac.com/pts/redirect.mp3/traffic.libsyn.com/jnite/lup-0213.mp3",)
         );
         assert_eq!(i2.description, Some(descr2));
         assert_eq!(i2.length, Some(36544272));
@@ -331,9 +312,7 @@ mod tests {
         assert_eq!(i.length, Some(15077388));
         assert_eq!(
             i.guid,
-            Some(
-                "https://request-for-explanation.github.io/podcast/ep9-a-once-in-a-lifetime-rfc/",
-            )
+            Some("https://request-for-explanation.github.io/podcast/ep9-a-once-in-a-lifetime-rfc/",)
         );
         assert_eq!(i.published_date, Some("Mon, 28 Aug 2017 15:00:00 PDT"));
         // Need to fix datetime parser first
@@ -354,9 +333,7 @@ mod tests {
         assert_eq!(i2.length, Some(13713219));
         assert_eq!(
             i2.guid,
-            Some(
-                "https://request-for-explanation.github.io/podcast/ep8-an-existential-crisis/",
-            )
+            Some("https://request-for-explanation.github.io/podcast/ep8-an-existential-crisis/",)
         );
         assert_eq!(i2.published_date, Some("Tue, 15 Aug 2017 17:00:00 PDT"));
         // Need to fix datetime parser first

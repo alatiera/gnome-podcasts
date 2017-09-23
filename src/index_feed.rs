@@ -6,7 +6,7 @@ use schema;
 use dbqueries;
 use feedparser;
 use errors::*;
-use models::{NewSource, Source, Podcast, Episode};
+use models::{Episode, NewSource, Podcast, Source};
 
 pub fn foo() {
     let inpt = vec![
@@ -42,9 +42,9 @@ fn insert_source(con: &SqliteConnection, url: &str) -> Result<Source> {
             // bar.save_changes::<Source>(con)?;
         }
         Err(_) => {
-            diesel::insert(&foo).into(schema::source::table).execute(
-                con,
-            )?;
+            diesel::insert(&foo)
+                .into(schema::source::table)
+                .execute(con)?;
         }
     }
 
@@ -67,9 +67,9 @@ fn index_podcast(
             foo.save_changes::<Podcast>(con)?;
         }
         Err(_) => {
-            diesel::insert(&pd).into(schema::podcast::table).execute(
-                con,
-            )?;
+            diesel::insert(&pd)
+                .into(schema::podcast::table)
+                .execute(con)?;
         }
     }
 
@@ -89,11 +89,11 @@ fn index_episode(con: &SqliteConnection, item: &rss::Item, parent: &Podcast) -> 
             foo.set_length(ep.length);
             foo.set_epoch(ep.epoch);
             foo.save_changes::<Episode>(con)?;
-        } 
+        }
         Err(_) => {
-            diesel::insert(&ep).into(schema::episode::table).execute(
-                con,
-            )?;
+            diesel::insert(&ep)
+                .into(schema::episode::table)
+                .execute(con)?;
         }
     }
 
@@ -122,7 +122,6 @@ pub fn index_loop(db: SqliteConnection) -> Result<()> {
         info!("{:#?}", pd);
         // info!("{:#?}", episodes);
         // info!("{:?}", chan);
-
     }
     Ok(())
 }
