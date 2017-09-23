@@ -59,13 +59,12 @@ fn index_podcast(
     let pd = feedparser::parse_podcast(channel, parent.id())?;
 
     match dbqueries::load_podcast(con, &pd.title) {
-        Ok(mut foo) => {
-            // TODO: Cmp first before replacing
+        Ok(mut foo) => if foo.link() != pd.link || foo.description() != pd.description {
             foo.set_link(&pd.link);
             foo.set_description(&pd.description);
             foo.set_image_uri(pd.image_uri.as_ref().map(|s| s.as_str()));
             foo.save_changes::<Podcast>(con)?;
-        }
+        },
         Err(_) => {
             diesel::insert(&pd)
                 .into(schema::podcast::table)
@@ -80,8 +79,7 @@ fn index_episode(con: &SqliteConnection, item: &rss::Item, parent: &Podcast) -> 
     let ep = feedparser::parse_episode(item, parent.id())?;
 
     match dbqueries::load_episode(con, &ep.uri.unwrap()) {
-        Ok(mut foo) => {
-            // TODO: Cmp first before replacing
+        Ok(mut foo) => if foo.title() != ep.title || foo.published_date() != ep.published_date {
             foo.set_title(ep.title);
             foo.set_description(ep.description);
             foo.set_published_date(ep.published_date);
@@ -89,7 +87,7 @@ fn index_episode(con: &SqliteConnection, item: &rss::Item, parent: &Podcast) -> 
             foo.set_length(ep.length);
             foo.set_epoch(ep.epoch);
             foo.save_changes::<Episode>(con)?;
-        }
+        },
         Err(_) => {
             diesel::insert(&ep)
                 .into(schema::episode::table)
