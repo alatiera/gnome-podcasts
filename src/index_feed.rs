@@ -9,7 +9,7 @@ use schema;
 use dbqueries;
 use feedparser;
 use errors::*;
-use models::{Episode, NewEpisode, NewSource, Podcast, Source};
+use models::{Episode, NewEpisode, NewPodcast, NewSource, Podcast, Source};
 
 pub fn foo() {
     let inpt = vec![
@@ -21,7 +21,7 @@ pub fn foo() {
 
     let db = ::establish_connection();
     for feed in inpt.iter() {
-        match insert_source(&db, feed) {
+        match insert_return_source(&db, feed) {
             Ok(_) => {}
             Err(foo) => {
                 error!("Error: {}", foo);
@@ -33,28 +33,17 @@ pub fn foo() {
     index_loop(db).unwrap();
 }
 
-fn insert_source(con: &SqliteConnection, url: &str) -> Result<Source> {
-    let foo = NewSource::new_with_uri(url);
-
+fn index_source(con: &SqliteConnection, foo: &NewSource) -> Result<()> {
     match dbqueries::load_source(con, foo.uri) {
-        Ok(_) => (),
+        Ok(_) => Ok(()),
         Err(_) => {
-            diesel::insert(&foo)
-                .into(schema::source::table)
-                .execute(con)?;
+            diesel::insert(foo).into(schema::source::table).execute(con)?;
+            Ok(())
         }
     }
-
-    Ok(dbqueries::load_source(con, foo.uri)?)
 }
 
-fn index_podcast(
-    con: &SqliteConnection,
-    channel: &rss::Channel,
-    parent: &Source,
-) -> Result<Podcast> {
-    let pd = feedparser::parse_podcast(channel, parent.id())?;
-
+fn index_podcast(con: &SqliteConnection, pd: &NewPodcast) -> Result<()> {
     match dbqueries::load_podcast(con, &pd.title) {
         Ok(mut foo) => if foo.link() != pd.link || foo.description() != pd.description {
             foo.set_link(&pd.link);
@@ -63,18 +52,13 @@ fn index_podcast(
             foo.save_changes::<Podcast>(con)?;
         },
         Err(_) => {
-            diesel::insert(&pd)
-                .into(schema::podcast::table)
-                .execute(con)?;
+            diesel::insert(pd).into(schema::podcast::table).execute(con)?;
         }
     }
-
-    Ok(dbqueries::load_podcast(con, &pd.title)?)
+    Ok(())
 }
 
-fn index_episode(con: &SqliteConnection, ep: &NewEpisode) -> Result<Episode> {
-    // let ep = feedparser::parse_episode(item, parent.id())?;
-
+fn index_episode(con: &SqliteConnection, ep: &NewEpisode) -> Result<()> {
     match dbqueries::load_episode(con, &ep.uri.unwrap()) {
         Ok(mut foo) => if foo.title() != ep.title || foo.published_date() != ep.published_date {
             foo.set_title(ep.title);
@@ -89,6 +73,23 @@ fn index_episode(con: &SqliteConnection, ep: &NewEpisode) -> Result<Episode> {
             diesel::insert(ep).into(schema::episode::table).execute(con)?;
         }
     }
+    Ok(())
+}
+fn insert_return_source(con: &SqliteConnection, url: &str) -> Result<Source> {
+    let foo = NewSource::new_with_uri(url);
+    index_source(con, &foo)?;
+
+    Ok(dbqueries::load_source(con, foo.uri)?)
+}
+
+fn insert_return_podcast(con: &SqliteConnection, pd: &NewPodcast) -> Result<Podcast> {
+    index_podcast(con, pd)?;
+
+    Ok(dbqueries::load_podcast(con, &pd.title)?)
+}
+
+fn insert_return_episode(con: &SqliteConnection, ep: &NewEpisode) -> Result<Episode> {
+    index_episode(con, ep)?;
 
     Ok(dbqueries::load_episode(con, &ep.uri.unwrap())?)
 }
@@ -104,9 +105,10 @@ pub fn index_loop(db: SqliteConnection) -> Result<()> {
         let mut buf = String::new();
         req.read_to_string(&mut buf)?;
         let chan = rss::Channel::from_str(&buf)?;
+        let pd = feedparser::parse_podcast(&chan, source.id())?;
 
         let fakedb = bar.lock().unwrap();
-        let pd = index_podcast(&fakedb, &chan, source)?;
+        let pd = insert_return_podcast(&fakedb, &pd)?;
         drop(fakedb);
 
         let foo: Vec<_> = chan.items()
@@ -115,7 +117,7 @@ pub fn index_loop(db: SqliteConnection) -> Result<()> {
             .collect();
 
         // info!("{:#?}", pd);
-        info!("{:#?}", foo);
+        // info!("{:#?}", foo);
         let _: Vec<_> = foo.par_iter()
             .map(|x| {
                 let dbmutex = bar.clone();
