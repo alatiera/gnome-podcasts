@@ -98,8 +98,9 @@ pub fn index_loop(db: SqliteConnection) -> Result<()> {
     use std::io::Read;
     use std::str::FromStr;
 
-    let mut f = fetch_feeds(&db)?;
     let bar = Arc::new(Mutex::new(db));
+
+    let mut f = fetch_feeds(bar.clone())?;
 
     for &mut (ref mut req, ref source) in f.iter_mut() {
         let mut buf = String::new();
@@ -107,9 +108,9 @@ pub fn index_loop(db: SqliteConnection) -> Result<()> {
         let chan = rss::Channel::from_str(&buf)?;
         let pd = feedparser::parse_podcast(&chan, source.id())?;
 
-        let fakedb = bar.lock().unwrap();
-        let pd = insert_return_podcast(&fakedb, &pd)?;
-        drop(fakedb);
+        let tempdb = bar.lock().unwrap();
+        let pd = insert_return_podcast(&tempdb, &pd)?;
+        drop(tempdb);
 
         let foo: Vec<_> = chan.items()
             .par_iter()
@@ -134,12 +135,20 @@ pub fn index_loop(db: SqliteConnection) -> Result<()> {
 
 // TODO: maybe refactor into an Iterator for lazy evaluation.
 // TODO: After fixing etag/lmod, add sent_etag:bool arg and logic to bypass it.
-pub fn fetch_feeds(connection: &SqliteConnection) -> Result<Vec<(reqwest::Response, Source)>> {
-    let mut feeds = dbqueries::get_sources(connection)?;
+pub fn fetch_feeds(
+    connection: Arc<Mutex<SqliteConnection>>,
+) -> Result<Vec<(reqwest::Response, Source)>> {
+    let tempdb = connection.lock().unwrap();
+    let mut feeds = dbqueries::get_sources(&tempdb)?;
+    drop(tempdb);
 
-    let results: Vec<(reqwest::Response, Source)> = feeds
-        .iter_mut()
-        .map(|x| refresh_source(connection, x).unwrap())
+    let results: Vec<_> = feeds
+        .par_iter_mut()
+        .map(|x| {
+            let dbmutex = connection.clone();
+            let db = dbmutex.lock().unwrap();
+            refresh_source(&db, x).unwrap()
+        })
         .collect();
 
     Ok(results)
@@ -155,14 +164,14 @@ fn refresh_source(
     let mut headers = Headers::new();
 
     if let Some(foo) = feed.http_etag() {
-        headers.set(ETag(EntityTag::new(false, foo.to_owned())));
+        headers.set(ETag(EntityTag::new(true, foo.to_owned())));
     }
 
     if let Some(foo) = feed.last_modified() {
         headers.set(LastModified(foo.parse::<HttpDate>()?));
     }
 
-    info!("{:?}", headers);
+    info!("Headers: {:?}", headers);
     // FIXME: I have fucked up somewhere here.
     // Getting back 200 codes even though I supposedly sent etags.
     let req = client.get(feed.uri())?.headers(headers).send()?;

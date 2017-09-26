@@ -180,19 +180,17 @@ impl<'a> Source {
     /// corresponding db row.
     pub fn update_etag(&mut self, con: &SqliteConnection, req: &reqwest::Response) -> Result<()> {
         let headers = req.headers();
-        debug!("{:#?}", headers);
 
         // let etag = headers.get_raw("ETag").unwrap();
         let etag = headers.get::<ETag>();
         let lmod = headers.get::<LastModified>();
 
+        // FIXME: This dsnt work most of the time apparently
         if self.http_etag() != etag.map(|x| x.tag())
             || self.last_modified != lmod.map(|x| format!("{}", x))
         {
             self.http_etag = etag.map(|x| x.tag().to_string().to_owned());
             self.last_modified = lmod.map(|x| format!("{}", x));
-            info!("Self etag: {:?}", self.http_etag);
-            info!("Self last_mod: {:?}", self.last_modified);
             self.save_changes::<Source>(con)?;
         }
 
