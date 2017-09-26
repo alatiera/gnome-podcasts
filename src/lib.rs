@@ -21,6 +21,7 @@ extern crate diesel_codegen;
 
 extern crate chrono;
 extern crate hyper;
+extern crate rayon;
 extern crate reqwest;
 extern crate rss;
 extern crate time;
@@ -43,6 +44,7 @@ pub mod errors {
     use time;
     use diesel::migrations::RunMigrationsError;
     use diesel::result;
+    // use std::sync;
 
     error_chain! {
         foreign_links {
@@ -55,6 +57,7 @@ pub mod errors {
             ChronoError(chrono::ParseError);
             DurationError(time::OutOfRangeError);
             HyperError(hyper::error::Error);
+            // MutexPoison(sync::PoisonError);
         }
     }
 }
@@ -75,11 +78,11 @@ lazy_static!{
         HAMMOND_XDG.create_data_directory(HAMMOND_XDG.get_data_home()).unwrap()
     };
 
-    static ref HAMMOND_CONFIG: PathBuf = {
+    static ref _HAMMOND_CONFIG: PathBuf = {
         HAMMOND_XDG.create_config_directory(HAMMOND_XDG.get_config_home()).unwrap()
     };
 
-    static ref HAMMOND_CACHE: PathBuf = {
+    static ref _HAMMOND_CACHE: PathBuf = {
         HAMMOND_XDG.create_cache_directory(HAMMOND_XDG.get_cache_home()).unwrap()
     };
 

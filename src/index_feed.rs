@@ -2,12 +2,14 @@ use diesel::prelude::*;
 use diesel;
 use rss;
 use reqwest;
+use rayon::prelude::*;
+use std::sync::{Arc, Mutex};
 
 use schema;
 use dbqueries;
 use feedparser;
 use errors::*;
-use models::{Episode, NewSource, Podcast, Source};
+use models::{Episode, NewEpisode, NewSource, Podcast, Source};
 
 pub fn foo() {
     let inpt = vec![
@@ -28,7 +30,7 @@ pub fn foo() {
         }
     }
 
-    index_loop(&db).unwrap();
+    index_loop(db).unwrap();
 }
 
 fn insert_source(con: &SqliteConnection, url: &str) -> Result<Source> {
@@ -70,8 +72,8 @@ fn index_podcast(
     Ok(dbqueries::load_podcast(con, &pd.title)?)
 }
 
-fn index_episode(con: &SqliteConnection, item: &rss::Item, parent: &Podcast) -> Result<Episode> {
-    let ep = feedparser::parse_episode(item, parent.id())?;
+fn index_episode(con: &SqliteConnection, ep: &NewEpisode) -> Result<Episode> {
+    // let ep = feedparser::parse_episode(item, parent.id())?;
 
     match dbqueries::load_episode(con, &ep.uri.unwrap()) {
         Ok(mut foo) => if foo.title() != ep.title || foo.published_date() != ep.published_date {
@@ -84,41 +86,59 @@ fn index_episode(con: &SqliteConnection, item: &rss::Item, parent: &Podcast) -> 
             foo.save_changes::<Episode>(con)?;
         },
         Err(_) => {
-            diesel::insert(&ep)
-                .into(schema::episode::table)
-                .execute(con)?;
+            diesel::insert(ep).into(schema::episode::table).execute(con)?;
         }
     }
 
     Ok(dbqueries::load_episode(con, &ep.uri.unwrap())?)
 }
 
-pub fn index_loop(db: &SqliteConnection) -> Result<()> {
+pub fn index_loop(db: SqliteConnection) -> Result<()> {
     use std::io::Read;
     use std::str::FromStr;
 
-    let mut f = fetch_feeds(db)?;
+    let mut f = fetch_feeds(&db)?;
+    let bar = Arc::new(Mutex::new(db));
 
     for &mut (ref mut req, ref source) in f.iter_mut() {
         let mut buf = String::new();
         req.read_to_string(&mut buf)?;
         let chan = rss::Channel::from_str(&buf)?;
 
-        let pd = index_podcast(db, &chan, source)?;
+        let mut pd = Podcast::new();
 
-        let _: Vec<_> = chan.items()
-            .iter()
-            .map(|x| index_episode(db, &x, &pd))
+        {
+            let fakedb = bar.lock().unwrap();
+            pd = index_podcast(&fakedb, &chan, source)?;
+        }
+
+        let foo: Vec<_> = chan.items()
+            .par_iter()
+            .map(|x| feedparser::parse_episode(&x, pd.id()).unwrap())
             .collect();
 
-        info!("{:#?}", pd);
+        // info!("{:#?}", pd);
+        info!("{:#?}", foo);
+        let _: Vec<_> = foo.par_iter()
+            .map(|x| {
+                let z = bar.clone();
+                baz(z, x)
+            })
+            .collect();
+
         // info!("{:#?}", episodes);
         // info!("{:?}", chan);
     }
     Ok(())
 }
 
-// TODO: make it into an iterator that yields reqwest::response
+fn baz(arc: Arc<Mutex<SqliteConnection>>, ep: &NewEpisode) -> Result<()> {
+    let db = arc.lock().unwrap();
+    index_episode(&db, ep)?;
+    Ok(())
+}
+
+// TODO: refactor into an Iterator
 // TODO: After fixing etag/lmod, add sent_etag:bool arg and logic to bypass it.
 pub fn fetch_feeds(connection: &SqliteConnection) -> Result<Vec<(reqwest::Response, Source)>> {
     use reqwest::header::{ETag, EntityTag, Headers, HttpDate, LastModified};
@@ -140,12 +160,16 @@ pub fn fetch_feeds(connection: &SqliteConnection) -> Result<Vec<(reqwest::Respon
         }
 
         info!("{:?}", headers);
-        // FIXME: I have fucked up something here.
+        // FIXME: I have fucked up somewhere here.
         // Getting back 200 codes even though I supposedly sent etags.
         let req = client.get(feed.uri())?.headers(headers).send()?;
         info!("{}", req.status());
 
         // TODO match on more stuff
+        // 301: Permanent redirect of the url
+        // 302: Temporary redirect of the url
+        // 304: Up to date Feed, checked with the Etag
+        // 410: Feed deleted
         match req.status() {
             reqwest::StatusCode::NotModified => {
                 continue;

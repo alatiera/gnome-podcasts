@@ -55,7 +55,7 @@ pub fn parse_episode<'a>(item: &'a Item, parent_id: i32) -> Result<models::NewEp
             // FIXME: Figure out the format sequence of rfc822.
             // This is the closest I got it,
             // its also a direct copy of the sequence of rfc2822.
-            let date = DateTime::parse_from_str(&foo, "%a, %e %b %Y %H:%M:%S %z");
+            let date = DateTime::parse_from_str(&foo, "%a, %e %B %Y %H:%M:%S %z");
 
             match date {
                 Ok(bar) => bar.timestamp() as i32,
