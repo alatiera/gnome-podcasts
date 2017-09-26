@@ -105,12 +105,9 @@ pub fn index_loop(db: SqliteConnection) -> Result<()> {
         req.read_to_string(&mut buf)?;
         let chan = rss::Channel::from_str(&buf)?;
 
-        let mut pd = Podcast::new();
-
-        {
-            let fakedb = bar.lock().unwrap();
-            pd = index_podcast(&fakedb, &chan, source)?;
-        }
+        let fakedb = bar.lock().unwrap();
+        let pd = index_podcast(&fakedb, &chan, source)?;
+        drop(fakedb);
 
         let foo: Vec<_> = chan.items()
             .par_iter()
@@ -121,20 +118,15 @@ pub fn index_loop(db: SqliteConnection) -> Result<()> {
         info!("{:#?}", foo);
         let _: Vec<_> = foo.par_iter()
             .map(|x| {
-                let z = bar.clone();
-                baz(z, x)
+                let dbmutex = bar.clone();
+                let db = dbmutex.lock().unwrap();
+                index_episode(&db, &x).unwrap();
             })
             .collect();
 
         // info!("{:#?}", episodes);
         // info!("{:?}", chan);
     }
-    Ok(())
-}
-
-fn baz(arc: Arc<Mutex<SqliteConnection>>, ep: &NewEpisode) -> Result<()> {
-    let db = arc.lock().unwrap();
-    index_episode(&db, ep)?;
     Ok(())
 }
 

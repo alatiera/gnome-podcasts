@@ -108,17 +108,6 @@ pub struct Podcast {
 }
 
 impl Podcast {
-    pub fn new() -> Podcast {
-        Podcast {
-            id: 0,
-            title: String::new(),
-            link: String::new(),
-            description: String::new(),
-            image_uri: None,
-            source_id: 0,
-        }
-    }
-
     pub fn id(&self) -> i32 {
         self.id
     }
