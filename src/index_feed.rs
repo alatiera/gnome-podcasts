@@ -9,7 +9,7 @@ use schema;
 use dbqueries;
 use feedparser;
 use errors::*;
-use models::{Episode, NewEpisode, NewPodcast, NewSource, Podcast, Source};
+use models::*;
 
 pub fn foo() {
     let inpt = vec![
@@ -95,41 +95,49 @@ fn insert_return_episode(con: &SqliteConnection, ep: &NewEpisode) -> Result<Epis
 }
 
 pub fn index_loop(db: SqliteConnection) -> Result<()> {
+    let m = Arc::new(Mutex::new(db));
+
+    let mut f = fetch_feeds(m.clone())?;
+
+    let _: Vec<_> = f.par_iter_mut()
+        .map(|&mut (ref mut req, ref source)| {
+            complete_index_from_source(req, source, m.clone()).unwrap()
+        })
+        .collect();
+
+    Ok(())
+}
+
+fn complete_index_from_source(
+    req: &mut reqwest::Response,
+    source: &Source,
+    mutex: Arc<Mutex<SqliteConnection>>,
+) -> Result<()> {
     use std::io::Read;
     use std::str::FromStr;
 
-    let bar = Arc::new(Mutex::new(db));
+    let mut buf = String::new();
+    req.read_to_string(&mut buf)?;
+    let chan = rss::Channel::from_str(&buf)?;
+    let pd = feedparser::parse_podcast(&chan, source.id())?;
 
-    let mut f = fetch_feeds(bar.clone())?;
+    let tempdb = mutex.lock().unwrap();
+    let pd = insert_return_podcast(&tempdb, &pd)?;
+    drop(tempdb);
 
-    for &mut (ref mut req, ref source) in f.iter_mut() {
-        let mut buf = String::new();
-        req.read_to_string(&mut buf)?;
-        let chan = rss::Channel::from_str(&buf)?;
-        let pd = feedparser::parse_podcast(&chan, source.id())?;
+    let foo: Vec<_> = chan.items()
+        .par_iter()
+        .map(|x| feedparser::parse_episode(&x, pd.id()).unwrap())
+        .collect();
 
-        let tempdb = bar.lock().unwrap();
-        let pd = insert_return_podcast(&tempdb, &pd)?;
-        drop(tempdb);
+    let _: Vec<_> = foo.par_iter()
+        .map(|x| {
+            let dbmutex = mutex.clone();
+            let db = dbmutex.lock().unwrap();
+            index_episode(&db, &x).unwrap();
+        })
+        .collect();
 
-        let foo: Vec<_> = chan.items()
-            .par_iter()
-            .map(|x| feedparser::parse_episode(&x, pd.id()).unwrap())
-            .collect();
-
-        // info!("{:#?}", pd);
-        // info!("{:#?}", foo);
-        let _: Vec<_> = foo.par_iter()
-            .map(|x| {
-                let dbmutex = bar.clone();
-                let db = dbmutex.lock().unwrap();
-                index_episode(&db, &x).unwrap();
-            })
-            .collect();
-
-        // info!("{:#?}", episodes);
-        // info!("{:?}", chan);
-    }
     Ok(())
 }
 
