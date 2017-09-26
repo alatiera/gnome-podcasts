@@ -132,48 +132,52 @@ pub fn index_loop(db: SqliteConnection) -> Result<()> {
     Ok(())
 }
 
-// TODO: refactor into an Iterator
+// TODO: maybe refactor into an Iterator for lazy evaluation.
 // TODO: After fixing etag/lmod, add sent_etag:bool arg and logic to bypass it.
 pub fn fetch_feeds(connection: &SqliteConnection) -> Result<Vec<(reqwest::Response, Source)>> {
-    use reqwest::header::{ETag, EntityTag, Headers, HttpDate, LastModified};
-
-    let mut results = Vec::new();
-
     let mut feeds = dbqueries::get_sources(connection)?;
 
-    for feed in feeds.iter_mut() {
-        let client = reqwest::Client::new()?;
-        let mut headers = Headers::new();
-
-        if let Some(foo) = feed.http_etag() {
-            headers.set(ETag(EntityTag::new(true, foo.to_owned())));
-        }
-
-        if let Some(foo) = feed.last_modified() {
-            headers.set(LastModified(foo.parse::<HttpDate>()?));
-        }
-
-        info!("{:?}", headers);
-        // FIXME: I have fucked up somewhere here.
-        // Getting back 200 codes even though I supposedly sent etags.
-        let req = client.get(feed.uri())?.headers(headers).send()?;
-        info!("{}", req.status());
-
-        // TODO match on more stuff
-        // 301: Permanent redirect of the url
-        // 302: Temporary redirect of the url
-        // 304: Up to date Feed, checked with the Etag
-        // 410: Feed deleted
-        match req.status() {
-            reqwest::StatusCode::NotModified => {
-                continue;
-            }
-            _ => (),
-        };
-
-        feed.update_etag(connection, &req)?;
-        results.push((req, feed.clone()));
-    }
+    let results: Vec<(reqwest::Response, Source)> = feeds
+        .iter_mut()
+        .map(|x| refresh_source(connection, x).unwrap())
+        .collect();
 
     Ok(results)
+}
+
+fn refresh_source(
+    connection: &SqliteConnection,
+    feed: &mut Source,
+) -> Result<(reqwest::Response, Source)> {
+    use reqwest::header::{ETag, EntityTag, Headers, HttpDate, LastModified};
+
+    let client = reqwest::Client::new()?;
+    let mut headers = Headers::new();
+
+    if let Some(foo) = feed.http_etag() {
+        headers.set(ETag(EntityTag::new(false, foo.to_owned())));
+    }
+
+    if let Some(foo) = feed.last_modified() {
+        headers.set(LastModified(foo.parse::<HttpDate>()?));
+    }
+
+    info!("{:?}", headers);
+    // FIXME: I have fucked up somewhere here.
+    // Getting back 200 codes even though I supposedly sent etags.
+    let req = client.get(feed.uri())?.headers(headers).send()?;
+    info!("{}", req.status());
+
+    // TODO match on more stuff
+    // 301: Permanent redirect of the url
+    // 302: Temporary redirect of the url
+    // 304: Up to date Feed, checked with the Etag
+    // 410: Feed deleted
+    match req.status() {
+        reqwest::StatusCode::NotModified => (),
+        _ => (),
+    };
+
+    feed.update_etag(connection, &req)?;
+    Ok((req, feed.clone()))
 }
