@@ -2,6 +2,7 @@ use rss::{Channel, Item};
 use chrono::DateTime;
 use models;
 use errors::*;
+use std::collections::HashMap;
 
 pub fn parse_podcast(chan: &Channel, source_id: i32) -> Result<models::NewPodcast> {
     let title = chan.title().to_owned();
@@ -26,7 +27,27 @@ pub fn parse_podcast(chan: &Channel, source_id: i32) -> Result<models::NewPodcas
     Ok(foo)
 }
 
+// TODO: Factor out rfc822 to rfc2822 normalization
 pub fn parse_episode<'a>(item: &'a Item, parent_id: i32) -> Result<models::NewEpisode<'a>> {
+    let weekdays = vec![
+        "Mon,", "Tue,", "Wed,", "Thu,", "Fri,", "Sat,", "Sun,", "Monday,", "Tuesday,",
+        "Wednesday,", "Thursday,", "Friday,", "Saturday,", "Sunday,",
+    ];
+
+    let mut months = HashMap::new();
+    months.insert("January", "Jan");
+    months.insert("February", "Feb");
+    months.insert("March", "Mar");
+    months.insert("April ", "Apr");
+    months.insert("May", "May");
+    months.insert("June", "Jun");
+    months.insert("July", "Jul");
+    months.insert("August", "Aug");
+    months.insert("September", "Sep");
+    months.insert("October", "Oct");
+    months.insert("November", "Nov");
+    months.insert("December", "Dec");
+
     let title = item.title();
 
     let description = item.description();
@@ -46,20 +67,38 @@ pub fn parse_episode<'a>(item: &'a Item, parent_id: i32) -> Result<models::NewEp
     let pub_date = item.pub_date();
 
     let epoch = match pub_date {
-        Some(foo) => {
-            // info!("{}", foo);
-            // let date = DateTime::parse_from_rfc2822(&foo);
+        Some(abc) => {
+            let mut foo = String::from(abc);
 
-            // rss::Item::pub_date() returns dates formated according to rfc822
-            // But, chrono::DateTime has support only for rfc2822 or rfc3339 atm.
-            // FIXME: Figure out the format sequence of rfc822.
-            // This is the closest I got it,
-            // its also a direct copy of the sequence of rfc2822.
-            let date = DateTime::parse_from_str(&foo, "%a, %e %B %Y %H:%M:%S %z");
+            // Weekday name is not required for rfc2822
+            // for stable, replace for_each with map and add
+            // .fold((), |(),_|()) or .collect()
+            weekdays.iter().for_each(|x| if abc.starts_with(x) {
+                // TODO: handle to lower etc.
+                // For sure someone has a weird feed with the day in lowercase
+                foo = format!("{}", &abc[x.len()..]);
+                foo = foo.trim().to_string();
+            });
+
+            // Replace long month names with 3 letter Abr.
+            months.iter().for_each(|(k, v)| if abc.contains(k) {
+                foo = foo.replace(k, v);
+            });
+
+            // TODO: Pad HH:MM:SS with exta zeros.
+
+            // See #102, https://github.com/chronotope/chrono/issues/102
+            // Handle -0000 as +0000
+            if abc.ends_with("-0000") {
+                foo = format!("{}+0000", &abc[..abc.len() - 5]);
+            }
+
+            let date = DateTime::parse_from_rfc2822(&foo);
 
             match date {
                 Ok(bar) => bar.timestamp() as i32,
                 Err(baz) => {
+                    // info!("{}", foo);
                     error!("Error while trying to parse \"{}\" as date.", foo);
                     error!("Error: {}", baz);
                     debug!("Falling back to default 0");
@@ -344,11 +383,12 @@ mod tests {
         assert_eq!(i.length, Some(15077388));
         assert_eq!(
             i.guid,
-            Some("https://request-for-explanation.github.io/podcast/ep9-a-once-in-a-lifetime-rfc/",)
+            Some(
+                "https://request-for-explanation.github.io/podcast/ep9-a-once-in-a-lifetime-rfc/",
+            )
         );
         assert_eq!(i.published_date, Some("Mon, 28 Aug 2017 15:00:00 PDT"));
-        // Need to fix datetime parser first
-        // assert_eq!(i.epoch, );
+        assert_eq!(i.epoch, 1503957600);
 
         let second = channel.items().iter().nth(8).unwrap();
         let i2 = parse_episode(&second, 0).unwrap();
@@ -371,7 +411,6 @@ mod tests {
             Some("https://request-for-explanation.github.io/podcast/ep8-an-existential-crisis/",)
         );
         assert_eq!(i2.published_date, Some("Tue, 15 Aug 2017 17:00:00 PDT"));
-        // Need to fix datetime parser first
-        // assert_eq!(i.epoch, );
+        assert_eq!(i2.epoch, 1502841600);
     }
 }
