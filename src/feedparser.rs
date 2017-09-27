@@ -1,5 +1,7 @@
 use rss::{Channel, Item};
 use chrono::DateTime;
+use regex;
+
 use models;
 use errors::*;
 use std::collections::HashMap;
@@ -70,13 +72,32 @@ pub fn parse_episode<'a>(item: &'a Item, parent_id: i32) -> Result<models::NewEp
         Some(abc) => {
             let mut foo = String::from(abc);
 
+            // Pad HH:MM:SS with exta zero if needed.
+            let re = regex::Regex::new(r"(\d{1,2}):(\d{1,2}):(\d{1,2})")?;
+            // hours, minutes, seconds = cap[1], cap[2], cap[3]
+            let cap = re.captures(&abc).unwrap();
+            let mut newtime = Vec::new();
+
+            cap.iter().skip(1).for_each(|x| if let Some(y) = x {
+                if y.end() - y.start() == 1 {
+                    // warn!("{}", y.as_str());
+                    newtime.push(format!("0{}", y.as_str()));
+                } else {
+                    newtime.push(y.as_str().to_string());
+                }
+            });
+
+            let ntime = &newtime.join(":");
+            foo = foo.replace(cap.get(0).unwrap().as_str(), ntime);
+            debug!("{:?}", foo);
+
             // Weekday name is not required for rfc2822
             // for stable, replace for_each with map and add
             // .fold((), |(),_|()) or .collect()
-            weekdays.iter().for_each(|x| if abc.starts_with(x) {
+            weekdays.iter().for_each(|x| if foo.starts_with(x) {
                 // TODO: handle to lower etc.
                 // For sure someone has a weird feed with the day in lowercase
-                foo = format!("{}", &abc[x.len()..]);
+                foo = format!("{}", &foo[x.len()..]);
                 foo = foo.trim().to_string();
             });
 
@@ -84,8 +105,6 @@ pub fn parse_episode<'a>(item: &'a Item, parent_id: i32) -> Result<models::NewEp
             months.iter().for_each(|(k, v)| if abc.contains(k) {
                 foo = foo.replace(k, v);
             });
-
-            // TODO: Pad HH:MM:SS with exta zeros.
 
             // See #102, https://github.com/chronotope/chrono/issues/102
             // Handle -0000 as +0000
@@ -383,9 +402,7 @@ mod tests {
         assert_eq!(i.length, Some(15077388));
         assert_eq!(
             i.guid,
-            Some(
-                "https://request-for-explanation.github.io/podcast/ep9-a-once-in-a-lifetime-rfc/",
-            )
+            Some("https://request-for-explanation.github.io/podcast/ep9-a-once-in-a-lifetime-rfc/",)
         );
         assert_eq!(i.published_date, Some("Mon, 28 Aug 2017 15:00:00 PDT"));
         assert_eq!(i.epoch, 1503957600);

@@ -22,6 +22,7 @@ extern crate diesel_codegen;
 extern crate chrono;
 extern crate hyper;
 extern crate rayon;
+extern crate regex;
 extern crate reqwest;
 extern crate rss;
 extern crate time;
@@ -44,6 +45,7 @@ pub mod errors {
     use time;
     use diesel::migrations::RunMigrationsError;
     use diesel::result;
+    use regex;
     // use std::sync;
 
     error_chain! {
@@ -57,6 +59,7 @@ pub mod errors {
             ChronoError(chrono::ParseError);
             DurationError(time::OutOfRangeError);
             HyperError(hyper::error::Error);
+            RegexError(regex::Error);
             // MutexPoison(sync::PoisonError);
         }
     }
