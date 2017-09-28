@@ -24,6 +24,7 @@ extern crate hyper;
 extern crate rayon;
 extern crate regex;
 extern crate reqwest;
+extern crate rfc822_sanitizer;
 extern crate rss;
 extern crate time;
 extern crate xdg;

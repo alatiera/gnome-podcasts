@@ -4,6 +4,7 @@ version = "0.1.0"
 authors = ["Jordan Petridis <jordanpetridis@protonmail.com>"]
 
 [dependencies]
+rfc822_sanitizer = "0.1.0"
 rayon = "0.8.2"
 regex = "0.2"
 error-chain = "0.11.0"

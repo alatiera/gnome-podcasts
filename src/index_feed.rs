@@ -60,10 +60,12 @@ fn index_podcast(con: &SqliteConnection, pd: &NewPodcast) -> Result<()> {
 
 fn index_episode(con: &SqliteConnection, ep: &NewEpisode) -> Result<()> {
     match dbqueries::load_episode(con, &ep.uri.unwrap()) {
-        Ok(mut foo) => if foo.title() != ep.title || foo.published_date() != ep.published_date {
+        Ok(mut foo) => if foo.title() != ep.title
+            || foo.published_date() != ep.published_date.as_ref().map(|x| x.as_str())
+        {
             foo.set_title(ep.title);
             foo.set_description(ep.description);
-            foo.set_published_date(ep.published_date);
+            foo.set_published_date(ep.published_date.clone());
             foo.set_guid(ep.guid);
             foo.set_length(ep.length);
             foo.set_epoch(ep.epoch);

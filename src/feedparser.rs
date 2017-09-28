@@ -1,10 +1,8 @@
 use rss::{Channel, Item};
-use chrono::DateTime;
-use regex;
+use rfc822_sanitizer::parse_from_rfc2822_with_fallback;
 
 use models;
 use errors::*;
-use std::collections::HashMap;
 
 pub fn parse_podcast(chan: &Channel, source_id: i32) -> Result<models::NewPodcast> {
     let title = chan.title().to_owned();
@@ -31,32 +29,11 @@ pub fn parse_podcast(chan: &Channel, source_id: i32) -> Result<models::NewPodcas
 
 // TODO: Factor out rfc822 to rfc2822 normalization
 pub fn parse_episode<'a>(item: &'a Item, parent_id: i32) -> Result<models::NewEpisode<'a>> {
-    let weekdays = vec![
-        "Mon,", "Tue,", "Wed,", "Thu,", "Fri,", "Sat,", "Sun,", "Monday,", "Tuesday,",
-        "Wednesday,", "Thursday,", "Friday,", "Saturday,", "Sunday,",
-    ];
-
-    let mut months = HashMap::new();
-    months.insert("January", "Jan");
-    months.insert("February", "Feb");
-    months.insert("March", "Mar");
-    months.insert("April ", "Apr");
-    months.insert("May", "May");
-    months.insert("June", "Jun");
-    months.insert("July", "Jul");
-    months.insert("August", "Aug");
-    months.insert("September", "Sep");
-    months.insert("October", "Oct");
-    months.insert("November", "Nov");
-    months.insert("December", "Dec");
-
     let title = item.title();
-
     let description = item.description();
     let guid = item.guid().map(|x| x.value());
 
     let mut uri = item.enclosure().map(|x| x.url());
-
     if uri == None {
         uri = item.link();
     }
@@ -66,66 +43,17 @@ pub fn parse_episode<'a>(item: &'a Item, parent_id: i32) -> Result<models::NewEp
     // and have seperate logic to handle local_files
     let local_uri = None;
 
-    let pub_date = item.pub_date();
+    let date = parse_from_rfc2822_with_fallback(item.pub_date().unwrap());
+    // let pub_date = date.map(|x| x.to_rfc2822());
+    //
+    let pub_date = match date {
+        Ok(foo) => Some(foo.to_rfc2822()),
+        Err(_) => None,
+    };
 
-    let epoch = match pub_date {
-        Some(abc) => {
-            let mut foo = String::from(abc);
-
-            // Pad HH:MM:SS with exta zero if needed.
-            let re = regex::Regex::new(r"(\d{1,2}):(\d{1,2}):(\d{1,2})")?;
-            // hours, minutes, seconds = cap[1], cap[2], cap[3]
-            let cap = re.captures(&abc).unwrap();
-            let mut newtime = Vec::new();
-
-            cap.iter().skip(1).for_each(|x| if let Some(y) = x {
-                if y.end() - y.start() == 1 {
-                    // warn!("{}", y.as_str());
-                    newtime.push(format!("0{}", y.as_str()));
-                } else {
-                    newtime.push(y.as_str().to_string());
-                }
-            });
-
-            let ntime = &newtime.join(":");
-            foo = foo.replace(cap.get(0).unwrap().as_str(), ntime);
-            debug!("{:?}", foo);
-
-            // Weekday name is not required for rfc2822
-            // for stable, replace for_each with map and add
-            // .fold((), |(),_|()) or .collect()
-            weekdays.iter().for_each(|x| if foo.starts_with(x) {
-                // TODO: handle to lower etc.
-                // For sure someone has a weird feed with the day in lowercase
-                foo = format!("{}", &foo[x.len()..]);
-                foo = foo.trim().to_string();
-            });
-
-            // Replace long month names with 3 letter Abr.
-            months.iter().for_each(|(k, v)| if abc.contains(k) {
-                foo = foo.replace(k, v);
-            });
-
-            // See #102, https://github.com/chronotope/chrono/issues/102
-            // Handle -0000 as +0000
-            if abc.ends_with("-0000") {
-                foo = format!("{}+0000", &abc[..abc.len() - 5]);
-            }
-
-            let date = DateTime::parse_from_rfc2822(&foo);
-
-            match date {
-                Ok(bar) => bar.timestamp() as i32,
-                Err(baz) => {
-                    // info!("{}", foo);
-                    error!("Error while trying to parse \"{}\" as date.", foo);
-                    error!("Error: {}", baz);
-                    debug!("Falling back to default 0");
-                    0
-                }
-            }
-        }
-        _ => 0,
+    let epoch = match date {
+        Ok(foo) => foo.timestamp() as i32,
+        Err(_) => 0,
     };
 
     let length = item.enclosure()
@@ -245,7 +173,10 @@ mod tests {
         assert_eq!(i.description, Some(descr));
         assert_eq!(i.length, Some(66738886));
         assert_eq!(i.guid, Some("7df4070a-9832-11e7-adac-cb37b05d5e24"));
-        assert_eq!(i.published_date, Some("Wed, 13 Sep 2017 10:00:00 -0000"));
+        assert_eq!(
+            i.published_date,
+            Some("Wed, 13 Sep 2017 10:00:00 +0000".to_string())
+        );
         assert_eq!(i.epoch, 1505296800);
 
         let second = channel.items().iter().nth(1).unwrap();
@@ -267,7 +198,10 @@ mod tests {
         assert_eq!(i2.description, Some(descr2));
         assert_eq!(i2.length, Some(67527575));
         assert_eq!(i2.guid, Some("7c207a24-e33f-11e6-9438-eb45dcf36a1d"));
-        assert_eq!(i2.published_date, Some("Wed, 09 Aug 2017 10:00:00 -0000"));
+        assert_eq!(
+            i2.published_date,
+            Some("Wed,  9 Aug 2017 10:00:00 +0000".to_string())
+        );
         assert_eq!(i2.epoch, 1502272800);
     }
 
@@ -300,7 +234,10 @@ mod tests {
                  the-breakthrough-hopelessness-exploitation-homes-for-mentally-ill#134472",
             )
         );
-        assert_eq!(i.published_date, Some("Fri, 08 Sep 2017 12:00:00 +0000"));
+        assert_eq!(
+            i.published_date,
+            Some("Fri,  8 Sep 2017 12:00:00 +0000".to_string())
+        );
         assert_eq!(i.epoch, 1504872000);
 
         let second = channel.items().iter().nth(1).unwrap();
@@ -330,7 +267,10 @@ mod tests {
                  org/podcast/the-breakthrough-hillary-clinton-failed-presidential-bid#133721",
             )
         );
-        assert_eq!(i2.published_date, Some("Fri, 25 Aug 2017 12:00:00 +0000"));
+        assert_eq!(
+            i2.published_date,
+            Some("Fri, 25 Aug 2017 12:00:00 +0000".to_string())
+        );
         assert_eq!(i2.epoch, 1503662400);
     }
 
@@ -354,7 +294,10 @@ mod tests {
         assert_eq!(i.description, Some(descr));
         assert_eq!(i.length, Some(46479789));
         assert_eq!(i.guid, Some("78A682B4-73E8-47B8-88C0-1BE62DD4EF9D"));
-        assert_eq!(i.published_date, Some("Tue, 12 Sep 2017 22:24:42 -0700"));
+        assert_eq!(
+            i.published_date,
+            Some("Tue, 12 Sep 2017 22:24:42 -0700".to_string())
+        );
         assert_eq!(i.epoch, 1505280282);
 
         let second = channel.items().iter().nth(1).unwrap();
@@ -375,7 +318,10 @@ mod tests {
         assert_eq!(i2.description, Some(descr2));
         assert_eq!(i2.length, Some(36544272));
         assert_eq!(i2.guid, Some("1CE57548-B36C-4F14-832A-5D5E0A24E35B"));
-        assert_eq!(i2.published_date, Some("Tue, 05 Sep 2017 20:57:27 -0700"));
+        assert_eq!(
+            i2.published_date,
+            Some("Tue,  5 Sep 2017 20:57:27 -0700".to_string())
+        );
         assert_eq!(i2.epoch, 1504670247);
     }
 
@@ -404,7 +350,10 @@ mod tests {
             i.guid,
             Some("https://request-for-explanation.github.io/podcast/ep9-a-once-in-a-lifetime-rfc/",)
         );
-        assert_eq!(i.published_date, Some("Mon, 28 Aug 2017 15:00:00 PDT"));
+        assert_eq!(
+            i.published_date,
+            Some("Mon, 28 Aug 2017 15:00:00 -0700".to_string())
+        );
         assert_eq!(i.epoch, 1503957600);
 
         let second = channel.items().iter().nth(8).unwrap();
@@ -427,7 +376,10 @@ mod tests {
             i2.guid,
             Some("https://request-for-explanation.github.io/podcast/ep8-an-existential-crisis/",)
         );
-        assert_eq!(i2.published_date, Some("Tue, 15 Aug 2017 17:00:00 PDT"));
+        assert_eq!(
+            i2.published_date,
+            Some("Tue, 15 Aug 2017 17:00:00 -0700".to_string())
+        );
         assert_eq!(i2.epoch, 1502841600);
     }
 }
