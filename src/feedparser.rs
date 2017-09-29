@@ -7,14 +7,7 @@ use errors::*;
 pub fn parse_podcast(chan: &Channel, source_id: i32) -> Result<models::NewPodcast> {
     let title = chan.title().to_owned();
     let link = chan.link().to_owned();
-
     let description = chan.description().to_owned();
-
-    // let image_uri = match chan.image() {
-    //     Some(foo) => Some(foo.url().to_owned()),
-    //     None => None,
-    // };
-    // Same as the above match expression.
     let image_uri = chan.image().map(|foo| foo.url().to_owned());
 
     let foo = models::NewPodcast {
@@ -27,7 +20,6 @@ pub fn parse_podcast(chan: &Channel, source_id: i32) -> Result<models::NewPodcas
     Ok(foo)
 }
 
-// TODO: Factor out rfc822 to rfc2822 normalization
 pub fn parse_episode<'a>(item: &'a Item, parent_id: i32) -> Result<models::NewEpisode<'a>> {
     let title = item.title();
     let description = item.description();
@@ -44,20 +36,14 @@ pub fn parse_episode<'a>(item: &'a Item, parent_id: i32) -> Result<models::NewEp
     let local_uri = None;
 
     let date = parse_from_rfc2822_with_fallback(item.pub_date().unwrap());
-    // let pub_date = date.map(|x| x.to_rfc2822());
-    //
-    let pub_date = match date {
-        Ok(foo) => Some(foo.to_rfc2822()),
-        Err(_) => None,
-    };
 
-    let epoch = match date {
-        Ok(foo) => foo.timestamp() as i32,
-        Err(_) => 0,
-    };
+    // Should treat information from the rss feeds as invalid by default.
+    // Case: Thu, 05 Aug 2016 06:00:00 -0400 <-- Actually that was friday.
+    let pub_date = date.map(|x| x.to_rfc2822()).ok();
+    let epoch = date.map(|x| x.timestamp() as i32).unwrap_or(0);
 
     let length = item.enclosure()
-        .map(|x| x.length().parse().unwrap_or_default());
+        .map(|x| x.length().parse().unwrap_or(0));
 
     let foo = models::NewEpisode {
         title,

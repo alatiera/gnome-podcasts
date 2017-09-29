@@ -248,6 +248,8 @@ pub struct NewPodcast {
 }
 
 impl NewPodcast {
+    // FIXME: This method seems to not be used anywhere atm.
+    // Drop dead code maybe?
     pub fn from_url(uri: &str, parent: &Source) -> Result<NewPodcast> {
         let chan = Channel::from_url(uri)?;
         let foo = ::feedparser::parse_podcast(&chan, parent.id())?;

@@ -22,6 +22,6 @@ merge_derives = true
 array_horizontal_layout_threshold = 5
 condense_wildcard_suffixes = true
 # rustfmt 0.2.7 panics with format_string = true atm
-# format_strings = false
+# format_strings = true
 chain_one_line_max = 60
 chain_split_single_child = false
