@@ -11,28 +11,6 @@ use feedparser;
 use errors::*;
 use models::*;
 
-pub fn foo() {
-    let inpt = vec![
-        "https://request-for-explanation.github.io/podcast/rss.xml",
-        "https://feeds.feedburner.com/InterceptedWithJeremyScahill",
-        "http://feeds.propublica.org/propublica/podcast",
-        "http://feeds.feedburner.com/linuxunplugged",
-    ];
-
-    let db = ::establish_connection();
-    for feed in inpt.iter() {
-        match insert_return_source(&db, feed) {
-            Ok(_) => {}
-            Err(foo) => {
-                error!("Error: {}", foo);
-                continue;
-            }
-        }
-    }
-
-    index_loop(db).unwrap();
-}
-
 fn index_source(con: &SqliteConnection, foo: &NewSource) -> Result<()> {
     match dbqueries::load_source(con, foo.uri) {
         Ok(_) => Ok(()),
@@ -199,4 +177,34 @@ fn refresh_source(
 
     feed.update_etag(connection, &req)?;
     Ok((req, feed.clone()))
+}
+
+#[cfg(test)]
+mod tests {
+    extern crate tempdir;
+    use std::fs::File;
+    use std::io::stdout;
+    use diesel::prelude::*;
+    use super::*;
+
+    embed_migrations!("migrations/");
+
+    #[test]
+    fn foo() {
+        let tmp_dir = tempdir::TempDir::new("hammond_unit_test").unwrap();
+        let db_path = tmp_dir.path().join("foo_tests.db");
+
+        let db = SqliteConnection::establish(db_path.to_str().unwrap()).unwrap();
+        embedded_migrations::run_with_output(&db, &mut stdout()).unwrap();
+
+        let inpt = vec![
+            "https://request-for-explanation.github.io/podcast/rss.xml",
+            "https://feeds.feedburner.com/InterceptedWithJeremyScahill",
+            "http://feeds.propublica.org/propublica/podcast",
+            "http://feeds.feedburner.com/linuxunplugged",
+        ];
+
+        inpt.iter().for_each(|feed| index_source(&db, &NewSource::new_with_uri(feed)).unwrap());
+        index_loop(db).unwrap();
+    }
 }

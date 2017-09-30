@@ -20,7 +20,7 @@ pub fn run() -> Result<()> {
     info!("{:?}", foo);
 
     ::init()?;
-    ::index_feed::foo();
+    // ::index_feed::foo();
 
     Ok(())
 }

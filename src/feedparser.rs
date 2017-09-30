@@ -35,15 +35,17 @@ pub fn parse_episode<'a>(item: &'a Item, parent_id: i32) -> Result<models::NewEp
     // and have seperate logic to handle local_files
     let local_uri = None;
 
-    let date = parse_from_rfc2822_with_fallback(item.pub_date().unwrap());
+    let date = parse_from_rfc2822_with_fallback(
+        // Default to rfc2822 represantation of epoch 0.
+        item.pub_date().unwrap_or("Thu, 1 Jan 1970 00:00:00 +0000"),
+    );
 
     // Should treat information from the rss feeds as invalid by default.
     // Case: Thu, 05 Aug 2016 06:00:00 -0400 <-- Actually that was friday.
     let pub_date = date.map(|x| x.to_rfc2822()).ok();
     let epoch = date.map(|x| x.timestamp() as i32).unwrap_or(0);
 
-    let length = item.enclosure()
-        .map(|x| x.length().parse().unwrap_or(0));
+    let length = item.enclosure().map(|x| x.length().parse().unwrap_or(0));
 
     let foo = models::NewEpisode {
         title,
