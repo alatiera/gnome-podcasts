@@ -1,3 +1,5 @@
+#![allow(dead_code)]
+
 use diesel::prelude::*;
 use diesel;
 use rss;
@@ -98,8 +100,18 @@ fn complete_index_from_source(
     req.read_to_string(&mut buf)?;
     let chan = rss::Channel::from_str(&buf)?;
 
+    complete_index(mutex, chan, &source)?;
+
+    Ok(())
+}
+
+fn complete_index(
+    mutex: Arc<Mutex<SqliteConnection>>,
+    chan: rss::Channel,
+    parent: &Source
+) -> Result<()>{
     let tempdb = mutex.lock().unwrap();
-    let pd = index_channel(&tempdb, &chan, &source)?;
+    let pd = index_channel(&tempdb, &chan, parent)?;
     drop(tempdb);
 
     index_channel_items(mutex.clone(), chan.items(), &pd)?;
