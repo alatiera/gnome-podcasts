@@ -39,7 +39,6 @@ pub mod dbqueries;
 pub mod errors {
 
     use reqwest;
-    use std::io;
     use rss;
     use chrono;
     use hyper;
@@ -47,6 +46,8 @@ pub mod errors {
     use diesel::migrations::RunMigrationsError;
     use diesel::result;
     use regex;
+
+    use std::io;
     // use std::sync;
 
     error_chain! {

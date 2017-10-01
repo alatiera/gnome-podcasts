@@ -97,14 +97,30 @@ fn complete_index_from_source(
     let mut buf = String::new();
     req.read_to_string(&mut buf)?;
     let chan = rss::Channel::from_str(&buf)?;
-    let pd = feedparser::parse_podcast(&chan, source.id())?;
 
     let tempdb = mutex.lock().unwrap();
-    let pd = insert_return_podcast(&tempdb, &pd)?;
+    let pd = index_channel(&tempdb, &chan, &source)?;
     drop(tempdb);
 
-    let foo: Vec<_> = chan.items()
-        .par_iter()
+    index_channel_items(mutex.clone(), chan.items(), &pd)?;
+
+    Ok(())
+}
+
+fn index_channel(db: &SqliteConnection, chan: &rss::Channel, parent: &Source) -> Result<Podcast> {
+    let pd = feedparser::parse_podcast(&chan, parent.id())?;
+    // Convert NewPodcast to Podcast
+    let pd = insert_return_podcast(db, &pd)?;
+    Ok(pd)
+}
+
+// TODO: Propagate the erros from the maps up the chain.
+fn index_channel_items(
+    mutex: Arc<Mutex<SqliteConnection>>,
+    i: &[rss::Item],
+    pd: &Podcast,
+) -> Result<()> {
+    let foo: Vec<_> = i.par_iter()
         .map(|x| feedparser::parse_episode(&x, pd.id()).unwrap())
         .collect();
 
@@ -113,7 +129,6 @@ fn complete_index_from_source(
         let db = dbmutex.lock().unwrap();
         index_episode(&db, &x).unwrap();
     });
-
     Ok(())
 }
 
@@ -195,6 +210,8 @@ mod tests {
 
     /// Create and return a Temporary DB.
     /// Will be destroed once the returned variable(s) is dropped.
+    // TODO: make it an Iterator so it will give a unique db_path each time.
+    // And will also be able to run tests in parallel.
     fn get_temp_db() -> TempDB {
         let tmp_dir = tempdir::TempDir::new("hammond_unit_test").unwrap();
         let db_path = tmp_dir.path().join("foo_tests.db");
