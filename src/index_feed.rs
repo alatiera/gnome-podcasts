@@ -79,6 +79,7 @@ pub fn index_loop(db: SqliteConnection) -> Result<()> {
 
     let mut f = fetch_feeds(m.clone())?;
 
+    // TODO: replace maps with for_each
     let _: Vec<_> = f.par_iter_mut()
         .map(|&mut (ref mut req, ref source)| {
             complete_index_from_source(req, source, m.clone()).unwrap()
@@ -182,20 +183,42 @@ fn refresh_source(
 #[cfg(test)]
 mod tests {
     extern crate tempdir;
-    use std::fs::File;
-    use std::io::stdout;
     use diesel::prelude::*;
+
+    use std::io::stdout;
+    use std::path::PathBuf;
+
     use super::*;
 
     embed_migrations!("migrations/");
+    // struct TempDB {
+    //     tmp_dir: tempdir::TempDir,
+    //     db_path: PathBuf,
+    //     db: SqliteConnection,
+    // }
+    struct TempDB(tempdir::TempDir, PathBuf, SqliteConnection);
 
-    #[test]
-    fn foo() {
+    /// Create and return a Temporary DB.
+    /// Will be destroed once the returned variable(s) is dropped.
+    fn get_temp_db() -> TempDB {
         let tmp_dir = tempdir::TempDir::new("hammond_unit_test").unwrap();
         let db_path = tmp_dir.path().join("foo_tests.db");
 
         let db = SqliteConnection::establish(db_path.to_str().unwrap()).unwrap();
         embedded_migrations::run_with_output(&db, &mut stdout()).unwrap();
+
+        // TempDB {
+        //     tmp_dir,
+        //     db_path,
+        //     db,
+        // }
+        TempDB(tmp_dir, db_path, db)
+    }
+
+    #[test]
+    /// Insert feeds and update/index them.
+    fn foo() {
+        let TempDB(_tmp_dir, db_path, db) = get_temp_db();
 
         let inpt = vec![
             "https://request-for-explanation.github.io/podcast/rss.xml",
@@ -204,7 +227,21 @@ mod tests {
             "http://feeds.feedburner.com/linuxunplugged",
         ];
 
-        inpt.iter().for_each(|feed| index_source(&db, &NewSource::new_with_uri(feed)).unwrap());
+        inpt.iter().for_each(|feed| {
+            index_source(&db, &NewSource::new_with_uri(feed)).unwrap()
+        });
+        index_loop(db).unwrap();
+
+        // index_loop takes oweneship of the dbconnection in order to create mutexes.
+        let db = SqliteConnection::establish(db_path.to_str().unwrap()).unwrap();
+
+        // Run again to cover Unique constrains erros.
         index_loop(db).unwrap();
     }
+
+    // #[test]
+    // fn baz(){
+    //     let TempDB(tmp_dir, db_path, db) = get_temp_db();
+
+    // }
 }
