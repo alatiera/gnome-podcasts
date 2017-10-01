@@ -79,12 +79,9 @@ pub fn index_loop(db: SqliteConnection) -> Result<()> {
 
     let mut f = fetch_feeds(m.clone())?;
 
-    // TODO: replace maps with for_each
-    let _: Vec<_> = f.par_iter_mut()
-        .map(|&mut (ref mut req, ref source)| {
-            complete_index_from_source(req, source, m.clone()).unwrap()
-        })
-        .collect();
+    f.par_iter_mut().for_each(|&mut (ref mut req, ref source)| {
+        complete_index_from_source(req, source, m.clone()).unwrap()
+    });
 
     Ok(())
 }
@@ -111,13 +108,11 @@ fn complete_index_from_source(
         .map(|x| feedparser::parse_episode(&x, pd.id()).unwrap())
         .collect();
 
-    let _: Vec<_> = foo.par_iter()
-        .map(|x| {
-            let dbmutex = mutex.clone();
-            let db = dbmutex.lock().unwrap();
-            index_episode(&db, &x).unwrap();
-        })
-        .collect();
+    foo.par_iter().for_each(|x| {
+        let dbmutex = mutex.clone();
+        let db = dbmutex.lock().unwrap();
+        index_episode(&db, &x).unwrap();
+    });
 
     Ok(())
 }
