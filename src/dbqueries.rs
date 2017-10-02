@@ -8,10 +8,25 @@ pub fn get_sources(con: &SqliteConnection) -> QueryResult<Vec<Source>> {
     s
 }
 
-pub fn get_podcasts(con: &SqliteConnection, parent: &Source) -> QueryResult<Vec<Podcast>> {
-    let pds = Podcast::belonging_to(parent).load::<Podcast>(con);
-    // debug!("Returned Podcasts:\n{:?}", pds);
+pub fn get_podcasts(con: &SqliteConnection) -> QueryResult<Vec<Podcast>> {
+    use schema::podcast::dsl::*;
+
+    let pds = podcast.load::<Podcast>(con);
     pds
+}
+
+
+pub fn get_episodes(con: &SqliteConnection) -> QueryResult<Vec<Episode>> {
+    use schema::episode::dsl::*;
+
+    let eps = episode.load::<Episode>(con);
+    eps
+}
+
+pub fn get_podcast(con: &SqliteConnection, parent: &Source) -> QueryResult<Vec<Podcast>> {
+    let pd = Podcast::belonging_to(parent).load::<Podcast>(con);
+    // debug!("Returned Podcasts:\n{:?}", pds);
+    pd
 }
 
 pub fn get_pd_episodes(con: &SqliteConnection, parent: &Podcast) -> QueryResult<Vec<Episode>> {

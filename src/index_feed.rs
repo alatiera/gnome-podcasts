@@ -108,8 +108,8 @@ fn complete_index_from_source(
 fn complete_index(
     mutex: Arc<Mutex<SqliteConnection>>,
     chan: rss::Channel,
-    parent: &Source
-) -> Result<()>{
+    parent: &Source,
+) -> Result<()> {
     let tempdb = mutex.lock().unwrap();
     let pd = index_channel(&tempdb, &chan, parent)?;
     drop(tempdb);
@@ -206,9 +206,12 @@ fn refresh_source(
 mod tests {
     extern crate tempdir;
     use diesel::prelude::*;
+    use rss;
 
-    use std::io::stdout;
+    use std::io::{stdout, BufReader};
     use std::path::PathBuf;
+    use std::fs;
+    use std::collections::HashMap;
 
     use super::*;
 
@@ -241,7 +244,7 @@ mod tests {
 
     #[test]
     /// Insert feeds and update/index them.
-    fn foo() {
+    fn test_index_loop() {
         let TempDB(_tmp_dir, db_path, db) = get_temp_db();
 
         let inpt = vec![
@@ -263,9 +266,57 @@ mod tests {
         index_loop(db).unwrap();
     }
 
-    // #[test]
-    // fn baz(){
-    //     let TempDB(tmp_dir, db_path, db) = get_temp_db();
+    #[test]
+    fn test_complete_index() {
+        let TempDB(_tmp_dir, _db_path, db) = get_temp_db();
+        // complete_index runs in parallel so it requires a mutex as argument.
+        let m = Arc::new(Mutex::new(db));
 
-    // }
+        // map the filenames to their feeds url.
+        let mut urls = HashMap::new();
+        urls.insert(
+            "Intercepted.xml",
+            "https://feeds.feedburner.com/InterceptedWithJeremyScahill",
+        );
+        urls.insert(
+            "LinuxUnplugged.xml",
+            "http://feeds.feedburner.com/linuxunplugged",
+        );
+        urls.insert(
+            "TheBreakthrough.xml",
+            "http://feeds.feedburner.com/propublica/podcast",
+        );
+        urls.insert(
+            "R4Explanation.xml",
+            "https://request-for-explanation.github.io/podcast/rss.xml",
+        );
+
+        let feeds_path = fs::read_dir("./tests/feeds/").unwrap();
+        // feeds_path.for_each(|x| println!("{}", x.unwrap().path().display()));
+
+        feeds_path.for_each(|x| {
+            let x = x.unwrap();
+            let name = x.file_name();
+            let url = urls.get(name.to_str().unwrap());
+
+            let tempdb = m.lock().unwrap();
+            // Create and insert a Source into db
+            let s = insert_return_source(&tempdb, url.unwrap()).unwrap();
+            drop(tempdb);
+
+            // open the xml file
+            let feed = fs::File::open(x.path()).unwrap();
+            // parse it into a channel
+            let chan = rss::Channel::read_from(BufReader::new(feed)).unwrap();
+
+            // Index the channel
+            complete_index(m.clone(), chan, &s).unwrap();
+        });
+
+        // Assert the index rows equal the controlled results
+        let tempdb = m.lock().unwrap();
+        assert_eq!(dbqueries::get_sources(&tempdb).unwrap().len(), 4);
+        assert_eq!(dbqueries::get_podcasts(&tempdb).unwrap().len(), 4);
+        assert_eq!(dbqueries::get_episodes(&tempdb).unwrap().len(), 274);
+    }
 }
