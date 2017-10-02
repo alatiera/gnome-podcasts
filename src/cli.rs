@@ -1,7 +1,7 @@
 use structopt::StructOpt;
 use loggerv;
 use errors::*;
-// use models::NewPodcast;
+use downloader;
 
 #[derive(StructOpt, Debug)]
 #[structopt(name = "example", about = "An example of StructOpt usage.")]
@@ -20,6 +20,7 @@ pub fn run() -> Result<()> {
     info!("{:?}", foo);
 
     ::init()?;
+    downloader::download_to("./foo", "http://traffic.megaphone.fm/FL8700626063.mp3")?;
     // ::index_feed::foo();
 
     Ok(())

@@ -211,7 +211,6 @@ mod tests {
     use std::io::{stdout, BufReader};
     use std::path::PathBuf;
     use std::fs;
-    use std::collections::HashMap;
 
     use super::*;
 

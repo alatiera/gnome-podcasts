@@ -35,6 +35,7 @@ pub mod models;
 pub mod feedparser;
 pub mod index_feed;
 pub mod dbqueries;
+pub mod downloader;
 
 pub mod errors {
 
@@ -48,6 +49,7 @@ pub mod errors {
     use regex;
 
     use std::io;
+    // use std::option;
     // use std::sync;
 
     error_chain! {
@@ -62,6 +64,7 @@ pub mod errors {
             DurationError(time::OutOfRangeError);
             HyperError(hyper::error::Error);
             RegexError(regex::Error);
+            // NoneError(option::NoneError);
             // MutexPoison(sync::PoisonError);
         }
     }
