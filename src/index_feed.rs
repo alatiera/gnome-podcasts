@@ -272,40 +272,34 @@ mod tests {
         // complete_index runs in parallel so it requires a mutex as argument.
         let m = Arc::new(Mutex::new(db));
 
-        // map the filenames to their feeds url.
-        let mut urls = HashMap::new();
-        urls.insert(
-            "Intercepted.xml",
-            "https://feeds.feedburner.com/InterceptedWithJeremyScahill",
-        );
-        urls.insert(
-            "LinuxUnplugged.xml",
-            "http://feeds.feedburner.com/linuxunplugged",
-        );
-        urls.insert(
-            "TheBreakthrough.xml",
-            "http://feeds.feedburner.com/propublica/podcast",
-        );
-        urls.insert(
-            "R4Explanation.xml",
-            "https://request-for-explanation.github.io/podcast/rss.xml",
-        );
+        // vec of (path, url) tuples.
+        let urls = vec![
+            (
+                "tests/feeds/Intercepted.xml",
+                "https://feeds.feedburner.com/InterceptedWithJeremyScahill",
+            ),
+            (
+                "tests/feeds/LinuxUnplugged.xml",
+                "http://feeds.feedburner.com/linuxunplugged",
+            ),
+            (
+                "tests/feeds/TheBreakthrough.xml",
+                "http://feeds.feedburner.com/propublica/podcast",
+            ),
+            (
+                "tests/feeds/R4Explanation.xml",
+                "https://request-for-explanation.github.io/podcast/rss.xml",
+            ),
+        ];
 
-        let feeds_path = fs::read_dir("./tests/feeds/").unwrap();
-        // feeds_path.for_each(|x| println!("{}", x.unwrap().path().display()));
-
-        feeds_path.for_each(|x| {
-            let x = x.unwrap();
-            let name = x.file_name();
-            let url = urls.get(name.to_str().unwrap());
-
+        urls.iter().for_each(|&(path, url)| {
             let tempdb = m.lock().unwrap();
             // Create and insert a Source into db
-            let s = insert_return_source(&tempdb, url.unwrap()).unwrap();
+            let s = insert_return_source(&tempdb, url).unwrap();
             drop(tempdb);
 
             // open the xml file
-            let feed = fs::File::open(x.path()).unwrap();
+            let feed = fs::File::open(path).unwrap();
             // parse it into a channel
             let chan = rss::Channel::read_from(BufReader::new(feed)).unwrap();
 
