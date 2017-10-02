@@ -6,7 +6,7 @@ use rss;
 use reqwest;
 use rayon::prelude::*;
 use std::sync::{Arc, Mutex};
-
+ 
 use schema;
 use dbqueries;
 use feedparser;
@@ -81,9 +81,13 @@ pub fn index_loop(db: SqliteConnection) -> Result<()> {
 
     let mut f = fetch_feeds(m.clone())?;
 
-    f.par_iter_mut().for_each(|&mut (ref mut req, ref source)| {
-        complete_index_from_source(req, source, m.clone()).unwrap()
-    });
+    // f.par_iter_mut().for_each(|&mut (ref mut req, ref source)| {
+    // TODO: Once for_each is stable, uncomment above line and delete collect.
+    let _ : Vec<_> = f.par_iter_mut()
+    .map(|&mut (ref mut req, ref source)| {
+        complete_index_from_source(req, source, m.clone()).unwrap();
+    })
+    .collect();
 
     Ok(())
 }
@@ -253,9 +257,11 @@ mod tests {
             "http://feeds.feedburner.com/linuxunplugged",
         ];
 
-        inpt.iter().for_each(|feed| {
+        inpt.iter().map(|feed| {
             index_source(&db, &NewSource::new_with_uri(feed)).unwrap()
-        });
+        })
+        .fold((), |(), _| ());
+
         index_loop(db).unwrap();
 
         // index_loop takes oweneship of the dbconnection in order to create mutexes.
@@ -291,7 +297,7 @@ mod tests {
             ),
         ];
 
-        urls.iter().for_each(|&(path, url)| {
+        urls.iter().map(|&(path, url)| {
             let tempdb = m.lock().unwrap();
             // Create and insert a Source into db
             let s = insert_return_source(&tempdb, url).unwrap();
@@ -304,7 +310,8 @@ mod tests {
 
             // Index the channel
             complete_index(m.clone(), chan, &s).unwrap();
-        });
+        })
+        .fold((), |(), _| ());
 
         // Assert the index rows equal the controlled results
         let tempdb = m.lock().unwrap();
