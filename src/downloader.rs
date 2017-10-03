@@ -2,7 +2,7 @@ use reqwest;
 use hyper::header::*;
 use diesel::prelude::*;
 
-use std::fs::{DirBuilder, File};
+use std::fs::{rename, DirBuilder, File};
 use std::io::{BufWriter, Read, Write};
 use std::path::Path;
 
@@ -10,11 +10,11 @@ use errors::*;
 use dbqueries;
 
 // Adapted from https://github.com/mattgathu/rget .
-/// I never wanted to write a custom downloader.
-/// Sorry to those who will have to work with that code.
-/// Would much rather use a crate, 
-/// or bindings for a lib like youtube-dl(python),
-/// But cant seem to find one.
+// I never wanted to write a custom downloader.
+// Sorry to those who will have to work with that code.
+// Would much rather use a crate,
+// or bindings for a lib like youtube-dl(python),
+// But cant seem to find one.
 pub fn download_to(target: &str, url: &str) -> Result<()> {
     let mut resp = reqwest::get(url)?;
     info!("GET request to: {}", url);
@@ -27,8 +27,6 @@ pub fn download_to(target: &str, url: &str) -> Result<()> {
         ct_len.map(|x| info!("File Lenght: {}", x));
         info!("Content Type: {:?}", ct_type);
 
-        // FIXME
-        // let out_file = target.to_owned() + "/bar.mp3";
         info!("Save destination: {}", target);
 
         let chunk_size = match ct_len {
@@ -36,7 +34,8 @@ pub fn download_to(target: &str, url: &str) -> Result<()> {
             None => 1024 as usize, // default chunk size
         };
 
-        let mut writer = BufWriter::new(File::create(target)?);
+        let out_file = format!("{}.part", target);
+        let mut writer = BufWriter::new(File::create(&out_file)?);
 
         loop {
             let mut buffer = vec![0; chunk_size];
@@ -48,6 +47,7 @@ pub fn download_to(target: &str, url: &str) -> Result<()> {
                 break;
             }
         }
+        rename(out_file, target)?;
     }
     Ok(())
 }
@@ -79,10 +79,12 @@ pub fn latest_dl(connection: &SqliteConnection, limit: u32) -> Result<()> {
             eps.iter_mut()
                 .map(|y| -> Result<()> {
                     // Check if its alrdy downloaded
-                    if let Some(foo) = y.local_uri().clone(){
-                        if Path::new(foo).exists() {
+                    if let Some(_) = y.local_uri() {
+                        // Not idiomatic but I am still fighting the borrow-checker.
+                        if Path::new(y.local_uri().unwrap().to_owned().as_str()).exists() {
                             return Ok(());
                         }
+                        y.set_local_uri(None);
                         y.save_changes::<Episode>(connection)?;
                         ()
                     };
@@ -92,8 +94,7 @@ pub fn latest_dl(connection: &SqliteConnection, limit: u32) -> Result<()> {
 
                     // Construct the download path.
                     let dlpath = format!("{}/{}.{}", dl_fold, y.title().unwrap().to_owned(), ext);
-                    info!("Downloading {:?} into: {}", y.title(), dlpath);
-                    // TODO: implement .part files
+                    // info!("Downloading {:?} into: {}", y.title(), dlpath);
                     download_to(&dlpath, y.uri())?;
 
                     // If download succedes set episode local_uri to dlpath.
