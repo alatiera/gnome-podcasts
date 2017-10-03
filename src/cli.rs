@@ -21,7 +21,7 @@ pub fn run() -> Result<()> {
 
     ::init()?;
     let db = ::establish_connection();
-    downloader::latest_dl(&db)?;
+    downloader::latest_dl(&db, 2)?;
 
     Ok(())
 }

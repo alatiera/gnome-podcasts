@@ -37,7 +37,25 @@ pub fn get_podcast(con: &SqliteConnection, parent: &Source) -> QueryResult<Vec<P
 }
 
 pub fn get_pd_episodes(con: &SqliteConnection, parent: &Podcast) -> QueryResult<Vec<Episode>> {
-    let eps = Episode::belonging_to(parent).load::<Episode>(con);
+    use schema::episode::dsl::*;
+
+    let eps = Episode::belonging_to(parent)
+        .order(epoch.desc())
+        .load::<Episode>(con);
+    eps
+}
+
+pub fn get_pd_episodes_limit(
+    con: &SqliteConnection,
+    parent: &Podcast,
+    limit: u32,
+) -> QueryResult<Vec<Episode>> {
+    use schema::episode::dsl::*;
+
+    let eps = Episode::belonging_to(parent)
+        .order(epoch.desc())
+        .limit(limit as i64)
+        .load::<Episode>(con);
     eps
 }
 

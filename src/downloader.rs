@@ -2,7 +2,7 @@ use reqwest;
 use hyper::header::*;
 use diesel::prelude::*;
 
-use std::fs::{File, DirBuilder};
+use std::fs::{DirBuilder, File};
 use std::io::{BufWriter, Read, Write};
 
 use errors::*;
@@ -48,12 +48,17 @@ pub fn download_to(target: &str, url: &str) -> Result<()> {
 }
 
 // Initial messy prototype, queries load alot of not needed stuff.
-pub fn latest_dl(connection: &SqliteConnection) -> Result<()> {
+pub fn latest_dl(connection: &SqliteConnection, limit: u32) -> Result<()> {
     let pds = dbqueries::get_podcasts(connection)?;
- 
+
     pds.iter()
         .map(|x| -> Result<()> {
-            let eps = dbqueries::get_pd_episodes(connection, &x)?;
+            let eps;
+            if limit == 0 {
+                eps = dbqueries::get_pd_episodes(connection, &x)?;
+            } else {
+                eps = dbqueries::get_pd_episodes_limit(connection, &x, limit)?;
+            }
 
             // It might be better to make it a hash of the title
             let dl_fold = format!("{}/{}", ::DL_DIR.to_str().unwrap(), x.title());
