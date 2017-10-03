@@ -24,16 +24,12 @@ pub fn parse_episode<'a>(item: &'a Item, parent_id: i32) -> Result<models::NewEp
     let title = item.title();
     let description = item.description();
     let guid = item.guid().map(|x| x.value());
+    let local_uri = None;
 
     let mut uri = item.enclosure().map(|x| x.url());
     if uri == None {
         uri = item.link();
     }
-
-    // FIXME:
-    // probably needs to be removed from NewEpisode,
-    // and have seperate logic to handle local_files
-    let local_uri = None;
 
     let date = parse_from_rfc2822_with_fallback(
         // Default to rfc2822 represantation of epoch 0.
