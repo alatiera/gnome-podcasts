@@ -14,7 +14,7 @@ use errors::*;
 pub struct Episode {
     id: i32,
     title: Option<String>,
-    uri: Option<String>,
+    uri: String,
     local_uri: Option<String>,
     description: Option<String>,
     published_date: Option<String>,
@@ -37,12 +37,13 @@ impl Episode {
         self.title = value.map(|x| x.to_string());
     }
 
-    pub fn uri(&self) -> Option<&str> {
-        self.uri.as_ref().map(|s| s.as_str())
+    /// uri is guaranted to exist based on the db rules
+    pub fn uri(&self) -> &str {
+        self.uri.as_ref()
     }
 
-    pub fn set_uri(&mut self, value: Option<&str>) {
-        self.uri = value.map(|x| x.to_string());
+    pub fn set_uri(&mut self, value: &str) {
+        self.uri = value.to_string();
     }
 
     pub fn local_uri(&self) -> Option<&str> {

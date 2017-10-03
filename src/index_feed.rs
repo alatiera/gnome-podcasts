@@ -6,7 +6,7 @@ use rss;
 use reqwest;
 use rayon::prelude::*;
 use std::sync::{Arc, Mutex};
- 
+
 use schema;
 use dbqueries;
 use feedparser;
@@ -83,11 +83,11 @@ pub fn index_loop(db: SqliteConnection) -> Result<()> {
 
     // f.par_iter_mut().for_each(|&mut (ref mut req, ref source)| {
     // TODO: Once for_each is stable, uncomment above line and delete collect.
-    let _ : Vec<_> = f.par_iter_mut()
-    .map(|&mut (ref mut req, ref source)| {
-        complete_index_from_source(req, source, m.clone()).unwrap();
-    })
-    .collect();
+    let _: Vec<_> = f.par_iter_mut()
+        .map(|&mut (ref mut req, ref source)| {
+            complete_index_from_source(req, source, m.clone()).unwrap();
+        })
+        .collect();
 
     Ok(())
 }
@@ -257,10 +257,11 @@ mod tests {
             "http://feeds.feedburner.com/linuxunplugged",
         ];
 
-        inpt.iter().map(|feed| {
-            index_source(&db, &NewSource::new_with_uri(feed)).unwrap()
-        })
-        .fold((), |(), _| ());
+        inpt.iter()
+            .map(|feed| {
+                index_source(&db, &NewSource::new_with_uri(feed)).unwrap()
+            })
+            .fold((), |(), _| ());
 
         index_loop(db).unwrap();
 
@@ -297,21 +298,22 @@ mod tests {
             ),
         ];
 
-        urls.iter().map(|&(path, url)| {
-            let tempdb = m.lock().unwrap();
-            // Create and insert a Source into db
-            let s = insert_return_source(&tempdb, url).unwrap();
-            drop(tempdb);
+        urls.iter()
+            .map(|&(path, url)| {
+                let tempdb = m.lock().unwrap();
+                // Create and insert a Source into db
+                let s = insert_return_source(&tempdb, url).unwrap();
+                drop(tempdb);
 
-            // open the xml file
-            let feed = fs::File::open(path).unwrap();
-            // parse it into a channel
-            let chan = rss::Channel::read_from(BufReader::new(feed)).unwrap();
+                // open the xml file
+                let feed = fs::File::open(path).unwrap();
+                // parse it into a channel
+                let chan = rss::Channel::read_from(BufReader::new(feed)).unwrap();
 
-            // Index the channel
-            complete_index(m.clone(), chan, &s).unwrap();
-        })
-        .fold((), |(), _| ());
+                // Index the channel
+                complete_index(m.clone(), chan, &s).unwrap();
+            })
+            .fold((), |(), _| ());
 
         // Assert the index rows equal the controlled results
         let tempdb = m.lock().unwrap();

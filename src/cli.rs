@@ -20,8 +20,8 @@ pub fn run() -> Result<()> {
     info!("{:?}", foo);
 
     ::init()?;
-    downloader::download_to("./foo", "http://traffic.megaphone.fm/FL8700626063.mp3")?;
-    // ::index_feed::foo();
+    let db = ::establish_connection();
+    downloader::latest_dl(&db)?;
 
     Ok(())
 }

@@ -2,7 +2,7 @@ table! {
     episode (id) {
         id -> Integer,
         title -> Nullable<Text>,
-        uri -> Nullable<Text>,
+        uri -> Text,
         local_uri -> Nullable<Text>,
         description -> Nullable<Text>,
         published_date -> Nullable<Text>,

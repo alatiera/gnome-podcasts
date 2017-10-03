@@ -15,6 +15,13 @@ pub fn get_podcasts(con: &SqliteConnection) -> QueryResult<Vec<Podcast>> {
     pds
 }
 
+// Maybe later.
+// pub fn get_podcasts_ids(con: &SqliteConnection) -> QueryResult<Vec<i32>> {
+//     use schema::podcast::dsl::*;
+
+//     let pds = podcast.select(id).load::<i32>(con);
+//     pds
+// }
 
 pub fn get_episodes(con: &SqliteConnection) -> QueryResult<Vec<Episode>> {
     use schema::episode::dsl::*;

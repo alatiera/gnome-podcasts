@@ -1,9 +1,12 @@
 use reqwest;
 use hyper::header::*;
+use diesel::prelude::*;
 
-use std::fs::File;
+use std::fs::{File, DirBuilder};
 use std::io::{BufWriter, Read, Write};
+
 use errors::*;
+use dbqueries;
 
 // Adapted from https://github.com/mattgathu/rget .
 pub fn download_to(target: &str, url: &str) -> Result<()> {
@@ -19,18 +22,17 @@ pub fn download_to(target: &str, url: &str) -> Result<()> {
         info!("Content Type: {:?}", ct_type);
 
         // FIXME
-        let out_file = target.to_owned() + "/bar.mp3";
-        info!("Save destination: {}", out_file);
+        // let out_file = target.to_owned() + "/bar.mp3";
+        info!("Save destination: {}", target);
 
         let chunk_size = match ct_len {
             Some(x) => x as usize / 99,
-            None => 1024usize, // default chunk size
+            None => 1024 as usize, // default chunk size
         };
 
-        // let foo_file =
+        let mut writer = BufWriter::new(File::create(target)?);
 
-        let mut writer = BufWriter::new(File::create(out_file)?);
-
+        // FIXME: not running
         loop {
             let mut buffer = vec![0; chunk_size];
             let bcount = resp.read(&mut buffer[..]).unwrap();
@@ -42,5 +44,37 @@ pub fn download_to(target: &str, url: &str) -> Result<()> {
             }
         }
     }
+    Ok(())
+}
+
+// Initial messy prototype, queries load alot of not needed stuff.
+pub fn latest_dl(connection: &SqliteConnection) -> Result<()> {
+    let pds = dbqueries::get_podcasts(connection)?;
+ 
+    pds.iter()
+        .map(|x| -> Result<()> {
+            let eps = dbqueries::get_pd_episodes(connection, &x)?;
+
+            // It might be better to make it a hash of the title
+            let dl_fold = format!("{}/{}", ::DL_DIR.to_str().unwrap(), x.title());
+
+            // Create the folder
+            DirBuilder::new().recursive(true).create(&dl_fold).unwrap();
+
+            // Download the episodes
+            eps.iter()
+                .map(|y| -> Result<()> {
+                    let ext = y.uri().split(".").last().unwrap();
+                    let dlpath = format!("{}/{}.{}", dl_fold, y.title().unwrap(), ext);
+                    info!("Downloading {:?} into: {}", y.title(), dlpath);
+                    download_to(&dlpath, y.uri())?;
+                    Ok(())
+                })
+                .fold((), |(), _| ());
+
+            Ok(())
+        })
+        .fold((), |(), _| ());
+
     Ok(())
 }

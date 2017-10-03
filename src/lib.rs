@@ -100,6 +100,11 @@ lazy_static!{
 
         HAMMOND_XDG.place_data_file("hammond.db").unwrap()
         };
+
+    static ref DL_DIR: PathBuf = {
+        &HAMMOND_DATA;
+        HAMMOND_XDG.create_data_directory("Downloads").unwrap()
+    };
 }
 
 pub fn init() -> Result<()> {
