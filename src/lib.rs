@@ -1,9 +1,5 @@
 #![recursion_limit = "1024"]
 
-extern crate structopt;
-#[macro_use]
-extern crate structopt_derive;
-
 #[macro_use]
 extern crate error_chain;
 
@@ -29,7 +25,6 @@ extern crate rss;
 extern crate time;
 extern crate xdg;
 
-pub mod cli;
 pub mod schema;
 pub mod models;
 pub mod feedparser;
