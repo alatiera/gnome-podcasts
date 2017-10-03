@@ -57,7 +57,7 @@ fn index_episode(con: &SqliteConnection, ep: &NewEpisode) -> Result<()> {
     }
     Ok(())
 }
-fn insert_return_source(con: &SqliteConnection, url: &str) -> Result<Source> {
+pub fn insert_return_source(con: &SqliteConnection, url: &str) -> Result<Source> {
     let foo = NewSource::new_with_uri(url);
     index_source(con, &foo)?;
 
