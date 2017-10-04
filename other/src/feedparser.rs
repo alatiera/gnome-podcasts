@@ -1,8 +1,8 @@
 use rss::{Channel, Item};
 use rfc822_sanitizer::parse_from_rfc2822_with_fallback;
 
-use models;
-use errors::*;
+use hammond_data::models;
+use hammond_data::errors::*;
 
 pub fn parse_podcast(chan: &Channel, source_id: i32) -> Result<models::NewPodcast> {
     let title = chan.title().to_owned();

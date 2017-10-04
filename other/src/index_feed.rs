@@ -7,11 +7,11 @@ use reqwest;
 use rayon::prelude::*;
 use std::sync::{Arc, Mutex};
 
-use schema;
-use dbqueries;
+use hammond_data::schema;
+use hammond_data::dbqueries;
+use hammond_data::errors::*;
+use hammond_data::models::*;
 use feedparser;
-use errors::*;
-use models::*;
 
 fn index_source(con: &SqliteConnection, foo: &NewSource) -> Result<()> {
     match dbqueries::load_source(con, foo.uri) {
@@ -209,8 +209,11 @@ fn refresh_source(
 
 #[cfg(test)]
 mod tests {
+
+    extern crate hammond_data;
     extern crate tempdir;
     use diesel::prelude::*;
+    // use diesel::embed_migrations;
     use rss;
 
     use std::io::{stdout, BufReader};
@@ -219,7 +222,6 @@ mod tests {
 
     use super::*;
 
-    embed_migrations!("migrations/");
     // struct TempDB {
     //     tmp_dir: tempdir::TempDir,
     //     db_path: PathBuf,
@@ -236,7 +238,7 @@ mod tests {
         let db_path = tmp_dir.path().join("foo_tests.db");
 
         let db = SqliteConnection::establish(db_path.to_str().unwrap()).unwrap();
-        embedded_migrations::run_with_output(&db, &mut stdout()).unwrap();
+        hammond_data::run_migration_on(&db).unwrap();
 
         // TempDB {
         //     tmp_dir,

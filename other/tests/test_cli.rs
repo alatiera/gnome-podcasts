@@ -1,5 +1,5 @@
 extern crate assert_cli;
-extern crate hammond;
+extern crate other;
 
 // Notes:
 // The following tests will use your systems local hammond db.

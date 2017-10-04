@@ -25,12 +25,9 @@ extern crate rss;
 extern crate time;
 extern crate xdg;
 
-pub mod schema;
-pub mod models;
-pub mod feedparser;
-pub mod index_feed;
 pub mod dbqueries;
-pub mod downloader;
+pub mod models;
+pub mod schema;
 
 pub mod errors {
 
@@ -96,17 +93,23 @@ lazy_static!{
         HAMMOND_XDG.place_data_file("hammond.db").unwrap()
         };
 
-    static ref DL_DIR: PathBuf = {
+    pub static ref DL_DIR: PathBuf = {
         &HAMMOND_DATA;
         HAMMOND_XDG.create_data_directory("Downloads").unwrap()
     };
 }
 
+// TODO: REFACTOR
 pub fn init() -> Result<()> {
     let conn = establish_connection();
     // embedded_migrations::run(&conn)?;
     embedded_migrations::run_with_output(&conn, &mut std::io::stdout())?;
 
+    Ok(())
+}
+
+pub fn run_migration_on(connection: &SqliteConnection) -> Result<()> {
+    embedded_migrations::run_with_output(connection, &mut std::io::stdout())?;
     Ok(())
 }
 

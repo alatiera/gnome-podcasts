@@ -1,0 +1,6 @@
+[package]
+name = "hammond-cli"
+version = "0.1.0"
+authors = ["Jordan Petridis <jordanpetridis@protonmail.com>"]
+
+[dependencies]

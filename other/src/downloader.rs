@@ -6,8 +6,8 @@ use std::fs::{rename, DirBuilder, File};
 use std::io::{BufWriter, Read, Write};
 use std::path::Path;
 
-use errors::*;
-use dbqueries;
+use hammond_data::errors::*;
+use hammond_data::dbqueries;
 
 // Adapted from https://github.com/mattgathu/rget .
 // I never wanted to write a custom downloader.
@@ -54,7 +54,8 @@ pub fn download_to(target: &str, url: &str) -> Result<()> {
 
 // Initial messy prototype, queries load alot of not needed stuff.
 pub fn latest_dl(connection: &SqliteConnection, limit: u32) -> Result<()> {
-    use models::Episode;
+    use hammond_data::models::Episode;
+    use hammond_data::DL_DIR;
 
     let pds = dbqueries::get_podcasts(connection)?;
 
@@ -70,7 +71,7 @@ pub fn latest_dl(connection: &SqliteConnection, limit: u32) -> Result<()> {
             }
 
             // It might be better to make it a hash of the title
-            let dl_fold = format!("{}/{}", ::DL_DIR.to_str().unwrap(), x.title());
+            let dl_fold = format!("{}/{}", DL_DIR.to_str().unwrap(), x.title());
 
             // Create the folder
             DirBuilder::new().recursive(true).create(&dl_fold).unwrap();

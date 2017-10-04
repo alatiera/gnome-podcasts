@@ -8,13 +8,14 @@ extern crate structopt_derive;
 #[macro_use]
 extern crate error_chain;
 
-extern crate hammond;
+extern crate hammond_data;
+extern crate other;
 
 use structopt::StructOpt;
-use hammond::errors::*;
-use hammond::downloader;
-use hammond::index_feed;
-use hammond::dbqueries;
+use hammond_data::errors::*;
+use hammond_data::dbqueries;
+use other::downloader;
+use other::index_feed;
 
 // Should probably had made an Enum instead.
 #[derive(StructOpt, Debug)]
@@ -38,27 +39,27 @@ fn run() -> Result<()> {
 
     loggerv::init_with_verbosity(args.verbosity)?;
 
-    hammond::init()?;
+    hammond_data::init()?;
 
     // Initial prototype for testing.
     // The plan is to write a Gtk+ gui later.
     if args.add != "".to_string() {
-        let db = hammond::establish_connection();
+        let db = hammond_data::establish_connection();
         let _ = index_feed::insert_return_source(&db, &args.add);
     }
 
     if args.up {
-        let db = hammond::establish_connection();
+        let db = hammond_data::establish_connection();
         index_feed::index_loop(db)?;
     }
 
     if args.dl >= 0 {
-        let db = hammond::establish_connection();
+        let db = hammond_data::establish_connection();
         downloader::latest_dl(&db, args.dl as u32)?;
     }
 
     if args.latest {
-        let db = hammond::establish_connection();
+        let db = hammond_data::establish_connection();
         let foo = dbqueries::get_episodes_with_limit(&db, 10)?;
         // This ends up horribly but works for now.
         let _: Vec<_> = foo.iter().map(|x| println!("{:?}", x)).collect();
