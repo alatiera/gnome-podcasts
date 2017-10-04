@@ -6,7 +6,7 @@ use std::fs::{rename, DirBuilder, File};
 use std::io::{BufWriter, Read, Write};
 use std::path::Path;
 
-use hammond_data::errors::*;
+use errors::*;
 use hammond_data::dbqueries;
 
 // Adapted from https://github.com/mattgathu/rget .

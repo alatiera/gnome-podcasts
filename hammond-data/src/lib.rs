@@ -15,14 +15,8 @@ extern crate diesel;
 #[macro_use]
 extern crate diesel_codegen;
 
-extern crate chrono;
-extern crate hyper;
 extern crate rayon;
-extern crate regex;
 extern crate reqwest;
-extern crate rfc822_sanitizer;
-extern crate rss;
-extern crate time;
 extern crate xdg;
 
 pub mod dbqueries;
@@ -31,33 +25,13 @@ pub mod schema;
 
 pub mod errors {
 
-    use reqwest;
-    use rss;
-    use chrono;
-    use hyper;
-    use time;
     use diesel::migrations::RunMigrationsError;
     use diesel::result;
-    use regex;
-
-    use std::io;
-    // use std::option;
-    // use std::sync;
 
     error_chain! {
         foreign_links {
-            ReqError(reqwest::Error);
-            IoError(io::Error);
-            Log(::log::SetLoggerError);
             MigrationError(RunMigrationsError);
-            RSSError(rss::Error);
             DieselResultError(result::Error);
-            ChronoError(chrono::ParseError);
-            DurationError(time::OutOfRangeError);
-            HyperError(hyper::error::Error);
-            RegexError(regex::Error);
-            // NoneError(option::NoneError);
-            // MutexPoison(sync::PoisonError);
         }
     }
 }
@@ -109,6 +83,7 @@ pub fn init() -> Result<()> {
 }
 
 pub fn run_migration_on(connection: &SqliteConnection) -> Result<()> {
+    info!("Running DB Migrations...");
     embedded_migrations::run_with_output(connection, &mut std::io::stdout())?;
     Ok(())
 }

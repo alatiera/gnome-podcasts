@@ -1,5 +1,4 @@
 use reqwest;
-use rss::Channel;
 use diesel::SaveChangesDsl;
 use SqliteConnection;
 use reqwest::header::{ETag, LastModified};

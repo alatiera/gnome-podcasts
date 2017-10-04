@@ -12,8 +12,8 @@ extern crate hammond_data;
 extern crate other;
 
 use structopt::StructOpt;
-use hammond_data::errors::*;
 use hammond_data::dbqueries;
+use other::errors::*;
 use other::downloader;
 use other::index_feed;
 

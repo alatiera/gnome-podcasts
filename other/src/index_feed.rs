@@ -9,8 +9,9 @@ use std::sync::{Arc, Mutex};
 
 use hammond_data::schema;
 use hammond_data::dbqueries;
-use hammond_data::errors::*;
 use hammond_data::models::*;
+
+use errors::*;
 use feedparser;
 
 fn index_source(con: &SqliteConnection, foo: &NewSource) -> Result<()> {
