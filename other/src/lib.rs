@@ -1,6 +1,8 @@
 #![recursion_limit = "1024"]
 
 extern crate diesel;
+#[macro_use]
+extern crate error_chain;
 extern crate hammond_data;
 extern crate hyper;
 #[macro_use]
@@ -9,8 +11,6 @@ extern crate rayon;
 extern crate reqwest;
 extern crate rfc822_sanitizer;
 extern crate rss;
-#[macro_use]
-extern crate error_chain;
 
 pub mod feedparser;
 pub mod downloader;

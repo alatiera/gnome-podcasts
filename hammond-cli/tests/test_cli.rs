@@ -1,5 +1,4 @@
 extern crate assert_cli;
-extern crate other;
 
 // Notes:
 // The following tests will use your systems local hammond db.
@@ -27,5 +26,12 @@ fn test_add() {
             "--add",
             "https://feeds.feedburner.com/InterceptedWithJeremyScahill",
         ])
+        .unwrap();
+}
+
+#[test]
+fn test_latest() {
+    assert_cli::Assert::main_binary()
+        .with_args(&["--latest"])
         .unwrap();
 }

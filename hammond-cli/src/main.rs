@@ -4,19 +4,18 @@ extern crate loggerv;
 extern crate structopt;
 #[macro_use]
 extern crate structopt_derive;
-
 #[macro_use]
 extern crate error_chain;
 
-extern crate hammond_data;
 extern crate other;
+extern crate hammond_data;
 
 use structopt::StructOpt;
 use hammond_data::dbqueries;
 use other::errors::*;
 use other::downloader;
 use other::index_feed;
-
+ 
 // Should probably had made an Enum instead.
 #[derive(StructOpt, Debug)]
 #[structopt(name = "example", about = "An example of StructOpt usage.")]

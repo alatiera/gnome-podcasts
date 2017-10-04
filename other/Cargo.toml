@@ -7,18 +7,15 @@ authors = ["Jordan Petridis <jordanpetridis@protonmail.com>"]
 hammond-data = {path = "../hammond-data"}
 rayon = "0.8.2"
 error-chain = "0.11.0"
-structopt = "0.1.0"
-structopt-derive = "0.1.0"
 log = "0.3.8"
 loggerv = "0.3.0"
 rfc822_sanitizer = "0.3.0"
 reqwest = "0.7.3"
 hyper = "0.11.2"
-diesel = { version = "0.16.0", features = ["sqlite", "deprecated-time", "chrono"] }
+diesel = { version = "0.16.0", features = ["sqlite"] }
 diesel_codegen = { version = "0.16.0", features = ["sqlite"] }
 rss = { version = "1.1.0", features = ["from_url"]}
 dotenv = "*"
 
 [dev-dependencies]
 tempdir = "0.3.5"
-assert_cli = "0.5"

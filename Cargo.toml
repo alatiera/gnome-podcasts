@@ -1,5 +1,6 @@
 [workspace]
 members = [
     "hammond-data",
+    "hammond-cli",
     "other"
 ]
