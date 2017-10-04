@@ -40,7 +40,7 @@ fn run() -> Result<()> {
 
     hammond::init()?;
 
-    // Initial prototype for testings.
+    // Initial prototype for testing.
     // The plan is to write a Gtk+ gui later.
     if args.add != "".to_string() {
         let db = hammond::establish_connection();
