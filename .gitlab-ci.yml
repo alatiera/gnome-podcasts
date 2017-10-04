@@ -1,8 +1,11 @@
 # Optional: Install a C compiler, cmake and git into the container.
 # You will often need this when you (or any of your dependencies) depends on C code.
-# before_script:
-# - apt-get update -yqq
-# - apt-get install -yqq --no-install-recommends build-essential
+before_script:
+- apt-get update -yqq
+- apt-get install -yqq --no-install-recommends build-essential
+
+# kcov
+- apt-get install -y libcurl4-openssl-dev libelf-dev libdw-dev cmake gcc binutils-dev libiberty-dev
 
 variables:
   RUSTFLAGS: "-C link-dead-code"
@@ -13,7 +16,7 @@ test:stable:
   script:
   - rustc --version && cargo --version      # Print version info for debugging
   - cargo build
-  - cargo test --verbose
+  - cargo test --verbose --jobs 1 --release
 
 # Use cargo to test the project
 test:nightly:
@@ -23,6 +26,9 @@ test:nightly:
   script:
   - rustc --version && cargo --version      # Print version info for debugging
   - cargo build
-  - cargo test --verbose
-  # - cargo test --verbose --jobs 1 --release # Don't paralize to make errors more readable
-
+  # - cargo test --verbose
+  # # Don't paralize, At least until I fix tempdb helper fn.
+  - cargo test --verbose --jobs 1 --release
+  - cargo bench
+  after_script:
+  - wget https://github.com/SimonKagstrom/kcov/archive/master.tar.gz && tar xzf master.tar.gz && cd kcov-master && mkdir build && cd build && cmake .. && make && make install DESTDIR=../../kcov-build && cd ../.. && rm -rf kcov-master && for file in target/debug/hammond-*[^\.d]; do mkdir -p "target/cov/$(basename $file)"; ./kcov-build/usr/local/bin/kcov --exclude-pattern=/.cargo,/usr/lib --verify "target/cov/$(basename $file)" "$file"; done && bash <(curl -s https://codecov.io/bash) && echo "Uploaded code coverage"
