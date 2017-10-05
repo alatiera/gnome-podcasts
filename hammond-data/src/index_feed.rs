@@ -77,10 +77,10 @@ fn insert_return_episode(con: &SqliteConnection, ep: &NewEpisode) -> Result<Epis
     Ok(dbqueries::load_episode(con, &ep.uri.unwrap())?)
 }
 
-pub fn index_loop(db: SqliteConnection) -> Result<()> {
+pub fn index_loop(db: SqliteConnection, force: bool) -> Result<()> {
     let m = Arc::new(Mutex::new(db));
 
-    let mut f = fetch_feeds(m.clone())?;
+    let mut f = fetch_feeds(m.clone(), force)?;
 
     // f.par_iter_mut().for_each(|&mut (ref mut req, ref source)| {
     // TODO: Once for_each is stable, uncomment above line and delete collect.
@@ -153,6 +153,7 @@ fn index_channel_items(
 // TODO: After fixing etag/lmod, add sent_etag:bool arg and logic to bypass it.
 pub fn fetch_feeds(
     connection: Arc<Mutex<SqliteConnection>>,
+    force: bool,
 ) -> Result<Vec<(reqwest::Response, Source)>> {
     let tempdb = connection.lock().unwrap();
     let mut feeds = dbqueries::get_sources(&tempdb)?;
@@ -163,7 +164,7 @@ pub fn fetch_feeds(
         .map(|x| {
             let dbmutex = connection.clone();
             let db = dbmutex.lock().unwrap();
-            refresh_source(&db, x).unwrap()
+            refresh_source(&db, x, force).unwrap()
         })
         .collect();
 
@@ -173,24 +174,32 @@ pub fn fetch_feeds(
 fn refresh_source(
     connection: &SqliteConnection,
     feed: &mut Source,
+    force: bool,
 ) -> Result<(reqwest::Response, Source)> {
     use reqwest::header::{ETag, EntityTag, Headers, HttpDate, LastModified};
 
     let client = reqwest::Client::new()?;
-    let mut headers = Headers::new();
+    let req;
+    match force {
+        true => req = client.get(feed.uri())?.send()?,
+        false => {
+            let mut headers = Headers::new();
 
-    if let Some(foo) = feed.http_etag() {
-        headers.set(ETag(EntityTag::new(true, foo.to_owned())));
-    }
+            if let Some(foo) = feed.http_etag() {
+                headers.set(ETag(EntityTag::new(true, foo.to_owned())));
+            }
 
-    if let Some(foo) = feed.last_modified() {
-        headers.set(LastModified(foo.parse::<HttpDate>()?));
-    }
+            if let Some(foo) = feed.last_modified() {
+                headers.set(LastModified(foo.parse::<HttpDate>()?));
+            }
 
-    info!("Headers: {:?}", headers);
-    // FIXME: I have fucked up somewhere here.
-    // Getting back 200 codes even though I supposedly sent etags.
-    let req = client.get(feed.uri())?.headers(headers).send()?;
+            // FIXME: I have fucked up somewhere here.
+            // Getting back 200 codes even though I supposedly sent etags.
+            info!("Headers: {:?}", headers);
+            req = client.get(feed.uri())?.headers(headers).send()?;
+        }
+    };
+
     info!("{}", req.status());
 
     // TODO match on more stuff
@@ -210,8 +219,8 @@ fn refresh_source(
 #[cfg(test)]
 mod tests {
 
-    extern crate tempdir;
     extern crate rand;
+    extern crate tempdir;
 
     use diesel::prelude::*;
     use rss;
@@ -223,11 +232,6 @@ mod tests {
 
     use super::*;
 
-    // struct TempDB {
-    //     tmp_dir: tempdir::TempDir,
-    //     db_path: PathBuf,
-    //     db: SqliteConnection,
-    // }
     struct TempDB(tempdir::TempDir, PathBuf, SqliteConnection);
 
     /// Create and return a Temporary DB.
@@ -236,16 +240,13 @@ mod tests {
         let mut rng = rand::thread_rng();
 
         let tmp_dir = tempdir::TempDir::new("hammond_unit_test").unwrap();
-        let db_path = tmp_dir.path().join(format!("hammonddb_{}.db", rng.gen::<usize>()));
+        let db_path = tmp_dir
+            .path()
+            .join(format!("hammonddb_{}.db", rng.gen::<usize>()));
 
         let db = SqliteConnection::establish(db_path.to_str().unwrap()).unwrap();
         ::run_migration_on(&db).unwrap();
 
-        // TempDB {
-        //     tmp_dir,
-        //     db_path,
-        //     db,
-        // }
         TempDB(tmp_dir, db_path, db)
     }
 
@@ -267,13 +268,13 @@ mod tests {
             })
             .fold((), |(), _| ());
 
-        index_loop(db).unwrap();
+        index_loop(db, true).unwrap();
 
         // index_loop takes oweneship of the dbconnection in order to create mutexes.
         let db = SqliteConnection::establish(db_path.to_str().unwrap()).unwrap();
 
         // Run again to cover Unique constrains erros.
-        index_loop(db).unwrap();
+        index_loop(db, true).unwrap();
     }
 
     #[test]
