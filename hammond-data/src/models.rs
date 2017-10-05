@@ -198,7 +198,6 @@ impl<'a> Source {
     }
 }
 
-// TODO: Remove pub fields and add setters.
 #[derive(Insertable)]
 #[table_name = "source"]
 #[derive(Debug, Clone)]

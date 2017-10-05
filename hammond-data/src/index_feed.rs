@@ -149,7 +149,7 @@ fn index_channel_items(
     Ok(())
 }
 
-// TODO: maybe refactor into an Iterator for lazy evaluation.
+// Maybe this can be refactored into an Iterator for lazy evaluation.
 pub fn fetch_feeds(
     connection: Arc<Mutex<SqliteConnection>>,
     force: bool,
