@@ -36,7 +36,7 @@ struct Opt {
 fn run() -> Result<()> {
     let args = Opt::from_args();
 
-    loggerv::init_with_verbosity(args.verbosity).unwrap();
+    loggerv::init_with_verbosity(args.verbosity)?;
 
     hammond_data::init()?;
 

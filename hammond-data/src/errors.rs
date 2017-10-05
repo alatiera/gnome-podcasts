@@ -3,11 +3,13 @@ use diesel::result;
 use rss;
 use hyper;
 use reqwest;
+use log;
 
 use std::io;
 
 error_chain! {
     foreign_links {
+        LogError(log::SetLoggerError);
         MigrationError(RunMigrationsError);
         DieselResultError(result::Error);
         RSSError(rss::Error);

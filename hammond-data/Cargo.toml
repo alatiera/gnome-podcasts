@@ -10,12 +10,12 @@ hyper = "0.11.2"
 reqwest = "0.7.3"
 error-chain = "0.11.0"
 log = "0.3.8"
-loggerv = "0.3.0"
-diesel = { version = "0.16.0", features = ["sqlite", "deprecated-time", "chrono"] }
+diesel = { version = "0.16.0", features = ["sqlite"] }
 diesel_codegen = { version = "0.16.0", features = ["sqlite"] }
 xdg = "2.1.0"
 lazy_static = "0.2.8"
-rss = { version = "1.1.0", features = ["from_url"]}
+rss = "1.1.0"
+# overwrite diesel dependancy that disables a feature rss depends upon
 dotenv = "*"
 
 [dev-dependencies]

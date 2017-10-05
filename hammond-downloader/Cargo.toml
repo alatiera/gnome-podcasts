@@ -7,10 +7,8 @@ authors = ["Jordan Petridis <jordanpetridis@protonmail.com>"]
 hammond-data = {path = "../hammond-data"}
 error-chain = "0.11.0"
 log = "0.3.8"
-loggerv = "0.3.0"
 reqwest = "0.7.3"
 hyper = "0.11.2"
 diesel = { version = "0.16.0", features = ["sqlite"] }
-diesel_codegen = { version = "0.16.0", features = ["sqlite"] }
 rss = { version = "1.1.0", features = ["from_url"]}
 dotenv = "*"

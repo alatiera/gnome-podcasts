@@ -8,7 +8,6 @@ extern crate lazy_static;
 
 #[macro_use]
 extern crate log;
-extern crate loggerv;
 
 #[macro_use]
 extern crate diesel;
