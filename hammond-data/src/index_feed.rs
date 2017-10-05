@@ -211,8 +211,11 @@ fn refresh_source(
 mod tests {
 
     extern crate tempdir;
+    extern crate rand;
+
     use diesel::prelude::*;
     use rss;
+    use self::rand::Rng;
 
     use std::io::BufReader;
     use std::path::PathBuf;
@@ -229,11 +232,11 @@ mod tests {
 
     /// Create and return a Temporary DB.
     /// Will be destroed once the returned variable(s) is dropped.
-    // TODO: make it an Iterator so it will give a unique db_path each time.
-    // And will also be able to run tests in parallel.
     fn get_temp_db() -> TempDB {
+        let mut rng = rand::thread_rng();
+
         let tmp_dir = tempdir::TempDir::new("hammond_unit_test").unwrap();
-        let db_path = tmp_dir.path().join("foo_tests.db");
+        let db_path = tmp_dir.path().join(format!("hammonddb_{}.db", rng.gen::<usize>()));
 
         let db = SqliteConnection::establish(db_path.to_str().unwrap()).unwrap();
         ::run_migration_on(&db).unwrap();
