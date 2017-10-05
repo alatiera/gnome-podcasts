@@ -2,5 +2,6 @@
 members = [
     "hammond-data",
     "hammond-cli",
-    "hammond-downloader"
+    "hammond-downloader",
+    "hammond-gtk"
 ]
