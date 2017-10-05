@@ -2,5 +2,5 @@
 members = [
     "hammond-data",
     "hammond-cli",
-    "other"
+    "hammond-downloader"
 ]

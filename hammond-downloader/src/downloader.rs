@@ -8,6 +8,8 @@ use std::path::Path;
 
 use errors::*;
 use hammond_data::dbqueries;
+use hammond_data::models::Episode;
+use hammond_data::DL_DIR;
 
 // Adapted from https://github.com/mattgathu/rget .
 // I never wanted to write a custom downloader.
@@ -54,9 +56,6 @@ pub fn download_to(target: &str, url: &str) -> Result<()> {
 
 // Initial messy prototype, queries load alot of not needed stuff.
 pub fn latest_dl(connection: &SqliteConnection, limit: u32) -> Result<()> {
-    use hammond_data::models::Episode;
-    use hammond_data::DL_DIR;
-
     let pds = dbqueries::get_podcasts(connection)?;
 
     pds.iter()

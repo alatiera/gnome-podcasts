@@ -17,21 +17,35 @@ extern crate diesel_codegen;
 
 extern crate rayon;
 extern crate reqwest;
+extern crate hyper; 
 extern crate xdg;
+extern crate rss;
+extern crate rfc822_sanitizer;
 
 pub mod dbqueries;
 pub mod models;
 pub mod schema;
 
+pub mod index_feed;
+pub mod feedparser;
+
 pub mod errors {
 
     use diesel::migrations::RunMigrationsError;
     use diesel::result;
+    use rss;
+    use hyper;
+    use reqwest;
+    use std::io;
 
     error_chain! {
         foreign_links {
             MigrationError(RunMigrationsError);
             DieselResultError(result::Error);
+            RSSError(rss::Error);
+            HyperError(hyper::error::Error);
+            ReqError(reqwest::Error);
+            IoError(io::Error);
         }
     }
 }

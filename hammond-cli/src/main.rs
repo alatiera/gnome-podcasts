@@ -1,21 +1,21 @@
 extern crate log;
 extern crate loggerv;
 
+#[macro_use]
+extern crate error_chain;
 extern crate structopt;
 #[macro_use]
 extern crate structopt_derive;
-#[macro_use]
-extern crate error_chain;
 
-extern crate other;
 extern crate hammond_data;
+extern crate hammond_downloader;
 
 use structopt::StructOpt;
 use hammond_data::dbqueries;
-use other::errors::*;
-use other::downloader;
-use other::index_feed;
- 
+use hammond_data::errors::*;
+use hammond_data::index_feed;
+use hammond_downloader::downloader;
+
 // Should probably had made an Enum instead.
 #[derive(StructOpt, Debug)]
 #[structopt(name = "example", about = "An example of StructOpt usage.")]
@@ -36,7 +36,7 @@ struct Opt {
 fn run() -> Result<()> {
     let args = Opt::from_args();
 
-    loggerv::init_with_verbosity(args.verbosity)?;
+    loggerv::init_with_verbosity(args.verbosity).unwrap();
 
     hammond_data::init()?;
 
@@ -54,7 +54,7 @@ fn run() -> Result<()> {
 
     if args.dl >= 0 {
         let db = hammond_data::establish_connection();
-        downloader::latest_dl(&db, args.dl as u32)?;
+        downloader::latest_dl(&db, args.dl as u32).unwrap();
     }
 
     if args.latest {
