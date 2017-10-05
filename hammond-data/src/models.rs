@@ -65,10 +65,8 @@ impl Episode {
         self.published_date.as_ref().map(|s| s.as_str())
     }
 
-    // FIXME: make the setter accept &str again
-    pub fn set_published_date(&mut self, value: Option<String>) {
-        // self.published_date = value.map(|x| x.to_string());
-        self.published_date = value;
+    pub fn set_published_date(&mut self, value: Option<&str>) {
+        self.published_date = value.map(|x| x.to_string().to_owned());
     }
 
     pub fn guid(&self) -> Option<&str> {
@@ -228,7 +226,6 @@ pub struct NewEpisode<'a> {
     pub uri: Option<&'a str>,
     pub local_uri: Option<&'a str>,
     pub description: Option<&'a str>,
-    // FIXME: make it &str again
     pub published_date: Option<String>,
     pub length: Option<i32>,
     pub guid: Option<&'a str>,

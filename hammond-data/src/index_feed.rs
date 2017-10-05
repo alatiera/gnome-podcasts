@@ -45,7 +45,7 @@ fn index_episode(con: &SqliteConnection, ep: &NewEpisode) -> Result<()> {
         {
             foo.set_title(ep.title);
             foo.set_description(ep.description);
-            foo.set_published_date(ep.published_date.clone());
+            foo.set_published_date(ep.published_date.as_ref().map(|x| x.as_str()));
             foo.set_guid(ep.guid);
             foo.set_length(ep.length);
             foo.set_epoch(ep.epoch);
@@ -150,7 +150,6 @@ fn index_channel_items(
 }
 
 // TODO: maybe refactor into an Iterator for lazy evaluation.
-// TODO: After fixing etag/lmod, add sent_etag:bool arg and logic to bypass it.
 pub fn fetch_feeds(
     connection: Arc<Mutex<SqliteConnection>>,
     force: bool,
