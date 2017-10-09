@@ -9,6 +9,19 @@
     <property name="subtitle">World!</property>
     <property name="show_close_button">True</property>
     <child>
+      <object class="GtkButton" id="homebutton">
+        <property name="label">gtk-home</property>
+        <property name="visible">True</property>
+        <property name="can_focus">True</property>
+        <property name="receives_default">True</property>
+        <property name="use_stock">True</property>
+        <property name="always_show_image">True</property>
+      </object>
+      <packing>
+        <property name="position">3</property>
+      </packing>
+    </child>
+    <child>
       <object class="GtkButton" id="refbutton">
         <property name="label">gtk-refresh</property>
         <property name="visible">True</property>
@@ -20,6 +33,36 @@
       </object>
       <packing>
         <property name="pack_type">end</property>
+      </packing>
+    </child>
+    <child>
+      <object class="GtkButton" id="addbutton">
+        <property name="label">gtk-add</property>
+        <property name="visible">True</property>
+        <property name="can_focus">True</property>
+        <property name="receives_default">True</property>
+        <property name="use_underline">True</property>
+        <property name="use_stock">True</property>
+        <property name="always_show_image">True</property>
+      </object>
+      <packing>
+        <property name="pack_type">end</property>
+        <property name="position">1</property>
+      </packing>
+    </child>
+    <child>
+      <object class="GtkButton" id="searchbutton">
+        <property name="label">gtk-find</property>
+        <property name="visible">True</property>
+        <property name="can_focus">True</property>
+        <property name="receives_default">True</property>
+        <property name="use_underline">True</property>
+        <property name="use_stock">True</property>
+        <property name="always_show_image">True</property>
+      </object>
+      <packing>
+        <property name="pack_type">end</property>
+        <property name="position">2</property>
       </packing>
     </child>
   </object>

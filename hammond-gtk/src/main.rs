@@ -39,6 +39,18 @@ fn main() {
     let header: gtk::HeaderBar = builder.get_object("headerbar1").unwrap();
     window.set_titlebar(&header);
 
+    let refresh_button : gtk::Button = builder.get_object("refbutton").unwrap();
+    // TODO: Have a small dropdown menu
+    let add_button : gtk::Button = builder.get_object("addbutton").unwrap();
+    let search_button : gtk::Button = builder.get_object("searchbutton").unwrap();
+    let home_button : gtk::Button = builder.get_object("homebutton").unwrap();
+
+    // FIXME: This locks the ui atm.
+    refresh_button.connect_clicked(|_| {
+        let db = hammond_data::establish_connection();
+        hammond_data::index_feed::index_loop(db, false).unwrap();
+    });
+
     // Exit cleanly on delete event
     window.connect_delete_event(|_, _| {
         gtk::main_quit();
