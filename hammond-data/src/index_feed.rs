@@ -207,10 +207,10 @@ fn refresh_source(
     // 302: Temporary redirect of the url
     // 304: Up to date Feed, checked with the Etag
     // 410: Feed deleted
-    match req.status() {
-        reqwest::StatusCode::NotModified => (),
-        _ => (),
-    };
+    // match req.status() {
+    //     reqwest::StatusCode::NotModified => (),
+    //     _ => (),
+    // };
 
     feed.update_etag(connection, &req)?;
     Ok((req, feed.clone()))
