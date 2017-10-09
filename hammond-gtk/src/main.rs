@@ -1,18 +1,23 @@
 // extern crate glib;
 extern crate gtk;
 // extern crate gdk_pixbuf;
+extern crate hammond_data;
 
 use gtk::prelude::*;
 use gtk::Orientation;
 use gtk::IconSize;
 // use gtk::{CellRendererText, TreeStore, TreeView, TreeViewColumn};
 
+use hammond_data::dbqueries;
+
 use gtk::prelude::*;
 
+// TODO: setup a img downloader, caching system, and then display them.
 fn create_child(name: &str) -> gtk::Box {
     let box_ = gtk::Box::new(Orientation::Vertical, 5);
     let img = gtk::Image::new_from_icon_name("gtk-missing-image", IconSize::Menu.into());
     let label = gtk::Label::new(name);
+    box_.set_size_request(200, 200);
     box_.pack_start(&img, true, true, 0);
     box_.pack_start(&label, false, false, 0);
     box_
@@ -24,7 +29,7 @@ fn main() {
         return;
     }
 
-    // Direct copy of the way gnome-music does albumview
+    // Adapted copy of the way gnome-music does albumview
     let glade_src = include_str!("../gtk/foo.ui");
     let builder = gtk::Builder::new_from_string(glade_src);
 
@@ -41,11 +46,15 @@ fn main() {
     });
 
     let flowbox: gtk::FlowBox = builder.get_object("flowbox1").unwrap();
-    for _ in 0..10 {
-        let f = create_child("placeholder");
+
+    // TODO: This should be in a TreeStore.
+    let db = hammond_data::establish_connection();
+    let podcasts = dbqueries::get_podcasts(&db).unwrap();
+
+    for pd in &podcasts {
+        let f = create_child(pd.title());
         flowbox.add(&f);
     }
-
 
     window.show_all();
     gtk::main();
