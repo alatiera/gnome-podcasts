@@ -5,3 +5,5 @@ authors = ["Jordan Petridis <jordanpetridis@protonmail.com>"]
 
 [dependencies]
 gtk = { version = "0.2.0", features = ["v3_22"]}
+glib = "0.3.0"
+gdk-pixbuf = "0.2.0"
