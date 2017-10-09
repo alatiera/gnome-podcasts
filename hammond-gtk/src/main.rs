@@ -13,13 +13,14 @@ fn main() {
         return;
     }
 
+    // Direct copy of the way gnome-music does albumview
     let glade_src = include_str!("../gtk/foo.ui");
     let builder = gtk::Builder::new_from_string(glade_src);
 
     // Get the main window
-    let window :gtk::Window = builder.get_object("appwindow1").unwrap();
+    let window: gtk::Window = builder.get_object("window1").unwrap();
     // Get the headerbar
-    let header :gtk::HeaderBar = builder.get_object("headerbar1").unwrap();
+    let header: gtk::HeaderBar = builder.get_object("headerbar1").unwrap();
     window.set_titlebar(&header);
 
     // Exit cleanly on delete event
