@@ -1,3 +1,5 @@
+#![cfg_attr(feature = "cargo-clippy", allow(let_and_return))]
+
 use diesel::prelude::*;
 use models::{Episode, Podcast, Source};
 

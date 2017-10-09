@@ -20,7 +20,7 @@ pub fn parse_podcast(chan: &Channel, source_id: i32) -> Result<models::NewPodcas
     Ok(foo)
 }
 
-pub fn parse_episode<'a>(item: &'a Item, parent_id: i32) -> Result<models::NewEpisode<'a>> {
+pub fn parse_episode(item: &Item, parent_id: i32) -> Result<models::NewEpisode> {
     let title = item.title();
     let description = item.description();
     let guid = item.guid().map(|x| x.value());

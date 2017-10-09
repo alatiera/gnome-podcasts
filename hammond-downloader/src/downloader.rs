@@ -62,12 +62,11 @@ pub fn latest_dl(connection: &SqliteConnection, limit: u32) -> Result<()> {
         // TODO when for_each reaches stable:
         // Remove all the ugly folds(_) and replace map() with for_each().
         .map(|x| -> Result<()> {
-            let mut eps;
-            if limit == 0 {
-                eps = dbqueries::get_pd_episodes(connection, &x)?;
+            let mut eps = if limit == 0 {
+                dbqueries::get_pd_episodes(connection, x)?
             } else {
-                eps = dbqueries::get_pd_episodes_limit(connection, &x, limit)?;
-            }
+                dbqueries::get_pd_episodes_limit(connection, x, limit)?
+            };
 
             // It might be better to make it a hash of the title
             let dl_fold = format!("{}/{}", DL_DIR.to_str().unwrap(), x.title());
@@ -79,7 +78,7 @@ pub fn latest_dl(connection: &SqliteConnection, limit: u32) -> Result<()> {
             eps.iter_mut()
                 .map(|y| -> Result<()> {
                     // Check if its alrdy downloaded
-                    if let Some(_) = y.local_uri() {
+                    if y.local_uri().is_some() {
                         // Not idiomatic but I am still fighting the borrow-checker.
                         if Path::new(y.local_uri().unwrap().to_owned().as_str()).exists() {
                             return Ok(());
@@ -90,7 +89,7 @@ pub fn latest_dl(connection: &SqliteConnection, limit: u32) -> Result<()> {
                     };
 
                     // Unreliable and hacky way to extract the file extension from the url.
-                    let ext = y.uri().split(".").last().unwrap().to_owned();
+                    let ext = y.uri().split('.').last().unwrap().to_owned();
 
                     // Construct the download path.
                     let dlpath = format!("{}/{}.{}", dl_fold, y.title().unwrap().to_owned(), ext);

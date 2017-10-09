@@ -1,4 +1,5 @@
 #![allow(dead_code)]
+#![cfg_attr(feature = "cargo-clippy", allow(clone_on_ref_ptr))]
 
 use diesel::prelude::*;
 use diesel;
@@ -39,7 +40,7 @@ fn index_podcast(con: &SqliteConnection, pd: &NewPodcast) -> Result<()> {
 }
 
 fn index_episode(con: &SqliteConnection, ep: &NewEpisode) -> Result<()> {
-    match dbqueries::load_episode(con, &ep.uri.unwrap()) {
+    match dbqueries::load_episode(con, ep.uri.unwrap()) {
         Ok(mut foo) => if foo.title() != ep.title
             || foo.published_date() != ep.published_date.as_ref().map(|x| x.as_str())
         {
@@ -74,7 +75,7 @@ fn insert_return_podcast(con: &SqliteConnection, pd: &NewPodcast) -> Result<Podc
 fn insert_return_episode(con: &SqliteConnection, ep: &NewEpisode) -> Result<Episode> {
     index_episode(con, ep)?;
 
-    Ok(dbqueries::load_episode(con, &ep.uri.unwrap())?)
+    Ok(dbqueries::load_episode(con, ep.uri.unwrap())?)
 }
 
 pub fn index_loop(db: SqliteConnection, force: bool) -> Result<()> {
@@ -105,18 +106,18 @@ fn complete_index_from_source(
     req.read_to_string(&mut buf)?;
     let chan = rss::Channel::from_str(&buf)?;
 
-    complete_index(mutex, chan, &source)?;
+    complete_index(mutex, &chan, source)?;
 
     Ok(())
 }
 
 fn complete_index(
     mutex: Arc<Mutex<SqliteConnection>>,
-    chan: rss::Channel,
+    chan: &rss::Channel,
     parent: &Source,
 ) -> Result<()> {
     let tempdb = mutex.lock().unwrap();
-    let pd = index_channel(&tempdb, &chan, parent)?;
+    let pd = index_channel(&tempdb, chan, parent)?;
     drop(tempdb);
 
     index_channel_items(mutex.clone(), chan.items(), &pd)?;
@@ -125,7 +126,7 @@ fn complete_index(
 }
 
 fn index_channel(db: &SqliteConnection, chan: &rss::Channel, parent: &Source) -> Result<Podcast> {
-    let pd = feedparser::parse_podcast(&chan, parent.id())?;
+    let pd = feedparser::parse_podcast(chan, parent.id())?;
     // Convert NewPodcast to Podcast
     let pd = insert_return_podcast(db, &pd)?;
     Ok(pd)
@@ -138,13 +139,13 @@ fn index_channel_items(
     pd: &Podcast,
 ) -> Result<()> {
     let foo: Vec<_> = i.par_iter()
-        .map(|x| feedparser::parse_episode(&x, pd.id()).unwrap())
+        .map(|x| feedparser::parse_episode(x, pd.id()).unwrap())
         .collect();
 
     foo.par_iter().for_each(|x| {
         let dbmutex = mutex.clone();
         let db = dbmutex.lock().unwrap();
-        index_episode(&db, &x).unwrap();
+        index_episode(&db, x).unwrap();
     });
     Ok(())
 }
@@ -315,7 +316,7 @@ mod tests {
                 let chan = rss::Channel::read_from(BufReader::new(feed)).unwrap();
 
                 // Index the channel
-                complete_index(m.clone(), chan, &s).unwrap();
+                complete_index(m.clone(), &chan, &s).unwrap();
             })
             .fold((), |(), _| ());
 

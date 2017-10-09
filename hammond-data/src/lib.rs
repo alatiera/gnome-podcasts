@@ -1,4 +1,5 @@
 #![recursion_limit = "1024"]
+#![cfg_attr(feature = "cargo-clippy", allow(blacklisted_name))]
 
 #[macro_use]
 extern crate error_chain;
