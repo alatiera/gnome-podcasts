@@ -44,7 +44,7 @@ pub fn download_to(target: &str, url: &str) -> Result<()> {
             let bcount = resp.read(&mut buffer[..]).unwrap();
             buffer.truncate(bcount);
             if !buffer.is_empty() {
-                writer.write(buffer.as_slice()).unwrap();
+                writer.write_all(buffer.as_slice()).unwrap();
             } else {
                 break;
             }
