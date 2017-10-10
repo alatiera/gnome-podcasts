@@ -42,7 +42,11 @@ test:rustfmt:
   - which rustfmt || cargo install rustfmt
   script:
   - rustc --version && cargo --version
+  - pwd
+  - ls -al
   - cargo fmt --all -- --write-mode=diff
+  # allwo failure till it uses rustfmt.toml
+  allow_failure: true
 
 # Configure and run clippy on nightly
 test:clippy:
