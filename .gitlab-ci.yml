@@ -38,6 +38,9 @@ test:nightly:
 test:rustfmt:
   image: "rustlang/rust:nightly"
   before_script:
+  - apt-get update -yqq
+  - apt-get install -yqq --no-install-recommends build-essential
+  - apt-get install -y libgtk-3-dev
   - export PATH="$PATH:$HOME/.cargo/bin"
   - which rustfmt || cargo install rustfmt
   script:
@@ -52,6 +55,9 @@ test:rustfmt:
 test:clippy:
   image: "rustlang/rust:nightly"
   before_script:
+  - apt-get update -yqq
+  - apt-get install -yqq --no-install-recommends build-essential
+  - apt-get install -y libgtk-3-dev
   - export PATH="$PATH:$HOME/.cargo/bin"
   - which rustfmt || cargo install clippy
   script:
