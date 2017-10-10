@@ -17,8 +17,8 @@ test:stable:
   script:
   - rustc --version && cargo --version      # Print version info for debugging
   - cargo build --all
-  - cargo test --all --verbose
-  # - cargo test --all --verbose --jobs 1
+  # - cargo test --all --verbose
+  - cargo test --all --verbose --jobs 1
 
 # Use cargo to test the project
 test:nightly:
@@ -28,8 +28,8 @@ test:nightly:
   script:
   - rustc --version && cargo --version      # Print version info for debugging
   - cargo build --all
-  - cargo test --all --verbose
-  # - cargo test --verbose --jobs 1
+  # - cargo test --all --verbose
+  - cargo test --all --verbose --jobs 1
   # - cargo bench
   allow_failure: true
 
@@ -52,5 +52,5 @@ test:clippy:
   - which rustfmt || cargo install clippy
   script:
   - rustc --version && cargo --version
-  - cargo clippy
+  - cargo clippy --all
   allow_failure: true

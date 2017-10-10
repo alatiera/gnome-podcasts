@@ -4,11 +4,11 @@ version = "0.1.0"
 authors = ["Jordan Petridis <jordanpetridis@protonmail.com>"]
 
 [dependencies]
-log = "0.3.8"
-loggerv = "0.3.0"
-structopt = "0.1.0"
-structopt-derive = "0.1.0"
-error-chain = "0.11.0"
+log = "0.3"
+loggerv = "0.3"
+structopt = "0.1"
+structopt-derive = "0.1"
+error-chain = "0.11"
 hammond-data = {path = "../hammond-data"}
 hammond-downloader = {path = "../hammond-downloader"}
 

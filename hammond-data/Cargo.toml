@@ -4,20 +4,20 @@ version = "0.1.0"
 authors = ["Jordan Petridis <jordanpetridis@protonmail.com>"]
 
 [dependencies]
-rfc822_sanitizer = "0.3.0"
-rayon = "0.8.2"
-hyper = "0.11.2"
-reqwest = "0.7.3"
-error-chain = "0.11.0"
-log = "0.3.8"
-diesel = { version = "0.16.0", features = ["sqlite"] }
-diesel_codegen = { version = "0.16.0", features = ["sqlite"] }
-xdg = "2.1.0"
-lazy_static = "0.2.8"
-rss = "1.1.0"
+rfc822_sanitizer = "0.3"
+rayon = "0.8"
+hyper = "0.11"
+reqwest = "0.7"
+error-chain = "0.11"
+log = "0.3"
+diesel = { version = "0.16", features = ["sqlite"] }
+diesel_codegen = { version = "0.16", features = ["sqlite"] }
+xdg = "2.1"
+lazy_static = "0.2"
+rss = "1.1"
 # overwrite diesel dependancy that disables a feature rss depends upon
 dotenv = "*"
 
 [dev-dependencies]
-tempdir = "0.3.5"
-rand = "0.3.16"
+tempdir = "0.3"
+rand = "0.3"
