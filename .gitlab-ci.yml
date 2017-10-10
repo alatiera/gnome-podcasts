@@ -17,8 +17,8 @@ test:stable:
   script:
   - rustc --version && cargo --version      # Print version info for debugging
   - cargo build --all
-  # - cargo test --all --verbose --jobs 1
   - cargo test --all --verbose
+  # - cargo test --all --verbose --jobs 1
 
 # Use cargo to test the project
 test:nightly:
@@ -27,8 +27,30 @@ test:nightly:
   image: "rustlang/rust:nightly"
   script:
   - rustc --version && cargo --version      # Print version info for debugging
-  - cargo build
-  - cargo test --verbose
+  - cargo build --all
+  - cargo test --all --verbose
   # - cargo test --verbose --jobs 1
   # - cargo bench
+  allow_failure: true
+
+# Configure and run rustfmt on nightly
+# Exits and builds fails if on bad format
+test:rustfmt:
+  image: "rustlang/rust:nightly"
+  before_script:
+  - export PATH="$PATH:$HOME/.cargo/bin"
+  - which rustfmt || cargo install rustfmt
+  script:
+  - rustc --version && cargo --version
+  - cargo fmt --all -- --write-mode=diff
+
+# Configure and run clippy on nightly
+test:clippy:
+  image: "rustlang/rust:nightly"
+  before_script:
+  - export PATH="$PATH:$HOME/.cargo/bin"
+  - which rustfmt || cargo install clippy
+  script:
+  - rustc --version && cargo --version
+  - cargo clippy
   allow_failure: true

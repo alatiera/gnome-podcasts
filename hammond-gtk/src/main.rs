@@ -39,11 +39,11 @@ fn main() {
     let header: gtk::HeaderBar = builder.get_object("headerbar1").unwrap();
     window.set_titlebar(&header);
 
-    let refresh_button : gtk::Button = builder.get_object("refbutton").unwrap();
+    let refresh_button: gtk::Button = builder.get_object("refbutton").unwrap();
     // TODO: Have a small dropdown menu
-    let add_button : gtk::Button = builder.get_object("addbutton").unwrap();
-    let search_button : gtk::Button = builder.get_object("searchbutton").unwrap();
-    let home_button : gtk::Button = builder.get_object("homebutton").unwrap();
+    let add_button: gtk::Button = builder.get_object("addbutton").unwrap();
+    let search_button: gtk::Button = builder.get_object("searchbutton").unwrap();
+    let home_button: gtk::Button = builder.get_object("homebutton").unwrap();
 
     // FIXME: This locks the ui atm.
     refresh_button.connect_clicked(|_| {
