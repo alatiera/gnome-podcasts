@@ -26,17 +26,23 @@ fn create_child(name: &str) -> gtk::Box {
     box_
 }
 
-fn create_list_store(connection: &SqliteConnection) -> gtk::ListStore {
-    let podcast_model = gtk::ListStore::new(&[Type::String, Type::String, Type::String]);
+fn create_list_store(connection: &SqliteConnection) -> TreeStore {
+    let podcast_model = TreeStore::new(&[Type::String, Type::String, Type::String]);
 
     let podcasts = dbqueries::get_podcasts(connection).unwrap();
 
     for pd in &podcasts {
-        podcast_model.insert_with_values(
+        let iter = podcast_model.insert_with_values(
+            None,
             None,
             &[0, 1, 2],
             &[&pd.title(), &pd.description(), &pd.link()],
         );
+        let episodes = dbqueries::get_pd_episodes(connection, &pd).unwrap();
+
+        for ep in episodes {
+            podcast_model.insert_with_values(Some(&iter), None, &[0], &[&ep.title().unwrap()]);
+        }
     }
 
     podcast_model
