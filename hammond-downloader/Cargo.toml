@@ -2,6 +2,7 @@
 name = "hammond-downloader"
 version = "0.1.0"
 authors = ["Jordan Petridis <jordanpetridis@protonmail.com>"]
+workspace = "../"
 
 [dependencies]
 hammond-data = {path = "../hammond-data"}

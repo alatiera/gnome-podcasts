@@ -2,6 +2,7 @@
 name = "hammond-gtk"
 version = "0.1.0"
 authors = ["Jordan Petridis <jordanpetridis@protonmail.com>"]
+workspace = "../"
 
 [dependencies]
 gtk = { version = "0.2", features = ["v3_22"]}
