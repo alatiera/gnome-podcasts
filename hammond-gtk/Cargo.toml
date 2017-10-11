@@ -8,3 +8,4 @@ gtk = { version = "0.2", features = ["v3_22"]}
 glib = "0.3"
 gdk-pixbuf = "0.2"
 hammond-data = {path = "../hammond-data"}
+diesel = { version = "0.16", features = ["sqlite"] }
