@@ -52,10 +52,13 @@ fn create_tree_store(connection: &SqliteConnection, builder: &gtk::Builder) -> T
             podcast_model.insert_with_values(
                 Some(&iter),
                 None,
-                &[0, 1, 2, 6, 7, 8],
                 &[
-                    &ep.id(), &ep.title().unwrap(), &ep.description().unwrap_or_default(), &ep.uri(),
-                    &ep.local_uri().unwrap_or_default(), &ep.published_date().unwrap_or_default(),
+                    0, 1, 2, 6, 7, 8
+                ],
+                &[
+                    &ep.id(), &ep.title().unwrap(), &ep.description().unwrap_or_default(),
+                    &ep.uri(), &ep.local_uri().unwrap_or_default(),
+                    &ep.published_date().unwrap_or_default(),
                 ],
             );
         }
@@ -105,20 +108,22 @@ fn main() {
 
     // Adapted copy of the way gnome-music does albumview
     let glade_src = include_str!("../gtk/foo.ui");
+    let header_src = include_str!("../gtk/headerbar.ui");
     let builder = gtk::Builder::new_from_string(glade_src);
+    let header_build = gtk::Builder::new_from_string(header_src);
 
     // Get the main window
     // let window: gtk::Window = builder.get_object("window1").unwrap();
     let window: gtk::Window = builder.get_object("window2").unwrap();
     // Get the headerbar
-    let header: gtk::HeaderBar = builder.get_object("headerbar1").unwrap();
+    let header: gtk::HeaderBar = header_build.get_object("headerbar1").unwrap();
     window.set_titlebar(&header);
 
-    let refresh_button: gtk::Button = builder.get_object("refbutton").unwrap();
+    let refresh_button: gtk::Button = header_build.get_object("refbutton").unwrap();
     // TODO: Have a small dropdown menu
-    let _add_button: gtk::Button = builder.get_object("addbutton").unwrap();
-    let _search_button: gtk::Button = builder.get_object("searchbutton").unwrap();
-    let _home_button: gtk::Button = builder.get_object("homebutton").unwrap();
+    let _add_button: gtk::Button = header_build.get_object("addbutton").unwrap();
+    let _search_button: gtk::Button = header_build.get_object("searchbutton").unwrap();
+    let _home_button: gtk::Button = header_build.get_object("homebutton").unwrap();
 
     // FIXME: This locks the ui atm.
     refresh_button.connect_clicked(|_| {
