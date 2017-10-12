@@ -262,11 +262,9 @@ mod tests {
             "http://feeds.feedburner.com/linuxunplugged",
         ];
 
-        inpt.iter()
-            .map(|feed| {
-                index_source(&db, &NewSource::new_with_uri(feed)).unwrap()
-            })
-            .fold((), |(), _| ());
+        inpt.iter().for_each(|feed| {
+            index_source(&db, &NewSource::new_with_uri(feed)).unwrap()
+        });
 
         index_loop(db, true).unwrap();
 
@@ -303,22 +301,20 @@ mod tests {
             ),
         ];
 
-        urls.iter()
-            .map(|&(path, url)| {
-                let tempdb = m.lock().unwrap();
-                // Create and insert a Source into db
-                let s = insert_return_source(&tempdb, url).unwrap();
-                drop(tempdb);
+        urls.iter().for_each(|&(path, url)| {
+            let tempdb = m.lock().unwrap();
+            // Create and insert a Source into db
+            let s = insert_return_source(&tempdb, url).unwrap();
+            drop(tempdb);
 
-                // open the xml file
-                let feed = fs::File::open(path).unwrap();
-                // parse it into a channel
-                let chan = rss::Channel::read_from(BufReader::new(feed)).unwrap();
+            // open the xml file
+            let feed = fs::File::open(path).unwrap();
+            // parse it into a channel
+            let chan = rss::Channel::read_from(BufReader::new(feed)).unwrap();
 
-                // Index the channel
-                complete_index(m.clone(), &chan, &s).unwrap();
-            })
-            .fold((), |(), _| ());
+            // Index the channel
+            complete_index(m.clone(), &chan, &s).unwrap();
+        });
 
         // Assert the index rows equal the controlled results
         let tempdb = m.lock().unwrap();

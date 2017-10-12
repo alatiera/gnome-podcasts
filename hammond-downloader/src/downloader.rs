@@ -55,12 +55,12 @@ pub fn download_to(target: &str, url: &str) -> Result<()> {
 }
 
 // Initial messy prototype, queries load alot of not needed stuff.
+// TODO: Refactor
 pub fn latest_dl(connection: &SqliteConnection, limit: u32) -> Result<()> {
     let pds = dbqueries::get_podcasts(connection)?;
 
-    pds.iter()
-        // TODO when for_each reaches stable:
-        // Remove all the ugly folds(_) and replace map() with for_each().
+    let _: Vec<_> = pds.iter()
+        // This could be for_each instead of map.
         .map(|x| -> Result<()> {
             let mut eps = if limit == 0 {
                 dbqueries::get_pd_episodes(connection, x)?
@@ -75,17 +75,15 @@ pub fn latest_dl(connection: &SqliteConnection, limit: u32) -> Result<()> {
             DirBuilder::new().recursive(true).create(&dl_fold).unwrap();
 
             // Download the episodes
-            eps.iter_mut()
+            let _ :Vec<_>= eps.iter_mut()
                 .map(|y| -> Result<()> {
                     // Check if its alrdy downloaded
                     if y.local_uri().is_some() {
-                        // Not idiomatic but I am still fighting the borrow-checker.
-                        if Path::new(y.local_uri().unwrap().to_owned().as_str()).exists() {
+                        if Path::new(y.local_uri().unwrap()).exists() {
                             return Ok(());
                         }
                         y.set_local_uri(None);
                         y.save_changes::<Episode>(connection)?;
-                        ()
                     };
 
                     // Unreliable and hacky way to extract the file extension from the url.
@@ -101,11 +99,11 @@ pub fn latest_dl(connection: &SqliteConnection, limit: u32) -> Result<()> {
                     y.save_changes::<Episode>(connection)?;
                     Ok(())
                 })
-                .fold((), |(), _| ());
+                .collect();
 
             Ok(())
         })
-        .fold((), |(), _| ());
+        .collect();
 
     Ok(())
 }
