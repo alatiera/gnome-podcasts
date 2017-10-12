@@ -2,6 +2,28 @@
 <!-- Generated with glade 3.20.0 -->
 <interface>
   <requires lib="gtk+" version="3.20"/>
+  <object class="GtkTreeStore" id="FooStore">
+    <columns>
+      <!-- column-name id -->
+      <column type="guint"/>
+      <!-- column-name title -->
+      <column type="gchararray"/>
+      <!-- column-name description -->
+      <column type="gchararray"/>
+      <!-- column-name link -->
+      <column type="gchararray"/>
+      <!-- column-name image -->
+      <column type="GdkPixbuf"/>
+      <!-- column-name image_uri -->
+      <column type="gchararray"/>
+      <!-- column-name uri -->
+      <column type="gchararray"/>
+      <!-- column-name local_uri -->
+      <column type="gchararray"/>
+      <!-- column-name published_date -->
+      <column type="gchararray"/>
+    </columns>
+  </object>
   <object class="GtkHeaderBar" id="headerbar1">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
@@ -19,6 +41,21 @@
       </object>
       <packing>
         <property name="position">3</property>
+      </packing>
+    </child>
+    <child>
+      <object class="GtkButton" id="refbutton">
+        <property name="label">gtk-refresh</property>
+        <property name="visible">True</property>
+        <property name="can_focus">True</property>
+        <property name="receives_default">True</property>
+        <property name="use_underline">True</property>
+        <property name="use_stock">True</property>
+        <property name="always_show_image">True</property>
+      </object>
+      <packing>
+        <property name="pack_type">end</property>
+        <property name="position">1</property>
       </packing>
     </child>
     <child>
@@ -49,21 +86,6 @@
       <packing>
         <property name="pack_type">end</property>
         <property name="position">2</property>
-      </packing>
-    </child>
-    <child>
-      <object class="GtkButton" id="refbutton">
-        <property name="label">gtk-refresh</property>
-        <property name="visible">True</property>
-        <property name="can_focus">True</property>
-        <property name="receives_default">True</property>
-        <property name="use_underline">True</property>
-        <property name="use_stock">True</property>
-        <property name="always_show_image">True</property>
-      </object>
-      <packing>
-        <property name="pack_type">end</property>
-        <property name="position">1</property>
       </packing>
     </child>
   </object>

@@ -26,8 +26,10 @@ fn create_child(name: &str) -> gtk::Box {
     box_
 }
 
-fn create_list_store(connection: &SqliteConnection) -> TreeStore {
-    let podcast_model = TreeStore::new(&[Type::String, Type::String, Type::String]);
+fn create_tree_store(connection: &SqliteConnection, builder: &gtk::Builder) -> TreeStore {
+    // let podcast_model = TreeStore::new(&[Type::String, Type::String,
+    // Type::String]);
+    let podcast_model: TreeStore = builder.get_object("FooStore").unwrap();
 
     let podcasts = dbqueries::get_podcasts(connection).unwrap();
 
@@ -35,13 +37,27 @@ fn create_list_store(connection: &SqliteConnection) -> TreeStore {
         let iter = podcast_model.insert_with_values(
             None,
             None,
-            &[0, 1, 2],
-            &[&pd.title(), &pd.description(), &pd.link()],
+            &[0, 1, 2, 3, 5],
+            &[
+                &pd.id(),
+                &pd.title(),
+                &pd.description(),
+                &pd.link(),
+                &pd.image_uri().unwrap_or_default(),
+            ],
         );
         let episodes = dbqueries::get_pd_episodes(connection, &pd).unwrap();
 
         for ep in episodes {
-            podcast_model.insert_with_values(Some(&iter), None, &[0], &[&ep.title().unwrap()]);
+            podcast_model.insert_with_values(
+                Some(&iter),
+                None,
+                &[0, 1, 2, 6, 7, 8],
+                &[
+                    &ep.id(), &ep.title().unwrap(), &ep.description().unwrap_or_default(), &ep.uri(),
+                    &ep.local_uri().unwrap_or_default(), &ep.published_date().unwrap_or_default(),
+                ],
+            );
         }
     }
 
@@ -60,13 +76,6 @@ fn create_and_setup_view() -> TreeView {
 
     column.pack_start(&cell, true);
     // Association of the view's column with the model's `id` column.
-    column.add_attribute(&cell, "text", 0);
-    tree.append_column(&column);
-
-    let column = TreeViewColumn::new();
-    let cell = CellRendererText::new();
-
-    column.pack_start(&cell, true);
     column.add_attribute(&cell, "text", 1);
     tree.append_column(&column);
 
@@ -75,6 +84,13 @@ fn create_and_setup_view() -> TreeView {
 
     column.pack_start(&cell, true);
     column.add_attribute(&cell, "text", 2);
+    tree.append_column(&column);
+
+    let column = TreeViewColumn::new();
+    let cell = CellRendererText::new();
+
+    column.pack_start(&cell, true);
+    column.add_attribute(&cell, "text", 3);
     tree.append_column(&column);
 
     tree
@@ -118,7 +134,7 @@ fn main() {
 
     // let flowbox: gtk::FlowBox = builder.get_object("flowbox1").unwrap();
     let db = hammond_data::establish_connection();
-    let pd_model = create_list_store(&db);
+    let pd_model = create_tree_store(&db, &builder);
     // let podcasts = dbqueries::get_podcasts(&db).unwrap();
 
     // for pd in &podcasts {
