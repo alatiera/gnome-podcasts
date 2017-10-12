@@ -5,15 +5,13 @@ extern crate gtk;
 extern crate hammond_data;
 
 use diesel::prelude::*;
-use gtk::prelude::*;
-use gtk::Orientation;
-use gtk::IconSize;
-use gtk::Type;
 use gtk::{CellRendererText, TreeStore, TreeView, TreeViewColumn};
-
-use hammond_data::dbqueries;
-
+use gtk::IconSize;
+use gtk::Orientation;
+use gtk::Type;
 use gtk::prelude::*;
+use gtk::prelude::*;
+use hammond_data::dbqueries;
 
 // TODO: setup a img downloader, caching system, and then display them.
 fn create_child(name: &str) -> gtk::Box {
@@ -52,12 +50,13 @@ fn create_tree_store(connection: &SqliteConnection, builder: &gtk::Builder) -> T
             podcast_model.insert_with_values(
                 Some(&iter),
                 None,
+                &[0, 1, 2, 6, 7, 8],
                 &[
-                    0, 1, 2, 6, 7, 8
-                ],
-                &[
-                    &ep.id(), &ep.title().unwrap(), &ep.description().unwrap_or_default(),
-                    &ep.uri(), &ep.local_uri().unwrap_or_default(),
+                    &ep.id(),
+                    &ep.title().unwrap(),
+                    &ep.description().unwrap_or_default(),
+                    &ep.uri(),
+                    &ep.local_uri().unwrap_or_default(),
                     &ep.published_date().unwrap_or_default(),
                 ],
             );

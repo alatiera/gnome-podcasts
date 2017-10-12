@@ -1,8 +1,7 @@
-use reqwest;
-use rss;
 use diesel::result;
 use hammond_data;
-
+use reqwest;
+use rss;
 use std::io;
 
 error_chain! {

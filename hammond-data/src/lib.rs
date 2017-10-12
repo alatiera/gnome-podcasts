@@ -30,8 +30,8 @@ pub mod index_feed;
 pub mod feedparser;
 pub mod errors;
 
-use errors::*;
 use diesel::prelude::*;
+use errors::*;
 use std::path::PathBuf;
 
 embed_migrations!("migrations/");
