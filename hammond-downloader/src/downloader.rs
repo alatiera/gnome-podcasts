@@ -120,14 +120,21 @@ fn get_episode(connection: &SqliteConnection, ep: &mut Episode, dl_folder: &str)
     Ok(())
 }
 
-pub fn cache_image(pd: &Podcast) -> Option<String> {
-    if let Some(url) = pd.image_uri() {
+// pub fn cache_image(pd: &Podcast) -> Option<String> {
+pub fn cache_image(title: &str, image_uri: Option<&str>) -> Option<String> {
+    info!("{:?}", image_uri);
+    if let Some(url) = image_uri {
+        if url == "" {
+            return None;
+        }
+
         let ext = url.split('.').last().unwrap();
 
-        let dl_fold = format!("{}/{}", HAMMOND_CACHE.to_str().unwrap(), pd.title());
+        let dl_fold = format!("{}/{}", HAMMOND_CACHE.to_str().unwrap(), title);
+        info!("Img Dl path: {}", dl_fold);
         DirBuilder::new().recursive(true).create(&dl_fold).unwrap();
 
-        let dlpath = format!("{}/{}.{}", dl_fold, pd.title(), ext);
+        let dlpath = format!("{}/{}.{}", dl_fold, title, ext);
         info!("Cached img path: {}", dlpath);
 
         if Path::new(&dlpath).exists() {

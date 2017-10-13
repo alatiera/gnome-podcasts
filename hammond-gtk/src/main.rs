@@ -20,9 +20,9 @@ use hammond_data::dbqueries;
 use hammond_data::models::Podcast;
 
 // TODO: setup a img downloader, caching system, and then display them.
-fn create_child(pd: &Podcast) -> gtk::Box {
+fn create_child(title: &str, image_uri: Option<&str>) -> gtk::Box {
     let box_ = gtk::Box::new(Orientation::Vertical, 5);
-    let imgpath = hammond_downloader::downloader::cache_image(pd);
+    let imgpath = hammond_downloader::downloader::cache_image(title, image_uri);
     info!("{:?}", imgpath);
     let img = if let Some(i) = imgpath {
         let pixbuf = Pixbuf::new_from_file_at_scale(&i, 200, 200, true);
@@ -37,11 +37,9 @@ fn create_child(pd: &Podcast) -> gtk::Box {
         gtk::Image::new_from_icon_name("gtk-missing-image", IconSize::Menu.into())
     };
 
-    img.set_size_request(200, 200);
-
-    let label = gtk::Label::new(pd.title());
+    let label = gtk::Label::new(title);
     box_.set_size_request(200, 200);
-    box_.pack_start(&img, false, false, 0);
+    box_.pack_start(&img, true, true, 0);
     box_.pack_start(&label, false, false, 0);
     box_
 }
@@ -142,6 +140,12 @@ fn main() {
     let header: gtk::HeaderBar = header_build.get_object("headerbar1").unwrap();
     window.set_titlebar(&header);
 
+    // Debuging TreeStore
+    // let box2: gtk::Box = builder.get_object("box2").unwrap();
+    // let treeview = create_and_setup_view();
+    // treeview.set_model(Some(&pd_model));
+    // box2.add(&treeview);
+
     let refresh_button: gtk::Button = header_build.get_object("refbutton").unwrap();
     // TODO: Have a small dropdown menu
     let _add_button: gtk::Button = header_build.get_object("addbutton").unwrap();
@@ -163,18 +167,22 @@ fn main() {
     let flowbox: gtk::FlowBox = builder.get_object("flowbox1").unwrap();
     let db = hammond_data::establish_connection();
     let pd_model = create_tree_store(&db, &builder);
-    let podcasts = dbqueries::get_podcasts(&db).unwrap();
 
-    for pd in &podcasts {
-        let f = create_child(pd);
+    let iter = pd_model.get_iter_first().unwrap();
+    // this will iterate over the episodes.
+    // let iter = pd_model.iter_children(&iter).unwrap();
+    loop {
+        let title = pd_model.get_value(&iter, 1).get::<String>().unwrap();
+        let image_uri = pd_model.get_value(&iter, 5).get::<String>();
+        info!("{:?}", title);
+        let f = create_child(&title, image_uri.as_ref().map(|s| s.as_str()));
+
         flowbox.add(&f);
+
+        if !pd_model.iter_next(&iter) {
+            break;
+        }
     }
-
-    // let box2: gtk::Box = builder.get_object("box2").unwrap();
-
-    // let treeview = create_and_setup_view();
-    // treeview.set_model(Some(&pd_model));
-    // box2.add(&treeview);
 
     window.show_all();
     gtk::main();
