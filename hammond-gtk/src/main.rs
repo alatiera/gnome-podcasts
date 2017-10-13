@@ -1,25 +1,47 @@
 // extern crate glib;
 extern crate diesel;
+extern crate gdk_pixbuf;
 extern crate gtk;
-// extern crate gdk_pixbuf;
 extern crate hammond_data;
+extern crate hammond_downloader;
+#[macro_use]
+extern crate log;
+extern crate loggerv;
 
+use log::LogLevel;
 use diesel::prelude::*;
 use gtk::{CellRendererText, TreeStore, TreeView, TreeViewColumn};
 use gtk::IconSize;
 use gtk::Orientation;
-use gtk::Type;
+// use gtk::Type;
 use gtk::prelude::*;
-use gtk::prelude::*;
+use gdk_pixbuf::Pixbuf;
 use hammond_data::dbqueries;
+use hammond_data::models::Podcast;
 
 // TODO: setup a img downloader, caching system, and then display them.
-fn create_child(name: &str) -> gtk::Box {
+fn create_child(pd: &Podcast) -> gtk::Box {
     let box_ = gtk::Box::new(Orientation::Vertical, 5);
-    let img = gtk::Image::new_from_icon_name("gtk-missing-image", IconSize::Menu.into());
-    let label = gtk::Label::new(name);
+    let imgpath = hammond_downloader::downloader::cache_image(pd);
+    info!("{:?}", imgpath);
+    let img = if let Some(i) = imgpath {
+        let pixbuf = Pixbuf::new_from_file_at_scale(&i, 200, 200, true);
+        // gtk::Image::new_from_file(&i)
+        // Ugly hack
+        if pixbuf.is_ok() {
+            gtk::Image::new_from_pixbuf(&pixbuf.unwrap())
+        } else {
+            gtk::Image::new_from_icon_name("gtk-missing-image", IconSize::Menu.into())
+        }
+    } else {
+        gtk::Image::new_from_icon_name("gtk-missing-image", IconSize::Menu.into())
+    };
+
+    img.set_size_request(200, 200);
+
+    let label = gtk::Label::new(pd.title());
     box_.set_size_request(200, 200);
-    box_.pack_start(&img, true, true, 0);
+    box_.pack_start(&img, false, false, 0);
     box_.pack_start(&label, false, false, 0);
     box_
 }
@@ -99,8 +121,10 @@ fn create_and_setup_view() -> TreeView {
 }
 
 fn main() {
+    loggerv::init_with_level(LogLevel::Info).unwrap();
+
     if gtk::init().is_err() {
-        println!("Failed to initialize GTK.");
+        info!("Failed to initialize GTK.");
         return;
     }
     hammond_data::init().unwrap();
@@ -112,8 +136,8 @@ fn main() {
     let header_build = gtk::Builder::new_from_string(header_src);
 
     // Get the main window
-    // let window: gtk::Window = builder.get_object("window1").unwrap();
-    let window: gtk::Window = builder.get_object("window2").unwrap();
+    let window: gtk::Window = builder.get_object("window1").unwrap();
+    // let window: gtk::Window = builder.get_object("window2").unwrap();
     // Get the headerbar
     let header: gtk::HeaderBar = header_build.get_object("headerbar1").unwrap();
     window.set_titlebar(&header);
@@ -136,21 +160,21 @@ fn main() {
         Inhibit(false)
     });
 
-    // let flowbox: gtk::FlowBox = builder.get_object("flowbox1").unwrap();
+    let flowbox: gtk::FlowBox = builder.get_object("flowbox1").unwrap();
     let db = hammond_data::establish_connection();
     let pd_model = create_tree_store(&db, &builder);
-    // let podcasts = dbqueries::get_podcasts(&db).unwrap();
+    let podcasts = dbqueries::get_podcasts(&db).unwrap();
 
-    // for pd in &podcasts {
-    //     // TODO: This should be in a TreeStore.
-    //     let f = create_child(pd.title());
-    //     flowbox.add(&f);
-    // }
-    let box2: gtk::Box = builder.get_object("box2").unwrap();
+    for pd in &podcasts {
+        let f = create_child(pd);
+        flowbox.add(&f);
+    }
 
-    let treeview = create_and_setup_view();
-    treeview.set_model(Some(&pd_model));
-    box2.add(&treeview);
+    // let box2: gtk::Box = builder.get_object("box2").unwrap();
+
+    // let treeview = create_and_setup_view();
+    // treeview.set_model(Some(&pd_model));
+    // box2.add(&treeview);
 
     window.show_all();
     gtk::main();

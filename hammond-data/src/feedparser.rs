@@ -8,6 +8,8 @@ pub fn parse_podcast(chan: &Channel, source_id: i32) -> Result<models::NewPodcas
     let title = chan.title().to_owned();
     let link = chan.link().to_owned();
     let description = chan.description().to_owned();
+    // Some feeds miss baseurl and/or http://
+    // TODO: Sanitize the url
     let image_uri = chan.image().map(|foo| foo.url().to_owned());
 
     let foo = models::NewPodcast {

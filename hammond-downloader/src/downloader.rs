@@ -9,7 +9,7 @@ use std::path::Path;
 use errors::*;
 use hammond_data::dbqueries;
 use hammond_data::models::{Episode, Podcast};
-use hammond_data::DL_DIR;
+use hammond_data::{DL_DIR, HAMMOND_CACHE};
 
 // Adapted from https://github.com/mattgathu/rget .
 // I never wanted to write a custom downloader.
@@ -18,8 +18,8 @@ use hammond_data::DL_DIR;
 // or bindings for a lib like youtube-dl(python),
 // But cant seem to find one.
 pub fn download_to(target: &str, url: &str) -> Result<()> {
-    let mut resp = reqwest::get(url)?;
     info!("GET request to: {}", url);
+    let mut resp = reqwest::get(url)?;
 
     if resp.status().is_success() {
         let headers = resp.headers().clone();
@@ -71,7 +71,7 @@ pub fn latest_dl(connection: &SqliteConnection, limit: u32) -> Result<()> {
             let dl_fold = get_dl_folder(x)?;
 
             // Download the episodes
-            let _ :Vec<_>= eps.iter_mut()
+            let _ :Vec<_> = eps.iter_mut()
                 .map(|ep| -> Result<()> {
                     // TODO: handle Result here and replace map with for_each
                     get_episode(connection, ep, &dl_fold)
@@ -118,4 +118,24 @@ fn get_episode(connection: &SqliteConnection, ep: &mut Episode, dl_folder: &str)
     ep.set_local_uri(Some(&dlpath));
     ep.save_changes::<Episode>(connection)?;
     Ok(())
+}
+
+pub fn cache_image(pd: &Podcast) -> Option<String> {
+    if let Some(url) = pd.image_uri() {
+        let ext = url.split('.').last().unwrap();
+
+        let dl_fold = format!("{}/{}", HAMMOND_CACHE.to_str().unwrap(), pd.title());
+        DirBuilder::new().recursive(true).create(&dl_fold).unwrap();
+
+        let dlpath = format!("{}/{}.{}", dl_fold, pd.title(), ext);
+        info!("Cached img path: {}", dlpath);
+
+        if Path::new(&dlpath).exists() {
+            return Some(dlpath);
+        }
+
+        download_to(&dlpath, url).unwrap();
+        return Some(dlpath);
+    }
+    None
 }

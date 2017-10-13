@@ -50,7 +50,7 @@ lazy_static!{
         HAMMOND_XDG.create_config_directory(HAMMOND_XDG.get_config_home()).unwrap()
     };
 
-    static ref _HAMMOND_CACHE: PathBuf = {
+    pub static ref HAMMOND_CACHE: PathBuf = {
         HAMMOND_XDG.create_cache_directory(HAMMOND_XDG.get_cache_home()).unwrap()
     };
 
