@@ -89,6 +89,31 @@ fn create_and_fill_tree_store(connection: &SqliteConnection, builder: &gtk::Buil
     podcast_model
 }
 
+fn create_and_fill_list_store(
+    connection: &SqliteConnection,
+    builder: &gtk::Builder,
+) -> gtk::ListStore {
+    let podcast_model: gtk::ListStore = builder.get_object("PdListStore").unwrap();
+
+    let podcasts = dbqueries::get_podcasts(connection).unwrap();
+
+    for pd in &podcasts {
+        podcast_model.insert_with_values(
+            None,
+            &[0, 1, 2, 3, 4],
+            &[
+                &pd.id(),
+                &pd.title(),
+                &pd.description(),
+                &pd.link(),
+                &pd.image_uri().unwrap_or_default(),
+            ],
+        );
+    }
+
+    podcast_model
+}
+
 fn main() {
     loggerv::init_with_level(LogLevel::Info).unwrap();
 
@@ -138,14 +163,15 @@ fn main() {
     let flowbox: gtk::FlowBox = builder.get_object("flowbox1").unwrap();
 
     let db = hammond_data::establish_connection();
-    let pd_model = create_and_fill_tree_store(&db, &builder);
+    // let pd_model = create_and_fill_tree_store(&db, &builder);
+    let pd_model = create_and_fill_list_store(&db, &builder);
 
     let iter = pd_model.get_iter_first().unwrap();
     // this will iterate over the episodes.
     // let iter = pd_model.iter_children(&iter).unwrap();
     loop {
         let title = pd_model.get_value(&iter, 1).get::<String>().unwrap();
-        let image_uri = pd_model.get_value(&iter, 5).get::<String>();
+        let image_uri = pd_model.get_value(&iter, 4).get::<String>();
 
         let f = create_flowbox_child(&title, image_uri.as_ref().map(|s| s.as_str()));
         let stack_clone = stack.clone();
