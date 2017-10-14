@@ -20,6 +20,7 @@ use hammond_data::{DL_DIR, HAMMOND_CACHE};
 pub fn download_to(target: &str, url: &str) -> Result<()> {
     info!("GET request to: {}", url);
     let mut resp = reqwest::get(url)?;
+    info!("Status Resp: {}", resp.status());
 
     if resp.status().is_success() {
         let headers = resp.headers().clone();
@@ -123,7 +124,6 @@ fn get_episode(connection: &SqliteConnection, ep: &mut Episode, dl_folder: &str)
 // pub fn cache_image(pd: &Podcast) -> Option<String> {
 // TODO: Refactor
 pub fn cache_image(title: &str, image_uri: Option<&str>) -> Option<String> {
-    info!("{:?}", image_uri);
     if let Some(url) = image_uri {
         if url == "" {
             return None;
@@ -131,18 +131,17 @@ pub fn cache_image(title: &str, image_uri: Option<&str>) -> Option<String> {
 
         let ext = url.split('.').last().unwrap();
 
-        let dl_fold = format!("{}/{}", HAMMOND_CACHE.to_str().unwrap(), title);
-        info!("Img Dl path: {}", dl_fold);
+        let dl_fold = format!("{}{}", HAMMOND_CACHE.to_str().unwrap(), title);
         DirBuilder::new().recursive(true).create(&dl_fold).unwrap();
 
         let dlpath = format!("{}/{}.{}", dl_fold, title, ext);
-        info!("Cached img path: {}", dlpath);
 
         if Path::new(&dlpath).exists() {
             return Some(dlpath);
         }
 
         download_to(&dlpath, url).unwrap();
+        info!("Cached img into: {}", dlpath);
         return Some(dlpath);
     }
     None
