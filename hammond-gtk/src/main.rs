@@ -10,12 +10,11 @@ extern crate loggerv;
 
 use log::LogLevel;
 use diesel::prelude::*;
-use gtk::{CellRendererText, TreeStore, TreeView, TreeViewColumn};
-// use gtk::Type;
+use hammond_data::dbqueries;
+
+use gtk::TreeStore;
 use gtk::prelude::*;
 use gdk_pixbuf::Pixbuf;
-use hammond_data::dbqueries;
-// use hammond_data::models::Podcast;
 
 fn create_flowbox_child(title: &str, image_uri: Option<&str>) -> gtk::Box {
     let build_src = include_str!("../gtk/pd_fb_child.ui");
@@ -40,9 +39,7 @@ fn create_flowbox_child(title: &str, image_uri: Option<&str>) -> gtk::Box {
     box_
 }
 
-fn create_tree_store(connection: &SqliteConnection, builder: &gtk::Builder) -> TreeStore {
-    // let podcast_model = TreeStore::new(&[Type::String, Type::String,
-    // Type::String]);
+fn create_and_fill_tree_store(connection: &SqliteConnection, builder: &gtk::Builder) -> TreeStore {
     let podcast_model: TreeStore = builder.get_object("FooStore").unwrap();
 
     let podcasts = dbqueries::get_podcasts(connection).unwrap();
@@ -80,36 +77,6 @@ fn create_tree_store(connection: &SqliteConnection, builder: &gtk::Builder) -> T
     }
 
     podcast_model
-}
-
-fn create_and_setup_view() -> TreeView {
-    // Creating the tree view.
-    let tree = TreeView::new();
-
-    tree.set_headers_visible(false);
-
-    let column = TreeViewColumn::new();
-    let cell = CellRendererText::new();
-
-    column.pack_start(&cell, true);
-    column.add_attribute(&cell, "text", 1);
-    tree.append_column(&column);
-
-    let column = TreeViewColumn::new();
-    let cell = CellRendererText::new();
-
-    column.pack_start(&cell, true);
-    column.add_attribute(&cell, "text", 2);
-    tree.append_column(&column);
-
-    let column = TreeViewColumn::new();
-    let cell = CellRendererText::new();
-
-    column.pack_start(&cell, true);
-    column.add_attribute(&cell, "text", 3);
-    tree.append_column(&column);
-
-    tree
 }
 
 fn main() {
@@ -153,7 +120,7 @@ fn main() {
     // Adapted copy of the way gnome-music does albumview
     let flowbox: gtk::FlowBox = builder.get_object("flowbox1").unwrap();
     let db = hammond_data::establish_connection();
-    let pd_model = create_tree_store(&db, &builder);
+    let pd_model = create_and_fill_tree_store(&db, &builder);
 
     let iter = pd_model.get_iter_first().unwrap();
     // this will iterate over the episodes.
@@ -170,14 +137,6 @@ fn main() {
             break;
         }
     }
-
-    // Debuging TreeStore
-    // let box2: gtk::Box = builder.get_object("box2").unwrap();
-    // let treeview = create_and_setup_view();
-    // treeview.set_model(Some(&pd_model));
-    // box2.add(&treeview);
-    // window.add(&box2);
-    // window.show_all();
 
     window.show_all();
     gtk::main();
