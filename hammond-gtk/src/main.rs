@@ -11,36 +11,32 @@ extern crate loggerv;
 use log::LogLevel;
 use diesel::prelude::*;
 use gtk::{CellRendererText, TreeStore, TreeView, TreeViewColumn};
-use gtk::IconSize;
-use gtk::Orientation;
 // use gtk::Type;
 use gtk::prelude::*;
 use gdk_pixbuf::Pixbuf;
 use hammond_data::dbqueries;
-use hammond_data::models::Podcast;
+// use hammond_data::models::Podcast;
 
-// TODO: setup a img downloader, caching system, and then display them.
-fn create_child(title: &str, image_uri: Option<&str>) -> gtk::Box {
-    let box_ = gtk::Box::new(Orientation::Vertical, 5);
+fn create_flowbox_child(title: &str, image_uri: Option<&str>) -> gtk::Box {
+    let build_src = include_str!("../gtk/pd_fb_child.ui");
+    let builder = gtk::Builder::new_from_string(build_src);
+
+    // Copy of gnome-music AlbumWidget
+    let box_: gtk::Box = builder.get_object("fb_child").unwrap();
+    let pd_title: gtk::Label = builder.get_object("pd_title").unwrap();
+    let pd_cover: gtk::Image = builder.get_object("pd_cover").unwrap();
+
+    pd_title.set_text(&title);
+
     let imgpath = hammond_downloader::downloader::cache_image(title, image_uri);
-    info!("{:?}", imgpath);
-    let img = if let Some(i) = imgpath {
+
+    if let Some(i) = imgpath {
         let pixbuf = Pixbuf::new_from_file_at_scale(&i, 200, 200, true);
-        // gtk::Image::new_from_file(&i)
-        // Ugly hack
         if pixbuf.is_ok() {
-            gtk::Image::new_from_pixbuf(&pixbuf.unwrap())
-        } else {
-            gtk::Image::new_from_icon_name("gtk-missing-image", IconSize::Menu.into())
+            pd_cover.set_from_pixbuf(&pixbuf.unwrap())
         }
-    } else {
-        gtk::Image::new_from_icon_name("gtk-missing-image", IconSize::Menu.into())
     };
 
-    let label = gtk::Label::new(title);
-    box_.set_size_request(200, 200);
-    box_.pack_start(&img, true, true, 0);
-    box_.pack_start(&label, false, false, 0);
     box_
 }
 
@@ -92,12 +88,10 @@ fn create_and_setup_view() -> TreeView {
 
     tree.set_headers_visible(false);
 
-    // Creating the two columns inside the view.
     let column = TreeViewColumn::new();
     let cell = CellRendererText::new();
 
     column.pack_start(&cell, true);
-    // Association of the view's column with the model's `id` column.
     column.add_attribute(&cell, "text", 1);
     tree.append_column(&column);
 
@@ -127,7 +121,6 @@ fn main() {
     }
     hammond_data::init().unwrap();
 
-    // Adapted copy of the way gnome-music does albumview
     let glade_src = include_str!("../gtk/foo.ui");
     let header_src = include_str!("../gtk/headerbar.ui");
     let builder = gtk::Builder::new_from_string(glade_src);
@@ -135,16 +128,9 @@ fn main() {
 
     // Get the main window
     let window: gtk::Window = builder.get_object("window1").unwrap();
-    // let window: gtk::Window = builder.get_object("window2").unwrap();
     // Get the headerbar
     let header: gtk::HeaderBar = header_build.get_object("headerbar1").unwrap();
     window.set_titlebar(&header);
-
-    // Debuging TreeStore
-    // let box2: gtk::Box = builder.get_object("box2").unwrap();
-    // let treeview = create_and_setup_view();
-    // treeview.set_model(Some(&pd_model));
-    // box2.add(&treeview);
 
     let refresh_button: gtk::Button = header_build.get_object("refbutton").unwrap();
     // TODO: Have a small dropdown menu
@@ -164,6 +150,7 @@ fn main() {
         Inhibit(false)
     });
 
+    // Adapted copy of the way gnome-music does albumview
     let flowbox: gtk::FlowBox = builder.get_object("flowbox1").unwrap();
     let db = hammond_data::establish_connection();
     let pd_model = create_tree_store(&db, &builder);
@@ -175,7 +162,7 @@ fn main() {
         let title = pd_model.get_value(&iter, 1).get::<String>().unwrap();
         let image_uri = pd_model.get_value(&iter, 5).get::<String>();
         info!("{:?}", title);
-        let f = create_child(&title, image_uri.as_ref().map(|s| s.as_str()));
+        let f = create_flowbox_child(&title, image_uri.as_ref().map(|s| s.as_str()));
 
         flowbox.add(&f);
 
@@ -183,6 +170,14 @@ fn main() {
             break;
         }
     }
+
+    // Debuging TreeStore
+    // let box2: gtk::Box = builder.get_object("box2").unwrap();
+    // let treeview = create_and_setup_view();
+    // treeview.set_model(Some(&pd_model));
+    // box2.add(&treeview);
+    // window.add(&box2);
+    // window.show_all();
 
     window.show_all();
     gtk::main();

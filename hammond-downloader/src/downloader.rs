@@ -121,6 +121,7 @@ fn get_episode(connection: &SqliteConnection, ep: &mut Episode, dl_folder: &str)
 }
 
 // pub fn cache_image(pd: &Podcast) -> Option<String> {
+// TODO: Refactor
 pub fn cache_image(title: &str, image_uri: Option<&str>) -> Option<String> {
     info!("{:?}", image_uri);
     if let Some(url) = image_uri {
