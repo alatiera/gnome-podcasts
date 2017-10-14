@@ -45,8 +45,6 @@ fn create_flowbox_child(title: &str, image_uri: Option<&str>) -> gtk::FlowBoxChi
     };
 
     let fbc = gtk::FlowBoxChild::new();
-    fbc.connect_activate(|_| println!("Hello World!, child activated"));
-
     fbc.add(&box_);
     fbc
 }
@@ -101,12 +99,19 @@ fn main() {
     hammond_data::init().unwrap();
 
     let glade_src = include_str!("../gtk/foo.ui");
+    // Adapted from gnome-music AlbumWidget
+    let pd_widget = include_str!("../gtk/podcast_widget.ui");
     let header_src = include_str!("../gtk/headerbar.ui");
     let builder = gtk::Builder::new_from_string(glade_src);
     let header_build = gtk::Builder::new_from_string(header_src);
+    let pd_widget = gtk::Builder::new_from_string(pd_widget);
 
     // Get the main window
     let window: gtk::Window = builder.get_object("window1").unwrap();
+    // Get the Stack
+    let stack: gtk::Stack = builder.get_object("stack1").unwrap();
+    let pd_widget: gtk::Box = pd_widget.get_object("podcast_widget").unwrap();
+    stack.add(&pd_widget);
     // Get the headerbar
     let header: gtk::HeaderBar = header_build.get_object("headerbar1").unwrap();
     window.set_titlebar(&header);
@@ -143,6 +148,12 @@ fn main() {
         let image_uri = pd_model.get_value(&iter, 5).get::<String>();
 
         let f = create_flowbox_child(&title, image_uri.as_ref().map(|s| s.as_str()));
+        let stack_clone = stack.clone();
+        let pd_widget_clone = pd_widget.clone();
+        f.connect_activate(move |_| {
+            stack_clone.set_visible_child(&pd_widget_clone);
+            println!("Hello World!, child activated");
+        });
         flowbox.add(&f);
 
         if !pd_model.iter_next(&iter) {
