@@ -6,6 +6,7 @@ workspace = "../"
 
 [dependencies]
 gtk = { version = "0.2", features = ["v3_22"]}
+gdk = "0.6"
 glib = "0.3"
 gdk-pixbuf = "0.2"
 diesel = { version = "0.16", features = ["sqlite"] }

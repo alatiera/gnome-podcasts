@@ -1,5 +1,6 @@
 // extern crate glib;
 extern crate diesel;
+extern crate gdk;
 extern crate gdk_pixbuf;
 extern crate gtk;
 extern crate hammond_data;
@@ -16,7 +17,7 @@ use gtk::TreeStore;
 use gtk::prelude::*;
 use gdk_pixbuf::Pixbuf;
 
-fn create_flowbox_child(title: &str, image_uri: Option<&str>) -> gtk::Box {
+fn create_flowbox_child(title: &str, image_uri: Option<&str>) -> gtk::FlowBoxChild {
     let build_src = include_str!("../gtk/pd_fb_child.ui");
     let builder = gtk::Builder::new_from_string(build_src);
 
@@ -24,6 +25,13 @@ fn create_flowbox_child(title: &str, image_uri: Option<&str>) -> gtk::Box {
     let box_: gtk::Box = builder.get_object("fb_child").unwrap();
     let pd_title: gtk::Label = builder.get_object("pd_title").unwrap();
     let pd_cover: gtk::Image = builder.get_object("pd_cover").unwrap();
+
+    let events: gtk::EventBox = builder.get_object("events").unwrap();
+
+    // GDK.TOUCH_MASK
+    // https://developer.gnome.org/gdk3/stable/gdk3-Events.html#GDK-TOUCH-MASK:CAPS
+    // http://gtk-rs.org/docs/gdk/constant.TOUCH_MASK.html
+    events.add_events(4194304);
 
     pd_title.set_text(&title);
 
@@ -36,7 +44,11 @@ fn create_flowbox_child(title: &str, image_uri: Option<&str>) -> gtk::Box {
         }
     };
 
-    box_
+    let fbc = gtk::FlowBoxChild::new();
+    fbc.connect_activate(|_| println!("Hello World!, child activated"));
+
+    fbc.add(&box_);
+    fbc
 }
 
 fn create_and_fill_tree_store(connection: &SqliteConnection, builder: &gtk::Builder) -> TreeStore {
@@ -119,6 +131,7 @@ fn main() {
 
     // Adapted copy of the way gnome-music does albumview
     let flowbox: gtk::FlowBox = builder.get_object("flowbox1").unwrap();
+
     let db = hammond_data::establish_connection();
     let pd_model = create_and_fill_tree_store(&db, &builder);
 
@@ -128,9 +141,8 @@ fn main() {
     loop {
         let title = pd_model.get_value(&iter, 1).get::<String>().unwrap();
         let image_uri = pd_model.get_value(&iter, 5).get::<String>();
-        info!("{:?}", title);
-        let f = create_flowbox_child(&title, image_uri.as_ref().map(|s| s.as_str()));
 
+        let f = create_flowbox_child(&title, image_uri.as_ref().map(|s| s.as_str()));
         flowbox.add(&f);
 
         if !pd_model.iter_next(&iter) {
