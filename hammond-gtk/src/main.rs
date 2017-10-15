@@ -1,8 +1,11 @@
 // extern crate glib;
 extern crate diesel;
+
 extern crate gdk;
 extern crate gdk_pixbuf;
+extern crate gio;
 extern crate gtk;
+
 extern crate hammond_data;
 extern crate hammond_downloader;
 #[macro_use]
@@ -15,6 +18,7 @@ use hammond_data::dbqueries;
 
 use gtk::TreeStore;
 use gtk::prelude::*;
+use gio::ApplicationExt;
 use gdk_pixbuf::Pixbuf;
 
 fn create_flowbox_child(title: &str, image_uri: Option<&str>) -> gtk::FlowBoxChild {
@@ -114,18 +118,11 @@ fn create_and_fill_list_store(
     podcast_model
 }
 
-fn main() {
-    loggerv::init_with_level(LogLevel::Info).unwrap();
-
-    if gtk::init().is_err() {
-        info!("Failed to initialize GTK.");
-        return;
-    }
-    hammond_data::init().unwrap();
-
-    let glade_src = include_str!("../gtk/foo.ui");
+fn build_ui() {
     // Adapted from gnome-music AlbumWidget
     let pd_widget = include_str!("../gtk/podcast_widget.ui");
+
+    let glade_src = include_str!("../gtk/foo.ui");
     let header_src = include_str!("../gtk/headerbar.ui");
     let builder = gtk::Builder::new_from_string(glade_src);
     let header_build = gtk::Builder::new_from_string(header_src);
@@ -141,7 +138,16 @@ fn main() {
     let header: gtk::HeaderBar = header_build.get_object("headerbar1").unwrap();
     window.set_titlebar(&header);
 
+    // FIXME:
+    // GLib-GIO-WARNING **: Your application does not implement g_application_activate()
+    // and has no handlers connected to the 'activate' signal.  It should do one of these.
+    window.connect_delete_event(|_, _| {
+        gtk::main_quit();
+        Inhibit(false)
+    });
+
     // Adapted copy of the way gnome-music does albumview
+    // FIXME: flowbox childs activate with space/enter but not with clicks.
     let flowbox: gtk::FlowBox = builder.get_object("flowbox1").unwrap();
     let grid: gtk::Grid = builder.get_object("grid").unwrap();
 
@@ -158,15 +164,10 @@ fn main() {
     home_button.connect_clicked(move |_| stack_clone.set_visible_child(&grid_clone));
 
     // FIXME: This locks the ui atm.
-    refresh_button.connect_clicked(|_| {
+    // FIXME: it also leaks memmory.
+    refresh_button.connect_clicked(move |_| {
         let db = hammond_data::establish_connection();
         hammond_data::index_feed::index_loop(db, false).unwrap();
-    });
-
-    // Exit cleanly on delete event
-    window.connect_delete_event(|_, _| {
-        gtk::main_quit();
-        Inhibit(false)
     });
 
     let db = hammond_data::establish_connection();
@@ -196,4 +197,35 @@ fn main() {
 
     window.show_all();
     gtk::main();
+}
+
+// Copied from:
+// https://github.com/GuillaumeGomez/process-viewer/blob/ \
+// ddcb30d01631c0083710cf486caf04c831d38cb7/src/process_viewer.rs#L367
+fn main() {
+    loggerv::init_with_level(LogLevel::Info).unwrap();
+    hammond_data::init().unwrap();
+
+    // Not sure if needed.
+    if gtk::init().is_err() {
+        info!("Failed to initialize GTK.");
+        return;
+    }
+
+    let application = gtk::Application::new(
+        "com.gitlab.alatiera.Hammond",
+        gio::ApplicationFlags::empty(),
+    ).expect("Initialization failed...");
+
+    application.connect_startup(move |_| {
+        build_ui();
+    });
+
+    // Not sure if this will be kept.
+    let original = ::std::env::args().collect::<Vec<_>>();
+    let mut tmp = Vec::with_capacity(original.len());
+    for i in 0..original.len() {
+        tmp.push(original[i].as_str());
+    }
+    application.run(&tmp);
 }

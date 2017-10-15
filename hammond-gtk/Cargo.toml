@@ -8,9 +8,12 @@ workspace = "../"
 gtk = { version = "0.2", features = ["v3_22"]}
 gdk = "0.6"
 glib = "0.3"
+gio = "0.2"
 gdk-pixbuf = "0.2"
+
 diesel = { version = "0.16", features = ["sqlite"] }
 loggerv = "0.3"
 log = "0.3"
+
 hammond-data = {path = "../hammond-data"}
 hammond-downloader = {path = "../hammond-downloader"}
