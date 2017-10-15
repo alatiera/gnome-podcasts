@@ -86,6 +86,7 @@ pub fn latest_dl(connection: &SqliteConnection, limit: u32) -> Result<()> {
     Ok(())
 }
 
+// TODO: Right unit test
 fn get_dl_folder(pd: &Podcast) -> Result<String> {
     // It might be better to make it a hash of the title
     let dl_fold = format!("{}/{}", DL_DIR.to_str().unwrap(), pd.title());
@@ -122,6 +123,7 @@ fn get_episode(connection: &SqliteConnection, ep: &mut Episode, dl_folder: &str)
 }
 
 // pub fn cache_image(pd: &Podcast) -> Option<String> {
+// TODO: Right unit test
 // TODO: Refactor
 pub fn cache_image(title: &str, image_uri: Option<&str>) -> Option<String> {
     if let Some(url) = image_uri {

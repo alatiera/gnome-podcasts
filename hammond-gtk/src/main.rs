@@ -141,11 +141,21 @@ fn main() {
     let header: gtk::HeaderBar = header_build.get_object("headerbar1").unwrap();
     window.set_titlebar(&header);
 
+    // Adapted copy of the way gnome-music does albumview
+    let flowbox: gtk::FlowBox = builder.get_object("flowbox1").unwrap();
+    let grid: gtk::Grid = builder.get_object("grid").unwrap();
+
     let refresh_button: gtk::Button = header_build.get_object("refbutton").unwrap();
     // TODO: Have a small dropdown menu
     let _add_button: gtk::Button = header_build.get_object("addbutton").unwrap();
     let _search_button: gtk::Button = header_build.get_object("searchbutton").unwrap();
-    let _home_button: gtk::Button = header_build.get_object("homebutton").unwrap();
+
+    // TODO: make it a back arrow button, that will hide when appropriate,
+    // and add a StackSwitcher when more views are added.
+    let home_button: gtk::Button = header_build.get_object("homebutton").unwrap();
+    let grid_clone = grid.clone();
+    let stack_clone = stack.clone();
+    home_button.connect_clicked(move |_| stack_clone.set_visible_child(&grid_clone));
 
     // FIXME: This locks the ui atm.
     refresh_button.connect_clicked(|_| {
@@ -158,9 +168,6 @@ fn main() {
         gtk::main_quit();
         Inhibit(false)
     });
-
-    // Adapted copy of the way gnome-music does albumview
-    let flowbox: gtk::FlowBox = builder.get_object("flowbox1").unwrap();
 
     let db = hammond_data::establish_connection();
     // let pd_model = create_and_fill_tree_store(&db, &builder);
