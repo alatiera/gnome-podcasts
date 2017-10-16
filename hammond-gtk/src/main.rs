@@ -16,12 +16,11 @@ use log::LogLevel;
 use diesel::prelude::*;
 use hammond_data::dbqueries;
 
-use gtk::TreeStore;
 use gtk::prelude::*;
 use gio::ApplicationExt;
 use gdk_pixbuf::Pixbuf;
 
-fn create_flowbox_child(title: &str, image_uri: Option<&str>) -> gtk::FlowBoxChild {
+fn create_flowbox_child(title: &str, cover: Option<Pixbuf>) -> gtk::FlowBoxChild {
     let build_src = include_str!("../gtk/pd_fb_child.ui");
     let builder = gtk::Builder::new_from_string(build_src);
 
@@ -39,58 +38,13 @@ fn create_flowbox_child(title: &str, image_uri: Option<&str>) -> gtk::FlowBoxChi
 
     pd_title.set_text(&title);
 
-    let imgpath = hammond_downloader::downloader::cache_image(title, image_uri);
-
-    if let Some(i) = imgpath {
-        let pixbuf = Pixbuf::new_from_file_at_scale(&i, 200, 200, true);
-        if pixbuf.is_ok() {
-            pd_cover.set_from_pixbuf(&pixbuf.unwrap())
-        }
+    if let Some(img) = cover {
+        pd_cover.set_from_pixbuf(&img);
     };
 
     let fbc = gtk::FlowBoxChild::new();
     fbc.add(&box_);
     fbc
-}
-
-fn create_and_fill_tree_store(connection: &SqliteConnection, builder: &gtk::Builder) -> TreeStore {
-    let podcast_model: TreeStore = builder.get_object("FooStore").unwrap();
-
-    let podcasts = dbqueries::get_podcasts(connection).unwrap();
-
-    for pd in &podcasts {
-        let iter = podcast_model.insert_with_values(
-            None,
-            None,
-            &[0, 1, 2, 3, 5],
-            &[
-                &pd.id(),
-                &pd.title(),
-                &pd.description(),
-                &pd.link(),
-                &pd.image_uri().unwrap_or_default(),
-            ],
-        );
-        let episodes = dbqueries::get_pd_episodes(connection, &pd).unwrap();
-
-        for ep in episodes {
-            podcast_model.insert_with_values(
-                Some(&iter),
-                None,
-                &[0, 1, 2, 6, 7, 8],
-                &[
-                    &ep.id(),
-                    &ep.title().unwrap(),
-                    &ep.description().unwrap_or_default(),
-                    &ep.uri(),
-                    &ep.local_uri().unwrap_or_default(),
-                    &ep.published_date().unwrap_or_default(),
-                ],
-            );
-        }
-    }
-
-    podcast_model
 }
 
 fn create_and_fill_list_store(
@@ -118,22 +72,49 @@ fn create_and_fill_list_store(
     podcast_model
 }
 
-fn build_ui() {
+fn podcast_widget(
+    title: Option<&str>,
+    description: Option<&str>,
+    image: Option<Pixbuf>,
+) -> gtk::Box {
     // Adapted from gnome-music AlbumWidget
-    let pd_widget = include_str!("../gtk/podcast_widget.ui");
+    let pd_widget_source = include_str!("../gtk/podcast_widget.ui");
+    let pd_widget_buidler = gtk::Builder::new_from_string(pd_widget_source);
+    let pd_widget: gtk::Box = pd_widget_buidler.get_object("podcast_widget").unwrap();
 
+    let cover: gtk::Image = pd_widget_buidler.get_object("cover").unwrap();
+    let title_label: gtk::Label = pd_widget_buidler.get_object("title_label").unwrap();
+    let desc_label: gtk::Label = pd_widget_buidler.get_object("description_label").unwrap();
+
+    if let Some(t) = title {
+        title_label.set_text(t);
+    }
+
+    if let Some(d) = description {
+        desc_label.set_text(d);
+    }
+
+    if let Some(i) = image {
+        cover.set_from_pixbuf(&i);
+    }
+
+    // (pd_widget, title_label, desc_label, cover)
+    pd_widget
+}
+
+fn build_ui() {
     let glade_src = include_str!("../gtk/foo.ui");
     let header_src = include_str!("../gtk/headerbar.ui");
     let builder = gtk::Builder::new_from_string(glade_src);
     let header_build = gtk::Builder::new_from_string(header_src);
-    let pd_widget = gtk::Builder::new_from_string(pd_widget);
 
     // Get the main window
     let window: gtk::Window = builder.get_object("window1").unwrap();
     // Get the Stack
     let stack: gtk::Stack = builder.get_object("stack1").unwrap();
-    let pd_widget: gtk::Box = pd_widget.get_object("podcast_widget").unwrap();
-    stack.add(&pd_widget);
+
+    let pd_widget = podcast_widget(None, None, None);
+    stack.add_named(&pd_widget, "pdw");
     // Get the headerbar
     let header: gtk::HeaderBar = header_build.get_object("headerbar1").unwrap();
     window.set_titlebar(&header);
@@ -194,13 +175,32 @@ fn build_ui() {
     // let iter = pd_model.iter_children(&iter).unwrap();
     loop {
         let title = pd_model.get_value(&iter, 1).get::<String>().unwrap();
+        let description = pd_model.get_value(&iter, 2).get::<String>().unwrap();
         let image_uri = pd_model.get_value(&iter, 4).get::<String>();
 
-        let f = create_flowbox_child(&title, image_uri.as_ref().map(|s| s.as_str()));
+        let imgpath = hammond_downloader::downloader::cache_image(
+            &title,
+            image_uri.as_ref().map(|s| s.as_str()),
+        );
+
+        let pixbuf = if let Some(i) = imgpath {
+            Pixbuf::new_from_file_at_scale(&i, 200, 200, true).ok()
+        } else {
+            None
+        };
+
+        let f = create_flowbox_child(&title, pixbuf.clone());
         let stack_clone = stack.clone();
-        let pd_widget_clone = pd_widget.clone();
         f.connect_activate(move |_| {
-            stack_clone.set_visible_child(&pd_widget_clone);
+            let pdw = stack_clone.get_child_by_name("pdw").unwrap();
+            stack_clone.remove(&pdw);
+            let pdw = podcast_widget(
+                Some(title.as_str()),
+                Some(description.as_str()),
+                pixbuf.clone(),
+            );
+            stack_clone.add_named(&pdw, "pdw");
+            stack_clone.set_visible_child(&pdw);
             println!("Hello World!, child activated");
         });
         flowbox.add(&f);
