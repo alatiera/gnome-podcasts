@@ -151,9 +151,23 @@ fn build_ui() {
     let flowbox: gtk::FlowBox = builder.get_object("flowbox1").unwrap();
     let grid: gtk::Grid = builder.get_object("grid").unwrap();
 
-    let refresh_button: gtk::Button = header_build.get_object("refbutton").unwrap();
-    // TODO: Have a small dropdown menu
-    let _add_button: gtk::Button = header_build.get_object("addbutton").unwrap();
+    // Stolen from gnome-news:
+    // https://github.com/GNOME/gnome-news/blob/master/data/ui/headerbar.ui
+    let add_toggle_button: gtk::MenuButton = header_build.get_object("add-toggle-button").unwrap();
+    let add_popover: gtk::Popover = header_build.get_object("add-popover").unwrap();
+    let new_url: gtk::Entry = header_build.get_object("new-url").unwrap();
+    let add_button: gtk::Button = header_build.get_object("add-button").unwrap();
+    new_url.connect_changed(move |url| {
+        println!("{:?}", url.get_text());
+    });
+    // FIXME: Button is not clickable for some reason
+    add_button.connect_clicked(move |f| {
+        println!("{:?} feed added", f);
+    });
+    // add_button.clicked();
+    add_popover.hide();
+    add_toggle_button.set_popover(&add_popover);
+
     let _search_button: gtk::Button = header_build.get_object("searchbutton").unwrap();
 
     // TODO: make it a back arrow button, that will hide when appropriate,
@@ -163,6 +177,7 @@ fn build_ui() {
     let stack_clone = stack.clone();
     home_button.connect_clicked(move |_| stack_clone.set_visible_child(&grid_clone));
 
+    let refresh_button: gtk::Button = header_build.get_object("refbutton").unwrap();
     // FIXME: This locks the ui atm.
     // FIXME: it also leaks memmory.
     refresh_button.connect_clicked(move |_| {
