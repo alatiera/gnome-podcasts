@@ -39,7 +39,6 @@
             <property name="halign">start</property>
             <property name="valign">center</property>
             <property name="use_markup">True</property>
-            <property name="use_underline">True</property>
             <property name="wrap">True</property>
             <property name="ellipsize">end</property>
             <property name="lines">3</property>
