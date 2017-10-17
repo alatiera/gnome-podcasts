@@ -118,8 +118,6 @@
             <property name="width_request">400</property>
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="hexpand">True</property>
-            <property name="vexpand">True</property>
             <property name="shadow_type">none</property>
             <child>
               <placeholder/>

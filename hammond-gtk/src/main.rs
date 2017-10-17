@@ -143,8 +143,8 @@ fn episodes_listbox(connection: &SqliteConnection, pd_title: &str) -> gtk::ListB
         list.add(&w)
     });
 
-    list.set_vexpand(true);
-    list.set_hexpand(true);
+    list.set_vexpand(false);
+    list.set_hexpand(false);
     list.set_visible(true);
     list
 }
