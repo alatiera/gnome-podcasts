@@ -15,7 +15,9 @@ extern crate loggerv;
 use log::LogLevel;
 use diesel::prelude::*;
 use hammond_data::dbqueries;
+
 use std::rc;
+use std::thread;
 
 use gtk::prelude::*;
 use gio::ApplicationExt;
@@ -209,11 +211,12 @@ fn build_ui() {
     home_button.connect_clicked(move |_| stack_clone.set_visible_child(&grid_clone));
 
     let refresh_button: gtk::Button = header_build.get_object("refbutton").unwrap();
-    // FIXME: This locks the ui atm.
-    // FIXME: it also leaks memmory.
+    // FIXME: There appears to be a memmory leak here.
     refresh_button.connect_clicked(move |_| {
-        let db = hammond_data::establish_connection();
-        hammond_data::index_feed::index_loop(db, false).unwrap();
+        thread::spawn(|| {
+            let db = hammond_data::establish_connection();
+            hammond_data::index_feed::index_loop(db, false).unwrap();
+        });
     });
 
     // let pd_model = create_and_fill_tree_store(&db, &builder);
