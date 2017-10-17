@@ -9,18 +9,18 @@
       <object class="GtkBox">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="halign">end</property>
+        <property name="halign">center</property>
+        <property name="valign">center</property>
         <property name="margin_left">32</property>
         <property name="margin_right">32</property>
         <property name="margin_start">32</property>
         <property name="margin_end">32</property>
         <property name="margin_top">64</property>
         <property name="margin_bottom">32</property>
-        <property name="vexpand">True</property>
         <child>
           <object class="GtkBox">
-            <property name="width_request">100</property>
-            <property name="height_request">100</property>
+            <property name="width_request">50</property>
+            <property name="height_request">50</property>
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="halign">center</property>
@@ -52,18 +52,14 @@
                 <property name="halign">center</property>
                 <property name="valign">start</property>
                 <property name="orientation">vertical</property>
-                <property name="spacing">3</property>
+                <property name="spacing">2</property>
                 <child>
                   <object class="GtkLabel" id="title_label">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="halign">center</property>
-                    <property name="justify">center</property>
-                    <property name="ellipsize">middle</property>
-                    <attributes>
-                      <attribute name="weight" value="bold"/>
-                      <attribute name="scale" value="1.2"/>
-                    </attributes>
+                    <property name="use_markup">True</property>
+                    <property name="ellipsize">end</property>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -75,9 +71,12 @@
                   <object class="GtkLabel" id="description_label">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
+                    <property name="use_markup">True</property>
                     <property name="wrap">True</property>
+                    <property name="wrap_mode">word-char</property>
                     <property name="selectable">True</property>
                     <property name="ellipsize">end</property>
+                    <property name="max_width_chars">30</property>
                     <property name="lines">5</property>
                   </object>
                   <packing>
@@ -119,8 +118,8 @@
             <property name="width_request">400</property>
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="halign">start</property>
             <property name="hexpand">True</property>
+            <property name="vexpand">True</property>
             <property name="shadow_type">none</property>
             <child>
               <placeholder/>

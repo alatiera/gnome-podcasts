@@ -15,6 +15,7 @@ extern crate loggerv;
 use log::LogLevel;
 use diesel::prelude::*;
 use hammond_data::dbqueries;
+use std::rc;
 
 use gtk::prelude::*;
 use gio::ApplicationExt;
@@ -73,6 +74,7 @@ fn create_and_fill_list_store(
 }
 
 fn podcast_widget(
+    connection: &SqliteConnection,
     title: Option<&str>,
     description: Option<&str>,
     image: Option<Pixbuf>,
@@ -85,9 +87,12 @@ fn podcast_widget(
     let cover: gtk::Image = pd_widget_buidler.get_object("cover").unwrap();
     let title_label: gtk::Label = pd_widget_buidler.get_object("title_label").unwrap();
     let desc_label: gtk::Label = pd_widget_buidler.get_object("description_label").unwrap();
+    let view: gtk::Viewport = pd_widget_buidler.get_object("view").unwrap();
 
     if let Some(t) = title {
         title_label.set_text(t);
+        let listbox = episodes_listbox(connection, t);
+        view.add(&listbox);
     }
 
     if let Some(d) = description {
@@ -102,6 +107,50 @@ fn podcast_widget(
     pd_widget
 }
 
+fn epidose_widget(title: Option<&str>, description: Option<&str>) -> gtk::Box {
+    // This is just a prototype and will be reworked probably.
+    let builder = include_str!("../gtk/EpisodeWidget.ui");
+    let builder = gtk::Builder::new_from_string(builder);
+
+    let ep: gtk::Box = builder.get_object("episode_box").unwrap();
+    let _dl_button: gtk::Button = builder.get_object("download_button").unwrap();
+    let _play_button: gtk::Button = builder.get_object("play_button").unwrap();
+
+    let title_label: gtk::Label = builder.get_object("title_label").unwrap();
+    let desc_label: gtk::Label = builder.get_object("desc_label").unwrap();
+
+    title_label.set_xalign(0.0);
+    desc_label.set_xalign(0.0);
+
+    if let Some(t) = title {
+        title_label.set_text(t);
+    }
+
+    if let Some(d) = description {
+        desc_label.set_text(d);
+    }
+
+    ep
+}
+
+fn episodes_listbox(connection: &SqliteConnection, pd_title: &str) -> gtk::ListBox {
+    let pd = dbqueries::load_podcast(connection, pd_title).unwrap();
+    let episodes = dbqueries::get_pd_episodes(connection, &pd).unwrap();
+
+    let list = gtk::ListBox::new();
+    episodes.iter().for_each(|ep| {
+        let w = epidose_widget(ep.title(), ep.description());
+        list.add(&w)
+    });
+
+    list.set_vexpand(true);
+    list.set_hexpand(true);
+    list.set_visible(true);
+    list
+}
+
+// I am sorry about the spaghetti code.
+// Gonna clean it up when the GUI is a bit usuable.
 fn build_ui() {
     let glade_src = include_str!("../gtk/foo.ui");
     let header_src = include_str!("../gtk/headerbar.ui");
@@ -113,7 +162,8 @@ fn build_ui() {
     // Get the Stack
     let stack: gtk::Stack = builder.get_object("stack1").unwrap();
 
-    let pd_widget = podcast_widget(None, None, None);
+    let db = hammond_data::establish_connection();
+    let pd_widget = podcast_widget(&db, None, None, None);
     stack.add_named(&pd_widget, "pdw");
     // Get the headerbar
     let header: gtk::HeaderBar = header_build.get_object("headerbar1").unwrap();
@@ -166,11 +216,11 @@ fn build_ui() {
         hammond_data::index_feed::index_loop(db, false).unwrap();
     });
 
-    let db = hammond_data::establish_connection();
     // let pd_model = create_and_fill_tree_store(&db, &builder);
     let pd_model = create_and_fill_list_store(&db, &builder);
 
     let iter = pd_model.get_iter_first().unwrap();
+    let db = rc::Rc::new(db);
     // this will iterate over the episodes.
     // let iter = pd_model.iter_children(&iter).unwrap();
     loop {
@@ -191,10 +241,12 @@ fn build_ui() {
 
         let f = create_flowbox_child(&title, pixbuf.clone());
         let stack_clone = stack.clone();
+        let db_clone = db.clone();
         f.connect_activate(move |_| {
             let pdw = stack_clone.get_child_by_name("pdw").unwrap();
             stack_clone.remove(&pdw);
             let pdw = podcast_widget(
+                &db_clone,
                 Some(title.as_str()),
                 Some(description.as_str()),
                 pixbuf.clone(),

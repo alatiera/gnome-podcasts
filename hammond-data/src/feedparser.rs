@@ -7,9 +7,9 @@ use errors::*;
 // TODO: look into how bad-utf8 is handled in rss crate,
 // and figure if there is a need for checking before parsing.
 pub fn parse_podcast(chan: &Channel, source_id: i32) -> Result<models::NewPodcast> {
-    let title = chan.title().to_owned();
+    let title = chan.title().trim().to_owned();
     let link = chan.link().to_owned();
-    let description = chan.description().to_owned();
+    let description = chan.description().trim().to_owned();
     // Some feeds miss baseurl and/or http://
     // TODO: Sanitize the url,
     // could also be reuse to sanitize the new-url gui entrybox.
@@ -26,12 +26,12 @@ pub fn parse_podcast(chan: &Channel, source_id: i32) -> Result<models::NewPodcas
 }
 
 pub fn parse_episode(item: &Item, parent_id: i32) -> Result<models::NewEpisode> {
-    let title = item.title();
-    let description = item.description();
-    let guid = item.guid().map(|x| x.value());
+    let title = item.title().map(|s| s.trim());
+    let description = item.description().map(|s| s.trim());
+    let guid = item.guid().map(|x| x.value().trim());
     let local_uri = None;
 
-    let mut uri = item.enclosure().map(|x| x.url());
+    let mut uri = item.enclosure().map(|x| x.url().trim());
     if uri == None {
         uri = item.link();
     }
@@ -200,10 +200,8 @@ mod tests {
         let channel = Channel::read_from(BufReader::new(file)).unwrap();
 
         let firstitem = channel.items().first().unwrap();
-        let descr = "\n                               \
-                     <p>A reporter finds that homes meant to replace New York’s troubled \
-                     psychiatric hospitals might be just as bad.</p>\
-                     \n                \n            ";
+        let descr = "<p>A reporter finds that homes meant to replace New York’s troubled \
+                     psychiatric hospitals might be just as bad.</p>";
         let i = parse_episode(&firstitem, 0).unwrap();
 
         assert_eq!(
@@ -231,11 +229,9 @@ mod tests {
 
         let second = channel.items().iter().nth(1).unwrap();
         let i2 = parse_episode(&second, 0).unwrap();
-        let descr2 = "\n                               \
-                      <p>Jonathan Allen and Amie Parnes didn’t know their \
+        let descr2 = "<p>Jonathan Allen and Amie Parnes didn’t know their \
                       book would be called ‘Shattered,’ or that their extraordinary access would \
-                      let them chronicle the mounting signs of a doomed campaign.</p>\
-                      \n                \n            ";
+                      let them chronicle the mounting signs of a doomed campaign.</p>";
 
         assert_eq!(
             i2.title,
