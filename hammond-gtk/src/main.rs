@@ -113,7 +113,7 @@ fn podcast_widget(
 }
 
 fn epidose_widget(
-    connection: &SqliteConnection,
+    connection: Arc<Mutex<SqliteConnection>>,
     episode: &mut Episode,
     pd_title: &str,
 ) -> gtk::Box {
@@ -152,12 +152,22 @@ fn epidose_widget(
     }
 
     let pd_title_cloned = pd_title.clone().to_owned();
-    // let db = rc::Rc::new(connection);
+    let db = connection.clone();
+    let ep_clone = episode.clone();
     dl_button.connect_clicked(move |_| {
         // ugly hack to bypass the borrowchecker
         let pd_title = pd_title_cloned.clone();
+        let db = db.clone();
+        let mut ep_clone = ep_clone.clone();
+
         thread::spawn(move || {
-            let dl_fold = downloader::get_dl_folder(&pd_title);
+            let dl_fold = downloader::get_dl_folder(&pd_title).unwrap();
+            let tempdb = db.lock().unwrap();
+            let e = downloader::get_episode(&tempdb, &mut ep_clone, dl_fold.as_str());
+            if let Err(err) = e {
+                error!("Error while trying to download: {}", ep_clone.uri());
+                error!("Error: {}", err);
+            };
         });
     });
 
@@ -172,9 +182,7 @@ fn episodes_listbox(connection: Arc<Mutex<SqliteConnection>>, pd_title: &str) ->
 
     let list = gtk::ListBox::new();
     episodes.iter_mut().for_each(|ep| {
-        let m = connection.clone();
-        let db = m.lock().unwrap();
-        let w = epidose_widget(&db, ep, pd_title);
+        let w = epidose_widget(connection.clone(), ep, pd_title);
         list.add(&w)
     });
 
