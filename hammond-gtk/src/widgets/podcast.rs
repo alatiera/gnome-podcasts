@@ -7,7 +7,7 @@ use hammond_data::dbqueries;
 
 use std::sync::{Arc, Mutex};
 
-use episode_widget::episodes_listbox;
+use widgets::episode::episodes_listbox;
 
 pub fn podcast_widget(
     connection: Arc<Mutex<SqliteConnection>>,
@@ -16,7 +16,7 @@ pub fn podcast_widget(
     image: Option<Pixbuf>,
 ) -> gtk::Box {
     // Adapted from gnome-music AlbumWidget
-    let pd_widget_source = include_str!("../gtk/podcast_widget.ui");
+    let pd_widget_source = include_str!("../../gtk/podcast_widget.ui");
     let pd_widget_buidler = gtk::Builder::new_from_string(pd_widget_source);
     let pd_widget: gtk::Box = pd_widget_buidler.get_object("podcast_widget").unwrap();
 
@@ -44,7 +44,7 @@ pub fn podcast_widget(
 }
 
 pub fn create_flowbox_child(title: &str, cover: Option<Pixbuf>) -> gtk::FlowBoxChild {
-    let build_src = include_str!("../gtk/pd_fb_child.ui");
+    let build_src = include_str!("../../gtk/pd_fb_child.ui");
     let builder = gtk::Builder::new_from_string(build_src);
 
     // Copy of gnome-music AlbumWidget
@@ -70,8 +70,10 @@ pub fn create_flowbox_child(title: &str, cover: Option<Pixbuf>) -> gtk::FlowBoxC
     fbc
 }
 
-pub fn podcast_liststore(connection: &SqliteConnection, builder: &gtk::Builder) -> gtk::ListStore {
-    let podcast_model: gtk::ListStore = builder.get_object("PdListStore").unwrap();
+pub fn podcast_liststore(connection: &SqliteConnection) -> gtk::ListStore {
+    let builder = include_str!("../../gtk/podcast_widget.ui");
+    let builder = gtk::Builder::new_from_string(builder);
+    let podcast_model: gtk::ListStore = builder.get_object("pd_store").unwrap();
 
     let podcasts = dbqueries::get_podcasts(connection).unwrap();
 

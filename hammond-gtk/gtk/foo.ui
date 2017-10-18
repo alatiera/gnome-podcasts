@@ -2,44 +2,6 @@
 <!-- Generated with glade 3.20.1 -->
 <interface>
   <requires lib="gtk+" version="3.20"/>
-  <object class="GtkTreeStore" id="FooStore">
-    <columns>
-      <!-- column-name id -->
-      <column type="guint"/>
-      <!-- column-name title -->
-      <column type="gchararray"/>
-      <!-- column-name description -->
-      <column type="gchararray"/>
-      <!-- column-name link -->
-      <column type="gchararray"/>
-      <!-- column-name image -->
-      <column type="GdkPixbuf"/>
-      <!-- column-name image_uri -->
-      <column type="gchararray"/>
-      <!-- column-name uri -->
-      <column type="gchararray"/>
-      <!-- column-name local_uri -->
-      <column type="gchararray"/>
-      <!-- column-name published_date -->
-      <column type="gchararray"/>
-    </columns>
-  </object>
-  <object class="GtkListStore" id="PdListStore">
-    <columns>
-      <!-- column-name id -->
-      <column type="guint"/>
-      <!-- column-name title -->
-      <column type="gchararray"/>
-      <!-- column-name description -->
-      <column type="gchararray"/>
-      <!-- column-name link -->
-      <column type="gchararray"/>
-      <!-- column-name image_uri -->
-      <column type="gchararray"/>
-      <!-- column-name img -->
-      <column type="GdkPixbuf"/>
-    </columns>
-  </object>
   <object class="GtkApplicationWindow" id="window1">
     <property name="can_focus">False</property>
     <property name="default_width">1000</property>
@@ -104,7 +66,7 @@
         </child>
       </object>
     </child>
-    <child>
+    <child type="titlebar">
       <placeholder/>
     </child>
   </object>

@@ -16,7 +16,7 @@ fn epidose_widget(
     pd_title: &str,
 ) -> gtk::Box {
     // This is just a prototype and will be reworked probably.
-    let builder = include_str!("../gtk/episode_widget.ui");
+    let builder = include_str!("../../gtk/episode_widget.ui");
     let builder = gtk::Builder::new_from_string(builder);
 
     let ep: gtk::Box = builder.get_object("episode_box").unwrap();

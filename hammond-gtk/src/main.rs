@@ -25,10 +25,10 @@ use gtk::prelude::*;
 use gio::ApplicationExt;
 use gdk_pixbuf::Pixbuf;
 
-pub mod podcast_widget;
-pub mod episode_widget;
+pub mod views;
+pub mod widgets;
 
-use podcast_widget::{create_flowbox_child, podcast_liststore, podcast_widget};
+use widgets::podcast::{create_flowbox_child, podcast_liststore, podcast_widget};
 
 /*
 THIS IS STILL A PROTOTYPE.
@@ -120,7 +120,7 @@ fn build_ui() {
     });
 
     let tempdb = db.lock().unwrap();
-    let pd_model = podcast_liststore(&tempdb, &builder);
+    let pd_model = podcast_liststore(&tempdb);
     drop(tempdb);
 
     // Get a ListStore iterator at the first element.
