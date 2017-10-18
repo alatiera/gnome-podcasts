@@ -19,8 +19,8 @@ use hammond_data::dbqueries;
 use hammond_data::models::Episode;
 use hammond_downloader::downloader;
 
-use std::rc;
 use std::thread;
+use std::sync::{Arc, Mutex};
 
 use gtk::prelude::*;
 use gio::ApplicationExt;
@@ -79,7 +79,7 @@ fn create_and_fill_list_store(
 }
 
 fn podcast_widget(
-    connection: &SqliteConnection,
+    connection: Arc<Mutex<SqliteConnection>>,
     title: Option<&str>,
     description: Option<&str>,
     image: Option<Pixbuf>,
@@ -96,7 +96,7 @@ fn podcast_widget(
 
     if let Some(t) = title {
         title_label.set_text(t);
-        let listbox = episodes_listbox(connection, t);
+        let listbox = episodes_listbox(connection.clone(), t);
         view.add(&listbox);
     }
 
@@ -112,7 +112,11 @@ fn podcast_widget(
     pd_widget
 }
 
-fn epidose_widget(connection: &SqliteConnection, episode: &mut Episode, pd_title: &str) -> gtk::Box {
+fn epidose_widget(
+    connection: &SqliteConnection,
+    episode: &mut Episode,
+    pd_title: &str,
+) -> gtk::Box {
     // This is just a prototype and will be reworked probably.
     let builder = include_str!("../gtk/EpisodeWidget.ui");
     let builder = gtk::Builder::new_from_string(builder);
@@ -160,13 +164,17 @@ fn epidose_widget(connection: &SqliteConnection, episode: &mut Episode, pd_title
     ep
 }
 
-fn episodes_listbox(connection: &SqliteConnection, pd_title: &str) -> gtk::ListBox {
-    let pd = dbqueries::load_podcast(connection, pd_title).unwrap();
-    let mut episodes = dbqueries::get_pd_episodes(connection, &pd).unwrap();
+fn episodes_listbox(connection: Arc<Mutex<SqliteConnection>>, pd_title: &str) -> gtk::ListBox {
+    let m = connection.lock().unwrap();
+    let pd = dbqueries::load_podcast(&m, pd_title).unwrap();
+    let mut episodes = dbqueries::get_pd_episodes(&m, &pd).unwrap();
+    drop(m);
 
     let list = gtk::ListBox::new();
     episodes.iter_mut().for_each(|ep| {
-        let w = epidose_widget(connection, ep, pd_title);
+        let m = connection.clone();
+        let db = m.lock().unwrap();
+        let w = epidose_widget(&db, ep, pd_title);
         list.add(&w)
     });
 
@@ -189,8 +197,8 @@ fn build_ui() {
     // Get the Stack
     let stack: gtk::Stack = builder.get_object("stack1").unwrap();
 
-    let db = hammond_data::establish_connection();
-    let pd_widget = podcast_widget(&db, None, None, None);
+    let db = Arc::new(Mutex::new(hammond_data::establish_connection()));
+    let pd_widget = podcast_widget(db.clone(), None, None, None);
     stack.add_named(&pd_widget, "pdw");
     // Get the headerbar
     let header: gtk::HeaderBar = header_build.get_object("headerbar1").unwrap();
@@ -237,18 +245,20 @@ fn build_ui() {
 
     let refresh_button: gtk::Button = header_build.get_object("refbutton").unwrap();
     // FIXME: There appears to be a memmory leak here.
+    let db_clone = db.clone();
     refresh_button.connect_clicked(move |_| {
-        thread::spawn(|| {
-            let db = hammond_data::establish_connection();
-            hammond_data::index_feed::index_loop(db, false).unwrap();
+        let _db_clone = db_clone.clone();
+        thread::spawn(move || {
+            // let tempdb = db_clone.lock().unwrap();
+            // hammond_data::index_feed::index_loop(*tempdb, false).unwrap();
         });
     });
 
-    // let pd_model = create_and_fill_tree_store(&db, &builder);
-    let pd_model = create_and_fill_list_store(&db, &builder);
+    let tempdb = db.lock().unwrap();
+    let pd_model = create_and_fill_list_store(&tempdb, &builder);
+    drop(tempdb);
 
     let iter = pd_model.get_iter_first().unwrap();
-    let db = rc::Rc::new(db);
     // this will iterate over the episodes.
     // let iter = pd_model.iter_children(&iter).unwrap();
     loop {
@@ -256,10 +266,7 @@ fn build_ui() {
         let description = pd_model.get_value(&iter, 2).get::<String>().unwrap();
         let image_uri = pd_model.get_value(&iter, 4).get::<String>();
 
-        let imgpath = downloader::cache_image(
-            &title,
-            image_uri.as_ref().map(|s| s.as_str()),
-        );
+        let imgpath = downloader::cache_image(&title, image_uri.as_ref().map(|s| s.as_str()));
 
         let pixbuf = if let Some(i) = imgpath {
             Pixbuf::new_from_file_at_scale(&i, 200, 200, true).ok()
@@ -274,7 +281,7 @@ fn build_ui() {
             let pdw = stack_clone.get_child_by_name("pdw").unwrap();
             stack_clone.remove(&pdw);
             let pdw = podcast_widget(
-                &db_clone,
+                db_clone.clone(),
                 Some(title.as_str()),
                 Some(description.as_str()),
                 pixbuf.clone(),

@@ -8,7 +8,7 @@ use std::path::Path;
 
 use errors::*;
 use hammond_data::dbqueries;
-use hammond_data::models::{Episode, Podcast};
+use hammond_data::models::Episode;
 use hammond_data::{DL_DIR, HAMMOND_CACHE};
 
 // Adapted from https://github.com/mattgathu/rget .

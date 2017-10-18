@@ -83,13 +83,9 @@ pub fn index_loop(db: SqliteConnection, force: bool) -> Result<()> {
 
     let mut f = fetch_feeds(m.clone(), force)?;
 
-    // f.par_iter_mut().for_each(|&mut (ref mut req, ref source)| {
-    // TODO: Once for_each is stable, uncomment above line and delete collect.
-    let _: Vec<_> = f.par_iter_mut()
-        .map(|&mut (ref mut req, ref source)| {
-            complete_index_from_source(req, source, m.clone()).unwrap();
-        })
-        .collect();
+    f.par_iter_mut().for_each(|&mut (ref mut req, ref source)| {
+        complete_index_from_source(req, source, m.clone()).unwrap();
+    });
 
     Ok(())
 }
