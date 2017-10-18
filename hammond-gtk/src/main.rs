@@ -15,9 +15,7 @@ extern crate open;
 
 use log::LogLevel;
 use diesel::prelude::*;
-use hammond_data::dbqueries;
 use hammond_data::index_feed;
-use hammond_data::models::Episode;
 use hammond_downloader::downloader;
 
 use std::thread;
@@ -27,177 +25,15 @@ use gtk::prelude::*;
 use gio::ApplicationExt;
 use gdk_pixbuf::Pixbuf;
 
+pub mod podcast_widget;
+pub mod episode_widget;
+
+use podcast_widget::{create_flowbox_child, podcast_liststore, podcast_widget};
+
 /*
 THIS IS STILL A PROTOTYPE.
 THE CODE IS TERIBLE, SPAGHETTI AND HAS UNWRAPS EVERYWHERE.
 */
-
-fn create_flowbox_child(title: &str, cover: Option<Pixbuf>) -> gtk::FlowBoxChild {
-    let build_src = include_str!("../gtk/pd_fb_child.ui");
-    let builder = gtk::Builder::new_from_string(build_src);
-
-    // Copy of gnome-music AlbumWidget
-    let box_: gtk::Box = builder.get_object("fb_child").unwrap();
-    let pd_title: gtk::Label = builder.get_object("pd_title").unwrap();
-    let pd_cover: gtk::Image = builder.get_object("pd_cover").unwrap();
-
-    let events: gtk::EventBox = builder.get_object("events").unwrap();
-
-    // GDK.TOUCH_MASK
-    // https://developer.gnome.org/gdk3/stable/gdk3-Events.html#GDK-TOUCH-MASK:CAPS
-    // http://gtk-rs.org/docs/gdk/constant.TOUCH_MASK.html
-    events.add_events(4194304);
-
-    pd_title.set_text(&title);
-
-    if let Some(img) = cover {
-        pd_cover.set_from_pixbuf(&img);
-    };
-
-    let fbc = gtk::FlowBoxChild::new();
-    fbc.add(&box_);
-    fbc
-}
-
-fn create_and_fill_list_store(
-    connection: &SqliteConnection,
-    builder: &gtk::Builder,
-) -> gtk::ListStore {
-    let podcast_model: gtk::ListStore = builder.get_object("PdListStore").unwrap();
-
-    let podcasts = dbqueries::get_podcasts(connection).unwrap();
-
-    for pd in &podcasts {
-        podcast_model.insert_with_values(
-            None,
-            &[0, 1, 2, 3, 4],
-            &[
-                &pd.id(),
-                &pd.title(),
-                &pd.description(),
-                &pd.link(),
-                &pd.image_uri().unwrap_or_default(),
-            ],
-        );
-    }
-
-    podcast_model
-}
-
-fn podcast_widget(
-    connection: Arc<Mutex<SqliteConnection>>,
-    title: Option<&str>,
-    description: Option<&str>,
-    image: Option<Pixbuf>,
-) -> gtk::Box {
-    // Adapted from gnome-music AlbumWidget
-    let pd_widget_source = include_str!("../gtk/podcast_widget.ui");
-    let pd_widget_buidler = gtk::Builder::new_from_string(pd_widget_source);
-    let pd_widget: gtk::Box = pd_widget_buidler.get_object("podcast_widget").unwrap();
-
-    let cover: gtk::Image = pd_widget_buidler.get_object("cover").unwrap();
-    let title_label: gtk::Label = pd_widget_buidler.get_object("title_label").unwrap();
-    let desc_label: gtk::Label = pd_widget_buidler.get_object("description_label").unwrap();
-    let view: gtk::Viewport = pd_widget_buidler.get_object("view").unwrap();
-
-    if let Some(t) = title {
-        title_label.set_text(t);
-        let listbox = episodes_listbox(connection.clone(), t);
-        view.add(&listbox);
-    }
-
-    if let Some(d) = description {
-        desc_label.set_text(d);
-    }
-
-    if let Some(i) = image {
-        cover.set_from_pixbuf(&i);
-    }
-
-    // (pd_widget, title_label, desc_label, cover)
-    pd_widget
-}
-
-fn epidose_widget(
-    connection: Arc<Mutex<SqliteConnection>>,
-    episode: &mut Episode,
-    pd_title: &str,
-) -> gtk::Box {
-    // This is just a prototype and will be reworked probably.
-    let builder = include_str!("../gtk/EpisodeWidget.ui");
-    let builder = gtk::Builder::new_from_string(builder);
-
-    let ep: gtk::Box = builder.get_object("episode_box").unwrap();
-    let dl_button: gtk::Button = builder.get_object("download_button").unwrap();
-    let play_button: gtk::Button = builder.get_object("play_button").unwrap();
-
-    let title_label: gtk::Label = builder.get_object("title_label").unwrap();
-    let desc_label: gtk::Label = builder.get_object("desc_label").unwrap();
-
-    title_label.set_xalign(0.0);
-    desc_label.set_xalign(0.0);
-
-    if let Some(t) = episode.title() {
-        title_label.set_text(t);
-    }
-
-    if let Some(d) = episode.description() {
-        desc_label.set_text(d);
-    }
-
-    if let Some(_) = episode.local_uri() {
-        dl_button.hide();
-        play_button.show();
-        let uri = episode.local_uri().unwrap().to_owned();
-        play_button.connect_clicked(move |_| {
-            let e = open::that(&uri);
-            if e.is_err() {
-                error!("Error while trying to open: {}", uri);
-            }
-        });
-    }
-
-    let pd_title_cloned = pd_title.clone().to_owned();
-    let db = connection.clone();
-    let ep_clone = episode.clone();
-    dl_button.connect_clicked(move |_| {
-        // ugly hack to bypass the borrowchecker
-        let pd_title = pd_title_cloned.clone();
-        let db = db.clone();
-        let mut ep_clone = ep_clone.clone();
-
-        thread::spawn(move || {
-            let dl_fold = downloader::get_dl_folder(&pd_title).unwrap();
-            let tempdb = db.lock().unwrap();
-            let e = downloader::get_episode(&tempdb, &mut ep_clone, dl_fold.as_str());
-            if let Err(err) = e {
-                error!("Error while trying to download: {}", ep_clone.uri());
-                error!("Error: {}", err);
-            };
-        });
-    });
-
-    ep
-}
-
-fn episodes_listbox(connection: Arc<Mutex<SqliteConnection>>, pd_title: &str) -> gtk::ListBox {
-    let m = connection.lock().unwrap();
-    let pd = dbqueries::load_podcast(&m, pd_title).unwrap();
-    let mut episodes = dbqueries::get_pd_episodes(&m, &pd).unwrap();
-    drop(m);
-
-    let list = gtk::ListBox::new();
-    episodes.iter_mut().for_each(|ep| {
-        let w = epidose_widget(connection.clone(), ep, pd_title);
-        list.add(&w)
-    });
-
-    list.set_vexpand(false);
-    list.set_hexpand(false);
-    list.set_visible(true);
-    list
-}
-
 fn refresh_db(db: Arc<Mutex<SqliteConnection>>) {
     let db_clone = db.clone();
     thread::spawn(move || {
@@ -284,12 +120,13 @@ fn build_ui() {
     });
 
     let tempdb = db.lock().unwrap();
-    let pd_model = create_and_fill_list_store(&tempdb, &builder);
+    let pd_model = podcast_liststore(&tempdb, &builder);
     drop(tempdb);
 
+    // Get a ListStore iterator at the first element.
     let iter = pd_model.get_iter_first().unwrap();
-    // this will iterate over the episodes.
-    // let iter = pd_model.iter_children(&iter).unwrap();
+
+    // Iterate the podcast view.
     loop {
         let title = pd_model.get_value(&iter, 1).get::<String>().unwrap();
         let description = pd_model.get_value(&iter, 2).get::<String>().unwrap();
