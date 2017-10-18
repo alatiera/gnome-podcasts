@@ -16,6 +16,7 @@ extern crate open;
 use log::LogLevel;
 use diesel::prelude::*;
 use hammond_data::dbqueries;
+use hammond_data::index_feed;
 use hammond_data::models::Episode;
 use hammond_downloader::downloader;
 
@@ -231,14 +232,26 @@ fn build_ui() {
     let add_popover: gtk::Popover = header_build.get_object("add-popover").unwrap();
     let new_url: gtk::Entry = header_build.get_object("new-url").unwrap();
     let add_button: gtk::Button = header_build.get_object("add-button").unwrap();
+    // TODO: check if url exists in the db and lock the button
     new_url.connect_changed(move |url| {
         println!("{:?}", url.get_text());
     });
-    // FIXME: Button is not clickable for some reason
-    add_button.connect_clicked(move |f| {
-        println!("{:?} feed added", f);
+    let add_popover_clone = add_popover.clone();
+    let db_clone = db.clone();
+    add_button.connect_clicked(move |_| {
+        let tempdb = db_clone.lock().unwrap();
+        let url = new_url.get_text().unwrap();
+        let _ = index_feed::insert_return_source(&tempdb, &url);
+        drop(tempdb);
+        println!("{:?} feed added", url);
+
+        // update the db
+        // TODO: refactor the update and spin a thread.
+        index_feed::index_loop(db_clone.clone(), false).unwrap();
+
+        // TODO: lock the button instead of hiding and add notification of feed added.
+        add_popover_clone.hide();
     });
-    // add_button.clicked();
     add_popover.hide();
     add_toggle_button.set_popover(&add_popover);
 
@@ -255,10 +268,10 @@ fn build_ui() {
     // FIXME: There appears to be a memmory leak here.
     let db_clone = db.clone();
     refresh_button.connect_clicked(move |_| {
-        let _db_clone = db_clone.clone();
+        // fsdaa, The things I do for the borrow checker.
+        let db_clone = db_clone.clone();
         thread::spawn(move || {
-            // let tempdb = db_clone.lock().unwrap();
-            // hammond_data::index_feed::index_loop(*tempdb, false).unwrap();
+            hammond_data::index_feed::index_loop(db_clone.clone(), false).unwrap();
         });
     });
 

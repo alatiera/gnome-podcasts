@@ -16,8 +16,8 @@ use hammond_data::errors::*;
 use hammond_data::index_feed;
 use hammond_downloader::downloader;
 
-// Should probably had made an Enum instead.
-// TODO: Refactor to enum, add --force for update
+use std::sync::{Arc, Mutex};
+
 #[derive(StructOpt, Debug)]
 #[structopt(name = "example", about = "An example of StructOpt usage.")]
 struct Opt {
@@ -50,7 +50,8 @@ fn run() -> Result<()> {
 
     if args.up {
         let db = hammond_data::establish_connection();
-        index_feed::index_loop(db, false)?;
+        let db = Arc::new(Mutex::new(db));
+        index_feed::index_loop(db.clone(), false)?;
     }
 
     if args.dl >= 0 {

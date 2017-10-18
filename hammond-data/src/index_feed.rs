@@ -78,13 +78,11 @@ fn insert_return_episode(con: &SqliteConnection, ep: &NewEpisode) -> Result<Epis
     Ok(dbqueries::load_episode(con, ep.uri.unwrap())?)
 }
 
-pub fn index_loop(db: SqliteConnection, force: bool) -> Result<()> {
-    let m = Arc::new(Mutex::new(db));
-
-    let mut f = fetch_feeds(m.clone(), force)?;
+pub fn index_loop(db: Arc<Mutex<SqliteConnection>>, force: bool) -> Result<()> {
+    let mut f = fetch_feeds(db.clone(), force)?;
 
     f.par_iter_mut().for_each(|&mut (ref mut req, ref source)| {
-        complete_index_from_source(req, source, m.clone()).unwrap();
+        complete_index_from_source(req, source, db.clone()).unwrap();
     });
 
     Ok(())
@@ -249,7 +247,8 @@ mod tests {
     #[test]
     /// Insert feeds and update/index them.
     fn test_index_loop() {
-        let TempDB(_tmp_dir, db_path, db) = get_temp_db();
+        let TempDB(_tmp_dir, _db_path, db) = get_temp_db();
+        let db = Arc::new(Mutex::new(db));
 
         let inpt = vec![
             "https://request-for-explanation.github.io/podcast/rss.xml",
@@ -259,16 +258,14 @@ mod tests {
         ];
 
         inpt.iter().for_each(|feed| {
-            index_source(&db, &NewSource::new_with_uri(feed)).unwrap()
+            let tempdb = db.lock().unwrap();
+            index_source(&tempdb, &NewSource::new_with_uri(feed)).unwrap()
         });
 
-        index_loop(db, true).unwrap();
-
-        // index_loop takes oweneship of the dbconnection in order to create mutexes.
-        let db = SqliteConnection::establish(db_path.to_str().unwrap()).unwrap();
+        index_loop(db.clone(), true).unwrap();
 
         // Run again to cover Unique constrains erros.
-        index_loop(db, true).unwrap();
+        index_loop(db.clone(), true).unwrap();
     }
 
     #[test]
