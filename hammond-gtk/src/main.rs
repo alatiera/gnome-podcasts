@@ -27,6 +27,11 @@ use gtk::prelude::*;
 use gio::ApplicationExt;
 use gdk_pixbuf::Pixbuf;
 
+/*
+THIS IS STILL A PROTOTYPE.
+THE CODE IS TERIBLE, SPAGHETTI AND HAS UNWRAPS EVERYWHERE.
+*/
+
 fn create_flowbox_child(title: &str, cover: Option<Pixbuf>) -> gtk::FlowBoxChild {
     let build_src = include_str!("../gtk/pd_fb_child.ui");
     let builder = gtk::Builder::new_from_string(build_src);
@@ -193,6 +198,13 @@ fn episodes_listbox(connection: Arc<Mutex<SqliteConnection>>, pd_title: &str) ->
     list
 }
 
+fn refresh_db(db: Arc<Mutex<SqliteConnection>>) {
+    let db_clone = db.clone();
+    thread::spawn(move || {
+        hammond_data::index_feed::index_loop(db_clone.clone(), false).unwrap();
+    });
+}
+
 // I am sorry about the spaghetti code.
 // Gonna clean it up when the GUI is a bit usuable.
 fn build_ui() {
@@ -246,8 +258,7 @@ fn build_ui() {
         println!("{:?} feed added", url);
 
         // update the db
-        // TODO: refactor the update and spin a thread.
-        index_feed::index_loop(db_clone.clone(), false).unwrap();
+        refresh_db(db_clone.clone());
 
         // TODO: lock the button instead of hiding and add notification of feed added.
         add_popover_clone.hide();
@@ -269,10 +280,7 @@ fn build_ui() {
     let db_clone = db.clone();
     refresh_button.connect_clicked(move |_| {
         // fsdaa, The things I do for the borrow checker.
-        let db_clone = db_clone.clone();
-        thread::spawn(move || {
-            hammond_data::index_feed::index_loop(db_clone.clone(), false).unwrap();
-        });
+        refresh_db(db_clone.clone());
     });
 
     let tempdb = db.lock().unwrap();
