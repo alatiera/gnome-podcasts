@@ -26,26 +26,24 @@ pub mod widgets;
 pub mod headerbar;
 pub mod utils;
 
-use widgets::podcast::*;
-use views::podcasts_view::populate_podcasts_flowbox;
+use views::podcasts_view;
 
 /*
 THIS IS STILL A PROTOTYPE.
 THE CODE IS TERIBLE AND USES UNWRAPS EVERYWHERE.
 */
 
-fn build_ui() {
-    let glade_src = include_str!("../gtk/foo.ui");
-    let builder = gtk::Builder::new_from_string(glade_src);
+fn build_ui(app: &gtk::Application) {
+    let db = Arc::new(Mutex::new(hammond_data::establish_connection()));
 
     // Get the main window
-    let window: gtk::Window = builder.get_object("window1").unwrap();
-    // Get the Stack
-    let stack: gtk::Stack = builder.get_object("stack1").unwrap();
-
-    let db = Arc::new(Mutex::new(hammond_data::establish_connection()));
-    let pd_widget = podcast_widget(db.clone(), None, None, None);
-    stack.add_named(&pd_widget, "pdw");
+    let window = gtk::ApplicationWindow::new(app);
+    window.set_default_size(1000, 600);
+    app.add_window(&window);
+    // Setup the Stack that will magane the switche between podcasts_view and podcast_widget.
+    let stack = podcasts_view::setup_stack(db.clone());
+    // Populate the flowbox with the Podcasts.
+    window.add(&stack);
 
     // FIXME:
     // GLib-GIO-WARNING **: Your application does not implement g_application_activate()
@@ -55,16 +53,9 @@ fn build_ui() {
         Inhibit(false)
     });
 
-    // Adapted copy of the way gnome-music does albumview
-    // FIXME: flowbox childs activate with space/enter but not with clicks.
-    let flowbox: gtk::FlowBox = builder.get_object("flowbox1").unwrap();
-    let grid: gtk::Grid = builder.get_object("grid").unwrap();
-
     // Get the headerbar
-    let header = headerbar::get_headerbar(db.clone(), stack.clone(), grid.clone());
+    let header = headerbar::get_headerbar(db.clone(), stack.clone());
     window.set_titlebar(&header);
-
-    populate_podcasts_flowbox(db.clone(), stack.clone(), flowbox.clone());
 
     window.show_all();
     gtk::main();
@@ -88,8 +79,8 @@ fn main() {
         gio::ApplicationFlags::empty(),
     ).expect("Initialization failed...");
 
-    application.connect_startup(move |_| {
-        build_ui();
+    application.connect_startup(move |app| {
+        build_ui(app);
     });
 
     // Not sure if this will be kept.

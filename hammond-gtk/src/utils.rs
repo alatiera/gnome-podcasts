@@ -1,5 +1,5 @@
 use hammond_data;
-use diesel::prelude::*;
+use diesel::prelude::SqliteConnection;
 
 use std::thread;
 use std::sync::{Arc, Mutex};

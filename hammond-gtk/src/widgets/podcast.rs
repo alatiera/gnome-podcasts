@@ -2,7 +2,7 @@ use gtk::prelude::*;
 use gtk;
 use gdk_pixbuf::Pixbuf;
 
-use diesel::prelude::*;
+use diesel::prelude::SqliteConnection;
 use hammond_data::dbqueries;
 
 use std::sync::{Arc, Mutex};
@@ -39,12 +39,11 @@ pub fn podcast_widget(
         cover.set_from_pixbuf(&i);
     }
 
-    // (pd_widget, title_label, desc_label, cover)
     pd_widget
 }
 
 pub fn create_flowbox_child(title: &str, cover: Option<Pixbuf>) -> gtk::FlowBoxChild {
-    let build_src = include_str!("../../gtk/pd_fb_child.ui");
+    let build_src = include_str!("../../gtk/podcasts_child.ui");
     let builder = gtk::Builder::new_from_string(build_src);
 
     // Copy of gnome-music AlbumWidget
@@ -67,6 +66,7 @@ pub fn create_flowbox_child(title: &str, cover: Option<Pixbuf>) -> gtk::FlowBoxC
 
     let fbc = gtk::FlowBoxChild::new();
     fbc.add(&box_);
+    info!("flowbox child created");
     fbc
 }
 
@@ -75,6 +75,7 @@ pub fn podcast_liststore(connection: &SqliteConnection) -> gtk::ListStore {
     let builder = gtk::Builder::new_from_string(builder);
     let podcast_model: gtk::ListStore = builder.get_object("pd_store").unwrap();
 
+    // TODO: handle unwrap.
     let podcasts = dbqueries::get_podcasts(connection).unwrap();
 
     for pd in &podcasts {

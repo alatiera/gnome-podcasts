@@ -1,17 +1,13 @@
 use gtk;
 use gtk::prelude::*;
 
-use diesel::prelude::*;
+use diesel::prelude::SqliteConnection;
 use index_feed;
 use utils;
 
 use std::sync::{Arc, Mutex};
 
-pub fn get_headerbar(
-    db: Arc<Mutex<SqliteConnection>>,
-    stack: gtk::Stack,
-    grid: gtk::Grid,
-) -> gtk::HeaderBar {
+pub fn get_headerbar(db: Arc<Mutex<SqliteConnection>>, stack: gtk::Stack) -> gtk::HeaderBar {
     let builder = include_str!("../gtk/headerbar.ui");
     let builder = gtk::Builder::new_from_string(builder);
 
@@ -43,6 +39,7 @@ pub fn get_headerbar(
         utils::refresh_db(db_clone.clone());
 
         // TODO: lock the button instead of hiding and add notification of feed added.
+        // TODO: map the spinner
         add_popover_clone.hide();
     });
     add_popover.hide();
@@ -50,6 +47,7 @@ pub fn get_headerbar(
 
     // TODO: make it a back arrow button, that will hide when appropriate,
     // and add a StackSwitcher when more views are added.
+    let grid = stack.get_child_by_name("pd_grid").unwrap();
     home_button.connect_clicked(move |_| stack.set_visible_child(&grid));
 
     // FIXME: There appears to be a memmory leak here.

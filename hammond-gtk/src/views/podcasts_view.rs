@@ -3,7 +3,7 @@ use gtk::prelude::*;
 use gdk_pixbuf::Pixbuf;
 
 use hammond_downloader::downloader;
-use diesel::prelude::*;
+use diesel::prelude::SqliteConnection;
 
 use std::sync::{Arc, Mutex};
 
@@ -22,8 +22,11 @@ pub fn populate_podcasts_flowbox(
     let iter = pd_model.get_iter_first().unwrap();
 
     loop {
-        let title = pd_model.get_value(&iter, 1).get::<String>().unwrap();
-        let description = pd_model.get_value(&iter, 2).get::<String>().unwrap();
+        let title = pd_model
+            .get_value(&iter, 1)
+            .get::<String>()
+            .unwrap_or_default();
+        let description = pd_model.get_value(&iter, 2).get::<String>();
         let image_uri = pd_model.get_value(&iter, 4).get::<String>();
 
         let imgpath = downloader::cache_image(&title, image_uri.as_ref().map(|s| s.as_str()));
@@ -42,12 +45,14 @@ pub fn populate_podcasts_flowbox(
         f.connect_activate(move |_| {
             let pdw = stack_clone.get_child_by_name("pdw").unwrap();
             stack_clone.remove(&pdw);
+
             let pdw = podcast_widget(
                 db_clone.clone(),
                 Some(title.as_str()),
-                Some(description.as_str()),
+                description.as_ref().map(|x| x.as_str()),
                 pixbuf.clone(),
             );
+
             stack_clone.add_named(&pdw, "pdw");
             stack_clone.set_visible_child(&pdw);
             println!("Hello World!, child activated");
@@ -58,4 +63,29 @@ pub fn populate_podcasts_flowbox(
             break;
         }
     }
+}
+
+fn setup_podcast_widget(db: Arc<Mutex<SqliteConnection>>, stack: gtk::Stack) {
+    let pd_widget = podcast_widget(db.clone(), None, None, None);
+    stack.add_named(&pd_widget, "pdw");
+}
+
+fn setup_podcasts_grid(db: Arc<Mutex<SqliteConnection>>, stack: gtk::Stack) {
+    let builder = include_str!("../../gtk/podcasts_grid.ui");
+    let builder = gtk::Builder::new_from_string(builder);
+    let grid: gtk::Grid = builder.get_object("grid").unwrap();
+    stack.add_named(&grid, "pd_grid");
+    stack.set_visible_child(&grid);
+
+    // Adapted copy of the way gnome-music does albumview
+    // FIXME: flowbox childs activate with space/enter but not with clicks.
+    let flowbox: gtk::FlowBox = builder.get_object("flowbox").unwrap();
+    populate_podcasts_flowbox(db.clone(), stack.clone(), flowbox.clone());
+}
+
+pub fn setup_stack(db: Arc<Mutex<SqliteConnection>>) -> gtk::Stack {
+    let stack = gtk::Stack::new();
+    setup_podcast_widget(db.clone(), stack.clone());
+    setup_podcasts_grid(db.clone(), stack.clone());
+    stack
 }

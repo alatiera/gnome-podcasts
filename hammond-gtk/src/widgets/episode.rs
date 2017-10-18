@@ -1,5 +1,5 @@
 use open;
-use diesel::prelude::*;
+use diesel::prelude::SqliteConnection;
 use hammond_data::dbqueries;
 use hammond_data::models::Episode;
 use hammond_downloader::downloader;
@@ -37,7 +37,7 @@ fn epidose_widget(
         desc_label.set_text(d);
     }
 
-    if let Some(_) = episode.local_uri() {
+    if episode.local_uri().is_some() {
         dl_button.hide();
         play_button.show();
         let uri = episode.local_uri().unwrap().to_owned();
