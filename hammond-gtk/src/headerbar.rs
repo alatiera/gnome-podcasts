@@ -37,7 +37,7 @@ pub fn get_headerbar(
         let url = new_url.get_text().unwrap();
         let _ = index_feed::insert_return_source(&tempdb, &url);
         drop(tempdb);
-        println!("{:?} feed added", url);
+        info!("{:?} feed added", url);
 
         // update the db
         utils::refresh_db(db_clone.clone());
