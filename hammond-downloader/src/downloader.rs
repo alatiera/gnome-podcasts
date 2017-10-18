@@ -69,7 +69,7 @@ pub fn latest_dl(connection: &SqliteConnection, limit: u32) -> Result<()> {
                 dbqueries::get_pd_episodes_limit(connection, x, limit)?
             };
 
-            let dl_fold = get_dl_folder(x)?;
+            let dl_fold = get_dl_folder(x.title())?;
 
             // Download the episodes
             let _ :Vec<_> = eps.iter_mut()
@@ -87,9 +87,9 @@ pub fn latest_dl(connection: &SqliteConnection, limit: u32) -> Result<()> {
 }
 
 // TODO: Right unit test
-fn get_dl_folder(pd: &Podcast) -> Result<String> {
+pub fn get_dl_folder(pd_title: &str) -> Result<String> {
     // It might be better to make it a hash of the title
-    let dl_fold = format!("{}/{}", DL_DIR.to_str().unwrap(), pd.title());
+    let dl_fold = format!("{}/{}", DL_DIR.to_str().unwrap(), pd_title);
 
     // Create the folder
     // TODO: handle the unwrap properly
@@ -97,7 +97,7 @@ fn get_dl_folder(pd: &Podcast) -> Result<String> {
     Ok(dl_fold)
 }
 
-fn get_episode(connection: &SqliteConnection, ep: &mut Episode, dl_folder: &str) -> Result<()> {
+pub fn get_episode(connection: &SqliteConnection, ep: &mut Episode, dl_folder: &str) -> Result<()> {
     // Check if its alrdy downloaded
     if ep.local_uri().is_some() {
         if Path::new(ep.local_uri().unwrap()).exists() {

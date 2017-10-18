@@ -17,6 +17,7 @@ use log::LogLevel;
 use diesel::prelude::*;
 use hammond_data::dbqueries;
 use hammond_data::models::Episode;
+use hammond_downloader::downloader;
 
 use std::rc;
 use std::thread;
@@ -111,7 +112,7 @@ fn podcast_widget(
     pd_widget
 }
 
-fn epidose_widget(episode: &Episode) -> gtk::Box {
+fn epidose_widget(connection: &SqliteConnection, episode: &mut Episode, pd_title: &str) -> gtk::Box {
     // This is just a prototype and will be reworked probably.
     let builder = include_str!("../gtk/EpisodeWidget.ui");
     let builder = gtk::Builder::new_from_string(builder);
@@ -146,16 +147,26 @@ fn epidose_widget(episode: &Episode) -> gtk::Box {
         });
     }
 
+    let pd_title_cloned = pd_title.clone().to_owned();
+    // let db = rc::Rc::new(connection);
+    dl_button.connect_clicked(move |_| {
+        // ugly hack to bypass the borrowchecker
+        let pd_title = pd_title_cloned.clone();
+        thread::spawn(move || {
+            let dl_fold = downloader::get_dl_folder(&pd_title);
+        });
+    });
+
     ep
 }
 
 fn episodes_listbox(connection: &SqliteConnection, pd_title: &str) -> gtk::ListBox {
     let pd = dbqueries::load_podcast(connection, pd_title).unwrap();
-    let episodes = dbqueries::get_pd_episodes(connection, &pd).unwrap();
+    let mut episodes = dbqueries::get_pd_episodes(connection, &pd).unwrap();
 
     let list = gtk::ListBox::new();
-    episodes.iter().for_each(|ep| {
-        let w = epidose_widget(ep);
+    episodes.iter_mut().for_each(|ep| {
+        let w = epidose_widget(connection, ep, pd_title);
         list.add(&w)
     });
 
@@ -245,7 +256,7 @@ fn build_ui() {
         let description = pd_model.get_value(&iter, 2).get::<String>().unwrap();
         let image_uri = pd_model.get_value(&iter, 4).get::<String>();
 
-        let imgpath = hammond_downloader::downloader::cache_image(
+        let imgpath = downloader::cache_image(
             &title,
             image_uri.as_ref().map(|s| s.as_str()),
         );
