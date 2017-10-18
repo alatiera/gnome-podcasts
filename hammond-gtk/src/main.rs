@@ -1,20 +1,22 @@
 // extern crate glib;
-extern crate diesel;
 
 extern crate gdk;
 extern crate gdk_pixbuf;
 extern crate gio;
 extern crate gtk;
 
+extern crate diesel;
 extern crate hammond_data;
 extern crate hammond_downloader;
 #[macro_use]
 extern crate log;
 extern crate loggerv;
+extern crate open;
 
 use log::LogLevel;
 use diesel::prelude::*;
 use hammond_data::dbqueries;
+use hammond_data::models::Episode;
 
 use std::rc;
 use std::thread;
@@ -109,14 +111,14 @@ fn podcast_widget(
     pd_widget
 }
 
-fn epidose_widget(title: Option<&str>, description: Option<&str>) -> gtk::Box {
+fn epidose_widget(episode: &Episode) -> gtk::Box {
     // This is just a prototype and will be reworked probably.
     let builder = include_str!("../gtk/EpisodeWidget.ui");
     let builder = gtk::Builder::new_from_string(builder);
 
     let ep: gtk::Box = builder.get_object("episode_box").unwrap();
-    let _dl_button: gtk::Button = builder.get_object("download_button").unwrap();
-    let _play_button: gtk::Button = builder.get_object("play_button").unwrap();
+    let dl_button: gtk::Button = builder.get_object("download_button").unwrap();
+    let play_button: gtk::Button = builder.get_object("play_button").unwrap();
 
     let title_label: gtk::Label = builder.get_object("title_label").unwrap();
     let desc_label: gtk::Label = builder.get_object("desc_label").unwrap();
@@ -124,12 +126,24 @@ fn epidose_widget(title: Option<&str>, description: Option<&str>) -> gtk::Box {
     title_label.set_xalign(0.0);
     desc_label.set_xalign(0.0);
 
-    if let Some(t) = title {
+    if let Some(t) = episode.title() {
         title_label.set_text(t);
     }
 
-    if let Some(d) = description {
+    if let Some(d) = episode.description() {
         desc_label.set_text(d);
+    }
+
+    if let Some(_) = episode.local_uri() {
+        dl_button.hide();
+        play_button.show();
+        let uri = episode.local_uri().unwrap().to_owned();
+        play_button.connect_clicked(move |_| {
+            let e = open::that(&uri);
+            if e.is_err() {
+                error!("Error while trying to open: {}", uri);
+            }
+        });
     }
 
     ep
@@ -141,7 +155,7 @@ fn episodes_listbox(connection: &SqliteConnection, pd_title: &str) -> gtk::ListB
 
     let list = gtk::ListBox::new();
     episodes.iter().for_each(|ep| {
-        let w = epidose_widget(ep.title(), ep.description());
+        let w = epidose_widget(ep);
         list.add(&w)
     });
 

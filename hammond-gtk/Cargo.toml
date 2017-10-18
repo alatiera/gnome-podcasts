@@ -14,6 +14,7 @@ gdk-pixbuf = "0.2"
 diesel = { version = "0.16", features = ["sqlite"] }
 loggerv = "0.3"
 log = "0.3"
+open = "1.2"
 
 hammond-data = {path = "../hammond-data"}
 hammond-downloader = {path = "../hammond-downloader"}
