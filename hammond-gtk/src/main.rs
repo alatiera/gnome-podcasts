@@ -14,11 +14,9 @@ extern crate loggerv;
 extern crate open;
 
 use log::LogLevel;
-use diesel::prelude::*;
 use hammond_data::index_feed;
 use hammond_downloader::downloader;
 
-use std::thread;
 use std::sync::{Arc, Mutex};
 
 use gtk::prelude::*;
@@ -27,6 +25,8 @@ use gdk_pixbuf::Pixbuf;
 
 pub mod views;
 pub mod widgets;
+pub mod headerbar;
+pub mod utils;
 
 use widgets::podcast::{create_flowbox_child, podcast_liststore, podcast_widget};
 
@@ -34,12 +34,6 @@ use widgets::podcast::{create_flowbox_child, podcast_liststore, podcast_widget};
 THIS IS STILL A PROTOTYPE.
 THE CODE IS TERIBLE, SPAGHETTI AND HAS UNWRAPS EVERYWHERE.
 */
-fn refresh_db(db: Arc<Mutex<SqliteConnection>>) {
-    let db_clone = db.clone();
-    thread::spawn(move || {
-        hammond_data::index_feed::index_loop(db_clone.clone(), false).unwrap();
-    });
-}
 
 // I am sorry about the spaghetti code.
 // Gonna clean it up when the GUI is a bit usuable.
@@ -57,9 +51,6 @@ fn build_ui() {
     let db = Arc::new(Mutex::new(hammond_data::establish_connection()));
     let pd_widget = podcast_widget(db.clone(), None, None, None);
     stack.add_named(&pd_widget, "pdw");
-    // Get the headerbar
-    let header: gtk::HeaderBar = header_build.get_object("headerbar1").unwrap();
-    window.set_titlebar(&header);
 
     // FIXME:
     // GLib-GIO-WARNING **: Your application does not implement g_application_activate()
@@ -74,49 +65,16 @@ fn build_ui() {
     let flowbox: gtk::FlowBox = builder.get_object("flowbox1").unwrap();
     let grid: gtk::Grid = builder.get_object("grid").unwrap();
 
-    // Stolen from gnome-news:
-    // https://github.com/GNOME/gnome-news/blob/master/data/ui/headerbar.ui
-    let add_toggle_button: gtk::MenuButton = header_build.get_object("add-toggle-button").unwrap();
-    let add_popover: gtk::Popover = header_build.get_object("add-popover").unwrap();
-    let new_url: gtk::Entry = header_build.get_object("new-url").unwrap();
-    let add_button: gtk::Button = header_build.get_object("add-button").unwrap();
-    // TODO: check if url exists in the db and lock the button
-    new_url.connect_changed(move |url| {
-        println!("{:?}", url.get_text());
-    });
-    let add_popover_clone = add_popover.clone();
-    let db_clone = db.clone();
-    add_button.connect_clicked(move |_| {
-        let tempdb = db_clone.lock().unwrap();
-        let url = new_url.get_text().unwrap();
-        let _ = index_feed::insert_return_source(&tempdb, &url);
-        drop(tempdb);
-        println!("{:?} feed added", url);
-
-        // update the db
-        refresh_db(db_clone.clone());
-
-        // TODO: lock the button instead of hiding and add notification of feed added.
-        add_popover_clone.hide();
-    });
-    add_popover.hide();
-    add_toggle_button.set_popover(&add_popover);
-
-    let _search_button: gtk::Button = header_build.get_object("searchbutton").unwrap();
-
-    // TODO: make it a back arrow button, that will hide when appropriate,
-    // and add a StackSwitcher when more views are added.
-    let home_button: gtk::Button = header_build.get_object("homebutton").unwrap();
-    let grid_clone = grid.clone();
-    let stack_clone = stack.clone();
-    home_button.connect_clicked(move |_| stack_clone.set_visible_child(&grid_clone));
+    // Get the headerbar
+    let header = headerbar::get_headerbar(db.clone(), stack.clone(), grid.clone());
+    window.set_titlebar(&header);
 
     let refresh_button: gtk::Button = header_build.get_object("refbutton").unwrap();
     // FIXME: There appears to be a memmory leak here.
     let db_clone = db.clone();
     refresh_button.connect_clicked(move |_| {
         // fsdaa, The things I do for the borrow checker.
-        refresh_db(db_clone.clone());
+        utils::refresh_db(db_clone.clone());
     });
 
     let tempdb = db.lock().unwrap();
