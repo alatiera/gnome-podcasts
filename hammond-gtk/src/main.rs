@@ -39,9 +39,7 @@ THE CODE IS TERIBLE, SPAGHETTI AND HAS UNWRAPS EVERYWHERE.
 // Gonna clean it up when the GUI is a bit usuable.
 fn build_ui() {
     let glade_src = include_str!("../gtk/foo.ui");
-    let header_src = include_str!("../gtk/headerbar.ui");
     let builder = gtk::Builder::new_from_string(glade_src);
-    let header_build = gtk::Builder::new_from_string(header_src);
 
     // Get the main window
     let window: gtk::Window = builder.get_object("window1").unwrap();
@@ -68,14 +66,6 @@ fn build_ui() {
     // Get the headerbar
     let header = headerbar::get_headerbar(db.clone(), stack.clone(), grid.clone());
     window.set_titlebar(&header);
-
-    let refresh_button: gtk::Button = header_build.get_object("refbutton").unwrap();
-    // FIXME: There appears to be a memmory leak here.
-    let db_clone = db.clone();
-    refresh_button.connect_clicked(move |_| {
-        // fsdaa, The things I do for the borrow checker.
-        utils::refresh_db(db_clone.clone());
-    });
 
     let tempdb = db.lock().unwrap();
     let pd_model = podcast_liststore(&tempdb);

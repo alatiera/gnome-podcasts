@@ -14,7 +14,11 @@ pub fn get_headerbar(
 ) -> gtk::HeaderBar {
     let builder = include_str!("../gtk/headerbar.ui");
     let builder = gtk::Builder::new_from_string(builder);
+
     let header: gtk::HeaderBar = builder.get_object("headerbar1").unwrap();
+    let home_button: gtk::Button = builder.get_object("homebutton").unwrap();
+    let refresh_button: gtk::Button = builder.get_object("refbutton").unwrap();
+    let _search_button: gtk::Button = builder.get_object("searchbutton").unwrap();
 
     let add_toggle_button: gtk::MenuButton = builder.get_object("add-toggle-button").unwrap();
     let add_popover: gtk::Popover = builder.get_object("add-popover").unwrap();
@@ -24,8 +28,10 @@ pub fn get_headerbar(
     new_url.connect_changed(move |url| {
         println!("{:?}", url.get_text());
     });
+
     let add_popover_clone = add_popover.clone();
     let db_clone = db.clone();
+
     add_button.connect_clicked(move |_| {
         let tempdb = db_clone.lock().unwrap();
         let url = new_url.get_text().unwrap();
@@ -42,12 +48,15 @@ pub fn get_headerbar(
     add_popover.hide();
     add_toggle_button.set_popover(&add_popover);
 
-    let _search_button: gtk::Button = builder.get_object("searchbutton").unwrap();
-
     // TODO: make it a back arrow button, that will hide when appropriate,
     // and add a StackSwitcher when more views are added.
-    let home_button: gtk::Button = builder.get_object("homebutton").unwrap();
     home_button.connect_clicked(move |_| stack.set_visible_child(&grid));
+
+    // FIXME: There appears to be a memmory leak here.
+    refresh_button.connect_clicked(move |_| {
+        // fsdaa, The things I do for the borrow checker.
+        utils::refresh_db(db.clone());
+    });
 
     header
 }
