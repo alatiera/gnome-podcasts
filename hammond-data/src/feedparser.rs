@@ -6,6 +6,7 @@ use errors::*;
 
 // TODO: look into how bad-utf8 is handled in rss crate,
 // and figure if there is a need for checking before parsing.
+// TODO: Extend the support for parsing itunes extensions
 pub fn parse_podcast(chan: &Channel, source_id: i32) -> Result<models::NewPodcast> {
     let title = chan.title().trim().to_owned();
     let link = chan.link().to_owned();
@@ -13,7 +14,11 @@ pub fn parse_podcast(chan: &Channel, source_id: i32) -> Result<models::NewPodcas
     // Some feeds miss baseurl and/or http://
     // TODO: Sanitize the url,
     // could also be reuse to sanitize the new-url gui entrybox.
-    let image_uri = chan.image().map(|foo| foo.url().to_owned());
+    let image_uri = if let Some(img) = chan.itunes_ext().map(|s| s.image()) {
+        img.map(|s| s.to_string())
+    } else {
+        chan.image().map(|foo| foo.url().to_owned())
+    };
 
     let foo = models::NewPodcast {
         title,
@@ -86,7 +91,15 @@ mod tests {
         assert_eq!(pd.title, "Intercepted with Jeremy Scahill".to_string());
         assert_eq!(pd.link, "https://theintercept.com/podcasts".to_string());
         assert_eq!(pd.description, descr.to_string());
-        assert_eq!(pd.image_uri, None);
+        assert_eq!(
+            pd.image_uri,
+            Some(
+                "http://static.megaphone.fm/podcasts/d5735a50-d904-11e6-8532-73c7de466ea6/image/\
+                 uploads_2F1484252190700-qhn5krasklbce3dh-a797539282700ea0298a3a26f7e49b0b_\
+                 2FIntercepted_COVER%2B_281_29.png"
+                    .to_string()
+            )
+        );
     }
 
     #[test]
@@ -102,7 +115,10 @@ mod tests {
         assert_eq!(pd.title, "The Breakthrough".to_string());
         assert_eq!(pd.link, "http://www.propublica.org/podcast".to_string());
         assert_eq!(pd.description, descr.to_string());
-        assert_eq!(pd.image_uri, None);
+        assert_eq!(
+            pd.image_uri,
+            Some("http://www.propublica.org/images/podcast_logo_2.png".to_string())
+        );
     }
 
     #[test]
@@ -120,7 +136,7 @@ mod tests {
         assert_eq!(pd.description, descr.to_string());
         assert_eq!(
             pd.image_uri,
-            Some("http://michaeltunnell.com/images/linux-unplugged.jpg".to_string(),)
+            Some("http://www.jupiterbroadcasting.com/images/LASUN-Badge1400.jpg".to_string(),)
         );
     }
 
