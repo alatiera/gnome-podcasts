@@ -19,7 +19,12 @@ pub fn populate_podcasts_flowbox(
     drop(tempdb);
 
     // Get a ListStore iterator at the first element.
-    let iter = pd_model.get_iter_first().unwrap();
+    let iter = if let Some(it) = pd_model.get_iter_first() {
+        it
+    } else {
+        // TODO: Display an empty view
+        return;
+    };
 
     loop {
         let title = pd_model
