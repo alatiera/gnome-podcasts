@@ -30,7 +30,6 @@ pub fn populate_podcasts_flowbox(
         let image_uri = pd_model.get_value(&iter, 4).get::<String>();
 
         let imgpath = downloader::cache_image(&title, image_uri.as_ref().map(|s| s.as_str()));
-
         let pixbuf = if let Some(i) = imgpath {
             Pixbuf::new_from_file_at_scale(&i, 200, 200, true).ok()
         } else {
@@ -80,6 +79,7 @@ fn setup_podcasts_grid(db: Arc<Mutex<SqliteConnection>>, stack: gtk::Stack) {
     // Adapted copy of the way gnome-music does albumview
     // FIXME: flowbox childs activate with space/enter but not with clicks.
     let flowbox: gtk::FlowBox = builder.get_object("flowbox").unwrap();
+    // Populate the flowbox with the Podcasts.
     populate_podcasts_flowbox(db.clone(), stack.clone(), flowbox.clone());
 }
 

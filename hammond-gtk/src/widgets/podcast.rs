@@ -66,7 +66,7 @@ pub fn create_flowbox_child(title: &str, cover: Option<Pixbuf>) -> gtk::FlowBoxC
 
     let fbc = gtk::FlowBoxChild::new();
     fbc.add(&box_);
-    info!("flowbox child created");
+    // info!("flowbox child created");
     fbc
 }
 

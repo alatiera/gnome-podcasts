@@ -30,10 +30,15 @@ pub fn get_headerbar(db: Arc<Mutex<SqliteConnection>>, stack: gtk::Stack) -> gtk
 
     add_button.connect_clicked(move |_| {
         let tempdb = db_clone.lock().unwrap();
-        let url = new_url.get_text().unwrap();
-        let _ = index_feed::insert_return_source(&tempdb, &url);
+        let url = new_url.get_text().unwrap_or_default();
+        // TODO: check if the feed is already present.
+        let f = index_feed::insert_return_source(&tempdb, &url);
         drop(tempdb);
         info!("{:?} feed added", url);
+        if f.is_err() {
+            error!("Expected Error, feed probably already exists.");
+            error!("Error: {:?}", f.unwrap_err());
+        }
 
         // update the db
         utils::refresh_db(db_clone.clone());

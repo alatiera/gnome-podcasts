@@ -30,7 +30,6 @@ use views::podcasts_view;
 
 /*
 THIS IS STILL A PROTOTYPE.
-THE CODE IS TERIBLE AND USES UNWRAPS EVERYWHERE.
 */
 
 fn build_ui(app: &gtk::Application) {
@@ -42,7 +41,6 @@ fn build_ui(app: &gtk::Application) {
     app.add_window(&window);
     // Setup the Stack that will magane the switche between podcasts_view and podcast_widget.
     let stack = podcasts_view::setup_stack(db.clone());
-    // Populate the flowbox with the Podcasts.
     window.add(&stack);
 
     // FIXME:
@@ -66,7 +64,7 @@ fn build_ui(app: &gtk::Application) {
 // ddcb30d01631c0083710cf486caf04c831d38cb7/src/process_viewer.rs#L367
 fn main() {
     loggerv::init_with_level(LogLevel::Info).unwrap();
-    hammond_data::init().unwrap();
+    hammond_data::init().expect("Hammond Initialazation failed.");
 
     // Not sure if needed.
     if gtk::init().is_err() {

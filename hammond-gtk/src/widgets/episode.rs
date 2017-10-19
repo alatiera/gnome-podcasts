@@ -73,6 +73,7 @@ fn epidose_widget(
 }
 
 pub fn episodes_listbox(connection: Arc<Mutex<SqliteConnection>>, pd_title: &str) -> gtk::ListBox {
+    // TODO: handle unwraps.
     let m = connection.lock().unwrap();
     let pd = dbqueries::load_podcast(&m, pd_title).unwrap();
     let mut episodes = dbqueries::get_pd_episodes(&m, &pd).unwrap();
