@@ -1,20 +1,30 @@
 // use glib;
 
+use gtk;
+// use gtk::prelude::*;
+
 use hammond_data;
 use diesel::prelude::SqliteConnection;
 
 use std::thread;
 use std::sync::{Arc, Mutex};
 
-pub fn refresh_db(db: Arc<Mutex<SqliteConnection>>) {
+use views::podcasts_view;
+
+pub fn refresh_db(db: Arc<Mutex<SqliteConnection>>, stack: gtk::Stack) {
     let db_clone = db.clone();
-    thread::spawn(move || {
+    let handle = thread::spawn(move || {
         let t = hammond_data::index_feed::index_loop(db_clone.clone(), false);
         if t.is_err() {
             error!("Error While trying to update the database.");
             error!("Error msg: {}", t.unwrap_err());
         };
     });
+    // FIXME: atm freezing the ui till update is done.
+    // Make it instead emmit a signal on update completion.
+    handle.join();
+
+    podcasts_view::update_podcasts_view(db.clone(), stack.clone());
 }
 
 // https://github.

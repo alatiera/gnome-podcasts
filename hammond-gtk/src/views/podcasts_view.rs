@@ -1,5 +1,6 @@
 use gtk;
 use gtk::prelude::*;
+// use gtk::StackTransitionType;
 use gdk_pixbuf::Pixbuf;
 
 use hammond_downloader::downloader;
@@ -23,6 +24,7 @@ pub fn populate_podcasts_flowbox(
         it
     } else {
         // TODO: Display an empty view
+        info!("Empty view.");
         return;
     };
 
@@ -67,6 +69,7 @@ pub fn populate_podcasts_flowbox(
             break;
         }
     }
+    flowbox.show_all();
 }
 
 fn setup_podcast_widget(db: Arc<Mutex<SqliteConnection>>, stack: gtk::Stack) {
@@ -90,7 +93,26 @@ fn setup_podcasts_grid(db: Arc<Mutex<SqliteConnection>>, stack: gtk::Stack) {
 
 pub fn setup_stack(db: Arc<Mutex<SqliteConnection>>) -> gtk::Stack {
     let stack = gtk::Stack::new();
+    let _st_clone = stack.clone();
     setup_podcast_widget(db.clone(), stack.clone());
     setup_podcasts_grid(db.clone(), stack.clone());
+    // stack.connect("foo", true, move |_| {
+    //     update_podcasts_view(db.clone(), st_clone);
+    // });
     stack
+}
+
+pub fn update_podcasts_view(db: Arc<Mutex<SqliteConnection>>, stack: gtk::Stack) {
+    let builder = include_str!("../../gtk/podcasts_view.ui");
+    let builder = gtk::Builder::new_from_string(builder);
+    let grid: gtk::Grid = builder.get_object("grid").unwrap();
+
+    let flowbox: gtk::FlowBox = builder.get_object("flowbox").unwrap();
+    // Populate the flowbox with the Podcasts.
+    populate_podcasts_flowbox(db.clone(), stack.clone(), flowbox.clone());
+
+    let old = stack.get_child_by_name("pd_grid").unwrap();
+    stack.remove(&old);
+    stack.add_named(&grid, "pd_grid");
+    // stack.set_visible_child_full("pd_grid", StackTransitionType::None);
 }

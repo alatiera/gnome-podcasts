@@ -27,6 +27,7 @@ pub fn get_headerbar(db: Arc<Mutex<SqliteConnection>>, stack: gtk::Stack) -> gtk
 
     let add_popover_clone = add_popover.clone();
     let db_clone = db.clone();
+    let stack_clone = stack.clone();
 
     add_button.connect_clicked(move |_| {
         let tempdb = db_clone.lock().unwrap();
@@ -41,7 +42,8 @@ pub fn get_headerbar(db: Arc<Mutex<SqliteConnection>>, stack: gtk::Stack) -> gtk
         }
 
         // update the db
-        utils::refresh_db(db_clone.clone());
+        // TODO: have it fettch only the added feed.
+        utils::refresh_db(db_clone.clone(), stack_clone.clone());
 
         // TODO: lock the button instead of hiding and add notification of feed added.
         // TODO: map the spinner
@@ -52,13 +54,17 @@ pub fn get_headerbar(db: Arc<Mutex<SqliteConnection>>, stack: gtk::Stack) -> gtk
 
     // TODO: make it a back arrow button, that will hide when appropriate,
     // and add a StackSwitcher when more views are added.
-    let grid = stack.get_child_by_name("pd_grid").unwrap();
-    home_button.connect_clicked(move |_| stack.set_visible_child(&grid));
+    let stack_clone = stack.clone();
+    home_button.connect_clicked(move |_| {
+        let grid = stack_clone.get_child_by_name("pd_grid").unwrap();
+        stack_clone.set_visible_child(&grid)
+    });
 
+    let stack_clone = stack.clone();
     // FIXME: There appears to be a memmory leak here.
     refresh_button.connect_clicked(move |_| {
         // fsdaa, The things I do for the borrow checker.
-        utils::refresh_db(db.clone());
+        utils::refresh_db(db.clone(), stack_clone.clone());
     });
 
     header
