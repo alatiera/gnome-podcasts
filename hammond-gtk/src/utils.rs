@@ -25,6 +25,8 @@ pub fn refresh_db(db: Arc<Mutex<SqliteConnection>>, stack: gtk::Stack) {
     handle.join();
 
     podcasts_view::update_podcasts_view(db.clone(), stack.clone());
+    // let foo = stack.emit("foo", &[]);
+    // info!("{:?}", foo)
 }
 
 // https://github.

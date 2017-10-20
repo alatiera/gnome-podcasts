@@ -1,6 +1,6 @@
 use gtk;
 use gtk::prelude::*;
-// use gtk::StackTransitionType;
+use gtk::StackTransitionType;
 use gdk_pixbuf::Pixbuf;
 
 use hammond_downloader::downloader;
@@ -97,7 +97,8 @@ pub fn setup_stack(db: Arc<Mutex<SqliteConnection>>) -> gtk::Stack {
     setup_podcast_widget(db.clone(), stack.clone());
     setup_podcasts_grid(db.clone(), stack.clone());
     // stack.connect("foo", true, move |_| {
-    //     update_podcasts_view(db.clone(), st_clone);
+    //     update_podcasts_view(db.clone(), st_clone.clone());
+    //     None
     // });
     stack
 }
@@ -114,5 +115,5 @@ pub fn update_podcasts_view(db: Arc<Mutex<SqliteConnection>>, stack: gtk::Stack)
     let old = stack.get_child_by_name("pd_grid").unwrap();
     stack.remove(&old);
     stack.add_named(&grid, "pd_grid");
-    // stack.set_visible_child_full("pd_grid", StackTransitionType::None);
+    stack.set_visible_child_full("pd_grid", StackTransitionType::None);
 }
