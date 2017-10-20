@@ -3,12 +3,18 @@ use diesel::prelude::SqliteConnection;
 use hammond_data::dbqueries;
 use hammond_data::models::Episode;
 use hammond_downloader::downloader;
+// use html5ever::parse_document;
+// use html5ever::rcdom::RcDom;
+// use tendril::stream::TendrilSink;
+use dissolve::strip_html_tags;
 
 use std::thread;
 use std::sync::{Arc, Mutex};
 
 use gtk;
 use gtk::prelude::*;
+
+// use utils;
 
 fn epidose_widget(
     connection: Arc<Mutex<SqliteConnection>>,
@@ -25,6 +31,7 @@ fn epidose_widget(
 
     let title_label: gtk::Label = builder.get_object("title_label").unwrap();
     let desc_label: gtk::Label = builder.get_object("desc_label").unwrap();
+    let expander: gtk::Expander = builder.get_object("expand_desc").unwrap();
 
     title_label.set_xalign(0.0);
     desc_label.set_xalign(0.0);
@@ -33,8 +40,15 @@ fn epidose_widget(
         title_label.set_text(t);
     }
 
-    if let Some(d) = episode.description() {
-        desc_label.set_text(d);
+    if episode.description().is_some() {
+        // let mk = utils::html_to_markup(d.to_string());
+        // desc_label.set_markup(mk.as_str());
+        let d = episode.description().unwrap().to_owned();
+ 
+        expander.connect_activate(move |_|{
+            let plain_text = strip_html_tags(&d).join(" ");
+            desc_label.set_text(&plain_text.trim())
+        });
     }
 
     if episode.local_uri().is_some() {

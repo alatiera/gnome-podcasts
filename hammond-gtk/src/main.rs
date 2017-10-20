@@ -12,6 +12,7 @@ extern crate hammond_downloader;
 extern crate log;
 extern crate loggerv;
 extern crate open;
+extern crate dissolve;
 
 use log::LogLevel;
 use hammond_data::index_feed;
