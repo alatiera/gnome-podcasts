@@ -6,13 +6,13 @@ extern crate gio;
 extern crate gtk;
 
 extern crate diesel;
+extern crate dissolve;
 extern crate hammond_data;
 extern crate hammond_downloader;
 #[macro_use]
 extern crate log;
 extern crate loggerv;
 extern crate open;
-extern crate dissolve;
 
 use log::LogLevel;
 use hammond_data::index_feed;

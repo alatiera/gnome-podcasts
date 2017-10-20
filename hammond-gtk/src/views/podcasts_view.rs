@@ -75,7 +75,7 @@ fn setup_podcast_widget(db: Arc<Mutex<SqliteConnection>>, stack: gtk::Stack) {
 }
 
 fn setup_podcasts_grid(db: Arc<Mutex<SqliteConnection>>, stack: gtk::Stack) {
-    let builder = include_str!("../../gtk/podcasts_grid.ui");
+    let builder = include_str!("../../gtk/podcasts_view.ui");
     let builder = gtk::Builder::new_from_string(builder);
     let grid: gtk::Grid = builder.get_object("grid").unwrap();
     stack.add_named(&grid, "pd_grid");

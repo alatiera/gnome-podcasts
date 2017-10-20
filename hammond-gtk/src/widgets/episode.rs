@@ -44,8 +44,8 @@ fn epidose_widget(
         // let mk = utils::html_to_markup(d.to_string());
         // desc_label.set_markup(mk.as_str());
         let d = episode.description().unwrap().to_owned();
- 
-        expander.connect_activate(move |_|{
+
+        expander.connect_activate(move |_| {
             let plain_text = strip_html_tags(&d).join(" ");
             desc_label.set_text(&plain_text.trim())
         });
