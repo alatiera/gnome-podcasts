@@ -172,26 +172,24 @@ fn refresh_source(
 ) -> Result<(reqwest::Response, Source)> {
     use reqwest::header::{ETag, EntityTag, Headers, HttpDate, LastModified};
 
-    let client = reqwest::Client::new()?;
-    let req;
-    match force {
-        true => req = client.get(feed.uri())?.send()?,
-        false => {
-            let mut headers = Headers::new();
+    let client = reqwest::Client::new();
+    let req = if force {
+        client.get(feed.uri()).send()?
+    } else {
+        let mut headers = Headers::new();
 
-            if let Some(foo) = feed.http_etag() {
-                headers.set(ETag(EntityTag::new(true, foo.to_owned())));
-            }
-
-            if let Some(foo) = feed.last_modified() {
-                headers.set(LastModified(foo.parse::<HttpDate>()?));
-            }
-
-            // FIXME: I have fucked up somewhere here.
-            // Getting back 200 codes even though I supposedly sent etags.
-            info!("Headers: {:?}", headers);
-            req = client.get(feed.uri())?.headers(headers).send()?;
+        if let Some(foo) = feed.http_etag() {
+            headers.set(ETag(EntityTag::new(true, foo.to_owned())));
         }
+
+        if let Some(foo) = feed.last_modified() {
+            headers.set(LastModified(foo.parse::<HttpDate>()?));
+        }
+
+        // FIXME: I have fucked up somewhere here.
+        // Getting back 200 codes even though I supposedly sent etags.
+        info!("Headers: {:?}", headers);
+        client.get(feed.uri()).headers(headers).send()?
     };
 
     info!("{}", req.status());
