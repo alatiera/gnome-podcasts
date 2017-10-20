@@ -23,7 +23,13 @@ pub fn populate_podcasts_flowbox(
     let iter = if let Some(it) = pd_model.get_iter_first() {
         it
     } else {
-        // TODO: Display an empty view
+        // stolen from gnome-news.
+        let builder = include_str!("../../gtk/empty_view.ui");
+        let builder = gtk::Builder::new_from_string(builder);
+        let view: gtk::Box = builder.get_object("empty_view").unwrap();
+        stack.add_named(&view, "empty");
+        stack.set_visible_child_name("empty");
+
         info!("Empty view.");
         return;
     };
