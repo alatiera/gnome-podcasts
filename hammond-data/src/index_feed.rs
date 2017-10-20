@@ -88,7 +88,7 @@ pub fn index_loop(db: Arc<Mutex<SqliteConnection>>, force: bool) -> Result<()> {
     Ok(())
 }
 
-fn complete_index_from_source(
+pub fn complete_index_from_source(
     req: &mut reqwest::Response,
     source: &Source,
     mutex: Arc<Mutex<SqliteConnection>>,
@@ -165,7 +165,7 @@ pub fn fetch_feeds(
     Ok(results)
 }
 
-fn refresh_source(
+pub fn refresh_source(
     connection: &SqliteConnection,
     feed: &mut Source,
     force: bool,
@@ -188,11 +188,11 @@ fn refresh_source(
 
         // FIXME: I have fucked up somewhere here.
         // Getting back 200 codes even though I supposedly sent etags.
-        info!("Headers: {:?}", headers);
+        // info!("Headers: {:?}", headers);
         client.get(feed.uri()).headers(headers).send()?
     };
 
-    info!("{}", req.status());
+    info!("GET to {} , returned: {}", feed.uri(), req.status());
 
     // TODO match on more stuff
     // 301: Permanent redirect of the url

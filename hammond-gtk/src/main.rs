@@ -54,6 +54,8 @@ fn build_ui(app: &gtk::Application) {
 
     // Get the headerbar
     let header = headerbar::get_headerbar(db.clone(), stack.clone());
+    // Uncomment this when etag implementation is fixed and refesh_db thread is non blocking.
+    // utils::refresh_db(db.clone(), stack.clone());
     window.set_titlebar(&header);
 
     window.show_all();

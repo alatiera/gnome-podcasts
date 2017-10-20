@@ -36,14 +36,13 @@ pub fn get_headerbar(db: Arc<Mutex<SqliteConnection>>, stack: gtk::Stack) -> gtk
         let f = index_feed::insert_return_source(&tempdb, &url);
         drop(tempdb);
         info!("{:?} feed added", url);
-        if f.is_err() {
+        if let Ok(mut source) = f {
+            // update the db
+            utils::refresh_feed(db_clone.clone(), stack_clone.clone(), &mut source);
+        } else {
             error!("Expected Error, feed probably already exists.");
             error!("Error: {:?}", f.unwrap_err());
         }
-
-        // update the db
-        // TODO: have it fettch only the added feed.
-        utils::refresh_db(db_clone.clone(), stack_clone.clone());
 
         // TODO: lock the button instead of hiding and add notification of feed added.
         // TODO: map the spinner
