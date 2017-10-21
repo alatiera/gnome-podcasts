@@ -158,7 +158,12 @@ pub fn cache_image(title: &str, image_uri: Option<&str>) -> Option<String> {
             return Some(dlpath);
         }
 
-        download_to(&dlpath, url).unwrap();
+        if let Err(err) = download_to(&dlpath, url) {
+            error!("Failed to get feed image.");
+            error!("Error: {}", err);
+            return None;
+        };
+
         info!("Cached img into: {}", dlpath);
         return Some(dlpath);
     }
