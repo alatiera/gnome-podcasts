@@ -1,3 +1,6 @@
+#![cfg_attr(feature = "cargo-clippy", allow(clone_on_ref_ptr))]
+#![cfg_attr(feature = "cargo-clippy", allow(needless_pass_by_value))]
+
 use reqwest;
 use hyper::header::*;
 use diesel::prelude::*;
@@ -5,7 +8,7 @@ use diesel::prelude::*;
 use std::fs::{rename, DirBuilder, File};
 use std::io::{BufWriter, Read, Write};
 use std::path::Path;
-use std::thread;
+use std::sync::{Arc, Mutex};
 
 use errors::*;
 use hammond_data::dbqueries;
@@ -58,22 +61,28 @@ pub fn download_to(target: &str, url: &str) -> Result<()> {
 
 // Initial messy prototype, queries load alot of not needed stuff.
 // TODO: Refactor
-pub fn latest_dl(connection: &SqliteConnection, limit: u32) -> Result<()> {
-    let pds = dbqueries::get_podcasts(connection)?;
+pub fn latest_dl(connection: Arc<Mutex<SqliteConnection>>, limit: u32) -> Result<()> {
+    let pds = {
+        let tempdb = connection.lock().unwrap();
+        dbqueries::get_podcasts(&tempdb)?
+    };
 
     let _: Vec<_> = pds.iter()
         .map(|x| -> Result<()> {
-            let mut eps = if limit == 0 {
-                dbqueries::get_pd_episodes(connection, x)?
-            } else {
-                dbqueries::get_pd_episodes_limit(connection, x, limit)?
+            let mut eps = {
+                let tempdb = connection.lock().unwrap();
+                if limit == 0 {
+                    dbqueries::get_pd_episodes(&tempdb, x)?
+                } else {
+                    dbqueries::get_pd_episodes_limit(&tempdb, x, limit)?
+                }
             };
 
             let dl_fold = get_dl_folder(x.title())?;
 
             // Download the episodes
             eps.iter_mut().for_each(|ep| {
-                let x = get_episode(connection, ep, &dl_fold);
+                let x = get_episode(connection.clone(), ep, &dl_fold);
                 if let Err(err) = x {
                     error!("An Error occured while downloading an episode.");
                     error!("Error: {}", err);
@@ -97,14 +106,22 @@ pub fn get_dl_folder(pd_title: &str) -> Result<String> {
     Ok(dl_fold)
 }
 
-pub fn get_episode(connection: &SqliteConnection, ep: &mut Episode, dl_folder: &str) -> Result<()> {
+// TODO: Refactor
+pub fn get_episode(
+    connection: Arc<Mutex<SqliteConnection>>,
+    ep: &mut Episode,
+    dl_folder: &str,
+) -> Result<()> {
     // Check if its alrdy downloaded
     if ep.local_uri().is_some() {
         if Path::new(ep.local_uri().unwrap()).exists() {
             return Ok(());
         }
-        ep.set_local_uri(None);
-        ep.save_changes::<Episode>(connection)?;
+        {
+            let db = connection.lock().unwrap();
+            ep.set_local_uri(None);
+            ep.save_changes::<Episode>(&*db)?;
+        }
     };
 
     // FIXME: Unreliable and hacky way to extract the file extension from the url.
@@ -113,28 +130,23 @@ pub fn get_episode(connection: &SqliteConnection, ep: &mut Episode, dl_folder: &
     // Construct the download path.
     // TODO: Check if its a valid path
     let dlpath = format!("{}/{}.{}", dl_folder, ep.title().unwrap().to_owned(), ext);
+    let dlpath1 = dlpath.clone();
     // info!("Downloading {:?} into: {}", y.title(), dlpath);
 
-    // If download succedes set episode local_uri to dlpath.
-    // This should be at the end after download is finished,
-    // but its handy atm while the gtk client doesnt yet have custom signals.
-    ep.set_local_uri(Some(&dlpath));
-    ep.save_changes::<Episode>(connection)?;
-
     let uri = ep.uri().to_owned();
+    let res = download_to(&dlpath1, uri.as_str());
 
-    // This would not be needed in general but I want to be able to call
-    // this function from the gtk client.
-    // should get removed probably once custom callbacks are implemented.
-    thread::spawn(move || {
-        let res = download_to(&dlpath, uri.as_str());
-        if let Err(err) = res {
-            error!("Something whent wrong while downloading.");
-            error!("Error: {}", err);
-        } else {
-            info!("Download of {} finished.", uri);
-        }
-    });
+    if let Err(err) = res {
+        error!("Something whent wrong while downloading.");
+        error!("Error: {}", err);
+    } else {
+        info!("Download of {} finished.", uri);
+    };
+
+    // If download succedes set episode local_uri to dlpath.
+    ep.set_local_uri(Some(&dlpath));
+    let db = connection.lock().unwrap();
+    ep.save_changes::<Episode>(&*db)?;
     Ok(())
 }
 

@@ -56,7 +56,8 @@ fn run() -> Result<()> {
 
     if args.dl >= 0 {
         let db = hammond_data::establish_connection();
-        downloader::latest_dl(&db, args.dl as u32).unwrap();
+        let db = Arc::new(Mutex::new(db));
+        downloader::latest_dl(db, args.dl as u32).unwrap();
     }
 
     if args.latest {

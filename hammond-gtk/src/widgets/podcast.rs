@@ -102,10 +102,11 @@ pub fn podcast_liststore(connection: &SqliteConnection) -> gtk::ListStore {
 // &Podcast){
 //     let old = stack.get_child_by_name("pdw").unwrap();
 //     let pdw = pd_widget_from_diesel_model(&db.clone(), pd, &stack.clone());
+//         let vis = stack.get_visible_child_name().unwrap();
 
 //     stack.remove(&old);
 //     stack.add_named(&pdw, "pdw");
-//     stack.set_visible_child_full("pdw", StackTransitionType::None);
+//     stack.set_visible_child_name(&vis);
 // }
 
 pub fn pd_widget_from_diesel_model(db: Arc<Mutex<SqliteConnection>>, pd: &Podcast) -> gtk::Box {
