@@ -80,6 +80,7 @@ fn epidose_widget(
                 error!("Error while trying to download: {}", ep_clone.uri());
                 error!("Error: {}", err);
             };
+            // TODO: emit a signal in order to update the podcast widget.
         });
     });
 

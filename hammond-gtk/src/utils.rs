@@ -23,6 +23,7 @@ pub fn refresh_db(db: Arc<Mutex<SqliteConnection>>, stack: gtk::Stack) {
     });
     // FIXME: atm freezing the ui till update is done.
     // Make it instead emmit a signal on update completion.
+    // TODO: emit a signal in order to update the podcast widget.
     handle.join();
 
     podcasts_view::update_podcasts_view(db.clone(), stack.clone());
@@ -51,6 +52,7 @@ pub fn refresh_feed(db: Arc<Mutex<SqliteConnection>>, stack: gtk::Stack, source:
     });
     // FIXME: atm freezing the ui till update is done.
     // Make it instead emmit a signal on update completion.
+    // TODO: emit a signal in order to update the podcast widget.
     handle.join();
 
     podcasts_view::update_podcasts_view(db.clone(), stack.clone());
