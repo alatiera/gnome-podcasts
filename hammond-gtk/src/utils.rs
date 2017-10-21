@@ -6,6 +6,7 @@ use gtk;
 // use gtk::prelude::*;
 
 use hammond_data;
+use hammond_data::index_feed::Feed;
 use hammond_data::models::Source;
 use diesel::prelude::SqliteConnection;
 
@@ -40,7 +41,8 @@ pub fn refresh_feed(db: &Arc<Mutex<SqliteConnection>>, stack: &gtk::Stack, sourc
         let foo_ = hammond_data::index_feed::refresh_source(&db_, &mut source_, false);
         drop(db_);
 
-        if let Ok((mut req, s)) = foo_ {
+        if let Ok(x) = foo_ {
+            let Feed(mut req, s) = x;
             let s = hammond_data::index_feed::complete_index_from_source(&mut req, &s, &db_clone);
             if s.is_err() {
                 error!("Error While trying to update the database.");

@@ -14,6 +14,9 @@ use models::*;
 use errors::*;
 use feedparser;
 
+#[derive(Debug)]
+pub struct Feed(pub reqwest::Response, pub Source);
+
 fn index_source(con: &SqliteConnection, foo: &NewSource) -> Result<()> {
     match dbqueries::load_source(con, foo.uri) {
         Ok(_) => Ok(()),
@@ -79,15 +82,16 @@ fn insert_return_episode(con: &SqliteConnection, ep: &NewEpisode) -> Result<Epis
 }
 
 pub fn index_loop(db: &Arc<Mutex<SqliteConnection>>, force: bool) -> Result<()> {
-    let mut f = fetch_feeds(&db.clone(), force)?;
+    let mut f = fetch_feeds(db, force)?;
 
-    f.par_iter_mut().for_each(|&mut (ref mut req, ref source)| {
-        let e = complete_index_from_source(req, source, &db.clone());
-        if e.is_err() {
-            error!("Error While trying to update the database.");
-            error!("Error msg: {}", e.unwrap_err());
-        };
-    });
+    f.par_iter_mut()
+        .for_each(|&mut Feed(ref mut req, ref source)| {
+            let e = complete_index_from_source(req, source, db);
+            if e.is_err() {
+                error!("Error While trying to update the database.");
+                error!("Error msg: {}", e.unwrap_err());
+            };
+        });
     info!("Indexing done.");
     Ok(())
 }
@@ -118,7 +122,7 @@ fn complete_index(
     let pd = index_channel(&tempdb, chan, parent)?;
     drop(tempdb);
 
-    index_channel_items(&connection.clone(), chan.items(), &pd)?;
+    index_channel_items(connection, chan.items(), &pd);
 
     Ok(())
 }
@@ -130,44 +134,32 @@ fn index_channel(db: &SqliteConnection, chan: &rss::Channel, parent: &Source) ->
     Ok(pd)
 }
 
-fn index_channel_items(
-    mutex: &Arc<Mutex<SqliteConnection>>,
-    i: &[rss::Item],
-    pd: &Podcast,
-) -> Result<()> {
-    let foo: Vec<_> = i.par_iter()
+fn index_channel_items(connection: &Arc<Mutex<SqliteConnection>>, it: &[rss::Item], pd: &Podcast) {
+    it.par_iter()
         .map(|x| feedparser::parse_episode(x, pd.id()))
-        .collect();
-
-    foo.par_iter().for_each(|x| {
-        let dbmutex = mutex.clone();
-        let db = dbmutex.lock().unwrap();
-        let e = index_episode(&db, x);
-        if let Err(err) = e {
-            error!("Failed to index episode: {:?}.", x);
-            error!("Error msg: {}", err);
-        };
-    });
-    Ok(())
+        .for_each(|x| {
+            let db = connection.lock().unwrap();
+            let e = index_episode(&db, &x);
+            if let Err(err) = e {
+                error!("Failed to index episode: {:?}.", x);
+                error!("Error msg: {}", err);
+            };
+        });
 }
 
 // Maybe this can be refactored into an Iterator for lazy evaluation.
-pub fn fetch_feeds(
-    connection: &Arc<Mutex<SqliteConnection>>,
-    force: bool,
-) -> Result<Vec<(reqwest::Response, Source)>> {
+pub fn fetch_feeds(connection: &Arc<Mutex<SqliteConnection>>, force: bool) -> Result<Vec<Feed>> {
     let tempdb = connection.lock().unwrap();
     let mut feeds = dbqueries::get_sources(&tempdb)?;
     drop(tempdb);
 
-    let results: Vec<(reqwest::Response, Source)> = feeds
+    let results: Vec<Feed> = feeds
         .par_iter_mut()
         .filter_map(|x| {
-            let dbmutex = connection.clone();
-            let db = dbmutex.lock().unwrap();
+            let db = connection.lock().unwrap();
             let l = refresh_source(&db, x, force);
-            if let Ok(res) = l {
-                Some(res)
+            if l.is_ok() {
+                l.ok()
             } else {
                 error!("Error While trying to fetch from source: {}.", x.uri());
                 error!("Error msg: {}", l.unwrap_err());
@@ -183,7 +175,7 @@ pub fn refresh_source(
     connection: &SqliteConnection,
     feed: &mut Source,
     force: bool,
-) -> Result<(reqwest::Response, Source)> {
+) -> Result<Feed> {
     use reqwest::header::{ETag, EntityTag, Headers, HttpDate, LastModified};
 
     let client = reqwest::Client::new();
@@ -197,7 +189,9 @@ pub fn refresh_source(
         }
 
         if let Some(foo) = feed.last_modified() {
-            headers.set(LastModified(foo.parse::<HttpDate>()?));
+            if let Ok(x) = foo.parse::<HttpDate>() {
+                headers.set(LastModified(x));
+            }
         }
 
         // FIXME: I have fucked up somewhere here.
@@ -219,7 +213,7 @@ pub fn refresh_source(
     // };
 
     feed.update_etag(connection, &req)?;
-    Ok((req, feed.clone()))
+    Ok(Feed(req, feed.clone()))
 }
 
 #[cfg(test)]
@@ -274,10 +268,10 @@ mod tests {
             index_source(&tempdb, &NewSource::new_with_uri(feed)).unwrap()
         });
 
-        index_loop(&db.clone(), true).unwrap();
+        index_loop(&db, true).unwrap();
 
         // Run again to cover Unique constrains erros.
-        index_loop(&db.clone(), true).unwrap();
+        index_loop(&db, true).unwrap();
     }
 
     #[test]
@@ -318,7 +312,7 @@ mod tests {
             let chan = rss::Channel::read_from(BufReader::new(feed)).unwrap();
 
             // Index the channel
-            complete_index(&m.clone(), &chan, &s).unwrap();
+            complete_index(&m, &chan, &s).unwrap();
         });
 
         // Assert the index rows equal the controlled results

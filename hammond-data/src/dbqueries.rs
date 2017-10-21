@@ -39,7 +39,7 @@ pub fn get_episodes_with_limit(con: &SqliteConnection, limit: u32) -> QueryResul
 
     let eps = episode
         .order(epoch.desc())
-        .limit(limit as i64)
+        .limit(i64::from(limit))
         .load::<Episode>(con);
     eps
 }
@@ -68,7 +68,7 @@ pub fn get_pd_episodes_limit(
 
     let eps = Episode::belonging_to(parent)
         .order(epoch.desc())
-        .limit(limit as i64)
+        .limit(i64::from(limit))
         .load::<Episode>(con);
     eps
 }
