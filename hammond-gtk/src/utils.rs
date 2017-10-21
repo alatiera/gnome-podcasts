@@ -17,7 +17,7 @@ use views::podcasts_view;
 pub fn refresh_db(db: &Arc<Mutex<SqliteConnection>>, stack: &gtk::Stack) {
     let db_clone = db.clone();
     let handle = thread::spawn(move || {
-        let t = hammond_data::index_feed::index_loop(&db_clone.clone(), false);
+        let t = hammond_data::index_feed::index_loop(&db_clone, false);
         if t.is_err() {
             error!("Error While trying to update the database.");
             error!("Error msg: {}", t.unwrap_err());
@@ -28,24 +28,20 @@ pub fn refresh_db(db: &Arc<Mutex<SqliteConnection>>, stack: &gtk::Stack) {
     // TODO: emit a signal in order to update the podcast widget.
     let _ = handle.join();
 
-    podcasts_view::update_podcasts_view(&db.clone(), &stack.clone());
+    podcasts_view::update_podcasts_view(&db, &stack);
 }
 
 pub fn refresh_feed(db: &Arc<Mutex<SqliteConnection>>, stack: &gtk::Stack, source: &mut Source) {
     let db_clone = db.clone();
-    let source_ = source.clone();
+    let mut source_ = source.clone();
     // TODO: add timeout option and error reporting.
     let handle = thread::spawn(move || {
         let db_ = db_clone.lock().unwrap();
-        let foo_ = hammond_data::index_feed::refresh_source(&db_, &mut source_.clone(), false);
+        let foo_ = hammond_data::index_feed::refresh_source(&db_, &mut source_, false);
         drop(db_);
 
         if let Ok((mut req, s)) = foo_ {
-            let s = hammond_data::index_feed::complete_index_from_source(
-                &mut req,
-                &s,
-                &db_clone.clone(),
-            );
+            let s = hammond_data::index_feed::complete_index_from_source(&mut req, &s, &db_clone);
             if s.is_err() {
                 error!("Error While trying to update the database.");
                 error!("Error msg: {}", s.unwrap_err());
@@ -57,7 +53,7 @@ pub fn refresh_feed(db: &Arc<Mutex<SqliteConnection>>, stack: &gtk::Stack, sourc
     // TODO: emit a signal in order to update the podcast widget.
     let _ = handle.join();
 
-    podcasts_view::update_podcasts_view(&db.clone(), &stack.clone());
+    podcasts_view::update_podcasts_view(&db, &stack);
 }
 
 // https://github.

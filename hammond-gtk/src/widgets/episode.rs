@@ -84,7 +84,7 @@ fn epidose_widget(
         // TODO: emit a signal and show notification when dl is finished and block play_bttn till
         // then.
         thread::spawn(move || {
-            let dl_fold = downloader::get_dl_folder(&pd_title.clone()).unwrap();
+            let dl_fold = downloader::get_dl_folder(&pd_title).unwrap();
             let tempdb = db_clone.lock().unwrap();
             let e = downloader::get_episode(&tempdb, &mut ep_clone, dl_fold.as_str());
             drop(tempdb);
@@ -109,7 +109,7 @@ pub fn episodes_listbox(connection: &Arc<Mutex<SqliteConnection>>, pd_title: &st
 
     let list = gtk::ListBox::new();
     episodes.iter_mut().for_each(|ep| {
-        let w = epidose_widget(&connection.clone(), ep, pd_title);
+        let w = epidose_widget(&connection, ep, pd_title);
         list.add(&w)
     });
 

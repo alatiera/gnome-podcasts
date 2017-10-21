@@ -124,8 +124,9 @@ pub fn get_episode(connection: &SqliteConnection, ep: &mut Episode, dl_folder: &
 
     let uri = ep.uri().to_owned();
 
-    // This would not be needed in general but I want to be able to block the
-    // a higher order thread in src/widgets/episode.rs epsode.
+    // This would not be needed in general but I want to be able to call
+    // this function from the gtk client.
+    // should get removed probably once custom callbacks are implemented.
     thread::spawn(move || {
         let res = download_to(&dlpath, uri.as_str());
         if let Err(err) = res {

@@ -40,7 +40,7 @@ pub fn get_headerbar(db: &Arc<Mutex<SqliteConnection>>, stack: &gtk::Stack) -> g
         info!("{:?} feed added", url);
         if let Ok(mut source) = f {
             // update the db
-            utils::refresh_feed(&db_clone.clone(), &stack_clone.clone(), &mut source);
+            utils::refresh_feed(&db_clone, &stack_clone, &mut source);
         } else {
             error!("Expected Error, feed probably already exists.");
             error!("Error: {:?}", f.unwrap_err());
@@ -66,7 +66,7 @@ pub fn get_headerbar(db: &Arc<Mutex<SqliteConnection>>, stack: &gtk::Stack) -> g
     // FIXME: There appears to be a memmory leak here.
     refresh_button.connect_clicked(move |_| {
         // fsdaa, The things I do for the borrow checker.
-        utils::refresh_db(&db_clone.clone(), &stack_clone.clone());
+        utils::refresh_db(&db_clone, &stack_clone);
     });
 
     header
