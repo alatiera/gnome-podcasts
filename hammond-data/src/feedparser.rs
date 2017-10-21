@@ -8,12 +8,13 @@ use models;
 // TODO: Extend the support for parsing itunes extensions
 pub fn parse_podcast(chan: &Channel, source_id: i32) -> models::NewPodcast {
     let title = chan.title().trim().to_owned();
-    let link = chan.link().to_owned();
+    let link = chan.link().trim().to_owned();
     let description = chan.description().trim().to_owned();
     // Some feeds miss baseurl and/or http://
     // TODO: Sanitize the url,
     // could also be reuse to sanitize the new-url gui entrybox.
-    let image_uri = if let Some(img) = chan.itunes_ext().map(|s| s.image()) {
+    let x = chan.itunes_ext().map(|s| s.image());
+    let image_uri = if let Some(img) = x {
         img.map(|s| s.to_string())
     } else {
         chan.image().map(|foo| foo.url().to_owned())
@@ -38,8 +39,9 @@ pub fn parse_episode(item: &Item, parent_id: i32) -> models::NewEpisode {
     // Rss 2.0 specified that it's optional.
     // Though the db scema has a requirment of episode uri being Unique && Not Null.
     // TODO: Restructure
-    let uri = if item.enclosure().map(|x| x.url().trim()).is_some() {
-        item.enclosure().map(|x| x.url().trim())
+    let x = item.enclosure().map(|x| x.url().trim());
+    let uri = if x.is_some() {
+        x
     } else if item.link().is_some() {
         item.link()
     } else {

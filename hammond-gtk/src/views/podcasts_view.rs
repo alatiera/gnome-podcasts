@@ -95,8 +95,8 @@ pub fn setup_stack(db: &Arc<Mutex<SqliteConnection>>) -> gtk::Stack {
     // let _st_clone = stack.clone();
     setup_podcast_widget(&db, &stack);
     setup_podcasts_grid(&db, &stack);
-    // stack.connect("foo", true, move |_| {
-    //     update_podcasts_view(db.clone(), st_clone.clone());
+    // stack.connect("update_grid", true, move |_| {
+    //     update_podcasts_view(&db_clone, &st_clone);
     //     None
     // });
     stack

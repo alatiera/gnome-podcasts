@@ -65,7 +65,6 @@ pub fn get_headerbar(db: &Arc<Mutex<SqliteConnection>>, stack: &gtk::Stack) -> g
     let db_clone = db.clone();
     // FIXME: There appears to be a memmory leak here.
     refresh_button.connect_clicked(move |_| {
-        // fsdaa, The things I do for the borrow checker.
         utils::refresh_db(&db_clone, &stack_clone);
     });
 

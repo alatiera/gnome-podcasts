@@ -62,7 +62,6 @@ pub fn latest_dl(connection: &SqliteConnection, limit: u32) -> Result<()> {
     let pds = dbqueries::get_podcasts(connection)?;
 
     let _: Vec<_> = pds.iter()
-        // This could be for_each instead of map.
         .map(|x| -> Result<()> {
             let mut eps = if limit == 0 {
                 dbqueries::get_pd_episodes(connection, x)?
@@ -73,12 +72,13 @@ pub fn latest_dl(connection: &SqliteConnection, limit: u32) -> Result<()> {
             let dl_fold = get_dl_folder(x.title())?;
 
             // Download the episodes
-            let _ :Vec<_> = eps.iter_mut()
-                .map(|ep| -> Result<()> {
-                    // TODO: handle Result here and replace map with for_each
-                    get_episode(connection, ep, &dl_fold)
-                })
-                .collect();
+            eps.iter_mut().for_each(|ep| {
+                let x = get_episode(connection, ep, &dl_fold);
+                if let Err(err) = x {
+                    error!("An Error occured while downloading an episode.");
+                    error!("Error: {}", err);
+                };
+            });
 
             Ok(())
         })
@@ -93,7 +93,6 @@ pub fn get_dl_folder(pd_title: &str) -> Result<String> {
     let dl_fold = format!("{}/{}", DL_DIR.to_str().unwrap(), pd_title);
 
     // Create the folder
-    // TODO: handle the unwrap properly
     DirBuilder::new().recursive(true).create(&dl_fold)?;
     Ok(dl_fold)
 }
@@ -108,7 +107,7 @@ pub fn get_episode(connection: &SqliteConnection, ep: &mut Episode, dl_folder: &
         ep.save_changes::<Episode>(connection)?;
     };
 
-    // Unreliable and hacky way to extract the file extension from the url.
+    // FIXME: Unreliable and hacky way to extract the file extension from the url.
     let ext = ep.uri().split('.').last().unwrap().to_owned();
 
     // Construct the download path.
@@ -148,11 +147,11 @@ pub fn cache_image(title: &str, image_uri: Option<&str>) -> Option<String> {
             return None;
         }
 
+        // FIXME:
         let ext = url.split('.').last().unwrap();
 
         let dl_fold = format!("{}{}", HAMMOND_CACHE.to_str().unwrap(), title);
         DirBuilder::new().recursive(true).create(&dl_fold).unwrap();
-
         let dlpath = format!("{}/{}.{}", dl_fold, title, ext);
 
         if Path::new(&dlpath).exists() {
