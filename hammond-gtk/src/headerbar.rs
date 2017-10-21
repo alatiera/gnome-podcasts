@@ -1,3 +1,5 @@
+#![cfg_attr(feature = "cargo-clippy", allow(clone_on_ref_ptr))]
+
 use gtk;
 use gtk::prelude::*;
 
@@ -7,7 +9,7 @@ use utils;
 
 use std::sync::{Arc, Mutex};
 
-pub fn get_headerbar(db: Arc<Mutex<SqliteConnection>>, stack: gtk::Stack) -> gtk::HeaderBar {
+pub fn get_headerbar(db: &Arc<Mutex<SqliteConnection>>, stack: &gtk::Stack) -> gtk::HeaderBar {
     let builder = include_str!("../gtk/headerbar.ui");
     let builder = gtk::Builder::new_from_string(builder);
 
@@ -38,7 +40,7 @@ pub fn get_headerbar(db: Arc<Mutex<SqliteConnection>>, stack: gtk::Stack) -> gtk
         info!("{:?} feed added", url);
         if let Ok(mut source) = f {
             // update the db
-            utils::refresh_feed(db_clone.clone(), stack_clone.clone(), &mut source);
+            utils::refresh_feed(&db_clone.clone(), &stack_clone.clone(), &mut source);
         } else {
             error!("Expected Error, feed probably already exists.");
             error!("Error: {:?}", f.unwrap_err());
@@ -60,10 +62,11 @@ pub fn get_headerbar(db: Arc<Mutex<SqliteConnection>>, stack: gtk::Stack) -> gtk
     });
 
     let stack_clone = stack.clone();
+    let db_clone = db.clone();
     // FIXME: There appears to be a memmory leak here.
     refresh_button.connect_clicked(move |_| {
         // fsdaa, The things I do for the borrow checker.
-        utils::refresh_db(db.clone(), stack_clone.clone());
+        utils::refresh_db(&db_clone.clone(), &stack_clone.clone());
     });
 
     header

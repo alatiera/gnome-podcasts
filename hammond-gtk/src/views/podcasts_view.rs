@@ -1,3 +1,5 @@
+#![cfg_attr(feature = "cargo-clippy", allow(clone_on_ref_ptr))]
+
 use gtk;
 use gtk::prelude::*;
 use gtk::StackTransitionType;
@@ -11,9 +13,9 @@ use std::sync::{Arc, Mutex};
 use widgets::podcast::*;
 
 pub fn populate_podcasts_flowbox(
-    db: Arc<Mutex<SqliteConnection>>,
-    stack: gtk::Stack,
-    flowbox: gtk::FlowBox,
+    db: &Arc<Mutex<SqliteConnection>>,
+    stack: &gtk::Stack,
+    flowbox: &gtk::FlowBox,
 ) {
     let tempdb = db.lock().unwrap();
     let pd_model = podcast_liststore(&tempdb);
@@ -59,7 +61,7 @@ pub fn populate_podcasts_flowbox(
             stack_clone.remove(&pdw);
 
             let pdw = podcast_widget(
-                db_clone.clone(),
+                &db_clone.clone(),
                 Some(title.as_str()),
                 description.as_ref().map(|x| x.as_str()),
                 pixbuf.clone(),
@@ -78,12 +80,12 @@ pub fn populate_podcasts_flowbox(
     flowbox.show_all();
 }
 
-fn setup_podcast_widget(db: Arc<Mutex<SqliteConnection>>, stack: gtk::Stack) {
-    let pd_widget = podcast_widget(db.clone(), None, None, None);
+fn setup_podcast_widget(db: &Arc<Mutex<SqliteConnection>>, stack: &gtk::Stack) {
+    let pd_widget = podcast_widget(&db.clone(), None, None, None);
     stack.add_named(&pd_widget, "pdw");
 }
 
-fn setup_podcasts_grid(db: Arc<Mutex<SqliteConnection>>, stack: gtk::Stack) {
+fn setup_podcasts_grid(db: &Arc<Mutex<SqliteConnection>>, stack: &gtk::Stack) {
     let builder = include_str!("../../gtk/podcasts_view.ui");
     let builder = gtk::Builder::new_from_string(builder);
     let grid: gtk::Grid = builder.get_object("grid").unwrap();
@@ -94,14 +96,14 @@ fn setup_podcasts_grid(db: Arc<Mutex<SqliteConnection>>, stack: gtk::Stack) {
     // FIXME: flowbox childs activate with space/enter but not with clicks.
     let flowbox: gtk::FlowBox = builder.get_object("flowbox").unwrap();
     // Populate the flowbox with the Podcasts.
-    populate_podcasts_flowbox(db.clone(), stack.clone(), flowbox.clone());
+    populate_podcasts_flowbox(&db.clone(), &stack.clone(), &flowbox.clone());
 }
 
-pub fn setup_stack(db: Arc<Mutex<SqliteConnection>>) -> gtk::Stack {
+pub fn setup_stack(db: &Arc<Mutex<SqliteConnection>>) -> gtk::Stack {
     let stack = gtk::Stack::new();
     let _st_clone = stack.clone();
-    setup_podcast_widget(db.clone(), stack.clone());
-    setup_podcasts_grid(db.clone(), stack.clone());
+    setup_podcast_widget(&db.clone(), &stack.clone());
+    setup_podcasts_grid(&db.clone(), &stack.clone());
     // stack.connect("foo", true, move |_| {
     //     update_podcasts_view(db.clone(), st_clone.clone());
     //     None
@@ -109,14 +111,14 @@ pub fn setup_stack(db: Arc<Mutex<SqliteConnection>>) -> gtk::Stack {
     stack
 }
 
-pub fn update_podcasts_view(db: Arc<Mutex<SqliteConnection>>, stack: gtk::Stack) {
+pub fn update_podcasts_view(db: &Arc<Mutex<SqliteConnection>>, stack: &gtk::Stack) {
     let builder = include_str!("../../gtk/podcasts_view.ui");
     let builder = gtk::Builder::new_from_string(builder);
     let grid: gtk::Grid = builder.get_object("grid").unwrap();
 
     let flowbox: gtk::FlowBox = builder.get_object("flowbox").unwrap();
     // Populate the flowbox with the Podcasts.
-    populate_podcasts_flowbox(db.clone(), stack.clone(), flowbox.clone());
+    populate_podcasts_flowbox(&db.clone(), &stack.clone(), &flowbox.clone());
 
     let old = stack.get_child_by_name("pd_grid").unwrap();
     stack.remove(&old);

@@ -3,6 +3,8 @@
 use diesel::prelude::*;
 use models::{Episode, Podcast, Source};
 
+// TODO: Needs cleanup.
+
 pub fn get_sources(con: &SqliteConnection) -> QueryResult<Vec<Source>> {
     use schema::source::dsl::*;
 

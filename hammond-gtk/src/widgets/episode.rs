@@ -1,3 +1,6 @@
+
+#![cfg_attr(feature = "cargo-clippy", allow(clone_on_ref_ptr))]
+
 use open;
 use diesel::prelude::SqliteConnection;
 use hammond_data::dbqueries;
@@ -17,7 +20,7 @@ use gtk::prelude::*;
 // use utils;
 
 fn epidose_widget(
-    connection: Arc<Mutex<SqliteConnection>>,
+    connection: &Arc<Mutex<SqliteConnection>>,
     episode: &mut Episode,
     pd_title: &str,
 ) -> gtk::Box {
@@ -47,7 +50,7 @@ fn epidose_widget(
 
         expander.connect_activate(move |_| {
             let plain_text = strip_html_tags(&d).join(" ");
-            desc_label.set_text(&plain_text.trim())
+            desc_label.set_text(plain_text.trim())
         });
     }
 
@@ -63,7 +66,7 @@ fn epidose_widget(
         });
     }
 
-    let pd_title_cloned = pd_title.clone().to_owned();
+    let pd_title_cloned = pd_title.to_owned();
     let db = connection.clone();
     let ep_clone = episode.clone();
     dl_button.connect_clicked(move |_| {
@@ -87,7 +90,7 @@ fn epidose_widget(
     ep
 }
 
-pub fn episodes_listbox(connection: Arc<Mutex<SqliteConnection>>, pd_title: &str) -> gtk::ListBox {
+pub fn episodes_listbox(connection: &Arc<Mutex<SqliteConnection>>, pd_title: &str) -> gtk::ListBox {
     // TODO: handle unwraps.
     let m = connection.lock().unwrap();
     let pd = dbqueries::load_podcast(&m, pd_title).unwrap();
@@ -96,7 +99,7 @@ pub fn episodes_listbox(connection: Arc<Mutex<SqliteConnection>>, pd_title: &str
 
     let list = gtk::ListBox::new();
     episodes.iter_mut().for_each(|ep| {
-        let w = epidose_widget(connection.clone(), ep, pd_title);
+        let w = epidose_widget(&connection.clone(), ep, pd_title);
         list.add(&w)
     });
 

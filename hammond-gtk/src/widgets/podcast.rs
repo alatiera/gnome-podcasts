@@ -10,7 +10,7 @@ use std::sync::{Arc, Mutex};
 use widgets::episode::episodes_listbox;
 
 pub fn podcast_widget(
-    connection: Arc<Mutex<SqliteConnection>>,
+    connection: &Arc<Mutex<SqliteConnection>>,
     title: Option<&str>,
     description: Option<&str>,
     image: Option<Pixbuf>,
@@ -27,7 +27,7 @@ pub fn podcast_widget(
 
     if let Some(t) = title {
         title_label.set_text(t);
-        let listbox = episodes_listbox(connection.clone(), t);
+        let listbox = episodes_listbox(&connection.clone(), t);
         view.add(&listbox);
     }
 
@@ -56,9 +56,9 @@ pub fn create_flowbox_child(title: &str, cover: Option<Pixbuf>) -> gtk::FlowBoxC
     // GDK.TOUCH_MASK
     // https://developer.gnome.org/gdk3/stable/gdk3-Events.html#GDK-TOUCH-MASK:CAPS
     // http://gtk-rs.org/docs/gdk/constant.TOUCH_MASK.html
-    events.add_events(4194304);
+    events.add_events(4_194_304);
 
-    pd_title.set_text(&title);
+    pd_title.set_text(title);
 
     if let Some(img) = cover {
         pd_cover.set_from_pixbuf(&img);
