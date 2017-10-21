@@ -109,7 +109,7 @@ pub fn episodes_listbox(connection: &Arc<Mutex<SqliteConnection>>, pd_title: &st
 
     let list = gtk::ListBox::new();
     episodes.iter_mut().for_each(|ep| {
-        let w = epidose_widget(&connection, ep, pd_title);
+        let w = epidose_widget(connection, ep, pd_title);
         list.add(&w)
     });
 

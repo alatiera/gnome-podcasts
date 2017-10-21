@@ -29,7 +29,7 @@ pub fn refresh_db(db: &Arc<Mutex<SqliteConnection>>, stack: &gtk::Stack) {
     // TODO: emit a signal in order to update the podcast widget.
     let _ = handle.join();
 
-    podcasts_view::update_podcasts_view(&db, &stack);
+    podcasts_view::update_podcasts_view(db, stack);
 }
 
 pub fn refresh_feed(db: &Arc<Mutex<SqliteConnection>>, stack: &gtk::Stack, source: &mut Source) {
@@ -55,7 +55,7 @@ pub fn refresh_feed(db: &Arc<Mutex<SqliteConnection>>, stack: &gtk::Stack, sourc
     // TODO: emit a signal in order to update the podcast widget.
     let _ = handle.join();
 
-    podcasts_view::update_podcasts_view(&db, &stack);
+    podcasts_view::update_podcasts_view(db, stack);
 }
 
 // https://github.

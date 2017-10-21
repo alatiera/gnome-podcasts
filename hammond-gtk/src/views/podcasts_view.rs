@@ -72,7 +72,7 @@ pub fn populate_podcasts_flowbox(
 }
 
 fn setup_podcast_widget(db: &Arc<Mutex<SqliteConnection>>, stack: &gtk::Stack) {
-    let pd_widget = podcast_widget(&db, None, None, None);
+    let pd_widget = podcast_widget(db, None, None, None);
     stack.add_named(&pd_widget, "pdw");
 }
 
@@ -87,14 +87,14 @@ fn setup_podcasts_grid(db: &Arc<Mutex<SqliteConnection>>, stack: &gtk::Stack) {
     // FIXME: flowbox childs activate with space/enter but not with clicks.
     let flowbox: gtk::FlowBox = builder.get_object("flowbox").unwrap();
     // Populate the flowbox with the Podcasts.
-    populate_podcasts_flowbox(&db, &stack, &flowbox);
+    populate_podcasts_flowbox(db, stack, &flowbox);
 }
 
 pub fn setup_stack(db: &Arc<Mutex<SqliteConnection>>) -> gtk::Stack {
     let stack = gtk::Stack::new();
     // let _st_clone = stack.clone();
-    setup_podcast_widget(&db, &stack);
-    setup_podcasts_grid(&db, &stack);
+    setup_podcast_widget(db, &stack);
+    setup_podcasts_grid(db, &stack);
     // stack.connect("update_grid", true, move |_| {
     //     update_podcasts_view(&db_clone, &st_clone);
     //     None
@@ -109,7 +109,7 @@ pub fn update_podcasts_view(db: &Arc<Mutex<SqliteConnection>>, stack: &gtk::Stac
 
     let flowbox: gtk::FlowBox = builder.get_object("flowbox").unwrap();
     // Populate the flowbox with the Podcasts.
-    populate_podcasts_flowbox(&db, &stack, &flowbox);
+    populate_podcasts_flowbox(db, stack, &flowbox);
 
     let old = stack.get_child_by_name("pd_grid").unwrap();
     stack.remove(&old);
