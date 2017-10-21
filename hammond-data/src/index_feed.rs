@@ -1,5 +1,6 @@
 #![allow(dead_code)]
 #![cfg_attr(feature = "cargo-clippy", allow(clone_on_ref_ptr))]
+#![cfg_attr(feature = "cargo-clippy", allow(needless_pass_by_value))]
 
 use diesel::prelude::*;
 use diesel;
@@ -81,12 +82,12 @@ fn insert_return_episode(con: &SqliteConnection, ep: &NewEpisode) -> Result<Epis
     Ok(dbqueries::load_episode(con, ep.uri.unwrap())?)
 }
 
-pub fn index_loop(db: &Arc<Mutex<SqliteConnection>>, force: bool) -> Result<()> {
-    let mut f = fetch_feeds(db, force)?;
+pub fn index_loop(db: Arc<Mutex<SqliteConnection>>, force: bool) -> Result<()> {
+    let mut f = fetch_feeds(db.clone(), force)?;
 
     f.par_iter_mut()
         .for_each(|&mut Feed(ref mut req, ref source)| {
-            let e = complete_index_from_source(req, source, db);
+            let e = complete_index_from_source(req, source, db.clone());
             if e.is_err() {
                 error!("Error While trying to update the database.");
                 error!("Error msg: {}", e.unwrap_err());
@@ -99,7 +100,7 @@ pub fn index_loop(db: &Arc<Mutex<SqliteConnection>>, force: bool) -> Result<()> 
 pub fn complete_index_from_source(
     req: &mut reqwest::Response,
     source: &Source,
-    mutex: &Arc<Mutex<SqliteConnection>>,
+    mutex: Arc<Mutex<SqliteConnection>>,
 ) -> Result<()> {
     use std::io::Read;
     use std::str::FromStr;
@@ -114,13 +115,15 @@ pub fn complete_index_from_source(
 }
 
 fn complete_index(
-    connection: &Arc<Mutex<SqliteConnection>>,
+    connection: Arc<Mutex<SqliteConnection>>,
     chan: &rss::Channel,
     parent: &Source,
 ) -> Result<()> {
-    let tempdb = connection.lock().unwrap();
-    let pd = index_channel(&tempdb, chan, parent)?;
-    drop(tempdb);
+    let pd = {
+        let db = connection.clone();
+        let db = db.lock().unwrap();
+        index_channel(&db, chan, parent)?
+    };
 
     index_channel_items(connection, chan.items(), &pd);
 
@@ -134,11 +137,12 @@ fn index_channel(db: &SqliteConnection, chan: &rss::Channel, parent: &Source) ->
     Ok(pd)
 }
 
-fn index_channel_items(connection: &Arc<Mutex<SqliteConnection>>, it: &[rss::Item], pd: &Podcast) {
+fn index_channel_items(connection: Arc<Mutex<SqliteConnection>>, it: &[rss::Item], pd: &Podcast) {
     it.par_iter()
         .map(|x| feedparser::parse_episode(x, pd.id()))
         .for_each(|x| {
-            let db = connection.lock().unwrap();
+            let db = connection.clone();
+            let db = db.lock().unwrap();
             let e = index_episode(&db, &x);
             if let Err(err) = e {
                 error!("Failed to index episode: {:?}.", x);
@@ -148,7 +152,7 @@ fn index_channel_items(connection: &Arc<Mutex<SqliteConnection>>, it: &[rss::Ite
 }
 
 // Maybe this can be refactored into an Iterator for lazy evaluation.
-pub fn fetch_feeds(connection: &Arc<Mutex<SqliteConnection>>, force: bool) -> Result<Vec<Feed>> {
+pub fn fetch_feeds(connection: Arc<Mutex<SqliteConnection>>, force: bool) -> Result<Vec<Feed>> {
     let tempdb = connection.lock().unwrap();
     let mut feeds = dbqueries::get_sources(&tempdb)?;
     drop(tempdb);
@@ -268,10 +272,10 @@ mod tests {
             index_source(&tempdb, &NewSource::new_with_uri(feed)).unwrap()
         });
 
-        index_loop(&db, true).unwrap();
+        index_loop(db.clone(), true).unwrap();
 
         // Run again to cover Unique constrains erros.
-        index_loop(&db, true).unwrap();
+        index_loop(db.clone(), true).unwrap();
     }
 
     #[test]
@@ -312,7 +316,7 @@ mod tests {
             let chan = rss::Channel::read_from(BufReader::new(feed)).unwrap();
 
             // Index the channel
-            complete_index(&m, &chan, &s).unwrap();
+            complete_index(m.clone(), &chan, &s).unwrap();
         });
 
         // Assert the index rows equal the controlled results

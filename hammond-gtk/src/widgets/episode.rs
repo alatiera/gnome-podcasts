@@ -1,5 +1,6 @@
 
 #![cfg_attr(feature = "cargo-clippy", allow(clone_on_ref_ptr))]
+#![cfg_attr(feature = "cargo-clippy", allow(needless_pass_by_value))]
 
 use open;
 use diesel::prelude::SqliteConnection;
@@ -22,7 +23,7 @@ use gtk::ContainerExt;
 // use utils;
 
 fn epidose_widget(
-    connection: &Arc<Mutex<SqliteConnection>>,
+    connection: Arc<Mutex<SqliteConnection>>,
     episode: &mut Episode,
     pd_title: &str,
 ) -> gtk::Box {
@@ -101,7 +102,7 @@ fn epidose_widget(
 }
 
 
-pub fn episodes_listbox(connection: &Arc<Mutex<SqliteConnection>>, pd_title: &str) -> gtk::ListBox {
+pub fn episodes_listbox(connection: Arc<Mutex<SqliteConnection>>, pd_title: &str) -> gtk::ListBox {
     // TODO: handle unwraps.
     let m = connection.lock().unwrap();
     let pd = dbqueries::load_podcast(&m, pd_title).unwrap();
@@ -110,7 +111,7 @@ pub fn episodes_listbox(connection: &Arc<Mutex<SqliteConnection>>, pd_title: &st
 
     let list = gtk::ListBox::new();
     episodes.iter_mut().for_each(|ep| {
-        let w = epidose_widget(connection, ep, pd_title);
+        let w = epidose_widget(connection.clone(), ep, pd_title);
         list.add(&w)
     });
 

@@ -1,4 +1,5 @@
 #![cfg_attr(feature = "cargo-clippy", allow(clone_on_ref_ptr))]
+#![cfg_attr(feature = "cargo-clippy", allow(needless_pass_by_value))]
 
 use gtk;
 use gtk::prelude::*;
@@ -40,7 +41,7 @@ pub fn get_headerbar(db: Arc<Mutex<SqliteConnection>>, stack: gtk::Stack) -> gtk
         info!("{:?} feed added", url);
         if let Ok(mut source) = f {
             // update the db
-            utils::refresh_feed(&db_clone, &stack_clone, &mut source);
+            utils::refresh_feed(db_clone.clone(), &stack_clone, &mut source);
         } else {
             error!("Expected Error, feed probably already exists.");
             error!("Error: {:?}", f.unwrap_err());

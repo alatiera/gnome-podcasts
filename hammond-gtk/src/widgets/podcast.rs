@@ -12,7 +12,7 @@ use std::sync::{Arc, Mutex};
 use widgets::episode::episodes_listbox;
 
 pub fn podcast_widget(
-    connection: &Arc<Mutex<SqliteConnection>>,
+    connection: Arc<Mutex<SqliteConnection>>,
     title: Option<&str>,
     description: Option<&str>,
     image: Option<Pixbuf>,
@@ -29,7 +29,7 @@ pub fn podcast_widget(
 
     if let Some(t) = title {
         title_label.set_text(t);
-        let listbox = episodes_listbox(&connection, t);
+        let listbox = episodes_listbox(connection, t);
         view.add(&listbox);
     }
 
@@ -108,7 +108,7 @@ pub fn podcast_liststore(connection: &SqliteConnection) -> gtk::ListStore {
 //     stack.set_visible_child_full("pdw", StackTransitionType::None);
 // }
 
-pub fn pd_widget_from_diesel_model(db: &Arc<Mutex<SqliteConnection>>, pd: &Podcast) -> gtk::Box {
+pub fn pd_widget_from_diesel_model(db: Arc<Mutex<SqliteConnection>>, pd: &Podcast) -> gtk::Box {
     let img = get_pixbuf_from_path(pd.image_uri(), pd.title());
     podcast_widget(db, Some(pd.title()), Some(pd.description()), img)
 }

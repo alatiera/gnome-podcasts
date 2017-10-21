@@ -1,4 +1,5 @@
 #![cfg_attr(feature = "cargo-clippy", allow(clone_on_ref_ptr))]
+#![cfg_attr(feature = "cargo-clippy", allow(needless_pass_by_value))]
 
 extern crate gdk;
 extern crate gdk_pixbuf;
@@ -42,7 +43,7 @@ fn build_ui(app: &gtk::Application) {
     window.set_default_size(1050, 600);
     app.add_window(&window);
     // Setup the Stack that will magane the switche between podcasts_view and podcast_widget.
-    let stack = podcasts_view::setup_stack(&db);
+    let stack = podcasts_view::setup_stack(db.clone());
     window.add(&stack);
 
     // FIXME:
