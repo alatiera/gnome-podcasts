@@ -7,9 +7,6 @@ use diesel::prelude::SqliteConnection;
 use hammond_data::dbqueries;
 use hammond_data::models::Episode;
 use hammond_downloader::downloader;
-// use html5ever::parse_document;
-// use html5ever::rcdom::RcDom;
-// use tendril::stream::TendrilSink;
 use dissolve::strip_html_tags;
 
 use std::thread;
@@ -19,8 +16,6 @@ use std::path::Path;
 use gtk;
 use gtk::prelude::*;
 use gtk::ContainerExt;
-
-// use utils;
 
 fn epidose_widget(
     connection: Arc<Mutex<SqliteConnection>>,
@@ -47,8 +42,6 @@ fn epidose_widget(
     }
 
     if episode.description().is_some() {
-        // let mk = utils::html_to_markup(d.to_string());
-        // desc_label.set_markup(mk.as_str());
         let d = episode.description().unwrap().to_owned();
 
         expander.connect_activate(move |_| {

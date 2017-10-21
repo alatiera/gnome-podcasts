@@ -37,11 +37,14 @@ pub fn get_headerbar(db: Arc<Mutex<SqliteConnection>>, stack: gtk::Stack) -> gtk
         let url = new_url.get_text().unwrap_or_default();
         // TODO: check if the feed is already present.
         let f = index_feed::insert_return_source(&tempdb, &url);
+
         drop(tempdb);
         info!("{:?} feed added", url);
+
+        let stack_clone = stack_clone.clone();
         if let Ok(mut source) = f {
             // update the db
-            utils::refresh_feed(db_clone.clone(), &stack_clone, &mut source);
+            utils::refresh_feed(db_clone.clone(), stack_clone, &mut source);
         } else {
             error!("Expected Error, feed probably already exists.");
             error!("Error: {:?}", f.unwrap_err());

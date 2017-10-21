@@ -2,7 +2,6 @@
 
 use gtk;
 use gtk::prelude::*;
-use gtk::StackTransitionType;
 
 use diesel::prelude::SqliteConnection;
 
@@ -107,7 +106,10 @@ pub fn update_podcasts_view(db: Arc<Mutex<SqliteConnection>>, stack: &gtk::Stack
     populate_podcasts_flowbox(db, stack, &flowbox);
 
     let old = stack.get_child_by_name("pd_grid").unwrap();
+    let vis = stack.get_visible_child_name().unwrap();
+
     stack.remove(&old);
     stack.add_named(&grid, "pd_grid");
-    stack.set_visible_child_full("pd_grid", StackTransitionType::None);
+    // preserve the visible widget
+    stack.set_visible_child_name(&vis);
 }

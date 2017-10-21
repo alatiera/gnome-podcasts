@@ -18,20 +18,24 @@ use std::sync::mpsc::{channel, Receiver};
 
 use views::podcasts_view;
 
+// Create a thread local storage that will store the arguments to be transfered.
 thread_local!(
     static GLOBAL: RefCell<Option<(Arc<Mutex<SqliteConnection>>,
     gtk::Stack,
     Receiver<bool>)>> = RefCell::new(None));
 
 pub fn refresh_db(db: Arc<Mutex<SqliteConnection>>, stack: gtk::Stack) {
+    // Create a async channel.
     let (sender, receiver) = channel();
 
     let db_clone = db.clone();
+    // Pass the desired arguments into the Local Thread Storage.
     GLOBAL.with(move |global| {
         *global.borrow_mut() = Some((db_clone, stack, receiver));
     });
 
     // The implementation of how this is done is probably terrible but it works!.
+    // TODO: add timeout option and error reporting.
     let db_clone = db.clone();
     thread::spawn(move || {
         let t = hammond_data::index_feed::index_loop(db_clone, false);
@@ -41,15 +45,23 @@ pub fn refresh_db(db: Arc<Mutex<SqliteConnection>>, stack: gtk::Stack) {
         };
         sender.send(true).expect("Couldn't send data to channel");;
 
-        glib::idle_add(receive);
+        // http://gtk-rs.org/docs/glib/source/fn.idle_add.html
+        glib::idle_add(refresh_podcasts_view);
     });
 }
 
-pub fn refresh_feed(db: Arc<Mutex<SqliteConnection>>, stack: &gtk::Stack, source: &mut Source) {
+pub fn refresh_feed(db: Arc<Mutex<SqliteConnection>>, stack: gtk::Stack, source: &mut Source) {
+    let (sender, receiver) = channel();
+
+    let db_clone = db.clone();
+    GLOBAL.with(move |global| {
+        *global.borrow_mut() = Some((db_clone, stack, receiver));
+    });
+
     let db_clone = db.clone();
     let mut source_ = source.clone();
     // TODO: add timeout option and error reporting.
-    let handle = thread::spawn(move || {
+    thread::spawn(move || {
         let db_ = db_clone.clone();
         let db_ = db_.lock().unwrap();
         let foo_ = hammond_data::index_feed::refresh_source(&db_, &mut source_, false);
@@ -62,39 +74,17 @@ pub fn refresh_feed(db: Arc<Mutex<SqliteConnection>>, stack: &gtk::Stack, source
                 error!("Error While trying to update the database.");
                 error!("Error msg: {}", s.unwrap_err());
             };
+
+            sender.send(true).expect("Couldn't send data to channel");;
+            glib::idle_add(refresh_podcasts_view);
         };
     });
-    // FIXME: atm freezing the ui till update is done.
-    // Make it instead emmit a signal on update completion.
-    // TODO: emit a signal in order to update the podcast widget.
-    let _ = handle.join();
-    podcasts_view::update_podcasts_view(db, stack);
 }
 
-// https://github.
-// com/needle-and-thread/vocal/blob/8b21f1c18c2be32921e84e289576a659ab3c8f2e/src/Utils/Utils.
-// vala#L136
-// TODO:
-// pub fn html_to_markup(s: String) -> String {
-//     let markup = glib::uri_escape_string(s.as_str(), None, true);
-
-//     let markup = if let Some(m) = markup {
-//         m
-//     } else {
-//         warn!("unable to unescape markup: {}", s);
-//         s
-//     };
-//     // let markup = s;
-
-
-//     info!("{}", markup);
-//     markup
-// }
-
-fn receive() -> glib::Continue {
+fn refresh_podcasts_view() -> glib::Continue {
     GLOBAL.with(|global| {
         if let Some((ref db, ref stack, ref reciever)) = *global.borrow() {
-            if let Ok(_) = reciever.try_recv() {
+            if reciever.try_recv().is_ok() {
                 podcasts_view::update_podcasts_view(db.clone(), stack);
             }
         }
