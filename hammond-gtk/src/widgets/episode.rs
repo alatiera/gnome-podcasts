@@ -100,6 +100,7 @@ fn epidose_widget(
     ep
 }
 
+
 pub fn episodes_listbox(connection: &Arc<Mutex<SqliteConnection>>, pd_title: &str) -> gtk::ListBox {
     // TODO: handle unwraps.
     let m = connection.lock().unwrap();

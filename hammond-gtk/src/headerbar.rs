@@ -9,7 +9,7 @@ use utils;
 
 use std::sync::{Arc, Mutex};
 
-pub fn get_headerbar(db: &Arc<Mutex<SqliteConnection>>, stack: &gtk::Stack) -> gtk::HeaderBar {
+pub fn get_headerbar(db: Arc<Mutex<SqliteConnection>>, stack: gtk::Stack) -> gtk::HeaderBar {
     let builder = include_str!("../gtk/headerbar.ui");
     let builder = gtk::Builder::new_from_string(builder);
 
@@ -65,7 +65,7 @@ pub fn get_headerbar(db: &Arc<Mutex<SqliteConnection>>, stack: &gtk::Stack) -> g
     let db_clone = db.clone();
     // FIXME: There appears to be a memmory leak here.
     refresh_button.connect_clicked(move |_| {
-        utils::refresh_db(&db_clone, &stack_clone);
+        utils::refresh_db(db_clone.clone(), stack_clone.clone());
     });
 
     header

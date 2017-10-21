@@ -29,7 +29,7 @@ pub fn podcast_widget(
 
     if let Some(t) = title {
         title_label.set_text(t);
-        let listbox = episodes_listbox(&connection.clone(), t);
+        let listbox = episodes_listbox(&connection, t);
         view.add(&listbox);
     }
 

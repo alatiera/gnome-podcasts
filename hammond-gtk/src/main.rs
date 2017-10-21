@@ -1,10 +1,9 @@
 #![cfg_attr(feature = "cargo-clippy", allow(clone_on_ref_ptr))]
 
-// extern crate glib;
-
 extern crate gdk;
 extern crate gdk_pixbuf;
 extern crate gio;
+extern crate glib;
 extern crate gtk;
 
 extern crate diesel;
@@ -55,7 +54,7 @@ fn build_ui(app: &gtk::Application) {
     });
 
     // Get the headerbar
-    let header = headerbar::get_headerbar(&db, &stack);
+    let header = headerbar::get_headerbar(db, stack);
     // Uncomment this when etag implementation is fixed and refesh_db thread is non blocking.
     // utils::refresh_db(&db, &stack);
     window.set_titlebar(&header);
