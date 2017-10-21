@@ -3,9 +3,7 @@
 use gtk;
 use gtk::prelude::*;
 use gtk::StackTransitionType;
-use gdk_pixbuf::Pixbuf;
 
-use hammond_downloader::downloader;
 use diesel::prelude::SqliteConnection;
 
 use std::sync::{Arc, Mutex};
@@ -44,22 +42,14 @@ pub fn populate_podcasts_flowbox(
         let description = pd_model.get_value(&iter, 2).get::<String>();
         let image_uri = pd_model.get_value(&iter, 4).get::<String>();
 
-        let imgpath = downloader::cache_image(&title, image_uri.as_ref().map(|s| s.as_str()));
-        let pixbuf = if let Some(i) = imgpath {
-            Pixbuf::new_from_file_at_scale(&i, 200, 200, true).ok()
-        } else {
-            None
-        };
-
+        let pixbuf = get_pixbuf_from_path(image_uri.as_ref().map(|s| s.as_str()), &title);
         let f = create_flowbox_child(&title, pixbuf.clone());
 
         let stack_clone = stack.clone();
         let db_clone = db.clone();
 
         f.connect_activate(move |_| {
-            let pdw = stack_clone.get_child_by_name("pdw").unwrap();
-            stack_clone.remove(&pdw);
-
+            let old = stack_clone.get_child_by_name("pdw").unwrap();
             let pdw = podcast_widget(
                 &db_clone.clone(),
                 Some(title.as_str()),
@@ -67,6 +57,7 @@ pub fn populate_podcasts_flowbox(
                 pixbuf.clone(),
             );
 
+            stack_clone.remove(&old);
             stack_clone.add_named(&pdw, "pdw");
             stack_clone.set_visible_child(&pdw);
             println!("Hello World!, child activated");

@@ -5,6 +5,7 @@ use diesel::prelude::*;
 use std::fs::{rename, DirBuilder, File};
 use std::io::{BufWriter, Read, Write};
 use std::path::Path;
+use std::thread;
 
 use errors::*;
 use hammond_data::dbqueries;
@@ -114,11 +115,26 @@ pub fn get_episode(connection: &SqliteConnection, ep: &mut Episode, dl_folder: &
     // TODO: Check if its a valid path
     let dlpath = format!("{}/{}.{}", dl_folder, ep.title().unwrap().to_owned(), ext);
     // info!("Downloading {:?} into: {}", y.title(), dlpath);
-    download_to(&dlpath, ep.uri())?;
 
     // If download succedes set episode local_uri to dlpath.
+    // This should be at the end after download is finished,
+    // but its handy atm while the gtk client doesnt yet have custom signals.
     ep.set_local_uri(Some(&dlpath));
     ep.save_changes::<Episode>(connection)?;
+
+    let uri = ep.uri().to_owned();
+
+    // This would not be needed in general but I want to be able to block the
+    // a higher order thread in src/widgets/episode.rs epsode.
+    thread::spawn(move || {
+        let res = download_to(&dlpath, uri.as_str());
+        if let Err(err) = res {
+            error!("Something whent wrong while downloading.");
+            error!("Error: {}", err);
+        } else {
+            info!("Download of {} finished.", uri);
+        }
+    });
     Ok(())
 }
 

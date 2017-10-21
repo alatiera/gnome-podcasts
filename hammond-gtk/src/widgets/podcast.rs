@@ -4,6 +4,8 @@ use gdk_pixbuf::Pixbuf;
 
 use diesel::prelude::SqliteConnection;
 use hammond_data::dbqueries;
+use hammond_data::models::Podcast;
+use hammond_downloader::downloader;
 
 use std::sync::{Arc, Mutex};
 
@@ -70,6 +72,7 @@ pub fn create_flowbox_child(title: &str, cover: Option<Pixbuf>) -> gtk::FlowBoxC
     fbc
 }
 
+// Figure if its better to completly ditch stores and just create the views from diesel models.
 pub fn podcast_liststore(connection: &SqliteConnection) -> gtk::ListStore {
     let builder = include_str!("../../gtk/podcast_widget.ui");
     let builder = gtk::Builder::new_from_string(builder);
@@ -93,4 +96,28 @@ pub fn podcast_liststore(connection: &SqliteConnection) -> gtk::ListStore {
     }
 
     podcast_model
+}
+
+// pub fn update_podcast_widget(db: &Arc<Mutex<SqliteConnection>>, stack: &gtk::Stack, pd:
+// &Podcast){
+//     let old = stack.get_child_by_name("pdw").unwrap();
+//     let pdw = pd_widget_from_diesel_model(&db.clone(), pd, &stack.clone());
+
+//     stack.remove(&old);
+//     stack.add_named(&pdw, "pdw");
+//     stack.set_visible_child_full("pdw", StackTransitionType::None);
+// }
+
+pub fn pd_widget_from_diesel_model(db: &Arc<Mutex<SqliteConnection>>, pd: &Podcast) -> gtk::Box {
+    let img = get_pixbuf_from_path(pd.image_uri(), pd.title());
+    podcast_widget(&db.clone(), Some(pd.title()), Some(pd.description()), img)
+}
+
+pub fn get_pixbuf_from_path(img_path: Option<&str>, pd_title: &str) -> Option<Pixbuf> {
+    let img_path = downloader::cache_image(pd_title, img_path);
+    if let Some(i) = img_path {
+        Pixbuf::new_from_file_at_scale(&i, 200, 200, true).ok()
+    } else {
+        None
+    }
 }

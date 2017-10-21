@@ -13,9 +13,11 @@ use dissolve::strip_html_tags;
 
 use std::thread;
 use std::sync::{Arc, Mutex};
+use std::path::Path;
 
 use gtk;
 use gtk::prelude::*;
+use gtk::ContainerExt;
 
 // use utils;
 
@@ -55,36 +57,44 @@ fn epidose_widget(
     }
 
     if episode.local_uri().is_some() {
-        dl_button.hide();
-        play_button.show();
         let uri = episode.local_uri().unwrap().to_owned();
-        play_button.connect_clicked(move |_| {
-            let e = open::that(&uri);
-            if e.is_err() {
-                error!("Error while trying to open: {}", uri);
-            }
-        });
+
+        if Path::new(&uri).exists() {
+            dl_button.hide();
+            play_button.show();
+            play_button.connect_clicked(move |_| {
+                let e = open::that(&uri);
+                if e.is_err() {
+                    error!("Error while trying to open: {}", uri);
+                }
+            });
+        }
     }
 
     let pd_title_cloned = pd_title.to_owned();
     let db = connection.clone();
     let ep_clone = episode.clone();
-    dl_button.connect_clicked(move |_| {
+    let play_button_clone = play_button.clone();
+    dl_button.connect_clicked(move |dl| {
         // ugly hack to bypass the borrowchecker
         let pd_title = pd_title_cloned.clone();
-        let db = db.clone();
+        let db_clone = db.clone();
         let mut ep_clone = ep_clone.clone();
 
+        // TODO: emit a signal and show notification when dl is finished and block play_bttn till
+        // then.
         thread::spawn(move || {
-            let dl_fold = downloader::get_dl_folder(&pd_title).unwrap();
-            let tempdb = db.lock().unwrap();
+            let dl_fold = downloader::get_dl_folder(&pd_title.clone()).unwrap();
+            let tempdb = db_clone.lock().unwrap();
             let e = downloader::get_episode(&tempdb, &mut ep_clone, dl_fold.as_str());
+            drop(tempdb);
             if let Err(err) = e {
                 error!("Error while trying to download: {}", ep_clone.uri());
                 error!("Error: {}", err);
             };
-            // TODO: emit a signal in order to update the podcast widget.
         });
+        dl.hide();
+        play_button_clone.show();
     });
 
     ep
