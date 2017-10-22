@@ -33,22 +33,8 @@ pub fn get_headerbar(db: Arc<Mutex<SqliteConnection>>, stack: gtk::Stack) -> gtk
     let stack_clone = stack.clone();
 
     add_button.connect_clicked(move |_| {
-        let tempdb = db_clone.lock().unwrap();
         let url = new_url.get_text().unwrap_or_default();
-        // TODO: check if the feed is already present.
-        let f = index_feed::insert_return_source(&tempdb, &url);
-
-        drop(tempdb);
-        info!("{:?} feed added", url);
-
-        let stack_clone = stack_clone.clone();
-        if let Ok(mut source) = f {
-            // update the db
-            utils::refresh_feed(db_clone.clone(), stack_clone, &mut source);
-        } else {
-            error!("Expected Error, feed probably already exists.");
-            error!("Error: {:?}", f.unwrap_err());
-        }
+        on_add_bttn_clicked(db_clone.clone(), stack_clone.clone(), &url);
 
         // TODO: lock the button instead of hiding and add notification of feed added.
         // TODO: map the spinner
@@ -73,4 +59,20 @@ pub fn get_headerbar(db: Arc<Mutex<SqliteConnection>>, stack: gtk::Stack) -> gtk
     });
 
     header
+}
+
+fn on_add_bttn_clicked(db: Arc<Mutex<SqliteConnection>>, stack: gtk::Stack, url: &str) {
+    let source = {
+        let tempdb = db.lock().unwrap();
+        index_feed::insert_return_source(&tempdb, &url)
+    };
+    info!("{:?} feed added", url);
+
+    if let Ok(mut s) = source {
+        // update the db
+        utils::refresh_feed(db.clone(), stack.clone(), &mut s);
+    } else {
+        error!("Expected Error, feed probably already exists.");
+        error!("Error: {:?}", source.unwrap_err());
+    }
 }
