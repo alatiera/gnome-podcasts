@@ -72,7 +72,24 @@ pub fn create_flowbox_child(title: &str, cover: Option<Pixbuf>) -> gtk::FlowBoxC
     fbc
 }
 
-// Figure if its better to completly ditch stores and just create the views from diesel models.
+pub fn on_flowbox_child_activate(
+    db: Arc<Mutex<SqliteConnection>>,
+    stack: &gtk::Stack,
+    parent: &Podcast,
+    pixbuf: Option<Pixbuf>,
+) {
+    let old = stack.get_child_by_name("pdw").unwrap();
+    let pdw = podcast_widget(db, Some(parent.title()), Some(parent.description()), pixbuf);
+
+    stack.remove(&old);
+    stack.add_named(&pdw, "pdw");
+    stack.set_visible_child(&pdw);
+    old.destroy();
+    println!("Hello World!, child activated");
+}
+
+// NOT IN USE.
+// TRYING OUT STORELESS ATM.
 pub fn podcast_liststore(connection: &SqliteConnection) -> gtk::ListStore {
     let builder = include_str!("../../gtk/podcast_widget.ui");
     let builder = gtk::Builder::new_from_string(builder);

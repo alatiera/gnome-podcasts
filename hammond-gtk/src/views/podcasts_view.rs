@@ -4,11 +4,14 @@ use gtk;
 use gtk::prelude::*;
 
 use diesel::prelude::SqliteConnection;
+use hammond_data::dbqueries;
 
 use std::sync::{Arc, Mutex};
 
 use widgets::podcast::*;
 
+// NOT IN USE.
+// TRYING OUT STORELESS ATM.
 pub fn populate_podcasts_flowbox(
     db: Arc<Mutex<SqliteConnection>>,
     stack: &gtk::Stack,
@@ -59,6 +62,7 @@ pub fn populate_podcasts_flowbox(
             stack_clone.remove(&old);
             stack_clone.add_named(&pdw, "pdw");
             stack_clone.set_visible_child(&pdw);
+            old.destroy();
             println!("Hello World!, child activated");
         });
         flowbox.add(&f);
@@ -68,6 +72,46 @@ pub fn populate_podcasts_flowbox(
         }
     }
     flowbox.show_all();
+}
+
+fn show_empty_view(stack: &gtk::Stack) {
+    let builder = include_str!("../../gtk/empty_view.ui");
+    let builder = gtk::Builder::new_from_string(builder);
+    let view: gtk::Box = builder.get_object("empty_view").unwrap();
+    stack.add_named(&view, "empty");
+    stack.set_visible_child_name("empty");
+
+    info!("Empty view.");
+}
+
+pub fn pop_flowbox_no_store(
+    db: Arc<Mutex<SqliteConnection>>,
+    stack: &gtk::Stack,
+    flowbox: &gtk::FlowBox,
+) {
+    let podcasts = {
+        let db = db.lock().unwrap();
+        dbqueries::get_podcasts(&db)
+    };
+
+    if let Ok(pds) = podcasts {
+        pds.iter().for_each(|parent| {
+            let title = parent.title();
+            let img = parent.image_uri();
+            let pixbuf = get_pixbuf_from_path(img, title);
+            let f = create_flowbox_child(title, pixbuf.clone());
+
+            let db = db.clone();
+            let stack = stack.clone();
+            let parent = parent.clone();
+            f.connect_activate(move |_| {
+                on_flowbox_child_activate(db.clone(), &stack, &parent, pixbuf.clone());
+            });
+            flowbox.add(&f);
+        });
+    } else {
+        show_empty_view(&stack);
+    }
 }
 
 fn setup_podcast_widget(db: Arc<Mutex<SqliteConnection>>, stack: &gtk::Stack) {
@@ -86,7 +130,8 @@ fn setup_podcasts_grid(db: Arc<Mutex<SqliteConnection>>, stack: &gtk::Stack) {
     // FIXME: flowbox childs activate with space/enter but not with clicks.
     let flowbox: gtk::FlowBox = builder.get_object("flowbox").unwrap();
     // Populate the flowbox with the Podcasts.
-    populate_podcasts_flowbox(db, stack, &flowbox);
+    // populate_podcasts_flowbox(db, stack, &flowbox);
+    pop_flowbox_no_store(db, stack, &flowbox);
 }
 
 pub fn setup_stack(db: Arc<Mutex<SqliteConnection>>) -> gtk::Stack {
@@ -112,4 +157,5 @@ pub fn update_podcasts_view(db: Arc<Mutex<SqliteConnection>>, stack: &gtk::Stack
     stack.add_named(&grid, "pd_grid");
     // preserve the visible widget
     stack.set_visible_child_name(&vis);
+    old.destroy();
 }
