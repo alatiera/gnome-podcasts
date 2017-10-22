@@ -84,7 +84,7 @@ fn show_empty_view(stack: &gtk::Stack) {
     info!("Empty view.");
 }
 
-pub fn pop_flowbox_no_store(
+pub fn populate_flowbox_no_store(
     db: &Arc<Mutex<SqliteConnection>>,
     stack: &gtk::Stack,
     flowbox: &gtk::FlowBox,
@@ -131,7 +131,7 @@ fn setup_podcasts_grid(db: &Arc<Mutex<SqliteConnection>>, stack: &gtk::Stack) {
     let flowbox: gtk::FlowBox = builder.get_object("flowbox").unwrap();
     // Populate the flowbox with the Podcasts.
     // populate_podcasts_flowbox(db, stack, &flowbox);
-    pop_flowbox_no_store(db, stack, &flowbox);
+    populate_flowbox_no_store(db, stack, &flowbox);
 }
 
 pub fn setup_stack(db: &Arc<Mutex<SqliteConnection>>) -> gtk::Stack {

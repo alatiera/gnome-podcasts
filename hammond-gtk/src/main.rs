@@ -40,41 +40,34 @@ fn build_ui(app: &gtk::Application) {
     // Get the main window
     let window = gtk::ApplicationWindow::new(app);
     window.set_default_size(1050, 600);
-    app.add_window(&window);
     // Setup the Stack that will magane the switche between podcasts_view and podcast_widget.
     let stack = podcasts_view::setup_stack(&db);
     window.add(&stack);
 
-    // FIXME:
-    // GLib-GIO-WARNING **: Your application does not implement g_application_activate()
-    // and has no handlers connected to the 'activate' signal.  It should do one of these.
-    window.connect_delete_event(|_, _| {
-        gtk::main_quit();
+    window.connect_delete_event(|w, _| {
+        w.destroy();
         Inhibit(false)
     });
 
     // Get the headerbar
     let header = headerbar::get_headerbar(&db, &stack);
+
     // TODO: add delay, cause else theres lock contention for the db obj.
     // utils::refresh_db(db.clone(), stack.clone());
     window.set_titlebar(&header);
 
     window.show_all();
-    gtk::main();
+    window.activate();
+    app.connect_activate(move |_| ());
 }
 
 // Copied from:
 // https://github.com/GuillaumeGomez/process-viewer/blob/ \
 // ddcb30d01631c0083710cf486caf04c831d38cb7/src/process_viewer.rs#L367
 fn main() {
+    // TODO: make the the logger a cli -vv option
     loggerv::init_with_level(LogLevel::Info).unwrap();
     hammond_data::init().expect("Hammond Initialazation failed.");
-
-    // Not sure if needed.
-    if gtk::init().is_err() {
-        info!("Failed to initialize GTK.");
-        return;
-    }
 
     let application = gtk::Application::new(
         "com.gitlab.alatiera.Hammond",
@@ -85,11 +78,5 @@ fn main() {
         build_ui(app);
     });
 
-    // Not sure if this will be kept.
-    let original = ::std::env::args().collect::<Vec<_>>();
-    let mut tmp = Vec::with_capacity(original.len());
-    for i in 0..original.len() {
-        tmp.push(original[i].as_str());
-    }
-    application.run(&tmp);
+    application.run(&[]);
 }
