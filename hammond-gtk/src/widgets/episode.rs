@@ -85,8 +85,8 @@ fn epidose_widget(
             &db,
             &pd_title_clone,
             &mut ep_clone.clone(),
-            dl_button_clone.clone(),
-            play_button_clone.clone(),
+            &dl_button_clone,
+            &play_button_clone,
         );
     });
 
@@ -98,15 +98,15 @@ fn on_dl_clicked(
     db: &Arc<Mutex<SqliteConnection>>,
     pd_title: &str,
     ep: &mut Episode,
-    dl_bttn: gtk::Button,
-    play_bttn: gtk::Button,
+    dl_bttn: &gtk::Button,
+    play_bttn: &gtk::Button,
 ) {
     // Create a async channel.
     let (sender, receiver) = channel();
 
     // Pass the desired arguments into the Local Thread Storage.
     GLOBAL.with(move |global| {
-        *global.borrow_mut() = Some((dl_bttn, play_bttn, receiver));
+        *global.borrow_mut() = Some((dl_bttn.clone(), play_bttn.clone(), receiver));
     });
 
     let pd_title = pd_title.to_owned();

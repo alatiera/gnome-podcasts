@@ -27,10 +27,9 @@ pub fn refresh_db(db: &Arc<Mutex<SqliteConnection>>, stack: &gtk::Stack) {
     // Create a async channel.
     let (sender, receiver) = channel();
 
-    let db_clone = db.clone();
     // Pass the desired arguments into the Local Thread Storage.
     GLOBAL.with(move |global| {
-        *global.borrow_mut() = Some((db_clone, stack.clone(), receiver));
+        *global.borrow_mut() = Some((db.clone(), stack.clone(), receiver));
     });
 
     // The implementation of how this is done is probably terrible but it works!.
@@ -52,23 +51,21 @@ pub fn refresh_db(db: &Arc<Mutex<SqliteConnection>>, stack: &gtk::Stack) {
 pub fn refresh_feed(db: &Arc<Mutex<SqliteConnection>>, stack: &gtk::Stack, source: &mut Source) {
     let (sender, receiver) = channel();
 
-    let db_clone = db.clone();
     GLOBAL.with(move |global| {
-        *global.borrow_mut() = Some((db_clone, stack.clone(), receiver));
+        *global.borrow_mut() = Some((db.clone(), stack.clone(), receiver));
     });
 
-    let db_clone = db.clone();
-    let mut source_ = source.clone();
+    let db = db.clone();
+    let mut source = source.clone();
     // TODO: add timeout option and error reporting.
     thread::spawn(move || {
-        let db_ = db_clone.clone();
-        let db_ = db_.lock().unwrap();
-        let foo_ = hammond_data::index_feed::refresh_source(&db_, &mut source_, false);
+        let db_ = db.lock().unwrap();
+        let foo_ = hammond_data::index_feed::refresh_source(&db_, &mut source, false);
         drop(db_);
 
         if let Ok(x) = foo_ {
             let Feed(mut req, s) = x;
-            let s = hammond_data::index_feed::complete_index_from_source(&mut req, &s, &db_clone);
+            let s = hammond_data::index_feed::complete_index_from_source(&mut req, &s, &db);
             if s.is_err() {
                 error!("Error While trying to update the database.");
                 error!("Error msg: {}", s.unwrap_err());

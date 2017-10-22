@@ -129,11 +129,10 @@ pub fn get_episode(
     // Construct the download path.
     // TODO: Check if its a valid path
     let dlpath = format!("{}/{}.{}", dl_folder, ep.title().unwrap().to_owned(), ext);
-    let dlpath1 = dlpath.clone();
     // info!("Downloading {:?} into: {}", y.title(), dlpath);
 
     let uri = ep.uri().to_owned();
-    let res = download_to(&dlpath1, uri.as_str());
+    let res = download_to(&dlpath, uri.as_str());
 
     if let Err(err) = res {
         error!("Something whent wrong while downloading.");

@@ -119,8 +119,7 @@ fn complete_index(
     parent: &Source,
 ) -> Result<()> {
     let pd = {
-        let db = connection.clone();
-        let db = db.lock().unwrap();
+        let db = connection.lock().unwrap();
         index_channel(&db, chan, parent)?
     };
 
@@ -140,8 +139,7 @@ fn index_channel_items(connection: &Arc<Mutex<SqliteConnection>>, it: &[rss::Ite
     it.par_iter()
         .map(|x| feedparser::parse_episode(x, pd.id()))
         .for_each(|x| {
-            let db = connection.clone();
-            let db = db.lock().unwrap();
+            let db = connection.lock().unwrap();
             let e = index_episode(&db, &x);
             if let Err(err) = e {
                 error!("Failed to index episode: {:?}.", x);
