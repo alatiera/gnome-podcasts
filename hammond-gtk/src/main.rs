@@ -61,9 +61,6 @@ fn build_ui(app: &gtk::Application) {
     app.connect_activate(move |_| ());
 }
 
-// Copied from:
-// https://github.com/GuillaumeGomez/process-viewer/blob/ \
-// ddcb30d01631c0083710cf486caf04c831d38cb7/src/process_viewer.rs#L367
 fn main() {
     // TODO: make the the logger a cli -vv option
     loggerv::init_with_level(LogLevel::Info).unwrap();

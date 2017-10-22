@@ -45,10 +45,7 @@ pub fn get_headerbar(db: &Arc<Mutex<SqliteConnection>>, stack: &gtk::Stack) -> g
     // TODO: make it a back arrow button, that will hide when appropriate,
     // and add a StackSwitcher when more views are added.
     let stack_clone = stack.clone();
-    home_button.connect_clicked(move |_| {
-        let grid = stack_clone.get_child_by_name("pd_grid").unwrap();
-        stack_clone.set_visible_child(&grid)
-    });
+    home_button.connect_clicked(move |_| stack_clone.set_visible_child_name("pd_grid"));
 
     let stack_clone = stack.clone();
     let db_clone = db.clone();
