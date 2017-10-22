@@ -1,5 +1,4 @@
 #![cfg_attr(feature = "cargo-clippy", allow(clone_on_ref_ptr))]
-#![cfg_attr(feature = "cargo-clippy", allow(needless_pass_by_value))]
 
 extern crate gdk;
 extern crate gdk_pixbuf;
@@ -43,7 +42,7 @@ fn build_ui(app: &gtk::Application) {
     window.set_default_size(1050, 600);
     app.add_window(&window);
     // Setup the Stack that will magane the switche between podcasts_view and podcast_widget.
-    let stack = podcasts_view::setup_stack(db.clone());
+    let stack = podcasts_view::setup_stack(&db);
     window.add(&stack);
 
     // FIXME:
@@ -55,7 +54,7 @@ fn build_ui(app: &gtk::Application) {
     });
 
     // Get the headerbar
-    let header = headerbar::get_headerbar(db.clone(), &stack);
+    let header = headerbar::get_headerbar(&db, &stack);
     // TODO: add delay, cause else theres lock contention for the db obj.
     // utils::refresh_db(db.clone(), stack.clone());
     window.set_titlebar(&header);

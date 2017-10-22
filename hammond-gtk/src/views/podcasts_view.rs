@@ -13,7 +13,7 @@ use widgets::podcast::*;
 // NOT IN USE.
 // TRYING OUT STORELESS ATM.
 pub fn populate_podcasts_flowbox(
-    db: Arc<Mutex<SqliteConnection>>,
+    db: &Arc<Mutex<SqliteConnection>>,
     stack: &gtk::Stack,
     flowbox: &gtk::FlowBox,
 ) {
@@ -53,7 +53,7 @@ pub fn populate_podcasts_flowbox(
         f.connect_activate(move |_| {
             let old = stack_clone.get_child_by_name("pdw").unwrap();
             let pdw = podcast_widget(
-                db_clone.clone(),
+                &db_clone,
                 Some(title.as_str()),
                 description.as_ref().map(|x| x.as_str()),
                 pixbuf.clone(),
@@ -85,7 +85,7 @@ fn show_empty_view(stack: &gtk::Stack) {
 }
 
 pub fn pop_flowbox_no_store(
-    db: Arc<Mutex<SqliteConnection>>,
+    db: &Arc<Mutex<SqliteConnection>>,
     stack: &gtk::Stack,
     flowbox: &gtk::FlowBox,
 ) {
@@ -105,21 +105,21 @@ pub fn pop_flowbox_no_store(
             let stack = stack.clone();
             let parent = parent.clone();
             f.connect_activate(move |_| {
-                on_flowbox_child_activate(db.clone(), &stack, &parent, pixbuf.clone());
+                on_flowbox_child_activate(&db, &stack, &parent, pixbuf.clone());
             });
             flowbox.add(&f);
         });
     } else {
-        show_empty_view(&stack);
+        show_empty_view(stack);
     }
 }
 
-fn setup_podcast_widget(db: Arc<Mutex<SqliteConnection>>, stack: &gtk::Stack) {
+fn setup_podcast_widget(db: &Arc<Mutex<SqliteConnection>>, stack: &gtk::Stack) {
     let pd_widget = podcast_widget(db, None, None, None);
     stack.add_named(&pd_widget, "pdw");
 }
 
-fn setup_podcasts_grid(db: Arc<Mutex<SqliteConnection>>, stack: &gtk::Stack) {
+fn setup_podcasts_grid(db: &Arc<Mutex<SqliteConnection>>, stack: &gtk::Stack) {
     let builder = include_str!("../../gtk/podcasts_view.ui");
     let builder = gtk::Builder::new_from_string(builder);
     let grid: gtk::Grid = builder.get_object("grid").unwrap();
@@ -134,14 +134,14 @@ fn setup_podcasts_grid(db: Arc<Mutex<SqliteConnection>>, stack: &gtk::Stack) {
     pop_flowbox_no_store(db, stack, &flowbox);
 }
 
-pub fn setup_stack(db: Arc<Mutex<SqliteConnection>>) -> gtk::Stack {
+pub fn setup_stack(db: &Arc<Mutex<SqliteConnection>>) -> gtk::Stack {
     let stack = gtk::Stack::new();
-    setup_podcast_widget(db.clone(), &stack);
+    setup_podcast_widget(db, &stack);
     setup_podcasts_grid(db, &stack);
     stack
 }
 
-pub fn update_podcasts_view(db: Arc<Mutex<SqliteConnection>>, stack: &gtk::Stack) {
+pub fn update_podcasts_view(db: &Arc<Mutex<SqliteConnection>>, stack: &gtk::Stack) {
     let builder = include_str!("../../gtk/podcasts_view.ui");
     let builder = gtk::Builder::new_from_string(builder);
     let grid: gtk::Grid = builder.get_object("grid").unwrap();

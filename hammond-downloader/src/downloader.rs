@@ -1,5 +1,4 @@
 #![cfg_attr(feature = "cargo-clippy", allow(clone_on_ref_ptr))]
-#![cfg_attr(feature = "cargo-clippy", allow(needless_pass_by_value))]
 
 use reqwest;
 use hyper::header::*;
@@ -61,7 +60,7 @@ pub fn download_to(target: &str, url: &str) -> Result<()> {
 
 // Initial messy prototype, queries load alot of not needed stuff.
 // TODO: Refactor
-pub fn latest_dl(connection: Arc<Mutex<SqliteConnection>>, limit: u32) -> Result<()> {
+pub fn latest_dl(connection: &Arc<Mutex<SqliteConnection>>, limit: u32) -> Result<()> {
     let pds = {
         let tempdb = connection.lock().unwrap();
         dbqueries::get_podcasts(&tempdb)?
@@ -82,7 +81,7 @@ pub fn latest_dl(connection: Arc<Mutex<SqliteConnection>>, limit: u32) -> Result
 
             // Download the episodes
             eps.iter_mut().for_each(|ep| {
-                let x = get_episode(connection.clone(), ep, &dl_fold);
+                let x = get_episode(connection, ep, &dl_fold);
                 if let Err(err) = x {
                     error!("An Error occured while downloading an episode.");
                     error!("Error: {}", err);
@@ -108,7 +107,7 @@ pub fn get_dl_folder(pd_title: &str) -> Result<String> {
 
 // TODO: Refactor
 pub fn get_episode(
-    connection: Arc<Mutex<SqliteConnection>>,
+    connection: &Arc<Mutex<SqliteConnection>>,
     ep: &mut Episode,
     dl_folder: &str,
 ) -> Result<()> {

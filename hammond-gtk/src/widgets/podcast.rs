@@ -12,7 +12,7 @@ use std::sync::{Arc, Mutex};
 use widgets::episode::episodes_listbox;
 
 pub fn podcast_widget(
-    connection: Arc<Mutex<SqliteConnection>>,
+    connection: &Arc<Mutex<SqliteConnection>>,
     title: Option<&str>,
     description: Option<&str>,
     image: Option<Pixbuf>,
@@ -73,7 +73,7 @@ pub fn create_flowbox_child(title: &str, cover: Option<Pixbuf>) -> gtk::FlowBoxC
 }
 
 pub fn on_flowbox_child_activate(
-    db: Arc<Mutex<SqliteConnection>>,
+    db: &Arc<Mutex<SqliteConnection>>,
     stack: &gtk::Stack,
     parent: &Podcast,
     pixbuf: Option<Pixbuf>,
@@ -115,7 +115,7 @@ pub fn podcast_liststore(connection: &SqliteConnection) -> gtk::ListStore {
     podcast_model
 }
 
-// pub fn update_podcast_widget(db: &Arc<Mutex<SqliteConnection>>, stack: &gtk::Stack, pd:
+// pub fn update_podcast_widget(db: &&Arc<Mutex<SqliteConnection>>, stack: &gtk::Stack, pd:
 // &Podcast){
 //     let old = stack.get_child_by_name("pdw").unwrap();
 //     let pdw = pd_widget_from_diesel_model(&db.clone(), pd, &stack.clone());
@@ -126,7 +126,7 @@ pub fn podcast_liststore(connection: &SqliteConnection) -> gtk::ListStore {
 //     stack.set_visible_child_name(&vis);
 // }
 
-pub fn pd_widget_from_diesel_model(db: Arc<Mutex<SqliteConnection>>, pd: &Podcast) -> gtk::Box {
+pub fn pd_widget_from_diesel_model(db: &Arc<Mutex<SqliteConnection>>, pd: &Podcast) -> gtk::Box {
     let img = get_pixbuf_from_path(pd.image_uri(), pd.title());
     podcast_widget(db, Some(pd.title()), Some(pd.description()), img)
 }

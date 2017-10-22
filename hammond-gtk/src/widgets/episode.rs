@@ -1,6 +1,5 @@
 
 #![cfg_attr(feature = "cargo-clippy", allow(clone_on_ref_ptr))]
-#![cfg_attr(feature = "cargo-clippy", allow(needless_pass_by_value))]
 
 use open;
 use diesel::prelude::SqliteConnection;
@@ -27,7 +26,7 @@ thread_local!(
 
 // TODO: REFACTOR AND MODULATE ME.
 fn epidose_widget(
-    connection: Arc<Mutex<SqliteConnection>>,
+    connection: &Arc<Mutex<SqliteConnection>>,
     episode: &mut Episode,
     pd_title: &str,
 ) -> gtk::Box {
@@ -83,7 +82,7 @@ fn epidose_widget(
     let dl_button_clone = dl_button.clone();
     dl_button.connect_clicked(move |_| {
         on_dl_clicked(
-            db.clone(),
+            &db,
             &pd_title_clone,
             &mut ep_clone.clone(),
             dl_button_clone.clone(),
@@ -96,7 +95,7 @@ fn epidose_widget(
 
 // TODO: show notification when dl is finished and block play_bttn till then.
 fn on_dl_clicked(
-    db: Arc<Mutex<SqliteConnection>>,
+    db: &Arc<Mutex<SqliteConnection>>,
     pd_title: &str,
     ep: &mut Episode,
     dl_bttn: gtk::Button,
@@ -112,9 +111,10 @@ fn on_dl_clicked(
 
     let pd_title = pd_title.to_owned();
     let mut ep = ep.clone();
+    let db = db.clone();
     thread::spawn(move || {
         let dl_fold = downloader::get_dl_folder(&pd_title).unwrap();
-        let e = downloader::get_episode(db, &mut ep, dl_fold.as_str());
+        let e = downloader::get_episode(&db, &mut ep, dl_fold.as_str());
         if let Err(err) = e {
             error!("Error while trying to download: {}", ep.uri());
             error!("Error: {}", err);
@@ -136,7 +136,7 @@ fn receive() -> glib::Continue {
     glib::Continue(false)
 }
 
-pub fn episodes_listbox(connection: Arc<Mutex<SqliteConnection>>, pd_title: &str) -> gtk::ListBox {
+pub fn episodes_listbox(connection: &Arc<Mutex<SqliteConnection>>, pd_title: &str) -> gtk::ListBox {
     // TODO: handle unwraps.
     let m = connection.lock().unwrap();
     let pd = dbqueries::load_podcast(&m, pd_title).unwrap();
@@ -145,7 +145,7 @@ pub fn episodes_listbox(connection: Arc<Mutex<SqliteConnection>>, pd_title: &str
 
     let list = gtk::ListBox::new();
     episodes.iter_mut().for_each(|ep| {
-        let w = epidose_widget(connection.clone(), ep, pd_title);
+        let w = epidose_widget(connection, ep, pd_title);
         list.add(&w)
     });
 

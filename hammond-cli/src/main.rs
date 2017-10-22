@@ -51,13 +51,13 @@ fn run() -> Result<()> {
     if args.up {
         let db = hammond_data::establish_connection();
         let db = Arc::new(Mutex::new(db));
-        index_feed::index_loop(db.clone(), false)?;
+        index_feed::index_loop(&db, false)?;
     }
 
     if args.dl >= 0 {
         let db = hammond_data::establish_connection();
         let db = Arc::new(Mutex::new(db));
-        downloader::latest_dl(db, args.dl as u32).unwrap();
+        downloader::latest_dl(&db, args.dl as u32).unwrap();
     }
 
     if args.latest {
