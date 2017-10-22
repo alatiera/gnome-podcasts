@@ -10,7 +10,7 @@ use utils;
 
 use std::sync::{Arc, Mutex};
 
-pub fn get_headerbar(db: Arc<Mutex<SqliteConnection>>, stack: gtk::Stack) -> gtk::HeaderBar {
+pub fn get_headerbar(db: Arc<Mutex<SqliteConnection>>, stack: &gtk::Stack) -> gtk::HeaderBar {
     let builder = include_str!("../gtk/headerbar.ui");
     let builder = gtk::Builder::new_from_string(builder);
 
@@ -34,7 +34,7 @@ pub fn get_headerbar(db: Arc<Mutex<SqliteConnection>>, stack: gtk::Stack) -> gtk
 
     add_button.connect_clicked(move |_| {
         let url = new_url.get_text().unwrap_or_default();
-        on_add_bttn_clicked(db_clone.clone(), stack_clone.clone(), &url);
+        on_add_bttn_clicked(db_clone.clone(), &stack_clone, &url);
 
         // TODO: lock the button instead of hiding and add notification of feed added.
         // TODO: map the spinner
@@ -55,13 +55,13 @@ pub fn get_headerbar(db: Arc<Mutex<SqliteConnection>>, stack: gtk::Stack) -> gtk
     let db_clone = db.clone();
     // FIXME: There appears to be a memmory leak here.
     refresh_button.connect_clicked(move |_| {
-        utils::refresh_db(db_clone.clone(), stack_clone.clone());
+        utils::refresh_db(db_clone.clone(), &stack_clone);
     });
 
     header
 }
 
-fn on_add_bttn_clicked(db: Arc<Mutex<SqliteConnection>>, stack: gtk::Stack, url: &str) {
+fn on_add_bttn_clicked(db: Arc<Mutex<SqliteConnection>>, stack: &gtk::Stack, url: &str) {
     let source = {
         let tempdb = db.lock().unwrap();
         index_feed::insert_return_source(&tempdb, &url)
@@ -70,7 +70,7 @@ fn on_add_bttn_clicked(db: Arc<Mutex<SqliteConnection>>, stack: gtk::Stack, url:
 
     if let Ok(mut s) = source {
         // update the db
-        utils::refresh_feed(db.clone(), stack.clone(), &mut s);
+        utils::refresh_feed(db.clone(), &stack, &mut s);
     } else {
         error!("Expected Error, feed probably already exists.");
         error!("Error: {:?}", source.unwrap_err());

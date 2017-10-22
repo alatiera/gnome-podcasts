@@ -55,7 +55,7 @@ fn build_ui(app: &gtk::Application) {
     });
 
     // Get the headerbar
-    let header = headerbar::get_headerbar(db.clone(), stack.clone());
+    let header = headerbar::get_headerbar(db.clone(), &stack);
     // TODO: add delay, cause else theres lock contention for the db obj.
     // utils::refresh_db(db.clone(), stack.clone());
     window.set_titlebar(&header);

@@ -24,14 +24,14 @@ thread_local!(
     gtk::Stack,
     Receiver<bool>)>> = RefCell::new(None));
 
-pub fn refresh_db(db: Arc<Mutex<SqliteConnection>>, stack: gtk::Stack) {
+pub fn refresh_db(db: Arc<Mutex<SqliteConnection>>, stack: &gtk::Stack) {
     // Create a async channel.
     let (sender, receiver) = channel();
 
     let db_clone = db.clone();
     // Pass the desired arguments into the Local Thread Storage.
     GLOBAL.with(move |global| {
-        *global.borrow_mut() = Some((db_clone, stack, receiver));
+        *global.borrow_mut() = Some((db_clone, stack.clone(), receiver));
     });
 
     // The implementation of how this is done is probably terrible but it works!.
@@ -50,12 +50,12 @@ pub fn refresh_db(db: Arc<Mutex<SqliteConnection>>, stack: gtk::Stack) {
     });
 }
 
-pub fn refresh_feed(db: Arc<Mutex<SqliteConnection>>, stack: gtk::Stack, source: &mut Source) {
+pub fn refresh_feed(db: Arc<Mutex<SqliteConnection>>, stack: &gtk::Stack, source: &mut Source) {
     let (sender, receiver) = channel();
 
     let db_clone = db.clone();
     GLOBAL.with(move |global| {
-        *global.borrow_mut() = Some((db_clone, stack, receiver));
+        *global.borrow_mut() = Some((db_clone, stack.clone(), receiver));
     });
 
     let db_clone = db.clone();
