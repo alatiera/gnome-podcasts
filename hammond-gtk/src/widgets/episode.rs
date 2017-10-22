@@ -59,19 +59,17 @@ fn epidose_widget(
     }
 
     if episode.local_uri().is_some() {
-        let uri = episode.local_uri().unwrap().to_owned();
+        dl_button.hide();
+        play_button.show();
+    };
 
-        if Path::new(&uri).exists() {
-            dl_button.hide();
-            play_button.show();
-            play_button.connect_clicked(move |_| {
-                let e = open::that(&uri);
-                if e.is_err() {
-                    error!("Error while trying to open: {}", uri);
-                }
-            });
-        }
-    }
+    let ep_clone = episode.clone();
+    let db = connection.clone();
+    let play_button_clone = play_button.clone();
+    play_button.connect_clicked(move |_| {
+        // info!("I RUN");
+        on_play_bttn_clicked(&db, ep_clone.id(), &play_button_clone);
+    });
 
     // TODO: figure out how to use the gtk-clone macro,
     // to make it less tedious.
@@ -124,6 +122,34 @@ fn on_dl_clicked(
     });
 }
 
+fn on_play_bttn_clicked(
+    db: &Arc<Mutex<SqliteConnection>>,
+    episode_id: i32,
+    play_button: &gtk::Button,
+) {
+    let local_uri = {
+        let tempdb = db.lock().unwrap();
+        dbqueries::get_episode_local_uri(&tempdb, episode_id).unwrap()
+    };
+
+    info!("Local_uri: {:?}", local_uri);
+    if local_uri.is_some() {
+        let uri = local_uri.unwrap().to_owned();
+
+        if Path::new(&uri).exists() {
+            play_button.show();
+            play_button.connect_clicked(move |_| {
+                let e = open::that(&uri);
+                if e.is_err() {
+                    error!("Error while trying to open: {}", uri);
+                }
+            });
+        } else {
+            ()
+        }
+    }
+}
+
 fn receive() -> glib::Continue {
     GLOBAL.with(|global| {
         if let Some((ref dl_bttn, ref play_bttn, ref reciever)) = *global.borrow() {
@@ -139,7 +165,7 @@ fn receive() -> glib::Continue {
 pub fn episodes_listbox(connection: &Arc<Mutex<SqliteConnection>>, pd_title: &str) -> gtk::ListBox {
     // TODO: handle unwraps.
     let m = connection.lock().unwrap();
-    let pd = dbqueries::load_podcast(&m, pd_title).unwrap();
+    let pd = dbqueries::load_podcast_from_title(&m, pd_title).unwrap();
     let mut episodes = dbqueries::get_pd_episodes(&m, &pd).unwrap();
     drop(m);
 

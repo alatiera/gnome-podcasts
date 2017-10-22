@@ -34,6 +34,23 @@ pub fn get_episodes(con: &SqliteConnection) -> QueryResult<Vec<Episode>> {
     eps
 }
 
+pub fn get_episode(con: &SqliteConnection, ep_id: i32) -> QueryResult<Episode> {
+    use schema::episode::dsl::*;
+
+    let ep = episode.filter(id.eq(ep_id)).get_result::<Episode>(con);
+    ep
+}
+
+pub fn get_episode_local_uri(con: &SqliteConnection, ep_id: i32) -> QueryResult<Option<String>> {
+    use schema::episode::dsl::*;
+
+    let ep = episode
+        .filter(id.eq(ep_id))
+        .select(local_uri)
+        .get_result::<Option<String>>(con);
+    ep
+}
+
 pub fn get_episodes_with_limit(con: &SqliteConnection, limit: u32) -> QueryResult<Vec<Episode>> {
     use schema::episode::dsl::*;
 
@@ -73,21 +90,21 @@ pub fn get_pd_episodes_limit(
     eps
 }
 
-pub fn load_source(con: &SqliteConnection, uri_: &str) -> QueryResult<Source> {
+pub fn load_source_from_uri(con: &SqliteConnection, uri_: &str) -> QueryResult<Source> {
     use schema::source::dsl::*;
 
     let s = source.filter(uri.eq(uri_)).get_result::<Source>(con);
     s
 }
 
-pub fn load_podcast(con: &SqliteConnection, title_: &str) -> QueryResult<Podcast> {
+pub fn load_podcast_from_title(con: &SqliteConnection, title_: &str) -> QueryResult<Podcast> {
     use schema::podcast::dsl::*;
 
     let pd = podcast.filter(title.eq(title_)).get_result::<Podcast>(con);
     pd
 }
 
-pub fn load_episode(con: &SqliteConnection, uri_: &str) -> QueryResult<Episode> {
+pub fn load_episode_from_uri(con: &SqliteConnection, uri_: &str) -> QueryResult<Episode> {
     use schema::episode::dsl::*;
 
     let ep = episode.filter(uri.eq(uri_)).get_result::<Episode>(con);

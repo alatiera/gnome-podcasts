@@ -4,3 +4,6 @@ members = [
     "hammond-downloader",
     "hammond-gtk"
 ]
+
+[profile.release]
+debug = true
