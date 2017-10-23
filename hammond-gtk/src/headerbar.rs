@@ -9,6 +9,24 @@ use utils;
 
 use std::sync::{Arc, Mutex};
 
+// http://gtk-rs.org/tuto/closures
+macro_rules! clone {
+    (@param _) => ( _ );
+    (@param $x:ident) => ( $x );
+    ($($n:ident),+ => move || $body:expr) => (
+        {
+            $( let $n = $n.clone(); )+
+            move || $body
+        }
+    );
+    ($($n:ident),+ => move |$($p:tt),+| $body:expr) => (
+        {
+            $( let $n = $n.clone(); )+
+            move |$(clone!(@param $p),)+| $body
+        }
+    );
+}
+
 pub fn get_headerbar(db: &Arc<Mutex<SqliteConnection>>, stack: &gtk::Stack) -> gtk::HeaderBar {
     let builder = include_str!("../gtk/headerbar.ui");
     let builder = gtk::Builder::new_from_string(builder);
@@ -27,32 +45,27 @@ pub fn get_headerbar(db: &Arc<Mutex<SqliteConnection>>, stack: &gtk::Stack) -> g
         println!("{:?}", url.get_text());
     });
 
-    let add_popover_clone = add_popover.clone();
-    let db_clone = db.clone();
-    let stack_clone = stack.clone();
-
-    add_button.connect_clicked(move |_| {
+    add_button.connect_clicked(clone!(db, stack, add_popover => move |_| {
         let url = new_url.get_text().unwrap_or_default();
-        on_add_bttn_clicked(&db_clone, &stack_clone, &url);
+        on_add_bttn_clicked(&db, &stack, &url);
 
         // TODO: lock the button instead of hiding and add notification of feed added.
         // TODO: map the spinner
-        add_popover_clone.hide();
-    });
+        add_popover.hide();
+    }));
     add_popover.hide();
     add_toggle_button.set_popover(&add_popover);
 
     // TODO: make it a back arrow button, that will hide when appropriate,
     // and add a StackSwitcher when more views are added.
-    let stack_clone = stack.clone();
-    home_button.connect_clicked(move |_| stack_clone.set_visible_child_name("pd_grid"));
+    home_button.connect_clicked(clone!(stack => move |_| stack.set_visible_child_name("pd_grid")));
 
-    let stack_clone = stack.clone();
-    let db_clone = db.clone();
+    let stack = stack.clone();
+    let db = db.clone();
     // FIXME: There appears to be a memmory leak here.
-    refresh_button.connect_clicked(move |_| {
-        utils::refresh_db(&db_clone, &stack_clone);
-    });
+    refresh_button.connect_clicked(clone!(stack, db => move |_| {
+        utils::refresh_db(&db, &stack);
+    }));
 
     header
 }

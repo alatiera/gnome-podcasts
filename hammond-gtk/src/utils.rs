@@ -17,6 +17,24 @@ use std::sync::mpsc::{channel, Receiver};
 
 use views::podcasts_view;
 
+// http://gtk-rs.org/tuto/closures
+macro_rules! clone {
+    (@param _) => ( _ );
+    (@param $x:ident) => ( $x );
+    ($($n:ident),+ => move || $body:expr) => (
+        {
+            $( let $n = $n.clone(); )+
+            move || $body
+        }
+    );
+    ($($n:ident),+ => move |$($p:tt),+| $body:expr) => (
+        {
+            $( let $n = $n.clone(); )+
+            move |$(clone!(@param $p),)+| $body
+        }
+    );
+}
+
 // Create a thread local storage that will store the arguments to be transfered.
 thread_local!(
     static GLOBAL: RefCell<Option<(Arc<Mutex<SqliteConnection>>,
@@ -28,15 +46,14 @@ pub fn refresh_db(db: &Arc<Mutex<SqliteConnection>>, stack: &gtk::Stack) {
     let (sender, receiver) = channel();
 
     // Pass the desired arguments into the Local Thread Storage.
-    GLOBAL.with(move |global| {
-        *global.borrow_mut() = Some((db.clone(), stack.clone(), receiver));
-    });
+    GLOBAL.with(clone!(db, stack => move |global| {
+        *global.borrow_mut() = Some((db, stack, receiver));
+    }));
 
     // The implementation of how this is done is probably terrible but it works!.
     // TODO: add timeout option and error reporting.
-    let db_clone = db.clone();
-    thread::spawn(move || {
-        let t = hammond_data::index_feed::index_loop(&db_clone, false);
+    thread::spawn(clone!(db => move || {
+        let t = hammond_data::index_feed::index_loop(&db, false);
         if t.is_err() {
             error!("Error While trying to update the database.");
             error!("Error msg: {}", t.unwrap_err());
@@ -45,7 +62,7 @@ pub fn refresh_db(db: &Arc<Mutex<SqliteConnection>>, stack: &gtk::Stack) {
 
         // http://gtk-rs.org/docs/glib/source/fn.idle_add.html
         glib::idle_add(refresh_podcasts_view);
-    });
+    }));
 }
 
 pub fn refresh_feed(db: &Arc<Mutex<SqliteConnection>>, stack: &gtk::Stack, source: &mut Source) {
@@ -55,10 +72,9 @@ pub fn refresh_feed(db: &Arc<Mutex<SqliteConnection>>, stack: &gtk::Stack, sourc
         *global.borrow_mut() = Some((db.clone(), stack.clone(), receiver));
     });
 
-    let db = db.clone();
     let mut source = source.clone();
     // TODO: add timeout option and error reporting.
-    thread::spawn(move || {
+    thread::spawn(clone!(db => move || {
         let db_ = db.lock().unwrap();
         let foo_ = hammond_data::index_feed::refresh_source(&db_, &mut source, false);
         drop(db_);
@@ -74,7 +90,7 @@ pub fn refresh_feed(db: &Arc<Mutex<SqliteConnection>>, stack: &gtk::Stack, sourc
             sender.send(true).expect("Couldn't send data to channel");;
             glib::idle_add(refresh_podcasts_view);
         };
-    });
+    }));
 }
 
 fn refresh_podcasts_view() -> glib::Continue {

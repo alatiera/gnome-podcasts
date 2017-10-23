@@ -23,10 +23,11 @@ use std::sync::{Arc, Mutex};
 use gtk::prelude::*;
 use gio::ApplicationExt;
 
-pub mod views;
-pub mod widgets;
-pub mod headerbar;
-pub mod utils;
+mod views;
+mod widgets;
+mod headerbar;
+
+mod utils;
 
 use views::podcasts_view;
 

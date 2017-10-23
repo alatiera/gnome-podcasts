@@ -10,6 +10,24 @@ use std::sync::{Arc, Mutex};
 
 use widgets::podcast::*;
 
+// http://gtk-rs.org/tuto/closures
+macro_rules! clone {
+    (@param _) => ( _ );
+    (@param $x:ident) => ( $x );
+    ($($n:ident),+ => move || $body:expr) => (
+        {
+            $( let $n = $n.clone(); )+
+            move || $body
+        }
+    );
+    ($($n:ident),+ => move |$($p:tt),+| $body:expr) => (
+        {
+            $( let $n = $n.clone(); )+
+            move |$(clone!(@param $p),)+| $body
+        }
+    );
+}
+
 // NOT IN USE.
 // TRYING OUT STORELESS ATM.
 pub fn populate_podcasts_flowbox(
@@ -47,24 +65,21 @@ pub fn populate_podcasts_flowbox(
         let pixbuf = get_pixbuf_from_path(image_uri.as_ref().map(|s| s.as_str()), &title);
         let f = create_flowbox_child(&title, pixbuf.clone());
 
-        let stack_clone = stack.clone();
-        let db_clone = db.clone();
-
-        f.connect_activate(move |_| {
-            let old = stack_clone.get_child_by_name("pdw").unwrap();
+        f.connect_activate(clone!(stack, db => move |_| {
+            let old = stack.get_child_by_name("pdw").unwrap();
             let pdw = podcast_widget(
-                &db_clone,
+                &db,
                 Some(title.as_str()),
                 description.as_ref().map(|x| x.as_str()),
                 pixbuf.clone(),
             );
 
-            stack_clone.remove(&old);
-            stack_clone.add_named(&pdw, "pdw");
-            stack_clone.set_visible_child(&pdw);
+            stack.remove(&old);
+            stack.add_named(&pdw, "pdw");
+            stack.set_visible_child(&pdw);
             old.destroy();
             println!("Hello World!, child activated");
-        });
+        }));
         flowbox.add(&f);
 
         if !pd_model.iter_next(&iter) {

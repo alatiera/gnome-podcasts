@@ -19,6 +19,26 @@ use gtk;
 use gtk::prelude::*;
 use gtk::ContainerExt;
 
+// http://gtk-rs.org/tuto/closures
+// FIXME: Atm this macro is copied into every module.
+// Figure out how to propely define once and export it instead.
+macro_rules! clone {
+    (@param _) => ( _ );
+    (@param $x:ident) => ( $x );
+    ($($n:ident),+ => move || $body:expr) => (
+        {
+            $( let $n = $n.clone(); )+
+            move || $body
+        }
+    );
+    ($($n:ident),+ => move |$($p:tt),+| $body:expr) => (
+        {
+            $( let $n = $n.clone(); )+
+            move |$(clone!(@param $p),)+| $body
+        }
+    );
+}
+
 thread_local!(
     static GLOBAL: RefCell<Option<((gtk::Button,
     gtk::Button,
@@ -26,7 +46,7 @@ thread_local!(
 
 // TODO: REFACTOR AND MODULATE ME.
 fn epidose_widget(
-    connection: &Arc<Mutex<SqliteConnection>>,
+    db: &Arc<Mutex<SqliteConnection>>,
     episode: &mut Episode,
     pd_title: &str,
 ) -> gtk::Box {
@@ -65,27 +85,20 @@ fn epidose_widget(
         play_button.show();
     }
 
-    let ep_clone = episode.clone();
-    let db = connection.clone();
-    play_button.connect_clicked(move |_| {
-        on_play_bttn_clicked(&db, ep_clone.id());
-    });
+    play_button.connect_clicked(clone!(episode, db => move |_| {
+        on_play_bttn_clicked(&db, episode.id());
+    }));
 
-    // TODO: figure out how to use the gtk-clone macro,
-    // to make it less tedious.
-    let pd_title_clone = pd_title.to_owned();
-    let db = connection.clone();
-    let ep_clone = episode.clone();
-    let play_button_clone = play_button.clone();
-    dl_button.connect_clicked(move |dl| {
+    let pd_title = pd_title.to_owned();
+    dl_button.connect_clicked(clone!(db, play_button, episode  => move |dl| {
         on_dl_clicked(
             &db,
-            &pd_title_clone,
-            &mut ep_clone.clone(),
+            &pd_title,
+            &mut episode.clone(),
             dl,
-            &play_button_clone,
+            &play_button,
         );
-    });
+    }));
 
     ep
 }
@@ -102,14 +115,13 @@ fn on_dl_clicked(
     let (sender, receiver) = channel();
 
     // Pass the desired arguments into the Local Thread Storage.
-    GLOBAL.with(move |global| {
-        *global.borrow_mut() = Some((dl_bttn.clone(), play_bttn.clone(), receiver));
-    });
+    GLOBAL.with(clone!(dl_bttn, play_bttn => move |global| {
+        *global.borrow_mut() = Some((dl_bttn, play_bttn, receiver));
+    }));
 
     let pd_title = pd_title.to_owned();
     let mut ep = ep.clone();
-    let db = db.clone();
-    thread::spawn(move || {
+    thread::spawn(clone!(db => move || {
         let dl_fold = downloader::get_dl_folder(&pd_title).unwrap();
         let e = downloader::get_episode(&db, &mut ep, dl_fold.as_str());
         if let Err(err) = e {
@@ -118,7 +130,7 @@ fn on_dl_clicked(
         };
         sender.send(true).expect("Couldn't send data to channel");;
         glib::idle_add(receive);
-    });
+    }));
 }
 
 fn on_play_bttn_clicked(db: &Arc<Mutex<SqliteConnection>>, episode_id: i32) {

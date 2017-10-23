@@ -126,10 +126,10 @@ pub fn podcast_liststore(connection: &SqliteConnection) -> gtk::ListStore {
 //     stack.set_visible_child_name(&vis);
 // }
 
-pub fn pd_widget_from_diesel_model(db: &Arc<Mutex<SqliteConnection>>, pd: &Podcast) -> gtk::Box {
-    let img = get_pixbuf_from_path(pd.image_uri(), pd.title());
-    podcast_widget(db, Some(pd.title()), Some(pd.description()), img)
-}
+// pub fn pd_widget_from_diesel_model(db: &Arc<Mutex<SqliteConnection>>, pd: &Podcast) -> gtk::Box {
+//     let img = get_pixbuf_from_path(pd.image_uri(), pd.title());
+//     podcast_widget(db, Some(pd.title()), Some(pd.description()), img)
+// }
 
 pub fn get_pixbuf_from_path(img_path: Option<&str>, pd_title: &str) -> Option<Pixbuf> {
     let img_path = downloader::cache_image(pd_title, img_path);
