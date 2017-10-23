@@ -96,7 +96,7 @@
           <object class="GtkImage">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="icon_name">gtk-save</property>
+            <property name="stock">gtk-save</property>
             <property name="use_fallback">True</property>
           </object>
         </child>
@@ -120,7 +120,7 @@
           <object class="GtkImage">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="icon_name">gtk-media-play</property>
+            <property name="stock">gtk-media-play</property>
             <property name="use_fallback">True</property>
           </object>
         </child>

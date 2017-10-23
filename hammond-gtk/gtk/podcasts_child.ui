@@ -22,7 +22,7 @@
               <object class="GtkImage" id="pd_cover">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="icon_name">gtk-missing-image</property>
+                <property name="stock">gtk-missing-image</property>
                 <property name="use_fallback">True</property>
                 <property name="icon_size">6</property>
               </object>
