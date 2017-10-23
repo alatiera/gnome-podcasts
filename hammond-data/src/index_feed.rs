@@ -98,7 +98,7 @@ pub fn index_loop(db: &Arc<Mutex<SqliteConnection>>, force: bool) -> Result<()> 
 pub fn complete_index_from_source(
     req: &mut reqwest::Response,
     source: &Source,
-    mutex: &Arc<Mutex<SqliteConnection>>,
+    db: &Arc<Mutex<SqliteConnection>>,
 ) -> Result<()> {
     use std::io::Read;
     use std::str::FromStr;
@@ -107,57 +107,66 @@ pub fn complete_index_from_source(
     req.read_to_string(&mut buf)?;
     let chan = rss::Channel::from_str(&buf)?;
 
-    complete_index(mutex, &chan, source)?;
+    complete_index(&db, &chan, source)?;
 
     Ok(())
 }
 
 fn complete_index(
-    connection: &Arc<Mutex<SqliteConnection>>,
+    db: &Arc<Mutex<SqliteConnection>>,
     chan: &rss::Channel,
     parent: &Source,
 ) -> Result<()> {
     let pd = {
-        let db = connection.lock().unwrap();
-        index_channel(&db, chan, parent)?
+        let conn = db.lock().unwrap();
+        index_channel(&conn, chan, parent)?
     };
-
-    index_channel_items(connection, chan.items(), &pd);
-
+    index_channel_items(db, chan.items(), &pd);
     Ok(())
 }
 
-fn index_channel(db: &SqliteConnection, chan: &rss::Channel, parent: &Source) -> Result<Podcast> {
+fn index_channel(con: &SqliteConnection, chan: &rss::Channel, parent: &Source) -> Result<Podcast> {
     let pd = feedparser::parse_podcast(chan, parent.id());
     // Convert NewPodcast to Podcast
-    let pd = insert_return_podcast(db, &pd)?;
+    let pd = insert_return_podcast(con, &pd)?;
     Ok(pd)
 }
 
-fn index_channel_items(connection: &Arc<Mutex<SqliteConnection>>, it: &[rss::Item], pd: &Podcast) {
-    it.par_iter()
+fn index_channel_items(db: &Arc<Mutex<SqliteConnection>>, it: &[rss::Item], pd: &Podcast) {
+    let episodes: Vec<_> = it.par_iter()
         .map(|x| feedparser::parse_episode(x, pd.id()))
-        .for_each(|x| {
-            let db = connection.lock().unwrap();
-            let e = index_episode(&db, &x);
+        .collect();
+
+    let conn = db.lock().unwrap();
+    let e = conn.transaction::<(), Error, _>(|| {
+        episodes.iter().for_each(|x| {
+            let e = index_episode(&conn, &x);
             if let Err(err) = e {
                 error!("Failed to index episode: {:?}.", x);
                 error!("Error msg: {}", err);
             };
         });
+        Ok(())
+    });
+    drop(conn);
+
+    if let Err(err) = e {
+        error!("Episodes Transcaction Failed.");
+        error!("Error msg: {}", err);
+    };
 }
 
 // Maybe this can be refactored into an Iterator for lazy evaluation.
-pub fn fetch_feeds(connection: &Arc<Mutex<SqliteConnection>>, force: bool) -> Result<Vec<Feed>> {
-    let tempdb = connection.lock().unwrap();
-    let mut feeds = dbqueries::get_sources(&tempdb)?;
-    drop(tempdb);
+pub fn fetch_feeds(db: &Arc<Mutex<SqliteConnection>>, force: bool) -> Result<Vec<Feed>> {
+    let mut feeds = {
+        let conn = db.lock().unwrap();
+        dbqueries::get_sources(&conn)?
+    };
 
     let results: Vec<Feed> = feeds
         .par_iter_mut()
         .filter_map(|x| {
-            let db = connection.lock().unwrap();
-            let l = refresh_source(&db, x, force);
+            let l = refresh_source(db, x, force);
             if l.is_ok() {
                 l.ok()
             } else {
@@ -172,7 +181,7 @@ pub fn fetch_feeds(connection: &Arc<Mutex<SqliteConnection>>, force: bool) -> Re
 }
 
 pub fn refresh_source(
-    connection: &SqliteConnection,
+    db: &Arc<Mutex<SqliteConnection>>,
     feed: &mut Source,
     force: bool,
 ) -> Result<Feed> {
@@ -212,7 +221,7 @@ pub fn refresh_source(
     //     _ => (),
     // };
 
-    feed.update_etag(connection, &req)?;
+    feed.update_etag(db, &req)?;
     Ok(Feed(req, feed.clone()))
 }
 

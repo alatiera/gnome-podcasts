@@ -75,6 +75,8 @@ pub fn populate_podcasts_flowbox(
             stack.remove(&old);
             stack.add_named(&pdw, "pdw");
             stack.set_visible_child(&pdw);
+            // aggresive memory cleanup
+            // probably not needed
             old.destroy();
             println!("Hello World!, child activated");
         }));
@@ -167,5 +169,8 @@ pub fn update_podcasts_view(db: &Arc<Mutex<SqliteConnection>>, stack: &gtk::Stac
     stack.add_named(&grid, "pd_grid");
     // preserve the visible widget
     stack.set_visible_child_name(&vis);
+
+    // aggresive memory cleanup
+    // probably not needed
     old.destroy();
 }

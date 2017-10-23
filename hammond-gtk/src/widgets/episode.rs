@@ -168,16 +168,16 @@ fn receive() -> glib::Continue {
     glib::Continue(false)
 }
 
-pub fn episodes_listbox(connection: &Arc<Mutex<SqliteConnection>>, pd_title: &str) -> gtk::ListBox {
+pub fn episodes_listbox(db: &Arc<Mutex<SqliteConnection>>, pd_title: &str) -> gtk::ListBox {
     // TODO: handle unwraps.
-    let m = connection.lock().unwrap();
-    let pd = dbqueries::load_podcast_from_title(&m, pd_title).unwrap();
-    let mut episodes = dbqueries::get_pd_episodes(&m, &pd).unwrap();
-    drop(m);
+    let conn = db.lock().unwrap();
+    let pd = dbqueries::load_podcast_from_title(&conn, pd_title).unwrap();
+    let mut episodes = dbqueries::get_pd_episodes(&conn, &pd).unwrap();
+    drop(conn);
 
     let list = gtk::ListBox::new();
     episodes.iter_mut().for_each(|ep| {
-        let w = epidose_widget(connection, ep, pd_title);
+        let w = epidose_widget(db, ep, pd_title);
         list.add(&w)
     });
 

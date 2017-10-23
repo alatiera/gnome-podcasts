@@ -12,7 +12,7 @@ use std::sync::{Arc, Mutex};
 use widgets::episode::episodes_listbox;
 
 pub fn podcast_widget(
-    connection: &Arc<Mutex<SqliteConnection>>,
+    db: &Arc<Mutex<SqliteConnection>>,
     title: Option<&str>,
     description: Option<&str>,
     image: Option<Pixbuf>,
@@ -29,7 +29,7 @@ pub fn podcast_widget(
 
     if let Some(t) = title {
         title_label.set_text(t);
-        let listbox = episodes_listbox(connection, t);
+        let listbox = episodes_listbox(db, t);
         view.add(&listbox);
     }
 
@@ -84,6 +84,9 @@ pub fn on_flowbox_child_activate(
     stack.remove(&old);
     stack.add_named(&pdw, "pdw");
     stack.set_visible_child(&pdw);
+
+    // aggresive memory cleanup
+    // probably not needed
     old.destroy();
     println!("Hello World!, child activated");
 }

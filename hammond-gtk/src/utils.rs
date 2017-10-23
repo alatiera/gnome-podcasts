@@ -73,9 +73,7 @@ pub fn refresh_feed(db: &Arc<Mutex<SqliteConnection>>, stack: &gtk::Stack, sourc
     let mut source = source.clone();
     // TODO: add timeout option and error reporting.
     thread::spawn(clone!(db => move || {
-        let db_ = db.lock().unwrap();
-        let foo_ = hammond_data::index_feed::refresh_source(&db_, &mut source, false);
-        drop(db_);
+        let foo_ = hammond_data::index_feed::refresh_source(&db, &mut source, false);
 
         if let Ok(x) = foo_ {
             let Feed(mut req, s) = x;
