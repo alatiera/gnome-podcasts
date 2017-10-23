@@ -4,7 +4,7 @@ extern crate gio;
 extern crate glib;
 extern crate gtk;
 
-extern crate diesel;
+// extern crate diesel;
 extern crate dissolve;
 extern crate hammond_data;
 extern crate hammond_downloader;

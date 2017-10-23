@@ -2,8 +2,6 @@ use gtk::prelude::*;
 use gtk;
 use gdk_pixbuf::Pixbuf;
 
-use diesel::prelude::SqliteConnection;
-use hammond_data::dbqueries;
 use hammond_data::models::Podcast;
 use hammond_downloader::downloader;
 use hammond_data::index_feed::Database;
@@ -90,31 +88,13 @@ pub fn on_flowbox_child_activate(
     println!("Hello World!, child activated");
 }
 
-// NOT IN USE.
-// TRYING OUT STORELESS ATM.
-pub fn podcast_liststore(connection: &SqliteConnection) -> gtk::ListStore {
-    let builder = include_str!("../../gtk/podcast_widget.ui");
-    let builder = gtk::Builder::new_from_string(builder);
-    let podcast_model: gtk::ListStore = builder.get_object("pd_store").unwrap();
-
-    // TODO: handle unwrap.
-    let podcasts = dbqueries::get_podcasts(connection).unwrap();
-
-    for pd in &podcasts {
-        podcast_model.insert_with_values(
-            None,
-            &[0, 1, 2, 3, 4],
-            &[
-                &pd.id(),
-                &pd.title(),
-                &pd.description(),
-                &pd.link(),
-                &pd.image_uri().unwrap_or_default(),
-            ],
-        );
+pub fn get_pixbuf_from_path(img_path: Option<&str>, pd_title: &str) -> Option<Pixbuf> {
+    let img_path = downloader::cache_image(pd_title, img_path);
+    if let Some(i) = img_path {
+        Pixbuf::new_from_file_at_scale(&i, 200, 200, true).ok()
+    } else {
+        None
     }
-
-    podcast_model
 }
 
 // pub fn update_podcast_widget(db: &&Database, stack: &gtk::Stack, pd:
@@ -132,12 +112,3 @@ pub fn podcast_liststore(connection: &SqliteConnection) -> gtk::ListStore {
 //     let img = get_pixbuf_from_path(pd.image_uri(), pd.title());
 //     podcast_widget(db, Some(pd.title()), Some(pd.description()), img)
 // }
-
-pub fn get_pixbuf_from_path(img_path: Option<&str>, pd_title: &str) -> Option<Pixbuf> {
-    let img_path = downloader::cache_image(pd_title, img_path);
-    if let Some(i) = img_path {
-        Pixbuf::new_from_file_at_scale(&i, 200, 200, true).ok()
-    } else {
-        None
-    }
-}

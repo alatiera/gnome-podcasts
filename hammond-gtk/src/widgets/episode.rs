@@ -42,7 +42,6 @@ thread_local!(
     gtk::Button,
     Receiver<bool>))>> = RefCell::new(None));
 
-// TODO: REFACTOR AND MODULATE ME.
 fn epidose_widget(db: &Database, episode: &mut Episode, pd_title: &str) -> gtk::Box {
     // This is just a prototype and will be reworked probably.
     let builder = include_str!("../../gtk/episode_widget.ui");
