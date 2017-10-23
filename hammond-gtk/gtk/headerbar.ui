@@ -113,8 +113,8 @@
   <object class="GtkHeaderBar" id="headerbar1">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
-    <property name="title">Hello</property>
-    <property name="subtitle">World!</property>
+    <property name="title">Hammond</property>
+    <property name="has_subtitle">False</property>
     <property name="show_close_button">True</property>
     <child>
       <object class="GtkButton" id="homebutton">
@@ -156,29 +156,6 @@
       <packing>
         <property name="pack_type">end</property>
         <property name="position">2</property>
-      </packing>
-    </child>
-    <child>
-      <object class="GtkToggleButton" id="searchbutton">
-        <property name="can_focus">True</property>
-        <property name="receives_default">False</property>
-        <property name="tooltip_text" translatable="yes">Search</property>
-        <property name="valign">center</property>
-        <child>
-          <object class="GtkImage" id="search-button-image">
-            <property name="can_focus">False</property>
-            <property name="stock">gtk-find</property>
-            <property name="use_fallback">True</property>
-            <property name="icon_size">1</property>
-          </object>
-        </child>
-        <style>
-          <class name="image-button"/>
-        </style>
-      </object>
-      <packing>
-        <property name="pack_type">end</property>
-        <property name="position">3</property>
       </packing>
     </child>
     <child>

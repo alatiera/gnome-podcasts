@@ -30,7 +30,6 @@ pub fn get_headerbar(db: &Database, stack: &gtk::Stack) -> gtk::HeaderBar {
     let header: gtk::HeaderBar = builder.get_object("headerbar1").unwrap();
     let home_button: gtk::Button = builder.get_object("homebutton").unwrap();
     let refresh_button: gtk::Button = builder.get_object("refbutton").unwrap();
-    let _search_button: gtk::Button = builder.get_object("searchbutton").unwrap();
 
     let add_toggle_button: gtk::MenuButton = builder.get_object("add-toggle-button").unwrap();
     let add_popover: gtk::Popover = builder.get_object("add-popover").unwrap();
