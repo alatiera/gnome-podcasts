@@ -1,5 +1,3 @@
-#![cfg_attr(feature = "cargo-clippy", allow(clone_on_ref_ptr))]
-
 use gtk;
 use gtk::prelude::*;
 
@@ -116,12 +114,9 @@ pub fn populate_flowbox_no_store(
             let pixbuf = get_pixbuf_from_path(img, title);
             let f = create_flowbox_child(title, pixbuf.clone());
 
-            let db = db.clone();
-            let stack = stack.clone();
-            let parent = parent.clone();
-            f.connect_activate(move |_| {
+            f.connect_activate(clone!(db, stack, parent => move |_| {
                 on_flowbox_child_activate(&db, &stack, &parent, pixbuf.clone());
-            });
+            }));
             flowbox.add(&f);
         });
     } else {

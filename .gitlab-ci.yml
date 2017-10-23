@@ -3,7 +3,7 @@
 before_script:
 - apt-get update -yqq
 - apt-get install -yqq --no-install-recommends build-essential
-- apt-get install -yqq libgtk-3-dev
+- apt-get install -yqq --no-install-recommends libgtk-3-dev
 
 # kcov
 # - apt-get install -y libcurl4-openssl-dev libelf-dev libdw-dev cmake gcc binutils-dev libiberty-dev
@@ -39,7 +39,7 @@ test:rustfmt:
   before_script:
   - apt-get update -yqq
   - apt-get install -yqq --no-install-recommends build-essential
-  - apt-get install -yqq libgtk-3-dev
+  - apt-get install -yqq --no-install-recommends build-essential libgtk-3-dev
   - export PATH="$PATH:$HOME/.cargo/bin"
   - which rustfmt || cargo install rustfmt-nightly
   script:
@@ -47,6 +47,7 @@ test:rustfmt:
   - cargo fmt --all -- --write-mode=diff
 
 # Configure and run clippy on nightly
+# Only fails on errors atm.
 test:clippy:
   image: "rustlang/rust:nightly"
   before_script:
@@ -58,4 +59,3 @@ test:clippy:
   script:
   - rustc --version && cargo --version
   - cargo clippy --all
-  allow_failure: true

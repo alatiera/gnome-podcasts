@@ -1,6 +1,4 @@
 
-#![cfg_attr(feature = "cargo-clippy", allow(clone_on_ref_ptr))]
-
 use open;
 use diesel::prelude::SqliteConnection;
 use hammond_data::dbqueries;

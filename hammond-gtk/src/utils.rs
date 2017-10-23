@@ -1,5 +1,3 @@
-#![cfg_attr(feature = "cargo-clippy", allow(clone_on_ref_ptr))]
-
 use glib;
 
 use gtk;
@@ -68,9 +66,9 @@ pub fn refresh_db(db: &Arc<Mutex<SqliteConnection>>, stack: &gtk::Stack) {
 pub fn refresh_feed(db: &Arc<Mutex<SqliteConnection>>, stack: &gtk::Stack, source: &mut Source) {
     let (sender, receiver) = channel();
 
-    GLOBAL.with(move |global| {
-        *global.borrow_mut() = Some((db.clone(), stack.clone(), receiver));
-    });
+    GLOBAL.with(clone!(db, stack => move |global| {
+        *global.borrow_mut() = Some((db, stack, receiver));
+    }));
 
     let mut source = source.clone();
     // TODO: add timeout option and error reporting.

@@ -1,5 +1,3 @@
-#![cfg_attr(feature = "cargo-clippy", allow(clone_on_ref_ptr))]
-
 use gtk;
 use gtk::prelude::*;
 
@@ -60,8 +58,6 @@ pub fn get_headerbar(db: &Arc<Mutex<SqliteConnection>>, stack: &gtk::Stack) -> g
     // and add a StackSwitcher when more views are added.
     home_button.connect_clicked(clone!(stack => move |_| stack.set_visible_child_name("pd_grid")));
 
-    let stack = stack.clone();
-    let db = db.clone();
     // FIXME: There appears to be a memmory leak here.
     refresh_button.connect_clicked(clone!(stack, db => move |_| {
         utils::refresh_db(&db, &stack);

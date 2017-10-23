@@ -1,5 +1,4 @@
 #![allow(dead_code)]
-#![cfg_attr(feature = "cargo-clippy", allow(clone_on_ref_ptr))]
 
 use diesel::prelude::*;
 use diesel;
