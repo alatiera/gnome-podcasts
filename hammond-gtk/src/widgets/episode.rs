@@ -58,17 +58,17 @@ fn epidose_widget(
         });
     }
 
-    if episode.local_uri().is_some() {
+    // Show play button upon widget initialization.
+    let local_uri = episode.local_uri();
+    if local_uri.is_some() && Path::new(local_uri.unwrap()).exists() {
         dl_button.hide();
         play_button.show();
-    };
+    }
 
     let ep_clone = episode.clone();
     let db = connection.clone();
-    let play_button_clone = play_button.clone();
     play_button.connect_clicked(move |_| {
-        // info!("I RUN");
-        on_play_bttn_clicked(&db, ep_clone.id(), &play_button_clone);
+        on_play_bttn_clicked(&db, ep_clone.id());
     });
 
     // TODO: figure out how to use the gtk-clone macro,
@@ -77,13 +77,12 @@ fn epidose_widget(
     let db = connection.clone();
     let ep_clone = episode.clone();
     let play_button_clone = play_button.clone();
-    let dl_button_clone = dl_button.clone();
-    dl_button.connect_clicked(move |_| {
+    dl_button.connect_clicked(move |dl| {
         on_dl_clicked(
             &db,
             &pd_title_clone,
             &mut ep_clone.clone(),
-            &dl_button_clone,
+            dl,
             &play_button_clone,
         );
     });
@@ -122,31 +121,28 @@ fn on_dl_clicked(
     });
 }
 
-fn on_play_bttn_clicked(
-    db: &Arc<Mutex<SqliteConnection>>,
-    episode_id: i32,
-    play_button: &gtk::Button,
-) {
+fn on_play_bttn_clicked(db: &Arc<Mutex<SqliteConnection>>, episode_id: i32) {
     let local_uri = {
         let tempdb = db.lock().unwrap();
         dbqueries::get_episode_local_uri(&tempdb, episode_id).unwrap()
     };
 
-    info!("Local_uri: {:?}", local_uri);
     if local_uri.is_some() {
         let uri = local_uri.unwrap().to_owned();
 
         if Path::new(&uri).exists() {
-            play_button.show();
-            play_button.connect_clicked(move |_| {
-                let e = open::that(&uri);
-                if e.is_err() {
-                    error!("Error while trying to open: {}", uri);
-                }
-            });
-        } else {
-            ()
+            info!("Opening {}", uri);
+            let e = open::that(&uri);
+            if let Err(err) = e {
+                error!("Error while trying to open file: {}", uri);
+                error!("Error: {}", err);
+            };
         }
+    } else {
+        error!(
+            "Something went wrong evaluating the following path: {:?}",
+            local_uri
+        );
     }
 }
 

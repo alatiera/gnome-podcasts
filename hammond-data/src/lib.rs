@@ -1,5 +1,6 @@
 #![recursion_limit = "1024"]
 #![cfg_attr(feature = "cargo-clippy", allow(blacklisted_name))]
+#![allow(dead_code)]
 
 #[macro_use]
 extern crate error_chain;
@@ -55,14 +56,10 @@ lazy_static!{
     };
 
     static ref DB_PATH: PathBuf = {
-        // Ensure that xdg_data is created.
-        &HAMMOND_DATA;
-
         HAMMOND_XDG.place_data_file("hammond.db").unwrap()
         };
 
     pub static ref DL_DIR: PathBuf = {
-        &HAMMOND_DATA;
         HAMMOND_XDG.create_data_directory("Downloads").unwrap()
     };
 }
