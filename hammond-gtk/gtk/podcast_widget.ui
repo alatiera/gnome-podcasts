@@ -54,6 +54,7 @@
                 <property name="margin_start">1</property>
                 <property name="margin_end">1</property>
                 <property name="icon_name">gtk-missing-image</property>
+                <property name="use_fallback">True</property>
               </object>
               <packing>
                 <property name="expand">False</property>

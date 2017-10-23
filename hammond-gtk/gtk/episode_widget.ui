@@ -44,7 +44,6 @@
                 <property name="shadow_type">in</property>
                 <property name="min_content_height">60</property>
                 <property name="max_content_height">400</property>
-                <property name="propagate_natural_height">True</property>
                 <child>
                   <object class="GtkViewport">
                     <property name="visible">True</property>
@@ -98,6 +97,7 @@
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="icon_name">gtk-save</property>
+            <property name="use_fallback">True</property>
           </object>
         </child>
       </object>
@@ -121,6 +121,7 @@
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="icon_name">gtk-media-play</property>
+            <property name="use_fallback">True</property>
           </object>
         </child>
       </object>

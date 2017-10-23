@@ -17,6 +17,7 @@
         <property name="can_focus">False</property>
         <property name="pixel_size">128</property>
         <property name="icon_name">application-rss+xml-symbolic</property>
+        <property name="use_fallback">True</property>
         <style>
           <class name="dim-label"/>
         </style>
