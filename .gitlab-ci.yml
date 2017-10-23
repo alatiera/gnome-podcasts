@@ -3,7 +3,7 @@
 before_script:
 - apt-get update -yqq
 - apt-get install -yqq --no-install-recommends build-essential
-- apt-get install -y libgtk-3-dev
+- apt-get install -yqq libgtk-3-dev
 
 # kcov
 # - apt-get install -y libcurl4-openssl-dev libelf-dev libdw-dev cmake gcc binutils-dev libiberty-dev
@@ -13,14 +13,14 @@ before_script:
 
 test:stable:
   # Stable img
+  # https://hub.docker.com/_/rust/
   image: "rust"
   script:
   - rustc --version && cargo --version      # Print version info for debugging
   - cargo build --all
-  # - cargo test --all --verbose
-  - cargo test --all --verbose --jobs 1
+  - cargo test --all --verbose
+  # - cargo test --all --verbose --jobs 1
 
-# Use cargo to test the project
 test:nightly:
   # Nightly
   # https://hub.docker.com/r/rustlang/rust/
@@ -28,10 +28,9 @@ test:nightly:
   script:
   - rustc --version && cargo --version      # Print version info for debugging
   - cargo build --all
-  # - cargo test --all --verbose
-  - cargo test --all --verbose --jobs 1
+  - cargo test --all --verbose
+  # - cargo test --all --verbose --jobs 1
   # - cargo bench
-  allow_failure: true
 
 # Configure and run rustfmt on nightly
 # Exits and builds fails if on bad format
@@ -40,15 +39,12 @@ test:rustfmt:
   before_script:
   - apt-get update -yqq
   - apt-get install -yqq --no-install-recommends build-essential
-  - apt-get install -y libgtk-3-dev
+  - apt-get install -yqq libgtk-3-dev
   - export PATH="$PATH:$HOME/.cargo/bin"
   - which rustfmt || cargo install rustfmt-nightly
   script:
   - rustc --version && cargo --version
-  - pwd
-  - ls -al
   - cargo fmt --all -- --write-mode=diff
-  # allwo failure till it uses rustfmt.toml
 
 # Configure and run clippy on nightly
 test:clippy:
@@ -56,7 +52,7 @@ test:clippy:
   before_script:
   - apt-get update -yqq
   - apt-get install -yqq --no-install-recommends build-essential
-  - apt-get install -y libgtk-3-dev
+  - apt-get install -yqq --no-install-recommends build-essential libgtk-3-dev
   - export PATH="$PATH:$HOME/.cargo/bin"
   - which rustfmt || cargo install clippy
   script:
