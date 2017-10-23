@@ -1,10 +1,8 @@
 use gtk;
 use gtk::prelude::*;
 
-use diesel::prelude::SqliteConnection;
 use hammond_data::dbqueries;
-
-use std::sync::{Arc, Mutex};
+use hammond_data::index_feed::Database;
 
 use widgets::podcast::*;
 
@@ -28,11 +26,7 @@ macro_rules! clone {
 
 // NOT IN USE.
 // TRYING OUT STORELESS ATM.
-pub fn populate_podcasts_flowbox(
-    db: &Arc<Mutex<SqliteConnection>>,
-    stack: &gtk::Stack,
-    flowbox: &gtk::FlowBox,
-) {
+pub fn populate_podcasts_flowbox(db: &Database, stack: &gtk::Stack, flowbox: &gtk::FlowBox) {
     let tempdb = db.lock().unwrap();
     let pd_model = podcast_liststore(&tempdb);
     drop(tempdb);
@@ -99,11 +93,7 @@ fn show_empty_view(stack: &gtk::Stack) {
     info!("Empty view.");
 }
 
-pub fn populate_flowbox_no_store(
-    db: &Arc<Mutex<SqliteConnection>>,
-    stack: &gtk::Stack,
-    flowbox: &gtk::FlowBox,
-) {
+pub fn populate_flowbox_no_store(db: &Database, stack: &gtk::Stack, flowbox: &gtk::FlowBox) {
     let podcasts = {
         let db = db.lock().unwrap();
         dbqueries::get_podcasts(&db)
@@ -126,12 +116,12 @@ pub fn populate_flowbox_no_store(
     }
 }
 
-fn setup_podcast_widget(db: &Arc<Mutex<SqliteConnection>>, stack: &gtk::Stack) {
+fn setup_podcast_widget(db: &Database, stack: &gtk::Stack) {
     let pd_widget = podcast_widget(db, None, None, None);
     stack.add_named(&pd_widget, "pdw");
 }
 
-fn setup_podcasts_grid(db: &Arc<Mutex<SqliteConnection>>, stack: &gtk::Stack) {
+fn setup_podcasts_grid(db: &Database, stack: &gtk::Stack) {
     let builder = include_str!("../../gtk/podcasts_view.ui");
     let builder = gtk::Builder::new_from_string(builder);
     let grid: gtk::Grid = builder.get_object("grid").unwrap();
@@ -146,14 +136,14 @@ fn setup_podcasts_grid(db: &Arc<Mutex<SqliteConnection>>, stack: &gtk::Stack) {
     populate_flowbox_no_store(db, stack, &flowbox);
 }
 
-pub fn setup_stack(db: &Arc<Mutex<SqliteConnection>>) -> gtk::Stack {
+pub fn setup_stack(db: &Database) -> gtk::Stack {
     let stack = gtk::Stack::new();
     setup_podcast_widget(db, &stack);
     setup_podcasts_grid(db, &stack);
     stack
 }
 
-pub fn update_podcasts_view(db: &Arc<Mutex<SqliteConnection>>, stack: &gtk::Stack) {
+pub fn update_podcasts_view(db: &Database, stack: &gtk::Stack) {
     let builder = include_str!("../../gtk/podcasts_view.ui");
     let builder = gtk::Builder::new_from_string(builder);
     let grid: gtk::Grid = builder.get_object("grid").unwrap();

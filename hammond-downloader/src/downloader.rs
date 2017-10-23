@@ -5,9 +5,9 @@ use diesel::prelude::*;
 use std::fs::{rename, DirBuilder, File};
 use std::io::{BufWriter, Read, Write};
 use std::path::Path;
-use std::sync::{Arc, Mutex};
 
 use errors::*;
+use hammond_data::index_feed::Database;
 use hammond_data::dbqueries;
 use hammond_data::models::Episode;
 use hammond_data::{DL_DIR, HAMMOND_CACHE};
@@ -58,7 +58,7 @@ pub fn download_to(target: &str, url: &str) -> Result<()> {
 
 // Initial messy prototype, queries load alot of not needed stuff.
 // TODO: Refactor
-pub fn latest_dl(connection: &Arc<Mutex<SqliteConnection>>, limit: u32) -> Result<()> {
+pub fn latest_dl(connection: &Database, limit: u32) -> Result<()> {
     let pds = {
         let tempdb = connection.lock().unwrap();
         dbqueries::get_podcasts(&tempdb)?
@@ -104,11 +104,7 @@ pub fn get_dl_folder(pd_title: &str) -> Result<String> {
 }
 
 // TODO: Refactor
-pub fn get_episode(
-    connection: &Arc<Mutex<SqliteConnection>>,
-    ep: &mut Episode,
-    dl_folder: &str,
-) -> Result<()> {
+pub fn get_episode(connection: &Database, ep: &mut Episode, dl_folder: &str) -> Result<()> {
     // Check if its alrdy downloaded
     if ep.local_uri().is_some() {
         if Path::new(ep.local_uri().unwrap()).exists() {

@@ -5,7 +5,6 @@ use diesel;
 use rss;
 use reqwest;
 use rayon::prelude::*;
-use std::sync::{Arc, Mutex};
 
 use schema;
 use dbqueries;
@@ -13,8 +12,12 @@ use models::*;
 use errors::*;
 use feedparser;
 
+use std::sync::{Arc, Mutex};
+
 #[derive(Debug)]
 pub struct Feed(pub reqwest::Response, pub Source);
+
+pub type Database = Arc<Mutex<SqliteConnection>>;
 
 fn index_source(con: &SqliteConnection, foo: &NewSource) -> Result<()> {
     match dbqueries::load_source_from_uri(con, foo.uri) {
@@ -80,8 +83,8 @@ fn insert_return_episode(con: &SqliteConnection, ep: &NewEpisode) -> Result<Epis
     Ok(dbqueries::load_episode_from_uri(con, ep.uri.unwrap())?)
 }
 
-pub fn index_loop(db: &Arc<Mutex<SqliteConnection>>, force: bool) -> Result<()> {
-    let mut f = fetch_feeds(db, force)?;
+pub fn index_loop(db: &Database) -> Result<()> {
+    let mut f = fetch_feeds(db)?;
 
     f.par_iter_mut()
         .for_each(|&mut Feed(ref mut req, ref source)| {
@@ -98,7 +101,7 @@ pub fn index_loop(db: &Arc<Mutex<SqliteConnection>>, force: bool) -> Result<()> 
 pub fn complete_index_from_source(
     req: &mut reqwest::Response,
     source: &Source,
-    db: &Arc<Mutex<SqliteConnection>>,
+    db: &Database,
 ) -> Result<()> {
     use std::io::Read;
     use std::str::FromStr;
@@ -107,16 +110,12 @@ pub fn complete_index_from_source(
     req.read_to_string(&mut buf)?;
     let chan = rss::Channel::from_str(&buf)?;
 
-    complete_index(&db, &chan, source)?;
+    complete_index(db, &chan, source)?;
 
     Ok(())
 }
 
-fn complete_index(
-    db: &Arc<Mutex<SqliteConnection>>,
-    chan: &rss::Channel,
-    parent: &Source,
-) -> Result<()> {
+fn complete_index(db: &Database, chan: &rss::Channel, parent: &Source) -> Result<()> {
     let pd = {
         let conn = db.lock().unwrap();
         index_channel(&conn, chan, parent)?
@@ -132,7 +131,7 @@ fn index_channel(con: &SqliteConnection, chan: &rss::Channel, parent: &Source) -
     Ok(pd)
 }
 
-fn index_channel_items(db: &Arc<Mutex<SqliteConnection>>, it: &[rss::Item], pd: &Podcast) {
+fn index_channel_items(db: &Database, it: &[rss::Item], pd: &Podcast) {
     let episodes: Vec<_> = it.par_iter()
         .map(|x| feedparser::parse_episode(x, pd.id()))
         .collect();
@@ -140,7 +139,7 @@ fn index_channel_items(db: &Arc<Mutex<SqliteConnection>>, it: &[rss::Item], pd: 
     let conn = db.lock().unwrap();
     let e = conn.transaction::<(), Error, _>(|| {
         episodes.iter().for_each(|x| {
-            let e = index_episode(&conn, &x);
+            let e = index_episode(&conn, x);
             if let Err(err) = e {
                 error!("Failed to index episode: {:?}.", x);
                 error!("Error msg: {}", err);
@@ -157,7 +156,7 @@ fn index_channel_items(db: &Arc<Mutex<SqliteConnection>>, it: &[rss::Item], pd: 
 }
 
 // Maybe this can be refactored into an Iterator for lazy evaluation.
-pub fn fetch_feeds(db: &Arc<Mutex<SqliteConnection>>, force: bool) -> Result<Vec<Feed>> {
+pub fn fetch_feeds(db: &Database) -> Result<Vec<Feed>> {
     let mut feeds = {
         let conn = db.lock().unwrap();
         dbqueries::get_sources(&conn)?
@@ -166,7 +165,7 @@ pub fn fetch_feeds(db: &Arc<Mutex<SqliteConnection>>, force: bool) -> Result<Vec
     let results: Vec<Feed> = feeds
         .par_iter_mut()
         .filter_map(|x| {
-            let l = refresh_source(db, x, force);
+            let l = refresh_source(db, x);
             if l.is_ok() {
                 l.ok()
             } else {
@@ -180,34 +179,26 @@ pub fn fetch_feeds(db: &Arc<Mutex<SqliteConnection>>, force: bool) -> Result<Vec
     Ok(results)
 }
 
-pub fn refresh_source(
-    db: &Arc<Mutex<SqliteConnection>>,
-    feed: &mut Source,
-    force: bool,
-) -> Result<Feed> {
+pub fn refresh_source(db: &Database, feed: &mut Source) -> Result<Feed> {
     use reqwest::header::{ETag, EntityTag, Headers, HttpDate, LastModified};
 
     let client = reqwest::Client::new();
-    let req = if force {
-        client.get(feed.uri()).send()?
-    } else {
-        let mut headers = Headers::new();
+    let mut headers = Headers::new();
 
-        if let Some(foo) = feed.http_etag() {
-            headers.set(ETag(EntityTag::new(true, foo.to_owned())));
+    if let Some(foo) = feed.http_etag() {
+        headers.set(ETag(EntityTag::new(true, foo.to_owned())));
+    }
+
+    if let Some(foo) = feed.last_modified() {
+        if let Ok(x) = foo.parse::<HttpDate>() {
+            headers.set(LastModified(x));
         }
+    }
 
-        if let Some(foo) = feed.last_modified() {
-            if let Ok(x) = foo.parse::<HttpDate>() {
-                headers.set(LastModified(x));
-            }
-        }
-
-        // FIXME: I have fucked up somewhere here.
-        // Getting back 200 codes even though I supposedly sent etags.
-        // info!("Headers: {:?}", headers);
-        client.get(feed.uri()).headers(headers).send()?
-    };
+    // FIXME: I have fucked up somewhere here.
+    // Getting back 200 codes even though I supposedly sent etags.
+    // info!("Headers: {:?}", headers);
+    let req = client.get(feed.uri()).headers(headers).send()?;
 
     info!("GET to {} , returned: {}", feed.uri(), req.status());
 
@@ -277,10 +268,10 @@ mod tests {
             index_source(&tempdb, &NewSource::new_with_uri(feed)).unwrap()
         });
 
-        index_loop(&db, true).unwrap();
+        index_loop(&db).unwrap();
 
         // Run again to cover Unique constrains erros.
-        index_loop(&db, true).unwrap();
+        index_loop(&db).unwrap();
     }
 
     #[test]

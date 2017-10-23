@@ -1,11 +1,9 @@
 use reqwest;
 use diesel::SaveChangesDsl;
-use SqliteConnection;
 use reqwest::header::{ETag, LastModified};
 
-use std::sync::{Arc, Mutex};
-
 use schema::{episode, podcast, source};
+use index_feed::Database;
 use errors::*;
 
 #[derive(Queryable, Identifiable, AsChangeset, Associations)]
@@ -180,11 +178,7 @@ impl<'a> Source {
 
     /// Extract Etag and LastModifier from req, and update self and the
     /// corresponding db row.
-    pub fn update_etag(
-        &mut self,
-        db: &Arc<Mutex<SqliteConnection>>,
-        req: &reqwest::Response,
-    ) -> Result<()> {
+    pub fn update_etag(&mut self, db: &Database, req: &reqwest::Response) -> Result<()> {
         let headers = req.headers();
 
         // let etag = headers.get_raw("ETag").unwrap();

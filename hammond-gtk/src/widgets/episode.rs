@@ -1,14 +1,14 @@
 
 use open;
-use diesel::prelude::SqliteConnection;
 use hammond_data::dbqueries;
 use hammond_data::models::Episode;
 use hammond_downloader::downloader;
+use hammond_data::index_feed::Database;
+
 use dissolve::strip_html_tags;
 
 use std::thread;
 use std::cell::RefCell;
-use std::sync::{Arc, Mutex};
 use std::sync::mpsc::{channel, Receiver};
 use std::path::Path;
 
@@ -43,11 +43,7 @@ thread_local!(
     Receiver<bool>))>> = RefCell::new(None));
 
 // TODO: REFACTOR AND MODULATE ME.
-fn epidose_widget(
-    db: &Arc<Mutex<SqliteConnection>>,
-    episode: &mut Episode,
-    pd_title: &str,
-) -> gtk::Box {
+fn epidose_widget(db: &Database, episode: &mut Episode, pd_title: &str) -> gtk::Box {
     // This is just a prototype and will be reworked probably.
     let builder = include_str!("../../gtk/episode_widget.ui");
     let builder = gtk::Builder::new_from_string(builder);
@@ -103,7 +99,7 @@ fn epidose_widget(
 
 // TODO: show notification when dl is finished and block play_bttn till then.
 fn on_dl_clicked(
-    db: &Arc<Mutex<SqliteConnection>>,
+    db: &Database,
     pd_title: &str,
     ep: &mut Episode,
     dl_bttn: &gtk::Button,
@@ -131,7 +127,7 @@ fn on_dl_clicked(
     }));
 }
 
-fn on_play_bttn_clicked(db: &Arc<Mutex<SqliteConnection>>, episode_id: i32) {
+fn on_play_bttn_clicked(db: &Database, episode_id: i32) {
     let local_uri = {
         let tempdb = db.lock().unwrap();
         dbqueries::get_episode_local_uri(&tempdb, episode_id).unwrap()
@@ -168,7 +164,7 @@ fn receive() -> glib::Continue {
     glib::Continue(false)
 }
 
-pub fn episodes_listbox(db: &Arc<Mutex<SqliteConnection>>, pd_title: &str) -> gtk::ListBox {
+pub fn episodes_listbox(db: &Database, pd_title: &str) -> gtk::ListBox {
     // TODO: handle unwraps.
     let conn = db.lock().unwrap();
     let pd = dbqueries::load_podcast_from_title(&conn, pd_title).unwrap();

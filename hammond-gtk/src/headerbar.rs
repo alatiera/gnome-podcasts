@@ -1,11 +1,9 @@
 use gtk;
 use gtk::prelude::*;
 
-use diesel::prelude::SqliteConnection;
 use index_feed;
+use hammond_data::index_feed::Database;
 use utils;
-
-use std::sync::{Arc, Mutex};
 
 // http://gtk-rs.org/tuto/closures
 macro_rules! clone {
@@ -25,7 +23,7 @@ macro_rules! clone {
     );
 }
 
-pub fn get_headerbar(db: &Arc<Mutex<SqliteConnection>>, stack: &gtk::Stack) -> gtk::HeaderBar {
+pub fn get_headerbar(db: &Database, stack: &gtk::Stack) -> gtk::HeaderBar {
     let builder = include_str!("../gtk/headerbar.ui");
     let builder = gtk::Builder::new_from_string(builder);
 
@@ -66,7 +64,7 @@ pub fn get_headerbar(db: &Arc<Mutex<SqliteConnection>>, stack: &gtk::Stack) -> g
     header
 }
 
-fn on_add_bttn_clicked(db: &Arc<Mutex<SqliteConnection>>, stack: &gtk::Stack, url: &str) {
+fn on_add_bttn_clicked(db: &Database, stack: &gtk::Stack, url: &str) {
     let source = {
         let tempdb = db.lock().unwrap();
         index_feed::insert_return_source(&tempdb, url)

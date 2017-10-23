@@ -25,11 +25,10 @@ extern crate xdg;
 
 pub mod dbqueries;
 pub mod models;
-pub mod schema;
-
 pub mod index_feed;
-pub mod feedparser;
 pub mod errors;
+mod feedparser;
+mod schema;
 
 use diesel::prelude::*;
 use errors::*;

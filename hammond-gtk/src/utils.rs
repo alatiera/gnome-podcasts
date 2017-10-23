@@ -1,16 +1,14 @@
 use glib;
-
 use gtk;
 // use gtk::prelude::*;
 
 use hammond_data;
 use hammond_data::index_feed::Feed;
 use hammond_data::models::Source;
-use diesel::prelude::SqliteConnection;
+use hammond_data::index_feed::Database;
 
 use std::thread;
 use std::cell::RefCell;
-use std::sync::{Arc, Mutex};
 use std::sync::mpsc::{channel, Receiver};
 
 use views::podcasts_view;
@@ -35,11 +33,11 @@ macro_rules! clone {
 
 // Create a thread local storage that will store the arguments to be transfered.
 thread_local!(
-    static GLOBAL: RefCell<Option<(Arc<Mutex<SqliteConnection>>,
+    static GLOBAL: RefCell<Option<(Database,
     gtk::Stack,
     Receiver<bool>)>> = RefCell::new(None));
 
-pub fn refresh_db(db: &Arc<Mutex<SqliteConnection>>, stack: &gtk::Stack) {
+pub fn refresh_db(db: &Database, stack: &gtk::Stack) {
     // Create a async channel.
     let (sender, receiver) = channel();
 
@@ -51,7 +49,7 @@ pub fn refresh_db(db: &Arc<Mutex<SqliteConnection>>, stack: &gtk::Stack) {
     // The implementation of how this is done is probably terrible but it works!.
     // TODO: add timeout option and error reporting.
     thread::spawn(clone!(db => move || {
-        let t = hammond_data::index_feed::index_loop(&db, false);
+        let t = hammond_data::index_feed::index_loop(&db);
         if t.is_err() {
             error!("Error While trying to update the database.");
             error!("Error msg: {}", t.unwrap_err());
@@ -63,7 +61,7 @@ pub fn refresh_db(db: &Arc<Mutex<SqliteConnection>>, stack: &gtk::Stack) {
     }));
 }
 
-pub fn refresh_feed(db: &Arc<Mutex<SqliteConnection>>, stack: &gtk::Stack, source: &mut Source) {
+pub fn refresh_feed(db: &Database, stack: &gtk::Stack, source: &mut Source) {
     let (sender, receiver) = channel();
 
     GLOBAL.with(clone!(db, stack => move |global| {
@@ -73,7 +71,7 @@ pub fn refresh_feed(db: &Arc<Mutex<SqliteConnection>>, stack: &gtk::Stack, sourc
     let mut source = source.clone();
     // TODO: add timeout option and error reporting.
     thread::spawn(clone!(db => move || {
-        let foo_ = hammond_data::index_feed::refresh_source(&db, &mut source, false);
+        let foo_ = hammond_data::index_feed::refresh_source(&db, &mut source);
 
         if let Ok(x) = foo_ {
             let Feed(mut req, s) = x;
