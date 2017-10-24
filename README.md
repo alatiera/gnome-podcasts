@@ -6,6 +6,7 @@ Description...
 ![podcast_widget](./assets/podcast_widget.png)
 
 **A note about the project's name:**
+
 The project was named after Allan Moore's character [Evey Hammond](https://en.wikipedia.org/wiki/Evey_Hammond) from the graphic novel V for Vendetta.
 
 It has nothing to do with the horrible headlines on the news.
