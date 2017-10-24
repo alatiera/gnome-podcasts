@@ -2,8 +2,22 @@
 ## Prototype of a multithreaded, safe, and reliable Gtk+ Podcast client.
 Description...
 
+![podcasts_view](./assets/podcasts_view.png)
+![podcast_widget](./assets/podcast_widget.png)
+
+**A note about the project's name:**
+The project was named after Allan Moore's character [Evey Hammond](https://en.wikipedia.org/wiki/Evey_Hammond) from the graphic novel V for Vendetta.
+
+It has nothing to do with the horrible headlines on the news.
+
 ## Quick start
-Flatpak instructions...
+```sh
+git clone https://gitlab.gnome.org/alatiera/Hammond.git
+cd Hammond/
+cargo run -p hammond-gtk --release
+```
+### Flatpak:
+Flatpak instructions... Soon™.
 
 ## Dependancies:
 
@@ -29,11 +43,14 @@ If you happen to build it on other distributions please let me know the names of
 ```sh
 git clone https://gitlab.gnome.org/alatiera/Hammond.git
 cd Hammond/
-cargo run -p hammond-gtk --release
+cargo build --all
 ```
 
 ## Overview:
-foo
+
+To be added.
 
 ## Contributing:
+There alot of thins to be done, take a look at TODO.md or grep for TODO: and FIXME:.
+
 to be added: CONTRIBUTING.md

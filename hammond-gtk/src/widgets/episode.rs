@@ -179,5 +179,6 @@ pub fn episodes_listbox(db: &Database, pd_title: &str) -> gtk::ListBox {
     list.set_vexpand(false);
     list.set_hexpand(false);
     list.set_visible(true);
+    list.set_selection_mode(gtk::SelectionMode::None);
     list
 }
