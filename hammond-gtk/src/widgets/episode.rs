@@ -11,6 +11,7 @@ use std::thread;
 use std::cell::RefCell;
 use std::sync::mpsc::{channel, Receiver};
 use std::path::Path;
+use std::fs;
 
 use glib;
 use gtk;
@@ -48,8 +49,9 @@ fn epidose_widget(db: &Database, episode: &mut Episode, pd_title: &str) -> gtk::
     let builder = gtk::Builder::new_from_string(builder);
 
     let ep: gtk::Box = builder.get_object("episode_box").unwrap();
-    let dl_button: gtk::Button = builder.get_object("download_button").unwrap();
+    let download_button: gtk::Button = builder.get_object("download_button").unwrap();
     let play_button: gtk::Button = builder.get_object("play_button").unwrap();
+    let delete_button: gtk::Button = builder.get_object("delete_button").unwrap();
 
     let title_label: gtk::Label = builder.get_object("title_label").unwrap();
     let desc_label: gtk::Label = builder.get_object("desc_label").unwrap();
@@ -71,20 +73,31 @@ fn epidose_widget(db: &Database, episode: &mut Episode, pd_title: &str) -> gtk::
         });
     }
 
-    // Show play button upon widget initialization.
+    // Show or hide the play/delete/download buttons upon widget initialization.
     let local_uri = episode.local_uri();
     if local_uri.is_some() && Path::new(local_uri.unwrap()).exists() {
-        dl_button.hide();
+        download_button.hide();
         play_button.show();
+        delete_button.show();
     }
 
     play_button.connect_clicked(clone!(episode, db => move |_| {
         on_play_bttn_clicked(&db, episode.id());
     }));
 
+    delete_button.connect_clicked(
+        clone!(episode, db, play_button, download_button => move |del|{
+        on_delete_bttn_clicked(&db, episode.id());
+        del.hide();
+        play_button.hide();
+        download_button.show();
+        // TODO: reload the widget
+    }),
+    );
+
     let pd_title = pd_title.to_owned();
-    dl_button.connect_clicked(clone!(db, play_button, episode  => move |dl| {
-        on_dl_clicked(
+    download_button.connect_clicked(clone!(db, play_button, episode  => move |dl| {
+        on_download_clicked(
             &db,
             &pd_title,
             &mut episode.clone(),
@@ -97,26 +110,26 @@ fn epidose_widget(db: &Database, episode: &mut Episode, pd_title: &str) -> gtk::
 }
 
 // TODO: show notification when dl is finished and block play_bttn till then.
-fn on_dl_clicked(
+fn on_download_clicked(
     db: &Database,
     pd_title: &str,
     ep: &mut Episode,
-    dl_bttn: &gtk::Button,
+    download_bttn: &gtk::Button,
     play_bttn: &gtk::Button,
 ) {
     // Create a async channel.
     let (sender, receiver) = channel();
 
     // Pass the desired arguments into the Local Thread Storage.
-    GLOBAL.with(clone!(dl_bttn, play_bttn => move |global| {
-        *global.borrow_mut() = Some((dl_bttn, play_bttn, receiver));
+    GLOBAL.with(clone!(download_bttn, play_bttn => move |global| {
+        *global.borrow_mut() = Some((download_bttn, play_bttn, receiver));
     }));
 
     let pd_title = pd_title.to_owned();
     let mut ep = ep.clone();
     thread::spawn(clone!(db => move || {
-        let dl_fold = downloader::get_dl_folder(&pd_title).unwrap();
-        let e = downloader::get_episode(&db, &mut ep, dl_fold.as_str());
+        let download_fold = downloader::get_download_folder(&pd_title).unwrap();
+        let e = downloader::get_episode(&db, &mut ep, download_fold.as_str());
         if let Err(err) = e {
             error!("Error while trying to download: {}", ep.uri());
             error!("Error: {}", err);
@@ -132,9 +145,7 @@ fn on_play_bttn_clicked(db: &Database, episode_id: i32) {
         dbqueries::get_episode_local_uri(&tempdb, episode_id).unwrap()
     };
 
-    if local_uri.is_some() {
-        let uri = local_uri.unwrap().to_owned();
-
+    if let Some(uri) = local_uri {
         if Path::new(&uri).exists() {
             info!("Opening {}", uri);
             let e = open::that(&uri);
@@ -151,11 +162,46 @@ fn on_play_bttn_clicked(db: &Database, episode_id: i32) {
     }
 }
 
+fn on_delete_bttn_clicked(db: &Database, episode_id: i32) {
+    let mut ep = {
+        let tempdb = db.lock().unwrap();
+        dbqueries::get_episode(&tempdb, episode_id).unwrap()
+    };
+
+    let ep2 = ep.clone();
+    let local_uri = ep2.local_uri();
+
+    if local_uri.is_some() {
+        let uri = local_uri.unwrap().to_owned();
+        if Path::new(&uri).exists() {
+            let res = fs::remove_file(&uri);
+            if res.is_ok() {
+                ep.set_local_uri(None);
+                let res2 = ep.save(db);
+                if res2.is_ok() {
+                    info!("Deleted file at: {}", uri);
+                } else {
+                    error!("Error while trying to delete file: {}", uri);
+                    error!("Error: {}", res2.unwrap_err());
+                }
+            } else {
+                error!("Error while trying to delete file: {}", uri);
+                error!("Error: {}", res.unwrap_err());
+            };
+        }
+    } else {
+        error!(
+            "Something went wrong evaluating the following path: {:?}",
+            local_uri
+        );
+    }
+}
+
 fn receive() -> glib::Continue {
     GLOBAL.with(|global| {
-        if let Some((ref dl_bttn, ref play_bttn, ref reciever)) = *global.borrow() {
+        if let Some((ref download_bttn, ref play_bttn, ref reciever)) = *global.borrow() {
             if reciever.try_recv().is_ok() {
-                dl_bttn.hide();
+                download_bttn.hide();
                 play_bttn.show();
             }
         }

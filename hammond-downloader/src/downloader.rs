@@ -1,6 +1,5 @@
 use reqwest;
 use hyper::header::*;
-use diesel::prelude::*;
 
 use std::fs::{rename, DirBuilder, File};
 use std::io::{BufWriter, Read, Write};
@@ -75,11 +74,11 @@ pub fn latest_dl(connection: &Database, limit: u32) -> Result<()> {
                 }
             };
 
-            let dl_fold = get_dl_folder(x.title())?;
+            let download_fold = get_download_folder(x.title())?;
 
             // Download the episodes
             eps.iter_mut().for_each(|ep| {
-                let x = get_episode(connection, ep, &dl_fold);
+                let x = get_episode(connection, ep, &download_fold);
                 if let Err(err) = x {
                     error!("An Error occured while downloading an episode.");
                     error!("Error: {}", err);
@@ -94,27 +93,25 @@ pub fn latest_dl(connection: &Database, limit: u32) -> Result<()> {
 }
 
 // TODO: Right unit test
-pub fn get_dl_folder(pd_title: &str) -> Result<String> {
+pub fn get_download_folder(pd_title: &str) -> Result<String> {
     // It might be better to make it a hash of the title
-    let dl_fold = format!("{}/{}", DL_DIR.to_str().unwrap(), pd_title);
+    let download_fold = format!("{}/{}", DL_DIR.to_str().unwrap(), pd_title);
 
     // Create the folder
-    DirBuilder::new().recursive(true).create(&dl_fold)?;
-    Ok(dl_fold)
+    DirBuilder::new().recursive(true).create(&download_fold)?;
+    Ok(download_fold)
 }
 
 // TODO: Refactor
-pub fn get_episode(connection: &Database, ep: &mut Episode, dl_folder: &str) -> Result<()> {
+pub fn get_episode(connection: &Database, ep: &mut Episode, download_folder: &str) -> Result<()> {
     // Check if its alrdy downloaded
     if ep.local_uri().is_some() {
         if Path::new(ep.local_uri().unwrap()).exists() {
             return Ok(());
         }
-        {
-            let db = connection.lock().unwrap();
-            ep.set_local_uri(None);
-            ep.save_changes::<Episode>(&*db)?;
-        }
+
+        ep.set_local_uri(None);
+        ep.save(connection)?;
     };
 
     // FIXME: Unreliable and hacky way to extract the file extension from the url.
@@ -122,7 +119,12 @@ pub fn get_episode(connection: &Database, ep: &mut Episode, dl_folder: &str) -> 
 
     // Construct the download path.
     // TODO: Check if its a valid path
-    let dlpath = format!("{}/{}.{}", dl_folder, ep.title().unwrap().to_owned(), ext);
+    let dlpath = format!(
+        "{}/{}.{}",
+        download_folder,
+        ep.title().unwrap().to_owned(),
+        ext
+    );
     // info!("Downloading {:?} into: {}", y.title(), dlpath);
 
     let uri = ep.uri().to_owned();
@@ -137,8 +139,7 @@ pub fn get_episode(connection: &Database, ep: &mut Episode, dl_folder: &str) -> 
 
     // If download succedes set episode local_uri to dlpath.
     ep.set_local_uri(Some(&dlpath));
-    let db = connection.lock().unwrap();
-    ep.save_changes::<Episode>(&*db)?;
+    ep.save(connection)?;
     Ok(())
 }
 
@@ -154,9 +155,12 @@ pub fn cache_image(title: &str, image_uri: Option<&str>) -> Option<String> {
         // FIXME:
         let ext = url.split('.').last().unwrap();
 
-        let dl_fold = format!("{}{}", HAMMOND_CACHE.to_str().unwrap(), title);
-        DirBuilder::new().recursive(true).create(&dl_fold).unwrap();
-        let dlpath = format!("{}/{}.{}", dl_fold, title, ext);
+        let download_fold = format!("{}{}", HAMMOND_CACHE.to_str().unwrap(), title);
+        DirBuilder::new()
+            .recursive(true)
+            .create(&download_fold)
+            .unwrap();
+        let dlpath = format!("{}/{}.{}", download_fold, title, ext);
 
         if Path::new(&dlpath).exists() {
             return Some(dlpath);

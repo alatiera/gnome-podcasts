@@ -92,6 +92,12 @@ impl Episode {
     pub fn set_length(&mut self, value: Option<i32>) {
         self.length = value;
     }
+
+    pub fn save(&self, db: &Database) -> Result<()> {
+        let tempdb = db.lock().unwrap();
+        self.save_changes::<Episode>(&*tempdb)?;
+        Ok(())
+    }
 }
 
 #[derive(Queryable, Identifiable, AsChangeset, Associations)]
@@ -138,6 +144,12 @@ impl Podcast {
 
     pub fn set_image_uri(&mut self, value: Option<&str>) {
         self.image_uri = value.map(|x| x.to_string());
+    }
+
+    pub fn save(&self, db: &Database) -> Result<()> {
+        let tempdb = db.lock().unwrap();
+        self.save_changes::<Podcast>(&*tempdb)?;
+        Ok(())
     }
 }
 
@@ -191,10 +203,15 @@ impl<'a> Source {
         {
             self.http_etag = etag.map(|x| x.tag().to_string().to_owned());
             self.last_modified = lmod.map(|x| format!("{}", x));
-            let con = db.lock().unwrap();
-            self.save_changes::<Source>(&*con)?;
+            self.save(&db)?;
         }
 
+        Ok(())
+    }
+
+    pub fn save(&self, db: &Database) -> Result<()> {
+        let tempdb = db.lock().unwrap();
+        self.save_changes::<Source>(&*tempdb)?;
         Ok(())
     }
 }
