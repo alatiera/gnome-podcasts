@@ -86,12 +86,11 @@ fn epidose_widget(db: &Database, episode: &mut Episode, pd_title: &str) -> gtk::
     }));
 
     delete_button.connect_clicked(
-        clone!(episode, db, play_button, download_button => move |del|{
+        clone!(episode, db, play_button, download_button => move |del| {
         on_delete_bttn_clicked(&db, episode.id());
         del.hide();
         play_button.hide();
         download_button.show();
-        // TODO: reload the widget
     }),
     );
 

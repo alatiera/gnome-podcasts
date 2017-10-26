@@ -118,6 +118,10 @@ impl Podcast {
         self.id
     }
 
+    pub fn source_id(&self) -> i32 {
+        self.source_id
+    }
+
     pub fn title(&self) -> &str {
         &self.title
     }

@@ -5,8 +5,27 @@ use gdk_pixbuf::Pixbuf;
 use hammond_data::models::Podcast;
 use hammond_downloader::downloader;
 use hammond_data::index_feed::Database;
+use hammond_data::dbqueries::{load_podcast_from_title, remove_feed};
 
 use widgets::episode::episodes_listbox;
+
+// http://gtk-rs.org/tuto/closures
+macro_rules! clone {
+    (@param _) => ( _ );
+    (@param $x:ident) => ( $x );
+    ($($n:ident),+ => move || $body:expr) => (
+        {
+            $( let $n = $n.clone(); )+
+            move || $body
+        }
+    );
+    ($($n:ident),+ => move |$($p:tt),+| $body:expr) => (
+        {
+            $( let $n = $n.clone(); )+
+            move |$(clone!(@param $p),)+| $body
+        }
+    );
+}
 
 pub fn podcast_widget(
     db: &Database,
@@ -23,6 +42,26 @@ pub fn podcast_widget(
     let title_label: gtk::Label = pd_widget_buidler.get_object("title_label").unwrap();
     let desc_label: gtk::Label = pd_widget_buidler.get_object("description_label").unwrap();
     let view: gtk::Viewport = pd_widget_buidler.get_object("view").unwrap();
+    let unsub_button: gtk::Button = pd_widget_buidler.get_object("unsub_button").unwrap();
+
+    // TODO: handle unwraps properly.
+    // TODO: also remove the downloaded content.
+    if title.is_some() {
+        let t = title.unwrap().to_owned();
+        // TODO: update the stack views after.
+        unsub_button.connect_clicked(clone!(db, t => move |bttn| {
+        let pd = {
+            let tempdb = db.lock().unwrap();
+            load_podcast_from_title(&tempdb, &t).unwrap()};
+        let res = remove_feed(&db, &pd);
+        if res.is_ok(){
+            info!("{} was removed succesfully.", t);
+            // hack to get away without properly checking for none.
+            // if pressed twice would panic.
+            bttn.hide();
+        }
+    }));
+    }
 
     if let Some(t) = title {
         title_label.set_text(t);

@@ -1,7 +1,10 @@
 #![cfg_attr(feature = "cargo-clippy", allow(let_and_return))]
 
 use diesel::prelude::*;
+use diesel;
 use models::{Episode, Podcast, Source};
+use index_feed::Database;
+use errors::*;
 
 // TODO: Needs cleanup.
 
@@ -109,4 +112,39 @@ pub fn load_episode_from_uri(con: &SqliteConnection, uri_: &str) -> QueryResult<
 
     let ep = episode.filter(uri.eq(uri_)).get_result::<Episode>(con);
     ep
+}
+
+pub fn remove_feed(db: &Database, pd: &Podcast) -> Result<()> {
+    let s_id = pd.source_id();
+    let pd_id = pd.id();
+    let tempdb = db.lock().unwrap();
+
+    tempdb.transaction(|| -> Result<()> {
+        delete_source(&tempdb, s_id)?;
+        delete_podcast(&tempdb, pd_id)?;
+        delete_podcast_episodes(&tempdb, pd_id)?;
+        Ok(())
+    })?;
+    Ok(())
+}
+
+pub fn delete_source(connection: &SqliteConnection, source_id: i32) -> Result<()> {
+    use schema::source::dsl::*;
+
+    diesel::delete(source.filter(id.eq(source_id))).execute(connection)?;
+    Ok(())
+}
+
+pub fn delete_podcast(connection: &SqliteConnection, podcast_id: i32) -> Result<()> {
+    use schema::podcast::dsl::*;
+
+    diesel::delete(podcast.filter(id.eq(podcast_id))).execute(connection)?;
+    Ok(())
+}
+
+pub fn delete_podcast_episodes(connection: &SqliteConnection, parent_id: i32) -> Result<()> {
+    use schema::episode::dsl::*;
+
+    diesel::delete(episode.filter(podcast_id.eq(parent_id))).execute(connection)?;
+    Ok(())
 }
