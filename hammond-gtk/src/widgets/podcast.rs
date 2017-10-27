@@ -2,12 +2,15 @@ use gtk::prelude::*;
 use gtk;
 use gdk_pixbuf::Pixbuf;
 
+use std::fs;
+
 use hammond_data::models::Podcast;
 use hammond_downloader::downloader;
 use hammond_data::index_feed::Database;
 use hammond_data::dbqueries::{load_podcast_from_title, remove_feed};
 
 use widgets::episode::episodes_listbox;
+use podcasts_view::update_podcasts_view;
 
 // http://gtk-rs.org/tuto/closures
 macro_rules! clone {
@@ -29,6 +32,7 @@ macro_rules! clone {
 
 pub fn podcast_widget(
     db: &Database,
+    stack: &gtk::Stack,
     title: Option<&str>,
     description: Option<&str>,
     image: Option<Pixbuf>,
@@ -44,22 +48,34 @@ pub fn podcast_widget(
     let view: gtk::Viewport = pd_widget_buidler.get_object("view").unwrap();
     let unsub_button: gtk::Button = pd_widget_buidler.get_object("unsub_button").unwrap();
 
-    // TODO: handle unwraps properly.
-    // TODO: also remove the downloaded content.
+    // TODO: refactor, splitoff, spawn a thread probably.
     if title.is_some() {
         let t = title.unwrap().to_owned();
-        // TODO: update the stack views after.
-        unsub_button.connect_clicked(clone!(db, t => move |bttn| {
+        unsub_button.connect_clicked(clone!(db, stack, t => move |bttn| {
         let pd = {
             let tempdb = db.lock().unwrap();
-            load_podcast_from_title(&tempdb, &t).unwrap()};
+            load_podcast_from_title(&tempdb, &t)};
+        if let Ok(pd) = pd {
+
         let res = remove_feed(&db, &pd);
         if res.is_ok(){
-            info!("{} was removed succesfully.", t);
+            info!("{} was removed succesfully.", &t);
             // hack to get away without properly checking for none.
             // if pressed twice would panic.
             bttn.hide();
+
+            let dl_fold = downloader::get_download_folder(&t);
+            if let Ok(fold) = dl_fold{
+                let res3 = fs::remove_dir_all(&fold);
+                if res3.is_ok(){
+                    info!("All the content at, {} was removed succesfully", &fold);
+
+                }
+            };
         }
+        }
+        update_podcasts_view(&db, &stack);
+        stack.set_visible_child_name("pd_grid")
     }));
     }
 
@@ -115,7 +131,13 @@ pub fn on_flowbox_child_activate(
     pixbuf: Option<Pixbuf>,
 ) {
     let old = stack.get_child_by_name("pdw").unwrap();
-    let pdw = podcast_widget(db, Some(parent.title()), Some(parent.description()), pixbuf);
+    let pdw = podcast_widget(
+        db,
+        stack,
+        Some(parent.title()),
+        Some(parent.description()),
+        pixbuf,
+    );
 
     stack.remove(&old);
     stack.add_named(&pdw, "pdw");

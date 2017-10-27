@@ -35,9 +35,9 @@
 
 **DB changes:**
 
-- [ ] Db episodes: add watched field
+- [ ] episodes: add watched field
 - [ ] Mark episodes/podcast for archival
-- [ ] Podcast deletion
+- [x] Podcast deletion
 - [ ] Download cleaner
 - [ ] Mark stuff as Favorite. Maybe auto-archive favorites?
 - [ ] New episode notifier on podcast_flowbox_child, like the one vocal has

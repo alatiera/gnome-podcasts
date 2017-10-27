@@ -172,11 +172,11 @@ mod tests {
         let channel = Channel::read_from(BufReader::new(file)).unwrap();
 
         let firstitem = channel.items().first().unwrap();
-        let descr = "NSA whistleblower Edward Snowden discusses the massive Equifax data \
-                     breach and allegations of Russian interference in the US election. \
-                     Commentator Shaun King explains his call for a boycott of the NFL and \
-                     talks about his campaign to bring violent neo-Nazis to justice. Rapper \
-                     Open Mike Eagle performs.";
+        let descr = "NSA whistleblower Edward Snowden discusses the massive Equifax data breach \
+                     and allegations of Russian interference in the US election. Commentator \
+                     Shaun King explains his call for a boycott of the NFL and talks about his \
+                     campaign to bring violent neo-Nazis to justice. Rapper Open Mike Eagle \
+                     performs.";
         let i = parse_episode(&firstitem, 0);
 
         assert_eq!(i.title, Some("The Super Bowl of Racism"));
@@ -251,9 +251,9 @@ mod tests {
 
         let second = channel.items().iter().nth(1).unwrap();
         let i2 = parse_episode(&second, 0);
-        let descr2 = "<p>Jonathan Allen and Amie Parnes didn’t know their \
-                      book would be called ‘Shattered,’ or that their extraordinary access would \
-                      let them chronicle the mounting signs of a doomed campaign.</p>";
+        let descr2 = "<p>Jonathan Allen and Amie Parnes didn’t know their book would be called \
+                      ‘Shattered,’ or that their extraordinary access would let them chronicle \
+                      the mounting signs of a doomed campaign.</p>";
 
         assert_eq!(
             i2.title,
@@ -287,10 +287,10 @@ mod tests {
         let channel = Channel::read_from(BufReader::new(file)).unwrap();
 
         let firstitem = channel.items().first().unwrap();
-        let descr = "Audit your network with a couple of easy commands on Kali Linux. Chris \
-                     decides to blow off a little steam by attacking his IoT devices, Wes \
-                     has the scope on Equifax blaming open source & the Beard just saved \
-                     the show. It’s a really packed episode!";
+        let descr =
+            "Audit your network with a couple of easy commands on Kali Linux. Chris decides to \
+             blow off a little steam by attacking his IoT devices, Wes has the scope on Equifax \
+             blaming open source & the Beard just saved the show. It’s a really packed episode!";
         let i = parse_episode(&firstitem, 0);
 
         assert_eq!(i.title, Some("Hacking Devices with Kali Linux | LUP 214"));
@@ -313,8 +313,7 @@ mod tests {
         let descr2 = "<p>The Gnome project is about to solve one of our audience's biggest \
                       Wayland’s concerns. But as the project takes on a new level of relevance, \
                       decisions for the next version of Gnome have us worried about the \
-                      future.</p>\n\n\
-                      <p>Plus we chat with Wimpy about the Ubuntu Rally in NYC, \
+                      future.</p>\n\n<p>Plus we chat with Wimpy about the Ubuntu Rally in NYC, \
                       Microsoft’s sneaky move to turn Windows 10 into the “ULTIMATE LINUX \
                       RUNTIME”, community news & more!</p>";
         assert_eq!(i2.title, Some("Gnome Does it Again | LUP 213"));

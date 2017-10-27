@@ -207,7 +207,7 @@ impl<'a> Source {
         {
             self.http_etag = etag.map(|x| x.tag().to_string().to_owned());
             self.last_modified = lmod.map(|x| format!("{}", x));
-            self.save(&db)?;
+            self.save(db)?;
         }
 
         Ok(())

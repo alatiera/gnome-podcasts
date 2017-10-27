@@ -59,7 +59,7 @@ fn populate_flowbox(db: &Database, stack: &gtk::Stack, flowbox: &gtk::FlowBox) {
 }
 
 fn setup_podcast_widget(db: &Database, stack: &gtk::Stack) {
-    let pd_widget = podcast_widget(db, None, None, None);
+    let pd_widget = podcast_widget(db, stack, None, None, None);
     stack.add_named(&pd_widget, "pdw");
 }
 

@@ -1,6 +1,6 @@
 verbose = false
 disable_all_formatting = false
-skip_children = false 
+skip_children = false
 max_width = 100
 comment_width = 100
 wrap_comments = true
@@ -20,7 +20,7 @@ spaces_within_parens = false
 write_mode = "Overwrite"
 merge_derives = true
 condense_wildcard_suffixes = true
-# format_strings = true
+format_strings = true
 multiline_closure_forces_block = true
 attributes_on_same_line_as_field = true
 attributes_on_same_line_as_variant = true
