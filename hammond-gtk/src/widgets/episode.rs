@@ -39,9 +39,9 @@ macro_rules! clone {
 }
 
 thread_local!(
-    static GLOBAL: RefCell<Option<((gtk::Button,
-    gtk::Button,
-    Receiver<bool>))>> = RefCell::new(None));
+    static GLOBAL: RefCell<Option<((
+        gtk::Button, gtk::Button, gtk::Button, Receiver<bool>,
+        ))>> = RefCell::new(None));
 
 fn epidose_widget(db: &Database, episode: &mut Episode, pd_title: &str) -> gtk::Box {
     // This is just a prototype and will be reworked probably.
@@ -96,15 +96,18 @@ fn epidose_widget(db: &Database, episode: &mut Episode, pd_title: &str) -> gtk::
     );
 
     let pd_title = pd_title.to_owned();
-    download_button.connect_clicked(clone!(db, play_button, episode  => move |dl| {
+    download_button.connect_clicked(
+        clone!(db, play_button, delete_button, episode  => move |dl| {
         on_download_clicked(
             &db,
             &pd_title,
             &mut episode.clone(),
             dl,
             &play_button,
+            &delete_button,
         );
-    }));
+    }),
+    );
 
     ep
 }
@@ -116,13 +119,14 @@ fn on_download_clicked(
     ep: &mut Episode,
     download_bttn: &gtk::Button,
     play_bttn: &gtk::Button,
+    del_bttn: &gtk::Button,
 ) {
     // Create a async channel.
     let (sender, receiver) = channel();
 
     // Pass the desired arguments into the Local Thread Storage.
-    GLOBAL.with(clone!(download_bttn, play_bttn => move |global| {
-        *global.borrow_mut() = Some((download_bttn, play_bttn, receiver));
+    GLOBAL.with(clone!(download_bttn, play_bttn, del_bttn => move |global| {
+        *global.borrow_mut() = Some((download_bttn, play_bttn, del_bttn, receiver));
     }));
 
     let pd_title = pd_title.to_owned();
@@ -177,10 +181,13 @@ fn on_delete_bttn_clicked(db: &Database, episode_id: i32) {
 
 fn receive() -> glib::Continue {
     GLOBAL.with(|global| {
-        if let Some((ref download_bttn, ref play_bttn, ref reciever)) = *global.borrow() {
+        if let Some((ref download_bttn, ref play_bttn, ref del_bttn, ref reciever)) =
+            *global.borrow()
+        {
             if reciever.try_recv().is_ok() {
                 download_bttn.hide();
                 play_bttn.show();
+                del_bttn.show();
             }
         }
     });

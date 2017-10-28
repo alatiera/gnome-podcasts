@@ -1,6 +1,6 @@
 # Hammond
-## Prototype of a multithreaded, safe, and reliable Gtk+ Podcast client.
-Description...
+## Multithreaded, safe, and reliable Gtk+ Podcast client.
+This is a prototype of a podcast client written in Rust.
 
 ![podcasts_view](./assets/podcasts_view.png)
 ![podcast_widget](./assets/podcast_widget.png)
