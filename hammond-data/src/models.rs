@@ -20,6 +20,7 @@ pub struct Episode {
     epoch: i32,
     length: Option<i32>,
     guid: Option<String>,
+    watched: Option<i32>,
     podcast_id: i32,
 }
 
@@ -245,7 +246,6 @@ impl<'a> NewSource<'a> {
 pub struct NewEpisode<'a> {
     pub title: Option<&'a str>,
     pub uri: Option<&'a str>,
-    pub local_uri: Option<&'a str>,
     pub description: Option<&'a str>,
     pub published_date: Option<String>,
     pub length: Option<i32>,

@@ -20,6 +20,7 @@ CREATE TABLE `episode` (
 	`epoch`	INTEGER NOT NULL DEFAULT 0,
 	`length`	INTEGER,
 	`guid`	TEXT,
+	`watched`	INTEGER ,
 	`podcast_id`	INTEGER NOT NULL
 );
 

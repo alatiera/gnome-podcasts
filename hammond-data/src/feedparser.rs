@@ -6,6 +6,7 @@ use models;
 // TODO: look into how bad-utf8 is handled in rss crate,
 // and figure if there is a need for checking before parsing.
 // TODO: Extend the support for parsing itunes extensions
+/// Parses a rss::Channel into a NewPodcast Struct.
 pub fn parse_podcast(chan: &Channel, source_id: i32) -> models::NewPodcast {
     let title = chan.title().trim().to_owned();
     let link = chan.link().trim().to_owned();
@@ -29,11 +30,11 @@ pub fn parse_podcast(chan: &Channel, source_id: i32) -> models::NewPodcast {
     }
 }
 
+/// Parses a rss::Item into a NewEpisode Struct.
 pub fn parse_episode(item: &Item, parent_id: i32) -> models::NewEpisode {
     let title = item.title().map(|s| s.trim());
     let description = item.description().map(|s| s.trim());
     let guid = item.guid().map(|x| x.value().trim());
-    let local_uri = None;
 
     // Its kinda weird this being an Option type.
     // Rss 2.0 specified that it's optional.
@@ -63,7 +64,6 @@ pub fn parse_episode(item: &Item, parent_id: i32) -> models::NewEpisode {
     models::NewEpisode {
         title,
         uri,
-        local_uri,
         description,
         length,
         published_date: pub_date,
