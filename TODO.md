@@ -35,10 +35,11 @@
 
 **DB changes:**
 
-- [ ] episodes: add watched field
-- [ ] Mark episodes/podcast for archival
+- [x] episodes: add watched field
 - [x] Podcast deletion
-- [ ] Download cleaner
+- [x] Download cleaner
+- [ ] Discuss and decide when to schedule the download cleaner.
+- [ ] Mark episodes/podcast for archival
 - [ ] Mark stuff as Favorite. Maybe auto-archive favorites?
 - [ ] New episode notifier on podcast_flowbox_child, like the one vocal has
 

@@ -15,11 +15,12 @@ extern crate open;
 
 use log::LogLevel;
 use hammond_data::index_feed;
+use hammond_data::dbcheckup;
 
 use std::sync::{Arc, Mutex};
 
 use gtk::prelude::*;
-use gio::ApplicationExt;
+use gio::{ActionMapExt, ApplicationExt, MenuExt, SimpleActionExt};
 
 mod views;
 mod widgets;
@@ -36,6 +37,11 @@ THIS IS STILL A PROTOTYPE.
 fn build_ui(app: &gtk::Application) {
     let db = Arc::new(Mutex::new(hammond_data::establish_connection()));
 
+    let menu = gio::Menu::new();
+    menu.append("Quit", "app.quit");
+    menu.append("Checkup", "app.check");
+    app.set_app_menu(&menu);
+
     // Get the main window
     let window = gtk::ApplicationWindow::new(app);
     window.set_default_size(1050, 600);
@@ -48,10 +54,24 @@ fn build_ui(app: &gtk::Application) {
         Inhibit(false)
     });
 
+    let quit = gio::SimpleAction::new("quit", None);
+    let window2 = window.clone();
+    quit.connect_activate(move |_, _| {
+        window2.destroy();
+    });
+    app.add_action(&quit);
+
+    let db2 = db.clone();
+    let check = gio::SimpleAction::new("check", None);
+    check.connect_activate(move |_, _| {
+        let _ = dbcheckup::run(&db2);
+    });
+    app.add_action(&check);
+
     // Get the headerbar
     let header = headerbar::get_headerbar(&db, &stack);
 
-    // TODO: add delay, cause else theres lock contention for the db obj.
+    // TODO: add delay, cause else there's lock contention for the db obj.
     // utils::refresh_db(db.clone(), stack.clone());
     window.set_titlebar(&header);
 

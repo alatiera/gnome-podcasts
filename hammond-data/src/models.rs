@@ -8,6 +8,7 @@ use errors::*;
 
 #[derive(Queryable, Identifiable, AsChangeset, Associations)]
 #[table_name = "episode"]
+#[changeset_options(treat_none_as_null = "true")]
 #[belongs_to(Podcast, foreign_key = "podcast_id")]
 #[derive(Debug, Clone)]
 pub struct Episode {
@@ -113,6 +114,7 @@ impl Episode {
 
 #[derive(Queryable, Identifiable, AsChangeset, Associations)]
 #[belongs_to(Source, foreign_key = "source_id")]
+#[changeset_options(treat_none_as_null = "true")]
 #[table_name = "podcast"]
 #[derive(Debug, Clone)]
 pub struct Podcast {
@@ -170,6 +172,7 @@ impl Podcast {
 
 #[derive(Queryable, Identifiable, AsChangeset)]
 #[table_name = "source"]
+#[changeset_options(treat_none_as_null = "true")]
 #[derive(Debug, Clone)]
 pub struct Source {
     id: i32,

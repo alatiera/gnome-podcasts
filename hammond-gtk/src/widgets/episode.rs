@@ -4,7 +4,7 @@ use hammond_data::dbqueries;
 use hammond_data::models::Episode;
 use hammond_downloader::downloader;
 use hammond_data::index_feed::Database;
-use hammond_data::dbcheckup::delete_local_content;
+use hammond_data::dbcheckup::*;
 
 use dissolve::strip_html_tags;
 
@@ -81,8 +81,9 @@ fn epidose_widget(db: &Database, episode: &mut Episode, pd_title: &str) -> gtk::
         delete_button.show();
     }
 
-    play_button.connect_clicked(clone!(episode, db => move |_| {
+    play_button.connect_clicked(clone!(db, episode => move |_| {
         on_play_bttn_clicked(&db, episode.id());
+        let _ = set_watched(&db, &mut episode.clone());
     }));
 
     delete_button.connect_clicked(

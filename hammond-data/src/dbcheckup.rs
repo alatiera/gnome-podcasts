@@ -10,22 +10,20 @@ use std::path::Path;
 use std::fs;
 
 // TODO: Write unit test.
-pub fn download_checker(db: Database) -> Result<()> {
+fn download_checker(db: &Database) -> Result<()> {
     let mut episodes = {
         let tempdb = db.lock().unwrap();
         dbqueries::get_downloaded_episodes(&tempdb)?
     };
 
     episodes.par_iter_mut().for_each(|ep| {
-        if ep.local_uri().is_some() {
-            if !Path::new(ep.local_uri().unwrap()).exists() {
-                ep.set_local_uri(None);
-                let res = ep.save(&db.clone());
-                if let Err(err) = res {
-                    error!("Error while trying to update episode: {:#?}", ep);
-                    error!("Error: {}", err);
-                };
-            }
+        if !Path::new(ep.local_uri().unwrap()).exists() {
+            ep.set_local_uri(None);
+            let res = ep.save(&db.clone());
+            if let Err(err) = res {
+                error!("Error while trying to update episode: {:#?}", ep);
+                error!("Error: {}", err);
+            };
         }
     });
 
@@ -33,7 +31,7 @@ pub fn download_checker(db: Database) -> Result<()> {
 }
 
 // TODO: Write unit test.
-pub fn watched_cleaner(db: &Database) -> Result<()> {
+fn watched_cleaner(db: &Database) -> Result<()> {
     let mut episodes = {
         let tempdb = db.lock().unwrap();
         dbqueries::get_watched_episodes(&tempdb)?
@@ -46,7 +44,7 @@ pub fn watched_cleaner(db: &Database) -> Result<()> {
             // TODO: expose a config and a user set option.
             let limit = watched + 172_800; // add 2days in seconds
             if now_utc > limit {
-                let e = delete_local_content(db, &mut ep);
+                let e = delete_local_content(&db.clone(), &mut ep);
                 if let Err(err) = e {
                     error!("Error while trying to delete file: {:?}", ep.local_uri());
                     error!("Error: {}", err);
@@ -77,5 +75,18 @@ pub fn delete_local_content(db: &Database, ep: &mut Episode) -> Result<()> {
             ep.local_uri(),
         );
     }
+    Ok(())
+}
+
+pub fn set_watched(db: &Database, ep: &mut Episode) -> Result<()> {
+    let epoch = Utc::now().timestamp() as i32;
+    ep.set_watched(Some(epoch));
+    ep.save(db)?;
+    Ok(())
+}
+
+pub fn run(db: &Database) -> Result<()> {
+    download_checker(db)?;
+    watched_cleaner(db)?;
     Ok(())
 }
