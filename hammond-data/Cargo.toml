@@ -16,6 +16,7 @@ diesel_codegen = { version = "0.16", features = ["sqlite"] }
 xdg = "2.1"
 lazy_static = "0.2"
 rss = "1.1"
+chrono = "0.4"
 # overwrite diesel dependancy that disables a feature rss depends upon
 dotenv = "*"
 

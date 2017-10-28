@@ -37,6 +37,20 @@ pub fn get_episodes(con: &SqliteConnection) -> QueryResult<Vec<Episode>> {
     eps
 }
 
+pub fn get_downloaded_episodes(con: &SqliteConnection) -> QueryResult<Vec<Episode>> {
+    use schema::episode::dsl::*;
+
+    let eps = episode.filter(local_uri.is_not_null()).load::<Episode>(con);
+    eps
+}
+
+pub fn get_watched_episodes(con: &SqliteConnection) -> QueryResult<Vec<Episode>> {
+    use schema::episode::dsl::*;
+
+    let eps = episode.filter(watched.is_not_null()).load::<Episode>(con);
+    eps
+}
+
 pub fn get_episode(con: &SqliteConnection, ep_id: i32) -> QueryResult<Episode> {
     use schema::episode::dsl::*;
 
@@ -44,7 +58,10 @@ pub fn get_episode(con: &SqliteConnection, ep_id: i32) -> QueryResult<Episode> {
     ep
 }
 
-pub fn get_episode_local_uri(con: &SqliteConnection, ep_id: i32) -> QueryResult<Option<String>> {
+pub fn get_episode_from_local_uri(
+    con: &SqliteConnection,
+    ep_id: i32,
+) -> QueryResult<Option<String>> {
     use schema::episode::dsl::*;
 
     let ep = episode

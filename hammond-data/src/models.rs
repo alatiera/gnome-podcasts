@@ -17,9 +17,11 @@ pub struct Episode {
     local_uri: Option<String>,
     description: Option<String>,
     published_date: Option<String>,
+    /// Representation of system time. Should be in UTC.
     epoch: i32,
     length: Option<i32>,
     guid: Option<String>,
+    /// Represent the epoch value of when the episode was last watched.
     watched: Option<i32>,
     podcast_id: i32,
 }
@@ -92,6 +94,14 @@ impl Episode {
 
     pub fn set_length(&mut self, value: Option<i32>) {
         self.length = value;
+    }
+
+    pub fn watched(&self) -> Option<i32> {
+        self.watched
+    }
+
+    pub fn set_watched(&mut self, value: Option<i32>) {
+        self.watched = value;
     }
 
     pub fn save(&self, db: &Database) -> Result<()> {

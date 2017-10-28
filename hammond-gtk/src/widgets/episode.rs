@@ -4,6 +4,7 @@ use hammond_data::dbqueries;
 use hammond_data::models::Episode;
 use hammond_downloader::downloader;
 use hammond_data::index_feed::Database;
+use hammond_data::dbcheckup::delete_local_content;
 
 use dissolve::strip_html_tags;
 
@@ -11,7 +12,6 @@ use std::thread;
 use std::cell::RefCell;
 use std::sync::mpsc::{channel, Receiver};
 use std::path::Path;
-use std::fs;
 
 use glib;
 use gtk;
@@ -141,7 +141,7 @@ fn on_download_clicked(
 fn on_play_bttn_clicked(db: &Database, episode_id: i32) {
     let local_uri = {
         let tempdb = db.lock().unwrap();
-        dbqueries::get_episode_local_uri(&tempdb, episode_id).unwrap()
+        dbqueries::get_episode_from_local_uri(&tempdb, episode_id).unwrap()
     };
 
     if let Some(uri) = local_uri {
@@ -167,33 +167,11 @@ fn on_delete_bttn_clicked(db: &Database, episode_id: i32) {
         dbqueries::get_episode(&tempdb, episode_id).unwrap()
     };
 
-    let ep2 = ep.clone();
-    let local_uri = ep2.local_uri();
-
-    if local_uri.is_some() {
-        let uri = local_uri.unwrap().to_owned();
-        if Path::new(&uri).exists() {
-            let res = fs::remove_file(&uri);
-            if res.is_ok() {
-                ep.set_local_uri(None);
-                let res2 = ep.save(db);
-                if res2.is_ok() {
-                    info!("Deleted file at: {}", uri);
-                } else {
-                    error!("Error while trying to delete file: {}", uri);
-                    error!("Error: {}", res2.unwrap_err());
-                }
-            } else {
-                error!("Error while trying to delete file: {}", uri);
-                error!("Error: {}", res.unwrap_err());
-            };
-        }
-    } else {
-        error!(
-            "Something went wrong evaluating the following path: {:?}",
-            local_uri
-        );
-    }
+    let e = delete_local_content(db, &mut ep);
+    if let Err(err) = e {
+        error!("Error while trying to delete file: {:?}", ep.local_uri());
+        error!("Error: {}", err);
+    };
 }
 
 fn receive() -> glib::Continue {

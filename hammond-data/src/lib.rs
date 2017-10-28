@@ -16,6 +16,7 @@ extern crate diesel;
 #[macro_use]
 extern crate diesel_codegen;
 
+extern crate chrono;
 extern crate hyper;
 extern crate rayon;
 extern crate reqwest;
@@ -24,6 +25,7 @@ extern crate rss;
 extern crate xdg;
 
 pub mod dbqueries;
+pub mod dbcheckup;
 pub mod models;
 pub mod index_feed;
 pub mod errors;
