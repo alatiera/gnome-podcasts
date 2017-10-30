@@ -22,8 +22,8 @@ pub struct Episode {
     epoch: i32,
     length: Option<i32>,
     guid: Option<String>,
-    /// Represent the epoch value of when the episode was last watched.
-    watched: Option<i32>,
+    /// Represent the epoch value of when the episode was last played.
+    played: Option<i32>,
     podcast_id: i32,
 }
 
@@ -97,12 +97,12 @@ impl Episode {
         self.length = value;
     }
 
-    pub fn watched(&self) -> Option<i32> {
-        self.watched
+    pub fn played(&self) -> Option<i32> {
+        self.played
     }
 
-    pub fn set_watched(&mut self, value: Option<i32>) {
-        self.watched = value;
+    pub fn set_played(&mut self, value: Option<i32>) {
+        self.played = value;
     }
 
     pub fn save(&self, db: &Database) -> Result<()> {

@@ -9,7 +9,7 @@ table! {
         epoch -> Integer,
         length -> Nullable<Integer>,
         guid -> Nullable<Text>,
-        watched -> Nullable<Integer>,
+        played -> Nullable<Integer>,
         podcast_id -> Integer,
     }
 }

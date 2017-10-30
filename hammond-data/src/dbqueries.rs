@@ -45,10 +45,10 @@ pub fn get_downloaded_episodes(con: &SqliteConnection) -> QueryResult<Vec<Episod
     eps
 }
 
-pub fn get_watched_episodes(con: &SqliteConnection) -> QueryResult<Vec<Episode>> {
+pub fn get_played_episodes(con: &SqliteConnection) -> QueryResult<Vec<Episode>> {
     use schema::episode::dsl::*;
 
-    let eps = episode.filter(watched.is_not_null()).load::<Episode>(con);
+    let eps = episode.filter(played.is_not_null()).load::<Episode>(con);
     eps
 }
 
@@ -104,7 +104,7 @@ pub fn get_pd_unplayed_episodes(
     use schema::episode::dsl::*;
 
     let eps = Episode::belonging_to(parent)
-        .filter(watched.is_null())
+        .filter(played.is_null())
         .order(epoch.desc())
         .load::<Episode>(con);
     eps
@@ -185,8 +185,8 @@ pub fn update_none_to_played_now(connection: &SqliteConnection, parent: &Podcast
     use schema::episode::dsl::*;
 
     let epoch_now = Utc::now().timestamp() as i32;
-    diesel::update(Episode::belonging_to(parent).filter(watched.is_null()))
-        .set(watched.eq(Some(epoch_now)))
+    diesel::update(Episode::belonging_to(parent).filter(played.is_null()))
+        .set(played.eq(Some(epoch_now)))
         .execute(connection)?;
 
     Ok(())

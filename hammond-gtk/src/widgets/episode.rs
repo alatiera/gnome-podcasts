@@ -75,7 +75,7 @@ fn epidose_widget(db: &Database, episode: &mut Episode, pd_title: &str) -> gtk::
         });
     }
 
-    if episode.watched().is_some() {
+    if episode.played().is_some() {
         unplayed_button.show();
         played_button.hide();
     }
@@ -90,7 +90,7 @@ fn epidose_widget(db: &Database, episode: &mut Episode, pd_title: &str) -> gtk::
 
     play_button.connect_clicked(clone!(db, episode => move |_| {
         on_play_bttn_clicked(&db, episode.id());
-        let _ = set_watched_now(&db, &mut episode.clone());
+        let _ = set_played_now(&db, &mut episode.clone());
     }));
 
     delete_button.connect_clicked(
@@ -102,15 +102,15 @@ fn epidose_widget(db: &Database, episode: &mut Episode, pd_title: &str) -> gtk::
     }),
     );
 
-    played_button.connect_clicked(clone!(db, episode, unplayed_button => move |watched| {
-        let _ = set_watched_now(&db, &mut episode.clone());
-        watched.hide();
+    played_button.connect_clicked(clone!(db, episode, unplayed_button => move |played| {
+        let _ = set_played_now(&db, &mut episode.clone());
+        played.hide();
         unplayed_button.show();
     }));
 
     unplayed_button.connect_clicked(clone!(db, episode, played_button => move |un| {
         let mut episode = episode.clone();
-        episode.set_watched(None);
+        episode.set_played(None);
         let _ = episode.save(&db);
         un.hide();
         played_button.show();

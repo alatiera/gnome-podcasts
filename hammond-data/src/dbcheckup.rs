@@ -32,18 +32,18 @@ fn download_checker(db: &Database) -> Result<()> {
 }
 
 // TODO: Write unit test.
-fn watched_cleaner(db: &Database) -> Result<()> {
+fn played_cleaner(db: &Database) -> Result<()> {
     let mut episodes = {
         let tempdb = db.lock().unwrap();
-        dbqueries::get_watched_episodes(&tempdb)?
+        dbqueries::get_played_episodes(&tempdb)?
     };
 
     let now_utc = Utc::now().timestamp() as i32;
     episodes.par_iter_mut().for_each(|mut ep| {
-        if ep.local_uri().is_some() && ep.watched().is_some() {
-            let watched = ep.watched().unwrap();
+        if ep.local_uri().is_some() && ep.played().is_some() {
+            let played = ep.played().unwrap();
             // TODO: expose a config and a user set option.
-            let limit = watched + 172_800; // add 2days in seconds
+            let limit = played + 172_800; // add 2days in seconds
             if now_utc > limit {
                 let e = delete_local_content(&Arc::clone(db), &mut ep);
                 if let Err(err) = e {
@@ -79,15 +79,15 @@ pub fn delete_local_content(db: &Database, ep: &mut Episode) -> Result<()> {
     Ok(())
 }
 
-pub fn set_watched_now(db: &Database, ep: &mut Episode) -> Result<()> {
+pub fn set_played_now(db: &Database, ep: &mut Episode) -> Result<()> {
     let epoch = Utc::now().timestamp() as i32;
-    ep.set_watched(Some(epoch));
+    ep.set_played(Some(epoch));
     ep.save(db)?;
     Ok(())
 }
 
 pub fn run(db: &Database) -> Result<()> {
     download_checker(db)?;
-    watched_cleaner(db)?;
+    played_cleaner(db)?;
     Ok(())
 }
