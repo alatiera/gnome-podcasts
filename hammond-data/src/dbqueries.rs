@@ -5,6 +5,7 @@ use diesel;
 use models::{Episode, Podcast, Source};
 use index_feed::Database;
 use errors::*;
+use chrono::prelude::*;
 
 // TODO: Needs cleanup.
 
@@ -96,6 +97,19 @@ pub fn get_pd_episodes(con: &SqliteConnection, parent: &Podcast) -> QueryResult<
     eps
 }
 
+pub fn get_pd_unplayed_episodes(
+    con: &SqliteConnection,
+    parent: &Podcast,
+) -> QueryResult<Vec<Episode>> {
+    use schema::episode::dsl::*;
+
+    let eps = Episode::belonging_to(parent)
+        .filter(watched.is_null())
+        .order(epoch.desc())
+        .load::<Episode>(con);
+    eps
+}
+
 pub fn get_pd_episodes_limit(
     con: &SqliteConnection,
     parent: &Podcast,
@@ -163,5 +177,17 @@ pub fn delete_podcast_episodes(connection: &SqliteConnection, parent_id: i32) ->
     use schema::episode::dsl::*;
 
     diesel::delete(episode.filter(podcast_id.eq(parent_id))).execute(connection)?;
+    Ok(())
+}
+
+// TODO: make it transaction.
+pub fn update_none_to_played_now(connection: &SqliteConnection, parent: &Podcast) -> Result<()> {
+    use schema::episode::dsl::*;
+
+    let epoch_now = Utc::now().timestamp() as i32;
+    diesel::update(Episode::belonging_to(parent).filter(watched.is_null()))
+        .set(watched.eq(Some(epoch_now)))
+        .execute(connection)?;
+
     Ok(())
 }

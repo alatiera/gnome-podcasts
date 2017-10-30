@@ -78,7 +78,7 @@ pub fn delete_local_content(db: &Database, ep: &mut Episode) -> Result<()> {
     Ok(())
 }
 
-pub fn set_watched(db: &Database, ep: &mut Episode) -> Result<()> {
+pub fn set_watched_now(db: &Database, ep: &mut Episode) -> Result<()> {
     let epoch = Utc::now().timestamp() as i32;
     ep.set_watched(Some(epoch));
     ep.save(db)?;

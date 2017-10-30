@@ -7,7 +7,7 @@ use std::fs;
 use hammond_data::models::Podcast;
 use hammond_downloader::downloader;
 use hammond_data::index_feed::Database;
-use hammond_data::dbqueries::{load_podcast_from_title, remove_feed};
+use hammond_data::dbqueries;
 
 use widgets::episode::episodes_listbox;
 use podcasts_view::update_podcasts_view;
@@ -30,6 +30,7 @@ macro_rules! clone {
     );
 }
 
+// TODO: Refacto to take a Podcast Stuct as argument instead.
 pub fn podcast_widget(
     db: &Database,
     stack: &gtk::Stack,
@@ -47,6 +48,9 @@ pub fn podcast_widget(
     let desc_label: gtk::Label = pd_widget_buidler.get_object("description_label").unwrap();
     let view: gtk::Viewport = pd_widget_buidler.get_object("view").unwrap();
     let unsub_button: gtk::Button = pd_widget_buidler.get_object("unsub_button").unwrap();
+    let played_button: gtk::Button = pd_widget_buidler
+        .get_object("mark_all_played_button")
+        .unwrap();
 
     // TODO: refactor, splitoff, spawn a thread probably.
     if title.is_some() {
@@ -54,10 +58,10 @@ pub fn podcast_widget(
         unsub_button.connect_clicked(clone!(db, stack, t => move |bttn| {
         let pd = {
             let tempdb = db.lock().unwrap();
-            load_podcast_from_title(&tempdb, &t)};
+            dbqueries::load_podcast_from_title(&tempdb, &t)};
         if let Ok(pd) = pd {
 
-        let res = remove_feed(&db, &pd);
+        let res = dbqueries::remove_feed(&db, &pd);
         if res.is_ok(){
             info!("{} was removed succesfully.", &t);
             // hack to get away without properly checking for none.
@@ -91,6 +95,29 @@ pub fn podcast_widget(
 
     if let Some(i) = image {
         cover.set_from_pixbuf(&i);
+    }
+
+    // TODO: refactor
+    if let Some(t) = title {
+        let t = t.to_owned();
+        played_button.connect_clicked(clone!(db, stack, t => move |_| {
+            let tempdb = db.lock().unwrap();
+            let parent = dbqueries::load_podcast_from_title(&tempdb, &t).unwrap();
+            let _ = dbqueries::update_none_to_played_now(&tempdb, &parent);
+            drop(tempdb);
+            update_podcast_widget(&db, &stack, &parent);
+        }));
+    }
+
+    if let Some(t) = title {
+        let tempdb = db.lock().unwrap();
+        let parent = dbqueries::load_podcast_from_title(&tempdb, &t).unwrap();
+        let f = dbqueries::get_pd_unplayed_episodes(&tempdb, &parent);
+        if let Ok(l) = f {
+            if l.len() > 0 {
+                played_button.show()
+            }
+        }
     }
 
     pd_widget
@@ -158,18 +185,17 @@ pub fn get_pixbuf_from_path(img_path: Option<&str>, pd_title: &str) -> Option<Pi
     }
 }
 
-// pub fn update_podcast_widget(db: &&Database, stack: &gtk::Stack, pd:
-// &Podcast){
-//     let old = stack.get_child_by_name("pdw").unwrap();
-//     let pdw = pd_widget_from_diesel_model(&db.clone(), pd, &stack.clone());
-//         let vis = stack.get_visible_child_name().unwrap();
+pub fn update_podcast_widget(db: &Database, stack: &gtk::Stack, pd: &Podcast) {
+    let old = stack.get_child_by_name("pdw").unwrap();
+    let pdw = pd_widget_from_diesel_model(db, pd, stack);
+    let vis = stack.get_visible_child_name().unwrap();
 
-//     stack.remove(&old);
-//     stack.add_named(&pdw, "pdw");
-//     stack.set_visible_child_name(&vis);
-// }
+    stack.remove(&old);
+    stack.add_named(&pdw, "pdw");
+    stack.set_visible_child_name(&vis);
+}
 
-// pub fn pd_widget_from_diesel_model(db: &Database, pd: &Podcast) -> gtk::Box {
-//     let img = get_pixbuf_from_path(pd.image_uri(), pd.title());
-//     podcast_widget(db, Some(pd.title()), Some(pd.description()), img)
-// }
+fn pd_widget_from_diesel_model(db: &Database, pd: &Podcast, stack: &gtk::Stack) -> gtk::Box {
+    let img = get_pixbuf_from_path(pd.image_uri(), pd.title());
+    podcast_widget(db, stack, Some(pd.title()), Some(pd.description()), img)
+}

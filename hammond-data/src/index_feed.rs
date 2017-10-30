@@ -23,7 +23,9 @@ fn index_source(con: &SqliteConnection, foo: &NewSource) -> Result<()> {
     match dbqueries::load_source_from_uri(con, foo.uri) {
         Ok(_) => Ok(()),
         Err(_) => {
-            diesel::insert(foo).into(schema::source::table).execute(con)?;
+            diesel::insert(foo)
+                .into(schema::source::table)
+                .execute(con)?;
             Ok(())
         }
     }
@@ -38,7 +40,9 @@ fn index_podcast(con: &SqliteConnection, pd: &NewPodcast) -> Result<()> {
             foo.save_changes::<Podcast>(con)?;
         },
         Err(_) => {
-            diesel::insert(pd).into(schema::podcast::table).execute(con)?;
+            diesel::insert(pd)
+                .into(schema::podcast::table)
+                .execute(con)?;
         }
     }
     Ok(())
@@ -58,7 +62,9 @@ fn index_episode(con: &SqliteConnection, ep: &NewEpisode) -> Result<()> {
             foo.save_changes::<Episode>(con)?;
         },
         Err(_) => {
-            diesel::insert(ep).into(schema::episode::table).execute(con)?;
+            diesel::insert(ep)
+                .into(schema::episode::table)
+                .execute(con)?;
         }
     }
     Ok(())

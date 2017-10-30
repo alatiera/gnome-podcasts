@@ -52,6 +52,8 @@ fn epidose_widget(db: &Database, episode: &mut Episode, pd_title: &str) -> gtk::
     let download_button: gtk::Button = builder.get_object("download_button").unwrap();
     let play_button: gtk::Button = builder.get_object("play_button").unwrap();
     let delete_button: gtk::Button = builder.get_object("delete_button").unwrap();
+    let played_button: gtk::Button = builder.get_object("mark_played_button").unwrap();
+    let unplayed_button: gtk::Button = builder.get_object("mark_unplayed_button").unwrap();
 
     let title_label: gtk::Label = builder.get_object("title_label").unwrap();
     let desc_label: gtk::Label = builder.get_object("desc_label").unwrap();
@@ -73,6 +75,11 @@ fn epidose_widget(db: &Database, episode: &mut Episode, pd_title: &str) -> gtk::
         });
     }
 
+    if episode.watched().is_some() {
+        unplayed_button.show();
+        played_button.hide();
+    }
+
     // Show or hide the play/delete/download buttons upon widget initialization.
     let local_uri = episode.local_uri();
     if local_uri.is_some() && Path::new(local_uri.unwrap()).exists() {
@@ -83,7 +90,7 @@ fn epidose_widget(db: &Database, episode: &mut Episode, pd_title: &str) -> gtk::
 
     play_button.connect_clicked(clone!(db, episode => move |_| {
         on_play_bttn_clicked(&db, episode.id());
-        let _ = set_watched(&db, &mut episode.clone());
+        let _ = set_watched_now(&db, &mut episode.clone());
     }));
 
     delete_button.connect_clicked(
@@ -94,6 +101,20 @@ fn epidose_widget(db: &Database, episode: &mut Episode, pd_title: &str) -> gtk::
         download_button.show();
     }),
     );
+
+    played_button.connect_clicked(clone!(db, episode, unplayed_button => move |watched| {
+        let _ = set_watched_now(&db, &mut episode.clone());
+        watched.hide();
+        unplayed_button.show();
+    }));
+
+    unplayed_button.connect_clicked(clone!(db, episode, played_button => move |un| {
+        let mut episode = episode.clone();
+        episode.set_watched(None);
+        let _ = episode.save(&db);
+        un.hide();
+        played_button.show();
+    }));
 
     let pd_title = pd_title.to_owned();
     download_button.connect_clicked(
