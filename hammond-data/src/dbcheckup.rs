@@ -8,6 +8,7 @@ use chrono::prelude::*;
 
 use std::path::Path;
 use std::fs;
+use std::sync::Arc;
 
 // TODO: Write unit test.
 fn download_checker(db: &Database) -> Result<()> {
@@ -19,7 +20,7 @@ fn download_checker(db: &Database) -> Result<()> {
     episodes.par_iter_mut().for_each(|ep| {
         if !Path::new(ep.local_uri().unwrap()).exists() {
             ep.set_local_uri(None);
-            let res = ep.save(&db.clone());
+            let res = ep.save(&Arc::clone(db));
             if let Err(err) = res {
                 error!("Error while trying to update episode: {:#?}", ep);
                 error!("Error: {}", err);
@@ -40,11 +41,11 @@ fn watched_cleaner(db: &Database) -> Result<()> {
     let now_utc = Utc::now().timestamp() as i32;
     episodes.par_iter_mut().for_each(|mut ep| {
         if ep.local_uri().is_some() && ep.watched().is_some() {
-            let watched = ep.watched().unwrap().clone();
+            let watched = ep.watched().unwrap();
             // TODO: expose a config and a user set option.
             let limit = watched + 172_800; // add 2days in seconds
             if now_utc > limit {
-                let e = delete_local_content(&db.clone(), &mut ep);
+                let e = delete_local_content(&Arc::clone(db), &mut ep);
                 if let Err(err) = e {
                     error!("Error while trying to delete file: {:?}", ep.local_uri());
                     error!("Error: {}", err);

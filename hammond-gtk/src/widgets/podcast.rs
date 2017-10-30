@@ -111,10 +111,10 @@ pub fn podcast_widget(
 
     if let Some(t) = title {
         let tempdb = db.lock().unwrap();
-        let parent = dbqueries::load_podcast_from_title(&tempdb, &t).unwrap();
+        let parent = dbqueries::load_podcast_from_title(&tempdb, t).unwrap();
         let f = dbqueries::get_pd_unplayed_episodes(&tempdb, &parent);
         if let Ok(l) = f {
-            if l.len() > 0 {
+            if !l.is_empty() {
                 played_button.show()
             }
         }

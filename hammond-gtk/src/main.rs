@@ -61,7 +61,7 @@ fn build_ui(app: &gtk::Application) {
     });
     app.add_action(&quit);
 
-    let db2 = db.clone();
+    let db2 = Arc::clone(&db);
     let check = gio::SimpleAction::new("check", None);
     check.connect_activate(move |_, _| {
         let _ = dbcheckup::run(&db2);
