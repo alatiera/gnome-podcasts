@@ -45,14 +45,16 @@ pub fn podcast_widget(db: &Database, stack: &gtk::Stack, pd: &Podcast) -> gtk::B
         .get_object("mark_all_played_button")
         .unwrap();
 
-    // TODO: spawn a thread to avoid locking the UI probably.
+    // TODO: should spawn a thread to avoid locking the UI probably.
     unsub_button.connect_clicked(clone!(db, stack, pd => move |bttn| {
         on_unsub_button_clicked(&db, &stack, &pd, bttn);
     }));
 
     title_label.set_text(pd.title());
     let listbox = episodes_listbox(db, pd.title());
-    view.add(&listbox);
+    if let Ok(l) = listbox {
+        view.add(&l);
+    }
 
     desc_label.set_text(pd.description());
 

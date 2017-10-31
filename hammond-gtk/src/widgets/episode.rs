@@ -5,6 +5,7 @@ use hammond_data::models::Episode;
 use hammond_downloader::downloader;
 use hammond_data::index_feed::Database;
 use hammond_data::dbcheckup::*;
+use hammond_data::errors::*;
 
 use dissolve::strip_html_tags;
 
@@ -133,7 +134,7 @@ fn epidose_widget(db: &Database, episode: &mut Episode, pd_title: &str) -> gtk::
     ep
 }
 
-// TODO: show notification when dl is finished and block play_bttn till then.
+// TODO: show notification when dl is finished.
 fn on_download_clicked(
     db: &Database,
     pd_title: &str,
@@ -215,11 +216,10 @@ fn receive() -> glib::Continue {
     glib::Continue(false)
 }
 
-pub fn episodes_listbox(db: &Database, pd_title: &str) -> gtk::ListBox {
-    // TODO: handle unwraps.
+pub fn episodes_listbox(db: &Database, pd_title: &str) -> Result<gtk::ListBox> {
     let conn = db.lock().unwrap();
-    let pd = dbqueries::load_podcast_from_title(&conn, pd_title).unwrap();
-    let mut episodes = dbqueries::get_pd_episodes(&conn, &pd).unwrap();
+    let pd = dbqueries::load_podcast_from_title(&conn, pd_title)?;
+    let mut episodes = dbqueries::get_pd_episodes(&conn, &pd)?;
     drop(conn);
 
     let list = gtk::ListBox::new();
@@ -232,5 +232,5 @@ pub fn episodes_listbox(db: &Database, pd_title: &str) -> gtk::ListBox {
     list.set_hexpand(false);
     list.set_visible(true);
     list.set_selection_mode(gtk::SelectionMode::None);
-    list
+    Ok(list)
 }
