@@ -54,6 +54,7 @@ fn build_ui(app: &gtk::Application) {
         Inhibit(false)
     });
 
+    // Setup quit in the app menu since default is overwritten.
     let quit = gio::SimpleAction::new("quit", None);
     let window2 = window.clone();
     quit.connect_activate(move |_, _| {
@@ -61,6 +62,7 @@ fn build_ui(app: &gtk::Application) {
     });
     app.add_action(&quit);
 
+    // Setup the dbcheckup in the app menu.
     let db2 = Arc::clone(&db);
     let check = gio::SimpleAction::new("check", None);
     check.connect_activate(move |_, _| {

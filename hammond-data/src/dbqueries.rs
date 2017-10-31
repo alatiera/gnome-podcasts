@@ -59,10 +59,7 @@ pub fn get_episode(con: &SqliteConnection, ep_id: i32) -> QueryResult<Episode> {
     ep
 }
 
-pub fn get_episode_from_local_uri(
-    con: &SqliteConnection,
-    ep_id: i32,
-) -> QueryResult<Option<String>> {
+pub fn get_episode_local_uri(con: &SqliteConnection, ep_id: i32) -> QueryResult<Option<String>> {
     use schema::episode::dsl::*;
 
     let ep = episode

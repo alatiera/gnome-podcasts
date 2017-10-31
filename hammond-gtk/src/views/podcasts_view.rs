@@ -45,10 +45,10 @@ fn populate_flowbox(db: &Database, stack: &gtk::Stack, flowbox: &gtk::FlowBox) {
             let title = parent.title();
             let img = parent.image_uri();
             let pixbuf = get_pixbuf_from_path(img, title);
-            let f = create_flowbox_child(title, pixbuf.clone());
+            let f = create_flowbox_child(title, pixbuf);
 
             f.connect_activate(clone!(db, stack, parent => move |_| {
-                on_flowbox_child_activate(&db, &stack, &parent, pixbuf.clone());
+                on_flowbox_child_activate(&db, &stack, &parent);
             }));
             flowbox.add(&f);
         });
@@ -58,8 +58,11 @@ fn populate_flowbox(db: &Database, stack: &gtk::Stack, flowbox: &gtk::FlowBox) {
     flowbox.show_all();
 }
 
-fn setup_podcast_widget(db: &Database, stack: &gtk::Stack) {
-    let pd_widget = podcast_widget(db, stack, None, None, None);
+fn setup_podcast_widget(stack: &gtk::Stack) {
+    let pd_widget_source = include_str!("../../gtk/podcast_widget.ui");
+    let pd_widget_buidler = gtk::Builder::new_from_string(pd_widget_source);
+    let pd_widget: gtk::Box = pd_widget_buidler.get_object("podcast_widget").unwrap();
+
     stack.add_named(&pd_widget, "pdw");
 }
 
@@ -80,7 +83,7 @@ fn setup_podcasts_grid(db: &Database, stack: &gtk::Stack) {
 
 pub fn setup_stack(db: &Database) -> gtk::Stack {
     let stack = gtk::Stack::new();
-    setup_podcast_widget(db, &stack);
+    setup_podcast_widget(&stack);
     setup_podcasts_grid(db, &stack);
     stack
 }

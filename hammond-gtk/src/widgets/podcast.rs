@@ -30,14 +30,7 @@ macro_rules! clone {
     );
 }
 
-// TODO: Refacto to take a Podcast Stuct as argument instead.
-pub fn podcast_widget(
-    db: &Database,
-    stack: &gtk::Stack,
-    title: Option<&str>,
-    description: Option<&str>,
-    image: Option<Pixbuf>,
-) -> gtk::Box {
+pub fn podcast_widget(db: &Database, stack: &gtk::Stack, pd: &Podcast) -> gtk::Box {
     // Adapted from gnome-music AlbumWidget
     let pd_widget_source = include_str!("../../gtk/podcast_widget.ui");
     let pd_widget_buidler = gtk::Builder::new_from_string(pd_widget_source);
@@ -52,75 +45,76 @@ pub fn podcast_widget(
         .get_object("mark_all_played_button")
         .unwrap();
 
-    // TODO: refactor, splitoff, spawn a thread probably.
-    if title.is_some() {
-        let t = title.unwrap().to_owned();
-        unsub_button.connect_clicked(clone!(db, stack, t => move |bttn| {
-        let pd = {
-            let tempdb = db.lock().unwrap();
-            dbqueries::load_podcast_from_title(&tempdb, &t)};
-        if let Ok(pd) = pd {
-
-        let res = dbqueries::remove_feed(&db, &pd);
-        if res.is_ok(){
-            info!("{} was removed succesfully.", &t);
-            // hack to get away without properly checking for none.
-            // if pressed twice would panic.
-            bttn.hide();
-
-            let dl_fold = downloader::get_download_folder(&t);
-            if let Ok(fold) = dl_fold{
-                let res3 = fs::remove_dir_all(&fold);
-                if res3.is_ok(){
-                    info!("All the content at, {} was removed succesfully", &fold);
-
-                }
-            };
-        }
-        }
-        update_podcasts_view(&db, &stack);
-        stack.set_visible_child_name("pd_grid")
+    // TODO: spawn a thread to avoid locking the UI probably.
+    unsub_button.connect_clicked(clone!(db, stack, pd => move |bttn| {
+        on_unsub_button_clicked(&db, &stack, &pd, bttn);
     }));
-    }
 
-    if let Some(t) = title {
-        title_label.set_text(t);
-        let listbox = episodes_listbox(db, t);
-        view.add(&listbox);
-    }
+    title_label.set_text(pd.title());
+    let listbox = episodes_listbox(db, pd.title());
+    view.add(&listbox);
 
-    if let Some(d) = description {
-        desc_label.set_text(d);
-    }
+    desc_label.set_text(pd.description());
 
-    if let Some(i) = image {
+    let img = get_pixbuf_from_path(pd.image_uri(), pd.title());
+    if let Some(i) = img {
         cover.set_from_pixbuf(&i);
     }
 
-    // TODO: refactor
-    if let Some(t) = title {
-        let t = t.to_owned();
-        played_button.connect_clicked(clone!(db, stack, t => move |_| {
-            let tempdb = db.lock().unwrap();
-            let parent = dbqueries::load_podcast_from_title(&tempdb, &t).unwrap();
-            let _ = dbqueries::update_none_to_played_now(&tempdb, &parent);
-            drop(tempdb);
-            update_podcast_widget(&db, &stack, &parent);
-        }));
-    }
+    played_button.connect_clicked(clone!(db, stack, pd => move |_| {
+        on_played_button_clicked(&db, &stack, &pd);
+    }));
 
-    if let Some(t) = title {
-        let tempdb = db.lock().unwrap();
-        let parent = dbqueries::load_podcast_from_title(&tempdb, t).unwrap();
-        let f = dbqueries::get_pd_unplayed_episodes(&tempdb, &parent);
-        if let Ok(l) = f {
-            if !l.is_empty() {
-                played_button.show()
-            }
-        }
-    }
+    show_played_button(db, pd, &played_button);
 
     pd_widget
+}
+
+fn on_unsub_button_clicked(
+    db: &Database,
+    stack: &gtk::Stack,
+    pd: &Podcast,
+    unsub_button: &gtk::Button,
+) {
+    let res = dbqueries::remove_feed(db, pd);
+    if res.is_ok() {
+        info!("{} was removed succesfully.", pd.title());
+        // hack to get away without properly checking for none.
+        // if pressed twice would panic.
+        unsub_button.hide();
+
+        let dl_fold = downloader::get_download_folder(pd.title());
+        if let Ok(fold) = dl_fold {
+            let res3 = fs::remove_dir_all(&fold);
+            if res3.is_ok() {
+                info!("All the content at, {} was removed succesfully", &fold);
+            }
+        };
+    }
+    update_podcasts_view(db, stack);
+    stack.set_visible_child_name("pd_grid")
+}
+
+fn on_played_button_clicked(db: &Database, stack: &gtk::Stack, pd: &Podcast) {
+    {
+        let tempdb = db.lock().unwrap();
+        let _ = dbqueries::update_none_to_played_now(&tempdb, pd);
+    }
+
+    update_podcast_widget(db, stack, pd);
+}
+
+fn show_played_button(db: &Database, pd: &Podcast, played_button: &gtk::Button) {
+    let new_episodes = {
+        let tempdb = db.lock().unwrap();
+        dbqueries::get_pd_unplayed_episodes(&tempdb, pd)
+    };
+
+    if let Ok(n) = new_episodes {
+        if !n.is_empty() {
+            played_button.show()
+        }
+    }
 }
 
 pub fn create_flowbox_child(title: &str, cover: Option<Pixbuf>) -> gtk::FlowBoxChild {
@@ -151,20 +145,9 @@ pub fn create_flowbox_child(title: &str, cover: Option<Pixbuf>) -> gtk::FlowBoxC
     fbc
 }
 
-pub fn on_flowbox_child_activate(
-    db: &Database,
-    stack: &gtk::Stack,
-    parent: &Podcast,
-    pixbuf: Option<Pixbuf>,
-) {
+pub fn on_flowbox_child_activate(db: &Database, stack: &gtk::Stack, parent: &Podcast) {
     let old = stack.get_child_by_name("pdw").unwrap();
-    let pdw = podcast_widget(
-        db,
-        stack,
-        Some(parent.title()),
-        Some(parent.description()),
-        pixbuf,
-    );
+    let pdw = podcast_widget(db, stack, parent);
 
     stack.remove(&old);
     stack.add_named(&pdw, "pdw");
@@ -187,15 +170,10 @@ pub fn get_pixbuf_from_path(img_path: Option<&str>, pd_title: &str) -> Option<Pi
 
 pub fn update_podcast_widget(db: &Database, stack: &gtk::Stack, pd: &Podcast) {
     let old = stack.get_child_by_name("pdw").unwrap();
-    let pdw = pd_widget_from_diesel_model(db, pd, stack);
+    let pdw = podcast_widget(db, stack, pd);
     let vis = stack.get_visible_child_name().unwrap();
 
     stack.remove(&old);
     stack.add_named(&pdw, "pdw");
     stack.set_visible_child_name(&vis);
-}
-
-fn pd_widget_from_diesel_model(db: &Database, pd: &Podcast, stack: &gtk::Stack) -> gtk::Box {
-    let img = get_pixbuf_from_path(pd.image_uri(), pd.title());
-    podcast_widget(db, stack, Some(pd.title()), Some(pd.description()), img)
 }

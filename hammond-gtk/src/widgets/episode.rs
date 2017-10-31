@@ -167,7 +167,7 @@ fn on_download_clicked(
 fn on_play_bttn_clicked(db: &Database, episode_id: i32) {
     let local_uri = {
         let tempdb = db.lock().unwrap();
-        dbqueries::get_episode_from_local_uri(&tempdb, episode_id).unwrap()
+        dbqueries::get_episode_local_uri(&tempdb, episode_id).unwrap()
     };
 
     if let Some(uri) = local_uri {
