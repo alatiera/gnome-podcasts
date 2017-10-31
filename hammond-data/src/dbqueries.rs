@@ -7,7 +7,9 @@ use index_feed::Database;
 use errors::*;
 use chrono::prelude::*;
 
-// TODO: Needs cleanup.
+/// Random db querries helper functions.
+/// Probably needs cleanup.
+
 
 pub fn get_sources(con: &SqliteConnection) -> QueryResult<Vec<Source>> {
     use schema::source::dsl::*;
@@ -22,14 +24,6 @@ pub fn get_podcasts(con: &SqliteConnection) -> QueryResult<Vec<Podcast>> {
     let pds = podcast.load::<Podcast>(con);
     pds
 }
-
-// Maybe later.
-// pub fn get_podcasts_ids(con: &SqliteConnection) -> QueryResult<Vec<i32>> {
-//     use schema::podcast::dsl::*;
-
-//     let pds = podcast.select(id).load::<i32>(con);
-//     pds
-// }
 
 pub fn get_episodes(con: &SqliteConnection) -> QueryResult<Vec<Episode>> {
     use schema::episode::dsl::*;
@@ -177,14 +171,16 @@ pub fn delete_podcast_episodes(connection: &SqliteConnection, parent_id: i32) ->
     Ok(())
 }
 
-// TODO: make it transaction.
 pub fn update_none_to_played_now(connection: &SqliteConnection, parent: &Podcast) -> Result<()> {
     use schema::episode::dsl::*;
 
     let epoch_now = Utc::now().timestamp() as i32;
-    diesel::update(Episode::belonging_to(parent).filter(played.is_null()))
-        .set(played.eq(Some(epoch_now)))
-        .execute(connection)?;
+    connection.transaction(|| -> Result<()> {
+        diesel::update(Episode::belonging_to(parent).filter(played.is_null()))
+            .set(played.eq(Some(epoch_now)))
+            .execute(connection)?;
+        Ok(())
+    })?;
 
     Ok(())
 }
