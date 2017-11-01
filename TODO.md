@@ -10,6 +10,7 @@
 
 **Would be nice:**
 
+- [ ] Possibly Convert description labels to textview.
 - [ ] Make Podcast cover fetchng and loading not block the execution of the program at startup.
 - [ ] Re-design EpisodeWidget.
 - [ ] Lazy evaluate episode loading based on the podcast_widget's view scrolling.
@@ -29,8 +30,9 @@
 
 **Look into:**
 
-- [ ] Not sure how bad-utf8 is handled in rss crate
 - [ ] Icons && install stuff && flatpak
+
+* Neither flatpak nor meson support atm building from cargo.
 
 
 **DB changes:**
@@ -46,6 +48,7 @@
 
 ## Secondary:
 
+- [ ] Unplayed Only and Downloaded only view.
 - [ ] Auto-updater, update on startup
 - [ ] Make use of file metadas, [This](https://github.com/GuillaumeGomez/audio-video-metadata) might be helpfull.
 - [ ] Notifications

@@ -13,7 +13,7 @@ It has nothing to do with the horrible headlines on the news.
 
 ## Quick start
 ```sh
-git clone https://gitlab.gnome.org/alatiera/Hammond.git
+git clone https://gitlab.gnome.org/alatiera/hammond.git
 cd Hammond/
 cargo run -p hammond-gtk --release
 ```
@@ -34,7 +34,7 @@ apt-get install -yqq --no-install-recommends libgtk-3-dev
 
 **Fedora**:
 ```sh
-dnf install -y gtk3-devel openssl-devel sqlite-devel
+dnf install -y gtk3-devel glib2-devel openssl-devel sqlite-devel
 ```
 
 If you happen to build it on other distributions please let me know the names of the corresponding libraries. Feel free to open a PR or an Issue to note it.

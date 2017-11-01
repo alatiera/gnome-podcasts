@@ -3,8 +3,6 @@ use rfc822_sanitizer::parse_from_rfc2822_with_fallback;
 
 use models;
 
-// TODO: look into how bad-utf8 is handled in rss crate,
-// and figure if there is a need for checking before parsing.
 // TODO: Extend the support for parsing itunes extensions
 /// Parses a `rss::Channel` into a `NewPodcast` Struct.
 pub fn parse_podcast(chan: &Channel, source_id: i32) -> models::NewPodcast {

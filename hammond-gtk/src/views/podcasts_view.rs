@@ -77,7 +77,6 @@ fn setup_podcasts_grid(db: &Database, stack: &gtk::Stack) {
     // FIXME: flowbox childs activate with space/enter but not with clicks.
     let flowbox: gtk::FlowBox = builder.get_object("flowbox").unwrap();
     // Populate the flowbox with the Podcasts.
-    // populate_podcasts_flowbox(db, stack, &flowbox);
     populate_flowbox(db, stack, &flowbox);
 }
 
