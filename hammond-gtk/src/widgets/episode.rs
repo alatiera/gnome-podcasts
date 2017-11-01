@@ -17,7 +17,7 @@ use std::path::Path;
 use glib;
 use gtk;
 use gtk::prelude::*;
-use gtk::ContainerExt;
+use gtk::{ContainerExt, TextBufferExt};
 
 // http://gtk-rs.org/tuto/closures
 // FIXME: Atm this macro is copied into every module.
@@ -57,11 +57,11 @@ fn epidose_widget(db: &Database, episode: &mut Episode, pd_title: &str) -> gtk::
     let unplayed_button: gtk::Button = builder.get_object("mark_unplayed_button").unwrap();
 
     let title_label: gtk::Label = builder.get_object("title_label").unwrap();
-    let desc_label: gtk::Label = builder.get_object("desc_label").unwrap();
+    // let desc_label: gtk::Label = builder.get_object("desc_label").unwrap();
     let expander: gtk::Expander = builder.get_object("expand_desc").unwrap();
+    let desc_text_view: gtk::TextView = builder.get_object("desc_text_view").unwrap();
 
     title_label.set_xalign(0.0);
-    desc_label.set_xalign(0.0);
 
     if let Some(t) = episode.title() {
         title_label.set_text(t);
@@ -72,7 +72,9 @@ fn epidose_widget(db: &Database, episode: &mut Episode, pd_title: &str) -> gtk::
 
         expander.connect_activate(move |_| {
             let plain_text = strip_html_tags(&d).join(" ");
-            desc_label.set_text(plain_text.trim())
+            // TODO: handle unwrap
+            let buff = desc_text_view.get_buffer().unwrap();
+            buff.set_text(plain_text.trim());
         });
     }
 

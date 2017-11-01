@@ -38,7 +38,8 @@ pub fn podcast_widget(db: &Database, stack: &gtk::Stack, pd: &Podcast) -> gtk::B
 
     let cover: gtk::Image = pd_widget_buidler.get_object("cover").unwrap();
     let title_label: gtk::Label = pd_widget_buidler.get_object("title_label").unwrap();
-    let desc_label: gtk::Label = pd_widget_buidler.get_object("description_label").unwrap();
+    // let desc_label: gtk::Label = pd_widget_buidler.get_object("description_label").unwrap();
+    let desc_text_view: gtk::TextView = pd_widget_buidler.get_object("desc_text_view").unwrap();
     let view: gtk::Viewport = pd_widget_buidler.get_object("view").unwrap();
     let unsub_button: gtk::Button = pd_widget_buidler.get_object("unsub_button").unwrap();
     let played_button: gtk::Button = pd_widget_buidler
@@ -56,7 +57,10 @@ pub fn podcast_widget(db: &Database, stack: &gtk::Stack, pd: &Podcast) -> gtk::B
         view.add(&l);
     }
 
-    desc_label.set_text(pd.description());
+    {
+        let buff = desc_text_view.get_buffer().unwrap();
+        buff.set_text(pd.description());
+    }
 
     let img = get_pixbuf_from_path(pd.image_uri(), pd.title());
     if let Some(i) = img {

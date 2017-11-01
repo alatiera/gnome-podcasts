@@ -10,7 +10,7 @@
 
 **Would be nice:**
 
-- [ ] Possibly Convert description labels to textview.
+- [x] Possibly Convert description labels to textview.
 - [ ] Make Podcast cover fetchng and loading not block the execution of the program at startup.
 - [ ] Re-design EpisodeWidget.
 - [ ] Lazy evaluate episode loading based on the podcast_widget's view scrolling.
