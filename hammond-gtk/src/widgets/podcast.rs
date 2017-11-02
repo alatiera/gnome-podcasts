@@ -123,7 +123,11 @@ fn show_played_button(db: &Database, pd: &Podcast, played_button: &gtk::Button) 
     }
 }
 
-pub fn create_flowbox_child(title: &str, cover: Option<Pixbuf>) -> gtk::FlowBoxChild {
+// TODO: Add something that displays the amount of unplayed episodes on each Podcast.
+// Look into the vocal implementation.
+// https://github.com/needle-and-thread/\
+// vocal/blob/bced2e23cedb25b5edd0626e5f9361ceace683c9/src/Widgets/CoverArt.vala#L50
+pub fn create_flowbox_child(_db: &Database, pd: &Podcast) -> gtk::FlowBoxChild {
     let build_src = include_str!("../../gtk/podcasts_child.ui");
     let builder = gtk::Builder::new_from_string(build_src);
 
@@ -131,7 +135,6 @@ pub fn create_flowbox_child(title: &str, cover: Option<Pixbuf>) -> gtk::FlowBoxC
     let box_: gtk::Box = builder.get_object("fb_child").unwrap();
     let pd_title: gtk::Label = builder.get_object("pd_title").unwrap();
     let pd_cover: gtk::Image = builder.get_object("pd_cover").unwrap();
-
     let events: gtk::EventBox = builder.get_object("events").unwrap();
 
     // GDK.TOUCH_MASK
@@ -139,7 +142,9 @@ pub fn create_flowbox_child(title: &str, cover: Option<Pixbuf>) -> gtk::FlowBoxC
     // http://gtk-rs.org/docs/gdk/constant.TOUCH_MASK.html
     events.add_events(4_194_304);
 
-    pd_title.set_text(title);
+    pd_title.set_text(pd.title());
+
+    let cover = get_pixbuf_from_path(pd.image_uri(), pd.title());
 
     if let Some(img) = cover {
         pd_cover.set_from_pixbuf(&img);
