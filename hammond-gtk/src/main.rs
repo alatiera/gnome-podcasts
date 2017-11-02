@@ -14,7 +14,6 @@ extern crate loggerv;
 extern crate open;
 
 use log::LogLevel;
-use hammond_data::index_feed;
 use hammond_data::dbcheckup;
 
 use std::sync::{Arc, Mutex};

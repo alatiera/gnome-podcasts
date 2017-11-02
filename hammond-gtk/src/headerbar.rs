@@ -1,8 +1,10 @@
 use gtk;
 use gtk::prelude::*;
 
-use index_feed;
+use hammond_data::index_feed;
 use hammond_data::index_feed::Database;
+
+use podcasts_view::update_podcasts_view;
 use utils;
 
 // http://gtk-rs.org/tuto/closures
@@ -53,7 +55,16 @@ pub fn get_headerbar(db: &Database, stack: &gtk::Stack) -> gtk::HeaderBar {
 
     // TODO: make it a back arrow button, that will hide when appropriate,
     // and add a StackSwitcher when more views are added.
-    home_button.connect_clicked(clone!(stack => move |_| stack.set_visible_child_name("pd_grid")));
+    home_button.connect_clicked(clone!(db, stack => move |_| {
+        let vis = stack.get_visible_child_name().unwrap();
+        if vis == "pd_grid" {
+            // More conviniet way to reload podcasts_flowbox while trying out stuff.
+            // Ideally, the functionality should be removed from final design.
+            update_podcasts_view(&db, &stack);
+        } else {
+            stack.set_visible_child_name("pd_grid");
+        }
+    }));
 
     // FIXME: There appears to be a memmory leak here.
     refresh_button.connect_clicked(clone!(stack, db => move |_| {
