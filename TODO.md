@@ -10,12 +10,14 @@
 
 **Would be nice:**
 
+- [ ] Use GResource for assets like the banner.png etc, instead of hardcoded paths.
 - [x] Possibly Convert description labels to textview.
 - [ ] Make Podcast cover fetchng and loading not block the execution of the program at startup.
 - [ ] Re-design EpisodeWidget.
 - [ ] Lazy evaluate episode loading based on the podcast_widget's view scrolling.
 - [ ] Headerbar back button and stack switching
-- [ ] New episode notifier on podcast_flowbox_child, like the one vocal has
+- [x] New episode notifier on podcast_flowbox_child, like the one vocal has
+- [ ] Polish the flowbox_child banner.
 
 
 **Unhack stuff:**

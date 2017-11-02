@@ -42,7 +42,7 @@ fn populate_flowbox(db: &Database, stack: &gtk::Stack, flowbox: &gtk::FlowBox) {
 
     if let Ok(pds) = podcasts {
         pds.iter().for_each(|parent| {
-            let f = create_flowbox_child(db, &parent);
+            let f = create_flowbox_child(db, parent);
 
             f.connect_activate(clone!(db, stack, parent => move |_| {
                 on_flowbox_child_activate(&db, &stack, &parent);

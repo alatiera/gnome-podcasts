@@ -15,23 +15,44 @@
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <child>
-          <object class="GtkEventBox" id="events">
+          <placeholder/>
+        </child>
+        <child type="overlay">
+          <object class="GtkImage" id="pd_cover">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="visible_window">False</property>
-            <property name="above_child">True</property>
-            <child>
-              <object class="GtkImage" id="pd_cover">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="stock">gtk-missing-image</property>
-                <property name="use_fallback">True</property>
-                <property name="icon_size">6</property>
-              </object>
-            </child>
+            <property name="halign">center</property>
+            <property name="valign">center</property>
+            <property name="stock">gtk-missing-image</property>
+            <property name="use_fallback">True</property>
+            <property name="icon_size">6</property>
+          </object>
+        </child>
+        <child type="overlay">
+          <object class="GtkImage" id="banner">
+            <property name="can_focus">False</property>
+            <property name="no_show_all">True</property>
+            <property name="halign">end</property>
+            <property name="valign">start</property>
+            <property name="stock">gtk-missing-image</property>
           </object>
           <packing>
-            <property name="index">-1</property>
+            <property name="index">1</property>
+          </packing>
+        </child>
+        <child type="overlay">
+          <object class="GtkLabel" id="banner_label">
+            <property name="can_focus">False</property>
+            <property name="no_show_all">True</property>
+            <property name="label" translatable="yes">Num</property>
+            <property name="use_markup">True</property>
+            <property name="justify">center</property>
+            <property name="track_visited_links">False</property>
+            <property name="xalign">0.87999999523162842</property>
+            <property name="yalign">0.14000000059604645</property>
+          </object>
+          <packing>
+            <property name="index">2</property>
           </packing>
         </child>
       </object>

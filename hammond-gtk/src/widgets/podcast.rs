@@ -30,7 +30,7 @@ macro_rules! clone {
     );
 }
 
-pub fn podcast_widget(db: &Database, stack: &gtk::Stack, pd: &Podcast) -> gtk::Box {
+fn podcast_widget(db: &Database, stack: &gtk::Stack, pd: &Podcast) -> gtk::Box {
     // Adapted from gnome-music AlbumWidget
     let pd_widget_source = include_str!("../../gtk/podcast_widget.ui");
     let pd_widget_buidler = gtk::Builder::new_from_string(pd_widget_source);
@@ -123,11 +123,7 @@ fn show_played_button(db: &Database, pd: &Podcast, played_button: &gtk::Button) 
     }
 }
 
-// TODO: Add something that displays the amount of unplayed episodes on each Podcast.
-// Look into the vocal implementation.
-// https://github.com/needle-and-thread/\
-// vocal/blob/bced2e23cedb25b5edd0626e5f9361ceace683c9/src/Widgets/CoverArt.vala#L50
-pub fn create_flowbox_child(_db: &Database, pd: &Podcast) -> gtk::FlowBoxChild {
+pub fn create_flowbox_child(db: &Database, pd: &Podcast) -> gtk::FlowBoxChild {
     let build_src = include_str!("../../gtk/podcasts_child.ui");
     let builder = gtk::Builder::new_from_string(build_src);
 
@@ -135,25 +131,42 @@ pub fn create_flowbox_child(_db: &Database, pd: &Podcast) -> gtk::FlowBoxChild {
     let box_: gtk::Box = builder.get_object("fb_child").unwrap();
     let pd_title: gtk::Label = builder.get_object("pd_title").unwrap();
     let pd_cover: gtk::Image = builder.get_object("pd_cover").unwrap();
-    let events: gtk::EventBox = builder.get_object("events").unwrap();
-
-    // GDK.TOUCH_MASK
-    // https://developer.gnome.org/gdk3/stable/gdk3-Events.html#GDK-TOUCH-MASK:CAPS
-    // http://gtk-rs.org/docs/gdk/constant.TOUCH_MASK.html
-    events.add_events(4_194_304);
+    let banner: gtk::Image = builder.get_object("banner").unwrap();
+    let banner_title: gtk::Label = builder.get_object("banner_label").unwrap();
 
     pd_title.set_text(pd.title());
 
     let cover = get_pixbuf_from_path(pd.image_uri(), pd.title());
-
     if let Some(img) = cover {
         pd_cover.set_from_pixbuf(&img);
     };
+
+    configure_banner(db, pd, &banner, &banner_title);
 
     let fbc = gtk::FlowBoxChild::new();
     fbc.add(&box_);
     // info!("flowbox child created");
     fbc
+}
+
+fn configure_banner(db: &Database, pd: &Podcast, banner: &gtk::Image, banner_title: &gtk::Label) {
+    let bann = Pixbuf::new_from_file_at_scale("assets/banner.png", 100, 100, true);
+    if let Ok(b) = bann {
+        banner.set_from_pixbuf(&b);
+
+        let new_episodes = {
+            let tempdb = db.lock().unwrap();
+            dbqueries::get_pd_unplayed_episodes(&tempdb, pd)
+        };
+
+        if let Ok(n) = new_episodes {
+            if !n.is_empty() {
+                banner_title.set_text(&n.len().to_string());
+                banner.show();
+                banner_title.show();
+            }
+        }
+    }
 }
 
 pub fn on_flowbox_child_activate(db: &Database, stack: &gtk::Stack, parent: &Podcast) {
@@ -170,7 +183,7 @@ pub fn on_flowbox_child_activate(db: &Database, stack: &gtk::Stack, parent: &Pod
     println!("Hello World!, child activated");
 }
 
-pub fn get_pixbuf_from_path(img_path: Option<&str>, pd_title: &str) -> Option<Pixbuf> {
+fn get_pixbuf_from_path(img_path: Option<&str>, pd_title: &str) -> Option<Pixbuf> {
     let img_path = downloader::cache_image(pd_title, img_path);
     if let Some(i) = img_path {
         Pixbuf::new_from_file_at_scale(&i, 200, 200, true).ok()
