@@ -13,24 +13,6 @@ use std::sync::mpsc::{channel, Receiver};
 
 use views::podcasts_view;
 
-// http://gtk-rs.org/tuto/closures
-macro_rules! clone {
-    (@param _) => ( _ );
-    (@param $x:ident) => ( $x );
-    ($($n:ident),+ => move || $body:expr) => (
-        {
-            $( let $n = $n.clone(); )+
-            move || $body
-        }
-    );
-    ($($n:ident),+ => move |$($p:tt),+| $body:expr) => (
-        {
-            $( let $n = $n.clone(); )+
-            move |$(clone!(@param $p),)+| $body
-        }
-    );
-}
-
 // Create a thread local storage that will store the arguments to be transfered.
 thread_local!(
     static GLOBAL: RefCell<Option<(Database,
@@ -68,10 +50,9 @@ pub fn refresh_feed(db: &Database, stack: &gtk::Stack, source: &mut Source) {
         *global.borrow_mut() = Some((db, stack, receiver));
     }));
 
-    let mut source = source.clone();
     // TODO: add timeout option and error reporting.
-    thread::spawn(clone!(db => move || {
-        let foo_ = hammond_data::index_feed::refresh_source(&db, &mut source);
+    thread::spawn(clone!(db, source => move || {
+        let foo_ = hammond_data::index_feed::refresh_source(&db, &mut source.clone());
 
         if let Ok(x) = foo_ {
             let Feed(mut req, s) = x;

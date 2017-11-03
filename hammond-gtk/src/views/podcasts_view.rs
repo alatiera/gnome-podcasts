@@ -6,24 +6,6 @@ use hammond_data::index_feed::Database;
 
 use widgets::podcast::*;
 
-// http://gtk-rs.org/tuto/closures
-macro_rules! clone {
-    (@param _) => ( _ );
-    (@param $x:ident) => ( $x );
-    ($($n:ident),+ => move || $body:expr) => (
-        {
-            $( let $n = $n.clone(); )+
-            move || $body
-        }
-    );
-    ($($n:ident),+ => move |$($p:tt),+| $body:expr) => (
-        {
-            $( let $n = $n.clone(); )+
-            move |$(clone!(@param $p),)+| $body
-        }
-    );
-}
-
 fn show_empty_view(stack: &gtk::Stack) {
     let builder = include_str!("../../gtk/empty_view.ui");
     let builder = gtk::Builder::new_from_string(builder);

@@ -21,6 +21,25 @@ use std::sync::{Arc, Mutex};
 use gtk::prelude::*;
 use gio::{ActionMapExt, ApplicationExt, MenuExt, SimpleActionExt};
 
+// http://gtk-rs.org/tuto/closures
+#[macro_export]
+macro_rules! clone {
+    (@param _) => ( _ );
+    (@param $x:ident) => ( $x );
+    ($($n:ident),+ => move || $body:expr) => (
+        {
+            $( let $n = $n.clone(); )+
+            move || $body
+        }
+    );
+    ($($n:ident),+ => move |$($p:tt),+| $body:expr) => (
+        {
+            $( let $n = $n.clone(); )+
+            move |$(clone!(@param $p),)+| $body
+        }
+    );
+}
+
 mod views;
 mod widgets;
 mod headerbar;
@@ -62,18 +81,15 @@ fn build_ui(app: &gtk::Application) {
     app.add_action(&quit);
 
     // Setup the dbcheckup in the app menu.
-    let db2 = Arc::clone(&db);
     let check = gio::SimpleAction::new("check", None);
-    check.connect_activate(move |_, _| {
-        let _ = dbcheckup::run(&db2);
-    });
+    check.connect_activate(clone!(db => move |_, _| {
+        let _ = dbcheckup::run(&db);
+    }));
     app.add_action(&check);
 
     // Get the headerbar
     let header = headerbar::get_headerbar(&db, &stack);
 
-    // TODO: add delay, cause else there's lock contention for the db obj.
-    // utils::refresh_db(db.clone(), stack.clone());
     window.set_titlebar(&header);
 
     window.show_all();

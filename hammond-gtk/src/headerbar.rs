@@ -7,24 +7,6 @@ use hammond_data::index_feed::Database;
 use podcasts_view::update_podcasts_view;
 use utils;
 
-// http://gtk-rs.org/tuto/closures
-macro_rules! clone {
-    (@param _) => ( _ );
-    (@param $x:ident) => ( $x );
-    ($($n:ident),+ => move || $body:expr) => (
-        {
-            $( let $n = $n.clone(); )+
-            move || $body
-        }
-    );
-    ($($n:ident),+ => move |$($p:tt),+| $body:expr) => (
-        {
-            $( let $n = $n.clone(); )+
-            move |$(clone!(@param $p),)+| $body
-        }
-    );
-}
-
 pub fn get_headerbar(db: &Database, stack: &gtk::Stack) -> gtk::HeaderBar {
     let builder = include_str!("../gtk/headerbar.ui");
     let builder = gtk::Builder::new_from_string(builder);

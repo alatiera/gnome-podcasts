@@ -12,24 +12,6 @@ use hammond_data::dbqueries;
 use widgets::episode::episodes_listbox;
 use podcasts_view::update_podcasts_view;
 
-// http://gtk-rs.org/tuto/closures
-macro_rules! clone {
-    (@param _) => ( _ );
-    (@param $x:ident) => ( $x );
-    ($($n:ident),+ => move || $body:expr) => (
-        {
-            $( let $n = $n.clone(); )+
-            move || $body
-        }
-    );
-    ($($n:ident),+ => move |$($p:tt),+| $body:expr) => (
-        {
-            $( let $n = $n.clone(); )+
-            move |$(clone!(@param $p),)+| $body
-        }
-    );
-}
-
 fn podcast_widget(db: &Database, stack: &gtk::Stack, pd: &Podcast) -> gtk::Box {
     // Adapted from gnome-music AlbumWidget
     let pd_widget_source = include_str!("../../gtk/podcast_widget.ui");
@@ -52,7 +34,7 @@ fn podcast_widget(db: &Database, stack: &gtk::Stack, pd: &Podcast) -> gtk::Box {
     }));
 
     title_label.set_text(pd.title());
-    let listbox = episodes_listbox(db, pd.title());
+    let listbox = episodes_listbox(db, &pd);
     if let Ok(l) = listbox {
         view.add(&l);
     }

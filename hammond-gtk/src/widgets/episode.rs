@@ -1,7 +1,7 @@
 
 use open;
 use hammond_data::dbqueries;
-use hammond_data::models::Episode;
+use hammond_data::models::{Episode, Podcast};
 use hammond_downloader::downloader;
 use hammond_data::index_feed::Database;
 use hammond_data::dbcheckup::*;
@@ -18,26 +18,6 @@ use glib;
 use gtk;
 use gtk::prelude::*;
 use gtk::{ContainerExt, TextBufferExt};
-
-// http://gtk-rs.org/tuto/closures
-// FIXME: Atm this macro is copied into every module.
-// Figure out how to propely define once and export it instead.
-macro_rules! clone {
-    (@param _) => ( _ );
-    (@param $x:ident) => ( $x );
-    ($($n:ident),+ => move || $body:expr) => (
-        {
-            $( let $n = $n.clone(); )+
-            move || $body
-        }
-    );
-    ($($n:ident),+ => move |$($p:tt),+| $body:expr) => (
-        {
-            $( let $n = $n.clone(); )+
-            move |$(clone!(@param $p),)+| $body
-        }
-    );
-}
 
 thread_local!(
     static GLOBAL: RefCell<Option<((
@@ -218,15 +198,14 @@ fn receive() -> glib::Continue {
     glib::Continue(false)
 }
 
-pub fn episodes_listbox(db: &Database, pd_title: &str) -> Result<gtk::ListBox> {
+pub fn episodes_listbox(db: &Database, pd: &Podcast) -> Result<gtk::ListBox> {
     let conn = db.lock().unwrap();
-    let pd = dbqueries::load_podcast_from_title(&conn, pd_title)?;
     let mut episodes = dbqueries::get_pd_episodes(&conn, &pd)?;
     drop(conn);
 
     let list = gtk::ListBox::new();
     episodes.iter_mut().for_each(|ep| {
-        let w = epidose_widget(db, ep, pd_title);
+        let w = epidose_widget(db, ep, pd.title());
         list.add(&w)
     });
 
