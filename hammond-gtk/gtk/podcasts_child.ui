@@ -3,8 +3,8 @@
 <interface>
   <requires lib="gtk+" version="3.20"/>
   <object class="GtkBox" id="fb_child">
-    <property name="width_request">200</property>
-    <property name="height_request">200</property>
+    <property name="width_request">256</property>
+    <property name="height_request">256</property>
     <property name="visible">True</property>
     <property name="can_focus">False</property>
     <property name="halign">center</property>
@@ -44,12 +44,16 @@
           <object class="GtkLabel" id="banner_label">
             <property name="can_focus">False</property>
             <property name="no_show_all">True</property>
+            <property name="halign">end</property>
+            <property name="valign">start</property>
+            <property name="margin_right">40</property>
+            <property name="margin_top">38</property>
             <property name="label" translatable="yes">Num</property>
             <property name="use_markup">True</property>
             <property name="justify">center</property>
             <property name="track_visited_links">False</property>
-            <property name="xalign">0.87999999523162842</property>
-            <property name="yalign">0.14000000059604645</property>
+            <property name="xalign">1</property>
+            <property name="yalign">0</property>
           </object>
           <packing>
             <property name="index">2</property>
@@ -73,7 +77,7 @@
         <property name="justify">center</property>
         <property name="ellipsize">end</property>
         <property name="single_line_mode">True</property>
-        <property name="max_width_chars">30</property>
+        <property name="max_width_chars">35</property>
       </object>
       <packing>
         <property name="expand">False</property>

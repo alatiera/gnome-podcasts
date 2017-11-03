@@ -43,7 +43,7 @@ fn build_ui(app: &gtk::Application) {
 
     // Get the main window
     let window = gtk::ApplicationWindow::new(app);
-    window.set_default_size(1050, 600);
+    window.set_default_size(1150, 650);
     // Setup the Stack that will manage the switch between podcasts_view and podcast_widget.
     let stack = podcasts_view::setup_stack(&db);
     window.add(&stack);

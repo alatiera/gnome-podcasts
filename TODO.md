@@ -48,6 +48,7 @@
 
 ## Secondary:
 
+- [ ] Discuss and decide when to schedule the download cleaner. [#3](https://gitlab.gnome.org/alatiera/Hammond/issues/3)
 - [ ] Unplayed Only and Downloaded only view.
 - [ ] Auto-updater, update on startup
 - [ ] Make use of file metadas, [This](https://github.com/GuillaumeGomez/audio-video-metadata) might be helpfull.
@@ -55,7 +56,6 @@
 
 **DB changes:**
 
-- [ ] Discuss and decide when to schedule the download cleaner.
 - [ ] Mark episodes/podcast for archival
 - [ ] Mark stuff as Favorite. Maybe auto-archive favorites?
 

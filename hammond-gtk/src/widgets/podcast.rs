@@ -150,7 +150,7 @@ pub fn create_flowbox_child(db: &Database, pd: &Podcast) -> gtk::FlowBoxChild {
 }
 
 fn configure_banner(db: &Database, pd: &Podcast, banner: &gtk::Image, banner_title: &gtk::Label) {
-    let bann = Pixbuf::new_from_file_at_scale("assets/banner.png", 100, 100, true);
+    let bann = Pixbuf::new_from_file_at_scale("assets/banner.png", 256, 256, true);
     if let Ok(b) = bann {
         banner.set_from_pixbuf(&b);
 
@@ -186,7 +186,7 @@ pub fn on_flowbox_child_activate(db: &Database, stack: &gtk::Stack, parent: &Pod
 fn get_pixbuf_from_path(img_path: Option<&str>, pd_title: &str) -> Option<Pixbuf> {
     let img_path = downloader::cache_image(pd_title, img_path);
     if let Some(i) = img_path {
-        Pixbuf::new_from_file_at_scale(&i, 200, 200, true).ok()
+        Pixbuf::new_from_file_at_scale(&i, 256, 256, true).ok()
     } else {
         None
     }
