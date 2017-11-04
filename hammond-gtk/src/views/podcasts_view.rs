@@ -120,6 +120,7 @@ fn setup_podcasts_grid(db: &Database, stack: &gtk::Stack) {
 
 pub fn setup_stack(db: &Database) -> gtk::Stack {
     let stack = gtk::Stack::new();
+    stack.set_transition_type(gtk::StackTransitionType::SlideLeftRight);
     setup_podcast_widget(&stack);
     setup_podcasts_grid(db, &stack);
     stack

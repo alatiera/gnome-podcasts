@@ -74,20 +74,6 @@ fn build_ui(app: &gtk::Application) {
         Inhibit(false)
     });
 
-    // let builder = gtk::Builder::new_from_string(include_str!("../gtk/foo.glade"));
-    // let boxx: gtk::Box = builder.get_object("box").unwrap();
-    // let child: gtk::Box = builder.get_object("child").unwrap();
-    // let flowbox: gtk::FlowBox = builder.get_object("flowbox").unwrap();
-    // window.add(&boxx);
-
-    // let fbc = gtk::FlowBoxChild::new();
-    // fbc.add(&child);
-    // flowbox.connect_child_activated(move |_, f| {
-    //     println!("Hello world");
-    //     println!("child activated: {:?}", f);
-    // });
-    // flowbox.add(&fbc);
-
     // Setup quit in the app menu since default is overwritten.
     let quit = gio::SimpleAction::new("quit", None);
     let window2 = window.clone();
