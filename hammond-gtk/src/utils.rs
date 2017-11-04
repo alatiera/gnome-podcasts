@@ -5,22 +5,27 @@ use hammond_data::index_feed;
 use hammond_data::models::Source;
 use hammond_data::index_feed::Database;
 
-use std::thread;
+use std::{thread, time};
 use std::cell::RefCell;
 use std::sync::mpsc::{channel, Receiver};
 
 use views::podcasts_view;
 
+type Foo = RefCell<Option<(Database, gtk::Stack, Receiver<bool>)>>;
+
 // Create a thread local storage that will store the arguments to be transfered.
-thread_local!(
-    static GLOBAL: RefCell<Option<(Database,
-    gtk::Stack,
-    Receiver<bool>)>> = RefCell::new(None));
+thread_local!(static GLOBAL: Foo = RefCell::new(None));
 
 /// Update the rss feed(s) originating from `Source`.
 /// If `source` is None, Fetches all the `Source` entries in the database and updates them.
+/// `delay` represents the desired time in seconds for the thread to sleep before executing.
 /// When It's done,it queues up a `podcast_view` refresh.
-pub fn refresh_feed(db: &Database, stack: &gtk::Stack, source: Option<Vec<Source>>) {
+pub fn refresh_feed(
+    db: &Database,
+    stack: &gtk::Stack,
+    source: Option<Vec<Source>>,
+    delay: Option<u64>,
+) {
     // Create a async channel.
     let (sender, receiver) = channel();
 
@@ -30,6 +35,11 @@ pub fn refresh_feed(db: &Database, stack: &gtk::Stack, source: Option<Vec<Source
     }));
 
     thread::spawn(clone!(db => move || {
+        if let Some(s) = delay{
+            let t = time::Duration::from_secs(s);
+            thread::sleep(t);
+        }
+
         let feeds = {
             if let Some(mut vec) = source {
                 Ok(index_feed::fetch_feeds(&db, &mut vec))

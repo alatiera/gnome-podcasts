@@ -18,6 +18,7 @@
 - [ ] Headerbar back button and stack switching
 - [x] New episode notifier on podcast_flowbox_child, like the one vocal has
 - [ ] Polish the flowbox_child banner.
+- [x] Update on startup
 
 
 **Unhack stuff:**
@@ -50,7 +51,7 @@
 
 - [ ] Discuss and decide when to schedule the download cleaner. [#3](https://gitlab.gnome.org/alatiera/Hammond/issues/3)
 - [ ] Unplayed Only and Downloaded only view.
-- [ ] Auto-updater, update on startup
+- [ ] Auto-updater 
 - [ ] Make use of file metadas, [This](https://github.com/GuillaumeGomez/audio-video-metadata) might be helpfull.
 - [ ] OPML import/export // Probably need to create a crate.
 

@@ -19,10 +19,9 @@ use gtk;
 use gtk::prelude::*;
 use gtk::{ContainerExt, TextBufferExt};
 
-thread_local!(
-    static GLOBAL: RefCell<Option<((
-        gtk::Button, gtk::Button, gtk::Button, Receiver<bool>,
-        ))>> = RefCell::new(None));
+type Foo = RefCell<Option<(gtk::Button, gtk::Button, gtk::Button, Receiver<bool>)>>;
+
+thread_local!(static GLOBAL: Foo = RefCell::new(None));
 
 fn epidose_widget(db: &Database, episode: &mut Episode, pd_title: &str) -> gtk::Box {
     // This is just a prototype and will be reworked probably.

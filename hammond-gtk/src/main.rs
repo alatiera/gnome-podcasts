@@ -89,6 +89,12 @@ fn build_ui(app: &gtk::Application) {
     }));
     app.add_action(&check);
 
+    // queue a db update 1 minute after the startup.
+    gtk::idle_add(clone!(db, stack => move || {
+        utils::refresh_feed(&db, &stack, None, Some(60));
+        glib::Continue(false)
+    }));
+
     // Get the headerbar
     let header = headerbar::get_headerbar(&db, &stack);
 
