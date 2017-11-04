@@ -89,9 +89,15 @@ fn insert_return_episode(con: &SqliteConnection, ep: &NewEpisode) -> Result<Epis
     Ok(dbqueries::load_episode_from_uri(con, ep.uri.unwrap())?)
 }
 
-pub fn index_loop(db: &Database) -> Result<()> {
+pub fn full_index_loop(db: &Database) -> Result<()> {
     let mut f = fetch_feeds(db)?;
 
+    index_feed(&db, &mut f);
+    info!("Indexing done.");
+    Ok(())
+}
+
+pub fn index_feed(db: &Database, f: &mut [Feed]) {
     f.par_iter_mut()
         .for_each(|&mut Feed(ref mut req, ref source)| {
             let e = complete_index_from_source(req, source, db);
@@ -100,8 +106,6 @@ pub fn index_loop(db: &Database) -> Result<()> {
                 error!("Error msg: {}", e.unwrap_err());
             };
         });
-    info!("Indexing done.");
-    Ok(())
 }
 
 pub fn complete_index_from_source(
@@ -274,10 +278,10 @@ mod tests {
             index_source(&tempdb, &NewSource::new_with_uri(feed)).unwrap()
         });
 
-        index_loop(&db).unwrap();
+        full_index_loop(&db).unwrap();
 
         // Run again to cover Unique constrains erros.
-        index_loop(&db).unwrap();
+        full_index_loop(&db).unwrap();
     }
 
     #[test]

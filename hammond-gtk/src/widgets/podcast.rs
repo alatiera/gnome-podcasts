@@ -30,7 +30,7 @@ fn podcast_widget(db: &Database, stack: &gtk::Stack, pd: &Podcast) -> gtk::Box {
     }));
 
     title_label.set_text(pd.title());
-    let listbox = episodes_listbox(db, &pd);
+    let listbox = episodes_listbox(db, pd);
     if let Ok(l) = listbox {
         view.add(&l);
     }

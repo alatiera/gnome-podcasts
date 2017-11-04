@@ -49,7 +49,7 @@ pub fn get_headerbar(db: &Database, stack: &gtk::Stack) -> gtk::HeaderBar {
 
     // FIXME: There appears to be a memmory leak here.
     refresh_button.connect_clicked(clone!(stack, db => move |_| {
-        utils::refresh_db(&db, &stack);
+        utils::refresh_feed(&db, &stack, None);
     }));
 
     header
@@ -62,9 +62,9 @@ fn on_add_bttn_clicked(db: &Database, stack: &gtk::Stack, url: &str) {
     };
     info!("{:?} feed added", url);
 
-    if let Ok(mut s) = source {
+    if let Ok(s) = source {
         // update the db
-        utils::refresh_feed(db, stack, &mut s);
+        utils::refresh_feed(db, stack, Some(Box::new(vec![s])));
     } else {
         error!("Expected Error, feed probably already exists.");
         error!("Error: {:?}", source.unwrap_err());
