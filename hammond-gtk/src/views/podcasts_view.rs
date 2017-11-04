@@ -92,30 +92,18 @@ fn on_flowbox_child_activate(db: &Database, stack: &gtk::Stack, parent: &Podcast
     // aggresive memory cleanup
     // probably not needed
     old.destroy();
-    println!("Hello World!, child activated");
 }
 
 fn setup_podcasts_grid(db: &Database, stack: &gtk::Stack) {
     let builder = gtk::Builder::new_from_string(include_str!("../../gtk/podcasts_view.ui"));
     let grid: gtk::Grid = builder.get_object("grid").unwrap();
+    let view: gtk::Viewport = builder.get_object("view").unwrap();
+
+    let flowbox = init_flowbox(db, stack);
+    view.add(&flowbox);
+
     stack.add_named(&grid, "pd_grid");
     stack.set_visible_child(&grid);
-
-    // Adapted copy of the way gnome-music does albumview
-    let flowbox: gtk::FlowBox = builder.get_object("flowbox").unwrap();
-
-    // TODO: handle unwraps.
-    flowbox.connect_child_activated(clone!(db, stack => move |_, child| {
-        // This is such an ugly hack...
-        let id = child.get_name().unwrap().parse::<i32>().unwrap();
-        let parent = {
-            let tempdb = db.lock().unwrap();
-            dbqueries::get_podcast_from_id(&tempdb, id).unwrap()
-        };
-        on_flowbox_child_activate(&db, &stack, &parent);
-    }));
-    // Populate the flowbox with the Podcasts.
-    populate_flowbox(db, stack, &flowbox);
 }
 
 pub fn setup_stack(db: &Database) -> gtk::Stack {
@@ -129,10 +117,10 @@ pub fn setup_stack(db: &Database) -> gtk::Stack {
 pub fn update_podcasts_view(db: &Database, stack: &gtk::Stack) {
     let builder = gtk::Builder::new_from_string(include_str!("../../gtk/podcasts_view.ui"));
     let grid: gtk::Grid = builder.get_object("grid").unwrap();
+    let view: gtk::Viewport = builder.get_object("view").unwrap();
 
-    let flowbox: gtk::FlowBox = builder.get_object("flowbox").unwrap();
-    // Populate the flowbox with the Podcasts.
-    populate_flowbox(db, stack, &flowbox);
+    let flowbox = init_flowbox(db, stack);
+    view.add(&flowbox);
 
     let old = stack.get_child_by_name("pd_grid").unwrap();
     let vis = stack.get_visible_child_name().unwrap();
@@ -145,4 +133,22 @@ pub fn update_podcasts_view(db: &Database, stack: &gtk::Stack) {
     // aggresive memory cleanup
     // probably not needed
     old.destroy();
+}
+
+fn init_flowbox(db: &Database, stack: &gtk::Stack) -> gtk::FlowBox {
+    let flowbox = gtk::FlowBox::new();
+
+    // TODO: handle unwraps.
+    flowbox.connect_child_activated(clone!(db, stack => move |_, child| {
+        // This is such an ugly hack...
+        let id = child.get_name().unwrap().parse::<i32>().unwrap();
+        let parent = {
+            let tempdb = db.lock().unwrap();
+            dbqueries::get_podcast_from_id(&tempdb, id).unwrap()
+        };
+        on_flowbox_child_activate(&db, &stack, &parent);
+    }));
+    // Populate the flowbox with the Podcasts.
+    populate_flowbox(db, stack, &flowbox);
+    flowbox
 }
