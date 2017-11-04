@@ -29,7 +29,7 @@
 
 **FIXME:**
 
-- [ ] Fix Flowbox child activation. [#1](https://gitlab.gnome.org/alatiera/Hammond/issues/1)
+- [x] Fix Flowbox child activation. [#1](https://gitlab.gnome.org/alatiera/Hammond/issues/1)
 - [ ] Fix Etag/Last-modified implementation. [#2](https://gitlab.gnome.org/alatiera/Hammond/issues/2)
 
 

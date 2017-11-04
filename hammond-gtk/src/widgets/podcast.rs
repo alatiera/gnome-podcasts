@@ -121,8 +121,9 @@ pub fn create_flowbox_child(db: &Database, pd: &Podcast) -> gtk::FlowBoxChild {
     configure_banner(db, pd, &banner, &banner_title);
 
     let fbc = gtk::FlowBoxChild::new();
+    // There's probably a better way to store the id somewhere.
+    fbc.set_name(&pd.id().to_string());
     fbc.add(&box_);
-    // info!("flowbox child created");
     fbc
 }
 

@@ -31,7 +31,8 @@
                     <property name="homogeneous">True</property>
                     <property name="column_spacing">5</property>
                     <property name="row_spacing">5</property>
-                    <property name="max_children_per_line">25</property>
+                    <property name="max_children_per_line">20</property>
+                    <property name="selection_mode">none</property>
                   </object>
                 </child>
               </object>

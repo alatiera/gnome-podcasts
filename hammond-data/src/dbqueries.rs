@@ -73,9 +73,9 @@ pub fn get_episodes_with_limit(con: &SqliteConnection, limit: u32) -> QueryResul
     eps
 }
 
-pub fn get_podcast(con: &SqliteConnection, parent: &Source) -> QueryResult<Vec<Podcast>> {
-    let pd = Podcast::belonging_to(parent).load::<Podcast>(con);
-    // debug!("Returned Podcasts:\n{:?}", pds);
+pub fn get_podcast_from_id(con: &SqliteConnection, pid: i32) -> QueryResult<Podcast> {
+    use schema::podcast::dsl::*;
+    let pd = podcast.filter(id.eq(pid)).get_result::<Podcast>(con);
     pd
 }
 
