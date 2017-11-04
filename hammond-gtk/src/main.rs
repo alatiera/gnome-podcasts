@@ -12,8 +12,9 @@ extern crate hammond_downloader;
 extern crate log;
 extern crate loggerv;
 extern crate open;
-extern crate rayon;
+// extern crate rayon;
 
+// use rayon::prelude::*;
 use log::LogLevel;
 use hammond_data::dbcheckup;
 

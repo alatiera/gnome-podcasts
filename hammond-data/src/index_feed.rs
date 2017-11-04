@@ -90,9 +90,9 @@ fn insert_return_episode(con: &SqliteConnection, ep: &NewEpisode) -> Result<Epis
 }
 
 pub fn full_index_loop(db: &Database) -> Result<()> {
-    let mut f = fetch_feeds(db)?;
+    let mut f = fetch_all_feeds(db)?;
 
-    index_feed(&db, &mut f);
+    index_feed(db, &mut f);
     info!("Indexing done.");
     Ok(())
 }
@@ -166,12 +166,17 @@ fn index_channel_items(db: &Database, it: &[rss::Item], pd: &Podcast) {
 }
 
 // Maybe this can be refactored into an Iterator for lazy evaluation.
-pub fn fetch_feeds(db: &Database) -> Result<Vec<Feed>> {
+pub fn fetch_all_feeds(db: &Database) -> Result<Vec<Feed>> {
     let mut feeds = {
         let conn = db.lock().unwrap();
         dbqueries::get_sources(&conn)?
     };
 
+    let results = fetch_feeds(db, &mut feeds);
+    Ok(results)
+}
+
+pub fn fetch_feeds(db: &Database, feeds: &mut [Source]) -> Vec<Feed> {
     let results: Vec<Feed> = feeds
         .par_iter_mut()
         .filter_map(|x| {
@@ -186,7 +191,7 @@ pub fn fetch_feeds(db: &Database) -> Result<Vec<Feed>> {
         })
         .collect();
 
-    Ok(results)
+    results
 }
 
 pub fn refresh_source(db: &Database, feed: &mut Source) -> Result<Feed> {

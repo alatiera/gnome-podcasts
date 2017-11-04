@@ -1,6 +1,5 @@
 use glib;
 use gtk;
-use rayon::prelude::*;
 
 use hammond_data::index_feed;
 use hammond_data::models::Source;
@@ -18,26 +17,24 @@ thread_local!(
     gtk::Stack,
     Receiver<bool>)>> = RefCell::new(None));
 
-pub fn refresh_feed(db: &Database, stack: &gtk::Stack, source: Option<Box<Vec<Source>>>) {
+/// Update the rss feed(s) originating from `Source`.
+/// If `source` is None, Fetches all the `Source` entries in the database and updates them.
+/// When It's done,it queues up a `podcast_view` refresh.
+pub fn refresh_feed(db: &Database, stack: &gtk::Stack, source: Option<Vec<Source>>) {
+    // Create a async channel.
     let (sender, receiver) = channel();
 
+    // Pass the desired arguments into the Local Thread Storage.
     GLOBAL.with(clone!(db, stack => move |global| {
         *global.borrow_mut() = Some((db, stack, receiver));
     }));
 
-    // TODO: add timeout option and error reporting.
     thread::spawn(clone!(db => move || {
         let feeds = {
-            if let Some(mut boxed_vec) = source {
-                let f = boxed_vec
-                    .par_iter_mut()
-                    .filter_map(|mut s| {
-                        index_feed::refresh_source(&db, &mut s).ok()
-                    })
-                    .collect();
-                Ok(f)
+            if let Some(mut vec) = source {
+                Ok(index_feed::fetch_feeds(&db, &mut vec))
             } else {
-                index_feed::fetch_feeds(&db)
+                index_feed::fetch_all_feeds(&db)
             }
         };
 
