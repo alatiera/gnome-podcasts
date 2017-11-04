@@ -14,19 +14,15 @@ use podcasts_view::update_podcasts_view;
 
 fn podcast_widget(db: &Database, stack: &gtk::Stack, pd: &Podcast) -> gtk::Box {
     // Adapted from gnome-music AlbumWidget
-    let pd_widget_source = include_str!("../../gtk/podcast_widget.ui");
-    let pd_widget_buidler = gtk::Builder::new_from_string(pd_widget_source);
-    let pd_widget: gtk::Box = pd_widget_buidler.get_object("podcast_widget").unwrap();
+    let builder = gtk::Builder::new_from_string(include_str!("../../gtk/podcast_widget.ui"));
+    let pd_widget: gtk::Box = builder.get_object("podcast_widget").unwrap();
 
-    let cover: gtk::Image = pd_widget_buidler.get_object("cover").unwrap();
-    let title_label: gtk::Label = pd_widget_buidler.get_object("title_label").unwrap();
-    // let desc_label: gtk::Label = pd_widget_buidler.get_object("description_label").unwrap();
-    let desc_text_view: gtk::TextView = pd_widget_buidler.get_object("desc_text_view").unwrap();
-    let view: gtk::Viewport = pd_widget_buidler.get_object("view").unwrap();
-    let unsub_button: gtk::Button = pd_widget_buidler.get_object("unsub_button").unwrap();
-    let played_button: gtk::Button = pd_widget_buidler
-        .get_object("mark_all_played_button")
-        .unwrap();
+    let cover: gtk::Image = builder.get_object("cover").unwrap();
+    let title_label: gtk::Label = builder.get_object("title_label").unwrap();
+    let desc_text_view: gtk::TextView = builder.get_object("desc_text_view").unwrap();
+    let view: gtk::Viewport = builder.get_object("view").unwrap();
+    let unsub_button: gtk::Button = builder.get_object("unsub_button").unwrap();
+    let played_button: gtk::Button = builder.get_object("mark_all_played_button").unwrap();
 
     // TODO: should spawn a thread to avoid locking the UI probably.
     unsub_button.connect_clicked(clone!(db, stack, pd => move |bttn| {
@@ -106,8 +102,7 @@ fn show_played_button(db: &Database, pd: &Podcast, played_button: &gtk::Button) 
 }
 
 pub fn create_flowbox_child(db: &Database, pd: &Podcast) -> gtk::FlowBoxChild {
-    let build_src = include_str!("../../gtk/podcasts_child.ui");
-    let builder = gtk::Builder::new_from_string(build_src);
+    let builder = gtk::Builder::new_from_string(include_str!("../../gtk/podcasts_child.ui"));
 
     // Copy of gnome-music AlbumWidget
     let box_: gtk::Box = builder.get_object("fb_child").unwrap();
@@ -132,7 +127,8 @@ pub fn create_flowbox_child(db: &Database, pd: &Podcast) -> gtk::FlowBoxChild {
 }
 
 fn configure_banner(db: &Database, pd: &Podcast, banner: &gtk::Image, banner_title: &gtk::Label) {
-    let bann = Pixbuf::new_from_file_at_scale("assets/banner.png", 256, 256, true);
+    // TODO: use GResource instead.
+    let bann = Pixbuf::new_from_file_at_scale("hammond-gtk/gtk/banner.png", 256, 256, true);
     if let Ok(b) = bann {
         banner.set_from_pixbuf(&b);
 

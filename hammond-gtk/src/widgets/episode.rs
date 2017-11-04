@@ -26,8 +26,7 @@ thread_local!(
 
 fn epidose_widget(db: &Database, episode: &mut Episode, pd_title: &str) -> gtk::Box {
     // This is just a prototype and will be reworked probably.
-    let builder = include_str!("../../gtk/episode_widget.ui");
-    let builder = gtk::Builder::new_from_string(builder);
+    let builder = gtk::Builder::new_from_string(include_str!("../../gtk/episode_widget.ui"));
 
     let ep: gtk::Box = builder.get_object("episode_box").unwrap();
     let download_button: gtk::Button = builder.get_object("download_button").unwrap();

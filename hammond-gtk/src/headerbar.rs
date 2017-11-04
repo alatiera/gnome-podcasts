@@ -8,8 +8,7 @@ use podcasts_view::update_podcasts_view;
 use utils;
 
 pub fn get_headerbar(db: &Database, stack: &gtk::Stack) -> gtk::HeaderBar {
-    let builder = include_str!("../gtk/headerbar.ui");
-    let builder = gtk::Builder::new_from_string(builder);
+    let builder = gtk::Builder::new_from_string(include_str!("../gtk/headerbar.ui"));
 
     let header: gtk::HeaderBar = builder.get_object("headerbar1").unwrap();
     let home_button: gtk::Button = builder.get_object("homebutton").unwrap();

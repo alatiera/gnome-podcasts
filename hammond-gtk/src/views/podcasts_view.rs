@@ -7,8 +7,7 @@ use hammond_data::index_feed::Database;
 use widgets::podcast::*;
 
 fn show_empty_view(stack: &gtk::Stack) {
-    let builder = include_str!("../../gtk/empty_view.ui");
-    let builder = gtk::Builder::new_from_string(builder);
+    let builder = gtk::Builder::new_from_string(include_str!("../../gtk/empty_view.ui"));
     let view: gtk::Box = builder.get_object("empty_view").unwrap();
     stack.add_named(&view, "empty");
     stack.set_visible_child_name("empty");
@@ -38,16 +37,14 @@ fn populate_flowbox(db: &Database, stack: &gtk::Stack, flowbox: &gtk::FlowBox) {
 }
 
 fn setup_podcast_widget(stack: &gtk::Stack) {
-    let pd_widget_source = include_str!("../../gtk/podcast_widget.ui");
-    let pd_widget_buidler = gtk::Builder::new_from_string(pd_widget_source);
-    let pd_widget: gtk::Box = pd_widget_buidler.get_object("podcast_widget").unwrap();
+    let buidler = gtk::Builder::new_from_string(include_str!("../../gtk/podcast_widget.ui"));
+    let pd_widget: gtk::Box = buidler.get_object("podcast_widget").unwrap();
 
     stack.add_named(&pd_widget, "pdw");
 }
 
 fn setup_podcasts_grid(db: &Database, stack: &gtk::Stack) {
-    let builder = include_str!("../../gtk/podcasts_view.ui");
-    let builder = gtk::Builder::new_from_string(builder);
+    let builder = gtk::Builder::new_from_string(include_str!("../../gtk/podcasts_view.ui"));
     let grid: gtk::Grid = builder.get_object("grid").unwrap();
     stack.add_named(&grid, "pd_grid");
     stack.set_visible_child(&grid);
@@ -67,8 +64,7 @@ pub fn setup_stack(db: &Database) -> gtk::Stack {
 }
 
 pub fn update_podcasts_view(db: &Database, stack: &gtk::Stack) {
-    let builder = include_str!("../../gtk/podcasts_view.ui");
-    let builder = gtk::Builder::new_from_string(builder);
+    let builder = gtk::Builder::new_from_string(include_str!("../../gtk/podcasts_view.ui"));
     let grid: gtk::Grid = builder.get_object("grid").unwrap();
 
     let flowbox: gtk::FlowBox = builder.get_object("flowbox").unwrap();
