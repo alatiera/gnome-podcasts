@@ -97,10 +97,9 @@ fn on_flowbox_child_activate(db: &Database, stack: &gtk::Stack, parent: &Podcast
 fn setup_podcasts_flowbox(db: &Database, stack: &gtk::Stack) {
     let builder = gtk::Builder::new_from_string(include_str!("../../gtk/podcasts_view.ui"));
     let fb_parent: gtk::Box = builder.get_object("fb_parent").unwrap();
-    let view: gtk::Viewport = builder.get_object("view").unwrap();
 
-    let flowbox = init_flowbox(db, stack);
-    view.add(&flowbox);
+    let flowbox: gtk::FlowBox = builder.get_object("flowbox").unwrap();
+    init_flowbox(db, stack, &flowbox);
 
     stack.add_named(&fb_parent, "fb_parent");
     stack.set_visible_child(&fb_parent);
@@ -117,10 +116,9 @@ pub fn setup_stack(db: &Database) -> gtk::Stack {
 pub fn update_podcasts_view(db: &Database, stack: &gtk::Stack) {
     let builder = gtk::Builder::new_from_string(include_str!("../../gtk/podcasts_view.ui"));
     let fb_parent: gtk::Box = builder.get_object("fb_parent").unwrap();
-    let view: gtk::Viewport = builder.get_object("view").unwrap();
 
-    let flowbox = init_flowbox(db, stack);
-    view.add(&flowbox);
+    let flowbox: gtk::FlowBox = builder.get_object("flowbox").unwrap();
+    init_flowbox(db, stack, &flowbox);
 
     let old = stack.get_child_by_name("fb_parent").unwrap();
     let vis = stack.get_visible_child_name().unwrap();
@@ -135,9 +133,7 @@ pub fn update_podcasts_view(db: &Database, stack: &gtk::Stack) {
     old.destroy();
 }
 
-fn init_flowbox(db: &Database, stack: &gtk::Stack) -> gtk::FlowBox {
-    let flowbox = gtk::FlowBox::new();
-
+fn init_flowbox(db: &Database, stack: &gtk::Stack, flowbox: &gtk::FlowBox) {
     // TODO: handle unwraps.
     flowbox.connect_child_activated(clone!(db, stack => move |_, child| {
         // This is such an ugly hack...
@@ -150,5 +146,4 @@ fn init_flowbox(db: &Database, stack: &gtk::Stack) -> gtk::FlowBox {
     }));
     // Populate the flowbox with the Podcasts.
     populate_flowbox(db, stack, &flowbox);
-    flowbox
 }

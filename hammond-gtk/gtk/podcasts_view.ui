@@ -12,11 +12,21 @@
         <property name="can_focus">True</property>
         <property name="shadow_type">in</property>
         <child>
-          <object class="GtkViewport" id="view">
+          <object class="GtkViewport">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <child>
-              <placeholder/>
+              <object class="GtkFlowBox" id="flowbox">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="halign">start</property>
+                <property name="valign">start</property>
+                <property name="homogeneous">True</property>
+                <property name="column_spacing">5</property>
+                <property name="row_spacing">2</property>
+                <property name="max_children_per_line">20</property>
+                <property name="selection_mode">none</property>
+              </object>
             </child>
           </object>
         </child>
