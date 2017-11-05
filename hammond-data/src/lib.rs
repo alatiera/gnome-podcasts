@@ -16,7 +16,6 @@ extern crate diesel;
 extern crate diesel_codegen;
 
 extern crate chrono;
-extern crate hyper;
 extern crate rayon;
 extern crate reqwest;
 extern crate rfc822_sanitizer;
@@ -31,8 +30,8 @@ pub mod errors;
 mod feedparser;
 mod schema;
 
+use diesel::migrations::RunMigrationsError;
 use diesel::prelude::*;
-use errors::*;
 use std::path::PathBuf;
 
 embed_migrations!("migrations/");
@@ -64,18 +63,15 @@ lazy_static!{
     };
 }
 
-pub fn init() -> Result<()> {
+pub fn init() -> Result<(), RunMigrationsError> {
     let conn = establish_connection();
-    run_migration_on(&conn)?;
-
-    Ok(())
+    run_migration_on(&conn)
 }
 
-pub fn run_migration_on(connection: &SqliteConnection) -> Result<()> {
+pub fn run_migration_on(connection: &SqliteConnection) -> Result<(), RunMigrationsError> {
     info!("Running DB Migrations...");
-    // embedded_migrations::run(&conn)?;
-    embedded_migrations::run_with_output(connection, &mut std::io::stdout())?;
-    Ok(())
+    embedded_migrations::run(connection)
+    // embedded_migrations::run_with_output(connection, &mut std::io::stdout())
 }
 
 pub fn establish_connection() -> SqliteConnection {
