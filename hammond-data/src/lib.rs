@@ -1,6 +1,5 @@
 #![recursion_limit = "1024"]
 #![cfg_attr(feature = "cargo-clippy", allow(blacklisted_name))]
-#![allow(dead_code)]
 
 #[macro_use]
 extern crate error_chain;
@@ -39,12 +38,12 @@ use std::path::PathBuf;
 embed_migrations!("migrations/");
 
 lazy_static!{
-
+    #[allow(dead_code)]
     static ref HAMMOND_XDG: xdg::BaseDirectories = {
         xdg::BaseDirectories::with_prefix("Hammond").unwrap()
     };
 
-    static ref HAMMOND_DATA: PathBuf = {
+    static ref _HAMMOND_DATA: PathBuf = {
         HAMMOND_XDG.create_data_directory(HAMMOND_XDG.get_data_home()).unwrap()
     };
 

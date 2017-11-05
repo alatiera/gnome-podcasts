@@ -1,5 +1,3 @@
-#![allow(dead_code)]
-
 use diesel::prelude::*;
 use diesel;
 use rss;
@@ -19,20 +17,15 @@ pub struct Feed(pub reqwest::Response, pub Source);
 
 pub type Database = Arc<Mutex<SqliteConnection>>;
 
-fn index_source(con: &SqliteConnection, foo: &NewSource) -> Result<()> {
-    match dbqueries::load_source_from_uri(con, foo.uri) {
-        Ok(_) => Ok(()),
-        Err(_) => {
-            diesel::insert(foo)
-                .into(schema::source::table)
-                .execute(con)?;
-            Ok(())
-        }
+fn index_source(con: &SqliteConnection, foo: &NewSource) -> QueryResult<usize> {
+    match dbqueries::get_source_from_uri(con, foo.uri) {
+        Ok(_) => Ok(1),
+        Err(_) => diesel::insert(foo).into(schema::source::table).execute(con),
     }
 }
 
 fn index_podcast(con: &SqliteConnection, pd: &NewPodcast) -> Result<()> {
-    match dbqueries::load_podcast_from_title(con, &pd.title) {
+    match dbqueries::get_podcast_from_title(con, &pd.title) {
         Ok(mut foo) => if foo.link() != pd.link || foo.description() != pd.description {
             foo.set_link(&pd.link);
             foo.set_description(&pd.description);
@@ -49,7 +42,7 @@ fn index_podcast(con: &SqliteConnection, pd: &NewPodcast) -> Result<()> {
 }
 
 fn index_episode(con: &SqliteConnection, ep: &NewEpisode) -> Result<()> {
-    match dbqueries::load_episode_from_uri(con, ep.uri.unwrap()) {
+    match dbqueries::get_episode_from_uri(con, ep.uri.unwrap()) {
         Ok(mut foo) => if foo.title() != ep.title
             || foo.published_date() != ep.published_date.as_ref().map(|x| x.as_str())
         {
@@ -74,20 +67,20 @@ pub fn insert_return_source(con: &SqliteConnection, url: &str) -> Result<Source>
     let foo = NewSource::new_with_uri(url);
     index_source(con, &foo)?;
 
-    Ok(dbqueries::load_source_from_uri(con, foo.uri)?)
+    Ok(dbqueries::get_source_from_uri(con, foo.uri)?)
 }
 
 fn insert_return_podcast(con: &SqliteConnection, pd: &NewPodcast) -> Result<Podcast> {
     index_podcast(con, pd)?;
 
-    Ok(dbqueries::load_podcast_from_title(con, &pd.title)?)
+    Ok(dbqueries::get_podcast_from_title(con, &pd.title)?)
 }
 
-fn insert_return_episode(con: &SqliteConnection, ep: &NewEpisode) -> Result<Episode> {
-    index_episode(con, ep)?;
+// fn insert_return_episode(con: &SqliteConnection, ep: &NewEpisode) -> Result<Episode> {
+//     index_episode(con, ep)?;
 
-    Ok(dbqueries::load_episode_from_uri(con, ep.uri.unwrap())?)
-}
+//     Ok(dbqueries::get_episode_from_uri(con, ep.uri.unwrap())?)
+// }
 
 pub fn full_index_loop(db: &Database) -> Result<()> {
     let mut f = fetch_all_feeds(db)?;
@@ -120,9 +113,7 @@ pub fn complete_index_from_source(
     req.read_to_string(&mut buf)?;
     let chan = rss::Channel::from_str(&buf)?;
 
-    complete_index(db, &chan, source)?;
-
-    Ok(())
+    complete_index(db, &chan, source)
 }
 
 fn complete_index(db: &Database, chan: &rss::Channel, parent: &Source) -> Result<()> {
@@ -137,8 +128,7 @@ fn complete_index(db: &Database, chan: &rss::Channel, parent: &Source) -> Result
 fn index_channel(con: &SqliteConnection, chan: &rss::Channel, parent: &Source) -> Result<Podcast> {
     let pd = feedparser::parse_podcast(chan, parent.id());
     // Convert NewPodcast to Podcast
-    let pd = insert_return_podcast(con, &pd)?;
-    Ok(pd)
+    insert_return_podcast(con, &pd)
 }
 
 fn index_channel_items(db: &Database, it: &[rss::Item], pd: &Podcast) {
@@ -280,7 +270,7 @@ mod tests {
 
         inpt.iter().for_each(|feed| {
             let tempdb = db.lock().unwrap();
-            index_source(&tempdb, &NewSource::new_with_uri(feed)).unwrap()
+            index_source(&tempdb, &NewSource::new_with_uri(feed)).unwrap();
         });
 
         full_index_loop(&db).unwrap();

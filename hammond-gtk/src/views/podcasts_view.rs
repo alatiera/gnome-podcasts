@@ -145,5 +145,5 @@ fn init_flowbox(db: &Database, stack: &gtk::Stack, flowbox: &gtk::FlowBox) {
         on_flowbox_child_activate(&db, &stack, &parent);
     }));
     // Populate the flowbox with the Podcasts.
-    populate_flowbox(db, stack, &flowbox);
+    populate_flowbox(db, stack, flowbox);
 }

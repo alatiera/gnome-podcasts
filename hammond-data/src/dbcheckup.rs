@@ -49,6 +49,8 @@ fn played_cleaner(db: &Database) -> Result<()> {
                 if let Err(err) = e {
                     error!("Error while trying to delete file: {:?}", ep.local_uri());
                     error!("Error: {}", err);
+                } else {
+                    info!("Episode {:?} was deleted succesfully.", ep.title());
                 };
             }
         }

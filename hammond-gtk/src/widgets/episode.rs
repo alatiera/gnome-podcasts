@@ -152,7 +152,7 @@ fn on_download_clicked(
 fn on_play_bttn_clicked(db: &Database, episode_id: i32) {
     let local_uri = {
         let tempdb = db.lock().unwrap();
-        dbqueries::get_episode_local_uri(&tempdb, episode_id).unwrap()
+        dbqueries::get_episode_local_uri_from_id(&tempdb, episode_id).unwrap()
     };
 
     if let Some(uri) = local_uri {
@@ -175,7 +175,7 @@ fn on_play_bttn_clicked(db: &Database, episode_id: i32) {
 fn on_delete_bttn_clicked(db: &Database, episode_id: i32) {
     let mut ep = {
         let tempdb = db.lock().unwrap();
-        dbqueries::get_episode(&tempdb, episode_id).unwrap()
+        dbqueries::get_episode_from_id(&tempdb, episode_id).unwrap()
     };
 
     let e = delete_local_content(db, &mut ep);
