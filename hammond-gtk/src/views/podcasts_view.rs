@@ -94,39 +94,39 @@ fn on_flowbox_child_activate(db: &Database, stack: &gtk::Stack, parent: &Podcast
     old.destroy();
 }
 
-fn setup_podcasts_grid(db: &Database, stack: &gtk::Stack) {
+fn setup_podcasts_flowbox(db: &Database, stack: &gtk::Stack) {
     let builder = gtk::Builder::new_from_string(include_str!("../../gtk/podcasts_view.ui"));
-    let grid: gtk::Grid = builder.get_object("grid").unwrap();
+    let fb_parent: gtk::Box = builder.get_object("fb_parent").unwrap();
     let view: gtk::Viewport = builder.get_object("view").unwrap();
 
     let flowbox = init_flowbox(db, stack);
     view.add(&flowbox);
 
-    stack.add_named(&grid, "pd_grid");
-    stack.set_visible_child(&grid);
+    stack.add_named(&fb_parent, "fb_parent");
+    stack.set_visible_child(&fb_parent);
 }
 
 pub fn setup_stack(db: &Database) -> gtk::Stack {
     let stack = gtk::Stack::new();
     stack.set_transition_type(gtk::StackTransitionType::SlideLeftRight);
     setup_podcast_widget(&stack);
-    setup_podcasts_grid(db, &stack);
+    setup_podcasts_flowbox(db, &stack);
     stack
 }
 
 pub fn update_podcasts_view(db: &Database, stack: &gtk::Stack) {
     let builder = gtk::Builder::new_from_string(include_str!("../../gtk/podcasts_view.ui"));
-    let grid: gtk::Grid = builder.get_object("grid").unwrap();
+    let fb_parent: gtk::Box = builder.get_object("fb_parent").unwrap();
     let view: gtk::Viewport = builder.get_object("view").unwrap();
 
     let flowbox = init_flowbox(db, stack);
     view.add(&flowbox);
 
-    let old = stack.get_child_by_name("pd_grid").unwrap();
+    let old = stack.get_child_by_name("fb_parent").unwrap();
     let vis = stack.get_visible_child_name().unwrap();
 
     stack.remove(&old);
-    stack.add_named(&grid, "pd_grid");
+    stack.add_named(&fb_parent, "fb_parent");
     // preserve the visible widget
     stack.set_visible_child_name(&vis);
 

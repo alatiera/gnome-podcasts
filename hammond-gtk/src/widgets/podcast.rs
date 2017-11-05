@@ -76,7 +76,7 @@ fn on_unsub_button_clicked(
         };
     }
     update_podcasts_view(db, stack);
-    stack.set_visible_child_name("pd_grid")
+    stack.set_visible_child_name("fb_parent")
 }
 
 fn on_played_button_clicked(db: &Database, stack: &gtk::Stack, pd: &Podcast) {

@@ -38,12 +38,12 @@ pub fn get_headerbar(db: &Database, stack: &gtk::Stack) -> gtk::HeaderBar {
     // and add a StackSwitcher when more views are added.
     home_button.connect_clicked(clone!(db, stack => move |_| {
         let vis = stack.get_visible_child_name().unwrap();
-        if vis == "pd_grid" {
+        if vis == "fb_parent" {
             // More conviniet way to reload podcasts_flowbox while trying out stuff.
             // Ideally, the functionality should be removed from final design.
             update_podcasts_view(&db, &stack);
         } else {
-            stack.set_visible_child_name("pd_grid");
+            stack.set_visible_child_name("fb_parent");
         }
     }));
 
