@@ -3,6 +3,7 @@ name = "hammond-gtk"
 version = "0.1.0"
 authors = ["Jordan Petridis <jordanpetridis@protonmail.com>"]
 workspace = "../"
+build = "build.rs"
 
 [dependencies]
 gtk = { version = "0.2", features = ["v3_22"]}
@@ -10,10 +11,10 @@ gdk = "0.6"
 glib = "0.3"
 gio = "0.2"
 gdk-pixbuf = "0.2"
-libc = "0.2"
 
+libc = "0.2"
 gio-sys = "0.4"
-glib-sys = "^0.4"
+glib-sys = "0.4"
 
 loggerv = "0.4"
 log = "0.3"
