@@ -25,7 +25,7 @@ thread_local!(static GLOBAL: Foo = RefCell::new(None));
 
 fn epidose_widget(db: &Database, episode: &mut Episode, pd_title: &str) -> gtk::Box {
     // This is just a prototype and will be reworked probably.
-    let builder = gtk::Builder::new_from_string(include_str!("../../gtk/episode_widget.ui"));
+    let builder = gtk::Builder::new_from_resource("/org/gtk/hammond/gtk/episode_widget.ui");
 
     let ep: gtk::Box = builder.get_object("episode_box").unwrap();
     let download_button: gtk::Button = builder.get_object("download_button").unwrap();

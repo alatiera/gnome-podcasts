@@ -7,11 +7,9 @@ use hammond_data::models::Podcast;
 use hammond_data::index_feed::Database;
 
 use widgets::podcast::*;
-use static_resource;
-
 
 fn show_empty_view(stack: &gtk::Stack) {
-    let builder = gtk::Builder::new_from_string(include_str!("../../gtk/empty_view.ui"));
+    let builder = gtk::Builder::new_from_resource("/org/gtk/hammond/gtk/empty_view.ui");
     let view: gtk::Box = builder.get_object("empty_view").unwrap();
     stack.add_named(&view, "empty");
     stack.set_visible_child_name("empty");
@@ -20,8 +18,6 @@ fn show_empty_view(stack: &gtk::Stack) {
 }
 
 fn populate_flowbox(db: &Database, stack: &gtk::Stack, flowbox: &gtk::FlowBox) {
-    static_resource::init().expect("Something went wrong with the resource file initialization.");
-
     let podcasts = {
         let db = db.lock().unwrap();
         dbqueries::get_podcasts(&db)
@@ -39,7 +35,7 @@ fn populate_flowbox(db: &Database, stack: &gtk::Stack, flowbox: &gtk::FlowBox) {
 }
 
 fn create_flowbox_child(db: &Database, pd: &Podcast) -> gtk::FlowBoxChild {
-    let builder = gtk::Builder::new_from_string(include_str!("../../gtk/podcasts_child.ui"));
+    let builder = gtk::Builder::new_from_resource("/org/gtk/hammond/gtk/podcasts_child.ui");
 
     // Copy of gnome-music AlbumWidget
     let box_: gtk::Box = builder.get_object("fb_child").unwrap();
@@ -65,9 +61,6 @@ fn create_flowbox_child(db: &Database, pd: &Podcast) -> gtk::FlowBoxChild {
 }
 
 fn configure_banner(db: &Database, pd: &Podcast, banner: &gtk::Image, banner_title: &gtk::Label) {
-    // TODO: move .ui files into gresources and refactor.
-    static_resource::init().expect("Something went wrong with the resource file initialization.");
-
     let bann = Pixbuf::new_from_resource_at_scale("/org/gtk/hammond/banner.png", 256, 256, true);
     if let Ok(b) = bann {
         banner.set_from_pixbuf(&b);
@@ -101,7 +94,7 @@ fn on_flowbox_child_activate(db: &Database, stack: &gtk::Stack, parent: &Podcast
 }
 
 fn setup_podcasts_flowbox(db: &Database, stack: &gtk::Stack) {
-    let builder = gtk::Builder::new_from_string(include_str!("../../gtk/podcasts_view.ui"));
+    let builder = gtk::Builder::new_from_resource("/org/gtk/hammond/gtk/podcasts_view.ui");
     let fb_parent: gtk::Box = builder.get_object("fb_parent").unwrap();
 
     let flowbox: gtk::FlowBox = builder.get_object("flowbox").unwrap();
@@ -120,7 +113,7 @@ pub fn setup_stack(db: &Database) -> gtk::Stack {
 }
 
 pub fn update_podcasts_view(db: &Database, stack: &gtk::Stack) {
-    let builder = gtk::Builder::new_from_string(include_str!("../../gtk/podcasts_view.ui"));
+    let builder = gtk::Builder::new_from_resource("/org/gtk/hammond/gtk/podcasts_view.ui");
     let fb_parent: gtk::Box = builder.get_object("fb_parent").unwrap();
 
     let flowbox: gtk::FlowBox = builder.get_object("flowbox").unwrap();

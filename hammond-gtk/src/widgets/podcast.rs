@@ -14,7 +14,7 @@ use podcasts_view::update_podcasts_view;
 
 pub fn podcast_widget(db: &Database, stack: &gtk::Stack, pd: &Podcast) -> gtk::Box {
     // Adapted from gnome-music AlbumWidget
-    let builder = gtk::Builder::new_from_string(include_str!("../../gtk/podcast_widget.ui"));
+    let builder = gtk::Builder::new_from_resource("/org/gtk/hammond/gtk/podcast_widget.ui");
     let pd_widget: gtk::Box = builder.get_object("podcast_widget").unwrap();
 
     let cover: gtk::Image = builder.get_object("cover").unwrap();
@@ -111,8 +111,8 @@ pub fn get_pixbuf_from_path(img_path: Option<&str>, pd_title: &str) -> Option<Pi
 }
 
 pub fn setup_podcast_widget(stack: &gtk::Stack) {
-    let buidler = gtk::Builder::new_from_string(include_str!("../../gtk/podcast_widget.ui"));
-    let pd_widget: gtk::Box = buidler.get_object("podcast_widget").unwrap();
+    let builder = gtk::Builder::new_from_resource("/org/gtk/hammond/gtk/podcast_widget.ui");
+    let pd_widget: gtk::Box = builder.get_object("podcast_widget").unwrap();
 
     stack.add_named(&pd_widget, "pdw");
 }
@@ -125,4 +125,5 @@ pub fn update_podcast_widget(db: &Database, stack: &gtk::Stack, pd: &Podcast) {
     stack.remove(&old);
     stack.add_named(&pdw, "pdw");
     stack.set_visible_child_name(&vis);
+    old.destroy();
 }

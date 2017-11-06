@@ -108,6 +108,7 @@ fn build_ui(app: &gtk::Application) {
 fn main() {
     // TODO: make the the logger a cli -vv option
     loggerv::init_with_level(LogLevel::Info).unwrap();
+    static_resource::init().expect("Something went wrong with the resource file initialization.");
     hammond_data::init().expect("Hammond Initialazation failed.");
 
     let application = gtk::Application::new(

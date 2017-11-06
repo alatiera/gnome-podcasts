@@ -2,5 +2,11 @@
 <gresources>
   <gresource prefix="/org/gtk/hammond/">
       <file>banner.png</file>
+      <file preprocess="xml-stripblanks">gtk/episode_widget.ui</file>
+      <file preprocess="xml-stripblanks">gtk/podcast_widget.ui</file>
+      <file preprocess="xml-stripblanks">gtk/empty_view.ui</file>
+      <file preprocess="xml-stripblanks">gtk/podcasts_view.ui</file>
+      <file preprocess="xml-stripblanks">gtk/podcasts_child.ui</file>
+      <file preprocess="xml-stripblanks">gtk/headerbar.ui</file>
   </gresource>
 </gresources>
