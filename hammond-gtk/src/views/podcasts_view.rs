@@ -66,12 +66,9 @@ fn create_flowbox_child(db: &Database, pd: &Podcast) -> gtk::FlowBoxChild {
 
 fn configure_banner(db: &Database, pd: &Podcast, banner: &gtk::Image, banner_title: &gtk::Label) {
     // TODO: move .ui files into gresources and refactor.
-    // static_resource::init().expect("Something went wrong with the resource file
-    // initialization.");
-    info!("I RUN");
+    static_resource::init().expect("Something went wrong with the resource file initialization.");
 
     let bann = Pixbuf::new_from_resource_at_scale("/org/gtk/hammond/banner.png", 256, 256, true);
-    info!("{:?}", bann);
     if let Ok(b) = bann {
         banner.set_from_pixbuf(&b);
 
