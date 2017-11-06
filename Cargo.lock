@@ -552,7 +552,7 @@ dependencies = [
  "rand 0.3.17 (registry+https://github.com/rust-lang/crates.io-index)",
  "rayon 0.8.2 (registry+https://github.com/rust-lang/crates.io-index)",
  "reqwest 0.8.0 (registry+https://github.com/rust-lang/crates.io-index)",
- "rfc822_sanitizer 0.3.2 (registry+https://github.com/rust-lang/crates.io-index)",
+ "rfc822_sanitizer 0.3.3 (registry+https://github.com/rust-lang/crates.io-index)",
  "rss 1.1.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "tempdir 0.3.5 (registry+https://github.com/rust-lang/crates.io-index)",
  "xdg 2.1.0 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -580,10 +580,13 @@ dependencies = [
  "gdk 0.6.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "gdk-pixbuf 0.2.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "gio 0.2.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "gio-sys 0.4.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "glib 0.3.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "glib-sys 0.4.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "gtk 0.2.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "hammond-data 0.1.0",
  "hammond-downloader 0.1.0",
+ "libc 0.2.33 (registry+https://github.com/rust-lang/crates.io-index)",
  "log 0.3.8 (registry+https://github.com/rust-lang/crates.io-index)",
  "loggerv 0.4.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "open 1.2.1 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -1136,7 +1139,7 @@ dependencies = [
 
 [[package]]
 name = "rfc822_sanitizer"
-version = "0.3.2"
+version = "0.3.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 dependencies = [
  "chrono 0.4.0 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -1692,7 +1695,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 "checksum relay 0.1.0 (registry+https://github.com/rust-lang/crates.io-index)" = "f301bafeb60867c85170031bdb2fcf24c8041f33aee09e7b116a58d4e9f781c5"
 "checksum reqwest 0.6.2 (registry+https://github.com/rust-lang/crates.io-index)" = "1d56dbe269dbe19d716b76ec8c3efce8ef84e974f5b7e5527463e8c0507d4e17"
 "checksum reqwest 0.8.0 (registry+https://github.com/rust-lang/crates.io-index)" = "194fe0d39dea7f89738707bf70e9f3ed47e8aca47d4b2eeaad6ac7831d2d390b"
-"checksum rfc822_sanitizer 0.3.2 (registry+https://github.com/rust-lang/crates.io-index)" = "28423a6dc1c7d5db3ab5b540965149302cdf355e5ccaa05f38e25c97a568a6fd"
+"checksum rfc822_sanitizer 0.3.3 (registry+https://github.com/rust-lang/crates.io-index)" = "680e8305c1e0cdf836dc4bec5424e045f278c975a3cac36d1ca01c4695f9d815"
 "checksum rss 1.1.0 (registry+https://github.com/rust-lang/crates.io-index)" = "70294b2be2d620fed3939032067684c53b8ccae18e8ca0b8410447f0f07228c5"
 "checksum rustc-demangle 0.1.5 (registry+https://github.com/rust-lang/crates.io-index)" = "aee45432acc62f7b9a108cc054142dac51f979e69e71ddce7d6fc7adf29e817e"
 "checksum rustc-serialize 0.3.24 (registry+https://github.com/rust-lang/crates.io-index)" = "dcf128d1287d2ea9d80910b5f1120d0b8eede3fbf1abe91c40d39ea7d51e6fda"

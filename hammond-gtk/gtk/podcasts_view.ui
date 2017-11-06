@@ -19,7 +19,7 @@
               <object class="GtkFlowBox" id="flowbox">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="halign">start</property>
+                <property name="halign">baseline</property>
                 <property name="valign">start</property>
                 <property name="homogeneous">True</property>
                 <property name="column_spacing">5</property>

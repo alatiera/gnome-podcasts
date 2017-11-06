@@ -7,6 +7,7 @@ use hammond_data::models::Podcast;
 use hammond_data::index_feed::Database;
 
 use widgets::podcast::*;
+use static_resource;
 
 fn show_empty_view(stack: &gtk::Stack) {
     let builder = gtk::Builder::new_from_string(include_str!("../../gtk/empty_view.ui"));
@@ -61,8 +62,10 @@ fn create_flowbox_child(db: &Database, pd: &Podcast) -> gtk::FlowBoxChild {
 }
 
 fn configure_banner(db: &Database, pd: &Podcast, banner: &gtk::Image, banner_title: &gtk::Label) {
-    // TODO: use GResource instead.
-    let bann = Pixbuf::new_from_file_at_scale("hammond-gtk/gtk/banner.png", 256, 256, true);
+    // TODO: move .ui files into gresources and refactor.
+    static_resource::init();
+
+    let bann = Pixbuf::new_from_resource_at_scale("/org/gtk/hammond/banner.png", 256, 256, true);
     if let Ok(b) = bann {
         banner.set_from_pixbuf(&b);
 

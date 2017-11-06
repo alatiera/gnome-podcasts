@@ -47,6 +47,7 @@ mod widgets;
 mod headerbar;
 
 mod utils;
+mod static_resource;
 
 use views::podcasts_view;
 
