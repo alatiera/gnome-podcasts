@@ -10,7 +10,7 @@
 
 **Would be nice:**
 
-- [ ] Use GResource for assets like the banner.png etc, instead of hardcoded paths.
+- [x] Use GResource for assets like the banner.png etc, instead of hardcoded paths.
 - [x] Possibly Convert description labels to textview.
 - [ ] Make Podcast cover fetchng and loading not block the execution of the program at startup.
 - [ ] Re-design EpisodeWidget.

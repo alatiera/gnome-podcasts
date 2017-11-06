@@ -56,8 +56,9 @@ $ tree -d
 │       └── feeds       # Raw RSS Feeds used for tests.
 ├── hammond-downloader  # Really basic, Really crappy downloader.
 │   └── src
-├── hammond-gtk         # The Gtk+ client.
-│   ├── gtk             # Contains the glade.ui files and.
+├── hammond-gtk         # The Gtk+ Client                            
+│   ├── resources       # GResources folder                                                                                         
+│   │   └── gtk         # Contains the glade.ui files.
 │   └── src
 │       ├── views       # Currently only contains the Podcasts_view.
 │       └── widgets     # Contains custom widgets such as Podcast and Episode.
