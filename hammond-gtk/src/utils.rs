@@ -50,6 +50,7 @@ pub fn refresh_feed(
 
         if let Ok(mut x) = feeds {
             index_feed::index_feed(&db, &mut x);
+            info!("Indexing done.");
 
             sender.send(true).expect("Couldn't send data to channel");;
             glib::idle_add(refresh_podcasts_view);

@@ -187,7 +187,6 @@ pub fn fetch_feeds(db: &Database, feeds: &mut [Source]) -> Vec<Feed> {
 pub fn refresh_source(db: &Database, feed: &mut Source) -> Result<Feed> {
     use reqwest::header::{ETag, EntityTag, Headers, HttpDate, LastModified};
 
-    let client = reqwest::Client::new();
     let mut headers = Headers::new();
 
     if let Some(foo) = feed.http_etag() {
@@ -203,6 +202,7 @@ pub fn refresh_source(db: &Database, feed: &mut Source) -> Result<Feed> {
     // FIXME: I have fucked up somewhere here.
     // Getting back 200 codes even though I supposedly sent etags.
     // info!("Headers: {:?}", headers);
+    let client = reqwest::Client::builder().referer(false).build()?;
     let req = client.get(feed.uri()).headers(headers).send()?;
 
     info!("GET to {} , returned: {}", feed.uri(), req.status());

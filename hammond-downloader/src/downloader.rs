@@ -19,7 +19,8 @@ use hammond_data::{DL_DIR, HAMMOND_CACHE};
 // But cant seem to find one.
 pub fn download_to(target: &str, url: &str) -> Result<()> {
     info!("GET request to: {}", url);
-    let mut resp = reqwest::get(url)?;
+    let client = reqwest::Client::builder().referer(false).build()?;
+    let mut resp = client.get(url).send()?;
     info!("Status Resp: {}", resp.status());
 
     if resp.status().is_success() {
@@ -133,6 +134,7 @@ pub fn get_episode(connection: &Database, ep: &mut Episode, download_folder: &st
     if let Err(err) = res {
         error!("Something whent wrong while downloading.");
         error!("Error: {}", err);
+        return Err(err);
     } else {
         info!("Download of {} finished.", uri);
     };
