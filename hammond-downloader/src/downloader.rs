@@ -165,7 +165,7 @@ mod tests {
     #[test]
     fn test_cache_image() {
         let img_path =
-            cache_image("New Rustacean", Some("http://newrustacean.coe/podcast.png")).unwrap();
+            cache_image("New Rustacean", Some("http://newrustacean.com/podcast.png")).unwrap();
         let foo_ = format!(
             "{}{}/cover.png",
             HAMMOND_CACHE.to_str().unwrap(),
