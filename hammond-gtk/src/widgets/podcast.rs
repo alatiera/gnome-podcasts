@@ -40,7 +40,7 @@ pub fn podcast_widget(db: &Database, stack: &gtk::Stack, pd: &Podcast) -> gtk::B
         buff.set_text(pd.description());
     }
 
-    let img = get_pixbuf_from_path(pd.image_uri(), pd.title());
+    let img = get_pixbuf_from_path(pd.title(), pd.image_uri());
     if let Some(i) = img {
         cover.set_from_pixbuf(&i);
     }
@@ -101,7 +101,7 @@ fn show_played_button(db: &Database, pd: &Podcast, played_button: &gtk::Button) 
     }
 }
 
-pub fn get_pixbuf_from_path(img_path: Option<&str>, pd_title: &str) -> Option<Pixbuf> {
+pub fn get_pixbuf_from_path(pd_title: &str, img_path: Option<&str>) -> Option<Pixbuf> {
     let img_path = downloader::cache_image(pd_title, img_path);
     if let Some(i) = img_path {
         Pixbuf::new_from_file_at_scale(&i, 256, 256, true).ok()
@@ -126,4 +126,16 @@ pub fn update_podcast_widget(db: &Database, stack: &gtk::Stack, pd: &Podcast) {
     stack.add_named(&pdw, "pdw");
     stack.set_visible_child_name(&vis);
     old.destroy();
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_get_pixbuf_from_path() {
+        let pxbuf =
+            get_pixbuf_from_path("New Rustacean", Some("http://newrustacean.com/podcast.png"));
+        assert!(pxbuf.is_some());
+    }
 }

@@ -46,7 +46,7 @@ fn create_flowbox_child(db: &Database, pd: &Podcast) -> gtk::FlowBoxChild {
 
     pd_title.set_text(pd.title());
 
-    let cover = get_pixbuf_from_path(pd.image_uri(), pd.title());
+    let cover = get_pixbuf_from_path(pd.title(), pd.image_uri());
     if let Some(img) = cover {
         pd_cover.set_from_pixbuf(&img);
     };

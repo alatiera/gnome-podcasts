@@ -1,13 +1,14 @@
 use reqwest;
 use hyper::header::*;
+// use mime::Mime;
 
 use std::fs::{rename, DirBuilder, File};
 use std::io::{BufWriter, Read, Write};
 use std::path::Path;
+// use std::str::FromStr;
 
 use errors::*;
 use hammond_data::index_feed::Database;
-use hammond_data::dbqueries;
 use hammond_data::models::Episode;
 use hammond_data::{DL_DIR, HAMMOND_CACHE};
 
@@ -17,7 +18,7 @@ use hammond_data::{DL_DIR, HAMMOND_CACHE};
 // Would much rather use a crate,
 // or bindings for a lib like youtube-dl(python),
 // But cant seem to find one.
-pub fn download_to(target: &str, url: &str) -> Result<()> {
+pub fn download_to(dir: &str, filename: &str, url: &str) -> Result<String> {
     info!("GET request to: {}", url);
     let client = reqwest::Client::builder().referer(false).build()?;
     let mut resp = client.get(url).send()?;
@@ -27,73 +28,47 @@ pub fn download_to(target: &str, url: &str) -> Result<()> {
         let headers = resp.headers().clone();
 
         let ct_len = headers.get::<ContentLength>().map(|ct_len| **ct_len);
-        let ct_type = headers.get::<ContentType>().unwrap();
+        let ct_type = headers.get::<ContentType>();
         ct_len.map(|x| info!("File Lenght: {}", x));
-        info!("Content Type: {:?}", ct_type);
+        ct_type.map(|x| info!("Content Type: {}", x));
 
-        info!("Save destination: {}", target);
-
-        let chunk_size = match ct_len {
-            Some(x) => x as usize / 99,
-            None => 1024 as usize, // default chunk size
-        };
-
-        let out_file = format!("{}.part", target);
-        let mut writer = BufWriter::new(File::create(&out_file)?);
-
-        loop {
-            let mut buffer = vec![0; chunk_size];
-            let bcount = resp.read(&mut buffer[..]).unwrap();
-            buffer.truncate(bcount);
-            if !buffer.is_empty() {
-                writer.write_all(buffer.as_slice()).unwrap();
-            } else {
-                break;
-            }
-        }
-        rename(out_file, target)?;
+        let target = format!("{}/{}", dir, filename);
+        // let target = format!("{}{}",dir, filename, ext);
+        return save_io(&target, &mut resp, ct_len);
     }
-    Ok(())
+    // Ok(String::from(""))
+    panic!("foo");
 }
 
-// Initial messy prototype, queries load alot of not needed stuff.
-// TODO: Refactor
-pub fn latest_dl(connection: &Database, limit: u32) -> Result<()> {
-    let pds = {
-        let tempdb = connection.lock().unwrap();
-        dbqueries::get_podcasts(&tempdb)?
+fn save_io(
+    target: &str,
+    resp: &mut reqwest::Response,
+    content_lenght: Option<u64>,
+) -> Result<String> {
+    info!("Downloading into: {}", target);
+    let chunk_size = match content_lenght {
+        Some(x) => x as usize / 99,
+        None => 1024 as usize, // default chunk size
     };
 
-    let _: Vec<_> = pds.iter()
-        .map(|x| -> Result<()> {
-            let mut eps = {
-                let tempdb = connection.lock().unwrap();
-                if limit == 0 {
-                    dbqueries::get_pd_episodes(&tempdb, x)?
-                } else {
-                    dbqueries::get_pd_episodes_limit(&tempdb, x, limit)?
-                }
-            };
+    let out_file = format!("{}.part", target);
+    let mut writer = BufWriter::new(File::create(&out_file)?);
 
-            let download_fold = get_download_folder(x.title())?;
-
-            // Download the episodes
-            eps.iter_mut().for_each(|ep| {
-                let x = get_episode(connection, ep, &download_fold);
-                if let Err(err) = x {
-                    error!("An Error occured while downloading an episode.");
-                    error!("Error: {}", err);
-                };
-            });
-
-            Ok(())
-        })
-        .collect();
-
-    Ok(())
+    loop {
+        let mut buffer = vec![0; chunk_size];
+        let bcount = resp.read(&mut buffer[..])?;
+        buffer.truncate(bcount);
+        if !buffer.is_empty() {
+            writer.write_all(buffer.as_slice())?;
+        } else {
+            break;
+        }
+    }
+    rename(out_file, target)?;
+    info!("Downloading of {} completed succesfully.", target);
+    Ok(target.to_string())
 }
 
-// TODO: Right unit test
 pub fn get_download_folder(pd_title: &str) -> Result<String> {
     // It might be better to make it a hash of the title
     let download_fold = format!("{}/{}", DL_DIR.to_str().unwrap(), pd_title);
@@ -116,33 +91,26 @@ pub fn get_episode(connection: &Database, ep: &mut Episode, download_folder: &st
     };
 
     // FIXME: Unreliable and hacky way to extract the file extension from the url.
+    // https://gitlab.gnome.org/alatiera/Hammond/issues/5
     let ext = ep.uri().split('.').last().unwrap().to_owned();
 
     // Construct the download path.
     // TODO: Check if its a valid path
-    let dlpath = format!(
-        "{}/{}.{}",
-        download_folder,
-        ep.title().unwrap().to_owned(),
-        ext
-    );
-    // info!("Downloading {:?} into: {}", y.title(), dlpath);
+    let file_name = format!("/{}.{}", ep.title().unwrap().to_owned(), ext);
 
     let uri = ep.uri().to_owned();
-    let res = download_to(&dlpath, uri.as_str());
+    let res = download_to(download_folder, &file_name, uri.as_str());
 
-    if let Err(err) = res {
-        error!("Something whent wrong while downloading.");
-        error!("Error: {}", err);
-        return Err(err);
+    if res.is_ok() {
+        // If download succedes set episode local_uri to dlpath.
+        let dlpath = res.unwrap();
+        ep.set_local_uri(Some(&dlpath));
+        ep.save(connection)?;
+        Ok(())
     } else {
-        info!("Download of {} finished.", uri);
-    };
-
-    // If download succedes set episode local_uri to dlpath.
-    ep.set_local_uri(Some(&dlpath));
-    ep.save(connection)?;
-    Ok(())
+        error!("Something whent wrong while downloading.");
+        Err(res.unwrap_err())
+    }
 }
 
 // pub fn cache_image(pd: &Podcast) -> Option<String> {
@@ -154,7 +122,7 @@ pub fn cache_image(title: &str, image_uri: Option<&str>) -> Option<String> {
             return None;
         }
 
-        // FIXME:
+        // FIXME: https://gitlab.gnome.org/alatiera/Hammond/issues/5
         let ext = url.split('.').last().unwrap();
 
         let download_fold = format!("{}{}", HAMMOND_CACHE.to_str().unwrap(), title);
@@ -162,13 +130,16 @@ pub fn cache_image(title: &str, image_uri: Option<&str>) -> Option<String> {
             .recursive(true)
             .create(&download_fold)
             .unwrap();
-        let dlpath = format!("{}/{}.{}", download_fold, title, ext);
+        let file_name = format!("cover.{}", ext);
+
+        // This will need rework once the #5 is completed.
+        let dlpath = format!("{}/{}", download_fold, file_name);
 
         if Path::new(&dlpath).exists() {
             return Some(dlpath);
         }
 
-        if let Err(err) = download_to(&dlpath, url) {
+        if let Err(err) = download_to(&download_fold, &file_name, url) {
             error!("Failed to get feed image.");
             error!("Error: {}", err);
             return None;
@@ -178,4 +149,28 @@ pub fn cache_image(title: &str, image_uri: Option<&str>) -> Option<String> {
         return Some(dlpath);
     }
     None
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use hammond_data::{DL_DIR, HAMMOND_CACHE};
+
+    #[test]
+    fn test_get_dl_folder() {
+        let foo_ = format!("{}/{}", DL_DIR.to_str().unwrap(), "foo");
+        assert_eq!(get_download_folder("foo").unwrap(), foo_);
+    }
+
+    #[test]
+    fn test_cache_image() {
+        let img_path =
+            cache_image("New Rustacean", Some("http://newrustacean.coe/podcast.png")).unwrap();
+        let foo_ = format!(
+            "{}{}/cover.png",
+            HAMMOND_CACHE.to_str().unwrap(),
+            "New Rustacean"
+        );
+        assert_eq!(img_path, foo_);
+    }
 }

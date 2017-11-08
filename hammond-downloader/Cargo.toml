@@ -8,6 +8,7 @@ workspace = "../"
 hammond-data = {path = "../hammond-data"}
 error-chain = "0.11"
 log = "0.3"
+mime = "0.3"
 reqwest = "0.8"
 hyper = "0.11"
 diesel = { version = "0.16", features = ["sqlite"] }
