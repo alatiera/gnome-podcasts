@@ -3,11 +3,12 @@ use hyper::header::*;
 use tempdir::TempDir;
 use rand;
 use rand::Rng;
-// use mime::Mime;
+use mime::Mime;
 
 use std::fs::{rename, DirBuilder, File};
 use std::io::{BufWriter, Read, Write};
 use std::path::Path;
+use std::collections::HashMap;
 // use std::str::FromStr;
 
 use errors::*;
@@ -21,7 +22,7 @@ use hammond_data::{DL_DIR, HAMMOND_CACHE};
 // Would much rather use a crate,
 // or bindings for a lib like youtube-dl(python),
 // But cant seem to find one.
-pub fn download_to(dir: &str, file_title: &str, url: &str) -> Result<String> {
+fn download_into(dir: &str, file_title: &str, url: &str) -> Result<String> {
     info!("GET request to: {}", url);
     let client = reqwest::Client::builder().referer(false).build()?;
     let mut resp = client.get(url).send()?;
@@ -35,17 +36,30 @@ pub fn download_to(dir: &str, file_title: &str, url: &str) -> Result<String> {
         ct_len.map(|x| info!("File Lenght: {}", x));
         ct_type.map(|x| info!("Content Type: {}", x));
 
-        // FIXME: Unreliable and hacky way to extract the file extension from the url.
-        // https://gitlab.gnome.org/alatiera/Hammond/issues/5
-        let ext = url.split('.').last().unwrap();
+        // This sucks!
+        let ext = if let Some(t) = ct_type {
+            let f = i_hate_this_func(t);
+            if let Some(foo_) = f {
+                info!("File Extension to be used: {}", &foo_);
+                foo_
+            } else {
+                error!("Failed to match mime-type: {}", t);
+                panic!("Unkown file extension.");
+            }
+        } else {
+            // To be used only as fallback.
+            // FIXME: Unreliable and hacky way to extract the file extension from the url.
+            // https://gitlab.gnome.org/alatiera/Hammond/issues/5
+            url.split('.').last().unwrap().to_string()
+        };
+
         // Construct the download path.
-        // TODO: Check if its a valid path
         let filename = format!("{}.{}", file_title, ext);
 
         return save_io(dir, &filename, &mut resp, ct_len);
     }
     // Ok(String::from(""))
-    panic!("foo");
+    panic!("Bad request response.");
 }
 
 fn save_io(
@@ -87,6 +101,28 @@ fn save_io(
     Ok(target)
 }
 
+
+// Please, for the love of Cthulu, if you know the proper way to covnert mime-tyeps
+// into file extension PLEASE let me know.
+fn i_hate_this_func(m: &Mime) -> Option<String> {
+    // This is terrible for performance but the whole thing is suboptimal anyway
+    let mut mimes = HashMap::new();
+    mimes.insert("audio/ogg", "ogg");
+    mimes.insert("audio/mpeg", "mp3");
+    mimes.insert("audio/aac", "aac");
+    mimes.insert("audio/x-m4a", "aac");
+    mimes.insert("video/mpeg", "mp4");
+    mimes.insert("image/jpeg", "jpg");
+    mimes.insert("image/png", "png");
+
+    let res = mimes.get(m.as_ref());
+    if let Some(r) = res {
+        return Some(r.to_string());
+    }
+
+    None
+}
+
 pub fn get_download_folder(pd_title: &str) -> Result<String> {
     // It might be better to make it a hash of the title
     let download_fold = format!("{}/{}", DL_DIR.to_str().unwrap(), pd_title);
@@ -108,7 +144,7 @@ pub fn get_episode(connection: &Database, ep: &mut Episode, download_folder: &st
         ep.save(connection)?;
     };
 
-    let res = download_to(download_folder, ep.title().unwrap(), ep.uri());
+    let res = download_into(download_folder, ep.title().unwrap(), ep.uri());
 
     if let Ok(path) = res {
         // If download succedes set episode local_uri to dlpath.
@@ -152,7 +188,7 @@ pub fn cache_image(pd: &Podcast) -> Option<String> {
             .create(&download_fold)
             .unwrap();
 
-        let dlpath = download_to(&download_fold, "cover", &url);
+        let dlpath = download_into(&download_fold, "cover", &url);
         if let Ok(path) = dlpath {
             info!("Cached img into: {}", &path);
             return Some(path);
