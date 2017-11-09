@@ -1,16 +1,23 @@
 [package]
+authors = ["Jordan Petridis <jordanpetridis@protonmail.com>"]
 name = "hammond-downloader"
 version = "0.1.0"
-authors = ["Jordan Petridis <jordanpetridis@protonmail.com>"]
 workspace = "../"
 
 [dependencies]
-hammond-data = {path = "../hammond-data"}
+dotenv = "*"
 error-chain = "0.11"
+hyper = "0.11"
 log = "0.3"
 mime = "0.3"
+rand = "0.3"
 reqwest = "0.8"
-hyper = "0.11"
-diesel = { version = "0.16", features = ["sqlite"] }
-rss = { version = "1.1", features = ["from_url"]}
-dotenv = "*"
+rss = "1.1"
+tempdir = "0.3"
+
+[dependencies.diesel]
+features = ["sqlite"]
+version = "0.16"
+
+[dependencies.hammond-data]
+path = "../hammond-data"

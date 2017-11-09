@@ -1,24 +1,30 @@
 [package]
+authors = ["Jordan Petridis <jordanpetridis@protonmail.com>"]
 name = "hammond-data"
 version = "0.1.0"
-authors = ["Jordan Petridis <jordanpetridis@protonmail.com>"]
 workspace = "../"
 
 [dependencies]
-rfc822_sanitizer = "0.3"
+chrono = "0.4"
+# diesel wants dotenv with a feature disabled and breaks rss
+dotenv = "0.10"
+error-chain = "0.11"
+lazy_static = "0.2"
+log = "0.3"
 rayon = "0.8"
 reqwest = "0.8"
-error-chain = "0.11"
-log = "0.3"
-diesel = { version = "0.16", features = ["sqlite"] }
-diesel_codegen = { version = "0.16", features = ["sqlite"] }
-xdg = "2.1"
-lazy_static = "0.2"
+rfc822_sanitizer = "0.3"
 rss = "1.1"
-chrono = "0.4"
-# overwrite diesel dependancy that disables a feature rss depends upon
-dotenv = "*"
+xdg = "2.1"
+
+[dependencies.diesel]
+features = ["sqlite"]
+version = "0.16"
+
+[dependencies.diesel_codegen]
+features = ["sqlite"]
+version = "0.16"
 
 [dev-dependencies]
-tempdir = "0.3"
 rand = "0.3"
+tempdir = "0.3"

@@ -40,7 +40,7 @@ pub fn podcast_widget(db: &Database, stack: &gtk::Stack, pd: &Podcast) -> gtk::B
         buff.set_text(pd.description());
     }
 
-    let img = get_pixbuf_from_path(pd.title(), pd.image_uri());
+    let img = get_pixbuf_from_path(pd);
     if let Some(i) = img {
         cover.set_from_pixbuf(&i);
     }
@@ -101,8 +101,8 @@ fn show_played_button(db: &Database, pd: &Podcast, played_button: &gtk::Button) 
     }
 }
 
-pub fn get_pixbuf_from_path(pd_title: &str, img_path: Option<&str>) -> Option<Pixbuf> {
-    let img_path = downloader::cache_image(pd_title, img_path);
+pub fn get_pixbuf_from_path(pd: &Podcast) -> Option<Pixbuf> {
+    let img_path = downloader::cache_image(pd);
     if let Some(i) = img_path {
         Pixbuf::new_from_file_at_scale(&i, 256, 256, true).ok()
     } else {
@@ -130,12 +130,21 @@ pub fn update_podcast_widget(db: &Database, stack: &gtk::Stack, pd: &Podcast) {
 
 #[cfg(test)]
 mod tests {
+    use hammond_data::models::NewPodcast;
     use super::*;
 
     #[test]
     fn test_get_pixbuf_from_path() {
-        let pxbuf =
-            get_pixbuf_from_path("New Rustacean", Some("http://newrustacean.com/podcast.png"));
+        let pd = NewPodcast {
+            title: "New Rustacean".to_string(),
+            description: "".to_string(),
+            link: "".to_string(),
+            image_uri: Some("http://newrustacean.com/podcast.png".to_string()),
+            source_id: 0,
+        };
+        let pd = pd.into_podcast();
+
+        let pxbuf = get_pixbuf_from_path(&pd);
         assert!(pxbuf.is_some());
     }
 }

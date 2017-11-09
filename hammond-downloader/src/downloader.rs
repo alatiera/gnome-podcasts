@@ -1,5 +1,8 @@
 use reqwest;
 use hyper::header::*;
+use tempdir::TempDir;
+use rand;
+use rand::Rng;
 // use mime::Mime;
 
 use std::fs::{rename, DirBuilder, File};
@@ -9,7 +12,7 @@ use std::path::Path;
 
 use errors::*;
 use hammond_data::index_feed::Database;
-use hammond_data::models::Episode;
+use hammond_data::models::{Episode, Podcast};
 use hammond_data::{DL_DIR, HAMMOND_CACHE};
 
 // Adapted from https://github.com/mattgathu/rget .
@@ -18,7 +21,7 @@ use hammond_data::{DL_DIR, HAMMOND_CACHE};
 // Would much rather use a crate,
 // or bindings for a lib like youtube-dl(python),
 // But cant seem to find one.
-pub fn download_to(dir: &str, filename: &str, url: &str) -> Result<String> {
+pub fn download_to(dir: &str, file_title: &str, url: &str) -> Result<String> {
     info!("GET request to: {}", url);
     let client = reqwest::Client::builder().referer(false).build()?;
     let mut resp = client.get(url).send()?;
@@ -32,26 +35,39 @@ pub fn download_to(dir: &str, filename: &str, url: &str) -> Result<String> {
         ct_len.map(|x| info!("File Lenght: {}", x));
         ct_type.map(|x| info!("Content Type: {}", x));
 
-        let target = format!("{}/{}", dir, filename);
-        // let target = format!("{}{}",dir, filename, ext);
-        return save_io(&target, &mut resp, ct_len);
+        // FIXME: Unreliable and hacky way to extract the file extension from the url.
+        // https://gitlab.gnome.org/alatiera/Hammond/issues/5
+        let ext = url.split('.').last().unwrap();
+        // Construct the download path.
+        // TODO: Check if its a valid path
+        let filename = format!("{}.{}", file_title, ext);
+
+        return save_io(dir, &filename, &mut resp, ct_len);
     }
     // Ok(String::from(""))
     panic!("foo");
 }
 
 fn save_io(
-    target: &str,
+    target_dir: &str,
+    filename: &str,
     resp: &mut reqwest::Response,
     content_lenght: Option<u64>,
 ) -> Result<String> {
-    info!("Downloading into: {}", target);
+    info!("Downloading into: {}", target_dir);
     let chunk_size = match content_lenght {
         Some(x) => x as usize / 99,
         None => 1024 as usize, // default chunk size
     };
 
-    let out_file = format!("{}.part", target);
+    let tempdir = TempDir::new(target_dir)?;
+    let mut rng = rand::thread_rng();
+
+    let out_file = format!(
+        "{}/{}.part",
+        tempdir.path().to_str().unwrap(),
+        rng.gen::<usize>()
+    );
     let mut writer = BufWriter::new(File::create(&out_file)?);
 
     loop {
@@ -64,9 +80,11 @@ fn save_io(
             break;
         }
     }
-    rename(out_file, target)?;
-    info!("Downloading of {} completed succesfully.", target);
-    Ok(target.to_string())
+
+    let target = format!("{}/{}", target_dir, filename);
+    rename(out_file, &target)?;
+    info!("Downloading of {} completed succesfully.", &target);
+    Ok(target)
 }
 
 pub fn get_download_folder(pd_title: &str) -> Result<String> {
@@ -90,21 +108,11 @@ pub fn get_episode(connection: &Database, ep: &mut Episode, download_folder: &st
         ep.save(connection)?;
     };
 
-    // FIXME: Unreliable and hacky way to extract the file extension from the url.
-    // https://gitlab.gnome.org/alatiera/Hammond/issues/5
-    let ext = ep.uri().split('.').last().unwrap().to_owned();
+    let res = download_to(download_folder, ep.title().unwrap(), ep.uri());
 
-    // Construct the download path.
-    // TODO: Check if its a valid path
-    let file_name = format!("/{}.{}", ep.title().unwrap().to_owned(), ext);
-
-    let uri = ep.uri().to_owned();
-    let res = download_to(download_folder, &file_name, uri.as_str());
-
-    if res.is_ok() {
+    if let Ok(path) = res {
         // If download succedes set episode local_uri to dlpath.
-        let dlpath = res.unwrap();
-        ep.set_local_uri(Some(&dlpath));
+        ep.set_local_uri(Some(&path));
         ep.save(connection)?;
         Ok(())
     } else {
@@ -113,40 +121,46 @@ pub fn get_episode(connection: &Database, ep: &mut Episode, download_folder: &st
     }
 }
 
-// pub fn cache_image(pd: &Podcast) -> Option<String> {
-// TODO: Right unit test
-// TODO: Refactor
-pub fn cache_image(title: &str, image_uri: Option<&str>) -> Option<String> {
-    if let Some(url) = image_uri {
+pub fn cache_image(pd: &Podcast) -> Option<String> {
+    if pd.image_uri().is_some() {
+        let url = pd.image_uri().unwrap().to_owned();
         if url == "" {
             return None;
         }
 
-        // FIXME: https://gitlab.gnome.org/alatiera/Hammond/issues/5
-        let ext = url.split('.').last().unwrap();
+        let download_fold = format!(
+            "{}{}",
+            HAMMOND_CACHE.to_str().unwrap(),
+            pd.title().to_owned()
+        );
 
-        let download_fold = format!("{}{}", HAMMOND_CACHE.to_str().unwrap(), title);
+        // Hacky way
+        // TODO: make it so it returns the first cover.* file encountered.
+        let png = format!("{}/cover.png", download_fold);
+        let jpg = format!("{}/cover.jpg", download_fold);
+        let jpeg = format!("{}/cover.jpeg", download_fold);
+        if Path::new(&png).exists() {
+            return Some(png);
+        } else if Path::new(&jpg).exists() {
+            return Some(jpg);
+        } else if Path::new(&jpeg).exists() {
+            return Some(jpeg);
+        };
+
         DirBuilder::new()
             .recursive(true)
             .create(&download_fold)
             .unwrap();
-        let file_name = format!("cover.{}", ext);
 
-        // This will need rework once the #5 is completed.
-        let dlpath = format!("{}/{}", download_fold, file_name);
-
-        if Path::new(&dlpath).exists() {
-            return Some(dlpath);
-        }
-
-        if let Err(err) = download_to(&download_fold, &file_name, url) {
+        let dlpath = download_to(&download_fold, "cover", &url);
+        if let Ok(path) = dlpath {
+            info!("Cached img into: {}", &path);
+            return Some(path);
+        } else {
             error!("Failed to get feed image.");
-            error!("Error: {}", err);
+            error!("Error: {}", dlpath.unwrap_err());
             return None;
         };
-
-        info!("Cached img into: {}", dlpath);
-        return Some(dlpath);
     }
     None
 }
@@ -155,6 +169,7 @@ pub fn cache_image(title: &str, image_uri: Option<&str>) -> Option<String> {
 mod tests {
     use super::*;
     use hammond_data::{DL_DIR, HAMMOND_CACHE};
+    use hammond_data::models::NewPodcast;
 
     #[test]
     fn test_get_dl_folder() {
@@ -164,13 +179,20 @@ mod tests {
 
     #[test]
     fn test_cache_image() {
-        let img_path =
-            cache_image("New Rustacean", Some("http://newrustacean.com/podcast.png")).unwrap();
+        let pd = NewPodcast {
+            title: "New Rustacean".to_string(),
+            description: "".to_string(),
+            link: "".to_string(),
+            image_uri: Some("http://newrustacean.com/podcast.png".to_string()),
+            source_id: 0,
+        };
+        let pd = pd.into_podcast();
+        let img_path = cache_image(&pd);
         let foo_ = format!(
             "{}{}/cover.png",
             HAMMOND_CACHE.to_str().unwrap(),
             "New Rustacean"
         );
-        assert_eq!(img_path, foo_);
+        assert_eq!(img_path, Some(foo_));
     }
 }

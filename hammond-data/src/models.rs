@@ -1,5 +1,6 @@
 use reqwest;
 use diesel::SaveChangesDsl;
+use diesel::result::QueryResult;
 use reqwest::header::{ETag, LastModified};
 
 use schema::{episode, podcast, source};
@@ -105,10 +106,9 @@ impl Episode {
         self.played = value;
     }
 
-    pub fn save(&self, db: &Database) -> Result<()> {
+    pub fn save(&self, db: &Database) -> QueryResult<Episode> {
         let tempdb = db.lock().unwrap();
-        self.save_changes::<Episode>(&*tempdb)?;
-        Ok(())
+        self.save_changes::<Episode>(&*tempdb)
     }
 }
 
@@ -163,10 +163,9 @@ impl Podcast {
         self.image_uri = value.map(|x| x.to_string());
     }
 
-    pub fn save(&self, db: &Database) -> Result<()> {
+    pub fn save(&self, db: &Database) -> QueryResult<Podcast> {
         let tempdb = db.lock().unwrap();
-        self.save_changes::<Podcast>(&*tempdb)?;
-        Ok(())
+        self.save_changes::<Podcast>(&*tempdb)
     }
 }
 
@@ -227,10 +226,9 @@ impl<'a> Source {
         Ok(())
     }
 
-    pub fn save(&self, db: &Database) -> Result<()> {
+    pub fn save(&self, db: &Database) -> QueryResult<Source> {
         let tempdb = db.lock().unwrap();
-        self.save_changes::<Source>(&*tempdb)?;
-        Ok(())
+        self.save_changes::<Source>(&*tempdb)
     }
 }
 
@@ -276,4 +274,17 @@ pub struct NewPodcast {
     pub description: String,
     pub image_uri: Option<String>,
     pub source_id: i32,
+}
+
+impl NewPodcast {
+    pub fn into_podcast(self) -> Podcast {
+        Podcast {
+            id: 0,
+            title: self.title,
+            link: self.link,
+            description: self.description,
+            image_uri: self.image_uri,
+            source_id: self.source_id,
+        }
+    }
 }

@@ -8,8 +8,10 @@ extern crate hyper;
 #[macro_use]
 extern crate log;
 extern crate mime;
+extern crate rand;
 extern crate reqwest;
-extern crate rss;
+// extern crate rss;
+extern crate tempdir;
 
 pub mod downloader;
 pub mod errors;

@@ -1,22 +1,27 @@
 [package]
+authors = ["Jordan Petridis <jordanpetridis@protonmail.com>"]
+build = "build.rs"
 name = "hammond-gtk"
 version = "0.1.0"
-authors = ["Jordan Petridis <jordanpetridis@protonmail.com>"]
 workspace = "../"
-build = "build.rs"
 
 [dependencies]
-gtk = { version = "0.2", features = ["v3_22"]}
-gdk = "0.6"
-glib = "0.3"
-gio = "0.2"
-gdk-pixbuf = "0.2"
-
-loggerv = "0.4"
-log = "0.3"
-open = "1.2"
 dissolve = "0.2"
+gdk = "0.6"
+gdk-pixbuf = "0.2"
+gio = "0.2"
+glib = "0.3"
+log = "0.3"
+loggerv = "0.4"
+open = "1.2"
 rayon = "0.8"
 
-hammond-data = {path = "../hammond-data"}
-hammond-downloader = {path = "../hammond-downloader"}
+[dependencies.gtk]
+features = ["v3_22"]
+version = "0.2"
+
+[dependencies.hammond-data]
+path = "../hammond-data"
+
+[dependencies.hammond-downloader]
+path = "../hammond-downloader"
