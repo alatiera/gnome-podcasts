@@ -21,8 +21,7 @@ cargo run -p hammond-gtk --release
 ```sh
 git clone https://gitlab.gnome.org/alatiera/hammond.git
 cd Hammond/
-make
-sudo make install
+make && sudo make install
 ```
 
 **Additionall:**
@@ -68,14 +67,14 @@ $ tree -d
 ├── assets              # png's used in the README.md
 ├── hammond-data        # Storate related stuff, Sqlite db, XDG setup.
 │   ├── migrations      # Diesel migrations.
-│   │   └── ... 
+│   │   └── ...
 │   ├── src
 │   └── tests
 │       └── feeds       # Raw RSS Feeds used for tests.
 ├── hammond-downloader  # Really basic, Really crappy downloader.
 │   └── src
-├── hammond-gtk         # The Gtk+ Client                            
-│   ├── resources       # GResources folder                                                                                         
+├── hammond-gtk         # The Gtk+ Client
+│   ├── resources       # GResources folder
 │   │   └── gtk         # Contains the glade.ui files.
 │   └── src
 │       ├── views       # Currently only contains the Podcasts_view.

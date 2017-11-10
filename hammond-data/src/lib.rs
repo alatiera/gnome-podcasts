@@ -39,7 +39,7 @@ embed_migrations!("migrations/");
 lazy_static!{
     #[allow(dead_code)]
     static ref HAMMOND_XDG: xdg::BaseDirectories = {
-        xdg::BaseDirectories::with_prefix("Hammond").unwrap()
+        xdg::BaseDirectories::with_prefix("hammond").unwrap()
     };
 
     static ref _HAMMOND_DATA: PathBuf = {
