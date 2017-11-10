@@ -37,14 +37,8 @@ pub fn get_headerbar(db: &Database, stack: &gtk::Stack) -> gtk::HeaderBar {
     // TODO: make it a back arrow button, that will hide when appropriate,
     // and add a StackSwitcher when more views are added.
     home_button.connect_clicked(clone!(db, stack => move |_| {
-        let vis = stack.get_visible_child_name().unwrap();
-        if vis == "fb_parent" {
-            // More conviniet way to reload podcasts_flowbox while trying out stuff.
-            // Ideally, the functionality should be removed from final design.
-            update_podcasts_view(&db, &stack);
-        } else {
-            stack.set_visible_child_name("fb_parent");
-        }
+        stack.set_visible_child_name("fb_parent");
+        update_podcasts_view(&db, &stack);
     }));
 
     // FIXME: There appears to be a memmory leak here.

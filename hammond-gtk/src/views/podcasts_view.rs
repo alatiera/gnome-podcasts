@@ -8,16 +8,19 @@ use hammond_data::index_feed::Database;
 
 use widgets::podcast::*;
 
-fn show_empty_view(stack: &gtk::Stack) {
+fn setup_empty_view(stack: &gtk::Stack) {
     let builder = gtk::Builder::new_from_resource("/org/gtk/hammond/gtk/empty_view.ui");
     let view: gtk::Box = builder.get_object("empty_view").unwrap();
     stack.add_named(&view, "empty");
+}
+
+fn show_empty_view(stack: &gtk::Stack) {
     stack.set_visible_child_name("empty");
 
     info!("Empty view.");
 }
 
-fn populate_flowbox(db: &Database, stack: &gtk::Stack, flowbox: &gtk::FlowBox) {
+fn populate_flowbox(db: &Database, flowbox: &gtk::FlowBox) {
     let podcasts = {
         let db = db.lock().unwrap();
         dbqueries::get_podcasts(&db)
@@ -28,10 +31,8 @@ fn populate_flowbox(db: &Database, stack: &gtk::Stack, flowbox: &gtk::FlowBox) {
             let f = create_flowbox_child(db, parent);
             flowbox.add(&f);
         });
-    } else {
-        show_empty_view(stack);
+        flowbox.show_all();
     }
-    flowbox.show_all();
 }
 
 fn create_flowbox_child(db: &Database, pd: &Podcast) -> gtk::FlowBoxChild {
@@ -93,39 +94,47 @@ fn on_flowbox_child_activate(db: &Database, stack: &gtk::Stack, parent: &Podcast
     old.destroy();
 }
 
-fn setup_podcasts_flowbox(db: &Database, stack: &gtk::Stack) {
+fn setup_podcasts_flowbox(db: &Database, stack: &gtk::Stack) -> gtk::FlowBox {
     let builder = gtk::Builder::new_from_resource("/org/gtk/hammond/gtk/podcasts_view.ui");
     let fb_parent: gtk::Box = builder.get_object("fb_parent").unwrap();
-
     let flowbox: gtk::FlowBox = builder.get_object("flowbox").unwrap();
     init_flowbox(db, stack, &flowbox);
 
     stack.add_named(&fb_parent, "fb_parent");
-    stack.set_visible_child(&fb_parent);
+
+    if flowbox.get_children().is_empty() {
+        show_empty_view(stack);
+    } else {
+        stack.set_visible_child(&fb_parent);
+    };
+
+    flowbox
 }
 
 pub fn setup_stack(db: &Database) -> gtk::Stack {
     let stack = gtk::Stack::new();
     stack.set_transition_type(gtk::StackTransitionType::SlideLeftRight);
+    setup_empty_view(&stack);
     setup_podcast_widget(&stack);
     setup_podcasts_flowbox(db, &stack);
     stack
 }
 
 pub fn update_podcasts_view(db: &Database, stack: &gtk::Stack) {
-    let builder = gtk::Builder::new_from_resource("/org/gtk/hammond/gtk/podcasts_view.ui");
-    let fb_parent: gtk::Box = builder.get_object("fb_parent").unwrap();
-
-    let flowbox: gtk::FlowBox = builder.get_object("flowbox").unwrap();
-    init_flowbox(db, stack, &flowbox);
-
-    let old = stack.get_child_by_name("fb_parent").unwrap();
     let vis = stack.get_visible_child_name().unwrap();
-
+    let old = stack.get_child_by_name("fb_parent").unwrap();
     stack.remove(&old);
-    stack.add_named(&fb_parent, "fb_parent");
-    // preserve the visible widget
-    stack.set_visible_child_name(&vis);
+
+    let flowbox = setup_podcasts_flowbox(db, stack);
+
+    if vis == "empty" && !flowbox.get_children().is_empty() {
+        stack.set_visible_child_name("fb_parent");
+    } else if vis == "fb_parent" && flowbox.get_children().is_empty() {
+        stack.set_visible_child_name("empty");
+    } else {
+        // preserve the visible widget
+        stack.set_visible_child_name(&vis);
+    };
 
     // aggresive memory cleanup
     // probably not needed
@@ -144,5 +153,5 @@ fn init_flowbox(db: &Database, stack: &gtk::Stack, flowbox: &gtk::FlowBox) {
         on_flowbox_child_activate(&db, &stack, &parent);
     }));
     // Populate the flowbox with the Podcasts.
-    populate_flowbox(db, stack, flowbox);
+    populate_flowbox(db, flowbox);
 }

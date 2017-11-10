@@ -183,10 +183,13 @@ mod tests {
     use hammond_data::{DL_DIR, HAMMOND_CACHE};
     use hammond_data::models::NewPodcast;
 
+    use std::fs;
+
     #[test]
     fn test_get_dl_folder() {
         let foo_ = format!("{}/{}", DL_DIR.to_str().unwrap(), "foo");
         assert_eq!(get_download_folder("foo").unwrap(), foo_);
+        let _ = fs::remove_dir_all(foo_);
     }
 
     #[test]
