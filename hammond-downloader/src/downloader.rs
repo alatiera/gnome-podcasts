@@ -147,9 +147,12 @@ pub fn cache_image(pd: &Podcast) -> Option<String> {
         // TODO: make it so it returns the first cover.* file encountered.
         let png = format!("{}/cover.png", download_fold);
         let jpg = format!("{}/cover.jpg", download_fold);
+        let jpe = format!("{}/cover.jpe", download_fold);
         let jpeg = format!("{}/cover.jpeg", download_fold);
         if Path::new(&png).exists() {
             return Some(png);
+        } else if Path::new(&jpe).exists() {
+            return Some(jpe);
         } else if Path::new(&jpg).exists() {
             return Some(jpg);
         } else if Path::new(&jpeg).exists() {
