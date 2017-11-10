@@ -1,0 +1,11 @@
+[Desktop Entry]
+Name=Hammond
+GenericName=Podcast Client
+Comment=Play, Subscribe and Manage Podcast Feeds.
+Icon=multimedia-player
+Exec=hammond-gtk
+Terminal=false
+Type=Application
+StartupNotify=true
+Categories=AudioVideo;Audio;Video;
+Keywords=Podcast
