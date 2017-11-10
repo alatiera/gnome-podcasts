@@ -14,7 +14,7 @@ glib = "0.3"
 log = "0.3"
 loggerv = "0.4"
 open = "1.2"
-rayon = "0.8"
+rayon = "0.9"
 
 [dependencies.gtk]
 features = ["v3_22"]

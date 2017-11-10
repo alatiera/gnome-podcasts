@@ -6,12 +6,11 @@ workspace = "../"
 
 [dependencies]
 chrono = "0.4"
-# diesel wants dotenv with a feature disabled and breaks rss
-dotenv = "0.10"
+dotenv = "0.10.1"
 error-chain = "0.11"
 lazy_static = "0.2"
 log = "0.3"
-rayon = "0.8"
+rayon = "0.9"
 reqwest = "0.8"
 rfc822_sanitizer = "0.3"
 rss = "1.1"

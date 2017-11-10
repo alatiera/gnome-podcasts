@@ -8,7 +8,6 @@ use mime_guess;
 use std::fs::{rename, DirBuilder, File};
 use std::io::{BufWriter, Read, Write};
 use std::path::Path;
-// use std::str::FromStr;
 
 use errors::*;
 use hammond_data::index_feed::Database;
