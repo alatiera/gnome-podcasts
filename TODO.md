@@ -24,7 +24,7 @@
 **Unhack stuff:**
 
 - [ ] Url sanitization
-- [ ] Fix downloader .ext parsing
+- [x] Fix downloader .ext parsing
 
 
 **FIXME:**
@@ -35,7 +35,7 @@
 
 **Look into:**
 
-- [ ] Icons && install stuff && flatpak
+- [x] Icons && install stuff && flatpak
 
 * Neither flatpak nor meson support atm building from cargo.
 
@@ -51,7 +51,7 @@
 
 - [ ] Discuss and decide when to schedule the download cleaner. [#3](https://gitlab.gnome.org/alatiera/Hammond/issues/3)
 - [ ] Unplayed Only and Downloaded only view.
-- [ ] Auto-updater 
+- [ ] Auto-updater
 - [ ] Make use of file metadas, [This](https://github.com/GuillaumeGomez/audio-video-metadata) might be helpfull.
 - [ ] OPML import/export // Probably need to create a crate.
 
@@ -61,7 +61,7 @@
 - [ ] Mark stuff as Favorite. Maybe auto-archive favorites?
 
 
-## Third: 
+## Third:
 
 - [ ] Notifications
 - [ ] Episode queue
@@ -70,8 +70,8 @@
 - [ ] Search Implementation
 
 
-## Fourth: 
+## Fourth:
 
-- [ ] soundcloud and itunes feeds // [This](http://getrssfeed.com) seems intresting. 
+- [ ] soundcloud and itunes feeds // [This](http://getrssfeed.com) seems intresting.
 - [ ] Integrate with Itunes API for various crap
 - [ ] YoutubeFeeds

@@ -7,12 +7,30 @@ This is a prototype of a podcast client written in Rust.
 ![podcasts_view](./assets/podcasts_view.png)
 ![podcast_widget](./assets/podcast_widget.png)
 
-## Quick start
+The following steps assume you have a working installation of rustc and cargo.
+If you dont take a look at [rustup.rs](rustup.rs)
+
+## Quick start:
 ```sh
 git clone https://gitlab.gnome.org/alatiera/hammond.git
 cd Hammond/
 cargo run -p hammond-gtk --release
 ```
+
+## Install from soure:
+```sh
+git clone https://gitlab.gnome.org/alatiera/hammond.git
+cd Hammond/
+make
+sudo make install
+```
+
+**Additionall:**
+
+You can run `sudo make uninstall` for removal
+
+And `make clean` to clean up the enviroment after instalation.
+
 ### Flatpak:
 Flatpak instructions... Soon™.
 
