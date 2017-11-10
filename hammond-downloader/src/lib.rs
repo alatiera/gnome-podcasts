@@ -8,6 +8,7 @@ extern crate hyper;
 #[macro_use]
 extern crate log;
 extern crate mime;
+extern crate mime_guess;
 extern crate rand;
 extern crate reqwest;
 extern crate tempdir;

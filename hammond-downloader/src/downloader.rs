@@ -3,12 +3,11 @@ use hyper::header::*;
 use tempdir::TempDir;
 use rand;
 use rand::Rng;
-use mime::Mime;
+use mime_guess;
 
 use std::fs::{rename, DirBuilder, File};
 use std::io::{BufWriter, Read, Write};
 use std::path::Path;
-use std::collections::HashMap;
 // use std::str::FromStr;
 
 use errors::*;
@@ -36,26 +35,23 @@ fn download_into(dir: &str, file_title: &str, url: &str) -> Result<String> {
         ct_len.map(|x| info!("File Lenght: {}", x));
         ct_type.map(|x| info!("Content Type: {}", x));
 
-        // This sucks!
         let ext = if let Some(t) = ct_type {
-            let f = i_hate_this_func(t);
-            if let Some(foo_) = f {
-                info!("File Extension to be used: {}", &foo_);
-                foo_
+            let mime = mime_guess::get_extensions(t.type_().as_ref(), t.subtype().as_ref());
+            if let Some(m) = mime {
+                m.first().unwrap()
             } else {
-                error!("Failed to match mime-type: {}", t);
-                panic!("Unkown file extension.");
+                error!("Unkown mime type. {}", t);
+                "unkown"
             }
         } else {
-            // To be used only as fallback.
-            // FIXME: Unreliable and hacky way to extract the file extension from the url.
-            // https://gitlab.gnome.org/alatiera/Hammond/issues/5
-            url.split('.').last().unwrap().to_string()
+            error!("Unkown mime type.");
+            "unkown"
         };
 
         // Construct the download path.
         let filename = format!("{}.{}", file_title, ext);
 
+        // TODO: do a mime-type check after the file is downloaded to be sure.
         return save_io(dir, &filename, &mut resp, ct_len);
     }
     // Ok(String::from(""))
@@ -99,28 +95,6 @@ fn save_io(
     rename(out_file, &target)?;
     info!("Downloading of {} completed succesfully.", &target);
     Ok(target)
-}
-
-
-// Please, for the love of Cthulu, if you know the proper way to covnert mime-tyeps
-// into file extension PLEASE let me know.
-fn i_hate_this_func(m: &Mime) -> Option<String> {
-    // This is terrible for performance but the whole thing is suboptimal anyway
-    let mut mimes = HashMap::new();
-    mimes.insert("audio/ogg", "ogg");
-    mimes.insert("audio/mpeg", "mp3");
-    mimes.insert("audio/aac", "aac");
-    mimes.insert("audio/x-m4a", "aac");
-    mimes.insert("video/mpeg", "mp4");
-    mimes.insert("image/jpeg", "jpg");
-    mimes.insert("image/png", "png");
-
-    let res = mimes.get(m.as_ref());
-    if let Some(r) = res {
-        return Some(r.to_string());
-    }
-
-    None
 }
 
 pub fn get_download_folder(pd_title: &str) -> Result<String> {
