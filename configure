@@ -1,3 +1,6 @@
+# Adapted from:
+# https://gitlab.gnome.org/danigm/libgepub/blob/27f0d374e0c8f6fa972dbd111d4ce0c0f3096914/configure_meson
+
 #!/bin/bash
 # configure script adapter for Meson
 # Based on build-api: https://github.com/cgwalters/build-api

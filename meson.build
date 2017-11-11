@@ -1,3 +1,6 @@
+# Adatped from:
+# https://gitlab.gnome.org/danigm/fractal/blob/6e2911f9d2353c99a18a6c19fab7f903c4bbb431/meson.build
+
 project(
   'hammond', 'rust',
   version: '0.1.0',
