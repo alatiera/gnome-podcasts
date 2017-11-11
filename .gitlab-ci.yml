@@ -1,7 +1,15 @@
+stages:
+  # meson uses cargo to do the build
+  # so it's ok to have the tests first.
+  - test
+  # - build
+  - lint
+
 before_script:
 - apt-get update -yqq
 - apt-get install -yqq --no-install-recommends build-essential
 - apt-get install -yqq --no-install-recommends libgtk-3-dev
+# - apt-get install -yqq --no-install-recommends meson
 
 # kcov
 # - apt-get install -y libcurl4-openssl-dev libelf-dev libdw-dev cmake gcc binutils-dev libiberty-dev
@@ -9,24 +17,25 @@ before_script:
 # variables:
 #   RUSTFLAGS: "-C link-dead-code"
 
-# Build with meson
-build:stable:
-  # Stable img
-  # https://hub.docker.com/_/rust/
-  image: "rust"
-  script:
-  - rustc --version && cargo --version
-  - ./configure --prefix=/usr/local
-  - make && sudo make install
+# Currently doesnt work.
+# # Build with meson
+# build:stable:
+#   # Stable img
+#   # https://hub.docker.com/_/rust/
+#   image: "rust"
+#   script:
+#   - rustc --version && cargo --version
+#   - ./configure --prefix=/usr/local
+#   - make && sudo make install
 
-build:nightly:
-  # Nightly
-  # https://hub.docker.com/r/rustlang/rust/
-  image: "rustlang/rust:nightly"
-  script:
-  - rustc --version && cargo --version
-  - ./configure --prefix=/usr/local
-  - make && sudo make install
+# build:nightly:
+#   # Nightly
+#   # https://hub.docker.com/r/rustlang/rust/
+#   image: "rustlang/rust:nightly"
+#   script:
+#   - rustc --version && cargo --version
+#   - ./configure --prefix=/usr/local
+#   - make && sudo make install
 
 test:stable:
   # Stable img
@@ -49,7 +58,7 @@ test:nightly:
 
 # Configure and run rustfmt on nightly
 # Exits and builds fails if on bad format
-rustfmt:
+lint:rustfmt:
   image: "rustlang/rust:nightly"
   before_script:
   - apt-get update -yqq
@@ -63,7 +72,7 @@ rustfmt:
 
 # Configure and run clippy on nightly
 # Only fails on errors atm.
-clippy:
+lint:clippy:
   image: "rustlang/rust:nightly"
   before_script:
   - apt-get update -yqq
