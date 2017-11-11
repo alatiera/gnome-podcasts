@@ -21,6 +21,7 @@ cargo run -p hammond-gtk --release
 ```sh
 git clone https://gitlab.gnome.org/alatiera/hammond.git
 cd Hammond/
+./configure --prefix=/usr/local
 make && sudo make install
 ```
 
