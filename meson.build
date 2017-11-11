@@ -27,3 +27,7 @@ cargo_release = custom_target('cargo-build',
                         install_dir: hammond_bindir,
                         command: [cargo_script, '@CURRENT_SOURCE_DIR@', '@OUTPUT@'])
 
+run_target('release', command: ['scripts/release.sh',
+                                meson.project_name() + '-' + hammond_version
+                               ],
+                                depends: [cargo_release])

@@ -141,6 +141,9 @@ install:
 uninstall:
 	${NINJA} ${NINJA_OPT} uninstall
 
+release:
+	${NINJA} ${NINJA_OPT} release
+
 check:
 	${MESONTEST} ${NINJA_OPT}
 END
