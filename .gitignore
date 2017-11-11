@@ -4,3 +4,5 @@ Cargo.lock
 .vscode
 *.ui~
 *.gresource
+_build
+vendor/
