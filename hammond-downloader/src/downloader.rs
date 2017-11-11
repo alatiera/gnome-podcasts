@@ -47,37 +47,37 @@ fn download_into(dir: &str, file_title: &str, url: &str) -> Result<String> {
             "unkown"
         };
 
-        // Construct the download path.
-        let filename = format!("{}.{}", file_title, ext);
+        // Construct a temp file to save desired content.
+        let tempdir = TempDir::new_in(dir, "")?;
+        let mut rng = rand::thread_rng();
 
-        // TODO: do a mime-type check after the file is downloaded to be sure.
-        return save_io(dir, &filename, &mut resp, ct_len);
+        let out_file = format!(
+            "{}/{}.part",
+            tempdir.path().to_str().unwrap(),
+            rng.gen::<usize>()
+        );
+
+        save_io(&out_file, &mut resp, ct_len)?;
+
+        // Construct the desired path.
+        let target = format!("{}/{}.{}", dir, file_title, ext);
+        // Rename/move the tempfile into a permanent place.
+        rename(out_file, &target)?;
+        info!("Downloading of {} completed succesfully.", &target);
+        return Ok(target);
     }
     // Ok(String::from(""))
     panic!("Bad request response.");
 }
 
-fn save_io(
-    target_dir: &str,
-    filename: &str,
-    resp: &mut reqwest::Response,
-    content_lenght: Option<u64>,
-) -> Result<String> {
-    info!("Downloading into: {}", target_dir);
+fn save_io(file: &str, resp: &mut reqwest::Response, content_lenght: Option<u64>) -> Result<()> {
+    info!("Downloading into: {}", file);
     let chunk_size = match content_lenght {
         Some(x) => x as usize / 99,
         None => 1024 as usize, // default chunk size
     };
 
-    let tempdir = TempDir::new(target_dir)?;
-    let mut rng = rand::thread_rng();
-
-    let out_file = format!(
-        "{}/{}.part",
-        tempdir.path().to_str().unwrap(),
-        rng.gen::<usize>()
-    );
-    let mut writer = BufWriter::new(File::create(&out_file)?);
+    let mut writer = BufWriter::new(File::create(&file)?);
 
     loop {
         let mut buffer = vec![0; chunk_size];
@@ -90,10 +90,7 @@ fn save_io(
         }
     }
 
-    let target = format!("{}/{}", target_dir, filename);
-    rename(out_file, &target)?;
-    info!("Downloading of {} completed succesfully.", &target);
-    Ok(target)
+    Ok(())
 }
 
 pub fn get_download_folder(pd_title: &str) -> Result<String> {
