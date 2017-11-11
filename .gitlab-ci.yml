@@ -1,5 +1,3 @@
-# Optional: Install a C compiler, cmake and git into the container.
-# You will often need this when you (or any of your dependencies) depends on C code.
 before_script:
 - apt-get update -yqq
 - apt-get install -yqq --no-install-recommends build-essential
@@ -11,30 +9,47 @@ before_script:
 # variables:
 #   RUSTFLAGS: "-C link-dead-code"
 
+# Build with meson
+build:stable:
+  # Stable img
+  # https://hub.docker.com/_/rust/
+  image: "rust"
+  script:
+  - rustc --version && cargo --version
+  - ./configure --prefix=/usr/local
+  - make && sudo make install
+
+build:nightly:
+  # Nightly
+  # https://hub.docker.com/r/rustlang/rust/
+  image: "rustlang/rust:nightly"
+  script:
+  - rustc --version && cargo --version
+  - ./configure --prefix=/usr/local
+  - make && sudo make install
+
 test:stable:
   # Stable img
   # https://hub.docker.com/_/rust/
   image: "rust"
   script:
-  - rustc --version && cargo --version      # Print version info for debugging
+  - rustc --version && cargo --version
   - cargo build --all
   - cargo test --all --verbose
-  # - cargo test --all --verbose --jobs 1
 
 test:nightly:
   # Nightly
   # https://hub.docker.com/r/rustlang/rust/
   image: "rustlang/rust:nightly"
   script:
-  - rustc --version && cargo --version      # Print version info for debugging
+  - rustc --version && cargo --version
   - cargo build --all
   - cargo test --all --verbose
-  # - cargo test --all --verbose --jobs 1
   # - cargo bench
 
 # Configure and run rustfmt on nightly
 # Exits and builds fails if on bad format
-test:rustfmt:
+rustfmt:
   image: "rustlang/rust:nightly"
   before_script:
   - apt-get update -yqq
@@ -48,7 +63,7 @@ test:rustfmt:
 
 # Configure and run clippy on nightly
 # Only fails on errors atm.
-test:clippy:
+clippy:
   image: "rustlang/rust:nightly"
   before_script:
   - apt-get update -yqq
