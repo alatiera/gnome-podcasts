@@ -60,26 +60,16 @@ test:nightly:
 # Exits and builds fails if on bad format
 lint:rustfmt:
   image: "rustlang/rust:nightly"
-  before_script:
-  - apt-get update -yqq
-  - apt-get install -yqq --no-install-recommends build-essential
-  - apt-get install -yqq --no-install-recommends build-essential libgtk-3-dev
-  - export PATH="$PATH:$HOME/.cargo/bin"
-  - which rustfmt || cargo install rustfmt-nightly
   script:
   - rustc --version && cargo --version
+  - cargo install rustfmt-nightly
   - cargo fmt --all -- --write-mode=diff
 
 # Configure and run clippy on nightly
 # Only fails on errors atm.
 lint:clippy:
   image: "rustlang/rust:nightly"
-  before_script:
-  - apt-get update -yqq
-  - apt-get install -yqq --no-install-recommends build-essential
-  - apt-get install -yqq --no-install-recommends build-essential libgtk-3-dev
-  - export PATH="$PATH:$HOME/.cargo/bin"
-  - which rustfmt || cargo install clippy
   script:
   - rustc --version && cargo --version
+  - cargo install clippy
   - cargo clippy --all

@@ -33,13 +33,6 @@
 - [ ] Fix Etag/Last-modified implementation. [#2](https://gitlab.gnome.org/alatiera/Hammond/issues/2)
 
 
-**Look into:**
-
-- [x] Icons && install stuff && flatpak
-
-* Neither flatpak nor meson support atm building from cargo.
-
-
 **DB changes:**
 
 - [x] episodes: add watched field
