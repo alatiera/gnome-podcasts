@@ -111,10 +111,8 @@ fn main() {
     static_resource::init().expect("Something went wrong with the resource file initialization.");
     hammond_data::init().expect("Hammond Initialazation failed.");
 
-    let application = gtk::Application::new(
-        "com.gitlab.alatiera.Hammond",
-        gio::ApplicationFlags::empty(),
-    ).expect("Initialization failed...");
+    let application = gtk::Application::new("org.gnome.Hammond", gio::ApplicationFlags::empty())
+        .expect("Initialization failed...");
 
     application.connect_startup(move |app| {
         build_ui(app);
