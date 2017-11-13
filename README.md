@@ -9,10 +9,10 @@ This is a prototype of a podcast client written in Rust.
 
 ## Getting in Touch
 If you have any questions regarding the
-use or development of Hammond, want to discuss design or simply hang out
-with nice folks, please join us in #hammond on irc.gnome.org.
+use or development of Hammond, want to discuss design or simply hang out, please join us in []#hammond on irc.gnome.org.](irc://irc.gnome.org/#hammond)
 
 Sidenote:
+
 There isn't much documentation yet, so you will probably have question about parts of the Code.
 
 ## Quick start
@@ -92,7 +92,9 @@ $ tree -d
 
 ## Contributing
 There alot of thins yet to be done.
+
 You can find start by taking a look at [Issues](https://gitlab.gnome.org/alatiera/Hammond/issues) or Opening a [New one](https://gitlab.gnome.org/alatiera/Hammond/issues/new?issue%5Bassignee_id%5D=&issue%5Bmilestone_id%5D=).
+
 You may also want to take a look at [TODO.md](https://gitlab.gnome.org/alatiera/Hammond/blob/master/TODO.md) or grep the source code for `TODO:` and `FIXME:` tags.
 
 If you want to contribute, please check the [Contributions Guidelines][contribution-guidelines].
@@ -107,6 +109,8 @@ It has nothing to do with the horrible headlines on the news.
 ## Acknowledgments
 
 Hammond's design is heavily insired by [Gnome-Music](https://wiki.gnome.org/Design/Apps/Music) and [Vocal](http://vocalproject.net/).
+
 We also copied some elements from [Gnome-news](https://wiki.gnome.org/Design/Apps/Potential/News).
+
 And almost the entirety of the build system is copied from the [Fractal](https://gitlab.gnome.org/danigm/fractal) project.
 
