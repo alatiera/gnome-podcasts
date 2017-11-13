@@ -14,68 +14,77 @@ use hammond_data::index_feed::Database;
 use hammond_data::models::{Episode, Podcast};
 use hammond_data::{DL_DIR, HAMMOND_CACHE};
 
+// TODO: Replace path that are of type &str with std::path.
+// TODO: Have a convention/document absolute/relative paths, if they should end with / or not.
+
 // Adapted from https://github.com/mattgathu/rget .
 // I never wanted to write a custom downloader.
 // Sorry to those who will have to work with that code.
 // Would much rather use a crate,
 // or bindings for a lib like youtube-dl(python),
 // But cant seem to find one.
+// TODO: Write unit-tests.
 fn download_into(dir: &str, file_title: &str, url: &str) -> Result<String> {
     info!("GET request to: {}", url);
     let client = reqwest::Client::builder().referer(false).build()?;
     let mut resp = client.get(url).send()?;
     info!("Status Resp: {}", resp.status());
 
-    if resp.status().is_success() {
-        let headers = resp.headers().clone();
+    if !resp.status().is_success() {
+        // TODO: Return an error instead of panicking.
+        panic!("Bad request response.");
+    }
 
-        let ct_len = headers.get::<ContentLength>().map(|ct_len| **ct_len);
-        let ct_type = headers.get::<ContentType>();
-        ct_len.map(|x| info!("File Lenght: {}", x));
-        ct_type.map(|x| info!("Content Type: {}", x));
+    let headers = resp.headers().clone();
 
-        // This could be prettier.
-        let ext = if let Some(t) = ct_type {
-            let mime = mime_guess::get_extensions(t.type_().as_ref(), t.subtype().as_ref());
-            if let Some(m) = mime {
-                if m.contains(&t.subtype().as_ref()) {
-                    t.subtype().as_ref().to_string()
-                } else {
-                    m.first().unwrap().to_string()
-                }
+    let ct_len = headers.get::<ContentLength>().map(|ct_len| **ct_len);
+    let ct_type = headers.get::<ContentType>();
+    ct_len.map(|x| info!("File Lenght: {}", x));
+    ct_type.map(|x| info!("Content Type: {}", x));
+
+    // This could be prettier.
+    // Determine the file extension from the http content-type header.
+    let ext = if let Some(t) = ct_type {
+        let mime = mime_guess::get_extensions(t.type_().as_ref(), t.subtype().as_ref());
+        if let Some(m) = mime {
+            if m.contains(&t.subtype().as_ref()) {
+                t.subtype().as_ref().to_string()
             } else {
-                error!("Unkown mime type. {}", t);
-                "unkown".to_string()
+                m.first().unwrap().to_string()
             }
         } else {
-            error!("Unkown mime type.");
+            error!("Unkown mime type. {}", t);
             "unkown".to_string()
-        };
-        info!("Extension: {}", ext);
+        }
+    } else {
+        error!("Unkown mime type.");
+        "unkown".to_string()
+    };
+    info!("Extension: {}", ext);
 
-        // Construct a temp file to save desired content.
-        let tempdir = TempDir::new_in(dir, "")?;
-        let mut rng = rand::thread_rng();
+    // Construct a temp file to save desired content.
+    let tempdir = TempDir::new_in(dir, "")?;
+    let mut rng = rand::thread_rng();
 
-        let out_file = format!(
-            "{}/{}.part",
-            tempdir.path().to_str().unwrap(),
-            rng.gen::<usize>()
-        );
+    let out_file = format!(
+        "{}/{}.part",
+        tempdir.path().to_str().unwrap(),
+        rng.gen::<usize>()
+    );
 
-        save_io(&out_file, &mut resp, ct_len)?;
+    // Save requested content into the file.
+    save_io(&out_file, &mut resp, ct_len)?;
 
-        // Construct the desired path.
-        let target = format!("{}/{}.{}", dir, file_title, ext);
-        // Rename/move the tempfile into a permanent place.
-        rename(out_file, &target)?;
-        info!("Downloading of {} completed succesfully.", &target);
-        return Ok(target);
-    }
-    // Ok(String::from(""))
-    panic!("Bad request response.");
+    // Construct the desired path.
+    let target = format!("{}/{}.{}", dir, file_title, ext);
+    // Rename/move the tempfile into a permanent place upon success.
+    rename(out_file, &target)?;
+    info!("Downloading of {} completed succesfully.", &target);
+    Ok(target)
 }
 
+// TODO: Write unit-tests.
+/// Handles the I/O of fetching a remote file and saving into a Buffer and A File.
 fn save_io(file: &str, resp: &mut reqwest::Response, content_lenght: Option<u64>) -> Result<()> {
     info!("Downloading into: {}", file);
     let chunk_size = match content_lenght {
@@ -116,6 +125,7 @@ pub fn get_episode(connection: &Database, ep: &mut Episode, download_folder: &st
             return Ok(());
         }
 
+        // If the path is not valid, then set it to None.
         ep.set_local_uri(None);
         ep.save(connection)?;
     };
@@ -134,50 +144,51 @@ pub fn get_episode(connection: &Database, ep: &mut Episode, download_folder: &st
 }
 
 pub fn cache_image(pd: &Podcast) -> Option<String> {
-    if pd.image_uri().is_some() {
-        let url = pd.image_uri().unwrap().to_owned();
-        if url == "" {
-            return None;
-        }
-
-        let download_fold = format!(
-            "{}{}",
-            HAMMOND_CACHE.to_str().unwrap(),
-            pd.title().to_owned()
-        );
-
-        // Hacky way
-        // TODO: make it so it returns the first cover.* file encountered.
-        let png = format!("{}/cover.png", download_fold);
-        let jpg = format!("{}/cover.jpg", download_fold);
-        let jpe = format!("{}/cover.jpe", download_fold);
-        let jpeg = format!("{}/cover.jpeg", download_fold);
-        if Path::new(&png).exists() {
-            return Some(png);
-        } else if Path::new(&jpe).exists() {
-            return Some(jpe);
-        } else if Path::new(&jpg).exists() {
-            return Some(jpg);
-        } else if Path::new(&jpeg).exists() {
-            return Some(jpeg);
-        };
-
-        DirBuilder::new()
-            .recursive(true)
-            .create(&download_fold)
-            .unwrap();
-
-        let dlpath = download_into(&download_fold, "cover", &url);
-        if let Ok(path) = dlpath {
-            info!("Cached img into: {}", &path);
-            return Some(path);
-        } else {
-            error!("Failed to get feed image.");
-            error!("Error: {}", dlpath.unwrap_err());
-            return None;
-        };
+    if pd.image_uri().is_none() {
+        return None;
     }
-    None
+
+    let url = pd.image_uri().unwrap().to_owned();
+    if url == "" {
+        return None;
+    }
+
+    let download_fold = format!(
+        "{}{}",
+        HAMMOND_CACHE.to_str().unwrap(),
+        pd.title().to_owned()
+    );
+
+    // Hacky way
+    // TODO: make it so it returns the first cover.* file encountered.
+    let png = format!("{}/cover.png", download_fold);
+    let jpg = format!("{}/cover.jpg", download_fold);
+    let jpe = format!("{}/cover.jpe", download_fold);
+    let jpeg = format!("{}/cover.jpeg", download_fold);
+    if Path::new(&png).exists() {
+        return Some(png);
+    } else if Path::new(&jpe).exists() {
+        return Some(jpe);
+    } else if Path::new(&jpg).exists() {
+        return Some(jpg);
+    } else if Path::new(&jpeg).exists() {
+        return Some(jpeg);
+    };
+
+    DirBuilder::new()
+        .recursive(true)
+        .create(&download_fold)
+        .unwrap();
+
+    let dlpath = download_into(&download_fold, "cover", &url);
+    if let Ok(path) = dlpath {
+        info!("Cached img into: {}", &path);
+        Some(path)
+    } else {
+        error!("Failed to get feed image.");
+        error!("Error: {}", dlpath.unwrap_err());
+        None
+    }
 }
 
 #[cfg(test)]
