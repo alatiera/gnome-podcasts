@@ -1,0 +1,37 @@
+{
+    "app-id": "org.gnome.Hammond",
+    "runtime": "org.gnome.Platform",
+    "runtime-version": "3.26",
+    "sdk": "org.gnome.Sdk",
+    "sdk-extensions": ["org.freedesktop.Sdk.Extension.rust-stable"],
+    "command": "hammond",
+    "finish-args": [
+        "--share=network",
+        "--socket=x11",
+        "--socket=wayland",
+        "--talk-name=org.freedesktop.Notifications"
+    ],
+    "build-options" : {
+        "env": {
+            "CARGO_HOME": "/run/build/Hammond/cargo"
+        },
+        "build-args": [ "--share=network" ]
+    },
+    "modules": [
+        {
+           "name": "Hammond",
+           "buildsystem": "simple",
+           "build-commands": [
+               "source /usr/lib/sdk/rust-stable/enable.sh && ./configure --prefix=/app && make && make install"
+            ],
+           "sources": [
+               {
+                   "type": "git",
+                   "url": "https://gitlab.gnome.org/alatiera/Hammond.git",
+                   "branch": "master"
+               }
+           ]
+        }
+    ]
+}
+

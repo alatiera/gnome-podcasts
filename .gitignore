@@ -6,3 +6,4 @@ Cargo.lock
 *.gresource
 _build
 vendor/
+.flatpak-builder/
