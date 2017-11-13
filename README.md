@@ -9,7 +9,7 @@ This is a prototype of a podcast client written in Rust.
 
 ## Getting in Touch
 If you have any questions regarding the
-use or development of Hammond, want to discuss design or simply hang out, please join us in []#hammond on irc.gnome.org.](irc://irc.gnome.org/#hammond)
+use or development of Hammond, want to discuss design or simply hang out, please join us in [#hammond on irc.gnome.org.](irc://irc.gnome.org/#hammond)
 
 Sidenote:
 
