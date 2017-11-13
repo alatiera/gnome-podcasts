@@ -16,7 +16,8 @@ hammond_version_micro = version_array[2].to_int()
 hammond_prefix = get_option('prefix')
 hammond_bindir = join_paths(hammond_prefix, get_option('bindir'))
 
-install_data('assets/org.gnome.Hammond.desktop', install_dir : get_option('datadir') + '/applications')
+install_data('hammond-gtk/resources/org.gnome.Hammond.desktop', install_dir : get_option('datadir') + '/applications')
+install_data('hammond-gtk/resources/org.gnome.Hammond.appdata.xml', install_dir : get_option('datadir') + '/appdata')
 
 cargo = find_program('cargo', required: false)
 gresource = find_program('glib-compile-resources', required: false)
