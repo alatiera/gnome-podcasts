@@ -1,3 +1,5 @@
+> Adapted from Gnome-TODO
+> https://gitlab.gnome.org/GNOME/gnome-todo/blob/582f9a57b84f92dc629b2042b887188878578cdb/CONTRIBUTING.md
 ## Contributing
 
 Contributing
@@ -21,6 +23,50 @@ It is recommended to add a pre-commit hook to run cargo test and cargo fmt
    #!/bin/sh
    cargo test --all && cargo fmt --all -- --write-mode=diff
    ```
+
+# Issues, issues and more issues!
+
+There are many ways you can contribute to Hammond, and all of them involve creating issues
+in [Hammond issue tracker](https://gitlab.gnome.org/alatiera/Hammond/issues). This is the
+entry point for your contribution.
+
+To create an effective and high quality ticket, try to put the following information on your
+ticket:
+
+ 1. A detailed description of the issue or feature request
+     - For issues, please add the necessary steps to reproduce the issue.
+     - For feature requests, add a detailed description of your proposal.
+ 2. A checklist of Development tasks
+ 3. A checklist of Design tasks
+ 4. A checklist of QA tasks
+
+## Issue template
+```
+[Title of the issue or feature request]
+
+Detailed description of the issue. Put as much information as you can, potentially
+with images showing the issue or mockups of the proposed feature.
+
+If it's an issue, add the steps to reproduce like this:
+
+Steps to reproduce:
+
+1. Open Hammond
+2. Do an Action
+3. ...
+
+## Design Tasks
+
+* [ ]  design tasks
+
+## Development Tasks
+
+* [ ]  development tasks
+
+## QA Tasks
+
+* [ ]  qa (quality assurance) tasks
+```
 
 ## Pull Request Process
 
