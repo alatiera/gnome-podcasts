@@ -103,3 +103,10 @@ If you want to contribute, please check the [Contributions Guidelines][contribut
 The project was named after Allan Moore's character [Evey Hammond](https://en.wikipedia.org/wiki/Evey_Hammond) from the graphic novel V for Vendetta.
 
 It has nothing to do with the horrible headlines on the news.
+
+## Acknowledgments
+
+Hammond's design is heavily insired by [Gnome-Music](https://wiki.gnome.org/Design/Apps/Music) and [Vocal](http://vocalproject.net/).
+We also copied some elements from [Gnome-news](https://wiki.gnome.org/Design/Apps/Potential/News).
+And almost the entirety of the build system is copied from the [Fractal](https://gitlab.gnome.org/danigm/fractal) project.
+

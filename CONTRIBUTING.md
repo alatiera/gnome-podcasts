@@ -6,6 +6,22 @@ When contributing to the development of Hammond, please first discuss the change
 
 Please note we have a code of conduct, please follow it in all your interactions with the project.
 
+## Style
+
+We use rustfmt for code formatting and we enforce it on the gitlab-CI server.
+
+Quick setup
+   ```
+   cargo install rustfmt-nightly
+   cargo fmt --all
+   ```
+
+It is recommended to add a pre-commit hook to run cargo test and cargo fmt
+   ```
+   #!/bin/sh
+   cargo test --all && cargo fmt --all -- --write-mode=diff
+   ```
+
 ## Pull Request Process
 
 1. Ensure your code compiles. Run `make` before creating the pull request.
