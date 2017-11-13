@@ -2,7 +2,8 @@
 
 **General:**
 
-- [ ] Add CONTRIBUTING.md
+- [x] Add CONTRIBUTING.md
+- [ ] Add Issues and Pull Request templates
 - [ ] Write docs
 
 
