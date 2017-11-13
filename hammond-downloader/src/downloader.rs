@@ -34,18 +34,24 @@ fn download_into(dir: &str, file_title: &str, url: &str) -> Result<String> {
         ct_len.map(|x| info!("File Lenght: {}", x));
         ct_type.map(|x| info!("Content Type: {}", x));
 
+        // This could be prettier.
         let ext = if let Some(t) = ct_type {
             let mime = mime_guess::get_extensions(t.type_().as_ref(), t.subtype().as_ref());
             if let Some(m) = mime {
-                m.first().unwrap()
+                if m.contains(&t.subtype().as_ref()) {
+                    t.subtype().as_ref().to_string()
+                } else {
+                    m.first().unwrap().to_string()
+                }
             } else {
                 error!("Unkown mime type. {}", t);
-                "unkown"
+                "unkown".to_string()
             }
         } else {
             error!("Unkown mime type.");
-            "unkown"
+            "unkown".to_string()
         };
+        info!("Extension: {}", ext);
 
         // Construct a temp file to save desired content.
         let tempdir = TempDir::new_in(dir, "")?;
