@@ -98,7 +98,7 @@ You can find start by taking a look at [Issues](https://gitlab.gnome.org/alatier
 You may also want to take a look at [TODO.md](https://gitlab.gnome.org/alatiera/Hammond/blob/master/TODO.md) or grep the source code for `TODO:` and `FIXME:` tags.
 
 If you want to contribute, please check the [Contributions Guidelines][contribution-guidelines].
-[contribution-guidelines]: https://gitlab.gnome.org/GNOME/gnome-todo/blob/master/CONTRIBUTING.md
+[contribution-guidelines]: https://gitlab.gnome.org/alatiera/Hammond/blob/master/CONTRIBUTING.md
 
 ## A note about the project's name
 

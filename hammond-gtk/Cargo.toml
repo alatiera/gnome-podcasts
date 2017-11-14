@@ -6,19 +6,19 @@ version = "0.1.0"
 workspace = "../"
 
 [dependencies]
-dissolve = "0.2"
-gdk = "0.6"
-gdk-pixbuf = "0.2"
-gio = "0.2"
-glib = "0.3"
-log = "0.3"
-loggerv = "0.4"
-open = "1.2"
-rayon = "0.9"
+dissolve = "0.2.2"
+gdk = "0.6.0"
+gdk-pixbuf = "0.2.0"
+gio = "0.2.0"
+glib = "0.3.1"
+log = "0.3.8"
+loggerv = "0.5.1"
+open = "1.2.1"
+rayon = "0.9.0"
 
 [dependencies.gtk]
 features = ["v3_22"]
-version = "0.2"
+version = "0.2.0"
 
 [dependencies.hammond-data]
 path = "../hammond-data"
