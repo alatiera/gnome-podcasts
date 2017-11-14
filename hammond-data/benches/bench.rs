@@ -49,20 +49,24 @@ fn bench_index_test_files(b: &mut Bencher) {
     // vec of (path, url) tuples.
     let urls = vec![
         (
-            "tests/feeds/Intercepted.xml",
-            "https://feeds.feedburner.com/InterceptedWithJeremyScahill",
+            "benches/feeds/pcpermp3.xml",
+            "https://www.pcper.com/rss/podcasts-mp3.rss",
         ),
         (
-            "tests/feeds/LinuxUnplugged.xml",
+            "benches/feeds/linuxunplugged.xml",
             "http://feeds.feedburner.com/linuxunplugged",
         ),
         (
-            "tests/feeds/TheBreakthrough.xml",
-            "http://feeds.feedburner.com/propublica/podcast",
+            "benches/feeds/coderradiomp3.xml",
+            "https://feeds.feedburner.com/coderradiomp3",
         ),
         (
-            "tests/feeds/R4Explanation.xml",
-            "https://request-for-explanation.github.io/podcast/rss.xml",
+            "benches/feeds/techsnapmp3.xml",
+            "https://feeds.feedburner.com/techsnapmp3",
+        ),
+        (
+            "benches/feeds/TheLinuxActionShow.xml",
+            "https://feeds2.feedburner.com/TheLinuxActionShow",
         ),
     ];
 
