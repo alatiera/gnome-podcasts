@@ -116,7 +116,7 @@ pub fn complete_index_from_source(
     complete_index(db, &chan, source)
 }
 
-fn complete_index(db: &Database, chan: &rss::Channel, parent: &Source) -> Result<()> {
+pub fn complete_index(db: &Database, chan: &rss::Channel, parent: &Source) -> Result<()> {
     let pd = {
         let conn = db.lock().unwrap();
         index_channel(&conn, chan, parent)?
