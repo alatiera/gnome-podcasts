@@ -4,7 +4,6 @@ use rss;
 use reqwest;
 use rayon::prelude::*;
 
-use schema;
 use dbqueries;
 use models::*;
 use errors::*;
@@ -17,47 +16,41 @@ pub struct Feed(pub reqwest::Response, pub Source);
 
 pub type Database = Arc<Mutex<SqliteConnection>>;
 
-fn index_source(con: &SqliteConnection, foo: &NewSource) -> QueryResult<usize> {
-    match dbqueries::get_source_from_uri(con, foo.uri) {
-        Ok(_) => Ok(1),
-        Err(_) => diesel::insert(foo).into(schema::source::table).execute(con),
-    }
+fn index_source(con: &SqliteConnection, foo: &NewSource) {
+    use schema::source::dsl::*;
+
+    // Throw away the result like `insert or ignore`
+    // Diesel deos not support `insert or ignore` yet.
+    let _ = diesel::insert_into(source).values(foo).execute(con);
 }
 
 fn index_podcast(con: &SqliteConnection, pd: &NewPodcast) -> Result<()> {
+    use schema::podcast::dsl::*;
+
     match dbqueries::get_podcast_from_title(con, &pd.title) {
-        Ok(mut foo) => if foo.link() != pd.link || foo.description() != pd.description {
-            foo.set_link(&pd.link);
-            foo.set_description(&pd.description);
-            foo.set_image_uri(pd.image_uri.as_ref().map(|s| s.as_str()));
-            foo.save_changes::<Podcast>(con)?;
+        Ok(foo) => if foo.link() != pd.link || foo.description() != pd.description {
+            diesel::replace_into(podcast).values(pd).execute(con)?;
         },
         Err(_) => {
-            diesel::insert(pd)
-                .into(schema::podcast::table)
-                .execute(con)?;
+            diesel::insert_into(podcast).values(pd).execute(con)?;
         }
     }
     Ok(())
 }
 
-fn index_episode(con: &SqliteConnection, ep: &NewEpisode) -> Result<()> {
+// TODO: Currently using diesel from master git.
+// Watch out for v0.99.0 beta and change the toml.
+fn index_episode(con: &SqliteConnection, ep: &NewEpisode) -> QueryResult<()> {
+    use schema::episode::dsl::*;
+
     match dbqueries::get_episode_from_uri(con, ep.uri.unwrap()) {
-        Ok(mut foo) => if foo.title() != ep.title
+        Ok(foo) => if foo.title() != ep.title
             || foo.published_date() != ep.published_date.as_ref().map(|x| x.as_str())
         {
-            foo.set_title(ep.title);
-            foo.set_description(ep.description);
-            foo.set_published_date(ep.published_date.as_ref().map(|x| x.as_str()));
-            foo.set_guid(ep.guid);
-            foo.set_length(ep.length);
-            foo.set_epoch(ep.epoch);
-            foo.save_changes::<Episode>(con)?;
+            diesel::replace_into(episode).values(ep).execute(con)?;
         },
         Err(_) => {
-            diesel::insert(ep)
-                .into(schema::episode::table)
-                .execute(con)?;
+            diesel::insert_into(episode).values(ep).execute(con)?;
         }
     }
     Ok(())
@@ -65,7 +58,7 @@ fn index_episode(con: &SqliteConnection, ep: &NewEpisode) -> Result<()> {
 
 pub fn insert_return_source(con: &SqliteConnection, url: &str) -> Result<Source> {
     let foo = NewSource::new_with_uri(url);
-    index_source(con, &foo)?;
+    index_source(con, &foo);
 
     Ok(dbqueries::get_source_from_uri(con, foo.uri)?)
 }
@@ -270,7 +263,7 @@ mod tests {
 
         inpt.iter().for_each(|feed| {
             let tempdb = db.lock().unwrap();
-            index_source(&tempdb, &NewSource::new_with_uri(feed)).unwrap();
+            index_source(&tempdb, &NewSource::new_with_uri(feed));
         });
 
         full_index_loop(&db).unwrap();
