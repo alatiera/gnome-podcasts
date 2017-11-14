@@ -46,41 +46,37 @@ fn bench_index_test_files(b: &mut Bencher) {
     // complete_index runs in parallel so it requires a mutex as argument.
     let m = Arc::new(Mutex::new(db));
 
-    // vec of (path, url) tuples.
+    // include them in the binary to avoid loading from disk making file open syscalls.
+    let pcper = include_bytes!("feeds/pcpermp3.xml");
+    let unplugged = include_bytes!("feeds/linuxunplugged.xml");
+    let radio = include_bytes!("feeds/coderradiomp3.xml");
+    let snap = include_bytes!("feeds/techsnapmp3.xml");
+    let las = include_bytes!("feeds/TheLinuxActionShow.xml");
+
+    // vec of (&vec<u8>, url) tuples.
     let urls = vec![
+        (pcper.as_ref(), "https://www.pcper.com/rss/podcasts-mp3.rss"),
         (
-            "benches/feeds/pcpermp3.xml",
-            "https://www.pcper.com/rss/podcasts-mp3.rss",
-        ),
-        (
-            "benches/feeds/linuxunplugged.xml",
+            unplugged.as_ref(),
             "http://feeds.feedburner.com/linuxunplugged",
         ),
+        (radio.as_ref(), "https://feeds.feedburner.com/coderradiomp3"),
+        (snap.as_ref(), "https://feeds.feedburner.com/techsnapmp3"),
         (
-            "benches/feeds/coderradiomp3.xml",
-            "https://feeds.feedburner.com/coderradiomp3",
-        ),
-        (
-            "benches/feeds/techsnapmp3.xml",
-            "https://feeds.feedburner.com/techsnapmp3",
-        ),
-        (
-            "benches/feeds/TheLinuxActionShow.xml",
+            las.as_ref(),
             "https://feeds2.feedburner.com/TheLinuxActionShow",
         ),
     ];
 
     b.iter(|| {
-        urls.par_iter().for_each(|&(path, url)| {
-            let tempdb = m.lock().unwrap();
+        urls.par_iter().for_each(|&(buff, url)| {
             // Create and insert a Source into db
-            let s = insert_return_source(&tempdb, url).unwrap();
-            drop(tempdb);
-
-            // open the xml file
-            let feed = fs::File::open(path).unwrap();
+            let s = {
+                let temp = m.lock().unwrap();
+                insert_return_source(&temp, url).unwrap()
+            };
             // parse it into a channel
-            let chan = rss::Channel::read_from(BufReader::new(feed)).unwrap();
+            let chan = rss::Channel::read_from(buff).unwrap();
 
             // Index the channel
             complete_index(&m, &chan, &s).unwrap();
