@@ -10,6 +10,8 @@ table! {
         length -> Nullable<Integer>,
         guid -> Nullable<Text>,
         played -> Nullable<Integer>,
+        favorite -> Bool,
+        archive -> Bool,
         podcast_id -> Integer,
     }
 }
@@ -21,6 +23,9 @@ table! {
         link -> Text,
         description -> Text,
         image_uri -> Nullable<Text>,
+        favorite -> Bool,
+        archive -> Bool,
+        always_dl -> Bool,
         source_id -> Integer,
     }
 }

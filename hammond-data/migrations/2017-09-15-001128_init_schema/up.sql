@@ -16,11 +16,13 @@ CREATE TABLE `episode` (
 	`uri`	TEXT NOT NULL UNIQUE,
 	`local_uri`	TEXT,
 	`description`	TEXT,
-	`published_date` TEXT ,
+	`published_date`	TEXT,
 	`epoch`	INTEGER NOT NULL DEFAULT 0,
 	`length`	INTEGER,
 	`guid`	TEXT,
-	`played`	INTEGER ,
+	`played`	INTEGER,
+	`favorite`	INTEGER NOT NULL DEFAULT 0,
+	`archive`	INTEGER NOT NULL DEFAULT 0,
 	`podcast_id`	INTEGER NOT NULL
 );
 
@@ -30,5 +32,8 @@ CREATE TABLE `podcast` (
 	`link`	TEXT NOT NULL,
 	`description`	TEXT NOT NULL,
 	`image_uri`	TEXT,
+	`favorite`	INTEGER NOT NULL DEFAULT 0,
+	`archive`	INTEGER NOT NULL DEFAULT 0,
+	`always_dl`	INTEGER NOT NULL DEFAULT 0,
 	`source_id`	INTEGER NOT NULL
 );

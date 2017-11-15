@@ -25,6 +25,8 @@ pub struct Episode {
     guid: Option<String>,
     /// Represent the epoch value of when the episode was last played.
     played: Option<i32>,
+    favorite: bool,
+    archive: bool,
     podcast_id: i32,
 }
 
@@ -106,6 +108,22 @@ impl Episode {
         self.played = value;
     }
 
+    pub fn archive(&self) -> bool {
+        self.archive
+    }
+
+    pub fn set_archive(&mut self, b: bool) {
+        self.archive = b
+    }
+
+    pub fn favorite(&self) -> bool {
+        self.favorite
+    }
+
+    pub fn set_favorite(&mut self, b: bool) {
+        self.favorite = b
+    }
+
     pub fn save(&self, db: &Database) -> QueryResult<Episode> {
         let tempdb = db.lock().unwrap();
         self.save_changes::<Episode>(&*tempdb)
@@ -123,6 +141,9 @@ pub struct Podcast {
     link: String,
     description: String,
     image_uri: Option<String>,
+    favorite: bool,
+    archive: bool,
+    always_dl: bool,
     source_id: i32,
 }
 
@@ -161,6 +182,30 @@ impl Podcast {
 
     pub fn set_image_uri(&mut self, value: Option<&str>) {
         self.image_uri = value.map(|x| x.to_string());
+    }
+
+    pub fn archive(&self) -> bool {
+        self.archive
+    }
+
+    pub fn set_archive(&mut self, b: bool) {
+        self.archive = b
+    }
+
+    pub fn favorite(&self) -> bool {
+        self.favorite
+    }
+
+    pub fn set_favorite(&mut self, b: bool) {
+        self.favorite = b
+    }
+
+    pub fn always_download(&self) -> bool {
+        self.always_dl
+    }
+
+    pub fn set_always_download(&mut self, b: bool) {
+        self.always_dl = b
     }
 
     pub fn save(&self, db: &Database) -> QueryResult<Podcast> {
@@ -277,6 +322,7 @@ pub struct NewPodcast {
 }
 
 impl NewPodcast {
+    // This is meant only to be used to make unit tests easier.
     pub fn into_podcast(self) -> Podcast {
         Podcast {
             id: 0,
@@ -285,6 +331,9 @@ impl NewPodcast {
             description: self.description,
             image_uri: self.image_uri,
             source_id: self.source_id,
+            always_dl: false,
+            archive: false,
+            favorite: false,
         }
     }
 }
