@@ -9,7 +9,7 @@ use hammond_data::index_feed::Database;
 use widgets::podcast::*;
 
 fn setup_empty_view(stack: &gtk::Stack) {
-    let builder = gtk::Builder::new_from_resource("/org/gtk/hammond/gtk/empty_view.ui");
+    let builder = gtk::Builder::new_from_resource("/org/gnome/hammond/gtk/empty_view.ui");
     let view: gtk::Box = builder.get_object("empty_view").unwrap();
     stack.add_named(&view, "empty");
 }
@@ -36,7 +36,7 @@ fn populate_flowbox(db: &Database, flowbox: &gtk::FlowBox) {
 }
 
 fn create_flowbox_child(db: &Database, pd: &Podcast) -> gtk::FlowBoxChild {
-    let builder = gtk::Builder::new_from_resource("/org/gtk/hammond/gtk/podcasts_child.ui");
+    let builder = gtk::Builder::new_from_resource("/org/gnome/hammond/gtk/podcasts_child.ui");
 
     // Copy of gnome-music AlbumWidget
     let box_: gtk::Box = builder.get_object("fb_child").unwrap();
@@ -62,7 +62,7 @@ fn create_flowbox_child(db: &Database, pd: &Podcast) -> gtk::FlowBoxChild {
 }
 
 fn configure_banner(db: &Database, pd: &Podcast, banner: &gtk::Image, banner_title: &gtk::Label) {
-    let bann = Pixbuf::new_from_resource_at_scale("/org/gtk/hammond/banner.png", 256, 256, true);
+    let bann = Pixbuf::new_from_resource_at_scale("/org/gnome/hammond/banner.png", 256, 256, true);
     if let Ok(b) = bann {
         banner.set_from_pixbuf(&b);
 
@@ -95,7 +95,7 @@ fn on_flowbox_child_activate(db: &Database, stack: &gtk::Stack, parent: &Podcast
 }
 
 fn setup_podcasts_flowbox(db: &Database, stack: &gtk::Stack) -> gtk::FlowBox {
-    let builder = gtk::Builder::new_from_resource("/org/gtk/hammond/gtk/podcasts_view.ui");
+    let builder = gtk::Builder::new_from_resource("/org/gnome/hammond/gtk/podcasts_view.ui");
     let fb_parent: gtk::Box = builder.get_object("fb_parent").unwrap();
     let flowbox: gtk::FlowBox = builder.get_object("flowbox").unwrap();
     init_flowbox(db, stack, &flowbox);

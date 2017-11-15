@@ -1,8 +1,4 @@
-> Adapted from Gnome-TODO
-> https://gitlab.gnome.org/GNOME/gnome-todo/blob/582f9a57b84f92dc629b2042b887188878578cdb/CONTRIBUTING.md
 ## Contributing
-
-Contributing
 
 When contributing to the development of Hammond, please first discuss the change you wish to make via issue, email, or any other method with the maintainers before making a change.
 

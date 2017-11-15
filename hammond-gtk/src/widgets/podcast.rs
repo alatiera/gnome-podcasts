@@ -14,7 +14,7 @@ use podcasts_view::update_podcasts_view;
 
 pub fn podcast_widget(db: &Database, stack: &gtk::Stack, pd: &Podcast) -> gtk::Box {
     // Adapted from gnome-music AlbumWidget
-    let builder = gtk::Builder::new_from_resource("/org/gtk/hammond/gtk/podcast_widget.ui");
+    let builder = gtk::Builder::new_from_resource("/org/gnome/hammond/gtk/podcast_widget.ui");
     let pd_widget: gtk::Box = builder.get_object("podcast_widget").unwrap();
 
     let cover: gtk::Image = builder.get_object("cover").unwrap();
@@ -111,7 +111,7 @@ pub fn get_pixbuf_from_path(pd: &Podcast) -> Option<Pixbuf> {
 }
 
 pub fn setup_podcast_widget(stack: &gtk::Stack) {
-    let builder = gtk::Builder::new_from_resource("/org/gtk/hammond/gtk/podcast_widget.ui");
+    let builder = gtk::Builder::new_from_resource("/org/gnome/hammond/gtk/podcast_widget.ui");
     let pd_widget: gtk::Box = builder.get_object("podcast_widget").unwrap();
 
     stack.add_named(&pd_widget, "pdw");
