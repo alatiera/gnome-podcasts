@@ -63,11 +63,33 @@ dnf install -y gtk3-devel glib2-devel openssl-devel sqlite-devel meson
 ```
 
 If you happen to build it on other distributions please let me know the names of the corresponding libraries. Feel free to open a PR or an Issue to note it.
+
 ```sh
 git clone https://gitlab.gnome.org/alatiera/Hammond.git
 cd Hammond/
 cargo build --all
 ```
+
+## Call for designers
+
+Currently there no design plans or mockups. They are highly needed in order to advance the Gtk Client.
+
+There is the will for a complete client re-write if a someone contributes the mockups.
+
+If you happen to be a designer and want to contribute please hope on [#hammond](https://docs.python.org/3/library/exceptions.html) and get in touch with us.
+
+## Contributing
+
+There alot of thins yet to be done.
+
+If you want to contribute, please check the [Contributions Guidelines][contribution-guidelines].
+
+You can find start by taking a look at [Issues](https://gitlab.gnome.org/alatiera/Hammond/issues) or Opening a [New one](https://gitlab.gnome.org/alatiera/Hammond/issues/new?issue%5Bassignee_id%5D=&issue%5Bmilestone_id%5D=).
+
+There are also some minor tasks tagged with `TODO:` and `FIXME:` in the source code.
+
+[contribution-guidelines]: https://gitlab.gnome.org/alatiera/Hammond/blob/master/CONTRIBUTING.md
+
 
 ## Overview
 
@@ -89,16 +111,6 @@ $ tree -d
 │       ├── views       # Currently only contains the Podcasts_view.
 │       └── widgets     # Contains custom widgets such as Podcast and Episode.
 ```
-
-## Contributing
-There alot of thins yet to be done.
-
-You can find start by taking a look at [Issues](https://gitlab.gnome.org/alatiera/Hammond/issues) or Opening a [New one](https://gitlab.gnome.org/alatiera/Hammond/issues/new?issue%5Bassignee_id%5D=&issue%5Bmilestone_id%5D=).
-
-You may also want to take a look at [TODO.md](https://gitlab.gnome.org/alatiera/Hammond/blob/master/TODO.md) or grep the source code for `TODO:` and `FIXME:` tags.
-
-If you want to contribute, please check the [Contributions Guidelines][contribution-guidelines].
-[contribution-guidelines]: https://gitlab.gnome.org/alatiera/Hammond/blob/master/CONTRIBUTING.md
 
 ## A note about the project's name
 
