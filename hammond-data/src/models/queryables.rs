@@ -1,3 +1,4 @@
+
 use reqwest;
 use diesel::SaveChangesDsl;
 use diesel::result::QueryResult;
@@ -6,6 +7,8 @@ use reqwest::header::{ETag, LastModified};
 use schema::{episode, podcast, source};
 use index_feed::Database;
 use errors::*;
+
+use models::insertables::NewPodcast;
 
 #[derive(Queryable, Identifiable, AsChangeset, Associations)]
 #[table_name = "episode"]
@@ -147,6 +150,23 @@ pub struct Podcast {
     source_id: i32,
 }
 
+/// This is meant only to be used to make unit tests easier.
+impl From<NewPodcast> for Podcast {
+    fn from(pd: NewPodcast) -> Podcast {
+        Podcast {
+            id: 0,
+            title: pd.title,
+            link: pd.link,
+            description: pd.description,
+            image_uri: pd.image_uri,
+            source_id: pd.source_id,
+            always_dl: false,
+            archive: false,
+            favorite: false,
+        }
+    }
+}
+
 impl Podcast {
     pub fn id(&self) -> i32 {
         self.id
@@ -274,66 +294,5 @@ impl<'a> Source {
     pub fn save(&self, db: &Database) -> QueryResult<Source> {
         let tempdb = db.lock().unwrap();
         self.save_changes::<Source>(&*tempdb)
-    }
-}
-
-#[derive(Insertable)]
-#[table_name = "source"]
-#[derive(Debug, Clone)]
-pub struct NewSource<'a> {
-    pub uri: &'a str,
-    pub last_modified: Option<&'a str>,
-    pub http_etag: Option<&'a str>,
-}
-
-impl<'a> NewSource<'a> {
-    pub fn new_with_uri(uri: &'a str) -> NewSource {
-        NewSource {
-            uri,
-            last_modified: None,
-            http_etag: None,
-        }
-    }
-}
-
-#[derive(Insertable)]
-#[table_name = "episode"]
-#[derive(Debug, Clone)]
-pub struct NewEpisode<'a> {
-    pub title: Option<&'a str>,
-    pub uri: Option<&'a str>,
-    pub description: Option<&'a str>,
-    pub published_date: Option<String>,
-    pub length: Option<i32>,
-    pub guid: Option<&'a str>,
-    pub epoch: i32,
-    pub podcast_id: i32,
-}
-
-#[derive(Insertable)]
-#[table_name = "podcast"]
-#[derive(Debug, Clone)]
-pub struct NewPodcast {
-    pub title: String,
-    pub link: String,
-    pub description: String,
-    pub image_uri: Option<String>,
-    pub source_id: i32,
-}
-
-impl NewPodcast {
-    // This is meant only to be used to make unit tests easier.
-    pub fn into_podcast(self) -> Podcast {
-        Podcast {
-            id: 0,
-            title: self.title,
-            link: self.link,
-            description: self.description,
-            image_uri: self.image_uri,
-            source_id: self.source_id,
-            always_dl: false,
-            archive: false,
-            favorite: false,
-        }
     }
 }

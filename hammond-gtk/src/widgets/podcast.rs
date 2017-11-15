@@ -142,7 +142,7 @@ mod tests {
             image_uri: Some("http://newrustacean.com/podcast.png".to_string()),
             source_id: 0,
         };
-        let pd = pd.into_podcast();
+        let pd = Podcast::from(pd);
 
         let pxbuf = get_pixbuf_from_path(&pd);
         assert!(pxbuf.is_some());
