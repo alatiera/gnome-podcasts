@@ -23,7 +23,7 @@ extern crate rss;
 extern crate xdg;
 
 pub mod dbqueries;
-pub mod dbcheckup;
+pub mod utils;
 pub mod models;
 pub mod index_feed;
 pub mod errors;

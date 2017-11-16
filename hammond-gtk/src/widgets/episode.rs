@@ -4,7 +4,7 @@ use hammond_data::dbqueries;
 use hammond_data::models::{Episode, Podcast};
 use hammond_downloader::downloader;
 use hammond_data::index_feed::Database;
-use hammond_data::dbcheckup::*;
+use hammond_data::utils::*;
 use hammond_data::errors::*;
 
 use dissolve::strip_html_tags;

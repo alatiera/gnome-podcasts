@@ -88,7 +88,7 @@ pub fn set_played_now(db: &Database, ep: &mut Episode) -> Result<()> {
     Ok(())
 }
 
-pub fn run(db: &Database) -> Result<()> {
+pub fn checkup(db: &Database) -> Result<()> {
     download_checker(db)?;
     played_cleaner(db)?;
     Ok(())

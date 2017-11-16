@@ -16,7 +16,7 @@ extern crate open;
 
 // use rayon::prelude::*;
 use log::LogLevel;
-use hammond_data::dbcheckup;
+use hammond_data::utils::checkup;
 
 use std::sync::{Arc, Mutex};
 
@@ -83,10 +83,10 @@ fn build_ui(app: &gtk::Application) {
     });
     app.add_action(&quit);
 
-    // Setup the dbcheckup in the app menu.
+    // Setup the checkup in the app menu.
     let check = gio::SimpleAction::new("check", None);
     check.connect_activate(clone!(db => move |_, _| {
-        let _ = dbcheckup::run(&db);
+        let _ = checkup(&db);
     }));
     app.add_action(&check);
 
