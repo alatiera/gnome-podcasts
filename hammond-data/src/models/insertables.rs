@@ -59,6 +59,36 @@ pub struct NewEpisode<'a> {
     pub podcast_id: i32,
 }
 
+impl<'a> NewEpisode<'a> {
+    // TODO: Currently using diesel from master git.
+    // Watch out for v0.99.0 beta and change the toml.
+    // TODO: Refactor into batch indexes instead.
+    pub fn index(&self, db: &Database) -> QueryResult<()> {
+        use schema::episode::dsl::*;
+
+        let ep = {
+            let tempdb = db.lock().unwrap();
+            dbqueries::get_episode_from_uri(&tempdb, self.uri.unwrap())
+        };
+
+        match ep {
+            Ok(foo) => if foo.title() != self.title
+                || foo.published_date() != self.published_date.as_ref().map(|x| x.as_str())
+            {
+                let tempdb = db.lock().unwrap();
+                diesel::replace_into(episode)
+                    .values(self)
+                    .execute(&*tempdb)?;
+            },
+            Err(_) => {
+                let tempdb = db.lock().unwrap();
+                diesel::insert_into(episode).values(self).execute(&*tempdb)?;
+            }
+        }
+        Ok(())
+    }
+}
+
 #[derive(Insertable)]
 #[table_name = "podcast"]
 #[derive(Debug, Clone)]
@@ -78,7 +108,7 @@ impl NewPodcast {
         Ok(dbqueries::get_podcast_from_title(&tempdb, &self.title)?)
     }
 
-    fn index(&self, db: &Database) -> Result<()> {
+    fn index(&self, db: &Database) -> QueryResult<()> {
         use schema::podcast::dsl::*;
         let pd = {
             let tempdb = db.lock().unwrap();

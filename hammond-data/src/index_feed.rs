@@ -1,7 +1,6 @@
 use diesel::prelude::*;
 use rayon::prelude::*;
 
-use diesel;
 use rss;
 
 use dbqueries;
@@ -45,46 +44,24 @@ impl Feed {
         pd.into_podcast(db)
     }
 
+    // TODO: Figure out transcactions.
+    // The synchronous version where there was a db.lock() before the episodes.iter()
+    // is actually faster.
     fn index_channel_items(&self, db: &Database, pd: &Podcast) -> Result<()> {
         let it = self.channel.items();
         let episodes: Vec<_> = it.par_iter()
             .map(|x| feedparser::parse_episode(x, pd.id()))
             .collect();
 
-        let conn = db.lock().unwrap();
-        let e = conn.transaction::<(), Error, _>(|| {
-            // TODO:
-            episodes.iter().for_each(|x| {
-                let e = index_episode(&conn, x);
-                if let Err(err) = e {
-                    error!("Failed to index episode: {:?}.", x);
-                    error!("Error msg: {}", err);
-                };
-            });
-            Ok(())
+        episodes.into_par_iter().for_each(|x| {
+            let e = x.index(&Arc::clone(db));
+            if let Err(err) = e {
+                error!("Failed to index episode: {:?}.", x);
+                error!("Error msg: {}", err);
+            };
         });
-        drop(conn);
-
-        e
+        Ok(())
     }
-}
-
-// TODO: Currently using diesel from master git.
-// Watch out for v0.99.0 beta and change the toml.
-fn index_episode(con: &SqliteConnection, ep: &NewEpisode) -> QueryResult<()> {
-    use schema::episode::dsl::*;
-
-    match dbqueries::get_episode_from_uri(con, ep.uri.unwrap()) {
-        Ok(foo) => if foo.title() != ep.title
-            || foo.published_date() != ep.published_date.as_ref().map(|x| x.as_str())
-        {
-            diesel::replace_into(episode).values(ep).execute(con)?;
-        },
-        Err(_) => {
-            diesel::insert_into(episode).values(ep).execute(con)?;
-        }
-    }
-    Ok(())
 }
 
 pub fn full_index_loop(db: &Database) -> Result<()> {
