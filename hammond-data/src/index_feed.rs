@@ -53,6 +53,7 @@ impl Feed {
 
         let conn = db.lock().unwrap();
         let e = conn.transaction::<(), Error, _>(|| {
+            // TODO:
             episodes.iter().for_each(|x| {
                 let e = index_episode(&conn, x);
                 if let Err(err) = e {
@@ -66,28 +67,6 @@ impl Feed {
 
         e
     }
-}
-
-pub fn index_source(con: &SqliteConnection, foo: &NewSource) {
-    use schema::source::dsl::*;
-
-    // Throw away the result like `insert or ignore`
-    // Diesel deos not support `insert or ignore` yet.
-    let _ = diesel::insert_into(source).values(foo).execute(con);
-}
-
-pub fn index_podcast(con: &SqliteConnection, pd: &NewPodcast) -> Result<()> {
-    use schema::podcast::dsl::*;
-
-    match dbqueries::get_podcast_from_title(con, &pd.title) {
-        Ok(foo) => if foo.link() != pd.link || foo.description() != pd.description {
-            diesel::replace_into(podcast).values(pd).execute(con)?;
-        },
-        Err(_) => {
-            diesel::insert_into(podcast).values(pd).execute(con)?;
-        }
-    }
-    Ok(())
 }
 
 // TODO: Currently using diesel from master git.
@@ -203,8 +182,9 @@ mod tests {
         ];
 
         inpt.iter().for_each(|feed| {
-            let tempdb = db.lock().unwrap();
-            index_source(&tempdb, &NewSource::new_with_uri(feed));
+            NewSource::new_with_uri(feed)
+                .into_source(&db.clone())
+                .unwrap();
         });
 
         full_index_loop(&db).unwrap();

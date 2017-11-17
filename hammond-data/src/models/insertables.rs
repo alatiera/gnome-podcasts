@@ -1,11 +1,12 @@
 use diesel::prelude::*;
+use diesel;
 
 use schema::{episode, podcast, source};
 use models::{Podcast, Source};
 use index_feed::Database;
 use errors::*;
 
-use index_feed;
+// use index_feed;
 use dbqueries;
 
 #[derive(Insertable)]
@@ -26,10 +27,20 @@ impl<'a> NewSource<'a> {
         }
     }
 
+    fn index(&self, db: &Database) {
+        use schema::source::dsl::*;
+
+        let tempdb = db.lock().unwrap();
+        // Throw away the result like `insert or ignore`
+        // Diesel deos not support `insert or ignore` yet.
+        let _ = diesel::insert_into(source).values(self).execute(&*tempdb);
+    }
+
     // Look out for when tryinto lands into stable.
     pub fn into_source(self, db: &Database) -> QueryResult<Source> {
+        self.index(db);
+
         let tempdb = db.lock().unwrap();
-        index_feed::index_source(&tempdb, &self);
         dbqueries::get_source_from_uri(&tempdb, self.uri)
     }
 }
@@ -62,9 +73,30 @@ pub struct NewPodcast {
 impl NewPodcast {
     // Look out for when tryinto lands into stable.
     pub fn into_podcast(self, db: &Database) -> Result<Podcast> {
+        self.index(db)?;
         let tempdb = db.lock().unwrap();
-        index_feed::index_podcast(&tempdb, &self)?;
-
         Ok(dbqueries::get_podcast_from_title(&tempdb, &self.title)?)
+    }
+
+    fn index(&self, db: &Database) -> Result<()> {
+        use schema::podcast::dsl::*;
+        let pd = {
+            let tempdb = db.lock().unwrap();
+            dbqueries::get_podcast_from_title(&tempdb, &self.title)
+        };
+
+        match pd {
+            Ok(foo) => if foo.link() != self.link {
+                let tempdb = db.lock().unwrap();
+                diesel::replace_into(podcast)
+                    .values(self)
+                    .execute(&*tempdb)?;
+            },
+            Err(_) => {
+                let tempdb = db.lock().unwrap();
+                diesel::insert_into(podcast).values(self).execute(&*tempdb)?;
+            }
+        }
+        Ok(())
     }
 }
