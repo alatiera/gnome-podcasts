@@ -1,12 +1,14 @@
 use diesel::prelude::*;
-use diesel;
-use rss;
 use rayon::prelude::*;
 
+use diesel;
+use rss;
+
 use dbqueries;
+use feedparser;
+
 use models::*;
 use errors::*;
-use feedparser;
 
 use std::sync::{Arc, Mutex};
 
@@ -31,18 +33,16 @@ impl Feed {
     }
 
     fn index(&self, db: &Database) -> Result<()> {
-        let tempdb = db.lock().unwrap();
-        let pd = self.index_channel(&tempdb)?;
-        drop(tempdb);
+        let pd = self.index_channel(db)?;
 
         self.index_channel_items(db, &pd)?;
         Ok(())
     }
 
-    fn index_channel(&self, con: &SqliteConnection) -> Result<Podcast> {
+    fn index_channel(&self, db: &Database) -> Result<Podcast> {
         let pd = feedparser::parse_podcast(&self.channel, self.source.id());
         // Convert NewPodcast to Podcast
-        insert_return_podcast(con, &pd)
+        pd.into_podcast(db)
     }
 
     fn index_channel_items(&self, db: &Database, pd: &Podcast) -> Result<()> {
@@ -76,7 +76,7 @@ pub fn index_source(con: &SqliteConnection, foo: &NewSource) {
     let _ = diesel::insert_into(source).values(foo).execute(con);
 }
 
-fn index_podcast(con: &SqliteConnection, pd: &NewPodcast) -> Result<()> {
+pub fn index_podcast(con: &SqliteConnection, pd: &NewPodcast) -> Result<()> {
     use schema::podcast::dsl::*;
 
     match dbqueries::get_podcast_from_title(con, &pd.title) {
@@ -108,25 +108,6 @@ fn index_episode(con: &SqliteConnection, ep: &NewEpisode) -> QueryResult<()> {
     Ok(())
 }
 
-pub fn insert_return_source(con: &SqliteConnection, url: &str) -> Result<Source> {
-    let foo = NewSource::new_with_uri(url);
-    index_source(con, &foo);
-
-    Ok(dbqueries::get_source_from_uri(con, foo.uri)?)
-}
-
-fn insert_return_podcast(con: &SqliteConnection, pd: &NewPodcast) -> Result<Podcast> {
-    index_podcast(con, pd)?;
-
-    Ok(dbqueries::get_podcast_from_title(con, &pd.title)?)
-}
-
-// fn insert_return_episode(con: &SqliteConnection, ep: &NewEpisode) -> Result<Episode> {
-//     index_episode(con, ep)?;
-
-//     Ok(dbqueries::get_episode_from_uri(con, ep.uri.unwrap())?)
-// }
-
 pub fn full_index_loop(db: &Database) -> Result<()> {
     let mut f = fetch_all_feeds(db)?;
 
@@ -137,7 +118,7 @@ pub fn full_index_loop(db: &Database) -> Result<()> {
 
 pub fn index_feeds(db: &Database, f: &mut [Feed]) {
     f.into_par_iter().for_each(|x| {
-        let e = x.index(db);
+        let e = x.index(&Arc::clone(db));
         if e.is_err() {
             error!("Error While trying to update the database.");
             error!("Error msg: {}", e.unwrap_err());
@@ -160,7 +141,7 @@ pub fn fetch_feeds(db: &Database, feeds: Vec<Source>) -> Vec<Feed> {
         .into_par_iter()
         .filter_map(|x| {
             let uri = x.uri().to_owned();
-            let l = Feed::new_from_source(db, x);
+            let l = Feed::new_from_source(&Arc::clone(db), x);
             if l.is_ok() {
                 l.ok()
             } else {
@@ -260,10 +241,10 @@ mod tests {
 
         let mut feeds: Vec<_> = urls.iter()
             .map(|&(path, url)| {
-                let tempdb = m.lock().unwrap();
                 // Create and insert a Source into db
-                let s = insert_return_source(&tempdb, url).unwrap();
-                drop(tempdb);
+                let s = NewSource::new_with_uri(url)
+                    .into_source(&m.clone())
+                    .unwrap();
 
                 // open the xml file
                 let feed = fs::File::open(path).unwrap();

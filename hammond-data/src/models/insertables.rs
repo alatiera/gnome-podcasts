@@ -1,9 +1,10 @@
 use diesel::prelude::*;
 
 use schema::{episode, podcast, source};
-
-use models::Source;
+use models::{Podcast, Source};
 use index_feed::Database;
+use errors::*;
+
 use index_feed;
 use dbqueries;
 
@@ -11,7 +12,7 @@ use dbqueries;
 #[table_name = "source"]
 #[derive(Debug, Clone)]
 pub struct NewSource<'a> {
-    pub uri: &'a str,
+    uri: &'a str,
     last_modified: Option<&'a str>,
     http_etag: Option<&'a str>,
 }
@@ -25,6 +26,7 @@ impl<'a> NewSource<'a> {
         }
     }
 
+    // Look out for when tryinto lands into stable.
     pub fn into_source(self, db: &Database) -> QueryResult<Source> {
         let tempdb = db.lock().unwrap();
         index_feed::index_source(&tempdb, &self);
@@ -55,4 +57,14 @@ pub struct NewPodcast {
     pub description: String,
     pub image_uri: Option<String>,
     pub source_id: i32,
+}
+
+impl NewPodcast {
+    // Look out for when tryinto lands into stable.
+    pub fn into_podcast(self, db: &Database) -> Result<Podcast> {
+        let tempdb = db.lock().unwrap();
+        index_feed::index_podcast(&tempdb, &self)?;
+
+        Ok(dbqueries::get_podcast_from_title(&tempdb, &self.title)?)
+    }
 }

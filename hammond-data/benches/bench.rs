@@ -15,9 +15,10 @@ use rand::Rng;
 use test::Bencher;
 
 use hammond_data::run_migration_on;
-use hammond_data::index_feed::{index_feeds, insert_return_source, Database, Feed};
+use hammond_data::models::NewSource;
+use hammond_data::index_feed::{index_feeds, Database, Feed};
 
-// use std::io::BufRead;
+use std::io::BufReader;
 use std::path::PathBuf;
 use std::sync::{Arc, Mutex};
 
@@ -55,20 +56,17 @@ fn get_temp_db() -> TempDB {
 }
 
 fn index_urls(m: &Database) {
-    let mut feeds: Vec<_> = URLS.par_iter()
+    URLS.par_iter()
         .map(|&(buff, url)| {
             // Create and insert a Source into db
-            let s = {
-                let temp = m.lock().unwrap();
-                insert_return_source(&temp, url).unwrap()
-            };
+            let s = NewSource::new_with_uri(url).into_source(m).unwrap();
             // parse it into a channel
-            let chan = rss::Channel::read_from(buff).unwrap();
+            let chan = rss::Channel::read_from(BufReader::new(buff)).unwrap();
             Feed::new_from_channel_source(chan, s)
         })
-        .collect();
-
-    index_feeds(m, &mut feeds);
+        .for_each(|feed| {
+            index_feeds(m, &mut [feed]);
+        });
 }
 
 #[bench]

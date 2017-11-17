@@ -1,7 +1,7 @@
 use gtk;
 use gtk::prelude::*;
 
-use hammond_data::index_feed;
+use hammond_data::models::NewSource;
 use hammond_data::index_feed::Database;
 
 use podcasts_view::update_podcasts_view;
@@ -53,17 +53,14 @@ pub fn get_headerbar(db: &Database, stack: &gtk::Stack) -> gtk::HeaderBar {
 }
 
 fn on_add_bttn_clicked(db: &Database, stack: &gtk::Stack, url: &str) {
-    let source = {
-        let tempdb = db.lock().unwrap();
-        index_feed::insert_return_source(&tempdb, url)
-    };
+    let source = NewSource::new_with_uri(url).into_source(db);
     info!("{:?} feed added", url);
 
     if let Ok(s) = source {
         // update the db
         utils::refresh_feed(db, stack, Some(vec![s]), None);
     } else {
-        error!("Expected Error, feed probably already exists.");
+        error!("Feed probably already exists.");
         error!("Error: {:?}", source.unwrap_err());
     }
 }
