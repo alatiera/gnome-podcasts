@@ -1,12 +1,19 @@
+use diesel::prelude::*;
+
 use schema::{episode, podcast, source};
+
+use models::Source;
+use index_feed::Database;
+use index_feed;
+use dbqueries;
 
 #[derive(Insertable)]
 #[table_name = "source"]
 #[derive(Debug, Clone)]
 pub struct NewSource<'a> {
     pub uri: &'a str,
-    pub last_modified: Option<&'a str>,
-    pub http_etag: Option<&'a str>,
+    last_modified: Option<&'a str>,
+    http_etag: Option<&'a str>,
 }
 
 impl<'a> NewSource<'a> {
@@ -16,6 +23,12 @@ impl<'a> NewSource<'a> {
             last_modified: None,
             http_etag: None,
         }
+    }
+
+    pub fn into_source(self, db: &Database) -> QueryResult<Source> {
+        let tempdb = db.lock().unwrap();
+        index_feed::index_source(&tempdb, &self);
+        dbqueries::get_source_from_uri(&tempdb, self.uri)
     }
 }
 

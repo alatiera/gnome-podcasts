@@ -1,7 +1,6 @@
 use diesel::prelude::*;
 use diesel;
 use rss;
-use reqwest;
 use rayon::prelude::*;
 
 use dbqueries;
@@ -11,12 +10,51 @@ use feedparser;
 
 use std::sync::{Arc, Mutex};
 
-#[derive(Debug)]
-pub struct Feed(pub reqwest::Response, pub Source);
-
 pub type Database = Arc<Mutex<SqliteConnection>>;
 
-fn index_source(con: &SqliteConnection, foo: &NewSource) {
+#[derive(Debug)]
+pub struct Feed(pub rss::Channel, pub Source);
+
+impl Feed {
+    fn index(&self, db: &Database) -> Result<()> {
+        let tempdb = db.lock().unwrap();
+        let pd = self.index_channel(&tempdb)?;
+        drop(tempdb);
+
+        self.index_channel_items(db, &pd)?;
+        Ok(())
+    }
+
+    fn index_channel(&self, con: &SqliteConnection) -> Result<Podcast> {
+        let pd = feedparser::parse_podcast(&self.0, self.1.id());
+        // Convert NewPodcast to Podcast
+        insert_return_podcast(con, &pd)
+    }
+
+    fn index_channel_items(&self, db: &Database, pd: &Podcast) -> Result<()> {
+        let it = self.0.items();
+        let episodes: Vec<_> = it.par_iter()
+            .map(|x| feedparser::parse_episode(x, pd.id()))
+            .collect();
+
+        let conn = db.lock().unwrap();
+        let e = conn.transaction::<(), Error, _>(|| {
+            episodes.iter().for_each(|x| {
+                let e = index_episode(&conn, x);
+                if let Err(err) = e {
+                    error!("Failed to index episode: {:?}.", x);
+                    error!("Error msg: {}", err);
+                };
+            });
+            Ok(())
+        });
+        drop(conn);
+
+        e
+    }
+}
+
+pub fn index_source(con: &SqliteConnection, foo: &NewSource) {
     use schema::source::dsl::*;
 
     // Throw away the result like `insert or ignore`
@@ -78,96 +116,41 @@ fn insert_return_podcast(con: &SqliteConnection, pd: &NewPodcast) -> Result<Podc
 pub fn full_index_loop(db: &Database) -> Result<()> {
     let mut f = fetch_all_feeds(db)?;
 
-    index_feed(db, &mut f);
+    index_feeds(db, &mut f);
     info!("Indexing done.");
     Ok(())
 }
 
-pub fn index_feed(db: &Database, f: &mut [Feed]) {
-    f.par_iter_mut()
-        .for_each(|&mut Feed(ref mut req, ref source)| {
-            let e = complete_index_from_source(req, source, db);
-            if e.is_err() {
-                error!("Error While trying to update the database.");
-                error!("Error msg: {}", e.unwrap_err());
-            };
-        });
-}
-
-pub fn complete_index_from_source(
-    req: &mut reqwest::Response,
-    source: &Source,
-    db: &Database,
-) -> Result<()> {
-    use std::io::Read;
-    use std::str::FromStr;
-
-    let mut buf = String::new();
-    req.read_to_string(&mut buf)?;
-    let chan = rss::Channel::from_str(&buf)?;
-
-    complete_index(db, &chan, source)
-}
-
-pub fn complete_index(db: &Database, chan: &rss::Channel, parent: &Source) -> Result<()> {
-    let pd = {
-        let conn = db.lock().unwrap();
-        index_channel(&conn, chan, parent)?
-    };
-    index_channel_items(db, chan.items(), &pd);
-    Ok(())
-}
-
-fn index_channel(con: &SqliteConnection, chan: &rss::Channel, parent: &Source) -> Result<Podcast> {
-    let pd = feedparser::parse_podcast(chan, parent.id());
-    // Convert NewPodcast to Podcast
-    insert_return_podcast(con, &pd)
-}
-
-fn index_channel_items(db: &Database, it: &[rss::Item], pd: &Podcast) {
-    let episodes: Vec<_> = it.par_iter()
-        .map(|x| feedparser::parse_episode(x, pd.id()))
-        .collect();
-
-    let conn = db.lock().unwrap();
-    let e = conn.transaction::<(), Error, _>(|| {
-        episodes.iter().for_each(|x| {
-            let e = index_episode(&conn, x);
-            if let Err(err) = e {
-                error!("Failed to index episode: {:?}.", x);
-                error!("Error msg: {}", err);
-            };
-        });
-        Ok(())
+pub fn index_feeds(db: &Database, f: &mut [Feed]) {
+    f.into_par_iter().for_each(|x| {
+        let e = x.index(db);
+        if e.is_err() {
+            error!("Error While trying to update the database.");
+            error!("Error msg: {}", e.unwrap_err());
+        };
     });
-    drop(conn);
-
-    if let Err(err) = e {
-        error!("Episodes Transcaction Failed.");
-        error!("Error msg: {}", err);
-    };
 }
 
-// Maybe this can be refactored into an Iterator for lazy evaluation.
 pub fn fetch_all_feeds(db: &Database) -> Result<Vec<Feed>> {
-    let mut feeds = {
+    let feeds = {
         let conn = db.lock().unwrap();
         dbqueries::get_sources(&conn)?
     };
 
-    let results = fetch_feeds(db, &mut feeds);
+    let results = fetch_feeds(db, feeds);
     Ok(results)
 }
 
-pub fn fetch_feeds(db: &Database, feeds: &mut [Source]) -> Vec<Feed> {
-    let results: Vec<Feed> = feeds
-        .par_iter_mut()
+pub fn fetch_feeds(db: &Database, feeds: Vec<Source>) -> Vec<Feed> {
+    let results: Vec<_> = feeds
+        .into_par_iter()
         .filter_map(|x| {
-            let l = refresh_source(db, x);
+            let uri = x.uri().to_owned();
+            let l = x.refresh(db);
             if l.is_ok() {
                 l.ok()
             } else {
-                error!("Error While trying to fetch from source: {}.", x.uri());
+                error!("Error While trying to fetch from source: {}.", uri);
                 error!("Error msg: {}", l.unwrap_err());
                 None
             }
@@ -175,43 +158,6 @@ pub fn fetch_feeds(db: &Database, feeds: &mut [Source]) -> Vec<Feed> {
         .collect();
 
     results
-}
-
-pub fn refresh_source(db: &Database, feed: &mut Source) -> Result<Feed> {
-    use reqwest::header::{ETag, EntityTag, Headers, HttpDate, LastModified};
-
-    let mut headers = Headers::new();
-
-    if let Some(foo) = feed.http_etag() {
-        headers.set(ETag(EntityTag::new(true, foo.to_owned())));
-    }
-
-    if let Some(foo) = feed.last_modified() {
-        if let Ok(x) = foo.parse::<HttpDate>() {
-            headers.set(LastModified(x));
-        }
-    }
-
-    // FIXME: I have fucked up somewhere here.
-    // Getting back 200 codes even though I supposedly sent etags.
-    // info!("Headers: {:?}", headers);
-    let client = reqwest::Client::builder().referer(false).build()?;
-    let req = client.get(feed.uri()).headers(headers).send()?;
-
-    info!("GET to {} , returned: {}", feed.uri(), req.status());
-
-    // TODO match on more stuff
-    // 301: Permanent redirect of the url
-    // 302: Temporary redirect of the url
-    // 304: Up to date Feed, checked with the Etag
-    // 410: Feed deleted
-    // match req.status() {
-    //     reqwest::StatusCode::NotModified => (),
-    //     _ => (),
-    // };
-
-    feed.update_etag(db, &req)?;
-    Ok(Feed(req, feed.clone()))
 }
 
 #[cfg(test)]
@@ -308,9 +254,10 @@ mod tests {
             let feed = fs::File::open(path).unwrap();
             // parse it into a channel
             let chan = rss::Channel::read_from(BufReader::new(feed)).unwrap();
+            let feed = Feed(chan, s);
 
             // Index the channel
-            complete_index(&m, &chan, &s).unwrap();
+            index_feeds(&m, &mut [feed]);
         });
 
         // Assert the index rows equal the controlled results

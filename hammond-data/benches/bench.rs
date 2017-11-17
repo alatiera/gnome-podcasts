@@ -15,7 +15,7 @@ use rand::Rng;
 use test::Bencher;
 
 use hammond_data::run_migration_on;
-use hammond_data::index_feed::{complete_index, insert_return_source, Database};
+use hammond_data::index_feed::{index_feeds, insert_return_source, Database, Feed};
 
 // use std::io::BufRead;
 use std::path::PathBuf;
@@ -63,9 +63,10 @@ fn index_urls(m: &Database) {
         };
         // parse it into a channel
         let chan = rss::Channel::read_from(buff).unwrap();
+        let feed = Feed(chan, s);
 
         // Index the channel
-        complete_index(m, &chan, &s).unwrap();
+        index_feeds(m, &mut [feed]);
     });
 }
 

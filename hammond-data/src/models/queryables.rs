@@ -3,12 +3,16 @@ use reqwest;
 use diesel::SaveChangesDsl;
 use diesel::result::QueryResult;
 use reqwest::header::{ETag, LastModified};
+use rss::Channel;
 
 use schema::{episode, podcast, source};
-use index_feed::Database;
+use index_feed::{Database, Feed};
 use errors::*;
 
 use models::insertables::NewPodcast;
+
+use std::io::Read;
+use std::str::FromStr;
 
 #[derive(Queryable, Identifiable, AsChangeset, Associations)]
 #[table_name = "episode"]
@@ -272,7 +276,7 @@ impl<'a> Source {
 
     /// Extract Etag and LastModifier from req, and update self and the
     /// corresponding db row.
-    pub fn update_etag(&mut self, db: &Database, req: &reqwest::Response) -> Result<()> {
+    fn update_etag(&mut self, db: &Database, req: &reqwest::Response) -> Result<()> {
         let headers = req.headers();
 
         // let etag = headers.get_raw("ETag").unwrap();
@@ -294,5 +298,47 @@ impl<'a> Source {
     pub fn save(&self, db: &Database) -> QueryResult<Source> {
         let tempdb = db.lock().unwrap();
         self.save_changes::<Source>(&*tempdb)
+    }
+
+    pub fn refresh(mut self, db: &Database) -> Result<Feed> {
+        use reqwest::header::{ETag, EntityTag, Headers, HttpDate, LastModified};
+
+        let mut headers = Headers::new();
+
+        if let Some(foo) = self.http_etag() {
+            headers.set(ETag(EntityTag::new(true, foo.to_owned())));
+        }
+
+        if let Some(foo) = self.last_modified() {
+            if let Ok(x) = foo.parse::<HttpDate>() {
+                headers.set(LastModified(x));
+            }
+        }
+
+        // FIXME: I have fucked up somewhere here.
+        // Getting back 200 codes even though I supposedly sent etags.
+        // info!("Headers: {:?}", headers);
+        let client = reqwest::Client::builder().referer(false).build()?;
+        let mut req = client.get(self.uri()).headers(headers).send()?;
+
+        info!("GET to {} , returned: {}", self.uri(), req.status());
+
+        // TODO match on more stuff
+        // 301: Permanent redirect of the url
+        // 302: Temporary redirect of the url
+        // 304: Up to date Feed, checked with the Etag
+        // 410: Feed deleted
+        // match req.status() {
+        //     reqwest::StatusCode::NotModified => (),
+        //     _ => (),
+        // };
+
+        self.update_etag(db, &req)?;
+
+        let mut buf = String::new();
+        req.read_to_string(&mut buf)?;
+        let chan = Channel::from_str(&buf)?;
+
+        Ok(Feed(chan, self))
     }
 }
