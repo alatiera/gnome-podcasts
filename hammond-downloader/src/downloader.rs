@@ -10,7 +10,7 @@ use std::io::{BufWriter, Read, Write};
 use std::path::Path;
 
 use errors::*;
-use hammond_data::index_feed::Database;
+use hammond_data::Database;
 use hammond_data::models::{Episode, Podcast};
 use hammond_data::{DL_DIR, HAMMOND_CACHE};
 

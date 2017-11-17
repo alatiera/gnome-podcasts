@@ -32,7 +32,11 @@ mod schema;
 
 use diesel::migrations::RunMigrationsError;
 use diesel::prelude::*;
+
 use std::path::PathBuf;
+use std::sync::{Arc, Mutex};
+
+pub type Database = Arc<Mutex<SqliteConnection>>;
 
 embed_migrations!("migrations/");
 

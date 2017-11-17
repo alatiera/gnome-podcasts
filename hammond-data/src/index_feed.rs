@@ -1,17 +1,16 @@
-use diesel::prelude::*;
 use rayon::prelude::*;
 
 use rss;
 
 use dbqueries;
 use feedparser;
+use Database;
 
 use models::*;
 use errors::*;
 
-use std::sync::{Arc, Mutex};
+use std::sync::Arc;
 
-pub type Database = Arc<Mutex<SqliteConnection>>;
 
 #[derive(Debug)]
 pub struct Feed {
@@ -124,6 +123,7 @@ mod tests {
     use std::io::BufReader;
     use std::path::PathBuf;
     use std::fs;
+    use std::sync::Mutex;
 
     use super::*;
 

@@ -3,7 +3,7 @@ use open;
 use hammond_data::dbqueries;
 use hammond_data::models::{Episode, Podcast};
 use hammond_downloader::downloader;
-use hammond_data::index_feed::Database;
+use hammond_data::Database;
 use hammond_data::utils::*;
 use hammond_data::errors::*;
 

@@ -2,7 +2,7 @@
 use diesel::prelude::*;
 use diesel;
 use models::{Episode, Podcast, Source};
-use index_feed::Database;
+use Database;
 use chrono::prelude::*;
 
 /// Random db querries helper functions.

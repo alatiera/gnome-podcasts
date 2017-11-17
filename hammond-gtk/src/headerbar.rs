@@ -2,7 +2,7 @@ use gtk;
 use gtk::prelude::*;
 
 use hammond_data::models::NewSource;
-use hammond_data::index_feed::Database;
+use hammond_data::Database;
 
 use podcasts_view::update_podcasts_view;
 use utils;

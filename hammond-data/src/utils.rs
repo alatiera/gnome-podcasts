@@ -2,7 +2,7 @@ use rayon::prelude::*;
 
 use errors::*;
 use dbqueries;
-use index_feed::Database;
+use Database;
 use models::Episode;
 use chrono::prelude::*;
 

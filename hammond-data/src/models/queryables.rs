@@ -6,10 +6,11 @@ use reqwest::header::{ETag, LastModified};
 use rss::Channel;
 
 use schema::{episode, podcast, source};
-use index_feed::{Database, Feed};
+use index_feed::Feed;
 use errors::*;
 
 use models::insertables::NewPodcast;
+use Database;
 
 use std::io::Read;
 use std::str::FromStr;

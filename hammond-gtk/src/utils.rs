@@ -3,7 +3,7 @@ use gtk;
 
 use hammond_data::index_feed;
 use hammond_data::models::Source;
-use hammond_data::index_feed::Database;
+use hammond_data::Database;
 
 use std::{thread, time};
 use std::cell::RefCell;

@@ -3,10 +3,9 @@ use diesel;
 
 use schema::{episode, podcast, source};
 use models::{Podcast, Source};
-use index_feed::Database;
+use Database;
 use errors::*;
 
-// use index_feed;
 use dbqueries;
 
 #[derive(Insertable)]
