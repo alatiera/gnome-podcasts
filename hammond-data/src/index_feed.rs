@@ -13,9 +13,17 @@ use std::sync::{Arc, Mutex};
 pub type Database = Arc<Mutex<SqliteConnection>>;
 
 #[derive(Debug)]
-pub struct Feed(pub rss::Channel, pub Source);
+pub struct Feed(rss::Channel, Source);
 
 impl Feed {
+    pub fn new_from_source(db: &Database, s: Source) -> Result<Feed> {
+        s.refresh(db)
+    }
+
+    pub fn new_from_channel_source(chan: rss::Channel, s: Source) -> Feed {
+        Feed(chan, s)
+    }
+
     fn index(&self, db: &Database) -> Result<()> {
         let tempdb = db.lock().unwrap();
         let pd = self.index_channel(&tempdb)?;
@@ -146,7 +154,7 @@ pub fn fetch_feeds(db: &Database, feeds: Vec<Source>) -> Vec<Feed> {
         .into_par_iter()
         .filter_map(|x| {
             let uri = x.uri().to_owned();
-            let l = x.refresh(db);
+            let l = Feed::new_from_source(db, x);
             if l.is_ok() {
                 l.ok()
             } else {
@@ -244,21 +252,23 @@ mod tests {
             ),
         ];
 
-        urls.iter().for_each(|&(path, url)| {
-            let tempdb = m.lock().unwrap();
-            // Create and insert a Source into db
-            let s = insert_return_source(&tempdb, url).unwrap();
-            drop(tempdb);
+        let mut feeds: Vec<_> = urls.iter()
+            .map(|&(path, url)| {
+                let tempdb = m.lock().unwrap();
+                // Create and insert a Source into db
+                let s = insert_return_source(&tempdb, url).unwrap();
+                drop(tempdb);
 
-            // open the xml file
-            let feed = fs::File::open(path).unwrap();
-            // parse it into a channel
-            let chan = rss::Channel::read_from(BufReader::new(feed)).unwrap();
-            let feed = Feed(chan, s);
+                // open the xml file
+                let feed = fs::File::open(path).unwrap();
+                // parse it into a channel
+                let chan = rss::Channel::read_from(BufReader::new(feed)).unwrap();
+                Feed::new_from_channel_source(chan, s)
+            })
+            .collect();
 
-            // Index the channel
-            index_feeds(&m, &mut [feed]);
-        });
+        // Index the channel
+        index_feeds(&m, &mut feeds);
 
         // Assert the index rows equal the controlled results
         let tempdb = m.lock().unwrap();

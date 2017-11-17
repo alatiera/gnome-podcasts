@@ -55,19 +55,20 @@ fn get_temp_db() -> TempDB {
 }
 
 fn index_urls(m: &Database) {
-    URLS.par_iter().for_each(|&(buff, url)| {
-        // Create and insert a Source into db
-        let s = {
-            let temp = m.lock().unwrap();
-            insert_return_source(&temp, url).unwrap()
-        };
-        // parse it into a channel
-        let chan = rss::Channel::read_from(buff).unwrap();
-        let feed = Feed(chan, s);
+    let mut feeds: Vec<_> = URLS.par_iter()
+        .map(|&(buff, url)| {
+            // Create and insert a Source into db
+            let s = {
+                let temp = m.lock().unwrap();
+                insert_return_source(&temp, url).unwrap()
+            };
+            // parse it into a channel
+            let chan = rss::Channel::read_from(buff).unwrap();
+            Feed::new_from_channel_source(chan, s)
+        })
+        .collect();
 
-        // Index the channel
-        index_feeds(m, &mut [feed]);
-    });
+    index_feeds(m, &mut feeds);
 }
 
 #[bench]

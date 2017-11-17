@@ -339,6 +339,6 @@ impl<'a> Source {
         req.read_to_string(&mut buf)?;
         let chan = Channel::from_str(&buf)?;
 
-        Ok(Feed(chan, self))
+        Ok(Feed::new_from_channel_source(chan, self))
     }
 }
