@@ -13,7 +13,10 @@ use std::sync::{Arc, Mutex};
 pub type Database = Arc<Mutex<SqliteConnection>>;
 
 #[derive(Debug)]
-pub struct Feed(rss::Channel, Source);
+pub struct Feed {
+    channel: rss::Channel,
+    source: Source,
+}
 
 impl Feed {
     pub fn new_from_source(db: &Database, s: Source) -> Result<Feed> {
@@ -21,7 +24,10 @@ impl Feed {
     }
 
     pub fn new_from_channel_source(chan: rss::Channel, s: Source) -> Feed {
-        Feed(chan, s)
+        Feed {
+            channel: chan,
+            source: s,
+        }
     }
 
     fn index(&self, db: &Database) -> Result<()> {
@@ -34,13 +40,13 @@ impl Feed {
     }
 
     fn index_channel(&self, con: &SqliteConnection) -> Result<Podcast> {
-        let pd = feedparser::parse_podcast(&self.0, self.1.id());
+        let pd = feedparser::parse_podcast(&self.channel, self.source.id());
         // Convert NewPodcast to Podcast
         insert_return_podcast(con, &pd)
     }
 
     fn index_channel_items(&self, db: &Database, pd: &Podcast) -> Result<()> {
-        let it = self.0.items();
+        let it = self.channel.items();
         let episodes: Vec<_> = it.par_iter()
             .map(|x| feedparser::parse_episode(x, pd.id()))
             .collect();
