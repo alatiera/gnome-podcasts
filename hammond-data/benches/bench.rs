@@ -16,7 +16,8 @@ use test::Bencher;
 
 use hammond_data::run_migration_on;
 use hammond_data::models::NewSource;
-use hammond_data::index_feed::{index_feeds, Database, Feed};
+use hammond_data::index_feed::{index, Feed};
+use hammond_data::Database;
 
 use std::io::BufReader;
 use std::path::PathBuf;
@@ -65,7 +66,7 @@ fn index_urls(m: &Database) {
             Feed::new_from_channel_source(chan, s)
         })
         .for_each(|feed| {
-            index_feeds(m, &mut [feed]);
+            index(m, &mut [feed]);
         });
 }
 

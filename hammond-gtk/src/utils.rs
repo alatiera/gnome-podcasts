@@ -42,14 +42,14 @@ pub fn refresh_feed(
 
         let feeds = {
             if let Some(mut vec) = source {
-                Ok(index_feed::fetch_feeds(&db, vec))
+                Ok(index_feed::fetch(&db, vec))
             } else {
-                index_feed::fetch_all_feeds(&db)
+                index_feed::fetch_all(&db)
             }
         };
 
         if let Ok(mut x) = feeds {
-            index_feed::index_feeds(&db, &mut x);
+            index_feed::index(&db, &mut x);
             info!("Indexing done.");
 
             sender.send(true).expect("Couldn't send data to channel");;

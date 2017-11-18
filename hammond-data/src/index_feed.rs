@@ -6,7 +6,7 @@ use dbqueries;
 use feedparser;
 use Database;
 
-use models::*;
+use models::{Podcast, Source};
 use errors::*;
 
 use std::sync::Arc;
@@ -63,15 +63,15 @@ impl Feed {
     }
 }
 
-pub fn full_index_loop(db: &Database) -> Result<()> {
-    let mut f = fetch_all_feeds(db)?;
+pub fn index_all(db: &Database) -> Result<()> {
+    let mut f = fetch_all(db)?;
 
-    index_feeds(db, &mut f);
+    index(db, &mut f);
     info!("Indexing done.");
     Ok(())
 }
 
-pub fn index_feeds(db: &Database, f: &mut [Feed]) {
+pub fn index(db: &Database, f: &mut [Feed]) {
     f.into_par_iter().for_each(|x| {
         let e = x.index(&Arc::clone(db));
         if e.is_err() {
@@ -81,17 +81,17 @@ pub fn index_feeds(db: &Database, f: &mut [Feed]) {
     });
 }
 
-pub fn fetch_all_feeds(db: &Database) -> Result<Vec<Feed>> {
+pub fn fetch_all(db: &Database) -> Result<Vec<Feed>> {
     let feeds = {
         let conn = db.lock().unwrap();
         dbqueries::get_sources(&conn)?
     };
 
-    let results = fetch_feeds(db, feeds);
+    let results = fetch(db, feeds);
     Ok(results)
 }
 
-pub fn fetch_feeds(db: &Database, feeds: Vec<Source>) -> Vec<Feed> {
+pub fn fetch(db: &Database, feeds: Vec<Source>) -> Vec<Feed> {
     let results: Vec<_> = feeds
         .into_par_iter()
         .filter_map(|x| {
@@ -119,6 +119,7 @@ mod tests {
     use diesel::prelude::*;
     use rss;
     use self::rand::Rng;
+    use models::NewSource;
 
     use std::io::BufReader;
     use std::path::PathBuf;
@@ -164,10 +165,10 @@ mod tests {
                 .unwrap();
         });
 
-        full_index_loop(&db).unwrap();
+        index_all(&db).unwrap();
 
         // Run again to cover Unique constrains erros.
-        full_index_loop(&db).unwrap();
+        index_all(&db).unwrap();
     }
 
     #[test]
@@ -211,8 +212,8 @@ mod tests {
             })
             .collect();
 
-        // Index the channel
-        index_feeds(&m, &mut feeds);
+        // Index the channels
+        index(&m, &mut feeds);
 
         // Assert the index rows equal the controlled results
         let tempdb = m.lock().unwrap();
