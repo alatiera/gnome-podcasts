@@ -62,26 +62,29 @@ impl<'a> NewEpisode<'a> {
     // TODO: Currently using diesel from master git.
     // Watch out for v0.99.0 beta and change the toml.
     // TODO: Refactor into batch indexes instead.
-    pub fn index(&self, db: &Database) -> QueryResult<()> {
+    // TODO: Refactor so all index methods take consistent arguments
+    // like NewEpisode.index wants Sqliteconnection where the other take a Database
+    pub fn index(&self, con: &SqliteConnection) -> QueryResult<()> {
         use schema::episode::dsl::*;
 
         let ep = {
-            let tempdb = db.lock().unwrap();
-            dbqueries::get_episode_from_uri(&tempdb, self.uri.unwrap())
+            // let tempdb = db.lock().unwrap();
+            // dbqueries::get_episode_from_uri(&tempdb, self.uri.unwrap())
+            dbqueries::get_episode_from_uri(con, self.uri.unwrap())
         };
 
         match ep {
             Ok(foo) => if foo.title() != self.title
                 || foo.published_date() != self.published_date.as_ref().map(|x| x.as_str())
             {
-                let tempdb = db.lock().unwrap();
-                diesel::replace_into(episode)
-                    .values(self)
-                    .execute(&*tempdb)?;
+                // let tempdb = db.lock().unwrap();
+                diesel::replace_into(episode).values(self).execute(con)?;
+                // .execute(&*tempdb)?;
             },
             Err(_) => {
-                let tempdb = db.lock().unwrap();
-                diesel::insert_into(episode).values(self).execute(&*tempdb)?;
+                // let tempdb = db.lock().unwrap();
+                diesel::insert_into(episode).values(self).execute(con)?;
+                // .execute(&*tempdb)?;
             }
         }
         Ok(())

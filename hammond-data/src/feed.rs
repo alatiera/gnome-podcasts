@@ -1,5 +1,6 @@
 use rayon::prelude::*;
 use diesel::Identifiable;
+use diesel::prelude::*;
 
 use rss;
 
@@ -44,9 +45,7 @@ impl Feed {
         pd.into_podcast(db)
     }
 
-    // TODO: Figure out transcactions.
-    // The synchronous version where there was a db.lock() before the episodes.iter()
-    // is actually faster.
+    // TODO: Refactor transcactions and find a way to do it in parallel.
     fn index_channel_items(&self, db: &Database, pd: &Podcast) -> Result<()> {
         let items = self.channel.items();
         let episodes: Vec<_> = items
@@ -54,12 +53,16 @@ impl Feed {
             .map(|item| parser::new_episode(item, *pd.id()))
             .collect();
 
-        episodes.into_par_iter().for_each(|ep| {
-            let e = ep.index(&Arc::clone(db));
-            if let Err(err) = e {
-                error!("Failed to index episode: {:?}.", ep);
-                error!("Error msg: {}", err);
-            };
+        let tempdb = db.lock().unwrap();
+        let _ = tempdb.transaction::<(), Error, _>(|| {
+            episodes.into_iter().for_each(|x| {
+                let e = x.index(&tempdb);
+                if let Err(err) = e {
+                    error!("Failed to index episode: {:?}.", x);
+                    error!("Error msg: {}", err);
+                };
+            });
+            Ok(())
         });
         Ok(())
     }
