@@ -5,7 +5,7 @@ use models;
 
 // TODO: Extend the support for parsing itunes extensions
 /// Parses a `rss::Channel` into a `NewPodcast` Struct.
-pub fn parse_podcast(chan: &Channel, source_id: i32) -> models::NewPodcast {
+pub fn new_podcast(chan: &Channel, source_id: i32) -> models::NewPodcast {
     let title = chan.title().trim().to_owned();
     let link = chan.link().trim().to_owned();
     let description = chan.description().trim().to_owned();
@@ -29,7 +29,7 @@ pub fn parse_podcast(chan: &Channel, source_id: i32) -> models::NewPodcast {
 }
 
 /// Parses an `rss::Item` into a `NewEpisode` Struct.
-pub fn parse_episode(item: &Item, parent_id: i32) -> models::NewEpisode {
+pub fn new_episode(item: &Item, parent_id: i32) -> models::NewEpisode {
     let title = item.title().map(|s| s.trim());
     let description = item.description().map(|s| s.trim());
     let guid = item.guid().map(|x| x.value().trim());
@@ -81,7 +81,7 @@ mod tests {
     use super::*;
 
     #[test]
-    fn test_parse_podcast_intercepted() {
+    fn test_new_podcast_intercepted() {
         let file = File::open("tests/feeds/Intercepted.xml").unwrap();
         let channel = Channel::read_from(BufReader::new(file)).unwrap();
 
@@ -90,7 +90,7 @@ mod tests {
                      the crucial issues of our time: national security, civil liberties, foreign \
                      policy, and criminal justice.  Plus interviews with artists, thinkers, and \
                      newsmakers who challenge our preconceptions about the world we live in.";
-        let pd = parse_podcast(&channel, 0);
+        let pd = new_podcast(&channel, 0);
 
         assert_eq!(pd.title, "Intercepted with Jeremy Scahill".to_string());
         assert_eq!(pd.link, "https://theintercept.com/podcasts".to_string());
@@ -107,14 +107,14 @@ mod tests {
     }
 
     #[test]
-    fn test_parse_podcast_breakthrough() {
+    fn test_new_podcast_breakthrough() {
         let file = File::open("tests/feeds/TheBreakthrough.xml").unwrap();
         let channel = Channel::read_from(BufReader::new(file)).unwrap();
 
         let descr = "Latest Articles and Investigations from ProPublica, an independent, \
                      non-profit newsroom that produces investigative journalism in the public \
                      interest.";
-        let pd = parse_podcast(&channel, 0);
+        let pd = new_podcast(&channel, 0);
 
         assert_eq!(pd.title, "The Breakthrough".to_string());
         assert_eq!(pd.link, "http://www.propublica.org/podcast".to_string());
@@ -126,14 +126,14 @@ mod tests {
     }
 
     #[test]
-    fn test_parse_podcast_lup() {
+    fn test_new_podcast_lup() {
         let file = File::open("tests/feeds/LinuxUnplugged.xml").unwrap();
         let channel = Channel::read_from(BufReader::new(file)).unwrap();
 
         let descr = "An open show powered by community LINUX Unplugged takes the best attributes \
                      of open collaboration and focuses them into a weekly lifestyle show about \
                      Linux.";
-        let pd = parse_podcast(&channel, 0);
+        let pd = new_podcast(&channel, 0);
 
         assert_eq!(pd.title, "LINUX Unplugged Podcast".to_string());
         assert_eq!(pd.link, "http://www.jupiterbroadcasting.com/".to_string());
@@ -145,11 +145,11 @@ mod tests {
     }
 
     #[test]
-    fn test_parse_podcast_r4explanation() {
+    fn test_new_podcast_r4explanation() {
         let file = File::open("tests/feeds/R4Explanation.xml").unwrap();
         let channel = Channel::read_from(BufReader::new(file)).unwrap();
 
-        let pd = parse_podcast(&channel, 0);
+        let pd = new_podcast(&channel, 0);
         let descr = "A weekly discussion of Rust RFCs";
 
         assert_eq!(pd.title, "Request For Explanation".to_string());
@@ -165,7 +165,7 @@ mod tests {
     }
 
     #[test]
-    fn test_parse_episode_intercepted() {
+    fn test_new_episode_intercepted() {
         let file = File::open("tests/feeds/Intercepted.xml").unwrap();
         let channel = Channel::read_from(BufReader::new(file)).unwrap();
 
@@ -175,7 +175,7 @@ mod tests {
                      Shaun King explains his call for a boycott of the NFL and talks about his \
                      campaign to bring violent neo-Nazis to justice. Rapper Open Mike Eagle \
                      performs.";
-        let i = parse_episode(&firstitem, 0);
+        let i = new_episode(&firstitem, 0);
 
         assert_eq!(i.title, Some("The Super Bowl of Racism"));
         assert_eq!(i.uri, Some("http://traffic.megaphone.fm/PPY6458293736.mp3"));
@@ -189,7 +189,7 @@ mod tests {
         assert_eq!(i.epoch, 1505296800);
 
         let second = channel.items().iter().nth(1).unwrap();
-        let i2 = parse_episode(&second, 0);
+        let i2 = new_episode(&second, 0);
 
         let descr2 = "This week on Intercepted: Jeremy gives an update on the aftermath of \
                       Blackwater’s 2007 massacre of Iraqi civilians. Intercept reporter Lee Fang \
@@ -215,14 +215,14 @@ mod tests {
     }
 
     #[test]
-    fn test_parse_episode_breakthrough() {
+    fn test_new_episode_breakthrough() {
         let file = File::open("tests/feeds/TheBreakthrough.xml").unwrap();
         let channel = Channel::read_from(BufReader::new(file)).unwrap();
 
         let firstitem = channel.items().first().unwrap();
         let descr = "<p>A reporter finds that homes meant to replace New York’s troubled \
                      psychiatric hospitals might be just as bad.</p>";
-        let i = parse_episode(&firstitem, 0);
+        let i = new_episode(&firstitem, 0);
 
         assert_eq!(
             i.title,
@@ -248,7 +248,7 @@ mod tests {
         assert_eq!(i.epoch, 1504872000);
 
         let second = channel.items().iter().nth(1).unwrap();
-        let i2 = parse_episode(&second, 0);
+        let i2 = new_episode(&second, 0);
         let descr2 = "<p>Jonathan Allen and Amie Parnes didn’t know their book would be called \
                       ‘Shattered,’ or that their extraordinary access would let them chronicle \
                       the mounting signs of a doomed campaign.</p>";
@@ -280,7 +280,7 @@ mod tests {
     }
 
     #[test]
-    fn test_parse_episode_lup() {
+    fn test_new_episode_lup() {
         let file = File::open("tests/feeds/LinuxUnplugged.xml").unwrap();
         let channel = Channel::read_from(BufReader::new(file)).unwrap();
 
@@ -289,7 +289,7 @@ mod tests {
             "Audit your network with a couple of easy commands on Kali Linux. Chris decides to \
              blow off a little steam by attacking his IoT devices, Wes has the scope on Equifax \
              blaming open source & the Beard just saved the show. It’s a really packed episode!";
-        let i = parse_episode(&firstitem, 0);
+        let i = new_episode(&firstitem, 0);
 
         assert_eq!(i.title, Some("Hacking Devices with Kali Linux | LUP 214"));
         assert_eq!(
@@ -306,7 +306,7 @@ mod tests {
         assert_eq!(i.epoch, 1505280282);
 
         let second = channel.items().iter().nth(1).unwrap();
-        let i2 = parse_episode(&second, 0);
+        let i2 = new_episode(&second, 0);
 
         let descr2 = "<p>The Gnome project is about to solve one of our audience's biggest \
                       Wayland’s concerns. But as the project takes on a new level of relevance, \
@@ -330,7 +330,7 @@ mod tests {
     }
 
     #[test]
-    fn test_parse_episode_r4expanation() {
+    fn test_new_episode_r4expanation() {
         let file = File::open("tests/feeds/R4Explanation.xml").unwrap();
         let channel = Channel::read_from(BufReader::new(file)).unwrap();
 
@@ -338,7 +338,7 @@ mod tests {
         let descr = "This week we look at <a \
                      href=\"https://github.com/rust-lang/rfcs/pull/2094\">RFC 2094</a> \
                      \"Non-lexical lifetimes\"";
-        let i = parse_episode(&firstitem, 0);
+        let i = new_episode(&firstitem, 0);
 
         assert_eq!(i.title, Some("Episode #9 - A Once in a Lifetime RFC"));
         assert_eq!(
@@ -361,7 +361,7 @@ mod tests {
         assert_eq!(i.epoch, 1503957600);
 
         let second = channel.items().iter().nth(8).unwrap();
-        let i2 = parse_episode(&second, 0);
+        let i2 = new_episode(&second, 0);
 
         let descr2 = "This week we look at <a \
                       href=\"https://github.com/rust-lang/rfcs/pull/2071\">RFC 2071</a> \"Add \

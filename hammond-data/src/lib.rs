@@ -27,7 +27,7 @@ pub mod utils;
 pub mod models;
 pub mod feed;
 pub mod errors;
-mod feedparser;
+mod parser;
 mod schema;
 
 use diesel::migrations::RunMigrationsError;
