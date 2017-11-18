@@ -30,15 +30,12 @@ pub mod errors;
 mod parser;
 mod schema;
 
-use diesel::migrations::RunMigrationsError;
 use diesel::prelude::*;
 
 use std::path::PathBuf;
 use std::sync::{Arc, Mutex};
 
 pub type Database = Arc<Mutex<SqliteConnection>>;
-
-embed_migrations!("migrations/");
 
 lazy_static!{
     #[allow(dead_code)]
@@ -65,29 +62,4 @@ lazy_static!{
     pub static ref DL_DIR: PathBuf = {
         HAMMOND_XDG.create_data_directory("Downloads").unwrap()
     };
-}
-
-pub fn init() -> Result<(), RunMigrationsError> {
-    let conn = establish_connection();
-    run_migration_on(&conn)
-}
-
-pub fn run_migration_on(connection: &SqliteConnection) -> Result<(), RunMigrationsError> {
-    info!("Running DB Migrations...");
-    embedded_migrations::run(connection)
-    // embedded_migrations::run_with_output(connection, &mut std::io::stdout())
-}
-
-pub fn establish_connection() -> SqliteConnection {
-    let database_url = DB_PATH.to_str().unwrap();
-    SqliteConnection::establish(database_url)
-        .expect(&format!("Error connecting to {}", database_url))
-}
-
-#[cfg(test)]
-mod tests {
-    #[test]
-    fn it_works() {
-        assert_eq!(2 + 2, 4);
-    }
 }

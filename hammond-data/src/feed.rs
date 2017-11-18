@@ -125,6 +125,7 @@ mod tests {
     use rss;
     use self::rand::Rng;
     use models::NewSource;
+    use utils::run_migration_on;
 
     use std::io::BufReader;
     use std::path::PathBuf;
@@ -146,7 +147,7 @@ mod tests {
             .join(format!("hammonddb_{}.db", rng.gen::<usize>()));
 
         let db = SqliteConnection::establish(db_path.to_str().unwrap()).unwrap();
-        ::run_migration_on(&db).unwrap();
+        run_migration_on(&db).unwrap();
 
         TempDB(tmp_dir, db_path, db)
     }

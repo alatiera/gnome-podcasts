@@ -1,14 +1,37 @@
 use rayon::prelude::*;
+use diesel::prelude::*;
+use chrono::prelude::*;
 
 use errors::*;
 use dbqueries;
 use Database;
 use models::Episode;
-use chrono::prelude::*;
 
 use std::path::Path;
 use std::fs;
 use std::sync::Arc;
+
+use DB_PATH;
+
+embed_migrations!("migrations/");
+
+pub fn init() -> Result<()> {
+    let conn = establish_connection();
+    run_migration_on(&conn)
+}
+
+pub fn run_migration_on(connection: &SqliteConnection) -> Result<()> {
+    info!("Running DB Migrations...");
+    embedded_migrations::run(connection)?;
+    // embedded_migrations::run_with_output(connection, &mut std::io::stdout())
+    Ok(())
+}
+
+pub fn establish_connection() -> SqliteConnection {
+    let database_url = DB_PATH.to_str().unwrap();
+    SqliteConnection::establish(database_url)
+        .expect(&format!("Error connecting to {}", database_url))
+}
 
 // TODO: Write unit test.
 fn download_checker(db: &Database) -> Result<()> {

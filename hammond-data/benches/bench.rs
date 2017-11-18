@@ -14,7 +14,7 @@ use rayon::prelude::*;
 use rand::Rng;
 use test::Bencher;
 
-use hammond_data::run_migration_on;
+use hammond_data::utils::run_migration_on;
 use hammond_data::models::NewSource;
 use hammond_data::feed::{index, Feed};
 use hammond_data::Database;
@@ -51,7 +51,7 @@ fn get_temp_db() -> TempDB {
         .join(format!("hammonddb_{}.db", rng.gen::<usize>()));
 
     let db = SqliteConnection::establish(db_path.to_str().unwrap()).unwrap();
-    ::run_migration_on(&db).unwrap();
+    run_migration_on(&db).unwrap();
 
     TempDB(tmp_dir, db_path, db)
 }

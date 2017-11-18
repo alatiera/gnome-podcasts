@@ -56,7 +56,7 @@ THIS IS STILL A PROTOTYPE.
 */
 
 fn build_ui(app: &gtk::Application) {
-    let db = Arc::new(Mutex::new(hammond_data::establish_connection()));
+    let db = Arc::new(Mutex::new(hammond_data::utils::establish_connection()));
 
     let menu = gio::Menu::new();
     menu.append("Quit", "app.quit");
@@ -109,7 +109,7 @@ fn main() {
     // TODO: make the the logger a cli -vv option
     loggerv::init_with_level(LogLevel::Info).unwrap();
     static_resource::init().expect("Something went wrong with the resource file initialization.");
-    hammond_data::init().expect("Hammond Initialazation failed.");
+    hammond_data::utils::init().expect("Hammond Initialazation failed.");
 
     let application = gtk::Application::new("org.gnome.Hammond", gio::ApplicationFlags::empty())
         .expect("Initialization failed...");
