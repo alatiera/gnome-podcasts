@@ -16,7 +16,7 @@ use test::Bencher;
 
 use hammond_data::run_migration_on;
 use hammond_data::models::NewSource;
-use hammond_data::index_feed::{index, Feed};
+use hammond_data::feed::{index, Feed};
 use hammond_data::Database;
 
 use std::io::BufReader;

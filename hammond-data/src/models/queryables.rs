@@ -6,7 +6,7 @@ use reqwest::header::{ETag, LastModified};
 use rss::Channel;
 
 use schema::{episode, podcast, source};
-use index_feed::Feed;
+use feed::Feed;
 use errors::*;
 
 use models::insertables::NewPodcast;

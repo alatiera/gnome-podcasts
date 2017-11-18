@@ -1,7 +1,7 @@
 use glib;
 use gtk;
 
-use hammond_data::index_feed;
+use hammond_data::feed;
 use hammond_data::models::Source;
 use hammond_data::Database;
 
@@ -42,14 +42,14 @@ pub fn refresh_feed(
 
         let feeds = {
             if let Some(mut vec) = source {
-                Ok(index_feed::fetch(&db, vec))
+                Ok(feed::fetch(&db, vec))
             } else {
-                index_feed::fetch_all(&db)
+                feed::fetch_all(&db)
             }
         };
 
         if let Ok(mut x) = feeds {
-            index_feed::index(&db, &mut x);
+            feed::index(&db, &mut x);
             info!("Indexing done.");
 
             sender.send(true).expect("Couldn't send data to channel");;

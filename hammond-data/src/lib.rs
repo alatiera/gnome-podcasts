@@ -25,7 +25,7 @@ extern crate xdg;
 pub mod dbqueries;
 pub mod utils;
 pub mod models;
-pub mod index_feed;
+pub mod feed;
 pub mod errors;
 mod feedparser;
 mod schema;
