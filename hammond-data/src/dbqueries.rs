@@ -127,8 +127,8 @@ pub fn remove_feed(db: &Database, pd: &Podcast) -> QueryResult<usize> {
 
     tempdb.transaction(|| -> QueryResult<usize> {
         delete_source(&tempdb, pd.source_id())?;
-        delete_podcast(&tempdb, pd.id())?;
-        delete_podcast_episodes(&tempdb, pd.id())
+        delete_podcast(&tempdb, *pd.id())?;
+        delete_podcast_episodes(&tempdb, *pd.id())
     })
 }
 

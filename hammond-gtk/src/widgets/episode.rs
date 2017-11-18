@@ -1,4 +1,3 @@
-
 use open;
 use hammond_data::dbqueries;
 use hammond_data::models::{Episode, Podcast};
@@ -8,6 +7,7 @@ use hammond_data::utils::*;
 use hammond_data::errors::*;
 
 use dissolve::strip_html_tags;
+use diesel::associations::Identifiable;
 
 use std::thread;
 use std::cell::RefCell;
@@ -71,7 +71,7 @@ fn epidose_widget(db: &Database, episode: &mut Episode, pd_title: &str) -> gtk::
 
     play_button.connect_clicked(
         clone!(db, episode, played_button, unplayed_button => move |_| {
-        on_play_bttn_clicked(&db, episode.id());
+        on_play_bttn_clicked(&db, *episode.id());
         let _ = set_played_now(&db, &mut episode.clone());
         played_button.hide();
         unplayed_button.show();
@@ -80,7 +80,7 @@ fn epidose_widget(db: &Database, episode: &mut Episode, pd_title: &str) -> gtk::
 
     delete_button.connect_clicked(
         clone!(episode, db, play_button, download_button => move |del| {
-        on_delete_bttn_clicked(&db, episode.id());
+        on_delete_bttn_clicked(&db, *episode.id());
         del.hide();
         play_button.hide();
         download_button.show();

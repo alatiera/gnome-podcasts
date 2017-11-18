@@ -1,6 +1,7 @@
 use gtk;
 use gtk::prelude::*;
 use gdk_pixbuf::Pixbuf;
+use diesel::associations::Identifiable;
 
 use hammond_data::dbqueries;
 use hammond_data::models::Podcast;

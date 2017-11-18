@@ -39,10 +39,6 @@ pub struct Episode {
 }
 
 impl Episode {
-    pub fn id(&self) -> i32 {
-        self.id
-    }
-
     pub fn title(&self) -> Option<&str> {
         self.title.as_ref().map(|s| s.as_str())
     }
@@ -173,10 +169,6 @@ impl From<NewPodcast> for Podcast {
 }
 
 impl Podcast {
-    pub fn id(&self) -> i32 {
-        self.id
-    }
-
     pub fn source_id(&self) -> i32 {
         self.source_id
     }
@@ -251,10 +243,6 @@ pub struct Source {
 }
 
 impl<'a> Source {
-    pub fn id(&self) -> i32 {
-        self.id
-    }
-
     pub fn uri(&self) -> &str {
         &self.uri
     }

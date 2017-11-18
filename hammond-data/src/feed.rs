@@ -1,4 +1,5 @@
 use rayon::prelude::*;
+use diesel::Identifiable;
 
 use rss;
 
@@ -38,7 +39,7 @@ impl Feed {
     }
 
     fn index_channel(&self, db: &Database) -> Result<Podcast> {
-        let pd = parser::new_podcast(&self.channel, self.source.id());
+        let pd = parser::new_podcast(&self.channel, *self.source.id());
         // Convert NewPodcast to Podcast
         pd.into_podcast(db)
     }
@@ -49,7 +50,7 @@ impl Feed {
     fn index_channel_items(&self, db: &Database, pd: &Podcast) -> Result<()> {
         let it = self.channel.items();
         let episodes: Vec<_> = it.par_iter()
-            .map(|x| parser::new_episode(x, pd.id()))
+            .map(|x| parser::new_episode(x, *pd.id()))
             .collect();
 
         episodes.into_par_iter().for_each(|x| {
