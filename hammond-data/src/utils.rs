@@ -12,12 +12,12 @@ use std::sync::Arc;
 
 // TODO: Write unit test.
 fn download_checker(db: &Database) -> Result<()> {
-    let mut episodes = {
+    let episodes = {
         let tempdb = db.lock().unwrap();
         dbqueries::get_downloaded_episodes(&tempdb)?
     };
 
-    episodes.par_iter_mut().for_each(|ep| {
+    episodes.into_par_iter().for_each(|mut ep| {
         if !Path::new(ep.local_uri().unwrap()).exists() {
             ep.set_local_uri(None);
             let res = ep.save(&Arc::clone(db));
@@ -33,13 +33,13 @@ fn download_checker(db: &Database) -> Result<()> {
 
 // TODO: Write unit test.
 fn played_cleaner(db: &Database) -> Result<()> {
-    let mut episodes = {
+    let episodes = {
         let tempdb = db.lock().unwrap();
         dbqueries::get_played_episodes(&tempdb)?
     };
 
     let now_utc = Utc::now().timestamp() as i32;
-    episodes.par_iter_mut().for_each(|mut ep| {
+    episodes.into_par_iter().for_each(|mut ep| {
         if ep.local_uri().is_some() && ep.played().is_some() {
             let played = ep.played().unwrap();
             // TODO: expose a config and a user set option.

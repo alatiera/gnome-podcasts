@@ -48,15 +48,16 @@ impl Feed {
     // The synchronous version where there was a db.lock() before the episodes.iter()
     // is actually faster.
     fn index_channel_items(&self, db: &Database, pd: &Podcast) -> Result<()> {
-        let it = self.channel.items();
-        let episodes: Vec<_> = it.par_iter()
-            .map(|x| parser::new_episode(x, *pd.id()))
+        let items = self.channel.items();
+        let episodes: Vec<_> = items
+            .into_par_iter()
+            .map(|item| parser::new_episode(item, *pd.id()))
             .collect();
 
-        episodes.into_par_iter().for_each(|x| {
-            let e = x.index(&Arc::clone(db));
+        episodes.into_par_iter().for_each(|ep| {
+            let e = ep.index(&Arc::clone(db));
             if let Err(err) = e {
-                error!("Failed to index episode: {:?}.", x);
+                error!("Failed to index episode: {:?}.", ep);
                 error!("Error msg: {}", err);
             };
         });
@@ -72,9 +73,9 @@ pub fn index_all(db: &Database) -> Result<()> {
     Ok(())
 }
 
-pub fn index(db: &Database, f: &mut [Feed]) {
-    f.into_par_iter().for_each(|x| {
-        let e = x.index(&Arc::clone(db));
+pub fn index(db: &Database, feeds: &mut [Feed]) {
+    feeds.into_par_iter().for_each(|f| {
+        let e = f.index(&Arc::clone(db));
         if e.is_err() {
             error!("Error While trying to update the database.");
             error!("Error msg: {}", e.unwrap_err());

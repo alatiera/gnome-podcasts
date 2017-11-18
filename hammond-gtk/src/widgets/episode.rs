@@ -202,12 +202,12 @@ fn receive() -> glib::Continue {
 
 pub fn episodes_listbox(db: &Database, pd: &Podcast) -> Result<gtk::ListBox> {
     let conn = db.lock().unwrap();
-    let mut episodes = dbqueries::get_pd_episodes(&conn, pd)?;
+    let episodes = dbqueries::get_pd_episodes(&conn, pd)?;
     drop(conn);
 
     let list = gtk::ListBox::new();
-    episodes.iter_mut().for_each(|ep| {
-        let w = epidose_widget(db, ep, pd.title());
+    episodes.into_iter().for_each(|mut ep| {
+        let w = epidose_widget(db, &mut ep, pd.title());
         list.add(&w)
     });
 
