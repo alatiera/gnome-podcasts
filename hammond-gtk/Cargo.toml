@@ -16,19 +16,17 @@ loggerv = "0.5.1"
 open = "1.2.1"
 rayon = "0.9.0"
 
-[dependencies.gtk]
-features = ["v3_22"]
-version = "0.2.0"
-
 [dependencies.diesel]
 features = ["sqlite"]
-# version = "0.16.0"
 git = "https://github.com/diesel-rs/diesel.git"
 
 [dependencies.diesel_codegen]
 features = ["sqlite"]
-# version = "0.16.0"
 git = "https://github.com/diesel-rs/diesel.git"
+
+[dependencies.gtk]
+features = ["v3_22"]
+version = "0.2.0"
 
 [dependencies.hammond-data]
 path = "../hammond-data"
