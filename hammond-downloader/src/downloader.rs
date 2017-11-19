@@ -10,7 +10,6 @@ use std::io::{BufWriter, Read, Write};
 use std::path::Path;
 
 use errors::*;
-use hammond_data::Database;
 use hammond_data::models::{Episode, Podcast};
 use hammond_data::{DL_DIR, HAMMOND_CACHE};
 
@@ -118,7 +117,7 @@ pub fn get_download_folder(pd_title: &str) -> Result<String> {
 }
 
 // TODO: Refactor
-pub fn get_episode(connection: &Database, ep: &mut Episode, download_folder: &str) -> Result<()> {
+pub fn get_episode(ep: &mut Episode, download_folder: &str) -> Result<()> {
     // Check if its alrdy downloaded
     if ep.local_uri().is_some() {
         if Path::new(ep.local_uri().unwrap()).exists() {
@@ -127,7 +126,7 @@ pub fn get_episode(connection: &Database, ep: &mut Episode, download_folder: &st
 
         // If the path is not valid, then set it to None.
         ep.set_local_uri(None);
-        ep.save(connection)?;
+        ep.save()?;
     };
 
     let res = download_into(download_folder, ep.title().unwrap(), ep.uri());
@@ -135,7 +134,7 @@ pub fn get_episode(connection: &Database, ep: &mut Episode, download_folder: &st
     if let Ok(path) = res {
         // If download succedes set episode local_uri to dlpath.
         ep.set_local_uri(Some(&path));
-        ep.save(connection)?;
+        ep.save()?;
         Ok(())
     } else {
         error!("Something whent wrong while downloading.");

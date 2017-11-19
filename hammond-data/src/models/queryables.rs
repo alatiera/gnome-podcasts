@@ -10,7 +10,6 @@ use feed::Feed;
 use errors::*;
 
 use models::insertables::NewPodcast;
-use Database;
 use POOL;
 
 use std::io::Read;
@@ -129,8 +128,8 @@ impl Episode {
         self.favorite = b
     }
 
-    pub fn save(&self, db: &Database) -> QueryResult<Episode> {
-        let tempdb = db.lock().unwrap();
+    pub fn save(&self) -> QueryResult<Episode> {
+        let tempdb = POOL.clone().get().unwrap();
         self.save_changes::<Episode>(&*tempdb)
     }
 }
@@ -226,8 +225,8 @@ impl Podcast {
         self.always_dl = b
     }
 
-    pub fn save(&self, db: &Database) -> QueryResult<Podcast> {
-        let tempdb = db.lock().unwrap();
+    pub fn save(&self) -> QueryResult<Podcast> {
+        let tempdb = POOL.clone().get().unwrap();
         self.save_changes::<Podcast>(&*tempdb)
     }
 }

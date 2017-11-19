@@ -32,12 +32,7 @@ pub mod errors;
 mod parser;
 mod schema;
 
-use diesel::prelude::*;
-
 use std::path::PathBuf;
-use std::sync::{Arc, Mutex};
-
-pub type Database = Arc<Mutex<SqliteConnection>>;
 
 lazy_static!{
     #[allow(dead_code)]

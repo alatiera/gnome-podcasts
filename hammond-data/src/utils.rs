@@ -8,12 +8,11 @@ use r2d2_diesel::ConnectionManager;
 
 use errors::*;
 use dbqueries;
-use Database;
+use POOL;
 use models::Episode;
 
 use std::path::Path;
 use std::fs;
-use std::sync::Arc;
 
 use DB_PATH;
 
@@ -46,16 +45,16 @@ pub fn establish_connection() -> SqliteConnection {
 }
 
 // TODO: Write unit test.
-fn download_checker(db: &Database) -> Result<()> {
+fn download_checker() -> Result<()> {
     let episodes = {
-        let tempdb = db.lock().unwrap();
+        let tempdb = POOL.clone().get().unwrap();
         dbqueries::get_downloaded_episodes(&tempdb)?
     };
 
     episodes.into_par_iter().for_each(|mut ep| {
         if !Path::new(ep.local_uri().unwrap()).exists() {
             ep.set_local_uri(None);
-            let res = ep.save(&Arc::clone(db));
+            let res = ep.save();
             if let Err(err) = res {
                 error!("Error while trying to update episode: {:#?}", ep);
                 error!("Error: {}", err);
@@ -67,10 +66,10 @@ fn download_checker(db: &Database) -> Result<()> {
 }
 
 // TODO: Write unit test.
-fn played_cleaner(db: &Database) -> Result<()> {
+fn played_cleaner() -> Result<()> {
     let episodes = {
-        let tempdb = db.lock().unwrap();
-        dbqueries::get_played_episodes(&tempdb)?
+        let tempdb = POOL.clone().get().unwrap();
+        dbqueries::get_played_episodes(&*tempdb)?
     };
 
     let now_utc = Utc::now().timestamp() as i32;
@@ -80,7 +79,7 @@ fn played_cleaner(db: &Database) -> Result<()> {
             // TODO: expose a config and a user set option.
             let limit = played + 172_800; // add 2days in seconds
             if now_utc > limit {
-                let e = delete_local_content(&Arc::clone(db), &mut ep);
+                let e = delete_local_content(&mut ep);
                 if let Err(err) = e {
                     error!("Error while trying to delete file: {:?}", ep.local_uri());
                     error!("Error: {}", err);
@@ -94,14 +93,14 @@ fn played_cleaner(db: &Database) -> Result<()> {
 }
 
 // TODO: Write unit test.
-pub fn delete_local_content(db: &Database, ep: &mut Episode) -> Result<()> {
+pub fn delete_local_content(ep: &mut Episode) -> Result<()> {
     if ep.local_uri().is_some() {
         let uri = ep.local_uri().unwrap().to_owned();
         if Path::new(&uri).exists() {
             let res = fs::remove_file(&uri);
             if res.is_ok() {
                 ep.set_local_uri(None);
-                ep.save(db)?;
+                ep.save()?;
             } else {
                 error!("Error while trying to delete file: {}", uri);
                 error!("Error: {}", res.unwrap_err());
@@ -116,15 +115,15 @@ pub fn delete_local_content(db: &Database, ep: &mut Episode) -> Result<()> {
     Ok(())
 }
 
-pub fn set_played_now(db: &Database, ep: &mut Episode) -> Result<()> {
+pub fn set_played_now(ep: &mut Episode) -> Result<()> {
     let epoch = Utc::now().timestamp() as i32;
     ep.set_played(Some(epoch));
-    ep.save(db)?;
+    ep.save()?;
     Ok(())
 }
 
-pub fn checkup(db: &Database) -> Result<()> {
-    download_checker(db)?;
-    played_cleaner(db)?;
+pub fn checkup() -> Result<()> {
+    download_checker()?;
+    played_cleaner()?;
     Ok(())
 }

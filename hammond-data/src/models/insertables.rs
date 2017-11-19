@@ -61,8 +61,6 @@ impl<'a> NewEpisode<'a> {
     // TODO: Currently using diesel from master git.
     // Watch out for v0.99.0 beta and change the toml.
     // TODO: Refactor into batch indexes instead.
-    // TODO: Refactor so all index methods take consistent arguments
-    // like NewEpisode.index wants Sqliteconnection where the other take a Database
     pub fn index(&self, con: &SqliteConnection) -> QueryResult<()> {
         use schema::episode::dsl::*;
 
