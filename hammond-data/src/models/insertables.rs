@@ -67,7 +67,7 @@ impl<'a> NewEpisode<'a> {
         let ep = {
             // let tempdb = db.lock().unwrap();
             // dbqueries::get_episode_from_uri(&tempdb, self.uri.unwrap())
-            dbqueries::get_episode_from_uri(con, self.uri.unwrap())
+            dbqueries::get_episode_from_uri(self.uri.unwrap())
         };
 
         match ep {
@@ -103,16 +103,12 @@ impl NewPodcast {
     // Look out for when tryinto lands into stable.
     pub fn into_podcast(self) -> Result<Podcast> {
         self.index()?;
-        let tempdb = POOL.clone().get().unwrap();
-        Ok(dbqueries::get_podcast_from_title(&*tempdb, &self.title)?)
+        Ok(dbqueries::get_podcast_from_title(&self.title)?)
     }
 
     fn index(&self) -> QueryResult<()> {
         use schema::podcast::dsl::*;
-        let pd = {
-            let tempdb = POOL.clone().get().unwrap();
-            dbqueries::get_podcast_from_title(&*tempdb, &self.title)
-        };
+        let pd = dbqueries::get_podcast_from_title(&self.title);
 
         match pd {
             Ok(foo) => if foo.link() != self.link {

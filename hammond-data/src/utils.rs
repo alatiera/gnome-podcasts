@@ -8,7 +8,6 @@ use r2d2_diesel::ConnectionManager;
 
 use errors::*;
 use dbqueries;
-use POOL;
 use models::Episode;
 
 use std::path::Path;
@@ -46,10 +45,7 @@ pub fn establish_connection() -> SqliteConnection {
 
 // TODO: Write unit test.
 fn download_checker() -> Result<()> {
-    let episodes = {
-        let tempdb = POOL.clone().get().unwrap();
-        dbqueries::get_downloaded_episodes(&tempdb)?
-    };
+    let episodes = dbqueries::get_downloaded_episodes()?;
 
     episodes.into_par_iter().for_each(|mut ep| {
         if !Path::new(ep.local_uri().unwrap()).exists() {
@@ -67,10 +63,7 @@ fn download_checker() -> Result<()> {
 
 // TODO: Write unit test.
 fn played_cleaner() -> Result<()> {
-    let episodes = {
-        let tempdb = POOL.clone().get().unwrap();
-        dbqueries::get_played_episodes(&*tempdb)?
-    };
+    let episodes = dbqueries::get_played_episodes()?;
 
     let now_utc = Utc::now().timestamp() as i32;
     episodes.into_par_iter().for_each(|mut ep| {
