@@ -27,7 +27,9 @@ pub fn init() -> Result<()> {
 pub fn init_pool(db_path: &str) -> Pool {
     let config = r2d2::Config::default();
     let manager = ConnectionManager::<SqliteConnection>::new(db_path);
-    r2d2::Pool::new(config, manager).expect("Failed to create pool.")
+    let pool = r2d2::Pool::new(config, manager).expect("Failed to create pool.");
+    info!("Database pool initialized.");
+    pool
 }
 
 pub fn run_migration_on(connection: &SqliteConnection) -> Result<()> {

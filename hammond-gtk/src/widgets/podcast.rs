@@ -6,13 +6,12 @@ use std::fs;
 
 use hammond_data::dbqueries;
 use hammond_data::models::Podcast;
-use hammond_data::Database;
 use hammond_downloader::downloader;
 
 use widgets::episode::episodes_listbox;
 use podcasts_view::update_podcasts_view;
 
-pub fn podcast_widget(db: &Database, stack: &gtk::Stack, pd: &Podcast) -> gtk::Box {
+pub fn podcast_widget(stack: &gtk::Stack, pd: &Podcast) -> gtk::Box {
     // Adapted from gnome-music AlbumWidget
     let builder = gtk::Builder::new_from_resource("/org/gnome/hammond/gtk/podcast_widget.ui");
     let pd_widget: gtk::Box = builder.get_object("podcast_widget").unwrap();
@@ -25,12 +24,12 @@ pub fn podcast_widget(db: &Database, stack: &gtk::Stack, pd: &Podcast) -> gtk::B
     let played_button: gtk::Button = builder.get_object("mark_all_played_button").unwrap();
 
     // TODO: should spawn a thread to avoid locking the UI probably.
-    unsub_button.connect_clicked(clone!(db, stack, pd => move |bttn| {
-        on_unsub_button_clicked(&db, &stack, &pd, bttn);
+    unsub_button.connect_clicked(clone!(stack, pd => move |bttn| {
+        on_unsub_button_clicked(&stack, &pd, bttn);
     }));
 
     title_label.set_text(pd.title());
-    let listbox = episodes_listbox(db, pd);
+    let listbox = episodes_listbox(pd);
     if let Ok(l) = listbox {
         view.add(&l);
     }
@@ -45,22 +44,21 @@ pub fn podcast_widget(db: &Database, stack: &gtk::Stack, pd: &Podcast) -> gtk::B
         cover.set_from_pixbuf(&i);
     }
 
-    played_button.connect_clicked(clone!(db, stack, pd => move |_| {
-        on_played_button_clicked(&db, &stack, &pd);
+    played_button.connect_clicked(clone!(stack, pd => move |_| {
+        on_played_button_clicked(&stack, &pd);
     }));
 
-    show_played_button(db, pd, &played_button);
+    show_played_button(pd, &played_button);
 
     pd_widget
 }
 
 fn on_unsub_button_clicked(
-    db: &Database,
     stack: &gtk::Stack,
     pd: &Podcast,
     unsub_button: &gtk::Button,
 ) {
-    let res = dbqueries::remove_feed(db, pd);
+    let res = dbqueries::remove_feed(pd);
     if res.is_ok() {
         info!("{} was removed succesfully.", pd.title());
         // hack to get away without properly checking for none.
@@ -76,23 +74,17 @@ fn on_unsub_button_clicked(
         };
     }
     stack.set_visible_child_name("fb_parent");
-    update_podcasts_view(db, stack);
+    update_podcasts_view(stack);
 }
 
-fn on_played_button_clicked(db: &Database, stack: &gtk::Stack, pd: &Podcast) {
-    {
-        let tempdb = db.lock().unwrap();
-        let _ = dbqueries::update_none_to_played_now(&tempdb, pd);
-    }
+fn on_played_button_clicked(stack: &gtk::Stack, pd: &Podcast) {
+    let _ = dbqueries::update_none_to_played_now(pd);
 
-    update_podcast_widget(db, stack, pd);
+    update_podcast_widget(stack, pd);
 }
 
-fn show_played_button(db: &Database, pd: &Podcast, played_button: &gtk::Button) {
-    let new_episodes = {
-        let tempdb = db.lock().unwrap();
-        dbqueries::get_pd_unplayed_episodes(&tempdb, pd)
-    };
+fn show_played_button(pd: &Podcast, played_button: &gtk::Button) {
+    let new_episodes = dbqueries::get_pd_unplayed_episodes(pd);
 
     if let Ok(n) = new_episodes {
         if !n.is_empty() {
@@ -117,9 +109,9 @@ pub fn setup_podcast_widget(stack: &gtk::Stack) {
     stack.add_named(&pd_widget, "pdw");
 }
 
-pub fn update_podcast_widget(db: &Database, stack: &gtk::Stack, pd: &Podcast) {
+pub fn update_podcast_widget(stack: &gtk::Stack, pd: &Podcast) {
     let old = stack.get_child_by_name("pdw").unwrap();
-    let pdw = podcast_widget(db, stack, pd);
+    let pdw = podcast_widget(stack, pd);
     let vis = stack.get_visible_child_name().unwrap();
 
     stack.remove(&old);

@@ -2,12 +2,11 @@ use gtk;
 use gtk::prelude::*;
 
 use hammond_data::models::NewSource;
-use hammond_data::Database;
 
 use podcasts_view::update_podcasts_view;
 use utils;
 
-pub fn get_headerbar(db: &Database, stack: &gtk::Stack) -> gtk::HeaderBar {
+pub fn get_headerbar(stack: &gtk::Stack) -> gtk::HeaderBar {
     let builder = gtk::Builder::new_from_resource("/org/gnome/hammond/gtk/headerbar.ui");
 
     let header: gtk::HeaderBar = builder.get_object("headerbar1").unwrap();
@@ -23,9 +22,9 @@ pub fn get_headerbar(db: &Database, stack: &gtk::Stack) -> gtk::HeaderBar {
         println!("{:?}", url.get_text());
     });
 
-    add_button.connect_clicked(clone!(db, stack, add_popover => move |_| {
+    add_button.connect_clicked(clone!(stack, add_popover => move |_| {
         let url = new_url.get_text().unwrap_or_default();
-        on_add_bttn_clicked(&db, &stack, &url);
+        on_add_bttn_clicked(&stack, &url);
 
         // TODO: lock the button instead of hiding and add notification of feed added.
         // TODO: map the spinner
@@ -36,29 +35,29 @@ pub fn get_headerbar(db: &Database, stack: &gtk::Stack) -> gtk::HeaderBar {
 
     // TODO: make it a back arrow button, that will hide when appropriate,
     // and add a StackSwitcher when more views are added.
-    home_button.connect_clicked(clone!(db, stack => move |_| {
+    home_button.connect_clicked(clone!(stack => move |_| {
         let vis = stack.get_visible_child_name().unwrap();
         stack.set_visible_child_name("fb_parent");
         if vis != "pdw" {
-            update_podcasts_view(&db, &stack);
+            update_podcasts_view(&stack);
         }
     }));
 
     // FIXME: There appears to be a memmory leak here.
-    refresh_button.connect_clicked(clone!(stack, db => move |_| {
-        utils::refresh_feed(&db, &stack, None, None);
+    refresh_button.connect_clicked(clone!(stack => move |_| {
+        utils::refresh_feed(&stack, None, None);
     }));
 
     header
 }
 
-fn on_add_bttn_clicked(db: &Database, stack: &gtk::Stack, url: &str) {
-    let source = NewSource::new_with_uri(url).into_source(db);
+fn on_add_bttn_clicked(stack: &gtk::Stack, url: &str) {
+    let source = NewSource::new_with_uri(url).into_source();
     info!("{:?} feed added", url);
 
     if let Ok(s) = source {
         // update the db
-        utils::refresh_feed(db, stack, Some(vec![s]), None);
+        utils::refresh_feed(stack, Some(vec![s]), None);
     } else {
         error!("Feed probably already exists.");
         error!("Error: {:?}", source.unwrap_err());

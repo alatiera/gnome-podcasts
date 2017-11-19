@@ -5,7 +5,6 @@ use diesel::associations::Identifiable;
 
 use hammond_data::dbqueries;
 use hammond_data::models::Podcast;
-use hammond_data::Database;
 
 use widgets::podcast::*;
 
@@ -21,22 +20,19 @@ fn show_empty_view(stack: &gtk::Stack) {
     info!("Empty view.");
 }
 
-fn populate_flowbox(db: &Database, flowbox: &gtk::FlowBox) {
-    let podcasts = {
-        let db = db.lock().unwrap();
-        dbqueries::get_podcasts(&db)
-    };
+fn populate_flowbox(flowbox: &gtk::FlowBox) {
+    let podcasts = dbqueries::get_podcasts();
 
     if let Ok(pds) = podcasts {
         pds.iter().for_each(|parent| {
-            let f = create_flowbox_child(db, parent);
+            let f = create_flowbox_child(parent);
             flowbox.add(&f);
         });
         flowbox.show_all();
     }
 }
 
-fn create_flowbox_child(db: &Database, pd: &Podcast) -> gtk::FlowBoxChild {
+fn create_flowbox_child(pd: &Podcast) -> gtk::FlowBoxChild {
     let builder = gtk::Builder::new_from_resource("/org/gnome/hammond/gtk/podcasts_child.ui");
 
     // Copy of gnome-music AlbumWidget
@@ -53,7 +49,7 @@ fn create_flowbox_child(db: &Database, pd: &Podcast) -> gtk::FlowBoxChild {
         pd_cover.set_from_pixbuf(&img);
     };
 
-    configure_banner(db, pd, &banner, &banner_title);
+    configure_banner(pd, &banner, &banner_title);
 
     let fbc = gtk::FlowBoxChild::new();
     // There's probably a better way to store the id somewhere.
@@ -62,15 +58,12 @@ fn create_flowbox_child(db: &Database, pd: &Podcast) -> gtk::FlowBoxChild {
     fbc
 }
 
-fn configure_banner(db: &Database, pd: &Podcast, banner: &gtk::Image, banner_title: &gtk::Label) {
+fn configure_banner(pd: &Podcast, banner: &gtk::Image, banner_title: &gtk::Label) {
     let bann = Pixbuf::new_from_resource_at_scale("/org/gnome/hammond/banner.png", 256, 256, true);
     if let Ok(b) = bann {
         banner.set_from_pixbuf(&b);
 
-        let new_episodes = {
-            let tempdb = db.lock().unwrap();
-            dbqueries::get_pd_unplayed_episodes(&tempdb, pd)
-        };
+        let new_episodes = dbqueries::get_pd_unplayed_episodes(pd);
 
         if let Ok(n) = new_episodes {
             if !n.is_empty() {
@@ -82,9 +75,9 @@ fn configure_banner(db: &Database, pd: &Podcast, banner: &gtk::Image, banner_tit
     }
 }
 
-fn on_flowbox_child_activate(db: &Database, stack: &gtk::Stack, parent: &Podcast) {
+fn on_flowbox_child_activate(stack: &gtk::Stack, parent: &Podcast) {
     let old = stack.get_child_by_name("pdw").unwrap();
-    let pdw = podcast_widget(db, stack, parent);
+    let pdw = podcast_widget(stack, parent);
 
     stack.remove(&old);
     stack.add_named(&pdw, "pdw");
@@ -95,11 +88,11 @@ fn on_flowbox_child_activate(db: &Database, stack: &gtk::Stack, parent: &Podcast
     old.destroy();
 }
 
-fn setup_podcasts_flowbox(db: &Database, stack: &gtk::Stack) -> gtk::FlowBox {
+fn setup_podcasts_flowbox(stack: &gtk::Stack) -> gtk::FlowBox {
     let builder = gtk::Builder::new_from_resource("/org/gnome/hammond/gtk/podcasts_view.ui");
     let fb_parent: gtk::Box = builder.get_object("fb_parent").unwrap();
     let flowbox: gtk::FlowBox = builder.get_object("flowbox").unwrap();
-    init_flowbox(db, stack, &flowbox);
+    init_flowbox(stack, &flowbox);
 
     stack.add_named(&fb_parent, "fb_parent");
 
@@ -112,21 +105,21 @@ fn setup_podcasts_flowbox(db: &Database, stack: &gtk::Stack) -> gtk::FlowBox {
     flowbox
 }
 
-pub fn setup_stack(db: &Database) -> gtk::Stack {
+pub fn setup_stack() -> gtk::Stack {
     let stack = gtk::Stack::new();
     stack.set_transition_type(gtk::StackTransitionType::SlideLeftRight);
     setup_empty_view(&stack);
     setup_podcast_widget(&stack);
-    setup_podcasts_flowbox(db, &stack);
+    setup_podcasts_flowbox(&stack);
     stack
 }
 
-pub fn update_podcasts_view(db: &Database, stack: &gtk::Stack) {
+pub fn update_podcasts_view(stack: &gtk::Stack) {
     let vis = stack.get_visible_child_name().unwrap();
     let old = stack.get_child_by_name("fb_parent").unwrap();
     stack.remove(&old);
 
-    let flowbox = setup_podcasts_flowbox(db, stack);
+    let flowbox = setup_podcasts_flowbox(stack);
 
     if vis == "empty" && !flowbox.get_children().is_empty() {
         stack.set_visible_child_name("fb_parent");
@@ -142,17 +135,14 @@ pub fn update_podcasts_view(db: &Database, stack: &gtk::Stack) {
     old.destroy();
 }
 
-fn init_flowbox(db: &Database, stack: &gtk::Stack, flowbox: &gtk::FlowBox) {
+fn init_flowbox(stack: &gtk::Stack, flowbox: &gtk::FlowBox) {
     // TODO: handle unwraps.
-    flowbox.connect_child_activated(clone!(db, stack => move |_, child| {
+    flowbox.connect_child_activated(clone!(stack => move |_, child| {
         // This is such an ugly hack...
         let id = child.get_name().unwrap().parse::<i32>().unwrap();
-        let parent = {
-            let tempdb = db.lock().unwrap();
-            dbqueries::get_podcast_from_id(&tempdb, id).unwrap()
-        };
-        on_flowbox_child_activate(&db, &stack, &parent);
+        let parent = dbqueries::get_podcast_from_id(id).unwrap();
+        on_flowbox_child_activate(&stack, &parent);
     }));
     // Populate the flowbox with the Podcasts.
-    populate_flowbox(db, flowbox);
+    populate_flowbox(flowbox);
 }

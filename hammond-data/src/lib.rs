@@ -90,11 +90,11 @@ fn get_temp_db() -> TempDB {
     let tmp_dir = tempdir::TempDir::new("hammond_unit_test").unwrap();
     let db_path = tmp_dir
         .path()
-        .join(format!("hammonddb_{}.db", rng.gen::<usize>()));
+        .join("test.db");
 
     let pool = utils::init_pool(db_path.to_str().unwrap());
-    let db = pool.get().unwrap();
-    utils::run_migration_on(&db).unwrap();
+    let db = pool.clone().get().unwrap();
+    utils::run_migration_on(&*db).unwrap();
 
     TempDB(tmp_dir, db_path, pool)
 }

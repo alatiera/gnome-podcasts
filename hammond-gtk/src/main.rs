@@ -18,8 +18,6 @@ extern crate open;
 use log::LogLevel;
 use hammond_data::utils::checkup;
 
-use std::sync::{Arc, Mutex};
-
 use gtk::prelude::*;
 use gio::{ActionMapExt, ApplicationExt, MenuExt, SimpleActionExt};
 
@@ -56,8 +54,6 @@ THIS IS STILL A PROTOTYPE.
 */
 
 fn build_ui(app: &gtk::Application) {
-    let db = Arc::new(Mutex::new(hammond_data::utils::establish_connection()));
-
     let menu = gio::Menu::new();
     menu.append("Quit", "app.quit");
     menu.append("Checkup", "app.check");
@@ -67,7 +63,7 @@ fn build_ui(app: &gtk::Application) {
     let window = gtk::ApplicationWindow::new(app);
     window.set_default_size(1150, 650);
     // Setup the Stack that will manage the switch between podcasts_view and podcast_widget.
-    let stack = podcasts_view::setup_stack(&db);
+    let stack = podcasts_view::setup_stack();
     window.add(&stack);
 
     window.connect_delete_event(|w, _| {
@@ -85,19 +81,19 @@ fn build_ui(app: &gtk::Application) {
 
     // Setup the checkup in the app menu.
     let check = gio::SimpleAction::new("check", None);
-    check.connect_activate(clone!(db => move |_, _| {
-        let _ = checkup(&db);
-    }));
+    check.connect_activate(move |_, _| {
+        let _ = checkup();
+    });
     app.add_action(&check);
 
     // queue a db update 1 minute after the startup.
-    gtk::idle_add(clone!(db, stack => move || {
-        utils::refresh_feed(&db, &stack, None, Some(60));
+    gtk::idle_add(clone!(stack => move || {
+        utils::refresh_feed(&stack, None, Some(60));
         glib::Continue(false)
     }));
 
     // Get the headerbar
-    let header = headerbar::get_headerbar(&db, &stack);
+    let header = headerbar::get_headerbar(&stack);
     window.set_titlebar(&header);
 
     window.show_all();
