@@ -53,11 +53,7 @@ pub fn podcast_widget(stack: &gtk::Stack, pd: &Podcast) -> gtk::Box {
     pd_widget
 }
 
-fn on_unsub_button_clicked(
-    stack: &gtk::Stack,
-    pd: &Podcast,
-    unsub_button: &gtk::Button,
-) {
+fn on_unsub_button_clicked(stack: &gtk::Stack, pd: &Podcast, unsub_button: &gtk::Button) {
     let res = dbqueries::remove_feed(pd);
     if res.is_ok() {
         info!("{} was removed succesfully.", pd.title());

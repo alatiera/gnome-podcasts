@@ -68,23 +68,19 @@ fn epidose_widget(episode: &mut Episode, pd_title: &str) -> gtk::Box {
         delete_button.show();
     }
 
-    play_button.connect_clicked(
-        clone!(episode, played_button, unplayed_button => move |_| {
+    play_button.connect_clicked(clone!(episode, played_button, unplayed_button => move |_| {
         on_play_bttn_clicked(*episode.id());
         let _ = set_played_now(&mut episode.clone());
         played_button.hide();
         unplayed_button.show();
-    }),
-    );
+    }));
 
-    delete_button.connect_clicked(
-        clone!(episode, play_button, download_button => move |del| {
+    delete_button.connect_clicked(clone!(episode, play_button, download_button => move |del| {
         on_delete_bttn_clicked(*episode.id());
         del.hide();
         play_button.hide();
         download_button.show();
-    }),
-    );
+    }));
 
     played_button.connect_clicked(clone!(episode, unplayed_button => move |played| {
         let _ = set_played_now(&mut episode.clone());
@@ -101,8 +97,7 @@ fn epidose_widget(episode: &mut Episode, pd_title: &str) -> gtk::Box {
     }));
 
     let pd_title = pd_title.to_owned();
-    download_button.connect_clicked(
-        clone!(play_button, delete_button, episode  => move |dl| {
+    download_button.connect_clicked(clone!(play_button, delete_button, episode  => move |dl| {
         on_download_clicked(
             &pd_title,
             &mut episode.clone(),
@@ -110,8 +105,7 @@ fn epidose_widget(episode: &mut Episode, pd_title: &str) -> gtk::Box {
             &play_button,
             &delete_button,
         );
-    }),
-    );
+    }));
 
     ep
 }

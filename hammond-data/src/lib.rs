@@ -75,26 +75,20 @@ lazy_static! {
 struct TempDB(tempdir::TempDir, PathBuf, utils::Pool);
 
 #[cfg(test)]
-extern crate rand;
-#[cfg(test)]
 extern crate tempdir;
-#[cfg(test)]
-use rand::Rng;
 
 #[cfg(test)]
 /// Create and return a Temporary DB.
 /// Will be destroed once the returned variable(s) is dropped.
 fn get_temp_db() -> TempDB {
-    let mut rng = rand::thread_rng();
-
     let tmp_dir = tempdir::TempDir::new("hammond_unit_test").unwrap();
-    let db_path = tmp_dir
-        .path()
-        .join("test.db");
+    let db_path = tmp_dir.path().join("test.db");
 
     let pool = utils::init_pool(db_path.to_str().unwrap());
-    let db = pool.clone().get().unwrap();
-    utils::run_migration_on(&*db).unwrap();
+    {
+        let db = pool.clone().get().unwrap();
+        utils::run_migration_on(&*db).unwrap();
+    }
 
     TempDB(tmp_dir, db_path, pool)
 }

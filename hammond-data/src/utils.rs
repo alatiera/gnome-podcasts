@@ -1,5 +1,4 @@
 use rayon::prelude::*;
-use diesel::prelude::*;
 use chrono::prelude::*;
 
 use r2d2;
@@ -12,24 +11,28 @@ use models::Episode;
 
 use std::path::Path;
 use std::fs;
+use std::sync::Arc;
+use std::time::Duration;
 
-use DB_PATH;
+use POOL;
 
 embed_migrations!("migrations/");
 
-pub type Pool = r2d2::Pool<ConnectionManager<SqliteConnection>>;
+pub type Pool = Arc<r2d2::Pool<ConnectionManager<SqliteConnection>>>;
 
 pub fn init() -> Result<()> {
-    let conn = establish_connection();
-    run_migration_on(&conn)
+    let con = POOL.clone().get().unwrap();
+    run_migration_on(&*con)
 }
 
 pub fn init_pool(db_path: &str) -> Pool {
-    let config = r2d2::Config::default();
+    let config = r2d2::Config::builder()
+        .connection_timeout(Duration::from_secs(60))
+        .build();
     let manager = ConnectionManager::<SqliteConnection>::new(db_path);
     let pool = r2d2::Pool::new(config, manager).expect("Failed to create pool.");
     info!("Database pool initialized.");
-    pool
+    Arc::new(pool)
 }
 
 pub fn run_migration_on(connection: &SqliteConnection) -> Result<()> {
@@ -37,12 +40,6 @@ pub fn run_migration_on(connection: &SqliteConnection) -> Result<()> {
     embedded_migrations::run(connection)?;
     // embedded_migrations::run_with_output(connection, &mut std::io::stdout())
     Ok(())
-}
-
-pub fn establish_connection() -> SqliteConnection {
-    let database_url = DB_PATH.to_str().unwrap();
-    SqliteConnection::establish(database_url)
-        .expect(&format!("Error connecting to {}", database_url))
 }
 
 // TODO: Write unit test.

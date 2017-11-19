@@ -19,11 +19,7 @@ thread_local!(static GLOBAL: Foo = RefCell::new(None));
 /// If `source` is None, Fetches all the `Source` entries in the database and updates them.
 /// `delay` represents the desired time in seconds for the thread to sleep before executing.
 /// When It's done,it queues up a `podcast_view` refresh.
-pub fn refresh_feed(
-    stack: &gtk::Stack,
-    source: Option<Vec<Source>>,
-    delay: Option<u64>,
-) {
+pub fn refresh_feed(stack: &gtk::Stack, source: Option<Vec<Source>>, delay: Option<u64>) {
     // Create a async channel.
     let (sender, receiver) = channel();
 
@@ -33,7 +29,7 @@ pub fn refresh_feed(
     }));
 
     thread::spawn(move || {
-        if let Some(s) = delay{
+        if let Some(s) = delay {
             let t = time::Duration::from_secs(s);
             thread::sleep(t);
         }
