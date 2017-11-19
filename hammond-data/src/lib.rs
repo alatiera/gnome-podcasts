@@ -16,6 +16,8 @@ extern crate diesel;
 extern crate diesel_codegen;
 
 extern crate chrono;
+extern crate r2d2;
+extern crate r2d2_diesel;
 extern crate rayon;
 extern crate reqwest;
 extern crate rfc822_sanitizer;
@@ -55,11 +57,49 @@ lazy_static!{
         HAMMOND_XDG.create_cache_directory(HAMMOND_XDG.get_cache_home()).unwrap()
     };
 
-    static ref DB_PATH: PathBuf = {
-        HAMMOND_XDG.place_data_file("hammond.db").unwrap()
-        };
-
     pub static ref DL_DIR: PathBuf = {
         HAMMOND_XDG.create_data_directory("Downloads").unwrap()
     };
+
+    pub static ref DB_PATH: PathBuf = HAMMOND_XDG.place_data_file("hammond.db").unwrap();
+}
+
+#[cfg(not(test))]
+lazy_static! {
+    pub static ref POOL: utils::Pool = utils::init_pool(DB_PATH.to_str().unwrap());
+}
+
+#[cfg(test)]
+lazy_static! {
+    static ref TEMPDB: TempDB =  get_temp_db();
+
+    pub static ref POOL: &'static utils::Pool = &TEMPDB.2;
+}
+
+#[cfg(test)]
+struct TempDB(tempdir::TempDir, PathBuf, utils::Pool);
+
+#[cfg(test)]
+extern crate rand;
+#[cfg(test)]
+extern crate tempdir;
+#[cfg(test)]
+use rand::Rng;
+
+#[cfg(test)]
+/// Create and return a Temporary DB.
+/// Will be destroed once the returned variable(s) is dropped.
+fn get_temp_db() -> TempDB {
+    let mut rng = rand::thread_rng();
+
+    let tmp_dir = tempdir::TempDir::new("hammond_unit_test").unwrap();
+    let db_path = tmp_dir
+        .path()
+        .join(format!("hammonddb_{}.db", rng.gen::<usize>()));
+
+    let pool = utils::init_pool(db_path.to_str().unwrap());
+    let db = pool.get().unwrap();
+    utils::run_migration_on(&db).unwrap();
+
+    TempDB(tmp_dir, db_path, pool)
 }

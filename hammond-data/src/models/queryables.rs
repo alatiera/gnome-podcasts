@@ -11,6 +11,7 @@ use errors::*;
 
 use models::insertables::NewPodcast;
 use Database;
+use POOL;
 
 use std::io::Read;
 use std::str::FromStr;
@@ -265,7 +266,7 @@ impl<'a> Source {
 
     /// Extract Etag and LastModifier from req, and update self and the
     /// corresponding db row.
-    fn update_etag(&mut self, db: &Database, req: &reqwest::Response) -> Result<()> {
+    fn update_etag(&mut self, req: &reqwest::Response) -> Result<()> {
         let headers = req.headers();
 
         // let etag = headers.get_raw("ETag").unwrap();
@@ -278,18 +279,18 @@ impl<'a> Source {
         {
             self.http_etag = etag.map(|x| x.tag().to_string().to_owned());
             self.last_modified = lmod.map(|x| format!("{}", x));
-            self.save(db)?;
+            self.save()?;
         }
 
         Ok(())
     }
 
-    pub fn save(&self, db: &Database) -> QueryResult<Source> {
-        let tempdb = db.lock().unwrap();
+    pub fn save(&self) -> QueryResult<Source> {
+        let tempdb = POOL.clone().get().unwrap();
         self.save_changes::<Source>(&*tempdb)
     }
 
-    pub fn refresh(mut self, db: &Database) -> Result<Feed> {
+    pub fn refresh(mut self) -> Result<Feed> {
         use reqwest::header::{ETag, EntityTag, Headers, HttpDate, LastModified};
 
         let mut headers = Headers::new();
@@ -322,12 +323,12 @@ impl<'a> Source {
         //     _ => (),
         // };
 
-        self.update_etag(db, &req)?;
+        self.update_etag(&req)?;
 
         let mut buf = String::new();
         req.read_to_string(&mut buf)?;
         let chan = Channel::from_str(&buf)?;
 
-        Ok(Feed::new_from_channel_source(chan, self))
+        Ok(Feed::from_channel_source(chan, self))
     }
 }

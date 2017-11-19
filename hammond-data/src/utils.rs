@@ -2,6 +2,10 @@ use rayon::prelude::*;
 use diesel::prelude::*;
 use chrono::prelude::*;
 
+use r2d2;
+use diesel::sqlite::SqliteConnection;
+use r2d2_diesel::ConnectionManager;
+
 use errors::*;
 use dbqueries;
 use Database;
@@ -15,9 +19,17 @@ use DB_PATH;
 
 embed_migrations!("migrations/");
 
+pub type Pool = r2d2::Pool<ConnectionManager<SqliteConnection>>;
+
 pub fn init() -> Result<()> {
     let conn = establish_connection();
     run_migration_on(&conn)
+}
+
+pub fn init_pool(db_path: &str) -> Pool {
+    let config = r2d2::Config::default();
+    let manager = ConnectionManager::<SqliteConnection>::new(db_path);
+    r2d2::Pool::new(config, manager).expect("Failed to create pool.")
 }
 
 pub fn run_migration_on(connection: &SqliteConnection) -> Result<()> {

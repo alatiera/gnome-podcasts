@@ -3,7 +3,7 @@ use diesel;
 
 use schema::{episode, podcast, source};
 use models::{Podcast, Source};
-use Database;
+use POOL;
 use errors::*;
 
 use dbqueries;
@@ -26,21 +26,20 @@ impl<'a> NewSource<'a> {
         }
     }
 
-    fn index(&self, db: &Database) {
+    fn index(&self) {
         use schema::source::dsl::*;
 
-        let tempdb = db.lock().unwrap();
+        let tempdb = POOL.clone().get().unwrap();
         // Throw away the result like `insert or ignore`
         // Diesel deos not support `insert or ignore` yet.
         let _ = diesel::insert_into(source).values(self).execute(&*tempdb);
     }
 
     // Look out for when tryinto lands into stable.
-    pub fn into_source(self, db: &Database) -> QueryResult<Source> {
-        self.index(db);
+    pub fn into_source(self) -> QueryResult<Source> {
+        self.index();
 
-        let tempdb = db.lock().unwrap();
-        dbqueries::get_source_from_uri(&tempdb, self.uri)
+        dbqueries::get_source_from_uri(self.uri)
     }
 }
 
@@ -104,28 +103,28 @@ pub struct NewPodcast {
 
 impl NewPodcast {
     // Look out for when tryinto lands into stable.
-    pub fn into_podcast(self, db: &Database) -> Result<Podcast> {
-        self.index(db)?;
-        let tempdb = db.lock().unwrap();
-        Ok(dbqueries::get_podcast_from_title(&tempdb, &self.title)?)
+    pub fn into_podcast(self) -> Result<Podcast> {
+        self.index()?;
+        let tempdb = POOL.clone().get().unwrap();
+        Ok(dbqueries::get_podcast_from_title(&*tempdb, &self.title)?)
     }
 
-    fn index(&self, db: &Database) -> QueryResult<()> {
+    fn index(&self) -> QueryResult<()> {
         use schema::podcast::dsl::*;
         let pd = {
-            let tempdb = db.lock().unwrap();
-            dbqueries::get_podcast_from_title(&tempdb, &self.title)
+            let tempdb = POOL.clone().get().unwrap();
+            dbqueries::get_podcast_from_title(&*tempdb, &self.title)
         };
 
         match pd {
             Ok(foo) => if foo.link() != self.link {
-                let tempdb = db.lock().unwrap();
+                let tempdb = POOL.clone().get().unwrap();
                 diesel::replace_into(podcast)
                     .values(self)
                     .execute(&*tempdb)?;
             },
             Err(_) => {
-                let tempdb = db.lock().unwrap();
+                let tempdb = POOL.clone().get().unwrap();
                 diesel::insert_into(podcast).values(self).execute(&*tempdb)?;
             }
         }

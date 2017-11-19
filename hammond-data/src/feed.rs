@@ -6,12 +6,10 @@ use rss;
 
 use dbqueries;
 use parser;
-use Database;
+use POOL;
 
 use models::{Podcast, Source};
 use errors::*;
-
-use std::sync::Arc;
 
 
 #[derive(Debug)]
@@ -21,42 +19,42 @@ pub struct Feed {
 }
 
 impl Feed {
-    pub fn new_from_source(db: &Database, s: Source) -> Result<Feed> {
-        s.refresh(db)
+    pub fn from_source(s: Source) -> Result<Feed> {
+        s.refresh()
     }
 
-    pub fn new_from_channel_source(chan: rss::Channel, s: Source) -> Feed {
+    pub fn from_channel_source(chan: rss::Channel, s: Source) -> Feed {
         Feed {
             channel: chan,
             source: s,
         }
     }
 
-    fn index(&self, db: &Database) -> Result<()> {
-        let pd = self.index_channel(db)?;
+    fn index(&self) -> Result<()> {
+        let pd = self.index_channel()?;
 
-        self.index_channel_items(db, &pd)?;
+        self.index_channel_items(&pd)?;
         Ok(())
     }
 
-    fn index_channel(&self, db: &Database) -> Result<Podcast> {
+    fn index_channel(&self) -> Result<Podcast> {
         let pd = parser::new_podcast(&self.channel, *self.source.id());
         // Convert NewPodcast to Podcast
-        pd.into_podcast(db)
+        pd.into_podcast()
     }
 
     // TODO: Refactor transcactions and find a way to do it in parallel.
-    fn index_channel_items(&self, db: &Database, pd: &Podcast) -> Result<()> {
+    fn index_channel_items(&self, pd: &Podcast) -> Result<()> {
         let items = self.channel.items();
         let episodes: Vec<_> = items
             .into_par_iter()
             .map(|item| parser::new_episode(item, *pd.id()))
             .collect();
 
-        let tempdb = db.lock().unwrap();
+        let tempdb = POOL.clone().get().unwrap();
         let _ = tempdb.transaction::<(), Error, _>(|| {
             episodes.into_iter().for_each(|x| {
-                let e = x.index(&tempdb);
+                let e = x.index(&*tempdb);
                 if let Err(err) = e {
                     error!("Failed to index episode: {:?}.", x);
                     error!("Error msg: {}", err);
@@ -68,17 +66,17 @@ impl Feed {
     }
 }
 
-pub fn index_all(db: &Database) -> Result<()> {
-    let mut f = fetch_all(db)?;
+pub fn index_all() -> Result<()> {
+    let mut f = fetch_all()?;
 
-    index(db, &mut f);
+    index(&mut f);
     info!("Indexing done.");
     Ok(())
 }
 
-pub fn index(db: &Database, feeds: &mut [Feed]) {
+pub fn index(feeds: &mut [Feed]) {
     feeds.into_par_iter().for_each(|f| {
-        let e = f.index(&Arc::clone(db));
+        let e = f.index();
         if e.is_err() {
             error!("Error While trying to update the database.");
             error!("Error msg: {}", e.unwrap_err());
@@ -86,22 +84,19 @@ pub fn index(db: &Database, feeds: &mut [Feed]) {
     });
 }
 
-pub fn fetch_all(db: &Database) -> Result<Vec<Feed>> {
-    let feeds = {
-        let conn = db.lock().unwrap();
-        dbqueries::get_sources(&conn)?
-    };
+pub fn fetch_all() -> Result<Vec<Feed>> {
+    let feeds = dbqueries::get_sources()?;
 
-    let results = fetch(db, feeds);
+    let results = fetch(feeds);
     Ok(results)
 }
 
-pub fn fetch(db: &Database, feeds: Vec<Source>) -> Vec<Feed> {
+pub fn fetch(feeds: Vec<Source>) -> Vec<Feed> {
     let results: Vec<_> = feeds
         .into_par_iter()
         .filter_map(|x| {
             let uri = x.uri().to_owned();
-            let l = Feed::new_from_source(&Arc::clone(db), x);
+            let l = Feed::from_source(x);
             if l.is_ok() {
                 l.ok()
             } else {
@@ -118,46 +113,17 @@ pub fn fetch(db: &Database, feeds: Vec<Source>) -> Vec<Feed> {
 #[cfg(test)]
 mod tests {
 
-    extern crate rand;
-    extern crate tempdir;
-
-    use diesel::prelude::*;
     use rss;
-    use self::rand::Rng;
     use models::NewSource;
-    use utils::run_migration_on;
 
-    use std::io::BufReader;
-    use std::path::PathBuf;
     use std::fs;
-    use std::sync::Mutex;
+    use std::io::BufReader;
 
     use super::*;
-
-    struct TempDB(tempdir::TempDir, PathBuf, SqliteConnection);
-
-    /// Create and return a Temporary DB.
-    /// Will be destroed once the returned variable(s) is dropped.
-    fn get_temp_db() -> TempDB {
-        let mut rng = rand::thread_rng();
-
-        let tmp_dir = tempdir::TempDir::new("hammond_unit_test").unwrap();
-        let db_path = tmp_dir
-            .path()
-            .join(format!("hammonddb_{}.db", rng.gen::<usize>()));
-
-        let db = SqliteConnection::establish(db_path.to_str().unwrap()).unwrap();
-        run_migration_on(&db).unwrap();
-
-        TempDB(tmp_dir, db_path, db)
-    }
 
     #[test]
     /// Insert feeds and update/index them.
     fn test_index_loop() {
-        let TempDB(_tmp_dir, _db_path, db) = get_temp_db();
-        let db = Arc::new(Mutex::new(db));
-
         let inpt = vec![
             "https://request-for-explanation.github.io/podcast/rss.xml",
             "https://feeds.feedburner.com/InterceptedWithJeremyScahill",
@@ -166,23 +132,17 @@ mod tests {
         ];
 
         inpt.iter().for_each(|feed| {
-            NewSource::new_with_uri(feed)
-                .into_source(&db.clone())
-                .unwrap();
+            NewSource::new_with_uri(feed).into_source().unwrap();
         });
 
-        index_all(&db).unwrap();
+        index_all().unwrap();
 
         // Run again to cover Unique constrains erros.
-        index_all(&db).unwrap();
+        index_all().unwrap();
     }
 
     #[test]
     fn test_complete_index() {
-        let TempDB(_tmp_dir, _db_path, db) = get_temp_db();
-        // complete_index runs in parallel so it requires a mutex as argument.
-        let m = Arc::new(Mutex::new(db));
-
         // vec of (path, url) tuples.
         let urls = vec![
             (
@@ -195,7 +155,7 @@ mod tests {
             ),
             (
                 "tests/feeds/TheBreakthrough.xml",
-                "http://feeds.feedburner.com/propublica/podcast",
+                "http://feeds.propublica.org/propublica/podcast",
             ),
             (
                 "tests/feeds/R4Explanation.xml",
@@ -206,25 +166,22 @@ mod tests {
         let mut feeds: Vec<_> = urls.iter()
             .map(|&(path, url)| {
                 // Create and insert a Source into db
-                let s = NewSource::new_with_uri(url)
-                    .into_source(&m.clone())
-                    .unwrap();
+                let s = NewSource::new_with_uri(url).into_source().unwrap();
 
                 // open the xml file
                 let feed = fs::File::open(path).unwrap();
                 // parse it into a channel
                 let chan = rss::Channel::read_from(BufReader::new(feed)).unwrap();
-                Feed::new_from_channel_source(chan, s)
+                Feed::from_channel_source(chan, s)
             })
             .collect();
 
         // Index the channels
-        index(&m, &mut feeds);
+        index(&mut feeds);
 
         // Assert the index rows equal the controlled results
-        let tempdb = m.lock().unwrap();
-        assert_eq!(dbqueries::get_sources(&tempdb).unwrap().len(), 4);
-        assert_eq!(dbqueries::get_podcasts(&tempdb).unwrap().len(), 4);
-        assert_eq!(dbqueries::get_episodes(&tempdb).unwrap().len(), 274);
+        assert_eq!(dbqueries::get_sources().unwrap().len(), 4);
+        assert_eq!(dbqueries::get_podcasts().unwrap().len(), 4);
+        assert_eq!(dbqueries::get_episodes().unwrap().len(), 274);
     }
 }

@@ -8,22 +8,29 @@ use chrono::prelude::*;
 /// Random db querries helper functions.
 /// Probably needs cleanup.
 
-pub fn get_sources(con: &SqliteConnection) -> QueryResult<Vec<Source>> {
+use POOL;
+
+pub fn get_sources() -> QueryResult<Vec<Source>> {
     use schema::source::dsl::*;
 
-    source.load::<Source>(con)
+    let con = POOL.get().unwrap();
+    let s = source.load::<Source>(&*con);
+    // s.iter().for_each(|x| println!("{:#?}", x));
+    s
 }
 
-pub fn get_podcasts(con: &SqliteConnection) -> QueryResult<Vec<Podcast>> {
+pub fn get_podcasts() -> QueryResult<Vec<Podcast>> {
     use schema::podcast::dsl::*;
 
-    podcast.load::<Podcast>(con)
+    let con = POOL.get().unwrap();
+    podcast.load::<Podcast>(&*con)
 }
 
-pub fn get_episodes(con: &SqliteConnection) -> QueryResult<Vec<Episode>> {
+pub fn get_episodes() -> QueryResult<Vec<Episode>> {
     use schema::episode::dsl::*;
 
-    episode.order(epoch.desc()).load::<Episode>(con)
+    let con = POOL.get().unwrap();
+    episode.order(epoch.desc()).load::<Episode>(&*con)
 }
 
 pub fn get_downloaded_episodes(con: &SqliteConnection) -> QueryResult<Vec<Episode>> {
@@ -104,10 +111,11 @@ pub fn get_pd_episodes_limit(
         .load::<Episode>(con)
 }
 
-pub fn get_source_from_uri(con: &SqliteConnection, uri_: &str) -> QueryResult<Source> {
+pub fn get_source_from_uri(uri_: &str) -> QueryResult<Source> {
     use schema::source::dsl::*;
 
-    source.filter(uri.eq(uri_)).get_result::<Source>(con)
+    let con = POOL.get().unwrap();
+    source.filter(uri.eq(uri_)).get_result::<Source>(&*con)
 }
 
 pub fn get_podcast_from_title(con: &SqliteConnection, title_: &str) -> QueryResult<Podcast> {
