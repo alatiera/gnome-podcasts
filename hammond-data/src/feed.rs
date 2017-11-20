@@ -1,16 +1,13 @@
 use rayon::prelude::*;
 use diesel::Identifiable;
-use diesel::prelude::*;
 
 use rss;
 
 use dbqueries;
 use parser;
-use connection;
 
 use models::{Podcast, Source};
 use errors::*;
-
 
 #[derive(Debug)]
 pub struct Feed {
@@ -51,16 +48,12 @@ impl Feed {
             .map(|item| parser::new_episode(item, *pd.id()))
             .collect();
 
-        let tempdb = connection().get().unwrap();
-        let _ = tempdb.transaction::<(), Error, _>(|| {
-            episodes.into_iter().for_each(|x| {
-                let e = x.index(&*tempdb);
-                if let Err(err) = e {
-                    error!("Failed to index episode: {:?}.", x);
-                    error!("Error msg: {}", err);
-                };
-            });
-            Ok(())
+        episodes.into_iter().for_each(|x| {
+            let e = x.index();
+            if let Err(err) = e {
+                error!("Failed to index episode: {:?}.", x);
+                error!("Error msg: {}", err);
+            };
         });
         Ok(())
     }
@@ -70,7 +63,6 @@ pub fn index_all() -> Result<()> {
     let mut f = fetch_all()?;
 
     index(&mut f);
-    info!("Indexing done.");
     Ok(())
 }
 
@@ -82,6 +74,7 @@ pub fn index(feeds: &mut [Feed]) {
             error!("Error msg: {}", e.unwrap_err());
         };
     });
+    info!("Indexing done.");
 }
 
 pub fn fetch_all() -> Result<Vec<Feed>> {

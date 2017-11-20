@@ -129,7 +129,9 @@ impl Episode {
     }
 
     pub fn save(&self) -> QueryResult<Episode> {
-        let tempdb = connection().get().unwrap();
+        let db = connection();
+        let tempdb = db.lock().unwrap();
+
         self.save_changes::<Episode>(&*tempdb)
     }
 }
@@ -226,7 +228,9 @@ impl Podcast {
     }
 
     pub fn save(&self) -> QueryResult<Podcast> {
-        let tempdb = connection().get().unwrap();
+        let db = connection();
+        let tempdb = db.lock().unwrap();
+
         self.save_changes::<Podcast>(&*tempdb)
     }
 }
@@ -285,7 +289,9 @@ impl<'a> Source {
     }
 
     pub fn save(&self) -> QueryResult<Source> {
-        let tempdb = connection().get().unwrap();
+        let db = connection();
+        let tempdb = db.lock().unwrap();
+
         self.save_changes::<Source>(&*tempdb)
     }
 

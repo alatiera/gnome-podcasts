@@ -9,13 +9,14 @@ use models::Episode;
 
 use std::path::Path;
 use std::fs;
+use std::io;
 
 embed_migrations!("migrations/");
 
 pub fn run_migration_on(connection: &SqliteConnection) -> Result<()> {
     info!("Running DB Migrations...");
-    embedded_migrations::run(connection)?;
-    // embedded_migrations::run_with_output(connection, &mut std::io::stdout())
+    // embedded_migrations::run(connection)?;
+    embedded_migrations::run_with_output(connection, &mut io::stdout())?;
     Ok(())
 }
 
