@@ -1,7 +1,7 @@
 
 use diesel::prelude::*;
 use diesel;
-use models::{Episode, Podcast, Source, NewSource, NewEpisode, NewPodcast};
+use models::{Episode, NewEpisode, NewPodcast, NewSource, Podcast, Source};
 use chrono::prelude::*;
 
 /// Random db querries helper functions.
@@ -226,10 +226,8 @@ pub fn replace_podcast(pd: &NewPodcast) -> QueryResult<usize> {
 
     let db = connection();
     let tempdb = db.lock().unwrap();
- 
-    diesel::replace_into(podcast)
-        .values(pd)
-        .execute(&*tempdb)
+
+    diesel::replace_into(podcast).values(pd).execute(&*tempdb)
 }
 
 pub fn replace_episode(ep: &NewEpisode) -> QueryResult<usize> {
@@ -237,8 +235,6 @@ pub fn replace_episode(ep: &NewEpisode) -> QueryResult<usize> {
 
     let db = connection();
     let tempdb = db.lock().unwrap();
- 
-    diesel::replace_into(episode)
-        .values(ep)
-        .execute(&*tempdb)
+
+    diesel::replace_into(episode).values(ep).execute(&*tempdb)
 }

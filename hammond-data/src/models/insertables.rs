@@ -43,7 +43,7 @@ impl<'a> NewSource<'a> {
 #[derive(Debug, Clone)]
 pub struct NewEpisode<'a> {
     pub title: Option<&'a str>,
-    pub uri: Option<&'a str>,
+    pub uri: Option<String>,
     pub description: Option<&'a str>,
     pub published_date: Option<String>,
     pub length: Option<i32>,
@@ -57,7 +57,7 @@ impl<'a> NewEpisode<'a> {
     // Watch out for v0.99.0 beta and change the toml.
     // TODO: Refactor into batch indexes instead.
     pub fn index(&self) -> QueryResult<()> {
-        let ep = dbqueries::get_episode_from_uri(self.uri.unwrap());
+        let ep = dbqueries::get_episode_from_uri(&self.uri.clone().unwrap());
 
         match ep {
             Ok(foo) => if foo.title() != self.title

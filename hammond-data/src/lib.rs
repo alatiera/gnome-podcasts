@@ -22,6 +22,7 @@ extern crate rayon;
 extern crate reqwest;
 extern crate rfc822_sanitizer;
 extern crate rss;
+extern crate url;
 extern crate xdg;
 
 pub mod dbqueries;

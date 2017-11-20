@@ -1,6 +1,5 @@
 use rayon::prelude::*;
 use diesel::Identifiable;
-
 use rss;
 
 use dbqueries;

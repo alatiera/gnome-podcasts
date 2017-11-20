@@ -17,6 +17,7 @@ reqwest = "0.8.1"
 rfc822_sanitizer = "0.3.3"
 rss = "1.1.0"
 xdg = "2.1.0"
+url = "1.6.0"
 
 [dependencies.diesel]
 features = ["sqlite"]

@@ -1,25 +1,24 @@
 use rss::{Channel, Item};
 use rfc822_sanitizer::parse_from_rfc2822_with_fallback;
 
-use models;
+use models::{NewEpisode, NewPodcast};
+use utils::url_cleaner;
 
 // TODO: Extend the support for parsing itunes extensions
 /// Parses a `rss::Channel` into a `NewPodcast` Struct.
-pub fn new_podcast(chan: &Channel, source_id: i32) -> models::NewPodcast {
+pub fn new_podcast(chan: &Channel, source_id: i32) -> NewPodcast {
     let title = chan.title().trim().to_owned();
-    let link = chan.link().trim().to_owned();
     let description = chan.description().trim().to_owned();
-    // Some feeds miss baseurl and/or http://
-    // TODO: Sanitize the url,
-    // could also be reuse to sanitize the new-url gui entrybox.
+
+    let link = url_cleaner(chan.link()).to_owned();
     let x = chan.itunes_ext().map(|s| s.image());
     let image_uri = if let Some(img) = x {
-        img.map(|s| s.to_string())
+        img.map(|s| url_cleaner(s))
     } else {
-        chan.image().map(|foo| foo.url().to_owned())
+        chan.image().map(|foo| url_cleaner(foo.url()))
     };
 
-    models::NewPodcast {
+    NewPodcast {
         title,
         link,
         description,
@@ -29,20 +28,20 @@ pub fn new_podcast(chan: &Channel, source_id: i32) -> models::NewPodcast {
 }
 
 /// Parses an `rss::Item` into a `NewEpisode` Struct.
-pub fn new_episode(item: &Item, parent_id: i32) -> models::NewEpisode {
+pub fn new_episode(item: &Item, parent_id: i32) -> NewEpisode {
     let title = item.title().map(|s| s.trim());
     let description = item.description().map(|s| s.trim());
-    let guid = item.guid().map(|x| x.value().trim());
+    let guid = item.guid().map(|s| s.value().trim());
 
     // Its kinda weird this being an Option type.
     // Rss 2.0 specified that it's optional.
     // Though the db scema has a requirment of episode uri being Unique && Not Null.
     // TODO: Restructure
-    let x = item.enclosure().map(|x| x.url().trim());
+    let x = item.enclosure().map(|s| url_cleaner(s.url()));
     let uri = if x.is_some() {
         x
     } else if item.link().is_some() {
-        item.link()
+        item.link().map(|s| url_cleaner(s))
     } else {
         None
     };
@@ -59,7 +58,7 @@ pub fn new_episode(item: &Item, parent_id: i32) -> models::NewEpisode {
 
     let length = item.enclosure().map(|x| x.length().parse().unwrap_or(0));
 
-    models::NewEpisode {
+    NewEpisode {
         title,
         uri,
         description,
@@ -178,7 +177,10 @@ mod tests {
         let i = new_episode(&firstitem, 0);
 
         assert_eq!(i.title, Some("The Super Bowl of Racism"));
-        assert_eq!(i.uri, Some("http://traffic.megaphone.fm/PPY6458293736.mp3"));
+        assert_eq!(
+            i.uri,
+            Some("http://traffic.megaphone.fm/PPY6458293736.mp3".to_string())
+        );
         assert_eq!(i.description, Some(descr));
         assert_eq!(i.length, Some(66738886));
         assert_eq!(i.guid, Some("7df4070a-9832-11e7-adac-cb37b05d5e24"));
@@ -203,7 +205,10 @@ mod tests {
             i2.title,
             Some("Atlas Golfed — U.S.-Backed Think Tanks Target Latin America",)
         );
-        assert_eq!(i2.uri, Some("http://traffic.megaphone.fm/FL5331443769.mp3"));
+        assert_eq!(
+            i2.uri,
+            Some("http://traffic.megaphone.fm/FL5331443769.mp3".to_string())
+        );
         assert_eq!(i2.description, Some(descr2));
         assert_eq!(i2.length, Some(67527575));
         assert_eq!(i2.guid, Some("7c207a24-e33f-11e6-9438-eb45dcf36a1d"));
@@ -230,7 +235,10 @@ mod tests {
         );
         assert_eq!(
             i.uri,
-            Some("http://tracking.feedpress.it/link/10581/6726758/20170908-cliff-levy.mp3",)
+            Some(
+                "http://tracking.feedpress.it/link/10581/6726758/20170908-cliff-levy.mp3"
+                    .to_string(),
+            )
         );
         assert_eq!(i.description, Some(descr));
         assert_eq!(i.length, Some(33396551));
@@ -261,7 +269,10 @@ mod tests {
         );
         assert_eq!(
             i2.uri,
-            Some("http://tracking.feedpress.it/link/10581/6726759/16_JohnAllen-CRAFT.mp3",)
+            Some(
+                "http://tracking.feedpress.it/link/10581/6726759/16_JohnAllen-CRAFT.mp3"
+                    .to_string(),
+            )
         );
         assert_eq!(i2.description, Some(descr2));
         assert_eq!(i2.length, Some(17964071));
@@ -294,7 +305,10 @@ mod tests {
         assert_eq!(i.title, Some("Hacking Devices with Kali Linux | LUP 214"));
         assert_eq!(
             i.uri,
-            Some("http://www.podtrac.com/pts/redirect.mp3/traffic.libsyn.com/jnite/lup-0214.mp3",)
+            Some(
+                "http://www.podtrac.com/pts/redirect.mp3/traffic.libsyn.com/jnite/lup-0214.mp3"
+                    .to_string(),
+            )
         );
         assert_eq!(i.description, Some(descr));
         assert_eq!(i.length, Some(46479789));
@@ -317,7 +331,10 @@ mod tests {
         assert_eq!(i2.title, Some("Gnome Does it Again | LUP 213"));
         assert_eq!(
             i2.uri,
-            Some("http://www.podtrac.com/pts/redirect.mp3/traffic.libsyn.com/jnite/lup-0213.mp3",)
+            Some(
+                "http://www.podtrac.com/pts/redirect.mp3/traffic.libsyn.com/jnite/lup-0213.mp3"
+                    .to_string(),
+            )
         );
         assert_eq!(i2.description, Some(descr2));
         assert_eq!(i2.length, Some(36544272));
@@ -345,7 +362,8 @@ mod tests {
             i.uri,
             Some(
                 "http://request-for-explanation.github.\
-                 io/podcast/ep9-a-once-in-a-lifetime-rfc/episode.mp3",
+                 io/podcast/ep9-a-once-in-a-lifetime-rfc/episode.mp3"
+                    .to_string(),
             )
         );
         assert_eq!(i.description, Some(descr));
@@ -371,7 +389,8 @@ mod tests {
             i2.uri,
             Some(
                 "http://request-for-explanation.github.\
-                 io/podcast/ep8-an-existential-crisis/episode.mp3",
+                 io/podcast/ep8-an-existential-crisis/episode.mp3"
+                    .to_string(),
             )
         );
         assert_eq!(i2.description, Some(descr2));

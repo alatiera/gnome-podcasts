@@ -2,6 +2,7 @@ use rayon::prelude::*;
 use chrono::prelude::*;
 
 use diesel::sqlite::SqliteConnection;
+use url::{Position, Url};
 
 use errors::*;
 use dbqueries;
@@ -96,4 +97,14 @@ pub fn checkup() -> Result<()> {
     download_checker()?;
     played_cleaner()?;
     Ok(())
+}
+
+pub fn url_cleaner(s: &str) -> String {
+    // Copied from the cookbook.
+    // https://rust-lang-nursery.github.io/rust-cookbook/net.html
+    // #remove-fragment-identifiers-and-query-pairs-from-a-url
+    match Url::parse(s) {
+        Ok(parsed) => parsed[..Position::AfterPath].to_owned(),
+        _ => s.trim().to_owned(),
+    }
 }

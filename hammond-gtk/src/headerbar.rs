@@ -2,6 +2,7 @@ use gtk;
 use gtk::prelude::*;
 
 use hammond_data::models::NewSource;
+use hammond_data::utils::url_cleaner;
 
 use podcasts_view::update_podcasts_view;
 use utils;
@@ -24,6 +25,7 @@ pub fn get_headerbar(stack: &gtk::Stack) -> gtk::HeaderBar {
 
     add_button.connect_clicked(clone!(stack, add_popover => move |_| {
         let url = new_url.get_text().unwrap_or_default();
+        let url = url_cleaner(&url);
         on_add_bttn_clicked(&stack, &url);
 
         // TODO: lock the button instead of hiding and add notification of feed added.
