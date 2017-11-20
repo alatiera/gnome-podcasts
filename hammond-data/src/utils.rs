@@ -1,9 +1,7 @@
 use rayon::prelude::*;
 use chrono::prelude::*;
 
-use r2d2;
 use diesel::sqlite::SqliteConnection;
-use r2d2_diesel::ConnectionManager;
 
 use errors::*;
 use dbqueries;
@@ -11,29 +9,8 @@ use models::Episode;
 
 use std::path::Path;
 use std::fs;
-use std::sync::Arc;
-use std::time::Duration;
-
-use POOL;
 
 embed_migrations!("migrations/");
-
-pub type Pool = Arc<r2d2::Pool<ConnectionManager<SqliteConnection>>>;
-
-pub fn init() -> Result<()> {
-    let con = POOL.clone().get().unwrap();
-    run_migration_on(&*con)
-}
-
-pub fn init_pool(db_path: &str) -> Pool {
-    let config = r2d2::Config::builder()
-        .connection_timeout(Duration::from_secs(60))
-        .build();
-    let manager = ConnectionManager::<SqliteConnection>::new(db_path);
-    let pool = r2d2::Pool::new(config, manager).expect("Failed to create pool.");
-    info!("Database pool initialized.");
-    Arc::new(pool)
-}
 
 pub fn run_migration_on(connection: &SqliteConnection) -> Result<()> {
     info!("Running DB Migrations...");

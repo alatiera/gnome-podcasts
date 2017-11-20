@@ -6,7 +6,7 @@ use rss;
 
 use dbqueries;
 use parser;
-use POOL;
+use connection;
 
 use models::{Podcast, Source};
 use errors::*;
@@ -51,7 +51,7 @@ impl Feed {
             .map(|item| parser::new_episode(item, *pd.id()))
             .collect();
 
-        let tempdb = POOL.clone().get().unwrap();
+        let tempdb = connection().get().unwrap();
         let _ = tempdb.transaction::<(), Error, _>(|| {
             episodes.into_iter().for_each(|x| {
                 let e = x.index(&*tempdb);

@@ -105,7 +105,6 @@ fn main() {
     // TODO: make the the logger a cli -vv option
     loggerv::init_with_level(LogLevel::Info).unwrap();
     static_resource::init().expect("Something went wrong with the resource file initialization.");
-    hammond_data::utils::init().expect("Hammond Initialazation failed.");
 
     let application = gtk::Application::new("org.gnome.Hammond", gio::ApplicationFlags::empty())
         .expect("Initialization failed...");

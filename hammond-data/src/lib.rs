@@ -32,7 +32,13 @@ pub mod errors;
 mod parser;
 mod schema;
 
+use r2d2_diesel::ConnectionManager;
+use diesel::SqliteConnection;
+
 use std::path::PathBuf;
+// use std::time::Duration;
+
+type Pool = r2d2::Pool<ConnectionManager<SqliteConnection>>;
 
 lazy_static!{
     #[allow(dead_code)]
@@ -56,39 +62,44 @@ lazy_static!{
         HAMMOND_XDG.create_data_directory("Downloads").unwrap()
     };
 
-    pub static ref DB_PATH: PathBuf = HAMMOND_XDG.place_data_file("hammond.db").unwrap();
+    static ref POOL: Pool = init_pool(DB_PATH.to_str().unwrap());
 }
 
 #[cfg(not(test))]
 lazy_static! {
-    pub static ref POOL: utils::Pool = utils::init_pool(DB_PATH.to_str().unwrap());
+    static ref DB_PATH: PathBuf = HAMMOND_XDG.place_data_file("hammond.db").unwrap();
 }
-
-#[cfg(test)]
-lazy_static! {
-    static ref TEMPDB: TempDB =  get_temp_db();
-
-    pub static ref POOL: &'static utils::Pool = &TEMPDB.2;
-}
-
-#[cfg(test)]
-struct TempDB(tempdir::TempDir, PathBuf, utils::Pool);
 
 #[cfg(test)]
 extern crate tempdir;
 
 #[cfg(test)]
-/// Create and return a Temporary DB.
-/// Will be destroed once the returned variable(s) is dropped.
-fn get_temp_db() -> TempDB {
-    let tmp_dir = tempdir::TempDir::new("hammond_unit_test").unwrap();
-    let db_path = tmp_dir.path().join("test.db");
+lazy_static! {
+    static ref TEMPDIR: tempdir::TempDir = {
+        tempdir::TempDir::new("hammond_unit_test").unwrap()
+    };
 
-    let pool = utils::init_pool(db_path.to_str().unwrap());
+    static ref DB_PATH: PathBuf = TEMPDIR.path().join("hammond.db");
+}
+
+pub fn connection() -> Pool {
+    POOL.clone()
+}
+
+fn init_pool(db_path: &str) -> Pool {
+    let config = r2d2::Config::builder()
+        // .pool_size(60)
+        // .min_idle(Some(60))
+        // .connection_timeout(Duration::from_secs(60))
+        .build();
+    let manager = ConnectionManager::<SqliteConnection>::new(db_path);
+    let pool = r2d2::Pool::new(config, manager).expect("Failed to create pool.");
+    info!("Database pool initialized.");
+
     {
         let db = pool.clone().get().unwrap();
         utils::run_migration_on(&*db).unwrap();
     }
 
-    TempDB(tmp_dir, db_path, pool)
+    pool
 }

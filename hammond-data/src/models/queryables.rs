@@ -10,7 +10,7 @@ use feed::Feed;
 use errors::*;
 
 use models::insertables::NewPodcast;
-use POOL;
+use connection;
 
 use std::io::Read;
 use std::str::FromStr;
@@ -129,7 +129,7 @@ impl Episode {
     }
 
     pub fn save(&self) -> QueryResult<Episode> {
-        let tempdb = POOL.clone().get().unwrap();
+        let tempdb = connection().get().unwrap();
         self.save_changes::<Episode>(&*tempdb)
     }
 }
@@ -226,7 +226,7 @@ impl Podcast {
     }
 
     pub fn save(&self) -> QueryResult<Podcast> {
-        let tempdb = POOL.clone().get().unwrap();
+        let tempdb = connection().get().unwrap();
         self.save_changes::<Podcast>(&*tempdb)
     }
 }
@@ -285,7 +285,7 @@ impl<'a> Source {
     }
 
     pub fn save(&self) -> QueryResult<Source> {
-        let tempdb = POOL.clone().get().unwrap();
+        let tempdb = connection().get().unwrap();
         self.save_changes::<Source>(&*tempdb)
     }
 
