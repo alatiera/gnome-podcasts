@@ -1,7 +1,7 @@
 
 use diesel::prelude::*;
 use diesel;
-use models::{Episode, Podcast, Source};
+use models::{Episode, Podcast, Source, NewSource, NewEpisode, NewPodcast};
 use chrono::prelude::*;
 
 /// Random db querries helper functions.
@@ -195,4 +195,50 @@ pub fn update_none_to_played_now(parent: &Podcast) -> QueryResult<usize> {
             .set(played.eq(Some(epoch_now)))
             .execute(&*con)
     })
+}
+
+pub fn insert_new_source(s: &NewSource) -> QueryResult<usize> {
+    use schema::source::dsl::*;
+
+    let db = connection();
+    let tempdb = db.lock().unwrap();
+    diesel::insert_into(source).values(s).execute(&*tempdb)
+}
+
+pub fn insert_new_podcast(pd: &NewPodcast) -> QueryResult<usize> {
+    use schema::podcast::dsl::*;
+
+    let db = connection();
+    let tempdb = db.lock().unwrap();
+    diesel::insert_into(podcast).values(pd).execute(&*tempdb)
+}
+
+pub fn insert_new_episode(ep: &NewEpisode) -> QueryResult<usize> {
+    use schema::episode::dsl::*;
+
+    let db = connection();
+    let tempdb = db.lock().unwrap();
+    diesel::insert_into(episode).values(ep).execute(&*tempdb)
+}
+
+pub fn replace_podcast(pd: &NewPodcast) -> QueryResult<usize> {
+    use schema::podcast::dsl::*;
+
+    let db = connection();
+    let tempdb = db.lock().unwrap();
+ 
+    diesel::replace_into(podcast)
+        .values(pd)
+        .execute(&*tempdb)
+}
+
+pub fn replace_episode(ep: &NewEpisode) -> QueryResult<usize> {
+    use schema::episode::dsl::*;
+
+    let db = connection();
+    let tempdb = db.lock().unwrap();
+ 
+    diesel::replace_into(episode)
+        .values(ep)
+        .execute(&*tempdb)
 }

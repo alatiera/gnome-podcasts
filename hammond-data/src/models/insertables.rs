@@ -1,9 +1,7 @@
 use diesel::prelude::*;
-use diesel;
 
 use schema::{episode, podcast, source};
 use models::{Podcast, Source};
-use connection;
 use errors::*;
 
 use dbqueries;
@@ -27,13 +25,9 @@ impl<'a> NewSource<'a> {
     }
 
     fn index(&self) {
-        use schema::source::dsl::*;
-
-        let db = connection();
-        let tempdb = db.lock().unwrap();
         // Throw away the result like `insert or ignore`
         // Diesel deos not support `insert or ignore` yet.
-        let _ = diesel::insert_into(source).values(self).execute(&*tempdb);
+        let _ = dbqueries::insert_new_source(self);
     }
 
     // Look out for when tryinto lands into stable.
@@ -63,24 +57,16 @@ impl<'a> NewEpisode<'a> {
     // Watch out for v0.99.0 beta and change the toml.
     // TODO: Refactor into batch indexes instead.
     pub fn index(&self) -> QueryResult<()> {
-        use schema::episode::dsl::*;
-
         let ep = dbqueries::get_episode_from_uri(self.uri.unwrap());
 
-        let db = connection();
-        let con = db.lock().unwrap();
         match ep {
             Ok(foo) => if foo.title() != self.title
                 || foo.published_date() != self.published_date.as_ref().map(|x| x.as_str())
             {
-                // let tempdb = db.lock().unwrap();
-                diesel::replace_into(episode).values(self).execute(&*con)?;
-                // .execute(&tempdb)?;
+                dbqueries::replace_episode(self)?;
             },
             Err(_) => {
-                // let tempdb = db.lock().unwrap();
-                diesel::insert_into(episode).values(self).execute(&*con)?;
-                // .execute(&tempdb)?;
+                dbqueries::insert_new_episode(self)?;
             }
         }
         Ok(())
@@ -106,23 +92,14 @@ impl NewPodcast {
     }
 
     fn index(&self) -> QueryResult<()> {
-        use schema::podcast::dsl::*;
         let pd = dbqueries::get_podcast_from_title(&self.title);
 
         match pd {
             Ok(foo) => if foo.link() != self.link {
-                let db = connection();
-                let tempdb = db.lock().unwrap();
-
-                diesel::replace_into(podcast)
-                    .values(self)
-                    .execute(&*tempdb)?;
+                dbqueries::replace_podcast(self)?;
             },
             Err(_) => {
-                let db = connection();
-                let tempdb = db.lock().unwrap();
-
-                diesel::insert_into(podcast).values(self).execute(&*tempdb)?;
+                dbqueries::insert_new_podcast(self)?;
             }
         }
         Ok(())
