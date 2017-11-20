@@ -30,8 +30,7 @@ fn download_into(dir: &str, file_title: &str, url: &str) -> Result<String> {
     info!("Status Resp: {}", resp.status());
 
     if !resp.status().is_success() {
-        // TODO: Return an error instead of panicking.
-        panic!("Bad request response.");
+        bail!("Unexpected server response: {}", resp.status())
     }
 
     let headers = resp.headers().clone();
