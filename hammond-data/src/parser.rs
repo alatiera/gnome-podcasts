@@ -29,9 +29,9 @@ pub fn new_podcast(chan: &Channel, source_id: i32) -> NewPodcast {
 
 /// Parses an `rss::Item` into a `NewEpisode` Struct.
 pub fn new_episode(item: &Item, parent_id: i32) -> NewEpisode {
-    let title = item.title().map(|s| s.trim());
-    let description = item.description().map(|s| s.trim());
-    let guid = item.guid().map(|s| s.value().trim());
+    let title = item.title().map(|s| s.trim().to_owned());
+    let description = item.description().map(|s| s.trim().to_owned());
+    let guid = item.guid().map(|s| s.value().trim().to_owned());
 
     // Its kinda weird this being an Option type.
     // Rss 2.0 specified that it's optional.
@@ -176,14 +176,17 @@ mod tests {
                      performs.";
         let i = new_episode(&firstitem, 0);
 
-        assert_eq!(i.title, Some("The Super Bowl of Racism"));
+        assert_eq!(i.title, Some("The Super Bowl of Racism".to_string()));
         assert_eq!(
             i.uri,
             Some("http://traffic.megaphone.fm/PPY6458293736.mp3".to_string())
         );
-        assert_eq!(i.description, Some(descr));
+        assert_eq!(i.description, Some(descr.to_string()));
         assert_eq!(i.length, Some(66738886));
-        assert_eq!(i.guid, Some("7df4070a-9832-11e7-adac-cb37b05d5e24"));
+        assert_eq!(
+            i.guid,
+            Some("7df4070a-9832-11e7-adac-cb37b05d5e24".to_string())
+        );
         assert_eq!(
             i.published_date,
             Some("Wed, 13 Sep 2017 10:00:00 +0000".to_string())
@@ -203,15 +206,18 @@ mod tests {
                       Venezuela.";
         assert_eq!(
             i2.title,
-            Some("Atlas Golfed — U.S.-Backed Think Tanks Target Latin America",)
+            Some("Atlas Golfed — U.S.-Backed Think Tanks Target Latin America".to_string(),)
         );
         assert_eq!(
             i2.uri,
             Some("http://traffic.megaphone.fm/FL5331443769.mp3".to_string())
         );
-        assert_eq!(i2.description, Some(descr2));
+        assert_eq!(i2.description, Some(descr2.to_string()));
         assert_eq!(i2.length, Some(67527575));
-        assert_eq!(i2.guid, Some("7c207a24-e33f-11e6-9438-eb45dcf36a1d"));
+        assert_eq!(
+            i2.guid,
+            Some("7c207a24-e33f-11e6-9438-eb45dcf36a1d".to_string())
+        );
         assert_eq!(
             i2.published_date,
             Some("Wed,  9 Aug 2017 10:00:00 +0000".to_string())
@@ -231,7 +237,10 @@ mod tests {
 
         assert_eq!(
             i.title,
-            Some("The Breakthrough: Hopelessness and Exploitation Inside Homes for Mentally Ill",)
+            Some(
+                "The Breakthrough: Hopelessness and Exploitation Inside Homes for Mentally Ill"
+                    .to_string(),
+            )
         );
         assert_eq!(
             i.uri,
@@ -240,13 +249,14 @@ mod tests {
                     .to_string(),
             )
         );
-        assert_eq!(i.description, Some(descr));
+        assert_eq!(i.description, Some(descr.to_string()));
         assert_eq!(i.length, Some(33396551));
         assert_eq!(
             i.guid,
             Some(
                 "https://www.propublica.org/podcast/\
-                 the-breakthrough-hopelessness-exploitation-homes-for-mentally-ill#134472",
+                 the-breakthrough-hopelessness-exploitation-homes-for-mentally-ill#134472"
+                    .to_string(),
             )
         );
         assert_eq!(
@@ -263,9 +273,8 @@ mod tests {
 
         assert_eq!(
             i2.title,
-            Some(
-                "The Breakthrough: Behind the Scenes of Hillary Clinton’s Failed Bid for President",
-            )
+            Some("The Breakthrough: Behind the Scenes of Hillary Clinton’s Failed Bid for \
+                  President".to_string())
         );
         assert_eq!(
             i2.uri,
@@ -274,13 +283,14 @@ mod tests {
                     .to_string(),
             )
         );
-        assert_eq!(i2.description, Some(descr2));
+        assert_eq!(i2.description, Some(descr2.to_string()));
         assert_eq!(i2.length, Some(17964071));
         assert_eq!(
             i2.guid,
             Some(
                 "https://www.propublica.\
-                 org/podcast/the-breakthrough-hillary-clinton-failed-presidential-bid#133721",
+                 org/podcast/the-breakthrough-hillary-clinton-failed-presidential-bid#133721"
+                    .to_string(),
             )
         );
         assert_eq!(
@@ -302,7 +312,10 @@ mod tests {
              blaming open source & the Beard just saved the show. It’s a really packed episode!";
         let i = new_episode(&firstitem, 0);
 
-        assert_eq!(i.title, Some("Hacking Devices with Kali Linux | LUP 214"));
+        assert_eq!(
+            i.title,
+            Some("Hacking Devices with Kali Linux | LUP 214".to_string())
+        );
         assert_eq!(
             i.uri,
             Some(
@@ -310,9 +323,12 @@ mod tests {
                     .to_string(),
             )
         );
-        assert_eq!(i.description, Some(descr));
+        assert_eq!(i.description, Some(descr.to_string()));
         assert_eq!(i.length, Some(46479789));
-        assert_eq!(i.guid, Some("78A682B4-73E8-47B8-88C0-1BE62DD4EF9D"));
+        assert_eq!(
+            i.guid,
+            Some("78A682B4-73E8-47B8-88C0-1BE62DD4EF9D".to_string())
+        );
         assert_eq!(
             i.published_date,
             Some("Tue, 12 Sep 2017 22:24:42 -0700".to_string())
@@ -328,7 +344,7 @@ mod tests {
                       future.</p>\n\n<p>Plus we chat with Wimpy about the Ubuntu Rally in NYC, \
                       Microsoft’s sneaky move to turn Windows 10 into the “ULTIMATE LINUX \
                       RUNTIME”, community news & more!</p>";
-        assert_eq!(i2.title, Some("Gnome Does it Again | LUP 213"));
+        assert_eq!(i2.title, Some("Gnome Does it Again | LUP 213".to_string()));
         assert_eq!(
             i2.uri,
             Some(
@@ -336,9 +352,12 @@ mod tests {
                     .to_string(),
             )
         );
-        assert_eq!(i2.description, Some(descr2));
+        assert_eq!(i2.description, Some(descr2.to_string()));
         assert_eq!(i2.length, Some(36544272));
-        assert_eq!(i2.guid, Some("1CE57548-B36C-4F14-832A-5D5E0A24E35B"));
+        assert_eq!(
+            i2.guid,
+            Some("1CE57548-B36C-4F14-832A-5D5E0A24E35B".to_string())
+        );
         assert_eq!(
             i2.published_date,
             Some("Tue,  5 Sep 2017 20:57:27 -0700".to_string())
@@ -357,7 +376,10 @@ mod tests {
                      \"Non-lexical lifetimes\"";
         let i = new_episode(&firstitem, 0);
 
-        assert_eq!(i.title, Some("Episode #9 - A Once in a Lifetime RFC"));
+        assert_eq!(
+            i.title,
+            Some("Episode #9 - A Once in a Lifetime RFC".to_string())
+        );
         assert_eq!(
             i.uri,
             Some(
@@ -366,11 +388,14 @@ mod tests {
                     .to_string(),
             )
         );
-        assert_eq!(i.description, Some(descr));
+        assert_eq!(i.description, Some(descr.to_string()));
         assert_eq!(i.length, Some(15077388));
         assert_eq!(
             i.guid,
-            Some("https://request-for-explanation.github.io/podcast/ep9-a-once-in-a-lifetime-rfc/",)
+            Some(
+                "https://request-for-explanation.github.io/podcast/ep9-a-once-in-a-lifetime-rfc/"
+                    .to_string(),
+            )
         );
         assert_eq!(
             i.published_date,
@@ -384,7 +409,10 @@ mod tests {
         let descr2 = "This week we look at <a \
                       href=\"https://github.com/rust-lang/rfcs/pull/2071\">RFC 2071</a> \"Add \
                       impl Trait type alias and variable declarations\"";
-        assert_eq!(i2.title, Some("Episode #8 - An Existential Crisis"));
+        assert_eq!(
+            i2.title,
+            Some("Episode #8 - An Existential Crisis".to_string())
+        );
         assert_eq!(
             i2.uri,
             Some(
@@ -393,11 +421,14 @@ mod tests {
                     .to_string(),
             )
         );
-        assert_eq!(i2.description, Some(descr2));
+        assert_eq!(i2.description, Some(descr2.to_string()));
         assert_eq!(i2.length, Some(13713219));
         assert_eq!(
             i2.guid,
-            Some("https://request-for-explanation.github.io/podcast/ep8-an-existential-crisis/",)
+            Some(
+                "https://request-for-explanation.github.io/podcast/ep8-an-existential-crisis/"
+                    .to_string(),
+            )
         );
         assert_eq!(
             i2.published_date,

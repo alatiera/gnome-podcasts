@@ -9,16 +9,16 @@ use dbqueries;
 #[derive(Insertable)]
 #[table_name = "source"]
 #[derive(Debug, Clone)]
-pub struct NewSource<'a> {
-    uri: &'a str,
-    last_modified: Option<&'a str>,
-    http_etag: Option<&'a str>,
+pub struct NewSource {
+    uri: String,
+    last_modified: Option<String>,
+    http_etag: Option<String>,
 }
 
-impl<'a> NewSource<'a> {
-    pub fn new_with_uri(uri: &'a str) -> NewSource {
+impl NewSource {
+    pub fn new_with_uri(uri: &str) -> NewSource {
         NewSource {
-            uri,
+            uri: uri.to_string(),
             last_modified: None,
             http_etag: None,
         }
@@ -34,25 +34,25 @@ impl<'a> NewSource<'a> {
     pub fn into_source(self) -> QueryResult<Source> {
         self.index();
 
-        dbqueries::get_source_from_uri(self.uri)
+        dbqueries::get_source_from_uri(&self.uri)
     }
 }
 
 #[derive(Insertable)]
 #[table_name = "episode"]
 #[derive(Debug, Clone, Default)]
-pub struct NewEpisode<'a> {
-    pub title: Option<&'a str>,
+pub struct NewEpisode {
+    pub title: Option<String>,
     pub uri: Option<String>,
-    pub description: Option<&'a str>,
+    pub description: Option<String>,
     pub published_date: Option<String>,
     pub length: Option<i32>,
-    pub guid: Option<&'a str>,
+    pub guid: Option<String>,
     pub epoch: i32,
     pub podcast_id: i32,
 }
 
-impl<'a> NewEpisode<'a> {
+impl NewEpisode {
     // TODO: Currently using diesel from master git.
     // Watch out for v0.99.0 beta and change the toml.
     // TODO: Refactor into batch indexes instead.
@@ -60,7 +60,7 @@ impl<'a> NewEpisode<'a> {
         let ep = dbqueries::get_episode_from_uri(&self.uri.clone().unwrap());
 
         match ep {
-            Ok(foo) => if foo.title() != self.title
+            Ok(foo) => if foo.title() != self.title.as_ref().map(|x| x.as_str())
                 || foo.published_date() != self.published_date.as_ref().map(|x| x.as_str())
             {
                 dbqueries::replace_episode(self)?;
