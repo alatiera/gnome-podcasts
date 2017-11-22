@@ -1,4 +1,3 @@
-
 use reqwest;
 use diesel::SaveChangesDsl;
 use diesel::result::QueryResult;
@@ -9,7 +8,7 @@ use schema::{episode, podcast, source};
 use feed::Feed;
 use errors::*;
 
-use models::insertables::NewPodcast;
+use models::insertables::NewSource;
 use connection;
 
 use std::io::Read;
@@ -151,23 +150,6 @@ pub struct Podcast {
     archive: bool,
     always_dl: bool,
     source_id: i32,
-}
-
-/// This is meant only to be used to make unit tests easier.
-impl From<NewPodcast> for Podcast {
-    fn from(pd: NewPodcast) -> Podcast {
-        Podcast {
-            id: 0,
-            title: pd.title,
-            link: pd.link,
-            description: pd.description,
-            image_uri: pd.image_uri,
-            source_id: pd.source_id,
-            always_dl: false,
-            archive: false,
-            favorite: false,
-        }
-    }
 }
 
 impl Podcast {
@@ -335,5 +317,9 @@ impl<'a> Source {
         let chan = Channel::from_str(&buf)?;
 
         Ok(Feed::from_channel_source(chan, self))
+    }
+
+    pub fn from_url(uri: &str) -> QueryResult<Source> {
+        NewSource::new_with_uri(uri).into_source()
     }
 }

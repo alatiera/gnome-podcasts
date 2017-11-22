@@ -1,7 +1,7 @@
 use gtk;
 use gtk::prelude::*;
 
-use hammond_data::models::NewSource;
+use hammond_data::Source;
 use hammond_data::utils::url_cleaner;
 
 use podcasts_view::update_podcasts_view;
@@ -54,10 +54,10 @@ pub fn get_headerbar(stack: &gtk::Stack) -> gtk::HeaderBar {
 }
 
 fn on_add_bttn_clicked(stack: &gtk::Stack, url: &str) {
-    let source = NewSource::new_with_uri(url).into_source();
-    info!("{:?} feed added", url);
+    let source = Source::from_url(url);
 
     if let Ok(s) = source {
+        info!("{:?} feed added", url);
         // update the db
         utils::refresh_feed(stack, Some(vec![s]), None);
     } else {

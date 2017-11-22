@@ -2,7 +2,7 @@ use glib;
 use gtk;
 
 use hammond_data::feed;
-use hammond_data::models::Source;
+use hammond_data::Source;
 
 use std::{thread, time};
 use std::cell::RefCell;

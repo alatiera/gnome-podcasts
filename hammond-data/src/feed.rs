@@ -33,7 +33,7 @@ impl Feed {
         Ok(())
     }
 
-    fn index_channel(&self) -> Result<Podcast> {
+    pub fn index_channel(&self) -> Result<Podcast> {
         let pd = parser::new_podcast(&self.channel, *self.source.id());
         // Convert NewPodcast to Podcast
         pd.into_podcast()

@@ -27,9 +27,9 @@ extern crate xdg;
 
 pub mod dbqueries;
 pub mod utils;
-pub mod models;
 pub mod feed;
 pub mod errors;
+mod models;
 mod parser;
 mod schema;
 
@@ -40,6 +40,8 @@ use diesel::prelude::*;
 use std::path::PathBuf;
 use std::sync::{Arc, Mutex};
 // use std::time::Duration;
+
+pub use models::{Episode, Podcast, Source};
 
 // type Pool = r2d2::Pool<ConnectionManager<SqliteConnection>>;
 type Database = Arc<Mutex<SqliteConnection>>;

@@ -10,7 +10,7 @@ use std::io::{BufWriter, Read, Write};
 use std::path::Path;
 
 use errors::*;
-use hammond_data::models::{Episode, Podcast};
+use hammond_data::{Episode, Podcast};
 use hammond_data::{DL_DIR, HAMMOND_CACHE};
 
 // TODO: Replace path that are of type &str with std::path.
@@ -193,7 +193,7 @@ pub fn cache_image(pd: &Podcast) -> Option<String> {
 mod tests {
     use super::*;
     use hammond_data::{DL_DIR, HAMMOND_CACHE};
-    use hammond_data::models::NewPodcast;
+    use hammond_data::Source;
 
     use std::fs;
 
@@ -206,14 +206,13 @@ mod tests {
 
     #[test]
     fn test_cache_image() {
-        let pd = NewPodcast {
-            title: "New Rustacean".to_string(),
-            description: "".to_string(),
-            link: "".to_string(),
-            image_uri: Some("http://newrustacean.com/podcast.png".to_string()),
-            source_id: 0,
-        };
-        let pd = Podcast::from(pd);
+        let pd = Source::from_url("http://www.newrustacean.com/feed.xml")
+            .unwrap()
+            .refresh()
+            .unwrap()
+            .index_channel()
+            .unwrap();
+
         let img_path = cache_image(&pd);
         let foo_ = format!(
             "{}{}/cover.png",

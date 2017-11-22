@@ -40,7 +40,7 @@ impl<'a> NewSource<'a> {
 
 #[derive(Insertable)]
 #[table_name = "episode"]
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Default)]
 pub struct NewEpisode<'a> {
     pub title: Option<&'a str>,
     pub uri: Option<String>,

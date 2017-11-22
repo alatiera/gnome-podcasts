@@ -12,7 +12,7 @@ use rayon::prelude::*;
 
 use test::Bencher;
 
-use hammond_data::models::NewSource;
+use hammond_data::Source;
 use hammond_data::feed::{index, Feed};
 
 use std::io::BufReader;
@@ -36,7 +36,7 @@ fn index_urls() {
     URLS.par_iter()
         .map(|&(buff, url)| {
             // Create and insert a Source into db
-            let s = NewSource::new_with_uri(url).into_source().unwrap();
+            let s = Source::from_url(url).unwrap();
             // parse it into a channel
             let chan = rss::Channel::read_from(BufReader::new(buff)).unwrap();
             Feed::from_channel_source(chan, s)

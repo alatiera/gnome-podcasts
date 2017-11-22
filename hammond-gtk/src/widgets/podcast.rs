@@ -5,7 +5,7 @@ use gdk_pixbuf::Pixbuf;
 use std::fs;
 
 use hammond_data::dbqueries;
-use hammond_data::models::Podcast;
+use hammond_data::Podcast;
 use hammond_downloader::downloader;
 
 use widgets::episode::episodes_listbox;
@@ -118,19 +118,17 @@ pub fn update_podcast_widget(stack: &gtk::Stack, pd: &Podcast) {
 
 #[cfg(test)]
 mod tests {
-    use hammond_data::models::NewPodcast;
+    use hammond_data::Source;
     use super::*;
 
     #[test]
     fn test_get_pixbuf_from_path() {
-        let pd = NewPodcast {
-            title: "New Rustacean".to_string(),
-            description: "".to_string(),
-            link: "".to_string(),
-            image_uri: Some("http://newrustacean.com/podcast.png".to_string()),
-            source_id: 0,
-        };
-        let pd = Podcast::from(pd);
+        let pd = Source::from_url("http://www.newrustacean.com/feed.xml")
+            .unwrap()
+            .refresh()
+            .unwrap()
+            .index_channel()
+            .unwrap();
 
         let pxbuf = get_pixbuf_from_path(&pd);
         assert!(pxbuf.is_some());
