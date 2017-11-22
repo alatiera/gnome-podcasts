@@ -208,9 +208,9 @@ mod tests {
     fn test_cache_image() {
         let pd = Source::from_url("http://www.newrustacean.com/feed.xml")
             .unwrap()
-            .refresh()
+            .into_feed()
             .unwrap()
-            .index_channel()
+            .get_podcast()
             .unwrap();
 
         let img_path = cache_image(&pd);

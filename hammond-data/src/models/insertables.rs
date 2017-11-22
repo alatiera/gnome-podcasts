@@ -91,7 +91,7 @@ impl NewPodcast {
         Ok(dbqueries::get_podcast_from_title(&self.title)?)
     }
 
-    fn index(&self) -> QueryResult<()> {
+    pub fn index(&self) -> QueryResult<()> {
         let pd = dbqueries::get_podcast_from_title(&self.title);
 
         match pd {

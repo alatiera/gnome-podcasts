@@ -277,7 +277,7 @@ impl<'a> Source {
         self.save_changes::<Source>(&*tempdb)
     }
 
-    pub fn refresh(mut self) -> Result<Feed> {
+    pub fn into_feed(mut self) -> Result<Feed> {
         use reqwest::header::{ETag, EntityTag, Headers, HttpDate, LastModified};
 
         let mut headers = Headers::new();

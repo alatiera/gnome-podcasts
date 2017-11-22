@@ -125,9 +125,9 @@ mod tests {
     fn test_get_pixbuf_from_path() {
         let pd = Source::from_url("http://www.newrustacean.com/feed.xml")
             .unwrap()
-            .refresh()
+            .into_feed()
             .unwrap()
-            .index_channel()
+            .get_podcast()
             .unwrap();
 
         let pxbuf = get_pixbuf_from_path(&pd);

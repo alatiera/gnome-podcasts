@@ -1,5 +1,5 @@
 use rayon::prelude::*;
-use diesel::Identifiable;
+use diesel::{Identifiable, QueryResult};
 use rss;
 
 use dbqueries;
@@ -16,7 +16,7 @@ pub struct Feed {
 
 impl Feed {
     pub fn from_source(s: Source) -> Result<Feed> {
-        s.refresh()
+        s.into_feed()
     }
 
     pub fn from_channel_source(chan: rss::Channel, s: Source) -> Feed {
@@ -27,16 +27,19 @@ impl Feed {
     }
 
     fn index(&self) -> Result<()> {
-        let pd = self.index_channel()?;
+        let pd = self.get_podcast()?;
 
         self.index_channel_items(&pd)?;
         Ok(())
     }
 
-    pub fn index_channel(&self) -> Result<Podcast> {
-        let pd = parser::new_podcast(&self.channel, *self.source.id());
-        // Convert NewPodcast to Podcast
-        pd.into_podcast()
+    pub fn index_channel(&self) -> QueryResult<()> {
+        let new_pd = parser::new_podcast(&self.channel, *self.source.id());
+        new_pd.index()
+    }
+
+    pub fn get_podcast(&self) -> Result<Podcast> {
+        parser::new_podcast(&self.channel, *self.source.id()).into_podcast()
     }
 
     // TODO: Refactor transcactions and find a way to do it in parallel.
