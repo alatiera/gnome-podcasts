@@ -46,28 +46,34 @@ pub use models::{Episode, Podcast, Source};
 // type Pool = r2d2::Pool<ConnectionManager<SqliteConnection>>;
 type Database = Arc<Mutex<SqliteConnection>>;
 
+pub mod xdg_ {
+    use std::path::PathBuf;
+    use xdg;
+
+    lazy_static!{
+        pub static ref HAMMOND_XDG: xdg::BaseDirectories = {
+            xdg::BaseDirectories::with_prefix("hammond").unwrap()
+        };
+
+        static ref _HAMMOND_DATA: PathBuf = {
+            HAMMOND_XDG.create_data_directory(HAMMOND_XDG.get_data_home()).unwrap()
+        };
+
+        static ref _HAMMOND_CONFIG: PathBuf = {
+            HAMMOND_XDG.create_config_directory(HAMMOND_XDG.get_config_home()).unwrap()
+        };
+
+        pub static ref HAMMOND_CACHE: PathBuf = {
+            HAMMOND_XDG.create_cache_directory(HAMMOND_XDG.get_cache_home()).unwrap()
+        };
+
+        pub static ref DL_DIR: PathBuf = {
+            HAMMOND_XDG.create_data_directory("Downloads").unwrap()
+        };
+    }
+}
+
 lazy_static!{
-    #[allow(dead_code)]
-    static ref HAMMOND_XDG: xdg::BaseDirectories = {
-        xdg::BaseDirectories::with_prefix("hammond").unwrap()
-    };
-
-    static ref _HAMMOND_DATA: PathBuf = {
-        HAMMOND_XDG.create_data_directory(HAMMOND_XDG.get_data_home()).unwrap()
-    };
-
-    static ref _HAMMOND_CONFIG: PathBuf = {
-        HAMMOND_XDG.create_config_directory(HAMMOND_XDG.get_config_home()).unwrap()
-    };
-
-    pub static ref HAMMOND_CACHE: PathBuf = {
-        HAMMOND_XDG.create_cache_directory(HAMMOND_XDG.get_cache_home()).unwrap()
-    };
-
-    pub static ref DL_DIR: PathBuf = {
-        HAMMOND_XDG.create_data_directory("Downloads").unwrap()
-    };
-
     // static ref POOL: Pool = init_pool(DB_PATH.to_str().unwrap());
 
     static ref DB: Arc<Mutex<SqliteConnection>> = Arc::new(Mutex::new(establish_connection()));
@@ -75,7 +81,7 @@ lazy_static!{
 
 #[cfg(not(test))]
 lazy_static! {
-    static ref DB_PATH: PathBuf = HAMMOND_XDG.place_data_file("hammond.db").unwrap();
+    static ref DB_PATH: PathBuf = xdg_::HAMMOND_XDG.place_data_file("hammond.db").unwrap();
 }
 
 #[cfg(test)]

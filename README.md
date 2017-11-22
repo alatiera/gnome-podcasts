@@ -1,5 +1,5 @@
 # Hammond
-## Multithreaded, safe, and reliable Gtk+ Podcast client.
+## Multithreaded and reliable Gtk+ Podcast client.
 This is a prototype of a podcast client written in Rust.
 
 [![pipeline status](https://gitlab.gnome.org/alatiera/Hammond/badges/master/pipeline.svg)](https://gitlab.gnome.org/alatiera/Hammond/commits/master)
