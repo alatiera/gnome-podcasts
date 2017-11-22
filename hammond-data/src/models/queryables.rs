@@ -9,7 +9,7 @@ use feed::Feed;
 use errors::*;
 
 use models::insertables::NewSource;
-use connection;
+use database::connection;
 
 use std::io::Read;
 use std::str::FromStr;

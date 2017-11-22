@@ -6,7 +6,7 @@ use chrono::prelude::*;
 /// Random db querries helper functions.
 /// Probably needs cleanup.
 
-use connection;
+use database::connection;
 
 pub fn get_sources() -> QueryResult<Vec<Source>> {
     use schema::source::dsl::*;
