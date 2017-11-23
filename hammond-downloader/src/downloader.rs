@@ -193,6 +193,7 @@ pub fn cache_image(pd: &Podcast) -> Option<String> {
 mod tests {
     use super::*;
     use hammond_data::Source;
+    use hammond_data::dbqueries;
 
     use std::fs;
 
@@ -205,12 +206,16 @@ mod tests {
 
     #[test]
     fn test_cache_image() {
-        let pd = Source::from_url("http://www.newrustacean.com/feed.xml")
+        let url = "http://www.newrustacean.com/feed.xml";
+
+        Source::from_url(url)
             .unwrap()
             .into_feed()
             .unwrap()
-            .get_podcast()
+            .index()
             .unwrap();
+
+        let pd = dbqueries::get_podcast_from_title("New Rustacean").unwrap();
 
         let img_path = cache_image(&pd);
         let foo_ = format!(

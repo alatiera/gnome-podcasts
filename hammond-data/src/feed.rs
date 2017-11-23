@@ -1,11 +1,11 @@
 use rayon::prelude::*;
-use diesel::{Identifiable, QueryResult};
+use diesel::Identifiable;
 use rss;
 
 use dbqueries;
 use parser;
 
-use models::{Podcast, Source};
+use models::{Episode, NewEpisode, NewPodcast, Podcast, Source};
 use errors::*;
 
 #[derive(Debug)]
@@ -26,29 +26,22 @@ impl Feed {
         }
     }
 
-    fn index(&self) -> Result<()> {
+    pub fn index(&self) -> Result<()> {
         let pd = self.get_podcast()?;
 
         self.index_channel_items(&pd)?;
         Ok(())
     }
 
-    pub fn index_channel(&self) -> QueryResult<()> {
-        let new_pd = parser::new_podcast(&self.channel, *self.source.id());
-        new_pd.index()
-    }
-
-    pub fn get_podcast(&self) -> Result<Podcast> {
-        parser::new_podcast(&self.channel, *self.source.id()).into_podcast()
+    #[allow(dead_code)]
+    fn index_channel(&self) -> Result<()> {
+        self.parse_channel().index()?;
+        Ok(())
     }
 
     // TODO: Refactor transcactions and find a way to do it in parallel.
     fn index_channel_items(&self, pd: &Podcast) -> Result<()> {
-        let items = self.channel.items();
-        let episodes: Vec<_> = items
-            .into_par_iter()
-            .map(|item| parser::new_episode(item, *pd.id()))
-            .collect();
+        let episodes = self.parse_channel_items(pd);
 
         episodes.into_iter().for_each(|x| {
             let e = x.index();
@@ -58,6 +51,39 @@ impl Feed {
             };
         });
         Ok(())
+    }
+
+    fn parse_channel(&self) -> NewPodcast {
+        parser::new_podcast(&self.channel, *self.source.id())
+    }
+
+    fn parse_channel_items(&self, pd: &Podcast) -> Vec<NewEpisode> {
+        let items = self.channel.items();
+        let new_episodes: Vec<_> = items
+            .into_par_iter()
+            .map(|item| parser::new_episode(item, *pd.id()))
+            .collect();
+
+        new_episodes
+    }
+
+    fn get_podcast(&self) -> Result<Podcast> {
+        self.parse_channel().into_podcast()
+    }
+
+    #[allow(dead_code)]
+    fn get_episodes(&self) -> Result<Vec<Episode>> {
+        let pd = self.get_podcast()?;
+
+        let episodes: Vec<_> = self.parse_channel_items(&pd)
+            .into_par_iter()
+            .filter_map(|ep| ep.into_episode().ok())
+            .collect();
+
+        Ok(episodes)
+
+        // self.index_channel_items(&pd)?;
+        // Ok(dbqueries::get_pd_episodes(&pd)?)
     }
 }
 
@@ -178,5 +204,42 @@ mod tests {
         assert_eq!(dbqueries::get_sources().unwrap().len(), 4);
         assert_eq!(dbqueries::get_podcasts().unwrap().len(), 4);
         assert_eq!(dbqueries::get_episodes().unwrap().len(), 274);
+    }
+
+    #[test]
+    fn test_partial_index_podcast() {
+        let url = "https://feeds.feedburner.com/InterceptedWithJeremyScahill";
+
+        let s1 = Source::from_url(url).unwrap();
+        let s2 = Source::from_url(url).unwrap();
+        assert_eq!(s1, s2);
+        assert_eq!(s1.id(), s2.id());
+
+        let f1 = s1.into_feed().unwrap();
+        let f2 = s2.into_feed().unwrap();
+
+        let p1 = f1.get_podcast().unwrap();
+        let p2 = {
+            f2.index().unwrap();
+            f2.get_podcast().unwrap()
+        };
+        assert_eq!(p1, p2);
+        assert_eq!(p1.id(), p2.id());
+        assert_eq!(p1.source_id(), p2.source_id());
+
+        let eps1 = f1.get_episodes().unwrap();
+        let eps2 = {
+            f2.index().unwrap();
+            f2.get_episodes().unwrap()
+        };
+
+        eps1.into_par_iter()
+            .zip(eps2)
+            .into_par_iter()
+            .for_each(|(ep1, ep2): (Episode, Episode)| {
+                assert_eq!(ep1, ep2);
+                assert_eq!(ep1.id(), ep2.id());
+                assert_eq!(ep1.podcast_id(), ep2.podcast_id());
+            });
     }
 }

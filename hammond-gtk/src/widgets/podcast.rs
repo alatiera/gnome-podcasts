@@ -123,12 +123,16 @@ mod tests {
 
     #[test]
     fn test_get_pixbuf_from_path() {
-        let pd = Source::from_url("http://www.newrustacean.com/feed.xml")
+        let url = "http://www.newrustacean.com/feed.xml";
+
+        Source::from_url(url)
             .unwrap()
             .into_feed()
             .unwrap()
-            .get_podcast()
+            .index()
             .unwrap();
+
+        let pd = dbqueries::get_podcast_from_title("New Rustacean").unwrap();
 
         let pxbuf = get_pixbuf_from_path(&pd);
         assert!(pxbuf.is_some());

@@ -45,11 +45,11 @@ pub mod xdg_ {
             xdg::BaseDirectories::with_prefix("hammond").unwrap()
         };
 
-        static ref _HAMMOND_DATA: PathBuf = {
+        pub static ref HAMMOND_DATA: PathBuf = {
             HAMMOND_XDG.create_data_directory(HAMMOND_XDG.get_data_home()).unwrap()
         };
 
-        static ref _HAMMOND_CONFIG: PathBuf = {
+        pub static ref HAMMOND_CONFIG: PathBuf = {
             HAMMOND_XDG.create_config_directory(HAMMOND_XDG.get_config_home()).unwrap()
         };
 

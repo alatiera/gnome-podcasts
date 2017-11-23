@@ -14,7 +14,7 @@ use database::connection;
 use std::io::Read;
 use std::str::FromStr;
 
-#[derive(Queryable, Identifiable, AsChangeset, Associations)]
+#[derive(Queryable, Identifiable, AsChangeset, Associations, PartialEq)]
 #[table_name = "episode"]
 #[changeset_options(treat_none_as_null = "true")]
 #[belongs_to(Podcast, foreign_key = "podcast_id")]
@@ -127,6 +127,10 @@ impl Episode {
         self.favorite = b
     }
 
+    pub fn podcast_id(&self) -> i32 {
+        self.podcast_id
+    }
+
     pub fn save(&self) -> QueryResult<Episode> {
         let db = connection();
         let tempdb = db.lock().unwrap();
@@ -135,7 +139,7 @@ impl Episode {
     }
 }
 
-#[derive(Queryable, Identifiable, AsChangeset, Associations)]
+#[derive(Queryable, Identifiable, AsChangeset, Associations, PartialEq)]
 #[belongs_to(Source, foreign_key = "source_id")]
 #[changeset_options(treat_none_as_null = "true")]
 #[table_name = "podcast"]
@@ -217,7 +221,7 @@ impl Podcast {
     }
 }
 
-#[derive(Queryable, Identifiable, AsChangeset)]
+#[derive(Queryable, Identifiable, AsChangeset, PartialEq)]
 #[table_name = "source"]
 #[changeset_options(treat_none_as_null = "true")]
 #[derive(Debug, Clone)]

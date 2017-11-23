@@ -7,8 +7,10 @@ use std::sync::{Arc, Mutex};
 use std::io;
 // use std::time::Duration;
 
-use xdg_;
 use errors::*;
+
+#[cfg(not(test))]
+use xdg_;
 
 // type Pool = r2d2::Pool<ConnectionManager<SqliteConnection>>;
 type Database = Arc<Mutex<SqliteConnection>>;
