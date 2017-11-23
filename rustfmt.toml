@@ -7,7 +7,6 @@ wrap_comments = true
 error_on_line_overflow = true
 error_on_line_overflow_comments = true
 tab_spaces = 4
-fn_call_width = 60
 newline_style = "Unix"
 fn_call_style = "Block"
 report_todo = "Never"

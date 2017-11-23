@@ -6,6 +6,7 @@ use utils::url_cleaner;
 use errors::*;
 
 use dbqueries;
+use database::connection;
 
 #[derive(Insertable)]
 #[table_name = "source"]
@@ -27,9 +28,12 @@ impl NewSource {
     }
 
     fn index(&self) {
+        let db = connection();
+        let con = db.get().unwrap();
+
         // Throw away the result like `insert or ignore`
         // Diesel deos not support `insert or ignore` yet.
-        let _ = dbqueries::insert_new_source(self);
+        let _ = dbqueries::insert_new_source(&con, self);
     }
 
     // Look out for when tryinto lands into stable.
@@ -58,13 +62,13 @@ impl NewEpisode {
     // TODO: Currently using diesel from master git.
     // Watch out for v0.99.0 beta and change the toml.
     // TODO: Refactor into batch indexes instead.
-    pub fn into_episode(self) -> Result<Episode> {
-        self.index()?;
-        Ok(dbqueries::get_episode_from_uri(&self.uri.unwrap())?)
+    pub fn into_episode(self, con: &SqliteConnection) -> Result<Episode> {
+        self.index(con)?;
+        Ok(dbqueries::get_episode_from_uri(con, &self.uri.unwrap())?)
     }
 
-    pub fn index(&self) -> QueryResult<()> {
-        let ep = dbqueries::get_episode_from_uri(&self.uri.clone().unwrap());
+    pub fn index(&self, con: &SqliteConnection) -> QueryResult<()> {
+        let ep = dbqueries::get_episode_from_uri(con, &self.uri.clone().unwrap());
 
         match ep {
             Ok(foo) => {
@@ -75,11 +79,11 @@ impl NewEpisode {
                 if foo.title() != self.title.as_ref().map(|x| x.as_str())
                     || foo.published_date() != self.published_date.as_ref().map(|x| x.as_str())
                 {
-                    dbqueries::replace_episode(self)?;
+                    dbqueries::replace_episode(con, self)?;
                 }
             }
             Err(_) => {
-                dbqueries::insert_new_episode(self)?;
+                dbqueries::insert_new_episode(con, self)?;
             }
         }
         Ok(())
@@ -107,6 +111,8 @@ impl NewPodcast {
     pub fn index(&self) -> QueryResult<()> {
         let pd = dbqueries::get_podcast_from_title(&self.title);
 
+        let db = connection();
+        let con = db.get().unwrap();
         match pd {
             Ok(foo) => {
                 if foo.source_id() != self.source_id {
@@ -114,11 +120,11 @@ impl NewPodcast {
                 };
 
                 if foo.link() != self.link {
-                    dbqueries::replace_podcast(self)?;
+                    dbqueries::replace_podcast(&con, self)?;
                 }
             }
             Err(_) => {
-                dbqueries::insert_new_podcast(self)?;
+                dbqueries::insert_new_podcast(&con, self)?;
             }
         }
         Ok(())

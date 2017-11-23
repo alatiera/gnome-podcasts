@@ -6,6 +6,7 @@ use dbqueries;
 use parser;
 
 use models::{Episode, NewEpisode, NewPodcast, Podcast, Source};
+use database::connection;
 use errors::*;
 
 #[derive(Debug)]
@@ -33,18 +34,20 @@ impl Feed {
         Ok(())
     }
 
-    #[allow(dead_code)]
-    fn index_channel(&self) -> Result<()> {
-        self.parse_channel().index()?;
-        Ok(())
-    }
+    // #[allow(dead_code)]
+    // fn index_channel(&self) -> Result<()> {
+    //     self.parse_channel().index()?;
+    //     Ok(())
+    // }
 
     // TODO: Refactor transcactions and find a way to do it in parallel.
     fn index_channel_items(&self, pd: &Podcast) -> Result<()> {
         let episodes = self.parse_channel_items(pd);
+        let db = connection();
+        let con = db.get().unwrap();
 
         episodes.into_iter().for_each(|x| {
-            let e = x.index();
+            let e = x.index(&con);
             if let Err(err) = e {
                 error!("Failed to index episode: {:?}.", x);
                 error!("Error msg: {}", err);
@@ -74,10 +77,13 @@ impl Feed {
     #[allow(dead_code)]
     fn get_episodes(&self) -> Result<Vec<Episode>> {
         let pd = self.get_podcast()?;
+        let eps = self.parse_channel_items(&pd);
 
-        let episodes: Vec<_> = self.parse_channel_items(&pd)
-            .into_par_iter()
-            .filter_map(|ep| ep.into_episode().ok())
+        let db = connection();
+        let con = db.get().unwrap();
+        // TODO: Make it parallel
+        let episodes: Vec<_> = eps.into_iter()
+            .filter_map(|ep| ep.into_episode(&con).ok())
             .collect();
 
         Ok(episodes)
@@ -135,7 +141,7 @@ pub fn fetch(feeds: Vec<Source>) -> Vec<Feed> {
 mod tests {
 
     use rss;
-    use models::NewSource;
+    use models::Source;
 
     use std::fs;
     use std::io::BufReader;
@@ -152,8 +158,9 @@ mod tests {
             "http://feeds.feedburner.com/linuxunplugged",
         ];
 
-        inpt.iter().for_each(|feed| {
-            NewSource::new_with_uri(feed).into_source().unwrap();
+        inpt.iter().for_each(|url| {
+            // Index the urls into the source table.
+            Source::from_url(url).unwrap();
         });
 
         index_all().unwrap();
@@ -187,7 +194,7 @@ mod tests {
         let mut feeds: Vec<_> = urls.iter()
             .map(|&(path, url)| {
                 // Create and insert a Source into db
-                let s = NewSource::new_with_uri(url).into_source().unwrap();
+                let s = Source::from_url(url).unwrap();
 
                 // open the xml file
                 let feed = fs::File::open(path).unwrap();
