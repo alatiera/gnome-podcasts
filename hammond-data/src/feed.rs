@@ -1,4 +1,6 @@
 use rayon::prelude::*;
+use diesel::prelude::*;
+
 use diesel::Identifiable;
 use rss;
 
@@ -46,12 +48,15 @@ impl Feed {
         let db = connection();
         let con = db.get().unwrap();
 
-        episodes.into_iter().for_each(|x| {
-            let e = x.index(&con);
-            if let Err(err) = e {
-                error!("Failed to index episode: {:?}.", x);
-                error!("Error msg: {}", err);
-            };
+        let _ = con.transaction::<(), Error, _>(|| {
+            episodes.into_iter().for_each(|x| {
+                let e = x.index(&con);
+                if let Err(err) = e {
+                    error!("Failed to index episode: {:?}.", x);
+                    error!("Error msg: {}", err);
+                };
+            });
+            Ok(())
         });
         Ok(())
     }
