@@ -153,10 +153,13 @@ pub fn remove_feed(pd: &Podcast) -> QueryResult<()> {
     let db = connection();
     let con = db.get().unwrap();
 
-    delete_source(&con, pd.source_id())?;
-    delete_podcast(&con, *pd.id())?;
-    delete_podcast_episodes(&con, *pd.id())?;
-    Ok(())
+    con.transaction(|| -> QueryResult<()> {
+        delete_source(&con, pd.source_id())?;
+        delete_podcast(&con, *pd.id())?;
+        delete_podcast_episodes(&con, *pd.id())?;
+        info!("Feed removed from the Database.");
+        Ok(())
+    })
 }
 
 pub fn delete_source(con: &SqliteConnection, source_id: i32) -> QueryResult<usize> {
