@@ -31,9 +31,7 @@ impl Feed {
 
     pub fn index(&self) -> Result<()> {
         let pd = self.get_podcast()?;
-
-        self.index_channel_items(&pd)?;
-        Ok(())
+        self.index_channel_items(&pd)
     }
 
     // #[allow(dead_code)]
@@ -52,7 +50,7 @@ impl Feed {
             episodes.into_iter().for_each(|x| {
                 let e = x.index(&con);
                 if let Err(err) = e {
-                    error!("Failed to index episode: {:?}.", x);
+                    error!("Failed to index episode: {:?}.", x.title);
                     error!("Error msg: {}", err);
                 };
             });
@@ -87,21 +85,23 @@ impl Feed {
         let db = connection();
         let con = db.get().unwrap();
         // TODO: Make it parallel
+        // This returns only the episodes in the xml feed.
         let episodes: Vec<_> = eps.into_iter()
             .filter_map(|ep| ep.into_episode(&con).ok())
             .collect();
 
         Ok(episodes)
 
+        // This would return every episode of the feed from the db.
         // self.index_channel_items(&pd)?;
         // Ok(dbqueries::get_pd_episodes(&pd)?)
     }
 }
 
 pub fn index_all() -> Result<()> {
-    let mut f = fetch_all()?;
+    let mut feeds = fetch_all()?;
 
-    index(&mut f);
+    index(&mut feeds);
     Ok(())
 }
 
@@ -118,9 +118,7 @@ pub fn index(feeds: &mut [Feed]) {
 
 pub fn fetch_all() -> Result<Vec<Feed>> {
     let feeds = dbqueries::get_sources()?;
-
-    let results = fetch(feeds);
-    Ok(results)
+    Ok(fetch(feeds))
 }
 
 pub fn fetch(feeds: Vec<Source>) -> Vec<Feed> {
@@ -128,14 +126,11 @@ pub fn fetch(feeds: Vec<Source>) -> Vec<Feed> {
         .into_par_iter()
         .filter_map(|x| {
             let uri = x.uri().to_owned();
-            let l = Feed::from_source(x);
-            if l.is_ok() {
-                l.ok()
-            } else {
-                error!("Error While trying to fetch from source: {}.", uri);
-                error!("Error msg: {}", l.unwrap_err());
-                None
+            let feed = Feed::from_source(x).ok();
+            if feed.is_none() {
+                error!("Error While trying to fetch from source url: {}.", uri);
             }
+            feed
         })
         .collect();
 
