@@ -142,6 +142,7 @@ mod tests {
 
     use rss;
     use models::Source;
+    use database::connection;
 
     use std::fs;
     use std::io::BufReader;
@@ -190,6 +191,16 @@ mod tests {
                 "https://request-for-explanation.github.io/podcast/rss.xml",
             ),
         ];
+
+        {
+            // Reset the database into a clean state.
+            // Test share a Temp file db I think.
+            let db = connection();
+            let con = db.get().unwrap();
+            con.execute("DELETE FROM episode").unwrap();
+            con.execute("DELETE FROM podcast").unwrap();
+            con.execute("DELETE FROM source").unwrap();
+        }
 
         let mut feeds: Vec<_> = urls.iter()
             .map(|&(path, url)| {

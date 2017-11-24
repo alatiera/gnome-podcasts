@@ -43,8 +43,8 @@ test:stable:
   image: "rust"
   script:
   - rustc --version && cargo --version
-  - cargo build --all
-  - cargo test -j 1 --all --verbose
+  - cargo build
+  - cargo test -j 1 --verbose
 
 test:nightly:
   # Nightly
