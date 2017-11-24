@@ -105,11 +105,11 @@ impl NewPodcast {
     // Look out for when tryinto lands into stable.
     pub fn into_podcast(self) -> Result<Podcast> {
         self.index()?;
-        Ok(dbqueries::get_podcast_from_title(&self.title)?)
+        Ok(dbqueries::get_podcast_from_source_id(self.source_id)?)
     }
 
     pub fn index(&self) -> QueryResult<()> {
-        let pd = dbqueries::get_podcast_from_title(&self.title);
+        let pd = dbqueries::get_podcast_from_source_id(self.source_id);
 
         let db = connection();
         let con = db.get().unwrap();
@@ -119,7 +119,9 @@ impl NewPodcast {
                     error!("NPD sid: {}, PD sid: {}", self.source_id, foo.source_id());
                 };
 
-                if foo.link() != self.link {
+                if (foo.link() != self.link) || (foo.title() != self.title)
+                    || (foo.image_uri() != self.image_uri.as_ref().map(|x| x.as_str()))
+                {
                     dbqueries::replace_podcast(&con, self)?;
                 }
             }

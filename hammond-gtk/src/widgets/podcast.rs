@@ -119,21 +119,23 @@ pub fn update_podcast_widget(stack: &gtk::Stack, pd: &Podcast) {
 #[cfg(test)]
 mod tests {
     use hammond_data::Source;
+    use diesel::Identifiable;
     use super::*;
 
     #[test]
     fn test_get_pixbuf_from_path() {
         let url = "http://www.newrustacean.com/feed.xml";
 
-        Source::from_url(url)
-            .unwrap()
-            .into_feed()
-            .unwrap()
-            .index()
-            .unwrap();
+        // Create and index a source
+        let source = Source::from_url(url).unwrap();
+        // Copy it's id
+        let sid = source.id().clone();
 
-        let pd = dbqueries::get_podcast_from_title("New Rustacean").unwrap();
+        // Convert Source it into a Feed and index it
+        source.into_feed().unwrap().index().unwrap();
 
+        // Get the Podcast
+        let pd = dbqueries::get_podcast_from_source_id(sid).unwrap();
         let pxbuf = get_pixbuf_from_path(&pd);
         assert!(pxbuf.is_some());
     }

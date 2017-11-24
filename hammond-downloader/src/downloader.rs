@@ -194,6 +194,7 @@ mod tests {
     use super::*;
     use hammond_data::Source;
     use hammond_data::dbqueries;
+    use diesel::Identifiable;
 
     use std::fs;
 
@@ -208,14 +209,16 @@ mod tests {
     fn test_cache_image() {
         let url = "http://www.newrustacean.com/feed.xml";
 
-        Source::from_url(url)
-            .unwrap()
-            .into_feed()
-            .unwrap()
-            .index()
-            .unwrap();
+        // Create and index a source
+        let source = Source::from_url(url).unwrap();
+        // Copy it's id
+        let sid = source.id().clone();
 
-        let pd = dbqueries::get_podcast_from_title("New Rustacean").unwrap();
+        // Convert Source it into a Feed and index it
+        source.into_feed().unwrap().index().unwrap();
+
+        // Get the Podcast
+        let pd = dbqueries::get_podcast_from_source_id(sid).unwrap();
 
         let img_path = cache_image(&pd);
         let foo_ = format!(

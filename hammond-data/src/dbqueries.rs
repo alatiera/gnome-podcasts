@@ -133,13 +133,23 @@ pub fn get_source_from_uri(uri_: &str) -> QueryResult<Source> {
     source.filter(uri.eq(uri_)).get_result::<Source>(&*con)
 }
 
-pub fn get_podcast_from_title(title_: &str) -> QueryResult<Podcast> {
+// pub fn get_podcast_from_title(title_: &str) -> QueryResult<Podcast> {
+//     use schema::podcast::dsl::*;
+
+//     let db = connection();
+//     let con = db.get().unwrap();
+//     podcast
+//         .filter(title.eq(title_))
+//         .get_result::<Podcast>(&*con)
+// }
+
+pub fn get_podcast_from_source_id(sid: i32) -> QueryResult<Podcast> {
     use schema::podcast::dsl::*;
 
     let db = connection();
     let con = db.get().unwrap();
     podcast
-        .filter(title.eq(title_))
+        .filter(source_id.eq(sid))
         .get_result::<Podcast>(&*con)
 }
 
