@@ -75,13 +75,6 @@ pub fn delete_local_content(ep: &mut Episode) -> Result<()> {
     Ok(())
 }
 
-pub fn set_played_now(ep: &mut Episode) -> Result<()> {
-    let epoch = Utc::now().timestamp() as i32;
-    ep.set_played(Some(epoch));
-    ep.save()?;
-    Ok(())
-}
-
 pub fn checkup() -> Result<()> {
     download_checker()?;
     played_cleaner()?;

@@ -69,8 +69,9 @@ fn epidose_widget(episode: &mut Episode, pd_title: &str) -> gtk::Box {
     }
 
     play_button.connect_clicked(clone!(episode, played_button, unplayed_button => move |_| {
+        let mut episode = episode.clone();
         on_play_bttn_clicked(*episode.id());
-        let _ = set_played_now(&mut episode.clone());
+        let _ = episode.set_played_now();
         played_button.hide();
         unplayed_button.show();
     }));
@@ -83,7 +84,8 @@ fn epidose_widget(episode: &mut Episode, pd_title: &str) -> gtk::Box {
     }));
 
     played_button.connect_clicked(clone!(episode, unplayed_button => move |played| {
-        let _ = set_played_now(&mut episode.clone());
+        let mut episode = episode.clone();
+        let _ = episode.set_played_now();
         played.hide();
         unplayed_button.show();
     }));

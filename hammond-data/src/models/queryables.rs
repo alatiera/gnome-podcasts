@@ -1,3 +1,5 @@
+use chrono::prelude::*;
+
 use reqwest;
 use diesel::SaveChangesDsl;
 use diesel::result::QueryResult;
@@ -129,6 +131,13 @@ impl Episode {
 
     pub fn podcast_id(&self) -> i32 {
         self.podcast_id
+    }
+
+    pub fn set_played_now(&mut self) -> QueryResult<()> {
+        let epoch = Utc::now().timestamp() as i32;
+        self.set_played(Some(epoch));
+        self.save()?;
+        Ok(())
     }
 
     pub fn save(&self) -> QueryResult<Episode> {
