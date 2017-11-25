@@ -1,6 +1,6 @@
 use diesel::prelude::*;
 use diesel;
-use models::{Episode, NewEpisode, NewPodcast, NewSource, Podcast, Source};
+use models::{Episode, Podcast, Source};
 use chrono::prelude::*;
 use errors::*;
 
@@ -204,20 +204,4 @@ pub fn update_none_to_played_now(parent: &Podcast) -> Result<usize> {
         ).set(played.eq(Some(epoch_now)))
             .execute(&*con)?)
     })
-}
-
-pub fn update_podcast(con: &SqliteConnection, pd_id: i32, pd: &NewPodcast) -> QueryResult<usize> {
-    use schema::podcast::dsl::*;
-
-    diesel::update(podcast.filter(id.eq(pd_id)))
-        .set(pd)
-        .execute(&*con)
-}
-
-pub fn update_episode(con: &SqliteConnection, ep_id: i32, ep: &NewEpisode) -> QueryResult<usize> {
-    use schema::episode::dsl::*;
-
-    diesel::update(episode.filter(id.eq(ep_id)))
-        .set(ep)
-        .execute(&*con)
 }

@@ -14,6 +14,10 @@ trait Insert {
     fn insert(&self, &SqliteConnection) -> QueryResult<usize>;
 }
 
+trait Update {
+    fn update(&self, &SqliteConnection, i32) -> QueryResult<usize>;
+}
+
 #[derive(Insertable)]
 #[table_name = "source"]
 #[derive(Debug, Clone)]
@@ -78,6 +82,16 @@ impl Insert for NewEpisode {
     }
 }
 
+impl Update for NewEpisode {
+    fn update(&self, con: &SqliteConnection, episode_id: i32) -> QueryResult<usize> {
+        use schema::episode::dsl::*;
+
+        diesel::update(episode.filter(id.eq(episode_id)))
+            .set(self)
+            .execute(&*con)
+    }
+}
+
 impl NewEpisode {
     // TODO: Currently using diesel from master git.
     // Watch out for v0.99.0 beta and change the toml.
@@ -99,7 +113,7 @@ impl NewEpisode {
                 if foo.title() != self.title.as_ref().map(|x| x.as_str())
                     || foo.published_date() != self.published_date.as_ref().map(|x| x.as_str())
                 {
-                    dbqueries::update_episode(con, *foo.id(), self)?;
+                    self.update(con, *foo.id())?;
                 }
             }
             Err(_) => {
@@ -128,6 +142,16 @@ impl Insert for NewPodcast {
     }
 }
 
+impl Update for NewPodcast {
+    fn update(&self, con: &SqliteConnection, podcast_id: i32) -> QueryResult<usize> {
+        use schema::podcast::dsl::*;
+
+        diesel::update(podcast.filter(id.eq(podcast_id)))
+            .set(self)
+            .execute(&*con)
+    }
+}
+
 impl NewPodcast {
     // Look out for when tryinto lands into stable.
     pub fn into_podcast(self) -> Result<Podcast> {
@@ -149,7 +173,7 @@ impl NewPodcast {
                 if (foo.link() != self.link) || (foo.title() != self.title)
                     || (foo.image_uri() != self.image_uri.as_ref().map(|x| x.as_str()))
                 {
-                    dbqueries::update_podcast(&con, *foo.id(), self)?;
+                    self.update(&con, *foo.id())?;
                 }
             }
             Err(_) => {
