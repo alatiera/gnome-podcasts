@@ -45,7 +45,7 @@ test:stable:
   script:
   - rustc --version && cargo --version
   - cargo build
-  - cargo test -j 1 --verbose
+  - cargo test --verbose -- --test-threads=1
 
 test:nightly:
   # Nightly
@@ -54,7 +54,7 @@ test:nightly:
   script:
   - rustc --version && cargo --version
   - cargo build
-  - cargo test -j 1 --verbose
+  - cargo test --verbose -- --test-threads=1
   # - cargo bench
 
 # Configure and run rustfmt on nightly
