@@ -45,12 +45,12 @@ impl NewSource {
     }
 }
 
-#[derive(Insertable)]
+#[derive(Insertable, AsChangeset)]
 #[table_name = "episode"]
 #[derive(Debug, Clone, Default)]
 pub struct NewEpisode {
     pub title: Option<String>,
-    pub uri: Option<String>,
+    pub uri: String,
     pub description: Option<String>,
     pub published_date: Option<String>,
     pub length: Option<i32>,
@@ -65,11 +65,11 @@ impl NewEpisode {
     // TODO: Refactor into batch indexes instead.
     pub fn into_episode(self, con: &SqliteConnection) -> Result<Episode> {
         self.index(con)?;
-        Ok(dbqueries::get_episode_from_uri(con, &self.uri.unwrap())?)
+        Ok(dbqueries::get_episode_from_uri(con, &self.uri)?)
     }
 
     pub fn index(&self, con: &SqliteConnection) -> QueryResult<()> {
-        let ep = dbqueries::get_episode_from_uri(con, &self.uri.clone().unwrap());
+        let ep = dbqueries::get_episode_from_uri(con, &self.uri.clone());
 
         match ep {
             Ok(foo) => {
@@ -80,8 +80,7 @@ impl NewEpisode {
                 if foo.title() != self.title.as_ref().map(|x| x.as_str())
                     || foo.published_date() != self.published_date.as_ref().map(|x| x.as_str())
                 {
-                    // TODO: Update instead of replace
-                    dbqueries::replace_episode(con, self)?;
+                    dbqueries::update_episode(con, *foo.id(), self)?;
                 }
             }
             Err(_) => {

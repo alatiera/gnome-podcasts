@@ -17,7 +17,7 @@ Quick setup
 It is recommended to add a pre-commit hook to run cargo test and cargo fmt
    ```
    #!/bin/sh
-   cargo test --all && cargo fmt --all -- --write-mode=diff
+   cargo test -- --test-threads=1 && cargo fmt --all -- --write-mode=diff
    ```
 
 # Issues, issues and more issues!

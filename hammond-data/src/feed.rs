@@ -67,7 +67,7 @@ impl Feed {
         let items = self.channel.items();
         let new_episodes: Vec<_> = items
             .into_par_iter()
-            .map(|item| parser::new_episode(item, *pd.id()))
+            .filter_map(|item| parser::new_episode(item, *pd.id()).ok())
             .collect();
 
         new_episodes
@@ -215,38 +215,6 @@ mod tests {
         assert_eq!(dbqueries::get_sources().unwrap().len(), 4);
         assert_eq!(dbqueries::get_podcasts().unwrap().len(), 4);
         assert_eq!(dbqueries::get_episodes().unwrap().len(), 274);
-    }
-
-    #[test]
-    // Ingore this. Trying to replicate a bug
-    // Sometimes I get the following:
-    // ```
-    // failures:
-    // ---- feed::tests::test_partial_index_podcast stdout ----
-    // thread 'feed::tests::test_partial_index_podcast' panicked at 'assertion failed:
-    // `(left == right)` left: `Source { id: 1, uri: "https://feeds.feedburner.com/InterceptedWithJeremyScahill", last_modified: None, http_etag: None }`,
-    // right: `Source { id: 3, uri: "https://feeds.feedburner.com/InterceptedWithJeremyScahill", last_modified: None, http_etag: None }`', hammond-data/src/feed.rs:233:8
-    // note: Run with `RUST_BACKTRACE=1` for a backtrace.
-    // ```
-    fn foo() {
-        truncate_db().unwrap();
-        use models::NewSource;
-
-        let url = "https://feeds.feedburner.com/InterceptedWithJeremyScahill";
-        let sources = dbqueries::get_sources().unwrap();
-        println!("{:?}", sources);
-
-        let s1 = NewSource::new_with_uri(url).into_source().unwrap();
-        let sources = dbqueries::get_sources().unwrap();
-        println!("{:?}", sources);
-
-        let s2 = NewSource::new_with_uri(url).into_source().unwrap();
-
-        let sources = dbqueries::get_sources().unwrap();
-        println!("{:?}", sources);
-
-        assert_eq!(s1, s2);
-        assert_eq!(s1.id(), s2.id());
     }
 
     #[test]

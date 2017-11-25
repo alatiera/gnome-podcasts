@@ -4,6 +4,8 @@ use rfc822_sanitizer::parse_from_rfc2822_with_fallback;
 use models::{NewEpisode, NewPodcast};
 use utils::url_cleaner;
 
+use errors::*;
+
 // TODO: Extend the support for parsing itunes extensions
 /// Parses a `rss::Channel` into a `NewPodcast` Struct.
 pub fn new_podcast(chan: &Channel, source_id: i32) -> NewPodcast {
@@ -28,7 +30,7 @@ pub fn new_podcast(chan: &Channel, source_id: i32) -> NewPodcast {
 }
 
 /// Parses an `rss::Item` into a `NewEpisode` Struct.
-pub fn new_episode(item: &Item, parent_id: i32) -> NewEpisode {
+pub fn new_episode(item: &Item, parent_id: i32) -> Result<NewEpisode> {
     let title = item.title().map(|s| s.trim().to_owned());
     let description = item.description().map(|s| s.trim().to_owned());
     let guid = item.guid().map(|s| s.value().trim().to_owned());
@@ -39,11 +41,11 @@ pub fn new_episode(item: &Item, parent_id: i32) -> NewEpisode {
     // TODO: Restructure
     let x = item.enclosure().map(|s| url_cleaner(s.url()));
     let uri = if x.is_some() {
-        x
+        x.unwrap()
     } else if item.link().is_some() {
-        item.link().map(|s| url_cleaner(s))
+        item.link().map(|s| url_cleaner(s)).unwrap()
     } else {
-        None
+        bail!("No url specified for the item.")
     };
 
     let date = parse_from_rfc2822_with_fallback(
@@ -58,7 +60,7 @@ pub fn new_episode(item: &Item, parent_id: i32) -> NewEpisode {
 
     let length = item.enclosure().map(|x| x.length().parse().unwrap_or(0));
 
-    NewEpisode {
+    Ok(NewEpisode {
         title,
         uri,
         description,
@@ -67,7 +69,7 @@ pub fn new_episode(item: &Item, parent_id: i32) -> NewEpisode {
         epoch,
         guid,
         podcast_id: parent_id,
-    }
+    })
 }
 
 
@@ -101,7 +103,7 @@ mod tests {
                  uploads_2F1484252190700-qhn5krasklbce3dh-a797539282700ea0298a3a26f7e49b0b_\
                  2FIntercepted_COVER%2B_281_29.png"
                     .to_string()
-            )
+            ),
         );
     }
 
@@ -120,7 +122,7 @@ mod tests {
         assert_eq!(pd.description, descr.to_string());
         assert_eq!(
             pd.image_uri,
-            Some("http://www.propublica.org/images/podcast_logo_2.png".to_string())
+            Some("http://www.propublica.org/images/podcast_logo_2.png".to_string()),
         );
     }
 
@@ -159,7 +161,7 @@ mod tests {
         assert_eq!(pd.description, descr.to_string());
         assert_eq!(
             pd.image_uri,
-            Some("https://request-for-explanation.github.io/podcast/podcast.png".to_string(),)
+            Some("https://request-for-explanation.github.io/podcast/podcast.png".to_string()),
         );
     }
 
@@ -174,12 +176,12 @@ mod tests {
                      Shaun King explains his call for a boycott of the NFL and talks about his \
                      campaign to bring violent neo-Nazis to justice. Rapper Open Mike Eagle \
                      performs.";
-        let i = new_episode(&firstitem, 0);
+        let i = new_episode(&firstitem, 0).unwrap();
 
         assert_eq!(i.title, Some("The Super Bowl of Racism".to_string()));
         assert_eq!(
             i.uri,
-            Some("http://traffic.megaphone.fm/PPY6458293736.mp3".to_string())
+            "http://traffic.megaphone.fm/PPY6458293736.mp3".to_string()
         );
         assert_eq!(i.description, Some(descr.to_string()));
         assert_eq!(i.length, Some(66738886));
@@ -194,7 +196,7 @@ mod tests {
         assert_eq!(i.epoch, 1505296800);
 
         let second = channel.items().iter().nth(1).unwrap();
-        let i2 = new_episode(&second, 0);
+        let i2 = new_episode(&second, 0).unwrap();
 
         let descr2 = "This week on Intercepted: Jeremy gives an update on the aftermath of \
                       Blackwater’s 2007 massacre of Iraqi civilians. Intercept reporter Lee Fang \
@@ -210,7 +212,7 @@ mod tests {
         );
         assert_eq!(
             i2.uri,
-            Some("http://traffic.megaphone.fm/FL5331443769.mp3".to_string())
+            "http://traffic.megaphone.fm/FL5331443769.mp3".to_string()
         );
         assert_eq!(i2.description, Some(descr2.to_string()));
         assert_eq!(i2.length, Some(67527575));
@@ -233,7 +235,7 @@ mod tests {
         let firstitem = channel.items().first().unwrap();
         let descr = "<p>A reporter finds that homes meant to replace New York’s troubled \
                      psychiatric hospitals might be just as bad.</p>";
-        let i = new_episode(&firstitem, 0);
+        let i = new_episode(&firstitem, 0).unwrap();
 
         assert_eq!(
             i.title,
@@ -244,10 +246,7 @@ mod tests {
         );
         assert_eq!(
             i.uri,
-            Some(
-                "http://tracking.feedpress.it/link/10581/6726758/20170908-cliff-levy.mp3"
-                    .to_string(),
-            )
+            "http://tracking.feedpress.it/link/10581/6726758/20170908-cliff-levy.mp3".to_string(),
         );
         assert_eq!(i.description, Some(descr.to_string()));
         assert_eq!(i.length, Some(33396551));
@@ -266,7 +265,7 @@ mod tests {
         assert_eq!(i.epoch, 1504872000);
 
         let second = channel.items().iter().nth(1).unwrap();
-        let i2 = new_episode(&second, 0);
+        let i2 = new_episode(&second, 0).unwrap();
         let descr2 = "<p>Jonathan Allen and Amie Parnes didn’t know their book would be called \
                       ‘Shattered,’ or that their extraordinary access would let them chronicle \
                       the mounting signs of a doomed campaign.</p>";
@@ -278,10 +277,7 @@ mod tests {
         );
         assert_eq!(
             i2.uri,
-            Some(
-                "http://tracking.feedpress.it/link/10581/6726759/16_JohnAllen-CRAFT.mp3"
-                    .to_string(),
-            )
+            "http://tracking.feedpress.it/link/10581/6726759/16_JohnAllen-CRAFT.mp3".to_string(),
         );
         assert_eq!(i2.description, Some(descr2.to_string()));
         assert_eq!(i2.length, Some(17964071));
@@ -310,7 +306,7 @@ mod tests {
             "Audit your network with a couple of easy commands on Kali Linux. Chris decides to \
              blow off a little steam by attacking his IoT devices, Wes has the scope on Equifax \
              blaming open source & the Beard just saved the show. It’s a really packed episode!";
-        let i = new_episode(&firstitem, 0);
+        let i = new_episode(&firstitem, 0).unwrap();
 
         assert_eq!(
             i.title,
@@ -318,10 +314,8 @@ mod tests {
         );
         assert_eq!(
             i.uri,
-            Some(
-                "http://www.podtrac.com/pts/redirect.mp3/traffic.libsyn.com/jnite/lup-0214.mp3"
-                    .to_string(),
-            )
+            "http://www.podtrac.com/pts/redirect.mp3/traffic.libsyn.com/jnite/lup-0214.mp3"
+                .to_string(),
         );
         assert_eq!(i.description, Some(descr.to_string()));
         assert_eq!(i.length, Some(46479789));
@@ -336,7 +330,7 @@ mod tests {
         assert_eq!(i.epoch, 1505280282);
 
         let second = channel.items().iter().nth(1).unwrap();
-        let i2 = new_episode(&second, 0);
+        let i2 = new_episode(&second, 0).unwrap();
 
         let descr2 = "<p>The Gnome project is about to solve one of our audience's biggest \
                       Wayland’s concerns. But as the project takes on a new level of relevance, \
@@ -347,10 +341,8 @@ mod tests {
         assert_eq!(i2.title, Some("Gnome Does it Again | LUP 213".to_string()));
         assert_eq!(
             i2.uri,
-            Some(
-                "http://www.podtrac.com/pts/redirect.mp3/traffic.libsyn.com/jnite/lup-0213.mp3"
-                    .to_string(),
-            )
+            "http://www.podtrac.com/pts/redirect.mp3/traffic.libsyn.com/jnite/lup-0213.mp3"
+                .to_string(),
         );
         assert_eq!(i2.description, Some(descr2.to_string()));
         assert_eq!(i2.length, Some(36544272));
@@ -374,7 +366,7 @@ mod tests {
         let descr = "This week we look at <a \
                      href=\"https://github.com/rust-lang/rfcs/pull/2094\">RFC 2094</a> \
                      \"Non-lexical lifetimes\"";
-        let i = new_episode(&firstitem, 0);
+        let i = new_episode(&firstitem, 0).unwrap();
 
         assert_eq!(
             i.title,
@@ -382,11 +374,9 @@ mod tests {
         );
         assert_eq!(
             i.uri,
-            Some(
-                "http://request-for-explanation.github.\
-                 io/podcast/ep9-a-once-in-a-lifetime-rfc/episode.mp3"
-                    .to_string(),
-            )
+            "http://request-for-explanation.github.\
+             io/podcast/ep9-a-once-in-a-lifetime-rfc/episode.mp3"
+                .to_string(),
         );
         assert_eq!(i.description, Some(descr.to_string()));
         assert_eq!(i.length, Some(15077388));
@@ -404,7 +394,7 @@ mod tests {
         assert_eq!(i.epoch, 1503957600);
 
         let second = channel.items().iter().nth(8).unwrap();
-        let i2 = new_episode(&second, 0);
+        let i2 = new_episode(&second, 0).unwrap();
 
         let descr2 = "This week we look at <a \
                       href=\"https://github.com/rust-lang/rfcs/pull/2071\">RFC 2071</a> \"Add \
@@ -415,11 +405,9 @@ mod tests {
         );
         assert_eq!(
             i2.uri,
-            Some(
-                "http://request-for-explanation.github.\
-                 io/podcast/ep8-an-existential-crisis/episode.mp3"
-                    .to_string(),
-            )
+            "http://request-for-explanation.github.io/podcast/ep8-an-existential-crisis/episode.\
+             mp3"
+                .to_string(),
         );
         assert_eq!(i2.description, Some(descr2.to_string()));
         assert_eq!(i2.length, Some(13713219));

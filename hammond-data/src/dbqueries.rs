@@ -224,21 +224,18 @@ pub fn insert_new_episode(con: &SqliteConnection, ep: &NewEpisode) -> QueryResul
     diesel::insert_into(episode).values(ep).execute(&*con)
 }
 
-pub fn replace_podcast(con: &SqliteConnection, pd: &NewPodcast) -> QueryResult<usize> {
-    use schema::podcast::dsl::*;
-
-    diesel::replace_into(podcast).values(pd).execute(&*con)
-}
-
-pub fn replace_episode(con: &SqliteConnection, ep: &NewEpisode) -> QueryResult<usize> {
-    use schema::episode::dsl::*;
-
-    diesel::replace_into(episode).values(ep).execute(&*con)
-}
-
 pub fn update_podcast(con: &SqliteConnection, pd_id: i32, pd: &NewPodcast) -> QueryResult<usize> {
     use schema::podcast::dsl::*;
+
     diesel::update(podcast.filter(id.eq(pd_id)))
         .set(pd)
+        .execute(&*con)
+}
+
+pub fn update_episode(con: &SqliteConnection, ep_id: i32, ep: &NewEpisode) -> QueryResult<usize> {
+    use schema::episode::dsl::*;
+
+    diesel::update(episode.filter(id.eq(ep_id)))
+        .set(ep)
         .execute(&*con)
 }
