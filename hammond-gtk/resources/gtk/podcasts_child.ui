@@ -77,7 +77,7 @@
         <property name="justify">center</property>
         <property name="ellipsize">end</property>
         <property name="single_line_mode">True</property>
-        <property name="max_width_chars">35</property>
+        <property name="max_width_chars">33</property>
       </object>
       <packing>
         <property name="expand">False</property>
