@@ -14,8 +14,9 @@ before_script:
 # kcov
 # - apt-get install -y libcurl4-openssl-dev libelf-dev libdw-dev cmake gcc binutils-dev libiberty-dev
 
-# variables:
+variables:
 #   RUSTFLAGS: "-C link-dead-code"
+  RUST_BACKTRACE: "FULL"
 
 # Currently doesnt work.
 # # Build with meson

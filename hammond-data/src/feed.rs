@@ -142,7 +142,7 @@ mod tests {
 
     use rss;
     use models::Source;
-    use database::connection;
+    use database::{connection, truncate_db};
 
     use std::fs;
     use std::io::BufReader;
@@ -152,6 +152,7 @@ mod tests {
     #[test]
     /// Insert feeds and update/index them.
     fn test_index_loop() {
+        truncate_db().unwrap();
         let inpt = vec![
             "https://request-for-explanation.github.io/podcast/rss.xml",
             "https://feeds.feedburner.com/InterceptedWithJeremyScahill",
@@ -192,15 +193,7 @@ mod tests {
             ),
         ];
 
-        {
-            // Reset the database into a clean state.
-            // Test share a Temp file db I think.
-            let db = connection();
-            let con = db.get().unwrap();
-            con.execute("DELETE FROM episode").unwrap();
-            con.execute("DELETE FROM podcast").unwrap();
-            con.execute("DELETE FROM source").unwrap();
-        }
+        truncate_db().unwrap();
 
         let mut feeds: Vec<_> = urls.iter()
             .map(|&(path, url)| {
@@ -225,7 +218,40 @@ mod tests {
     }
 
     #[test]
+    // Ingore this. Trying to replicate a bug
+    // Sometimes I get the following:
+    // ```
+    // failures:
+    // ---- feed::tests::test_partial_index_podcast stdout ----
+    // thread 'feed::tests::test_partial_index_podcast' panicked at 'assertion failed:
+    // `(left == right)` left: `Source { id: 1, uri: "https://feeds.feedburner.com/InterceptedWithJeremyScahill", last_modified: None, http_etag: None }`,
+    // right: `Source { id: 3, uri: "https://feeds.feedburner.com/InterceptedWithJeremyScahill", last_modified: None, http_etag: None }`', hammond-data/src/feed.rs:233:8
+    // note: Run with `RUST_BACKTRACE=1` for a backtrace.
+    // ```
+    fn foo() {
+        truncate_db().unwrap();
+        use models::NewSource;
+
+        let url = "https://feeds.feedburner.com/InterceptedWithJeremyScahill";
+        let sources = dbqueries::get_sources().unwrap();
+        println!("{:?}", sources);
+
+        let s1 = NewSource::new_with_uri(url).into_source().unwrap();
+        let sources = dbqueries::get_sources().unwrap();
+        println!("{:?}", sources);
+
+        let s2 = NewSource::new_with_uri(url).into_source().unwrap();
+
+        let sources = dbqueries::get_sources().unwrap();
+        println!("{:?}", sources);
+
+        assert_eq!(s1, s2);
+        assert_eq!(s1.id(), s2.id());
+    }
+
+    #[test]
     fn test_partial_index_podcast() {
+        truncate_db().unwrap();
         let url = "https://feeds.feedburner.com/InterceptedWithJeremyScahill";
 
         let s1 = Source::from_url(url).unwrap();

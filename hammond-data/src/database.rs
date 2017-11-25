@@ -65,3 +65,14 @@ pub fn run_migration_on(connection: &SqliteConnection) -> Result<()> {
     embedded_migrations::run_with_output(connection, &mut io::stdout())?;
     Ok(())
 }
+
+// Reset the database into a clean state.
+// Test share a Temp file db.
+pub fn truncate_db() -> Result<()> {
+    let db = connection();
+    let con = db.get()?;
+    con.execute("DELETE FROM episode")?;
+    con.execute("DELETE FROM podcast")?;
+    con.execute("DELETE FROM source")?;
+    Ok(())
+}
