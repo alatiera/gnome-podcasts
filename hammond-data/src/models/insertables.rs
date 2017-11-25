@@ -2,6 +2,7 @@ use diesel::prelude::*;
 
 use schema::{episode, podcast, source};
 use models::{Episode, Podcast, Source};
+
 use utils::url_cleaner;
 use errors::*;
 
@@ -79,6 +80,7 @@ impl NewEpisode {
                 if foo.title() != self.title.as_ref().map(|x| x.as_str())
                     || foo.published_date() != self.published_date.as_ref().map(|x| x.as_str())
                 {
+                    // TODO: Update instead of replace
                     dbqueries::replace_episode(con, self)?;
                 }
             }
@@ -90,7 +92,7 @@ impl NewEpisode {
     }
 }
 
-#[derive(Insertable)]
+#[derive(Insertable, AsChangeset)]
 #[table_name = "podcast"]
 #[derive(Debug, Clone)]
 pub struct NewPodcast {
@@ -116,13 +118,13 @@ impl NewPodcast {
         match pd {
             Ok(foo) => {
                 if foo.source_id() != self.source_id {
-                    error!("NPD sid: {}, PD sid: {}", self.source_id, foo.source_id());
+                    error!("NSPD sid: {}, SPD sid: {}", self.source_id, foo.source_id());
                 };
 
                 if (foo.link() != self.link) || (foo.title() != self.title)
                     || (foo.image_uri() != self.image_uri.as_ref().map(|x| x.as_str()))
                 {
-                    dbqueries::replace_podcast(&con, self)?;
+                    dbqueries::update_podcast(&con, *foo.id(), self)?;
                 }
             }
             Err(_) => {

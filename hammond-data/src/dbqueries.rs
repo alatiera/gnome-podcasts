@@ -235,3 +235,10 @@ pub fn replace_episode(con: &SqliteConnection, ep: &NewEpisode) -> QueryResult<u
 
     diesel::replace_into(episode).values(ep).execute(&*con)
 }
+
+pub fn update_podcast(con: &SqliteConnection, pd_id: i32, pd: &NewPodcast) -> QueryResult<usize> {
+    use schema::podcast::dsl::*;
+    diesel::update(podcast.filter(id.eq(pd_id)))
+        .set(pd)
+        .execute(&*con)
+}

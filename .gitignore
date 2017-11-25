@@ -7,6 +7,7 @@ Cargo.lock
 _build
 vendor/
 .flatpak-builder/
+flatpak-build/
 flatpak-repo/
+repo/
 Makefile
-hammond-repo/
