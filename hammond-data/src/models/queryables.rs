@@ -2,7 +2,6 @@ use chrono::prelude::*;
 
 use reqwest;
 use diesel::SaveChangesDsl;
-use diesel::result::QueryResult;
 use reqwest::header::{ETag, LastModified};
 use rss::Channel;
 
@@ -133,18 +132,18 @@ impl Episode {
         self.podcast_id
     }
 
-    pub fn set_played_now(&mut self) -> QueryResult<()> {
+    pub fn set_played_now(&mut self) -> Result<()> {
         let epoch = Utc::now().timestamp() as i32;
         self.set_played(Some(epoch));
         self.save()?;
         Ok(())
     }
 
-    pub fn save(&self) -> QueryResult<Episode> {
+    pub fn save(&self) -> Result<Episode> {
         let db = connection();
-        let tempdb = db.get().unwrap();
+        let tempdb = db.get()?;
 
-        self.save_changes::<Episode>(&*tempdb)
+        Ok(self.save_changes::<Episode>(&*tempdb)?)
     }
 }
 
@@ -222,11 +221,11 @@ impl Podcast {
         self.always_dl = b
     }
 
-    pub fn save(&self) -> QueryResult<Podcast> {
+    pub fn save(&self) -> Result<Podcast> {
         let db = connection();
-        let tempdb = db.get().unwrap();
+        let tempdb = db.get()?;
 
-        self.save_changes::<Podcast>(&*tempdb)
+        Ok(self.save_changes::<Podcast>(&*tempdb)?)
     }
 }
 
@@ -283,11 +282,11 @@ impl<'a> Source {
         Ok(())
     }
 
-    pub fn save(&self) -> QueryResult<Source> {
+    pub fn save(&self) -> Result<Source> {
         let db = connection();
-        let tempdb = db.get().unwrap();
+        let tempdb = db.get()?;
 
-        self.save_changes::<Source>(&*tempdb)
+        Ok(self.save_changes::<Source>(&*tempdb)?)
     }
 
     pub fn into_feed(mut self) -> Result<Feed> {
@@ -332,7 +331,7 @@ impl<'a> Source {
         Ok(Feed::from_channel_source(chan, self))
     }
 
-    pub fn from_url(uri: &str) -> QueryResult<Source> {
+    pub fn from_url(uri: &str) -> Result<Source> {
         NewSource::new_with_uri(uri).into_source()
     }
 }

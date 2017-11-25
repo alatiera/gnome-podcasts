@@ -49,13 +49,12 @@ fn init_pool(db_path: &str) -> Pool {
         .build();
     let manager = ConnectionManager::<SqliteConnection>::new(db_path);
     let pool = Arc::new(r2d2::Pool::new(config, manager).expect("Failed to create pool."));
-    info!("Database pool initialized.");
 
     {
-        let db = Arc::clone(&pool).get().unwrap();
-        run_migration_on(&*db).unwrap();
+        let db = Arc::clone(&pool).get().expect("Failed to initialize pool.");
+        run_migration_on(&*db).expect("Failed to run migrations during init.");
     }
-
+    info!("Database pool initialized.");
     pool
 }
 

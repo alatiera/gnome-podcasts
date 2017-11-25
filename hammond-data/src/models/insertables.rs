@@ -27,19 +27,19 @@ impl NewSource {
         }
     }
 
-    fn index(&self) {
+    fn index(&self) -> Result<()> {
         let db = connection();
-        let con = db.get().unwrap();
+        let con = db.get()?;
 
         // Throw away the result like `insert or ignore`
         // Diesel deos not support `insert or ignore` yet.
         let _ = dbqueries::insert_new_source(&con, self);
+        Ok(())
     }
 
     // Look out for when tryinto lands into stable.
-    pub fn into_source(self) -> QueryResult<Source> {
-        self.index();
-
+    pub fn into_source(self) -> Result<Source> {
+        self.index()?;
         dbqueries::get_source_from_uri(&self.uri)
     }
 }
@@ -108,11 +108,11 @@ impl NewPodcast {
         Ok(dbqueries::get_podcast_from_source_id(self.source_id)?)
     }
 
-    pub fn index(&self) -> QueryResult<()> {
+    pub fn index(&self) -> Result<()> {
         let pd = dbqueries::get_podcast_from_source_id(self.source_id);
 
         let db = connection();
-        let con = db.get().unwrap();
+        let con = db.get()?;
         match pd {
             Ok(foo) => {
                 if foo.source_id() != self.source_id {

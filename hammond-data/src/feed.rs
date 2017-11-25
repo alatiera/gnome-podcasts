@@ -44,7 +44,7 @@ impl Feed {
     fn index_channel_items(&self, pd: &Podcast) -> Result<()> {
         let episodes = self.parse_channel_items(pd);
         let db = connection();
-        let con = db.get().unwrap();
+        let con = db.get()?;
 
         let _ = con.transaction::<(), Error, _>(|| {
             episodes.into_iter().for_each(|x| {
@@ -83,7 +83,7 @@ impl Feed {
         let eps = self.parse_channel_items(&pd);
 
         let db = connection();
-        let con = db.get().unwrap();
+        let con = db.get()?;
         // TODO: Make it parallel
         // This returns only the episodes in the xml feed.
         let episodes: Vec<_> = eps.into_iter()
@@ -142,7 +142,7 @@ mod tests {
 
     use rss;
     use models::Source;
-    use database::{connection, truncate_db};
+    use database::truncate_db;
 
     use std::fs;
     use std::io::BufReader;
