@@ -7,7 +7,12 @@ use utils::url_cleaner;
 use errors::*;
 
 use dbqueries;
+use diesel;
 use database::connection;
+
+trait Insert {
+    fn insert(&self, &SqliteConnection) -> QueryResult<usize>;
+}
 
 #[derive(Insertable)]
 #[table_name = "source"]
@@ -16,6 +21,13 @@ pub struct NewSource {
     uri: String,
     last_modified: Option<String>,
     http_etag: Option<String>,
+}
+
+impl Insert for NewSource {
+    fn insert(&self, con: &SqliteConnection) -> QueryResult<usize> {
+        use schema::source::dsl::*;
+        diesel::insert_into(source).values(self).execute(&*con)
+    }
 }
 
 impl NewSource {
@@ -34,7 +46,7 @@ impl NewSource {
 
         // Throw away the result like `insert or ignore`
         // Diesel deos not support `insert or ignore` yet.
-        let _ = dbqueries::insert_new_source(&con, self);
+        let _ = self.insert(&con);
         Ok(())
     }
 
@@ -57,6 +69,13 @@ pub struct NewEpisode {
     pub guid: Option<String>,
     pub epoch: i32,
     pub podcast_id: i32,
+}
+
+impl Insert for NewEpisode {
+    fn insert(&self, con: &SqliteConnection) -> QueryResult<usize> {
+        use schema::episode::dsl::*;
+        diesel::insert_into(episode).values(self).execute(&*con)
+    }
 }
 
 impl NewEpisode {
@@ -84,7 +103,7 @@ impl NewEpisode {
                 }
             }
             Err(_) => {
-                dbqueries::insert_new_episode(con, self)?;
+                self.insert(con)?;
             }
         }
         Ok(())
@@ -100,6 +119,13 @@ pub struct NewPodcast {
     pub description: String,
     pub image_uri: Option<String>,
     pub source_id: i32,
+}
+
+impl Insert for NewPodcast {
+    fn insert(&self, con: &SqliteConnection) -> QueryResult<usize> {
+        use schema::podcast::dsl::*;
+        diesel::insert_into(podcast).values(self).execute(&*con)
+    }
 }
 
 impl NewPodcast {
@@ -127,7 +153,7 @@ impl NewPodcast {
                 }
             }
             Err(_) => {
-                dbqueries::insert_new_podcast(&con, self)?;
+                self.insert(&con)?;
             }
         }
         Ok(())

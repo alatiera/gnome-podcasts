@@ -206,24 +206,6 @@ pub fn update_none_to_played_now(parent: &Podcast) -> Result<usize> {
     })
 }
 
-pub fn insert_new_source(con: &SqliteConnection, s: &NewSource) -> QueryResult<usize> {
-    use schema::source::dsl::*;
-
-    diesel::insert_into(source).values(s).execute(&*con)
-}
-
-pub fn insert_new_podcast(con: &SqliteConnection, pd: &NewPodcast) -> QueryResult<usize> {
-    use schema::podcast::dsl::*;
-
-    diesel::insert_into(podcast).values(pd).execute(&*con)
-}
-
-pub fn insert_new_episode(con: &SqliteConnection, ep: &NewEpisode) -> QueryResult<usize> {
-    use schema::episode::dsl::*;
-
-    diesel::insert_into(episode).values(ep).execute(&*con)
-}
-
 pub fn update_podcast(con: &SqliteConnection, pd_id: i32, pd: &NewPodcast) -> QueryResult<usize> {
     use schema::podcast::dsl::*;
 
