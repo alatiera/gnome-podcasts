@@ -224,7 +224,7 @@ mod tests {
         let foo_ = format!(
             "{}{}/cover.png",
             HAMMOND_CACHE.to_str().unwrap(),
-            "New Rustacean"
+            pd.title()
         );
         assert_eq!(img_path, Some(foo_));
     }
