@@ -1,5 +1,6 @@
 use rayon::prelude::*;
 use diesel::prelude::*;
+use rayon::iter::IntoParallelIterator;
 
 use diesel::Identifiable;
 use rss;
@@ -100,13 +101,13 @@ impl Feed {
 }
 
 pub fn index_all() -> Result<()> {
-    let mut feeds = fetch_all()?;
+    let feeds = fetch_all()?;
 
-    index(&mut feeds);
+    index(feeds);
     Ok(())
 }
 
-pub fn index(feeds: &mut [Feed]) {
+pub fn index<F: IntoParallelIterator<Item = Feed>>(feeds: F) {
     feeds.into_par_iter().for_each(|f| {
         let e = f.index();
         if e.is_err() {
@@ -122,7 +123,7 @@ pub fn fetch_all() -> Result<Vec<Feed>> {
     Ok(fetch(feeds))
 }
 
-pub fn fetch(feeds: Vec<Source>) -> Vec<Feed> {
+pub fn fetch<F: IntoParallelIterator<Item = Source>>(feeds: F) -> Vec<Feed> {
     let results: Vec<_> = feeds
         .into_par_iter()
         .filter_map(|x| {
@@ -140,13 +141,9 @@ pub fn fetch(feeds: Vec<Source>) -> Vec<Feed> {
 
 #[cfg(test)]
 mod tests {
-
-    use rss;
-    use models::Source;
-    use database::truncate_db;
-
     use std::fs;
     use std::io::BufReader;
+    use database::truncate_db;
 
     use super::*;
 
@@ -196,7 +193,7 @@ mod tests {
 
         truncate_db().unwrap();
 
-        let mut feeds: Vec<_> = urls.iter()
+        let feeds: Vec<_> = urls.iter()
             .map(|&(path, url)| {
                 // Create and insert a Source into db
                 let s = Source::from_url(url).unwrap();
@@ -210,7 +207,7 @@ mod tests {
             .collect();
 
         // Index the channels
-        index(&mut feeds);
+        index(feeds);
 
         // Assert the index rows equal the controlled results
         assert_eq!(dbqueries::get_sources().unwrap().len(), 4);

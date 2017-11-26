@@ -35,15 +35,15 @@ pub fn refresh_feed(stack: &gtk::Stack, source: Option<Vec<Source>>, delay: Opti
         }
 
         let feeds = {
-            if let Some(mut vec) = source {
+            if let Some(vec) = source {
                 Ok(feed::fetch(vec))
             } else {
                 feed::fetch_all()
             }
         };
 
-        if let Ok(mut x) = feeds {
-            feed::index(&mut x);
+        if let Ok(x) = feeds {
+            feed::index(x);
 
             sender.send(true).expect("Couldn't send data to channel");;
             glib::idle_add(refresh_podcasts_view);

@@ -33,7 +33,7 @@ static URLS: &[(&[u8], &str)] = &[
 ];
 
 fn index_urls() {
-    URLS.par_iter()
+    let feeds: Vec<_> = URLS.par_iter()
         .map(|&(buff, url)| {
             // Create and insert a Source into db
             let s = Source::from_url(url).unwrap();
@@ -41,9 +41,9 @@ fn index_urls() {
             let chan = rss::Channel::read_from(BufReader::new(buff)).unwrap();
             Feed::from_channel_source(chan, s)
         })
-        .for_each(|feed| {
-            index(&mut [feed]);
-        });
+        .collect();
+
+    index(feeds);
 }
 
 #[bench]
