@@ -52,7 +52,7 @@ impl Feed {
             episodes.into_iter().for_each(|x| {
                 let e = x.index(&con);
                 if let Err(err) = e {
-                    error!("Failed to index episode: {:?}.", x.title);
+                    error!("Failed to index episode: {:?}.", x.title());
                     error!("Error msg: {}", err);
                 };
             });

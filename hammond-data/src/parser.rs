@@ -1,7 +1,7 @@
 use rss::{Channel, Item};
 use rfc822_sanitizer::parse_from_rfc2822_with_fallback;
 
-use models::insertables::{NewEpisode, NewPodcast};
+use models::insertables::{NewEpisode, NewEpisodeBuilder, NewPodcast, NewPodcastBuilder};
 use utils::url_cleaner;
 
 use errors::*;
@@ -20,13 +20,13 @@ pub(crate) fn new_podcast(chan: &Channel, source_id: i32) -> NewPodcast {
         chan.image().map(|foo| url_cleaner(foo.url()))
     };
 
-    NewPodcast {
-        title,
-        link,
-        description,
-        image_uri,
-        source_id,
-    }
+    NewPodcastBuilder::new()
+        .title(title)
+        .description(description)
+        .link(link)
+        .image_uri(image_uri)
+        .source_id(source_id)
+        .build()
 }
 
 /// Parses an `rss::Item` into a `NewEpisode` Struct.
@@ -60,16 +60,18 @@ pub(crate) fn new_episode(item: &Item, parent_id: i32) -> Result<NewEpisode> {
 
     let length = item.enclosure().map(|x| x.length().parse().unwrap_or(0));
 
-    Ok(NewEpisode {
-        title,
-        uri,
-        description,
-        length,
-        published_date: pub_date,
-        epoch,
-        guid,
-        podcast_id: parent_id,
-    })
+    Ok(
+        NewEpisodeBuilder::new()
+            .title(title)
+            .uri(uri)
+            .description(description)
+            .length(length)
+            .published_date(pub_date)
+            .epoch(epoch)
+            .guid(guid)
+            .podcast_id(parent_id)
+            .build(),
+    )
 }
 
 
@@ -93,16 +95,15 @@ mod tests {
                      newsmakers who challenge our preconceptions about the world we live in.";
         let pd = new_podcast(&channel, 0);
 
-        assert_eq!(pd.title, "Intercepted with Jeremy Scahill".to_string());
-        assert_eq!(pd.link, "https://theintercept.com/podcasts".to_string());
-        assert_eq!(pd.description, descr.to_string());
+        assert_eq!(pd.title(), "Intercepted with Jeremy Scahill");
+        assert_eq!(pd.link(), "https://theintercept.com/podcasts");
+        assert_eq!(pd.description(), descr);
         assert_eq!(
-            pd.image_uri,
+            pd.image_uri(),
             Some(
                 "http://static.megaphone.fm/podcasts/d5735a50-d904-11e6-8532-73c7de466ea6/image/\
                  uploads_2F1484252190700-qhn5krasklbce3dh-a797539282700ea0298a3a26f7e49b0b_\
                  2FIntercepted_COVER%2B_281_29.png"
-                    .to_string()
             ),
         );
     }
@@ -117,12 +118,12 @@ mod tests {
                      interest.";
         let pd = new_podcast(&channel, 0);
 
-        assert_eq!(pd.title, "The Breakthrough".to_string());
-        assert_eq!(pd.link, "http://www.propublica.org/podcast".to_string());
-        assert_eq!(pd.description, descr.to_string());
+        assert_eq!(pd.title(), "The Breakthrough");
+        assert_eq!(pd.link(), "http://www.propublica.org/podcast");
+        assert_eq!(pd.description(), descr);
         assert_eq!(
-            pd.image_uri,
-            Some("http://www.propublica.org/images/podcast_logo_2.png".to_string()),
+            pd.image_uri(),
+            Some("http://www.propublica.org/images/podcast_logo_2.png"),
         );
     }
 
@@ -136,12 +137,12 @@ mod tests {
                      Linux.";
         let pd = new_podcast(&channel, 0);
 
-        assert_eq!(pd.title, "LINUX Unplugged Podcast".to_string());
-        assert_eq!(pd.link, "http://www.jupiterbroadcasting.com/".to_string());
-        assert_eq!(pd.description, descr.to_string());
+        assert_eq!(pd.title(), "LINUX Unplugged Podcast");
+        assert_eq!(pd.link(), "http://www.jupiterbroadcasting.com/");
+        assert_eq!(pd.description(), descr);
         assert_eq!(
-            pd.image_uri,
-            Some("http://www.jupiterbroadcasting.com/images/LASUN-Badge1400.jpg".to_string(),)
+            pd.image_uri(),
+            Some("http://www.jupiterbroadcasting.com/images/LASUN-Badge1400.jpg")
         );
     }
 
@@ -153,15 +154,15 @@ mod tests {
         let pd = new_podcast(&channel, 0);
         let descr = "A weekly discussion of Rust RFCs";
 
-        assert_eq!(pd.title, "Request For Explanation".to_string());
+        assert_eq!(pd.title(), "Request For Explanation");
         assert_eq!(
-            pd.link,
-            "https://request-for-explanation.github.io/podcast/".to_string()
+            pd.link(),
+            "https://request-for-explanation.github.io/podcast/"
         );
-        assert_eq!(pd.description, descr.to_string());
+        assert_eq!(pd.description(), descr);
         assert_eq!(
-            pd.image_uri,
-            Some("https://request-for-explanation.github.io/podcast/podcast.png".to_string()),
+            pd.image_uri(),
+            Some("https://request-for-explanation.github.io/podcast/podcast.png"),
         );
     }
 
@@ -178,22 +179,13 @@ mod tests {
                      performs.";
         let i = new_episode(&firstitem, 0).unwrap();
 
-        assert_eq!(i.title, Some("The Super Bowl of Racism".to_string()));
-        assert_eq!(
-            i.uri,
-            "http://traffic.megaphone.fm/PPY6458293736.mp3".to_string()
-        );
-        assert_eq!(i.description, Some(descr.to_string()));
-        assert_eq!(i.length, Some(66738886));
-        assert_eq!(
-            i.guid,
-            Some("7df4070a-9832-11e7-adac-cb37b05d5e24".to_string())
-        );
-        assert_eq!(
-            i.published_date,
-            Some("Wed, 13 Sep 2017 10:00:00 +0000".to_string())
-        );
-        assert_eq!(i.epoch, 1505296800);
+        assert_eq!(i.title(), Some("The Super Bowl of Racism"));
+        assert_eq!(i.uri(), "http://traffic.megaphone.fm/PPY6458293736.mp3");
+        assert_eq!(i.description(), Some(descr));
+        assert_eq!(i.length(), Some(66738886));
+        assert_eq!(i.guid(), Some("7df4070a-9832-11e7-adac-cb37b05d5e24"));
+        assert_eq!(i.published_date(), Some("Wed, 13 Sep 2017 10:00:00 +0000"));
+        assert_eq!(i.epoch(), 1505296800);
 
         let second = channel.items().iter().nth(1).unwrap();
         let i2 = new_episode(&second, 0).unwrap();
@@ -207,24 +199,15 @@ mod tests {
                       Caracas-based band, La Pequeña Revancha, talk about her music and hopes for \
                       Venezuela.";
         assert_eq!(
-            i2.title,
-            Some("Atlas Golfed — U.S.-Backed Think Tanks Target Latin America".to_string(),)
+            i2.title(),
+            Some("Atlas Golfed — U.S.-Backed Think Tanks Target Latin America")
         );
-        assert_eq!(
-            i2.uri,
-            "http://traffic.megaphone.fm/FL5331443769.mp3".to_string()
-        );
-        assert_eq!(i2.description, Some(descr2.to_string()));
-        assert_eq!(i2.length, Some(67527575));
-        assert_eq!(
-            i2.guid,
-            Some("7c207a24-e33f-11e6-9438-eb45dcf36a1d".to_string())
-        );
-        assert_eq!(
-            i2.published_date,
-            Some("Wed,  9 Aug 2017 10:00:00 +0000".to_string())
-        );
-        assert_eq!(i2.epoch, 1502272800);
+        assert_eq!(i2.uri(), "http://traffic.megaphone.fm/FL5331443769.mp3");
+        assert_eq!(i2.description(), Some(descr2));
+        assert_eq!(i2.length(), Some(67527575));
+        assert_eq!(i2.guid(), Some("7c207a24-e33f-11e6-9438-eb45dcf36a1d"));
+        assert_eq!(i2.published_date(), Some("Wed,  9 Aug 2017 10:00:00 +0000"));
+        assert_eq!(i2.epoch(), 1502272800);
     }
 
     #[test]
@@ -238,31 +221,24 @@ mod tests {
         let i = new_episode(&firstitem, 0).unwrap();
 
         assert_eq!(
-            i.title,
-            Some(
-                "The Breakthrough: Hopelessness and Exploitation Inside Homes for Mentally Ill"
-                    .to_string(),
-            )
+            i.title(),
+            Some("The Breakthrough: Hopelessness and Exploitation Inside Homes for Mentally Ill")
         );
         assert_eq!(
-            i.uri,
-            "http://tracking.feedpress.it/link/10581/6726758/20170908-cliff-levy.mp3".to_string(),
+            i.uri(),
+            "http://tracking.feedpress.it/link/10581/6726758/20170908-cliff-levy.mp3",
         );
-        assert_eq!(i.description, Some(descr.to_string()));
-        assert_eq!(i.length, Some(33396551));
+        assert_eq!(i.description(), Some(descr));
+        assert_eq!(i.length(), Some(33396551));
         assert_eq!(
-            i.guid,
+            i.guid(),
             Some(
                 "https://www.propublica.org/podcast/\
                  the-breakthrough-hopelessness-exploitation-homes-for-mentally-ill#134472"
-                    .to_string(),
             )
         );
-        assert_eq!(
-            i.published_date,
-            Some("Fri,  8 Sep 2017 12:00:00 +0000".to_string())
-        );
-        assert_eq!(i.epoch, 1504872000);
+        assert_eq!(i.published_date(), Some("Fri,  8 Sep 2017 12:00:00 +0000"));
+        assert_eq!(i.epoch(), 1504872000);
 
         let second = channel.items().iter().nth(1).unwrap();
         let i2 = new_episode(&second, 0).unwrap();
@@ -271,29 +247,25 @@ mod tests {
                       the mounting signs of a doomed campaign.</p>";
 
         assert_eq!(
-            i2.title,
+            i2.title(),
             Some("The Breakthrough: Behind the Scenes of Hillary Clinton’s Failed Bid for \
-                  President".to_string())
+                  President")
         );
         assert_eq!(
-            i2.uri,
+            i2.uri(),
             "http://tracking.feedpress.it/link/10581/6726759/16_JohnAllen-CRAFT.mp3".to_string(),
         );
-        assert_eq!(i2.description, Some(descr2.to_string()));
-        assert_eq!(i2.length, Some(17964071));
+        assert_eq!(i2.description(), Some(descr2));
+        assert_eq!(i2.length(), Some(17964071));
         assert_eq!(
-            i2.guid,
+            i2.guid(),
             Some(
                 "https://www.propublica.\
                  org/podcast/the-breakthrough-hillary-clinton-failed-presidential-bid#133721"
-                    .to_string(),
             )
         );
-        assert_eq!(
-            i2.published_date,
-            Some("Fri, 25 Aug 2017 12:00:00 +0000".to_string())
-        );
-        assert_eq!(i2.epoch, 1503662400);
+        assert_eq!(i2.published_date(), Some("Fri, 25 Aug 2017 12:00:00 +0000"));
+        assert_eq!(i2.epoch(), 1503662400);
     }
 
     #[test]
@@ -308,26 +280,16 @@ mod tests {
              blaming open source & the Beard just saved the show. It’s a really packed episode!";
         let i = new_episode(&firstitem, 0).unwrap();
 
+        assert_eq!(i.title(), Some("Hacking Devices with Kali Linux | LUP 214"));
         assert_eq!(
-            i.title,
-            Some("Hacking Devices with Kali Linux | LUP 214".to_string())
-        );
-        assert_eq!(
-            i.uri,
+            i.uri(),
             "http://www.podtrac.com/pts/redirect.mp3/traffic.libsyn.com/jnite/lup-0214.mp3"
-                .to_string(),
         );
-        assert_eq!(i.description, Some(descr.to_string()));
-        assert_eq!(i.length, Some(46479789));
-        assert_eq!(
-            i.guid,
-            Some("78A682B4-73E8-47B8-88C0-1BE62DD4EF9D".to_string())
-        );
-        assert_eq!(
-            i.published_date,
-            Some("Tue, 12 Sep 2017 22:24:42 -0700".to_string())
-        );
-        assert_eq!(i.epoch, 1505280282);
+        assert_eq!(i.description(), Some(descr));
+        assert_eq!(i.length(), Some(46479789));
+        assert_eq!(i.guid(), Some("78A682B4-73E8-47B8-88C0-1BE62DD4EF9D"));
+        assert_eq!(i.published_date(), Some("Tue, 12 Sep 2017 22:24:42 -0700"));
+        assert_eq!(i.epoch(), 1505280282);
 
         let second = channel.items().iter().nth(1).unwrap();
         let i2 = new_episode(&second, 0).unwrap();
@@ -338,23 +300,16 @@ mod tests {
                       future.</p>\n\n<p>Plus we chat with Wimpy about the Ubuntu Rally in NYC, \
                       Microsoft’s sneaky move to turn Windows 10 into the “ULTIMATE LINUX \
                       RUNTIME”, community news & more!</p>";
-        assert_eq!(i2.title, Some("Gnome Does it Again | LUP 213".to_string()));
+        assert_eq!(i2.title(), Some("Gnome Does it Again | LUP 213"));
         assert_eq!(
-            i2.uri,
+            i2.uri(),
             "http://www.podtrac.com/pts/redirect.mp3/traffic.libsyn.com/jnite/lup-0213.mp3"
-                .to_string(),
         );
-        assert_eq!(i2.description, Some(descr2.to_string()));
-        assert_eq!(i2.length, Some(36544272));
-        assert_eq!(
-            i2.guid,
-            Some("1CE57548-B36C-4F14-832A-5D5E0A24E35B".to_string())
-        );
-        assert_eq!(
-            i2.published_date,
-            Some("Tue,  5 Sep 2017 20:57:27 -0700".to_string())
-        );
-        assert_eq!(i2.epoch, 1504670247);
+        assert_eq!(i2.description(), Some(descr2));
+        assert_eq!(i2.length(), Some(36544272));
+        assert_eq!(i2.guid(), Some("1CE57548-B36C-4F14-832A-5D5E0A24E35B"));
+        assert_eq!(i2.published_date(), Some("Tue,  5 Sep 2017 20:57:27 -0700"));
+        assert_eq!(i2.epoch(), 1504670247);
     }
 
     #[test]
@@ -368,30 +323,20 @@ mod tests {
                      \"Non-lexical lifetimes\"";
         let i = new_episode(&firstitem, 0).unwrap();
 
+        assert_eq!(i.title(), Some("Episode #9 - A Once in a Lifetime RFC"));
         assert_eq!(
-            i.title,
-            Some("Episode #9 - A Once in a Lifetime RFC".to_string())
-        );
-        assert_eq!(
-            i.uri,
+            i.uri(),
             "http://request-for-explanation.github.\
              io/podcast/ep9-a-once-in-a-lifetime-rfc/episode.mp3"
-                .to_string(),
         );
-        assert_eq!(i.description, Some(descr.to_string()));
-        assert_eq!(i.length, Some(15077388));
+        assert_eq!(i.description(), Some(descr));
+        assert_eq!(i.length(), Some(15077388));
         assert_eq!(
-            i.guid,
-            Some(
-                "https://request-for-explanation.github.io/podcast/ep9-a-once-in-a-lifetime-rfc/"
-                    .to_string(),
-            )
+            i.guid(),
+            Some("https://request-for-explanation.github.io/podcast/ep9-a-once-in-a-lifetime-rfc/")
         );
-        assert_eq!(
-            i.published_date,
-            Some("Mon, 28 Aug 2017 15:00:00 -0700".to_string())
-        );
-        assert_eq!(i.epoch, 1503957600);
+        assert_eq!(i.published_date(), Some("Mon, 28 Aug 2017 15:00:00 -0700"));
+        assert_eq!(i.epoch(), 1503957600);
 
         let second = channel.items().iter().nth(8).unwrap();
         let i2 = new_episode(&second, 0).unwrap();
@@ -399,29 +344,19 @@ mod tests {
         let descr2 = "This week we look at <a \
                       href=\"https://github.com/rust-lang/rfcs/pull/2071\">RFC 2071</a> \"Add \
                       impl Trait type alias and variable declarations\"";
+        assert_eq!(i2.title(), Some("Episode #8 - An Existential Crisis"));
         assert_eq!(
-            i2.title,
-            Some("Episode #8 - An Existential Crisis".to_string())
-        );
-        assert_eq!(
-            i2.uri,
+            i2.uri(),
             "http://request-for-explanation.github.io/podcast/ep8-an-existential-crisis/episode.\
              mp3"
-                .to_string(),
         );
-        assert_eq!(i2.description, Some(descr2.to_string()));
-        assert_eq!(i2.length, Some(13713219));
+        assert_eq!(i2.description(), Some(descr2));
+        assert_eq!(i2.length(), Some(13713219));
         assert_eq!(
-            i2.guid,
-            Some(
-                "https://request-for-explanation.github.io/podcast/ep8-an-existential-crisis/"
-                    .to_string(),
-            )
+            i2.guid(),
+            Some("https://request-for-explanation.github.io/podcast/ep8-an-existential-crisis/")
         );
-        assert_eq!(
-            i2.published_date,
-            Some("Tue, 15 Aug 2017 17:00:00 -0700".to_string())
-        );
-        assert_eq!(i2.epoch, 1502841600);
+        assert_eq!(i2.published_date(), Some("Tue, 15 Aug 2017 17:00:00 -0700"));
+        assert_eq!(i2.epoch(), 1502841600);
     }
 }
