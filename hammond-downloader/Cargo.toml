@@ -9,7 +9,6 @@ error-chain = "0.11.0"
 hyper = "0.11.7"
 log = "0.3.8"
 mime_guess = "1.8.2"
-rand = "0.3.18"
 reqwest = "0.8.1"
 tempdir = "0.3.5"
 

@@ -1,8 +1,6 @@
 use reqwest;
 use hyper::header::*;
 use tempdir::TempDir;
-use rand;
-use rand::Rng;
 use mime_guess;
 
 use std::fs::{rename, DirBuilder, File};
@@ -62,13 +60,8 @@ fn download_into(dir: &str, file_title: &str, url: &str) -> Result<String> {
 
     // Construct a temp file to save desired content.
     let tempdir = TempDir::new_in(dir, "")?;
-    let mut rng = rand::thread_rng();
 
-    let out_file = format!(
-        "{}/{}.part",
-        tempdir.path().to_str().unwrap(),
-        rng.gen::<usize>()
-    );
+    let out_file = format!("{}/temp.part", tempdir.path().to_str().unwrap(),);
 
     // Save requested content into the file.
     save_io(&out_file, &mut resp, ct_len)?;
@@ -142,11 +135,7 @@ pub fn get_episode(ep: &mut Episode, download_folder: &str) -> Result<()> {
 }
 
 pub fn cache_image(pd: &Podcast) -> Option<String> {
-    if pd.image_uri().is_none() {
-        return None;
-    }
-
-    let url = pd.image_uri().unwrap().to_owned();
+    let url = pd.image_uri()?.to_owned();
     if url == "" {
         return None;
     }
@@ -159,6 +148,7 @@ pub fn cache_image(pd: &Podcast) -> Option<String> {
 
     // Hacky way
     // TODO: make it so it returns the first cover.* file encountered.
+    // Use glob instead
     let png = format!("{}/cover.png", download_fold);
     let jpg = format!("{}/cover.jpg", download_fold);
     let jpe = format!("{}/cover.jpe", download_fold);

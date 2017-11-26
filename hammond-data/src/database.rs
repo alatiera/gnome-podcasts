@@ -38,7 +38,6 @@ lazy_static! {
 }
 
 pub fn connection() -> Pool {
-    // Arc::clone(&DB)
     Arc::clone(&POOL)
 }
 

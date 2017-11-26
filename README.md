@@ -46,7 +46,7 @@ Flatpak instructions... Soon™.
 
 ###  Dependancies
 
-* Rust stable 1.21 or later.
+* Rust stable 1.22 or later.
 * Gtk+ 3.22 or later
 * Meson
 
