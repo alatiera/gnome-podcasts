@@ -7,10 +7,10 @@ workspace = "../"
 
 [dependencies]
 dissolve = "0.2.2"
-gdk = "0.6.0"
-gdk-pixbuf = "0.2.0"
-gio = "0.2.0"
-glib = "0.3.1"
+gdk = "0.7.0"
+gdk-pixbuf = "0.3.0"
+gio = "0.3.0"
+glib = "0.4.0"
 log = "0.3.8"
 loggerv = "0.5.1"
 open = "1.2.1"
@@ -26,7 +26,7 @@ git = "https://github.com/diesel-rs/diesel.git"
 
 [dependencies.gtk]
 features = ["v3_22"]
-version = "0.2.0"
+version = "0.3.0"
 
 [dependencies.hammond-data]
 path = "../hammond-data"

@@ -102,6 +102,8 @@ fn build_ui(app: &gtk::Application) {
 }
 
 fn main() {
+    use gio::ApplicationExtManual;
+
     // TODO: make the the logger a cli -vv option
     loggerv::init_with_level(LogLevel::Info).unwrap();
     static_resource::init().expect("Something went wrong with the resource file initialization.");
@@ -113,5 +115,6 @@ fn main() {
         build_ui(app);
     });
 
-    application.run(&[]);
+    // application.run(&[]);
+    ApplicationExtManual::run(&application, &[]);
 }

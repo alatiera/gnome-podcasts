@@ -53,7 +53,8 @@ fn create_flowbox_child(pd: &Podcast) -> gtk::FlowBoxChild {
 
     let fbc = gtk::FlowBoxChild::new();
     // There's probably a better way to store the id somewhere.
-    fbc.set_name(&pd.id().to_string());
+    // fbc.set_name(&pd.id().to_string());
+    WidgetExt::set_name(&fbc, &pd.id().to_string());
     fbc.add(&box_);
     fbc
 }
@@ -136,10 +137,13 @@ pub fn update_podcasts_view(stack: &gtk::Stack) {
 }
 
 fn init_flowbox(stack: &gtk::Stack, flowbox: &gtk::FlowBox) {
+    use gtk::WidgetExt;
+
     // TODO: handle unwraps.
     flowbox.connect_child_activated(clone!(stack => move |_, child| {
         // This is such an ugly hack...
-        let id = child.get_name().unwrap().parse::<i32>().unwrap();
+        // let id = child.get_name().unwrap().parse::<i32>().unwrap();
+        let id = WidgetExt::get_name(child).unwrap().parse::<i32>().unwrap();
         let parent = dbqueries::get_podcast_from_id(id).unwrap();
         on_flowbox_child_activate(&stack, &parent);
     }));
