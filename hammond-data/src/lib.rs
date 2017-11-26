@@ -29,12 +29,12 @@ pub mod dbqueries;
 pub mod utils;
 pub mod feed;
 pub mod errors;
-pub mod database;
-mod models;
+pub(crate) mod database;
+pub(crate) mod models;
 mod parser;
 mod schema;
 
-pub use models::{Episode, Podcast, Source};
+pub use models::queryables::{Episode, Podcast, Source};
 
 pub mod xdg_ {
     use std::path::PathBuf;

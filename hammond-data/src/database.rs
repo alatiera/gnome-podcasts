@@ -37,7 +37,7 @@ lazy_static! {
     static ref DB_PATH: PathBuf = TEMPDIR.path().join("hammond.db");
 }
 
-pub fn connection() -> Pool {
+pub(crate) fn connection() -> Pool {
     Arc::clone(&POOL)
 }
 
@@ -57,7 +57,7 @@ fn init_pool(db_path: &str) -> Pool {
     pool
 }
 
-pub fn run_migration_on(connection: &SqliteConnection) -> Result<()> {
+fn run_migration_on(connection: &SqliteConnection) -> Result<()> {
     info!("Running DB Migrations...");
     // embedded_migrations::run(connection)?;
     embedded_migrations::run_with_output(connection, &mut io::stdout())?;
@@ -66,6 +66,7 @@ pub fn run_migration_on(connection: &SqliteConnection) -> Result<()> {
 
 // Reset the database into a clean state.
 // Test share a Temp file db.
+#[allow(dead_code)]
 pub fn truncate_db() -> Result<()> {
     let db = connection();
     let con = db.get()?;

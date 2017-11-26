@@ -5,7 +5,7 @@ use url::{Position, Url};
 
 use errors::*;
 use dbqueries;
-use models::Episode;
+use models::queryables::Episode;
 
 use std::path::Path;
 use std::fs;

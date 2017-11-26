@@ -1,14 +1,14 @@
 use rss::{Channel, Item};
 use rfc822_sanitizer::parse_from_rfc2822_with_fallback;
 
-use models::{NewEpisode, NewPodcast};
+use models::insertables::{NewEpisode, NewPodcast};
 use utils::url_cleaner;
 
 use errors::*;
 
 // TODO: Extend the support for parsing itunes extensions
 /// Parses a `rss::Channel` into a `NewPodcast` Struct.
-pub fn new_podcast(chan: &Channel, source_id: i32) -> NewPodcast {
+pub(crate) fn new_podcast(chan: &Channel, source_id: i32) -> NewPodcast {
     let title = chan.title().trim().to_owned();
     let description = chan.description().trim().to_owned();
 
@@ -30,7 +30,7 @@ pub fn new_podcast(chan: &Channel, source_id: i32) -> NewPodcast {
 }
 
 /// Parses an `rss::Item` into a `NewEpisode` Struct.
-pub fn new_episode(item: &Item, parent_id: i32) -> Result<NewEpisode> {
+pub(crate) fn new_episode(item: &Item, parent_id: i32) -> Result<NewEpisode> {
     let title = item.title().map(|s| s.trim().to_owned());
     let description = item.description().map(|s| s.trim().to_owned());
     let guid = item.guid().map(|s| s.value().trim().to_owned());

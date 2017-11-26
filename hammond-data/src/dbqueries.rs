@@ -1,6 +1,6 @@
 use diesel::prelude::*;
 use diesel;
-use models::{Episode, Podcast, Source};
+use models::queryables::{Episode, Podcast, Source};
 use chrono::prelude::*;
 use errors::*;
 

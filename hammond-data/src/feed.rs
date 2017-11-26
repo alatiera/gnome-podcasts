@@ -7,7 +7,8 @@ use rss;
 use dbqueries;
 use parser;
 
-use models::{Episode, NewEpisode, NewPodcast, Podcast, Source};
+use models::queryables::{Episode, Podcast, Source};
+use models::insertables::{NewEpisode, NewPodcast};
 use database::connection;
 use errors::*;
 

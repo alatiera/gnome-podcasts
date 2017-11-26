@@ -1,7 +1,7 @@
 use diesel::prelude::*;
 
 use schema::{episode, podcast, source};
-use models::{Episode, Podcast, Source};
+use models::queryables::{Episode, Podcast, Source};
 
 use utils::url_cleaner;
 use errors::*;
@@ -21,7 +21,7 @@ trait Update {
 #[derive(Insertable)]
 #[table_name = "source"]
 #[derive(Debug, Clone)]
-pub struct NewSource {
+pub(crate) struct NewSource {
     uri: String,
     last_modified: Option<String>,
     http_etag: Option<String>,
@@ -64,7 +64,7 @@ impl NewSource {
 #[derive(Insertable, AsChangeset)]
 #[table_name = "episode"]
 #[derive(Debug, Clone, Default)]
-pub struct NewEpisode {
+pub(crate) struct NewEpisode {
     pub title: Option<String>,
     pub uri: String,
     pub description: Option<String>,
@@ -127,7 +127,7 @@ impl NewEpisode {
 #[derive(Insertable, AsChangeset)]
 #[table_name = "podcast"]
 #[derive(Debug, Clone)]
-pub struct NewPodcast {
+pub(crate) struct NewPodcast {
     pub title: String,
     pub link: String,
     pub description: String,
