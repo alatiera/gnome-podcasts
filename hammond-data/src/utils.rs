@@ -31,7 +31,6 @@ fn checker_helper(ep: &mut Episode) {
     }
 }
 
-// TODO: Write unit test.
 fn played_cleaner() -> Result<()> {
     let episodes = dbqueries::get_played_episodes()?;
 
@@ -56,6 +55,7 @@ fn played_cleaner() -> Result<()> {
     Ok(())
 }
 
+/// Check `ep.local_uri` field and delete the file it points to.
 pub fn delete_local_content(ep: &mut Episode) -> Result<()> {
     if ep.local_uri().is_some() {
         let uri = ep.local_uri().unwrap().to_owned();
@@ -78,12 +78,21 @@ pub fn delete_local_content(ep: &mut Episode) -> Result<()> {
     Ok(())
 }
 
+/// Database cleaning tasks.
+///
+/// Runs a download checker which looks for `Episode.local_uri` entries that
+/// doesn't exist and sets them to None
+///
+/// Runs a cleaner for played Episode's that are pass the lifetime limit and
+/// scheduled for removal.
 pub fn checkup() -> Result<()> {
     download_checker()?;
     played_cleaner()?;
     Ok(())
 }
 
+/// Remove fragment identifiers and query pairs from a URL
+/// If url parsing fails, return's a trimmed version of the original input.
 pub fn url_cleaner(s: &str) -> String {
     // Copied from the cookbook.
     // https://rust-lang-nursery.github.io/rust-cookbook/net.html
