@@ -9,7 +9,7 @@ use std::path::Path;
 
 use errors::*;
 use hammond_data::{Episode, Podcast};
-use hammond_data::xdg_::{DL_DIR, HAMMOND_CACHE};
+use hammond_data::xdg_dirs::{DL_DIR, HAMMOND_CACHE};
 
 // TODO: Replace path that are of type &str with std::path.
 // TODO: Have a convention/document absolute/relative paths, if they should end with / or not.

@@ -170,6 +170,25 @@ mod tests {
     }
 
     #[test]
+    /// Insert feeds and update/index them.
+    fn test_fetch_loop() {
+        truncate_db().unwrap();
+        let inpt = vec![
+            "https://request-for-explanation.github.io/podcast/rss.xml",
+            "https://feeds.feedburner.com/InterceptedWithJeremyScahill",
+            "http://feeds.propublica.org/propublica/podcast",
+            "http://feeds.feedburner.com/linuxunplugged",
+        ];
+
+        inpt.iter().for_each(|url| {
+            // Index the urls into the source table.
+            Source::from_url(url).unwrap();
+        });
+
+        fetch_all().unwrap();
+    }
+
+    #[test]
     fn test_complete_index() {
         // vec of (path, url) tuples.
         let urls = vec![

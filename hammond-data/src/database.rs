@@ -10,7 +10,7 @@ use std::time::Duration;
 use errors::*;
 
 #[cfg(not(test))]
-use xdg_;
+use xdg_dirs;
 
 type Pool = Arc<r2d2::Pool<ConnectionManager<SqliteConnection>>>;
 
@@ -22,7 +22,7 @@ lazy_static!{
 
 #[cfg(not(test))]
 lazy_static! {
-    static ref DB_PATH: PathBuf = xdg_::HAMMOND_XDG.place_data_file("hammond.db").unwrap();
+    static ref DB_PATH: PathBuf = xdg_dirs::HAMMOND_XDG.place_data_file("hammond.db").unwrap();
 }
 
 #[cfg(test)]

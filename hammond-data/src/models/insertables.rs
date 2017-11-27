@@ -69,6 +69,9 @@ pub(crate) struct NewPodcast {
     link: String,
     description: String,
     image_uri: Option<String>,
+    favorite: bool,
+    archive: bool,
+    always_dl: bool,
     source_id: i32,
 }
 
@@ -127,9 +130,13 @@ pub(crate) struct NewPodcastBuilder {
     link: String,
     description: String,
     image_uri: Option<String>,
+    favorite: bool,
+    archive: bool,
+    always_dl: bool,
     source_id: i32,
 }
 
+#[allow(dead_code)]
 impl NewPodcastBuilder {
     pub(crate) fn new() -> NewPodcastBuilder {
         NewPodcastBuilder::default()
@@ -160,12 +167,30 @@ impl NewPodcastBuilder {
         self
     }
 
+    pub(crate) fn favorite(mut self, s: bool) -> NewPodcastBuilder {
+        self.favorite = s;
+        self
+    }
+
+    pub(crate) fn archive(mut self, s: bool) -> NewPodcastBuilder {
+        self.archive = s;
+        self
+    }
+
+    pub(crate) fn always_dl(mut self, s: bool) -> NewPodcastBuilder {
+        self.always_dl = s;
+        self
+    }
+
     pub(crate) fn build(self) -> NewPodcast {
         NewPodcast {
             title: self.title,
             link: self.link,
             description: self.description,
             image_uri: self.image_uri,
+            favorite: self.favorite,
+            archive: self.archive,
+            always_dl: self.always_dl,
             source_id: self.source_id,
         }
     }
@@ -201,11 +226,15 @@ impl NewPodcast {
 pub(crate) struct NewEpisode {
     title: Option<String>,
     uri: String,
+    local_uri: Option<String>,
     description: Option<String>,
     published_date: Option<String>,
     length: Option<i32>,
     guid: Option<String>,
     epoch: i32,
+    played: Option<i32>,
+    favorite: bool,
+    archive: bool,
     podcast_id: i32,
 }
 
@@ -262,14 +291,19 @@ impl NewEpisode {
 pub(crate) struct NewEpisodeBuilder {
     title: Option<String>,
     uri: String,
+    local_uri: Option<String>,
     description: Option<String>,
     published_date: Option<String>,
     length: Option<i32>,
     guid: Option<String>,
     epoch: i32,
+    played: Option<i32>,
+    favorite: bool,
+    archive: bool,
     podcast_id: i32,
 }
 
+#[allow(dead_code)]
 impl NewEpisodeBuilder {
     pub(crate) fn new() -> NewEpisodeBuilder {
         NewEpisodeBuilder::default()
@@ -282,6 +316,11 @@ impl NewEpisodeBuilder {
 
     pub(crate) fn uri(mut self, s: String) -> NewEpisodeBuilder {
         self.uri = s;
+        self
+    }
+
+    pub(crate) fn local_uri(mut self, s: Option<String>) -> NewEpisodeBuilder {
+        self.local_uri = s;
         self
     }
 
@@ -300,6 +339,11 @@ impl NewEpisodeBuilder {
         self
     }
 
+    pub(crate) fn played(mut self, s: Option<i32>) -> NewEpisodeBuilder {
+        self.played = s;
+        self
+    }
+
     pub(crate) fn guid(mut self, s: Option<String>) -> NewEpisodeBuilder {
         self.guid = s;
         self
@@ -315,15 +359,29 @@ impl NewEpisodeBuilder {
         self
     }
 
+    pub(crate) fn favorite(mut self, s: bool) -> NewEpisodeBuilder {
+        self.favorite = s;
+        self
+    }
+
+    pub(crate) fn archive(mut self, s: bool) -> NewEpisodeBuilder {
+        self.archive = s;
+        self
+    }
+
     pub(crate) fn build(self) -> NewEpisode {
         NewEpisode {
             title: self.title,
             uri: self.uri,
+            local_uri: self.local_uri,
             description: self.description,
             published_date: self.published_date,
             length: self.length,
             guid: self.guid,
             epoch: self.epoch,
+            played: self.played,
+            favorite: self.favorite,
+            archive: self.archive,
             podcast_id: self.podcast_id,
         }
     }

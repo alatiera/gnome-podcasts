@@ -36,7 +36,7 @@ mod schema;
 
 pub use models::queryables::{Episode, Podcast, Source};
 
-pub mod xdg_ {
+pub mod xdg_dirs {
     use std::path::PathBuf;
     use xdg;
 
