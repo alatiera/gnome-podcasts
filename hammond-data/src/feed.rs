@@ -14,16 +14,20 @@ use database::connection;
 use errors::*;
 
 #[derive(Debug)]
+/// Wrapper struct that hold a `Source` and the `rss::Channel`
+/// that corresponds to the `Source.uri` field.
 pub struct Feed {
     channel: rss::Channel,
     source: Source,
 }
 
 impl Feed {
+    /// Constructor that consumes a `Source` and returns the corresponding `Feed` struct.
     pub fn from_source(s: Source) -> Result<Feed> {
         s.into_feed()
     }
 
+    /// Constructor that consumes a `Source` and a `rss::Channel` returns a `Feed` struct.
     pub fn from_channel_source(chan: rss::Channel, s: Source) -> Feed {
         Feed {
             channel: chan,
@@ -31,7 +35,7 @@ impl Feed {
         }
     }
 
-    pub fn index(&self) -> Result<()> {
+    fn index(&self) -> Result<()> {
         let pd = self.get_podcast()?;
         self.index_channel_items(&pd)
     }
@@ -100,6 +104,7 @@ impl Feed {
     }
 }
 
+/// Use's `fetch_all` to retrieve a list of `Feed`s and use index them using `feed::index`.
 pub fn index_all() -> Result<()> {
     let feeds = fetch_all()?;
 
@@ -107,6 +112,9 @@ pub fn index_all() -> Result<()> {
     Ok(())
 }
 
+/// Handle the indexing of a feed `F` into the Database.
+///
+/// Consume a `ParallelIterator<Feed>` and index it.
 pub fn index<F: IntoParallelIterator<Item = Feed>>(feeds: F) {
     feeds.into_par_iter().for_each(|f| {
         let e = f.index();
@@ -118,11 +126,15 @@ pub fn index<F: IntoParallelIterator<Item = Feed>>(feeds: F) {
     info!("Indexing done.");
 }
 
+/// Retrieve a list of all the `Source` in the database,
+/// then use `feed::fetch` to convert them into `Feed`s
+/// and return them.
 pub fn fetch_all() -> Result<Vec<Feed>> {
     let feeds = dbqueries::get_sources()?;
     Ok(fetch(feeds))
 }
 
+/// Consume a `ParallelIterator<Source>` and return a list of `Feed`s.
 pub fn fetch<F: IntoParallelIterator<Item = Source>>(feeds: F) -> Vec<Feed> {
     let results: Vec<_> = feeds
         .into_par_iter()
