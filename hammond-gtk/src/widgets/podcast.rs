@@ -134,7 +134,7 @@ mod tests {
 
         // Convert Source it into a Feed and index it
         let feed = source.into_feed().unwrap();
-        index(vec!(feed));
+        index(vec![feed]);
 
         // Get the Podcast
         let pd = dbqueries::get_podcast_from_source_id(sid).unwrap();

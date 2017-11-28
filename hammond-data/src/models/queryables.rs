@@ -20,6 +20,7 @@ use std::str::FromStr;
 #[changeset_options(treat_none_as_null = "true")]
 #[belongs_to(Podcast, foreign_key = "podcast_id")]
 #[derive(Debug, Clone)]
+/// Diesel Model of the episode table.
 pub struct Episode {
     id: i32,
     title: Option<String>,
@@ -39,99 +40,128 @@ pub struct Episode {
 }
 
 impl Episode {
+    /// Get the value of the `title` field.
     pub fn title(&self) -> Option<&str> {
         self.title.as_ref().map(|s| s.as_str())
     }
 
+    /// Set the `title`.
     pub fn set_title(&mut self, value: Option<&str>) {
         self.title = value.map(|x| x.to_string());
     }
 
-    /// uri is guaranted to exist based on the db rules
+    /// Get the value of the `uri`.
+    /// Represents the url(usually) that the media file will be located at.
     pub fn uri(&self) -> &str {
         self.uri.as_ref()
     }
 
+    /// Set the `uri`.
     pub fn set_uri(&mut self, value: &str) {
         self.uri = value.to_string();
     }
 
+    /// Get the value of the `local_uri`.
+    /// Represents the local uri,usually filesystem path, that the media file will be located at.
     pub fn local_uri(&self) -> Option<&str> {
         self.local_uri.as_ref().map(|s| s.as_str())
     }
 
+    /// Set the `local_uri`.
     pub fn set_local_uri(&mut self, value: Option<&str>) {
         self.local_uri = value.map(|x| x.to_string());
     }
 
+    /// Get the value of the `description`.
     pub fn description(&self) -> Option<&str> {
         self.description.as_ref().map(|s| s.as_str())
     }
 
+    /// Set the `description`.
     pub fn set_description(&mut self, value: Option<&str>) {
         self.description = value.map(|x| x.to_string());
     }
 
+    /// Get the the `published_date`.
     pub fn published_date(&self) -> Option<&str> {
         self.published_date.as_ref().map(|s| s.as_str())
     }
 
+    /// Set the `published_date`.
     pub fn set_published_date(&mut self, value: Option<&str>) {
         self.published_date = value.map(|x| x.to_string().to_owned());
     }
 
+    /// Get the value of the `description`.
     pub fn guid(&self) -> Option<&str> {
         self.guid.as_ref().map(|s| s.as_str())
     }
 
+    /// Set the `guid`.
     pub fn set_guid(&mut self, value: Option<&str>) {
         self.guid = value.map(|x| x.to_string());
     }
 
+    /// Get the `epoch` value.
+    /// Retrieved from the rss Item publish date.
     pub fn epoch(&self) -> i32 {
         self.epoch
     }
 
+    /// Set the `epoch`.
     pub fn set_epoch(&mut self, value: i32) {
         self.epoch = value;
     }
 
+    /// Get the `length`.
     pub fn length(&self) -> Option<i32> {
         self.length
     }
 
+    /// Set the `length`.
     pub fn set_length(&mut self, value: Option<i32>) {
         self.length = value;
     }
 
+    /// Epoch representation of the last time the episode was played.
+    /// None/Null for unplayed.
     pub fn played(&self) -> Option<i32> {
         self.played
     }
 
+    /// Set the `played` value.
     pub fn set_played(&mut self, value: Option<i32>) {
         self.played = value;
     }
 
+    /// Represents the archiving policy for the episode.
     pub fn archive(&self) -> bool {
         self.archive
     }
 
+    /// Set the `archive` policy.
+    /// If true, the download cleanr will ignore the episode
+    /// and the corresponding media value will never be automaticly deleted.
     pub fn set_archive(&mut self, b: bool) {
         self.archive = b
     }
 
+    /// Get the `favorite` statues of the `Episode`.
     pub fn favorite(&self) -> bool {
         self.favorite
     }
 
+    /// Set `favorite`.
     pub fn set_favorite(&mut self, b: bool) {
         self.favorite = b
     }
 
+    /// `Podcast` foreign key.
     pub fn podcast_id(&self) -> i32 {
         self.podcast_id
     }
 
+    /// Sets the `played` value with the current `epoch` timestap and save it.
     pub fn set_played_now(&mut self) -> Result<()> {
         let epoch = Utc::now().timestamp() as i32;
         self.set_played(Some(epoch));
@@ -139,6 +169,7 @@ impl Episode {
         Ok(())
     }
 
+    /// Helper method to easily save/"sync" current state of self to the Database.
     pub fn save(&self) -> Result<Episode> {
         let db = connection();
         let tempdb = db.get()?;
