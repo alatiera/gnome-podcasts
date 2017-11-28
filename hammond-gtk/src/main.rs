@@ -92,6 +92,11 @@ fn build_ui(app: &gtk::Application) {
         glib::Continue(false)
     }));
 
+    gtk::idle_add(move || {
+        let _ = checkup();
+        glib::Continue(false)
+    });
+
     // Get the headerbar
     let header = headerbar::get_headerbar(&stack);
     window.set_titlebar(&header);
