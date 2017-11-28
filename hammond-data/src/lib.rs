@@ -2,6 +2,9 @@
 #![warn(missing_docs)]
 #![cfg_attr(feature = "cargo-clippy", allow(blacklisted_name))]
 
+//! A libraty for parsing, indexing and retrieving podcast Feeds,
+//! into and from a Database.
+
 #[macro_use]
 extern crate error_chain;
 

@@ -19,11 +19,6 @@
 - [ ] Re-design PodcastWidget.
 - [ ] Polish the flowbox_child banner.
 
-**DB changes:**
-
-- [ ] Mark episodes/podcast for archival
-- [ ] Mark stuff as Favorite. Maybe auto-archive favorites?
-
 ## Second:
 
 - [ ] Make use of file metadas, [This](https://github.com/GuillaumeGomez/audio-video-metadata) might be helpfull.
@@ -49,12 +44,6 @@
 - [ ] Make Podcast cover fetchng and loading not block the execution of the program at startup.
 - [ ] Lazy evaluate episode loading based on the podcast_widget's view scrolling.
 - [ ] Headerbar back button and stack switching
-
-
-**Unhack stuff:**
-
-- [ ] Url sanitization
-
 
 **FIXME:**
 

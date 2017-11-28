@@ -1,3 +1,5 @@
+//! Helper utilities for accomplishing various tasks.
+
 use rayon::prelude::*;
 use chrono::prelude::*;
 

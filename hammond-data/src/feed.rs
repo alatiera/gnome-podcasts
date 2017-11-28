@@ -1,3 +1,5 @@
+//! Index and retrieve Feeds.
+
 use rayon::prelude::*;
 use diesel::prelude::*;
 use rayon::iter::IntoParallelIterator;
