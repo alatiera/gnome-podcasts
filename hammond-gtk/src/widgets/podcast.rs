@@ -119,6 +119,7 @@ pub fn update_podcast_widget(stack: &gtk::Stack, pd: &Podcast) {
 #[cfg(test)]
 mod tests {
     use hammond_data::Source;
+    use hammond_data::feed::index;
     use diesel::Identifiable;
     use super::*;
 
@@ -132,7 +133,8 @@ mod tests {
         let sid = source.id().clone();
 
         // Convert Source it into a Feed and index it
-        source.into_feed().unwrap().index().unwrap();
+        let feed = source.into_feed().unwrap();
+        index(vec!(feed));
 
         // Get the Podcast
         let pd = dbqueries::get_podcast_from_source_id(sid).unwrap();

@@ -183,6 +183,7 @@ pub fn cache_image(pd: &Podcast) -> Option<String> {
 mod tests {
     use super::*;
     use hammond_data::Source;
+    use hammond_data::feed::index;
     use hammond_data::dbqueries;
     use diesel::Identifiable;
 
@@ -205,7 +206,8 @@ mod tests {
         let sid = source.id().clone();
 
         // Convert Source it into a Feed and index it
-        source.into_feed().unwrap().index().unwrap();
+        let feed = source.into_feed().unwrap();
+        index(vec!(feed));
 
         // Get the Podcast
         let pd = dbqueries::get_podcast_from_source_id(sid).unwrap();

@@ -64,7 +64,7 @@ fn run_migration_on(connection: &SqliteConnection) -> Result<()> {
     Ok(())
 }
 
-// Reset the database into a clean state.
+/// Reset the database into a clean state.
 // Test share a Temp file db.
 #[allow(dead_code)]
 pub fn truncate_db() -> Result<()> {

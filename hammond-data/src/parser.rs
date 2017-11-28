@@ -104,7 +104,7 @@ mod tests {
                 "http://static.megaphone.fm/podcasts/d5735a50-d904-11e6-8532-73c7de466ea6/image/\
                  uploads_2F1484252190700-qhn5krasklbce3dh-a797539282700ea0298a3a26f7e49b0b_\
                  2FIntercepted_COVER%2B_281_29.png"
-            ),
+            )
         );
     }
 
@@ -123,7 +123,7 @@ mod tests {
         assert_eq!(pd.description(), descr);
         assert_eq!(
             pd.image_uri(),
-            Some("http://www.propublica.org/images/podcast_logo_2.png"),
+            Some("http://www.propublica.org/images/podcast_logo_2.png")
         );
     }
 
@@ -162,7 +162,7 @@ mod tests {
         assert_eq!(pd.description(), descr);
         assert_eq!(
             pd.image_uri(),
-            Some("https://request-for-explanation.github.io/podcast/podcast.png"),
+            Some("https://request-for-explanation.github.io/podcast/podcast.png")
         );
     }
 
@@ -226,7 +226,7 @@ mod tests {
         );
         assert_eq!(
             i.uri(),
-            "http://tracking.feedpress.it/link/10581/6726758/20170908-cliff-levy.mp3",
+            "http://tracking.feedpress.it/link/10581/6726758/20170908-cliff-levy.mp3"
         );
         assert_eq!(i.description(), Some(descr));
         assert_eq!(i.length(), Some(33396551));
@@ -253,7 +253,7 @@ mod tests {
         );
         assert_eq!(
             i2.uri(),
-            "http://tracking.feedpress.it/link/10581/6726759/16_JohnAllen-CRAFT.mp3".to_string(),
+            "http://tracking.feedpress.it/link/10581/6726759/16_JohnAllen-CRAFT.mp3".to_string()
         );
         assert_eq!(i2.description(), Some(descr2));
         assert_eq!(i2.length(), Some(17964071));
