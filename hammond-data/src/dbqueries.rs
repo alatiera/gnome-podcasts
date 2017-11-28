@@ -1,11 +1,10 @@
+//! Random CRUD helper functions.
+
 use diesel::prelude::*;
 use diesel;
 use models::queryables::{Episode, Podcast, Source};
 use chrono::prelude::*;
 use errors::*;
-
-/// Random db querries helper functions.
-/// Probably needs cleanup.
 
 use database::connection;
 

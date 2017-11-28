@@ -1,5 +1,5 @@
 #![recursion_limit = "1024"]
-#![warn(missing_docs)]
+#![deny(missing_docs)]
 #![cfg_attr(feature = "cargo-clippy", allow(blacklisted_name))]
 
 //! A libraty for parsing, indexing and retrieving podcast Feeds,
