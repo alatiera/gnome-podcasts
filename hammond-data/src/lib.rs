@@ -1,6 +1,12 @@
 #![recursion_limit = "1024"]
 #![deny(missing_docs)]
 #![cfg_attr(feature = "cargo-clippy", allow(blacklisted_name))]
+#![cfg_attr(feature = "clippy",
+            warn(option_unwrap_used, result_unwrap_used, print_stdout,
+                 wrong_pub_self_convention, mut_mut, non_ascii_literal, similar_names,
+                 unicode_not_nfc, enum_glob_use, if_not_else, items_after_statements,
+                 used_underscore_binding))]
+#![cfg_attr(all(test, feature = "clippy"), allow(option_unwrap_used, result_unwrap_used))]
 
 //! A libraty for parsing, indexing and retrieving podcast Feeds,
 //! into and from a Database.
