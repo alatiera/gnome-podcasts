@@ -28,11 +28,9 @@ pub struct Episode {
     local_uri: Option<String>,
     description: Option<String>,
     published_date: Option<String>,
-    /// Representation of system time. Should be in UTC.
     epoch: i32,
     length: Option<i32>,
     guid: Option<String>,
-    /// Represent the epoch value of when the episode was last played.
     played: Option<i32>,
     favorite: bool,
     archive: bool,
@@ -72,7 +70,7 @@ impl Episode {
         self.local_uri = value.map(|x| x.to_string());
     }
 
-    /// Get the value of the `description`.
+    /// Get the `description`.
     pub fn description(&self) -> Option<&str> {
         self.description.as_ref().map(|s| s.as_str())
     }
@@ -104,6 +102,7 @@ impl Episode {
 
     /// Get the `epoch` value.
     /// Retrieved from the rss Item publish date.
+    /// Set to Utc whenever possible.
     pub fn epoch(&self) -> i32 {
         self.epoch
     }
@@ -146,17 +145,17 @@ impl Episode {
         self.archive = b
     }
 
-    /// Get the `favorite` statues of the `Episode`.
+    /// Get the `favorite` status of the `Episode`.
     pub fn favorite(&self) -> bool {
         self.favorite
     }
 
-    /// Set `favorite`.
+    /// Set `favorite` status.
     pub fn set_favorite(&mut self, b: bool) {
         self.favorite = b
     }
 
-    /// `Podcast` foreign key.
+    /// `Podcast` table foreign key.
     pub fn podcast_id(&self) -> i32 {
         self.podcast_id
     }
@@ -183,6 +182,7 @@ impl Episode {
 #[changeset_options(treat_none_as_null = "true")]
 #[table_name = "podcast"]
 #[derive(Debug, Clone)]
+/// Diesel Model of the podcast table.
 pub struct Podcast {
     id: i32,
     title: String,
@@ -196,62 +196,81 @@ pub struct Podcast {
 }
 
 impl Podcast {
-    pub fn source_id(&self) -> i32 {
-        self.source_id
-    }
-
+    /// Get the Feed `title`.
     pub fn title(&self) -> &str {
         &self.title
     }
 
+    /// Get the Feed `link`.
+    /// Usually the website/homepage of the content creator.
     pub fn link(&self) -> &str {
         &self.link
     }
 
+    /// Set the Podcast/Feed `link`.
     pub fn set_link(&mut self, value: &str) {
         self.link = value.to_string();
     }
 
+    /// Get the `description`.
     pub fn description(&self) -> &str {
         &self.description
     }
 
+    /// Set the `description`.
     pub fn set_description(&mut self, value: &str) {
         self.description = value.to_string();
     }
 
+    /// Get the `image_uri`.
+    /// Represents the uri(url usually) that the Feed cover image is located at.
     pub fn image_uri(&self) -> Option<&str> {
         self.image_uri.as_ref().map(|s| s.as_str())
     }
 
+    /// Set the `image_uri`.
     pub fn set_image_uri(&mut self, value: Option<&str>) {
         self.image_uri = value.map(|x| x.to_string());
     }
 
+    /// Represents the archiving policy for the episode.
     pub fn archive(&self) -> bool {
         self.archive
     }
 
+    /// Set the `archive` policy.
     pub fn set_archive(&mut self, b: bool) {
         self.archive = b
     }
 
+    /// Get the `favorite` status of the `Podcast` Feed.
     pub fn favorite(&self) -> bool {
         self.favorite
     }
 
+    /// Set `favorite` status.
     pub fn set_favorite(&mut self, b: bool) {
         self.favorite = b
     }
 
+    /// Represents the download policy for the `Podcast` Feed.
+    /// Reserved for the use with a Download manager, yet to be implemented.
+    /// If true Podcast Episode should be downloaded automaticly/skipping the selection queue.
     pub fn always_download(&self) -> bool {
         self.always_dl
     }
 
+    /// Set the download policy.
     pub fn set_always_download(&mut self, b: bool) {
         self.always_dl = b
     }
 
+    /// `Source` table foreign key.
+    pub fn source_id(&self) -> i32 {
+        self.source_id
+    }
+
+    /// Helper method to easily save/"sync" current state of self to the Database.
     pub fn save(&self) -> Result<Podcast> {
         let db = connection();
         let tempdb = db.get()?;
