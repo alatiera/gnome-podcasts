@@ -49,6 +49,7 @@ impl Episode {
     }
 
     /// Get the value of the `uri`.
+    ///
     /// Represents the url(usually) that the media file will be located at.
     pub fn uri(&self) -> &str {
         self.uri.as_ref()
@@ -60,7 +61,9 @@ impl Episode {
     }
 
     /// Get the value of the `local_uri`.
-    /// Represents the local uri,usually filesystem path, that the media file will be located at.
+    ///
+    /// Represents the local uri,usually filesystem path,
+    /// that the media file will be located at.
     pub fn local_uri(&self) -> Option<&str> {
         self.local_uri.as_ref().map(|s| s.as_str())
     }
@@ -101,8 +104,9 @@ impl Episode {
     }
 
     /// Get the `epoch` value.
+    ///
     /// Retrieved from the rss Item publish date.
-    /// Set to Utc whenever possible.
+    /// Value is set to Utc whenever possible.
     pub fn epoch(&self) -> i32 {
         self.epoch
     }
@@ -123,6 +127,7 @@ impl Episode {
     }
 
     /// Epoch representation of the last time the episode was played.
+    ///
     /// None/Null for unplayed.
     pub fn played(&self) -> Option<i32> {
         self.played
@@ -139,6 +144,7 @@ impl Episode {
     }
 
     /// Set the `archive` policy.
+    ///
     /// If true, the download cleanr will ignore the episode
     /// and the corresponding media value will never be automaticly deleted.
     pub fn set_archive(&mut self, b: bool) {
@@ -202,6 +208,7 @@ impl Podcast {
     }
 
     /// Get the Feed `link`.
+    ///
     /// Usually the website/homepage of the content creator.
     pub fn link(&self) -> &str {
         &self.link
@@ -223,6 +230,7 @@ impl Podcast {
     }
 
     /// Get the `image_uri`.
+    ///
     /// Represents the uri(url usually) that the Feed cover image is located at.
     pub fn image_uri(&self) -> Option<&str> {
         self.image_uri.as_ref().map(|s| s.as_str())
@@ -254,8 +262,11 @@ impl Podcast {
     }
 
     /// Represents the download policy for the `Podcast` Feed.
+    ///
     /// Reserved for the use with a Download manager, yet to be implemented.
-    /// If true Podcast Episode should be downloaded automaticly/skipping the selection queue.
+    ///
+    /// If true Podcast Episode should be downloaded automaticly/skipping
+    /// the selection queue.
     pub fn always_download(&self) -> bool {
         self.always_dl
     }
@@ -283,6 +294,7 @@ impl Podcast {
 #[table_name = "source"]
 #[changeset_options(treat_none_as_null = "true")]
 #[derive(Debug, Clone)]
+/// Diesel Model of the source table.
 pub struct Source {
     id: i32,
     uri: String,
@@ -291,22 +303,31 @@ pub struct Source {
 }
 
 impl<'a> Source {
+    /// Represents the location(usually url) of the Feed xml file.
     pub fn uri(&self) -> &str {
         &self.uri
     }
 
+    /// Represents the Http Last-Modified Header field.
+    ///
+    /// See [RFC 7231](https://tools.ietf.org/html/rfc7231#section-7.2) for more.
     pub fn last_modified(&self) -> Option<&str> {
         self.last_modified.as_ref().map(|s| s.as_str())
     }
 
+    /// Set `last_modified` value.
     pub fn set_last_modified(&mut self, value: Option<&str>) {
         self.last_modified = value.map(|x| x.to_string());
     }
 
+    /// Represents the Http Etag Header field.
+    ///
+    /// See [RFC 7231](https://tools.ietf.org/html/rfc7231#section-7.2) for more.
     pub fn http_etag(&self) -> Option<&str> {
         self.http_etag.as_ref().map(|s| s.as_str())
     }
 
+    /// Set `http_etag` value.
     pub fn set_http_etag(&mut self, value: Option<&str>) {
         self.http_etag = value.map(|x| x.to_string());
     }
@@ -332,6 +353,7 @@ impl<'a> Source {
         Ok(())
     }
 
+    /// Helper method to easily save/"sync" current state of self to the Database.
     pub fn save(&self) -> Result<Source> {
         let db = connection();
         let tempdb = db.get()?;
@@ -339,6 +361,14 @@ impl<'a> Source {
         Ok(self.save_changes::<Source>(&*tempdb)?)
     }
 
+    /// `Feed` constructor.
+    ///
+    /// Fetches the latest xml Feed.
+    ///
+    /// Updates the validator Http Headers.
+    ///
+    /// Consumes `self` and Returns the corresponding `Feed` Object.
+    // TODO: Refactor into TryInto once it lands on stable.
     pub fn into_feed(mut self) -> Result<Feed> {
         use reqwest::header::{ETag, EntityTag, Headers, HttpDate, LastModified};
 
@@ -381,6 +411,7 @@ impl<'a> Source {
         Ok(Feed::from_channel_source(chan, self))
     }
 
+    /// Construct a new `Source` with the given `uri` and index it.
     pub fn from_url(uri: &str) -> Result<Source> {
         NewSource::new_with_uri(uri).into_source()
     }
