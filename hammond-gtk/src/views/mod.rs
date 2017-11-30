@@ -1,1 +1,1 @@
-pub mod podcasts_view;
+pub mod podcasts;

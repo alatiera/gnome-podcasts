@@ -1,3 +1,5 @@
+#![allow(dead_code)]
+
 extern crate gdk;
 extern crate gdk_pixbuf;
 extern crate gio;
@@ -47,7 +49,7 @@ mod headerbar;
 mod utils;
 mod static_resource;
 
-use views::podcasts_view;
+use views::podcasts;
 
 /*
 THIS IS STILL A PROTOTYPE.
@@ -63,7 +65,7 @@ fn build_ui(app: &gtk::Application) {
     let window = gtk::ApplicationWindow::new(app);
     window.set_default_size(1150, 650);
     // Setup the Stack that will manage the switch between podcasts_view and podcast_widget.
-    let stack = podcasts_view::setup_stack();
+    let stack = podcasts::setup_stack();
     window.add(&stack);
 
     window.connect_delete_event(|w, _| {

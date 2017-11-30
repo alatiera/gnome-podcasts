@@ -8,7 +8,7 @@ use std::{thread, time};
 use std::cell::RefCell;
 use std::sync::mpsc::{channel, Receiver};
 
-use views::podcasts_view;
+use views::podcasts;
 
 type Foo = RefCell<Option<(gtk::Stack, Receiver<bool>)>>;
 
@@ -55,7 +55,7 @@ fn refresh_podcasts_view() -> glib::Continue {
     GLOBAL.with(|global| {
         if let Some((ref stack, ref reciever)) = *global.borrow() {
             if reciever.try_recv().is_ok() {
-                podcasts_view::update_podcasts_view(stack);
+                podcasts::update_podcasts_view(stack);
             }
         }
     });

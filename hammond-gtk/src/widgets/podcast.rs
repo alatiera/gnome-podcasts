@@ -9,7 +9,7 @@ use hammond_data::Podcast;
 use hammond_downloader::downloader;
 
 use widgets::episode::episodes_listbox;
-use podcasts_view::update_podcasts_view;
+use views::podcasts::update_podcasts_view;
 
 pub fn podcast_widget(stack: &gtk::Stack, pd: &Podcast) -> gtk::Box {
     // Adapted from gnome-music AlbumWidget

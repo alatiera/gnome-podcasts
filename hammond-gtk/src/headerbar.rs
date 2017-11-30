@@ -4,7 +4,7 @@ use gtk::prelude::*;
 use hammond_data::Source;
 use hammond_data::utils::url_cleaner;
 
-use podcasts_view::update_podcasts_view;
+use views::podcasts::update_podcasts_view;
 use utils;
 
 #[derive(Debug)]
