@@ -1,6 +1,5 @@
 use gtk::prelude::*;
 use gtk;
-use gdk_pixbuf::Pixbuf;
 
 use std::fs;
 
@@ -10,6 +9,7 @@ use hammond_downloader::downloader;
 
 use widgets::episode::episodes_listbox;
 use views::podcasts::update_podcasts_view;
+use utils::get_pixbuf_from_path;
 
 #[derive(Debug)]
 struct PodcastWidget {
@@ -154,15 +154,6 @@ fn show_played_button(pd: &Podcast, played_button: &gtk::Button) {
     }
 }
 
-pub fn get_pixbuf_from_path(pd: &Podcast) -> Option<Pixbuf> {
-    let img_path = downloader::cache_image(pd);
-    if let Some(i) = img_path {
-        Pixbuf::new_from_file_at_scale(&i, 256, 256, true).ok()
-    } else {
-        None
-    }
-}
-
 pub fn setup_podcast_widget(stack: &gtk::Stack) {
     let builder = gtk::Builder::new_from_resource("/org/gnome/hammond/gtk/podcast_widget.ui");
     let pd_widget: gtk::Box = builder.get_object("podcast_widget").unwrap();
@@ -179,31 +170,4 @@ pub fn update_podcast_widget(stack: &gtk::Stack, pd: &Podcast) {
     stack.add_named(&pdw, "pdw");
     stack.set_visible_child_name(&vis);
     old.destroy();
-}
-
-#[cfg(test)]
-mod tests {
-    use hammond_data::Source;
-    use hammond_data::feed::index;
-    use diesel::Identifiable;
-    use super::*;
-
-    #[test]
-    fn test_get_pixbuf_from_path() {
-        let url = "http://www.newrustacean.com/feed.xml";
-
-        // Create and index a source
-        let source = Source::from_url(url).unwrap();
-        // Copy it's id
-        let sid = source.id().clone();
-
-        // Convert Source it into a Feed and index it
-        let feed = source.into_feed().unwrap();
-        index(vec![feed]);
-
-        // Get the Podcast
-        let pd = dbqueries::get_podcast_from_source_id(sid).unwrap();
-        let pxbuf = get_pixbuf_from_path(&pd);
-        assert!(pxbuf.is_some());
-    }
 }

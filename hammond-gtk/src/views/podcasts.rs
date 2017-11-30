@@ -7,6 +7,7 @@ use hammond_data::dbqueries;
 use hammond_data::Podcast;
 
 use widgets::podcast::*;
+use utils::get_pixbuf_from_path;
 
 fn setup_empty_view(stack: &gtk::Stack) {
     let builder = gtk::Builder::new_from_resource("/org/gnome/hammond/gtk/empty_view.ui");
