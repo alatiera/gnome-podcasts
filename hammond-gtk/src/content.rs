@@ -44,8 +44,7 @@ impl Content {
             podcasts: pop,
         };
 
-        content.setup_stack();
-        content.podcasts.init(&content.stack);
+        content.init();
         content
     }
 
@@ -56,5 +55,10 @@ impl Content {
         self.stack.add_named(&self.widget.container, "pdw"); // Rename into "widget"
         self.stack.add_named(&self.podcasts.container, "fb_parent"); // Rename into "podcasts"
         self.stack.add_named(&self.empty.container, "empty"); // Rename into "empty"
+    }
+
+    fn init(&self) {
+        self.setup_stack();
+        self.podcasts.init(&self.stack);
     }
 }

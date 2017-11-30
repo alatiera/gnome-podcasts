@@ -9,14 +9,14 @@ use utils;
 
 #[derive(Debug)]
 pub struct Header {
-    container: gtk::HeaderBar,
+    pub container: gtk::HeaderBar,
     home: gtk::Button,
     refresh: gtk::Button,
     add_toggle: gtk::MenuButton,
 }
 
 impl Header {
-    fn new() -> Header {
+    pub fn new() -> Header {
         let builder = gtk::Builder::new_from_resource("/org/gnome/hammond/gtk/headerbar.ui");
 
         let header: gtk::HeaderBar = builder.get_object("headerbar1").unwrap();
@@ -30,6 +30,12 @@ impl Header {
             refresh,
             add_toggle,
         }
+    }
+
+    pub fn new_initialized(stack: &gtk::Stack) -> Header {
+        let header = Header::new();
+        header.init(stack);
+        header
     }
 
     fn init(&self, stack: &gtk::Stack) {

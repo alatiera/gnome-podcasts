@@ -101,8 +101,10 @@ fn build_ui(app: &gtk::Application) {
     });
 
     // Get the headerbar
-    let header = headerbar::get_headerbar(&stack);
-    window.set_titlebar(&header);
+    // let header = headerbar::get_headerbar(&stack);
+    // window.set_titlebar(&header);
+    let header = headerbar::Header::new_initialized(&stack);
+    window.set_titlebar(&header.container);
 
     window.show_all();
     window.activate();
