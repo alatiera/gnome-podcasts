@@ -3,7 +3,6 @@
 <interface>
   <requires lib="gtk+" version="3.20"/>
   <object class="GtkPopover" id="add-popover">
-    <property name="visible">True</property>
     <property name="can_focus">False</property>
     <property name="tooltip_text" translatable="yes">Add a new feed</property>
     <property name="valign">center</property>
