@@ -9,6 +9,45 @@ use hammond_data::Podcast;
 use widgets::podcast::*;
 use utils::get_pixbuf_from_path;
 
+#[derive(Debug, Clone)]
+pub struct PopulatedView {
+    container: gtk::Box,
+    flowbox: gtk::FlowBox,
+    viewport: gtk::Viewport,
+}
+
+impl PopulatedView {
+    pub fn new() -> PopulatedView {
+        let builder = gtk::Builder::new_from_resource("/org/gnome/hammond/gtk/podcasts_view.ui");
+        let container: gtk::Box = builder.get_object("fb_parent").unwrap();
+        let flowbox: gtk::FlowBox = builder.get_object("flowbox").unwrap();
+        let viewport: gtk::Viewport = builder.get_object("viewport").unwrap();
+
+        PopulatedView {
+            container,
+            flowbox,
+            viewport,
+        }
+    }
+
+    pub fn init(&self, content_stack: &gtk::Stack) {
+        use gtk::WidgetExt;
+
+        // TODO: handle unwraps.
+        let stack = content_stack;
+        self.flowbox
+            .connect_child_activated(clone!(stack => move |_, child| {
+            // This is such an ugly hack...
+            // let id = child.get_name().unwrap().parse::<i32>().unwrap();
+            let id = WidgetExt::get_name(child).unwrap().parse::<i32>().unwrap();
+            let parent = dbqueries::get_podcast_from_id(id).unwrap();
+            on_flowbox_child_activate(&stack, &parent);
+        }));
+        // Populate the flowbox with the Podcasts.
+        populate_flowbox(&self.flowbox);
+    }
+}
+
 fn setup_empty_view(stack: &gtk::Stack) {
     let builder = gtk::Builder::new_from_resource("/org/gnome/hammond/gtk/empty_view.ui");
     let view: gtk::Box = builder.get_object("empty_view").unwrap();

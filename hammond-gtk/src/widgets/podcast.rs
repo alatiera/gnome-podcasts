@@ -72,7 +72,17 @@ impl PodcastWidget {
             on_played_button_clicked(&stack, &pd);
         }));
 
-        show_played_button(pd, &self.played);
+        self.show_played_button(pd);
+    }
+
+    fn show_played_button(&self, pd: &Podcast) {
+        let new_episodes = dbqueries::get_pd_unplayed_episodes(pd);
+
+        if let Ok(n) = new_episodes {
+            if !n.is_empty() {
+                self.played.show()
+            }
+        }
     }
 }
 
@@ -118,6 +128,7 @@ pub fn podcast_widget(stack: &gtk::Stack, pd: &Podcast) -> gtk::Box {
     pd_widget
 }
 
+// Note: Stack manipulation
 fn on_unsub_button_clicked(stack: &gtk::Stack, pd: &Podcast, unsub_button: &gtk::Button) {
     let res = dbqueries::remove_feed(pd);
     if res.is_ok() {
@@ -154,6 +165,7 @@ fn show_played_button(pd: &Podcast, played_button: &gtk::Button) {
     }
 }
 
+// Note: Stack manipulation
 pub fn setup_podcast_widget(stack: &gtk::Stack) {
     let builder = gtk::Builder::new_from_resource("/org/gnome/hammond/gtk/podcast_widget.ui");
     let pd_widget: gtk::Box = builder.get_object("podcast_widget").unwrap();
@@ -161,6 +173,7 @@ pub fn setup_podcast_widget(stack: &gtk::Stack) {
     stack.add_named(&pd_widget, "pdw");
 }
 
+// Note: Stack manipulation
 pub fn update_podcast_widget(stack: &gtk::Stack, pd: &Podcast) {
     let old = stack.get_child_by_name("pdw").unwrap();
     let pdw = podcast_widget(stack, pd);
