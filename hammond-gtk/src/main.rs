@@ -45,6 +45,7 @@ macro_rules! clone {
 mod views;
 mod widgets;
 mod headerbar;
+mod content;
 
 mod utils;
 mod static_resource;

@@ -2,7 +2,7 @@ use gtk;
 
 #[derive(Debug, Clone)]
 pub struct EmptyView {
-    container: gtk::Box,
+    pub container: gtk::Box,
 }
 
 impl EmptyView {

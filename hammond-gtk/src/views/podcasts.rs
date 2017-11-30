@@ -11,7 +11,7 @@ use utils::get_pixbuf_from_path;
 
 #[derive(Debug, Clone)]
 pub struct PopulatedView {
-    container: gtk::Box,
+    pub container: gtk::Box,
     flowbox: gtk::FlowBox,
     viewport: gtk::Viewport,
 }

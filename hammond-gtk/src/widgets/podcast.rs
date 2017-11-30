@@ -12,8 +12,8 @@ use views::podcasts::update_podcasts_view;
 use utils::get_pixbuf_from_path;
 
 #[derive(Debug)]
-struct PodcastWidget {
-    container: gtk::Box,
+pub struct PodcastWidget {
+    pub container: gtk::Box,
     cover: gtk::Image,
     title: gtk::Label,
     description: gtk::TextView,
@@ -23,7 +23,7 @@ struct PodcastWidget {
 }
 
 impl PodcastWidget {
-    fn new() -> PodcastWidget {
+    pub fn new() -> PodcastWidget {
         // Adapted from gnome-music AlbumWidget
         let builder = gtk::Builder::new_from_resource("/org/gnome/hammond/gtk/podcast_widget.ui");
         let container: gtk::Box = builder.get_object("podcast_widget").unwrap();
