@@ -109,7 +109,6 @@ Warn: This will delete downloaded content associated with this Podcast.</propert
                 </child>
                 <child>
                   <object class="GtkButton" id="mark_all_played_button">
-                    <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
                     <property name="tooltip_text" translatable="yes">Mark all episodes as Played.</property>
