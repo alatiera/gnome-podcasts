@@ -11,6 +11,71 @@ use hammond_downloader::downloader;
 use widgets::episode::episodes_listbox;
 use views::podcasts::update_podcasts_view;
 
+#[derive(Debug)]
+struct PodcastWidget {
+    container: gtk::Box,
+    cover: gtk::Image,
+    title: gtk::Label,
+    description: gtk::TextView,
+    view: gtk::Viewport,
+    unsub: gtk::Button,
+    played: gtk::Button,
+}
+
+impl PodcastWidget {
+    fn new() -> PodcastWidget {
+        // Adapted from gnome-music AlbumWidget
+        let builder = gtk::Builder::new_from_resource("/org/gnome/hammond/gtk/podcast_widget.ui");
+        let container: gtk::Box = builder.get_object("podcast_widget").unwrap();
+
+        let cover: gtk::Image = builder.get_object("cover").unwrap();
+        let title: gtk::Label = builder.get_object("title_label").unwrap();
+        let description: gtk::TextView = builder.get_object("desc_text_view").unwrap();
+        let view: gtk::Viewport = builder.get_object("view").unwrap();
+        let unsub: gtk::Button = builder.get_object("unsub_button").unwrap();
+        let played: gtk::Button = builder.get_object("mark_all_played_button").unwrap();
+
+        PodcastWidget {
+            container,
+            cover,
+            title,
+            description,
+            view,
+            unsub,
+            played,
+        }
+    }
+
+    pub fn init(&self, stack: &gtk::Stack, pd: &Podcast) {
+        // TODO: should spawn a thread to avoid locking the UI probably.
+        self.unsub.connect_clicked(clone!(stack, pd => move |bttn| {
+            on_unsub_button_clicked(&stack, &pd, bttn);
+        }));
+
+        self.title.set_text(pd.title());
+        let listbox = episodes_listbox(pd);
+        if let Ok(l) = listbox {
+            self.view.add(&l);
+        }
+
+        {
+            let buff = self.description.get_buffer().unwrap();
+            buff.set_text(pd.description());
+        }
+
+        let img = get_pixbuf_from_path(pd);
+        if let Some(i) = img {
+            self.cover.set_from_pixbuf(&i);
+        }
+
+        self.played.connect_clicked(clone!(stack, pd => move |_| {
+            on_played_button_clicked(&stack, &pd);
+        }));
+
+        show_played_button(pd, &self.played);
+    }
+}
+
 pub fn podcast_widget(stack: &gtk::Stack, pd: &Podcast) -> gtk::Box {
     // Adapted from gnome-music AlbumWidget
     let builder = gtk::Builder::new_from_resource("/org/gnome/hammond/gtk/podcast_widget.ui");
