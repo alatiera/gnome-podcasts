@@ -55,6 +55,9 @@ impl Content {
         self.stack.add_named(&self.widget.container, "pdw"); // Rename into "widget"
         self.stack.add_named(&self.podcasts.container, "fb_parent"); // Rename into "podcasts"
         self.stack.add_named(&self.empty.container, "empty"); // Rename into "empty"
+
+        // FIXME: needs actuall logic
+        self.stack.set_visible_child_name("fb_parent")
     }
 
     fn init(&self) {
