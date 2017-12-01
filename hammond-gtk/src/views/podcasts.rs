@@ -12,7 +12,7 @@ use utils::get_pixbuf_from_path;
 #[derive(Debug, Clone)]
 pub struct PopulatedView {
     pub container: gtk::Box,
-    flowbox: gtk::FlowBox,
+    pub flowbox: gtk::FlowBox,
     viewport: gtk::Viewport,
 }
 
@@ -46,12 +46,6 @@ impl PopulatedView {
         // Populate the flowbox with the Podcasts.
         populate_flowbox(&self.flowbox);
     }
-}
-
-fn setup_empty_view(stack: &gtk::Stack) {
-    let builder = gtk::Builder::new_from_resource("/org/gnome/hammond/gtk/empty_view.ui");
-    let view: gtk::Box = builder.get_object("empty_view").unwrap();
-    stack.add_named(&view, "empty");
 }
 
 fn show_empty_view(stack: &gtk::Stack) {
@@ -118,11 +112,12 @@ fn configure_banner(pd: &Podcast, banner: &gtk::Image, banner_title: &gtk::Label
 
 fn on_flowbox_child_activate(stack: &gtk::Stack, parent: &Podcast) {
     let old = stack.get_child_by_name("pdw").unwrap();
-    let pdw = podcast_widget(stack, parent);
+    let pdw = PodcastWidget::new();
+    pdw.init(stack, parent);
 
     stack.remove(&old);
-    stack.add_named(&pdw, "pdw");
-    stack.set_visible_child(&pdw);
+    stack.add_named(&pdw.container, "pdw");
+    stack.set_visible_child_name("pdw");
 
     // aggresive memory cleanup
     // probably not needed
@@ -144,15 +139,6 @@ fn setup_podcasts_flowbox(stack: &gtk::Stack) -> gtk::FlowBox {
     };
 
     flowbox
-}
-
-pub fn setup_stack() -> gtk::Stack {
-    let stack = gtk::Stack::new();
-    stack.set_transition_type(gtk::StackTransitionType::SlideLeftRight);
-    setup_empty_view(&stack);
-    setup_podcast_widget(&stack);
-    setup_podcasts_flowbox(&stack);
-    stack
 }
 
 pub fn update_podcasts_view(stack: &gtk::Stack) {

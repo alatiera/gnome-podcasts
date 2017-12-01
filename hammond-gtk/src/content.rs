@@ -4,8 +4,7 @@ use gtk::prelude::*;
 
 // use diesel::Identifiable;
 
-// use hammond_data::dbqueries;
-// use hammond_data::Podcast;
+use hammond_data::Podcast;
 
 use widgets::podcast::PodcastWidget;
 use views::podcasts::PopulatedView;
@@ -16,7 +15,7 @@ pub struct Content {
     pub stack: gtk::Stack,
     pub state: ContentState,
     widget: PodcastWidget,
-    podcasts: PopulatedView,
+    pub podcasts: PopulatedView,
     empty: EmptyView,
 }
 

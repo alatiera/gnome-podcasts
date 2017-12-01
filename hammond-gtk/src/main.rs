@@ -1,5 +1,3 @@
-#![allow(dead_code)]
-
 extern crate gdk;
 extern crate gdk_pixbuf;
 extern crate gio;
@@ -67,8 +65,8 @@ fn build_ui(app: &gtk::Application) {
     window.set_default_size(1150, 650);
     // Setup the Stack that will manage the switch between podcasts_view and podcast_widget.
     // let stack = podcasts::setup_stack();
-    let content = content::Content::new();
-    let stack = content.stack.clone();
+    let ct = content::Content::new();
+    let stack = ct.stack.clone();
     window.add(&stack);
 
     window.connect_delete_event(|w, _| {
@@ -103,8 +101,6 @@ fn build_ui(app: &gtk::Application) {
     });
 
     // Get the headerbar
-    // let header = headerbar::get_headerbar(&stack);
-    // window.set_titlebar(&header);
     let header = headerbar::Header::new_initialized(&stack);
     window.set_titlebar(&header.container);
 

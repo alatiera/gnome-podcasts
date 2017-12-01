@@ -86,48 +86,6 @@ impl PodcastWidget {
     }
 }
 
-pub fn podcast_widget(stack: &gtk::Stack, pd: &Podcast) -> gtk::Box {
-    // Adapted from gnome-music AlbumWidget
-    let builder = gtk::Builder::new_from_resource("/org/gnome/hammond/gtk/podcast_widget.ui");
-    let pd_widget: gtk::Box = builder.get_object("podcast_widget").unwrap();
-
-    let cover: gtk::Image = builder.get_object("cover").unwrap();
-    let title_label: gtk::Label = builder.get_object("title_label").unwrap();
-    let desc_text_view: gtk::TextView = builder.get_object("desc_text_view").unwrap();
-    let view: gtk::Viewport = builder.get_object("view").unwrap();
-    let unsub_button: gtk::Button = builder.get_object("unsub_button").unwrap();
-    let played_button: gtk::Button = builder.get_object("mark_all_played_button").unwrap();
-
-    // TODO: should spawn a thread to avoid locking the UI probably.
-    unsub_button.connect_clicked(clone!(stack, pd => move |bttn| {
-        on_unsub_button_clicked(&stack, &pd, bttn);
-    }));
-
-    title_label.set_text(pd.title());
-    let listbox = episodes_listbox(pd);
-    if let Ok(l) = listbox {
-        view.add(&l);
-    }
-
-    {
-        let buff = desc_text_view.get_buffer().unwrap();
-        buff.set_text(pd.description());
-    }
-
-    let img = get_pixbuf_from_path(pd);
-    if let Some(i) = img {
-        cover.set_from_pixbuf(&i);
-    }
-
-    played_button.connect_clicked(clone!(stack, pd => move |_| {
-        on_played_button_clicked(&stack, &pd);
-    }));
-
-    show_played_button(pd, &played_button);
-
-    pd_widget
-}
-
 // Note: Stack manipulation
 fn on_unsub_button_clicked(stack: &gtk::Stack, pd: &Podcast, unsub_button: &gtk::Button) {
     let res = dbqueries::remove_feed(pd);
@@ -155,32 +113,15 @@ fn on_played_button_clicked(stack: &gtk::Stack, pd: &Podcast) {
     update_podcast_widget(stack, pd);
 }
 
-fn show_played_button(pd: &Podcast, played_button: &gtk::Button) {
-    let new_episodes = dbqueries::get_pd_unplayed_episodes(pd);
-
-    if let Ok(n) = new_episodes {
-        if !n.is_empty() {
-            played_button.show()
-        }
-    }
-}
-
-// Note: Stack manipulation
-pub fn setup_podcast_widget(stack: &gtk::Stack) {
-    let builder = gtk::Builder::new_from_resource("/org/gnome/hammond/gtk/podcast_widget.ui");
-    let pd_widget: gtk::Box = builder.get_object("podcast_widget").unwrap();
-
-    stack.add_named(&pd_widget, "pdw");
-}
-
 // Note: Stack manipulation
 pub fn update_podcast_widget(stack: &gtk::Stack, pd: &Podcast) {
     let old = stack.get_child_by_name("pdw").unwrap();
-    let pdw = podcast_widget(stack, pd);
+    let pdw = PodcastWidget::new();
+    pdw.init(stack, pd);
     let vis = stack.get_visible_child_name().unwrap();
 
     stack.remove(&old);
-    stack.add_named(&pdw, "pdw");
+    stack.add_named(&pdw.container, "pdw");
     stack.set_visible_child_name(&vis);
     old.destroy();
 }
