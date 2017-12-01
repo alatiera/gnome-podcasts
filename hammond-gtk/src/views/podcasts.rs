@@ -30,11 +30,10 @@ impl PopulatedView {
         }
     }
 
-    pub fn init(&self, content_stack: &gtk::Stack) {
+    pub fn init(&self, stack: &gtk::Stack) {
         use gtk::WidgetExt;
 
         // TODO: handle unwraps.
-        let stack = content_stack;
         self.flowbox
             .connect_child_activated(clone!(stack => move |_, child| {
             // This is such an ugly hack...
@@ -44,25 +43,19 @@ impl PopulatedView {
             on_flowbox_child_activate(&stack, &parent);
         }));
         // Populate the flowbox with the Podcasts.
-        populate_flowbox(&self.flowbox);
+        self.populate_flowbox();
     }
-}
 
-fn show_empty_view(stack: &gtk::Stack) {
-    stack.set_visible_child_name("empty");
+    fn populate_flowbox(&self) {
+        let podcasts = dbqueries::get_podcasts();
 
-    info!("Empty view.");
-}
-
-fn populate_flowbox(flowbox: &gtk::FlowBox) {
-    let podcasts = dbqueries::get_podcasts();
-
-    if let Ok(pds) = podcasts {
-        pds.iter().for_each(|parent| {
-            let f = create_flowbox_child(parent);
-            flowbox.add(&f);
-        });
-        flowbox.show_all();
+        if let Ok(pds) = podcasts {
+            pds.iter().for_each(|parent| {
+                let f = create_flowbox_child(parent);
+                self.flowbox.add(&f);
+            });
+            self.flowbox.show_all();
+        }
     }
 }
 
@@ -124,29 +117,15 @@ fn on_flowbox_child_activate(stack: &gtk::Stack, parent: &Podcast) {
     old.destroy();
 }
 
-fn setup_podcasts_flowbox(stack: &gtk::Stack) -> gtk::FlowBox {
-    let builder = gtk::Builder::new_from_resource("/org/gnome/hammond/gtk/podcasts_view.ui");
-    let fb_parent: gtk::Box = builder.get_object("fb_parent").unwrap();
-    let flowbox: gtk::FlowBox = builder.get_object("flowbox").unwrap();
-    init_flowbox(stack, &flowbox);
-
-    stack.add_named(&fb_parent, "fb_parent");
-
-    if flowbox.get_children().is_empty() {
-        show_empty_view(stack);
-    } else {
-        stack.set_visible_child(&fb_parent);
-    };
-
-    flowbox
-}
-
 pub fn update_podcasts_view(stack: &gtk::Stack) {
     let vis = stack.get_visible_child_name().unwrap();
     let old = stack.get_child_by_name("fb_parent").unwrap();
     stack.remove(&old);
 
-    let flowbox = setup_podcasts_flowbox(stack);
+    let pdw = PopulatedView::new();
+    pdw.init(stack);
+    stack.add_named(&pdw.container, "fb_parent");
+    let flowbox = &pdw.flowbox;
 
     if vis == "empty" && !flowbox.get_children().is_empty() {
         stack.set_visible_child_name("fb_parent");
@@ -160,19 +139,4 @@ pub fn update_podcasts_view(stack: &gtk::Stack) {
     // aggresive memory cleanup
     // probably not needed
     old.destroy();
-}
-
-fn init_flowbox(stack: &gtk::Stack, flowbox: &gtk::FlowBox) {
-    use gtk::WidgetExt;
-
-    // TODO: handle unwraps.
-    flowbox.connect_child_activated(clone!(stack => move |_, child| {
-        // This is such an ugly hack...
-        // let id = child.get_name().unwrap().parse::<i32>().unwrap();
-        let id = WidgetExt::get_name(child).unwrap().parse::<i32>().unwrap();
-        let parent = dbqueries::get_podcast_from_id(id).unwrap();
-        on_flowbox_child_activate(&stack, &parent);
-    }));
-    // Populate the flowbox with the Podcasts.
-    populate_flowbox(flowbox);
 }
