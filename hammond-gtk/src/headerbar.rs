@@ -62,8 +62,8 @@ impl Header {
         // and add a StackSwitcher when more views are added.
         self.home.connect_clicked(clone!(stack => move |_| {
             let vis = stack.get_visible_child_name().unwrap();
-            stack.set_visible_child_name("fb_parent");
-            if vis != "pdw" {
+            stack.set_visible_child_name("podcasts");
+            if vis != "widget" {
                 update_podcasts_view(&stack);
             }
         }));

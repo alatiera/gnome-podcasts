@@ -132,13 +132,13 @@ impl PodcastChild {
 }
 
 fn on_flowbox_child_activate(stack: &gtk::Stack, parent: &Podcast) {
-    let old = stack.get_child_by_name("pdw").unwrap();
+    let old = stack.get_child_by_name("widget").unwrap();
     let pdw = PodcastWidget::new();
     pdw.init(stack, parent);
 
     stack.remove(&old);
-    stack.add_named(&pdw.container, "pdw");
-    stack.set_visible_child_name("pdw");
+    stack.add_named(&pdw.container, "widget");
+    stack.set_visible_child_name("widget");
 
     // aggresive memory cleanup
     // probably not needed
@@ -147,17 +147,17 @@ fn on_flowbox_child_activate(stack: &gtk::Stack, parent: &Podcast) {
 
 pub fn update_podcasts_view(stack: &gtk::Stack) {
     let vis = stack.get_visible_child_name().unwrap();
-    let old = stack.get_child_by_name("fb_parent").unwrap();
+    let old = stack.get_child_by_name("podcasts").unwrap();
     stack.remove(&old);
 
     let pdw = PopulatedView::new();
     pdw.init(stack);
-    stack.add_named(&pdw.container, "fb_parent");
+    stack.add_named(&pdw.container, "podcasts");
     let flowbox = &pdw.flowbox;
 
     if vis == "empty" && !flowbox.get_children().is_empty() {
-        stack.set_visible_child_name("fb_parent");
-    } else if vis == "fb_parent" && flowbox.get_children().is_empty() {
+        stack.set_visible_child_name("podcasts");
+    } else if vis == "podcasts" && flowbox.get_children().is_empty() {
         stack.set_visible_child_name("empty");
     } else {
         // preserve the visible widget

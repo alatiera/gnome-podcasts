@@ -18,6 +18,8 @@ pub struct Content {
 }
 
 #[derive(Debug)]
+#[allow(dead_code)]
+// TODO: find a way to wrap gtk::Stack into a State machine.
 pub enum ContentState {
     Widget(PodcastWidget),
     Empty(EmptyView),
@@ -49,12 +51,12 @@ impl Content {
         self.stack
             .set_transition_type(gtk::StackTransitionType::SlideLeftRight);
 
-        self.stack.add_named(&self.widget.container, "pdw"); // Rename into "widget"
-        self.stack.add_named(&self.podcasts.container, "fb_parent"); // Rename into "podcasts"
-        self.stack.add_named(&self.empty.container, "empty"); // Rename into "empty"
+        self.stack.add_named(&self.widget.container, "widget");
+        self.stack.add_named(&self.podcasts.container, "podcasts");
+        self.stack.add_named(&self.empty.container, "empty");
 
         // FIXME: needs actuall logic
-        self.stack.set_visible_child_name("fb_parent")
+        self.stack.set_visible_child_name("podcasts")
     }
 
     fn init(&self) {

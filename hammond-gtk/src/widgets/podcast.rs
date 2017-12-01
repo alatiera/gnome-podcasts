@@ -103,7 +103,7 @@ fn on_unsub_button_clicked(stack: &gtk::Stack, pd: &Podcast, unsub_button: &gtk:
             }
         };
     }
-    stack.set_visible_child_name("fb_parent");
+    stack.set_visible_child_name("podcasts");
     update_podcasts_view(stack);
 }
 
@@ -115,13 +115,13 @@ fn on_played_button_clicked(stack: &gtk::Stack, pd: &Podcast) {
 
 // Note: Stack manipulation
 pub fn update_podcast_widget(stack: &gtk::Stack, pd: &Podcast) {
-    let old = stack.get_child_by_name("pdw").unwrap();
+    let old = stack.get_child_by_name("widget").unwrap();
     let pdw = PodcastWidget::new();
     pdw.init(stack, pd);
     let vis = stack.get_visible_child_name().unwrap();
 
     stack.remove(&old);
-    stack.add_named(&pdw.container, "pdw");
+    stack.add_named(&pdw.container, "widget");
     stack.set_visible_child_name(&vis);
     old.destroy();
 }
