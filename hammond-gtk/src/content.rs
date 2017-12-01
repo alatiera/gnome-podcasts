@@ -53,9 +53,6 @@ impl Content {
     }
 
     fn setup_stack(&self) {
-        // self.stack
-        //     .set_transition_type(gtk::StackTransitionType::SlideLeftRight);
-
         self.stack.add_named(&self.widget.container, "widget");
         self.stack.add_named(&self.podcasts.container, "podcasts");
         self.stack.add_named(&self.empty.container, "empty");

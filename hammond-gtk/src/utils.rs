@@ -65,12 +65,8 @@ fn refresh_podcasts_view() -> glib::Continue {
 }
 
 pub fn get_pixbuf_from_path(pd: &Podcast) -> Option<Pixbuf> {
-    let img_path = downloader::cache_image(pd);
-    if let Some(i) = img_path {
-        Pixbuf::new_from_file_at_scale(&i, 256, 256, true).ok()
-    } else {
-        None
-    }
+    let img_path = downloader::cache_image(pd)?;
+    Pixbuf::new_from_file_at_scale(&img_path, 256, 256, true).ok()
 }
 
 #[cfg(test)]

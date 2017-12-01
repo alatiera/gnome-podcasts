@@ -40,6 +40,13 @@ impl PopulatedView {
         }
     }
 
+    #[allow(dead_code)]
+    pub fn new_initialized(stack: &gtk::Stack) -> PopulatedView {
+        let pop = PopulatedView::new();
+        pop.init(stack);
+        pop
+    }
+
     pub fn init(&self, stack: &gtk::Stack) {
         use gtk::WidgetExt;
 
