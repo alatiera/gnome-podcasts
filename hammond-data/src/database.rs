@@ -3,7 +3,6 @@ use diesel::prelude::*;
 use r2d2;
 
 use std::path::PathBuf;
-use std::sync::Arc;
 use std::io;
 
 use errors::*;
@@ -11,7 +10,7 @@ use errors::*;
 #[cfg(not(test))]
 use xdg_dirs;
 
-type Pool = Arc<r2d2::Pool<ConnectionManager<SqliteConnection>>>;
+type Pool = r2d2::Pool<ConnectionManager<SqliteConnection>>;
 
 embed_migrations!("migrations/");
 
@@ -37,20 +36,18 @@ lazy_static! {
 }
 
 pub(crate) fn connection() -> Pool {
-    Arc::clone(&POOL)
+    POOL.clone()
 }
 
 fn init_pool(db_path: &str) -> Pool {
     let manager = ConnectionManager::<SqliteConnection>::new(db_path);
-    let config = r2d2::Pool::builder()
+    let pool = r2d2::Pool::builder()
         .max_size(1)
         .build(manager)
         .expect("Failed to create pool.");
 
-    let pool = Arc::new(config);
-
     {
-        let db = Arc::clone(&pool).get().expect("Failed to initialize pool.");
+        let db = pool.get().expect("Failed to initialize pool.");
         run_migration_on(&*db).expect("Failed to run migrations during init.");
     }
     info!("Database pool initialized.");
