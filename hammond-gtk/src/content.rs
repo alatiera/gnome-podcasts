@@ -11,11 +11,19 @@ use views::empty::EmptyView;
 #[derive(Debug)]
 pub struct Content {
     pub stack: gtk::Stack,
-    pub state: ContentState,
     widget: PodcastWidget,
-    pub podcasts: PopulatedView,
+    podcasts: PopulatedView,
     empty: EmptyView,
 }
+
+// #[derive(Debug)]
+// pub struct Content {
+//     pub stack: gtk::Stack,
+//     pub state: ContentState,
+//     widget: PodcastWidget,
+//     pub podcasts: PopulatedView,
+//     empty: EmptyView,
+// }
 
 #[derive(Debug)]
 #[allow(dead_code)]
@@ -32,12 +40,9 @@ impl Content {
         let widget = PodcastWidget::new();
         let pop = PopulatedView::new();
         let empty = EmptyView::new();
-        // TODO: Avoid cloning
-        let state = ContentState::Populated(pop.clone());
 
         let content = Content {
             stack,
-            state,
             widget,
             empty,
             podcasts: pop,
@@ -55,12 +60,14 @@ impl Content {
         self.stack.add_named(&self.podcasts.container, "podcasts");
         self.stack.add_named(&self.empty.container, "empty");
 
-        // FIXME: needs actuall logic
         self.stack.set_visible_child_name("podcasts")
     }
 
     fn init(&self) {
         self.setup_stack();
         self.podcasts.init(&self.stack);
+        if self.podcasts.flowbox.get_children().is_empty() {
+            self.stack.set_visible_child_name("empty");
+        }
     }
 }
