@@ -4,8 +4,6 @@ use gtk::prelude::*;
 
 // use diesel::Identifiable;
 
-use hammond_data::Podcast;
-
 use widgets::podcast::PodcastWidget;
 use views::podcasts::PopulatedView;
 use views::empty::EmptyView;

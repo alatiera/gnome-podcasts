@@ -12,8 +12,18 @@ use utils::get_pixbuf_from_path;
 #[derive(Debug, Clone)]
 pub struct PopulatedView {
     pub container: gtk::Box,
-    pub flowbox: gtk::FlowBox,
+    flowbox: gtk::FlowBox,
     viewport: gtk::Viewport,
+}
+
+#[derive(Debug)]
+struct PodcastChild {
+    container: gtk::Box,
+    title: gtk::Label,
+    cover: gtk::Image,
+    banner: gtk::Image,
+    number: gtk::Label,
+    child: gtk::FlowBoxChild,
 }
 
 impl PopulatedView {
@@ -51,53 +61,71 @@ impl PopulatedView {
 
         if let Ok(pds) = podcasts {
             pds.iter().for_each(|parent| {
-                let f = create_flowbox_child(parent);
-                self.flowbox.add(&f);
+                let flowbox_child = PodcastChild::new_initialized(parent);
+                self.flowbox.add(&flowbox_child.child);
             });
             self.flowbox.show_all();
         }
     }
 }
 
-fn create_flowbox_child(pd: &Podcast) -> gtk::FlowBoxChild {
-    let builder = gtk::Builder::new_from_resource("/org/gnome/hammond/gtk/podcasts_child.ui");
+impl PodcastChild {
+    fn new() -> PodcastChild {
+        let builder = gtk::Builder::new_from_resource("/org/gnome/hammond/gtk/podcasts_child.ui");
 
-    // Copy of gnome-music AlbumWidget
-    let box_: gtk::Box = builder.get_object("fb_child").unwrap();
-    let pd_title: gtk::Label = builder.get_object("pd_title").unwrap();
-    let pd_cover: gtk::Image = builder.get_object("pd_cover").unwrap();
-    let banner: gtk::Image = builder.get_object("banner").unwrap();
-    let banner_title: gtk::Label = builder.get_object("banner_label").unwrap();
+        // Copy of gnome-music AlbumWidget
+        let container: gtk::Box = builder.get_object("fb_child").unwrap();
+        let title: gtk::Label = builder.get_object("pd_title").unwrap();
+        let cover: gtk::Image = builder.get_object("pd_cover").unwrap();
+        let banner: gtk::Image = builder.get_object("banner").unwrap();
+        let number: gtk::Label = builder.get_object("banner_label").unwrap();
 
-    pd_title.set_text(pd.title());
+        let child = gtk::FlowBoxChild::new();
+        child.add(&container);
 
-    let cover = get_pixbuf_from_path(pd);
-    if let Some(img) = cover {
-        pd_cover.set_from_pixbuf(&img);
-    };
+        PodcastChild {
+            container,
+            title,
+            cover,
+            banner,
+            number,
+            child,
+        }
+    }
 
-    configure_banner(pd, &banner, &banner_title);
+    fn init(&self, pd: &Podcast) {
+        self.title.set_text(pd.title());
 
-    let fbc = gtk::FlowBoxChild::new();
-    // There's probably a better way to store the id somewhere.
-    // fbc.set_name(&pd.id().to_string());
-    WidgetExt::set_name(&fbc, &pd.id().to_string());
-    fbc.add(&box_);
-    fbc
-}
+        let cover = get_pixbuf_from_path(pd);
+        if let Some(img) = cover {
+            self.cover.set_from_pixbuf(&img);
+        };
 
-fn configure_banner(pd: &Podcast, banner: &gtk::Image, banner_title: &gtk::Label) {
-    let bann = Pixbuf::new_from_resource_at_scale("/org/gnome/hammond/banner.png", 256, 256, true);
-    if let Ok(b) = bann {
-        banner.set_from_pixbuf(&b);
+        WidgetExt::set_name(&self.child, &pd.id().to_string());
+        self.configure_banner(pd);
+    }
 
-        let new_episodes = dbqueries::get_pd_unplayed_episodes(pd);
+    pub fn new_initialized(pd: &Podcast) -> PodcastChild {
+        let child = PodcastChild::new();
+        child.init(pd);
 
-        if let Ok(n) = new_episodes {
-            if !n.is_empty() {
-                banner_title.set_text(&n.len().to_string());
-                banner.show();
-                banner_title.show();
+        child
+    }
+
+    fn configure_banner(&self, pd: &Podcast) {
+        let bann =
+            Pixbuf::new_from_resource_at_scale("/org/gnome/hammond/banner.png", 256, 256, true);
+        if let Ok(b) = bann {
+            self.banner.set_from_pixbuf(&b);
+
+            let new_episodes = dbqueries::get_pd_unplayed_episodes(pd);
+
+            if let Ok(n) = new_episodes {
+                if !n.is_empty() {
+                    self.number.set_text(&n.len().to_string());
+                    self.banner.show();
+                    self.number.show();
+                }
             }
         }
     }
