@@ -11,9 +11,9 @@ use views::empty::EmptyView;
 #[derive(Debug)]
 pub struct Content {
     pub stack: gtk::Stack,
-    widget: PodcastWidget,
-    podcasts: PopulatedView,
-    empty: EmptyView,
+    // widget: PodcastWidget,
+    // podcasts: PopulatedView,
+    // empty: EmptyView,
 }
 
 // #[derive(Debug)]
@@ -37,33 +37,30 @@ pub enum ContentState {
 impl Content {
     pub fn new() -> Content {
         let stack = gtk::Stack::new();
-        let widget = PodcastWidget::new();
-        let pop = PopulatedView::new();
-        let empty = EmptyView::new();
 
         let content = Content {
             stack,
-            widget,
-            empty,
-            podcasts: pop,
+            // widget,
+            // empty,
+            // podcasts: pop,
         };
 
         content.init();
         content
     }
 
-    fn setup_stack(&self) {
-        self.stack.add_named(&self.widget.container, "widget");
-        self.stack.add_named(&self.podcasts.container, "podcasts");
-        self.stack.add_named(&self.empty.container, "empty");
-
-        self.stack.set_visible_child_name("podcasts")
-    }
-
     fn init(&self) {
-        self.setup_stack();
-        self.podcasts.init(&self.stack);
-        if self.podcasts.flowbox.get_children().is_empty() {
+        let widget = PodcastWidget::new();
+        let podcasts = PopulatedView::new();
+        let empty = EmptyView::new();
+
+        self.stack.add_named(&widget.container, "widget");
+        self.stack.add_named(&podcasts.container, "podcasts");
+        self.stack.add_named(&empty.container, "empty");
+        self.stack.set_visible_child_name("podcasts");
+
+        podcasts.init(&self.stack);
+        if podcasts.flowbox.get_children().is_empty() {
             self.stack.set_visible_child_name("empty");
         }
     }
