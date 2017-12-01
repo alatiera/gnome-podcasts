@@ -1,5 +1,4 @@
 #![recursion_limit = "1024"]
-#![deny(missing_docs)]
 #![cfg_attr(feature = "cargo-clippy", allow(blacklisted_name))]
 #![cfg_attr(feature = "clippy",
             warn(option_unwrap_used, result_unwrap_used, print_stdout,
@@ -10,6 +9,15 @@
 
 //! A libraty for parsing, indexing and retrieving podcast Feeds,
 //! into and from a Database.
+
+#![deny(bad_style, const_err, dead_code, improper_ctypes, legacy_directory_ownership,
+        non_shorthand_field_patterns, no_mangle_generic_items, overflowing_literals,
+        path_statements, patterns_in_fns_without_body, plugin_as_library, private_in_public,
+        private_no_mangle_fns, private_no_mangle_statics, safe_extern_statics,
+        unconditional_recursion, unions_with_drop_fields, unused, unused_allocation,
+        unused_comparisons, unused_parens, while_true)]
+#![deny(missing_debug_implementations, missing_docs, trivial_casts, trivial_numeric_casts,
+        unused_extern_crates)]
 
 #[macro_use]
 extern crate error_chain;
@@ -49,6 +57,7 @@ mod schema;
 pub use models::queryables::{Episode, Podcast, Source};
 
 /// [XDG Base Direcotory](https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html) Paths.
+#[allow(missing_debug_implementations)]
 pub mod xdg_dirs {
     use std::path::PathBuf;
     use xdg;
