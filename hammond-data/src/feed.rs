@@ -4,7 +4,7 @@ use rayon::prelude::*;
 use diesel::prelude::*;
 use rayon::iter::IntoParallelIterator;
 
-use diesel::Identifiable;
+use diesel::associations::Identifiable;
 use rss;
 
 use dbqueries;

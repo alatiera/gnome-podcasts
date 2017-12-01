@@ -30,7 +30,7 @@
                 {
                     "type": "git",
                     "url": "https://gitlab.gnome.org/alatiera/Hammond.git",
-                    "branch": "master"
+                    "branch": "client-rework"
                 }
             ]
         }

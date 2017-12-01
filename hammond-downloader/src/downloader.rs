@@ -185,7 +185,7 @@ mod tests {
     use hammond_data::Source;
     use hammond_data::feed::index;
     use hammond_data::dbqueries;
-    use diesel::Identifiable;
+    use diesel::associations::Identifiable;
 
     use std::fs;
 

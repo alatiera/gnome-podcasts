@@ -5,7 +5,6 @@ use r2d2;
 use std::path::PathBuf;
 use std::sync::Arc;
 use std::io;
-use std::time::Duration;
 
 use errors::*;
 
@@ -42,12 +41,13 @@ pub(crate) fn connection() -> Pool {
 }
 
 fn init_pool(db_path: &str) -> Pool {
-    let config = r2d2::Config::builder()
-        .pool_size(1)
-        .connection_timeout(Duration::from_secs(60))
-        .build();
     let manager = ConnectionManager::<SqliteConnection>::new(db_path);
-    let pool = Arc::new(r2d2::Pool::new(config, manager).expect("Failed to create pool."));
+    let config = r2d2::Pool::builder()
+        .max_size(1)
+        .build(manager)
+        .expect("Failed to create pool.");
+
+    let pool = Arc::new(config);
 
     {
         let db = Arc::clone(&pool).get().expect("Failed to initialize pool.");

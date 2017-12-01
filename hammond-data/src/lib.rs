@@ -30,8 +30,9 @@ extern crate log;
 
 #[macro_use]
 extern crate diesel;
+
 #[macro_use]
-extern crate diesel_codegen;
+extern crate diesel_migrations;
 
 extern crate chrono;
 extern crate r2d2;

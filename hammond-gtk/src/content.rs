@@ -2,7 +2,7 @@ use gtk;
 use gtk::prelude::*;
 // use gdk_pixbuf::Pixbuf;
 
-// use diesel::Identifiable;
+// use diesel::associations::Identifiable;
 
 use widgets::podcast::PodcastWidget;
 use views::podcasts::PopulatedView;
