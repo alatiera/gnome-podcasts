@@ -48,8 +48,6 @@ mod content;
 mod utils;
 mod static_resource;
 
-// use views::podcasts;
-
 /*
 THIS IS STILL A PROTOTYPE.
 */
@@ -63,8 +61,7 @@ fn build_ui(app: &gtk::Application) {
     // Get the main window
     let window = gtk::ApplicationWindow::new(app);
     window.set_default_size(1150, 650);
-    // Setup the Stack that will manage the switch between podcasts_view and podcast_widget.
-    // let stack = podcasts::setup_stack();
+
     let ct = content::Content::new();
     let stack = ct.stack.clone();
     window.add(&stack);
