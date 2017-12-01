@@ -138,7 +138,7 @@ fn on_flowbox_child_activate(stack: &gtk::Stack, parent: &Podcast) {
 
     stack.remove(&old);
     stack.add_named(&pdw.container, "widget");
-    stack.set_visible_child_name("widget");
+    stack.set_visible_child_full("widget", gtk::StackTransitionType::SlideLeft);
 
     // aggresive memory cleanup
     // probably not needed
