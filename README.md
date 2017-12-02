@@ -76,7 +76,7 @@ Currently there no design plans or mockups. They are highly needed in order to a
 
 There is the will for a complete client re-write if a someone contributes the mockups.
 
-If you happen to be a designer and want to contribute please hope on [#hammond](https://docs.python.org/3/library/exceptions.html) and get in touch with us.
+If you happen to be a designer and want to contribute please hope on [#hammond](irc://irc.gnome.org/#hammond) and get in touch with us.
 
 ## Contributing
 
@@ -84,7 +84,7 @@ There alot of thins yet to be done.
 
 If you want to contribute, please check the [Contributions Guidelines][contribution-guidelines].
 
-You can find start by taking a look at [Issues](https://gitlab.gnome.org/alatiera/Hammond/issues) or Opening a [New one](https://gitlab.gnome.org/alatiera/Hammond/issues/new?issue%5Bassignee_id%5D=&issue%5Bmilestone_id%5D=).
+You can start by taking a look at [Issues](https://gitlab.gnome.org/alatiera/Hammond/issues) or by opening a [New issue](https://gitlab.gnome.org/alatiera/Hammond/issues/new?issue%5Bassignee_id%5D=&issue%5Bmilestone_id%5D=).
 
 There are also some minor tasks tagged with `TODO:` and `FIXME:` in the source code.
 
