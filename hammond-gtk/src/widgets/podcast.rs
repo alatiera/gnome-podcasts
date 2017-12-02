@@ -8,8 +8,8 @@ use hammond_data::Podcast;
 use hammond_downloader::downloader;
 
 use widgets::episode::episodes_listbox;
-use views::podcasts::update_podcasts_view;
 use utils::get_pixbuf_from_path;
+use content;
 
 #[derive(Debug)]
 pub struct PodcastWidget {
@@ -44,6 +44,12 @@ impl PodcastWidget {
             unsub,
             played,
         }
+    }
+
+    pub fn new_initialized(stack: &gtk::Stack, pd: &Podcast) -> PodcastWidget {
+        let pdw = PodcastWidget::new();
+        pdw.init(stack, pd);
+        pdw
     }
 
     pub fn init(&self, stack: &gtk::Stack, pd: &Podcast) {
@@ -86,7 +92,6 @@ impl PodcastWidget {
     }
 }
 
-// Note: Stack manipulation
 fn on_unsub_button_clicked(stack: &gtk::Stack, pd: &Podcast, unsub_button: &gtk::Button) {
     let res = dbqueries::remove_feed(pd);
     if res.is_ok() {
@@ -103,25 +108,12 @@ fn on_unsub_button_clicked(stack: &gtk::Stack, pd: &Podcast, unsub_button: &gtk:
             }
         };
     }
-    stack.set_visible_child_name("podcasts");
-    update_podcasts_view(stack);
+    content::show_podcasts(stack);
+    content::update_podcasts(stack);
 }
 
 fn on_played_button_clicked(stack: &gtk::Stack, pd: &Podcast) {
     let _ = dbqueries::update_none_to_played_now(pd);
 
-    update_podcast_widget(stack, pd);
-}
-
-// Note: Stack manipulation
-pub fn update_podcast_widget(stack: &gtk::Stack, pd: &Podcast) {
-    let old = stack.get_child_by_name("widget").unwrap();
-    let pdw = PodcastWidget::new();
-    pdw.init(stack, pd);
-    let vis = stack.get_visible_child_name().unwrap();
-
-    stack.remove(&old);
-    stack.add_named(&pdw.container, "widget");
-    stack.set_visible_child_name(&vis);
-    old.destroy();
+    content::update_widget_preserve_vis(stack, pd);
 }

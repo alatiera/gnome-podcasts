@@ -4,8 +4,8 @@ use gtk::prelude::*;
 use hammond_data::Source;
 use hammond_data::utils::url_cleaner;
 
-use views::podcasts::update_podcasts_view;
 use utils;
+use content;
 
 #[derive(Debug)]
 pub struct Header {
@@ -61,11 +61,7 @@ impl Header {
         // TODO: make it a back arrow button, that will hide when appropriate,
         // and add a StackSwitcher when more views are added.
         self.home.connect_clicked(clone!(stack => move |_| {
-            let vis = stack.get_visible_child_name().unwrap();
-            stack.set_visible_child_name("podcasts");
-            if vis != "widget" {
-                update_podcasts_view(&stack);
-            }
+            content::on_home_button_activate(&stack);
         }));
 
         // FIXME: There appears to be a memmory leak here.
