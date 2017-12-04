@@ -38,24 +38,7 @@ fn download_into(dir: &str, file_title: &str, url: &str) -> Result<String> {
     ct_len.map(|x| info!("File Lenght: {}", x));
     ct_type.map(|x| info!("Content Type: {}", x));
 
-    // This could be prettier.
-    // Determine the file extension from the http content-type header.
-    let ext = if let Some(t) = ct_type {
-        let mime = mime_guess::get_extensions(t.type_().as_ref(), t.subtype().as_ref());
-        if let Some(m) = mime {
-            if m.contains(&t.subtype().as_ref()) {
-                t.subtype().as_ref().to_string()
-            } else {
-                m.first().unwrap().to_string()
-            }
-        } else {
-            error!("Unkown mime type. {}", t);
-            "unkown".to_string()
-        }
-    } else {
-        error!("Unkown mime type.");
-        "unkown".to_string()
-    };
+    let ext = get_ext(ct_type.cloned()).unwrap_or(String::from("unkown"));
     info!("Extension: {}", ext);
 
     // Construct a temp file to save desired content.
@@ -73,6 +56,19 @@ fn download_into(dir: &str, file_title: &str, url: &str) -> Result<String> {
     info!("Downloading of {} completed succesfully.", &target);
     Ok(target)
 }
+
+// Determine the file extension from the http content-type header.
+fn get_ext(content: Option<ContentType>) -> Option<String> {
+    let cont = content.clone()?;
+    content.and_then(|c| mime_guess::get_extensions(c.type_().as_ref(), c.subtype().as_ref()))
+           .and_then(|c| {
+                if c.contains(&cont.subtype().as_ref()) {
+                    Some(cont.subtype().as_ref().to_string())
+                } else {
+                    Some(c.first().unwrap().to_string())
+                }
+            })
+} 
 
 // TODO: Write unit-tests.
 /// Handles the I/O of fetching a remote file and saving into a Buffer and A File.

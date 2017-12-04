@@ -1,8 +1,6 @@
 use gtk;
 use gtk::prelude::*;
-// use gdk_pixbuf::Pixbuf;
 
-// use diesel::associations::Identifiable;
 use hammond_data::Podcast;
 
 use widgets::podcast::PodcastWidget;
@@ -89,6 +87,7 @@ fn replace_podcasts(stack: &gtk::Stack, pop: &PopulatedView) {
 //     old.destroy();
 // }
 
+#[allow(dead_code)]
 pub fn show_widget(stack: &gtk::Stack) {
     stack.set_visible_child_name("widget")
 }
