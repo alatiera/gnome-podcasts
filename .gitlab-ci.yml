@@ -38,19 +38,21 @@ variables:
 #   - ./configure --prefix=/usr/local
 #   - make && sudo make install
 
-test:stable:
+stable:test:
   # Stable img
   # https://hub.docker.com/_/rust/
   image: "rust"
+  stage: test
   script:
   - rustc --version && cargo --version
   - cargo build
   - cargo test --verbose -- --test-threads=1
 
-test:nightly:
+nightly:test:
   # Nightly
   # https://hub.docker.com/r/rustlang/rust/
   image: "rustlang/rust:nightly"
+  stage: test
   script:
   - rustc --version && cargo --version
   - cargo build
@@ -59,8 +61,9 @@ test:nightly:
 
 # Configure and run rustfmt on nightly
 # Exits and builds fails if on bad format
-lint:rustfmt:
+rustfmt:
   image: "rustlang/rust:nightly"
+  stage: lint
   script:
   - rustc --version && cargo --version
   - cargo install rustfmt-nightly
@@ -68,8 +71,9 @@ lint:rustfmt:
 
 # Configure and run clippy on nightly
 # Only fails on errors atm.
-lint:clippy:
+clippy:
   image: "rustlang/rust:nightly"
+  stage: lint
   script:
   - rustc --version && cargo --version
   - cargo install clippy
