@@ -9,10 +9,10 @@ use errors::*;
 // TODO: Extend the support for parsing itunes extensions
 /// Parses a `rss::Channel` into a `NewPodcast` Struct.
 pub(crate) fn new_podcast(chan: &Channel, source_id: i32) -> NewPodcast {
-    let title = chan.title().trim().to_owned();
-    let description = chan.description().trim().to_owned();
+    let title = chan.title().trim();
+    let description = chan.description().trim();
 
-    let link = url_cleaner(chan.link()).to_owned();
+    let link = url_cleaner(chan.link());
     let x = chan.itunes_ext().map(|s| s.image());
     let image_uri = if let Some(img) = x {
         img.map(|s| url_cleaner(s))
