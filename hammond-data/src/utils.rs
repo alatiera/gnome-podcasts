@@ -129,19 +129,28 @@ mod tests {
         // Setup episodes
         let db = connection();
         let con = db.get().unwrap();
-        NewEpisodeBuilder::new()
+        NewEpisodeBuilder::default()
             .uri("foo_bar".to_string())
-            .local_uri(Some(valid_path.to_str().unwrap().to_owned()))
             .build()
+            .unwrap()
             .into_episode(&con)
             .unwrap();
 
-        NewEpisodeBuilder::new()
+        NewEpisodeBuilder::default()
             .uri("bar_baz".to_string())
-            .local_uri(Some(bad_path.to_str().unwrap().to_owned()))
             .build()
+            .unwrap()
             .into_episode(&con)
             .unwrap();
+        
+        let mut ep1 = dbqueries::get_episode_from_uri(&con, "foo_bar").unwrap();
+        let mut ep2 = dbqueries::get_episode_from_uri(&con, "bar_baz").unwrap();
+        ep1.set_local_uri(Some(valid_path.to_str().unwrap()));
+        ep2.set_local_uri(Some(bad_path.to_str().unwrap()));
+
+        drop(con);
+        ep1.save().unwrap();
+        ep2.save().unwrap();
 
         tmp_dir
     }

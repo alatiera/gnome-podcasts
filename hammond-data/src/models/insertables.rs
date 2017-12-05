@@ -1,3 +1,5 @@
+#![allow(unused_mut)]
+
 use diesel::prelude::*;
 
 use schema::{episode, podcast, source};
@@ -20,7 +22,10 @@ trait Update {
 
 #[derive(Insertable)]
 #[table_name = "source"]
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Default, Builder)]
+#[builder(default)]
+#[builder(derive(Debug))]
+#[builder(setter(into))]
 pub(crate) struct NewSource {
     uri: String,
     last_modified: Option<String>,
@@ -63,15 +68,15 @@ impl NewSource {
 
 #[derive(Insertable, AsChangeset)]
 #[table_name = "podcast"]
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Default, Builder)]
+#[builder(default)]
+#[builder(derive(Debug))]
+#[builder(setter(into))]
 pub(crate) struct NewPodcast {
     title: String,
     link: String,
     description: String,
     image_uri: Option<String>,
-    favorite: bool,
-    archive: bool,
-    always_dl: bool,
     source_id: i32,
 }
 
@@ -124,78 +129,6 @@ impl NewPodcast {
     }
 }
 
-#[derive(Debug, Default)]
-pub(crate) struct NewPodcastBuilder {
-    title: String,
-    link: String,
-    description: String,
-    image_uri: Option<String>,
-    favorite: bool,
-    archive: bool,
-    always_dl: bool,
-    source_id: i32,
-}
-
-#[allow(dead_code)]
-impl NewPodcastBuilder {
-    pub(crate) fn new() -> NewPodcastBuilder {
-        NewPodcastBuilder::default()
-    }
-
-    pub(crate) fn title(mut self, s: String) -> NewPodcastBuilder {
-        self.title = s;
-        self
-    }
-
-    pub(crate) fn link(mut self, s: String) -> NewPodcastBuilder {
-        self.link = s;
-        self
-    }
-
-    pub(crate) fn description(mut self, s: String) -> NewPodcastBuilder {
-        self.description = s;
-        self
-    }
-
-    pub(crate) fn image_uri(mut self, s: Option<String>) -> NewPodcastBuilder {
-        self.image_uri = s;
-        self
-    }
-
-    pub(crate) fn source_id(mut self, s: i32) -> NewPodcastBuilder {
-        self.source_id = s;
-        self
-    }
-
-    pub(crate) fn favorite(mut self, s: bool) -> NewPodcastBuilder {
-        self.favorite = s;
-        self
-    }
-
-    pub(crate) fn archive(mut self, s: bool) -> NewPodcastBuilder {
-        self.archive = s;
-        self
-    }
-
-    pub(crate) fn always_dl(mut self, s: bool) -> NewPodcastBuilder {
-        self.always_dl = s;
-        self
-    }
-
-    pub(crate) fn build(self) -> NewPodcast {
-        NewPodcast {
-            title: self.title,
-            link: self.link,
-            description: self.description,
-            image_uri: self.image_uri,
-            favorite: self.favorite,
-            archive: self.archive,
-            always_dl: self.always_dl,
-            source_id: self.source_id,
-        }
-    }
-}
-
 #[allow(dead_code)]
 // Ignore the following geters. They are used in unit tests mainly.
 impl NewPodcast {
@@ -222,19 +155,18 @@ impl NewPodcast {
 
 #[derive(Insertable, AsChangeset)]
 #[table_name = "episode"]
-#[derive(Debug, Clone, Default)]
+#[derive(Debug, Clone, Default, Builder)]
+#[builder(default)]
+#[builder(derive(Debug))]
+#[builder(setter(into))]
 pub(crate) struct NewEpisode {
     title: Option<String>,
     uri: String,
-    local_uri: Option<String>,
     description: Option<String>,
     published_date: Option<String>,
     length: Option<i32>,
     guid: Option<String>,
     epoch: i32,
-    played: Option<i32>,
-    favorite: bool,
-    archive: bool,
     podcast_id: i32,
 }
 
@@ -256,8 +188,6 @@ impl Update for NewEpisode {
 }
 
 impl NewEpisode {
-    // TODO: Currently using diesel from master git.
-    // Watch out for v0.99.0 beta and change the toml.
     // TODO: Refactor into batch indexes instead.
     pub(crate) fn into_episode(self, con: &SqliteConnection) -> Result<Episode> {
         self.index(con)?;
@@ -287,108 +217,8 @@ impl NewEpisode {
     }
 }
 
-#[derive(Debug, Default)]
-pub(crate) struct NewEpisodeBuilder {
-    title: Option<String>,
-    uri: String,
-    local_uri: Option<String>,
-    description: Option<String>,
-    published_date: Option<String>,
-    length: Option<i32>,
-    guid: Option<String>,
-    epoch: i32,
-    played: Option<i32>,
-    favorite: bool,
-    archive: bool,
-    podcast_id: i32,
-}
-
 #[allow(dead_code)]
-impl NewEpisodeBuilder {
-    pub(crate) fn new() -> NewEpisodeBuilder {
-        NewEpisodeBuilder::default()
-    }
-
-    pub(crate) fn title(mut self, s: Option<String>) -> NewEpisodeBuilder {
-        self.title = s;
-        self
-    }
-
-    pub(crate) fn uri(mut self, s: String) -> NewEpisodeBuilder {
-        self.uri = s;
-        self
-    }
-
-    pub(crate) fn local_uri(mut self, s: Option<String>) -> NewEpisodeBuilder {
-        self.local_uri = s;
-        self
-    }
-
-    pub(crate) fn description(mut self, s: Option<String>) -> NewEpisodeBuilder {
-        self.description = s;
-        self
-    }
-
-    pub(crate) fn published_date(mut self, s: Option<String>) -> NewEpisodeBuilder {
-        self.published_date = s;
-        self
-    }
-
-    pub(crate) fn length(mut self, s: Option<i32>) -> NewEpisodeBuilder {
-        self.length = s;
-        self
-    }
-
-    pub(crate) fn played(mut self, s: Option<i32>) -> NewEpisodeBuilder {
-        self.played = s;
-        self
-    }
-
-    pub(crate) fn guid(mut self, s: Option<String>) -> NewEpisodeBuilder {
-        self.guid = s;
-        self
-    }
-
-    pub(crate) fn epoch(mut self, s: i32) -> NewEpisodeBuilder {
-        self.epoch = s;
-        self
-    }
-
-    pub(crate) fn podcast_id(mut self, s: i32) -> NewEpisodeBuilder {
-        self.podcast_id = s;
-        self
-    }
-
-    pub(crate) fn favorite(mut self, s: bool) -> NewEpisodeBuilder {
-        self.favorite = s;
-        self
-    }
-
-    pub(crate) fn archive(mut self, s: bool) -> NewEpisodeBuilder {
-        self.archive = s;
-        self
-    }
-
-    pub(crate) fn build(self) -> NewEpisode {
-        NewEpisode {
-            title: self.title,
-            uri: self.uri,
-            local_uri: self.local_uri,
-            description: self.description,
-            published_date: self.published_date,
-            length: self.length,
-            guid: self.guid,
-            epoch: self.epoch,
-            played: self.played,
-            favorite: self.favorite,
-            archive: self.archive,
-            podcast_id: self.podcast_id,
-        }
-    }
-}
-
-#[allow(dead_code)]
-// Ignore the following geters. They are used in unit tests mainly.
+// Ignore the following getters. They are used in unit tests mainly.
 impl NewEpisode {
     pub(crate) fn title(&self) -> Option<&str> {
         self.title.as_ref().map(|s| s.as_str())

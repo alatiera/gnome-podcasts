@@ -20,13 +20,14 @@ pub(crate) fn new_podcast(chan: &Channel, source_id: i32) -> NewPodcast {
         chan.image().map(|foo| url_cleaner(foo.url()))
     };
 
-    NewPodcastBuilder::new()
+    NewPodcastBuilder::default()
         .title(title)
         .description(description)
         .link(link)
         .image_uri(image_uri)
         .source_id(source_id)
         .build()
+        .unwrap()
 }
 
 /// Parses an `rss::Item` into a `NewEpisode` Struct.
@@ -61,7 +62,7 @@ pub(crate) fn new_episode(item: &Item, parent_id: i32) -> Result<NewEpisode> {
     let length = item.enclosure().map(|x| x.length().parse().unwrap_or(0));
 
     Ok(
-        NewEpisodeBuilder::new()
+        NewEpisodeBuilder::default()
             .title(title)
             .uri(uri)
             .description(description)
@@ -70,7 +71,8 @@ pub(crate) fn new_episode(item: &Item, parent_id: i32) -> Result<NewEpisode> {
             .epoch(epoch)
             .guid(guid)
             .podcast_id(parent_id)
-            .build(),
+            .build()
+            .unwrap()
     )
 }
 

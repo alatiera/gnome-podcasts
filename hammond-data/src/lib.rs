@@ -34,6 +34,9 @@ extern crate diesel;
 #[macro_use]
 extern crate diesel_migrations;
 
+#[macro_use]
+extern crate derive_builder;
+
 extern crate chrono;
 extern crate r2d2;
 extern crate r2d2_diesel;
