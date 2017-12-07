@@ -63,8 +63,8 @@ fn build_ui(app: &gtk::Application) {
     let window = gtk::ApplicationWindow::new(app);
     window.set_default_size(1150, 650);
 
-    let ct = content::Content::new();
-    let stack = ct.stack.clone();
+    let ct = content::ContentState::new();
+    let stack = ct.get_stack();
     window.add(&stack);
 
     window.connect_delete_event(|w, _| {

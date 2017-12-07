@@ -10,57 +10,129 @@ use views::empty::EmptyView;
 #[derive(Debug)]
 pub struct Content {
     pub stack: gtk::Stack,
-    // widget: PodcastWidget,
-    // podcasts: PopulatedView,
-    // empty: EmptyView,
-}
-
-// #[derive(Debug)]
-// pub struct Content {
-//     pub stack: gtk::Stack,
-//     pub state: ContentState,
-//     widget: PodcastWidget,
-//     pub podcasts: PopulatedView,
-//     empty: EmptyView,
-// }
-
-#[derive(Debug)]
-#[allow(dead_code)]
-// TODO: find a way to wrap gtk::Stack into a State machine.
-pub enum ContentState {
-    Widget(PodcastWidget),
-    Empty(EmptyView),
-    Populated(PopulatedView),
+    pub widget: PodcastWidget,
+    pub podcasts: PopulatedView,
+    pub empty: EmptyView,
 }
 
 impl Content {
-    pub fn new() -> Content {
+    fn new() -> Content {
         let stack = gtk::Stack::new();
 
-        let content = Content {
-            stack,
-            // widget,
-            // empty,
-            // podcasts: pop,
-        };
-
-        content.init();
-        content
-    }
-
-    fn init(&self) {
         let widget = PodcastWidget::new();
         let podcasts = PopulatedView::new();
         let empty = EmptyView::new();
 
-        self.stack.add_named(&widget.container, "widget");
-        self.stack.add_named(&podcasts.container, "podcasts");
-        self.stack.add_named(&empty.container, "empty");
-        self.stack.set_visible_child_name("podcasts");
+        stack.add_named(&widget.container, "widget");
+        stack.add_named(&podcasts.container, "podcasts");
+        stack.add_named(&empty.container, "empty");
 
-        podcasts.init(&self.stack);
-        if podcasts.flowbox.get_children().is_empty() {
-            self.stack.set_visible_child_name("empty");
+        Content {
+            stack,
+            widget,
+            empty,
+            podcasts,
+        }
+    }
+}
+
+#[derive(Debug)]
+struct Empty {
+    content: Content 
+}
+
+#[derive(Debug)]
+struct PodcastsView {
+    content: Content
+}
+
+#[derive(Debug)]
+struct WidgetsView {
+    content: Content
+}
+
+impl Empty {
+    fn into_podcasts(self) -> Result<PodcastsView, Empty> {
+        if self.content.podcasts.flowbox.get_children().is_empty() {
+            return Err(self);
+        }
+
+        self.content.stack.set_visible_child_name("podcasts");
+
+        Ok(
+            PodcastsView {
+                content: self.content
+            }
+        )
+    }
+}
+
+impl PodcastsView {
+    fn into_empty(self) -> Result<Empty, PodcastsView> {
+        if !self.content.podcasts.flowbox.get_children().is_empty() {
+            return Err(self);
+        }
+
+        self.content.stack.set_visible_child_name("empty");
+
+        Ok(
+            Empty {
+                content: self.content
+            }
+        )
+    }
+
+    fn into_widget(self) -> WidgetsView {
+        self.content.stack.set_visible_child_name("widget");
+
+        WidgetsView {
+            content: self.content
+        }
+    }
+}
+
+impl WidgetsView {
+    fn into_podcasts(self) -> PodcastsView {
+        self.content.stack.set_visible_child_name("podcasts");
+        PodcastsView {
+            content: self.content
+        }
+    }
+
+    fn into_empty(self) -> Empty {
+        self.content.stack.set_visible_child_name("empty");
+        Empty {
+            content: self.content
+        }
+    }
+}
+
+#[derive(Debug)]
+pub enum ContentState {
+    empty(Empty),
+    pop(PodcastsView),
+    pd(WidgetsView),
+}
+
+impl ContentState {
+    pub fn new() -> ContentState {
+        let content = Content::new();
+
+        content.podcasts.init(&content.stack);
+        if content.podcasts.flowbox.get_children().is_empty() {
+            content.stack.set_visible_child_name("empty");
+            return ContentState::empty(Empty { content })
+        }
+
+        content.stack.set_visible_child_name("podcasts");
+        ContentState::pop(PodcastsView{ content })
+    }
+
+    pub fn get_stack(&self) -> gtk::Stack {
+        match *self {
+            ContentState::empty(ref e) => e.content.stack.clone(),
+            ContentState::pop(ref e) => e.content.stack.clone(),
+            ContentState::pd(ref e) => e.content.stack.clone(),
         }
     }
 }
