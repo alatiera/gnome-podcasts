@@ -12,14 +12,12 @@ mkdir -p $DIST
 cp -rf hammond-data $DIST
 cp -rf hammond-gtk $DIST
 cp -rf hammond-downloader $DIST
-cp build.rs $DIST
 cp Cargo.toml $DIST
 cp configure $DIST
 cp meson.build $DIST
 cp Hammond.doap $DIST
 cp LICENSE $DIST
 cp README.md $DIST
-# cp -rf assets/org.gnome.Hammond.desktop $DIST
 cp -rf assets $DIST
 cp -rf scripts $DIST
 

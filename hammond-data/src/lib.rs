@@ -46,6 +46,7 @@ extern crate rfc822_sanitizer;
 extern crate rss;
 extern crate url;
 extern crate xdg;
+extern crate ammonia;
 
 #[allow(missing_docs)]
 pub mod dbqueries;

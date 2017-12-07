@@ -1,22 +1,24 @@
+use glib;
+use gtk;
+use gtk::prelude::*;
+use gtk::{ContainerExt, TextBufferExt};
+
 use open;
+use dissolve::strip_html_tags;
+use diesel::associations::Identifiable;
+
 use hammond_data::dbqueries;
 use hammond_data::{Episode, Podcast};
 use hammond_downloader::downloader;
 use hammond_data::utils::*;
 use hammond_data::errors::*;
 
-use dissolve::strip_html_tags;
-use diesel::associations::Identifiable;
+// use utils::html_to_markup;
 
 use std::thread;
 use std::cell::RefCell;
 use std::sync::mpsc::{channel, Receiver};
 use std::path::Path;
-
-use glib;
-use gtk;
-use gtk::prelude::*;
-use gtk::{ContainerExt, TextBufferExt};
 
 type Foo = RefCell<Option<(gtk::Button, gtk::Button, gtk::Button, Receiver<bool>)>>;
 
@@ -32,6 +34,7 @@ struct EpisodeWidget {
     unplayed: gtk::Button,
     title: gtk::Label,
     description: gtk::TextView,
+    // description: gtk::Label,
     expander: gtk::Expander,
 }
 
@@ -50,6 +53,7 @@ impl EpisodeWidget {
         let title: gtk::Label = builder.get_object("title_label").unwrap();
         let expander: gtk::Expander = builder.get_object("expand_desc").unwrap();
         let description: gtk::TextView = builder.get_object("desc_text_view").unwrap();
+        // let description: gtk::Label = builder.get_object("desc_text").unwrap();
 
         EpisodeWidget {
             container,
@@ -78,12 +82,15 @@ impl EpisodeWidget {
         }
 
         if episode.description().is_some() {
-            let d = episode.description().unwrap().to_owned();
-
+            let text = episode.description().unwrap().to_owned();
             let description = &self.description;
             self.expander
-                .connect_activate(clone!(description => move |_| {
-                let plain_text = strip_html_tags(&d).join(" ");
+                .connect_activate(clone!(description, text => move |_| {
+                // let mut text = text.clone();
+                // html_to_markup(&mut text);
+                // description.set_markup(&text)
+                
+                let plain_text = strip_html_tags(&text).join("");
                 // TODO: handle unwrap
                 let buff = description.get_buffer().unwrap();
                 buff.set_text(plain_text.trim());
