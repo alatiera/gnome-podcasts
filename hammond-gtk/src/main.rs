@@ -12,6 +12,7 @@ extern crate hammond_downloader;
 extern crate log;
 extern crate loggerv;
 extern crate open;
+extern crate regex;
 // extern crate rayon;
 
 // use rayon::prelude::*;

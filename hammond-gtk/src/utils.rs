@@ -9,8 +9,10 @@ use hammond_downloader::downloader;
 use std::{thread, time};
 use std::cell::RefCell;
 use std::sync::mpsc::{channel, Receiver};
+use std::borrow::Cow;
 
 use content;
+use regex::Regex;
 
 type Foo = RefCell<Option<(gtk::Stack, Receiver<bool>)>>;
 
@@ -67,6 +69,18 @@ fn refresh_podcasts_view() -> glib::Continue {
 pub fn get_pixbuf_from_path(pd: &Podcast) -> Option<Pixbuf> {
     let img_path = downloader::cache_image(pd)?;
     Pixbuf::new_from_file_at_scale(&img_path, 256, 256, true).ok()
+}
+
+#[allow(dead_code)]
+// WIP: parse html to markup
+pub fn html_to_markup(s: &mut str) -> Cow<str> {
+    s.trim();
+    s.replace('&', "&amp;");
+    s.replace('<', "&lt;");
+    s.replace('>', "&gt;");
+
+    let re = Regex::new("(?P<url>https?://[^\\s&,)(\"]+(&\\w=[\\w._-]?)*(#[\\w._-]+)?)").unwrap();
+    re.replace_all(s, "<a href=\"$url\">$url</a>")
 }
 
 #[cfg(test)]
