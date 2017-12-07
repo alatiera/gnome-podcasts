@@ -12,6 +12,7 @@ use hammond_data::{Episode, Podcast};
 use hammond_downloader::downloader;
 use hammond_data::utils::*;
 use hammond_data::errors::*;
+use hammond_data::utils::replace_extra_spaces;
 
 // use utils::html_to_markup;
 
@@ -90,10 +91,10 @@ impl EpisodeWidget {
                 // html_to_markup(&mut text);
                 // description.set_markup(&text)
                 
-                let plain_text = strip_html_tags(&text).join("");
+                let plain_text = strip_html_tags(&text).join(" ");
                 // TODO: handle unwrap
                 let buff = description.get_buffer().unwrap();
-                buff.set_text(plain_text.trim());
+                buff.set_text(&replace_extra_spaces(&plain_text));
             }));
         }
 

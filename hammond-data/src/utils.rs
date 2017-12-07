@@ -105,6 +105,15 @@ pub fn url_cleaner(s: &str) -> String {
     }
 }
 
+/// Placeholder
+// TODO: Docs
+pub fn replace_extra_spaces(s: &str) -> String {
+    s.lines()
+     .map(|x| x.split_whitespace().collect::<Vec<_>>().join(" "))
+     .filter(|x| !x.is_empty())
+     .collect::<Vec<_>>().join("\n")
+}
+
 #[cfg(test)]
 mod tests {
     extern crate tempdir;
@@ -240,5 +249,23 @@ mod tests {
         assert_eq!(url_cleaner(bad_url), good_url);
         assert_eq!(url_cleaner(good_url), good_url);
         assert_eq!(url_cleaner(&format!("   {}\t\n", bad_url)), good_url);
+    }
+
+    #[test]
+    fn test_whitespace() {
+        let bad_txt = "1   2   3        4  5";
+        let valid_txt = "1 2 3 4 5";
+
+        assert_eq!(replace_extra_spaces(&bad_txt), valid_txt);
+
+        let bad_txt = "1   2   3  \n      4  5\n";
+        let valid_txt = "1 2 3\n4 5";
+
+        assert_eq!(replace_extra_spaces(&bad_txt), valid_txt);
+
+        let bad_txt = "1   2   3  \n\n\n    \n  4  5\n";
+        let valid_txt = "1 2 3\n4 5";
+
+        assert_eq!(replace_extra_spaces(&bad_txt), valid_txt);
     }
 }
