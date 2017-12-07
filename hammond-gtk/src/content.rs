@@ -35,6 +35,24 @@ impl Content {
             podcasts,
         }
     }
+
+    fn replace_widget(&mut self, pdw: PodcastWidget) {
+        let old = self.stack.get_child_by_name("widget").unwrap();
+        self.stack.remove(&old);
+
+        self.widget = pdw;
+        self.stack.add_named(&self.widget.container, "widget");
+        old.destroy();
+    }
+
+    fn replace_podcasts(&mut self, pop: PopulatedView) {
+        let old = self.stack.get_child_by_name("podcasts").unwrap();
+        self.stack.remove(&old);
+
+        self.podcasts = pop;
+        self.stack.add_named(&self.podcasts.container, "podcasts");
+        old.destroy();
+    }
 }
 
 trait UpdateView {
@@ -102,14 +120,8 @@ impl PodcastsView {
 
 impl UpdateView for PodcastsView {
     fn update(&mut self) {
-        let old = self.content.stack.get_child_by_name("podcasts").unwrap();
-
-        self.content.podcasts = PopulatedView::new_initialized(&self.content.stack);
-
-        self.content.stack.remove(&old);
-        self.content.stack.add_named(&self.content.podcasts.container, "podcasts");
-
-        old.destroy();
+        let pop = PopulatedView::new_initialized(&self.content.stack);
+        self.content.replace_podcasts(pop)
     }
 }
 
@@ -135,11 +147,8 @@ impl UpdateView for WidgetsView {
         let id = WidgetExt::get_name(&old).unwrap();
         let pd = dbqueries::get_podcast_from_id(id.parse::<i32>().unwrap()).unwrap();
 
-        self.content.widget = PodcastWidget::new_initialized(&self.content.stack, &pd);;
-        self.content.stack.remove(&old);
-        self.content.stack.add_named(&self.content.widget.container, "widget");
-
-        old.destroy();
+        let pdw = PodcastWidget::new_initialized(&self.content.stack, &pd);;
+        self.content.replace_widget(pdw);
     }
 }
 
