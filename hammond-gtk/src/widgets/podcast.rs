@@ -1,5 +1,6 @@
 use gtk::prelude::*;
 use gtk;
+use diesel::Identifiable;
 
 use std::fs;
 
@@ -53,6 +54,8 @@ impl PodcastWidget {
     }
 
     pub fn init(&self, stack: &gtk::Stack, pd: &Podcast) {
+        WidgetExt::set_name(&self.container, &pd.id().to_string());
+
         // TODO: should spawn a thread to avoid locking the UI probably.
         self.unsub.connect_clicked(clone!(stack, pd => move |bttn| {
             on_unsub_button_clicked(&stack, &pd, bttn);

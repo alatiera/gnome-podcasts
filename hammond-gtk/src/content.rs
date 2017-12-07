@@ -2,6 +2,7 @@ use gtk;
 use gtk::prelude::*;
 
 use hammond_data::Podcast;
+use hammond_data::dbqueries;
 
 use widgets::podcast::PodcastWidget;
 use views::podcasts::PopulatedView;
@@ -36,6 +37,10 @@ impl Content {
     }
 }
 
+trait UpdateView {
+    fn update(&mut self);
+}
+
 #[derive(Debug)]
 struct Empty {
     content: Content 
@@ -67,6 +72,10 @@ impl Empty {
     }
 }
 
+impl UpdateView for Empty {
+    fn update(&mut self) {}
+}
+
 impl PodcastsView {
     fn into_empty(self) -> Result<Empty, PodcastsView> {
         if !self.content.podcasts.flowbox.get_children().is_empty() {
@@ -91,6 +100,19 @@ impl PodcastsView {
     }
 }
 
+impl UpdateView for PodcastsView {
+    fn update(&mut self) {
+        let old = self.content.stack.get_child_by_name("podcasts").unwrap();
+
+        self.content.podcasts = PopulatedView::new_initialized(&self.content.stack);
+
+        self.content.stack.remove(&old);
+        self.content.stack.add_named(&self.content.podcasts.container, "podcasts");
+
+        old.destroy();
+    }
+}
+
 impl WidgetsView {
     fn into_podcasts(self) -> PodcastsView {
         self.content.stack.set_visible_child_name("podcasts");
@@ -104,6 +126,20 @@ impl WidgetsView {
         Empty {
             content: self.content
         }
+    }
+}
+
+impl UpdateView for WidgetsView {
+    fn update(&mut self) {
+        let old = self.content.stack.get_child_by_name("widget").unwrap();
+        let id = WidgetExt::get_name(&old).unwrap();
+        let pd = dbqueries::get_podcast_from_id(id.parse::<i32>().unwrap()).unwrap();
+
+        self.content.widget = PodcastWidget::new_initialized(&self.content.stack, &pd);;
+        self.content.stack.remove(&old);
+        self.content.stack.add_named(&self.content.widget.container, "widget");
+
+        old.destroy();
     }
 }
 
@@ -133,6 +169,14 @@ impl ContentState {
             ContentState::empty(ref e) => e.content.stack.clone(),
             ContentState::pop(ref e) => e.content.stack.clone(),
             ContentState::pd(ref e) => e.content.stack.clone(),
+        }
+    }
+
+    pub fn update(&mut self) {
+        match *self {
+            ContentState::empty(ref mut e) => e.update(),
+            ContentState::pop(ref mut e) => e.update(),
+            ContentState::pd(ref mut e) => e.update(),
         }
     }
 }
