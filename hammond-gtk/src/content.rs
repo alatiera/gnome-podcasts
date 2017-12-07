@@ -74,19 +74,20 @@ struct WidgetsView {
     content: Content
 }
 
-impl Empty {
-    fn into_podcasts(self) -> Result<PodcastsView, Empty> {
-        if self.content.podcasts.flowbox.get_children().is_empty() {
-            return Err(self);
-        }
+#[derive(Debug)]
+pub enum ContentState {
+    empty(Empty),
+    pop(PodcastsView),
+    pd(WidgetsView),
+}
 
+impl Into<PodcastsView> for Empty {
+    fn into(self) -> PodcastsView {
         self.content.stack.set_visible_child_name("podcasts");
 
-        Ok(
-            PodcastsView {
-                content: self.content
-            }
-        )
+        PodcastsView {
+            content: self.content
+        }
     }
 }
 
@@ -94,22 +95,17 @@ impl UpdateView for Empty {
     fn update(&mut self) {}
 }
 
-impl PodcastsView {
-    fn into_empty(self) -> Result<Empty, PodcastsView> {
-        if !self.content.podcasts.flowbox.get_children().is_empty() {
-            return Err(self);
-        }
-
+impl Into<Empty> for  PodcastsView {
+    fn into(self) -> Empty {
         self.content.stack.set_visible_child_name("empty");
-
-        Ok(
-            Empty {
-                content: self.content
-            }
-        )
+        Empty {
+            content: self.content
+        }
     }
+}
 
-    fn into_widget(self) -> WidgetsView {
+impl Into<WidgetsView> for PodcastsView {
+    fn into(self) -> WidgetsView {
         self.content.stack.set_visible_child_name("widget");
 
         WidgetsView {
@@ -125,15 +121,17 @@ impl UpdateView for PodcastsView {
     }
 }
 
-impl WidgetsView {
-    fn into_podcasts(self) -> PodcastsView {
+impl Into<PodcastsView> for WidgetsView {
+    fn into(self) -> PodcastsView {
         self.content.stack.set_visible_child_name("podcasts");
         PodcastsView {
             content: self.content
         }
     }
+}
 
-    fn into_empty(self) -> Empty {
+impl Into<Empty> for WidgetsView {
+    fn into(self) -> Empty {
         self.content.stack.set_visible_child_name("empty");
         Empty {
             content: self.content
@@ -150,13 +148,6 @@ impl UpdateView for WidgetsView {
         let pdw = PodcastWidget::new_initialized(&self.content.stack, &pd);;
         self.content.replace_widget(pdw);
     }
-}
-
-#[derive(Debug)]
-pub enum ContentState {
-    empty(Empty),
-    pop(PodcastsView),
-    pd(WidgetsView),
 }
 
 impl ContentState {
