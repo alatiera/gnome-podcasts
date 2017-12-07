@@ -63,7 +63,8 @@ fn build_ui(app: &gtk::Application) {
     let window = gtk::ApplicationWindow::new(app);
     window.set_default_size(1150, 650);
 
-    let ct = content::ContentState::new();
+    // TODO: this will blow horribly
+    let ct = content::ContentState::new().unwrap();
     let stack = ct.get_stack();
     window.add(&stack);
 

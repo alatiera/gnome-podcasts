@@ -37,109 +37,111 @@ impl Content {
     }
 
     fn replace_widget(&mut self, pdw: PodcastWidget) {
+        let vis = self.stack.get_visible_child_name().unwrap();
         let old = self.stack.get_child_by_name("widget").unwrap();
         self.stack.remove(&old);
 
         self.widget = pdw;
         self.stack.add_named(&self.widget.container, "widget");
+        self.stack.set_visible_child_name(&vis);
         old.destroy();
     }
 
     fn replace_podcasts(&mut self, pop: PopulatedView) {
+        let vis = self.stack.get_visible_child_name().unwrap();
         let old = self.stack.get_child_by_name("podcasts").unwrap();
         self.stack.remove(&old);
 
         self.podcasts = pop;
         self.stack.add_named(&self.podcasts.container, "podcasts");
+        self.stack.set_visible_child_name(&vis);
         old.destroy();
     }
 }
 
-trait UpdateView {
+#[derive(Debug)]
+pub struct ContentState<S> {
+    content: Content,
+    state: S,
+}
+
+pub trait UpdateView {
     fn update(&mut self);
 }
 
 #[derive(Debug)]
-struct Empty {
-    content: Content 
-}
+pub struct Empty {}
 
 #[derive(Debug)]
-struct PodcastsView {
-    content: Content
-}
+pub struct PodcastsView {}
 
 #[derive(Debug)]
-struct WidgetsView {
-    content: Content
-}
+pub struct WidgetsView {}
 
-#[derive(Debug)]
-pub enum ContentState {
-    empty(Empty),
-    pop(PodcastsView),
-    pd(WidgetsView),
-}
-
-impl Into<PodcastsView> for Empty {
-    fn into(self) -> PodcastsView {
+impl Into<ContentState<PodcastsView>> for ContentState<Empty> {
+    fn into(self) -> ContentState<PodcastsView> {
         self.content.stack.set_visible_child_name("podcasts");
 
-        PodcastsView {
-            content: self.content
+        ContentState{
+            content: self.content,
+            state: PodcastsView{},
         }
     }
 }
 
-impl UpdateView for Empty {
+impl UpdateView for ContentState<Empty> {
     fn update(&mut self) {}
 }
 
-impl Into<Empty> for  PodcastsView {
-    fn into(self) -> Empty {
+impl Into<ContentState<Empty>> for ContentState<PodcastsView> {
+    fn into(self) -> ContentState<Empty> {
         self.content.stack.set_visible_child_name("empty");
-        Empty {
-            content: self.content
+        ContentState{
+            content: self.content,
+            state: Empty{},
         }
     }
 }
 
-impl Into<WidgetsView> for PodcastsView {
-    fn into(self) -> WidgetsView {
+impl Into<ContentState<WidgetsView>> for ContentState<PodcastsView> {
+    fn into(self) -> ContentState<WidgetsView> {
         self.content.stack.set_visible_child_name("widget");
 
-        WidgetsView {
-            content: self.content
+        ContentState{
+            content: self.content,
+            state: WidgetsView{},
         }
     }
 }
 
-impl UpdateView for PodcastsView {
+impl UpdateView for ContentState<PodcastsView> {
     fn update(&mut self) {
         let pop = PopulatedView::new_initialized(&self.content.stack);
         self.content.replace_podcasts(pop)
     }
 }
 
-impl Into<PodcastsView> for WidgetsView {
-    fn into(self) -> PodcastsView {
+impl Into<ContentState<PodcastsView>> for ContentState<WidgetsView> {
+    fn into(self) -> ContentState<PodcastsView> {
         self.content.stack.set_visible_child_name("podcasts");
-        PodcastsView {
-            content: self.content
+        ContentState{
+            content: self.content,
+            state: PodcastsView{},
         }
     }
 }
 
-impl Into<Empty> for WidgetsView {
-    fn into(self) -> Empty {
+impl Into<ContentState<Empty>> for ContentState<WidgetsView> {
+    fn into(self) -> ContentState<Empty> {
         self.content.stack.set_visible_child_name("empty");
-        Empty {
-            content: self.content
+        ContentState{
+            content: self.content,
+            state: Empty{},
         }
     }
 }
 
-impl UpdateView for WidgetsView {
+impl UpdateView for ContentState<WidgetsView> {
     fn update(&mut self) {
         let old = self.content.stack.get_child_by_name("widget").unwrap();
         let id = WidgetExt::get_name(&old).unwrap();
@@ -150,34 +152,29 @@ impl UpdateView for WidgetsView {
     }
 }
 
-impl ContentState {
-    pub fn new() -> ContentState {
+impl ContentState<PodcastsView> {
+    pub fn new() -> Result<ContentState<PodcastsView>, ContentState<Empty>> {
         let content = Content::new();
 
         content.podcasts.init(&content.stack);
         if content.podcasts.flowbox.get_children().is_empty() {
             content.stack.set_visible_child_name("empty");
-            return ContentState::empty(Empty { content })
+            return Err(
+                ContentState{
+                    content,
+                    state: Empty{},
+                });
         }
 
         content.stack.set_visible_child_name("podcasts");
-        ContentState::pop(PodcastsView{ content })
+        Ok(ContentState {
+            content,
+            state: PodcastsView{},
+        })
     }
 
     pub fn get_stack(&self) -> gtk::Stack {
-        match *self {
-            ContentState::empty(ref e) => e.content.stack.clone(),
-            ContentState::pop(ref e) => e.content.stack.clone(),
-            ContentState::pd(ref e) => e.content.stack.clone(),
-        }
-    }
-
-    pub fn update(&mut self) {
-        match *self {
-            ContentState::empty(ref mut e) => e.update(),
-            ContentState::pop(ref mut e) => e.update(),
-            ContentState::pd(ref mut e) => e.update(),
-        }
+        self.content.stack.clone()
     }
 }
 
