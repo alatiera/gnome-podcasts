@@ -17,7 +17,7 @@ pub struct Content {
 }
 
 impl Content {
-    fn new() -> Content {
+    pub fn new() -> Content {
         let stack = gtk::Stack::new();
 
         let widget = PodcastWidget::new();
@@ -34,6 +34,22 @@ impl Content {
             empty,
             podcasts,
         }
+    }
+
+    pub fn new_initialized() -> Content {
+        let ct = Content::new();
+        ct.init();
+        ct
+    }
+
+    pub fn init(&self) {
+        self.podcasts.init(&self.stack);
+        if self.podcasts.flowbox.get_children().is_empty() {
+            self.stack.set_visible_child_name("empty");
+            return
+        }
+
+        self.stack.set_visible_child_name("podcasts");
     }
 
     fn replace_widget(&mut self, pdw: PodcastWidget) {
@@ -60,6 +76,8 @@ impl Content {
 }
 
 #[derive(Debug)]
+// Experiementing with Wrapping gtk::Stack into a State machine.
+// Gonna revist it when TryInto trais is stabilized.
 pub struct ContentState<S> {
     content: Content,
     state: S,
@@ -153,6 +171,7 @@ impl UpdateView for ContentState<WidgetsView> {
 }
 
 impl ContentState<PodcastsView> {
+    #[allow(dead_code)]
     pub fn new() -> Result<ContentState<PodcastsView>, ContentState<Empty>> {
         let content = Content::new();
 
@@ -173,6 +192,7 @@ impl ContentState<PodcastsView> {
         })
     }
 
+    #[allow(dead_code)]
     pub fn get_stack(&self) -> gtk::Stack {
         self.content.stack.clone()
     }
@@ -191,14 +211,6 @@ fn replace_podcasts(stack: &gtk::Stack, pop: &PopulatedView) {
     stack.add_named(&pop.container, "podcasts");
     old.destroy();
 }
-
-// This won't ever be needed probably
-// pub fn replace_empty(stack: &gtk::Stack, emp: &EmptyView ) {
-//     let old = stack.get_child_by_name("empty").unwrap();
-//     stack.remove(&old);
-//     stack.add_named(&emp.container, "empty");
-//     old.destroy();
-// }
 
 #[allow(dead_code)]
 pub fn show_widget(stack: &gtk::Stack) {

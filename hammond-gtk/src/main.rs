@@ -64,8 +64,11 @@ fn build_ui(app: &gtk::Application) {
     window.set_default_size(1150, 650);
 
     // TODO: this will blow horribly
-    let ct = content::ContentState::new().unwrap();
-    let stack = ct.get_stack();
+    // let ct = content::ContentState::new().unwrap();
+    // let stack = ct.get_stack();
+
+    let ct = content::Content::new_initialized();
+    let stack = ct.stack;
     window.add(&stack);
 
     window.connect_delete_event(|w, _| {
