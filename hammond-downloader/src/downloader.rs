@@ -118,7 +118,7 @@ pub fn get_episode(ep: &mut Episode, download_folder: &str) -> Result<()> {
         ep.save()?;
     };
 
-    let res = download_into(download_folder, ep.title().unwrap(), ep.uri());
+    let res = download_into(download_folder, ep.title(), ep.uri().unwrap());
 
     if let Ok(path) = res {
         // If download succedes set episode local_uri to dlpath.

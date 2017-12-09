@@ -1,8 +1,8 @@
 table! {
-    episode (id) {
-        id -> Integer,
-        title -> Nullable<Text>,
-        uri -> Text,
+    episode (title, podcast_id) {
+        rowid -> Integer,
+        title -> Text,
+        uri -> Nullable<Text>,
         local_uri -> Nullable<Text>,
         description -> Nullable<Text>,
         published_date -> Nullable<Text>,

@@ -34,7 +34,10 @@ pub(crate) fn new_podcast(chan: &Channel, source_id: i32) -> NewPodcast {
 
 /// Parses an `rss::Item` into a `NewEpisode` Struct.
 pub(crate) fn new_episode(item: &Item, parent_id: i32) -> Result<NewEpisode> {
-    let title = item.title().map(|s| s.trim().to_owned());
+    if item.title().is_none() {
+        bail!("No title specified for the item.")
+    }
+    let title = item.title().unwrap().trim().to_owned();
     let description = item.description()
         .map(|s| replace_extra_spaces(&ammonia::clean(s)));
     let guid = item.guid().map(|s| s.value().trim().to_owned());
@@ -44,10 +47,11 @@ pub(crate) fn new_episode(item: &Item, parent_id: i32) -> Result<NewEpisode> {
     // Though the db scema has a requirment of episode uri being Unique && Not Null.
     // TODO: Restructure
     let x = item.enclosure().map(|s| url_cleaner(s.url()));
+    // FIXME: refactor
     let uri = if x.is_some() {
-        x.unwrap()
+        x
     } else if item.link().is_some() {
-        item.link().map(|s| url_cleaner(s)).unwrap()
+        item.link().map(|s| url_cleaner(s))
     } else {
         bail!("No url specified for the item.")
     };
@@ -182,8 +186,11 @@ mod tests {
                      performs.";
         let i = new_episode(&firstitem, 0).unwrap();
 
-        assert_eq!(i.title(), Some("The Super Bowl of Racism"));
-        assert_eq!(i.uri(), "http://traffic.megaphone.fm/PPY6458293736.mp3");
+        assert_eq!(i.title(), "The Super Bowl of Racism");
+        assert_eq!(
+            i.uri(),
+            Some("http://traffic.megaphone.fm/PPY6458293736.mp3")
+        );
         assert_eq!(i.description(), Some(descr));
         assert_eq!(i.length(), Some(66738886));
         assert_eq!(i.guid(), Some("7df4070a-9832-11e7-adac-cb37b05d5e24"));
@@ -203,9 +210,12 @@ mod tests {
                       Venezuela.";
         assert_eq!(
             i2.title(),
-            Some("Atlas Golfed — U.S.-Backed Think Tanks Target Latin America")
+            "Atlas Golfed — U.S.-Backed Think Tanks Target Latin America"
         );
-        assert_eq!(i2.uri(), "http://traffic.megaphone.fm/FL5331443769.mp3");
+        assert_eq!(
+            i2.uri(),
+            Some("http://traffic.megaphone.fm/FL5331443769.mp3")
+        );
         assert_eq!(i2.description(), Some(descr2));
         assert_eq!(i2.length(), Some(67527575));
         assert_eq!(i2.guid(), Some("7c207a24-e33f-11e6-9438-eb45dcf36a1d"));
@@ -225,11 +235,11 @@ mod tests {
 
         assert_eq!(
             i.title(),
-            Some("The Breakthrough: Hopelessness and Exploitation Inside Homes for Mentally Ill")
+            "The Breakthrough: Hopelessness and Exploitation Inside Homes for Mentally Ill"
         );
         assert_eq!(
             i.uri(),
-            "http://tracking.feedpress.it/link/10581/6726758/20170908-cliff-levy.mp3"
+            Some("http://tracking.feedpress.it/link/10581/6726758/20170908-cliff-levy.mp3")
         );
         assert_eq!(i.description(), Some(descr));
         assert_eq!(i.length(), Some(33396551));
@@ -251,14 +261,11 @@ mod tests {
 
         assert_eq!(
             i2.title(),
-            Some(
-                "The Breakthrough: Behind the Scenes of Hillary Clinton’s Failed Bid for \
-                 President"
-            )
+            "The Breakthrough: Behind the Scenes of Hillary Clinton’s Failed Bid for President"
         );
         assert_eq!(
             i2.uri(),
-            "http://tracking.feedpress.it/link/10581/6726759/16_JohnAllen-CRAFT.mp3".to_string()
+            Some("http://tracking.feedpress.it/link/10581/6726759/16_JohnAllen-CRAFT.mp3")
         );
         assert_eq!(i2.description(), Some(descr2));
         assert_eq!(i2.length(), Some(17964071));
@@ -285,10 +292,10 @@ mod tests {
                      It’s a really packed episode!";
         let i = new_episode(&firstitem, 0).unwrap();
 
-        assert_eq!(i.title(), Some("Hacking Devices with Kali Linux | LUP 214"));
+        assert_eq!(i.title(), "Hacking Devices with Kali Linux | LUP 214");
         assert_eq!(
             i.uri(),
-            "http://www.podtrac.com/pts/redirect.mp3/traffic.libsyn.com/jnite/lup-0214.mp3"
+            Some("http://www.podtrac.com/pts/redirect.mp3/traffic.libsyn.com/jnite/lup-0214.mp3")
         );
         assert_eq!(i.description(), Some(descr));
         assert_eq!(i.length(), Some(46479789));
@@ -305,10 +312,10 @@ mod tests {
                       future.</p>\n<p>Plus we chat with Wimpy about the Ubuntu Rally in NYC, \
                       Microsoft’s sneaky move to turn Windows 10 into the “ULTIMATE LINUX \
                       RUNTIME”, community news &amp; more!</p>";
-        assert_eq!(i2.title(), Some("Gnome Does it Again | LUP 213"));
+        assert_eq!(i2.title(), "Gnome Does it Again | LUP 213");
         assert_eq!(
             i2.uri(),
-            "http://www.podtrac.com/pts/redirect.mp3/traffic.libsyn.com/jnite/lup-0213.mp3"
+            Some("http://www.podtrac.com/pts/redirect.mp3/traffic.libsyn.com/jnite/lup-0213.mp3")
         );
         assert_eq!(i2.description(), Some(descr2));
         assert_eq!(i2.length(), Some(36544272));
@@ -327,11 +334,13 @@ mod tests {
                      rel=\"noopener noreferrer\">RFC 2094</a> \"Non-lexical lifetimes\"";
         let i = new_episode(&firstitem, 0).unwrap();
 
-        assert_eq!(i.title(), Some("Episode #9 - A Once in a Lifetime RFC"));
+        assert_eq!(i.title(), "Episode #9 - A Once in a Lifetime RFC");
         assert_eq!(
             i.uri(),
-            "http://request-for-explanation.github.\
-             io/podcast/ep9-a-once-in-a-lifetime-rfc/episode.mp3"
+            Some(
+                "http://request-for-explanation.github.\
+                 io/podcast/ep9-a-once-in-a-lifetime-rfc/episode.mp3"
+            )
         );
         assert_eq!(i.description(), Some(descr));
         assert_eq!(i.length(), Some(15077388));
@@ -349,11 +358,13 @@ mod tests {
                       href=\"https://github.com/rust-lang/rfcs/pull/2071\" rel=\"noopener \
                       noreferrer\">RFC 2071</a> \"Add impl Trait type alias and variable \
                       declarations\"";
-        assert_eq!(i2.title(), Some("Episode #8 - An Existential Crisis"));
+        assert_eq!(i2.title(), "Episode #8 - An Existential Crisis");
         assert_eq!(
             i2.uri(),
-            "http://request-for-explanation.github.io/podcast/ep8-an-existential-crisis/episode.\
-             mp3"
+            Some(
+                "http://request-for-explanation.github.\
+                 io/podcast/ep8-an-existential-crisis/episode.mp3"
+            )
         );
         assert_eq!(i2.description(), Some(descr2));
         assert_eq!(i2.length(), Some(13713219));

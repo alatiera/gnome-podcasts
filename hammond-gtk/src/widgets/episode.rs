@@ -5,7 +5,6 @@ use gtk::{ContainerExt, TextBufferExt};
 
 use open;
 use dissolve::strip_html_tags;
-use diesel::associations::Identifiable;
 
 use hammond_data::dbqueries;
 use hammond_data::{Episode, Podcast};
@@ -77,10 +76,7 @@ impl EpisodeWidget {
 
     fn init(&self, episode: &mut Episode, pd: &Podcast) {
         self.title.set_xalign(0.0);
-
-        if let Some(t) = episode.title() {
-            self.title.set_text(t);
-        }
+        self.title.set_text(episode.title());
 
         if episode.description().is_some() {
             let text = episode.description().unwrap().to_owned();
@@ -116,7 +112,7 @@ impl EpisodeWidget {
         self.play
             .connect_clicked(clone!(episode, played, unplayed => move |_| {
             let mut episode = episode.clone();
-            on_play_bttn_clicked(*episode.id());
+            on_play_bttn_clicked(episode.rowid());
             let _ = episode.set_played_now();
             played.hide();
             unplayed.show();
@@ -126,7 +122,7 @@ impl EpisodeWidget {
         let download = &self.download;
         self.delete
             .connect_clicked(clone!(episode, play, download => move |del| {
-            on_delete_bttn_clicked(*episode.id());
+            on_delete_bttn_clicked(episode.rowid());
             del.hide();
             play.hide();
             download.show();
@@ -189,7 +185,7 @@ fn on_download_clicked(
         let download_fold = downloader::get_download_folder(&pd_title).unwrap();
         let e = downloader::get_episode(&mut ep, download_fold.as_str());
         if let Err(err) = e {
-            error!("Error while trying to download: {}", ep.uri());
+            error!("Error while trying to download: {:?}", ep.uri());
             error!("Error: {}", err);
         };
         sender.send(true).expect("Couldn't send data to channel");;

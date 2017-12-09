@@ -146,22 +146,26 @@ mod tests {
         // Setup episodes
         let db = connection();
         let con = db.get().unwrap();
-        NewEpisodeBuilder::default()
-            .uri("foo_bar".to_string())
+        let n1 = NewEpisodeBuilder::default()
+            .title("foo_bar".to_string())
+            .podcast_id(0)
             .build()
             .unwrap()
             .into_episode(&con)
             .unwrap();
 
-        NewEpisodeBuilder::default()
-            .uri("bar_baz".to_string())
+        let n2 = NewEpisodeBuilder::default()
+            .title("bar_baz".to_string())
+            .podcast_id(1)
             .build()
             .unwrap()
             .into_episode(&con)
             .unwrap();
 
-        let mut ep1 = dbqueries::get_episode_from_uri(&con, "foo_bar").unwrap();
-        let mut ep2 = dbqueries::get_episode_from_uri(&con, "bar_baz").unwrap();
+        let mut ep1 =
+            dbqueries::get_episode_from_new_episode(&con, n1.title(), n1.podcast_id()).unwrap();
+        let mut ep2 =
+            dbqueries::get_episode_from_new_episode(&con, n2.title(), n2.podcast_id()).unwrap();
         ep1.set_local_uri(Some(valid_path.to_str().unwrap()));
         ep2.set_local_uri(Some(bad_path.to_str().unwrap()));
 
@@ -179,7 +183,7 @@ mod tests {
         let episodes = dbqueries::get_downloaded_episodes().unwrap();
 
         assert_eq!(episodes.len(), 1);
-        assert_eq!("foo_bar", episodes.first().unwrap().uri());
+        assert_eq!("foo_bar", episodes.first().unwrap().title());
     }
 
     #[test]
@@ -188,7 +192,7 @@ mod tests {
         let mut episode = {
             let db = connection();
             let con = db.get().unwrap();
-            dbqueries::get_episode_from_uri(&con, "bar_baz").unwrap()
+            dbqueries::get_episode_from_new_episode(&con, "bar_baz", 1).unwrap()
         };
 
         checker_helper(&mut episode);
@@ -201,7 +205,7 @@ mod tests {
         let mut episode = {
             let db = connection();
             let con = db.get().unwrap();
-            dbqueries::get_episode_from_uri(&con, "foo_bar").unwrap()
+            dbqueries::get_episode_from_new_episode(&con, "foo_bar", 0).unwrap()
         };
 
         let valid_path = episode.local_uri().unwrap().to_owned();
@@ -215,7 +219,7 @@ mod tests {
         let mut episode = {
             let db = connection();
             let con = db.get().unwrap();
-            dbqueries::get_episode_from_uri(&con, "foo_bar").unwrap()
+            dbqueries::get_episode_from_new_episode(&con, "foo_bar", 0).unwrap()
         };
         let now_utc = Utc::now().timestamp() as i32;
         // let limit = now_utc - 172_800;
@@ -235,7 +239,7 @@ mod tests {
         let mut episode = {
             let db = connection();
             let con = db.get().unwrap();
-            dbqueries::get_episode_from_uri(&con, "foo_bar").unwrap()
+            dbqueries::get_episode_from_new_episode(&con, "foo_bar", 0).unwrap()
         };
         let now_utc = Utc::now().timestamp() as i32;
         // limit = 172_800;

@@ -91,6 +91,7 @@ impl Update for NewPodcast {
     fn update(&self, con: &SqliteConnection, podcast_id: i32) -> QueryResult<usize> {
         use schema::podcast::dsl::*;
 
+        info!("Updating {}", self.title);
         diesel::update(podcast.filter(id.eq(podcast_id)))
             .set(self)
             .execute(&*con)
@@ -160,8 +161,8 @@ impl NewPodcast {
 #[builder(derive(Debug))]
 #[builder(setter(into))]
 pub(crate) struct NewEpisode {
-    title: Option<String>,
-    uri: String,
+    title: String,
+    uri: Option<String>,
     description: Option<String>,
     published_date: Option<String>,
     length: Option<i32>,
@@ -181,7 +182,8 @@ impl Update for NewEpisode {
     fn update(&self, con: &SqliteConnection, episode_id: i32) -> QueryResult<usize> {
         use schema::episode::dsl::*;
 
-        diesel::update(episode.filter(id.eq(episode_id)))
+        info!("Updating {:?}", self.title);
+        diesel::update(episode.filter(rowid.eq(episode_id)))
             .set(self)
             .execute(&*con)
     }
@@ -191,11 +193,16 @@ impl NewEpisode {
     // TODO: Refactor into batch indexes instead.
     pub(crate) fn into_episode(self, con: &SqliteConnection) -> Result<Episode> {
         self.index(con)?;
-        Ok(dbqueries::get_episode_from_uri(con, &self.uri)?)
+        Ok(dbqueries::get_episode_from_new_episode(
+            con,
+            &self.title,
+            self.podcast_id,
+        )?)
     }
 
     pub(crate) fn index(&self, con: &SqliteConnection) -> QueryResult<()> {
-        let ep = dbqueries::get_episode_from_uri(con, &self.uri.clone());
+        // TODO: Change me
+        let ep = dbqueries::get_episode_from_new_episode(con, &self.title, self.podcast_id);
 
         match ep {
             Ok(foo) => {
@@ -203,10 +210,10 @@ impl NewEpisode {
                     error!("NEP pid: {}, EP pid: {}", self.podcast_id, foo.podcast_id());
                 };
 
-                if foo.title() != self.title.as_ref().map(|x| x.as_str())
-                    || foo.published_date() != self.published_date.as_ref().map(|x| x.as_str())
+                if foo.title() != self.title.as_str() || foo.epoch() != self.epoch
+                    || foo.uri() != self.uri.as_ref().map(|s| s.as_str())
                 {
-                    self.update(con, *foo.id())?;
+                    self.update(con, foo.rowid())?;
                 }
             }
             Err(_) => {
@@ -220,12 +227,12 @@ impl NewEpisode {
 #[allow(dead_code)]
 // Ignore the following getters. They are used in unit tests mainly.
 impl NewEpisode {
-    pub(crate) fn title(&self) -> Option<&str> {
-        self.title.as_ref().map(|s| s.as_str())
+    pub(crate) fn title(&self) -> &str {
+        self.title.as_ref()
     }
 
-    pub(crate) fn uri(&self) -> &str {
-        self.uri.as_ref()
+    pub(crate) fn uri(&self) -> Option<&str> {
+        self.uri.as_ref().map(|s| s.as_str())
     }
 
     pub(crate) fn description(&self) -> Option<&str> {

@@ -18,13 +18,14 @@ use std::str::FromStr;
 #[derive(Queryable, Identifiable, AsChangeset, Associations, PartialEq)]
 #[table_name = "episode"]
 #[changeset_options(treat_none_as_null = "true")]
+#[primary_key(title, podcast_id)]
 #[belongs_to(Podcast, foreign_key = "podcast_id")]
 #[derive(Debug, Clone)]
 /// Diesel Model of the episode table.
 pub struct Episode {
-    id: i32,
-    title: Option<String>,
-    uri: String,
+    rowid: i32,
+    title: String,
+    uri: Option<String>,
     local_uri: Option<String>,
     description: Option<String>,
     published_date: Option<String>,
@@ -38,26 +39,31 @@ pub struct Episode {
 }
 
 impl Episode {
+    /// Get the value of the sqlite's `ROW_ID`
+    pub fn rowid(&self) -> i32 {
+        self.rowid
+    }
+
     /// Get the value of the `title` field.
-    pub fn title(&self) -> Option<&str> {
-        self.title.as_ref().map(|s| s.as_str())
+    pub fn title(&self) -> &str {
+        &self.title
     }
 
     /// Set the `title`.
-    pub fn set_title(&mut self, value: Option<&str>) {
-        self.title = value.map(|x| x.to_string());
+    pub fn set_title(&mut self, value: &str) {
+        self.title = value.to_string();
     }
 
     /// Get the value of the `uri`.
     ///
     /// Represents the url(usually) that the media file will be located at.
-    pub fn uri(&self) -> &str {
-        self.uri.as_ref()
+    pub fn uri(&self) -> Option<&str> {
+        self.uri.as_ref().map(|s| s.as_str())
     }
 
     /// Set the `uri`.
-    pub fn set_uri(&mut self, value: &str) {
-        self.uri = value.to_string();
+    pub fn set_uri(&mut self, value: Option<&str>) {
+        self.uri = value.map(|x| x.to_string());
     }
 
     /// Get the value of the `local_uri`.

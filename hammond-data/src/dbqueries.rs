@@ -55,7 +55,9 @@ pub fn get_episode_from_id(ep_id: i32) -> Result<Episode> {
 
     let db = connection();
     let con = db.get()?;
-    Ok(episode.filter(id.eq(ep_id)).get_result::<Episode>(&*con)?)
+    Ok(episode
+        .filter(rowid.eq(ep_id))
+        .get_result::<Episode>(&*con)?)
 }
 
 pub fn get_episode_local_uri_from_id(ep_id: i32) -> Result<Option<String>> {
@@ -65,7 +67,7 @@ pub fn get_episode_local_uri_from_id(ep_id: i32) -> Result<Option<String>> {
     let con = db.get()?;
 
     Ok(episode
-        .filter(id.eq(ep_id))
+        .filter(rowid.eq(ep_id))
         .select(local_uri)
         .get_result::<Option<String>>(&*con)?)
 }
@@ -153,10 +155,18 @@ pub fn get_podcast_from_source_id(sid: i32) -> Result<Podcast> {
         .get_result::<Podcast>(&*con)?)
 }
 
-pub fn get_episode_from_uri(con: &SqliteConnection, uri_: &str) -> QueryResult<Episode> {
+// TODO: unhack me
+pub fn get_episode_from_new_episode(
+    con: &SqliteConnection,
+    title_: &str,
+    pid: i32,
+) -> QueryResult<Episode> {
     use schema::episode::dsl::*;
 
-    episode.filter(uri.eq(uri_)).get_result::<Episode>(&*con)
+    episode
+        .filter(title.eq(title_))
+        .filter(podcast_id.eq(pid))
+        .get_result::<Episode>(&*con)
 }
 
 pub fn remove_feed(pd: &Podcast) -> Result<()> {
