@@ -12,6 +12,7 @@ extern crate hammond_downloader;
 extern crate log;
 extern crate loggerv;
 extern crate open;
+extern crate regex;
 // extern crate rayon;
 
 // use rayon::prelude::*;
@@ -43,11 +44,10 @@ macro_rules! clone {
 mod views;
 mod widgets;
 mod headerbar;
+mod content;
 
 mod utils;
 mod static_resource;
-
-use views::podcasts_view;
 
 /*
 THIS IS STILL A PROTOTYPE.
@@ -62,8 +62,13 @@ fn build_ui(app: &gtk::Application) {
     // Get the main window
     let window = gtk::ApplicationWindow::new(app);
     window.set_default_size(1150, 650);
-    // Setup the Stack that will manage the switch between podcasts_view and podcast_widget.
-    let stack = podcasts_view::setup_stack();
+
+    // TODO: this will blow horribly
+    // let ct = content::ContentState::new().unwrap();
+    // let stack = ct.get_stack();
+
+    let ct = content::Content::new_initialized();
+    let stack = ct.stack;
     window.add(&stack);
 
     window.connect_delete_event(|w, _| {
@@ -98,8 +103,8 @@ fn build_ui(app: &gtk::Application) {
     });
 
     // Get the headerbar
-    let header = headerbar::get_headerbar(&stack);
-    window.set_titlebar(&header);
+    let header = headerbar::Header::new_initialized(&stack);
+    window.set_titlebar(&header.container);
 
     window.show_all();
     window.activate();

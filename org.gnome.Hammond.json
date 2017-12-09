@@ -14,18 +14,18 @@
         "--talk-name=org.freedesktop.Notifications"
     ],
     "build-options": {
+        "append-path": "/usr/lib/sdk/rust-stable/bin",
+        "build-args": [
+            "--share=network"
+        ],
         "env": {
             "CARGO_HOME": "/run/build/Hammond/cargo"
-        },
-        "build-args": [ "--share=network" ]
+        }
     },
     "modules": [
         {
             "name": "Hammond",
-            "buildsystem": "simple",
-            "build-commands": [
-                "source /usr/lib/sdk/rust-stable/enable.sh && ./configure --prefix=/app && make && make install"
-            ],
+            "buildsystem": "meson",
             "sources": [
                 {
                     "type": "git",

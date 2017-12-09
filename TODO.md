@@ -1,14 +1,9 @@
 ## TODOs:
 
-**General:**
-
-- [ ] Write docs
-
 ## Planned Features
 
 ## Priorities:
 
-- [ ] Discuss and decide when to schedule the download cleaner. [#3](https://gitlab.gnome.org/alatiera/Hammond/issues/3)
 - [ ] Unplayed Only and Downloaded only view.
 - [ ] Auto-updater
 - [ ] OPML import/export // Probably need to create a crate.

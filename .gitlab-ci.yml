@@ -14,53 +14,34 @@ before_script:
 # kcov
 # - apt-get install -y libcurl4-openssl-dev libelf-dev libdw-dev cmake gcc binutils-dev libiberty-dev
 
+.cargo_test_template: &cargo_test
+  stage: test
+  script:
+  - rustc --version && cargo --version
+  - cargo build
+  - cargo test --verbose -- --test-threads=1
+
 variables:
 #   RUSTFLAGS: "-C link-dead-code"
   RUST_BACKTRACE: "FULL"
 
-# Currently doesnt work.
-# # Build with meson
-# build:stable:
-#   # Stable img
-#   # https://hub.docker.com/_/rust/
-#   image: "rust"
-#   script:
-#   - rustc --version && cargo --version
-#   - ./configure --prefix=/usr/local
-#   - make && sudo make install
-
-# build:nightly:
-#   # Nightly
-#   # https://hub.docker.com/r/rustlang/rust/
-#   image: "rustlang/rust:nightly"
-#   script:
-#   - rustc --version && cargo --version
-#   - ./configure --prefix=/usr/local
-#   - make && sudo make install
-
-test:stable:
-  # Stable img
+stable:test:
   # https://hub.docker.com/_/rust/
   image: "rust"
-  script:
-  - rustc --version && cargo --version
-  - cargo build
-  - cargo test --verbose -- --test-threads=1
+  <<: *cargo_test
 
-test:nightly:
-  # Nightly
+nightly:test:
   # https://hub.docker.com/r/rustlang/rust/
   image: "rustlang/rust:nightly"
-  script:
-  - rustc --version && cargo --version
-  - cargo build
-  - cargo test --verbose -- --test-threads=1
-  # - cargo bench
+  <<: *cargo_test
 
 # Configure and run rustfmt on nightly
 # Exits and builds fails if on bad format
-lint:rustfmt:
+rustfmt:
   image: "rustlang/rust:nightly"
+  stage: lint
+  variables:
+    CFG_RELEASE_CHANNEL: "nightly"
   script:
   - rustc --version && cargo --version
   - cargo install rustfmt-nightly
@@ -68,8 +49,9 @@ lint:rustfmt:
 
 # Configure and run clippy on nightly
 # Only fails on errors atm.
-lint:clippy:
+clippy:
   image: "rustlang/rust:nightly"
+  stage: lint
   script:
   - rustc --version && cargo --version
   - cargo install clippy

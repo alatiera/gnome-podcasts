@@ -105,6 +105,16 @@ pub fn url_cleaner(s: &str) -> String {
     }
 }
 
+/// Placeholder
+// TODO: Docs
+pub fn replace_extra_spaces(s: &str) -> String {
+    s.lines()
+        .map(|x| x.split_whitespace().collect::<Vec<_>>().join(" "))
+        .filter(|x| !x.is_empty())
+        .collect::<Vec<_>>()
+        .join("\n")
+}
+
 #[cfg(test)]
 mod tests {
     extern crate tempdir;
@@ -129,19 +139,28 @@ mod tests {
         // Setup episodes
         let db = connection();
         let con = db.get().unwrap();
-        NewEpisodeBuilder::new()
+        NewEpisodeBuilder::default()
             .uri("foo_bar".to_string())
-            .local_uri(Some(valid_path.to_str().unwrap().to_owned()))
             .build()
+            .unwrap()
             .into_episode(&con)
             .unwrap();
 
-        NewEpisodeBuilder::new()
+        NewEpisodeBuilder::default()
             .uri("bar_baz".to_string())
-            .local_uri(Some(bad_path.to_str().unwrap().to_owned()))
             .build()
+            .unwrap()
             .into_episode(&con)
             .unwrap();
+
+        let mut ep1 = dbqueries::get_episode_from_uri(&con, "foo_bar").unwrap();
+        let mut ep2 = dbqueries::get_episode_from_uri(&con, "bar_baz").unwrap();
+        ep1.set_local_uri(Some(valid_path.to_str().unwrap()));
+        ep2.set_local_uri(Some(bad_path.to_str().unwrap()));
+
+        drop(con);
+        ep1.save().unwrap();
+        ep2.save().unwrap();
 
         tmp_dir
     }
@@ -231,5 +250,23 @@ mod tests {
         assert_eq!(url_cleaner(bad_url), good_url);
         assert_eq!(url_cleaner(good_url), good_url);
         assert_eq!(url_cleaner(&format!("   {}\t\n", bad_url)), good_url);
+    }
+
+    #[test]
+    fn test_whitespace() {
+        let bad_txt = "1   2   3        4  5";
+        let valid_txt = "1 2 3 4 5";
+
+        assert_eq!(replace_extra_spaces(&bad_txt), valid_txt);
+
+        let bad_txt = "1   2   3  \n      4  5\n";
+        let valid_txt = "1 2 3\n4 5";
+
+        assert_eq!(replace_extra_spaces(&bad_txt), valid_txt);
+
+        let bad_txt = "1   2   3  \n\n\n    \n  4  5\n";
+        let valid_txt = "1 2 3\n4 5";
+
+        assert_eq!(replace_extra_spaces(&bad_txt), valid_txt);
     }
 }

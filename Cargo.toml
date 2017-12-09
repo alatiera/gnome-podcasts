@@ -8,7 +8,3 @@ members = [
 [profile.release]
 debug = false
 
-[patch.crates-io]
-diesel = { git = "https://github.com/diesel-rs/diesel.git" }
-diesel_infer_schema = { git = "https://github.com/diesel-rs/diesel.git" }
-diesel_codegen = { git = "https://github.com/diesel-rs/diesel.git" }

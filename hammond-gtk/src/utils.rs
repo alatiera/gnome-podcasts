@@ -1,14 +1,18 @@
 use glib;
 use gtk;
+use gdk_pixbuf::Pixbuf;
 
 use hammond_data::feed;
-use hammond_data::Source;
+use hammond_data::{Podcast, Source};
+use hammond_downloader::downloader;
 
 use std::{thread, time};
 use std::cell::RefCell;
 use std::sync::mpsc::{channel, Receiver};
+use std::borrow::Cow;
 
-use views::podcasts_view;
+use content;
+use regex::Regex;
 
 type Foo = RefCell<Option<(gtk::Stack, Receiver<bool>)>>;
 
@@ -55,9 +59,54 @@ fn refresh_podcasts_view() -> glib::Continue {
     GLOBAL.with(|global| {
         if let Some((ref stack, ref reciever)) = *global.borrow() {
             if reciever.try_recv().is_ok() {
-                podcasts_view::update_podcasts_view(stack);
+                content::update_podcasts_preserve_vis(stack);
             }
         }
     });
     glib::Continue(false)
+}
+
+pub fn get_pixbuf_from_path(pd: &Podcast) -> Option<Pixbuf> {
+    let img_path = downloader::cache_image(pd)?;
+    Pixbuf::new_from_file_at_scale(&img_path, 256, 256, true).ok()
+}
+
+#[allow(dead_code)]
+// WIP: parse html to markup
+pub fn html_to_markup(s: &mut str) -> Cow<str> {
+    s.trim();
+    s.replace('&', "&amp;");
+    s.replace('<', "&lt;");
+    s.replace('>', "&gt;");
+
+    let re = Regex::new("(?P<url>https?://[^\\s&,)(\"]+(&\\w=[\\w._-]?)*(#[\\w._-]+)?)").unwrap();
+    re.replace_all(s, "<a href=\"$url\">$url</a>")
+}
+
+#[cfg(test)]
+mod tests {
+    use hammond_data::Source;
+    use hammond_data::feed::index;
+    use hammond_data::dbqueries;
+    use diesel::associations::Identifiable;
+    use super::*;
+
+    #[test]
+    fn test_get_pixbuf_from_path() {
+        let url = "http://www.newrustacean.com/feed.xml";
+
+        // Create and index a source
+        let source = Source::from_url(url).unwrap();
+        // Copy it's id
+        let sid = source.id().clone();
+
+        // Convert Source it into a Feed and index it
+        let feed = source.into_feed().unwrap();
+        index(vec![feed]);
+
+        // Get the Podcast
+        let pd = dbqueries::get_podcast_from_source_id(sid).unwrap();
+        let pxbuf = get_pixbuf_from_path(&pd);
+        assert!(pxbuf.is_some());
+    }
 }

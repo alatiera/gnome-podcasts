@@ -8,13 +8,13 @@ workspace = "../"
 error-chain = "0.11.0"
 hyper = "0.11.7"
 log = "0.3.8"
-mime_guess = "1.8.2"
+mime_guess = "1.8.3"
 reqwest = "0.8.1"
 tempdir = "0.3.5"
 
 [dependencies.diesel]
 features = ["sqlite"]
-git = "https://github.com/diesel-rs/diesel.git"
+version = "0.99"
 
 [dependencies.hammond-data]
 path = "../hammond-data"
