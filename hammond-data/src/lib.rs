@@ -10,6 +10,7 @@
 //! A libraty for parsing, indexing and retrieving podcast Feeds,
 //! into and from a Database.
 
+#![allow(unknown_lints)]
 #![deny(bad_style, const_err, dead_code, improper_ctypes, legacy_directory_ownership,
         non_shorthand_field_patterns, no_mangle_generic_items, overflowing_literals,
         path_statements, patterns_in_fns_without_body, plugin_as_library, private_in_public,
@@ -39,6 +40,7 @@ extern crate derive_builder;
 
 extern crate ammonia;
 extern crate chrono;
+extern crate itertools;
 extern crate r2d2;
 extern crate r2d2_diesel;
 extern crate rayon;

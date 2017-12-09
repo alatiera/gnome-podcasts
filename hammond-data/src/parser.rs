@@ -4,6 +4,7 @@ use rfc822_sanitizer::parse_from_rfc2822_with_fallback;
 
 use models::insertables::{NewEpisode, NewEpisodeBuilder, NewPodcast, NewPodcastBuilder};
 use utils::url_cleaner;
+use utils::replace_extra_spaces;
 
 use errors::*;
 
@@ -11,7 +12,7 @@ use errors::*;
 /// Parses a `rss::Channel` into a `NewPodcast` Struct.
 pub(crate) fn new_podcast(chan: &Channel, source_id: i32) -> NewPodcast {
     let title = chan.title().trim();
-    let description = ammonia::clean(chan.description().trim());
+    let description = replace_extra_spaces(&ammonia::clean(chan.description()));
 
     let link = url_cleaner(chan.link());
     let x = chan.itunes_ext().map(|s| s.image());
@@ -34,7 +35,8 @@ pub(crate) fn new_podcast(chan: &Channel, source_id: i32) -> NewPodcast {
 /// Parses an `rss::Item` into a `NewEpisode` Struct.
 pub(crate) fn new_episode(item: &Item, parent_id: i32) -> Result<NewEpisode> {
     let title = item.title().map(|s| s.trim().to_owned());
-    let description = item.description().map(|s| ammonia::clean(s.trim()));
+    let description = item.description()
+        .map(|s| replace_extra_spaces(&ammonia::clean(s)));
     let guid = item.guid().map(|s| s.value().trim().to_owned());
 
     // Its kinda weird this being an Option type.
@@ -92,7 +94,7 @@ mod tests {
         let descr = "The people behind The Intercept’s fearless reporting and incisive \
                      commentary—Jeremy Scahill, Glenn Greenwald, Betsy Reed and others—discuss \
                      the crucial issues of our time: national security, civil liberties, foreign \
-                     policy, and criminal justice.  Plus interviews with artists, thinkers, and \
+                     policy, and criminal justice. Plus interviews with artists, thinkers, and \
                      newsmakers who challenge our preconceptions about the world we live in.";
         let pd = new_podcast(&channel, 0);
 
@@ -249,8 +251,10 @@ mod tests {
 
         assert_eq!(
             i2.title(),
-            Some("The Breakthrough: Behind the Scenes of Hillary Clinton’s Failed Bid for \
-                  President")
+            Some(
+                "The Breakthrough: Behind the Scenes of Hillary Clinton’s Failed Bid for \
+                 President"
+            )
         );
         assert_eq!(
             i2.uri(),
@@ -298,7 +302,7 @@ mod tests {
         let descr2 = "<p>The Gnome project is about to solve one of our audience's biggest \
                       Wayland’s concerns. But as the project takes on a new level of relevance, \
                       decisions for the next version of Gnome have us worried about the \
-                      future.</p>\n\n<p>Plus we chat with Wimpy about the Ubuntu Rally in NYC, \
+                      future.</p>\n<p>Plus we chat with Wimpy about the Ubuntu Rally in NYC, \
                       Microsoft’s sneaky move to turn Windows 10 into the “ULTIMATE LINUX \
                       RUNTIME”, community news &amp; more!</p>";
         assert_eq!(i2.title(), Some("Gnome Does it Again | LUP 213"));

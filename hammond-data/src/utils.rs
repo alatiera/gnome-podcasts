@@ -4,6 +4,7 @@ use rayon::prelude::*;
 use chrono::prelude::*;
 
 use url::{Position, Url};
+use itertools::Itertools;
 
 use errors::*;
 use dbqueries;
@@ -105,14 +106,20 @@ pub fn url_cleaner(s: &str) -> String {
     }
 }
 
-/// Placeholder
-// TODO: Docs
+/// Helper functions that strips extra spaces and newlines and all the tabs.
+#[allow(match_same_arms)]
 pub fn replace_extra_spaces(s: &str) -> String {
-    s.lines()
-        .map(|x| x.split_whitespace().collect::<Vec<_>>().join(" "))
-        .filter(|x| !x.is_empty())
-        .collect::<Vec<_>>()
-        .join("\n")
+    s.trim()
+        .chars()
+        .filter(|ch| *ch != '\t')
+        .coalesce(|current, next| match (current, next) {
+            ('\n', '\n') => Ok('\n'),
+            ('\n', ' ') => Ok('\n'),
+            (' ', '\n') => Ok('\n'),
+            (' ', ' ') => Ok(' '),
+            (_, _) => Err((current, next)),
+        })
+        .collect::<String>()
 }
 
 #[cfg(test)]
