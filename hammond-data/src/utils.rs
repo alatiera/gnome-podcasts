@@ -109,9 +109,10 @@ pub fn url_cleaner(s: &str) -> String {
 // TODO: Docs
 pub fn replace_extra_spaces(s: &str) -> String {
     s.lines()
-     .map(|x| x.split_whitespace().collect::<Vec<_>>().join(" "))
-     .filter(|x| !x.is_empty())
-     .collect::<Vec<_>>().join("\n")
+        .map(|x| x.split_whitespace().collect::<Vec<_>>().join(" "))
+        .filter(|x| !x.is_empty())
+        .collect::<Vec<_>>()
+        .join("\n")
 }
 
 #[cfg(test)]
@@ -151,7 +152,7 @@ mod tests {
             .unwrap()
             .into_episode(&con)
             .unwrap();
-        
+
         let mut ep1 = dbqueries::get_episode_from_uri(&con, "foo_bar").unwrap();
         let mut ep2 = dbqueries::get_episode_from_uri(&con, "bar_baz").unwrap();
         ep1.set_local_uri(Some(valid_path.to_str().unwrap()));

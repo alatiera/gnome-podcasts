@@ -342,9 +342,9 @@ impl<'a> Source {
         let lmod = headers.get::<LastModified>();
 
         // FIXME: This dsnt work most of the time apparently
-        if self.http_etag() != etag.map(|x| x.tag())
-            || self.last_modified != lmod.map(|x| format!("{}", x))
-        {
+        if self.http_etag() != etag.map(|x| x.tag()) || self.last_modified != lmod.map(|x| {
+            format!("{}", x)
+        }) {
             self.http_etag = etag.map(|x| x.tag().to_string().to_owned());
             self.last_modified = lmod.map(|x| format!("{}", x));
             self.save()?;

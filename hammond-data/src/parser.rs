@@ -62,19 +62,17 @@ pub(crate) fn new_episode(item: &Item, parent_id: i32) -> Result<NewEpisode> {
 
     let length = item.enclosure().map(|x| x.length().parse().unwrap_or(0));
 
-    Ok(
-        NewEpisodeBuilder::default()
-            .title(title)
-            .uri(uri)
-            .description(description)
-            .length(length)
-            .published_date(pub_date)
-            .epoch(epoch)
-            .guid(guid)
-            .podcast_id(parent_id)
-            .build()
-            .unwrap()
-    )
+    Ok(NewEpisodeBuilder::default()
+        .title(title)
+        .uri(uri)
+        .description(description)
+        .length(length)
+        .published_date(pub_date)
+        .epoch(epoch)
+        .guid(guid)
+        .podcast_id(parent_id)
+        .build()
+        .unwrap())
 }
 
 
@@ -278,9 +276,9 @@ mod tests {
 
         let firstitem = channel.items().first().unwrap();
         let descr = "Audit your network with a couple of easy commands on Kali Linux. Chris \
-                     decides to blow off a little steam by attacking his IoT devices, Wes has \
-                     the scope on Equifax blaming open source &amp; the Beard just saved the \
-                     show. It’s a really packed episode!";
+                     decides to blow off a little steam by attacking his IoT devices, Wes has the \
+                     scope on Equifax blaming open source &amp; the Beard just saved the show. \
+                     It’s a really packed episode!";
         let i = new_episode(&firstitem, 0).unwrap();
 
         assert_eq!(i.title(), Some("Hacking Devices with Kali Linux | LUP 214"));
@@ -321,9 +319,8 @@ mod tests {
         let channel = Channel::read_from(BufReader::new(file)).unwrap();
 
         let firstitem = channel.items().iter().nth(9).unwrap();
-        let descr = "This week we look at <a \
-                     href=\"https://github.com/rust-lang/rfcs/pull/2094\" rel=\"noopener \
-                     noreferrer\">RFC 2094</a> \"Non-lexical lifetimes\"";
+        let descr = "This week we look at <a href=\"https://github.com/rust-lang/rfcs/pull/2094\" \
+                     rel=\"noopener noreferrer\">RFC 2094</a> \"Non-lexical lifetimes\"";
         let i = new_episode(&firstitem, 0).unwrap();
 
         assert_eq!(i.title(), Some("Episode #9 - A Once in a Lifetime RFC"));
@@ -344,9 +341,10 @@ mod tests {
         let second = channel.items().iter().nth(8).unwrap();
         let i2 = new_episode(&second, 0).unwrap();
 
-        let descr2 = "This week we look at <a href=\"https://github.com/rust-lang/rfcs/pull/2071\" \
-                      rel=\"noopener noreferrer\">RFC 2071</a> \"Add impl Trait type alias and \
-                      variable declarations\"";
+        let descr2 = "This week we look at <a \
+                      href=\"https://github.com/rust-lang/rfcs/pull/2071\" rel=\"noopener \
+                      noreferrer\">RFC 2071</a> \"Add impl Trait type alias and variable \
+                      declarations\"";
         assert_eq!(i2.title(), Some("Episode #8 - An Existential Crisis"));
         assert_eq!(
             i2.uri(),

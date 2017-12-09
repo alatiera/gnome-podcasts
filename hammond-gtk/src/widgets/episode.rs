@@ -90,7 +90,7 @@ impl EpisodeWidget {
                 // let mut text = text.clone();
                 // html_to_markup(&mut text);
                 // description.set_markup(&text)
-                
+
                 let plain_text = strip_html_tags(&text).join(" ");
                 // TODO: handle unwrap
                 let buff = description.get_buffer().unwrap();

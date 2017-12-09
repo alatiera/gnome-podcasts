@@ -198,9 +198,10 @@ pub fn update_none_to_played_now(parent: &Podcast) -> Result<usize> {
 
     let epoch_now = Utc::now().timestamp() as i32;
     con.transaction(|| -> Result<usize> {
-        Ok(diesel::update(
-            Episode::belonging_to(parent).filter(played.is_null()),
-        ).set(played.eq(Some(epoch_now)))
-            .execute(&*con)?)
+        Ok(
+            diesel::update(Episode::belonging_to(parent).filter(played.is_null()))
+                .set(played.eq(Some(epoch_now)))
+                .execute(&*con)?,
+        )
     })
 }

@@ -276,13 +276,12 @@ mod tests {
             f2.get_episodes().unwrap()
         };
 
-        eps1.into_par_iter()
-            .zip(eps2)
-            .into_par_iter()
-            .for_each(|(ep1, ep2): (Episode, Episode)| {
+        eps1.into_par_iter().zip(eps2).into_par_iter().for_each(
+            |(ep1, ep2): (Episode, Episode)| {
                 assert_eq!(ep1, ep2);
                 assert_eq!(ep1.id(), ep2.id());
                 assert_eq!(ep1.podcast_id(), ep2.podcast_id());
-            });
+            },
+        );
     }
 }

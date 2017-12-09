@@ -60,15 +60,16 @@ fn download_into(dir: &str, file_title: &str, url: &str) -> Result<String> {
 // Determine the file extension from the http content-type header.
 fn get_ext(content: Option<ContentType>) -> Option<String> {
     let cont = content.clone()?;
-    content.and_then(|c| mime_guess::get_extensions(c.type_().as_ref(), c.subtype().as_ref()))
-           .and_then(|c| {
-                if c.contains(&cont.subtype().as_ref()) {
-                    Some(cont.subtype().as_ref().to_string())
-                } else {
-                    Some(c.first().unwrap().to_string())
-                }
-            })
-} 
+    content
+        .and_then(|c| mime_guess::get_extensions(c.type_().as_ref(), c.subtype().as_ref()))
+        .and_then(|c| {
+            if c.contains(&cont.subtype().as_ref()) {
+                Some(cont.subtype().as_ref().to_string())
+            } else {
+                Some(c.first().unwrap().to_string())
+            }
+        })
+}
 
 // TODO: Write unit-tests.
 /// Handles the I/O of fetching a remote file and saving into a Buffer and A File.

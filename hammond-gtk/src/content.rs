@@ -46,7 +46,7 @@ impl Content {
         self.podcasts.init(&self.stack);
         if self.podcasts.flowbox.get_children().is_empty() {
             self.stack.set_visible_child_name("empty");
-            return
+            return;
         }
 
         self.stack.set_visible_child_name("podcasts");
@@ -100,9 +100,9 @@ impl Into<ContentState<PodcastsView>> for ContentState<Empty> {
     fn into(self) -> ContentState<PodcastsView> {
         self.content.stack.set_visible_child_name("podcasts");
 
-        ContentState{
+        ContentState {
             content: self.content,
-            state: PodcastsView{},
+            state: PodcastsView {},
         }
     }
 }
@@ -114,9 +114,9 @@ impl UpdateView for ContentState<Empty> {
 impl Into<ContentState<Empty>> for ContentState<PodcastsView> {
     fn into(self) -> ContentState<Empty> {
         self.content.stack.set_visible_child_name("empty");
-        ContentState{
+        ContentState {
             content: self.content,
-            state: Empty{},
+            state: Empty {},
         }
     }
 }
@@ -125,9 +125,9 @@ impl Into<ContentState<WidgetsView>> for ContentState<PodcastsView> {
     fn into(self) -> ContentState<WidgetsView> {
         self.content.stack.set_visible_child_name("widget");
 
-        ContentState{
+        ContentState {
             content: self.content,
-            state: WidgetsView{},
+            state: WidgetsView {},
         }
     }
 }
@@ -142,9 +142,9 @@ impl UpdateView for ContentState<PodcastsView> {
 impl Into<ContentState<PodcastsView>> for ContentState<WidgetsView> {
     fn into(self) -> ContentState<PodcastsView> {
         self.content.stack.set_visible_child_name("podcasts");
-        ContentState{
+        ContentState {
             content: self.content,
-            state: PodcastsView{},
+            state: PodcastsView {},
         }
     }
 }
@@ -152,9 +152,9 @@ impl Into<ContentState<PodcastsView>> for ContentState<WidgetsView> {
 impl Into<ContentState<Empty>> for ContentState<WidgetsView> {
     fn into(self) -> ContentState<Empty> {
         self.content.stack.set_visible_child_name("empty");
-        ContentState{
+        ContentState {
             content: self.content,
-            state: Empty{},
+            state: Empty {},
         }
     }
 }
@@ -165,7 +165,7 @@ impl UpdateView for ContentState<WidgetsView> {
         let id = WidgetExt::get_name(&old).unwrap();
         let pd = dbqueries::get_podcast_from_id(id.parse::<i32>().unwrap()).unwrap();
 
-        let pdw = PodcastWidget::new_initialized(&self.content.stack, &pd);;
+        let pdw = PodcastWidget::new_initialized(&self.content.stack, &pd);
         self.content.replace_widget(pdw);
     }
 }
@@ -178,17 +178,16 @@ impl ContentState<PodcastsView> {
         content.podcasts.init(&content.stack);
         if content.podcasts.flowbox.get_children().is_empty() {
             content.stack.set_visible_child_name("empty");
-            return Err(
-                ContentState{
-                    content,
-                    state: Empty{},
-                });
+            return Err(ContentState {
+                content,
+                state: Empty {},
+            });
         }
 
         content.stack.set_visible_child_name("podcasts");
         Ok(ContentState {
             content,
-            state: PodcastsView{},
+            state: PodcastsView {},
         })
     }
 

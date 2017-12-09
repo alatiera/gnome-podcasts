@@ -37,6 +37,7 @@ extern crate diesel_migrations;
 #[macro_use]
 extern crate derive_builder;
 
+extern crate ammonia;
 extern crate chrono;
 extern crate r2d2;
 extern crate r2d2_diesel;
@@ -46,7 +47,6 @@ extern crate rfc822_sanitizer;
 extern crate rss;
 extern crate url;
 extern crate xdg;
-extern crate ammonia;
 
 #[allow(missing_docs)]
 pub mod dbqueries;

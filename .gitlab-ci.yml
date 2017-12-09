@@ -40,6 +40,8 @@ nightly:test:
 rustfmt:
   image: "rustlang/rust:nightly"
   stage: lint
+  variables:
+    CFG_RELEASE_CHANNEL: "nightly"
   script:
   - rustc --version && cargo --version
   - cargo install rustfmt-nightly
