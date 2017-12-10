@@ -193,7 +193,7 @@ impl NewEpisode {
     // TODO: Refactor into batch indexes instead.
     pub(crate) fn into_episode(self, con: &SqliteConnection) -> Result<Episode> {
         self.index(con)?;
-        Ok(dbqueries::get_episode_from_new_episode(
+        Ok(dbqueries::get_episode_from_pk(
             con,
             &self.title,
             self.podcast_id,
@@ -201,8 +201,7 @@ impl NewEpisode {
     }
 
     pub(crate) fn index(&self, con: &SqliteConnection) -> QueryResult<()> {
-        // TODO: Change me
-        let ep = dbqueries::get_episode_from_new_episode(con, &self.title, self.podcast_id);
+        let ep = dbqueries::get_episode_from_pk(con, &self.title, self.podcast_id);
 
         match ep {
             Ok(foo) => {

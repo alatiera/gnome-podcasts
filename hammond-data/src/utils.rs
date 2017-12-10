@@ -162,10 +162,8 @@ mod tests {
             .into_episode(&con)
             .unwrap();
 
-        let mut ep1 =
-            dbqueries::get_episode_from_new_episode(&con, n1.title(), n1.podcast_id()).unwrap();
-        let mut ep2 =
-            dbqueries::get_episode_from_new_episode(&con, n2.title(), n2.podcast_id()).unwrap();
+        let mut ep1 = dbqueries::get_episode_from_pk(&con, n1.title(), n1.podcast_id()).unwrap();
+        let mut ep2 = dbqueries::get_episode_from_pk(&con, n2.title(), n2.podcast_id()).unwrap();
         ep1.set_local_uri(Some(valid_path.to_str().unwrap()));
         ep2.set_local_uri(Some(bad_path.to_str().unwrap()));
 
@@ -192,7 +190,7 @@ mod tests {
         let mut episode = {
             let db = connection();
             let con = db.get().unwrap();
-            dbqueries::get_episode_from_new_episode(&con, "bar_baz", 1).unwrap()
+            dbqueries::get_episode_from_pk(&con, "bar_baz", 1).unwrap()
         };
 
         checker_helper(&mut episode);
@@ -205,7 +203,7 @@ mod tests {
         let mut episode = {
             let db = connection();
             let con = db.get().unwrap();
-            dbqueries::get_episode_from_new_episode(&con, "foo_bar", 0).unwrap()
+            dbqueries::get_episode_from_pk(&con, "foo_bar", 0).unwrap()
         };
 
         let valid_path = episode.local_uri().unwrap().to_owned();
@@ -219,7 +217,7 @@ mod tests {
         let mut episode = {
             let db = connection();
             let con = db.get().unwrap();
-            dbqueries::get_episode_from_new_episode(&con, "foo_bar", 0).unwrap()
+            dbqueries::get_episode_from_pk(&con, "foo_bar", 0).unwrap()
         };
         let now_utc = Utc::now().timestamp() as i32;
         // let limit = now_utc - 172_800;
@@ -239,7 +237,7 @@ mod tests {
         let mut episode = {
             let db = connection();
             let con = db.get().unwrap();
-            dbqueries::get_episode_from_new_episode(&con, "foo_bar", 0).unwrap()
+            dbqueries::get_episode_from_pk(&con, "foo_bar", 0).unwrap()
         };
         let now_utc = Utc::now().timestamp() as i32;
         // limit = 172_800;

@@ -155,12 +155,7 @@ pub fn get_podcast_from_source_id(sid: i32) -> Result<Podcast> {
         .get_result::<Podcast>(&*con)?)
 }
 
-// TODO: unhack me
-pub fn get_episode_from_new_episode(
-    con: &SqliteConnection,
-    title_: &str,
-    pid: i32,
-) -> QueryResult<Episode> {
+pub fn get_episode_from_pk(con: &SqliteConnection, title_: &str, pid: i32) -> QueryResult<Episode> {
     use schema::episode::dsl::*;
 
     episode
