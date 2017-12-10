@@ -16,4 +16,8 @@ CREATE TABLE episode (
     podcast_id	INTEGER NOT NULL
 );
  
-INSERT INTO episode SELECT * FROM old_table;
+INSERT INTO episode (title, uri, local_uri, description, published_date, epoch, length, guid, played, favorite, archive, podcast_id)
+SELECT title, uri, local_uri, description, published_date, epoch, length, guid, played, favorite, archive, podcast_id
+FROM old_table;
+
+Drop table old_table;
