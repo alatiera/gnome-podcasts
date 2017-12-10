@@ -13,6 +13,7 @@ pub struct Header {
     home: gtk::Button,
     refresh: gtk::Button,
     add_toggle: gtk::MenuButton,
+    switch: gtk::StackSwitcher,
 }
 
 impl Header {
@@ -23,12 +24,16 @@ impl Header {
         let home: gtk::Button = builder.get_object("homebutton").unwrap();
         let refresh: gtk::Button = builder.get_object("refbutton").unwrap();
         let add_toggle: gtk::MenuButton = builder.get_object("add-toggle-button").unwrap();
+        let switch: gtk::StackSwitcher = builder.get_object("switch").unwrap();
+        switch.set_halign(gtk::Align::Center);
+        switch.show();
 
         Header {
             container: header,
             home,
             refresh,
             add_toggle,
+            switch,
         }
     }
 
@@ -44,6 +49,7 @@ impl Header {
         let add_popover: gtk::Popover = builder.get_object("add-popover").unwrap();
         let new_url: gtk::Entry = builder.get_object("new-url").unwrap();
         let add_button: gtk::Button = builder.get_object("add-button").unwrap();
+        self.switch.set_stack(stack);
 
         new_url.connect_changed(move |url| {
             println!("{:?}", url.get_text());

@@ -24,8 +24,8 @@ impl Content {
         let podcasts = PopulatedView::new();
         let empty = EmptyView::new();
 
-        stack.add_named(&widget.container, "widget");
-        stack.add_named(&podcasts.container, "podcasts");
+        stack.add_titled(&widget.container, "widget", "Episodes");
+        stack.add_titled(&podcasts.container, "podcasts", "Shows");
         stack.add_named(&empty.container, "empty");
 
         Content {
@@ -58,7 +58,8 @@ impl Content {
         self.stack.remove(&old);
 
         self.widget = pdw;
-        self.stack.add_named(&self.widget.container, "widget");
+        self.stack
+            .add_titled(&self.widget.container, "widget", "Episodes");
         self.stack.set_visible_child_name(&vis);
         old.destroy();
     }
@@ -69,7 +70,8 @@ impl Content {
         self.stack.remove(&old);
 
         self.podcasts = pop;
-        self.stack.add_named(&self.podcasts.container, "podcasts");
+        self.stack
+            .add_titled(&self.podcasts.container, "podcasts", "Shows");
         self.stack.set_visible_child_name(&vis);
         old.destroy();
     }
@@ -200,14 +202,14 @@ impl ContentState<PodcastsView> {
 fn replace_widget(stack: &gtk::Stack, pdw: &PodcastWidget) {
     let old = stack.get_child_by_name("widget").unwrap();
     stack.remove(&old);
-    stack.add_named(&pdw.container, "widget");
+    stack.add_titled(&pdw.container, "widget", "Episode");
     old.destroy();
 }
 
 fn replace_podcasts(stack: &gtk::Stack, pop: &PopulatedView) {
     let old = stack.get_child_by_name("podcasts").unwrap();
     stack.remove(&old);
-    stack.add_named(&pop.container, "podcasts");
+    stack.add_titled(&pop.container, "podcasts", "Shows");
     old.destroy();
 }
 
