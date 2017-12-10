@@ -89,8 +89,7 @@ pub trait UpdateView {
     fn update(&mut self);
 }
 
-#[derive(Debug)]
-pub struct Empty {}
+pub struct Empty;
 
 #[derive(Debug)]
 pub struct PodcastsView {}
@@ -258,4 +257,159 @@ pub fn update_widget_preserve_vis(stack: &gtk::Stack, pd: &Podcast) {
 pub fn on_podcasts_child_activate(stack: &gtk::Stack, pd: &Podcast) {
     update_widget(stack, pd);
     stack.set_visible_child_full("widget", gtk::StackTransitionType::SlideLeft);
+}
+
+// FIXME: Rename and remove aliases
+type ShowsPopulated = PopulatedView;
+type ShowsEmpty = EmptyView;
+type EpisodesPopulated = PodcastWidget;
+type EpisodesEmpty = EmptyView;
+
+struct Populated;
+// struct Empty;
+// struct Shows;
+// struct Episodes;
+
+// Thats probably too overengineered
+// struct StackStateMachine<S, T> {
+//     shows: ShowsMachine<S>,
+//     episodes: EpisodesMachine<S>,
+//     stack: gtk::Stack,
+//     state: T,
+// }
+
+#[derive(Debug, Clone)]
+struct ShowsMachine<S> {
+    populated: ShowsPopulated,
+    empty: ShowsEmpty,
+    stack: gtk::Stack,
+    state: S,
+}
+
+#[derive(Debug)]
+struct EpisodesMachine<S> {
+    populated: EpisodesPopulated,
+    empty: EpisodesEmpty,
+    stack: gtk::Stack,
+    state: S,
+}
+
+// impl Into<StackStateMachine<Populated, Shows>> for StackStateMachine<Populated, Episodes> {
+//     fn into(self) -> StackStateMachine<Populated, Shows> {
+//         self.stack.set_visible_child_name("shows");
+
+//         StackStateMachine {
+//             shows: self.shows,
+//             episodes: self.episodes,
+//             stack: self.stack,
+//             state: Shows {},
+//         }
+//     }
+// }
+
+// impl Into<StackStateMachine<Populated, Episodes>> for StackStateMachine<Populated, Shows> {
+//     fn into(self) -> StackStateMachine<Populated, Episodes> {
+//         self.stack.set_visible_child_name("episodes");
+
+//         StackStateMachine {
+//             shows: self.shows,
+//             episodes: self.episodes,
+//             stack: self.stack,
+//             state: Episodes {},
+//         }
+//     }
+// }
+
+impl Into<ShowsMachine<Populated>> for ShowsMachine<Empty> {
+    fn into(self) -> ShowsMachine<Populated> {
+        self.stack.set_visible_child_name("populated");
+
+        ShowsMachine {
+            populated: self.populated,
+            empty: self.empty,
+            stack: self.stack,
+            state: Populated {},
+        }
+    }
+}
+
+impl Into<ShowsMachine<Empty>> for ShowsMachine<Populated> {
+    fn into(self) -> ShowsMachine<Empty> {
+        self.stack.set_visible_child_name("empty");
+
+        ShowsMachine {
+            populated: self.populated,
+            empty: self.empty,
+            stack: self.stack,
+            state: Empty {},
+        }
+    }
+}
+
+impl Into<EpisodesMachine<Populated>> for EpisodesMachine<Empty> {
+    fn into(self) -> EpisodesMachine<Populated> {
+        self.stack.set_visible_child_name("populated");
+
+        EpisodesMachine {
+            populated: self.populated,
+            empty: self.empty,
+            stack: self.stack,
+            state: Populated {},
+        }
+    }
+}
+
+impl Into<EpisodesMachine<Empty>> for EpisodesMachine<Populated> {
+    fn into(self) -> EpisodesMachine<Empty> {
+        self.stack.set_visible_child_name("empty");
+
+        EpisodesMachine {
+            populated: self.populated,
+            empty: self.empty,
+            stack: self.stack,
+            state: Empty {},
+        }
+    }
+}
+
+// enum StackStateWrapper<S> {
+//     Shows(StackStateMachine<S, Shows>),
+//     Episodes(StackStateMachine<S, Episodes>),
+// }
+
+enum ShowStateWrapper {
+    Populated(EpisodesMachine<Populated>),
+    Empty(EpisodesMachine<Empty>),
+}
+
+enum EpisodeStateWrapper {
+    Populated(EpisodesMachine<Populated>),
+    Empty(EpisodesMachine<Empty>),
+}
+
+// impl <S>StackStateWrapper<S> {
+//     fn switch(mut self) -> Self {
+//         match self {
+//             StackStateWrapper::Shows(val) => StackStateWrapper::Episodes(val.into()),
+//             StackStateWrapper::Episodes(val) => StackStateWrapper::Shows(val.into())
+//         }
+//     }
+// }
+
+impl ShowStateWrapper {
+    fn switch(self) -> Self {
+        match self {
+            ShowStateWrapper::Populated(val) => ShowStateWrapper::Empty(val.into()),
+            ShowStateWrapper::Empty(val) => ShowStateWrapper::Populated(val.into()),
+        }
+    }
+}
+
+impl EpisodeStateWrapper {
+    fn switch(self) -> Self {
+        match self {
+            EpisodeStateWrapper::Populated(val) => EpisodeStateWrapper::Empty(val.into()),
+            EpisodeStateWrapper::Empty(val) => EpisodeStateWrapper::Populated(val.into()),
+        }
+    }
 }
