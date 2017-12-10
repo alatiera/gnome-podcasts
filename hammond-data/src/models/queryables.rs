@@ -376,17 +376,21 @@ impl<'a> Source {
     /// Consumes `self` and Returns the corresponding `Feed` Object.
     // TODO: Refactor into TryInto once it lands on stable.
     pub fn into_feed(mut self) -> Result<Feed> {
-        use reqwest::header::{ETag, EntityTag, Headers, HttpDate, LastModified};
+        use reqwest::header::{EntityTag, Headers, HttpDate, IfNoneMatch, IfModifiedSince};
 
         let mut headers = Headers::new();
 
         if let Some(foo) = self.http_etag() {
-            headers.set(ETag(EntityTag::new(true, foo.to_owned())));
+            headers.set(
+                IfNoneMatch::Items(vec![
+                    EntityTag::new(true, foo.to_owned())
+                ])
+            );
         }
 
         if let Some(foo) = self.last_modified() {
             if let Ok(x) = foo.parse::<HttpDate>() {
-                headers.set(LastModified(x));
+                headers.set(IfModifiedSince(x));
             }
         }
 
