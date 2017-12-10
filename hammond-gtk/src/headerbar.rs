@@ -5,12 +5,11 @@ use hammond_data::Source;
 use hammond_data::utils::url_cleaner;
 
 use utils;
-use content;
+// use content;
 
 #[derive(Debug)]
 pub struct Header {
     pub container: gtk::HeaderBar,
-    home: gtk::Button,
     refresh: gtk::Button,
     add_toggle: gtk::MenuButton,
     switch: gtk::StackSwitcher,
@@ -21,7 +20,6 @@ impl Header {
         let builder = gtk::Builder::new_from_resource("/org/gnome/hammond/gtk/headerbar.ui");
 
         let header: gtk::HeaderBar = builder.get_object("headerbar1").unwrap();
-        let home: gtk::Button = builder.get_object("homebutton").unwrap();
         let refresh: gtk::Button = builder.get_object("refbutton").unwrap();
         let add_toggle: gtk::MenuButton = builder.get_object("add-toggle-button").unwrap();
         let switch: gtk::StackSwitcher = builder.get_object("switch").unwrap();
@@ -30,7 +28,6 @@ impl Header {
 
         Header {
             container: header,
-            home,
             refresh,
             add_toggle,
             switch,
@@ -63,12 +60,6 @@ impl Header {
             add_popover.hide();
         }));
         self.add_toggle.set_popover(&add_popover);
-
-        // TODO: make it a back arrow button, that will hide when appropriate,
-        // and add a StackSwitcher when more views are added.
-        self.home.connect_clicked(clone!(stack => move |_| {
-            content::on_home_button_activate(&stack);
-        }));
 
         // FIXME: There appears to be a memmory leak here.
         self.refresh.connect_clicked(clone!(stack => move |_| {

@@ -259,13 +259,3 @@ pub fn on_podcasts_child_activate(stack: &gtk::Stack, pd: &Podcast) {
     update_widget(stack, pd);
     stack.set_visible_child_full("widget", gtk::StackTransitionType::SlideLeft);
 }
-
-pub fn on_home_button_activate(stack: &gtk::Stack) {
-    let vis = stack.get_visible_child_name().unwrap();
-
-    if vis != "widget" {
-        update_podcasts(stack);
-    }
-
-    show_podcasts(stack);
-}
