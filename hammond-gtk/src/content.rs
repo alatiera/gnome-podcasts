@@ -33,58 +33,9 @@ impl Content {
         }
     }
 
-    // pub fn new_initialized() -> Content {
-    //     let ct = Content::new();
-    //     ct.init();
-    //     ct
-    // }
-
-    // pub fn init(&self) {
-    //     self.podcasts.init();
-    //     if self.podcasts.flowbox.get_children().is_empty() {
-    //         self.stack.set_visible_child_name("empty");
-    //         return;
-    //     }
-
-    //     self.stack.set_visible_child_name("podcasts");
-    // }
-
-    // fn replace_widget(&mut self, pdw: PodcastWidget) {
-    //     let vis = self.stack.get_visible_child_name().unwrap();
-    //     let old = self.stack.get_child_by_name("widget").unwrap();
-    //     self.stack.remove(&old);
-
-    //     self.widget = pdw;
-    //     self.stack
-    //         .add_titled(&self.widget.container, "widget", "Episodes");
-    //     self.stack.set_visible_child_name(&vis);
-    //     old.destroy();
-    // }
-}
-
-pub struct ContentState<S> {
-    content: Content,
-    state: S,
-}
-
-pub trait UpdateView {
-    fn update(&mut self);
-}
-
-#[derive(Debug)]
-pub struct PodcastsView {}
-
-#[derive(Debug)]
-pub struct WidgetsView {}
-
-impl UpdateView for ContentState<WidgetsView> {
-    fn update(&mut self) {
-        let old = self.content.stack.get_child_by_name("widget").unwrap();
-        let id = WidgetExt::get_name(&old).unwrap();
-        let pd = dbqueries::get_podcast_from_id(id.parse::<i32>().unwrap()).unwrap();
-
-        let pdw = PodcastWidget::new_initialized(&self.content.stack, &pd);
-        // self.content.replace_widget(pdw);
+    pub fn update(&mut self) {
+        self.shows.update();
+        self.episodes.update();
     }
 }
 
@@ -162,13 +113,12 @@ struct ShowsMachine<S> {
 impl<S> ShowsMachine<S> {
     fn update(&mut self) {
         let vis = self.stack.get_visible_child_name().unwrap();
-        let old = self.stack.get_child_by_name("shows").unwrap();
+        let old = self.stack.get_child_by_name("populated").unwrap();
         self.stack.remove(&old);
 
         let pop = ShowsPopulated::new_initialized();
         self.populated = pop;
-        self.stack
-            .add_titled(&self.populated.container, "shows", "Shows");
+        self.stack.add_named(&self.populated.container, "populated");
         self.stack.set_visible_child_name(&vis);
     }
 }
@@ -179,6 +129,26 @@ struct EpisodesMachine<S> {
     empty: EpisodesEmpty,
     stack: gtk::Stack,
     state: S,
+}
+
+impl<S> EpisodesMachine<S> {
+    // FIXME:
+    fn update(&mut self) {
+        let vis = self.stack.get_visible_child_name().unwrap();
+        let old = self.stack.get_child_by_name("populated").unwrap();
+
+        let id = WidgetExt::get_name(&old).unwrap();
+        if id == "GtkBox" {
+            return;
+        }
+        let pd = dbqueries::get_podcast_from_id(id.parse::<i32>().unwrap()).unwrap();
+        let pdw = EpisodesPopulated::new_initialized(&self.stack, &pd);
+
+        self.populated = pdw;
+        self.stack.remove(&old);
+        self.stack.add_named(&self.populated.container, "populated");
+        self.stack.set_visible_child_name(&vis);
+    }
 }
 
 // impl Into<StackStateMachine<Populated, Shows>> for StackStateMachine<Populated, Episodes> {
@@ -351,6 +321,13 @@ impl EpisodeStateWrapper {
             stack,
             state: Empty {},
         })
+    }
+
+    fn update(&mut self) {
+        match *self {
+            EpisodeStateWrapper::Populated(ref mut val) => val.update(),
+            EpisodeStateWrapper::Empty(ref mut val) => val.update(),
+        }
     }
 
     fn switch(self) -> Self {

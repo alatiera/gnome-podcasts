@@ -11,10 +11,12 @@ use std::cell::RefCell;
 use std::sync::mpsc::{channel, Receiver};
 use std::borrow::Cow;
 
-use content;
+use content::Content;
 use regex::Regex;
 
-type Foo = RefCell<Option<(gtk::Stack, Receiver<bool>)>>;
+use std::sync::{Arc, Mutex};
+
+type Foo = RefCell<Option<(Arc<Mutex<Content>>, Receiver<bool>)>>;
 
 // Create a thread local storage that will store the arguments to be transfered.
 thread_local!(static GLOBAL: Foo = RefCell::new(None));
@@ -23,13 +25,13 @@ thread_local!(static GLOBAL: Foo = RefCell::new(None));
 /// If `source` is None, Fetches all the `Source` entries in the database and updates them.
 /// `delay` represents the desired time in seconds for the thread to sleep before executing.
 /// When It's done,it queues up a `podcast_view` refresh.
-pub fn refresh_feed(stack: &gtk::Stack, source: Option<Vec<Source>>, delay: Option<u64>) {
+pub fn refresh_feed(content: Arc<Mutex<Content>>, source: Option<Vec<Source>>, delay: Option<u64>) {
     // Create a async channel.
     let (sender, receiver) = channel();
 
     // Pass the desired arguments into the Local Thread Storage.
-    GLOBAL.with(clone!(stack => move |global| {
-        *global.borrow_mut() = Some((stack, receiver));
+    GLOBAL.with(clone!(content => move |global| {
+        *global.borrow_mut() = Some((content, receiver));
     }));
 
     thread::spawn(move || {
@@ -57,9 +59,10 @@ pub fn refresh_feed(stack: &gtk::Stack, source: Option<Vec<Source>>, delay: Opti
 
 fn refresh_podcasts_view() -> glib::Continue {
     GLOBAL.with(|global| {
-        if let Some((ref stack, ref reciever)) = *global.borrow() {
+        if let Some((ref content, ref reciever)) = *global.borrow() {
             if reciever.try_recv().is_ok() {
-                content::update_podcasts_preserve_vis(stack);
+                let mut content = content.lock().unwrap();
+                content.update();
             }
         }
     });

@@ -22,6 +22,8 @@ use hammond_data::utils::checkup;
 use gtk::prelude::*;
 use gio::{ActionMapExt, ApplicationExt, MenuExt, SimpleActionExt};
 
+use std::sync::{Arc, Mutex};
+
 // http://gtk-rs.org/tuto/closures
 #[macro_export]
 macro_rules! clone {
@@ -69,7 +71,8 @@ fn build_ui(app: &gtk::Application) {
 
     // let ct = content::Content::new_initialized();
     let ct = content::Content::new();
-    let stack = ct.stack;
+    let stack = ct.stack.clone();
+    let ct = Arc::new(Mutex::new(ct));
     window.add(&stack);
 
     window.connect_delete_event(|w, _| {
@@ -93,8 +96,8 @@ fn build_ui(app: &gtk::Application) {
     app.add_action(&check);
 
     // queue a db update 1 minute after the startup.
-    gtk::idle_add(clone!(stack => move || {
-        utils::refresh_feed(&stack, None, Some(60));
+    gtk::idle_add(clone!(ct => move || {
+        utils::refresh_feed(ct.clone(), None, Some(60));
         glib::Continue(false)
     }));
 
@@ -104,7 +107,7 @@ fn build_ui(app: &gtk::Application) {
     });
 
     // Get the headerbar
-    let header = headerbar::Header::new_initialized(&stack);
+    let header = headerbar::Header::new_initialized(ct.clone());
     window.set_titlebar(&header.container);
 
     window.show_all();
