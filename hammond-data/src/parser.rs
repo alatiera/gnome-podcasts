@@ -81,7 +81,6 @@ pub(crate) fn new_episode(item: &Item, parent_id: i32) -> Result<NewEpisode> {
         .unwrap())
 }
 
-
 #[cfg(test)]
 mod tests {
     use std::fs::File;

@@ -97,69 +97,6 @@ pub struct PodcastsView {}
 #[derive(Debug)]
 pub struct WidgetsView {}
 
-impl Into<ContentState<PodcastsView>> for ContentState<Empty> {
-    fn into(self) -> ContentState<PodcastsView> {
-        self.content.stack.set_visible_child_name("podcasts");
-
-        ContentState {
-            content: self.content,
-            state: PodcastsView {},
-        }
-    }
-}
-
-impl UpdateView for ContentState<Empty> {
-    fn update(&mut self) {}
-}
-
-impl Into<ContentState<Empty>> for ContentState<PodcastsView> {
-    fn into(self) -> ContentState<Empty> {
-        self.content.stack.set_visible_child_name("empty");
-        ContentState {
-            content: self.content,
-            state: Empty {},
-        }
-    }
-}
-
-impl Into<ContentState<WidgetsView>> for ContentState<PodcastsView> {
-    fn into(self) -> ContentState<WidgetsView> {
-        self.content.stack.set_visible_child_name("widget");
-
-        ContentState {
-            content: self.content,
-            state: WidgetsView {},
-        }
-    }
-}
-
-impl UpdateView for ContentState<PodcastsView> {
-    fn update(&mut self) {
-        let pop = PopulatedView::new_initialized(&self.content.stack);
-        self.content.replace_podcasts(pop)
-    }
-}
-
-impl Into<ContentState<PodcastsView>> for ContentState<WidgetsView> {
-    fn into(self) -> ContentState<PodcastsView> {
-        self.content.stack.set_visible_child_name("podcasts");
-        ContentState {
-            content: self.content,
-            state: PodcastsView {},
-        }
-    }
-}
-
-impl Into<ContentState<Empty>> for ContentState<WidgetsView> {
-    fn into(self) -> ContentState<Empty> {
-        self.content.stack.set_visible_child_name("empty");
-        ContentState {
-            content: self.content,
-            state: Empty {},
-        }
-    }
-}
-
 impl UpdateView for ContentState<WidgetsView> {
     fn update(&mut self) {
         let old = self.content.stack.get_child_by_name("widget").unwrap();
@@ -286,6 +223,20 @@ struct ShowsMachine<S> {
     state: S,
 }
 
+impl<S> ShowsMachine<S> {
+    fn update(&mut self) {
+        let vis = self.stack.get_visible_child_name().unwrap();
+        let old = self.stack.get_child_by_name("shows").unwrap();
+        self.stack.remove(&old);
+
+        let pop = ShowsPopulated::new_initialized(&self.stack);
+        self.populated = pop;
+        self.stack
+            .add_titled(&self.populated.container, "shows", "Shows");
+        self.stack.set_visible_child_name(&vis);
+    }
+}
+
 #[derive(Debug)]
 struct EpisodesMachine<S> {
     populated: EpisodesPopulated,
@@ -320,6 +271,7 @@ struct EpisodesMachine<S> {
 //     }
 // }
 
+// TODO: Impl <From> instead of <Into>
 impl Into<ShowsMachine<Populated>> for ShowsMachine<Empty> {
     fn into(self) -> ShowsMachine<Populated> {
         self.stack.set_visible_child_name("populated");
@@ -378,8 +330,8 @@ impl Into<EpisodesMachine<Empty>> for EpisodesMachine<Populated> {
 // }
 
 enum ShowStateWrapper {
-    Populated(EpisodesMachine<Populated>),
-    Empty(EpisodesMachine<Empty>),
+    Populated(ShowsMachine<Populated>),
+    Empty(ShowsMachine<Empty>),
 }
 
 enum EpisodeStateWrapper {
@@ -397,10 +349,42 @@ enum EpisodeStateWrapper {
 // }
 
 impl ShowStateWrapper {
+    fn new() -> Self {
+        let stack = gtk::Stack::new();
+        let pop = ShowsPopulated::new_initialized(&stack);
+        let empty = EmptyView::new();
+
+        if pop.flowbox.get_children().is_empty() {
+            stack.set_visible_child_name("empty");
+            ShowStateWrapper::Empty(ShowsMachine {
+                empty,
+                populated: pop,
+                stack,
+                state: Empty {},
+            })
+        } else {
+            stack.set_visible_child_name("shows");
+
+            ShowStateWrapper::Populated(ShowsMachine {
+                empty,
+                populated: pop,
+                stack,
+                state: Populated {},
+            })
+        }
+    }
+
     fn switch(self) -> Self {
         match self {
             ShowStateWrapper::Populated(val) => ShowStateWrapper::Empty(val.into()),
             ShowStateWrapper::Empty(val) => ShowStateWrapper::Populated(val.into()),
+        }
+    }
+
+    fn update(&mut self) {
+        match *self {
+            ShowStateWrapper::Populated(ref mut val) => val.update(),
+            ShowStateWrapper::Empty(ref mut val) => val.update(),
         }
     }
 }
