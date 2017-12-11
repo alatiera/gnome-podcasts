@@ -67,7 +67,8 @@ fn build_ui(app: &gtk::Application) {
     // let ct = content::ContentState::new().unwrap();
     // let stack = ct.get_stack();
 
-    let ct = content::Content::new_initialized();
+    // let ct = content::Content::new_initialized();
+    let ct = content::Content::new();
     let stack = ct.stack;
     window.add(&stack);
 

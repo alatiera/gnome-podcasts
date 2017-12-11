@@ -112,7 +112,6 @@ fn on_unsub_button_clicked(stack: &gtk::Stack, pd: &Podcast, unsub_button: &gtk:
         };
     }
     content::update_podcasts(stack);
-    content::show_podcasts(stack);
 }
 
 fn on_played_button_clicked(stack: &gtk::Stack, pd: &Podcast) {

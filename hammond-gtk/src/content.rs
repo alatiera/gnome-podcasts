@@ -8,78 +8,60 @@ use widgets::podcast::PodcastWidget;
 use views::podcasts::PopulatedView;
 use views::empty::EmptyView;
 
-#[derive(Debug)]
 pub struct Content {
     pub stack: gtk::Stack,
-    pub widget: PodcastWidget,
-    pub podcasts: PopulatedView,
-    pub empty: EmptyView,
+    shows: ShowStateWrapper,
+    episodes: EpisodeStateWrapper,
 }
 
 impl Content {
     pub fn new() -> Content {
         let stack = gtk::Stack::new();
+        let shows = ShowStateWrapper::new();
+        let episodes = EpisodeStateWrapper::new();
 
-        let widget = PodcastWidget::new();
-        let podcasts = PopulatedView::new();
-        let empty = EmptyView::new();
+        let shows_stack = shows.get_stack();
+        let ep_stack = episodes.get_stack();
 
-        stack.add_titled(&widget.container, "widget", "Episodes");
-        stack.add_titled(&podcasts.container, "podcasts", "Shows");
-        stack.add_named(&empty.container, "empty");
+        stack.add_titled(&ep_stack, "episodes", "Episodes");
+        stack.add_titled(&shows_stack, "shows", "Shows");
 
         Content {
             stack,
-            widget,
-            empty,
-            podcasts,
+            shows,
+            episodes,
         }
     }
 
-    pub fn new_initialized() -> Content {
-        let ct = Content::new();
-        ct.init();
-        ct
-    }
+    // pub fn new_initialized() -> Content {
+    //     let ct = Content::new();
+    //     ct.init();
+    //     ct
+    // }
 
-    pub fn init(&self) {
-        self.podcasts.init(&self.stack);
-        if self.podcasts.flowbox.get_children().is_empty() {
-            self.stack.set_visible_child_name("empty");
-            return;
-        }
+    // pub fn init(&self) {
+    //     self.podcasts.init();
+    //     if self.podcasts.flowbox.get_children().is_empty() {
+    //         self.stack.set_visible_child_name("empty");
+    //         return;
+    //     }
 
-        self.stack.set_visible_child_name("podcasts");
-    }
+    //     self.stack.set_visible_child_name("podcasts");
+    // }
 
-    fn replace_widget(&mut self, pdw: PodcastWidget) {
-        let vis = self.stack.get_visible_child_name().unwrap();
-        let old = self.stack.get_child_by_name("widget").unwrap();
-        self.stack.remove(&old);
+    // fn replace_widget(&mut self, pdw: PodcastWidget) {
+    //     let vis = self.stack.get_visible_child_name().unwrap();
+    //     let old = self.stack.get_child_by_name("widget").unwrap();
+    //     self.stack.remove(&old);
 
-        self.widget = pdw;
-        self.stack
-            .add_titled(&self.widget.container, "widget", "Episodes");
-        self.stack.set_visible_child_name(&vis);
-        old.destroy();
-    }
-
-    fn replace_podcasts(&mut self, pop: PopulatedView) {
-        let vis = self.stack.get_visible_child_name().unwrap();
-        let old = self.stack.get_child_by_name("podcasts").unwrap();
-        self.stack.remove(&old);
-
-        self.podcasts = pop;
-        self.stack
-            .add_titled(&self.podcasts.container, "podcasts", "Shows");
-        self.stack.set_visible_child_name(&vis);
-        old.destroy();
-    }
+    //     self.widget = pdw;
+    //     self.stack
+    //         .add_titled(&self.widget.container, "widget", "Episodes");
+    //     self.stack.set_visible_child_name(&vis);
+    //     old.destroy();
+    // }
 }
 
-#[derive(Debug)]
-// Experiementing with Wrapping gtk::Stack into a State machine.
-// Gonna revist it when TryInto trais is stabilized.
 pub struct ContentState<S> {
     content: Content,
     state: S,
@@ -88,8 +70,6 @@ pub struct ContentState<S> {
 pub trait UpdateView {
     fn update(&mut self);
 }
-
-pub struct Empty;
 
 #[derive(Debug)]
 pub struct PodcastsView {}
@@ -104,34 +84,7 @@ impl UpdateView for ContentState<WidgetsView> {
         let pd = dbqueries::get_podcast_from_id(id.parse::<i32>().unwrap()).unwrap();
 
         let pdw = PodcastWidget::new_initialized(&self.content.stack, &pd);
-        self.content.replace_widget(pdw);
-    }
-}
-
-impl ContentState<PodcastsView> {
-    #[allow(dead_code)]
-    pub fn new() -> Result<ContentState<PodcastsView>, ContentState<Empty>> {
-        let content = Content::new();
-
-        content.podcasts.init(&content.stack);
-        if content.podcasts.flowbox.get_children().is_empty() {
-            content.stack.set_visible_child_name("empty");
-            return Err(ContentState {
-                content,
-                state: Empty {},
-            });
-        }
-
-        content.stack.set_visible_child_name("podcasts");
-        Ok(ContentState {
-            content,
-            state: PodcastsView {},
-        })
-    }
-
-    #[allow(dead_code)]
-    pub fn get_stack(&self) -> gtk::Stack {
-        self.content.stack.clone()
+        // self.content.replace_widget(pdw);
     }
 }
 
@@ -149,25 +102,8 @@ fn replace_podcasts(stack: &gtk::Stack, pop: &PopulatedView) {
     old.destroy();
 }
 
-#[allow(dead_code)]
-pub fn show_widget(stack: &gtk::Stack) {
-    stack.set_visible_child_name("widget")
-}
-
-pub fn show_podcasts(stack: &gtk::Stack) {
-    stack.set_visible_child_name("podcasts")
-}
-
-pub fn show_empty(stack: &gtk::Stack) {
-    stack.set_visible_child_name("empty")
-}
-
 pub fn update_podcasts(stack: &gtk::Stack) {
-    let pods = PopulatedView::new_initialized(stack);
-
-    if pods.flowbox.get_children().is_empty() {
-        show_empty(stack)
-    }
+    let pods = PopulatedView::new_initialized();
 
     replace_podcasts(stack, &pods);
 }
@@ -191,10 +127,10 @@ pub fn update_widget_preserve_vis(stack: &gtk::Stack, pd: &Podcast) {
     stack.set_visible_child_name(&vis)
 }
 
-pub fn on_podcasts_child_activate(stack: &gtk::Stack, pd: &Podcast) {
-    update_widget(stack, pd);
-    stack.set_visible_child_full("widget", gtk::StackTransitionType::SlideLeft);
-}
+// pub fn on_podcasts_child_activate(stack: &gtk::Stack, pd: &Podcast) {
+//     update_widget(stack, pd);
+//     stack.set_visible_child_full("widget", gtk::StackTransitionType::SlideLeft);
+// }
 
 // FIXME: Rename and remove aliases
 type ShowsPopulated = PopulatedView;
@@ -203,7 +139,7 @@ type EpisodesPopulated = PodcastWidget;
 type EpisodesEmpty = EmptyView;
 
 struct Populated;
-// struct Empty;
+struct Empty;
 // struct Shows;
 // struct Episodes;
 
@@ -229,7 +165,7 @@ impl<S> ShowsMachine<S> {
         let old = self.stack.get_child_by_name("shows").unwrap();
         self.stack.remove(&old);
 
-        let pop = ShowsPopulated::new_initialized(&self.stack);
+        let pop = ShowsPopulated::new_initialized();
         self.populated = pop;
         self.stack
             .add_titled(&self.populated.container, "shows", "Shows");
@@ -351,8 +287,10 @@ enum EpisodeStateWrapper {
 impl ShowStateWrapper {
     fn new() -> Self {
         let stack = gtk::Stack::new();
-        let pop = ShowsPopulated::new_initialized(&stack);
+        let pop = ShowsPopulated::new_initialized();
         let empty = EmptyView::new();
+        stack.add_named(&pop.container, "populated");
+        stack.add_named(&empty.container, "empty");
 
         if pop.flowbox.get_children().is_empty() {
             stack.set_visible_child_name("empty");
@@ -363,7 +301,7 @@ impl ShowStateWrapper {
                 state: Empty {},
             })
         } else {
-            stack.set_visible_child_name("shows");
+            stack.set_visible_child_name("populated");
 
             ShowStateWrapper::Populated(ShowsMachine {
                 empty,
@@ -387,13 +325,45 @@ impl ShowStateWrapper {
             ShowStateWrapper::Empty(ref mut val) => val.update(),
         }
     }
+
+    fn get_stack(&self) -> gtk::Stack {
+        match *self {
+            ShowStateWrapper::Populated(ref val) => val.stack.clone(),
+            ShowStateWrapper::Empty(ref val) => val.stack.clone(),
+        }
+    }
 }
 
 impl EpisodeStateWrapper {
+    // FIXME:
+    fn new() -> Self {
+        let pop = PodcastWidget::new();
+        let empty = EmptyView::new();
+        let stack = gtk::Stack::new();
+
+        stack.add_named(&pop.container, "populated");
+        stack.add_named(&empty.container, "empty");
+        stack.set_visible_child_name("empty");
+
+        EpisodeStateWrapper::Empty(EpisodesMachine {
+            empty,
+            populated: pop,
+            stack,
+            state: Empty {},
+        })
+    }
+
     fn switch(self) -> Self {
         match self {
             EpisodeStateWrapper::Populated(val) => EpisodeStateWrapper::Empty(val.into()),
             EpisodeStateWrapper::Empty(val) => EpisodeStateWrapper::Populated(val.into()),
+        }
+    }
+
+    fn get_stack(&self) -> gtk::Stack {
+        match *self {
+            EpisodeStateWrapper::Populated(ref val) => val.stack.clone(),
+            EpisodeStateWrapper::Empty(ref val) => val.stack.clone(),
         }
     }
 }

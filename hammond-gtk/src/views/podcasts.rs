@@ -8,7 +8,7 @@ use hammond_data::Podcast;
 
 use utils::get_pixbuf_from_path;
 
-use content;
+// use content;
 
 #[derive(Debug, Clone)]
 pub struct PopulatedView {
@@ -42,24 +42,25 @@ impl PopulatedView {
     }
 
     #[allow(dead_code)]
-    pub fn new_initialized(stack: &gtk::Stack) -> PopulatedView {
+    pub fn new_initialized() -> PopulatedView {
         let pop = PopulatedView::new();
-        pop.init(stack);
+        pop.init();
         pop
     }
 
-    pub fn init(&self, stack: &gtk::Stack) {
-        use gtk::WidgetExt;
+    pub fn init(&self) {
+        // pub fn init(&self, stack: &gtk::Stack) {
+        // use gtk::WidgetExt;
 
-        // TODO: handle unwraps.
-        self.flowbox
-            .connect_child_activated(clone!(stack => move |_, child| {
-            // This is such an ugly hack...
-            // let id = child.get_name().unwrap().parse::<i32>().unwrap();
-            let id = WidgetExt::get_name(child).unwrap().parse::<i32>().unwrap();
-            let parent = dbqueries::get_podcast_from_id(id).unwrap();
-            on_flowbox_child_activate(&stack, &parent);
-        }));
+        // // TODO: handle unwraps.
+        // self.flowbox
+        //     .connect_child_activated(clone!(stack => move |_, child| {
+        //     // This is such an ugly hack...
+        //     // let id = child.get_name().unwrap().parse::<i32>().unwrap();
+        //     let id = WidgetExt::get_name(child).unwrap().parse::<i32>().unwrap();
+        //     let parent = dbqueries::get_podcast_from_id(id).unwrap();
+        //     on_flowbox_child_activate(&stack, &parent);
+        // }));
         // Populate the flowbox with the Podcasts.
         self.populate_flowbox();
     }
@@ -139,6 +140,6 @@ impl PodcastChild {
     }
 }
 
-fn on_flowbox_child_activate(stack: &gtk::Stack, parent: &Podcast) {
-    content::on_podcasts_child_activate(stack, parent)
-}
+// fn on_flowbox_child_activate(stack: &gtk::Stack, parent: &Podcast) {
+//     content::on_podcasts_child_activate(stack, parent)
+// }
