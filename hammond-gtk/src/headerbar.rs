@@ -58,9 +58,8 @@ impl Header {
             println!("{:?}", url.get_text());
         });
 
-        let cont = content.clone();
-        add_button.connect_clicked(clone!(cont, add_popover, new_url => move |_| {
-            on_add_bttn_clicked(cont.clone(), &new_url);
+        add_button.connect_clicked(clone!(content, add_popover, new_url => move |_| {
+            on_add_bttn_clicked(content.clone(), &new_url);
 
             // TODO: lock the button instead of hiding and add notification of feed added.
             // TODO: map the spinner
@@ -70,9 +69,9 @@ impl Header {
 
         // FIXME: There appears to be a memmory leak here.
         let cont = content.clone();
-        self.refresh.connect_clicked(clone!(cont => move |_| {
+        self.refresh.connect_clicked(move |_| {
             utils::refresh_feed(cont.clone(), None, None);
-        }));
+        });
     }
 }
 

@@ -10,9 +10,9 @@ use hammond_downloader::downloader;
 
 use widgets::episode::episodes_listbox;
 use utils::get_pixbuf_from_path;
-use content;
+// use content;
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct PodcastWidget {
     pub container: gtk::Box,
     cover: gtk::Image,
@@ -111,11 +111,11 @@ fn on_unsub_button_clicked(stack: &gtk::Stack, pd: &Podcast, unsub_button: &gtk:
             }
         };
     }
-    content::update_podcasts(stack);
+    // content::update_podcasts(stack);
 }
 
 fn on_played_button_clicked(stack: &gtk::Stack, pd: &Podcast) {
     let _ = dbqueries::update_none_to_played_now(pd);
 
-    content::update_widget_preserve_vis(stack, pd);
+    // content::update_widget_preserve_vis(stack, pd);
 }
