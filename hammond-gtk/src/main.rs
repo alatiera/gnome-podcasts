@@ -1,3 +1,5 @@
+#![cfg_attr(feature = "cargo-clippy", allow(clone_on_ref_ptr))]
+
 extern crate gdk;
 extern crate gdk_pixbuf;
 extern crate gio;
@@ -21,8 +23,6 @@ use hammond_data::utils::checkup;
 
 use gtk::prelude::*;
 use gio::{ActionMapExt, ApplicationExt, MenuExt, SimpleActionExt};
-
-use std::sync::{Arc, Mutex};
 
 // http://gtk-rs.org/tuto/closures
 #[macro_export]
@@ -72,7 +72,6 @@ fn build_ui(app: &gtk::Application) {
     // let ct = content::Content::new_initialized();
     let ct = content::Content::new();
     let stack = ct.stack.clone();
-    let ct = Arc::new(Mutex::new(ct));
     window.add(&stack);
 
     window.connect_delete_event(|w, _| {

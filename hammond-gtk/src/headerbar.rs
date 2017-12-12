@@ -4,7 +4,7 @@ use gtk::prelude::*;
 use hammond_data::Source;
 use hammond_data::utils::url_cleaner;
 
-use std::sync::{Arc, Mutex};
+use std::rc::Rc;
 
 use utils;
 use content::Content;
@@ -36,23 +36,19 @@ impl Header {
         }
     }
 
-    pub fn new_initialized(content: Arc<Mutex<Content>>) -> Header {
+    pub fn new_initialized(content: Rc<Content>) -> Header {
         let header = Header::new();
         header.init(content);
         header
     }
 
-    fn init(&self, content: Arc<Mutex<Content>>) {
+    fn init(&self, content: Rc<Content>) {
         let builder = gtk::Builder::new_from_resource("/org/gnome/hammond/gtk/headerbar.ui");
 
         let add_popover: gtk::Popover = builder.get_object("add-popover").unwrap();
         let new_url: gtk::Entry = builder.get_object("new-url").unwrap();
         let add_button: gtk::Button = builder.get_object("add-button").unwrap();
-
-        {
-            let cont = content.lock().unwrap();
-            self.switch.set_stack(&cont.stack);
-        }
+        self.switch.set_stack(&content.stack);
 
         new_url.connect_changed(move |url| {
             println!("{:?}", url.get_text());
@@ -68,14 +64,13 @@ impl Header {
         self.add_toggle.set_popover(&add_popover);
 
         // FIXME: There appears to be a memmory leak here.
-        let cont = content.clone();
         self.refresh.connect_clicked(move |_| {
-            utils::refresh_feed(cont.clone(), None, None);
+            utils::refresh_feed(content.clone(), None, None);
         });
     }
 }
 
-fn on_add_bttn_clicked(content: Arc<Mutex<Content>>, entry: &gtk::Entry) {
+fn on_add_bttn_clicked(content: Rc<Content>, entry: &gtk::Entry) {
     let url = entry.get_text().unwrap_or_default();
     let url = url_cleaner(&url);
     let source = Source::from_url(&url);

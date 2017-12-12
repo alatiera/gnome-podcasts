@@ -10,7 +10,8 @@ use hammond_downloader::downloader;
 
 use widgets::episode::episodes_listbox;
 use utils::get_pixbuf_from_path;
-// use content;
+use content::ShowStack;
+use std::rc::Rc;
 
 #[derive(Debug, Clone)]
 pub struct PodcastWidget {
@@ -47,18 +48,18 @@ impl PodcastWidget {
         }
     }
 
-    pub fn new_initialized(stack: &gtk::Stack, pd: &Podcast) -> PodcastWidget {
+    pub fn new_initialized(shows: Rc<ShowStack>, pd: &Podcast) -> PodcastWidget {
         let pdw = PodcastWidget::new();
-        pdw.init(stack, pd);
+        pdw.init(shows, pd);
         pdw
     }
 
-    pub fn init(&self, stack: &gtk::Stack, pd: &Podcast) {
+    pub fn init(&self, shows: Rc<ShowStack>, pd: &Podcast) {
         WidgetExt::set_name(&self.container, &pd.id().to_string());
 
         // TODO: should spawn a thread to avoid locking the UI probably.
-        self.unsub.connect_clicked(clone!(stack, pd => move |bttn| {
-            on_unsub_button_clicked(&stack, &pd, bttn);
+        self.unsub.connect_clicked(clone!(shows, pd => move |bttn| {
+            on_unsub_button_clicked(shows.clone(), &pd, bttn);
         }));
 
         self.title.set_text(pd.title());
@@ -77,8 +78,8 @@ impl PodcastWidget {
             self.cover.set_from_pixbuf(&i);
         }
 
-        self.played.connect_clicked(clone!(stack, pd => move |_| {
-            on_played_button_clicked(&stack, &pd);
+        self.played.connect_clicked(clone!(shows, pd => move |_| {
+            on_played_button_clicked(shows.clone(), &pd);
         }));
 
         self.show_played_button(pd);
@@ -95,7 +96,7 @@ impl PodcastWidget {
     }
 }
 
-fn on_unsub_button_clicked(stack: &gtk::Stack, pd: &Podcast, unsub_button: &gtk::Button) {
+fn on_unsub_button_clicked(shows: Rc<ShowStack>, pd: &Podcast, unsub_button: &gtk::Button) {
     let res = dbqueries::remove_feed(pd);
     if res.is_ok() {
         info!("{} was removed succesfully.", pd.title());
@@ -111,11 +112,12 @@ fn on_unsub_button_clicked(stack: &gtk::Stack, pd: &Podcast, unsub_button: &gtk:
             }
         };
     }
-    // content::update_podcasts(stack);
+    shows.switch_podcasts_animated();
+    shows.update_podcasts();
 }
 
-fn on_played_button_clicked(stack: &gtk::Stack, pd: &Podcast) {
+fn on_played_button_clicked(shows: Rc<ShowStack>, pd: &Podcast) {
     let _ = dbqueries::update_none_to_played_now(pd);
 
-    // content::update_widget_preserve_vis(stack, pd);
+    shows.update_widget();
 }

@@ -7,8 +7,9 @@ use hammond_data::dbqueries;
 use hammond_data::Podcast;
 
 use utils::get_pixbuf_from_path;
+use content::ShowStack;
 
-// use content;
+use std::rc::Rc;
 
 #[derive(Debug, Clone)]
 pub struct PopulatedView {
@@ -42,25 +43,29 @@ impl PopulatedView {
     }
 
     #[allow(dead_code)]
-    pub fn new_initialized() -> PopulatedView {
+    pub fn new_initialized(show: Rc<ShowStack>) -> PopulatedView {
         let pop = PopulatedView::new();
-        pop.init();
+        pop.init(show);
         pop
     }
 
-    pub fn init(&self) {
-        // pub fn init(&self, stack: &gtk::Stack) {
-        // use gtk::WidgetExt;
+    pub fn init(&self, show: Rc<ShowStack>) {
+        use gtk::WidgetExt;
 
-        // // TODO: handle unwraps.
-        // self.flowbox
-        //     .connect_child_activated(clone!(stack => move |_, child| {
-        //     // This is such an ugly hack...
-        //     // let id = child.get_name().unwrap().parse::<i32>().unwrap();
-        //     let id = WidgetExt::get_name(child).unwrap().parse::<i32>().unwrap();
-        //     let parent = dbqueries::get_podcast_from_id(id).unwrap();
-        //     on_flowbox_child_activate(&stack, &parent);
-        // }));
+        // TODO: handle unwraps.
+        // Note: flowbox_activation always adds "widnget" into the stack and switch to it,
+        // TODO: implement back button.
+        // so back button should always remove "widget" and destroy it.
+        let show = show.clone();
+        self.flowbox
+            .connect_child_activated(clone!(show => move |_, child| {
+            // This is such an ugly hack...
+            let id = WidgetExt::get_name(child).unwrap().parse::<i32>().unwrap();
+            let pd = dbqueries::get_podcast_from_id(id).unwrap();
+
+            show.replace_widget(&pd);
+            show.switch_widget_animated();
+        }));
         // Populate the flowbox with the Podcasts.
         self.populate_flowbox();
     }
@@ -75,6 +80,10 @@ impl PopulatedView {
             });
             self.flowbox.show_all();
         }
+    }
+
+    pub fn is_empty(&self) -> bool {
+        self.flowbox.get_children().is_empty()
     }
 }
 
@@ -139,7 +148,3 @@ impl PodcastChild {
         }
     }
 }
-
-// fn on_flowbox_child_activate(stack: &gtk::Stack, parent: &Podcast) {
-//     content::on_podcasts_child_activate(stack, parent)
-// }

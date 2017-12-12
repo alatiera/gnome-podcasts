@@ -1,5 +1,4 @@
 use glib;
-use gtk;
 use gdk_pixbuf::Pixbuf;
 
 use hammond_data::feed;
@@ -9,14 +8,12 @@ use hammond_downloader::downloader;
 use std::{thread, time};
 use std::cell::RefCell;
 use std::sync::mpsc::{channel, Receiver};
-use std::borrow::Cow;
 
 use content::Content;
-use regex::Regex;
 
-use std::sync::{Arc, Mutex};
+use std::rc::Rc;
 
-type Foo = RefCell<Option<(Arc<Mutex<Content>>, Receiver<bool>)>>;
+type Foo = RefCell<Option<(Rc<Content>, Receiver<bool>)>>;
 
 // Create a thread local storage that will store the arguments to be transfered.
 thread_local!(static GLOBAL: Foo = RefCell::new(None));
@@ -25,13 +22,13 @@ thread_local!(static GLOBAL: Foo = RefCell::new(None));
 /// If `source` is None, Fetches all the `Source` entries in the database and updates them.
 /// `delay` represents the desired time in seconds for the thread to sleep before executing.
 /// When It's done,it queues up a `podcast_view` refresh.
-pub fn refresh_feed(content: Arc<Mutex<Content>>, source: Option<Vec<Source>>, delay: Option<u64>) {
+pub fn refresh_feed(content: Rc<Content>, source: Option<Vec<Source>>, delay: Option<u64>) {
     // Create a async channel.
     let (sender, receiver) = channel();
 
     // Pass the desired arguments into the Local Thread Storage.
     GLOBAL.with(clone!(content => move |global| {
-        *global.borrow_mut() = Some((content, receiver));
+        *global.borrow_mut() = Some((content.clone(), receiver));
     }));
 
     thread::spawn(move || {
@@ -61,7 +58,6 @@ fn refresh_podcasts_view() -> glib::Continue {
     GLOBAL.with(|global| {
         if let Some((ref content, ref reciever)) = *global.borrow() {
             if reciever.try_recv().is_ok() {
-                let mut content = content.lock().unwrap();
                 content.update();
             }
         }
@@ -72,18 +68,6 @@ fn refresh_podcasts_view() -> glib::Continue {
 pub fn get_pixbuf_from_path(pd: &Podcast) -> Option<Pixbuf> {
     let img_path = downloader::cache_image(pd)?;
     Pixbuf::new_from_file_at_scale(&img_path, 256, 256, true).ok()
-}
-
-#[allow(dead_code)]
-// WIP: parse html to markup
-pub fn html_to_markup(s: &mut str) -> Cow<str> {
-    s.trim();
-    s.replace('&', "&amp;");
-    s.replace('<', "&lt;");
-    s.replace('>', "&gt;");
-
-    let re = Regex::new("(?P<url>https?://[^\\s&,)(\"]+(&\\w=[\\w._-]?)*(#[\\w._-]+)?)").unwrap();
-    re.replace_all(s, "<a href=\"$url\">$url</a>")
 }
 
 #[cfg(test)]
