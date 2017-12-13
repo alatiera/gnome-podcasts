@@ -30,7 +30,7 @@ struct ShowsChild {
 
 impl ShowsPopulated {
     pub fn new() -> ShowsPopulated {
-        let builder = gtk::Builder::new_from_resource("/org/gnome/hammond/gtk/podcasts_view.ui");
+        let builder = gtk::Builder::new_from_resource("/org/gnome/hammond/gtk/shows_view.ui");
         let container: gtk::Box = builder.get_object("fb_parent").unwrap();
         let flowbox: gtk::FlowBox = builder.get_object("flowbox").unwrap();
         let viewport: gtk::Viewport = builder.get_object("viewport").unwrap();
@@ -53,10 +53,7 @@ impl ShowsPopulated {
         use gtk::WidgetExt;
 
         // TODO: handle unwraps.
-        // Note: flowbox_activation always adds "widnget" into the stack and switch to it,
         // TODO: implement back button.
-        // so back button should always remove "widget" and destroy it.
-        let show = show.clone();
         self.flowbox
             .connect_child_activated(clone!(show => move |_, child| {
             // This is such an ugly hack...
@@ -89,7 +86,7 @@ impl ShowsPopulated {
 
 impl ShowsChild {
     fn new() -> ShowsChild {
-        let builder = gtk::Builder::new_from_resource("/org/gnome/hammond/gtk/podcasts_child.ui");
+        let builder = gtk::Builder::new_from_resource("/org/gnome/hammond/gtk/shows_child.ui");
 
         // Copy of gnome-music AlbumWidget
         let container: gtk::Box = builder.get_object("fb_child").unwrap();

@@ -27,7 +27,7 @@ pub struct ShowWidget {
 impl ShowWidget {
     pub fn new() -> ShowWidget {
         // Adapted from gnome-music AlbumWidget
-        let builder = gtk::Builder::new_from_resource("/org/gnome/hammond/gtk/podcast_widget.ui");
+        let builder = gtk::Builder::new_from_resource("/org/gnome/hammond/gtk/show_widget.ui");
         let container: gtk::Box = builder.get_object("podcast_widget").unwrap();
 
         let cover: gtk::Image = builder.get_object("cover").unwrap();
