@@ -14,7 +14,7 @@ use std::rc::Rc;
 #[derive(Debug, Clone)]
 pub struct ShowsPopulated {
     pub container: gtk::Box,
-    pub flowbox: gtk::FlowBox,
+    flowbox: gtk::FlowBox,
     viewport: gtk::Viewport,
 }
 
