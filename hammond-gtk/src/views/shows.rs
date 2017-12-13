@@ -8,6 +8,7 @@ use hammond_data::Podcast;
 
 use utils::get_pixbuf_from_path;
 use content::ShowStack;
+use headerbar::Header;
 
 use std::rc::Rc;
 
@@ -43,13 +44,13 @@ impl ShowsPopulated {
     }
 
     #[allow(dead_code)]
-    pub fn new_initialized(show: Rc<ShowStack>) -> ShowsPopulated {
+    pub fn new_initialized(show: Rc<ShowStack>, header: Rc<Header>) -> ShowsPopulated {
         let pop = ShowsPopulated::new();
-        pop.init(show);
+        pop.init(show, header);
         pop
     }
 
-    pub fn init(&self, show: Rc<ShowStack>) {
+    pub fn init(&self, show: Rc<ShowStack>, header: Rc<Header>) {
         use gtk::WidgetExt;
 
         // TODO: handle unwraps.
@@ -61,6 +62,8 @@ impl ShowsPopulated {
             let pd = dbqueries::get_podcast_from_id(id).unwrap();
 
             show.replace_widget(&pd);
+            header.set_show_title(pd.title());
+            header.switch_to_back();
             show.switch_widget_animated();
         }));
         // Populate the flowbox with the Podcasts.

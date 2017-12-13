@@ -11,6 +11,8 @@ use hammond_downloader::downloader;
 use widgets::episode::episodes_listbox;
 use utils::get_pixbuf_from_path;
 use content::ShowStack;
+use headerbar::Header;
+
 use std::rc::Rc;
 
 #[derive(Debug, Clone)]
@@ -48,18 +50,19 @@ impl ShowWidget {
         }
     }
 
-    pub fn new_initialized(shows: Rc<ShowStack>, pd: &Podcast) -> ShowWidget {
+    pub fn new_initialized(shows: Rc<ShowStack>, header: Rc<Header>, pd: &Podcast) -> ShowWidget {
         let pdw = ShowWidget::new();
-        pdw.init(shows, pd);
+        pdw.init(shows, header, pd);
         pdw
     }
 
-    pub fn init(&self, shows: Rc<ShowStack>, pd: &Podcast) {
+    pub fn init(&self, shows: Rc<ShowStack>, header: Rc<Header>, pd: &Podcast) {
         WidgetExt::set_name(&self.container, &pd.id().to_string());
 
         // TODO: should spawn a thread to avoid locking the UI probably.
         self.unsub.connect_clicked(clone!(shows, pd => move |bttn| {
             on_unsub_button_clicked(shows.clone(), &pd, bttn);
+            header.switch_to_normal();
         }));
 
         self.title.set_text(pd.title());

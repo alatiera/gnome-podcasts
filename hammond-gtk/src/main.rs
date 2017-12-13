@@ -70,9 +70,13 @@ fn build_ui(app: &gtk::Application) {
     // let stack = ct.get_stack();
 
     // let ct = content::Content::new_initialized();
-    let ct = content::Content::new();
-    let stack = ct.stack.clone();
-    window.add(&stack);
+
+    // Get the headerbar
+    let header = headerbar::Header::new();
+    let ct = content::Content::new(header.clone());
+    header.init(ct.clone());
+    window.set_titlebar(&header.container);
+    window.add(&ct.get_stack());
 
     window.connect_delete_event(|w, _| {
         w.destroy();
@@ -104,10 +108,6 @@ fn build_ui(app: &gtk::Application) {
         let _ = checkup();
         glib::Continue(false)
     });
-
-    // Get the headerbar
-    let header = headerbar::Header::new_initialized(ct.clone());
-    window.set_titlebar(&header.container);
 
     window.show_all();
     window.activate();
