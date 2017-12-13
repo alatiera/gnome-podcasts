@@ -15,24 +15,33 @@ pub struct Header {
     refresh: gtk::Button,
     add_toggle: gtk::MenuButton,
     switch: gtk::StackSwitcher,
+    stack: gtk::Stack,
 }
 
 impl Header {
     pub fn new() -> Header {
         let builder = gtk::Builder::new_from_resource("/org/gnome/hammond/gtk/headerbar.ui");
 
-        let header: gtk::HeaderBar = builder.get_object("headerbar1").unwrap();
-        let refresh: gtk::Button = builder.get_object("refbutton").unwrap();
-        let add_toggle: gtk::MenuButton = builder.get_object("add-toggle-button").unwrap();
+        let header: gtk::HeaderBar = builder.get_object("headerbar").unwrap();
+        let refresh: gtk::Button = builder.get_object("ref_button").unwrap();
+        let add_toggle: gtk::MenuButton = builder.get_object("add_toggle_button").unwrap();
         let switch: gtk::StackSwitcher = builder.get_object("switch").unwrap();
+        let stack: gtk::Stack = builder.get_object("headerbar_stack").unwrap();
+        let normal_view: gtk::Box = builder.get_object("normal_view").unwrap();
+        let back_view: gtk::Box = builder.get_object("back_view").unwrap();
         switch.set_halign(gtk::Align::Center);
         switch.show();
+
+        stack.add_named(&normal_view, "normal_view");
+        stack.add_named(&back_view, "back_view");
+        stack.set_visible_child_name("normal_view");
 
         Header {
             container: header,
             refresh,
             add_toggle,
             switch,
+            stack,
         }
     }
 
