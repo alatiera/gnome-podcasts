@@ -13,8 +13,6 @@ use hammond_data::utils::*;
 use hammond_data::errors::*;
 use hammond_data::utils::replace_extra_spaces;
 
-// use utils::html_to_markup;
-
 use std::thread;
 use std::cell::RefCell;
 use std::sync::mpsc::{channel, Receiver};

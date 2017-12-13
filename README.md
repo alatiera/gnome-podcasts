@@ -8,8 +8,7 @@ This is a prototype of a podcast client written in Rust.
 ![podcast_widget](./assets/podcast_widget.png)
 
 ## Getting in Touch
-If you have any questions regarding the
-use or development of Hammond, want to discuss design or simply hang out, please join us in [#hammond on irc.gnome.org.](irc://irc.gnome.org/#hammond)
+If you have any questions regarding the use or development of Hammond, want to discuss design or simply hang out, please join us in [#hammond on irc.gnome.org.](irc://irc.gnome.org/#hammond)
 
 Sidenote:
 
@@ -69,14 +68,6 @@ git clone https://gitlab.gnome.org/alatiera/Hammond.git
 cd Hammond/
 cargo build --all
 ```
-
-## Call for designers
-
-Currently there no design plans or mockups. They are highly needed in order to advance the Gtk Client.
-
-There is the will for a complete client re-write if a someone contributes the mockups.
-
-If you happen to be a designer and want to contribute please hope on [#hammond](irc://irc.gnome.org/#hammond) and get in touch with us.
 
 ## Contributing
 

@@ -20,6 +20,12 @@ It is recommended to add a pre-commit hook to run cargo test and cargo fmt
    cargo test -- --test-threads=1 && cargo fmt --all -- --write-mode=diff
    ```
 
+## Running the test suite
+
+The test suite sets a temporary sqlite database in the /tmp folder. Due to that it's not possible to run them in parrallel.
+
+In order to run the test suite use the following: `cargo test -- --test-threads=1`
+
 # Issues, issues and more issues!
 
 There are many ways you can contribute to Hammond, and all of them involve creating issues
@@ -67,8 +73,10 @@ Steps to reproduce:
 ## Pull Request Process
 
 1. Ensure your code compiles. Run `make` before creating the pull request.
-2. If you're adding new API, it must be properly documented.
-3. The commit message is formatted as follows:
+2. Ensure the test suit passes. Run `cargo test -- --test-threads=1`.
+3. Ensure your code is properly formated. Run `cargo fmt --all`.
+4. If you're adding new API, it must be properly documented.
+5. The commit message is formatted as follows:
    ```
    component: <summary>
 
@@ -78,7 +86,7 @@ Steps to reproduce:
 
    <link to the bug ticket>
    ```
-4. You may merge the pull request in once you have the sign-off of the maintainers, or if you
+6. You may merge the pull request in once you have the sign-off of the maintainers, or if you
    do not have permission to do that, you may request the second reviewer to merge it for you.
 
 ## Code of Conduct

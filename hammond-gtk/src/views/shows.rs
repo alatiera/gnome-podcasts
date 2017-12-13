@@ -7,18 +7,20 @@ use hammond_data::dbqueries;
 use hammond_data::Podcast;
 
 use utils::get_pixbuf_from_path;
+use content::ShowStack;
+use headerbar::Header;
 
-use content;
+use std::rc::Rc;
 
 #[derive(Debug, Clone)]
-pub struct PopulatedView {
+pub struct ShowsPopulated {
     pub container: gtk::Box,
-    pub flowbox: gtk::FlowBox,
+    flowbox: gtk::FlowBox,
     viewport: gtk::Viewport,
 }
 
 #[derive(Debug)]
-struct PodcastChild {
+struct ShowsChild {
     container: gtk::Box,
     title: gtk::Label,
     cover: gtk::Image,
@@ -27,14 +29,14 @@ struct PodcastChild {
     child: gtk::FlowBoxChild,
 }
 
-impl PopulatedView {
-    pub fn new() -> PopulatedView {
-        let builder = gtk::Builder::new_from_resource("/org/gnome/hammond/gtk/podcasts_view.ui");
+impl ShowsPopulated {
+    pub fn new() -> ShowsPopulated {
+        let builder = gtk::Builder::new_from_resource("/org/gnome/hammond/gtk/shows_view.ui");
         let container: gtk::Box = builder.get_object("fb_parent").unwrap();
         let flowbox: gtk::FlowBox = builder.get_object("flowbox").unwrap();
         let viewport: gtk::Viewport = builder.get_object("viewport").unwrap();
 
-        PopulatedView {
+        ShowsPopulated {
             container,
             flowbox,
             viewport,
@@ -42,23 +44,27 @@ impl PopulatedView {
     }
 
     #[allow(dead_code)]
-    pub fn new_initialized(stack: &gtk::Stack) -> PopulatedView {
-        let pop = PopulatedView::new();
-        pop.init(stack);
+    pub fn new_initialized(show: Rc<ShowStack>, header: Rc<Header>) -> ShowsPopulated {
+        let pop = ShowsPopulated::new();
+        pop.init(show, header);
         pop
     }
 
-    pub fn init(&self, stack: &gtk::Stack) {
+    pub fn init(&self, show: Rc<ShowStack>, header: Rc<Header>) {
         use gtk::WidgetExt;
 
         // TODO: handle unwraps.
+        // TODO: implement back button.
         self.flowbox
-            .connect_child_activated(clone!(stack => move |_, child| {
+            .connect_child_activated(clone!(show => move |_, child| {
             // This is such an ugly hack...
-            // let id = child.get_name().unwrap().parse::<i32>().unwrap();
             let id = WidgetExt::get_name(child).unwrap().parse::<i32>().unwrap();
-            let parent = dbqueries::get_podcast_from_id(id).unwrap();
-            on_flowbox_child_activate(&stack, &parent);
+            let pd = dbqueries::get_podcast_from_id(id).unwrap();
+
+            show.replace_widget(&pd);
+            header.set_show_title(pd.title());
+            header.switch_to_back();
+            show.switch_widget_animated();
         }));
         // Populate the flowbox with the Podcasts.
         self.populate_flowbox();
@@ -69,17 +75,21 @@ impl PopulatedView {
 
         if let Ok(pds) = podcasts {
             pds.iter().for_each(|parent| {
-                let flowbox_child = PodcastChild::new_initialized(parent);
+                let flowbox_child = ShowsChild::new_initialized(parent);
                 self.flowbox.add(&flowbox_child.child);
             });
             self.flowbox.show_all();
         }
     }
+
+    pub fn is_empty(&self) -> bool {
+        self.flowbox.get_children().is_empty()
+    }
 }
 
-impl PodcastChild {
-    fn new() -> PodcastChild {
-        let builder = gtk::Builder::new_from_resource("/org/gnome/hammond/gtk/podcasts_child.ui");
+impl ShowsChild {
+    fn new() -> ShowsChild {
+        let builder = gtk::Builder::new_from_resource("/org/gnome/hammond/gtk/shows_child.ui");
 
         // Copy of gnome-music AlbumWidget
         let container: gtk::Box = builder.get_object("fb_child").unwrap();
@@ -91,7 +101,7 @@ impl PodcastChild {
         let child = gtk::FlowBoxChild::new();
         child.add(&container);
 
-        PodcastChild {
+        ShowsChild {
             container,
             title,
             cover,
@@ -113,8 +123,8 @@ impl PodcastChild {
         self.configure_banner(pd);
     }
 
-    pub fn new_initialized(pd: &Podcast) -> PodcastChild {
-        let child = PodcastChild::new();
+    pub fn new_initialized(pd: &Podcast) -> ShowsChild {
+        let child = ShowsChild::new();
         child.init(pd);
 
         child
@@ -137,8 +147,4 @@ impl PodcastChild {
             }
         }
     }
-}
-
-fn on_flowbox_child_activate(stack: &gtk::Stack, parent: &Podcast) {
-    content::on_podcasts_child_activate(stack, parent)
 }

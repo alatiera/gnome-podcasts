@@ -1,3 +1,5 @@
+#![cfg_attr(feature = "cargo-clippy", allow(clone_on_ref_ptr))]
+
 extern crate gdk;
 extern crate gdk_pixbuf;
 extern crate gio;
@@ -67,9 +69,14 @@ fn build_ui(app: &gtk::Application) {
     // let ct = content::ContentState::new().unwrap();
     // let stack = ct.get_stack();
 
-    let ct = content::Content::new_initialized();
-    let stack = ct.stack;
-    window.add(&stack);
+    // let ct = content::Content::new_initialized();
+
+    // Get the headerbar
+    let header = headerbar::Header::new();
+    let ct = content::Content::new(header.clone());
+    header.init(ct.clone());
+    window.set_titlebar(&header.container);
+    window.add(&ct.get_stack());
 
     window.connect_delete_event(|w, _| {
         w.destroy();
@@ -92,8 +99,8 @@ fn build_ui(app: &gtk::Application) {
     app.add_action(&check);
 
     // queue a db update 1 minute after the startup.
-    gtk::idle_add(clone!(stack => move || {
-        utils::refresh_feed(&stack, None, Some(60));
+    gtk::idle_add(clone!(ct => move || {
+        utils::refresh_feed(ct.clone(), None, Some(60));
         glib::Continue(false)
     }));
 
@@ -101,10 +108,6 @@ fn build_ui(app: &gtk::Application) {
         let _ = checkup();
         glib::Continue(false)
     });
-
-    // Get the headerbar
-    let header = headerbar::Header::new_initialized(&stack);
-    window.set_titlebar(&header.container);
 
     window.show_all();
     window.activate();

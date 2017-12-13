@@ -10,10 +10,13 @@ use hammond_downloader::downloader;
 
 use widgets::episode::episodes_listbox;
 use utils::get_pixbuf_from_path;
-use content;
+use content::ShowStack;
+use headerbar::Header;
 
-#[derive(Debug)]
-pub struct PodcastWidget {
+use std::rc::Rc;
+
+#[derive(Debug, Clone)]
+pub struct ShowWidget {
     pub container: gtk::Box,
     cover: gtk::Image,
     title: gtk::Label,
@@ -23,10 +26,10 @@ pub struct PodcastWidget {
     played: gtk::Button,
 }
 
-impl PodcastWidget {
-    pub fn new() -> PodcastWidget {
+impl ShowWidget {
+    pub fn new() -> ShowWidget {
         // Adapted from gnome-music AlbumWidget
-        let builder = gtk::Builder::new_from_resource("/org/gnome/hammond/gtk/podcast_widget.ui");
+        let builder = gtk::Builder::new_from_resource("/org/gnome/hammond/gtk/show_widget.ui");
         let container: gtk::Box = builder.get_object("podcast_widget").unwrap();
 
         let cover: gtk::Image = builder.get_object("cover").unwrap();
@@ -36,7 +39,7 @@ impl PodcastWidget {
         let unsub: gtk::Button = builder.get_object("unsub_button").unwrap();
         let played: gtk::Button = builder.get_object("mark_all_played_button").unwrap();
 
-        PodcastWidget {
+        ShowWidget {
             container,
             cover,
             title,
@@ -47,18 +50,19 @@ impl PodcastWidget {
         }
     }
 
-    pub fn new_initialized(stack: &gtk::Stack, pd: &Podcast) -> PodcastWidget {
-        let pdw = PodcastWidget::new();
-        pdw.init(stack, pd);
+    pub fn new_initialized(shows: Rc<ShowStack>, header: Rc<Header>, pd: &Podcast) -> ShowWidget {
+        let pdw = ShowWidget::new();
+        pdw.init(shows, header, pd);
         pdw
     }
 
-    pub fn init(&self, stack: &gtk::Stack, pd: &Podcast) {
+    pub fn init(&self, shows: Rc<ShowStack>, header: Rc<Header>, pd: &Podcast) {
         WidgetExt::set_name(&self.container, &pd.id().to_string());
 
         // TODO: should spawn a thread to avoid locking the UI probably.
-        self.unsub.connect_clicked(clone!(stack, pd => move |bttn| {
-            on_unsub_button_clicked(&stack, &pd, bttn);
+        self.unsub.connect_clicked(clone!(shows, pd => move |bttn| {
+            on_unsub_button_clicked(shows.clone(), &pd, bttn);
+            header.switch_to_normal();
         }));
 
         self.title.set_text(pd.title());
@@ -77,8 +81,8 @@ impl PodcastWidget {
             self.cover.set_from_pixbuf(&i);
         }
 
-        self.played.connect_clicked(clone!(stack, pd => move |_| {
-            on_played_button_clicked(&stack, &pd);
+        self.played.connect_clicked(clone!(shows, pd => move |_| {
+            on_played_button_clicked(shows.clone(), &pd);
         }));
 
         self.show_played_button(pd);
@@ -95,7 +99,7 @@ impl PodcastWidget {
     }
 }
 
-fn on_unsub_button_clicked(stack: &gtk::Stack, pd: &Podcast, unsub_button: &gtk::Button) {
+fn on_unsub_button_clicked(shows: Rc<ShowStack>, pd: &Podcast, unsub_button: &gtk::Button) {
     let res = dbqueries::remove_feed(pd);
     if res.is_ok() {
         info!("{} was removed succesfully.", pd.title());
@@ -111,12 +115,12 @@ fn on_unsub_button_clicked(stack: &gtk::Stack, pd: &Podcast, unsub_button: &gtk:
             }
         };
     }
-    content::update_podcasts(stack);
-    content::show_podcasts(stack);
+    shows.switch_podcasts_animated();
+    shows.update_podcasts();
 }
 
-fn on_played_button_clicked(stack: &gtk::Stack, pd: &Podcast) {
+fn on_played_button_clicked(shows: Rc<ShowStack>, pd: &Podcast) {
     let _ = dbqueries::update_none_to_played_now(pd);
 
-    content::update_widget_preserve_vis(stack, pd);
+    shows.update_widget();
 }
