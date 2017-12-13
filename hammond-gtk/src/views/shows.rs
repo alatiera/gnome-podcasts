@@ -12,14 +12,14 @@ use content::ShowStack;
 use std::rc::Rc;
 
 #[derive(Debug, Clone)]
-pub struct PopulatedView {
+pub struct ShowsPopulated {
     pub container: gtk::Box,
     pub flowbox: gtk::FlowBox,
     viewport: gtk::Viewport,
 }
 
 #[derive(Debug)]
-struct PodcastChild {
+struct ShowsChild {
     container: gtk::Box,
     title: gtk::Label,
     cover: gtk::Image,
@@ -28,14 +28,14 @@ struct PodcastChild {
     child: gtk::FlowBoxChild,
 }
 
-impl PopulatedView {
-    pub fn new() -> PopulatedView {
+impl ShowsPopulated {
+    pub fn new() -> ShowsPopulated {
         let builder = gtk::Builder::new_from_resource("/org/gnome/hammond/gtk/podcasts_view.ui");
         let container: gtk::Box = builder.get_object("fb_parent").unwrap();
         let flowbox: gtk::FlowBox = builder.get_object("flowbox").unwrap();
         let viewport: gtk::Viewport = builder.get_object("viewport").unwrap();
 
-        PopulatedView {
+        ShowsPopulated {
             container,
             flowbox,
             viewport,
@@ -43,8 +43,8 @@ impl PopulatedView {
     }
 
     #[allow(dead_code)]
-    pub fn new_initialized(show: Rc<ShowStack>) -> PopulatedView {
-        let pop = PopulatedView::new();
+    pub fn new_initialized(show: Rc<ShowStack>) -> ShowsPopulated {
+        let pop = ShowsPopulated::new();
         pop.init(show);
         pop
     }
@@ -75,7 +75,7 @@ impl PopulatedView {
 
         if let Ok(pds) = podcasts {
             pds.iter().for_each(|parent| {
-                let flowbox_child = PodcastChild::new_initialized(parent);
+                let flowbox_child = ShowsChild::new_initialized(parent);
                 self.flowbox.add(&flowbox_child.child);
             });
             self.flowbox.show_all();
@@ -87,8 +87,8 @@ impl PopulatedView {
     }
 }
 
-impl PodcastChild {
-    fn new() -> PodcastChild {
+impl ShowsChild {
+    fn new() -> ShowsChild {
         let builder = gtk::Builder::new_from_resource("/org/gnome/hammond/gtk/podcasts_child.ui");
 
         // Copy of gnome-music AlbumWidget
@@ -101,7 +101,7 @@ impl PodcastChild {
         let child = gtk::FlowBoxChild::new();
         child.add(&container);
 
-        PodcastChild {
+        ShowsChild {
             container,
             title,
             cover,
@@ -123,8 +123,8 @@ impl PodcastChild {
         self.configure_banner(pd);
     }
 
-    pub fn new_initialized(pd: &Podcast) -> PodcastChild {
-        let child = PodcastChild::new();
+    pub fn new_initialized(pd: &Podcast) -> ShowsChild {
+        let child = ShowsChild::new();
         child.init(pd);
 
         child

@@ -1,2 +1,2 @@
-pub mod podcast;
+pub mod show;
 pub mod episode;

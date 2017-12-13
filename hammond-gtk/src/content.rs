@@ -4,9 +4,10 @@ use gtk::prelude::*;
 use hammond_data::Podcast;
 use hammond_data::dbqueries;
 
-use views::podcasts::PopulatedView;
+use views::shows::ShowsPopulated;
 use views::empty::EmptyView;
-use widgets::podcast::PodcastWidget;
+
+use widgets::show::ShowWidget;
 
 use std::rc::Rc;
 
@@ -50,8 +51,8 @@ impl ShowStack {
 
         let show = Rc::new(ShowStack { stack });
 
-        let pop = PopulatedView::new_initialized(show.clone());
-        let widget = PodcastWidget::new();
+        let pop = ShowsPopulated::new_initialized(show.clone());
+        let widget = ShowWidget::new();
         let empty = EmptyView::new();
 
         show.stack.add_named(&pop.container, "podcasts");
@@ -80,7 +81,7 @@ impl ShowStack {
         let vis = self.stack.get_visible_child_name().unwrap();
         let old = self.stack.get_child_by_name("podcasts").unwrap();
 
-        let pop = PopulatedView::new();
+        let pop = ShowsPopulated::new();
         pop.init(Rc::new(self.clone()));
 
         self.stack.remove(&old);
@@ -99,7 +100,7 @@ impl ShowStack {
 
     pub fn replace_widget(&self, pd: &Podcast) {
         let old = self.stack.get_child_by_name("widget").unwrap();
-        let new = PodcastWidget::new_initialized(Rc::new(self.clone()), pd);
+        let new = ShowWidget::new_initialized(Rc::new(self.clone()), pd);
 
         self.stack.remove(&old);
         self.stack.add_named(&new.container, "widget");

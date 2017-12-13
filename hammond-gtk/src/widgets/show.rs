@@ -14,7 +14,7 @@ use content::ShowStack;
 use std::rc::Rc;
 
 #[derive(Debug, Clone)]
-pub struct PodcastWidget {
+pub struct ShowWidget {
     pub container: gtk::Box,
     cover: gtk::Image,
     title: gtk::Label,
@@ -24,8 +24,8 @@ pub struct PodcastWidget {
     played: gtk::Button,
 }
 
-impl PodcastWidget {
-    pub fn new() -> PodcastWidget {
+impl ShowWidget {
+    pub fn new() -> ShowWidget {
         // Adapted from gnome-music AlbumWidget
         let builder = gtk::Builder::new_from_resource("/org/gnome/hammond/gtk/podcast_widget.ui");
         let container: gtk::Box = builder.get_object("podcast_widget").unwrap();
@@ -37,7 +37,7 @@ impl PodcastWidget {
         let unsub: gtk::Button = builder.get_object("unsub_button").unwrap();
         let played: gtk::Button = builder.get_object("mark_all_played_button").unwrap();
 
-        PodcastWidget {
+        ShowWidget {
             container,
             cover,
             title,
@@ -48,8 +48,8 @@ impl PodcastWidget {
         }
     }
 
-    pub fn new_initialized(shows: Rc<ShowStack>, pd: &Podcast) -> PodcastWidget {
-        let pdw = PodcastWidget::new();
+    pub fn new_initialized(shows: Rc<ShowStack>, pd: &Podcast) -> ShowWidget {
+        let pdw = ShowWidget::new();
         pdw.init(shows, pd);
         pdw
     }
