@@ -11,23 +11,25 @@
     <property name="margin_bottom">5</property>
     <property name="spacing">5</property>
     <child>
-      <object class="GtkButton" id="delete_button">
-        <property name="name">delete_button</property>
+      <object class="GtkButton" id="play_button">
         <property name="can_focus">True</property>
         <property name="receives_default">True</property>
         <property name="halign">end</property>
         <property name="valign">center</property>
+        <property name="margin_top">5</property>
+        <property name="margin_bottom">5</property>
         <child>
           <object class="GtkImage">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="icon_name">edit-delete-symbolic</property>
+            <property name="icon_name">media-playback-start-symbolic</property>
           </object>
         </child>
       </object>
       <packing>
         <property name="expand">False</property>
         <property name="fill">False</property>
+        <property name="padding">5</property>
         <property name="pack_type">end</property>
         <property name="position">0</property>
       </packing>
@@ -59,25 +61,23 @@
       </packing>
     </child>
     <child>
-      <object class="GtkButton" id="play_button">
+      <object class="GtkButton" id="delete_button">
+        <property name="name">delete_button</property>
         <property name="can_focus">True</property>
         <property name="receives_default">True</property>
         <property name="halign">end</property>
         <property name="valign">center</property>
-        <property name="margin_top">5</property>
-        <property name="margin_bottom">5</property>
         <child>
           <object class="GtkImage">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="icon_name">media-playback-start-symbolic</property>
+            <property name="icon_name">user-trash-symbolic</property>
           </object>
         </child>
       </object>
       <packing>
         <property name="expand">False</property>
         <property name="fill">False</property>
-        <property name="padding">5</property>
         <property name="pack_type">end</property>
         <property name="position">0</property>
       </packing>
