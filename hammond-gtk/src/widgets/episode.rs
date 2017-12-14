@@ -1,6 +1,8 @@
 use glib;
 use gtk;
+
 use gtk::prelude::*;
+use chrono::prelude::*;
 
 use open;
 
@@ -38,10 +40,11 @@ struct EpisodeWidget {
     download: gtk::Button,
     cancel: gtk::Button,
     title: gtk::Label,
+    date: gtk::Label,
     duration: gtk::Label,
     size: gtk::Label,
     progress: gtk::ProgressBar,
-    an_indicator: gtk::Image,
+    progress_label: gtk::Label,
 }
 
 impl EpisodeWidget {
@@ -49,9 +52,7 @@ impl EpisodeWidget {
         let builder = gtk::Builder::new_from_resource("/org/gnome/hammond/gtk/episode_widget.ui");
 
         let container: gtk::Box = builder.get_object("episode_container").unwrap();
-
         let progress: gtk::ProgressBar = builder.get_object("progress_bar").unwrap();
-        let an_indicator: gtk::Image = builder.get_object("an_indicator").unwrap();
 
         let download: gtk::Button = builder.get_object("download_button").unwrap();
         let play: gtk::Button = builder.get_object("play_button").unwrap();
@@ -59,13 +60,14 @@ impl EpisodeWidget {
         let cancel: gtk::Button = builder.get_object("cancel_button").unwrap();
 
         let title: gtk::Label = builder.get_object("title_label").unwrap();
+        let date: gtk::Label = builder.get_object("date_label").unwrap();
         let duration: gtk::Label = builder.get_object("duration_label").unwrap();
         let size: gtk::Label = builder.get_object("size_label").unwrap();
+        let progress_label: gtk::Label = builder.get_object("progress_label").unwrap();
 
         EpisodeWidget {
             container,
             progress,
-            an_indicator,
             download,
             play,
             cancel,
@@ -73,6 +75,8 @@ impl EpisodeWidget {
             title,
             duration,
             size,
+            date,
+            progress_label,
         }
     }
 
@@ -86,7 +90,6 @@ impl EpisodeWidget {
     // TODO: wire the progress_bar to the downloader.
     // TODO: wire the cancel button.
     fn init(&self, episode: &mut EpisodeWidgetQuery, pd: &Podcast) {
-        self.duration.hide();
         self.title.set_xalign(0.0);
         self.title.set_text(episode.title());
         self.progress.set_pulse_step(0.1);
@@ -98,9 +101,14 @@ impl EpisodeWidget {
         });
 
         if let Some(size) = episode.length() {
-            let megabytes: f32 = size as f32 / 1024.0 / 1024.0; // episode.length represents bytes
-            self.size.set_text(&format!("{:.1} mb", megabytes))
+            let megabytes = size / 1024 / 1024; // episode.length represents bytes
+            self.size.set_text(&format!("{} MB", megabytes))
         };
+
+        let date = Utc.timestamp(i64::from(episode.epoch()), 0)
+            .format("%b %e")
+            .to_string();
+        self.date.set_text(&date);
 
         // Show or hide the play/delete/download buttons upon widget initialization.
         let local_uri = episode.local_uri();

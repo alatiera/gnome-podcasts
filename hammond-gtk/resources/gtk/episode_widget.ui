@@ -18,15 +18,27 @@
             <property name="orientation">vertical</property>
             <property name="spacing">5</property>
             <child>
-              <object class="GtkLabel" id="title_label">
+              <object class="GtkBox">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="halign">start</property>
-                <property name="label" translatable="yes">Episode Title</property>
-                <property name="use_markup">True</property>
-                <property name="wrap">True</property>
-                <property name="ellipsize">end</property>
-                <property name="lines">1</property>
+                <child>
+                  <object class="GtkLabel" id="title_label">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="halign">start</property>
+                    <property name="label" translatable="yes">Episode Title</property>
+                    <property name="use_markup">True</property>
+                    <property name="wrap">True</property>
+                    <property name="ellipsize">end</property>
+                    <property name="track_visited_links">False</property>
+                    <property name="lines">1</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
               </object>
               <packing>
                 <property name="expand">True</property>
@@ -40,10 +52,11 @@
                 <property name="can_focus">False</property>
                 <property name="spacing">5</property>
                 <child>
-                  <object class="GtkLabel" id="duration_label">
+                  <object class="GtkLabel" id="date_label">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="label" translatable="yes">42 min</property>
+                    <property name="label" translatable="yes">1970/01/01</property>
+                    <property name="track_visited_links">False</property>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -52,10 +65,10 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkLabel" id="size_label">
-                    <property name="visible">True</property>
+                  <object class="GtkLabel">
                     <property name="can_focus">False</property>
-                    <property name="label" translatable="yes">42 mb</property>
+                    <property name="no_show_all">True</property>
+                    <property name="label" translatable="yes">·</property>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -64,14 +77,54 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkImage" id="an_indicator">
+                  <object class="GtkLabel" id="duration_label">
                     <property name="can_focus">False</property>
-                    <property name="icon_name">document-save-symbolic</property>
+                    <property name="no_show_all">True</property>
+                    <property name="label" translatable="yes">42 min</property>
+                    <property name="track_visited_links">False</property>
                   </object>
                   <packing>
                     <property name="expand">False</property>
                     <property name="fill">True</property>
                     <property name="position">2</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="label" translatable="yes">·</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">3</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="size_label">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="label" translatable="yes">42 MB</property>
+                    <property name="track_visited_links">False</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">4</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="progress_label">
+                    <property name="can_focus">False</property>
+                    <property name="no_show_all">True</property>
+                    <property name="label" translatable="yes">12 MB / 42 MB</property>
+                    <property name="track_visited_links">False</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">5</property>
                   </packing>
                 </child>
               </object>
@@ -185,7 +238,6 @@
       <packing>
         <property name="expand">True</property>
         <property name="fill">True</property>
-        <property name="padding">5</property>
         <property name="position">0</property>
       </packing>
     </child>
