@@ -39,6 +39,7 @@ struct EpisodeWidget {
     cancel: gtk::Button,
     title: gtk::Label,
     duration: gtk::Label,
+    size: gtk::Label,
     progress: gtk::ProgressBar,
     an_indicator: gtk::Image,
 }
@@ -59,6 +60,7 @@ impl EpisodeWidget {
 
         let title: gtk::Label = builder.get_object("title_label").unwrap();
         let duration: gtk::Label = builder.get_object("duration_label").unwrap();
+        let size: gtk::Label = builder.get_object("size_label").unwrap();
 
         EpisodeWidget {
             container,
@@ -70,6 +72,7 @@ impl EpisodeWidget {
             delete,
             title,
             duration,
+            size,
         }
     }
 
@@ -83,6 +86,7 @@ impl EpisodeWidget {
     // TODO: wire the progress_bar to the downloader.
     // TODO: wire the cancel button.
     fn init(&self, episode: &mut EpisodeWidgetQuery, pd: &Podcast) {
+        self.duration.hide();
         self.title.set_xalign(0.0);
         self.title.set_text(episode.title());
         self.progress.set_pulse_step(0.1);
@@ -92,6 +96,11 @@ impl EpisodeWidget {
             progress.pulse();
             glib::Continue(true)
         });
+
+        if let Some(size) = episode.length() {
+            let megabytes: f32 = size as f32 / 1024.0 / 1024.0; // episode.length represents bytes
+            self.size.set_text(&format!("{:.1} mb", megabytes))
+        };
 
         // Show or hide the play/delete/download buttons upon widget initialization.
         let local_uri = episode.local_uri();
