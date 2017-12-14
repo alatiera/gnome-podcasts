@@ -5,10 +5,10 @@ use gtk::prelude::*;
 use open;
 
 use hammond_data::dbqueries;
-use hammond_data::{Episode, Podcast};
-use hammond_downloader::downloader;
+use hammond_data::{EpisodeWidgetQuery, Podcast};
 use hammond_data::utils::*;
 use hammond_data::errors::*;
+use hammond_downloader::downloader;
 
 use std::thread;
 use std::cell::RefCell;
@@ -73,13 +73,16 @@ impl EpisodeWidget {
         }
     }
 
-    pub fn new_initialized(episode: &mut Episode, pd: &Podcast) -> EpisodeWidget {
+    pub fn new_initialized(episode: &mut EpisodeWidgetQuery, pd: &Podcast) -> EpisodeWidget {
         let widget = EpisodeWidget::new();
         widget.init(episode, pd);
         widget
     }
 
-    fn init(&self, episode: &mut Episode, pd: &Podcast) {
+    // TODO: calculate lenght.
+    // TODO: wire the progress_bar to the downloader.
+    // TODO: wire the cancel button.
+    fn init(&self, episode: &mut EpisodeWidgetQuery, pd: &Podcast) {
         self.title.set_xalign(0.0);
         self.title.set_text(episode.title());
 
@@ -131,7 +134,7 @@ impl EpisodeWidget {
 // TODO: show notification when dl is finished.
 fn on_download_clicked(
     pd_title: &str,
-    ep: &mut Episode,
+    ep: &mut EpisodeWidgetQuery,
     download_bttn: &gtk::Button,
     play_bttn: &gtk::Button,
     del_bttn: &gtk::Button,
@@ -225,7 +228,7 @@ fn receive() -> glib::Continue {
 }
 
 pub fn episodes_listbox(pd: &Podcast) -> Result<gtk::ListBox> {
-    let episodes = dbqueries::get_pd_episodes(pd)?;
+    let episodes = dbqueries::get_pd_episodeswidgets(pd)?;
 
     let list = gtk::ListBox::new();
     episodes.into_iter().for_each(|mut ep| {

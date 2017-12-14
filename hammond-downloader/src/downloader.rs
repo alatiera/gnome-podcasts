@@ -8,7 +8,7 @@ use std::io::{BufWriter, Read, Write};
 use std::path::Path;
 
 use errors::*;
-use hammond_data::{Episode, Podcast};
+use hammond_data::{Episode, EpisodeWidgetQuery, Podcast};
 use hammond_data::xdg_dirs::{DL_DIR, HAMMOND_CACHE};
 
 // TODO: Replace path that are of type &str with std::path.
@@ -106,7 +106,7 @@ pub fn get_download_folder(pd_title: &str) -> Result<String> {
 }
 
 // TODO: Refactor
-pub fn get_episode(ep: &mut Episode, download_folder: &str) -> Result<()> {
+pub fn get_episode(ep: &mut EpisodeWidgetQuery, download_folder: &str) -> Result<()> {
     // Check if its alrdy downloaded
     if ep.local_uri().is_some() {
         if Path::new(ep.local_uri().unwrap()).exists() {
