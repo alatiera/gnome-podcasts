@@ -314,7 +314,9 @@ impl EpisodeWidgetQuery {
         let db = connection();
         let tempdb = db.get()?;
 
-        Ok(diesel::update(episode).set(self).execute(&*tempdb)?)
+        Ok(diesel::update(episode.filter(rowid.eq(self.rowid)))
+            .set(self)
+            .execute(&*tempdb)?)
     }
 }
 

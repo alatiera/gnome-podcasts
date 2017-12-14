@@ -85,6 +85,13 @@ impl EpisodeWidget {
     fn init(&self, episode: &mut EpisodeWidgetQuery, pd: &Podcast) {
         self.title.set_xalign(0.0);
         self.title.set_text(episode.title());
+        self.progress.set_pulse_step(0.1);
+
+        let progress = self.progress.clone();
+        timeout_add(200, move || {
+            progress.pulse();
+            glib::Continue(true)
+        });
 
         // Show or hide the play/delete/download buttons upon widget initialization.
         let local_uri = episode.local_uri();
@@ -232,7 +239,6 @@ pub fn episodes_listbox(pd: &Podcast) -> Result<gtk::ListBox> {
 
     let list = gtk::ListBox::new();
     episodes.into_iter().for_each(|mut ep| {
-        // let w = epidose_widget(&mut ep, pd.title());
         let widget = EpisodeWidget::new_initialized(&mut ep, pd);
         list.add(&widget.container)
     });
