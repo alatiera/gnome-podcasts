@@ -15,9 +15,8 @@ pub struct Header {
     refresh: gtk::Button,
     add_toggle: gtk::MenuButton,
     switch: gtk::StackSwitcher,
-    stack: gtk::Stack,
     back_button: gtk::Button,
-    show_title: gtk::Label,
+    // show_title: gtk::Label,
 }
 
 impl Header {
@@ -28,41 +27,20 @@ impl Header {
         let refresh: gtk::Button = builder.get_object("ref_button").unwrap();
         let add_toggle: gtk::MenuButton = builder.get_object("add_toggle_button").unwrap();
         let switch: gtk::StackSwitcher = builder.get_object("switch").unwrap();
-        let stack: gtk::Stack = builder.get_object("headerbar_stack").unwrap();
-        let normal_view: gtk::Box = builder.get_object("normal_view").unwrap();
-        let back_view: gtk::Box = builder.get_object("back_view").unwrap();
         let back_button: gtk::Button = builder.get_object("back_button").unwrap();
-        let show_title: gtk::Label = builder.get_object("show_title").unwrap();
-
-        let stack = stack.clone();
-        back_button.connect_clicked(clone!(stack => move |_| {
-            stack.set_visible_child_name("normal_view");
-        }));
+        // let show_title: gtk::Label = builder.get_object("show_title").unwrap();
 
         switch.set_halign(gtk::Align::Center);
         switch.show();
-
-        stack.add_named(&normal_view, "normal_view");
-        stack.add_named(&back_view, "back_view");
-        stack.set_transition_type(gtk::StackTransitionType::Crossfade);
-        stack.set_visible_child_name("normal_view");
 
         Rc::new(Header {
             container: header,
             refresh,
             add_toggle,
             switch,
-            stack,
             back_button,
-            show_title,
         })
     }
-
-    // pub fn new_initialized(content: Rc<Content>) -> Rc<Header> {
-    //     let header = Header::new();
-    //     header.init(content);
-    //     header
-    // }
 
     pub fn init(&self, content: Rc<Content>) {
         let builder = gtk::Builder::new_from_resource("/org/gnome/hammond/gtk/headerbar.ui");
@@ -90,25 +68,32 @@ impl Header {
             utils::refresh_feed(content.clone(), None, None);
         }));
 
-        let stack = self.stack.clone();
+        let switch = &self.switch;
+        let add_toggle = &self.add_toggle;
         self.back_button
-            .connect_clicked(clone!(content => move |_| {
-            content.shows.stack.set_visible_child_full("podcasts", gtk::StackTransitionType::SlideLeft);
-            stack.set_visible_child_name("normal_view")
+            .connect_clicked(clone!(content, switch, add_toggle => move |back| {
+            switch.show();
+            add_toggle.show();
+            back.hide();
+            content.shows.stack.set_visible_child_full("podcasts", gtk::StackTransitionType::SlideRight);
         }));
     }
 
-    pub fn switch_to_normal(&self) {
-        self.stack.set_visible_child_name("normal_view")
-    }
-
     pub fn switch_to_back(&self) {
-        self.stack.set_visible_child_name("back_view")
+        self.switch.hide();
+        self.add_toggle.hide();
+        self.back_button.show();
     }
 
-    pub fn set_show_title(&self, title: &str) {
-        self.show_title.set_text(title)
+    pub fn switch_to_normal(&self) {
+        self.switch.show();
+        self.add_toggle.show();
+        self.back_button.hide();
     }
+
+    // pub fn set_show_title(&self, title: &str) {
+    //     self.show_title.set_text(title)
+    // }
 }
 
 fn on_add_bttn_clicked(content: Rc<Content>, entry: &gtk::Entry) {

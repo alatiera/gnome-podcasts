@@ -62,7 +62,7 @@ impl ShowsPopulated {
             let pd = dbqueries::get_podcast_from_id(id).unwrap();
 
             show.replace_widget(&pd);
-            header.set_show_title(pd.title());
+            // header.set_show_title(pd.title());
             header.switch_to_back();
             show.switch_widget_animated();
         }));
