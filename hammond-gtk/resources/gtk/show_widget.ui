@@ -2,191 +2,156 @@
 <!-- Generated with glade 3.20.2 -->
 <interface domain="gnome-music">
   <requires lib="gtk+" version="3.12"/>
-  <object class="GtkBox" id="podcast_widget">
+  <object class="GtkBox" id="container">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
+    <property name="orientation">vertical</property>
     <child>
-      <object class="GtkBox">
+      <object class="GtkScrolledWindow">
         <property name="visible">True</property>
-        <property name="can_focus">False</property>
-        <property name="halign">center</property>
-        <property name="valign">center</property>
-        <property name="margin_left">32</property>
-        <property name="margin_right">32</property>
-        <property name="margin_start">32</property>
-        <property name="margin_end">32</property>
-        <property name="margin_top">64</property>
-        <property name="margin_bottom">32</property>
+        <property name="can_focus">True</property>
+        <property name="shadow_type">in</property>
         <child>
-          <object class="GtkBox">
+          <object class="GtkViewport">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="halign">center</property>
-            <property name="valign">center</property>
-            <property name="orientation">vertical</property>
-            <property name="spacing">15</property>
-            <child>
-              <object class="GtkImage" id="cover">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="halign">center</property>
-                <property name="valign">start</property>
-                <property name="margin_left">1</property>
-                <property name="margin_right">1</property>
-                <property name="margin_start">1</property>
-                <property name="margin_end">1</property>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">False</property>
-                <property name="position">0</property>
-              </packing>
-            </child>
             <child>
               <object class="GtkBox">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="halign">center</property>
-                <property name="valign">center</property>
+                <property name="orientation">vertical</property>
                 <child>
                   <object class="GtkBox">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="halign">center</property>
+                    <property name="valign">center</property>
                     <child>
-                      <object class="GtkLabel" id="title_label">
-                        <property name="width_request">50</property>
+                      <object class="GtkImage" id="cover">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="pixel_size">128</property>
+                        <property name="icon_name">image-x-generic-symbolic</property>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">0</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkBox">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="halign">center</property>
-                        <property name="label" translatable="yes">Foobar</property>
-                        <property name="use_markup">True</property>
-                        <property name="justify">center</property>
-                        <property name="wrap">True</property>
-                        <property name="max_width_chars">28</property>
-                        <property name="track_visited_links">False</property>
+                        <property name="valign">center</property>
+                        <property name="orientation">vertical</property>
+                        <child>
+                          <object class="GtkLabel" id="description">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="label" translatable="yes">The people behind The Intercept’s fearless reporting and incisive commentary—Jeremy Scahill, Glenn Greenwald, Betsy Reed and others—discuss the crucial issues of our time: national security, civil liberties, foreign policy, and criminal justice.  Plus interviews with artists, thinkers, and newsmakers who challenge our preconceptions about the world we live in.</property>
+                            <property name="wrap">True</property>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="padding">5</property>
+                            <property name="position">0</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkBox">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <child>
+                              <object class="GtkButton" id="settings_button">
+                                <property name="visible">True</property>
+                                <property name="can_focus">True</property>
+                                <property name="receives_default">True</property>
+                                <child>
+                                  <object class="GtkImage">
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">False</property>
+                                    <property name="icon_name">emblem-system-symbolic</property>
+                                  </object>
+                                </child>
+                              </object>
+                              <packing>
+                                <property name="expand">False</property>
+                                <property name="fill">True</property>
+                                <property name="padding">5</property>
+                                <property name="position">0</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkButton" id="link_button">
+                                <property name="label" translatable="yes">Website</property>
+                                <property name="visible">True</property>
+                                <property name="can_focus">True</property>
+                                <property name="receives_default">True</property>
+                              </object>
+                              <packing>
+                                <property name="expand">False</property>
+                                <property name="fill">True</property>
+                                <property name="padding">5</property>
+                                <property name="position">1</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkButton" id="unsub_button">
+                                <property name="label" translatable="yes">Unsubscribe</property>
+                                <property name="visible">True</property>
+                                <property name="can_focus">True</property>
+                                <property name="receives_default">True</property>
+                              </object>
+                              <packing>
+                                <property name="expand">False</property>
+                                <property name="fill">True</property>
+                                <property name="padding">5</property>
+                                <property name="pack_type">end</property>
+                                <property name="position">2</property>
+                              </packing>
+                            </child>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="padding">5</property>
+                            <property name="position">1</property>
+                          </packing>
+                        </child>
                       </object>
                       <packing>
                         <property name="expand">True</property>
                         <property name="fill">True</property>
-                        <property name="position">0</property>
+                        <property name="padding">5</property>
+                        <property name="position">1</property>
                       </packing>
                     </child>
                   </object>
                   <packing>
                     <property name="expand">False</property>
                     <property name="fill">True</property>
-                    <property name="padding">5</property>
-                    <property name="position">1</property>
+                    <property name="padding">10</property>
+                    <property name="position">0</property>
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkButton" id="unsub_button">
+                  <object class="GtkBox" id="episodes">
                     <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
-                    <property name="halign">center</property>
-                    <property name="valign">center</property>
+                    <property name="can_focus">False</property>
+                    <property name="orientation">vertical</property>
                     <child>
-                      <object class="GtkImage">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="tooltip_text" translatable="yes">Unsubrscribe from this Podcast.
-Warn: This will delete downloaded content associated with this Podcast.</property>
-                        <property name="icon_name">user-trash-symbolic</property>
-                      </object>
+                      <placeholder/>
                     </child>
                   </object>
                   <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">False</property>
-                    <property name="padding">5</property>
-                    <property name="pack_type">end</property>
+                    <property name="expand">True</property>
+                    <property name="fill">True</property>
                     <property name="position">1</property>
                   </packing>
                 </child>
-                <child>
-                  <object class="GtkButton" id="mark_all_played_button">
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
-                    <property name="tooltip_text" translatable="yes">Mark all episodes as Played.</property>
-                    <property name="halign">center</property>
-                    <property name="valign">center</property>
-                    <child>
-                      <object class="GtkImage">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="icon_name">object-select-symbolic</property>
-                      </object>
-                    </child>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">False</property>
-                    <property name="position">2</property>
-                  </packing>
-                </child>
               </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">False</property>
-                <property name="position">1</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkScrolledWindow">
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="shadow_type">in</property>
-                <property name="min_content_width">200</property>
-                <property name="max_content_width">200</property>
-                <property name="propagate_natural_width">True</property>
-                <property name="propagate_natural_height">True</property>
-                <child>
-                  <object class="GtkTextView" id="desc_text_view">
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="editable">False</property>
-                    <property name="wrap_mode">word-char</property>
-                    <property name="cursor_visible">False</property>
-                  </object>
-                </child>
-              </object>
-              <packing>
-                <property name="expand">True</property>
-                <property name="fill">True</property>
-                <property name="position">2</property>
-              </packing>
-            </child>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">False</property>
-            <property name="position">0</property>
-          </packing>
-        </child>
-      </object>
-      <packing>
-        <property name="expand">False</property>
-        <property name="fill">False</property>
-        <property name="position">1</property>
-      </packing>
-    </child>
-    <child>
-      <object class="GtkScrolledWindow">
-        <property name="visible">True</property>
-        <property name="can_focus">True</property>
-        <property name="hexpand">True</property>
-        <property name="vexpand">True</property>
-        <property name="hscrollbar_policy">never</property>
-        <child>
-          <object class="GtkViewport" id="view">
-            <property name="width_request">400</property>
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="shadow_type">none</property>
-            <child>
-              <placeholder/>
             </child>
           </object>
         </child>
@@ -194,7 +159,7 @@ Warn: This will delete downloaded content associated with this Podcast.</propert
       <packing>
         <property name="expand">True</property>
         <property name="fill">True</property>
-        <property name="position">2</property>
+        <property name="position">0</property>
       </packing>
     </child>
   </object>
