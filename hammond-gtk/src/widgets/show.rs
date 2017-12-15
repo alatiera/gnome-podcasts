@@ -22,7 +22,7 @@ pub struct ShowWidget {
     cover: gtk::Image,
     description: gtk::Label,
     link: gtk::Button,
-    settings: gtk::Button,
+    settings: gtk::MenuButton,
     unsub: gtk::Button,
     episodes: gtk::Frame,
 }
@@ -37,7 +37,7 @@ impl ShowWidget {
         let description: gtk::Label = builder.get_object("description").unwrap();
         let unsub: gtk::Button = builder.get_object("unsub_button").unwrap();
         let link: gtk::Button = builder.get_object("link_button").unwrap();
-        let settings: gtk::Button = builder.get_object("settings_button").unwrap();
+        let settings: gtk::MenuButton = builder.get_object("settings_button").unwrap();
 
         unsub
             .get_style_context()
