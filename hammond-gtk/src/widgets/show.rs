@@ -23,7 +23,7 @@ pub struct ShowWidget {
     link: gtk::Button,
     settings: gtk::Button,
     unsub: gtk::Button,
-    episodes: gtk::Box,
+    episodes: gtk::Frame,
 }
 
 impl ShowWidget {
@@ -31,7 +31,7 @@ impl ShowWidget {
         // Adapted from gnome-music AlbumWidget
         let builder = gtk::Builder::new_from_resource("/org/gnome/hammond/gtk/show_widget.ui");
         let container: gtk::Box = builder.get_object("container").unwrap();
-        let episodes: gtk::Box = builder.get_object("episodes").unwrap();
+        let episodes: gtk::Frame = builder.get_object("episodes").unwrap();
 
         let cover: gtk::Image = builder.get_object("cover").unwrap();
         let description: gtk::Label = builder.get_object("description").unwrap();
