@@ -1,4 +1,6 @@
 use chrono::prelude::*;
+use diesel::prelude::*;
+use diesel;
 
 use reqwest;
 use diesel::SaveChangesDsl;
@@ -186,6 +188,135 @@ impl Episode {
         let tempdb = db.get()?;
 
         Ok(self.save_changes::<Episode>(&*tempdb)?)
+    }
+}
+
+#[derive(Queryable, AsChangeset, PartialEq)]
+#[table_name = "episode"]
+#[changeset_options(treat_none_as_null = "true")]
+#[primary_key(title, podcast_id)]
+#[derive(Debug, Clone)]
+/// Diesel Model to be used for constructing `EpisodeWidgets`.
+pub struct EpisodeWidgetQuery {
+    rowid: i32,
+    title: String,
+    uri: Option<String>,
+    local_uri: Option<String>,
+    epoch: i32,
+    length: Option<i32>,
+    played: Option<i32>,
+    // favorite: bool,
+    // archive: bool,
+    podcast_id: i32,
+}
+
+impl EpisodeWidgetQuery {
+    /// Get the value of the sqlite's `ROW_ID`
+    pub fn rowid(&self) -> i32 {
+        self.rowid
+    }
+
+    /// Get the value of the `title` field.
+    pub fn title(&self) -> &str {
+        &self.title
+    }
+
+    /// Get the value of the `uri`.
+    ///
+    /// Represents the url(usually) that the media file will be located at.
+    pub fn uri(&self) -> Option<&str> {
+        self.uri.as_ref().map(|s| s.as_str())
+    }
+
+    /// Get the value of the `local_uri`.
+    ///
+    /// Represents the local uri,usually filesystem path,
+    /// that the media file will be located at.
+    pub fn local_uri(&self) -> Option<&str> {
+        self.local_uri.as_ref().map(|s| s.as_str())
+    }
+
+    /// Set the `local_uri`.
+    pub fn set_local_uri(&mut self, value: Option<&str>) {
+        self.local_uri = value.map(|x| x.to_string());
+    }
+
+    /// Get the `epoch` value.
+    ///
+    /// Retrieved from the rss Item publish date.
+    /// Value is set to Utc whenever possible.
+    pub fn epoch(&self) -> i32 {
+        self.epoch
+    }
+
+    /// Get the `length`.
+    pub fn length(&self) -> Option<i32> {
+        self.length
+    }
+
+    /// Set the `length`.
+    pub fn set_length(&mut self, value: Option<i32>) {
+        self.length = value;
+    }
+
+    /// Epoch representation of the last time the episode was played.
+    ///
+    /// None/Null for unplayed.
+    pub fn played(&self) -> Option<i32> {
+        self.played
+    }
+
+    /// Set the `played` value.
+    pub fn set_played(&mut self, value: Option<i32>) {
+        self.played = value;
+    }
+
+    // /// Represents the archiving policy for the episode.
+    // pub fn archive(&self) -> bool {
+    //     self.archive
+    // }
+
+    // /// Set the `archive` policy.
+    // ///
+    // /// If true, the download cleanr will ignore the episode
+    // /// and the corresponding media value will never be automaticly deleted.
+    // pub fn set_archive(&mut self, b: bool) {
+    //     self.archive = b
+    // }
+
+    // /// Get the `favorite` status of the `Episode`.
+    // pub fn favorite(&self) -> bool {
+    //     self.favorite
+    // }
+
+    // /// Set `favorite` status.
+    // pub fn set_favorite(&mut self, b: bool) {
+    //     self.favorite = b
+    // }
+
+    /// `Podcast` table foreign key.
+    pub fn podcast_id(&self) -> i32 {
+        self.podcast_id
+    }
+
+    /// Sets the `played` value with the current `epoch` timestap and save it.
+    pub fn set_played_now(&mut self) -> Result<()> {
+        let epoch = Utc::now().timestamp() as i32;
+        self.set_played(Some(epoch));
+        self.save()?;
+        Ok(())
+    }
+
+    /// Helper method to easily save/"sync" current state of self to the Database.
+    pub fn save(&self) -> Result<usize> {
+        use schema::episode::dsl::*;
+
+        let db = connection();
+        let tempdb = db.get()?;
+
+        Ok(diesel::update(episode.filter(rowid.eq(self.rowid)))
+            .set(self)
+            .execute(&*tempdb)?)
     }
 }
 

@@ -2,7 +2,7 @@
 
 use diesel::prelude::*;
 use diesel;
-use models::queryables::{Episode, Podcast, Source};
+use models::queryables::{Episode, EpisodeWidgetQuery, Podcast, Source};
 use chrono::prelude::*;
 use errors::*;
 
@@ -101,6 +101,21 @@ pub fn get_pd_episodes(parent: &Podcast) -> Result<Vec<Episode>> {
     Ok(Episode::belonging_to(parent)
         .order(epoch.desc())
         .load::<Episode>(&*con)?)
+}
+
+pub fn get_pd_episodeswidgets(parent: &Podcast) -> Result<Vec<EpisodeWidgetQuery>> {
+    use schema::episode::dsl::*;
+
+    let db = connection();
+    let con = db.get()?;
+
+    Ok(
+        episode.select((rowid, title, uri, local_uri, epoch, length, played, podcast_id))
+        .filter(podcast_id.eq(parent.id()))
+        // .group_by(epoch)
+        .order(epoch.desc())
+        .load::<EpisodeWidgetQuery>(&*con)?,
+    )
 }
 
 pub fn get_pd_unplayed_episodes(parent: &Podcast) -> Result<Vec<Episode>> {
