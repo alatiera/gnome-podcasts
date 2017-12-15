@@ -16,7 +16,7 @@ pub struct Header {
     add_toggle: gtk::MenuButton,
     switch: gtk::StackSwitcher,
     back_button: gtk::Button,
-    // show_title: gtk::Label,
+    show_title: gtk::Label,
 }
 
 impl Header {
@@ -28,7 +28,7 @@ impl Header {
         let add_toggle: gtk::MenuButton = builder.get_object("add_toggle_button").unwrap();
         let switch: gtk::StackSwitcher = builder.get_object("switch").unwrap();
         let back_button: gtk::Button = builder.get_object("back_button").unwrap();
-        // let show_title: gtk::Label = builder.get_object("show_title").unwrap();
+        let show_title: gtk::Label = builder.get_object("show_title").unwrap();
 
         switch.set_halign(gtk::Align::Center);
         switch.show();
@@ -39,6 +39,7 @@ impl Header {
             add_toggle,
             switch,
             back_button,
+            show_title,
         })
     }
 
@@ -70,25 +71,31 @@ impl Header {
 
         let switch = &self.switch;
         let add_toggle = &self.add_toggle;
-        self.back_button
-            .connect_clicked(clone!(content, switch, add_toggle => move |back| {
+        let show_title = &self.show_title;
+        self.back_button.connect_clicked(
+            clone!(content, switch, add_toggle, show_title => move |back| {
             switch.show();
             add_toggle.show();
             back.hide();
+            show_title.hide();
             content.shows.stack.set_visible_child_full("podcasts", gtk::StackTransitionType::SlideRight);
-        }));
+        }),
+        );
     }
 
-    pub fn switch_to_back(&self) {
+    pub fn switch_to_back(&self, title: &str) {
         self.switch.hide();
         self.add_toggle.hide();
         self.back_button.show();
+        self.show_title.set_text(title);
+        self.show_title.show();
     }
 
     pub fn switch_to_normal(&self) {
         self.switch.show();
         self.add_toggle.show();
         self.back_button.hide();
+        self.show_title.hide();
     }
 
     // pub fn set_show_title(&self, title: &str) {

@@ -65,8 +65,8 @@ impl EpisodeWidget {
         let size: gtk::Label = builder.get_object("size_label").unwrap();
         let progress_label: gtk::Label = builder.get_object("progress_label").unwrap();
 
-        let sep1: gtk::Label = builder.get_object("seperator1").unwrap();
-        let sep2: gtk::Label = builder.get_object("seperator2").unwrap();
+        let sep1: gtk::Label = builder.get_object("separator1").unwrap();
+        let sep2: gtk::Label = builder.get_object("separator2").unwrap();
 
         // Dim(grey out) the labels.
         // If it's possible through glade, feel free to open a PR.
@@ -269,6 +269,7 @@ fn receive() -> glib::Continue {
 pub fn episodes_listbox(pd: &Podcast) -> Result<gtk::ListBox> {
     let episodes = dbqueries::get_pd_episodeswidgets(pd)?;
 
+    // TODO: add a separator
     let list = gtk::ListBox::new();
     episodes.into_iter().for_each(|mut ep| {
         let widget = EpisodeWidget::new_initialized(&mut ep, pd);

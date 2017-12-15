@@ -66,7 +66,7 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkLabel" id="seperator1">
+                  <object class="GtkLabel" id="separator1">
                     <property name="can_focus">False</property>
                     <property name="no_show_all">True</property>
                     <property name="label" translatable="yes">·</property>
@@ -93,7 +93,7 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkLabel" id="seperator2">
+                  <object class="GtkLabel" id="separator2">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="label" translatable="yes">·</property>
