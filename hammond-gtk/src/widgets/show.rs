@@ -1,6 +1,7 @@
 use gtk::prelude::*;
 use gtk;
 use diesel::Identifiable;
+use open;
 
 use std::fs;
 
@@ -28,7 +29,6 @@ pub struct ShowWidget {
 
 impl ShowWidget {
     pub fn new() -> ShowWidget {
-        // Adapted from gnome-music AlbumWidget
         let builder = gtk::Builder::new_from_resource("/org/gnome/hammond/gtk/show_widget.ui");
         let container: gtk::Box = builder.get_object("container").unwrap();
         let episodes: gtk::Frame = builder.get_object("episodes").unwrap();
@@ -81,22 +81,16 @@ impl ShowWidget {
             self.cover.set_from_pixbuf(&i);
         }
 
+        let link = pd.link().to_owned();
+        self.link.connect_clicked(move |_| {
+            info!("Opening link: {}", &link);
+            let _ = open::that(&link);
+        });
+
         // self.played.connect_clicked(clone!(shows, pd => move |_| {
         //     on_played_button_clicked(shows.clone(), &pd);
         // }));
-
-        // self.show_played_button(pd);
     }
-
-    // fn show_played_button(&self, pd: &Podcast) {
-    //     let new_episodes = dbqueries::get_pd_unplayed_episodes(pd);
-
-    //     if let Ok(n) = new_episodes {
-    //         if !n.is_empty() {
-    //             self.played.show()
-    //         }
-    //     }
-    // }
 }
 
 fn on_unsub_button_clicked(shows: Rc<ShowStack>, pd: &Podcast, unsub_button: &gtk::Button) {
