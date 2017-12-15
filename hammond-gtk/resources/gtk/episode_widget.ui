@@ -6,6 +6,7 @@
     <property name="visible">True</property>
     <property name="can_focus">False</property>
     <property name="orientation">vertical</property>
+    <property name="spacing">5</property>
     <child>
       <object class="GtkBox">
         <property name="visible">True</property>
@@ -27,7 +28,6 @@
                     <property name="can_focus">False</property>
                     <property name="halign">start</property>
                     <property name="label" translatable="yes">Episode Title</property>
-                    <property name="use_markup">True</property>
                     <property name="wrap">True</property>
                     <property name="ellipsize">end</property>
                     <property name="track_visited_links">False</property>
@@ -56,6 +56,7 @@
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="label" translatable="yes">1970/01/01</property>
+                    <property name="single_line_mode">True</property>
                     <property name="track_visited_links">False</property>
                   </object>
                   <packing>
@@ -65,10 +66,11 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkLabel">
+                  <object class="GtkLabel" id="seperator1">
                     <property name="can_focus">False</property>
                     <property name="no_show_all">True</property>
                     <property name="label" translatable="yes">·</property>
+                    <property name="track_visited_links">False</property>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -81,6 +83,7 @@
                     <property name="can_focus">False</property>
                     <property name="no_show_all">True</property>
                     <property name="label" translatable="yes">42 min</property>
+                    <property name="single_line_mode">True</property>
                     <property name="track_visited_links">False</property>
                   </object>
                   <packing>
@@ -90,10 +93,11 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkLabel">
+                  <object class="GtkLabel" id="seperator2">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="label" translatable="yes">·</property>
+                    <property name="track_visited_links">False</property>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -106,6 +110,7 @@
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="label" translatable="yes">42 MB</property>
+                    <property name="single_line_mode">True</property>
                     <property name="track_visited_links">False</property>
                   </object>
                   <packing>
@@ -119,6 +124,7 @@
                     <property name="can_focus">False</property>
                     <property name="no_show_all">True</property>
                     <property name="label" translatable="yes">12 MB / 42 MB</property>
+                    <property name="single_line_mode">True</property>
                     <property name="track_visited_links">False</property>
                   </object>
                   <packing>

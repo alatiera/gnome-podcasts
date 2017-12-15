@@ -65,6 +65,22 @@ impl EpisodeWidget {
         let size: gtk::Label = builder.get_object("size_label").unwrap();
         let progress_label: gtk::Label = builder.get_object("progress_label").unwrap();
 
+        let sep1: gtk::Label = builder.get_object("seperator1").unwrap();
+        let sep2: gtk::Label = builder.get_object("seperator2").unwrap();
+
+        // Dim(grey out) the labels.
+        // If it's possible through glade, feel free to open a PR.
+        duration
+            .get_style_context()
+            .map(|c| c.add_class("dim-label"));
+        progress_label
+            .get_style_context()
+            .map(|c| c.add_class("dim-label"));
+        date.get_style_context().map(|c| c.add_class("dim-label"));
+        size.get_style_context().map(|c| c.add_class("dim-label"));
+        sep1.get_style_context().map(|c| c.add_class("dim-label"));
+        sep2.get_style_context().map(|c| c.add_class("dim-label"));
+
         EpisodeWidget {
             container,
             progress,
@@ -92,7 +108,6 @@ impl EpisodeWidget {
     fn init(&self, episode: &mut EpisodeWidgetQuery, pd: &Podcast) {
         self.title.set_xalign(0.0);
         self.title.set_text(episode.title());
-        self.progress.set_pulse_step(0.1);
 
         let progress = self.progress.clone();
         timeout_add(200, move || {
