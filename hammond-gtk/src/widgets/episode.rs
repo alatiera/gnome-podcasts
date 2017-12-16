@@ -269,12 +269,18 @@ fn receive() -> glib::Continue {
 pub fn episodes_listbox(pd: &Podcast) -> Result<gtk::ListBox> {
     let episodes = dbqueries::get_pd_episodeswidgets(pd)?;
 
-    // TODO: add a separator
     let list = gtk::ListBox::new();
+
     episodes.into_iter().for_each(|mut ep| {
         let widget = EpisodeWidget::new_initialized(&mut ep, pd);
         list.add(&widget.container);
-        list.add(&gtk::Separator::new(gtk::Orientation::Vertical))
+
+        let sep = gtk::Separator::new(gtk::Orientation::Vertical);
+        sep.set_sensitive(false);
+        sep.set_can_focus(false);
+
+        list.add(&sep);
+        sep.show()
     });
 
     list.set_vexpand(false);
