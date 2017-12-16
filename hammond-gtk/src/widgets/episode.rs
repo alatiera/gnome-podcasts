@@ -109,6 +109,12 @@ impl EpisodeWidget {
         self.title.set_xalign(0.0);
         self.title.set_text(episode.title());
 
+        if episode.played().is_some() {
+            self.title
+                .get_style_context()
+                .map(|c| c.add_class("dim-label"));
+        }
+
         let progress = self.progress.clone();
         timeout_add(200, move || {
             progress.pulse();
@@ -133,10 +139,16 @@ impl EpisodeWidget {
             self.delete.show();
         }
 
-        self.play.connect_clicked(clone!(episode => move |_| {
+        let title = &self.title;
+        self.play
+            .connect_clicked(clone!(episode, title => move |_| {
             let mut episode = episode.clone();
             on_play_bttn_clicked(episode.rowid());
-            let _ = episode.set_played_now();
+            if episode.set_played_now().is_ok() {
+                title
+                    .get_style_context()
+                    .map(|c| c.add_class("dim-label"));
+            };
         }));
 
         let play = &self.play;
@@ -234,7 +246,7 @@ fn on_play_bttn_clicked(episode_id: i32) {
 }
 
 fn on_delete_bttn_clicked(episode_id: i32) {
-    let mut ep = dbqueries::get_episode_from_id(episode_id).unwrap();
+    let mut ep = dbqueries::get_episode_from_rowid(episode_id).unwrap();
 
     let e = delete_local_content(&mut ep);
     if let Err(err) = e {
