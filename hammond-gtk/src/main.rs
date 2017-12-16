@@ -52,9 +52,7 @@ mod content;
 mod utils;
 mod static_resource;
 
-/*
-THIS IS STILL A PROTOTYPE.
-*/
+// THIS IS STILL A PROTOTYPE.
 
 fn build_ui(app: &gtk::Application) {
     let menu = gio::Menu::new();
