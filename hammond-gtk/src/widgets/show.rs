@@ -2,11 +2,11 @@ use gtk::prelude::*;
 use gtk;
 use diesel::Identifiable;
 use open;
-
-use std::fs;
+use dissolve;
 
 use hammond_data::dbqueries;
 use hammond_data::Podcast;
+use hammond_data::utils::replace_extra_spaces;
 use hammond_downloader::downloader;
 
 use widgets::episode::episodes_listbox;
@@ -15,6 +15,7 @@ use content::ShowStack;
 use headerbar::Header;
 
 use std::rc::Rc;
+use std::fs;
 
 #[derive(Debug, Clone)]
 pub struct ShowWidget {
@@ -74,7 +75,9 @@ impl ShowWidget {
             self.episodes.add(&l);
         }
 
-        self.description.set_text(pd.description());
+        // TODO: Temporary solution until we render html urls/bold/italic probably with markup.
+        let desc = dissolve::strip_html_tags(pd.description()).join(" ");
+        self.description.set_text(&replace_extra_spaces(&desc));
 
         let img = get_pixbuf_from_path_128(pd);
         if let Some(i) = img {
@@ -113,6 +116,7 @@ fn on_unsub_button_clicked(shows: Rc<ShowStack>, pd: &Podcast, unsub_button: &gt
     shows.update_podcasts();
 }
 
+#[allow(dead_code)]
 fn on_played_button_clicked(shows: Rc<ShowStack>, pd: &Podcast) {
     let _ = dbqueries::update_none_to_played_now(pd);
 
