@@ -57,6 +57,7 @@ fn build_ui(app: &gtk::Application) {
     let menu = gio::Menu::new();
     menu.append("Quit", "app.quit");
     menu.append("Checkup", "app.check");
+    menu.append("Update feeds", "app.update");
     app.set_app_menu(&menu);
 
     // Get the main window
@@ -89,6 +90,13 @@ fn build_ui(app: &gtk::Application) {
         let _ = checkup();
     });
     app.add_action(&check);
+
+    let update = gio::SimpleAction::new("update", None);
+    let ct_clone = ct.clone();
+    update.connect_activate(move |_, _| {
+        utils::refresh_feed(ct_clone.clone(), None);
+    });
+    app.add_action(&update);
 
     // Update on startup
     gtk::timeout_add_seconds(
