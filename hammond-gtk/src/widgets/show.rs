@@ -28,8 +28,8 @@ pub struct ShowWidget {
     episodes: gtk::Frame,
 }
 
-impl ShowWidget {
-    pub fn new() -> ShowWidget {
+impl Default for ShowWidget {
+    fn default() -> Self {
         let builder = gtk::Builder::new_from_resource("/org/gnome/hammond/gtk/show_widget.ui");
         let container: gtk::Box = builder.get_object("container").unwrap();
         let episodes: gtk::Frame = builder.get_object("episodes").unwrap();
@@ -54,9 +54,11 @@ impl ShowWidget {
             episodes,
         }
     }
+}
 
-    pub fn new_initialized(shows: Rc<ShowStack>, header: Rc<Header>, pd: &Podcast) -> ShowWidget {
-        let pdw = ShowWidget::new();
+impl ShowWidget {
+    pub fn new(shows: Rc<ShowStack>, header: Rc<Header>, pd: &Podcast) -> ShowWidget {
+        let pdw = ShowWidget::default();
         pdw.init(shows, header, pd);
         pdw
     }

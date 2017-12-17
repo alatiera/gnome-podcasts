@@ -47,8 +47,8 @@ struct EpisodeWidget {
     progress_label: gtk::Label,
 }
 
-impl EpisodeWidget {
-    fn new() -> EpisodeWidget {
+impl Default for EpisodeWidget {
+    fn default() -> Self {
         let builder = gtk::Builder::new_from_resource("/org/gnome/hammond/gtk/episode_widget.ui");
 
         let container: gtk::Box = builder.get_object("episode_container").unwrap();
@@ -95,9 +95,11 @@ impl EpisodeWidget {
             progress_label,
         }
     }
+}
 
-    pub fn new_initialized(episode: &mut EpisodeWidgetQuery, pd: &Podcast) -> EpisodeWidget {
-        let widget = EpisodeWidget::new();
+impl EpisodeWidget {
+    pub fn new(episode: &mut EpisodeWidgetQuery, pd: &Podcast) -> EpisodeWidget {
+        let widget = EpisodeWidget::default();
         widget.init(episode, pd);
         widget
     }
@@ -284,7 +286,7 @@ pub fn episodes_listbox(pd: &Podcast) -> Result<gtk::ListBox> {
     let list = gtk::ListBox::new();
 
     episodes.into_iter().for_each(|mut ep| {
-        let widget = EpisodeWidget::new_initialized(&mut ep, pd);
+        let widget = EpisodeWidget::new(&mut ep, pd);
         list.add(&widget.container);
 
         let sep = gtk::Separator::new(gtk::Orientation::Vertical);

@@ -60,8 +60,8 @@ impl ShowStack {
             header: header.clone(),
         });
 
-        let pop = ShowsPopulated::new_initialized(show.clone(), header);
-        let widget = ShowWidget::new();
+        let pop = ShowsPopulated::new(show.clone(), header);
+        let widget = ShowWidget::default();
         let empty = EmptyView::new();
 
         show.stack.add_named(&pop.container, "podcasts");
@@ -90,7 +90,7 @@ impl ShowStack {
         let vis = self.stack.get_visible_child_name().unwrap();
         let old = self.stack.get_child_by_name("podcasts").unwrap();
 
-        let pop = ShowsPopulated::new();
+        let pop = ShowsPopulated::default();
         pop.init(Rc::new(self.clone()), self.header.clone());
 
         self.stack.remove(&old);
@@ -109,7 +109,7 @@ impl ShowStack {
 
     pub fn replace_widget(&self, pd: &Podcast) {
         let old = self.stack.get_child_by_name("widget").unwrap();
-        let new = ShowWidget::new_initialized(Rc::new(self.clone()), self.header.clone(), pd);
+        let new = ShowWidget::new(Rc::new(self.clone()), self.header.clone(), pd);
 
         self.stack.remove(&old);
         self.stack.add_named(&new.container, "widget");

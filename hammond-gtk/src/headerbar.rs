@@ -19,8 +19,8 @@ pub struct Header {
     show_title: gtk::Label,
 }
 
-impl Header {
-    pub fn new() -> Rc<Header> {
+impl Default for Header {
+    fn default() -> Header {
         let builder = gtk::Builder::new_from_resource("/org/gnome/hammond/gtk/headerbar.ui");
 
         let header: gtk::HeaderBar = builder.get_object("headerbar").unwrap();
@@ -33,14 +33,23 @@ impl Header {
         switch.set_halign(gtk::Align::Center);
         switch.show();
 
-        Rc::new(Header {
+        Header {
             container: header,
             refresh,
             add_toggle,
             switch,
             back_button,
             show_title,
-        })
+        }
+    }
+}
+
+impl Header {
+    #[allow(dead_code)]
+    pub fn new(content: Rc<Content>) -> Rc<Header> {
+        let h = Header::default();
+        h.init(content);
+        Rc::new(h)
     }
 
     pub fn init(&self, content: Rc<Content>) {

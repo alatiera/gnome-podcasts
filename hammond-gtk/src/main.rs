@@ -24,6 +24,7 @@ use hammond_data::utils::checkup;
 
 use gtk::prelude::*;
 use gio::{ActionMapExt, ApplicationExt, MenuExt, SimpleActionExt};
+use std::rc::Rc;
 
 // http://gtk-rs.org/tuto/closures
 #[macro_export]
@@ -52,8 +53,6 @@ mod content;
 mod utils;
 mod static_resource;
 
-// THIS IS STILL A PROTOTYPE.
-
 fn build_ui(app: &gtk::Application) {
     let menu = gio::Menu::new();
     menu.append("Quit", "app.quit");
@@ -64,14 +63,8 @@ fn build_ui(app: &gtk::Application) {
     let window = gtk::ApplicationWindow::new(app);
     window.set_default_size(1150, 650);
 
-    // TODO: this will blow horribly
-    // let ct = content::ContentState::new().unwrap();
-    // let stack = ct.get_stack();
-
-    // let ct = content::Content::new_initialized();
-
     // Get the headerbar
-    let header = headerbar::Header::new();
+    let header = Rc::new(headerbar::Header::default());
     let ct = content::Content::new(header.clone());
     header.init(ct.clone());
     window.set_titlebar(&header.container);
