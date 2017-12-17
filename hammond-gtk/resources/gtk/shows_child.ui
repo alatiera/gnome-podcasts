@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.20.1 -->
+<!-- Generated with glade 3.20.2 -->
 <interface>
   <requires lib="gtk+" version="3.20"/>
   <object class="GtkBox" id="fb_child">
@@ -23,41 +23,10 @@
             <property name="can_focus">False</property>
             <property name="halign">center</property>
             <property name="valign">center</property>
-            <property name="stock">gtk-missing-image</property>
-            <property name="use_fallback">True</property>
-            <property name="icon_size">6</property>
+            <property name="pixel_size">256</property>
+            <property name="icon_name">image-x-generic-symbolic</property>
+            <property name="icon_size">0</property>
           </object>
-        </child>
-        <child type="overlay">
-          <object class="GtkImage" id="banner">
-            <property name="can_focus">False</property>
-            <property name="no_show_all">True</property>
-            <property name="halign">end</property>
-            <property name="valign">start</property>
-            <property name="stock">gtk-missing-image</property>
-          </object>
-          <packing>
-            <property name="index">1</property>
-          </packing>
-        </child>
-        <child type="overlay">
-          <object class="GtkLabel" id="banner_label">
-            <property name="can_focus">False</property>
-            <property name="no_show_all">True</property>
-            <property name="halign">end</property>
-            <property name="valign">start</property>
-            <property name="margin_right">40</property>
-            <property name="margin_top">38</property>
-            <property name="label" translatable="yes">Num</property>
-            <property name="use_markup">True</property>
-            <property name="justify">center</property>
-            <property name="track_visited_links">False</property>
-            <property name="xalign">1</property>
-            <property name="yalign">0</property>
-          </object>
-          <packing>
-            <property name="index">2</property>
-          </packing>
         </child>
       </object>
       <packing>
@@ -72,12 +41,12 @@
         <property name="can_focus">False</property>
         <property name="halign">center</property>
         <property name="valign">center</property>
-        <property name="label" translatable="yes">label</property>
         <property name="use_markup">True</property>
         <property name="justify">center</property>
         <property name="ellipsize">end</property>
         <property name="single_line_mode">True</property>
         <property name="max_width_chars">33</property>
+        <property name="track_visited_links">False</property>
       </object>
       <packing>
         <property name="expand">False</property>

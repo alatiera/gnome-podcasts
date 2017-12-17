@@ -1,6 +1,5 @@
 use gtk;
 use gtk::prelude::*;
-use gdk_pixbuf::Pixbuf;
 use diesel::associations::Identifiable;
 
 use hammond_data::dbqueries;
@@ -82,8 +81,6 @@ struct ShowsChild {
     container: gtk::Box,
     title: gtk::Label,
     cover: gtk::Image,
-    banner: gtk::Image,
-    number: gtk::Label,
     child: gtk::FlowBoxChild,
 }
 
@@ -94,8 +91,6 @@ impl Default for ShowsChild {
         let container: gtk::Box = builder.get_object("fb_child").unwrap();
         let title: gtk::Label = builder.get_object("pd_title").unwrap();
         let cover: gtk::Image = builder.get_object("pd_cover").unwrap();
-        let banner: gtk::Image = builder.get_object("banner").unwrap();
-        let number: gtk::Label = builder.get_object("banner_label").unwrap();
 
         let child = gtk::FlowBoxChild::new();
         child.add(&container);
@@ -104,8 +99,6 @@ impl Default for ShowsChild {
             container,
             title,
             cover,
-            banner,
-            number,
             child,
         }
     }
@@ -115,7 +108,6 @@ impl ShowsChild {
     pub fn new(pd: &Podcast) -> ShowsChild {
         let child = ShowsChild::default();
         child.init(pd);
-
         child
     }
 
@@ -128,24 +120,5 @@ impl ShowsChild {
         };
 
         WidgetExt::set_name(&self.child, &pd.id().to_string());
-        self.configure_banner(pd);
-    }
-
-    fn configure_banner(&self, pd: &Podcast) {
-        let bann =
-            Pixbuf::new_from_resource_at_scale("/org/gnome/hammond/banner.png", 256, 256, true);
-        if let Ok(b) = bann {
-            self.banner.set_from_pixbuf(&b);
-
-            let new_episodes = dbqueries::get_pd_unplayed_episodes(pd);
-
-            if let Ok(n) = new_episodes {
-                if !n.is_empty() {
-                    self.number.set_text(&n.len().to_string());
-                    self.banner.show();
-                    self.number.show();
-                }
-            }
-        }
     }
 }
