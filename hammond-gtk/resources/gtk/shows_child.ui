@@ -35,24 +35,5 @@
         <property name="position">0</property>
       </packing>
     </child>
-    <child>
-      <object class="GtkLabel" id="pd_title">
-        <property name="visible">True</property>
-        <property name="can_focus">False</property>
-        <property name="halign">center</property>
-        <property name="valign">center</property>
-        <property name="use_markup">True</property>
-        <property name="justify">center</property>
-        <property name="ellipsize">end</property>
-        <property name="single_line_mode">True</property>
-        <property name="max_width_chars">33</property>
-        <property name="track_visited_links">False</property>
-      </object>
-      <packing>
-        <property name="expand">False</property>
-        <property name="fill">False</property>
-        <property name="position">2</property>
-      </packing>
-    </child>
   </object>
 </interface>

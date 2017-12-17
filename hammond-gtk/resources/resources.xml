@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <gresources>
   <gresource prefix="/org/gnome/hammond/">
-      <file>banner.png</file>
       <file preprocess="xml-stripblanks">gtk/episode_widget.ui</file>
       <file preprocess="xml-stripblanks">gtk/show_widget.ui</file>
       <file preprocess="xml-stripblanks">gtk/empty_view.ui</file>

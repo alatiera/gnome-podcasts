@@ -79,7 +79,6 @@ impl ShowsPopulated {
 #[derive(Debug)]
 struct ShowsChild {
     container: gtk::Box,
-    title: gtk::Label,
     cover: gtk::Image,
     child: gtk::FlowBoxChild,
 }
@@ -89,7 +88,6 @@ impl Default for ShowsChild {
         let builder = gtk::Builder::new_from_resource("/org/gnome/hammond/gtk/shows_child.ui");
 
         let container: gtk::Box = builder.get_object("fb_child").unwrap();
-        let title: gtk::Label = builder.get_object("pd_title").unwrap();
         let cover: gtk::Image = builder.get_object("pd_cover").unwrap();
 
         let child = gtk::FlowBoxChild::new();
@@ -97,7 +95,6 @@ impl Default for ShowsChild {
 
         ShowsChild {
             container,
-            title,
             cover,
             child,
         }
@@ -112,7 +109,7 @@ impl ShowsChild {
     }
 
     fn init(&self, pd: &Podcast) {
-        self.title.set_text(pd.title());
+        self.container.set_tooltip_text(pd.title());
 
         let cover = get_pixbuf_from_path(pd);
         if let Some(img) = cover {
