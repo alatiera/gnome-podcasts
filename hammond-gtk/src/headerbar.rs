@@ -75,7 +75,7 @@ impl Header {
 
         // FIXME: There appears to be a memmory leak here.
         self.refresh.connect_clicked(clone!(content => move |_| {
-            utils::refresh_feed(content.clone(), None, None);
+            utils::refresh_feed(content.clone(), None);
         }));
 
         let switch = &self.switch;
@@ -120,7 +120,7 @@ fn on_add_bttn_clicked(content: Rc<Content>, entry: &gtk::Entry) {
     if let Ok(s) = source {
         info!("{:?} feed added", url);
         // update the db
-        utils::refresh_feed(content, Some(vec![s]), None);
+        utils::refresh_feed(content, Some(vec![s]));
     } else {
         error!("Feed probably already exists.");
         error!("Error: {:?}", source.unwrap_err());

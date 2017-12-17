@@ -90,11 +90,25 @@ fn build_ui(app: &gtk::Application) {
     });
     app.add_action(&check);
 
-    // queue a db update 1 minute after the startup.
-    gtk::idle_add(clone!(ct => move || {
-        utils::refresh_feed(ct.clone(), None, Some(60));
+    // Update on startup
+    gtk::timeout_add_seconds(
+        30,
+        clone!(ct => move || {
+        utils::refresh_feed(ct.clone(), None);
         glib::Continue(false)
-    }));
+    }),
+    );
+
+    // Auto-updater, runs every hour.
+    // TODO: expose the interval in which it run to a user setting.
+    // TODO: show notifications.
+    gtk::timeout_add_seconds(
+        3600,
+        clone!(ct => move || {
+        utils::refresh_feed(ct.clone(), None);
+        glib::Continue(true)
+    }),
+    );
 
     gtk::idle_add(move || {
         let _ = checkup();
