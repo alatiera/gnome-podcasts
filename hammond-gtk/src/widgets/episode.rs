@@ -47,8 +47,8 @@ struct EpisodeWidget {
     progress_label: gtk::Label,
 }
 
-impl EpisodeWidget {
-    fn new() -> EpisodeWidget {
+impl Default for EpisodeWidget {
+    fn default() -> Self {
         let builder = gtk::Builder::new_from_resource("/org/gnome/hammond/gtk/episode_widget.ui");
 
         let container: gtk::Box = builder.get_object("episode_container").unwrap();
@@ -95,9 +95,11 @@ impl EpisodeWidget {
             progress_label,
         }
     }
+}
 
-    pub fn new_initialized(episode: &mut EpisodeWidgetQuery, pd: &Podcast) -> EpisodeWidget {
-        let widget = EpisodeWidget::new();
+impl EpisodeWidget {
+    pub fn new(episode: &mut EpisodeWidgetQuery, pd: &Podcast) -> EpisodeWidget {
+        let widget = EpisodeWidget::default();
         widget.init(episode, pd);
         widget
     }
@@ -108,6 +110,12 @@ impl EpisodeWidget {
     fn init(&self, episode: &mut EpisodeWidgetQuery, pd: &Podcast) {
         self.title.set_xalign(0.0);
         self.title.set_text(episode.title());
+
+        if episode.played().is_some() {
+            self.title
+                .get_style_context()
+                .map(|c| c.add_class("dim-label"));
+        }
 
         let progress = self.progress.clone();
         timeout_add(200, move || {
@@ -133,10 +141,16 @@ impl EpisodeWidget {
             self.delete.show();
         }
 
-        self.play.connect_clicked(clone!(episode => move |_| {
+        let title = &self.title;
+        self.play
+            .connect_clicked(clone!(episode, title => move |_| {
             let mut episode = episode.clone();
             on_play_bttn_clicked(episode.rowid());
-            let _ = episode.set_played_now();
+            if episode.set_played_now().is_ok() {
+                title
+                    .get_style_context()
+                    .map(|c| c.add_class("dim-label"));
+            };
         }));
 
         let play = &self.play;
@@ -234,7 +248,7 @@ fn on_play_bttn_clicked(episode_id: i32) {
 }
 
 fn on_delete_bttn_clicked(episode_id: i32) {
-    let mut ep = dbqueries::get_episode_from_id(episode_id).unwrap();
+    let mut ep = dbqueries::get_episode_from_rowid(episode_id).unwrap();
 
     let e = delete_local_content(&mut ep);
     if let Err(err) = e {
@@ -269,11 +283,18 @@ fn receive() -> glib::Continue {
 pub fn episodes_listbox(pd: &Podcast) -> Result<gtk::ListBox> {
     let episodes = dbqueries::get_pd_episodeswidgets(pd)?;
 
-    // TODO: add a separator
     let list = gtk::ListBox::new();
+
     episodes.into_iter().for_each(|mut ep| {
-        let widget = EpisodeWidget::new_initialized(&mut ep, pd);
-        list.add(&widget.container)
+        let widget = EpisodeWidget::new(&mut ep, pd);
+        list.add(&widget.container);
+
+        let sep = gtk::Separator::new(gtk::Orientation::Vertical);
+        sep.set_sensitive(false);
+        sep.set_can_focus(false);
+
+        list.add(&sep);
+        sep.show()
     });
 
     list.set_vexpand(false);

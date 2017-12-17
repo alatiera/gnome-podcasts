@@ -19,18 +19,8 @@ pub struct ShowsPopulated {
     viewport: gtk::Viewport,
 }
 
-#[derive(Debug)]
-struct ShowsChild {
-    container: gtk::Box,
-    title: gtk::Label,
-    cover: gtk::Image,
-    banner: gtk::Image,
-    number: gtk::Label,
-    child: gtk::FlowBoxChild,
-}
-
-impl ShowsPopulated {
-    pub fn new() -> ShowsPopulated {
+impl Default for ShowsPopulated {
+    fn default() -> Self {
         let builder = gtk::Builder::new_from_resource("/org/gnome/hammond/gtk/shows_view.ui");
         let container: gtk::Box = builder.get_object("fb_parent").unwrap();
         let flowbox: gtk::FlowBox = builder.get_object("flowbox").unwrap();
@@ -42,10 +32,11 @@ impl ShowsPopulated {
             viewport,
         }
     }
+}
 
-    #[allow(dead_code)]
-    pub fn new_initialized(show: Rc<ShowStack>, header: Rc<Header>) -> ShowsPopulated {
-        let pop = ShowsPopulated::new();
+impl ShowsPopulated {
+    pub fn new(show: Rc<ShowStack>, header: Rc<Header>) -> ShowsPopulated {
+        let pop = ShowsPopulated::default();
         pop.init(show, header);
         pop
     }
@@ -74,7 +65,7 @@ impl ShowsPopulated {
 
         if let Ok(pds) = podcasts {
             pds.iter().for_each(|parent| {
-                let flowbox_child = ShowsChild::new_initialized(parent);
+                let flowbox_child = ShowsChild::new(parent);
                 self.flowbox.add(&flowbox_child.child);
             });
             self.flowbox.show_all();
@@ -86,11 +77,20 @@ impl ShowsPopulated {
     }
 }
 
-impl ShowsChild {
-    fn new() -> ShowsChild {
+#[derive(Debug)]
+struct ShowsChild {
+    container: gtk::Box,
+    title: gtk::Label,
+    cover: gtk::Image,
+    banner: gtk::Image,
+    number: gtk::Label,
+    child: gtk::FlowBoxChild,
+}
+
+impl Default for ShowsChild {
+    fn default() -> Self {
         let builder = gtk::Builder::new_from_resource("/org/gnome/hammond/gtk/shows_child.ui");
 
-        // Copy of gnome-music AlbumWidget
         let container: gtk::Box = builder.get_object("fb_child").unwrap();
         let title: gtk::Label = builder.get_object("pd_title").unwrap();
         let cover: gtk::Image = builder.get_object("pd_cover").unwrap();
@@ -109,6 +109,15 @@ impl ShowsChild {
             child,
         }
     }
+}
+
+impl ShowsChild {
+    pub fn new(pd: &Podcast) -> ShowsChild {
+        let child = ShowsChild::default();
+        child.init(pd);
+
+        child
+    }
 
     fn init(&self, pd: &Podcast) {
         self.title.set_text(pd.title());
@@ -120,13 +129,6 @@ impl ShowsChild {
 
         WidgetExt::set_name(&self.child, &pd.id().to_string());
         self.configure_banner(pd);
-    }
-
-    pub fn new_initialized(pd: &Podcast) -> ShowsChild {
-        let child = ShowsChild::new();
-        child.init(pd);
-
-        child
     }
 
     fn configure_banner(&self, pd: &Podcast) {

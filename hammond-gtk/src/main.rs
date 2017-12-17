@@ -24,6 +24,7 @@ use hammond_data::utils::checkup;
 
 use gtk::prelude::*;
 use gio::{ActionMapExt, ApplicationExt, MenuExt, SimpleActionExt};
+use std::rc::Rc;
 
 // http://gtk-rs.org/tuto/closures
 #[macro_export]
@@ -52,28 +53,19 @@ mod content;
 mod utils;
 mod static_resource;
 
-/*
-THIS IS STILL A PROTOTYPE.
-*/
-
 fn build_ui(app: &gtk::Application) {
     let menu = gio::Menu::new();
     menu.append("Quit", "app.quit");
     menu.append("Checkup", "app.check");
+    menu.append("Update feeds", "app.update");
     app.set_app_menu(&menu);
 
     // Get the main window
     let window = gtk::ApplicationWindow::new(app);
     window.set_default_size(1150, 650);
 
-    // TODO: this will blow horribly
-    // let ct = content::ContentState::new().unwrap();
-    // let stack = ct.get_stack();
-
-    // let ct = content::Content::new_initialized();
-
     // Get the headerbar
-    let header = headerbar::Header::new();
+    let header = Rc::new(headerbar::Header::default());
     let ct = content::Content::new(header.clone());
     header.init(ct.clone());
     window.set_titlebar(&header.container);
@@ -99,11 +91,32 @@ fn build_ui(app: &gtk::Application) {
     });
     app.add_action(&check);
 
-    // queue a db update 1 minute after the startup.
-    gtk::idle_add(clone!(ct => move || {
-        utils::refresh_feed(ct.clone(), None, Some(60));
+    let update = gio::SimpleAction::new("update", None);
+    let ct_clone = ct.clone();
+    update.connect_activate(move |_, _| {
+        utils::refresh_feed(ct_clone.clone(), None);
+    });
+    app.add_action(&update);
+
+    // Update on startup
+    gtk::timeout_add_seconds(
+        30,
+        clone!(ct => move || {
+        utils::refresh_feed(ct.clone(), None);
         glib::Continue(false)
-    }));
+    }),
+    );
+
+    // Auto-updater, runs every hour.
+    // TODO: expose the interval in which it run to a user setting.
+    // TODO: show notifications.
+    gtk::timeout_add_seconds(
+        3600,
+        clone!(ct => move || {
+        utils::refresh_feed(ct.clone(), None);
+        glib::Continue(true)
+    }),
+    );
 
     gtk::idle_add(move || {
         let _ = checkup();

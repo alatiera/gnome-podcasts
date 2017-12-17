@@ -5,13 +5,12 @@ use hammond_data::feed;
 use hammond_data::{Podcast, Source};
 use hammond_downloader::downloader;
 
-use std::{thread, time};
+use std::thread;
 use std::cell::RefCell;
 use std::sync::mpsc::{channel, Receiver};
+use std::rc::Rc;
 
 use content::Content;
-
-use std::rc::Rc;
 
 type Foo = RefCell<Option<(Rc<Content>, Receiver<bool>)>>;
 
@@ -22,7 +21,7 @@ thread_local!(static GLOBAL: Foo = RefCell::new(None));
 /// If `source` is None, Fetches all the `Source` entries in the database and updates them.
 /// `delay` represents the desired time in seconds for the thread to sleep before executing.
 /// When It's done,it queues up a `podcast_view` refresh.
-pub fn refresh_feed(content: Rc<Content>, source: Option<Vec<Source>>, delay: Option<u64>) {
+pub fn refresh_feed(content: Rc<Content>, source: Option<Vec<Source>>) {
     // Create a async channel.
     let (sender, receiver) = channel();
 
@@ -32,11 +31,6 @@ pub fn refresh_feed(content: Rc<Content>, source: Option<Vec<Source>>, delay: Op
     }));
 
     thread::spawn(move || {
-        if let Some(s) = delay {
-            let t = time::Duration::from_secs(s);
-            thread::sleep(t);
-        }
-
         let feeds = {
             if let Some(vec) = source {
                 Ok(feed::fetch(vec))
@@ -68,6 +62,11 @@ fn refresh_podcasts_view() -> glib::Continue {
 pub fn get_pixbuf_from_path(pd: &Podcast) -> Option<Pixbuf> {
     let img_path = downloader::cache_image(pd)?;
     Pixbuf::new_from_file_at_scale(&img_path, 256, 256, true).ok()
+}
+
+pub fn get_pixbuf_from_path_128(pd: &Podcast) -> Option<Pixbuf> {
+    let img_path = downloader::cache_image(pd)?;
+    Pixbuf::new_from_file_at_scale(&img_path, 128, 128, true).ok()
 }
 
 #[cfg(test)]

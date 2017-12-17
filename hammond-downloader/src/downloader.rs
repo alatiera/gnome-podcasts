@@ -8,7 +8,7 @@ use std::io::{BufWriter, Read, Write};
 use std::path::Path;
 
 use errors::*;
-use hammond_data::{Episode, EpisodeWidgetQuery, Podcast};
+use hammond_data::{EpisodeWidgetQuery, Podcast};
 use hammond_data::xdg_dirs::{DL_DIR, HAMMOND_CACHE};
 
 // TODO: Replace path that are of type &str with std::path.

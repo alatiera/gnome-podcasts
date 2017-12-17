@@ -50,7 +50,7 @@ pub fn get_played_episodes() -> Result<Vec<Episode>> {
     Ok(episode.filter(played.is_not_null()).load::<Episode>(&*con)?)
 }
 
-pub fn get_episode_from_id(ep_id: i32) -> Result<Episode> {
+pub fn get_episode_from_rowid(ep_id: i32) -> Result<Episode> {
     use schema::episode::dsl::*;
 
     let db = connection();

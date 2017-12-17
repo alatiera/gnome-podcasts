@@ -12,19 +12,17 @@ use content::Content;
 #[derive(Debug)]
 pub struct Header {
     pub container: gtk::HeaderBar,
-    refresh: gtk::Button,
     add_toggle: gtk::MenuButton,
     switch: gtk::StackSwitcher,
     back_button: gtk::Button,
     show_title: gtk::Label,
 }
 
-impl Header {
-    pub fn new() -> Rc<Header> {
+impl Default for Header {
+    fn default() -> Header {
         let builder = gtk::Builder::new_from_resource("/org/gnome/hammond/gtk/headerbar.ui");
 
         let header: gtk::HeaderBar = builder.get_object("headerbar").unwrap();
-        let refresh: gtk::Button = builder.get_object("ref_button").unwrap();
         let add_toggle: gtk::MenuButton = builder.get_object("add_toggle_button").unwrap();
         let switch: gtk::StackSwitcher = builder.get_object("switch").unwrap();
         let back_button: gtk::Button = builder.get_object("back_button").unwrap();
@@ -33,14 +31,22 @@ impl Header {
         switch.set_halign(gtk::Align::Center);
         switch.show();
 
-        Rc::new(Header {
+        Header {
             container: header,
-            refresh,
             add_toggle,
             switch,
             back_button,
             show_title,
-        })
+        }
+    }
+}
+
+impl Header {
+    #[allow(dead_code)]
+    pub fn new(content: Rc<Content>) -> Rc<Header> {
+        let h = Header::default();
+        h.init(content);
+        Rc::new(h)
     }
 
     pub fn init(&self, content: Rc<Content>) {
@@ -64,11 +70,6 @@ impl Header {
         }));
         self.add_toggle.set_popover(&add_popover);
 
-        // FIXME: There appears to be a memmory leak here.
-        self.refresh.connect_clicked(clone!(content => move |_| {
-            utils::refresh_feed(content.clone(), None, None);
-        }));
-
         let switch = &self.switch;
         let add_toggle = &self.add_toggle;
         let show_title = &self.show_title;
@@ -87,7 +88,7 @@ impl Header {
         self.switch.hide();
         self.add_toggle.hide();
         self.back_button.show();
-        self.show_title.set_text(title);
+        self.set_show_title(title);
         self.show_title.show();
     }
 
@@ -98,9 +99,9 @@ impl Header {
         self.show_title.hide();
     }
 
-    // pub fn set_show_title(&self, title: &str) {
-    //     self.show_title.set_text(title)
-    // }
+    pub fn set_show_title(&self, title: &str) {
+        self.show_title.set_text(title)
+    }
 }
 
 fn on_add_bttn_clicked(content: Rc<Content>, entry: &gtk::Entry) {
@@ -111,7 +112,7 @@ fn on_add_bttn_clicked(content: Rc<Content>, entry: &gtk::Entry) {
     if let Ok(s) = source {
         info!("{:?} feed added", url);
         // update the db
-        utils::refresh_feed(content, Some(vec![s]), None);
+        utils::refresh_feed(content, Some(vec![s]));
     } else {
         error!("Feed probably already exists.");
         error!("Error: {:?}", source.unwrap_err());
