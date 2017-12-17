@@ -58,6 +58,9 @@
                     <property name="label" translatable="yes">1970/01/01</property>
                     <property name="single_line_mode">True</property>
                     <property name="track_visited_links">False</property>
+                    <style>
+                      <class name="dim-label"/>
+                    </style>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -71,6 +74,9 @@
                     <property name="no_show_all">True</property>
                     <property name="label" translatable="yes">·</property>
                     <property name="track_visited_links">False</property>
+                    <style>
+                      <class name="dim-label"/>
+                    </style>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -85,6 +91,9 @@
                     <property name="label" translatable="yes">42 min</property>
                     <property name="single_line_mode">True</property>
                     <property name="track_visited_links">False</property>
+                    <style>
+                      <class name="dim-label"/>
+                    </style>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -98,6 +107,9 @@
                     <property name="can_focus">False</property>
                     <property name="label" translatable="yes">·</property>
                     <property name="track_visited_links">False</property>
+                    <style>
+                      <class name="dim-label"/>
+                    </style>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -112,6 +124,9 @@
                     <property name="label" translatable="yes">42 MB</property>
                     <property name="single_line_mode">True</property>
                     <property name="track_visited_links">False</property>
+                    <style>
+                      <class name="dim-label"/>
+                    </style>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -126,6 +141,9 @@
                     <property name="label" translatable="yes">12 MB / 42 MB</property>
                     <property name="single_line_mode">True</property>
                     <property name="track_visited_links">False</property>
+                    <style>
+                      <class name="dim-label"/>
+                    </style>
                   </object>
                   <packing>
                     <property name="expand">False</property>
