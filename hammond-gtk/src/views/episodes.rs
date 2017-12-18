@@ -2,6 +2,7 @@ use gtk;
 use gtk::prelude::*;
 
 use hammond_data::dbqueries;
+use hammond_data::EpisodeWidgetQuery;
 
 use widgets::episode::EpisodeWidget;
 
@@ -43,8 +44,8 @@ impl EpisodesView {
         list.set_selection_mode(gtk::SelectionMode::None);
 
         episodes.into_iter().for_each(|mut ep| {
-            let widget = EpisodeWidget::new(&mut ep);
-            list.add(&widget.container);
+            let viewep = EpisodesViewWidget::new(&mut ep);
+            list.add(&viewep.container);
 
             let sep = gtk::Separator::new(gtk::Orientation::Vertical);
             sep.set_sensitive(false);
@@ -72,7 +73,24 @@ impl Default for EpisodesViewWidget {
         let container: gtk::Box = builder.get_object("container").unwrap();
         let image: gtk::Image = builder.get_object("cover").unwrap();
         let ep = EpisodeWidget::default();
-        container.add(&ep.container);
+        container.pack_start(&ep.container, true, true, 5);
+
+        EpisodesViewWidget {
+            container,
+            image,
+            episode: ep.container,
+        }
+    }
+}
+
+impl EpisodesViewWidget {
+    fn new(episode: &mut EpisodeWidgetQuery) -> EpisodesViewWidget {
+        let builder =
+            gtk::Builder::new_from_resource("/org/gnome/hammond/gtk/episodes_view_widget.ui");
+        let container: gtk::Box = builder.get_object("container").unwrap();
+        let image: gtk::Image = builder.get_object("cover").unwrap();
+        let ep = EpisodeWidget::new(episode);
+        container.pack_start(&ep.container, true, true, 5);
 
         EpisodesViewWidget {
             container,
