@@ -84,6 +84,28 @@ pub fn get_episodes_with_limit(limit: u32) -> Result<Vec<Episode>> {
         .load::<Episode>(&*con)?)
 }
 
+pub fn get_episodeswidgets_with_limit(limit: u32) -> Result<Vec<EpisodeWidgetQuery>> {
+    use schema::episode::dsl::*;
+
+    let db = connection();
+    let con = db.get()?;
+
+    Ok(episode
+        .select((
+            rowid,
+            title,
+            uri,
+            local_uri,
+            epoch,
+            length,
+            played,
+            podcast_id,
+        ))
+        .order(epoch.desc())
+        .limit(i64::from(limit))
+        .load::<EpisodeWidgetQuery>(&*con)?)
+}
+
 pub fn get_podcast_from_id(pid: i32) -> Result<Podcast> {
     use schema::podcast::dsl::*;
 

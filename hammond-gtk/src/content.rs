@@ -156,7 +156,7 @@ struct EpisodeStack {
 
 impl EpisodeStack {
     fn new() -> Rc<EpisodeStack> {
-        let episodes = EpisodesView::default();
+        let episodes = EpisodesView::new();
         let empty = EmptyView::new();
         let stack = gtk::Stack::new();
 

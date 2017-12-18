@@ -1,7 +1,11 @@
 use gtk;
 use gtk::prelude::*;
 
+use hammond_data::dbqueries;
+
 use widgets::episode::EpisodeWidget;
+
+use std::rc::Rc;
 
 #[derive(Debug, Clone)]
 pub struct EpisodesView {
@@ -19,6 +23,38 @@ impl Default for EpisodesView {
             container,
             frame_parent,
         }
+    }
+}
+
+impl EpisodesView {
+    pub fn new() -> Rc<EpisodesView> {
+        let view = EpisodesView::default();
+
+        let episodes = dbqueries::get_episodeswidgets_with_limit(100).unwrap();
+        let frame = gtk::Frame::new("Recent Episodes");
+        let list = gtk::ListBox::new();
+
+        view.frame_parent.add(&frame);
+        frame.add(&list);
+
+        list.set_vexpand(false);
+        list.set_hexpand(false);
+        list.set_visible(true);
+        list.set_selection_mode(gtk::SelectionMode::None);
+
+        episodes.into_iter().for_each(|mut ep| {
+            let widget = EpisodeWidget::new(&mut ep);
+            list.add(&widget.container);
+
+            let sep = gtk::Separator::new(gtk::Orientation::Vertical);
+            sep.set_sensitive(false);
+            sep.set_can_focus(false);
+
+            list.add(&sep);
+            sep.show()
+        });
+
+        Rc::new(view)
     }
 }
 

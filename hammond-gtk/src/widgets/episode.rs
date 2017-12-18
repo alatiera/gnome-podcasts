@@ -82,16 +82,16 @@ impl Default for EpisodeWidget {
 }
 
 impl EpisodeWidget {
-    pub fn new(episode: &mut EpisodeWidgetQuery, pd: &Podcast) -> EpisodeWidget {
+    pub fn new(episode: &mut EpisodeWidgetQuery) -> EpisodeWidget {
         let widget = EpisodeWidget::default();
-        widget.init(episode, pd);
+        widget.init(episode);
         widget
     }
 
     // TODO: calculate lenght.
     // TODO: wire the progress_bar to the downloader.
     // TODO: wire the cancel button.
-    fn init(&self, episode: &mut EpisodeWidgetQuery, pd: &Podcast) {
+    fn init(&self, episode: &mut EpisodeWidgetQuery) {
         self.title.set_xalign(0.0);
         self.title.set_text(episode.title());
 
@@ -147,7 +147,6 @@ impl EpisodeWidget {
             download.show();
         }));
 
-        let pd_title = pd.title().to_owned();
         let play = &self.play;
         let delete = &self.delete;
         let cancel = &self.cancel;
@@ -155,7 +154,6 @@ impl EpisodeWidget {
         self.download.connect_clicked(
             clone!(play, delete, episode, cancel, progress  => move |dl| {
             on_download_clicked(
-                &pd_title,
                 &mut episode.clone(),
                 dl,
                 &play,
@@ -170,7 +168,6 @@ impl EpisodeWidget {
 
 // TODO: show notification when dl is finished.
 fn on_download_clicked(
-    pd_title: &str,
     ep: &mut EpisodeWidgetQuery,
     download_bttn: &gtk::Button,
     play_bttn: &gtk::Button,
@@ -194,7 +191,8 @@ fn on_download_clicked(
             }),
     );
 
-    let pd_title = pd_title.to_owned();
+    let pd = dbqueries::get_podcast_from_id(ep.podcast_id()).unwrap();
+    let pd_title = pd.title().to_owned();
     let mut ep = ep.clone();
     cancel_bttn.show();
     progress_bar.show();
@@ -270,7 +268,7 @@ pub fn episodes_listbox(pd: &Podcast) -> Result<gtk::ListBox> {
     let list = gtk::ListBox::new();
 
     episodes.into_iter().for_each(|mut ep| {
-        let widget = EpisodeWidget::new(&mut ep, pd);
+        let widget = EpisodeWidget::new(&mut ep);
         list.add(&widget.container);
 
         let sep = gtk::Separator::new(gtk::Orientation::Vertical);
