@@ -40,10 +40,6 @@ impl Default for ShowWidget {
         let link: gtk::Button = builder.get_object("link_button").unwrap();
         let settings: gtk::MenuButton = builder.get_object("settings_button").unwrap();
 
-        unsub
-            .get_style_context()
-            .map(|c| c.add_class("destructive-action"));
-
         ShowWidget {
             container,
             cover,

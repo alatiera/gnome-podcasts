@@ -32,9 +32,9 @@ type Foo = RefCell<
 
 thread_local!(static GLOBAL: Foo = RefCell::new(None));
 
-#[derive(Debug)]
-struct EpisodeWidget {
-    container: gtk::Box,
+#[derive(Debug, Clone)]
+pub struct EpisodeWidget {
+    pub container: gtk::Box,
     play: gtk::Button,
     delete: gtk::Button,
     download: gtk::Button,

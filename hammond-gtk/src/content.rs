@@ -6,6 +6,7 @@ use hammond_data::dbqueries;
 
 use views::shows::ShowsPopulated;
 use views::empty::EmptyView;
+use views::episodes::EpisodesView;
 
 use widgets::show::ShowWidget;
 use headerbar::Header;
@@ -155,14 +156,14 @@ struct EpisodeStack {
 
 impl EpisodeStack {
     fn new() -> Rc<EpisodeStack> {
-        let _pop = RecentEpisodes {};
+        let episodes = EpisodesView::default();
         let empty = EmptyView::new();
         let stack = gtk::Stack::new();
 
-        // stack.add_named(&pop.container, "populated");
+        stack.add_named(&episodes.container, "episodes");
         stack.add_named(&empty.container, "empty");
         // FIXME:
-        stack.set_visible_child_name("empty");
+        stack.set_visible_child_name("episodes");
 
         Rc::new(EpisodeStack {
             // empty,
