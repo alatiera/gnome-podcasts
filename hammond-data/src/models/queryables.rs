@@ -354,8 +354,16 @@ pub struct EpisodeViewWidgetQuery {
 }
 
 impl EpisodeViewWidgetQuery {
+    /// Get the `image_uri`.
+    ///
+    /// Represents the uri(url usually) that the Feed cover image is located at.
     pub fn image_uri(&self) -> Option<&str> {
         self.image_uri.as_ref().map(|s| s.as_str())
+    }
+
+    /// `Podcast` table foreign key.
+    pub fn podcast_id(&self) -> i32 {
+        self.podcast_id
     }
 }
 

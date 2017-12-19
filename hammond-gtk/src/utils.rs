@@ -59,6 +59,8 @@ fn refresh_podcasts_view() -> glib::Continue {
     glib::Continue(false)
 }
 
+// FIXME: use something that would just scale?
+
 pub fn get_pixbuf_from_path(pd: &Podcast) -> Option<Pixbuf> {
     let img_path = downloader::cache_image(pd)?;
     Pixbuf::new_from_file_at_scale(&img_path, 256, 256, true).ok()
@@ -67,6 +69,11 @@ pub fn get_pixbuf_from_path(pd: &Podcast) -> Option<Pixbuf> {
 pub fn get_pixbuf_from_path_128(pd: &Podcast) -> Option<Pixbuf> {
     let img_path = downloader::cache_image(pd)?;
     Pixbuf::new_from_file_at_scale(&img_path, 128, 128, true).ok()
+}
+
+pub fn get_pixbuf_from_path_64(pd: &Podcast) -> Option<Pixbuf> {
+    let img_path = downloader::cache_image(pd)?;
+    Pixbuf::new_from_file_at_scale(&img_path, 64, 64, true).ok()
 }
 
 #[cfg(test)]
