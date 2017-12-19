@@ -320,53 +320,6 @@ impl EpisodeWidgetQuery {
     }
 }
 
-impl From<EpisodeViewWidgetQuery> for EpisodeWidgetQuery {
-    fn from(view: EpisodeViewWidgetQuery) -> EpisodeWidgetQuery {
-        EpisodeWidgetQuery {
-            rowid: view.rowid,
-            title: view.title,
-            uri: view.uri,
-            local_uri: view.local_uri,
-            epoch: view.epoch,
-            length: view.length,
-            played: view.played,
-            // favorite: view.favorite,
-            // archive: view.archive,
-            podcast_id: view.podcast_id,
-        }
-    }
-}
-
-#[derive(Queryable, Debug, Clone)]
-/// Diesel Model to be used for constructing `EpisodeWidgets`.
-pub struct EpisodeViewWidgetQuery {
-    rowid: i32,
-    title: String,
-    uri: Option<String>,
-    local_uri: Option<String>,
-    epoch: i32,
-    length: Option<i32>,
-    played: Option<i32>,
-    // favorite: bool,
-    // archive: bool,
-    podcast_id: i32,
-    image_uri: Option<String>,
-}
-
-impl EpisodeViewWidgetQuery {
-    /// Get the `image_uri`.
-    ///
-    /// Represents the uri(url usually) that the Feed cover image is located at.
-    pub fn image_uri(&self) -> Option<&str> {
-        self.image_uri.as_ref().map(|s| s.as_str())
-    }
-
-    /// `Podcast` table foreign key.
-    pub fn podcast_id(&self) -> i32 {
-        self.podcast_id
-    }
-}
-
 #[derive(Queryable, Identifiable, AsChangeset, Associations, PartialEq)]
 #[belongs_to(Source, foreign_key = "source_id")]
 #[changeset_options(treat_none_as_null = "true")]

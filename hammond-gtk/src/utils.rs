@@ -60,6 +60,7 @@ fn refresh_podcasts_view() -> glib::Continue {
 }
 
 // FIXME: use something that would just scale?
+// TODO: make a diesel model with only title, local_uri
 
 pub fn get_pixbuf_from_path(pd: &Podcast) -> Option<Pixbuf> {
     let img_path = downloader::cache_image(pd)?;

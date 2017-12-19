@@ -2,7 +2,7 @@ use gtk;
 use gtk::prelude::*;
 
 use hammond_data::dbqueries;
-use hammond_data::EpisodeViewWidgetQuery;
+use hammond_data::EpisodeWidgetQuery;
 
 use widgets::episode::EpisodeWidget;
 use utils::get_pixbuf_from_path_64;
@@ -32,7 +32,7 @@ impl EpisodesView {
     pub fn new() -> Rc<EpisodesView> {
         let view = EpisodesView::default();
 
-        let episodes = dbqueries::get_episodes_view_widgets_with_limit(100).unwrap();
+        let episodes = dbqueries::get_episodes_widgets_with_limit(100).unwrap();
         let frame = gtk::Frame::new(None);
         let list = gtk::ListBox::new();
 
@@ -45,8 +45,8 @@ impl EpisodesView {
         list.set_visible(true);
         list.set_selection_mode(gtk::SelectionMode::None);
 
-        episodes.into_iter().for_each(|ep| {
-            let viewep = EpisodesViewWidget::new(ep);
+        episodes.into_iter().for_each(|mut ep| {
+            let viewep = EpisodesViewWidget::new(&mut ep);
             list.add(&viewep.container);
 
             let sep = gtk::Separator::new(gtk::Orientation::Vertical);
@@ -86,20 +86,21 @@ impl Default for EpisodesViewWidget {
 }
 
 impl EpisodesViewWidget {
-    fn new(episode: EpisodeViewWidgetQuery) -> EpisodesViewWidget {
+    fn new(episode: &mut EpisodeWidgetQuery) -> EpisodesViewWidget {
         let builder =
             gtk::Builder::new_from_resource("/org/gnome/hammond/gtk/episodes_view_widget.ui");
         let container: gtk::Box = builder.get_object("container").unwrap();
         let image: gtk::Image = builder.get_object("cover").unwrap();
 
         // FIXME:
-        let pd = dbqueries::get_podcast_from_id(episode.podcast_id()).unwrap();
-        let img = get_pixbuf_from_path_64(&pd);
-        if let Some(i) = img {
-            image.set_from_pixbuf(&i);
+        if let Ok(pd) = dbqueries::get_podcast_from_id(episode.podcast_id()) {
+            let img = get_pixbuf_from_path_64(&pd);
+            if let Some(i) = img {
+                image.set_from_pixbuf(&i);
+            }
         }
 
-        let ep = EpisodeWidget::new(&mut episode.into());
+        let ep = EpisodeWidget::new(episode);
         container.pack_start(&ep.container, true, true, 5);
 
         EpisodesViewWidget {
