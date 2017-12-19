@@ -14,6 +14,8 @@ use std::path::Path;
 use std::fs;
 
 fn download_checker() -> Result<()> {
+    // TODO: give it it's own diesel model,
+    // so it does not pull useless and expensive stuff like description.
     let episodes = dbqueries::get_downloaded_episodes()?;
 
     episodes
@@ -35,6 +37,8 @@ fn checker_helper(ep: &mut Episode) {
 }
 
 fn played_cleaner() -> Result<()> {
+    // TODO: give it it's own diesel model,
+    // so it does not pull useless and expensive stuff like description.
     let episodes = dbqueries::get_played_episodes()?;
 
     let now_utc = Utc::now().timestamp() as i32;

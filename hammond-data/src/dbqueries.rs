@@ -2,7 +2,7 @@
 
 use diesel::prelude::*;
 use diesel;
-use models::queryables::{Episode, EpisodeWidgetQuery, Podcast, Source};
+use models::queryables::{Episode, EpisodeViewWidgetQuery, EpisodeWidgetQuery, Podcast, Source};
 use chrono::prelude::*;
 use errors::*;
 
@@ -84,26 +84,31 @@ pub fn get_episodes_with_limit(limit: u32) -> Result<Vec<Episode>> {
         .load::<Episode>(&*con)?)
 }
 
-pub fn get_episodeswidgets_with_limit(limit: u32) -> Result<Vec<EpisodeWidgetQuery>> {
-    use schema::episode::dsl::*;
+pub fn get_episodes_view_widgets_with_limit(limit: u32) -> Result<Vec<EpisodeViewWidgetQuery>> {
+    use schema::{episode, podcast};
+
+    joinable!(episode -> podcast (rowid));
+    allow_tables_to_appear_in_same_query!(episode, podcast);
 
     let db = connection();
     let con = db.get()?;
 
-    Ok(episode
+    Ok(episode::table
+        .left_join(podcast::table)
         .select((
-            rowid,
-            title,
-            uri,
-            local_uri,
-            epoch,
-            length,
-            played,
-            podcast_id,
+            episode::rowid,
+            episode::title,
+            episode::uri,
+            episode::local_uri,
+            episode::epoch,
+            episode::length,
+            episode::played,
+            episode::podcast_id,
+            (podcast::image_uri).nullable(),
         ))
-        .order(epoch.desc())
+        .order(episode::epoch.desc())
         .limit(i64::from(limit))
-        .load::<EpisodeWidgetQuery>(&*con)?)
+        .load::<EpisodeViewWidgetQuery>(&*con)?)
 }
 
 pub fn get_podcast_from_id(pid: i32) -> Result<Podcast> {

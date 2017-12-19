@@ -31,7 +31,7 @@ impl EpisodesView {
     pub fn new() -> Rc<EpisodesView> {
         let view = EpisodesView::default();
 
-        let episodes = dbqueries::get_episodeswidgets_with_limit(100).unwrap();
+        let episodes = dbqueries::get_episodes_view_widgets_with_limit(100).unwrap();
         let frame = gtk::Frame::new("Recent Episodes");
         let list = gtk::ListBox::new();
 
@@ -43,8 +43,9 @@ impl EpisodesView {
         list.set_visible(true);
         list.set_selection_mode(gtk::SelectionMode::None);
 
-        episodes.into_iter().for_each(|mut ep| {
-            let viewep = EpisodesViewWidget::new(&mut ep);
+        episodes.into_iter().for_each(|ep| {
+            info!("{:?}", &ep.image_uri());
+            let viewep = EpisodesViewWidget::new(&mut ep.into());
             list.add(&viewep.container);
 
             let sep = gtk::Separator::new(gtk::Orientation::Vertical);
