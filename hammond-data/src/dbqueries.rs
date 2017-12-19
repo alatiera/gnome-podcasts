@@ -87,7 +87,7 @@ pub fn get_episodes_with_limit(limit: u32) -> Result<Vec<Episode>> {
 pub fn get_episodes_view_widgets_with_limit(limit: u32) -> Result<Vec<EpisodeViewWidgetQuery>> {
     use schema::{episode, podcast};
 
-    joinable!(episode -> podcast (rowid));
+    joinable!(episode -> podcast (podcast_id));
     allow_tables_to_appear_in_same_query!(episode, podcast);
 
     let db = connection();

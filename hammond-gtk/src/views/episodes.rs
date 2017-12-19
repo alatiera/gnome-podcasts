@@ -44,7 +44,6 @@ impl EpisodesView {
         list.set_selection_mode(gtk::SelectionMode::None);
 
         episodes.into_iter().for_each(|ep| {
-            info!("{:?}", &ep.image_uri());
             let viewep = EpisodesViewWidget::new(&mut ep.into());
             list.add(&viewep.container);
 
