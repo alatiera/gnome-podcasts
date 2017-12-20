@@ -57,6 +57,7 @@ impl EpisodesView {
             sep.show()
         });
 
+        view.container.show_all();
         Rc::new(view)
     }
 }
