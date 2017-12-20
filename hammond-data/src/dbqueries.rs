@@ -2,7 +2,7 @@
 
 use diesel::prelude::*;
 use diesel;
-use models::queryables::{Episode, EpisodeDownloadCleanerQuery, EpisodeWidgetQuery, Podcast,
+use models::queryables::{Episode, EpisodeCleanerQuery, EpisodeWidgetQuery, Podcast,
                          PodcastCoverQuery, Source};
 use chrono::prelude::*;
 use errors::*;
@@ -33,15 +33,15 @@ pub fn get_episodes() -> Result<Vec<Episode>> {
     Ok(episode.order(epoch.desc()).load::<Episode>(&*con)?)
 }
 
-pub(crate) fn get_downloaded_episodes() -> Result<Vec<EpisodeDownloadCleanerQuery>> {
+pub(crate) fn get_downloaded_episodes() -> Result<Vec<EpisodeCleanerQuery>> {
     use schema::episode::dsl::*;
 
     let db = connection();
     let con = db.get()?;
     Ok(episode
-        .select((rowid, local_uri))
+        .select((rowid, local_uri, played))
         .filter(local_uri.is_not_null())
-        .load::<EpisodeDownloadCleanerQuery>(&*con)?)
+        .load::<EpisodeCleanerQuery>(&*con)?)
 }
 
 pub fn get_played_episodes() -> Result<Vec<Episode>> {
@@ -50,6 +50,17 @@ pub fn get_played_episodes() -> Result<Vec<Episode>> {
     let db = connection();
     let con = db.get()?;
     Ok(episode.filter(played.is_not_null()).load::<Episode>(&*con)?)
+}
+
+pub fn get_played_cleaner_episodes() -> Result<Vec<EpisodeCleanerQuery>> {
+    use schema::episode::dsl::*;
+
+    let db = connection();
+    let con = db.get()?;
+    Ok(episode
+        .select((rowid, local_uri, played))
+        .filter(played.is_not_null())
+        .load::<EpisodeCleanerQuery>(&*con)?)
 }
 
 pub fn get_episode_from_rowid(ep_id: i32) -> Result<Episode> {

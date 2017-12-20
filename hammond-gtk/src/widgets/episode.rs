@@ -232,7 +232,9 @@ fn on_play_bttn_clicked(episode_id: i32) {
 }
 
 fn on_delete_bttn_clicked(episode_id: i32) {
-    let mut ep = dbqueries::get_episode_from_rowid(episode_id).unwrap();
+    let mut ep = dbqueries::get_episode_from_rowid(episode_id)
+        .unwrap()
+        .into();
 
     let e = delete_local_content(&mut ep);
     if let Err(err) = e {

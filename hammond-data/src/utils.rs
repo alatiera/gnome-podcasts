@@ -8,14 +8,12 @@ use itertools::Itertools;
 
 use errors::*;
 use dbqueries;
-use models::queryables::{Episode, EpisodeDownloadCleanerQuery};
+use models::queryables::EpisodeCleanerQuery;
 
 use std::path::Path;
 use std::fs;
 
 fn download_checker() -> Result<()> {
-    // TODO: give it it's own diesel model,
-    // so it does not pull useless and expensive stuff like description.
     let episodes = dbqueries::get_downloaded_episodes()?;
 
     episodes
@@ -25,7 +23,7 @@ fn download_checker() -> Result<()> {
     Ok(())
 }
 
-fn checker_helper(ep: &mut EpisodeDownloadCleanerQuery) {
+fn checker_helper(ep: &mut EpisodeCleanerQuery) {
     if !Path::new(ep.local_uri().unwrap()).exists() {
         ep.set_local_uri(None);
         let res = ep.save();
@@ -37,9 +35,7 @@ fn checker_helper(ep: &mut EpisodeDownloadCleanerQuery) {
 }
 
 fn played_cleaner() -> Result<()> {
-    // TODO: give it it's own diesel model,
-    // so it does not pull useless and expensive stuff like description.
-    let episodes = dbqueries::get_played_episodes()?;
+    let episodes = dbqueries::get_played_cleaner_episodes()?;
 
     let now_utc = Utc::now().timestamp() as i32;
     episodes.into_par_iter().for_each(|mut ep| {
@@ -54,7 +50,7 @@ fn played_cleaner() -> Result<()> {
                     error!("Error while trying to delete file: {:?}", ep.local_uri());
                     error!("Error: {}", err);
                 } else {
-                    info!("Episode {:?} was deleted succesfully.", ep.title());
+                    info!("Episode {:?} was deleted succesfully.", ep.local_uri());
                 };
             }
         }
@@ -63,7 +59,7 @@ fn played_cleaner() -> Result<()> {
 }
 
 /// Check `ep.local_uri` field and delete the file it points to.
-pub fn delete_local_content(ep: &mut Episode) -> Result<()> {
+pub fn delete_local_content(ep: &mut EpisodeCleanerQuery) -> Result<()> {
     if ep.local_uri().is_some() {
         let uri = ep.local_uri().unwrap().to_owned();
         if Path::new(&uri).exists() {
@@ -110,7 +106,7 @@ pub fn url_cleaner(s: &str) -> String {
     }
 }
 
-/// Helper functions that strips extra spaces and newlines and all the tabs.
+/// Helper functions that strips extra spaces and newlines and ignores the tabs.
 #[allow(match_same_arms)]
 pub fn replace_extra_spaces(s: &str) -> String {
     s.trim()
@@ -210,10 +206,12 @@ mod tests {
     #[test]
     fn test_download_cleaner() {
         let _tmp_dir = helper_db();
-        let mut episode = {
+        let mut episode: EpisodeCleanerQuery = {
             let db = connection();
             let con = db.get().unwrap();
-            dbqueries::get_episode_from_pk(&con, "foo_bar", 0).unwrap()
+            dbqueries::get_episode_from_pk(&con, "foo_bar", 0)
+                .unwrap()
+                .into()
         };
 
         let valid_path = episode.local_uri().unwrap().to_owned();

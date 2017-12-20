@@ -325,24 +325,26 @@ impl EpisodeWidgetQuery {
 #[changeset_options(treat_none_as_null = "true")]
 #[primary_key(title, podcast_id)]
 #[derive(Debug, Clone)]
-/// Diesel Model to be used for constructing `EpisodeWidgets`.
-pub(crate) struct EpisodeDownloadCleanerQuery {
+/// Diesel Model to be used internal with the `utils::checkup` function.
+pub struct EpisodeCleanerQuery {
     rowid: i32,
     local_uri: Option<String>,
+    played: Option<i32>,
 }
 
-impl From<Episode> for EpisodeDownloadCleanerQuery {
-    fn from(e: Episode) -> EpisodeDownloadCleanerQuery {
-        EpisodeDownloadCleanerQuery {
+impl From<Episode> for EpisodeCleanerQuery {
+    fn from(e: Episode) -> EpisodeCleanerQuery {
+        EpisodeCleanerQuery {
             rowid: e.rowid(),
             local_uri: e.local_uri,
+            played: e.played,
         }
     }
 }
 
-impl EpisodeDownloadCleanerQuery {
+impl EpisodeCleanerQuery {
     /// Get the value of the sqlite's `ROW_ID`
-    pub(crate) fn rowid(&self) -> i32 {
+    pub fn rowid(&self) -> i32 {
         self.rowid
     }
 
@@ -350,17 +352,29 @@ impl EpisodeDownloadCleanerQuery {
     ///
     /// Represents the local uri,usually filesystem path,
     /// that the media file will be located at.
-    pub(crate) fn local_uri(&self) -> Option<&str> {
+    pub fn local_uri(&self) -> Option<&str> {
         self.local_uri.as_ref().map(|s| s.as_str())
     }
 
     /// Set the `local_uri`.
-    pub(crate) fn set_local_uri(&mut self, value: Option<&str>) {
+    pub fn set_local_uri(&mut self, value: Option<&str>) {
         self.local_uri = value.map(|x| x.to_string());
     }
 
+    /// Epoch representation of the last time the episode was played.
+    ///
+    /// None/Null for unplayed.
+    pub fn played(&self) -> Option<i32> {
+        self.played
+    }
+
+    /// Set the `played` value.
+    pub fn set_played(&mut self, value: Option<i32>) {
+        self.played = value;
+    }
+
     /// Helper method to easily save/"sync" current state of self to the Database.
-    pub(crate) fn save(&self) -> Result<usize> {
+    pub fn save(&self) -> Result<usize> {
         use schema::episode::dsl::*;
 
         let db = connection();
