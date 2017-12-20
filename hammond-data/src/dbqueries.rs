@@ -2,7 +2,7 @@
 
 use diesel::prelude::*;
 use diesel;
-use models::queryables::{Episode, EpisodeWidgetQuery, Podcast, Source};
+use models::queryables::{Episode, EpisodeWidgetQuery, Podcast, PodcastCoverQuery, Source};
 use chrono::prelude::*;
 use errors::*;
 
@@ -112,6 +112,17 @@ pub fn get_podcast_from_id(pid: i32) -> Result<Podcast> {
     let db = connection();
     let con = db.get()?;
     Ok(podcast.filter(id.eq(pid)).get_result::<Podcast>(&*con)?)
+}
+
+pub fn get_podcast_cover_from_id(pid: i32) -> Result<PodcastCoverQuery> {
+    use schema::podcast::dsl::*;
+
+    let db = connection();
+    let con = db.get()?;
+    Ok(podcast
+        .select((id, title, image_uri))
+        .filter(id.eq(pid))
+        .get_result::<PodcastCoverQuery>(&*con)?)
 }
 
 pub fn get_pd_episodes(parent: &Podcast) -> Result<Vec<Episode>> {

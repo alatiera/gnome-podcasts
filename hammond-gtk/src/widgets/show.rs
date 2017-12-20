@@ -10,7 +10,7 @@ use hammond_data::utils::replace_extra_spaces;
 use hammond_downloader::downloader;
 
 use widgets::episode::episodes_listbox;
-use utils::get_pixbuf_from_path_128;
+use utils::get_pixbuf_from_path;
 use content::ShowStack;
 use headerbar::Header;
 
@@ -77,7 +77,7 @@ impl ShowWidget {
         let desc = dissolve::strip_html_tags(pd.description()).join(" ");
         self.description.set_text(&replace_extra_spaces(&desc));
 
-        let img = get_pixbuf_from_path_128(pd);
+        let img = get_pixbuf_from_path(&pd.clone().into(), 128);
         if let Some(i) = img {
             self.cover.set_from_pixbuf(&i);
         }

@@ -8,7 +8,7 @@ use std::io::{BufWriter, Read, Write};
 use std::path::Path;
 
 use errors::*;
-use hammond_data::{EpisodeWidgetQuery, Podcast};
+use hammond_data::{EpisodeWidgetQuery, PodcastCoverQuery};
 use hammond_data::xdg_dirs::{DL_DIR, HAMMOND_CACHE};
 
 // TODO: Replace path that are of type &str with std::path.
@@ -131,7 +131,7 @@ pub fn get_episode(ep: &mut EpisodeWidgetQuery, download_folder: &str) -> Result
     }
 }
 
-pub fn cache_image(pd: &Podcast) -> Option<String> {
+pub fn cache_image(pd: &PodcastCoverQuery) -> Option<String> {
     let url = pd.image_uri()?.to_owned();
     if url == "" {
         return None;
@@ -207,7 +207,7 @@ mod tests {
         index(vec![feed]);
 
         // Get the Podcast
-        let pd = dbqueries::get_podcast_from_source_id(sid).unwrap();
+        let pd = dbqueries::get_podcast_from_source_id(sid).unwrap().into();
 
         let img_path = cache_image(&pd);
         let foo_ = format!(

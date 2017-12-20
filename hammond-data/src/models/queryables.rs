@@ -427,6 +427,39 @@ impl Podcast {
     }
 }
 
+#[derive(Queryable, Debug, Clone)]
+/// Diesel Model of the podcast cover query.
+/// Used for fetching information about a Podcast's cover.
+pub struct PodcastCoverQuery {
+    id: i32,
+    title: String,
+    image_uri: Option<String>,
+}
+
+impl From<Podcast> for PodcastCoverQuery {
+    fn from(p: Podcast) -> PodcastCoverQuery {
+        PodcastCoverQuery {
+            id: *p.id(),
+            title: p.title,
+            image_uri: p.image_uri,
+        }
+    }
+}
+
+impl PodcastCoverQuery {
+    /// Get the Feed `title`.
+    pub fn title(&self) -> &str {
+        &self.title
+    }
+
+    /// Get the `image_uri`.
+    ///
+    /// Represents the uri(url usually) that the Feed cover image is located at.
+    pub fn image_uri(&self) -> Option<&str> {
+        self.image_uri.as_ref().map(|s| s.as_str())
+    }
+}
+
 #[derive(Queryable, Identifiable, AsChangeset, PartialEq)]
 #[table_name = "source"]
 #[changeset_options(treat_none_as_null = "true")]

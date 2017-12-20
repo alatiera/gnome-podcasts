@@ -2,7 +2,7 @@ use glib;
 use gdk_pixbuf::Pixbuf;
 
 use hammond_data::feed;
-use hammond_data::{Podcast, Source};
+use hammond_data::{PodcastCoverQuery, Source};
 use hammond_downloader::downloader;
 
 use std::thread;
@@ -60,21 +60,9 @@ fn refresh_podcasts_view() -> glib::Continue {
 }
 
 // FIXME: use something that would just scale?
-// TODO: make a diesel model with only title, local_uri
-
-pub fn get_pixbuf_from_path(pd: &Podcast) -> Option<Pixbuf> {
+pub fn get_pixbuf_from_path(pd: &PodcastCoverQuery, size: u32) -> Option<Pixbuf> {
     let img_path = downloader::cache_image(pd)?;
-    Pixbuf::new_from_file_at_scale(&img_path, 256, 256, true).ok()
-}
-
-pub fn get_pixbuf_from_path_128(pd: &Podcast) -> Option<Pixbuf> {
-    let img_path = downloader::cache_image(pd)?;
-    Pixbuf::new_from_file_at_scale(&img_path, 128, 128, true).ok()
-}
-
-pub fn get_pixbuf_from_path_64(pd: &Podcast) -> Option<Pixbuf> {
-    let img_path = downloader::cache_image(pd)?;
-    Pixbuf::new_from_file_at_scale(&img_path, 64, 64, true).ok()
+    Pixbuf::new_from_file_at_scale(&img_path, size as i32, size as i32, true).ok()
 }
 
 #[cfg(test)]
@@ -100,7 +88,7 @@ mod tests {
 
         // Get the Podcast
         let pd = dbqueries::get_podcast_from_source_id(sid).unwrap();
-        let pxbuf = get_pixbuf_from_path(&pd);
+        let pxbuf = get_pixbuf_from_path(&pd.into(), 256);
         assert!(pxbuf.is_some());
     }
 }
