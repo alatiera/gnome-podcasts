@@ -173,15 +173,17 @@ impl EpisodeStack {
     }
 
     fn update(&self) {
-        // FIXME: figure out if it should switch to empty view
-        let vis = self.stack.get_visible_child_name().unwrap();
         let old = self.stack.get_child_by_name("episodes").unwrap();
-
         let eps = EpisodesView::new();
 
         self.stack.remove(&old);
         self.stack.add_named(&eps.container, "episodes");
-        self.stack.set_visible_child_name(&vis);
+
+        if eps.is_empty() {
+            self.stack.set_visible_child_name("empty");
+        } else {
+            self.stack.set_visible_child_name("episodes");
+        }
 
         old.destroy();
     }

@@ -163,6 +163,34 @@ impl EpisodesView {
         view.container.show_all();
         Rc::new(view)
     }
+
+    pub fn is_empty(&self) -> bool {
+        if !self.today_list.get_children().is_empty() {
+            return false;
+        }
+
+        if !self.yday_list.get_children().is_empty() {
+            return false;
+        }
+
+        if !self.week_list.get_children().is_empty() {
+            return false;
+        }
+
+        if !self.month_list.get_children().is_empty() {
+            return false;
+        }
+
+        if !self.year_list.get_children().is_empty() {
+            return false;
+        }
+
+        if !self.rest_list.get_children().is_empty() {
+            return false;
+        }
+
+        true
+    }
 }
 
 // TODO: Avoid epoch calculations, use chrono instead.
