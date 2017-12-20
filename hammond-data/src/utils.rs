@@ -8,7 +8,7 @@ use itertools::Itertools;
 
 use errors::*;
 use dbqueries;
-use models::queryables::Episode;
+use models::queryables::{Episode, EpisodeDownloadCleanerQuery};
 
 use std::path::Path;
 use std::fs;
@@ -25,7 +25,7 @@ fn download_checker() -> Result<()> {
     Ok(())
 }
 
-fn checker_helper(ep: &mut Episode) {
+fn checker_helper(ep: &mut EpisodeDownloadCleanerQuery) {
     if !Path::new(ep.local_uri().unwrap()).exists() {
         ep.set_local_uri(None);
         let res = ep.save();
@@ -180,12 +180,16 @@ mod tests {
 
     #[test]
     fn test_download_checker() {
-        let _tmp_dir = helper_db();
+        let tmp_dir = helper_db();
         download_checker().unwrap();
         let episodes = dbqueries::get_downloaded_episodes().unwrap();
+        let valid_path = tmp_dir.path().join("virtual_dl.mp3");
 
         assert_eq!(episodes.len(), 1);
-        assert_eq!("foo_bar", episodes.first().unwrap().title());
+        assert_eq!(
+            Some(valid_path.to_str().unwrap()),
+            episodes.first().unwrap().local_uri()
+        );
     }
 
     #[test]
@@ -194,7 +198,9 @@ mod tests {
         let mut episode = {
             let db = connection();
             let con = db.get().unwrap();
-            dbqueries::get_episode_from_pk(&con, "bar_baz", 1).unwrap()
+            dbqueries::get_episode_from_pk(&con, "bar_baz", 1)
+                .unwrap()
+                .into()
         };
 
         checker_helper(&mut episode);

@@ -320,6 +320,58 @@ impl EpisodeWidgetQuery {
     }
 }
 
+#[derive(Queryable, AsChangeset, PartialEq)]
+#[table_name = "episode"]
+#[changeset_options(treat_none_as_null = "true")]
+#[primary_key(title, podcast_id)]
+#[derive(Debug, Clone)]
+/// Diesel Model to be used for constructing `EpisodeWidgets`.
+pub(crate) struct EpisodeDownloadCleanerQuery {
+    rowid: i32,
+    local_uri: Option<String>,
+}
+
+impl From<Episode> for EpisodeDownloadCleanerQuery {
+    fn from(e: Episode) -> EpisodeDownloadCleanerQuery {
+        EpisodeDownloadCleanerQuery {
+            rowid: e.rowid(),
+            local_uri: e.local_uri,
+        }
+    }
+}
+
+impl EpisodeDownloadCleanerQuery {
+    /// Get the value of the sqlite's `ROW_ID`
+    pub(crate) fn rowid(&self) -> i32 {
+        self.rowid
+    }
+
+    /// Get the value of the `local_uri`.
+    ///
+    /// Represents the local uri,usually filesystem path,
+    /// that the media file will be located at.
+    pub(crate) fn local_uri(&self) -> Option<&str> {
+        self.local_uri.as_ref().map(|s| s.as_str())
+    }
+
+    /// Set the `local_uri`.
+    pub(crate) fn set_local_uri(&mut self, value: Option<&str>) {
+        self.local_uri = value.map(|x| x.to_string());
+    }
+
+    /// Helper method to easily save/"sync" current state of self to the Database.
+    pub(crate) fn save(&self) -> Result<usize> {
+        use schema::episode::dsl::*;
+
+        let db = connection();
+        let tempdb = db.get()?;
+
+        Ok(diesel::update(episode.filter(rowid.eq(self.rowid())))
+            .set(self)
+            .execute(&*tempdb)?)
+    }
+}
+
 #[derive(Queryable, Identifiable, AsChangeset, Associations, PartialEq)]
 #[belongs_to(Source, foreign_key = "source_id")]
 #[changeset_options(treat_none_as_null = "true")]

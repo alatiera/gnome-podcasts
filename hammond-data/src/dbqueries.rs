@@ -2,7 +2,8 @@
 
 use diesel::prelude::*;
 use diesel;
-use models::queryables::{Episode, EpisodeWidgetQuery, Podcast, PodcastCoverQuery, Source};
+use models::queryables::{Episode, EpisodeDownloadCleanerQuery, EpisodeWidgetQuery, Podcast,
+                         PodcastCoverQuery, Source};
 use chrono::prelude::*;
 use errors::*;
 
@@ -32,14 +33,15 @@ pub fn get_episodes() -> Result<Vec<Episode>> {
     Ok(episode.order(epoch.desc()).load::<Episode>(&*con)?)
 }
 
-pub fn get_downloaded_episodes() -> Result<Vec<Episode>> {
+pub(crate) fn get_downloaded_episodes() -> Result<Vec<EpisodeDownloadCleanerQuery>> {
     use schema::episode::dsl::*;
 
     let db = connection();
     let con = db.get()?;
     Ok(episode
+        .select((rowid, local_uri))
         .filter(local_uri.is_not_null())
-        .load::<Episode>(&*con)?)
+        .load::<EpisodeDownloadCleanerQuery>(&*con)?)
 }
 
 pub fn get_played_episodes() -> Result<Vec<Episode>> {
