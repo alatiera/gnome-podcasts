@@ -50,7 +50,7 @@
                         <property name="no_show_all">True</property>
                         <property name="orientation">vertical</property>
                         <child>
-                          <object class="GtkLabel" id="today_label">
+                          <object class="GtkLabel">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
                             <property name="halign">start</property>
@@ -102,7 +102,7 @@
                         <property name="no_show_all">True</property>
                         <property name="orientation">vertical</property>
                         <child>
-                          <object class="GtkLabel" id="yday_label">
+                          <object class="GtkLabel">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
                             <property name="halign">start</property>
@@ -154,7 +154,7 @@
                         <property name="no_show_all">True</property>
                         <property name="orientation">vertical</property>
                         <child>
-                          <object class="GtkLabel" id="week_label">
+                          <object class="GtkLabel">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
                             <property name="halign">start</property>
@@ -206,7 +206,7 @@
                         <property name="no_show_all">True</property>
                         <property name="orientation">vertical</property>
                         <child>
-                          <object class="GtkLabel" id="month_label">
+                          <object class="GtkLabel">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
                             <property name="halign">start</property>
@@ -258,7 +258,7 @@
                         <property name="no_show_all">True</property>
                         <property name="orientation">vertical</property>
                         <child>
-                          <object class="GtkLabel" id="year_label">
+                          <object class="GtkLabel">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
                             <property name="halign">start</property>
@@ -310,7 +310,7 @@
                         <property name="no_show_all">True</property>
                         <property name="orientation">vertical</property>
                         <child>
-                          <object class="GtkLabel" id="rest_label">
+                          <object class="GtkLabel">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
                             <property name="halign">start</property>

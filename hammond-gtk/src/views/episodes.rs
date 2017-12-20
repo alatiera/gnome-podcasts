@@ -36,12 +36,6 @@ pub struct EpisodesView {
     month_list: gtk::ListBox,
     year_list: gtk::ListBox,
     rest_list: gtk::ListBox,
-    today_label: gtk::Label,
-    yday_label: gtk::Label,
-    week_label: gtk::Label,
-    month_label: gtk::Label,
-    year_label: gtk::Label,
-    rest_label: gtk::Label,
 }
 
 impl Default for EpisodesView {
@@ -61,12 +55,6 @@ impl Default for EpisodesView {
         let month_list: gtk::ListBox = builder.get_object("month_list").unwrap();
         let year_list: gtk::ListBox = builder.get_object("year_list").unwrap();
         let rest_list: gtk::ListBox = builder.get_object("rest_list").unwrap();
-        let today_label: gtk::Label = builder.get_object("today_label").unwrap();
-        let yday_label: gtk::Label = builder.get_object("yday_label").unwrap();
-        let week_label: gtk::Label = builder.get_object("week_label").unwrap();
-        let month_label: gtk::Label = builder.get_object("month_label").unwrap();
-        let year_label: gtk::Label = builder.get_object("year_label").unwrap();
-        let rest_label: gtk::Label = builder.get_object("rest_label").unwrap();
 
         EpisodesView {
             container,
@@ -83,12 +71,6 @@ impl Default for EpisodesView {
             month_list,
             year_list,
             rest_list,
-            today_label,
-            yday_label,
-            week_label,
-            month_label,
-            year_label,
-            rest_label,
         }
     }
 }
