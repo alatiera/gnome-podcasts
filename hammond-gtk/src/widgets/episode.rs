@@ -101,12 +101,6 @@ impl EpisodeWidget {
                 .map(|c| c.add_class("dim-label"));
         }
 
-        let progress = self.progress.clone();
-        timeout_add(200, move || {
-            progress.pulse();
-            glib::Continue(true)
-        });
-
         if let Some(size) = episode.length() {
             let megabytes = size / 1024 / 1024; // episode.length represents bytes
             self.size.set_text(&format!("{} MB", megabytes))
@@ -150,7 +144,7 @@ impl EpisodeWidget {
         let play = &self.play;
         let delete = &self.delete;
         let cancel = &self.cancel;
-        let progress = &self.progress;
+        let progress = self.progress.clone();
         self.download.connect_clicked(
             clone!(play, delete, episode, cancel, progress  => move |dl| {
             on_download_clicked(
@@ -159,7 +153,7 @@ impl EpisodeWidget {
                 &play,
                 &delete,
                 &cancel,
-                &progress
+                progress.clone()
             );
         }),
         );
@@ -173,20 +167,28 @@ fn on_download_clicked(
     play_bttn: &gtk::Button,
     del_bttn: &gtk::Button,
     cancel_bttn: &gtk::Button,
-    progress_bar: &gtk::ProgressBar,
+    progress_bar: gtk::ProgressBar,
 ) {
+    let progress = progress_bar.clone();
+
+    // Start the proggress_bar pulse.
+    timeout_add(200, move || {
+        progress_bar.pulse();
+        glib::Continue(true)
+    });
+
     // Create a async channel.
     let (sender, receiver) = channel();
 
     // Pass the desired arguments into the Local Thread Storage.
     GLOBAL.with(
-        clone!(download_bttn, play_bttn, del_bttn, cancel_bttn, progress_bar => move |global| {
+        clone!(download_bttn, play_bttn, del_bttn, cancel_bttn, progress => move |global| {
             *global.borrow_mut() = Some((
                 download_bttn,
                 play_bttn,
                 del_bttn,
                 cancel_bttn,
-                progress_bar,
+                progress,
                 receiver));
             }),
     );
@@ -195,7 +197,7 @@ fn on_download_clicked(
     let pd_title = pd.title().to_owned();
     let mut ep = ep.clone();
     cancel_bttn.show();
-    progress_bar.show();
+    progress.show();
     download_bttn.hide();
     thread::spawn(move || {
         let download_fold = downloader::get_download_folder(&pd_title).unwrap();
