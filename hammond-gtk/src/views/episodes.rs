@@ -1,5 +1,6 @@
 use gtk;
 use gtk::prelude::*;
+use chrono::prelude::*;
 
 use hammond_data::dbqueries;
 use hammond_data::EpisodeWidgetQuery;
@@ -10,9 +11,25 @@ use utils::get_pixbuf_from_path_64;
 use std::rc::Rc;
 
 #[derive(Debug, Clone)]
+enum ListSplit {
+    Today,
+    Yday,
+    Week,
+    Month,
+}
+
+#[derive(Debug, Clone)]
 pub struct EpisodesView {
     pub container: gtk::Box,
     frame_parent: gtk::Box,
+    today_box: gtk::ListBox,
+    yday_box: gtk::ListBox,
+    week_box: gtk::ListBox,
+    month_box: gtk::ListBox,
+    today_label: gtk::Label,
+    yday_label: gtk::Label,
+    week_label: gtk::Label,
+    month_label: gtk::Label,
 }
 
 impl Default for EpisodesView {
@@ -20,10 +37,26 @@ impl Default for EpisodesView {
         let builder = gtk::Builder::new_from_resource("/org/gnome/hammond/gtk/episodes_view.ui");
         let container: gtk::Box = builder.get_object("container").unwrap();
         let frame_parent: gtk::Box = builder.get_object("frame_parent").unwrap();
+        let today_box: gtk::ListBox = builder.get_object("today_box").unwrap();
+        let yday_box: gtk::ListBox = builder.get_object("yday_box").unwrap();
+        let week_box: gtk::ListBox = builder.get_object("week_box").unwrap();
+        let month_box: gtk::ListBox = builder.get_object("month_box").unwrap();
+        let today_label: gtk::Label = builder.get_object("today_label").unwrap();
+        let yday_label: gtk::Label = builder.get_object("yday_label").unwrap();
+        let week_label: gtk::Label = builder.get_object("week_label").unwrap();
+        let month_label: gtk::Label = builder.get_object("month_label").unwrap();
 
         EpisodesView {
             container,
             frame_parent,
+            today_box,
+            yday_box,
+            week_box,
+            month_box,
+            today_label,
+            yday_label,
+            week_label,
+            month_label,
         }
     }
 }
@@ -31,34 +64,54 @@ impl Default for EpisodesView {
 impl EpisodesView {
     pub fn new() -> Rc<EpisodesView> {
         let view = EpisodesView::default();
-
         let episodes = dbqueries::get_episodes_widgets_with_limit(100).unwrap();
-        let frame = gtk::Frame::new(None);
-        let list = gtk::ListBox::new();
-
-        view.frame_parent.pack_start(&frame, true, false, 10);
-        frame.add(&list);
-        frame.set_shadow_type(gtk::ShadowType::In);
-
-        list.set_vexpand(false);
-        list.set_hexpand(false);
-        list.set_visible(true);
-        list.set_selection_mode(gtk::SelectionMode::None);
+        let now_utc = Utc::now().timestamp() as i32;
 
         episodes.into_iter().for_each(|mut ep| {
             let viewep = EpisodesViewWidget::new(&mut ep);
-            list.add(&viewep.container);
-
             let sep = gtk::Separator::new(gtk::Orientation::Vertical);
             sep.set_sensitive(false);
             sep.set_can_focus(false);
 
-            list.add(&sep);
+            let t = split(now_utc, ep.epoch());
+            match t {
+                ListSplit::Today => {
+                    view.today_box.add(&viewep.container);
+                    view.today_box.add(&sep)
+                }
+                ListSplit::Yday => {
+                    view.yday_box.add(&viewep.container);
+                    view.yday_box.add(&sep)
+                }
+                ListSplit::Week => {
+                    view.week_box.add(&viewep.container);
+                    view.week_box.add(&sep)
+                }
+                _ => {
+                    view.month_box.add(&viewep.container);
+                    view.month_box.add(&sep)
+                }
+            }
+
             sep.show()
         });
 
         view.container.show_all();
         Rc::new(view)
+    }
+}
+
+fn split(now_utc: i32, epoch: i32) -> ListSplit {
+    let t = now_utc - epoch;
+
+    if t < 86_400 {
+        ListSplit::Today
+    } else if t < 172_800 {
+        ListSplit::Yday
+    } else if t < 604_800 {
+        ListSplit::Week
+    } else {
+        ListSplit::Month
     }
 }
 
