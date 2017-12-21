@@ -57,6 +57,7 @@
                             <property name="label" translatable="yes">Today</property>
                             <attributes>
                               <attribute name="weight" value="bold"/>
+                              <attribute name="scale" value="1.5"/>
                             </attributes>
                           </object>
                           <packing>
@@ -109,6 +110,7 @@
                             <property name="label" translatable="yes">Yesterday</property>
                             <attributes>
                               <attribute name="weight" value="bold"/>
+                              <attribute name="scale" value="1.5"/>
                             </attributes>
                           </object>
                           <packing>
@@ -161,6 +163,7 @@
                             <property name="label" translatable="yes">This Week</property>
                             <attributes>
                               <attribute name="weight" value="bold"/>
+                              <attribute name="scale" value="1.5"/>
                             </attributes>
                           </object>
                           <packing>
@@ -213,6 +216,7 @@
                             <property name="label" translatable="yes">This Month</property>
                             <attributes>
                               <attribute name="weight" value="bold"/>
+                              <attribute name="scale" value="1.5"/>
                             </attributes>
                           </object>
                           <packing>
@@ -265,6 +269,7 @@
                             <property name="label" translatable="yes">This Year</property>
                             <attributes>
                               <attribute name="weight" value="bold"/>
+                              <attribute name="scale" value="1.5"/>
                             </attributes>
                           </object>
                           <packing>
@@ -317,6 +322,7 @@
                             <property name="label" translatable="yes">Older than a Year</property>
                             <attributes>
                               <attribute name="weight" value="bold"/>
+                              <attribute name="scale" value="1.5"/>
                             </attributes>
                           </object>
                           <packing>
