@@ -11,6 +11,7 @@ extern crate diesel;
 extern crate dissolve;
 extern crate hammond_data;
 extern crate hammond_downloader;
+extern crate humansize;
 #[macro_use]
 extern crate lazy_static;
 #[macro_use]

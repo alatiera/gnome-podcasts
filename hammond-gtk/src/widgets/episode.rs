@@ -5,6 +5,7 @@ use gtk::prelude::*;
 use chrono::prelude::*;
 
 use open;
+use humansize::{file_size_opts as size_opts, FileSize};
 
 use hammond_data::dbqueries;
 use hammond_data::{EpisodeWidgetQuery, Podcast};
@@ -101,9 +102,14 @@ impl EpisodeWidget {
                 .map(|c| c.add_class("dim-label"));
         }
 
+        // TODO: configure it so it will not show decimal places.
         if let Some(size) = episode.length() {
-            let megabytes = size / 1024 / 1024; // episode.length represents bytes
-            self.size.set_text(&format!("{} MB", megabytes))
+            let s = size.file_size(size_opts::CONVENTIONAL);
+            if let Ok(s) = s {
+                self.size.set_text(&s);
+            } else {
+                self.size.hide();
+            }
         };
 
         let date = Utc.timestamp(i64::from(episode.epoch()), 0)
