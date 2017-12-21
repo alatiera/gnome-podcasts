@@ -124,10 +124,13 @@ impl EpisodeWidget {
             }
         };
 
-        let date = Utc.timestamp(i64::from(episode.epoch()), 0)
-            .format("%b %e")
-            .to_string();
-        self.date.set_text(&date);
+        let now = Utc::now();
+        let date = Utc.timestamp(i64::from(episode.epoch()), 0);
+        if now.year() == date.year() {
+            self.date.set_text(&date.format("%e %b").to_string());
+        } else {
+            self.date.set_text(&date.format("%e %b %Y").to_string());
+        };
 
         // Show or hide the play/delete/download buttons upon widget initialization.
         let local_uri = episode.local_uri();
