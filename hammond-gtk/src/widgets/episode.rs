@@ -102,9 +102,21 @@ impl EpisodeWidget {
                 .map(|c| c.add_class("dim-label"));
         }
 
-        // TODO: configure it so it will not show decimal places.
+        // Declare a custom humansize option struct
+        // See: https://docs.rs/humansize/1.0.2/humansize/file_size_opts/struct.FileSizeOpts.html
+        let custom_options = size_opts::FileSizeOpts {
+            divider: size_opts::Kilo::Binary,
+            units: size_opts::Kilo::Decimal,
+            decimal_places: 0,
+            decimal_zeroes: 0,
+            fixed_at: size_opts::FixedAt::No,
+            long_units: false,
+            space: true,
+            suffix: "",
+        };
+
         if let Some(size) = episode.length() {
-            let s = size.file_size(size_opts::CONVENTIONAL);
+            let s = size.file_size(custom_options);
             if let Ok(s) = s {
                 self.size.set_text(&s);
             } else {
