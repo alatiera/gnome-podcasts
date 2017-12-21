@@ -23,8 +23,8 @@ pub struct Content {
 impl Content {
     pub fn new(header: Rc<Header>) -> Rc<Content> {
         let stack = gtk::Stack::new();
-        let shows = ShowStack::new(header);
         let episodes = EpisodeStack::new();
+        let shows = ShowStack::new(header, episodes.clone());
 
         stack.add_titled(&episodes.stack, "episodes", "Episodes");
         stack.add_titled(&shows.stack, "shows", "Shows");
@@ -50,15 +50,17 @@ impl Content {
 pub struct ShowStack {
     pub stack: gtk::Stack,
     header: Rc<Header>,
+    epstack: Rc<EpisodeStack>,
 }
 
 impl ShowStack {
-    fn new(header: Rc<Header>) -> Rc<ShowStack> {
+    fn new(header: Rc<Header>, epstack: Rc<EpisodeStack>) -> Rc<ShowStack> {
         let stack = gtk::Stack::new();
 
         let show = Rc::new(ShowStack {
             stack,
             header: header.clone(),
+            epstack,
         });
 
         let pop = ShowsPopulated::new(show.clone(), header);
@@ -110,7 +112,12 @@ impl ShowStack {
 
     pub fn replace_widget(&self, pd: &Podcast) {
         let old = self.stack.get_child_by_name("widget").unwrap();
-        let new = ShowWidget::new(Rc::new(self.clone()), self.header.clone(), pd);
+        let new = ShowWidget::new(
+            Rc::new(self.clone()),
+            self.epstack.clone(),
+            self.header.clone(),
+            pd,
+        );
 
         self.stack.remove(&old);
         self.stack.add_named(&new.container, "widget");
@@ -145,10 +152,7 @@ impl ShowStack {
 }
 
 #[derive(Debug, Clone)]
-struct RecentEpisodes;
-
-#[derive(Debug, Clone)]
-struct EpisodeStack {
+pub struct EpisodeStack {
     // populated: RecentEpisodes,
     // empty: EmptyView,
     stack: gtk::Stack,
@@ -172,7 +176,7 @@ impl EpisodeStack {
         })
     }
 
-    fn update(&self) {
+    pub fn update(&self) {
         let old = self.stack.get_child_by_name("episodes").unwrap();
         let eps = EpisodesView::new();
 
