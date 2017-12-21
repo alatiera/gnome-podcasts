@@ -6,6 +6,7 @@ use mime_guess;
 use std::fs::{rename, DirBuilder, File};
 use std::io::{BufWriter, Read, Write};
 use std::path::Path;
+use std::fs;
 
 use errors::*;
 use hammond_data::{EpisodeWidgetQuery, PodcastCoverQuery};
@@ -123,6 +124,11 @@ pub fn get_episode(ep: &mut EpisodeWidgetQuery, download_folder: &str) -> Result
     if let Ok(path) = res {
         // If download succedes set episode local_uri to dlpath.
         ep.set_local_uri(Some(&path));
+
+        let size = fs::metadata(path);
+        if let Ok(s) = size {
+            ep.set_length(Some(s.len() as i32))
+        };
         ep.save()?;
         Ok(())
     } else {
