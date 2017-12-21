@@ -166,8 +166,12 @@ impl EpisodeStack {
 
         stack.add_named(&episodes.container, "episodes");
         stack.add_named(&empty.container, "empty");
-        // FIXME:
-        stack.set_visible_child_name("episodes");
+
+        if episodes.is_empty() {
+            stack.set_visible_child_name("empty");
+        } else {
+            stack.set_visible_child_name("episodes");
+        }
 
         Rc::new(EpisodeStack {
             // empty,
