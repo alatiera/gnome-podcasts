@@ -513,6 +513,11 @@ impl From<Podcast> for PodcastCoverQuery {
 }
 
 impl PodcastCoverQuery {
+    /// Get the Feed `id`.
+    pub fn id(&self) -> i32 {
+        self.id
+    }
+
     /// Get the Feed `title`.
     pub fn title(&self) -> &str {
         &self.title

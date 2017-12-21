@@ -12,10 +12,13 @@ extern crate dissolve;
 extern crate hammond_data;
 extern crate hammond_downloader;
 #[macro_use]
+extern crate lazy_static;
+#[macro_use]
 extern crate log;
 extern crate loggerv;
 extern crate open;
 extern crate regex;
+extern crate send_cell;
 // extern crate rayon;
 
 // use rayon::prelude::*;
