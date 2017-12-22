@@ -79,7 +79,7 @@ impl EpisodesView {
     pub fn new() -> Rc<EpisodesView> {
         let view = EpisodesView::default();
         let episodes = dbqueries::get_episodes_widgets_with_limit(100).unwrap();
-        let now_utc = Utc::now().timestamp() as i32;
+        let now_utc = Utc::now();
 
         episodes.into_iter().for_each(|mut ep| {
             let viewep = EpisodesViewWidget::new(&mut ep);
@@ -87,7 +87,7 @@ impl EpisodesView {
             sep.set_sensitive(false);
             sep.set_can_focus(false);
 
-            let t = split(now_utc, ep.epoch());
+            let t = split(&now_utc, i64::from(ep.epoch()));
             match t {
                 ListSplit::Today => {
                     view.today_list.add(&viewep.container);
@@ -175,19 +175,18 @@ impl EpisodesView {
     }
 }
 
-// TODO: Avoid epoch calculations, use chrono instead.
-fn split(now_utc: i32, epoch: i32) -> ListSplit {
-    let t = now_utc - epoch;
+fn split(now: &DateTime<Utc>, epoch: i64) -> ListSplit {
+    let ep = Utc.timestamp(epoch, 0);
 
-    if t < 86_400 {
+    if now.ordinal() == ep.ordinal() && now.year() == ep.year() {
         ListSplit::Today
-    } else if t < 172_800 {
+    } else if now.ordinal() == ep.ordinal() + 1 && now.year() == ep.year() {
         ListSplit::Yday
-    } else if t < 604_800 {
+    } else if now.iso_week().week() == ep.iso_week().week() && now.year() == ep.year() {
         ListSplit::Week
-    } else if t < 2_419_200 {
+    } else if now.month() == ep.month() && now.year() == ep.year() {
         ListSplit::Month
-    } else if t < 31_536_000 {
+    } else if now.year() == ep.year() {
         ListSplit::Year
     } else {
         ListSplit::Rest
