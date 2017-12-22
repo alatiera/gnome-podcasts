@@ -17,9 +17,9 @@ pub(crate) fn new_podcast(chan: &Channel, source_id: i32) -> NewPodcast {
     let link = url_cleaner(chan.link());
     let x = chan.itunes_ext().map(|s| s.image());
     let image_uri = if let Some(img) = x {
-        img.map(|s| url_cleaner(s))
+        img.map(|s| s.to_owned())
     } else {
-        chan.image().map(|foo| url_cleaner(foo.url()))
+        chan.image().map(|foo| foo.url().to_owned())
     };
 
     NewPodcastBuilder::default()
@@ -43,10 +43,6 @@ pub(crate) fn new_episode(item: &Item, parent_id: i32) -> Result<NewEpisode> {
         .map(|s| replace_extra_spaces(&ammonia::clean(s)));
     let guid = item.guid().map(|s| s.value().trim().to_owned());
 
-    // Its kinda weird this being an Option type.
-    // Rss 2.0 specified that it's optional.
-    // Though the db scema has a requirment of episode uri being Unique && Not Null.
-    // TODO: Restructure
     let x = item.enclosure().map(|s| url_cleaner(s.url()));
     // FIXME: refactor
     let uri = if x.is_some() {

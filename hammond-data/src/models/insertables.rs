@@ -112,10 +112,6 @@ impl NewPodcast {
         let con = db.get()?;
         match pd {
             Ok(foo) => {
-                if foo.source_id() != self.source_id {
-                    error!("NSPD sid: {}, SPD sid: {}", self.source_id, foo.source_id());
-                };
-
                 if (foo.link() != self.link) || (foo.title() != self.title)
                     || (foo.image_uri() != self.image_uri.as_ref().map(|x| x.as_str()))
                 {
