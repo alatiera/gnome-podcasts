@@ -76,35 +76,25 @@ impl EpisodesView {
 
         episodes.into_iter().for_each(|mut ep| {
             let viewep = EpisodesViewWidget::new(&mut ep);
-            let sep = gtk::Separator::new(gtk::Orientation::Vertical);
-            sep.set_sensitive(false);
-            sep.set_can_focus(false);
 
             let t = split(&now_utc, i64::from(ep.epoch()));
             match t {
                 ListSplit::Today => {
                     view.today_list.add(&viewep.container);
-                    view.today_list.add(&sep)
                 }
                 ListSplit::Yday => {
                     view.yday_list.add(&viewep.container);
-                    view.yday_list.add(&sep)
                 }
                 ListSplit::Week => {
                     view.week_list.add(&viewep.container);
-                    view.week_list.add(&sep)
                 }
                 ListSplit::Month => {
                     view.month_list.add(&viewep.container);
-                    view.month_list.add(&sep)
                 }
                 ListSplit::Rest => {
                     view.rest_list.add(&viewep.container);
-                    view.rest_list.add(&sep)
                 }
             }
-
-            sep.show()
         });
 
         if view.today_list.get_children().is_empty() {
