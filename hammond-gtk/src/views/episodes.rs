@@ -207,7 +207,7 @@ impl Default for EpisodesViewWidget {
         let container: gtk::Box = builder.get_object("container").unwrap();
         let image: gtk::Image = builder.get_object("cover").unwrap();
         let ep = EpisodeWidget::default();
-        container.pack_start(&ep.container, true, true, 5);
+        container.pack_start(&ep.container, true, true, 6);
 
         EpisodesViewWidget {
             container,
@@ -233,7 +233,7 @@ impl EpisodesViewWidget {
         }
 
         let ep = EpisodeWidget::new(episode);
-        container.pack_start(&ep.container, true, true, 5);
+        container.pack_start(&ep.container, true, true, 6);
 
         EpisodesViewWidget {
             container,
