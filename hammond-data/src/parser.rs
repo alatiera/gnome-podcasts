@@ -82,8 +82,19 @@ pub(crate) fn new_episode(item: &Item, parent_id: i32) -> Result<NewEpisode> {
 
 /// Parses an Item Itunes extension and returns it's duration value in seconds.
 // FIXME: Rafactor
+// TODO: Write tests
+#[allow(non_snake_case)]
 fn parse_itunes_duration(item: &Item) -> Option<i32> {
     let duration = item.itunes_ext().map(|s| s.duration())??;
+
+    // FOR SOME FUCKING REASON, IN THE APPLE EXTENSION SPEC
+    // THE DURATION CAN BE EITHER AN INT OF SECONDS OR
+    // A STRING OF THE FOLLOWING FORMATS:
+    // HH:MM:SS, H:MM:SS, MM:SS, M:SS
+    // LIKE WHO THE FUCK THOUGH THAT WOULD BE A GOOD IDEA.
+    if let Ok(NO_FUCKING_LOGIC) = duration.parse::<i32>() {
+        return Some(NO_FUCKING_LOGIC);
+    };
 
     let mut seconds = 0;
     let fk_apple = duration.split(':').collect::<Vec<_>>();
