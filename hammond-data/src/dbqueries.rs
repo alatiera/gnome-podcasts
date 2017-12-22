@@ -111,6 +111,7 @@ pub fn get_episodes_widgets_with_limit(limit: u32) -> Result<Vec<EpisodeWidgetQu
             episode::local_uri,
             episode::epoch,
             episode::length,
+            episode::duration,
             episode::played,
             episode::podcast_id,
         ))
@@ -156,7 +157,7 @@ pub fn get_pd_episodeswidgets(parent: &Podcast) -> Result<Vec<EpisodeWidgetQuery
     let con = db.get()?;
 
     Ok(
-        episode.select((rowid, title, uri, local_uri, epoch, length, played, podcast_id))
+        episode.select((rowid, title, uri, local_uri, epoch, length, duration, played, podcast_id))
         .filter(podcast_id.eq(parent.id()))
         // .group_by(epoch)
         .order(epoch.desc())

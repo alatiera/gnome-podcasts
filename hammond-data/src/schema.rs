@@ -8,6 +8,7 @@ table! {
         published_date -> Nullable<Text>,
         epoch -> Integer,
         length -> Nullable<Integer>,
+        duration -> Nullable<Integer>,
         guid -> Nullable<Text>,
         played -> Nullable<Integer>,
         favorite -> Bool,

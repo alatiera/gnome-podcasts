@@ -162,6 +162,7 @@ pub(crate) struct NewEpisode {
     description: Option<String>,
     published_date: Option<String>,
     length: Option<i32>,
+    duration: Option<i32>,
     guid: Option<String>,
     epoch: i32,
     podcast_id: i32,
@@ -207,6 +208,7 @@ impl NewEpisode {
 
                 if foo.title() != self.title.as_str() || foo.epoch() != self.epoch
                     || foo.uri() != self.uri.as_ref().map(|s| s.as_str())
+                    || foo.duration() != self.duration
                 {
                     self.update(con, foo.rowid())?;
                 }

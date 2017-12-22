@@ -64,13 +64,14 @@ pub(crate) fn new_episode(item: &Item, parent_id: i32) -> Result<NewEpisode> {
     let epoch = date.map(|x| x.timestamp() as i32).unwrap_or(0);
 
     let length = item.enclosure().map(|x| x.length().parse().unwrap_or(0));
-    let _duration = parse_itunes_duration(item);
+    let duration = parse_itunes_duration(item);
 
     Ok(NewEpisodeBuilder::default()
         .title(title)
         .uri(uri)
         .description(description)
         .length(length)
+        .duration(duration)
         .published_date(pub_date)
         .epoch(epoch)
         .guid(guid)

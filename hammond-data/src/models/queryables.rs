@@ -33,6 +33,7 @@ pub struct Episode {
     published_date: Option<String>,
     epoch: i32,
     length: Option<i32>,
+    duration: Option<i32>,
     guid: Option<String>,
     played: Option<i32>,
     favorite: bool,
@@ -125,6 +126,8 @@ impl Episode {
     }
 
     /// Get the `length`.
+    ///
+    /// The number represents the size of the file in bytes.
     pub fn length(&self) -> Option<i32> {
         self.length
     }
@@ -132,6 +135,18 @@ impl Episode {
     /// Set the `length`.
     pub fn set_length(&mut self, value: Option<i32>) {
         self.length = value;
+    }
+
+    /// Get the `duration` value.
+    ///
+    /// The number represents the duration of the item/episode in seconds.
+    pub fn duration(&self) -> Option<i32> {
+        self.duration
+    }
+
+    /// Set the `duration`.
+    pub fn set_duration(&mut self, value: Option<i32>) {
+        self.duration = value;
     }
 
     /// Epoch representation of the last time the episode was played.
@@ -204,6 +219,7 @@ pub struct EpisodeWidgetQuery {
     local_uri: Option<String>,
     epoch: i32,
     length: Option<i32>,
+    duration: Option<i32>,
     played: Option<i32>,
     // favorite: bool,
     // archive: bool,
@@ -250,6 +266,8 @@ impl EpisodeWidgetQuery {
     }
 
     /// Get the `length`.
+    ///
+    /// The number represents the size of the file in bytes.
     pub fn length(&self) -> Option<i32> {
         self.length
     }
@@ -257,6 +275,18 @@ impl EpisodeWidgetQuery {
     /// Set the `length`.
     pub fn set_length(&mut self, value: Option<i32>) {
         self.length = value;
+    }
+
+    /// Get the `duration` value.
+    ///
+    /// The number represents the duration of the item/episode in seconds.
+    pub fn duration(&self) -> Option<i32> {
+        self.duration
+    }
+
+    /// Set the `duration`.
+    pub fn set_duration(&mut self, value: Option<i32>) {
+        self.duration = value;
     }
 
     /// Epoch representation of the last time the episode was played.
