@@ -64,6 +64,7 @@ pub(crate) fn new_episode(item: &Item, parent_id: i32) -> Result<NewEpisode> {
     let epoch = date.map(|x| x.timestamp() as i32).unwrap_or(0);
 
     let length = item.enclosure().map(|x| x.length().parse().unwrap_or(0));
+    let _duration = parse_itunes_duration(item);
 
     Ok(NewEpisodeBuilder::default()
         .title(title)
@@ -76,6 +77,25 @@ pub(crate) fn new_episode(item: &Item, parent_id: i32) -> Result<NewEpisode> {
         .podcast_id(parent_id)
         .build()
         .unwrap())
+}
+
+/// Parses an Item Itunes extension and returns it's duration value in seconds.
+// FIXME: Rafactor
+fn parse_itunes_duration(item: &Item) -> Option<i32> {
+    let duration = item.itunes_ext().map(|s| s.duration())??;
+
+    let mut seconds = 0;
+    let fk_apple = duration.split(':').collect::<Vec<_>>();
+    if fk_apple.len() == 3 {
+        seconds += fk_apple[0].parse::<i32>().unwrap_or(0) * 3600;
+        seconds += fk_apple[1].parse::<i32>().unwrap_or(0) * 60;
+        seconds += fk_apple[2].parse::<i32>().unwrap_or(0);
+    } else if fk_apple.len() == 2 {
+        seconds += fk_apple[0].parse::<i32>().unwrap_or(0) * 60;
+        seconds += fk_apple[1].parse::<i32>().unwrap_or(0);
+    }
+
+    Some(seconds)
 }
 
 #[cfg(test)]
