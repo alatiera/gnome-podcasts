@@ -46,6 +46,7 @@ pub struct EpisodeWidget {
     size: gtk::Label,
     progress: gtk::ProgressBar,
     progress_label: gtk::Label,
+    separator1: gtk::Label,
 }
 
 impl Default for EpisodeWidget {
@@ -66,6 +67,8 @@ impl Default for EpisodeWidget {
         let size: gtk::Label = builder.get_object("size_label").unwrap();
         let progress_label: gtk::Label = builder.get_object("progress_label").unwrap();
 
+        let separator1: gtk::Label = builder.get_object("separator1").unwrap();
+
         EpisodeWidget {
             container,
             progress,
@@ -78,6 +81,7 @@ impl Default for EpisodeWidget {
             size,
             date,
             progress_label,
+            separator1,
         }
     }
 }
@@ -122,6 +126,12 @@ impl EpisodeWidget {
             } else {
                 self.size.hide();
             }
+        };
+
+        if let Some(secs) = episode.duration() {
+            self.duration.set_text(&format!("{} min", secs / 60));
+            self.duration.show();
+            self.separator1.show();
         };
 
         let now = Utc::now();
