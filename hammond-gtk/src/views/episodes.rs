@@ -16,7 +16,6 @@ enum ListSplit {
     Yday,
     Week,
     Month,
-    Year,
     Rest,
 }
 
@@ -28,13 +27,11 @@ pub struct EpisodesView {
     yday_box: gtk::Box,
     week_box: gtk::Box,
     month_box: gtk::Box,
-    year_box: gtk::Box,
     rest_box: gtk::Box,
     today_list: gtk::ListBox,
     yday_list: gtk::ListBox,
     week_list: gtk::ListBox,
     month_list: gtk::ListBox,
-    year_list: gtk::ListBox,
     rest_list: gtk::ListBox,
 }
 
@@ -47,13 +44,11 @@ impl Default for EpisodesView {
         let yday_box: gtk::Box = builder.get_object("yday_box").unwrap();
         let week_box: gtk::Box = builder.get_object("week_box").unwrap();
         let month_box: gtk::Box = builder.get_object("month_box").unwrap();
-        let year_box: gtk::Box = builder.get_object("year_box").unwrap();
         let rest_box: gtk::Box = builder.get_object("rest_box").unwrap();
         let today_list: gtk::ListBox = builder.get_object("today_list").unwrap();
         let yday_list: gtk::ListBox = builder.get_object("yday_list").unwrap();
         let week_list: gtk::ListBox = builder.get_object("week_list").unwrap();
         let month_list: gtk::ListBox = builder.get_object("month_list").unwrap();
-        let year_list: gtk::ListBox = builder.get_object("year_list").unwrap();
         let rest_list: gtk::ListBox = builder.get_object("rest_list").unwrap();
 
         EpisodesView {
@@ -63,13 +58,11 @@ impl Default for EpisodesView {
             yday_box,
             week_box,
             month_box,
-            year_box,
             rest_box,
             today_list,
             yday_list,
             week_list,
             month_list,
-            year_list,
             rest_list,
         }
     }
@@ -105,10 +98,6 @@ impl EpisodesView {
                     view.month_list.add(&viewep.container);
                     view.month_list.add(&sep)
                 }
-                ListSplit::Year => {
-                    view.year_list.add(&viewep.container);
-                    view.year_list.add(&sep)
-                }
                 ListSplit::Rest => {
                     view.rest_list.add(&viewep.container);
                     view.rest_list.add(&sep)
@@ -132,10 +121,6 @@ impl EpisodesView {
 
         if view.month_list.get_children().is_empty() {
             view.month_box.hide();
-        }
-
-        if view.year_list.get_children().is_empty() {
-            view.year_box.hide();
         }
 
         if view.rest_list.get_children().is_empty() {
@@ -163,10 +148,6 @@ impl EpisodesView {
             return false;
         }
 
-        if !self.year_list.get_children().is_empty() {
-            return false;
-        }
-
         if !self.rest_list.get_children().is_empty() {
             return false;
         }
@@ -186,8 +167,6 @@ fn split(now: &DateTime<Utc>, epoch: i64) -> ListSplit {
         ListSplit::Week
     } else if now.month() == ep.month() && now.year() == ep.year() {
         ListSplit::Month
-    } else if now.year() == ep.year() {
-        ListSplit::Year
     } else {
         ListSplit::Rest
     }

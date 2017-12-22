@@ -66,7 +66,7 @@ fn build_ui(app: &gtk::Application) {
 
     // Get the main window
     let window = gtk::ApplicationWindow::new(app);
-    window.set_default_size(1150, 650);
+    window.set_default_size(1024, 576);
 
     // Get the headerbar
     let header = Rc::new(headerbar::Header::default());
