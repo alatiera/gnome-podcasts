@@ -64,6 +64,10 @@ fn build_ui(app: &gtk::Application) {
     menu.append("Update feeds", "app.update");
     app.set_app_menu(&menu);
 
+    // Add custom style
+    let provider = gtk::CssProvider::new();
+    gtk::CssProvider::load_from_resource(&provider, "/org/gnome/hammond/gtk/style.css");
+    gtk::StyleContext::add_provider_for_screen(&gdk::Screen::get_default().unwrap(), &provider, 600);
     // Get the main window
     let window = gtk::ApplicationWindow::new(app);
     window.set_default_size(1150, 650);

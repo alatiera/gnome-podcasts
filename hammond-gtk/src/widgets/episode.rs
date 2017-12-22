@@ -305,13 +305,6 @@ pub fn episodes_listbox(pd: &Podcast) -> Result<gtk::ListBox> {
     episodes.into_iter().for_each(|mut ep| {
         let widget = EpisodeWidget::new(&mut ep);
         list.add(&widget.container);
-
-        let sep = gtk::Separator::new(gtk::Orientation::Vertical);
-        sep.set_sensitive(false);
-        sep.set_can_focus(false);
-
-        list.add(&sep);
-        sep.show()
     });
 
     list.set_vexpand(false);
