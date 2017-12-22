@@ -20,6 +20,10 @@ before_script:
   - rustc --version && cargo --version
   - cargo build
   - cargo test --verbose -- --test-threads=1
+  cache:
+      paths:
+        - target/
+        - cargo/
 
 variables:
 #   RUSTFLAGS: "-C link-dead-code"
@@ -46,6 +50,10 @@ rustfmt:
   - rustc --version && cargo --version
   - cargo install rustfmt-nightly --force
   - cargo fmt --all -- --write-mode=diff
+  cache:
+      paths:
+        - target/
+        - cargo/
 
 # Configure and run clippy on nightly
 # Only fails on errors atm.
@@ -56,3 +64,7 @@ clippy:
   - rustc --version && cargo --version
   - cargo install clippy --force
   - cargo clippy --all
+  cache:
+      paths:
+        - target/
+        - cargo/
