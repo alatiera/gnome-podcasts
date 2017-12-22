@@ -10,14 +10,14 @@
       <object class="GtkBox">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="spacing">5</property>
+        <property name="spacing">6</property>
         <child>
           <object class="GtkBox">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="valign">center</property>
             <property name="orientation">vertical</property>
-            <property name="spacing">5</property>
+            <property name="spacing">6</property>
             <child>
               <object class="GtkBox">
                 <property name="visible">True</property>
@@ -51,7 +51,7 @@
               <object class="GtkBox">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="spacing">5</property>
+                <property name="spacing">6</property>
                 <child>
                   <object class="GtkLabel" id="date_label">
                     <property name="visible">True</property>
@@ -164,7 +164,7 @@
           <packing>
             <property name="expand">False</property>
             <property name="fill">True</property>
-            <property name="padding">5</property>
+            <property name="padding">6</property>
             <property name="position">0</property>
           </packing>
         </child>
@@ -172,7 +172,7 @@
           <object class="GtkBox">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="spacing">5</property>
+            <property name="spacing">6</property>
             <child>
               <object class="GtkButton" id="cancel_button">
                 <property name="label" translatable="yes">Cancel</property>
@@ -260,7 +260,7 @@
           <packing>
             <property name="expand">False</property>
             <property name="fill">True</property>
-            <property name="padding">5</property>
+            <property name="padding">6</property>
             <property name="pack_type">end</property>
             <property name="position">1</property>
           </packing>
@@ -269,7 +269,7 @@
       <packing>
         <property name="expand">True</property>
         <property name="fill">False</property>
-        <property name="padding">5</property>
+        <property name="padding">6</property>
         <property name="position">0</property>
       </packing>
     </child>
@@ -281,7 +281,7 @@
       <packing>
         <property name="expand">False</property>
         <property name="fill">True</property>
-        <property name="padding">5</property>
+        <property name="padding">6</property>
         <property name="pack_type">end</property>
         <property name="position">1</property>
       </packing>

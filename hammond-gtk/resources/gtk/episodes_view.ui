@@ -41,14 +41,16 @@
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="halign">center</property>
+                    <property name="margin_top">24</property>
                     <property name="orientation">vertical</property>
-                    <property name="spacing">25</property>
+                    <property name="spacing">24</property>
                     <child>
                       <object class="GtkBox" id="today_box">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="no_show_all">True</property>
                         <property name="orientation">vertical</property>
+                        <property name="spacing">6</property>
                         <child>
                           <object class="GtkLabel">
                             <property name="visible">True</property>
@@ -102,6 +104,7 @@
                         <property name="can_focus">False</property>
                         <property name="no_show_all">True</property>
                         <property name="orientation">vertical</property>
+                        <property name="spacing">6</property>
                         <child>
                           <object class="GtkLabel">
                             <property name="visible">True</property>
@@ -155,6 +158,7 @@
                         <property name="can_focus">False</property>
                         <property name="no_show_all">True</property>
                         <property name="orientation">vertical</property>
+                        <property name="spacing">6</property>
                         <child>
                           <object class="GtkLabel">
                             <property name="visible">True</property>
@@ -208,6 +212,7 @@
                         <property name="can_focus">False</property>
                         <property name="no_show_all">True</property>
                         <property name="orientation">vertical</property>
+                        <property name="spacing">6</property>
                         <child>
                           <object class="GtkLabel">
                             <property name="visible">True</property>
@@ -256,70 +261,18 @@
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkBox" id="year_box">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="no_show_all">True</property>
-                        <property name="orientation">vertical</property>
-                        <child>
-                          <object class="GtkLabel">
-                            <property name="visible">True</property>
-                            <property name="can_focus">False</property>
-                            <property name="halign">start</property>
-                            <property name="label" translatable="yes">This Year</property>
-                            <attributes>
-                              <attribute name="weight" value="bold"/>
-                              <attribute name="scale" value="1.5"/>
-                            </attributes>
-                          </object>
-                          <packing>
-                            <property name="expand">False</property>
-                            <property name="fill">True</property>
-                            <property name="position">0</property>
-                          </packing>
-                        </child>
-                        <child>
-                          <object class="GtkFrame">
-                            <property name="visible">True</property>
-                            <property name="can_focus">False</property>
-                            <property name="label_xalign">0</property>
-                            <property name="shadow_type">in</property>
-                            <child>
-                              <object class="GtkListBox" id="year_list">
-                                <property name="visible">True</property>
-                                <property name="can_focus">False</property>
-                                <property name="selection_mode">none</property>
-                              </object>
-                            </child>
-                            <child type="label_item">
-                              <placeholder/>
-                            </child>
-                          </object>
-                          <packing>
-                            <property name="expand">False</property>
-                            <property name="fill">True</property>
-                            <property name="position">1</property>
-                          </packing>
-                        </child>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
-                        <property name="position">4</property>
-                      </packing>
-                    </child>
-                    <child>
                       <object class="GtkBox" id="rest_box">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="no_show_all">True</property>
                         <property name="orientation">vertical</property>
+                        <property name="spacing">6</property>
                         <child>
                           <object class="GtkLabel">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
                             <property name="halign">start</property>
-                            <property name="label" translatable="yes">Older than a Year</property>
+                            <property name="label" translatable="yes">Older</property>
                             <attributes>
                               <attribute name="weight" value="bold"/>
                               <attribute name="scale" value="1.5"/>

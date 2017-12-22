@@ -28,6 +28,7 @@ before_script:
 variables:
 #   RUSTFLAGS: "-C link-dead-code"
   RUST_BACKTRACE: "FULL"
+  CARGO_HOME: $CI_PROJECT_DIR/cargo
 
 stable:test:
   # https://hub.docker.com/_/rust/
