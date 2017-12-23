@@ -1,4 +1,4 @@
-#![cfg_attr(feature = "cargo-clippy", allow(clone_on_ref_ptr))]
+#![cfg_attr(feature = "cargo-clippy", allow(clone_on_ref_ptr, needless_pass_by_value))]
 
 extern crate gdk;
 extern crate gdk_pixbuf;

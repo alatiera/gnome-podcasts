@@ -125,10 +125,12 @@ pub fn get_episode(ep: &mut EpisodeWidgetQuery, download_folder: &str) -> Result
         // If download succedes set episode local_uri to dlpath.
         ep.set_local_uri(Some(&path));
 
+        // Over-write episode lenght
         let size = fs::metadata(path);
         if let Ok(s) = size {
             ep.set_length(Some(s.len() as i32))
         };
+
         ep.save()?;
         Ok(())
     } else {

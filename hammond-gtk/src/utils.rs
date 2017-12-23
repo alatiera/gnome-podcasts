@@ -68,7 +68,13 @@ lazy_static! {
     };
 }
 
-// FIXME: use something that would just scale?
+// Since gdk_pixbuf::Pixbuf is refference counted and every episode,
+// use the cover of the Podcast Feed/Show, We can only create a Pixbuf
+// cover per show and pass around the Rc pointer.
+//
+// GObjects do not implement Send trait, so SendCell is a way around that.
+// Also lazy_static requires Sync trait, so that's what the mutexes are.
+// TODO: maybe use something that would just scale to requested size?
 pub fn get_pixbuf_from_path(pd: &PodcastCoverQuery, size: u32) -> Option<Pixbuf> {
     let mut hashmap = CACHED_PIXBUFS.lock().unwrap();
     {
