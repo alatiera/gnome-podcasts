@@ -104,8 +104,8 @@
                 </child>
                 <child>
                   <object class="GtkLabel" id="separator2">
-                    <property name="visible">True</property>
                     <property name="can_focus">False</property>
+                    <property name="no_show_all">True</property>
                     <property name="label" translatable="yes">·</property>
                     <property name="track_visited_links">False</property>
                     <style>
@@ -120,7 +120,6 @@
                 </child>
                 <child>
                   <object class="GtkLabel" id="size_label">
-                    <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="no_show_all">True</property>
                     <property name="label" translatable="yes">42 MB</property>

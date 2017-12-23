@@ -63,7 +63,7 @@ pub(crate) fn new_episode(item: &Item, parent_id: i32) -> Result<NewEpisode> {
     let pub_date = date.map(|x| x.to_rfc2822()).ok();
     let epoch = date.map(|x| x.timestamp() as i32).unwrap_or(0);
 
-    let length = item.enclosure().map(|x| x.length().parse().unwrap_or(0));
+    let length = || -> Option<i32> { item.enclosure().map(|x| x.length().parse().ok())? }();
     let duration = parse_itunes_duration(item);
 
     Ok(NewEpisodeBuilder::default()
