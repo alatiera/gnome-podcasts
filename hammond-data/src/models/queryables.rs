@@ -33,6 +33,7 @@ pub struct Episode {
     published_date: Option<String>,
     epoch: i32,
     length: Option<i32>,
+    duration: Option<i32>,
     guid: Option<String>,
     played: Option<i32>,
     favorite: bool,
@@ -125,6 +126,8 @@ impl Episode {
     }
 
     /// Get the `length`.
+    ///
+    /// The number represents the size of the file in bytes.
     pub fn length(&self) -> Option<i32> {
         self.length
     }
@@ -132,6 +135,18 @@ impl Episode {
     /// Set the `length`.
     pub fn set_length(&mut self, value: Option<i32>) {
         self.length = value;
+    }
+
+    /// Get the `duration` value.
+    ///
+    /// The number represents the duration of the item/episode in seconds.
+    pub fn duration(&self) -> Option<i32> {
+        self.duration
+    }
+
+    /// Set the `duration`.
+    pub fn set_duration(&mut self, value: Option<i32>) {
+        self.duration = value;
     }
 
     /// Epoch representation of the last time the episode was played.
@@ -204,6 +219,7 @@ pub struct EpisodeWidgetQuery {
     local_uri: Option<String>,
     epoch: i32,
     length: Option<i32>,
+    duration: Option<i32>,
     played: Option<i32>,
     // favorite: bool,
     // archive: bool,
@@ -250,6 +266,8 @@ impl EpisodeWidgetQuery {
     }
 
     /// Get the `length`.
+    ///
+    /// The number represents the size of the file in bytes.
     pub fn length(&self) -> Option<i32> {
         self.length
     }
@@ -257,6 +275,18 @@ impl EpisodeWidgetQuery {
     /// Set the `length`.
     pub fn set_length(&mut self, value: Option<i32>) {
         self.length = value;
+    }
+
+    /// Get the `duration` value.
+    ///
+    /// The number represents the duration of the item/episode in seconds.
+    pub fn duration(&self) -> Option<i32> {
+        self.duration
+    }
+
+    /// Set the `duration`.
+    pub fn set_duration(&mut self, value: Option<i32>) {
+        self.duration = value;
     }
 
     /// Epoch representation of the last time the episode was played.
@@ -315,6 +345,72 @@ impl EpisodeWidgetQuery {
         let tempdb = db.get()?;
 
         Ok(diesel::update(episode.filter(rowid.eq(self.rowid)))
+            .set(self)
+            .execute(&*tempdb)?)
+    }
+}
+
+#[derive(Queryable, AsChangeset, PartialEq)]
+#[table_name = "episode"]
+#[changeset_options(treat_none_as_null = "true")]
+#[primary_key(title, podcast_id)]
+#[derive(Debug, Clone)]
+/// Diesel Model to be used internal with the `utils::checkup` function.
+pub struct EpisodeCleanerQuery {
+    rowid: i32,
+    local_uri: Option<String>,
+    played: Option<i32>,
+}
+
+impl From<Episode> for EpisodeCleanerQuery {
+    fn from(e: Episode) -> EpisodeCleanerQuery {
+        EpisodeCleanerQuery {
+            rowid: e.rowid(),
+            local_uri: e.local_uri,
+            played: e.played,
+        }
+    }
+}
+
+impl EpisodeCleanerQuery {
+    /// Get the value of the sqlite's `ROW_ID`
+    pub fn rowid(&self) -> i32 {
+        self.rowid
+    }
+
+    /// Get the value of the `local_uri`.
+    ///
+    /// Represents the local uri,usually filesystem path,
+    /// that the media file will be located at.
+    pub fn local_uri(&self) -> Option<&str> {
+        self.local_uri.as_ref().map(|s| s.as_str())
+    }
+
+    /// Set the `local_uri`.
+    pub fn set_local_uri(&mut self, value: Option<&str>) {
+        self.local_uri = value.map(|x| x.to_string());
+    }
+
+    /// Epoch representation of the last time the episode was played.
+    ///
+    /// None/Null for unplayed.
+    pub fn played(&self) -> Option<i32> {
+        self.played
+    }
+
+    /// Set the `played` value.
+    pub fn set_played(&mut self, value: Option<i32>) {
+        self.played = value;
+    }
+
+    /// Helper method to easily save/"sync" current state of self to the Database.
+    pub fn save(&self) -> Result<usize> {
+        use schema::episode::dsl::*;
+
+        let db = connection();
+        let tempdb = db.get()?;
+
+        Ok(diesel::update(episode.filter(rowid.eq(self.rowid())))
             .set(self)
             .execute(&*tempdb)?)
     }
@@ -424,6 +520,44 @@ impl Podcast {
         let tempdb = db.get()?;
 
         Ok(self.save_changes::<Podcast>(&*tempdb)?)
+    }
+}
+
+#[derive(Queryable, Debug, Clone)]
+/// Diesel Model of the podcast cover query.
+/// Used for fetching information about a Podcast's cover.
+pub struct PodcastCoverQuery {
+    id: i32,
+    title: String,
+    image_uri: Option<String>,
+}
+
+impl From<Podcast> for PodcastCoverQuery {
+    fn from(p: Podcast) -> PodcastCoverQuery {
+        PodcastCoverQuery {
+            id: *p.id(),
+            title: p.title,
+            image_uri: p.image_uri,
+        }
+    }
+}
+
+impl PodcastCoverQuery {
+    /// Get the Feed `id`.
+    pub fn id(&self) -> i32 {
+        self.id
+    }
+
+    /// Get the Feed `title`.
+    pub fn title(&self) -> &str {
+        &self.title
+    }
+
+    /// Get the `image_uri`.
+    ///
+    /// Represents the uri(url usually) that the Feed cover image is located at.
+    pub fn image_uri(&self) -> Option<&str> {
+        self.image_uri.as_ref().map(|s| s.as_str())
     }
 }
 

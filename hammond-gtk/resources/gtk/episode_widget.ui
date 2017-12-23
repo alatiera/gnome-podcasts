@@ -10,13 +10,14 @@
       <object class="GtkBox">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="spacing">5</property>
+        <property name="spacing">6</property>
         <child>
           <object class="GtkBox">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
+            <property name="valign">center</property>
             <property name="orientation">vertical</property>
-            <property name="spacing">5</property>
+            <property name="spacing">6</property>
             <child>
               <object class="GtkBox">
                 <property name="visible">True</property>
@@ -50,7 +51,7 @@
               <object class="GtkBox">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="spacing">5</property>
+                <property name="spacing">6</property>
                 <child>
                   <object class="GtkLabel" id="date_label">
                     <property name="visible">True</property>
@@ -103,8 +104,8 @@
                 </child>
                 <child>
                   <object class="GtkLabel" id="separator2">
-                    <property name="visible">True</property>
                     <property name="can_focus">False</property>
+                    <property name="no_show_all">True</property>
                     <property name="label" translatable="yes">·</property>
                     <property name="track_visited_links">False</property>
                     <style>
@@ -119,8 +120,8 @@
                 </child>
                 <child>
                   <object class="GtkLabel" id="size_label">
-                    <property name="visible">True</property>
                     <property name="can_focus">False</property>
+                    <property name="no_show_all">True</property>
                     <property name="label" translatable="yes">42 MB</property>
                     <property name="single_line_mode">True</property>
                     <property name="track_visited_links">False</property>
@@ -162,7 +163,7 @@
           <packing>
             <property name="expand">False</property>
             <property name="fill">True</property>
-            <property name="padding">5</property>
+            <property name="padding">6</property>
             <property name="position">0</property>
           </packing>
         </child>
@@ -170,12 +171,13 @@
           <object class="GtkBox">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="spacing">5</property>
+            <property name="spacing">6</property>
             <child>
               <object class="GtkButton" id="cancel_button">
                 <property name="label" translatable="yes">Cancel</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
+                <property name="no_show_all">True</property>
                 <property name="valign">center</property>
               </object>
               <packing>
@@ -190,6 +192,7 @@
                 <property name="name">delete_button</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
+                <property name="no_show_all">True</property>
                 <property name="halign">end</property>
                 <property name="valign">center</property>
                 <child>
@@ -212,6 +215,7 @@
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
+                <property name="no_show_all">True</property>
                 <property name="halign">end</property>
                 <property name="valign">center</property>
                 <property name="always_show_image">True</property>
@@ -234,6 +238,7 @@
               <object class="GtkButton" id="play_button">
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
+                <property name="no_show_all">True</property>
                 <property name="valign">center</property>
                 <child>
                   <object class="GtkImage">
@@ -254,27 +259,29 @@
           <packing>
             <property name="expand">False</property>
             <property name="fill">True</property>
-            <property name="padding">5</property>
+            <property name="padding">6</property>
             <property name="pack_type">end</property>
             <property name="position">1</property>
           </packing>
         </child>
       </object>
       <packing>
-        <property name="expand">False</property>
-        <property name="fill">True</property>
-        <property name="padding">5</property>
+        <property name="expand">True</property>
+        <property name="fill">False</property>
+        <property name="padding">6</property>
         <property name="position">0</property>
       </packing>
     </child>
     <child>
       <object class="GtkProgressBar" id="progress_bar">
         <property name="can_focus">False</property>
+        <property name="no_show_all">True</property>
       </object>
       <packing>
         <property name="expand">False</property>
         <property name="fill">True</property>
-        <property name="padding">5</property>
+        <property name="padding">6</property>
+        <property name="pack_type">end</property>
         <property name="position">1</property>
       </packing>
     </child>

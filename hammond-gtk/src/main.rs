@@ -1,4 +1,4 @@
-#![cfg_attr(feature = "cargo-clippy", allow(clone_on_ref_ptr))]
+#![cfg_attr(feature = "cargo-clippy", allow(clone_on_ref_ptr, needless_pass_by_value))]
 
 extern crate gdk;
 extern crate gdk_pixbuf;
@@ -11,11 +11,15 @@ extern crate diesel;
 extern crate dissolve;
 extern crate hammond_data;
 extern crate hammond_downloader;
+extern crate humansize;
+#[macro_use]
+extern crate lazy_static;
 #[macro_use]
 extern crate log;
 extern crate loggerv;
 extern crate open;
 extern crate regex;
+extern crate send_cell;
 // extern crate rayon;
 
 // use rayon::prelude::*;
@@ -23,7 +27,7 @@ use log::LogLevel;
 use hammond_data::utils::checkup;
 
 use gtk::prelude::*;
-use gio::{ActionMapExt, ApplicationExt, MenuExt, SimpleActionExt};
+use gio::ApplicationExt;
 use std::rc::Rc;
 
 // http://gtk-rs.org/tuto/closures
@@ -54,15 +58,9 @@ mod utils;
 mod static_resource;
 
 fn build_ui(app: &gtk::Application) {
-    let menu = gio::Menu::new();
-    menu.append("Quit", "app.quit");
-    menu.append("Checkup", "app.check");
-    menu.append("Update feeds", "app.update");
-    app.set_app_menu(&menu);
-
     // Get the main window
     let window = gtk::ApplicationWindow::new(app);
-    window.set_default_size(1150, 650);
+    window.set_default_size(860, 640);
 
     // Get the headerbar
     let header = Rc::new(headerbar::Header::default());
@@ -76,28 +74,6 @@ fn build_ui(app: &gtk::Application) {
         Inhibit(false)
     });
 
-    // Setup quit in the app menu since default is overwritten.
-    let quit = gio::SimpleAction::new("quit", None);
-    let window2 = window.clone();
-    quit.connect_activate(move |_, _| {
-        window2.destroy();
-    });
-    app.add_action(&quit);
-
-    // Setup the checkup in the app menu.
-    let check = gio::SimpleAction::new("check", None);
-    check.connect_activate(move |_, _| {
-        let _ = checkup();
-    });
-    app.add_action(&check);
-
-    let update = gio::SimpleAction::new("update", None);
-    let ct_clone = ct.clone();
-    update.connect_activate(move |_, _| {
-        utils::refresh_feed(ct_clone.clone(), None);
-    });
-    app.add_action(&update);
-
     // Update on startup
     gtk::timeout_add_seconds(
         30,
@@ -106,7 +82,6 @@ fn build_ui(app: &gtk::Application) {
         glib::Continue(false)
     }),
     );
-
     // Auto-updater, runs every hour.
     // TODO: expose the interval in which it run to a user setting.
     // TODO: show notifications.
@@ -137,6 +112,15 @@ fn main() {
 
     let application = gtk::Application::new("org.gnome.Hammond", gio::ApplicationFlags::empty())
         .expect("Initialization failed...");
+
+    // Add custom style
+    let provider = gtk::CssProvider::new();
+    gtk::CssProvider::load_from_resource(&provider, "/org/gnome/hammond/gtk/style.css");
+    gtk::StyleContext::add_provider_for_screen(
+        &gdk::Screen::get_default().unwrap(),
+        &provider,
+        600,
+    );
 
     application.connect_startup(move |app| {
         build_ui(app);

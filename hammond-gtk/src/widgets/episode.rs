@@ -5,6 +5,7 @@ use gtk::prelude::*;
 use chrono::prelude::*;
 
 use open;
+use humansize::{file_size_opts as size_opts, FileSize};
 
 use hammond_data::dbqueries;
 use hammond_data::{EpisodeWidgetQuery, Podcast};
@@ -32,9 +33,9 @@ type Foo = RefCell<
 
 thread_local!(static GLOBAL: Foo = RefCell::new(None));
 
-#[derive(Debug)]
-struct EpisodeWidget {
-    container: gtk::Box,
+#[derive(Debug, Clone)]
+pub struct EpisodeWidget {
+    pub container: gtk::Box,
     play: gtk::Button,
     delete: gtk::Button,
     download: gtk::Button,
@@ -45,6 +46,8 @@ struct EpisodeWidget {
     size: gtk::Label,
     progress: gtk::ProgressBar,
     progress_label: gtk::Label,
+    separator1: gtk::Label,
+    separator2: gtk::Label,
 }
 
 impl Default for EpisodeWidget {
@@ -65,6 +68,9 @@ impl Default for EpisodeWidget {
         let size: gtk::Label = builder.get_object("size_label").unwrap();
         let progress_label: gtk::Label = builder.get_object("progress_label").unwrap();
 
+        let separator1: gtk::Label = builder.get_object("separator1").unwrap();
+        let separator2: gtk::Label = builder.get_object("separator2").unwrap();
+
         EpisodeWidget {
             container,
             progress,
@@ -77,21 +83,23 @@ impl Default for EpisodeWidget {
             size,
             date,
             progress_label,
+            separator1,
+            separator2,
         }
     }
 }
 
 impl EpisodeWidget {
-    pub fn new(episode: &mut EpisodeWidgetQuery, pd: &Podcast) -> EpisodeWidget {
+    pub fn new(episode: &mut EpisodeWidgetQuery) -> EpisodeWidget {
         let widget = EpisodeWidget::default();
-        widget.init(episode, pd);
+        widget.init(episode);
         widget
     }
 
     // TODO: calculate lenght.
     // TODO: wire the progress_bar to the downloader.
     // TODO: wire the cancel button.
-    fn init(&self, episode: &mut EpisodeWidgetQuery, pd: &Podcast) {
+    fn init(&self, episode: &mut EpisodeWidgetQuery) {
         self.title.set_xalign(0.0);
         self.title.set_text(episode.title());
 
@@ -101,21 +109,43 @@ impl EpisodeWidget {
                 .map(|c| c.add_class("dim-label"));
         }
 
-        let progress = self.progress.clone();
-        timeout_add(200, move || {
-            progress.pulse();
-            glib::Continue(true)
-        });
-
-        if let Some(size) = episode.length() {
-            let megabytes = size / 1024 / 1024; // episode.length represents bytes
-            self.size.set_text(&format!("{} MB", megabytes))
+        // Declare a custom humansize option struct
+        // See: https://docs.rs/humansize/1.0.2/humansize/file_size_opts/struct.FileSizeOpts.html
+        let custom_options = size_opts::FileSizeOpts {
+            divider: size_opts::Kilo::Binary,
+            units: size_opts::Kilo::Decimal,
+            decimal_places: 0,
+            decimal_zeroes: 0,
+            fixed_at: size_opts::FixedAt::No,
+            long_units: false,
+            space: true,
+            suffix: "",
         };
 
-        let date = Utc.timestamp(i64::from(episode.epoch()), 0)
-            .format("%b %e")
-            .to_string();
-        self.date.set_text(&date);
+        if let Some(size) = episode.length() {
+            if size != 0 {
+                let s = size.file_size(custom_options);
+                if let Ok(s) = s {
+                    self.size.set_text(&s);
+                    self.size.show();
+                    self.separator2.show();
+                }
+            }
+        };
+
+        if let Some(secs) = episode.duration() {
+            self.duration.set_text(&format!("{} min", secs / 60));
+            self.duration.show();
+            self.separator1.show();
+        };
+
+        let now = Utc::now();
+        let date = Utc.timestamp(i64::from(episode.epoch()), 0);
+        if now.year() == date.year() {
+            self.date.set_text(&date.format("%e %b").to_string());
+        } else {
+            self.date.set_text(&date.format("%e %b %Y").to_string());
+        };
 
         // Show or hide the play/delete/download buttons upon widget initialization.
         let local_uri = episode.local_uri();
@@ -147,21 +177,19 @@ impl EpisodeWidget {
             download.show();
         }));
 
-        let pd_title = pd.title().to_owned();
         let play = &self.play;
         let delete = &self.delete;
         let cancel = &self.cancel;
-        let progress = &self.progress;
+        let progress = self.progress.clone();
         self.download.connect_clicked(
             clone!(play, delete, episode, cancel, progress  => move |dl| {
             on_download_clicked(
-                &pd_title,
                 &mut episode.clone(),
                 dl,
                 &play,
                 &delete,
                 &cancel,
-                &progress
+                progress.clone()
             );
         }),
         );
@@ -170,34 +198,42 @@ impl EpisodeWidget {
 
 // TODO: show notification when dl is finished.
 fn on_download_clicked(
-    pd_title: &str,
     ep: &mut EpisodeWidgetQuery,
     download_bttn: &gtk::Button,
     play_bttn: &gtk::Button,
     del_bttn: &gtk::Button,
     cancel_bttn: &gtk::Button,
-    progress_bar: &gtk::ProgressBar,
+    progress_bar: gtk::ProgressBar,
 ) {
+    let progress = progress_bar.clone();
+
+    // Start the proggress_bar pulse.
+    timeout_add(200, move || {
+        progress_bar.pulse();
+        glib::Continue(true)
+    });
+
     // Create a async channel.
     let (sender, receiver) = channel();
 
     // Pass the desired arguments into the Local Thread Storage.
     GLOBAL.with(
-        clone!(download_bttn, play_bttn, del_bttn, cancel_bttn, progress_bar => move |global| {
+        clone!(download_bttn, play_bttn, del_bttn, cancel_bttn, progress => move |global| {
             *global.borrow_mut() = Some((
                 download_bttn,
                 play_bttn,
                 del_bttn,
                 cancel_bttn,
-                progress_bar,
+                progress,
                 receiver));
             }),
     );
 
-    let pd_title = pd_title.to_owned();
+    let pd = dbqueries::get_podcast_from_id(ep.podcast_id()).unwrap();
+    let pd_title = pd.title().to_owned();
     let mut ep = ep.clone();
     cancel_bttn.show();
-    progress_bar.show();
+    progress.show();
     download_bttn.hide();
     thread::spawn(move || {
         let download_fold = downloader::get_download_folder(&pd_title).unwrap();
@@ -232,7 +268,9 @@ fn on_play_bttn_clicked(episode_id: i32) {
 }
 
 fn on_delete_bttn_clicked(episode_id: i32) {
-    let mut ep = dbqueries::get_episode_from_rowid(episode_id).unwrap();
+    let mut ep = dbqueries::get_episode_from_rowid(episode_id)
+        .unwrap()
+        .into();
 
     let e = delete_local_content(&mut ep);
     if let Err(err) = e {
@@ -270,15 +308,8 @@ pub fn episodes_listbox(pd: &Podcast) -> Result<gtk::ListBox> {
     let list = gtk::ListBox::new();
 
     episodes.into_iter().for_each(|mut ep| {
-        let widget = EpisodeWidget::new(&mut ep, pd);
+        let widget = EpisodeWidget::new(&mut ep);
         list.add(&widget.container);
-
-        let sep = gtk::Separator::new(gtk::Orientation::Vertical);
-        sep.set_sensitive(false);
-        sep.set_can_focus(false);
-
-        list.add(&sep);
-        sep.show()
     });
 
     list.set_vexpand(false);

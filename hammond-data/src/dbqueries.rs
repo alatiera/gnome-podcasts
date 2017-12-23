@@ -2,7 +2,8 @@
 
 use diesel::prelude::*;
 use diesel;
-use models::queryables::{Episode, EpisodeWidgetQuery, Podcast, Source};
+use models::queryables::{Episode, EpisodeCleanerQuery, EpisodeWidgetQuery, Podcast,
+                         PodcastCoverQuery, Source};
 use chrono::prelude::*;
 use errors::*;
 
@@ -32,14 +33,15 @@ pub fn get_episodes() -> Result<Vec<Episode>> {
     Ok(episode.order(epoch.desc()).load::<Episode>(&*con)?)
 }
 
-pub fn get_downloaded_episodes() -> Result<Vec<Episode>> {
+pub(crate) fn get_downloaded_episodes() -> Result<Vec<EpisodeCleanerQuery>> {
     use schema::episode::dsl::*;
 
     let db = connection();
     let con = db.get()?;
     Ok(episode
+        .select((rowid, local_uri, played))
         .filter(local_uri.is_not_null())
-        .load::<Episode>(&*con)?)
+        .load::<EpisodeCleanerQuery>(&*con)?)
 }
 
 pub fn get_played_episodes() -> Result<Vec<Episode>> {
@@ -48,6 +50,17 @@ pub fn get_played_episodes() -> Result<Vec<Episode>> {
     let db = connection();
     let con = db.get()?;
     Ok(episode.filter(played.is_not_null()).load::<Episode>(&*con)?)
+}
+
+pub fn get_played_cleaner_episodes() -> Result<Vec<EpisodeCleanerQuery>> {
+    use schema::episode::dsl::*;
+
+    let db = connection();
+    let con = db.get()?;
+    Ok(episode
+        .select((rowid, local_uri, played))
+        .filter(played.is_not_null())
+        .load::<EpisodeCleanerQuery>(&*con)?)
 }
 
 pub fn get_episode_from_rowid(ep_id: i32) -> Result<Episode> {
@@ -84,12 +97,46 @@ pub fn get_episodes_with_limit(limit: u32) -> Result<Vec<Episode>> {
         .load::<Episode>(&*con)?)
 }
 
+pub fn get_episodes_widgets_with_limit(limit: u32) -> Result<Vec<EpisodeWidgetQuery>> {
+    use schema::episode;
+
+    let db = connection();
+    let con = db.get()?;
+
+    Ok(episode::table
+        .select((
+            episode::rowid,
+            episode::title,
+            episode::uri,
+            episode::local_uri,
+            episode::epoch,
+            episode::length,
+            episode::duration,
+            episode::played,
+            episode::podcast_id,
+        ))
+        .order(episode::epoch.desc())
+        .limit(i64::from(limit))
+        .load::<EpisodeWidgetQuery>(&*con)?)
+}
+
 pub fn get_podcast_from_id(pid: i32) -> Result<Podcast> {
     use schema::podcast::dsl::*;
 
     let db = connection();
     let con = db.get()?;
     Ok(podcast.filter(id.eq(pid)).get_result::<Podcast>(&*con)?)
+}
+
+pub fn get_podcast_cover_from_id(pid: i32) -> Result<PodcastCoverQuery> {
+    use schema::podcast::dsl::*;
+
+    let db = connection();
+    let con = db.get()?;
+    Ok(podcast
+        .select((id, title, image_uri))
+        .filter(id.eq(pid))
+        .get_result::<PodcastCoverQuery>(&*con)?)
 }
 
 pub fn get_pd_episodes(parent: &Podcast) -> Result<Vec<Episode>> {
@@ -110,7 +157,7 @@ pub fn get_pd_episodeswidgets(parent: &Podcast) -> Result<Vec<EpisodeWidgetQuery
     let con = db.get()?;
 
     Ok(
-        episode.select((rowid, title, uri, local_uri, epoch, length, played, podcast_id))
+        episode.select((rowid, title, uri, local_uri, epoch, length, duration, played, podcast_id))
         .filter(podcast_id.eq(parent.id()))
         // .group_by(epoch)
         .order(epoch.desc())

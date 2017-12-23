@@ -111,7 +111,7 @@ impl ShowsChild {
     fn init(&self, pd: &Podcast) {
         self.container.set_tooltip_text(pd.title());
 
-        let cover = get_pixbuf_from_path(pd);
+        let cover = get_pixbuf_from_path(&pd.clone().into(), 256);
         if let Some(img) = cover {
             self.cover.set_from_pixbuf(&img);
         };

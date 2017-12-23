@@ -17,9 +17,9 @@ pub(crate) fn new_podcast(chan: &Channel, source_id: i32) -> NewPodcast {
     let link = url_cleaner(chan.link());
     let x = chan.itunes_ext().map(|s| s.image());
     let image_uri = if let Some(img) = x {
-        img.map(|s| url_cleaner(s))
+        img.map(|s| s.to_owned())
     } else {
-        chan.image().map(|foo| url_cleaner(foo.url()))
+        chan.image().map(|foo| foo.url().to_owned())
     };
 
     NewPodcastBuilder::default()
@@ -43,10 +43,6 @@ pub(crate) fn new_episode(item: &Item, parent_id: i32) -> Result<NewEpisode> {
         .map(|s| replace_extra_spaces(&ammonia::clean(s)));
     let guid = item.guid().map(|s| s.value().trim().to_owned());
 
-    // Its kinda weird this being an Option type.
-    // Rss 2.0 specified that it's optional.
-    // Though the db scema has a requirment of episode uri being Unique && Not Null.
-    // TODO: Restructure
     let x = item.enclosure().map(|s| url_cleaner(s.url()));
     // FIXME: refactor
     let uri = if x.is_some() {
@@ -67,19 +63,51 @@ pub(crate) fn new_episode(item: &Item, parent_id: i32) -> Result<NewEpisode> {
     let pub_date = date.map(|x| x.to_rfc2822()).ok();
     let epoch = date.map(|x| x.timestamp() as i32).unwrap_or(0);
 
-    let length = item.enclosure().map(|x| x.length().parse().unwrap_or(0));
+    let length = || -> Option<i32> { item.enclosure().map(|x| x.length().parse().ok())? }();
+    let duration = parse_itunes_duration(item);
 
     Ok(NewEpisodeBuilder::default()
         .title(title)
         .uri(uri)
         .description(description)
         .length(length)
+        .duration(duration)
         .published_date(pub_date)
         .epoch(epoch)
         .guid(guid)
         .podcast_id(parent_id)
         .build()
         .unwrap())
+}
+
+/// Parses an Item Itunes extension and returns it's duration value in seconds.
+// FIXME: Rafactor
+// TODO: Write tests
+#[allow(non_snake_case)]
+fn parse_itunes_duration(item: &Item) -> Option<i32> {
+    let duration = item.itunes_ext().map(|s| s.duration())??;
+
+    // FOR SOME FUCKING REASON, IN THE APPLE EXTENSION SPEC
+    // THE DURATION CAN BE EITHER AN INT OF SECONDS OR
+    // A STRING OF THE FOLLOWING FORMATS:
+    // HH:MM:SS, H:MM:SS, MM:SS, M:SS
+    // LIKE WHO THE FUCK THOUGH THAT WOULD BE A GOOD IDEA.
+    if let Ok(NO_FUCKING_LOGIC) = duration.parse::<i32>() {
+        return Some(NO_FUCKING_LOGIC);
+    };
+
+    let mut seconds = 0;
+    let fk_apple = duration.split(':').collect::<Vec<_>>();
+    if fk_apple.len() == 3 {
+        seconds += fk_apple[0].parse::<i32>().unwrap_or(0) * 3600;
+        seconds += fk_apple[1].parse::<i32>().unwrap_or(0) * 60;
+        seconds += fk_apple[2].parse::<i32>().unwrap_or(0);
+    } else if fk_apple.len() == 2 {
+        seconds += fk_apple[0].parse::<i32>().unwrap_or(0) * 60;
+        seconds += fk_apple[1].parse::<i32>().unwrap_or(0);
+    }
+
+    Some(seconds)
 }
 
 #[cfg(test)]

@@ -112,10 +112,6 @@ impl NewPodcast {
         let con = db.get()?;
         match pd {
             Ok(foo) => {
-                if foo.source_id() != self.source_id {
-                    error!("NSPD sid: {}, SPD sid: {}", self.source_id, foo.source_id());
-                };
-
                 if (foo.link() != self.link) || (foo.title() != self.title)
                     || (foo.image_uri() != self.image_uri.as_ref().map(|x| x.as_str()))
                 {
@@ -166,6 +162,7 @@ pub(crate) struct NewEpisode {
     description: Option<String>,
     published_date: Option<String>,
     length: Option<i32>,
+    duration: Option<i32>,
     guid: Option<String>,
     epoch: i32,
     podcast_id: i32,
@@ -211,6 +208,7 @@ impl NewEpisode {
 
                 if foo.title() != self.title.as_str() || foo.epoch() != self.epoch
                     || foo.uri() != self.uri.as_ref().map(|s| s.as_str())
+                    || foo.duration() != self.duration
                 {
                     self.update(con, foo.rowid())?;
                 }

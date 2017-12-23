@@ -1,14 +1,17 @@
+use send_cell::SendCell;
 use glib;
 use gdk_pixbuf::Pixbuf;
 
 use hammond_data::feed;
-use hammond_data::{Podcast, Source};
+use hammond_data::{PodcastCoverQuery, Source};
 use hammond_downloader::downloader;
 
 use std::thread;
 use std::cell::RefCell;
 use std::sync::mpsc::{channel, Receiver};
+use std::sync::Mutex;
 use std::rc::Rc;
+use std::collections::HashMap;
 
 use content::Content;
 
@@ -59,14 +62,36 @@ fn refresh_podcasts_view() -> glib::Continue {
     glib::Continue(false)
 }
 
-pub fn get_pixbuf_from_path(pd: &Podcast) -> Option<Pixbuf> {
-    let img_path = downloader::cache_image(pd)?;
-    Pixbuf::new_from_file_at_scale(&img_path, 256, 256, true).ok()
+lazy_static! {
+    static ref CACHED_PIXBUFS: Mutex<HashMap<(i32, u32), Mutex<SendCell<Pixbuf>>>> = {
+        Mutex::new(HashMap::new())
+    };
 }
 
-pub fn get_pixbuf_from_path_128(pd: &Podcast) -> Option<Pixbuf> {
+// Since gdk_pixbuf::Pixbuf is refference counted and every episode,
+// use the cover of the Podcast Feed/Show, We can only create a Pixbuf
+// cover per show and pass around the Rc pointer.
+//
+// GObjects do not implement Send trait, so SendCell is a way around that.
+// Also lazy_static requires Sync trait, so that's what the mutexes are.
+// TODO: maybe use something that would just scale to requested size?
+pub fn get_pixbuf_from_path(pd: &PodcastCoverQuery, size: u32) -> Option<Pixbuf> {
+    let mut hashmap = CACHED_PIXBUFS.lock().unwrap();
+    {
+        let res = hashmap.get(&(pd.id(), size));
+        if let Some(px) = res {
+            let m = px.lock().unwrap();
+            return Some(m.clone().into_inner());
+        }
+    }
+
     let img_path = downloader::cache_image(pd)?;
-    Pixbuf::new_from_file_at_scale(&img_path, 128, 128, true).ok()
+    let px = Pixbuf::new_from_file_at_scale(&img_path, size as i32, size as i32, true).ok();
+    if let Some(px) = px {
+        hashmap.insert((pd.id(), size), Mutex::new(SendCell::new(px.clone())));
+        return Some(px);
+    }
+    None
 }
 
 #[cfg(test)]
@@ -92,7 +117,7 @@ mod tests {
 
         // Get the Podcast
         let pd = dbqueries::get_podcast_from_source_id(sid).unwrap();
-        let pxbuf = get_pixbuf_from_path(&pd);
+        let pxbuf = get_pixbuf_from_path(&pd.into(), 256);
         assert!(pxbuf.is_some());
     }
 }

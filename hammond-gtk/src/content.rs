@@ -6,6 +6,7 @@ use hammond_data::dbqueries;
 
 use views::shows::ShowsPopulated;
 use views::empty::EmptyView;
+use views::episodes::EpisodesView;
 
 use widgets::show::ShowWidget;
 use headerbar::Header;
@@ -22,8 +23,8 @@ pub struct Content {
 impl Content {
     pub fn new(header: Rc<Header>) -> Rc<Content> {
         let stack = gtk::Stack::new();
-        let shows = ShowStack::new(header);
         let episodes = EpisodeStack::new();
+        let shows = ShowStack::new(header, episodes.clone());
 
         stack.add_titled(&episodes.stack, "episodes", "Episodes");
         stack.add_titled(&shows.stack, "shows", "Shows");
@@ -49,15 +50,17 @@ impl Content {
 pub struct ShowStack {
     pub stack: gtk::Stack,
     header: Rc<Header>,
+    epstack: Rc<EpisodeStack>,
 }
 
 impl ShowStack {
-    fn new(header: Rc<Header>) -> Rc<ShowStack> {
+    fn new(header: Rc<Header>, epstack: Rc<EpisodeStack>) -> Rc<ShowStack> {
         let stack = gtk::Stack::new();
 
         let show = Rc::new(ShowStack {
             stack,
             header: header.clone(),
+            epstack,
         });
 
         let pop = ShowsPopulated::new(show.clone(), header);
@@ -109,7 +112,12 @@ impl ShowStack {
 
     pub fn replace_widget(&self, pd: &Podcast) {
         let old = self.stack.get_child_by_name("widget").unwrap();
-        let new = ShowWidget::new(Rc::new(self.clone()), self.header.clone(), pd);
+        let new = ShowWidget::new(
+            Rc::new(self.clone()),
+            self.epstack.clone(),
+            self.header.clone(),
+            pd,
+        );
 
         self.stack.remove(&old);
         self.stack.add_named(&new.container, "widget");
@@ -144,10 +152,7 @@ impl ShowStack {
 }
 
 #[derive(Debug, Clone)]
-struct RecentEpisodes;
-
-#[derive(Debug, Clone)]
-struct EpisodeStack {
+pub struct EpisodeStack {
     // populated: RecentEpisodes,
     // empty: EmptyView,
     stack: gtk::Stack,
@@ -155,14 +160,18 @@ struct EpisodeStack {
 
 impl EpisodeStack {
     fn new() -> Rc<EpisodeStack> {
-        let _pop = RecentEpisodes {};
+        let episodes = EpisodesView::new();
         let empty = EmptyView::new();
         let stack = gtk::Stack::new();
 
-        // stack.add_named(&pop.container, "populated");
+        stack.add_named(&episodes.container, "episodes");
         stack.add_named(&empty.container, "empty");
-        // FIXME:
-        stack.set_visible_child_name("empty");
+
+        if episodes.is_empty() {
+            stack.set_visible_child_name("empty");
+        } else {
+            stack.set_visible_child_name("episodes");
+        }
 
         Rc::new(EpisodeStack {
             // empty,
@@ -171,7 +180,19 @@ impl EpisodeStack {
         })
     }
 
-    fn update(&self) {
-        // unimplemented!()
+    pub fn update(&self) {
+        let old = self.stack.get_child_by_name("episodes").unwrap();
+        let eps = EpisodesView::new();
+
+        self.stack.remove(&old);
+        self.stack.add_named(&eps.container, "episodes");
+
+        if eps.is_empty() {
+            self.stack.set_visible_child_name("empty");
+        } else {
+            self.stack.set_visible_child_name("episodes");
+        }
+
+        old.destroy();
     }
 }
