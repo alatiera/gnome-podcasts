@@ -18,6 +18,8 @@ before_script:
   stage: test
   script:
   - rustc --version && cargo --version
+  # Force regeneration of gresources regardless of artifacts chage
+  - cd hammond-gtk/resources/ && glib-compile-resources --generate resources.xml && cd ../../
   - cargo build
   - cargo test --verbose -- --test-threads=1
   cache:
@@ -60,4 +62,6 @@ clippy:
   script:
   - rustc --version && cargo --version
   - cargo install clippy --force
+  # Force regeneration of gresources regardless of artifacts chage
+  - cd hammond-gtk/resources/ && glib-compile-resources --generate resources.xml && cd ../../
   - cargo clippy --all
