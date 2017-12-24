@@ -5,3 +5,7 @@ row {
 row:last-child {
 	border-bottom: none;
 }
+
+list, border {
+  border-radius: 4px;
+}
