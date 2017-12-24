@@ -61,6 +61,7 @@ fn build_ui(app: &gtk::Application) {
     // Get the main window
     let window = gtk::ApplicationWindow::new(app);
     window.set_default_size(860, 640);
+    window.set_title("Hammond");
 
     // Get the headerbar
     let header = Rc::new(headerbar::Header::default());
@@ -112,6 +113,9 @@ fn main() {
 
     let application = gtk::Application::new("org.gnome.Hammond", gio::ApplicationFlags::empty())
         .expect("Initialization failed...");
+
+    glib::set_application_name("Hammond");
+    glib::set_prgname(Some("Hammond"));
 
     // Add custom style
     let provider = gtk::CssProvider::new();
