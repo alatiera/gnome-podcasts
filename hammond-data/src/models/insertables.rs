@@ -22,7 +22,7 @@ trait Update {
 
 #[derive(Insertable)]
 #[table_name = "source"]
-#[derive(Debug, Clone, Default, Builder)]
+#[derive(Debug, Clone, Default, Builder, PartialEq)]
 #[builder(default)]
 #[builder(derive(Debug))]
 #[builder(setter(into))]
@@ -68,7 +68,7 @@ impl NewSource {
 
 #[derive(Insertable, AsChangeset)]
 #[table_name = "podcast"]
-#[derive(Debug, Clone, Default, Builder)]
+#[derive(Debug, Clone, Default, Builder, PartialEq)]
 #[builder(default)]
 #[builder(derive(Debug))]
 #[builder(setter(into))]
@@ -152,7 +152,7 @@ impl NewPodcast {
 
 #[derive(Insertable, AsChangeset)]
 #[table_name = "episode"]
-#[derive(Debug, Clone, Default, Builder)]
+#[derive(Debug, Clone, Default, Builder, PartialEq)]
 #[builder(default)]
 #[builder(derive(Debug))]
 #[builder(setter(into))]

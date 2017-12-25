@@ -128,19 +128,21 @@ mod tests {
                      the crucial issues of our time: national security, civil liberties, foreign \
                      policy, and criminal justice. Plus interviews with artists, thinkers, and \
                      newsmakers who challenge our preconceptions about the world we live in.";
-        let pd = new_podcast(&channel, 0);
 
-        assert_eq!(pd.title(), "Intercepted with Jeremy Scahill");
-        assert_eq!(pd.link(), "https://theintercept.com/podcasts");
-        assert_eq!(pd.description(), descr);
-        assert_eq!(
-            pd.image_uri(),
-            Some(
+        let pd = new_podcast(&channel, 0);
+        let expected = NewPodcastBuilder::default()
+            .title("Intercepted with Jeremy Scahill")
+            .link("https://theintercept.com/podcasts")
+            .description(descr)
+            .image_uri(Some(String::from(
                 "http://static.megaphone.fm/podcasts/d5735a50-d904-11e6-8532-73c7de466ea6/image/\
                  uploads_2F1484252190700-qhn5krasklbce3dh-a797539282700ea0298a3a26f7e49b0b_\
-                 2FIntercepted_COVER%2B_281_29.png"
-            )
-        );
+                 2FIntercepted_COVER%2B_281_29.png")
+            ))
+            .build()
+            .unwrap();
+
+        assert_eq!(pd, expected);
     }
 
     #[test]
@@ -153,13 +155,17 @@ mod tests {
                      interest.";
         let pd = new_podcast(&channel, 0);
 
-        assert_eq!(pd.title(), "The Breakthrough");
-        assert_eq!(pd.link(), "http://www.propublica.org/podcast");
-        assert_eq!(pd.description(), descr);
-        assert_eq!(
-            pd.image_uri(),
-            Some("http://www.propublica.org/images/podcast_logo_2.png")
-        );
+        let expected = NewPodcastBuilder::default()
+            .title("The Breakthrough")
+            .link("http://www.propublica.org/podcast")
+            .description(descr)
+            .image_uri(Some(String::from(
+                "http://www.propublica.org/images/podcast_logo_2.png",
+            )))
+            .build()
+            .unwrap();
+
+        assert_eq!(pd, expected);
     }
 
     #[test]
@@ -172,13 +178,17 @@ mod tests {
                      Linux.";
         let pd = new_podcast(&channel, 0);
 
-        assert_eq!(pd.title(), "LINUX Unplugged Podcast");
-        assert_eq!(pd.link(), "http://www.jupiterbroadcasting.com/");
-        assert_eq!(pd.description(), descr);
-        assert_eq!(
-            pd.image_uri(),
-            Some("http://www.jupiterbroadcasting.com/images/LASUN-Badge1400.jpg")
-        );
+        let expected = NewPodcastBuilder::default()
+            .title("LINUX Unplugged Podcast")
+            .link("http://www.jupiterbroadcasting.com/")
+            .description(descr)
+            .image_uri(Some(String::from(
+                "http://www.jupiterbroadcasting.com/images/LASUN-Badge1400.jpg",
+            )))
+            .build()
+            .unwrap();
+
+        assert_eq!(pd, expected);
     }
 
     #[test]
@@ -187,18 +197,18 @@ mod tests {
         let channel = Channel::read_from(BufReader::new(file)).unwrap();
 
         let pd = new_podcast(&channel, 0);
-        let descr = "A weekly discussion of Rust RFCs";
 
-        assert_eq!(pd.title(), "Request For Explanation");
-        assert_eq!(
-            pd.link(),
-            "https://request-for-explanation.github.io/podcast/"
-        );
-        assert_eq!(pd.description(), descr);
-        assert_eq!(
-            pd.image_uri(),
-            Some("https://request-for-explanation.github.io/podcast/podcast.png")
-        );
+        let expected = NewPodcastBuilder::default()
+            .title("Request For Explanation")
+            .link("https://request-for-explanation.github.io/podcast/")
+            .description("A weekly discussion of Rust RFCs")
+            .image_uri(Some(String::from(
+                "https://request-for-explanation.github.io/podcast/podcast.png",
+            )))
+            .build()
+            .unwrap();
+
+        assert_eq!(pd, expected);
     }
 
     #[test]
