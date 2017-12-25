@@ -7,7 +7,7 @@
     <property name="tooltip_text" translatable="yes">Add a new feed</property>
     <property name="valign">center</property>
     <child>
-      <object class="GtkBox" id="add-box">
+      <object class="GtkBox" id="add_box">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="valign">center</property>
@@ -18,7 +18,7 @@
         <property name="orientation">vertical</property>
         <property name="spacing">6</property>
         <child>
-          <object class="GtkLabel" id="add-box-enter-address-label">
+          <object class="GtkLabel" id="enter_address_label">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="halign">start</property>
@@ -35,12 +35,12 @@
           </packing>
         </child>
         <child>
-          <object class="GtkBox" id="add-entry-box">
+          <object class="GtkBox" id="add_entry_box">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="spacing">6</property>
             <child>
-              <object class="GtkEntry" id="new-url">
+              <object class="GtkEntry" id="new_url">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="width_chars">30</property>
@@ -53,12 +53,12 @@
               </packing>
             </child>
             <child>
-              <object class="GtkStack" id="add-button-stack">
+              <object class="GtkStack" id="add_button_stack">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="interpolate_size">True</property>
                 <child>
-                  <object class="GtkButton" id="add-button">
+                  <object class="GtkButton" id="add_button">
                     <property name="label" translatable="yes">Add</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
@@ -99,7 +99,7 @@
           </packing>
         </child>
         <child>
-          <object class="GtkLabel" id="add-box-already-subscribed-label">
+          <object class="GtkLabel" id="already_subscribed_label">
             <property name="can_focus">False</property>
             <property name="halign">start</property>
             <property name="label" translatable="yes">You are already subscribed to that feed!</property>
@@ -240,7 +240,7 @@
           </packing>
         </child>
         <child>
-          <object class="GtkModelButton">
+          <object class="GtkModelButton" id="refresh_button">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="receives_default">True</property>

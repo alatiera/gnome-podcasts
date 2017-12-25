@@ -57,8 +57,9 @@ impl Header {
 
         let add_popover: gtk::Popover = builder.get_object("add_popover").unwrap();
         let menu_popover: gtk::PopoverMenu = builder.get_object("menu_popover").unwrap();
-        let new_url: gtk::Entry = builder.get_object("new-url").unwrap();
-        let add_button: gtk::Button = builder.get_object("add-button").unwrap();
+        let new_url: gtk::Entry = builder.get_object("new_url").unwrap();
+        let add_button: gtk::Button = builder.get_object("add_button").unwrap();
+        let refresh_button: gtk::Button = builder.get_object("refresh_button").unwrap();
         self.switch.set_stack(&content.stack);
 
         new_url.connect_changed(move |url| {
@@ -72,6 +73,11 @@ impl Header {
             // TODO: map the spinner
             add_popover.hide();
         }));
+
+        refresh_button.connect_clicked(clone!(content => move |_| {
+            utils::refresh_feed(content.clone(), None);
+        }));
+
         self.add_toggle.set_popover(&add_popover);
         self.menu_toggle.set_popover(&menu_popover);
 
