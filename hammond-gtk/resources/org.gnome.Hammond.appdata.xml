@@ -4,8 +4,8 @@
   <name>Hammond</name>
   <project_license>GPL-3.0</project_license>
   <metadata_license>CC0-1.0</metadata_license>
-  <developer_name>Daniel García Moreno</developer_name>
-  <summary>Gtk+ Matrix.org client</summary>
+  <developer_name>Jordan Petridis</developer_name>
+  <summary>GNOME Podcast Client written in Rust</summary>
   <url type="homepage">https://gitlab.gnome.org/alatiera/Hammond</url>
   <description>
     Hammond is a Fast, Safe and Reliable Gtk+ Podcast client written in Rust
@@ -17,7 +17,7 @@
     </screenshot>
   </screenshots>
   <releases>
-    <release version="0.1.1" date="2017-11-13"/>
+    <release version="0.2.0" date="2017-11-28"/>
   </releases>
   <update_contact>jordanpetridis@protonmail.com</update_contact>
 </component>
