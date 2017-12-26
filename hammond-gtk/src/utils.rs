@@ -34,20 +34,18 @@ pub fn refresh_feed(content: Rc<Content>, source: Option<Vec<Source>>) {
     }));
 
     thread::spawn(move || {
-        let feeds = {
-            if let Some(vec) = source {
-                Ok(feed::fetch(vec))
-            } else {
-                feed::fetch_all()
-            }
+        if let Some(s) = source {
+            feed::index_loop(s);
+        } else {
+            let e = feed::index_all();
+            if let Err(err) = e {
+                error!("Error While trying to update the database.");
+                error!("Error msg: {}", err);
+            };
         };
 
-        if let Ok(x) = feeds {
-            feed::index(x);
-
-            sender.send(true).expect("Couldn't send data to channel");;
-            glib::idle_add(refresh_podcasts_view);
-        };
+        sender.send(true).expect("Couldn't send data to channel");;
+        glib::idle_add(refresh_podcasts_view);
     });
 }
 
@@ -113,7 +111,7 @@ mod tests {
 
         // Convert Source it into a Feed and index it
         let feed = source.into_feed().unwrap();
-        index(vec![feed]);
+        index(&feed);
 
         // Get the Podcast
         let pd = dbqueries::get_podcast_from_source_id(sid).unwrap();

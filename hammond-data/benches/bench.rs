@@ -13,7 +13,7 @@ use rayon::prelude::*;
 use test::Bencher;
 
 use hammond_data::Source;
-use hammond_data::feed::{index, Feed};
+use hammond_data::feed::*;
 
 use std::io::BufReader;
 
@@ -43,7 +43,7 @@ fn index_urls() {
         })
         .collect();
 
-    index(feeds);
+    feeds.par_iter().for_each(|x| index(x));
 }
 
 #[bench]

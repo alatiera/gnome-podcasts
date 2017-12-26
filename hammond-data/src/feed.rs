@@ -99,58 +99,42 @@ impl Feed {
             .collect();
 
         Ok(episodes)
-
-        // This would return every episode of the feed from the db.
-        // self.index_channel_items(&pd)?;
-        // Ok(dbqueries::get_pd_episodes(&pd)?)
     }
 }
 
-/// Use's `fetch_all` to retrieve a list of `Feed`s and use index them using `feed::index`.
-pub fn index_all() -> Result<()> {
-    let feeds = fetch_all()?;
-
-    index(feeds);
-    Ok(())
+/// Handle the indexing of a `Feed` into the Database.
+pub fn index(feed: &Feed) {
+    if let Err(err) = feed.index() {
+        error!("Error While trying to update the database.");
+        error!("Error msg: {}", err);
+    };
 }
 
-/// Handle the indexing of a feed `F` into the Database.
-///
-/// Consume a `ParallelIterator<Feed>` and index it.
-pub fn index<F: IntoParallelIterator<Item = Feed>>(feeds: F) {
-    feeds.into_par_iter().for_each(|f| {
-        let e = f.index();
-        if e.is_err() {
-            error!("Error While trying to update the database.");
-            error!("Error msg: {}", e.unwrap_err());
-        };
-    });
+/// Consume a `Source` and return a `Feed`.
+fn fetch(source: Source) -> Result<Feed> {
+    let uri = source.uri().to_owned();
+    let feed = Feed::from_source(source);
+    if feed.is_err() {
+        error!("Error While trying to fetch from source url: {}.", uri);
+    }
+    feed
+}
+
+/// Index a "list" of `Source`s.
+pub fn index_loop<S: IntoParallelIterator<Item = Source>>(sources: S) {
+    sources
+        .into_par_iter()
+        .filter_map(|x| fetch(x).ok())
+        .for_each(|x| index(&x));
+
     info!("Indexing done.");
 }
 
-/// Retrieve a list of all the `Source` in the database,
-/// then use `feed::fetch` to convert them into `Feed`s
-/// and return them.
-pub fn fetch_all() -> Result<Vec<Feed>> {
-    let feeds = dbqueries::get_sources()?;
-    Ok(fetch(feeds))
-}
-
-/// Consume a `ParallelIterator<Source>` and return a list of `Feed`s.
-pub fn fetch<F: IntoParallelIterator<Item = Source>>(feeds: F) -> Vec<Feed> {
-    let results: Vec<_> = feeds
-        .into_par_iter()
-        .filter_map(|x| {
-            let uri = x.uri().to_owned();
-            let feed = Feed::from_source(x).ok();
-            if feed.is_none() {
-                error!("Error While trying to fetch from source url: {}.", uri);
-            }
-            feed
-        })
-        .collect();
-
-    results
+/// Retrieves all `Sources` from the database and updates/indexes them.
+pub fn index_all() -> Result<()> {
+    let sources = dbqueries::get_sources()?;
+    index_loop(sources);
+    Ok(())
 }
 
 #[cfg(test)]
@@ -181,25 +165,6 @@ mod tests {
 
         // Run again to cover Unique constrains erros.
         index_all().unwrap();
-    }
-
-    #[test]
-    /// Insert feeds and update/index them.
-    fn test_fetch_loop() {
-        truncate_db().unwrap();
-        let inpt = vec![
-            "https://request-for-explanation.github.io/podcast/rss.xml",
-            "https://feeds.feedburner.com/InterceptedWithJeremyScahill",
-            "http://feeds.propublica.org/propublica/podcast",
-            "http://feeds.feedburner.com/linuxunplugged",
-        ];
-
-        inpt.iter().for_each(|url| {
-            // Index the urls into the source table.
-            Source::from_url(url).unwrap();
-        });
-
-        fetch_all().unwrap();
     }
 
     #[test]
@@ -240,7 +205,7 @@ mod tests {
             .collect();
 
         // Index the channels
-        index(feeds);
+        feeds.par_iter().for_each(|x| index(&x));
 
         // Assert the index rows equal the controlled results
         assert_eq!(dbqueries::get_sources().unwrap().len(), 4);
