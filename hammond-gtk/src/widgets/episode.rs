@@ -9,7 +9,7 @@ use humansize::{file_size_opts as size_opts, FileSize};
 
 use hammond_data::dbqueries;
 use hammond_data::{EpisodeWidgetQuery, Podcast};
-use hammond_data::utils::*;
+// use hammond_data::utils::*;
 use hammond_data::errors::*;
 use hammond_downloader::downloader;
 
@@ -21,7 +21,6 @@ use std::path::Path;
 type Foo = RefCell<
     Option<
         (
-            gtk::Button,
             gtk::Button,
             gtk::Button,
             gtk::Button,
@@ -37,7 +36,6 @@ thread_local!(static GLOBAL: Foo = RefCell::new(None));
 pub struct EpisodeWidget {
     pub container: gtk::Box,
     play: gtk::Button,
-    delete: gtk::Button,
     download: gtk::Button,
     cancel: gtk::Button,
     title: gtk::Label,
@@ -59,7 +57,6 @@ impl Default for EpisodeWidget {
 
         let download: gtk::Button = builder.get_object("download_button").unwrap();
         let play: gtk::Button = builder.get_object("play_button").unwrap();
-        let delete: gtk::Button = builder.get_object("delete_button").unwrap();
         let cancel: gtk::Button = builder.get_object("cancel_button").unwrap();
 
         let title: gtk::Label = builder.get_object("title_label").unwrap();
@@ -77,7 +74,6 @@ impl Default for EpisodeWidget {
             download,
             play,
             cancel,
-            delete,
             title,
             duration,
             size,
@@ -152,7 +148,6 @@ impl EpisodeWidget {
         if local_uri.is_some() && Path::new(local_uri.unwrap()).exists() {
             self.download.hide();
             self.play.show();
-            self.delete.show();
         }
 
         let title = &self.title;
@@ -168,31 +163,18 @@ impl EpisodeWidget {
         }));
 
         let play = &self.play;
-        let download = &self.download;
-        self.delete
-            .connect_clicked(clone!(episode, play, download => move |del| {
-            on_delete_bttn_clicked(episode.rowid());
-            del.hide();
-            play.hide();
-            download.show();
-        }));
-
-        let play = &self.play;
-        let delete = &self.delete;
         let cancel = &self.cancel;
         let progress = self.progress.clone();
-        self.download.connect_clicked(
-            clone!(play, delete, episode, cancel, progress  => move |dl| {
+        self.download
+            .connect_clicked(clone!(play, episode, cancel, progress  => move |dl| {
             on_download_clicked(
                 &mut episode.clone(),
                 dl,
                 &play,
-                &delete,
                 &cancel,
                 progress.clone()
             );
-        }),
-        );
+        }));
     }
 }
 
@@ -201,7 +183,6 @@ fn on_download_clicked(
     ep: &mut EpisodeWidgetQuery,
     download_bttn: &gtk::Button,
     play_bttn: &gtk::Button,
-    del_bttn: &gtk::Button,
     cancel_bttn: &gtk::Button,
     progress_bar: gtk::ProgressBar,
 ) {
@@ -218,11 +199,10 @@ fn on_download_clicked(
 
     // Pass the desired arguments into the Local Thread Storage.
     GLOBAL.with(
-        clone!(download_bttn, play_bttn, del_bttn, cancel_bttn, progress => move |global| {
+        clone!(download_bttn, play_bttn, cancel_bttn, progress => move |global| {
             *global.borrow_mut() = Some((
                 download_bttn,
                 play_bttn,
-                del_bttn,
                 cancel_bttn,
                 progress,
                 receiver));
@@ -232,7 +212,7 @@ fn on_download_clicked(
     let pd = dbqueries::get_podcast_from_id(ep.podcast_id()).unwrap();
     let pd_title = pd.title().to_owned();
     let mut ep = ep.clone();
-    cancel_bttn.show();
+    // cancel_bttn.show();
     progress.show();
     download_bttn.hide();
     thread::spawn(move || {
@@ -267,25 +247,24 @@ fn on_play_bttn_clicked(episode_id: i32) {
     }
 }
 
-fn on_delete_bttn_clicked(episode_id: i32) {
-    let mut ep = dbqueries::get_episode_from_rowid(episode_id)
-        .unwrap()
-        .into();
+// fn on_delete_bttn_clicked(episode_id: i32) {
+//     let mut ep = dbqueries::get_episode_from_rowid(episode_id)
+//         .unwrap()
+//         .into();
 
-    let e = delete_local_content(&mut ep);
-    if let Err(err) = e {
-        error!("Error while trying to delete file: {:?}", ep.local_uri());
-        error!("Error: {}", err);
-    };
-}
+//     let e = delete_local_content(&mut ep);
+//     if let Err(err) = e {
+//         error!("Error while trying to delete file: {:?}", ep.local_uri());
+//         error!("Error: {}", err);
+//     };
+// }
 
 fn receive() -> glib::Continue {
     GLOBAL.with(|global| {
         if let Some((
             ref download_bttn,
             ref play_bttn,
-            ref del_bttn,
-            ref cancel_bttn,
+            ref _cancel_bttn,
             ref progress_bar,
             ref reciever,
         )) = *global.borrow()
@@ -293,8 +272,7 @@ fn receive() -> glib::Continue {
             if reciever.try_recv().is_ok() {
                 download_bttn.hide();
                 play_bttn.show();
-                del_bttn.show();
-                cancel_bttn.hide();
+                // cancel_bttn.hide();
                 progress_bar.hide();
             }
         }
