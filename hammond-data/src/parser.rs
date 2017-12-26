@@ -222,43 +222,51 @@ mod tests {
                      Shaun King explains his call for a boycott of the NFL and talks about his \
                      campaign to bring violent neo-Nazis to justice. Rapper Open Mike Eagle \
                      performs.";
-        let i = new_episode(&firstitem, 0).unwrap();
 
-        assert_eq!(i.title(), "The Super Bowl of Racism");
-        assert_eq!(
-            i.uri(),
-            Some("http://traffic.megaphone.fm/PPY6458293736.mp3")
-        );
-        assert_eq!(i.description(), Some(descr));
-        assert_eq!(i.length(), Some(66738886));
-        assert_eq!(i.guid(), Some("7df4070a-9832-11e7-adac-cb37b05d5e24"));
-        assert_eq!(i.published_date(), Some("Wed, 13 Sep 2017 10:00:00 +0000"));
-        assert_eq!(i.epoch(), 1505296800);
+        let ep = new_episode(&firstitem, 0).unwrap();
+        let expected = NewEpisodeBuilder::default()
+            .title("The Super Bowl of Racism")
+            .uri(Some(String::from(
+                "http://traffic.megaphone.fm/PPY6458293736.mp3",
+            )))
+            .description(Some(String::from(descr)))
+            .guid(Some(String::from("7df4070a-9832-11e7-adac-cb37b05d5e24")))
+            .published_date(Some(String::from("Wed, 13 Sep 2017 10:00:00 +0000")))
+            .length(Some(66738886))
+            .epoch(1505296800)
+            .duration(Some(4171))
+            .build()
+            .unwrap();
+
+        assert_eq!(ep, expected);
 
         let second = channel.items().iter().nth(1).unwrap();
-        let i2 = new_episode(&second, 0).unwrap();
+        let ep = new_episode(&second, 0).unwrap();
 
-        let descr2 = "This week on Intercepted: Jeremy gives an update on the aftermath of \
-                      Blackwater’s 2007 massacre of Iraqi civilians. Intercept reporter Lee Fang \
-                      lays out how a network of libertarian think tanks called the Atlas Network \
-                      is insidiously shaping political infrastructure in Latin America. We speak \
-                      with attorney and former Hugo Chavez adviser Eva Golinger about the \
-                      Venezuela\'s political turmoil.And we hear Claudia Lizardo of the \
-                      Caracas-based band, La Pequeña Revancha, talk about her music and hopes for \
-                      Venezuela.";
-        assert_eq!(
-            i2.title(),
-            "Atlas Golfed — U.S.-Backed Think Tanks Target Latin America"
-        );
-        assert_eq!(
-            i2.uri(),
-            Some("http://traffic.megaphone.fm/FL5331443769.mp3")
-        );
-        assert_eq!(i2.description(), Some(descr2));
-        assert_eq!(i2.length(), Some(67527575));
-        assert_eq!(i2.guid(), Some("7c207a24-e33f-11e6-9438-eb45dcf36a1d"));
-        assert_eq!(i2.published_date(), Some("Wed,  9 Aug 2017 10:00:00 +0000"));
-        assert_eq!(i2.epoch(), 1502272800);
+        let descr = "This week on Intercepted: Jeremy gives an update on the aftermath of \
+                     Blackwater’s 2007 massacre of Iraqi civilians. Intercept reporter Lee Fang \
+                     lays out how a network of libertarian think tanks called the Atlas Network \
+                     is insidiously shaping political infrastructure in Latin America. We speak \
+                     with attorney and former Hugo Chavez adviser Eva Golinger about the \
+                     Venezuela\'s political turmoil.And we hear Claudia Lizardo of the \
+                     Caracas-based band, La Pequeña Revancha, talk about her music and hopes for \
+                     Venezuela.";
+
+        let expected = NewEpisodeBuilder::default()
+            .title("Atlas Golfed — U.S.-Backed Think Tanks Target Latin America")
+            .uri(Some(String::from(
+                "http://traffic.megaphone.fm/FL5331443769.mp3",
+            )))
+            .description(Some(String::from(descr)))
+            .guid(Some(String::from("7c207a24-e33f-11e6-9438-eb45dcf36a1d")))
+            .published_date(Some(String::from("Wed,  9 Aug 2017 10:00:00 +0000")))
+            .length(Some(67527575))
+            .epoch(1502272800)
+            .duration(Some(4220))
+            .build()
+            .unwrap();
+
+        assert_eq!(ep, expected);
     }
 
     #[test]
@@ -269,53 +277,52 @@ mod tests {
         let firstitem = channel.items().first().unwrap();
         let descr = "<p>A reporter finds that homes meant to replace New York’s troubled \
                      psychiatric hospitals might be just as bad.</p>";
-        let i = new_episode(&firstitem, 0).unwrap();
+        let ep = new_episode(&firstitem, 0).unwrap();
 
-        assert_eq!(
-            i.title(),
-            "The Breakthrough: Hopelessness and Exploitation Inside Homes for Mentally Ill"
-        );
-        assert_eq!(
-            i.uri(),
-            Some("http://tracking.feedpress.it/link/10581/6726758/20170908-cliff-levy.mp3")
-        );
-        assert_eq!(i.description(), Some(descr));
-        assert_eq!(i.length(), Some(33396551));
-        assert_eq!(
-            i.guid(),
-            Some(
-                "https://www.propublica.org/podcast/\
-                 the-breakthrough-hopelessness-exploitation-homes-for-mentally-ill#134472"
-            )
-        );
-        assert_eq!(i.published_date(), Some("Fri,  8 Sep 2017 12:00:00 +0000"));
-        assert_eq!(i.epoch(), 1504872000);
+        let expected = NewEpisodeBuilder::default()
+            .title("The Breakthrough: Hopelessness and Exploitation Inside Homes for Mentally Ill")
+            .uri(Some(String::from("http://tracking.feedpress.it/link/10581/6726758/20170908-cliff-levy.mp3")))
+            .description(Some(String::from(descr)))
+            .guid(Some(String::from("https://www.propublica.org/podcast/\
+                 the-breakthrough-hopelessness-exploitation-homes-for-mentally-ill#134472")))
+            .published_date(Some(String::from("Fri,  8 Sep 2017 12:00:00 +0000")))
+            .length(Some(33396551))
+            .epoch(1504872000)
+            .duration(Some(1670))
+            .build()
+            .unwrap();
+
+        assert_eq!(ep, expected);
 
         let second = channel.items().iter().nth(1).unwrap();
-        let i2 = new_episode(&second, 0).unwrap();
-        let descr2 = "<p>Jonathan Allen and Amie Parnes didn’t know their book would be called \
-                      ‘Shattered,’ or that their extraordinary access would let them chronicle \
-                      the mounting signs of a doomed campaign.</p>";
+        let ep = new_episode(&second, 0).unwrap();
+        let descr =
+            "<p>Jonathan Allen and Amie Parnes didn’t know their book would be called \
+             ‘Shattered,’ or that their extraordinary access would let them chronicle the \
+             mounting signs of a doomed campaign.</p>";
 
-        assert_eq!(
-            i2.title(),
-            "The Breakthrough: Behind the Scenes of Hillary Clinton’s Failed Bid for President"
-        );
-        assert_eq!(
-            i2.uri(),
-            Some("http://tracking.feedpress.it/link/10581/6726759/16_JohnAllen-CRAFT.mp3")
-        );
-        assert_eq!(i2.description(), Some(descr2));
-        assert_eq!(i2.length(), Some(17964071));
-        assert_eq!(
-            i2.guid(),
-            Some(
-                "https://www.propublica.\
-                 org/podcast/the-breakthrough-hillary-clinton-failed-presidential-bid#133721"
-            )
-        );
-        assert_eq!(i2.published_date(), Some("Fri, 25 Aug 2017 12:00:00 +0000"));
-        assert_eq!(i2.epoch(), 1503662400);
+        let expected =
+            NewEpisodeBuilder::default()
+                .title(
+                    "The Breakthrough: Behind the Scenes of Hillary Clinton’s Failed Bid for \
+                     President",
+                )
+                .uri(Some(String::from(
+                    "http://tracking.feedpress.it/link/10581/6726759/16_JohnAllen-CRAFT.mp3",
+                )))
+                .description(Some(String::from(descr)))
+                .guid(Some(String::from(
+                    "https://www.propublica.\
+                     org/podcast/the-breakthrough-hillary-clinton-failed-presidential-bid#133721",
+                )))
+                .published_date(Some(String::from("Fri, 25 Aug 2017 12:00:00 +0000")))
+                .length(Some(17964071))
+                .epoch(1503662400)
+                .duration(Some(1125))
+                .build()
+                .unwrap();
+
+        assert_eq!(ep, expected);
     }
 
     #[test]
@@ -328,38 +335,49 @@ mod tests {
                      decides to blow off a little steam by attacking his IoT devices, Wes has the \
                      scope on Equifax blaming open source &amp; the Beard just saved the show. \
                      It’s a really packed episode!";
-        let i = new_episode(&firstitem, 0).unwrap();
+        let ep = new_episode(&firstitem, 0).unwrap();
 
-        assert_eq!(i.title(), "Hacking Devices with Kali Linux | LUP 214");
-        assert_eq!(
-            i.uri(),
-            Some("http://www.podtrac.com/pts/redirect.mp3/traffic.libsyn.com/jnite/lup-0214.mp3")
-        );
-        assert_eq!(i.description(), Some(descr));
-        assert_eq!(i.length(), Some(46479789));
-        assert_eq!(i.guid(), Some("78A682B4-73E8-47B8-88C0-1BE62DD4EF9D"));
-        assert_eq!(i.published_date(), Some("Tue, 12 Sep 2017 22:24:42 -0700"));
-        assert_eq!(i.epoch(), 1505280282);
+        let expected = NewEpisodeBuilder::default()
+            .title("Hacking Devices with Kali Linux | LUP 214")
+            .uri(Some(String::from(
+                "http://www.podtrac.com/pts/redirect.mp3/traffic.libsyn.com/jnite/lup-0214.mp3",
+            )))
+            .description(Some(String::from(descr)))
+            .guid(Some(String::from("78A682B4-73E8-47B8-88C0-1BE62DD4EF9D")))
+            .published_date(Some(String::from("Tue, 12 Sep 2017 22:24:42 -0700")))
+            .length(Some(46479789))
+            .epoch(1505280282)
+            .duration(Some(5733))
+            .build()
+            .unwrap();
+
+        assert_eq!(ep, expected);
 
         let second = channel.items().iter().nth(1).unwrap();
-        let i2 = new_episode(&second, 0).unwrap();
+        let ep = new_episode(&second, 0).unwrap();
 
-        let descr2 = "<p>The Gnome project is about to solve one of our audience's biggest \
-                      Wayland’s concerns. But as the project takes on a new level of relevance, \
-                      decisions for the next version of Gnome have us worried about the \
-                      future.</p>\n<p>Plus we chat with Wimpy about the Ubuntu Rally in NYC, \
-                      Microsoft’s sneaky move to turn Windows 10 into the “ULTIMATE LINUX \
-                      RUNTIME”, community news &amp; more!</p>";
-        assert_eq!(i2.title(), "Gnome Does it Again | LUP 213");
-        assert_eq!(
-            i2.uri(),
-            Some("http://www.podtrac.com/pts/redirect.mp3/traffic.libsyn.com/jnite/lup-0213.mp3")
-        );
-        assert_eq!(i2.description(), Some(descr2));
-        assert_eq!(i2.length(), Some(36544272));
-        assert_eq!(i2.guid(), Some("1CE57548-B36C-4F14-832A-5D5E0A24E35B"));
-        assert_eq!(i2.published_date(), Some("Tue,  5 Sep 2017 20:57:27 -0700"));
-        assert_eq!(i2.epoch(), 1504670247);
+        let descr = "<p>The Gnome project is about to solve one of our audience's biggest \
+                     Wayland’s concerns. But as the project takes on a new level of relevance, \
+                     decisions for the next version of Gnome have us worried about the \
+                     future.</p>\n<p>Plus we chat with Wimpy about the Ubuntu Rally in NYC, \
+                     Microsoft’s sneaky move to turn Windows 10 into the “ULTIMATE LINUX \
+                     RUNTIME”, community news &amp; more!</p>";
+
+        let expected = NewEpisodeBuilder::default()
+            .title("Gnome Does it Again | LUP 213")
+            .uri(Some(String::from(
+                "http://www.podtrac.com/pts/redirect.mp3/traffic.libsyn.com/jnite/lup-0213.mp3",
+            )))
+            .description(Some(String::from(descr)))
+            .guid(Some(String::from("1CE57548-B36C-4F14-832A-5D5E0A24E35B")))
+            .published_date(Some(String::from("Tue,  5 Sep 2017 20:57:27 -0700")))
+            .length(Some(36544272))
+            .epoch(1504670247)
+            .duration(Some(4491))
+            .build()
+            .unwrap();
+
+        assert_eq!(ep, expected);
     }
 
     #[test]
@@ -370,47 +388,51 @@ mod tests {
         let firstitem = channel.items().iter().nth(9).unwrap();
         let descr = "This week we look at <a href=\"https://github.com/rust-lang/rfcs/pull/2094\" \
                      rel=\"noopener noreferrer\">RFC 2094</a> \"Non-lexical lifetimes\"";
-        let i = new_episode(&firstitem, 0).unwrap();
+        let ep = new_episode(&firstitem, 0).unwrap();
 
-        assert_eq!(i.title(), "Episode #9 - A Once in a Lifetime RFC");
-        assert_eq!(
-            i.uri(),
-            Some(
+        let expected = NewEpisodeBuilder::default()
+            .title("Episode #9 - A Once in a Lifetime RFC")
+            .uri(Some(String::from(
                 "http://request-for-explanation.github.\
-                 io/podcast/ep9-a-once-in-a-lifetime-rfc/episode.mp3"
-            )
-        );
-        assert_eq!(i.description(), Some(descr));
-        assert_eq!(i.length(), Some(15077388));
-        assert_eq!(
-            i.guid(),
-            Some("https://request-for-explanation.github.io/podcast/ep9-a-once-in-a-lifetime-rfc/")
-        );
-        assert_eq!(i.published_date(), Some("Mon, 28 Aug 2017 15:00:00 -0700"));
-        assert_eq!(i.epoch(), 1503957600);
+                 io/podcast/ep9-a-once-in-a-lifetime-rfc/episode.mp3",
+            )))
+            .description(Some(String::from(descr)))
+            .guid(Some(String::from(
+                "https://request-for-explanation.github.io/podcast/ep9-a-once-in-a-lifetime-rfc/",
+            )))
+            .published_date(Some(String::from("Mon, 28 Aug 2017 15:00:00 -0700")))
+            .length(Some(15077388))
+            .epoch(1503957600)
+            .duration(Some(2533))
+            .build()
+            .unwrap();
+
+        assert_eq!(ep, expected);
 
         let second = channel.items().iter().nth(8).unwrap();
-        let i2 = new_episode(&second, 0).unwrap();
+        let ep = new_episode(&second, 0).unwrap();
 
-        let descr2 = "This week we look at <a \
-                      href=\"https://github.com/rust-lang/rfcs/pull/2071\" rel=\"noopener \
-                      noreferrer\">RFC 2071</a> \"Add impl Trait type alias and variable \
-                      declarations\"";
-        assert_eq!(i2.title(), "Episode #8 - An Existential Crisis");
-        assert_eq!(
-            i2.uri(),
-            Some(
+        let descr = "This week we look at <a href=\"https://github.com/rust-lang/rfcs/pull/2071\" \
+                     rel=\"noopener noreferrer\">RFC 2071</a> \"Add impl Trait type alias and \
+                     variable declarations\"";
+
+        let expected = NewEpisodeBuilder::default()
+            .title("Episode #8 - An Existential Crisis")
+            .uri(Some(String::from(
                 "http://request-for-explanation.github.\
-                 io/podcast/ep8-an-existential-crisis/episode.mp3"
-            )
-        );
-        assert_eq!(i2.description(), Some(descr2));
-        assert_eq!(i2.length(), Some(13713219));
-        assert_eq!(
-            i2.guid(),
-            Some("https://request-for-explanation.github.io/podcast/ep8-an-existential-crisis/")
-        );
-        assert_eq!(i2.published_date(), Some("Tue, 15 Aug 2017 17:00:00 -0700"));
-        assert_eq!(i2.epoch(), 1502841600);
+                 io/podcast/ep8-an-existential-crisis/episode.mp3",
+            )))
+            .description(Some(String::from(descr)))
+            .guid(Some(String::from(
+                "https://request-for-explanation.github.io/podcast/ep8-an-existential-crisis/",
+            )))
+            .published_date(Some(String::from("Tue, 15 Aug 2017 17:00:00 -0700")))
+            .length(Some(13713219))
+            .epoch(1502841600)
+            .duration(Some(2313))
+            .build()
+            .unwrap();
+
+        assert_eq!(ep, expected);
     }
 }
