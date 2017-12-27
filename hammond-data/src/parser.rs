@@ -12,7 +12,14 @@ use errors::*;
 /// Parses a `rss::Channel` into a `NewPodcast` Struct.
 pub(crate) fn new_podcast(chan: &Channel, source_id: i32) -> NewPodcast {
     let title = chan.title().trim();
-    let description = replace_extra_spaces(&ammonia::clean(chan.description()));
+
+    // Prefer itunes summary over rss.description since many feeds put html into rss.description.
+    let summary = chan.itunes_ext().map(|s| s.summary()).and_then(|s| s);
+    let description = if let Some(sum) = summary {
+        replace_extra_spaces(&ammonia::clean(sum))
+    } else {
+        replace_extra_spaces(&ammonia::clean(chan.description()))
+    };
 
     let link = url_cleaner(chan.link());
     let x = chan.itunes_ext().map(|s| s.image());
@@ -42,6 +49,7 @@ pub(crate) fn new_episode(item: &Item, parent_id: i32) -> Result<NewEpisode> {
     let title = item.title().unwrap().trim().to_owned();
     let guid = item.guid().map(|s| s.value().trim().to_owned());
 
+    // Prefer itunes summary over rss.description since many feeds put html into rss.description.
     let summary = item.itunes_ext().map(|s| s.summary()).and_then(|s| s);
     let description = if summary.is_some() {
         summary.map(|s| replace_extra_spaces(&ammonia::clean(s)))
@@ -155,9 +163,8 @@ mod tests {
         let file = File::open("tests/feeds/TheBreakthrough.xml").unwrap();
         let channel = Channel::read_from(BufReader::new(file)).unwrap();
 
-        let descr = "Latest Articles and Investigations from ProPublica, an independent, \
-                     non-profit newsroom that produces investigative journalism in the public \
-                     interest.";
+        let descr = "The podcast that takes you behind the scenes with journalists to hear how \
+                     they nailed their biggest stories.";
         let pd = new_podcast(&channel, 0);
 
         let expected = NewPodcastBuilder::default()
