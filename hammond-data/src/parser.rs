@@ -38,15 +38,20 @@ pub(crate) fn new_episode(item: &Item, parent_id: i32) -> Result<NewEpisode> {
     if item.title().is_none() {
         bail!("No title specified for the item.")
     }
+
     let title = item.title().unwrap().trim().to_owned();
-    let description = item.description()
-        .map(|s| replace_extra_spaces(&ammonia::clean(s)));
     let guid = item.guid().map(|s| s.value().trim().to_owned());
 
-    let x = item.enclosure().map(|s| url_cleaner(s.url()));
-    // FIXME: refactor
-    let uri = if x.is_some() {
-        x
+    let summary = item.itunes_ext().map(|s| s.summary()).and_then(|s| s);
+    let description = if summary.is_some() {
+        summary.map(|s| replace_extra_spaces(&ammonia::clean(s)))
+    } else {
+        item.description()
+            .map(|s| replace_extra_spaces(&ammonia::clean(s)))
+    };
+
+    let uri = if let Some(url) = item.enclosure().map(|s| url_cleaner(s.url())) {
+        Some(url)
     } else if item.link().is_some() {
         item.link().map(|s| url_cleaner(s))
     } else {
@@ -275,8 +280,9 @@ mod tests {
         let channel = Channel::read_from(BufReader::new(file)).unwrap();
 
         let firstitem = channel.items().first().unwrap();
-        let descr = "<p>A reporter finds that homes meant to replace New York’s troubled \
-                     psychiatric hospitals might be just as bad.</p>";
+        let descr =
+            "A reporter finds that homes meant to replace New York’s troubled psychiatric \
+             hospitals might be just as bad.";
         let ep = new_episode(&firstitem, 0).unwrap();
 
         let expected = NewEpisodeBuilder::default()
@@ -297,9 +303,9 @@ mod tests {
         let second = channel.items().iter().nth(1).unwrap();
         let ep = new_episode(&second, 0).unwrap();
         let descr =
-            "<p>Jonathan Allen and Amie Parnes didn’t know their book would be called \
+            "Jonathan Allen and Amie Parnes didn’t know their book would be called \
              ‘Shattered,’ or that their extraordinary access would let them chronicle the \
-             mounting signs of a doomed campaign.</p>";
+             mounting signs of a doomed campaign.";
 
         let expected =
             NewEpisodeBuilder::default()
@@ -356,12 +362,12 @@ mod tests {
         let second = channel.items().iter().nth(1).unwrap();
         let ep = new_episode(&second, 0).unwrap();
 
-        let descr = "<p>The Gnome project is about to solve one of our audience's biggest \
-                     Wayland’s concerns. But as the project takes on a new level of relevance, \
-                     decisions for the next version of Gnome have us worried about the \
-                     future.</p>\n<p>Plus we chat with Wimpy about the Ubuntu Rally in NYC, \
-                     Microsoft’s sneaky move to turn Windows 10 into the “ULTIMATE LINUX \
-                     RUNTIME”, community news &amp; more!</p>";
+        let descr =
+            "The Gnome project is about to solve one of our audience's biggest Wayland’s \
+             concerns. But as the project takes on a new level of relevance, decisions for the \
+             next version of Gnome have us worried about the future.\nPlus we chat with Wimpy \
+             about the Ubuntu Rally in NYC, Microsoft’s sneaky move to turn Windows 10 into the \
+             “ULTIMATE LINUX RUNTIME”, community news &amp; more!";
 
         let expected = NewEpisodeBuilder::default()
             .title("Gnome Does it Again | LUP 213")
