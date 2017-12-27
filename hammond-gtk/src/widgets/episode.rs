@@ -212,7 +212,7 @@ fn on_download_clicked(
     let pd = dbqueries::get_podcast_from_id(ep.podcast_id()).unwrap();
     let pd_title = pd.title().to_owned();
     let mut ep = ep.clone();
-    // cancel_bttn.show();
+    cancel_bttn.show();
     progress.show();
     download_bttn.hide();
     thread::spawn(move || {
@@ -264,7 +264,7 @@ fn receive() -> glib::Continue {
         if let Some((
             ref download_bttn,
             ref play_bttn,
-            ref _cancel_bttn,
+            ref cancel_bttn,
             ref progress_bar,
             ref reciever,
         )) = *global.borrow()
@@ -272,7 +272,7 @@ fn receive() -> glib::Continue {
             if reciever.try_recv().is_ok() {
                 download_bttn.hide();
                 play_bttn.show();
-                // cancel_bttn.hide();
+                cancel_bttn.hide();
                 progress_bar.hide();
             }
         }
