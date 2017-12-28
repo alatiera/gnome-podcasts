@@ -116,6 +116,7 @@ impl EpisodeWidget {
             long_units: false,
             space: true,
             suffix: "",
+            allow_negative: false,
         };
 
         if let Some(size) = episode.length() {
