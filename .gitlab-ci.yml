@@ -22,6 +22,7 @@ before_script:
   - cd hammond-gtk/resources/ && glib-compile-resources --generate resources.xml && cd ../../
   - cargo build
   - cargo test --verbose -- --test-threads=1
+  - cargo test --verbose -- --test-threads=1 --ignored
 
 variables:
 #   RUSTFLAGS: "-C link-dead-code"

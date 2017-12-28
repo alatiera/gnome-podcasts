@@ -101,6 +101,9 @@ mod tests {
     use super::*;
 
     #[test]
+    // This test inserts an rss feed to your `XDG_DATA/hammond/hammond.db` so we make it explicit
+    // to run it.
+    #[ignore]
     fn test_get_pixbuf_from_path() {
         let url = "http://www.newrustacean.com/feed.xml";
 

@@ -202,6 +202,9 @@ mod tests {
     }
 
     #[test]
+    // This test inserts an rss feed to your `XDG_DATA/hammond/hammond.db` so we make it explicit
+    // to run it.
+    #[ignore]
     fn test_cache_image() {
         let url = "http://www.newrustacean.com/feed.xml";
 
