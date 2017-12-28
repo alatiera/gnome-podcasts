@@ -40,7 +40,6 @@ pub(crate) fn new_podcast(chan: &Channel, source_id: i32) -> NewPodcast {
 }
 
 /// Parses an `rss::Item` into a `NewEpisode` Struct.
-// TODO: parse itunes duration extension.
 pub(crate) fn new_episode(item: &Item, parent_id: i32) -> Result<NewEpisode> {
     if item.title().is_none() {
         bail!("No title specified for the item.")
