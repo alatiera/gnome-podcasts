@@ -30,9 +30,6 @@ impl Default for Header {
         let back_button: gtk::Button = builder.get_object("back_button").unwrap();
         let show_title: gtk::Label = builder.get_object("show_title").unwrap();
 
-        switch.set_halign(gtk::Align::Center);
-        switch.show();
-
         Header {
             container: header,
             add_toggle,
@@ -60,7 +57,7 @@ impl Header {
         let new_url: gtk::Entry = builder.get_object("new_url").unwrap();
         let add_button: gtk::Button = builder.get_object("add_button").unwrap();
         let refresh_button: gtk::Button = builder.get_object("refresh_button").unwrap();
-        self.switch.set_stack(&content.stack);
+        self.switch.set_stack(&content.get_stack());
 
         new_url.connect_changed(move |url| {
             println!("{:?}", url.get_text());
@@ -90,7 +87,7 @@ impl Header {
             add_toggle.show();
             back.hide();
             show_title.hide();
-            content.shows.stack.set_visible_child_full("podcasts", gtk::StackTransitionType::SlideRight);
+            content.get_shows().get_stack().set_visible_child_full("podcasts", gtk::StackTransitionType::SlideRight);
         }),
         );
     }

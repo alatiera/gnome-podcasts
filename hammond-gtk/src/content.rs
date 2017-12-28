@@ -15,8 +15,8 @@ use std::rc::Rc;
 
 #[derive(Debug, Clone)]
 pub struct Content {
-    pub stack: gtk::Stack,
-    pub shows: Rc<ShowStack>,
+    stack: gtk::Stack,
+    shows: Rc<ShowStack>,
     episodes: Rc<EpisodeStack>,
 }
 
@@ -44,11 +44,15 @@ impl Content {
     pub fn get_stack(&self) -> gtk::Stack {
         self.stack.clone()
     }
+
+    pub fn get_shows(&self) -> Rc<ShowStack> {
+        self.shows.clone()
+    }
 }
 
 #[derive(Debug, Clone)]
 pub struct ShowStack {
-    pub stack: gtk::Stack,
+    stack: gtk::Stack,
     header: Rc<Header>,
     epstack: Rc<EpisodeStack>,
 }
@@ -148,6 +152,10 @@ impl ShowStack {
     pub fn switch_widget_animated(&self) {
         self.stack
             .set_visible_child_full("widget", gtk::StackTransitionType::SlideLeft)
+    }
+
+    pub fn get_stack(&self) -> gtk::Stack {
+        self.stack.clone()
     }
 }
 
