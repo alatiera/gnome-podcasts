@@ -66,8 +66,9 @@ impl App {
     pub fn setup_actions(&self) {
         let update = gio::SimpleAction::new("update", None);
         let content = self.content.clone();
+        let header = self.header.clone();
         update.connect_activate(move |_, _| {
-            utils::refresh_feed(content.clone(), None);
+            utils::refresh_feed(content.clone(), header.clone(), None);
         });
         self.app_instance.add_action(&update);
 
@@ -97,23 +98,25 @@ impl App {
 
     pub fn setup_timed_callbacks(&self) {
         let content = self.content.clone();
+        let header = self.header.clone();
         // Update 30 seconds after the Application is initialized.
         gtk::timeout_add_seconds(
             30,
             clone!(content => move || {
-            utils::refresh_feed(content.clone(), None);
+            utils::refresh_feed(content.clone(), header.clone(), None);
             glib::Continue(false)
         }),
         );
 
         let content = self.content.clone();
+        let header = self.header.clone();
         // Auto-updater, runs every hour.
         // TODO: expose the interval in which it run to a user setting.
         // TODO: show notifications.
         gtk::timeout_add_seconds(
             3600,
             clone!(content => move || {
-            utils::refresh_feed(content.clone(), None);
+            utils::refresh_feed(content.clone(), header.clone(), None);
             glib::Continue(true)
         }),
         );

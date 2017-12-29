@@ -14,8 +14,9 @@ use std::rc::Rc;
 use std::collections::HashMap;
 
 use content::Content;
+use headerbar::Header;
 
-type Foo = RefCell<Option<(Rc<Content>, Receiver<bool>)>>;
+type Foo = RefCell<Option<(Rc<Content>, Rc<Header>, Receiver<bool>)>>;
 
 // Create a thread local storage that will store the arguments to be transfered.
 thread_local!(static GLOBAL: Foo = RefCell::new(None));
@@ -24,13 +25,15 @@ thread_local!(static GLOBAL: Foo = RefCell::new(None));
 /// If `source` is None, Fetches all the `Source` entries in the database and updates them.
 /// `delay` represents the desired time in seconds for the thread to sleep before executing.
 /// When It's done,it queues up a `podcast_view` refresh.
-pub fn refresh_feed(content: Rc<Content>, source: Option<Vec<Source>>) {
+pub fn refresh_feed(content: Rc<Content>, headerbar: Rc<Header>, source: Option<Vec<Source>>) {
+    headerbar.show_update_notification();
+
     // Create a async channel.
     let (sender, receiver) = channel();
 
     // Pass the desired arguments into the Local Thread Storage.
-    GLOBAL.with(clone!(content => move |global| {
-        *global.borrow_mut() = Some((content.clone(), receiver));
+    GLOBAL.with(clone!(content, headerbar => move |global| {
+        *global.borrow_mut() = Some((content.clone(), headerbar.clone(), receiver));
     }));
 
     thread::spawn(move || {
@@ -51,9 +54,10 @@ pub fn refresh_feed(content: Rc<Content>, source: Option<Vec<Source>>) {
 
 fn refresh_everything() -> glib::Continue {
     GLOBAL.with(|global| {
-        if let Some((ref content, ref reciever)) = *global.borrow() {
+        if let Some((ref content, ref headerbar, ref reciever)) = *global.borrow() {
             if reciever.try_recv().is_ok() {
                 content.update();
+                headerbar.hide_update_notification();
             }
         }
     });

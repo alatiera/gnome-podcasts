@@ -151,7 +151,7 @@
                                             <property name="receives_default">True</property>
                                             <property name="halign">center</property>
                                             <property name="valign">center</property>
-                                            <property name="action_name">app.update</property>
+                                            <property name="action_name">app.refresh</property>
                                             <style>
                                               <class name="destructive-action"/>
                                             </style>
