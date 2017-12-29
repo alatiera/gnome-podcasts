@@ -5,7 +5,6 @@ use diesel::prelude::*;
 use schema::{episode, podcast, source};
 use models::queryables::{Episode, Podcast, Source};
 
-use utils::url_cleaner;
 use errors::*;
 
 use dbqueries;
@@ -41,9 +40,8 @@ impl Insert for NewSource {
 
 impl NewSource {
     pub(crate) fn new_with_uri(uri: &str) -> NewSource {
-        let uri = url_cleaner(uri);
         NewSource {
-            uri,
+            uri: uri.trim().to_string(),
             last_modified: None,
             http_etag: None,
         }

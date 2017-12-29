@@ -2,7 +2,6 @@ use gtk;
 use gtk::prelude::*;
 
 use hammond_data::Source;
-use hammond_data::utils::url_cleaner;
 
 use std::rc::Rc;
 
@@ -109,7 +108,6 @@ impl Header {
 
 fn on_add_bttn_clicked(content: Rc<Content>, entry: &gtk::Entry) {
     let url = entry.get_text().unwrap_or_default();
-    let url = url_cleaner(&url);
     let source = Source::from_url(&url);
 
     if let Ok(s) = source {
