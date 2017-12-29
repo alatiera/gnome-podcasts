@@ -26,7 +26,7 @@ pub struct Feed {
 impl Feed {
     /// Constructor that consumes a `Source` and returns the corresponding `Feed` struct.
     pub fn from_source(s: Source) -> Result<Feed> {
-        s.into_feed()
+        s.into_feed(false)
     }
 
     /// Constructor that consumes a `Source` and a `rss::Channel` returns a `Feed` struct.
@@ -112,19 +112,22 @@ pub fn index(feed: &Feed) {
 
 /// Consume a `Source` and return a `Feed`.
 fn fetch(source: Source) -> Result<Feed> {
-    let uri = source.uri().to_owned();
-    let feed = Feed::from_source(source);
-    if feed.is_err() {
-        error!("Error While trying to fetch from source url: {}.", uri);
-    }
-    feed
+    Feed::from_source(source)
 }
 
 /// Index a "list" of `Source`s.
 pub fn index_loop<S: IntoParallelIterator<Item = Source>>(sources: S) {
     sources
         .into_par_iter()
-        .filter_map(|x| fetch(x).ok())
+        .filter_map(|x| {
+            let foo = fetch(x);
+            if let Err(err) = foo {
+                error!("Error: {}", err);
+                None
+            } else {
+                foo.ok()
+            }
+        })
         .for_each(|x| index(&x));
 
     info!("Indexing done.");
@@ -223,8 +226,8 @@ mod tests {
         assert_eq!(s1, s2);
         assert_eq!(s1.id(), s2.id());
 
-        let f1 = s1.into_feed().unwrap();
-        let f2 = s2.into_feed().unwrap();
+        let f1 = s1.into_feed(false).unwrap();
+        let f2 = s2.into_feed(false).unwrap();
 
         let p1 = f1.get_podcast().unwrap();
         let p2 = {

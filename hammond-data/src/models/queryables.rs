@@ -640,18 +640,22 @@ impl<'a> Source {
     ///
     /// Consumes `self` and Returns the corresponding `Feed` Object.
     // TODO: Refactor into TryInto once it lands on stable.
-    pub fn into_feed(mut self) -> Result<Feed> {
-        use reqwest::header::{ETag, EntityTag, Headers, HttpDate, LastModified};
+    pub fn into_feed(mut self, ignore_etags: bool) -> Result<Feed> {
+        use reqwest::header::{EntityTag, Headers, HttpDate, IfModifiedSince, IfNoneMatch};
 
         let mut headers = Headers::new();
 
-        if let Some(foo) = self.http_etag() {
-            headers.set(ETag(EntityTag::new(true, foo.to_owned())));
-        }
+        if !ignore_etags {
+            if let Some(foo) = self.http_etag() {
+                headers.set(IfNoneMatch::Items(vec![
+                    EntityTag::new(true, foo.to_owned()),
+                ]));
+            }
 
-        if let Some(foo) = self.last_modified() {
-            if let Ok(x) = foo.parse::<HttpDate>() {
-                headers.set(LastModified(x));
+            if let Some(foo) = self.last_modified() {
+                if let Ok(x) = foo.parse::<HttpDate>() {
+                    headers.set(IfModifiedSince(x));
+                }
             }
         }
 
@@ -663,17 +667,17 @@ impl<'a> Source {
 
         info!("GET to {} , returned: {}", self.uri(), req.status());
 
+        self.update_etag(&req)?;
+
         // TODO match on more stuff
         // 301: Permanent redirect of the url
         // 302: Temporary redirect of the url
         // 304: Up to date Feed, checked with the Etag
         // 410: Feed deleted
-        // match req.status() {
-        //     reqwest::StatusCode::NotModified => (),
-        //     _ => (),
-        // };
-
-        self.update_etag(&req)?;
+        match req.status() {
+            reqwest::StatusCode::NotModified => bail!("304, skipping.."),
+            _ => (),
+        };
 
         let mut buf = String::new();
         req.read_to_string(&mut buf)?;

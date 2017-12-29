@@ -31,6 +31,3 @@
 - [ ] Make Podcast cover fetchng and loading not block the execution of the program at startup.
 - [ ] Lazy evaluate episode loading based on the show_widget's scrolling.
 
-**FIXME:**
-
-- [ ] Fix Etag/Last-modified implementation. [#2](https://gitlab.gnome.org/alatiera/Hammond/issues/2)

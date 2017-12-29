@@ -214,7 +214,7 @@ mod tests {
         let sid = source.id().clone();
 
         // Convert Source it into a Feed and index it
-        let feed = source.into_feed().unwrap();
+        let feed = source.into_feed(true).unwrap();
         index(&feed);
 
         // Get the Podcast
