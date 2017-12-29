@@ -45,11 +45,11 @@ pub fn refresh_feed(content: Rc<Content>, source: Option<Vec<Source>>) {
         };
 
         sender.send(true).expect("Couldn't send data to channel");;
-        glib::idle_add(refresh_podcasts_view);
+        glib::idle_add(refresh_everything);
     });
 }
 
-fn refresh_podcasts_view() -> glib::Continue {
+fn refresh_everything() -> glib::Continue {
     GLOBAL.with(|global| {
         if let Some((ref content, ref reciever)) = *global.borrow() {
             if reciever.try_recv().is_ok() {

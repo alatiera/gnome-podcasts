@@ -2,8 +2,7 @@ use gtk;
 use glib;
 use gio;
 use gtk::prelude::*;
-use gio::ApplicationExtManual;
-use gio::ApplicationExt;
+use gio::{ActionMapExt, ApplicationExt, ApplicationExtManual, SimpleActionExt};
 
 use hammond_data::utils::checkup;
 
@@ -64,13 +63,23 @@ impl App {
         }
     }
 
-    pub fn run(&self) {
-        let window = self.window.clone();
-        let app = self.app_instance.clone();
-        self.app_instance.connect_startup(move |_| {
-            build_ui(&window, &app);
+    pub fn setup_actions(&self) {
+        let update = gio::SimpleAction::new("update", None);
+        let content = self.content.clone();
+        update.connect_activate(move |_, _| {
+            utils::refresh_feed(content.clone(), None);
         });
+        self.app_instance.add_action(&update);
 
+        let refresh = gio::SimpleAction::new("refresh", None);
+        let content = self.content.clone();
+        update.connect_activate(move |_, _| {
+            content.update();
+        });
+        self.app_instance.add_action(&refresh);
+    }
+
+    pub fn setup_timed_callbacks(&self) {
         let content = self.content.clone();
         // Update 30 seconds after the Application is initialized.
         gtk::timeout_add_seconds(
@@ -98,6 +107,16 @@ impl App {
             let _ = checkup();
             glib::Continue(false)
         });
+    }
+
+    pub fn run(&self) {
+        let window = self.window.clone();
+        let app = self.app_instance.clone();
+        self.app_instance.connect_startup(move |_| {
+            build_ui(&window, &app);
+        });
+        self.setup_timed_callbacks();
+        self.setup_actions();
 
         ApplicationExtManual::run(&self.app_instance, &[]);
     }

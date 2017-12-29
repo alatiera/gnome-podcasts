@@ -56,7 +56,6 @@ impl Header {
         let menu_popover: gtk::PopoverMenu = builder.get_object("menu_popover").unwrap();
         let new_url: gtk::Entry = builder.get_object("new_url").unwrap();
         let add_button: gtk::Button = builder.get_object("add_button").unwrap();
-        let refresh_button: gtk::Button = builder.get_object("refresh_button").unwrap();
         self.switch.set_stack(&content.get_stack());
 
         new_url.connect_changed(move |url| {
@@ -69,10 +68,6 @@ impl Header {
             // TODO: lock the button instead of hiding and add notification of feed added.
             // TODO: map the spinner
             add_popover.hide();
-        }));
-
-        refresh_button.connect_clicked(clone!(content => move |_| {
-            utils::refresh_feed(content.clone(), None);
         }));
 
         self.add_toggle.set_popover(&add_popover);
