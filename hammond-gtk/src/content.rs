@@ -37,8 +37,16 @@ impl Content {
     }
 
     pub fn update(&self) {
-        self.shows.update();
+        self.update_shows_view();
+        self.update_episode_view();
+    }
+
+    pub fn update_episode_view(&self) {
         self.episodes.update();
+    }
+
+    pub fn update_shows_view(&self) {
+        self.shows.update();
     }
 
     pub fn get_stack(&self) -> gtk::Stack {
