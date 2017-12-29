@@ -11,7 +11,7 @@ use hammond_downloader::downloader;
 
 use widgets::episode::episodes_listbox;
 use utils::get_pixbuf_from_path;
-use content::{EpisodeStack, ShowStack};
+use content::ShowStack;
 use headerbar::Header;
 
 use std::rc::Rc;
@@ -53,30 +53,17 @@ impl Default for ShowWidget {
 }
 
 impl ShowWidget {
-    pub fn new(
-        shows: Rc<ShowStack>,
-        epstack: Rc<EpisodeStack>,
-        header: Rc<Header>,
-        pd: &Podcast,
-    ) -> ShowWidget {
+    pub fn new(shows: Rc<ShowStack>, header: Rc<Header>, pd: &Podcast) -> ShowWidget {
         let pdw = ShowWidget::default();
-        pdw.init(shows, epstack, header, pd);
+        pdw.init(shows, header, pd);
         pdw
     }
 
-    pub fn init(
-        &self,
-        shows: Rc<ShowStack>,
-        epstack: Rc<EpisodeStack>,
-        header: Rc<Header>,
-        pd: &Podcast,
-    ) {
+    pub fn init(&self, shows: Rc<ShowStack>, header: Rc<Header>, pd: &Podcast) {
         WidgetExt::set_name(&self.container, &pd.id().to_string());
 
-        // TODO: should spawn a thread to avoid locking the UI probably.
-        self.unsub
-            .connect_clicked(clone!(shows, epstack, pd => move |bttn| {
-            on_unsub_button_clicked(shows.clone(), epstack.clone(), &pd, bttn);
+        self.unsub.connect_clicked(clone!(shows, pd => move |bttn| {
+            on_unsub_button_clicked(shows.clone(), &pd, bttn);
             header.switch_to_normal();
         }));
 
@@ -106,12 +93,7 @@ impl ShowWidget {
     }
 }
 
-fn on_unsub_button_clicked(
-    shows: Rc<ShowStack>,
-    epstack: Rc<EpisodeStack>,
-    pd: &Podcast,
-    unsub_button: &gtk::Button,
-) {
+fn on_unsub_button_clicked(shows: Rc<ShowStack>, pd: &Podcast, unsub_button: &gtk::Button) {
     let res = dbqueries::remove_feed(pd);
     if res.is_ok() {
         info!("{} was removed succesfully.", pd.title());
@@ -128,8 +110,6 @@ fn on_unsub_button_clicked(
         };
     }
     shows.switch_podcasts_animated();
-    shows.update_podcasts();
-    epstack.update();
 }
 
 #[allow(dead_code)]

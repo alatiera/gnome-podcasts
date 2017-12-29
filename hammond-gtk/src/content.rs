@@ -124,12 +124,7 @@ impl ShowStack {
 
     pub fn replace_widget(&self, pd: &Podcast) {
         let old = self.stack.get_child_by_name("widget").unwrap();
-        let new = ShowWidget::new(
-            Rc::new(self.clone()),
-            self.epstack.clone(),
-            self.header.clone(),
-            pd,
-        );
+        let new = ShowWidget::new(Rc::new(self.clone()), self.header.clone(), pd);
 
         self.stack.remove(&old);
         self.stack.add_named(&new.container, "widget");
