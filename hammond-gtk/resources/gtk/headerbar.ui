@@ -6,6 +6,8 @@
     <property name="can_focus">False</property>
     <property name="tooltip_text" translatable="yes">Add a new feed</property>
     <property name="valign">center</property>
+    <property name="relative_to">add_toggle</property>
+    <property name="position">bottom</property>
     <child>
       <object class="GtkBox" id="add_box">
         <property name="visible">True</property>
@@ -123,6 +125,7 @@
         <property name="receives_default">False</property>
         <property name="tooltip_text" translatable="yes">Add a new feed</property>
         <property name="valign">center</property>
+        <property name="popover">add_popover</property>
         <child>
           <object class="GtkImage" id="add-button-image2">
             <property name="visible">True</property>
@@ -230,8 +233,8 @@
         <property name="visible">True</property>
         <property name="can_focus">True</property>
         <property name="receives_default">False</property>
-        <property name="tooltip_text" translatable="yes">Add a new feed</property>
         <property name="valign">center</property>
+        <property name="popover">menu_popover</property>
         <child>
           <object class="GtkImage">
             <property name="visible">True</property>
@@ -250,8 +253,9 @@
       </packing>
     </child>
   </object>
-  <object class="GtkPopoverMenu" id="menu_popover">
+  <object class="GtkPopover" id="menu_popover">
     <property name="can_focus">False</property>
+    <property name="relative_to">menu_toggle</property>
     <child>
       <object class="GtkBox">
         <property name="visible">True</property>
@@ -265,7 +269,7 @@
           <object class="GtkModelButton">
             <property name="visible">True</property>
             <property name="sensitive">False</property>
-            <property name="can_focus">False</property>
+            <property name="can_focus">True</property>
             <property name="receives_default">False</property>
             <property name="text" translatable="yes">Preferences</property>
           </object>
@@ -304,7 +308,7 @@
           <object class="GtkModelButton">
             <property name="visible">True</property>
             <property name="sensitive">False</property>
-            <property name="can_focus">False</property>
+            <property name="can_focus">True</property>
             <property name="receives_default">False</property>
             <property name="text" translatable="yes">About</property>
           </object>
@@ -318,7 +322,7 @@
           <object class="GtkModelButton">
             <property name="visible">True</property>
             <property name="sensitive">False</property>
-            <property name="can_focus">False</property>
+            <property name="can_focus">True</property>
             <property name="receives_default">False</property>
             <property name="text" translatable="yes">Help</property>
           </object>
@@ -332,7 +336,7 @@
           <object class="GtkModelButton">
             <property name="visible">True</property>
             <property name="sensitive">False</property>
-            <property name="can_focus">False</property>
+            <property name="can_focus">True</property>
             <property name="receives_default">False</property>
             <property name="text" translatable="yes">Keyboard Shortcuts</property>
           </object>
@@ -343,10 +347,6 @@
           </packing>
         </child>
       </object>
-      <packing>
-        <property name="submenu">submenu0</property>
-        <property name="position">1</property>
-      </packing>
     </child>
   </object>
 </interface>

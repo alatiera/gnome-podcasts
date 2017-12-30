@@ -12,7 +12,6 @@ use content::Content;
 pub struct Header {
     pub container: gtk::HeaderBar,
     add_toggle: gtk::MenuButton,
-    menu_toggle: gtk::MenuButton,
     switch: gtk::StackSwitcher,
     back_button: gtk::Button,
     show_title: gtk::Label,
@@ -27,7 +26,6 @@ impl Default for Header {
 
         let header: gtk::HeaderBar = builder.get_object("headerbar").unwrap();
         let add_toggle: gtk::MenuButton = builder.get_object("add_toggle").unwrap();
-        let menu_toggle: gtk::MenuButton = builder.get_object("menu_toggle").unwrap();
         let switch: gtk::StackSwitcher = builder.get_object("switch").unwrap();
         let back_button: gtk::Button = builder.get_object("back_button").unwrap();
         let show_title: gtk::Label = builder.get_object("show_title").unwrap();
@@ -38,7 +36,6 @@ impl Default for Header {
         Header {
             container: header,
             add_toggle,
-            menu_toggle,
             switch,
             back_button,
             show_title,
@@ -61,7 +58,6 @@ impl Header {
         let builder = gtk::Builder::new_from_resource("/org/gnome/hammond/gtk/headerbar.ui");
 
         let add_popover: gtk::Popover = builder.get_object("add_popover").unwrap();
-        let menu_popover: gtk::PopoverMenu = builder.get_object("menu_popover").unwrap();
         let new_url: gtk::Entry = builder.get_object("new_url").unwrap();
         let add_button: gtk::Button = builder.get_object("add_button").unwrap();
         self.switch.set_stack(&content.get_stack());
@@ -75,9 +71,6 @@ impl Header {
             on_add_bttn_clicked(content.clone(), header.clone(), &new_url);
             add_popover.hide();
         }));
-
-        self.add_toggle.set_popover(&add_popover);
-        self.menu_toggle.set_popover(&menu_popover);
 
         let switch = &self.switch;
         let add_toggle = &self.add_toggle;
