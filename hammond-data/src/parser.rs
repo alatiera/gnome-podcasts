@@ -8,7 +8,6 @@ use utils::replace_extra_spaces;
 
 use errors::*;
 
-// TODO: Extend the support for parsing itunes extensions
 /// Parses a `rss::Channel` into a `NewPodcast` Struct.
 pub(crate) fn new_podcast(chan: &Channel, source_id: i32) -> NewPodcast {
     let title = chan.title().trim();

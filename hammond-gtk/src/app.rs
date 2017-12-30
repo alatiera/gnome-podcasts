@@ -64,6 +64,7 @@ impl App {
     }
 
     pub fn setup_actions(&self) {
+        // Updates the database and refreshes every view.
         let update = gio::SimpleAction::new("update", None);
         let content = self.content.clone();
         let header = self.header.clone();
@@ -72,6 +73,7 @@ impl App {
         });
         self.app_instance.add_action(&update);
 
+        // Refreshes the `Content`
         let refresh = gio::SimpleAction::new("refresh", None);
         let content = self.content.clone();
         refresh.connect_activate(move |_, _| {
@@ -79,6 +81,7 @@ impl App {
         });
         self.app_instance.add_action(&refresh);
 
+        // Refreshes the `EpisodesStack`
         let refresh_episodes = gio::SimpleAction::new("refresh_episodes", None);
         let content = self.content.clone();
         refresh_episodes.connect_activate(move |_, _| {
@@ -88,6 +91,7 @@ impl App {
         });
         self.app_instance.add_action(&refresh_episodes);
 
+        // Refreshes the `ShowStack`
         let refresh_shows = gio::SimpleAction::new("refresh_shows", None);
         let content = self.content.clone();
         refresh_shows.connect_activate(move |_, _| {
@@ -143,7 +147,6 @@ impl App {
 
 fn build_ui(window: &gtk::Window, app: &gtk::Application) {
     window.set_application(app);
-
     window.show_all();
     window.activate();
     app.connect_activate(move |_| ());

@@ -44,7 +44,6 @@ impl ShowsPopulated {
         use gtk::WidgetExt;
 
         // TODO: handle unwraps.
-        // TODO: implement back button.
         self.flowbox
             .connect_child_activated(clone!(show => move |_, child| {
             // This is such an ugly hack...

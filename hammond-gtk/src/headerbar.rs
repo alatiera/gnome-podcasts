@@ -73,9 +73,6 @@ impl Header {
         let header = Rc::new(self.clone());
         add_button.connect_clicked(clone!(content, header, add_popover, new_url => move |_| {
             on_add_bttn_clicked(content.clone(), header.clone(), &new_url);
-
-            // TODO: lock the button instead of hiding and add notification of feed added.
-            // TODO: map the spinner
             add_popover.hide();
         }));
 

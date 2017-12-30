@@ -193,7 +193,6 @@ impl EpisodesViewWidget {
         let container: gtk::Box = builder.get_object("container").unwrap();
         let image: gtk::Image = builder.get_object("cover").unwrap();
 
-        // FIXME:
         if let Ok(pd) = dbqueries::get_podcast_cover_from_id(episode.podcast_id()) {
             let img = get_pixbuf_from_path(&pd, 64);
             if let Some(i) = img {

@@ -612,7 +612,6 @@ impl<'a> Source {
         let etag = headers.get::<ETag>();
         let lmod = headers.get::<LastModified>();
 
-        // FIXME: This dsnt work most of the time apparently
         if self.http_etag() != etag.map(|x| x.tag()) || self.last_modified != lmod.map(|x| {
             format!("{}", x)
         }) {
@@ -659,9 +658,6 @@ impl<'a> Source {
             }
         }
 
-        // FIXME: I have fucked up somewhere here.
-        // Getting back 200 codes even though I supposedly sent etags.
-        // info!("Headers: {:?}", headers);
         let client = reqwest::Client::builder().referer(false).build()?;
         let mut req = client.get(self.uri()).headers(headers).send()?;
 
