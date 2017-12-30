@@ -158,7 +158,6 @@ pub(crate) struct NewEpisode {
     title: String,
     uri: Option<String>,
     description: Option<String>,
-    published_date: Option<String>,
     length: Option<i32>,
     duration: Option<i32>,
     guid: Option<String>,
@@ -232,10 +231,6 @@ impl NewEpisode {
 
     pub(crate) fn description(&self) -> Option<&str> {
         self.description.as_ref().map(|s| s.as_str())
-    }
-
-    pub(crate) fn published_date(&self) -> Option<&str> {
-        self.published_date.as_ref().map(|s| s.as_str())
     }
 
     pub(crate) fn guid(&self) -> Option<&str> {

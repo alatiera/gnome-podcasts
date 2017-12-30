@@ -30,7 +30,6 @@ pub struct Episode {
     uri: Option<String>,
     local_uri: Option<String>,
     description: Option<String>,
-    published_date: Option<String>,
     epoch: i32,
     length: Option<i32>,
     duration: Option<i32>,
@@ -90,16 +89,6 @@ impl Episode {
     /// Set the `description`.
     pub fn set_description(&mut self, value: Option<&str>) {
         self.description = value.map(|x| x.to_string());
-    }
-
-    /// Get the the `published_date`.
-    pub fn published_date(&self) -> Option<&str> {
-        self.published_date.as_ref().map(|s| s.as_str())
-    }
-
-    /// Set the `published_date`.
-    pub fn set_published_date(&mut self, value: Option<&str>) {
-        self.published_date = value.map(|x| x.to_string().to_owned());
     }
 
     /// Get the value of the `description`.

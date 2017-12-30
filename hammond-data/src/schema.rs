@@ -5,7 +5,6 @@ table! {
         uri -> Nullable<Text>,
         local_uri -> Nullable<Text>,
         description -> Nullable<Text>,
-        published_date -> Nullable<Text>,
         epoch -> Integer,
         length -> Nullable<Integer>,
         duration -> Nullable<Integer>,

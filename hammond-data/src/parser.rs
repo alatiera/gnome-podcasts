@@ -71,7 +71,6 @@ pub(crate) fn new_episode(item: &Item, parent_id: i32) -> Result<NewEpisode> {
 
     // Should treat information from the rss feeds as invalid by default.
     // Case: Thu, 05 Aug 2016 06:00:00 -0400 <-- Actually that was friday.
-    let pub_date = date.map(|x| x.to_rfc2822()).ok();
     let epoch = date.map(|x| x.timestamp() as i32).unwrap_or(0);
 
     let length = || -> Option<i32> { item.enclosure().map(|x| x.length().parse().ok())? }();
@@ -83,7 +82,6 @@ pub(crate) fn new_episode(item: &Item, parent_id: i32) -> Result<NewEpisode> {
         .description(description)
         .length(length)
         .duration(duration)
-        .published_date(pub_date)
         .epoch(epoch)
         .guid(guid)
         .podcast_id(parent_id)
@@ -241,7 +239,6 @@ mod tests {
             )))
             .description(Some(String::from(descr)))
             .guid(Some(String::from("7df4070a-9832-11e7-adac-cb37b05d5e24")))
-            .published_date(Some(String::from("Wed, 13 Sep 2017 10:00:00 +0000")))
             .length(Some(66738886))
             .epoch(1505296800)
             .duration(Some(4171))
@@ -269,7 +266,6 @@ mod tests {
             )))
             .description(Some(String::from(descr)))
             .guid(Some(String::from("7c207a24-e33f-11e6-9438-eb45dcf36a1d")))
-            .published_date(Some(String::from("Wed,  9 Aug 2017 10:00:00 +0000")))
             .length(Some(67527575))
             .epoch(1502272800)
             .duration(Some(4220))
@@ -296,7 +292,6 @@ mod tests {
             .description(Some(String::from(descr)))
             .guid(Some(String::from("https://www.propublica.org/podcast/\
                  the-breakthrough-hopelessness-exploitation-homes-for-mentally-ill#134472")))
-            .published_date(Some(String::from("Fri,  8 Sep 2017 12:00:00 +0000")))
             .length(Some(33396551))
             .epoch(1504872000)
             .duration(Some(1670))
@@ -326,7 +321,6 @@ mod tests {
                     "https://www.propublica.\
                      org/podcast/the-breakthrough-hillary-clinton-failed-presidential-bid#133721",
                 )))
-                .published_date(Some(String::from("Fri, 25 Aug 2017 12:00:00 +0000")))
                 .length(Some(17964071))
                 .epoch(1503662400)
                 .duration(Some(1125))
@@ -355,7 +349,6 @@ mod tests {
             )))
             .description(Some(String::from(descr)))
             .guid(Some(String::from("78A682B4-73E8-47B8-88C0-1BE62DD4EF9D")))
-            .published_date(Some(String::from("Tue, 12 Sep 2017 22:24:42 -0700")))
             .length(Some(46479789))
             .epoch(1505280282)
             .duration(Some(5733))
@@ -381,7 +374,6 @@ mod tests {
             )))
             .description(Some(String::from(descr)))
             .guid(Some(String::from("1CE57548-B36C-4F14-832A-5D5E0A24E35B")))
-            .published_date(Some(String::from("Tue,  5 Sep 2017 20:57:27 -0700")))
             .length(Some(36544272))
             .epoch(1504670247)
             .duration(Some(4491))
@@ -411,7 +403,6 @@ mod tests {
             .guid(Some(String::from(
                 "https://request-for-explanation.github.io/podcast/ep9-a-once-in-a-lifetime-rfc/",
             )))
-            .published_date(Some(String::from("Mon, 28 Aug 2017 15:00:00 -0700")))
             .length(Some(15077388))
             .epoch(1503957600)
             .duration(Some(2533))
@@ -437,7 +428,6 @@ mod tests {
             .guid(Some(String::from(
                 "https://request-for-explanation.github.io/podcast/ep8-an-existential-crisis/",
             )))
-            .published_date(Some(String::from("Tue, 15 Aug 2017 17:00:00 -0700")))
             .length(Some(13713219))
             .epoch(1502841600)
             .duration(Some(2313))
