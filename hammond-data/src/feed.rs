@@ -74,7 +74,7 @@ impl Feed {
     fn parse_channel_items(&self, pd: &Podcast) -> Vec<NewEpisode> {
         let items = self.channel.items();
         let new_episodes: Vec<_> = items
-            .into_par_iter()
+            .par_iter()
             .filter_map(|item| parser::new_episode(item, *pd.id()).ok())
             .collect();
 

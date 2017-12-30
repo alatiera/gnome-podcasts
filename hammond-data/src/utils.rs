@@ -18,43 +18,38 @@ fn download_checker() -> Result<()> {
 
     episodes
         .into_par_iter()
-        .for_each(|mut ep| checker_helper(&mut ep));
+        .filter(|ep| !Path::new(ep.local_uri().unwrap()).exists())
+        .for_each(|mut ep| {
+            ep.set_local_uri(None);
+            if let Err(err) = ep.save() {
+                error!("Error while trying to update episode: {:#?}", ep);
+                error!("Error: {}", err);
+            };
+        });
 
     Ok(())
 }
 
-fn checker_helper(ep: &mut EpisodeCleanerQuery) {
-    if !Path::new(ep.local_uri().unwrap()).exists() {
-        ep.set_local_uri(None);
-        let res = ep.save();
-        if let Err(err) = res {
-            error!("Error while trying to update episode: {:#?}", ep);
-            error!("Error: {}", err);
-        };
-    }
-}
-
 fn played_cleaner() -> Result<()> {
-    let episodes = dbqueries::get_played_cleaner_episodes()?;
+    let mut episodes = dbqueries::get_played_cleaner_episodes()?;
 
     let now_utc = Utc::now().timestamp() as i32;
-    episodes.into_par_iter().for_each(|mut ep| {
-        if ep.local_uri().is_some() && ep.played().is_some() {
-            let played = ep.played().unwrap();
+    episodes
+        .par_iter_mut()
+        .filter(|ep| ep.local_uri().is_some() && ep.played().is_some())
+        .for_each(|ep| {
             // TODO: expose a config and a user set option.
             // Chnage the test too when exposed
-            let limit = played + 172_800; // add 2days in seconds
+            let limit = ep.played().unwrap() + 172_800; // add 2days in seconds
             if now_utc > limit {
-                let e = delete_local_content(&mut ep);
-                if let Err(err) = e {
+                if let Err(err) = delete_local_content(ep) {
                     error!("Error while trying to delete file: {:?}", ep.local_uri());
                     error!("Error: {}", err);
                 } else {
                     info!("Episode {:?} was deleted succesfully.", ep.local_uri());
                 };
             }
-        }
-    });
+        });
     Ok(())
 }
 
@@ -186,20 +181,14 @@ mod tests {
             Some(valid_path.to_str().unwrap()),
             episodes.first().unwrap().local_uri()
         );
-    }
 
-    #[test]
-    fn test_checker_helper() {
         let _tmp_dir = helper_db();
-        let mut episode = {
+        download_checker().unwrap();
+        let episode = {
             let db = connection();
             let con = db.get().unwrap();
-            dbqueries::get_episode_from_pk(&con, "bar_baz", 1)
-                .unwrap()
-                .into()
+            dbqueries::get_episode_from_pk(&con, "bar_baz", 1).unwrap()
         };
-
-        checker_helper(&mut episode);
         assert!(episode.local_uri().is_none());
     }
 
