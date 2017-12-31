@@ -72,6 +72,8 @@ impl Header {
             add_popover.hide();
         }));
 
+        self.add_toggle.set_popover(&add_popover);
+
         let switch = &self.switch;
         let add_toggle = &self.add_toggle;
         let show_title = &self.show_title;
