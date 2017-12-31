@@ -2,6 +2,7 @@ use reqwest;
 use hyper::header::*;
 use tempdir::TempDir;
 use mime_guess;
+use glob::glob;
 
 use std::fs::{rename, DirBuilder, File};
 use std::io::{BufWriter, Read, Write};
@@ -43,7 +44,8 @@ fn download_into(dir: &str, file_title: &str, url: &str) -> Result<String> {
     info!("Extension: {}", ext);
 
     // Construct a temp file to save desired content.
-    let tempdir = TempDir::new_in(dir, "")?;
+    // It has to be a `new_in` instead of new cause rename can't move cross filesystems.
+    let tempdir = TempDir::new_in(dir, "temp_download")?;
 
     let out_file = format!("{}/temp.part", tempdir.path().to_str().unwrap(),);
 
@@ -151,21 +153,13 @@ pub fn cache_image(pd: &PodcastCoverQuery) -> Option<String> {
         pd.title().to_owned()
     );
 
-    // Hacky way
-    // TODO: make it so it returns the first cover.* file encountered.
-    // Use glob instead
-    let png = format!("{}/cover.png", download_fold);
-    let jpg = format!("{}/cover.jpg", download_fold);
-    let jpe = format!("{}/cover.jpe", download_fold);
-    let jpeg = format!("{}/cover.jpeg", download_fold);
-    if Path::new(&png).exists() {
-        return Some(png);
-    } else if Path::new(&jpe).exists() {
-        return Some(jpe);
-    } else if Path::new(&jpg).exists() {
-        return Some(jpg);
-    } else if Path::new(&jpeg).exists() {
-        return Some(jpeg);
+    // Weird glob magic.
+    if let Ok(mut foo) = glob(&format!("{}/cover.*", download_fold)) {
+        // For some reason there is no .first() method so nth(0) is used
+        let path = foo.nth(0).and_then(|x| x.ok());
+        if let Some(p) = path {
+            return Some(p.to_str()?.into());
+        }
     };
 
     DirBuilder::new()
@@ -173,14 +167,16 @@ pub fn cache_image(pd: &PodcastCoverQuery) -> Option<String> {
         .create(&download_fold)
         .unwrap();
 
-    let dlpath = download_into(&download_fold, "cover", &url);
-    if let Ok(path) = dlpath {
-        info!("Cached img into: {}", &path);
-        Some(path)
-    } else {
-        error!("Failed to get feed image.");
-        error!("Error: {}", dlpath.unwrap_err());
-        None
+    match download_into(&download_fold, "cover", &url) {
+        Ok(path) => {
+            info!("Cached img into: {}", &path);
+            Some(path)
+        }
+        Err(err) => {
+            error!("Failed to get feed image.");
+            error!("Error: {}", err);
+            None
+        }
     }
 }
 
