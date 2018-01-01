@@ -82,6 +82,7 @@ impl ShowWidget {
         }
 
         let link = pd.link().to_owned();
+        WidgetExt::set_tooltip_text(&self.link, Some(link.as_str()));
         self.link.connect_clicked(move |_| {
             info!("Opening link: {}", &link);
             let _ = open::that(&link);
