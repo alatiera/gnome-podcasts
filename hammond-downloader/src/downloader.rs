@@ -34,7 +34,6 @@ fn download_into(dir: &str, file_title: &str, url: &str) -> Result<String> {
     }
 
     let headers = resp.headers().clone();
-
     let ct_len = headers.get::<ContentLength>().map(|ct_len| **ct_len);
     let ct_type = headers.get::<ContentType>();
     ct_len.map(|x| info!("File Lenght: {}", x));
@@ -46,7 +45,6 @@ fn download_into(dir: &str, file_title: &str, url: &str) -> Result<String> {
     // Construct a temp file to save desired content.
     // It has to be a `new_in` instead of new cause rename can't move cross filesystems.
     let tempdir = TempDir::new_in(dir, "temp_download")?;
-
     let out_file = format!("{}/temp.part", tempdir.path().to_str().unwrap(),);
 
     // Save requested content into the file.
@@ -60,7 +58,7 @@ fn download_into(dir: &str, file_title: &str, url: &str) -> Result<String> {
     Ok(target)
 }
 
-// Determine the file extension from the http content-type header.
+/// Determine the file extension from the http content-type header.
 fn get_ext(content: Option<ContentType>) -> Option<String> {
     let cont = content.clone()?;
     content
@@ -121,7 +119,7 @@ pub fn get_episode(ep: &mut EpisodeWidgetQuery, download_folder: &str) -> Result
         ep.save()?;
     };
 
-    let res = download_into(download_folder, ep.title(), ep.uri().unwrap());
+    let res = download_into(download_folder, &ep.rowid().to_string(), ep.uri().unwrap());
 
     if let Ok(path) = res {
         // If download succedes set episode local_uri to dlpath.
@@ -147,14 +145,14 @@ pub fn cache_image(pd: &PodcastCoverQuery) -> Option<String> {
         return None;
     }
 
-    let download_fold = format!(
+    let cache_download_fold = format!(
         "{}{}",
         HAMMOND_CACHE.to_str().unwrap(),
         pd.title().to_owned()
     );
 
     // Weird glob magic.
-    if let Ok(mut foo) = glob(&format!("{}/cover.*", download_fold)) {
+    if let Ok(mut foo) = glob(&format!("{}/cover.*", cache_download_fold)) {
         // For some reason there is no .first() method so nth(0) is used
         let path = foo.nth(0).and_then(|x| x.ok());
         if let Some(p) = path {
@@ -162,12 +160,13 @@ pub fn cache_image(pd: &PodcastCoverQuery) -> Option<String> {
         }
     };
 
+    // Create the folders if they don't exist.
     DirBuilder::new()
         .recursive(true)
-        .create(&download_fold)
+        .create(&cache_download_fold)
         .unwrap();
 
-    match download_into(&download_fold, "cover", &url) {
+    match download_into(&cache_download_fold, "cover", &url) {
         Ok(path) => {
             info!("Cached img into: {}", &path);
             Some(path)

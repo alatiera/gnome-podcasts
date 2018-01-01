@@ -7,6 +7,8 @@ extern crate glob;
 extern crate hammond_data;
 extern crate hyper;
 #[macro_use]
+extern crate lazy_static;
+#[macro_use]
 extern crate log;
 extern crate mime_guess;
 extern crate reqwest;
