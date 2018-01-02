@@ -103,9 +103,9 @@ impl App {
     pub fn setup_timed_callbacks(&self) {
         let content = self.content.clone();
         let header = self.header.clone();
-        // Update 30 seconds after the Application is initialized.
+        // Update the feeds right after the Application is initialized.
         gtk::timeout_add_seconds(
-            30,
+            2,
             clone!(content => move || {
             utils::refresh_feed(content.clone(), header.clone(), None);
             glib::Continue(false)
@@ -126,7 +126,7 @@ impl App {
         );
 
         // Run a database checkup once the application is initialized.
-        gtk::idle_add(move || {
+        gtk::timeout_add(300, || {
             let _ = checkup();
             glib::Continue(false)
         });

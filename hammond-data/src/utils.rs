@@ -84,8 +84,10 @@ pub fn delete_local_content(ep: &mut EpisodeCleanerQuery) -> Result<()> {
 /// Runs a cleaner for played Episode's that are pass the lifetime limit and
 /// scheduled for removal.
 pub fn checkup() -> Result<()> {
+    info!("Running database checks.");
     download_checker()?;
     played_cleaner()?;
+    info!("Checks completed.");
     Ok(())
 }
 
