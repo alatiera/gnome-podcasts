@@ -39,7 +39,7 @@ fn download_into(dir: &str, file_title: &str, url: &str) -> Result<String> {
     ct_len.map(|x| info!("File Lenght: {}", x));
     ct_type.map(|x| info!("Content Type: {}", x));
 
-    let ext = get_ext(ct_type.cloned()).unwrap_or(String::from("unkown"));
+    let ext = get_ext(ct_type.cloned()).unwrap_or(String::from("unknown"));
     info!("Extension: {}", ext);
 
     // Construct a temp file to save desired content.

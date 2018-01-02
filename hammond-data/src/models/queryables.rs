@@ -215,6 +215,22 @@ pub struct EpisodeWidgetQuery {
     podcast_id: i32,
 }
 
+impl From<Episode> for EpisodeWidgetQuery {
+    fn from(e: Episode) -> EpisodeWidgetQuery {
+        EpisodeWidgetQuery {
+            rowid: e.rowid,
+            title: e.title,
+            uri: e.uri,
+            local_uri: e.local_uri,
+            epoch: e.epoch,
+            length: e.length,
+            duration: e.duration,
+            played: e.played,
+            podcast_id: e.podcast_id,
+        }
+    }
+}
+
 impl EpisodeWidgetQuery {
     /// Get the value of the sqlite's `ROW_ID`
     pub fn rowid(&self) -> i32 {

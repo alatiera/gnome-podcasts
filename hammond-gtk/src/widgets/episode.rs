@@ -179,7 +179,6 @@ impl EpisodeWidget {
     }
 }
 
-// TODO: show notification when dl is finished.
 fn on_download_clicked(
     ep: &mut EpisodeWidgetQuery,
     download_bttn: &gtk::Button,

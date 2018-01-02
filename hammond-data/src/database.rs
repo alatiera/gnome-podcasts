@@ -35,7 +35,8 @@ lazy_static! {
     static ref DB_PATH: PathBuf = TEMPDIR.path().join("hammond.db");
 }
 
-pub(crate) fn connection() -> Pool {
+// FIXME: this should not be public
+pub fn connection() -> Pool {
     POOL.clone()
 }
 

@@ -16,3 +16,4 @@ extern crate tempdir;
 
 pub mod downloader;
 pub mod errors;
+pub mod manager;
