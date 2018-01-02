@@ -5,12 +5,18 @@ use gtk::prelude::*;
 use gio::{ActionMapExt, ApplicationExt, ApplicationExtManual, SimpleActionExt};
 
 use hammond_data::utils::checkup;
+use hammond_downloader::manager::Manager;
 
 use headerbar::Header;
 use content::Content;
 use utils;
 
 use std::rc::Rc;
+use std::sync::{Arc, Mutex};
+
+lazy_static! {
+    pub static ref DOWNLOADS_MANAGER: Arc<Mutex<Manager>> = Arc::new(Mutex::new(Manager::new()));
+}
 
 #[derive(Debug, Clone)]
 pub struct App {

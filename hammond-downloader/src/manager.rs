@@ -27,8 +27,10 @@ impl DonwloadInstance {
     }
 }
 
-struct Manager {
-    active: Arc<Mutex<HashSet<i32>>>,
+#[derive(Debug, Clone)]
+// FIXME: privacy stuff
+pub struct Manager {
+    pub active: Arc<Mutex<HashSet<i32>>>,
 }
 
 impl Default for Manager {
@@ -40,11 +42,11 @@ impl Default for Manager {
 }
 
 impl Manager {
-    fn new() -> Self {
+    pub fn new() -> Self {
         Manager::default()
     }
 
-    fn add(&self, id: i32, directory: &str) {
+    pub fn add(&self, id: i32, directory: &str) {
         {
             let mut m = self.active.lock().unwrap();
             m.insert(id);

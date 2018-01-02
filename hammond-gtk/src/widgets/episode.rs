@@ -13,6 +13,8 @@ use hammond_data::{EpisodeWidgetQuery, Podcast};
 use hammond_data::errors::*;
 use hammond_downloader::downloader;
 
+use app::DOWNLOADS_MANAGER;
+
 use std::thread;
 use std::cell::RefCell;
 use std::sync::mpsc::{channel, Receiver};
@@ -105,6 +107,14 @@ impl EpisodeWidget {
                 .map(|c| c.add_class("dim-label"));
         }
 
+        {
+            let m = DOWNLOADS_MANAGER.lock().unwrap();
+            let list = m.active.lock().unwrap();
+            if list.contains(&episode.rowid()) {
+                self.show_progess_bar()
+            };
+        }
+
         // Declare a custom humansize option struct
         // See: https://docs.rs/humansize/1.0.2/humansize/file_size_opts/struct.FileSizeOpts.html
         let custom_options = size_opts::FileSizeOpts {
@@ -177,6 +187,16 @@ impl EpisodeWidget {
             );
         }));
     }
+
+    fn show_progess_bar(&self) {
+        let progress_bar = self.progress.clone();
+        timeout_add(200, move || {
+            progress_bar.pulse();
+            glib::Continue(true)
+        });
+
+        self.progress.show();
+    }
 }
 
 fn on_download_clicked(
@@ -194,37 +214,18 @@ fn on_download_clicked(
         glib::Continue(true)
     });
 
-    // Create a async channel.
-    let (sender, receiver) = channel();
-
-    // Pass the desired arguments into the Local Thread Storage.
-    GLOBAL.with(
-        clone!(download_bttn, play_bttn, cancel_bttn, progress => move |global| {
-            *global.borrow_mut() = Some((
-                download_bttn,
-                play_bttn,
-                cancel_bttn,
-                progress,
-                receiver));
-            }),
-    );
-
     let pd = dbqueries::get_podcast_from_id(ep.podcast_id()).unwrap();
     let pd_title = pd.title().to_owned();
     let mut ep = ep.clone();
     cancel_bttn.show();
     progress.show();
     download_bttn.hide();
-    thread::spawn(move || {
-        let download_fold = downloader::get_download_folder(&pd_title).unwrap();
-        let e = downloader::get_episode(&mut ep, download_fold.as_str());
-        if let Err(err) = e {
-            error!("Error while trying to download: {:?}", ep.uri());
-            error!("Error: {}", err);
-        };
-        sender.send(true).expect("Couldn't send data to channel");;
-        glib::idle_add(receive);
-    });
+    let download_fold = downloader::get_download_folder(&pd_title).unwrap();
+    {
+        let m = DOWNLOADS_MANAGER.clone();
+        let man = m.lock().unwrap();
+        man.add(ep.rowid(), &download_fold);
+    }
 }
 
 fn on_play_bttn_clicked(episode_id: i32) {
