@@ -15,24 +15,7 @@ use hammond_downloader::downloader;
 
 use app::DOWNLOADS_MANAGER;
 
-use std::thread;
-use std::cell::RefCell;
-use std::sync::mpsc::{channel, Receiver};
 use std::path::Path;
-
-type Foo = RefCell<
-    Option<
-        (
-            gtk::Button,
-            gtk::Button,
-            gtk::Button,
-            gtk::ProgressBar,
-            Receiver<bool>,
-        ),
-    >,
->;
-
-thread_local!(static GLOBAL: Foo = RefCell::new(None));
 
 #[derive(Debug, Clone)]
 pub struct EpisodeWidget {
@@ -173,15 +156,13 @@ impl EpisodeWidget {
             };
         }));
 
-        let play = &self.play;
         let cancel = &self.cancel;
         let progress = self.progress.clone();
         self.download
-            .connect_clicked(clone!(play, episode, cancel, progress  => move |dl| {
+            .connect_clicked(clone!(episode, cancel, progress  => move |dl| {
             on_download_clicked(
-                &mut episode.clone(),
+                &episode,
                 dl,
-                &play,
                 &cancel,
                 progress.clone()
             );
@@ -196,13 +177,14 @@ impl EpisodeWidget {
         });
 
         self.progress.show();
+        self.download.hide();
+        self.cancel.show();
     }
 }
 
 fn on_download_clicked(
-    ep: &mut EpisodeWidgetQuery,
+    ep: &EpisodeWidgetQuery,
     download_bttn: &gtk::Button,
-    play_bttn: &gtk::Button,
     cancel_bttn: &gtk::Button,
     progress_bar: gtk::ProgressBar,
 ) {
@@ -216,14 +198,12 @@ fn on_download_clicked(
 
     let pd = dbqueries::get_podcast_from_id(ep.podcast_id()).unwrap();
     let pd_title = pd.title().to_owned();
-    let mut ep = ep.clone();
     cancel_bttn.show();
     progress.show();
     download_bttn.hide();
     let download_fold = downloader::get_download_folder(&pd_title).unwrap();
     {
-        let m = DOWNLOADS_MANAGER.clone();
-        let man = m.lock().unwrap();
+        let man = DOWNLOADS_MANAGER.lock().unwrap();
         man.add(ep.rowid(), &download_fold);
     }
 }
@@ -260,34 +240,13 @@ fn on_play_bttn_clicked(episode_id: i32) {
 //     };
 // }
 
-fn receive() -> glib::Continue {
-    GLOBAL.with(|global| {
-        if let Some((
-            ref download_bttn,
-            ref play_bttn,
-            ref cancel_bttn,
-            ref progress_bar,
-            ref reciever,
-        )) = *global.borrow()
-        {
-            if reciever.try_recv().is_ok() {
-                download_bttn.hide();
-                play_bttn.show();
-                cancel_bttn.hide();
-                progress_bar.hide();
-            }
-        }
-    });
-    glib::Continue(false)
-}
-
 pub fn episodes_listbox(pd: &Podcast) -> Result<gtk::ListBox> {
-    let episodes = dbqueries::get_pd_episodeswidgets(pd)?;
+    let mut episodes = dbqueries::get_pd_episodeswidgets(pd)?;
 
     let list = gtk::ListBox::new();
 
-    episodes.into_iter().for_each(|mut ep| {
-        let widget = EpisodeWidget::new(&mut ep);
+    episodes.iter_mut().for_each(|ep| {
+        let widget = EpisodeWidget::new(ep);
         list.add(&widget.container);
     });
 
