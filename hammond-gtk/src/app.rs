@@ -5,19 +5,28 @@ use gtk::prelude::*;
 use gio::{ActionMapExt, ApplicationExt, ApplicationExtManual, SimpleActionExt};
 
 use hammond_data::utils::checkup;
+use hammond_data::Source;
 
 use headerbar::Header;
 use content::Content;
 use utils;
 
 use std::rc::Rc;
+use std::sync::mpsc::{channel, Receiver};
+use std::time::Duration;
 
-#[derive(Debug, Clone)]
+#[derive(Clone, Debug)]
+pub enum Action {
+    UpdateSources(Option<Source>),
+}
+
+#[derive(Debug)]
 pub struct App {
     app_instance: gtk::Application,
     window: gtk::Window,
     header: Rc<Header>,
     content: Rc<Content>,
+    receiver: Receiver<Action>,
 }
 
 impl App {
@@ -34,10 +43,13 @@ impl App {
         let window = gtk::Window::new(gtk::WindowType::Toplevel);
         window.set_default_size(860, 640);
         window.set_title("Hammond");
-        window.connect_delete_event(|w, _| {
-            w.destroy();
+        let app_clone = application.clone();
+        window.connect_delete_event(move |_, _| {
+            app_clone.quit();
             Inhibit(false)
         });
+
+        let (sender, receiver) = channel();
 
         // TODO: Refactor the initialization order.
 
@@ -48,7 +60,7 @@ impl App {
         let content = Content::new(header.clone());
 
         // Initialize the headerbar
-        header.init(content.clone());
+        header.init(content.clone(), sender.clone());
 
         // Add the Headerbar to the window.
         window.set_titlebar(&header.container);
@@ -60,6 +72,7 @@ impl App {
             window,
             header,
             content,
+            receiver,
         }
     }
 
@@ -132,7 +145,7 @@ impl App {
         });
     }
 
-    pub fn run(&self) {
+    pub fn run(self) {
         let window = self.window.clone();
         let app = self.app_instance.clone();
         self.app_instance.connect_startup(move |_| {
@@ -140,6 +153,22 @@ impl App {
         });
         self.setup_timed_callbacks();
         self.setup_actions();
+
+        let receiver = self.receiver;
+        let content = self.content.clone();
+        let headerbar = self.header.clone();
+        gtk::idle_add(clone!(content, headerbar => move || {
+            match receiver.recv_timeout(Duration::from_millis(5)) {
+                Ok(Action::UpdateSources(source)) => {
+                    if let Some(s) = source {
+                        utils::refresh_feed(content.clone(), headerbar.clone(), Some(vec!(s)))
+                    }
+                }
+                _ => (),
+            }
+
+            Continue(true)
+        }));
 
         ApplicationExtManual::run(&self.app_instance, &[]);
     }
