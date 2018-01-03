@@ -18,6 +18,8 @@ use std::time::Duration;
 #[derive(Clone, Debug)]
 pub enum Action {
     UpdateSources(Option<Source>),
+    RefreshViews,
+    RefreshEpisodesView,
 }
 
 #[derive(Debug)]
@@ -57,7 +59,7 @@ impl App {
         let header = Rc::new(Header::default());
 
         // Create a content instance
-        let content = Content::new(header.clone());
+        let content = Content::new(header.clone(), sender.clone());
 
         // Initialize the headerbar
         header.init(content.clone(), sender.clone());
@@ -163,6 +165,12 @@ impl App {
                     if let Some(s) = source {
                         utils::refresh_feed(content.clone(), headerbar.clone(), Some(vec!(s)))
                     }
+                }
+                Ok(Action::RefreshViews) => {
+                    content.update();
+                }
+                Ok(Action::RefreshEpisodesView) => {
+                    content.update_episode_view();
                 }
                 _ => (),
             }

@@ -10,21 +10,24 @@ use views::episodes::EpisodesView;
 
 use widgets::show::ShowWidget;
 use headerbar::Header;
+use app::Action;
 
 use std::rc::Rc;
+use std::sync::mpsc::Sender;
 
 #[derive(Debug, Clone)]
 pub struct Content {
     stack: gtk::Stack,
     shows: Rc<ShowStack>,
     episodes: Rc<EpisodeStack>,
+    sender: Sender<Action>,
 }
 
 impl Content {
-    pub fn new(header: Rc<Header>) -> Rc<Content> {
+    pub fn new(header: Rc<Header>, sender: Sender<Action>) -> Rc<Content> {
         let stack = gtk::Stack::new();
         let episodes = EpisodeStack::new();
-        let shows = ShowStack::new(header, episodes.clone());
+        let shows = ShowStack::new(header, episodes.clone(), sender.clone());
 
         stack.add_titled(&episodes.stack, "episodes", "Episodes");
         stack.add_titled(&shows.stack, "shows", "Shows");
@@ -33,6 +36,7 @@ impl Content {
             stack,
             shows,
             episodes,
+            sender,
         })
     }
 
@@ -63,16 +67,18 @@ pub struct ShowStack {
     stack: gtk::Stack,
     header: Rc<Header>,
     epstack: Rc<EpisodeStack>,
+    sender: Sender<Action>,
 }
 
 impl ShowStack {
-    fn new(header: Rc<Header>, epstack: Rc<EpisodeStack>) -> Rc<ShowStack> {
+    fn new(header: Rc<Header>, epstack: Rc<EpisodeStack>, sender: Sender<Action>) -> Rc<ShowStack> {
         let stack = gtk::Stack::new();
 
         let show = Rc::new(ShowStack {
             stack,
             header: header.clone(),
             epstack,
+            sender,
         });
 
         let pop = ShowsPopulated::new(show.clone(), header);
@@ -124,7 +130,12 @@ impl ShowStack {
 
     pub fn replace_widget(&self, pd: &Podcast) {
         let old = self.stack.get_child_by_name("widget").unwrap();
-        let new = ShowWidget::new(Rc::new(self.clone()), self.header.clone(), pd);
+        let new = ShowWidget::new(
+            Rc::new(self.clone()),
+            self.header.clone(),
+            pd,
+            self.sender.clone(),
+        );
 
         self.stack.remove(&old);
         self.stack.add_named(&new.container, "widget");
