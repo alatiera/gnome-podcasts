@@ -82,7 +82,7 @@ impl ShowWidget {
             header.switch_to_normal();
         }));
 
-        self.setup_listbox(pd);
+        self.setup_listbox(pd, sender.clone());
         self.set_cover(pd);
         self.set_description(pd.description());
 
@@ -95,8 +95,8 @@ impl ShowWidget {
     }
 
     /// Populate the listbox with the shows episodes.
-    fn setup_listbox(&self, pd: &Podcast) {
-        let listbox = episodes_listbox(pd);
+    fn setup_listbox(&self, pd: &Podcast, sender: Sender<Action>) {
+        let listbox = episodes_listbox(pd, sender.clone());
         if let Ok(l) = listbox {
             self.episodes.add(&l);
         }

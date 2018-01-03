@@ -13,9 +13,11 @@ use hammond_data::{EpisodeWidgetQuery, Podcast};
 use hammond_data::errors::*;
 use hammond_downloader::downloader;
 
+use app::Action;
+
 use std::thread;
 use std::cell::RefCell;
-use std::sync::mpsc::{channel, Receiver};
+use std::sync::mpsc::{channel, Receiver, Sender};
 use std::path::Path;
 
 type Foo = RefCell<
@@ -86,16 +88,16 @@ impl Default for EpisodeWidget {
 }
 
 impl EpisodeWidget {
-    pub fn new(episode: &mut EpisodeWidgetQuery) -> EpisodeWidget {
+    pub fn new(episode: &mut EpisodeWidgetQuery, sender: Sender<Action>) -> EpisodeWidget {
         let widget = EpisodeWidget::default();
-        widget.init(episode);
+        widget.init(episode, sender);
         widget
     }
 
     // TODO: calculate lenght.
     // TODO: wire the progress_bar to the downloader.
     // TODO: wire the cancel button.
-    fn init(&self, episode: &mut EpisodeWidgetQuery) {
+    fn init(&self, episode: &mut EpisodeWidgetQuery, sender: Sender<Action>) {
         // Set the title label state.
         self.set_title(episode);
 
@@ -113,29 +115,32 @@ impl EpisodeWidget {
 
         let title = &self.title;
         self.play
-            .connect_clicked(clone!(episode, title => move |_| {
+            .connect_clicked(clone!(episode, title, sender => move |_| {
             let mut episode = episode.clone();
             on_play_bttn_clicked(episode.rowid());
             if episode.set_played_now().is_ok() {
                 title
                     .get_style_context()
                     .map(|c| c.add_class("dim-label"));
+                sender.clone().send(Action::RefreshEpisodesViewBGR).unwrap();
             };
         }));
 
         let play = &self.play;
         let cancel = &self.cancel;
         let progress = self.progress.clone();
-        self.download
-            .connect_clicked(clone!(play, episode, cancel, progress  => move |dl| {
+        self.download.connect_clicked(
+            clone!(play, episode, cancel, progress, sender  => move |dl| {
             on_download_clicked(
                 &mut episode.clone(),
                 dl,
                 &play,
                 &cancel,
-                progress.clone()
+                progress.clone(),
+                sender.clone()
             );
-        }));
+        }),
+        );
     }
 
     /// Show or hide the play/delete/download buttons upon widget initialization.
@@ -214,6 +219,7 @@ fn on_download_clicked(
     play_bttn: &gtk::Button,
     cancel_bttn: &gtk::Button,
     progress_bar: gtk::ProgressBar,
+    sender: Sender<Action>,
 ) {
     let progress = progress_bar.clone();
 
@@ -223,27 +229,13 @@ fn on_download_clicked(
         glib::Continue(true)
     });
 
-    // Create a async channel.
-    let (sender, receiver) = channel();
-
-    // Pass the desired arguments into the Local Thread Storage.
-    GLOBAL.with(
-        clone!(download_bttn, play_bttn, cancel_bttn, progress => move |global| {
-            *global.borrow_mut() = Some((
-                download_bttn,
-                play_bttn,
-                cancel_bttn,
-                progress,
-                receiver));
-            }),
-    );
-
     let pd = dbqueries::get_podcast_from_id(ep.podcast_id()).unwrap();
     let pd_title = pd.title().to_owned();
     let mut ep = ep.clone();
     cancel_bttn.show();
     progress.show();
     download_bttn.hide();
+    sender.send(Action::RefreshEpisodesViewBGR);
     thread::spawn(move || {
         let download_fold = downloader::get_download_folder(&pd_title).unwrap();
         let e = downloader::get_episode(&mut ep, download_fold.as_str());
@@ -251,8 +243,7 @@ fn on_download_clicked(
             error!("Error while trying to download: {:?}", ep.uri());
             error!("Error: {}", err);
         };
-        sender.send(true).expect("Couldn't send data to channel");;
-        glib::idle_add(receive);
+        sender.send(Action::RefreshViews);
     });
 }
 
@@ -309,13 +300,13 @@ fn receive() -> glib::Continue {
     glib::Continue(false)
 }
 
-pub fn episodes_listbox(pd: &Podcast) -> Result<gtk::ListBox> {
+pub fn episodes_listbox(pd: &Podcast, sender: Sender<Action>) -> Result<gtk::ListBox> {
     let episodes = dbqueries::get_pd_episodeswidgets(pd)?;
 
     let list = gtk::ListBox::new();
 
     episodes.into_iter().for_each(|mut ep| {
-        let widget = EpisodeWidget::new(&mut ep);
+        let widget = EpisodeWidget::new(&mut ep, sender.clone());
         list.add(&widget.container);
     });
 

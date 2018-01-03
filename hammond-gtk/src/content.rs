@@ -26,7 +26,7 @@ pub struct Content {
 impl Content {
     pub fn new(header: Rc<Header>, sender: Sender<Action>) -> Rc<Content> {
         let stack = gtk::Stack::new();
-        let episodes = EpisodeStack::new();
+        let episodes = EpisodeStack::new(sender.clone());
         let shows = ShowStack::new(header, episodes.clone(), sender.clone());
 
         stack.add_titled(&episodes.stack, "episodes", "Episodes");
@@ -47,6 +47,12 @@ impl Content {
 
     pub fn update_episode_view(&self) {
         self.episodes.update();
+    }
+
+    pub fn update_episode_view_if_baground(&self) {
+        if self.stack.get_visible_child_name() != Some("episodes".into()) {
+            self.episodes.update();
+        }
     }
 
     pub fn update_shows_view(&self) {
@@ -178,11 +184,12 @@ pub struct EpisodeStack {
     // populated: RecentEpisodes,
     // empty: EmptyView,
     stack: gtk::Stack,
+    sender: Sender<Action>,
 }
 
 impl EpisodeStack {
-    fn new() -> Rc<EpisodeStack> {
-        let episodes = EpisodesView::new();
+    fn new(sender: Sender<Action>) -> Rc<EpisodeStack> {
+        let episodes = EpisodesView::new(sender.clone());
         let empty = EmptyView::new();
         let stack = gtk::Stack::new();
 
@@ -199,12 +206,13 @@ impl EpisodeStack {
             // empty,
             // populated: pop,
             stack,
+            sender,
         })
     }
 
     pub fn update(&self) {
         let old = self.stack.get_child_by_name("episodes").unwrap();
-        let eps = EpisodesView::new();
+        let eps = EpisodesView::new(self.sender.clone());
 
         self.stack.remove(&old);
         self.stack.add_named(&eps.container, "episodes");

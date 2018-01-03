@@ -197,7 +197,6 @@
                 <property name="tooltip_text" translatable="yes">Download this episode</property>
                 <property name="halign">end</property>
                 <property name="valign">center</property>
-                <property name="action_name">app.refresh_episodes</property>
                 <property name="always_show_image">True</property>
                 <child>
                   <object class="GtkImage">
@@ -221,7 +220,6 @@
                 <property name="no_show_all">True</property>
                 <property name="tooltip_text" translatable="yes">Play this episode</property>
                 <property name="valign">center</property>
-                <property name="action_name">app.refresh_episodes</property>
                 <child>
                   <object class="GtkImage">
                     <property name="visible">True</property>

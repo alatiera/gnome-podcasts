@@ -19,7 +19,7 @@ use std::time::Duration;
 pub enum Action {
     UpdateSources(Option<Source>),
     RefreshViews,
-    RefreshEpisodesView,
+    RefreshEpisodesViewBGR,
 }
 
 #[derive(Debug)]
@@ -169,8 +169,8 @@ impl App {
                 Ok(Action::RefreshViews) => {
                     content.update();
                 }
-                Ok(Action::RefreshEpisodesView) => {
-                    content.update_episode_view();
+                Ok(Action::RefreshEpisodesViewBGR) => {
+                    content.update_episode_view_if_baground();
                 }
                 _ => (),
             }

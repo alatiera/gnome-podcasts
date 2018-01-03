@@ -7,8 +7,10 @@ use hammond_data::EpisodeWidgetQuery;
 
 use widgets::episode::EpisodeWidget;
 use utils::get_pixbuf_from_path;
+use app::Action;
 
 use std::rc::Rc;
+use std::sync::mpsc::Sender;
 
 #[derive(Debug, Clone)]
 enum ListSplit {
@@ -69,13 +71,13 @@ impl Default for EpisodesView {
 }
 
 impl EpisodesView {
-    pub fn new() -> Rc<EpisodesView> {
+    pub fn new(sender: Sender<Action>) -> Rc<EpisodesView> {
         let view = EpisodesView::default();
         let episodes = dbqueries::get_episodes_widgets_with_limit(100).unwrap();
         let now_utc = Utc::now();
 
         episodes.into_iter().for_each(|mut ep| {
-            let viewep = EpisodesViewWidget::new(&mut ep);
+            let viewep = EpisodesViewWidget::new(&mut ep, sender.clone());
 
             let t = split(&now_utc, i64::from(ep.epoch()));
             match t {
@@ -187,7 +189,7 @@ impl Default for EpisodesViewWidget {
 }
 
 impl EpisodesViewWidget {
-    fn new(episode: &mut EpisodeWidgetQuery) -> EpisodesViewWidget {
+    fn new(episode: &mut EpisodeWidgetQuery, sender: Sender<Action>) -> EpisodesViewWidget {
         let builder =
             gtk::Builder::new_from_resource("/org/gnome/hammond/gtk/episodes_view_widget.ui");
         let container: gtk::Box = builder.get_object("container").unwrap();
@@ -200,7 +202,7 @@ impl EpisodesViewWidget {
             }
         }
 
-        let ep = EpisodeWidget::new(episode);
+        let ep = EpisodeWidget::new(episode, sender.clone());
         container.pack_start(&ep.container, true, true, 6);
 
         EpisodesViewWidget {
