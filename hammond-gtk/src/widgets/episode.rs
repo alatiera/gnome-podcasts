@@ -96,60 +96,20 @@ impl EpisodeWidget {
     // TODO: wire the progress_bar to the downloader.
     // TODO: wire the cancel button.
     fn init(&self, episode: &mut EpisodeWidgetQuery) {
-        self.title.set_xalign(0.0);
-        self.title.set_text(episode.title());
+        // Set the title label state.
+        self.set_title(episode);
 
-        if episode.played().is_some() {
-            self.title
-                .get_style_context()
-                .map(|c| c.add_class("dim-label"));
-        }
+        // Set the size label.
+        self.set_size(episode.length());
 
-        // Declare a custom humansize option struct
-        // See: https://docs.rs/humansize/1.0.2/humansize/file_size_opts/struct.FileSizeOpts.html
-        let custom_options = size_opts::FileSizeOpts {
-            divider: size_opts::Kilo::Binary,
-            units: size_opts::Kilo::Decimal,
-            decimal_places: 0,
-            decimal_zeroes: 0,
-            fixed_at: size_opts::FixedAt::No,
-            long_units: false,
-            space: true,
-            suffix: "",
-            allow_negative: false,
-        };
+        // Set the duaration label.
+        self.set_duration(episode.duration());
 
-        if let Some(size) = episode.length() {
-            if size != 0 {
-                let s = size.file_size(custom_options);
-                if let Ok(s) = s {
-                    self.size.set_text(&s);
-                    self.size.show();
-                    self.separator2.show();
-                }
-            }
-        };
-
-        if let Some(secs) = episode.duration() {
-            self.duration.set_text(&format!("{} min", secs / 60));
-            self.duration.show();
-            self.separator1.show();
-        };
-
-        let now = Utc::now();
-        let date = Utc.timestamp(i64::from(episode.epoch()), 0);
-        if now.year() == date.year() {
-            self.date.set_text(&date.format("%e %b").to_string());
-        } else {
-            self.date.set_text(&date.format("%e %b %Y").to_string());
-        };
+        // Set the date label.
+        self.set_date(episode.epoch());
 
         // Show or hide the play/delete/download buttons upon widget initialization.
-        let local_uri = episode.local_uri();
-        if local_uri.is_some() && Path::new(local_uri.unwrap()).exists() {
-            self.download.hide();
-            self.play.show();
-        }
+        self.show_buttons(episode.local_uri());
 
         let title = &self.title;
         self.play
@@ -177,9 +137,77 @@ impl EpisodeWidget {
             );
         }));
     }
+
+    /// Show or hide the play/delete/download buttons upon widget initialization.
+    fn show_buttons(&self, local_uri: Option<&str>) {
+        if local_uri.is_some() && Path::new(local_uri.unwrap()).exists() {
+            self.download.hide();
+            self.play.show();
+        }
+    }
+
+    /// Determine the title state.
+    fn set_title(&self, episode: &EpisodeWidgetQuery) {
+        self.title.set_xalign(0.0);
+        self.title.set_text(episode.title());
+
+        // Grey out the title if the episode is played.
+        if episode.played().is_some() {
+            self.title
+                .get_style_context()
+                .map(|c| c.add_class("dim-label"));
+        }
+    }
+
+    /// Set the date label depending on the current time.
+    fn set_date(&self, epoch: i32) {
+        let now = Utc::now();
+        let date = Utc.timestamp(i64::from(epoch), 0);
+        if now.year() == date.year() {
+            self.date.set_text(&date.format("%e %b").to_string());
+        } else {
+            self.date.set_text(&date.format("%e %b %Y").to_string());
+        };
+    }
+
+    /// Set the duration label.
+    fn set_duration(&self, seconds: Option<i32>) {
+        if let Some(secs) = seconds {
+            self.duration.set_text(&format!("{} min", secs / 60));
+            self.duration.show();
+            self.separator1.show();
+        }
+    }
+
+    /// Set the Episode label dependings on its size
+    fn set_size(&self, bytes: Option<i32>) {
+        // Declare a custom humansize option struct
+        // See: https://docs.rs/humansize/1.0.2/humansize/file_size_opts/struct.FileSizeOpts.html
+        let custom_options = size_opts::FileSizeOpts {
+            divider: size_opts::Kilo::Binary,
+            units: size_opts::Kilo::Decimal,
+            decimal_places: 0,
+            decimal_zeroes: 0,
+            fixed_at: size_opts::FixedAt::No,
+            long_units: false,
+            space: true,
+            suffix: "",
+            allow_negative: false,
+        };
+
+        if let Some(size) = bytes {
+            if size != 0 {
+                let s = size.file_size(custom_options);
+                if let Ok(s) = s {
+                    self.size.set_text(&s);
+                    self.size.show();
+                    self.separator2.show();
+                }
+            }
+        };
+    }
 }
 
-// TODO: show notification when dl is finished.
 fn on_download_clicked(
     ep: &mut EpisodeWidgetQuery,
     download_bttn: &gtk::Button,
