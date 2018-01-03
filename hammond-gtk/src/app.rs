@@ -87,32 +87,6 @@ impl App {
             utils::refresh_feed(content.clone(), header.clone(), None);
         });
         self.app_instance.add_action(&update);
-
-        // Refreshes the `Content`
-        let refresh = gio::SimpleAction::new("refresh", None);
-        let content = self.content.clone();
-        refresh.connect_activate(move |_, _| {
-            content.update();
-        });
-        self.app_instance.add_action(&refresh);
-
-        // Refreshes the `EpisodesStack`
-        let refresh_episodes = gio::SimpleAction::new("refresh_episodes", None);
-        let content = self.content.clone();
-        refresh_episodes.connect_activate(move |_, _| {
-            if content.get_stack().get_visible_child_name() != Some(String::from("episodes")) {
-                content.update_episode_view();
-            }
-        });
-        self.app_instance.add_action(&refresh_episodes);
-
-        // Refreshes the `ShowStack`
-        let refresh_shows = gio::SimpleAction::new("refresh_shows", None);
-        let content = self.content.clone();
-        refresh_shows.connect_activate(move |_, _| {
-            content.update_shows_view();
-        });
-        self.app_instance.add_action(&refresh_shows);
     }
 
     pub fn setup_timed_callbacks(&self) {
