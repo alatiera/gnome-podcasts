@@ -26,7 +26,7 @@ impl Content {
     pub fn new(sender: Sender<Action>) -> Rc<Content> {
         let stack = gtk::Stack::new();
         let episodes = EpisodeStack::new(sender.clone());
-        let shows = ShowStack::new(episodes.clone(), sender.clone());
+        let shows = ShowStack::new(sender.clone());
 
         stack.add_titled(&episodes.stack, "episodes", "Episodes");
         stack.add_titled(&shows.stack, "shows", "Shows");
@@ -70,17 +70,15 @@ impl Content {
 #[derive(Debug, Clone)]
 pub struct ShowStack {
     stack: gtk::Stack,
-    epstack: Rc<EpisodeStack>,
     sender: Sender<Action>,
 }
 
 impl ShowStack {
-    fn new(epstack: Rc<EpisodeStack>, sender: Sender<Action>) -> Rc<ShowStack> {
+    fn new(sender: Sender<Action>) -> Rc<ShowStack> {
         let stack = gtk::Stack::new();
 
         let show = Rc::new(ShowStack {
             stack,
-            epstack,
             sender: sender.clone(),
         });
 
@@ -114,8 +112,7 @@ impl ShowStack {
         let vis = self.stack.get_visible_child_name().unwrap();
         let old = self.stack.get_child_by_name("podcasts").unwrap();
 
-        let pop = ShowsPopulated::default();
-        pop.init(Rc::new(self.clone()), self.sender.clone());
+        let pop = ShowsPopulated::new(Rc::new(self.clone()), self.sender.clone());
 
         self.stack.remove(&old);
         self.stack.add_named(&pop.container, "podcasts");
@@ -173,8 +170,6 @@ impl ShowStack {
 
 #[derive(Debug, Clone)]
 pub struct EpisodeStack {
-    // populated: RecentEpisodes,
-    // empty: EmptyView,
     stack: gtk::Stack,
     sender: Sender<Action>,
 }
