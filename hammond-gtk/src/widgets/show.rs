@@ -60,6 +60,7 @@ impl ShowWidget {
     }
 
     pub fn init(&self, shows: Rc<ShowStack>, header: Rc<Header>, pd: &Podcast) {
+        // Hacky workaround so the pd.id() can be retrieved from the `ShowStack`.
         WidgetExt::set_name(&self.container, &pd.id().to_string());
 
         self.unsub.connect_clicked(clone!(shows, pd => move |bttn| {
@@ -67,30 +68,39 @@ impl ShowWidget {
             header.switch_to_normal();
         }));
 
-        let listbox = episodes_listbox(pd);
-        if let Ok(l) = listbox {
-            self.episodes.add(&l);
-        }
-
-        // TODO: Temporary solution until we render html urls/bold/italic probably with markup.
-        let desc = dissolve::strip_html_tags(pd.description()).join(" ");
-        self.description.set_text(&replace_extra_spaces(&desc));
-
-        let img = get_pixbuf_from_path(&pd.clone().into(), 128);
-        if let Some(i) = img {
-            self.cover.set_from_pixbuf(&i);
-        }
+        self.setup_listbox(pd);
+        self.set_cover(pd);
+        self.set_description(pd.description());
 
         let link = pd.link().to_owned();
-        WidgetExt::set_tooltip_text(&self.link, Some(link.as_str()));
+        self.link.set_tooltip_text(Some(link.as_str()));
         self.link.connect_clicked(move |_| {
             info!("Opening link: {}", &link);
             let _ = open::that(&link);
         });
+    }
 
-        // self.played.connect_clicked(clone!(shows, pd => move |_| {
-        //     on_played_button_clicked(shows.clone(), &pd);
-        // }));
+    /// Populate the listbox with the shows episodes.
+    fn setup_listbox(&self, pd: &Podcast) {
+        let listbox = episodes_listbox(pd);
+        if let Ok(l) = listbox {
+            self.episodes.add(&l);
+        }
+    }
+
+    /// Set the show cover.
+    fn set_cover(&self, pd: &Podcast) {
+        let img = get_pixbuf_from_path(&pd.clone().into(), 128);
+        if let Some(i) = img {
+            self.cover.set_from_pixbuf(&i);
+        }
+    }
+
+    /// Set the descripton text.
+    fn set_description(&self, text: &str) {
+        // TODO: Temporary solution until we render html urls/bold/italic probably with markup.
+        let desc = dissolve::strip_html_tags(text).join(" ");
+        self.description.set_text(&replace_extra_spaces(&desc));
     }
 }
 
