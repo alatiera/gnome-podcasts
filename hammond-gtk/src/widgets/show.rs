@@ -12,7 +12,6 @@ use hammond_downloader::downloader;
 use widgets::episode::episodes_listbox;
 use utils::get_pixbuf_from_path;
 use content::ShowStack;
-use headerbar::Header;
 use app::Action;
 
 use std::rc::Rc;
@@ -55,31 +54,20 @@ impl Default for ShowWidget {
 }
 
 impl ShowWidget {
-    pub fn new(
-        shows: Rc<ShowStack>,
-        header: Rc<Header>,
-        pd: &Podcast,
-        sender: Sender<Action>,
-    ) -> ShowWidget {
+    pub fn new(shows: Rc<ShowStack>, pd: &Podcast, sender: Sender<Action>) -> ShowWidget {
         let pdw = ShowWidget::default();
-        pdw.init(shows, header, pd, sender);
+        pdw.init(shows, pd, sender);
         pdw
     }
 
-    pub fn init(
-        &self,
-        shows: Rc<ShowStack>,
-        header: Rc<Header>,
-        pd: &Podcast,
-        sender: Sender<Action>,
-    ) {
+    pub fn init(&self, shows: Rc<ShowStack>, pd: &Podcast, sender: Sender<Action>) {
         // Hacky workaround so the pd.id() can be retrieved from the `ShowStack`.
         WidgetExt::set_name(&self.container, &pd.id().to_string());
 
         self.unsub
             .connect_clicked(clone!(shows, pd, sender => move |bttn| {
             on_unsub_button_clicked(shows.clone(), &pd, bttn, sender.clone());
-            header.switch_to_normal();
+            sender.send(Action::HeaderBarNormal).unwrap();
         }));
 
         self.setup_listbox(pd, sender.clone());

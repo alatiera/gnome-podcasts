@@ -16,23 +16,8 @@ use hammond_downloader::downloader;
 use app::Action;
 
 use std::thread;
-use std::cell::RefCell;
-use std::sync::mpsc::{channel, Receiver, Sender};
+use std::sync::mpsc::Sender;
 use std::path::Path;
-
-type Foo = RefCell<
-    Option<
-        (
-            gtk::Button,
-            gtk::Button,
-            gtk::Button,
-            gtk::ProgressBar,
-            Receiver<bool>,
-        ),
-    >,
->;
-
-thread_local!(static GLOBAL: Foo = RefCell::new(None));
 
 #[derive(Debug, Clone)]
 pub struct EpisodeWidget {
@@ -126,21 +111,18 @@ impl EpisodeWidget {
             };
         }));
 
-        let play = &self.play;
         let cancel = &self.cancel;
         let progress = self.progress.clone();
-        self.download.connect_clicked(
-            clone!(play, episode, cancel, progress, sender  => move |dl| {
+        self.download
+            .connect_clicked(clone!(episode, cancel, progress, sender => move |dl| {
             on_download_clicked(
                 &mut episode.clone(),
                 dl,
-                &play,
                 &cancel,
                 progress.clone(),
                 sender.clone()
             );
-        }),
-        );
+        }));
     }
 
     /// Show or hide the play/delete/download buttons upon widget initialization.
@@ -216,7 +198,6 @@ impl EpisodeWidget {
 fn on_download_clicked(
     ep: &mut EpisodeWidgetQuery,
     download_bttn: &gtk::Button,
-    play_bttn: &gtk::Button,
     cancel_bttn: &gtk::Button,
     progress_bar: gtk::ProgressBar,
     sender: Sender<Action>,
@@ -235,7 +216,7 @@ fn on_download_clicked(
     cancel_bttn.show();
     progress.show();
     download_bttn.hide();
-    sender.send(Action::RefreshEpisodesViewBGR);
+    sender.send(Action::RefreshEpisodesViewBGR).unwrap();
     thread::spawn(move || {
         let download_fold = downloader::get_download_folder(&pd_title).unwrap();
         let e = downloader::get_episode(&mut ep, download_fold.as_str());
@@ -243,7 +224,7 @@ fn on_download_clicked(
             error!("Error while trying to download: {:?}", ep.uri());
             error!("Error: {}", err);
         };
-        sender.send(Action::RefreshViews);
+        sender.send(Action::RefreshViews).unwrap();
     });
 }
 
@@ -278,27 +259,6 @@ fn on_play_bttn_clicked(episode_id: i32) {
 //         error!("Error: {}", err);
 //     };
 // }
-
-fn receive() -> glib::Continue {
-    GLOBAL.with(|global| {
-        if let Some((
-            ref download_bttn,
-            ref play_bttn,
-            ref cancel_bttn,
-            ref progress_bar,
-            ref reciever,
-        )) = *global.borrow()
-        {
-            if reciever.try_recv().is_ok() {
-                download_bttn.hide();
-                play_bttn.show();
-                cancel_bttn.hide();
-                progress_bar.hide();
-            }
-        }
-    });
-    glib::Continue(false)
-}
 
 pub fn episodes_listbox(pd: &Podcast, sender: Sender<Action>) -> Result<gtk::ListBox> {
     let episodes = dbqueries::get_pd_episodeswidgets(pd)?;

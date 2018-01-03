@@ -20,6 +20,8 @@ pub enum Action {
     UpdateSources(Option<Source>),
     RefreshViews,
     RefreshEpisodesViewBGR,
+    HeaderBarShowTile(String),
+    HeaderBarNormal,
 }
 
 #[derive(Debug)]
@@ -53,16 +55,11 @@ impl App {
 
         let (sender, receiver) = channel();
 
-        // TODO: Refactor the initialization order.
+        // Create a content instance
+        let content = Content::new(sender.clone());
 
         // Create the headerbar
-        let header = Rc::new(Header::default());
-
-        // Create a content instance
-        let content = Content::new(header.clone(), sender.clone());
-
-        // Initialize the headerbar
-        header.init(content.clone(), sender.clone());
+        let header = Header::new(content.clone(), sender);
 
         // Add the Headerbar to the window.
         window.set_titlebar(&header.container);
@@ -145,6 +142,12 @@ impl App {
                 }
                 Ok(Action::RefreshEpisodesViewBGR) => {
                     content.update_episode_view_if_baground();
+                }
+                Ok(Action::HeaderBarShowTile(title)) => {
+                    headerbar.switch_to_back(&title)
+                }
+                Ok(Action::HeaderBarNormal) => {
+                    headerbar.switch_to_normal()
                 }
                 _ => (),
             }

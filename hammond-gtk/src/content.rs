@@ -9,7 +9,6 @@ use views::empty::EmptyView;
 use views::episodes::EpisodesView;
 
 use widgets::show::ShowWidget;
-use headerbar::Header;
 use app::Action;
 
 use std::rc::Rc;
@@ -24,10 +23,10 @@ pub struct Content {
 }
 
 impl Content {
-    pub fn new(header: Rc<Header>, sender: Sender<Action>) -> Rc<Content> {
+    pub fn new(sender: Sender<Action>) -> Rc<Content> {
         let stack = gtk::Stack::new();
         let episodes = EpisodeStack::new(sender.clone());
-        let shows = ShowStack::new(header, episodes.clone(), sender.clone());
+        let shows = ShowStack::new(episodes.clone(), sender.clone());
 
         stack.add_titled(&episodes.stack, "episodes", "Episodes");
         stack.add_titled(&shows.stack, "shows", "Shows");
@@ -71,23 +70,21 @@ impl Content {
 #[derive(Debug, Clone)]
 pub struct ShowStack {
     stack: gtk::Stack,
-    header: Rc<Header>,
     epstack: Rc<EpisodeStack>,
     sender: Sender<Action>,
 }
 
 impl ShowStack {
-    fn new(header: Rc<Header>, epstack: Rc<EpisodeStack>, sender: Sender<Action>) -> Rc<ShowStack> {
+    fn new(epstack: Rc<EpisodeStack>, sender: Sender<Action>) -> Rc<ShowStack> {
         let stack = gtk::Stack::new();
 
         let show = Rc::new(ShowStack {
             stack,
-            header: header.clone(),
             epstack,
-            sender,
+            sender: sender.clone(),
         });
 
-        let pop = ShowsPopulated::new(show.clone(), header);
+        let pop = ShowsPopulated::new(show.clone(), sender.clone());
         let widget = ShowWidget::default();
         let empty = EmptyView::new();
 
@@ -118,7 +115,7 @@ impl ShowStack {
         let old = self.stack.get_child_by_name("podcasts").unwrap();
 
         let pop = ShowsPopulated::default();
-        pop.init(Rc::new(self.clone()), self.header.clone());
+        pop.init(Rc::new(self.clone()), self.sender.clone());
 
         self.stack.remove(&old);
         self.stack.add_named(&pop.container, "podcasts");
@@ -136,12 +133,7 @@ impl ShowStack {
 
     pub fn replace_widget(&self, pd: &Podcast) {
         let old = self.stack.get_child_by_name("widget").unwrap();
-        let new = ShowWidget::new(
-            Rc::new(self.clone()),
-            self.header.clone(),
-            pd,
-            self.sender.clone(),
-        );
+        let new = ShowWidget::new(Rc::new(self.clone()), pd, self.sender.clone());
 
         self.stack.remove(&old);
         self.stack.add_named(&new.container, "widget");
