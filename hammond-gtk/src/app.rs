@@ -22,6 +22,7 @@ pub enum Action {
     RefreshEpisodesViewBGR,
     HeaderBarShowTile(String),
     HeaderBarNormal,
+    HeaderBarHideUpdateIndicator,
 }
 
 #[derive(Debug)]
@@ -145,6 +146,9 @@ impl App {
                 }
                 Ok(Action::HeaderBarNormal) => {
                     headerbar.switch_to_normal()
+                }
+                Ok(Action::HeaderBarHideUpdateIndicator) => {
+                    headerbar.hide_update_notification()
                 }
                 _ => (),
             }
