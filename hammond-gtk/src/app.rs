@@ -134,12 +134,8 @@ impl App {
                         utils::refresh_feed(headerbar.clone(), Some(vec![s]), sender.clone())
                     }
                 }
-                Ok(Action::RefreshViews) => {
-                    content.update();
-                }
-                Ok(Action::RefreshEpisodesViewBGR) => {
-                    content.update_episode_view_if_baground();
-                }
+                Ok(Action::RefreshViews) => content.update(),
+                Ok(Action::RefreshEpisodesViewBGR) => content.update_episode_view_if_baground(),
                 Ok(Action::HeaderBarShowTile(title)) => headerbar.switch_to_back(&title),
                 Ok(Action::HeaderBarNormal) => headerbar.switch_to_normal(),
                 Ok(Action::HeaderBarHideUpdateIndicator) => headerbar.hide_update_notification(),

@@ -193,8 +193,27 @@ impl EpisodeStack {
     }
 
     pub fn update(&self) {
-        let old = self.stack.get_child_by_name("episodes").unwrap();
+        use gtk::Cast;
+
+        let old = self.stack
+            .get_child_by_name("episodes")
+            .unwrap()
+            .downcast::<gtk::Box>()
+            .unwrap();
+        info!("Name: {:?}", WidgetExt::get_name(&old));
+
+        let scrolled_window = old.get_children()
+            .first()
+            .unwrap()
+            .clone()
+            .downcast::<gtk::ScrolledWindow>()
+            .unwrap();
+        info!("Name: {:?}", WidgetExt::get_name(&scrolled_window));
+
         let eps = EpisodesView::new(self.sender.clone());
+        scrolled_window
+            .get_vadjustment()
+            .map(|x| eps.set_vadjustment(&x));
 
         self.stack.remove(&old);
         self.stack.add_named(&eps.container, "episodes");

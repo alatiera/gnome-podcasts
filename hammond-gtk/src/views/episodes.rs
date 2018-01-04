@@ -24,6 +24,7 @@ enum ListSplit {
 #[derive(Debug, Clone)]
 pub struct EpisodesView {
     pub container: gtk::Box,
+    scrolled_window: gtk::ScrolledWindow,
     frame_parent: gtk::Box,
     today_box: gtk::Box,
     yday_box: gtk::Box,
@@ -41,6 +42,7 @@ impl Default for EpisodesView {
     fn default() -> Self {
         let builder = gtk::Builder::new_from_resource("/org/gnome/hammond/gtk/episodes_view.ui");
         let container: gtk::Box = builder.get_object("container").unwrap();
+        let scrolled_window: gtk::ScrolledWindow = builder.get_object("scrolled_window").unwrap();
         let frame_parent: gtk::Box = builder.get_object("frame_parent").unwrap();
         let today_box: gtk::Box = builder.get_object("today_box").unwrap();
         let yday_box: gtk::Box = builder.get_object("yday_box").unwrap();
@@ -55,6 +57,7 @@ impl Default for EpisodesView {
 
         EpisodesView {
             container,
+            scrolled_window,
             frame_parent,
             today_box,
             yday_box,
@@ -146,6 +149,10 @@ impl EpisodesView {
         }
 
         true
+    }
+
+    pub fn set_vadjustment(&self, vadjustment: &gtk::Adjustment) {
+        self.scrolled_window.set_vadjustment(vadjustment)
     }
 }
 
