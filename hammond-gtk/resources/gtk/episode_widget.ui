@@ -15,22 +15,22 @@
           <object class="GtkBox">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="valign">center</property>
+            <property name="valign">start</property>
             <property name="orientation">vertical</property>
             <property name="spacing">6</property>
             <child>
               <object class="GtkBox">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
+                <property name="halign">start</property>
                 <child>
                   <object class="GtkLabel" id="title_label">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="halign">start</property>
                     <property name="label" translatable="yes">Episode Title</property>
                     <property name="ellipsize">end</property>
                     <property name="single_line_mode">True</property>
-                    <property name="max_width_chars">60</property>
+                    <property name="max_width_chars">64</property>
                     <property name="track_visited_links">False</property>
                     <property name="lines">1</property>
                   </object>
@@ -51,12 +51,13 @@
               <object class="GtkBox">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
+                <property name="halign">start</property>
                 <property name="spacing">6</property>
                 <child>
                   <object class="GtkLabel" id="date_label">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="label" translatable="yes">1970/01/01</property>
+                    <property name="label" translatable="yes">3 Jan</property>
                     <property name="single_line_mode">True</property>
                     <property name="track_visited_links">False</property>
                     <style>
