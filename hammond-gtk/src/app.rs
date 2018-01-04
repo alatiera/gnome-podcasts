@@ -12,7 +12,7 @@ use content::Content;
 use utils;
 
 use std::rc::Rc;
-use std::sync::mpsc::{channel, Receiver};
+use std::sync::mpsc::{channel, Receiver, Sender};
 use std::time::Duration;
 
 #[derive(Clone, Debug)]
@@ -31,6 +31,7 @@ pub struct App {
     header: Rc<Header>,
     content: Rc<Content>,
     receiver: Receiver<Action>,
+    sender: Sender<Action>,
 }
 
 impl App {
@@ -59,7 +60,7 @@ impl App {
         let content = Content::new(sender.clone());
 
         // Create the headerbar
-        let header = Header::new(content.clone(), sender);
+        let header = Header::new(content.clone(), sender.clone());
 
         // Add the Headerbar to the window.
         window.set_titlebar(&header.container);
@@ -72,44 +73,39 @@ impl App {
             header,
             content,
             receiver,
+            sender,
         }
     }
 
     pub fn setup_actions(&self) {
         // Updates the database and refreshes every view.
         let update = gio::SimpleAction::new("update", None);
-        let content = self.content.clone();
         let header = self.header.clone();
+        let sender = self.sender.clone();
         update.connect_activate(move |_, _| {
-            utils::refresh_feed(content.clone(), header.clone(), None);
+            utils::refresh_feed(header.clone(), None, sender.clone());
         });
         self.app_instance.add_action(&update);
     }
 
     pub fn setup_timed_callbacks(&self) {
-        let content = self.content.clone();
         let header = self.header.clone();
+        let sender = self.sender.clone();
         // Update the feeds right after the Application is initialized.
-        gtk::timeout_add_seconds(
-            2,
-            clone!(content => move || {
-            utils::refresh_feed(content.clone(), header.clone(), None);
+        gtk::timeout_add_seconds(2, move || {
+            utils::refresh_feed(header.clone(), None, sender.clone());
             glib::Continue(false)
-        }),
-        );
+        });
 
-        let content = self.content.clone();
         let header = self.header.clone();
+        let sender = self.sender.clone();
         // Auto-updater, runs every hour.
         // TODO: expose the interval in which it run to a user setting.
         // TODO: show notifications.
-        gtk::timeout_add_seconds(
-            3600,
-            clone!(content => move || {
-            utils::refresh_feed(content.clone(), header.clone(), None);
+        gtk::timeout_add_seconds(3600, move || {
+            utils::refresh_feed(header.clone(), None, sender.clone());
             glib::Continue(true)
-        }),
-        );
+        });
 
         // Run a database checkup once the application is initialized.
         gtk::timeout_add(300, || {
@@ -130,11 +126,12 @@ impl App {
         let receiver = self.receiver;
         let content = self.content.clone();
         let headerbar = self.header.clone();
+        let sender = self.sender.clone();
         gtk::idle_add(clone!(content, headerbar => move || {
             match receiver.recv_timeout(Duration::from_millis(5)) {
                 Ok(Action::UpdateSources(source)) => {
                     if let Some(s) = source {
-                        utils::refresh_feed(content.clone(), headerbar.clone(), Some(vec!(s)))
+                        utils::refresh_feed(headerbar.clone(), Some(vec!(s)), sender.clone())
                     }
                 }
                 Ok(Action::RefreshViews) => {
