@@ -9,8 +9,8 @@ use widgets::episode::EpisodeWidget;
 use utils::get_pixbuf_from_path;
 use app::Action;
 
-use std::rc::Rc;
 use std::sync::mpsc::Sender;
+use std::sync::Arc;
 
 #[derive(Debug, Clone)]
 enum ListSplit {
@@ -72,7 +72,7 @@ impl Default for EpisodesView {
 
 // TODO: REFACTOR ME
 impl EpisodesView {
-    pub fn new(sender: Sender<Action>) -> Rc<EpisodesView> {
+    pub fn new(sender: Sender<Action>) -> Arc<EpisodesView> {
         let view = EpisodesView::default();
         let episodes = dbqueries::get_episodes_widgets_with_limit(100).unwrap();
         let now_utc = Utc::now();
@@ -121,7 +121,7 @@ impl EpisodesView {
         }
 
         view.container.show_all();
-        Rc::new(view)
+        Arc::new(view)
     }
 
     pub fn is_empty(&self) -> bool {

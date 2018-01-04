@@ -9,8 +9,8 @@ use utils::get_pixbuf_from_path;
 use content::ShowStack;
 use app::Action;
 
-use std::rc::Rc;
 use std::sync::mpsc::Sender;
+use std::sync::Arc;
 
 #[derive(Debug, Clone)]
 pub struct ShowsPopulated {
@@ -35,13 +35,13 @@ impl Default for ShowsPopulated {
 }
 
 impl ShowsPopulated {
-    pub fn new(show: Rc<ShowStack>, sender: Sender<Action>) -> ShowsPopulated {
+    pub fn new(show: Arc<ShowStack>, sender: Sender<Action>) -> ShowsPopulated {
         let pop = ShowsPopulated::default();
         pop.init(show, sender);
         pop
     }
 
-    pub fn init(&self, show: Rc<ShowStack>, sender: Sender<Action>) {
+    pub fn init(&self, show: Arc<ShowStack>, sender: Sender<Action>) {
         use gtk::WidgetExt;
 
         // TODO: handle unwraps.

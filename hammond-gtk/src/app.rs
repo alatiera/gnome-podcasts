@@ -11,8 +11,8 @@ use headerbar::Header;
 use content::Content;
 use utils;
 
-use std::rc::Rc;
 use std::sync::mpsc::{channel, Receiver, Sender};
+use std::sync::Arc;
 
 #[derive(Clone, Debug)]
 pub enum Action {
@@ -28,8 +28,8 @@ pub enum Action {
 pub struct App {
     app_instance: gtk::Application,
     window: gtk::Window,
-    header: Rc<Header>,
-    content: Rc<Content>,
+    header: Arc<Header>,
+    content: Arc<Content>,
     receiver: Receiver<Action>,
     sender: Sender<Action>,
 }

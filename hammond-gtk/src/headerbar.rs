@@ -3,10 +3,10 @@ use gtk::prelude::*;
 
 use hammond_data::Source;
 
-use std::rc::Rc;
 use std::sync::mpsc::Sender;
-use app::Action;
+use std::sync::Arc;
 
+use app::Action;
 use content::Content;
 
 #[derive(Debug, Clone)]
@@ -49,13 +49,13 @@ impl Default for Header {
 
 impl Header {
     #[allow(dead_code)]
-    pub fn new(content: Rc<Content>, sender: Sender<Action>) -> Rc<Header> {
+    pub fn new(content: Arc<Content>, sender: Sender<Action>) -> Arc<Header> {
         let h = Header::default();
         h.init(content, sender);
-        Rc::new(h)
+        Arc::new(h)
     }
 
-    pub fn init(&self, content: Rc<Content>, sender: Sender<Action>) {
+    pub fn init(&self, content: Arc<Content>, sender: Sender<Action>) {
         let builder = gtk::Builder::new_from_resource("/org/gnome/hammond/gtk/headerbar.ui");
 
         let add_popover: gtk::Popover = builder.get_object("add_popover").unwrap();

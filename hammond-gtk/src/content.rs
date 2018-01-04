@@ -11,19 +11,19 @@ use views::episodes::EpisodesView;
 use widgets::show::ShowWidget;
 use app::Action;
 
-use std::rc::Rc;
+use std::sync::Arc;
 use std::sync::mpsc::Sender;
 
 #[derive(Debug, Clone)]
 pub struct Content {
     stack: gtk::Stack,
-    shows: Rc<ShowStack>,
-    episodes: Rc<EpisodeStack>,
+    shows: Arc<ShowStack>,
+    episodes: Arc<EpisodeStack>,
     sender: Sender<Action>,
 }
 
 impl Content {
-    pub fn new(sender: Sender<Action>) -> Rc<Content> {
+    pub fn new(sender: Sender<Action>) -> Arc<Content> {
         let stack = gtk::Stack::new();
         let episodes = EpisodeStack::new(sender.clone());
         let shows = ShowStack::new(sender.clone());
@@ -31,7 +31,7 @@ impl Content {
         stack.add_titled(&episodes.stack, "episodes", "Episodes");
         stack.add_titled(&shows.stack, "shows", "Shows");
 
-        Rc::new(Content {
+        Arc::new(Content {
             stack,
             shows,
             episodes,
@@ -62,7 +62,7 @@ impl Content {
         self.stack.clone()
     }
 
-    pub fn get_shows(&self) -> Rc<ShowStack> {
+    pub fn get_shows(&self) -> Arc<ShowStack> {
         self.shows.clone()
     }
 }
@@ -74,10 +74,10 @@ pub struct ShowStack {
 }
 
 impl ShowStack {
-    fn new(sender: Sender<Action>) -> Rc<ShowStack> {
+    fn new(sender: Sender<Action>) -> Arc<ShowStack> {
         let stack = gtk::Stack::new();
 
-        let show = Rc::new(ShowStack {
+        let show = Arc::new(ShowStack {
             stack,
             sender: sender.clone(),
         });
@@ -112,7 +112,7 @@ impl ShowStack {
         let vis = self.stack.get_visible_child_name().unwrap();
         let old = self.stack.get_child_by_name("podcasts").unwrap();
 
-        let pop = ShowsPopulated::new(Rc::new(self.clone()), self.sender.clone());
+        let pop = ShowsPopulated::new(Arc::new(self.clone()), self.sender.clone());
 
         self.stack.remove(&old);
         self.stack.add_named(&pop.container, "podcasts");
@@ -130,7 +130,7 @@ impl ShowStack {
 
     pub fn replace_widget(&self, pd: &Podcast) {
         let old = self.stack.get_child_by_name("widget").unwrap();
-        let new = ShowWidget::new(Rc::new(self.clone()), pd, self.sender.clone());
+        let new = ShowWidget::new(Arc::new(self.clone()), pd, self.sender.clone());
 
         self.stack.remove(&old);
         self.stack.add_named(&new.container, "widget");
@@ -175,7 +175,7 @@ pub struct EpisodeStack {
 }
 
 impl EpisodeStack {
-    fn new(sender: Sender<Action>) -> Rc<EpisodeStack> {
+    fn new(sender: Sender<Action>) -> Arc<EpisodeStack> {
         let episodes = EpisodesView::new(sender.clone());
         let empty = EmptyView::new();
         let stack = gtk::Stack::new();
@@ -189,12 +189,7 @@ impl EpisodeStack {
             stack.set_visible_child_name("episodes");
         }
 
-        Rc::new(EpisodeStack {
-            // empty,
-            // populated: pop,
-            stack,
-            sender,
-        })
+        Arc::new(EpisodeStack { stack, sender })
     }
 
     pub fn update(&self) {

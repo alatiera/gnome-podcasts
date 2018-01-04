@@ -7,8 +7,7 @@ use hammond_downloader::downloader;
 
 use std::thread;
 use std::sync::mpsc::Sender;
-use std::sync::Mutex;
-use std::rc::Rc;
+use std::sync::{Arc, Mutex};
 use std::collections::HashMap;
 
 use headerbar::Header;
@@ -17,7 +16,7 @@ use app::Action;
 /// Update the rss feed(s) originating from `source`.
 /// If `source` is None, Fetches all the `Source` entries in the database and updates them.
 /// When It's done,it queues up a `RefreshViews` action.
-pub fn refresh_feed(headerbar: Rc<Header>, source: Option<Vec<Source>>, sender: Sender<Action>) {
+pub fn refresh_feed(headerbar: Arc<Header>, source: Option<Vec<Source>>, sender: Sender<Action>) {
     headerbar.show_update_notification();
 
     thread::spawn(move || {

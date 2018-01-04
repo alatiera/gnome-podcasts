@@ -14,8 +14,8 @@ use utils::get_pixbuf_from_path;
 use content::ShowStack;
 use app::Action;
 
-use std::rc::Rc;
 use std::sync::mpsc::Sender;
+use std::sync::Arc;
 use std::fs;
 
 #[derive(Debug, Clone)]
@@ -54,13 +54,13 @@ impl Default for ShowWidget {
 }
 
 impl ShowWidget {
-    pub fn new(shows: Rc<ShowStack>, pd: &Podcast, sender: Sender<Action>) -> ShowWidget {
+    pub fn new(shows: Arc<ShowStack>, pd: &Podcast, sender: Sender<Action>) -> ShowWidget {
         let pdw = ShowWidget::default();
         pdw.init(shows, pd, sender);
         pdw
     }
 
-    pub fn init(&self, shows: Rc<ShowStack>, pd: &Podcast, sender: Sender<Action>) {
+    pub fn init(&self, shows: Arc<ShowStack>, pd: &Podcast, sender: Sender<Action>) {
         // Hacky workaround so the pd.id() can be retrieved from the `ShowStack`.
         WidgetExt::set_name(&self.container, &pd.id().to_string());
 
@@ -107,7 +107,7 @@ impl ShowWidget {
 }
 
 fn on_unsub_button_clicked(
-    shows: Rc<ShowStack>,
+    shows: Arc<ShowStack>,
     pd: &Podcast,
     unsub_button: &gtk::Button,
     sender: Sender<Action>,
@@ -132,7 +132,7 @@ fn on_unsub_button_clicked(
 }
 
 #[allow(dead_code)]
-fn on_played_button_clicked(shows: Rc<ShowStack>, pd: &Podcast) {
+fn on_played_button_clicked(shows: Arc<ShowStack>, pd: &Podcast) {
     let _ = dbqueries::update_none_to_played_now(pd);
 
     shows.update_widget();
