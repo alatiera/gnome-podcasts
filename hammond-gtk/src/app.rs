@@ -13,7 +13,6 @@ use utils;
 
 use std::rc::Rc;
 use std::sync::mpsc::{channel, Receiver, Sender};
-use std::time::Duration;
 
 #[derive(Clone, Debug)]
 pub enum Action {
@@ -124,15 +123,15 @@ impl App {
         self.setup_timed_callbacks();
         self.setup_actions();
 
-        let receiver = self.receiver;
         let content = self.content.clone();
         let headerbar = self.header.clone();
         let sender = self.sender.clone();
-        gtk::idle_add(clone!(content, headerbar => move || {
-            match receiver.recv_timeout(Duration::from_millis(5)) {
+        let receiver = self.receiver;
+        gtk::timeout_add(250, move || {
+            match receiver.try_recv() {
                 Ok(Action::UpdateSources(source)) => {
                     if let Some(s) = source {
-                        utils::refresh_feed(headerbar.clone(), Some(vec!(s)), sender.clone())
+                        utils::refresh_feed(headerbar.clone(), Some(vec![s]), sender.clone())
                     }
                 }
                 Ok(Action::RefreshViews) => {
@@ -141,20 +140,14 @@ impl App {
                 Ok(Action::RefreshEpisodesViewBGR) => {
                     content.update_episode_view_if_baground();
                 }
-                Ok(Action::HeaderBarShowTile(title)) => {
-                    headerbar.switch_to_back(&title)
-                }
-                Ok(Action::HeaderBarNormal) => {
-                    headerbar.switch_to_normal()
-                }
-                Ok(Action::HeaderBarHideUpdateIndicator) => {
-                    headerbar.hide_update_notification()
-                }
+                Ok(Action::HeaderBarShowTile(title)) => headerbar.switch_to_back(&title),
+                Ok(Action::HeaderBarNormal) => headerbar.switch_to_normal(),
+                Ok(Action::HeaderBarHideUpdateIndicator) => headerbar.hide_update_notification(),
                 _ => (),
             }
 
             Continue(true)
-        }));
+        });
 
         ApplicationExtManual::run(&self.app_instance, &[]);
     }

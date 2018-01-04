@@ -70,6 +70,7 @@ impl Default for EpisodesView {
     }
 }
 
+// TODO: REFACTOR ME
 impl EpisodesView {
     pub fn new(sender: Sender<Action>) -> Rc<EpisodesView> {
         let view = EpisodesView::default();

@@ -107,7 +107,7 @@ impl EpisodeWidget {
                 title
                     .get_style_context()
                     .map(|c| c.add_class("dim-label"));
-                sender.clone().send(Action::RefreshEpisodesViewBGR).unwrap();
+                sender.send(Action::RefreshEpisodesViewBGR).unwrap();
             };
         }));
 
@@ -261,12 +261,12 @@ fn on_play_bttn_clicked(episode_id: i32) {
 // }
 
 pub fn episodes_listbox(pd: &Podcast, sender: Sender<Action>) -> Result<gtk::ListBox> {
-    let episodes = dbqueries::get_pd_episodeswidgets(pd)?;
+    let mut episodes = dbqueries::get_pd_episodeswidgets(pd)?;
 
     let list = gtk::ListBox::new();
 
-    episodes.into_iter().for_each(|mut ep| {
-        let widget = EpisodeWidget::new(&mut ep, sender.clone());
+    episodes.iter_mut().for_each(|ep| {
+        let widget = EpisodeWidget::new(ep, sender.clone());
         list.add(&widget.container);
     });
 
