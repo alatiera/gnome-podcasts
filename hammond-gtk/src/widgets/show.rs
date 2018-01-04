@@ -16,6 +16,7 @@ use app::Action;
 
 use std::sync::mpsc::Sender;
 use std::sync::Arc;
+use std::thread;
 use std::fs;
 
 #[derive(Debug, Clone)]
@@ -120,23 +121,28 @@ fn on_unsub_button_clicked(
     unsub_button: &gtk::Button,
     sender: Sender<Action>,
 ) {
-    let res = dbqueries::remove_feed(pd);
-    if res.is_ok() {
-        info!("{} was removed succesfully.", pd.title());
-        // hack to get away without properly checking for none.
-        // if pressed twice would panic.
-        unsub_button.hide();
+    // hack to get away without properly checking for none.
+    // if pressed twice would panic.
+    unsub_button.hide();
+    // Spawn a thread so it won't block the ui.
+    thread::spawn(clone!(pd => move || {
+        let res = dbqueries::remove_feed(&pd);
+        if res.is_ok() {
+            info!("{} was removed succesfully.", pd.title());
 
-        let dl_fold = downloader::get_download_folder(pd.title());
-        if let Ok(fold) = dl_fold {
-            let res3 = fs::remove_dir_all(&fold);
-            if res3.is_ok() {
-                info!("All the content at, {} was removed succesfully", &fold);
-            }
-        };
-    }
-    sender.send(Action::RefreshViews).unwrap();
+            let dl_fold = downloader::get_download_folder(pd.title());
+            if let Ok(fold) = dl_fold {
+                let res3 = fs::remove_dir_all(&fold);
+                // TODO: Show errors?
+                if res3.is_ok() {
+                    info!("All the content at, {} was removed succesfully", &fold);
+                }
+            };
+        }
+    }));
     shows.switch_podcasts_animated();
+    // Queue a refresh after the switch to avoid blocking the db.
+    sender.send(Action::RefreshViews).unwrap();
 }
 
 #[allow(dead_code)]
