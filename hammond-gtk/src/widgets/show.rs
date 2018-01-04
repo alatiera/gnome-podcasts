@@ -21,6 +21,7 @@ use std::fs;
 #[derive(Debug, Clone)]
 pub struct ShowWidget {
     pub container: gtk::Box,
+    scrolled_window: gtk::ScrolledWindow,
     cover: gtk::Image,
     description: gtk::Label,
     link: gtk::Button,
@@ -33,6 +34,7 @@ impl Default for ShowWidget {
     fn default() -> Self {
         let builder = gtk::Builder::new_from_resource("/org/gnome/hammond/gtk/show_widget.ui");
         let container: gtk::Box = builder.get_object("container").unwrap();
+        let scrolled_window: gtk::ScrolledWindow = builder.get_object("scrolled_window").unwrap();
         let episodes: gtk::Frame = builder.get_object("episodes").unwrap();
 
         let cover: gtk::Image = builder.get_object("cover").unwrap();
@@ -43,6 +45,7 @@ impl Default for ShowWidget {
 
         ShowWidget {
             container,
+            scrolled_window,
             cover,
             description,
             unsub,
@@ -103,6 +106,11 @@ impl ShowWidget {
         // TODO: Temporary solution until we render html urls/bold/italic probably with markup.
         let desc = dissolve::strip_html_tags(text).join(" ");
         self.description.set_text(&replace_extra_spaces(&desc));
+    }
+
+    /// Set scrolled window vertical adjustment.
+    pub fn set_vadjustment(&self, vadjustment: &gtk::Adjustment) {
+        self.scrolled_window.set_vadjustment(vadjustment)
     }
 }
 

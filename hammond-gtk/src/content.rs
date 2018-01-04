@@ -1,4 +1,5 @@
 use gtk;
+use gtk::Cast;
 use gtk::prelude::*;
 
 use hammond_data::Podcast;
@@ -129,8 +130,30 @@ impl ShowStack {
     }
 
     pub fn replace_widget(&self, pd: &Podcast) {
-        let old = self.stack.get_child_by_name("widget").unwrap();
+        let old = self.stack
+            .get_child_by_name("widget")
+            // This is guaranted to exists, based on ShowStack::new().
+            .unwrap()
+            .downcast::<gtk::Box>()
+            // This is guaranted to be a Box based on the ShowWidget impl.
+            .unwrap();
+        debug!("Name: {:?}", WidgetExt::get_name(&old));
+
+        let scrolled_window = old.get_children()
+            .first()
+            // This is guaranted to exist based on the show_widget.ui file.
+            .unwrap()
+            .clone()
+            .downcast::<gtk::ScrolledWindow>()
+            // This is guaranted based on the show_widget.ui file.
+            .unwrap();
+        debug!("Name: {:?}", WidgetExt::get_name(&scrolled_window));
+
         let new = ShowWidget::new(Arc::new(self.clone()), pd, self.sender.clone());
+        // Copy the vertical scrollbar adjustment from the old view into the new one.
+        scrolled_window
+            .get_vadjustment()
+            .map(|x| new.set_vadjustment(&x));
 
         self.stack.remove(&old);
         self.stack.add_named(&new.container, "widget");
@@ -193,24 +216,27 @@ impl EpisodeStack {
     }
 
     pub fn update(&self) {
-        use gtk::Cast;
-
         let old = self.stack
             .get_child_by_name("episodes")
+            // This is guaranted to exists, based on EpisodeStack::new().
             .unwrap()
             .downcast::<gtk::Box>()
+            // This is guaranted to be a Box based on the EpisodesView impl.
             .unwrap();
-        info!("Name: {:?}", WidgetExt::get_name(&old));
+        debug!("Name: {:?}", WidgetExt::get_name(&old));
 
         let scrolled_window = old.get_children()
             .first()
+            // This is guaranted to exist based on the episodes_view.ui file.
             .unwrap()
             .clone()
             .downcast::<gtk::ScrolledWindow>()
+            // This is guaranted based on the episodes_view.ui file.
             .unwrap();
-        info!("Name: {:?}", WidgetExt::get_name(&scrolled_window));
+        debug!("Name: {:?}", WidgetExt::get_name(&scrolled_window));
 
         let eps = EpisodesView::new(self.sender.clone());
+        // Copy the vertical scrollbar adjustment from the old view into the new one.
         scrolled_window
             .get_vadjustment()
             .map(|x| eps.set_vadjustment(&x));
