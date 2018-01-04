@@ -111,9 +111,31 @@ impl ShowStack {
 
     pub fn update_podcasts(&self) {
         let vis = self.stack.get_visible_child_name().unwrap();
-        let old = self.stack.get_child_by_name("podcasts").unwrap();
+
+        let old = self.stack
+            .get_child_by_name("podcasts")
+            // This is guaranted to exists, based on `ShowStack::new()`.
+            .unwrap()
+            .downcast::<gtk::Box>()
+            // This is guaranted to be a Box based on the `ShowsPopulated` impl.
+            .unwrap();
+        debug!("Name: {:?}", WidgetExt::get_name(&old));
+
+        let scrolled_window = old.get_children()
+            .first()
+            // This is guaranted to exist based on the show_widget.ui file.
+            .unwrap()
+            .clone()
+            .downcast::<gtk::ScrolledWindow>()
+            // This is guaranted based on the show_widget.ui file.
+            .unwrap();
+        debug!("Name: {:?}", WidgetExt::get_name(&scrolled_window));
 
         let pop = ShowsPopulated::new(Arc::new(self.clone()), self.sender.clone());
+        // Copy the vertical scrollbar adjustment from the old view into the new one.
+        scrolled_window
+            .get_vadjustment()
+            .map(|x| pop.set_vadjustment(&x));
 
         self.stack.remove(&old);
         self.stack.add_named(&pop.container, "podcasts");
@@ -132,10 +154,10 @@ impl ShowStack {
     pub fn replace_widget(&self, pd: &Podcast) {
         let old = self.stack
             .get_child_by_name("widget")
-            // This is guaranted to exists, based on ShowStack::new().
+            // This is guaranted to exists, based on `ShowStack::new()`.
             .unwrap()
             .downcast::<gtk::Box>()
-            // This is guaranted to be a Box based on the ShowWidget impl.
+            // This is guaranted to be a Box based on the `ShowWidget` impl.
             .unwrap();
         debug!("Name: {:?}", WidgetExt::get_name(&old));
 
@@ -218,10 +240,10 @@ impl EpisodeStack {
     pub fn update(&self) {
         let old = self.stack
             .get_child_by_name("episodes")
-            // This is guaranted to exists, based on EpisodeStack::new().
+            // This is guaranted to exists, based on `EpisodeStack::new()`.
             .unwrap()
             .downcast::<gtk::Box>()
-            // This is guaranted to be a Box based on the EpisodesView impl.
+            // This is guaranted to be a Box based on the `EpisodesView` impl.
             .unwrap();
         debug!("Name: {:?}", WidgetExt::get_name(&old));
 

@@ -15,21 +15,21 @@ use std::sync::Arc;
 #[derive(Debug, Clone)]
 pub struct ShowsPopulated {
     pub container: gtk::Box,
+    scrolled_window: gtk::ScrolledWindow,
     flowbox: gtk::FlowBox,
-    viewport: gtk::Viewport,
 }
 
 impl Default for ShowsPopulated {
     fn default() -> Self {
         let builder = gtk::Builder::new_from_resource("/org/gnome/hammond/gtk/shows_view.ui");
         let container: gtk::Box = builder.get_object("fb_parent").unwrap();
+        let scrolled_window: gtk::ScrolledWindow = builder.get_object("scrolled_window").unwrap();
         let flowbox: gtk::FlowBox = builder.get_object("flowbox").unwrap();
-        let viewport: gtk::Viewport = builder.get_object("viewport").unwrap();
 
         ShowsPopulated {
             container,
+            scrolled_window,
             flowbox,
-            viewport,
         }
     }
 }
@@ -73,6 +73,11 @@ impl ShowsPopulated {
 
     pub fn is_empty(&self) -> bool {
         self.flowbox.get_children().is_empty()
+    }
+
+    /// Set scrolled window vertical adjustment.
+    pub fn set_vadjustment(&self, vadjustment: &gtk::Adjustment) {
+        self.scrolled_window.set_vadjustment(vadjustment)
     }
 }
 
