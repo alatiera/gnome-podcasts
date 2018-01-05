@@ -239,7 +239,7 @@ fn on_download_clicked(
     let download_fold = downloader::get_download_folder(&pd_title).unwrap();
     {
         let man = DOWNLOADS_MANAGER.lock().unwrap();
-        man.add(ep.rowid(), &download_fold);
+        man.add(ep.rowid(), &download_fold, sender.clone());
     }
     sender.send(Action::RefreshEpisodesViewBGR).unwrap();
 }

@@ -2,8 +2,11 @@
 use hammond_data::dbqueries;
 use hammond_downloader::downloader::get_episode;
 
+use app::Action;
+
 use std::collections::HashSet;
 use std::sync::{Arc, Mutex};
+use std::sync::mpsc::Sender;
 // use std::path::PathBuf;
 use std::thread;
 
@@ -45,7 +48,7 @@ impl Manager {
         Manager::default()
     }
 
-    pub fn add(&self, id: i32, directory: &str) {
+    pub fn add(&self, id: i32, directory: &str, sender: Sender<Action>) {
         {
             let mut m = self.active.lock().unwrap();
             m.insert(id);
@@ -60,8 +63,11 @@ impl Manager {
                 error!("Error: {}", err);
             };
 
-            let mut m = list.lock().unwrap();
-            m.remove(&id);
+            {
+                let mut m = list.lock().unwrap();
+                m.remove(&id);
+            }
+            sender.send(Action::RefreshViews).unwrap();
         });
     }
 }
@@ -80,6 +86,7 @@ mod tests {
 
     use std::path::Path;
     use std::{thread, time};
+    use std::sync::mpsc::channel;
 
     #[test]
     // This test inserts an rss feed to your `XDG_DATA/hammond/hammond.db` so we make it explicit
@@ -108,12 +115,14 @@ mod tests {
                 .unwrap()
         };
 
+        let (sender, _rx) = channel();
+
         let manager = Manager::new();
         let download_fold = downloader::get_download_folder(&pd.title()).unwrap();
-        manager.add(episode.rowid(), download_fold.as_str());
+        manager.add(episode.rowid(), download_fold.as_str(), sender);
 
         // Give it soem time to download the file
-        thread::sleep(time::Duration::from_secs(20));
+        thread::sleep(time::Duration::from_secs(40));
 
         let final_path = format!("{}/{}.unknown", &download_fold, episode.rowid());
         println!("{}", &final_path);
