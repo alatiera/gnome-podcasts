@@ -5,9 +5,9 @@ use gtk::prelude::*;
 use gio::{ActionMapExt, ApplicationExt, ApplicationExtManual, SimpleActionExt};
 
 use hammond_data::utils::checkup;
-use hammond_downloader::manager::Manager;
 use hammond_data::Source;
 
+use manager::Manager;
 use headerbar::Header;
 use content::Content;
 use utils;

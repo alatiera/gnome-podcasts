@@ -1,31 +1,30 @@
-use hammond_data::Episode;
+// use hammond_data::Episode;
 use hammond_data::dbqueries;
-
-use downloader::get_episode;
+use hammond_downloader::downloader::get_episode;
 
 use std::collections::HashSet;
 use std::sync::{Arc, Mutex};
-use std::path::PathBuf;
+// use std::path::PathBuf;
 use std::thread;
 
-struct DonwloadInstance {
-    uri: String,
-    // FIXME: MAKE ME A PATHBUF
-    local_uri: Option<String>,
-    downloaded_bytes: u64,
-    total_bytes: u64,
-}
+// struct DonwloadInstance {
+//     uri: String,
+//     // FIXME: MAKE ME A PATHBUF
+//     local_uri: Option<String>,
+//     downloaded_bytes: u64,
+//     total_bytes: u64,
+// }
 
-impl DonwloadInstance {
-    fn new(url: &str, total_bytes: u64) -> Self {
-        DonwloadInstance {
-            uri: url.into(),
-            local_uri: None,
-            downloaded_bytes: 0,
-            total_bytes,
-        }
-    }
-}
+// impl DonwloadInstance {
+//     fn new(url: &str, total_bytes: u64) -> Self {
+//         DonwloadInstance {
+//             uri: url.into(),
+//             local_uri: None,
+//             downloaded_bytes: 0,
+//             total_bytes,
+//         }
+//     }
+// }
 
 #[derive(Debug, Clone)]
 // FIXME: privacy stuff
@@ -70,7 +69,7 @@ impl Manager {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use downloader;
+    use hammond_downloader::downloader;
 
     use diesel::Identifiable;
 

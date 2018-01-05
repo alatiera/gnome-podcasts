@@ -14,10 +14,8 @@ use hammond_data::errors::*;
 use hammond_downloader::downloader;
 
 use app::DOWNLOADS_MANAGER;
-
 use app::Action;
 
-use std::thread;
 use std::sync::mpsc::Sender;
 use std::path::Path;
 
