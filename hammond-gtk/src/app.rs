@@ -6,24 +6,37 @@ use gio::{ActionMapExt, ApplicationExt, ApplicationExtManual, SimpleActionExt};
 
 use hammond_data::utils::checkup;
 use hammond_downloader::manager::Manager;
+use hammond_data::Source;
 
 use headerbar::Header;
 use content::Content;
 use utils;
 
-use std::rc::Rc;
 use std::sync::{Arc, Mutex};
+use std::sync::mpsc::{channel, Receiver, Sender};
 
 lazy_static! {
     pub static ref DOWNLOADS_MANAGER: Arc<Mutex<Manager>> = Arc::new(Mutex::new(Manager::new()));
 }
 
-#[derive(Debug, Clone)]
+#[derive(Clone, Debug)]
+pub enum Action {
+    UpdateSources(Option<Source>),
+    RefreshViews,
+    RefreshEpisodesViewBGR,
+    HeaderBarShowTile(String),
+    HeaderBarNormal,
+    HeaderBarHideUpdateIndicator,
+}
+
+#[derive(Debug)]
 pub struct App {
     app_instance: gtk::Application,
     window: gtk::Window,
-    header: Rc<Header>,
-    content: Rc<Content>,
+    header: Arc<Header>,
+    content: Arc<Content>,
+    receiver: Receiver<Action>,
+    sender: Sender<Action>,
 }
 
 impl App {
@@ -40,21 +53,19 @@ impl App {
         let window = gtk::Window::new(gtk::WindowType::Toplevel);
         window.set_default_size(860, 640);
         window.set_title("Hammond");
-        window.connect_delete_event(|w, _| {
-            w.destroy();
+        let app_clone = application.clone();
+        window.connect_delete_event(move |_, _| {
+            app_clone.quit();
             Inhibit(false)
         });
 
-        // TODO: Refactor the initialization order.
-
-        // Create the headerbar
-        let header = Rc::new(Header::default());
+        let (sender, receiver) = channel();
 
         // Create a content instance
-        let content = Content::new(header.clone());
+        let content = Content::new(sender.clone());
 
-        // Initialize the headerbar
-        header.init(content.clone());
+        // Create the headerbar
+        let header = Header::new(content.clone(), sender.clone());
 
         // Add the Headerbar to the window.
         window.set_titlebar(&header.container);
@@ -66,79 +77,49 @@ impl App {
             window,
             header,
             content,
+            receiver,
+            sender,
         }
     }
 
     pub fn setup_actions(&self) {
         // Updates the database and refreshes every view.
         let update = gio::SimpleAction::new("update", None);
-        let content = self.content.clone();
         let header = self.header.clone();
+        let sender = self.sender.clone();
         update.connect_activate(move |_, _| {
-            utils::refresh_feed(content.clone(), header.clone(), None);
+            utils::refresh_feed(header.clone(), None, sender.clone());
         });
         self.app_instance.add_action(&update);
-
-        // Refreshes the `Content`
-        let refresh = gio::SimpleAction::new("refresh", None);
-        let content = self.content.clone();
-        refresh.connect_activate(move |_, _| {
-            content.update();
-        });
-        self.app_instance.add_action(&refresh);
-
-        // Refreshes the `EpisodesStack`
-        let refresh_episodes = gio::SimpleAction::new("refresh_episodes", None);
-        let content = self.content.clone();
-        refresh_episodes.connect_activate(move |_, _| {
-            if content.get_stack().get_visible_child_name() != Some(String::from("episodes")) {
-                content.update_episode_view();
-            }
-        });
-        self.app_instance.add_action(&refresh_episodes);
-
-        // Refreshes the `ShowStack`
-        let refresh_shows = gio::SimpleAction::new("refresh_shows", None);
-        let content = self.content.clone();
-        refresh_shows.connect_activate(move |_, _| {
-            content.update_shows_view();
-        });
-        self.app_instance.add_action(&refresh_shows);
     }
 
     pub fn setup_timed_callbacks(&self) {
-        let content = self.content.clone();
         let header = self.header.clone();
-        // Update 30 seconds after the Application is initialized.
-        gtk::timeout_add_seconds(
-            30,
-            clone!(content => move || {
-            utils::refresh_feed(content.clone(), header.clone(), None);
+        let sender = self.sender.clone();
+        // Update the feeds right after the Application is initialized.
+        gtk::timeout_add_seconds(2, move || {
+            utils::refresh_feed(header.clone(), None, sender.clone());
             glib::Continue(false)
-        }),
-        );
+        });
 
-        let content = self.content.clone();
         let header = self.header.clone();
+        let sender = self.sender.clone();
         // Auto-updater, runs every hour.
         // TODO: expose the interval in which it run to a user setting.
         // TODO: show notifications.
-        gtk::timeout_add_seconds(
-            3600,
-            clone!(content => move || {
-            utils::refresh_feed(content.clone(), header.clone(), None);
+        gtk::timeout_add_seconds(3600, move || {
+            utils::refresh_feed(header.clone(), None, sender.clone());
             glib::Continue(true)
-        }),
-        );
+        });
 
         // Run a database checkup once the application is initialized.
-        gtk::idle_add(move || {
+        gtk::timeout_add(300, || {
             let _ = checkup();
             glib::Continue(false)
         });
     }
 
-    pub fn run(&self) {
+    pub fn run(self) {
         let window = self.window.clone();
         let app = self.app_instance.clone();
         self.app_instance.connect_startup(move |_| {
@@ -146,6 +127,28 @@ impl App {
         });
         self.setup_timed_callbacks();
         self.setup_actions();
+
+        let content = self.content.clone();
+        let headerbar = self.header.clone();
+        let sender = self.sender.clone();
+        let receiver = self.receiver;
+        gtk::timeout_add(250, move || {
+            match receiver.try_recv() {
+                Ok(Action::UpdateSources(source)) => {
+                    if let Some(s) = source {
+                        utils::refresh_feed(headerbar.clone(), Some(vec![s]), sender.clone())
+                    }
+                }
+                Ok(Action::RefreshViews) => content.update(),
+                Ok(Action::RefreshEpisodesViewBGR) => content.update_episode_view_if_baground(),
+                Ok(Action::HeaderBarShowTile(title)) => headerbar.switch_to_back(&title),
+                Ok(Action::HeaderBarNormal) => headerbar.switch_to_normal(),
+                Ok(Action::HeaderBarHideUpdateIndicator) => headerbar.hide_update_notification(),
+                _ => (),
+            }
+
+            Continue(true)
+        });
 
         ApplicationExtManual::run(&self.app_instance, &[]);
     }

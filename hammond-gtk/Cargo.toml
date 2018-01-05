@@ -23,7 +23,7 @@ send-cell = "0.1.2"
 
 [dependencies.diesel]
 features = ["sqlite"]
-version = "0.99.0"
+version = "1.0.0"
 
 [dependencies.gtk]
 features = ["v3_22"]

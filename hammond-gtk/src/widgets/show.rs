@@ -12,14 +12,17 @@ use hammond_downloader::downloader;
 use widgets::episode::episodes_listbox;
 use utils::get_pixbuf_from_path;
 use content::ShowStack;
-use headerbar::Header;
+use app::Action;
 
-use std::rc::Rc;
+use std::sync::mpsc::Sender;
+use std::sync::Arc;
+use std::thread;
 use std::fs;
 
 #[derive(Debug, Clone)]
 pub struct ShowWidget {
     pub container: gtk::Box,
+    scrolled_window: gtk::ScrolledWindow,
     cover: gtk::Image,
     description: gtk::Label,
     link: gtk::Button,
@@ -32,6 +35,7 @@ impl Default for ShowWidget {
     fn default() -> Self {
         let builder = gtk::Builder::new_from_resource("/org/gnome/hammond/gtk/show_widget.ui");
         let container: gtk::Box = builder.get_object("container").unwrap();
+        let scrolled_window: gtk::ScrolledWindow = builder.get_object("scrolled_window").unwrap();
         let episodes: gtk::Frame = builder.get_object("episodes").unwrap();
 
         let cover: gtk::Image = builder.get_object("cover").unwrap();
@@ -42,6 +46,7 @@ impl Default for ShowWidget {
 
         ShowWidget {
             container,
+            scrolled_window,
             cover,
             description,
             unsub,
@@ -53,67 +58,95 @@ impl Default for ShowWidget {
 }
 
 impl ShowWidget {
-    pub fn new(shows: Rc<ShowStack>, header: Rc<Header>, pd: &Podcast) -> ShowWidget {
+    pub fn new(shows: Arc<ShowStack>, pd: &Podcast, sender: Sender<Action>) -> ShowWidget {
         let pdw = ShowWidget::default();
-        pdw.init(shows, header, pd);
+        pdw.init(shows, pd, sender);
         pdw
     }
 
-    pub fn init(&self, shows: Rc<ShowStack>, header: Rc<Header>, pd: &Podcast) {
+    pub fn init(&self, shows: Arc<ShowStack>, pd: &Podcast, sender: Sender<Action>) {
+        // Hacky workaround so the pd.id() can be retrieved from the `ShowStack`.
         WidgetExt::set_name(&self.container, &pd.id().to_string());
 
-        self.unsub.connect_clicked(clone!(shows, pd => move |bttn| {
-            on_unsub_button_clicked(shows.clone(), &pd, bttn);
-            header.switch_to_normal();
+        self.unsub
+            .connect_clicked(clone!(shows, pd, sender => move |bttn| {
+            on_unsub_button_clicked(shows.clone(), &pd, bttn, sender.clone());
+            sender.send(Action::HeaderBarNormal).unwrap();
         }));
 
-        let listbox = episodes_listbox(pd);
-        if let Ok(l) = listbox {
-            self.episodes.add(&l);
-        }
-
-        // TODO: Temporary solution until we render html urls/bold/italic probably with markup.
-        let desc = dissolve::strip_html_tags(pd.description()).join(" ");
-        self.description.set_text(&replace_extra_spaces(&desc));
-
-        let img = get_pixbuf_from_path(&pd.clone().into(), 128);
-        if let Some(i) = img {
-            self.cover.set_from_pixbuf(&i);
-        }
+        self.setup_listbox(pd, sender.clone());
+        self.set_cover(pd);
+        self.set_description(pd.description());
 
         let link = pd.link().to_owned();
+        self.link.set_tooltip_text(Some(link.as_str()));
         self.link.connect_clicked(move |_| {
             info!("Opening link: {}", &link);
             let _ = open::that(&link);
         });
+    }
 
-        // self.played.connect_clicked(clone!(shows, pd => move |_| {
-        //     on_played_button_clicked(shows.clone(), &pd);
-        // }));
+    /// Populate the listbox with the shows episodes.
+    fn setup_listbox(&self, pd: &Podcast, sender: Sender<Action>) {
+        let listbox = episodes_listbox(pd, sender.clone());
+        if let Ok(l) = listbox {
+            self.episodes.add(&l);
+        }
+    }
+
+    /// Set the show cover.
+    fn set_cover(&self, pd: &Podcast) {
+        let img = get_pixbuf_from_path(&pd.clone().into(), 128);
+        if let Some(i) = img {
+            self.cover.set_from_pixbuf(&i);
+        }
+    }
+
+    /// Set the descripton text.
+    fn set_description(&self, text: &str) {
+        // TODO: Temporary solution until we render html urls/bold/italic probably with markup.
+        let desc = dissolve::strip_html_tags(text).join(" ");
+        self.description.set_text(&replace_extra_spaces(&desc));
+    }
+
+    /// Set scrolled window vertical adjustment.
+    pub fn set_vadjustment(&self, vadjustment: &gtk::Adjustment) {
+        self.scrolled_window.set_vadjustment(vadjustment)
     }
 }
 
-fn on_unsub_button_clicked(shows: Rc<ShowStack>, pd: &Podcast, unsub_button: &gtk::Button) {
-    let res = dbqueries::remove_feed(pd);
-    if res.is_ok() {
-        info!("{} was removed succesfully.", pd.title());
-        // hack to get away without properly checking for none.
-        // if pressed twice would panic.
-        unsub_button.hide();
+fn on_unsub_button_clicked(
+    shows: Arc<ShowStack>,
+    pd: &Podcast,
+    unsub_button: &gtk::Button,
+    sender: Sender<Action>,
+) {
+    // hack to get away without properly checking for none.
+    // if pressed twice would panic.
+    unsub_button.hide();
+    // Spawn a thread so it won't block the ui.
+    thread::spawn(clone!(pd => move || {
+        let res = dbqueries::remove_feed(&pd);
+        if res.is_ok() {
+            info!("{} was removed succesfully.", pd.title());
 
-        let dl_fold = downloader::get_download_folder(pd.title());
-        if let Ok(fold) = dl_fold {
-            let res3 = fs::remove_dir_all(&fold);
-            if res3.is_ok() {
-                info!("All the content at, {} was removed succesfully", &fold);
-            }
-        };
-    }
+            let dl_fold = downloader::get_download_folder(pd.title());
+            if let Ok(fold) = dl_fold {
+                let res3 = fs::remove_dir_all(&fold);
+                // TODO: Show errors?
+                if res3.is_ok() {
+                    info!("All the content at, {} was removed succesfully", &fold);
+                }
+            };
+        }
+    }));
     shows.switch_podcasts_animated();
+    // Queue a refresh after the switch to avoid blocking the db.
+    sender.send(Action::RefreshViews).unwrap();
 }
 
 #[allow(dead_code)]
-fn on_played_button_clicked(shows: Rc<ShowStack>, pd: &Podcast) {
+fn on_played_button_clicked(shows: Arc<ShowStack>, pd: &Podcast) {
     let _ = dbqueries::update_none_to_played_now(pd);
 
     shows.update_widget();

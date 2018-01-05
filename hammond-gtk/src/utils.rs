@@ -1,5 +1,4 @@
 use send_cell::SendCell;
-use glib;
 use gdk_pixbuf::Pixbuf;
 
 use hammond_data::feed;
@@ -7,61 +6,32 @@ use hammond_data::{PodcastCoverQuery, Source};
 use hammond_downloader::downloader;
 
 use std::thread;
-use std::cell::RefCell;
-use std::sync::mpsc::{channel, Receiver};
-use std::sync::Mutex;
-use std::rc::Rc;
+use std::sync::mpsc::Sender;
+use std::sync::{Arc, Mutex};
 use std::collections::HashMap;
 
-use content::Content;
 use headerbar::Header;
+use app::Action;
 
-type Foo = RefCell<Option<(Rc<Content>, Rc<Header>, Receiver<bool>)>>;
-
-// Create a thread local storage that will store the arguments to be transfered.
-thread_local!(static GLOBAL: Foo = RefCell::new(None));
-
-/// Update the rss feed(s) originating from `Source`.
+/// Update the rss feed(s) originating from `source`.
 /// If `source` is None, Fetches all the `Source` entries in the database and updates them.
-/// `delay` represents the desired time in seconds for the thread to sleep before executing.
-/// When It's done,it queues up a `podcast_view` refresh.
-pub fn refresh_feed(content: Rc<Content>, headerbar: Rc<Header>, source: Option<Vec<Source>>) {
+/// When It's done,it queues up a `RefreshViews` action.
+pub fn refresh_feed(headerbar: Arc<Header>, source: Option<Vec<Source>>, sender: Sender<Action>) {
     headerbar.show_update_notification();
-
-    // Create a async channel.
-    let (sender, receiver) = channel();
-
-    // Pass the desired arguments into the Local Thread Storage.
-    GLOBAL.with(clone!(content, headerbar => move |global| {
-        *global.borrow_mut() = Some((content.clone(), headerbar.clone(), receiver));
-    }));
 
     thread::spawn(move || {
         if let Some(s) = source {
             feed::index_loop(s);
         } else {
-            let e = feed::index_all();
-            if let Err(err) = e {
+            if let Err(err) = feed::index_all() {
                 error!("Error While trying to update the database.");
                 error!("Error msg: {}", err);
-            };
+            }
         };
 
-        sender.send(true).expect("Couldn't send data to channel");;
-        glib::idle_add(refresh_everything);
+        sender.send(Action::HeaderBarHideUpdateIndicator).unwrap();
+        sender.send(Action::RefreshViews).unwrap();
     });
-}
-
-fn refresh_everything() -> glib::Continue {
-    GLOBAL.with(|global| {
-        if let Some((ref content, ref headerbar, ref reciever)) = *global.borrow() {
-            if reciever.try_recv().is_ok() {
-                content.update();
-                headerbar.hide_update_notification();
-            }
-        }
-    });
-    glib::Continue(false)
 }
 
 lazy_static! {

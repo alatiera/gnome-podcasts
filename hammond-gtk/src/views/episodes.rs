@@ -7,8 +7,10 @@ use hammond_data::EpisodeWidgetQuery;
 
 use widgets::episode::EpisodeWidget;
 use utils::get_pixbuf_from_path;
+use app::Action;
 
-use std::rc::Rc;
+use std::sync::mpsc::Sender;
+use std::sync::Arc;
 
 #[derive(Debug, Clone)]
 enum ListSplit {
@@ -22,6 +24,7 @@ enum ListSplit {
 #[derive(Debug, Clone)]
 pub struct EpisodesView {
     pub container: gtk::Box,
+    scrolled_window: gtk::ScrolledWindow,
     frame_parent: gtk::Box,
     today_box: gtk::Box,
     yday_box: gtk::Box,
@@ -39,6 +42,7 @@ impl Default for EpisodesView {
     fn default() -> Self {
         let builder = gtk::Builder::new_from_resource("/org/gnome/hammond/gtk/episodes_view.ui");
         let container: gtk::Box = builder.get_object("container").unwrap();
+        let scrolled_window: gtk::ScrolledWindow = builder.get_object("scrolled_window").unwrap();
         let frame_parent: gtk::Box = builder.get_object("frame_parent").unwrap();
         let today_box: gtk::Box = builder.get_object("today_box").unwrap();
         let yday_box: gtk::Box = builder.get_object("yday_box").unwrap();
@@ -53,6 +57,7 @@ impl Default for EpisodesView {
 
         EpisodesView {
             container,
+            scrolled_window,
             frame_parent,
             today_box,
             yday_box,
@@ -68,14 +73,15 @@ impl Default for EpisodesView {
     }
 }
 
+// TODO: REFACTOR ME
 impl EpisodesView {
-    pub fn new() -> Rc<EpisodesView> {
+    pub fn new(sender: Sender<Action>) -> Arc<EpisodesView> {
         let view = EpisodesView::default();
         let episodes = dbqueries::get_episodes_widgets_with_limit(100).unwrap();
         let now_utc = Utc::now();
 
         episodes.into_iter().for_each(|mut ep| {
-            let viewep = EpisodesViewWidget::new(&mut ep);
+            let viewep = EpisodesViewWidget::new(&mut ep, sender.clone());
 
             let t = split(&now_utc, i64::from(ep.epoch()));
             match t {
@@ -118,7 +124,7 @@ impl EpisodesView {
         }
 
         view.container.show_all();
-        Rc::new(view)
+        Arc::new(view)
     }
 
     pub fn is_empty(&self) -> bool {
@@ -143,6 +149,11 @@ impl EpisodesView {
         }
 
         true
+    }
+
+    /// Set scrolled window vertical adjustment.
+    pub fn set_vadjustment(&self, vadjustment: &gtk::Adjustment) {
+        self.scrolled_window.set_vadjustment(vadjustment)
     }
 }
 
@@ -187,7 +198,7 @@ impl Default for EpisodesViewWidget {
 }
 
 impl EpisodesViewWidget {
-    fn new(episode: &mut EpisodeWidgetQuery) -> EpisodesViewWidget {
+    fn new(episode: &mut EpisodeWidgetQuery, sender: Sender<Action>) -> EpisodesViewWidget {
         let builder =
             gtk::Builder::new_from_resource("/org/gnome/hammond/gtk/episodes_view_widget.ui");
         let container: gtk::Box = builder.get_object("container").unwrap();
@@ -200,7 +211,7 @@ impl EpisodesViewWidget {
             }
         }
 
-        let ep = EpisodeWidget::new(episode);
+        let ep = EpisodeWidget::new(episode, sender.clone());
         container.pack_start(&ep.container, true, true, 6);
 
         EpisodesViewWidget {

@@ -3,9 +3,10 @@ use gtk::prelude::*;
 
 use hammond_data::Source;
 
-use std::rc::Rc;
+use std::sync::mpsc::Sender;
+use std::sync::Arc;
 
-use utils;
+use app::Action;
 use content::Content;
 
 #[derive(Debug, Clone)]
@@ -48,13 +49,13 @@ impl Default for Header {
 
 impl Header {
     #[allow(dead_code)]
-    pub fn new(content: Rc<Content>) -> Rc<Header> {
+    pub fn new(content: Arc<Content>, sender: Sender<Action>) -> Arc<Header> {
         let h = Header::default();
-        h.init(content);
-        Rc::new(h)
+        h.init(content, sender);
+        Arc::new(h)
     }
 
-    pub fn init(&self, content: Rc<Content>) {
+    pub fn init(&self, content: Arc<Content>, sender: Sender<Action>) {
         let builder = gtk::Builder::new_from_resource("/org/gnome/hammond/gtk/headerbar.ui");
 
         let add_popover: gtk::Popover = builder.get_object("add_popover").unwrap();
@@ -66,11 +67,12 @@ impl Header {
             println!("{:?}", url.get_text());
         });
 
-        let header = Rc::new(self.clone());
-        add_button.connect_clicked(clone!(content, header, add_popover, new_url => move |_| {
-            on_add_bttn_clicked(content.clone(), header.clone(), &new_url);
+        add_button.connect_clicked(clone!(add_popover, new_url, sender => move |_| {
+            on_add_bttn_clicked(&new_url, sender.clone());
             add_popover.hide();
         }));
+
+        self.add_toggle.set_popover(&add_popover);
 
         let switch = &self.switch;
         let add_toggle = &self.add_toggle;
@@ -120,16 +122,14 @@ impl Header {
     }
 }
 
-fn on_add_bttn_clicked(content: Rc<Content>, headerbar: Rc<Header>, entry: &gtk::Entry) {
+fn on_add_bttn_clicked(entry: &gtk::Entry, sender: Sender<Action>) {
     let url = entry.get_text().unwrap_or_default();
     let source = Source::from_url(&url);
 
-    if let Ok(s) = source {
-        info!("{:?} feed added", url);
-        // update the db
-        utils::refresh_feed(content, headerbar, Some(vec![s]));
+    if source.is_ok() {
+        sender.send(Action::UpdateSources(source.ok())).unwrap();
     } else {
-        error!("Feed probably already exists.");
+        error!("Something went wrong.");
         error!("Error: {:?}", source.unwrap_err());
     }
 }

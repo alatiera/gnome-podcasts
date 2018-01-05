@@ -16,7 +16,7 @@ lazy_static = "1.0.0"
 
 [dependencies.diesel]
 features = ["sqlite"]
-version = "0.99.0"
+version = "1.0.0"
 
 [dependencies.hammond-data]
 path = "../hammond-data"
