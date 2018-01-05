@@ -151,9 +151,10 @@ impl EpisodeWidget {
         let now = Utc::now();
         let date = Utc.timestamp(i64::from(epoch), 0);
         if now.year() == date.year() {
-            self.date.set_text(&date.format("%e %b").to_string());
+            self.date.set_text(&date.format("%e %b").to_string().trim());
         } else {
-            self.date.set_text(&date.format("%e %b %Y").to_string());
+            self.date
+                .set_text(&date.format("%e %b %Y").to_string().trim());
         };
     }
 
