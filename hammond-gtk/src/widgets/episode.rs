@@ -9,7 +9,6 @@ use humansize::{file_size_opts as size_opts, FileSize};
 
 use hammond_data::dbqueries;
 use hammond_data::{EpisodeWidgetQuery, Podcast};
-// use hammond_data::utils::*;
 use hammond_data::errors::*;
 use hammond_downloader::downloader;
 
@@ -70,6 +69,10 @@ impl Default for EpisodeWidget {
             separator2,
         }
     }
+}
+
+lazy_static! {
+    static ref NOW: DateTime<Utc> = Utc::now();
 }
 
 impl EpisodeWidget {
@@ -148,9 +151,8 @@ impl EpisodeWidget {
 
     /// Set the date label depending on the current time.
     fn set_date(&self, epoch: i32) {
-        let now = Utc::now();
         let date = Utc.timestamp(i64::from(epoch), 0);
-        if now.year() == date.year() {
+        if NOW.year() == date.year() {
             self.date.set_text(&date.format("%e %b").to_string().trim());
         } else {
             self.date
@@ -173,6 +175,10 @@ impl EpisodeWidget {
 
     /// Set the Episode label dependings on its size
     fn set_size(&self, bytes: Option<i32>) {
+        if (bytes == Some(0)) || bytes.is_none() {
+            return;
+        };
+
         // Declare a custom humansize option struct
         // See: https://docs.rs/humansize/1.0.2/humansize/file_size_opts/struct.FileSizeOpts.html
         let custom_options = size_opts::FileSizeOpts {
@@ -188,13 +194,11 @@ impl EpisodeWidget {
         };
 
         if let Some(size) = bytes {
-            if size != 0 {
-                let s = size.file_size(custom_options);
-                if let Ok(s) = s {
-                    self.size.set_text(&s);
-                    self.size.show();
-                    self.separator2.show();
-                }
+            let s = size.file_size(custom_options);
+            if let Ok(s) = s {
+                self.size.set_text(&s);
+                self.size.show();
+                self.separator2.show();
             }
         };
     }
