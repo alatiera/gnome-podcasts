@@ -160,6 +160,10 @@ impl EpisodeWidget {
 
     /// Set the duration label.
     fn set_duration(&self, seconds: Option<i32>) {
+        if (seconds == Some(0)) || seconds.is_none() {
+            return;
+        };
+
         if let Some(secs) = seconds {
             self.duration.set_text(&format!("{} min", secs / 60));
             self.duration.show();
