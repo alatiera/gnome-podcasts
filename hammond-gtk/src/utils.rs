@@ -22,11 +22,9 @@ pub fn refresh_feed(headerbar: Arc<Header>, source: Option<Vec<Source>>, sender:
     thread::spawn(move || {
         if let Some(s) = source {
             feed::index_loop(s);
-        } else {
-            if let Err(err) = feed::index_all() {
-                error!("Error While trying to update the database.");
-                error!("Error msg: {}", err);
-            }
+        } else if let Err(err) = feed::index_all() {
+            error!("Error While trying to update the database.");
+            error!("Error msg: {}", err);
         };
 
         sender.send(Action::HeaderBarHideUpdateIndicator).unwrap();

@@ -139,7 +139,7 @@ pub fn get_download_folder(pd_title: &str) -> Result<String> {
 /// TODO: Write Tests
 /// TODO: Return Result instead
 pub fn delete_show(pd: &Podcast) {
-    let res = dbqueries::remove_feed(&pd);
+    let res = dbqueries::remove_feed(pd);
     if res.is_ok() {
         info!("{} was removed succesfully.", pd.title());
 

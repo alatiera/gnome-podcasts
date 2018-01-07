@@ -154,10 +154,10 @@ impl EpisodeWidget {
     fn set_date(&self, epoch: i32) {
         let date = Utc.timestamp(i64::from(epoch), 0);
         if NOW.year() == date.year() {
-            self.date.set_text(&date.format("%e %b").to_string().trim());
+            self.date.set_text(date.format("%e %b").to_string().trim());
         } else {
             self.date
-                .set_text(&date.format("%e %b %Y").to_string().trim());
+                .set_text(date.format("%e %b %Y").to_string().trim());
         };
     }
 
