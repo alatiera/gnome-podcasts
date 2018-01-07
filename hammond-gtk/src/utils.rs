@@ -7,7 +7,7 @@ use hammond_downloader::downloader;
 
 use std::thread;
 use std::sync::mpsc::Sender;
-use std::sync::{Arc, Mutex};
+use std::sync::{Arc, Mutex, RwLock};
 use std::collections::HashMap;
 
 use headerbar::Header;
@@ -35,8 +35,8 @@ pub fn refresh_feed(headerbar: Arc<Header>, source: Option<Vec<Source>>, sender:
 }
 
 lazy_static! {
-    static ref CACHED_PIXBUFS: Mutex<HashMap<(i32, u32), Mutex<SendCell<Pixbuf>>>> = {
-        Mutex::new(HashMap::new())
+    static ref CACHED_PIXBUFS: RwLock<HashMap<(i32, u32), Mutex<SendCell<Pixbuf>>>> = {
+        RwLock::new(HashMap::new())
     };
 }
 
@@ -48,8 +48,8 @@ lazy_static! {
 // Also lazy_static requires Sync trait, so that's what the mutexes are.
 // TODO: maybe use something that would just scale to requested size?
 pub fn get_pixbuf_from_path(pd: &PodcastCoverQuery, size: u32) -> Option<Pixbuf> {
-    let mut hashmap = CACHED_PIXBUFS.lock().unwrap();
     {
+        let hashmap = CACHED_PIXBUFS.read().unwrap();
         let res = hashmap.get(&(pd.id(), size));
         if let Some(px) = res {
             let m = px.lock().unwrap();
@@ -60,6 +60,7 @@ pub fn get_pixbuf_from_path(pd: &PodcastCoverQuery, size: u32) -> Option<Pixbuf>
     let img_path = downloader::cache_image(pd)?;
     let px = Pixbuf::new_from_file_at_scale(&img_path, size as i32, size as i32, true).ok();
     if let Some(px) = px {
+        let mut hashmap = CACHED_PIXBUFS.write().unwrap();
         hashmap.insert((pd.id(), size), Mutex::new(SendCell::new(px.clone())));
         return Some(px);
     }
