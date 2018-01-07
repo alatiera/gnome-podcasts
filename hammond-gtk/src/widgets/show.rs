@@ -6,8 +6,7 @@ use dissolve;
 
 use hammond_data::dbqueries;
 use hammond_data::Podcast;
-use hammond_data::utils::replace_extra_spaces;
-use hammond_downloader::downloader;
+use hammond_data::utils::{delete_show, replace_extra_spaces};
 
 use widgets::episode::episodes_listbox;
 use utils::get_pixbuf_from_path;
@@ -17,7 +16,6 @@ use app::Action;
 use std::sync::mpsc::Sender;
 use std::sync::Arc;
 use std::thread;
-use std::fs;
 
 #[derive(Debug, Clone)]
 pub struct ShowWidget {
@@ -126,19 +124,7 @@ fn on_unsub_button_clicked(
     unsub_button.hide();
     // Spawn a thread so it won't block the ui.
     thread::spawn(clone!(pd => move || {
-        let res = dbqueries::remove_feed(&pd);
-        if res.is_ok() {
-            info!("{} was removed succesfully.", pd.title());
-
-            let dl_fold = downloader::get_download_folder(pd.title());
-            if let Ok(fold) = dl_fold {
-                let res3 = fs::remove_dir_all(&fold);
-                // TODO: Show errors?
-                if res3.is_ok() {
-                    info!("All the content at, {} was removed succesfully", &fold);
-                }
-            };
-        }
+        delete_show(&pd)
     }));
     shows.switch_podcasts_animated();
     // Queue a refresh after the switch to avoid blocking the db.

@@ -10,7 +10,7 @@ use std::fs;
 
 use errors::*;
 use hammond_data::{EpisodeWidgetQuery, PodcastCoverQuery};
-use hammond_data::xdg_dirs::{DL_DIR, HAMMOND_CACHE};
+use hammond_data::xdg_dirs::HAMMOND_CACHE;
 
 // TODO: Replace path that are of type &str with std::path.
 // TODO: Have a convention/document absolute/relative paths, if they should end with / or not.
@@ -95,15 +95,6 @@ fn save_io(file: &str, resp: &mut reqwest::Response, content_lenght: Option<u64>
     }
 
     Ok(())
-}
-
-pub fn get_download_folder(pd_title: &str) -> Result<String> {
-    // It might be better to make it a hash of the title
-    let download_fold = format!("{}/{}", DL_DIR.to_str().unwrap(), pd_title);
-
-    // Create the folder
-    DirBuilder::new().recursive(true).create(&download_fold)?;
-    Ok(download_fold)
 }
 
 // TODO: Refactor
@@ -191,15 +182,6 @@ mod tests {
     use hammond_data::feed::index;
     use hammond_data::dbqueries;
     use diesel::associations::Identifiable;
-
-    use std::fs;
-
-    #[test]
-    fn test_get_dl_folder() {
-        let foo_ = format!("{}/{}", DL_DIR.to_str().unwrap(), "foo");
-        assert_eq!(get_download_folder("foo").unwrap(), foo_);
-        let _ = fs::remove_dir_all(foo_);
-    }
 
     #[test]
     // This test inserts an rss feed to your `XDG_DATA/hammond/hammond.db` so we make it explicit

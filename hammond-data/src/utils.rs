@@ -8,11 +8,13 @@ use itertools::Itertools;
 
 use errors::*;
 use dbqueries;
-use models::queryables::EpisodeCleanerQuery;
+use models::queryables::{EpisodeCleanerQuery, Podcast};
+use xdg_dirs::DL_DIR;
 
 use std::path::Path;
 use std::fs;
 
+/// Scan downloaded `episode` entries that might have broken `local_uri`s and set them to `None`.
 fn download_checker() -> Result<()> {
     let episodes = dbqueries::get_downloaded_episodes()?;
 
@@ -30,6 +32,7 @@ fn download_checker() -> Result<()> {
     Ok(())
 }
 
+/// Delete watched `episodes` that have exceded their liftime after played.
 fn played_cleaner() -> Result<()> {
     let mut episodes = dbqueries::get_played_cleaner_episodes()?;
 
@@ -54,7 +57,7 @@ fn played_cleaner() -> Result<()> {
 }
 
 /// Check `ep.local_uri` field and delete the file it points to.
-pub fn delete_local_content(ep: &mut EpisodeCleanerQuery) -> Result<()> {
+fn delete_local_content(ep: &mut EpisodeCleanerQuery) -> Result<()> {
     if ep.local_uri().is_some() {
         let uri = ep.local_uri().unwrap().to_owned();
         if Path::new(&uri).exists() {
@@ -117,6 +120,38 @@ pub fn replace_extra_spaces(s: &str) -> String {
             (_, _) => Err((current, next)),
         })
         .collect::<String>()
+}
+
+/// Returns the URI of a Podcast Downloads given it's title.
+pub fn get_download_folder(pd_title: &str) -> Result<String> {
+    // It might be better to make it a hash of the title or the podcast rowid
+    let download_fold = format!("{}/{}", DL_DIR.to_str().unwrap(), pd_title);
+
+    // Create the folder
+    fs::DirBuilder::new()
+        .recursive(true)
+        .create(&download_fold)?;
+    Ok(download_fold)
+}
+
+/// Removes all the entries associated with the given show from the database,
+/// and deletes all of the downloaded content.
+/// TODO: Write Tests
+/// TODO: Return Result instead
+pub fn delete_show(pd: &Podcast) {
+    let res = dbqueries::remove_feed(&pd);
+    if res.is_ok() {
+        info!("{} was removed succesfully.", pd.title());
+
+        let dl_fold = get_download_folder(pd.title());
+        if let Ok(fold) = dl_fold {
+            let res3 = fs::remove_dir_all(&fold);
+            // TODO: Show errors?
+            if res3.is_ok() {
+                info!("All the content at, {} was removed succesfully", &fold);
+            }
+        };
+    }
 }
 
 #[cfg(test)]
@@ -276,5 +311,12 @@ mod tests {
         let valid_txt = "1 2 3\n4 5";
 
         assert_eq!(replace_extra_spaces(&bad_txt), valid_txt);
+    }
+
+    #[test]
+    fn test_get_dl_folder() {
+        let foo_ = format!("{}/{}", DL_DIR.to_str().unwrap(), "foo");
+        assert_eq!(get_download_folder("foo").unwrap(), foo_);
+        let _ = fs::remove_dir_all(foo_);
     }
 }

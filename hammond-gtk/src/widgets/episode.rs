@@ -9,6 +9,7 @@ use humansize::{file_size_opts as size_opts, FileSize};
 
 use hammond_data::dbqueries;
 use hammond_data::{EpisodeWidgetQuery, Podcast};
+use hammond_data::utils::get_download_folder;
 use hammond_data::errors::*;
 use hammond_downloader::downloader;
 
@@ -227,7 +228,7 @@ fn on_download_clicked(
     download_bttn.hide();
     sender.send(Action::RefreshEpisodesViewBGR).unwrap();
     thread::spawn(move || {
-        let download_fold = downloader::get_download_folder(&pd_title).unwrap();
+        let download_fold = get_download_folder(&pd_title).unwrap();
         let e = downloader::get_episode(&mut ep, download_fold.as_str());
         if let Err(err) = e {
             error!("Error while trying to download: {:?}", ep.uri());
