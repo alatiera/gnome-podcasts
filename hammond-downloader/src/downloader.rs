@@ -44,7 +44,7 @@ fn download_into(dir: &str, file_title: &str, url: &str) -> Result<String> {
 
     // Construct a temp file to save desired content.
     // It has to be a `new_in` instead of new cause rename can't move cross filesystems.
-    let tempdir = TempDir::new_in(dir, "temp_download")?;
+    let tempdir = TempDir::new_in(HAMMOND_CACHE.to_str().unwrap(), "temp_download")?;
     let out_file = format!("{}/temp.part", tempdir.path().to_str().unwrap(),);
 
     // Save requested content into the file.
