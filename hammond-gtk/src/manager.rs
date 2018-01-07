@@ -4,72 +4,58 @@ use hammond_downloader::downloader::get_episode;
 
 use app::Action;
 
-use std::collections::HashSet;
-use std::sync::{Arc, Mutex};
+use std::collections::{HashMap, HashSet};
+use std::sync::{Arc, Mutex, RwLock};
 use std::sync::mpsc::Sender;
+// use std::sync::atomic::AtomicUsize;
 // use std::path::PathBuf;
 use std::thread;
 
-// struct DonwloadInstance {
-//     uri: String,
-//     // FIXME: MAKE ME A PATHBUF
-//     local_uri: Option<String>,
-//     downloaded_bytes: u64,
-//     total_bytes: u64,
-// }
-
-// impl DonwloadInstance {
-//     fn new(url: &str, total_bytes: u64) -> Self {
-//         DonwloadInstance {
-//             uri: url.into(),
-//             local_uri: None,
-//             downloaded_bytes: 0,
-//             total_bytes,
-//         }
-//     }
-// }
-
-#[derive(Debug, Clone)]
-// FIXME: privacy stuff
-pub struct Manager {
-    pub active: Arc<Mutex<HashSet<i32>>>,
+#[derive(Debug)]
+pub struct Progress {
+    total_bytes: u64,
+    downloaded_bytes: u64,
 }
 
-impl Default for Manager {
-    fn default() -> Self {
-        Manager {
-            active: Arc::new(Mutex::new(HashSet::new())),
+impl Progress {
+    pub fn new(size: u64) -> Self {
+        Progress {
+            total_bytes: size,
+            downloaded_bytes: 0,
         }
     }
 }
 
-impl Manager {
-    pub fn new() -> Self {
-        Manager::default()
+lazy_static! {
+    pub static ref ACTIVE_DOWNLOADS: Arc<RwLock<HashSet<i32>>> = {
+        Arc::new(RwLock::new(HashSet::new()))
+    };
+
+    pub static ref ACTIVE_PROGRESS: Arc<RwLock<HashMap<i32, Mutex<Progress>>>> = {
+        Arc::new(RwLock::new(HashMap::new()))
+    };
+}
+
+pub fn add(id: i32, directory: &str, sender: Sender<Action>) {
+    {
+        let mut m = ACTIVE_DOWNLOADS.write().unwrap();
+        m.insert(id);
     }
 
-    pub fn add(&self, id: i32, directory: &str, sender: Sender<Action>) {
+    let dir = directory.to_owned();
+    thread::spawn(move || {
+        let episode = dbqueries::get_episode_from_rowid(id).unwrap();
+        let e = get_episode(&mut episode.into(), dir.as_str());
+        if let Err(err) = e {
+            error!("Error: {}", err);
+        };
+
         {
-            let mut m = self.active.lock().unwrap();
-            m.insert(id);
+            let mut m = ACTIVE_DOWNLOADS.write().unwrap();
+            m.remove(&id);
         }
-
-        let dir = directory.to_owned();
-        let list = self.active.clone();
-        thread::spawn(move || {
-            let episode = dbqueries::get_episode_from_rowid(id).unwrap();
-            let e = get_episode(&mut episode.into(), dir.as_str());
-            if let Err(err) = e {
-                error!("Error: {}", err);
-            };
-
-            {
-                let mut m = list.lock().unwrap();
-                m.remove(&id);
-            }
-            sender.send(Action::RefreshViews).unwrap();
-        });
-    }
+        sender.send(Action::RefreshViews).unwrap();
+    });
 }
 
 #[cfg(test)]
@@ -117,9 +103,8 @@ mod tests {
 
         let (sender, _rx) = channel();
 
-        let manager = Manager::new();
         let download_fold = downloader::get_download_folder(&pd.title()).unwrap();
-        manager.add(episode.rowid(), download_fold.as_str(), sender);
+        add(episode.rowid(), download_fold.as_str(), sender);
 
         // Give it soem time to download the file
         thread::sleep(time::Duration::from_secs(40));

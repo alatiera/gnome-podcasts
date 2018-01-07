@@ -13,8 +13,8 @@ use hammond_data::{EpisodeWidgetQuery, Podcast};
 use hammond_data::errors::*;
 use hammond_downloader::downloader;
 
-use app::DOWNLOADS_MANAGER;
 use app::Action;
+use manager;
 
 use std::sync::mpsc::Sender;
 use std::path::Path;
@@ -99,9 +99,8 @@ impl EpisodeWidget {
         self.show_buttons(episode.local_uri());
 
         {
-            let m = DOWNLOADS_MANAGER.lock().unwrap();
-            let list = m.active.lock().unwrap();
-            if list.contains(&episode.rowid()) {
+            let m = manager::ACTIVE_DOWNLOADS.read().unwrap();
+            if m.contains(&episode.rowid()) {
                 self.show_progess_bar()
             };
         }
@@ -237,10 +236,8 @@ fn on_download_clicked(
     progress.show();
     download_bttn.hide();
     let download_fold = downloader::get_download_folder(&pd_title).unwrap();
-    {
-        let man = DOWNLOADS_MANAGER.lock().unwrap();
-        man.add(ep.rowid(), &download_fold, sender.clone());
-    }
+
+    manager::add(ep.rowid(), &download_fold, sender.clone());
     sender.send(Action::RefreshEpisodesViewBGR).unwrap();
 }
 
