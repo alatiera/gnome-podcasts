@@ -1,6 +1,7 @@
 // use hammond_data::Episode;
 use hammond_data::dbqueries;
 use hammond_downloader::downloader::get_episode;
+use hammond_downloader::downloader::DownloadProgress;
 
 use app::Action;
 
@@ -18,15 +19,33 @@ pub struct Progress {
 }
 
 impl Progress {
-    pub fn new(size: u64) -> Self {
+    pub fn get_fraction(&self) -> f64 {
+        info!("Progress: {:?}", self);
+        let ratio = self.downloaded_bytes as f64 / self.total_bytes as f64;
+
+        if ratio >= 1.0 {
+            return 1.0;
+        };
+        ratio
+    }
+}
+
+impl Default for Progress {
+    fn default() -> Self {
         Progress {
-            total_bytes: size,
+            total_bytes: 0,
             downloaded_bytes: 0,
         }
     }
+}
 
-    pub fn get_fraction(&self) -> f64 {
-        self.downloaded_bytes as f64 / self.total_bytes as f64
+impl DownloadProgress for Progress {
+    fn set_downloaded(&mut self, downloaded: u64) {
+        self.downloaded_bytes = downloaded
+    }
+
+    fn set_size(&mut self, bytes: u64) {
+        self.total_bytes = bytes;
     }
 }
 
@@ -36,17 +55,23 @@ lazy_static! {
     };
 }
 
-pub fn add(id: i32, directory: &str, sender: Sender<Action>, prog: Arc<Mutex<Progress>>) {
+pub fn add(id: i32, directory: &str, sender: Sender<Action>) {
+    // Create a new `Progress` struct to keep track of dl progress.
+    let prog = Arc::new(Mutex::new(Progress::default()));
+
     {
         let mut m = ACTIVE_DOWNLOADS.write().unwrap();
         m.insert(id, prog.clone());
     }
+    {
+        let m = ACTIVE_DOWNLOADS.read().unwrap();
+        info!("ACTIVE DOWNLOADS: {:#?}", m);
+    }
 
     let dir = directory.to_owned();
     thread::spawn(move || {
-        info!("{:?}", prog); // just checking that it compiles
         let episode = dbqueries::get_episode_from_rowid(id).unwrap();
-        let e = get_episode(&mut episode.into(), dir.as_str());
+        let e = get_episode(&mut episode.into(), dir.as_str(), Some(prog));
         if let Err(err) = e {
             error!("Error: {}", err);
         };
@@ -105,10 +130,9 @@ mod tests {
         };
 
         let (sender, _rx) = channel();
-        let prog = Arc::new(Mutex::new(Progress::new(42)));
 
         let download_fold = downloader::get_download_folder(&pd.title()).unwrap();
-        add(episode.rowid(), download_fold.as_str(), sender, prog);
+        add(episode.rowid(), download_fold.as_str(), sender);
 
         // Give it soem time to download the file
         thread::sleep(time::Duration::from_secs(40));

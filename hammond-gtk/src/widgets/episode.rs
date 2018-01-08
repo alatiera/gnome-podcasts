@@ -17,7 +17,6 @@ use app::Action;
 use manager;
 
 use std::sync::mpsc::Sender;
-use std::sync::{Arc, Mutex};
 use std::path::Path;
 
 #[derive(Debug, Clone)]
@@ -80,8 +79,6 @@ impl EpisodeWidget {
         widget
     }
 
-    // TODO: calculate lenght.
-    // TODO: wire the progress_bar to the downloader.
     // TODO: wire the cancel button.
     fn init(&self, episode: &mut EpisodeWidgetQuery, sender: Sender<Action>) {
         WidgetExt::set_name(&self.container, &episode.rowid().to_string());
@@ -218,13 +215,24 @@ impl EpisodeWidget {
                         let m = prog.lock().unwrap();
                         m.get_fraction()
                     };
-                    progress_bar.set_fraction(fraction);
-                    // info!("Fraction: {}", progress_bar.get_fraction());
 
-                    if fraction != 1.0{
-                        glib::Continue(true)
-                    } else {
+                    // I hate floating points.
+                    if (fraction >= 0.0) && (fraction <= 1.0) && (!fraction.is_nan()) {
+                        progress_bar.set_fraction(fraction);
+                    }
+                    // info!("Fraction: {}", progress_bar.get_fraction());
+                    // info!("Fraction: {}", fraction);
+                    let active = {
+                        let m = manager::ACTIVE_DOWNLOADS.read().unwrap();
+                        m.contains_key(&id)
+                    };
+
+                    if (fraction >= 1.0) && (!fraction.is_nan()){
                         glib::Continue(false)
+                    } else if !active {
+                        glib::Continue(false)
+                    }else {
+                        glib::Continue(true)
                     }
             }),
             );
@@ -236,10 +244,8 @@ fn on_download_clicked(ep: &EpisodeWidgetQuery, sender: Sender<Action>) {
     let pd = dbqueries::get_podcast_from_id(ep.podcast_id()).unwrap();
     let download_fold = downloader::get_download_folder(&pd.title().to_owned()).unwrap();
 
-    // Create a new `Progress` struct to keep track of dl progress.
-    let prog = Arc::new(Mutex::new(manager::Progress::new(42)));
     // Start a new download.
-    manager::add(ep.rowid(), &download_fold, sender.clone(), prog.clone());
+    manager::add(ep.rowid(), &download_fold, sender.clone());
 
     // Update Views
     sender.send(Action::RefreshEpisodesView).unwrap();
