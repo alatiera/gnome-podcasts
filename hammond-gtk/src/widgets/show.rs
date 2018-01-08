@@ -142,7 +142,7 @@ fn on_unsub_button_clicked(
     }));
     shows.switch_podcasts_animated();
     // Queue a refresh after the switch to avoid blocking the db.
-    sender.send(Action::RefreshViews).unwrap();
+    sender.send(Action::RefreshAllViews).unwrap();
 }
 
 #[allow(dead_code)]

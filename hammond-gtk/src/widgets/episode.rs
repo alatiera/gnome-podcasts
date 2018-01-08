@@ -17,6 +17,7 @@ use app::Action;
 use manager;
 
 use std::sync::mpsc::Sender;
+use std::sync::{Arc, Mutex};
 use std::path::Path;
 
 #[derive(Debug, Clone)]
@@ -83,6 +84,8 @@ impl EpisodeWidget {
     // TODO: wire the progress_bar to the downloader.
     // TODO: wire the cancel button.
     fn init(&self, episode: &mut EpisodeWidgetQuery, sender: Sender<Action>) {
+        WidgetExt::set_name(&self.container, &episode.rowid().to_string());
+
         // Set the title label state.
         self.set_title(episode);
 
@@ -98,12 +101,8 @@ impl EpisodeWidget {
         // Show or hide the play/delete/download buttons upon widget initialization.
         self.show_buttons(episode.local_uri());
 
-        {
-            let m = manager::ACTIVE_DOWNLOADS.read().unwrap();
-            if m.contains(&episode.rowid()) {
-                self.show_progess_bar()
-            };
-        }
+        // Determine what the state of the progress bar should be.
+        self.determine_progess_bar();
 
         let title = &self.title;
         self.play
@@ -118,17 +117,10 @@ impl EpisodeWidget {
             };
         }));
 
-        let cancel = &self.cancel;
-        let progress = self.progress.clone();
         self.download
-            .connect_clicked(clone!(episode, cancel, progress, sender => move |dl| {
-            on_download_clicked(
-                &mut episode.clone(),
-                dl,
-                &cancel,
-                progress.clone(),
-                sender.clone()
-            );
+            .connect_clicked(clone!(episode, sender => move |dl| {
+                dl.set_sensitive(false);
+                on_download_clicked(&mut episode.clone(), sender.clone());
         }));
     }
 
@@ -202,43 +194,56 @@ impl EpisodeWidget {
         };
     }
 
-    fn show_progess_bar(&self) {
-        let progress_bar = self.progress.clone();
-        timeout_add(200, move || {
-            progress_bar.pulse();
-            glib::Continue(true)
-        });
+    fn determine_progess_bar(&self) {
+        let id = WidgetExt::get_name(&self.container)
+            .unwrap()
+            .parse::<i32>()
+            .unwrap();
 
-        self.progress.show();
-        self.download.hide();
-        self.cancel.show();
+        let m = manager::ACTIVE_DOWNLOADS.read().unwrap();
+        if !m.contains_key(&id) {
+            return;
+        };
+
+        let progress_bar = self.progress.clone();
+        if let Some(prog) = m.get(&id) {
+            self.progress.show();
+            self.download.hide();
+            self.cancel.show();
+
+            timeout_add(
+                400,
+                clone!(prog => move || {
+                    let fraction = {
+                        let m = prog.lock().unwrap();
+                        m.get_fraction()
+                    };
+                    progress_bar.set_fraction(fraction);
+                    // info!("Fraction: {}", progress_bar.get_fraction());
+
+                    if fraction != 1.0{
+                        glib::Continue(true)
+                    } else {
+                        glib::Continue(false)
+                    }
+            }),
+            );
+        }
     }
 }
 
-fn on_download_clicked(
-    ep: &EpisodeWidgetQuery,
-    download_bttn: &gtk::Button,
-    cancel_bttn: &gtk::Button,
-    progress_bar: gtk::ProgressBar,
-    sender: Sender<Action>,
-) {
-    let progress = progress_bar.clone();
-
-    // Start the proggress_bar pulse.
-    timeout_add(200, move || {
-        progress_bar.pulse();
-        glib::Continue(true)
-    });
-
+fn on_download_clicked(ep: &EpisodeWidgetQuery, sender: Sender<Action>) {
     let pd = dbqueries::get_podcast_from_id(ep.podcast_id()).unwrap();
-    let pd_title = pd.title().to_owned();
-    cancel_bttn.show();
-    progress.show();
-    download_bttn.hide();
-    let download_fold = downloader::get_download_folder(&pd_title).unwrap();
+    let download_fold = downloader::get_download_folder(&pd.title().to_owned()).unwrap();
 
-    manager::add(ep.rowid(), &download_fold, sender.clone());
-    sender.send(Action::RefreshEpisodesViewBGR).unwrap();
+    // Create a new `Progress` struct to keep track of dl progress.
+    let prog = Arc::new(Mutex::new(manager::Progress::new(42)));
+    // Start a new download.
+    manager::add(ep.rowid(), &download_fold, sender.clone(), prog.clone());
+
+    // Update Views
+    sender.send(Action::RefreshEpisodesView).unwrap();
+    sender.send(Action::RefreshWidget).unwrap();
 }
 
 fn on_play_bttn_clicked(episode_id: i32) {

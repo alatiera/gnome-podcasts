@@ -4,7 +4,7 @@ use hammond_downloader::downloader::get_episode;
 
 use app::Action;
 
-use std::collections::{HashMap, HashSet};
+use std::collections::HashMap;
 use std::sync::{Arc, Mutex, RwLock};
 use std::sync::mpsc::Sender;
 // use std::sync::atomic::AtomicUsize;
@@ -24,26 +24,27 @@ impl Progress {
             downloaded_bytes: 0,
         }
     }
+
+    pub fn get_fraction(&self) -> f64 {
+        self.downloaded_bytes as f64 / self.total_bytes as f64
+    }
 }
 
 lazy_static! {
-    pub static ref ACTIVE_DOWNLOADS: Arc<RwLock<HashSet<i32>>> = {
-        Arc::new(RwLock::new(HashSet::new()))
-    };
-
-    pub static ref ACTIVE_PROGRESS: Arc<RwLock<HashMap<i32, Mutex<Progress>>>> = {
+    pub static ref ACTIVE_DOWNLOADS: Arc<RwLock<HashMap<i32, Arc<Mutex<Progress>>>>> = {
         Arc::new(RwLock::new(HashMap::new()))
     };
 }
 
-pub fn add(id: i32, directory: &str, sender: Sender<Action>) {
+pub fn add(id: i32, directory: &str, sender: Sender<Action>, prog: Arc<Mutex<Progress>>) {
     {
         let mut m = ACTIVE_DOWNLOADS.write().unwrap();
-        m.insert(id);
+        m.insert(id, prog.clone());
     }
 
     let dir = directory.to_owned();
     thread::spawn(move || {
+        info!("{:?}", prog); // just checking that it compiles
         let episode = dbqueries::get_episode_from_rowid(id).unwrap();
         let e = get_episode(&mut episode.into(), dir.as_str());
         if let Err(err) = e {
@@ -54,7 +55,9 @@ pub fn add(id: i32, directory: &str, sender: Sender<Action>) {
             let mut m = ACTIVE_DOWNLOADS.write().unwrap();
             m.remove(&id);
         }
-        sender.send(Action::RefreshViews).unwrap();
+
+        sender.send(Action::RefreshEpisodesView).unwrap();
+        sender.send(Action::RefreshWidget).unwrap();
     });
 }
 
@@ -102,9 +105,10 @@ mod tests {
         };
 
         let (sender, _rx) = channel();
+        let prog = Arc::new(Mutex::new(Progress::new(42)));
 
         let download_fold = downloader::get_download_folder(&pd.title()).unwrap();
-        add(episode.rowid(), download_fold.as_str(), sender);
+        add(episode.rowid(), download_fold.as_str(), sender, prog);
 
         // Give it soem time to download the file
         thread::sleep(time::Duration::from_secs(40));

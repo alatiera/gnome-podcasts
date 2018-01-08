@@ -30,7 +30,7 @@ pub fn refresh_feed(headerbar: Arc<Header>, source: Option<Vec<Source>>, sender:
         };
 
         sender.send(Action::HeaderBarHideUpdateIndicator).unwrap();
-        sender.send(Action::RefreshViews).unwrap();
+        sender.send(Action::RefreshAllViews).unwrap();
     });
 }
 

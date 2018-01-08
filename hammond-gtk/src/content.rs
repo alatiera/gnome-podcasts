@@ -41,8 +41,9 @@ impl Content {
     }
 
     pub fn update(&self) {
-        self.update_shows_view();
         self.update_episode_view();
+        self.update_shows_view();
+        self.update_widget()
     }
 
     pub fn update_episode_view(&self) {
@@ -56,7 +57,11 @@ impl Content {
     }
 
     pub fn update_shows_view(&self) {
-        self.shows.update();
+        self.shows.update_podcasts();
+    }
+
+    pub fn update_widget(&self) {
+        self.shows.update_widget();
     }
 
     pub fn get_stack(&self) -> gtk::Stack {
@@ -100,14 +105,10 @@ impl ShowStack {
         show
     }
 
-    // fn is_empty(&self) -> bool {
-    //     self.podcasts.is_empty()
+    // pub fn update(&self) {
+    //     self.update_widget();
+    //     self.update_podcasts();
     // }
-
-    pub fn update(&self) {
-        self.update_podcasts();
-        self.update_widget();
-    }
 
     pub fn update_podcasts(&self) {
         let vis = self.stack.get_visible_child_name().unwrap();
