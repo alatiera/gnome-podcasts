@@ -17,7 +17,26 @@ use app::Action;
 use manager;
 
 use std::sync::mpsc::Sender;
+use std::sync::Arc;
 use std::path::Path;
+
+lazy_static! {
+    static ref SIZE_OPTS: Arc<size_opts::FileSizeOpts> =  {
+        // Declare a custom humansize option struct
+        // See: https://docs.rs/humansize/1.0.2/humansize/file_size_opts/struct.FileSizeOpts.html
+        Arc::new(size_opts::FileSizeOpts {
+            divider: size_opts::Kilo::Binary,
+            units: size_opts::Kilo::Decimal,
+            decimal_places: 0,
+            decimal_zeroes: 0,
+            fixed_at: size_opts::FixedAt::No,
+            long_units: false,
+            space: true,
+            suffix: "",
+            allow_negative: false,
+        })
+    };
+}
 
 #[derive(Debug, Clone)]
 pub struct EpisodeWidget {
@@ -28,11 +47,12 @@ pub struct EpisodeWidget {
     title: gtk::Label,
     date: gtk::Label,
     duration: gtk::Label,
-    size: gtk::Label,
     progress: gtk::ProgressBar,
-    progress_label: gtk::Label,
+    total_size: gtk::Label,
+    local_size: gtk::Label,
     separator1: gtk::Label,
     separator2: gtk::Label,
+    prog_separator: gtk::Label,
 }
 
 impl Default for EpisodeWidget {
@@ -49,11 +69,12 @@ impl Default for EpisodeWidget {
         let title: gtk::Label = builder.get_object("title_label").unwrap();
         let date: gtk::Label = builder.get_object("date_label").unwrap();
         let duration: gtk::Label = builder.get_object("duration_label").unwrap();
-        let size: gtk::Label = builder.get_object("size_label").unwrap();
-        let progress_label: gtk::Label = builder.get_object("progress_label").unwrap();
+        let local_size: gtk::Label = builder.get_object("local_size").unwrap();
+        let total_size: gtk::Label = builder.get_object("total_size").unwrap();
 
         let separator1: gtk::Label = builder.get_object("separator1").unwrap();
         let separator2: gtk::Label = builder.get_object("separator2").unwrap();
+        let prog_separator: gtk::Label = builder.get_object("prog_separator").unwrap();
 
         EpisodeWidget {
             container,
@@ -63,11 +84,12 @@ impl Default for EpisodeWidget {
             cancel,
             title,
             duration,
-            size,
             date,
-            progress_label,
+            total_size,
+            local_size,
             separator1,
             separator2,
+            prog_separator,
         }
     }
 }
@@ -87,7 +109,7 @@ impl EpisodeWidget {
         self.set_title(episode);
 
         // Set the size label.
-        self.set_size(episode.length());
+        self.set_total_size(episode.length());
 
         // Set the duaration label.
         self.set_duration(episode.duration());
@@ -164,33 +186,20 @@ impl EpisodeWidget {
     }
 
     /// Set the Episode label dependings on its size
-    fn set_size(&self, bytes: Option<i32>) {
-        // Declare a custom humansize option struct
-        // See: https://docs.rs/humansize/1.0.2/humansize/file_size_opts/struct.FileSizeOpts.html
-        let custom_options = size_opts::FileSizeOpts {
-            divider: size_opts::Kilo::Binary,
-            units: size_opts::Kilo::Decimal,
-            decimal_places: 0,
-            decimal_zeroes: 0,
-            fixed_at: size_opts::FixedAt::No,
-            long_units: false,
-            space: true,
-            suffix: "",
-            allow_negative: false,
-        };
-
+    fn set_total_size(&self, bytes: Option<i32>) {
         if let Some(size) = bytes {
             if size != 0 {
-                let s = size.file_size(custom_options);
+                let s = size.file_size(SIZE_OPTS.clone());
                 if let Ok(s) = s {
-                    self.size.set_text(&s);
-                    self.size.show();
+                    self.total_size.set_text(&s);
+                    self.total_size.show();
                     self.separator2.show();
                 }
             }
         };
     }
 
+    // FIXME: REFACTOR ME
     fn determine_progess_bar(&self) {
         let id = WidgetExt::get_name(&self.container)
             .unwrap()
@@ -204,10 +213,14 @@ impl EpisodeWidget {
 
         let progress_bar = self.progress.clone();
         if let Some(prog) = m.get(&id) {
-            self.progress.show();
             self.download.hide();
+            self.progress.show();
+            self.local_size.show();
+            self.total_size.show();
+            self.prog_separator.show();
             self.cancel.show();
 
+            // Setup a callback that will update the progress bar.
             timeout_add(
                 400,
                 clone!(prog => move || {
@@ -231,10 +244,35 @@ impl EpisodeWidget {
                         glib::Continue(false)
                     } else if !active {
                         glib::Continue(false)
-                    }else {
+                    } else {
                         glib::Continue(true)
                     }
             }),
+            );
+
+            let total_size = self.total_size.clone();
+            // Setup a callback that will update the total_size label
+            // with the http ContentLength header number rather than
+            // relying to the RSS feed.
+            timeout_add(
+                500,
+                clone!(prog, total_size => move || {
+                    let total_bytes = {
+                        let m = prog.lock().unwrap();
+                        m.get_total_size()
+                    };
+
+                    debug!("Total Size: {}", total_bytes);
+                    if total_bytes != 0 {
+                        let size = total_bytes.file_size(SIZE_OPTS.clone());
+                        if let Ok(s) = size {
+                            total_size.set_text(&s);
+                        }
+                        glib::Continue(false)
+                    } else {
+                        glib::Continue(true)
+                    }
+                }),
             );
         }
     }

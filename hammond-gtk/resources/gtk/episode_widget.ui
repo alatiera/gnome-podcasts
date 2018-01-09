@@ -120,10 +120,10 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkLabel" id="size_label">
+                  <object class="GtkLabel" id="local_size">
                     <property name="can_focus">False</property>
                     <property name="no_show_all">True</property>
-                    <property name="label" translatable="yes">42 MB</property>
+                    <property name="label" translatable="yes">0 MB</property>
                     <property name="single_line_mode">True</property>
                     <property name="track_visited_links">False</property>
                     <style>
@@ -137,10 +137,10 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkLabel" id="progress_label">
+                  <object class="GtkLabel" id="prog_separator">
                     <property name="can_focus">False</property>
                     <property name="no_show_all">True</property>
-                    <property name="label" translatable="yes">12 MB / 42 MB</property>
+                    <property name="label" translatable="yes">/</property>
                     <property name="single_line_mode">True</property>
                     <property name="track_visited_links">False</property>
                     <style>
@@ -151,6 +151,23 @@
                     <property name="expand">False</property>
                     <property name="fill">True</property>
                     <property name="position">5</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="total_size">
+                    <property name="can_focus">False</property>
+                    <property name="no_show_all">True</property>
+                    <property name="label" translatable="yes">XX MB</property>
+                    <property name="single_line_mode">True</property>
+                    <property name="track_visited_links">False</property>
+                    <style>
+                      <class name="dim-label"/>
+                    </style>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">6</property>
                   </packing>
                 </child>
               </object>

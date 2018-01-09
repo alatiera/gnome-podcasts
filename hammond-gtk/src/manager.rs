@@ -28,6 +28,10 @@ impl Progress {
         };
         ratio
     }
+
+    pub fn get_total_size(&self) -> u64 {
+        self.total_bytes
+    }
 }
 
 impl Default for Progress {
