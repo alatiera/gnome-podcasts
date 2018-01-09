@@ -17,7 +17,7 @@ use app::Action;
 use manager;
 
 use std::sync::mpsc::Sender;
-use std::sync::Arc;
+use std::sync::{Arc, Mutex};
 use std::path::Path;
 
 lazy_static! {
@@ -212,6 +212,7 @@ impl EpisodeWidget {
         };
 
         let progress_bar = self.progress.clone();
+        let total_size = self.total_size.clone();
         if let Some(prog) = m.get(&id) {
             self.download.hide();
             self.progress.show();
@@ -221,59 +222,12 @@ impl EpisodeWidget {
             self.cancel.show();
 
             // Setup a callback that will update the progress bar.
-            timeout_add(
-                400,
-                clone!(prog => move || {
-                    let fraction = {
-                        let m = prog.lock().unwrap();
-                        m.get_fraction()
-                    };
+            update_progressbar_callback(prog.clone(), id, progress_bar);
 
-                    // I hate floating points.
-                    if (fraction >= 0.0) && (fraction <= 1.0) && (!fraction.is_nan()) {
-                        progress_bar.set_fraction(fraction);
-                    }
-                    // info!("Fraction: {}", progress_bar.get_fraction());
-                    // info!("Fraction: {}", fraction);
-                    let active = {
-                        let m = manager::ACTIVE_DOWNLOADS.read().unwrap();
-                        m.contains_key(&id)
-                    };
-
-                    if (fraction >= 1.0) && (!fraction.is_nan()){
-                        glib::Continue(false)
-                    } else if !active {
-                        glib::Continue(false)
-                    } else {
-                        glib::Continue(true)
-                    }
-            }),
-            );
-
-            let total_size = self.total_size.clone();
             // Setup a callback that will update the total_size label
             // with the http ContentLength header number rather than
             // relying to the RSS feed.
-            timeout_add(
-                500,
-                clone!(prog, total_size => move || {
-                    let total_bytes = {
-                        let m = prog.lock().unwrap();
-                        m.get_total_size()
-                    };
-
-                    debug!("Total Size: {}", total_bytes);
-                    if total_bytes != 0 {
-                        let size = total_bytes.file_size(SIZE_OPTS.clone());
-                        if let Ok(s) = size {
-                            total_size.set_text(&s);
-                        }
-                        glib::Continue(false)
-                    } else {
-                        glib::Continue(true)
-                    }
-                }),
-            );
+            update_total_size_callback(prog.clone(), total_size);
         }
     }
 }
@@ -308,6 +262,68 @@ fn on_play_bttn_clicked(episode_id: i32) {
             local_uri
         );
     }
+}
+
+// Setup a callback that will update the progress bar.
+fn update_progressbar_callback(
+    prog: Arc<Mutex<manager::Progress>>,
+    episode_rowid: i32,
+    progress_bar: gtk::ProgressBar,
+) {
+    timeout_add(
+        400,
+        clone!(prog, progress_bar=> move || {
+            let fraction = {
+                let m = prog.lock().unwrap();
+                m.get_fraction()
+            };
+
+            // I hate floating points.
+            if (fraction >= 0.0) && (fraction <= 1.0) && (!fraction.is_nan()) {
+                progress_bar.set_fraction(fraction);
+            }
+            // info!("Fraction: {}", progress_bar.get_fraction());
+            // info!("Fraction: {}", fraction);
+            let active = {
+                let m = manager::ACTIVE_DOWNLOADS.read().unwrap();
+                m.contains_key(&episode_rowid)
+            };
+
+            if (fraction >= 1.0) && (!fraction.is_nan()){
+                glib::Continue(false)
+            } else if !active {
+                glib::Continue(false)
+            } else {
+                glib::Continue(true)
+            }
+        }),
+    );
+}
+
+// Setup a callback that will update the total_size label
+// with the http ContentLength header number rather than
+// relying to the RSS feed.
+fn update_total_size_callback(prog: Arc<Mutex<manager::Progress>>, total_size: gtk::Label) {
+    timeout_add(
+        500,
+        clone!(prog, total_size => move || {
+            let total_bytes = {
+                let m = prog.lock().unwrap();
+                m.get_total_size()
+            };
+
+            debug!("Total Size: {}", total_bytes);
+            if total_bytes != 0 {
+                let size = total_bytes.file_size(SIZE_OPTS.clone());
+                if let Ok(s) = size {
+                    total_size.set_text(&s);
+                }
+                glib::Continue(false)
+            } else {
+                glib::Continue(true)
+            }
+        }),
+    );
 }
 
 // fn on_delete_bttn_clicked(episode_id: i32) {
