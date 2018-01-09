@@ -32,6 +32,10 @@ impl Progress {
     pub fn get_total_size(&self) -> u64 {
         self.total_bytes
     }
+
+    pub fn get_downloaded(&self) -> u64 {
+        self.downloaded_bytes
+    }
 }
 
 impl Default for Progress {

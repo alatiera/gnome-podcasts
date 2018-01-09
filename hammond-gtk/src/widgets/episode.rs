@@ -206,23 +206,28 @@ impl EpisodeWidget {
             .parse::<i32>()
             .unwrap();
 
-        let m = manager::ACTIVE_DOWNLOADS.read().unwrap();
-        if !m.contains_key(&id) {
-            return;
+        let prog_struct = {
+            let m = manager::ACTIVE_DOWNLOADS.read().unwrap();
+            if !m.contains_key(&id) {
+                return;
+            };
+            m.get(&id).cloned()
         };
 
         let progress_bar = self.progress.clone();
         let total_size = self.total_size.clone();
-        if let Some(prog) = m.get(&id) {
+        let local_size = self.local_size.clone();
+        if let Some(prog) = prog_struct {
             self.download.hide();
             self.progress.show();
             self.local_size.show();
             self.total_size.show();
+            self.separator2.show();
             self.prog_separator.show();
             self.cancel.show();
 
             // Setup a callback that will update the progress bar.
-            update_progressbar_callback(prog.clone(), id, progress_bar);
+            update_progressbar_callback(prog.clone(), id, progress_bar, local_size);
 
             // Setup a callback that will update the total_size label
             // with the http ContentLength header number rather than
@@ -269,14 +274,18 @@ fn update_progressbar_callback(
     prog: Arc<Mutex<manager::Progress>>,
     episode_rowid: i32,
     progress_bar: gtk::ProgressBar,
+    local_size: gtk::Label,
 ) {
     timeout_add(
         400,
-        clone!(prog, progress_bar=> move || {
-            let fraction = {
+        clone!(prog, progress_bar => move || {
+            let (fraction, downloaded) = {
                 let m = prog.lock().unwrap();
-                m.get_fraction()
+                (m.get_fraction(), m.get_downloaded())
             };
+
+            // Update local_size label
+            downloaded.file_size(SIZE_OPTS.clone()).map(|x| local_size.set_text(&x));
 
             // I hate floating points.
             if (fraction >= 0.0) && (fraction <= 1.0) && (!fraction.is_nan()) {
