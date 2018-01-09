@@ -68,20 +68,16 @@ pub fn add(id: i32, directory: &str, sender: Sender<Action>) {
     let prog = Arc::new(Mutex::new(Progress::default()));
 
     {
-        ACTIVE_DOWNLOADS
-            .write()
-            .ok()
-            .map(|mut m| m.insert(id, prog.clone()));
+        if let Ok(mut m) = ACTIVE_DOWNLOADS.write() {
+            m.insert(id, prog.clone());
+        }
     }
-    // {
-    //     let m = ACTIVE_DOWNLOADS.read().unwrap();
-    //     info!("ACTIVE DOWNLOADS: {:#?}", m);
-    // }
 
     let dir = directory.to_owned();
     thread::spawn(move || {
         if let Ok(episode) = dbqueries::get_episode_from_rowid(id) {
-            let id = episode.podcast_id();
+            let pid = episode.podcast_id();
+            let id = episode.rowid();
             get_episode(&mut episode.into(), dir.as_str(), Some(prog))
                 .err()
                 .map(|err| {
@@ -90,11 +86,19 @@ pub fn add(id: i32, directory: &str, sender: Sender<Action>) {
                 });
 
             {
-                ACTIVE_DOWNLOADS.write().ok().map(|mut x| x.remove(&id));
+                if let Ok(mut m) = ACTIVE_DOWNLOADS.write() {
+                    info!("Removed: {:?}", m.remove(&id));
+                }
             }
 
+            // {
+            //     if let Ok(m) = ACTIVE_DOWNLOADS.read() {
+            //         debug!("ACTIVE DOWNLOADS: {:#?}", m);
+            //     }
+            // }
+
             sender.send(Action::RefreshEpisodesView).unwrap();
-            sender.send(Action::RefreshWidgetIfSame(id)).unwrap();
+            sender.send(Action::RefreshWidgetIfSame(pid)).unwrap();
         }
     });
 }
