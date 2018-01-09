@@ -20,7 +20,10 @@ pub enum Action {
     RefreshAllViews,
     RefreshEpisodesView,
     RefreshEpisodesViewBGR,
+    RefreshShowsView,
     RefreshWidget,
+    RefreshWidgetIfVis,
+    RefreshWidgetIfSame(i32),
     HeaderBarShowTile(String),
     HeaderBarNormal,
     HeaderBarHideUpdateIndicator,
@@ -137,7 +140,10 @@ impl App {
                     }
                 }
                 Ok(Action::RefreshAllViews) => content.update(),
+                Ok(Action::RefreshShowsView) => content.update_shows_view(),
                 Ok(Action::RefreshWidget) => content.update_widget(),
+                Ok(Action::RefreshWidgetIfVis) => content.update_widget_if_visible(),
+                Ok(Action::RefreshWidgetIfSame(id)) => content.update_widget_if_same(id),
                 Ok(Action::RefreshEpisodesView) => content.update_episode_view(),
                 Ok(Action::RefreshEpisodesViewBGR) => content.update_episode_view_if_baground(),
                 Ok(Action::HeaderBarShowTile(title)) => headerbar.switch_to_back(&title),

@@ -81,6 +81,7 @@ pub fn add(id: i32, directory: &str, sender: Sender<Action>) {
     let dir = directory.to_owned();
     thread::spawn(move || {
         if let Ok(episode) = dbqueries::get_episode_from_rowid(id) {
+            let id = episode.podcast_id();
             get_episode(&mut episode.into(), dir.as_str(), Some(prog))
                 .err()
                 .map(|err| {
@@ -93,7 +94,7 @@ pub fn add(id: i32, directory: &str, sender: Sender<Action>) {
             }
 
             sender.send(Action::RefreshEpisodesView).unwrap();
-            sender.send(Action::RefreshWidget).unwrap();
+            sender.send(Action::RefreshWidgetIfSame(id)).unwrap();
         }
     });
 }

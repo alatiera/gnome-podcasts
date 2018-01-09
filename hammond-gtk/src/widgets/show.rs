@@ -71,7 +71,6 @@ impl ShowWidget {
         self.unsub
             .connect_clicked(clone!(shows, pd, sender => move |bttn| {
             on_unsub_button_clicked(shows.clone(), &pd, bttn, sender.clone());
-            sender.send(Action::HeaderBarNormal).unwrap();
         }));
 
         self.setup_listbox(pd, sender.clone());
@@ -137,8 +136,10 @@ fn on_unsub_button_clicked(
         });
     }));
     shows.switch_podcasts_animated();
+    sender.send(Action::HeaderBarNormal).unwrap();
     // Queue a refresh after the switch to avoid blocking the db.
-    sender.send(Action::RefreshAllViews).unwrap();
+    sender.send(Action::RefreshShowsView).unwrap();
+    sender.send(Action::RefreshEpisodesView).unwrap();
 }
 
 #[allow(dead_code)]

@@ -251,7 +251,7 @@ fn on_download_clicked(ep: &EpisodeWidgetQuery, sender: Sender<Action>) {
 
     // Update Views
     sender.send(Action::RefreshEpisodesView).unwrap();
-    sender.send(Action::RefreshWidget).unwrap();
+    sender.send(Action::RefreshWidgetIfVis).unwrap();
 }
 
 fn on_play_bttn_clicked(episode_id: i32) {
