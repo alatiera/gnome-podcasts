@@ -189,12 +189,11 @@ impl EpisodeWidget {
     fn set_total_size(&self, bytes: Option<i32>) {
         if let Some(size) = bytes {
             if size != 0 {
-                let s = size.file_size(SIZE_OPTS.clone());
-                if let Ok(s) = s {
+                size.file_size(SIZE_OPTS.clone()).ok().map(|s| {
                     self.total_size.set_text(&s);
                     self.total_size.show();
                     self.separator2.show();
-                }
+                });
             }
         };
     }
@@ -250,16 +249,17 @@ fn on_download_clicked(ep: &EpisodeWidgetQuery, sender: Sender<Action>) {
 }
 
 fn on_play_bttn_clicked(episode_id: i32) {
-    let local_uri = dbqueries::get_episode_local_uri_from_id(episode_id).unwrap();
+    let local_uri = dbqueries::get_episode_local_uri_from_id(episode_id)
+        .ok()
+        .and_then(|x| x);
 
     if let Some(uri) = local_uri {
         if Path::new(&uri).exists() {
             info!("Opening {}", uri);
-            let e = open::that(&uri);
-            if let Err(err) = e {
+            open::that(&uri).err().map(|err| {
                 error!("Error while trying to open file: {}", uri);
                 error!("Error: {}", err);
-            };
+            });
         }
     } else {
         error!(
@@ -285,14 +285,18 @@ fn update_progressbar_callback(
             };
 
             // Update local_size label
-            downloaded.file_size(SIZE_OPTS.clone()).map(|x| local_size.set_text(&x));
+            downloaded.file_size(SIZE_OPTS.clone()).ok().map(|x| local_size.set_text(&x));
 
             // I hate floating points.
+            // Update the progress_bar.
             if (fraction >= 0.0) && (fraction <= 1.0) && (!fraction.is_nan()) {
                 progress_bar.set_fraction(fraction);
             }
+
             // info!("Fraction: {}", progress_bar.get_fraction());
             // info!("Fraction: {}", fraction);
+
+            // Check if the download is still active
             let active = {
                 let m = manager::ACTIVE_DOWNLOADS.read().unwrap();
                 m.contains_key(&episode_rowid)
@@ -323,10 +327,8 @@ fn update_total_size_callback(prog: Arc<Mutex<manager::Progress>>, total_size: g
 
             debug!("Total Size: {}", total_bytes);
             if total_bytes != 0 {
-                let size = total_bytes.file_size(SIZE_OPTS.clone());
-                if let Ok(s) = size {
-                    total_size.set_text(&s);
-                }
+                // Update the total_size label
+                total_bytes.file_size(SIZE_OPTS.clone()).ok().map(|x| total_size.set_text(&x));
                 glib::Continue(false)
             } else {
                 glib::Continue(true)

@@ -82,24 +82,22 @@ impl ShowWidget {
         self.link.set_tooltip_text(Some(link.as_str()));
         self.link.connect_clicked(move |_| {
             info!("Opening link: {}", &link);
-            let _ = open::that(&link);
+            open::that(&link)
+                .err()
+                .map(|err| error!("Something went wrong: {}", err));
         });
     }
 
     /// Populate the listbox with the shows episodes.
     fn setup_listbox(&self, pd: &Podcast, sender: Sender<Action>) {
         let listbox = episodes_listbox(pd, sender.clone());
-        if let Ok(l) = listbox {
-            self.episodes.add(&l);
-        }
+        listbox.ok().map(|l| self.episodes.add(&l));
     }
 
     /// Set the show cover.
     fn set_cover(&self, pd: &Podcast) {
         let img = get_pixbuf_from_path(&pd.clone().into(), 128);
-        if let Some(i) = img {
-            self.cover.set_from_pixbuf(&i);
-        }
+        img.map(|i| self.cover.set_from_pixbuf(&i));
     }
 
     /// Set the descripton text.
@@ -126,19 +124,17 @@ fn on_unsub_button_clicked(
     unsub_button.hide();
     // Spawn a thread so it won't block the ui.
     thread::spawn(clone!(pd => move || {
-        let res = dbqueries::remove_feed(&pd);
-        if res.is_ok() {
+        dbqueries::remove_feed(&pd).ok().map(|_| {
             info!("{} was removed succesfully.", pd.title());
 
-            let dl_fold = downloader::get_download_folder(pd.title());
-            if let Ok(fold) = dl_fold {
+            downloader::get_download_folder(pd.title()).ok().map(|fold| {
                 let res3 = fs::remove_dir_all(&fold);
                 // TODO: Show errors?
                 if res3.is_ok() {
                     info!("All the content at, {} was removed succesfully", &fold);
                 }
-            };
-        }
+            });
+        });
     }));
     shows.switch_podcasts_animated();
     // Queue a refresh after the switch to avoid blocking the db.
