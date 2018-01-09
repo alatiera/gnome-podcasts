@@ -106,11 +106,10 @@ pub fn add(id: i32, directory: &str, sender: Sender<Action>) {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use hammond_downloader::downloader;
-
     use diesel::Identifiable;
 
     use hammond_data::database;
+    use hammond_data::utils::get_download_folder;
     use hammond_data::feed::*;
     use hammond_data::{Episode, Source};
     use hammond_data::dbqueries;
@@ -148,7 +147,7 @@ mod tests {
 
         let (sender, _rx) = channel();
 
-        let download_fold = downloader::get_download_folder(&pd.title()).unwrap();
+        let download_fold = get_download_folder(&pd.title()).unwrap();
         add(episode.rowid(), download_fold.as_str(), sender);
 
         // Give it soem time to download the file

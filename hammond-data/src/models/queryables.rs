@@ -645,6 +645,7 @@ impl<'a> Source {
     // TODO: Refactor into TryInto once it lands on stable.
     pub fn into_feed(mut self, ignore_etags: bool) -> Result<Feed> {
         use reqwest::header::{EntityTag, Headers, HttpDate, IfModifiedSince, IfNoneMatch};
+        use reqwest::StatusCode;
 
         let mut headers = Headers::new();
 
@@ -670,12 +671,26 @@ impl<'a> Source {
         self.update_etag(&req)?;
 
         // TODO match on more stuff
-        // 301: Permanent redirect of the url
-        // 302: Temporary redirect of the url
+        // 301: Moved Permanently
         // 304: Up to date Feed, checked with the Etag
+        // 307: Temporary redirect of the url
+        // 308: Permanent redirect of the url
+        // 401: Unathorized
+        // 403: Forbidden
+        // 408: Timeout
         // 410: Feed deleted
         match req.status() {
-            reqwest::StatusCode::NotModified => bail!("304, skipping.."),
+            StatusCode::NotModified => bail!("304: skipping.."),
+            StatusCode::TemporaryRedirect => debug!("307: Temporary Redirect."),
+            // TODO: Change the source uri to the new one
+            StatusCode::MovedPermanently | StatusCode::PermanentRedirect => {
+                warn!("Feed was moved permanently.")
+            }
+            StatusCode::Unauthorized => bail!("401: Unauthorized."),
+            StatusCode::Forbidden => bail!("403: Forbidden."),
+            StatusCode::NotFound => bail!("404: Not found."),
+            StatusCode::RequestTimeout => bail!("408: Request Timeout."),
+            StatusCode::Gone => bail!("410: Feed was deleted."),
             _ => (),
         };
 

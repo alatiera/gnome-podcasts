@@ -174,21 +174,30 @@ impl ShowStack {
             .unwrap();
         debug!("Name: {:?}", WidgetExt::get_name(&old));
 
-        let scrolled_window = old.get_children()
-            .first()
-            // This is guaranted to exist based on the show_widget.ui file.
-            .unwrap()
-            .clone()
-            .downcast::<gtk::ScrolledWindow>()
-            // This is guaranted based on the show_widget.ui file.
-            .unwrap();
-        debug!("Name: {:?}", WidgetExt::get_name(&scrolled_window));
-
         let new = ShowWidget::new(Arc::new(self.clone()), pd, self.sender.clone());
-        // Copy the vertical scrollbar adjustment from the old view into the new one.
-        scrolled_window
-            .get_vadjustment()
-            .map(|x| new.set_vadjustment(&x));
+        // Each composite ShowWidget is a gtkBox with the Podcast.id encoded in the gtk::Widget
+        // name. It's a hack since we can't yet subclass GObject easily.
+        let oldid = WidgetExt::get_name(&old);
+        let newid = WidgetExt::get_name(&new.container);
+        debug!("Old widget Name: {:?}\nNew widget Name: {:?}", oldid, newid);
+
+        // Only copy the old scrollbar if both widget's represent the same podcast.
+        if newid == oldid {
+            let scrolled_window = old.get_children()
+                .first()
+                // This is guaranted to exist based on the show_widget.ui file.
+                .unwrap()
+                .clone()
+                .downcast::<gtk::ScrolledWindow>()
+                // This is guaranted based on the show_widget.ui file.
+                .unwrap();
+            debug!("Name: {:?}", WidgetExt::get_name(&scrolled_window));
+
+            // Copy the vertical scrollbar adjustment from the old view into the new one.
+            scrolled_window
+                .get_vadjustment()
+                .map(|x| new.set_vadjustment(&x));
+        }
 
         self.stack.remove(&old);
         self.stack.add_named(&new.container, "widget");

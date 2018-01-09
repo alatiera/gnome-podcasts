@@ -9,9 +9,8 @@ use humansize::{file_size_opts as size_opts, FileSize};
 
 use hammond_data::dbqueries;
 use hammond_data::{EpisodeWidgetQuery, Podcast};
-// use hammond_data::utils::*;
+use hammond_data::utils::get_download_folder;
 use hammond_data::errors::*;
-use hammond_downloader::downloader;
 
 use app::Action;
 use manager;
@@ -94,6 +93,10 @@ impl Default for EpisodeWidget {
     }
 }
 
+lazy_static! {
+    static ref NOW: DateTime<Utc> = Utc::now();
+}
+
 impl EpisodeWidget {
     pub fn new(episode: &mut EpisodeWidgetQuery, sender: Sender<Action>) -> EpisodeWidget {
         let widget = EpisodeWidget::default();
@@ -166,18 +169,21 @@ impl EpisodeWidget {
 
     /// Set the date label depending on the current time.
     fn set_date(&self, epoch: i32) {
-        let now = Utc::now();
         let date = Utc.timestamp(i64::from(epoch), 0);
-        if now.year() == date.year() {
-            self.date.set_text(&date.format("%e %b").to_string().trim());
+        if NOW.year() == date.year() {
+            self.date.set_text(date.format("%e %b").to_string().trim());
         } else {
             self.date
-                .set_text(&date.format("%e %b %Y").to_string().trim());
+                .set_text(date.format("%e %b %Y").to_string().trim());
         };
     }
 
     /// Set the duration label.
     fn set_duration(&self, seconds: Option<i32>) {
+        if (seconds == Some(0)) || seconds.is_none() {
+            return;
+        };
+
         if let Some(secs) = seconds {
             self.duration.set_text(&format!("{} min", secs / 60));
             self.duration.show();
@@ -241,7 +247,7 @@ impl EpisodeWidget {
 fn on_download_clicked(ep: &EpisodeWidgetQuery, sender: Sender<Action>) {
     let download_fold = dbqueries::get_podcast_from_id(ep.podcast_id())
         .ok()
-        .map(|pd| downloader::get_download_folder(&pd.title().to_owned()).ok())
+        .map(|pd| get_download_folder(&pd.title().to_owned()).ok())
         .and_then(|x| x);
 
     // Start a new download.

@@ -123,9 +123,69 @@ fn parse_itunes_duration(item: &Item) -> Option<i32> {
 mod tests {
     use std::fs::File;
     use std::io::BufReader;
-    use rss::Channel;
+    use rss;
 
     use super::*;
+
+    #[test]
+    fn test_itunes_duration() {
+        use rss::extension::itunes::ITunesItemExtensionBuilder;
+
+        // Input is a String<Int>
+        let extension = ITunesItemExtensionBuilder::default()
+            .duration(Some("3370".into()))
+            .build()
+            .unwrap();
+        let item = rss::ItemBuilder::default()
+            .itunes_ext(Some(extension))
+            .build()
+            .unwrap();
+        assert_eq!(parse_itunes_duration(&item), Some(3370));
+
+        // Input is a String<M:SS>
+        let extension = ITunesItemExtensionBuilder::default()
+            .duration(Some("6:10".into()))
+            .build()
+            .unwrap();
+        let item = rss::ItemBuilder::default()
+            .itunes_ext(Some(extension))
+            .build()
+            .unwrap();
+        assert_eq!(parse_itunes_duration(&item), Some(370));
+
+        // Input is a String<MM:SS>
+        let extension = ITunesItemExtensionBuilder::default()
+            .duration(Some("56:10".into()))
+            .build()
+            .unwrap();
+        let item = rss::ItemBuilder::default()
+            .itunes_ext(Some(extension))
+            .build()
+            .unwrap();
+        assert_eq!(parse_itunes_duration(&item), Some(3370));
+
+        // Input is a String<H:MM:SS>
+        let extension = ITunesItemExtensionBuilder::default()
+            .duration(Some("1:56:10".into()))
+            .build()
+            .unwrap();
+        let item = rss::ItemBuilder::default()
+            .itunes_ext(Some(extension))
+            .build()
+            .unwrap();
+        assert_eq!(parse_itunes_duration(&item), Some(6970));
+
+        // Input is a String<HH:MM:SS>
+        let extension = ITunesItemExtensionBuilder::default()
+            .duration(Some("01:56:10".into()))
+            .build()
+            .unwrap();
+        let item = rss::ItemBuilder::default()
+            .itunes_ext(Some(extension))
+            .build()
+            .unwrap();
+        assert_eq!(parse_itunes_duration(&item), Some(6970));
+    }
 
     #[test]
     fn test_new_podcast_intercepted() {

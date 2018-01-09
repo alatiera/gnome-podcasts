@@ -1,3 +1,5 @@
+//! Database Setup. This is only public to help with some unit tests.
+
 use r2d2_diesel::ConnectionManager;
 use diesel::prelude::*;
 use r2d2;
@@ -35,7 +37,7 @@ lazy_static! {
     static ref DB_PATH: PathBuf = TEMPDIR.path().join("hammond.db");
 }
 
-// FIXME: this should not be public
+/// Get an r2d2 SqliteConnection.
 pub fn connection() -> Pool {
     POOL.clone()
 }

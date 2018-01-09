@@ -56,8 +56,6 @@ pub mod utils;
 pub mod feed;
 #[allow(missing_docs)]
 pub mod errors;
-// FIXME: this should not be public
-#[allow(missing_docs)]
 pub mod database;
 pub(crate) mod models;
 mod parser;
