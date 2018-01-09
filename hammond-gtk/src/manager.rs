@@ -68,29 +68,33 @@ pub fn add(id: i32, directory: &str, sender: Sender<Action>) {
     let prog = Arc::new(Mutex::new(Progress::default()));
 
     {
-        let mut m = ACTIVE_DOWNLOADS.write().unwrap();
-        m.insert(id, prog.clone());
+        ACTIVE_DOWNLOADS
+            .write()
+            .ok()
+            .map(|mut m| m.insert(id, prog.clone()));
     }
-    {
-        let m = ACTIVE_DOWNLOADS.read().unwrap();
-        info!("ACTIVE DOWNLOADS: {:#?}", m);
-    }
+    // {
+    //     let m = ACTIVE_DOWNLOADS.read().unwrap();
+    //     info!("ACTIVE DOWNLOADS: {:#?}", m);
+    // }
 
     let dir = directory.to_owned();
     thread::spawn(move || {
-        let episode = dbqueries::get_episode_from_rowid(id).unwrap();
-        let e = get_episode(&mut episode.into(), dir.as_str(), Some(prog));
-        if let Err(err) = e {
-            error!("Error: {}", err);
-        };
+        if let Ok(episode) = dbqueries::get_episode_from_rowid(id) {
+            get_episode(&mut episode.into(), dir.as_str(), Some(prog))
+                .err()
+                .map(|err| {
+                    error!("Error while trying to download an episode");
+                    error!("Error: {}", err);
+                });
 
-        {
-            let mut m = ACTIVE_DOWNLOADS.write().unwrap();
-            m.remove(&id);
+            {
+                ACTIVE_DOWNLOADS.write().ok().map(|mut x| x.remove(&id));
+            }
+
+            sender.send(Action::RefreshEpisodesView).unwrap();
+            sender.send(Action::RefreshWidget).unwrap();
         }
-
-        sender.send(Action::RefreshEpisodesView).unwrap();
-        sender.send(Action::RefreshWidget).unwrap();
     });
 }
 

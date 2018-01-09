@@ -205,13 +205,15 @@ impl EpisodeWidget {
             .parse::<i32>()
             .unwrap();
 
-        let prog_struct = {
-            let m = manager::ACTIVE_DOWNLOADS.read().unwrap();
-            if !m.contains_key(&id) {
-                return;
-            };
-            m.get(&id).cloned()
-        };
+        let prog_struct = || -> Option<_> {
+            if let Ok(m) = manager::ACTIVE_DOWNLOADS.read() {
+                if !m.contains_key(&id) {
+                    return None;
+                };
+                return m.get(&id).cloned();
+            }
+            None
+        }();
 
         let progress_bar = self.progress.clone();
         let total_size = self.total_size.clone();
@@ -237,11 +239,15 @@ impl EpisodeWidget {
 }
 
 fn on_download_clicked(ep: &EpisodeWidgetQuery, sender: Sender<Action>) {
-    let pd = dbqueries::get_podcast_from_id(ep.podcast_id()).unwrap();
-    let download_fold = downloader::get_download_folder(&pd.title().to_owned()).unwrap();
+    let download_fold = dbqueries::get_podcast_from_id(ep.podcast_id())
+        .ok()
+        .map(|pd| downloader::get_download_folder(&pd.title().to_owned()).ok())
+        .and_then(|x| x);
 
     // Start a new download.
-    manager::add(ep.rowid(), &download_fold, sender.clone());
+    if let Some(fold) = download_fold {
+        manager::add(ep.rowid(), &fold, sender.clone());
+    }
 
     // Update Views
     sender.send(Action::RefreshEpisodesView).unwrap();

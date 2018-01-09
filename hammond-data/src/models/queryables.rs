@@ -613,7 +613,6 @@ impl<'a> Source {
     fn update_etag(&mut self, req: &reqwest::Response) -> Result<()> {
         let headers = req.headers();
 
-        // let etag = headers.get_raw("ETag").unwrap();
         let etag = headers.get::<ETag>();
         let lmod = headers.get::<LastModified>();
 
