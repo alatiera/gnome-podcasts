@@ -77,7 +77,7 @@ impl Default for EpisodesView {
 impl EpisodesView {
     pub fn new(sender: Sender<Action>) -> Arc<EpisodesView> {
         let view = EpisodesView::default();
-        let episodes = dbqueries::get_episodes_widgets_with_limit(100).unwrap();
+        let episodes = dbqueries::get_episodes_widgets_with_limit(50).unwrap();
         let now_utc = Utc::now();
 
         episodes.into_iter().for_each(|mut ep| {
@@ -205,10 +205,7 @@ impl EpisodesViewWidget {
         let image: gtk::Image = builder.get_object("cover").unwrap();
 
         if let Ok(pd) = dbqueries::get_podcast_cover_from_id(episode.podcast_id()) {
-            let img = get_pixbuf_from_path(&pd, 64);
-            if let Some(i) = img {
-                image.set_from_pixbuf(&i);
-            }
+            get_pixbuf_from_path(&pd, 64).map(|img| image.set_from_pixbuf(&img));
         }
 
         let ep = EpisodeWidget::new(episode, sender.clone());

@@ -69,7 +69,6 @@ impl ShowWidget {
         self.unsub
             .connect_clicked(clone!(shows, pd, sender => move |bttn| {
             on_unsub_button_clicked(shows.clone(), &pd, bttn, sender.clone());
-            sender.send(Action::HeaderBarNormal).unwrap();
         }));
 
         self.setup_listbox(pd, sender.clone());
@@ -80,24 +79,22 @@ impl ShowWidget {
         self.link.set_tooltip_text(Some(link.as_str()));
         self.link.connect_clicked(move |_| {
             info!("Opening link: {}", &link);
-            let _ = open::that(&link);
+            open::that(&link)
+                .err()
+                .map(|err| error!("Something went wrong: {}", err));
         });
     }
 
     /// Populate the listbox with the shows episodes.
     fn setup_listbox(&self, pd: &Podcast, sender: Sender<Action>) {
         let listbox = episodes_listbox(pd, sender.clone());
-        if let Ok(l) = listbox {
-            self.episodes.add(&l);
-        }
+        listbox.ok().map(|l| self.episodes.add(&l));
     }
 
     /// Set the show cover.
     fn set_cover(&self, pd: &Podcast) {
         let img = get_pixbuf_from_path(&pd.clone().into(), 128);
-        if let Some(i) = img {
-            self.cover.set_from_pixbuf(&i);
-        }
+        img.map(|i| self.cover.set_from_pixbuf(&i));
     }
 
     /// Set the descripton text.
@@ -124,11 +121,16 @@ fn on_unsub_button_clicked(
     unsub_button.hide();
     // Spawn a thread so it won't block the ui.
     thread::spawn(clone!(pd => move || {
-        delete_show(&pd)
+        if let Err(err) = delete_show(&pd) {
+            error!("Something went wrong trying to remove {}", pd.title());
+            error!("Error: {}", err);
+        }
     }));
     shows.switch_podcasts_animated();
+    sender.send(Action::HeaderBarNormal).unwrap();
     // Queue a refresh after the switch to avoid blocking the db.
-    sender.send(Action::RefreshViews).unwrap();
+    sender.send(Action::RefreshShowsView).unwrap();
+    sender.send(Action::RefreshEpisodesView).unwrap();
 }
 
 #[allow(dead_code)]

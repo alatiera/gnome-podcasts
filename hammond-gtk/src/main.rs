@@ -53,6 +53,7 @@ mod content;
 mod app;
 
 mod utils;
+mod manager;
 mod static_resource;
 
 use app::App;

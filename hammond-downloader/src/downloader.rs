@@ -2,11 +2,13 @@ use reqwest;
 use hyper::header::*;
 use tempdir::TempDir;
 use mime_guess;
+use glob::glob;
 
 use std::fs::{rename, DirBuilder, File};
 use std::io::{BufWriter, Read, Write};
 use std::path::Path;
 use std::fs;
+use std::sync::{Arc, Mutex};
 
 use errors::*;
 use hammond_data::{EpisodeWidgetQuery, PodcastCoverQuery};
@@ -15,6 +17,11 @@ use hammond_data::xdg_dirs::HAMMOND_CACHE;
 // TODO: Replace path that are of type &str with std::path.
 // TODO: Have a convention/document absolute/relative paths, if they should end with / or not.
 
+pub trait DownloadProgress {
+    fn set_downloaded(&mut self, downloaded: u64);
+    fn set_size(&mut self, bytes: u64);
+}
+
 // Adapted from https://github.com/mattgathu/rget .
 // I never wanted to write a custom downloader.
 // Sorry to those who will have to work with that code.
@@ -22,7 +29,12 @@ use hammond_data::xdg_dirs::HAMMOND_CACHE;
 // or bindings for a lib like youtube-dl(python),
 // But cant seem to find one.
 // TODO: Write unit-tests.
-fn download_into(dir: &str, file_title: &str, url: &str) -> Result<String> {
+fn download_into(
+    dir: &str,
+    file_title: &str,
+    url: &str,
+    progress: Option<Arc<Mutex<DownloadProgress>>>,
+) -> Result<String> {
     info!("GET request to: {}", url);
     let client = reqwest::Client::builder().referer(false).build()?;
     let mut resp = client.get(url).send()?;
@@ -33,22 +45,28 @@ fn download_into(dir: &str, file_title: &str, url: &str) -> Result<String> {
     }
 
     let headers = resp.headers().clone();
-
     let ct_len = headers.get::<ContentLength>().map(|ct_len| **ct_len);
     let ct_type = headers.get::<ContentType>();
     ct_len.map(|x| info!("File Lenght: {}", x));
     ct_type.map(|x| info!("Content Type: {}", x));
 
-    let ext = get_ext(ct_type.cloned()).unwrap_or(String::from("unkown"));
+    let ext = get_ext(ct_type.cloned()).unwrap_or(String::from("unknown"));
     info!("Extension: {}", ext);
 
     // Construct a temp file to save desired content.
-    let tempdir = TempDir::new_in(dir, "")?;
-
+    // It has to be a `new_in` instead of new cause rename can't move cross filesystems.
+    let tempdir = TempDir::new_in(HAMMOND_CACHE.to_str().unwrap(), "temp_download")?;
     let out_file = format!("{}/temp.part", tempdir.path().to_str().unwrap(),);
 
+    ct_len.map(|x| {
+        if let Some(p) = progress.clone() {
+            let mut m = p.lock().unwrap();
+            m.set_size(x);
+        }
+    });
+
     // Save requested content into the file.
-    save_io(&out_file, &mut resp, ct_len)?;
+    save_io(&out_file, &mut resp, ct_len, progress)?;
 
     // Construct the desired path.
     let target = format!("{}/{}.{}", dir, file_title, ext);
@@ -58,7 +76,7 @@ fn download_into(dir: &str, file_title: &str, url: &str) -> Result<String> {
     Ok(target)
 }
 
-// Determine the file extension from the http content-type header.
+/// Determine the file extension from the http content-type header.
 fn get_ext(content: Option<ContentType>) -> Option<String> {
     let cont = content.clone()?;
     content
@@ -73,8 +91,14 @@ fn get_ext(content: Option<ContentType>) -> Option<String> {
 }
 
 // TODO: Write unit-tests.
+// TODO: Refactor... Somehow.
 /// Handles the I/O of fetching a remote file and saving into a Buffer and A File.
-fn save_io(file: &str, resp: &mut reqwest::Response, content_lenght: Option<u64>) -> Result<()> {
+fn save_io(
+    file: &str,
+    resp: &mut reqwest::Response,
+    content_lenght: Option<u64>,
+    progress: Option<Arc<Mutex<DownloadProgress>>>,
+) -> Result<()> {
     info!("Downloading into: {}", file);
     let chunk_size = match content_lenght {
         Some(x) => x as usize / 99,
@@ -89,6 +113,14 @@ fn save_io(file: &str, resp: &mut reqwest::Response, content_lenght: Option<u64>
         buffer.truncate(bcount);
         if !buffer.is_empty() {
             writer.write_all(buffer.as_slice())?;
+            if let Some(prog) = progress.clone() {
+                // This sucks.
+                let len = writer.get_ref().metadata().map(|x| x.len());
+                if let Ok(l) = len {
+                    let mut m = prog.lock().unwrap();
+                    m.set_downloaded(l);
+                }
+            }
         } else {
             break;
         }
@@ -98,7 +130,11 @@ fn save_io(file: &str, resp: &mut reqwest::Response, content_lenght: Option<u64>
 }
 
 // TODO: Refactor
-pub fn get_episode(ep: &mut EpisodeWidgetQuery, download_folder: &str) -> Result<()> {
+pub fn get_episode(
+    ep: &mut EpisodeWidgetQuery,
+    download_folder: &str,
+    progress: Option<Arc<Mutex<DownloadProgress>>>,
+) -> Result<()> {
     // Check if its alrdy downloaded
     if ep.local_uri().is_some() {
         if Path::new(ep.local_uri().unwrap()).exists() {
@@ -110,7 +146,12 @@ pub fn get_episode(ep: &mut EpisodeWidgetQuery, download_folder: &str) -> Result
         ep.save()?;
     };
 
-    let res = download_into(download_folder, ep.title(), ep.uri().unwrap());
+    let res = download_into(
+        download_folder,
+        &ep.rowid().to_string(),
+        ep.uri().unwrap(),
+        progress,
+    );
 
     if let Ok(path) = res {
         // If download succedes set episode local_uri to dlpath.
@@ -136,42 +177,33 @@ pub fn cache_image(pd: &PodcastCoverQuery) -> Option<String> {
         return None;
     }
 
-    let download_fold = format!(
-        "{}{}",
-        HAMMOND_CACHE.to_str().unwrap(),
-        pd.title().to_owned()
-    );
+    let cache_download_fold = format!("{}{}", HAMMOND_CACHE.to_str()?, pd.title().to_owned());
 
-    // Hacky way
-    // TODO: make it so it returns the first cover.* file encountered.
-    // Use glob instead
-    let png = format!("{}/cover.png", download_fold);
-    let jpg = format!("{}/cover.jpg", download_fold);
-    let jpe = format!("{}/cover.jpe", download_fold);
-    let jpeg = format!("{}/cover.jpeg", download_fold);
-    if Path::new(&png).exists() {
-        return Some(png);
-    } else if Path::new(&jpe).exists() {
-        return Some(jpe);
-    } else if Path::new(&jpg).exists() {
-        return Some(jpg);
-    } else if Path::new(&jpeg).exists() {
-        return Some(jpeg);
+    // Weird glob magic.
+    if let Ok(mut foo) = glob(&format!("{}/cover.*", cache_download_fold)) {
+        // For some reason there is no .first() method so nth(0) is used
+        let path = foo.nth(0).and_then(|x| x.ok());
+        if let Some(p) = path {
+            return Some(p.to_str()?.into());
+        }
     };
 
+    // Create the folders if they don't exist.
     DirBuilder::new()
         .recursive(true)
-        .create(&download_fold)
-        .unwrap();
+        .create(&cache_download_fold)
+        .ok()?;
 
-    let dlpath = download_into(&download_fold, "cover", &url);
-    if let Ok(path) = dlpath {
-        info!("Cached img into: {}", &path);
-        Some(path)
-    } else {
-        error!("Failed to get feed image.");
-        error!("Error: {}", dlpath.unwrap_err());
-        None
+    match download_into(&cache_download_fold, "cover", &url, None) {
+        Ok(path) => {
+            info!("Cached img into: {}", &path);
+            Some(path)
+        }
+        Err(err) => {
+            error!("Failed to get feed image.");
+            error!("Error: {}", err);
+            None
+        }
     }
 }
 

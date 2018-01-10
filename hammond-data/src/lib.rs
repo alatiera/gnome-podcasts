@@ -56,7 +56,7 @@ pub mod utils;
 pub mod feed;
 #[allow(missing_docs)]
 pub mod errors;
-pub(crate) mod database;
+pub mod database;
 pub(crate) mod models;
 mod parser;
 mod schema;

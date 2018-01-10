@@ -3,6 +3,7 @@
 extern crate diesel;
 #[macro_use]
 extern crate error_chain;
+extern crate glob;
 extern crate hammond_data;
 extern crate hyper;
 #[macro_use]

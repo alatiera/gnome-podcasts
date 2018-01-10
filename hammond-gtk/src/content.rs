@@ -41,8 +41,9 @@ impl Content {
     }
 
     pub fn update(&self) {
-        self.update_shows_view();
         self.update_episode_view();
+        self.update_shows_view();
+        self.update_widget()
     }
 
     pub fn update_episode_view(&self) {
@@ -56,7 +57,23 @@ impl Content {
     }
 
     pub fn update_shows_view(&self) {
-        self.shows.update();
+        self.shows.update_podcasts();
+    }
+
+    pub fn update_widget(&self) {
+        self.shows.update_widget();
+    }
+
+    pub fn update_widget_if_same(&self, pid: i32) {
+        self.shows.update_widget_if_same(pid);
+    }
+
+    pub fn update_widget_if_visible(&self) {
+        if self.stack.get_visible_child_name() == Some("shows".to_string())
+            && self.shows.get_stack().get_visible_child_name() == Some("widget".to_string())
+        {
+            self.shows.update_widget();
+        }
     }
 
     pub fn get_stack(&self) -> gtk::Stack {
@@ -100,14 +117,10 @@ impl ShowStack {
         show
     }
 
-    // fn is_empty(&self) -> bool {
-    //     self.podcasts.is_empty()
+    // pub fn update(&self) {
+    //     self.update_widget();
+    //     self.update_podcasts();
     // }
-
-    pub fn update(&self) {
-        self.update_podcasts();
-        self.update_widget();
-    }
 
     pub fn update_podcasts(&self) {
         let vis = self.stack.get_visible_child_name().unwrap();
@@ -194,17 +207,28 @@ impl ShowStack {
         let vis = self.stack.get_visible_child_name().unwrap();
         let old = self.stack.get_child_by_name("widget").unwrap();
 
-        let id = WidgetExt::get_name(&old).unwrap();
-        if id == "GtkBox" {
+        let id = WidgetExt::get_name(&old);
+        if id == Some("GtkBox".to_string()) || id.is_none() {
             return;
         }
 
-        let pd = dbqueries::get_podcast_from_id(id.parse::<i32>().unwrap());
+        let pd = dbqueries::get_podcast_from_id(id.unwrap().parse::<i32>().unwrap());
         if let Ok(pd) = pd {
             self.replace_widget(&pd);
             self.stack.set_visible_child_name(&vis);
             old.destroy();
         }
+    }
+
+    // Only update widget if it's podcast_id is equal to pid.
+    pub fn update_widget_if_same(&self, pid: i32) {
+        let old = self.stack.get_child_by_name("widget").unwrap();
+
+        let id = WidgetExt::get_name(&old);
+        if id != Some(pid.to_string()) || id.is_none() {
+            return;
+        }
+        self.update_widget();
     }
 
     pub fn switch_podcasts_animated(&self) {

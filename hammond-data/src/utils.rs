@@ -137,21 +137,14 @@ pub fn get_download_folder(pd_title: &str) -> Result<String> {
 /// Removes all the entries associated with the given show from the database,
 /// and deletes all of the downloaded content.
 /// TODO: Write Tests
-/// TODO: Return Result instead
-pub fn delete_show(pd: &Podcast) {
-    let res = dbqueries::remove_feed(pd);
-    if res.is_ok() {
-        info!("{} was removed succesfully.", pd.title());
+pub fn delete_show(pd: &Podcast) -> Result<()> {
+    dbqueries::remove_feed(&pd)?;
+    info!("{} was removed succesfully.", pd.title());
 
-        let dl_fold = get_download_folder(pd.title());
-        if let Ok(fold) = dl_fold {
-            let res3 = fs::remove_dir_all(&fold);
-            // TODO: Show errors?
-            if res3.is_ok() {
-                info!("All the content at, {} was removed succesfully", &fold);
-            }
-        };
-    }
+    let fold = get_download_folder(pd.title())?;
+    fs::remove_dir_all(&fold)?;
+    info!("All the content at, {} was removed succesfully", &fold);
+    Ok(())
 }
 
 #[cfg(test)]
