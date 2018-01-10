@@ -150,6 +150,7 @@ mod tests {
 
         let download_fold = get_download_folder(&pd.title()).unwrap();
         add(episode.rowid(), download_fold.as_str(), sender);
+        assert_eq!(ACTIVE_DOWNLOADS.read().unwrap().len(), 1);
 
         // Give it soem time to download the file
         thread::sleep(time::Duration::from_secs(40));

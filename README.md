@@ -87,8 +87,8 @@ There are also some minor tasks tagged with `TODO:` and `FIXME:` in the source c
 ```sh
 $ tree -d
 ├── assets              # png's used in the README.md
-├── hammond-data        # Storate related stuff, Sqlite db, XDG setup.
-│   ├── migrations      # Diesel migrations.
+├── hammond-data        # Storate related stuff, SQLite, XDG setup, RSS Parser.
+│   ├── migrations      # Diesel SQL migrations.
 │   │   └── ...
 │   ├── src
 │   └── tests
@@ -99,8 +99,8 @@ $ tree -d
 │   ├── resources       # GResources folder
 │   │   └── gtk         # Contains the glade.ui files.
 │   └── src
-│       ├── views       # Currently only contains the Empty and Episodes views.
-│       └── widgets     # Contains custom widgets such as Podcast and Episode.
+│       ├── views       # Contains the Empty, Episodes and Shows view.
+│       └── widgets     # Contains custom widgets such as Show and Episode.
 ```
 
 ## A note about the project's name
