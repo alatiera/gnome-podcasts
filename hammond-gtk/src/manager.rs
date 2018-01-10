@@ -20,8 +20,9 @@ pub struct Progress {
 
 impl Progress {
     pub fn get_fraction(&self) -> f64 {
-        info!("Progress: {:?}", self);
         let ratio = self.downloaded_bytes as f64 / self.total_bytes as f64;
+        debug!("{:?}", self);
+        debug!("Ratio completed: {}", ratio);
 
         if ratio >= 1.0 {
             return 1.0;

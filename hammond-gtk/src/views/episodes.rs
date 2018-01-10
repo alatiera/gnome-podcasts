@@ -77,7 +77,7 @@ impl Default for EpisodesView {
 impl EpisodesView {
     pub fn new(sender: Sender<Action>) -> Arc<EpisodesView> {
         let view = EpisodesView::default();
-        let episodes = dbqueries::get_episodes_widgets_with_limit(100).unwrap();
+        let episodes = dbqueries::get_episodes_widgets_with_limit(50).unwrap();
         let now_utc = Utc::now();
 
         episodes.into_iter().for_each(|mut ep| {

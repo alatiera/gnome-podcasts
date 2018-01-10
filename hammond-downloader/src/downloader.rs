@@ -177,11 +177,7 @@ pub fn cache_image(pd: &PodcastCoverQuery) -> Option<String> {
         return None;
     }
 
-    let cache_download_fold = format!(
-        "{}{}",
-        HAMMOND_CACHE.to_str().unwrap(),
-        pd.title().to_owned()
-    );
+    let cache_download_fold = format!("{}{}", HAMMOND_CACHE.to_str()?, pd.title().to_owned());
 
     // Weird glob magic.
     if let Ok(mut foo) = glob(&format!("{}/cover.*", cache_download_fold)) {
@@ -196,7 +192,7 @@ pub fn cache_image(pd: &PodcastCoverQuery) -> Option<String> {
     DirBuilder::new()
         .recursive(true)
         .create(&cache_download_fold)
-        .unwrap();
+        .ok()?;
 
     match download_into(&cache_download_fold, "cover", &url, None) {
         Ok(path) => {
