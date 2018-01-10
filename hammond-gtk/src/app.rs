@@ -5,13 +5,14 @@ use gtk::prelude::*;
 use gio::{ActionMapExt, ApplicationExt, ApplicationExtManual, SimpleActionExt};
 
 use hammond_data::utils::checkup;
-use hammond_data::Source;
+use hammond_data::{Podcast, Source};
 
 use headerbar::Header;
 use content::Content;
 use utils;
 
 use std::sync::Arc;
+use std::time::Duration;
 use std::sync::mpsc::{channel, Receiver, Sender};
 
 #[derive(Clone, Debug)]
@@ -23,7 +24,10 @@ pub enum Action {
     RefreshShowsView,
     RefreshWidget,
     RefreshWidgetIfVis,
+    ReplaceWidget(Podcast),
     RefreshWidgetIfSame(i32),
+    ShowWidgetAnimated,
+    ShowShowsAnimated,
     HeaderBarShowTile(String),
     HeaderBarNormal,
     HeaderBarHideUpdateIndicator,
@@ -132,8 +136,8 @@ impl App {
         let headerbar = self.header.clone();
         let sender = self.sender.clone();
         let receiver = self.receiver;
-        gtk::timeout_add(250, move || {
-            match receiver.try_recv() {
+        gtk::idle_add(move || {
+            match receiver.recv_timeout(Duration::from_millis(10)) {
                 Ok(Action::UpdateSources(source)) => {
                     if let Some(s) = source {
                         utils::refresh_feed(headerbar.clone(), Some(vec![s]), sender.clone())
@@ -146,6 +150,9 @@ impl App {
                 Ok(Action::RefreshWidgetIfSame(id)) => content.update_widget_if_same(id),
                 Ok(Action::RefreshEpisodesView) => content.update_episode_view(),
                 Ok(Action::RefreshEpisodesViewBGR) => content.update_episode_view_if_baground(),
+                Ok(Action::ReplaceWidget(ref pd)) => content.get_shows().replace_widget(pd),
+                Ok(Action::ShowWidgetAnimated) => content.get_shows().switch_widget_animated(),
+                Ok(Action::ShowShowsAnimated) => content.get_shows().switch_podcasts_animated(),
                 Ok(Action::HeaderBarShowTile(title)) => headerbar.switch_to_back(&title),
                 Ok(Action::HeaderBarNormal) => headerbar.switch_to_normal(),
                 Ok(Action::HeaderBarHideUpdateIndicator) => headerbar.hide_update_notification(),

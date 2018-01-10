@@ -6,11 +6,9 @@ use hammond_data::dbqueries;
 use hammond_data::Podcast;
 
 use utils::get_pixbuf_from_path;
-use content::ShowStack;
 use app::Action;
 
 use std::sync::mpsc::Sender;
-use std::sync::Arc;
 
 #[derive(Debug, Clone)]
 pub struct ShowsPopulated {
@@ -35,26 +33,27 @@ impl Default for ShowsPopulated {
 }
 
 impl ShowsPopulated {
-    pub fn new(show: Arc<ShowStack>, sender: Sender<Action>) -> ShowsPopulated {
+    pub fn new(sender: Sender<Action>) -> ShowsPopulated {
         let pop = ShowsPopulated::default();
-        pop.init(show, sender);
+        pop.init(sender);
         pop
     }
 
-    pub fn init(&self, show: Arc<ShowStack>, sender: Sender<Action>) {
+    pub fn init(&self, sender: Sender<Action>) {
         use gtk::WidgetExt;
 
         // TODO: handle unwraps.
-        self.flowbox
-            .connect_child_activated(clone!(show, sender => move |_, child| {
+        self.flowbox.connect_child_activated(move |_, child| {
             // This is such an ugly hack...
             let id = WidgetExt::get_name(child).unwrap().parse::<i32>().unwrap();
             let pd = dbqueries::get_podcast_from_id(id).unwrap();
 
-            show.replace_widget(&pd);
-            sender.send(Action::HeaderBarShowTile(pd.title().into())).unwrap();
-            show.switch_widget_animated();
-        }));
+            sender
+                .send(Action::HeaderBarShowTile(pd.title().into()))
+                .unwrap();
+            sender.send(Action::ReplaceWidget(pd)).unwrap();
+            sender.send(Action::ShowWidgetAnimated).unwrap();
+        });
         // Populate the flowbox with the Podcasts.
         self.populate_flowbox();
     }

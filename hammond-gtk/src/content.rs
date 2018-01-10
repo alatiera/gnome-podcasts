@@ -26,8 +26,8 @@ pub struct Content {
 impl Content {
     pub fn new(sender: Sender<Action>) -> Arc<Content> {
         let stack = gtk::Stack::new();
-        let episodes = EpisodeStack::new(sender.clone());
-        let shows = ShowStack::new(sender.clone());
+        let episodes = Arc::new(EpisodeStack::new(sender.clone()));
+        let shows = Arc::new(ShowStack::new(sender.clone()));
 
         stack.add_titled(&episodes.stack, "episodes", "Episodes");
         stack.add_titled(&shows.stack, "shows", "Shows");
@@ -92,15 +92,15 @@ pub struct ShowStack {
 }
 
 impl ShowStack {
-    fn new(sender: Sender<Action>) -> Arc<ShowStack> {
+    fn new(sender: Sender<Action>) -> ShowStack {
         let stack = gtk::Stack::new();
 
-        let show = Arc::new(ShowStack {
+        let show = ShowStack {
             stack,
             sender: sender.clone(),
-        });
+        };
 
-        let pop = ShowsPopulated::new(show.clone(), sender.clone());
+        let pop = ShowsPopulated::new(sender.clone());
         let widget = ShowWidget::default();
         let empty = EmptyView::new();
 
@@ -144,7 +144,7 @@ impl ShowStack {
             .unwrap();
         debug!("Name: {:?}", WidgetExt::get_name(&scrolled_window));
 
-        let pop = ShowsPopulated::new(Arc::new(self.clone()), self.sender.clone());
+        let pop = ShowsPopulated::new(self.sender.clone());
         // Copy the vertical scrollbar adjustment from the old view into the new one.
         scrolled_window
             .get_vadjustment()
@@ -174,7 +174,7 @@ impl ShowStack {
             .unwrap();
         debug!("Name: {:?}", WidgetExt::get_name(&old));
 
-        let new = ShowWidget::new(Arc::new(self.clone()), pd, self.sender.clone());
+        let new = ShowWidget::new(pd, self.sender.clone());
         // Each composite ShowWidget is a gtkBox with the Podcast.id encoded in the gtk::Widget
         // name. It's a hack since we can't yet subclass GObject easily.
         let oldid = WidgetExt::get_name(&old);
@@ -253,7 +253,7 @@ pub struct EpisodeStack {
 }
 
 impl EpisodeStack {
-    fn new(sender: Sender<Action>) -> Arc<EpisodeStack> {
+    fn new(sender: Sender<Action>) -> EpisodeStack {
         let episodes = EpisodesView::new(sender.clone());
         let empty = EmptyView::new();
         let stack = gtk::Stack::new();
@@ -267,7 +267,7 @@ impl EpisodeStack {
             stack.set_visible_child_name("episodes");
         }
 
-        Arc::new(EpisodeStack { stack, sender })
+        EpisodeStack { stack, sender }
     }
 
     pub fn update(&self) {

@@ -10,11 +10,9 @@ use hammond_data::utils::{delete_show, replace_extra_spaces};
 
 use widgets::episode::episodes_listbox;
 use utils::get_pixbuf_from_path;
-use content::ShowStack;
 use app::Action;
 
 use std::sync::mpsc::Sender;
-use std::sync::Arc;
 use std::thread;
 
 #[derive(Debug, Clone)]
@@ -56,19 +54,19 @@ impl Default for ShowWidget {
 }
 
 impl ShowWidget {
-    pub fn new(shows: Arc<ShowStack>, pd: &Podcast, sender: Sender<Action>) -> ShowWidget {
+    pub fn new(pd: &Podcast, sender: Sender<Action>) -> ShowWidget {
         let pdw = ShowWidget::default();
-        pdw.init(shows, pd, sender);
+        pdw.init(pd, sender);
         pdw
     }
 
-    pub fn init(&self, shows: Arc<ShowStack>, pd: &Podcast, sender: Sender<Action>) {
+    pub fn init(&self, pd: &Podcast, sender: Sender<Action>) {
         // Hacky workaround so the pd.id() can be retrieved from the `ShowStack`.
         WidgetExt::set_name(&self.container, &pd.id().to_string());
 
         self.unsub
-            .connect_clicked(clone!(shows, pd, sender => move |bttn| {
-            on_unsub_button_clicked(shows.clone(), &pd, bttn, sender.clone());
+            .connect_clicked(clone!(pd, sender => move |bttn| {
+            on_unsub_button_clicked(&pd, bttn, sender.clone());
         }));
 
         self.setup_listbox(pd, sender.clone());
@@ -110,12 +108,7 @@ impl ShowWidget {
     }
 }
 
-fn on_unsub_button_clicked(
-    shows: Arc<ShowStack>,
-    pd: &Podcast,
-    unsub_button: &gtk::Button,
-    sender: Sender<Action>,
-) {
+fn on_unsub_button_clicked(pd: &Podcast, unsub_button: &gtk::Button, sender: Sender<Action>) {
     // hack to get away without properly checking for none.
     // if pressed twice would panic.
     unsub_button.hide();
@@ -126,16 +119,16 @@ fn on_unsub_button_clicked(
             error!("Error: {}", err);
         }
     }));
-    shows.switch_podcasts_animated();
     sender.send(Action::HeaderBarNormal).unwrap();
+    sender.send(Action::ShowShowsAnimated).unwrap();
     // Queue a refresh after the switch to avoid blocking the db.
     sender.send(Action::RefreshShowsView).unwrap();
     sender.send(Action::RefreshEpisodesView).unwrap();
 }
 
 #[allow(dead_code)]
-fn on_played_button_clicked(shows: Arc<ShowStack>, pd: &Podcast) {
+fn on_played_button_clicked(pd: &Podcast, sender: Sender<Action>) {
     let _ = dbqueries::update_none_to_played_now(pd);
 
-    shows.update_widget();
+    sender.send(Action::RefreshWidget).unwrap();
 }
