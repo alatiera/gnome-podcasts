@@ -8,7 +8,8 @@ This is a prototype of a podcast client written in Rust.
 ![podcast_widget](./assets/podcast_widget.png)
 
 ## Getting in Touch
-If you have any questions regarding the use or development of Hammond, want to discuss design or simply hang out, please join us in [#hammond on irc.gnome.org.](irc://irc.gnome.org/#hammond)
+If you have any questions regarding the use or development of Hammond,
+want to discuss design or simply hang out, please join us in [#hammond on irc.gnome.org.](irc://irc.gnome.org/#hammond)
 
 Sidenote:
 
@@ -49,14 +50,14 @@ Flatpak instructions... Soon™.
 * Gtk+ 3.22 or later
 * Meson
 
-**Debian/Ubuntu**:
+**Debian/Ubuntu**
 ```sh
 apt-get update -yqq
 apt-get install -yqq --no-install-recommends build-essential
 apt-get install -yqq --no-install-recommends libgtk-3-dev meson
 ```
 
-**Fedora**:
+**Fedora**
 ```sh
 dnf install -y gtk3-devel glib2-devel openssl-devel sqlite-devel meson
 ```

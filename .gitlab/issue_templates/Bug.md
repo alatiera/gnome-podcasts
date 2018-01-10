@@ -7,14 +7,3 @@ Steps to reproduce:
 2. Do an action
 3. ...
 
-## Design Tasks
-
-* [ ]  design tasks
-
-## Development Tasks
-
-* [ ]  development tasks
-
-## QA Tasks
-
-* [ ]  qa (quality assurance) tasks
