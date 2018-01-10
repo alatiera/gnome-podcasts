@@ -20,6 +20,7 @@ use hammond_data::xdg_dirs::HAMMOND_CACHE;
 pub trait DownloadProgress {
     fn set_downloaded(&mut self, downloaded: u64);
     fn set_size(&mut self, bytes: u64);
+    fn should_cancel(&self) -> bool;
 }
 
 // Adapted from https://github.com/mattgathu/rget .
@@ -113,12 +114,17 @@ fn save_io(
         buffer.truncate(bcount);
         if !buffer.is_empty() {
             writer.write_all(buffer.as_slice())?;
+            // This sucks.
+            // Actually the whole download module is hack, so w/e.
             if let Some(prog) = progress.clone() {
-                // This sucks.
                 let len = writer.get_ref().metadata().map(|x| x.len());
                 if let Ok(l) = len {
-                    let mut m = prog.lock().unwrap();
-                    m.set_downloaded(l);
+                    if let Ok(mut m) = prog.lock() {
+                        if m.should_cancel() {
+                            bail!("Download was cancelled.");
+                        }
+                        m.set_downloaded(l);
+                    }
                 }
             }
         } else {

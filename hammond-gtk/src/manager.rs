@@ -16,6 +16,17 @@ use std::thread;
 pub struct Progress {
     total_bytes: u64,
     downloaded_bytes: u64,
+    cancel: bool,
+}
+
+impl Default for Progress {
+    fn default() -> Self {
+        Progress {
+            total_bytes: 0,
+            downloaded_bytes: 0,
+            cancel: false,
+        }
+    }
 }
 
 impl Progress {
@@ -37,14 +48,9 @@ impl Progress {
     pub fn get_downloaded(&self) -> u64 {
         self.downloaded_bytes
     }
-}
 
-impl Default for Progress {
-    fn default() -> Self {
-        Progress {
-            total_bytes: 0,
-            downloaded_bytes: 0,
-        }
+    pub fn cancel(&mut self) {
+        self.cancel = true;
     }
 }
 
@@ -55,6 +61,10 @@ impl DownloadProgress for Progress {
 
     fn set_size(&mut self, bytes: u64) {
         self.total_bytes = bytes;
+    }
+
+    fn should_cancel(&self) -> bool {
+        self.cancel
     }
 }
 

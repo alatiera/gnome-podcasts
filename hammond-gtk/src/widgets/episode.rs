@@ -240,6 +240,13 @@ impl EpisodeWidget {
             // with the http ContentLength header number rather than
             // relying to the RSS feed.
             update_total_size_callback(prog.clone(), total_size);
+
+            self.cancel.connect_clicked(clone!(prog => move |cancel| {
+                if let Ok(mut m) = prog.lock() {
+                    m.cancel();
+                    cancel.set_sensitive(false);
+                }
+            }));
         }
     }
 }

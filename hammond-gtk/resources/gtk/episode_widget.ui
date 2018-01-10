@@ -221,7 +221,6 @@ Tobias Bernard
             <child>
               <object class="GtkButton" id="cancel_button">
                 <property name="label" translatable="yes">Cancel</property>
-                <property name="sensitive">False</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">False</property>
                 <property name="no_show_all">True</property>
