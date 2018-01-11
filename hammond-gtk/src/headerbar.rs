@@ -16,6 +16,7 @@ pub struct Header {
     switch: gtk::StackSwitcher,
     back_button: gtk::Button,
     show_title: gtk::Label,
+    update_button: gtk::ModelButton,
     update_box: gtk::Box,
     update_label: gtk::Label,
     update_spinner: gtk::Spinner,
@@ -30,6 +31,7 @@ impl Default for Header {
         let switch: gtk::StackSwitcher = builder.get_object("switch").unwrap();
         let back_button: gtk::Button = builder.get_object("back_button").unwrap();
         let show_title: gtk::Label = builder.get_object("show_title").unwrap();
+        let update_button: gtk::ModelButton = builder.get_object("update_button").unwrap();
         let update_box: gtk::Box = builder.get_object("update_notification").unwrap();
         let update_label: gtk::Label = builder.get_object("update_label").unwrap();
         let update_spinner: gtk::Spinner = builder.get_object("update_spinner").unwrap();
@@ -40,6 +42,7 @@ impl Default for Header {
             switch,
             back_button,
             show_title,
+            update_button,
             update_box,
             update_label,
             update_spinner,
@@ -73,6 +76,10 @@ impl Header {
         }));
 
         self.add_toggle.set_popover(&add_popover);
+
+        self.update_button.connect_clicked(move |_| {
+            sender.send(Action::UpdateSources(None)).unwrap();
+        });
 
         let switch = &self.switch;
         let add_toggle = &self.add_toggle;

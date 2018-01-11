@@ -307,11 +307,10 @@ Tobias Bernard
           </packing>
         </child>
         <child>
-          <object class="GtkModelButton" id="refresh_button">
+          <object class="GtkModelButton" id="update_button">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="receives_default">True</property>
-            <property name="action_name">app.update</property>
             <property name="text" translatable="yes">Check for new episodes</property>
           </object>
           <packing>

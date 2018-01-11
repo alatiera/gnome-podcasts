@@ -2,7 +2,7 @@ use gtk;
 use glib;
 use gio;
 use gtk::prelude::*;
-use gio::{ActionMapExt, ApplicationExt, ApplicationExtManual, SimpleActionExt};
+use gio::{ApplicationExt, ApplicationExtManual};
 
 use hammond_data::utils::checkup;
 use hammond_data::{Podcast, Source};
@@ -86,17 +86,6 @@ impl App {
         }
     }
 
-    pub fn setup_actions(&self) {
-        // Updates the database and refreshes every view.
-        let update = gio::SimpleAction::new("update", None);
-        let header = self.header.clone();
-        let sender = self.sender.clone();
-        update.connect_activate(move |_, _| {
-            utils::refresh_feed(header.clone(), None, sender.clone());
-        });
-        self.app_instance.add_action(&update);
-    }
-
     pub fn setup_timed_callbacks(&self) {
         let header = self.header.clone();
         let sender = self.sender.clone();
@@ -130,7 +119,6 @@ impl App {
             build_ui(&window, &app);
         });
         self.setup_timed_callbacks();
-        self.setup_actions();
 
         let content = self.content.clone();
         let headerbar = self.header.clone();
@@ -141,6 +129,8 @@ impl App {
                 Ok(Action::UpdateSources(source)) => {
                     if let Some(s) = source {
                         utils::refresh_feed(headerbar.clone(), Some(vec![s]), sender.clone())
+                    } else {
+                        utils::refresh_feed(headerbar.clone(), None, sender.clone())
                     }
                 }
                 Ok(Action::RefreshAllViews) => content.update(),
