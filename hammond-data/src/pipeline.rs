@@ -1,19 +1,17 @@
-extern crate futures;
-extern crate hyper;
-extern crate tokio_core;
-
+use hyper;
 use std::io::{self, Write};
 use std::str::FromStr;
 use futures::{Future, Stream};
-// use futures::future::join_all;
 use hyper::Client;
 use hyper::client::HttpConnector;
 use hyper::Method;
 use hyper::Uri;
 use tokio_core::reactor::Core;
 use hyper_tls::HttpsConnector;
+use rss;
 // use errors::*;
 // use hyper::header::{ETag, LastModified};
+// use futures::future::join_all;
 
 use Source;
 
@@ -64,11 +62,21 @@ fn req_constructor(
     Box::new(work)
 }
 
+#[allow(dead_code)]
+fn res_to_channel(res: hyper::Response) -> Box<Future<Item = rss::Channel, Error = hyper::Error>> {
+    let chan = res.body().concat2().map(|x| x.into_iter()).map(|iter| {
+        let utf_8_bytes = iter.collect::<Vec<u8>>();
+        let buf = String::from_utf8_lossy(&utf_8_bytes).into_owned();
+        rss::Channel::from_str(&buf).unwrap()
+    });
+    // .map_err(|_| ());
+    Box::new(chan)
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
-    use futures::future::result;
-    use rss::Channel;
+    // use futures::future::result;
 
     use database::truncate_db;
     use Source;
@@ -92,19 +100,14 @@ mod tests {
 
         let channel = req_constructor(&mut client, &mut source)
             .map(|res| {
-                info!("Status: {}", res.status());
-                source.update_etag2(&res);
+                println!("Status: {}", res.status());
+                source.update_etag2(&res).unwrap();
                 res
             })
-            .and_then(|res| res.body().concat2())
-            .map(|concat2| concat2.into_iter())
-            .map(|iter| {
-                let utf_8_bytes = iter.collect::<Vec<u8>>();
-                let buf = String::from_utf8_lossy(&utf_8_bytes).into_owned();
-                Channel::from_str(&buf).unwrap()
-            });
+            .and_then(|res| res_to_channel(res));
 
         let chan = core.run(channel).unwrap();
+        // let c = chan.wait().unwrap();
         println!("{:?}", chan);
     }
 }

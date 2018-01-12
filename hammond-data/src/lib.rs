@@ -20,6 +20,7 @@
 #![deny(missing_debug_implementations, missing_docs, trivial_casts, trivial_numeric_casts)]
 // FIXME: uncomment
 // unused_extern_crates, unused)]
+// #![feature(conservative_impl_trait)]
 
 #[macro_use]
 extern crate error_chain;
