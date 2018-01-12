@@ -6,6 +6,7 @@ use reqwest;
 use diesel::SaveChangesDsl;
 use reqwest::header::{ETag, LastModified};
 use rss::Channel;
+use hyper;
 
 use schema::{episode, podcast, source};
 use feed::Feed;
@@ -574,8 +575,10 @@ impl PodcastCoverQuery {
 pub struct Source {
     id: i32,
     uri: String,
-    last_modified: Option<String>,
-    http_etag: Option<String>,
+    /// FIXME
+    pub last_modified: Option<String>,
+    /// FIXME
+    pub http_etag: Option<String>,
 }
 
 impl<'a> Source {
@@ -611,6 +614,24 @@ impl<'a> Source {
     /// Extract Etag and LastModifier from req, and update self and the
     /// corresponding db row.
     fn update_etag(&mut self, req: &reqwest::Response) -> Result<()> {
+        let headers = req.headers();
+
+        let etag = headers.get::<ETag>();
+        let lmod = headers.get::<LastModified>();
+
+        if self.http_etag() != etag.map(|x| x.tag()) || self.last_modified != lmod.map(|x| {
+            format!("{}", x)
+        }) {
+            self.http_etag = etag.map(|x| x.tag().to_string().to_owned());
+            self.last_modified = lmod.map(|x| format!("{}", x));
+            self.save()?;
+        }
+
+        Ok(())
+    }
+
+    /// Docs
+    pub fn update_etag2(&mut self, req: &hyper::Response) -> Result<()> {
         let headers = req.headers();
 
         let etag = headers.get::<ETag>();

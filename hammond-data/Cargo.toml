@@ -21,6 +21,10 @@ rfc822_sanitizer = "0.3.3"
 rss = "1.2.1"
 url = "1.6.0"
 xdg = "2.1.0"
+futures = "0.1.17"
+hyper = "0.11.12"
+tokio-core = "0.1.12"
+hyper-tls = "0.1.2"
 
 [dependencies.diesel]
 features = ["sqlite"]

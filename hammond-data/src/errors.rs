@@ -3,6 +3,7 @@ use diesel_migrations::RunMigrationsError;
 use rss;
 use reqwest;
 use r2d2;
+use hyper;
 
 use std::io;
 
@@ -13,6 +14,7 @@ error_chain! {
         DieselMigrationError(RunMigrationsError);
         RSSError(rss::Error);
         ReqError(reqwest::Error);
+        HyperError(hyper::Error);
         IoError(io::Error);
     }
 }

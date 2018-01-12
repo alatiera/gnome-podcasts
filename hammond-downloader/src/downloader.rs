@@ -51,7 +51,7 @@ fn download_into(
     ct_len.map(|x| info!("File Lenght: {}", x));
     ct_type.map(|x| info!("Content Type: {}", x));
 
-    let ext = get_ext(ct_type.cloned()).unwrap_or(String::from("unknown"));
+    let ext = get_ext(ct_type.cloned()).unwrap_or_else(|| String::from("unknown"));
     info!("Extension: {}", ext);
 
     // Construct a temp file to save desired content.

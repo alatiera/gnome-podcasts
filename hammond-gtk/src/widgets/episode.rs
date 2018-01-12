@@ -142,7 +142,7 @@ impl EpisodeWidget {
         self.download
             .connect_clicked(clone!(episode, sender => move |dl| {
                 dl.set_sensitive(false);
-                on_download_clicked(&mut episode.clone(), sender.clone());
+                on_download_clicked(&episode, sender.clone());
         }));
     }
 
