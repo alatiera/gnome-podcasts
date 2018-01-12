@@ -1,21 +1,19 @@
 # Hammond
-## Multithreaded and reliable Gtk+ Podcast client.
-This is a prototype of a podcast client written in Rust.
+
+## A Podcast Client for the GNOME Desktop written in Rust.
 
 [![pipeline status](https://gitlab.gnome.org/alatiera/Hammond/badges/master/pipeline.svg)](https://gitlab.gnome.org/alatiera/Hammond/commits/master)
 
-![podcasts_view](./assets/podcasts_view.png)
-![podcast_widget](./assets/podcast_widget.png)
+### Features
 
-## Getting in Touch
-If you have any questions regarding the use or development of Hammond,
-want to discuss design or simply hang out, please join us in [#hammond on irc.gnome.org.](irc://irc.gnome.org/#hammond)
+* TBA
 
-Sidenote:
-
-There isn't much documentation yet, so you will probably have question about parts of the Code.
+![episdes_view](./assets/episodes_view.png)
+![shows_view](./assets/shows_view.png)
+![show_widget](./assets/show_widget.png)
 
 ## Quick start
+
 The following steps assume you have a working installation of rustc and cargo.
 If you dont take a look at [rustup.rs](rustup.rs)
 
@@ -25,7 +23,22 @@ cd Hammond/
 cargo run -p hammond-gtk --release
 ```
 
+## Broken Feed
+
+Did you found or tried to use a Feed that does not work with hammond ?
+Please [open an issue](https://gitlab.gnome.org/alatiera/Hammond/issues/new) and choose the `BrokenFeed` template so we will know and fix it!
+
+## Getting in Touch
+
+If you have any questions regarding the use or development of Hammond,
+want to discuss design or simply hang out, please join us in [#hammond on irc.gnome.org.](irc://irc.gnome.org/#hammond)
+
+Sidenote:
+
+There isn't much documentation yet, so you will probably have question about parts of the Code.
+
 ## Install from soure
+
 ```sh
 git clone https://gitlab.gnome.org/alatiera/hammond.git
 cd Hammond/
@@ -40,17 +53,19 @@ You can run `sudo make uninstall` for removal
 And `make clean` to clean up the enviroment after instalation.
 
 ### Flatpak
+
 Flatpak instructions... Soon™.
 
 ## Building
 
-###  Dependancies
+### Dependancies
 
 * Rust stable 1.22 or later.
 * Gtk+ 3.22 or later
 * Meson
 
 **Debian/Ubuntu**
+
 ```sh
 apt-get update -yqq
 apt-get install -yqq --no-install-recommends build-essential
@@ -58,6 +73,7 @@ apt-get install -yqq --no-install-recommends libgtk-3-dev meson
 ```
 
 **Fedora**
+
 ```sh
 dnf install -y gtk3-devel glib2-devel openssl-devel sqlite-devel meson
 ```
