@@ -1,6 +1,5 @@
 #![feature(test)]
 
-extern crate diesel;
 extern crate futures;
 extern crate hammond_data;
 extern crate hyper;
@@ -8,11 +7,10 @@ extern crate hyper_tls;
 extern crate rand;
 extern crate rayon;
 extern crate rss;
-extern crate tempdir;
 extern crate test;
 extern crate tokio_core;
 
-use rayon::prelude::*;
+// use rayon::prelude::*;
 
 use test::Bencher;
 
@@ -42,8 +40,26 @@ static URLS: &[(&[u8], &str)] = &[
     (LAS, "https://feeds2.feedburner.com/TheLinuxActionShow"),
 ];
 
+static URLS2: &[&str] = &[
+    "https://feeds.feedburner.com/InterceptedWithJeremyScahill",
+    "http://www.badvoltage.org/feed/ogg/",
+    "https://www.theguardian.com/news/series/the-audio-long-read/podcast.xml",
+    "http://feeds.feedburner.com/coderradiomp3",
+    "https://rss.art19.com/steal-the-stars",
+    "https://feeds.mozilla-podcasts.org/irl",
+    "http://economicupdate.libsyn.com/rss",
+    "http://feeds.feedburner.com/linuxunplugged",
+    "http://ubuntupodcast.org/feed/ogg/",
+    "http://www.newrustacean.com/feed.xml",
+    "http://feeds.propublica.org/propublica/podcast",
+    "https://rss.acast.com/thetipoff",
+    "http://feeds.soundcloud.com/users/soundcloud:users:277306156/sounds.rss",
+    "http://revolutionspodcast.libsyn.com/rss/",
+    "https://www.greaterthancode.com/feed/podcast",
+];
+
 fn index_urls() {
-    let feeds: Vec<_> = URLS.par_iter()
+    let feeds: Vec<_> = URLS.iter()
         .map(|&(buff, url)| {
             // Create and insert a Source into db
             let s = Source::from_url(url).unwrap();
@@ -53,7 +69,7 @@ fn index_urls() {
         })
         .collect();
 
-    feeds.par_iter().for_each(|x| index(x));
+    feeds.iter().for_each(|x| index(x));
 }
 
 #[bench]
@@ -77,13 +93,14 @@ fn bench_index_unchanged_feeds(b: &mut Bencher) {
 
 #[bench]
 fn bench_get_normal_feeds(b: &mut Bencher) {
+    // Index first so it will only bench the comparison test case.
     truncate_db().unwrap();
 
     b.iter(|| {
-        URLS.iter().for_each(|&(_, url)| {
+        URLS2.iter().for_each(|url| {
             let mut s = Source::from_url(url).unwrap();
-            s.into_feed(true).unwrap();
-        })
+            let _feed = s.into_feed(true);
+        });
     });
 }
 
@@ -93,20 +110,21 @@ fn bench_get_future_feeds(b: &mut Bencher) {
 
     b.iter(|| {
         let mut core = Core::new().unwrap();
-        let mut handle = core.handle();
-        let mut client = Client::configure()
+        let handle = core.handle();
+        let client = Client::configure()
             .connector(HttpsConnector::new(4, &handle).unwrap())
             .build(&handle);
 
-        let mut foo: Vec<_>;
+        let mut foo = vec![];
 
-        URLS.iter().for_each(|&(_, url)| {
-            let mut s = Source::from_url(url).unwrap();
-            let future = s.into_fututre_feed(&mut client, true);
+        URLS2.iter().for_each(|url| {
+            let s = Source::from_url(url).unwrap();
+            let future = s.into_fututre_feed(&client, true);
             foo.push(future);
         });
 
         let work = join_all(foo);
-        core.run(work).unwrap();
-    });
+        let res = core.run(work);
+        assert!(res.is_ok());
+    })
 }

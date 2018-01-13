@@ -15,8 +15,7 @@ use hyper::Uri;
 use hyper_tls::HttpsConnector;
 // use hyper::header::{ETag, LastModified};
 
-use futures::{Future, Stream};
-// use futures::future::join_all;
+use futures::prelude::*;
 
 use schema::{episode, podcast, source};
 use feed::Feed;
@@ -596,7 +595,7 @@ pub struct Source {
     pub http_etag: Option<String>,
 }
 
-impl<'a> Source {
+impl Source {
     /// Get the source `id` column.
     pub fn id(&self) -> i32 {
         self.id
@@ -659,7 +658,7 @@ impl<'a> Source {
     }
 
     /// Docs
-    pub fn update_etag2(&mut self, req: &hyper::Response) -> Result<()> {
+    pub fn update_etag2(mut self, req: &hyper::Response) -> Result<()> {
         let headers = req.headers();
 
         let etag = headers.get::<ETag>();
@@ -745,18 +744,21 @@ impl<'a> Source {
     #[allow(dead_code)]
     /// Docs
     pub fn into_fututre_feed(
-        &'a mut self,
-        client: &'a mut Client<HttpsConnector<HttpConnector>>,
+        self,
+        client: &Client<HttpsConnector<HttpConnector>>,
         ignore_etags: bool,
-    ) -> Box<Future<Item = Feed, Error = hyper::Error> + 'a> {
+    ) -> Box<Future<Item = Feed, Error = Error>> {
         let id = self.id();
         let feed = request_constructor(&self, client, ignore_etags)
             .map(move |res| {
-                println!("Status: {}", res.status());
-                self.update_etag2(&res).unwrap();
+                if let Err(err) = self.update_etag2(&res) {
+                    error!("Failed to update Source struct with new etag values");
+                    error!("Error: {}", err);
+                };
                 res
             })
-            .and_then(move |res| response_to_channel(res))
+            .map_err(From::from)
+            .and_then(|res| response_to_channel(res))
             .map(move |chan| Feed::from_channel_source(chan, id));
 
         Box::new(feed)
@@ -770,11 +772,12 @@ impl<'a> Source {
 
 fn request_constructor(
     s: &Source,
-    client: &mut Client<HttpsConnector<HttpConnector>>,
+    client: &Client<HttpsConnector<HttpConnector>>,
     ignore_etags: bool,
-) -> Box<Future<Item = hyper::Response, Error = hyper::Error>> {
+) -> Box<Future<Item = hyper::Response, Error = Error>> {
     use hyper::header::{EntityTag, HttpDate, IfModifiedSince, IfNoneMatch};
 
+    // FIXME: remove unwrap
     let uri = Uri::from_str(&s.uri()).unwrap();
     let mut req = hyper::Request::new(Method::Get, uri);
 
@@ -792,15 +795,45 @@ fn request_constructor(
         }
     }
 
-    let work = client.request(req);
+    let work = client.request(req).map_err(From::from);
     Box::new(work)
 }
 
-fn response_to_channel(res: hyper::Response) -> Box<Future<Item = Channel, Error = hyper::Error>> {
-    let chan = res.body().concat2().map(|x| x.into_iter()).map(|iter| {
-        let utf_8_bytes = iter.collect::<Vec<u8>>();
-        let buf = String::from_utf8_lossy(&utf_8_bytes).into_owned();
-        Channel::from_str(&buf).unwrap()
-    });
+fn response_to_channel(res: hyper::Response) -> Box<Future<Item = Channel, Error = Error>> {
+    let chan = res.body()
+        .concat2()
+        .map(|x| x.into_iter())
+        .map_err(From::from)
+        .and_then(|iter| {
+            let utf_8_bytes = iter.collect::<Vec<u8>>();
+            let buf = String::from_utf8_lossy(&utf_8_bytes).into_owned();
+            let chan = Channel::from_str(&buf).map_err(From::from);
+            chan
+        });
     Box::new(chan)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use tokio_core::reactor::Core;
+
+    use database::truncate_db;
+
+    #[test]
+    fn test_into_future_feed() {
+        truncate_db().unwrap();
+
+        let mut core = Core::new().unwrap();
+        let client = Client::configure()
+            .connector(HttpsConnector::new(4, &core.handle()).unwrap())
+            .build(&core.handle());
+
+        let url = "http://www.newrustacean.com/feed.xml";
+        let source = Source::from_url(url).unwrap();
+
+        let feed = source.into_fututre_feed(&client, true);
+
+        assert!(core.run(feed).is_ok());
+    }
 }
