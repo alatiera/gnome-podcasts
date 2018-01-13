@@ -8,6 +8,12 @@ use reqwest::header::{ETag, LastModified};
 use rss::Channel;
 use hyper;
 
+// use futures::{future, Future, Stream};
+// use hyper::Client;
+// use hyper::client::HttpConnector;
+// use hyper::Method;
+// use hyper::Uri;
+
 use schema::{episode, podcast, source};
 use feed::Feed;
 use errors::*;
@@ -611,6 +617,14 @@ impl<'a> Source {
         self.http_etag = value.map(|x| x.to_string());
     }
 
+    /// Helper method to easily save/"sync" current state of self to the Database.
+    pub fn save(&self) -> Result<Source> {
+        let db = connection();
+        let tempdb = db.get()?;
+
+        Ok(self.save_changes::<Source>(&*tempdb)?)
+    }
+
     /// Extract Etag and LastModifier from req, and update self and the
     /// corresponding db row.
     fn update_etag(&mut self, req: &reqwest::Response) -> Result<()> {
@@ -646,14 +660,6 @@ impl<'a> Source {
         }
 
         Ok(())
-    }
-
-    /// Helper method to easily save/"sync" current state of self to the Database.
-    pub fn save(&self) -> Result<Source> {
-        let db = connection();
-        let tempdb = db.get()?;
-
-        Ok(self.save_changes::<Source>(&*tempdb)?)
     }
 
     /// `Feed` constructor.
