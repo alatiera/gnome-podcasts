@@ -23,9 +23,9 @@ cd Hammond/
 cargo run -p hammond-gtk --release
 ```
 
-## Broken Feed
+## Broken Feeds
 
-Did you found or tried to use a Feed that does not work with hammond ?
+Found a feed that does not work in Hammond?
 Please [open an issue](https://gitlab.gnome.org/alatiera/Hammond/issues/new) and choose the `BrokenFeed` template so we will know and fix it!
 
 ## Getting in Touch
@@ -33,7 +33,7 @@ Please [open an issue](https://gitlab.gnome.org/alatiera/Hammond/issues/new) and
 If you have any questions regarding the use or development of Hammond,
 want to discuss design or simply hang out, please join us in [#hammond on irc.gnome.org.](irc://irc.gnome.org/#hammond)
 
-Sidenote:
+Note:
 
 There isn't much documentation yet, so you will probably have question about parts of the Code.
 
@@ -46,7 +46,7 @@ cd Hammond/
 make && sudo make install
 ```
 
-**Additionall:**
+**Additional:**
 
 You can run `sudo make uninstall` for removal
 
@@ -58,7 +58,7 @@ Flatpak instructions... Soon™.
 
 ## Building
 
-### Dependancies
+### Dependencies
 
 * Rust stable 1.22 or later.
 * Gtk+ 3.22 or later
@@ -128,9 +128,9 @@ It has nothing to do with the horrible headlines on the news.
 
 ## Acknowledgments
 
-Hammond's design is heavily insired by [Gnome-Music](https://wiki.gnome.org/Design/Apps/Music) and [Vocal](http://vocalproject.net/).
+Hammond's design is heavily insired by [GNOME Music](https://wiki.gnome.org/Design/Apps/Music) and [Vocal](http://vocalproject.net/).
 
-We also copied some elements from [Gnome-news](https://wiki.gnome.org/Design/Apps/Potential/News).
+We also copied some elements from [GNOME News](https://wiki.gnome.org/Design/Apps/Potential/News).
 
 And almost the entirety of the build system is copied from the [Fractal](https://gitlab.gnome.org/danigm/fractal) project.
 
