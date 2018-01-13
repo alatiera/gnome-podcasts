@@ -139,7 +139,7 @@ mod tests {
         let url = "http://www.newrustacean.com/feed.xml";
 
         // Create and index a source
-        let source = Source::from_url(url).unwrap();
+        let mut source = Source::from_url(url).unwrap();
         // Copy it's id
         let sid = source.id().clone();
 

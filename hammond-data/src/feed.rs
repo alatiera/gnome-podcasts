@@ -1,4 +1,4 @@
-//! Index and retrieve Feeds.
+//! Index Feeds.
 
 use rayon::prelude::*;
 use diesel::prelude::*;
@@ -20,20 +20,20 @@ use errors::*;
 /// that corresponds to the `Source.uri` field.
 pub struct Feed {
     channel: rss::Channel,
-    source: Source,
+    source_id: i32,
 }
 
 impl Feed {
     /// Constructor that consumes a `Source` and returns the corresponding `Feed` struct.
-    pub fn from_source(s: Source) -> Result<Feed> {
+    pub fn from_source(s: &mut Source) -> Result<Feed> {
         s.into_feed(false)
     }
 
     /// Constructor that consumes a `Source` and a `rss::Channel` returns a `Feed` struct.
-    pub fn from_channel_source(chan: rss::Channel, s: Source) -> Feed {
+    pub fn from_channel_source(chan: rss::Channel, s: i32) -> Feed {
         Feed {
             channel: chan,
-            source: s,
+            source_id: s,
         }
     }
 
@@ -68,7 +68,7 @@ impl Feed {
     }
 
     fn parse_channel(&self) -> NewPodcast {
-        parser::new_podcast(&self.channel, *self.source.id())
+        parser::new_podcast(&self.channel, self.source_id)
     }
 
     fn parse_channel_items(&self, pd: &Podcast) -> Vec<NewEpisode> {
@@ -111,7 +111,7 @@ pub fn index(feed: &Feed) {
 }
 
 /// Consume a `Source` and return a `Feed`.
-fn fetch(source: Source) -> Result<Feed> {
+fn fetch(source: &mut Source) -> Result<Feed> {
     Feed::from_source(source)
 }
 
@@ -119,8 +119,8 @@ fn fetch(source: Source) -> Result<Feed> {
 pub fn index_loop<S: IntoParallelIterator<Item = Source>>(sources: S) {
     sources
         .into_par_iter()
-        .filter_map(|x| {
-            let foo = fetch(x);
+        .filter_map(|mut x| {
+            let foo = fetch(&mut x);
             if let Err(err) = foo {
                 error!("Error: {}", err);
                 None
@@ -203,7 +203,7 @@ mod tests {
                 let feed = fs::File::open(path).unwrap();
                 // parse it into a channel
                 let chan = rss::Channel::read_from(BufReader::new(feed)).unwrap();
-                Feed::from_channel_source(chan, s)
+                Feed::from_channel_source(chan, *s.id())
             })
             .collect();
 
@@ -221,8 +221,8 @@ mod tests {
         truncate_db().unwrap();
         let url = "https://feeds.feedburner.com/InterceptedWithJeremyScahill";
 
-        let s1 = Source::from_url(url).unwrap();
-        let s2 = Source::from_url(url).unwrap();
+        let mut s1 = Source::from_url(url).unwrap();
+        let mut s2 = Source::from_url(url).unwrap();
         assert_eq!(s1, s2);
         assert_eq!(s1.id(), s2.id());
 

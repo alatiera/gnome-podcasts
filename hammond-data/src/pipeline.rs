@@ -11,7 +11,6 @@ use hyper_tls::HttpsConnector;
 
 use futures::{Future, Stream};
 // use futures::future::join_all;
-use tokio_core::reactor::Core;
 
 // use std::io::{self, Write};
 use std::str::FromStr;
@@ -63,6 +62,7 @@ fn res_to_channel(res: hyper::Response) -> Box<Future<Item = rss::Channel, Error
 mod tests {
     use super::*;
     // use futures::future::result;
+    use tokio_core::reactor::Core;
 
     use database::truncate_db;
     use Source;

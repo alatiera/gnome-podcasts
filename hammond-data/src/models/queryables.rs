@@ -670,7 +670,7 @@ impl<'a> Source {
     ///
     /// Consumes `self` and Returns the corresponding `Feed` Object.
     // TODO: Refactor into TryInto once it lands on stable.
-    pub fn into_feed(mut self, ignore_etags: bool) -> Result<Feed> {
+    pub fn into_feed(&mut self, ignore_etags: bool) -> Result<Feed> {
         use reqwest::header::{EntityTag, Headers, HttpDate, IfModifiedSince, IfNoneMatch};
         use reqwest::StatusCode;
 
@@ -725,7 +725,7 @@ impl<'a> Source {
         req.read_to_string(&mut buf)?;
         let chan = Channel::from_str(&buf)?;
 
-        Ok(Feed::from_channel_source(chan, self))
+        Ok(Feed::from_channel_source(chan, self.id))
     }
 
     /// Construct a new `Source` with the given `uri` and index it.
