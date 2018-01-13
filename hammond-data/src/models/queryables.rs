@@ -451,6 +451,11 @@ pub struct Podcast {
 }
 
 impl Podcast {
+    /// Get the Feed `id`.
+    pub fn id(&self) -> i32 {
+        self.id
+    }
+
     /// Get the Feed `title`.
     pub fn title(&self) -> &str {
         &self.title
@@ -551,7 +556,7 @@ pub struct PodcastCoverQuery {
 impl From<Podcast> for PodcastCoverQuery {
     fn from(p: Podcast) -> PodcastCoverQuery {
         PodcastCoverQuery {
-            id: *p.id(),
+            id: p.id(),
             title: p.title,
             image_uri: p.image_uri,
         }
@@ -592,6 +597,11 @@ pub struct Source {
 }
 
 impl<'a> Source {
+    /// Get the source `id` column.
+    pub fn id(&self) -> i32 {
+        self.id
+    }
+
     /// Represents the location(usually url) of the Feed xml file.
     pub fn uri(&self) -> &str {
         &self.uri
@@ -739,7 +749,7 @@ impl<'a> Source {
         client: &'a mut Client<HttpsConnector<HttpConnector>>,
         ignore_etags: bool,
     ) -> Box<Future<Item = Feed, Error = hyper::Error> + 'a> {
-        let id = *self.id();
+        let id = self.id();
         let feed = request_constructor(&self, client, ignore_etags)
             .map(move |res| {
                 println!("Status: {}", res.status());

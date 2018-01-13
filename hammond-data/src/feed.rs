@@ -4,7 +4,6 @@ use rayon::prelude::*;
 use diesel::prelude::*;
 use rayon::iter::IntoParallelIterator;
 
-use diesel::associations::Identifiable;
 use rss;
 
 use dbqueries;
@@ -75,7 +74,7 @@ impl Feed {
         let items = self.channel.items();
         let new_episodes: Vec<_> = items
             .par_iter()
-            .filter_map(|item| parser::new_episode(item, *pd.id()).ok())
+            .filter_map(|item| parser::new_episode(item, pd.id()).ok())
             .collect();
 
         new_episodes
@@ -203,7 +202,7 @@ mod tests {
                 let feed = fs::File::open(path).unwrap();
                 // parse it into a channel
                 let chan = rss::Channel::read_from(BufReader::new(feed)).unwrap();
-                Feed::from_channel_source(chan, *s.id())
+                Feed::from_channel_source(chan, s.id())
             })
             .collect();
 

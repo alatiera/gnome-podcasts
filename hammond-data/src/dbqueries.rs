@@ -232,8 +232,8 @@ pub fn remove_feed(pd: &Podcast) -> Result<()> {
 
     con.transaction(|| -> Result<()> {
         delete_source(&con, pd.source_id())?;
-        delete_podcast(&con, *pd.id())?;
-        delete_podcast_episodes(&con, *pd.id())?;
+        delete_podcast(&con, pd.id())?;
+        delete_podcast_episodes(&con, pd.id())?;
         info!("Feed removed from the Database.");
         Ok(())
     })

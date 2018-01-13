@@ -1,6 +1,5 @@
 use gtk;
 use gtk::prelude::*;
-use diesel::associations::Identifiable;
 
 use hammond_data::dbqueries;
 use hammond_data::Podcast;

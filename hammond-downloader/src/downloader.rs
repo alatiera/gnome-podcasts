@@ -219,7 +219,6 @@ mod tests {
     use hammond_data::Source;
     use hammond_data::feed::index;
     use hammond_data::dbqueries;
-    use diesel::associations::Identifiable;
 
     #[test]
     // This test inserts an rss feed to your `XDG_DATA/hammond/hammond.db` so we make it explicit
@@ -231,7 +230,7 @@ mod tests {
         // Create and index a source
         let mut source = Source::from_url(url).unwrap();
         // Copy it's id
-        let sid = source.id().clone();
+        let sid = source.id();
 
         // Convert Source it into a Feed and index it
         let feed = source.into_feed(true).unwrap();

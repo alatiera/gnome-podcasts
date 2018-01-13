@@ -1,6 +1,5 @@
 use gtk::prelude::*;
 use gtk;
-use diesel::Identifiable;
 use open;
 use dissolve;
 

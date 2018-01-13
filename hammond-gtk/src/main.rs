@@ -7,7 +7,6 @@ extern crate glib;
 extern crate gtk;
 
 extern crate chrono;
-extern crate diesel;
 extern crate dissolve;
 extern crate hammond_data;
 extern crate hammond_downloader;

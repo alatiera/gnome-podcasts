@@ -117,7 +117,6 @@ pub fn add(id: i32, directory: &str, sender: Sender<Action>) {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use diesel::Identifiable;
 
     use hammond_data::database;
     use hammond_data::utils::get_download_folder;
@@ -141,7 +140,7 @@ mod tests {
         // Create and index a source
         let mut source = Source::from_url(url).unwrap();
         // Copy it's id
-        let sid = source.id().clone();
+        let sid = source.id();
 
         // Convert Source it into a Feed and index it
         let feed = source.into_feed(true).unwrap();
@@ -152,7 +151,7 @@ mod tests {
         // Get an episode
         let episode: Episode = {
             let con = database::connection();
-            dbqueries::get_episode_from_pk(&*con.get().unwrap(), "e000: Hello, world!", *pd.id())
+            dbqueries::get_episode_from_pk(&*con.get().unwrap(), "e000: Hello, world!", pd.id())
                 .unwrap()
         };
 
