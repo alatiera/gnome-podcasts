@@ -19,7 +19,8 @@
         unused_parens, while_true)]
 #![deny(missing_debug_implementations, missing_docs, trivial_casts, trivial_numeric_casts)]
 // FIXME: uncomment
-// unused_extern_crates, unused)]
+// #![deny(unused_extern_crates, unused)]
+
 // #![feature(conservative_impl_trait)]
 
 #[macro_use]
@@ -59,15 +60,15 @@ extern crate xdg;
 
 #[allow(missing_docs)]
 pub mod dbqueries;
-pub mod utils;
-pub mod feed;
 #[allow(missing_docs)]
 pub mod errors;
+pub mod utils;
+pub mod feed;
 pub mod database;
+pub mod pipeline;
 pub(crate) mod models;
 mod parser;
 mod schema;
-pub mod pipeline;
 
 pub use models::queryables::{Episode, EpisodeWidgetQuery, Podcast, PodcastCoverQuery, Source};
 

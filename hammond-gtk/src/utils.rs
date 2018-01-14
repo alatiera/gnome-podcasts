@@ -19,18 +19,22 @@ use app::Action;
 /// If `source` is None, Fetches all the `Source` entries in the database and updates them.
 /// When It's done,it queues up a `RefreshViews` action.
 pub fn refresh_feed(headerbar: Arc<Header>, source: Option<Vec<Source>>, sender: Sender<Action>) {
+    // TODO: make it an application channel action.
+    // I missed it before apparently.
     headerbar.show_update_notification();
 
     thread::spawn(move || {
+        // FIXME: This is messy at best.
         if let Some(s) = source {
             // feed::index_loop(s);
-            if let Err(err) = pipeline::pipeline(s) {
+            // TODO: determine if it needs to ignore_etags.
+            if let Err(err) = pipeline::pipeline(s, true) {
                 error!("Error While trying to update the database.");
                 error!("Error msg: {}", err);
             }
         } else {
             let sources = dbqueries::get_sources().unwrap();
-            if let Err(err) = pipeline::pipeline(sources) {
+            if let Err(err) = pipeline::pipeline(sources, false) {
                 error!("Error While trying to update the database.");
                 error!("Error msg: {}", err);
             }

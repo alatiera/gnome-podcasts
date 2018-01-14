@@ -39,7 +39,7 @@ impl Insert for NewSource {
 }
 
 impl NewSource {
-    pub(crate) fn new_with_uri(uri: &str) -> NewSource {
+    pub(crate) fn new(uri: &str) -> NewSource {
         NewSource {
             uri: uri.trim().to_string(),
             last_modified: None,

@@ -4,16 +4,12 @@ use diesel;
 
 use reqwest;
 use diesel::SaveChangesDsl;
-use reqwest::header::{ETag, LastModified};
 use rss::Channel;
 
-use hyper;
-use hyper::Client;
 use hyper::client::HttpConnector;
-use hyper::Method;
-use hyper::Uri;
+use hyper::{Client, Method, Request, Response, StatusCode, Uri};
+use hyper::header::{ETag, EntityTag, HttpDate, IfModifiedSince, IfNoneMatch, LastModified};
 use hyper_tls::HttpsConnector;
-// use hyper::header::{ETag, LastModified};
 
 use futures::prelude::*;
 // use futures::future::ok;
@@ -639,10 +635,10 @@ impl Source {
         Ok(self.save_changes::<Source>(&*tempdb)?)
     }
 
-    /// Extract Etag and LastModifier from req, and update self and the
+    /// Extract Etag and LastModifier from res, and update self and the
     /// corresponding db row.
-    fn update_etag(&mut self, req: &reqwest::Response) -> Result<()> {
-        let headers = req.headers();
+    fn update_etag(&mut self, res: &reqwest::Response) -> Result<()> {
+        let headers = res.headers();
 
         let etag = headers.get::<ETag>();
         let lmod = headers.get::<LastModified>();
@@ -658,9 +654,10 @@ impl Source {
         Ok(())
     }
 
-    /// Docs
-    pub fn update_etag2(mut self, req: &hyper::Response) -> Result<()> {
-        let headers = req.headers();
+    /// Extract Etag and LastModifier from res, and update self and the
+    /// corresponding db row.
+    fn update_etag2(mut self, res: &Response) -> Result<()> {
+        let headers = res.headers();
 
         let etag = headers.get::<ETag>();
         let lmod = headers.get::<LastModified>();
@@ -686,7 +683,6 @@ impl Source {
     // TODO: Refactor into TryInto once it lands on stable.
     pub fn into_feed(&mut self, ignore_etags: bool) -> Result<Feed> {
         use reqwest::header::{EntityTag, Headers, HttpDate, IfModifiedSince, IfNoneMatch};
-        use reqwest::StatusCode;
 
         let mut headers = Headers::new();
 
@@ -705,44 +701,20 @@ impl Source {
         }
 
         let client = reqwest::Client::builder().referer(false).build()?;
-        let mut req = client.get(self.uri()).headers(headers).send()?;
+        let mut res = client.get(self.uri()).headers(headers).send()?;
 
-        info!("GET to {} , returned: {}", self.uri(), req.status());
+        info!("GET to {} , returned: {}", self.uri(), res.status());
 
-        self.update_etag(&req)?;
-
-        // TODO match on more stuff
-        // 301: Moved Permanently
-        // 304: Up to date Feed, checked with the Etag
-        // 307: Temporary redirect of the url
-        // 308: Permanent redirect of the url
-        // 401: Unathorized
-        // 403: Forbidden
-        // 408: Timeout
-        // 410: Feed deleted
-        match req.status() {
-            StatusCode::NotModified => bail!("304: skipping.."),
-            StatusCode::TemporaryRedirect => debug!("307: Temporary Redirect."),
-            // TODO: Change the source uri to the new one
-            StatusCode::MovedPermanently | StatusCode::PermanentRedirect => {
-                warn!("Feed was moved permanently.")
-            }
-            StatusCode::Unauthorized => bail!("401: Unauthorized."),
-            StatusCode::Forbidden => bail!("403: Forbidden."),
-            StatusCode::NotFound => bail!("404: Not found."),
-            StatusCode::RequestTimeout => bail!("408: Request Timeout."),
-            StatusCode::Gone => bail!("410: Feed was deleted."),
-            _ => (),
-        };
+        self.update_etag(&res)?;
+        match_status(res.status())?;
 
         let mut buf = String::new();
-        req.read_to_string(&mut buf)?;
+        res.read_to_string(&mut buf)?;
         let chan = Channel::from_str(&buf)?;
 
         Ok(Feed::from_channel_source(chan, self.id))
     }
 
-    #[allow(dead_code)]
     /// Docs
     pub fn into_fututre_feed(
         self,
@@ -750,6 +722,8 @@ impl Source {
         ignore_etags: bool,
     ) -> Box<Future<Item = Feed, Error = Error>> {
         let id = self.id();
+        // TODO: make URI future
+        // TODO: make a status match future
         let feed = request_constructor(&self, client, ignore_etags)
             .map(move |res| {
                 if let Err(err) = self.update_etag2(&res) {
@@ -766,21 +740,23 @@ impl Source {
     }
 
     /// Construct a new `Source` with the given `uri` and index it.
+    ///
+    /// This only indexes the `Source` struct, not the Podcast Feed.
     pub fn from_url(uri: &str) -> Result<Source> {
-        NewSource::new_with_uri(uri).into_source()
+        NewSource::new(uri).into_source()
     }
 }
 
+// TODO: make ignore_etags an Enum for better ergonomics.
+// #bools_are_just_2variant_enmus
 fn request_constructor(
     s: &Source,
     client: &Client<HttpsConnector<HttpConnector>>,
     ignore_etags: bool,
-) -> Box<Future<Item = hyper::Response, Error = Error>> {
-    use hyper::header::{EntityTag, HttpDate, IfModifiedSince, IfNoneMatch};
-
+) -> Box<Future<Item = Response, Error = Error>> {
     // FIXME: remove unwrap
     let uri = Uri::from_str(&s.uri()).unwrap();
-    let mut req = hyper::Request::new(Method::Get, uri);
+    let mut req = Request::new(Method::Get, uri);
 
     if !ignore_etags {
         if let Some(foo) = s.http_etag() {
@@ -800,7 +776,7 @@ fn request_constructor(
     Box::new(work)
 }
 
-fn response_to_channel(res: hyper::Response) -> Box<Future<Item = Channel, Error = Error>> {
+fn response_to_channel(res: Response) -> Box<Future<Item = Channel, Error = Error>> {
     let chan = res.body()
         .concat2()
         .map(|x| x.into_iter())
@@ -812,6 +788,33 @@ fn response_to_channel(res: hyper::Response) -> Box<Future<Item = Channel, Error
             chan
         });
     Box::new(chan)
+}
+
+// TODO match on more stuff
+// 301: Moved Permanently
+// 304: Up to date Feed, checked with the Etag
+// 307: Temporary redirect of the url
+// 308: Permanent redirect of the url
+// 401: Unathorized
+// 403: Forbidden
+// 408: Timeout
+// 410: Feed deleted
+fn match_status(code: StatusCode) -> Result<()> {
+    match code {
+        StatusCode::NotModified => bail!("304: skipping.."),
+        StatusCode::TemporaryRedirect => debug!("307: Temporary Redirect."),
+        // TODO: Change the source uri to the new one
+        StatusCode::MovedPermanently | StatusCode::PermanentRedirect => {
+            warn!("Feed was moved permanently.")
+        }
+        StatusCode::Unauthorized => bail!("401: Unauthorized."),
+        StatusCode::Forbidden => bail!("403: Forbidden."),
+        StatusCode::NotFound => bail!("404: Not found."),
+        StatusCode::RequestTimeout => bail!("408: Request Timeout."),
+        StatusCode::Gone => bail!("410: Feed was deleted."),
+        _ => (),
+    };
+    Ok(())
 }
 
 #[cfg(test)]

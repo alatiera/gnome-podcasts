@@ -1,13 +1,13 @@
 //! Docs.
 
-use futures::future::*;
 use errors::Error;
 use Source;
 
 use tokio_core::reactor::Core;
 use hyper::Client;
 use hyper_tls::HttpsConnector;
-// use futures::future::*;
+use futures::prelude::*;
+use futures::future::*;
 
 // Weird magic from #rust irc channel
 // kudos to remexre
@@ -42,8 +42,13 @@ mod dirtyhack {
     use super::*;
     use errors::*;
 
-    /// Docs
-    pub fn pipeline<S: IntoIterator<Item = Source>>(sources: S) -> Result<()> {
+    /// The pipline to be run for indexing and updating a Podcast feed that originates from
+    /// `Source.uri`.
+    ///
+    /// Messy temp diagram:
+    /// Source -> GET Request -> Update Etags -> Check Status -> Parse xml/Rss ->
+    /// Convert rss::Channel into Feed -> Index Podcast -> Index Episodes.
+    pub fn pipeline<S: IntoIterator<Item = Source>>(sources: S, ignore_etags: bool) -> Result<()> {
         let mut core = Core::new()?;
         let handle = core.handle();
         let client = Client::configure()
@@ -53,7 +58,9 @@ mod dirtyhack {
 
         let list = sources
             .into_iter()
-            .map(|s| s.into_fututre_feed(&client, false).map(|feed| feed.index()))
+            // FIXME: Make proper indexing futures instead of wrapping up existing
+            // blocking functions
+            .map(|s| s.into_fututre_feed(&client, ignore_etags).map(|feed| feed.index()))
             .collect();
 
         let f = core.run(collect_futures(list))?;
