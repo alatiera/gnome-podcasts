@@ -1,23 +1,15 @@
 #![feature(test)]
 
-extern crate futures;
 extern crate hammond_data;
 extern crate hyper;
-extern crate hyper_tls;
 extern crate rand;
-extern crate rayon;
+// extern crate rayon;
 extern crate rss;
 extern crate test;
-extern crate tokio_core;
 
 // use rayon::prelude::*;
 
 use test::Bencher;
-
-use tokio_core::reactor::Core;
-use hyper::Client;
-use hyper_tls::HttpsConnector;
-use futures::future::*;
 
 use hammond_data::Source;
 use hammond_data::feed::*;
@@ -41,6 +33,7 @@ static URLS: &[(&[u8], &str)] = &[
 ];
 
 static URLS2: &[&str] = &[
+    "https://www.pcper.com/rss/podcasts-mp3.rss",
     "https://feeds.feedburner.com/InterceptedWithJeremyScahill",
     "http://www.badvoltage.org/feed/ogg/",
     "https://www.theguardian.com/news/series/the-audio-long-read/podcast.xml",
@@ -95,36 +88,27 @@ fn bench_index_unchanged_feeds(b: &mut Bencher) {
 fn bench_get_normal_feeds(b: &mut Bencher) {
     // Index first so it will only bench the comparison test case.
     truncate_db().unwrap();
+    URLS2.iter().for_each(|url| {
+        Source::from_url(url).unwrap();
+    });
 
     b.iter(|| {
-        URLS2.iter().for_each(|url| {
-            let mut s = Source::from_url(url).unwrap();
-            let _feed = s.into_feed(true);
-        });
+        let sources = hammond_data::dbqueries::get_sources().unwrap();
+        index_loop(sources);
+        println!("I RUN");
     });
 }
 
 #[bench]
 fn bench_get_future_feeds(b: &mut Bencher) {
     truncate_db().unwrap();
+    URLS2.iter().for_each(|url| {
+        Source::from_url(url).unwrap();
+    });
 
     b.iter(|| {
-        let mut core = Core::new().unwrap();
-        let handle = core.handle();
-        let client = Client::configure()
-            .connector(HttpsConnector::new(4, &handle).unwrap())
-            .build(&handle);
-
-        let mut foo = vec![];
-
-        URLS2.iter().for_each(|url| {
-            let s = Source::from_url(url).unwrap();
-            let future = s.into_fututre_feed(&client, true);
-            foo.push(future);
-        });
-
-        let work = join_all(foo);
-        let res = core.run(work);
-        assert!(res.is_ok());
+        let sources = hammond_data::dbqueries::get_sources().unwrap();
+        hammond_data::pipeline::pipeline(sources).unwrap();
+        println!("I RUN");
     })
 }
