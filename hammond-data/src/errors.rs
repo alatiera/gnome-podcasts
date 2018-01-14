@@ -4,6 +4,7 @@ use rss;
 use reqwest;
 use r2d2;
 use hyper;
+use native_tls;
 
 use std::io;
 
@@ -15,6 +16,7 @@ error_chain! {
         RSSError(rss::Error);
         ReqError(reqwest::Error);
         HyperError(hyper::Error);
+        TLSError(native_tls::Error);
         IoError(io::Error);
     }
 }

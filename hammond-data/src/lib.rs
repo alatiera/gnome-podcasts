@@ -46,6 +46,7 @@ extern crate futures;
 extern crate hyper;
 extern crate hyper_tls;
 extern crate itertools;
+extern crate native_tls;
 extern crate r2d2;
 extern crate r2d2_diesel;
 extern crate rayon;
@@ -66,7 +67,7 @@ pub mod database;
 pub(crate) mod models;
 mod parser;
 mod schema;
-mod pipeline;
+pub mod pipeline;
 
 pub use models::queryables::{Episode, EpisodeWidgetQuery, Podcast, PodcastCoverQuery, Source};
 

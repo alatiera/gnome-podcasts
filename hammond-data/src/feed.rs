@@ -36,7 +36,8 @@ impl Feed {
         }
     }
 
-    fn index(&self) -> Result<()> {
+    /// docs
+    pub fn index(&self) -> Result<()> {
         let pd = self.get_podcast()?;
         self.index_channel_items(&pd)
     }

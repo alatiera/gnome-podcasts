@@ -16,6 +16,7 @@ use hyper_tls::HttpsConnector;
 // use hyper::header::{ETag, LastModified};
 
 use futures::prelude::*;
+// use futures::future::ok;
 
 use schema::{episode, podcast, source};
 use feed::Feed;
