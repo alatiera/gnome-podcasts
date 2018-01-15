@@ -6,6 +6,7 @@ use reqwest;
 use diesel::SaveChangesDsl;
 use rss::Channel;
 
+use hyper;
 use hyper::client::HttpConnector;
 use hyper::{Client, Method, Request, Response, StatusCode, Uri};
 use hyper::header::{ETag, EntityTag, HttpDate, IfModifiedSince, IfNoneMatch, LastModified};
@@ -723,16 +724,16 @@ impl Source {
     ) -> Box<Future<Item = Feed, Error = Error>> {
         let id = self.id();
         // TODO: make URI future
-        // TODO: make a status match future
         let feed = request_constructor(&self, client, ignore_etags)
-            .map(move |res| {
-                if let Err(err) = self.update_etag2(&res) {
-                    error!("Failed to update Source struct with new etag values");
-                    error!("Error: {}", err);
-                };
-                res
-            })
             .map_err(From::from)
+            .and_then(move |res| {
+                self.update_etag2(&res)?;
+                Ok(res)
+            })
+            .and_then(|res| -> Result<Response> {
+                match_status(res.status())?;
+                Ok(res)
+            })
             .and_then(|res| response_to_channel(res))
             .map(move |chan| Feed::from_channel_source(chan, id));
 
@@ -753,7 +754,7 @@ fn request_constructor(
     s: &Source,
     client: &Client<HttpsConnector<HttpConnector>>,
     ignore_etags: bool,
-) -> Box<Future<Item = Response, Error = Error>> {
+) -> Box<Future<Item = Response, Error = hyper::Error>> {
     // FIXME: remove unwrap
     let uri = Uri::from_str(&s.uri()).unwrap();
     let mut req = Request::new(Method::Get, uri);

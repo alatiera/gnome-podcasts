@@ -108,7 +108,6 @@ fn bench_get_future_feeds(b: &mut Bencher) {
 
     b.iter(|| {
         let sources = hammond_data::dbqueries::get_sources().unwrap();
-        hammond_data::pipeline::pipeline(sources).unwrap();
-        println!("I RUN");
+        hammond_data::pipeline::pipeline(sources, false).unwrap();
     })
 }
