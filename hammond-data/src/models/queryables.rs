@@ -13,7 +13,7 @@ use hyper::header::{ETag, EntityTag, HttpDate, IfModifiedSince, IfNoneMatch, Las
 use hyper_tls::HttpsConnector;
 
 use futures::prelude::*;
-// use futures::future::ok;
+// use futures::future::{ok, result};
 
 use schema::{episode, podcast, source};
 use feed::Feed;
@@ -723,7 +723,6 @@ impl Source {
         ignore_etags: bool,
     ) -> Box<Future<Item = Feed, Error = Error>> {
         let id = self.id();
-        // TODO: make URI future
         let feed = request_constructor(&self, client, ignore_etags)
             .map_err(From::from)
             .and_then(move |res| {
@@ -755,7 +754,7 @@ fn request_constructor(
     client: &Client<HttpsConnector<HttpConnector>>,
     ignore_etags: bool,
 ) -> Box<Future<Item = Response, Error = hyper::Error>> {
-    // FIXME: remove unwrap
+    // FIXME: remove unwrap somehow
     let uri = Uri::from_str(&s.uri()).unwrap();
     let mut req = Request::new(Method::Get, uri);
 

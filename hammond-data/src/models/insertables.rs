@@ -185,6 +185,7 @@ impl Update for NewEpisode {
 
 impl NewEpisode {
     // TODO: Refactor into batch indexes instead.
+    #[allow(dead_code)]
     pub(crate) fn into_episode(self, con: &SqliteConnection) -> Result<Episode> {
         self.index(con)?;
         Ok(dbqueries::get_episode_from_pk(

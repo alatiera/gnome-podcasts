@@ -120,7 +120,6 @@ mod tests {
 
     use hammond_data::database;
     use hammond_data::utils::get_download_folder;
-    use hammond_data::feed::*;
     use hammond_data::{Episode, Source};
     use hammond_data::dbqueries;
 
@@ -144,7 +143,7 @@ mod tests {
 
         // Convert Source it into a Feed and index it
         let feed = source.into_feed(true).unwrap();
-        index(&feed);
+        feed.index().unwrap();
 
         // Get the Podcast
         let pd = dbqueries::get_podcast_from_source_id(sid).unwrap();

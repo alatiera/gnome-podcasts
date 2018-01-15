@@ -9,10 +9,13 @@ use rss;
 use dbqueries;
 use parser;
 
-use models::queryables::{Episode, Podcast, Source};
+use models::queryables::{Podcast, Source};
 use models::insertables::{NewEpisode, NewPodcast};
 use database::connection;
 use errors::*;
+
+#[cfg(test)]
+use models::queryables::Episode;
 
 #[derive(Debug)]
 /// Wrapper struct that hold a `Source` and the `rss::Channel`
@@ -29,11 +32,8 @@ impl Feed {
     }
 
     /// Constructor that consumes a `Source` and a `rss::Channel` returns a `Feed` struct.
-    pub fn from_channel_source(chan: rss::Channel, s: i32) -> Feed {
-        Feed {
-            channel: chan,
-            source_id: s,
-        }
+    pub fn from_channel_source(channel: rss::Channel, source_id: i32) -> Feed {
+        Feed { channel, source_id }
     }
 
     /// docs
@@ -85,15 +85,15 @@ impl Feed {
         self.parse_channel().into_podcast()
     }
 
-    #[allow(dead_code)]
+    #[cfg(test)]
+    /// This returns only the episodes in the xml feed.
+    /// Used for unit-tests only.
     fn get_episodes(&self) -> Result<Vec<Episode>> {
         let pd = self.get_podcast()?;
         let eps = self.parse_channel_items(&pd);
 
         let db = connection();
         let con = db.get()?;
-        // TODO: Make it parallel
-        // This returns only the episodes in the xml feed.
         let episodes: Vec<_> = eps.into_iter()
             .filter_map(|ep| ep.into_episode(&con).ok())
             .collect();
@@ -102,25 +102,12 @@ impl Feed {
     }
 }
 
-/// Handle the indexing of a `Feed` into the Database.
-pub fn index(feed: &Feed) {
-    if let Err(err) = feed.index() {
-        error!("Error While trying to update the database.");
-        error!("Error msg: {}", err);
-    };
-}
-
-/// Consume a `Source` and return a `Feed`.
-fn fetch(source: &mut Source) -> Result<Feed> {
-    Feed::from_source(source)
-}
-
 /// Index a "list" of `Source`s.
 pub fn index_loop<S: IntoParallelIterator<Item = Source>>(sources: S) {
     sources
         .into_par_iter()
-        .filter_map(|mut x| {
-            let foo = fetch(&mut x);
+        .filter_map(|mut source| {
+            let foo = Feed::from_source(&mut source);
             if let Err(err) = foo {
                 error!("Error: {}", err);
                 None
@@ -128,7 +115,13 @@ pub fn index_loop<S: IntoParallelIterator<Item = Source>>(sources: S) {
                 foo.ok()
             }
         })
-        .for_each(|x| index(&x));
+        // Handle the indexing of a `Feed` into the Database.
+        .for_each(|feed| {
+            if let Err(err) = feed.index() {
+                error!("Error While trying to update the database.");
+                error!("Error msg: {}", err);
+            }
+        });
 
     info!("Indexing done.");
 }
@@ -208,7 +201,7 @@ mod tests {
             .collect();
 
         // Index the channels
-        feeds.par_iter().for_each(|x| index(&x));
+        feeds.par_iter().for_each(|x| x.index().unwrap());
 
         // Assert the index rows equal the controlled results
         assert_eq!(dbqueries::get_sources().unwrap().len(), 4);

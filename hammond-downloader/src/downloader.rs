@@ -217,7 +217,6 @@ pub fn cache_image(pd: &PodcastCoverQuery) -> Option<String> {
 mod tests {
     use super::*;
     use hammond_data::Source;
-    use hammond_data::feed::index;
     use hammond_data::dbqueries;
 
     #[test]
@@ -234,7 +233,7 @@ mod tests {
 
         // Convert Source it into a Feed and index it
         let feed = source.into_feed(true).unwrap();
-        index(&feed);
+        feed.index().unwrap();
 
         // Get the Podcast
         let pd = dbqueries::get_podcast_from_source_id(sid).unwrap().into();

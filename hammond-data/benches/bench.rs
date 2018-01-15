@@ -62,7 +62,7 @@ fn index_urls() {
         })
         .collect();
 
-    feeds.iter().for_each(|x| index(x));
+    feeds.iter().for_each(|x| x.index().unwrap());
 }
 
 #[bench]
