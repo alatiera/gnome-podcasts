@@ -2,6 +2,8 @@
 
 use rayon::prelude::*;
 use diesel::prelude::*;
+use futures::prelude::*;
+use futures::future::*;
 use rayon::iter::IntoParallelIterator;
 
 use rss;
@@ -42,6 +44,17 @@ impl Feed {
         self.index_channel_items(&pd)
     }
 
+    /// Docs
+    // FIXME: docs
+    // FIXME: lifetime stuff
+    pub fn index_future(self) -> Box<Future<Item = (), Error = Error>> {
+        let indx = self.parse_podcast_futture()
+            .and_then(|pd| pd.into_podcast())
+            .and_then(move |pd| self.index_channel_items(&pd));
+
+        Box::new(indx)
+    }
+
     // TODO: Refactor transcactions and find a way to do it in parallel.
     fn index_channel_items(&self, pd: &Podcast) -> Result<()> {
         let episodes = self.parse_channel_items(pd);
@@ -62,6 +75,10 @@ impl Feed {
 
     fn parse_podcast(&self) -> NewPodcast {
         parser::new_podcast(&self.channel, self.source_id)
+    }
+
+    fn parse_podcast_futture(&self) -> Box<FutureResult<NewPodcast, Error>> {
+        Box::new(ok(self.parse_podcast()))
     }
 
     fn parse_channel_items(&self, pd: &Podcast) -> Vec<NewEpisode> {

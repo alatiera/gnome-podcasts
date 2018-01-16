@@ -1,13 +1,15 @@
+// FIXME:
 //! Docs.
-
-use errors::Error;
-use Source;
 
 use tokio_core::reactor::Core;
 use hyper::Client;
 use hyper_tls::HttpsConnector;
 use futures::prelude::*;
 use futures::future::*;
+
+use errors::Error;
+use Source;
+// use Feed;
 
 // Weird magic from #rust irc channel
 // kudos to remexre
@@ -60,7 +62,7 @@ mod dirtyhack {
             .into_iter()
             // FIXME: Make proper indexing futures instead of wrapping up existing
             // blocking functions
-            .map(|s| s.into_fututre_feed(&client, ignore_etags).map(|feed| feed.index()))
+            .map(|s| s.into_fututre_feed(&client, ignore_etags).map(|feed| feed.index_future()))
             .collect();
 
         let f = core.run(collect_futures(list))?;

@@ -716,6 +716,7 @@ impl Source {
         Ok(Feed::from_channel_source(chan, self.id))
     }
 
+    // FIXME:
     /// Docs
     pub fn into_fututre_feed(
         self,
