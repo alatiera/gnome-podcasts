@@ -10,7 +10,6 @@
 ## Second
 
 - [ ] Make use of file metadas, [This](https://github.com/GuillaumeGomez/audio-video-metadata) might be helpfull.
-- [ ] Notifications
 - [ ] Episode queue
 - [ ] Embedded player
 - [ ] MPRIS integration
@@ -21,8 +20,8 @@
 - [ ] Download Queue
 - [ ] Ability to Stream content on demand
 - [ ] soundcloud and itunes feeds // [This](http://getrssfeed.com) seems intresting.
-- [ ] Integrate with Itunes API for various crap
-- [ ] YoutubeFeeds
+- [ ] Integrate with Itunes API for various crap?
+- [ ] YoutubeFeeds?
 
 ## Rest Tasks
 

@@ -113,6 +113,7 @@ impl NewPodcast {
                 if (foo.link() != self.link) || (foo.title() != self.title)
                     || (foo.image_uri() != self.image_uri.as_ref().map(|x| x.as_str()))
                 {
+                    info!("NewEpisode: {:?}\n OldEpisode: {:?}", self, foo);
                     self.update(&con, foo.id())?;
                 }
             }

@@ -14,11 +14,11 @@ use models::insertables::{NewEpisode, NewPodcast};
 use database::connection;
 use errors::*;
 
-#[cfg(test)]
-use models::queryables::Episode;
+// #[cfg(test)]
+// use models::queryables::Episode;
 
 #[derive(Debug)]
-/// Wrapper struct that hold a `Source` and the `rss::Channel`
+/// Wrapper struct that hold a `Source` id and the `rss::Channel`
 /// that corresponds to the `Source.uri` field.
 pub struct Feed {
     channel: rss::Channel,
@@ -36,17 +36,11 @@ impl Feed {
         Feed { channel, source_id }
     }
 
-    /// docs
+    /// Index the contents of the RSS `Feed` into the database.
     pub fn index(&self) -> Result<()> {
-        let pd = self.get_podcast()?;
+        let pd = self.parse_podcast().into_podcast()?;
         self.index_channel_items(&pd)
     }
-
-    // #[allow(dead_code)]
-    // fn index_channel(&self) -> Result<()> {
-    //     self.parse_channel().index()?;
-    //     Ok(())
-    // }
 
     // TODO: Refactor transcactions and find a way to do it in parallel.
     fn index_channel_items(&self, pd: &Podcast) -> Result<()> {
@@ -56,8 +50,7 @@ impl Feed {
 
         let _ = con.transaction::<(), Error, _>(|| {
             episodes.into_iter().for_each(|x| {
-                let e = x.index(&con);
-                if let Err(err) = e {
+                if let Err(err) = x.index(&con) {
                     error!("Failed to index episode: {:?}.", x.title());
                     error!("Error msg: {}", err);
                 };
@@ -67,7 +60,7 @@ impl Feed {
         Ok(())
     }
 
-    fn parse_channel(&self) -> NewPodcast {
+    fn parse_podcast(&self) -> NewPodcast {
         parser::new_podcast(&self.channel, self.source_id)
     }
 
@@ -81,25 +74,20 @@ impl Feed {
         new_episodes
     }
 
-    fn get_podcast(&self) -> Result<Podcast> {
-        self.parse_channel().into_podcast()
-    }
+    // #[cfg(test)]
+    // /// This returns only the episodes in the xml feed.
+    // fn get_episodes(&self) -> Result<Vec<Episode>> {
+    //     let pd = self.get_podcast()?;
+    //     let eps = self.parse_channel_items(&pd);
 
-    #[cfg(test)]
-    /// This returns only the episodes in the xml feed.
-    /// Used for unit-tests only.
-    fn get_episodes(&self) -> Result<Vec<Episode>> {
-        let pd = self.get_podcast()?;
-        let eps = self.parse_channel_items(&pd);
+    //     let db = connection();
+    //     let con = db.get()?;
+    //     let episodes: Vec<_> = eps.into_iter()
+    //         .filter_map(|ep| ep.into_episode(&con).ok())
+    //         .collect();
 
-        let db = connection();
-        let con = db.get()?;
-        let episodes: Vec<_> = eps.into_iter()
-            .filter_map(|ep| ep.into_episode(&con).ok())
-            .collect();
-
-        Ok(episodes)
-    }
+    //     Ok(episodes)
+    // }
 }
 
 /// Index a "list" of `Source`s.
@@ -207,42 +195,5 @@ mod tests {
         assert_eq!(dbqueries::get_sources().unwrap().len(), 4);
         assert_eq!(dbqueries::get_podcasts().unwrap().len(), 4);
         assert_eq!(dbqueries::get_episodes().unwrap().len(), 274);
-    }
-
-    #[test]
-    fn test_partial_index_podcast() {
-        truncate_db().unwrap();
-        let url = "https://feeds.feedburner.com/InterceptedWithJeremyScahill";
-
-        let mut s1 = Source::from_url(url).unwrap();
-        let mut s2 = Source::from_url(url).unwrap();
-        assert_eq!(s1, s2);
-        assert_eq!(s1.id(), s2.id());
-
-        let f1 = s1.into_feed(false).unwrap();
-        let f2 = s2.into_feed(false).unwrap();
-
-        let p1 = f1.get_podcast().unwrap();
-        let p2 = {
-            f2.index().unwrap();
-            f2.get_podcast().unwrap()
-        };
-        assert_eq!(p1, p2);
-        assert_eq!(p1.id(), p2.id());
-        assert_eq!(p1.source_id(), p2.source_id());
-
-        let eps1 = f1.get_episodes().unwrap();
-        let eps2 = {
-            f2.index().unwrap();
-            f2.get_episodes().unwrap()
-        };
-
-        eps1.into_par_iter().zip(eps2).into_par_iter().for_each(
-            |(ep1, ep2): (Episode, Episode)| {
-                assert_eq!(ep1, ep2);
-                assert_eq!(ep1.id(), ep2.id());
-                assert_eq!(ep1.podcast_id(), ep2.podcast_id());
-            },
-        );
     }
 }

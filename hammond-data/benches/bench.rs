@@ -95,7 +95,6 @@ fn bench_get_normal_feeds(b: &mut Bencher) {
     b.iter(|| {
         let sources = hammond_data::dbqueries::get_sources().unwrap();
         index_loop(sources);
-        println!("I RUN");
     });
 }
 
