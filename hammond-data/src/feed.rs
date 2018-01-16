@@ -91,6 +91,22 @@ impl Feed {
         new_episodes
     }
 
+    // This could also retrurn a FutureResult<Vec<FutureNewEpisode, Error>>, Error> Instead
+    #[allow(dead_code)]
+    fn parse_channel_items_future(
+        &self,
+        pd: &Podcast,
+    ) -> Box<Vec<FutureResult<NewEpisode, Error>>> {
+        let items = self.channel.items();
+
+        let episodes: Vec<_> = items
+            .par_iter()
+            .map(|item| result(parser::new_episode(item, pd.id())))
+            .collect();
+
+        Box::new(episodes)
+    }
+
     // #[cfg(test)]
     // /// This returns only the episodes in the xml feed.
     // fn get_episodes(&self) -> Result<Vec<Episode>> {
