@@ -257,6 +257,33 @@ pub fn delete_podcast_episodes(con: &SqliteConnection, parent_id: i32) -> QueryR
     diesel::delete(episode.filter(podcast_id.eq(parent_id))).execute(&*con)
 }
 
+pub fn podcast_exists(source_id_: i32) -> Result<bool> {
+    use schema::podcast::dsl::*;
+    use diesel::select;
+    use diesel::dsl::exists;
+
+    let db = connection();
+    let con = db.get()?;
+
+    select(exists(podcast.filter(source_id.eq(source_id_))))
+        .get_result(&*con)
+        .map_err(From::from)
+}
+
+#[cfg_attr(rustfmt, rustfmt_skip)]
+pub fn episode_exists(title_: &str, podcast_id_: i32) -> Result<bool> {
+    use schema::episode::dsl::*;
+    use diesel::select;
+    use diesel::dsl::exists;
+
+    let db = connection();
+    let con = db.get()?;
+
+    select(exists(episode.filter(podcast_id.eq(podcast_id_)).filter(title.eq(title_))))
+        .get_result(&*con)
+        .map_err(From::from)
+}
+
 pub fn update_none_to_played_now(parent: &Podcast) -> Result<usize> {
     use schema::episode::dsl::*;
 

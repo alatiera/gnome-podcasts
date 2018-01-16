@@ -1,4 +1,4 @@
-use diesel::result;
+use diesel;
 use diesel_migrations::RunMigrationsError;
 use rss;
 use reqwest;
@@ -11,7 +11,7 @@ use std::io;
 error_chain! {
     foreign_links {
         R2D2Error(r2d2::Error);
-        DieselResultError(result::Error);
+        DieselResultError(diesel::result::Error);
         DieselMigrationError(RunMigrationsError);
         RSSError(rss::Error);
         ReqError(reqwest::Error);

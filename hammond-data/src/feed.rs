@@ -93,13 +93,9 @@ impl Feed {
 
     // This could also retrurn a FutureResult<Vec<FutureNewEpisode, Error>>, Error> Instead
     #[allow(dead_code)]
-    fn parse_channel_items_future(
-        &self,
-        pd: &Podcast,
-    ) -> Box<Vec<FutureResult<NewEpisode, Error>>> {
-        let items = self.channel.items();
-
-        let episodes: Vec<_> = items
+    fn parse_episodes_future(&self, pd: &Podcast) -> Box<Vec<FutureResult<NewEpisode, Error>>> {
+        let episodes = self.channel
+            .items()
             .par_iter()
             .map(|item| result(parser::new_episode(item, pd.id())))
             .collect();
