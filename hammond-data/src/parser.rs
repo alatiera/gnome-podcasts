@@ -93,7 +93,7 @@ pub(crate) fn new_episode(item: &Item, parent_id: i32) -> Result<NewEpisode> {
 // FIXME: Rafactor
 // TODO: Write tests
 #[allow(non_snake_case)]
-fn parse_itunes_duration(item: &Item) -> Option<i32> {
+pub(crate) fn parse_itunes_duration(item: &Item) -> Option<i32> {
     let duration = item.itunes_ext().map(|s| s.duration())??;
 
     // FOR SOME FUCKING REASON, IN THE APPLE EXTENSION SPEC
