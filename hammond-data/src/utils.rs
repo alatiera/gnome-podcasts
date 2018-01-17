@@ -1,18 +1,18 @@
 //! Helper utilities for accomplishing various tasks.
 
-use rayon::prelude::*;
 use chrono::prelude::*;
+use rayon::prelude::*;
 
-use url::{Position, Url};
 use itertools::Itertools;
+use url::{Position, Url};
 
-use errors::*;
 use dbqueries;
+use errors::*;
 use models::{EpisodeCleanerQuery, Podcast};
 use xdg_dirs::DL_DIR;
 
-use std::path::Path;
 use std::fs;
+use std::path::Path;
 
 /// Scan downloaded `episode` entries that might have broken `local_uri`s and set them to `None`.
 fn download_checker() -> Result<()> {
@@ -151,10 +151,10 @@ pub fn delete_show(pd: &Podcast) -> Result<()> {
 mod tests {
     extern crate tempdir;
 
+    use self::tempdir::TempDir;
     use super::*;
     use database::{connection, truncate_db};
     use models::new_episode::NewEpisodeBuilder;
-    use self::tempdir::TempDir;
     use std::fs::File;
     use std::io::Write;
 

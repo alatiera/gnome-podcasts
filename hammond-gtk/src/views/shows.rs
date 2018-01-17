@@ -1,11 +1,11 @@
 use gtk;
 use gtk::prelude::*;
 
-use hammond_data::dbqueries;
 use hammond_data::Podcast;
+use hammond_data::dbqueries;
 
-use utils::get_pixbuf_from_path;
 use app::Action;
+use utils::get_pixbuf_from_path;
 
 use std::sync::mpsc::Sender;
 

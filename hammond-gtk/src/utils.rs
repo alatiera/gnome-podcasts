@@ -1,19 +1,19 @@
-use send_cell::SendCell;
 use gdk_pixbuf::Pixbuf;
+use send_cell::SendCell;
 
 // use hammond_data::feed;
-use hammond_data::pipeline;
-use hammond_data::dbqueries;
 use hammond_data::{PodcastCoverQuery, Source};
+use hammond_data::dbqueries;
+use hammond_data::pipeline;
 use hammond_downloader::downloader;
 
-use std::thread;
-use std::sync::mpsc::Sender;
-use std::sync::{Arc, Mutex, RwLock};
 use std::collections::HashMap;
+use std::sync::{Arc, Mutex, RwLock};
+use std::sync::mpsc::Sender;
+use std::thread;
 
-use headerbar::Header;
 use app::Action;
+use headerbar::Header;
 
 /// Update the rss feed(s) originating from `source`.
 /// If `source` is None, Fetches all the `Source` entries in the database and updates them.
@@ -80,9 +80,9 @@ pub fn get_pixbuf_from_path(pd: &PodcastCoverQuery, size: u32) -> Option<Pixbuf>
 
 #[cfg(test)]
 mod tests {
+    use super::*;
     use hammond_data::Source;
     use hammond_data::dbqueries;
-    use super::*;
 
     #[test]
     // This test inserts an rss feed to your `XDG_DATA/hammond/hammond.db` so we make it explicit

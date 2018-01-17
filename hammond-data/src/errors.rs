@@ -1,10 +1,10 @@
 use diesel;
 use diesel_migrations::RunMigrationsError;
-use rss;
-use reqwest;
-use r2d2;
 use hyper;
 use native_tls;
+use r2d2;
+use reqwest;
+use rss;
 
 use std::io;
 

@@ -1,14 +1,15 @@
 // FIXME:
 //! Docs.
 
-use tokio_core::reactor::Core;
+use futures::future::*;
+use futures::prelude::*;
+
 use hyper::Client;
 use hyper_tls::HttpsConnector;
-use futures::prelude::*;
-use futures::future::*;
+use tokio_core::reactor::Core;
 
-use errors::*;
 use Source;
+use errors::*;
 // use Feed;
 
 use std;

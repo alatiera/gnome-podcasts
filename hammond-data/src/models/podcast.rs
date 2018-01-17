@@ -1,11 +1,9 @@
 use diesel::SaveChangesDsl;
 
-// use futures::future::{ok, result};
-
-use schema::podcast;
-use errors::*;
 use database::connection;
+use errors::*;
 use models::Source;
+use schema::podcast;
 
 #[derive(Queryable, Identifiable, AsChangeset, Associations, PartialEq)]
 #[belongs_to(Source, foreign_key = "source_id")]

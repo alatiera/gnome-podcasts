@@ -1,18 +1,17 @@
-use diesel::prelude::*;
 use diesel;
+use diesel::prelude::*;
 use schema::episode;
 
-use rss;
 use ammonia;
 use rfc822_sanitizer::parse_from_rfc2822_with_fallback as parse_rfc822;
+use rss;
 
 use dbqueries;
 use errors::*;
 use models::{Insert, Update};
 use models::Episode;
-
-use utils::{replace_extra_spaces, url_cleaner};
 use parser;
+use utils::{replace_extra_spaces, url_cleaner};
 
 #[derive(Insertable, AsChangeset)]
 #[table_name = "episode"]

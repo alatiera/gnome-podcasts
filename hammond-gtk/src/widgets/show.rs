@@ -1,15 +1,15 @@
-use gtk::prelude::*;
-use gtk;
-use open;
 use dissolve;
+use gtk;
+use gtk::prelude::*;
+use open;
 
-use hammond_data::dbqueries;
 use hammond_data::Podcast;
+use hammond_data::dbqueries;
 use hammond_data::utils::{delete_show, replace_extra_spaces};
 
-use widgets::episode::episodes_listbox;
-use utils::get_pixbuf_from_path;
 use app::Action;
+use utils::get_pixbuf_from_path;
+use widgets::episode::episodes_listbox;
 
 use std::sync::mpsc::Sender;
 use std::thread;

@@ -1,5 +1,5 @@
-use reqwest;
 use hammond_data;
+use reqwest;
 use std::io;
 
 error_chain! {

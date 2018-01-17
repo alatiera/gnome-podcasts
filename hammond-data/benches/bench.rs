@@ -12,8 +12,8 @@ extern crate test;
 use test::Bencher;
 
 use hammond_data::Source;
-use hammond_data::feed::*;
 use hammond_data::database::truncate_db;
+use hammond_data::feed::*;
 
 use std::io::BufReader;
 

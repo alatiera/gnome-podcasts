@@ -3,8 +3,8 @@ use gtk::prelude::*;
 
 use hammond_data::Source;
 
-use std::sync::mpsc::Sender;
 use std::sync::Arc;
+use std::sync::mpsc::Sender;
 
 use app::Action;
 use content::Content;

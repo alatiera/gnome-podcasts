@@ -1,22 +1,21 @@
-use reqwest;
 use diesel::SaveChangesDsl;
+use reqwest;
 use rss::Channel;
 
 use hyper;
-use hyper::client::HttpConnector;
 use hyper::{Client, Method, Request, Response, StatusCode, Uri};
+use hyper::client::HttpConnector;
 use hyper::header::{ETag, EntityTag, HttpDate, IfModifiedSince, IfNoneMatch, LastModified};
 use hyper_tls::HttpsConnector;
 
 use futures::prelude::*;
 // use futures::future::{ok, result};
 
-use schema::source;
-use feed::Feed;
-use errors::*;
-
-use models::NewSource;
 use database::connection;
+use errors::*;
+use feed::Feed;
+use models::NewSource;
+use schema::source;
 
 use std::io::Read;
 use std::str::FromStr;

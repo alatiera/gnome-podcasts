@@ -1,17 +1,16 @@
 //! Index Feeds.
 
-use rayon::prelude::*;
 use diesel::prelude::*;
-use futures::prelude::*;
 use futures::future::*;
+use futures::prelude::*;
 use rayon::iter::IntoParallelIterator;
-
+use rayon::prelude::*;
 use rss;
 
-use dbqueries;
-use models::{NewEpisode, NewPodcast, Podcast, Source};
 use database::connection;
+use dbqueries;
 use errors::*;
+use models::{NewEpisode, NewPodcast, Podcast, Source};
 
 // #[cfg(test)]
 // use models::queryables::Episode;
@@ -149,9 +148,9 @@ pub fn index_all() -> Result<()> {
 
 #[cfg(test)]
 mod tests {
+    use database::truncate_db;
     use std::fs;
     use std::io::BufReader;
-    use database::truncate_db;
 
     use super::*;
 

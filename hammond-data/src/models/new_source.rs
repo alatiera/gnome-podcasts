@@ -1,14 +1,13 @@
 #![allow(unused_mut)]
 
-use diesel::prelude::*;
 use diesel;
+use diesel::prelude::*;
 
-use schema::source;
-use models::Source;
-use models::{Insert, Update};
-
-use dbqueries;
 use database::connection;
+use dbqueries;
+use models::{Insert, Update};
+use models::Source;
+use schema::source;
 
 use errors::*;
 

@@ -1,7 +1,6 @@
 // use hammond_data::Episode;
 use hammond_data::dbqueries;
-use hammond_downloader::downloader::get_episode;
-use hammond_downloader::downloader::DownloadProgress;
+use hammond_downloader::downloader::{get_episode, DownloadProgress};
 
 use app::Action;
 
@@ -118,13 +117,13 @@ pub fn add(id: i32, directory: &str, sender: Sender<Action>) {
 mod tests {
     use super::*;
 
-    use hammond_data::database;
-    use hammond_data::utils::get_download_folder;
     use hammond_data::{Episode, Source};
+    use hammond_data::database;
     use hammond_data::dbqueries;
+    use hammond_data::utils::get_download_folder;
 
-    use std::path::Path;
     use std::{thread, time};
+    use std::path::Path;
     use std::sync::mpsc::channel;
 
     #[test]

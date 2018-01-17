@@ -1,23 +1,23 @@
 use glib;
 use gtk;
 
-use gtk::prelude::*;
 use chrono::prelude::*;
+use gtk::prelude::*;
 
-use open;
 use humansize::{file_size_opts as size_opts, FileSize};
+use open;
 
-use hammond_data::dbqueries;
 use hammond_data::{EpisodeWidgetQuery, Podcast};
-use hammond_data::utils::get_download_folder;
+use hammond_data::dbqueries;
 use hammond_data::errors::*;
+use hammond_data::utils::get_download_folder;
 
 use app::Action;
 use manager;
 
-use std::sync::mpsc::Sender;
-use std::sync::{Arc, Mutex};
 use std::path::Path;
+use std::sync::{Arc, Mutex};
+use std::sync::mpsc::Sender;
 
 lazy_static! {
     static ref SIZE_OPTS: Arc<size_opts::FileSizeOpts> =  {

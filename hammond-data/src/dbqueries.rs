@@ -1,12 +1,12 @@
 //! Random CRUD helper functions.
 
-use diesel::prelude::*;
-use diesel;
-use models::{Episode, EpisodeCleanerQuery, EpisodeWidgetQuery, Podcast, PodcastCoverQuery, Source};
 use chrono::prelude::*;
-use errors::*;
+use diesel;
+use diesel::prelude::*;
 
 use database::connection;
+use errors::*;
+use models::{Episode, EpisodeCleanerQuery, EpisodeWidgetQuery, Podcast, PodcastCoverQuery, Source};
 
 pub fn get_sources() -> Result<Vec<Source>> {
     use schema::source::dsl::*;
@@ -279,9 +279,9 @@ pub fn delete_podcast_episodes(con: &SqliteConnection, parent_id: i32) -> QueryR
 }
 
 pub fn podcast_exists(source_id_: i32) -> Result<bool> {
-    use schema::podcast::dsl::*;
-    use diesel::select;
     use diesel::dsl::exists;
+    use diesel::select;
+    use schema::podcast::dsl::*;
 
     let db = connection();
     let con = db.get()?;

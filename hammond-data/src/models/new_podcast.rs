@@ -1,15 +1,15 @@
-use diesel::prelude::*;
 use diesel;
+use diesel::prelude::*;
 
-use rss;
 use ammonia;
+use rss;
 
-use schema::podcast;
-use models::Podcast;
 use models::{Insert, Update};
+use models::Podcast;
+use schema::podcast;
 
-use dbqueries;
 use database::connection;
+use dbqueries;
 use utils::{replace_extra_spaces, url_cleaner};
 
 use errors::*;

@@ -13,9 +13,9 @@ pub(crate) use self::new_podcast::NewPodcast;
 pub(crate) use self::new_source::NewSource;
 
 pub use self::episode::{Episode, EpisodeWidgetQuery};
+pub(crate) use self::episode::EpisodeCleanerQuery;
 pub use self::podcast::{Podcast, PodcastCoverQuery};
 pub use self::source::Source;
-pub(crate) use self::episode::EpisodeCleanerQuery;
 
 #[allow(dead_code)]
 enum IndexState<T> {

@@ -1,13 +1,12 @@
 use chrono::prelude::*;
-use diesel::prelude::*;
 use diesel;
-
 use diesel::SaveChangesDsl;
+use diesel::prelude::*;
 
-use schema::episode;
-use errors::*;
 use database::connection;
+use errors::*;
 use models::Podcast;
+use schema::episode;
 
 #[derive(Queryable, Identifiable, AsChangeset, Associations, PartialEq)]
 #[table_name = "episode"]

@@ -1,13 +1,13 @@
-use reqwest;
-use hyper::header::*;
-use tempdir::TempDir;
-use mime_guess;
 use glob::glob;
+use hyper::header::*;
+use mime_guess;
+use reqwest;
+use tempdir::TempDir;
 
+use std::fs;
 use std::fs::{rename, DirBuilder, File};
 use std::io::{BufWriter, Read, Write};
 use std::path::Path;
-use std::fs;
 use std::sync::{Arc, Mutex};
 
 use errors::*;
