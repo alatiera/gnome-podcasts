@@ -11,7 +11,8 @@ use rss;
 use dbqueries;
 
 use models::queryables::{Podcast, Source};
-use models::insertables::{NewEpisode, NewPodcast};
+use models::NewPodcast;
+use models::NewEpisode;
 use database::connection;
 use errors::*;
 

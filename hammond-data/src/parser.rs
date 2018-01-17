@@ -36,8 +36,8 @@ mod tests {
     use std::io::BufReader;
     use rss::{Channel, ItemBuilder};
     use rss::extension::itunes::ITunesItemExtensionBuilder;
-    use models::insertables::{NewEpisode, NewEpisodeBuilder};
-    use models::insertables::{NewPodcast, NewPodcastBuilder};
+    use models::new_episode::{NewEpisode, NewEpisodeBuilder};
+    use models::new_podcast::{NewPodcast, NewPodcastBuilder};
 
     use super::*;
 

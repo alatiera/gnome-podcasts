@@ -19,7 +19,7 @@ use schema::{episode, podcast, source};
 use feed::Feed;
 use errors::*;
 
-use models::insertables::NewSource;
+use models::NewSource;
 use database::connection;
 
 use std::io::Read;

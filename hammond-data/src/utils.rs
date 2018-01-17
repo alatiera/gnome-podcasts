@@ -153,7 +153,7 @@ mod tests {
 
     use super::*;
     use database::{connection, truncate_db};
-    use models::insertables::NewEpisodeBuilder;
+    use models::new_episode::NewEpisodeBuilder;
     use self::tempdir::TempDir;
     use std::fs::File;
     use std::io::Write;
