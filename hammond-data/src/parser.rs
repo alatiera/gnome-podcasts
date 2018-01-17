@@ -1,41 +1,4 @@
-use ammonia;
-use rss::{Channel, Item};
-
-use models::insertables::{NewPodcast, NewPodcastBuilder};
-use utils::url_cleaner;
-use utils::replace_extra_spaces;
-
-// use errors::*;
-
-/// Parses a `rss::Channel` into a `NewPodcast` Struct.
-pub(crate) fn new_podcast(chan: &Channel, source_id: i32) -> NewPodcast {
-    let title = chan.title().trim();
-
-    // Prefer itunes summary over rss.description since many feeds put html into rss.description.
-    let summary = chan.itunes_ext().map(|s| s.summary()).and_then(|s| s);
-    let description = if let Some(sum) = summary {
-        replace_extra_spaces(&ammonia::clean(sum))
-    } else {
-        replace_extra_spaces(&ammonia::clean(chan.description()))
-    };
-
-    let link = url_cleaner(chan.link());
-    let x = chan.itunes_ext().map(|s| s.image());
-    let image_uri = if let Some(img) = x {
-        img.map(|s| s.to_owned())
-    } else {
-        chan.image().map(|foo| foo.url().to_owned())
-    };
-
-    NewPodcastBuilder::default()
-        .title(title)
-        .description(description)
-        .link(link)
-        .image_uri(image_uri)
-        .source_id(source_id)
-        .build()
-        .unwrap()
-}
+use rss::Item;
 
 /// Parses an Item Itunes extension and returns it's duration value in seconds.
 // FIXME: Rafactor
@@ -71,21 +34,21 @@ pub(crate) fn parse_itunes_duration(item: &Item) -> Option<i32> {
 mod tests {
     use std::fs::File;
     use std::io::BufReader;
-    use rss;
+    use rss::{Channel, ItemBuilder};
+    use rss::extension::itunes::ITunesItemExtensionBuilder;
     use models::insertables::{NewEpisode, NewEpisodeBuilder};
+    use models::insertables::{NewPodcast, NewPodcastBuilder};
 
     use super::*;
 
     #[test]
     fn test_itunes_duration() {
-        use rss::extension::itunes::ITunesItemExtensionBuilder;
-
         // Input is a String<Int>
         let extension = ITunesItemExtensionBuilder::default()
             .duration(Some("3370".into()))
             .build()
             .unwrap();
-        let item = rss::ItemBuilder::default()
+        let item = ItemBuilder::default()
             .itunes_ext(Some(extension))
             .build()
             .unwrap();
@@ -96,7 +59,7 @@ mod tests {
             .duration(Some("6:10".into()))
             .build()
             .unwrap();
-        let item = rss::ItemBuilder::default()
+        let item = ItemBuilder::default()
             .itunes_ext(Some(extension))
             .build()
             .unwrap();
@@ -107,7 +70,7 @@ mod tests {
             .duration(Some("56:10".into()))
             .build()
             .unwrap();
-        let item = rss::ItemBuilder::default()
+        let item = ItemBuilder::default()
             .itunes_ext(Some(extension))
             .build()
             .unwrap();
@@ -118,7 +81,7 @@ mod tests {
             .duration(Some("1:56:10".into()))
             .build()
             .unwrap();
-        let item = rss::ItemBuilder::default()
+        let item = ItemBuilder::default()
             .itunes_ext(Some(extension))
             .build()
             .unwrap();
@@ -129,7 +92,7 @@ mod tests {
             .duration(Some("01:56:10".into()))
             .build()
             .unwrap();
-        let item = rss::ItemBuilder::default()
+        let item = ItemBuilder::default()
             .itunes_ext(Some(extension))
             .build()
             .unwrap();
@@ -147,7 +110,7 @@ mod tests {
                      policy, and criminal justice. Plus interviews with artists, thinkers, and \
                      newsmakers who challenge our preconceptions about the world we live in.";
 
-        let pd = new_podcast(&channel, 0);
+        let pd = NewPodcast::new(&channel, 0);
         let expected = NewPodcastBuilder::default()
             .title("Intercepted with Jeremy Scahill")
             .link("https://theintercept.com/podcasts")
@@ -170,7 +133,7 @@ mod tests {
 
         let descr = "The podcast that takes you behind the scenes with journalists to hear how \
                      they nailed their biggest stories.";
-        let pd = new_podcast(&channel, 0);
+        let pd = NewPodcast::new(&channel, 0);
 
         let expected = NewPodcastBuilder::default()
             .title("The Breakthrough")
@@ -193,7 +156,7 @@ mod tests {
         let descr = "An open show powered by community LINUX Unplugged takes the best attributes \
                      of open collaboration and focuses them into a weekly lifestyle show about \
                      Linux.";
-        let pd = new_podcast(&channel, 0);
+        let pd = NewPodcast::new(&channel, 0);
 
         let expected = NewPodcastBuilder::default()
             .title("LINUX Unplugged Podcast")
@@ -213,7 +176,7 @@ mod tests {
         let file = File::open("tests/feeds/R4Explanation.xml").unwrap();
         let channel = Channel::read_from(BufReader::new(file)).unwrap();
 
-        let pd = new_podcast(&channel, 0);
+        let pd = NewPodcast::new(&channel, 0);
 
         let expected = NewPodcastBuilder::default()
             .title("Request For Explanation")

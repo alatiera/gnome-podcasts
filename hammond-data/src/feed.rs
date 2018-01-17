@@ -9,7 +9,6 @@ use rayon::iter::IntoParallelIterator;
 use rss;
 
 use dbqueries;
-use parser;
 
 use models::queryables::{Podcast, Source};
 use models::insertables::{NewEpisode, NewPodcast};
@@ -74,7 +73,7 @@ impl Feed {
     }
 
     fn parse_podcast(&self) -> NewPodcast {
-        parser::new_podcast(&self.channel, self.source_id)
+        NewPodcast::new(&self.channel, self.source_id)
     }
 
     fn parse_podcast_futture(&self) -> Box<FutureResult<NewPodcast, Error>> {

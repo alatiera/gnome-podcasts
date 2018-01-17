@@ -109,6 +109,37 @@ impl Update for NewPodcast {
 }
 
 impl NewPodcast {
+    /// Parses a `rss::Channel` into a `NewPodcast` Struct.
+    pub(crate) fn new(chan: &rss::Channel, source_id: i32) -> NewPodcast {
+        let title = chan.title().trim();
+
+        // Prefer itunes summary over rss.description since many feeds put html into
+        // rss.description.
+        let summary = chan.itunes_ext().map(|s| s.summary()).and_then(|s| s);
+        let description = if let Some(sum) = summary {
+            replace_extra_spaces(&ammonia::clean(sum))
+        } else {
+            replace_extra_spaces(&ammonia::clean(chan.description()))
+        };
+
+        let link = url_cleaner(chan.link());
+        let x = chan.itunes_ext().map(|s| s.image());
+        let image_uri = if let Some(img) = x {
+            img.map(|s| s.to_owned())
+        } else {
+            chan.image().map(|foo| foo.url().to_owned())
+        };
+
+        NewPodcastBuilder::default()
+            .title(title)
+            .description(description)
+            .link(link)
+            .image_uri(image_uri)
+            .source_id(source_id)
+            .build()
+            .unwrap()
+    }
+
     // Look out for when tryinto lands into stable.
     pub(crate) fn into_podcast(self) -> Result<Podcast> {
         self.index()?;
