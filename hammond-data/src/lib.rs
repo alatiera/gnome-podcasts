@@ -70,7 +70,7 @@ pub(crate) mod models;
 mod parser;
 mod schema;
 
-pub use models::queryables::{Episode, EpisodeWidgetQuery, Podcast, PodcastCoverQuery, Source};
+pub use models::{Episode, EpisodeWidgetQuery, Podcast, PodcastCoverQuery, Source};
 // pub use feed::Feed;
 
 /// [XDG Base Direcotory](https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html) Paths.

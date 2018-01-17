@@ -2,8 +2,7 @@
 
 use diesel::prelude::*;
 use diesel;
-use models::queryables::{Episode, EpisodeCleanerQuery, EpisodeWidgetQuery, Podcast,
-                         PodcastCoverQuery, Source};
+use models::{Episode, EpisodeCleanerQuery, EpisodeWidgetQuery, Podcast, PodcastCoverQuery, Source};
 use chrono::prelude::*;
 use errors::*;
 

@@ -9,7 +9,7 @@ use rfc822_sanitizer::parse_from_rfc2822_with_fallback as parse_rfc822;
 use dbqueries;
 use errors::*;
 use models::{Insert, Update};
-use models::queryables::Episode;
+use models::Episode;
 
 use utils::{replace_extra_spaces, url_cleaner};
 use parser;

@@ -8,7 +8,7 @@ use itertools::Itertools;
 
 use errors::*;
 use dbqueries;
-use models::queryables::{EpisodeCleanerQuery, Podcast};
+use models::{EpisodeCleanerQuery, Podcast};
 use xdg_dirs::DL_DIR;
 
 use std::path::Path;

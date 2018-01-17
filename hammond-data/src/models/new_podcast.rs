@@ -5,7 +5,7 @@ use rss;
 use ammonia;
 
 use schema::podcast;
-use models::queryables::Podcast;
+use models::Podcast;
 use models::{Insert, Update};
 
 use dbqueries;

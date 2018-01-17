@@ -9,10 +9,7 @@ use rayon::iter::IntoParallelIterator;
 use rss;
 
 use dbqueries;
-
-use models::queryables::{Podcast, Source};
-use models::NewPodcast;
-use models::NewEpisode;
+use models::{NewEpisode, NewPodcast, Podcast, Source};
 use database::connection;
 use errors::*;
 

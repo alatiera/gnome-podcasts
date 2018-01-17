@@ -4,7 +4,7 @@ use diesel::prelude::*;
 use diesel;
 
 use schema::source;
-use models::queryables::Source;
+use models::Source;
 use models::{Insert, Update};
 
 use dbqueries;
