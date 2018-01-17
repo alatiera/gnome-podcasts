@@ -6,6 +6,7 @@ use diesel::prelude::*;
 use database::connection;
 use errors::*;
 use models::Podcast;
+use models::new_episode::{NewEpisodeMinimal, NewEpisodeMinimalBuilder};
 use schema::episode;
 
 #[derive(Queryable, Identifiable, AsChangeset, Associations, PartialEq)]
@@ -409,5 +410,88 @@ impl EpisodeCleanerQuery {
         Ok(diesel::update(episode.filter(rowid.eq(self.rowid())))
             .set(self)
             .execute(&*tempdb)?)
+    }
+}
+
+#[derive(Queryable, AsChangeset, PartialEq)]
+#[table_name = "episode"]
+#[changeset_options(treat_none_as_null = "true")]
+#[primary_key(title, podcast_id)]
+#[derive(Debug, Clone)]
+/// Diesel Model to be used for FIXME.
+pub struct EpisodeMinimal {
+    rowid: i32,
+    title: String,
+    uri: Option<String>,
+    epoch: i32,
+    duration: Option<i32>,
+    guid: Option<String>,
+    podcast_id: i32,
+}
+
+impl From<Episode> for EpisodeMinimal {
+    fn from(e: Episode) -> Self {
+        EpisodeMinimal {
+            rowid: e.rowid,
+            title: e.title,
+            uri: e.uri,
+            guid: e.guid,
+            epoch: e.epoch,
+            duration: e.duration,
+            podcast_id: e.podcast_id,
+        }
+    }
+}
+
+impl Into<NewEpisodeMinimal> for EpisodeMinimal {
+    fn into(self) -> NewEpisodeMinimal {
+        NewEpisodeMinimalBuilder::default()
+            .title(self.title)
+            .uri(self.uri)
+            .guid(self.guid)
+            .epoch(self.epoch)
+            .duration(self.duration)
+            .podcast_id(self.podcast_id)
+            .build()
+            .unwrap()
+    }
+}
+
+impl EpisodeMinimal {
+    /// Get the value of the sqlite's `ROW_ID`
+    pub fn rowid(&self) -> i32 {
+        self.rowid
+    }
+
+    /// Get the value of the `title` field.
+    pub fn title(&self) -> &str {
+        &self.title
+    }
+
+    /// Get the value of the `uri`.
+    ///
+    /// Represents the url(usually) that the media file will be located at.
+    pub fn uri(&self) -> Option<&str> {
+        self.uri.as_ref().map(|s| s.as_str())
+    }
+
+    /// Get the `epoch` value.
+    ///
+    /// Retrieved from the rss Item publish date.
+    /// Value is set to Utc whenever possible.
+    pub fn epoch(&self) -> i32 {
+        self.epoch
+    }
+
+    /// Get the `duration` value.
+    ///
+    /// The number represents the duration of the item/episode in seconds.
+    pub fn duration(&self) -> Option<i32> {
+        self.duration
+    }
+
+    /// `Podcast` table foreign key.
+    pub fn podcast_id(&self) -> i32 {
+        self.podcast_id
     }
 }

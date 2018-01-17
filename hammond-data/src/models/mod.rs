@@ -12,13 +12,13 @@ pub(crate) use self::new_episode::{NewEpisode, NewEpisodeMinimal};
 pub(crate) use self::new_podcast::NewPodcast;
 pub(crate) use self::new_source::NewSource;
 
-pub use self::episode::{Episode, EpisodeWidgetQuery};
+pub use self::episode::{Episode, EpisodeMinimal, EpisodeWidgetQuery};
 pub(crate) use self::episode::EpisodeCleanerQuery;
 pub use self::podcast::{Podcast, PodcastCoverQuery};
 pub use self::source::Source;
 
 #[allow(dead_code)]
-enum IndexState<T> {
+pub enum IndexState<T> {
     Index(T),
     Update(T),
     NotChanged,

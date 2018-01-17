@@ -8,8 +8,7 @@ use rss;
 
 use dbqueries;
 use errors::*;
-use models::{Insert, Update};
-use models::Episode;
+use models::{Episode, Insert, Update};
 use parser;
 use utils::{replace_extra_spaces, url_cleaner};
 
@@ -168,10 +167,8 @@ impl NewEpisodeMinimal {
             bail!("No url specified for the item.")
         };
 
-        let date = parse_rfc822(
-            // Default to rfc2822 represantation of epoch 0.
-            item.pub_date().unwrap_or("Thu, 1 Jan 1970 00:00:00 +0000"),
-        );
+        // Default to rfc2822 represantation of epoch 0.
+        let date = parse_rfc822(item.pub_date().unwrap_or("Thu, 1 Jan 1970 00:00:00 +0000"));
         // Should treat information from the rss feeds as invalid by default.
         // Case: Thu, 05 Aug 2016 06:00:00 -0400 <-- Actually that was friday.
         let epoch = date.map(|x| x.timestamp() as i32).unwrap_or(0);
@@ -214,5 +211,29 @@ impl NewEpisodeMinimal {
             .description(description)
             .build()
             .unwrap()
+    }
+}
+
+#[allow(dead_code)]
+// Ignore the following getters. They are used in unit tests mainly.
+impl NewEpisodeMinimal {
+    pub(crate) fn title(&self) -> &str {
+        self.title.as_ref()
+    }
+
+    pub(crate) fn uri(&self) -> Option<&str> {
+        self.uri.as_ref().map(|s| s.as_str())
+    }
+
+    pub(crate) fn guid(&self) -> Option<&str> {
+        self.guid.as_ref().map(|s| s.as_str())
+    }
+
+    pub(crate) fn epoch(&self) -> i32 {
+        self.epoch
+    }
+
+    pub(crate) fn podcast_id(&self) -> i32 {
+        self.podcast_id
     }
 }
