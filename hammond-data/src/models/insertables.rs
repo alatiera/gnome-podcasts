@@ -210,6 +210,12 @@ impl Update for NewEpisode {
 }
 
 impl NewEpisode {
+    #[allow(dead_code)]
+    /// Parses an `rss::Item` into a `NewEpisode` Struct.
+    pub(crate) fn new(item: &rss::Item, podcast_id: i32) -> Result<Self> {
+        NewEpisodeMinimal::new(item, podcast_id).map(|ep| ep.into_new_episode(item))
+    }
+
     // TODO: Refactor into batch indexes instead.
     #[allow(dead_code)]
     pub(crate) fn into_episode(self, con: &SqliteConnection) -> Result<Episode> {
@@ -227,7 +233,7 @@ impl NewEpisode {
         match ep {
             Ok(foo) => {
                 if foo.podcast_id() != self.podcast_id {
-                    error!("NEP pid: {}, EP pid: {}", self.podcast_id, foo.podcast_id());
+                    error!("NEP pid: {}\nEP pid: {}", self.podcast_id, foo.podcast_id());
                 };
 
                 if foo.title() != self.title.as_str() || foo.epoch() != self.epoch

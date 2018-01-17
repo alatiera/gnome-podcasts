@@ -85,7 +85,7 @@ impl Feed {
         let items = self.channel.items();
         let new_episodes: Vec<_> = items
             .par_iter()
-            .filter_map(|item| parser::new_episode(item, pd.id()).ok())
+            .filter_map(|item| NewEpisode::new(item, pd.id()).ok())
             .collect();
 
         new_episodes
@@ -97,7 +97,7 @@ impl Feed {
         let episodes = self.channel
             .items()
             .par_iter()
-            .map(|item| result(parser::new_episode(item, pd.id())))
+            .map(|item| result(NewEpisode::new(item, pd.id())))
             .collect();
 
         Box::new(episodes)

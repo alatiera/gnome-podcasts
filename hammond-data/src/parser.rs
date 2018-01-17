@@ -1,12 +1,11 @@
 use ammonia;
 use rss::{Channel, Item};
-use rfc822_sanitizer::parse_from_rfc2822_with_fallback;
 
-use models::insertables::{NewEpisode, NewEpisodeBuilder, NewPodcast, NewPodcastBuilder};
+use models::insertables::{NewPodcast, NewPodcastBuilder};
 use utils::url_cleaner;
 use utils::replace_extra_spaces;
 
-use errors::*;
+// use errors::*;
 
 /// Parses a `rss::Channel` into a `NewPodcast` Struct.
 pub(crate) fn new_podcast(chan: &Channel, source_id: i32) -> NewPodcast {
@@ -36,57 +35,6 @@ pub(crate) fn new_podcast(chan: &Channel, source_id: i32) -> NewPodcast {
         .source_id(source_id)
         .build()
         .unwrap()
-}
-
-/// Parses an `rss::Item` into a `NewEpisode` Struct.
-pub(crate) fn new_episode(item: &Item, parent_id: i32) -> Result<NewEpisode> {
-    if item.title().is_none() {
-        bail!("No title specified for the item.")
-    }
-
-    let title = item.title().unwrap().trim().to_owned();
-    let guid = item.guid().map(|s| s.value().trim().to_owned());
-
-    // Prefer itunes summary over rss.description since many feeds put html into rss.description.
-    let summary = item.itunes_ext().map(|s| s.summary()).and_then(|s| s);
-    let description = if summary.is_some() {
-        summary.map(|s| replace_extra_spaces(&ammonia::clean(s)))
-    } else {
-        item.description()
-            .map(|s| replace_extra_spaces(&ammonia::clean(s)))
-    };
-
-    let uri = if let Some(url) = item.enclosure().map(|s| url_cleaner(s.url())) {
-        Some(url)
-    } else if item.link().is_some() {
-        item.link().map(|s| url_cleaner(s))
-    } else {
-        bail!("No url specified for the item.")
-    };
-
-    let date = parse_from_rfc2822_with_fallback(
-        // Default to rfc2822 represantation of epoch 0.
-        item.pub_date().unwrap_or("Thu, 1 Jan 1970 00:00:00 +0000"),
-    );
-
-    // Should treat information from the rss feeds as invalid by default.
-    // Case: Thu, 05 Aug 2016 06:00:00 -0400 <-- Actually that was friday.
-    let epoch = date.map(|x| x.timestamp() as i32).unwrap_or(0);
-
-    let length = || -> Option<i32> { item.enclosure().map(|x| x.length().parse().ok())? }();
-    let duration = parse_itunes_duration(item);
-
-    Ok(NewEpisodeBuilder::default()
-        .title(title)
-        .uri(uri)
-        .description(description)
-        .length(length)
-        .duration(duration)
-        .epoch(epoch)
-        .guid(guid)
-        .podcast_id(parent_id)
-        .build()
-        .unwrap())
 }
 
 /// Parses an Item Itunes extension and returns it's duration value in seconds.
@@ -124,6 +72,7 @@ mod tests {
     use std::fs::File;
     use std::io::BufReader;
     use rss;
+    use models::insertables::{NewEpisode, NewEpisodeBuilder};
 
     use super::*;
 
@@ -291,7 +240,7 @@ mod tests {
                      campaign to bring violent neo-Nazis to justice. Rapper Open Mike Eagle \
                      performs.";
 
-        let ep = new_episode(&firstitem, 0).unwrap();
+        let ep = NewEpisode::new(&firstitem, 0).unwrap();
         let expected = NewEpisodeBuilder::default()
             .title("The Super Bowl of Racism")
             .uri(Some(String::from(
@@ -308,7 +257,7 @@ mod tests {
         assert_eq!(ep, expected);
 
         let second = channel.items().iter().nth(1).unwrap();
-        let ep = new_episode(&second, 0).unwrap();
+        let ep = NewEpisode::new(&second, 0).unwrap();
 
         let descr = "This week on Intercepted: Jeremy gives an update on the aftermath of \
                      Blackwater’s 2007 massacre of Iraqi civilians. Intercept reporter Lee Fang \
@@ -344,7 +293,7 @@ mod tests {
         let descr =
             "A reporter finds that homes meant to replace New York’s troubled psychiatric \
              hospitals might be just as bad.";
-        let ep = new_episode(&firstitem, 0).unwrap();
+        let ep = NewEpisode::new(&firstitem, 0).unwrap();
 
         let expected = NewEpisodeBuilder::default()
             .title("The Breakthrough: Hopelessness and Exploitation Inside Homes for Mentally Ill")
@@ -361,7 +310,7 @@ mod tests {
         assert_eq!(ep, expected);
 
         let second = channel.items().iter().nth(1).unwrap();
-        let ep = new_episode(&second, 0).unwrap();
+        let ep = NewEpisode::new(&second, 0).unwrap();
         let descr =
             "Jonathan Allen and Amie Parnes didn’t know their book would be called \
              ‘Shattered,’ or that their extraordinary access would let them chronicle the \
@@ -400,7 +349,7 @@ mod tests {
                      decides to blow off a little steam by attacking his IoT devices, Wes has the \
                      scope on Equifax blaming open source &amp; the Beard just saved the show. \
                      It’s a really packed episode!";
-        let ep = new_episode(&firstitem, 0).unwrap();
+        let ep = NewEpisode::new(&firstitem, 0).unwrap();
 
         let expected = NewEpisodeBuilder::default()
             .title("Hacking Devices with Kali Linux | LUP 214")
@@ -418,7 +367,7 @@ mod tests {
         assert_eq!(ep, expected);
 
         let second = channel.items().iter().nth(1).unwrap();
-        let ep = new_episode(&second, 0).unwrap();
+        let ep = NewEpisode::new(&second, 0).unwrap();
 
         let descr =
             "The Gnome project is about to solve one of our audience's biggest Wayland’s \
@@ -451,7 +400,7 @@ mod tests {
         let firstitem = channel.items().iter().nth(9).unwrap();
         let descr = "This week we look at <a href=\"https://github.com/rust-lang/rfcs/pull/2094\" \
                      rel=\"noopener noreferrer\">RFC 2094</a> \"Non-lexical lifetimes\"";
-        let ep = new_episode(&firstitem, 0).unwrap();
+        let ep = NewEpisode::new(&firstitem, 0).unwrap();
 
         let expected = NewEpisodeBuilder::default()
             .title("Episode #9 - A Once in a Lifetime RFC")
@@ -472,7 +421,7 @@ mod tests {
         assert_eq!(ep, expected);
 
         let second = channel.items().iter().nth(8).unwrap();
-        let ep = new_episode(&second, 0).unwrap();
+        let ep = NewEpisode::new(&second, 0).unwrap();
 
         let descr = "This week we look at <a href=\"https://github.com/rust-lang/rfcs/pull/2071\" \
                      rel=\"noopener noreferrer\">RFC 2071</a> \"Add impl Trait type alias and \
