@@ -14,7 +14,7 @@ pub fn get_sources() -> Result<Vec<Source>> {
 
     let db = connection();
     let con = db.get()?;
-    Ok(source.load::<Source>(&*con)?)
+    source.load::<Source>(&*con).map_err(From::from)
 }
 
 pub fn get_podcasts() -> Result<Vec<Podcast>> {
@@ -22,7 +22,7 @@ pub fn get_podcasts() -> Result<Vec<Podcast>> {
 
     let db = connection();
     let con = db.get()?;
-    Ok(podcast.load::<Podcast>(&*con)?)
+    podcast.load::<Podcast>(&*con).map_err(From::from)
 }
 
 pub fn get_episodes() -> Result<Vec<Episode>> {
@@ -30,7 +30,10 @@ pub fn get_episodes() -> Result<Vec<Episode>> {
 
     let db = connection();
     let con = db.get()?;
-    Ok(episode.order(epoch.desc()).load::<Episode>(&*con)?)
+    episode
+        .order(epoch.desc())
+        .load::<Episode>(&*con)
+        .map_err(From::from)
 }
 
 pub(crate) fn get_downloaded_episodes() -> Result<Vec<EpisodeCleanerQuery>> {
@@ -38,10 +41,11 @@ pub(crate) fn get_downloaded_episodes() -> Result<Vec<EpisodeCleanerQuery>> {
 
     let db = connection();
     let con = db.get()?;
-    Ok(episode
+    episode
         .select((rowid, local_uri, played))
         .filter(local_uri.is_not_null())
-        .load::<EpisodeCleanerQuery>(&*con)?)
+        .load::<EpisodeCleanerQuery>(&*con)
+        .map_err(From::from)
 }
 
 pub fn get_played_episodes() -> Result<Vec<Episode>> {
@@ -49,7 +53,10 @@ pub fn get_played_episodes() -> Result<Vec<Episode>> {
 
     let db = connection();
     let con = db.get()?;
-    Ok(episode.filter(played.is_not_null()).load::<Episode>(&*con)?)
+    episode
+        .filter(played.is_not_null())
+        .load::<Episode>(&*con)
+        .map_err(From::from)
 }
 
 pub fn get_played_cleaner_episodes() -> Result<Vec<EpisodeCleanerQuery>> {
@@ -57,10 +64,11 @@ pub fn get_played_cleaner_episodes() -> Result<Vec<EpisodeCleanerQuery>> {
 
     let db = connection();
     let con = db.get()?;
-    Ok(episode
+    episode
         .select((rowid, local_uri, played))
         .filter(played.is_not_null())
-        .load::<EpisodeCleanerQuery>(&*con)?)
+        .load::<EpisodeCleanerQuery>(&*con)
+        .map_err(From::from)
 }
 
 pub fn get_episode_from_rowid(ep_id: i32) -> Result<Episode> {
@@ -68,9 +76,10 @@ pub fn get_episode_from_rowid(ep_id: i32) -> Result<Episode> {
 
     let db = connection();
     let con = db.get()?;
-    Ok(episode
+    episode
         .filter(rowid.eq(ep_id))
-        .get_result::<Episode>(&*con)?)
+        .get_result::<Episode>(&*con)
+        .map_err(From::from)
 }
 
 pub fn get_episode_local_uri_from_id(ep_id: i32) -> Result<Option<String>> {
@@ -79,10 +88,11 @@ pub fn get_episode_local_uri_from_id(ep_id: i32) -> Result<Option<String>> {
     let db = connection();
     let con = db.get()?;
 
-    Ok(episode
+    episode
         .filter(rowid.eq(ep_id))
         .select(local_uri)
-        .get_result::<Option<String>>(&*con)?)
+        .get_result::<Option<String>>(&*con)
+        .map_err(From::from)
 }
 
 pub fn get_episodes_with_limit(limit: u32) -> Result<Vec<Episode>> {
@@ -91,10 +101,11 @@ pub fn get_episodes_with_limit(limit: u32) -> Result<Vec<Episode>> {
     let db = connection();
     let con = db.get()?;
 
-    Ok(episode
+    episode
         .order(epoch.desc())
         .limit(i64::from(limit))
-        .load::<Episode>(&*con)?)
+        .load::<Episode>(&*con)
+        .map_err(From::from)
 }
 
 pub fn get_episodes_widgets_with_limit(limit: u32) -> Result<Vec<EpisodeWidgetQuery>> {
@@ -103,7 +114,7 @@ pub fn get_episodes_widgets_with_limit(limit: u32) -> Result<Vec<EpisodeWidgetQu
     let db = connection();
     let con = db.get()?;
 
-    Ok(episode::table
+    episode::table
         .select((
             episode::rowid,
             episode::title,
@@ -117,7 +128,8 @@ pub fn get_episodes_widgets_with_limit(limit: u32) -> Result<Vec<EpisodeWidgetQu
         ))
         .order(episode::epoch.desc())
         .limit(i64::from(limit))
-        .load::<EpisodeWidgetQuery>(&*con)?)
+        .load::<EpisodeWidgetQuery>(&*con)
+        .map_err(From::from)
 }
 
 pub fn get_podcast_from_id(pid: i32) -> Result<Podcast> {
@@ -125,7 +137,10 @@ pub fn get_podcast_from_id(pid: i32) -> Result<Podcast> {
 
     let db = connection();
     let con = db.get()?;
-    Ok(podcast.filter(id.eq(pid)).get_result::<Podcast>(&*con)?)
+    podcast
+        .filter(id.eq(pid))
+        .get_result::<Podcast>(&*con)
+        .map_err(From::from)
 }
 
 pub fn get_podcast_cover_from_id(pid: i32) -> Result<PodcastCoverQuery> {
@@ -133,10 +148,11 @@ pub fn get_podcast_cover_from_id(pid: i32) -> Result<PodcastCoverQuery> {
 
     let db = connection();
     let con = db.get()?;
-    Ok(podcast
+    podcast
         .select((id, title, image_uri))
         .filter(id.eq(pid))
-        .get_result::<PodcastCoverQuery>(&*con)?)
+        .get_result::<PodcastCoverQuery>(&*con)
+        .map_err(From::from)
 }
 
 pub fn get_pd_episodes(parent: &Podcast) -> Result<Vec<Episode>> {
@@ -145,9 +161,10 @@ pub fn get_pd_episodes(parent: &Podcast) -> Result<Vec<Episode>> {
     let db = connection();
     let con = db.get()?;
 
-    Ok(Episode::belonging_to(parent)
+    Episode::belonging_to(parent)
         .order(epoch.desc())
-        .load::<Episode>(&*con)?)
+        .load::<Episode>(&*con)
+        .map_err(From::from)
 }
 
 pub fn get_pd_episodeswidgets(parent: &Podcast) -> Result<Vec<EpisodeWidgetQuery>> {
@@ -156,13 +173,12 @@ pub fn get_pd_episodeswidgets(parent: &Podcast) -> Result<Vec<EpisodeWidgetQuery
     let db = connection();
     let con = db.get()?;
 
-    Ok(
-        episode.select((rowid, title, uri, local_uri, epoch, length, duration, played, podcast_id))
+    episode.select((rowid, title, uri, local_uri, epoch, length, duration, played, podcast_id))
         .filter(podcast_id.eq(parent.id()))
         // .group_by(epoch)
         .order(epoch.desc())
-        .load::<EpisodeWidgetQuery>(&*con)?,
-    )
+        .load::<EpisodeWidgetQuery>(&*con)
+        .map_err(From::from)
 }
 
 pub fn get_pd_unplayed_episodes(parent: &Podcast) -> Result<Vec<Episode>> {
@@ -171,10 +187,11 @@ pub fn get_pd_unplayed_episodes(parent: &Podcast) -> Result<Vec<Episode>> {
     let db = connection();
     let con = db.get()?;
 
-    Ok(Episode::belonging_to(parent)
+    Episode::belonging_to(parent)
         .filter(played.is_null())
         .order(epoch.desc())
-        .load::<Episode>(&*con)?)
+        .load::<Episode>(&*con)
+        .map_err(From::from)
 }
 
 pub fn get_pd_episodes_limit(parent: &Podcast, limit: u32) -> Result<Vec<Episode>> {
@@ -183,10 +200,11 @@ pub fn get_pd_episodes_limit(parent: &Podcast, limit: u32) -> Result<Vec<Episode
     let db = connection();
     let con = db.get()?;
 
-    Ok(Episode::belonging_to(parent)
+    Episode::belonging_to(parent)
         .order(epoch.desc())
         .limit(i64::from(limit))
-        .load::<Episode>(&*con)?)
+        .load::<Episode>(&*con)
+        .map_err(From::from)
 }
 
 pub fn get_source_from_uri(uri_: &str) -> Result<Source> {
@@ -194,7 +212,10 @@ pub fn get_source_from_uri(uri_: &str) -> Result<Source> {
 
     let db = connection();
     let con = db.get()?;
-    Ok(source.filter(uri.eq(uri_)).get_result::<Source>(&*con)?)
+    source
+        .filter(uri.eq(uri_))
+        .get_result::<Source>(&*con)
+        .map_err(From::from)
 }
 
 // pub fn get_podcast_from_title(title_: &str) -> QueryResult<Podcast> {
@@ -212,9 +233,10 @@ pub fn get_podcast_from_source_id(sid: i32) -> Result<Podcast> {
 
     let db = connection();
     let con = db.get()?;
-    Ok(podcast
+    podcast
         .filter(source_id.eq(sid))
-        .get_result::<Podcast>(&*con)?)
+        .get_result::<Podcast>(&*con)
+        .map_err(From::from)
 }
 
 pub fn get_episode_from_pk(con: &SqliteConnection, title_: &str, pid: i32) -> QueryResult<Episode> {
@@ -292,10 +314,9 @@ pub fn update_none_to_played_now(parent: &Podcast) -> Result<usize> {
 
     let epoch_now = Utc::now().timestamp() as i32;
     con.transaction(|| -> Result<usize> {
-        Ok(
-            diesel::update(Episode::belonging_to(parent).filter(played.is_null()))
-                .set(played.eq(Some(epoch_now)))
-                .execute(&*con)?,
-        )
+        diesel::update(Episode::belonging_to(parent).filter(played.is_null()))
+            .set(played.eq(Some(epoch_now)))
+            .execute(&*con)
+            .map_err(From::from)
     })
 }
