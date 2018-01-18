@@ -2,14 +2,19 @@
 //! Docs.
 
 use futures::future::*;
-use futures::prelude::*;
+// use futures::prelude::*;
 
 use hyper::Client;
 use hyper_tls::HttpsConnector;
 use tokio_core::reactor::Core;
 
+use rss;
+
 use Source;
+use dbqueries;
 use errors::*;
+use models::{IndexState, Insert, NewEpisode, NewEpisodeMinimal, Update};
+// use models::new_episode::NewEpisodeMinimal;
 // use Feed;
 
 use std;
@@ -32,7 +37,7 @@ pub fn pipeline<S: IntoIterator<Item = Source>>(sources: S, ignore_etags: bool) 
         .into_iter()
         // FIXME: Make proper indexing futures instead of wrapping up existing
         // blocking functions
-        .map(|s| s.into_fututre_feed(&client, ignore_etags).map(|feed| feed.index_future()))
+        .map(|s| s.into_feed(&client, ignore_etags).and_then(|feed| feed.index()))
         .collect();
 
     let f = core.run(collect_futures(list))?;
@@ -43,9 +48,54 @@ pub fn pipeline<S: IntoIterator<Item = Source>>(sources: S, ignore_etags: bool) 
     Ok(())
 }
 
+#[allow(dead_code)]
+pub(crate) fn determine_episode_state(
+    ep: NewEpisodeMinimal,
+    item: &rss::Item,
+) -> Result<IndexState<NewEpisode>> {
+    // determine if feed exists
+    let exists = dbqueries::episode_exists(ep.title(), ep.podcast_id())?;
+
+    if !exists {
+        return Ok(IndexState::Index(ep.into_new_episode(item)));
+    } else {
+        let old = dbqueries::get_episode_minimal_from_pk(ep.title(), ep.podcast_id())?;
+        let rowid = old.rowid();
+
+        if ep != old.into() {
+            return Ok(IndexState::Update((ep.into_new_episode(item), rowid)));
+        } else {
+            return Ok(IndexState::NotChanged);
+        }
+    }
+}
+
+#[allow(dead_code)]
+pub(crate) fn model_state<T: Insert + Update>(state: IndexState<T>) -> Result<()> {
+    match state {
+        IndexState::NotChanged => Ok(()),
+        IndexState::Index(t) => t.insert(),
+        IndexState::Update((t, rowid)) => t.update(rowid),
+    }
+}
+
+#[allow(dead_code)]
+pub(crate) fn model_state_future<T: Insert + Update>(
+    state: IndexState<T>,
+) -> Box<FutureResult<(), Error>> {
+    Box::new(result(model_state(state)))
+}
+
+#[allow(dead_code)]
+pub(crate) fn glue(item: &rss::Item, id: i32) -> Result<IndexState<NewEpisode>> {
+    let e = NewEpisodeMinimal::new(item, id)?;
+    determine_episode_state(e, &item)
+}
+
 // Weird magic from #rust irc channel
 // kudos to remexre
-fn collect_futures<F>(
+/// docs
+pub fn collect_futures<F>(
     futures: Vec<F>,
 ) -> Box<Future<Item = Vec<std::result::Result<F::Item, F::Error>>, Error = Error>>
 where

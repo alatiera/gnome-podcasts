@@ -1,19 +1,13 @@
 //! Index Feeds.
 
-use diesel::prelude::*;
 use futures::future::*;
-use futures::prelude::*;
-use rayon::iter::IntoParallelIterator;
+// use futures::prelude::*;
+use errors::*;
+use models::{NewEpisode, NewPodcast, Podcast};
 use rayon::prelude::*;
 use rss;
-
-use database::connection;
-use dbqueries;
-use errors::*;
-use models::{NewEpisode, NewPodcast, Podcast, Source};
-
-// #[cfg(test)]
-// use models::queryables::Episode;
+// use models::{IndexState, Source};
+// use pipeline::*;
 
 #[derive(Debug)]
 /// Wrapper struct that hold a `Source` id and the `rss::Channel`
@@ -24,11 +18,6 @@ pub struct Feed {
 }
 
 impl Feed {
-    /// Constructor that consumes a `Source` and returns the corresponding `Feed` struct.
-    pub fn from_source(s: &mut Source) -> Result<Feed> {
-        s.into_feed(false)
-    }
-
     /// Constructor that consumes a `Source` and a `rss::Channel` returns a `Feed` struct.
     pub fn from_channel_source(channel: rss::Channel, source_id: i32) -> Feed {
         Feed { channel, source_id }
@@ -40,31 +29,15 @@ impl Feed {
         self.index_channel_items(&pd)
     }
 
-    /// Docs
-    // FIXME: docs
-    // FIXME: lifetime stuff
-    pub fn index_future(self) -> Box<Future<Item = (), Error = Error>> {
-        let indx = self.parse_podcast_futture()
-            .and_then(|pd| pd.into_podcast())
-            .and_then(move |pd| self.index_channel_items(&pd));
-
-        Box::new(indx)
-    }
-
     // TODO: Refactor transcactions and find a way to do it in parallel.
     fn index_channel_items(&self, pd: &Podcast) -> Result<()> {
         let episodes = self.parse_channel_items(pd);
-        let db = connection();
-        let con = db.get()?;
 
-        let _ = con.transaction::<(), Error, _>(|| {
-            episodes.into_iter().for_each(|x| {
-                if let Err(err) = x.index(&con) {
-                    error!("Failed to index episode: {:?}.", x.title());
-                    error!("Error msg: {}", err);
-                };
-            });
-            Ok(())
+        episodes.iter().for_each(|x| {
+            if let Err(err) = x.index() {
+                error!("Failed to index episode: {:?}.", x.title());
+                error!("Error msg: {}", err);
+            };
         });
         Ok(())
     }
@@ -73,6 +46,7 @@ impl Feed {
         NewPodcast::new(&self.channel, self.source_id)
     }
 
+    #[allow(dead_code)]
     fn parse_podcast_futture(&self) -> Box<FutureResult<NewPodcast, Error>> {
         Box::new(ok(self.parse_podcast()))
     }
@@ -86,69 +60,28 @@ impl Feed {
 
         new_episodes
     }
-
-    // This could also retrurn a FutureResult<Vec<FutureNewEpisode, Error>>, Error> Instead
-    #[allow(dead_code)]
-    fn parse_episodes_future(&self, pd: &Podcast) -> Box<Vec<FutureResult<NewEpisode, Error>>> {
-        let episodes = self.channel
-            .items()
-            .par_iter()
-            .map(|item| result(NewEpisode::new(item, pd.id())))
-            .collect();
-
-        Box::new(episodes)
-    }
-
-    // #[cfg(test)]
-    // /// This returns only the episodes in the xml feed.
-    // fn get_episodes(&self) -> Result<Vec<Episode>> {
-    //     let pd = self.get_podcast()?;
-    //     let eps = self.parse_channel_items(&pd);
-
-    //     let db = connection();
-    //     let con = db.get()?;
-    //     let episodes: Vec<_> = eps.into_iter()
-    //         .filter_map(|ep| ep.into_episode(&con).ok())
-    //         .collect();
-
-    //     Ok(episodes)
-    // }
 }
+//     fn parse_channel_items2(
+//         &self,
+//         pd: &Podcast,
+//     ) -> (Vec<IndexState<NewEpisode>>, Vec<IndexState<NewEpisode>>) {
+//         let items = self.channel.items();
+//         let (insert, update): (Vec<_>, Vec<_>) = items
+//             .into_iter()
+//             .filter_map(|item| glue(item, pd.id()).ok())
+//             .filter(|&state| state == IndexState::NotChanged)
+//             .partition(|&state| state == IndexState::Index);
 
-/// Index a "list" of `Source`s.
-pub fn index_loop<S: IntoParallelIterator<Item = Source>>(sources: S) {
-    sources
-        .into_par_iter()
-        .filter_map(|mut source| {
-            let foo = Feed::from_source(&mut source);
-            if let Err(err) = foo {
-                error!("Error: {}", err);
-                None
-            } else {
-                foo.ok()
-            }
-        })
-        // Handle the indexing of a `Feed` into the Database.
-        .for_each(|feed| {
-            if let Err(err) = feed.index() {
-                error!("Error While trying to update the database.");
-                error!("Error msg: {}", err);
-            }
-        });
-
-    info!("Indexing done.");
-}
-
-/// Retrieves all `Sources` from the database and updates/indexes them.
-pub fn index_all() -> Result<()> {
-    let sources = dbqueries::get_sources()?;
-    index_loop(sources);
-    Ok(())
-}
+//         (insert, update)
+//     }
+// }
 
 #[cfg(test)]
 mod tests {
+    use Source;
     use database::truncate_db;
+    use dbqueries;
+    use pipeline;
     use std::fs;
     use std::io::BufReader;
 
@@ -169,11 +102,12 @@ mod tests {
             // Index the urls into the source table.
             Source::from_url(url).unwrap();
         });
+        let sources = dbqueries::get_sources().unwrap();
+        pipeline::pipeline(sources, true).unwrap();
 
-        index_all().unwrap();
-
+        let sources = dbqueries::get_sources().unwrap();
         // Run again to cover Unique constrains erros.
-        index_all().unwrap();
+        pipeline::pipeline(sources, true).unwrap()
     }
 
     #[test]

@@ -5,7 +5,8 @@ use diesel::prelude::*;
 
 use database::connection;
 use dbqueries;
-use models::{Insert, Update};
+// use models::{Insert, Update};
+use models::Insert;
 use models::Source;
 use schema::source;
 
@@ -24,9 +25,14 @@ pub(crate) struct NewSource {
 }
 
 impl Insert for NewSource {
-    fn insert(&self, con: &SqliteConnection) -> QueryResult<usize> {
+    fn insert(&self) -> Result<()> {
         use schema::source::dsl::*;
-        diesel::insert_into(source).values(self).execute(&*con)
+        let db = connection();
+        let con = db.get()?;
+
+        // FIXME: Insert or ignore
+        let _ = diesel::insert_into(source).values(self).execute(&*con);
+        Ok(())
     }
 }
 
@@ -39,19 +45,9 @@ impl NewSource {
         }
     }
 
-    fn index(&self) -> Result<()> {
-        let db = connection();
-        let con = db.get()?;
-
-        // Throw away the result like `insert or ignore`
-        // Diesel deos not support `insert or ignore` yet.
-        let _ = self.insert(&con);
-        Ok(())
-    }
-
     // Look out for when tryinto lands into stable.
     pub(crate) fn into_source(self) -> Result<Source> {
-        self.index()?;
+        self.insert()?;
         dbqueries::get_source_from_uri(&self.uri)
     }
 }

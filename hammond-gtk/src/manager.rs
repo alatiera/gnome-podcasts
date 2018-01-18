@@ -117,8 +117,11 @@ pub fn add(id: i32, directory: &str, sender: Sender<Action>) {
 mod tests {
     use super::*;
 
+    use hyper::Client;
+    use hyper_tls::HttpsConnector;
+    use tokio_core::reactor::Core;
+
     use hammond_data::{Episode, Source};
-    use hammond_data::database;
     use hammond_data::dbqueries;
     use hammond_data::utils::get_download_folder;
 
@@ -133,25 +136,26 @@ mod tests {
     // THIS IS NOT A RELIABLE TEST
     // Just quick sanity check
     fn test_start_dl() {
-        let url = "http://www.newrustacean.com/feed.xml";
+        let mut core = Core::new().unwrap();
+        let client = Client::configure()
+            .connector(HttpsConnector::new(4, &core.handle()).unwrap())
+            .build(&core.handle());
 
+        let url = "http://www.newrustacean.com/feed.xml";
         // Create and index a source
-        let mut source = Source::from_url(url).unwrap();
+        let source = Source::from_url(url).unwrap();
         // Copy it's id
         let sid = source.id();
-
-        // Convert Source it into a Feed and index it
-        let feed = source.into_feed(true).unwrap();
+        // Convert Source it into a future Feed and index it
+        let future = source.into_feed(&client, true);
+        let feed = core.run(future).unwrap();
         feed.index().unwrap();
 
         // Get the Podcast
         let pd = dbqueries::get_podcast_from_source_id(sid).unwrap();
         // Get an episode
-        let episode: Episode = {
-            let con = database::connection();
-            dbqueries::get_episode_from_pk(&*con.get().unwrap(), "e000: Hello, world!", pd.id())
-                .unwrap()
-        };
+        let episode: Episode =
+            dbqueries::get_episode_from_pk("e000: Hello, world!", pd.id()).unwrap();
 
         let (sender, _rx) = channel();
 

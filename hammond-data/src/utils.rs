@@ -153,7 +153,7 @@ mod tests {
 
     use self::tempdir::TempDir;
     use super::*;
-    use database::{connection, truncate_db};
+    use database::truncate_db;
     use models::new_episode::NewEpisodeBuilder;
     use std::fs::File;
     use std::io::Write;
@@ -169,14 +169,12 @@ mod tests {
         writeln!(tmp_file, "Foooo").unwrap();
 
         // Setup episodes
-        let db = connection();
-        let con = db.get().unwrap();
         let n1 = NewEpisodeBuilder::default()
             .title("foo_bar".to_string())
             .podcast_id(0)
             .build()
             .unwrap()
-            .into_episode(&con)
+            .into_episode()
             .unwrap();
 
         let n2 = NewEpisodeBuilder::default()
@@ -184,15 +182,14 @@ mod tests {
             .podcast_id(1)
             .build()
             .unwrap()
-            .into_episode(&con)
+            .into_episode()
             .unwrap();
 
-        let mut ep1 = dbqueries::get_episode_from_pk(&con, n1.title(), n1.podcast_id()).unwrap();
-        let mut ep2 = dbqueries::get_episode_from_pk(&con, n2.title(), n2.podcast_id()).unwrap();
+        let mut ep1 = dbqueries::get_episode_from_pk(n1.title(), n1.podcast_id()).unwrap();
+        let mut ep2 = dbqueries::get_episode_from_pk(n2.title(), n2.podcast_id()).unwrap();
         ep1.set_local_uri(Some(valid_path.to_str().unwrap()));
         ep2.set_local_uri(Some(bad_path.to_str().unwrap()));
 
-        drop(con);
         ep1.save().unwrap();
         ep2.save().unwrap();
 
@@ -214,24 +211,15 @@ mod tests {
 
         let _tmp_dir = helper_db();
         download_checker().unwrap();
-        let episode = {
-            let db = connection();
-            let con = db.get().unwrap();
-            dbqueries::get_episode_from_pk(&con, "bar_baz", 1).unwrap()
-        };
+        let episode = dbqueries::get_episode_from_pk("bar_baz", 1).unwrap();
         assert!(episode.local_uri().is_none());
     }
 
     #[test]
     fn test_download_cleaner() {
         let _tmp_dir = helper_db();
-        let mut episode: EpisodeCleanerQuery = {
-            let db = connection();
-            let con = db.get().unwrap();
-            dbqueries::get_episode_from_pk(&con, "foo_bar", 0)
-                .unwrap()
-                .into()
-        };
+        let mut episode: EpisodeCleanerQuery =
+            dbqueries::get_episode_from_pk("foo_bar", 0).unwrap().into();
 
         let valid_path = episode.local_uri().unwrap().to_owned();
         delete_local_content(&mut episode).unwrap();
@@ -241,11 +229,7 @@ mod tests {
     #[test]
     fn test_played_cleaner_expired() {
         let _tmp_dir = helper_db();
-        let mut episode = {
-            let db = connection();
-            let con = db.get().unwrap();
-            dbqueries::get_episode_from_pk(&con, "foo_bar", 0).unwrap()
-        };
+        let mut episode = dbqueries::get_episode_from_pk("foo_bar", 0).unwrap();
         let now_utc = Utc::now().timestamp() as i32;
         // let limit = now_utc - 172_800;
         let epoch = now_utc - 200_000;
@@ -261,11 +245,7 @@ mod tests {
     #[test]
     fn test_played_cleaner_none() {
         let _tmp_dir = helper_db();
-        let mut episode = {
-            let db = connection();
-            let con = db.get().unwrap();
-            dbqueries::get_episode_from_pk(&con, "foo_bar", 0).unwrap()
-        };
+        let mut episode = dbqueries::get_episode_from_pk("foo_bar", 0).unwrap();
         let now_utc = Utc::now().timestamp() as i32;
         // limit = 172_800;
         let epoch = now_utc - 20_000;

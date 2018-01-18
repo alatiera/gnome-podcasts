@@ -29,20 +29,31 @@ pub(crate) struct NewPodcast {
 }
 
 impl Insert for NewPodcast {
-    fn insert(&self, con: &SqliteConnection) -> QueryResult<usize> {
+    fn insert(&self) -> Result<()> {
         use schema::podcast::dsl::*;
-        diesel::insert_into(podcast).values(self).execute(&*con)
+        let db = connection();
+        let con = db.get()?;
+
+        diesel::insert_into(podcast)
+            .values(self)
+            .execute(&*con)
+            .map(|_| ())
+            .map_err(From::from)
     }
 }
 
 impl Update for NewPodcast {
-    fn update(&self, con: &SqliteConnection, podcast_id: i32) -> QueryResult<usize> {
+    fn update(&self, podcast_id: i32) -> Result<()> {
         use schema::podcast::dsl::*;
+        let db = connection();
+        let con = db.get()?;
 
         info!("Updating {}", self.title);
         diesel::update(podcast.filter(id.eq(podcast_id)))
             .set(self)
             .execute(&*con)
+            .map(|_| ())
+            .map_err(From::from)
     }
 }
 
@@ -87,19 +98,17 @@ impl NewPodcast {
     pub(crate) fn index(&self) -> Result<()> {
         let pd = dbqueries::get_podcast_from_source_id(self.source_id);
 
-        let db = connection();
-        let con = db.get()?;
         match pd {
             Ok(foo) => {
                 if (foo.link() != self.link) || (foo.title() != self.title)
                     || (foo.image_uri() != self.image_uri.as_ref().map(|x| x.as_str()))
                 {
                     info!("NewEpisode: {:?}\n OldEpisode: {:?}", self, foo);
-                    self.update(&con, foo.id())?;
+                    self.update(foo.id())?;
                 }
             }
             Err(_) => {
-                self.insert(&con)?;
+                self.insert()?;
             }
         }
         Ok(())

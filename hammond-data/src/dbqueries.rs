@@ -6,7 +6,8 @@ use diesel::prelude::*;
 
 use database::connection;
 use errors::*;
-use models::{Episode, EpisodeCleanerQuery, EpisodeWidgetQuery, Podcast, PodcastCoverQuery, Source};
+use models::{Episode, EpisodeCleanerQuery, EpisodeMinimal, EpisodeWidgetQuery, Podcast,
+             PodcastCoverQuery, Source};
 
 pub fn get_sources() -> Result<Vec<Source>> {
     use schema::source::dsl::*;
@@ -238,13 +239,29 @@ pub fn get_podcast_from_source_id(sid: i32) -> Result<Podcast> {
         .map_err(From::from)
 }
 
-pub fn get_episode_from_pk(con: &SqliteConnection, title_: &str, pid: i32) -> QueryResult<Episode> {
+pub fn get_episode_from_pk(title_: &str, pid: i32) -> Result<Episode> {
     use schema::episode::dsl::*;
+    let db = connection();
+    let con = db.get()?;
 
     episode
         .filter(title.eq(title_))
         .filter(podcast_id.eq(pid))
         .get_result::<Episode>(&*con)
+        .map_err(From::from)
+}
+
+pub fn get_episode_minimal_from_pk(title_: &str, pid: i32) -> Result<EpisodeMinimal> {
+    use schema::episode::dsl::*;
+    let db = connection();
+    let con = db.get()?;
+
+    episode
+        .select((rowid, title, uri, epoch, duration, guid, podcast_id))
+        .filter(title.eq(title_))
+        .filter(podcast_id.eq(pid))
+        .get_result::<EpisodeMinimal>(&*con)
+        .map_err(From::from)
 }
 
 pub fn remove_feed(pd: &Podcast) -> Result<()> {

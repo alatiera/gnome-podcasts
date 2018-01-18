@@ -21,6 +21,13 @@ extern crate regex;
 extern crate send_cell;
 // extern crate rayon;
 
+#[cfg(test)]
+extern crate hyper;
+#[cfg(test)]
+extern crate hyper_tls;
+#[cfg(test)]
+extern crate tokio_core;
+
 // use rayon::prelude::*;
 use log::LogLevel;
 

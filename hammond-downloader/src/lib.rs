@@ -13,3 +13,8 @@ extern crate tempdir;
 
 pub mod downloader;
 pub mod errors;
+
+#[cfg(test)]
+extern crate hyper_tls;
+#[cfg(test)]
+extern crate tokio_core;

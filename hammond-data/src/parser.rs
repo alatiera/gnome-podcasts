@@ -2,7 +2,6 @@ use rss::Item;
 
 /// Parses an Item Itunes extension and returns it's duration value in seconds.
 // FIXME: Rafactor
-// TODO: Write tests
 #[allow(non_snake_case)]
 pub(crate) fn parse_itunes_duration(item: &Item) -> Option<i32> {
     let duration = item.itunes_ext().map(|s| s.duration())??;

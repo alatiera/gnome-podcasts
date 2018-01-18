@@ -32,25 +32,6 @@ static URLS: &[(&[u8], &str)] = &[
     (LAS, "https://feeds2.feedburner.com/TheLinuxActionShow"),
 ];
 
-static URLS2: &[&str] = &[
-    "https://www.pcper.com/rss/podcasts-mp3.rss",
-    "https://feeds.feedburner.com/InterceptedWithJeremyScahill",
-    "http://www.badvoltage.org/feed/ogg/",
-    "https://www.theguardian.com/news/series/the-audio-long-read/podcast.xml",
-    "http://feeds.feedburner.com/coderradiomp3",
-    "https://rss.art19.com/steal-the-stars",
-    "https://feeds.mozilla-podcasts.org/irl",
-    "http://economicupdate.libsyn.com/rss",
-    "http://feeds.feedburner.com/linuxunplugged",
-    "http://ubuntupodcast.org/feed/ogg/",
-    "http://www.newrustacean.com/feed.xml",
-    "http://feeds.propublica.org/propublica/podcast",
-    "https://rss.acast.com/thetipoff",
-    "http://feeds.soundcloud.com/users/soundcloud:users:277306156/sounds.rss",
-    "http://revolutionspodcast.libsyn.com/rss/",
-    "https://www.greaterthancode.com/feed/podcast",
-];
-
 fn index_urls() {
     let feeds: Vec<_> = URLS.iter()
         .map(|&(buff, url)| {
@@ -85,23 +66,9 @@ fn bench_index_unchanged_feeds(b: &mut Bencher) {
 }
 
 #[bench]
-fn bench_get_normal_feeds(b: &mut Bencher) {
-    // Index first so it will only bench the comparison test case.
-    truncate_db().unwrap();
-    URLS2.iter().for_each(|url| {
-        Source::from_url(url).unwrap();
-    });
-
-    b.iter(|| {
-        let sources = hammond_data::dbqueries::get_sources().unwrap();
-        index_loop(sources);
-    });
-}
-
-#[bench]
 fn bench_get_future_feeds(b: &mut Bencher) {
     truncate_db().unwrap();
-    URLS2.iter().for_each(|url| {
+    URLS.iter().for_each(|&(_, url)| {
         Source::from_url(url).unwrap();
     });
 

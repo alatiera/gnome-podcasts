@@ -1,5 +1,4 @@
 use diesel::SaveChangesDsl;
-use reqwest;
 use rss::Channel;
 
 use hyper;
@@ -17,7 +16,6 @@ use feed::Feed;
 use models::NewSource;
 use schema::source;
 
-use std::io::Read;
 use std::str::FromStr;
 
 #[derive(Queryable, Identifiable, AsChangeset, PartialEq)]
@@ -79,26 +77,8 @@ impl Source {
 
     /// Extract Etag and LastModifier from res, and update self and the
     /// corresponding db row.
-    fn update_etag(&mut self, res: &reqwest::Response) -> Result<()> {
-        let headers = res.headers();
-
-        let etag = headers.get::<ETag>();
-        let lmod = headers.get::<LastModified>();
-
-        if self.http_etag() != etag.map(|x| x.tag()) || self.last_modified != lmod.map(|x| {
-            format!("{}", x)
-        }) {
-            self.http_etag = etag.map(|x| x.tag().to_string().to_owned());
-            self.last_modified = lmod.map(|x| format!("{}", x));
-            self.save()?;
-        }
-
-        Ok(())
-    }
-
-    /// Extract Etag and LastModifier from res, and update self and the
-    /// corresponding db row.
-    fn update_etag2(mut self, res: &Response) -> Result<()> {
+    // FIXME: With &mut self the closure is of type FnMut instead of FnOnce.
+    fn update_etag(mut self, res: &Response) -> Result<()> {
         let headers = res.headers();
 
         let etag = headers.get::<ETag>();
@@ -123,43 +103,7 @@ impl Source {
     ///
     /// Consumes `self` and Returns the corresponding `Feed` Object.
     // TODO: Refactor into TryInto once it lands on stable.
-    pub fn into_feed(&mut self, ignore_etags: bool) -> Result<Feed> {
-        use reqwest::header::{EntityTag, Headers, HttpDate, IfModifiedSince, IfNoneMatch};
-
-        let mut headers = Headers::new();
-
-        if !ignore_etags {
-            if let Some(foo) = self.http_etag() {
-                headers.set(IfNoneMatch::Items(vec![
-                    EntityTag::new(true, foo.to_owned()),
-                ]));
-            }
-
-            if let Some(foo) = self.last_modified() {
-                if let Ok(x) = foo.parse::<HttpDate>() {
-                    headers.set(IfModifiedSince(x));
-                }
-            }
-        }
-
-        let client = reqwest::Client::builder().referer(false).build()?;
-        let mut res = client.get(self.uri()).headers(headers).send()?;
-
-        info!("GET to {} , returned: {}", self.uri(), res.status());
-
-        self.update_etag(&res)?;
-        match_status(res.status())?;
-
-        let mut buf = String::new();
-        res.read_to_string(&mut buf)?;
-        let chan = Channel::from_str(&buf)?;
-
-        Ok(Feed::from_channel_source(chan, self.id))
-    }
-
-    // FIXME:
-    /// Docs
-    pub fn into_fututre_feed(
+    pub fn into_feed(
         self,
         client: &Client<HttpsConnector<HttpConnector>>,
         ignore_etags: bool,
@@ -168,7 +112,7 @@ impl Source {
         let feed = request_constructor(&self, client, ignore_etags)
             .map_err(From::from)
             .and_then(move |res| {
-                self.update_etag2(&res)?;
+                self.update_etag(&res)?;
                 Ok(res)
             })
             .and_then(|res| -> Result<Response> {
@@ -278,7 +222,7 @@ mod tests {
         let url = "http://www.newrustacean.com/feed.xml";
         let source = Source::from_url(url).unwrap();
 
-        let feed = source.into_fututre_feed(&client, true);
+        let feed = source.into_feed(&client, true);
 
         assert!(core.run(feed).is_ok());
     }

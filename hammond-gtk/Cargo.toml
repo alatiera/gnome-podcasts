@@ -30,3 +30,8 @@ path = "../hammond-data"
 
 [dependencies.hammond-downloader]
 path = "../hammond-downloader"
+
+[dev-dependencies]
+hyper-tls = "0.1.2"
+tokio-core = "0.1.12"
+hyper = "0.11.12"

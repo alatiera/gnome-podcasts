@@ -1,11 +1,13 @@
-use diesel;
 use diesel::prelude::*;
+
+use diesel;
 use schema::episode;
 
 use ammonia;
 use rfc822_sanitizer::parse_from_rfc2822_with_fallback as parse_rfc822;
 use rss;
 
+use database::connection;
 use dbqueries;
 use errors::*;
 use models::{Episode, Insert, Update};
@@ -44,43 +46,49 @@ impl From<NewEpisodeMinimal> for NewEpisode {
 }
 
 impl Insert for NewEpisode {
-    fn insert(&self, con: &SqliteConnection) -> QueryResult<usize> {
+    fn insert(&self) -> Result<()> {
         use schema::episode::dsl::*;
-        diesel::insert_into(episode).values(self).execute(&*con)
+        let db = connection();
+        let con = db.get()?;
+
+        info!("Indexing {:?}", self.title);
+        diesel::insert_into(episode)
+            .values(self)
+            .execute(&*con)
+            .map_err(From::from)
+            .map(|_| ())
     }
 }
 
 impl Update for NewEpisode {
-    fn update(&self, con: &SqliteConnection, episode_id: i32) -> QueryResult<usize> {
+    fn update(&self, episode_id: i32) -> Result<()> {
         use schema::episode::dsl::*;
+        let db = connection();
+        let con = db.get()?;
 
         info!("Updating {:?}", self.title);
         diesel::update(episode.filter(rowid.eq(episode_id)))
             .set(self)
             .execute(&*con)
+            .map_err(From::from)
+            .map(|_| ())
     }
 }
 
 impl NewEpisode {
-    #[allow(dead_code)]
     /// Parses an `rss::Item` into a `NewEpisode` Struct.
     pub(crate) fn new(item: &rss::Item, podcast_id: i32) -> Result<Self> {
         NewEpisodeMinimal::new(item, podcast_id).map(|ep| ep.into_new_episode(item))
     }
 
-    // TODO: Refactor into batch indexes instead.
     #[allow(dead_code)]
-    pub(crate) fn into_episode(self, con: &SqliteConnection) -> Result<Episode> {
-        self.index(con)?;
-        Ok(dbqueries::get_episode_from_pk(
-            con,
-            &self.title,
-            self.podcast_id,
-        )?)
+    pub(crate) fn into_episode(self) -> Result<Episode> {
+        self.index()?;
+        dbqueries::get_episode_from_pk(&self.title, self.podcast_id)
     }
 
-    pub(crate) fn index(&self, con: &SqliteConnection) -> QueryResult<()> {
-        let ep = dbqueries::get_episode_from_pk(con, &self.title, self.podcast_id);
+    pub(crate) fn index(&self) -> Result<()> {
+        let ep = dbqueries::get_episode_from_pk(&self.title, self.podcast_id);
 
         match ep {
             Ok(foo) => {
@@ -92,11 +100,11 @@ impl NewEpisode {
                     || foo.uri() != self.uri.as_ref().map(|s| s.as_str())
                     || foo.duration() != self.duration
                 {
-                    self.update(con, foo.rowid())?;
+                    self.update(foo.rowid())?;
                 }
             }
             Err(_) => {
-                self.insert(con)?;
+                self.insert()?;
             }
         }
         Ok(())
