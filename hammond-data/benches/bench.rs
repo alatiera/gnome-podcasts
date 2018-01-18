@@ -24,6 +24,12 @@ const RADIO: &[u8] = include_bytes!("feeds/coderradiomp3.xml");
 const SNAP: &[u8] = include_bytes!("feeds/techsnapmp3.xml");
 const LAS: &[u8] = include_bytes!("feeds/TheLinuxActionShow.xml");
 
+// This feed has HUGE descripion and summary fields which can be very
+// very expensive to parse.
+const CODE: &[u8] = include_bytes!("feeds/GreaterThanCode.xml");
+// Relative small feed
+const STARS: &[u8] = include_bytes!("feeds/StealTheStars.xml");
+
 static URLS: &[(&[u8], &str)] = &[
     (PCPER, "https://www.pcper.com/rss/podcasts-mp3.rss"),
     (UNPLUGGED, "http://feeds.feedburner.com/linuxunplugged"),
@@ -75,5 +81,31 @@ fn bench_get_future_feeds(b: &mut Bencher) {
     b.iter(|| {
         let sources = hammond_data::dbqueries::get_sources().unwrap();
         hammond_data::pipeline::pipeline(sources, false).unwrap();
+    })
+}
+
+#[bench]
+fn bench_index_greater_than_code(b: &mut Bencher) {
+    let url = "https://www.greaterthancode.com/feed/podcast";
+
+    b.iter(|| {
+        let s = Source::from_url(url).unwrap();
+        // parse it into a channel
+        let chan = rss::Channel::read_from(BufReader::new(CODE)).unwrap();
+        let feed = Feed::from_channel_source(chan, s.id());
+        feed.index().unwrap();
+    })
+}
+
+#[bench]
+fn bench_index_steal_the_stars(b: &mut Bencher) {
+    let url = "https://rss.art19.com/steal-the-stars";
+
+    b.iter(|| {
+        let s = Source::from_url(url).unwrap();
+        // parse it into a channel
+        let chan = rss::Channel::read_from(BufReader::new(STARS)).unwrap();
+        let feed = Feed::from_channel_source(chan, s.id());
+        feed.index().unwrap();
     })
 }
