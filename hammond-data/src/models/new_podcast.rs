@@ -69,6 +69,7 @@ impl Index for NewPodcast {
                 // This is messy
                 if (self.link() != old.link()) || (self.title() != old.title())
                     || (self.image_uri() != old.image_uri())
+                    || (self.description() != old.description())
                 {
                     self.update(old.id())
                 } else {

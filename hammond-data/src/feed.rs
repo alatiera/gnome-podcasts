@@ -4,12 +4,11 @@ use futures::future::*;
 use itertools::{Either, Itertools};
 use rayon::prelude::*;
 use rss;
-// use futures::prelude::*;
 
 use dbqueries;
 use errors::*;
 use models::{IndexState, Update};
-use models::{NewPodcast, Podcast};
+use models::{NewEpisode, NewPodcast, Podcast};
 use pipeline::*;
 
 #[derive(Debug)]
@@ -32,17 +31,23 @@ impl Feed {
         self.index_channel_items(&pd)
     }
 
-    #[allow(dead_code)]
+    /// Index the contents of the RSS `Feed` into the database.
+    pub fn index_async(self) -> Box<Future<Item = (), Error = Error>> {
+        let fut = self.parse_podcast_async()
+            .and_then(|pd| pd.into_podcast())
+            .and_then(move |pd| self.index_channel_items_async(&pd));
+
+        Box::new(fut)
+    }
+
     fn parse_podcast(&self) -> NewPodcast {
         NewPodcast::new(&self.channel, self.source_id)
     }
 
-    #[allow(dead_code)]
-    fn parse_podcast_futture(&self) -> Box<FutureResult<NewPodcast, Error>> {
+    fn parse_podcast_async(&self) -> Box<FutureResult<NewPodcast, Error>> {
         Box::new(ok(self.parse_podcast()))
     }
 
-    #[allow(dead_code)]
     fn index_channel_items(&self, pd: &Podcast) -> Result<()> {
         let items = self.channel.items();
         let (insert, update): (Vec<_>, Vec<_>) = items
@@ -69,6 +74,51 @@ impl Feed {
         });
 
         Ok(())
+    }
+
+    fn index_channel_items_async(&self, pd: &Podcast) -> Box<Future<Item = (), Error = Error>> {
+        let fut = self.get_stuff(pd)
+            .and_then(|(insert, update)| {
+                info!("Indexing {} episodes.", insert.len());
+                dbqueries::index_new_episodes(insert.as_slice())?;
+                Ok((insert, update))
+            })
+            .map(|(_, update)| {
+                info!("Updating {} episodes.", update.len());
+                update.iter().for_each(|&(ref ep, rowid)| {
+                    if let Err(err) = ep.update(rowid) {
+                        error!("Failed to index episode: {:?}.", ep.title());
+                        error!("Error msg: {}", err);
+                    };
+                })
+            });
+
+        Box::new(fut)
+    }
+
+    fn get_stuff(
+        &self,
+        pd: &Podcast,
+    ) -> Box<Future<Item = (Vec<NewEpisode>, Vec<(NewEpisode, i32)>), Error = Error>> {
+        let (insert, update): (Vec<_>, Vec<_>) = self.channel
+            .items()
+            .into_iter()
+            .map(|item| glue_async(item, pd.id()))
+            .map(|fut| {
+                fut.and_then(|x| match x {
+                    IndexState::NotChanged => bail!("Nothing to do here."),
+                    _ => Ok(x),
+                })
+            })
+            .flat_map(|fut| fut.wait())
+            .partition_map(|state| match state {
+                IndexState::Index(e) => Either::Left(e),
+                IndexState::Update(e) => Either::Right(e),
+                // How not to use the unimplemented macro...
+                IndexState::NotChanged => unimplemented!(),
+            });
+
+        Box::new(ok((insert, update)))
     }
 }
 

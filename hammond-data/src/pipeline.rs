@@ -37,7 +37,7 @@ pub fn pipeline<S: IntoIterator<Item = Source>>(sources: S, ignore_etags: bool) 
         .into_iter()
         // FIXME: Make proper indexing futures instead of wrapping up existing
         // blocking functions
-        .map(|s| s.into_feed(&client, ignore_etags).and_then(|feed| feed.index()))
+        .map(|s| s.into_feed(&client, ignore_etags).and_then(|feed| feed.index_async()))
         .collect();
 
     let f = core.run(collect_futures(list))?;
@@ -71,6 +71,16 @@ fn determine_ep_state(ep: NewEpisodeMinimal, item: &rss::Item) -> Result<IndexSt
 pub(crate) fn glue(item: &rss::Item, id: i32) -> Result<IndexState<NewEpisode>> {
     let e = NewEpisodeMinimal::new(item, id)?;
     determine_ep_state(e, &item)
+}
+
+#[allow(dead_code)]
+pub(crate) fn glue_async<'a>(
+    item: &'a rss::Item,
+    id: i32,
+) -> Box<Future<Item = IndexState<NewEpisode>, Error = Error> + 'a> {
+    Box::new(
+        result(NewEpisodeMinimal::new(item, id)).and_then(move |ep| determine_ep_state(ep, item)),
+    )
 }
 
 // Weird magic from #rust irc channel
