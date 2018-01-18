@@ -10,7 +10,7 @@ use rss;
 use database::connection;
 use dbqueries;
 use errors::*;
-use models::{Episode, Insert, Update};
+use models::{Episode, Index, Insert, Update};
 use parser;
 use utils::{replace_extra_spaces, url_cleaner};
 
@@ -75,6 +75,30 @@ impl Update for NewEpisode {
     }
 }
 
+impl Index for NewEpisode {
+    fn index(&self) -> Result<()> {
+        let exists = dbqueries::episode_exists(self.title(), self.podcast_id())?;
+
+        match exists {
+            false => self.insert(),
+            true => {
+                let old = dbqueries::get_episode_minimal_from_pk(self.title(), self.podcast_id())?;
+
+                // This is messy
+                if (self.title() != old.title()) || (self.uri() != old.uri())
+                    || (self.duration() != old.duration())
+                    || (self.epoch() != old.epoch())
+                    || (self.guid() != old.guid())
+                {
+                    self.update(old.rowid())
+                } else {
+                    Ok(())
+                }
+            }
+        }
+    }
+}
+
 impl NewEpisode {
     /// Parses an `rss::Item` into a `NewEpisode` Struct.
     pub(crate) fn new(item: &rss::Item, podcast_id: i32) -> Result<Self> {
@@ -85,29 +109,6 @@ impl NewEpisode {
     pub(crate) fn into_episode(self) -> Result<Episode> {
         self.index()?;
         dbqueries::get_episode_from_pk(&self.title, self.podcast_id)
-    }
-
-    pub(crate) fn index(&self) -> Result<()> {
-        let ep = dbqueries::get_episode_from_pk(&self.title, self.podcast_id);
-
-        match ep {
-            Ok(foo) => {
-                if foo.podcast_id() != self.podcast_id {
-                    error!("NEP pid: {}\nEP pid: {}", self.podcast_id, foo.podcast_id());
-                };
-
-                if foo.title() != self.title.as_str() || foo.epoch() != self.epoch
-                    || foo.uri() != self.uri.as_ref().map(|s| s.as_str())
-                    || foo.duration() != self.duration
-                {
-                    self.update(foo.rowid())?;
-                }
-            }
-            Err(_) => {
-                self.insert()?;
-            }
-        }
-        Ok(())
     }
 }
 
@@ -132,6 +133,10 @@ impl NewEpisode {
 
     pub(crate) fn epoch(&self) -> i32 {
         self.epoch
+    }
+
+    pub(crate) fn duration(&self) -> Option<i32> {
+        self.duration
     }
 
     pub(crate) fn length(&self) -> Option<i32> {

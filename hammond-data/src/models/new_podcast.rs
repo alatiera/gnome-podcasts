@@ -4,7 +4,7 @@ use diesel::prelude::*;
 use ammonia;
 use rss;
 
-use models::{Insert, Update};
+use models::{Index, Insert, Update};
 use models::Podcast;
 use schema::podcast;
 
@@ -57,6 +57,28 @@ impl Update for NewPodcast {
     }
 }
 
+impl Index for NewPodcast {
+    fn index(&self) -> Result<()> {
+        let exists = dbqueries::podcast_exists(self.source_id)?;
+
+        match exists {
+            false => self.insert(),
+            true => {
+                let old = dbqueries::get_podcast_from_source_id(self.source_id)?;
+
+                // This is messy
+                if (self.link() != old.link()) || (self.title() != old.title())
+                    || (self.image_uri() != old.image_uri())
+                {
+                    self.update(old.id())
+                } else {
+                    Ok(())
+                }
+            }
+        }
+    }
+}
+
 impl NewPodcast {
     /// Parses a `rss::Channel` into a `NewPodcast` Struct.
     pub(crate) fn new(chan: &rss::Channel, source_id: i32) -> NewPodcast {
@@ -92,26 +114,7 @@ impl NewPodcast {
     // Look out for when tryinto lands into stable.
     pub(crate) fn into_podcast(self) -> Result<Podcast> {
         self.index()?;
-        Ok(dbqueries::get_podcast_from_source_id(self.source_id)?)
-    }
-
-    pub(crate) fn index(&self) -> Result<()> {
-        let pd = dbqueries::get_podcast_from_source_id(self.source_id);
-
-        match pd {
-            Ok(foo) => {
-                if (foo.link() != self.link) || (foo.title() != self.title)
-                    || (foo.image_uri() != self.image_uri.as_ref().map(|x| x.as_str()))
-                {
-                    info!("NewEpisode: {:?}\n OldEpisode: {:?}", self, foo);
-                    self.update(foo.id())?;
-                }
-            }
-            Err(_) => {
-                self.insert()?;
-            }
-        }
-        Ok(())
+        dbqueries::get_podcast_from_source_id(self.source_id).map_err(From::from)
     }
 }
 

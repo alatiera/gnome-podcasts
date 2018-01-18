@@ -83,7 +83,7 @@ impl Episode {
         self.description = value.map(|x| x.to_string());
     }
 
-    /// Get the value of the `description`.
+    /// Get the Episode's `guid`.
     pub fn guid(&self) -> Option<&str> {
         self.guid.as_ref().map(|s| s.as_str())
     }
@@ -473,6 +473,11 @@ impl EpisodeMinimal {
     /// Represents the url(usually) that the media file will be located at.
     pub fn uri(&self) -> Option<&str> {
         self.uri.as_ref().map(|s| s.as_str())
+    }
+
+    /// Get the Episode's `guid`.
+    pub fn guid(&self) -> Option<&str> {
+        self.guid.as_ref().map(|s| s.as_str())
     }
 
     /// Get the `epoch` value.

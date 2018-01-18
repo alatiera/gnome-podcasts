@@ -35,3 +35,7 @@ pub trait Insert {
 pub trait Update {
     fn update(&self, i32) -> Result<()>;
 }
+
+pub trait Index: Insert + Update {
+    fn index(&self) -> Result<()>;
+}

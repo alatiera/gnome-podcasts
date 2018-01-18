@@ -8,7 +8,7 @@ use rss;
 
 use dbqueries;
 use errors::*;
-use models::{IndexState, Update};
+use models::{Index, IndexState, Update};
 use models::{NewEpisode, NewPodcast, Podcast};
 use pipeline::*;
 
