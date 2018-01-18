@@ -13,7 +13,7 @@ use rss;
 use Source;
 use dbqueries;
 use errors::*;
-use models::{IndexState, Insert, NewEpisode, NewEpisodeMinimal, Update};
+use models::{IndexState, NewEpisode, NewEpisodeMinimal};
 // use models::new_episode::NewEpisodeMinimal;
 // use Feed;
 
@@ -49,11 +49,8 @@ pub fn pipeline<S: IntoIterator<Item = Source>>(sources: S, ignore_etags: bool) 
 }
 
 #[allow(dead_code)]
-pub(crate) fn determine_episode_state(
-    ep: NewEpisodeMinimal,
-    item: &rss::Item,
-) -> Result<IndexState<NewEpisode>> {
-    // determine if feed exists
+fn determine_ep_state(ep: NewEpisodeMinimal, item: &rss::Item) -> Result<IndexState<NewEpisode>> {
+    // Check if feed exists
     let exists = dbqueries::episode_exists(ep.title(), ep.podcast_id())?;
 
     if !exists {
@@ -71,25 +68,9 @@ pub(crate) fn determine_episode_state(
 }
 
 #[allow(dead_code)]
-pub(crate) fn model_state<T: Insert + Update>(state: IndexState<T>) -> Result<()> {
-    match state {
-        IndexState::NotChanged => Ok(()),
-        IndexState::Index(t) => t.insert(),
-        IndexState::Update((t, rowid)) => t.update(rowid),
-    }
-}
-
-#[allow(dead_code)]
-pub(crate) fn model_state_future<T: Insert + Update>(
-    state: IndexState<T>,
-) -> Box<FutureResult<(), Error>> {
-    Box::new(result(model_state(state)))
-}
-
-#[allow(dead_code)]
 pub(crate) fn glue(item: &rss::Item, id: i32) -> Result<IndexState<NewEpisode>> {
     let e = NewEpisodeMinimal::new(item, id)?;
-    determine_episode_state(e, &item)
+    determine_ep_state(e, &item)
 }
 
 // Weird magic from #rust irc channel

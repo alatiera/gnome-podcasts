@@ -8,8 +8,8 @@ use rss;
 
 use dbqueries;
 use errors::*;
-use models::{Index, IndexState, Update};
-use models::{NewEpisode, NewPodcast, Podcast};
+use models::{IndexState, Update};
+use models::{NewPodcast, Podcast};
 use pipeline::*;
 
 #[derive(Debug)]
@@ -29,21 +29,7 @@ impl Feed {
     /// Index the contents of the RSS `Feed` into the database.
     pub fn index(&self) -> Result<()> {
         let pd = self.parse_podcast().into_podcast()?;
-        self.index_channel_items_sync(&pd)
-    }
-
-    // TODO: Refactor transcactions and find a way to do it in parallel.
-    #[allow(dead_code)]
-    fn index_channel_items(&self, pd: &Podcast) -> Result<()> {
-        let episodes = self.parse_channel_items(pd);
-
-        episodes.iter().for_each(|x| {
-            if let Err(err) = x.index() {
-                error!("Failed to index episode: {:?}.", x.title());
-                error!("Error msg: {}", err);
-            };
-        });
-        Ok(())
+        self.index_channel_items(&pd)
     }
 
     #[allow(dead_code)]
@@ -57,18 +43,7 @@ impl Feed {
     }
 
     #[allow(dead_code)]
-    fn parse_channel_items(&self, pd: &Podcast) -> Vec<NewEpisode> {
-        let items = self.channel.items();
-        let new_episodes: Vec<_> = items
-            .par_iter()
-            .filter_map(|item| NewEpisode::new(item, pd.id()).ok())
-            .collect();
-
-        new_episodes
-    }
-
-    #[allow(dead_code)]
-    fn index_channel_items_sync(&self, pd: &Podcast) -> Result<()> {
+    fn index_channel_items(&self, pd: &Podcast) -> Result<()> {
         let items = self.channel.items();
         let (insert, update): (Vec<_>, Vec<_>) = items
             .into_iter()

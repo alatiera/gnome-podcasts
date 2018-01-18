@@ -101,6 +101,7 @@ impl Index for NewEpisode {
 
 impl NewEpisode {
     /// Parses an `rss::Item` into a `NewEpisode` Struct.
+    #[allow(dead_code)]
     pub(crate) fn new(item: &rss::Item, podcast_id: i32) -> Result<Self> {
         NewEpisodeMinimal::new(item, podcast_id).map(|ep| ep.into_new_episode(item))
     }
