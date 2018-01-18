@@ -6,8 +6,8 @@ use diesel::prelude::*;
 
 use database::connection;
 use errors::*;
-use models::{Episode, EpisodeCleanerQuery, EpisodeMinimal, EpisodeWidgetQuery, Podcast,
-             PodcastCoverQuery, Source};
+use models::{Episode, EpisodeCleanerQuery, EpisodeMinimal, EpisodeWidgetQuery, NewEpisode,
+             Podcast, PodcastCoverQuery, Source};
 
 pub fn get_sources() -> Result<Vec<Source>> {
     use schema::source::dsl::*;
@@ -320,6 +320,18 @@ pub fn episode_exists(title_: &str, podcast_id_: i32) -> Result<bool> {
     select(exists(episode.filter(podcast_id.eq(podcast_id_)).filter(title.eq(title_))))
         .get_result(&*con)
         .map_err(From::from)
+}
+
+pub(crate) fn index_new_episodes(eps: &[NewEpisode]) -> Result<()> {
+    use schema::episode::dsl::*;
+    let db = connection();
+    let con = db.get()?;
+
+    diesel::insert_into(episode)
+        .values(eps)
+        .execute(&*con)
+        .map_err(From::from)
+        .map(|_| ())
 }
 
 pub fn update_none_to_played_now(parent: &Podcast) -> Result<usize> {
