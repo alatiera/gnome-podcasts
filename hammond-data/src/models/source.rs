@@ -7,8 +7,8 @@ use hyper::client::HttpConnector;
 use hyper::header::{ETag, EntityTag, HttpDate, IfModifiedSince, IfNoneMatch, LastModified};
 use hyper_tls::HttpsConnector;
 
+use futures::future::ok;
 use futures::prelude::*;
-// use futures::future::{ok, result};
 
 use database::connection;
 use errors::*;
@@ -165,11 +165,9 @@ fn response_to_channel(res: Response) -> Box<Future<Item = Channel, Error = Erro
         .concat2()
         .map(|x| x.into_iter())
         .map_err(From::from)
-        .and_then(|iter| {
-            let utf_8_bytes = iter.collect::<Vec<u8>>();
-            let buf = String::from_utf8_lossy(&utf_8_bytes).into_owned();
-            Channel::from_str(&buf).map_err(From::from)
-        });
+        .and_then(|iter| ok(iter.collect::<Vec<u8>>()))
+        .and_then(|utf_8_bytes| ok(String::from_utf8_lossy(&utf_8_bytes).into_owned()))
+        .and_then(|buf| Channel::from_str(&buf).map_err(From::from));
 
     Box::new(chan)
 }
