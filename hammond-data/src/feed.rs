@@ -11,6 +11,8 @@ use models::{IndexState, Update};
 use models::{NewEpisode, NewPodcast, Podcast};
 use pipeline::*;
 
+type InsertUpdate = (Vec<NewEpisode>, Vec<(NewEpisode, i32)>);
+
 #[derive(Debug)]
 /// Wrapper struct that hold a `Source` id and the `rss::Channel`
 /// that corresponds to the `Source.uri` field.
@@ -53,8 +55,8 @@ impl Feed {
         let (insert, update): (Vec<_>, Vec<_>) = items
             .into_iter()
             .filter_map(|item| glue(item, pd.id()).ok())
-            .filter(|state| match state {
-                &IndexState::NotChanged => false,
+            .filter(|state| match *state {
+                IndexState::NotChanged => false,
                 _ => true,
             })
             .partition_map(|state| match state {
@@ -79,27 +81,28 @@ impl Feed {
     fn index_channel_items_async(&self, pd: &Podcast) -> Box<Future<Item = (), Error = Error>> {
         let fut = self.get_stuff(pd)
             .and_then(|(insert, update)| {
-                info!("Indexing {} episodes.", insert.len());
-                dbqueries::index_new_episodes(insert.as_slice())?;
+                if !insert.is_empty() {
+                    info!("Indexing {} episodes.", insert.len());
+                    dbqueries::index_new_episodes(insert.as_slice())?;
+                }
                 Ok((insert, update))
             })
             .map(|(_, update)| {
-                info!("Updating {} episodes.", update.len());
-                update.iter().for_each(|&(ref ep, rowid)| {
-                    if let Err(err) = ep.update(rowid) {
-                        error!("Failed to index episode: {:?}.", ep.title());
-                        error!("Error msg: {}", err);
-                    };
-                })
+                if !update.is_empty() {
+                    info!("Updating {} episodes.", update.len());
+                    update.iter().for_each(|&(ref ep, rowid)| {
+                        if let Err(err) = ep.update(rowid) {
+                            error!("Failed to index episode: {:?}.", ep.title());
+                            error!("Error msg: {}", err);
+                        };
+                    })
+                }
             });
 
         Box::new(fut)
     }
 
-    fn get_stuff(
-        &self,
-        pd: &Podcast,
-    ) -> Box<Future<Item = (Vec<NewEpisode>, Vec<(NewEpisode, i32)>), Error = Error>> {
+    fn get_stuff(&self, pd: &Podcast) -> Box<Future<Item = InsertUpdate, Error = Error>> {
         let (insert, update): (Vec<_>, Vec<_>) = self.channel
             .items()
             .into_iter()

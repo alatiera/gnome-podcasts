@@ -24,7 +24,7 @@ use std;
 ///
 /// Messy temp diagram:
 /// Source -> GET Request -> Update Etags -> Check Status -> Parse xml/Rss ->
-/// Convert rss::Channel into Feed -> Index Podcast -> Index Episodes.
+/// Convert `rss::Channel` into Feed -> Index Podcast -> Index Episodes.
 pub fn pipeline<S: IntoIterator<Item = Source>>(sources: S, ignore_etags: bool) -> Result<()> {
     let mut core = Core::new()?;
     let handle = core.handle();
@@ -35,7 +35,7 @@ pub fn pipeline<S: IntoIterator<Item = Source>>(sources: S, ignore_etags: bool) 
 
     let list = sources
         .into_iter()
-        .map(|s| s.to_feed(&client, ignore_etags))
+        .map(|s| s.into_feed(&client, ignore_etags))
         .map(|fut| fut.and_then(|feed| feed.index_async()))
         .collect();
 
@@ -53,15 +53,15 @@ fn determine_ep_state(ep: NewEpisodeMinimal, item: &rss::Item) -> Result<IndexSt
     let exists = dbqueries::episode_exists(ep.title(), ep.podcast_id())?;
 
     if !exists {
-        return Ok(IndexState::Index(ep.into_new_episode(item)));
+        Ok(IndexState::Index(ep.into_new_episode(item)))
     } else {
         let old = dbqueries::get_episode_minimal_from_pk(ep.title(), ep.podcast_id())?;
         let rowid = old.rowid();
 
         if ep != old.into() {
-            return Ok(IndexState::Update((ep.into_new_episode(item), rowid)));
+            Ok(IndexState::Update((ep.into_new_episode(item), rowid)))
         } else {
-            return Ok(IndexState::NotChanged);
+            Ok(IndexState::NotChanged)
         }
     }
 }
@@ -69,7 +69,7 @@ fn determine_ep_state(ep: NewEpisodeMinimal, item: &rss::Item) -> Result<IndexSt
 #[allow(dead_code)]
 pub(crate) fn glue(item: &rss::Item, id: i32) -> Result<IndexState<NewEpisode>> {
     let e = NewEpisodeMinimal::new(item, id)?;
-    determine_ep_state(e, &item)
+    determine_ep_state(e, item)
 }
 
 #[allow(dead_code)]
@@ -100,7 +100,7 @@ where
                 Err((r, _, rest)) => (Err(r), rest),
             };
             done.push(r);
-            if rest.len() == 0 {
+            if rest.is_empty() {
                 Ok(Loop::Break(done))
             } else {
                 Ok(Loop::Continue((rest, done)))

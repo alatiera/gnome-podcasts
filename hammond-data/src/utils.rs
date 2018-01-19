@@ -138,7 +138,7 @@ pub fn get_download_folder(pd_title: &str) -> Result<String> {
 /// and deletes all of the downloaded content.
 /// TODO: Write Tests
 pub fn delete_show(pd: &Podcast) -> Result<()> {
-    dbqueries::remove_feed(&pd)?;
+    dbqueries::remove_feed(pd)?;
     info!("{} was removed succesfully.", pd.title());
 
     let fold = get_download_folder(pd.title())?;

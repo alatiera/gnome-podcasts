@@ -61,21 +61,20 @@ impl Index for NewPodcast {
     fn index(&self) -> Result<()> {
         let exists = dbqueries::podcast_exists(self.source_id)?;
 
-        match exists {
-            false => self.insert(),
-            true => {
-                let old = dbqueries::get_podcast_from_source_id(self.source_id)?;
+        if exists {
+            let old = dbqueries::get_podcast_from_source_id(self.source_id)?;
 
-                // This is messy
-                if (self.link() != old.link()) || (self.title() != old.title())
-                    || (self.image_uri() != old.image_uri())
-                    || (self.description() != old.description())
-                {
-                    self.update(old.id())
-                } else {
-                    Ok(())
-                }
+            // This is messy
+            if (self.link() != old.link()) || (self.title() != old.title())
+                || (self.image_uri() != old.image_uri())
+                || (self.description() != old.description())
+            {
+                self.update(old.id())
+            } else {
+                Ok(())
             }
+        } else {
+            self.insert()
         }
     }
 }

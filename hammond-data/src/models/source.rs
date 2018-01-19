@@ -71,9 +71,9 @@ impl Source {
     /// Helper method to easily save/"sync" current state of self to the Database.
     pub fn save(&self) -> Result<Source> {
         let db = connection();
-        let tempdb = db.get()?;
+        let con = db.get()?;
 
-        Ok(self.save_changes::<Source>(&*tempdb)?)
+        Ok(self.save_changes::<Source>(&*con)?)
     }
 
     /// Extract Etag and LastModifier from res, and update self and the
@@ -81,14 +81,12 @@ impl Source {
     fn update_etag(&mut self, res: &Response) -> Result<()> {
         let headers = res.headers();
 
-        let etag = headers.get::<ETag>();
-        let lmod = headers.get::<LastModified>();
+        let etag = headers.get::<ETag>().map(|x| x.tag());
+        let lmod = headers.get::<LastModified>().map(|x| format!("{}", x));
 
-        if self.http_etag() != etag.map(|x| x.tag()) || self.last_modified != lmod.map(|x| {
-            format!("{}", x)
-        }) {
-            self.set_http_etag(etag.map(|x| x.tag()));
-            self.set_last_modified(lmod.map(|x| format!("{}", x)));
+        if (self.http_etag() != etag) || (self.last_modified != lmod) {
+            self.set_http_etag(etag);
+            self.set_last_modified(lmod);
             self.save()?;
         }
 
@@ -110,7 +108,7 @@ impl Source {
     ///
     /// Consumes `self` and Returns the corresponding `Feed` Object.
     // TODO: Refactor into TryInto once it lands on stable.
-    pub fn to_feed(
+    pub fn into_feed(
         mut self,
         client: &Client<HttpsConnector<HttpConnector>>,
         ignore_etags: bool,
@@ -118,7 +116,7 @@ impl Source {
         let id = self.id();
         let feed = self.request_constructor(client, ignore_etags)
             .map_err(From::from)
-            .and_then(move |res| {
+            .and_then(move |res| -> Result<Response> {
                 self.update_etag(&res)?;
                 Ok(res)
             })
@@ -126,7 +124,7 @@ impl Source {
                 match_status(res.status())?;
                 Ok(res)
             })
-            .and_then(|res| response_to_channel(res))
+            .and_then(response_to_channel)
             .map(move |chan| Feed::from_channel_source(chan, id));
 
         Box::new(feed)
@@ -170,9 +168,9 @@ fn response_to_channel(res: Response) -> Box<Future<Item = Channel, Error = Erro
         .and_then(|iter| {
             let utf_8_bytes = iter.collect::<Vec<u8>>();
             let buf = String::from_utf8_lossy(&utf_8_bytes).into_owned();
-            let chan = Channel::from_str(&buf).map_err(From::from);
-            chan
+            Channel::from_str(&buf).map_err(From::from)
         });
+
     Box::new(chan)
 }
 
@@ -223,7 +221,7 @@ mod tests {
         let url = "http://www.newrustacean.com/feed.xml";
         let source = Source::from_url(url).unwrap();
 
-        let feed = source.to_feed(&client, true);
+        let feed = source.into_feed(&client, true);
 
         assert!(core.run(feed).is_ok());
     }

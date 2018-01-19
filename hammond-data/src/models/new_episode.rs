@@ -79,22 +79,20 @@ impl Index for NewEpisode {
     fn index(&self) -> Result<()> {
         let exists = dbqueries::episode_exists(self.title(), self.podcast_id())?;
 
-        match exists {
-            false => self.insert(),
-            true => {
-                let old = dbqueries::get_episode_minimal_from_pk(self.title(), self.podcast_id())?;
+        if exists {
+            let old = dbqueries::get_episode_minimal_from_pk(self.title(), self.podcast_id())?;
 
-                // This is messy
-                if (self.title() != old.title()) || (self.uri() != old.uri())
-                    || (self.duration() != old.duration())
-                    || (self.epoch() != old.epoch())
-                    || (self.guid() != old.guid())
-                {
-                    self.update(old.rowid())
-                } else {
-                    Ok(())
-                }
+            // This is messy
+            if (self.title() != old.title()) || (self.uri() != old.uri())
+                || (self.duration() != old.duration())
+                || (self.epoch() != old.epoch()) || (self.guid() != old.guid())
+            {
+                self.update(old.rowid())
+            } else {
+                Ok(())
             }
+        } else {
+            self.insert()
         }
     }
 }
