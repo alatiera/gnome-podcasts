@@ -10,7 +10,7 @@ use models::{IndexState, Update};
 use models::{NewEpisode, NewPodcast, Podcast};
 use pipeline::*;
 
-type InsertUpdate = (Vec<NewEpisode>, Vec<(NewEpisode, i32)>);
+type InsertUpdate = (Vec<NewEpisode>, Vec<Option<(NewEpisode, i32)>>);
 
 #[derive(Debug)]
 /// Wrapper struct that hold a `Source` id and the `rss::Channel`
@@ -54,13 +54,16 @@ impl Feed {
             })
             .map(|(_, update)| {
                 if !update.is_empty() {
-                    info!("Updating {} episodes.", update.len());
-                    update.iter().for_each(|&(ref ep, rowid)| {
-                        if let Err(err) = ep.update(rowid) {
-                            error!("Failed to index episode: {:?}.", ep.title());
-                            error!("Error msg: {}", err);
-                        };
-                    })
+                    // see get_stuff for more
+                    update
+                        .into_iter()
+                        .filter_map(|x| x)
+                        .for_each(|(ref ep, rowid)| {
+                            if let Err(err) = ep.update(rowid) {
+                                error!("Failed to index episode: {:?}.", ep.title());
+                                error!("Error msg: {}", err);
+                            };
+                        })
                 }
             });
 
@@ -72,6 +75,10 @@ impl Feed {
             .items()
             .into_iter()
             .map(|item| glue_async(item, pd.id()))
+            // This is sort of ugly but I think it's cheaper than pushing None
+            // to updated and filtering it out later.
+            // Even though we already map_filter in index_channel_items.
+            // I am not sure what the optimizations are on match vs allocating None.
             .map(|fut| {
                 fut.and_then(|x| match x {
                     IndexState::NotChanged => bail!("Nothing to do here."),
@@ -81,9 +88,9 @@ impl Feed {
             .flat_map(|fut| fut.wait())
             .partition_map(|state| match state {
                 IndexState::Index(e) => Either::Left(e),
-                IndexState::Update(e) => Either::Right(e),
-                // How not to use the unimplemented macro...
-                IndexState::NotChanged => unimplemented!(),
+                IndexState::Update(e) => Either::Right(Some(e)),
+                // This should never occur
+                IndexState::NotChanged => Either::Right(None),
             });
 
         Box::new(ok((insert, update)))
