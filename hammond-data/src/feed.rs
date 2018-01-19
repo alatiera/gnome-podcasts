@@ -22,7 +22,7 @@ pub struct Feed {
 }
 
 impl Feed {
-    /// Constructor that consumes a `Source` and a `rss::Channel` returns a `Feed` struct.
+    /// Constructor that consumes a `rss::Channel`, returns a `Feed` struct.
     pub fn from_channel_source(channel: rss::Channel, source_id: i32) -> Feed {
         Feed { channel, source_id }
     }
