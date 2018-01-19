@@ -20,7 +20,6 @@ pub use self::source::Source;
 
 use errors::*;
 
-#[allow(dead_code)]
 #[derive(Debug, Clone, PartialEq)]
 pub enum IndexState<T> {
     Index(T),

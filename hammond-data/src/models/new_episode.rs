@@ -162,7 +162,6 @@ pub(crate) struct NewEpisodeMinimal {
 }
 
 impl NewEpisodeMinimal {
-    #[allow(dead_code)]
     pub(crate) fn new(item: &rss::Item, parent_id: i32) -> Result<Self> {
         if item.title().is_none() {
             bail!("No title specified for the item.")
@@ -198,7 +197,6 @@ impl NewEpisodeMinimal {
             .unwrap())
     }
 
-    #[allow(dead_code)]
     pub(crate) fn into_new_episode(self, item: &rss::Item) -> NewEpisode {
         let length = || -> Option<i32> { item.enclosure().map(|x| x.length().parse().ok())? }();
 

@@ -52,6 +52,7 @@ impl Default for Header {
 
 impl Header {
     #[allow(dead_code)]
+    // FIXME: should not return arc and stuff
     pub fn new(content: Arc<Content>, sender: Sender<Action>) -> Arc<Header> {
         let h = Header::default();
         h.init(content, sender);

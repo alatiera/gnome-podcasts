@@ -36,7 +36,7 @@ pub fn pipeline<S: IntoIterator<Item = Source>>(sources: S, ignore_etags: bool) 
     let list = sources
         .into_iter()
         .map(|s| s.into_feed(&client, ignore_etags))
-        .map(|fut| fut.and_then(|feed| feed.index_async()))
+        .map(|fut| fut.and_then(|feed| feed.index()))
         .collect();
 
     let f = core.run(collect_futures(list))?;
@@ -47,7 +47,6 @@ pub fn pipeline<S: IntoIterator<Item = Source>>(sources: S, ignore_etags: bool) 
     Ok(())
 }
 
-#[allow(dead_code)]
 fn determine_ep_state(ep: NewEpisodeMinimal, item: &rss::Item) -> Result<IndexState<NewEpisode>> {
     // Check if feed exists
     let exists = dbqueries::episode_exists(ep.title(), ep.podcast_id())?;
@@ -66,13 +65,6 @@ fn determine_ep_state(ep: NewEpisodeMinimal, item: &rss::Item) -> Result<IndexSt
     }
 }
 
-#[allow(dead_code)]
-pub(crate) fn glue(item: &rss::Item, id: i32) -> Result<IndexState<NewEpisode>> {
-    let e = NewEpisodeMinimal::new(item, id)?;
-    determine_ep_state(e, item)
-}
-
-#[allow(dead_code)]
 pub(crate) fn glue_async<'a>(
     item: &'a rss::Item,
     id: i32,

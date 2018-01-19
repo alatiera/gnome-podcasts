@@ -44,7 +44,7 @@ static URLS: &[(&[u8], &str)] = &[
     (LAS, "https://feeds2.feedburner.com/TheLinuxActionShow"),
 ];
 
-fn index_urls() {
+fn index_urls() -> Vec<Box<Future<Item = (), Error = Error>>> {
     let feeds: Vec<_> = URLS.iter()
         .map(|&(buff, url)| {
             // Create and insert a Source into db
@@ -55,106 +55,96 @@ fn index_urls() {
         })
         .collect();
 
-    feeds.iter().for_each(|x| x.index().unwrap());
-}
-
-fn index_urls_async() -> Vec<Box<Future<Item = (), Error = Error>>> {
-    let feeds: Vec<_> = URLS.iter()
-        .map(|&(buff, url)| {
-            // Create and insert a Source into db
-            let s = Source::from_url(url).unwrap();
-            // parse it into a channel
-            let chan = rss::Channel::read_from(BufReader::new(buff)).unwrap();
-            Feed::from_channel_source(chan, s.id())
-        })
-        .collect();
-
-    feeds.into_iter().map(|feed| feed.index_async()).collect()
+    feeds.into_iter().map(|feed| feed.index()).collect()
 }
 
 fn bench_index_feeds(c: &mut Criterion) {
     truncate_db().unwrap();
-
-    c.bench_function("index_feeds_sync", |b| b.iter(|| index_urls()));
-}
-
-fn bench_index_feeds_async(c: &mut Criterion) {
-    truncate_db().unwrap();
     let mut core = Core::new().unwrap();
 
-    c.bench_function("index_feeds_sync", |b| {
+    c.bench_function("index_feeds", |b| {
         b.iter(|| {
-            let list = index_urls_async();
-            let _foo = core.run(select_all(list));
+            let list = index_urls();
+            let _foo = core.run(join_all(list));
         })
     });
+    truncate_db().unwrap();
 }
 
 fn bench_index_unchanged_feeds(c: &mut Criterion) {
     truncate_db().unwrap();
+    let mut core = Core::new().unwrap();
     // Index first so it will only bench the comparison test case.
-    index_urls();
+    let list = index_urls();
+    let _foo = core.run(join_all(list));
 
-    c.bench_function("index_10_unchanged_sync", |b| {
+    c.bench_function("index_5_unchanged", |b| {
         b.iter(|| {
-            for _ in 0..10 {
-                index_urls();
+            for _ in 0..5 {
+                let list = index_urls();
+                let _foo = core.run(join_all(list));
             }
         })
     });
+    truncate_db().unwrap();
 }
 
-fn bench_get_future_feeds(c: &mut Criterion) {
+// This is broken and I don't know why.
+fn bench_pipeline(c: &mut Criterion) {
     truncate_db().unwrap();
     URLS.iter().for_each(|&(_, url)| {
         Source::from_url(url).unwrap();
     });
 
-    c.bench_function("index_urls_futures", |b| {
+    c.bench_function("pipline", |b| {
         b.iter(|| {
             let sources = hammond_data::dbqueries::get_sources().unwrap();
-            hammond_data::pipeline::pipeline(sources, false).unwrap();
+            hammond_data::pipeline::pipeline(sources, true).unwrap();
         })
     });
+    truncate_db().unwrap();
 }
 
-fn bench_index_greater_than_code(c: &mut Criterion) {
+fn bench_index_large_feed(c: &mut Criterion) {
     truncate_db().unwrap();
     let url = "https://www.greaterthancode.com/feed/podcast";
+    let mut core = Core::new().unwrap();
 
-    c.bench_function("index_greater_than_code_sync", |b| {
+    c.bench_function("index_large_feed", |b| {
         b.iter(|| {
             let s = Source::from_url(url).unwrap();
             // parse it into a channel
             let chan = rss::Channel::read_from(BufReader::new(CODE)).unwrap();
             let feed = Feed::from_channel_source(chan, s.id());
-            feed.index().unwrap();
+            let _foo = core.run(feed.index()).unwrap();
         })
     });
+    truncate_db().unwrap();
 }
 
-fn bench_index_steal_the_stars(c: &mut Criterion) {
+fn bench_index_small_feed(c: &mut Criterion) {
     truncate_db().unwrap();
     let url = "https://rss.art19.com/steal-the-stars";
+    let mut core = Core::new().unwrap();
 
-    c.bench_function("index_steal_the_stars_sync", |b| {
+    c.bench_function("index_small_feed", |b| {
         b.iter(|| {
             let s = Source::from_url(url).unwrap();
             // parse it into a channel
             let chan = rss::Channel::read_from(BufReader::new(STARS)).unwrap();
             let feed = Feed::from_channel_source(chan, s.id());
-            feed.index().unwrap();
+            let _foo = core.run(feed.index()).unwrap();
         })
     });
+    truncate_db().unwrap();
 }
 
 criterion_group!(
     benches,
     bench_index_feeds,
-    bench_index_feeds_async,
     bench_index_unchanged_feeds,
-    bench_get_future_feeds,
-    bench_index_greater_than_code,
-    bench_index_steal_the_stars
+    bench_pipeline,
+    bench_index_large_feed,
+    bench_index_small_feed
 );
 criterion_main!(benches);

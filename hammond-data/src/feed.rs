@@ -2,7 +2,6 @@
 
 use futures::future::*;
 use itertools::{Either, Itertools};
-use rayon::prelude::*;
 use rss;
 
 use dbqueries;
@@ -28,16 +27,10 @@ impl Feed {
     }
 
     /// Index the contents of the RSS `Feed` into the database.
-    pub fn index(&self) -> Result<()> {
-        let pd = self.parse_podcast().into_podcast()?;
-        self.index_channel_items(&pd)
-    }
-
-    /// Index the contents of the RSS `Feed` into the database.
-    pub fn index_async(self) -> Box<Future<Item = (), Error = Error>> {
+    pub fn index(self) -> Box<Future<Item = (), Error = Error>> {
         let fut = self.parse_podcast_async()
             .and_then(|pd| pd.into_podcast())
-            .and_then(move |pd| self.index_channel_items_async(&pd));
+            .and_then(move |pd| self.index_channel_items(&pd));
 
         Box::new(fut)
     }
@@ -50,35 +43,7 @@ impl Feed {
         Box::new(ok(self.parse_podcast()))
     }
 
-    fn index_channel_items(&self, pd: &Podcast) -> Result<()> {
-        let items = self.channel.items();
-        let (insert, update): (Vec<_>, Vec<_>) = items
-            .into_iter()
-            .filter_map(|item| glue(item, pd.id()).ok())
-            .filter(|state| match *state {
-                IndexState::NotChanged => false,
-                _ => true,
-            })
-            .partition_map(|state| match state {
-                IndexState::Index(e) => Either::Left(e),
-                IndexState::Update(e) => Either::Right(e),
-                // How not to use the unimplemented macro...
-                IndexState::NotChanged => unimplemented!(),
-            });
-
-        dbqueries::index_new_episodes(insert.as_slice())?;
-
-        update.par_iter().for_each(|&(ref ep, rowid)| {
-            if let Err(err) = ep.update(rowid) {
-                error!("Failed to index episode: {:?}.", ep.title());
-                error!("Error msg: {}", err);
-            };
-        });
-
-        Ok(())
-    }
-
-    fn index_channel_items_async(&self, pd: &Podcast) -> Box<Future<Item = (), Error = Error>> {
+    fn index_channel_items(&self, pd: &Podcast) -> Box<Future<Item = (), Error = Error>> {
         let fut = self.get_stuff(pd)
             .and_then(|(insert, update)| {
                 if !insert.is_empty() {
@@ -127,10 +92,13 @@ impl Feed {
 
 #[cfg(test)]
 mod tests {
+    use tokio_core::reactor::Core;
+
     use Source;
     use database::truncate_db;
     use dbqueries;
     use pipeline;
+
     use std::fs;
     use std::io::BufReader;
 
@@ -196,8 +164,10 @@ mod tests {
             })
             .collect();
 
+        let mut core = Core::new().unwrap();
         // Index the channels
-        feeds.par_iter().for_each(|x| x.index().unwrap());
+        let list: Vec<_> = feeds.into_iter().map(|x| x.index()).collect();
+        let _foo = core.run(join_all(list));
 
         // Assert the index rows equal the controlled results
         assert_eq!(dbqueries::get_sources().unwrap().len(), 4);

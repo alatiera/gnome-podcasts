@@ -83,30 +83,19 @@ mod tests {
     use super::*;
     use hammond_data::Source;
     use hammond_data::dbqueries;
-
-    use hyper::Client;
-    use hyper_tls::HttpsConnector;
-    use tokio_core::reactor::Core;
+    use hammond_data::pipeline::pipeline;
 
     #[test]
     // This test inserts an rss feed to your `XDG_DATA/hammond/hammond.db` so we make it explicit
     // to run it.
     #[ignore]
     fn test_get_pixbuf_from_path() {
-        let mut core = Core::new().unwrap();
-        let client = Client::configure()
-            .connector(HttpsConnector::new(4, &core.handle()).unwrap())
-            .build(&core.handle());
-
         let url = "http://www.newrustacean.com/feed.xml";
         // Create and index a source
         let source = Source::from_url(url).unwrap();
         // Copy it's id
         let sid = source.id();
-        // Convert Source it into a future Feed and index it
-        let future = source.into_feed(&client, true);
-        let feed = core.run(future).unwrap();
-        feed.index().unwrap();
+        pipeline(vec![source], true).unwrap();
 
         // Get the Podcast
         let pd = dbqueries::get_podcast_from_source_id(sid).unwrap();
