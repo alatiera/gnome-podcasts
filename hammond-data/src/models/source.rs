@@ -51,8 +51,9 @@ impl Source {
     }
 
     /// Set `last_modified` value.
-    pub fn set_last_modified(&mut self, value: Option<&str>) {
-        self.last_modified = value.map(|x| x.to_string());
+    pub fn set_last_modified(&mut self, value: Option<String>) {
+        // self.last_modified = value.map(|x| x.to_string());
+        self.last_modified = value;
     }
 
     /// Represents the Http Etag Header field.
@@ -77,8 +78,7 @@ impl Source {
 
     /// Extract Etag and LastModifier from res, and update self and the
     /// corresponding db row.
-    // FIXME: With &mut self the closure is of type FnMut instead of FnOnce.
-    fn update_etag(mut self, res: &Response) -> Result<()> {
+    fn update_etag(&mut self, res: &Response) -> Result<()> {
         let headers = res.headers();
 
         let etag = headers.get::<ETag>();
@@ -87,12 +87,19 @@ impl Source {
         if self.http_etag() != etag.map(|x| x.tag()) || self.last_modified != lmod.map(|x| {
             format!("{}", x)
         }) {
-            self.http_etag = etag.map(|x| x.tag().to_string().to_owned());
-            self.last_modified = lmod.map(|x| format!("{}", x));
+            self.set_http_etag(etag.map(|x| x.tag()));
+            self.set_last_modified(lmod.map(|x| format!("{}", x)));
             self.save()?;
         }
 
         Ok(())
+    }
+
+    /// Construct a new `Source` with the given `uri` and index it.
+    ///
+    /// This only indexes the `Source` struct, not the Podcast Feed.
+    pub fn from_url(uri: &str) -> Result<Source> {
+        NewSource::new(uri).into_source()
     }
 
     /// `Feed` constructor.
@@ -103,13 +110,13 @@ impl Source {
     ///
     /// Consumes `self` and Returns the corresponding `Feed` Object.
     // TODO: Refactor into TryInto once it lands on stable.
-    pub fn into_feed(
-        self,
+    pub fn to_feed(
+        mut self,
         client: &Client<HttpsConnector<HttpConnector>>,
         ignore_etags: bool,
     ) -> Box<Future<Item = Feed, Error = Error>> {
         let id = self.id();
-        let feed = request_constructor(&self, client, ignore_etags)
+        let feed = self.request_constructor(client, ignore_etags)
             .map_err(From::from)
             .and_then(move |res| {
                 self.update_etag(&res)?;
@@ -125,41 +132,34 @@ impl Source {
         Box::new(feed)
     }
 
-    /// Construct a new `Source` with the given `uri` and index it.
-    ///
-    /// This only indexes the `Source` struct, not the Podcast Feed.
-    pub fn from_url(uri: &str) -> Result<Source> {
-        NewSource::new(uri).into_source()
-    }
-}
+    // TODO: make ignore_etags an Enum for better ergonomics.
+    // #bools_are_just_2variant_enmus
+    fn request_constructor(
+        &self,
+        client: &Client<HttpsConnector<HttpConnector>>,
+        ignore_etags: bool,
+    ) -> Box<Future<Item = Response, Error = hyper::Error>> {
+        // FIXME: remove unwrap somehow
+        let uri = Uri::from_str(self.uri()).unwrap();
+        let mut req = Request::new(Method::Get, uri);
 
-// TODO: make ignore_etags an Enum for better ergonomics.
-// #bools_are_just_2variant_enmus
-fn request_constructor(
-    s: &Source,
-    client: &Client<HttpsConnector<HttpConnector>>,
-    ignore_etags: bool,
-) -> Box<Future<Item = Response, Error = hyper::Error>> {
-    // FIXME: remove unwrap somehow
-    let uri = Uri::from_str(&s.uri()).unwrap();
-    let mut req = Request::new(Method::Get, uri);
+        if !ignore_etags {
+            if let Some(foo) = self.http_etag() {
+                req.headers_mut().set(IfNoneMatch::Items(vec![
+                    EntityTag::new(true, foo.to_owned()),
+                ]));
+            }
 
-    if !ignore_etags {
-        if let Some(foo) = s.http_etag() {
-            req.headers_mut().set(IfNoneMatch::Items(vec![
-                EntityTag::new(true, foo.to_owned()),
-            ]));
-        }
-
-        if let Some(foo) = s.last_modified() {
-            if let Ok(x) = foo.parse::<HttpDate>() {
-                req.headers_mut().set(IfModifiedSince(x));
+            if let Some(foo) = self.last_modified() {
+                if let Ok(x) = foo.parse::<HttpDate>() {
+                    req.headers_mut().set(IfModifiedSince(x));
+                }
             }
         }
-    }
 
-    let work = client.request(req).map_err(From::from);
-    Box::new(work)
+        let work = client.request(req).map_err(From::from);
+        Box::new(work)
+    }
 }
 
 fn response_to_channel(res: Response) -> Box<Future<Item = Channel, Error = Error>> {
@@ -191,14 +191,15 @@ fn match_status(code: StatusCode) -> Result<()> {
         StatusCode::TemporaryRedirect => debug!("307: Temporary Redirect."),
         // TODO: Change the source uri to the new one
         StatusCode::MovedPermanently | StatusCode::PermanentRedirect => {
-            warn!("Feed was moved permanently.")
+            warn!("Feed was moved permanently.");
+            bail!("Feed was moved permanently.")
         }
         StatusCode::Unauthorized => bail!("401: Unauthorized."),
         StatusCode::Forbidden => bail!("403: Forbidden."),
         StatusCode::NotFound => bail!("404: Not found."),
         StatusCode::RequestTimeout => bail!("408: Request Timeout."),
         StatusCode::Gone => bail!("410: Feed was deleted."),
-        _ => (),
+        _ => info!("HTTP StatusCode: {}", code),
     };
     Ok(())
 }
@@ -222,7 +223,7 @@ mod tests {
         let url = "http://www.newrustacean.com/feed.xml";
         let source = Source::from_url(url).unwrap();
 
-        let feed = source.into_feed(&client, true);
+        let feed = source.to_feed(&client, true);
 
         assert!(core.run(feed).is_ok());
     }

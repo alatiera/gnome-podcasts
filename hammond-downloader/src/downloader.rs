@@ -239,7 +239,7 @@ mod tests {
         // Copy it's id
         let sid = source.id();
         // Convert Source it into a future Feed and index it
-        let future = source.into_feed(&client, true);
+        let future = source.to_feed(&client, true);
         let feed = core.run(future).unwrap();
         feed.index().unwrap();
 

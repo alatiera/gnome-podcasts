@@ -35,9 +35,8 @@ pub fn pipeline<S: IntoIterator<Item = Source>>(sources: S, ignore_etags: bool) 
 
     let list = sources
         .into_iter()
-        // FIXME: Make proper indexing futures instead of wrapping up existing
-        // blocking functions
-        .map(|s| s.into_feed(&client, ignore_etags).and_then(|feed| feed.index_async()))
+        .map(|s| s.to_feed(&client, ignore_etags))
+        .map(|fut| fut.and_then(|feed| feed.index_async()))
         .collect();
 
     let f = core.run(collect_futures(list))?;
