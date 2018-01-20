@@ -64,7 +64,7 @@ mod feed;
 mod parser;
 mod schema;
 
-pub use feed::Feed;
+pub use feed::{Feed, FeedBuilder};
 pub use models::{Episode, EpisodeWidgetQuery, Podcast, PodcastCoverQuery, Source};
 
 /// [XDG Base Direcotory](https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html) Paths.

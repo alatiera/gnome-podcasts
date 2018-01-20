@@ -51,7 +51,12 @@ fn index_urls() -> Vec<Box<Future<Item = (), Error = Error>>> {
             let s = Source::from_url(url).unwrap();
             // parse it into a channel
             let chan = rss::Channel::read_from(BufReader::new(buff)).unwrap();
-            Feed::from_channel_source(chan, s.id())
+
+            FeedBuilder::default()
+                .channel(chan)
+                .source_id(s.id())
+                .build()
+                .unwrap()
         })
         .collect();
 
@@ -115,7 +120,11 @@ fn bench_index_large_feed(c: &mut Criterion) {
             let s = Source::from_url(url).unwrap();
             // parse it into a channel
             let chan = rss::Channel::read_from(BufReader::new(CODE)).unwrap();
-            let feed = Feed::from_channel_source(chan, s.id());
+            let feed = FeedBuilder::default()
+                .channel(chan)
+                .source_id(s.id())
+                .build()
+                .unwrap();
             let _foo = core.run(feed.index()).unwrap();
         })
     });
@@ -132,7 +141,11 @@ fn bench_index_small_feed(c: &mut Criterion) {
             let s = Source::from_url(url).unwrap();
             // parse it into a channel
             let chan = rss::Channel::read_from(BufReader::new(STARS)).unwrap();
-            let feed = Feed::from_channel_source(chan, s.id());
+            let feed = FeedBuilder::default()
+                .channel(chan)
+                .source_id(s.id())
+                .build()
+                .unwrap();
             let _foo = core.run(feed.index()).unwrap();
         })
     });

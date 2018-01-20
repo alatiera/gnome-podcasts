@@ -12,20 +12,19 @@ use pipeline::*;
 
 type InsertUpdate = (Vec<NewEpisode>, Vec<Option<(NewEpisode, i32)>>);
 
-#[derive(Debug)]
 /// Wrapper struct that hold a `Source` id and the `rss::Channel`
 /// that corresponds to the `Source.uri` field.
+#[derive(Debug, Clone, Builder)]
+#[builder(derive(Debug))]
+#[builder(setter(into))]
 pub struct Feed {
+    /// The `rss::Channel` parsed from the `Source` uri.
     channel: rss::Channel,
+    /// The `Source` id where the xml `rss::Channel` came from.
     source_id: i32,
 }
 
 impl Feed {
-    /// Constructor that consumes a `rss::Channel`, returns a `Feed` struct.
-    pub fn from_channel_source(channel: rss::Channel, source_id: i32) -> Feed {
-        Feed { channel, source_id }
-    }
-
     /// Index the contents of the RSS `Feed` into the database.
     pub fn index(self) -> Box<Future<Item = (), Error = Error>> {
         let fut = self.parse_podcast_async()
@@ -102,9 +101,10 @@ mod tests {
     use tokio_core::reactor::Core;
 
     use Source;
-    use database::truncate_db;
     use dbqueries;
     use pipeline;
+
+    use database::truncate_db;
 
     use std::fs;
     use std::io::BufReader;
@@ -167,7 +167,11 @@ mod tests {
                 let feed = fs::File::open(path).unwrap();
                 // parse it into a channel
                 let chan = rss::Channel::read_from(BufReader::new(feed)).unwrap();
-                Feed::from_channel_source(chan, s.id())
+                FeedBuilder::default()
+                    .channel(chan)
+                    .source_id(s.id())
+                    .build()
+                    .unwrap()
             })
             .collect();
 

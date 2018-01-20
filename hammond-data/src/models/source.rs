@@ -12,7 +12,7 @@ use futures::prelude::*;
 
 use database::connection;
 use errors::*;
-use feed::Feed;
+use feed::{Feed, FeedBuilder};
 use models::NewSource;
 use schema::source;
 
@@ -125,7 +125,13 @@ impl Source {
                 Ok(res)
             })
             .and_then(response_to_channel)
-            .map(move |chan| Feed::from_channel_source(chan, id));
+            .map(move |chan| {
+                FeedBuilder::default()
+                    .channel(chan)
+                    .source_id(id)
+                    .build()
+                    .unwrap()
+            });
 
         Box::new(feed)
     }
