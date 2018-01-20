@@ -14,7 +14,7 @@ type InsertUpdate = (Vec<NewEpisode>, Vec<Option<(NewEpisode, i32)>>);
 
 /// Wrapper struct that hold a `Source` id and the `rss::Channel`
 /// that corresponds to the `Source.uri` field.
-#[derive(Debug, Clone, Builder)]
+#[derive(Debug, Clone, Builder, PartialEq)]
 #[builder(derive(Debug))]
 #[builder(setter(into))]
 pub struct Feed {

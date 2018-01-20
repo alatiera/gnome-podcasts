@@ -26,10 +26,8 @@ use std::str::FromStr;
 pub struct Source {
     id: i32,
     uri: String,
-    /// FIXME
-    pub last_modified: Option<String>,
-    /// FIXME
-    pub http_etag: Option<String>,
+    last_modified: Option<String>,
+    http_etag: Option<String>,
 }
 
 impl Source {
@@ -173,7 +171,10 @@ fn response_to_channel(res: Response) -> Box<Future<Item = Channel, Error = Erro
         .map_err(From::from)
         .and_then(|iter| ok(iter.collect::<Vec<u8>>()))
         .and_then(|utf_8_bytes| ok(String::from_utf8_lossy(&utf_8_bytes).into_owned()))
-        .and_then(|buf| Channel::from_str(&buf).map_err(From::from));
+        .and_then(|buf| {
+            println!("{:?}", buf);
+            Channel::from_str(&buf).map_err(From::from)
+        });
 
     Box::new(chan)
 }
@@ -194,7 +195,7 @@ fn match_status(code: StatusCode) -> Result<()> {
         // TODO: Change the source uri to the new one
         StatusCode::MovedPermanently | StatusCode::PermanentRedirect => {
             warn!("Feed was moved permanently.");
-            bail!("Feed was moved permanently.")
+            bail!("308: Feed was moved permanently.")
         }
         StatusCode::Unauthorized => bail!("401: Unauthorized."),
         StatusCode::Forbidden => bail!("403: Forbidden."),
@@ -212,9 +213,11 @@ mod tests {
     use tokio_core::reactor::Core;
 
     use database::truncate_db;
+    use std::fs;
+    use std::io::BufReader;
 
     #[test]
-    fn test_into_future_feed() {
+    fn test_into_feed() {
         truncate_db().unwrap();
 
         let mut core = Core::new().unwrap();
@@ -222,11 +225,27 @@ mod tests {
             .connector(HttpsConnector::new(4, &core.handle()).unwrap())
             .build(&core.handle());
 
-        let url = "http://www.newrustacean.com/feed.xml";
+        let url = "https://web.archive.org/web/20180120083840if_/https://feeds.feedburner.\
+                   com/InterceptedWithJeremyScahill";
         let source = Source::from_url(url).unwrap();
+        let id = source.id();
+        println!("{:?}", source);
 
         let feed = source.into_feed(&client, true);
+        let feed = core.run(feed).unwrap();
 
-        assert!(core.run(feed).is_ok());
+        let good = {
+            // open the xml file
+            let feed = fs::File::open("tests/feeds/2018-01-20-Intercepted.xml").unwrap();
+            // parse it into a channel
+            let chan = Channel::read_from(BufReader::new(feed)).unwrap();
+            FeedBuilder::default()
+                .channel(chan)
+                .source_id(id)
+                .build()
+                .unwrap()
+        };
+
+        assert_eq!(good, feed);
     }
 }

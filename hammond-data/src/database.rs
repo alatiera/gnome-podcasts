@@ -60,8 +60,7 @@ fn init_pool(db_path: &str) -> Pool {
 fn run_migration_on(connection: &SqliteConnection) -> Result<()> {
     info!("Running DB Migrations...");
     // embedded_migrations::run(connection)?;
-    embedded_migrations::run_with_output(connection, &mut io::stdout())?;
-    Ok(())
+    embedded_migrations::run_with_output(connection, &mut io::stdout()).map_err(From::from)
 }
 
 /// Reset the database into a clean state.
