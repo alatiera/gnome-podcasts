@@ -56,7 +56,7 @@ fn determine_ep_state(ep: NewEpisodeMinimal, item: &rss::Item) -> Result<IndexSt
         let old = dbqueries::get_episode_minimal_from_pk(ep.title(), ep.podcast_id())?;
         let rowid = old.rowid();
 
-        if ep != old.into() {
+        if ep != old {
             Ok(IndexState::Update((ep.into_new_episode(item), rowid)))
         } else {
             Ok(IndexState::NotChanged)

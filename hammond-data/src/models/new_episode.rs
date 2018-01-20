@@ -10,7 +10,7 @@ use rss;
 use database::connection;
 use dbqueries;
 use errors::*;
-use models::{Episode, Index, Insert, Update};
+use models::{Episode, EpisodeMinimal, Index, Insert, Update};
 use parser;
 use utils::{replace_extra_spaces, url_cleaner};
 
@@ -80,20 +80,24 @@ impl Index for NewEpisode {
         let exists = dbqueries::episode_exists(self.title(), self.podcast_id())?;
 
         if exists {
-            let old = dbqueries::get_episode_minimal_from_pk(self.title(), self.podcast_id())?;
+            let other = dbqueries::get_episode_minimal_from_pk(self.title(), self.podcast_id())?;
 
-            // This is messy
-            if (self.title() != old.title()) || (self.uri() != old.uri())
-                || (self.duration() != old.duration())
-                || (self.epoch() != old.epoch()) || (self.guid() != old.guid())
-            {
-                self.update(old.rowid())
+            if self != &other {
+                self.update(other.rowid())
             } else {
                 Ok(())
             }
         } else {
             self.insert()
         }
+    }
+}
+
+impl PartialEq<EpisodeMinimal> for NewEpisode {
+    fn eq(&self, other: &EpisodeMinimal) -> bool {
+        (self.title() != other.title()) || (self.uri() != other.uri())
+            || (self.duration() != other.duration()) || (self.epoch() != other.epoch())
+            || (self.guid() != other.guid())
     }
 }
 
@@ -161,6 +165,14 @@ pub(crate) struct NewEpisodeMinimal {
     podcast_id: i32,
 }
 
+impl PartialEq<EpisodeMinimal> for NewEpisodeMinimal {
+    fn eq(&self, other: &EpisodeMinimal) -> bool {
+        (self.title() != other.title()) || (self.uri() != other.uri())
+            || (self.duration() != other.duration()) || (self.epoch() != other.epoch())
+            || (self.guid() != other.guid())
+    }
+}
+
 impl NewEpisodeMinimal {
     pub(crate) fn new(item: &rss::Item, parent_id: i32) -> Result<Self> {
         if item.title().is_none() {
@@ -224,7 +236,6 @@ impl NewEpisodeMinimal {
     }
 }
 
-#[allow(dead_code)]
 // Ignore the following getters. They are used in unit tests mainly.
 impl NewEpisodeMinimal {
     pub(crate) fn title(&self) -> &str {
@@ -237,6 +248,10 @@ impl NewEpisodeMinimal {
 
     pub(crate) fn guid(&self) -> Option<&str> {
         self.guid.as_ref().map(|s| s.as_str())
+    }
+
+    pub(crate) fn duration(&self) -> Option<i32> {
+        self.duration
     }
 
     pub(crate) fn epoch(&self) -> i32 {

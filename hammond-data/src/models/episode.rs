@@ -6,7 +6,6 @@ use diesel::prelude::*;
 use database::connection;
 use errors::*;
 use models::Podcast;
-use models::new_episode::{NewEpisodeMinimal, NewEpisodeMinimalBuilder};
 use schema::episode;
 
 #[derive(Queryable, Identifiable, AsChangeset, Associations, PartialEq)]
@@ -440,20 +439,6 @@ impl From<Episode> for EpisodeMinimal {
             duration: e.duration,
             podcast_id: e.podcast_id,
         }
-    }
-}
-
-impl Into<NewEpisodeMinimal> for EpisodeMinimal {
-    fn into(self) -> NewEpisodeMinimal {
-        NewEpisodeMinimalBuilder::default()
-            .title(self.title)
-            .uri(self.uri)
-            .guid(self.guid)
-            .epoch(self.epoch)
-            .duration(self.duration)
-            .podcast_id(self.podcast_id)
-            .build()
-            .unwrap()
     }
 }
 
