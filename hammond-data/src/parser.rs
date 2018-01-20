@@ -32,7 +32,6 @@ pub(crate) fn parse_itunes_duration(item: &Item) -> Option<i32> {
 #[cfg(test)]
 mod tests {
     use models::{NewEpisode, NewEpisodeBuilder};
-    use models::{NewPodcast, NewPodcastBuilder};
 
     use rss::{Channel, ItemBuilder};
     use rss::extension::itunes::ITunesItemExtensionBuilder;
@@ -98,98 +97,6 @@ mod tests {
             .build()
             .unwrap();
         assert_eq!(parse_itunes_duration(&item), Some(6970));
-    }
-
-    #[test]
-    fn test_new_podcast_intercepted() {
-        let file = File::open("tests/feeds/Intercepted.xml").unwrap();
-        let channel = Channel::read_from(BufReader::new(file)).unwrap();
-
-        let descr = "The people behind The Intercept’s fearless reporting and incisive \
-                     commentary—Jeremy Scahill, Glenn Greenwald, Betsy Reed and others—discuss \
-                     the crucial issues of our time: national security, civil liberties, foreign \
-                     policy, and criminal justice. Plus interviews with artists, thinkers, and \
-                     newsmakers who challenge our preconceptions about the world we live in.";
-
-        let pd = NewPodcast::new(&channel, 0);
-        let expected = NewPodcastBuilder::default()
-            .title("Intercepted with Jeremy Scahill")
-            .link("https://theintercept.com/podcasts")
-            .description(descr)
-            .image_uri(Some(String::from(
-                "http://static.megaphone.fm/podcasts/d5735a50-d904-11e6-8532-73c7de466ea6/image/\
-                 uploads_2F1484252190700-qhn5krasklbce3dh-a797539282700ea0298a3a26f7e49b0b_\
-                 2FIntercepted_COVER%2B_281_29.png")
-            ))
-            .build()
-            .unwrap();
-
-        assert_eq!(pd, expected);
-    }
-
-    #[test]
-    fn test_new_podcast_breakthrough() {
-        let file = File::open("tests/feeds/TheBreakthrough.xml").unwrap();
-        let channel = Channel::read_from(BufReader::new(file)).unwrap();
-
-        let descr = "The podcast that takes you behind the scenes with journalists to hear how \
-                     they nailed their biggest stories.";
-        let pd = NewPodcast::new(&channel, 0);
-
-        let expected = NewPodcastBuilder::default()
-            .title("The Breakthrough")
-            .link("http://www.propublica.org/podcast")
-            .description(descr)
-            .image_uri(Some(String::from(
-                "http://www.propublica.org/images/podcast_logo_2.png",
-            )))
-            .build()
-            .unwrap();
-
-        assert_eq!(pd, expected);
-    }
-
-    #[test]
-    fn test_new_podcast_lup() {
-        let file = File::open("tests/feeds/LinuxUnplugged.xml").unwrap();
-        let channel = Channel::read_from(BufReader::new(file)).unwrap();
-
-        let descr = "An open show powered by community LINUX Unplugged takes the best attributes \
-                     of open collaboration and focuses them into a weekly lifestyle show about \
-                     Linux.";
-        let pd = NewPodcast::new(&channel, 0);
-
-        let expected = NewPodcastBuilder::default()
-            .title("LINUX Unplugged Podcast")
-            .link("http://www.jupiterbroadcasting.com/")
-            .description(descr)
-            .image_uri(Some(String::from(
-                "http://www.jupiterbroadcasting.com/images/LASUN-Badge1400.jpg",
-            )))
-            .build()
-            .unwrap();
-
-        assert_eq!(pd, expected);
-    }
-
-    #[test]
-    fn test_new_podcast_r4explanation() {
-        let file = File::open("tests/feeds/R4Explanation.xml").unwrap();
-        let channel = Channel::read_from(BufReader::new(file)).unwrap();
-
-        let pd = NewPodcast::new(&channel, 0);
-
-        let expected = NewPodcastBuilder::default()
-            .title("Request For Explanation")
-            .link("https://request-for-explanation.github.io/podcast/")
-            .description("A weekly discussion of Rust RFCs")
-            .image_uri(Some(String::from(
-                "https://request-for-explanation.github.io/podcast/podcast.png",
-            )))
-            .build()
-            .unwrap();
-
-        assert_eq!(pd, expected);
     }
 
     #[test]

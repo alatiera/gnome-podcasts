@@ -171,10 +171,7 @@ fn response_to_channel(res: Response) -> Box<Future<Item = Channel, Error = Erro
         .map_err(From::from)
         .and_then(|iter| ok(iter.collect::<Vec<u8>>()))
         .and_then(|utf_8_bytes| ok(String::from_utf8_lossy(&utf_8_bytes).into_owned()))
-        .and_then(|buf| {
-            println!("{:?}", buf);
-            Channel::from_str(&buf).map_err(From::from)
-        });
+        .and_then(|buf| Channel::from_str(&buf).map_err(From::from));
 
     Box::new(chan)
 }
@@ -213,8 +210,7 @@ mod tests {
     use tokio_core::reactor::Core;
 
     use database::truncate_db;
-    use std::fs;
-    use std::io::BufReader;
+    use utils::get_feed;
 
     #[test]
     fn test_into_feed() {
@@ -229,23 +225,11 @@ mod tests {
                    com/InterceptedWithJeremyScahill";
         let source = Source::from_url(url).unwrap();
         let id = source.id();
-        println!("{:?}", source);
 
         let feed = source.into_feed(&client, true);
         let feed = core.run(feed).unwrap();
 
-        let good = {
-            // open the xml file
-            let feed = fs::File::open("tests/feeds/2018-01-20-Intercepted.xml").unwrap();
-            // parse it into a channel
-            let chan = Channel::read_from(BufReader::new(feed)).unwrap();
-            FeedBuilder::default()
-                .channel(chan)
-                .source_id(id)
-                .build()
-                .unwrap()
-        };
-
-        assert_eq!(good, feed);
+        let expected = get_feed("tests/feeds/2018-01-20-Intercepted.xml", id);
+        assert_eq!(expected, feed);
     }
 }

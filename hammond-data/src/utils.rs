@@ -148,6 +148,29 @@ pub fn delete_show(pd: &Podcast) -> Result<()> {
 }
 
 #[cfg(test)]
+use Feed;
+
+#[cfg(test)]
+/// Helper function that open a local file, parse the rss::Channel and gives back a Feed object.
+/// Alternative Feed constructor to be used for tests.
+pub fn get_feed(file_path: &str, id: i32) -> Feed {
+    use feed::FeedBuilder;
+    use rss::Channel;
+    use std::fs;
+    use std::io::BufReader;
+
+    // open the xml file
+    let feed = fs::File::open(file_path).unwrap();
+    // parse it into a channel
+    let chan = Channel::read_from(BufReader::new(feed)).unwrap();
+    FeedBuilder::default()
+        .channel(chan)
+        .source_id(id)
+        .build()
+        .unwrap()
+}
+
+#[cfg(test)]
 mod tests {
     extern crate tempdir;
 
