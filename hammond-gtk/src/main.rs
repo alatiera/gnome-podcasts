@@ -1,4 +1,5 @@
 #![cfg_attr(feature = "cargo-clippy", allow(clone_on_ref_ptr, needless_pass_by_value))]
+#![deny(unused_extern_crates, unused)]
 
 extern crate gdk;
 extern crate gdk_pixbuf;
@@ -17,16 +18,8 @@ extern crate lazy_static;
 extern crate log;
 extern crate loggerv;
 extern crate open;
-extern crate regex;
 extern crate send_cell;
 // extern crate rayon;
-
-#[cfg(test)]
-extern crate hyper;
-#[cfg(test)]
-extern crate hyper_tls;
-#[cfg(test)]
-extern crate tokio_core;
 
 // use rayon::prelude::*;
 use log::LogLevel;

@@ -1,4 +1,5 @@
 #![recursion_limit = "1024"]
+#![deny(unused_extern_crates, unused)]
 
 #[macro_use]
 extern crate error_chain;
@@ -13,8 +14,3 @@ extern crate tempdir;
 
 pub mod downloader;
 pub mod errors;
-
-#[cfg(test)]
-extern crate hyper_tls;
-#[cfg(test)]
-extern crate tokio_core;
