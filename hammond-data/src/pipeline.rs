@@ -14,7 +14,6 @@ use Source;
 use dbqueries;
 use errors::*;
 use models::{IndexState, NewEpisode, NewEpisodeMinimal};
-// use models::new_episode::NewEpisodeMinimal;
 // use Feed;
 
 use std;

@@ -153,8 +153,10 @@ mod tests {
 
     use self::tempdir::TempDir;
     use super::*;
+
     use database::truncate_db;
-    use models::new_episode::NewEpisodeBuilder;
+    use models::NewEpisodeBuilder;
+
     use std::fs::File;
     use std::io::Write;
 

@@ -1,20 +1,25 @@
-pub(crate) mod new_episode;
-pub(crate) mod new_podcast;
-pub(crate) mod new_source;
+mod new_episode;
+mod new_podcast;
+mod new_source;
 
-pub(crate) mod episode;
-pub(crate) mod podcast;
-pub(crate) mod source;
+mod episode;
+mod podcast;
+mod source;
 
 // use futures::prelude::*;
 // use futures::future::*;
 
+pub(crate) use self::episode::EpisodeCleanerQuery;
 pub(crate) use self::new_episode::{NewEpisode, NewEpisodeMinimal};
 pub(crate) use self::new_podcast::NewPodcast;
 pub(crate) use self::new_source::NewSource;
 
+#[cfg(test)]
+pub(crate) use self::new_episode::NewEpisodeBuilder;
+#[cfg(test)]
+pub(crate) use self::new_podcast::NewPodcastBuilder;
+
 pub use self::episode::{Episode, EpisodeMinimal, EpisodeWidgetQuery};
-pub(crate) use self::episode::EpisodeCleanerQuery;
 pub use self::podcast::{Podcast, PodcastCoverQuery};
 pub use self::source::Source;
 

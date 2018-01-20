@@ -18,28 +18,22 @@
         unconditional_recursion, unions_with_drop_fields, unused_allocation, unused_comparisons,
         unused_parens, while_true)]
 #![deny(missing_debug_implementations, missing_docs, trivial_casts, trivial_numeric_casts)]
-// FIXME: uncomment
-// #![deny(unused_extern_crates, unused)]
+#![deny(unused_extern_crates, unused)]
 
 // #![feature(conservative_impl_trait)]
 
 #[macro_use]
-extern crate error_chain;
-
-#[macro_use]
-extern crate lazy_static;
-
-#[macro_use]
-extern crate log;
-
+extern crate derive_builder;
 #[macro_use]
 extern crate diesel;
-
 #[macro_use]
 extern crate diesel_migrations;
-
 #[macro_use]
-extern crate derive_builder;
+extern crate error_chain;
+#[macro_use]
+extern crate lazy_static;
+#[macro_use]
+extern crate log;
 
 extern crate ammonia;
 extern crate chrono;
@@ -63,15 +57,15 @@ pub mod dbqueries;
 #[allow(missing_docs)]
 pub mod errors;
 pub mod utils;
-pub mod feed;
 pub mod database;
 pub mod pipeline;
 pub(crate) mod models;
+mod feed;
 mod parser;
 mod schema;
 
+pub use feed::Feed;
 pub use models::{Episode, EpisodeWidgetQuery, Podcast, PodcastCoverQuery, Source};
-// pub use feed::Feed;
 
 /// [XDG Base Direcotory](https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html) Paths.
 #[allow(missing_debug_implementations)]

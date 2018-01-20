@@ -31,8 +31,8 @@ pub(crate) fn parse_itunes_duration(item: &Item) -> Option<i32> {
 
 #[cfg(test)]
 mod tests {
-    use models::new_episode::{NewEpisode, NewEpisodeBuilder};
-    use models::new_podcast::{NewPodcast, NewPodcastBuilder};
+    use models::{NewEpisode, NewEpisodeBuilder};
+    use models::{NewPodcast, NewPodcastBuilder};
 
     use rss::{Channel, ItemBuilder};
     use rss::extension::itunes::ITunesItemExtensionBuilder;
