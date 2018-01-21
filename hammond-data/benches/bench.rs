@@ -16,32 +16,47 @@ extern crate rss;
 use futures::future::*;
 use tokio_core::reactor::Core;
 
+use hammond_data::FeedBuilder;
 use hammond_data::Source;
 use hammond_data::database::truncate_db;
 use hammond_data::errors::*;
-use hammond_data::feed::*;
 
 use std::io::BufReader;
 
-// Big rss feed
-const PCPER: &[u8] = include_bytes!("feeds/pcpermp3.xml");
-const UNPLUGGED: &[u8] = include_bytes!("feeds/linuxunplugged.xml");
-const RADIO: &[u8] = include_bytes!("feeds/coderradiomp3.xml");
-const SNAP: &[u8] = include_bytes!("feeds/techsnapmp3.xml");
-const LAS: &[u8] = include_bytes!("feeds/TheLinuxActionShow.xml");
+// RSS feeds
+const INTERCEPTED: &[u8] = include_bytes!("../tests/feeds/2018-01-20-Intercepted.xml");
+const UNPLUGGED: &[u8] = include_bytes!("../tests/feeds/2018-01-20-LinuxUnplugged.xml");
+const TIPOFF: &[u8] = include_bytes!("../tests/feeds/2018-01-20-TheTipOff.xml");
 
 // This feed has HUGE descripion and summary fields which can be very
 // very expensive to parse.
-const CODE: &[u8] = include_bytes!("feeds/GreaterThanCode.xml");
+const CODE: &[u8] = include_bytes!("../tests/feeds/2018-01-20-GreaterThanCode.xml");
 // Relative small feed
-const STARS: &[u8] = include_bytes!("feeds/StealTheStars.xml");
+const STARS: &[u8] = include_bytes!("../tests/feeds/2018-01-20-StealTheStars.xml");
 
 static URLS: &[(&[u8], &str)] = &[
-    (PCPER, "https://www.pcper.com/rss/podcasts-mp3.rss"),
-    (UNPLUGGED, "http://feeds.feedburner.com/linuxunplugged"),
-    (RADIO, "https://feeds.feedburner.com/coderradiomp3"),
-    (SNAP, "https://feeds.feedburner.com/techsnapmp3"),
-    (LAS, "https://feeds2.feedburner.com/TheLinuxActionShow"),
+    (
+        INTERCEPTED,
+        "https://web.archive.org/web/20180120083840if_/https://feeds.feedburner.\
+         com/InterceptedWithJeremyScahill",
+    ),
+    (
+        UNPLUGGED,
+        "https://web.archive.org/web/20180120110314if_/https://feeds.feedburner.com/linuxunplugged",
+    ),
+    (
+        TIPOFF,
+        "https://web.archive.org/web/20180120110727if_/https://rss.acast.com/thetipoff",
+    ),
+    (
+        CODE,
+        "https://web.archive.org/web/20180120104741if_/https://www.greaterthancode.\
+         com/feed/podcast",
+    ),
+    (
+        STARS,
+        "https://web.archive.org/web/20180120104957if_/https://rss.art19.com/steal-the-stars",
+    ),
 ];
 
 fn index_urls() -> Vec<Box<Future<Item = (), Error = Error>>> {
