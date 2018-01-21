@@ -119,7 +119,7 @@ impl NewPodcast {
     }
 
     // Look out for when tryinto lands into stable.
-    pub(crate) fn into_podcast(&self) -> Result<Podcast> {
+    pub(crate) fn to_podcast(&self) -> Result<Podcast> {
         self.index()?;
         dbqueries::get_podcast_from_source_id(self.source_id).map_err(From::from)
     }
@@ -164,7 +164,7 @@ mod tests {
 
     // Pre-built expected NewPodcast structs.
     lazy_static!{
-        static ref EXPECTED_INTERCEPT: NewPodcast = {
+        static ref EXPECTED_INTERCEPTED: NewPodcast = {
             let descr = "The people behind The Intercept’s fearless reporting and incisive \
                          commentary—Jeremy Scahill, Glenn Greenwald, Betsy Reed and others—discuss \
                          the crucial issues of our time: national security, civil liberties, foreign \
@@ -263,6 +263,21 @@ mod tests {
                 .build()
                 .unwrap()
         };
+
+        static ref UPDATED_DESC_INTERCEPTED: NewPodcast = {
+            NewPodcastBuilder::default()
+                .title("Intercepted with Jeremy Scahill")
+                .link("https://theintercept.com/podcasts")
+                .description("New Description")
+                .image_uri(Some(String::from(
+                    "http://static.megaphone.fm/podcasts/d5735a50-d904-11e6-8532-73c7de466ea6/image/\
+                     uploads_2F1484252190700-qhn5krasklbce3dh-a797539282700ea0298a3a26f7e49b0b_\
+                     2FIntercepted_COVER%2B_281_29.png")
+                ))
+                .source_id(42)
+                .build()
+                .unwrap()
+        };
     }
 
     #[test]
@@ -271,7 +286,7 @@ mod tests {
         let channel = Channel::read_from(BufReader::new(file)).unwrap();
 
         let pd = NewPodcast::new(&channel, 42);
-        assert_eq!(*EXPECTED_INTERCEPT, pd);
+        assert_eq!(*EXPECTED_INTERCEPTED, pd);
     }
 
     #[test]
@@ -322,64 +337,41 @@ mod tests {
         let pd = dbqueries::get_podcast_from_source_id(42).unwrap();
 
         assert_eq!(npd, pd);
-        assert_eq!(*EXPECTED_INTERCEPT, npd);
-        assert_eq!(&*EXPECTED_INTERCEPT, &pd);
+        assert_eq!(*EXPECTED_INTERCEPTED, npd);
+        assert_eq!(&*EXPECTED_INTERCEPTED, &pd);
     }
 
     #[test]
     // TODO: Add more test/checks
-    // Currently there's a test that only checks new descriptions.
+    // Currently there's a test that only checks new description or title.
     // If you have time and want to help, implement the test for the other fields too.
     fn test_new_podcast_update() {
         truncate_db().unwrap();
-        let old = EXPECTED_INTERCEPT.into_podcast().unwrap();
+        let old = EXPECTED_INTERCEPTED.to_podcast().unwrap();
 
-        let updated = NewPodcastBuilder::default()
-            .title("Intercepted with Jeremy Scahill")
-            .link("https://theintercept.com/podcasts")
-            .description("New description")
-            .image_uri(Some(String::from(
-                "http://static.megaphone.fm/podcasts/d5735a50-d904-11e6-8532-73c7de466ea6/image/\
-                 uploads_2F1484252190700-qhn5krasklbce3dh-a797539282700ea0298a3a26f7e49b0b_\
-                 2FIntercepted_COVER%2B_281_29.png")
-            ))
-            .source_id(42)
-            .build()
-            .unwrap();
-
+        let updated = &*UPDATED_DESC_INTERCEPTED;
         updated.update(old.id()).unwrap();
         let new = dbqueries::get_podcast_from_source_id(42).unwrap();
 
         assert_ne!(old, new);
-        assert_eq!(updated, new);
-        assert_ne!(&updated, &old);
+        assert_eq!(updated, &new);
+        assert_ne!(updated, &old);
     }
 
     #[test]
     fn test_new_podcast_index() {
         truncate_db().unwrap();
 
-        let updated = NewPodcastBuilder::default()
-            .title("Intercepted with Jeremy Scahill")
-            .link("https://theintercept.com/podcasts")
-            .description("New description")
-            .image_uri(Some(String::from(
-                "http://static.megaphone.fm/podcasts/d5735a50-d904-11e6-8532-73c7de466ea6/image/\
-                 uploads_2F1484252190700-qhn5krasklbce3dh-a797539282700ea0298a3a26f7e49b0b_\
-                 2FIntercepted_COVER%2B_281_29.png")
-            ))
-            .source_id(42)
-            .build()
-            .unwrap();
-
         // First insert
-        assert!(EXPECTED_INTERCEPT.index().is_ok());
+        assert!(EXPECTED_INTERCEPTED.index().is_ok());
         // Second identical, This should take the early return path
-        assert!(EXPECTED_INTERCEPT.index().is_ok());
+        assert!(EXPECTED_INTERCEPTED.index().is_ok());
         // Get the podcast
         let old = dbqueries::get_podcast_from_source_id(42).unwrap();
         // Assert that NewPodcast is equal to the Indexed one
-        assert_eq!(&*EXPECTED_INTERCEPT, &old);
+        assert_eq!(&*EXPECTED_INTERCEPTED, &old);
+
+        let updated = &*UPDATED_DESC_INTERCEPTED;
 
         // Update the podcast
         assert!(updated.index().is_ok());

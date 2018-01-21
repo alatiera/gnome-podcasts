@@ -28,7 +28,7 @@ impl Feed {
     /// Index the contents of the RSS `Feed` into the database.
     pub fn index(self) -> Box<Future<Item = (), Error = Error>> {
         let fut = self.parse_podcast_async()
-            .and_then(|pd| pd.into_podcast())
+            .and_then(|pd| pd.to_podcast())
             .and_then(move |pd| self.index_channel_items(&pd));
 
         Box::new(fut)
