@@ -117,7 +117,7 @@ impl NewPodcast {
     }
 
     // Look out for when tryinto lands into stable.
-    pub(crate) fn into_podcast(self) -> Result<Podcast> {
+    pub(crate) fn into_podcast(&self) -> Result<Podcast> {
         self.index()?;
         dbqueries::get_podcast_from_source_id(self.source_id).map_err(From::from)
     }
@@ -178,6 +178,7 @@ mod tests {
                      uploads_2F1484252190700-qhn5krasklbce3dh-a797539282700ea0298a3a26f7e49b0b_\
                      2FIntercepted_COVER%2B_281_29.png")
                 ))
+                .source_id(42)
                 .build()
                 .unwrap()
         };
@@ -194,6 +195,7 @@ mod tests {
                 .image_uri(Some(String::from(
                     "http://www.jupiterbroadcasting.com/images/LASUN-Badge1400.jpg",
                 )))
+                .source_id(42)
                 .build()
                 .unwrap()
         };
@@ -217,6 +219,7 @@ mod tests {
                     "https://imagecdn.acast.com/image?h=1500&w=1500&source=http%3A%2F%2Fi1.sndcdn.\
                      com%2Favatars-000317856075-a2coqz-original.jpg",
                 )))
+                .source_id(42)
                 .build()
                 .unwrap()
 
@@ -237,6 +240,7 @@ mod tests {
                 .link("http://tor-labs.com/")
                 .description(descr)
                 .image_uri(Some(String::from(img)))
+                .source_id(42)
                 .build()
                 .unwrap()
         };
@@ -253,6 +257,7 @@ mod tests {
                 .image_uri(Some(String::from(
                     "http://www.greaterthancode.com/wp-content/uploads/2016/10/code1400-4.jpg",
                 )))
+                .source_id(42)
                 .build()
                 .unwrap()
         };
@@ -263,8 +268,8 @@ mod tests {
         let file = File::open("tests/feeds/2018-01-20-Intercepted.xml").unwrap();
         let channel = Channel::read_from(BufReader::new(file)).unwrap();
 
-        let pd = NewPodcast::new(&channel, 0);
-        assert_eq!(&*EXPECTED_INTERCEPT, &pd);
+        let pd = NewPodcast::new(&channel, 42);
+        assert_eq!(*EXPECTED_INTERCEPT, pd);
     }
 
     #[test]
@@ -272,8 +277,8 @@ mod tests {
         let file = File::open("tests/feeds/2018-01-20-LinuxUnplugged.xml").unwrap();
         let channel = Channel::read_from(BufReader::new(file)).unwrap();
 
-        let pd = NewPodcast::new(&channel, 0);
-        assert_eq!(&*EXPECTED_LUP, &pd);
+        let pd = NewPodcast::new(&channel, 42);
+        assert_eq!(*EXPECTED_LUP, pd);
     }
 
     #[test]
@@ -281,8 +286,8 @@ mod tests {
         let file = File::open("tests/feeds/2018-01-20-TheTipOff.xml").unwrap();
         let channel = Channel::read_from(BufReader::new(file)).unwrap();
 
-        let pd = NewPodcast::new(&channel, 0);
-        assert_eq!(&*EXPECTED_TIPOFF, &pd);
+        let pd = NewPodcast::new(&channel, 42);
+        assert_eq!(*EXPECTED_TIPOFF, pd);
     }
 
     #[test]
@@ -290,8 +295,8 @@ mod tests {
         let file = File::open("tests/feeds/2018-01-20-StealTheStars.xml").unwrap();
         let channel = Channel::read_from(BufReader::new(file)).unwrap();
 
-        let pd = NewPodcast::new(&channel, 0);
-        assert_eq!(&*EXPECTED_STARS, &pd);
+        let pd = NewPodcast::new(&channel, 42);
+        assert_eq!(*EXPECTED_STARS, pd);
     }
 
     #[test]
@@ -299,8 +304,8 @@ mod tests {
         let file = File::open("tests/feeds/2018-01-20-GreaterThanCode.xml").unwrap();
         let channel = Channel::read_from(BufReader::new(file)).unwrap();
 
-        let pd = NewPodcast::new(&channel, 0);
-        assert_eq!(&*EXPECTED_CODE, &pd);
+        let pd = NewPodcast::new(&channel, 42);
+        assert_eq!(*EXPECTED_CODE, pd);
     }
 
     #[test]
@@ -310,12 +315,42 @@ mod tests {
         let file = File::open("tests/feeds/2018-01-20-Intercepted.xml").unwrap();
         let channel = Channel::read_from(BufReader::new(file)).unwrap();
 
-        let npd = NewPodcast::new(&channel, 0);
+        let npd = NewPodcast::new(&channel, 42);
         npd.insert().unwrap();
-        let pd = dbqueries::get_podcast_from_source_id(0).unwrap();
+        let pd = dbqueries::get_podcast_from_source_id(42).unwrap();
 
         assert_eq!(npd, pd);
+        assert_eq!(*EXPECTED_INTERCEPT, npd);
         assert_eq!(&*EXPECTED_INTERCEPT, &pd);
-        assert_eq!(&*EXPECTED_INTERCEPT, &npd);
+    }
+
+    #[test]
+    // This maybe could be a doc test on insert.
+    // TODO: Add more test/checks
+    // Currently there's a test that only checks new descriptions.
+    // If you have time and want to help, implement the test for the other fields too.
+    fn test_new_podcast_update() {
+        truncate_db().unwrap();
+        let old = (*EXPECTED_INTERCEPT).into_podcast().unwrap();
+
+        let updated = NewPodcastBuilder::default()
+            .title("Intercepted with Jeremy Scahill")
+            .link("https://theintercept.com/podcasts")
+            .description("New description")
+            .image_uri(Some(String::from(
+                "http://static.megaphone.fm/podcasts/d5735a50-d904-11e6-8532-73c7de466ea6/image/\
+                 uploads_2F1484252190700-qhn5krasklbce3dh-a797539282700ea0298a3a26f7e49b0b_\
+                 2FIntercepted_COVER%2B_281_29.png")
+            ))
+            .source_id(42)
+            .build()
+            .unwrap();
+
+        updated.update(old.id()).unwrap();
+        let new = dbqueries::get_podcast_from_source_id(42).unwrap();
+
+        assert_ne!(old, new);
+        assert_eq!(updated, new);
+        assert_ne!(&updated, &old);
     }
 }
