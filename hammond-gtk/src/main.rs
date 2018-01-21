@@ -22,7 +22,7 @@ extern crate send_cell;
 // extern crate rayon;
 
 // use rayon::prelude::*;
-use log::LogLevel;
+use log::Level;
 
 use gtk::prelude::*;
 
@@ -59,7 +59,7 @@ use app::App;
 
 fn main() {
     // TODO: make the the logger a cli -vv option
-    loggerv::init_with_level(LogLevel::Info).unwrap();
+    loggerv::init_with_level(Level::Info).unwrap();
     gtk::init().expect("Error initializing gtk");
     static_resource::init().expect("Something went wrong with the resource file initialization.");
 
