@@ -153,7 +153,7 @@ impl NewEpisode {
 
 #[derive(Insertable, AsChangeset)]
 #[table_name = "episode"]
-#[derive(Debug, Clone, Default, Builder, PartialEq)]
+#[derive(Debug, Clone, Builder, PartialEq)]
 #[builder(derive(Debug))]
 #[builder(setter(into))]
 pub(crate) struct NewEpisodeMinimal {
@@ -260,5 +260,211 @@ impl NewEpisodeMinimal {
 
     pub(crate) fn podcast_id(&self) -> i32 {
         self.podcast_id
+    }
+}
+#[cfg(test)]
+mod tests {
+    use models::{NewEpisode, NewEpisodeBuilder};
+    use models::new_episode::{NewEpisodeMinimal, NewEpisodeMinimalBuilder};
+
+    use rss::Channel;
+
+    use std::fs::File;
+    use std::io::BufReader;
+
+    // TODO: Add tests for other feeds too.
+    // Especially if you find an *intresting* generated feed.
+
+    #[test]
+    fn test_new_episode_minimal_intercepted() {
+        let file = File::open("tests/feeds/2018-01-20-Intercepted.xml").unwrap();
+        let channel = Channel::read_from(BufReader::new(file)).unwrap();
+
+        let episode = channel.items().iter().nth(14).unwrap();
+
+        let ep = NewEpisodeMinimal::new(&episode, 42).unwrap();
+        let expected = NewEpisodeMinimalBuilder::default()
+            .title("The Super Bowl of Racism")
+            .uri(Some(String::from(
+                "http://traffic.megaphone.fm/PPY6458293736.mp3",
+            )))
+            .guid(Some(String::from("7df4070a-9832-11e7-adac-cb37b05d5e24")))
+            .epoch(1505296800)
+            .duration(Some(4171))
+            .podcast_id(42)
+            .build()
+            .unwrap();
+
+        assert_eq!(ep, expected);
+
+        let episode = channel.items().iter().nth(15).unwrap();
+        let ep = NewEpisodeMinimal::new(&episode, 42).unwrap();
+
+        let expected = NewEpisodeMinimalBuilder::default()
+            .title("Atlas Golfed — U.S.-Backed Think Tanks Target Latin America")
+            .uri(Some(String::from(
+                "http://traffic.megaphone.fm/FL5331443769.mp3",
+            )))
+            .guid(Some(String::from("7c207a24-e33f-11e6-9438-eb45dcf36a1d")))
+            .epoch(1502272800)
+            .duration(Some(4415))
+            .podcast_id(42)
+            .build()
+            .unwrap();
+
+        assert_eq!(ep, expected);
+    }
+
+    #[test]
+    fn test_new_episode_intercepted() {
+        let file = File::open("tests/feeds/2018-01-20-Intercepted.xml").unwrap();
+        let channel = Channel::read_from(BufReader::new(file)).unwrap();
+
+        let episode = channel.items().iter().nth(14).unwrap();
+        let descr = "NSA whistleblower Edward Snowden discusses the massive Equifax data breach \
+                     and allegations of Russian interference in the US election. Commentator \
+                     Shaun King explains his call for a boycott of the NFL and talks about his \
+                     campaign to bring violent neo-Nazis to justice. Rapper Open Mike Eagle \
+                     performs.";
+
+        let ep = NewEpisode::new(&episode, 42).unwrap();
+        let expected = NewEpisodeBuilder::default()
+            .title("The Super Bowl of Racism")
+            .uri(Some(String::from(
+                "http://traffic.megaphone.fm/PPY6458293736.mp3",
+            )))
+            .description(Some(String::from(descr)))
+            .guid(Some(String::from("7df4070a-9832-11e7-adac-cb37b05d5e24")))
+            .length(Some(66738886))
+            .epoch(1505296800)
+            .duration(Some(4171))
+            .podcast_id(42)
+            .build()
+            .unwrap();
+
+        assert_eq!(ep, expected);
+
+        let episode = channel.items().iter().nth(15).unwrap();
+        let ep = NewEpisode::new(&episode, 42).unwrap();
+
+        let descr = "This week on Intercepted: Jeremy gives an update on the aftermath of \
+                     Blackwater’s 2007 massacre of Iraqi civilians. Intercept reporter Lee Fang \
+                     lays out how a network of libertarian think tanks called the Atlas Network \
+                     is insidiously shaping political infrastructure in Latin America. We speak \
+                     with attorney and former Hugo Chavez adviser Eva Golinger about the \
+                     Venezuela\'s political turmoil.And we hear Claudia Lizardo of the \
+                     Caracas-based band, La Pequeña Revancha, talk about her music and hopes for \
+                     Venezuela.";
+
+        let expected = NewEpisodeBuilder::default()
+            .title("Atlas Golfed — U.S.-Backed Think Tanks Target Latin America")
+            .uri(Some(String::from(
+                "http://traffic.megaphone.fm/FL5331443769.mp3",
+            )))
+            .description(Some(String::from(descr)))
+            .guid(Some(String::from("7c207a24-e33f-11e6-9438-eb45dcf36a1d")))
+            .length(Some(67527575))
+            .epoch(1502272800)
+            .duration(Some(4415))
+            .podcast_id(42)
+            .build()
+            .unwrap();
+
+        assert_eq!(ep, expected);
+    }
+
+    #[test]
+    fn test_new_episode_minimal_lup() {
+        let file = File::open("tests/feeds/2018-01-20-LinuxUnplugged.xml").unwrap();
+        let channel = Channel::read_from(BufReader::new(file)).unwrap();
+
+        let episode = channel.items().iter().nth(18).unwrap();
+        let ep = NewEpisodeMinimal::new(&episode, 42).unwrap();
+
+        let expected = NewEpisodeMinimalBuilder::default()
+            .title("Hacking Devices with Kali Linux | LUP 214")
+            .uri(Some(String::from(
+                "http://www.podtrac.com/pts/redirect.mp3/traffic.libsyn.com/jnite/lup-0214.mp3",
+            )))
+            .guid(Some(String::from("78A682B4-73E8-47B8-88C0-1BE62DD4EF9D")))
+            .epoch(1505280282)
+            .duration(Some(5733))
+            .podcast_id(42)
+            .build()
+            .unwrap();
+
+        assert_eq!(ep, expected);
+
+        let episode = channel.items().iter().nth(19).unwrap();
+        let ep = NewEpisodeMinimal::new(&episode, 42).unwrap();
+
+        let expected = NewEpisodeMinimalBuilder::default()
+            .title("Gnome Does it Again | LUP 213")
+            .uri(Some(String::from(
+                "http://www.podtrac.com/pts/redirect.mp3/traffic.libsyn.com/jnite/lup-0213.mp3",
+            )))
+            .guid(Some(String::from("1CE57548-B36C-4F14-832A-5D5E0A24E35B")))
+            .epoch(1504670247)
+            .duration(Some(4491))
+            .podcast_id(42)
+            .build()
+            .unwrap();
+
+        assert_eq!(ep, expected);
+    }
+
+    #[test]
+    fn test_new_episode_lup() {
+        let file = File::open("tests/feeds/2018-01-20-LinuxUnplugged.xml").unwrap();
+        let channel = Channel::read_from(BufReader::new(file)).unwrap();
+
+        let episode = channel.items().iter().nth(18).unwrap();
+        let descr = "Audit your network with a couple of easy commands on Kali Linux. Chris \
+                     decides to blow off a little steam by attacking his IoT devices, Wes has the \
+                     scope on Equifax blaming open source &amp; the Beard just saved the show. \
+                     It’s a really packed episode!";
+        let ep = NewEpisode::new(&episode, 42).unwrap();
+
+        let expected = NewEpisodeBuilder::default()
+            .title("Hacking Devices with Kali Linux | LUP 214")
+            .uri(Some(String::from(
+                "http://www.podtrac.com/pts/redirect.mp3/traffic.libsyn.com/jnite/lup-0214.mp3",
+            )))
+            .description(Some(String::from(descr)))
+            .guid(Some(String::from("78A682B4-73E8-47B8-88C0-1BE62DD4EF9D")))
+            .length(Some(46479789))
+            .epoch(1505280282)
+            .duration(Some(5733))
+            .podcast_id(42)
+            .build()
+            .unwrap();
+
+        assert_eq!(ep, expected);
+
+        let episode = channel.items().iter().nth(19).unwrap();
+        let ep = NewEpisode::new(&episode, 42).unwrap();
+
+        let descr =
+            "The Gnome project is about to solve one of our audience's biggest Wayland’s \
+             concerns. But as the project takes on a new level of relevance, decisions for the \
+             next version of Gnome have us worried about the future.\nPlus we chat with Wimpy \
+             about the Ubuntu Rally in NYC, Microsoft’s sneaky move to turn Windows 10 into the \
+             “ULTIMATE LINUX RUNTIME”, community news &amp; more!";
+
+        let expected = NewEpisodeBuilder::default()
+            .title("Gnome Does it Again | LUP 213")
+            .uri(Some(String::from(
+                "http://www.podtrac.com/pts/redirect.mp3/traffic.libsyn.com/jnite/lup-0213.mp3",
+            )))
+            .description(Some(String::from(descr)))
+            .guid(Some(String::from("1CE57548-B36C-4F14-832A-5D5E0A24E35B")))
+            .length(Some(36544272))
+            .epoch(1504670247)
+            .duration(Some(4491))
+            .podcast_id(42)
+            .build()
+            .unwrap();
+
+        assert_eq!(ep, expected);
     }
 }

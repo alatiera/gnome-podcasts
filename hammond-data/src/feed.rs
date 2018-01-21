@@ -116,10 +116,14 @@ mod tests {
     fn test_index_loop() {
         truncate_db().unwrap();
         let inpt = vec![
-            "https://request-for-explanation.github.io/podcast/rss.xml",
-            "https://feeds.feedburner.com/InterceptedWithJeremyScahill",
-            "http://feeds.propublica.org/propublica/podcast",
-            "http://feeds.feedburner.com/linuxunplugged",
+            "https://web.archive.org/web/20180120083840if_/https://feeds.feedburner.\
+             com/InterceptedWithJeremyScahill",
+            "https://web.archive.org/web/20180120110314if_/https://feeds.feedburner.\
+             com/linuxunplugged",
+            "https://web.archive.org/web/20180120110727if_/https://rss.acast.com/thetipoff",
+            "https://web.archive.org/web/20180120104957if_/https://rss.art19.com/steal-the-stars",
+            "https://web.archive.org/web/20180120104741if_/https://www.greaterthancode.\
+             com/feed/podcast",
         ];
 
         inpt.iter().for_each(|url| {
@@ -131,7 +135,12 @@ mod tests {
 
         let sources = dbqueries::get_sources().unwrap();
         // Run again to cover Unique constrains erros.
-        pipeline::pipeline(sources, true).unwrap()
+        pipeline::pipeline(sources, true).unwrap();
+
+        // Assert the index rows equal the controlled results
+        assert_eq!(dbqueries::get_sources().unwrap().len(), 5);
+        assert_eq!(dbqueries::get_podcasts().unwrap().len(), 5);
+        assert_eq!(dbqueries::get_episodes().unwrap().len(), 354);
     }
 
     #[test]
@@ -139,20 +148,28 @@ mod tests {
         // vec of (path, url) tuples.
         let urls = vec![
             (
-                "tests/feeds/Intercepted.xml",
-                "https://feeds.feedburner.com/InterceptedWithJeremyScahill",
+                "tests/feeds/2018-01-20-Intercepted.xml",
+                "https://web.archive.org/web/20180120083840if_/https://feeds.feedburner.\
+                 com/InterceptedWithJeremyScahill",
             ),
             (
-                "tests/feeds/LinuxUnplugged.xml",
-                "http://feeds.feedburner.com/linuxunplugged",
+                "tests/feeds/2018-01-20-LinuxUnplugged.xml",
+                "https://web.archive.org/web/20180120110314if_/https://feeds.feedburner.\
+                 com/linuxunplugged",
             ),
             (
-                "tests/feeds/TheBreakthrough.xml",
-                "http://feeds.propublica.org/propublica/podcast",
+                "tests/feeds/2018-01-20-TheTipOff.xml",
+                "https://web.archive.org/web/20180120110727if_/https://rss.acast.com/thetipoff",
             ),
             (
-                "tests/feeds/R4Explanation.xml",
-                "https://request-for-explanation.github.io/podcast/rss.xml",
+                "tests/feeds/2018-01-20-StealTheStars.xml",
+                "https://web.archive.org/web/20180120104957if_/https://rss.art19.\
+                 com/steal-the-stars",
+            ),
+            (
+                "tests/feeds/2018-01-20-GreaterThanCode.xml",
+                "https://web.archive.org/web/20180120104741if_/https://www.greaterthancode.\
+                 com/feed/podcast",
             ),
         ];
 
@@ -181,8 +198,8 @@ mod tests {
         let _foo = core.run(join_all(list));
 
         // Assert the index rows equal the controlled results
-        assert_eq!(dbqueries::get_sources().unwrap().len(), 4);
-        assert_eq!(dbqueries::get_podcasts().unwrap().len(), 4);
-        assert_eq!(dbqueries::get_episodes().unwrap().len(), 274);
+        assert_eq!(dbqueries::get_sources().unwrap().len(), 5);
+        assert_eq!(dbqueries::get_podcasts().unwrap().len(), 5);
+        assert_eq!(dbqueries::get_episodes().unwrap().len(), 354);
     }
 }
