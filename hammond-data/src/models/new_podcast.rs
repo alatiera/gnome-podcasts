@@ -57,6 +57,8 @@ impl Update for NewPodcast {
     }
 }
 
+// TODO: Maybe return an Enum<Action(Resut)> Instead.
+// It would make unti testing better too.
 impl Index for NewPodcast {
     fn index(&self) -> Result<()> {
         let exists = dbqueries::podcast_exists(self.source_id)?;
@@ -325,13 +327,12 @@ mod tests {
     }
 
     #[test]
-    // This maybe could be a doc test on insert.
     // TODO: Add more test/checks
     // Currently there's a test that only checks new descriptions.
     // If you have time and want to help, implement the test for the other fields too.
     fn test_new_podcast_update() {
         truncate_db().unwrap();
-        let old = (*EXPECTED_INTERCEPT).into_podcast().unwrap();
+        let old = EXPECTED_INTERCEPT.into_podcast().unwrap();
 
         let updated = NewPodcastBuilder::default()
             .title("Intercepted with Jeremy Scahill")
@@ -352,5 +353,39 @@ mod tests {
         assert_ne!(old, new);
         assert_eq!(updated, new);
         assert_ne!(&updated, &old);
+    }
+
+    #[test]
+    fn test_new_podcast_index() {
+        truncate_db().unwrap();
+
+        let updated = NewPodcastBuilder::default()
+            .title("Intercepted with Jeremy Scahill")
+            .link("https://theintercept.com/podcasts")
+            .description("New description")
+            .image_uri(Some(String::from(
+                "http://static.megaphone.fm/podcasts/d5735a50-d904-11e6-8532-73c7de466ea6/image/\
+                 uploads_2F1484252190700-qhn5krasklbce3dh-a797539282700ea0298a3a26f7e49b0b_\
+                 2FIntercepted_COVER%2B_281_29.png")
+            ))
+            .source_id(42)
+            .build()
+            .unwrap();
+
+        // First insert
+        assert!(EXPECTED_INTERCEPT.index().is_ok());
+        // Second identical, This should take the early return path
+        assert!(EXPECTED_INTERCEPT.index().is_ok());
+        // Get the podcast
+        let old = dbqueries::get_podcast_from_source_id(42).unwrap();
+        // Assert that NewPodcast is equal to the Indexed one
+        assert_eq!(&*EXPECTED_INTERCEPT, &old);
+
+        // Update the podcast
+        assert!(updated.index().is_ok());
+        // Get the new Podcast
+        let new = dbqueries::get_podcast_from_source_id(42).unwrap();
+        // Assert it's diff from the old one.
+        assert_ne!(new, old);
     }
 }
