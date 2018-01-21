@@ -95,9 +95,9 @@ impl Index for NewEpisode {
 
 impl PartialEq<EpisodeMinimal> for NewEpisode {
     fn eq(&self, other: &EpisodeMinimal) -> bool {
-        (self.title() != other.title()) || (self.uri() != other.uri())
-            || (self.duration() != other.duration()) || (self.epoch() != other.epoch())
-            || (self.guid() != other.guid())
+        (self.title() == other.title()) && (self.uri() == other.uri())
+            && (self.duration() == other.duration()) && (self.epoch() == other.epoch())
+            && (self.guid() == other.guid())
     }
 }
 
@@ -167,9 +167,9 @@ pub(crate) struct NewEpisodeMinimal {
 
 impl PartialEq<EpisodeMinimal> for NewEpisodeMinimal {
     fn eq(&self, other: &EpisodeMinimal) -> bool {
-        (self.title() != other.title()) || (self.uri() != other.uri())
-            || (self.duration() != other.duration()) || (self.epoch() != other.epoch())
-            || (self.guid() != other.guid())
+        (self.title() == other.title()) && (self.uri() == other.uri())
+            && (self.duration() == other.duration()) && (self.epoch() == other.epoch())
+            && (self.guid() == other.guid())
     }
 }
 

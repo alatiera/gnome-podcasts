@@ -77,9 +77,10 @@ impl Index for NewPodcast {
 
 impl PartialEq<Podcast> for NewPodcast {
     fn eq(&self, other: &Podcast) -> bool {
-        (self.link() != other.link()) || (self.title() != other.title())
-            || (self.image_uri() != other.image_uri())
-            || (self.description() != other.description())
+        (self.link() == other.link()) && (self.title() == other.title())
+            && (self.image_uri() == other.image_uri())
+            && (self.description() == other.description())
+            && (self.source_id() == other.source_id())
     }
 }
 
@@ -153,6 +154,7 @@ mod tests {
 
     use rss::Channel;
 
+    use database::truncate_db;
     use models::NewPodcastBuilder;
 
     use std::fs::File;
@@ -285,5 +287,39 @@ mod tests {
             .unwrap();
 
         assert_eq!(pd, expected);
+    }
+
+    #[test]
+    // This maybe could be a doc test on insert.
+    fn test_new_podcast_insert() {
+        truncate_db().unwrap();
+        let file = File::open("tests/feeds/2018-01-20-Intercepted.xml").unwrap();
+        let channel = Channel::read_from(BufReader::new(file)).unwrap();
+
+        let npd = NewPodcast::new(&channel, 0);
+        npd.insert().unwrap();
+        let pd = dbqueries::get_podcast_from_source_id(0).unwrap();
+
+        let descr = "The people behind The Intercept’s fearless reporting and incisive \
+                     commentary—Jeremy Scahill, Glenn Greenwald, Betsy Reed and others—discuss \
+                     the crucial issues of our time: national security, civil liberties, foreign \
+                     policy, and criminal justice. Plus interviews with artists, thinkers, and \
+                     newsmakers who challenge our preconceptions about the world we live in.";
+
+        let expected = NewPodcastBuilder::default()
+            .title("Intercepted with Jeremy Scahill")
+            .link("https://theintercept.com/podcasts")
+            .description(descr)
+            .image_uri(Some(String::from(
+                "http://static.megaphone.fm/podcasts/d5735a50-d904-11e6-8532-73c7de466ea6/image/\
+                 uploads_2F1484252190700-qhn5krasklbce3dh-a797539282700ea0298a3a26f7e49b0b_\
+                 2FIntercepted_COVER%2B_281_29.png")
+            ))
+            .build()
+            .unwrap();
+
+        assert_eq!(npd, pd);
+        assert_eq!(&expected, &pd);
+        assert_eq!(&expected, &npd);
     }
 }
