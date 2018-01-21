@@ -351,11 +351,21 @@ mod tests {
 
         let updated = &*UPDATED_DESC_INTERCEPTED;
         updated.update(old.id()).unwrap();
-        let new = dbqueries::get_podcast_from_source_id(42).unwrap();
+        let mut new = dbqueries::get_podcast_from_source_id(42).unwrap();
 
         assert_ne!(old, new);
         assert_eq!(updated, &new);
         assert_ne!(updated, &old);
+
+        // Chech that the update does not override user preferences.
+        new.set_archive(true);
+        new.save().unwrap();
+
+        let updated = &*UPDATED_DESC_INTERCEPTED;
+        updated.update(old.id()).unwrap();
+
+        let new2 = dbqueries::get_podcast_from_source_id(42).unwrap();
+        assert_eq!(true, new2.archive());
     }
 
     #[test]
@@ -379,5 +389,32 @@ mod tests {
         let new = dbqueries::get_podcast_from_source_id(42).unwrap();
         // Assert it's diff from the old one.
         assert_ne!(new, old);
+    }
+
+    #[test]
+    fn test_to_podcast() {
+        // Assert insert() produces the same result that you would get with to_podcast()
+        truncate_db().unwrap();
+        EXPECTED_INTERCEPTED.insert().unwrap();
+        let old = dbqueries::get_podcast_from_source_id(42).unwrap();
+        let pd = EXPECTED_INTERCEPTED.to_podcast().unwrap();
+        assert_eq!(old, pd);
+
+        // Same as above, diff order
+        truncate_db().unwrap();
+        let pd = EXPECTED_INTERCEPTED.to_podcast().unwrap();
+        // This should error as a unique constrain violation
+        assert!(EXPECTED_INTERCEPTED.insert().is_err());
+        let mut old = dbqueries::get_podcast_from_source_id(42).unwrap();
+        assert_eq!(old, pd);
+
+        old.set_archive(true);
+        old.save().unwrap();
+
+        // Assert that it does not mess with user preferences
+        let pd = UPDATED_DESC_INTERCEPTED.to_podcast().unwrap();
+        let old = dbqueries::get_podcast_from_source_id(42).unwrap();
+        assert_eq!(old, pd);
+        assert_eq!(old.archive(), true);
     }
 }
