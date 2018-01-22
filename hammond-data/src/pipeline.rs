@@ -2,6 +2,7 @@
 //! Docs.
 
 use futures::future::*;
+// use futures_cpupool::CpuPool;
 // use futures::prelude::*;
 
 use hyper::Client;
@@ -17,6 +18,7 @@ use models::{IndexState, NewEpisode, NewEpisodeMinimal};
 // use Feed;
 
 use std;
+// use std::sync::{Arc, Mutex};
 
 /// The pipline to be run for indexing and updating a Podcast feed that originates from
 /// `Source.uri`.
@@ -25,6 +27,8 @@ use std;
 /// Source -> GET Request -> Update Etags -> Check Status -> Parse xml/Rss ->
 /// Convert `rss::Channel` into Feed -> Index Podcast -> Index Episodes.
 pub fn pipeline<S: IntoIterator<Item = Source>>(sources: S, ignore_etags: bool) -> Result<()> {
+    // let _pool = CpuPool::new_num_cpus();
+
     let mut core = Core::new()?;
     let handle = core.handle();
     let client = Client::configure()
