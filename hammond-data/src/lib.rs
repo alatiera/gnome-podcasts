@@ -19,6 +19,7 @@
         unused_parens, while_true)]
 #![deny(missing_debug_implementations, missing_docs, trivial_casts, trivial_numeric_casts)]
 #![deny(unused_extern_crates, unused)]
+#![deny(unused_extern_crates, unused)]
 
 // #![feature(conservative_impl_trait)]
 
@@ -38,12 +39,11 @@ extern crate log;
 extern crate ammonia;
 extern crate chrono;
 extern crate futures;
+// extern crate futures_cpupool;
 extern crate hyper;
 extern crate hyper_tls;
 extern crate itertools;
 extern crate native_tls;
-extern crate r2d2;
-extern crate r2d2_diesel;
 extern crate rayon;
 extern crate reqwest;
 extern crate rfc822_sanitizer;

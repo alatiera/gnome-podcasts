@@ -36,7 +36,7 @@ impl Insert for NewPodcast {
 
         diesel::insert_into(podcast)
             .values(self)
-            .execute(&*con)
+            .execute(&con)
             .map(|_| ())
             .map_err(From::from)
     }
@@ -51,7 +51,7 @@ impl Update for NewPodcast {
         info!("Updating {}", self.title);
         diesel::update(podcast.filter(id.eq(podcast_id)))
             .set(self)
-            .execute(&*con)
+            .execute(&con)
             .map(|_| ())
             .map_err(From::from)
     }

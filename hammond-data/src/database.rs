@@ -1,8 +1,8 @@
 //! Database Setup. This is only public to help with some unit tests.
 
 use diesel::prelude::*;
-use r2d2;
-use r2d2_diesel::ConnectionManager;
+use diesel::r2d2;
+use diesel::r2d2::ConnectionManager;
 
 use std::io;
 use std::path::PathBuf;

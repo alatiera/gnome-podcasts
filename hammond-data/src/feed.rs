@@ -4,9 +4,9 @@ use futures::future::*;
 use itertools::{Either, Itertools};
 use rss;
 
-use dbqueries;
+// use dbqueries;
 use errors::*;
-use models::{IndexState, Update};
+use models::{IndexState, Insert, Update};
 use models::{NewEpisode, NewPodcast, Podcast};
 use pipeline::*;
 
@@ -26,7 +26,7 @@ pub struct Feed {
 
 impl Feed {
     /// Index the contents of the RSS `Feed` into the database.
-    pub fn index(self) -> Box<Future<Item = (), Error = Error>> {
+    pub fn index(self) -> Box<Future<Item = (), Error = Error> + Send> {
         let fut = self.parse_podcast_async()
             .and_then(|pd| pd.to_podcast())
             .and_then(move |pd| self.index_channel_items(&pd));
@@ -38,16 +38,23 @@ impl Feed {
         NewPodcast::new(&self.channel, self.source_id)
     }
 
-    fn parse_podcast_async(&self) -> Box<FutureResult<NewPodcast, Error>> {
+    fn parse_podcast_async(&self) -> Box<Future<Item = NewPodcast, Error = Error> + Send> {
         Box::new(ok(self.parse_podcast()))
     }
 
-    fn index_channel_items(&self, pd: &Podcast) -> Box<Future<Item = (), Error = Error>> {
+    fn index_channel_items(&self, pd: &Podcast) -> Box<Future<Item = (), Error = Error> + Send> {
         let fut = self.get_stuff(pd)
             .and_then(|(insert, update)| {
                 if !insert.is_empty() {
                     info!("Indexing {} episodes.", insert.len());
-                    dbqueries::index_new_episodes(insert.as_slice())?;
+                    // dbqueries::index_new_episodes(insert.as_slice())?;
+                    // FIXME: workaround cause of a diesel 1.1 reggression.
+                    insert.iter().for_each(|ep| {
+                        if let Err(err) = ep.insert() {
+                            error!("Failed to index episode: {:?}.", ep.title());
+                            error!("Error msg: {}", err);
+                        }
+                    });
                 }
                 Ok((insert, update))
             })
@@ -69,7 +76,7 @@ impl Feed {
         Box::new(fut)
     }
 
-    fn get_stuff(&self, pd: &Podcast) -> Box<Future<Item = InsertUpdate, Error = Error>> {
+    fn get_stuff(&self, pd: &Podcast) -> Box<Future<Item = InsertUpdate, Error = Error> + Send> {
         let (insert, update): (Vec<_>, Vec<_>) = self.channel
             .items()
             .into_iter()

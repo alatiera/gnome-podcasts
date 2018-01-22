@@ -31,7 +31,7 @@ impl Insert for NewSource {
         let con = db.get()?;
 
         // FIXME: Insert or ignore
-        let _ = diesel::insert_into(source).values(self).execute(&*con);
+        let _ = diesel::insert_into(source).values(self).execute(&con);
         Ok(())
     }
 }

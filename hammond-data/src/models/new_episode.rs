@@ -54,7 +54,7 @@ impl Insert for NewEpisode {
         info!("Indexing {:?}", self.title);
         diesel::insert_into(episode)
             .values(self)
-            .execute(&*con)
+            .execute(&con)
             .map_err(From::from)
             .map(|_| ())
     }
@@ -69,7 +69,7 @@ impl Update for NewEpisode {
         info!("Updating {:?}", self.title);
         diesel::update(episode.filter(rowid.eq(episode_id)))
             .set(self)
-            .execute(&*con)
+            .execute(&con)
             .map_err(From::from)
             .map(|_| ())
     }

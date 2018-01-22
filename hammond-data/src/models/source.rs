@@ -7,7 +7,7 @@ use hyper::client::HttpConnector;
 use hyper::header::{ETag, EntityTag, HttpDate, IfModifiedSince, IfNoneMatch, LastModified};
 use hyper_tls::HttpsConnector;
 
-use futures::future::ok;
+// use futures::future::ok;
 use futures::prelude::*;
 
 use database::connection;
@@ -71,7 +71,7 @@ impl Source {
         let db = connection();
         let con = db.get()?;
 
-        Ok(self.save_changes::<Source>(&*con)?)
+        Ok(self.save_changes::<Source>(&con)?)
     }
 
     /// Extract Etag and LastModifier from res, and update self and the
@@ -114,11 +114,11 @@ impl Source {
         let id = self.id();
         let feed = self.request_constructor(client, ignore_etags)
             .map_err(From::from)
-            .and_then(move |res| -> Result<Response> {
+            .and_then(move |res| {
                 self.update_etag(&res)?;
                 Ok(res)
             })
-            .and_then(|res| -> Result<Response> {
+            .and_then(|res| {
                 match_status(res.status())?;
                 Ok(res)
             })
@@ -159,18 +159,18 @@ impl Source {
             }
         }
 
-        let work = client.request(req).map_err(From::from);
+        let work = client.request(req);
         Box::new(work)
     }
 }
 
-fn response_to_channel(res: Response) -> Box<Future<Item = Channel, Error = Error>> {
+fn response_to_channel(res: Response) -> Box<Future<Item = Channel, Error = Error> + Send> {
     let chan = res.body()
         .concat2()
         .map(|x| x.into_iter())
         .map_err(From::from)
-        .and_then(|iter| ok(iter.collect::<Vec<u8>>()))
-        .and_then(|utf_8_bytes| ok(String::from_utf8_lossy(&utf_8_bytes).into_owned()))
+        .map(|iter| iter.collect::<Vec<u8>>())
+        .map(|utf_8_bytes| String::from_utf8_lossy(&utf_8_bytes).into_owned())
         .and_then(|buf| Channel::from_str(&buf).map_err(From::from));
 
     Box::new(chan)
