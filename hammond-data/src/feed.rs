@@ -4,9 +4,9 @@ use futures::future::*;
 use itertools::{Either, Itertools};
 use rss;
 
-// use dbqueries;
+use dbqueries;
 use errors::*;
-use models::{IndexState, Insert, Update};
+use models::{IndexState, Update};
 use models::{NewEpisode, NewPodcast, Podcast};
 use pipeline::*;
 
@@ -47,14 +47,7 @@ impl Feed {
             .and_then(|(insert, update)| {
                 if !insert.is_empty() {
                     info!("Indexing {} episodes.", insert.len());
-                    // dbqueries::index_new_episodes(insert.as_slice())?;
-                    // FIXME: workaround cause of a diesel 1.1 reggression.
-                    insert.iter().for_each(|ep| {
-                        if let Err(err) = ep.insert() {
-                            error!("Failed to index episode: {:?}.", ep.title());
-                            error!("Error msg: {}", err);
-                        }
-                    });
+                    dbqueries::index_new_episodes(insert.as_slice())?;
                 }
                 Ok((insert, update))
             })

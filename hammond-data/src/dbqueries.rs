@@ -293,17 +293,17 @@ pub(crate) fn episode_exists(title_: &str, podcast_id_: i32) -> Result<bool> {
         .map_err(From::from)
 }
 
-// pub(crate) fn index_new_episodes(eps: &[NewEpisode]) -> Result<()> {
-//     use schema::episode::dsl::*;
-//     let db = connection();
-//     let con = db.get()?;
+pub(crate) fn index_new_episodes(eps: &[NewEpisode]) -> Result<()> {
+    use schema::episode::dsl::*;
+    let db = connection();
+    let con = db.get()?;
 
-//     diesel::insert_into(episode)
-//         .values(eps)
-//         .execute(&con)
-//         .map_err(From::from)
-//         .map(|_| ())
-// }
+    diesel::insert_into(episode)
+        .values(eps)
+        .execute(&*con)
+        .map_err(From::from)
+        .map(|_| ())
+}
 
 pub fn update_none_to_played_now(parent: &Podcast) -> Result<usize> {
     use schema::episode::dsl::*;
