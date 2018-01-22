@@ -479,4 +479,22 @@ mod tests {
         let ep = NewEpisode::new(&episode, 42).unwrap();
         assert_eq!(ep, *EXPECTED_LUP_2);
     }
+
+    #[test]
+    fn test_minimal_into_new_episode() {
+        let file = File::open("tests/feeds/2018-01-20-Intercepted.xml").unwrap();
+        let channel = Channel::read_from(BufReader::new(file)).unwrap();
+
+        let item = channel.items().iter().nth(14).unwrap();
+        let ep = EXPECTED_MINIMAL_INTERCEPTED_1
+            .clone()
+            .into_new_episode(&item);
+        assert_eq!(ep, *EXPECTED_INTERCEPTED_1);
+
+        let item = channel.items().iter().nth(15).unwrap();
+        let ep = EXPECTED_MINIMAL_INTERCEPTED_2
+            .clone()
+            .into_new_episode(&item);
+        assert_eq!(ep, *EXPECTED_INTERCEPTED_2);
+    }
 }
