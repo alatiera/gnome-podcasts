@@ -61,6 +61,7 @@ impl Insert for NewEpisode {
 }
 
 impl Update for NewEpisode {
+    // FIXME: Add test
     fn update(&self, episode_id: i32) -> Result<()> {
         use schema::episode::dsl::*;
         let db = connection();
@@ -76,6 +77,7 @@ impl Update for NewEpisode {
 }
 
 impl Index for NewEpisode {
+    // FIXME: Add test
     fn index(&self) -> Result<()> {
         let exists = dbqueries::episode_exists(self.title(), self.podcast_id())?;
 
@@ -97,7 +99,17 @@ impl PartialEq<EpisodeMinimal> for NewEpisode {
     fn eq(&self, other: &EpisodeMinimal) -> bool {
         (self.title() == other.title()) && (self.uri() == other.uri())
             && (self.duration() == other.duration()) && (self.epoch() == other.epoch())
-            && (self.guid() == other.guid())
+            && (self.guid() == other.guid()) && (self.podcast_id() == other.podcast_id())
+    }
+}
+
+impl PartialEq<Episode> for NewEpisode {
+    fn eq(&self, other: &Episode) -> bool {
+        (self.title() == other.title()) && (self.uri() == other.uri())
+            && (self.duration() == other.duration()) && (self.epoch() == other.epoch())
+            && (self.guid() == other.guid()) && (self.podcast_id() == other.podcast_id())
+            && (self.description() == other.description())
+            && (self.length() == other.length())
     }
 }
 
@@ -109,6 +121,7 @@ impl NewEpisode {
     }
 
     #[allow(dead_code)]
+    // FIXME: Add test
     pub(crate) fn into_episode(self) -> Result<Episode> {
         self.index()?;
         dbqueries::get_episode_from_pk(&self.title, self.podcast_id)
@@ -169,7 +182,7 @@ impl PartialEq<EpisodeMinimal> for NewEpisodeMinimal {
     fn eq(&self, other: &EpisodeMinimal) -> bool {
         (self.title() == other.title()) && (self.uri() == other.uri())
             && (self.duration() == other.duration()) && (self.epoch() == other.epoch())
-            && (self.guid() == other.guid())
+            && (self.guid() == other.guid()) && (self.podcast_id() == other.podcast_id())
     }
 }
 
@@ -264,7 +277,8 @@ impl NewEpisodeMinimal {
 }
 #[cfg(test)]
 mod tests {
-    use models::{NewEpisode, NewEpisodeBuilder};
+    use dbqueries;
+    use models::*;
     use models::new_episode::{NewEpisodeMinimal, NewEpisodeMinimalBuilder};
 
     use rss::Channel;
@@ -496,5 +510,27 @@ mod tests {
             .clone()
             .into_new_episode(&item);
         assert_eq!(ep, *EXPECTED_INTERCEPTED_2);
+    }
+
+    #[test]
+    fn test_new_episode_insert() {
+        let file = File::open("tests/feeds/2018-01-20-Intercepted.xml").unwrap();
+        let channel = Channel::read_from(BufReader::new(file)).unwrap();
+
+        let episode = channel.items().iter().nth(14).unwrap();
+        let new_ep = NewEpisode::new(&episode, 42).unwrap();
+        new_ep.insert().unwrap();
+        let ep = dbqueries::get_episode_from_pk(new_ep.title(), new_ep.podcast_id()).unwrap();
+        assert_eq!(new_ep, ep);
+        assert_eq!(&new_ep, &*EXPECTED_INTERCEPTED_1);
+        assert_eq!(&*EXPECTED_INTERCEPTED_1, &ep);
+
+        let episode = channel.items().iter().nth(15).unwrap();
+        let new_ep = NewEpisode::new(&episode, 42).unwrap();
+        new_ep.insert().unwrap();
+        let ep = dbqueries::get_episode_from_pk(new_ep.title(), new_ep.podcast_id()).unwrap();
+        assert_eq!(new_ep, ep);
+        assert_eq!(&new_ep, &*EXPECTED_INTERCEPTED_2);
+        assert_eq!(&*EXPECTED_INTERCEPTED_2, &ep);
     }
 }
