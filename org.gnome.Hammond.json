@@ -10,8 +10,7 @@
     "finish-args": [
         "--share=network",
         "--socket=x11",
-        "--socket=wayland",
-        "--talk-name=org.freedesktop.Notifications"
+        "--socket=wayland"
     ],
     "build-options": {
         "append-path": "/usr/lib/sdk/rust-stable/bin",
