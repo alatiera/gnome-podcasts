@@ -354,6 +354,8 @@ mod tests {
         let mut new = dbqueries::get_podcast_from_source_id(42).unwrap();
 
         assert_ne!(old, new);
+        assert_eq!(old.id(), new.id());
+        assert_eq!(old.source_id(), new.source_id());
         assert_eq!(updated, &new);
         assert_ne!(updated, &old);
 
