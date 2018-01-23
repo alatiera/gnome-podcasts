@@ -45,7 +45,6 @@ macro_rules! clone {
 /// Convert `rss::Channel` into Feed -> Index Podcast -> Index Episodes.
 pub fn pipeline<S: IntoIterator<Item = Source>>(sources: S, ignore_etags: bool) -> Result<()> {
     let pool = CpuPool::new_num_cpus();
-
     let mut core = Core::new()?;
     let handle = core.handle();
     let client = Client::configure()
@@ -53,15 +52,19 @@ pub fn pipeline<S: IntoIterator<Item = Source>>(sources: S, ignore_etags: bool) 
         .connector(HttpsConnector::new(4, &handle)?)
         .build(&handle);
 
-    let list = sources
+    let list: Vec<_> = sources
         .into_iter()
         .map(clone!(pool => move |s| s.into_feed(&client, pool.clone(), ignore_etags)))
         .map(|fut| fut.and_then(clone!(pool => move |feed| pool.clone().spawn(feed.index()))))
         .map(|fut| fut.map(|_| ()).map_err(|err| error!("Error: {}", err)))
         .collect();
 
-    // Thats not really concurrent yet I think.
-    core.run(collect_futures(list))?;
+    // TODO: this could be moved at the start of the function.
+    if !list.is_empty() {
+        // Thats not really concurrent yet I think.
+        core.run(collect_futures(list))?;
+    }
+
     Ok(())
 }
 
