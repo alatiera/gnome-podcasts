@@ -2,7 +2,8 @@
 extern crate criterion;
 use criterion::Criterion;
 
-extern crate futures;
+// extern crate futures;
+// extern crate futures_cpupool;
 extern crate hammond_data;
 extern crate hyper;
 extern crate hyper_tls;
@@ -13,106 +14,53 @@ extern crate rss;
 
 // use rayon::prelude::*;
 
-use futures::future::*;
+// use futures::future::*;
+// use futures_cpupool::CpuPool;
 use tokio_core::reactor::Core;
 
 use hammond_data::FeedBuilder;
 use hammond_data::Source;
 use hammond_data::database::truncate_db;
-use hammond_data::errors::*;
+// use hammond_data::errors::*;
 
 use std::io::BufReader;
 
 // RSS feeds
 const INTERCEPTED: &[u8] = include_bytes!("../tests/feeds/2018-01-20-Intercepted.xml");
+const INTERCEPTED_URL: &str = "https://web.archive.org/web/20180120083840if_/https://feeds.\
+                               feedburner.com/InterceptedWithJeremyScahill";
+
 const UNPLUGGED: &[u8] = include_bytes!("../tests/feeds/2018-01-20-LinuxUnplugged.xml");
+const UNPLUGGED_URL: &str =
+    "https://web.archive.org/web/20180120110314if_/https://feeds.feedburner.com/linuxunplugged";
+
 const TIPOFF: &[u8] = include_bytes!("../tests/feeds/2018-01-20-TheTipOff.xml");
+const TIPOFF_URL: &str =
+    "https://web.archive.org/web/20180120110727if_/https://rss.acast.com/thetipoff";
 
 // This feed has HUGE descripion and summary fields which can be very
 // very expensive to parse.
 const CODE: &[u8] = include_bytes!("../tests/feeds/2018-01-20-GreaterThanCode.xml");
+const CODE_URL: &str =
+    "https://web.archive.org/web/20180120104741if_/https://www.greaterthancode.com/feed/podcast";
+
 // Relative small feed
 const STARS: &[u8] = include_bytes!("../tests/feeds/2018-01-20-StealTheStars.xml");
+const STARS_URL: &str =
+    "https://web.archive.org/web/20180120104957if_/https://rss.art19.com/steal-the-stars";
 
-static URLS: &[(&[u8], &str)] = &[
-    (
-        INTERCEPTED,
-        "https://web.archive.org/web/20180120083840if_/https://feeds.feedburner.\
-         com/InterceptedWithJeremyScahill",
-    ),
-    (
-        UNPLUGGED,
-        "https://web.archive.org/web/20180120110314if_/https://feeds.feedburner.com/linuxunplugged",
-    ),
-    (
-        TIPOFF,
-        "https://web.archive.org/web/20180120110727if_/https://rss.acast.com/thetipoff",
-    ),
-    (
-        CODE,
-        "https://web.archive.org/web/20180120104741if_/https://www.greaterthancode.\
-         com/feed/podcast",
-    ),
-    (
-        STARS,
-        "https://web.archive.org/web/20180120104957if_/https://rss.art19.com/steal-the-stars",
-    ),
+static FEEDS: &[(&[u8], &str)] = &[
+    (INTERCEPTED, INTERCEPTED_URL),
+    (UNPLUGGED, UNPLUGGED_URL),
+    (TIPOFF, TIPOFF_URL),
+    (CODE, CODE_URL),
+    (STARS, STARS_URL),
 ];
-
-fn index_urls() -> Vec<Box<Future<Item = (), Error = Error> + Send>> {
-    let feeds: Vec<_> = URLS.iter()
-        .map(|&(buff, url)| {
-            // Create and insert a Source into db
-            let s = Source::from_url(url).unwrap();
-            // parse it into a channel
-            let chan = rss::Channel::read_from(BufReader::new(buff)).unwrap();
-
-            FeedBuilder::default()
-                .channel(chan)
-                .source_id(s.id())
-                .build()
-                .unwrap()
-        })
-        .collect();
-
-    feeds.into_iter().map(|feed| feed.index()).collect()
-}
-
-fn bench_index_feeds(c: &mut Criterion) {
-    truncate_db().unwrap();
-    let mut core = Core::new().unwrap();
-
-    c.bench_function("index_feeds", |b| {
-        b.iter(|| {
-            let list = index_urls();
-            let _foo = core.run(join_all(list));
-        })
-    });
-    truncate_db().unwrap();
-}
-
-fn bench_index_unchanged_feeds(c: &mut Criterion) {
-    truncate_db().unwrap();
-    let mut core = Core::new().unwrap();
-    // Index first so it will only bench the comparison test case.
-    let list = index_urls();
-    let _foo = core.run(join_all(list));
-
-    c.bench_function("index_5_unchanged", |b| {
-        b.iter(|| {
-            for _ in 0..5 {
-                let list = index_urls();
-                let _foo = core.run(join_all(list));
-            }
-        })
-    });
-    truncate_db().unwrap();
-}
 
 // This is broken and I don't know why.
 fn bench_pipeline(c: &mut Criterion) {
     truncate_db().unwrap();
-    URLS.iter().for_each(|&(_, url)| {
+    FEEDS.iter().for_each(|&(_, url)| {
         Source::from_url(url).unwrap();
     });
 
@@ -169,8 +117,6 @@ fn bench_index_small_feed(c: &mut Criterion) {
 
 criterion_group!(
     benches,
-    bench_index_feeds,
-    bench_index_unchanged_feeds,
     bench_pipeline,
     bench_index_large_feed,
     bench_index_small_feed
