@@ -172,12 +172,12 @@ impl Source {
                 Ok(res)
             })
             .and_then(move |res| response_to_channel(res, pool))
-            .map(move |chan| {
+            .and_then(move |chan| {
                 FeedBuilder::default()
                     .channel(chan)
                     .source_id(id)
                     .build()
-                    .unwrap()
+                    .map_err(From::from)
             });
 
         Box::new(feed)

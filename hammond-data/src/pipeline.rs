@@ -57,13 +57,11 @@ pub fn pipeline<S: IntoIterator<Item = Source>>(sources: S, ignore_etags: bool) 
         .into_iter()
         .map(clone!(pool => move |s| s.into_feed(&client, pool.clone(), ignore_etags)))
         .map(|fut| fut.and_then(clone!(pool => move |feed| pool.clone().spawn(feed.index()))))
+        .map(|fut| fut.map(|_| ()).map_err(|err| error!("Error: {}", err)))
         .collect();
 
-    let f = core.run(collect_futures(list))?;
-    f.into_iter()
-        .filter_map(|x| x.err())
-        .for_each(|err| error!("Error: {}", err));
-
+    // Thats not really concurrent yet I think.
+    core.run(collect_futures(list))?;
     Ok(())
 }
 
