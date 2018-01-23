@@ -44,7 +44,7 @@ macro_rules! clone {
 /// Source -> GET Request -> Update Etags -> Check Status -> Parse xml/Rss ->
 /// Convert `rss::Channel` into Feed -> Index Podcast -> Index Episodes.
 pub fn pipeline<S: IntoIterator<Item = Source>>(sources: S, ignore_etags: bool) -> Result<()> {
-    let _pool = CpuPool::new_num_cpus();
+    let pool = CpuPool::new_num_cpus();
 
     let mut core = Core::new()?;
     let handle = core.handle();
@@ -55,8 +55,8 @@ pub fn pipeline<S: IntoIterator<Item = Source>>(sources: S, ignore_etags: bool) 
 
     let list = sources
         .into_iter()
-        .map(|s| s.into_feed(&client, ignore_etags))
-        .map(|fut| fut.and_then(clone!(_pool => move |feed| _pool.clone().spawn(feed.index()))))
+        .map(clone!(pool => move |s| s.into_feed(&client, pool.clone(), ignore_etags)))
+        .map(|fut| fut.and_then(clone!(pool => move |feed| pool.clone().spawn(feed.index()))))
         .collect();
 
     let f = core.run(collect_futures(list))?;
