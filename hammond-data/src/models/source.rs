@@ -4,7 +4,8 @@ use rss::Channel;
 use hyper;
 use hyper::{Client, Method, Request, Response, StatusCode, Uri};
 use hyper::client::HttpConnector;
-use hyper::header::{ETag, EntityTag, HttpDate, IfModifiedSince, IfNoneMatch, LastModified};
+use hyper::header::{ETag, EntityTag, HttpDate, IfModifiedSince, IfNoneMatch, LastModified,
+                    Location};
 use hyper_tls::HttpsConnector;
 
 // use futures::future::ok;
@@ -42,6 +43,11 @@ impl Source {
         &self.uri
     }
 
+    /// Set the `uri` field value.
+    pub fn set_uri(&mut self, uri: String) {
+        self.uri = uri;
+    }
+
     /// Represents the Http Last-Modified Header field.
     ///
     /// See [RFC 7231](https://tools.ietf.org/html/rfc7231#section-7.2) for more.
@@ -72,7 +78,7 @@ impl Source {
         let db = connection();
         let con = db.get()?;
 
-        Ok(self.save_changes::<Source>(&con)?)
+        self.save_changes::<Source>(&con).map_err(From::from)
     }
 
     /// Extract Etag and LastModifier from res, and update self and the
@@ -87,6 +93,50 @@ impl Source {
             self.set_http_etag(etag);
             self.set_last_modified(lmod);
             self.save()?;
+        }
+
+        Ok(())
+    }
+
+    // TODO match on more stuff
+    // 301: Moved Permanently
+    // 304: Up to date Feed, checked with the Etag
+    // 307: Temporary redirect of the url
+    // 308: Permanent redirect of the url
+    // 401: Unathorized
+    // 403: Forbidden
+    // 408: Timeout
+    // 410: Feed deleted
+    fn match_status(&mut self, res: &Response) -> Result<()> {
+        let code = res.status();
+        match code {
+            StatusCode::NotModified => bail!("304: skipping.."),
+            StatusCode::MovedPermanently => {
+                error!("Feed was moved permanently.");
+                self.handle_301(res)?;
+                bail!("301: Feed was moved permanently.")
+            }
+            StatusCode::TemporaryRedirect => debug!("307: Temporary Redirect."),
+            StatusCode::PermanentRedirect => warn!("308: Permanent Redirect."),
+            StatusCode::Unauthorized => bail!("401: Unauthorized."),
+            StatusCode::Forbidden => bail!("403: Forbidden."),
+            StatusCode::NotFound => bail!("404: Not found."),
+            StatusCode::RequestTimeout => bail!("408: Request Timeout."),
+            StatusCode::Gone => bail!("410: Feed was deleted."),
+            _ => info!("HTTP StatusCode: {}", code),
+        };
+        Ok(())
+    }
+
+    fn handle_301(&mut self, res: &Response) -> Result<()> {
+        let headers = res.headers();
+
+        if let Some(url) = headers.get::<Location>() {
+            self.set_uri(url.to_string());
+            self.save()?;
+            info!("Feed url was updated succesfully.");
+            // TODO: Refresh in place instead of next time, Not a priority.
+            info!("New content will be fetched with the next refesh.");
         }
 
         Ok(())
@@ -118,10 +168,7 @@ impl Source {
             .map_err(From::from)
             .and_then(move |res| {
                 self.update_etag(&res)?;
-                Ok(res)
-            })
-            .and_then(|res| {
-                match_status(res.status())?;
+                self.match_status(&res)?;
                 Ok(res)
             })
             .and_then(move |res| response_to_channel(res, pool))
@@ -179,34 +226,6 @@ fn response_to_channel(
         .and_then(|buf| Channel::from_str(&buf).map_err(From::from));
     let cpu_chan = pool.spawn(chan);
     Box::new(cpu_chan)
-}
-
-// TODO match on more stuff
-// 301: Moved Permanently
-// 304: Up to date Feed, checked with the Etag
-// 307: Temporary redirect of the url
-// 308: Permanent redirect of the url
-// 401: Unathorized
-// 403: Forbidden
-// 408: Timeout
-// 410: Feed deleted
-fn match_status(code: StatusCode) -> Result<()> {
-    match code {
-        StatusCode::NotModified => bail!("304: skipping.."),
-        StatusCode::TemporaryRedirect => debug!("307: Temporary Redirect."),
-        // TODO: Change the source uri to the new one
-        StatusCode::MovedPermanently | StatusCode::PermanentRedirect => {
-            warn!("Feed was moved permanently.");
-            bail!("308: Feed was moved permanently.")
-        }
-        StatusCode::Unauthorized => bail!("401: Unauthorized."),
-        StatusCode::Forbidden => bail!("403: Forbidden."),
-        StatusCode::NotFound => bail!("404: Not found."),
-        StatusCode::RequestTimeout => bail!("408: Request Timeout."),
-        StatusCode::Gone => bail!("410: Feed was deleted."),
-        _ => info!("HTTP StatusCode: {}", code),
-    };
-    Ok(())
 }
 
 #[cfg(test)]
