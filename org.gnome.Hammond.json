@@ -9,8 +9,10 @@
     "command": "hammond",
     "finish-args": [
         "--share=network",
+        "--share=ipc",
         "--socket=x11",
-        "--socket=wayland"
+        "--socket=wayland",
+        "--talk-name=org.freedesktop.Desktop"
     ],
     "build-options": {
         "append-path": "/usr/lib/sdk/rust-stable/bin",
