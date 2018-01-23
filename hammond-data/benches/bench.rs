@@ -59,7 +59,7 @@ static URLS: &[(&[u8], &str)] = &[
     ),
 ];
 
-fn index_urls() -> Vec<Box<Future<Item = (), Error = Error>>> {
+fn index_urls() -> Vec<Box<Future<Item = (), Error = Error> + Send>> {
     let feeds: Vec<_> = URLS.iter()
         .map(|&(buff, url)| {
             // Create and insert a Source into db

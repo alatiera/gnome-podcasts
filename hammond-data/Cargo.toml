@@ -24,6 +24,7 @@ hyper = "0.11.14"
 tokio-core = "0.1.12"
 hyper-tls = "0.1.2"
 native-tls = "0.1.5"
+futures-cpupool = "0.1.8"
 
 [dependencies.diesel]
 features = ["sqlite", "r2d2"]

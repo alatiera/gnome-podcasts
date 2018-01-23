@@ -53,6 +53,7 @@ impl Feed {
             })
             .map(|(_, update)| {
                 if !update.is_empty() {
+                    info!("Updating {} episodes.", update.len());
                     // see get_stuff for more
                     update
                         .into_iter()

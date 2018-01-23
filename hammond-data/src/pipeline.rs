@@ -2,7 +2,7 @@
 //! Docs.
 
 use futures::future::*;
-// use futures_cpupool::CpuPool;
+use futures_cpupool::CpuPool;
 // use futures::prelude::*;
 
 use hyper::Client;
@@ -20,6 +20,23 @@ use models::{IndexState, NewEpisode, NewEpisodeMinimal};
 use std;
 // use std::sync::{Arc, Mutex};
 
+macro_rules! clone {
+    (@param _) => ( _ );
+    (@param $x:ident) => ( $x );
+    ($($n:ident),+ => move || $body:expr) => (
+        {
+            $( let $n = $n.clone(); )+
+            move || $body
+        }
+    );
+    ($($n:ident),+ => move |$($p:tt),+| $body:expr) => (
+        {
+            $( let $n = $n.clone(); )+
+            move |$(clone!(@param $p),)+| $body
+        }
+    );
+}
+
 /// The pipline to be run for indexing and updating a Podcast feed that originates from
 /// `Source.uri`.
 ///
@@ -27,7 +44,7 @@ use std;
 /// Source -> GET Request -> Update Etags -> Check Status -> Parse xml/Rss ->
 /// Convert `rss::Channel` into Feed -> Index Podcast -> Index Episodes.
 pub fn pipeline<S: IntoIterator<Item = Source>>(sources: S, ignore_etags: bool) -> Result<()> {
-    // let _pool = CpuPool::new_num_cpus();
+    let _pool = CpuPool::new_num_cpus();
 
     let mut core = Core::new()?;
     let handle = core.handle();
@@ -39,7 +56,7 @@ pub fn pipeline<S: IntoIterator<Item = Source>>(sources: S, ignore_etags: bool) 
     let list = sources
         .into_iter()
         .map(|s| s.into_feed(&client, ignore_etags))
-        .map(|fut| fut.and_then(|feed| feed.index()))
+        .map(|fut| fut.and_then(clone!(_pool => move |feed| _pool.clone().spawn(feed.index()))))
         .collect();
 
     let f = core.run(collect_futures(list))?;
