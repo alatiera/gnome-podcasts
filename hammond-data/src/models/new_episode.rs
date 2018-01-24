@@ -206,7 +206,7 @@ impl NewEpisodeMinimal {
         // Case: Thu, 05 Aug 2016 06:00:00 -0400 <-- Actually that was friday.
         let epoch = date.map(|x| x.timestamp() as i32).unwrap_or(0);
 
-        let duration = parser::parse_itunes_duration(item);
+        let duration = parser::parse_itunes_duration(item.itunes_ext());
 
         NewEpisodeMinimalBuilder::default()
             .title(title)

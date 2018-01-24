@@ -1,10 +1,10 @@
-use rss::Item;
+use rss::extension::itunes::ITunesItemExtension;
 
 /// Parses an Item Itunes extension and returns it's duration value in seconds.
 // FIXME: Rafactor
 #[allow(non_snake_case)]
-pub(crate) fn parse_itunes_duration(item: &Item) -> Option<i32> {
-    let duration = item.itunes_ext().map(|s| s.duration())??;
+pub(crate) fn parse_itunes_duration(item: Option<&ITunesItemExtension>) -> Option<i32> {
+    let duration = item.map(|s| s.duration())??;
 
     // FOR SOME FUCKING REASON, IN THE APPLE EXTENSION SPEC
     // THE DURATION CAN BE EITHER AN INT OF SECONDS OR
@@ -31,7 +31,6 @@ pub(crate) fn parse_itunes_duration(item: &Item) -> Option<i32> {
 
 #[cfg(test)]
 mod tests {
-    use rss::ItemBuilder;
     use rss::extension::itunes::ITunesItemExtensionBuilder;
 
     use super::*;
@@ -43,55 +42,40 @@ mod tests {
             .duration(Some("3370".into()))
             .build()
             .unwrap();
-        let item = ItemBuilder::default()
-            .itunes_ext(Some(extension))
-            .build()
-            .unwrap();
-        assert_eq!(parse_itunes_duration(&item), Some(3370));
+        let item = Some(&extension);
+        assert_eq!(parse_itunes_duration(item), Some(3370));
 
         // Input is a String<M:SS>
         let extension = ITunesItemExtensionBuilder::default()
             .duration(Some("6:10".into()))
             .build()
             .unwrap();
-        let item = ItemBuilder::default()
-            .itunes_ext(Some(extension))
-            .build()
-            .unwrap();
-        assert_eq!(parse_itunes_duration(&item), Some(370));
+        let item = Some(&extension);
+        assert_eq!(parse_itunes_duration(item), Some(370));
 
         // Input is a String<MM:SS>
         let extension = ITunesItemExtensionBuilder::default()
             .duration(Some("56:10".into()))
             .build()
             .unwrap();
-        let item = ItemBuilder::default()
-            .itunes_ext(Some(extension))
-            .build()
-            .unwrap();
-        assert_eq!(parse_itunes_duration(&item), Some(3370));
+        let item = Some(&extension);
+        assert_eq!(parse_itunes_duration(item), Some(3370));
 
         // Input is a String<H:MM:SS>
         let extension = ITunesItemExtensionBuilder::default()
             .duration(Some("1:56:10".into()))
             .build()
             .unwrap();
-        let item = ItemBuilder::default()
-            .itunes_ext(Some(extension))
-            .build()
-            .unwrap();
-        assert_eq!(parse_itunes_duration(&item), Some(6970));
+        let item = Some(&extension);
+        assert_eq!(parse_itunes_duration(item), Some(6970));
 
         // Input is a String<HH:MM:SS>
         let extension = ITunesItemExtensionBuilder::default()
             .duration(Some("01:56:10".into()))
             .build()
             .unwrap();
-        let item = ItemBuilder::default()
-            .itunes_ext(Some(extension))
-            .build()
-            .unwrap();
-        assert_eq!(parse_itunes_duration(&item), Some(6970));
+        let item = Some(&extension);
+        assert_eq!(parse_itunes_duration(item), Some(6970));
     }
 
 }
