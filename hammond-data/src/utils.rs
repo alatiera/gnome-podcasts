@@ -199,7 +199,7 @@ mod tests {
             .podcast_id(0)
             .build()
             .unwrap()
-            .into_episode()
+            .to_episode()
             .unwrap();
 
         let n2 = NewEpisodeBuilder::default()
@@ -207,7 +207,7 @@ mod tests {
             .podcast_id(1)
             .build()
             .unwrap()
-            .into_episode()
+            .to_episode()
             .unwrap();
 
         let mut ep1 = dbqueries::get_episode_from_pk(n1.title(), n1.podcast_id()).unwrap();

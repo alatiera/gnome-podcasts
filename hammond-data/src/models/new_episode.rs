@@ -120,10 +120,7 @@ impl NewEpisode {
     }
 
     #[allow(dead_code)]
-    // FIXME: Add test
-    // FIXME: Rename to "to_episode", since it can be expensive
-    // and change it ot &self
-    pub(crate) fn into_episode(self) -> Result<Episode> {
+    pub(crate) fn to_episode(&self) -> Result<Episode> {
         self.index()?;
         dbqueries::get_episode_from_pk(&self.title, self.podcast_id)
     }
@@ -290,6 +287,7 @@ mod tests {
     // TODO: Add tests for other feeds too.
     // Especially if you find an *intresting* generated feed.
 
+    // Known prebuilt expected objects.
     lazy_static! {
         static ref EXPECTED_MINIMAL_INTERCEPTED_1: NewEpisodeMinimal = {
             NewEpisodeMinimalBuilder::default()
@@ -560,7 +558,7 @@ mod tests {
     #[test]
     fn test_new_episode_update() {
         truncate_db().unwrap();
-        let old = EXPECTED_INTERCEPTED_1.clone().into_episode().unwrap();
+        let old = EXPECTED_INTERCEPTED_1.clone().to_episode().unwrap();
 
         let updated = &*UPDATED_DURATION_INTERCEPTED_1;
         updated.update(old.rowid()).unwrap();
@@ -606,5 +604,36 @@ mod tests {
         assert_eq!(*updated, new);
         assert_eq!(new.rowid(), old.rowid());
         assert_eq!(new.podcast_id(), old.podcast_id());
+    }
+
+    #[test]
+    fn test_new_episode_to_episode() {
+        let expected = &*EXPECTED_INTERCEPTED_1;
+        let updated = &*UPDATED_DURATION_INTERCEPTED_1;
+
+        // Assert insert() produces the same result that you would get with to_podcast()
+        truncate_db().unwrap();
+        expected.insert().unwrap();
+        let old = dbqueries::get_episode_from_pk(expected.title(), expected.podcast_id()).unwrap();
+        let ep = expected.to_episode().unwrap();
+        assert_eq!(old, ep);
+
+        // Same as above, diff order
+        truncate_db().unwrap();
+        let ep = expected.to_episode().unwrap();
+        // This should error as a unique constrain violation
+        assert!(expected.insert().is_err());
+        let mut old =
+            dbqueries::get_episode_from_pk(expected.title(), expected.podcast_id()).unwrap();
+        assert_eq!(old, ep);
+
+        old.set_archive(true);
+        old.save().unwrap();
+
+        // Assert that it does not mess with user preferences
+        let ep = updated.to_episode().unwrap();
+        let old = dbqueries::get_episode_from_pk(expected.title(), expected.podcast_id()).unwrap();
+        assert_eq!(old, ep);
+        assert_eq!(old.archive(), true);
     }
 }
