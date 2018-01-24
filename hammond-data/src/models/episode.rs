@@ -173,8 +173,7 @@ impl Episode {
     pub fn set_played_now(&mut self) -> Result<()> {
         let epoch = Utc::now().timestamp() as i32;
         self.set_played(Some(epoch));
-        self.save()?;
-        Ok(())
+        self.save().map(|_| ())
     }
 
     /// Helper method to easily save/"sync" current state of self to the Database.
@@ -182,7 +181,7 @@ impl Episode {
         let db = connection();
         let tempdb = db.get()?;
 
-        Ok(self.save_changes::<Episode>(&*tempdb)?)
+        self.save_changes::<Episode>(&*tempdb).map_err(From::from)
     }
 }
 
@@ -329,8 +328,7 @@ impl EpisodeWidgetQuery {
     pub fn set_played_now(&mut self) -> Result<()> {
         let epoch = Utc::now().timestamp() as i32;
         self.set_played(Some(epoch));
-        self.save()?;
-        Ok(())
+        self.save().map(|_| ())
     }
 
     /// Helper method to easily save/"sync" current state of self to the Database.
@@ -340,9 +338,10 @@ impl EpisodeWidgetQuery {
         let db = connection();
         let tempdb = db.get()?;
 
-        Ok(diesel::update(episode.filter(rowid.eq(self.rowid)))
+        diesel::update(episode.filter(rowid.eq(self.rowid)))
             .set(self)
-            .execute(&*tempdb)?)
+            .execute(&*tempdb)
+            .map_err(From::from)
     }
 }
 
@@ -406,9 +405,10 @@ impl EpisodeCleanerQuery {
         let db = connection();
         let tempdb = db.get()?;
 
-        Ok(diesel::update(episode.filter(rowid.eq(self.rowid())))
+        diesel::update(episode.filter(rowid.eq(self.rowid())))
             .set(self)
-            .execute(&*tempdb)?)
+            .execute(&*tempdb)
+            .map_err(From::from)
     }
 }
 

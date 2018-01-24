@@ -113,7 +113,7 @@ impl Podcast {
         let db = connection();
         let tempdb = db.get()?;
 
-        Ok(self.save_changes::<Podcast>(&*tempdb)?)
+        self.save_changes::<Podcast>(&*tempdb).map_err(From::from)
     }
 }
 
