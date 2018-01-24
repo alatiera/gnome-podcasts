@@ -99,55 +99,23 @@ impl Feed {
 
 #[cfg(test)]
 mod tests {
+    use rss::Channel;
     use tokio_core::reactor::Core;
 
     use Source;
+    use database::truncate_db;
     use dbqueries;
     use pipeline;
-
-    use database::truncate_db;
+    use utils::get_feed;
 
     use std::fs;
     use std::io::BufReader;
 
     use super::*;
 
-    #[test]
-    /// Insert feeds and update/index them.
-    fn test_index_loop() {
-        truncate_db().unwrap();
-        let inpt = vec![
-            "https://web.archive.org/web/20180120083840if_/https://feeds.feedburner.\
-             com/InterceptedWithJeremyScahill",
-            "https://web.archive.org/web/20180120110314if_/https://feeds.feedburner.\
-             com/linuxunplugged",
-            "https://web.archive.org/web/20180120110727if_/https://rss.acast.com/thetipoff",
-            "https://web.archive.org/web/20180120104957if_/https://rss.art19.com/steal-the-stars",
-            "https://web.archive.org/web/20180120104741if_/https://www.greaterthancode.\
-             com/feed/podcast",
-        ];
-
-        inpt.iter().for_each(|url| {
-            // Index the urls into the source table.
-            Source::from_url(url).unwrap();
-        });
-        let sources = dbqueries::get_sources().unwrap();
-        pipeline::pipeline(sources, true).unwrap();
-
-        let sources = dbqueries::get_sources().unwrap();
-        // Run again to cover Unique constrains erros.
-        pipeline::pipeline(sources, true).unwrap();
-
-        // Assert the index rows equal the controlled results
-        assert_eq!(dbqueries::get_sources().unwrap().len(), 5);
-        assert_eq!(dbqueries::get_podcasts().unwrap().len(), 5);
-        assert_eq!(dbqueries::get_episodes().unwrap().len(), 354);
-    }
-
-    #[test]
-    fn test_complete_index() {
-        // vec of (path, url) tuples.
-        let urls = vec![
+    // (path, url) tuples.
+    const URLS: &[(&str, &str)] = {
+        &[
             (
                 "tests/feeds/2018-01-20-Intercepted.xml",
                 "https://web.archive.org/web/20180120083840if_/https://feeds.feedburner.\
@@ -172,24 +140,39 @@ mod tests {
                 "https://web.archive.org/web/20180120104741if_/https://www.greaterthancode.\
                  com/feed/podcast",
             ),
-        ];
+        ]
+    };
 
+    #[test]
+    /// Insert feeds and update/index them.
+    fn test_index_loop() {
+        truncate_db().unwrap();
+        URLS.iter().for_each(|&(_, url)| {
+            // Index the urls into the source table.
+            Source::from_url(url).unwrap();
+        });
+        let sources = dbqueries::get_sources().unwrap();
+        pipeline::pipeline(sources, true).unwrap();
+
+        let sources = dbqueries::get_sources().unwrap();
+        // Run again to cover Unique constrains erros.
+        pipeline::pipeline(sources, true).unwrap();
+
+        // Assert the index rows equal the controlled results
+        assert_eq!(dbqueries::get_sources().unwrap().len(), 5);
+        assert_eq!(dbqueries::get_podcasts().unwrap().len(), 5);
+        assert_eq!(dbqueries::get_episodes().unwrap().len(), 354);
+    }
+
+    #[test]
+    fn test_complete_index() {
         truncate_db().unwrap();
 
-        let feeds: Vec<_> = urls.iter()
+        let feeds: Vec<_> = URLS.iter()
             .map(|&(path, url)| {
                 // Create and insert a Source into db
                 let s = Source::from_url(url).unwrap();
-
-                // open the xml file
-                let feed = fs::File::open(path).unwrap();
-                // parse it into a channel
-                let chan = rss::Channel::read_from(BufReader::new(feed)).unwrap();
-                FeedBuilder::default()
-                    .channel(chan)
-                    .source_id(s.id())
-                    .build()
-                    .unwrap()
+                get_feed(path, s.id())
             })
             .collect();
 
@@ -202,5 +185,46 @@ mod tests {
         assert_eq!(dbqueries::get_sources().unwrap().len(), 5);
         assert_eq!(dbqueries::get_podcasts().unwrap().len(), 5);
         assert_eq!(dbqueries::get_episodes().unwrap().len(), 354);
+    }
+
+    #[test]
+    fn test_feed_parse_podcast() {
+        truncate_db().unwrap();
+
+        let path = "tests/feeds/2018-01-20-Intercepted.xml";
+        let feed = get_feed(path, 42);
+
+        let file = fs::File::open(path).unwrap();
+        let channel = Channel::read_from(BufReader::new(file)).unwrap();
+
+        let pd = NewPodcast::new(&channel, 42);
+        assert_eq!(feed.parse_podcast(), pd);
+    }
+
+    #[test]
+    fn test_feed_index_channel_items() {
+        truncate_db().unwrap();
+
+        let path = "tests/feeds/2018-01-20-Intercepted.xml";
+        let feed = get_feed(path, 42);
+        let pd = feed.parse_podcast().to_podcast().unwrap();
+
+        feed.index_channel_items(&pd).wait().unwrap();
+        assert_eq!(dbqueries::get_podcasts().unwrap().len(), 1);
+        assert_eq!(dbqueries::get_episodes().unwrap().len(), 43);
+    }
+
+    #[test]
+    fn test_feed_get_stuff() {
+        truncate_db().unwrap();
+
+        let path = "tests/feeds/2018-01-20-Intercepted.xml";
+        let feed = get_feed(path, 42);
+        let pd = feed.parse_podcast().to_podcast().unwrap();
+
+        let (insert, update) = feed.get_stuff(&pd).wait().unwrap();
+        assert_eq!(43, insert.len());
+        assert_eq!(0, update.len());
+        // TODO: find or create a feed to test updates too.
     }
 }
