@@ -51,7 +51,7 @@ impl Insert for NewEpisode {
         let db = connection();
         let con = db.get()?;
 
-        info!("Indexing {:?}", self.title);
+        info!("Inserting {:?}", self.title);
         diesel::insert_into(episode)
             .values(self)
             .execute(&con)
@@ -61,7 +61,6 @@ impl Insert for NewEpisode {
 }
 
 impl Update for NewEpisode {
-    // FIXME: Add test
     fn update(&self, episode_id: i32) -> Result<()> {
         use schema::episode::dsl::*;
         let db = connection();
@@ -128,7 +127,6 @@ impl NewEpisode {
     }
 }
 
-#[allow(dead_code)]
 // Ignore the following getters. They are used in unit tests mainly.
 impl NewEpisode {
     pub(crate) fn title(&self) -> &str {
@@ -365,6 +363,22 @@ mod tests {
                 .unwrap()
         };
 
+        static ref UPDATED_DESC_INTERCEPTED_1: NewEpisode = {
+            NewEpisodeBuilder::default()
+                .title("The Super Bowl of Racism")
+                .uri(Some(String::from(
+                    "http://traffic.megaphone.fm/PPY6458293736.mp3",
+                )))
+                .description(Some(String::from("New description")))
+                .guid(Some(String::from("7df4070a-9832-11e7-adac-cb37b05d5e24")))
+                .length(Some(66738886))
+                .epoch(1505296800)
+                .duration(Some(4171))
+                .podcast_id(42)
+                .build()
+                .unwrap()
+        };
+
         static ref EXPECTED_MINIMAL_LUP_1: NewEpisodeMinimal = {
             NewEpisodeMinimalBuilder::default()
                 .title("Hacking Devices with Kali Linux | LUP 214")
@@ -521,6 +535,7 @@ mod tests {
         let new_ep = NewEpisode::new(&episode, 42).unwrap();
         new_ep.insert().unwrap();
         let ep = dbqueries::get_episode_from_pk(new_ep.title(), new_ep.podcast_id()).unwrap();
+
         assert_eq!(new_ep, ep);
         assert_eq!(&new_ep, &*EXPECTED_INTERCEPTED_1);
         assert_eq!(&*EXPECTED_INTERCEPTED_1, &ep);
@@ -529,8 +544,32 @@ mod tests {
         let new_ep = NewEpisode::new(&episode, 42).unwrap();
         new_ep.insert().unwrap();
         let ep = dbqueries::get_episode_from_pk(new_ep.title(), new_ep.podcast_id()).unwrap();
+
         assert_eq!(new_ep, ep);
         assert_eq!(&new_ep, &*EXPECTED_INTERCEPTED_2);
         assert_eq!(&*EXPECTED_INTERCEPTED_2, &ep);
+    }
+
+    #[test]
+    fn test_new_episode_update() {
+        let old = EXPECTED_INTERCEPTED_1.clone().into_episode().unwrap();
+
+        let updated = &*UPDATED_DESC_INTERCEPTED_1;
+        updated.update(old.rowid()).unwrap();
+        let mut new = dbqueries::get_episode_from_pk(old.title(), old.podcast_id()).unwrap();
+
+        // Assert that updating does not change the rowid and podcast_id
+        assert_ne!(old, new);
+        assert_eq!(old.rowid(), new.rowid());
+        assert_eq!(old.podcast_id(), new.podcast_id());
+
+        assert_eq!(updated, &new);
+        assert_ne!(updated, &old);
+
+        new.set_archive(true);
+        new.save().unwrap();
+
+        let new2 = dbqueries::get_episode_from_pk(old.title(), old.podcast_id()).unwrap();
+        assert_eq!(true, new2.archive());
     }
 }

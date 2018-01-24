@@ -363,9 +363,6 @@ mod tests {
         new.set_archive(true);
         new.save().unwrap();
 
-        let updated = &*UPDATED_DESC_INTERCEPTED;
-        updated.update(old.id()).unwrap();
-
         let new2 = dbqueries::get_podcast_from_source_id(42).unwrap();
         assert_eq!(true, new2.archive());
     }
