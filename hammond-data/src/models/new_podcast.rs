@@ -388,6 +388,8 @@ mod tests {
         let new = dbqueries::get_podcast_from_source_id(42).unwrap();
         // Assert it's diff from the old one.
         assert_ne!(new, old);
+        assert_eq!(new.id(), old.id());
+        assert_eq!(new.source_id(), old.source_id());
     }
 
     #[test]

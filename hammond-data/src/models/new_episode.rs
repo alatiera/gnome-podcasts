@@ -76,7 +76,7 @@ impl Update for NewEpisode {
 }
 
 impl Index for NewEpisode {
-    // FIXME: Add test
+    // Does not update the episode description if it's the only thing that has changed.
     fn index(&self) -> Result<()> {
         let exists = dbqueries::episode_exists(self.title(), self.podcast_id())?;
 
@@ -121,6 +121,8 @@ impl NewEpisode {
 
     #[allow(dead_code)]
     // FIXME: Add test
+    // FIXME: Rename to "to_episode", since it can be expensive
+    // and change it ot &self
     pub(crate) fn into_episode(self) -> Result<Episode> {
         self.index()?;
         dbqueries::get_episode_from_pk(&self.title, self.podcast_id)
@@ -275,6 +277,7 @@ impl NewEpisodeMinimal {
 }
 #[cfg(test)]
 mod tests {
+    use database::truncate_db;
     use dbqueries;
     use models::*;
     use models::new_episode::{NewEpisodeMinimal, NewEpisodeMinimalBuilder};
@@ -363,7 +366,7 @@ mod tests {
                 .unwrap()
         };
 
-        static ref UPDATED_DESC_INTERCEPTED_1: NewEpisode = {
+        static ref UPDATED_DURATION_INTERCEPTED_1: NewEpisode = {
             NewEpisodeBuilder::default()
                 .title("The Super Bowl of Racism")
                 .uri(Some(String::from(
@@ -373,7 +376,7 @@ mod tests {
                 .guid(Some(String::from("7df4070a-9832-11e7-adac-cb37b05d5e24")))
                 .length(Some(66738886))
                 .epoch(1505296800)
-                .duration(Some(4171))
+                .duration(Some(424242))
                 .podcast_id(42)
                 .build()
                 .unwrap()
@@ -510,6 +513,8 @@ mod tests {
 
     #[test]
     fn test_minimal_into_new_episode() {
+        truncate_db().unwrap();
+
         let file = File::open("tests/feeds/2018-01-20-Intercepted.xml").unwrap();
         let channel = Channel::read_from(BufReader::new(file)).unwrap();
 
@@ -528,6 +533,8 @@ mod tests {
 
     #[test]
     fn test_new_episode_insert() {
+        truncate_db().unwrap();
+
         let file = File::open("tests/feeds/2018-01-20-Intercepted.xml").unwrap();
         let channel = Channel::read_from(BufReader::new(file)).unwrap();
 
@@ -552,9 +559,10 @@ mod tests {
 
     #[test]
     fn test_new_episode_update() {
+        truncate_db().unwrap();
         let old = EXPECTED_INTERCEPTED_1.clone().into_episode().unwrap();
 
-        let updated = &*UPDATED_DESC_INTERCEPTED_1;
+        let updated = &*UPDATED_DURATION_INTERCEPTED_1;
         updated.update(old.rowid()).unwrap();
         let mut new = dbqueries::get_episode_from_pk(old.title(), old.podcast_id()).unwrap();
 
@@ -571,5 +579,32 @@ mod tests {
 
         let new2 = dbqueries::get_episode_from_pk(old.title(), old.podcast_id()).unwrap();
         assert_eq!(true, new2.archive());
+    }
+
+    #[test]
+    fn test_new_episode_index() {
+        truncate_db().unwrap();
+        let expected = &*EXPECTED_INTERCEPTED_1;
+
+        // First insert
+        assert!(expected.index().is_ok());
+        // Second identical, This should take the early return path
+        assert!(expected.index().is_ok());
+        // Get the episode
+        let old = dbqueries::get_episode_from_pk(expected.title(), expected.podcast_id()).unwrap();
+        // Assert that NewPodcast is equal to the Indexed one
+        assert_eq!(*expected, old);
+
+        let updated = &*UPDATED_DURATION_INTERCEPTED_1;
+
+        // Update the podcast
+        assert!(updated.index().is_ok());
+        // Get the new Podcast
+        let new = dbqueries::get_episode_from_pk(expected.title(), expected.podcast_id()).unwrap();
+        // Assert it's diff from the old one.
+        assert_ne!(new, old);
+        assert_eq!(*updated, new);
+        assert_eq!(new.rowid(), old.rowid());
+        assert_eq!(new.podcast_id(), old.podcast_id());
     }
 }
