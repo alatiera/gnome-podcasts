@@ -62,7 +62,7 @@ Download the `org.gnome.Hammond.json` flatpak manifest from this repo.
 flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo # Add flathub repo
 flatpak --user install flathub org.freedesktop.Sdk.Extension.rust-stable # Install the required rust-stable extension from flathub
 flatpak-builder --repo=repo hammond org.gnome.Hammond.json --force-clean
-flatpak build-bundle repo hammond org.gnome.hammond
+flatpak build-bundle repo hammond org.gnome.Hammond
 ```
 
 ## Building
