@@ -105,7 +105,6 @@ mod tests {
     use Source;
     use database::truncate_db;
     use dbqueries;
-    use pipeline;
     use utils::get_feed;
 
     use std::fs;
@@ -142,27 +141,6 @@ mod tests {
             ),
         ]
     };
-
-    #[test]
-    /// Insert feeds and update/index them.
-    fn test_index_loop() {
-        truncate_db().unwrap();
-        URLS.iter().for_each(|&(_, url)| {
-            // Index the urls into the source table.
-            Source::from_url(url).unwrap();
-        });
-        let sources = dbqueries::get_sources().unwrap();
-        pipeline::pipeline(sources, true).unwrap();
-
-        let sources = dbqueries::get_sources().unwrap();
-        // Run again to cover Unique constrains erros.
-        pipeline::pipeline(sources, true).unwrap();
-
-        // Assert the index rows equal the controlled results
-        assert_eq!(dbqueries::get_sources().unwrap().len(), 5);
-        assert_eq!(dbqueries::get_podcasts().unwrap().len(), 5);
-        assert_eq!(dbqueries::get_episodes().unwrap().len(), 354);
-    }
 
     #[test]
     fn test_complete_index() {

@@ -218,7 +218,7 @@ mod tests {
     use super::*;
     use hammond_data::Source;
     use hammond_data::dbqueries;
-    use hammond_data::pipeline::pipeline;
+    use hammond_data::pipeline;
 
     #[test]
     // This test inserts an rss feed to your `XDG_DATA/hammond/hammond.db` so we make it explicit
@@ -231,7 +231,7 @@ mod tests {
         // Copy it's id
         let sid = source.id();
         // Convert Source it into a future Feed and index it
-        pipeline(vec![source], true).unwrap();
+        pipeline::run(vec![source], true).unwrap();
 
         // Get the Podcast
         let pd = dbqueries::get_podcast_from_source_id(sid).unwrap().into();

@@ -119,7 +119,7 @@ mod tests {
 
     use hammond_data::{Episode, Source};
     use hammond_data::dbqueries;
-    use hammond_data::pipeline::pipeline;
+    use hammond_data::pipeline;
     use hammond_data::utils::get_download_folder;
 
     use std::{thread, time};
@@ -138,7 +138,7 @@ mod tests {
         let source = Source::from_url(url).unwrap();
         // Copy it's id
         let sid = source.id();
-        pipeline(vec![source], true).unwrap();
+        pipeline::run(vec![source], true).unwrap();
 
         // Get the Podcast
         let pd = dbqueries::get_podcast_from_source_id(sid).unwrap();

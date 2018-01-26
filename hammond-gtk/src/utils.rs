@@ -28,13 +28,13 @@ pub fn refresh_feed(headerbar: Arc<Header>, source: Option<Vec<Source>>, sender:
         if let Some(s) = source {
             // feed::index_loop(s);
             // TODO: determine if it needs to ignore_etags.
-            if let Err(err) = pipeline::pipeline(s, true) {
+            if let Err(err) = pipeline::run(s, true) {
                 error!("Error While trying to update the database.");
                 error!("Error msg: {}", err);
             }
         } else {
             let sources = dbqueries::get_sources().unwrap();
-            if let Err(err) = pipeline::pipeline(sources, false) {
+            if let Err(err) = pipeline::run(sources, false) {
                 error!("Error While trying to update the database.");
                 error!("Error msg: {}", err);
             }
@@ -83,7 +83,6 @@ mod tests {
     use super::*;
     use hammond_data::Source;
     use hammond_data::dbqueries;
-    use hammond_data::pipeline::pipeline;
 
     #[test]
     // This test inserts an rss feed to your `XDG_DATA/hammond/hammond.db` so we make it explicit
@@ -95,7 +94,7 @@ mod tests {
         let source = Source::from_url(url).unwrap();
         // Copy it's id
         let sid = source.id();
-        pipeline(vec![source], true).unwrap();
+        pipeline::run(vec![source], true).unwrap();
 
         // Get the Podcast
         let pd = dbqueries::get_podcast_from_source_id(sid).unwrap();
