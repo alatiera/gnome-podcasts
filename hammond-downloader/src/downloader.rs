@@ -225,7 +225,7 @@ mod tests {
     // to run it.
     #[ignore]
     fn test_cache_image() {
-        let url = "http://www.newrustacean.com/feed.xml";
+        let url = "https://web.archive.org/web/20180120110727if_/https://rss.acast.com/thetipoff";
         // Create and index a source
         let source = Source::from_url(url).unwrap();
         // Copy it's id
@@ -238,7 +238,7 @@ mod tests {
 
         let img_path = cache_image(&pd);
         let foo_ = format!(
-            "{}{}/cover.png",
+            "{}{}/cover.jpeg",
             HAMMOND_CACHE.to_str().unwrap(),
             pd.title()
         );

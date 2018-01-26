@@ -89,7 +89,7 @@ mod tests {
     // to run it.
     #[ignore]
     fn test_get_pixbuf_from_path() {
-        let url = "http://www.newrustacean.com/feed.xml";
+        let url = "https://web.archive.org/web/20180120110727if_/https://rss.acast.com/thetipoff";
         // Create and index a source
         let source = Source::from_url(url).unwrap();
         // Copy it's id

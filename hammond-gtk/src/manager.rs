@@ -133,7 +133,7 @@ mod tests {
     // THIS IS NOT A RELIABLE TEST
     // Just quick sanity check
     fn test_start_dl() {
-        let url = "http://www.newrustacean.com/feed.xml";
+        let url = "https://web.archive.org/web/20180120110727if_/https://rss.acast.com/thetipoff";
         // Create and index a source
         let source = Source::from_url(url).unwrap();
         // Copy it's id
@@ -142,9 +142,9 @@ mod tests {
 
         // Get the Podcast
         let pd = dbqueries::get_podcast_from_source_id(sid).unwrap();
+        let title = "Coming soon... The Tip Off";
         // Get an episode
-        let episode: Episode =
-            dbqueries::get_episode_from_pk("e000: Hello, world!", pd.id()).unwrap();
+        let episode: Episode = dbqueries::get_episode_from_pk(title, pd.id()).unwrap();
 
         let (sender, _rx) = channel();
 
@@ -153,9 +153,9 @@ mod tests {
         assert_eq!(ACTIVE_DOWNLOADS.read().unwrap().len(), 1);
 
         // Give it soem time to download the file
-        thread::sleep(time::Duration::from_secs(40));
+        thread::sleep(time::Duration::from_secs(20));
 
-        let final_path = format!("{}/{}.unknown", &download_fold, episode.rowid());
+        let final_path = format!("{}/{}.mp3", &download_fold, episode.rowid());
         println!("{}", &final_path);
         assert!(Path::new(&final_path).exists());
     }
