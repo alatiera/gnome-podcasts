@@ -44,9 +44,6 @@ macro_rules! clone {
 /// Messy temp diagram:
 /// Source -> GET Request -> Update Etags -> Check Status -> Parse xml/Rss ->
 /// Convert `rss::Channel` into Feed -> Index Podcast -> Index Episodes.
-///
-/// # Panics
-/// If `sources` contains no Items.
 pub fn pipeline<S: IntoIterator<Item = Source>>(
     sources: S,
     ignore_etags: bool,
@@ -61,7 +58,10 @@ pub fn pipeline<S: IntoIterator<Item = Source>>(
         .map(|fut| fut.map(|_| ()).map_err(|err| error!("Error: {}", err)))
         .collect();
 
-    assert!(!list.is_empty());
+    if list.is_empty() {
+        bail!("No futures were found to run.");
+    }
+
     // Thats not really concurrent yet I think.
     tokio_core.run(collect_futures(list))?;
 
@@ -69,7 +69,11 @@ pub fn pipeline<S: IntoIterator<Item = Source>>(
 }
 
 /// Creates a tokio-core, a  cpu_pool, and a hyper::Client and runs the pipeline.
-pub fn run<S: IntoIterator<Item = Source>>(sources: S, ignore_etags: bool) -> Result<()> {
+pub fn run(sources: Vec<Source>, ignore_etags: bool) -> Result<()> {
+    if sources.is_empty() {
+        return Ok(());
+    }
+
     let pool = CpuPool::new_num_cpus();
     let mut core = Core::new()?;
     let handle = core.handle();
