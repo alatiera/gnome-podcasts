@@ -104,7 +104,6 @@ impl EpisodeWidget {
         widget
     }
 
-    // TODO: wire the cancel button.
     fn init(&self, episode: &mut EpisodeWidgetQuery, sender: Sender<Action>) {
         WidgetExt::set_name(&self.container, &episode.rowid().to_string());
 

@@ -66,10 +66,10 @@ impl App {
         let (sender, receiver) = channel();
 
         // Create a content instance
-        let content = Content::new(sender.clone());
+        let content = Arc::new(Content::new(sender.clone()));
 
         // Create the headerbar
-        let header = Header::new(content.clone(), sender.clone());
+        let header = Arc::new(Header::new(content.clone(), sender.clone()));
 
         // Add the Headerbar to the window.
         window.set_titlebar(&header.container);

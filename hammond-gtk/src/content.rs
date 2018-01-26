@@ -24,7 +24,7 @@ pub struct Content {
 }
 
 impl Content {
-    pub fn new(sender: Sender<Action>) -> Arc<Content> {
+    pub fn new(sender: Sender<Action>) -> Content {
         let stack = gtk::Stack::new();
         let episodes = Arc::new(EpisodeStack::new(sender.clone()));
         let shows = Arc::new(ShowStack::new(sender.clone()));
@@ -32,12 +32,12 @@ impl Content {
         stack.add_titled(&episodes.stack, "episodes", "Episodes");
         stack.add_titled(&shows.stack, "shows", "Shows");
 
-        Arc::new(Content {
+        Content {
             stack,
             shows,
             episodes,
             sender,
-        })
+        }
     }
 
     pub fn update(&self) {
