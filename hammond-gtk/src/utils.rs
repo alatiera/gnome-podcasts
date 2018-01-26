@@ -1,30 +1,43 @@
-use send_cell::SendCell;
 use gdk_pixbuf::Pixbuf;
+use send_cell::SendCell;
 
-use hammond_data::feed;
+// use hammond_data::feed;
 use hammond_data::{PodcastCoverQuery, Source};
+use hammond_data::dbqueries;
+use hammond_data::pipeline;
 use hammond_downloader::downloader;
 
-use std::thread;
-use std::sync::mpsc::Sender;
-use std::sync::{Arc, Mutex, RwLock};
 use std::collections::HashMap;
+use std::sync::{Arc, Mutex, RwLock};
+use std::sync::mpsc::Sender;
+use std::thread;
 
-use headerbar::Header;
 use app::Action;
+use headerbar::Header;
 
 /// Update the rss feed(s) originating from `source`.
 /// If `source` is None, Fetches all the `Source` entries in the database and updates them.
 /// When It's done,it queues up a `RefreshViews` action.
 pub fn refresh_feed(headerbar: Arc<Header>, source: Option<Vec<Source>>, sender: Sender<Action>) {
+    // TODO: make it an application channel action.
+    // I missed it before apparently.
     headerbar.show_update_notification();
 
     thread::spawn(move || {
+        // FIXME: This is messy at best.
         if let Some(s) = source {
-            feed::index_loop(s);
-        } else if let Err(err) = feed::index_all() {
-            error!("Error While trying to update the database.");
-            error!("Error msg: {}", err);
+            // feed::index_loop(s);
+            // TODO: determine if it needs to ignore_etags.
+            if let Err(err) = pipeline::run(s, true) {
+                error!("Error While trying to update the database.");
+                error!("Error msg: {}", err);
+            }
+        } else {
+            let sources = dbqueries::get_sources().unwrap();
+            if let Err(err) = pipeline::run(sources, false) {
+                error!("Error While trying to update the database.");
+                error!("Error msg: {}", err);
+            }
         };
 
         sender.send(Action::HeaderBarHideUpdateIndicator).unwrap();
@@ -67,27 +80,21 @@ pub fn get_pixbuf_from_path(pd: &PodcastCoverQuery, size: u32) -> Option<Pixbuf>
 
 #[cfg(test)]
 mod tests {
-    use hammond_data::Source;
-    use hammond_data::feed::index;
-    use hammond_data::dbqueries;
-    use diesel::associations::Identifiable;
     use super::*;
+    use hammond_data::Source;
+    use hammond_data::dbqueries;
 
     #[test]
     // This test inserts an rss feed to your `XDG_DATA/hammond/hammond.db` so we make it explicit
     // to run it.
     #[ignore]
     fn test_get_pixbuf_from_path() {
-        let url = "http://www.newrustacean.com/feed.xml";
-
+        let url = "https://web.archive.org/web/20180120110727if_/https://rss.acast.com/thetipoff";
         // Create and index a source
         let source = Source::from_url(url).unwrap();
         // Copy it's id
-        let sid = source.id().clone();
-
-        // Convert Source it into a Feed and index it
-        let feed = source.into_feed(true).unwrap();
-        index(&feed);
+        let sid = source.id();
+        pipeline::run(vec![source], true).unwrap();
 
         // Get the Podcast
         let pd = dbqueries::get_podcast_from_source_id(sid).unwrap();

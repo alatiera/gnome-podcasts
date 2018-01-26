@@ -1,4 +1,5 @@
 #![cfg_attr(feature = "cargo-clippy", allow(clone_on_ref_ptr, needless_pass_by_value))]
+#![deny(unused_extern_crates, unused)]
 
 extern crate gdk;
 extern crate gdk_pixbuf;
@@ -7,7 +8,6 @@ extern crate glib;
 extern crate gtk;
 
 extern crate chrono;
-extern crate diesel;
 extern crate dissolve;
 extern crate hammond_data;
 extern crate hammond_downloader;
@@ -18,12 +18,11 @@ extern crate lazy_static;
 extern crate log;
 extern crate loggerv;
 extern crate open;
-extern crate regex;
 extern crate send_cell;
 // extern crate rayon;
 
 // use rayon::prelude::*;
-use log::LogLevel;
+use log::Level;
 
 use gtk::prelude::*;
 
@@ -60,7 +59,7 @@ use app::App;
 
 fn main() {
     // TODO: make the the logger a cli -vv option
-    loggerv::init_with_level(LogLevel::Info).unwrap();
+    loggerv::init_with_level(Level::Info).unwrap();
     gtk::init().expect("Error initializing gtk");
     static_resource::init().expect("Something went wrong with the resource file initialization.");
 

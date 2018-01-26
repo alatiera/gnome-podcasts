@@ -5,12 +5,12 @@ use gtk::prelude::*;
 use hammond_data::Podcast;
 use hammond_data::dbqueries;
 
-use views::shows::ShowsPopulated;
 use views::empty::EmptyView;
 use views::episodes::EpisodesView;
+use views::shows::ShowsPopulated;
 
-use widgets::show::ShowWidget;
 use app::Action;
+use widgets::show::ShowWidget;
 
 use std::sync::Arc;
 use std::sync::mpsc::Sender;

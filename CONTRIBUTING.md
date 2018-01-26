@@ -41,6 +41,8 @@ cargo test -- --test-threads=1 && cargo fmt --all -- --write-mode=diff
 
 ## Running the test suite
 
+Running the tests requires an internet connection and it it will download some files from the [Internet Archive](archive.org)
+
 The test suite sets a temporary sqlite database in the `/tmp` folder.
 Due to that it's not possible to run them in parrallel.
 

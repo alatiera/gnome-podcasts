@@ -1,19 +1,19 @@
-use gtk;
-use glib;
 use gio;
-use gtk::prelude::*;
 use gio::{ApplicationExt, ApplicationExtManual};
+use glib;
+use gtk;
+use gtk::prelude::*;
 
-use hammond_data::utils::checkup;
 use hammond_data::{Podcast, Source};
+use hammond_data::utils::checkup;
 
-use headerbar::Header;
 use content::Content;
+use headerbar::Header;
 use utils;
 
 use std::sync::Arc;
-use std::time::Duration;
 use std::sync::mpsc::{channel, Receiver, Sender};
+use std::time::Duration;
 
 #[derive(Clone, Debug)]
 pub enum Action {

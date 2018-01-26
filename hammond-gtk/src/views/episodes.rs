@@ -1,16 +1,16 @@
+use chrono::prelude::*;
 use gtk;
 use gtk::prelude::*;
-use chrono::prelude::*;
 
-use hammond_data::dbqueries;
 use hammond_data::EpisodeWidgetQuery;
+use hammond_data::dbqueries;
 
-use widgets::episode::EpisodeWidget;
-use utils::get_pixbuf_from_path;
 use app::Action;
+use utils::get_pixbuf_from_path;
+use widgets::episode::EpisodeWidget;
 
-use std::sync::mpsc::Sender;
 use std::sync::Arc;
+use std::sync::mpsc::Sender;
 
 #[derive(Debug, Clone)]
 enum ListSplit {

@@ -1,13 +1,13 @@
-use reqwest;
-use hyper::header::*;
-use tempdir::TempDir;
-use mime_guess;
 use glob::glob;
+use hyper::header::*;
+use mime_guess;
+use reqwest;
+use tempdir::TempDir;
 
+use std::fs;
 use std::fs::{rename, DirBuilder, File};
 use std::io::{BufWriter, Read, Write};
 use std::path::Path;
-use std::fs;
 use std::sync::{Arc, Mutex};
 
 use errors::*;
@@ -51,7 +51,7 @@ fn download_into(
     ct_len.map(|x| info!("File Lenght: {}", x));
     ct_type.map(|x| info!("Content Type: {}", x));
 
-    let ext = get_ext(ct_type.cloned()).unwrap_or(String::from("unknown"));
+    let ext = get_ext(ct_type.cloned()).unwrap_or_else(|| String::from("unknown"));
     info!("Extension: {}", ext);
 
     // Construct a temp file to save desired content.
@@ -217,32 +217,28 @@ pub fn cache_image(pd: &PodcastCoverQuery) -> Option<String> {
 mod tests {
     use super::*;
     use hammond_data::Source;
-    use hammond_data::feed::index;
     use hammond_data::dbqueries;
-    use diesel::associations::Identifiable;
+    use hammond_data::pipeline;
 
     #[test]
     // This test inserts an rss feed to your `XDG_DATA/hammond/hammond.db` so we make it explicit
     // to run it.
     #[ignore]
     fn test_cache_image() {
-        let url = "http://www.newrustacean.com/feed.xml";
-
+        let url = "https://web.archive.org/web/20180120110727if_/https://rss.acast.com/thetipoff";
         // Create and index a source
         let source = Source::from_url(url).unwrap();
         // Copy it's id
-        let sid = source.id().clone();
-
-        // Convert Source it into a Feed and index it
-        let feed = source.into_feed(true).unwrap();
-        index(&feed);
+        let sid = source.id();
+        // Convert Source it into a future Feed and index it
+        pipeline::run(vec![source], true).unwrap();
 
         // Get the Podcast
         let pd = dbqueries::get_podcast_from_source_id(sid).unwrap().into();
 
         let img_path = cache_image(&pd);
         let foo_ = format!(
-            "{}{}/cover.png",
+            "{}{}/cover.jpeg",
             HAMMOND_CACHE.to_str().unwrap(),
             pd.title()
         );

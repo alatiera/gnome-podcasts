@@ -1,7 +1,6 @@
 // use hammond_data::Episode;
 use hammond_data::dbqueries;
-use hammond_downloader::downloader::get_episode;
-use hammond_downloader::downloader::DownloadProgress;
+use hammond_downloader::downloader::{get_episode, DownloadProgress};
 
 use app::Action;
 
@@ -117,16 +116,14 @@ pub fn add(id: i32, directory: &str, sender: Sender<Action>) {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use diesel::Identifiable;
 
-    use hammond_data::database;
-    use hammond_data::utils::get_download_folder;
-    use hammond_data::feed::*;
     use hammond_data::{Episode, Source};
     use hammond_data::dbqueries;
+    use hammond_data::pipeline;
+    use hammond_data::utils::get_download_folder;
 
-    use std::path::Path;
     use std::{thread, time};
+    use std::path::Path;
     use std::sync::mpsc::channel;
 
     #[test]
@@ -136,25 +133,18 @@ mod tests {
     // THIS IS NOT A RELIABLE TEST
     // Just quick sanity check
     fn test_start_dl() {
-        let url = "http://www.newrustacean.com/feed.xml";
-
+        let url = "https://web.archive.org/web/20180120110727if_/https://rss.acast.com/thetipoff";
         // Create and index a source
         let source = Source::from_url(url).unwrap();
         // Copy it's id
-        let sid = source.id().clone();
-
-        // Convert Source it into a Feed and index it
-        let feed = source.into_feed(true).unwrap();
-        index(&feed);
+        let sid = source.id();
+        pipeline::run(vec![source], true).unwrap();
 
         // Get the Podcast
         let pd = dbqueries::get_podcast_from_source_id(sid).unwrap();
+        let title = "Coming soon... The Tip Off";
         // Get an episode
-        let episode: Episode = {
-            let con = database::connection();
-            dbqueries::get_episode_from_pk(&*con.get().unwrap(), "e000: Hello, world!", *pd.id())
-                .unwrap()
-        };
+        let episode: Episode = dbqueries::get_episode_from_pk(title, pd.id()).unwrap();
 
         let (sender, _rx) = channel();
 
@@ -163,9 +153,9 @@ mod tests {
         assert_eq!(ACTIVE_DOWNLOADS.read().unwrap().len(), 1);
 
         // Give it soem time to download the file
-        thread::sleep(time::Duration::from_secs(40));
+        thread::sleep(time::Duration::from_secs(20));
 
-        let final_path = format!("{}/{}.unknown", &download_fold, episode.rowid());
+        let final_path = format!("{}/{}.mp3", &download_fold, episode.rowid());
         println!("{}", &final_path);
         assert!(Path::new(&final_path).exists());
     }

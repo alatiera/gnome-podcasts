@@ -3,8 +3,8 @@ use gtk::prelude::*;
 
 use hammond_data::Source;
 
-use std::sync::mpsc::Sender;
 use std::sync::Arc;
+use std::sync::mpsc::Sender;
 
 use app::Action;
 use content::Content;
@@ -52,6 +52,7 @@ impl Default for Header {
 
 impl Header {
     #[allow(dead_code)]
+    // FIXME: should not return arc and stuff
     pub fn new(content: Arc<Content>, sender: Sender<Action>) -> Arc<Header> {
         let h = Header::default();
         h.init(content, sender);

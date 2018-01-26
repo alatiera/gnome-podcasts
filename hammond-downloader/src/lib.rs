@@ -1,6 +1,6 @@
 #![recursion_limit = "1024"]
+#![deny(unused_extern_crates, unused)]
 
-extern crate diesel;
 #[macro_use]
 extern crate error_chain;
 extern crate glob;

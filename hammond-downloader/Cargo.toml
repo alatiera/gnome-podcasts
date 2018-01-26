@@ -6,16 +6,13 @@ workspace = "../"
 
 [dependencies]
 error-chain = "0.11.0"
-hyper = "0.11.10"
-log = "0.3.8"
+hyper = "0.11.14"
+log = "0.4.1"
 mime_guess = "1.8.3"
-reqwest = "0.8.2"
+reqwest = "0.8.3"
 tempdir = "0.3.5"
 glob = "0.2.11"
 
-[dependencies.diesel]
-features = ["sqlite"]
-version = "1.0.0"
-
 [dependencies.hammond-data]
 path = "../hammond-data"
+

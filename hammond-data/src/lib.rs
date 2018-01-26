@@ -15,53 +15,57 @@
         non_shorthand_field_patterns, no_mangle_generic_items, overflowing_literals,
         path_statements, patterns_in_fns_without_body, plugin_as_library, private_in_public,
         private_no_mangle_fns, private_no_mangle_statics, safe_extern_statics,
-        unconditional_recursion, unions_with_drop_fields, unused, unused_allocation,
-        unused_comparisons, unused_parens, while_true)]
-#![deny(missing_debug_implementations, missing_docs, trivial_casts, trivial_numeric_casts,
-        unused_extern_crates)]
+        unconditional_recursion, unions_with_drop_fields, unused_allocation, unused_comparisons,
+        unused_parens, while_true)]
+#![deny(missing_debug_implementations, missing_docs, trivial_casts, trivial_numeric_casts)]
+#![deny(unused_extern_crates, unused)]
+#![deny(unused_extern_crates, unused)]
 
-#[macro_use]
-extern crate error_chain;
-
-#[macro_use]
-extern crate lazy_static;
-
-#[macro_use]
-extern crate log;
-
-#[macro_use]
-extern crate diesel;
-
-#[macro_use]
-extern crate diesel_migrations;
+// #![feature(conservative_impl_trait)]
 
 #[macro_use]
 extern crate derive_builder;
+#[macro_use]
+extern crate diesel;
+#[macro_use]
+extern crate diesel_migrations;
+#[macro_use]
+extern crate error_chain;
+#[macro_use]
+extern crate lazy_static;
+#[macro_use]
+extern crate log;
 
 extern crate ammonia;
 extern crate chrono;
+extern crate futures;
+extern crate futures_cpupool;
+extern crate hyper;
+extern crate hyper_tls;
 extern crate itertools;
-extern crate r2d2;
-extern crate r2d2_diesel;
+extern crate native_tls;
 extern crate rayon;
 extern crate reqwest;
 extern crate rfc822_sanitizer;
 extern crate rss;
+extern crate tokio_core;
 extern crate url;
 extern crate xdg;
 
 #[allow(missing_docs)]
 pub mod dbqueries;
-pub mod utils;
-pub mod feed;
 #[allow(missing_docs)]
 pub mod errors;
+pub mod utils;
 pub mod database;
+pub mod pipeline;
 pub(crate) mod models;
+mod feed;
 mod parser;
 mod schema;
 
-pub use models::queryables::{Episode, EpisodeWidgetQuery, Podcast, PodcastCoverQuery, Source};
+pub use feed::{Feed, FeedBuilder};
+pub use models::{Episode, EpisodeWidgetQuery, Podcast, PodcastCoverQuery, Source};
 
 /// [XDG Base Direcotory](https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html) Paths.
 #[allow(missing_debug_implementations)]

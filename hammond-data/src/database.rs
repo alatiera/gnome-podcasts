@@ -1,11 +1,11 @@
 //! Database Setup. This is only public to help with some unit tests.
 
-use r2d2_diesel::ConnectionManager;
 use diesel::prelude::*;
-use r2d2;
+use diesel::r2d2;
+use diesel::r2d2::ConnectionManager;
 
-use std::path::PathBuf;
 use std::io;
+use std::path::PathBuf;
 
 use errors::*;
 
@@ -37,8 +37,8 @@ lazy_static! {
     static ref DB_PATH: PathBuf = TEMPDIR.path().join("hammond.db");
 }
 
-/// Get an r2d2 SqliteConnection.
-pub fn connection() -> Pool {
+/// Get an r2d2 `SqliteConnection`.
+pub(crate) fn connection() -> Pool {
     POOL.clone()
 }
 
@@ -60,8 +60,7 @@ fn init_pool(db_path: &str) -> Pool {
 fn run_migration_on(connection: &SqliteConnection) -> Result<()> {
     info!("Running DB Migrations...");
     // embedded_migrations::run(connection)?;
-    embedded_migrations::run_with_output(connection, &mut io::stdout())?;
-    Ok(())
+    embedded_migrations::run_with_output(connection, &mut io::stdout()).map_err(From::from)
 }
 
 /// Reset the database into a clean state.
