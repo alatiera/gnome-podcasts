@@ -21,20 +21,12 @@ pub fn refresh_feed(source: Option<Vec<Source>>, sender: Sender<Action>) {
     sender.send(Action::HeaderBarShowUpdateIndicator).unwrap();
 
     thread::spawn(move || {
-        // FIXME: This is messy at best.
-        if let Some(s) = source {
-            // TODO: determine if it needs to ignore_etags.
-            if let Err(err) = pipeline::run(s, true) {
-                error!("Error While trying to update the database.");
-                error!("Error msg: {}", err);
-            }
-        } else {
-            let sources = dbqueries::get_sources().unwrap();
-            if let Err(err) = pipeline::run(sources, false) {
-                error!("Error While trying to update the database.");
-                error!("Error msg: {}", err);
-            }
-        };
+        let sources = source.unwrap_or_else(|| dbqueries::get_sources().unwrap());
+
+        if let Err(err) = pipeline::run(sources, false) {
+            error!("Error While trying to update the database.");
+            error!("Error msg: {}", err);
+        }
 
         sender.send(Action::HeaderBarHideUpdateIndicator).unwrap();
         sender.send(Action::RefreshAllViews).unwrap();
