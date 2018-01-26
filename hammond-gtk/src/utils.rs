@@ -8,25 +8,21 @@ use hammond_data::pipeline;
 use hammond_downloader::downloader;
 
 use std::collections::HashMap;
-use std::sync::{Arc, Mutex, RwLock};
+use std::sync::{Mutex, RwLock};
 use std::sync::mpsc::Sender;
 use std::thread;
 
 use app::Action;
-use headerbar::Header;
 
 /// Update the rss feed(s) originating from `source`.
 /// If `source` is None, Fetches all the `Source` entries in the database and updates them.
 /// When It's done,it queues up a `RefreshViews` action.
-pub fn refresh_feed(headerbar: Arc<Header>, source: Option<Vec<Source>>, sender: Sender<Action>) {
-    // TODO: make it an application channel action.
-    // I missed it before apparently.
-    headerbar.show_update_notification();
+pub fn refresh_feed(source: Option<Vec<Source>>, sender: Sender<Action>) {
+    sender.send(Action::HeaderBarShowUpdateIndicator).unwrap();
 
     thread::spawn(move || {
         // FIXME: This is messy at best.
         if let Some(s) = source {
-            // feed::index_loop(s);
             // TODO: determine if it needs to ignore_etags.
             if let Err(err) = pipeline::run(s, true) {
                 error!("Error While trying to update the database.");

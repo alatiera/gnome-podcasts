@@ -30,6 +30,7 @@ pub enum Action {
     ShowShowsAnimated,
     HeaderBarShowTile(String),
     HeaderBarNormal,
+    HeaderBarShowUpdateIndicator,
     HeaderBarHideUpdateIndicator,
 }
 
@@ -87,21 +88,19 @@ impl App {
     }
 
     pub fn setup_timed_callbacks(&self) {
-        let header = self.header.clone();
         let sender = self.sender.clone();
         // Update the feeds right after the Application is initialized.
         gtk::timeout_add_seconds(2, move || {
-            utils::refresh_feed(header.clone(), None, sender.clone());
+            utils::refresh_feed(None, sender.clone());
             glib::Continue(false)
         });
 
-        let header = self.header.clone();
         let sender = self.sender.clone();
         // Auto-updater, runs every hour.
         // TODO: expose the interval in which it run to a user setting.
         // TODO: show notifications.
         gtk::timeout_add_seconds(3600, move || {
-            utils::refresh_feed(header.clone(), None, sender.clone());
+            utils::refresh_feed(None, sender.clone());
             glib::Continue(true)
         });
 
@@ -128,9 +127,9 @@ impl App {
             match receiver.recv_timeout(Duration::from_millis(10)) {
                 Ok(Action::UpdateSources(source)) => {
                     if let Some(s) = source {
-                        utils::refresh_feed(headerbar.clone(), Some(vec![s]), sender.clone())
+                        utils::refresh_feed(Some(vec![s]), sender.clone())
                     } else {
-                        utils::refresh_feed(headerbar.clone(), None, sender.clone())
+                        utils::refresh_feed(None, sender.clone())
                     }
                 }
                 Ok(Action::RefreshAllViews) => content.update(),
@@ -145,6 +144,7 @@ impl App {
                 Ok(Action::ShowShowsAnimated) => content.get_shows().switch_podcasts_animated(),
                 Ok(Action::HeaderBarShowTile(title)) => headerbar.switch_to_back(&title),
                 Ok(Action::HeaderBarNormal) => headerbar.switch_to_normal(),
+                Ok(Action::HeaderBarShowUpdateIndicator) => headerbar.show_update_notification(),
                 Ok(Action::HeaderBarHideUpdateIndicator) => headerbar.hide_update_notification(),
                 Err(_) => (),
             }
