@@ -2,6 +2,7 @@ use gtk;
 use gtk::prelude::*;
 
 use hammond_data::Source;
+use hammond_data::dbqueries;
 use url::Url;
 
 use std::sync::Arc;
@@ -135,6 +136,7 @@ fn on_add_bttn_clicked(entry: &gtk::Entry, sender: Sender<Action>) {
     let source = Source::from_url(&url);
 
     if source.is_ok() {
+        entry.set_text("");
         sender.send(Action::UpdateSources(source.ok())).unwrap();
     } else {
         error!("Something went wrong.");
@@ -147,18 +149,28 @@ fn on_url_change(entry: &gtk::Entry, result: &gtk::Label, add_button: &gtk::Butt
     debug!("Url: {}", uri);
 
     let url = Url::parse(&uri);
+    // TODO: refactor to avoid duplication
     match url {
-        // TODO: Check if the url exists
-        Ok(_u) => {
-            add_button.set_sensitive(true);
-            result.hide();
+        Ok(u) => {
+            if !dbqueries::source_exists(u.as_str()).unwrap() {
+                add_button.set_sensitive(true);
+                result.hide();
+                result.set_label("");
+            } else {
+                add_button.set_sensitive(false);
+                result.set_label("Show already exists.");
+                result.show();
+            }
         }
-        // TODO: refactor to avoid duplication
         Err(err) => {
             add_button.set_sensitive(false);
-            result.set_label("Invalid url.");
-            result.show();
-            error!("Error: {}", err);
+            if !uri.is_empty() {
+                result.set_label("Invalid url.");
+                result.show();
+                error!("Error: {}", err);
+            } else {
+                result.hide();
+            }
         }
     }
 }
