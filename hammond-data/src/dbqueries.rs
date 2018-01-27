@@ -1,8 +1,11 @@
 //! Random CRUD helper functions.
 
 use chrono::prelude::*;
-use diesel;
 use diesel::prelude::*;
+
+use diesel;
+use diesel::dsl::exists;
+use diesel::select;
 
 use database::connection;
 use errors::*;
@@ -266,9 +269,18 @@ fn delete_podcast_episodes(con: &SqliteConnection, parent_id: i32) -> QueryResul
     diesel::delete(episode.filter(podcast_id.eq(parent_id))).execute(con)
 }
 
+pub fn source_exists(url: &str) -> Result<bool> {
+    use schema::source::dsl::*;
+
+    let db = connection();
+    let con = db.get()?;
+
+    select(exists(source.filter(uri.eq(url))))
+        .get_result(&con)
+        .map_err(From::from)
+}
+
 pub(crate) fn podcast_exists(source_id_: i32) -> Result<bool> {
-    use diesel::dsl::exists;
-    use diesel::select;
     use schema::podcast::dsl::*;
 
     let db = connection();
@@ -282,8 +294,6 @@ pub(crate) fn podcast_exists(source_id_: i32) -> Result<bool> {
 #[cfg_attr(rustfmt, rustfmt_skip)]
 pub(crate) fn episode_exists(title_: &str, podcast_id_: i32) -> Result<bool> {
     use schema::episode::dsl::*;
-    use diesel::select;
-    use diesel::dsl::exists;
 
     let db = connection();
     let con = db.get()?;
