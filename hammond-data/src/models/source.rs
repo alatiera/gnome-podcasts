@@ -149,7 +149,7 @@ impl Source {
     pub fn from_url(uri: &str) -> Result<Source> {
         let url = Url::parse(&uri)?;
 
-        NewSource::new(&url).into_source()
+        NewSource::new(&url).to_source()
     }
 
     /// `Feed` constructor.

@@ -46,7 +46,7 @@ impl NewSource {
     }
 
     // Look out for when tryinto lands into stable.
-    pub(crate) fn into_source(self) -> Result<Source> {
+    pub(crate) fn to_source(&self) -> Result<Source> {
         self.insert_or_ignore()?;
         dbqueries::get_source_from_uri(&self.uri)
     }
