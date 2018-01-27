@@ -10,6 +10,7 @@ use hyper::client::HttpConnector;
 use hyper_tls::HttpsConnector;
 use tokio_core::reactor::Core;
 
+use num_cpus;
 use rss;
 
 use Source;
@@ -78,8 +79,7 @@ pub fn run(sources: Vec<Source>, ignore_etags: bool) -> Result<()> {
     let mut core = Core::new()?;
     let handle = core.handle();
     let client = Client::configure()
-        // FIXME: numcpus instead of 4
-        .connector(HttpsConnector::new(4, &handle)?)
+        .connector(HttpsConnector::new(num_cpus::get(), &handle)?)
         .build(&handle);
 
     pipeline(sources, ignore_etags, &mut core, pool, client)
