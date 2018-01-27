@@ -136,7 +136,7 @@ pub fn get_download_folder(pd_title: &str) -> Result<String> {
 
 /// Removes all the entries associated with the given show from the database,
 /// and deletes all of the downloaded content.
-/// TODO: Write Tests
+// TODO: Write Tests
 pub fn delete_show(pd: &Podcast) -> Result<()> {
     dbqueries::remove_feed(pd)?;
     info!("{} was removed succesfully.", pd.title());

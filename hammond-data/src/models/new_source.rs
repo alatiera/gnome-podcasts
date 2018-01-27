@@ -2,11 +2,11 @@
 
 use diesel;
 use diesel::prelude::*;
+use url::Url;
 
 use database::connection;
 use dbqueries;
 // use models::{Insert, Update};
-use models::Insert;
 use models::Source;
 use schema::source;
 
@@ -24,30 +24,30 @@ pub(crate) struct NewSource {
     http_etag: Option<String>,
 }
 
-impl Insert for NewSource {
-    fn insert(&self) -> Result<()> {
-        use schema::source::dsl::*;
-        let db = connection();
-        let con = db.get()?;
-
-        // FIXME: Insert or ignore
-        let _ = diesel::insert_into(source).values(self).execute(&con);
-        Ok(())
-    }
-}
-
 impl NewSource {
-    pub(crate) fn new(uri: &str) -> NewSource {
+    pub(crate) fn new(uri: &Url) -> NewSource {
         NewSource {
-            uri: uri.trim().to_string(),
+            uri: uri.to_string(),
             last_modified: None,
             http_etag: None,
         }
     }
 
+    pub(crate) fn insert_or_ignore(&self) -> Result<()> {
+        use schema::source::dsl::*;
+        let db = connection();
+        let con = db.get()?;
+
+        diesel::insert_or_ignore_into(source)
+            .values(self)
+            .execute(&con)
+            .map(|_| ())
+            .map_err(From::from)
+    }
+
     // Look out for when tryinto lands into stable.
     pub(crate) fn into_source(self) -> Result<Source> {
-        self.insert()?;
+        self.insert_or_ignore()?;
         dbqueries::get_source_from_uri(&self.uri)
     }
 }

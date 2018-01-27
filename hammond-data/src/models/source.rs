@@ -1,5 +1,6 @@
 use diesel::SaveChangesDsl;
 use rss::Channel;
+use url::Url;
 
 use hyper;
 use hyper::{Client, Method, Request, Response, StatusCode, Uri};
@@ -146,7 +147,9 @@ impl Source {
     ///
     /// This only indexes the `Source` struct, not the Podcast Feed.
     pub fn from_url(uri: &str) -> Result<Source> {
-        NewSource::new(uri).into_source()
+        let url = Url::parse(&uri)?;
+
+        NewSource::new(&url).into_source()
     }
 
     /// `Feed` constructor.
