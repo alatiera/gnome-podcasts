@@ -19,6 +19,7 @@ extern crate log;
 extern crate loggerv;
 extern crate open;
 extern crate send_cell;
+extern crate url;
 // extern crate rayon;
 
 // use rayon::prelude::*;

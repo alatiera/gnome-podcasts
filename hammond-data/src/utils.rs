@@ -16,12 +16,12 @@ use std::path::Path;
 
 /// Scan downloaded `episode` entries that might have broken `local_uri`s and set them to `None`.
 fn download_checker() -> Result<()> {
-    let episodes = dbqueries::get_downloaded_episodes()?;
+    let mut episodes = dbqueries::get_downloaded_episodes()?;
 
     episodes
-        .into_par_iter()
+        .par_iter_mut()
         .filter(|ep| !Path::new(ep.local_uri().unwrap()).exists())
-        .for_each(|mut ep| {
+        .for_each(|ep| {
             ep.set_local_uri(None);
             if let Err(err) = ep.save() {
                 error!("Error while trying to update episode: {:#?}", ep);

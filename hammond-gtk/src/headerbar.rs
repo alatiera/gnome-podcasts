@@ -2,6 +2,7 @@ use gtk;
 use gtk::prelude::*;
 
 use hammond_data::Source;
+use url::Url;
 
 use std::sync::Arc;
 use std::sync::mpsc::Sender;
@@ -63,11 +64,12 @@ impl Header {
         let add_popover: gtk::Popover = builder.get_object("add_popover").unwrap();
         let new_url: gtk::Entry = builder.get_object("new_url").unwrap();
         let add_button: gtk::Button = builder.get_object("add_button").unwrap();
+        let result_label: gtk::Label = builder.get_object("result_label").unwrap();
         self.switch.set_stack(&content.get_stack());
 
-        new_url.connect_changed(move |url| {
-            println!("{:?}", url.get_text());
-        });
+        new_url.connect_changed(clone!(add_button => move |url| {
+            on_url_change(url, &result_label, &add_button);
+        }));
 
         add_button.connect_clicked(clone!(add_popover, new_url, sender => move |_| {
             on_add_bttn_clicked(&new_url, sender.clone());
@@ -137,5 +139,26 @@ fn on_add_bttn_clicked(entry: &gtk::Entry, sender: Sender<Action>) {
     } else {
         error!("Something went wrong.");
         error!("Error: {:?}", source.unwrap_err());
+    }
+}
+
+fn on_url_change(entry: &gtk::Entry, result: &gtk::Label, add_button: &gtk::Button) {
+    let uri = entry.get_text().unwrap();
+    debug!("Url: {}", uri);
+
+    let url = Url::parse(&uri);
+    match url {
+        // TODO: Check if the url exists
+        Ok(_u) => {
+            add_button.set_sensitive(true);
+            result.hide();
+        }
+        // TODO: refactor to avoid duplication
+        Err(err) => {
+            add_button.set_sensitive(false);
+            result.set_label("Invalid url.");
+            result.show();
+            error!("Error: {}", err);
+        }
     }
 }

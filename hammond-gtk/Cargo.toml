@@ -19,6 +19,7 @@ loggerv = "0.7.0"
 open = "1.2.1"
 rayon = "0.9.0"
 send-cell = "0.1.2"
+url = "1.6.0"
 
 [dependencies.gtk]
 features = ["v3_22"]
