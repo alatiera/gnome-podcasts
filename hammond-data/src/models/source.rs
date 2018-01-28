@@ -16,7 +16,7 @@ use futures_cpupool::CpuPool;
 use database::connection;
 use errors::*;
 use feed::{Feed, FeedBuilder};
-use models::NewSource;
+use models::{NewSource, Save};
 use schema::source;
 
 use std::str::FromStr;
@@ -31,6 +31,16 @@ pub struct Source {
     uri: String,
     last_modified: Option<String>,
     http_etag: Option<String>,
+}
+
+impl Save<Source> for Source {
+    /// Helper method to easily save/"sync" current state of self to the Database.
+    fn save(&self) -> Result<Source> {
+        let db = connection();
+        let con = db.get()?;
+
+        self.save_changes::<Source>(&con).map_err(From::from)
+    }
 }
 
 impl Source {
@@ -72,14 +82,6 @@ impl Source {
     /// Set `http_etag` value.
     pub fn set_http_etag(&mut self, value: Option<&str>) {
         self.http_etag = value.map(|x| x.to_string());
-    }
-
-    /// Helper method to easily save/"sync" current state of self to the Database.
-    pub fn save(&self) -> Result<Source> {
-        let db = connection();
-        let con = db.get()?;
-
-        self.save_changes::<Source>(&con).map_err(From::from)
     }
 
     /// Extract Etag and LastModifier from res, and update self and the

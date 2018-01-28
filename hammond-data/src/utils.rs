@@ -8,7 +8,7 @@ use url::{Position, Url};
 
 use dbqueries;
 use errors::*;
-use models::{EpisodeCleanerQuery, Podcast};
+use models::{EpisodeCleanerQuery, Podcast, Save};
 use xdg_dirs::DL_DIR;
 
 use std::fs;

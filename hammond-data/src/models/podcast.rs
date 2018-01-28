@@ -2,7 +2,7 @@ use diesel::SaveChangesDsl;
 
 use database::connection;
 use errors::*;
-use models::Source;
+use models::{Save, Source};
 use schema::podcast;
 
 #[derive(Queryable, Identifiable, AsChangeset, Associations, PartialEq)]
@@ -21,6 +21,16 @@ pub struct Podcast {
     archive: bool,
     always_dl: bool,
     source_id: i32,
+}
+
+impl Save<Podcast> for Podcast {
+    /// Helper method to easily save/"sync" current state of self to the Database.
+    fn save(&self) -> Result<Podcast> {
+        let db = connection();
+        let tempdb = db.get()?;
+
+        self.save_changes::<Podcast>(&*tempdb).map_err(From::from)
+    }
 }
 
 impl Podcast {
@@ -106,14 +116,6 @@ impl Podcast {
     /// `Source` table foreign key.
     pub fn source_id(&self) -> i32 {
         self.source_id
-    }
-
-    /// Helper method to easily save/"sync" current state of self to the Database.
-    pub fn save(&self) -> Result<Podcast> {
-        let db = connection();
-        let tempdb = db.get()?;
-
-        self.save_changes::<Podcast>(&*tempdb).map_err(From::from)
     }
 }
 

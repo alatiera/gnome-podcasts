@@ -157,7 +157,7 @@ mod tests {
     use rss::Channel;
 
     use database::truncate_db;
-    use models::NewPodcastBuilder;
+    use models::{NewPodcastBuilder, Save};
 
     use std::fs::File;
     use std::io::BufReader;

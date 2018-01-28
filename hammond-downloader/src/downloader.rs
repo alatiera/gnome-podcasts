@@ -11,7 +11,7 @@ use std::path::Path;
 use std::sync::{Arc, Mutex};
 
 use errors::*;
-use hammond_data::{EpisodeWidgetQuery, PodcastCoverQuery};
+use hammond_data::{EpisodeWidgetQuery, PodcastCoverQuery, Save};
 use hammond_data::xdg_dirs::HAMMOND_CACHE;
 
 // TODO: Replace path that are of type &str with std::path.

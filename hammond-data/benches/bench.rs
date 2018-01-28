@@ -21,6 +21,7 @@ use tokio_core::reactor::Core;
 use hammond_data::FeedBuilder;
 use hammond_data::Source;
 use hammond_data::database::truncate_db;
+use hammond_data::pipeline;
 // use hammond_data::errors::*;
 
 use std::io::BufReader;
@@ -67,7 +68,7 @@ fn bench_pipeline(c: &mut Criterion) {
     c.bench_function("pipline", |b| {
         b.iter(|| {
             let sources = hammond_data::dbqueries::get_sources().unwrap();
-            hammond_data::pipeline::pipeline(sources, true).unwrap();
+            pipeline::run(sources, true).unwrap();
         })
     });
     truncate_db().unwrap();

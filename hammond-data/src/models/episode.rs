@@ -5,7 +5,7 @@ use diesel::prelude::*;
 
 use database::connection;
 use errors::*;
-use models::Podcast;
+use models::{Podcast, Save};
 use schema::episode;
 
 #[derive(Queryable, Identifiable, AsChangeset, Associations, PartialEq)]
@@ -29,6 +29,16 @@ pub struct Episode {
     favorite: bool,
     archive: bool,
     podcast_id: i32,
+}
+
+impl Save<Episode> for Episode {
+    /// Helper method to easily save/"sync" current state of self to the Database.
+    fn save(&self) -> Result<Episode> {
+        let db = connection();
+        let tempdb = db.get()?;
+
+        self.save_changes::<Episode>(&*tempdb).map_err(From::from)
+    }
 }
 
 impl Episode {
@@ -175,14 +185,6 @@ impl Episode {
         self.set_played(Some(epoch));
         self.save().map(|_| ())
     }
-
-    /// Helper method to easily save/"sync" current state of self to the Database.
-    pub fn save(&self) -> Result<Episode> {
-        let db = connection();
-        let tempdb = db.get()?;
-
-        self.save_changes::<Episode>(&*tempdb).map_err(From::from)
-    }
 }
 
 #[derive(Queryable, AsChangeset, PartialEq)]
@@ -218,6 +220,21 @@ impl From<Episode> for EpisodeWidgetQuery {
             played: e.played,
             podcast_id: e.podcast_id,
         }
+    }
+}
+
+impl Save<usize> for EpisodeWidgetQuery {
+    /// Helper method to easily save/"sync" current state of self to the Database.
+    fn save(&self) -> Result<usize> {
+        use schema::episode::dsl::*;
+
+        let db = connection();
+        let tempdb = db.get()?;
+
+        diesel::update(episode.filter(rowid.eq(self.rowid)))
+            .set(self)
+            .execute(&*tempdb)
+            .map_err(From::from)
     }
 }
 
@@ -330,19 +347,6 @@ impl EpisodeWidgetQuery {
         self.set_played(Some(epoch));
         self.save().map(|_| ())
     }
-
-    /// Helper method to easily save/"sync" current state of self to the Database.
-    pub fn save(&self) -> Result<usize> {
-        use schema::episode::dsl::*;
-
-        let db = connection();
-        let tempdb = db.get()?;
-
-        diesel::update(episode.filter(rowid.eq(self.rowid)))
-            .set(self)
-            .execute(&*tempdb)
-            .map_err(From::from)
-    }
 }
 
 #[derive(Queryable, AsChangeset, PartialEq)]
@@ -355,6 +359,21 @@ pub struct EpisodeCleanerQuery {
     rowid: i32,
     local_uri: Option<String>,
     played: Option<i32>,
+}
+
+impl Save<usize> for EpisodeCleanerQuery {
+    /// Helper method to easily save/"sync" current state of self to the Database.
+    fn save(&self) -> Result<usize> {
+        use schema::episode::dsl::*;
+
+        let db = connection();
+        let tempdb = db.get()?;
+
+        diesel::update(episode.filter(rowid.eq(self.rowid)))
+            .set(self)
+            .execute(&*tempdb)
+            .map_err(From::from)
+    }
 }
 
 impl From<Episode> for EpisodeCleanerQuery {
@@ -396,19 +415,6 @@ impl EpisodeCleanerQuery {
     /// Set the `played` value.
     pub fn set_played(&mut self, value: Option<i32>) {
         self.played = value;
-    }
-
-    /// Helper method to easily save/"sync" current state of self to the Database.
-    pub fn save(&self) -> Result<usize> {
-        use schema::episode::dsl::*;
-
-        let db = connection();
-        let tempdb = db.get()?;
-
-        diesel::update(episode.filter(rowid.eq(self.rowid())))
-            .set(self)
-            .execute(&*tempdb)
-            .map_err(From::from)
     }
 }
 

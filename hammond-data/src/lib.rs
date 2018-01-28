@@ -65,6 +65,7 @@ mod schema;
 
 pub use feed::{Feed, FeedBuilder};
 pub use models::{Episode, EpisodeWidgetQuery, Podcast, PodcastCoverQuery, Source};
+pub use models::Save;
 
 /// [XDG Base Direcotory](https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html) Paths.
 #[allow(missing_debug_implementations)]

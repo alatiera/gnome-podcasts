@@ -43,3 +43,9 @@ pub trait Update {
 pub trait Index: Insert + Update {
     fn index(&self) -> Result<()>;
 }
+
+/// FIXME: DOCS
+pub trait Save<T> {
+    /// Helper method to easily save/"sync" current state of a diesel model to the Database.
+    fn save(&self) -> Result<T>;
+}
