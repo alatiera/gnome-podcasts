@@ -26,6 +26,7 @@ cargo_script = find_program('scripts/cargo.sh')
 
 cargo_release = custom_target('cargo-build',
                         build_by_default: true,
+                        build_always: true,
                         output: ['hammond'],
                         install: true,
                         install_dir: hammond_bindir,
