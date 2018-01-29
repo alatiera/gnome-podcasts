@@ -27,7 +27,10 @@ pub fn get_podcasts() -> Result<Vec<Podcast>> {
     let db = connection();
     let con = db.get()?;
 
-    podcast.load::<Podcast>(&con).map_err(From::from)
+    podcast
+        .order(title.asc())
+        .load::<Podcast>(&con)
+        .map_err(From::from)
 }
 
 pub fn get_episodes() -> Result<Vec<Episode>> {
