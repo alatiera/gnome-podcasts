@@ -1,5 +1,4 @@
-use gio;
-use gio::{ApplicationExt, ApplicationExtManual};
+use gio::{ApplicationExt, ApplicationExtManual, ApplicationFlags};
 use glib;
 use gtk;
 use gtk::prelude::*;
@@ -46,9 +45,8 @@ pub struct App {
 
 impl App {
     pub fn new() -> App {
-        let application =
-            gtk::Application::new("org.gnome.Hammond", gio::ApplicationFlags::empty())
-                .expect("Initialization failed...");
+        let application = gtk::Application::new("org.gnome.Hammond", ApplicationFlags::empty())
+            .expect("Initialization failed...");
 
         // Weird magic I copy-pasted that sets the Application Name in the Shell.
         glib::set_application_name("Hammond");
@@ -70,10 +68,8 @@ impl App {
         let content = Arc::new(Content::new(sender.clone()));
 
         // Create the headerbar
-        let header = Arc::new(Header::new(content.clone(), sender.clone()));
+        let header = Arc::new(Header::new(content.clone(), &window, sender.clone()));
 
-        // Add the Headerbar to the window.
-        window.set_titlebar(&header.container);
         // Add the content main stack to the window.
         window.add(&content.get_stack());
 
@@ -98,7 +94,6 @@ impl App {
         let sender = self.sender.clone();
         // Auto-updater, runs every hour.
         // TODO: expose the interval in which it run to a user setting.
-        // TODO: show notifications.
         gtk::timeout_add_seconds(3600, move || {
             utils::refresh_feed(None, sender.clone());
             glib::Continue(true)

@@ -332,9 +332,8 @@ Tobias Bernard
           </packing>
         </child>
         <child>
-          <object class="GtkModelButton">
+          <object class="GtkModelButton" id="about_button">
             <property name="visible">True</property>
-            <property name="sensitive">False</property>
             <property name="can_focus">True</property>
             <property name="receives_default">False</property>
             <property name="text" translatable="yes">About</property>
