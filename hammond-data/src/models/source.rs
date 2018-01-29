@@ -149,7 +149,7 @@ impl Source {
     ///
     /// This only indexes the `Source` struct, not the Podcast Feed.
     pub fn from_url(uri: &str) -> Result<Source> {
-        let url = Url::parse(&uri)?;
+        let url = Url::parse(uri)?;
 
         NewSource::new(&url).to_source()
     }

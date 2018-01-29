@@ -1,3 +1,5 @@
+#![cfg_attr(feature = "cargo-clippy", allow(type_complexity))]
+
 use gdk_pixbuf::Pixbuf;
 use send_cell::SendCell;
 

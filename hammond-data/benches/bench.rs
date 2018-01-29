@@ -89,7 +89,7 @@ fn bench_index_large_feed(c: &mut Criterion) {
                 .source_id(s.id())
                 .build()
                 .unwrap();
-            let _foo = core.run(feed.index()).unwrap();
+            core.run(feed.index()).unwrap();
         })
     });
     truncate_db().unwrap();
@@ -110,7 +110,7 @@ fn bench_index_small_feed(c: &mut Criterion) {
                 .source_id(s.id())
                 .build()
                 .unwrap();
-            let _foo = core.run(feed.index()).unwrap();
+            core.run(feed.index()).unwrap();
         })
     });
     truncate_db().unwrap();

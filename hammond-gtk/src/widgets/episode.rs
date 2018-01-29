@@ -288,6 +288,7 @@ fn on_play_bttn_clicked(episode_id: i32) {
 }
 
 // Setup a callback that will update the progress bar.
+#[cfg_attr(feature = "cargo-clippy", allow(if_same_then_else))]
 fn update_progressbar_callback(
     prog: Arc<Mutex<manager::Progress>>,
     episode_rowid: i32,

@@ -49,7 +49,7 @@ pub fn pipeline<S: IntoIterator<Item = Source>>(
     sources: S,
     ignore_etags: bool,
     tokio_core: &mut Core,
-    pool: CpuPool,
+    pool: &CpuPool,
     client: Client<HttpsConnector<HttpConnector>>,
 ) -> Result<()> {
     let list: Vec<_> = sources
@@ -69,7 +69,7 @@ pub fn pipeline<S: IntoIterator<Item = Source>>(
     Ok(())
 }
 
-/// Creates a tokio-core, a  cpu_pool, and a hyper::Client and runs the pipeline.
+/// Creates a tokio `reactor::Core`, a `CpuPool`, and a `hyper::Client` and runs the pipeline.
 pub fn run(sources: Vec<Source>, ignore_etags: bool) -> Result<()> {
     if sources.is_empty() {
         return Ok(());
@@ -82,7 +82,7 @@ pub fn run(sources: Vec<Source>, ignore_etags: bool) -> Result<()> {
         .connector(HttpsConnector::new(num_cpus::get(), &handle)?)
         .build(&handle);
 
-    pipeline(sources, ignore_etags, &mut core, pool, client)
+    pipeline(sources, ignore_etags, &mut core, &pool, client)
 }
 
 fn determine_ep_state(ep: NewEpisodeMinimal, item: &rss::Item) -> Result<IndexState<NewEpisode>> {
@@ -114,7 +114,8 @@ pub(crate) fn glue_async<'a>(
 
 // Weird magic from #rust irc channel
 // kudos to remexre
-/// docs
+/// FIXME: Docs
+#[cfg_attr(feature = "cargo-clippy", allow(type_complexity))]
 pub fn collect_futures<F>(
     futures: Vec<F>,
 ) -> Box<Future<Item = Vec<std::result::Result<F::Item, F::Error>>, Error = Error>>
