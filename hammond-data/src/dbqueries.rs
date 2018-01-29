@@ -16,7 +16,10 @@ pub fn get_sources() -> Result<Vec<Source>> {
     let db = connection();
     let con = db.get()?;
 
-    source.load::<Source>(&con).map_err(From::from)
+    source
+        .order((http_etag.asc(), last_modified.asc()))
+        .load::<Source>(&con)
+        .map_err(From::from)
 }
 
 pub fn get_podcasts() -> Result<Vec<Podcast>> {
