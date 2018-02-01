@@ -110,6 +110,7 @@ impl Source {
     // 408: Timeout
     // 410: Feed deleted
     fn match_status(mut self, res: Response) -> Result<(Self, Response)> {
+        self.update_etag(&res)?;
         let code = res.status();
         match code {
             StatusCode::NotModified => bail!("304: skipping.."),
@@ -135,6 +136,8 @@ impl Source {
 
         if let Some(url) = headers.get::<Location>() {
             self.set_uri(url.to_string());
+            self.http_etag = None;
+            self.last_modified = None;
             self.save()?;
             info!("Feed url was updated succesfully.");
             // TODO: Refresh in place instead of next time, Not a priority.
@@ -169,11 +172,7 @@ impl Source {
     ) -> Box<Future<Item = Feed, Error = Error>> {
         let id = self.id();
         let feed = self.request_constructor(client, ignore_etags)
-            .and_then(move |(mut source, res)| {
-                source.update_etag(&res)?;
-                Ok(res)
-            })
-            .and_then(move |res| response_to_channel(res, pool))
+            .and_then(move |(_, res)| response_to_channel(res, pool))
             .and_then(move |chan| {
                 FeedBuilder::default()
                     .channel(chan)
@@ -213,6 +212,7 @@ impl Source {
         let work = client
             .request(req)
             .map_err(From::from)
+            // TODO: tail recursion loop that would follow redirects directly
             .and_then(move |res| self.match_status(res));
         Box::new(work)
     }
