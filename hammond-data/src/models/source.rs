@@ -2,7 +2,6 @@ use diesel::SaveChangesDsl;
 use rss::Channel;
 use url::Url;
 
-use hyper;
 use hyper::{Client, Method, Request, Response, StatusCode, Uri};
 use hyper::client::HttpConnector;
 use hyper::header::{ETag, EntityTag, HttpDate, IfModifiedSince, IfNoneMatch, LastModified,
@@ -110,13 +109,13 @@ impl Source {
     // 403: Forbidden
     // 408: Timeout
     // 410: Feed deleted
-    fn match_status(&mut self, res: &Response) -> Result<()> {
+    fn match_status(mut self, res: Response) -> Result<(Self, Response)> {
         let code = res.status();
         match code {
             StatusCode::NotModified => bail!("304: skipping.."),
             StatusCode::MovedPermanently => {
                 error!("Feed was moved permanently.");
-                self.handle_301(res)?;
+                self.handle_301(&res)?;
                 bail!("301: Feed was moved permanently.")
             }
             StatusCode::TemporaryRedirect => debug!("307: Temporary Redirect."),
@@ -128,7 +127,7 @@ impl Source {
             StatusCode::Gone => bail!("410: Feed was deleted."),
             _ => info!("HTTP StatusCode: {}", code),
         };
-        Ok(())
+        Ok((self, res))
     }
 
     fn handle_301(&mut self, res: &Response) -> Result<()> {
@@ -163,17 +162,15 @@ impl Source {
     /// Consumes `self` and Returns the corresponding `Feed` Object.
     // TODO: Refactor into TryInto once it lands on stable.
     pub fn into_feed(
-        mut self,
+        self,
         client: &Client<HttpsConnector<HttpConnector>>,
         pool: CpuPool,
         ignore_etags: bool,
     ) -> Box<Future<Item = Feed, Error = Error>> {
         let id = self.id();
         let feed = self.request_constructor(client, ignore_etags)
-            .map_err(From::from)
-            .and_then(move |res| {
-                self.update_etag(&res)?;
-                self.match_status(&res)?;
+            .and_then(move |(mut source, res)| {
+                source.update_etag(&res)?;
                 Ok(res)
             })
             .and_then(move |res| response_to_channel(res, pool))
@@ -191,10 +188,10 @@ impl Source {
     // TODO: make ignore_etags an Enum for better ergonomics.
     // #bools_are_just_2variant_enmus
     fn request_constructor(
-        &self,
+        self,
         client: &Client<HttpsConnector<HttpConnector>>,
         ignore_etags: bool,
-    ) -> Box<Future<Item = Response, Error = hyper::Error>> {
+    ) -> Box<Future<Item = (Self, Response), Error = Error>> {
         // FIXME: remove unwrap somehow
         let uri = Uri::from_str(self.uri()).unwrap();
         let mut req = Request::new(Method::Get, uri);
@@ -213,7 +210,10 @@ impl Source {
             }
         }
 
-        let work = client.request(req);
+        let work = client
+            .request(req)
+            .map_err(From::from)
+            .and_then(move |res| self.match_status(res));
         Box::new(work)
     }
 }
