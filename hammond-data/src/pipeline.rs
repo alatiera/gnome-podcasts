@@ -85,6 +85,23 @@ pub fn run(sources: Vec<Source>, ignore_etags: bool) -> Result<()> {
     pipeline(sources, ignore_etags, &mut core, &pool, client)
 }
 
+/// Docs
+pub fn index_single_source(s: Source, ignore_etags: bool) -> Result<()> {
+    let pool = CpuPool::new_num_cpus();
+    let mut core = Core::new()?;
+    let handle = core.handle();
+
+    let client = Client::configure()
+        .connector(HttpsConnector::new(num_cpus::get(), &handle)?)
+        .build(&handle);
+
+    let work = s.into_feed(&client, pool.clone(), ignore_etags)
+        .and_then(clone!(pool => move |feed| pool.clone().spawn(feed.index())))
+        .map(|_| ());
+
+    core.run(work)
+}
+
 fn determine_ep_state(ep: NewEpisodeMinimal, item: &rss::Item) -> Result<IndexState<NewEpisode>> {
     // Check if feed exists
     let exists = dbqueries::episode_exists(ep.title(), ep.podcast_id())?;

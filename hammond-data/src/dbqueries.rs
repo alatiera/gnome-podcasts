@@ -208,6 +208,17 @@ pub fn get_source_from_uri(uri_: &str) -> Result<Source> {
         .map_err(From::from)
 }
 
+pub fn get_source_from_id(id_: i32) -> Result<Source> {
+    use schema::source::dsl::*;
+    let db = connection();
+    let con = db.get()?;
+
+    source
+        .filter(id.eq(id_))
+        .get_result::<Source>(&con)
+        .map_err(From::from)
+}
+
 pub fn get_podcast_from_source_id(sid: i32) -> Result<Podcast> {
     use schema::podcast::dsl::*;
     let db = connection();
