@@ -39,7 +39,8 @@ fn download_into(
 ) -> Result<String> {
     info!("GET request to: {}", url);
     // Haven't included the loop check as
-    // Steal the Stars 
+    // Steal the Stars would tigger it as
+    // it has a loop back before giving correct url
     let policy = RedirectPolicy::custom(|attempt| {
         info!("Redirect Attempt URL: {:?}", attempt.url());
         if attempt.previous().len() > 10 {
