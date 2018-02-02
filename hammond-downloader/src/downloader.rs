@@ -2,6 +2,7 @@ use glob::glob;
 use hyper::header::*;
 use mime_guess;
 use reqwest;
+use reqwest::RedirectPolicy;
 use tempdir::TempDir;
 
 use std::fs;
@@ -37,7 +38,18 @@ fn download_into(
     progress: Option<Arc<Mutex<DownloadProgress>>>,
 ) -> Result<String> {
     info!("GET request to: {}", url);
-    let client = reqwest::Client::builder().referer(false).build()?;
+    // Haven't included the loop check as
+    // Steal the Stars 
+    let policy = RedirectPolicy::custom(|attempt| {
+        info!("Redirect Attempt URL: {:?}", attempt.url());
+        if attempt.previous().len() > 10 {
+            attempt.too_many_redirects()
+        } else {
+            attempt.follow()
+        }
+    });
+    
+    let client = reqwest::Client::builder().redirect(policy).referer(false).build()?;
     let mut resp = client.get(url).send()?;
     info!("Status Resp: {}", resp.status());
 
