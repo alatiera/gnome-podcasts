@@ -43,8 +43,10 @@ fn download_into(
     // it has a loop back before giving correct url
     let policy = RedirectPolicy::custom(|attempt| {
         info!("Redirect Attempt URL: {:?}", attempt.url());
-        if attempt.previous().len() > 10 {
+        if attempt.previous().len() > 5 {
             attempt.too_many_redirects()
+        } else if attempt.url() == attempt.previous().last().unwrap() {
+            attempt.loop_detected()
         } else {
             attempt.follow()
         }
