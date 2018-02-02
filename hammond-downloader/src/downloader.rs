@@ -51,8 +51,11 @@ fn download_into(
             attempt.follow()
         }
     });
-    
-    let client = reqwest::Client::builder().redirect(policy).referer(false).build()?;
+
+    let client = reqwest::Client::builder()
+        .redirect(policy)
+        .referer(false)
+        .build()?;
     let mut resp = client.get(url).send()?;
     info!("Status Resp: {}", resp.status());
 
