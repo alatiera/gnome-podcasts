@@ -45,7 +45,7 @@ fn download_into(
         info!("Redirect Attempt URL: {:?}", attempt.url());
         if attempt.previous().len() > 5 {
             attempt.too_many_redirects()
-        } else if attempt.url() == attempt.previous().last().unwrap() {
+        } else if Some(attempt.url()) == attempt.previous().last() {
             attempt.loop_detected()
         } else {
             attempt.follow()
