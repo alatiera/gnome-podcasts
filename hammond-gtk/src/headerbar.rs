@@ -2,86 +2,219 @@ use gtk;
 use gtk::prelude::*;
 
 use hammond_data::Source;
-use hammond_data::utils::url_cleaner;
+use hammond_data::dbqueries;
+use url::Url;
 
-use utils;
-use content;
+use std::sync::Arc;
+use std::sync::mpsc::Sender;
 
-#[derive(Debug)]
+use app::Action;
+use content::Content;
+
+#[derive(Debug, Clone)]
 pub struct Header {
-    pub container: gtk::HeaderBar,
-    home: gtk::Button,
-    refresh: gtk::Button,
+    container: gtk::HeaderBar,
     add_toggle: gtk::MenuButton,
+    switch: gtk::StackSwitcher,
+    back_button: gtk::Button,
+    show_title: gtk::Label,
+    about_button: gtk::ModelButton,
+    update_button: gtk::ModelButton,
+    update_box: gtk::Box,
+    update_label: gtk::Label,
+    update_spinner: gtk::Spinner,
 }
 
-impl Header {
-    pub fn new() -> Header {
+impl Default for Header {
+    fn default() -> Header {
         let builder = gtk::Builder::new_from_resource("/org/gnome/hammond/gtk/headerbar.ui");
 
-        let header: gtk::HeaderBar = builder.get_object("headerbar1").unwrap();
-        let home: gtk::Button = builder.get_object("homebutton").unwrap();
-        let refresh: gtk::Button = builder.get_object("refbutton").unwrap();
-        let add_toggle: gtk::MenuButton = builder.get_object("add-toggle-button").unwrap();
+        let header: gtk::HeaderBar = builder.get_object("headerbar").unwrap();
+        let add_toggle: gtk::MenuButton = builder.get_object("add_toggle").unwrap();
+        let switch: gtk::StackSwitcher = builder.get_object("switch").unwrap();
+        let back_button: gtk::Button = builder.get_object("back_button").unwrap();
+        let show_title: gtk::Label = builder.get_object("show_title").unwrap();
+        let update_button: gtk::ModelButton = builder.get_object("update_button").unwrap();
+        let update_box: gtk::Box = builder.get_object("update_notification").unwrap();
+        let update_label: gtk::Label = builder.get_object("update_label").unwrap();
+        let update_spinner: gtk::Spinner = builder.get_object("update_spinner").unwrap();
+        let about_button: gtk::ModelButton = builder.get_object("about_button").unwrap();
 
         Header {
             container: header,
-            home,
-            refresh,
             add_toggle,
+            switch,
+            back_button,
+            show_title,
+            about_button,
+            update_button,
+            update_box,
+            update_label,
+            update_spinner,
         }
-    }
-
-    pub fn new_initialized(stack: &gtk::Stack) -> Header {
-        let header = Header::new();
-        header.init(stack);
-        header
-    }
-
-    fn init(&self, stack: &gtk::Stack) {
-        let builder = gtk::Builder::new_from_resource("/org/gnome/hammond/gtk/headerbar.ui");
-
-        let add_popover: gtk::Popover = builder.get_object("add-popover").unwrap();
-        let new_url: gtk::Entry = builder.get_object("new-url").unwrap();
-        let add_button: gtk::Button = builder.get_object("add-button").unwrap();
-
-        new_url.connect_changed(move |url| {
-            println!("{:?}", url.get_text());
-        });
-
-        add_button.connect_clicked(clone!(stack, add_popover, new_url => move |_| {
-            on_add_bttn_clicked(&stack, &new_url);
-
-            // TODO: lock the button instead of hiding and add notification of feed added.
-            // TODO: map the spinner
-            add_popover.hide();
-        }));
-        self.add_toggle.set_popover(&add_popover);
-
-        // TODO: make it a back arrow button, that will hide when appropriate,
-        // and add a StackSwitcher when more views are added.
-        self.home.connect_clicked(clone!(stack => move |_| {
-            content::on_home_button_activate(&stack);
-        }));
-
-        // FIXME: There appears to be a memmory leak here.
-        self.refresh.connect_clicked(clone!(stack => move |_| {
-            utils::refresh_feed(&stack, None, None);
-        }));
     }
 }
 
-fn on_add_bttn_clicked(stack: &gtk::Stack, entry: &gtk::Entry) {
+impl Header {
+    pub fn new(content: Arc<Content>, window: &gtk::Window, sender: Sender<Action>) -> Header {
+        let h = Header::default();
+        h.init(content, window, sender);
+        h
+    }
+
+    pub fn init(&self, content: Arc<Content>, window: &gtk::Window, sender: Sender<Action>) {
+        let builder = gtk::Builder::new_from_resource("/org/gnome/hammond/gtk/headerbar.ui");
+
+        let add_popover: gtk::Popover = builder.get_object("add_popover").unwrap();
+        let new_url: gtk::Entry = builder.get_object("new_url").unwrap();
+        let add_button: gtk::Button = builder.get_object("add_button").unwrap();
+        let result_label: gtk::Label = builder.get_object("result_label").unwrap();
+        self.switch.set_stack(&content.get_stack());
+
+        new_url.connect_changed(clone!(add_button => move |url| {
+            on_url_change(url, &result_label, &add_button);
+        }));
+
+        add_button.connect_clicked(clone!(add_popover, new_url, sender => move |_| {
+            on_add_bttn_clicked(&new_url, sender.clone());
+            add_popover.hide();
+        }));
+
+        self.add_toggle.set_popover(&add_popover);
+
+        self.update_button.connect_clicked(move |_| {
+            sender.send(Action::UpdateSources(None)).unwrap();
+        });
+
+        self.about_button
+            .connect_clicked(clone!(window => move |_| {
+            about_dialog(&window);
+        }));
+
+        // Add the Headerbar to the window.
+        window.set_titlebar(&self.container);
+
+        let switch = &self.switch;
+        let add_toggle = &self.add_toggle;
+        let show_title = &self.show_title;
+        self.back_button.connect_clicked(
+            clone!(content, switch, add_toggle, show_title => move |back| {
+            switch.show();
+            add_toggle.show();
+            back.hide();
+            show_title.hide();
+            content.get_shows().get_stack().set_visible_child_full("podcasts", gtk::StackTransitionType::SlideRight);
+        }),
+        );
+    }
+
+    pub fn switch_to_back(&self, title: &str) {
+        self.switch.hide();
+        self.add_toggle.hide();
+        self.back_button.show();
+        self.set_show_title(title);
+        self.show_title.show();
+    }
+
+    pub fn switch_to_normal(&self) {
+        self.switch.show();
+        self.add_toggle.show();
+        self.back_button.hide();
+        self.show_title.hide();
+    }
+
+    pub fn set_show_title(&self, title: &str) {
+        self.show_title.set_text(title)
+    }
+
+    pub fn show_update_notification(&self) {
+        self.update_spinner.start();
+        self.update_box.show();
+        self.update_spinner.show();
+        self.update_label.show();
+    }
+
+    pub fn hide_update_notification(&self) {
+        self.update_spinner.stop();
+        self.update_box.hide();
+        self.update_spinner.hide();
+        self.update_label.hide();
+    }
+}
+
+fn on_add_bttn_clicked(entry: &gtk::Entry, sender: Sender<Action>) {
     let url = entry.get_text().unwrap_or_default();
-    let url = url_cleaner(&url);
     let source = Source::from_url(&url);
 
-    if let Ok(s) = source {
-        info!("{:?} feed added", url);
-        // update the db
-        utils::refresh_feed(stack, Some(vec![s]), None);
+    if source.is_ok() {
+        entry.set_text("");
+        sender.send(Action::UpdateSources(source.ok())).unwrap();
     } else {
-        error!("Feed probably already exists.");
+        error!("Something went wrong.");
         error!("Error: {:?}", source.unwrap_err());
     }
+}
+
+fn on_url_change(entry: &gtk::Entry, result: &gtk::Label, add_button: &gtk::Button) {
+    let uri = entry.get_text().unwrap();
+    debug!("Url: {}", uri);
+
+    let url = Url::parse(&uri);
+    // TODO: refactor to avoid duplication
+    match url {
+        Ok(u) => {
+            if !dbqueries::source_exists(u.as_str()).unwrap() {
+                add_button.set_sensitive(true);
+                result.hide();
+                result.set_label("");
+            } else {
+                add_button.set_sensitive(false);
+                result.set_label("Show already exists.");
+                result.show();
+            }
+        }
+        Err(err) => {
+            add_button.set_sensitive(false);
+            if !uri.is_empty() {
+                result.set_label("Invalid url.");
+                result.show();
+                error!("Error: {}", err);
+            } else {
+                result.hide();
+            }
+        }
+    }
+}
+
+// Totally copied it from fractal.
+// https://gitlab.gnome.org/danigm/fractal/blob/503e311e22b9d7540089d735b92af8e8f93560c5/fractal-gtk/src/app.rs#L1883-1912
+fn about_dialog(window: &gtk::Window) {
+    // Feel free to add yourself if you contribured.
+    let authors = &[
+        "Jordan Petridis",
+        "Julian Sparber",
+        "Gabriele Musco",
+        "Constantin Nickel",
+    ];
+
+    let dialog = gtk::AboutDialog::new();
+    // Waiting for a logo.
+    dialog.set_logo_icon_name("org.gnome.Hammond");
+    dialog.set_comments("A Podcast Client for the GNOME Desktop.");
+    dialog.set_copyright("© 2017, 2018 Jordan Petridis");
+    dialog.set_license_type(gtk::License::Gpl30);
+    dialog.set_modal(true);
+    // TODO: make it show it fetches the commit hash from which it was built
+    // and the version number is kept in sync automaticly
+    dialog.set_version("0.3");
+    dialog.set_program_name("Hammond");
+    // TODO: Need a wiki page first.
+    // dialog.set_website("https://wiki.gnome.org/Design/Apps/Potential/Podcasts");
+    // dialog.set_website_label("Learn more about Hammond");
+    dialog.set_transient_for(window);
+
+    dialog.set_artists(&["Tobias Bernard"]);
+    dialog.set_authors(authors);
+
+    dialog.show();
 }

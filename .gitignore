@@ -1,4 +1,4 @@
-/target/
+target/
 **/*.rs.bk
 Cargo.lock
 .vscode
@@ -8,6 +8,6 @@ _build
 vendor/
 .flatpak-builder/
 flatpak-build/
-flatpak-repo/
 repo/
 Makefile
+.criterion

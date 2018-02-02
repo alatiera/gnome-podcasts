@@ -1,21 +1,19 @@
 # Hammond
-## Multithreaded and reliable Gtk+ Podcast client.
-This is a prototype of a podcast client written in Rust.
+
+## A Podcast Client for the GNOME Desktop written in Rust.
 
 [![pipeline status](https://gitlab.gnome.org/alatiera/Hammond/badges/master/pipeline.svg)](https://gitlab.gnome.org/alatiera/Hammond/commits/master)
 
-![podcasts_view](./assets/podcasts_view.png)
-![podcast_widget](./assets/podcast_widget.png)
+### Features
 
-## Getting in Touch
-If you have any questions regarding the
-use or development of Hammond, want to discuss design or simply hang out, please join us in [#hammond on irc.gnome.org.](irc://irc.gnome.org/#hammond)
+* TBA
 
-Sidenote:
-
-There isn't much documentation yet, so you will probably have question about parts of the Code.
+![episdes_view](./assets/episodes_view.png)
+![shows_view](./assets/shows_view.png)
+![show_widget](./assets/show_widget.png)
 
 ## Quick start
+
 The following steps assume you have a working installation of rustc and cargo.
 If you dont take a look at [rustup.rs](rustup.rs)
 
@@ -25,7 +23,22 @@ cd Hammond/
 cargo run -p hammond-gtk --release
 ```
 
+## Broken Feeds
+
+Found a feed that does not work in Hammond?
+Please [open an issue](https://gitlab.gnome.org/alatiera/Hammond/issues/new) and choose the `BrokenFeed` template so we will know and fix it!
+
+## Getting in Touch
+
+If you have any questions regarding the use or development of Hammond,
+want to discuss design or simply hang out, please join us in [#hammond on irc.gnome.org.](irc://irc.gnome.org/#hammond)
+
+Note:
+
+There isn't much documentation yet, so you will probably have question about parts of the Code.
+
 ## Install from soure
+
 ```sh
 git clone https://gitlab.gnome.org/alatiera/hammond.git
 cd Hammond/
@@ -33,31 +46,43 @@ cd Hammond/
 make && sudo make install
 ```
 
-**Additionall:**
+**Additional:**
 
 You can run `sudo make uninstall` for removal
 
 And `make clean` to clean up the enviroment after instalation.
 
 ### Flatpak
-Flatpak instructions... Soon™.
+
+#### Building a Flatpak
+
+Download the `org.gnome.Hammond.json` flatpak manifest from this repo.
+
+```bash
+flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo # Add flathub repo
+flatpak --user install flathub org.freedesktop.Sdk.Extension.rust-stable # Install the required rust-stable extension from flathub
+flatpak-builder --repo=repo hammond org.gnome.Hammond.json --force-clean
+flatpak build-bundle repo hammond org.gnome.Hammond
+```
 
 ## Building
 
-###  Dependancies
+### Dependencies
 
 * Rust stable 1.22 or later.
 * Gtk+ 3.22 or later
 * Meson
 
-**Debian/Ubuntu**:
+**Debian/Ubuntu**
+
 ```sh
 apt-get update -yqq
 apt-get install -yqq --no-install-recommends build-essential
 apt-get install -yqq --no-install-recommends libgtk-3-dev meson
 ```
 
-**Fedora**:
+**Fedora**
+
 ```sh
 dnf install -y gtk3-devel glib2-devel openssl-devel sqlite-devel meson
 ```
@@ -69,14 +94,6 @@ git clone https://gitlab.gnome.org/alatiera/Hammond.git
 cd Hammond/
 cargo build --all
 ```
-
-## Call for designers
-
-Currently there no design plans or mockups. They are highly needed in order to advance the Gtk Client.
-
-There is the will for a complete client re-write if a someone contributes the mockups.
-
-If you happen to be a designer and want to contribute please hope on [#hammond](irc://irc.gnome.org/#hammond) and get in touch with us.
 
 ## Contributing
 
@@ -96,8 +113,8 @@ There are also some minor tasks tagged with `TODO:` and `FIXME:` in the source c
 ```sh
 $ tree -d
 ├── assets              # png's used in the README.md
-├── hammond-data        # Storate related stuff, Sqlite db, XDG setup.
-│   ├── migrations      # Diesel migrations.
+├── hammond-data        # Storate related stuff, SQLite, XDG setup, RSS Parser.
+│   ├── migrations      # Diesel SQL migrations.
 │   │   └── ...
 │   ├── src
 │   └── tests
@@ -108,8 +125,8 @@ $ tree -d
 │   ├── resources       # GResources folder
 │   │   └── gtk         # Contains the glade.ui files.
 │   └── src
-│       ├── views       # Currently only contains the Podcasts_view.
-│       └── widgets     # Contains custom widgets such as Podcast and Episode.
+│       ├── views       # Contains the Empty, Episodes and Shows view.
+│       └── widgets     # Contains custom widgets such as Show and Episode.
 ```
 
 ## A note about the project's name
@@ -120,9 +137,9 @@ It has nothing to do with the horrible headlines on the news.
 
 ## Acknowledgments
 
-Hammond's design is heavily insired by [Gnome-Music](https://wiki.gnome.org/Design/Apps/Music) and [Vocal](http://vocalproject.net/).
+Hammond's design is heavily insired by [GNOME Music](https://wiki.gnome.org/Design/Apps/Music) and [Vocal](http://vocalproject.net/).
 
-We also copied some elements from [Gnome-news](https://wiki.gnome.org/Design/Apps/Potential/News).
+We also copied some elements from [GNOME News](https://wiki.gnome.org/Design/Apps/Potential/News).
 
 And almost the entirety of the build system is copied from the [Fractal](https://gitlab.gnome.org/danigm/fractal) project.
 

@@ -1,269 +1,310 @@
 use gtk;
+use gtk::Cast;
 use gtk::prelude::*;
 
 use hammond_data::Podcast;
 use hammond_data::dbqueries;
 
-use widgets::podcast::PodcastWidget;
-use views::podcasts::PopulatedView;
 use views::empty::EmptyView;
+use views::episodes::EpisodesView;
+use views::shows::ShowsPopulated;
 
-#[derive(Debug)]
+use app::Action;
+use widgets::show::ShowWidget;
+
+use std::sync::Arc;
+use std::sync::mpsc::Sender;
+
+#[derive(Debug, Clone)]
 pub struct Content {
-    pub stack: gtk::Stack,
-    pub widget: PodcastWidget,
-    pub podcasts: PopulatedView,
-    pub empty: EmptyView,
+    stack: gtk::Stack,
+    shows: Arc<ShowStack>,
+    episodes: Arc<EpisodeStack>,
+    sender: Sender<Action>,
 }
 
 impl Content {
-    pub fn new() -> Content {
+    pub fn new(sender: Sender<Action>) -> Content {
         let stack = gtk::Stack::new();
+        let episodes = Arc::new(EpisodeStack::new(sender.clone()));
+        let shows = Arc::new(ShowStack::new(sender.clone()));
 
-        let widget = PodcastWidget::new();
-        let podcasts = PopulatedView::new();
-        let empty = EmptyView::new();
-
-        stack.add_named(&widget.container, "widget");
-        stack.add_named(&podcasts.container, "podcasts");
-        stack.add_named(&empty.container, "empty");
+        stack.add_titled(&episodes.stack, "episodes", "Episodes");
+        stack.add_titled(&shows.stack, "shows", "Shows");
 
         Content {
             stack,
-            widget,
-            empty,
-            podcasts,
+            shows,
+            episodes,
+            sender,
         }
     }
 
-    pub fn new_initialized() -> Content {
-        let ct = Content::new();
-        ct.init();
-        ct
+    pub fn update(&self) {
+        self.update_episode_view();
+        self.update_shows_view();
+        self.update_widget()
     }
 
-    pub fn init(&self) {
-        self.podcasts.init(&self.stack);
-        if self.podcasts.flowbox.get_children().is_empty() {
+    pub fn update_episode_view(&self) {
+        self.episodes.update();
+    }
+
+    pub fn update_episode_view_if_baground(&self) {
+        if self.stack.get_visible_child_name() != Some("episodes".into()) {
+            self.episodes.update();
+        }
+    }
+
+    pub fn update_shows_view(&self) {
+        self.shows.update_podcasts();
+    }
+
+    pub fn update_widget(&self) {
+        self.shows.update_widget();
+    }
+
+    pub fn update_widget_if_same(&self, pid: i32) {
+        self.shows.update_widget_if_same(pid);
+    }
+
+    pub fn update_widget_if_visible(&self) {
+        if self.stack.get_visible_child_name() == Some("shows".to_string())
+            && self.shows.get_stack().get_visible_child_name() == Some("widget".to_string())
+        {
+            self.shows.update_widget();
+        }
+    }
+
+    pub fn get_stack(&self) -> gtk::Stack {
+        self.stack.clone()
+    }
+
+    pub fn get_shows(&self) -> Arc<ShowStack> {
+        self.shows.clone()
+    }
+}
+
+#[derive(Debug, Clone)]
+pub struct ShowStack {
+    stack: gtk::Stack,
+    sender: Sender<Action>,
+}
+
+impl ShowStack {
+    fn new(sender: Sender<Action>) -> ShowStack {
+        let stack = gtk::Stack::new();
+
+        let show = ShowStack {
+            stack,
+            sender: sender.clone(),
+        };
+
+        let pop = ShowsPopulated::new(sender.clone());
+        let widget = ShowWidget::default();
+        let empty = EmptyView::new();
+
+        show.stack.add_named(&pop.container, "podcasts");
+        show.stack.add_named(&widget.container, "widget");
+        show.stack.add_named(&empty.container, "empty");
+
+        if pop.is_empty() {
+            show.stack.set_visible_child_name("empty")
+        } else {
+            show.stack.set_visible_child_name("podcasts")
+        }
+
+        show
+    }
+
+    // pub fn update(&self) {
+    //     self.update_widget();
+    //     self.update_podcasts();
+    // }
+
+    pub fn update_podcasts(&self) {
+        let vis = self.stack.get_visible_child_name().unwrap();
+
+        let old = self.stack
+            .get_child_by_name("podcasts")
+            // This is guaranted to exists, based on `ShowStack::new()`.
+            .unwrap()
+            .downcast::<gtk::Box>()
+            // This is guaranted to be a Box based on the `ShowsPopulated` impl.
+            .unwrap();
+        debug!("Name: {:?}", WidgetExt::get_name(&old));
+
+        let scrolled_window = old.get_children()
+            .first()
+            // This is guaranted to exist based on the show_widget.ui file.
+            .unwrap()
+            .clone()
+            .downcast::<gtk::ScrolledWindow>()
+            // This is guaranted based on the show_widget.ui file.
+            .unwrap();
+        debug!("Name: {:?}", WidgetExt::get_name(&scrolled_window));
+
+        let pop = ShowsPopulated::new(self.sender.clone());
+        // Copy the vertical scrollbar adjustment from the old view into the new one.
+        scrolled_window
+            .get_vadjustment()
+            .map(|x| pop.set_vadjustment(&x));
+
+        self.stack.remove(&old);
+        self.stack.add_named(&pop.container, "podcasts");
+
+        if pop.is_empty() {
             self.stack.set_visible_child_name("empty");
+        } else if vis != "empty" {
+            self.stack.set_visible_child_name(&vis);
+        } else {
+            self.stack.set_visible_child_name("podcasts");
+        }
+
+        old.destroy();
+    }
+
+    pub fn replace_widget(&self, pd: &Podcast) {
+        let old = self.stack
+            .get_child_by_name("widget")
+            // This is guaranted to exists, based on `ShowStack::new()`.
+            .unwrap()
+            .downcast::<gtk::Box>()
+            // This is guaranted to be a Box based on the `ShowWidget` impl.
+            .unwrap();
+        debug!("Name: {:?}", WidgetExt::get_name(&old));
+
+        let new = ShowWidget::new(pd, self.sender.clone());
+        // Each composite ShowWidget is a gtkBox with the Podcast.id encoded in the gtk::Widget
+        // name. It's a hack since we can't yet subclass GObject easily.
+        let oldid = WidgetExt::get_name(&old);
+        let newid = WidgetExt::get_name(&new.container);
+        debug!("Old widget Name: {:?}\nNew widget Name: {:?}", oldid, newid);
+
+        // Only copy the old scrollbar if both widget's represent the same podcast.
+        if newid == oldid {
+            let scrolled_window = old.get_children()
+                .first()
+                // This is guaranted to exist based on the show_widget.ui file.
+                .unwrap()
+                .clone()
+                .downcast::<gtk::ScrolledWindow>()
+                // This is guaranted based on the show_widget.ui file.
+                .unwrap();
+            debug!("Name: {:?}", WidgetExt::get_name(&scrolled_window));
+
+            // Copy the vertical scrollbar adjustment from the old view into the new one.
+            scrolled_window
+                .get_vadjustment()
+                .map(|x| new.set_vadjustment(&x));
+        }
+
+        self.stack.remove(&old);
+        self.stack.add_named(&new.container, "widget");
+    }
+
+    pub fn update_widget(&self) {
+        let vis = self.stack.get_visible_child_name().unwrap();
+        let old = self.stack.get_child_by_name("widget").unwrap();
+
+        let id = WidgetExt::get_name(&old);
+        if id == Some("GtkBox".to_string()) || id.is_none() {
             return;
         }
 
-        self.stack.set_visible_child_name("podcasts");
+        let pd = dbqueries::get_podcast_from_id(id.unwrap().parse::<i32>().unwrap());
+        if let Ok(pd) = pd {
+            self.replace_widget(&pd);
+            self.stack.set_visible_child_name(&vis);
+            old.destroy();
+        }
     }
 
-    fn replace_widget(&mut self, pdw: PodcastWidget) {
-        let vis = self.stack.get_visible_child_name().unwrap();
+    // Only update widget if it's podcast_id is equal to pid.
+    pub fn update_widget_if_same(&self, pid: i32) {
         let old = self.stack.get_child_by_name("widget").unwrap();
-        self.stack.remove(&old);
 
-        self.widget = pdw;
-        self.stack.add_named(&self.widget.container, "widget");
-        self.stack.set_visible_child_name(&vis);
-        old.destroy();
-    }
-
-    fn replace_podcasts(&mut self, pop: PopulatedView) {
-        let vis = self.stack.get_visible_child_name().unwrap();
-        let old = self.stack.get_child_by_name("podcasts").unwrap();
-        self.stack.remove(&old);
-
-        self.podcasts = pop;
-        self.stack.add_named(&self.podcasts.container, "podcasts");
-        self.stack.set_visible_child_name(&vis);
-        old.destroy();
-    }
-}
-
-#[derive(Debug)]
-// Experiementing with Wrapping gtk::Stack into a State machine.
-// Gonna revist it when TryInto trais is stabilized.
-pub struct ContentState<S> {
-    content: Content,
-    state: S,
-}
-
-pub trait UpdateView {
-    fn update(&mut self);
-}
-
-#[derive(Debug)]
-pub struct Empty {}
-
-#[derive(Debug)]
-pub struct PodcastsView {}
-
-#[derive(Debug)]
-pub struct WidgetsView {}
-
-impl Into<ContentState<PodcastsView>> for ContentState<Empty> {
-    fn into(self) -> ContentState<PodcastsView> {
-        self.content.stack.set_visible_child_name("podcasts");
-
-        ContentState {
-            content: self.content,
-            state: PodcastsView {},
+        let id = WidgetExt::get_name(&old);
+        if id != Some(pid.to_string()) || id.is_none() {
+            return;
         }
-    }
-}
-
-impl UpdateView for ContentState<Empty> {
-    fn update(&mut self) {}
-}
-
-impl Into<ContentState<Empty>> for ContentState<PodcastsView> {
-    fn into(self) -> ContentState<Empty> {
-        self.content.stack.set_visible_child_name("empty");
-        ContentState {
-            content: self.content,
-            state: Empty {},
-        }
-    }
-}
-
-impl Into<ContentState<WidgetsView>> for ContentState<PodcastsView> {
-    fn into(self) -> ContentState<WidgetsView> {
-        self.content.stack.set_visible_child_name("widget");
-
-        ContentState {
-            content: self.content,
-            state: WidgetsView {},
-        }
-    }
-}
-
-impl UpdateView for ContentState<PodcastsView> {
-    fn update(&mut self) {
-        let pop = PopulatedView::new_initialized(&self.content.stack);
-        self.content.replace_podcasts(pop)
-    }
-}
-
-impl Into<ContentState<PodcastsView>> for ContentState<WidgetsView> {
-    fn into(self) -> ContentState<PodcastsView> {
-        self.content.stack.set_visible_child_name("podcasts");
-        ContentState {
-            content: self.content,
-            state: PodcastsView {},
-        }
-    }
-}
-
-impl Into<ContentState<Empty>> for ContentState<WidgetsView> {
-    fn into(self) -> ContentState<Empty> {
-        self.content.stack.set_visible_child_name("empty");
-        ContentState {
-            content: self.content,
-            state: Empty {},
-        }
-    }
-}
-
-impl UpdateView for ContentState<WidgetsView> {
-    fn update(&mut self) {
-        let old = self.content.stack.get_child_by_name("widget").unwrap();
-        let id = WidgetExt::get_name(&old).unwrap();
-        let pd = dbqueries::get_podcast_from_id(id.parse::<i32>().unwrap()).unwrap();
-
-        let pdw = PodcastWidget::new_initialized(&self.content.stack, &pd);
-        self.content.replace_widget(pdw);
-    }
-}
-
-impl ContentState<PodcastsView> {
-    #[allow(dead_code)]
-    pub fn new() -> Result<ContentState<PodcastsView>, ContentState<Empty>> {
-        let content = Content::new();
-
-        content.podcasts.init(&content.stack);
-        if content.podcasts.flowbox.get_children().is_empty() {
-            content.stack.set_visible_child_name("empty");
-            return Err(ContentState {
-                content,
-                state: Empty {},
-            });
-        }
-
-        content.stack.set_visible_child_name("podcasts");
-        Ok(ContentState {
-            content,
-            state: PodcastsView {},
-        })
+        self.update_widget();
     }
 
-    #[allow(dead_code)]
+    pub fn switch_podcasts_animated(&self) {
+        self.stack
+            .set_visible_child_full("podcasts", gtk::StackTransitionType::SlideRight);
+    }
+
+    pub fn switch_widget_animated(&self) {
+        self.stack
+            .set_visible_child_full("widget", gtk::StackTransitionType::SlideLeft)
+    }
+
     pub fn get_stack(&self) -> gtk::Stack {
-        self.content.stack.clone()
+        self.stack.clone()
     }
 }
 
-fn replace_widget(stack: &gtk::Stack, pdw: &PodcastWidget) {
-    let old = stack.get_child_by_name("widget").unwrap();
-    stack.remove(&old);
-    stack.add_named(&pdw.container, "widget");
-    old.destroy();
+#[derive(Debug, Clone)]
+pub struct EpisodeStack {
+    stack: gtk::Stack,
+    sender: Sender<Action>,
 }
 
-fn replace_podcasts(stack: &gtk::Stack, pop: &PopulatedView) {
-    let old = stack.get_child_by_name("podcasts").unwrap();
-    stack.remove(&old);
-    stack.add_named(&pop.container, "podcasts");
-    old.destroy();
-}
+impl EpisodeStack {
+    fn new(sender: Sender<Action>) -> EpisodeStack {
+        let episodes = EpisodesView::new(sender.clone());
+        let empty = EmptyView::new();
+        let stack = gtk::Stack::new();
 
-#[allow(dead_code)]
-pub fn show_widget(stack: &gtk::Stack) {
-    stack.set_visible_child_name("widget")
-}
+        stack.add_named(&episodes.container, "episodes");
+        stack.add_named(&empty.container, "empty");
 
-pub fn show_podcasts(stack: &gtk::Stack) {
-    stack.set_visible_child_name("podcasts")
-}
+        if episodes.is_empty() {
+            stack.set_visible_child_name("empty");
+        } else {
+            stack.set_visible_child_name("episodes");
+        }
 
-pub fn show_empty(stack: &gtk::Stack) {
-    stack.set_visible_child_name("empty")
-}
-
-pub fn update_podcasts(stack: &gtk::Stack) {
-    let pods = PopulatedView::new_initialized(stack);
-
-    if pods.flowbox.get_children().is_empty() {
-        show_empty(stack)
+        EpisodeStack { stack, sender }
     }
 
-    replace_podcasts(stack, &pods);
-}
+    pub fn update(&self) {
+        let old = self.stack
+            .get_child_by_name("episodes")
+            // This is guaranted to exists, based on `EpisodeStack::new()`.
+            .unwrap()
+            .downcast::<gtk::Box>()
+            // This is guaranted to be a Box based on the `EpisodesView` impl.
+            .unwrap();
+        debug!("Name: {:?}", WidgetExt::get_name(&old));
 
-pub fn update_widget(stack: &gtk::Stack, pd: &Podcast) {
-    let pdw = PodcastWidget::new_initialized(stack, pd);
-    replace_widget(stack, &pdw);
-}
+        let scrolled_window = old.get_children()
+            .first()
+            // This is guaranted to exist based on the episodes_view.ui file.
+            .unwrap()
+            .clone()
+            .downcast::<gtk::ScrolledWindow>()
+            // This is guaranted based on the episodes_view.ui file.
+            .unwrap();
+        debug!("Name: {:?}", WidgetExt::get_name(&scrolled_window));
 
-pub fn update_podcasts_preserve_vis(stack: &gtk::Stack) {
-    let vis = stack.get_visible_child_name().unwrap();
-    update_podcasts(stack);
-    if vis != "empty" {
-        stack.set_visible_child_name(&vis)
+        let eps = EpisodesView::new(self.sender.clone());
+        // Copy the vertical scrollbar adjustment from the old view into the new one.
+        scrolled_window
+            .get_vadjustment()
+            .map(|x| eps.set_vadjustment(&x));
+
+        self.stack.remove(&old);
+        self.stack.add_named(&eps.container, "episodes");
+
+        if eps.is_empty() {
+            self.stack.set_visible_child_name("empty");
+        } else {
+            self.stack.set_visible_child_name("episodes");
+        }
+
+        old.destroy();
     }
-}
-
-pub fn update_widget_preserve_vis(stack: &gtk::Stack, pd: &Podcast) {
-    let vis = stack.get_visible_child_name().unwrap();
-    update_widget(stack, pd);
-    stack.set_visible_child_name(&vis)
-}
-
-pub fn on_podcasts_child_activate(stack: &gtk::Stack, pd: &Podcast) {
-    update_widget(stack, pd);
-    stack.set_visible_child_full("widget", gtk::StackTransitionType::SlideLeft);
-}
-
-pub fn on_home_button_activate(stack: &gtk::Stack) {
-    let vis = stack.get_visible_child_name().unwrap();
-
-    if vis != "widget" {
-        update_podcasts(stack);
-    }
-
-    show_podcasts(stack);
 }

@@ -1,20 +1,54 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.20.1 -->
+<!-- Generated with glade 3.21.0 
+
+Copyright (C) 2017 - 2018
+
+This file is part of Hammond.
+
+Hammond is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+Hammond is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Hammond.  If not, see <http://www.gnu.org/licenses/>.
+
+Authors:
+Jordan Petridis
+Tobias Bernard
+
+-->
 <interface>
   <requires lib="gtk+" version="3.20"/>
-  <object class="GtkPopover" id="add-popover">
+  <!-- interface-license-type gplv3 -->
+  <!-- interface-name Hammond -->
+  <!-- interface-description A podcast client for the GNOME Desktop -->
+  <!-- interface-copyright 2017 - 2018 -->
+  <!-- interface-authors Jordan Petridis\nTobias Bernard -->
+  <object class="GtkPopover" id="add_popover">
     <property name="can_focus">False</property>
     <property name="tooltip_text" translatable="yes">Add a new feed</property>
     <property name="valign">center</property>
+    <property name="relative_to">add_toggle</property>
+    <property name="position">bottom</property>
     <child>
-      <object class="GtkBox" id="add-box">
+      <object class="GtkBox" id="add_box">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="valign">center</property>
+        <property name="margin_left">6</property>
+        <property name="margin_right">6</property>
+        <property name="margin_top">6</property>
+        <property name="margin_bottom">6</property>
         <property name="orientation">vertical</property>
         <property name="spacing">6</property>
         <child>
-          <object class="GtkLabel" id="add-box-enter-address-label">
+          <object class="GtkLabel" id="enter_address_label">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="halign">start</property>
@@ -31,12 +65,12 @@
           </packing>
         </child>
         <child>
-          <object class="GtkBox" id="add-entry-box">
+          <object class="GtkBox" id="add_entry_box">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="spacing">6</property>
             <child>
-              <object class="GtkEntry" id="new-url">
+              <object class="GtkEntry" id="new_url">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="width_chars">30</property>
@@ -49,14 +83,15 @@
               </packing>
             </child>
             <child>
-              <object class="GtkStack" id="add-button-stack">
+              <object class="GtkStack" id="add_button_stack">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="interpolate_size">True</property>
                 <child>
-                  <object class="GtkButton" id="add-button">
+                  <object class="GtkButton" id="add_button">
                     <property name="label" translatable="yes">Add</property>
                     <property name="visible">True</property>
+                    <property name="sensitive">False</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">False</property>
                     <style>
@@ -95,7 +130,7 @@
           </packing>
         </child>
         <child>
-          <object class="GtkLabel" id="add-box-already-subscribed-label">
+          <object class="GtkLabel" id="result_label">
             <property name="can_focus">False</property>
             <property name="halign">start</property>
             <property name="label" translatable="yes">You are already subscribed to that feed!</property>
@@ -109,67 +144,130 @@
       </object>
     </child>
   </object>
-  <object class="GtkHeaderBar" id="headerbar1">
-    <property name="visible">True</property>
+  <object class="GtkHeaderBar" id="headerbar">
     <property name="can_focus">False</property>
-    <property name="title">Hammond</property>
-    <property name="has_subtitle">False</property>
     <property name="show_close_button">True</property>
     <child>
-      <object class="GtkButton" id="homebutton">
-        <property name="visible">True</property>
-        <property name="can_focus">True</property>
-        <property name="receives_default">True</property>
-        <property name="valign">center</property>
-        <property name="always_show_image">True</property>
-        <child>
-          <object class="GtkImage">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="stock">gtk-home</property>
-            <property name="use_fallback">True</property>
-          </object>
-        </child>
-      </object>
-      <packing>
-        <property name="position">3</property>
-      </packing>
-    </child>
-    <child>
-      <object class="GtkButton" id="refbutton">
-        <property name="visible">True</property>
-        <property name="can_focus">True</property>
-        <property name="receives_default">True</property>
-        <property name="valign">center</property>
-        <property name="use_underline">True</property>
-        <property name="always_show_image">True</property>
-        <child>
-          <object class="GtkImage">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="stock">gtk-refresh</property>
-            <property name="use_fallback">True</property>
-          </object>
-        </child>
-      </object>
-      <packing>
-        <property name="pack_type">end</property>
-        <property name="position">2</property>
-      </packing>
-    </child>
-    <child>
-      <object class="GtkMenuButton" id="add-toggle-button">
+      <object class="GtkMenuButton" id="add_toggle">
         <property name="visible">True</property>
         <property name="can_focus">True</property>
         <property name="receives_default">False</property>
         <property name="tooltip_text" translatable="yes">Add a new feed</property>
         <property name="valign">center</property>
         <child>
-          <object class="GtkImage" id="add-button-image">
+          <object class="GtkImage" id="add-button-image2">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="stock">gtk-add</property>
-            <property name="use_fallback">True</property>
+            <property name="icon_name">list-add-symbolic</property>
+            <property name="icon_size">1</property>
+          </object>
+        </child>
+        <style>
+          <class name="image-button"/>
+        </style>
+      </object>
+    </child>
+    <child>
+      <object class="GtkButton" id="back_button">
+        <property name="can_focus">True</property>
+        <property name="receives_default">False</property>
+        <property name="no_show_all">True</property>
+        <property name="tooltip_text" translatable="yes">Back</property>
+        <property name="valign">center</property>
+        <child>
+          <object class="GtkImage" id="back-button-image">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="icon_name">go-previous-symbolic</property>
+            <property name="icon_size">1</property>
+          </object>
+        </child>
+        <style>
+          <class name="image-button"/>
+        </style>
+      </object>
+      <packing>
+        <property name="position">1</property>
+      </packing>
+    </child>
+    <child>
+      <object class="GtkBox" id="update_notification">
+        <property name="can_focus">False</property>
+        <property name="no_show_all">True</property>
+        <child>
+          <object class="GtkSpinner" id="update_spinner">
+            <property name="can_focus">False</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="padding">6</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="update_label">
+            <property name="can_focus">False</property>
+            <property name="label" translatable="yes">Fetching new episodes</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
+      </object>
+      <packing>
+        <property name="position">3</property>
+      </packing>
+    </child>
+    <child type="title">
+      <object class="GtkBox">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="orientation">vertical</property>
+        <child>
+          <object class="GtkStackSwitcher" id="switch">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="halign">center</property>
+            <property name="valign">center</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="show_title">
+            <property name="can_focus">False</property>
+            <property name="no_show_all">True</property>
+            <property name="label" translatable="yes">Show Title</property>
+            <attributes>
+              <attribute name="weight" value="bold"/>
+            </attributes>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+    <child>
+      <object class="GtkMenuButton" id="menu_toggle">
+        <property name="visible">True</property>
+        <property name="can_focus">True</property>
+        <property name="receives_default">False</property>
+        <property name="valign">center</property>
+        <property name="popover">menu_popover</property>
+        <child>
+          <object class="GtkImage">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="icon_name">open-menu-symbolic</property>
             <property name="icon_size">1</property>
           </object>
         </child>
@@ -179,8 +277,102 @@
       </object>
       <packing>
         <property name="pack_type">end</property>
-        <property name="position">3</property>
+        <property name="position">2</property>
       </packing>
+    </child>
+  </object>
+  <object class="GtkPopover" id="menu_popover">
+    <property name="can_focus">False</property>
+    <property name="relative_to">menu_toggle</property>
+    <child>
+      <object class="GtkBox">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="margin_left">10</property>
+        <property name="margin_right">10</property>
+        <property name="margin_top">10</property>
+        <property name="margin_bottom">10</property>
+        <property name="orientation">vertical</property>
+        <child>
+          <object class="GtkModelButton">
+            <property name="visible">True</property>
+            <property name="sensitive">False</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">False</property>
+            <property name="text" translatable="yes">Preferences</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkModelButton" id="update_button">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+            <property name="text" translatable="yes">Check for new episodes</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkSeparator">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">2</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkModelButton" id="about_button">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">False</property>
+            <property name="text" translatable="yes">About</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">6</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkModelButton">
+            <property name="visible">True</property>
+            <property name="sensitive">False</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">False</property>
+            <property name="text" translatable="yes">Help</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">7</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkModelButton">
+            <property name="visible">True</property>
+            <property name="sensitive">False</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">False</property>
+            <property name="text" translatable="yes">Keyboard Shortcuts</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">8</property>
+          </packing>
+        </child>
+      </object>
     </child>
   </object>
 </interface>

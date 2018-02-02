@@ -5,9 +5,9 @@ table! {
         uri -> Nullable<Text>,
         local_uri -> Nullable<Text>,
         description -> Nullable<Text>,
-        published_date -> Nullable<Text>,
         epoch -> Integer,
         length -> Nullable<Integer>,
+        duration -> Nullable<Integer>,
         guid -> Nullable<Text>,
         played -> Nullable<Integer>,
         favorite -> Bool,
@@ -38,3 +38,5 @@ table! {
         http_etag -> Nullable<Text>,
     }
 }
+
+allow_tables_to_appear_in_same_query!(episode, podcast, source,);

@@ -11,29 +11,30 @@ before_script:
 - apt-get install -yqq --no-install-recommends libgtk-3-dev
 # - apt-get install -yqq --no-install-recommends meson
 
-# kcov
-# - apt-get install -y libcurl4-openssl-dev libelf-dev libdw-dev cmake gcc binutils-dev libiberty-dev
-
 .cargo_test_template: &cargo_test
   stage: test
   script:
   - rustc --version && cargo --version
+  # Force regeneration of gresources regardless of artifacts chage
+  - cd hammond-gtk/resources/ && glib-compile-resources --generate resources.xml && cd ../../
   - cargo build
   - cargo test --verbose -- --test-threads=1
+  - cargo test --verbose -- --test-threads=1 --ignored
 
 variables:
 #   RUSTFLAGS: "-C link-dead-code"
   RUST_BACKTRACE: "FULL"
+  CARGO_HOME: $CI_PROJECT_DIR/cargo
 
 stable:test:
   # https://hub.docker.com/_/rust/
   image: "rust"
   <<: *cargo_test
 
-nightly:test:
-  # https://hub.docker.com/r/rustlang/rust/
-  image: "rustlang/rust:nightly"
-  <<: *cargo_test
+# nightly:test:
+#   # https://hub.docker.com/r/rustlang/rust/
+#   image: "rustlang/rust:nightly"
+#   <<: *cargo_test
 
 # Configure and run rustfmt on nightly
 # Exits and builds fails if on bad format
@@ -44,15 +45,17 @@ rustfmt:
     CFG_RELEASE_CHANNEL: "nightly"
   script:
   - rustc --version && cargo --version
-  - cargo install rustfmt-nightly
+  - cargo install rustfmt-nightly --force
   - cargo fmt --all -- --write-mode=diff
 
 # Configure and run clippy on nightly
 # Only fails on errors atm.
-clippy:
-  image: "rustlang/rust:nightly"
-  stage: lint
-  script:
-  - rustc --version && cargo --version
-  - cargo install clippy
-  - cargo clippy --all
+# clippy:
+#   image: "rustlang/rust:nightly"
+#   stage: lint
+#   script:
+#   - rustc --version && cargo --version
+#   - cargo install clippy --force
+#   # Force regeneration of gresources regardless of artifacts chage
+#   - cd hammond-gtk/resources/ && glib-compile-resources --generate resources.xml && cd ../../
+#   - cargo clippy --all

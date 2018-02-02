@@ -1,112 +1,94 @@
-use glib;
-use gtk;
-use gdk_pixbuf::Pixbuf;
+#![cfg_attr(feature = "cargo-clippy", allow(type_complexity))]
 
-use hammond_data::feed;
-use hammond_data::{Podcast, Source};
+use gdk_pixbuf::Pixbuf;
+use send_cell::SendCell;
+
+// use hammond_data::feed;
+use hammond_data::{PodcastCoverQuery, Source};
+use hammond_data::dbqueries;
+use hammond_data::pipeline;
 use hammond_downloader::downloader;
 
-use std::{thread, time};
-use std::cell::RefCell;
-use std::sync::mpsc::{channel, Receiver};
-use std::borrow::Cow;
+use std::collections::HashMap;
+use std::sync::{Mutex, RwLock};
+use std::sync::mpsc::Sender;
+use std::thread;
 
-use content;
-use regex::Regex;
+use app::Action;
 
-type Foo = RefCell<Option<(gtk::Stack, Receiver<bool>)>>;
-
-// Create a thread local storage that will store the arguments to be transfered.
-thread_local!(static GLOBAL: Foo = RefCell::new(None));
-
-/// Update the rss feed(s) originating from `Source`.
+/// Update the rss feed(s) originating from `source`.
 /// If `source` is None, Fetches all the `Source` entries in the database and updates them.
-/// `delay` represents the desired time in seconds for the thread to sleep before executing.
-/// When It's done,it queues up a `podcast_view` refresh.
-pub fn refresh_feed(stack: &gtk::Stack, source: Option<Vec<Source>>, delay: Option<u64>) {
-    // Create a async channel.
-    let (sender, receiver) = channel();
-
-    // Pass the desired arguments into the Local Thread Storage.
-    GLOBAL.with(clone!(stack => move |global| {
-        *global.borrow_mut() = Some((stack, receiver));
-    }));
+/// When It's done,it queues up a `RefreshViews` action.
+pub fn refresh_feed(source: Option<Vec<Source>>, sender: Sender<Action>) {
+    sender.send(Action::HeaderBarShowUpdateIndicator).unwrap();
 
     thread::spawn(move || {
-        if let Some(s) = delay {
-            let t = time::Duration::from_secs(s);
-            thread::sleep(t);
+        let sources = source.unwrap_or_else(|| dbqueries::get_sources().unwrap());
+
+        if let Err(err) = pipeline::run(sources, false) {
+            error!("Error While trying to update the database.");
+            error!("Error msg: {}", err);
         }
 
-        let feeds = {
-            if let Some(vec) = source {
-                Ok(feed::fetch(vec))
-            } else {
-                feed::fetch_all()
-            }
-        };
-
-        if let Ok(x) = feeds {
-            feed::index(x);
-
-            sender.send(true).expect("Couldn't send data to channel");;
-            glib::idle_add(refresh_podcasts_view);
-        };
+        sender.send(Action::HeaderBarHideUpdateIndicator).unwrap();
+        sender.send(Action::RefreshAllViews).unwrap();
     });
 }
 
-fn refresh_podcasts_view() -> glib::Continue {
-    GLOBAL.with(|global| {
-        if let Some((ref stack, ref reciever)) = *global.borrow() {
-            if reciever.try_recv().is_ok() {
-                content::update_podcasts_preserve_vis(stack);
-            }
-        }
-    });
-    glib::Continue(false)
+lazy_static! {
+    static ref CACHED_PIXBUFS: RwLock<HashMap<(i32, u32), Mutex<SendCell<Pixbuf>>>> = {
+        RwLock::new(HashMap::new())
+    };
 }
 
-pub fn get_pixbuf_from_path(pd: &Podcast) -> Option<Pixbuf> {
+// Since gdk_pixbuf::Pixbuf is refference counted and every episode,
+// use the cover of the Podcast Feed/Show, We can only create a Pixbuf
+// cover per show and pass around the Rc pointer.
+//
+// GObjects do not implement Send trait, so SendCell is a way around that.
+// Also lazy_static requires Sync trait, so that's what the mutexes are.
+// TODO: maybe use something that would just scale to requested size?
+pub fn get_pixbuf_from_path(pd: &PodcastCoverQuery, size: u32) -> Option<Pixbuf> {
+    {
+        let hashmap = CACHED_PIXBUFS.read().unwrap();
+        let res = hashmap.get(&(pd.id(), size));
+        if let Some(px) = res {
+            let m = px.lock().unwrap();
+            return Some(m.clone().into_inner());
+        }
+    }
+
     let img_path = downloader::cache_image(pd)?;
-    Pixbuf::new_from_file_at_scale(&img_path, 256, 256, true).ok()
-}
-
-#[allow(dead_code)]
-// WIP: parse html to markup
-pub fn html_to_markup(s: &mut str) -> Cow<str> {
-    s.trim();
-    s.replace('&', "&amp;");
-    s.replace('<', "&lt;");
-    s.replace('>', "&gt;");
-
-    let re = Regex::new("(?P<url>https?://[^\\s&,)(\"]+(&\\w=[\\w._-]?)*(#[\\w._-]+)?)").unwrap();
-    re.replace_all(s, "<a href=\"$url\">$url</a>")
+    let px = Pixbuf::new_from_file_at_scale(&img_path, size as i32, size as i32, true).ok();
+    if let Some(px) = px {
+        let mut hashmap = CACHED_PIXBUFS.write().unwrap();
+        hashmap.insert((pd.id(), size), Mutex::new(SendCell::new(px.clone())));
+        return Some(px);
+    }
+    None
 }
 
 #[cfg(test)]
 mod tests {
-    use hammond_data::Source;
-    use hammond_data::feed::index;
-    use hammond_data::dbqueries;
-    use diesel::associations::Identifiable;
     use super::*;
+    use hammond_data::Source;
+    use hammond_data::dbqueries;
 
     #[test]
+    // This test inserts an rss feed to your `XDG_DATA/hammond/hammond.db` so we make it explicit
+    // to run it.
+    #[ignore]
     fn test_get_pixbuf_from_path() {
-        let url = "http://www.newrustacean.com/feed.xml";
-
+        let url = "https://web.archive.org/web/20180120110727if_/https://rss.acast.com/thetipoff";
         // Create and index a source
         let source = Source::from_url(url).unwrap();
         // Copy it's id
-        let sid = source.id().clone();
-
-        // Convert Source it into a Feed and index it
-        let feed = source.into_feed().unwrap();
-        index(vec![feed]);
+        let sid = source.id();
+        pipeline::run(vec![source], true).unwrap();
 
         // Get the Podcast
         let pd = dbqueries::get_podcast_from_source_id(sid).unwrap();
-        let pxbuf = get_pixbuf_from_path(&pd);
+        let pxbuf = get_pixbuf_from_path(&pd.into(), 256);
         assert!(pxbuf.is_some());
     }
 }

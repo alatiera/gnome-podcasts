@@ -2,7 +2,7 @@ ALTER TABLE episode RENAME TO old_table;
 
 CREATE TABLE episode (
 	title	TEXT NOT NULL,
-	uri	TEXT UNIQUE,
+	uri	TEXT,
 	local_uri	TEXT,
 	description	TEXT,
 	published_date	TEXT,
