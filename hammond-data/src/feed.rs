@@ -6,7 +6,7 @@ use rss;
 
 use dbqueries;
 use errors::*;
-use models::{IndexState, Update};
+use models::{Index, IndexState, Update};
 use models::{NewEpisode, NewPodcast, Podcast};
 use pipeline::*;
 
@@ -47,7 +47,16 @@ impl Feed {
             .and_then(|(insert, update)| {
                 if !insert.is_empty() {
                     info!("Indexing {} episodes.", insert.len());
-                    dbqueries::index_new_episodes(insert.as_slice())?;
+                    if let Err(err) = dbqueries::index_new_episodes(insert.as_slice()) {
+                        error!("Failed batch indexng, Fallign back to individual indexing.");
+                        error!("Error: {}", err);
+                        insert.iter().for_each(|ep| {
+                            if let Err(err) = ep.index() {
+                                error!("Failed to index episode: {:?}.", ep.title());
+                                error!("Error msg: {}", err);
+                            };
+                        })
+                    }
                 }
                 Ok((insert, update))
             })
