@@ -8,12 +8,12 @@
   <summary>GNOME Podcast Client written in Rust</summary>
   <url type="homepage">https://gitlab.gnome.org/alatiera/Hammond</url>
   <description>
-    Hammond is a Fast, Safe and Reliable Gtk+ Podcast client written in Rust
+    Hammond is a Gtk+ Podcast client for the GNOME Desktop written in Rust
   </description>
   <screenshots>
     <screenshot>
-      <image type="source">https://gitlab.gnome.org/alatiera/Hammond/raw/master/assets/podcasts_view.png</image>
-      <image type="source">https://gitlab.gnome.org/alatiera/Hammond/raw/master/assets/podcast_widget.png</image>
+      <image type="source">https://gitlab.gnome.org/alatiera/Hammond/raw/master/screenshots/podcasts_view.png</image>
+      <image type="source">https://gitlab.gnome.org/alatiera/Hammond/raw/master/screenshots/podcast_widget.png</image>
     </screenshot>
   </screenshots>
   <releases>

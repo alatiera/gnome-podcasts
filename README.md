@@ -8,9 +8,9 @@
 
 * TBA
 
-![episdes_view](./assets/episodes_view.png)
-![shows_view](./assets/shows_view.png)
-![show_widget](./assets/show_widget.png)
+![episdes_view](./screenshots/episodes_view.png)
+![shows_view](./screenshots/shows_view.png)
+![show_widget](./screenshots/show_widget.png)
 
 ## Quick start
 
@@ -112,7 +112,7 @@ There are also some minor tasks tagged with `TODO:` and `FIXME:` in the source c
 
 ```sh
 $ tree -d
-├── assets              # png's used in the README.md
+├── screenshots         # png's used in the README.md
 ├── hammond-data        # Storate related stuff, SQLite, XDG setup, RSS Parser.
 │   ├── migrations      # Diesel SQL migrations.
 │   │   └── ...

@@ -18,22 +18,14 @@ cp meson.build $DIST
 cp Hammond.doap $DIST
 cp LICENSE $DIST
 cp README.md $DIST
-cp -rf assets $DIST
+cp -rf screenshots $DIST
 cp -rf scripts $DIST
 
 # cargo vendor
-cargo vendor
 mkdir $DIST/.cargo
-cat <<EOF > $DIST/.cargo/config
-[source.crates-io]
-replace-with = "vendored-sources"
-
-[source.vendored-sources]
-directory = "vendor"
-EOF
+cargo vendor > $DIST/.cargo/config
 cp -rf vendor $DIST/
 
 # packaging
 cd $DEST/dist
 tar -cJvf $VERSION.tar.xz $VERSION
-

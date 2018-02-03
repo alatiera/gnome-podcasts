@@ -16,8 +16,9 @@ hammond_version_micro = version_array[2].to_int()
 hammond_prefix = get_option('prefix')
 hammond_bindir = join_paths(hammond_prefix, get_option('bindir'))
 
-install_data('hammond-gtk/resources/org.gnome.Hammond.desktop', install_dir : get_option('datadir') + '/applications')
-install_data('hammond-gtk/resources/org.gnome.Hammond.appdata.xml', install_dir : get_option('datadir') + '/appdata')
+datadir = get_option('datadir')
+icondir = join_paths(datadir, 'icons')
+subdir('hammond-gtk/resources')
 
 cargo = find_program('cargo', required: false)
 gresource = find_program('glib-compile-resources', required: false)
@@ -34,5 +35,4 @@ cargo_release = custom_target('cargo-build',
 
 run_target('release', command: ['scripts/release.sh',
                                 meson.project_name() + '-' + hammond_version
-                               ],
-                                depends: [cargo_release])
+                               ])

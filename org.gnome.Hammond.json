@@ -1,37 +1,37 @@
 {
-    "app-id": "org.gnome.Hammond",
-    "runtime": "org.gnome.Platform",
-    "runtime-version": "3.26",
-    "sdk": "org.gnome.Sdk",
-    "sdk-extensions": [
+    "app-id" : "org.gnome.Hammond",
+    "runtime" : "org.gnome.Platform",
+    "runtime-version" : "3.26",
+    "sdk" : "org.gnome.Sdk",
+    "sdk-extensions" : [
         "org.freedesktop.Sdk.Extension.rust-stable"
     ],
-    "command": "hammond",
-    "finish-args": [
+    "command" : "hammond",
+    "finish-args" : [
         "--share=network",
         "--share=ipc",
         "--socket=x11",
         "--socket=wayland",
         "--talk-name=org.freedesktop.Desktop"
     ],
-    "build-options": {
-        "append-path": "/usr/lib/sdk/rust-stable/bin",
-        "build-args": [
+    "build-options" : {
+        "append-path" : "/usr/lib/sdk/rust-stable/bin",
+        "build-args" : [
             "--share=network"
         ],
-        "env": {
-            "CARGO_HOME": "/run/build/Hammond/cargo"
+        "env" : {
+            "CARGO_HOME" : "/run/build/Hammond/cargo"
         }
     },
-    "modules": [
+    "modules" : [
         {
-            "name": "Hammond",
-            "buildsystem": "meson",
-            "sources": [
+            "name" : "Hammond",
+            "buildsystem" : "meson",
+            "sources" : [
                 {
-                    "type": "git",
-                    "url": "https://gitlab.gnome.org/alatiera/Hammond.git",
-                    "branch": "master"
+                    "type" : "git",
+                    "url" : "https://gitlab.gnome.org/alatiera/Hammond.git",
+                    "branch" : "master"
                 }
             ]
         }
