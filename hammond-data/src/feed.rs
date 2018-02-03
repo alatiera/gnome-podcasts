@@ -203,6 +203,15 @@ mod tests {
         let (insert, update) = feed.get_stuff(&pd).wait().unwrap();
         assert_eq!(43, insert.len());
         assert_eq!(0, update.len());
-        // TODO: find or create a feed to test updates too.
+
+        feed.index().wait().unwrap();
+
+        let path = "tests/feeds/2018-02-03-Intercepted.xml";
+        let feed = get_feed(path, 42);
+        let pd = feed.parse_podcast().to_podcast().unwrap();
+
+        let (insert, update) = feed.get_stuff(&pd).wait().unwrap();
+        assert_eq!(4, insert.len());
+        assert_eq!(43, update.len());
     }
 }

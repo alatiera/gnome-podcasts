@@ -8,6 +8,12 @@ Web view: https://web.archive.org/web/20180120083840/https://feeds.feedburner.co
 
 Raw file: https://web.archive.org/web/20180120083840if_/https://feeds.feedburner.com/InterceptedWithJeremyScahill
 
+Updated
+
+* [Web view](https://web.archive.org/web/20180203132146/https://feeds.feedburner.com/InterceptedWithJeremyScahill)
+
+* [Raw file](https://web.archive.org/web/20180203132146/https://feeds.feedburner.com/InterceptedWithJeremyScahill)
+
 #### The TipOff
 
 Web view: https://web.archive.org/web/20180120110727/https://rss.acast.com/thetipoff
