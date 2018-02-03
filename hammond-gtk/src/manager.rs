@@ -122,7 +122,10 @@ mod tests {
     use hammond_data::pipeline;
     use hammond_data::utils::get_download_folder;
 
+    use hammond_downloader::downloader::get_episode;
+
     use std::{thread, time};
+    use std::fs;
     use std::path::Path;
     use std::sync::mpsc::channel;
 
@@ -156,7 +159,33 @@ mod tests {
         thread::sleep(time::Duration::from_secs(20));
 
         let final_path = format!("{}/{}.mp3", &download_fold, episode.rowid());
-        println!("{}", &final_path);
         assert!(Path::new(&final_path).exists());
+        fs::remove_file(final_path).unwrap();
+    }
+
+    #[test]
+    fn test_dl_steal_the_stars() {
+        let url =
+            "https://web.archive.org/web/20180120104957if_/https://rss.art19.com/steal-the-stars";
+        // Create and index a source
+        let source = Source::from_url(url).unwrap();
+        // Copy it's id
+        let sid = source.id();
+        pipeline::run(vec![source], true).unwrap();
+
+        // Get the Podcast
+        let pd = dbqueries::get_podcast_from_source_id(sid).unwrap();
+        let title = "Introducing Steal the Stars";
+        // Get an episode
+        let mut episode = dbqueries::get_episode_from_pk(title, pd.id())
+            .unwrap()
+            .into();
+        let download_fold = get_download_folder(&pd.title()).unwrap();
+
+        get_episode(&mut episode, &download_fold, None).unwrap();
+
+        let final_path = format!("{}/{}.mp3", &download_fold, episode.rowid());
+        assert!(Path::new(&final_path).exists());
+        fs::remove_file(final_path).unwrap();
     }
 }
