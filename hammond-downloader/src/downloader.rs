@@ -15,6 +15,8 @@ use errors::*;
 use hammond_data::{EpisodeWidgetQuery, PodcastCoverQuery, Save};
 use hammond_data::xdg_dirs::HAMMOND_CACHE;
 
+// use failure::Error;
+
 // TODO: Replace path that are of type &str with std::path.
 // TODO: Have a convention/document absolute/relative paths, if they should end with / or not.
 

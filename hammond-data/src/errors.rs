@@ -23,3 +23,11 @@ error_chain! {
         IoError(io::Error);
     }
 }
+
+#[derive(Fail, Debug)]
+pub enum DatabaseError {
+    #[fail(display = "SQL Query failed: {}", _0)] DieselResultError(diesel::result::Error),
+    #[fail(display = "Database Migration error: {}", _0)] DieselMigrationError(RunMigrationsError),
+    #[fail(display = "R2D2 error: {}", _0)] R2D2Error(r2d2::Error),
+    #[fail(display = "R2D2 Pool error: {}", _0)] R2D2PoolError(r2d2::PoolError),
+}

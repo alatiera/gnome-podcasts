@@ -17,7 +17,7 @@
         unconditional_recursion, unions_with_drop_fields, unused_allocation, unused_comparisons,
         unused_parens, while_true)]
 #![deny(missing_debug_implementations, missing_docs, trivial_casts, trivial_numeric_casts)]
-#![deny(unused_extern_crates, unused)]
+// #![deny(unused_extern_crates, unused)]
 
 // #![feature(conservative_impl_trait)]
 
@@ -30,12 +30,15 @@ extern crate diesel_migrations;
 #[macro_use]
 extern crate error_chain;
 #[macro_use]
+extern crate failure_derive;
+#[macro_use]
 extern crate lazy_static;
 #[macro_use]
 extern crate log;
 
 extern crate ammonia;
 extern crate chrono;
+extern crate failure;
 extern crate futures;
 extern crate futures_cpupool;
 extern crate hyper;

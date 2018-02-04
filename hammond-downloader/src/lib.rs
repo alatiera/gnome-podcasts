@@ -1,13 +1,17 @@
 #![recursion_limit = "1024"]
-#![deny(unused_extern_crates, unused)]
+// #![deny(unused_extern_crates, unused)]
 
 #[macro_use]
 extern crate error_chain;
+#[macro_use]
+extern crate failure_derive;
+#[macro_use]
+extern crate log;
+
+extern crate failure;
 extern crate glob;
 extern crate hammond_data;
 extern crate hyper;
-#[macro_use]
-extern crate log;
 extern crate mime_guess;
 extern crate reqwest;
 extern crate tempdir;

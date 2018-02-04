@@ -7,15 +7,16 @@ extern crate gio;
 extern crate glib;
 extern crate gtk;
 
+#[macro_use]
+extern crate lazy_static;
+#[macro_use]
+extern crate log;
+
 extern crate chrono;
 extern crate dissolve;
 extern crate hammond_data;
 extern crate hammond_downloader;
 extern crate humansize;
-#[macro_use]
-extern crate lazy_static;
-#[macro_use]
-extern crate log;
 extern crate loggerv;
 extern crate open;
 extern crate send_cell;
