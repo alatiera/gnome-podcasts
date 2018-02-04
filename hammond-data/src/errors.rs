@@ -21,16 +21,24 @@ struct IOError(io::Error);
 
 #[derive(Fail, Debug)]
 pub enum DatabaseError {
-    #[fail(display = "SQL Query failed: {}", _0)] DieselResultError(diesel::result::Error),
-    #[fail(display = "Database Migration error: {}", _0)] DieselMigrationError(RunMigrationsError),
-    #[fail(display = "R2D2 error: {}", _0)] R2D2Error(r2d2::Error),
-    #[fail(display = "R2D2 Pool error: {}", _0)] R2D2PoolError(r2d2::PoolError),
+    #[fail(display = "SQL Query failed: {}", _0)]
+    DieselResultError(diesel::result::Error),
+    #[fail(display = "Database Migration error: {}", _0)]
+    DieselMigrationError(RunMigrationsError),
+    #[fail(display = "R2D2 error: {}", _0)]
+    R2D2Error(r2d2::Error),
+    #[fail(display = "R2D2 Pool error: {}", _0)]
+    R2D2PoolError(r2d2::PoolError),
 }
 
 #[derive(Fail, Debug)]
 pub enum HttpError {
-    #[fail(display = "Reqwest Error: {}", _0)] ReqError(reqwest::Error),
-    #[fail(display = "Hyper Error: {}", _0)] HyperError(hyper::Error),
-    #[fail(display = "Url Error: {}", _0)] UrlError(url::ParseError),
-    #[fail(display = "TLS Error: {}", _0)] TLSError(native_tls::Error),
+    #[fail(display = "Reqwest Error: {}", _0)]
+    ReqError(reqwest::Error),
+    #[fail(display = "Hyper Error: {}", _0)]
+    HyperError(hyper::Error),
+    #[fail(display = "Url Error: {}", _0)]
+    UrlError(url::ParseError),
+    #[fail(display = "TLS Error: {}", _0)]
+    TLSError(native_tls::Error),
 }
