@@ -1,5 +1,5 @@
 #![recursion_limit = "1024"]
-// #![deny(unused_extern_crates, unused)]
+#![deny(unused_extern_crates, unused)]
 
 #[macro_use]
 extern crate failure;
