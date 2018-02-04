@@ -20,7 +20,7 @@ struct IOError(io::Error);
 // struct RSSError(rss::Error);
 
 #[derive(Fail, Debug)]
-pub enum DatabaseError {
+pub enum DataError {
     #[fail(display = "SQL Query failed: {}", _0)]
     DieselResultError(#[cause] diesel::result::Error),
     #[fail(display = "Database Migration error: {}", _0)]
@@ -29,34 +29,6 @@ pub enum DatabaseError {
     R2D2Error(#[cause] r2d2::Error),
     #[fail(display = "R2D2 Pool error: {}", _0)]
     R2D2PoolError(#[cause] r2d2::PoolError),
-}
-
-impl From<RunMigrationsError> for DatabaseError {
-    fn from(err: RunMigrationsError) -> Self {
-        DatabaseError::DieselMigrationError(err)
-    }
-}
-
-impl From<diesel::result::Error> for DatabaseError {
-    fn from(err: diesel::result::Error) -> Self {
-        DatabaseError::DieselResultError(err)
-    }
-}
-
-impl From<r2d2::Error> for DatabaseError {
-    fn from(err: r2d2::Error) -> Self {
-        DatabaseError::R2D2Error(err)
-    }
-}
-
-impl From<r2d2::PoolError> for DatabaseError {
-    fn from(err: r2d2::PoolError) -> Self {
-        DatabaseError::R2D2PoolError(err)
-    }
-}
-
-#[derive(Fail, Debug)]
-pub enum HttpError {
     #[fail(display = "Reqwest Error: {}", _0)]
     ReqError(#[cause] reqwest::Error),
     #[fail(display = "Hyper Error: {}", _0)]
@@ -65,4 +37,28 @@ pub enum HttpError {
     UrlError(#[cause] url::ParseError),
     #[fail(display = "TLS Error: {}", _0)]
     TLSError(#[cause] native_tls::Error),
+}
+
+impl From<RunMigrationsError> for DataError {
+    fn from(err: RunMigrationsError) -> Self {
+        DataError::DieselMigrationError(err)
+    }
+}
+
+impl From<diesel::result::Error> for DataError {
+    fn from(err: diesel::result::Error) -> Self {
+        DataError::DieselResultError(err)
+    }
+}
+
+impl From<r2d2::Error> for DataError {
+    fn from(err: r2d2::Error) -> Self {
+        DataError::R2D2Error(err)
+    }
+}
+
+impl From<r2d2::PoolError> for DataError {
+    fn from(err: r2d2::PoolError) -> Self {
+        DataError::R2D2PoolError(err)
+    }
 }

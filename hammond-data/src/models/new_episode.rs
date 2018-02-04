@@ -120,7 +120,7 @@ impl NewEpisode {
     #[allow(dead_code)]
     pub(crate) fn to_episode(&self) -> Result<Episode, Error> {
         self.index()?;
-        dbqueries::get_episode_from_pk(&self.title, self.podcast_id)
+        dbqueries::get_episode_from_pk(&self.title, self.podcast_id).map_err(From::from)
     }
 }
 
