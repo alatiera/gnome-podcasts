@@ -14,6 +14,13 @@
 
 ## Quick start
 
+As of January 19 2018, Hammond can be built and run with [Gnome Builder](https://wiki.gnome.org/Apps/Builder) Nightly
+and any Stable release of Gnome Builder >= 3.28.0.
+
+Get Builder [here](https://wiki.gnome.org/Apps/Builder/Downloads)
+
+Manually:
+
 The following steps assume you have a working installation of rustc and cargo.
 If you dont take a look at [rustup.rs](rustup.rs)
 
@@ -37,22 +44,9 @@ Note:
 
 There isn't much documentation yet, so you will probably have question about parts of the Code.
 
-## Install from soure
-
-```sh
-git clone https://gitlab.gnome.org/alatiera/hammond.git
-cd Hammond/
-./configure --prefix=/usr/local
-make && sudo make install
-```
-
-**Additional:**
-
-You can run `sudo make uninstall` for removal
-
-And `make clean` to clean up the enviroment after instalation.
-
 ### Flatpak
+
+Flatpak is the reccomended way of building and installing Hammond.
 
 #### Building a Flatpak
 
@@ -65,7 +59,18 @@ flatpak-builder --repo=repo hammond org.gnome.Hammond.json --force-clean
 flatpak build-bundle repo hammond org.gnome.Hammond
 ```
 
-## Building
+## Building from soure
+
+```sh
+git clone https://gitlab.gnome.org/alatiera/hammond.git
+cd Hammond/
+./configure --prefix=/usr/local
+make && sudo make install
+```
+
+**Additional:**
+
+You can run `sudo make uninstall` for removal
 
 ### Dependencies
 
@@ -142,4 +147,3 @@ Hammond's design is heavily insired by [GNOME Music](https://wiki.gnome.org/Desi
 We also copied some elements from [GNOME News](https://wiki.gnome.org/Design/Apps/Potential/News).
 
 And almost the entirety of the build system is copied from the [Fractal](https://gitlab.gnome.org/danigm/fractal) project.
-
