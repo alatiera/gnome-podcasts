@@ -10,6 +10,7 @@ use failure::Error;
 
 use database::connection;
 use models::*;
+// use errors::DatabaseError;
 
 // Feel free to open a Merge request that manually replaces Result<T> if you feel bored.
 use std::result;
