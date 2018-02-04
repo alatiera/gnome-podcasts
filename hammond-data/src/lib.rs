@@ -46,7 +46,6 @@ extern crate itertools;
 extern crate native_tls;
 extern crate num_cpus;
 extern crate rayon;
-extern crate reqwest;
 extern crate rfc822_sanitizer;
 extern crate rss;
 extern crate tokio_core;
