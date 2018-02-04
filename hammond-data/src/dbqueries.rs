@@ -6,10 +6,14 @@ use diesel::prelude::*;
 use diesel;
 use diesel::dsl::exists;
 use diesel::select;
+use failure::Error;
 
 use database::connection;
-use errors::*;
 use models::*;
+
+// Feel free to open a Merge request that manually replaces Result<T> if you feel bored.
+use std::result;
+type Result<T> = result::Result<T, Error>;
 
 pub fn get_sources() -> Result<Vec<Source>> {
     use schema::source::dsl::*;

@@ -2,13 +2,12 @@
 // #![deny(unused_extern_crates, unused)]
 
 #[macro_use]
-extern crate error_chain;
+extern crate failure;
 #[macro_use]
 extern crate failure_derive;
 #[macro_use]
 extern crate log;
 
-extern crate failure;
 extern crate glob;
 extern crate hammond_data;
 extern crate hyper;

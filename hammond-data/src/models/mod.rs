@@ -23,7 +23,7 @@ pub use self::episode::{Episode, EpisodeMinimal, EpisodeWidgetQuery};
 pub use self::podcast::{Podcast, PodcastCoverQuery};
 pub use self::source::Source;
 
-use errors::*;
+use failure::Error;
 
 #[derive(Debug, Clone, PartialEq)]
 pub enum IndexState<T> {
@@ -33,19 +33,19 @@ pub enum IndexState<T> {
 }
 
 pub trait Insert {
-    fn insert(&self) -> Result<()>;
+    fn insert(&self) -> Result<(), Error>;
 }
 
 pub trait Update {
-    fn update(&self, i32) -> Result<()>;
+    fn update(&self, i32) -> Result<(), Error>;
 }
 
 pub trait Index: Insert + Update {
-    fn index(&self) -> Result<()>;
+    fn index(&self) -> Result<(), Error>;
 }
 
 /// FIXME: DOCS
 pub trait Save<T> {
     /// Helper method to easily save/"sync" current state of a diesel model to the Database.
-    fn save(&self) -> Result<T>;
+    fn save(&self) -> Result<T, Error>;
 }

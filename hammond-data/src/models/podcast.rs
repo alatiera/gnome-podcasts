@@ -1,7 +1,7 @@
 use diesel::SaveChangesDsl;
+use failure::Error;
 
 use database::connection;
-use errors::*;
 use models::{Save, Source};
 use schema::podcast;
 
@@ -25,7 +25,7 @@ pub struct Podcast {
 
 impl Save<Podcast> for Podcast {
     /// Helper method to easily save/"sync" current state of self to the Database.
-    fn save(&self) -> Result<Podcast> {
+    fn save(&self) -> Result<Podcast, Error> {
         let db = connection();
         let tempdb = db.get()?;
 

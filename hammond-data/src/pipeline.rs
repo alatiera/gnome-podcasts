@@ -10,16 +10,15 @@ use hyper::client::HttpConnector;
 use hyper_tls::HttpsConnector;
 use tokio_core::reactor::Core;
 
+use failure::Error;
 use num_cpus;
 use rss;
 
 use Source;
 use dbqueries;
-use errors::*;
 use models::{IndexState, NewEpisode, NewEpisodeMinimal};
 // use Feed;
 
-use std;
 // use std::sync::{Arc, Mutex};
 
 macro_rules! clone {
@@ -51,7 +50,7 @@ pub fn pipeline<S: IntoIterator<Item = Source>>(
     tokio_core: &mut Core,
     pool: &CpuPool,
     client: Client<HttpsConnector<HttpConnector>>,
-) -> Result<()> {
+) -> Result<(), Error> {
     let list: Vec<_> = sources
         .into_iter()
         .map(clone!(pool => move |s| s.into_feed(&client, pool.clone(), ignore_etags)))
@@ -70,7 +69,7 @@ pub fn pipeline<S: IntoIterator<Item = Source>>(
 }
 
 /// Creates a tokio `reactor::Core`, a `CpuPool`, and a `hyper::Client` and runs the pipeline.
-pub fn run(sources: Vec<Source>, ignore_etags: bool) -> Result<()> {
+pub fn run(sources: Vec<Source>, ignore_etags: bool) -> Result<(), Error> {
     if sources.is_empty() {
         return Ok(());
     }
@@ -86,7 +85,7 @@ pub fn run(sources: Vec<Source>, ignore_etags: bool) -> Result<()> {
 }
 
 /// Docs
-pub fn index_single_source(s: Source, ignore_etags: bool) -> Result<()> {
+pub fn index_single_source(s: Source, ignore_etags: bool) -> Result<(), Error> {
     let pool = CpuPool::new_num_cpus();
     let mut core = Core::new()?;
     let handle = core.handle();
@@ -102,7 +101,10 @@ pub fn index_single_source(s: Source, ignore_etags: bool) -> Result<()> {
     core.run(work)
 }
 
-fn determine_ep_state(ep: NewEpisodeMinimal, item: &rss::Item) -> Result<IndexState<NewEpisode>> {
+fn determine_ep_state(
+    ep: NewEpisodeMinimal,
+    item: &rss::Item,
+) -> Result<IndexState<NewEpisode>, Error> {
     // Check if feed exists
     let exists = dbqueries::episode_exists(ep.title(), ep.podcast_id())?;
 
@@ -135,7 +137,7 @@ pub(crate) fn glue_async<'a>(
 #[cfg_attr(feature = "cargo-clippy", allow(type_complexity))]
 pub fn collect_futures<F>(
     futures: Vec<F>,
-) -> Box<Future<Item = Vec<std::result::Result<F::Item, F::Error>>, Error = Error>>
+) -> Box<Future<Item = Vec<Result<F::Item, F::Error>>, Error = Error>>
 where
     F: 'static + Future,
     <F as Future>::Item: 'static,

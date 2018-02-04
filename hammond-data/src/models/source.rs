@@ -1,4 +1,5 @@
 use diesel::SaveChangesDsl;
+use failure::Error;
 use rss::Channel;
 use url::Url;
 
@@ -13,7 +14,6 @@ use futures::prelude::*;
 use futures_cpupool::CpuPool;
 
 use database::connection;
-use errors::*;
 use feed::{Feed, FeedBuilder};
 use models::{NewSource, Save};
 use schema::source;
@@ -34,7 +34,7 @@ pub struct Source {
 
 impl Save<Source> for Source {
     /// Helper method to easily save/"sync" current state of self to the Database.
-    fn save(&self) -> Result<Source> {
+    fn save(&self) -> Result<Source, Error> {
         let db = connection();
         let con = db.get()?;
 
@@ -85,7 +85,7 @@ impl Source {
 
     /// Extract Etag and LastModifier from res, and update self and the
     /// corresponding db row.
-    fn update_etag(&mut self, res: &Response) -> Result<()> {
+    fn update_etag(&mut self, res: &Response) -> Result<(), Error> {
         let headers = res.headers();
 
         let etag = headers.get::<ETag>().map(|x| x.tag());
@@ -109,7 +109,7 @@ impl Source {
     // 403: Forbidden
     // 408: Timeout
     // 410: Feed deleted
-    fn match_status(mut self, res: Response) -> Result<(Self, Response)> {
+    fn match_status(mut self, res: Response) -> Result<(Self, Response), Error> {
         self.update_etag(&res)?;
         let code = res.status();
         match code {
@@ -131,7 +131,7 @@ impl Source {
         Ok((self, res))
     }
 
-    fn handle_301(&mut self, res: &Response) -> Result<()> {
+    fn handle_301(&mut self, res: &Response) -> Result<(), Error> {
         let headers = res.headers();
 
         if let Some(url) = headers.get::<Location>() {
@@ -150,7 +150,7 @@ impl Source {
     /// Construct a new `Source` with the given `uri` and index it.
     ///
     /// This only indexes the `Source` struct, not the Podcast Feed.
-    pub fn from_url(uri: &str) -> Result<Source> {
+    pub fn from_url(uri: &str) -> Result<Source, Error> {
         let url = Url::parse(uri)?;
 
         NewSource::new(&url).to_source()
@@ -174,11 +174,11 @@ impl Source {
         let feed = self.request_constructor(client, ignore_etags)
             .and_then(move |(_, res)| response_to_channel(res, pool))
             .and_then(move |chan| {
-                FeedBuilder::default()
+                Ok(FeedBuilder::default()
                     .channel(chan)
                     .source_id(id)
                     .build()
-                    .map_err(From::from)
+                    .unwrap())
             });
 
         Box::new(feed)
@@ -228,7 +228,8 @@ fn response_to_channel(
         .map_err(From::from)
         .map(|iter| iter.collect::<Vec<u8>>())
         .map(|utf_8_bytes| String::from_utf8_lossy(&utf_8_bytes).into_owned())
-        .and_then(|buf| Channel::from_str(&buf).map_err(From::from));
+        // FIXME: Unwrap
+        .and_then(|buf| Ok(Channel::from_str(&buf).unwrap()));
     let cpu_chan = pool.spawn(chan);
     Box::new(cpu_chan)
 }

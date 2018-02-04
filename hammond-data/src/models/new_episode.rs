@@ -1,17 +1,15 @@
-use diesel::prelude::*;
-
-use diesel;
-use schema::episode;
-
 use ammonia;
+use diesel;
+use diesel::prelude::*;
+use failure::Error;
 use rfc822_sanitizer::parse_from_rfc2822_with_fallback as parse_rfc822;
 use rss;
 
 use database::connection;
 use dbqueries;
-use errors::*;
 use models::{Episode, EpisodeMinimal, Index, Insert, Update};
 use parser;
+use schema::episode;
 use utils::{replace_extra_spaces, url_cleaner};
 
 #[derive(Insertable, AsChangeset)]
@@ -46,7 +44,7 @@ impl From<NewEpisodeMinimal> for NewEpisode {
 }
 
 impl Insert for NewEpisode {
-    fn insert(&self) -> Result<()> {
+    fn insert(&self) -> Result<(), Error> {
         use schema::episode::dsl::*;
         let db = connection();
         let con = db.get()?;
@@ -61,7 +59,7 @@ impl Insert for NewEpisode {
 }
 
 impl Update for NewEpisode {
-    fn update(&self, episode_id: i32) -> Result<()> {
+    fn update(&self, episode_id: i32) -> Result<(), Error> {
         use schema::episode::dsl::*;
         let db = connection();
         let con = db.get()?;
@@ -77,7 +75,7 @@ impl Update for NewEpisode {
 
 impl Index for NewEpisode {
     // Does not update the episode description if it's the only thing that has changed.
-    fn index(&self) -> Result<()> {
+    fn index(&self) -> Result<(), Error> {
         let exists = dbqueries::episode_exists(self.title(), self.podcast_id())?;
 
         if exists {
@@ -115,12 +113,12 @@ impl PartialEq<Episode> for NewEpisode {
 impl NewEpisode {
     /// Parses an `rss::Item` into a `NewEpisode` Struct.
     #[allow(dead_code)]
-    pub(crate) fn new(item: &rss::Item, podcast_id: i32) -> Result<Self> {
+    pub(crate) fn new(item: &rss::Item, podcast_id: i32) -> Result<Self, Error> {
         NewEpisodeMinimal::new(item, podcast_id).map(|ep| ep.into_new_episode(item))
     }
 
     #[allow(dead_code)]
-    pub(crate) fn to_episode(&self) -> Result<Episode> {
+    pub(crate) fn to_episode(&self) -> Result<Episode, Error> {
         self.index()?;
         dbqueries::get_episode_from_pk(&self.title, self.podcast_id)
     }
@@ -184,7 +182,7 @@ impl PartialEq<EpisodeMinimal> for NewEpisodeMinimal {
 }
 
 impl NewEpisodeMinimal {
-    pub(crate) fn new(item: &rss::Item, parent_id: i32) -> Result<Self> {
+    pub(crate) fn new(item: &rss::Item, parent_id: i32) -> Result<Self, Error> {
         if item.title().is_none() {
             bail!("No title specified for the item.")
         }
@@ -208,7 +206,7 @@ impl NewEpisodeMinimal {
 
         let duration = parser::parse_itunes_duration(item.itunes_ext());
 
-        NewEpisodeMinimalBuilder::default()
+        Ok(NewEpisodeMinimalBuilder::default()
             .title(title)
             .uri(uri)
             .duration(duration)
@@ -216,7 +214,7 @@ impl NewEpisodeMinimal {
             .guid(guid)
             .podcast_id(parent_id)
             .build()
-            .map_err(From::from)
+            .unwrap())
     }
 
     pub(crate) fn into_new_episode(self, item: &rss::Item) -> NewEpisode {

@@ -2,6 +2,7 @@
 
 use diesel;
 use diesel::prelude::*;
+use failure::Error;
 use url::Url;
 
 use database::connection;
@@ -9,8 +10,6 @@ use dbqueries;
 // use models::{Insert, Update};
 use models::Source;
 use schema::source;
-
-use errors::*;
 
 #[derive(Insertable)]
 #[table_name = "source"]
@@ -33,7 +32,7 @@ impl NewSource {
         }
     }
 
-    pub(crate) fn insert_or_ignore(&self) -> Result<()> {
+    pub(crate) fn insert_or_ignore(&self) -> Result<(), Error> {
         use schema::source::dsl::*;
         let db = connection();
         let con = db.get()?;
@@ -46,7 +45,7 @@ impl NewSource {
     }
 
     // Look out for when tryinto lands into stable.
-    pub(crate) fn to_source(&self) -> Result<Source> {
+    pub(crate) fn to_source(&self) -> Result<Source, Error> {
         self.insert_or_ignore()?;
         dbqueries::get_source_from_uri(&self.uri)
     }

@@ -2,9 +2,9 @@ use chrono::prelude::*;
 use diesel;
 use diesel::SaveChangesDsl;
 use diesel::prelude::*;
+use failure::Error;
 
 use database::connection;
-use errors::*;
 use models::{Podcast, Save};
 use schema::episode;
 
@@ -33,7 +33,7 @@ pub struct Episode {
 
 impl Save<Episode> for Episode {
     /// Helper method to easily save/"sync" current state of self to the Database.
-    fn save(&self) -> Result<Episode> {
+    fn save(&self) -> Result<Episode, Error> {
         let db = connection();
         let tempdb = db.get()?;
 
@@ -180,7 +180,7 @@ impl Episode {
     }
 
     /// Sets the `played` value with the current `epoch` timestap and save it.
-    pub fn set_played_now(&mut self) -> Result<()> {
+    pub fn set_played_now(&mut self) -> Result<(), Error> {
         let epoch = Utc::now().timestamp() as i32;
         self.set_played(Some(epoch));
         self.save().map(|_| ())
@@ -225,7 +225,7 @@ impl From<Episode> for EpisodeWidgetQuery {
 
 impl Save<usize> for EpisodeWidgetQuery {
     /// Helper method to easily save/"sync" current state of self to the Database.
-    fn save(&self) -> Result<usize> {
+    fn save(&self) -> Result<usize, Error> {
         use schema::episode::dsl::*;
 
         let db = connection();
@@ -342,7 +342,7 @@ impl EpisodeWidgetQuery {
     }
 
     /// Sets the `played` value with the current `epoch` timestap and save it.
-    pub fn set_played_now(&mut self) -> Result<()> {
+    pub fn set_played_now(&mut self) -> Result<(), Error> {
         let epoch = Utc::now().timestamp() as i32;
         self.set_played(Some(epoch));
         self.save().map(|_| ())
@@ -363,7 +363,7 @@ pub struct EpisodeCleanerQuery {
 
 impl Save<usize> for EpisodeCleanerQuery {
     /// Helper method to easily save/"sync" current state of self to the Database.
-    fn save(&self) -> Result<usize> {
+    fn save(&self) -> Result<usize, Error> {
         use schema::episode::dsl::*;
 
         let db = connection();

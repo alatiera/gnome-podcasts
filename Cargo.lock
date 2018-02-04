@@ -661,6 +661,8 @@ version = "0.1.0"
 dependencies = [
  "chrono 0.4.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "dissolve 0.2.2 (registry+https://github.com/rust-lang/crates.io-index)",
+ "failure 0.1.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "failure_derive 0.1.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "gdk 0.7.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "gdk-pixbuf 0.3.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "gio 0.3.0 (registry+https://github.com/rust-lang/crates.io-index)",

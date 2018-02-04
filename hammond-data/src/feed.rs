@@ -1,11 +1,11 @@
 //! Index Feeds.
 
+use failure::Error;
 use futures::future::*;
 use itertools::{Either, Itertools};
 use rss;
 
 use dbqueries;
-use errors::*;
 use models::{Index, IndexState, Update};
 use models::{NewEpisode, NewPodcast, Podcast};
 use pipeline::*;
