@@ -119,7 +119,7 @@ impl Source {
                 let err = DataError::HttpStatusError {
                     url: self.uri,
                     status_code: code,
-                    contex: format!("304: skipping.."),
+                    context: format!("304: skipping.."),
                 };
 
                 return Err(err);
@@ -131,7 +131,7 @@ impl Source {
                 let err = DataError::HttpStatusError {
                     url: self.uri,
                     status_code: code,
-                    contex: format!("301: Feed was moved permanently."),
+                    context: format!("301: Feed was moved permanently."),
                 };
 
                 return Err(err);
@@ -142,7 +142,7 @@ impl Source {
                 let err = DataError::HttpStatusError {
                     url: self.uri,
                     status_code: code,
-                    contex: format!("401: Unauthorized."),
+                    context: format!("401: Unauthorized."),
                 };
 
                 return Err(err);
@@ -151,7 +151,7 @@ impl Source {
                 let err = DataError::HttpStatusError {
                     url: self.uri,
                     status_code: code,
-                    contex: format!("403:  Forbidden."),
+                    context: format!("403:  Forbidden."),
                 };
 
                 return Err(err);
@@ -161,7 +161,7 @@ impl Source {
                 let err = DataError::HttpStatusError {
                     url: self.uri,
                     status_code: code,
-                    contex: format!("408: Request Timeout."),
+                    context: format!("408: Request Timeout."),
                 };
 
                 return Err(err);
@@ -170,7 +170,7 @@ impl Source {
                 let err = DataError::HttpStatusError {
                     url: self.uri,
                     status_code: code,
-                    contex: format!("410: Feed was deleted.."),
+                    context: format!("410: Feed was deleted.."),
                 };
 
                 return Err(err);

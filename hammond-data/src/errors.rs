@@ -38,11 +38,11 @@ pub enum DataError {
     RssCrateError(String),
     #[fail(display = "Error: {}", _0)]
     DiscountBail(String),
-    #[fail(display = "Request to {} returned {}. Contex: {}", url, status_code, contex)]
+    #[fail(display = "Request to {} returned {}. Context: {}", url, status_code, context)]
     HttpStatusError {
         url: String,
         status_code: hyper::StatusCode,
-        contex: String,
+        context: String,
     },
 }
 
