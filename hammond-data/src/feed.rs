@@ -1,11 +1,11 @@
 //! Index Feeds.
 
-use failure::Error;
 use futures::future::*;
 use itertools::{Either, Itertools};
 use rss;
 
 use dbqueries;
+use errors::DataError;
 use models::{Index, IndexState, Update};
 use models::{NewEpisode, NewPodcast, Podcast};
 use pipeline::*;
@@ -26,7 +26,7 @@ pub struct Feed {
 
 impl Feed {
     /// Index the contents of the RSS `Feed` into the database.
-    pub fn index(self) -> Box<Future<Item = (), Error = Error> + Send> {
+    pub fn index(self) -> Box<Future<Item = (), Error = DataError> + Send> {
         let fut = self.parse_podcast_async()
             .and_then(|pd| pd.to_podcast())
             .and_then(move |pd| self.index_channel_items(&pd));
@@ -38,11 +38,14 @@ impl Feed {
         NewPodcast::new(&self.channel, self.source_id)
     }
 
-    fn parse_podcast_async(&self) -> Box<Future<Item = NewPodcast, Error = Error> + Send> {
+    fn parse_podcast_async(&self) -> Box<Future<Item = NewPodcast, Error = DataError> + Send> {
         Box::new(ok(self.parse_podcast()))
     }
 
-    fn index_channel_items(&self, pd: &Podcast) -> Box<Future<Item = (), Error = Error> + Send> {
+    fn index_channel_items(
+        &self,
+        pd: &Podcast,
+    ) -> Box<Future<Item = (), Error = DataError> + Send> {
         let fut = self.get_stuff(pd)
             .and_then(|(insert, update)| {
                 if !insert.is_empty() {
@@ -79,7 +82,10 @@ impl Feed {
         Box::new(fut)
     }
 
-    fn get_stuff(&self, pd: &Podcast) -> Box<Future<Item = InsertUpdate, Error = Error> + Send> {
+    fn get_stuff(
+        &self,
+        pd: &Podcast,
+    ) -> Box<Future<Item = InsertUpdate, Error = DataError> + Send> {
         let (insert, update): (Vec<_>, Vec<_>) = self.channel
             .items()
             .into_iter()
@@ -90,7 +96,7 @@ impl Feed {
             // I am not sure what the optimizations are on match vs allocating None.
             .map(|fut| {
                 fut.and_then(|x| match x {
-                    IndexState::NotChanged => bail!("Nothing to do here."),
+                    IndexState::NotChanged => return Err(DataError::DiscountBail(format!("Nothing to do here."))),
                     _ => Ok(x),
                 })
             })

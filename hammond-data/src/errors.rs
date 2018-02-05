@@ -8,11 +8,6 @@ use url;
 
 use std::io;
 
-#[allow(dead_code)]
-#[derive(Fail, Debug)]
-#[fail(display = "IO Error: {}", _0)]
-struct IOError(io::Error);
-
 // fadsadfs NOT SYNC
 // #[derive(Fail, Debug)]
 // #[fail(display = "RSS Error: {}", _0)]
@@ -34,6 +29,10 @@ pub enum DataError {
     UrlError(#[cause] url::ParseError),
     #[fail(display = "TLS Error: {}", _0)]
     TLSError(#[cause] native_tls::Error),
+    #[fail(display = "IO Error: {}", _0)]
+    IOError(io::Error),
+    #[fail(display = "WANNABE BAIL ERROR: {}", _0)]
+    DiscountBail(String),
 }
 
 impl From<RunMigrationsError> for DataError {
@@ -75,5 +74,11 @@ impl From<url::ParseError> for DataError {
 impl From<native_tls::Error> for DataError {
     fn from(err: native_tls::Error) -> Self {
         DataError::TLSError(err)
+    }
+}
+
+impl From<io::Error> for DataError {
+    fn from(err: io::Error) -> Self {
+        DataError::IOError(err)
     }
 }

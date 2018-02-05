@@ -2,9 +2,9 @@ use chrono::prelude::*;
 use diesel;
 use diesel::SaveChangesDsl;
 use diesel::prelude::*;
-use failure::Error;
 
 use database::connection;
+use errors::DataError;
 use models::{Podcast, Save};
 use schema::episode;
 
@@ -31,9 +31,9 @@ pub struct Episode {
     podcast_id: i32,
 }
 
-impl Save<Episode> for Episode {
+impl Save<Episode, DataError> for Episode {
     /// Helper method to easily save/"sync" current state of self to the Database.
-    fn save(&self) -> Result<Episode, Error> {
+    fn save(&self) -> Result<Episode, DataError> {
         let db = connection();
         let tempdb = db.get()?;
 
@@ -180,7 +180,7 @@ impl Episode {
     }
 
     /// Sets the `played` value with the current `epoch` timestap and save it.
-    pub fn set_played_now(&mut self) -> Result<(), Error> {
+    pub fn set_played_now(&mut self) -> Result<(), DataError> {
         let epoch = Utc::now().timestamp() as i32;
         self.set_played(Some(epoch));
         self.save().map(|_| ())
@@ -223,9 +223,9 @@ impl From<Episode> for EpisodeWidgetQuery {
     }
 }
 
-impl Save<usize> for EpisodeWidgetQuery {
+impl Save<usize, DataError> for EpisodeWidgetQuery {
     /// Helper method to easily save/"sync" current state of self to the Database.
-    fn save(&self) -> Result<usize, Error> {
+    fn save(&self) -> Result<usize, DataError> {
         use schema::episode::dsl::*;
 
         let db = connection();
@@ -342,7 +342,7 @@ impl EpisodeWidgetQuery {
     }
 
     /// Sets the `played` value with the current `epoch` timestap and save it.
-    pub fn set_played_now(&mut self) -> Result<(), Error> {
+    pub fn set_played_now(&mut self) -> Result<(), DataError> {
         let epoch = Utc::now().timestamp() as i32;
         self.set_played(Some(epoch));
         self.save().map(|_| ())
@@ -361,9 +361,9 @@ pub struct EpisodeCleanerQuery {
     played: Option<i32>,
 }
 
-impl Save<usize> for EpisodeCleanerQuery {
+impl Save<usize, DataError> for EpisodeCleanerQuery {
     /// Helper method to easily save/"sync" current state of self to the Database.
-    fn save(&self) -> Result<usize, Error> {
+    fn save(&self) -> Result<usize, DataError> {
         use schema::episode::dsl::*;
 
         let db = connection();

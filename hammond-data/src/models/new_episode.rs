@@ -1,12 +1,12 @@
 use ammonia;
 use diesel;
 use diesel::prelude::*;
-use failure::Error;
 use rfc822_sanitizer::parse_from_rfc2822_with_fallback as parse_rfc822;
 use rss;
 
 use database::connection;
 use dbqueries;
+use errors::DataError;
 use models::{Episode, EpisodeMinimal, Index, Insert, Update};
 use parser;
 use schema::episode;
@@ -43,8 +43,8 @@ impl From<NewEpisodeMinimal> for NewEpisode {
     }
 }
 
-impl Insert for NewEpisode {
-    fn insert(&self) -> Result<(), Error> {
+impl Insert<(), DataError> for NewEpisode {
+    fn insert(&self) -> Result<(), DataError> {
         use schema::episode::dsl::*;
         let db = connection();
         let con = db.get()?;
@@ -58,8 +58,8 @@ impl Insert for NewEpisode {
     }
 }
 
-impl Update for NewEpisode {
-    fn update(&self, episode_id: i32) -> Result<(), Error> {
+impl Update<(), DataError> for NewEpisode {
+    fn update(&self, episode_id: i32) -> Result<(), DataError> {
         use schema::episode::dsl::*;
         let db = connection();
         let con = db.get()?;
@@ -73,9 +73,9 @@ impl Update for NewEpisode {
     }
 }
 
-impl Index for NewEpisode {
+impl Index<(), DataError> for NewEpisode {
     // Does not update the episode description if it's the only thing that has changed.
-    fn index(&self) -> Result<(), Error> {
+    fn index(&self) -> Result<(), DataError> {
         let exists = dbqueries::episode_exists(self.title(), self.podcast_id())?;
 
         if exists {
@@ -113,12 +113,12 @@ impl PartialEq<Episode> for NewEpisode {
 impl NewEpisode {
     /// Parses an `rss::Item` into a `NewEpisode` Struct.
     #[allow(dead_code)]
-    pub(crate) fn new(item: &rss::Item, podcast_id: i32) -> Result<Self, Error> {
+    pub(crate) fn new(item: &rss::Item, podcast_id: i32) -> Result<Self, DataError> {
         NewEpisodeMinimal::new(item, podcast_id).map(|ep| ep.into_new_episode(item))
     }
 
     #[allow(dead_code)]
-    pub(crate) fn to_episode(&self) -> Result<Episode, Error> {
+    pub(crate) fn to_episode(&self) -> Result<Episode, DataError> {
         self.index()?;
         dbqueries::get_episode_from_pk(&self.title, self.podcast_id).map_err(From::from)
     }
@@ -182,9 +182,11 @@ impl PartialEq<EpisodeMinimal> for NewEpisodeMinimal {
 }
 
 impl NewEpisodeMinimal {
-    pub(crate) fn new(item: &rss::Item, parent_id: i32) -> Result<Self, Error> {
+    pub(crate) fn new(item: &rss::Item, parent_id: i32) -> Result<Self, DataError> {
         if item.title().is_none() {
-            bail!("No title specified for the item.")
+            return Err(DataError::DiscountBail(format!(
+                "No title specified for the item."
+            )));
         }
 
         let title = item.title().unwrap().trim().to_owned();
@@ -195,7 +197,9 @@ impl NewEpisodeMinimal {
         } else if item.link().is_some() {
             item.link().map(|s| url_cleaner(s))
         } else {
-            bail!("No url specified for the item.")
+            return Err(DataError::DiscountBail(format!(
+                "No url specified for the item."
+            )));
         };
 
         // Default to rfc2822 represantation of epoch 0.

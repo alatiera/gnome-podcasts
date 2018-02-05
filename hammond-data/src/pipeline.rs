@@ -10,14 +10,13 @@ use hyper::client::HttpConnector;
 use hyper_tls::HttpsConnector;
 use tokio_core::reactor::Core;
 
-use failure::Error;
 use num_cpus;
 use rss;
 
 use Source;
 use dbqueries;
+use errors::DataError;
 use models::{IndexState, NewEpisode, NewEpisodeMinimal};
-// use Feed;
 
 // use std::sync::{Arc, Mutex};
 
@@ -50,7 +49,7 @@ pub fn pipeline<S: IntoIterator<Item = Source>>(
     tokio_core: &mut Core,
     pool: &CpuPool,
     client: Client<HttpsConnector<HttpConnector>>,
-) -> Result<(), Error> {
+) -> Result<(), DataError> {
     let list: Vec<_> = sources
         .into_iter()
         .map(clone!(pool => move |s| s.into_feed(&client, pool.clone(), ignore_etags)))
@@ -59,7 +58,9 @@ pub fn pipeline<S: IntoIterator<Item = Source>>(
         .collect();
 
     if list.is_empty() {
-        bail!("No futures were found to run.");
+        return Err(DataError::DiscountBail(format!(
+            "No futures were found to run."
+        )));
     }
 
     // Thats not really concurrent yet I think.
@@ -69,7 +70,7 @@ pub fn pipeline<S: IntoIterator<Item = Source>>(
 }
 
 /// Creates a tokio `reactor::Core`, a `CpuPool`, and a `hyper::Client` and runs the pipeline.
-pub fn run(sources: Vec<Source>, ignore_etags: bool) -> Result<(), Error> {
+pub fn run(sources: Vec<Source>, ignore_etags: bool) -> Result<(), DataError> {
     if sources.is_empty() {
         return Ok(());
     }
@@ -85,7 +86,7 @@ pub fn run(sources: Vec<Source>, ignore_etags: bool) -> Result<(), Error> {
 }
 
 /// Docs
-pub fn index_single_source(s: Source, ignore_etags: bool) -> Result<(), Error> {
+pub fn index_single_source(s: Source, ignore_etags: bool) -> Result<(), DataError> {
     let pool = CpuPool::new_num_cpus();
     let mut core = Core::new()?;
     let handle = core.handle();
@@ -104,7 +105,7 @@ pub fn index_single_source(s: Source, ignore_etags: bool) -> Result<(), Error> {
 fn determine_ep_state(
     ep: NewEpisodeMinimal,
     item: &rss::Item,
-) -> Result<IndexState<NewEpisode>, Error> {
+) -> Result<IndexState<NewEpisode>, DataError> {
     // Check if feed exists
     let exists = dbqueries::episode_exists(ep.title(), ep.podcast_id())?;
 
@@ -125,7 +126,7 @@ fn determine_ep_state(
 pub(crate) fn glue_async<'a>(
     item: &'a rss::Item,
     id: i32,
-) -> Box<Future<Item = IndexState<NewEpisode>, Error = Error> + 'a> {
+) -> Box<Future<Item = IndexState<NewEpisode>, Error = DataError> + 'a> {
     Box::new(
         result(NewEpisodeMinimal::new(item, id)).and_then(move |ep| determine_ep_state(ep, item)),
     )
@@ -137,7 +138,7 @@ pub(crate) fn glue_async<'a>(
 #[cfg_attr(feature = "cargo-clippy", allow(type_complexity))]
 pub fn collect_futures<F>(
     futures: Vec<F>,
-) -> Box<Future<Item = Vec<Result<F::Item, F::Error>>, Error = Error>>
+) -> Box<Future<Item = Vec<Result<F::Item, F::Error>>, Error = DataError>>
 where
     F: 'static + Future,
     <F as Future>::Item: 'static,

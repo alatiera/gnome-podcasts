@@ -17,6 +17,7 @@ use hammond_data::xdg_dirs::HAMMOND_CACHE;
 use std::result;
 
 use failure::Error;
+
 type Result<T> = result::Result<T, Error>;
 
 // TODO: Replace path that are of type &str with std::path.
