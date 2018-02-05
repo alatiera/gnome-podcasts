@@ -1,4 +1,5 @@
 use diesel::SaveChangesDsl;
+// use failure::ResultExt;
 use rss::Channel;
 use url::Url;
 
@@ -115,29 +116,64 @@ impl Source {
         let code = res.status();
         match code {
             StatusCode::NotModified => {
-                return Err(DataError::DiscountBail(format!("304: skipping..")))
+                let err = DataError::HttpStatusError {
+                    url: self.uri,
+                    status_code: code,
+                    contex: format!("304: skipping.."),
+                };
+
+                return Err(err);
             }
             StatusCode::MovedPermanently => {
                 error!("Feed was moved permanently.");
                 self.handle_301(&res)?;
-                return Err(DataError::DiscountBail(format!(
-                    "301: Feed was moved permanently."
-                )));
+
+                let err = DataError::HttpStatusError {
+                    url: self.uri,
+                    status_code: code,
+                    contex: format!("301: Feed was moved permanently."),
+                };
+
+                return Err(err);
             }
             StatusCode::TemporaryRedirect => debug!("307: Temporary Redirect."),
             StatusCode::PermanentRedirect => warn!("308: Permanent Redirect."),
             StatusCode::Unauthorized => {
-                return Err(DataError::DiscountBail(format!("401: Unauthorized.")))
+                let err = DataError::HttpStatusError {
+                    url: self.uri,
+                    status_code: code,
+                    contex: format!("401: Unauthorized."),
+                };
+
+                return Err(err);
             }
             StatusCode::Forbidden => {
-                return Err(DataError::DiscountBail(format!("403: Forbidden.")))
+                let err = DataError::HttpStatusError {
+                    url: self.uri,
+                    status_code: code,
+                    contex: format!("403:  Forbidden."),
+                };
+
+                return Err(err);
             }
-            StatusCode::NotFound => return Err(DataError::DiscountBail(format!("404: Not found."))),
+            StatusCode::NotFound => return Err(format!("404: Not found.")).map_err(From::from),
             StatusCode::RequestTimeout => {
-                return Err(DataError::DiscountBail(format!("408: Request Timeout.")))
+                let err = DataError::HttpStatusError {
+                    url: self.uri,
+                    status_code: code,
+                    contex: format!("408: Request Timeout."),
+                };
+
+                return Err(err);
             }
             StatusCode::Gone => {
-                return Err(DataError::DiscountBail(format!("410: Feed was deleted.")))
+                let err = DataError::HttpStatusError {
+                    url: self.uri,
+                    status_code: code,
+                    contex: format!("410: Feed was deleted.."),
+                };
+
+                return Err(err);
             }
             _ => info!("HTTP StatusCode: {}", code),
         };
@@ -187,11 +223,11 @@ impl Source {
         let feed = self.request_constructor(client, ignore_etags)
             .and_then(move |(_, res)| response_to_channel(res, pool))
             .and_then(move |chan| {
-                Ok(FeedBuilder::default()
+                FeedBuilder::default()
                     .channel(chan)
                     .source_id(id)
                     .build()
-                    .unwrap())
+                    .map_err(From::from)
             });
 
         Box::new(feed)

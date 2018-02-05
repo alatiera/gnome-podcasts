@@ -7,6 +7,7 @@ use native_tls;
 use url;
 
 use std::io;
+// use std::fmt;
 
 // fadsadfs NOT SYNC
 // #[derive(Fail, Debug)]
@@ -26,6 +27,7 @@ pub enum DataError {
     #[fail(display = "Hyper Error: {}", _0)]
     HyperError(#[cause] hyper::Error),
     #[fail(display = "Failed to parse a url: {}", _0)]
+    // TODO: print the url too
     UrlError(#[cause] url::ParseError),
     #[fail(display = "TLS Error: {}", _0)]
     TLSError(#[cause] native_tls::Error),
@@ -34,8 +36,14 @@ pub enum DataError {
     #[fail(display = "RSS Error: {}", _0)]
     // Rss::Error is not yet Sync
     RssCrateError(String),
-    #[fail(display = "WANNABE BAIL ERROR: {}", _0)]
+    #[fail(display = "Error: {}", _0)]
     DiscountBail(String),
+    #[fail(display = "Request to {} returned {}. Contex: {}", url, status_code, contex)]
+    HttpStatusError {
+        url: String,
+        status_code: hyper::StatusCode,
+        contex: String,
+    },
 }
 
 impl From<RunMigrationsError> for DataError {
@@ -83,5 +91,11 @@ impl From<native_tls::Error> for DataError {
 impl From<io::Error> for DataError {
     fn from(err: io::Error) -> Self {
         DataError::IOError(err)
+    }
+}
+
+impl From<String> for DataError {
+    fn from(err: String) -> Self {
+        DataError::DiscountBail(err)
     }
 }

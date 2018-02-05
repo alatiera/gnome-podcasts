@@ -210,7 +210,7 @@ impl NewEpisodeMinimal {
 
         let duration = parser::parse_itunes_duration(item.itunes_ext());
 
-        Ok(NewEpisodeMinimalBuilder::default()
+        NewEpisodeMinimalBuilder::default()
             .title(title)
             .uri(uri)
             .duration(duration)
@@ -218,7 +218,7 @@ impl NewEpisodeMinimal {
             .guid(guid)
             .podcast_id(parent_id)
             .build()
-            .unwrap())
+            .map_err(From::from)
     }
 
     pub(crate) fn into_new_episode(self, item: &rss::Item) -> NewEpisode {

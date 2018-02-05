@@ -27,7 +27,7 @@ extern crate derive_builder;
 extern crate diesel;
 #[macro_use]
 extern crate diesel_migrations;
-// #[macro_use]
+#[macro_use]
 extern crate failure;
 #[macro_use]
 extern crate failure_derive;
