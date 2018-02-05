@@ -25,7 +25,7 @@ fn download_checker() -> Result<(), DataError> {
             ep.set_local_uri(None);
             if let Err(err) = ep.save() {
                 error!("Error while trying to update episode: {:#?}", ep);
-                error!("Error: {}", err);
+                error!("{}", err);
             };
         });
 
@@ -47,7 +47,7 @@ fn played_cleaner() -> Result<(), DataError> {
             if now_utc > limit {
                 if let Err(err) = delete_local_content(ep) {
                     error!("Error while trying to delete file: {:?}", ep.local_uri());
-                    error!("Error: {}", err);
+                    error!("{}", err);
                 } else {
                     info!("Episode {:?} was deleted succesfully.", ep.local_uri());
                 };
@@ -67,7 +67,7 @@ fn delete_local_content(ep: &mut EpisodeCleanerQuery) -> Result<(), DataError> {
                 ep.save()?;
             } else {
                 error!("Error while trying to delete file: {}", uri);
-                error!("Error: {}", res.unwrap_err());
+                error!("{}", res.unwrap_err());
             };
         }
     } else {

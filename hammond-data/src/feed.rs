@@ -52,11 +52,11 @@ impl Feed {
                     info!("Indexing {} episodes.", insert.len());
                     if let Err(err) = dbqueries::index_new_episodes(insert.as_slice()) {
                         error!("Failed batch indexng, Fallign back to individual indexing.");
-                        error!("Error: {}", err);
+                        error!("{}", err);
                         insert.iter().for_each(|ep| {
                             if let Err(err) = ep.index() {
                                 error!("Failed to index episode: {:?}.", ep.title());
-                                error!("Error msg: {}", err);
+                                error!("{}", err);
                             };
                         })
                     }
@@ -73,7 +73,7 @@ impl Feed {
                         .for_each(|(ref ep, rowid)| {
                             if let Err(err) = ep.update(rowid) {
                                 error!("Failed to index episode: {:?}.", ep.title());
-                                error!("Error msg: {}", err);
+                                error!("{}", err);
                             };
                         })
                 }

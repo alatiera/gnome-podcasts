@@ -184,9 +184,12 @@ impl PartialEq<EpisodeMinimal> for NewEpisodeMinimal {
 impl NewEpisodeMinimal {
     pub(crate) fn new(item: &rss::Item, parent_id: i32) -> Result<Self, DataError> {
         if item.title().is_none() {
-            return Err(DataError::DiscountBail(format!(
-                "No title specified for the item."
-            )));
+            let err = DataError::ParseEpisodeError {
+                reason: format!("No title specified for this Episode."),
+                parent_id,
+            };
+
+            return Err(err);
         }
 
         let title = item.title().unwrap().trim().to_owned();
@@ -197,9 +200,12 @@ impl NewEpisodeMinimal {
         } else if item.link().is_some() {
             item.link().map(|s| url_cleaner(s))
         } else {
-            return Err(DataError::DiscountBail(format!(
-                "No url specified for the item."
-            )));
+            let err = DataError::ParseEpisodeError {
+                reason: format!("No url specified for the item."),
+                parent_id,
+            };
+
+            return Err(err);
         };
 
         // Default to rfc2822 represantation of epoch 0.
