@@ -6,9 +6,6 @@
                  wrong_pub_self_convention, mut_mut, non_ascii_literal, similar_names,
                  unicode_not_nfc, enum_glob_use, if_not_else, items_after_statements,
                  used_underscore_binding))]
-
-//! FIXME: Docs
-
 #![allow(unknown_lints)]
 #![deny(bad_style, const_err, dead_code, improper_ctypes, legacy_directory_ownership,
         non_shorthand_field_patterns, no_mangle_generic_items, overflowing_literals,
@@ -17,9 +14,11 @@
         unconditional_recursion, unions_with_drop_fields, unused_allocation, unused_comparisons,
         unused_parens, while_true)]
 #![deny(missing_debug_implementations, missing_docs, trivial_casts, trivial_numeric_casts)]
-// #![deny(unused_extern_crates, unused)]
+#![deny(unused_extern_crates, unused)]
 
 // #![feature(conservative_impl_trait)]
+
+//! FIXME: Docs
 
 #[macro_use]
 extern crate derive_builder;
