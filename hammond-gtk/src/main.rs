@@ -1,5 +1,5 @@
 #![cfg_attr(feature = "cargo-clippy", allow(clone_on_ref_ptr, needless_pass_by_value))]
-#![deny(unused_extern_crates, unused)]
+// #![deny(unused_extern_crates, unused)]
 
 extern crate gdk;
 extern crate gdk_pixbuf;
@@ -7,15 +7,20 @@ extern crate gio;
 extern crate glib;
 extern crate gtk;
 
+#[macro_use]
+extern crate failure;
+#[macro_use]
+extern crate failure_derive;
+#[macro_use]
+extern crate lazy_static;
+#[macro_use]
+extern crate log;
+
 extern crate chrono;
 extern crate dissolve;
 extern crate hammond_data;
 extern crate hammond_downloader;
 extern crate humansize;
-#[macro_use]
-extern crate lazy_static;
-#[macro_use]
-extern crate log;
 extern crate loggerv;
 extern crate open;
 extern crate send_cell;

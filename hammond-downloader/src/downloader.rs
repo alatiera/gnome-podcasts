@@ -11,9 +11,11 @@ use std::io::{BufWriter, Read, Write};
 use std::path::Path;
 use std::sync::{Arc, Mutex};
 
-use errors::*;
 use hammond_data::{EpisodeWidgetQuery, PodcastCoverQuery, Save};
 use hammond_data::xdg_dirs::HAMMOND_CACHE;
+
+// use failure::Error;
+use errors::DownloadError;
 
 // TODO: Replace path that are of type &str with std::path.
 // TODO: Have a convention/document absolute/relative paths, if they should end with / or not.
@@ -36,7 +38,7 @@ fn download_into(
     file_title: &str,
     url: &str,
     progress: Option<Arc<Mutex<DownloadProgress>>>,
-) -> Result<String> {
+) -> Result<String, DownloadError> {
     info!("GET request to: {}", url);
     // Haven't included the loop check as
     // Steal the Stars would tigger it as
@@ -60,7 +62,7 @@ fn download_into(
     info!("Status Resp: {}", resp.status());
 
     if !resp.status().is_success() {
-        bail!("Unexpected server response: {}", resp.status())
+        return Err(DownloadError::UnexpectedResponse(resp.status()));
     }
 
     let headers = resp.headers().clone();
@@ -117,7 +119,7 @@ fn save_io(
     resp: &mut reqwest::Response,
     content_lenght: Option<u64>,
     progress: Option<Arc<Mutex<DownloadProgress>>>,
-) -> Result<()> {
+) -> Result<(), DownloadError> {
     info!("Downloading into: {}", file);
     let chunk_size = match content_lenght {
         Some(x) => x as usize / 99,
@@ -139,7 +141,7 @@ fn save_io(
                 if let Ok(l) = len {
                     if let Ok(mut m) = prog.lock() {
                         if m.should_cancel() {
-                            bail!("Download was cancelled.");
+                            return Err(DownloadError::DownloadCancelled);
                         }
                         m.set_downloaded(l);
                     }
@@ -158,7 +160,7 @@ pub fn get_episode(
     ep: &mut EpisodeWidgetQuery,
     download_folder: &str,
     progress: Option<Arc<Mutex<DownloadProgress>>>,
-) -> Result<()> {
+) -> Result<(), DownloadError> {
     // Check if its alrdy downloaded
     if ep.local_uri().is_some() {
         if Path::new(ep.local_uri().unwrap()).exists() {

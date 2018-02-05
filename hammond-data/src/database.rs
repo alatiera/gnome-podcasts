@@ -7,7 +7,7 @@ use diesel::r2d2::ConnectionManager;
 use std::io;
 use std::path::PathBuf;
 
-use errors::*;
+use errors::DataError;
 
 #[cfg(not(test))]
 use xdg_dirs;
@@ -57,7 +57,7 @@ fn init_pool(db_path: &str) -> Pool {
     pool
 }
 
-fn run_migration_on(connection: &SqliteConnection) -> Result<()> {
+fn run_migration_on(connection: &SqliteConnection) -> Result<(), DataError> {
     info!("Running DB Migrations...");
     // embedded_migrations::run(connection)?;
     embedded_migrations::run_with_output(connection, &mut io::stdout()).map_err(From::from)
@@ -66,7 +66,7 @@ fn run_migration_on(connection: &SqliteConnection) -> Result<()> {
 /// Reset the database into a clean state.
 // Test share a Temp file db.
 #[allow(dead_code)]
-pub fn truncate_db() -> Result<()> {
+pub fn truncate_db() -> Result<(), DataError> {
     let db = connection();
     let con = db.get()?;
     con.execute("DELETE FROM episode")?;

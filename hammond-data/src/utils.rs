@@ -7,7 +7,7 @@ use itertools::Itertools;
 use url::{Position, Url};
 
 use dbqueries;
-use errors::*;
+use errors::DataError;
 use models::{EpisodeCleanerQuery, Podcast, Save};
 use xdg_dirs::DL_DIR;
 
@@ -15,7 +15,7 @@ use std::fs;
 use std::path::Path;
 
 /// Scan downloaded `episode` entries that might have broken `local_uri`s and set them to `None`.
-fn download_checker() -> Result<()> {
+fn download_checker() -> Result<(), DataError> {
     let mut episodes = dbqueries::get_downloaded_episodes()?;
 
     episodes
@@ -25,7 +25,7 @@ fn download_checker() -> Result<()> {
             ep.set_local_uri(None);
             if let Err(err) = ep.save() {
                 error!("Error while trying to update episode: {:#?}", ep);
-                error!("Error: {}", err);
+                error!("{}", err);
             };
         });
 
@@ -33,7 +33,7 @@ fn download_checker() -> Result<()> {
 }
 
 /// Delete watched `episodes` that have exceded their liftime after played.
-fn played_cleaner() -> Result<()> {
+fn played_cleaner() -> Result<(), DataError> {
     let mut episodes = dbqueries::get_played_cleaner_episodes()?;
 
     let now_utc = Utc::now().timestamp() as i32;
@@ -47,7 +47,7 @@ fn played_cleaner() -> Result<()> {
             if now_utc > limit {
                 if let Err(err) = delete_local_content(ep) {
                     error!("Error while trying to delete file: {:?}", ep.local_uri());
-                    error!("Error: {}", err);
+                    error!("{}", err);
                 } else {
                     info!("Episode {:?} was deleted succesfully.", ep.local_uri());
                 };
@@ -57,7 +57,7 @@ fn played_cleaner() -> Result<()> {
 }
 
 /// Check `ep.local_uri` field and delete the file it points to.
-fn delete_local_content(ep: &mut EpisodeCleanerQuery) -> Result<()> {
+fn delete_local_content(ep: &mut EpisodeCleanerQuery) -> Result<(), DataError> {
     if ep.local_uri().is_some() {
         let uri = ep.local_uri().unwrap().to_owned();
         if Path::new(&uri).exists() {
@@ -67,7 +67,7 @@ fn delete_local_content(ep: &mut EpisodeCleanerQuery) -> Result<()> {
                 ep.save()?;
             } else {
                 error!("Error while trying to delete file: {}", uri);
-                error!("Error: {}", res.unwrap_err());
+                error!("{}", res.unwrap_err());
             };
         }
     } else {
@@ -86,7 +86,7 @@ fn delete_local_content(ep: &mut EpisodeCleanerQuery) -> Result<()> {
 ///
 /// Runs a cleaner for played Episode's that are pass the lifetime limit and
 /// scheduled for removal.
-pub fn checkup() -> Result<()> {
+pub fn checkup() -> Result<(), DataError> {
     info!("Running database checks.");
     download_checker()?;
     played_cleaner()?;
@@ -123,7 +123,7 @@ pub fn replace_extra_spaces(s: &str) -> String {
 }
 
 /// Returns the URI of a Podcast Downloads given it's title.
-pub fn get_download_folder(pd_title: &str) -> Result<String> {
+pub fn get_download_folder(pd_title: &str) -> Result<String, DataError> {
     // It might be better to make it a hash of the title or the podcast rowid
     let download_fold = format!("{}/{}", DL_DIR.to_str().unwrap(), pd_title);
 
@@ -137,7 +137,7 @@ pub fn get_download_folder(pd_title: &str) -> Result<String> {
 /// Removes all the entries associated with the given show from the database,
 /// and deletes all of the downloaded content.
 // TODO: Write Tests
-pub fn delete_show(pd: &Podcast) -> Result<()> {
+pub fn delete_show(pd: &Podcast) -> Result<(), DataError> {
     dbqueries::remove_feed(pd)?;
     info!("{} was removed succesfully.", pd.title());
 

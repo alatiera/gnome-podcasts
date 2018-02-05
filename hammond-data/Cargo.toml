@@ -14,7 +14,6 @@ itertools = "0.7.6"
 lazy_static = "1.0.0"
 log = "0.4.1"
 rayon = "0.9.0"
-reqwest = "0.8.4"
 rfc822_sanitizer = "0.3.3"
 rss = "1.2.1"
 url = "1.6.0"
@@ -26,6 +25,8 @@ hyper-tls = "0.1.2"
 native-tls = "0.1.5"
 futures-cpupool = "0.1.8"
 num_cpus = "1.8.0"
+failure = "0.1.1"
+failure_derive = "0.1.1"
 
 [dependencies.diesel]
 features = ["sqlite", "r2d2"]

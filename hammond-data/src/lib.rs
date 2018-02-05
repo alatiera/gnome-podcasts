@@ -6,9 +6,6 @@
                  wrong_pub_self_convention, mut_mut, non_ascii_literal, similar_names,
                  unicode_not_nfc, enum_glob_use, if_not_else, items_after_statements,
                  used_underscore_binding))]
-
-//! FIXME: Docs
-
 #![allow(unknown_lints)]
 #![deny(bad_style, const_err, dead_code, improper_ctypes, legacy_directory_ownership,
         non_shorthand_field_patterns, no_mangle_generic_items, overflowing_literals,
@@ -21,14 +18,18 @@
 
 // #![feature(conservative_impl_trait)]
 
+//! FIXME: Docs
+
 #[macro_use]
 extern crate derive_builder;
 #[macro_use]
 extern crate diesel;
 #[macro_use]
 extern crate diesel_migrations;
+// #[macro_use]
+extern crate failure;
 #[macro_use]
-extern crate error_chain;
+extern crate failure_derive;
 #[macro_use]
 extern crate lazy_static;
 #[macro_use]
@@ -44,7 +45,6 @@ extern crate itertools;
 extern crate native_tls;
 extern crate num_cpus;
 extern crate rayon;
-extern crate reqwest;
 extern crate rfc822_sanitizer;
 extern crate rss;
 extern crate tokio_core;

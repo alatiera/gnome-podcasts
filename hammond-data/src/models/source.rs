@@ -1,4 +1,5 @@
 use diesel::SaveChangesDsl;
+// use failure::ResultExt;
 use rss::Channel;
 use url::Url;
 
@@ -13,7 +14,7 @@ use futures::prelude::*;
 use futures_cpupool::CpuPool;
 
 use database::connection;
-use errors::*;
+use errors::DataError;
 use feed::{Feed, FeedBuilder};
 use models::{NewSource, Save};
 use schema::source;
@@ -32,9 +33,9 @@ pub struct Source {
     http_etag: Option<String>,
 }
 
-impl Save<Source> for Source {
+impl Save<Source, DataError> for Source {
     /// Helper method to easily save/"sync" current state of self to the Database.
-    fn save(&self) -> Result<Source> {
+    fn save(&self) -> Result<Source, DataError> {
         let db = connection();
         let con = db.get()?;
 
@@ -85,7 +86,7 @@ impl Source {
 
     /// Extract Etag and LastModifier from res, and update self and the
     /// corresponding db row.
-    fn update_etag(&mut self, res: &Response) -> Result<()> {
+    fn update_etag(&mut self, res: &Response) -> Result<(), DataError> {
         let headers = res.headers();
 
         let etag = headers.get::<ETag>().map(|x| x.tag());
@@ -109,29 +110,77 @@ impl Source {
     // 403: Forbidden
     // 408: Timeout
     // 410: Feed deleted
-    fn match_status(mut self, res: Response) -> Result<(Self, Response)> {
+    // TODO: Rething this api,
+    fn match_status(mut self, res: Response) -> Result<(Self, Response), DataError> {
         self.update_etag(&res)?;
         let code = res.status();
         match code {
-            StatusCode::NotModified => bail!("304: skipping.."),
+            StatusCode::NotModified => {
+                let err = DataError::HttpStatusError {
+                    url: self.uri,
+                    status_code: code,
+                    context: format!("304: skipping.."),
+                };
+
+                return Err(err);
+            }
             StatusCode::MovedPermanently => {
                 error!("Feed was moved permanently.");
                 self.handle_301(&res)?;
-                bail!("301: Feed was moved permanently.")
+
+                let err = DataError::HttpStatusError {
+                    url: self.uri,
+                    status_code: code,
+                    context: format!("301: Feed was moved permanently."),
+                };
+
+                return Err(err);
             }
             StatusCode::TemporaryRedirect => debug!("307: Temporary Redirect."),
             StatusCode::PermanentRedirect => warn!("308: Permanent Redirect."),
-            StatusCode::Unauthorized => bail!("401: Unauthorized."),
-            StatusCode::Forbidden => bail!("403: Forbidden."),
-            StatusCode::NotFound => bail!("404: Not found."),
-            StatusCode::RequestTimeout => bail!("408: Request Timeout."),
-            StatusCode::Gone => bail!("410: Feed was deleted."),
+            StatusCode::Unauthorized => {
+                let err = DataError::HttpStatusError {
+                    url: self.uri,
+                    status_code: code,
+                    context: format!("401: Unauthorized."),
+                };
+
+                return Err(err);
+            }
+            StatusCode::Forbidden => {
+                let err = DataError::HttpStatusError {
+                    url: self.uri,
+                    status_code: code,
+                    context: format!("403:  Forbidden."),
+                };
+
+                return Err(err);
+            }
+            StatusCode::NotFound => return Err(format!("404: Not found.")).map_err(From::from),
+            StatusCode::RequestTimeout => {
+                let err = DataError::HttpStatusError {
+                    url: self.uri,
+                    status_code: code,
+                    context: format!("408: Request Timeout."),
+                };
+
+                return Err(err);
+            }
+            StatusCode::Gone => {
+                let err = DataError::HttpStatusError {
+                    url: self.uri,
+                    status_code: code,
+                    context: format!("410: Feed was deleted.."),
+                };
+
+                return Err(err);
+            }
             _ => info!("HTTP StatusCode: {}", code),
         };
         Ok((self, res))
     }
 
-    fn handle_301(&mut self, res: &Response) -> Result<()> {
+    fn handle_301(&mut self, res: &Response) -> Result<(), DataError> {
         let headers = res.headers();
 
         if let Some(url) = headers.get::<Location>() {
@@ -150,7 +199,7 @@ impl Source {
     /// Construct a new `Source` with the given `uri` and index it.
     ///
     /// This only indexes the `Source` struct, not the Podcast Feed.
-    pub fn from_url(uri: &str) -> Result<Source> {
+    pub fn from_url(uri: &str) -> Result<Source, DataError> {
         let url = Url::parse(uri)?;
 
         NewSource::new(&url).to_source()
@@ -169,7 +218,7 @@ impl Source {
         client: &Client<HttpsConnector<HttpConnector>>,
         pool: CpuPool,
         ignore_etags: bool,
-    ) -> Box<Future<Item = Feed, Error = Error>> {
+    ) -> Box<Future<Item = Feed, Error = DataError>> {
         let id = self.id();
         let feed = self.request_constructor(client, ignore_etags)
             .and_then(move |(_, res)| response_to_channel(res, pool))
@@ -190,7 +239,7 @@ impl Source {
         self,
         client: &Client<HttpsConnector<HttpConnector>>,
         ignore_etags: bool,
-    ) -> Box<Future<Item = (Self, Response), Error = Error>> {
+    ) -> Box<Future<Item = (Self, Response), Error = DataError>> {
         // FIXME: remove unwrap somehow
         let uri = Uri::from_str(self.uri()).unwrap();
         let mut req = Request::new(Method::Get, uri);
@@ -221,14 +270,16 @@ impl Source {
 fn response_to_channel(
     res: Response,
     pool: CpuPool,
-) -> Box<Future<Item = Channel, Error = Error> + Send> {
+) -> Box<Future<Item = Channel, Error = DataError> + Send> {
     let chan = res.body()
         .concat2()
         .map(|x| x.into_iter())
         .map_err(From::from)
         .map(|iter| iter.collect::<Vec<u8>>())
         .map(|utf_8_bytes| String::from_utf8_lossy(&utf_8_bytes).into_owned())
-        .and_then(|buf| Channel::from_str(&buf).map_err(From::from));
+        .and_then(|buf| {
+            Channel::from_str(&buf).or_else(|err| Err(DataError::RssCrateError(format!("{}", err))))
+        });
     let cpu_chan = pool.spawn(chan);
     Box::new(cpu_chan)
 }

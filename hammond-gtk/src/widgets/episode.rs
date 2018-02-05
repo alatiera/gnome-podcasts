@@ -4,12 +4,12 @@ use gtk;
 use chrono::prelude::*;
 use gtk::prelude::*;
 
+use failure::Error;
 use humansize::{file_size_opts as size_opts, FileSize};
 use open;
 
 use hammond_data::{EpisodeWidgetQuery, Podcast};
 use hammond_data::dbqueries;
-use hammond_data::errors::*;
 use hammond_data::utils::get_download_folder;
 
 use app::Action;
@@ -368,7 +368,7 @@ fn update_total_size_callback(prog: Arc<Mutex<manager::Progress>>, total_size: g
 //     };
 // }
 
-pub fn episodes_listbox(pd: &Podcast, sender: Sender<Action>) -> Result<gtk::ListBox> {
+pub fn episodes_listbox(pd: &Podcast, sender: Sender<Action>) -> Result<gtk::ListBox, Error> {
     let mut episodes = dbqueries::get_pd_episodeswidgets(pd)?;
 
     let list = gtk::ListBox::new();

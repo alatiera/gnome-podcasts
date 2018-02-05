@@ -4,6 +4,7 @@ use diesel::prelude::*;
 use ammonia;
 use rss;
 
+use errors::DataError;
 use models::{Index, Insert, Update};
 use models::Podcast;
 use schema::podcast;
@@ -11,8 +12,6 @@ use schema::podcast;
 use database::connection;
 use dbqueries;
 use utils::{replace_extra_spaces, url_cleaner};
-
-use errors::*;
 
 #[derive(Insertable, AsChangeset)]
 #[table_name = "podcast"]
@@ -28,8 +27,8 @@ pub(crate) struct NewPodcast {
     source_id: i32,
 }
 
-impl Insert for NewPodcast {
-    fn insert(&self) -> Result<()> {
+impl Insert<(), DataError> for NewPodcast {
+    fn insert(&self) -> Result<(), DataError> {
         use schema::podcast::dsl::*;
         let db = connection();
         let con = db.get()?;
@@ -42,8 +41,8 @@ impl Insert for NewPodcast {
     }
 }
 
-impl Update for NewPodcast {
-    fn update(&self, podcast_id: i32) -> Result<()> {
+impl Update<(), DataError> for NewPodcast {
+    fn update(&self, podcast_id: i32) -> Result<(), DataError> {
         use schema::podcast::dsl::*;
         let db = connection();
         let con = db.get()?;
@@ -59,8 +58,8 @@ impl Update for NewPodcast {
 
 // TODO: Maybe return an Enum<Action(Resut)> Instead.
 // It would make unti testing better too.
-impl Index for NewPodcast {
-    fn index(&self) -> Result<()> {
+impl Index<(), DataError> for NewPodcast {
+    fn index(&self) -> Result<(), DataError> {
         let exists = dbqueries::podcast_exists(self.source_id)?;
 
         if exists {
@@ -119,7 +118,7 @@ impl NewPodcast {
     }
 
     // Look out for when tryinto lands into stable.
-    pub(crate) fn to_podcast(&self) -> Result<Podcast> {
+    pub(crate) fn to_podcast(&self) -> Result<Podcast, DataError> {
         self.index()?;
         dbqueries::get_podcast_from_source_id(self.source_id).map_err(From::from)
     }
