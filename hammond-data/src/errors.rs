@@ -37,7 +37,7 @@ pub enum DataError {
     // Rss::Error is not yet Sync
     RssCrateError(String),
     #[fail(display = "Error: {}", _0)]
-    DiscountBail(String),
+    Bail(String),
     #[fail(display = "Request to {} returned {}. Context: {}", url, status_code, context)]
     HttpStatusError {
         url: String,
@@ -102,6 +102,6 @@ impl From<io::Error> for DataError {
 
 impl From<String> for DataError {
     fn from(err: String) -> Self {
-        DataError::DiscountBail(err)
+        DataError::Bail(err)
     }
 }
