@@ -58,9 +58,7 @@ pub fn pipeline<S: IntoIterator<Item = Source>>(
         .collect();
 
     if list.is_empty() {
-        return Err(DataError::DiscountBail(format!(
-            "No futures were found to run."
-        )));
+        return Err(DataError::EmptyFuturesList);
     }
 
     // Thats not really concurrent yet I think.

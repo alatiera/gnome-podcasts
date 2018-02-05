@@ -46,6 +46,10 @@ pub enum DataError {
     },
     #[fail(display = "Error occured while Parsing an Episode. Reason: {}", reason)]
     ParseEpisodeError { reason: String, parent_id: i32 },
+    #[fail(display = "No Futures where produced to be run.")]
+    EmptyFuturesList,
+    #[fail(display = "Episode was not changed and thus skipped.")]
+    EpisodeNotChanged,
 }
 
 impl From<RunMigrationsError> for DataError {

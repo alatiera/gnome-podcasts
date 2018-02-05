@@ -96,7 +96,7 @@ impl Feed {
             // I am not sure what the optimizations are on match vs allocating None.
             .map(|fut| {
                 fut.and_then(|x| match x {
-                    IndexState::NotChanged => return Err(DataError::DiscountBail(format!("Nothing to do here."))),
+                    IndexState::NotChanged => return Err(DataError::EpisodeNotChanged),
                     _ => Ok(x),
                 })
             })
