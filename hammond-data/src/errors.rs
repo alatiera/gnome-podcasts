@@ -31,6 +31,9 @@ pub enum DataError {
     TLSError(#[cause] native_tls::Error),
     #[fail(display = "IO Error: {}", _0)]
     IOError(#[cause] io::Error),
+    #[fail(display = "RSS Error: {}", _0)]
+    // Rss::Error is not yet Sync
+    RssCrateError(String),
     #[fail(display = "WANNABE BAIL ERROR: {}", _0)]
     DiscountBail(String),
 }
