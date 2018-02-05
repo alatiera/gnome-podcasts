@@ -30,7 +30,7 @@ pub enum DataError {
     #[fail(display = "TLS Error: {}", _0)]
     TLSError(#[cause] native_tls::Error),
     #[fail(display = "IO Error: {}", _0)]
-    IOError(io::Error),
+    IOError(#[cause] io::Error),
     #[fail(display = "WANNABE BAIL ERROR: {}", _0)]
     DiscountBail(String),
 }
