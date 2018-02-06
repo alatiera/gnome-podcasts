@@ -2,6 +2,8 @@ use gtk;
 use gtk::Cast;
 use gtk::prelude::*;
 
+use failure::Error;
+
 use hammond_data::Podcast;
 use hammond_data::dbqueries;
 
@@ -46,13 +48,17 @@ impl Content {
         self.update_widget()
     }
 
+    // TODO: Maybe propagate the error?
     pub fn update_episode_view(&self) {
-        self.episodes.update();
+        if let Err(err) = self.episodes.update() {
+            error!("Something went wrong while trying to update the episode view.");
+            error!("Error: {}", err);
+        }
     }
 
     pub fn update_episode_view_if_baground(&self) {
         if self.stack.get_visible_child_name() != Some("episodes".into()) {
-            self.episodes.update();
+            self.update_episode_view();
         }
     }
 
@@ -270,24 +276,21 @@ impl EpisodeStack {
         EpisodeStack { stack, sender }
     }
 
-    pub fn update(&self) {
+    // Look into refactoring to a state-machine.
+    pub fn update(&self) -> Result<(), Error> {
         let old = self.stack
             .get_child_by_name("episodes")
-            // This is guaranted to exists, based on `EpisodeStack::new()`.
-            .unwrap()
+            .ok_or_else(|| format_err!("Faild to get \"episodes\" child from the stack."))?
             .downcast::<gtk::Box>()
-            // This is guaranted to be a Box based on the `EpisodesView` impl.
-            .unwrap();
+            .map_err(|_| format_err!("Failed to downcast stack child to a Box."))?;
         debug!("Name: {:?}", WidgetExt::get_name(&old));
 
         let scrolled_window = old.get_children()
             .first()
-            // This is guaranted to exist based on the episodes_view.ui file.
-            .unwrap()
+            .ok_or_else(|| format_err!("Box container has no childs."))?
             .clone()
             .downcast::<gtk::ScrolledWindow>()
-            // This is guaranted based on the episodes_view.ui file.
-            .unwrap();
+            .map_err(|_| format_err!("Failed to downcast stack child to a ScrolledWindow."))?;
         debug!("Name: {:?}", WidgetExt::get_name(&scrolled_window));
 
         let eps = EpisodesView::new(self.sender.clone());
@@ -306,5 +309,7 @@ impl EpisodeStack {
         }
 
         old.destroy();
+
+        Ok(())
     }
 }
