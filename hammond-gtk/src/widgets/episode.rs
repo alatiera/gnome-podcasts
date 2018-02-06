@@ -269,7 +269,7 @@ fn on_download_clicked(ep: &EpisodeWidgetQuery, sender: Sender<Action>) -> Resul
     let download_fold = get_download_folder(&pd.title().to_owned())?;
 
     // Start a new download.
-    manager::add(ep.rowid(), &download_fold, sender.clone());
+    manager::add(ep.rowid(), &download_fold, sender.clone())?;
 
     // Update Views
     sender.send(Action::RefreshEpisodesView)?;
