@@ -1,4 +1,5 @@
 use dissolve;
+use failure::Error;
 use gtk;
 use gtk::prelude::*;
 use open;
@@ -65,7 +66,9 @@ impl ShowWidget {
 
         self.unsub
             .connect_clicked(clone!(pd, sender => move |bttn| {
-            on_unsub_button_clicked(&pd, bttn, sender.clone());
+                if let Err(err) = on_unsub_button_clicked(&pd, bttn, sender.clone()) {
+                    error!("Error: {}", err);
+                }
         }));
 
         self.setup_listbox(pd, sender.clone());
@@ -76,9 +79,10 @@ impl ShowWidget {
         self.link.set_tooltip_text(Some(link.as_str()));
         self.link.connect_clicked(move |_| {
             info!("Opening link: {}", &link);
-            open::that(&link)
-                .err()
-                .map(|err| error!("Something went wrong: {}", err));
+            if let Err(err) = open::that(&link) {
+                error!("Failed to open link: {}", &link);
+                error!("Error: {}", err);
+            }
         });
     }
 
@@ -107,7 +111,11 @@ impl ShowWidget {
     }
 }
 
-fn on_unsub_button_clicked(pd: &Podcast, unsub_button: &gtk::Button, sender: Sender<Action>) {
+fn on_unsub_button_clicked(
+    pd: &Podcast,
+    unsub_button: &gtk::Button,
+    sender: Sender<Action>,
+) -> Result<(), Error> {
     // hack to get away without properly checking for none.
     // if pressed twice would panic.
     unsub_button.hide();
@@ -118,16 +126,19 @@ fn on_unsub_button_clicked(pd: &Podcast, unsub_button: &gtk::Button, sender: Sen
             error!("Error: {}", err);
         }
     }));
-    sender.send(Action::HeaderBarNormal).unwrap();
-    sender.send(Action::ShowShowsAnimated).unwrap();
+
+    sender.send(Action::HeaderBarNormal)?;
+    sender.send(Action::ShowShowsAnimated)?;
     // Queue a refresh after the switch to avoid blocking the db.
-    sender.send(Action::RefreshShowsView).unwrap();
-    sender.send(Action::RefreshEpisodesView).unwrap();
+    sender.send(Action::RefreshShowsView)?;
+    sender.send(Action::RefreshEpisodesView)?;
+
+    Ok(())
 }
 
 #[allow(dead_code)]
-fn on_played_button_clicked(pd: &Podcast, sender: Sender<Action>) {
-    let _ = dbqueries::update_none_to_played_now(pd);
-
-    sender.send(Action::RefreshWidget).unwrap();
+fn on_played_button_clicked(pd: &Podcast, sender: Sender<Action>) -> Result<(), Error> {
+    dbqueries::update_none_to_played_now(pd)?;
+    sender.send(Action::RefreshWidget)?;
+    Ok(())
 }
