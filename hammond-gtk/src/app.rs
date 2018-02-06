@@ -134,7 +134,12 @@ impl App {
                 Ok(Action::RefreshWidgetIfSame(id)) => content.update_widget_if_same(id),
                 Ok(Action::RefreshEpisodesView) => content.update_episode_view(),
                 Ok(Action::RefreshEpisodesViewBGR) => content.update_episode_view_if_baground(),
-                Ok(Action::ReplaceWidget(ref pd)) => content.get_shows().replace_widget(pd),
+                Ok(Action::ReplaceWidget(ref pd)) => {
+                    if let Err(err) = content.get_shows().replace_widget(pd) {
+                        error!("Something went wrong while trying to update the ShowWidget.");
+                        error!("Error: {}", err);
+                    }
+                }
                 Ok(Action::ShowWidgetAnimated) => content.get_shows().switch_widget_animated(),
                 Ok(Action::ShowShowsAnimated) => content.get_shows().switch_podcasts_animated(),
                 Ok(Action::HeaderBarShowTile(title)) => headerbar.switch_to_back(&title),
