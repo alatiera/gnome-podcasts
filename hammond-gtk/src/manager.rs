@@ -11,6 +11,9 @@ use std::sync::mpsc::Sender;
 // use std::path::PathBuf;
 use std::thread;
 
+// This is messy, undocumented and hacky af.
+// I am terrible at writting downloaders and download managers.
+
 #[derive(Debug)]
 pub struct Progress {
     total_bytes: u64,
