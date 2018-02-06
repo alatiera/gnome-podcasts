@@ -72,8 +72,11 @@ impl ShowWidget {
         }));
 
         self.setup_listbox(pd, sender.clone());
-        self.set_cover(pd);
         self.set_description(pd.description());
+
+        if let Err(err) = self.set_cover(pd) {
+            error!("Failed to set a cover: {}", err)
+        }
 
         let link = pd.link().to_owned();
         self.link.set_tooltip_text(Some(link.as_str()));
@@ -91,11 +94,11 @@ impl ShowWidget {
         let listbox = episodes_listbox(pd, sender.clone());
         listbox.ok().map(|l| self.episodes.add(&l));
     }
-
     /// Set the show cover.
-    fn set_cover(&self, pd: &Podcast) {
-        let img = get_pixbuf_from_path(&pd.clone().into(), 128);
-        img.map(|i| self.cover.set_from_pixbuf(&i));
+    fn set_cover(&self, pd: &Podcast) -> Result<(), Error> {
+        let image = get_pixbuf_from_path(&pd.clone().into(), 128)?;
+        self.cover.set_from_pixbuf(&image);
+        Ok(())
     }
 
     /// Set the descripton text.

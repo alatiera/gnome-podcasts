@@ -1,4 +1,5 @@
 use chrono::prelude::*;
+use failure::Error;
 use gtk;
 use gtk::prelude::*;
 
@@ -202,18 +203,30 @@ impl EpisodesViewWidget {
             gtk::Builder::new_from_resource("/org/gnome/hammond/gtk/episodes_view_widget.ui");
         let container: gtk::Box = builder.get_object("container").unwrap();
         let image: gtk::Image = builder.get_object("cover").unwrap();
-
-        if let Ok(pd) = dbqueries::get_podcast_cover_from_id(episode.podcast_id()) {
-            get_pixbuf_from_path(&pd, 64).map(|img| image.set_from_pixbuf(&img));
-        }
-
         let ep = EpisodeWidget::new(episode, sender.clone());
-        container.pack_start(&ep.container, true, true, 6);
 
-        EpisodesViewWidget {
+        let view = EpisodesViewWidget {
             container,
             image,
             episode: ep.container,
+        };
+
+        view.init(episode);
+        view
+    }
+
+    fn init(&self, episode: &mut EpisodeWidgetQuery) {
+        if let Err(err) = self.set_cover(episode) {
+            error!("Failed to set a cover: {}", err)
         }
+
+        self.container.pack_start(&self.episode, true, true, 6);
+    }
+
+    fn set_cover(&self, episode: &mut EpisodeWidgetQuery) -> Result<(), Error> {
+        let pd = dbqueries::get_podcast_cover_from_id(episode.podcast_id())?;
+        let img = get_pixbuf_from_path(&pd, 64)?;
+        self.image.set_from_pixbuf(&img);
+        Ok(())
     }
 }

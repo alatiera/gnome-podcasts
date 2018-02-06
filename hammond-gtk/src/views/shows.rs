@@ -1,3 +1,4 @@
+use failure::Error;
 use gtk;
 use gtk::prelude::*;
 
@@ -114,11 +115,16 @@ impl ShowsChild {
     fn init(&self, pd: &Podcast) {
         self.container.set_tooltip_text(pd.title());
 
-        let cover = get_pixbuf_from_path(&pd.clone().into(), 256);
-        if let Some(img) = cover {
-            self.cover.set_from_pixbuf(&img);
-        };
+        if let Err(err) = self.set_cover(pd) {
+            error!("Failed to set a cover: {}", err)
+        }
 
         WidgetExt::set_name(&self.child, &pd.id().to_string());
+    }
+
+    fn set_cover(&self, pd: &Podcast) -> Result<(), Error> {
+        let image = get_pixbuf_from_path(&pd.clone().into(), 256)?;
+        self.cover.set_from_pixbuf(&image);
+        Ok(())
     }
 }

@@ -73,24 +73,25 @@ lazy_static! {
 // GObjects do not implement Send trait, so SendCell is a way around that.
 // Also lazy_static requires Sync trait, so that's what the mutexes are.
 // TODO: maybe use something that would just scale to requested size?
-pub fn get_pixbuf_from_path(pd: &PodcastCoverQuery, size: u32) -> Option<Pixbuf> {
+pub fn get_pixbuf_from_path(pd: &PodcastCoverQuery, size: u32) -> Result<Pixbuf, Error> {
     {
-        let hashmap = CACHED_PIXBUFS.read().unwrap();
-        let res = hashmap.get(&(pd.id(), size));
-        if let Some(px) = res {
-            let m = px.lock().unwrap();
-            return Some(m.clone().into_inner());
+        let hashmap = CACHED_PIXBUFS
+            .read()
+            .map_err(|_| format_err!("Failed to get a lock on the pixbuf cache mutex."))?;
+        if let Some(px) = hashmap.get(&(pd.id(), size)) {
+            let m = px.lock()
+                .map_err(|_| format_err!("Failed to lock pixbuf mutex."))?;
+            return Ok(m.clone().into_inner());
         }
     }
 
-    let img_path = downloader::cache_image(pd).ok()?;
-    let px = Pixbuf::new_from_file_at_scale(&img_path, size as i32, size as i32, true).ok();
-    if let Some(px) = px {
-        let mut hashmap = CACHED_PIXBUFS.write().unwrap();
-        hashmap.insert((pd.id(), size), Mutex::new(SendCell::new(px.clone())));
-        return Some(px);
-    }
-    None
+    let img_path = downloader::cache_image(pd)?;
+    let px = Pixbuf::new_from_file_at_scale(&img_path, size as i32, size as i32, true)?;
+    let mut hashmap = CACHED_PIXBUFS
+        .write()
+        .map_err(|_| format_err!("Failed to lock pixbuf mutex."))?;
+    hashmap.insert((pd.id(), size), Mutex::new(SendCell::new(px.clone())));
+    Ok(px)
 }
 
 #[cfg(test)]
@@ -114,6 +115,6 @@ mod tests {
         // Get the Podcast
         let pd = dbqueries::get_podcast_from_source_id(sid).unwrap();
         let pxbuf = get_pixbuf_from_path(&pd.into(), 256);
-        assert!(pxbuf.is_some());
+        assert!(pxbuf.is_ok());
     }
 }
