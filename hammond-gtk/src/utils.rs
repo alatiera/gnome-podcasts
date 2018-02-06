@@ -1,5 +1,6 @@
 #![cfg_attr(feature = "cargo-clippy", allow(type_complexity))]
 
+use failure::Error;
 use gdk_pixbuf::Pixbuf;
 use send_cell::SendCell;
 
@@ -82,7 +83,7 @@ pub fn get_pixbuf_from_path(pd: &PodcastCoverQuery, size: u32) -> Option<Pixbuf>
         }
     }
 
-    let img_path = downloader::cache_image(pd)?;
+    let img_path = downloader::cache_image(pd).ok()?;
     let px = Pixbuf::new_from_file_at_scale(&img_path, size as i32, size as i32, true).ok();
     if let Some(px) = px {
         let mut hashmap = CACHED_PIXBUFS.write().unwrap();

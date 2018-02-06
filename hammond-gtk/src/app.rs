@@ -122,9 +122,9 @@ impl App {
             match receiver.recv_timeout(Duration::from_millis(10)) {
                 Ok(Action::UpdateSources(source)) => {
                     if let Some(s) = source {
-                        utils::refresh_feed(Some(vec![s]), sender.clone())
+                        utils::refresh_feed(Some(vec![s]), sender.clone());
                     } else {
-                        utils::refresh_feed(None, sender.clone())
+                        utils::refresh_feed(None, sender.clone());
                     }
                 }
                 Ok(Action::RefreshAllViews) => content.update(),
