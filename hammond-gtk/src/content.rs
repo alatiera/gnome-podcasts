@@ -67,18 +67,24 @@ impl Content {
     }
 
     pub fn update_widget(&self) {
-        self.shows.update_widget();
+        if let Err(err) = self.shows.update_widget() {
+            error!("Something went wrong while trying to update the Show Widget.");
+            error!("Error: {}", err);
+        }
     }
 
     pub fn update_widget_if_same(&self, pid: i32) {
-        self.shows.update_widget_if_same(pid);
+        if let Err(err) = self.shows.update_widget_if_same(pid) {
+            error!("Something went wrong while trying to update the Show Widget.");
+            error!("Error: {}", err);
+        }
     }
 
     pub fn update_widget_if_visible(&self) {
         if self.stack.get_visible_child_name() == Some("shows".to_string())
             && self.shows.get_stack().get_visible_child_name() == Some("widget".to_string())
         {
-            self.shows.update_widget();
+            self.update_widget();
         }
     }
 
@@ -209,32 +215,39 @@ impl ShowStack {
         self.stack.add_named(&new.container, "widget");
     }
 
-    pub fn update_widget(&self) {
-        let vis = self.stack.get_visible_child_name().unwrap();
-        let old = self.stack.get_child_by_name("widget").unwrap();
+    pub fn update_widget(&self) -> Result<(), Error> {
+        let vis = self.stack
+            .get_visible_child_name()
+            .ok_or_else(|| format_err!("Failed to get visible child name."))?;
+        let old = self.stack
+            .get_child_by_name("widget")
+            .ok_or_else(|| format_err!("Faild to get \"widget\" child from the stack."))?;
 
         let id = WidgetExt::get_name(&old);
         if id == Some("GtkBox".to_string()) || id.is_none() {
-            return;
+            return Ok(());
         }
 
-        let pd = dbqueries::get_podcast_from_id(id.unwrap().parse::<i32>().unwrap());
-        if let Ok(pd) = pd {
-            self.replace_widget(&pd);
-            self.stack.set_visible_child_name(&vis);
-            old.destroy();
-        }
+        let id = id.ok_or_else(|| format_err!("Failed to get widget's name."))?;
+        let pd = dbqueries::get_podcast_from_id(id.parse::<i32>()?)?;
+        self.replace_widget(&pd);
+        self.stack.set_visible_child_name(&vis);
+        old.destroy();
+        Ok(())
     }
 
     // Only update widget if it's podcast_id is equal to pid.
-    pub fn update_widget_if_same(&self, pid: i32) {
-        let old = self.stack.get_child_by_name("widget").unwrap();
+    pub fn update_widget_if_same(&self, pid: i32) -> Result<(), Error> {
+        let old = self.stack
+            .get_child_by_name("widget")
+            .ok_or_else(|| format_err!("Faild to get \"widget\" child from the stack."))?;
 
         let id = WidgetExt::get_name(&old);
         if id != Some(pid.to_string()) || id.is_none() {
-            return;
+            debug!("Different widget. Early return");
+            return Ok(());
         }
-        self.update_widget();
+        self.update_widget()
     }
 
     pub fn switch_podcasts_animated(&self) {
