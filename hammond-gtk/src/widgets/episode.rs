@@ -123,13 +123,20 @@ impl EpisodeWidget {
         self.show_buttons(episode.local_uri());
 
         // Determine what the state of the progress bar should be.
-        self.determine_progess_bar();
+        if let Err(err) = self.determine_progess_bar() {
+            error!("Something went wrong determining the ProgressBar State.");
+            error!("Error: {}", err);
+        }
 
         let title = &self.title;
         self.play
             .connect_clicked(clone!(episode, title, sender => move |_| {
             let mut episode = episode.clone();
-            on_play_bttn_clicked(episode.rowid());
+
+            if let Err(err) = on_play_bttn_clicked(episode.rowid()) {
+                error!("Error: {}", err);
+            };
+
             if episode.set_played_now().is_ok() {
                 title
                     .get_style_context()
@@ -141,7 +148,12 @@ impl EpisodeWidget {
         self.download
             .connect_clicked(clone!(episode, sender => move |dl| {
                 dl.set_sensitive(false);
-                on_download_clicked(&episode, sender.clone());
+                if let Err(err) = on_download_clicked(&episode, sender.clone())  {
+                    error!("Download failed to start.");
+                    error!("Error: {}", err);
+                } else {
+                    info!("Donwload started succesfully.");
+                }
         }));
     }
 
@@ -204,26 +216,22 @@ impl EpisodeWidget {
     }
 
     // FIXME: REFACTOR ME
-    fn determine_progess_bar(&self) {
+    // Something Something State-Machine?
+    fn determine_progess_bar(&self) -> Result<(), Error> {
         let id = WidgetExt::get_name(&self.container)
-            .unwrap()
-            .parse::<i32>()
-            .unwrap();
+            .ok_or_else(|| format_err!("Failed to get widget Name"))?
+            .parse::<i32>()?;
 
-        let prog_struct = || -> Option<_> {
-            if let Ok(m) = manager::ACTIVE_DOWNLOADS.read() {
-                if !m.contains_key(&id) {
-                    return None;
-                };
-                return m.get(&id).cloned();
-            }
-            None
-        }();
+        let active_dl = || -> Result<Option<_>, Error> {
+            let m = manager::ACTIVE_DOWNLOADS
+                .read()
+                .map_err(|_| format_err!("Failed to get a lock on the mutex."))?;
 
-        let progress_bar = self.progress.clone();
-        let total_size = self.total_size.clone();
-        let local_size = self.local_size.clone();
-        if let Some(prog) = prog_struct {
+            Ok(m.get(&id).cloned())
+        }()?;
+
+        if let Some(prog) = active_dl {
+            // FIXME: Document me?
             self.download.hide();
             self.progress.show();
             self.local_size.show();
@@ -232,13 +240,17 @@ impl EpisodeWidget {
             self.prog_separator.show();
             self.cancel.show();
 
+            let progress_bar = self.progress.clone();
+            let total_size = self.total_size.clone();
+            let local_size = self.local_size.clone();
+
             // Setup a callback that will update the progress bar.
-            update_progressbar_callback(prog.clone(), id, progress_bar, local_size);
+            update_progressbar_callback(prog.clone(), id, &progress_bar, &local_size);
 
             // Setup a callback that will update the total_size label
             // with the http ContentLength header number rather than
             // relying to the RSS feed.
-            update_total_size_callback(prog.clone(), total_size);
+            update_total_size_callback(prog.clone(), &total_size);
 
             self.cancel.connect_clicked(clone!(prog => move |cancel| {
                 if let Ok(mut m) = prog.lock() {
@@ -247,44 +259,37 @@ impl EpisodeWidget {
                 }
             }));
         }
+
+        Ok(())
     }
 }
 
-fn on_download_clicked(ep: &EpisodeWidgetQuery, sender: Sender<Action>) {
-    let download_fold = dbqueries::get_podcast_from_id(ep.podcast_id())
-        .ok()
-        .map(|pd| get_download_folder(&pd.title().to_owned()).ok())
-        .and_then(|x| x);
+fn on_download_clicked(ep: &EpisodeWidgetQuery, sender: Sender<Action>) -> Result<(), Error> {
+    let pd = dbqueries::get_podcast_from_id(ep.podcast_id())?;
+    let download_fold = get_download_folder(&pd.title().to_owned())?;
 
     // Start a new download.
-    if let Some(fold) = download_fold {
-        manager::add(ep.rowid(), &fold, sender.clone());
-    }
+    manager::add(ep.rowid(), &download_fold, sender.clone());
 
     // Update Views
-    sender.send(Action::RefreshEpisodesView).unwrap();
-    sender.send(Action::RefreshWidgetIfVis).unwrap();
+    sender.send(Action::RefreshEpisodesView)?;
+    sender.send(Action::RefreshWidgetIfVis)?;
+
+    Ok(())
 }
 
-fn on_play_bttn_clicked(episode_id: i32) {
-    let local_uri = dbqueries::get_episode_local_uri_from_id(episode_id)
-        .ok()
-        .and_then(|x| x);
+fn on_play_bttn_clicked(episode_id: i32) -> Result<(), Error> {
+    let uri = dbqueries::get_episode_local_uri_from_id(episode_id)?
+        .ok_or_else(|| format_err!("Expected Some found None."))?;
 
-    if let Some(uri) = local_uri {
-        if Path::new(&uri).exists() {
-            info!("Opening {}", uri);
-            open::that(&uri).err().map(|err| {
-                error!("Error while trying to open file: {}", uri);
-                error!("Error: {}", err);
-            });
-        }
+    if Path::new(&uri).exists() {
+        info!("Opening {}", uri);
+        open::that(&uri)?;
     } else {
-        error!(
-            "Something went wrong evaluating the following path: {:?}",
-            local_uri
-        );
+        bail!("File \"{}\" does not exist.", uri);
     }
+
+    Ok(())
 }
 
 // Setup a callback that will update the progress bar.
@@ -292,80 +297,102 @@ fn on_play_bttn_clicked(episode_id: i32) {
 fn update_progressbar_callback(
     prog: Arc<Mutex<manager::Progress>>,
     episode_rowid: i32,
-    progress_bar: gtk::ProgressBar,
-    local_size: gtk::Label,
+    progress_bar: &gtk::ProgressBar,
+    local_size: &gtk::Label,
 ) {
     timeout_add(
         400,
-        clone!(prog, progress_bar => move || {
-            let (fraction, downloaded) = {
-                let m = prog.lock().unwrap();
-                (m.get_fraction(), m.get_downloaded())
-            };
-
-            // Update local_size label
-            downloaded.file_size(SIZE_OPTS.clone()).ok().map(|x| local_size.set_text(&x));
-
-            // I hate floating points.
-            // Update the progress_bar.
-            if (fraction >= 0.0) && (fraction <= 1.0) && (!fraction.is_nan()) {
-                progress_bar.set_fraction(fraction);
-            }
-
-            // info!("Fraction: {}", progress_bar.get_fraction());
-            // info!("Fraction: {}", fraction);
-
-            // Check if the download is still active
-            let active = {
-                let m = manager::ACTIVE_DOWNLOADS.read().unwrap();
-                m.contains_key(&episode_rowid)
-            };
-
-            if (fraction >= 1.0) && (!fraction.is_nan()){
-                glib::Continue(false)
-            } else if !active {
-                glib::Continue(false)
-            } else {
-                glib::Continue(true)
-            }
+        clone!(prog, progress_bar, progress_bar, local_size=> move || {
+            progress_bar_helper(prog.clone(), episode_rowid, &progress_bar, &local_size)
+                .unwrap_or(glib::Continue(false))
         }),
     );
+}
+
+fn progress_bar_helper(
+    prog: Arc<Mutex<manager::Progress>>,
+    episode_rowid: i32,
+    progress_bar: &gtk::ProgressBar,
+    local_size: &gtk::Label,
+) -> Result<glib::Continue, Error> {
+    let (fraction, downloaded) = {
+        let m = prog.lock()
+            .map_err(|_| format_err!("Failed to get a lock on the mutex."))?;
+        (m.get_fraction(), m.get_downloaded())
+    };
+
+    // Update local_size label
+    downloaded
+        .file_size(SIZE_OPTS.clone())
+        .map_err(|err| format_err!("{}", err))
+        .map(|x| local_size.set_text(&x))?;
+
+    // I hate floating points.
+    // Update the progress_bar.
+    if (fraction >= 0.0) && (fraction <= 1.0) && (!fraction.is_nan()) {
+        progress_bar.set_fraction(fraction);
+    }
+
+    // info!("Fraction: {}", progress_bar.get_fraction());
+    // info!("Fraction: {}", fraction);
+
+    // Check if the download is still active
+    let active = {
+        let m = manager::ACTIVE_DOWNLOADS
+            .read()
+            .map_err(|_| format_err!("Failed to get a lock on the mutex."))?;
+        m.contains_key(&episode_rowid)
+    };
+
+    if (fraction >= 1.0) && (!fraction.is_nan()) {
+        Ok(glib::Continue(false))
+    } else if !active {
+        Ok(glib::Continue(false))
+    } else {
+        Ok(glib::Continue(true))
+    }
 }
 
 // Setup a callback that will update the total_size label
 // with the http ContentLength header number rather than
 // relying to the RSS feed.
-fn update_total_size_callback(prog: Arc<Mutex<manager::Progress>>, total_size: gtk::Label) {
+fn update_total_size_callback(prog: Arc<Mutex<manager::Progress>>, total_size: &gtk::Label) {
     timeout_add(
         500,
         clone!(prog, total_size => move || {
-            let total_bytes = {
-                let m = prog.lock().unwrap();
-                m.get_total_size()
-            };
-
-            debug!("Total Size: {}", total_bytes);
-            if total_bytes != 0 {
-                // Update the total_size label
-                total_bytes.file_size(SIZE_OPTS.clone()).ok().map(|x| total_size.set_text(&x));
-                glib::Continue(false)
-            } else {
-                glib::Continue(true)
-            }
+            total_size_helper(prog.clone(), &total_size).unwrap_or(glib::Continue(true))
         }),
     );
 }
 
-// fn on_delete_bttn_clicked(episode_id: i32) {
-//     let mut ep = dbqueries::get_episode_from_rowid(episode_id)
-//         .unwrap()
-//         .into();
+fn total_size_helper(
+    prog: Arc<Mutex<manager::Progress>>,
+    total_size: &gtk::Label,
+) -> Result<glib::Continue, Error> {
+    // Get the total_bytes.
+    let total_bytes = {
+        let m = prog.lock()
+            .map_err(|_| format_err!("Failed to get a lock on the mutex."))?;
+        m.get_total_size()
+    };
 
-//     let e = delete_local_content(&mut ep);
-//     if let Err(err) = e {
-//         error!("Error while trying to delete file: {:?}", ep.local_uri());
-//         error!("Error: {}", err);
-//     };
+    debug!("Total Size: {}", total_bytes);
+    if total_bytes != 0 {
+        // Update the total_size label
+        total_bytes
+            .file_size(SIZE_OPTS.clone())
+            .map_err(|err| format_err!("{}", err))
+            .map(|x| total_size.set_text(&x))?;
+        // Do not call again the callback
+        Ok(glib::Continue(false))
+    } else {
+        Ok(glib::Continue(true))
+    }
+}
+
+// fn on_delete_bttn_clicked(episode_id: i32) -> Result<(), Error> {
+//     let mut ep = dbqueries::get_episode_from_rowid(episode_id)?.into();
+//     delete_local_content(&mut ep).map_err(From::from).map(|_| ())
 // }
 
 pub fn episodes_listbox(pd: &Podcast, sender: Sender<Action>) -> Result<gtk::ListBox, Error> {

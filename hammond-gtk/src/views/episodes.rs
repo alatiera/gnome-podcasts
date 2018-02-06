@@ -9,7 +9,6 @@ use app::Action;
 use utils::get_pixbuf_from_path;
 use widgets::episode::EpisodeWidget;
 
-use std::sync::Arc;
 use std::sync::mpsc::Sender;
 
 #[derive(Debug, Clone)]
@@ -75,7 +74,7 @@ impl Default for EpisodesView {
 
 // TODO: REFACTOR ME
 impl EpisodesView {
-    pub fn new(sender: Sender<Action>) -> Arc<EpisodesView> {
+    pub fn new(sender: Sender<Action>) -> EpisodesView {
         let view = EpisodesView::default();
         let episodes = dbqueries::get_episodes_widgets_with_limit(50).unwrap();
         let now_utc = Utc::now();
@@ -124,7 +123,7 @@ impl EpisodesView {
         }
 
         view.container.show_all();
-        Arc::new(view)
+        view
     }
 
     pub fn is_empty(&self) -> bool {
