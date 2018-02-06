@@ -172,29 +172,24 @@ pub fn get_episode(
         ep.save()?;
     };
 
-    let res = download_into(
+    let path = download_into(
         download_folder,
         &ep.rowid().to_string(),
         ep.uri().unwrap(),
         progress,
-    );
+    )?;
 
-    if let Ok(path) = res {
-        // If download succedes set episode local_uri to dlpath.
-        ep.set_local_uri(Some(&path));
+    // If download succedes set episode local_uri to dlpath.
+    ep.set_local_uri(Some(&path));
 
-        // Over-write episode lenght
-        let size = fs::metadata(path);
-        if let Ok(s) = size {
-            ep.set_length(Some(s.len() as i32))
-        };
+    // Over-write episode lenght
+    let size = fs::metadata(path);
+    if let Ok(s) = size {
+        ep.set_length(Some(s.len() as i32))
+    };
 
-        ep.save()?;
-        Ok(())
-    } else {
-        error!("Something whent wrong while downloading.");
-        Err(res.unwrap_err())
-    }
+    ep.save()?;
+    Ok(())
 }
 
 pub fn cache_image(pd: &PodcastCoverQuery) -> Option<String> {
