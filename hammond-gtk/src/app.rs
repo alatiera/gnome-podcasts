@@ -23,7 +23,7 @@ pub enum Action {
     RefreshShowsView,
     RefreshWidget,
     RefreshWidgetIfVis,
-    ReplaceWidget(Podcast),
+    ReplaceWidget(Arc<Podcast>),
     RefreshWidgetIfSame(i32),
     ShowWidgetAnimated,
     ShowShowsAnimated,
@@ -136,7 +136,7 @@ impl App {
                 Ok(Action::RefreshEpisodesView) => content.update_episode_view(),
                 Ok(Action::RefreshEpisodesViewBGR) => content.update_episode_view_if_baground(),
                 Ok(Action::ReplaceWidget(pd)) => {
-                    if let Err(err) = content.get_shows().replace_widget(Arc::new(pd)) {
+                    if let Err(err) = content.get_shows().replace_widget(pd) {
                         error!("Something went wrong while trying to update the ShowWidget.");
                         error!("Error: {}", err);
                     }

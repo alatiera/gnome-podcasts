@@ -77,11 +77,11 @@ impl Default for EpisodesView {
 impl EpisodesView {
     pub fn new(sender: Sender<Action>) -> Result<EpisodesView, Error> {
         let view = EpisodesView::default();
-        let episodes = dbqueries::get_episodes_widgets_with_limit(50)?;
+        let mut episodes = dbqueries::get_episodes_widgets_with_limit(50)?;
         let now_utc = Utc::now();
 
-        episodes.into_iter().for_each(|mut ep| {
-            let viewep = EpisodesViewWidget::new(&mut ep, sender.clone());
+        episodes.iter_mut().for_each(|ep| {
+            let viewep = EpisodesViewWidget::new(ep, sender.clone());
 
             let t = split(&now_utc, i64::from(ep.epoch()));
             match t {

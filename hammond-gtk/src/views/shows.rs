@@ -84,7 +84,7 @@ fn on_child_activate(child: &gtk::FlowBoxChild, sender: Sender<Action>) -> Resul
     let id = WidgetExt::get_name(child)
         .ok_or_else(|| format_err!("Faild to get \"episodes\" child from the stack."))?
         .parse::<i32>()?;
-    let pd = dbqueries::get_podcast_from_id(id)?;
+    let pd = Arc::new(dbqueries::get_podcast_from_id(id)?);
 
     sender.send(Action::HeaderBarShowTile(pd.title().into()))?;
     sender.send(Action::ReplaceWidget(pd))?;
