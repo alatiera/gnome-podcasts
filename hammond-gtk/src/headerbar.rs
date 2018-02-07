@@ -11,7 +11,7 @@ use std::sync::Arc;
 use std::sync::mpsc::Sender;
 
 use app::Action;
-use content::Content;
+use stacks::Content;
 
 #[derive(Debug, Clone)]
 pub struct Header {

@@ -6,8 +6,8 @@ use gtk::prelude::*;
 use hammond_data::{Podcast, Source};
 use hammond_data::utils::checkup;
 
-use content::Content;
 use headerbar::Header;
+use stacks::Content;
 use utils;
 
 use std::sync::Arc;
