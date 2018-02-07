@@ -33,12 +33,12 @@ Tobias Bernard
   <object class="GtkBox" id="episode_container">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
+    <property name="valign">center</property>
     <property name="orientation">vertical</property>
     <child>
       <object class="GtkBox">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="spacing">6</property>
         <child>
           <object class="GtkBox">
             <property name="visible">True</property>
@@ -301,12 +301,14 @@ Tobias Bernard
       <object class="GtkProgressBar" id="progress_bar">
         <property name="can_focus">False</property>
         <property name="no_show_all">True</property>
+        <property name="margin_left">6</property>
+        <property name="margin_right">6</property>
+        <property name="margin_bottom">6</property>
         <property name="pulse_step">0</property>
       </object>
       <packing>
         <property name="expand">False</property>
-        <property name="fill">True</property>
-        <property name="padding">6</property>
+        <property name="fill">False</property>
         <property name="pack_type">end</property>
         <property name="position">1</property>
       </packing>
