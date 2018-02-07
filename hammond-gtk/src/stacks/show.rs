@@ -10,7 +10,7 @@ use hammond_data::dbqueries;
 use views::{EmptyView, ShowsPopulated};
 
 use app::Action;
-use widgets::show::ShowWidget;
+use widgets::ShowWidget;
 
 use std::sync::mpsc::Sender;
 

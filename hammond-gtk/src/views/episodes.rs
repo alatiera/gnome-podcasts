@@ -8,7 +8,7 @@ use hammond_data::dbqueries;
 
 use app::Action;
 use utils::get_pixbuf_from_path;
-use widgets::episode::EpisodeWidget;
+use widgets::EpisodeWidget;
 
 use std::sync::mpsc::Sender;
 

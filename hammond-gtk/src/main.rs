@@ -51,16 +51,18 @@ macro_rules! clone {
     );
 }
 
-mod views;
-mod widgets;
-mod stacks;
+// They do not need to be public
+// But it helps when looking at the generated docs.
+pub mod views;
+pub mod widgets;
+pub mod stacks;
 
-mod headerbar;
-mod app;
+pub mod headerbar;
+pub mod app;
 
-mod utils;
-mod manager;
-mod static_resource;
+pub mod utils;
+pub mod manager;
+pub mod static_resource;
 
 use app::App;
 
