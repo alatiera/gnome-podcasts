@@ -46,7 +46,7 @@ pub struct App {
 impl App {
     pub fn new() -> App {
         let application = gtk::Application::new("org.gnome.Hammond", ApplicationFlags::empty())
-            .expect("Initialization failed...");
+            .expect("Application Initialization failed...");
 
         // Weird magic I copy-pasted that sets the Application Name in the Shell.
         glib::set_application_name("Hammond");
