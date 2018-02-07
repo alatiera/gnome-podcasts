@@ -17,8 +17,7 @@ use std::sync::mpsc::Sender;
 
 #[derive(Debug, Clone)]
 pub struct ShowStack {
-    // FIXME: remove pub
-    pub stack: gtk::Stack,
+    stack: gtk::Stack,
     sender: Sender<Action>,
 }
 

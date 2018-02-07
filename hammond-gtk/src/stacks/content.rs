@@ -24,8 +24,8 @@ impl Content {
         let episodes = Arc::new(EpisodeStack::new(sender.clone())?);
         let shows = Arc::new(ShowStack::new(sender.clone())?);
 
-        stack.add_titled(&episodes.stack, "episodes", "Episodes");
-        stack.add_titled(&shows.stack, "shows", "Shows");
+        stack.add_titled(&episodes.get_stack(), "episodes", "Episodes");
+        stack.add_titled(&shows.get_stack(), "shows", "Shows");
 
         Ok(Content {
             stack,

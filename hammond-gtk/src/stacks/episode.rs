@@ -12,8 +12,7 @@ use std::sync::mpsc::Sender;
 
 #[derive(Debug, Clone)]
 pub struct EpisodeStack {
-    // FIXME: remove pub
-    pub stack: gtk::Stack,
+    stack: gtk::Stack,
     sender: Sender<Action>,
 }
 
@@ -70,5 +69,9 @@ impl EpisodeStack {
         old.destroy();
 
         Ok(())
+    }
+
+    pub fn get_stack(&self) -> gtk::Stack {
+        self.stack.clone()
     }
 }
