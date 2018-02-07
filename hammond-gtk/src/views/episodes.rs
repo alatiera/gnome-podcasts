@@ -77,13 +77,14 @@ impl Default for EpisodesView {
 impl EpisodesView {
     pub fn new(sender: Sender<Action>) -> Result<EpisodesView, Error> {
         let view = EpisodesView::default();
-        let mut episodes = dbqueries::get_episodes_widgets_with_limit(50)?;
+        let episodes = dbqueries::get_episodes_widgets_with_limit(50)?;
         let now_utc = Utc::now();
 
-        episodes.iter_mut().for_each(|ep| {
+        episodes.into_iter().for_each(|ep| {
+            let epoch = ep.epoch();
             let viewep = EpisodesViewWidget::new(ep, sender.clone());
 
-            let t = split(&now_utc, i64::from(ep.epoch()));
+            let t = split(&now_utc, i64::from(epoch));
             match t {
                 ListSplit::Today => {
                     view.today_list.add(&viewep.container);
@@ -198,11 +199,12 @@ impl Default for EpisodesViewWidget {
 }
 
 impl EpisodesViewWidget {
-    fn new(episode: &mut EpisodeWidgetQuery, sender: Sender<Action>) -> EpisodesViewWidget {
+    fn new(episode: EpisodeWidgetQuery, sender: Sender<Action>) -> EpisodesViewWidget {
         let builder =
             gtk::Builder::new_from_resource("/org/gnome/hammond/gtk/episodes_view_widget.ui");
         let container: gtk::Box = builder.get_object("container").unwrap();
         let image: gtk::Image = builder.get_object("cover").unwrap();
+        let pid = episode.podcast_id();
         let ep = EpisodeWidget::new(episode, sender.clone());
 
         let view = EpisodesViewWidget {
@@ -211,20 +213,20 @@ impl EpisodesViewWidget {
             episode: ep.container,
         };
 
-        view.init(episode);
+        view.init(pid);
         view
     }
 
-    fn init(&self, episode: &mut EpisodeWidgetQuery) {
-        if let Err(err) = self.set_cover(episode) {
+    fn init(&self, podcast_id: i32) {
+        if let Err(err) = self.set_cover(podcast_id) {
             error!("Failed to set a cover: {}", err)
         }
 
         self.container.pack_start(&self.episode, true, true, 6);
     }
 
-    fn set_cover(&self, episode: &mut EpisodeWidgetQuery) -> Result<(), Error> {
-        let pd = dbqueries::get_podcast_cover_from_id(episode.podcast_id())?;
+    fn set_cover(&self, podcast_id: i32) -> Result<(), Error> {
+        let pd = dbqueries::get_podcast_cover_from_id(podcast_id)?;
         let img = get_pixbuf_from_path(&pd, 64)?;
         self.image.set_from_pixbuf(&img);
         Ok(())

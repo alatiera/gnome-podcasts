@@ -98,17 +98,17 @@ lazy_static! {
 }
 
 impl EpisodeWidget {
-    pub fn new(episode: &mut EpisodeWidgetQuery, sender: Sender<Action>) -> EpisodeWidget {
+    pub fn new(episode: EpisodeWidgetQuery, sender: Sender<Action>) -> EpisodeWidget {
         let widget = EpisodeWidget::default();
         widget.init(episode, sender);
         widget
     }
 
-    fn init(&self, episode: &mut EpisodeWidgetQuery, sender: Sender<Action>) {
+    fn init(&self, episode: EpisodeWidgetQuery, sender: Sender<Action>) {
         WidgetExt::set_name(&self.container, &episode.rowid().to_string());
 
         // Set the title label state.
-        self.set_title(episode);
+        self.set_title(&episode);
 
         // Set the size label.
         self.set_total_size(episode.length());
@@ -128,31 +128,28 @@ impl EpisodeWidget {
             error!("Error: {}", err);
         }
 
-        let title = &self.title;
+        let episode = Arc::new(Mutex::new(episode));
+
+        let title = self.title.clone();
         self.play
-            .connect_clicked(clone!(episode, title, sender => move |_| {
-            let mut episode = episode.clone();
-
-            if let Err(err) = on_play_bttn_clicked(episode.rowid()) {
-                error!("Error: {}", err);
-            };
-
-            if episode.set_played_now().is_ok() {
-                title
-                    .get_style_context()
-                    .map(|c| c.add_class("dim-label"));
-                sender.send(Action::RefreshEpisodesViewBGR).unwrap();
-            };
+            .connect_clicked(clone!(episode, sender => move |_| {
+                if let Ok(mut ep) = episode.lock() {
+                    if let Err(err) = on_play_bttn_clicked(&mut ep, &title, sender.clone()){
+                        error!("Error: {}", err);
+                    };
+                }
         }));
 
         self.download
             .connect_clicked(clone!(episode, sender => move |dl| {
                 dl.set_sensitive(false);
-                if let Err(err) = on_download_clicked(&episode, sender.clone())  {
-                    error!("Download failed to start.");
-                    error!("Error: {}", err);
-                } else {
-                    info!("Donwload started succesfully.");
+                if let Ok(ep) = episode.lock() {
+                    if let Err(err) = on_download_clicked(&ep, sender.clone())  {
+                        error!("Download failed to start.");
+                        error!("Error: {}", err);
+                    } else {
+                        info!("Donwload started succesfully.");
+                    }
                 }
         }));
     }
@@ -278,8 +275,23 @@ fn on_download_clicked(ep: &EpisodeWidgetQuery, sender: Sender<Action>) -> Resul
     Ok(())
 }
 
-fn on_play_bttn_clicked(episode_id: i32) -> Result<(), Error> {
-    let uri = dbqueries::get_episode_local_uri_from_id(episode_id)?
+fn on_play_bttn_clicked(
+    episode: &mut EpisodeWidgetQuery,
+    title: &gtk::Label,
+    sender: Sender<Action>,
+) -> Result<(), Error> {
+    open_uri(episode.rowid())?;
+
+    if episode.set_played_now().is_ok() {
+        title.get_style_context().map(|c| c.add_class("dim-label"));
+        sender.send(Action::RefreshEpisodesViewBGR).unwrap();
+    };
+
+    Ok(())
+}
+
+fn open_uri(rowid: i32) -> Result<(), Error> {
+    let uri = dbqueries::get_episode_local_uri_from_id(rowid)?
         .ok_or_else(|| format_err!("Expected Some found None."))?;
 
     if Path::new(&uri).exists() {
@@ -396,11 +408,11 @@ fn total_size_helper(
 // }
 
 pub fn episodes_listbox(pd: &Podcast, sender: Sender<Action>) -> Result<gtk::ListBox, Error> {
-    let mut episodes = dbqueries::get_pd_episodeswidgets(pd)?;
+    let episodes = dbqueries::get_pd_episodeswidgets(pd)?;
 
     let list = gtk::ListBox::new();
 
-    episodes.iter_mut().for_each(|ep| {
+    episodes.into_iter().for_each(|ep| {
         let widget = EpisodeWidget::new(ep, sender.clone());
         list.add(&widget.container);
     });

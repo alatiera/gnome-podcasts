@@ -72,7 +72,7 @@ impl ShowWidget {
                 }
         }));
 
-        self.setup_listbox(pd.clone(), sender.clone());
+        self.setup_listbox(&pd, sender.clone());
         self.set_description(pd.description());
 
         if let Err(err) = self.set_cover(pd.clone()) {
@@ -91,8 +91,8 @@ impl ShowWidget {
     }
 
     /// Populate the listbox with the shows episodes.
-    fn setup_listbox(&self, pd: Arc<Podcast>, sender: Sender<Action>) {
-        let listbox = episodes_listbox(&pd, sender.clone());
+    fn setup_listbox(&self, pd: &Podcast, sender: Sender<Action>) {
+        let listbox = episodes_listbox(pd, sender.clone());
         listbox.ok().map(|l| self.episodes.add(&l));
     }
 
@@ -142,8 +142,8 @@ fn on_unsub_button_clicked(
 }
 
 #[allow(dead_code)]
-fn on_played_button_clicked(pd: Arc<Podcast>, sender: Sender<Action>) -> Result<(), Error> {
-    dbqueries::update_none_to_played_now(&pd)?;
+fn on_played_button_clicked(pd: &Podcast, sender: Sender<Action>) -> Result<(), Error> {
+    dbqueries::update_none_to_played_now(pd)?;
     sender.send(Action::RefreshWidget)?;
     Ok(())
 }
