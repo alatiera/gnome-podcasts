@@ -12,6 +12,7 @@ use app::Action;
 use utils::get_pixbuf_from_path;
 use widgets::episode::episodes_listbox;
 
+use std::sync::Arc;
 use std::sync::mpsc::Sender;
 use std::thread;
 
@@ -54,27 +55,27 @@ impl Default for ShowWidget {
 }
 
 impl ShowWidget {
-    pub fn new(pd: &Podcast, sender: Sender<Action>) -> ShowWidget {
+    pub fn new(pd: Arc<Podcast>, sender: Sender<Action>) -> ShowWidget {
         let pdw = ShowWidget::default();
         pdw.init(pd, sender);
         pdw
     }
 
-    pub fn init(&self, pd: &Podcast, sender: Sender<Action>) {
+    pub fn init(&self, pd: Arc<Podcast>, sender: Sender<Action>) {
         // Hacky workaround so the pd.id() can be retrieved from the `ShowStack`.
         WidgetExt::set_name(&self.container, &pd.id().to_string());
 
         self.unsub
             .connect_clicked(clone!(pd, sender => move |bttn| {
-                if let Err(err) = on_unsub_button_clicked(&pd, bttn, sender.clone()) {
+                if let Err(err) = on_unsub_button_clicked(pd.clone(), bttn, sender.clone()) {
                     error!("Error: {}", err);
                 }
         }));
 
-        self.setup_listbox(pd, sender.clone());
+        self.setup_listbox(pd.clone(), sender.clone());
         self.set_description(pd.description());
 
-        if let Err(err) = self.set_cover(pd) {
+        if let Err(err) = self.set_cover(pd.clone()) {
             error!("Failed to set a cover: {}", err)
         }
 
@@ -90,13 +91,14 @@ impl ShowWidget {
     }
 
     /// Populate the listbox with the shows episodes.
-    fn setup_listbox(&self, pd: &Podcast, sender: Sender<Action>) {
-        let listbox = episodes_listbox(pd, sender.clone());
+    fn setup_listbox(&self, pd: Arc<Podcast>, sender: Sender<Action>) {
+        let listbox = episodes_listbox(&pd, sender.clone());
         listbox.ok().map(|l| self.episodes.add(&l));
     }
+
     /// Set the show cover.
-    fn set_cover(&self, pd: &Podcast) -> Result<(), Error> {
-        let image = get_pixbuf_from_path(&pd.clone().into(), 128)?;
+    fn set_cover(&self, pd: Arc<Podcast>) -> Result<(), Error> {
+        let image = get_pixbuf_from_path(&pd.into(), 128)?;
         self.cover.set_from_pixbuf(&image);
         Ok(())
     }
@@ -115,7 +117,7 @@ impl ShowWidget {
 }
 
 fn on_unsub_button_clicked(
-    pd: &Podcast,
+    pd: Arc<Podcast>,
     unsub_button: &gtk::Button,
     sender: Sender<Action>,
 ) -> Result<(), Error> {
@@ -123,12 +125,12 @@ fn on_unsub_button_clicked(
     // if pressed twice would panic.
     unsub_button.hide();
     // Spawn a thread so it won't block the ui.
-    thread::spawn(clone!(pd => move || {
+    thread::spawn(move || {
         if let Err(err) = delete_show(&pd) {
             error!("Something went wrong trying to remove {}", pd.title());
             error!("Error: {}", err);
         }
-    }));
+    });
 
     sender.send(Action::HeaderBarNormal)?;
     sender.send(Action::ShowShowsAnimated)?;
@@ -140,8 +142,8 @@ fn on_unsub_button_clicked(
 }
 
 #[allow(dead_code)]
-fn on_played_button_clicked(pd: &Podcast, sender: Sender<Action>) -> Result<(), Error> {
-    dbqueries::update_none_to_played_now(pd)?;
+fn on_played_button_clicked(pd: Arc<Podcast>, sender: Sender<Action>) -> Result<(), Error> {
+    dbqueries::update_none_to_played_now(&pd)?;
     sender.send(Action::RefreshWidget)?;
     Ok(())
 }

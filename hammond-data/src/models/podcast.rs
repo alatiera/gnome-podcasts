@@ -5,6 +5,8 @@ use errors::DataError;
 use models::{Save, Source};
 use schema::podcast;
 
+use std::sync::Arc;
+
 #[derive(Queryable, Identifiable, AsChangeset, Associations, PartialEq)]
 #[belongs_to(Source, foreign_key = "source_id")]
 #[changeset_options(treat_none_as_null = "true")]
@@ -134,6 +136,16 @@ impl From<Podcast> for PodcastCoverQuery {
             id: p.id(),
             title: p.title,
             image_uri: p.image_uri,
+        }
+    }
+}
+
+impl From<Arc<Podcast>> for PodcastCoverQuery {
+    fn from(p: Arc<Podcast>) -> PodcastCoverQuery {
+        PodcastCoverQuery {
+            id: p.id(),
+            title: p.title.clone(),
+            image_uri: p.image_uri.clone(),
         }
     }
 }

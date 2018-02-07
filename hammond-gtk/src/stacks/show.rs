@@ -12,6 +12,7 @@ use views::{EmptyView, ShowsPopulated};
 use app::Action;
 use widgets::ShowWidget;
 
+use std::sync::Arc;
 use std::sync::mpsc::Sender;
 
 #[derive(Debug, Clone)]
@@ -93,7 +94,7 @@ impl ShowStack {
         Ok(())
     }
 
-    pub fn replace_widget(&self, pd: &Podcast) -> Result<(), Error> {
+    pub fn replace_widget(&self, pd: Arc<Podcast>) -> Result<(), Error> {
         let old = self.stack
             .get_child_by_name("widget")
             .ok_or_else(|| format_err!("Faild to get \"widget\" child from the stack."))?
@@ -144,7 +145,7 @@ impl ShowStack {
 
         let id = id.ok_or_else(|| format_err!("Failed to get widget's name."))?;
         let pd = dbqueries::get_podcast_from_id(id.parse::<i32>()?)?;
-        self.replace_widget(&pd)?;
+        self.replace_widget(Arc::new(pd))?;
         self.stack.set_visible_child_name(&vis);
         old.destroy();
         Ok(())

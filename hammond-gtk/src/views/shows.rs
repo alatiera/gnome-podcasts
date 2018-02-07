@@ -8,6 +8,7 @@ use hammond_data::dbqueries;
 use app::Action;
 use utils::get_pixbuf_from_path;
 
+use std::sync::Arc;
 use std::sync::mpsc::Sender;
 
 #[derive(Debug, Clone)]
@@ -55,10 +56,13 @@ impl ShowsPopulated {
     fn populate_flowbox(&self) -> Result<(), Error> {
         let podcasts = dbqueries::get_podcasts()?;
 
-        podcasts.iter().for_each(|parent| {
-            let flowbox_child = ShowsChild::new(parent);
-            self.flowbox.add(&flowbox_child.child);
-        });
+        podcasts
+            .into_iter()
+            .map(|pd| Arc::new(pd))
+            .for_each(|parent| {
+                let flowbox_child = ShowsChild::new(parent);
+                self.flowbox.add(&flowbox_child.child);
+            });
         self.flowbox.show_all();
         Ok(())
     }
@@ -114,23 +118,23 @@ impl Default for ShowsChild {
 }
 
 impl ShowsChild {
-    pub fn new(pd: &Podcast) -> ShowsChild {
+    pub fn new(pd: Arc<Podcast>) -> ShowsChild {
         let child = ShowsChild::default();
         child.init(pd);
         child
     }
 
-    fn init(&self, pd: &Podcast) {
+    fn init(&self, pd: Arc<Podcast>) {
         self.container.set_tooltip_text(pd.title());
 
-        if let Err(err) = self.set_cover(pd) {
+        if let Err(err) = self.set_cover(pd.clone()) {
             error!("Failed to set a cover: {}", err)
         }
 
         WidgetExt::set_name(&self.child, &pd.id().to_string());
     }
 
-    fn set_cover(&self, pd: &Podcast) -> Result<(), Error> {
+    fn set_cover(&self, pd: Arc<Podcast>) -> Result<(), Error> {
         let image = get_pixbuf_from_path(&pd.clone().into(), 256)?;
         self.cover.set_from_pixbuf(&image);
         Ok(())

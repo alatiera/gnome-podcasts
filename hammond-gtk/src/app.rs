@@ -135,8 +135,8 @@ impl App {
                 Ok(Action::RefreshWidgetIfSame(id)) => content.update_widget_if_same(id),
                 Ok(Action::RefreshEpisodesView) => content.update_episode_view(),
                 Ok(Action::RefreshEpisodesViewBGR) => content.update_episode_view_if_baground(),
-                Ok(Action::ReplaceWidget(ref pd)) => {
-                    if let Err(err) = content.get_shows().replace_widget(pd) {
+                Ok(Action::ReplaceWidget(pd)) => {
+                    if let Err(err) = content.get_shows().replace_widget(Arc::new(pd)) {
                         error!("Something went wrong while trying to update the ShowWidget.");
                         error!("Error: {}", err);
                     }
