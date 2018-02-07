@@ -7,8 +7,7 @@ use failure::Error;
 use hammond_data::Podcast;
 use hammond_data::dbqueries;
 
-use views::empty::EmptyView;
-use views::shows::ShowsPopulated;
+use views::{EmptyView, ShowsPopulated};
 
 use app::Action;
 use widgets::show::ShowWidget;

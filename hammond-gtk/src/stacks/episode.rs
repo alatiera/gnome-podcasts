@@ -4,8 +4,7 @@ use gtk::prelude::*;
 
 use failure::Error;
 
-use views::empty::EmptyView;
-use views::episodes::EpisodesView;
+use views::{EmptyView, EpisodesView};
 
 use app::Action;
 
