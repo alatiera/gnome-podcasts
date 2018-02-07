@@ -26,20 +26,20 @@ pub struct Content {
 }
 
 impl Content {
-    pub fn new(sender: Sender<Action>) -> Content {
+    pub fn new(sender: Sender<Action>) -> Result<Content, Error> {
         let stack = gtk::Stack::new();
-        let episodes = Arc::new(EpisodeStack::new(sender.clone()));
-        let shows = Arc::new(ShowStack::new(sender.clone()));
+        let episodes = Arc::new(EpisodeStack::new(sender.clone())?);
+        let shows = Arc::new(ShowStack::new(sender.clone())?);
 
         stack.add_titled(&episodes.stack, "episodes", "Episodes");
         stack.add_titled(&shows.stack, "shows", "Shows");
 
-        Content {
+        Ok(Content {
             stack,
             shows,
             episodes,
             sender,
-        }
+        })
     }
 
     pub fn update(&self) {
@@ -107,7 +107,7 @@ pub struct ShowStack {
 }
 
 impl ShowStack {
-    fn new(sender: Sender<Action>) -> ShowStack {
+    fn new(sender: Sender<Action>) -> Result<ShowStack, Error> {
         let stack = gtk::Stack::new();
 
         let show = ShowStack {
@@ -115,7 +115,7 @@ impl ShowStack {
             sender: sender.clone(),
         };
 
-        let pop = ShowsPopulated::new(sender.clone());
+        let pop = ShowsPopulated::new(sender.clone())?;
         let widget = ShowWidget::default();
         let empty = EmptyView::new();
 
@@ -129,7 +129,7 @@ impl ShowStack {
             show.stack.set_visible_child_name("podcasts")
         }
 
-        show
+        Ok(show)
     }
 
     // pub fn update(&self) {
@@ -138,7 +138,9 @@ impl ShowStack {
     // }
 
     pub fn update_podcasts(&self) -> Result<(), Error> {
-        let vis = self.stack.get_visible_child_name().unwrap();
+        let vis = self.stack
+            .get_visible_child_name()
+            .ok_or_else(|| format_err!("Failed to get visible child name."))?;
 
         let old = self.stack
             .get_child_by_name("podcasts")
@@ -155,7 +157,7 @@ impl ShowStack {
             .map_err(|_| format_err!("Failed to downcast stack child to a ScrolledWindow."))?;
         debug!("Name: {:?}", WidgetExt::get_name(&scrolled_window));
 
-        let pop = ShowsPopulated::new(self.sender.clone());
+        let pop = ShowsPopulated::new(self.sender.clone())?;
         // Copy the vertical scrollbar adjustment from the old view into the new one.
         scrolled_window
             .get_vadjustment()
@@ -269,8 +271,8 @@ pub struct EpisodeStack {
 }
 
 impl EpisodeStack {
-    fn new(sender: Sender<Action>) -> EpisodeStack {
-        let episodes = EpisodesView::new(sender.clone());
+    fn new(sender: Sender<Action>) -> Result<EpisodeStack, Error> {
+        let episodes = EpisodesView::new(sender.clone())?;
         let empty = EmptyView::new();
         let stack = gtk::Stack::new();
 
@@ -283,7 +285,7 @@ impl EpisodeStack {
             stack.set_visible_child_name("episodes");
         }
 
-        EpisodeStack { stack, sender }
+        Ok(EpisodeStack { stack, sender })
     }
 
     // Look into refactoring to a state-machine.
@@ -303,7 +305,7 @@ impl EpisodeStack {
             .map_err(|_| format_err!("Failed to downcast stack child to a ScrolledWindow."))?;
         debug!("Name: {:?}", WidgetExt::get_name(&scrolled_window));
 
-        let eps = EpisodesView::new(self.sender.clone());
+        let eps = EpisodesView::new(self.sender.clone())?;
         // Copy the vertical scrollbar adjustment from the old view into the new one.
         scrolled_window
             .get_vadjustment()

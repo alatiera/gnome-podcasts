@@ -90,7 +90,9 @@ impl Header {
         self.add_toggle.set_popover(&add_popover);
 
         self.update_button.connect_clicked(move |_| {
-            sender.send(Action::UpdateSources(None)).unwrap();
+            sender
+                .send(Action::UpdateSources(None))
+                .expect("Action channel blew up.");
         });
 
         self.about_button

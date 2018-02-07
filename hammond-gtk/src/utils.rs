@@ -17,14 +17,23 @@ use std::thread;
 
 use app::Action;
 
+pub fn refresh_feed_wrapper(source: Option<Vec<Source>>, sender: Sender<Action>) {
+    if let Err(err) = refresh_feed(source, sender) {
+        error!("An error occured while trying to update the feeds.");
+        error!("Error: {}", err);
+    }
+}
+
 /// Update the rss feed(s) originating from `source`.
 /// If `source` is None, Fetches all the `Source` entries in the database and updates them.
 /// When It's done,it queues up a `RefreshViews` action.
-pub fn refresh_feed(source: Option<Vec<Source>>, sender: Sender<Action>) {
-    sender.send(Action::HeaderBarShowUpdateIndicator).unwrap();
+fn refresh_feed(source: Option<Vec<Source>>, sender: Sender<Action>) -> Result<(), Error> {
+    sender.send(Action::HeaderBarShowUpdateIndicator)?;
 
     thread::spawn(move || {
-        let mut sources = source.unwrap_or_else(|| dbqueries::get_sources().unwrap());
+        let mut sources = source.unwrap_or_else(|| {
+            dbqueries::get_sources().expect("Failed to retrieve Sources from the database.")
+        });
 
         // Work around to improve the feed addition experience.
         // Many times links to rss feeds are just redirects(usually to an https version).
@@ -40,11 +49,11 @@ pub fn refresh_feed(source: Option<Vec<Source>>, sender: Sender<Action>) {
             if let Err(err) = pipeline::index_single_source(source, false) {
                 error!("Error While trying to update the database.");
                 error!("Error msg: {}", err);
-                let source = dbqueries::get_source_from_id(id).unwrap();
-
-                if let Err(err) = pipeline::index_single_source(source, false) {
-                    error!("Error While trying to update the database.");
-                    error!("Error msg: {}", err);
+                if let Ok(source) = dbqueries::get_source_from_id(id) {
+                    if let Err(err) = pipeline::index_single_source(source, false) {
+                        error!("Error While trying to update the database.");
+                        error!("Error msg: {}", err);
+                    }
                 }
             }
         } else {
@@ -55,9 +64,14 @@ pub fn refresh_feed(source: Option<Vec<Source>>, sender: Sender<Action>) {
             }
         }
 
-        sender.send(Action::HeaderBarHideUpdateIndicator).unwrap();
-        sender.send(Action::RefreshAllViews).unwrap();
+        sender
+            .send(Action::HeaderBarHideUpdateIndicator)
+            .expect("Action channel blew up.");
+        sender
+            .send(Action::RefreshAllViews)
+            .expect("Action channel blew up.");
     });
+    Ok(())
 }
 
 lazy_static! {

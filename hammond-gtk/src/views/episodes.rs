@@ -75,9 +75,9 @@ impl Default for EpisodesView {
 
 // TODO: REFACTOR ME
 impl EpisodesView {
-    pub fn new(sender: Sender<Action>) -> EpisodesView {
+    pub fn new(sender: Sender<Action>) -> Result<EpisodesView, Error> {
         let view = EpisodesView::default();
-        let episodes = dbqueries::get_episodes_widgets_with_limit(50).unwrap();
+        let episodes = dbqueries::get_episodes_widgets_with_limit(50)?;
         let now_utc = Utc::now();
 
         episodes.into_iter().for_each(|mut ep| {
@@ -124,7 +124,7 @@ impl EpisodesView {
         }
 
         view.container.show_all();
-        view
+        Ok(view)
     }
 
     pub fn is_empty(&self) -> bool {

@@ -112,8 +112,12 @@ pub fn add(id: i32, directory: &str, sender: Sender<Action>) -> Result<(), Error
             //     }
             // }
 
-            sender.send(Action::RefreshEpisodesView).unwrap();
-            sender.send(Action::RefreshWidgetIfSame(pid)).unwrap();
+            sender
+                .send(Action::RefreshEpisodesView)
+                .expect("Action channel blew up.");
+            sender
+                .send(Action::RefreshWidgetIfSame(pid))
+                .expect("Action channel blew up.");
         }
     });
 

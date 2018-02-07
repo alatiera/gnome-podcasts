@@ -33,41 +33,34 @@ impl Default for ShowsPopulated {
 }
 
 impl ShowsPopulated {
-    pub fn new(sender: Sender<Action>) -> ShowsPopulated {
+    pub fn new(sender: Sender<Action>) -> Result<ShowsPopulated, Error> {
         let pop = ShowsPopulated::default();
-        pop.init(sender);
-        pop
+        pop.init(sender)?;
+        Ok(pop)
     }
 
-    pub fn init(&self, sender: Sender<Action>) {
-        use gtk::WidgetExt;
-
-        // TODO: handle unwraps.
+    pub fn init(&self, sender: Sender<Action>) -> Result<(), Error> {
         self.flowbox.connect_child_activated(move |_, child| {
-            // This is such an ugly hack...
-            let id = WidgetExt::get_name(child).unwrap().parse::<i32>().unwrap();
-            let pd = dbqueries::get_podcast_from_id(id).unwrap();
-
-            sender
-                .send(Action::HeaderBarShowTile(pd.title().into()))
-                .unwrap();
-            sender.send(Action::ReplaceWidget(pd)).unwrap();
-            sender.send(Action::ShowWidgetAnimated).unwrap();
+            if let Err(err) = on_child_activate(child, sender.clone()) {
+                error!(
+                    "Something went wrong during flowbox child activation: {}.",
+                    err
+                )
+            };
         });
         // Populate the flowbox with the Podcasts.
-        self.populate_flowbox();
+        self.populate_flowbox()
     }
 
-    fn populate_flowbox(&self) {
-        let podcasts = dbqueries::get_podcasts();
+    fn populate_flowbox(&self) -> Result<(), Error> {
+        let podcasts = dbqueries::get_podcasts()?;
 
-        if let Ok(pds) = podcasts {
-            pds.iter().for_each(|parent| {
-                let flowbox_child = ShowsChild::new(parent);
-                self.flowbox.add(&flowbox_child.child);
-            });
-            self.flowbox.show_all();
-        }
+        podcasts.iter().for_each(|parent| {
+            let flowbox_child = ShowsChild::new(parent);
+            self.flowbox.add(&flowbox_child.child);
+        });
+        self.flowbox.show_all();
+        Ok(())
     }
 
     pub fn is_empty(&self) -> bool {
@@ -78,6 +71,21 @@ impl ShowsPopulated {
     pub fn set_vadjustment(&self, vadjustment: &gtk::Adjustment) {
         self.scrolled_window.set_vadjustment(vadjustment)
     }
+}
+
+fn on_child_activate(child: &gtk::FlowBoxChild, sender: Sender<Action>) -> Result<(), Error> {
+    use gtk::WidgetExt;
+
+    // This is such an ugly hack...
+    let id = WidgetExt::get_name(child)
+        .ok_or_else(|| format_err!("Faild to get \"episodes\" child from the stack."))?
+        .parse::<i32>()?;
+    let pd = dbqueries::get_podcast_from_id(id)?;
+
+    sender.send(Action::HeaderBarShowTile(pd.title().into()))?;
+    sender.send(Action::ReplaceWidget(pd))?;
+    sender.send(Action::ShowWidgetAnimated)?;
+    Ok(())
 }
 
 #[derive(Debug)]
