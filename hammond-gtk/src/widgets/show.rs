@@ -1,4 +1,5 @@
 use dissolve;
+use failure::Error;
 use gtk;
 use gtk::prelude::*;
 use open;
@@ -65,20 +66,26 @@ impl ShowWidget {
 
         self.unsub
             .connect_clicked(clone!(pd, sender => move |bttn| {
-            on_unsub_button_clicked(&pd, bttn, sender.clone());
+                if let Err(err) = on_unsub_button_clicked(&pd, bttn, sender.clone()) {
+                    error!("Error: {}", err);
+                }
         }));
 
         self.setup_listbox(pd, sender.clone());
-        self.set_cover(pd);
         self.set_description(pd.description());
+
+        if let Err(err) = self.set_cover(pd) {
+            error!("Failed to set a cover: {}", err)
+        }
 
         let link = pd.link().to_owned();
         self.link.set_tooltip_text(Some(link.as_str()));
         self.link.connect_clicked(move |_| {
             info!("Opening link: {}", &link);
-            open::that(&link)
-                .err()
-                .map(|err| error!("Something went wrong: {}", err));
+            if let Err(err) = open::that(&link) {
+                error!("Failed to open link: {}", &link);
+                error!("Error: {}", err);
+            }
         });
     }
 
@@ -87,11 +94,11 @@ impl ShowWidget {
         let listbox = episodes_listbox(pd, sender.clone());
         listbox.ok().map(|l| self.episodes.add(&l));
     }
-
     /// Set the show cover.
-    fn set_cover(&self, pd: &Podcast) {
-        let img = get_pixbuf_from_path(&pd.clone().into(), 128);
-        img.map(|i| self.cover.set_from_pixbuf(&i));
+    fn set_cover(&self, pd: &Podcast) -> Result<(), Error> {
+        let image = get_pixbuf_from_path(&pd.clone().into(), 128)?;
+        self.cover.set_from_pixbuf(&image);
+        Ok(())
     }
 
     /// Set the descripton text.
@@ -107,7 +114,11 @@ impl ShowWidget {
     }
 }
 
-fn on_unsub_button_clicked(pd: &Podcast, unsub_button: &gtk::Button, sender: Sender<Action>) {
+fn on_unsub_button_clicked(
+    pd: &Podcast,
+    unsub_button: &gtk::Button,
+    sender: Sender<Action>,
+) -> Result<(), Error> {
     // hack to get away without properly checking for none.
     // if pressed twice would panic.
     unsub_button.hide();
@@ -118,16 +129,19 @@ fn on_unsub_button_clicked(pd: &Podcast, unsub_button: &gtk::Button, sender: Sen
             error!("Error: {}", err);
         }
     }));
-    sender.send(Action::HeaderBarNormal).unwrap();
-    sender.send(Action::ShowShowsAnimated).unwrap();
+
+    sender.send(Action::HeaderBarNormal)?;
+    sender.send(Action::ShowShowsAnimated)?;
     // Queue a refresh after the switch to avoid blocking the db.
-    sender.send(Action::RefreshShowsView).unwrap();
-    sender.send(Action::RefreshEpisodesView).unwrap();
+    sender.send(Action::RefreshShowsView)?;
+    sender.send(Action::RefreshEpisodesView)?;
+
+    Ok(())
 }
 
 #[allow(dead_code)]
-fn on_played_button_clicked(pd: &Podcast, sender: Sender<Action>) {
-    let _ = dbqueries::update_none_to_played_now(pd);
-
-    sender.send(Action::RefreshWidget).unwrap();
+fn on_played_button_clicked(pd: &Podcast, sender: Sender<Action>) -> Result<(), Error> {
+    dbqueries::update_none_to_played_now(pd)?;
+    sender.send(Action::RefreshWidget)?;
+    Ok(())
 }

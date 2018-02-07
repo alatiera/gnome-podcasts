@@ -2,6 +2,8 @@ use gtk;
 use gtk::Cast;
 use gtk::prelude::*;
 
+use failure::Error;
+
 use hammond_data::Podcast;
 use hammond_data::dbqueries;
 
@@ -24,20 +26,20 @@ pub struct Content {
 }
 
 impl Content {
-    pub fn new(sender: Sender<Action>) -> Content {
+    pub fn new(sender: Sender<Action>) -> Result<Content, Error> {
         let stack = gtk::Stack::new();
-        let episodes = Arc::new(EpisodeStack::new(sender.clone()));
-        let shows = Arc::new(ShowStack::new(sender.clone()));
+        let episodes = Arc::new(EpisodeStack::new(sender.clone())?);
+        let shows = Arc::new(ShowStack::new(sender.clone())?);
 
         stack.add_titled(&episodes.stack, "episodes", "Episodes");
         stack.add_titled(&shows.stack, "shows", "Shows");
 
-        Content {
+        Ok(Content {
             stack,
             shows,
             episodes,
             sender,
-        }
+        })
     }
 
     pub fn update(&self) {
@@ -46,33 +48,46 @@ impl Content {
         self.update_widget()
     }
 
+    // TODO: Maybe propagate the error?
     pub fn update_episode_view(&self) {
-        self.episodes.update();
+        if let Err(err) = self.episodes.update() {
+            error!("Something went wrong while trying to update the episode view.");
+            error!("Error: {}", err);
+        }
     }
 
     pub fn update_episode_view_if_baground(&self) {
         if self.stack.get_visible_child_name() != Some("episodes".into()) {
-            self.episodes.update();
+            self.update_episode_view();
         }
     }
 
     pub fn update_shows_view(&self) {
-        self.shows.update_podcasts();
+        if let Err(err) = self.shows.update_podcasts() {
+            error!("Something went wrong while trying to update the ShowsView.");
+            error!("Error: {}", err);
+        }
     }
 
     pub fn update_widget(&self) {
-        self.shows.update_widget();
+        if let Err(err) = self.shows.update_widget() {
+            error!("Something went wrong while trying to update the Show Widget.");
+            error!("Error: {}", err);
+        }
     }
 
     pub fn update_widget_if_same(&self, pid: i32) {
-        self.shows.update_widget_if_same(pid);
+        if let Err(err) = self.shows.update_widget_if_same(pid) {
+            error!("Something went wrong while trying to update the Show Widget.");
+            error!("Error: {}", err);
+        }
     }
 
     pub fn update_widget_if_visible(&self) {
         if self.stack.get_visible_child_name() == Some("shows".to_string())
             && self.shows.get_stack().get_visible_child_name() == Some("widget".to_string())
         {
-            self.shows.update_widget();
+            self.update_widget();
         }
     }
 
@@ -92,7 +107,7 @@ pub struct ShowStack {
 }
 
 impl ShowStack {
-    fn new(sender: Sender<Action>) -> ShowStack {
+    fn new(sender: Sender<Action>) -> Result<ShowStack, Error> {
         let stack = gtk::Stack::new();
 
         let show = ShowStack {
@@ -100,7 +115,7 @@ impl ShowStack {
             sender: sender.clone(),
         };
 
-        let pop = ShowsPopulated::new(sender.clone());
+        let pop = ShowsPopulated::new(sender.clone())?;
         let widget = ShowWidget::default();
         let empty = EmptyView::new();
 
@@ -114,7 +129,7 @@ impl ShowStack {
             show.stack.set_visible_child_name("podcasts")
         }
 
-        show
+        Ok(show)
     }
 
     // pub fn update(&self) {
@@ -122,29 +137,27 @@ impl ShowStack {
     //     self.update_podcasts();
     // }
 
-    pub fn update_podcasts(&self) {
-        let vis = self.stack.get_visible_child_name().unwrap();
+    pub fn update_podcasts(&self) -> Result<(), Error> {
+        let vis = self.stack
+            .get_visible_child_name()
+            .ok_or_else(|| format_err!("Failed to get visible child name."))?;
 
         let old = self.stack
             .get_child_by_name("podcasts")
-            // This is guaranted to exists, based on `ShowStack::new()`.
-            .unwrap()
+            .ok_or_else(|| format_err!("Faild to get \"podcasts\" child from the stack."))?
             .downcast::<gtk::Box>()
-            // This is guaranted to be a Box based on the `ShowsPopulated` impl.
-            .unwrap();
+            .map_err(|_| format_err!("Failed to downcast stack child to a Box."))?;
         debug!("Name: {:?}", WidgetExt::get_name(&old));
 
         let scrolled_window = old.get_children()
             .first()
-            // This is guaranted to exist based on the show_widget.ui file.
-            .unwrap()
+            .ok_or_else(|| format_err!("Box container has no childs."))?
             .clone()
             .downcast::<gtk::ScrolledWindow>()
-            // This is guaranted based on the show_widget.ui file.
-            .unwrap();
+            .map_err(|_| format_err!("Failed to downcast stack child to a ScrolledWindow."))?;
         debug!("Name: {:?}", WidgetExt::get_name(&scrolled_window));
 
-        let pop = ShowsPopulated::new(self.sender.clone());
+        let pop = ShowsPopulated::new(self.sender.clone())?;
         // Copy the vertical scrollbar adjustment from the old view into the new one.
         scrolled_window
             .get_vadjustment()
@@ -162,16 +175,15 @@ impl ShowStack {
         }
 
         old.destroy();
+        Ok(())
     }
 
-    pub fn replace_widget(&self, pd: &Podcast) {
+    pub fn replace_widget(&self, pd: &Podcast) -> Result<(), Error> {
         let old = self.stack
             .get_child_by_name("widget")
-            // This is guaranted to exists, based on `ShowStack::new()`.
-            .unwrap()
+            .ok_or_else(|| format_err!("Faild to get \"widget\" child from the stack."))?
             .downcast::<gtk::Box>()
-            // This is guaranted to be a Box based on the `ShowWidget` impl.
-            .unwrap();
+            .map_err(|_| format_err!("Failed to downcast stack child to a Box."))?;
         debug!("Name: {:?}", WidgetExt::get_name(&old));
 
         let new = ShowWidget::new(pd, self.sender.clone());
@@ -185,12 +197,10 @@ impl ShowStack {
         if newid == oldid {
             let scrolled_window = old.get_children()
                 .first()
-                // This is guaranted to exist based on the show_widget.ui file.
-                .unwrap()
+                .ok_or_else(|| format_err!("Box container has no childs."))?
                 .clone()
                 .downcast::<gtk::ScrolledWindow>()
-                // This is guaranted based on the show_widget.ui file.
-                .unwrap();
+                .map_err(|_| format_err!("Failed to downcast stack child to a ScrolledWindow."))?;
             debug!("Name: {:?}", WidgetExt::get_name(&scrolled_window));
 
             // Copy the vertical scrollbar adjustment from the old view into the new one.
@@ -201,34 +211,42 @@ impl ShowStack {
 
         self.stack.remove(&old);
         self.stack.add_named(&new.container, "widget");
+        Ok(())
     }
 
-    pub fn update_widget(&self) {
-        let vis = self.stack.get_visible_child_name().unwrap();
-        let old = self.stack.get_child_by_name("widget").unwrap();
+    pub fn update_widget(&self) -> Result<(), Error> {
+        let vis = self.stack
+            .get_visible_child_name()
+            .ok_or_else(|| format_err!("Failed to get visible child name."))?;
+        let old = self.stack
+            .get_child_by_name("widget")
+            .ok_or_else(|| format_err!("Faild to get \"widget\" child from the stack."))?;
 
         let id = WidgetExt::get_name(&old);
         if id == Some("GtkBox".to_string()) || id.is_none() {
-            return;
+            return Ok(());
         }
 
-        let pd = dbqueries::get_podcast_from_id(id.unwrap().parse::<i32>().unwrap());
-        if let Ok(pd) = pd {
-            self.replace_widget(&pd);
-            self.stack.set_visible_child_name(&vis);
-            old.destroy();
-        }
+        let id = id.ok_or_else(|| format_err!("Failed to get widget's name."))?;
+        let pd = dbqueries::get_podcast_from_id(id.parse::<i32>()?)?;
+        self.replace_widget(&pd)?;
+        self.stack.set_visible_child_name(&vis);
+        old.destroy();
+        Ok(())
     }
 
     // Only update widget if it's podcast_id is equal to pid.
-    pub fn update_widget_if_same(&self, pid: i32) {
-        let old = self.stack.get_child_by_name("widget").unwrap();
+    pub fn update_widget_if_same(&self, pid: i32) -> Result<(), Error> {
+        let old = self.stack
+            .get_child_by_name("widget")
+            .ok_or_else(|| format_err!("Faild to get \"widget\" child from the stack."))?;
 
         let id = WidgetExt::get_name(&old);
         if id != Some(pid.to_string()) || id.is_none() {
-            return;
+            debug!("Different widget. Early return");
+            return Ok(());
         }
-        self.update_widget();
+        self.update_widget()
     }
 
     pub fn switch_podcasts_animated(&self) {
@@ -253,8 +271,8 @@ pub struct EpisodeStack {
 }
 
 impl EpisodeStack {
-    fn new(sender: Sender<Action>) -> EpisodeStack {
-        let episodes = EpisodesView::new(sender.clone());
+    fn new(sender: Sender<Action>) -> Result<EpisodeStack, Error> {
+        let episodes = EpisodesView::new(sender.clone())?;
         let empty = EmptyView::new();
         let stack = gtk::Stack::new();
 
@@ -267,30 +285,27 @@ impl EpisodeStack {
             stack.set_visible_child_name("episodes");
         }
 
-        EpisodeStack { stack, sender }
+        Ok(EpisodeStack { stack, sender })
     }
 
-    pub fn update(&self) {
+    // Look into refactoring to a state-machine.
+    pub fn update(&self) -> Result<(), Error> {
         let old = self.stack
             .get_child_by_name("episodes")
-            // This is guaranted to exists, based on `EpisodeStack::new()`.
-            .unwrap()
+            .ok_or_else(|| format_err!("Faild to get \"episodes\" child from the stack."))?
             .downcast::<gtk::Box>()
-            // This is guaranted to be a Box based on the `EpisodesView` impl.
-            .unwrap();
+            .map_err(|_| format_err!("Failed to downcast stack child to a Box."))?;
         debug!("Name: {:?}", WidgetExt::get_name(&old));
 
         let scrolled_window = old.get_children()
             .first()
-            // This is guaranted to exist based on the episodes_view.ui file.
-            .unwrap()
+            .ok_or_else(|| format_err!("Box container has no childs."))?
             .clone()
             .downcast::<gtk::ScrolledWindow>()
-            // This is guaranted based on the episodes_view.ui file.
-            .unwrap();
+            .map_err(|_| format_err!("Failed to downcast stack child to a ScrolledWindow."))?;
         debug!("Name: {:?}", WidgetExt::get_name(&scrolled_window));
 
-        let eps = EpisodesView::new(self.sender.clone());
+        let eps = EpisodesView::new(self.sender.clone())?;
         // Copy the vertical scrollbar adjustment from the old view into the new one.
         scrolled_window
             .get_vadjustment()
@@ -306,5 +321,7 @@ impl EpisodeStack {
         }
 
         old.destroy();
+
+        Ok(())
     }
 }

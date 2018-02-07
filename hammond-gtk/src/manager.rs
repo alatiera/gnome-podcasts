@@ -1,3 +1,5 @@
+use failure::Error;
+
 // use hammond_data::Episode;
 use hammond_data::dbqueries;
 use hammond_downloader::downloader::{get_episode, DownloadProgress};
@@ -10,6 +12,9 @@ use std::sync::mpsc::Sender;
 // use std::sync::atomic::AtomicUsize;
 // use std::path::PathBuf;
 use std::thread;
+
+// This is messy, undocumented and hacky af.
+// I am terrible at writting downloaders and download managers.
 
 #[derive(Debug)]
 pub struct Progress {
@@ -73,14 +78,15 @@ lazy_static! {
     };
 }
 
-pub fn add(id: i32, directory: &str, sender: Sender<Action>) {
+pub fn add(id: i32, directory: &str, sender: Sender<Action>) -> Result<(), Error> {
     // Create a new `Progress` struct to keep track of dl progress.
     let prog = Arc::new(Mutex::new(Progress::default()));
 
     {
-        if let Ok(mut m) = ACTIVE_DOWNLOADS.write() {
-            m.insert(id, prog.clone());
-        }
+        let mut m = ACTIVE_DOWNLOADS
+            .write()
+            .map_err(|_| format_err!("Failed to get a lock on the mutex."))?;
+        m.insert(id, prog.clone());
     }
 
     let dir = directory.to_owned();
@@ -88,12 +94,11 @@ pub fn add(id: i32, directory: &str, sender: Sender<Action>) {
         if let Ok(episode) = dbqueries::get_episode_from_rowid(id) {
             let pid = episode.podcast_id();
             let id = episode.rowid();
-            get_episode(&mut episode.into(), dir.as_str(), Some(prog))
-                .err()
-                .map(|err| {
-                    error!("Error while trying to download an episode");
-                    error!("Error: {}", err);
-                });
+
+            if let Err(err) = get_episode(&mut episode.into(), dir.as_str(), Some(prog)) {
+                error!("Error while trying to download an episode");
+                error!("Error: {}", err);
+            }
 
             {
                 if let Ok(mut m) = ACTIVE_DOWNLOADS.write() {
@@ -107,10 +112,16 @@ pub fn add(id: i32, directory: &str, sender: Sender<Action>) {
             //     }
             // }
 
-            sender.send(Action::RefreshEpisodesView).unwrap();
-            sender.send(Action::RefreshWidgetIfSame(pid)).unwrap();
+            sender
+                .send(Action::RefreshEpisodesView)
+                .expect("Action channel blew up.");
+            sender
+                .send(Action::RefreshWidgetIfSame(pid))
+                .expect("Action channel blew up.");
         }
     });
+
+    Ok(())
 }
 
 #[cfg(test)]
@@ -152,7 +163,7 @@ mod tests {
         let (sender, _rx) = channel();
 
         let download_fold = get_download_folder(&pd.title()).unwrap();
-        add(episode.rowid(), download_fold.as_str(), sender);
+        add(episode.rowid(), download_fold.as_str(), sender).unwrap();
         assert_eq!(ACTIVE_DOWNLOADS.read().unwrap().len(), 1);
 
         // Give it soem time to download the file

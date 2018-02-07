@@ -9,8 +9,8 @@ extern crate gtk;
 
 #[macro_use]
 extern crate failure;
-#[macro_use]
-extern crate failure_derive;
+// #[macro_use]
+// extern crate failure_derive;
 #[macro_use]
 extern crate lazy_static;
 #[macro_use]
@@ -65,15 +65,15 @@ use app::App;
 
 fn main() {
     // TODO: make the the logger a cli -vv option
-    loggerv::init_with_level(Level::Info).unwrap();
-    gtk::init().expect("Error initializing gtk");
+    loggerv::init_with_level(Level::Info).expect("Error initializing loggerv.");
+    gtk::init().expect("Error initializing gtk.");
     static_resource::init().expect("Something went wrong with the resource file initialization.");
 
     // Add custom style
     let provider = gtk::CssProvider::new();
     gtk::CssProvider::load_from_resource(&provider, "/org/gnome/hammond/gtk/style.css");
     gtk::StyleContext::add_provider_for_screen(
-        &gdk::Screen::get_default().unwrap(),
+        &gdk::Screen::get_default().expect("Error initializing gtk css provider."),
         &provider,
         600,
     );

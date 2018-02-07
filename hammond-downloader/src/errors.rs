@@ -10,10 +10,16 @@ pub enum DownloadError {
     DataError(#[cause] DataError),
     #[fail(display = "Io error: {}", _0)]
     IoError(#[cause] io::Error),
-    #[fail(display = "The Download was cancelled")]
-    DownloadCancelled,
     #[fail(display = "Unexpected server response: {}", _0)]
     UnexpectedResponse(reqwest::StatusCode),
+    #[fail(display = "The Download was cancelled.")]
+    DownloadCancelled,
+    #[fail(display = "Remote Image location not found.")]
+    NoImageLocation,
+    #[fail(display = "Failed to parse CacheLocation.")]
+    InvalidCacheLocation,
+    #[fail(display = "Failed to parse Cached Image Location.")]
+    InvalidCachedImageLocation,
 }
 
 impl From<reqwest::Error> for DownloadError {

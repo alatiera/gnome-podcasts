@@ -1,5 +1,6 @@
 #![cfg_attr(feature = "cargo-clippy", allow(type_complexity))]
 
+use failure::Error;
 use gdk_pixbuf::Pixbuf;
 use send_cell::SendCell;
 
@@ -16,14 +17,23 @@ use std::thread;
 
 use app::Action;
 
+pub fn refresh_feed_wrapper(source: Option<Vec<Source>>, sender: Sender<Action>) {
+    if let Err(err) = refresh_feed(source, sender) {
+        error!("An error occured while trying to update the feeds.");
+        error!("Error: {}", err);
+    }
+}
+
 /// Update the rss feed(s) originating from `source`.
 /// If `source` is None, Fetches all the `Source` entries in the database and updates them.
 /// When It's done,it queues up a `RefreshViews` action.
-pub fn refresh_feed(source: Option<Vec<Source>>, sender: Sender<Action>) {
-    sender.send(Action::HeaderBarShowUpdateIndicator).unwrap();
+fn refresh_feed(source: Option<Vec<Source>>, sender: Sender<Action>) -> Result<(), Error> {
+    sender.send(Action::HeaderBarShowUpdateIndicator)?;
 
     thread::spawn(move || {
-        let mut sources = source.unwrap_or_else(|| dbqueries::get_sources().unwrap());
+        let mut sources = source.unwrap_or_else(|| {
+            dbqueries::get_sources().expect("Failed to retrieve Sources from the database.")
+        });
 
         // Work around to improve the feed addition experience.
         // Many times links to rss feeds are just redirects(usually to an https version).
@@ -39,11 +49,11 @@ pub fn refresh_feed(source: Option<Vec<Source>>, sender: Sender<Action>) {
             if let Err(err) = pipeline::index_single_source(source, false) {
                 error!("Error While trying to update the database.");
                 error!("Error msg: {}", err);
-                let source = dbqueries::get_source_from_id(id).unwrap();
-
-                if let Err(err) = pipeline::index_single_source(source, false) {
-                    error!("Error While trying to update the database.");
-                    error!("Error msg: {}", err);
+                if let Ok(source) = dbqueries::get_source_from_id(id) {
+                    if let Err(err) = pipeline::index_single_source(source, false) {
+                        error!("Error While trying to update the database.");
+                        error!("Error msg: {}", err);
+                    }
                 }
             }
         } else {
@@ -54,9 +64,14 @@ pub fn refresh_feed(source: Option<Vec<Source>>, sender: Sender<Action>) {
             }
         }
 
-        sender.send(Action::HeaderBarHideUpdateIndicator).unwrap();
-        sender.send(Action::RefreshAllViews).unwrap();
+        sender
+            .send(Action::HeaderBarHideUpdateIndicator)
+            .expect("Action channel blew up.");
+        sender
+            .send(Action::RefreshAllViews)
+            .expect("Action channel blew up.");
     });
+    Ok(())
 }
 
 lazy_static! {
@@ -72,24 +87,25 @@ lazy_static! {
 // GObjects do not implement Send trait, so SendCell is a way around that.
 // Also lazy_static requires Sync trait, so that's what the mutexes are.
 // TODO: maybe use something that would just scale to requested size?
-pub fn get_pixbuf_from_path(pd: &PodcastCoverQuery, size: u32) -> Option<Pixbuf> {
+pub fn get_pixbuf_from_path(pd: &PodcastCoverQuery, size: u32) -> Result<Pixbuf, Error> {
     {
-        let hashmap = CACHED_PIXBUFS.read().unwrap();
-        let res = hashmap.get(&(pd.id(), size));
-        if let Some(px) = res {
-            let m = px.lock().unwrap();
-            return Some(m.clone().into_inner());
+        let hashmap = CACHED_PIXBUFS
+            .read()
+            .map_err(|_| format_err!("Failed to get a lock on the pixbuf cache mutex."))?;
+        if let Some(px) = hashmap.get(&(pd.id(), size)) {
+            let m = px.lock()
+                .map_err(|_| format_err!("Failed to lock pixbuf mutex."))?;
+            return Ok(m.clone().into_inner());
         }
     }
 
     let img_path = downloader::cache_image(pd)?;
-    let px = Pixbuf::new_from_file_at_scale(&img_path, size as i32, size as i32, true).ok();
-    if let Some(px) = px {
-        let mut hashmap = CACHED_PIXBUFS.write().unwrap();
-        hashmap.insert((pd.id(), size), Mutex::new(SendCell::new(px.clone())));
-        return Some(px);
-    }
-    None
+    let px = Pixbuf::new_from_file_at_scale(&img_path, size as i32, size as i32, true)?;
+    let mut hashmap = CACHED_PIXBUFS
+        .write()
+        .map_err(|_| format_err!("Failed to lock pixbuf mutex."))?;
+    hashmap.insert((pd.id(), size), Mutex::new(SendCell::new(px.clone())));
+    Ok(px)
 }
 
 #[cfg(test)]
@@ -113,6 +129,6 @@ mod tests {
         // Get the Podcast
         let pd = dbqueries::get_podcast_from_source_id(sid).unwrap();
         let pxbuf = get_pixbuf_from_path(&pd.into(), 256);
-        assert!(pxbuf.is_some());
+        assert!(pxbuf.is_ok());
     }
 }

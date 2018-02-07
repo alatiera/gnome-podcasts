@@ -1,4 +1,5 @@
 use chrono::prelude::*;
+use failure::Error;
 use gtk;
 use gtk::prelude::*;
 
@@ -9,7 +10,6 @@ use app::Action;
 use utils::get_pixbuf_from_path;
 use widgets::episode::EpisodeWidget;
 
-use std::sync::Arc;
 use std::sync::mpsc::Sender;
 
 #[derive(Debug, Clone)]
@@ -75,9 +75,9 @@ impl Default for EpisodesView {
 
 // TODO: REFACTOR ME
 impl EpisodesView {
-    pub fn new(sender: Sender<Action>) -> Arc<EpisodesView> {
+    pub fn new(sender: Sender<Action>) -> Result<EpisodesView, Error> {
         let view = EpisodesView::default();
-        let episodes = dbqueries::get_episodes_widgets_with_limit(50).unwrap();
+        let episodes = dbqueries::get_episodes_widgets_with_limit(50)?;
         let now_utc = Utc::now();
 
         episodes.into_iter().for_each(|mut ep| {
@@ -124,7 +124,7 @@ impl EpisodesView {
         }
 
         view.container.show_all();
-        Arc::new(view)
+        Ok(view)
     }
 
     pub fn is_empty(&self) -> bool {
@@ -203,18 +203,30 @@ impl EpisodesViewWidget {
             gtk::Builder::new_from_resource("/org/gnome/hammond/gtk/episodes_view_widget.ui");
         let container: gtk::Box = builder.get_object("container").unwrap();
         let image: gtk::Image = builder.get_object("cover").unwrap();
-
-        if let Ok(pd) = dbqueries::get_podcast_cover_from_id(episode.podcast_id()) {
-            get_pixbuf_from_path(&pd, 64).map(|img| image.set_from_pixbuf(&img));
-        }
-
         let ep = EpisodeWidget::new(episode, sender.clone());
-        container.pack_start(&ep.container, true, true, 6);
 
-        EpisodesViewWidget {
+        let view = EpisodesViewWidget {
             container,
             image,
             episode: ep.container,
+        };
+
+        view.init(episode);
+        view
+    }
+
+    fn init(&self, episode: &mut EpisodeWidgetQuery) {
+        if let Err(err) = self.set_cover(episode) {
+            error!("Failed to set a cover: {}", err)
         }
+
+        self.container.pack_start(&self.episode, true, true, 6);
+    }
+
+    fn set_cover(&self, episode: &mut EpisodeWidgetQuery) -> Result<(), Error> {
+        let pd = dbqueries::get_podcast_cover_from_id(episode.podcast_id())?;
+        let img = get_pixbuf_from_path(&pd, 64)?;
+        self.image.set_from_pixbuf(&img);
+        Ok(())
     }
 }

@@ -172,65 +172,59 @@ pub fn get_episode(
         ep.save()?;
     };
 
-    let res = download_into(
+    let path = download_into(
         download_folder,
         &ep.rowid().to_string(),
         ep.uri().unwrap(),
         progress,
-    );
+    )?;
 
-    if let Ok(path) = res {
-        // If download succedes set episode local_uri to dlpath.
-        ep.set_local_uri(Some(&path));
+    // If download succedes set episode local_uri to dlpath.
+    ep.set_local_uri(Some(&path));
 
-        // Over-write episode lenght
-        let size = fs::metadata(path);
-        if let Ok(s) = size {
-            ep.set_length(Some(s.len() as i32))
-        };
+    // Over-write episode lenght
+    let size = fs::metadata(path);
+    if let Ok(s) = size {
+        ep.set_length(Some(s.len() as i32))
+    };
 
-        ep.save()?;
-        Ok(())
-    } else {
-        error!("Something whent wrong while downloading.");
-        Err(res.unwrap_err())
-    }
+    ep.save()?;
+    Ok(())
 }
 
-pub fn cache_image(pd: &PodcastCoverQuery) -> Option<String> {
-    let url = pd.image_uri()?.to_owned();
+pub fn cache_image(pd: &PodcastCoverQuery) -> Result<String, DownloadError> {
+    let url = pd.image_uri()
+        .ok_or_else(|| DownloadError::NoImageLocation)?
+        .to_owned();
+
     if url == "" {
-        return None;
+        return Err(DownloadError::NoImageLocation);
     }
 
-    let cache_download_fold = format!("{}{}", HAMMOND_CACHE.to_str()?, pd.title().to_owned());
+    let cache_path = HAMMOND_CACHE
+        .to_str()
+        .ok_or_else(|| DownloadError::InvalidCacheLocation)?;
+    let cache_download_fold = format!("{}{}", cache_path, pd.title().to_owned());
 
     // Weird glob magic.
     if let Ok(mut foo) = glob(&format!("{}/cover.*", cache_download_fold)) {
         // For some reason there is no .first() method so nth(0) is used
         let path = foo.nth(0).and_then(|x| x.ok());
         if let Some(p) = path {
-            return Some(p.to_str()?.into());
+            return Ok(p.to_str()
+                .ok_or_else(|| DownloadError::InvalidCachedImageLocation)?
+                .into());
         }
     };
 
     // Create the folders if they don't exist.
     DirBuilder::new()
         .recursive(true)
-        .create(&cache_download_fold)
-        .ok()?;
+        .create(&cache_download_fold)?;
 
-    match download_into(&cache_download_fold, "cover", &url, None) {
-        Ok(path) => {
-            info!("Cached img into: {}", &path);
-            Some(path)
-        }
-        Err(err) => {
-            error!("Failed to get feed image.");
-            error!("Error: {}", err);
-            None
-        }
-    }
+    let path = download_into(&cache_download_fold, "cover", &url, None)?;
+    info!("Cached img into: {}", &path);
+    Ok(path)
 }
 
 #[cfg(test)]
@@ -239,6 +233,8 @@ mod tests {
     use hammond_data::Source;
     use hammond_data::dbqueries;
     use hammond_data::pipeline;
+
+    use std::fs;
 
     #[test]
     // This test inserts an rss feed to your `XDG_DATA/hammond/hammond.db` so we make it explicit
@@ -262,6 +258,7 @@ mod tests {
             HAMMOND_CACHE.to_str().unwrap(),
             pd.title()
         );
-        assert_eq!(img_path, Some(foo_));
+        assert_eq!(img_path.unwrap(), foo_);
+        fs::remove_file(foo_).unwrap();
     }
 }

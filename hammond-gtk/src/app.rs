@@ -46,7 +46,7 @@ pub struct App {
 impl App {
     pub fn new() -> App {
         let application = gtk::Application::new("org.gnome.Hammond", ApplicationFlags::empty())
-            .expect("Initialization failed...");
+            .expect("Application Initialization failed...");
 
         // Weird magic I copy-pasted that sets the Application Name in the Shell.
         glib::set_application_name("Hammond");
@@ -65,7 +65,8 @@ impl App {
         let (sender, receiver) = channel();
 
         // Create a content instance
-        let content = Arc::new(Content::new(sender.clone()));
+        let content =
+            Arc::new(Content::new(sender.clone()).expect("Content Initialization failed."));
 
         // Create the headerbar
         let header = Arc::new(Header::new(content.clone(), &window, sender.clone()));
@@ -87,7 +88,7 @@ impl App {
         let sender = self.sender.clone();
         // Update the feeds right after the Application is initialized.
         gtk::timeout_add_seconds(2, move || {
-            utils::refresh_feed(None, sender.clone());
+            utils::refresh_feed_wrapper(None, sender.clone());
             glib::Continue(false)
         });
 
@@ -95,7 +96,7 @@ impl App {
         // Auto-updater, runs every hour.
         // TODO: expose the interval in which it run to a user setting.
         gtk::timeout_add_seconds(3600, move || {
-            utils::refresh_feed(None, sender.clone());
+            utils::refresh_feed_wrapper(None, sender.clone());
             glib::Continue(true)
         });
 
@@ -122,9 +123,9 @@ impl App {
             match receiver.recv_timeout(Duration::from_millis(10)) {
                 Ok(Action::UpdateSources(source)) => {
                     if let Some(s) = source {
-                        utils::refresh_feed(Some(vec![s]), sender.clone())
+                        utils::refresh_feed_wrapper(Some(vec![s]), sender.clone());
                     } else {
-                        utils::refresh_feed(None, sender.clone())
+                        utils::refresh_feed_wrapper(None, sender.clone());
                     }
                 }
                 Ok(Action::RefreshAllViews) => content.update(),
@@ -134,7 +135,12 @@ impl App {
                 Ok(Action::RefreshWidgetIfSame(id)) => content.update_widget_if_same(id),
                 Ok(Action::RefreshEpisodesView) => content.update_episode_view(),
                 Ok(Action::RefreshEpisodesViewBGR) => content.update_episode_view_if_baground(),
-                Ok(Action::ReplaceWidget(ref pd)) => content.get_shows().replace_widget(pd),
+                Ok(Action::ReplaceWidget(ref pd)) => {
+                    if let Err(err) = content.get_shows().replace_widget(pd) {
+                        error!("Something went wrong while trying to update the ShowWidget.");
+                        error!("Error: {}", err);
+                    }
+                }
                 Ok(Action::ShowWidgetAnimated) => content.get_shows().switch_widget_animated(),
                 Ok(Action::ShowShowsAnimated) => content.get_shows().switch_podcasts_animated(),
                 Ok(Action::HeaderBarShowTile(title)) => headerbar.switch_to_back(&title),

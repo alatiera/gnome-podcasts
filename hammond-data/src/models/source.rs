@@ -212,7 +212,7 @@ impl Source {
     /// Updates the validator Http Headers.
     ///
     /// Consumes `self` and Returns the corresponding `Feed` Object.
-    // TODO: Refactor into TryInto once it lands on stable.
+    // Refactor into TryInto once it lands on stable.
     pub fn into_feed(
         self,
         client: &Client<HttpsConnector<HttpConnector>>,

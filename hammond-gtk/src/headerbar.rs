@@ -1,9 +1,11 @@
+use failure::Error;
+use failure::ResultExt;
 use gtk;
 use gtk::prelude::*;
+use url::Url;
 
 use hammond_data::Source;
 use hammond_data::dbqueries;
-use url::Url;
 
 use std::sync::Arc;
 use std::sync::mpsc::Sender;
@@ -55,6 +57,7 @@ impl Default for Header {
     }
 }
 
+// TODO: Refactor components into smaller state machines
 impl Header {
     pub fn new(content: Arc<Content>, window: &gtk::Window, sender: Sender<Action>) -> Header {
         let h = Header::default();
@@ -72,18 +75,24 @@ impl Header {
         self.switch.set_stack(&content.get_stack());
 
         new_url.connect_changed(clone!(add_button => move |url| {
-            on_url_change(url, &result_label, &add_button);
+            if let Err(err) = on_url_change(url, &result_label, &add_button) {
+                error!("Error: {}", err);
+            }
         }));
 
         add_button.connect_clicked(clone!(add_popover, new_url, sender => move |_| {
-            on_add_bttn_clicked(&new_url, sender.clone());
+            if let Err(err) = on_add_bttn_clicked(&new_url, sender.clone()) {
+                error!("Error: {}", err);
+            }
             add_popover.hide();
         }));
 
         self.add_toggle.set_popover(&add_popover);
 
         self.update_button.connect_clicked(move |_| {
-            sender.send(Action::UpdateSources(None)).unwrap();
+            sender
+                .send(Action::UpdateSources(None))
+                .expect("Action channel blew up.");
         });
 
         self.about_button
@@ -142,28 +151,32 @@ impl Header {
     }
 }
 
-fn on_add_bttn_clicked(entry: &gtk::Entry, sender: Sender<Action>) {
+fn on_add_bttn_clicked(entry: &gtk::Entry, sender: Sender<Action>) -> Result<(), Error> {
     let url = entry.get_text().unwrap_or_default();
-    let source = Source::from_url(&url);
+    let source = Source::from_url(&url).context("Failed to convert url to a Source entry.")?;
+    entry.set_text("");
 
-    if source.is_ok() {
-        entry.set_text("");
-        sender.send(Action::UpdateSources(source.ok())).unwrap();
-    } else {
-        error!("Something went wrong.");
-        error!("Error: {:?}", source.unwrap_err());
-    }
+    sender
+        .send(Action::UpdateSources(Some(source)))
+        .context("App channel blew up.")?;
+    Ok(())
 }
 
-fn on_url_change(entry: &gtk::Entry, result: &gtk::Label, add_button: &gtk::Button) {
-    let uri = entry.get_text().unwrap();
+fn on_url_change(
+    entry: &gtk::Entry,
+    result: &gtk::Label,
+    add_button: &gtk::Button,
+) -> Result<(), Error> {
+    let uri = entry
+        .get_text()
+        .ok_or_else(|| format_err!("GtkEntry blew up somehow."))?;
     debug!("Url: {}", uri);
 
     let url = Url::parse(&uri);
     // TODO: refactor to avoid duplication
     match url {
         Ok(u) => {
-            if !dbqueries::source_exists(u.as_str()).unwrap() {
+            if !dbqueries::source_exists(u.as_str())? {
                 add_button.set_sensitive(true);
                 result.hide();
                 result.set_label("");
@@ -172,6 +185,7 @@ fn on_url_change(entry: &gtk::Entry, result: &gtk::Label, add_button: &gtk::Butt
                 result.set_label("Show already exists.");
                 result.show();
             }
+            Ok(())
         }
         Err(err) => {
             add_button.set_sensitive(false);
@@ -182,6 +196,7 @@ fn on_url_change(entry: &gtk::Entry, result: &gtk::Label, add_button: &gtk::Butt
             } else {
                 result.hide();
             }
+            Ok(())
         }
     }
 }
