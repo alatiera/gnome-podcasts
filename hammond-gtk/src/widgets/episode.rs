@@ -41,12 +41,99 @@ lazy_static! {
 }
 
 #[derive(Debug, Clone)]
+struct Normal;
+#[derive(Debug, Clone)]
+struct GreyedOut;
+
+#[derive(Debug, Clone)]
+struct Title<S> {
+    title: gtk::Label,
+    state: S,
+}
+
+impl Title<Normal> {
+    fn new(title: gtk::Label) -> Self {
+        Title {
+            title,
+            state: Normal {},
+        }
+    }
+
+    fn set_title(&self, s: &str) {
+        self.title.set_text(s);
+    }
+}
+
+impl Title<GreyedOut> {
+    fn set_title(&self, s: &str) {
+        self.title.set_text(s);
+    }
+}
+
+impl From<Title<Normal>> for Title<GreyedOut> {
+    fn from(machine: Title<Normal>) -> Self {
+        machine
+            .title
+            .get_style_context()
+            .map(|c| c.add_class("dim-label"));
+
+        Title {
+            title: machine.title,
+            state: GreyedOut {},
+        }
+    }
+}
+
+impl From<Title<GreyedOut>> for Title<Normal> {
+    fn from(machine: Title<GreyedOut>) -> Self {
+        machine
+            .title
+            .get_style_context()
+            .map(|c| c.remove_class("dim-label"));
+
+        Title {
+            title: machine.title,
+            state: Normal {},
+        }
+    }
+}
+
+#[derive(Debug, Clone)]
+enum TitleMachine {
+    Normal(Title<Normal>),
+    GreyedOut(Title<GreyedOut>),
+}
+
+impl TitleMachine {
+    fn new(label: gtk::Label, is_played: bool) -> Self {
+        let m = TitleMachine::Normal(Title::<Normal>::new(label));
+        m.determine_state(is_played)
+    }
+
+    fn determine_state(self, is_played: bool) -> Self {
+        match (self, is_played) {
+            (title @ TitleMachine::Normal(_), false) => title,
+            (title @ TitleMachine::GreyedOut(_), true) => title,
+            (TitleMachine::Normal(val), true) => TitleMachine::GreyedOut(val.into()),
+            (TitleMachine::GreyedOut(val), false) => TitleMachine::Normal(val.into()),
+        }
+    }
+
+    fn set_title(&self, s: &str) {
+        match *self {
+            TitleMachine::Normal(ref val) => val.set_title(s),
+            TitleMachine::GreyedOut(ref val) => val.set_title(s),
+        }
+    }
+}
+
+#[derive(Debug, Clone)]
 pub struct EpisodeWidget {
     pub container: gtk::Box,
     play: gtk::Button,
     download: gtk::Button,
     cancel: gtk::Button,
-    title: gtk::Label,
+    title: TitleMachine,
     date: gtk::Label,
     duration: gtk::Label,
     progress: gtk::ProgressBar,
@@ -78,13 +165,15 @@ impl Default for EpisodeWidget {
         let separator2: gtk::Label = builder.get_object("separator2").unwrap();
         let prog_separator: gtk::Label = builder.get_object("prog_separator").unwrap();
 
+        let title_machine = TitleMachine::new(title, false);
+
         EpisodeWidget {
             container,
             progress,
             download,
             play,
             cancel,
-            title,
+            title: title_machine,
             duration,
             date,
             total_size,
@@ -98,16 +187,15 @@ impl Default for EpisodeWidget {
 
 impl EpisodeWidget {
     pub fn new(episode: EpisodeWidgetQuery, sender: Sender<Action>) -> EpisodeWidget {
-        let widget = EpisodeWidget::default();
-        widget.init(episode, sender);
-        widget
+        let mut widget = EpisodeWidget::default();
+        widget.init(episode, sender)
     }
 
-    fn init(&self, episode: EpisodeWidgetQuery, sender: Sender<Action>) {
+    fn init(mut self, episode: EpisodeWidgetQuery, sender: Sender<Action>) -> Self {
         WidgetExt::set_name(&self.container, &episode.rowid().to_string());
 
         // Set the title label state.
-        self.set_title(&episode);
+        self = self.set_title(&episode);
 
         // Set the duaration label.
         self.set_duration(episode.duration());
@@ -135,15 +223,15 @@ impl EpisodeWidget {
 
         let episode = Arc::new(Mutex::new(episode));
 
-        let title = self.title.clone();
-        self.play
-            .connect_clicked(clone!(episode, sender => move |_| {
-                if let Ok(mut ep) = episode.lock() {
-                    if let Err(err) = on_play_bttn_clicked(&mut ep, &title, sender.clone()){
-                        error!("Error: {}", err);
-                    };
-                }
-        }));
+        // let title = self.title.clone();
+        // self.play
+        //     .connect_clicked(clone!(episode, sender => move |_| {
+        //         if let Ok(mut ep) = episode.lock() {
+        //             if let Err(err) = on_play_bttn_clicked(&mut ep, &title, sender.clone()){
+        //                 error!("Error: {}", err);
+        //             };
+        //         }
+        // }));
 
         self.download
             .connect_clicked(clone!(episode, sender => move |dl| {
@@ -157,6 +245,8 @@ impl EpisodeWidget {
                     }
                 }
         }));
+
+        self
     }
 
     /// Show or hide the play/delete/download buttons upon widget initialization.
@@ -170,15 +260,10 @@ impl EpisodeWidget {
     }
 
     /// Determine the title state.
-    fn set_title(&self, episode: &EpisodeWidgetQuery) {
-        self.title.set_text(episode.title());
-
-        // Grey out the title if the episode is played.
-        if episode.played().is_some() {
-            self.title
-                .get_style_context()
-                .map(|c| c.add_class("dim-label"));
-        }
+    fn set_title(mut self, episode: &EpisodeWidgetQuery) -> Self {
+        self.title.set_title(episode.title());
+        self.title = self.title.determine_state(episode.played().is_some());
+        self
     }
 
     /// Set the date label depending on the current time.
