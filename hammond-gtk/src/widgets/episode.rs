@@ -35,6 +35,8 @@ lazy_static! {
             allow_negative: false,
         })
     };
+
+    static ref NOW: DateTime<Utc> = Utc::now();
 }
 
 #[derive(Debug, Clone)]
@@ -93,10 +95,6 @@ impl Default for EpisodeWidget {
     }
 }
 
-lazy_static! {
-    static ref NOW: DateTime<Utc> = Utc::now();
-}
-
 impl EpisodeWidget {
     pub fn new(episode: EpisodeWidgetQuery, sender: Sender<Action>) -> EpisodeWidget {
         let widget = EpisodeWidget::default();
@@ -110,9 +108,6 @@ impl EpisodeWidget {
         // Set the title label state.
         self.set_title(&episode);
 
-        // Set the size label.
-        self.set_total_size(episode.length());
-
         // Set the duaration label.
         self.set_duration(episode.duration());
 
@@ -121,6 +116,12 @@ impl EpisodeWidget {
 
         // Show or hide the play/delete/download buttons upon widget initialization.
         self.show_buttons(episode.local_uri());
+
+        // Set the size label.
+        if let Err(err) = self.set_total_size(episode.length()) {
+            error!("Failed to set the Size label.");
+            error!("Error: {}", err);
+        }
 
         // Determine what the state of the progress bar should be.
         if let Err(err) = self.determine_progess_bar() {
@@ -200,16 +201,17 @@ impl EpisodeWidget {
     }
 
     /// Set the Episode label dependings on its size
-    fn set_total_size(&self, bytes: Option<i32>) {
+    fn set_total_size(&self, bytes: Option<i32>) -> Result<(), Error> {
         if let Some(size) = bytes {
             if size != 0 {
-                size.file_size(SIZE_OPTS.clone()).ok().map(|s| {
-                    self.total_size.set_text(&s);
-                    self.total_size.show();
-                    self.separator2.show();
-                });
+                let s = size.file_size(SIZE_OPTS.clone())
+                    .map_err(|err| format_err!("{}", err))?;
+                self.total_size.set_text(&s);
+                self.total_size.show();
+                self.separator2.show();
             }
         };
+        Ok(())
     }
 
     // FIXME: REFACTOR ME
@@ -284,7 +286,7 @@ fn on_play_bttn_clicked(
 
     if episode.set_played_now().is_ok() {
         title.get_style_context().map(|c| c.add_class("dim-label"));
-        sender.send(Action::RefreshEpisodesViewBGR).unwrap();
+        sender.send(Action::RefreshEpisodesViewBGR)?;
     };
 
     Ok(())
