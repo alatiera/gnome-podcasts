@@ -116,7 +116,10 @@ impl EpisodeWidget {
         self.set_date(episode.epoch());
 
         // Show or hide the play/delete/download buttons upon widget initialization.
-        self.show_buttons(episode.local_uri());
+        if let Err(err) = self.show_buttons(episode.local_uri()) {
+            error!("Failed to determine play/download button state.");
+            error!("Error: {}", err);
+        }
 
         // Set the size label.
         if let Err(err) = self.set_total_size(episode.length()) {
@@ -157,11 +160,13 @@ impl EpisodeWidget {
     }
 
     /// Show or hide the play/delete/download buttons upon widget initialization.
-    fn show_buttons(&self, local_uri: Option<&str>) {
-        if local_uri.is_some() && Path::new(local_uri.unwrap()).exists() {
+    fn show_buttons(&self, local_uri: Option<&str>) -> Result<(), Error> {
+        let path = local_uri.ok_or_else(|| format_err!("Path is None"))?;
+        if Path::new(path).exists() {
             self.download.hide();
             self.play.show();
         }
+        Ok(())
     }
 
     /// Determine the title state.
