@@ -69,7 +69,7 @@ impl App {
             Arc::new(Content::new(sender.clone()).expect("Content Initialization failed."));
 
         // Create the headerbar
-        let header = Arc::new(Header::new(content.clone(), &window, sender.clone()));
+        let header = Arc::new(Header::new(&content, &window, sender.clone()));
 
         // Add the content main stack to the window.
         window.add(&content.get_stack());
@@ -102,7 +102,10 @@ impl App {
 
         // Run a database checkup once the application is initialized.
         gtk::timeout_add(300, || {
-            let _ = checkup();
+            if let Err(err) = checkup() {
+                error!("Check up failed: {}", err);
+            }
+
             glib::Continue(false)
         });
     }

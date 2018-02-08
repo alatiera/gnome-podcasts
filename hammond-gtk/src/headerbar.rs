@@ -1,13 +1,13 @@
-use failure::Error;
-use failure::ResultExt;
 use gtk;
 use gtk::prelude::*;
+
+use failure::Error;
+use failure::ResultExt;
 use url::Url;
 
 use hammond_data::Source;
 use hammond_data::dbqueries;
 
-use std::sync::Arc;
 use std::sync::mpsc::Sender;
 
 use app::Action;
@@ -59,13 +59,13 @@ impl Default for Header {
 
 // TODO: Refactor components into smaller state machines
 impl Header {
-    pub fn new(content: Arc<Content>, window: &gtk::Window, sender: Sender<Action>) -> Header {
+    pub fn new(content: &Content, window: &gtk::Window, sender: Sender<Action>) -> Header {
         let h = Header::default();
         h.init(content, window, sender);
         h
     }
 
-    pub fn init(&self, content: Arc<Content>, window: &gtk::Window, sender: Sender<Action>) {
+    pub fn init(&self, content: &Content, window: &gtk::Window, sender: Sender<Action>) {
         let builder = gtk::Builder::new_from_resource("/org/gnome/hammond/gtk/headerbar.ui");
 
         let add_popover: gtk::Popover = builder.get_object("add_popover").unwrap();
@@ -89,15 +89,16 @@ impl Header {
 
         self.add_toggle.set_popover(&add_popover);
 
-        self.update_button.connect_clicked(move |_| {
-            sender
-                .send(Action::UpdateSources(None))
-                .expect("Action channel blew up.");
-        });
+        self.update_button
+            .connect_clicked(clone!(sender => move |_| {
+                sender
+                    .send(Action::UpdateSources(None))
+                    .expect("Action channel blew up.");
+        }));
 
         self.about_button
             .connect_clicked(clone!(window => move |_| {
-            about_dialog(&window);
+                about_dialog(&window);
         }));
 
         // Add the Headerbar to the window.
@@ -107,13 +108,15 @@ impl Header {
         let add_toggle = &self.add_toggle;
         let show_title = &self.show_title;
         self.back_button.connect_clicked(
-            clone!(content, switch, add_toggle, show_title => move |back| {
-            switch.show();
-            add_toggle.show();
-            back.hide();
-            show_title.hide();
-            content.get_shows().get_stack().set_visible_child_full("podcasts", gtk::StackTransitionType::SlideRight);
-        }),
+            clone!(switch, add_toggle, show_title, sender => move |back| {
+                switch.show();
+                add_toggle.show();
+                back.hide();
+                show_title.hide();
+                if let Err(err) = sender.send(Action::ShowShowsAnimated) {
+                    error!("Action channel blew up: {}", err);
+                }
+            }),
         );
     }
 
