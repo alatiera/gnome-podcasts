@@ -65,7 +65,7 @@ fn bench_pipeline(c: &mut Criterion) {
         Source::from_url(url).unwrap();
     });
 
-    c.bench_function("pipline", |b| {
+    c.bench_function("pipline", move |b| {
         b.iter(|| {
             let sources = hammond_data::dbqueries::get_sources().unwrap();
             pipeline::run(sources, true).unwrap();
@@ -79,7 +79,7 @@ fn bench_index_large_feed(c: &mut Criterion) {
     let url = "https://www.greaterthancode.com/feed/podcast";
     let mut core = Core::new().unwrap();
 
-    c.bench_function("index_large_feed", |b| {
+    c.bench_function("index_large_feed", move |b| {
         b.iter(|| {
             let s = Source::from_url(url).unwrap();
             // parse it into a channel
@@ -100,7 +100,7 @@ fn bench_index_small_feed(c: &mut Criterion) {
     let url = "https://rss.art19.com/steal-the-stars";
     let mut core = Core::new().unwrap();
 
-    c.bench_function("index_small_feed", |b| {
+    c.bench_function("index_small_feed", move |b| {
         b.iter(|| {
             let s = Source::from_url(url).unwrap();
             // parse it into a channel
