@@ -20,7 +20,12 @@ fn download_checker() -> Result<(), DataError> {
 
     episodes
         .par_iter_mut()
-        .filter(|ep| !Path::new(ep.local_uri().unwrap()).exists())
+        .filter_map(|ep| {
+            if !Path::new(ep.local_uri()?).exists() {
+                return Some(ep);
+            }
+            None
+        })
         .for_each(|ep| {
             ep.set_local_uri(None);
             if let Err(err) = ep.save() {
