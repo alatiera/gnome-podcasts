@@ -202,15 +202,16 @@ impl EpisodeWidget {
 
     /// Set the Episode label dependings on its size
     fn set_total_size(&self, bytes: Option<i32>) -> Result<(), Error> {
-        if let Some(size) = bytes {
-            if size != 0 {
-                let s = size.file_size(SIZE_OPTS.clone())
-                    .map_err(|err| format_err!("{}", err))?;
-                self.total_size.set_text(&s);
-                self.total_size.show();
-                self.separator2.show();
-            }
-        };
+        let size = bytes.ok_or_else(|| format_err!("Size is None."))?;
+        if size == 0 {
+            bail!("Size is 0.");
+        }
+
+        let s = size.file_size(SIZE_OPTS.clone())
+            .map_err(|err| format_err!("{}", err))?;
+        self.total_size.set_text(&s);
+        self.total_size.show();
+        self.separator2.show();
         Ok(())
     }
 
