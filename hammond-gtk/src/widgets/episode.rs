@@ -4,6 +4,7 @@ use gtk;
 use chrono::prelude::*;
 use gtk::prelude::*;
 
+use chrono::Duration;
 use failure::Error;
 use humansize::{file_size_opts as size_opts, FileSize};
 use open;
@@ -187,16 +188,16 @@ impl EpisodeWidget {
     }
 
     /// Set the duration label.
-    fn set_duration(&self, seconds: Option<i32>) {
-        if (seconds == Some(0)) || seconds.is_none() {
-            return;
-        };
-
-        if let Some(secs) = seconds {
-            self.duration.set_text(&format!("{} min", secs / 60));
-            self.duration.show();
-            self.separator1.show();
+    fn set_duration(&self, seconds: Option<i32>) -> Option<()> {
+        let minutes = Duration::seconds(seconds?.into()).num_minutes();
+        if minutes == 0 {
+            return None;
         }
+
+        self.duration.set_text(&format!("{} min", minutes));
+        self.duration.show();
+        self.separator1.show();
+        Some(())
     }
 
     /// Set the Episode label dependings on its size
