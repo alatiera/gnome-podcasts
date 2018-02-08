@@ -51,22 +51,18 @@ struct Title<S> {
     state: S,
 }
 
+impl<S> Title<S> {
+    fn set_title(&self, s: &str) {
+        self.title.set_text(s);
+    }
+}
+
 impl Title<Normal> {
     fn new(title: gtk::Label) -> Self {
         Title {
             title,
             state: Normal {},
         }
-    }
-
-    fn set_title(&self, s: &str) {
-        self.title.set_text(s);
-    }
-}
-
-impl Title<GreyedOut> {
-    fn set_title(&self, s: &str) {
-        self.title.set_text(s);
     }
 }
 
