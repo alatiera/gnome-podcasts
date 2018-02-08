@@ -165,7 +165,6 @@ impl EpisodeWidget {
 
     /// Determine the title state.
     fn set_title(&self, episode: &EpisodeWidgetQuery) {
-        self.title.set_xalign(0.0);
         self.title.set_text(episode.title());
 
         // Grey out the title if the episode is played.
