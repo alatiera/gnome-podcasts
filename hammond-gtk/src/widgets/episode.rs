@@ -183,7 +183,7 @@ impl Default for EpisodeWidget {
 
 impl EpisodeWidget {
     pub fn new(episode: EpisodeWidgetQuery, sender: Sender<Action>) -> EpisodeWidget {
-        let mut widget = EpisodeWidget::default();
+        let widget = EpisodeWidget::default();
         widget.init(episode, sender)
     }
 
@@ -219,15 +219,14 @@ impl EpisodeWidget {
 
         let episode = Arc::new(Mutex::new(episode));
 
-        // let title = self.title.clone();
-        // self.play
-        //     .connect_clicked(clone!(episode, sender => move |_| {
-        //         if let Ok(mut ep) = episode.lock() {
-        //             if let Err(err) = on_play_bttn_clicked(&mut ep, &title, sender.clone()){
-        //                 error!("Error: {}", err);
-        //             };
-        //         }
-        // }));
+        self.play
+            .connect_clicked(clone!(episode, sender => move |_| {
+                if let Ok(mut ep) = episode.lock() {
+                    if let Err(err) = on_play_bttn_clicked(&mut ep, sender.clone()){
+                        error!("Error: {}", err);
+                    };
+                }
+        }));
 
         self.download
             .connect_clicked(clone!(episode, sender => move |dl| {
@@ -366,16 +365,13 @@ fn on_download_clicked(ep: &EpisodeWidgetQuery, sender: Sender<Action>) -> Resul
 
 fn on_play_bttn_clicked(
     episode: &mut EpisodeWidgetQuery,
-    title: &gtk::Label,
     sender: Sender<Action>,
 ) -> Result<(), Error> {
     open_uri(episode.rowid())?;
+    episode.set_played_now()?;
 
-    if episode.set_played_now().is_ok() {
-        title.get_style_context().map(|c| c.add_class("dim-label"));
-        sender.send(Action::RefreshEpisodesViewBGR)?;
-    };
-
+    sender.send(Action::RefreshWidgetIfVis)?;
+    sender.send(Action::RefreshEpisodesView)?;
     Ok(())
 }
 
