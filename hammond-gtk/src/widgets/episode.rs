@@ -15,6 +15,7 @@ use hammond_data::utils::get_download_folder;
 
 use app::Action;
 use manager;
+use widgets::episode_states::*;
 
 use std::path::Path;
 use std::sync::{Arc, Mutex};
@@ -38,89 +39,6 @@ lazy_static! {
     };
 
     static ref NOW: DateTime<Utc> = Utc::now();
-}
-
-#[derive(Debug, Clone)]
-struct Normal;
-#[derive(Debug, Clone)]
-struct GreyedOut;
-
-#[derive(Debug, Clone)]
-struct Title<S> {
-    title: gtk::Label,
-    state: S,
-}
-
-impl<S> Title<S> {
-    fn set_title(&self, s: &str) {
-        self.title.set_text(s);
-    }
-}
-
-impl Title<Normal> {
-    fn new(title: gtk::Label) -> Self {
-        Title {
-            title,
-            state: Normal {},
-        }
-    }
-}
-
-impl From<Title<Normal>> for Title<GreyedOut> {
-    fn from(machine: Title<Normal>) -> Self {
-        machine
-            .title
-            .get_style_context()
-            .map(|c| c.add_class("dim-label"));
-
-        Title {
-            title: machine.title,
-            state: GreyedOut {},
-        }
-    }
-}
-
-impl From<Title<GreyedOut>> for Title<Normal> {
-    fn from(machine: Title<GreyedOut>) -> Self {
-        machine
-            .title
-            .get_style_context()
-            .map(|c| c.remove_class("dim-label"));
-
-        Title {
-            title: machine.title,
-            state: Normal {},
-        }
-    }
-}
-
-#[derive(Debug, Clone)]
-enum TitleMachine {
-    Normal(Title<Normal>),
-    GreyedOut(Title<GreyedOut>),
-}
-
-impl TitleMachine {
-    fn new(label: gtk::Label, is_played: bool) -> Self {
-        let m = TitleMachine::Normal(Title::<Normal>::new(label));
-        m.determine_state(is_played)
-    }
-
-    fn determine_state(self, is_played: bool) -> Self {
-        match (self, is_played) {
-            (title @ TitleMachine::Normal(_), false) => title,
-            (title @ TitleMachine::GreyedOut(_), true) => title,
-            (TitleMachine::Normal(val), true) => TitleMachine::GreyedOut(val.into()),
-            (TitleMachine::GreyedOut(val), false) => TitleMachine::Normal(val.into()),
-        }
-    }
-
-    fn set_title(&self, s: &str) {
-        match *self {
-            TitleMachine::Normal(ref val) => val.set_title(s),
-            TitleMachine::GreyedOut(ref val) => val.set_title(s),
-        }
-    }
 }
 
 #[derive(Debug, Clone)]
