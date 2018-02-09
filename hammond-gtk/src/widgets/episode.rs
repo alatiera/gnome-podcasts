@@ -4,7 +4,6 @@ use gtk;
 use chrono::prelude::*;
 use gtk::prelude::*;
 
-use chrono::Duration;
 use failure::Error;
 use humansize::{file_size_opts as size_opts, FileSize};
 use open;
@@ -49,11 +48,10 @@ pub struct EpisodeWidget {
     cancel: gtk::Button,
     title: TitleMachine,
     date: gtk::Label,
-    duration: gtk::Label,
+    duration: DurationMachine,
     progress: gtk::ProgressBar,
     total_size: gtk::Label,
     local_size: gtk::Label,
-    separator1: gtk::Label,
     separator2: gtk::Label,
     prog_separator: gtk::Label,
 }
@@ -80,6 +78,7 @@ impl Default for EpisodeWidget {
         let prog_separator: gtk::Label = builder.get_object("prog_separator").unwrap();
 
         let title_machine = TitleMachine::new(title, false);
+        let duration_machine = DurationMachine::new(duration, separator1, None);
 
         EpisodeWidget {
             container,
@@ -88,11 +87,10 @@ impl Default for EpisodeWidget {
             play,
             cancel,
             title: title_machine,
-            duration,
+            duration: duration_machine,
             date,
             total_size,
             local_size,
-            separator1,
             separator2,
             prog_separator,
         }
@@ -112,7 +110,7 @@ impl EpisodeWidget {
         self = self.set_title(&episode);
 
         // Set the duaration label.
-        self.set_duration(episode.duration());
+        self = self.set_duration(episode.duration());
 
         // Set the date label.
         self.set_date(episode.epoch());
@@ -191,16 +189,9 @@ impl EpisodeWidget {
     }
 
     /// Set the duration label.
-    fn set_duration(&self, seconds: Option<i32>) -> Option<()> {
-        let minutes = Duration::seconds(seconds?.into()).num_minutes();
-        if minutes == 0 {
-            return None;
-        }
-
-        self.duration.set_text(&format!("{} min", minutes));
-        self.duration.show();
-        self.separator1.show();
-        Some(())
+    fn set_duration(mut self, seconds: Option<i32>) -> Self {
+        self.duration = self.duration.determine_state(seconds);
+        self
     }
 
     /// Set the Episode label dependings on its size

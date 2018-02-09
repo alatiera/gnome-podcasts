@@ -1,3 +1,4 @@
+use chrono;
 use gtk;
 use gtk::prelude::*;
 
@@ -80,6 +81,103 @@ impl TitleMachine {
         match *self {
             TitleMachine::Normal(ref val) => val.set_title(s),
             TitleMachine::GreyedOut(ref val) => val.set_title(s),
+        }
+    }
+}
+
+#[derive(Debug, Clone)]
+pub struct Shown;
+#[derive(Debug, Clone)]
+pub struct Hidden;
+
+#[derive(Debug, Clone)]
+pub struct Duration<S> {
+    // TODO: make duration and separator diff types
+    duration: gtk::Label,
+    separator: gtk::Label,
+    state: S,
+}
+
+impl<S> Duration<S> {
+    // This needs a better name.
+    fn set_duration(&self, minutes: i64) {
+        self.duration.set_text(&format!("{} min", minutes));
+    }
+}
+
+impl Duration<Hidden> {
+    fn new(duration: gtk::Label, separator: gtk::Label) -> Self {
+        duration.hide();
+        separator.hide();
+
+        Duration {
+            duration,
+            separator,
+            state: Hidden {},
+        }
+    }
+}
+
+impl From<Duration<Hidden>> for Duration<Shown> {
+    fn from(d: Duration<Hidden>) -> Self {
+        d.duration.show();
+        d.separator.show();
+
+        Duration {
+            duration: d.duration,
+            separator: d.separator,
+            state: Shown {},
+        }
+    }
+}
+
+impl From<Duration<Shown>> for Duration<Hidden> {
+    fn from(d: Duration<Shown>) -> Self {
+        d.duration.hide();
+        d.separator.hide();
+
+        Duration {
+            duration: d.duration,
+            separator: d.separator,
+            state: Hidden {},
+        }
+    }
+}
+
+#[derive(Debug, Clone)]
+pub enum DurationMachine {
+    Hidden(Duration<Hidden>),
+    Shown(Duration<Shown>),
+}
+
+impl DurationMachine {
+    pub fn new(duration: gtk::Label, separator: gtk::Label, seconds: Option<i32>) -> Self {
+        let m = DurationMachine::Hidden(Duration::<Hidden>::new(duration, separator));
+        m.determine_state(seconds)
+    }
+
+    pub fn determine_state(self, seconds: Option<i32>) -> Self {
+        match (self, seconds) {
+            (DurationMachine::Hidden(val), None) => DurationMachine::Hidden(val.into()),
+            (DurationMachine::Shown(val), None) => DurationMachine::Hidden(val.into()),
+            (DurationMachine::Hidden(val), Some(s)) => {
+                let minutes = chrono::Duration::seconds(s.into()).num_minutes();
+                if minutes == 0 {
+                    DurationMachine::Hidden(val.into())
+                } else {
+                    val.set_duration(minutes);
+                    DurationMachine::Shown(val.into())
+                }
+            }
+            (DurationMachine::Shown(val), Some(s)) => {
+                let minutes = chrono::Duration::seconds(s.into()).num_minutes();
+                if minutes == 0 {
+                    DurationMachine::Hidden(val.into())
+                } else {
+                    val.set_duration(minutes);
+                    DurationMachine::Shown(val.into())
+                }
+            }
         }
     }
 }
