@@ -14,7 +14,10 @@ pub struct Title<S> {
 }
 
 impl<S> Title<S> {
-    fn set_title(&self, s: &str) {
+    #[allow(unused_must_use)]
+    // This does not need to be &mut since gtk-rs does not model ownership
+    // But I think it wouldn't heart if we treat it as a Rust api.
+    fn set_title(&mut self, s: &str) {
         self.title.set_text(s);
     }
 }
@@ -77,10 +80,10 @@ impl TitleMachine {
         }
     }
 
-    pub fn set_title(&self, s: &str) {
+    pub fn set_title(&mut self, s: &str) {
         match *self {
-            TitleMachine::Normal(ref val) => val.set_title(s),
-            TitleMachine::GreyedOut(ref val) => val.set_title(s),
+            TitleMachine::Normal(ref mut val) => val.set_title(s),
+            TitleMachine::GreyedOut(ref mut val) => val.set_title(s),
         }
     }
 }

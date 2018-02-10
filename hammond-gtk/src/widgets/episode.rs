@@ -7,6 +7,7 @@ use gtk::prelude::*;
 use failure::Error;
 use humansize::{file_size_opts as size_opts, FileSize};
 use open;
+use take_mut;
 
 use hammond_data::{EpisodeWidgetQuery, Podcast};
 use hammond_data::dbqueries;
@@ -16,6 +17,7 @@ use app::Action;
 use manager;
 use widgets::episode_states::*;
 
+use std::ops::DerefMut;
 use std::path::Path;
 use std::sync::{Arc, Mutex};
 use std::sync::mpsc::Sender;
@@ -46,7 +48,7 @@ pub struct EpisodeWidget {
     play: gtk::Button,
     download: gtk::Button,
     cancel: gtk::Button,
-    title: TitleMachine,
+    title: Arc<Mutex<TitleMachine>>,
     date: gtk::Label,
     duration: DurationMachine,
     progress: gtk::ProgressBar,
@@ -77,7 +79,7 @@ impl Default for EpisodeWidget {
         let separator2: gtk::Label = builder.get_object("separator2").unwrap();
         let prog_separator: gtk::Label = builder.get_object("prog_separator").unwrap();
 
-        let title_machine = TitleMachine::new(title, false);
+        let title_machine = Arc::new(Mutex::new(TitleMachine::new(title, false)));
         let duration_machine = DurationMachine::new(duration, separator1, None);
 
         EpisodeWidget {
@@ -106,14 +108,16 @@ impl EpisodeWidget {
     fn init(mut self, episode: EpisodeWidgetQuery, sender: Sender<Action>) -> Self {
         WidgetExt::set_name(&self.container, &episode.rowid().to_string());
 
-        // Set the title label state.
-        self = self.set_title(&episode);
-
         // Set the duaration label.
         self = self.set_duration(episode.duration());
 
         // Set the date label.
         self.set_date(episode.epoch());
+
+        // Set the title label state.
+        if let Err(err) = self.set_title(&episode) {
+            error!("Failed to set title state: {}", err);
+        }
 
         // Show or hide the play/delete/download buttons upon widget initialization.
         if let Err(err) = self.show_buttons(episode.local_uri()) {
@@ -135,10 +139,11 @@ impl EpisodeWidget {
 
         let episode = Arc::new(Mutex::new(episode));
 
+        let title = self.title.clone();
         self.play
             .connect_clicked(clone!(episode, sender => move |_| {
                 if let Ok(mut ep) = episode.lock() {
-                    if let Err(err) = on_play_bttn_clicked(&mut ep, sender.clone()){
+                    if let Err(err) = on_play_bttn_clicked(&mut ep, title.clone(), sender.clone()){
                         error!("Error: {}", err);
                     };
                 }
@@ -171,10 +176,13 @@ impl EpisodeWidget {
     }
 
     /// Determine the title state.
-    fn set_title(mut self, episode: &EpisodeWidgetQuery) -> Self {
-        self.title.set_title(episode.title());
-        self.title = self.title.determine_state(episode.played().is_some());
-        self
+    fn set_title(&mut self, episode: &EpisodeWidgetQuery) -> Result<(), Error> {
+        let mut lock = self.title.lock().map_err(|err| format_err!("{}", err))?;
+        lock.set_title(episode.title());
+        take_mut::take(lock.deref_mut(), |title| {
+            title.determine_state(episode.played().is_some())
+        });
+        Ok(())
     }
 
     /// Set the date label depending on the current time.
@@ -274,13 +282,18 @@ fn on_download_clicked(ep: &EpisodeWidgetQuery, sender: Sender<Action>) -> Resul
 
 fn on_play_bttn_clicked(
     episode: &mut EpisodeWidgetQuery,
+    title: Arc<Mutex<TitleMachine>>,
     sender: Sender<Action>,
 ) -> Result<(), Error> {
     open_uri(episode.rowid())?;
     episode.set_played_now()?;
 
-    sender.send(Action::RefreshWidgetIfVis)?;
-    sender.send(Action::RefreshEpisodesView)?;
+    let mut lock = title.lock().map_err(|err| format_err!("{}", err))?;
+    take_mut::take(lock.deref_mut(), |title| {
+        title.determine_state(episode.played().is_some())
+    });
+
+    sender.send(Action::RefreshEpisodesViewBGR)?;
     Ok(())
 }
 

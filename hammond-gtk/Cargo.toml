@@ -22,6 +22,7 @@ send-cell = "0.1.2"
 url = "1.6.0"
 failure = "0.1.1"
 failure_derive = "0.1.1"
+take_mut = "0.2.0"
 
 [dependencies.gtk]
 features = ["v3_22"]
