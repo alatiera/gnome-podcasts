@@ -22,7 +22,7 @@ Get Builder [here](https://wiki.gnome.org/Apps/Builder/Downloads)
 Manually:
 
 The following steps assume you have a working installation of rustc and cargo.
-If you dont take a look at [rustup.rs](rustup.rs)
+If you dont take a look at [rustup.rs](https://rustup.rs/)
 
 ```sh
 git clone https://gitlab.gnome.org/alatiera/hammond.git
