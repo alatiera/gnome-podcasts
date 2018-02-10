@@ -117,8 +117,8 @@ impl EpisodeWidget {
 
         // Show or hide the play/delete/download buttons upon widget initialization.
         if let Err(err) = self.show_buttons(episode.local_uri()) {
-            error!("Failed to determine play/download button state.");
-            error!("Error: {}", err);
+            debug!("Failed to determine play/download button state.");
+            debug!("Error: {}", err);
         }
 
         // Set the size label.
