@@ -209,15 +209,17 @@ fn on_url_change(
 fn about_dialog(window: &gtk::Window) {
     // Feel free to add yourself if you contribured.
     let authors = &[
+        "Constantin Nickel",
+        "Gabriele Musco",
+        "James Wykeham-Martin",
         "Jordan Petridis",
         "Julian Sparber",
-        "Gabriele Musco",
-        "Constantin Nickel",
     ];
 
     let dialog = gtk::AboutDialog::new();
     // Waiting for a logo.
-    dialog.set_logo_icon_name("org.gnome.Hammond");
+    // dialog.set_logo_icon_name("org.gnome.Hammond");
+    dialog.set_logo_icon_name("multimedia-player");
     dialog.set_comments("A Podcast Client for the GNOME Desktop.");
     dialog.set_copyright("© 2017, 2018 Jordan Petridis");
     dialog.set_license_type(gtk::License::Gpl30);
