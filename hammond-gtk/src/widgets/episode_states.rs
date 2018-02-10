@@ -344,15 +344,15 @@ pub struct DownloadPlay<S> {
     state: S,
 }
 
-impl DownloadPlay<Download> {
+impl DownloadPlay<Hidden> {
     fn new(play: gtk::Button, download: gtk::Button) -> Self {
         play.hide();
-        download.show();
+        download.hide();
 
         DownloadPlay {
             play,
             download,
-            state: Download {},
+            state: Hidden {},
         }
     }
 }
@@ -443,7 +443,7 @@ pub enum DownloadPlayMachine {
 
 impl DownloadPlayMachine {
     pub fn new(play: gtk::Button, download: gtk::Button) -> Self {
-        DownloadPlayMachine::Download(DownloadPlay::<Download>::new(play, download))
+        DownloadPlayMachine::Hidden(DownloadPlay::<Hidden>::new(play, download))
     }
 
     pub fn determine_state(self, downloaded: bool, should_hide: bool) -> Self {
