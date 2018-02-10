@@ -50,7 +50,7 @@ pub struct EpisodeWidget {
     cancel: gtk::Button,
     title: Arc<Mutex<TitleMachine>>,
     date: gtk::Label,
-    duration: DurationMachine,
+    duration: Arc<Mutex<DurationMachine>>,
     progress: gtk::ProgressBar,
     total_size: gtk::Label,
     local_size: gtk::Label,
@@ -80,7 +80,8 @@ impl Default for EpisodeWidget {
         let prog_separator: gtk::Label = builder.get_object("prog_separator").unwrap();
 
         let title_machine = Arc::new(Mutex::new(TitleMachine::new(title, false)));
-        let duration_machine = DurationMachine::new(duration, separator1, None);
+        let dur = DurationMachine::new(duration, separator1, None);
+        let duration_machine = Arc::new(Mutex::new(dur));
 
         EpisodeWidget {
             container,
@@ -101,15 +102,13 @@ impl Default for EpisodeWidget {
 
 impl EpisodeWidget {
     pub fn new(episode: EpisodeWidgetQuery, sender: Sender<Action>) -> EpisodeWidget {
-        let widget = EpisodeWidget::default();
-        widget.init(episode, sender)
+        let mut widget = EpisodeWidget::default();
+        widget.init(episode, sender);
+        widget
     }
 
-    fn init(mut self, episode: EpisodeWidgetQuery, sender: Sender<Action>) -> Self {
+    fn init(&mut self, episode: EpisodeWidgetQuery, sender: Sender<Action>) {
         WidgetExt::set_name(&self.container, &episode.rowid().to_string());
-
-        // Set the duaration label.
-        self = self.set_duration(episode.duration());
 
         // Set the date label.
         self.set_date(episode.epoch());
@@ -117,6 +116,11 @@ impl EpisodeWidget {
         // Set the title label state.
         if let Err(err) = self.set_title(&episode) {
             error!("Failed to set title state: {}", err);
+        }
+
+        // Set the duaration label.
+        if let Err(err) = self.set_duration(episode.duration()) {
+            error!("Failed to set duration state: {}", err);
         }
 
         // Show or hide the play/delete/download buttons upon widget initialization.
@@ -161,8 +165,6 @@ impl EpisodeWidget {
                     }
                 }
         }));
-
-        self
     }
 
     /// Show or hide the play/delete/download buttons upon widget initialization.
@@ -197,9 +199,12 @@ impl EpisodeWidget {
     }
 
     /// Set the duration label.
-    fn set_duration(mut self, seconds: Option<i32>) -> Self {
-        self.duration = self.duration.determine_state(seconds);
-        self
+    fn set_duration(&mut self, seconds: Option<i32>) -> Result<(), Error> {
+        let mut lock = self.duration.lock().map_err(|err| format_err!("{}", err))?;
+        take_mut::take(lock.deref_mut(), |duration| {
+            duration.determine_state(seconds)
+        });
+        Ok(())
     }
 
     /// Set the Episode label dependings on its size
