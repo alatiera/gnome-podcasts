@@ -184,3 +184,141 @@ impl DurationMachine {
         }
     }
 }
+
+#[derive(Debug, Clone)]
+pub struct LocalShown;
+
+#[derive(Debug, Clone)]
+pub struct TotalShown;
+
+#[derive(Debug, Clone)]
+pub struct Unkown;
+
+#[derive(Debug, Clone)]
+pub struct InProgress;
+
+#[derive(Debug, Clone)]
+pub struct Size<S> {
+    local_size: gtk::Label,
+    total_size: gtk::Label,
+    separator: gtk::Label,
+    prog_separator: gtk::Label,
+    state: S,
+}
+
+impl Size<Unkown> {
+    fn new(
+        local_size: gtk::Label,
+        total_size: gtk::Label,
+        separator: gtk::Label,
+        prog_separator: gtk::Label,
+    ) -> Self {
+        local_size.hide();
+        total_size.hide();
+        separator.hide();
+        prog_separator.hide();
+
+        Size {
+            local_size,
+            total_size,
+            separator,
+            prog_separator,
+            state: Unkown {},
+        }
+    }
+}
+
+impl From<Size<TotalShown>> for Size<LocalShown> {
+    fn from(f: Size<TotalShown>) -> Self {
+        f.prog_separator.hide();
+        f.total_size.hide();
+        f.local_size.show();
+        f.separator.show();
+
+        Size {
+            local_size: f.local_size,
+            total_size: f.total_size,
+            separator: f.separator,
+            prog_separator: f.prog_separator,
+            state: LocalShown {},
+        }
+    }
+}
+
+impl From<Size<TotalShown>> for Size<InProgress> {
+    fn from(f: Size<TotalShown>) -> Self {
+        f.prog_separator.show();
+        f.total_size.show();
+        f.local_size.show();
+        f.separator.show();
+
+        Size {
+            local_size: f.local_size,
+            total_size: f.total_size,
+            separator: f.separator,
+            prog_separator: f.prog_separator,
+            state: InProgress {},
+        }
+    }
+}
+
+impl From<Size<Unkown>> for Size<InProgress> {
+    fn from(f: Size<Unkown>) -> Self {
+        f.prog_separator.show();
+        f.total_size.show();
+        f.local_size.show();
+        f.separator.show();
+
+        Size {
+            local_size: f.local_size,
+            total_size: f.total_size,
+            separator: f.separator,
+            prog_separator: f.prog_separator,
+            state: InProgress {},
+        }
+    }
+}
+
+impl From<Size<InProgress>> for Size<LocalShown> {
+    fn from(f: Size<InProgress>) -> Self {
+        f.prog_separator.hide();
+        f.total_size.hide();
+        f.local_size.show();
+        f.separator.show();
+
+        Size {
+            local_size: f.local_size,
+            total_size: f.total_size,
+            separator: f.separator,
+            prog_separator: f.prog_separator,
+            state: LocalShown {},
+        }
+    }
+}
+
+pub enum SizeMachine {
+    LocalShown(Size<LocalShown>),
+    TotallShown(Size<TotalShown>),
+    Unkown(Size<Unkown>),
+    InProgress(Size<InProgress>),
+}
+
+impl SizeMachine {
+    pub fn new(
+        local_size: gtk::Label,
+        total_size: gtk::Label,
+        separator: gtk::Label,
+        prog_separator: gtk::Label,
+    ) -> Self {
+        SizeMachine::Unkown(Size::<Unkown>::new(
+            local_size,
+            total_size,
+            separator,
+            prog_separator,
+        ))
+    }
+
+    pub fn determine_state(self) -> Self {
+        unimplemented!()
+    }
+}
