@@ -1,6 +1,18 @@
+//  TODO: Things that should be done.
+//
+// * Wherever there's a function that take 2 or more arguments of the same type,
+//   eg: fn new(total_size: gtk::Label, local_size: gtk::Label ..)
+//   Wrap the types into Struct-tuples and imple deref so it won't be possible to pass
+//   the wrong argument to the wrong position.
+
 use chrono;
 use gtk;
 use gtk::prelude::*;
+
+#[derive(Debug, Clone)]
+pub struct Shown;
+#[derive(Debug, Clone)]
+pub struct Hidden;
 
 #[derive(Debug, Clone)]
 pub struct Normal;
@@ -87,12 +99,6 @@ impl TitleMachine {
         }
     }
 }
-
-#[derive(Debug, Clone)]
-pub struct Shown;
-#[derive(Debug, Clone)]
-pub struct Hidden;
-
 #[derive(Debug, Clone)]
 pub struct Duration<S> {
     // TODO: make duration and separator diff types
@@ -296,6 +302,7 @@ impl From<Size<InProgress>> for Size<LocalShown> {
     }
 }
 
+#[derive(Debug, Clone)]
 pub enum SizeMachine {
     LocalShown(Size<LocalShown>),
     TotallShown(Size<TotalShown>),
@@ -320,5 +327,148 @@ impl SizeMachine {
 
     pub fn determine_state(self) -> Self {
         unimplemented!()
+    }
+}
+#[derive(Debug, Clone)]
+pub struct Download;
+
+#[derive(Debug, Clone)]
+pub struct Play;
+
+#[derive(Debug, Clone)]
+// FIXME: Needs better name.
+// Should each button also has it's own type and machine?
+pub struct DownloadPlay<S> {
+    play: gtk::Button,
+    download: gtk::Button,
+    state: S,
+}
+
+impl DownloadPlay<Download> {
+    fn new(play: gtk::Button, download: gtk::Button) -> Self {
+        play.hide();
+        download.show();
+
+        DownloadPlay {
+            play,
+            download,
+            state: Download {},
+        }
+    }
+}
+
+impl From<DownloadPlay<Play>> for DownloadPlay<Download> {
+    fn from(f: DownloadPlay<Play>) -> Self {
+        f.play.hide();
+        f.download.show();
+
+        DownloadPlay {
+            play: f.play,
+            download: f.download,
+            state: Download {},
+        }
+    }
+}
+
+impl From<DownloadPlay<Download>> for DownloadPlay<Play> {
+    fn from(f: DownloadPlay<Download>) -> Self {
+        f.play.show();
+        f.download.hide();
+
+        DownloadPlay {
+            play: f.play,
+            download: f.download,
+            state: Play {},
+        }
+    }
+}
+
+impl From<DownloadPlay<Play>> for DownloadPlay<Hidden> {
+    fn from(f: DownloadPlay<Play>) -> Self {
+        f.play.hide();
+        f.download.hide();
+
+        DownloadPlay {
+            play: f.play,
+            download: f.download,
+            state: Hidden {},
+        }
+    }
+}
+
+impl From<DownloadPlay<Download>> for DownloadPlay<Hidden> {
+    fn from(f: DownloadPlay<Download>) -> Self {
+        f.play.hide();
+        f.download.hide();
+
+        DownloadPlay {
+            play: f.play,
+            download: f.download,
+            state: Hidden {},
+        }
+    }
+}
+
+impl From<DownloadPlay<Hidden>> for DownloadPlay<Download> {
+    fn from(f: DownloadPlay<Hidden>) -> Self {
+        f.play.hide();
+        f.download.show();
+
+        DownloadPlay {
+            play: f.play,
+            download: f.download,
+            state: Download {},
+        }
+    }
+}
+
+impl From<DownloadPlay<Hidden>> for DownloadPlay<Play> {
+    fn from(f: DownloadPlay<Hidden>) -> Self {
+        f.play.show();
+        f.download.show();
+
+        DownloadPlay {
+            play: f.play,
+            download: f.download,
+            state: Play {},
+        }
+    }
+}
+
+pub enum DownloadPlayMachine {
+    Play(DownloadPlay<Play>),
+    Download(DownloadPlay<Download>),
+    Hidden(DownloadPlay<Hidden>),
+}
+
+impl DownloadPlayMachine {
+    pub fn new(play: gtk::Button, download: gtk::Button) -> Self {
+        DownloadPlayMachine::Download(DownloadPlay::<Download>::new(play, download))
+    }
+
+    pub fn determine_state(self, downloaded: bool, should_hide: bool) -> Self {
+        match (self, downloaded, should_hide) {
+            (DownloadPlayMachine::Play(val), true, false) => DownloadPlayMachine::Play(val.into()),
+            (DownloadPlayMachine::Play(val), false, false) => {
+                DownloadPlayMachine::Download(val.into())
+            }
+            (DownloadPlayMachine::Download(val), true, false) => {
+                DownloadPlayMachine::Play(val.into())
+            }
+            (DownloadPlayMachine::Download(val), false, false) => {
+                DownloadPlayMachine::Download(val.into())
+            }
+            (DownloadPlayMachine::Hidden(val), true, false) => {
+                DownloadPlayMachine::Play(val.into())
+            }
+            (DownloadPlayMachine::Hidden(val), false, false) => {
+                DownloadPlayMachine::Download(val.into())
+            }
+            (DownloadPlayMachine::Play(val), _, true) => DownloadPlayMachine::Hidden(val.into()),
+            (DownloadPlayMachine::Download(val), _, true) => {
+                DownloadPlayMachine::Hidden(val.into())
+            }
+            (DownloadPlayMachine::Hidden(val), _, true) => DownloadPlayMachine::Hidden(val.into()),
+        }
     }
 }
