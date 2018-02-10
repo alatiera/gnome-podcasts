@@ -99,6 +99,7 @@ impl TitleMachine {
         }
     }
 }
+
 #[derive(Debug, Clone)]
 pub struct Duration<S> {
     // TODO: make duration and separator diff types
@@ -128,26 +129,26 @@ impl Duration<Hidden> {
 }
 
 impl From<Duration<Hidden>> for Duration<Shown> {
-    fn from(d: Duration<Hidden>) -> Self {
-        d.duration.show();
-        d.separator.show();
+    fn from(f: Duration<Hidden>) -> Self {
+        f.duration.show();
+        f.separator.show();
 
         Duration {
-            duration: d.duration,
-            separator: d.separator,
+            duration: f.duration,
+            separator: f.separator,
             state: Shown {},
         }
     }
 }
 
 impl From<Duration<Shown>> for Duration<Hidden> {
-    fn from(d: Duration<Shown>) -> Self {
-        d.duration.hide();
-        d.separator.hide();
+    fn from(f: Duration<Shown>) -> Self {
+        f.duration.hide();
+        f.separator.hide();
 
         Duration {
-            duration: d.duration,
-            separator: d.separator,
+            duration: f.duration,
+            separator: f.separator,
             state: Hidden {},
         }
     }
@@ -329,6 +330,7 @@ impl SizeMachine {
         unimplemented!()
     }
 }
+
 #[derive(Debug, Clone)]
 pub struct Download;
 
@@ -469,6 +471,73 @@ impl DownloadPlayMachine {
                 DownloadPlayMachine::Hidden(val.into())
             }
             (DownloadPlayMachine::Hidden(val), _, true) => DownloadPlayMachine::Hidden(val.into()),
+        }
+    }
+}
+
+#[derive(Debug, Clone)]
+pub struct Progress<S> {
+    bar: gtk::ProgressBar,
+    cancel: gtk::Button,
+    state: S,
+}
+
+impl Progress<Hidden> {
+    fn new(bar: gtk::ProgressBar, cancel: gtk::Button) -> Self {
+        bar.hide();
+        cancel.hide();
+
+        Progress {
+            bar,
+            cancel,
+            state: Hidden {},
+        }
+    }
+}
+
+impl From<Progress<Hidden>> for Progress<Shown> {
+    fn from(f: Progress<Hidden>) -> Self {
+        f.bar.show();
+        f.cancel.show();
+
+        Progress {
+            bar: f.bar,
+            cancel: f.cancel,
+            state: Shown {},
+        }
+    }
+}
+
+impl From<Progress<Shown>> for Progress<Hidden> {
+    fn from(f: Progress<Shown>) -> Self {
+        f.bar.hide();
+        f.cancel.hide();
+
+        Progress {
+            bar: f.bar,
+            cancel: f.cancel,
+            state: Hidden {},
+        }
+    }
+}
+
+#[derive(Debug, Clone)]
+pub enum ProgressMachine {
+    Hidden(Progress<Hidden>),
+    Shown(Progress<Shown>),
+}
+
+impl ProgressMachine {
+    pub fn new(bar: gtk::ProgressBar, cancel: gtk::Button) -> Self {
+        ProgressMachine::Hidden(Progress::<Hidden>::new(bar, cancel))
+    }
+
+    pub fn determine_state(self, is_active: bool) -> Self {
+        match (self, is_active) {
+            (ProgressMachine::Hidden(val), false) => ProgressMachine::Hidden(val.into()),
+            (ProgressMachine::Hidden(val), true) => ProgressMachine::Shown(val.into()),
+            (ProgressMachine::Shown(val), false) => ProgressMachine::Hidden(val.into()),
+            (ProgressMachine::Shown(val), true) => ProgressMachine::Shown(val.into()),
         }
     }
 }
