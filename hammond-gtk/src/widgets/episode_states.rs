@@ -193,9 +193,6 @@ impl DurationMachine {
 }
 
 #[derive(Debug, Clone)]
-pub struct LocalShown;
-
-#[derive(Debug, Clone)]
 pub struct TotalShown;
 
 #[derive(Debug, Clone)]
@@ -211,6 +208,12 @@ pub struct Size<S> {
     separator: gtk::Label,
     prog_separator: gtk::Label,
     state: S,
+}
+
+impl<S> Size<S> {
+    fn set_total_size(&self, text: &str) {
+        self.total_size.set_text(text)
+    }
 }
 
 impl Size<Unkown> {
@@ -231,23 +234,6 @@ impl Size<Unkown> {
             separator,
             prog_separator,
             state: Unkown {},
-        }
-    }
-}
-
-impl From<Size<TotalShown>> for Size<LocalShown> {
-    fn from(f: Size<TotalShown>) -> Self {
-        f.prog_separator.hide();
-        f.total_size.hide();
-        f.local_size.show();
-        f.separator.show();
-
-        Size {
-            local_size: f.local_size,
-            total_size: f.total_size,
-            separator: f.separator,
-            prog_separator: f.prog_separator,
-            state: LocalShown {},
         }
     }
 }
@@ -283,51 +269,6 @@ impl From<Size<Unkown>> for Size<InProgress> {
             prog_separator: f.prog_separator,
             state: InProgress {},
         }
-    }
-}
-
-impl From<Size<InProgress>> for Size<LocalShown> {
-    fn from(f: Size<InProgress>) -> Self {
-        f.prog_separator.hide();
-        f.total_size.hide();
-        f.local_size.show();
-        f.separator.show();
-
-        Size {
-            local_size: f.local_size,
-            total_size: f.total_size,
-            separator: f.separator,
-            prog_separator: f.prog_separator,
-            state: LocalShown {},
-        }
-    }
-}
-
-#[derive(Debug, Clone)]
-pub enum SizeMachine {
-    LocalShown(Size<LocalShown>),
-    TotallShown(Size<TotalShown>),
-    Unkown(Size<Unkown>),
-    InProgress(Size<InProgress>),
-}
-
-impl SizeMachine {
-    pub fn new(
-        local_size: gtk::Label,
-        total_size: gtk::Label,
-        separator: gtk::Label,
-        prog_separator: gtk::Label,
-    ) -> Self {
-        SizeMachine::Unkown(Size::<Unkown>::new(
-            local_size,
-            total_size,
-            separator,
-            prog_separator,
-        ))
-    }
-
-    pub fn determine_state(self) -> Self {
-        unimplemented!()
     }
 }
 
@@ -437,44 +378,6 @@ impl From<DownloadPlay<Hidden>> for DownloadPlay<Play> {
     }
 }
 
-pub enum DownloadPlayMachine {
-    Play(DownloadPlay<Play>),
-    Download(DownloadPlay<Download>),
-    Hidden(DownloadPlay<Hidden>),
-}
-
-impl DownloadPlayMachine {
-    pub fn new(play: gtk::Button, download: gtk::Button) -> Self {
-        DownloadPlayMachine::Hidden(DownloadPlay::<Hidden>::new(play, download))
-    }
-
-    pub fn determine_state(self, downloaded: bool, should_hide: bool) -> Self {
-        match (self, downloaded, should_hide) {
-            (DownloadPlayMachine::Play(val), true, false) => DownloadPlayMachine::Play(val.into()),
-            (DownloadPlayMachine::Play(val), false, false) => {
-                DownloadPlayMachine::Download(val.into())
-            }
-            (DownloadPlayMachine::Download(val), true, false) => {
-                DownloadPlayMachine::Play(val.into())
-            }
-            (DownloadPlayMachine::Download(val), false, false) => {
-                DownloadPlayMachine::Download(val.into())
-            }
-            (DownloadPlayMachine::Hidden(val), true, false) => {
-                DownloadPlayMachine::Play(val.into())
-            }
-            (DownloadPlayMachine::Hidden(val), false, false) => {
-                DownloadPlayMachine::Download(val.into())
-            }
-            (DownloadPlayMachine::Play(val), _, true) => DownloadPlayMachine::Hidden(val.into()),
-            (DownloadPlayMachine::Download(val), _, true) => {
-                DownloadPlayMachine::Hidden(val.into())
-            }
-            (DownloadPlayMachine::Hidden(val), _, true) => DownloadPlayMachine::Hidden(val.into()),
-        }
-    }
-}
-
 #[derive(Debug, Clone)]
 pub struct Progress<S> {
     bar: gtk::ProgressBar,
@@ -522,22 +425,64 @@ impl From<Progress<Shown>> for Progress<Hidden> {
 }
 
 #[derive(Debug, Clone)]
-pub enum ProgressMachine {
-    Hidden(Progress<Hidden>),
-    Shown(Progress<Shown>),
+pub struct Media<D, P, S> {
+    dl: DownloadPlay<D>,
+    progress: Progress<P>,
+    size: Size<S>,
 }
 
-impl ProgressMachine {
-    pub fn new(bar: gtk::ProgressBar, cancel: gtk::Button) -> Self {
-        ProgressMachine::Hidden(Progress::<Hidden>::new(bar, cancel))
+#[derive(Debug, Clone)]
+pub enum MediaMachine {
+    NewWithSize(Media<Download, Hidden, TotalShown>),
+    NewWithoutSize(Media<Download, Hidden, Unkown>),
+    // TODO: Since you've download it you probably know it's size
+    // Adjust accordignly
+    PlayableWithSize(Media<Play, Hidden, TotalShown>),
+    PlayableWithoutSize(Media<Play, Hidden, Unkown>),
+    InProgress(Media<Hidden, Shown, InProgress>),
+}
+
+impl MediaMachine {
+    pub fn new(
+        play: gtk::Button,
+        download: gtk::Button,
+        bar: gtk::ProgressBar,
+        cancel: gtk::Button,
+        local_size: gtk::Label,
+        total_size: gtk::Label,
+        separator: gtk::Label,
+        prog_separator: gtk::Label,
+    ) -> Self {
+        let dl = DownloadPlay::<Download>::from(DownloadPlay::<Hidden>::new(play, download));
+        let progress = Progress::<Hidden>::new(bar, cancel);
+        let size = Size::<Unkown>::new(local_size, total_size, separator, prog_separator);
+
+        MediaMachine::NewWithoutSize(Media { dl, progress, size })
     }
 
-    pub fn determine_state(self, is_active: bool) -> Self {
-        match (self, is_active) {
-            (ProgressMachine::Hidden(val), false) => ProgressMachine::Hidden(val.into()),
-            (ProgressMachine::Hidden(val), true) => ProgressMachine::Shown(val.into()),
-            (ProgressMachine::Shown(val), false) => ProgressMachine::Hidden(val.into()),
-            (ProgressMachine::Shown(val), true) => ProgressMachine::Shown(val.into()),
+    pub fn determine_state(self, is_downloaded: bool, is_active: bool, size: Option<&str>) -> Self {
+        match (self, is_downloaded, is_active, size) {
+            (MediaMachine::NewWithSize(val), _, true, Some(s)) => {
+                let Media { dl, progress, size } = val;
+                size.set_total_size(s);
+
+                MediaMachine::InProgress(Media {
+                    dl: dl.into(),
+                    progress: progress.into(),
+                    size: size.into(),
+                })
+            }
+            (MediaMachine::NewWithSize(val), _, true, None) => {
+                let Media { dl, progress, size } = val;
+                size.set_total_size("Unkown");
+
+                MediaMachine::InProgress(Media {
+                    dl: dl.into(),
+                    progress: progress.into(),
+                    size: size.into(),
+                })
+            }
+            _ => unimplemented!(),
         }
     }
 }
