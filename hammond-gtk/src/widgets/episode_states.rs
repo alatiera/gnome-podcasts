@@ -110,6 +110,7 @@ pub struct Duration<S> {
 
 impl<S> Duration<S> {
     // This needs a better name.
+    // TODO: make me mut
     fn set_duration(&self, minutes: i64) {
         self.duration.set_text(&format!("{} min", minutes));
     }
@@ -193,81 +194,54 @@ impl DurationMachine {
 }
 
 #[derive(Debug, Clone)]
-pub struct TotalShown;
-
-#[derive(Debug, Clone)]
-pub struct Unkown;
-
-#[derive(Debug, Clone)]
-pub struct InProgress;
-
-#[derive(Debug, Clone)]
 pub struct Size<S> {
     local_size: gtk::Label,
-    total_size: gtk::Label,
     separator: gtk::Label,
     prog_separator: gtk::Label,
     state: S,
 }
 
-impl<S> Size<S> {
-    fn set_total_size(&self, text: &str) {
-        self.total_size.set_text(text)
-    }
-}
-
-impl Size<Unkown> {
-    fn new(
-        local_size: gtk::Label,
-        total_size: gtk::Label,
-        separator: gtk::Label,
-        prog_separator: gtk::Label,
-    ) -> Self {
+impl Size<Hidden> {
+    fn new(local_size: gtk::Label, separator: gtk::Label, prog_separator: gtk::Label) -> Self {
         local_size.hide();
-        total_size.hide();
         separator.hide();
         prog_separator.hide();
 
         Size {
             local_size,
-            total_size,
             separator,
             prog_separator,
-            state: Unkown {},
+            state: Hidden {},
         }
     }
 }
 
-impl From<Size<TotalShown>> for Size<InProgress> {
-    fn from(f: Size<TotalShown>) -> Self {
+impl From<Size<Hidden>> for Size<Shown> {
+    fn from(f: Size<Hidden>) -> Self {
         f.prog_separator.show();
-        f.total_size.show();
         f.local_size.show();
         f.separator.show();
 
         Size {
             local_size: f.local_size,
-            total_size: f.total_size,
             separator: f.separator,
             prog_separator: f.prog_separator,
-            state: InProgress {},
+            state: Shown {},
         }
     }
 }
 
-impl From<Size<Unkown>> for Size<InProgress> {
-    fn from(f: Size<Unkown>) -> Self {
-        f.prog_separator.show();
-        f.total_size.show();
-        f.local_size.show();
-        f.separator.show();
+impl From<Size<Shown>> for Size<Hidden> {
+    fn from(f: Size<Shown>) -> Self {
+        f.prog_separator.hide();
+        f.local_size.hide();
+        f.separator.hide();
 
         Size {
             local_size: f.local_size,
-            total_size: f.total_size,
             separator: f.separator,
             prog_separator: f.prog_separator,
-            state: InProgress {},
+            state: Hidden {},
         }
     }
 }
@@ -425,21 +399,17 @@ impl From<Progress<Shown>> for Progress<Hidden> {
 }
 
 #[derive(Debug, Clone)]
-pub struct Media<D, P, S> {
+pub struct Media<D, S> {
     dl: DownloadPlay<D>,
-    progress: Progress<P>,
+    progress: Progress<S>,
     size: Size<S>,
 }
 
 #[derive(Debug, Clone)]
 pub enum MediaMachine {
-    NewWithSize(Media<Download, Hidden, TotalShown>),
-    NewWithoutSize(Media<Download, Hidden, Unkown>),
-    // TODO: Since you've download it you probably know it's size
-    // Adjust accordignly
-    PlayableWithSize(Media<Play, Hidden, TotalShown>),
-    PlayableWithoutSize(Media<Play, Hidden, Unkown>),
-    InProgress(Media<Hidden, Shown, InProgress>),
+    New(Media<Download, Hidden>),
+    Playable(Media<Play, Hidden>),
+    InProgress(Media<Hidden, Shown>),
 }
 
 impl MediaMachine {
@@ -449,40 +419,41 @@ impl MediaMachine {
         bar: gtk::ProgressBar,
         cancel: gtk::Button,
         local_size: gtk::Label,
-        total_size: gtk::Label,
         separator: gtk::Label,
         prog_separator: gtk::Label,
     ) -> Self {
         let dl = DownloadPlay::<Download>::from(DownloadPlay::<Hidden>::new(play, download));
         let progress = Progress::<Hidden>::new(bar, cancel);
-        let size = Size::<Unkown>::new(local_size, total_size, separator, prog_separator);
+        let size = Size::<Hidden>::new(local_size, separator, prog_separator);
 
-        MediaMachine::NewWithoutSize(Media { dl, progress, size })
+        MediaMachine::New(Media { dl, progress, size })
     }
 
-    pub fn determine_state(self, is_downloaded: bool, is_active: bool, size: Option<&str>) -> Self {
-        match (self, is_downloaded, is_active, size) {
-            (MediaMachine::NewWithSize(val), _, true, Some(s)) => {
-                let Media { dl, progress, size } = val;
-                size.set_total_size(s);
-
-                MediaMachine::InProgress(Media {
-                    dl: dl.into(),
-                    progress: progress.into(),
-                    size: size.into(),
-                })
-            }
-            (MediaMachine::NewWithSize(val), _, true, None) => {
-                let Media { dl, progress, size } = val;
-                size.set_total_size("Unkown");
-
-                MediaMachine::InProgress(Media {
-                    dl: dl.into(),
-                    progress: progress.into(),
-                    size: size.into(),
-                })
-            }
-            _ => unimplemented!(),
+    pub fn determine_state(self, is_downloaded: bool, is_active: bool) -> Self {
+        match (self, is_downloaded, is_active) {
+            (MediaMachine::New(val), _, true) => MediaMachine::InProgress(Media {
+                dl: val.dl.into(),
+                progress: val.progress.into(),
+                size: val.size.into(),
+            }),
+            (MediaMachine::New(val), true, false) => MediaMachine::Playable(Media {
+                dl: val.dl.into(),
+                progress: val.progress.into(),
+                size: val.size.into(),
+            }),
+            (MediaMachine::Playable(val), _, true) => MediaMachine::InProgress(Media {
+                dl: val.dl.into(),
+                progress: val.progress.into(),
+                size: val.size.into(),
+            }),
+            (MediaMachine::Playable(val), false, false) => MediaMachine::New(Media {
+                dl: val.dl.into(),
+                progress: val.progress.into(),
+                size: val.size.into(),
+            }),
+            (n @ MediaMachine::New(_), false, false) => n,
+            (n @ MediaMachine::Playable(_), true, false) => n,
+            (n @ MediaMachine::InProgress(_), _, _) => n,
         }
     }
 }
