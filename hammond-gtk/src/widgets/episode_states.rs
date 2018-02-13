@@ -195,53 +195,60 @@ impl DurationMachine {
 
 #[derive(Debug, Clone)]
 pub struct Size<S> {
-    local_size: gtk::Label,
+    size: gtk::Label,
     separator: gtk::Label,
-    prog_separator: gtk::Label,
     state: S,
 }
 
+impl Size<Shown> {
+    fn set_size(&mut self, s: &str) {
+        self.size.set_text(s);
+        self.separator.show();
+    }
+}
+
 impl Size<Hidden> {
-    fn new(local_size: gtk::Label, separator: gtk::Label, prog_separator: gtk::Label) -> Self {
-        local_size.hide();
+    fn new(size: gtk::Label, separator: gtk::Label) -> Self {
+        size.hide();
         separator.hide();
-        prog_separator.hide();
 
         Size {
-            local_size,
+            size,
             separator,
-            prog_separator,
+            state: Hidden {},
+        }
+    }
+
+    fn set_size(self, s: &str) -> Size<Shown> {
+        self.size.set_text(s);
+        self.separator.show();
+        self.into()
+    }
+}
+
+impl From<Size<Shown>> for Size<Hidden> {
+    fn from(f: Size<Shown>) -> Self {
+        f.size.hide();
+        f.separator.hide();
+
+        Size {
+            size: f.size,
+            separator: f.separator,
             state: Hidden {},
         }
     }
 }
 
 impl From<Size<Hidden>> for Size<Shown> {
+    /// This is suposed to be called only from Size::<Hidden>::set_size.
     fn from(f: Size<Hidden>) -> Self {
-        f.prog_separator.show();
-        f.local_size.show();
+        f.size.show();
         f.separator.show();
 
         Size {
-            local_size: f.local_size,
+            size: f.size,
             separator: f.separator,
-            prog_separator: f.prog_separator,
             state: Shown {},
-        }
-    }
-}
-
-impl From<Size<Shown>> for Size<Hidden> {
-    fn from(f: Size<Shown>) -> Self {
-        f.prog_separator.hide();
-        f.local_size.hide();
-        f.separator.hide();
-
-        Size {
-            local_size: f.local_size,
-            separator: f.separator,
-            prog_separator: f.prog_separator,
-            state: Hidden {},
         }
     }
 }
@@ -356,17 +363,28 @@ impl From<DownloadPlay<Hidden>> for DownloadPlay<Play> {
 pub struct Progress<S> {
     bar: gtk::ProgressBar,
     cancel: gtk::Button,
+    local_size: gtk::Label,
+    prog_separator: gtk::Label,
     state: S,
 }
 
 impl Progress<Hidden> {
-    fn new(bar: gtk::ProgressBar, cancel: gtk::Button) -> Self {
+    fn new(
+        bar: gtk::ProgressBar,
+        cancel: gtk::Button,
+        local_size: gtk::Label,
+        prog_separator: gtk::Label,
+    ) -> Self {
         bar.hide();
         cancel.hide();
+        local_size.hide();
+        prog_separator.hide();
 
         Progress {
             bar,
             cancel,
+            local_size,
+            prog_separator,
             state: Hidden {},
         }
     }
@@ -376,10 +394,14 @@ impl From<Progress<Hidden>> for Progress<Shown> {
     fn from(f: Progress<Hidden>) -> Self {
         f.bar.show();
         f.cancel.show();
+        f.local_size.hide();
+        f.prog_separator.hide();
 
         Progress {
             bar: f.bar,
             cancel: f.cancel,
+            local_size: f.local_size,
+            prog_separator: f.prog_separator,
             state: Shown {},
         }
     }
@@ -389,27 +411,33 @@ impl From<Progress<Shown>> for Progress<Hidden> {
     fn from(f: Progress<Shown>) -> Self {
         f.bar.hide();
         f.cancel.hide();
+        f.local_size.hide();
+        f.prog_separator.hide();
 
         Progress {
             bar: f.bar,
             cancel: f.cancel,
+            local_size: f.local_size,
+            prog_separator: f.prog_separator,
             state: Hidden {},
         }
     }
 }
 
 #[derive(Debug, Clone)]
-pub struct Media<D, S> {
-    dl: DownloadPlay<D>,
-    progress: Progress<S>,
-    size: Size<S>,
+pub struct Media<X, Y, Z> {
+    dl: DownloadPlay<X>,
+    progress: Progress<Y>,
+    total_size: Size<Z>,
 }
 
 #[derive(Debug, Clone)]
 pub enum MediaMachine {
-    New(Media<Download, Hidden>),
-    Playable(Media<Play, Hidden>),
-    InProgress(Media<Hidden, Shown>),
+    New(Media<Download, Hidden, Shown>),
+    NewWithoutSize(Media<Download, Hidden, Hidden>),
+    Playable(Media<Play, Hidden, Shown>),
+    PlayableWithoutSize(Media<Play, Hidden, Hidden>),
+    InProgress(Media<Hidden, Shown, Shown>),
 }
 
 impl MediaMachine {
@@ -418,15 +446,20 @@ impl MediaMachine {
         download: gtk::Button,
         bar: gtk::ProgressBar,
         cancel: gtk::Button,
+        total_size: gtk::Label,
         local_size: gtk::Label,
         separator: gtk::Label,
         prog_separator: gtk::Label,
     ) -> Self {
         let dl = DownloadPlay::<Download>::from(DownloadPlay::<Hidden>::new(play, download));
-        let progress = Progress::<Hidden>::new(bar, cancel);
-        let size = Size::<Hidden>::new(local_size, separator, prog_separator);
+        let progress = Progress::<Hidden>::new(bar, cancel, local_size, prog_separator);
+        let total_size = Size::<Hidden>::new(total_size, separator);
 
-        MediaMachine::New(Media { dl, progress, size })
+        MediaMachine::NewWithoutSize(Media {
+            dl,
+            progress,
+            total_size,
+        })
     }
 
     pub fn determine_state(self, is_downloaded: bool, is_active: bool) -> Self {
@@ -434,26 +467,49 @@ impl MediaMachine {
             (MediaMachine::New(val), _, true) => MediaMachine::InProgress(Media {
                 dl: val.dl.into(),
                 progress: val.progress.into(),
-                size: val.size.into(),
+                total_size: val.total_size.into(),
             }),
             (MediaMachine::New(val), true, false) => MediaMachine::Playable(Media {
                 dl: val.dl.into(),
                 progress: val.progress.into(),
-                size: val.size.into(),
+                total_size: val.total_size.into(),
+            }),
+            (MediaMachine::NewWithoutSize(val), _, true) => MediaMachine::InProgress(Media {
+                dl: val.dl.into(),
+                progress: val.progress.into(),
+                total_size: val.total_size.set_size("Unkown"),
+            }),
+            (MediaMachine::NewWithoutSize(val), true, false) => MediaMachine::Playable(Media {
+                dl: val.dl.into(),
+                progress: val.progress.into(),
+                total_size: val.total_size.into(),
             }),
             (MediaMachine::Playable(val), _, true) => MediaMachine::InProgress(Media {
                 dl: val.dl.into(),
                 progress: val.progress.into(),
-                size: val.size.into(),
+                total_size: val.total_size.into(),
             }),
             (MediaMachine::Playable(val), false, false) => MediaMachine::New(Media {
                 dl: val.dl.into(),
                 progress: val.progress.into(),
-                size: val.size.into(),
+                total_size: val.total_size.into(),
+            }),
+            (MediaMachine::PlayableWithoutSize(val), _, true) => MediaMachine::InProgress(Media {
+                dl: val.dl.into(),
+                progress: val.progress.into(),
+                total_size: val.total_size.set_size("Unkown"),
+            }),
+            (MediaMachine::Playable(val), false, false) => MediaMachine::New(Media {
+                dl: val.dl.into(),
+                progress: val.progress.into(),
+                total_size: val.total_size.into(),
             }),
             (n @ MediaMachine::New(_), false, false) => n,
+            (n @ MediaMachine::NewWithoutSize(_), false, false) => n,
             (n @ MediaMachine::Playable(_), true, false) => n,
+            (n @ MediaMachine::PlayableWithoutSize(_), true, false) => n,
             (n @ MediaMachine::InProgress(_), _, _) => n,
+            _ => unimplemented!(),
         }
     }
 }
