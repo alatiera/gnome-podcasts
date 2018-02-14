@@ -9,10 +9,18 @@ use chrono;
 use gtk;
 use gtk::prelude::*;
 
+pub trait Visibility {}
+
+#[derive(Debug, Clone)]
+pub struct UnItialized;
+
 #[derive(Debug, Clone)]
 pub struct Shown;
 #[derive(Debug, Clone)]
 pub struct Hidden;
+
+impl Visibility for Shown {}
+impl Visibility for Hidden {}
 
 #[derive(Debug, Clone)]
 pub struct Normal;
@@ -101,14 +109,14 @@ impl TitleMachine {
 }
 
 #[derive(Debug, Clone)]
-pub struct Duration<S> {
+pub struct Duration<S: Visibility> {
     // TODO: make duration and separator diff types
     duration: gtk::Label,
     separator: gtk::Label,
     state: S,
 }
 
-impl<S> Duration<S> {
+impl<S: Visibility> Duration<S> {
     // This needs a better name.
     // TODO: make me mut
     fn set_duration(&self, minutes: i64) {
@@ -201,13 +209,22 @@ pub struct Size<S> {
 }
 
 impl Size<Shown> {
-    fn set_size(&mut self, s: &str) {
+    fn set_size(self, s: &str) -> Size<Shown> {
         self.size.set_text(s);
         self.separator.show();
+        self.into()
     }
 }
 
 impl Size<Hidden> {
+    fn set_size(self, s: &str) -> Size<Shown> {
+        self.size.set_text(s);
+        self.separator.show();
+        self.into()
+    }
+}
+
+impl Size<UnItialized> {
     fn new(size: gtk::Label, separator: gtk::Label) -> Self {
         size.hide();
         separator.hide();
@@ -215,7 +232,7 @@ impl Size<Hidden> {
         Size {
             size,
             separator,
-            state: Hidden {},
+            state: UnItialized {},
         }
     }
 
@@ -240,7 +257,6 @@ impl From<Size<Shown>> for Size<Hidden> {
 }
 
 impl From<Size<Hidden>> for Size<Shown> {
-    /// This is suposed to be called only from Size::<Hidden>::set_size.
     fn from(f: Size<Hidden>) -> Self {
         f.size.show();
         f.separator.show();
@@ -249,6 +265,34 @@ impl From<Size<Hidden>> for Size<Shown> {
             size: f.size,
             separator: f.separator,
             state: Shown {},
+        }
+    }
+}
+
+impl From<Size<UnItialized>> for Size<Shown> {
+    /// This is suposed to be called only from Size::<UnInitialize>::set_size.
+    fn from(f: Size<UnItialized>) -> Self {
+        f.size.show();
+        f.separator.show();
+
+        Size {
+            size: f.size,
+            separator: f.separator,
+            state: Shown {},
+        }
+    }
+}
+
+impl From<Size<UnItialized>> for Size<Hidden> {
+    /// This is suposed to be called only from Size::<UnInitialized>::set_size.
+    fn from(f: Size<UnItialized>) -> Self {
+        f.size.hide();
+        f.separator.hide();
+
+        Size {
+            size: f.size,
+            separator: f.separator,
+            state: Hidden {},
         }
     }
 }
@@ -268,7 +312,7 @@ pub struct DownloadPlay<S> {
     state: S,
 }
 
-impl DownloadPlay<Hidden> {
+impl DownloadPlay<UnItialized> {
     fn new(play: gtk::Button, download: gtk::Button) -> Self {
         play.hide();
         download.hide();
@@ -276,7 +320,7 @@ impl DownloadPlay<Hidden> {
         DownloadPlay {
             play,
             download,
-            state: Hidden {},
+            state: UnItialized {},
         }
     }
 }
@@ -359,6 +403,45 @@ impl From<DownloadPlay<Hidden>> for DownloadPlay<Play> {
     }
 }
 
+impl From<DownloadPlay<UnItialized>> for DownloadPlay<Download> {
+    fn from(f: DownloadPlay<UnItialized>) -> Self {
+        f.play.hide();
+        f.download.show();
+
+        DownloadPlay {
+            play: f.play,
+            download: f.download,
+            state: Download {},
+        }
+    }
+}
+
+impl From<DownloadPlay<UnItialized>> for DownloadPlay<Play> {
+    fn from(f: DownloadPlay<UnItialized>) -> Self {
+        f.play.show();
+        f.download.show();
+
+        DownloadPlay {
+            play: f.play,
+            download: f.download,
+            state: Play {},
+        }
+    }
+}
+
+impl From<DownloadPlay<UnItialized>> for DownloadPlay<Hidden> {
+    fn from(f: DownloadPlay<UnItialized>) -> Self {
+        f.play.hide();
+        f.download.hide();
+
+        DownloadPlay {
+            play: f.play,
+            download: f.download,
+            state: Hidden {},
+        }
+    }
+}
+
 #[derive(Debug, Clone)]
 pub struct Progress<S> {
     bar: gtk::ProgressBar,
@@ -368,7 +451,7 @@ pub struct Progress<S> {
     state: S,
 }
 
-impl Progress<Hidden> {
+impl Progress<UnItialized> {
     fn new(
         bar: gtk::ProgressBar,
         cancel: gtk::Button,
@@ -385,7 +468,7 @@ impl Progress<Hidden> {
             cancel,
             local_size,
             prog_separator,
-            state: Hidden {},
+            state: UnItialized {},
         }
     }
 }
@@ -394,8 +477,8 @@ impl From<Progress<Hidden>> for Progress<Shown> {
     fn from(f: Progress<Hidden>) -> Self {
         f.bar.show();
         f.cancel.show();
-        f.local_size.hide();
-        f.prog_separator.hide();
+        f.local_size.show();
+        f.prog_separator.show();
 
         Progress {
             bar: f.bar,
@@ -424,11 +507,122 @@ impl From<Progress<Shown>> for Progress<Hidden> {
     }
 }
 
+impl From<Progress<UnItialized>> for Progress<Shown> {
+    fn from(f: Progress<UnItialized>) -> Self {
+        f.bar.show();
+        f.cancel.show();
+        f.local_size.show();
+        f.prog_separator.show();
+
+        Progress {
+            bar: f.bar,
+            cancel: f.cancel,
+            local_size: f.local_size,
+            prog_separator: f.prog_separator,
+            state: Shown {},
+        }
+    }
+}
+
+impl From<Progress<UnItialized>> for Progress<Hidden> {
+    fn from(f: Progress<UnItialized>) -> Self {
+        f.bar.hide();
+        f.cancel.hide();
+        f.local_size.hide();
+        f.prog_separator.hide();
+
+        Progress {
+            bar: f.bar,
+            cancel: f.cancel,
+            local_size: f.local_size,
+            prog_separator: f.prog_separator,
+            state: Hidden {},
+        }
+    }
+}
+
 #[derive(Debug, Clone)]
-pub struct Media<X, Y, Z> {
+pub struct Media<X, Z, Y> {
     dl: DownloadPlay<X>,
-    progress: Progress<Y>,
     total_size: Size<Z>,
+    progress: Progress<Y>,
+}
+
+// From New fro InProgress
+impl From<Media<Download, Shown, Hidden>> for Media<Hidden, Shown, Shown> {
+    fn from(f: Media<Download, Shown, Hidden>) -> Self {
+        Media {
+            dl: f.dl.into(),
+            total_size: f.total_size.into(),
+            progress: f.progress.into(),
+        }
+    }
+}
+
+// From NewWithoutSize fro InProgress
+impl From<Media<Download, Hidden, Hidden>> for Media<Hidden, Shown, Shown> {
+    fn from(f: Media<Download, Hidden, Hidden>) -> Self {
+        Media {
+            dl: f.dl.into(),
+            total_size: f.total_size.into(),
+            progress: f.progress.into(),
+        }
+    }
+}
+
+// Into New
+impl Into<Media<Download, Hidden, Shown>> for Media<UnItialized, UnItialized, UnItialized> {
+    fn into(self) -> Media<Download, Hidden, Shown> {
+        Media {
+            dl: self.dl.into(),
+            total_size: self.total_size.into(),
+            progress: self.progress.into(),
+        }
+    }
+}
+
+// Into NewWithoutSize
+impl Into<Media<Download, Hidden, Hidden>> for Media<UnItialized, UnItialized, UnItialized> {
+    fn into(self) -> Media<Download, Hidden, Hidden> {
+        Media {
+            dl: self.dl.into(),
+            total_size: self.total_size.into(),
+            progress: self.progress.into(),
+        }
+    }
+}
+
+// Into Playable
+impl Into<Media<Play, Hidden, Shown>> for Media<UnItialized, UnItialized, UnItialized> {
+    fn into(self) -> Media<Play, Hidden, Shown> {
+        Media {
+            dl: self.dl.into(),
+            total_size: self.total_size.into(),
+            progress: self.progress.into(),
+        }
+    }
+}
+
+// Into PlayableWithoutSize
+impl Into<Media<Play, Hidden, Hidden>> for Media<UnItialized, UnItialized, UnItialized> {
+    fn into(self) -> Media<Play, Hidden, Hidden> {
+        Media {
+            dl: self.dl.into(),
+            total_size: self.total_size.into(),
+            progress: self.progress.into(),
+        }
+    }
+}
+
+// Into InProgress
+impl Into<Media<Hidden, Shown, Shown>> for Media<UnItialized, UnItialized, UnItialized> {
+    fn into(self) -> Media<Hidden, Shown, Shown> {
+        Media {
+            dl: self.dl.into(),
+            total_size: self.total_size.into(),
+            progress: self.progress.into(),
+        }
+    }
 }
 
 #[derive(Debug, Clone)]
@@ -440,7 +634,13 @@ pub enum MediaMachine {
     InProgress(Media<Hidden, Shown, Shown>),
 }
 
-impl MediaMachine {
+#[derive(Debug, Clone)]
+pub enum MediaMachineWrapper {
+    UnItialized(Media<UnItialized, UnItialized, UnItialized>),
+    Initialized(MediaMachine),
+}
+
+impl MediaMachineWrapper {
     pub fn new(
         play: gtk::Button,
         download: gtk::Button,
@@ -451,65 +651,14 @@ impl MediaMachine {
         separator: gtk::Label,
         prog_separator: gtk::Label,
     ) -> Self {
-        let dl = DownloadPlay::<Download>::from(DownloadPlay::<Hidden>::new(play, download));
-        let progress = Progress::<Hidden>::new(bar, cancel, local_size, prog_separator);
-        let total_size = Size::<Hidden>::new(total_size, separator);
+        let dl = DownloadPlay::<UnItialized>::new(play, download);
+        let progress = Progress::<UnItialized>::new(bar, cancel, local_size, prog_separator);
+        let total_size = Size::<UnItialized>::new(total_size, separator);
 
-        MediaMachine::NewWithoutSize(Media {
+        MediaMachineWrapper::UnItialized(Media {
             dl,
             progress,
             total_size,
         })
-    }
-
-    pub fn determine_state(self, is_downloaded: bool, is_active: bool) -> Self {
-        match (self, is_downloaded, is_active) {
-            (MediaMachine::New(val), _, true) => MediaMachine::InProgress(Media {
-                dl: val.dl.into(),
-                progress: val.progress.into(),
-                total_size: val.total_size.into(),
-            }),
-            (MediaMachine::New(val), true, false) => MediaMachine::Playable(Media {
-                dl: val.dl.into(),
-                progress: val.progress.into(),
-                total_size: val.total_size.into(),
-            }),
-            (MediaMachine::NewWithoutSize(val), _, true) => MediaMachine::InProgress(Media {
-                dl: val.dl.into(),
-                progress: val.progress.into(),
-                total_size: val.total_size.set_size("Unkown"),
-            }),
-            (MediaMachine::NewWithoutSize(val), true, false) => MediaMachine::Playable(Media {
-                dl: val.dl.into(),
-                progress: val.progress.into(),
-                total_size: val.total_size.into(),
-            }),
-            (MediaMachine::Playable(val), _, true) => MediaMachine::InProgress(Media {
-                dl: val.dl.into(),
-                progress: val.progress.into(),
-                total_size: val.total_size.into(),
-            }),
-            (MediaMachine::Playable(val), false, false) => MediaMachine::New(Media {
-                dl: val.dl.into(),
-                progress: val.progress.into(),
-                total_size: val.total_size.into(),
-            }),
-            (MediaMachine::PlayableWithoutSize(val), _, true) => MediaMachine::InProgress(Media {
-                dl: val.dl.into(),
-                progress: val.progress.into(),
-                total_size: val.total_size.set_size("Unkown"),
-            }),
-            (MediaMachine::Playable(val), false, false) => MediaMachine::New(Media {
-                dl: val.dl.into(),
-                progress: val.progress.into(),
-                total_size: val.total_size.into(),
-            }),
-            (n @ MediaMachine::New(_), false, false) => n,
-            (n @ MediaMachine::NewWithoutSize(_), false, false) => n,
-            (n @ MediaMachine::Playable(_), true, false) => n,
-            (n @ MediaMachine::PlayableWithoutSize(_), true, false) => n,
-            (n @ MediaMachine::InProgress(_), _, _) => n,
-            _ => unimplemented!(),
-        }
     }
 }
