@@ -113,11 +113,9 @@ Tobias Bernard
                                 <property name="can_focus">False</property>
                                 <property name="halign">start</property>
                                 <property name="valign">end</property>
-                                <property name="hexpand">True</property>
                                 <property name="label" translatable="yes">Show description</property>
                                 <property name="wrap">True</property>
                                 <property name="wrap_mode">word-char</property>
-                                <property name="max_width_chars">70</property>
                                 <attributes>
                                   <attribute name="weight" value="medium"/>
                                 </attributes>
@@ -132,6 +130,7 @@ Tobias Bernard
                               <object class="GtkBox">
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
+                                <property name="hexpand">True</property>
                                 <property name="spacing">6</property>
                                 <child>
                                   <object class="GtkMenuButton" id="settings_button">
@@ -228,7 +227,7 @@ Tobias Bernard
                       </object>
                       <packing>
                         <property name="expand">False</property>
-                        <property name="fill">True</property>
+                        <property name="fill">False</property>
                         <property name="position">1</property>
                       </packing>
                     </child>
