@@ -6,6 +6,7 @@
 //   the wrong argument to the wrong position.
 
 use chrono;
+use glib;
 use gtk;
 use gtk::prelude::*;
 
@@ -354,6 +355,14 @@ impl<S> DownloadPlay<S> {
             state: Hidden {},
         }
     }
+
+    fn connect_download<F: Fn(&gtk::Button) + 'static>(&self, f: F) -> glib::SignalHandlerId {
+        self.download.connect_clicked(f)
+    }
+
+    fn connect_play_button<F: Fn(&gtk::Button) + 'static>(&self, f: F) -> glib::SignalHandlerId {
+        self.play.connect_clicked(f)
+    }
 }
 
 impl DownloadPlay<UnInitialized> {
@@ -609,5 +618,37 @@ impl MediaMachine {
         //     _ => unimplemented!(),
         // }
         unimplemented!()
+    }
+
+    pub fn download_connect_clicked<F: Fn(&gtk::Button) + 'static>(
+        &self,
+        f: F,
+    ) -> glib::SignalHandlerId {
+        use self::MediaMachine::*;
+
+        match *self {
+            New(ref val) => val.dl.connect_download(f),
+            NewWithoutSize(ref val) => val.dl.connect_download(f),
+            Playable(ref val) => val.dl.connect_download(f),
+            PlayableWithoutSize(ref val) => val.dl.connect_download(f),
+            InProgress(ref val) => val.dl.connect_download(f),
+            UnInitialized(ref val) => val.dl.connect_download(f),
+        }
+    }
+
+    pub fn play_connect_clicked<F: Fn(&gtk::Button) + 'static>(
+        &self,
+        f: F,
+    ) -> glib::SignalHandlerId {
+        use self::MediaMachine::*;
+
+        match *self {
+            New(ref val) => val.dl.connect_play_button(f),
+            NewWithoutSize(ref val) => val.dl.connect_play_button(f),
+            Playable(ref val) => val.dl.connect_play_button(f),
+            PlayableWithoutSize(ref val) => val.dl.connect_play_button(f),
+            InProgress(ref val) => val.dl.connect_play_button(f),
+            UnInitialized(ref val) => val.dl.connect_play_button(f),
+        }
     }
 }

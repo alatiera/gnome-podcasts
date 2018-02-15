@@ -149,19 +149,21 @@ impl EpisodeWidget {
         }
 
         let episode = Arc::new(Mutex::new(episode));
+        self.connect_buttons(episode, sender);
+    }
 
+    fn connect_buttons(&self, episode: Arc<Mutex<EpisodeWidgetQuery>>, sender: Sender<Action>) {
         let title = self.title.clone();
-        self.play
-            .connect_clicked(clone!(episode, sender => move |_| {
+        if let Ok(media) = self.media.lock() {
+            media.play_connect_clicked(clone!(episode, sender => move |_| {
                 if let Ok(mut ep) = episode.lock() {
                     if let Err(err) = on_play_bttn_clicked(&mut ep, title.clone(), sender.clone()){
                         error!("Error: {}", err);
                     };
                 }
-        }));
+            }));
 
-        self.download
-            .connect_clicked(clone!(episode, sender => move |dl| {
+            media.download_connect_clicked(clone!(episode, sender => move |dl| {
                 dl.set_sensitive(false);
                 if let Ok(ep) = episode.lock() {
                     if let Err(err) = on_download_clicked(&ep, sender.clone())  {
@@ -171,7 +173,8 @@ impl EpisodeWidget {
                         info!("Donwload started succesfully.");
                     }
                 }
-        }));
+            }));
+        }
     }
 
     /// Determine the title state.
@@ -271,6 +274,7 @@ impl EpisodeWidget {
     }
 }
 
+#[inline]
 fn on_download_clicked(ep: &EpisodeWidgetQuery, sender: Sender<Action>) -> Result<(), Error> {
     let pd = dbqueries::get_podcast_from_id(ep.podcast_id())?;
     let download_fold = get_download_folder(&pd.title().to_owned())?;
@@ -285,6 +289,7 @@ fn on_download_clicked(ep: &EpisodeWidgetQuery, sender: Sender<Action>) -> Resul
     Ok(())
 }
 
+#[inline]
 fn on_play_bttn_clicked(
     episode: &mut EpisodeWidgetQuery,
     title: Arc<Mutex<TitleMachine>>,
@@ -317,6 +322,7 @@ fn open_uri(rowid: i32) -> Result<(), Error> {
 }
 
 // Setup a callback that will update the progress bar.
+#[inline]
 #[cfg_attr(feature = "cargo-clippy", allow(if_same_then_else))]
 fn update_progressbar_callback(
     prog: Arc<Mutex<manager::Progress>>,
@@ -333,6 +339,7 @@ fn update_progressbar_callback(
     );
 }
 
+#[inline]
 fn progress_bar_helper(
     prog: Arc<Mutex<manager::Progress>>,
     episode_rowid: i32,
@@ -380,6 +387,7 @@ fn progress_bar_helper(
 // Setup a callback that will update the total_size label
 // with the http ContentLength header number rather than
 // relying to the RSS feed.
+#[inline]
 fn update_total_size_callback(prog: Arc<Mutex<manager::Progress>>, total_size: &gtk::Label) {
     timeout_add(
         500,
@@ -389,6 +397,7 @@ fn update_total_size_callback(prog: Arc<Mutex<manager::Progress>>, total_size: &
     );
 }
 
+#[inline]
 fn total_size_helper(
     prog: Arc<Mutex<manager::Progress>>,
     total_size: &gtk::Label,
