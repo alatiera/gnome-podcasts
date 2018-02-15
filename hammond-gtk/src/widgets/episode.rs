@@ -23,7 +23,7 @@ use std::sync::{Arc, Mutex};
 use std::sync::mpsc::Sender;
 
 lazy_static! {
-    static ref SIZE_OPTS: Arc<size_opts::FileSizeOpts> =  {
+    pub static ref SIZE_OPTS: Arc<size_opts::FileSizeOpts> =  {
         // Declare a custom humansize option struct
         // See: https://docs.rs/humansize/1.0.2/humansize/file_size_opts/struct.FileSizeOpts.html
         Arc::new(size_opts::FileSizeOpts {
@@ -224,11 +224,12 @@ impl EpisodeWidget {
     fn set_total_size(&self, bytes: Option<i32>) -> Result<(), Error> {
         let size = bytes.ok_or_else(|| format_err!("Size is None."))?;
         if size == 0 {
-            bail!("Size is 0.");
+            bail!("Size is of 0 MB.");
         }
 
         let s = size.file_size(SIZE_OPTS.clone())
             .map_err(|err| format_err!("{}", err))?;
+
         self.total_size.set_text(&s);
         self.total_size.show();
         self.separator2.show();

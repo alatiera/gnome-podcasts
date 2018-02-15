@@ -9,6 +9,8 @@ use chrono;
 use gtk;
 use gtk::prelude::*;
 
+use widgets::episode::SIZE_OPTS;
+
 #[derive(Debug, Clone)]
 pub struct UnInitialized;
 
@@ -246,19 +248,40 @@ pub struct Size<S> {
     state: S,
 }
 
-impl Size<Shown> {
+impl<S> Size<S> {
     fn set_size(self, s: &str) -> Size<Shown> {
         self.size.set_text(s);
         self.separator.show();
-        self.into()
+        Size {
+            size: self.size,
+            separator: self.separator,
+            state: Shown {},
+        }
     }
-}
 
-impl Size<Hidden> {
-    fn set_size(self, s: &str) -> Size<Shown> {
-        self.size.set_text(s);
+    // https://play.rust-lang.org/?gist=1acffaf62743eeb85be1ae6ecf474784&version=stable
+    // It might be possible to make a generic definition with Specialization.
+    // https://github.com/rust-lang/rust/issues/31844
+    fn into_shown(self) -> Size<Shown> {
+        self.size.show();
         self.separator.show();
-        self.into()
+
+        Size {
+            size: self.size,
+            separator: self.separator,
+            state: Shown {},
+        }
+    }
+
+    fn into_hidden(self) -> Size<Hidden> {
+        self.size.hide();
+        self.separator.hide();
+
+        Size {
+            size: self.size,
+            separator: self.separator,
+            state: Hidden {},
+        }
     }
 }
 
@@ -273,67 +296,12 @@ impl Size<UnInitialized> {
             state: UnInitialized {},
         }
     }
-
-    fn set_size(self, s: &str) -> Size<Shown> {
-        self.size.set_text(s);
-        self.separator.show();
-        self.into()
-    }
 }
 
-impl From<Size<Shown>> for Size<Hidden> {
-    fn from(f: Size<Shown>) -> Self {
-        f.size.hide();
-        f.separator.hide();
+// pub trait Playable {}
 
-        Size {
-            size: f.size,
-            separator: f.separator,
-            state: f.state.into(),
-        }
-    }
-}
-
-impl From<Size<Hidden>> for Size<Shown> {
-    fn from(f: Size<Hidden>) -> Self {
-        f.size.show();
-        f.separator.show();
-
-        Size {
-            size: f.size,
-            separator: f.separator,
-            state: f.state.into(),
-        }
-    }
-}
-
-impl From<Size<UnInitialized>> for Size<Shown> {
-    /// This is suposed to be called only from Size::<UnInitialized>::set_size.
-    fn from(f: Size<UnInitialized>) -> Self {
-        f.size.show();
-        f.separator.show();
-
-        Size {
-            size: f.size,
-            separator: f.separator,
-            state: f.state.into(),
-        }
-    }
-}
-
-impl From<Size<UnInitialized>> for Size<Hidden> {
-    /// This is suposed to be called only from Size::<UnInitialized>::set_size.
-    fn from(f: Size<UnInitialized>) -> Self {
-        f.size.hide();
-        f.separator.hide();
-
-        Size {
-            size: f.size,
-            separator: f.separator,
-            state: f.state.into(),
-        }
-    }
-}
+// impl Playable for Download {}
+// impl Playable for Play {}
 
 #[derive(Debug, Clone)]
 pub struct Download;
@@ -350,6 +318,44 @@ pub struct DownloadPlay<S> {
     state: S,
 }
 
+impl<S> DownloadPlay<S> {
+    // https://play.rust-lang.org/?gist=1acffaf62743eeb85be1ae6ecf474784&version=stable
+    // It might be possible to make a generic definition with Specialization.
+    // https://github.com/rust-lang/rust/issues/31844
+    fn into_playable(self) -> DownloadPlay<Play> {
+        self.play.show();
+        self.download.hide();
+
+        DownloadPlay {
+            play: self.play,
+            download: self.download,
+            state: Play {},
+        }
+    }
+
+    fn into_fetchable(self) -> DownloadPlay<Download> {
+        self.play.hide();
+        self.download.show();
+
+        DownloadPlay {
+            play: self.play,
+            download: self.download,
+            state: Download {},
+        }
+    }
+
+    fn into_hidden(self) -> DownloadPlay<Hidden> {
+        self.play.hide();
+        self.download.hide();
+
+        DownloadPlay {
+            play: self.play,
+            download: self.download,
+            state: Hidden {},
+        }
+    }
+}
+
 impl DownloadPlay<UnInitialized> {
     fn new(play: gtk::Button, download: gtk::Button) -> Self {
         play.hide();
@@ -363,123 +369,6 @@ impl DownloadPlay<UnInitialized> {
     }
 }
 
-impl From<DownloadPlay<Play>> for DownloadPlay<Download> {
-    fn from(f: DownloadPlay<Play>) -> Self {
-        f.play.hide();
-        f.download.show();
-
-        DownloadPlay {
-            play: f.play,
-            download: f.download,
-            state: Download {},
-        }
-    }
-}
-
-impl From<DownloadPlay<Download>> for DownloadPlay<Play> {
-    fn from(f: DownloadPlay<Download>) -> Self {
-        f.play.show();
-        f.download.hide();
-
-        DownloadPlay {
-            play: f.play,
-            download: f.download,
-            state: Play {},
-        }
-    }
-}
-
-impl From<DownloadPlay<Play>> for DownloadPlay<Hidden> {
-    fn from(f: DownloadPlay<Play>) -> Self {
-        f.play.hide();
-        f.download.hide();
-
-        DownloadPlay {
-            play: f.play,
-            download: f.download,
-            state: Hidden {},
-        }
-    }
-}
-
-impl From<DownloadPlay<Download>> for DownloadPlay<Hidden> {
-    fn from(f: DownloadPlay<Download>) -> Self {
-        f.play.hide();
-        f.download.hide();
-
-        DownloadPlay {
-            play: f.play,
-            download: f.download,
-            state: Hidden {},
-        }
-    }
-}
-
-impl From<DownloadPlay<Hidden>> for DownloadPlay<Download> {
-    fn from(f: DownloadPlay<Hidden>) -> Self {
-        f.play.hide();
-        f.download.show();
-
-        DownloadPlay {
-            play: f.play,
-            download: f.download,
-            state: Download {},
-        }
-    }
-}
-
-impl From<DownloadPlay<Hidden>> for DownloadPlay<Play> {
-    fn from(f: DownloadPlay<Hidden>) -> Self {
-        f.play.show();
-        f.download.show();
-
-        DownloadPlay {
-            play: f.play,
-            download: f.download,
-            state: Play {},
-        }
-    }
-}
-
-impl From<DownloadPlay<UnInitialized>> for DownloadPlay<Download> {
-    fn from(f: DownloadPlay<UnInitialized>) -> Self {
-        f.play.hide();
-        f.download.show();
-
-        DownloadPlay {
-            play: f.play,
-            download: f.download,
-            state: Download {},
-        }
-    }
-}
-
-impl From<DownloadPlay<UnInitialized>> for DownloadPlay<Play> {
-    fn from(f: DownloadPlay<UnInitialized>) -> Self {
-        f.play.show();
-        f.download.show();
-
-        DownloadPlay {
-            play: f.play,
-            download: f.download,
-            state: Play {},
-        }
-    }
-}
-
-impl From<DownloadPlay<UnInitialized>> for DownloadPlay<Hidden> {
-    fn from(f: DownloadPlay<UnInitialized>) -> Self {
-        f.play.hide();
-        f.download.hide();
-
-        DownloadPlay {
-            play: f.play,
-            download: f.download,
-            state: Hidden {},
-        }
-    }
-}
-
 #[derive(Debug, Clone)]
 pub struct Progress<S> {
     bar: gtk::ProgressBar,
@@ -487,6 +376,38 @@ pub struct Progress<S> {
     local_size: gtk::Label,
     prog_separator: gtk::Label,
     state: S,
+}
+
+impl<S> Progress<S> {
+    fn into_shown(self) -> Progress<Shown> {
+        self.bar.show();
+        self.cancel.show();
+        self.local_size.show();
+        self.prog_separator.show();
+
+        Progress {
+            bar: self.bar,
+            cancel: self.cancel,
+            local_size: self.local_size,
+            prog_separator: self.prog_separator,
+            state: Shown {},
+        }
+    }
+
+    fn into_hidden(self) -> Progress<Hidden> {
+        self.bar.hide();
+        self.cancel.hide();
+        self.local_size.hide();
+        self.prog_separator.hide();
+
+        Progress {
+            bar: self.bar,
+            cancel: self.cancel,
+            local_size: self.local_size,
+            prog_separator: self.prog_separator,
+            state: Hidden {},
+        }
+    }
 }
 
 impl Progress<UnInitialized> {
@@ -511,74 +432,6 @@ impl Progress<UnInitialized> {
     }
 }
 
-impl From<Progress<Hidden>> for Progress<Shown> {
-    fn from(f: Progress<Hidden>) -> Self {
-        f.bar.show();
-        f.cancel.show();
-        f.local_size.show();
-        f.prog_separator.show();
-
-        Progress {
-            bar: f.bar,
-            cancel: f.cancel,
-            local_size: f.local_size,
-            prog_separator: f.prog_separator,
-            state: Shown {},
-        }
-    }
-}
-
-impl From<Progress<Shown>> for Progress<Hidden> {
-    fn from(f: Progress<Shown>) -> Self {
-        f.bar.hide();
-        f.cancel.hide();
-        f.local_size.hide();
-        f.prog_separator.hide();
-
-        Progress {
-            bar: f.bar,
-            cancel: f.cancel,
-            local_size: f.local_size,
-            prog_separator: f.prog_separator,
-            state: Hidden {},
-        }
-    }
-}
-
-impl From<Progress<UnInitialized>> for Progress<Shown> {
-    fn from(f: Progress<UnInitialized>) -> Self {
-        f.bar.show();
-        f.cancel.show();
-        f.local_size.show();
-        f.prog_separator.show();
-
-        Progress {
-            bar: f.bar,
-            cancel: f.cancel,
-            local_size: f.local_size,
-            prog_separator: f.prog_separator,
-            state: Shown {},
-        }
-    }
-}
-
-impl From<Progress<UnInitialized>> for Progress<Hidden> {
-    fn from(f: Progress<UnInitialized>) -> Self {
-        f.bar.hide();
-        f.cancel.hide();
-        f.local_size.hide();
-        f.prog_separator.hide();
-
-        Progress {
-            bar: f.bar,
-            cancel: f.cancel,
-            local_size: f.local_size,
-            prog_separator: f.prog_separator,
-            state: Hidden {},
-        }
-    }
-}
-
 #[derive(Debug, Clone)]
 pub struct Media<X, Y, Z> {
     dl: DownloadPlay<X>,
@@ -586,82 +439,102 @@ pub struct Media<X, Y, Z> {
     progress: Progress<Z>,
 }
 
-// From New from InProgress
-impl From<Media<Download, Hidden, Shown>> for Media<Hidden, Shown, Shown> {
-    fn from(f: Media<Download, Hidden, Shown>) -> Self {
+type New<Y: Visibility> = Media<Download, Y, Hidden>;
+type Playable<Y: Visibility> = Media<Play, Y, Hidden>;
+type InProgress = Media<Hidden, Shown, Shown>;
+type MediaUnInitialized = Media<UnInitialized, UnInitialized, UnInitialized>;
+
+impl From<New<Shown>> for InProgress {
+    fn from(f: New<Shown>) -> Self {
         Media {
-            dl: f.dl.into(),
-            size: f.size.into(),
-            progress: f.progress.into(),
+            dl: f.dl.into_hidden(),
+            size: f.size.into_shown(),
+            progress: f.progress.into_shown(),
         }
     }
 }
 
-// From NewWithoutSize from InProgress
-impl From<Media<Download, Hidden, Hidden>> for Media<Hidden, Shown, Shown> {
-    fn from(f: Media<Download, Hidden, Hidden>) -> Self {
+impl From<New<Hidden>> for InProgress {
+    fn from(f: New<Hidden>) -> Self {
         Media {
-            dl: f.dl.into(),
-            size: f.size.into(),
-            progress: f.progress.into(),
+            dl: f.dl.into_hidden(),
+            size: f.size.set_size("Unkown"),
+            progress: f.progress.into_shown(),
         }
     }
 }
 
-// Into New
-impl Into<Media<Download, Hidden, Shown>> for Media<UnInitialized, UnInitialized, UnInitialized> {
-    fn into(self) -> Media<Download, Hidden, Shown> {
+impl From<Playable<Shown>> for InProgress {
+    fn from(f: Playable<Shown>) -> Self {
         Media {
-            dl: self.dl.into(),
-            size: self.size.into(),
-            progress: self.progress.into(),
+            dl: f.dl.into_hidden(),
+            size: f.size.into_shown(),
+            progress: f.progress.into_shown(),
         }
     }
 }
 
-// Into NewWithoutSize
-impl Into<Media<Download, Hidden, Hidden>> for Media<UnInitialized, UnInitialized, UnInitialized> {
-    fn into(self) -> Media<Download, Hidden, Hidden> {
+impl From<Playable<Hidden>> for InProgress {
+    fn from(f: Playable<Hidden>) -> Self {
         Media {
-            dl: self.dl.into(),
-            size: self.size.into(),
-            progress: self.progress.into(),
+            dl: f.dl.into_hidden(),
+            size: f.size.set_size("Unkown"),
+            progress: f.progress.into_shown(),
         }
     }
 }
 
-// Into Playable
-impl Into<Media<Play, Hidden, Shown>> for Media<UnInitialized, UnInitialized, UnInitialized> {
-    fn into(self) -> Media<Play, Hidden, Shown> {
+impl From<MediaUnInitialized> for InProgress {
+    fn from(f: MediaUnInitialized) -> Self {
         Media {
-            dl: self.dl.into(),
-            size: self.size.into(),
-            progress: self.progress.into(),
+            dl: f.dl.into_hidden(),
+            size: f.size.into_shown(),
+            progress: f.progress.into_shown(),
         }
     }
 }
 
-// Into PlayableWithoutSize
-impl Into<Media<Play, Hidden, Hidden>> for Media<UnInitialized, UnInitialized, UnInitialized> {
-    fn into(self) -> Media<Play, Hidden, Hidden> {
+impl<Y: Visibility> From<Playable<Y>> for New<Y> {
+    fn from(f: Playable<Y>) -> Self {
         Media {
-            dl: self.dl.into(),
-            size: self.size.into(),
-            progress: self.progress.into(),
+            dl: f.dl.into_fetchable(),
+            size: f.size,
+            progress: f.progress,
         }
     }
 }
 
-// Into InProgress
-impl Into<Media<Hidden, Shown, Shown>> for Media<UnInitialized, UnInitialized, UnInitialized> {
-    fn into(self) -> Media<Hidden, Shown, Shown> {
+impl<Y: Visibility> From<New<Y>> for Playable<Y> {
+    fn from(f: New<Y>) -> Self {
         Media {
-            dl: self.dl.into(),
-            size: self.size.into(),
-            progress: self.progress.into(),
+            dl: f.dl.into_playable(),
+            size: f.size,
+            progress: f.progress,
         }
     }
 }
+
+impl From<MediaUnInitialized> for New<Hidden> {
+    fn from(f: MediaUnInitialized) -> Self {
+        Media {
+            dl: f.dl.into_fetchable(),
+            size: f.size.into_hidden(),
+            progress: f.progress.into_hidden(),
+        }
+    }
+}
+
+impl From<MediaUnInitialized> for Playable<Hidden> {
+    fn from(f: MediaUnInitialized) -> Self {
+        Media {
+            dl: f.dl.into_playable(),
+            size: f.size.into_hidden(),
+            progress: f.progress.into_hidden(),
+        }
+    }
+}
+
+// impl<X, Y, Z> Media<X, Y, Z> {}
 
 #[derive(Debug, Clone)]
 pub enum MediaMachine {
@@ -692,8 +565,49 @@ impl MediaMachine {
     }
 
     pub fn determine_state(self, is_downloaded: bool, is_active: bool) -> Self {
-        // use self::MediaMachine::*;
+        use self::MediaMachine::*;
 
+        match (self, is_downloaded, is_active) {
+            (UnInitialized(val), _, true) => InProgress(val.into()),
+            (UnInitialized(val), false, false) => NewWithoutSize(val.into()),
+            (UnInitialized(val), true, false) => PlayableWithoutSize(val.into()),
+
+            (Playable(val), false, false) => New(val.into()),
+            (New(val), true, false) => Playable(val.into()),
+            (NewWithoutSize(val), true, false) => PlayableWithoutSize(val.into()),
+            (PlayableWithoutSize(val), false, false) => NewWithoutSize(val.into()),
+
+            (New(val), _, true) => InProgress(val.into()),
+            (Playable(val), _, true) => InProgress(val.into()),
+            (PlayableWithoutSize(val), _, true) => InProgress(val.into()),
+            (NewWithoutSize(val), _, true) => InProgress(val.into()),
+
+            (n @ New(_), false, false) => n,
+            (n @ NewWithoutSize(_), false, false) => n,
+            (n @ Playable(_), true, false) => n,
+            (n @ PlayableWithoutSize(_), true, false) => n,
+            (n @ InProgress(_), _, _) => n,
+            // _ => unimplemented!(),
+        }
+    }
+
+    pub fn set_size(self, bytes: Option<i32>) -> Self {
+        // use self::MediaMachine::*;
+        // use humansize::{file_size_opts as size_opts, FileSize};
+
+        // let size_helper = || -> Option<String> {
+        //     let s = bytes?;
+        //     if s == 0 {
+        //         return None;
+        //     }
+
+        //     s.file_size(SIZE_OPTS.clone()).ok()
+        // };
+
+        // match (self, size_helper()) {
+        //     (New(val), Some(s)) => unimplemented!(),
+        //     _ => unimplemented!(),
+        // }
         unimplemented!()
     }
 }
