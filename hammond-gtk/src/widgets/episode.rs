@@ -56,6 +56,7 @@ pub struct EpisodeWidget {
     local_size: gtk::Label,
     separator2: gtk::Label,
     prog_separator: gtk::Label,
+    media: Arc<Mutex<MediaMachine>>,
 }
 
 impl Default for EpisodeWidget {
@@ -82,6 +83,17 @@ impl Default for EpisodeWidget {
         let title_machine = Arc::new(Mutex::new(TitleMachine::new(title, false)));
         let dur = DurationMachine::new(duration, separator1, None);
         let duration_machine = Arc::new(Mutex::new(dur));
+        let _media = MediaMachine::new(
+            play.clone(),
+            download.clone(),
+            progress.clone(),
+            cancel.clone(),
+            total_size.clone(),
+            local_size.clone(),
+            separator2.clone(),
+            prog_separator.clone(),
+        );
+        let media_machine = Arc::new(Mutex::new(_media));
 
         EpisodeWidget {
             container,
@@ -96,6 +108,7 @@ impl Default for EpisodeWidget {
             local_size,
             separator2,
             prog_separator,
+            media: media_machine,
         }
     }
 }

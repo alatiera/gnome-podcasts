@@ -9,8 +9,6 @@ use chrono;
 use gtk;
 use gtk::prelude::*;
 
-pub trait Visibility {}
-
 #[derive(Debug, Clone)]
 pub struct UnItialized;
 
@@ -19,8 +17,22 @@ pub struct Shown;
 #[derive(Debug, Clone)]
 pub struct Hidden;
 
+pub trait Visibility {}
+
 impl Visibility for Shown {}
 impl Visibility for Hidden {}
+
+impl From<Hidden> for Shown {
+    fn from(_: Hidden) -> Self {
+        Shown {}
+    }
+}
+
+impl From<Shown> for Hidden {
+    fn from(_: Shown) -> Self {
+        Hidden {}
+    }
+}
 
 #[derive(Debug, Clone)]
 pub struct Normal;
@@ -542,29 +554,29 @@ impl From<Progress<UnItialized>> for Progress<Hidden> {
 }
 
 #[derive(Debug, Clone)]
-pub struct Media<X, Z, Y> {
+pub struct Media<X, Y, Z> {
     dl: DownloadPlay<X>,
-    total_size: Size<Z>,
-    progress: Progress<Y>,
+    size: Size<Y>,
+    progress: Progress<Z>,
 }
 
-// From New fro InProgress
-impl From<Media<Download, Shown, Hidden>> for Media<Hidden, Shown, Shown> {
-    fn from(f: Media<Download, Shown, Hidden>) -> Self {
+// From New from InProgress
+impl From<Media<Download, Hidden, Shown>> for Media<Hidden, Shown, Shown> {
+    fn from(f: Media<Download, Hidden, Shown>) -> Self {
         Media {
             dl: f.dl.into(),
-            total_size: f.total_size.into(),
+            size: f.size.into(),
             progress: f.progress.into(),
         }
     }
 }
 
-// From NewWithoutSize fro InProgress
+// From NewWithoutSize from InProgress
 impl From<Media<Download, Hidden, Hidden>> for Media<Hidden, Shown, Shown> {
     fn from(f: Media<Download, Hidden, Hidden>) -> Self {
         Media {
             dl: f.dl.into(),
-            total_size: f.total_size.into(),
+            size: f.size.into(),
             progress: f.progress.into(),
         }
     }
@@ -575,7 +587,7 @@ impl Into<Media<Download, Hidden, Shown>> for Media<UnItialized, UnItialized, Un
     fn into(self) -> Media<Download, Hidden, Shown> {
         Media {
             dl: self.dl.into(),
-            total_size: self.total_size.into(),
+            size: self.size.into(),
             progress: self.progress.into(),
         }
     }
@@ -586,7 +598,7 @@ impl Into<Media<Download, Hidden, Hidden>> for Media<UnItialized, UnItialized, U
     fn into(self) -> Media<Download, Hidden, Hidden> {
         Media {
             dl: self.dl.into(),
-            total_size: self.total_size.into(),
+            size: self.size.into(),
             progress: self.progress.into(),
         }
     }
@@ -597,7 +609,7 @@ impl Into<Media<Play, Hidden, Shown>> for Media<UnItialized, UnItialized, UnItia
     fn into(self) -> Media<Play, Hidden, Shown> {
         Media {
             dl: self.dl.into(),
-            total_size: self.total_size.into(),
+            size: self.size.into(),
             progress: self.progress.into(),
         }
     }
@@ -608,7 +620,7 @@ impl Into<Media<Play, Hidden, Hidden>> for Media<UnItialized, UnItialized, UnIti
     fn into(self) -> Media<Play, Hidden, Hidden> {
         Media {
             dl: self.dl.into(),
-            total_size: self.total_size.into(),
+            size: self.size.into(),
             progress: self.progress.into(),
         }
     }
@@ -619,7 +631,7 @@ impl Into<Media<Hidden, Shown, Shown>> for Media<UnItialized, UnItialized, UnIti
     fn into(self) -> Media<Hidden, Shown, Shown> {
         Media {
             dl: self.dl.into(),
-            total_size: self.total_size.into(),
+            size: self.size.into(),
             progress: self.progress.into(),
         }
     }
@@ -627,20 +639,15 @@ impl Into<Media<Hidden, Shown, Shown>> for Media<UnItialized, UnItialized, UnIti
 
 #[derive(Debug, Clone)]
 pub enum MediaMachine {
-    New(Media<Download, Hidden, Shown>),
+    UnInitialized(Media<UnItialized, UnItialized, UnItialized>),
+    New(Media<Download, Shown, Hidden>),
     NewWithoutSize(Media<Download, Hidden, Hidden>),
-    Playable(Media<Play, Hidden, Shown>),
+    Playable(Media<Play, Shown, Hidden>),
     PlayableWithoutSize(Media<Play, Hidden, Hidden>),
     InProgress(Media<Hidden, Shown, Shown>),
 }
 
-#[derive(Debug, Clone)]
-pub enum MediaMachineWrapper {
-    UnItialized(Media<UnItialized, UnItialized, UnItialized>),
-    Initialized(MediaMachine),
-}
-
-impl MediaMachineWrapper {
+impl MediaMachine {
     pub fn new(
         play: gtk::Button,
         download: gtk::Button,
@@ -653,12 +660,14 @@ impl MediaMachineWrapper {
     ) -> Self {
         let dl = DownloadPlay::<UnItialized>::new(play, download);
         let progress = Progress::<UnItialized>::new(bar, cancel, local_size, prog_separator);
-        let total_size = Size::<UnItialized>::new(total_size, separator);
+        let size = Size::<UnItialized>::new(total_size, separator);
 
-        MediaMachineWrapper::UnItialized(Media {
-            dl,
-            progress,
-            total_size,
-        })
+        MediaMachine::UnInitialized(Media { dl, progress, size })
+    }
+
+    pub fn determine_state(self, is_downloaded: bool, is_active: bool) -> Self {
+        // use self::MediaMachine::*;
+
+        unimplemented!()
     }
 }
