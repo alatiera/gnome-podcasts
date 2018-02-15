@@ -136,12 +136,6 @@ impl EpisodeWidget {
             error!("Failed to set duration state: {}", err);
         }
 
-        // Show or hide the play/delete/download buttons upon widget initialization.
-        if let Err(err) = self.show_buttons(episode.local_uri()) {
-            error!("Failed to determine play/download button state.");
-            error!("Error: {}", err);
-        }
-
         // Set the size label.
         if let Err(err) = self.set_total_size(episode.length()) {
             error!("Failed to set the Size label.");
@@ -149,7 +143,7 @@ impl EpisodeWidget {
         }
 
         // Determine what the state of the progress bar should be.
-        if let Err(err) = self.determine_progess_bar() {
+        if let Err(err) = self.determine_progess_bar(&episode) {
             error!("Something went wrong determining the ProgressBar State.");
             error!("Error: {}", err);
         }
@@ -178,16 +172,6 @@ impl EpisodeWidget {
                     }
                 }
         }));
-    }
-
-    /// Show or hide the play/delete/download buttons upon widget initialization.
-    fn show_buttons(&self, local_uri: Option<&str>) -> Result<(), Error> {
-        let path = local_uri.ok_or_else(|| format_err!("Path is None"))?;
-        if Path::new(path).exists() {
-            self.download.hide();
-            self.play.show();
-        }
-        Ok(())
     }
 
     /// Determine the title state.
@@ -238,7 +222,7 @@ impl EpisodeWidget {
 
     // FIXME: REFACTOR ME
     // Something Something State-Machine?
-    fn determine_progess_bar(&self) -> Result<(), Error> {
+    fn determine_progess_bar(&self, episode: &EpisodeWidgetQuery) -> Result<(), Error> {
         let id = WidgetExt::get_name(&self.container)
             .ok_or_else(|| format_err!("Failed to get widget Name"))?
             .parse::<i32>()?;
@@ -251,15 +235,12 @@ impl EpisodeWidget {
             Ok(m.get(&id).cloned())
         }()?;
 
+        // Show or hide the play/delete/download buttons upon widget initialization.
         if let Some(prog) = active_dl {
-            // FIXME: Document me?
-            self.download.hide();
-            self.progress.show();
-            self.local_size.show();
-            self.total_size.show();
-            self.separator2.show();
-            self.prog_separator.show();
-            self.cancel.show();
+            let mut lock = self.media.lock().map_err(|err| format_err!("{}", err))?;
+            take_mut::take(lock.deref_mut(), |media| {
+                media.determine_state(episode.local_uri().is_some(), true)
+            });
 
             let progress_bar = self.progress.clone();
             let total_size = self.total_size.clone();
@@ -279,6 +260,11 @@ impl EpisodeWidget {
                     cancel.set_sensitive(false);
                 }
             }));
+        } else {
+            let mut lock = self.media.lock().map_err(|err| format_err!("{}", err))?;
+            take_mut::take(lock.deref_mut(), |media| {
+                media.determine_state(episode.local_uri().is_some(), false)
+            });
         }
 
         Ok(())
