@@ -33,6 +33,7 @@ Tobias Bernard
   <object class="GtkBox" id="episode_container">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
+    <property name="valign">center</property>
     <property name="orientation">vertical</property>
     <child>
       <object class="GtkBox">
