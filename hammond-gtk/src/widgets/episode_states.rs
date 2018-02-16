@@ -10,6 +10,9 @@ use glib;
 use gtk;
 use gtk::prelude::*;
 
+use std::sync::{Arc, Mutex};
+
+use manager::Progress as OtherProgress;
 use widgets::episode::SIZE_OPTS;
 
 #[derive(Debug, Clone)]
@@ -421,6 +424,15 @@ impl<S> Progress<S> {
             state: Hidden {},
         }
     }
+
+    fn cancel_connect_clicked(&self, prog: Arc<Mutex<OtherProgress>>) -> glib::SignalHandlerId {
+        self.cancel.connect_clicked(move |cancel| {
+            if let Ok(mut m) = prog.lock() {
+                m.cancel();
+                cancel.set_sensitive(false);
+            }
+        })
+    }
 }
 
 impl Progress<UnInitialized> {
@@ -675,6 +687,17 @@ impl ButtonsState {
             PlayableWithoutSize(ref val) => val.dl.play_connect_clicked(f),
         }
     }
+
+    fn cancel_connect_clicked(&self, prog: Arc<Mutex<OtherProgress>>) -> glib::SignalHandlerId {
+        use self::ButtonsState::*;
+
+        match *self {
+            New(ref val) => val.progress.cancel_connect_clicked(prog),
+            NewWithoutSize(ref val) => val.progress.cancel_connect_clicked(prog),
+            Playable(ref val) => val.progress.cancel_connect_clicked(prog),
+            PlayableWithoutSize(ref val) => val.progress.cancel_connect_clicked(prog),
+        }
+    }
 }
 
 #[derive(Debug, Clone)]
@@ -725,6 +748,16 @@ impl MediaMachine {
             UnInitialized(ref val) => val.dl.play_connect_clicked(f),
             Initialized(ref val) => val.play_connect_clicked(f),
             InProgress(ref val) => val.dl.play_connect_clicked(f),
+        }
+    }
+
+    pub fn cancel_connect_clicked(&self, prog: Arc<Mutex<OtherProgress>>) -> glib::SignalHandlerId {
+        use self::MediaMachine::*;
+
+        match *self {
+            UnInitialized(ref val) => val.progress.cancel_connect_clicked(prog),
+            Initialized(ref val) => val.cancel_connect_clicked(prog),
+            InProgress(ref val) => val.progress.cancel_connect_clicked(prog),
         }
     }
 

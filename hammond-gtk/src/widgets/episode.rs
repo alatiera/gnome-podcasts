@@ -45,9 +45,8 @@ lazy_static! {
 #[derive(Debug, Clone)]
 pub struct EpisodeWidget {
     pub container: gtk::Box,
-    cancel: gtk::Button,
-    title: Arc<Mutex<TitleMachine>>,
     date: gtk::Label,
+    title: Arc<Mutex<TitleMachine>>,
     duration: Arc<Mutex<DurationMachine>>,
     progress: gtk::ProgressBar,
     total_size: gtk::Label,
@@ -80,21 +79,20 @@ impl Default for EpisodeWidget {
         let dur = DurationMachine::new(duration, separator1, None);
         let duration_machine = Arc::new(Mutex::new(dur));
         let _media = MediaMachine::new(
-            play.clone(),
-            download.clone(),
+            play,
+            download,
             progress.clone(),
-            cancel.clone(),
+            cancel,
             total_size.clone(),
             local_size.clone(),
-            separator2.clone(),
-            prog_separator.clone(),
+            separator2,
+            prog_separator,
         );
         let media_machine = Arc::new(Mutex::new(_media));
 
         EpisodeWidget {
             container,
             progress,
-            cancel,
             total_size,
             local_size,
             title: title_machine,
@@ -130,7 +128,7 @@ impl EpisodeWidget {
 
         // Determine what the state of the media widgets should be.
         if let Err(err) = self.determine_media_state(&episode) {
-            error!("Something went wrong determining the ProgressBar State.");
+            error!("Something went wrong determining the Media State.");
             error!("Error: {}", err);
         }
 
@@ -231,12 +229,7 @@ impl EpisodeWidget {
             // relying to the RSS feed.
             update_total_size_callback(prog.clone(), &total_size);
 
-            self.cancel.connect_clicked(clone!(prog => move |cancel| {
-                if let Ok(mut m) = prog.lock() {
-                    m.cancel();
-                    cancel.set_sensitive(false);
-                }
-            }));
+            lock.cancel_connect_clicked(prog);
         }
 
         Ok(())
