@@ -49,7 +49,6 @@ pub struct EpisodeWidget {
     title: Arc<Mutex<TitleMachine>>,
     duration: Arc<Mutex<DurationMachine>>,
     progress: gtk::ProgressBar,
-    total_size: gtk::Label,
     local_size: gtk::Label,
     media: Arc<Mutex<MediaMachine>>,
 }
@@ -83,7 +82,7 @@ impl Default for EpisodeWidget {
             download,
             progress.clone(),
             cancel,
-            total_size.clone(),
+            total_size,
             local_size.clone(),
             separator2,
             prog_separator,
@@ -93,7 +92,6 @@ impl Default for EpisodeWidget {
         EpisodeWidget {
             container,
             progress,
-            total_size,
             local_size,
             title: title_machine,
             duration: duration_machine,
@@ -216,9 +214,9 @@ impl EpisodeWidget {
         });
 
         // Show or hide the play/delete/download buttons upon widget initialization.
+        // FIXME: There might be a deadlock introduced here, but I am too tired to test it.
         if let Some(prog) = active_dl {
             let progress_bar = self.progress.clone();
-            let total_size = self.total_size.clone();
             let local_size = self.local_size.clone();
 
             // Setup a callback that will update the progress bar.
@@ -227,7 +225,7 @@ impl EpisodeWidget {
             // Setup a callback that will update the total_size label
             // with the http ContentLength header number rather than
             // relying to the RSS feed.
-            update_total_size_callback(prog.clone(), &total_size);
+            update_total_size_callback(prog.clone(), self.media.clone());
 
             lock.cancel_connect_clicked(prog);
         }
@@ -350,11 +348,14 @@ fn progress_bar_helper(
 // with the http ContentLength header number rather than
 // relying to the RSS feed.
 #[inline]
-fn update_total_size_callback(prog: Arc<Mutex<manager::Progress>>, total_size: &gtk::Label) {
+fn update_total_size_callback(
+    prog: Arc<Mutex<manager::Progress>>,
+    media: Arc<Mutex<MediaMachine>>,
+) {
     timeout_add(
         500,
-        clone!(prog, total_size => move || {
-            total_size_helper(prog.clone(), &total_size).unwrap_or(glib::Continue(true))
+        clone!(prog, media => move || {
+            total_size_helper(prog.clone(), media.clone()).unwrap_or(glib::Continue(true))
         }),
     );
 }
@@ -362,7 +363,7 @@ fn update_total_size_callback(prog: Arc<Mutex<manager::Progress>>, total_size: &
 #[inline]
 fn total_size_helper(
     prog: Arc<Mutex<manager::Progress>>,
-    total_size: &gtk::Label,
+    media: Arc<Mutex<MediaMachine>>,
 ) -> Result<glib::Continue, Error> {
     // Get the total_bytes.
     let total_bytes = {
@@ -374,10 +375,12 @@ fn total_size_helper(
     debug!("Total Size: {}", total_bytes);
     if total_bytes != 0 {
         // Update the total_size label
-        total_bytes
-            .file_size(SIZE_OPTS.clone())
-            .map_err(|err| format_err!("{}", err))
-            .map(|x| total_size.set_text(&x))?;
+        if let Ok(mut m) = media.lock() {
+            take_mut::take(m.deref_mut(), |machine| {
+                machine.set_size(Some(total_bytes as i32))
+            });
+        }
+
         // Do not call again the callback
         Ok(glib::Continue(false))
     } else {

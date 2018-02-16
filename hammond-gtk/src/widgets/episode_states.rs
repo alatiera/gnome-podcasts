@@ -9,6 +9,7 @@ use chrono;
 use glib;
 use gtk;
 use gtk::prelude::*;
+use humansize::FileSize;
 
 use std::sync::{Arc, Mutex};
 
@@ -534,13 +535,13 @@ impl From<MediaUnInitialized> for Playable<Hidden> {
 }
 
 impl<X, Y, Z> Media<X, Y, Z> {
-    // fn set_size(self, s: &str) -> Media<X, Shown, Z> {
-    //     Media {
-    //         dl: self.dl,
-    //         size: self.size.set_size(s),
-    //         progress: self.progress,
-    //     }
-    // }
+    fn set_size(self, s: &str) -> Media<X, Shown, Z> {
+        Media {
+            dl: self.dl,
+            size: self.size.set_size(s),
+            progress: self.progress,
+        }
+    }
 
     fn hide_size(self) -> Media<X, Hidden, Z> {
         Media {
@@ -649,7 +650,7 @@ impl ButtonsState {
         }
     }
 
-    pub fn into_progress(self) -> InProgress {
+    fn into_progress(self) -> InProgress {
         use self::ButtonsState::*;
 
         match self {
@@ -657,6 +658,21 @@ impl ButtonsState {
             Playable(m) => m.into(),
             NewWithoutSize(m) => m.into(),
             PlayableWithoutSize(m) => m.into(),
+        }
+    }
+
+    fn set_size(self, size: Option<String>) -> Self {
+        use self::ButtonsState::*;
+
+        match (self, size) {
+            (New(m), Some(s)) => New(m.set_size(&s)),
+            (New(m), None) => NewWithoutSize(m.hide_size()),
+            (Playable(m), Some(s)) => Playable(m.set_size(&s)),
+            (Playable(m), None) => PlayableWithoutSize(m.hide_size()),
+            (bttn @ NewWithoutSize(_), None) => bttn,
+            (bttn @ PlayableWithoutSize(_), None) => bttn,
+            (NewWithoutSize(m), Some(s)) => New(m.into_new(&s)),
+            (PlayableWithoutSize(m), Some(s)) => Playable(m.into_playable(&s)),
         }
     }
 
@@ -764,18 +780,8 @@ impl MediaMachine {
     pub fn determine_state(self, bytes: Option<i32>, is_active: bool, is_downloaded: bool) -> Self {
         use self::ButtonsState::*;
         use self::MediaMachine::*;
-        use humansize::FileSize;
 
-        let size_helper = || -> Option<String> {
-            let s = bytes?;
-            if s == 0 {
-                return None;
-            }
-
-            s.file_size(SIZE_OPTS.clone()).ok()
-        };
-
-        match (self, size_helper(), is_downloaded, is_active) {
+        match (self, size_helper(bytes), is_downloaded, is_active) {
             (UnInitialized(m), s, _, true) => InProgress(m.into_progress(s)),
 
             // Into New
@@ -791,4 +797,26 @@ impl MediaMachine {
             (i @ InProgress(_), _, _, _) => i,
         }
     }
+
+    pub fn set_size(self, bytes: Option<i32>) -> Self {
+        use self::MediaMachine::*;
+        let size = size_helper(bytes);
+
+        match (self, size) {
+            (Initialized(bttn), s) => Initialized(bttn.set_size(s)),
+            (InProgress(val), Some(s)) => InProgress(val.set_size(&s)),
+            (n @ InProgress(_), None) => n,
+            (n @ UnInitialized(_), _) => n,
+        }
+    }
+}
+
+#[inline]
+fn size_helper(bytes: Option<i32>) -> Option<String> {
+    let s = bytes?;
+    if s == 0 {
+        return None;
+    }
+
+    s.file_size(SIZE_OPTS.clone()).ok()
 }
