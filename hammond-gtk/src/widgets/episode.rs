@@ -136,12 +136,6 @@ impl EpisodeWidget {
             error!("Failed to set duration state: {}", err);
         }
 
-        // Set the size label.
-        if let Err(err) = self.set_total_size(episode.length()) {
-            error!("Failed to set the Size label.");
-            error!("Error: {}", err);
-        }
-
         // Determine what the state of the progress bar should be.
         if let Err(err) = self.determine_progess_bar(&episode) {
             error!("Something went wrong determining the ProgressBar State.");
@@ -207,22 +201,6 @@ impl EpisodeWidget {
         Ok(())
     }
 
-    /// Set the Episode label dependings on its size
-    fn set_total_size(&self, bytes: Option<i32>) -> Result<(), Error> {
-        let size = bytes.ok_or_else(|| format_err!("Size is None."))?;
-        if size == 0 {
-            bail!("Size is of 0 MB.");
-        }
-
-        let s = size.file_size(SIZE_OPTS.clone())
-            .map_err(|err| format_err!("{}", err))?;
-
-        self.total_size.set_text(&s);
-        self.total_size.show();
-        self.separator2.show();
-        Ok(())
-    }
-
     // FIXME: REFACTOR ME
     // Something Something State-Machine?
     fn determine_progess_bar(&self, episode: &EpisodeWidgetQuery) -> Result<(), Error> {
@@ -242,7 +220,7 @@ impl EpisodeWidget {
         if let Some(prog) = active_dl {
             let mut lock = self.media.lock().map_err(|err| format_err!("{}", err))?;
             take_mut::take(lock.deref_mut(), |media| {
-                media.determine_state(episode.local_uri().is_some(), true)
+                media.determine_state(episode.length(), true, episode.local_uri().is_some())
             });
 
             let progress_bar = self.progress.clone();
@@ -266,7 +244,7 @@ impl EpisodeWidget {
         } else {
             let mut lock = self.media.lock().map_err(|err| format_err!("{}", err))?;
             take_mut::take(lock.deref_mut(), |media| {
-                media.determine_state(episode.local_uri().is_some(), false)
+                media.determine_state(episode.length(), false, episode.local_uri().is_some())
             });
         }
 

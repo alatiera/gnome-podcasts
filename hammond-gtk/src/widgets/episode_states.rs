@@ -252,6 +252,7 @@ pub struct Size<S> {
 impl<S> Size<S> {
     fn set_size(self, s: &str) -> Size<Shown> {
         self.size.set_text(s);
+        self.size.show();
         self.separator.show();
         Size {
             size: self.size,
@@ -356,11 +357,14 @@ impl<S> DownloadPlay<S> {
         }
     }
 
-    fn connect_download<F: Fn(&gtk::Button) + 'static>(&self, f: F) -> glib::SignalHandlerId {
+    fn download_connect_clicked<F: Fn(&gtk::Button) + 'static>(
+        &self,
+        f: F,
+    ) -> glib::SignalHandlerId {
         self.download.connect_clicked(f)
     }
 
-    fn connect_play_button<F: Fn(&gtk::Button) + 'static>(&self, f: F) -> glib::SignalHandlerId {
+    fn play_connect_clicked<F: Fn(&gtk::Button) + 'static>(&self, f: F) -> glib::SignalHandlerId {
         self.play.connect_clicked(f)
     }
 }
@@ -543,15 +547,121 @@ impl From<MediaUnInitialized> for Playable<Hidden> {
     }
 }
 
-// impl<X, Y, Z> Media<X, Y, Z> {}
+impl<X, Y, Z> Media<X, Y, Z> {
+    fn set_size(self, s: &str) -> Media<X, Shown, Z> {
+        Media {
+            dl: self.dl,
+            size: self.size.set_size(s),
+            progress: self.progress,
+        }
+    }
+
+    fn hide_size(self) -> Media<X, Hidden, Z> {
+        Media {
+            dl: self.dl,
+            size: self.size.into_hidden(),
+            progress: self.progress,
+        }
+    }
+
+    fn into_new(self, size: &str) -> New<Shown> {
+        Media {
+            dl: self.dl.into_fetchable(),
+            size: self.size.set_size(size),
+            progress: self.progress.into_hidden(),
+        }
+    }
+
+    fn into_playable(self, size: &str) -> Playable<Shown> {
+        Media {
+            dl: self.dl.into_playable(),
+            size: self.size.set_size(size),
+            progress: self.progress.into_hidden(),
+        }
+    }
+}
 
 #[derive(Debug, Clone)]
-pub enum MediaMachine {
-    UnInitialized(Media<UnInitialized, UnInitialized, UnInitialized>),
+pub enum ButtonsState {
     New(Media<Download, Shown, Hidden>),
     NewWithoutSize(Media<Download, Hidden, Hidden>),
     Playable(Media<Play, Shown, Hidden>),
     PlayableWithoutSize(Media<Play, Hidden, Hidden>),
+}
+
+impl ButtonsState {
+    pub fn determine_state(self, size: Option<String>, is_downloaded: bool) -> Self {
+        use self::ButtonsState::*;
+
+        match (self, size, is_downloaded) {
+            // From whatever to New
+            (b @ New(_), None, false) => b,
+            (New(m), Some(s), false) => New(m.into_new(&s)),
+
+            (Playable(m), None, false) => New(m.into()),
+            (Playable(m), Some(s), false) => New(m.into_new(&s)),
+
+            (NewWithoutSize(m), Some(s), false) => New(m.into_new(&s)),
+            (PlayableWithoutSize(m), Some(s), false) => New(m.into_new(&s)),
+
+            // From whatever to Playable
+            (New(m), None, true) => Playable(m.into()),
+            (New(m), Some(s), true) => Playable(m.into_playable(&s)),
+
+            (b @ Playable(_), None, true) => b,
+            (Playable(m), Some(s), true) => Playable(m.into_playable(&s)),
+
+            (NewWithoutSize(m), Some(s), true) => Playable(m.into_playable(&s)),
+            (PlayableWithoutSize(m), Some(s), true) => Playable(m.into_playable(&s)),
+
+            // From whatever to NewWithoutSize
+            (New(m), None, false) => NewWithoutSize(m.hide_size()),
+            (Playable(m), None, false) => NewWithoutSize(Media::from(m).hide_size()),
+            (b @ NewWithoutSize(_), None, false) => b,
+            (PlayableWithoutSize(m), None, false) => NewWithoutSize(m.into()),
+
+            // From whatever to PlayableWithoutSize
+            (New(m), None, true) => PlayableWithoutSize(Media::from(m).hide_size()),
+            (Playable(m), None, true) => PlayableWithoutSize(Media::from(m).hide_size()),
+            (NewWithoutSize(val), None, true) => PlayableWithoutSize(val.into()),
+            (b @ PlayableWithoutSize(_), None, true) => b,
+            // _ => unimplemented!()
+        }
+    }
+
+    pub fn download_connect_clicked<F: Fn(&gtk::Button) + 'static>(
+        &self,
+        f: F,
+    ) -> glib::SignalHandlerId {
+        use self::ButtonsState::*;
+
+        match *self {
+            New(ref val) => val.dl.download_connect_clicked(f),
+            NewWithoutSize(ref val) => val.dl.download_connect_clicked(f),
+            Playable(ref val) => val.dl.download_connect_clicked(f),
+            PlayableWithoutSize(ref val) => val.dl.download_connect_clicked(f),
+        }
+    }
+
+    pub fn play_connect_clicked<F: Fn(&gtk::Button) + 'static>(
+        &self,
+        f: F,
+    ) -> glib::SignalHandlerId {
+        use self::ButtonsState::*;
+
+        match *self {
+            New(ref val) => val.dl.play_connect_clicked(f),
+            NewWithoutSize(ref val) => val.dl.play_connect_clicked(f),
+            Playable(ref val) => val.dl.play_connect_clicked(f),
+            PlayableWithoutSize(ref val) => val.dl.play_connect_clicked(f),
+        }
+    }
+}
+
+#[derive(Debug, Clone)]
+pub enum MediaMachine {
+    UnInitialized(Media<UnInitialized, UnInitialized, UnInitialized>),
+    Initialized(ButtonsState),
     InProgress(Media<Hidden, Shown, Shown>),
 }
 
@@ -573,53 +683,6 @@ impl MediaMachine {
         MediaMachine::UnInitialized(Media { dl, progress, size })
     }
 
-    pub fn determine_state(self, is_downloaded: bool, is_active: bool) -> Self {
-        use self::MediaMachine::*;
-
-        match (self, is_downloaded, is_active) {
-            (UnInitialized(val), _, true) => InProgress(val.into()),
-            (UnInitialized(val), false, false) => NewWithoutSize(val.into()),
-            (UnInitialized(val), true, false) => PlayableWithoutSize(val.into()),
-
-            (Playable(val), false, false) => New(val.into()),
-            (New(val), true, false) => Playable(val.into()),
-            (NewWithoutSize(val), true, false) => PlayableWithoutSize(val.into()),
-            (PlayableWithoutSize(val), false, false) => NewWithoutSize(val.into()),
-
-            (New(val), _, true) => InProgress(val.into()),
-            (Playable(val), _, true) => InProgress(val.into()),
-            (PlayableWithoutSize(val), _, true) => InProgress(val.into()),
-            (NewWithoutSize(val), _, true) => InProgress(val.into()),
-
-            (n @ New(_), false, false) => n,
-            (n @ NewWithoutSize(_), false, false) => n,
-            (n @ Playable(_), true, false) => n,
-            (n @ PlayableWithoutSize(_), true, false) => n,
-            (n @ InProgress(_), _, _) => n,
-            // _ => unimplemented!(),
-        }
-    }
-
-    pub fn set_size(self, bytes: Option<i32>) -> Self {
-        // use self::MediaMachine::*;
-        // use humansize::{file_size_opts as size_opts, FileSize};
-
-        // let size_helper = || -> Option<String> {
-        //     let s = bytes?;
-        //     if s == 0 {
-        //         return None;
-        //     }
-
-        //     s.file_size(SIZE_OPTS.clone()).ok()
-        // };
-
-        // match (self, size_helper()) {
-        //     (New(val), Some(s)) => unimplemented!(),
-        //     _ => unimplemented!(),
-        // }
-        unimplemented!()
-    }
-
     pub fn download_connect_clicked<F: Fn(&gtk::Button) + 'static>(
         &self,
         f: F,
@@ -627,12 +690,9 @@ impl MediaMachine {
         use self::MediaMachine::*;
 
         match *self {
-            New(ref val) => val.dl.connect_download(f),
-            NewWithoutSize(ref val) => val.dl.connect_download(f),
-            Playable(ref val) => val.dl.connect_download(f),
-            PlayableWithoutSize(ref val) => val.dl.connect_download(f),
-            InProgress(ref val) => val.dl.connect_download(f),
-            UnInitialized(ref val) => val.dl.connect_download(f),
+            UnInitialized(ref val) => val.dl.download_connect_clicked(f),
+            Initialized(ref val) => val.download_connect_clicked(f),
+            InProgress(ref val) => val.dl.download_connect_clicked(f),
         }
     }
 
@@ -643,12 +703,43 @@ impl MediaMachine {
         use self::MediaMachine::*;
 
         match *self {
-            New(ref val) => val.dl.connect_play_button(f),
-            NewWithoutSize(ref val) => val.dl.connect_play_button(f),
-            Playable(ref val) => val.dl.connect_play_button(f),
-            PlayableWithoutSize(ref val) => val.dl.connect_play_button(f),
-            InProgress(ref val) => val.dl.connect_play_button(f),
-            UnInitialized(ref val) => val.dl.connect_play_button(f),
+            UnInitialized(ref val) => val.dl.play_connect_clicked(f),
+            Initialized(ref val) => val.play_connect_clicked(f),
+            InProgress(ref val) => val.dl.play_connect_clicked(f),
+        }
+    }
+
+    pub fn determine_state(self, bytes: Option<i32>, is_active: bool, is_downloaded: bool) -> Self {
+        use self::ButtonsState::*;
+        use self::MediaMachine::*;
+        use humansize::FileSize;
+
+        let size_helper = || -> Option<String> {
+            let s = bytes?;
+            if s == 0 {
+                return None;
+            }
+
+            s.file_size(SIZE_OPTS.clone()).ok()
+        };
+
+        if is_active {
+            match (self, size_helper()) {
+                _ => unimplemented!(),
+            }
+        } else {
+            match (self, size_helper(), is_downloaded) {
+                // Into New
+                (UnInitialized(m), Some(s), false) => Initialized(New(m.into_new(&s))),
+                (UnInitialized(m), None, false) => Initialized(NewWithoutSize(m.into())),
+
+                // Into Playable
+                (UnInitialized(m), Some(s), true) => Initialized(Playable(m.into_playable(&s))),
+                (UnInitialized(m), None, true) => Initialized(PlayableWithoutSize(m.into())),
+
+                (Initialized(bttn), s, dl) => Initialized(bttn.determine_state(s, dl)),
+                (i @ InProgress(_), _, _) => i,
+            }
         }
     }
 }
