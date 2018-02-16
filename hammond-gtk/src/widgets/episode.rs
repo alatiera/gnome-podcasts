@@ -45,8 +45,6 @@ lazy_static! {
 #[derive(Debug, Clone)]
 pub struct EpisodeWidget {
     pub container: gtk::Box,
-    play: gtk::Button,
-    download: gtk::Button,
     cancel: gtk::Button,
     title: Arc<Mutex<TitleMachine>>,
     date: gtk::Label,
@@ -54,8 +52,6 @@ pub struct EpisodeWidget {
     progress: gtk::ProgressBar,
     total_size: gtk::Label,
     local_size: gtk::Label,
-    separator2: gtk::Label,
-    prog_separator: gtk::Label,
     media: Arc<Mutex<MediaMachine>>,
 }
 
@@ -98,16 +94,12 @@ impl Default for EpisodeWidget {
         EpisodeWidget {
             container,
             progress,
-            download,
-            play,
             cancel,
+            total_size,
+            local_size,
             title: title_machine,
             duration: duration_machine,
             date,
-            total_size,
-            local_size,
-            separator2,
-            prog_separator,
             media: media_machine,
         }
     }
@@ -136,8 +128,8 @@ impl EpisodeWidget {
             error!("Failed to set duration state: {}", err);
         }
 
-        // Determine what the state of the progress bar should be.
-        if let Err(err) = self.determine_progess_bar(&episode) {
+        // Determine what the state of the media widgets should be.
+        if let Err(err) = self.determine_media_state(&episode) {
             error!("Something went wrong determining the ProgressBar State.");
             error!("Error: {}", err);
         }
@@ -203,7 +195,7 @@ impl EpisodeWidget {
 
     // FIXME: REFACTOR ME
     // Something Something State-Machine?
-    fn determine_progess_bar(&self, episode: &EpisodeWidgetQuery) -> Result<(), Error> {
+    fn determine_media_state(&self, episode: &EpisodeWidgetQuery) -> Result<(), Error> {
         let id = WidgetExt::get_name(&self.container)
             .ok_or_else(|| format_err!("Failed to get widget Name"))?
             .parse::<i32>()?;
@@ -216,13 +208,17 @@ impl EpisodeWidget {
             Ok(m.get(&id).cloned())
         }()?;
 
+        let mut lock = self.media.lock().map_err(|err| format_err!("{}", err))?;
+        take_mut::take(lock.deref_mut(), |media| {
+            media.determine_state(
+                episode.length(),
+                active_dl.is_some(),
+                episode.local_uri().is_some(),
+            )
+        });
+
         // Show or hide the play/delete/download buttons upon widget initialization.
         if let Some(prog) = active_dl {
-            let mut lock = self.media.lock().map_err(|err| format_err!("{}", err))?;
-            take_mut::take(lock.deref_mut(), |media| {
-                media.determine_state(episode.length(), true, episode.local_uri().is_some())
-            });
-
             let progress_bar = self.progress.clone();
             let total_size = self.total_size.clone();
             let local_size = self.local_size.clone();
@@ -241,11 +237,6 @@ impl EpisodeWidget {
                     cancel.set_sensitive(false);
                 }
             }));
-        } else {
-            let mut lock = self.media.lock().map_err(|err| format_err!("{}", err))?;
-            take_mut::take(lock.deref_mut(), |media| {
-                media.determine_state(episode.length(), false, episode.local_uri().is_some())
-            });
         }
 
         Ok(())

@@ -452,58 +452,32 @@ pub struct Media<X, Y, Z> {
     progress: Progress<Z>,
 }
 
-type New<Y: Visibility> = Media<Download, Y, Hidden>;
-type Playable<Y: Visibility> = Media<Play, Y, Hidden>;
+type New<Y> = Media<Download, Y, Hidden>;
+type Playable<Y> = Media<Play, Y, Hidden>;
 type InProgress = Media<Hidden, Shown, Shown>;
 type MediaUnInitialized = Media<UnInitialized, UnInitialized, UnInitialized>;
 
 impl From<New<Shown>> for InProgress {
     fn from(f: New<Shown>) -> Self {
-        Media {
-            dl: f.dl.into_hidden(),
-            size: f.size.into_shown(),
-            progress: f.progress.into_shown(),
-        }
+        f.into_progress()
     }
 }
 
 impl From<New<Hidden>> for InProgress {
     fn from(f: New<Hidden>) -> Self {
-        Media {
-            dl: f.dl.into_hidden(),
-            size: f.size.set_size("Unkown"),
-            progress: f.progress.into_shown(),
-        }
+        f.into_progress()
     }
 }
 
 impl From<Playable<Shown>> for InProgress {
     fn from(f: Playable<Shown>) -> Self {
-        Media {
-            dl: f.dl.into_hidden(),
-            size: f.size.into_shown(),
-            progress: f.progress.into_shown(),
-        }
+        f.into_progress()
     }
 }
 
 impl From<Playable<Hidden>> for InProgress {
     fn from(f: Playable<Hidden>) -> Self {
-        Media {
-            dl: f.dl.into_hidden(),
-            size: f.size.set_size("Unkown"),
-            progress: f.progress.into_shown(),
-        }
-    }
-}
-
-impl From<MediaUnInitialized> for InProgress {
-    fn from(f: MediaUnInitialized) -> Self {
-        Media {
-            dl: f.dl.into_hidden(),
-            size: f.size.into_shown(),
-            progress: f.progress.into_shown(),
-        }
+        f.into_progress()
     }
 }
 
@@ -548,13 +522,13 @@ impl From<MediaUnInitialized> for Playable<Hidden> {
 }
 
 impl<X, Y, Z> Media<X, Y, Z> {
-    fn set_size(self, s: &str) -> Media<X, Shown, Z> {
-        Media {
-            dl: self.dl,
-            size: self.size.set_size(s),
-            progress: self.progress,
-        }
-    }
+    // fn set_size(self, s: &str) -> Media<X, Shown, Z> {
+    //     Media {
+    //         dl: self.dl,
+    //         size: self.size.set_size(s),
+    //         progress: self.progress,
+    //     }
+    // }
 
     fn hide_size(self) -> Media<X, Hidden, Z> {
         Media {
@@ -581,6 +555,44 @@ impl<X, Y, Z> Media<X, Y, Z> {
     }
 }
 
+impl<X, Z> Media<X, Shown, Z> {
+    fn into_progress(self) -> InProgress {
+        Media {
+            dl: self.dl.into_hidden(),
+            size: self.size.into_shown(),
+            progress: self.progress.into_shown(),
+        }
+    }
+}
+
+impl<X, Z> Media<X, Hidden, Z> {
+    fn into_progress(self) -> InProgress {
+        Media {
+            dl: self.dl.into_hidden(),
+            size: self.size.set_size("Unkown"),
+            progress: self.progress.into_shown(),
+        }
+    }
+}
+
+impl<X, Z> Media<X, UnInitialized, Z> {
+    fn into_progress(self, size: Option<String>) -> InProgress {
+        if let Some(s) = size {
+            Media {
+                dl: self.dl.into_hidden(),
+                size: self.size.set_size(&s),
+                progress: self.progress.into_shown(),
+            }
+        } else {
+            Media {
+                dl: self.dl.into_hidden(),
+                size: self.size.set_size("Unkown"),
+                progress: self.progress.into_shown(),
+            }
+        }
+    }
+}
+
 #[derive(Debug, Clone)]
 pub enum ButtonsState {
     New(Media<Download, Shown, Hidden>),
@@ -595,20 +607,14 @@ impl ButtonsState {
 
         match (self, size, is_downloaded) {
             // From whatever to New
-            (b @ New(_), None, false) => b,
             (New(m), Some(s), false) => New(m.into_new(&s)),
-
-            (Playable(m), None, false) => New(m.into()),
             (Playable(m), Some(s), false) => New(m.into_new(&s)),
 
             (NewWithoutSize(m), Some(s), false) => New(m.into_new(&s)),
             (PlayableWithoutSize(m), Some(s), false) => New(m.into_new(&s)),
 
             // From whatever to Playable
-            (New(m), None, true) => Playable(m.into()),
             (New(m), Some(s), true) => Playable(m.into_playable(&s)),
-
-            (b @ Playable(_), None, true) => b,
             (Playable(m), Some(s), true) => Playable(m.into_playable(&s)),
 
             (NewWithoutSize(m), Some(s), true) => Playable(m.into_playable(&s)),
@@ -617,15 +623,28 @@ impl ButtonsState {
             // From whatever to NewWithoutSize
             (New(m), None, false) => NewWithoutSize(m.hide_size()),
             (Playable(m), None, false) => NewWithoutSize(Media::from(m).hide_size()),
+
             (b @ NewWithoutSize(_), None, false) => b,
             (PlayableWithoutSize(m), None, false) => NewWithoutSize(m.into()),
 
             // From whatever to PlayableWithoutSize
             (New(m), None, true) => PlayableWithoutSize(Media::from(m).hide_size()),
             (Playable(m), None, true) => PlayableWithoutSize(Media::from(m).hide_size()),
+
             (NewWithoutSize(val), None, true) => PlayableWithoutSize(val.into()),
             (b @ PlayableWithoutSize(_), None, true) => b,
             // _ => unimplemented!()
+        }
+    }
+
+    pub fn into_progress(self) -> InProgress {
+        use self::ButtonsState::*;
+
+        match self {
+            New(m) => m.into(),
+            Playable(m) => m.into(),
+            NewWithoutSize(m) => m.into(),
+            PlayableWithoutSize(m) => m.into(),
         }
     }
 
@@ -723,23 +742,20 @@ impl MediaMachine {
             s.file_size(SIZE_OPTS.clone()).ok()
         };
 
-        if is_active {
-            match (self, size_helper()) {
-                _ => unimplemented!(),
-            }
-        } else {
-            match (self, size_helper(), is_downloaded) {
-                // Into New
-                (UnInitialized(m), Some(s), false) => Initialized(New(m.into_new(&s))),
-                (UnInitialized(m), None, false) => Initialized(NewWithoutSize(m.into())),
+        match (self, size_helper(), is_downloaded, is_active) {
+            (UnInitialized(m), s, _, true) => InProgress(m.into_progress(s)),
 
-                // Into Playable
-                (UnInitialized(m), Some(s), true) => Initialized(Playable(m.into_playable(&s))),
-                (UnInitialized(m), None, true) => Initialized(PlayableWithoutSize(m.into())),
+            // Into New
+            (UnInitialized(m), Some(s), false, false) => Initialized(New(m.into_new(&s))),
+            (UnInitialized(m), None, false, false) => Initialized(NewWithoutSize(m.into())),
 
-                (Initialized(bttn), s, dl) => Initialized(bttn.determine_state(s, dl)),
-                (i @ InProgress(_), _, _) => i,
-            }
+            // Into Playable
+            (UnInitialized(m), Some(s), true, false) => Initialized(Playable(m.into_playable(&s))),
+            (UnInitialized(m), None, true, false) => Initialized(PlayableWithoutSize(m.into())),
+
+            (Initialized(bttn), s, dl, false) => Initialized(bttn.determine_state(s, dl)),
+            (Initialized(bttn), _, _, true) => InProgress(bttn.into_progress()),
+            (i @ InProgress(_), _, _, _) => i,
         }
     }
 }
