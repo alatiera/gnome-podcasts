@@ -48,8 +48,6 @@ pub struct EpisodeWidget {
     date: gtk::Label,
     title: Arc<Mutex<TitleMachine>>,
     duration: Arc<Mutex<DurationMachine>>,
-    progress: gtk::ProgressBar,
-    local_size: gtk::Label,
     media: Arc<Mutex<MediaMachine>>,
 }
 
@@ -80,10 +78,10 @@ impl Default for EpisodeWidget {
         let _media = MediaMachine::new(
             play,
             download,
-            progress.clone(),
+            progress,
             cancel,
             total_size,
-            local_size.clone(),
+            local_size,
             separator2,
             prog_separator,
         );
@@ -91,8 +89,6 @@ impl Default for EpisodeWidget {
 
         EpisodeWidget {
             container,
-            progress,
-            local_size,
             title: title_machine,
             duration: duration_machine,
             date,
@@ -189,8 +185,6 @@ impl EpisodeWidget {
         Ok(())
     }
 
-    // FIXME: REFACTOR ME
-    // Something Something State-Machine?
     fn determine_media_state(&self, episode: &EpisodeWidgetQuery) -> Result<(), Error> {
         let id = WidgetExt::get_name(&self.container)
             .ok_or_else(|| format_err!("Failed to get widget Name"))?
@@ -216,11 +210,8 @@ impl EpisodeWidget {
         // Show or hide the play/delete/download buttons upon widget initialization.
         // FIXME: There might be a deadlock introduced here, but I am too tired to test it.
         if let Some(prog) = active_dl {
-            let progress_bar = self.progress.clone();
-            let local_size = self.local_size.clone();
-
             // Setup a callback that will update the progress bar.
-            update_progressbar_callback(prog.clone(), id, &progress_bar, &local_size);
+            update_progressbar_callback(prog.clone(), self.media.clone(), id);
 
             // Setup a callback that will update the total_size label
             // with the http ContentLength header number rather than
@@ -286,14 +277,13 @@ fn open_uri(rowid: i32) -> Result<(), Error> {
 #[cfg_attr(feature = "cargo-clippy", allow(if_same_then_else))]
 fn update_progressbar_callback(
     prog: Arc<Mutex<manager::Progress>>,
+    media: Arc<Mutex<MediaMachine>>,
     episode_rowid: i32,
-    progress_bar: &gtk::ProgressBar,
-    local_size: &gtk::Label,
 ) {
     timeout_add(
         400,
-        clone!(prog, progress_bar, progress_bar, local_size=> move || {
-            progress_bar_helper(prog.clone(), episode_rowid, &progress_bar, &local_size)
+        clone!(prog, media => move || {
+            progress_bar_helper(prog.clone(), media.clone(), episode_rowid)
                 .unwrap_or(glib::Continue(false))
         }),
     );
@@ -302,9 +292,8 @@ fn update_progressbar_callback(
 #[inline]
 fn progress_bar_helper(
     prog: Arc<Mutex<manager::Progress>>,
+    media: Arc<Mutex<MediaMachine>>,
     episode_rowid: i32,
-    progress_bar: &gtk::ProgressBar,
-    local_size: &gtk::Label,
 ) -> Result<glib::Continue, Error> {
     let (fraction, downloaded) = {
         let m = prog.lock()
@@ -312,16 +301,16 @@ fn progress_bar_helper(
         (m.get_fraction(), m.get_downloaded())
     };
 
-    // Update local_size label
-    downloaded
-        .file_size(SIZE_OPTS.clone())
-        .map_err(|err| format_err!("{}", err))
-        .map(|x| local_size.set_text(&x))?;
-
     // I hate floating points.
     // Update the progress_bar.
     if (fraction >= 0.0) && (fraction <= 1.0) && (!fraction.is_nan()) {
-        progress_bar.set_fraction(fraction);
+        // Update local_size label
+        let size = downloaded
+            .file_size(SIZE_OPTS.clone())
+            .map_err(|err| format_err!("{}", err))?;
+
+        let mut m = media.lock().unwrap();
+        m.update_progress(&size, fraction);
     }
 
     // info!("Fraction: {}", progress_bar.get_fraction());

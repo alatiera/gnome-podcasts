@@ -79,7 +79,7 @@ pub struct Title<S> {
 impl<S> Title<S> {
     #[allow(unused_must_use)]
     // This does not need to be &mut since gtk-rs does not model ownership
-    // But I think it wouldn't heart if we treat it as a Rust api.
+    // But I think it wouldn't hurt if we treat it as a Rust api.
     fn set_title(&mut self, s: &str) {
         self.title.set_text(s);
     }
@@ -426,6 +426,14 @@ impl<S> Progress<S> {
         }
     }
 
+    #[allow(unused_must_use)]
+    // This does not need to be &mut since gtk-rs does not model ownership
+    // But I think it wouldn't hurt if we treat it as a Rust api.
+    fn update_progress(&mut self, local_size: &str, fraction: f64) {
+        self.local_size.set_text(local_size);
+        self.bar.set_fraction(fraction);
+    }
+
     fn cancel_connect_clicked(&self, prog: Arc<Mutex<OtherProgress>>) -> glib::SignalHandlerId {
         self.cancel.connect_clicked(move |cancel| {
             if let Ok(mut m) = prog.lock() {
@@ -606,6 +614,15 @@ impl<X, Z> Media<X, UnInitialized, Z> {
     }
 }
 
+impl InProgress {
+    #[allow(unused_must_use)]
+    // This does not need to be &mut since gtk-rs does not model ownership
+    // But I think it wouldn't hurt if we treat it as a Rust api.
+    fn update_progress(&mut self, local_size: &str, fraction: f64) {
+        self.progress.update_progress(local_size, fraction)
+    }
+}
+
 #[derive(Debug, Clone)]
 pub enum ButtonsState {
     New(Media<Download, Shown, Hidden>),
@@ -642,7 +659,7 @@ impl ButtonsState {
 
             // From whatever to PlayableWithoutSize
             (New(m), None, true) => PlayableWithoutSize(Media::from(m).hide_size()),
-            (Playable(m), None, true) => PlayableWithoutSize(Media::from(m).hide_size()),
+            (Playable(m), None, true) => PlayableWithoutSize(m.hide_size()),
 
             (NewWithoutSize(val), None, true) => PlayableWithoutSize(val.into()),
             (b @ PlayableWithoutSize(_), None, true) => b,
@@ -807,6 +824,16 @@ impl MediaMachine {
             (InProgress(val), Some(s)) => InProgress(val.set_size(&s)),
             (n @ InProgress(_), None) => n,
             (n @ UnInitialized(_), _) => n,
+        }
+    }
+
+    pub fn update_progress(&mut self, local_size: &str, fraction: f64) {
+        use self::MediaMachine::*;
+
+        match *self {
+            Initialized(_) => (),
+            UnInitialized(_) => (),
+            InProgress(ref mut val) => val.update_progress(local_size, fraction),
         }
     }
 }
