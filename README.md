@@ -54,12 +54,14 @@ Download the `org.gnome.Hammond.json` flatpak manifest from this repo.
 
 ```bash
 # Add flathub repo
-flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
+flatpak --user remote-add flathub --if-not-exists https://dl.flathub.org/repo/flathub.flatpakrepo
 # Add the gnome-nightly repo
-flatpak --user remote-add gnome-nightly https://sdk.gnome.org/gnome-nightly.flatpakrepo
+flatpak --user remote-add gnome-nightly --if-not-exists https://sdk.gnome.org/gnome-nightly.flatpakrepo
+# Install the gnome-nightly Sdk and Platform runtim
+flatpak --user install gnome-nightly org.gnome.Sdk org.gnome.Platform
 # Install the required rust-stable extension from flathub
 flatpak --user install flathub org.freedesktop.Sdk.Extension.rust-stable
-flatpak-builder --repo=repo hammond org.gnome.Hammond.json --force-clean
+flatpak-builder --user --repo=repo hammond org.gnome.Hammond.json --force-clean
 flatpak build-bundle repo hammond org.gnome.Hammond
 ```
 
