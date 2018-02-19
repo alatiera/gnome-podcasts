@@ -8,13 +8,34 @@
 use chrono;
 use glib;
 use gtk;
+
+use chrono::prelude::*;
 use gtk::prelude::*;
-use humansize::FileSize;
+use humansize::{file_size_opts as size_opts, FileSize};
 
 use std::sync::{Arc, Mutex};
 
 use manager::Progress as OtherProgress;
-use widgets::episode::SIZE_OPTS;
+
+lazy_static! {
+    pub static ref SIZE_OPTS: Arc<size_opts::FileSizeOpts> =  {
+        // Declare a custom humansize option struct
+        // See: https://docs.rs/humansize/1.0.2/humansize/file_size_opts/struct.FileSizeOpts.html
+        Arc::new(size_opts::FileSizeOpts {
+            divider: size_opts::Kilo::Binary,
+            units: size_opts::Kilo::Decimal,
+            decimal_places: 0,
+            decimal_zeroes: 0,
+            fixed_at: size_opts::FixedAt::No,
+            long_units: false,
+            space: true,
+            suffix: "",
+            allow_negative: false,
+        })
+    };
+
+    static ref NOW: DateTime<Utc> = Utc::now();
+}
 
 #[derive(Debug, Clone)]
 pub struct UnInitialized;
@@ -149,6 +170,96 @@ impl TitleMachine {
         match *self {
             Normal(ref mut val) => val.set_title(s),
             GreyedOut(ref mut val) => val.set_title(s),
+        }
+    }
+}
+
+#[derive(Debug, Clone)]
+pub struct Usual;
+#[derive(Debug, Clone)]
+pub struct YearShown;
+
+impl From<Usual> for YearShown {
+    fn from(_: Usual) -> Self {
+        YearShown {}
+    }
+}
+
+impl From<YearShown> for Usual {
+    fn from(_: YearShown) -> Self {
+        Usual {}
+    }
+}
+
+#[derive(Debug, Clone)]
+pub struct Date<S> {
+    date: gtk::Label,
+    epoch: i64,
+    state: S,
+}
+
+impl Date<Usual> {
+    fn new(date: gtk::Label, epoch: i64) -> Self {
+        let ts = Utc.timestamp(i64::from(epoch), 0);
+        date.set_text(ts.format("%e %b").to_string().trim());
+
+        Date {
+            date,
+            epoch,
+            state: Usual {},
+        }
+    }
+}
+
+impl From<Date<Usual>> for Date<YearShown> {
+    fn from(f: Date<Usual>) -> Self {
+        let ts = Utc.timestamp(f.epoch, 0);
+        f.date.set_text(ts.format("%e %b %Y").to_string().trim());
+
+        Date {
+            date: f.date,
+            epoch: f.epoch,
+            state: YearShown {},
+        }
+    }
+}
+
+impl From<Date<YearShown>> for Date<Usual> {
+    fn from(f: Date<YearShown>) -> Self {
+        let ts = Utc.timestamp(f.epoch, 0);
+        f.date.set_text(ts.format("%e %b").to_string().trim());
+
+        Date {
+            date: f.date,
+            epoch: f.epoch,
+            state: Usual {},
+        }
+    }
+}
+
+#[derive(Debug, Clone)]
+pub enum DateMachine {
+    Usual(Date<Usual>),
+    WithYear(Date<YearShown>),
+}
+
+impl DateMachine {
+    pub fn new(label: gtk::Label, epoch: i64) -> Self {
+        let m = DateMachine::Usual(Date::<Usual>::new(label, epoch));
+        m.determine_state(epoch)
+    }
+
+    pub fn determine_state(self, epoch: i64) -> Self {
+        use self::DateMachine::*;
+
+        let ts = Utc.timestamp(epoch, 0);
+        let is_old = NOW.year() == ts.year();
+
+        match (self, is_old) {
+            (date @ Usual(_), false) => date,
+            (date @ WithYear(_), true) => date,
+            (Usual(val), true) => WithYear(val.into()),
+            (WithYear(val), false) => Usual(val.into()),
         }
     }
 }

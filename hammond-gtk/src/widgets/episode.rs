@@ -1,11 +1,9 @@
 use glib;
 use gtk;
-
-use chrono::prelude::*;
 use gtk::prelude::*;
 
 use failure::Error;
-use humansize::{file_size_opts as size_opts, FileSize};
+use humansize::FileSize;
 use open;
 use take_mut;
 
@@ -22,30 +20,10 @@ use std::path::Path;
 use std::sync::{Arc, Mutex};
 use std::sync::mpsc::Sender;
 
-lazy_static! {
-    pub static ref SIZE_OPTS: Arc<size_opts::FileSizeOpts> =  {
-        // Declare a custom humansize option struct
-        // See: https://docs.rs/humansize/1.0.2/humansize/file_size_opts/struct.FileSizeOpts.html
-        Arc::new(size_opts::FileSizeOpts {
-            divider: size_opts::Kilo::Binary,
-            units: size_opts::Kilo::Decimal,
-            decimal_places: 0,
-            decimal_zeroes: 0,
-            fixed_at: size_opts::FixedAt::No,
-            long_units: false,
-            space: true,
-            suffix: "",
-            allow_negative: false,
-        })
-    };
-
-    static ref NOW: DateTime<Utc> = Utc::now();
-}
-
 #[derive(Debug, Clone)]
 pub struct EpisodeWidget {
     pub container: gtk::Box,
-    date: gtk::Label,
+    date: Arc<Mutex<DateMachine>>,
     title: Arc<Mutex<TitleMachine>>,
     duration: Arc<Mutex<DurationMachine>>,
     media: Arc<Mutex<MediaMachine>>,
@@ -73,6 +51,7 @@ impl Default for EpisodeWidget {
         let prog_separator: gtk::Label = builder.get_object("prog_separator").unwrap();
 
         let title_machine = Arc::new(Mutex::new(TitleMachine::new(title, false)));
+        let date_machine = Arc::new(Mutex::new(DateMachine::new(date, 0)));
         let dur = DurationMachine::new(duration, separator1, None);
         let duration_machine = Arc::new(Mutex::new(dur));
         let _media = MediaMachine::new(
@@ -91,7 +70,7 @@ impl Default for EpisodeWidget {
             container,
             title: title_machine,
             duration: duration_machine,
-            date,
+            date: date_machine,
             media: media_machine,
         }
     }
@@ -108,11 +87,13 @@ impl EpisodeWidget {
         WidgetExt::set_name(&self.container, &episode.rowid().to_string());
 
         // Set the date label.
-        self.set_date(episode.epoch());
+        if let Err(err) = self.set_date(episode.epoch()) {
+            error!("Failed to determine date state: {}", err);
+        }
 
         // Set the title label state.
         if let Err(err) = self.set_title(&episode) {
-            error!("Failed to set title state: {}", err);
+            error!("Failed to determine title state: {}", err);
         }
 
         // Set the duaration label.
@@ -166,14 +147,12 @@ impl EpisodeWidget {
     }
 
     /// Set the date label depending on the current time.
-    fn set_date(&self, epoch: i32) {
-        let date = Utc.timestamp(i64::from(epoch), 0);
-        if NOW.year() == date.year() {
-            self.date.set_text(date.format("%e %b").to_string().trim());
-        } else {
-            self.date
-                .set_text(date.format("%e %b %Y").to_string().trim());
-        };
+    fn set_date(&self, epoch: i32) -> Result<(), Error> {
+        let mut lock = self.date.lock().map_err(|err| format_err!("{}", err))?;
+        take_mut::take(lock.deref_mut(), |date| {
+            date.determine_state(i64::from(epoch))
+        });
+        Ok(())
     }
 
     /// Set the duration label.
