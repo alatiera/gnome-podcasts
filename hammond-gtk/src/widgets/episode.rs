@@ -159,7 +159,8 @@ impl EpisodeWidget {
         }));
     }
 
-    /// Show or hide the play/delete/download buttons upon widget initialization.
+    /// Show or hide the play/delete/download buttons upon widget
+    /// initialization.
     fn show_buttons(&self, local_uri: Option<&str>) -> Result<(), Error> {
         let path = local_uri.ok_or_else(|| format_err!("Path is None"))?;
         if Path::new(path).exists() {
@@ -329,6 +330,7 @@ fn update_progressbar_callback(
     );
 }
 
+#[allow(if_same_then_else)]
 fn progress_bar_helper(
     prog: Arc<Mutex<manager::Progress>>,
     episode_rowid: i32,

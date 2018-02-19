@@ -14,7 +14,8 @@ use xdg_dirs::DL_DIR;
 use std::fs;
 use std::path::Path;
 
-/// Scan downloaded `episode` entries that might have broken `local_uri`s and set them to `None`.
+/// Scan downloaded `episode` entries that might have broken `local_uri`s and
+/// set them to `None`.
 fn download_checker() -> Result<(), DataError> {
     let mut episodes = dbqueries::get_downloaded_episodes()?;
 

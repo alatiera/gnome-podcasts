@@ -26,7 +26,8 @@ pub struct Podcast {
 }
 
 impl Save<Podcast, DataError> for Podcast {
-    /// Helper method to easily save/"sync" current state of self to the Database.
+    /// Helper method to easily save/"sync" current state of self to the
+    /// Database.
     fn save(&self) -> Result<Podcast, DataError> {
         let db = connection();
         let tempdb = db.get()?;

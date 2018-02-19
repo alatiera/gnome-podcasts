@@ -18,7 +18,8 @@ use hammond_data::xdg_dirs::HAMMOND_CACHE;
 use errors::DownloadError;
 
 // TODO: Replace path that are of type &str with std::path.
-// TODO: Have a convention/document absolute/relative paths, if they should end with / or not.
+// TODO: Have a convention/document absolute/relative paths, if they should end
+// with / or not.
 
 pub trait DownloadProgress {
     fn set_downloaded(&mut self, downloaded: u64);
@@ -75,7 +76,8 @@ fn download_into(
     info!("Extension: {}", ext);
 
     // Construct a temp file to save desired content.
-    // It has to be a `new_in` instead of new cause rename can't move cross filesystems.
+    // It has to be a `new_in` instead of new cause rename can't move cross
+    // filesystems.
     let tempdir = TempDir::new_in(HAMMOND_CACHE.to_str().unwrap(), "temp_download")?;
     let out_file = format!("{}/temp.part", tempdir.path().to_str().unwrap(),);
 
@@ -113,7 +115,9 @@ fn get_ext(content: Option<ContentType>) -> Option<String> {
 
 // TODO: Write unit-tests.
 // TODO: Refactor... Somehow.
-/// Handles the I/O of fetching a remote file and saving into a Buffer and A File.
+/// Handles the I/O of fetching a remote file and saving into a Buffer and A
+/// File.
+#[allow(needless_pass_by_value)]
 fn save_io(
     file: &str,
     resp: &mut reqwest::Response,

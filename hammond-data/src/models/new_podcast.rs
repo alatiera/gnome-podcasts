@@ -343,7 +343,8 @@ mod tests {
     #[test]
     // TODO: Add more test/checks
     // Currently there's a test that only checks new description or title.
-    // If you have time and want to help, implement the test for the other fields too.
+    // If you have time and want to help, implement the test for the other fields
+    // too.
     fn test_new_podcast_update() {
         truncate_db().unwrap();
         let old = EXPECTED_INTERCEPTED.to_podcast().unwrap();

@@ -67,7 +67,8 @@ pub fn pipeline<S: IntoIterator<Item = Source>>(
     Ok(())
 }
 
-/// Creates a tokio `reactor::Core`, a `CpuPool`, and a `hyper::Client` and runs the pipeline.
+/// Creates a tokio `reactor::Core`, a `CpuPool`, and a `hyper::Client` and
+/// runs the pipeline.
 pub fn run(sources: Vec<Source>, ignore_etags: bool) -> Result<(), DataError> {
     if sources.is_empty() {
         return Ok(());

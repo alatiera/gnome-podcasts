@@ -32,7 +32,8 @@ pub struct Episode {
 }
 
 impl Save<Episode, DataError> for Episode {
-    /// Helper method to easily save/"sync" current state of self to the Database.
+    /// Helper method to easily save/"sync" current state of self to the
+    /// Database.
     fn save(&self) -> Result<Episode, DataError> {
         let db = connection();
         let tempdb = db.get()?;
@@ -224,7 +225,8 @@ impl From<Episode> for EpisodeWidgetQuery {
 }
 
 impl Save<usize, DataError> for EpisodeWidgetQuery {
-    /// Helper method to easily save/"sync" current state of self to the Database.
+    /// Helper method to easily save/"sync" current state of self to the
+    /// Database.
     fn save(&self) -> Result<usize, DataError> {
         use schema::episode::dsl::*;
 
@@ -362,7 +364,8 @@ pub struct EpisodeCleanerQuery {
 }
 
 impl Save<usize, DataError> for EpisodeCleanerQuery {
-    /// Helper method to easily save/"sync" current state of self to the Database.
+    /// Helper method to easily save/"sync" current state of self to the
+    /// Database.
     fn save(&self) -> Result<usize, DataError> {
         use schema::episode::dsl::*;
 
