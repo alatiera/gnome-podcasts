@@ -3,6 +3,7 @@
 ## A Podcast Client for the GNOME Desktop written in Rust.
 
 [![pipeline status](https://gitlab.gnome.org/alatiera/Hammond/badges/master/pipeline.svg)](https://gitlab.gnome.org/alatiera/Hammond/commits/master)
+[![Dependency Status](https://dependencyci.com/github/alatiera/Hammond/badge)](https://dependencyci.com/github/alatiera/Hammond)
 
 ### Features
 
