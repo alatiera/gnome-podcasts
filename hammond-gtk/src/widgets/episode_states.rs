@@ -198,54 +198,53 @@ pub struct Date<S> {
     state: S,
 }
 
-impl Date<Usual> {
-    fn new(date: gtk::Label, epoch: i64) -> Self {
-        let ts = Utc.timestamp(i64::from(epoch), 0);
-        date.set_text(ts.format("%e %b").to_string().trim());
+impl<S> Date<S> {
+    fn into_usual(self, epoch: i64) -> Date<Usual> {
+        let ts = Utc.timestamp(epoch, 0);
+        self.date.set_text(ts.format("%e %b").to_string().trim());
 
         Date {
-            date,
-            epoch,
+            date: self.date,
+            epoch: self.epoch,
             state: Usual {},
         }
     }
-}
 
-impl From<Date<Usual>> for Date<YearShown> {
-    fn from(f: Date<Usual>) -> Self {
-        let ts = Utc.timestamp(f.epoch, 0);
-        f.date.set_text(ts.format("%e %b %Y").to_string().trim());
+    fn into_year_shown(self, epoch: i64) -> Date<YearShown> {
+        let ts = Utc.timestamp(epoch, 0);
+        self.date.set_text(ts.format("%e %b %Y").to_string().trim());
 
         Date {
-            date: f.date,
-            epoch: f.epoch,
+            date: self.date,
+            epoch: self.epoch,
             state: YearShown {},
         }
     }
 }
 
-impl From<Date<YearShown>> for Date<Usual> {
-    fn from(f: Date<YearShown>) -> Self {
-        let ts = Utc.timestamp(f.epoch, 0);
-        f.date.set_text(ts.format("%e %b").to_string().trim());
+impl Date<UnInitialized> {
+    fn new(date: gtk::Label, epoch: i64) -> Self {
+        let ts = Utc.timestamp(epoch, 0);
+        date.set_text(ts.format("%e %b %Y").to_string().trim());
 
         Date {
-            date: f.date,
-            epoch: f.epoch,
-            state: Usual {},
+            date,
+            epoch,
+            state: UnInitialized {},
         }
     }
 }
 
 #[derive(Debug, Clone)]
 pub enum DateMachine {
+    UnInitialized(Date<UnInitialized>),
     Usual(Date<Usual>),
     WithYear(Date<YearShown>),
 }
 
 impl DateMachine {
     pub fn new(label: gtk::Label, epoch: i64) -> Self {
-        let m = DateMachine::Usual(Date::<Usual>::new(label, epoch));
+        let m = DateMachine::UnInitialized(Date::<UnInitialized>::new(label, epoch));
         m.determine_state(epoch)
     }
 
@@ -253,13 +252,18 @@ impl DateMachine {
         use self::DateMachine::*;
 
         let ts = Utc.timestamp(epoch, 0);
-        let is_old = NOW.year() == ts.year();
+        let is_old = !(NOW.year() == ts.year());
 
         match (self, is_old) {
-            (date @ Usual(_), false) => date,
-            (date @ WithYear(_), true) => date,
-            (Usual(val), true) => WithYear(val.into()),
-            (WithYear(val), false) => Usual(val.into()),
+            // Into Usual
+            (Usual(val), false) => Usual(val.into_usual(epoch)),
+            (WithYear(val), false) => Usual(val.into_usual(epoch)),
+            (UnInitialized(val), false) => Usual(val.into_usual(epoch)),
+
+            // Into Year Shown
+            (Usual(val), true) => WithYear(val.into_year_shown(epoch)),
+            (WithYear(val), true) => WithYear(val.into_year_shown(epoch)),
+            (UnInitialized(val), true) => WithYear(val.into_year_shown(epoch)),
         }
     }
 }
