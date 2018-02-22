@@ -105,7 +105,8 @@ impl ShowWidget {
 
     /// Set the descripton text.
     fn set_description(&self, text: &str) {
-        // TODO: Temporary solution until we render html urls/bold/italic probably with markup.
+        // TODO: Temporary solution until we render html urls/bold/italic probably with
+        // markup.
         let desc = dissolve::strip_html_tags(text).join(" ");
         self.description.set_text(&replace_extra_spaces(&desc));
     }

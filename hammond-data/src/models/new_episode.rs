@@ -74,7 +74,8 @@ impl Update<(), DataError> for NewEpisode {
 }
 
 impl Index<(), DataError> for NewEpisode {
-    // Does not update the episode description if it's the only thing that has changed.
+    // Does not update the episode description if it's the only thing that has
+    // changed.
     fn index(&self) -> Result<(), DataError> {
         let exists = dbqueries::episode_exists(self.title(), self.podcast_id())?;
 
@@ -185,7 +186,7 @@ impl NewEpisodeMinimal {
     pub(crate) fn new(item: &rss::Item, parent_id: i32) -> Result<Self, DataError> {
         if item.title().is_none() {
             let err = DataError::ParseEpisodeError {
-                reason: format!("No title specified for this Episode."),
+                reason: "No title specified for this Episode.".into(),
                 parent_id,
             };
 
@@ -201,7 +202,7 @@ impl NewEpisodeMinimal {
             item.link().map(|s| url_cleaner(s))
         } else {
             let err = DataError::ParseEpisodeError {
-                reason: format!("No url specified for the item."),
+                reason: "No url specified for the item.".into(),
                 parent_id,
             };
 

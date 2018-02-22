@@ -45,6 +45,7 @@ pub trait Index<T, E>: Insert<T, E> + Update<T, E> {
 
 /// FIXME: DOCS
 pub trait Save<T, E> {
-    /// Helper method to easily save/"sync" current state of a diesel model to the Database.
+    /// Helper method to easily save/"sync" current state of a diesel model to
+    /// the Database.
     fn save(&self) -> Result<T, E>;
 }

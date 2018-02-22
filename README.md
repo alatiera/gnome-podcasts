@@ -3,6 +3,7 @@
 ## A Podcast Client for the GNOME Desktop written in Rust.
 
 [![pipeline status](https://gitlab.gnome.org/alatiera/Hammond/badges/master/pipeline.svg)](https://gitlab.gnome.org/alatiera/Hammond/commits/master)
+[![Dependency Status](https://dependencyci.com/github/alatiera/Hammond/badge)](https://dependencyci.com/github/alatiera/Hammond)
 
 ### Features
 
@@ -22,7 +23,7 @@ Get Builder [here](https://wiki.gnome.org/Apps/Builder/Downloads)
 Manually:
 
 The following steps assume you have a working installation of rustc and cargo.
-If you dont take a look at [rustup.rs](rustup.rs)
+If you dont take a look at [rustup.rs](https://rustup.rs/)
 
 ```sh
 git clone https://gitlab.gnome.org/alatiera/hammond.git
@@ -53,9 +54,15 @@ Flatpak is the reccomended way of building and installing Hammond.
 Download the `org.gnome.Hammond.json` flatpak manifest from this repo.
 
 ```bash
-flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo # Add flathub repo
-flatpak --user install flathub org.freedesktop.Sdk.Extension.rust-stable # Install the required rust-stable extension from flathub
-flatpak-builder --repo=repo hammond org.gnome.Hammond.json --force-clean
+# Add flathub repo
+flatpak --user remote-add flathub --if-not-exists https://dl.flathub.org/repo/flathub.flatpakrepo
+# Add the gnome-nightly repo
+flatpak --user remote-add gnome-nightly --if-not-exists https://sdk.gnome.org/gnome-nightly.flatpakrepo
+# Install the gnome-nightly Sdk and Platform runtim
+flatpak --user install gnome-nightly org.gnome.Sdk org.gnome.Platform
+# Install the required rust-stable extension from flathub
+flatpak --user install flathub org.freedesktop.Sdk.Extension.rust-stable
+flatpak-builder --user --repo=repo hammond org.gnome.Hammond.json --force-clean
 flatpak build-bundle repo hammond org.gnome.Hammond
 ```
 

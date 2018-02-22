@@ -1,3 +1,5 @@
+#![allow(new_without_default)]
+
 use gio::{ApplicationExt, ApplicationExtManual, ApplicationFlags};
 use glib;
 use gtk;

@@ -269,6 +269,7 @@ fn update_progressbar_callback(
 }
 
 #[inline]
+#[allow(if_same_then_else)]
 fn progress_bar_helper(
     prog: Arc<Mutex<manager::Progress>>,
     media: Arc<Mutex<MediaMachine>>,

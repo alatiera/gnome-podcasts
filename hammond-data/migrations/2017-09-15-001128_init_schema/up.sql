@@ -1,8 +1,3 @@
--- Till version 0.2 is released the plan is to edited directly and dont expect
--- any kind of non-braking changes.
--- After there is a stable prototype, Only diesel migrations will be used
--- in order to change the db schema.
-
 CREATE TABLE `source` (
     `id`	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
     `uri`	TEXT NOT NULL UNIQUE,

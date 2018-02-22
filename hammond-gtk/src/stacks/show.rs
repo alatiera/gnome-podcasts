@@ -102,8 +102,9 @@ impl ShowStack {
         debug!("Name: {:?}", WidgetExt::get_name(&old));
 
         let new = ShowWidget::new(pd, self.sender.clone());
-        // Each composite ShowWidget is a gtkBox with the Podcast.id encoded in the gtk::Widget
-        // name. It's a hack since we can't yet subclass GObject easily.
+        // Each composite ShowWidget is a gtkBox with the Podcast.id encoded in the
+        // gtk::Widget name. It's a hack since we can't yet subclass GObject
+        // easily.
         let oldid = WidgetExt::get_name(&old);
         let newid = WidgetExt::get_name(&new.container);
         debug!("Old widget Name: {:?}\nNew widget Name: {:?}", oldid, newid);

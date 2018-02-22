@@ -34,7 +34,8 @@ pub struct Source {
 }
 
 impl Save<Source, DataError> for Source {
-    /// Helper method to easily save/"sync" current state of self to the Database.
+    /// Helper method to easily save/"sync" current state of self to the
+    /// Database.
     fn save(&self) -> Result<Source, DataError> {
         let db = connection();
         let con = db.get()?;
@@ -119,7 +120,7 @@ impl Source {
                 let err = DataError::HttpStatusError {
                     url: self.uri,
                     status_code: code,
-                    context: format!("304: skipping.."),
+                    context: "304: skipping..".into(),
                 };
 
                 return Err(err);
@@ -131,7 +132,7 @@ impl Source {
                 let err = DataError::HttpStatusError {
                     url: self.uri,
                     status_code: code,
-                    context: format!("301: Feed was moved permanently."),
+                    context: "301: Feed was moved permanently.".into(),
                 };
 
                 return Err(err);
@@ -142,7 +143,7 @@ impl Source {
                 let err = DataError::HttpStatusError {
                     url: self.uri,
                     status_code: code,
-                    context: format!("401: Unauthorized."),
+                    context: "401: Unauthorized.".into(),
                 };
 
                 return Err(err);
@@ -151,17 +152,25 @@ impl Source {
                 let err = DataError::HttpStatusError {
                     url: self.uri,
                     status_code: code,
-                    context: format!("403:  Forbidden."),
+                    context: "403:  Forbidden.".into(),
                 };
 
                 return Err(err);
             }
-            StatusCode::NotFound => return Err(format!("404: Not found.")).map_err(From::from),
+            StatusCode::NotFound => {
+                let err = DataError::HttpStatusError {
+                    url: self.uri,
+                    status_code: code,
+                    context: "404: Not found.".into(),
+                };
+
+                return Err(err);
+            }
             StatusCode::RequestTimeout => {
                 let err = DataError::HttpStatusError {
                     url: self.uri,
                     status_code: code,
-                    context: format!("408: Request Timeout."),
+                    context: "408: Request Timeout.".into(),
                 };
 
                 return Err(err);
@@ -170,7 +179,7 @@ impl Source {
                 let err = DataError::HttpStatusError {
                     url: self.uri,
                     status_code: code,
-                    context: format!("410: Feed was deleted.."),
+                    context: "410: Feed was deleted..".into(),
                 };
 
                 return Err(err);
@@ -267,6 +276,7 @@ impl Source {
     }
 }
 
+#[allow(needless_pass_by_value)]
 fn response_to_channel(
     res: Response,
     pool: CpuPool,

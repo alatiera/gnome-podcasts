@@ -56,13 +56,10 @@ impl ShowsPopulated {
     fn populate_flowbox(&self) -> Result<(), Error> {
         let podcasts = dbqueries::get_podcasts()?;
 
-        podcasts
-            .into_iter()
-            .map(|pd| Arc::new(pd))
-            .for_each(|parent| {
-                let flowbox_child = ShowsChild::new(parent);
-                self.flowbox.add(&flowbox_child.child);
-            });
+        podcasts.into_iter().map(Arc::new).for_each(|parent| {
+            let flowbox_child = ShowsChild::new(parent);
+            self.flowbox.add(&flowbox_child.child);
+        });
         self.flowbox.show_all();
         Ok(())
     }

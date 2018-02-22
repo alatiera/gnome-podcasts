@@ -36,13 +36,14 @@ fn refresh_feed(source: Option<Vec<Source>>, sender: Sender<Action>) -> Result<(
         });
 
         // Work around to improve the feed addition experience.
-        // Many times links to rss feeds are just redirects(usually to an https version).
-        // Sadly I haven't figured yet a nice way to follow up links redirects without getting
-        // to lifetime hell with futures and hyper.
+        // Many times links to rss feeds are just redirects(usually to an https
+        // version). Sadly I haven't figured yet a nice way to follow up links
+        // redirects without getting to lifetime hell with futures and hyper.
         // So the requested refresh is only of 1 feed, and the feed fails to be indexed,
-        // (as a 301 redict would update the source entry and exit), another refresh is run.
-        // For more see hammond_data/src/models/source.rs `fn request_constructor`.
-        // also ping me on irc if or open an issue if you want to tackle it.
+        // (as a 301 redict would update the source entry and exit), another refresh is
+        // run. For more see hammond_data/src/models/source.rs `fn
+        // request_constructor`. also ping me on irc if or open an issue if you
+        // want to tackle it.
         if sources.len() == 1 {
             let source = sources.remove(0);
             let id = source.id();
@@ -56,12 +57,10 @@ fn refresh_feed(source: Option<Vec<Source>>, sender: Sender<Action>) -> Result<(
                     }
                 }
             }
-        } else {
-            // This is what would normally run
-            if let Err(err) = pipeline::run(sources, false) {
-                error!("Error While trying to update the database.");
-                error!("Error msg: {}", err);
-            }
+        // This is what would normally run
+        } else if let Err(err) = pipeline::run(sources, false) {
+            error!("Error While trying to update the database.");
+            error!("Error msg: {}", err);
         }
 
         sender
