@@ -50,46 +50,10 @@ pub trait Visibility {}
 impl Visibility for Shown {}
 impl Visibility for Hidden {}
 
-impl From<Hidden> for Shown {
-    fn from(_: Hidden) -> Self {
-        Shown {}
-    }
-}
-
-impl From<Shown> for Hidden {
-    fn from(_: Shown) -> Self {
-        Hidden {}
-    }
-}
-
-impl Into<Hidden> for UnInitialized {
-    fn into(self) -> Hidden {
-        Hidden {}
-    }
-}
-
-impl Into<Shown> for UnInitialized {
-    fn into(self) -> Shown {
-        Shown {}
-    }
-}
-
 #[derive(Debug, Clone)]
 pub struct Normal;
 #[derive(Debug, Clone)]
 pub struct GreyedOut;
-
-impl From<Normal> for GreyedOut {
-    fn from(_: Normal) -> Self {
-        GreyedOut {}
-    }
-}
-
-impl From<GreyedOut> for Normal {
-    fn from(_: GreyedOut) -> Self {
-        Normal {}
-    }
-}
 
 #[derive(Debug, Clone)]
 pub struct Title<S> {
@@ -123,7 +87,7 @@ impl From<Title<Normal>> for Title<GreyedOut> {
 
         Title {
             title: f.title,
-            state: f.state.into(),
+            state: GreyedOut {},
         }
     }
 }
@@ -136,7 +100,7 @@ impl From<Title<GreyedOut>> for Title<Normal> {
 
         Title {
             title: f.title,
-            state: f.state.into(),
+            state: Normal {},
         }
     }
 }
@@ -178,18 +142,6 @@ impl TitleMachine {
 pub struct Usual;
 #[derive(Debug, Clone)]
 pub struct YearShown;
-
-impl From<Usual> for YearShown {
-    fn from(_: Usual) -> Self {
-        YearShown {}
-    }
-}
-
-impl From<YearShown> for Usual {
-    fn from(_: YearShown) -> Self {
-        Usual {}
-    }
-}
 
 #[derive(Debug, Clone)]
 pub struct Date<S> {
@@ -305,7 +257,7 @@ impl From<Duration<Hidden>> for Duration<Shown> {
         Duration {
             duration: f.duration,
             separator: f.separator,
-            state: f.state.into(),
+            state: Shown {},
         }
     }
 }
@@ -318,7 +270,7 @@ impl From<Duration<Shown>> for Duration<Hidden> {
         Duration {
             duration: f.duration,
             separator: f.separator,
-            state: f.state.into(),
+            state: Hidden {},
         }
     }
 }
