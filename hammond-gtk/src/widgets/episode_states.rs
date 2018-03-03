@@ -289,12 +289,12 @@ impl DurationMachine {
 
     pub fn determine_state(self, seconds: Option<i32>) -> Self {
         match (self, seconds) {
-            (DurationMachine::Hidden(val), None) => DurationMachine::Hidden(val.into()),
+            (d @ DurationMachine::Hidden(_), None) => d,
             (DurationMachine::Shown(val), None) => DurationMachine::Hidden(val.into()),
             (DurationMachine::Hidden(val), Some(s)) => {
                 let minutes = chrono::Duration::seconds(s.into()).num_minutes();
                 if minutes == 0 {
-                    DurationMachine::Hidden(val.into())
+                    DurationMachine::Hidden(val)
                 } else {
                     val.set_duration(minutes);
                     DurationMachine::Shown(val.into())
@@ -306,7 +306,7 @@ impl DurationMachine {
                     DurationMachine::Hidden(val.into())
                 } else {
                     val.set_duration(minutes);
-                    DurationMachine::Shown(val.into())
+                    DurationMachine::Shown(val)
                 }
             }
         }
@@ -808,6 +808,7 @@ pub enum MediaMachine {
 }
 
 impl MediaMachine {
+    #[cfg_attr(feature = "cargo-clippy", allow(too_many_arguments))]
     pub fn new(
         play: gtk::Button,
         download: gtk::Button,
