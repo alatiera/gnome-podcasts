@@ -74,9 +74,8 @@ fn refresh_feed(source: Option<Vec<Source>>, sender: Sender<Action>) -> Result<(
 }
 
 lazy_static! {
-    static ref CACHED_PIXBUFS: RwLock<HashMap<(i32, u32), Mutex<SendCell<Pixbuf>>>> = {
-        RwLock::new(HashMap::new())
-    };
+    static ref CACHED_PIXBUFS: RwLock<HashMap<(i32, u32), Mutex<SendCell<Pixbuf>>>> =
+        { RwLock::new(HashMap::new()) };
 }
 
 // Since gdk_pixbuf::Pixbuf is refference counted and every episode,
