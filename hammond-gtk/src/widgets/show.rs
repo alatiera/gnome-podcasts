@@ -62,6 +62,8 @@ impl ShowWidget {
     }
 
     pub fn init(&self, pd: Arc<Podcast>, sender: Sender<Action>) {
+        let builder = gtk::Builder::new_from_resource("/org/gnome/hammond/gtk/show_widget.ui");
+
         // Hacky workaround so the pd.id() can be retrieved from the `ShowStack`.
         WidgetExt::set_name(&self.container, &pd.id().to_string());
 
@@ -88,6 +90,16 @@ impl ShowWidget {
                 error!("Error: {}", err);
             }
         });
+
+        let show_menu: gtk::Popover = builder.get_object("show_menu").unwrap();
+        let mark_all: gtk::ModelButton = builder.get_object("mark_all_watched").unwrap();
+
+        mark_all.connect_clicked(clone!(pd, sender => move |_| {
+            if let Err(err) = on_played_button_clicked(&pd, sender.clone()) {
+                error!("Failed to mark all episodes as watched: {}", err);
+            }
+        }));
+        self.settings.set_popover(&show_menu);
     }
 
     /// Populate the listbox with the shows episodes.
@@ -142,7 +154,6 @@ fn on_unsub_button_clicked(
     Ok(())
 }
 
-#[allow(dead_code)]
 fn on_played_button_clicked(pd: &Podcast, sender: Sender<Action>) -> Result<(), Error> {
     dbqueries::update_none_to_played_now(pd)?;
     sender.send(Action::RefreshWidget)?;
