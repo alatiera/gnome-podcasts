@@ -110,8 +110,16 @@ impl ShowWidget {
         let notif = self.notif.clone();
         let notif_label = self.notif_label.clone();
         let notif_undo = self.notif_undo.clone();
+        let episodes = self.episodes.clone();
         mark_all.connect_clicked(clone!(pd, sender => move |_| {
-            on_played_button_clicked(pd.clone(), &notif, &notif_label, &notif_undo, sender.clone())
+            on_played_button_clicked(
+                pd.clone(),
+                &notif,
+                &notif_label,
+                &notif_undo,
+                &episodes,
+                sender.clone()
+            )
         }));
         self.settings.set_popover(&show_menu);
     }
@@ -173,11 +181,18 @@ fn on_played_button_clicked(
     notif: &gtk::Revealer,
     label: &gtk::Label,
     undo: &gtk::Button,
+    episodes: &gtk::Frame,
     sender: Sender<Action>,
 ) {
+    if dim_titles(episodes).is_none() {
+        error!("Something went horribly wrong when dimming the titles.");
+        warn!("RUN WHILE YOU STILL CAN!");
+    }
+
     label.set_text("All episodes where marked as watched.");
     notif.set_reveal_child(true);
 
+    // Set up the callback
     let id = timeout_add_seconds(10, move || {
         if let Err(err) = wrap(&pd, sender.clone()) {
             error!(
@@ -190,6 +205,7 @@ fn on_played_button_clicked(
 
     let id = Rc::new(RefCell::new(Some(id)));
 
+    // Cancel the callback
     undo.connect_clicked(clone!(id, notif => move |_| {
         let foo = id.borrow_mut().take();
         if let Some(id) = foo {
@@ -201,6 +217,32 @@ fn on_played_button_clicked(
 
 fn wrap(pd: &Podcast, sender: Sender<Action>) -> Result<(), Error> {
     dbqueries::update_none_to_played_now(pd)?;
-    sender.send(Action::RefreshWidget)?;
+    sender.send(Action::RefreshWidgetIfVis)?;
+    sender.send(Action::RefreshEpisodesView)?;
     Ok(())
+}
+
+// Ideally if we had a custom widget this would have been as simple as:
+// `for row in listbox { ep = row.get_episode(); ep.dim_title(); }`
+// But now I can't think of a better way to do it than hardcoding the title
+// position relative to the EpisodeWidget container gtk::Box.
+fn dim_titles(episodes: &gtk::Frame) -> Option<()> {
+    let listbox = episodes.get_focus_child()?.downcast::<gtk::ListBox>().ok()?;
+    let children = listbox.get_children();
+
+    for row in children {
+        let row = row.downcast::<gtk::ListBoxRow>().ok()?;
+        let container = row.get_children().remove(0).downcast::<gtk::Box>().ok()?;
+        let foo = container
+            .get_children()
+            .remove(0)
+            .downcast::<gtk::Box>()
+            .ok()?;
+        let bar = foo.get_children().remove(0).downcast::<gtk::Box>().ok()?;
+        let baz = bar.get_children().remove(0).downcast::<gtk::Box>().ok()?;
+        let title = baz.get_children().remove(0).downcast::<gtk::Label>().ok()?;
+
+        title.get_style_context().map(|c| c.add_class("dim-label"));
+    }
+    Some(())
 }
