@@ -193,19 +193,13 @@ fn on_played_button_clicked(
     notif.set_reveal_child(true);
 
     // Set up the callback
-    let id = timeout_add_seconds(
-        10,
-        clone!(sender => move || {
+    let callback = clone!(sender => move || {
         if let Err(err) = wrap(&pd, sender.clone()) {
-            error!(
-                "Something went horribly wrong with the notif callback: {}",
-                err
-            );
+            error!("Something went horribly wrong with the notif callback: {}", err);
         }
         glib::Continue(false)
-    }),
-    );
-
+    });
+    let id = timeout_add_seconds(10, callback);
     let id = Rc::new(RefCell::new(Some(id)));
 
     // Cancel the callback
@@ -213,10 +207,13 @@ fn on_played_button_clicked(
         let foo = id.borrow_mut().take();
         if let Some(id) = foo {
             glib::source::source_remove(id);
-            notif.set_reveal_child(false);
-            if let Err(err) = sender.send(Action::RefreshWidgetIfVis) {
-                error!("Something went horribly wrong with the Action channel: {}", err)
-            }
+        }
+
+        // Hide the notification
+        notif.set_reveal_child(false);
+        // Refresh the widget if visible
+        if let Err(err) = sender.send(Action::RefreshWidgetIfVis) {
+            error!("Something went horribly wrong with the Action channel: {}", err)
         }
     }));
 }

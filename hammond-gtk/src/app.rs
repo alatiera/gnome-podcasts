@@ -114,9 +114,8 @@ impl App {
 
     pub fn run(self) {
         let window = self.window.clone();
-        let app = self.app_instance.clone();
-        self.app_instance.connect_startup(move |_| {
-            build_ui(&window, &app);
+        self.app_instance.connect_startup(move |app| {
+            build_ui(&window, app);
         });
         self.setup_timed_callbacks();
 
