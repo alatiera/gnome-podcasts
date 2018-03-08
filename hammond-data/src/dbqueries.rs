@@ -348,3 +348,29 @@ pub fn update_none_to_played_now(parent: &Podcast) -> Result<usize, DataError> {
             .map_err(From::from)
     })
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use database::*;
+    use pipeline::*;
+
+    #[test]
+    fn test_update_none_to_played_now() {
+        truncate_db().unwrap();
+
+        let url = "https://web.archive.org/web/20180120083840if_/https://feeds.feedburner.\
+                   com/InterceptedWithJeremyScahill";
+        let source = Source::from_url(url).unwrap();
+        let id = source.id();
+        index_single_source(source, true).unwrap();
+        let pd = get_podcast_from_source_id(id).unwrap();
+
+        let eps_num = get_pd_unplayed_episodes(&pd).unwrap().len();
+        assert_ne!(eps_num, 0);
+
+        update_none_to_played_now(&pd).unwrap();
+        let eps_num2 = get_pd_unplayed_episodes(&pd).unwrap().len();
+        assert_eq!(eps_num2, 0);
+    }
+}
