@@ -193,7 +193,9 @@ fn on_played_button_clicked(
     notif.set_reveal_child(true);
 
     // Set up the callback
-    let id = timeout_add_seconds(10, move || {
+    let id = timeout_add_seconds(
+        10,
+        clone!(sender => move || {
         if let Err(err) = wrap(&pd, sender.clone()) {
             error!(
                 "Something went horribly wrong with the notif callback: {}",
@@ -201,16 +203,20 @@ fn on_played_button_clicked(
             );
         }
         glib::Continue(false)
-    });
+    }),
+    );
 
     let id = Rc::new(RefCell::new(Some(id)));
 
     // Cancel the callback
-    undo.connect_clicked(clone!(id, notif => move |_| {
+    undo.connect_clicked(clone!(id, notif, sender => move |_| {
         let foo = id.borrow_mut().take();
         if let Some(id) = foo {
             glib::source::source_remove(id);
             notif.set_reveal_child(false);
+            if let Err(err) = sender.send(Action::RefreshWidgetIfVis) {
+                error!("Something went horribly wrong with the Action channel: {}", err)
+            }
         }
     }));
 }
@@ -227,7 +233,11 @@ fn wrap(pd: &Podcast, sender: Sender<Action>) -> Result<(), Error> {
 // But now I can't think of a better way to do it than hardcoding the title
 // position relative to the EpisodeWidget container gtk::Box.
 fn dim_titles(episodes: &gtk::Frame) -> Option<()> {
-    let listbox = episodes.get_focus_child()?.downcast::<gtk::ListBox>().ok()?;
+    let listbox = episodes
+        .get_children()
+        .remove(0)
+        .downcast::<gtk::ListBox>()
+        .ok()?;
     let children = listbox.get_children();
 
     for row in children {
