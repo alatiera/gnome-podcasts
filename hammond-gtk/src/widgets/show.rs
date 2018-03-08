@@ -10,11 +10,10 @@ use hammond_data::dbqueries;
 use hammond_data::utils::{delete_show, replace_extra_spaces};
 
 use app::Action;
+use appnotif::InAppNotification;
 use utils::get_pixbuf_from_path;
 use widgets::episode::episodes_listbox;
 
-use std::cell::RefCell;
-use std::rc::Rc;
 use std::sync::Arc;
 use std::sync::mpsc::Sender;
 use std::thread;
@@ -29,9 +28,6 @@ pub struct ShowWidget {
     settings: gtk::MenuButton,
     unsub: gtk::Button,
     episodes: gtk::Frame,
-    notif: gtk::Revealer,
-    notif_label: gtk::Label,
-    notif_undo: gtk::Button,
 }
 
 impl Default for ShowWidget {
@@ -47,10 +43,6 @@ impl Default for ShowWidget {
         let link: gtk::Button = builder.get_object("link_button").unwrap();
         let settings: gtk::MenuButton = builder.get_object("settings_button").unwrap();
 
-        let notif: gtk::Revealer = builder.get_object("notif_revealer").unwrap();
-        let notif_label: gtk::Label = builder.get_object("notif_label").unwrap();
-        let notif_undo: gtk::Button = builder.get_object("undo_button").unwrap();
-
         ShowWidget {
             container,
             scrolled_window,
@@ -60,9 +52,6 @@ impl Default for ShowWidget {
             link,
             settings,
             episodes,
-            notif,
-            notif_label,
-            notif_undo,
         }
     }
 }
@@ -107,16 +96,10 @@ impl ShowWidget {
         let show_menu: gtk::Popover = builder.get_object("show_menu").unwrap();
         let mark_all: gtk::ModelButton = builder.get_object("mark_all_watched").unwrap();
 
-        let notif = self.notif.clone();
-        let notif_label = self.notif_label.clone();
-        let notif_undo = self.notif_undo.clone();
         let episodes = self.episodes.clone();
         mark_all.connect_clicked(clone!(pd, sender => move |_| {
             on_played_button_clicked(
                 pd.clone(),
-                &notif,
-                &notif_label,
-                &notif_undo,
                 &episodes,
                 sender.clone()
             )
@@ -176,21 +159,13 @@ fn on_unsub_button_clicked(
     Ok(())
 }
 
-fn on_played_button_clicked(
-    pd: Arc<Podcast>,
-    notif: &gtk::Revealer,
-    label: &gtk::Label,
-    undo: &gtk::Button,
-    episodes: &gtk::Frame,
-    sender: Sender<Action>,
-) {
+fn on_played_button_clicked(pd: Arc<Podcast>, episodes: &gtk::Frame, sender: Sender<Action>) {
     if dim_titles(episodes).is_none() {
         error!("Something went horribly wrong when dimming the titles.");
         warn!("RUN WHILE YOU STILL CAN!");
     }
 
-    label.set_text("All episodes where marked as watched.");
-    notif.set_reveal_child(true);
+    let text = "All episodes where marked as watched.";
 
     // Set up the callback
     let callback = clone!(sender => move || {
@@ -199,23 +174,7 @@ fn on_played_button_clicked(
         }
         glib::Continue(false)
     });
-    let id = timeout_add_seconds(10, callback);
-    let id = Rc::new(RefCell::new(Some(id)));
-
-    // Cancel the callback
-    undo.connect_clicked(clone!(id, notif, sender => move |_| {
-        let foo = id.borrow_mut().take();
-        if let Some(id) = foo {
-            glib::source::source_remove(id);
-        }
-
-        // Hide the notification
-        notif.set_reveal_child(false);
-        // Refresh the widget if visible
-        if let Err(err) = sender.send(Action::RefreshWidgetIfVis) {
-            error!("Something went horribly wrong with the Action channel: {}", err)
-        }
-    }));
+    let _notif = InAppNotification::new(text, callback, sender);
 }
 
 fn wrap(pd: &Podcast, sender: Sender<Action>) -> Result<(), Error> {

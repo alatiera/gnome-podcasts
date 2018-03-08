@@ -65,6 +65,7 @@ pub mod app;
 pub mod utils;
 pub mod manager;
 pub mod static_resource;
+pub mod appnotif;
 
 use app::App;
 

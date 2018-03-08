@@ -39,6 +39,7 @@ pub enum Action {
 pub struct App {
     app_instance: gtk::Application,
     window: gtk::Window,
+    overlay: gtk::Overlay,
     header: Arc<Header>,
     content: Arc<Content>,
     receiver: Receiver<Action>,
@@ -73,12 +74,17 @@ impl App {
         // Create the headerbar
         let header = Arc::new(Header::new(&content, &window, sender.clone()));
 
-        // Add the content main stack to the window.
-        window.add(&content.get_stack());
+        // Add the content main stack to the overlay.
+        let overlay = gtk::Overlay::new();
+        overlay.add(&content.get_stack());
+
+        // Add the overlay to the main window
+        window.add(&overlay);
 
         App {
             app_instance: application,
             window,
+            overlay,
             header,
             content,
             receiver,
