@@ -2,13 +2,13 @@
 <!-- Generated with glade 3.21.0 -->
 <interface>
   <requires lib="gtk+" version="3.20"/>
-  <object class="GtkOverlay" id="notif_overlay">
+  <object class="GtkOverlay" id="overlay">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
     <property name="halign">center</property>
     <property name="valign">start</property>
     <child>
-      <object class="GtkRevealer" id="notif_revealer">
+      <object class="GtkRevealer" id="revealer">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <child>
@@ -29,7 +29,7 @@
                 <property name="margin_bottom">6</property>
                 <property name="spacing">12</property>
                 <child>
-                  <object class="GtkLabel" id="notif_label">
+                  <object class="GtkLabel" id="text">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="halign">center</property>
@@ -43,7 +43,31 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkButton" id="undo_button">
+                  <object class="GtkButton" id="close">
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="focus_on_click">False</property>
+                    <property name="receives_default">True</property>
+                    <property name="halign">center</property>
+                    <property name="valign">center</property>
+                    <property name="relief">none</property>
+                    <child>
+                      <object class="GtkImage">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="icon_name">window-close-symbolic</property>
+                      </object>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">False</property>
+                    <property name="pack_type">end</property>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkButton" id="undo">
                     <property name="label" translatable="yes">Undo</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
@@ -55,7 +79,7 @@
                     <property name="expand">False</property>
                     <property name="fill">False</property>
                     <property name="pack_type">end</property>
-                    <property name="position">1</property>
+                    <property name="position">2</property>
                   </packing>
                 </child>
               </object>

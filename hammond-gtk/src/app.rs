@@ -174,7 +174,9 @@ impl App {
                     let sender = sender.clone();
                     let notif = InAppNotification::new(text.into(), callback, sender);
                     overlay.add_overlay(&notif.overlay);
-                    overlay.show_all();
+                    // We need to display the notification after the widget is added to the overlay
+                    // so there will be a nice animation.
+                    notif.show();
                 }
                 Err(_) => (),
             }

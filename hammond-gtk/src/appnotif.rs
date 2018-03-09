@@ -14,22 +14,25 @@ pub struct InAppNotification {
     revealer: gtk::Revealer,
     text: gtk::Label,
     undo: gtk::Button,
+    close: gtk::Button,
 }
 
 impl Default for InAppNotification {
     fn default() -> Self {
         let builder = gtk::Builder::new_from_resource("/org/gnome/hammond/gtk/inapp_notif.ui");
 
-        let overlay: gtk::Overlay = builder.get_object("notif_overlay").unwrap();
-        let revealer: gtk::Revealer = builder.get_object("notif_revealer").unwrap();
-        let text: gtk::Label = builder.get_object("notif_label").unwrap();
-        let undo: gtk::Button = builder.get_object("undo_button").unwrap();
+        let overlay: gtk::Overlay = builder.get_object("overlay").unwrap();
+        let revealer: gtk::Revealer = builder.get_object("revealer").unwrap();
+        let text: gtk::Label = builder.get_object("text").unwrap();
+        let undo: gtk::Button = builder.get_object("undo").unwrap();
+        let close: gtk::Button = builder.get_object("close").unwrap();
 
         InAppNotification {
             overlay,
             revealer,
             text,
             undo,
+            close,
         }
     }
 }
@@ -40,11 +43,9 @@ impl InAppNotification {
         F: FnMut() -> glib::Continue + 'static,
     {
         let notif = InAppNotification::default();
-
         notif.text.set_text(&text);
-        notif.revealer.set_reveal_child(true);
 
-        let id = timeout_add_seconds(60, callback);
+        let id = timeout_add_seconds(6, callback);
         let id = Rc::new(RefCell::new(Some(id)));
 
         // Cancel the callback
@@ -66,6 +67,20 @@ impl InAppNotification {
             }
         });
 
+        // Hide the revealer when the close button is clicked
+        let revealer = notif.revealer.clone();
+        notif.close.connect_clicked(move |_| {
+            revealer.set_reveal_child(false);
+        });
+
         notif
+    }
+
+    // This is a seperate method cause in order to get a nice animation
+    // the revealer should be attached to something that will display it.
+    // Previouslyi we where doing it in the constructor, which had the result
+    // of the animation being skipped cause there was no parent widget to display it.
+    pub fn show(&self) {
+        self.revealer.set_reveal_child(true);
     }
 }
