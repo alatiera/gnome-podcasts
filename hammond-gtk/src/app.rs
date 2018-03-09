@@ -169,7 +169,7 @@ impl App {
                         glib::Continue(false)
                     });
 
-                    let text = "Marked all episodes as listened.";
+                    let text = "Marked all episodes as listened";
                     let notif = InAppNotification::new(text.into(), callback, sender.clone());
                     overlay.add_overlay(&notif.overlay);
                     // We need to display the notification after the widget is added to the overlay
