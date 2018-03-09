@@ -8,9 +8,11 @@ use gtk::prelude::*;
 use hammond_data::{Podcast, Source};
 use hammond_data::utils::checkup;
 
+use appnotif::*;
 use headerbar::Header;
 use stacks::Content;
 use utils;
+use widgets::mark_all_watched;
 
 use std::sync::Arc;
 use std::sync::mpsc::{channel, Receiver, Sender};
@@ -33,6 +35,7 @@ pub enum Action {
     HeaderBarNormal,
     HeaderBarShowUpdateIndicator,
     HeaderBarHideUpdateIndicator,
+    MarkAllPlayerNotification(Arc<Podcast>),
 }
 
 #[derive(Debug)]
@@ -92,7 +95,7 @@ impl App {
         }
     }
 
-    pub fn setup_timed_callbacks(&self) {
+    fn setup_timed_callbacks(&self) {
         let sender = self.sender.clone();
         // Update the feeds right after the Application is initialized.
         gtk::timeout_add_seconds(2, move || {
@@ -128,6 +131,7 @@ impl App {
         let content = self.content.clone();
         let headerbar = self.header.clone();
         let sender = self.sender.clone();
+        let overlay = self.overlay.clone();
         let receiver = self.receiver;
         gtk::idle_add(move || {
             match receiver.recv_timeout(Duration::from_millis(10)) {
@@ -157,6 +161,21 @@ impl App {
                 Ok(Action::HeaderBarNormal) => headerbar.switch_to_normal(),
                 Ok(Action::HeaderBarShowUpdateIndicator) => headerbar.show_update_notification(),
                 Ok(Action::HeaderBarHideUpdateIndicator) => headerbar.hide_update_notification(),
+                Ok(Action::MarkAllPlayerNotification(pd)) => {
+                    let sender = sender.clone();
+                    let callback = clone!(sender => move || {
+                        if let Err(err) = mark_all_watched(&pd, sender.clone()) {
+                            error!("Something went horribly wrong with the notif callback: {}", err);
+                        }
+                        glib::Continue(false)
+                    });
+                    let text = "All episodes where marked as watched.";
+
+                    let sender = sender.clone();
+                    let notif = InAppNotification::new(text.into(), callback, sender);
+                    overlay.add_overlay(&notif.overlay);
+                    overlay.show_all();
+                }
                 Err(_) => (),
             }
 

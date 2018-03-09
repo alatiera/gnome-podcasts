@@ -1,6 +1,6 @@
 use dissolve;
 use failure::Error;
-use glib;
+// use glib;
 use gtk;
 use gtk::prelude::*;
 use open;
@@ -10,7 +10,6 @@ use hammond_data::dbqueries;
 use hammond_data::utils::{delete_show, replace_extra_spaces};
 
 use app::Action;
-use appnotif::InAppNotification;
 use utils::get_pixbuf_from_path;
 use widgets::episode::episodes_listbox;
 
@@ -165,19 +164,10 @@ fn on_played_button_clicked(pd: Arc<Podcast>, episodes: &gtk::Frame, sender: Sen
         warn!("RUN WHILE YOU STILL CAN!");
     }
 
-    let text = "All episodes where marked as watched.";
-
-    // Set up the callback
-    let callback = clone!(sender => move || {
-        if let Err(err) = wrap(&pd, sender.clone()) {
-            error!("Something went horribly wrong with the notif callback: {}", err);
-        }
-        glib::Continue(false)
-    });
-    let _notif = InAppNotification::new(text, callback, sender);
+    sender.send(Action::MarkAllPlayerNotification(pd)).unwrap();
 }
 
-fn wrap(pd: &Podcast, sender: Sender<Action>) -> Result<(), Error> {
+pub fn mark_all_watched(pd: &Podcast, sender: Sender<Action>) -> Result<(), Error> {
     dbqueries::update_none_to_played_now(pd)?;
     sender.send(Action::RefreshWidgetIfVis)?;
     sender.send(Action::RefreshEpisodesView)?;
