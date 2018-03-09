@@ -10,8 +10,7 @@ use std::sync::mpsc::Sender;
 
 #[derive(Debug, Clone)]
 pub struct InAppNotification {
-    pub overlay: gtk::Overlay,
-    revealer: gtk::Revealer,
+    pub revealer: gtk::Revealer,
     text: gtk::Label,
     undo: gtk::Button,
     close: gtk::Button,
@@ -21,14 +20,12 @@ impl Default for InAppNotification {
     fn default() -> Self {
         let builder = gtk::Builder::new_from_resource("/org/gnome/hammond/gtk/inapp_notif.ui");
 
-        let overlay: gtk::Overlay = builder.get_object("overlay").unwrap();
         let revealer: gtk::Revealer = builder.get_object("revealer").unwrap();
         let text: gtk::Label = builder.get_object("text").unwrap();
         let undo: gtk::Button = builder.get_object("undo").unwrap();
         let close: gtk::Button = builder.get_object("close").unwrap();
 
         InAppNotification {
-            overlay,
             revealer,
             text,
             undo,

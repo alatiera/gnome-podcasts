@@ -171,7 +171,7 @@ impl App {
 
                     let text = "Marked all episodes as listened";
                     let notif = InAppNotification::new(text.into(), callback, sender.clone());
-                    overlay.add_overlay(&notif.overlay);
+                    overlay.add_overlay(&notif.revealer);
                     // We need to display the notification after the widget is added to the overlay
                     // so there will be a nice animation.
                     notif.show();
