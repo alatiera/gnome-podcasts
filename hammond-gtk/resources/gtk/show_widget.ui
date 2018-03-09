@@ -279,7 +279,7 @@ Tobias Bernard
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="receives_default">True</property>
-            <property name="text" translatable="yes">Mark all epiodes as Watched</property>
+            <property name="text" translatable="yes">Mark all episodes as listened</property>
             <property name="centered">True</property>
           </object>
           <packing>

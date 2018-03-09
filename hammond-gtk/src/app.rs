@@ -162,17 +162,15 @@ impl App {
                 Ok(Action::HeaderBarShowUpdateIndicator) => headerbar.show_update_notification(),
                 Ok(Action::HeaderBarHideUpdateIndicator) => headerbar.hide_update_notification(),
                 Ok(Action::MarkAllPlayerNotification(pd)) => {
-                    let sender = sender.clone();
                     let callback = clone!(sender => move || {
                         if let Err(err) = mark_all_watched(&pd, sender.clone()) {
                             error!("Something went horribly wrong with the notif callback: {}", err);
                         }
                         glib::Continue(false)
                     });
-                    let text = "All episodes where marked as watched.";
 
-                    let sender = sender.clone();
-                    let notif = InAppNotification::new(text.into(), callback, sender);
+                    let text = "Marked all episodes as listened.";
+                    let notif = InAppNotification::new(text.into(), callback, sender.clone());
                     overlay.add_overlay(&notif.overlay);
                     // We need to display the notification after the widget is added to the overlay
                     // so there will be a nice animation.
