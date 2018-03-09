@@ -35,14 +35,18 @@ impl Default for InAppNotification {
 }
 
 impl InAppNotification {
-    pub fn new<F>(text: String, callback: F, sender: Sender<Action>) -> Self
+    pub fn new<F>(text: String, mut callback: F, sender: Sender<Action>) -> Self
     where
         F: FnMut() -> glib::Continue + 'static,
     {
         let notif = InAppNotification::default();
         notif.text.set_text(&text);
 
-        let id = timeout_add_seconds(6, callback);
+        let revealer = notif.revealer.clone();
+        let id = timeout_add_seconds(6, move || {
+            revealer.set_reveal_child(false);
+            callback()
+        });
         let id = Rc::new(RefCell::new(Some(id)));
 
         // Cancel the callback
