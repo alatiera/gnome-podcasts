@@ -29,8 +29,8 @@ extern crate open;
 extern crate regex;
 extern crate reqwest;
 extern crate send_cell;
-extern crate take_mut;
 extern crate serde_json;
+extern crate take_mut;
 extern crate url;
 // extern crate rayon;
 
