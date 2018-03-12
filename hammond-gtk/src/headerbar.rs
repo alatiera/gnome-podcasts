@@ -12,6 +12,7 @@ use std::sync::mpsc::Sender;
 
 use app::Action;
 use stacks::Content;
+use utils::itunes_to_rss;
 
 #[derive(Debug, Clone)]
 pub struct Header {
@@ -154,8 +155,18 @@ impl Header {
     }
 }
 
+// FIXME: THIS ALSO SUCKS!
 fn on_add_bttn_clicked(entry: &gtk::Entry, sender: Sender<Action>) -> Result<(), Error> {
     let url = entry.get_text().unwrap_or_default();
+    let url = if url.contains("itunes.com") || url.contains("apple.com") {
+        info!("Detected itunes url.");
+        let foo = itunes_to_rss(&url)?;
+        info!("Resolved to {}", foo);
+        foo
+    } else {
+        url.to_owned()
+    };
+
     let source = Source::from_url(&url).context("Failed to convert url to a Source entry.")?;
     entry.set_text("");
 
@@ -165,6 +176,7 @@ fn on_add_bttn_clicked(entry: &gtk::Entry, sender: Sender<Action>) -> Result<(),
     Ok(())
 }
 
+// FIXME: THIS SUCKS!
 fn on_url_change(
     entry: &gtk::Entry,
     result: &gtk::Label,

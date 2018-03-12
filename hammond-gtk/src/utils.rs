@@ -133,11 +133,9 @@ fn lookup_id(id: u32) -> Result<String, Error> {
     let url = format!("https://itunes.apple.com/lookup?id={}&entity=podcast", id);
     let req: Value = reqwest::get(&url)?.json()?;
     // FIXME: First time using serde, this could be done better and avoid using [] for indexing.
-    let feedurl = req["results"][0]["feedUrl"]
-        .as_str()
-        .ok_or_else(|| format_err!("Failed to get url from itunes response"))?
-        .into();
-    Ok(feedurl)
+    let feedurl = req["results"][0]["feedUrl"].as_str();
+    let feedurl = feedurl.ok_or_else(|| format_err!("Failed to get url from itunes response"))?;
+    Ok(feedurl.into())
 }
 
 #[cfg(test)]
