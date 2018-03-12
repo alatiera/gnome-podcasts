@@ -318,6 +318,8 @@ mod tests {
     }
 
     #[test]
+    // This test needs access to local system so we ignore it by default.
+    #[ignore]
     fn test_get_dl_folder() {
         let foo_ = format!("{}/{}", DL_DIR.to_str().unwrap(), "foo");
         assert_eq!(get_download_folder("foo").unwrap(), foo_);

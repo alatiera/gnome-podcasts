@@ -162,13 +162,14 @@ mod tests {
     use std::io::BufReader;
 
     // Pre-built expected NewPodcast structs.
-    lazy_static!{
+    lazy_static! {
         static ref EXPECTED_INTERCEPTED: NewPodcast = {
             let descr = "The people behind The Intercept’s fearless reporting and incisive \
-                         commentary—Jeremy Scahill, Glenn Greenwald, Betsy Reed and others—discuss \
-                         the crucial issues of our time: national security, civil liberties, foreign \
-                         policy, and criminal justice. Plus interviews with artists, thinkers, and \
-                         newsmakers who challenge our preconceptions about the world we live in.";
+                         commentary—Jeremy Scahill, Glenn Greenwald, Betsy Reed and \
+                         others—discuss the crucial issues of our time: national security, civil \
+                         liberties, foreign policy, and criminal justice. Plus interviews with \
+                         artists, thinkers, and newsmakers who challenge our preconceptions about \
+                         the world we live in.";
 
             NewPodcastBuilder::default()
                 .title("Intercepted with Jeremy Scahill")
@@ -183,11 +184,10 @@ mod tests {
                 .build()
                 .unwrap()
         };
-
         static ref EXPECTED_LUP: NewPodcast = {
-            let descr = "An open show powered by community LINUX Unplugged takes the best attributes \
-                         of open collaboration and focuses them into a weekly lifestyle show about \
-                         Linux.";
+            let descr = "An open show powered by community LINUX Unplugged takes the best \
+                         attributes of open collaboration and focuses them into a weekly \
+                         lifestyle show about Linux.";
 
             NewPodcastBuilder::default()
                 .title("LINUX Unplugged Podcast")
@@ -200,17 +200,16 @@ mod tests {
                 .build()
                 .unwrap()
         };
-
         static ref EXPECTED_TIPOFF: NewPodcast = {
-            let desc = "Welcome to The Tip Off- the podcast where we take you behind the scenes of \
-                        some of the best investigative journalism from recent years. Each episode \
-                        we’ll be digging into an investigative scoop- hearing from the journalists \
-                        behind the work as they tell us about the leads, the dead-ends and of course, \
-                        the tip offs. There’ll be car chases, slammed doors, terrorist cells, \
-                        meetings in dimly lit bars and cafes, wrangling with despotic regimes and \
-                        much more. So if you’re curious about the fun, complicated detective work \
-                        that goes into doing great investigative journalism- then this is the podcast \
-                        for you.";
+            let desc = "Welcome to The Tip Off- the podcast where we take you behind the scenes \
+                        of some of the best investigative journalism from recent years. Each \
+                        episode we’ll be digging into an investigative scoop- hearing from the \
+                        journalists behind the work as they tell us about the leads, the \
+                        dead-ends and of course, the tip offs. There’ll be car chases, slammed \
+                        doors, terrorist cells, meetings in dimly lit bars and cafes, wrangling \
+                        with despotic regimes and much more. So if you’re curious about the fun, \
+                        complicated detective work that goes into doing great investigative \
+                        journalism- then this is the podcast for you.";
 
             NewPodcastBuilder::default()
                 .title("The Tip Off")
@@ -223,15 +222,13 @@ mod tests {
                 .source_id(42)
                 .build()
                 .unwrap()
-
         };
-
         static ref EXPECTED_STARS: NewPodcast = {
-            let descr = "<p>The first audio drama from Tor Labs and Gideon Media, Steal the Stars is \
-                         a gripping noir science fiction thriller in 14 episodes: Forbidden love, a \
-                         crashed UFO, an alien body, and an impossible heist unlike any ever \
-                         attempted - scripted by Mac Rogers, the award-winning playwright and writer \
-                         of the multi-million download The Message and LifeAfter.</p>";
+            let descr = "<p>The first audio drama from Tor Labs and Gideon Media, Steal the Stars \
+                         is a gripping noir science fiction thriller in 14 episodes: Forbidden \
+                         love, a crashed UFO, an alien body, and an impossible heist unlike any \
+                         ever attempted - scripted by Mac Rogers, the award-winning playwright \
+                         and writer of the multi-million download The Message and LifeAfter.</p>";
             let img =  "https://dfkfj8j276wwv.cloudfront.net/images/2c/5f/a0/1a/2c5fa01a-ae78-4a8c-\
                         b183-7311d2e436c3/b3a4aa57a576bb662191f2a6bc2a436c8c4ae256ecffaff5c4c54fd42e\
                         923914941c264d01efb1833234b52c9530e67d28a8cebbe3d11a4bc0fbbdf13ecdf1c3.jpeg";
@@ -245,11 +242,10 @@ mod tests {
                 .build()
                 .unwrap()
         };
-
         static ref EXPECTED_CODE: NewPodcast = {
-            let descr = "A podcast about humans and technology. Panelists: Coraline Ada Ehmke, David \
-                         Brady, Jessica Kerr, Jay Bobo, Astrid Countee and Sam Livingston-Gray. \
-                         Brought to you by @therubyrep.";
+            let descr = "A podcast about humans and technology. Panelists: Coraline Ada Ehmke, \
+                         David Brady, Jessica Kerr, Jay Bobo, Astrid Countee and Sam \
+                         Livingston-Gray. Brought to you by @therubyrep.";
 
             NewPodcastBuilder::default()
                 .title("Greater Than Code")
@@ -262,7 +258,6 @@ mod tests {
                 .build()
                 .unwrap()
         };
-
         static ref UPDATED_DESC_INTERCEPTED: NewPodcast = {
             NewPodcastBuilder::default()
                 .title("Intercepted with Jeremy Scahill")

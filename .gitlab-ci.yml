@@ -39,13 +39,10 @@ stable:test:
 # Configure and run rustfmt on nightly
 # Exits and builds fails if on bad format
 rustfmt:
-  image: "rustlang/rust:nightly"
+  image: "registry.gitlab.com/alatiera/rustfmt-oci-image/rustfmt:nightly"
   stage: lint
-  variables:
-    CFG_RELEASE_CHANNEL: "nightly"
   script:
   - rustc --version && cargo --version
-  - cargo install rustfmt-nightly --force
   - cargo fmt --all -- --write-mode=diff
 
 # Configure and run clippy on nightly

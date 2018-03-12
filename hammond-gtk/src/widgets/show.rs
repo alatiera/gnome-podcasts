@@ -1,5 +1,6 @@
 use dissolve;
 use failure::Error;
+// use glib;
 use gtk;
 use gtk::prelude::*;
 use open;
@@ -62,6 +63,8 @@ impl ShowWidget {
     }
 
     pub fn init(&self, pd: Arc<Podcast>, sender: Sender<Action>) {
+        let builder = gtk::Builder::new_from_resource("/org/gnome/hammond/gtk/show_widget.ui");
+
         // Hacky workaround so the pd.id() can be retrieved from the `ShowStack`.
         WidgetExt::set_name(&self.container, &pd.id().to_string());
 
@@ -88,6 +91,19 @@ impl ShowWidget {
                 error!("Error: {}", err);
             }
         });
+
+        let show_menu: gtk::Popover = builder.get_object("show_menu").unwrap();
+        let mark_all: gtk::ModelButton = builder.get_object("mark_all_watched").unwrap();
+
+        let episodes = self.episodes.clone();
+        mark_all.connect_clicked(clone!(pd, sender => move |_| {
+            on_played_button_clicked(
+                pd.clone(),
+                &episodes,
+                sender.clone()
+            )
+        }));
+        self.settings.set_popover(&show_menu);
     }
 
     /// Populate the listbox with the shows episodes.
@@ -142,9 +158,47 @@ fn on_unsub_button_clicked(
     Ok(())
 }
 
-#[allow(dead_code)]
-fn on_played_button_clicked(pd: &Podcast, sender: Sender<Action>) -> Result<(), Error> {
+fn on_played_button_clicked(pd: Arc<Podcast>, episodes: &gtk::Frame, sender: Sender<Action>) {
+    if dim_titles(episodes).is_none() {
+        error!("Something went horribly wrong when dimming the titles.");
+        warn!("RUN WHILE YOU STILL CAN!");
+    }
+
+    sender.send(Action::MarkAllPlayerNotification(pd)).unwrap();
+}
+
+pub fn mark_all_watched(pd: &Podcast, sender: Sender<Action>) -> Result<(), Error> {
     dbqueries::update_none_to_played_now(pd)?;
-    sender.send(Action::RefreshWidget)?;
+    sender.send(Action::RefreshWidgetIfVis)?;
+    sender.send(Action::RefreshEpisodesView)?;
     Ok(())
+}
+
+// Ideally if we had a custom widget this would have been as simple as:
+// `for row in listbox { ep = row.get_episode(); ep.dim_title(); }`
+// But now I can't think of a better way to do it than hardcoding the title
+// position relative to the EpisodeWidget container gtk::Box.
+fn dim_titles(episodes: &gtk::Frame) -> Option<()> {
+    let listbox = episodes
+        .get_children()
+        .remove(0)
+        .downcast::<gtk::ListBox>()
+        .ok()?;
+    let children = listbox.get_children();
+
+    for row in children {
+        let row = row.downcast::<gtk::ListBoxRow>().ok()?;
+        let container = row.get_children().remove(0).downcast::<gtk::Box>().ok()?;
+        let foo = container
+            .get_children()
+            .remove(0)
+            .downcast::<gtk::Box>()
+            .ok()?;
+        let bar = foo.get_children().remove(0).downcast::<gtk::Box>().ok()?;
+        let baz = bar.get_children().remove(0).downcast::<gtk::Box>().ok()?;
+        let title = baz.get_children().remove(0).downcast::<gtk::Label>().ok()?;
+
+        title.get_style_context().map(|c| c.add_class("dim-label"));
+    }
+    Some(())
 }

@@ -16,7 +16,7 @@ type Pool = r2d2::Pool<ConnectionManager<SqliteConnection>>;
 
 embed_migrations!("migrations/");
 
-lazy_static!{
+lazy_static! {
     static ref POOL: Pool = init_pool(DB_PATH.to_str().unwrap());
 }
 
@@ -30,10 +30,7 @@ extern crate tempdir;
 
 #[cfg(test)]
 lazy_static! {
-    static ref TEMPDIR: tempdir::TempDir = {
-        tempdir::TempDir::new("hammond_unit_test").unwrap()
-    };
-
+    static ref TEMPDIR: tempdir::TempDir = { tempdir::TempDir::new("hammond_unit_test").unwrap() };
     static ref DB_PATH: PathBuf = TEMPDIR.path().join("hammond.db");
 }
 

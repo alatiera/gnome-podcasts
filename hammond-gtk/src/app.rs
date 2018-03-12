@@ -8,9 +8,11 @@ use gtk::prelude::*;
 use hammond_data::{Podcast, Source};
 use hammond_data::utils::checkup;
 
+use appnotif::*;
 use headerbar::Header;
 use stacks::Content;
 use utils;
+use widgets::mark_all_watched;
 
 use std::sync::Arc;
 use std::sync::mpsc::{channel, Receiver, Sender};
@@ -33,12 +35,14 @@ pub enum Action {
     HeaderBarNormal,
     HeaderBarShowUpdateIndicator,
     HeaderBarHideUpdateIndicator,
+    MarkAllPlayerNotification(Arc<Podcast>),
 }
 
 #[derive(Debug)]
 pub struct App {
     app_instance: gtk::Application,
     window: gtk::Window,
+    overlay: gtk::Overlay,
     header: Arc<Header>,
     content: Arc<Content>,
     receiver: Receiver<Action>,
@@ -73,12 +77,17 @@ impl App {
         // Create the headerbar
         let header = Arc::new(Header::new(&content, &window, sender.clone()));
 
-        // Add the content main stack to the window.
-        window.add(&content.get_stack());
+        // Add the content main stack to the overlay.
+        let overlay = gtk::Overlay::new();
+        overlay.add(&content.get_stack());
+
+        // Add the overlay to the main window
+        window.add(&overlay);
 
         App {
             app_instance: application,
             window,
+            overlay,
             header,
             content,
             receiver,
@@ -86,7 +95,7 @@ impl App {
         }
     }
 
-    pub fn setup_timed_callbacks(&self) {
+    fn setup_timed_callbacks(&self) {
         let sender = self.sender.clone();
         // Update the feeds right after the Application is initialized.
         gtk::timeout_add_seconds(2, move || {
@@ -114,15 +123,15 @@ impl App {
 
     pub fn run(self) {
         let window = self.window.clone();
-        let app = self.app_instance.clone();
-        self.app_instance.connect_startup(move |_| {
-            build_ui(&window, &app);
+        self.app_instance.connect_startup(move |app| {
+            build_ui(&window, app);
         });
         self.setup_timed_callbacks();
 
         let content = self.content.clone();
         let headerbar = self.header.clone();
         let sender = self.sender.clone();
+        let overlay = self.overlay.clone();
         let receiver = self.receiver;
         gtk::idle_add(move || {
             match receiver.recv_timeout(Duration::from_millis(10)) {
@@ -152,6 +161,21 @@ impl App {
                 Ok(Action::HeaderBarNormal) => headerbar.switch_to_normal(),
                 Ok(Action::HeaderBarShowUpdateIndicator) => headerbar.show_update_notification(),
                 Ok(Action::HeaderBarHideUpdateIndicator) => headerbar.hide_update_notification(),
+                Ok(Action::MarkAllPlayerNotification(pd)) => {
+                    let callback = clone!(sender => move || {
+                        if let Err(err) = mark_all_watched(&pd, sender.clone()) {
+                            error!("Something went horribly wrong with the notif callback: {}", err);
+                        }
+                        glib::Continue(false)
+                    });
+
+                    let text = "Marked all episodes as listened";
+                    let notif = InAppNotification::new(text.into(), callback, sender.clone());
+                    overlay.add_overlay(&notif.revealer);
+                    // We need to display the notification after the widget is added to the overlay
+                    // so there will be a nice animation.
+                    notif.show();
+                }
                 Err(_) => (),
             }
 

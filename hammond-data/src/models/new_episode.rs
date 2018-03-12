@@ -311,7 +311,6 @@ mod tests {
                 .build()
                 .unwrap()
         };
-
         static ref EXPECTED_MINIMAL_INTERCEPTED_2: NewEpisodeMinimal = {
             NewEpisodeMinimalBuilder::default()
                 .title("Atlas Golfed — U.S.-Backed Think Tanks Target Latin America")
@@ -325,13 +324,12 @@ mod tests {
                 .build()
                 .unwrap()
         };
-
         static ref EXPECTED_INTERCEPTED_1: NewEpisode = {
-            let descr = "NSA whistleblower Edward Snowden discusses the massive Equifax data breach \
-                         and allegations of Russian interference in the US election. Commentator \
-                         Shaun King explains his call for a boycott of the NFL and talks about his \
-                         campaign to bring violent neo-Nazis to justice. Rapper Open Mike Eagle \
-                         performs.";
+            let descr = "NSA whistleblower Edward Snowden discusses the massive Equifax data \
+                         breach and allegations of Russian interference in the US election. \
+                         Commentator Shaun King explains his call for a boycott of the NFL and \
+                         talks about his campaign to bring violent neo-Nazis to justice. Rapper \
+                         Open Mike Eagle performs.";
 
             NewEpisodeBuilder::default()
                 .title("The Super Bowl of Racism")
@@ -347,16 +345,15 @@ mod tests {
                 .build()
                 .unwrap()
         };
-
         static ref EXPECTED_INTERCEPTED_2: NewEpisode = {
             let descr = "This week on Intercepted: Jeremy gives an update on the aftermath of \
-                         Blackwater’s 2007 massacre of Iraqi civilians. Intercept reporter Lee Fang \
-                         lays out how a network of libertarian think tanks called the Atlas Network \
-                         is insidiously shaping political infrastructure in Latin America. We speak \
-                         with attorney and former Hugo Chavez adviser Eva Golinger about the \
-                         Venezuela\'s political turmoil.And we hear Claudia Lizardo of the \
-                         Caracas-based band, La Pequeña Revancha, talk about her music and hopes for \
-                         Venezuela.";
+                         Blackwater’s 2007 massacre of Iraqi civilians. Intercept reporter Lee \
+                         Fang lays out how a network of libertarian think tanks called the Atlas \
+                         Network is insidiously shaping political infrastructure in Latin \
+                         America. We speak with attorney and former Hugo Chavez adviser Eva \
+                         Golinger about the Venezuela\'s political turmoil.And we hear Claudia \
+                         Lizardo of the Caracas-based band, La Pequeña Revancha, talk about her \
+                         music and hopes for Venezuela.";
 
             NewEpisodeBuilder::default()
                 .title("Atlas Golfed — U.S.-Backed Think Tanks Target Latin America")
@@ -372,7 +369,6 @@ mod tests {
                 .build()
                 .unwrap()
         };
-
         static ref UPDATED_DURATION_INTERCEPTED_1: NewEpisode = {
             NewEpisodeBuilder::default()
                 .title("The Super Bowl of Racism")
@@ -388,7 +384,6 @@ mod tests {
                 .build()
                 .unwrap()
         };
-
         static ref EXPECTED_MINIMAL_LUP_1: NewEpisodeMinimal = {
             NewEpisodeMinimalBuilder::default()
                 .title("Hacking Devices with Kali Linux | LUP 214")
@@ -402,7 +397,6 @@ mod tests {
                 .build()
                 .unwrap()
         };
-
         static ref EXPECTED_MINIMAL_LUP_2: NewEpisodeMinimal = {
             NewEpisodeMinimalBuilder::default()
                 .title("Gnome Does it Again | LUP 213")
@@ -416,12 +410,11 @@ mod tests {
                 .build()
                 .unwrap()
         };
-
         static ref EXPECTED_LUP_1: NewEpisode = {
             let descr = "Audit your network with a couple of easy commands on Kali Linux. Chris \
-                         decides to blow off a little steam by attacking his IoT devices, Wes has the \
-                         scope on Equifax blaming open source &amp; the Beard just saved the show. \
-                         It’s a really packed episode!";
+                         decides to blow off a little steam by attacking his IoT devices, Wes has \
+                         the scope on Equifax blaming open source &amp; the Beard just saved the \
+                         show. It’s a really packed episode!";
 
             NewEpisodeBuilder::default()
                 .title("Hacking Devices with Kali Linux | LUP 214")
@@ -437,13 +430,13 @@ mod tests {
                 .build()
                 .unwrap()
         };
-
         static ref EXPECTED_LUP_2: NewEpisode = {
-            let descr = "The Gnome project is about to solve one of our audience's biggest Wayland’s \
-                         concerns. But as the project takes on a new level of relevance, decisions for the \
-                         next version of Gnome have us worried about the future.\nPlus we chat with Wimpy \
-                         about the Ubuntu Rally in NYC, Microsoft’s sneaky move to turn Windows 10 into the \
-                         “ULTIMATE LINUX RUNTIME”, community news &amp; more!";
+            let descr = "The Gnome project is about to solve one of our audience's biggest \
+                         Wayland’s concerns. But as the project takes on a new level of \
+                         relevance, decisions for the next version of Gnome have us worried about \
+                         the future.\nPlus we chat with Wimpy about the Ubuntu Rally in NYC, \
+                         Microsoft’s sneaky move to turn Windows 10 into the “ULTIMATE LINUX \
+                         RUNTIME”, community news &amp; more!";
 
             NewEpisodeBuilder::default()
                 .title("Gnome Does it Again | LUP 213")

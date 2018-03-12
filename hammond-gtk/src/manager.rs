@@ -73,9 +73,8 @@ impl DownloadProgress for Progress {
 }
 
 lazy_static! {
-    pub static ref ACTIVE_DOWNLOADS: Arc<RwLock<HashMap<i32, Arc<Mutex<Progress>>>>> = {
-        Arc::new(RwLock::new(HashMap::new()))
-    };
+    pub static ref ACTIVE_DOWNLOADS: Arc<RwLock<HashMap<i32, Arc<Mutex<Progress>>>>> =
+        { Arc::new(RwLock::new(HashMap::new())) };
 }
 
 pub fn add(id: i32, directory: &str, sender: Sender<Action>) -> Result<(), Error> {
@@ -175,6 +174,8 @@ mod tests {
     }
 
     #[test]
+    // This test needs access to local system so we ignore it by default.
+    #[ignore]
     fn test_dl_steal_the_stars() {
         let url =
             "https://web.archive.org/web/20180120104957if_/https://rss.art19.com/steal-the-stars";
