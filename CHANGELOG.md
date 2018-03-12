@@ -6,7 +6,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
-* Ability to mark all episodes of a Show as watched. (#47)[https://gitlab.gnome.org/alatiera/Hammond/issues/47]
+* Ability to mark all episodes of a Show as watched. [#47](https://gitlab.gnome.org/alatiera/Hammond/issues/47)
+* Now you are able to subscribe to itunes™ podcasts by using the itunes link of the show.[#49](https://gitlab.gnome.org/alatiera/Hammond/issues/49)
 
 ## [0.3.0] - 2018-02-11
 
