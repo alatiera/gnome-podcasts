@@ -174,6 +174,8 @@ mod tests {
     }
 
     #[test]
+    // This test needs access to local system so we ignore it by default.
+    #[ignore]
     fn test_dl_steal_the_stars() {
         let url =
             "https://web.archive.org/web/20180120104957if_/https://rss.art19.com/steal-the-stars";
