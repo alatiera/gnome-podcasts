@@ -109,12 +109,14 @@ pub fn get_pixbuf_from_path(pd: &PodcastCoverQuery, size: u32) -> Result<Pixbuf,
     Ok(px)
 }
 
+#[inline]
 // FIXME: the signature should be `fn foo(s: Url) -> Result<Url, Error>`
 pub fn itunes_to_rss(url: &str) -> Result<String, Error> {
     let id = itunes_id_from_url(url).ok_or_else(|| format_err!("Failed to find an Itunes ID."))?;
     lookup_id(id)
 }
 
+#[inline]
 fn itunes_id_from_url(url: &str) -> Option<u32> {
     lazy_static! {
         static ref RE: Regex = Regex::new(r"/id([0-9]+)").unwrap();
@@ -126,6 +128,7 @@ fn itunes_id_from_url(url: &str) -> Option<u32> {
     foo.parse::<u32>().ok()
 }
 
+#[inline]
 fn lookup_id(id: u32) -> Result<String, Error> {
     let url = format!("https://itunes.apple.com/lookup?id={}&entity=podcast", id);
     let req: Value = reqwest::get(&url)?.json()?;
@@ -165,25 +168,20 @@ mod tests {
     fn test_itunes_to_rss() {
         let itunes_url = "https://itunes.apple.com/podcast/id1195206601";
         let rss_url = String::from("http://feeds.feedburner.com/InterceptedWithJeremyScahill");
-
         assert_eq!(rss_url, itunes_to_rss(itunes_url).unwrap());
     }
 
     #[test]
     fn test_itunes_id() {
-        let itunes_url = "https://itunes.apple.com/podcast/id1195206601";
         let id = 1195206601;
-
+        let itunes_url = "https://itunes.apple.com/podcast/id1195206601";
         assert_eq!(id, itunes_id_from_url(itunes_url).unwrap());
     }
 
     #[test]
     fn test_itunes_lookup_id() {
         let id = 1195206601;
-
-        assert_eq!(
-            "http://feeds.feedburner.com/InterceptedWithJeremyScahill",
-            lookup_id(id).unwrap()
-        );
+        let rss_url = "http://feeds.feedburner.com/InterceptedWithJeremyScahill";
+        assert_eq!(rss_url, lookup_id(id).unwrap());
     }
 }
