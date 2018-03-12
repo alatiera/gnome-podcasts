@@ -2,7 +2,10 @@
 
 use failure::Error;
 use gdk_pixbuf::Pixbuf;
+use regex::Regex;
+use reqwest;
 use send_cell::SendCell;
+use serde_json::Value;
 
 // use hammond_data::feed;
 use hammond_data::{PodcastCoverQuery, Source};
@@ -106,6 +109,35 @@ pub fn get_pixbuf_from_path(pd: &PodcastCoverQuery, size: u32) -> Result<Pixbuf,
     Ok(px)
 }
 
+#[inline]
+// FIXME: the signature should be `fn foo(s: Url) -> Result<Url, Error>`
+pub fn itunes_to_rss(url: &str) -> Result<String, Error> {
+    let id = itunes_id_from_url(url).ok_or_else(|| format_err!("Failed to find an Itunes ID."))?;
+    lookup_id(id)
+}
+
+#[inline]
+fn itunes_id_from_url(url: &str) -> Option<u32> {
+    lazy_static! {
+        static ref RE: Regex = Regex::new(r"/id([0-9]+)").unwrap();
+    }
+
+    // Get the itunes id from the url
+    let foo = RE.captures_iter(url).nth(0)?.get(1)?.as_str();
+    // Parse it to a u32, this *should* never fail
+    foo.parse::<u32>().ok()
+}
+
+#[inline]
+fn lookup_id(id: u32) -> Result<String, Error> {
+    let url = format!("https://itunes.apple.com/lookup?id={}&entity=podcast", id);
+    let req: Value = reqwest::get(&url)?.json()?;
+    // FIXME: First time using serde, this could be done better and avoid using [] for indexing.
+    let feedurl = req["results"][0]["feedUrl"].as_str();
+    let feedurl = feedurl.ok_or_else(|| format_err!("Failed to get url from itunes response"))?;
+    Ok(feedurl.into())
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -128,5 +160,26 @@ mod tests {
         let pd = dbqueries::get_podcast_from_source_id(sid).unwrap();
         let pxbuf = get_pixbuf_from_path(&pd.into(), 256);
         assert!(pxbuf.is_ok());
+    }
+
+    #[test]
+    fn test_itunes_to_rss() {
+        let itunes_url = "https://itunes.apple.com/podcast/id1195206601";
+        let rss_url = String::from("http://feeds.feedburner.com/InterceptedWithJeremyScahill");
+        assert_eq!(rss_url, itunes_to_rss(itunes_url).unwrap());
+    }
+
+    #[test]
+    fn test_itunes_id() {
+        let id = 1195206601;
+        let itunes_url = "https://itunes.apple.com/podcast/id1195206601";
+        assert_eq!(id, itunes_id_from_url(itunes_url).unwrap());
+    }
+
+    #[test]
+    fn test_itunes_lookup_id() {
+        let id = 1195206601;
+        let rss_url = "http://feeds.feedburner.com/InterceptedWithJeremyScahill";
+        assert_eq!(rss_url, lookup_id(id).unwrap());
     }
 }

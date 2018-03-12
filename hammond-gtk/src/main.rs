@@ -25,7 +25,10 @@ extern crate hammond_downloader;
 extern crate humansize;
 extern crate loggerv;
 extern crate open;
+extern crate regex;
+extern crate reqwest;
 extern crate send_cell;
+extern crate serde_json;
 extern crate url;
 // extern crate rayon;
 
