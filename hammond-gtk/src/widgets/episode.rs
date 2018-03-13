@@ -15,6 +15,7 @@ use app::Action;
 use manager;
 use widgets::episode_states::*;
 
+use std::cell::RefCell;
 use std::ops::DerefMut;
 use std::path::Path;
 use std::rc::Rc;
@@ -24,9 +25,9 @@ use std::sync::mpsc::Sender;
 #[derive(Debug)]
 pub struct EpisodeWidget {
     pub container: gtk::Box,
-    date: Mutex<DateMachine>,
-    duration: Mutex<DurationMachine>,
-    title: Rc<Mutex<TitleMachine>>,
+    date: RefCell<DateMachine>,
+    duration: RefCell<DurationMachine>,
+    title: Rc<RefCell<TitleMachine>>,
     media: Arc<Mutex<MediaMachine>>,
 }
 
@@ -51,9 +52,9 @@ impl Default for EpisodeWidget {
         let separator2: gtk::Label = builder.get_object("separator2").unwrap();
         let prog_separator: gtk::Label = builder.get_object("prog_separator").unwrap();
 
-        let date_machine = Mutex::new(DateMachine::new(date, 0));
-        let dur_machine = Mutex::new(DurationMachine::new(duration, separator1, None));
-        let title_machine = Rc::new(Mutex::new(TitleMachine::new(title, false)));
+        let date_machine = RefCell::new(DateMachine::new(date, 0));
+        let dur_machine = RefCell::new(DurationMachine::new(duration, separator1, None));
+        let title_machine = Rc::new(RefCell::new(TitleMachine::new(title, false)));
         let media = MediaMachine::new(
             play,
             download,
@@ -87,19 +88,13 @@ impl EpisodeWidget {
         WidgetExt::set_name(&self.container, &episode.rowid().to_string());
 
         // Set the date label.
-        if let Err(err) = self.set_date(episode.epoch()) {
-            error!("Failed to determine date state: {}", err);
-        }
+        self.set_date(episode.epoch());
 
         // Set the title label state.
-        if let Err(err) = self.set_title(&episode) {
-            error!("Failed to determine title state: {}", err);
-        }
+        self.set_title(&episode);
 
         // Set the duaration label.
-        if let Err(err) = self.set_duration(episode.duration()) {
-            error!("Failed to set duration state: {}", err);
-        }
+        self.set_duration(episode.duration());
 
         // Determine what the state of the media widgets should be.
         if let Err(err) = self.determine_media_state(&episode) {
@@ -137,31 +132,24 @@ impl EpisodeWidget {
     }
 
     /// Determine the title state.
-    fn set_title(&mut self, episode: &EpisodeWidgetQuery) -> Result<(), Error> {
-        let mut lock = self.title.lock().map_err(|err| format_err!("{}", err))?;
-        lock.set_title(episode.title());
-        take_mut::take(lock.deref_mut(), |title| {
+    fn set_title(&mut self, episode: &EpisodeWidgetQuery) {
+        let mut machine = self.title.borrow_mut();
+        machine.set_title(episode.title());
+        take_mut::take(machine.deref_mut(), |title| {
             title.determine_state(episode.played().is_some())
         });
-        Ok(())
     }
 
     /// Set the date label depending on the current time.
-    fn set_date(&self, epoch: i32) -> Result<(), Error> {
-        let mut lock = self.date.lock().map_err(|err| format_err!("{}", err))?;
-        take_mut::take(lock.deref_mut(), |date| {
-            date.determine_state(i64::from(epoch))
-        });
-        Ok(())
+    fn set_date(&mut self, epoch: i32) {
+        let machine = self.date.get_mut();
+        take_mut::take(machine, |date| date.determine_state(i64::from(epoch)));
     }
 
     /// Set the duration label.
-    fn set_duration(&mut self, seconds: Option<i32>) -> Result<(), Error> {
-        let mut lock = self.duration.lock().map_err(|err| format_err!("{}", err))?;
-        take_mut::take(lock.deref_mut(), |duration| {
-            duration.determine_state(seconds)
-        });
-        Ok(())
+    fn set_duration(&mut self, seconds: Option<i32>) {
+        let machine = self.duration.get_mut();
+        take_mut::take(machine, |duration| duration.determine_state(seconds));
     }
 
     fn determine_media_state(&self, episode: &EpisodeWidgetQuery) -> Result<(), Error> {
@@ -222,14 +210,14 @@ fn on_download_clicked(ep: &EpisodeWidgetQuery, sender: Sender<Action>) -> Resul
 #[inline]
 fn on_play_bttn_clicked(
     episode: &mut EpisodeWidgetQuery,
-    title: Rc<Mutex<TitleMachine>>,
+    title: Rc<RefCell<TitleMachine>>,
     sender: Sender<Action>,
 ) -> Result<(), Error> {
     open_uri(episode.rowid())?;
     episode.set_played_now()?;
 
-    let mut lock = title.lock().map_err(|err| format_err!("{}", err))?;
-    take_mut::take(lock.deref_mut(), |title| {
+    let mut machine = title.try_borrow_mut()?;
+    take_mut::take(machine.deref_mut(), |title| {
         title.determine_state(episode.played().is_some())
     });
 
