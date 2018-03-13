@@ -175,8 +175,10 @@ impl EpisodeWidget {
         });
 
         // Show or hide the play/delete/download buttons upon widget initialization.
-        // FIXME: There might be a deadlock introduced here, but I am too tired to test it.
         if let Some(prog) = active_dl {
+            lock.cancel_connect_clicked(prog.clone());
+            drop(lock);
+
             // Setup a callback that will update the progress bar.
             update_progressbar_callback(prog.clone(), self.media.clone(), id);
 
@@ -184,8 +186,6 @@ impl EpisodeWidget {
             // with the http ContentLength header number rather than
             // relying to the RSS feed.
             update_total_size_callback(prog.clone(), self.media.clone());
-
-            lock.cancel_connect_clicked(prog);
         }
 
         Ok(())
