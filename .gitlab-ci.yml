@@ -17,10 +17,9 @@ variables:
     # Force regeneration of gresources regardless of artifacts chage
     - cd hammond-gtk/resources/ && glib-compile-resources --generate resources.xml && cd ../../
 
-    - ./configure --prefix=/usr/local
-    - make
-    - cargo test --release -- --test-threads=1
-    - cargo test --release -- --test-threads=1 --ignored
+    - cargo build
+    - cargo test -- --test-threads=1
+    - cargo test -- --test-threads=1 --ignored
 
 stable:test:
   # https://hub.docker.com/_/rust/
@@ -38,8 +37,9 @@ rustfmt:
   image: "registry.gitlab.com/alatiera/rustfmt-oci-image/rustfmt:nightly"
   stage: lint
   script:
-  - rustc --version && cargo --version
-  - cargo fmt --all -- --write-mode=diff
+    - rustc -Vv && cargo -Vv
+    - cargo fmt --version
+    - cargo fmt --all -- --write-mode=diff
 
 # Configure and run clippy on nightly
 # Only fails on errors atm.
