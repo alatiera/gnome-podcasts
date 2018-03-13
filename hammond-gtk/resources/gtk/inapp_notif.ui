@@ -21,8 +21,8 @@
             <property name="can_focus">False</property>
             <property name="halign">center</property>
             <property name="valign">center</property>
-            <property name="margin_left">6</property>
-            <property name="margin_right">6</property>
+            <property name="margin_left">3</property>
+            <property name="margin_right">3</property>
             <property name="spacing">6</property>
             <child>
               <object class="GtkLabel" id="text">
@@ -30,6 +30,8 @@
                 <property name="can_focus">False</property>
                 <property name="halign">center</property>
                 <property name="valign">center</property>
+                <property name="margin_left">12</property>
+                <property name="margin_right">12</property>
                 <property name="label" translatable="yes">An in-app action notification</property>
               </object>
               <packing>
