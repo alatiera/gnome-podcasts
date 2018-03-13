@@ -17,15 +17,16 @@ use widgets::episode_states::*;
 
 use std::ops::DerefMut;
 use std::path::Path;
+use std::rc::Rc;
 use std::sync::{Arc, Mutex};
 use std::sync::mpsc::Sender;
 
-#[derive(Debug, Clone)]
+#[derive(Debug)]
 pub struct EpisodeWidget {
     pub container: gtk::Box,
-    date: Arc<Mutex<DateMachine>>,
-    title: Arc<Mutex<TitleMachine>>,
-    duration: Arc<Mutex<DurationMachine>>,
+    date: Mutex<DateMachine>,
+    duration: Mutex<DurationMachine>,
+    title: Rc<Mutex<TitleMachine>>,
     media: Arc<Mutex<MediaMachine>>,
 }
 
@@ -50,11 +51,10 @@ impl Default for EpisodeWidget {
         let separator2: gtk::Label = builder.get_object("separator2").unwrap();
         let prog_separator: gtk::Label = builder.get_object("prog_separator").unwrap();
 
-        let title_machine = Arc::new(Mutex::new(TitleMachine::new(title, false)));
-        let date_machine = Arc::new(Mutex::new(DateMachine::new(date, 0)));
-        let dur = DurationMachine::new(duration, separator1, None);
-        let duration_machine = Arc::new(Mutex::new(dur));
-        let _media = MediaMachine::new(
+        let date_machine = Mutex::new(DateMachine::new(date, 0));
+        let dur_machine = Mutex::new(DurationMachine::new(duration, separator1, None));
+        let title_machine = Rc::new(Mutex::new(TitleMachine::new(title, false)));
+        let media = MediaMachine::new(
             play,
             download,
             progress,
@@ -64,12 +64,12 @@ impl Default for EpisodeWidget {
             separator2,
             prog_separator,
         );
-        let media_machine = Arc::new(Mutex::new(_media));
+        let media_machine = Arc::new(Mutex::new(media));
 
         EpisodeWidget {
             container,
             title: title_machine,
-            duration: duration_machine,
+            duration: dur_machine,
             date: date_machine,
             media: media_machine,
         }
@@ -222,7 +222,7 @@ fn on_download_clicked(ep: &EpisodeWidgetQuery, sender: Sender<Action>) -> Resul
 #[inline]
 fn on_play_bttn_clicked(
     episode: &mut EpisodeWidgetQuery,
-    title: Arc<Mutex<TitleMachine>>,
+    title: Rc<Mutex<TitleMachine>>,
     sender: Sender<Action>,
 ) -> Result<(), Error> {
     open_uri(episode.rowid())?;
