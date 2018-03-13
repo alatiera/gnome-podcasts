@@ -1,5 +1,6 @@
 #![cfg_attr(feature = "cargo-clippy",
-            allow(clone_on_ref_ptr, needless_pass_by_value, useless_format))]
+            allow(clone_on_ref_ptr, needless_pass_by_value, useless_format, blacklisted_name,
+                  match_same_arms))]
 #![allow(unknown_lints)]
 #![deny(unused_extern_crates, unused)]
 
@@ -29,6 +30,7 @@ extern crate regex;
 extern crate reqwest;
 extern crate send_cell;
 extern crate serde_json;
+extern crate take_mut;
 extern crate url;
 // extern crate rayon;
 

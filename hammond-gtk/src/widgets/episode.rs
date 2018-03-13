@@ -1,13 +1,11 @@
 use glib;
 use gtk;
-
-use chrono::prelude::*;
 use gtk::prelude::*;
 
-use chrono::Duration;
 use failure::Error;
-use humansize::{file_size_opts as size_opts, FileSize};
+use humansize::FileSize;
 use open;
+use take_mut;
 
 use hammond_data::{EpisodeWidgetQuery, Podcast};
 use hammond_data::dbqueries;
@@ -15,46 +13,22 @@ use hammond_data::utils::get_download_folder;
 
 use app::Action;
 use manager;
+use widgets::episode_states::*;
 
+use std::cell::RefCell;
+use std::ops::DerefMut;
 use std::path::Path;
+use std::rc::Rc;
 use std::sync::{Arc, Mutex};
 use std::sync::mpsc::Sender;
 
-lazy_static! {
-    static ref SIZE_OPTS: Arc<size_opts::FileSizeOpts> =  {
-        // Declare a custom humansize option struct
-        // See: https://docs.rs/humansize/1.0.2/humansize/file_size_opts/struct.FileSizeOpts.html
-        Arc::new(size_opts::FileSizeOpts {
-            divider: size_opts::Kilo::Binary,
-            units: size_opts::Kilo::Decimal,
-            decimal_places: 0,
-            decimal_zeroes: 0,
-            fixed_at: size_opts::FixedAt::No,
-            long_units: false,
-            space: true,
-            suffix: "",
-            allow_negative: false,
-        })
-    };
-
-    static ref NOW: DateTime<Utc> = Utc::now();
-}
-
-#[derive(Debug, Clone)]
+#[derive(Debug)]
 pub struct EpisodeWidget {
     pub container: gtk::Box,
-    play: gtk::Button,
-    download: gtk::Button,
-    cancel: gtk::Button,
-    title: gtk::Label,
-    date: gtk::Label,
-    duration: gtk::Label,
-    progress: gtk::ProgressBar,
-    total_size: gtk::Label,
-    local_size: gtk::Label,
-    separator1: gtk::Label,
-    separator2: gtk::Label,
-    prog_separator: gtk::Label,
+    date: RefCell<DateMachine>,
+    duration: RefCell<DurationMachine>,
+    title: Rc<RefCell<TitleMachine>>,
+    media: Arc<Mutex<MediaMachine>>,
 }
 
 impl Default for EpisodeWidget {
@@ -78,33 +52,43 @@ impl Default for EpisodeWidget {
         let separator2: gtk::Label = builder.get_object("separator2").unwrap();
         let prog_separator: gtk::Label = builder.get_object("prog_separator").unwrap();
 
-        EpisodeWidget {
-            container,
-            progress,
-            download,
+        let date_machine = RefCell::new(DateMachine::new(date, 0));
+        let dur_machine = RefCell::new(DurationMachine::new(duration, separator1, None));
+        let title_machine = Rc::new(RefCell::new(TitleMachine::new(title, false)));
+        let media = MediaMachine::new(
             play,
+            download,
+            progress,
             cancel,
-            title,
-            duration,
-            date,
             total_size,
             local_size,
-            separator1,
             separator2,
             prog_separator,
+        );
+        let media_machine = Arc::new(Mutex::new(media));
+
+        EpisodeWidget {
+            container,
+            title: title_machine,
+            duration: dur_machine,
+            date: date_machine,
+            media: media_machine,
         }
     }
 }
 
 impl EpisodeWidget {
     pub fn new(episode: EpisodeWidgetQuery, sender: Sender<Action>) -> EpisodeWidget {
-        let widget = EpisodeWidget::default();
+        let mut widget = EpisodeWidget::default();
         widget.init(episode, sender);
         widget
     }
 
-    fn init(&self, episode: EpisodeWidgetQuery, sender: Sender<Action>) {
+    fn init(&mut self, episode: EpisodeWidgetQuery, sender: Sender<Action>) {
         WidgetExt::set_name(&self.container, &episode.rowid().to_string());
+
+        // Set the date label.
+        self.set_date(episode.epoch());
 
         // Set the title label state.
         self.set_title(&episode);
@@ -112,41 +96,28 @@ impl EpisodeWidget {
         // Set the duaration label.
         self.set_duration(episode.duration());
 
-        // Set the date label.
-        self.set_date(episode.epoch());
-
-        // Show or hide the play/delete/download buttons upon widget initialization.
-        if let Err(err) = self.show_buttons(episode.local_uri()) {
-            debug!("Failed to determine play/download button state.");
-            debug!("Error: {}", err);
-        }
-
-        // Set the size label.
-        if let Err(err) = self.set_total_size(episode.length()) {
-            error!("Failed to set the Size label.");
-            error!("Error: {}", err);
-        }
-
-        // Determine what the state of the progress bar should be.
-        if let Err(err) = self.determine_progess_bar() {
-            error!("Something went wrong determining the ProgressBar State.");
+        // Determine what the state of the media widgets should be.
+        if let Err(err) = self.determine_media_state(&episode) {
+            error!("Something went wrong determining the Media State.");
             error!("Error: {}", err);
         }
 
         let episode = Arc::new(Mutex::new(episode));
+        self.connect_buttons(episode, sender);
+    }
 
+    fn connect_buttons(&self, episode: Arc<Mutex<EpisodeWidgetQuery>>, sender: Sender<Action>) {
         let title = self.title.clone();
-        self.play
-            .connect_clicked(clone!(episode, sender => move |_| {
+        if let Ok(media) = self.media.lock() {
+            media.play_connect_clicked(clone!(episode, sender => move |_| {
                 if let Ok(mut ep) = episode.lock() {
-                    if let Err(err) = on_play_bttn_clicked(&mut ep, &title, sender.clone()){
+                    if let Err(err) = on_play_bttn_clicked(&mut ep, title.clone(), sender.clone()){
                         error!("Error: {}", err);
                     };
                 }
-        }));
+            }));
 
-        self.download
-            .connect_clicked(clone!(episode, sender => move |dl| {
+            media.download_connect_clicked(clone!(episode, sender => move |dl| {
                 dl.set_sensitive(false);
                 if let Ok(ep) = episode.lock() {
                     if let Err(err) = on_download_clicked(&ep, sender.clone())  {
@@ -156,74 +127,32 @@ impl EpisodeWidget {
                         info!("Donwload started succesfully.");
                     }
                 }
-        }));
-    }
-
-    /// Show or hide the play/delete/download buttons upon widget
-    /// initialization.
-    fn show_buttons(&self, local_uri: Option<&str>) -> Result<(), Error> {
-        let path = local_uri.ok_or_else(|| format_err!("Path is None"))?;
-        if Path::new(path).exists() {
-            self.download.hide();
-            self.play.show();
+            }));
         }
-        Ok(())
     }
 
     /// Determine the title state.
-    fn set_title(&self, episode: &EpisodeWidgetQuery) {
-        self.title.set_text(episode.title());
-
-        // Grey out the title if the episode is played.
-        if episode.played().is_some() {
-            self.title
-                .get_style_context()
-                .map(|c| c.add_class("dim-label"));
-        }
+    fn set_title(&mut self, episode: &EpisodeWidgetQuery) {
+        let mut machine = self.title.borrow_mut();
+        machine.set_title(episode.title());
+        take_mut::take(machine.deref_mut(), |title| {
+            title.determine_state(episode.played().is_some())
+        });
     }
 
     /// Set the date label depending on the current time.
-    fn set_date(&self, epoch: i32) {
-        let date = Utc.timestamp(i64::from(epoch), 0);
-        if NOW.year() == date.year() {
-            self.date.set_text(date.format("%e %b").to_string().trim());
-        } else {
-            self.date
-                .set_text(date.format("%e %b %Y").to_string().trim());
-        };
+    fn set_date(&mut self, epoch: i32) {
+        let machine = self.date.get_mut();
+        take_mut::take(machine, |date| date.determine_state(i64::from(epoch)));
     }
 
     /// Set the duration label.
-    fn set_duration(&self, seconds: Option<i32>) -> Option<()> {
-        let minutes = Duration::seconds(seconds?.into()).num_minutes();
-        if minutes == 0 {
-            return None;
-        }
-
-        self.duration.set_text(&format!("{} min", minutes));
-        self.duration.show();
-        self.separator1.show();
-        Some(())
+    fn set_duration(&mut self, seconds: Option<i32>) {
+        let machine = self.duration.get_mut();
+        take_mut::take(machine, |duration| duration.determine_state(seconds));
     }
 
-    /// Set the Episode label dependings on its size
-    fn set_total_size(&self, bytes: Option<i32>) -> Result<(), Error> {
-        let size = bytes.ok_or_else(|| format_err!("Size is None."))?;
-        if size == 0 {
-            bail!("Size is 0.");
-        }
-
-        let s = size.file_size(SIZE_OPTS.clone())
-            .map_err(|err| format_err!("{}", err))?;
-        self.total_size.set_text(&s);
-        self.total_size.show();
-        self.separator2.show();
-        Ok(())
-    }
-
-    // FIXME: REFACTOR ME
-    // Something Something State-Machine?
-    fn determine_progess_bar(&self) -> Result<(), Error> {
+    fn determine_media_state(&self, episode: &EpisodeWidgetQuery) -> Result<(), Error> {
         let id = WidgetExt::get_name(&self.container)
             .ok_or_else(|| format_err!("Failed to get widget Name"))?
             .parse::<i32>()?;
@@ -236,40 +165,34 @@ impl EpisodeWidget {
             Ok(m.get(&id).cloned())
         }()?;
 
-        if let Some(prog) = active_dl {
-            // FIXME: Document me?
-            self.download.hide();
-            self.progress.show();
-            self.local_size.show();
-            self.total_size.show();
-            self.separator2.show();
-            self.prog_separator.show();
-            self.cancel.show();
+        let mut lock = self.media.lock().map_err(|err| format_err!("{}", err))?;
+        take_mut::take(lock.deref_mut(), |media| {
+            media.determine_state(
+                episode.length(),
+                active_dl.is_some(),
+                episode.local_uri().is_some(),
+            )
+        });
 
-            let progress_bar = self.progress.clone();
-            let total_size = self.total_size.clone();
-            let local_size = self.local_size.clone();
+        // Show or hide the play/delete/download buttons upon widget initialization.
+        if let Some(prog) = active_dl {
+            lock.cancel_connect_clicked(prog.clone());
+            drop(lock);
 
             // Setup a callback that will update the progress bar.
-            update_progressbar_callback(prog.clone(), id, &progress_bar, &local_size);
+            update_progressbar_callback(prog.clone(), self.media.clone(), id);
 
             // Setup a callback that will update the total_size label
             // with the http ContentLength header number rather than
             // relying to the RSS feed.
-            update_total_size_callback(prog.clone(), &total_size);
-
-            self.cancel.connect_clicked(clone!(prog => move |cancel| {
-                if let Ok(mut m) = prog.lock() {
-                    m.cancel();
-                    cancel.set_sensitive(false);
-                }
-            }));
+            update_total_size_callback(prog.clone(), self.media.clone());
         }
 
         Ok(())
     }
 }
 
+#[inline]
 fn on_download_clicked(ep: &EpisodeWidgetQuery, sender: Sender<Action>) -> Result<(), Error> {
     let pd = dbqueries::get_podcast_from_id(ep.podcast_id())?;
     let download_fold = get_download_folder(&pd.title().to_owned())?;
@@ -284,18 +207,21 @@ fn on_download_clicked(ep: &EpisodeWidgetQuery, sender: Sender<Action>) -> Resul
     Ok(())
 }
 
+#[inline]
 fn on_play_bttn_clicked(
     episode: &mut EpisodeWidgetQuery,
-    title: &gtk::Label,
+    title: Rc<RefCell<TitleMachine>>,
     sender: Sender<Action>,
 ) -> Result<(), Error> {
     open_uri(episode.rowid())?;
+    episode.set_played_now()?;
 
-    if episode.set_played_now().is_ok() {
-        title.get_style_context().map(|c| c.add_class("dim-label"));
-        sender.send(Action::RefreshEpisodesViewBGR)?;
-    };
+    let mut machine = title.try_borrow_mut()?;
+    take_mut::take(machine.deref_mut(), |title| {
+        title.determine_state(episode.played().is_some())
+    });
 
+    sender.send(Action::RefreshEpisodesViewBGR)?;
     Ok(())
 }
 
@@ -314,28 +240,28 @@ fn open_uri(rowid: i32) -> Result<(), Error> {
 }
 
 // Setup a callback that will update the progress bar.
+#[inline]
 #[cfg_attr(feature = "cargo-clippy", allow(if_same_then_else))]
 fn update_progressbar_callback(
     prog: Arc<Mutex<manager::Progress>>,
+    media: Arc<Mutex<MediaMachine>>,
     episode_rowid: i32,
-    progress_bar: &gtk::ProgressBar,
-    local_size: &gtk::Label,
 ) {
     timeout_add(
         400,
-        clone!(prog, progress_bar, progress_bar, local_size=> move || {
-            progress_bar_helper(prog.clone(), episode_rowid, &progress_bar, &local_size)
+        clone!(prog, media => move || {
+            progress_bar_helper(prog.clone(), media.clone(), episode_rowid)
                 .unwrap_or(glib::Continue(false))
         }),
     );
 }
 
+#[inline]
 #[allow(if_same_then_else)]
 fn progress_bar_helper(
     prog: Arc<Mutex<manager::Progress>>,
+    media: Arc<Mutex<MediaMachine>>,
     episode_rowid: i32,
-    progress_bar: &gtk::ProgressBar,
-    local_size: &gtk::Label,
 ) -> Result<glib::Continue, Error> {
     let (fraction, downloaded) = {
         let m = prog.lock()
@@ -343,16 +269,16 @@ fn progress_bar_helper(
         (m.get_fraction(), m.get_downloaded())
     };
 
-    // Update local_size label
-    downloaded
-        .file_size(SIZE_OPTS.clone())
-        .map_err(|err| format_err!("{}", err))
-        .map(|x| local_size.set_text(&x))?;
-
     // I hate floating points.
     // Update the progress_bar.
     if (fraction >= 0.0) && (fraction <= 1.0) && (!fraction.is_nan()) {
-        progress_bar.set_fraction(fraction);
+        // Update local_size label
+        let size = downloaded
+            .file_size(SIZE_OPTS.clone())
+            .map_err(|err| format_err!("{}", err))?;
+
+        let mut m = media.lock().unwrap();
+        m.update_progress(&size, fraction);
     }
 
     // info!("Fraction: {}", progress_bar.get_fraction());
@@ -378,18 +304,23 @@ fn progress_bar_helper(
 // Setup a callback that will update the total_size label
 // with the http ContentLength header number rather than
 // relying to the RSS feed.
-fn update_total_size_callback(prog: Arc<Mutex<manager::Progress>>, total_size: &gtk::Label) {
+#[inline]
+fn update_total_size_callback(
+    prog: Arc<Mutex<manager::Progress>>,
+    media: Arc<Mutex<MediaMachine>>,
+) {
     timeout_add(
         500,
-        clone!(prog, total_size => move || {
-            total_size_helper(prog.clone(), &total_size).unwrap_or(glib::Continue(true))
+        clone!(prog, media => move || {
+            total_size_helper(prog.clone(), media.clone()).unwrap_or(glib::Continue(true))
         }),
     );
 }
 
+#[inline]
 fn total_size_helper(
     prog: Arc<Mutex<manager::Progress>>,
-    total_size: &gtk::Label,
+    media: Arc<Mutex<MediaMachine>>,
 ) -> Result<glib::Continue, Error> {
     // Get the total_bytes.
     let total_bytes = {
@@ -401,10 +332,12 @@ fn total_size_helper(
     debug!("Total Size: {}", total_bytes);
     if total_bytes != 0 {
         // Update the total_size label
-        total_bytes
-            .file_size(SIZE_OPTS.clone())
-            .map_err(|err| format_err!("{}", err))
-            .map(|x| total_size.set_text(&x))?;
+        if let Ok(mut m) = media.lock() {
+            take_mut::take(m.deref_mut(), |machine| {
+                machine.set_size(Some(total_bytes as i32))
+            });
+        }
+
         // Do not call again the callback
         Ok(glib::Continue(false))
     } else {
