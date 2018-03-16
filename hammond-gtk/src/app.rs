@@ -1,12 +1,11 @@
 #![allow(new_without_default)]
 
-use gio::{ApplicationExt, ApplicationExtManual, ApplicationFlags};
+use gio::{ApplicationExt, ApplicationExtManual, ApplicationFlags, Settings, SettingsExt};
 use glib;
 use gtk;
 use gtk::prelude::*;
 
 use hammond_data::{Podcast, Source};
-use hammond_data::utils::checkup;
 
 use appnotif::*;
 use headerbar::Header;
@@ -47,6 +46,7 @@ pub struct App {
     content: Arc<Content>,
     receiver: Receiver<Action>,
     sender: Sender<Action>,
+    settings: Settings,
 }
 
 impl App {
@@ -84,6 +84,8 @@ impl App {
         // Add the overlay to the main window
         window.add(&overlay);
 
+        let settings = Settings::new("org.gnome.Hammond");
+
         App {
             app_instance: application,
             window,
@@ -92,32 +94,44 @@ impl App {
             content,
             receiver,
             sender,
+            settings,
         }
     }
 
     fn setup_timed_callbacks(&self) {
-        let sender = self.sender.clone();
+        self.setup_refresh_on_startup();
+        self.setup_auto_refresh();
+    }
+
+    fn setup_refresh_on_startup(&self) {
         // Update the feeds right after the Application is initialized.
-        gtk::timeout_add_seconds(2, move || {
-            utils::refresh_feed_wrapper(None, sender.clone());
-            glib::Continue(false)
-        });
+        if self.settings.get_boolean("refresh-on-startup") {
+            let cleanup_age = utils::get_cleanup_age(&self.settings);
+            let sender = self.sender.clone();
 
+            info!("Refresh on startup.");
+
+            gtk::timeout_add_seconds(2, move || {
+                utils::refresh(None, sender.clone());
+                utils::cleanup(cleanup_age);
+
+                glib::Continue(false)
+            });
+        }
+    }
+
+    fn setup_auto_refresh(&self) {
+        let refresh_interval = utils::get_refresh_interval(&self.settings);
+        let cleanup_age = utils::get_cleanup_age(&self.settings);
         let sender = self.sender.clone();
-        // Auto-updater, runs every hour.
-        // TODO: expose the interval in which it run to a user setting.
-        gtk::timeout_add_seconds(3600, move || {
-            utils::refresh_feed_wrapper(None, sender.clone());
+
+        info!("Auto-refresh every {:?} seconds.", refresh_interval);
+
+        gtk::timeout_add_seconds(refresh_interval, move || {
+            utils::refresh(None, sender.clone());
+            utils::cleanup(cleanup_age);
+
             glib::Continue(true)
-        });
-
-        // Run a database checkup once the application is initialized.
-        gtk::timeout_add(300, || {
-            if let Err(err) = checkup() {
-                error!("Check up failed: {}", err);
-            }
-
-            glib::Continue(false)
         });
     }
 
@@ -137,9 +151,9 @@ impl App {
             match receiver.recv_timeout(Duration::from_millis(10)) {
                 Ok(Action::UpdateSources(source)) => {
                     if let Some(s) = source {
-                        utils::refresh_feed_wrapper(Some(vec![s]), sender.clone());
+                        utils::refresh(Some(vec![s]), sender.clone());
                     } else {
-                        utils::refresh_feed_wrapper(None, sender.clone());
+                        utils::refresh(None, sender.clone());
                     }
                 }
                 Ok(Action::RefreshAllViews) => content.update(),

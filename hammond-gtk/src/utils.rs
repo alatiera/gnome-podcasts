@@ -2,6 +2,7 @@
 
 use failure::Error;
 use gdk_pixbuf::Pixbuf;
+use gio::{Settings, SettingsExt};
 use regex::Regex;
 use reqwest;
 use send_cell::SendCell;
@@ -11,6 +12,7 @@ use serde_json::Value;
 use hammond_data::{PodcastCoverQuery, Source};
 use hammond_data::dbqueries;
 use hammond_data::pipeline;
+use hammond_data::utils::checkup;
 use hammond_downloader::downloader;
 
 use std::collections::HashMap;
@@ -20,11 +22,31 @@ use std::thread;
 
 use app::Action;
 
-pub fn refresh_feed_wrapper(source: Option<Vec<Source>>, sender: Sender<Action>) {
+pub fn cleanup(age: u32) {
+    if let Err(err) = checkup(age) {
+        error!("Check up failed: {}", err);
+    }
+}
+
+pub fn refresh(source: Option<Vec<Source>>, sender: Sender<Action>) {
     if let Err(err) = refresh_feed(source, sender) {
         error!("An error occured while trying to update the feeds.");
         error!("Error: {}", err);
     }
+}
+
+pub fn get_refresh_interval(settings: &Settings) -> u32 {
+    let time = settings.get_int("auto-refresh-time") as u32;
+    let period = settings.get_string("auto-refresh-period").unwrap();
+
+    time_period_to_seconds(&time, period.as_str())
+}
+
+pub fn get_cleanup_age(settings: &Settings) -> u32 {
+    let time = settings.get_int("auto-refresh-time") as u32;
+    let period = settings.get_string("auto-refresh-period").unwrap();
+
+    time_period_to_seconds(&time, period.as_str())
 }
 
 /// Update the rss feed(s) originating from `source`.
@@ -138,11 +160,41 @@ fn lookup_id(id: u32) -> Result<String, Error> {
     Ok(feedurl.into())
 }
 
+pub fn time_period_to_seconds(time: &u32, period: &str) -> u32 {
+    match period {
+        "weeks" => time * 604800,
+        "days" => time * 86400,
+        "hours" => time * 3600,
+        "minutes" => time * 60,
+        _ => time * 1,
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
     use hammond_data::Source;
     use hammond_data::dbqueries;
+
+    #[test]
+    fn test_time_period_to_seconds() {
+        let time = 2 as u32;
+        let week = 604800 * time as u32;
+        let day = 86400 * time as u32;
+        let hour = 3600 * time as u32;
+        let minute = 60 * time as u32;
+        let from_weeks = time_period_to_seconds(&time, "weeks");
+        let from_days = time_period_to_seconds(&time, "days");
+        let from_hours = time_period_to_seconds(&time, "hours");
+        let from_minutes = time_period_to_seconds(&time, "minutes");
+        let from_seconds = time_period_to_seconds(&time, "seconds");
+
+        assert_eq!(week, from_weeks);
+        assert_eq!(day, from_days);
+        assert_eq!(hour, from_hours);
+        assert_eq!(minute, from_minutes);
+        assert_eq!(time, from_seconds);
+    }
 
     #[test]
     // This test inserts an rss feed to your `XDG_DATA/hammond/hammond.db` so we make it explicit

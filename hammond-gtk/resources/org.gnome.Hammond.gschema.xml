@@ -33,16 +33,12 @@
             <summary>Whether to refresh content after startup</summary>
         </key>
 
-        <key name="auto-cleanup" type="b">
-            <default>true</default>
-            <summary>Whether to periodically cleanup content</summary>
-        </key>
-        <key name="auto-cleanup-time" type="i">
+        <key name="cleanup-age-time" type="i">
             <range min="1" max="100"/>
             <default>2</default>
             <summary>How many periods of time to wait between automatic cleanups</summary>
         </key>
-        <key name="auto-cleanup-period" enum="org.gnome.Hammond.timePeriods">
+        <key name="cleanup-age-period" enum="org.gnome.Hammond.timePeriods">
             <default>'days'</default>
             <summary>What period of time to wait between automatic cleanups</summary>
         </key>
