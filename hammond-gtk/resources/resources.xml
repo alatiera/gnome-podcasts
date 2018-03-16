@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <gresources>
   <gresource prefix="/org/gnome/hammond/">
-      <file preprocess="xml-stripblanks">gtk/episode_widget.ui</file>
-      <file preprocess="xml-stripblanks">gtk/show_widget.ui</file>
-      <file preprocess="xml-stripblanks">gtk/empty_view.ui</file>
-      <file preprocess="xml-stripblanks">gtk/episodes_view.ui</file>
-      <file preprocess="xml-stripblanks">gtk/episodes_view_widget.ui</file>
-      <file preprocess="xml-stripblanks">gtk/shows_view.ui</file>
-      <file preprocess="xml-stripblanks">gtk/shows_child.ui</file>
-      <file preprocess="xml-stripblanks">gtk/headerbar.ui</file>
-      <file preprocess="xml-stripblanks">gtk/inapp_notif.ui</file>
+      <file compressed="true" preprocess="xml-stripblanks">gtk/episode_widget.ui</file>
+      <file compressed="true" preprocess="xml-stripblanks">gtk/show_widget.ui</file>
+      <file compressed="true" preprocess="xml-stripblanks">gtk/empty_view.ui</file>
+      <file compressed="true" preprocess="xml-stripblanks">gtk/episodes_view.ui</file>
+      <file compressed="true" preprocess="xml-stripblanks">gtk/episodes_view_widget.ui</file>
+      <file compressed="true" preprocess="xml-stripblanks">gtk/shows_view.ui</file>
+      <file compressed="true" preprocess="xml-stripblanks">gtk/shows_child.ui</file>
+      <file compressed="true" preprocess="xml-stripblanks">gtk/headerbar.ui</file>
+      <file compressed="true" preprocess="xml-stripblanks">gtk/inapp_notif.ui</file>
       <file compressed="true">gtk/style.css</file>
   </gresource>
 </gresources>
