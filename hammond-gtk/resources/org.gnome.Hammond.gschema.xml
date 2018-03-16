@@ -17,7 +17,7 @@
         
         <key name="auto-refresh" type="b">
             <default>true</default>
-            <summary>Wheather to periodically refresh content</summary>
+            <summary>Whether to periodically refresh content</summary>
         </key>
         <key name="auto-refresh-time" type="i">
             <range min="1" max="100"/>
@@ -30,12 +30,12 @@
         </key>
         <key name="refresh-on-startup" type="b">
             <default>true</default>
-            <summary>Wheather to refresh content after startup</summary>
+            <summary>Whether to refresh content after startup</summary>
         </key>
 
         <key name="auto-cleanup" type="b">
             <default>true</default>
-            <summary>Wheather to periodically cleanup content</summary>
+            <summary>Whether to periodically cleanup content</summary>
         </key>
         <key name="auto-cleanup-time" type="i">
             <range min="1" max="100"/>
