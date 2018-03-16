@@ -36,15 +36,15 @@ pub fn refresh(source: Option<Vec<Source>>, sender: Sender<Action>) {
 }
 
 pub fn get_refresh_interval(settings: &Settings) -> u32 {
-    let time = settings.get_int("auto-refresh-time") as u32;
-    let period = settings.get_string("auto-refresh-period").unwrap();
+    let time = settings.get_int("refresh-interval-time") as u32;
+    let period = settings.get_string("refresh-interval-period").unwrap();
 
     time_period_to_seconds(&time, period.as_str())
 }
 
 pub fn get_cleanup_age(settings: &Settings) -> u32 {
-    let time = settings.get_int("auto-refresh-time") as u32;
-    let period = settings.get_string("auto-refresh-period").unwrap();
+    let time = settings.get_int("cleanup-age-time") as u32;
+    let period = settings.get_string("cleanup-age-period").unwrap();
 
     time_period_to_seconds(&time, period.as_str())
 }

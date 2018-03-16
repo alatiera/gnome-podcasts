@@ -14,17 +14,17 @@
             <default>false</default>
             <summary>Enable or disable dark theme</summary>
         </key>
-        
-        <key name="auto-refresh" type="b">
+
+        <key name="refresh-interval" type="b">
             <default>true</default>
             <summary>Whether to periodically refresh content</summary>
         </key>
-        <key name="auto-refresh-time" type="i">
+        <key name="refresh-interval-time" type="i">
             <range min="1" max="100"/>
             <default>1</default>
             <summary>How many periods of time to wait between automatic refreshes</summary>
         </key>
-        <key name="auto-refresh-period" enum="org.gnome.Hammond.timePeriods">
+        <key name="refresh-interval-period" enum="org.gnome.Hammond.timePeriods">
             <default>'hours'</default>
             <summary>What period of time to wait between automatic refreshes</summary>
         </key>
