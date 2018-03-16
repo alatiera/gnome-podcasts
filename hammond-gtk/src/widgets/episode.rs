@@ -25,8 +25,8 @@ use std::sync::mpsc::Sender;
 #[derive(Debug)]
 pub struct EpisodeWidget {
     pub container: gtk::Box,
-    date: RefCell<DateMachine>,
-    duration: RefCell<DurationMachine>,
+    date: DateMachine,
+    duration: DurationMachine,
     title: Rc<RefCell<TitleMachine>>,
     media: Arc<Mutex<MediaMachine>>,
 }
@@ -52,8 +52,8 @@ impl Default for EpisodeWidget {
         let separator2: gtk::Label = builder.get_object("separator2").unwrap();
         let prog_separator: gtk::Label = builder.get_object("prog_separator").unwrap();
 
-        let date_machine = RefCell::new(DateMachine::new(date, 0));
-        let dur_machine = RefCell::new(DurationMachine::new(duration, separator1, None));
+        let date_machine = DateMachine::new(date, 0);
+        let dur_machine = DurationMachine::new(duration, separator1, None);
         let title_machine = Rc::new(RefCell::new(TitleMachine::new(title, false)));
         let media = MediaMachine::new(
             play,
@@ -142,13 +142,13 @@ impl EpisodeWidget {
 
     /// Set the date label depending on the current time.
     fn set_date(&mut self, epoch: i32) {
-        let machine = self.date.get_mut();
+        let machine = &mut self.date;
         take_mut::take(machine, |date| date.determine_state(i64::from(epoch)));
     }
 
     /// Set the duration label.
     fn set_duration(&mut self, seconds: Option<i32>) {
-        let machine = self.duration.get_mut();
+        let machine = &mut self.duration;
         take_mut::take(machine, |duration| duration.determine_state(seconds));
     }
 
