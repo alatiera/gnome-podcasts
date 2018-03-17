@@ -22,8 +22,11 @@ use std::thread;
 
 use app::Action;
 
-pub fn cleanup(age: u32) {
-    if let Err(err) = checkup(age) {
+use chrono::Duration;
+use chrono::prelude::*;
+
+pub fn cleanup(cleanup_date: DateTime<Utc>) {
+    if let Err(err) = checkup(cleanup_date) {
         error!("Check up failed: {}", err);
     }
 }
@@ -35,18 +38,19 @@ pub fn refresh(source: Option<Vec<Source>>, sender: Sender<Action>) {
     }
 }
 
-pub fn get_refresh_interval(settings: &Settings) -> u32 {
-    let time = settings.get_int("refresh-interval-time") as u32;
+pub fn get_refresh_interval(settings: &Settings) -> Duration {
+    let time = settings.get_int("refresh-interval-time") as i64;
     let period = settings.get_string("refresh-interval-period").unwrap();
 
-    time_period_to_seconds(&time, period.as_str())
+    time_period_to_duration(&time, period.as_str())
 }
 
-pub fn get_cleanup_age(settings: &Settings) -> u32 {
-    let time = settings.get_int("cleanup-age-time") as u32;
+pub fn get_cleanup_date(settings: &Settings) -> DateTime<Utc> {
+    let time = settings.get_int("cleanup-age-time") as i64;
     let period = settings.get_string("cleanup-age-period").unwrap();
+    let duration = time_period_to_duration(&time, period.as_str());
 
-    time_period_to_seconds(&time, period.as_str())
+    Utc::now() - duration
 }
 
 /// Update the rss feed(s) originating from `source`.
@@ -160,13 +164,13 @@ fn lookup_id(id: u32) -> Result<String, Error> {
     Ok(feedurl.into())
 }
 
-pub fn time_period_to_seconds(time: &u32, period: &str) -> u32 {
+pub fn time_period_to_duration(time: &i64, period: &str) -> Duration {
     match period {
-        "weeks" => time * 604800,
-        "days" => time * 86400,
-        "hours" => time * 3600,
-        "minutes" => time * 60,
-        _ => time * 1,
+        "weeks" => Duration::weeks(time.clone()),
+        "days" => Duration::days(time.clone()),
+        "hours" => Duration::hours(time.clone()),
+        "minutes" => Duration::minutes(time.clone()),
+        _ => Duration::seconds(time.clone()),
     }
 }
 
@@ -177,23 +181,24 @@ mod tests {
     use hammond_data::dbqueries;
 
     #[test]
-    fn test_time_period_to_seconds() {
-        let time = 2 as u32;
-        let week = 604800 * time as u32;
-        let day = 86400 * time as u32;
-        let hour = 3600 * time as u32;
-        let minute = 60 * time as u32;
-        let from_weeks = time_period_to_seconds(&time, "weeks");
-        let from_days = time_period_to_seconds(&time, "days");
-        let from_hours = time_period_to_seconds(&time, "hours");
-        let from_minutes = time_period_to_seconds(&time, "minutes");
-        let from_seconds = time_period_to_seconds(&time, "seconds");
+    fn test_time_period_to_duration() {
+        let time = 2;
+        let week = 604800 * time;
+        let day = 86400 * time;
+        let hour = 3600 * time;
+        let minute = 60 * time;
 
-        assert_eq!(week, from_weeks);
-        assert_eq!(day, from_days);
-        assert_eq!(hour, from_hours);
-        assert_eq!(minute, from_minutes);
-        assert_eq!(time, from_seconds);
+        assert_eq!(week, time_period_to_duration(&time, "weeks").num_seconds());
+        assert_eq!(day, time_period_to_duration(&time, "days").num_seconds());
+        assert_eq!(hour, time_period_to_duration(&time, "hours").num_seconds());
+        assert_eq!(
+            minute,
+            time_period_to_duration(&time, "minutes").num_seconds()
+        );
+        assert_eq!(
+            time,
+            time_period_to_duration(&time, "seconds").num_seconds()
+        );
     }
 
     #[test]

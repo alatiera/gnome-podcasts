@@ -106,14 +106,14 @@ impl App {
     fn setup_refresh_on_startup(&self) {
         // Update the feeds right after the Application is initialized.
         if self.settings.get_boolean("refresh-on-startup") {
-            let cleanup_age = utils::get_cleanup_age(&self.settings);
+            let cleanup_date = utils::get_cleanup_date(&self.settings);
             let sender = self.sender.clone();
 
             info!("Refresh on startup.");
 
             gtk::timeout_add_seconds(2, move || {
                 utils::refresh(None, sender.clone());
-                utils::cleanup(cleanup_age);
+                utils::cleanup(cleanup_date);
 
                 glib::Continue(false)
             });
@@ -121,15 +121,15 @@ impl App {
     }
 
     fn setup_auto_refresh(&self) {
-        let refresh_interval = utils::get_refresh_interval(&self.settings);
-        let cleanup_age = utils::get_cleanup_age(&self.settings);
+        let refresh_interval = utils::get_refresh_interval(&self.settings).num_seconds() as u32;
+        let cleanup_date = utils::get_cleanup_date(&self.settings);
         let sender = self.sender.clone();
 
         info!("Auto-refresh every {:?} seconds.", refresh_interval);
 
         gtk::timeout_add_seconds(refresh_interval, move || {
             utils::refresh(None, sender.clone());
-            utils::cleanup(cleanup_age);
+            utils::cleanup(cleanup_date);
 
             glib::Continue(true)
         });
