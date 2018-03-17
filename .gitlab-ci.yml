@@ -2,44 +2,56 @@ stages:
   - test
   - lint
 
-variables:
-#   RUSTFLAGS: "-C link-dead-code"
-  RUST_BACKTRACE: "FULL"
 
 .cargo_test_template: &cargo_test
-  stage: test
+    stage: test
 
-  before_script:
-    - apt-get update -yqq
-    - apt-get install -yqq --no-install-recommends build-essential libgtk-3-dev meson
-  script:
-    - rustc -Vv && cargo -Vv
-    # Force regeneration of gresources regardless of artifacts chage
-    - cd hammond-gtk/resources/ && glib-compile-resources --generate resources.xml && cd ../../
+    # variables:
+    #     RUSTFLAGS: "-C link-dead-code"
+    #     RUST_BACKTRACE: "FULL"
 
-    - cargo build
-    - cargo test -- --test-threads=1
-    - cargo test -- --test-threads=1 --ignored
+    before_script:
+        - apt-get update -yqq
+        - apt-get install -yqq --no-install-recommends build-essential libgtk-3-dev meson
+    script:
+        - rustc -Vv && cargo -Vv
+        # Force regeneration of gresources regardless of artifacts chage
+        - cd hammond-gtk/resources/ && glib-compile-resources --generate resources.xml && cd ../../
+
+        - cargo build
+        - cargo test -- --test-threads=1
+        - cargo test -- --test-threads=1 --ignored
 
 stable:test:
-  # https://hub.docker.com/_/rust/
-  image: "rust"
-  <<: *cargo_test
+    # https://hub.docker.com/_/rust/
+    image: "rust"
+    <<: *cargo_test
 
 # nightly:test:
-#   # https://hub.docker.com/r/rustlang/rust/
-#   image: "rustlang/rust:nightly"
-#   <<: *cargo_test
+    # https://hub.docker.com/r/rustlang/rust/
+#     image: "rustlang/rust:nightly"
+#     <<: *cargo_test
+
+flatpak:
+    image: flatpak/flatpak-builder:gnome-3-28
+    stage: test
+    script:
+        - flatpak-builder --force-clean --repo=repo app org.gnome.Hammond.json
+        - flatpak build-bundle repo hammond-dev.flatpak org.gnome.hammond
+    artifacts:
+        paths:
+            - hammond-dev.flatpak
+        expire_in: 2 days
 
 # Configure and run rustfmt on nightly
 # Exits and builds fails if on bad format
 rustfmt:
-  image: "registry.gitlab.com/alatiera/rustfmt-oci-image/rustfmt:nightly"
-  stage: lint
-  script:
-    - rustc -Vv && cargo -Vv
-    - cargo fmt --version
-    - cargo fmt --all -- --write-mode=diff
+    image: "registry.gitlab.com/alatiera/rustfmt-oci-image/rustfmt:nightly"
+    stage: lint
+    script:
+        - rustc -Vv && cargo -Vv
+        - cargo fmt --version
+        - cargo fmt --all -- --write-mode=diff
 
 # Configure and run clippy on nightly
 # Only fails on errors atm.
