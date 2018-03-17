@@ -3,8 +3,8 @@
 use gio::{ApplicationExt, ApplicationExtManual, ApplicationFlags, Settings, SettingsExt};
 use glib;
 use gtk;
-use gtk::prelude::*;
 use gtk::SettingsExt as GtkSettingsExt;
+use gtk::prelude::*;
 
 use hammond_data::{Podcast, Source};
 
@@ -120,9 +120,10 @@ impl App {
 
             info!("Refresh on startup.");
 
+            utils::cleanup(cleanup_date);
+
             gtk::timeout_add_seconds(2, move || {
                 utils::refresh(None, sender.clone());
-                utils::cleanup(cleanup_date);
 
                 glib::Continue(false)
             });
@@ -131,14 +132,12 @@ impl App {
 
     fn setup_auto_refresh(&self) {
         let refresh_interval = utils::get_refresh_interval(&self.settings).num_seconds() as u32;
-        let cleanup_date = utils::get_cleanup_date(&self.settings);
         let sender = self.sender.clone();
 
         info!("Auto-refresh every {:?} seconds.", refresh_interval);
 
         gtk::timeout_add_seconds(refresh_interval, move || {
             utils::refresh(None, sender.clone());
-            utils::cleanup(cleanup_date);
 
             glib::Continue(true)
         });
