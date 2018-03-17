@@ -4,6 +4,7 @@ use gio::{ApplicationExt, ApplicationExtManual, ApplicationFlags, Settings, Sett
 use glib;
 use gtk;
 use gtk::prelude::*;
+use gtk::SettingsExt as GtkSettingsExt;
 
 use hammond_data::{Podcast, Source};
 
@@ -99,8 +100,16 @@ impl App {
     }
 
     fn setup_timed_callbacks(&self) {
+        self.setup_dark_theme();
         self.setup_refresh_on_startup();
         self.setup_auto_refresh();
+    }
+
+    fn setup_dark_theme(&self) {
+        let settings = gtk::Settings::get_default().unwrap();
+        let enabled = self.settings.get_boolean("dark-theme");
+
+        settings.set_property_gtk_application_prefer_dark_theme(enabled);
     }
 
     fn setup_refresh_on_startup(&self) {
