@@ -10,7 +10,6 @@ chrono = "0.4.0"
 dissolve = "0.2.2"
 gdk = "0.7.0"
 gdk-pixbuf = "0.3.0"
-gio = "0.3.0"
 glib = "0.4.1"
 humansize = "1.1.0"
 lazy_static = "1.0.0"
@@ -29,6 +28,10 @@ serde_json = "1.0.11"
 
 [dependencies.gtk]
 features = ["v3_22"]
+version = "0.3.0"
+
+[dependencies.gio]
+features = ["v2_50"]
 version = "0.3.0"
 
 [dependencies.hammond-data]

@@ -89,11 +89,5 @@ fn main() {
         600,
     );
 
-    // This set's the app to dark mode.
-    // It wiil be in the user's preference later.
-    // Uncomment it to run with the dark theme variant.
-    // let settings = gtk::Settings::get_default().unwrap();
-    // settings.set_property_gtk_application_prefer_dark_theme(true);
-
     App::new().run();
 }

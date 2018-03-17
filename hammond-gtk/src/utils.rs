@@ -2,6 +2,7 @@
 
 use failure::Error;
 use gdk_pixbuf::Pixbuf;
+use gio::{Settings, SettingsExt};
 use regex::Regex;
 use reqwest;
 use send_cell::SendCell;
@@ -11,6 +12,7 @@ use serde_json::Value;
 use hammond_data::{PodcastCoverQuery, Source};
 use hammond_data::dbqueries;
 use hammond_data::pipeline;
+use hammond_data::utils::checkup;
 use hammond_downloader::downloader;
 
 use std::collections::HashMap;
@@ -20,11 +22,35 @@ use std::thread;
 
 use app::Action;
 
-pub fn refresh_feed_wrapper(source: Option<Vec<Source>>, sender: Sender<Action>) {
+use chrono::Duration;
+use chrono::prelude::*;
+
+pub fn cleanup(cleanup_date: DateTime<Utc>) {
+    if let Err(err) = checkup(cleanup_date) {
+        error!("Check up failed: {}", err);
+    }
+}
+
+pub fn refresh(source: Option<Vec<Source>>, sender: Sender<Action>) {
     if let Err(err) = refresh_feed(source, sender) {
         error!("An error occured while trying to update the feeds.");
         error!("Error: {}", err);
     }
+}
+
+pub fn get_refresh_interval(settings: &Settings) -> Duration {
+    let time = settings.get_int("refresh-interval-time") as i64;
+    let period = settings.get_string("refresh-interval-period").unwrap();
+
+    time_period_to_duration(time, period.as_str())
+}
+
+pub fn get_cleanup_date(settings: &Settings) -> DateTime<Utc> {
+    let time = settings.get_int("cleanup-age-time") as i64;
+    let period = settings.get_string("cleanup-age-period").unwrap();
+    let duration = time_period_to_duration(time, period.as_str());
+
+    Utc::now() - duration
 }
 
 /// Update the rss feed(s) originating from `source`.
@@ -138,11 +164,39 @@ fn lookup_id(id: u32) -> Result<String, Error> {
     Ok(feedurl.into())
 }
 
+pub fn time_period_to_duration(time: i64, period: &str) -> Duration {
+    match period {
+        "weeks" => Duration::weeks(time),
+        "days" => Duration::days(time),
+        "hours" => Duration::hours(time),
+        "minutes" => Duration::minutes(time),
+        _ => Duration::seconds(time),
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
     use hammond_data::Source;
     use hammond_data::dbqueries;
+
+    #[test]
+    fn test_time_period_to_duration() {
+        let time = 2;
+        let week = 604800 * time;
+        let day = 86400 * time;
+        let hour = 3600 * time;
+        let minute = 60 * time;
+
+        assert_eq!(week, time_period_to_duration(time, "weeks").num_seconds());
+        assert_eq!(day, time_period_to_duration(time, "days").num_seconds());
+        assert_eq!(hour, time_period_to_duration(time, "hours").num_seconds());
+        assert_eq!(
+            minute,
+            time_period_to_duration(time, "minutes").num_seconds()
+        );
+        assert_eq!(time, time_period_to_duration(time, "seconds").num_seconds());
+    }
 
     #[test]
     // This test inserts an rss feed to your `XDG_DATA/hammond/hammond.db` so we make it explicit

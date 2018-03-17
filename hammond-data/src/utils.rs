@@ -39,17 +39,15 @@ fn download_checker() -> Result<(), DataError> {
 }
 
 /// Delete watched `episodes` that have exceded their liftime after played.
-fn played_cleaner() -> Result<(), DataError> {
+fn played_cleaner(cleanup_date: DateTime<Utc>) -> Result<(), DataError> {
     let mut episodes = dbqueries::get_played_cleaner_episodes()?;
+    let now_utc = cleanup_date.timestamp() as i32;
 
-    let now_utc = Utc::now().timestamp() as i32;
     episodes
         .par_iter_mut()
         .filter(|ep| ep.local_uri().is_some() && ep.played().is_some())
         .for_each(|ep| {
-            // TODO: expose a config and a user set option.
-            // Chnage the test too when exposed
-            let limit = ep.played().unwrap() + 172_800; // add 2days in seconds
+            let limit = ep.played().unwrap();
             if now_utc > limit {
                 if let Err(err) = delete_local_content(ep) {
                     error!("Error while trying to delete file: {:?}", ep.local_uri());
@@ -92,10 +90,10 @@ fn delete_local_content(ep: &mut EpisodeCleanerQuery) -> Result<(), DataError> {
 ///
 /// Runs a cleaner for played Episode's that are pass the lifetime limit and
 /// scheduled for removal.
-pub fn checkup() -> Result<(), DataError> {
+pub fn checkup(cleanup_date: DateTime<Utc>) -> Result<(), DataError> {
     info!("Running database checks.");
     download_checker()?;
-    played_cleaner()?;
+    played_cleaner(cleanup_date)?;
     info!("Checks completed.");
     Ok(())
 }
@@ -182,6 +180,7 @@ mod tests {
 
     use self::tempdir::TempDir;
     use super::*;
+    use chrono::Duration;
 
     use database::truncate_db;
     use models::NewEpisodeBuilder;
@@ -261,15 +260,14 @@ mod tests {
     fn test_played_cleaner_expired() {
         let _tmp_dir = helper_db();
         let mut episode = dbqueries::get_episode_from_pk("foo_bar", 0).unwrap();
-        let now_utc = Utc::now().timestamp() as i32;
-        // let limit = now_utc - 172_800;
-        let epoch = now_utc - 200_000;
+        let cleanup_date = Utc::now() - Duration::seconds(1000);
+        let epoch = cleanup_date.timestamp() as i32 - 1;
         episode.set_played(Some(epoch));
         episode.save().unwrap();
         let valid_path = episode.local_uri().unwrap().to_owned();
 
         // This should delete the file
-        played_cleaner().unwrap();
+        played_cleaner(cleanup_date).unwrap();
         assert_eq!(Path::new(&valid_path).exists(), false);
     }
 
@@ -277,15 +275,14 @@ mod tests {
     fn test_played_cleaner_none() {
         let _tmp_dir = helper_db();
         let mut episode = dbqueries::get_episode_from_pk("foo_bar", 0).unwrap();
-        let now_utc = Utc::now().timestamp() as i32;
-        // limit = 172_800;
-        let epoch = now_utc - 20_000;
+        let cleanup_date = Utc::now() - Duration::seconds(1000);
+        let epoch = cleanup_date.timestamp() as i32 + 1;
         episode.set_played(Some(epoch));
         episode.save().unwrap();
         let valid_path = episode.local_uri().unwrap().to_owned();
 
         // This should not delete the file
-        played_cleaner().unwrap();
+        played_cleaner(cleanup_date).unwrap();
         assert_eq!(Path::new(&valid_path).exists(), true);
     }
 
