@@ -57,6 +57,7 @@ pub struct App {
 
 impl App {
     pub fn new() -> App {
+        let settings = Settings::new("org.gnome.Hammond");
         let application = gtk::Application::new("org.gnome.Hammond", ApplicationFlags::empty())
             .expect("Application Initialization failed...");
 
@@ -66,10 +67,14 @@ impl App {
 
         // Create the main window
         let window = gtk::Window::new(gtk::WindowType::Toplevel);
-        window.set_default_size(860, 640);
+
         window.set_title("Hammond");
+
         let app_clone = application.clone();
+        let window_clone = window.clone();
+        let settings_clone = settings.clone();
         window.connect_delete_event(move |_, _| {
+            store_window_geometry(&window_clone, &settings_clone);
             app_clone.quit();
             Inhibit(false)
         });
@@ -89,8 +94,6 @@ impl App {
 
         // Add the overlay to the main window
         window.add(&overlay);
-
-        let settings = Settings::new("org.gnome.Hammond");
 
         App {
             app_instance: application,
@@ -149,7 +152,10 @@ impl App {
     }
 
     pub fn run(self) {
+        restore_window_geometry(&self.window, &self.settings);
+
         let window = self.window.clone();
+
         self.app_instance.connect_startup(move |app| {
             build_ui(&window, app);
         });
@@ -257,4 +263,35 @@ fn build_ui(window: &gtk::Window, app: &gtk::Application) {
     window.show_all();
     window.activate();
     app.connect_activate(move |_| ());
+}
+
+fn restore_window_geometry(window: &gtk::Window, settings: &Settings) {
+    let top = settings.get_int("persist-window-geometry-top");
+    let left = settings.get_int("persist-window-geometry-left");
+    let width = settings.get_int("persist-window-geometry-width");
+    let height = settings.get_int("persist-window-geometry-height");
+    let is_maximized = settings.get_boolean("persist-window-geometry-maximized");
+
+    if width > 0 && height > 0 {
+        window.resize(width, height);
+    }
+
+    if is_maximized {
+        window.maximize();
+    }
+
+    else if top > 0 && left > 0 {
+        window.move_(left, top);
+    }
+}
+
+fn store_window_geometry(window: &gtk::Window, settings: &Settings) {
+    let position = window.get_position();
+    let size = window.get_size();
+
+    settings.set_int("persist-window-geometry-left", position.0);
+    settings.set_int("persist-window-geometry-top", position.1);
+    settings.set_int("persist-window-geometry-width", size.0);
+    settings.set_int("persist-window-geometry-height", size.1);
+    settings.set_boolean("persist-window-geometry-maximized", window.is_maximized());
 }
