@@ -13,6 +13,7 @@ use hammond_data::utils::delete_show;
 
 use appnotif::*;
 use headerbar::Header;
+use settings::WindowGeometry;
 use stacks::Content;
 use utils;
 use widgets::mark_all_watched;
@@ -74,7 +75,7 @@ impl App {
         let window_clone = window.clone();
         let settings_clone = settings.clone();
         window.connect_delete_event(move |_, _| {
-            store_window_geometry(&window_clone, &settings_clone);
+            WindowGeometry::from_window(&window_clone).write(&settings_clone);
             app_clone.quit();
             Inhibit(false)
         });
@@ -152,7 +153,7 @@ impl App {
     }
 
     pub fn run(self) {
-        restore_window_geometry(&self.window, &self.settings);
+        WindowGeometry::from_settings(&self.settings).apply(&self.window);
 
         let window = self.window.clone();
 
@@ -263,35 +264,4 @@ fn build_ui(window: &gtk::Window, app: &gtk::Application) {
     window.show_all();
     window.activate();
     app.connect_activate(move |_| ());
-}
-
-fn restore_window_geometry(window: &gtk::Window, settings: &Settings) {
-    let top = settings.get_int("persist-window-geometry-top");
-    let left = settings.get_int("persist-window-geometry-left");
-    let width = settings.get_int("persist-window-geometry-width");
-    let height = settings.get_int("persist-window-geometry-height");
-    let is_maximized = settings.get_boolean("persist-window-geometry-maximized");
-
-    if width > 0 && height > 0 {
-        window.resize(width, height);
-    }
-
-    if is_maximized {
-        window.maximize();
-    }
-
-    else if top > 0 && left > 0 {
-        window.move_(left, top);
-    }
-}
-
-fn store_window_geometry(window: &gtk::Window, settings: &Settings) {
-    let position = window.get_position();
-    let size = window.get_size();
-
-    settings.set_int("persist-window-geometry-left", position.0);
-    settings.set_int("persist-window-geometry-top", position.1);
-    settings.set_int("persist-window-geometry-width", size.0);
-    settings.set_int("persist-window-geometry-height", size.1);
-    settings.set_boolean("persist-window-geometry-maximized", window.is_maximized());
 }

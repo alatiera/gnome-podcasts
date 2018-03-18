@@ -67,6 +67,7 @@ pub mod stacks;
 pub mod headerbar;
 pub mod app;
 
+pub mod settings;
 pub mod utils;
 pub mod manager;
 pub mod static_resource;
