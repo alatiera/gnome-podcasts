@@ -40,7 +40,6 @@ Tobias Bernard
         <property name="name">scrolled_window</property>
         <property name="visible">True</property>
         <property name="can_focus">True</property>
-        <property name="shadow_type">in</property>
         <child>
           <object class="GtkViewport">
             <property name="visible">True</property>
