@@ -33,7 +33,7 @@
     },
     "modules" : [
         {
-            "name" : "Hammond",
+            "name" : "hammond",
             "buildsystem" : "meson",
             "sources" : [
                 {
