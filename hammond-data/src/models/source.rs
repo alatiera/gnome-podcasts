@@ -6,7 +6,7 @@ use url::Url;
 use hyper::{Client, Method, Request, Response, StatusCode, Uri};
 use hyper::client::HttpConnector;
 use hyper::header::{ETag, EntityTag, HttpDate, IfModifiedSince, IfNoneMatch, LastModified,
-                    Location};
+                    Location, UserAgent};
 use hyper_tls::HttpsConnector;
 
 // use futures::future::ok;
@@ -252,6 +252,12 @@ impl Source {
         // FIXME: remove unwrap somehow
         let uri = Uri::from_str(self.uri()).unwrap();
         let mut req = Request::new(Method::Get, uri);
+
+        // Set the user agent as a fix for issue #53
+        // TODO: keep this in sync with tor-browser releases
+        req.headers_mut().set(UserAgent::new(
+            "Mozilla/5.0 (Windows NT 6.1; rv:52.0) Gecko/20100101 Firefox/52.0",
+        ));
 
         if !ignore_etags {
             if let Some(foo) = self.http_etag() {
