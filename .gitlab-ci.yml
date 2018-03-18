@@ -33,11 +33,11 @@ stable:test:
 #     <<: *cargo_test
 
 flatpak:
-    image: flatpak/flatpak-builder:gnome-3-28
+    image: registry.gitlab.com/alatiera/gnome-nightly-oci/rust-bundle:latest
     stage: test
     script:
         - flatpak-builder --force-clean --repo=repo app org.gnome.Hammond.json
-        - flatpak build-bundle repo hammond-dev.flatpak org.gnome.hammond
+        - flatpak build-bundle repo hammond-dev.flatpak org.gnome.Hammond
     artifacts:
         paths:
             - hammond-dev.flatpak
