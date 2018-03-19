@@ -48,6 +48,11 @@ stable:test:
 flatpak:
     image: registry.gitlab.com/alatiera/gnome-nightly-oci/rust-bundle:latest
     stage: test
+    before_script:
+        # https://gitlab.gnome.org/alatiera/Hammond/issues/55
+        - dnf install -y glib2-devel
+        # Force regeneration of gresources regardless of artifacts chage
+        - cd hammond-gtk/resources/ && glib-compile-resources --generate resources.xml && cd ../../
     script:
         # Build the flatpak repo
         - flatpak-builder --stop-at=hammond app org.gnome.Hammond.json
@@ -59,8 +64,8 @@ flatpak:
         # Create a flatpak bundle
         - flatpak build-bundle repo hammond-dev.flatpak org.gnome.Hammond
         # Run the tests
-        # - flatpak-builder --run app org.gnome.Hammond.json ./scripts/release_tests.sh
-        # - flatpak-builder --run app org.gnome.Hammond.json ninja -C _build test
+        - flatpak-builder --run app org.gnome.Hammond.json cargo test --release -- --test-threads=1
+        - flatpak-builder --run app org.gnome.Hammond.json cargo test --release -- --test-threads=1 --ignored
 
     artifacts:
         paths:
