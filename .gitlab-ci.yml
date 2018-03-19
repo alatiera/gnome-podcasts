@@ -1,4 +1,5 @@
 stages:
+  - flatpak
   - test
   - lint
 
@@ -39,15 +40,21 @@ stable:test:
     # https://hub.docker.com/_/rust/
     image: "rust"
     <<: *cargo_test
+    only:
+        - schedule
+        - web
 
-# nightly:test:
+nightly:test:
     # https://hub.docker.com/r/rustlang/rust/
-#     image: "rustlang/rust:nightly"
-#     <<: *cargo_test
+    image: "rustlang/rust:nightly"
+    <<: *cargo_test
+    only:
+        - schedule
+        - web
 
 flatpak:
     image: registry.gitlab.com/alatiera/gnome-nightly-oci/rust-bundle:latest
-    stage: test
+    stage: flatpak
     before_script:
         # https://gitlab.gnome.org/alatiera/Hammond/issues/55
         - dnf install -y glib2-devel
@@ -93,12 +100,13 @@ rustfmt:
 
 # Configure and run clippy on nightly
 # Only fails on errors atm.
-# clippy:
-#   image: "rustlang/rust:nightly"
-#   stage: lint
-#   script:
-#   - rustc --version && cargo --version
-#   - cargo install clippy --force
-#   # Force regeneration of gresources regardless of artifacts chage
-#   - cd hammond-gtk/resources/ && glib-compile-resources --generate resources.xml && cd ../../
-#   - cargo clippy --all
+clippy:
+    image: "rustlang/rust:nightly"
+    stage: lint
+    script:
+        - rustc --version && cargo --version
+        - cargo install clippy --force
+        # Force regeneration of gresources regardless of artifacts chage
+        - cd hammond-gtk/resources/ && glib-compile-resources --generate resources.xml && cd ../../
+        - cargo clippy --all
+    when: manual
