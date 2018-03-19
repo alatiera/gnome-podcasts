@@ -3,11 +3,7 @@ target/
 Cargo.lock
 .vscode
 *.ui~
-*.gresource
+resources.gresource
 _build
 vendor/
-.flatpak-builder/
-flatpak-build/
-repo/
-Makefile
 .criterion
