@@ -15,21 +15,9 @@
 
 ## Quick start
 
-As of January 19 2018, Hammond can be built and run with [Gnome Builder](https://wiki.gnome.org/Apps/Builder) Nightly
-and any Stable release of Gnome Builder >= 3.28.0.
+Hammond can be built and run with [Gnome Builder](https://wiki.gnome.org/Apps/Builder) >= 3.28.
 
 Get Builder [here](https://wiki.gnome.org/Apps/Builder/Downloads)
-
-Manually:
-
-The following steps assume you have a working installation of rustc and cargo.
-If you dont take a look at [rustup.rs](https://rustup.rs/)
-
-```sh
-git clone https://gitlab.gnome.org/alatiera/hammond.git
-cd Hammond/
-cargo run -p hammond-gtk --release
-```
 
 ## Broken Feeds
 
@@ -44,6 +32,8 @@ want to discuss design or simply hang out, please join us in [#hammond on irc.gn
 Note:
 
 There isn't much documentation yet, so you will probably have question about parts of the Code.
+
+## Building
 
 ### Flatpak
 
@@ -66,7 +56,7 @@ flatpak-builder --user --repo=repo hammond org.gnome.Hammond.json --force-clean
 flatpak build-bundle repo hammond org.gnome.Hammond
 ```
 
-## Building from soure
+### Building from soure
 
 ```sh
 git clone https://gitlab.gnome.org/alatiera/hammond.git
@@ -79,7 +69,7 @@ make && sudo make install
 
 You can run `sudo make uninstall` for removal
 
-### Dependencies
+#### Dependencies
 
 * Rust stable 1.22 or later.
 * Gtk+ 3.22 or later
@@ -99,13 +89,8 @@ apt-get install -yqq --no-install-recommends libgtk-3-dev meson
 dnf install -y gtk3-devel glib2-devel openssl-devel sqlite-devel meson
 ```
 
-If you happen to build it on other distributions please let me know the names of the corresponding libraries. Feel free to open a PR or an Issue to note it.
-
-```sh
-git clone https://gitlab.gnome.org/alatiera/Hammond.git
-cd Hammond/
-cargo build --all
-```
+If you happen to build it on other distributions please let me know the names 
+of the corresponding libraries. Feel free to open a PR or an Issue to note it.
 
 ## Contributing
 
