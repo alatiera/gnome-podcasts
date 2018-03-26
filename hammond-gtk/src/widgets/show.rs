@@ -7,7 +7,7 @@ use open;
 
 use hammond_data::Podcast;
 use hammond_data::dbqueries;
-use hammond_data::utils::{delete_show, replace_extra_spaces};
+use hammond_data::utils::{replace_extra_spaces};
 
 use app::Action;
 use utils::get_pixbuf_from_path;
@@ -15,7 +15,6 @@ use widgets::episode::episodes_listbox;
 
 use std::sync::Arc;
 use std::sync::mpsc::Sender;
-use std::thread;
 
 #[derive(Debug, Clone)]
 pub struct ShowWidget {
@@ -141,13 +140,7 @@ fn on_unsub_button_clicked(
     // hack to get away without properly checking for none.
     // if pressed twice would panic.
     unsub_button.hide();
-    // Spawn a thread so it won't block the ui.
-    thread::spawn(move || {
-        if let Err(err) = delete_show(&pd) {
-            error!("Something went wrong trying to remove {}", pd.title());
-            error!("Error: {}", err);
-        }
-    });
+    sender.send(Action::RemoveShow(pd))?;
 
     sender.send(Action::HeaderBarNormal)?;
     sender.send(Action::ShowShowsAnimated)?;
