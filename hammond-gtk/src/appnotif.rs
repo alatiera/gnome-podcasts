@@ -35,9 +35,15 @@ impl Default for InAppNotification {
 }
 
 impl InAppNotification {
-    pub fn new<F>(text: String, mut callback: F, sender: Sender<Action>) -> Self
+    pub fn new<F, U>(
+        text: String,
+        mut callback: F,
+        undo_callback: U,
+        sender: Sender<Action>,
+    ) -> Self
     where
         F: FnMut() -> glib::Continue + 'static,
+        U: Fn() + 'static,
     {
         let notif = InAppNotification::default();
         notif.text.set_text(&text);
@@ -57,14 +63,13 @@ impl InAppNotification {
                 glib::source::source_remove(id);
             }
 
+            undo_callback();
+
             // Hide the notification
             revealer.set_reveal_child(false);
             // Refresh the widget if visible
             if let Err(err) = sender.send(Action::RefreshWidgetIfVis) {
-                error!(
-                    "Something went horribly wrong with the Action channel: {}",
-                    err
-                )
+                error!("Action channel blew up: {}", err)
             }
         });
 
