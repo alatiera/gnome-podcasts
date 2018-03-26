@@ -6,7 +6,7 @@ use hammond_data::Podcast;
 use hammond_data::dbqueries;
 
 use app::Action;
-use utils::get_pixbuf_from_path;
+use utils::{get_ignored_shows, get_pixbuf_from_path};
 
 use std::sync::Arc;
 use std::sync::mpsc::Sender;
@@ -54,7 +54,8 @@ impl ShowsPopulated {
     }
 
     fn populate_flowbox(&self) -> Result<(), Error> {
-        let podcasts = dbqueries::get_podcasts()?;
+        let ignore = get_ignored_shows()?;
+        let podcasts = dbqueries::get_podcasts_filter(&ignore)?;
 
         podcasts.into_iter().map(Arc::new).for_each(|parent| {
             let flowbox_child = ShowsChild::new(parent);

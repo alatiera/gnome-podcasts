@@ -7,7 +7,7 @@ use hammond_data::EpisodeWidgetQuery;
 use hammond_data::dbqueries;
 
 use app::Action;
-use utils::get_pixbuf_from_path;
+use utils::{get_ignored_shows, get_pixbuf_from_path};
 use widgets::EpisodeWidget;
 
 use std::sync::mpsc::Sender;
@@ -77,7 +77,8 @@ impl Default for EpisodesView {
 impl EpisodesView {
     pub fn new(sender: Sender<Action>) -> Result<EpisodesView, Error> {
         let view = EpisodesView::default();
-        let episodes = dbqueries::get_episodes_widgets_filter_limit(&[], 50)?;
+        let ignore = get_ignored_shows()?;
+        let episodes = dbqueries::get_episodes_widgets_filter_limit(&ignore, 50)?;
         let now_utc = Utc::now();
 
         episodes.into_iter().for_each(|ep| {

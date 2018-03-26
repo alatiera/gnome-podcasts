@@ -17,8 +17,8 @@ use widgets::mark_all_watched;
 
 use std::sync::Arc;
 use std::sync::mpsc::{channel, Receiver, Sender};
-use std::time::Duration;
 use std::thread;
+use std::time::Duration;
 
 #[derive(Clone, Debug)]
 pub enum Action {

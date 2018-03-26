@@ -7,7 +7,7 @@ use open;
 
 use hammond_data::Podcast;
 use hammond_data::dbqueries;
-use hammond_data::utils::{replace_extra_spaces};
+use hammond_data::utils::replace_extra_spaces;
 
 use app::Action;
 use utils::get_pixbuf_from_path;
