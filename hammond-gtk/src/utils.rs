@@ -15,8 +15,9 @@ use hammond_data::pipeline;
 use hammond_data::utils::checkup;
 use hammond_downloader::downloader;
 
-use std::collections::HashMap;
+use std::collections::{HashMap, HashSet};
 use std::sync::{Mutex, RwLock};
+use std::sync::Arc;
 use std::sync::mpsc::Sender;
 use std::thread;
 
@@ -24,6 +25,28 @@ use app::Action;
 
 use chrono::Duration;
 use chrono::prelude::*;
+
+lazy_static! {
+    static ref IGNORESHOWS: Arc<Mutex<HashSet<i32>>> = Arc::new(Mutex::new(HashSet::new()));
+}
+
+pub fn ignore_show(id: i32) -> Result<(), Error> {
+    let mut guard = IGNORESHOWS.lock().map_err(|err| format_err!("{}", err))?;
+    guard.insert(id);
+    Ok(())
+}
+
+pub fn uningore_show(id: i32) -> Result<(), Error> {
+    let mut guard = IGNORESHOWS.lock().map_err(|err| format_err!("{}", err))?;
+    guard.remove(&id);
+    Ok(())
+}
+
+pub fn get_ignored_shows() -> Result<Vec<i32>, Error> {
+    let guard = IGNORESHOWS.lock().map_err(|err| format_err!("{}", err))?;
+    let keys = guard.iter().cloned().collect::<Vec<_>>();
+    Ok(keys)
+}
 
 pub fn cleanup(cleanup_date: DateTime<Utc>) {
     if let Err(err) = checkup(cleanup_date) {

@@ -7,6 +7,7 @@ use gtk::SettingsExt as GtkSettingsExt;
 use gtk::prelude::*;
 
 use hammond_data::{Podcast, Source};
+use hammond_data::utils::delete_show;
 
 use appnotif::*;
 use headerbar::Header;
@@ -16,6 +17,7 @@ use widgets::mark_all_watched;
 
 use std::sync::Arc;
 use std::sync::mpsc::{channel, Receiver, Sender};
+use std::thread;
 use std::time::Duration;
 
 #[derive(Clone, Debug)]
@@ -36,6 +38,7 @@ pub enum Action {
     HeaderBarShowUpdateIndicator,
     HeaderBarHideUpdateIndicator,
     MarkAllPlayerNotification(Arc<Podcast>),
+    RemoveShow(Arc<Podcast>),
 }
 
 #[derive(Debug)]
@@ -192,7 +195,53 @@ impl App {
                     });
 
                     let text = "Marked all episodes as listened";
-                    let notif = InAppNotification::new(text.into(), callback, sender.clone());
+                    let notif =
+                        InAppNotification::new(text.into(), callback, || {}, sender.clone());
+                    overlay.add_overlay(&notif.revealer);
+                    // We need to display the notification after the widget is added to the overlay
+                    // so there will be a nice animation.
+                    notif.show();
+                }
+                Ok(Action::RemoveShow(pd)) => {
+                    if let Err(err) = utils::ignore_show(pd.id()) {
+                        error!("Could not insert {} to the ignore list.", pd.title());
+                        error!("Error: {}", err);
+                    }
+
+                    let callback = clone!(pd => move || {
+                        // Spawn a thread so it won't block the ui.
+                        thread::spawn(clone!(pd => move || {
+                            if let Err(err) = delete_show(&pd) {
+                                error!("Something went wrong trying to remove {}", pd.title());
+                                error!("Error: {}", err);
+                            }
+                        }));
+                        glib::Continue(false)
+                    });
+
+                    let undo_callback = clone!(pd, sender => move || {
+                        if let Err(err) = utils::uningore_show(pd.id()) {
+                            error!("Could not insert {} to the ignore list.", pd.title());
+                            error!("Error: {}", err);
+                        }
+
+
+                        if let Err(err) = sender.send(Action::RefreshShowsView) {
+                            error!("Action channl blew up, error {}", err)
+                        }
+
+                        if let Err(err) = sender.send(Action::RefreshEpisodesView) {
+                            error!("Action channl blew up, error {}", err)
+                        }
+                    });
+
+                    let text = format!("Unsubscribed from {}", pd.title());
+                    let notif = InAppNotification::new(
+                        text.into(),
+                        callback,
+                        undo_callback,
+                        sender.clone(),
+                    );
                     overlay.add_overlay(&notif.revealer);
                     // We need to display the notification after the widget is added to the overlay
                     // so there will be a nice animation.

@@ -33,6 +33,18 @@ pub fn get_podcasts() -> Result<Vec<Podcast>, DataError> {
         .map_err(From::from)
 }
 
+pub fn get_podcasts_filter(filter_ids: &[i32]) -> Result<Vec<Podcast>, DataError> {
+    use schema::podcast::dsl::*;
+    let db = connection();
+    let con = db.get()?;
+
+    podcast
+        .order(title.asc())
+        .filter(id.ne_any(filter_ids))
+        .load::<Podcast>(&con)
+        .map_err(From::from)
+}
+
 pub fn get_episodes() -> Result<Vec<Episode>, DataError> {
     use schema::episode::dsl::*;
     let db = connection();
@@ -102,7 +114,10 @@ pub fn get_episode_local_uri_from_id(ep_id: i32) -> Result<Option<String>, DataE
         .map_err(From::from)
 }
 
-pub fn get_episodes_widgets_with_limit(limit: u32) -> Result<Vec<EpisodeWidgetQuery>, DataError> {
+pub fn get_episodes_widgets_filter_limit(
+    filter_ids: &[i32],
+    limit: u32,
+) -> Result<Vec<EpisodeWidgetQuery>, DataError> {
     use schema::episode;
     let db = connection();
     let con = db.get()?;
@@ -120,6 +135,7 @@ pub fn get_episodes_widgets_with_limit(limit: u32) -> Result<Vec<EpisodeWidgetQu
             episode::podcast_id,
         ))
         .order(episode::epoch.desc())
+        .filter(episode::podcast_id.ne_any(filter_ids))
         .limit(i64::from(limit))
         .load::<EpisodeWidgetQuery>(&con)
         .map_err(From::from)
