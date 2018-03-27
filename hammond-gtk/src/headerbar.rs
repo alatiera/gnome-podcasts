@@ -226,19 +226,20 @@ fn about_dialog(window: &gtk::Window) {
         "James Wykeham-Martin",
         "Jordan Petridis",
         "Julian Sparber",
+        "Rowan Lewis",
     ];
 
     let dialog = gtk::AboutDialog::new();
     // Waiting for a logo.
     // dialog.set_logo_icon_name("org.gnome.Hammond");
     dialog.set_logo_icon_name("multimedia-player");
-    dialog.set_comments("A Podcast Client for the GNOME Desktop.");
+    dialog.set_comments("Podcast Client for the GNOME Desktop.");
     dialog.set_copyright("© 2017, 2018 Jordan Petridis");
     dialog.set_license_type(gtk::License::Gpl30);
     dialog.set_modal(true);
     // TODO: make it show it fetches the commit hash from which it was built
     // and the version number is kept in sync automaticly
-    dialog.set_version("0.3");
+    dialog.set_version("0.3.1");
     dialog.set_program_name("Hammond");
     // TODO: Need a wiki page first.
     // dialog.set_website("https://wiki.gnome.org/Design/Apps/Potential/Podcasts");
