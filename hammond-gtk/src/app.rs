@@ -209,6 +209,11 @@ impl App {
                     }
 
                     let callback = clone!(pd => move || {
+                        if let Err(err) = utils::uningore_show(pd.id()) {
+                            error!("Could not insert {} to the ignore list.", pd.title());
+                            error!("Error: {}", err);
+                        }
+
                         // Spawn a thread so it won't block the ui.
                         thread::spawn(clone!(pd => move || {
                             if let Err(err) = delete_show(&pd) {
