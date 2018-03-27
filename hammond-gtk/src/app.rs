@@ -196,13 +196,9 @@ impl App {
                         glib::Continue(false)
                     });
 
-                    let text = "Marked all episodes as listened";
-                    let notif =
-                        InAppNotification::new(text.into(), callback, || {}, sender.clone());
-                    overlay.add_overlay(&notif.revealer);
-                    // We need to display the notification after the widget is added to the overlay
-                    // so there will be a nice animation.
-                    notif.show();
+                    let text = "Marked all episodes as listened".into();
+                    let notif = InAppNotification::new(text, callback, || {}, sender.clone());
+                    notif.show(&overlay);
                 }
                 Ok(Action::RemoveShow(pd)) => {
                     let text = format!("Unsubscribed from {}", pd.title());
@@ -244,10 +240,7 @@ impl App {
 
                     let sender_ = sender.clone();
                     let notif = InAppNotification::new(text, callback, undo_callback, sender_);
-                    overlay.add_overlay(&notif.revealer);
-                    // We need to display the notification after the widget is added to the overlay
-                    // so there will be a nice animation.
-                    notif.show();
+                    notif.show(&overlay);
                 }
                 Err(_) => (),
             }

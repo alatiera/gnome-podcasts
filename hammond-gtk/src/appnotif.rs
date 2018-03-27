@@ -10,7 +10,7 @@ use std::sync::mpsc::Sender;
 
 #[derive(Debug, Clone)]
 pub struct InAppNotification {
-    pub revealer: gtk::Revealer,
+    revealer: gtk::Revealer,
     text: gtk::Label,
     undo: gtk::Button,
     close: gtk::Button,
@@ -83,10 +83,13 @@ impl InAppNotification {
     }
 
     // This is a seperate method cause in order to get a nice animation
-    // the revealer should be attached to something that will display it.
-    // Previouslyi we where doing it in the constructor, which had the result
+    // the revealer should be attached to something that displays it.
+    // Previously we where doing it in the constructor, which had the result
     // of the animation being skipped cause there was no parent widget to display it.
-    pub fn show(&self) {
+    pub fn show(&self, overlay: &gtk::Overlay) {
+        overlay.add_overlay(&self.revealer);
+        // We need to display the notification after the widget is added to the overlay
+        // so there will be a nice animation.
         self.revealer.set_reveal_child(true);
     }
 }
