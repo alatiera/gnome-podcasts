@@ -6,6 +6,8 @@ use gtk;
 use gtk::SettingsExt as GtkSettingsExt;
 use gtk::prelude::*;
 
+use failure::Error;
+
 use hammond_data::{Podcast, Source};
 use hammond_data::utils::delete_show;
 
@@ -203,6 +205,8 @@ impl App {
                     notif.show();
                 }
                 Ok(Action::RemoveShow(pd)) => {
+                    let text = format!("Unsubscribed from {}", pd.title());
+
                     if let Err(err) = utils::ignore_show(pd.id()) {
                         error!("Could not insert {} to the ignore list.", pd.title());
                         error!("Error: {}", err);
@@ -210,7 +214,7 @@ impl App {
 
                     let callback = clone!(pd => move || {
                         if let Err(err) = utils::uningore_show(pd.id()) {
-                            error!("Could not insert {} to the ignore list.", pd.title());
+                            error!("Could not remove {} from the ignore list.", pd.title());
                             error!("Error: {}", err);
                         }
 
@@ -224,29 +228,22 @@ impl App {
                         glib::Continue(false)
                     });
 
-                    let undo_callback = clone!(pd, sender => move || {
-                        if let Err(err) = utils::uningore_show(pd.id()) {
-                            error!("Could not insert {} to the ignore list.", pd.title());
-                            error!("Error: {}", err);
+                    let sender_ = sender.clone();
+                    let undo_wrap = move || -> Result<(), Error> {
+                        utils::uningore_show(pd.id())?;
+                        sender_.send(Action::RefreshShowsView)?;
+                        sender_.send(Action::RefreshEpisodesView)?;
+                        Ok(())
+                    };
+
+                    let undo_callback = move || {
+                        if let Err(err) = undo_wrap() {
+                            error!("{}", err)
                         }
+                    };
 
-
-                        if let Err(err) = sender.send(Action::RefreshShowsView) {
-                            error!("Action channl blew up, error {}", err)
-                        }
-
-                        if let Err(err) = sender.send(Action::RefreshEpisodesView) {
-                            error!("Action channl blew up, error {}", err)
-                        }
-                    });
-
-                    let text = format!("Unsubscribed from {}", pd.title());
-                    let notif = InAppNotification::new(
-                        text.into(),
-                        callback,
-                        undo_callback,
-                        sender.clone(),
-                    );
+                    let sender_ = sender.clone();
+                    let notif = InAppNotification::new(text, callback, undo_callback, sender_);
                     overlay.add_overlay(&notif.revealer);
                     // We need to display the notification after the widget is added to the overlay
                     // so there will be a nice animation.
