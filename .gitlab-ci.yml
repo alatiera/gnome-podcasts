@@ -1,5 +1,4 @@
 stages:
-  - flatpak
   - test
   - lint
 
@@ -36,15 +35,12 @@ stages:
             - target/
             - .cargo_cache/
 
-stable:test:
+rust:stable:
     # https://hub.docker.com/_/rust/
     image: "rust"
     <<: *cargo_test
-    only:
-        - schedule
-        - web
 
-nightly:test:
+rust:nightly:
     # https://hub.docker.com/r/rustlang/rust/
     image: "rustlang/rust:nightly"
     <<: *cargo_test
@@ -54,7 +50,7 @@ nightly:test:
 
 flatpak:
     image: registry.gitlab.com/alatiera/gnome-nightly-oci/rust-bundle:latest
-    stage: flatpak
+    stage: test
     script:
         - flatpak-builder --stop-at=hammond app org.gnome.Hammond.json
         # https://gitlab.gnome.org/alatiera/Hammond/issues/55
@@ -70,8 +66,8 @@ flatpak:
         # Create a flatpak bundle
         - flatpak build-bundle repo hammond-dev.flatpak org.gnome.Hammond
         # Run the tests
-        - flatpak-builder --run app org.gnome.Hammond.json cargo test --release -- --test-threads=1
-        - flatpak-builder --run app org.gnome.Hammond.json cargo test --release -- --test-threads=1 --ignored
+        # - flatpak-builder --run app org.gnome.Hammond.json cargo test -- --test-threads=1
+        # - flatpak-builder --run app org.gnome.Hammond.json cargo test -- --test-threads=1 --ignored
 
     artifacts:
         paths:
