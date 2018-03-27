@@ -13,6 +13,7 @@ use hammond_data::utils::delete_show;
 
 use appnotif::*;
 use headerbar::Header;
+use settings::WindowGeometry;
 use stacks::Content;
 use utils;
 use widgets::mark_all_watched;
@@ -57,6 +58,7 @@ pub struct App {
 
 impl App {
     pub fn new() -> App {
+        let settings = Settings::new("org.gnome.Hammond");
         let application = gtk::Application::new("org.gnome.Hammond", ApplicationFlags::empty())
             .expect("Application Initialization failed...");
 
@@ -66,10 +68,14 @@ impl App {
 
         // Create the main window
         let window = gtk::Window::new(gtk::WindowType::Toplevel);
-        window.set_default_size(860, 640);
+
         window.set_title("Hammond");
+
         let app_clone = application.clone();
+        let window_clone = window.clone();
+        let settings_clone = settings.clone();
         window.connect_delete_event(move |_, _| {
+            WindowGeometry::from_window(&window_clone).write(&settings_clone);
             app_clone.quit();
             Inhibit(false)
         });
@@ -89,8 +95,6 @@ impl App {
 
         // Add the overlay to the main window
         window.add(&overlay);
-
-        let settings = Settings::new("org.gnome.Hammond");
 
         App {
             app_instance: application,
@@ -149,7 +153,10 @@ impl App {
     }
 
     pub fn run(self) {
+        WindowGeometry::from_settings(&self.settings).apply(&self.window);
+
         let window = self.window.clone();
+
         self.app_instance.connect_startup(move |app| {
             build_ui(&window, app);
         });

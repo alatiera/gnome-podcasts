@@ -10,6 +10,27 @@
     </enum>
 
     <schema path="/org/gnome/hammond/" id="org.gnome.Hammond">
+        <key name="persist-window-geometry-top" type="i">
+            <default>-1</default>
+            <summary>Top position of the last open main window</summary>
+        </key>
+        <key name="persist-window-geometry-left" type="i">
+            <default>-1</default>
+            <summary>Left position of the last open main window</summary>
+        </key>
+        <key name="persist-window-geometry-height" type="i">
+            <default>640</default>
+            <summary>Height of the last open main window</summary>
+        </key>
+        <key name="persist-window-geometry-width" type="i">
+            <default>860</default>
+            <summary>Width of the last open main window</summary>
+        </key>
+        <key name="persist-window-geometry-maximized" type="b">
+            <default>false</default>
+            <summary>Maximized state of the last open main window</summary>
+        </key>
+
         <key name="dark-theme" type="b">
             <default>false</default>
             <summary>Enable or disable dark theme</summary>
