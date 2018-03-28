@@ -354,15 +354,19 @@ pub fn episodes_listbox(pd: &Podcast, sender: Sender<Action>) -> Result<gtk::Lis
     let episodes = dbqueries::get_pd_episodeswidgets(pd)?;
 
     let list = gtk::ListBox::new();
+    list.set_visible(true);
+    list.set_selection_mode(gtk::SelectionMode::None);
+
+    if episodes.is_empty() {
+        let builder = gtk::Builder::new_from_resource("/org/gnome/hammond/gtk/empty_show.ui");
+        let container: gtk::Box = builder.get_object("empty_show").unwrap();
+        list.add(&container);
+        return Ok(list);
+    }
 
     episodes.into_iter().for_each(|ep| {
         let widget = EpisodeWidget::new(ep, sender.clone());
         list.add(&widget.container);
     });
-
-    list.set_vexpand(false);
-    list.set_hexpand(false);
-    list.set_visible(true);
-    list.set_selection_mode(gtk::SelectionMode::None);
     Ok(list)
 }
