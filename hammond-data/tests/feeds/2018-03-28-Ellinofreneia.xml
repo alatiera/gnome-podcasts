@@ -1,0 +1,73 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd" version="2.0">
+  <channel>
+    <title>Ελληνοφρένεια</title>
+    <link>https://ellinofreneia.sealabs.net/feed.rss</link>
+    <description>Ανεπίσημο feed της Ελληνοφρένειας</description>
+    <atom:link href="https://ellinofreneia.sealabs.net/feed.rss" rel="self"/>
+    <copyright>All rights reversed by http://ellinofreneianet.gr/</copyright>
+    <docs>http://www.rssboard.org/rss-specification</docs>
+    <generator>python-feedgen</generator>
+    <image>
+      <url>https://ellinofreneia.sealabs.net/logo.png</url>
+      <title>Ελληνοφρένεια</title>
+      <link>https://ellinofreneia.sealabs.net/feed.rss</link>
+    </image>
+    <language>el</language>
+    <lastBuildDate>Tue, 27 Mar 2018 13:00:56 +0000</lastBuildDate>
+    <pubDate>Tue, 27 Mar 2018 13:00:56 +0000</pubDate>
+    <itunes:explicit>no</itunes:explicit>
+    <itunes:owner>
+      <itunes:name>Τζένη Μπώτση</itunes:name>
+      <itunes:email>tbotsi@example.com</itunes:email>
+    </itunes:owner>
+    <item>
+      <title>Η ρ_φ Ελληνοφρένεια της 27ης Μαρτίου 2018</title>
+      <guid isPermaLink="false">https://ellinofreneia.sealabs.net/audio/%CE%97%20%CF%81_%CF%86%20%CE%95%CE%BB%CE%BB%CE%B7%CE%BD%CE%BF%CF%86%CF%81%CE%AD%CE%BD%CE%B5%CE%B9%CE%B1%20%CF%84%CE%B7%CF%82%2027%CE%B7%CF%82%20%CE%9C%CE%B1%CF%81%CF%84%CE%AF%CE%BF%CF%85%202018.mp3</guid>
+      <enclosure url="https://ellinofreneia.sealabs.net/audio/%CE%97%20%CF%81_%CF%86%20%CE%95%CE%BB%CE%BB%CE%B7%CE%BD%CE%BF%CF%86%CF%81%CE%AD%CE%BD%CE%B5%CE%B9%CE%B1%20%CF%84%CE%B7%CF%82%2027%CE%B7%CF%82%20%CE%9C%CE%B1%CF%81%CF%84%CE%AF%CE%BF%CF%85%202018.mp3" length="36087430" type="audio/mpeg"/>
+      <pubDate>Tue, 27 Mar 2018 11:11:02 +0000</pubDate>
+      <itunes:image href="https://ellinofreneia.sealabs.net/audio/%CE%97%20%CF%81_%CF%86%20%CE%95%CE%BB%CE%BB%CE%B7%CE%BD%CE%BF%CF%86%CF%81%CE%AD%CE%BD%CE%B5%CE%B9%CE%B1%20%CF%84%CE%B7%CF%82%2027%CE%B7%CF%82%20%CE%9C%CE%B1%CF%81%CF%84%CE%AF%CE%BF%CF%85%202018.jpg"/>
+      <itunes:duration>2257</itunes:duration>
+    </item>
+    <item>
+      <title>Η ρ_φ Ελληνοφρένεια της 26ης Μαρτίου 2018</title>
+      <guid isPermaLink="false">https://ellinofreneia.sealabs.net/audio/%CE%97%20%CF%81_%CF%86%20%CE%95%CE%BB%CE%BB%CE%B7%CE%BD%CE%BF%CF%86%CF%81%CE%AD%CE%BD%CE%B5%CE%B9%CE%B1%20%CF%84%CE%B7%CF%82%2026%CE%B7%CF%82%20%CE%9C%CE%B1%CF%81%CF%84%CE%AF%CE%BF%CF%85%202018.mp3</guid>
+      <enclosure url="https://ellinofreneia.sealabs.net/audio/%CE%97%20%CF%81_%CF%86%20%CE%95%CE%BB%CE%BB%CE%B7%CE%BD%CE%BF%CF%86%CF%81%CE%AD%CE%BD%CE%B5%CE%B9%CE%B1%20%CF%84%CE%B7%CF%82%2026%CE%B7%CF%82%20%CE%9C%CE%B1%CF%81%CF%84%CE%AF%CE%BF%CF%85%202018.mp3" length="34974405" type="audio/mpeg"/>
+      <pubDate>Mon, 26 Mar 2018 11:16:17 +0000</pubDate>
+      <itunes:image href="https://ellinofreneia.sealabs.net/audio/%CE%97%20%CF%81_%CF%86%20%CE%95%CE%BB%CE%BB%CE%B7%CE%BD%CE%BF%CF%86%CF%81%CE%AD%CE%BD%CE%B5%CE%B9%CE%B1%20%CF%84%CE%B7%CF%82%2026%CE%B7%CF%82%20%CE%9C%CE%B1%CF%81%CF%84%CE%AF%CE%BF%CF%85%202018.jpg"/>
+      <itunes:duration>2188</itunes:duration>
+    </item>
+    <item>
+      <title>Η ρ_φ Ελληνοφρένεια της 23ης Μαρτίου 2018</title>
+      <guid isPermaLink="false">https://ellinofreneia.sealabs.net/audio/%CE%97%20%CF%81_%CF%86%20%CE%95%CE%BB%CE%BB%CE%B7%CE%BD%CE%BF%CF%86%CF%81%CE%AD%CE%BD%CE%B5%CE%B9%CE%B1%20%CF%84%CE%B7%CF%82%2023%CE%B7%CF%82%20%CE%9C%CE%B1%CF%81%CF%84%CE%AF%CE%BF%CF%85%202018.mp3</guid>
+      <enclosure url="https://ellinofreneia.sealabs.net/audio/%CE%97%20%CF%81_%CF%86%20%CE%95%CE%BB%CE%BB%CE%B7%CE%BD%CE%BF%CF%86%CF%81%CE%AD%CE%BD%CE%B5%CE%B9%CE%B1%20%CF%84%CE%B7%CF%82%2023%CE%B7%CF%82%20%CE%9C%CE%B1%CF%81%CF%84%CE%AF%CE%BF%CF%85%202018.mp3" length="38491114" type="audio/mpeg"/>
+      <pubDate>Fri, 23 Mar 2018 12:11:08 +0000</pubDate>
+      <itunes:image href="https://ellinofreneia.sealabs.net/audio/%CE%97%20%CF%81_%CF%86%20%CE%95%CE%BB%CE%BB%CE%B7%CE%BD%CE%BF%CF%86%CF%81%CE%AD%CE%BD%CE%B5%CE%B9%CE%B1%20%CF%84%CE%B7%CF%82%2023%CE%B7%CF%82%20%CE%9C%CE%B1%CF%81%CF%84%CE%AF%CE%BF%CF%85%202018.jpg"/>
+      <itunes:duration>2408</itunes:duration>
+    </item>
+    <item>
+      <title>Η ρ_φ Ελληνοφρένεια της 22ας Μαρτίου 2018</title>
+      <guid isPermaLink="false">https://ellinofreneia.sealabs.net/audio/%CE%97%20%CF%81_%CF%86%20%CE%95%CE%BB%CE%BB%CE%B7%CE%BD%CE%BF%CF%86%CF%81%CE%AD%CE%BD%CE%B5%CE%B9%CE%B1%20%CF%84%CE%B7%CF%82%2022%CE%B1%CF%82%20%CE%9C%CE%B1%CF%81%CF%84%CE%AF%CE%BF%CF%85%202018.mp3</guid>
+      <enclosure url="https://ellinofreneia.sealabs.net/audio/%CE%97%20%CF%81_%CF%86%20%CE%95%CE%BB%CE%BB%CE%B7%CE%BD%CE%BF%CF%86%CF%81%CE%AD%CE%BD%CE%B5%CE%B9%CE%B1%20%CF%84%CE%B7%CF%82%2022%CE%B1%CF%82%20%CE%9C%CE%B1%CF%81%CF%84%CE%AF%CE%BF%CF%85%202018.mp3" length="35607613" type="audio/mpeg"/>
+      <pubDate>Thu, 22 Mar 2018 12:31:20 +0000</pubDate>
+      <itunes:image href="https://ellinofreneia.sealabs.net/audio/%CE%97%20%CF%81_%CF%86%20%CE%95%CE%BB%CE%BB%CE%B7%CE%BD%CE%BF%CF%86%CF%81%CE%AD%CE%BD%CE%B5%CE%B9%CE%B1%20%CF%84%CE%B7%CF%82%2022%CE%B1%CF%82%20%CE%9C%CE%B1%CF%81%CF%84%CE%AF%CE%BF%CF%85%202018.jpg"/>
+      <itunes:duration>2227</itunes:duration>
+    </item>
+    <item>
+      <title>Η ρ_φ Ελληνοφρένεια της 21ης Μαρτίου 2018</title>
+      <guid isPermaLink="false">https://ellinofreneia.sealabs.net/audio/%CE%97%20%CF%81_%CF%86%20%CE%95%CE%BB%CE%BB%CE%B7%CE%BD%CE%BF%CF%86%CF%81%CE%AD%CE%BD%CE%B5%CE%B9%CE%B1%20%CF%84%CE%B7%CF%82%2021%CE%B7%CF%82%20%CE%9C%CE%B1%CF%81%CF%84%CE%AF%CE%BF%CF%85%202018.mp3</guid>
+      <enclosure url="https://ellinofreneia.sealabs.net/audio/%CE%97%20%CF%81_%CF%86%20%CE%95%CE%BB%CE%BB%CE%B7%CE%BD%CE%BF%CF%86%CF%81%CE%AD%CE%BD%CE%B5%CE%B9%CE%B1%20%CF%84%CE%B7%CF%82%2021%CE%B7%CF%82%20%CE%9C%CE%B1%CF%81%CF%84%CE%AF%CE%BF%CF%85%202018.mp3" length="36459832" type="audio/mpeg"/>
+      <pubDate>Wed, 21 Mar 2018 12:10:59 +0000</pubDate>
+      <itunes:image href="https://ellinofreneia.sealabs.net/audio/%CE%97%20%CF%81_%CF%86%20%CE%95%CE%BB%CE%BB%CE%B7%CE%BD%CE%BF%CF%86%CF%81%CE%AD%CE%BD%CE%B5%CE%B9%CE%B1%20%CF%84%CE%B7%CF%82%2021%CE%B7%CF%82%20%CE%9C%CE%B1%CF%81%CF%84%CE%AF%CE%BF%CF%85%202018.jpg"/>
+      <itunes:duration>2281</itunes:duration>
+    </item>
+    <item>
+      <title>Η ρ_φ Ελληνοφρένεια της 20ης Μαρτίου 2018</title>
+      <guid isPermaLink="false">https://ellinofreneia.sealabs.net/audio/%CE%97%20%CF%81_%CF%86%20%CE%95%CE%BB%CE%BB%CE%B7%CE%BD%CE%BF%CF%86%CF%81%CE%AD%CE%BD%CE%B5%CE%B9%CE%B1%20%CF%84%CE%B7%CF%82%2020%CE%B7%CF%82%20%CE%9C%CE%B1%CF%81%CF%84%CE%AF%CE%BF%CF%85%202018.mp3</guid>
+      <enclosure url="https://ellinofreneia.sealabs.net/audio/%CE%97%20%CF%81_%CF%86%20%CE%95%CE%BB%CE%BB%CE%B7%CE%BD%CE%BF%CF%86%CF%81%CE%AD%CE%BD%CE%B5%CE%B9%CE%B1%20%CF%84%CE%B7%CF%82%2020%CE%B7%CF%82%20%CE%9C%CE%B1%CF%81%CF%84%CE%AF%CE%BF%CF%85%202018.mp3" length="34507127" type="audio/mpeg"/>
+      <pubDate>Tue, 20 Mar 2018 12:11:06 +0000</pubDate>
+      <itunes:image href="https://ellinofreneia.sealabs.net/audio/%CE%97%20%CF%81_%CF%86%20%CE%95%CE%BB%CE%BB%CE%B7%CE%BD%CE%BF%CF%86%CF%81%CE%AD%CE%BD%CE%B5%CE%B9%CE%B1%20%CF%84%CE%B7%CF%82%2020%CE%B7%CF%82%20%CE%9C%CE%B1%CF%81%CF%84%CE%AF%CE%BF%CF%85%202018.jpg"/>
+      <itunes:duration>2159</itunes:duration>
+    </item>
+  </channel>
+</rss>

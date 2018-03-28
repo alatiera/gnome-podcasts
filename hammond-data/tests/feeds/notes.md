@@ -38,3 +38,8 @@ Web view: https://web.archive.org/web/20180120104741/https://www.greaterthancode
 
 Raw file: https://web.archive.org/web/20180120104741if_/https://www.greaterthancode.com/feed/podcast
 
+#### Ellinofreneia
+
+Web view: https://web.archive.org/web/20180328083913/https://ellinofreneia.sealabs.net/audio/podcast.rss
+
+Raw file: https://web.archive.org/web/20180328083913if_/https://ellinofreneia.sealabs.net/audio/podcast.rss

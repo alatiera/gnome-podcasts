@@ -100,11 +100,13 @@ impl NewPodcast {
         };
 
         let link = url_cleaner(chan.link());
-        let x = chan.itunes_ext().map(|s| s.image());
-        let image_uri = if let Some(img) = x {
-            img.map(|s| s.to_owned())
+        let itunes_img = chan.itunes_ext()
+            .and_then(|s| s.image())
+            .map(|s| s.to_owned());
+        let image_uri = if itunes_img.is_some() {
+            itunes_img
         } else {
-            chan.image().map(|foo| foo.url().to_owned())
+            chan.image().map(|s| s.url().to_owned())
         };
 
         NewPodcastBuilder::default()
@@ -258,6 +260,16 @@ mod tests {
                 .build()
                 .unwrap()
         };
+        static ref EXPECTED_ELLINOFRENEIA: NewPodcast = {
+            NewPodcastBuilder::default()
+                .title("Ελληνοφρένεια")
+                .link("https://ellinofreneia.sealabs.net/feed.rss")
+                .description("Ανεπίσημο feed της Ελληνοφρένειας")
+                .image_uri(Some("https://ellinofreneia.sealabs.net/logo.png".into()))
+                .source_id(42)
+                .build()
+                .unwrap()
+        };
         static ref UPDATED_DESC_INTERCEPTED: NewPodcast = {
             NewPodcastBuilder::default()
                 .title("Intercepted with Jeremy Scahill")
@@ -317,6 +329,15 @@ mod tests {
 
         let pd = NewPodcast::new(&channel, 42);
         assert_eq!(*EXPECTED_CODE, pd);
+    }
+
+    #[test]
+    fn test_new_podcast_ellinofreneia() {
+        let file = File::open("tests/feeds/2018-03-28-Ellinofreneia.xml").unwrap();
+        let channel = Channel::read_from(BufReader::new(file)).unwrap();
+
+        let pd = NewPodcast::new(&channel, 42);
+        assert_eq!(*EXPECTED_ELLINOFRENEIA, pd);
     }
 
     #[test]
