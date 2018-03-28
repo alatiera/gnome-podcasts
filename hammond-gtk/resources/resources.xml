@@ -4,6 +4,7 @@
       <file compressed="true" preprocess="xml-stripblanks">gtk/episode_widget.ui</file>
       <file compressed="true" preprocess="xml-stripblanks">gtk/show_widget.ui</file>
       <file compressed="true" preprocess="xml-stripblanks">gtk/empty_view.ui</file>
+      <file compressed="true" preprocess="xml-stripblanks">gtk/empty_show.ui</file>
       <file compressed="true" preprocess="xml-stripblanks">gtk/episodes_view.ui</file>
       <file compressed="true" preprocess="xml-stripblanks">gtk/episodes_view_widget.ui</file>
       <file compressed="true" preprocess="xml-stripblanks">gtk/shows_view.ui</file>
