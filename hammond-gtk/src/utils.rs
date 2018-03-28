@@ -1,8 +1,11 @@
 #![cfg_attr(feature = "cargo-clippy", allow(type_complexity))]
 
-use failure::Error;
 use gdk_pixbuf::Pixbuf;
 use gio::{Settings, SettingsExt};
+use gtk;
+use gtk::prelude::*;
+
+use failure::Error;
 use regex::Regex;
 use reqwest;
 use send_cell::SendCell;
@@ -137,7 +140,11 @@ lazy_static! {
 // GObjects do not implement Send trait, so SendCell is a way around that.
 // Also lazy_static requires Sync trait, so that's what the mutexes are.
 // TODO: maybe use something that would just scale to requested size?
-pub fn get_pixbuf_from_path(pd: &PodcastCoverQuery, size: u32) -> Result<Pixbuf, Error> {
+pub fn set_image_from_path(
+    image: &gtk::Image,
+    pd: &PodcastCoverQuery,
+    size: u32,
+) -> Result<(), Error> {
     {
         let hashmap = CACHED_PIXBUFS
             .read()
@@ -145,7 +152,9 @@ pub fn get_pixbuf_from_path(pd: &PodcastCoverQuery, size: u32) -> Result<Pixbuf,
         if let Some(px) = hashmap.get(&(pd.id(), size)) {
             let m = px.lock()
                 .map_err(|_| format_err!("Failed to lock pixbuf mutex."))?;
-            return Ok(m.clone().into_inner());
+            let px = m.clone().into_inner();
+            image.set_from_pixbuf(&px);
+            return Ok(());
         }
     }
 
@@ -155,7 +164,8 @@ pub fn get_pixbuf_from_path(pd: &PodcastCoverQuery, size: u32) -> Result<Pixbuf,
         .write()
         .map_err(|_| format_err!("Failed to lock pixbuf mutex."))?;
     hashmap.insert((pd.id(), size), Mutex::new(SendCell::new(px.clone())));
-    Ok(px)
+    image.set_from_pixbuf(&px);
+    Ok(())
 }
 
 #[inline]

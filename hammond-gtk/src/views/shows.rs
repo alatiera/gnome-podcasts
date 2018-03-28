@@ -6,7 +6,7 @@ use hammond_data::Podcast;
 use hammond_data::dbqueries;
 
 use app::Action;
-use utils::{get_ignored_shows, get_pixbuf_from_path};
+use utils::{get_ignored_shows, set_image_from_path};
 
 use std::sync::Arc;
 use std::sync::mpsc::Sender;
@@ -133,8 +133,6 @@ impl ShowsChild {
     }
 
     fn set_cover(&self, pd: Arc<Podcast>) -> Result<(), Error> {
-        let image = get_pixbuf_from_path(&pd.clone().into(), 256)?;
-        self.cover.set_from_pixbuf(&image);
-        Ok(())
+        set_image_from_path(&self.cover, &pd.clone().into(), 256)
     }
 }
