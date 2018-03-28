@@ -2,6 +2,7 @@
 
 use gdk_pixbuf::Pixbuf;
 use gio::{Settings, SettingsExt};
+use glib;
 use gtk;
 use gtk::prelude::*;
 
@@ -21,7 +22,7 @@ use hammond_downloader::downloader;
 use std::collections::{HashMap, HashSet};
 use std::sync::{Mutex, RwLock};
 use std::sync::Arc;
-use std::sync::mpsc::Sender;
+use std::sync::mpsc::*;
 use std::thread;
 
 use app::Action;
@@ -142,7 +143,7 @@ lazy_static! {
 // TODO: maybe use something that would just scale to requested size?
 pub fn set_image_from_path(
     image: &gtk::Image,
-    pd: &PodcastCoverQuery,
+    pd: Arc<PodcastCoverQuery>,
     size: u32,
 ) -> Result<(), Error> {
     {
@@ -158,13 +159,30 @@ pub fn set_image_from_path(
         }
     }
 
-    let img_path = downloader::cache_image(pd)?;
-    let px = Pixbuf::new_from_file_at_scale(&img_path, size as i32, size as i32, true)?;
-    let mut hashmap = CACHED_PIXBUFS
-        .write()
-        .map_err(|_| format_err!("Failed to lock pixbuf mutex."))?;
-    hashmap.insert((pd.id(), size), Mutex::new(SendCell::new(px.clone())));
-    image.set_from_pixbuf(&px);
+    let (sender, receiver) = channel();
+    let pd_ = pd.clone();
+    thread::spawn(move || {
+        sender.send(downloader::cache_image(&pd_)).unwrap();
+    });
+
+    let image = image.clone();
+    gtk::timeout_add(200, move || {
+        if let Ok(path) = receiver.try_recv() {
+            if let Ok(path) = path {
+                if let Ok(px) =
+                    Pixbuf::new_from_file_at_scale(&path, size as i32, size as i32, true)
+                {
+                    if let Ok(mut hashmap) = CACHED_PIXBUFS.write() {
+                        hashmap.insert((pd.id(), size), Mutex::new(SendCell::new(px.clone())));
+                        image.set_from_pixbuf(&px);
+                    }
+                }
+            }
+            glib::Continue(false)
+        } else {
+            glib::Continue(true)
+        }
+    });
     Ok(())
 }
 

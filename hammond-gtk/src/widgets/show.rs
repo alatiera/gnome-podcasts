@@ -113,7 +113,7 @@ impl ShowWidget {
 
     /// Set the show cover.
     fn set_cover(&self, pd: Arc<Podcast>) -> Result<(), Error> {
-        set_image_from_path(&self.cover, &pd.into(), 128)
+        set_image_from_path(&self.cover, Arc::new(pd.into()), 128)
     }
 
     /// Set the descripton text.

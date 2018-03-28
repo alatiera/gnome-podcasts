@@ -10,6 +10,7 @@ use app::Action;
 use utils::{get_ignored_shows, set_image_from_path};
 use widgets::EpisodeWidget;
 
+use std::sync::Arc;
 use std::sync::mpsc::Sender;
 
 #[derive(Debug, Clone)]
@@ -227,7 +228,7 @@ impl EpisodesViewWidget {
     }
 
     fn set_cover(&self, podcast_id: i32) -> Result<(), Error> {
-        let pd = dbqueries::get_podcast_cover_from_id(podcast_id)?;
-        set_image_from_path(&self.image, &pd, 64)
+        let pd = Arc::new(dbqueries::get_podcast_cover_from_id(podcast_id)?);
+        set_image_from_path(&self.image, pd, 64)
     }
 }
