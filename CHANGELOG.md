@@ -30,6 +30,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 * Implemnted the initial work for integrating with GSettings and storing preferences. (Rowan Lewis)
 [!22](https://gitlab.gnome.org/alatiera/Hammond/merge_requests/22) [!23](https://gitlab.gnome.org/alatiera/Hammond/merge_requests/23)
 
+* Shows without episodes now display an empty message similar to EmptyView.
+[#44](https://gitlab.gnome.org/alatiera/Hammond/issues/44)
+
 ## [0.3.0] - 2018-02-11
 
 * Tobias Bernard Redesigned the whole Gtk+ client.
