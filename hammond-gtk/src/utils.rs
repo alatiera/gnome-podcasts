@@ -179,8 +179,10 @@ pub fn set_image_from_path(
         if let Some(px) = hashmap.get(&(pd.id(), size)) {
             let m = px.lock()
                 .map_err(|_| format_err!("Failed to lock pixbuf mutex."))?;
-            let px = m.clone().into_inner();
-            image.set_from_pixbuf(&px);
+            let px = m.try_get().ok_or_else(|| {
+                format_err!("Pixbuf was accessed from a different thread than created")
+            })?;
+            image.set_from_pixbuf(px);
             return Ok(());
         }
     }
