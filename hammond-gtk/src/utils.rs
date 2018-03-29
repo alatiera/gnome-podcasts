@@ -161,13 +161,11 @@ pub fn set_image_from_path(
             .read()
             .map_err(|err| format_err!("Cover Registry: {}.", err))?;
         if reg_guard.contains(&pd.id()) {
-            gtk::timeout_add(
-                250,
-                clone!(image, pd => move || {
-                     let _ = set_image_from_path(&image, pd.clone(), size);
-                     glib::Continue(false)
-            }),
-            );
+            let callback = clone!(image, pd => move || {
+                 let _ = set_image_from_path(&image, pd.clone(), size);
+                 glib::Continue(false)
+            });
+            gtk::timeout_add(250, callback);
             return Ok(());
         }
     }
@@ -175,10 +173,10 @@ pub fn set_image_from_path(
     {
         let hashmap = CACHED_PIXBUFS
             .read()
-            .map_err(|_| format_err!("Failed to get a lock on the pixbuf cache mutex."))?;
+            .map_err(|err| format_err!("Pixbuf HashMap: {}", err))?;
         if let Some(px) = hashmap.get(&(pd.id(), size)) {
             let m = px.lock()
-                .map_err(|_| format_err!("Failed to lock pixbuf mutex."))?;
+                .map_err(|err| format_err!("SendCell Mutex: {}", err))?;
             let px = m.try_get().ok_or_else(|| {
                 format_err!("Pixbuf was accessed from a different thread than created")
             })?;
