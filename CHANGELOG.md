@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+* Downlaoding and loading images now is done asynchronously and is not blocking programs execution.
+[#7](https://gitlab.gnome.org/alatiera/Hammond/issues/7)
 
 ## [0.3.1] - 2018-03-28
 
