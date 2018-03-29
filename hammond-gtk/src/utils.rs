@@ -168,12 +168,11 @@ pub fn set_image_from_path(
     });
 
     let image = image.clone();
+    let s = size as i32;
     gtk::timeout_add(50, move || {
         if let Ok(path) = receiver.try_recv() {
             if let Ok(path) = path {
-                if let Ok(px) =
-                    Pixbuf::new_from_file_at_scale(&path, size as i32, size as i32, true)
-                {
+                if let Ok(px) = Pixbuf::new_from_file_at_scale(&path, s, s, true) {
                     if let Ok(mut hashmap) = CACHED_PIXBUFS.write() {
                         hashmap.insert((pd.id(), size), Mutex::new(SendCell::new(px.clone())));
                         image.set_from_pixbuf(&px);
@@ -251,24 +250,25 @@ mod tests {
         assert_eq!(time, time_period_to_duration(time, "seconds").num_seconds());
     }
 
-    #[test]
+    // #[test]
     // This test inserts an rss feed to your `XDG_DATA/hammond/hammond.db` so we make it explicit
     // to run it.
-    #[ignore]
-    fn test_set_image_from_path() {
-        let url = "https://web.archive.org/web/20180120110727if_/https://rss.acast.com/thetipoff";
-        // Create and index a source
-        let source = Source::from_url(url).unwrap();
-        // Copy it's id
-        let sid = source.id();
-        pipeline::run(vec![source], true).unwrap();
+    // #[ignore]
+    // Disabled till https://gitlab.gnome.org/alatiera/Hammond/issues/56
+    // fn test_set_image_from_path() {
+    //     let url = "https://web.archive.org/web/20180120110727if_/https://rss.acast.com/thetipoff";
+    // Create and index a source
+    //     let source = Source::from_url(url).unwrap();
+    // Copy it's id
+    //     let sid = source.id();
+    //     pipeline::run(vec![source], true).unwrap();
 
-        // Get the Podcast
-        let img = gtk::Image::new();
-        let pd = dbqueries::get_podcast_from_source_id(sid).unwrap().into();
-        let pxbuf = set_image_from_path(&img, Arc::new(pd), 256);
-        assert!(pxbuf.is_ok());
-    }
+    // Get the Podcast
+    //     let img = gtk::Image::new();
+    //     let pd = dbqueries::get_podcast_from_source_id(sid).unwrap().into();
+    //     let pxbuf = set_image_from_path(&img, Arc::new(pd), 256);
+    //     assert!(pxbuf.is_ok());
+    // }
 
     #[test]
     fn test_itunes_to_rss() {
