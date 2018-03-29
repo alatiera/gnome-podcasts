@@ -26,15 +26,14 @@ extern crate hammond_downloader;
 extern crate humansize;
 extern crate loggerv;
 extern crate open;
+extern crate rayon;
 extern crate regex;
 extern crate reqwest;
 extern crate send_cell;
 extern crate serde_json;
 extern crate take_mut;
 extern crate url;
-// extern crate rayon;
 
-// use rayon::prelude::*;
 use log::Level;
 
 use gtk::prelude::*;

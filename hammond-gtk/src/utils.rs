@@ -7,6 +7,7 @@ use gtk;
 use gtk::prelude::*;
 
 use failure::Error;
+use rayon;
 use regex::Regex;
 use reqwest;
 use send_cell::SendCell;
@@ -132,6 +133,7 @@ fn refresh_feed(source: Option<Vec<Source>>, sender: Sender<Action>) -> Result<(
 lazy_static! {
     static ref CACHED_PIXBUFS: RwLock<HashMap<(i32, u32), Mutex<SendCell<Pixbuf>>>> =
         { RwLock::new(HashMap::new()) };
+    static ref THREADPOOL: rayon::ThreadPool = rayon::ThreadPoolBuilder::new().build().unwrap();
 }
 
 // Since gdk_pixbuf::Pixbuf is refference counted and every episode,
@@ -161,12 +163,12 @@ pub fn set_image_from_path(
 
     let (sender, receiver) = channel();
     let pd_ = pd.clone();
-    thread::spawn(move || {
+    THREADPOOL.spawn(move || {
         sender.send(downloader::cache_image(&pd_)).unwrap();
     });
 
     let image = image.clone();
-    gtk::timeout_add(200, move || {
+    gtk::timeout_add(50, move || {
         if let Ok(path) = receiver.try_recv() {
             if let Ok(path) = path {
                 if let Ok(px) =
