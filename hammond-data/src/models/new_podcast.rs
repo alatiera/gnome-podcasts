@@ -231,9 +231,9 @@ mod tests {
                          love, a crashed UFO, an alien body, and an impossible heist unlike any \
                          ever attempted - scripted by Mac Rogers, the award-winning playwright \
                          and writer of the multi-million download The Message and LifeAfter.</p>";
-            let img =  "https://dfkfj8j276wwv.cloudfront.net/images/2c/5f/a0/1a/2c5fa01a-ae78-4a8c-\
-                        b183-7311d2e436c3/b3a4aa57a576bb662191f2a6bc2a436c8c4ae256ecffaff5c4c54fd42e\
-                        923914941c264d01efb1833234b52c9530e67d28a8cebbe3d11a4bc0fbbdf13ecdf1c3.jpeg";
+            let img = "https://dfkfj8j276wwv.cloudfront.net/images/2c/5f/a0/1a/2c5fa01a-ae78-4a8c-\
+                       b183-7311d2e436c3/b3a4aa57a576bb662191f2a6bc2a436c8c4ae256ecffaff5c4c54fd42e\
+                       923914941c264d01efb1833234b52c9530e67d28a8cebbe3d11a4bc0fbbdf13ecdf1c3.jpeg";
 
             NewPodcastBuilder::default()
                 .title("Steal the Stars")

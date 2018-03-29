@@ -7,9 +7,10 @@ use hammond_data::EpisodeWidgetQuery;
 use hammond_data::dbqueries;
 
 use app::Action;
-use utils::{get_ignored_shows, get_pixbuf_from_path};
+use utils::{get_ignored_shows, set_image_from_path};
 use widgets::EpisodeWidget;
 
+use std::sync::Arc;
 use std::sync::mpsc::Sender;
 
 #[derive(Debug, Clone)]
@@ -227,9 +228,7 @@ impl EpisodesViewWidget {
     }
 
     fn set_cover(&self, podcast_id: i32) -> Result<(), Error> {
-        let pd = dbqueries::get_podcast_cover_from_id(podcast_id)?;
-        let img = get_pixbuf_from_path(&pd, 64)?;
-        self.image.set_from_pixbuf(&img);
-        Ok(())
+        let pd = Arc::new(dbqueries::get_podcast_cover_from_id(podcast_id)?);
+        set_image_from_path(&self.image, pd, 64)
     }
 }

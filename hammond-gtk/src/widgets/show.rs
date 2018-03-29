@@ -10,7 +10,7 @@ use hammond_data::dbqueries;
 use hammond_data::utils::replace_extra_spaces;
 
 use app::Action;
-use utils::get_pixbuf_from_path;
+use utils::set_image_from_path;
 use widgets::episode::episodes_listbox;
 
 use std::sync::Arc;
@@ -113,9 +113,7 @@ impl ShowWidget {
 
     /// Set the show cover.
     fn set_cover(&self, pd: Arc<Podcast>) -> Result<(), Error> {
-        let image = get_pixbuf_from_path(&pd.into(), 128)?;
-        self.cover.set_from_pixbuf(&image);
-        Ok(())
+        set_image_from_path(&self.cover, Arc::new(pd.into()), 128)
     }
 
     /// Set the descripton text.
