@@ -253,7 +253,7 @@ mod tests {
     // This test inserts an rss feed to your `XDG_DATA/hammond/hammond.db` so we make it explicit
     // to run it.
     #[ignore]
-    fn test_get_pixbuf_from_path() {
+    fn test_set_image_from_path() {
         let url = "https://web.archive.org/web/20180120110727if_/https://rss.acast.com/thetipoff";
         // Create and index a source
         let source = Source::from_url(url).unwrap();
@@ -262,8 +262,9 @@ mod tests {
         pipeline::run(vec![source], true).unwrap();
 
         // Get the Podcast
-        let pd = dbqueries::get_podcast_from_source_id(sid).unwrap();
-        let pxbuf = get_pixbuf_from_path(&pd.into(), 256);
+        let img = gtk::Image::new();
+        let pd = dbqueries::get_podcast_from_source_id(sid).unwrap().into();
+        let pxbuf = set_image_from_path(&img, Arc::new(pd), 256);
         assert!(pxbuf.is_ok());
     }
 
