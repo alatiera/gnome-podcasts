@@ -133,7 +133,11 @@ fn refresh_feed(source: Option<Vec<Source>>, sender: Sender<Action>) -> Result<(
 lazy_static! {
     static ref CACHED_PIXBUFS: RwLock<HashMap<(i32, u32), Mutex<SendCell<Pixbuf>>>> =
         { RwLock::new(HashMap::new()) };
-    static ref THREADPOOL: rayon::ThreadPool = rayon::ThreadPoolBuilder::new().build().unwrap();
+    static ref COVER_DL_REGISTRY: RwLock<HashSet<i32>> = RwLock::new(HashSet::new());
+    static ref THREADPOOL: rayon::ThreadPool = rayon::ThreadPoolBuilder::new()
+        .breadth_first()
+        .build()
+        .unwrap();
 }
 
 // Since gdk_pixbuf::Pixbuf is refference counted and every episode,
@@ -148,6 +152,26 @@ pub fn set_image_from_path(
     pd: Arc<PodcastCoverQuery>,
     size: u32,
 ) -> Result<(), Error> {
+    {
+        // Check if there's an active download about this show cover.
+        // If there is, a callback will be set so this function will be called again.
+        // If the download succedes, there should be a quick return from the pixbuf cache_image
+        // If it fails another download will be scheduled.
+        let reg_guard = COVER_DL_REGISTRY
+            .read()
+            .map_err(|err| format_err!("Cover Registry: {}.", err))?;
+        if reg_guard.contains(&pd.id()) {
+            gtk::timeout_add(
+                250,
+                clone!(image, pd => move || {
+                     let _ = set_image_from_path(&image, pd.clone(), size);
+                     glib::Continue(false)
+            }),
+            );
+            return Ok(());
+        }
+    }
+
     {
         let hashmap = CACHED_PIXBUFS
             .read()
@@ -164,12 +188,22 @@ pub fn set_image_from_path(
     let (sender, receiver) = channel();
     let pd_ = pd.clone();
     THREADPOOL.spawn(move || {
-        sender.send(downloader::cache_image(&pd_)).unwrap();
+        {
+            if let Ok(mut guard) = COVER_DL_REGISTRY.write() {
+                guard.insert(pd_.id());
+            }
+        }
+        let _ = sender.send(downloader::cache_image(&pd_));
+        {
+            if let Ok(mut guard) = COVER_DL_REGISTRY.write() {
+                guard.remove(&pd_.id());
+            }
+        }
     });
 
     let image = image.clone();
     let s = size as i32;
-    gtk::timeout_add(50, move || {
+    gtk::timeout_add(25, move || {
         if let Ok(path) = receiver.try_recv() {
             if let Ok(path) = path {
                 if let Ok(px) = Pixbuf::new_from_file_at_scale(&path, s, s, true) {
@@ -229,8 +263,8 @@ pub fn time_period_to_duration(time: i64, period: &str) -> Duration {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use hammond_data::Source;
-    use hammond_data::dbqueries;
+    // use hammond_data::Source;
+    // use hammond_data::dbqueries;
 
     #[test]
     fn test_time_period_to_duration() {
