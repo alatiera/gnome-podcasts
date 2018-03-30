@@ -6,7 +6,7 @@ version = "0.1.0"
 workspace = "../"
 
 [dependencies]
-chrono = "0.4.0"
+chrono = "0.4.1"
 dissolve = "0.2.2"
 gdk = "0.8.0"
 gdk-pixbuf = "0.4.0"
@@ -21,10 +21,10 @@ send-cell = "0.1.2"
 url = "1.7.0"
 failure = "0.1.1"
 failure_derive = "0.1.1"
-take_mut = "0.2.1"
+take_mut = "0.2.2"
 regex = "0.2.10"
 reqwest = "0.8.5"
-serde_json = "1.0.11"
+serde_json = "1.0.13"
 
 [dependencies.gtk]
 features = ["v3_22"]
