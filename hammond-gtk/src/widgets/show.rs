@@ -123,7 +123,7 @@ impl ShowWidget {
         // markup.
         // let desc = dissolve::strip_html_tags(text).join(" ");
         // self.description.set_text(&replace_extra_spaces(&desc));
-        self.description.set_text(&html_to_pango_markup(text));
+        self.description.set_markup(&html_to_pango_markup(text));
     }
 
     /// Set scrolled window vertical adjustment.

@@ -112,12 +112,10 @@ Tobias Bernard
                                 <property name="halign">start</property>
                                 <property name="valign">end</property>
                                 <property name="label">foo</property>
+                                <property name="use_markup">True</property>
                                 <property name="wrap">True</property>
                                 <property name="wrap_mode">word-char</property>
                                 <property name="max_width_chars">90</property>
-                                <attributes>
-                                  <attribute name="weight" value="medium"/>
-                                </attributes>
                               </object>
                               <packing>
                                 <property name="expand">False</property>

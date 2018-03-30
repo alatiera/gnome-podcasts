@@ -1,7 +1,7 @@
 use diesel;
 use diesel::prelude::*;
 
-use ammonia;
+// use ammonia;
 use rss;
 
 use errors::DataError;
@@ -11,7 +11,8 @@ use schema::podcast;
 
 use database::connection;
 use dbqueries;
-use utils::{replace_extra_spaces, url_cleaner};
+// use utils::{replace_extra_spaces, url_cleaner};
+use utils::url_cleaner;
 
 #[derive(Insertable, AsChangeset)]
 #[table_name = "podcast"]
@@ -90,14 +91,15 @@ impl NewPodcast {
     pub(crate) fn new(chan: &rss::Channel, source_id: i32) -> NewPodcast {
         let title = chan.title().trim();
 
+        let description = chan.description().trim();
         // Prefer itunes summary over rss.description since many feeds put html into
         // rss.description.
-        let summary = chan.itunes_ext().map(|s| s.summary()).and_then(|s| s);
-        let description = if let Some(sum) = summary {
-            replace_extra_spaces(&ammonia::clean(sum))
-        } else {
-            replace_extra_spaces(&ammonia::clean(chan.description()))
-        };
+        // let summary = chan.itunes_ext().map(|s| s.summary()).and_then(|s| s);
+        // let description = if let Some(sum) = summary {
+        //     replace_extra_spaces(&ammonia::clean(sum))
+        // } else {
+        //     replace_extra_spaces(&ammonia::clean(chan.description()))
+        // };
 
         let link = url_cleaner(chan.link());
         let itunes_img = chan.itunes_ext()
