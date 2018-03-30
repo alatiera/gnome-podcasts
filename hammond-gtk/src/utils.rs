@@ -241,10 +241,8 @@ fn itunes_id_from_url(url: &str) -> Option<u32> {
 fn lookup_id(id: u32) -> Result<String, Error> {
     let url = format!("https://itunes.apple.com/lookup?id={}&entity=podcast", id);
     let req: Value = reqwest::get(&url)?.json()?;
-    // FIXME: First time using serde, this could be done better and avoid using [] for indexing.
-    let feedurl = req["results"][0]["feedUrl"].as_str();
-    let feedurl = feedurl.ok_or_else(|| format_err!("Failed to get url from itunes response"))?;
-    Ok(feedurl.into())
+    let rssurl = || -> Option<&str> { req.get("results")?.get(0)?.get("feedUrl")?.as_str() };
+    rssurl().map(From::from).ok_or_else(|| format_err!("Failed to get url from itunes response"))
 }
 
 pub fn time_period_to_duration(time: i64, period: &str) -> Duration {
@@ -306,6 +304,9 @@ mod tests {
         let itunes_url = "https://itunes.apple.com/podcast/id1195206601";
         let rss_url = String::from("http://feeds.feedburner.com/InterceptedWithJeremyScahill");
         assert_eq!(rss_url, itunes_to_rss(itunes_url).unwrap());
+
+        let itunes_url = "https://itunes.apple.com/podcast/id000000000000000";
+        assert!(itunes_to_rss(itunes_url).is_err());
     }
 
     #[test]
@@ -320,5 +321,8 @@ mod tests {
         let id = 1195206601;
         let rss_url = "http://feeds.feedburner.com/InterceptedWithJeremyScahill";
         assert_eq!(rss_url, lookup_id(id).unwrap());
+
+        let id = 000000000;
+        assert!(lookup_id(id).is_err());
     }
 }
