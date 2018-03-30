@@ -151,15 +151,12 @@ pub fn set_image_from_path(
     pd: Arc<PodcastCoverQuery>,
     size: u32,
 ) -> Result<(), Error> {
-    {
-        // Check if there's an active download about this show cover.
-        // If there is, a callback will be set so this function will be called again.
-        // If the download succedes, there should be a quick return from the pixbuf cache_image
-        // If it fails another download will be scheduled.
-        let reg_guard = COVER_DL_REGISTRY
-            .read()
-            .map_err(|err| format_err!("Cover Registry: {}.", err))?;
-        if reg_guard.contains(&pd.id()) {
+    // Check if there's an active download about this show cover.
+    // If there is, a callback will be set so this function will be called again.
+    // If the download succedes, there should be a quick return from the pixbuf cache_image
+    // If it fails another download will be scheduled.
+    if let Ok(guard) = COVER_DL_REGISTRY.read() {
+        if guard.contains(&pd.id()) {
             let callback = clone!(image, pd => move || {
                  let _ = set_image_from_path(&image, pd.clone(), size);
                  glib::Continue(false)
@@ -169,10 +166,9 @@ pub fn set_image_from_path(
         }
     }
 
-    {
-        let hashmap = CACHED_PIXBUFS
-            .read()
-            .map_err(|err| format_err!("Pixbuf HashMap: {}", err))?;
+    if let Ok(hashmap) = CACHED_PIXBUFS.read() {
+        // Check if the requested (cover + size) is already in the chache
+        // and if so do an early return after that.
         if let Some(guard) = hashmap.get(&(pd.id(), size)) {
             guard
                 .lock()
@@ -181,10 +177,9 @@ pub fn set_image_from_path(
                     sendcell
                         .try_get()
                         .map(|px| image.set_from_pixbuf(px))
-                        .ok_or_else(|| {
-                            format_err!("Pixbuf was accessed from a different thread than created")
-                        })
+                        .ok_or_else(|| format_err!("Pixbuf was accessed from a different thread"))
                 })?;
+
             return Ok(());
         }
     }
