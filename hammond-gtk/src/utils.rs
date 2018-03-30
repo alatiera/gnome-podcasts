@@ -34,22 +34,25 @@ lazy_static! {
     static ref IGNORESHOWS: Arc<Mutex<HashSet<i32>>> = Arc::new(Mutex::new(HashSet::new()));
 }
 
-pub fn ignore_show(id: i32) -> Result<(), Error> {
-    let mut guard = IGNORESHOWS.lock().map_err(|err| format_err!("{}", err))?;
-    guard.insert(id);
-    Ok(())
+pub fn ignore_show(id: i32) -> Result<bool, Error> {
+    IGNORESHOWS
+        .lock()
+        .map(|mut guard| guard.insert(id))
+        .map_err(|err| format_err!("{}", err))
 }
 
-pub fn uningore_show(id: i32) -> Result<(), Error> {
-    let mut guard = IGNORESHOWS.lock().map_err(|err| format_err!("{}", err))?;
-    guard.remove(&id);
-    Ok(())
+pub fn uningore_show(id: i32) -> Result<bool, Error> {
+    IGNORESHOWS
+        .lock()
+        .map(|mut guard| guard.remove(&id))
+        .map_err(|err| format_err!("{}", err))
 }
 
 pub fn get_ignored_shows() -> Result<Vec<i32>, Error> {
-    let guard = IGNORESHOWS.lock().map_err(|err| format_err!("{}", err))?;
-    let keys = guard.iter().cloned().collect::<Vec<_>>();
-    Ok(keys)
+    IGNORESHOWS
+        .lock()
+        .map(|guard| guard.iter().cloned().collect::<Vec<_>>())
+        .map_err(|err| format_err!("{}", err))
 }
 
 pub fn cleanup(cleanup_date: DateTime<Utc>) {
@@ -170,13 +173,18 @@ pub fn set_image_from_path(
         let hashmap = CACHED_PIXBUFS
             .read()
             .map_err(|err| format_err!("Pixbuf HashMap: {}", err))?;
-        if let Some(px) = hashmap.get(&(pd.id(), size)) {
-            let m = px.lock()
-                .map_err(|err| format_err!("SendCell Mutex: {}", err))?;
-            let px = m.try_get().ok_or_else(|| {
-                format_err!("Pixbuf was accessed from a different thread than created")
-            })?;
-            image.set_from_pixbuf(px);
+        if let Some(guard) = hashmap.get(&(pd.id(), size)) {
+            guard
+                .lock()
+                .map_err(|err| format_err!("SendCell Mutex: {}", err))
+                .and_then(|sendcell| {
+                    sendcell
+                        .try_get()
+                        .map(|px| image.set_from_pixbuf(px))
+                        .ok_or_else(|| {
+                            format_err!("Pixbuf was accessed from a different thread than created")
+                        })
+                })?;
             return Ok(());
         }
     }
@@ -184,16 +192,14 @@ pub fn set_image_from_path(
     let (sender, receiver) = channel();
     let pd_ = pd.clone();
     THREADPOOL.spawn(move || {
-        {
-            if let Ok(mut guard) = COVER_DL_REGISTRY.write() {
-                guard.insert(pd_.id());
-            }
+        if let Ok(mut guard) = COVER_DL_REGISTRY.write() {
+            guard.insert(pd_.id());
         }
+
         let _ = sender.send(downloader::cache_image(&pd_));
-        {
-            if let Ok(mut guard) = COVER_DL_REGISTRY.write() {
-                guard.remove(&pd_.id());
-            }
+
+        if let Ok(mut guard) = COVER_DL_REGISTRY.write() {
+            guard.remove(&pd_.id());
         }
     });
 
