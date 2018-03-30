@@ -133,9 +133,7 @@ lazy_static! {
     static ref CACHED_PIXBUFS: RwLock<HashMap<(i32, u32), Mutex<SendCell<Pixbuf>>>> =
         { RwLock::new(HashMap::new()) };
     static ref COVER_DL_REGISTRY: RwLock<HashSet<i32>> = RwLock::new(HashSet::new());
-    static ref THREADPOOL: rayon::ThreadPool = rayon::ThreadPoolBuilder::new()
-        .build()
-        .unwrap();
+    static ref THREADPOOL: rayon::ThreadPool = rayon::ThreadPoolBuilder::new().build().unwrap();
 }
 
 // Since gdk_pixbuf::Pixbuf is refference counted and every episode,
