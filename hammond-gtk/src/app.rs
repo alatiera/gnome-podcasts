@@ -7,6 +7,7 @@ use gtk::SettingsExt as GtkSettingsExt;
 use gtk::prelude::*;
 
 use failure::Error;
+use rayon;
 
 use hammond_data::{Podcast, Source};
 use hammond_data::utils::delete_show;
@@ -20,7 +21,6 @@ use widgets::mark_all_watched;
 
 use std::sync::Arc;
 use std::sync::mpsc::{channel, Receiver, Sender};
-use std::thread;
 use std::time::Duration;
 
 #[derive(Clone, Debug)]
@@ -222,7 +222,7 @@ impl App {
                         }
 
                         // Spawn a thread so it won't block the ui.
-                        thread::spawn(clone!(pd => move || {
+                        rayon::spawn(clone!(pd => move || {
                             if let Err(err) = delete_show(&pd) {
                                 error!("Something went wrong trying to remove {}", pd.title());
                                 error!("Error: {}", err);

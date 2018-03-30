@@ -1,4 +1,5 @@
 use failure::Error;
+use rayon;
 
 // use hammond_data::Episode;
 use hammond_data::dbqueries;
@@ -11,7 +12,6 @@ use std::sync::{Arc, Mutex, RwLock};
 use std::sync::mpsc::Sender;
 // use std::sync::atomic::AtomicUsize;
 // use std::path::PathBuf;
-use std::thread;
 
 // This is messy, undocumented and hacky af.
 // I am terrible at writting downloaders and download managers.
@@ -75,6 +75,7 @@ impl DownloadProgress for Progress {
 lazy_static! {
     pub static ref ACTIVE_DOWNLOADS: Arc<RwLock<HashMap<i32, Arc<Mutex<Progress>>>>> =
         { Arc::new(RwLock::new(HashMap::new())) };
+    static ref DLPOOL: rayon::ThreadPool = rayon::ThreadPoolBuilder::new().build().unwrap();
 }
 
 pub fn add(id: i32, directory: &str, sender: Sender<Action>) -> Result<(), Error> {
@@ -89,7 +90,7 @@ pub fn add(id: i32, directory: &str, sender: Sender<Action>) -> Result<(), Error
     }
 
     let dir = directory.to_owned();
-    thread::spawn(move || {
+    DLPOOL.spawn(move || {
         if let Ok(episode) = dbqueries::get_episode_from_rowid(id) {
             let pid = episode.podcast_id();
             let id = episode.rowid();

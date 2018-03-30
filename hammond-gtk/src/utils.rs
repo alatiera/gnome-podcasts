@@ -24,7 +24,6 @@ use std::collections::{HashMap, HashSet};
 use std::sync::{Mutex, RwLock};
 use std::sync::Arc;
 use std::sync::mpsc::*;
-use std::thread;
 
 use app::Action;
 
@@ -87,7 +86,7 @@ pub fn get_cleanup_date(settings: &Settings) -> DateTime<Utc> {
 fn refresh_feed(source: Option<Vec<Source>>, sender: Sender<Action>) -> Result<(), Error> {
     sender.send(Action::HeaderBarShowUpdateIndicator)?;
 
-    thread::spawn(move || {
+    rayon::spawn(move || {
         let mut sources = source.unwrap_or_else(|| {
             dbqueries::get_sources().expect("Failed to retrieve Sources from the database.")
         });
@@ -135,7 +134,6 @@ lazy_static! {
         { RwLock::new(HashMap::new()) };
     static ref COVER_DL_REGISTRY: RwLock<HashSet<i32>> = RwLock::new(HashSet::new());
     static ref THREADPOOL: rayon::ThreadPool = rayon::ThreadPoolBuilder::new()
-        .breadth_first()
         .build()
         .unwrap();
 }
