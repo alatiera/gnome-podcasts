@@ -242,7 +242,9 @@ fn lookup_id(id: u32) -> Result<String, Error> {
     let url = format!("https://itunes.apple.com/lookup?id={}&entity=podcast", id);
     let req: Value = reqwest::get(&url)?.json()?;
     let rssurl = || -> Option<&str> { req.get("results")?.get(0)?.get("feedUrl")?.as_str() };
-    rssurl().map(From::from).ok_or_else(|| format_err!("Failed to get url from itunes response"))
+    rssurl()
+        .map(From::from)
+        .ok_or_else(|| format_err!("Failed to get url from itunes response"))
 }
 
 pub fn time_period_to_duration(time: i64, period: &str) -> Duration {
