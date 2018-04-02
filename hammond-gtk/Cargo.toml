@@ -6,6 +6,7 @@ version = "0.1.0"
 workspace = "../"
 
 [dependencies]
+ammonia = "1.1.0"
 chrono = "0.4.1"
 dissolve = "0.2.2"
 gdk = "0.8.0"
@@ -25,6 +26,7 @@ take_mut = "0.2.2"
 regex = "0.2.10"
 reqwest = "0.8.5"
 serde_json = "1.0.13"
+html2pango = { git = "https://gitlab.gnome.org/danigm/html2pango" }
 
 [dependencies.gtk]
 features = ["v3_22"]

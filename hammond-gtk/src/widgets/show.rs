@@ -1,8 +1,10 @@
 // use dissolve;
 use failure::Error;
 // use glib;
+use ammonia;
 use gtk;
 use gtk::prelude::*;
+use html2pango::markup as html_to_pango_markup;
 use open;
 
 use hammond_data::Podcast;
@@ -10,7 +12,7 @@ use hammond_data::dbqueries;
 // use hammond_data::utils::replace_extra_spaces;
 
 use app::Action;
-use utils::{html_to_pango_markup, set_image_from_path};
+use utils::set_image_from_path;
 // use utils::set_image_from_path;
 use widgets::episode::episodes_listbox;
 
@@ -123,7 +125,8 @@ impl ShowWidget {
         // markup.
         // let desc = dissolve::strip_html_tags(text).join(" ");
         // self.description.set_text(&replace_extra_spaces(&desc));
-        self.description.set_markup(&html_to_pango_markup(text));
+        self.description
+            .set_markup(&ammonia::clean(&html_to_pango_markup(text)));
     }
 
     /// Set scrolled window vertical adjustment.

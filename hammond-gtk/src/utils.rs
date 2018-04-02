@@ -257,49 +257,6 @@ pub fn time_period_to_duration(time: i64, period: &str) -> Duration {
     }
 }
 
-/// https://gitlab.gnome.org/World/fractal/blob/da016b252a0710ffd324469cd2059e3e090695eb/fractal-gtk/src/util.rs#L44-79
-/// Converts the input `&str` to pango format, replacing special characters
-/// `&, < and >` and parses URLS to show as a link
-///
-/// # Examples
-///
-/// ```
-/// let m = markup("this is parsed");
-/// assert_eq!(&m, "this is parsed");
-///
-/// let m = markup("this is <span>parsed</span>");
-/// assert_eq!(&m, "this is &lt;parsed&gt;");
-///
-/// let m = markup();
-/// assert_eq!(&m, "with links: <a href=\"http://gnome.org\">http://gnome.org</a> ");
-/// ```
-pub fn html_to_pango_markup(s: &str) -> String {
-    let mut out = String::from(s);
-
-    out = String::from(out.trim());
-    out = out.replace('&', "&amp;");
-    out = out.replace('<', "&lt;");
-    out = out.replace('>', "&gt;");
-
-    let amp = "(&amp;)";
-    let domain = "[^\\s,)(\"]+";
-    let param = format!("({amp}?\\w+(=[\\w._-]+)?)", amp = amp);
-    let params = format!("(\\?{param}*)*", param = param);
-    let hash = "(#[\\w._-]+)?";
-
-    let regex_str = format!(
-        "(https?://{domain}{params}{hash})",
-        domain = domain,
-        params = params,
-        hash = hash
-    );
-
-    let re = Regex::new(&regex_str).unwrap();
-    out = String::from(re.replace_all(&out, "<a href=\"$0\">$0</a>"));
-
-    out
-}
-
 #[cfg(test)]
 mod tests {
     use super::*;
