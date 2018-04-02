@@ -9,6 +9,10 @@ extern crate failure_derive;
 #[macro_use]
 extern crate log;
 
+#[cfg(test)]
+#[macro_use]
+extern crate pretty_assertions;
+
 extern crate glob;
 extern crate hammond_data;
 extern crate hyper;

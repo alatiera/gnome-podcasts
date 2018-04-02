@@ -19,6 +19,10 @@ extern crate lazy_static;
 #[macro_use]
 extern crate log;
 
+#[cfg(test)]
+#[macro_use]
+extern crate pretty_assertions;
+
 extern crate ammonia;
 extern crate chrono;
 // extern crate dissolve;

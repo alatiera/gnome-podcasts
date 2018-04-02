@@ -41,3 +41,6 @@ path = "../hammond-data"
 
 [dependencies.hammond-downloader]
 path = "../hammond-downloader"
+
+[dev-dependencies]
+pretty_assertions = "0.5.1"

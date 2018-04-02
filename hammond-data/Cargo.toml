@@ -38,6 +38,7 @@ version = "1.1.0"
 rand = "0.4.2"
 tempdir = "0.3.7"
 criterion = "0.2.2"
+pretty_assertions = "0.5.1"
 
 [[bench]]
 name = "bench"
