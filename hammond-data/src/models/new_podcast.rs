@@ -11,7 +11,6 @@ use schema::podcast;
 
 use database::connection;
 use dbqueries;
-// use utils::{replace_extra_spaces, url_cleaner};
 use utils::url_cleaner;
 
 #[derive(Insertable, AsChangeset)]
@@ -92,15 +91,6 @@ impl NewPodcast {
         let title = chan.title().trim();
 
         let description = chan.description().trim();
-        // Prefer itunes summary over rss.description since many feeds put html into
-        // rss.description.
-        // let summary = chan.itunes_ext().map(|s| s.summary()).and_then(|s| s);
-        // let description = if let Some(sum) = summary {
-        //     replace_extra_spaces(&ammonia::clean(sum))
-        // } else {
-        //     replace_extra_spaces(&ammonia::clean(chan.description()))
-        // };
-
         let link = url_cleaner(chan.link());
         let itunes_img = chan.itunes_ext()
             .and_then(|s| s.image())
@@ -171,7 +161,7 @@ mod tests {
             let descr = "The people behind The Intercept’s fearless reporting and incisive \
                          commentary—Jeremy Scahill, Glenn Greenwald, Betsy Reed and \
                          others—discuss the crucial issues of our time: national security, civil \
-                         liberties, foreign policy, and criminal justice. Plus interviews with \
+                         liberties, foreign policy, and criminal justice.  Plus interviews with \
                          artists, thinkers, and newsmakers who challenge our preconceptions about \
                          the world we live in.";
 
@@ -205,15 +195,15 @@ mod tests {
                 .unwrap()
         };
         static ref EXPECTED_TIPOFF: NewPodcast = {
-            let desc = "Welcome to The Tip Off- the podcast where we take you behind the scenes \
-                        of some of the best investigative journalism from recent years. Each \
-                        episode we’ll be digging into an investigative scoop- hearing from the \
-                        journalists behind the work as they tell us about the leads, the \
+            let desc = "<p>Welcome to The Tip Off- the podcast where we take you behind the \
+                        scenes of some of the best investigative journalism from recent years. \
+                        Each episode we’ll be digging into an investigative scoop- hearing from \
+                        the journalists behind the work as they tell us about the leads, the \
                         dead-ends and of course, the tip offs. There’ll be car chases, slammed \
                         doors, terrorist cells, meetings in dimly lit bars and cafes, wrangling \
                         with despotic regimes and much more. So if you’re curious about the fun, \
                         complicated detective work that goes into doing great investigative \
-                        journalism- then this is the podcast for you.";
+                        journalism- then this is the podcast for you.</p>";
 
             NewPodcastBuilder::default()
                 .title("The Tip Off")
