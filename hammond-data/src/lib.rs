@@ -39,6 +39,7 @@ extern crate lazy_static;
 #[macro_use]
 extern crate log;
 
+extern crate ammonia;
 extern crate chrono;
 extern crate futures;
 extern crate futures_cpupool;

@@ -1,3 +1,4 @@
+use ammonia;
 use diesel;
 use diesel::prelude::*;
 use rss;
@@ -88,7 +89,7 @@ impl NewPodcast {
     pub(crate) fn new(chan: &rss::Channel, source_id: i32) -> NewPodcast {
         let title = chan.title().trim();
 
-        let description = chan.description().trim();
+        let description = ammonia::clean(chan.description().trim());
         let link = url_cleaner(chan.link());
         let itunes_img = chan.itunes_ext()
             .and_then(|s| s.image())

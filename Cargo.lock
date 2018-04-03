@@ -696,7 +696,6 @@ dependencies = [
 name = "hammond-gtk"
 version = "0.1.0"
 dependencies = [
- "ammonia 1.1.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "chrono 0.4.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "failure 0.1.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "failure_derive 0.1.1 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -741,8 +740,9 @@ dependencies = [
 [[package]]
 name = "html2pango"
 version = "0.1.0"
-source = "git+https://gitlab.gnome.org/danigm/html2pango#2e55f7587a2e7d75cf3ceed814fd473d60384dd2"
+source = "git+https://gitlab.gnome.org/danigm/html2pango#6dda855642d7d3cac0f1873106f2c93dc55ef293"
 dependencies = [
+ "ammonia 1.1.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "lazy_static 1.0.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "regex 0.2.10 (registry+https://github.com/rust-lang/crates.io-index)",
 ]

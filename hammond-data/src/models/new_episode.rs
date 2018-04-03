@@ -1,3 +1,4 @@
+use ammonia;
 use diesel;
 use diesel::prelude::*;
 use rfc822_sanitizer::parse_from_rfc2822_with_fallback as parse_rfc822;
@@ -230,7 +231,7 @@ impl NewEpisodeMinimal {
     pub(crate) fn into_new_episode(self, item: &rss::Item) -> NewEpisode {
         let length = || -> Option<i32> { item.enclosure().map(|x| x.length().parse().ok())? }();
 
-        let description = item.description().map(|s| s.to_owned());
+        let description = item.description().map(|s| ammonia::clean(s));
 
         NewEpisodeBuilder::default()
             .title(self.title)
@@ -404,7 +405,7 @@ mod tests {
         static ref EXPECTED_LUP_1: NewEpisode = {
             let descr = "Audit your network with a couple of easy commands on Kali Linux. Chris \
                          decides to blow off a little steam by attacking his IoT devices, Wes has \
-                         the scope on Equifax blaming open source & the Beard just saved the \
+                         the scope on Equifax blaming open source &amp; the Beard just saved the \
                          show. It’s a really packed episode!";
 
             NewEpisodeBuilder::default()
@@ -427,7 +428,7 @@ mod tests {
                  concerns. But as the project takes on a new level of relevance, decisions for \
                  the next version of Gnome have us worried about the future.</p>\n\n<p>Plus we \
                  chat with Wimpy about the Ubuntu Rally in NYC, Microsoft’s sneaky move to turn \
-                 Windows 10 into the “ULTIMATE LINUX RUNTIME”, community news & more!</p>";
+                 Windows 10 into the “ULTIMATE LINUX RUNTIME”, community news &amp; more!</p>";
 
             NewEpisodeBuilder::default()
                 .title("Gnome Does it Again | LUP 213")

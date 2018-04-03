@@ -23,7 +23,6 @@ extern crate log;
 #[macro_use]
 extern crate pretty_assertions;
 
-extern crate ammonia;
 extern crate chrono;
 extern crate hammond_data;
 extern crate hammond_downloader;

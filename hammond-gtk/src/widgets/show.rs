@@ -1,9 +1,8 @@
 use failure::Error;
 // use glib;
-use ammonia;
 use gtk;
 use gtk::prelude::*;
-use html2pango::markup as html_to_pango_markup;
+use html2pango::markup_from_raw;
 use open;
 
 use hammond_data::Podcast;
@@ -118,8 +117,7 @@ impl ShowWidget {
 
     /// Set the descripton text.
     fn set_description(&self, text: &str) {
-        self.description
-            .set_markup(&ammonia::clean(&html_to_pango_markup(text)));
+        self.description.set_markup(&markup_from_raw(text));
     }
 
     /// Set scrolled window vertical adjustment.
