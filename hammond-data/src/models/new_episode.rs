@@ -196,11 +196,14 @@ impl NewEpisodeMinimal {
         let title = item.title().unwrap().trim().to_owned();
         let guid = item.guid().map(|s| s.value().trim().to_owned());
 
-        let uri = if let Some(url) = item.enclosure().map(|s| url_cleaner(s.url())) {
-            Some(url)
-        } else if item.link().is_some() {
-            item.link().map(|s| url_cleaner(s))
-        } else {
+        let uri = item.enclosure()
+            .map(|s| url_cleaner(s.url()))
+            // Fallback to Rss.Item.link if enclosure is None.
+            .or_else(|| item.link().map(|s| url_cleaner(s)));
+
+        // If url is still None return an Error as this behaviour is
+        // compliant with the RSS Spec.
+        if uri.is_none() {
             let err = DataError::ParseEpisodeError {
                 reason: "No url specified for the item.".into(),
                 parent_id,
