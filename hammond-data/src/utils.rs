@@ -3,7 +3,6 @@
 use chrono::prelude::*;
 use rayon::prelude::*;
 
-use itertools::Itertools;
 use url::{Position, Url};
 
 use dbqueries;

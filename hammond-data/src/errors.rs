@@ -3,16 +3,11 @@ use diesel::r2d2;
 use diesel_migrations::RunMigrationsError;
 use hyper;
 use native_tls;
-// use rss;
+use rss;
 use url;
 
 use std::io;
 // use std::fmt;
-
-// fadsadfs NOT SYNC
-// #[derive(Fail, Debug)]
-// #[fail(display = "RSS Error: {}", _0)]
-// struct RSSError(rss::Error);
 
 #[derive(Fail, Debug)]
 pub enum DataError {
@@ -34,8 +29,7 @@ pub enum DataError {
     #[fail(display = "IO Error: {}", _0)]
     IOError(#[cause] io::Error),
     #[fail(display = "RSS Error: {}", _0)]
-    // Rss::Error is not yet Sync
-    RssCrateError(String),
+    RssError(#[cause] rss::Error),
     #[fail(display = "Error: {}", _0)]
     Bail(String),
     #[fail(display = "Request to {} returned {}. Context: {}", url, status_code, context)]
@@ -97,6 +91,12 @@ impl From<native_tls::Error> for DataError {
 impl From<io::Error> for DataError {
     fn from(err: io::Error) -> Self {
         DataError::IOError(err)
+    }
+}
+
+impl From<rss::Error> for DataError {
+    fn from(err: rss::Error) -> Self {
+        DataError::RssError(err)
     }
 }
 

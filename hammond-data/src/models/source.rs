@@ -293,9 +293,8 @@ fn response_to_channel(
         .map_err(From::from)
         .map(|iter| iter.collect::<Vec<u8>>())
         .map(|utf_8_bytes| String::from_utf8_lossy(&utf_8_bytes).into_owned())
-        .and_then(|buf| {
-            Channel::from_str(&buf).or_else(|err| Err(DataError::RssCrateError(format!("{}", err))))
-        });
+        .and_then(|buf| Channel::from_str(&buf).map_err(From::from));
+
     let cpu_chan = pool.spawn(chan);
     Box::new(cpu_chan)
 }
