@@ -215,7 +215,7 @@ impl NewEpisodeMinimal {
         // Default to rfc2822 represantation of epoch 0.
         let date = parse_rfc822(item.pub_date().unwrap_or("Thu, 1 Jan 1970 00:00:00 +0000"));
         // Should treat information from the rss feeds as invalid by default.
-        // Case: Thu, 05 Aug 2016 06:00:00 -0400 <-- Actually that was friday.
+        // Case: "Thu, 05 Aug 2016 06:00:00 -0400" <-- Actually that was friday.
         let epoch = date.map(|x| x.timestamp() as i32).unwrap_or(0);
 
         let duration = parser::parse_itunes_duration(item.itunes_ext());
@@ -231,9 +231,9 @@ impl NewEpisodeMinimal {
             .map_err(From::from)
     }
 
+    // TODO: TryInto is stabilizing in rustc v1.26!
     pub(crate) fn into_new_episode(self, item: &rss::Item) -> NewEpisode {
-        let length = || -> Option<i32> { item.enclosure().map(|x| x.length().parse().ok())? }();
-
+        let length = item.enclosure().and_then(|x| x.length().parse().ok());
         let description = item.description().map(|s| ammonia::clean(s));
 
         NewEpisodeBuilder::default()
