@@ -20,6 +20,10 @@
 
 //! FIXME: Docs
 
+#[cfg(test)]
+#[macro_use]
+extern crate pretty_assertions;
+
 #[macro_use]
 extern crate derive_builder;
 #[macro_use]

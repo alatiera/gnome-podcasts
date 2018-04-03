@@ -19,10 +19,14 @@ extern crate lazy_static;
 #[macro_use]
 extern crate log;
 
+#[cfg(test)]
+#[macro_use]
+extern crate pretty_assertions;
+
 extern crate chrono;
-extern crate dissolve;
 extern crate hammond_data;
 extern crate hammond_downloader;
+extern crate html2pango;
 extern crate humansize;
 extern crate loggerv;
 extern crate open;

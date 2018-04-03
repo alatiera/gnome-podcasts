@@ -1,13 +1,12 @@
-use dissolve;
 use failure::Error;
 // use glib;
 use gtk;
 use gtk::prelude::*;
+use html2pango::markup_from_raw;
 use open;
 
 use hammond_data::Podcast;
 use hammond_data::dbqueries;
-use hammond_data::utils::replace_extra_spaces;
 
 use app::Action;
 use utils::set_image_from_path;
@@ -118,10 +117,7 @@ impl ShowWidget {
 
     /// Set the descripton text.
     fn set_description(&self, text: &str) {
-        // TODO: Temporary solution until we render html urls/bold/italic probably with
-        // markup.
-        let desc = dissolve::strip_html_tags(text).join(" ");
-        self.description.set_text(&replace_extra_spaces(&desc));
+        self.description.set_markup(&markup_from_raw(text));
     }
 
     /// Set scrolled window vertical adjustment.

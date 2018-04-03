@@ -10,7 +10,7 @@ use errors::DataError;
 use models::{Episode, EpisodeMinimal, Index, Insert, Update};
 use parser;
 use schema::episode;
-use utils::{replace_extra_spaces, url_cleaner};
+use utils::url_cleaner;
 
 #[derive(Insertable, AsChangeset)]
 #[table_name = "episode"]
@@ -231,15 +231,7 @@ impl NewEpisodeMinimal {
     pub(crate) fn into_new_episode(self, item: &rss::Item) -> NewEpisode {
         let length = || -> Option<i32> { item.enclosure().map(|x| x.length().parse().ok())? }();
 
-        // Prefer itunes summary over rss.description since many feeds put html into
-        // rss.description.
-        let summary = item.itunes_ext().map(|s| s.summary()).and_then(|s| s);
-        let description = if summary.is_some() {
-            summary.map(|s| replace_extra_spaces(&ammonia::clean(s)))
-        } else {
-            item.description()
-                .map(|s| replace_extra_spaces(&ammonia::clean(s)))
-        };
+        let description = item.description().map(|s| ammonia::clean(s));
 
         NewEpisodeBuilder::default()
             .title(self.title)
@@ -431,12 +423,12 @@ mod tests {
                 .unwrap()
         };
         static ref EXPECTED_LUP_2: NewEpisode = {
-            let descr = "The Gnome project is about to solve one of our audience's biggest \
-                         Wayland’s concerns. But as the project takes on a new level of \
-                         relevance, decisions for the next version of Gnome have us worried about \
-                         the future.\nPlus we chat with Wimpy about the Ubuntu Rally in NYC, \
-                         Microsoft’s sneaky move to turn Windows 10 into the “ULTIMATE LINUX \
-                         RUNTIME”, community news &amp; more!";
+            let descr =
+                "<p>The Gnome project is about to solve one of our audience's biggest Wayland’s \
+                 concerns. But as the project takes on a new level of relevance, decisions for \
+                 the next version of Gnome have us worried about the future.</p>\n\n<p>Plus we \
+                 chat with Wimpy about the Ubuntu Rally in NYC, Microsoft’s sneaky move to turn \
+                 Windows 10 into the “ULTIMATE LINUX RUNTIME”, community news &amp; more!</p>";
 
             NewEpisodeBuilder::default()
                 .title("Gnome Does it Again | LUP 213")

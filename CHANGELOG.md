@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 * Downlaoding and loading images now is done asynchronously and is not blocking programs execution.
 [#7](https://gitlab.gnome.org/alatiera/Hammond/issues/7)
+* Bold, italics links and some other `html` tags can now be rendered in the Show Description.
+[#25](https://gitlab.gnome.org/alatiera/Hammond/issues/25)
 
 ## [0.3.1] - 2018-03-28
 

@@ -3,7 +3,6 @@
 use chrono::prelude::*;
 use rayon::prelude::*;
 
-use itertools::Itertools;
 use url::{Position, Url};
 
 use dbqueries;
@@ -108,22 +107,6 @@ pub fn url_cleaner(s: &str) -> String {
         Ok(parsed) => parsed[..Position::AfterPath].to_owned(),
         _ => s.trim().to_owned(),
     }
-}
-
-/// Helper functions that strips extra spaces and newlines and ignores the tabs.
-#[allow(match_same_arms)]
-pub fn replace_extra_spaces(s: &str) -> String {
-    s.trim()
-        .chars()
-        .filter(|ch| *ch != '\t')
-        .coalesce(|current, next| match (current, next) {
-            ('\n', '\n') => Ok('\n'),
-            ('\n', ' ') => Ok('\n'),
-            (' ', '\n') => Ok('\n'),
-            (' ', ' ') => Ok(' '),
-            (_, _) => Err((current, next)),
-        })
-        .collect::<String>()
 }
 
 /// Returns the URI of a Podcast Downloads given it's title.
@@ -294,24 +277,6 @@ mod tests {
         assert_eq!(url_cleaner(bad_url), good_url);
         assert_eq!(url_cleaner(good_url), good_url);
         assert_eq!(url_cleaner(&format!("   {}\t\n", bad_url)), good_url);
-    }
-
-    #[test]
-    fn test_whitespace() {
-        let bad_txt = "1   2   3        4  5";
-        let valid_txt = "1 2 3 4 5";
-
-        assert_eq!(replace_extra_spaces(&bad_txt), valid_txt);
-
-        let bad_txt = "1   2   3  \n      4  5\n";
-        let valid_txt = "1 2 3\n4 5";
-
-        assert_eq!(replace_extra_spaces(&bad_txt), valid_txt);
-
-        let bad_txt = "1   2   3  \n\n\n    \n  4  5\n";
-        let valid_txt = "1 2 3\n4 5";
-
-        assert_eq!(replace_extra_spaces(&bad_txt), valid_txt);
     }
 
     #[test]
