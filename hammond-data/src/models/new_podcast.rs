@@ -1,7 +1,5 @@
 use diesel;
 use diesel::prelude::*;
-
-// use ammonia;
 use rss;
 
 use errors::DataError;

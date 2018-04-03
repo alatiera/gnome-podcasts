@@ -7,7 +7,6 @@ use rss;
 use url;
 
 use std::io;
-// use std::fmt;
 
 #[derive(Fail, Debug)]
 pub enum DataError {

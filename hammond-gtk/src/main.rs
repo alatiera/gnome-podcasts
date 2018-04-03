@@ -25,7 +25,6 @@ extern crate pretty_assertions;
 
 extern crate ammonia;
 extern crate chrono;
-// extern crate dissolve;
 extern crate hammond_data;
 extern crate hammond_downloader;
 extern crate html2pango;

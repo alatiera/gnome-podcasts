@@ -8,7 +8,6 @@ workspace = "../"
 [dependencies]
 ammonia = "1.1.0"
 chrono = "0.4.1"
-dissolve = "0.2.2"
 gdk = "0.8.0"
 gdk-pixbuf = "0.4.0"
 glib = "0.5.0"
