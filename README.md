@@ -60,7 +60,7 @@ flatpak build-bundle repo hammond org.gnome.Hammond
 
 ```sh
 git clone https://gitlab.gnome.org/alatiera/hammond.git
-cd Hammond/
+cd hammond/
 ./configure --prefix=/usr/local
 make && sudo make install
 ```
@@ -71,26 +71,29 @@ You can run `sudo make uninstall` for removal
 
 #### Dependencies
 
-* Rust stable 1.22 or later.
+* Rust stable 1.22 or later along with cargo.
 * Gtk+ 3.22 or later
 * Meson
+* A network connection
+
+Offline build are possible too, but [`cargo-vendor`][vendor] would have to be setup first
 
 **Debian/Ubuntu**
 
 ```sh
 apt-get update -yqq
 apt-get install -yqq --no-install-recommends build-essential
-apt-get install -yqq --no-install-recommends libgtk-3-dev meson
+apt-get install -yqq --no-install-recommends rustc cargo libgtk-3-dev meson
 ```
 
 **Fedora**
 
 ```sh
-dnf install -y gtk3-devel glib2-devel openssl-devel sqlite-devel meson
+dnf install -y rust cargo gtk3-devel glib2-devel openssl-devel sqlite-devel meson
 ```
 
 If you happen to build it on other distributions please let me know the names 
-of the corresponding libraries. Feel free to open a PR or an Issue to note it.
+of the corresponding libraries. Feel free to open a MR or an Issue to note it.
 
 ## Contributing
 
@@ -139,3 +142,5 @@ Hammond's design is heavily insired by [GNOME Music](https://wiki.gnome.org/Desi
 We also copied some elements from [GNOME News](https://wiki.gnome.org/Design/Apps/Potential/News).
 
 And almost the entirety of the build system is copied from the [Fractal](https://gitlab.gnome.org/danigm/fractal) project.
+
+[vendor]: https://github.com/alexcrichton/cargo-vendor
