@@ -1,4 +1,3 @@
-// use dissolve;
 use failure::Error;
 // use glib;
 use ammonia;
@@ -9,11 +8,9 @@ use open;
 
 use hammond_data::Podcast;
 use hammond_data::dbqueries;
-// use hammond_data::utils::replace_extra_spaces;
 
 use app::Action;
 use utils::set_image_from_path;
-// use utils::set_image_from_path;
 use widgets::episode::episodes_listbox;
 
 use std::sync::Arc;
@@ -121,10 +118,6 @@ impl ShowWidget {
 
     /// Set the descripton text.
     fn set_description(&self, text: &str) {
-        // TODO: Temporary solution until we render html urls/bold/italic probably with
-        // markup.
-        // let desc = dissolve::strip_html_tags(text).join(" ");
-        // self.description.set_text(&replace_extra_spaces(&desc));
         self.description
             .set_markup(&ammonia::clean(&html_to_pango_markup(text)));
     }
