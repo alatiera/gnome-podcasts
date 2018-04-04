@@ -195,10 +195,10 @@ impl EpisodeWidget {
 #[inline]
 fn on_download_clicked(ep: &EpisodeWidgetQuery, sender: Sender<Action>) -> Result<(), Error> {
     let pd = dbqueries::get_podcast_from_id(ep.podcast_id())?;
-    let download_fold = get_download_folder(&pd.title().to_owned())?;
+    let download_fold = get_download_folder(&pd.title())?;
 
     // Start a new download.
-    manager::add(ep.rowid(), &download_fold, sender.clone())?;
+    manager::add(ep.rowid(), download_fold, sender.clone())?;
 
     // Update Views
     sender.send(Action::RefreshEpisodesView)?;

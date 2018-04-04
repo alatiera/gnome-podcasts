@@ -78,38 +78,32 @@ lazy_static! {
     static ref DLPOOL: rayon::ThreadPool = rayon::ThreadPoolBuilder::new().build().unwrap();
 }
 
-pub fn add(id: i32, directory: &str, sender: Sender<Action>) -> Result<(), Error> {
+pub fn add(id: i32, directory: String, sender: Sender<Action>) -> Result<(), Error> {
     // Create a new `Progress` struct to keep track of dl progress.
     let prog = Arc::new(Mutex::new(Progress::default()));
 
-    {
-        let mut m = ACTIVE_DOWNLOADS
-            .write()
-            .map_err(|_| format_err!("Failed to get a lock on the mutex."))?;
-        m.insert(id, prog.clone());
-    }
+    match ACTIVE_DOWNLOADS.write() {
+        Ok(mut guard) => guard.insert(id, prog.clone()),
+        Err(err) => return Err(format_err!("ActiveDonwloads: {}.", err)),
+    };
 
-    let dir = directory.to_owned();
     DLPOOL.spawn(move || {
         if let Ok(episode) = dbqueries::get_episode_from_rowid(id) {
             let pid = episode.podcast_id();
             let id = episode.rowid();
 
-            if let Err(err) = get_episode(&mut episode.into(), dir.as_str(), Some(prog)) {
+            if let Err(err) = get_episode(&mut episode.into(), directory.as_str(), Some(prog)) {
                 error!("Error while trying to download an episode");
                 error!("Error: {}", err);
             }
 
-            {
-                if let Ok(mut m) = ACTIVE_DOWNLOADS.write() {
-                    info!("Removed: {:?}", m.remove(&id));
-                }
+            if let Ok(mut m) = ACTIVE_DOWNLOADS.write() {
+                let foo = m.remove(&id);
+                debug!("Removed: {:?}", foo);
             }
 
-            // {
-            //     if let Ok(m) = ACTIVE_DOWNLOADS.read() {
-            //         debug!("ACTIVE DOWNLOADS: {:#?}", m);
-            //     }
+            // if let Ok(m) = ACTIVE_DOWNLOADS.read() {
+            //     debug!("ACTIVE DOWNLOADS: {:#?}", m);
             // }
 
             sender
@@ -163,13 +157,14 @@ mod tests {
         let (sender, _rx) = channel();
 
         let download_fold = get_download_folder(&pd.title()).unwrap();
-        add(episode.rowid(), download_fold.as_str(), sender).unwrap();
+        let fold2 = download_fold.clone();
+        add(episode.rowid(), download_fold, sender).unwrap();
         assert_eq!(ACTIVE_DOWNLOADS.read().unwrap().len(), 1);
 
         // Give it soem time to download the file
         thread::sleep(time::Duration::from_secs(20));
 
-        let final_path = format!("{}/{}.mp3", &download_fold, episode.rowid());
+        let final_path = format!("{}/{}.mp3", &fold2, episode.rowid());
         assert!(Path::new(&final_path).exists());
         fs::remove_file(final_path).unwrap();
     }
