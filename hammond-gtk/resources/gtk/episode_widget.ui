@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.21.0 
+<!-- Generated with glade 3.22.0 
 
 Copyright (C) 2017 - 2018
 
@@ -31,6 +31,7 @@ Tobias Bernard
   <!-- interface-copyright 2017 - 2018 -->
   <!-- interface-authors Jordan Petridis\nTobias Bernard -->
   <object class="GtkBox" id="episode_container">
+    <property name="height_request">64</property>
     <property name="visible">True</property>
     <property name="can_focus">False</property>
     <property name="valign">center</property>
@@ -288,9 +289,8 @@ Tobias Bernard
         </child>
       </object>
       <packing>
-        <property name="expand">False</property>
+        <property name="expand">True</property>
         <property name="fill">False</property>
-        <property name="padding">6</property>
         <property name="position">0</property>
       </packing>
     </child>
@@ -300,14 +300,13 @@ Tobias Bernard
         <property name="no_show_all">True</property>
         <property name="margin_left">6</property>
         <property name="margin_right">6</property>
-        <property name="margin_bottom">6</property>
         <property name="hexpand">True</property>
         <property name="pulse_step">0</property>
       </object>
       <packing>
         <property name="expand">False</property>
         <property name="fill">False</property>
-        <property name="pack_type">end</property>
+        <property name="padding">6</property>
         <property name="position">1</property>
       </packing>
     </child>
