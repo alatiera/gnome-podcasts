@@ -352,7 +352,7 @@ fn total_size_helper(
 // }
 
 pub fn episodes_listbox(pd: Arc<Podcast>, sender: Sender<Action>) -> Result<gtk::ListBox, Error> {
-    // use crossbeam_channel::TryRecvError::*;
+    use crossbeam_channel::TryRecvError::*;
     use crossbeam_channel::bounded;
 
     let count = dbqueries::get_pd_episodes_count(&pd)?;
@@ -376,23 +376,27 @@ pub fn episodes_listbox(pd: Arc<Podcast>, sender: Sender<Action>) -> Result<gtk:
         return Ok(list);
     }
 
-    let episodes = receiver.recv().unwrap();
-    //     Ok(e) => e,
-    //     Err(Empty) => return glib::Continue(true),
-    //     Err(Disconnected) => return glib::Continue(false),
-    // };
-
-    let mut idx = 0;
     gtk::idle_add(clone!(list => move || {
-        if idx >= episodes.len() { return glib::Continue(false) }
+        let episodes = match receiver.try_recv() {
+            Ok(e) => e,
+            Err(Empty) => return glib::Continue(true),
+            Err(Disconnected) => return glib::Continue(false),
+        };
 
-        episodes.get(idx).cloned().map(|ep| {
-            let widget = EpisodeWidget::new(ep, sender.clone());
-            list.add(&widget.container);
-        });
+        let mut idx = 0;
+        gtk::idle_add(clone!(list, sender => move || {
+            if idx >= episodes.len() { return glib::Continue(false) }
 
-        idx += 1;
-        glib::Continue(true)
+            episodes.get(idx).cloned().map(|ep| {
+                let widget = EpisodeWidget::new(ep, sender.clone());
+                list.add(&widget.container);
+            });
+
+            idx += 1;
+            glib::Continue(true)
+        }));
+
+        glib::Continue(false)
     }));
 
     Ok(list)
