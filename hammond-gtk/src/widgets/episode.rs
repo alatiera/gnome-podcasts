@@ -21,7 +21,7 @@ use std::ops::DerefMut;
 use std::path::Path;
 use std::rc::Rc;
 use std::sync::{Arc, Mutex};
-use std::sync::mpsc::{channel, Sender};
+use std::sync::mpsc::Sender;
 
 #[derive(Debug)]
 pub struct EpisodeWidget {
@@ -352,9 +352,12 @@ fn total_size_helper(
 // }
 
 pub fn episodes_listbox(pd: Arc<Podcast>, sender: Sender<Action>) -> Result<gtk::ListBox, Error> {
+    // use crossbeam_channel::TryRecvError::*;
+    use crossbeam_channel::bounded;
+
     let count = dbqueries::get_pd_episodes_count(&pd)?;
 
-    let (sender_, receiver) = channel();
+    let (sender_, receiver) = bounded(1);
     rayon::spawn(move || {
         let episodes = dbqueries::get_pd_episodeswidgets(&pd).unwrap();
         sender_
@@ -373,27 +376,24 @@ pub fn episodes_listbox(pd: Arc<Podcast>, sender: Sender<Action>) -> Result<gtk:
         return Ok(list);
     }
 
-    let widgets: Vec<_> = (0..count)
-        .into_iter()
-        .map(|_| {
-            let widget = EpisodeWidget::default();
+    let episodes = receiver.recv().unwrap();
+    //     Ok(e) => e,
+    //     Err(Empty) => return glib::Continue(true),
+    //     Err(Disconnected) => return glib::Continue(false),
+    // };
+
+    let mut idx = 0;
+    gtk::idle_add(clone!(list => move || {
+        if idx >= episodes.len() { return glib::Continue(false) }
+
+        episodes.get(idx).cloned().map(|ep| {
+            let widget = EpisodeWidget::new(ep, sender.clone());
             list.add(&widget.container);
-            widget
-        })
-        .collect();
+        });
 
-    let (s3, r3) = channel();
-    s3.send(widgets).unwrap();
-    gtk::idle_add(move || {
-        let episodes = receiver.recv().unwrap();
-        let widgets = r3.recv().unwrap();
-        episodes
-            .into_iter()
-            .zip(widgets)
-            .for_each(|(ep, mut widget)| widget.init(ep, sender.clone()));
-
-        glib::Continue(false)
-    });
+        idx += 1;
+        glib::Continue(true)
+    }));
 
     Ok(list)
 }

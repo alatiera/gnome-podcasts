@@ -24,6 +24,7 @@ extern crate log;
 extern crate pretty_assertions;
 
 extern crate chrono;
+extern crate crossbeam_channel;
 extern crate hammond_data;
 extern crate hammond_downloader;
 extern crate html2pango;
