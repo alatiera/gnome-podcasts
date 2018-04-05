@@ -706,7 +706,7 @@ dependencies = [
  "gtk 0.4.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "hammond-data 0.1.0",
  "hammond-downloader 0.1.0",
- "html2pango 0.1.0 (git+https://gitlab.gnome.org/danigm/html2pango)",
+ "html2pango 0.1.0 (git+https://gitlab.gnome.org/World/html2pango)",
  "humansize 1.1.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "lazy_static 1.0.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "log 0.4.1 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -740,10 +740,11 @@ dependencies = [
 [[package]]
 name = "html2pango"
 version = "0.1.0"
-source = "git+https://gitlab.gnome.org/danigm/html2pango#6dda855642d7d3cac0f1873106f2c93dc55ef293"
+source = "git+https://gitlab.gnome.org/World/html2pango#63fb1ea644ef38bf7f268bbe8f40b19dd77d7995"
 dependencies = [
  "ammonia 1.1.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "lazy_static 1.0.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "maplit 1.0.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "regex 0.2.10 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
@@ -2090,7 +2091,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 "checksum gtk 0.4.0 (registry+https://github.com/rust-lang/crates.io-index)" = "414f3522f550a0b4f65e089f00ffcd3987dab8b0be284cb979aa7f6a03d60516"
 "checksum gtk-sys 0.6.0 (registry+https://github.com/rust-lang/crates.io-index)" = "3d9554cf5b3a85a13fb39258c65b04b262989c1d7a758f8f555b77a478621a91"
 "checksum handlebars 0.31.0 (registry+https://github.com/rust-lang/crates.io-index)" = "e7bdb08e879b8c78ee90f5022d121897c31ea022cb0cc6d13f2158c7a9fbabb1"
-"checksum html2pango 0.1.0 (git+https://gitlab.gnome.org/danigm/html2pango)" = "<none>"
+"checksum html2pango 0.1.0 (git+https://gitlab.gnome.org/World/html2pango)" = "<none>"
 "checksum html5ever 0.22.0 (registry+https://github.com/rust-lang/crates.io-index)" = "e579ac8647178ab915d400d7d22938bda5cd351c6c62e1c294d56884ccfc75fe"
 "checksum httparse 1.2.4 (registry+https://github.com/rust-lang/crates.io-index)" = "c2f407128745b78abc95c0ffbe4e5d37427fdc0d45470710cfef8c44522a2e37"
 "checksum humansize 1.1.0 (registry+https://github.com/rust-lang/crates.io-index)" = "b6cab2627acfc432780848602f3f558f7e9dd427352224b0d9324025796d2a5e"
