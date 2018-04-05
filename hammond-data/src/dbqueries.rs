@@ -175,6 +175,16 @@ pub fn get_pd_episodes(parent: &Podcast) -> Result<Vec<Episode>, DataError> {
         .map_err(From::from)
 }
 
+pub fn get_pd_episodes_count(parent: &Podcast) -> Result<i64, DataError> {
+    let db = connection();
+    let con = db.get()?;
+
+    Episode::belonging_to(parent)
+        .count()
+        .get_result(&con)
+        .map_err(From::from)
+}
+
 pub fn get_pd_episodeswidgets(parent: &Podcast) -> Result<Vec<EpisodeWidgetQuery>, DataError> {
     use schema::episode::dsl::*;
     let db = connection();

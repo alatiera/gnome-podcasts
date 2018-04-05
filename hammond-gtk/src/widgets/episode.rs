@@ -5,6 +5,7 @@ use gtk::prelude::*;
 use failure::Error;
 use humansize::FileSize;
 use open;
+use rayon;
 use take_mut;
 
 use hammond_data::{EpisodeWidgetQuery, Podcast};
@@ -20,7 +21,7 @@ use std::ops::DerefMut;
 use std::path::Path;
 use std::rc::Rc;
 use std::sync::{Arc, Mutex};
-use std::sync::mpsc::Sender;
+use std::sync::mpsc::{channel, Sender};
 
 #[derive(Debug)]
 pub struct EpisodeWidget {
@@ -350,23 +351,49 @@ fn total_size_helper(
 //     delete_local_content(&mut ep).map_err(From::from).map(|_| ())
 // }
 
-pub fn episodes_listbox(pd: &Podcast, sender: Sender<Action>) -> Result<gtk::ListBox, Error> {
-    let episodes = dbqueries::get_pd_episodeswidgets(pd)?;
+pub fn episodes_listbox(pd: Arc<Podcast>, sender: Sender<Action>) -> Result<gtk::ListBox, Error> {
+    let count = dbqueries::get_pd_episodes_count(&pd)?;
+
+    let (sender_, receiver) = channel();
+    rayon::spawn(move || {
+        let episodes = dbqueries::get_pd_episodeswidgets(&pd).unwrap();
+        sender_
+            .send(episodes)
+            .expect("Something terrible happened to the channnel");
+    });
 
     let list = gtk::ListBox::new();
     list.set_visible(true);
     list.set_selection_mode(gtk::SelectionMode::None);
 
-    if episodes.is_empty() {
+    if count == 0 {
         let builder = gtk::Builder::new_from_resource("/org/gnome/hammond/gtk/empty_show.ui");
         let container: gtk::Box = builder.get_object("empty_show").unwrap();
         list.add(&container);
         return Ok(list);
     }
 
-    episodes.into_iter().for_each(|ep| {
-        let widget = EpisodeWidget::new(ep, sender.clone());
-        list.add(&widget.container);
+    let widgets: Vec<_> = (0..count)
+        .into_iter()
+        .map(|_| {
+            let widget = EpisodeWidget::default();
+            list.add(&widget.container);
+            widget
+        })
+        .collect();
+
+    let (s3, r3) = channel();
+    s3.send(widgets).unwrap();
+    gtk::idle_add(move || {
+        let episodes = receiver.recv().unwrap();
+        let widgets = r3.recv().unwrap();
+        episodes
+            .into_iter()
+            .zip(widgets)
+            .for_each(|(ep, mut widget)| widget.init(ep, sender.clone()));
+
+        glib::Continue(false)
     });
+
     Ok(list)
 }
