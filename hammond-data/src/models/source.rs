@@ -269,7 +269,7 @@ mod tests {
         let source = Source::from_url(url).unwrap();
         let id = source.id();
 
-        let feed = source.into_feed(&client, pool.clone(), true);
+        let feed = source.into_feed(&client, true);
         let feed = core.run(feed).unwrap();
 
         let expected = get_feed("tests/feeds/2018-01-20-Intercepted.xml", id);
