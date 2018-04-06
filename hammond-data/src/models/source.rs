@@ -259,7 +259,6 @@ mod tests {
     fn test_into_feed() {
         truncate_db().unwrap();
 
-        let pool = CpuPool::new_num_cpus();
         let mut core = Core::new().unwrap();
         let client = Client::configure()
             .connector(HttpsConnector::new(4, &core.handle()).unwrap())

@@ -3,7 +3,6 @@ extern crate criterion;
 use criterion::Criterion;
 
 // extern crate futures;
-// extern crate futures_cpupool;
 extern crate hammond_data;
 extern crate hyper;
 extern crate hyper_tls;
@@ -15,7 +14,6 @@ extern crate rss;
 // use rayon::prelude::*;
 
 // use futures::future::*;
-// use futures_cpupool::CpuPool;
 use tokio_core::reactor::Core;
 
 use hammond_data::FeedBuilder;
