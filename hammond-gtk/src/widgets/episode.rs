@@ -396,25 +396,25 @@ pub fn episodes_listbox(pd: Arc<Podcast>, sender: Sender<Action>) -> Result<gtk:
 
 use gtk::{IsA, Widget};
 
-fn lazy_load<T, U, P, Z>(data: Vec<T>, container: Z, mut predicate: P)
+fn lazy_load<T, U, P, Z>(mut data: Vec<T>, container: Z, mut predicate: P)
 where
-    T: Clone + 'static,
+    T: 'static,
     Z: ContainerExt + 'static,
     P: FnMut(T) -> U + 'static,
     U: IsA<Widget>,
 {
-    let mut idx = 0;
+    // to use it as a stack
+    data.reverse();
     gtk::idle_add(move || {
-        if idx >= data.len() {
+        if data.is_empty() {
             return glib::Continue(false);
         }
 
-        data.get(idx).cloned().map(|x| {
+        data.pop().map(|x| {
             let widget = predicate(x);
             container.add(&widget);
         });
 
-        idx += 1;
         glib::Continue(true)
     });
 }
