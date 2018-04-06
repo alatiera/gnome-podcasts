@@ -383,7 +383,7 @@ pub fn episodes_listbox(pd: Arc<Podcast>, sender: Sender<Action>) -> Result<gtk:
             Err(Disconnected) => return glib::Continue(false),
         };
 
-        lazy_load(episodes, list.clone(), clone!(sender => move |ep| {
+        lazy_load(episodes.into_iter(), list.clone(), clone!(sender => move |ep| {
             let w = EpisodeWidget::new(ep, sender.clone());
             w.container.clone()
         }));
@@ -396,25 +396,21 @@ pub fn episodes_listbox(pd: Arc<Podcast>, sender: Sender<Action>) -> Result<gtk:
 
 use gtk::{IsA, Widget};
 
-fn lazy_load<T, U, P, Z>(mut data: Vec<T>, container: Z, mut predicate: P)
+fn lazy_load<T, U, P, Z>(mut data: T, container: Z, mut predicate: P)
 where
-    T: 'static,
+    T: Iterator + 'static,
+    T::Item: 'static,
     Z: ContainerExt + 'static,
-    P: FnMut(T) -> U + 'static,
+    P: FnMut(T::Item) -> U + 'static,
     U: IsA<Widget>,
 {
-    // to use it as a stack
-    data.reverse();
     gtk::idle_add(move || {
-        if data.is_empty() {
-            return glib::Continue(false);
-        }
-
-        data.pop().map(|x| {
-            let widget = predicate(x);
-            container.add(&widget);
-        });
-
-        glib::Continue(true)
+        data.next()
+            .and_then(|x| {
+                container.add(&predicate(x));
+                Some(glib::Continue(true))
+            })
+            .or(Some(glib::Continue(false)))
+            .unwrap()
     });
 }
