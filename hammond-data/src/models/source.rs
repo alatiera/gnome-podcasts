@@ -11,7 +11,6 @@ use hyper_tls::HttpsConnector;
 
 // use futures::future::ok;
 use futures::prelude::*;
-use futures_cpupool::CpuPool;
 
 use database::connection;
 use errors::DataError;
@@ -179,12 +178,11 @@ impl Source {
     pub fn into_feed(
         self,
         client: &Client<HttpsConnector<HttpConnector>>,
-        pool: CpuPool,
         ignore_etags: bool,
     ) -> Box<Future<Item = Feed, Error = DataError>> {
         let id = self.id();
         let feed = self.request_constructor(client, ignore_etags)
-            .and_then(move |(_, res)| response_to_channel(res, pool))
+            .and_then(move |(_, res)| response_to_channel(res))
             .and_then(move |chan| {
                 FeedBuilder::default()
                     .channel(chan)
@@ -237,10 +235,7 @@ impl Source {
 }
 
 #[allow(needless_pass_by_value)]
-fn response_to_channel(
-    res: Response,
-    pool: CpuPool,
-) -> Box<Future<Item = Channel, Error = DataError> + Send> {
+fn response_to_channel(res: Response) -> Box<Future<Item = Channel, Error = DataError> + Send> {
     let chan = res.body()
         .concat2()
         .map(|x| x.into_iter())
@@ -249,8 +244,7 @@ fn response_to_channel(
         .map(|utf_8_bytes| String::from_utf8_lossy(&utf_8_bytes).into_owned())
         .and_then(|buf| Channel::from_str(&buf).map_err(From::from));
 
-    let cpu_chan = pool.spawn(chan);
-    Box::new(cpu_chan)
+    Box::new(chan)
 }
 
 #[cfg(test)]

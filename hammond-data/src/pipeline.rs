@@ -2,7 +2,6 @@
 //! Docs.
 
 use futures::future::*;
-use futures_cpupool::CpuPool;
 // use futures::prelude::*;
 
 use hyper::Client;
@@ -20,23 +19,6 @@ use models::{IndexState, NewEpisode, NewEpisodeMinimal};
 
 // use std::sync::{Arc, Mutex};
 
-macro_rules! clone {
-    (@param _) => ( _ );
-    (@param $x:ident) => ( $x );
-    ($($n:ident),+ => move || $body:expr) => (
-        {
-            $( let $n = $n.clone(); )+
-            move || $body
-        }
-    );
-    ($($n:ident),+ => move |$($p:tt),+| $body:expr) => (
-        {
-            $( let $n = $n.clone(); )+
-            move |$(clone!(@param $p),)+| $body
-        }
-    );
-}
-
 /// The pipline to be run for indexing and updating a Podcast feed that originates from
 /// `Source.uri`.
 ///
@@ -47,13 +29,12 @@ pub fn pipeline<S: IntoIterator<Item = Source>>(
     sources: S,
     ignore_etags: bool,
     tokio_core: &mut Core,
-    pool: &CpuPool,
     client: Client<HttpsConnector<HttpConnector>>,
 ) -> Result<(), DataError> {
     let list: Vec<_> = sources
         .into_iter()
-        .map(clone!(pool => move |s| s.into_feed(&client, pool.clone(), ignore_etags)))
-        .map(|fut| fut.and_then(clone!(pool => move |feed| pool.clone().spawn(feed.index()))))
+        .map(move |s| s.into_feed(&client, ignore_etags))
+        .map(|fut| fut.and_then(|feed| feed.index()))
         .map(|fut| fut.map(|_| ()).map_err(|err| error!("Error: {}", err)))
         .collect();
 
@@ -67,26 +48,24 @@ pub fn pipeline<S: IntoIterator<Item = Source>>(
     Ok(())
 }
 
-/// Creates a tokio `reactor::Core`, a `CpuPool`, and a `hyper::Client` and
+/// Creates a tokio `reactor::Core`, and a `hyper::Client` and
 /// runs the pipeline.
 pub fn run(sources: Vec<Source>, ignore_etags: bool) -> Result<(), DataError> {
     if sources.is_empty() {
         return Ok(());
     }
 
-    let pool = CpuPool::new_num_cpus();
     let mut core = Core::new()?;
     let handle = core.handle();
     let client = Client::configure()
         .connector(HttpsConnector::new(num_cpus::get(), &handle)?)
         .build(&handle);
 
-    pipeline(sources, ignore_etags, &mut core, &pool, client)
+    pipeline(sources, ignore_etags, &mut core, client)
 }
 
 /// Docs
 pub fn index_single_source(s: Source, ignore_etags: bool) -> Result<(), DataError> {
-    let pool = CpuPool::new_num_cpus();
     let mut core = Core::new()?;
     let handle = core.handle();
 
@@ -94,8 +73,8 @@ pub fn index_single_source(s: Source, ignore_etags: bool) -> Result<(), DataErro
         .connector(HttpsConnector::new(num_cpus::get(), &handle)?)
         .build(&handle);
 
-    let work = s.into_feed(&client, pool.clone(), ignore_etags)
-        .and_then(clone!(pool => move |feed| pool.clone().spawn(feed.index())))
+    let work = s.into_feed(&client, ignore_etags)
+        .and_then(move |feed| feed.index())
         .map(|_| ());
 
     core.run(work)
