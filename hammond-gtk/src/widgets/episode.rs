@@ -384,8 +384,7 @@ pub fn episodes_listbox(pd: Arc<Podcast>, sender: Sender<Action>) -> Result<gtk:
         };
 
         lazy_load(episodes, list.clone(), clone!(sender => move |ep| {
-            let w = EpisodeWidget::new(ep, sender.clone());
-            w.container.clone()
+            EpisodeWidget::new(ep, sender.clone()).container
         }));
 
         glib::Continue(false)
