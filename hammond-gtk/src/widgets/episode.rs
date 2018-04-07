@@ -395,18 +395,18 @@ pub fn episodes_listbox(pd: Arc<Podcast>, sender: Sender<Action>) -> Result<gtk:
 
 use gtk::{IsA, Widget};
 
-fn lazy_load<T, U, P, Z>(data: T, container: Z, mut predicate: P)
+fn lazy_load<T, C, F, W>(data: T, container: C, mut contructor: F)
 where
     T: IntoIterator + 'static,
     T::Item: 'static,
-    Z: ContainerExt + 'static,
-    P: FnMut(T::Item) -> U + 'static,
-    U: IsA<Widget>,
+    C: ContainerExt + 'static,
+    F: FnMut(T::Item) -> W + 'static,
+    W: IsA<Widget>,
 {
     let mut data = data.into_iter();
     gtk::idle_add(move || {
         data.next()
-            .map(|x| container.add(&predicate(x)))
+            .map(|x| container.add(&contructor(x)))
             .map(|_| glib::Continue(true))
             .unwrap_or(glib::Continue(false))
     });
