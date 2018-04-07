@@ -31,6 +31,38 @@ use app::Action;
 use chrono::Duration;
 use chrono::prelude::*;
 
+/// Lazy evaluates and loads widgets to the parent `container` widget.
+///
+/// Accepts an IntoIterator, `T`, as the source from which each widget
+/// will be constructed. An `FnMut` function that returns the desired
+/// widget should be passed as the widget `constructor`.
+///
+/// ```no_run
+/// # struct Message;
+/// # struct MessageWidget(gtk::Label);
+///
+/// # impl MessageWidget {
+/// #    fn new(_: Message) -> Self {
+/// #        MessageWidget(gtk::Label::new("A message"))
+/// #    }
+/// # }
+///
+/// let messages: Vec<Message> = Vec::new();
+/// let list = gtk::ListBox::new();
+/// let constructor = |m| { MessageWidget::new(m).0};
+/// lazy_load(messages, list, constructor);
+/// ```
+///
+/// If you have already constructed the widgets and only want to
+/// load them to the parent you can pass a closure that returns it's
+/// own argument to the constructor.
+///
+/// ```no_run
+/// # use std::collections::binary_heap::BinaryHeap;
+/// let widgets: BinaryHeap<gtk::Button> = BinaryHeap::new();
+/// let list = gtk::ListBox::new();
+/// lazy_load(widgets, list, |w| w);
+/// ```
 pub fn lazy_load<T, C, F, W>(data: T, container: C, mut contructor: F)
 where
     T: IntoIterator + 'static,
