@@ -4,6 +4,7 @@ use gdk_pixbuf::Pixbuf;
 use gio::{Settings, SettingsExt};
 use glib;
 use gtk;
+use gtk::{IsA, Widget};
 use gtk::prelude::*;
 
 use failure::Error;
@@ -29,6 +30,23 @@ use app::Action;
 
 use chrono::Duration;
 use chrono::prelude::*;
+
+pub fn lazy_load<T, C, F, W>(data: T, container: C, mut contructor: F)
+where
+    T: IntoIterator + 'static,
+    T::Item: 'static,
+    C: ContainerExt + 'static,
+    F: FnMut(T::Item) -> W + 'static,
+    W: IsA<Widget>,
+{
+    let mut data = data.into_iter();
+    gtk::idle_add(move || {
+        data.next()
+            .map(|x| container.add(&contructor(x)))
+            .map(|_| glib::Continue(true))
+            .unwrap_or(glib::Continue(false))
+    });
+}
 
 lazy_static! {
     static ref IGNORESHOWS: Arc<Mutex<HashSet<i32>>> = Arc::new(Mutex::new(HashSet::new()));
