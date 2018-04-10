@@ -98,7 +98,7 @@ impl NewPodcast {
 
         // Try to get the itunes img first
         let itunes_img = chan.itunes_ext()
-            .and_then(|s| s.image().trim())
+            .and_then(|s| s.image().map(|url| url.trim()))
             .map(|s| s.to_owned());
         // If itunes is None, try to get the channel.image from the rss spec
         let image_uri = itunes_img.or_else(|| chan.image().map(|s| s.url().trim().to_owned()));

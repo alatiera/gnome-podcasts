@@ -234,12 +234,13 @@ impl NewEpisodeMinimal {
     // TODO: TryInto is stabilizing in rustc v1.26!
     pub(crate) fn into_new_episode(self, item: &rss::Item) -> NewEpisode {
         let length = item.enclosure().and_then(|x| x.length().parse().ok());
-        let description = item.description().map(|s| {
-            ammonia::Builder::new()
+        let description = item.description().and_then(|s| {
+            let sanitized_html = ammonia::Builder::new()
                 // Remove `rel` attributes from `<a>` tags
                 .link_rel(None)
-                .clean(chan.description().trim())
+                .clean(s.trim())
                 .to_string();
+            Some(sanitized_html)
         });
 
         NewEpisodeBuilder::default()
