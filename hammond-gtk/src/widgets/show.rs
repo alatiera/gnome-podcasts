@@ -73,7 +73,7 @@ impl ShowWidget {
                 }
         }));
 
-        self.setup_listbox(&pd, sender.clone());
+        self.setup_listbox(pd.clone(), sender.clone());
         self.set_description(pd.description());
 
         if let Err(err) = self.set_cover(pd.clone()) {
@@ -105,7 +105,7 @@ impl ShowWidget {
     }
 
     /// Populate the listbox with the shows episodes.
-    fn setup_listbox(&self, pd: &Podcast, sender: Sender<Action>) {
+    fn setup_listbox(&self, pd: Arc<Podcast>, sender: Sender<Action>) {
         let listbox = episodes_listbox(pd, sender.clone());
         listbox.ok().map(|l| self.episodes.add(&l));
     }

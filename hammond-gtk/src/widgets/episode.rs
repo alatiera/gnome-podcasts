@@ -5,6 +5,7 @@ use gtk::prelude::*;
 use failure::Error;
 use humansize::FileSize;
 use open;
+use rayon;
 use take_mut;
 
 use hammond_data::{EpisodeWidgetQuery, Podcast};
@@ -13,6 +14,7 @@ use hammond_data::utils::get_download_folder;
 
 use app::Action;
 use manager;
+use utils::lazy_load;
 use widgets::episode_states::*;
 
 use std::cell::RefCell;
@@ -350,23 +352,44 @@ fn total_size_helper(
 //     delete_local_content(&mut ep).map_err(From::from).map(|_| ())
 // }
 
-pub fn episodes_listbox(pd: &Podcast, sender: Sender<Action>) -> Result<gtk::ListBox, Error> {
-    let episodes = dbqueries::get_pd_episodeswidgets(pd)?;
+pub fn episodes_listbox(pd: Arc<Podcast>, sender: Sender<Action>) -> Result<gtk::ListBox, Error> {
+    use crossbeam_channel::TryRecvError::*;
+    use crossbeam_channel::bounded;
+
+    let count = dbqueries::get_pd_episodes_count(&pd)?;
+
+    let (sender_, receiver) = bounded(1);
+    rayon::spawn(move || {
+        let episodes = dbqueries::get_pd_episodeswidgets(&pd).unwrap();
+        sender_
+            .send(episodes)
+            .expect("Something terrible happened to the channnel");
+    });
 
     let list = gtk::ListBox::new();
     list.set_visible(true);
     list.set_selection_mode(gtk::SelectionMode::None);
 
-    if episodes.is_empty() {
+    if count == 0 {
         let builder = gtk::Builder::new_from_resource("/org/gnome/hammond/gtk/empty_show.ui");
         let container: gtk::Box = builder.get_object("empty_show").unwrap();
         list.add(&container);
         return Ok(list);
     }
 
-    episodes.into_iter().for_each(|ep| {
-        let widget = EpisodeWidget::new(ep, sender.clone());
-        list.add(&widget.container);
-    });
+    gtk::idle_add(clone!(list => move || {
+        let episodes = match receiver.try_recv() {
+            Ok(e) => e,
+            Err(Empty) => return glib::Continue(true),
+            Err(Disconnected) => return glib::Continue(false),
+        };
+
+        lazy_load(episodes, list.clone(), clone!(sender => move |ep| {
+            EpisodeWidget::new(ep, sender.clone()).container
+        }));
+
+        glib::Continue(false)
+    }));
+
     Ok(list)
 }
