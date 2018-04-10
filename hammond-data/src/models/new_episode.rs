@@ -197,9 +197,9 @@ impl NewEpisodeMinimal {
         let guid = item.guid().map(|s| s.value().trim().to_owned());
 
         let uri = item.enclosure()
-            .map(|s| url_cleaner(s.url()))
+            .map(|s| url_cleaner(s.url().trim()))
             // Fallback to Rss.Item.link if enclosure is None.
-            .or_else(|| item.link().map(|s| url_cleaner(s)));
+            .or_else(|| item.link().map(|s| url_cleaner(s.trim())));
 
         // If url is still None return an Error as this behaviour is
         // compliant with the RSS Spec.
@@ -234,7 +234,13 @@ impl NewEpisodeMinimal {
     // TODO: TryInto is stabilizing in rustc v1.26!
     pub(crate) fn into_new_episode(self, item: &rss::Item) -> NewEpisode {
         let length = item.enclosure().and_then(|x| x.length().parse().ok());
-        let description = item.description().map(|s| ammonia::clean(s));
+        let description = item.description().map(|s| {
+            ammonia::Builder::new()
+                // Remove `rel` attributes from `<a>` tags
+                .link_rel(None)
+                .clean(chan.description().trim())
+                .to_string();
+        });
 
         NewEpisodeBuilder::default()
             .title(self.title)

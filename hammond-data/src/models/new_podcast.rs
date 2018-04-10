@@ -88,16 +88,20 @@ impl NewPodcast {
     /// Parses a `rss::Channel` into a `NewPodcast` Struct.
     pub(crate) fn new(chan: &rss::Channel, source_id: i32) -> NewPodcast {
         let title = chan.title().trim();
+        let link = url_cleaner(chan.link().trim());
 
-        let description = ammonia::clean(chan.description().trim());
-        let link = url_cleaner(chan.link());
+        let description = ammonia::Builder::new()
+            // Remove `rel` attributes from `<a>` tags
+            .link_rel(None)
+            .clean(chan.description().trim())
+            .to_string();
 
         // Try to get the itunes img first
         let itunes_img = chan.itunes_ext()
-            .and_then(|s| s.image())
+            .and_then(|s| s.image().trim())
             .map(|s| s.to_owned());
         // If itunes is None, try to get the channel.image from the rss spec
-        let image_uri = itunes_img.or_else(|| chan.image().map(|s| s.url().to_owned()));
+        let image_uri = itunes_img.or_else(|| chan.image().map(|s| s.url().trim().to_owned()));
 
         NewPodcastBuilder::default()
             .title(title)
