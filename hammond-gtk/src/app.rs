@@ -131,9 +131,8 @@ impl App {
 
             utils::cleanup(cleanup_date);
 
-            gtk::timeout_add_seconds(2, move || {
+            gtk::idle_add(move || {
                 utils::refresh(None, sender.clone());
-
                 glib::Continue(false)
             });
         }
