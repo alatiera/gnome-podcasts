@@ -536,71 +536,6 @@ pub struct Media<X, Y, Z> {
 type New<Y> = Media<Download, Y, Hidden>;
 type Playable<Y> = Media<Play, Y, Hidden>;
 type InProgress = Media<Hidden, Shown, Shown>;
-type MediaUnInitialized = Media<UnInitialized, UnInitialized, UnInitialized>;
-
-impl From<New<Shown>> for InProgress {
-    fn from(f: New<Shown>) -> Self {
-        f.into_progress()
-    }
-}
-
-impl From<New<Hidden>> for InProgress {
-    fn from(f: New<Hidden>) -> Self {
-        f.into_progress()
-    }
-}
-
-impl From<Playable<Shown>> for InProgress {
-    fn from(f: Playable<Shown>) -> Self {
-        f.into_progress()
-    }
-}
-
-impl From<Playable<Hidden>> for InProgress {
-    fn from(f: Playable<Hidden>) -> Self {
-        f.into_progress()
-    }
-}
-
-impl<Y: Visibility> From<Playable<Y>> for New<Y> {
-    fn from(f: Playable<Y>) -> Self {
-        Media {
-            dl: f.dl.into_fetchable(),
-            size: f.size,
-            progress: f.progress,
-        }
-    }
-}
-
-impl<Y: Visibility> From<New<Y>> for Playable<Y> {
-    fn from(f: New<Y>) -> Self {
-        Media {
-            dl: f.dl.into_playable(),
-            size: f.size,
-            progress: f.progress,
-        }
-    }
-}
-
-impl From<MediaUnInitialized> for New<Hidden> {
-    fn from(f: MediaUnInitialized) -> Self {
-        Media {
-            dl: f.dl.into_fetchable(),
-            size: f.size.into_hidden(),
-            progress: f.progress.into_hidden(),
-        }
-    }
-}
-
-impl From<MediaUnInitialized> for Playable<Hidden> {
-    fn from(f: MediaUnInitialized) -> Self {
-        Media {
-            dl: f.dl.into_playable(),
-            size: f.size.into_hidden(),
-            progress: f.progress.into_hidden(),
-        }
-    }
-}
 
 impl<X, Y, Z> Media<X, Y, Z> {
     fn set_size(self, s: &str) -> Media<X, Shown, Z> {
@@ -728,18 +663,17 @@ impl ButtonsState {
 
             // From whatever to NewWithoutSize
             (New(m), None, false) => NewWithoutSize(m.hide_size()),
-            (Playable(m), None, false) => NewWithoutSize(Media::from(m).hide_size()),
+            (Playable(m), None, false) => NewWithoutSize(m.into_new_without()),
 
             (b @ NewWithoutSize(_), None, false) => b,
-            (PlayableWithoutSize(m), None, false) => NewWithoutSize(m.into()),
+            (PlayableWithoutSize(m), None, false) => NewWithoutSize(m.into_new_without()),
 
             // From whatever to PlayableWithoutSize
-            (New(m), None, true) => PlayableWithoutSize(Media::from(m).hide_size()),
+            (New(m), None, true) => PlayableWithoutSize(m.into_playable_without()),
             (Playable(m), None, true) => PlayableWithoutSize(m.hide_size()),
 
-            (NewWithoutSize(val), None, true) => PlayableWithoutSize(val.into()),
+            (NewWithoutSize(val), None, true) => PlayableWithoutSize(val.into_playable_without()),
             (b @ PlayableWithoutSize(_), None, true) => b,
-            // _ => unimplemented!()
         }
     }
 
@@ -747,10 +681,10 @@ impl ButtonsState {
         use self::ButtonsState::*;
 
         match self {
-            New(m) => m.into(),
-            Playable(m) => m.into(),
-            NewWithoutSize(m) => m.into(),
-            PlayableWithoutSize(m) => m.into(),
+            New(m) => m.into_progress(),
+            Playable(m) => m.into_progress(),
+            NewWithoutSize(m) => m.into_progress(),
+            PlayableWithoutSize(m) => m.into_progress(),
         }
     }
 
@@ -883,11 +817,15 @@ impl MediaMachine {
 
             // Into New
             (UnInitialized(m), Some(s), false, false) => Initialized(New(m.into_new(&s))),
-            (UnInitialized(m), None, false, false) => Initialized(NewWithoutSize(m.into())),
+            (UnInitialized(m), None, false, false) => {
+                Initialized(NewWithoutSize(m.into_new_without()))
+            }
 
             // Into Playable
             (UnInitialized(m), Some(s), true, false) => Initialized(Playable(m.into_playable(&s))),
-            (UnInitialized(m), None, true, false) => Initialized(PlayableWithoutSize(m.into())),
+            (UnInitialized(m), None, true, false) => {
+                Initialized(PlayableWithoutSize(m.into_playable_without()))
+            }
 
             (Initialized(bttn), s, dl, false) => Initialized(bttn.determine_state(s, dl)),
             (Initialized(bttn), _, _, true) => InProgress(bttn.into_progress()),
