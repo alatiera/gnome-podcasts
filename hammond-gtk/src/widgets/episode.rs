@@ -382,9 +382,9 @@ pub fn episodes_listbox(pd: Arc<Podcast>, sender: Sender<Action>) -> Result<gtk:
     let (sender_, receiver) = bounded(1);
     rayon::spawn(move || {
         let episodes = dbqueries::get_pd_episodeswidgets(&pd).unwrap();
-        sender_
-            .send(episodes)
-            .expect("Something terrible happened to the channnel");
+        // The receiver can be dropped if there's an early return
+        // like on show without episodes for example.
+        sender_.send(episodes).ok();
     });
 
     let list = gtk::ListBox::new();
