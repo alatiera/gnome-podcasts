@@ -99,7 +99,7 @@ impl EpisodeWidget {
         self.set_duration(episode.duration());
 
         // Determine what the state of the media widgets should be.
-        if let Err(err) = self.determine_media_state(&episode) {
+        if let Err(err) = determine_media_state(self.media.clone(), &episode, &self.container) {
             error!("Something went wrong determining the Media State.");
             error!("Error: {}", err);
         }
@@ -119,7 +119,9 @@ impl EpisodeWidget {
                 }
             }));
 
-            media.download_connect_clicked(clone!(episode, sender => move |dl| {
+            let media_machine = self.media.clone();
+            let parent = self.container.clone();
+            media.download_connect_clicked(clone!(media_machine, episode, sender => move |dl| {
                 dl.set_sensitive(false);
                 if let Ok(ep) = episode.lock() {
                     if let Err(err) = on_download_clicked(&ep, sender.clone())  {
@@ -127,6 +129,11 @@ impl EpisodeWidget {
                         error!("Error: {}", err);
                     } else {
                         info!("Donwload started succesfully.");
+                        let line_limit = determine_media_state(media_machine.clone(), &ep, &parent);
+                        if let Err(err) = line_limit {
+                            error!("Something went wrong determining the Media State.");
+                            error!("Error: {}", err);
+                        }
                     }
                 }
             }));
@@ -153,45 +160,49 @@ impl EpisodeWidget {
         let machine = &mut self.duration;
         take_mut::take(machine, |duration| duration.determine_state(seconds));
     }
+}
 
-    fn determine_media_state(&self, episode: &EpisodeWidgetQuery) -> Result<(), Error> {
-        let id = WidgetExt::get_name(&self.container)
-            .ok_or_else(|| format_err!("Failed to get widget Name"))?
-            .parse::<i32>()?;
+fn determine_media_state(
+    media_machine: Arc<Mutex<MediaMachine>>,
+    episode: &EpisodeWidgetQuery,
+    parent: &gtk::Box,
+) -> Result<(), Error> {
+    let id = WidgetExt::get_name(parent)
+        .ok_or_else(|| format_err!("Failed to get widget Name"))?
+        .parse::<i32>()?;
 
-        let active_dl = || -> Result<Option<_>, Error> {
-            let m = manager::ACTIVE_DOWNLOADS
-                .read()
-                .map_err(|_| format_err!("Failed to get a lock on the mutex."))?;
+    let active_dl = || -> Result<Option<_>, Error> {
+        let m = manager::ACTIVE_DOWNLOADS
+            .read()
+            .map_err(|_| format_err!("Failed to get a lock on the mutex."))?;
 
-            Ok(m.get(&id).cloned())
-        }()?;
+        Ok(m.get(&id).cloned())
+    }()?;
 
-        let mut lock = self.media.lock().map_err(|err| format_err!("{}", err))?;
-        take_mut::take(lock.deref_mut(), |media| {
-            media.determine_state(
-                episode.length(),
-                active_dl.is_some(),
-                episode.local_uri().is_some(),
-            )
-        });
+    let mut lock = media_machine.lock().map_err(|err| format_err!("{}", err))?;
+    take_mut::take(lock.deref_mut(), |media| {
+        media.determine_state(
+            episode.length(),
+            active_dl.is_some(),
+            episode.local_uri().is_some(),
+        )
+    });
 
-        // Show or hide the play/delete/download buttons upon widget initialization.
-        if let Some(prog) = active_dl {
-            lock.cancel_connect_clicked(prog.clone());
-            drop(lock);
+    // Show or hide the play/delete/download buttons upon widget initialization.
+    if let Some(prog) = active_dl {
+        lock.cancel_connect_clicked(prog.clone());
+        drop(lock);
 
-            // Setup a callback that will update the progress bar.
-            update_progressbar_callback(prog.clone(), self.media.clone(), id);
+        // Setup a callback that will update the progress bar.
+        update_progressbar_callback(prog.clone(), media_machine.clone(), id);
 
-            // Setup a callback that will update the total_size label
-            // with the http ContentLength header number rather than
-            // relying to the RSS feed.
-            update_total_size_callback(prog.clone(), self.media.clone());
-        }
-
-        Ok(())
+        // Setup a callback that will update the total_size label
+        // with the http ContentLength header number rather than
+        // relying to the RSS feed.
+        update_total_size_callback(prog.clone(), media_machine.clone());
     }
+
+    Ok(())
 }
 
 #[inline]
@@ -203,8 +214,7 @@ fn on_download_clicked(ep: &EpisodeWidgetQuery, sender: Sender<Action>) -> Resul
     manager::add(ep.rowid(), download_fold, sender.clone())?;
 
     // Update Views
-    sender.send(Action::RefreshEpisodesView)?;
-    sender.send(Action::RefreshWidgetIfVis)?;
+    sender.send(Action::RefreshEpisodesViewBGR)?;
 
     Ok(())
 }
