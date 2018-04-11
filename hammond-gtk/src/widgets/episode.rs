@@ -270,13 +270,11 @@ fn update_progressbar_callback(
     media: Arc<Mutex<MediaMachine>>,
     episode_rowid: i32,
 ) {
-    timeout_add(
-        400,
-        clone!(prog, media => move || {
-            progress_bar_helper(prog.clone(), media.clone(), episode_rowid)
-                .unwrap_or(glib::Continue(false))
-        }),
-    );
+    let callback = clone!(prog, media => move || {
+        progress_bar_helper(prog.clone(), media.clone(), episode_rowid)
+            .unwrap_or(glib::Continue(false))
+    });
+    timeout_add(400, callback);
 }
 
 #[inline]
@@ -332,12 +330,10 @@ fn update_total_size_callback(
     prog: Arc<Mutex<manager::Progress>>,
     media: Arc<Mutex<MediaMachine>>,
 ) {
-    timeout_add(
-        500,
-        clone!(prog, media => move || {
-            total_size_helper(prog.clone(), media.clone()).unwrap_or(glib::Continue(true))
-        }),
-    );
+    let callback = clone!(prog, media => move || {
+        total_size_helper(prog.clone(), media.clone()).unwrap_or(glib::Continue(true))
+    });
+    timeout_add(500, callback);
 }
 
 #[inline]
