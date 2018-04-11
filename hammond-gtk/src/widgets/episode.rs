@@ -87,8 +87,6 @@ impl EpisodeWidget {
     }
 
     fn init(&mut self, episode: EpisodeWidgetQuery, sender: Sender<Action>) {
-        WidgetExt::set_name(&self.container, &episode.rowid().to_string());
-
         // Set the date label.
         self.set_date(episode.epoch());
 
@@ -99,7 +97,7 @@ impl EpisodeWidget {
         self.set_duration(episode.duration());
 
         // Determine what the state of the media widgets should be.
-        if let Err(err) = determine_media_state(self.media.clone(), &episode, &self.container) {
+        if let Err(err) = determine_media_state(self.media.clone(), &episode) {
             error!("Something went wrong determining the Media State.");
             error!("Error: {}", err);
         }
@@ -120,7 +118,6 @@ impl EpisodeWidget {
             }));
 
             let media_machine = self.media.clone();
-            let parent = self.container.clone();
             media.download_connect_clicked(clone!(media_machine, episode, sender => move |dl| {
                 dl.set_sensitive(false);
                 if let Ok(ep) = episode.lock() {
@@ -129,8 +126,7 @@ impl EpisodeWidget {
                         error!("Error: {}", err);
                     } else {
                         info!("Donwload started succesfully.");
-                        let line_limit = determine_media_state(media_machine.clone(), &ep, &parent);
-                        if let Err(err) = line_limit {
+                        if let Err(err) = determine_media_state(media_machine.clone(), &ep) {
                             error!("Something went wrong determining the Media State.");
                             error!("Error: {}", err);
                         }
@@ -165,12 +161,8 @@ impl EpisodeWidget {
 fn determine_media_state(
     media_machine: Arc<Mutex<MediaMachine>>,
     episode: &EpisodeWidgetQuery,
-    parent: &gtk::Box,
 ) -> Result<(), Error> {
-    let id = WidgetExt::get_name(parent)
-        .ok_or_else(|| format_err!("Failed to get widget Name"))?
-        .parse::<i32>()?;
-
+    let id = episode.rowid();
     let active_dl = || -> Result<Option<_>, Error> {
         let m = manager::ACTIVE_DOWNLOADS
             .read()
