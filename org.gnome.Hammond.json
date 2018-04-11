@@ -28,7 +28,8 @@
             "--share=network"
         ],
         "env" : {
-            "CARGO_HOME" : "/run/build/Hammond/cargo"
+            "CARGO_HOME" : "/run/build/Hammond/cargo",
+            "RUST_BACKTRACE" : "1"
         }
     },
     "modules" : [
