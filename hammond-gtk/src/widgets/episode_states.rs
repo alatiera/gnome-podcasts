@@ -13,9 +13,7 @@ use chrono::prelude::*;
 use gtk::prelude::*;
 use humansize::{file_size_opts as size_opts, FileSize};
 
-use std::sync::{Arc, Mutex};
-
-use manager::Progress as OtherProgress;
+use std::sync::Arc;
 
 lazy_static! {
     pub static ref SIZE_OPTS: Arc<size_opts::FileSizeOpts> =  {
@@ -501,13 +499,8 @@ impl<S> Progress<S> {
         self.bar.set_fraction(fraction);
     }
 
-    fn cancel_connect_clicked(&self, prog: Arc<Mutex<OtherProgress>>) -> glib::SignalHandlerId {
-        self.cancel.connect_clicked(move |cancel| {
-            if let Ok(mut m) = prog.lock() {
-                m.cancel();
-                cancel.set_sensitive(false);
-            }
-        })
+    fn cancel_connect_clicked<F: Fn(&gtk::Button) + 'static>(&self, f: F) -> glib::SignalHandlerId {
+        self.cancel.connect_clicked(f)
     }
 }
 
@@ -634,10 +627,26 @@ impl<X, Y, Z> Media<X, Y, Z> {
         }
     }
 
+    fn into_new_without(self) -> New<Hidden> {
+        Media {
+            dl: self.dl.into_fetchable(),
+            size: self.size.into_hidden(),
+            progress: self.progress.into_hidden(),
+        }
+    }
+
     fn into_playable(self, size: &str) -> Playable<Shown> {
         Media {
             dl: self.dl.into_playable(),
             size: self.size.set_size(size),
+            progress: self.progress.into_hidden(),
+        }
+    }
+
+    fn into_playable_without(self) -> Playable<Hidden> {
+        Media {
+            dl: self.dl.into_playable(),
+            size: self.size.into_hidden(),
             progress: self.progress.into_hidden(),
         }
     }
@@ -788,14 +797,14 @@ impl ButtonsState {
         }
     }
 
-    fn cancel_connect_clicked(&self, prog: Arc<Mutex<OtherProgress>>) -> glib::SignalHandlerId {
+    fn cancel_connect_clicked<F: Fn(&gtk::Button) + 'static>(&self, f: F) -> glib::SignalHandlerId {
         use self::ButtonsState::*;
 
         match *self {
-            New(ref val) => val.progress.cancel_connect_clicked(prog),
-            NewWithoutSize(ref val) => val.progress.cancel_connect_clicked(prog),
-            Playable(ref val) => val.progress.cancel_connect_clicked(prog),
-            PlayableWithoutSize(ref val) => val.progress.cancel_connect_clicked(prog),
+            New(ref val) => val.progress.cancel_connect_clicked(f),
+            NewWithoutSize(ref val) => val.progress.cancel_connect_clicked(f),
+            Playable(ref val) => val.progress.cancel_connect_clicked(f),
+            PlayableWithoutSize(ref val) => val.progress.cancel_connect_clicked(f),
         }
     }
 }
@@ -852,13 +861,16 @@ impl MediaMachine {
         }
     }
 
-    pub fn cancel_connect_clicked(&self, prog: Arc<Mutex<OtherProgress>>) -> glib::SignalHandlerId {
+    pub fn cancel_connect_clicked<F: Fn(&gtk::Button) + 'static>(
+        &self,
+        f: F,
+    ) -> glib::SignalHandlerId {
         use self::MediaMachine::*;
 
         match *self {
-            UnInitialized(ref val) => val.progress.cancel_connect_clicked(prog),
-            Initialized(ref val) => val.cancel_connect_clicked(prog),
-            InProgress(ref val) => val.progress.cancel_connect_clicked(prog),
+            UnInitialized(ref val) => val.progress.cancel_connect_clicked(f),
+            Initialized(ref val) => val.cancel_connect_clicked(f),
+            InProgress(ref val) => val.progress.cancel_connect_clicked(f),
         }
     }
 
@@ -879,6 +891,19 @@ impl MediaMachine {
 
             (Initialized(bttn), s, dl, false) => Initialized(bttn.determine_state(s, dl)),
             (Initialized(bttn), _, _, true) => InProgress(bttn.into_progress()),
+
+            // Into New
+            (InProgress(m), Some(s), false, false) => Initialized(New(m.into_new(&s))),
+            (InProgress(m), None, false, false) => {
+                Initialized(NewWithoutSize(m.into_new_without()))
+            }
+
+            // Into Playable
+            (InProgress(m), Some(s), true, false) => Initialized(Playable(m.into_playable(&s))),
+            (InProgress(m), None, true, false) => {
+                Initialized(PlayableWithoutSize(m.into_playable_without()))
+            }
+
             (i @ InProgress(_), _, _, _) => i,
         }
     }

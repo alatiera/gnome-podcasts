@@ -119,6 +119,7 @@ impl EpisodeWidget {
 
             let media_machine = self.media.clone();
             media.download_connect_clicked(clone!(media_machine, episode, sender => move |dl| {
+                // Make the button insensitive so it won't be pressed twice
                 dl.set_sensitive(false);
                 if let Ok(ep) = episode.lock() {
                     if let Err(err) = on_download_clicked(&ep, sender.clone())  {
@@ -132,6 +133,9 @@ impl EpisodeWidget {
                         }
                     }
                 }
+
+                // Restore sensitivity after operations above complete
+                dl.set_sensitive(true);
             }));
         }
     }
@@ -182,7 +186,22 @@ fn determine_media_state(
 
     // Show or hide the play/delete/download buttons upon widget initialization.
     if let Some(prog) = active_dl {
-        lock.cancel_connect_clicked(prog.clone());
+        let episode = episode.clone();
+        lock.cancel_connect_clicked(clone!(prog, media_machine => move |_| {
+            if let Ok(mut m) = prog.lock() {
+                m.cancel();
+            }
+
+            if let Ok(mut lock) = media_machine.lock() {
+                take_mut::take(lock.deref_mut(), |media| {
+                    media.determine_state(
+                        episode.length(),
+                        false,
+                        episode.local_uri().is_some(),
+                    )
+                });
+            }
+        }));
         drop(lock);
 
         // Setup a callback that will update the progress bar.

@@ -89,7 +89,6 @@ pub fn add(id: i32, directory: String, sender: Sender<Action>) -> Result<(), Err
 
     DLPOOL.spawn(move || {
         if let Ok(episode) = dbqueries::get_episode_from_rowid(id) {
-            let pid = episode.podcast_id();
             let id = episode.rowid();
 
             if let Err(err) = get_episode(&mut episode.into(), directory.as_str(), Some(prog)) {
@@ -107,10 +106,7 @@ pub fn add(id: i32, directory: String, sender: Sender<Action>) -> Result<(), Err
             // }
 
             sender
-                .send(Action::RefreshEpisodesView)
-                .expect("Action channel blew up.");
-            sender
-                .send(Action::RefreshWidgetIfSame(pid))
+                .send(Action::RefreshEpisodesViewBGR)
                 .expect("Action channel blew up.");
         }
     });
