@@ -90,6 +90,7 @@ pub fn add(id: i32, directory: String, sender: Sender<Action>) -> Result<(), Err
     DLPOOL.spawn(move || {
         if let Ok(episode) = dbqueries::get_episode_from_rowid(id) {
             let id = episode.rowid();
+            let pid = episode.podcast_id();
 
             if let Err(err) = get_episode(&mut episode.into(), directory.as_str(), Some(prog)) {
                 error!("Error while trying to download an episode");
@@ -106,7 +107,10 @@ pub fn add(id: i32, directory: String, sender: Sender<Action>) -> Result<(), Err
             // }
 
             sender
-                .send(Action::RefreshEpisodesViewBGR)
+                .send(Action::RefreshWidgetIfSame(pid))
+                .expect("Action channel blew up.");
+            sender
+                .send(Action::RefreshEpisodesView)
                 .expect("Action channel blew up.");
         }
     });
