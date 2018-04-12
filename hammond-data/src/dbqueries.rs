@@ -40,7 +40,7 @@ pub fn get_podcasts_filter(filter_ids: &[i32]) -> Result<Vec<Podcast>, DataError
 
     podcast
         .order(title.asc())
-        .filter(id.ne_any(filter_ids))
+        .filter(id.ne_all(filter_ids))
         .load::<Podcast>(&con)
         .map_err(From::from)
 }
@@ -135,7 +135,7 @@ pub fn get_episodes_widgets_filter_limit(
             episode::podcast_id,
         ))
         .order(episode::epoch.desc())
-        .filter(episode::podcast_id.ne_any(filter_ids))
+        .filter(episode::podcast_id.ne_all(filter_ids))
         .limit(i64::from(limit))
         .load::<EpisodeWidgetQuery>(&con)
         .map_err(From::from)
