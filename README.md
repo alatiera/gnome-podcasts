@@ -61,13 +61,10 @@ flatpak build-bundle repo hammond org.gnome.Hammond
 ```sh
 git clone https://gitlab.gnome.org/alatiera/hammond.git
 cd hammond/
-./configure --prefix=/usr/local
-make && sudo make install
+meson --prefix=/usr build
+ninja -C build
+sudo ninja -C build install
 ```
-
-**Additional:**
-
-You can run `sudo make uninstall` for removal
 
 #### Dependencies
 
