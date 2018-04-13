@@ -156,9 +156,10 @@ fn on_played_button_clicked(pd: Arc<Podcast>, episodes: &gtk::Frame, sender: Sen
 
 pub fn mark_all_watched(pd: &Podcast, sender: Sender<Action>) -> Result<(), Error> {
     dbqueries::update_none_to_played_now(pd)?;
-    sender.send(Action::RefreshWidgetIfVis)?;
-    sender.send(Action::RefreshEpisodesView)?;
-    Ok(())
+    // Not all widgets migth have been loaded when the mark_all is hit
+    // So we will need to refresh again after it's done.
+    sender.send(Action::RefreshWidgetIfSame(pd.id()))?;
+    sender.send(Action::RefreshEpisodesView).map_err(From::from)
 }
 
 // Ideally if we had a custom widget this would have been as simple as:

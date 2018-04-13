@@ -195,6 +195,7 @@ impl App {
                 Ok(Action::HeaderBarShowUpdateIndicator) => headerbar.show_update_notification(),
                 Ok(Action::HeaderBarHideUpdateIndicator) => headerbar.hide_update_notification(),
                 Ok(Action::MarkAllPlayerNotification(pd)) => {
+                    let id = pd.id();
                     let callback = clone!(sender => move || {
                         if let Err(err) = mark_all_watched(&pd, sender.clone()) {
                             error!("Something went horribly wrong with the notif callback: {}", err);
@@ -202,8 +203,12 @@ impl App {
                         glib::Continue(false)
                     });
 
+                    let undo_callback = clone!(sender => move || {
+                        sender.send(Action::RefreshWidgetIfSame(id)).expect("Action channel blow up");
+                    });
+
                     let text = "Marked all episodes as listened".into();
-                    let notif = InAppNotification::new(text, callback, || {}, sender.clone());
+                    let notif = InAppNotification::new(text, callback, undo_callback);
                     notif.show(&overlay);
                 }
                 Ok(Action::RemoveShow(pd)) => {
@@ -244,8 +249,7 @@ impl App {
                         }
                     };
 
-                    let sender_ = sender.clone();
-                    let notif = InAppNotification::new(text, callback, undo_callback, sender_);
+                    let notif = InAppNotification::new(text, callback, undo_callback);
                     notif.show(&overlay);
                 }
                 Err(_) => (),

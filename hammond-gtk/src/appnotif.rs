@@ -2,11 +2,8 @@ use glib;
 use gtk;
 use gtk::prelude::*;
 
-use app::Action;
-
 use std::cell::RefCell;
 use std::rc::Rc;
-use std::sync::mpsc::Sender;
 
 #[derive(Debug, Clone)]
 pub struct InAppNotification {
@@ -39,7 +36,6 @@ impl InAppNotification {
         text: String,
         mut callback: F,
         undo_callback: U,
-        sender: Sender<Action>,
     ) -> Self
     where
         F: FnMut() -> glib::Continue + 'static,
@@ -67,10 +63,6 @@ impl InAppNotification {
 
             // Hide the notification
             revealer.set_reveal_child(false);
-            // Refresh the widget if visible
-            if let Err(err) = sender.send(Action::RefreshWidgetIfVis) {
-                error!("Action channel blew up: {}", err)
-            }
         });
 
         // Hide the revealer when the close button is clicked
