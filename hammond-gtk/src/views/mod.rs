@@ -1,6 +1,6 @@
-mod shows;
-mod episodes;
 mod empty;
+mod episodes;
+mod shows;
 
 pub use self::empty::EmptyView;
 pub use self::episodes::EpisodesView;

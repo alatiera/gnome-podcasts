@@ -1,6 +1,6 @@
 use gtk;
-use gtk::Cast;
 use gtk::prelude::*;
+use gtk::Cast;
 
 use failure::Error;
 

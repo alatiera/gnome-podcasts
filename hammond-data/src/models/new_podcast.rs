@@ -4,8 +4,8 @@ use diesel::prelude::*;
 use rss;
 
 use errors::DataError;
-use models::{Index, Insert, Update};
 use models::Podcast;
+use models::{Index, Insert, Update};
 use schema::podcast;
 
 use database::connection;

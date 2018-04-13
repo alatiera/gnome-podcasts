@@ -1,7 +1,7 @@
 use chrono::prelude::*;
 use diesel;
-use diesel::SaveChangesDsl;
 use diesel::prelude::*;
+use diesel::SaveChangesDsl;
 
 use database::connection;
 use errors::DataError;

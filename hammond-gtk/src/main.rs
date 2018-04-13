@@ -1,6 +1,9 @@
-#![cfg_attr(feature = "cargo-clippy",
-            allow(clone_on_ref_ptr, needless_pass_by_value, useless_format, blacklisted_name,
-                  match_same_arms))]
+#![cfg_attr(
+    feature = "cargo-clippy",
+    allow(
+        clone_on_ref_ptr, needless_pass_by_value, useless_format, blacklisted_name, match_same_arms
+    )
+)]
 #![allow(unknown_lints)]
 #![deny(unused_extern_crates, unused)]
 
@@ -64,18 +67,18 @@ macro_rules! clone {
 
 // They do not need to be public
 // But it helps when looking at the generated docs.
+pub mod stacks;
 pub mod views;
 pub mod widgets;
-pub mod stacks;
 
-pub mod headerbar;
 pub mod app;
+pub mod headerbar;
 
-pub mod settings;
-pub mod utils;
-pub mod manager;
-pub mod static_resource;
 pub mod appnotif;
+pub mod manager;
+pub mod settings;
+pub mod static_resource;
+pub mod utils;
 
 use app::App;
 

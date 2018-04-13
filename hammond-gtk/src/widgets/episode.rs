@@ -8,9 +8,9 @@ use open;
 use rayon;
 use take_mut;
 
-use hammond_data::{EpisodeWidgetQuery, Podcast};
 use hammond_data::dbqueries;
 use hammond_data::utils::get_download_folder;
+use hammond_data::{EpisodeWidgetQuery, Podcast};
 
 use app::Action;
 use manager;
@@ -21,8 +21,8 @@ use std::cell::RefCell;
 use std::ops::DerefMut;
 use std::path::Path;
 use std::rc::Rc;
-use std::sync::{Arc, Mutex};
 use std::sync::mpsc::Sender;
+use std::sync::{Arc, Mutex};
 
 #[derive(Debug)]
 pub struct EpisodeWidget {
@@ -370,8 +370,8 @@ fn total_size_helper(
 // }
 
 pub fn episodes_listbox(pd: Arc<Podcast>, sender: Sender<Action>) -> Result<gtk::ListBox, Error> {
-    use crossbeam_channel::TryRecvError::*;
     use crossbeam_channel::bounded;
+    use crossbeam_channel::TryRecvError::*;
 
     let count = dbqueries::get_pd_episodes_count(&pd)?;
 

@@ -11,8 +11,8 @@ use std::io::{BufWriter, Read, Write};
 use std::path::Path;
 use std::sync::{Arc, Mutex};
 
-use hammond_data::{EpisodeWidgetQuery, PodcastCoverQuery, Save};
 use hammond_data::xdg_dirs::HAMMOND_CACHE;
+use hammond_data::{EpisodeWidgetQuery, PodcastCoverQuery, Save};
 
 // use failure::Error;
 use errors::DownloadError;
@@ -234,9 +234,9 @@ pub fn cache_image(pd: &PodcastCoverQuery) -> Result<String, DownloadError> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use hammond_data::Source;
     use hammond_data::dbqueries;
     use hammond_data::pipeline;
+    use hammond_data::Source;
 
     use std::fs;
 

@@ -4,18 +4,18 @@
 use futures::future::*;
 // use futures::prelude::*;
 
-use hyper::Client;
 use hyper::client::HttpConnector;
+use hyper::Client;
 use hyper_tls::HttpsConnector;
 use tokio_core::reactor::Core;
 
 use num_cpus;
 use rss;
 
-use Source;
 use dbqueries;
 use errors::DataError;
 use models::{IndexState, NewEpisode, NewEpisodeMinimal};
+use Source;
 
 // use std::sync::{Arc, Mutex};
 
@@ -141,8 +141,8 @@ where
 #[cfg(test)]
 mod tests {
     use super::*;
-    use Source;
     use database::truncate_db;
+    use Source;
 
     // (path, url) tuples.
     const URLS: &[(&str, &str)] = {

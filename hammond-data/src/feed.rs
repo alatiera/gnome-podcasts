@@ -117,10 +117,10 @@ mod tests {
     use rss::Channel;
     use tokio_core::reactor::Core;
 
-    use Source;
     use database::truncate_db;
     use dbqueries;
     use utils::get_feed;
+    use Source;
 
     use std::fs;
     use std::io::BufReader;

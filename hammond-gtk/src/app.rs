@@ -3,14 +3,14 @@
 use gio::{ApplicationExt, ApplicationExtManual, ApplicationFlags, Settings, SettingsExt};
 use glib;
 use gtk;
-use gtk::SettingsExt as GtkSettingsExt;
 use gtk::prelude::*;
+use gtk::SettingsExt as GtkSettingsExt;
 
 use failure::Error;
 use rayon;
 
-use hammond_data::{Podcast, Source};
 use hammond_data::utils::delete_show;
+use hammond_data::{Podcast, Source};
 
 use appnotif::*;
 use headerbar::Header;
@@ -19,8 +19,8 @@ use stacks::Content;
 use utils;
 use widgets::mark_all_watched;
 
-use std::sync::Arc;
 use std::sync::mpsc::{channel, Receiver, Sender};
+use std::sync::Arc;
 use std::time::Duration;
 
 #[derive(Clone, Debug)]

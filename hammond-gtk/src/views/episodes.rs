@@ -3,15 +3,15 @@ use failure::Error;
 use gtk;
 use gtk::prelude::*;
 
-use hammond_data::EpisodeWidgetQuery;
 use hammond_data::dbqueries;
+use hammond_data::EpisodeWidgetQuery;
 
 use app::Action;
 use utils::{get_ignored_shows, set_image_from_path};
 use widgets::EpisodeWidget;
 
-use std::sync::Arc;
 use std::sync::mpsc::Sender;
+use std::sync::Arc;
 
 #[derive(Debug, Clone)]
 enum ListSplit {

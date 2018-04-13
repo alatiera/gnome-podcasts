@@ -4,8 +4,8 @@ use gdk_pixbuf::Pixbuf;
 use gio::{Settings, SettingsExt};
 use glib;
 use gtk;
-use gtk::{IsA, Widget};
 use gtk::prelude::*;
+use gtk::{IsA, Widget};
 
 use failure::Error;
 use rayon;
@@ -15,21 +15,21 @@ use send_cell::SendCell;
 use serde_json::Value;
 
 // use hammond_data::feed;
-use hammond_data::{PodcastCoverQuery, Source};
 use hammond_data::dbqueries;
 use hammond_data::pipeline;
 use hammond_data::utils::checkup;
+use hammond_data::{PodcastCoverQuery, Source};
 use hammond_downloader::downloader;
 
 use std::collections::{HashMap, HashSet};
-use std::sync::{Mutex, RwLock};
-use std::sync::Arc;
 use std::sync::mpsc::*;
+use std::sync::Arc;
+use std::sync::{Mutex, RwLock};
 
 use app::Action;
 
-use chrono::Duration;
 use chrono::prelude::*;
+use chrono::Duration;
 
 /// Lazy evaluates and loads widgets to the parent `container` widget.
 ///

@@ -1,19 +1,19 @@
 use gtk;
-use gtk::Cast;
 use gtk::prelude::*;
+use gtk::Cast;
 
 use failure::Error;
 
-use hammond_data::Podcast;
 use hammond_data::dbqueries;
+use hammond_data::Podcast;
 
 use views::{EmptyView, ShowsPopulated};
 
 use app::Action;
 use widgets::ShowWidget;
 
-use std::sync::Arc;
 use std::sync::mpsc::Sender;
+use std::sync::Arc;
 
 #[derive(Debug, Clone)]
 pub struct ShowStack {

@@ -8,8 +8,8 @@ use hammond_downloader::downloader::{get_episode, DownloadProgress};
 use app::Action;
 
 use std::collections::HashMap;
-use std::sync::{Arc, Mutex, RwLock};
 use std::sync::mpsc::Sender;
+use std::sync::{Arc, Mutex, RwLock};
 // use std::sync::atomic::AtomicUsize;
 // use std::path::PathBuf;
 
@@ -122,17 +122,17 @@ pub fn add(id: i32, directory: String, sender: Sender<Action>) -> Result<(), Err
 mod tests {
     use super::*;
 
-    use hammond_data::{Episode, Source};
     use hammond_data::dbqueries;
     use hammond_data::pipeline;
     use hammond_data::utils::get_download_folder;
+    use hammond_data::{Episode, Source};
 
     use hammond_downloader::downloader::get_episode;
 
-    use std::{thread, time};
     use std::fs;
     use std::path::Path;
     use std::sync::mpsc::channel;
+    use std::{thread, time};
 
     #[test]
     // This test inserts an rss feed to your `XDG_DATA/hammond/hammond.db` so we make it explicit

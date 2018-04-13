@@ -5,8 +5,8 @@ use failure::Error;
 use failure::ResultExt;
 use url::Url;
 
-use hammond_data::Source;
 use hammond_data::dbqueries;
+use hammond_data::Source;
 
 use std::sync::mpsc::Sender;
 

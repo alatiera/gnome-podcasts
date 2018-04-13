@@ -1,18 +1,22 @@
 #![recursion_limit = "1024"]
 #![cfg_attr(all(test, feature = "clippy"), allow(option_unwrap_used, result_unwrap_used))]
 #![cfg_attr(feature = "cargo-clippy", allow(blacklisted_name))]
-#![cfg_attr(feature = "clippy",
-            warn(option_unwrap_used, result_unwrap_used, print_stdout,
-                 wrong_pub_self_convention, mut_mut, non_ascii_literal, similar_names,
-                 unicode_not_nfc, enum_glob_use, if_not_else, items_after_statements,
-                 used_underscore_binding))]
+#![cfg_attr(
+    feature = "clippy",
+    warn(
+        option_unwrap_used, result_unwrap_used, print_stdout, wrong_pub_self_convention, mut_mut,
+        non_ascii_literal, similar_names, unicode_not_nfc, enum_glob_use, if_not_else,
+        items_after_statements, used_underscore_binding
+    )
+)]
 #![allow(unknown_lints)]
-#![deny(bad_style, const_err, dead_code, improper_ctypes, legacy_directory_ownership,
-        non_shorthand_field_patterns, no_mangle_generic_items, overflowing_literals,
-        path_statements, patterns_in_fns_without_body, plugin_as_library, private_in_public,
-        private_no_mangle_fns, private_no_mangle_statics, safe_extern_statics,
-        unconditional_recursion, unions_with_drop_fields, unused_allocation, unused_comparisons,
-        unused_parens, while_true)]
+#![deny(
+    bad_style, const_err, dead_code, improper_ctypes, legacy_directory_ownership,
+    non_shorthand_field_patterns, no_mangle_generic_items, overflowing_literals, path_statements,
+    patterns_in_fns_without_body, plugin_as_library, private_in_public, private_no_mangle_fns,
+    private_no_mangle_statics, safe_extern_statics, unconditional_recursion,
+    unions_with_drop_fields, unused_allocation, unused_comparisons, unused_parens, while_true
+)]
 #![deny(missing_debug_implementations, missing_docs, trivial_casts, trivial_numeric_casts)]
 #![deny(unused_extern_crates, unused)]
 
@@ -54,21 +58,21 @@ extern crate tokio_core;
 extern crate url;
 extern crate xdg;
 
+pub mod database;
 #[allow(missing_docs)]
 pub mod dbqueries;
 #[allow(missing_docs)]
 pub mod errors;
-pub mod utils;
-pub mod database;
-pub mod pipeline;
-pub(crate) mod models;
 mod feed;
+pub(crate) mod models;
 mod parser;
+pub mod pipeline;
 mod schema;
+pub mod utils;
 
 pub use feed::{Feed, FeedBuilder};
-pub use models::{Episode, EpisodeWidgetQuery, Podcast, PodcastCoverQuery, Source};
 pub use models::Save;
+pub use models::{Episode, EpisodeWidgetQuery, Podcast, PodcastCoverQuery, Source};
 
 /// [XDG Base Direcotory](https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html) Paths.
 #[allow(missing_debug_implementations)]

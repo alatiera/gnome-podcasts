@@ -7,8 +7,8 @@ use app::Action;
 use stacks::EpisodeStack;
 use stacks::ShowStack;
 
-use std::sync::Arc;
 use std::sync::mpsc::Sender;
+use std::sync::Arc;
 
 #[derive(Debug, Clone)]
 pub struct Content {

@@ -5,15 +5,15 @@ use gtk::prelude::*;
 use html2pango::markup_from_raw;
 use open;
 
-use hammond_data::Podcast;
 use hammond_data::dbqueries;
+use hammond_data::Podcast;
 
 use app::Action;
 use utils::set_image_from_path;
 use widgets::episode::episodes_listbox;
 
-use std::sync::Arc;
 use std::sync::mpsc::Sender;
+use std::sync::Arc;
 
 #[derive(Debug, Clone)]
 pub struct ShowWidget {

@@ -16,10 +16,10 @@ extern crate rss;
 // use futures::future::*;
 use tokio_core::reactor::Core;
 
-use hammond_data::FeedBuilder;
-use hammond_data::Source;
 use hammond_data::database::truncate_db;
 use hammond_data::pipeline;
+use hammond_data::FeedBuilder;
+use hammond_data::Source;
 // use hammond_data::errors::*;
 
 use std::io::BufReader;

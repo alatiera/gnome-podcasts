@@ -2,14 +2,14 @@ use failure::Error;
 use gtk;
 use gtk::prelude::*;
 
-use hammond_data::{Podcast, PodcastCoverQuery};
 use hammond_data::dbqueries;
+use hammond_data::{Podcast, PodcastCoverQuery};
 
 use app::Action;
 use utils::{get_ignored_shows, set_image_from_path};
 
-use std::sync::Arc;
 use std::sync::mpsc::Sender;
+use std::sync::Arc;
 
 #[derive(Debug, Clone)]
 pub struct ShowsPopulated {

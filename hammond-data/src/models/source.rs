@@ -3,10 +3,10 @@ use diesel::SaveChangesDsl;
 use rss::Channel;
 use url::Url;
 
-use hyper::{Client, Method, Request, Response, StatusCode, Uri};
 use hyper::client::HttpConnector;
 use hyper::header::{ETag, EntityTag, HttpDate, IfModifiedSince, IfNoneMatch, LastModified,
                     Location, UserAgent};
+use hyper::{Client, Method, Request, Response, StatusCode, Uri};
 use hyper_tls::HttpsConnector;
 
 // use futures::future::ok;
@@ -213,9 +213,11 @@ impl Source {
 
         if !ignore_etags {
             if let Some(foo) = self.http_etag() {
-                req.headers_mut().set(IfNoneMatch::Items(vec![
-                    EntityTag::new(true, foo.to_owned()),
-                ]));
+                req.headers_mut()
+                    .set(IfNoneMatch::Items(vec![EntityTag::new(
+                        true,
+                        foo.to_owned(),
+                    )]));
             }
 
             if let Some(foo) = self.last_modified() {

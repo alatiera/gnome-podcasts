@@ -287,8 +287,8 @@ impl NewEpisodeMinimal {
 mod tests {
     use database::truncate_db;
     use dbqueries;
-    use models::*;
     use models::new_episode::{NewEpisodeMinimal, NewEpisodeMinimalBuilder};
+    use models::*;
 
     use rss::Channel;
 
