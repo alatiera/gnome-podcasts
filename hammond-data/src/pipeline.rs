@@ -38,18 +38,23 @@ macro_rules! clone {
     );
 }
 
+type HttpsClient = Client<HttpsConnector<HttpConnector>>;
+
 /// The pipline to be run for indexing and updating a Podcast feed that originates from
 /// `Source.uri`.
 ///
 /// Messy temp diagram:
-/// Source -> GET Request -> Update Etags -> Check Status -> Parse xml/Rss ->
-/// Convert `rss::Channel` into Feed -> Index Podcast -> Index Episodes.
-pub fn pipeline<S: IntoIterator<Item = Source>>(
+/// Source -> GET Request -> Update Etags -> Check Status -> Parse `xml/Rss` ->
+/// Convert `rss::Channel` into `Feed` -> Index Podcast -> Index Episodes.
+pub fn pipeline<S>(
     sources: S,
     ignore_etags: bool,
     tokio_core: &mut Core,
-    client: Client<HttpsConnector<HttpConnector>>,
-) -> Result<(), DataError> {
+    client: HttpsClient,
+) -> Result<(), DataError>
+where
+    S: IntoIterator<Item = Source>,
+{
     let list: Vec<_> = sources
         .into_iter()
         .map(clone!(client => move |s| s.into_feed(client.clone(), ignore_etags)))
@@ -67,11 +72,10 @@ pub fn pipeline<S: IntoIterator<Item = Source>>(
 
 /// Creates a tokio `reactor::Core`, and a `hyper::Client` and
 /// runs the pipeline.
-pub fn run(sources: Vec<Source>, ignore_etags: bool) -> Result<(), DataError> {
-    if sources.is_empty() {
-        return Ok(());
-    }
-
+pub fn run<S>(sources: S, ignore_etags: bool) -> Result<(), DataError>
+where
+    S: IntoIterator<Item = Source>,
+{
     let mut core = Core::new()?;
     let handle = core.handle();
     let client = Client::configure()
