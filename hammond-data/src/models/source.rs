@@ -116,7 +116,7 @@ impl Source {
     // 408: Timeout
     // 410: Feed deleted
     // TODO: Rething this api,
-    fn match_status(mut self, res: Response) -> Result<(Self, Response), DataError> {
+    fn match_status(mut self, res: Response) -> Result<Response, DataError> {
         self.update_etag(&res)?;
         let code = res.status();
 
@@ -136,7 +136,7 @@ impl Source {
             StatusCode::Gone => return Err(self.make_err("410: Feed was deleted..", code)),
             _ => info!("HTTP StatusCode: {}", code),
         };
-        Ok((self, res))
+        Ok(res)
     }
 
     fn handle_301(&mut self, res: &Response) -> Result<(), DataError> {
@@ -180,7 +180,7 @@ impl Source {
             source
                 .request_constructor(client.clone(), ignore_etags)
                 .then(|res| match res {
-                    Ok(s) => Ok(Loop::Break(s)),
+                    Ok(response) => Ok(Loop::Break(response)),
                     Err(err) => match err {
                         DataError::F301(s) => {
                             info!("Following redirect...");
@@ -192,7 +192,7 @@ impl Source {
         });
 
         let feed = response
-            .and_then(|(_, res)| response_to_channel(res))
+            .and_then(|res| response_to_channel(res))
             .and_then(move |chan| {
                 FeedBuilder::default()
                     .channel(chan)
@@ -210,7 +210,7 @@ impl Source {
         self,
         client: Client<HttpsConnector<HttpConnector>>,
         ignore_etags: bool,
-    ) -> Box<Future<Item = (Self, Response), Error = DataError>> {
+    ) -> Box<Future<Item = Response, Error = DataError>> {
         // FIXME: remove unwrap somehow
         let uri = Uri::from_str(self.uri()).unwrap();
         let mut req = Request::new(Method::Get, uri);
