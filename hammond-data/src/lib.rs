@@ -74,6 +74,11 @@ pub use feed::{Feed, FeedBuilder};
 pub use models::Save;
 pub use models::{Episode, EpisodeWidgetQuery, Podcast, PodcastCoverQuery, Source};
 
+// Set the user agent, See #53 for more
+// Keep this in sync with Tor-browser releases
+const USER_AGENT: &'static str =
+    "Mozilla/5.0 (Windows NT 6.1; rv:52.0) Gecko/20100101 Firefox/52.0";
+
 /// [XDG Base Direcotory](https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html) Paths.
 #[allow(missing_debug_implementations)]
 pub mod xdg_dirs {

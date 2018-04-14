@@ -18,6 +18,7 @@ use errors::*;
 use feed::{Feed, FeedBuilder};
 use models::{NewSource, Save};
 use schema::source;
+use USER_AGENT;
 
 use std::str::FromStr;
 
@@ -215,24 +216,18 @@ impl Source {
         let uri = Uri::from_str(self.uri()).unwrap();
         let mut req = Request::new(Method::Get, uri);
 
-        // Set the user agent as a fix for issue #53
-        // TODO: keep this in sync with tor-browser releases
-        req.headers_mut().set(UserAgent::new(
-            "Mozilla/5.0 (Windows NT 6.1; rv:52.0) Gecko/20100101 Firefox/52.0",
-        ));
+        // Set the UserAgent cause ppl still seem to check it for some reason...
+        req.headers_mut().set(UserAgent::new(USER_AGENT));
 
         if !ignore_etags {
-            if let Some(foo) = self.http_etag() {
-                req.headers_mut()
-                    .set(IfNoneMatch::Items(vec![EntityTag::new(
-                        true,
-                        foo.to_owned(),
-                    )]));
+            if let Some(etag) = self.http_etag() {
+                let tag = vec![EntityTag::new(true, etag.to_owned())];
+                req.headers_mut().set(IfNoneMatch::Items(tag));
             }
 
-            if let Some(foo) = self.last_modified() {
-                if let Ok(x) = foo.parse::<HttpDate>() {
-                    req.headers_mut().set(IfModifiedSince(x));
+            if let Some(lmod) = self.last_modified() {
+                if let Ok(date) = lmod.parse::<HttpDate>() {
+                    req.headers_mut().set(IfModifiedSince(date));
                 }
             }
         }
