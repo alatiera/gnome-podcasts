@@ -19,6 +19,25 @@ use Source;
 
 // use std::sync::{Arc, Mutex};
 
+// http://gtk-rs.org/tuto/closures
+#[macro_export]
+macro_rules! clone {
+    (@param _) => ( _ );
+    (@param $x:ident) => ( $x );
+    ($($n:ident),+ => move || $body:expr) => (
+        {
+            $( let $n = $n.clone(); )+
+            move || $body
+        }
+    );
+    ($($n:ident),+ => move |$($p:tt),+| $body:expr) => (
+        {
+            $( let $n = $n.clone(); )+
+            move |$(clone!(@param $p),)+| $body
+        }
+    );
+}
+
 /// The pipline to be run for indexing and updating a Podcast feed that originates from
 /// `Source.uri`.
 ///
@@ -33,7 +52,7 @@ pub fn pipeline<S: IntoIterator<Item = Source>>(
 ) -> Result<(), DataError> {
     let list: Vec<_> = sources
         .into_iter()
-        .map(move |s| s.into_feed(&client, ignore_etags))
+        .map(clone!(client => move |s| s.into_feed(client.clone(), ignore_etags)))
         .map(|fut| fut.and_then(|feed| feed.index()))
         .map(|fut| fut.map(|_| ()).map_err(|err| error!("Error: {}", err)))
         .collect();
@@ -73,7 +92,7 @@ pub fn index_single_source(s: Source, ignore_etags: bool) -> Result<(), DataErro
         .connector(HttpsConnector::new(num_cpus::get(), &handle)?)
         .build(&handle);
 
-    let work = s.into_feed(&client, ignore_etags)
+    let work = s.into_feed(client, ignore_etags)
         .and_then(move |feed| feed.index())
         .map(|_| ());
 

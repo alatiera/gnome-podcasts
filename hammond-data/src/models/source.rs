@@ -10,10 +10,11 @@ use hyper::{Client, Method, Request, Response, StatusCode, Uri};
 use hyper_tls::HttpsConnector;
 
 // use futures::future::ok;
+use futures::future::{loop_fn, Future, Loop};
 use futures::prelude::*;
 
 use database::connection;
-use errors::DataError;
+use errors::*;
 use feed::{Feed, FeedBuilder};
 use models::{NewSource, Save};
 use schema::source;
@@ -102,11 +103,7 @@ impl Source {
     }
 
     fn make_err(self, context: &str, code: StatusCode) -> DataError {
-        DataError::HttpStatusError {
-            url: self.uri,
-            status_code: code,
-            context: context.into(),
-        }
+        DataError::HttpStatusGeneral(HttpStatusError::new(self.uri, code, context.into()))
     }
 
     // TODO match on more stuff
@@ -128,7 +125,7 @@ impl Source {
             StatusCode::MovedPermanently => {
                 error!("Feed was moved permanently.");
                 self.handle_301(&res)?;
-                return Err(self.make_err("301: Feed was moved permanently.", code));
+                return Err(DataError::F301(self));
             }
             StatusCode::TemporaryRedirect => debug!("307: Temporary Redirect."),
             StatusCode::PermanentRedirect => warn!("308: Permanent Redirect."),
@@ -151,8 +148,6 @@ impl Source {
             self.last_modified = None;
             self.save()?;
             info!("Feed url was updated succesfully.");
-            // TODO: Refresh in place instead of next time, Not a priority.
-            info!("New content will be fetched with the next refesh.");
         }
 
         Ok(())
@@ -177,12 +172,27 @@ impl Source {
     // Refactor into TryInto once it lands on stable.
     pub fn into_feed(
         self,
-        client: &Client<HttpsConnector<HttpConnector>>,
+        client: Client<HttpsConnector<HttpConnector>>,
         ignore_etags: bool,
     ) -> Box<Future<Item = Feed, Error = DataError>> {
         let id = self.id();
-        let feed = self.request_constructor(client, ignore_etags)
-            .and_then(move |(_, res)| response_to_channel(res))
+        let response = loop_fn(self, move |source| {
+            source
+                .request_constructor(client.clone(), ignore_etags)
+                .then(|res| match res {
+                    Ok(s) => Ok(Loop::Break(s)),
+                    Err(err) => match err {
+                        DataError::F301(s) => {
+                            info!("Following redirect...");
+                            Ok(Loop::Continue(s))
+                        }
+                        e => Err(e),
+                    },
+                })
+        });
+
+        let feed = response
+            .and_then(|(_, res)| response_to_channel(res))
             .and_then(move |chan| {
                 FeedBuilder::default()
                     .channel(chan)
@@ -198,7 +208,7 @@ impl Source {
     // #bools_are_just_2variant_enmus
     fn request_constructor(
         self,
-        client: &Client<HttpsConnector<HttpConnector>>,
+        client: Client<HttpsConnector<HttpConnector>>,
         ignore_etags: bool,
     ) -> Box<Future<Item = (Self, Response), Error = DataError>> {
         // FIXME: remove unwrap somehow
@@ -230,7 +240,6 @@ impl Source {
         let work = client
             .request(req)
             .map_err(From::from)
-            // TODO: tail recursion loop that would follow redirects directly
             .and_then(move |res| self.match_status(res));
         Box::new(work)
     }
@@ -271,7 +280,7 @@ mod tests {
         let source = Source::from_url(url).unwrap();
         let id = source.id();
 
-        let feed = source.into_feed(&client, true);
+        let feed = source.into_feed(client, true);
         let feed = core.run(feed).unwrap();
 
         let expected = get_feed("tests/feeds/2018-01-20-Intercepted.xml", id);

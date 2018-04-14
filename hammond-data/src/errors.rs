@@ -8,6 +8,26 @@ use url;
 
 use std::io;
 
+use models::Source;
+
+#[fail(display = "Request to {} returned {}. Context: {}", url, status_code, context)]
+#[derive(Fail, Debug)]
+pub struct HttpStatusError {
+    url: String,
+    status_code: hyper::StatusCode,
+    context: String,
+}
+
+impl HttpStatusError {
+    pub fn new(url: String, code: hyper::StatusCode, context: String) -> Self {
+        HttpStatusError {
+            url,
+            status_code: code,
+            context,
+        }
+    }
+}
+
 #[derive(Fail, Debug)]
 pub enum DataError {
     #[fail(display = "SQL Query failed: {}", _0)]
@@ -31,12 +51,10 @@ pub enum DataError {
     RssError(#[cause] rss::Error),
     #[fail(display = "Error: {}", _0)]
     Bail(String),
-    #[fail(display = "Request to {} returned {}. Context: {}", url, status_code, context)]
-    HttpStatusError {
-        url: String,
-        status_code: hyper::StatusCode,
-        context: String,
-    },
+    #[fail(display = "{}", _0)]
+    HttpStatusGeneral(HttpStatusError),
+    #[fail(display = "FIXME: This should be better")]
+    F301(Source),
     #[fail(display = "Error occured while Parsing an Episode. Reason: {}", reason)]
     ParseEpisodeError { reason: String, parent_id: i32 },
     #[fail(display = "No Futures where produced to be run.")]
