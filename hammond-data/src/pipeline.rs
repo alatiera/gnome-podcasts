@@ -81,22 +81,6 @@ pub fn run(sources: Vec<Source>, ignore_etags: bool) -> Result<(), DataError> {
     pipeline(sources, ignore_etags, &mut core, client)
 }
 
-/// Docs
-pub fn index_single_source(s: Source, ignore_etags: bool) -> Result<(), DataError> {
-    let mut core = Core::new()?;
-    let handle = core.handle();
-
-    let client = Client::configure()
-        .connector(HttpsConnector::new(num_cpus::get(), &handle)?)
-        .build(&handle);
-
-    let work = s.into_feed(client, ignore_etags)
-        .and_then(move |feed| feed.index())
-        .map(|_| ());
-
-    core.run(work)
-}
-
 fn determine_ep_state(
     ep: NewEpisodeMinimal,
     item: &rss::Item,
@@ -125,34 +109,6 @@ pub(crate) fn glue_async<'a>(
     Box::new(
         result(NewEpisodeMinimal::new(item, id)).and_then(move |ep| determine_ep_state(ep, item)),
     )
-}
-
-// Weird magic from #rust irc channel
-// kudos to remexre
-/// FIXME: Docs
-#[cfg_attr(feature = "cargo-clippy", allow(type_complexity))]
-pub fn collect_futures<F>(
-    futures: Vec<F>,
-) -> Box<Future<Item = Vec<Result<F::Item, F::Error>>, Error = DataError>>
-where
-    F: 'static + Future,
-    <F as Future>::Item: 'static,
-    <F as Future>::Error: 'static,
-{
-    Box::new(loop_fn((futures, vec![]), |(futures, mut done)| {
-        select_all(futures).then(|r| {
-            let (r, rest) = match r {
-                Ok((r, _, rest)) => (Ok(r), rest),
-                Err((r, _, rest)) => (Err(r), rest),
-            };
-            done.push(r);
-            if rest.is_empty() {
-                Ok(Loop::Break(done))
-            } else {
-                Ok(Loop::Continue((rest, done)))
-            }
-        })
-    }))
 }
 
 #[cfg(test)]
