@@ -143,7 +143,10 @@ fn refresh_feed<S>(source: Option<S>, sender: Sender<Action>) -> Result<(), Erro
 where
     S: IntoIterator<Item = Source> + Send + 'static,
 {
-    sender.send(Action::HeaderBarShowUpdateIndicator)?;
+    sender
+        .send(Action::HeaderBarShowUpdateIndicator)
+        .map_err(|err| error!("Action Sender: {}", err))
+        .ok();
 
     rayon::spawn(move || {
         if let Some(s) = source {
@@ -163,10 +166,12 @@ where
 
         sender
             .send(Action::HeaderBarHideUpdateIndicator)
-            .expect("Action channel blew up.");
+            .map_err(|err| error!("Action Sender: {}", err))
+            .ok();
         sender
             .send(Action::RefreshAllViews)
-            .expect("Action channel blew up.");
+            .map_err(|err| error!("Action Sender: {}", err))
+            .ok();
     });
     Ok(())
 }
@@ -230,7 +235,10 @@ pub fn set_image_from_path(
             guard.insert(pd_.id());
         }
 
-        let _ = sender.send(downloader::cache_image(&pd_));
+        sender
+            .send(downloader::cache_image(&pd_))
+            .map_err(|err| error!("Action Sender: {}", err))
+            .ok();
 
         if let Ok(mut guard) = COVER_DL_REGISTRY.write() {
             guard.remove(&pd_.id());

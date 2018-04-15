@@ -12,7 +12,7 @@ use app::Action;
 use utils::set_image_from_path;
 use widgets::episode::episodes_listbox;
 
-use std::sync::mpsc::Sender;
+use std::sync::mpsc::{SendError, Sender};
 use std::sync::Arc;
 
 #[derive(Debug, Clone)]
@@ -68,9 +68,7 @@ impl ShowWidget {
 
         self.unsub
             .connect_clicked(clone!(pd, sender => move |bttn| {
-                if let Err(err) = on_unsub_button_clicked(pd.clone(), bttn, sender.clone()) {
-                    error!("Error: {}", err);
-                }
+                on_unsub_button_clicked(pd.clone(), bttn, sender.clone());
         }));
 
         self.setup_listbox(pd.clone(), sender.clone());
@@ -126,23 +124,23 @@ impl ShowWidget {
     }
 }
 
-fn on_unsub_button_clicked(
-    pd: Arc<Podcast>,
-    unsub_button: &gtk::Button,
-    sender: Sender<Action>,
-) -> Result<(), Error> {
+fn on_unsub_button_clicked(pd: Arc<Podcast>, unsub_button: &gtk::Button, sender: Sender<Action>) {
     // hack to get away without properly checking for none.
     // if pressed twice would panic.
     unsub_button.set_sensitive(false);
-    sender.send(Action::RemoveShow(pd))?;
 
-    sender.send(Action::HeaderBarNormal)?;
-    sender.send(Action::ShowShowsAnimated)?;
-    // Queue a refresh after the switch to avoid blocking the db.
-    sender.send(Action::RefreshShowsView)?;
-    sender.send(Action::RefreshEpisodesView)?;
+    let wrap = || -> Result<(), SendError<_>> {
+        sender.send(Action::RemoveShow(pd))?;
 
-    Ok(())
+        sender.send(Action::HeaderBarNormal)?;
+        sender.send(Action::ShowShowsAnimated)?;
+        // Queue a refresh after the switch to avoid blocking the db.
+        sender.send(Action::RefreshShowsView)?;
+        sender.send(Action::RefreshEpisodesView)?;
+        Ok(())
+    };
+
+    wrap().map_err(|err| error!("Action Sender: {}", err)).ok();
 }
 
 fn on_played_button_clicked(pd: Arc<Podcast>, episodes: &gtk::Frame, sender: Sender<Action>) {
@@ -151,7 +149,10 @@ fn on_played_button_clicked(pd: Arc<Podcast>, episodes: &gtk::Frame, sender: Sen
         warn!("RUN WHILE YOU STILL CAN!");
     }
 
-    sender.send(Action::MarkAllPlayerNotification(pd)).unwrap();
+    sender
+        .send(Action::MarkAllPlayerNotification(pd))
+        .map_err(|err| error!("Action Sender: {}", err))
+        .ok();
 }
 
 pub fn mark_all_watched(pd: &Podcast, sender: Sender<Action>) -> Result<(), Error> {

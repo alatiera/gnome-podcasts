@@ -94,7 +94,8 @@ impl Header {
             .connect_clicked(clone!(sender => move |_| {
                 sender
                     .send(Action::UpdateSources(None))
-                    .expect("Action channel blew up.");
+                    .map_err(|err| error!("Action Sender: {}", err))
+                    .ok();
         }));
 
         self.about_button

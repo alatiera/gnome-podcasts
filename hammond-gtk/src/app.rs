@@ -207,7 +207,9 @@ impl App {
                     });
 
                     let undo_callback = clone!(sender => move || {
-                        sender.send(Action::RefreshWidgetIfSame(id)).expect("Action channel blow up");
+                        sender.send(Action::RefreshWidgetIfSame(id))
+                            .map_err(|err| error!("Action Sender: {}", err))
+                            .ok();
                     });
 
                     let text = "Marked all episodes as listened".into();

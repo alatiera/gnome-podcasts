@@ -108,10 +108,12 @@ pub fn add(id: i32, directory: String, sender: Sender<Action>) -> Result<(), Err
 
             sender
                 .send(Action::RefreshWidgetIfSame(pid))
-                .expect("Action channel blew up.");
+                .map_err(|err| error!("Action Sender: {}", err))
+                .ok();
             sender
                 .send(Action::RefreshEpisodesView)
-                .expect("Action channel blew up.");
+                .map_err(|err| error!("Action Sender: {}", err))
+                .ok();
         }
     });
 
