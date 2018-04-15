@@ -132,7 +132,8 @@ impl App {
             utils::cleanup(cleanup_date);
 
             gtk::idle_add(move || {
-                utils::refresh(None, sender.clone());
+                let s: Option<Vec<_>> = None;
+                utils::refresh(s, sender.clone());
                 glib::Continue(false)
             });
         }
@@ -145,7 +146,8 @@ impl App {
         info!("Auto-refresh every {:?} seconds.", refresh_interval);
 
         gtk::timeout_add_seconds(refresh_interval, move || {
-            utils::refresh(None, sender.clone());
+            let s: Option<Vec<_>> = None;
+            utils::refresh(s, sender.clone());
 
             glib::Continue(true)
         });
@@ -172,7 +174,8 @@ impl App {
                     if let Some(s) = source {
                         utils::refresh(Some(vec![s]), sender.clone());
                     } else {
-                        utils::refresh(None, sender.clone());
+                        let s: Option<Vec<_>> = None;
+                        utils::refresh(s, sender.clone());
                     }
                 }
                 Ok(Action::RefreshAllViews) => content.update(),

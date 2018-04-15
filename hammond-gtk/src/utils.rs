@@ -111,7 +111,10 @@ pub fn cleanup(cleanup_date: DateTime<Utc>) {
     }
 }
 
-pub fn refresh(source: Option<Vec<Source>>, sender: Sender<Action>) {
+pub fn refresh<S>(source: Option<S>, sender: Sender<Action>)
+where
+    S: IntoIterator<Item = Source> + Send + 'static,
+{
     if let Err(err) = refresh_feed(source, sender) {
         error!("An error occured while trying to update the feeds.");
         error!("Error: {}", err);
@@ -136,18 +139,27 @@ pub fn get_cleanup_date(settings: &Settings) -> DateTime<Utc> {
 /// Update the rss feed(s) originating from `source`.
 /// If `source` is None, Fetches all the `Source` entries in the database and updates them.
 /// When It's done,it queues up a `RefreshViews` action.
-fn refresh_feed(source: Option<Vec<Source>>, sender: Sender<Action>) -> Result<(), Error> {
+fn refresh_feed<S>(source: Option<S>, sender: Sender<Action>) -> Result<(), Error>
+where
+    S: IntoIterator<Item = Source> + Send + 'static,
+{
     sender.send(Action::HeaderBarShowUpdateIndicator)?;
 
     rayon::spawn(move || {
-        let sources = source.unwrap_or_else(|| {
-            dbqueries::get_sources().expect("Failed to retrieve Sources from the database.")
-        });
-
-        if let Err(err) = pipeline::run(sources, false) {
-            error!("Error While trying to update the database.");
-            error!("Error msg: {}", err);
-        }
+        if let Some(s) = source {
+            // Refresh only specified feeds
+            pipeline::run(s, false)
+                .map_err(|err| error!("Error: {}", err))
+                .map_err(|_| error!("Error While trying to update the database."))
+                .ok();
+        } else {
+            // Refresh all the feeds
+            dbqueries::get_sources()
+                .map(|s| s.into_iter())
+                .and_then(|s| pipeline::run(s, false))
+                .map_err(|err| error!("Error: {}", err))
+                .ok();
+        };
 
         sender
             .send(Action::HeaderBarHideUpdateIndicator)
