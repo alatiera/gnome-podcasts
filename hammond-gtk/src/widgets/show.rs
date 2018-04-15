@@ -133,7 +133,7 @@ fn on_unsub_button_clicked(
 ) -> Result<(), Error> {
     // hack to get away without properly checking for none.
     // if pressed twice would panic.
-    unsub_button.hide();
+    unsub_button.set_sensitive(false);
     sender.send(Action::RemoveShow(pd))?;
 
     sender.send(Action::HeaderBarNormal)?;
