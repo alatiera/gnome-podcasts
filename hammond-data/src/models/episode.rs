@@ -31,10 +31,12 @@ pub struct Episode {
     podcast_id: i32,
 }
 
-impl Save<Episode, DataError> for Episode {
+impl Save<Episode> for Episode {
+    type Error = DataError;
+
     /// Helper method to easily save/"sync" current state of self to the
     /// Database.
-    fn save(&self) -> Result<Episode, DataError> {
+    fn save(&self) -> Result<Episode, Self::Error> {
         let db = connection();
         let tempdb = db.get()?;
 
@@ -224,10 +226,12 @@ impl From<Episode> for EpisodeWidgetQuery {
     }
 }
 
-impl Save<usize, DataError> for EpisodeWidgetQuery {
+impl Save<usize> for EpisodeWidgetQuery {
+    type Error = DataError;
+
     /// Helper method to easily save/"sync" current state of self to the
     /// Database.
-    fn save(&self) -> Result<usize, DataError> {
+    fn save(&self) -> Result<usize, Self::Error> {
         use schema::episode::dsl::*;
 
         let db = connection();
@@ -363,10 +367,12 @@ pub struct EpisodeCleanerQuery {
     played: Option<i32>,
 }
 
-impl Save<usize, DataError> for EpisodeCleanerQuery {
+impl Save<usize> for EpisodeCleanerQuery {
+    type Error = DataError;
+
     /// Helper method to easily save/"sync" current state of self to the
     /// Database.
-    fn save(&self) -> Result<usize, DataError> {
+    fn save(&self) -> Result<usize, Self::Error> {
         use schema::episode::dsl::*;
 
         let db = connection();

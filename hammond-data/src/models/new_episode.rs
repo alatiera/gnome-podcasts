@@ -43,7 +43,9 @@ impl From<NewEpisodeMinimal> for NewEpisode {
     }
 }
 
-impl Insert<(), DataError> for NewEpisode {
+impl Insert<()> for NewEpisode {
+    type Error = DataError;
+
     fn insert(&self) -> Result<(), DataError> {
         use schema::episode::dsl::*;
         let db = connection();
@@ -58,7 +60,9 @@ impl Insert<(), DataError> for NewEpisode {
     }
 }
 
-impl Update<(), DataError> for NewEpisode {
+impl Update<()> for NewEpisode {
+    type Error = DataError;
+
     fn update(&self, episode_id: i32) -> Result<(), DataError> {
         use schema::episode::dsl::*;
         let db = connection();
@@ -73,7 +77,9 @@ impl Update<(), DataError> for NewEpisode {
     }
 }
 
-impl Index<(), DataError> for NewEpisode {
+impl Index<()> for NewEpisode {
+    type Error = DataError;
+
     // Does not update the episode description if it's the only thing that has
     // changed.
     fn index(&self) -> Result<(), DataError> {

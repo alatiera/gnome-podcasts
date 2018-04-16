@@ -26,8 +26,10 @@ pub(crate) struct NewPodcast {
     source_id: i32,
 }
 
-impl Insert<(), DataError> for NewPodcast {
-    fn insert(&self) -> Result<(), DataError> {
+impl Insert<()> for NewPodcast {
+    type Error = DataError;
+
+    fn insert(&self) -> Result<(), Self::Error> {
         use schema::podcast::dsl::*;
         let db = connection();
         let con = db.get()?;
@@ -40,8 +42,10 @@ impl Insert<(), DataError> for NewPodcast {
     }
 }
 
-impl Update<(), DataError> for NewPodcast {
-    fn update(&self, podcast_id: i32) -> Result<(), DataError> {
+impl Update<()> for NewPodcast {
+    type Error = DataError;
+
+    fn update(&self, podcast_id: i32) -> Result<(), Self::Error> {
         use schema::podcast::dsl::*;
         let db = connection();
         let con = db.get()?;
@@ -57,7 +61,9 @@ impl Update<(), DataError> for NewPodcast {
 
 // TODO: Maybe return an Enum<Action(Resut)> Instead.
 // It would make unti testing better too.
-impl Index<(), DataError> for NewPodcast {
+impl Index<()> for NewPodcast {
+    type Error = DataError;
+
     fn index(&self) -> Result<(), DataError> {
         let exists = dbqueries::podcast_exists(self.source_id)?;
 

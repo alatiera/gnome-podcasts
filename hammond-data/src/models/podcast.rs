@@ -25,10 +25,12 @@ pub struct Podcast {
     source_id: i32,
 }
 
-impl Save<Podcast, DataError> for Podcast {
+impl Save<Podcast> for Podcast {
+    type Error = DataError;
+
     /// Helper method to easily save/"sync" current state of self to the
     /// Database.
-    fn save(&self) -> Result<Podcast, DataError> {
+    fn save(&self) -> Result<Podcast, Self::Error> {
         let db = connection();
         let tempdb = db.get()?;
 

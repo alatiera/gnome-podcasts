@@ -30,22 +30,30 @@ pub enum IndexState<T> {
     NotChanged,
 }
 
-pub trait Insert<T, E> {
-    fn insert(&self) -> Result<T, E>;
+pub trait Insert<T> {
+    type Error;
+
+    fn insert(&self) -> Result<T, Self::Error>;
 }
 
-pub trait Update<T, E> {
-    fn update(&self, i32) -> Result<T, E>;
+pub trait Update<T> {
+    type Error;
+
+    fn update(&self, i32) -> Result<T, Self::Error>;
 }
 
 // This might need to change in the future
-pub trait Index<T, E>: Insert<T, E> + Update<T, E> {
-    fn index(&self) -> Result<T, E>;
+pub trait Index<T>: Insert<T> + Update<T> {
+    type Error;
+
+    fn index(&self) -> Result<T, <Self as Index<T>>::Error>;
 }
 
 /// FIXME: DOCS
-pub trait Save<T, E> {
+pub trait Save<T> {
+    /// The Error type to be returned.
+    type Error;
     /// Helper method to easily save/"sync" current state of a diesel model to
     /// the Database.
-    fn save(&self) -> Result<T, E>;
+    fn save(&self) -> Result<T, Self::Error>;
 }

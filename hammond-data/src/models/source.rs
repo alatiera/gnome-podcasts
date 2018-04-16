@@ -34,10 +34,12 @@ pub struct Source {
     http_etag: Option<String>,
 }
 
-impl Save<Source, DataError> for Source {
+impl Save<Source> for Source {
+    type Error = DataError;
+
     /// Helper method to easily save/"sync" current state of self to the
     /// Database.
-    fn save(&self) -> Result<Source, DataError> {
+    fn save(&self) -> Result<Source, Self::Error> {
         let db = connection();
         let con = db.get()?;
 
