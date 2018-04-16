@@ -1,15 +1,19 @@
-use failure::Error;
-// use glib;
+use glib;
 use gtk;
 use gtk::prelude::*;
+
+use failure::Error;
 use html2pango::markup_from_raw;
 use open;
+use rayon;
 
 use hammond_data::dbqueries;
+use hammond_data::utils::delete_show;
 use hammond_data::Podcast;
 
 use app::Action;
-use utils::set_image_from_path;
+use appnotif::InAppNotification;
+use utils;
 use widgets::episode::episodes_listbox;
 
 use std::sync::mpsc::{SendError, Sender};
@@ -110,7 +114,7 @@ impl ShowWidget {
 
     /// Set the show cover.
     fn set_cover(&self, pd: Arc<Podcast>) -> Result<(), Error> {
-        set_image_from_path(&self.cover, Arc::new(pd.into()), 128)
+        utils::set_image_from_path(&self.cover, Arc::new(pd.into()), 128)
     }
 
     /// Set the descripton text.
@@ -155,12 +159,69 @@ fn on_played_button_clicked(pd: Arc<Podcast>, episodes: &gtk::Frame, sender: Sen
         .ok();
 }
 
-pub fn mark_all_watched(pd: &Podcast, sender: Sender<Action>) -> Result<(), Error> {
+fn mark_all_watched(pd: &Podcast, sender: Sender<Action>) -> Result<(), Error> {
     dbqueries::update_none_to_played_now(pd)?;
     // Not all widgets migth have been loaded when the mark_all is hit
     // So we will need to refresh again after it's done.
     sender.send(Action::RefreshWidgetIfSame(pd.id()))?;
     sender.send(Action::RefreshEpisodesView).map_err(From::from)
+}
+
+pub fn mark_all_notif(pd: Arc<Podcast>, sender: Sender<Action>) -> InAppNotification {
+    let id = pd.id();
+    let callback = clone!(sender => move || {
+        mark_all_watched(&pd, sender.clone())
+            .map_err(|err| error!("Notif Callback Error: {}", err))
+            .ok();
+        glib::Continue(false)
+    });
+
+    let undo_callback = clone!(sender => move || {
+        sender.send(Action::RefreshWidgetIfSame(id))
+            .map_err(|err| error!("Action Sender: {}", err))
+            .ok();
+    });
+
+    let text = "Marked all episodes as listened".into();
+    InAppNotification::new(text, callback, undo_callback)
+}
+
+pub fn remove_show_notif(pd: Arc<Podcast>, sender: Sender<Action>) -> InAppNotification {
+    let text = format!("Unsubscribed from {}", pd.title());
+
+    utils::ignore_show(pd.id())
+        .map_err(|err| error!("Error: {}", err))
+        .map_err(|_| error!("Could not insert {} to the ignore list.", pd.title()))
+        .ok();
+
+    let callback = clone!(pd => move || {
+        utils::uningore_show(pd.id())
+            .map_err(|err| error!("Error: {}", err))
+            .map_err(|_| error!("Could not remove {} from the ignore list.", pd.title()))
+            .ok();
+
+        // Spawn a thread so it won't block the ui.
+        rayon::spawn(clone!(pd => move || {
+            delete_show(&pd)
+                .map_err(|err| error!("Error: {}", err))
+                .map_err(|_| error!("Failed to delete {}", pd.title()))
+                .ok();
+        }));
+        glib::Continue(false)
+    });
+
+    let undo_wrap = move || -> Result<(), Error> {
+        utils::uningore_show(pd.id())?;
+        sender.send(Action::RefreshShowsView)?;
+        sender.send(Action::RefreshEpisodesView)?;
+        Ok(())
+    };
+
+    let undo_callback = move || {
+        undo_wrap().map_err(|err| error!("{}", err)).ok();
+    };
+
+    InAppNotification::new(text, callback, undo_callback)
 }
 
 // Ideally if we had a custom widget this would have been as simple as:

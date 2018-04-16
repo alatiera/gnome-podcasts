@@ -6,18 +6,13 @@ use gtk;
 use gtk::prelude::*;
 use gtk::SettingsExt as GtkSettingsExt;
 
-use failure::Error;
-use rayon;
-
-use hammond_data::utils::delete_show;
 use hammond_data::Podcast;
 
-use appnotif::*;
 use headerbar::Header;
 use settings::WindowGeometry;
 use stacks::Content;
 use utils;
-use widgets::mark_all_watched;
+use widgets::{mark_all_notif, remove_show_notif};
 
 use std::sync::mpsc::{channel, Receiver, Sender};
 use std::sync::Arc;
@@ -191,61 +186,11 @@ impl App {
                 Ok(Action::HeaderBarShowUpdateIndicator) => headerbar.show_update_notification(),
                 Ok(Action::HeaderBarHideUpdateIndicator) => headerbar.hide_update_notification(),
                 Ok(Action::MarkAllPlayerNotification(pd)) => {
-                    let id = pd.id();
-                    let callback = clone!(sender => move || {
-                        mark_all_watched(&pd, sender.clone())
-                            .map_err(|err| error!("Notif Callback Error: {}", err))
-                            .ok();
-                        glib::Continue(false)
-                    });
-
-                    let undo_callback = clone!(sender => move || {
-                        sender.send(Action::RefreshWidgetIfSame(id))
-                            .map_err(|err| error!("Action Sender: {}", err))
-                            .ok();
-                    });
-
-                    let text = "Marked all episodes as listened".into();
-                    let notif = InAppNotification::new(text, callback, undo_callback);
+                    let notif = mark_all_notif(pd, sender.clone());
                     notif.show(&overlay);
                 }
                 Ok(Action::RemoveShow(pd)) => {
-                    let text = format!("Unsubscribed from {}", pd.title());
-
-                    utils::ignore_show(pd.id())
-                        .map_err(|err| error!("Error: {}", err))
-                        .map_err(|_| error!("Could not insert {} to the ignore list.", pd.title()))
-                        .ok();
-
-                    let callback = clone!(pd => move || {
-                        utils::uningore_show(pd.id())
-                            .map_err(|err| error!("Error: {}", err))
-                            .map_err(|_| error!("Could not remove {} from the ignore list.", pd.title()))
-                            .ok();
-
-                        // Spawn a thread so it won't block the ui.
-                        rayon::spawn(clone!(pd => move || {
-                            delete_show(&pd)
-                                .map_err(|err| error!("Error: {}", err))
-                                .map_err(|_| error!("Failed to delete {}", pd.title()))
-                                .ok();
-                        }));
-                        glib::Continue(false)
-                    });
-
-                    let sender_ = sender.clone();
-                    let undo_wrap = move || -> Result<(), Error> {
-                        utils::uningore_show(pd.id())?;
-                        sender_.send(Action::RefreshShowsView)?;
-                        sender_.send(Action::RefreshEpisodesView)?;
-                        Ok(())
-                    };
-
-                    let undo_callback = move || {
-                        undo_wrap().map_err(|err| error!("{}", err)).ok();
-                    };
-
-                    let notif = InAppNotification::new(text, callback, undo_callback);
+                    let notif = remove_show_notif(pd, sender.clone());
                     notif.show(&overlay);
                 }
                 Err(_) => (),
