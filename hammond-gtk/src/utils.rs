@@ -71,10 +71,25 @@ where
     F: FnMut(T::Item) -> W + 'static,
     W: IsA<Widget>,
 {
+    let func = move |x| container.add(&contructor(x));
+    lazy_load_full(data, func);
+}
+
+/// Iterate over `data` and execute `func` using a `glib::idle_add()`.
+///
+/// This is a more flexible version of `lazy_load` with less constrains.
+/// If you just want to lazy add `widgets` to a `container` check if
+/// `lazy_load` fits your needs first.
+pub fn lazy_load_full<T, F>(data: T, mut func: F)
+where
+    T: IntoIterator + 'static,
+    T::Item: 'static,
+    F: FnMut(T::Item) + 'static,
+{
     let mut data = data.into_iter();
     gtk::idle_add(move || {
         data.next()
-            .map(|x| container.add(&contructor(x)))
+            .map(|x| func(x))
             .map(|_| glib::Continue(true))
             .unwrap_or(glib::Continue(false))
     });
