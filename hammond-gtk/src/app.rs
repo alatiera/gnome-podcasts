@@ -186,10 +186,12 @@ impl App {
                 Ok(Action::RefreshEpisodesView) => content.update_episode_view(),
                 Ok(Action::RefreshEpisodesViewBGR) => content.update_episode_view_if_baground(),
                 Ok(Action::ReplaceWidget(pd)) => {
-                    if let Err(err) = content.get_shows().replace_widget(pd) {
-                        error!("Something went wrong while trying to update the ShowWidget.");
-                        error!("Error: {}", err);
-                    }
+                    content
+                        .get_shows()
+                        .replace_widget(pd.clone())
+                        .map_err(|err| error!("Failed to update ShowWidget: {}", err))
+                        .map_err(|_| error!("Failed ot update ShowWidget {}", pd.title()))
+                        .ok();
                 }
                 Ok(Action::ShowWidgetAnimated) => content.get_shows().switch_widget_animated(),
                 Ok(Action::ShowShowsAnimated) => content.get_shows().switch_podcasts_animated(),
@@ -200,9 +202,9 @@ impl App {
                 Ok(Action::MarkAllPlayerNotification(pd)) => {
                     let id = pd.id();
                     let callback = clone!(sender => move || {
-                        if let Err(err) = mark_all_watched(&pd, sender.clone()) {
-                            error!("Something went horribly wrong with the notif callback: {}", err);
-                        }
+                        mark_all_watched(&pd, sender.clone())
+                            .map_err(|err| error!("Notif Callback Error: {}", err))
+                            .ok();
                         glib::Continue(false)
                     });
 
@@ -219,23 +221,23 @@ impl App {
                 Ok(Action::RemoveShow(pd)) => {
                     let text = format!("Unsubscribed from {}", pd.title());
 
-                    if let Err(err) = utils::ignore_show(pd.id()) {
-                        error!("Could not insert {} to the ignore list.", pd.title());
-                        error!("Error: {}", err);
-                    }
+                    utils::ignore_show(pd.id())
+                        .map_err(|err| error!("Error: {}", err))
+                        .map_err(|_| error!("Could not insert {} to the ignore list.", pd.title()))
+                        .ok();
 
                     let callback = clone!(pd => move || {
-                        if let Err(err) = utils::uningore_show(pd.id()) {
-                            error!("Could not remove {} from the ignore list.", pd.title());
-                            error!("Error: {}", err);
-                        }
+                        utils::uningore_show(pd.id())
+                            .map_err(|err| error!("Error: {}", err))
+                            .map_err(|_| error!("Could not remove {} from the ignore list.", pd.title()))
+                            .ok();
 
                         // Spawn a thread so it won't block the ui.
                         rayon::spawn(clone!(pd => move || {
-                            if let Err(err) = delete_show(&pd) {
-                                error!("Something went wrong trying to remove {}", pd.title());
-                                error!("Error: {}", err);
-                            }
+                            delete_show(&pd)
+                                .map_err(|err| error!("Error: {}", err))
+                                .map_err(|_| error!("Failed to delete {}", pd.title()))
+                                .ok();
                         }));
                         glib::Continue(false)
                     });
@@ -249,9 +251,7 @@ impl App {
                     };
 
                     let undo_callback = move || {
-                        if let Err(err) = undo_wrap() {
-                            error!("{}", err)
-                        }
+                        undo_wrap().map_err(|err| error!("{}", err)).ok();
                     };
 
                     let notif = InAppNotification::new(text, callback, undo_callback);

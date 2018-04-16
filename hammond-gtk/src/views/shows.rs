@@ -42,12 +42,9 @@ impl ShowsPopulated {
 
     pub fn init(&self, sender: Sender<Action>) -> Result<(), Error> {
         self.flowbox.connect_child_activated(move |_, child| {
-            if let Err(err) = on_child_activate(child, sender.clone()) {
-                error!(
-                    "Something went wrong during flowbox child activation: {}.",
-                    err
-                )
-            };
+            on_child_activate(child, sender.clone())
+                .map_err(|err| error!("Error along flowbox child activation: {}", err))
+                .ok();
         });
         // Populate the flowbox with the Podcasts.
         self.populate_flowbox()
@@ -126,10 +123,9 @@ impl ShowsChild {
         self.container.set_tooltip_text(pd.title());
         WidgetExt::set_name(&self.child, &pd.id().to_string());
 
-        let pd = Arc::new(pd.into());
-        if let Err(err) = self.set_cover(pd) {
-            error!("Failed to set a cover: {}", err)
-        }
+        self.set_cover(Arc::new(pd.into()))
+            .map_err(|err| error!("Failed to set a cover: {}", err))
+            .ok();
     }
 
     fn set_cover(&self, pd: Arc<PodcastCoverQuery>) -> Result<(), Error> {

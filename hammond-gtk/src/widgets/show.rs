@@ -74,18 +74,18 @@ impl ShowWidget {
         self.setup_listbox(pd.clone(), sender.clone());
         self.set_description(pd.description());
 
-        if let Err(err) = self.set_cover(pd.clone()) {
-            error!("Failed to set a cover: {}", err)
-        }
+        self.set_cover(pd.clone())
+            .map_err(|err| error!("Failed to set a cover: {}", err))
+            .ok();
 
         let link = pd.link().to_owned();
         self.link.set_tooltip_text(Some(link.as_str()));
         self.link.connect_clicked(move |_| {
             info!("Opening link: {}", &link);
-            if let Err(err) = open::that(&link) {
-                error!("Failed to open link: {}", &link);
-                error!("Error: {}", err);
-            }
+            open::that(&link)
+                .map_err(|err| error!("Error: {}", err))
+                .map_err(|_| error!("Failed open link: {}", &link))
+                .ok();
         });
 
         let show_menu: gtk::Popover = builder.get_object("show_menu").unwrap();

@@ -106,19 +106,18 @@ pub fn get_ignored_shows() -> Result<Vec<i32>, Error> {
 }
 
 pub fn cleanup(cleanup_date: DateTime<Utc>) {
-    if let Err(err) = checkup(cleanup_date) {
-        error!("Check up failed: {}", err);
-    }
+    checkup(cleanup_date)
+        .map_err(|err| error!("Check up failed: {}", err))
+        .ok();
 }
 
 pub fn refresh<S>(source: Option<S>, sender: Sender<Action>)
 where
     S: IntoIterator<Item = Source> + Send + 'static,
 {
-    if let Err(err) = refresh_feed(source, sender) {
-        error!("An error occured while trying to update the feeds.");
-        error!("Error: {}", err);
-    }
+    refresh_feed(source, sender)
+        .map_err(|err| error!("Failed to update feeds: {}", err))
+        .ok();
 }
 
 pub fn get_refresh_interval(settings: &Settings) -> Duration {

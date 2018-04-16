@@ -220,9 +220,9 @@ impl EpisodesViewWidget {
     }
 
     fn init(&self, podcast_id: i32) {
-        if let Err(err) = self.set_cover(podcast_id) {
-            error!("Failed to set a cover: {}", err)
-        }
+        self.set_cover(podcast_id)
+            .map_err(|err| error!("Failed to set a cover: {}", err))
+            .ok();
 
         self.container.pack_start(&self.episode, true, true, 6);
     }

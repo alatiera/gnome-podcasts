@@ -43,10 +43,10 @@ impl Content {
 
     // TODO: Maybe propagate the error?
     pub fn update_episode_view(&self) {
-        if let Err(err) = self.episodes.update() {
-            error!("Something went wrong while trying to update the episode view.");
-            error!("Error: {}", err);
-        }
+        self.episodes
+            .update()
+            .map_err(|err| error!("Failed to update EpisodeView: {}", err))
+            .ok();
     }
 
     pub fn update_episode_view_if_baground(&self) {
@@ -56,24 +56,24 @@ impl Content {
     }
 
     pub fn update_shows_view(&self) {
-        if let Err(err) = self.shows.update_podcasts() {
-            error!("Something went wrong while trying to update the ShowsView.");
-            error!("Error: {}", err);
-        }
+        self.shows
+            .update_podcasts()
+            .map_err(|err| error!("Failed to update ShowsView: {}", err))
+            .ok();
     }
 
     pub fn update_widget(&self) {
-        if let Err(err) = self.shows.update_widget() {
-            error!("Something went wrong while trying to update the Show Widget.");
-            error!("Error: {}", err);
-        }
+        self.shows
+            .update_widget()
+            .map_err(|err| error!("Failed to update ShowsWidget: {}", err))
+            .ok();
     }
 
     pub fn update_widget_if_same(&self, pid: i32) {
-        if let Err(err) = self.shows.update_widget_if_same(pid) {
-            error!("Something went wrong while trying to update the Show Widget.");
-            error!("Error: {}", err);
-        }
+        self.shows
+            .update_widget_if_same(pid)
+            .map_err(|err| error!("Failed to update ShowsWidget: {}", err))
+            .ok();
     }
 
     pub fn update_widget_if_visible(&self) {

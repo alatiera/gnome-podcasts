@@ -28,10 +28,10 @@ fn download_checker() -> Result<(), DataError> {
         })
         .for_each(|ep| {
             ep.set_local_uri(None);
-            if let Err(err) = ep.save() {
-                error!("Error while trying to update episode: {:#?}", ep);
-                error!("{}", err);
-            };
+            ep.save()
+                .map_err(|err| error!("{}", err))
+                .map_err(|_| error!("Error while trying to update episode: {:#?}", ep))
+                .ok();
         });
 
     Ok(())
@@ -48,12 +48,11 @@ fn played_cleaner(cleanup_date: DateTime<Utc>) -> Result<(), DataError> {
         .for_each(|ep| {
             let limit = ep.played().unwrap();
             if now_utc > limit {
-                if let Err(err) = delete_local_content(ep) {
-                    error!("Error while trying to delete file: {:?}", ep.local_uri());
-                    error!("{}", err);
-                } else {
-                    info!("Episode {:?} was deleted succesfully.", ep.local_uri());
-                };
+                delete_local_content(ep)
+                    .map(|_| info!("Episode {:?} was deleted succesfully.", ep.local_uri()))
+                    .map_err(|err| error!("Error: {}", err))
+                    .map_err(|_| error!("Failed to delete file: {:?}", ep.local_uri()))
+                    .ok();
             }
         });
     Ok(())

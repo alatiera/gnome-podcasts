@@ -97,10 +97,10 @@ impl EpisodeWidget {
         self.set_duration(episode.duration());
 
         // Determine what the state of the media widgets should be.
-        if let Err(err) = determine_media_state(self.media.clone(), &episode) {
-            error!("Something went wrong determining the Media State.");
-            error!("Error: {}", err);
-        }
+        determine_media_state(self.media.clone(), &episode)
+            .map_err(|err| error!("Error: {}", err))
+            .map_err(|_| error!("Could not determine Media State"))
+            .ok();
 
         let episode = Arc::new(Mutex::new(episode));
         self.connect_buttons(episode, sender);
@@ -111,9 +111,9 @@ impl EpisodeWidget {
         if let Ok(media) = self.media.lock() {
             media.play_connect_clicked(clone!(episode, sender => move |_| {
                 if let Ok(mut ep) = episode.lock() {
-                    if let Err(err) = on_play_bttn_clicked(&mut ep, title.clone(), sender.clone()){
-                        error!("Error: {}", err);
-                    };
+                    on_play_bttn_clicked(&mut ep, title.clone(), sender.clone())
+                        .map_err(|err| error!("Error: {}", err))
+                        .ok();
                 }
             }));
 
@@ -122,16 +122,14 @@ impl EpisodeWidget {
                 // Make the button insensitive so it won't be pressed twice
                 dl.set_sensitive(false);
                 if let Ok(ep) = episode.lock() {
-                    if let Err(err) = on_download_clicked(&ep, sender.clone())  {
-                        error!("Download failed to start.");
-                        error!("Error: {}", err);
-                    } else {
-                        info!("Donwload started succesfully.");
-                        if let Err(err) = determine_media_state(media_machine.clone(), &ep) {
-                            error!("Something went wrong determining the Media State.");
-                            error!("Error: {}", err);
-                        }
-                    }
+                    on_download_clicked(&ep, sender.clone())
+                        .and_then(|_| {
+                            info!("Donwload started succesfully.");
+                            determine_media_state(media_machine.clone(), &ep)
+                        })
+                        .map_err(|err| error!("Error: {}", err))
+                        .map_err(|_| error!("Could not determine Media State"))
+                        .ok();
                 }
 
                 // Restore sensitivity after operations above complete

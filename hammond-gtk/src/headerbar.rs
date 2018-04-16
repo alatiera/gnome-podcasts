@@ -76,15 +76,15 @@ impl Header {
         self.switch.set_stack(&content.get_stack());
 
         new_url.connect_changed(clone!(add_button => move |url| {
-            if let Err(err) = on_url_change(url, &result_label, &add_button) {
-                error!("Error: {}", err);
-            }
+            on_url_change(url, &result_label, &add_button)
+                .map_err(|err| error!("Error: {}", err))
+                .ok();
         }));
 
         add_button.connect_clicked(clone!(add_popover, new_url, sender => move |_| {
-            if let Err(err) = on_add_bttn_clicked(&new_url, sender.clone()) {
-                error!("Error: {}", err);
-            }
+            on_add_bttn_clicked(&new_url, sender.clone())
+                .map_err(|err| error!("Error: {}", err))
+                .ok();
             add_popover.hide();
         }));
 
@@ -115,9 +115,9 @@ impl Header {
                 add_toggle.show();
                 back.hide();
                 show_title.hide();
-                if let Err(err) = sender.send(Action::ShowShowsAnimated) {
-                    error!("Action channel blew up: {}", err);
-                }
+                sender.send(Action::ShowShowsAnimated)
+                    .map_err(|err| error!("Action Sender: {}", err))
+                    .ok();
             }),
         );
     }

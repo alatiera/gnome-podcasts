@@ -92,10 +92,9 @@ pub fn add(id: i32, directory: String, sender: Sender<Action>) -> Result<(), Err
             let id = episode.rowid();
             let pid = episode.podcast_id();
 
-            if let Err(err) = get_episode(&mut episode.into(), directory.as_str(), Some(prog)) {
-                error!("Error while trying to download an episode");
-                error!("Error: {}", err);
-            }
+            get_episode(&mut episode.into(), directory.as_str(), Some(prog))
+                .map_err(|err| error!("Download Failed: {}", err))
+                .ok();
 
             if let Ok(mut m) = ACTIVE_DOWNLOADS.write() {
                 let foo = m.remove(&id);
