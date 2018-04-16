@@ -145,6 +145,7 @@ fn on_unsub_button_clicked(pd: Arc<Podcast>, unsub_button: &gtk::Button, sender:
     };
 
     wrap().map_err(|err| error!("Action Sender: {}", err)).ok();
+    unsub_button.set_sensitive(true);
 }
 
 fn on_played_button_clicked(pd: Arc<Podcast>, episodes: &gtk::Frame, sender: Sender<Action>) {
