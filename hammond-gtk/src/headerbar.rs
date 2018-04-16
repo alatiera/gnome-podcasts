@@ -1,3 +1,4 @@
+use glib;
 use gtk;
 use gtk::prelude::*;
 
@@ -12,7 +13,7 @@ use std::sync::mpsc::Sender;
 
 use app::Action;
 use stacks::Content;
-use utils::itunes_to_rss;
+use utils::{itunes_to_rss, refresh};
 
 #[derive(Debug, Clone)]
 pub struct Header {
@@ -92,10 +93,11 @@ impl Header {
 
         self.update_button
             .connect_clicked(clone!(sender => move |_| {
-                sender
-                    .send(Action::UpdateSources(None))
-                    .map_err(|err| error!("Action Sender: {}", err))
-                    .ok();
+                glib::idle_add(clone!(sender => move || {
+                    let s: Option<Vec<_>> = None;
+                    refresh(s, sender.clone());
+                    glib::Continue(false)
+                }));
         }));
 
         self.about_button
@@ -171,9 +173,10 @@ fn on_add_bttn_clicked(entry: &gtk::Entry, sender: Sender<Action>) -> Result<(),
     let source = Source::from_url(&url).context("Failed to convert url to a Source entry.")?;
     entry.set_text("");
 
-    sender
-        .send(Action::UpdateSources(Some(source)))
-        .context("App channel blew up.")?;
+    glib::idle_add(move || {
+        refresh(Some(vec![source.clone()]), sender.clone());
+        glib::Continue(false)
+    });
     Ok(())
 }
 

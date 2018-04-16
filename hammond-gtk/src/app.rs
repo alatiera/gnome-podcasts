@@ -10,7 +10,7 @@ use failure::Error;
 use rayon;
 
 use hammond_data::utils::delete_show;
-use hammond_data::{Podcast, Source};
+use hammond_data::Podcast;
 
 use appnotif::*;
 use headerbar::Header;
@@ -25,7 +25,6 @@ use std::time::Duration;
 
 #[derive(Clone, Debug)]
 pub enum Action {
-    UpdateSources(Option<Source>),
     RefreshAllViews,
     RefreshEpisodesView,
     RefreshEpisodesViewBGR,
@@ -170,14 +169,6 @@ impl App {
         let receiver = self.receiver;
         gtk::idle_add(move || {
             match receiver.recv_timeout(Duration::from_millis(10)) {
-                Ok(Action::UpdateSources(source)) => {
-                    if let Some(s) = source {
-                        utils::refresh(Some(vec![s]), sender.clone());
-                    } else {
-                        let s: Option<Vec<_>> = None;
-                        utils::refresh(s, sender.clone());
-                    }
-                }
                 Ok(Action::RefreshAllViews) => content.update(),
                 Ok(Action::RefreshShowsView) => content.update_shows_view(),
                 Ok(Action::RefreshWidget) => content.update_widget(),
