@@ -399,9 +399,11 @@ pub fn episodes_listbox(pd: Arc<Podcast>, sender: Sender<Action>) -> Result<gtk:
             Err(Disconnected) => return glib::Continue(false),
         };
 
-        lazy_load(episodes, list.clone(), clone!(sender => move |ep| {
+        let constructor = clone!(sender => move |ep| {
             EpisodeWidget::new(ep, sender.clone()).container
-        }));
+        });
+
+        lazy_load(episodes, list.clone(), constructor, || {});
 
         glib::Continue(false)
     }));

@@ -33,9 +33,10 @@ use chrono::Duration;
 
 /// Lazy evaluates and loads widgets to the parent `container` widget.
 ///
-/// Accepts an IntoIterator, `T`, as the source from which each widget
+/// Accepts an `IntoIterator`, `data`, as the source from which each widget
 /// will be constructed. An `FnMut` function that returns the desired
-/// widget should be passed as the widget `constructor`.
+/// widget should be passed as the widget `constructor`. You can also specify
+/// a `callback` that will be executed when the iteration finish.
 ///
 /// ```no_run
 /// # struct Message;
@@ -50,7 +51,7 @@ use chrono::Duration;
 /// let messages: Vec<Message> = Vec::new();
 /// let list = gtk::ListBox::new();
 /// let constructor = |m| { MessageWidget::new(m).0};
-/// lazy_load(messages, list, constructor);
+/// lazy_load(messages, list, constructor, || {});
 /// ```
 ///
 /// If you have already constructed the widgets and only want to
@@ -61,37 +62,43 @@ use chrono::Duration;
 /// # use std::collections::binary_heap::BinaryHeap;
 /// let widgets: BinaryHeap<gtk::Button> = BinaryHeap::new();
 /// let list = gtk::ListBox::new();
-/// lazy_load(widgets, list, |w| w);
+/// lazy_load(widgets, list, |w| w, || {});
 /// ```
-pub fn lazy_load<T, C, F, W>(data: T, container: C, mut contructor: F)
+pub fn lazy_load<T, C, F, W, U>(data: T, container: C, mut contructor: F, callback: U)
 where
     T: IntoIterator + 'static,
     T::Item: 'static,
     C: ContainerExt + 'static,
     F: FnMut(T::Item) -> W + 'static,
     W: IsA<Widget>,
+    U: Fn() + 'static,
 {
     let func = move |x| container.add(&contructor(x));
-    lazy_load_full(data, func);
+    lazy_load_full(data, func, callback);
 }
 
-/// Iterate over `data` and execute `func` using a `glib::idle_add()`.
+/// Iterate over `data` and execute `func` using a `glib::idle_add()`,
+/// when the iteration finishes, it executes `finish_callback`.
 ///
 /// This is a more flexible version of `lazy_load` with less constrains.
 /// If you just want to lazy add `widgets` to a `container` check if
 /// `lazy_load` fits your needs first.
-pub fn lazy_load_full<T, F>(data: T, mut func: F)
+pub fn lazy_load_full<T, F, U>(data: T, mut func: F, finish_callback: U)
 where
     T: IntoIterator + 'static,
     T::Item: 'static,
     F: FnMut(T::Item) + 'static,
+    U: Fn() + 'static,
 {
     let mut data = data.into_iter();
     gtk::idle_add(move || {
         data.next()
             .map(|x| func(x))
             .map(|_| glib::Continue(true))
-            .unwrap_or(glib::Continue(false))
+            .unwrap_or_else(|| {
+                finish_callback();
+                glib::Continue(false)
+            })
     });
 }
 
