@@ -379,29 +379,17 @@ pub fn update_none_to_played_now(parent: &Podcast) -> Result<usize, DataError> {
 mod tests {
     use super::*;
     use database::*;
-    use pipeline::*;
-
-    use hyper::Client;
-    use hyper_tls::HttpsConnector;
-    use tokio_core::reactor::Core;
-
-    use num_cpus;
+    use pipeline;
 
     #[test]
     fn test_update_none_to_played_now() {
         truncate_db().unwrap();
 
-        let mut core = Core::new().unwrap();
-        let handle = core.handle();
-        let client = Client::configure()
-            .connector(HttpsConnector::new(num_cpus::get(), &handle).unwrap())
-            .build(&handle);
-
         let url = "https://web.archive.org/web/20180120083840if_/https://feeds.feedburner.\
                    com/InterceptedWithJeremyScahill";
         let source = Source::from_url(url).unwrap();
         let id = source.id();
-        pipeline(vec![source], true, &mut core, client).unwrap();
+        pipeline::run(vec![source], true).unwrap();
         let pd = get_podcast_from_source_id(id).unwrap();
 
         let eps_num = get_pd_unplayed_episodes(&pd).unwrap().len();

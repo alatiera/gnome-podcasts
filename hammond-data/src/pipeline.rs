@@ -1,8 +1,11 @@
 // FIXME:
 //! Docs.
 
+#![allow(unused)]
+
 use futures::future::*;
-// use futures::prelude::*;
+use futures::prelude::*;
+use futures::stream::*;
 
 use hyper::client::HttpConnector;
 use hyper::Client;
@@ -46,28 +49,25 @@ type HttpsClient = Client<HttpsConnector<HttpConnector>>;
 /// Messy temp diagram:
 /// Source -> GET Request -> Update Etags -> Check Status -> Parse `xml/Rss` ->
 /// Convert `rss::Channel` into `Feed` -> Index Podcast -> Index Episodes.
-pub fn pipeline<S>(
+pub fn pipeline<'a, S>(
     sources: S,
     ignore_etags: bool,
-    tokio_core: &mut Core,
     client: HttpsClient,
-) -> Result<(), DataError>
+) -> Box<Future<Item = Vec<()>, Error = DataError> + 'a>
 where
-    S: IntoIterator<Item = Source>,
+    S: IntoIterator<Item = Source> + 'a,
 {
-    let list: Vec<_> = sources
-        .into_iter()
-        .map(clone!(client => move |s| s.into_feed(client.clone(), ignore_etags)))
-        .map(|feed| {
-            feed.and_then(|f| f.index())
-                .map_err(|err| error!("Error: {}", err))
-                // join_all stops at the first error so
-                // we ensure that everything will succeded regardless.
-                .then(|_| ok::<(), DataError>(()))
-        })
+    let stream = iter_ok::<_, DataError>(sources);
+    let pipeline = stream
+        .and_then(clone!(client => move |s| s.into_feed(client.clone(), ignore_etags)))
+        .and_then(|feed| feed.index())
+        .map_err(|err| error!("Error: {}", err))
+        // the stream will stop at the first error so
+        // we ensure that everything will succeded regardless.
+        .then(|_| ok::<(), DataError>(()))
         .collect();
 
-    tokio_core.run(join_all(list)).map(|_| ())
+    Box::new(pipeline)
 }
 
 /// Creates a tokio `reactor::Core`, and a `hyper::Client` and
@@ -82,7 +82,8 @@ where
         .connector(HttpsConnector::new(num_cpus::get(), &handle)?)
         .build(&handle);
 
-    pipeline(sources, ignore_etags, &mut core, client)
+    let p = pipeline(sources, ignore_etags, client);
+    core.run(p).map(|_| ())
 }
 
 fn determine_ep_state(
