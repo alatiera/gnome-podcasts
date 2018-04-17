@@ -93,7 +93,7 @@ impl Header {
 
         self.update_button
             .connect_clicked(clone!(sender => move |_| {
-                glib::idle_add(clone!(sender => move || {
+                gtk::idle_add(clone!(sender => move || {
                     let s: Option<Vec<_>> = None;
                     refresh(s, sender.clone());
                     glib::Continue(false)
@@ -173,7 +173,7 @@ fn on_add_bttn_clicked(entry: &gtk::Entry, sender: Sender<Action>) -> Result<(),
     let source = Source::from_url(&url).context("Failed to convert url to a Source entry.")?;
     entry.set_text("");
 
-    glib::idle_add(move || {
+    gtk::idle_add(move || {
         refresh(Some(vec![source.clone()]), sender.clone());
         glib::Continue(false)
     });

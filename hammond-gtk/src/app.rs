@@ -162,7 +162,7 @@ impl App {
         let sender = self.sender.clone();
         let overlay = self.overlay.clone();
         let receiver = self.receiver;
-        gtk::timeout_add(75, move || {
+        gtk::timeout_add(50, move || {
             match receiver.try_recv() {
                 Ok(Action::RefreshAllViews) => content.update(),
                 Ok(Action::RefreshShowsView) => content.update_shows_view(),

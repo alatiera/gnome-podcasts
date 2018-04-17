@@ -77,7 +77,7 @@ where
     lazy_load_full(data, func, callback);
 }
 
-/// Iterate over `data` and execute `func` using a `glib::idle_add()`,
+/// Iterate over `data` and execute `func` using a `gtk::idle_add()`,
 /// when the iteration finishes, it executes `finish_callback`.
 ///
 /// This is a more flexible version of `lazy_load` with less constrains.
