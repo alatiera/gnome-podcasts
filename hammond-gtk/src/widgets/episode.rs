@@ -5,16 +5,14 @@ use gtk::prelude::*;
 use failure::Error;
 use humansize::FileSize;
 use open;
-use rayon;
 use take_mut;
 
 use hammond_data::dbqueries;
 use hammond_data::utils::get_download_folder;
-use hammond_data::{EpisodeWidgetQuery, Podcast};
+use hammond_data::EpisodeWidgetQuery;
 
 use app::Action;
 use manager;
-use utils::lazy_load;
 use widgets::episode_states::*;
 
 use std::cell::RefCell;
@@ -366,47 +364,3 @@ fn total_size_helper(
 //     let mut ep = dbqueries::get_episode_from_rowid(episode_id)?.into();
 //     delete_local_content(&mut ep).map_err(From::from).map(|_| ())
 // }
-
-pub fn episodes_listbox(pd: Arc<Podcast>, sender: Sender<Action>) -> Result<gtk::ListBox, Error> {
-    use crossbeam_channel::bounded;
-    use crossbeam_channel::TryRecvError::*;
-
-    let count = dbqueries::get_pd_episodes_count(&pd)?;
-
-    let (sender_, receiver) = bounded(1);
-    rayon::spawn(move || {
-        let episodes = dbqueries::get_pd_episodeswidgets(&pd).unwrap();
-        // The receiver can be dropped if there's an early return
-        // like on show without episodes for example.
-        sender_.send(episodes).ok();
-    });
-
-    let list = gtk::ListBox::new();
-    list.set_visible(true);
-    list.set_selection_mode(gtk::SelectionMode::None);
-
-    if count == 0 {
-        let builder = gtk::Builder::new_from_resource("/org/gnome/hammond/gtk/empty_show.ui");
-        let container: gtk::Box = builder.get_object("empty_show").unwrap();
-        list.add(&container);
-        return Ok(list);
-    }
-
-    gtk::idle_add(clone!(list => move || {
-        let episodes = match receiver.try_recv() {
-            Ok(e) => e,
-            Err(Empty) => return glib::Continue(true),
-            Err(Disconnected) => return glib::Continue(false),
-        };
-
-        let constructor = clone!(sender => move |ep| {
-            EpisodeWidget::new(ep, sender.clone()).container
-        });
-
-        lazy_load(episodes, list.clone(), constructor, || {});
-
-        glib::Continue(false)
-    }));
-
-    Ok(list)
-}

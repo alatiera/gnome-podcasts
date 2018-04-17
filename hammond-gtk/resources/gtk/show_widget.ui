@@ -223,13 +223,17 @@ Tobias Bernard
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkFrame" id="episodes">
+                      <object class="GtkFrame">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="label_xalign">0</property>
                         <property name="shadow_type">in</property>
                         <child>
-                          <placeholder/>
+                          <object class="GtkListBox" id="episodes">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="selection_mode">none</property>
+                          </object>
                         </child>
                         <child type="label_item">
                           <placeholder/>

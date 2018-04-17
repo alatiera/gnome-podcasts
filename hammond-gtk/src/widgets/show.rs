@@ -13,8 +13,8 @@ use hammond_data::Podcast;
 
 use app::Action;
 use appnotif::InAppNotification;
-use utils;
-use widgets::episode::episodes_listbox;
+use utils::{self, lazy_load};
+use widgets::EpisodeWidget;
 
 use std::sync::mpsc::{SendError, Sender};
 use std::sync::Arc;
@@ -28,7 +28,7 @@ pub struct ShowWidget {
     link: gtk::Button,
     settings: gtk::MenuButton,
     unsub: gtk::Button,
-    episodes: gtk::Frame,
+    episodes: gtk::ListBox,
 }
 
 impl Default for ShowWidget {
@@ -36,7 +36,7 @@ impl Default for ShowWidget {
         let builder = gtk::Builder::new_from_resource("/org/gnome/hammond/gtk/show_widget.ui");
         let container: gtk::Box = builder.get_object("container").unwrap();
         let scrolled_window: gtk::ScrolledWindow = builder.get_object("scrolled_window").unwrap();
-        let episodes: gtk::Frame = builder.get_object("episodes").unwrap();
+        let episodes = builder.get_object("episodes").unwrap();
 
         let cover: gtk::Image = builder.get_object("cover").unwrap();
         let description: gtk::Label = builder.get_object("description").unwrap();
@@ -75,8 +75,11 @@ impl ShowWidget {
                 on_unsub_button_clicked(pd.clone(), bttn, sender.clone());
         }));
 
-        self.setup_listbox(pd.clone(), sender.clone());
         self.set_description(pd.description());
+
+        self.populate_listbox(pd.clone(), sender.clone())
+            .map_err(|err| error!("Failed to populate the listbox: {}", err))
+            .ok();
 
         self.set_cover(pd.clone())
             .map_err(|err| error!("Failed to set a cover: {}", err))
@@ -106,12 +109,6 @@ impl ShowWidget {
         self.settings.set_popover(&show_menu);
     }
 
-    /// Populate the listbox with the shows episodes.
-    fn setup_listbox(&self, pd: Arc<Podcast>, sender: Sender<Action>) {
-        let listbox = episodes_listbox(pd, sender.clone());
-        listbox.ok().map(|l| self.episodes.add(&l));
-    }
-
     /// Set the show cover.
     fn set_cover(&self, pd: Arc<Podcast>) -> Result<(), Error> {
         utils::set_image_from_path(&self.cover, Arc::new(pd.into()), 128)
@@ -125,6 +122,48 @@ impl ShowWidget {
     /// Set scrolled window vertical adjustment.
     pub fn set_vadjustment(&self, vadjustment: &gtk::Adjustment) {
         self.scrolled_window.set_vadjustment(vadjustment)
+    }
+
+    /// Populate the listbox with the shows episodes.
+    fn populate_listbox(&self, pd: Arc<Podcast>, sender: Sender<Action>) -> Result<(), Error> {
+        use crossbeam_channel::bounded;
+        use crossbeam_channel::TryRecvError::*;
+
+        let count = dbqueries::get_pd_episodes_count(&pd)?;
+
+        let (sender_, receiver) = bounded(1);
+        rayon::spawn(move || {
+            let episodes = dbqueries::get_pd_episodeswidgets(&pd).unwrap();
+            // The receiver can be dropped if there's an early return
+            // like on show without episodes for example.
+            sender_.send(episodes).ok();
+        });
+
+        if count == 0 {
+            let builder = gtk::Builder::new_from_resource("/org/gnome/hammond/gtk/empty_show.ui");
+            let container: gtk::Box = builder.get_object("empty_show").unwrap();
+            self.episodes.add(&container);
+            return Ok(());
+        }
+
+        let list = self.episodes.clone();
+        gtk::idle_add(move || {
+            let episodes = match receiver.try_recv() {
+                Ok(e) => e,
+                Err(Empty) => return glib::Continue(true),
+                Err(Disconnected) => return glib::Continue(false),
+            };
+
+            let constructor = clone!(sender => move |ep| {
+                EpisodeWidget::new(ep, sender.clone()).container
+            });
+
+            lazy_load(episodes, list.clone(), constructor, || {});
+
+            glib::Continue(false)
+        });
+
+        Ok(())
     }
 }
 
@@ -148,7 +187,7 @@ fn on_unsub_button_clicked(pd: Arc<Podcast>, unsub_button: &gtk::Button, sender:
     unsub_button.set_sensitive(true);
 }
 
-fn on_played_button_clicked(pd: Arc<Podcast>, episodes: &gtk::Frame, sender: Sender<Action>) {
+fn on_played_button_clicked(pd: Arc<Podcast>, episodes: &gtk::ListBox, sender: Sender<Action>) {
     if dim_titles(episodes).is_none() {
         error!("Something went horribly wrong when dimming the titles.");
         warn!("RUN WHILE YOU STILL CAN!");
@@ -229,13 +268,8 @@ pub fn remove_show_notif(pd: Arc<Podcast>, sender: Sender<Action>) -> InAppNotif
 // `for row in listbox { ep = row.get_episode(); ep.dim_title(); }`
 // But now I can't think of a better way to do it than hardcoding the title
 // position relative to the EpisodeWidget container gtk::Box.
-fn dim_titles(episodes: &gtk::Frame) -> Option<()> {
-    let listbox = episodes
-        .get_children()
-        .remove(0)
-        .downcast::<gtk::ListBox>()
-        .ok()?;
-    let children = listbox.get_children();
+fn dim_titles(episodes: &gtk::ListBox) -> Option<()> {
+    let children = episodes.get_children();
 
     for row in children {
         let row = row.downcast::<gtk::ListBoxRow>().ok()?;
