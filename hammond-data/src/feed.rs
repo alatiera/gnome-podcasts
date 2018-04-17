@@ -1,16 +1,13 @@
 //! Index Feeds.
 
 use futures::future::*;
-use itertools::{Either, Itertools};
 use rss;
 
 use dbqueries;
 use errors::DataError;
 use models::{Index, IndexState, Update};
-use models::{NewEpisode, NewPodcast, Podcast};
+use models::{NewPodcast, Podcast};
 use pipeline::*;
-
-type InsertUpdate = (Vec<NewEpisode>, Vec<Option<(NewEpisode, i32)>>);
 
 /// Wrapper struct that hold a `Source` id and the `rss::Channel`
 /// that corresponds to the `Source.uri` field.
@@ -46,69 +43,45 @@ impl Feed {
         &self,
         pd: &Podcast,
     ) -> Box<Future<Item = (), Error = DataError> + Send> {
-        let fut = self.get_stuff(pd)
-            .and_then(|(insert, update)| {
-                if !insert.is_empty() {
-                    info!("Indexing {} episodes.", insert.len());
-                    if let Err(err) = dbqueries::index_new_episodes(insert.as_slice()) {
-                        error!("Failed batch indexng, Fallign back to individual indexing.");
-                        error!("{}", err);
-                        insert.iter().for_each(|ep| {
-                            if let Err(err) = ep.index() {
-                                error!("Failed to index episode: {:?}.", ep.title());
-                                error!("{}", err);
-                            };
-                        })
-                    }
-                }
-                Ok((insert, update))
-            })
-            .map(|(_, update)| {
-                if !update.is_empty() {
-                    info!("Updating {} episodes.", update.len());
-                    // see get_stuff for more
-                    update
-                        .into_iter()
-                        .filter_map(|x| x)
-                        .for_each(|(ref ep, rowid)| {
-                            if let Err(err) = ep.update(rowid) {
-                                error!("Failed to index episode: {:?}.", ep.title());
-                                error!("{}", err);
-                            };
-                        })
-                }
-            });
-
-        Box::new(fut)
+        Box::new(ok(self.index_stuff(pd)))
     }
 
-    fn get_stuff(
-        &self,
-        pd: &Podcast,
-    ) -> Box<Future<Item = InsertUpdate, Error = DataError> + Send> {
-        let (insert, update): (Vec<_>, Vec<_>) = self.channel
+    fn index_stuff(&self, pd: &Podcast) {
+        let insert: Vec<_> = self.channel
             .items()
-            .into_iter()
-            .map(|item| glue_async(item, pd.id()))
-            // This is sort of ugly but I think it's cheaper than pushing None
-            // to updated and filtering it out later.
-            // Even though we already map_filter in index_channel_items.
-            // I am not sure what the optimizations are on match vs allocating None.
-            .map(|fut| {
-                fut.and_then(|x| match x {
-                    IndexState::NotChanged => Err(DataError::EpisodeNotChanged),
-                    _ => Ok(x),
-                })
-            })
-            .flat_map(|fut| fut.wait())
-            .partition_map(|state| match state {
-                IndexState::Index(e) => Either::Left(e),
-                IndexState::Update(e) => Either::Right(Some(e)),
-                // This should never occur
-                IndexState::NotChanged => Either::Right(None),
-            });
+            .iter()
+            // FIXME: print the error
+            .filter_map(|item| glue(item, pd.id()).ok())
+            .filter_map(|state| match state {
+                IndexState::NotChanged => None,
+                // Update individual rows, and filter them
+                IndexState::Update((ref ep, rowid)) => {
+                    ep.update(rowid)
+                        .map_err(|err| error!("{}", err))
+                        .map_err(|_| error!("Failed to index episode: {:?}.", ep.title()))
+                        .ok();
 
-        Box::new(ok((insert, update)))
+                    None
+                },
+                IndexState::Index(s) => Some(s),
+            })
+            // only Index is left, collect them for batch index
+            .collect();
+
+        if !insert.is_empty() {
+            info!("Indexing {} episodes.", insert.len());
+            if let Err(err) = dbqueries::index_new_episodes(insert.as_slice()) {
+                error!("Failed batch indexng, Fallign back to individual indexing.");
+                error!("{}", err);
+
+                insert.iter().for_each(|ep| {
+                    if let Err(err) = ep.index() {
+                        error!("Failed to index episode: {:?}.", ep.title());
+                        error!("{}", err);
+                    };
+                })
+            }
+        }
     }
 }
 
@@ -205,28 +178,5 @@ mod tests {
         feed.index_channel_items(&pd).wait().unwrap();
         assert_eq!(dbqueries::get_podcasts().unwrap().len(), 1);
         assert_eq!(dbqueries::get_episodes().unwrap().len(), 43);
-    }
-
-    #[test]
-    fn test_feed_get_stuff() {
-        truncate_db().unwrap();
-
-        let path = "tests/feeds/2018-01-20-Intercepted.xml";
-        let feed = get_feed(path, 42);
-        let pd = feed.parse_podcast().to_podcast().unwrap();
-
-        let (insert, update) = feed.get_stuff(&pd).wait().unwrap();
-        assert_eq!(43, insert.len());
-        assert_eq!(0, update.len());
-
-        feed.index().wait().unwrap();
-
-        let path = "tests/feeds/2018-02-03-Intercepted.xml";
-        let feed = get_feed(path, 42);
-        let pd = feed.parse_podcast().to_podcast().unwrap();
-
-        let (insert, update) = feed.get_stuff(&pd).wait().unwrap();
-        assert_eq!(4, insert.len());
-        assert_eq!(43, update.len());
     }
 }

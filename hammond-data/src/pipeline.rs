@@ -106,6 +106,7 @@ fn determine_ep_state(
     }
 }
 
+#[allow(unused)]
 pub(crate) fn glue_async<'a>(
     item: &'a rss::Item,
     id: i32,
@@ -113,6 +114,10 @@ pub(crate) fn glue_async<'a>(
     Box::new(
         result(NewEpisodeMinimal::new(item, id)).and_then(move |ep| determine_ep_state(ep, item)),
     )
+}
+
+pub(crate) fn glue(item: &rss::Item, id: i32) -> Result<IndexState<NewEpisode>, DataError> {
+    NewEpisodeMinimal::new(item, id).and_then(move |ep| determine_ep_state(ep, item))
 }
 
 #[cfg(test)]

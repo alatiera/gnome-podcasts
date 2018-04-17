@@ -1,3 +1,5 @@
+#![allow(unused)]
+
 #[macro_use]
 extern crate criterion;
 use criterion::Criterion;
@@ -56,22 +58,6 @@ static FEEDS: &[(&[u8], &str)] = &[
     (STARS, STARS_URL),
 ];
 
-// This is broken and I don't know why.
-fn bench_pipeline(c: &mut Criterion) {
-    truncate_db().unwrap();
-    FEEDS.iter().for_each(|&(_, url)| {
-        Source::from_url(url).unwrap();
-    });
-
-    c.bench_function("pipline", move |b| {
-        b.iter(|| {
-            let sources = hammond_data::dbqueries::get_sources().unwrap();
-            pipeline::run(sources, true).unwrap();
-        })
-    });
-    truncate_db().unwrap();
-}
-
 fn bench_index_large_feed(c: &mut Criterion) {
     truncate_db().unwrap();
     let url = "https://www.greaterthancode.com/feed/podcast";
@@ -114,10 +100,5 @@ fn bench_index_small_feed(c: &mut Criterion) {
     truncate_db().unwrap();
 }
 
-criterion_group!(
-    benches,
-    bench_pipeline,
-    bench_index_large_feed,
-    bench_index_small_feed
-);
+criterion_group!(benches, bench_index_large_feed, bench_index_small_feed);
 criterion_main!(benches);

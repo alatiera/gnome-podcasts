@@ -48,7 +48,6 @@ extern crate chrono;
 extern crate futures;
 extern crate hyper;
 extern crate hyper_tls;
-extern crate itertools;
 extern crate native_tls;
 extern crate num_cpus;
 extern crate rayon;
