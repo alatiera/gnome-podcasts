@@ -16,7 +16,6 @@ use widgets::{mark_all_notif, remove_show_notif};
 
 use std::sync::mpsc::{channel, Receiver, Sender};
 use std::sync::Arc;
-use std::time::Duration;
 
 #[derive(Clone, Debug)]
 pub enum Action {
@@ -163,8 +162,8 @@ impl App {
         let sender = self.sender.clone();
         let overlay = self.overlay.clone();
         let receiver = self.receiver;
-        gtk::idle_add(move || {
-            match receiver.recv_timeout(Duration::from_millis(10)) {
+        gtk::timeout_add(75, move || {
+            match receiver.try_recv() {
                 Ok(Action::RefreshAllViews) => content.update(),
                 Ok(Action::RefreshShowsView) => content.update_shows_view(),
                 Ok(Action::RefreshWidget) => content.update_widget(),
