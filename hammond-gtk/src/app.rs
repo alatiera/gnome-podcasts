@@ -36,6 +36,7 @@ pub enum Action {
     HeaderBarHideUpdateIndicator,
     MarkAllPlayerNotification(Arc<Podcast>),
     RemoveShow(Arc<Podcast>),
+    SetShowWidgetAlignment(Arc<Podcast>),
 }
 
 #[derive(Debug)]
@@ -192,6 +193,13 @@ impl App {
                 Ok(Action::RemoveShow(pd)) => {
                     let notif = remove_show_notif(pd, sender.clone());
                     notif.show(&overlay);
+                }
+                Ok(Action::SetShowWidgetAlignment(pd)) => {
+                    content
+                        .get_shows()
+                        .set_widget_scroll_alignment(pd)
+                        .map_err(|err| error!("Failed to set ShowWidget alignment: {}", err))
+                        .ok();
                 }
                 Err(_) => (),
             }

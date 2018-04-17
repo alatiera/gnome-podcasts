@@ -132,12 +132,12 @@ impl ShowWidget {
         let count = dbqueries::get_pd_episodes_count(&pd)?;
 
         let (sender_, receiver) = bounded(1);
-        rayon::spawn(move || {
+        rayon::spawn(clone!(pd => move || {
             let episodes = dbqueries::get_pd_episodeswidgets(&pd).unwrap();
             // The receiver can be dropped if there's an early return
             // like on show without episodes for example.
             sender_.send(episodes).ok();
-        });
+        }));
 
         if count == 0 {
             let builder = gtk::Builder::new_from_resource("/org/gnome/hammond/gtk/empty_show.ui");
@@ -158,7 +158,13 @@ impl ShowWidget {
                 EpisodeWidget::new(ep, sender.clone()).container
             });
 
-            lazy_load(episodes, list.clone(), constructor, || {});
+            let callback = clone!(pd, sender => move || {
+                sender.send(Action::SetShowWidgetAlignment(pd.clone()))
+                    .map_err(|err| error!("Action Sender: {}", err))
+                    .ok();
+            });
+
+            lazy_load(episodes, list.clone(), constructor, callback);
 
             glib::Continue(false)
         });
