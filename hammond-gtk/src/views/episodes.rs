@@ -40,6 +40,7 @@ pub struct EpisodesView {
 }
 
 impl Default for EpisodesView {
+    #[inline]
     fn default() -> Self {
         let builder = gtk::Builder::new_from_resource("/org/gnome/hammond/gtk/episodes_view.ui");
         let container: gtk::Box = builder.get_object("container").unwrap();
@@ -76,6 +77,7 @@ impl Default for EpisodesView {
 
 // TODO: REFACTOR ME
 impl EpisodesView {
+    #[inline]
     pub fn new(sender: Sender<Action>) -> Result<EpisodesView, Error> {
         let view = EpisodesView::default();
         let ignore = get_ignored_shows()?;
@@ -130,6 +132,7 @@ impl EpisodesView {
         Ok(view)
     }
 
+    #[inline]
     pub fn is_empty(&self) -> bool {
         if !self.today_list.get_children().is_empty() {
             return false;
@@ -154,12 +157,14 @@ impl EpisodesView {
         true
     }
 
+    #[inline]
     /// Set scrolled window vertical adjustment.
     pub fn set_vadjustment(&self, vadjustment: &gtk::Adjustment) {
         self.scrolled_window.set_vadjustment(vadjustment)
     }
 }
 
+#[inline]
 fn split(now: &DateTime<Utc>, epoch: i64) -> ListSplit {
     let ep = Utc.timestamp(epoch, 0);
 
@@ -184,6 +189,7 @@ struct EpisodesViewWidget {
 }
 
 impl Default for EpisodesViewWidget {
+    #[inline]
     fn default() -> Self {
         let builder =
             gtk::Builder::new_from_resource("/org/gnome/hammond/gtk/episodes_view_widget.ui");
@@ -219,6 +225,7 @@ impl EpisodesViewWidget {
         view
     }
 
+    #[inline]
     fn init(&self, podcast_id: i32) {
         self.set_cover(podcast_id)
             .map_err(|err| error!("Failed to set a cover: {}", err))
@@ -227,6 +234,7 @@ impl EpisodesViewWidget {
         self.container.pack_start(&self.episode, true, true, 6);
     }
 
+    #[inline]
     fn set_cover(&self, podcast_id: i32) -> Result<(), Error> {
         let pd = Arc::new(dbqueries::get_podcast_cover_from_id(podcast_id)?);
         set_image_from_path(&self.image, pd, 64)

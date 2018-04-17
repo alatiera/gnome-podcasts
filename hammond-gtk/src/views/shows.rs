@@ -19,6 +19,7 @@ pub struct ShowsPopulated {
 }
 
 impl Default for ShowsPopulated {
+    #[inline]
     fn default() -> Self {
         let builder = gtk::Builder::new_from_resource("/org/gnome/hammond/gtk/shows_view.ui");
         let container: gtk::Box = builder.get_object("fb_parent").unwrap();
@@ -34,12 +35,14 @@ impl Default for ShowsPopulated {
 }
 
 impl ShowsPopulated {
+    #[inline]
     pub fn new(sender: Sender<Action>) -> Result<ShowsPopulated, Error> {
         let pop = ShowsPopulated::default();
         pop.init(sender)?;
         Ok(pop)
     }
 
+    #[inline]
     pub fn init(&self, sender: Sender<Action>) -> Result<(), Error> {
         self.flowbox.connect_child_activated(move |_, child| {
             on_child_activate(child, sender.clone())
@@ -50,6 +53,7 @@ impl ShowsPopulated {
         self.populate_flowbox()
     }
 
+    #[inline]
     fn populate_flowbox(&self) -> Result<(), Error> {
         let ignore = get_ignored_shows()?;
         let podcasts = dbqueries::get_podcasts_filter(&ignore)?;
@@ -62,16 +66,19 @@ impl ShowsPopulated {
         Ok(())
     }
 
+    #[inline]
     pub fn is_empty(&self) -> bool {
         self.flowbox.get_children().is_empty()
     }
 
+    #[inline]
     /// Set scrolled window vertical adjustment.
     pub fn set_vadjustment(&self, vadjustment: &gtk::Adjustment) {
         self.scrolled_window.set_vadjustment(vadjustment)
     }
 }
 
+#[inline]
 fn on_child_activate(child: &gtk::FlowBoxChild, sender: Sender<Action>) -> Result<(), Error> {
     use gtk::WidgetExt;
 
@@ -95,6 +102,7 @@ struct ShowsChild {
 }
 
 impl Default for ShowsChild {
+    #[inline]
     fn default() -> Self {
         let builder = gtk::Builder::new_from_resource("/org/gnome/hammond/gtk/shows_child.ui");
 
@@ -113,12 +121,14 @@ impl Default for ShowsChild {
 }
 
 impl ShowsChild {
+    #[inline]
     pub fn new(pd: Podcast) -> ShowsChild {
         let child = ShowsChild::default();
         child.init(pd);
         child
     }
 
+    #[inline]
     fn init(&self, pd: Podcast) {
         self.container.set_tooltip_text(pd.title());
         WidgetExt::set_name(&self.child, &pd.id().to_string());
@@ -128,6 +138,7 @@ impl ShowsChild {
             .ok();
     }
 
+    #[inline]
     fn set_cover(&self, pd: Arc<PodcastCoverQuery>) -> Result<(), Error> {
         set_image_from_path(&self.cover, pd, 256)
     }

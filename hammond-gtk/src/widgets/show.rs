@@ -32,6 +32,7 @@ pub struct ShowWidget {
 }
 
 impl Default for ShowWidget {
+    #[inline]
     fn default() -> Self {
         let builder = gtk::Builder::new_from_resource("/org/gnome/hammond/gtk/show_widget.ui");
         let container: gtk::Box = builder.get_object("container").unwrap();
@@ -58,12 +59,14 @@ impl Default for ShowWidget {
 }
 
 impl ShowWidget {
+    #[inline]
     pub fn new(pd: Arc<Podcast>, sender: Sender<Action>) -> ShowWidget {
         let pdw = ShowWidget::default();
         pdw.init(pd, sender);
         pdw
     }
 
+    #[inline]
     pub fn init(&self, pd: Arc<Podcast>, sender: Sender<Action>) {
         let builder = gtk::Builder::new_from_resource("/org/gnome/hammond/gtk/show_widget.ui");
 
@@ -109,21 +112,25 @@ impl ShowWidget {
         self.settings.set_popover(&show_menu);
     }
 
+    #[inline]
     /// Set the show cover.
     fn set_cover(&self, pd: Arc<Podcast>) -> Result<(), Error> {
         utils::set_image_from_path(&self.cover, Arc::new(pd.into()), 128)
     }
 
+    #[inline]
     /// Set the descripton text.
     fn set_description(&self, text: &str) {
         self.description.set_markup(&markup_from_raw(text));
     }
 
+    #[inline]
     /// Set scrolled window vertical adjustment.
     pub fn set_vadjustment(&self, vadjustment: &gtk::Adjustment) {
         self.scrolled_window.set_vadjustment(vadjustment)
     }
 
+    #[inline]
     /// Populate the listbox with the shows episodes.
     fn populate_listbox(&self, pd: Arc<Podcast>, sender: Sender<Action>) -> Result<(), Error> {
         use crossbeam_channel::bounded;
@@ -173,6 +180,7 @@ impl ShowWidget {
     }
 }
 
+#[inline]
 fn on_unsub_button_clicked(pd: Arc<Podcast>, unsub_button: &gtk::Button, sender: Sender<Action>) {
     // hack to get away without properly checking for none.
     // if pressed twice would panic.
@@ -193,6 +201,7 @@ fn on_unsub_button_clicked(pd: Arc<Podcast>, unsub_button: &gtk::Button, sender:
     unsub_button.set_sensitive(true);
 }
 
+#[inline]
 fn on_played_button_clicked(pd: Arc<Podcast>, episodes: &gtk::ListBox, sender: Sender<Action>) {
     if dim_titles(episodes).is_none() {
         error!("Something went horribly wrong when dimming the titles.");
@@ -205,6 +214,7 @@ fn on_played_button_clicked(pd: Arc<Podcast>, episodes: &gtk::ListBox, sender: S
         .ok();
 }
 
+#[inline]
 fn mark_all_watched(pd: &Podcast, sender: Sender<Action>) -> Result<(), Error> {
     dbqueries::update_none_to_played_now(pd)?;
     // Not all widgets migth have been loaded when the mark_all is hit
@@ -213,6 +223,7 @@ fn mark_all_watched(pd: &Podcast, sender: Sender<Action>) -> Result<(), Error> {
     sender.send(Action::RefreshEpisodesView).map_err(From::from)
 }
 
+#[inline]
 pub fn mark_all_notif(pd: Arc<Podcast>, sender: Sender<Action>) -> InAppNotification {
     let id = pd.id();
     let callback = clone!(sender => move || {
@@ -232,6 +243,7 @@ pub fn mark_all_notif(pd: Arc<Podcast>, sender: Sender<Action>) -> InAppNotifica
     InAppNotification::new(text, callback, undo_callback)
 }
 
+#[inline]
 pub fn remove_show_notif(pd: Arc<Podcast>, sender: Sender<Action>) -> InAppNotification {
     let text = format!("Unsubscribed from {}", pd.title());
 
@@ -270,6 +282,7 @@ pub fn remove_show_notif(pd: Arc<Podcast>, sender: Sender<Action>) -> InAppNotif
     InAppNotification::new(text, callback, undo_callback)
 }
 
+#[inline]
 // Ideally if we had a custom widget this would have been as simple as:
 // `for row in listbox { ep = row.get_episode(); ep.dim_title(); }`
 // But now I can't think of a better way to do it than hardcoding the title

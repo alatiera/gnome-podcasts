@@ -32,6 +32,7 @@ pub struct EpisodeWidget {
 }
 
 impl Default for EpisodeWidget {
+    #[inline]
     fn default() -> Self {
         let builder = gtk::Builder::new_from_resource("/org/gnome/hammond/gtk/episode_widget.ui");
 
@@ -78,12 +79,14 @@ impl Default for EpisodeWidget {
 }
 
 impl EpisodeWidget {
+    #[inline]
     pub fn new(episode: EpisodeWidgetQuery, sender: Sender<Action>) -> EpisodeWidget {
         let mut widget = EpisodeWidget::default();
         widget.init(episode, sender);
         widget
     }
 
+    #[inline]
     fn init(&mut self, episode: EpisodeWidgetQuery, sender: Sender<Action>) {
         // Set the date label.
         self.set_date(episode.epoch());
@@ -104,6 +107,7 @@ impl EpisodeWidget {
         self.connect_buttons(episode, sender);
     }
 
+    #[inline]
     fn connect_buttons(&self, episode: Arc<Mutex<EpisodeWidgetQuery>>, sender: Sender<Action>) {
         let title = self.title.clone();
         if let Ok(media) = self.media.lock() {
@@ -136,6 +140,7 @@ impl EpisodeWidget {
         }
     }
 
+    #[inline]
     /// Determine the title state.
     fn set_title(&mut self, episode: &EpisodeWidgetQuery) {
         let mut machine = self.title.borrow_mut();
@@ -145,12 +150,14 @@ impl EpisodeWidget {
         });
     }
 
+    #[inline]
     /// Set the date label depending on the current time.
     fn set_date(&mut self, epoch: i32) {
         let machine = &mut self.date;
         take_mut::take(machine, |date| date.determine_state(i64::from(epoch)));
     }
 
+    #[inline]
     /// Set the duration label.
     fn set_duration(&mut self, seconds: Option<i32>) {
         let machine = &mut self.duration;
@@ -158,6 +165,7 @@ impl EpisodeWidget {
     }
 }
 
+#[inline]
 fn determine_media_state(
     media_machine: Arc<Mutex<MediaMachine>>,
     episode: &EpisodeWidgetQuery,
@@ -244,6 +252,7 @@ fn on_play_bttn_clicked(
     Ok(())
 }
 
+#[inline]
 fn open_uri(rowid: i32) -> Result<(), Error> {
     let uri = dbqueries::get_episode_local_uri_from_id(rowid)?
         .ok_or_else(|| format_err!("Expected Some found None."))?;

@@ -147,6 +147,7 @@ impl App {
         });
     }
 
+    #[inline]
     pub fn run(self) {
         WindowGeometry::from_settings(&self.settings).apply(&self.window);
 

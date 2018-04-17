@@ -211,6 +211,7 @@ lazy_static! {
 // GObjects do not implement Send trait, so SendCell is a way around that.
 // Also lazy_static requires Sync trait, so that's what the mutexes are.
 // TODO: maybe use something that would just scale to requested size?
+#[inline]
 pub fn set_image_from_path(
     image: &gtk::Image,
     pd: Arc<PodcastCoverQuery>,
