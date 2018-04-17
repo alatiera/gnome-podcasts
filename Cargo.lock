@@ -691,7 +691,7 @@ dependencies = [
  "rand 0.4.2 (registry+https://github.com/rust-lang/crates.io-index)",
  "rayon 1.0.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "rfc822_sanitizer 0.3.3 (registry+https://github.com/rust-lang/crates.io-index)",
- "rss 1.4.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "rss 1.4.0 (git+https://github.com/alatiera/rss)",
  "string_cache 0.7.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "string_cache_codegen 0.4.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "tempdir 0.3.7 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -1493,7 +1493,7 @@ dependencies = [
 [[package]]
 name = "rss"
 version = "1.4.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
+source = "git+https://github.com/alatiera/rss#ca25285cb44d82c8dadfefe05f248ea9a14c996c"
 dependencies = [
  "derive_builder 0.5.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "failure 0.1.1 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -2271,7 +2271,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 "checksum remove_dir_all 0.5.0 (registry+https://github.com/rust-lang/crates.io-index)" = "dfc5b3ce5d5ea144bb04ebd093a9e14e9765bcfec866aecda9b6dec43b3d1e24"
 "checksum reqwest 0.8.5 (registry+https://github.com/rust-lang/crates.io-index)" = "241faa9a8ca28a03cbbb9815a5d085f271d4c0168a19181f106aa93240c22ddb"
 "checksum rfc822_sanitizer 0.3.3 (registry+https://github.com/rust-lang/crates.io-index)" = "680e8305c1e0cdf836dc4bec5424e045f278c975a3cac36d1ca01c4695f9d815"
-"checksum rss 1.4.0 (registry+https://github.com/rust-lang/crates.io-index)" = "dfaaee0d75c76ae197cc2671dc8c531314006e48790c725a9bf0b227d91d19e8"
+"checksum rss 1.4.0 (git+https://github.com/alatiera/rss)" = "<none>"
 "checksum rustc-demangle 0.1.7 (registry+https://github.com/rust-lang/crates.io-index)" = "11fb43a206a04116ffd7cfcf9bcb941f8eb6cc7ff667272246b0a1c74259a3cb"
 "checksum safemem 0.2.0 (registry+https://github.com/rust-lang/crates.io-index)" = "e27a8b19b835f7aea908818e871f5cc3a5a186550c30773be987e155e8163d8f"
 "checksum schannel 0.1.11 (registry+https://github.com/rust-lang/crates.io-index)" = "fbaffce35eb61c5b00846e73128b0cd62717e7c0ec46abbec132370d013975b4"

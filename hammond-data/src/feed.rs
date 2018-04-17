@@ -1,6 +1,8 @@
 //! Index Feeds.
 
 use futures::future::*;
+use futures::prelude::*;
+use futures::stream;
 use rss;
 
 use dbqueries;
@@ -26,7 +28,7 @@ impl Feed {
     pub fn index(self) -> Box<Future<Item = (), Error = DataError> + Send> {
         let fut = self.parse_podcast_async()
             .and_then(|pd| pd.to_podcast())
-            .and_then(move |pd| self.index_channel_items(&pd));
+            .and_then(move |pd| self.index_channel_items(pd));
 
         Box::new(fut)
     }
@@ -39,19 +41,11 @@ impl Feed {
         Box::new(ok(self.parse_podcast()))
     }
 
-    fn index_channel_items(
-        &self,
-        pd: &Podcast,
-    ) -> Box<Future<Item = (), Error = DataError> + Send> {
-        Box::new(ok(self.index_stuff(pd)))
-    }
-
-    fn index_stuff(&self, pd: &Podcast) {
-        let insert: Vec<_> = self.channel
-            .items()
-            .iter()
+    fn index_channel_items(self, pd: Podcast) -> Box<Future<Item = (), Error = DataError> + Send> {
+        let stream = stream::iter_ok::<_, DataError>(self.channel.items_owened());
+        let insert = stream
             // FIXME: print the error
-            .filter_map(|item| glue(item, pd.id()).ok())
+            .filter_map(move |item| glue(&item, pd.id()).ok())
             .filter_map(|state| match state {
                 IndexState::NotChanged => None,
                 // Update individual rows, and filter them
@@ -68,20 +62,24 @@ impl Feed {
             // only Index is left, collect them for batch index
             .collect();
 
-        if !insert.is_empty() {
-            info!("Indexing {} episodes.", insert.len());
-            if let Err(err) = dbqueries::index_new_episodes(insert.as_slice()) {
-                error!("Failed batch indexng, Fallign back to individual indexing.");
-                error!("{}", err);
+        let idx = insert.map(|vec| {
+            if !vec.is_empty() {
+                info!("Indexing {} episodes.", vec.len());
+                if let Err(err) = dbqueries::index_new_episodes(vec.as_slice()) {
+                    error!("Failed batch indexng, Fallign back to individual indexing.");
+                    error!("{}", err);
 
-                insert.iter().for_each(|ep| {
-                    if let Err(err) = ep.index() {
-                        error!("Failed to index episode: {:?}.", ep.title());
-                        error!("{}", err);
-                    };
-                })
+                    vec.iter().for_each(|ep| {
+                        if let Err(err) = ep.index() {
+                            error!("Failed to index episode: {:?}.", ep.title());
+                            error!("{}", err);
+                        };
+                    })
+                }
             }
-        }
+        });
+
+        Box::new(idx)
     }
 }
 
@@ -175,7 +173,7 @@ mod tests {
         let feed = get_feed(path, 42);
         let pd = feed.parse_podcast().to_podcast().unwrap();
 
-        feed.index_channel_items(&pd).wait().unwrap();
+        feed.index_channel_items(pd).wait().unwrap();
         assert_eq!(dbqueries::get_podcasts().unwrap().len(), 1);
         assert_eq!(dbqueries::get_episodes().unwrap().len(), 43);
     }

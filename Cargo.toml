@@ -8,3 +8,5 @@ members = [
 [profile.release]
 debug = false
 
+[patch.crates-io]
+rss = { git = "https://github.com/alatiera/rss" }
