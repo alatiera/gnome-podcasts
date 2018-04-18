@@ -44,8 +44,11 @@ impl Feed {
     fn index_channel_items(self, pd: Podcast) -> Box<Future<Item = (), Error = DataError> + Send> {
         let stream = stream::iter_ok::<_, DataError>(self.channel.items_owened());
         let insert = stream
-            // FIXME: print the error
-            .filter_map(move |item| glue(&item, pd.id()).ok())
+            .filter_map(move |item| {
+                glue(&item, pd.id())
+                    .map_err(|err| error!("Failed to parse an episode: {}", err))
+                    .ok()
+             })
             .filter_map(|state| match state {
                 IndexState::NotChanged => None,
                 // Update individual rows, and filter them
