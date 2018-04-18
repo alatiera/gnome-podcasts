@@ -13,7 +13,7 @@ log = "0.4.1"
 rayon = "1.0.1"
 rayon-futures = "0.1.0"
 rfc822_sanitizer = "0.3.3"
-rss = "1.4.0"
+rss = "1.5.0"
 url = "1.7.0"
 xdg = "2.1.0"
 futures = "0.1.21"
@@ -26,13 +26,13 @@ failure = "0.1.1"
 failure_derive = "0.1.1"
 
 # newer stuff do not compile inside flatpak
-html5ever = "=0.22.0"
-string_cache = "=0.7.1"
-string_cache_codegen = "=0.4.0"
+html5ever = "= 0.22.0"
+string_cache = "= 0.7.1"
+string_cache_codegen = "= 0.4.0"
 
 [dependencies.diesel]
 features = ["sqlite", "r2d2"]
-version = "1.2.1"
+version = "1.2.2"
 
 [dependencies.diesel_migrations]
 features = ["sqlite"]
@@ -41,7 +41,7 @@ version = "1.2.0"
 [dev-dependencies]
 rand = "0.4.2"
 tempdir = "0.3.7"
-criterion = "0.2.2"
+criterion = "0.2.3"
 pretty_assertions = "0.5.1"
 
 [[bench]]

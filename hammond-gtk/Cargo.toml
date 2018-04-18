@@ -24,7 +24,7 @@ failure_derive = "0.1.1"
 take_mut = "0.2.2"
 regex = "0.2.10"
 reqwest = "0.8.5"
-serde_json = "1.0.13"
+serde_json = "1.0.15"
 html2pango = { git = "https://gitlab.gnome.org/World/html2pango" }
 
 [dependencies.gtk]

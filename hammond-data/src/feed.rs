@@ -41,7 +41,7 @@ impl Feed {
     }
 
     fn index_channel_items(self, pd: Podcast) -> Box<Future<Item = (), Error = DataError> + Send> {
-        let stream = stream::iter_ok::<_, DataError>(self.channel.items_owned());
+        let stream = stream::iter_ok::<_, DataError>(self.channel.into_items());
 
         // Parse the episodes
         let episodes = stream.filter_map(move |item| {
