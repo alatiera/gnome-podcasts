@@ -1,5 +1,3 @@
-#![allow(unused_mut)]
-
 use diesel;
 use diesel::prelude::*;
 use url::Url;

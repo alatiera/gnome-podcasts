@@ -1,8 +1,6 @@
 // FIXME:
 //! Docs.
 
-#![allow(unused)]
-
 use futures::future::*;
 use futures::prelude::*;
 use futures::stream::*;
@@ -15,11 +13,8 @@ use tokio_core::reactor::Core;
 use num_cpus;
 use rayon;
 use rayon_futures::ScopeFutureExt;
-use rss;
 
-use dbqueries;
 use errors::DataError;
-use models::{IndexState, NewEpisode, NewEpisodeMinimal};
 use Source;
 
 // use std::sync::{Arc, Mutex};
@@ -88,35 +83,11 @@ where
     core.run(p).map(|_| ())
 }
 
-fn determine_ep_state(
-    ep: NewEpisodeMinimal,
-    item: &rss::Item,
-) -> Result<IndexState<NewEpisode>, DataError> {
-    // Check if feed exists
-    let exists = dbqueries::episode_exists(ep.title(), ep.podcast_id())?;
-
-    if !exists {
-        Ok(IndexState::Index(ep.into_new_episode(item)))
-    } else {
-        let old = dbqueries::get_episode_minimal_from_pk(ep.title(), ep.podcast_id())?;
-        let rowid = old.rowid();
-
-        if ep != old {
-            Ok(IndexState::Update((ep.into_new_episode(item), rowid)))
-        } else {
-            Ok(IndexState::NotChanged)
-        }
-    }
-}
-
-pub(crate) fn glue(item: &rss::Item, id: i32) -> Result<IndexState<NewEpisode>, DataError> {
-    NewEpisodeMinimal::new(item, id).and_then(move |ep| determine_ep_state(ep, item))
-}
-
 #[cfg(test)]
 mod tests {
     use super::*;
     use database::truncate_db;
+    use dbqueries;
     use Source;
 
     // (path, url) tuples.
