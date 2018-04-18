@@ -55,10 +55,9 @@ pub fn pipeline<'a, S>(
     client: HttpsClient,
 ) -> Box<Future<Item = Vec<()>, Error = DataError> + 'a>
 where
-    S: IntoIterator<Item = Source> + 'a,
+    S: Stream<Item = Source, Error = DataError> + 'a,
 {
-    let stream = iter_ok::<_, DataError>(sources);
-    let pipeline = stream
+    let pipeline = sources
         .and_then(clone!(client => move |s| s.into_feed(client.clone(), ignore_etags)))
         .and_then(|feed| feed.index())
         // the stream will stop at the first error so
@@ -82,7 +81,8 @@ where
         .connector(HttpsConnector::new(num_cpus::get(), &handle)?)
         .build(&handle);
 
-    let p = pipeline(sources, ignore_etags, client);
+    let stream = iter_ok::<_, DataError>(sources);
+    let p = pipeline(stream, ignore_etags, client);
     core.run(p).map(|_| ())
 }
 
