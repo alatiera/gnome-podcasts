@@ -5,9 +5,9 @@ stages:
 .cargo_test_template: &cargo_test
     stage: test
 
-    # variables:
-    #     RUSTFLAGS: "-C link-dead-code"
-    #     RUST_BACKTRACE: "FULL"
+    variables:
+        RUSTFLAGS: "--cfg rayon_unstable"
+        RUST_BACKTRACE: "FULL"
 
     before_script:
         - apt-get update -yqq

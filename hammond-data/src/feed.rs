@@ -42,7 +42,7 @@ impl Feed {
     }
 
     fn index_channel_items(self, pd: Podcast) -> Box<Future<Item = (), Error = DataError> + Send> {
-        let stream = stream::iter_ok::<_, DataError>(self.channel.items_owened());
+        let stream = stream::iter_ok::<_, DataError>(self.channel.items_owned());
         let insert = stream
             .filter_map(move |item| {
                 glue(&item, pd.id())

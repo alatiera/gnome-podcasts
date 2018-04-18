@@ -1503,7 +1503,7 @@ dependencies = [
 [[package]]
 name = "rss"
 version = "1.4.0"
-source = "git+https://github.com/alatiera/rss#ca25285cb44d82c8dadfefe05f248ea9a14c996c"
+source = "git+https://github.com/alatiera/rss#b4a5ff563bf3ab6f1c83b5c79e625ff0292aa480"
 dependencies = [
  "derive_builder 0.5.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "failure 0.1.1 (registry+https://github.com/rust-lang/crates.io-index)",
