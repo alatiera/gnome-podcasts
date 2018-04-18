@@ -61,9 +61,9 @@ where
     let pipeline = stream
         .and_then(clone!(client => move |s| s.into_feed(client.clone(), ignore_etags)))
         .and_then(|feed| feed.index())
-        .map_err(|err| error!("Error: {}", err))
         // the stream will stop at the first error so
         // we ensure that everything will succeded regardless.
+        .map_err(|err| error!("Error: {}", err))
         .then(|_| ok::<(), DataError>(()))
         .collect();
 
@@ -118,43 +118,30 @@ mod tests {
     use Source;
 
     // (path, url) tuples.
-    const URLS: &[(&str, &str)] = {
-        &[
-            (
-                "tests/feeds/2018-01-20-Intercepted.xml",
-                "https://web.archive.org/web/20180120083840if_/https://feeds.feedburner.\
-                 com/InterceptedWithJeremyScahill",
-            ),
-            (
-                "tests/feeds/2018-01-20-LinuxUnplugged.xml",
-                "https://web.archive.org/web/20180120110314if_/https://feeds.feedburner.\
-                 com/linuxunplugged",
-            ),
-            (
-                "tests/feeds/2018-01-20-TheTipOff.xml",
-                "https://web.archive.org/web/20180120110727if_/https://rss.acast.com/thetipoff",
-            ),
-            (
-                "tests/feeds/2018-01-20-StealTheStars.xml",
-                "https://web.archive.org/web/20180120104957if_/https://rss.art19.\
-                 com/steal-the-stars",
-            ),
-            (
-                "tests/feeds/2018-01-20-GreaterThanCode.xml",
-                "https://web.archive.org/web/20180120104741if_/https://www.greaterthancode.\
-                 com/feed/podcast",
-            ),
-        ]
-    };
+    const URLS: &[&str] = &[
+        "https://web.archive.org/web/20180120083840if_/https://feeds.feedburner.\
+         com/InterceptedWithJeremyScahill",
+        "https://web.archive.org/web/20180120110314if_/https://feeds.feedburner.com/linuxunplugged",
+        "https://web.archive.org/web/20180120110727if_/https://rss.acast.com/thetipoff",
+        "https://web.archive.org/web/20180120104957if_/https://rss.art19.com/steal-the-stars",
+        "https://web.archive.org/web/20180120104741if_/https://www.greaterthancode.\
+         com/feed/podcast",
+    ];
 
     #[test]
     /// Insert feeds and update/index them.
     fn test_pipeline() {
         truncate_db().unwrap();
-        URLS.iter().for_each(|&(_, url)| {
+        let bad_url = "https://gitlab.gnome.org/World/hammond.atom";
+        // if a stream returns error/None it stops
+        // bad we want to parse all feeds regardless if one fails
+        Source::from_url(bad_url).unwrap();
+
+        URLS.iter().for_each(|url| {
             // Index the urls into the source table.
             Source::from_url(url).unwrap();
         });
+
         let sources = dbqueries::get_sources().unwrap();
         run(sources, true).unwrap();
 
@@ -163,7 +150,7 @@ mod tests {
         run(sources, true).unwrap();
 
         // Assert the index rows equal the controlled results
-        assert_eq!(dbqueries::get_sources().unwrap().len(), 5);
+        assert_eq!(dbqueries::get_sources().unwrap().len(), 6);
         assert_eq!(dbqueries::get_podcasts().unwrap().len(), 5);
         assert_eq!(dbqueries::get_episodes().unwrap().len(), 354);
     }
