@@ -7,9 +7,11 @@ use hammond_data::dbqueries;
 use hammond_data::EpisodeWidgetQuery;
 
 use app::Action;
+use utils::lazy_load_full;
 use utils::{get_ignored_shows, set_image_from_path};
 use widgets::EpisodeWidget;
 
+use std::rc::Rc;
 use std::sync::mpsc::Sender;
 use std::sync::Arc;
 
@@ -78,83 +80,63 @@ impl Default for EpisodesView {
 // TODO: REFACTOR ME
 impl EpisodesView {
     #[inline]
-    pub fn new(sender: Sender<Action>) -> Result<EpisodesView, Error> {
-        let view = EpisodesView::default();
+    pub fn new(sender: Sender<Action>) -> Result<Rc<EpisodesView>, Error> {
+        let view = Rc::new(EpisodesView::default());
         let ignore = get_ignored_shows()?;
-        let episodes = dbqueries::get_episodes_widgets_filter_limit(&ignore, 50)?;
+        let episodes = dbqueries::get_episodes_widgets_filter_limit(&ignore, 200)?;
         let now_utc = Utc::now();
 
-        episodes.into_iter().for_each(|ep| {
+        let view_ = view.clone();
+        let func = move |ep: EpisodeWidgetQuery| {
             let epoch = ep.epoch();
             let viewep = EpisodesViewWidget::new(ep, sender.clone());
 
             let t = split(&now_utc, i64::from(epoch));
             match t {
                 ListSplit::Today => {
-                    view.today_list.add(&viewep.container);
+                    view_.today_list.add(&viewep.container);
                 }
                 ListSplit::Yday => {
-                    view.yday_list.add(&viewep.container);
+                    view_.yday_list.add(&viewep.container);
                 }
                 ListSplit::Week => {
-                    view.week_list.add(&viewep.container);
+                    view_.week_list.add(&viewep.container);
                 }
                 ListSplit::Month => {
-                    view.month_list.add(&viewep.container);
+                    view_.month_list.add(&viewep.container);
                 }
                 ListSplit::Rest => {
-                    view.rest_list.add(&viewep.container);
+                    view_.rest_list.add(&viewep.container);
                 }
+            }
+        };
+
+        let callback = clone!(view => move || {
+            if view.today_list.get_children().is_empty() {
+                view.today_box.hide();
+            }
+
+            if view.yday_list.get_children().is_empty() {
+                view.yday_box.hide();
+            }
+
+            if view.week_list.get_children().is_empty() {
+                view.week_box.hide();
+            }
+
+            if view.month_list.get_children().is_empty() {
+                view.month_box.hide();
+            }
+
+            if view.rest_list.get_children().is_empty() {
+                view.rest_box.hide();
             }
         });
 
-        if view.today_list.get_children().is_empty() {
-            view.today_box.hide();
-        }
-
-        if view.yday_list.get_children().is_empty() {
-            view.yday_box.hide();
-        }
-
-        if view.week_list.get_children().is_empty() {
-            view.week_box.hide();
-        }
-
-        if view.month_list.get_children().is_empty() {
-            view.month_box.hide();
-        }
-
-        if view.rest_list.get_children().is_empty() {
-            view.rest_box.hide();
-        }
+        lazy_load_full(episodes, func, callback);
 
         view.container.show_all();
         Ok(view)
-    }
-
-    #[inline]
-    pub fn is_empty(&self) -> bool {
-        if !self.today_list.get_children().is_empty() {
-            return false;
-        }
-
-        if !self.yday_list.get_children().is_empty() {
-            return false;
-        }
-
-        if !self.week_list.get_children().is_empty() {
-            return false;
-        }
-
-        if !self.month_list.get_children().is_empty() {
-            return false;
-        }
-
-        if !self.rest_list.get_children().is_empty() {
-            return false;
-        }
-
-        true
     }
 
     #[inline]

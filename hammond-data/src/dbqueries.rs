@@ -349,6 +349,20 @@ pub(crate) fn episode_exists(title_: &str, podcast_id_: i32) -> Result<bool, Dat
         .map_err(From::from)
 }
 
+/// Check `episode` table empty
+///
+/// Return true if `episode` table is populated.
+pub fn is_episodes_populated() -> Result<bool, DataError> {
+    use schema::episode::dsl::*;
+
+    let db = connection();
+    let con = db.get()?;
+
+    select(exists(episode.count()))
+        .get_result(&con)
+        .map_err(From::from)
+}
+
 pub(crate) fn index_new_episodes(eps: &[NewEpisode]) -> Result<(), DataError> {
     use schema::episode::dsl::*;
     let db = connection();
