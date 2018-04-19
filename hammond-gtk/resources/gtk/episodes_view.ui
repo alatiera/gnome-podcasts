@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.21.0 
+<!-- Generated with glade 3.22.0 
 
 Copyright (C) 2017 - 2018
 
@@ -81,7 +81,6 @@ Tobias Bernard
                     <property name="spacing">24</property>
                     <child>
                       <object class="GtkBox" id="today_box">
-                        <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="no_show_all">True</property>
                         <property name="hexpand">True</property>
@@ -139,7 +138,6 @@ Tobias Bernard
                     </child>
                     <child>
                       <object class="GtkBox" id="yday_box">
-                        <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="no_show_all">True</property>
                         <property name="hexpand">True</property>
@@ -196,7 +194,6 @@ Tobias Bernard
                     </child>
                     <child>
                       <object class="GtkBox" id="week_box">
-                        <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="no_show_all">True</property>
                         <property name="hexpand">True</property>
@@ -253,7 +250,6 @@ Tobias Bernard
                     </child>
                     <child>
                       <object class="GtkBox" id="month_box">
-                        <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="no_show_all">True</property>
                         <property name="hexpand">True</property>
@@ -310,7 +306,6 @@ Tobias Bernard
                     </child>
                     <child>
                       <object class="GtkBox" id="rest_box">
-                        <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="no_show_all">True</property>
                         <property name="hexpand">True</property>

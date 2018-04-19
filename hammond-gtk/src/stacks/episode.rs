@@ -67,6 +67,7 @@ impl EpisodeStack {
     }
 }
 
+#[inline]
 fn set_stack_visible(stack: &gtk::Stack) -> Result<(), DataError> {
     if is_episodes_populated()? {
         stack.set_visible_child_name("episodes");

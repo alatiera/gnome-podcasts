@@ -81,6 +81,8 @@ impl Default for EpisodesView {
 impl EpisodesView {
     #[inline]
     pub fn new(sender: Sender<Action>) -> Result<Rc<EpisodesView>, Error> {
+        use self::ListSplit::*;
+
         let view = Rc::new(EpisodesView::default());
         let ignore = get_ignored_shows()?;
         let episodes = dbqueries::get_episodes_widgets_filter_limit(&ignore, 200)?;
@@ -89,52 +91,18 @@ impl EpisodesView {
         let view_ = view.clone();
         let func = move |ep: EpisodeWidgetQuery| {
             let epoch = ep.epoch();
-            let viewep = EpisodesViewWidget::new(ep, sender.clone());
+            let widget = EpisodesViewWidget::new(ep, sender.clone());
 
-            let t = split(&now_utc, i64::from(epoch));
-            match t {
-                ListSplit::Today => {
-                    view_.today_list.add(&viewep.container);
-                }
-                ListSplit::Yday => {
-                    view_.yday_list.add(&viewep.container);
-                }
-                ListSplit::Week => {
-                    view_.week_list.add(&viewep.container);
-                }
-                ListSplit::Month => {
-                    view_.month_list.add(&viewep.container);
-                }
-                ListSplit::Rest => {
-                    view_.rest_list.add(&viewep.container);
-                }
+            match split(&now_utc, i64::from(epoch)) {
+                Today => add_to_box(&widget, &view_.today_list, &view_.today_box),
+                Yday => add_to_box(&widget, &view_.yday_list, &view_.yday_box),
+                Week => add_to_box(&widget, &view_.week_list, &view_.week_box),
+                Month => add_to_box(&widget, &view_.month_list, &view_.month_box),
+                Rest => add_to_box(&widget, &view_.rest_list, &view_.rest_box),
             }
         };
 
-        let callback = clone!(view => move || {
-            if view.today_list.get_children().is_empty() {
-                view.today_box.hide();
-            }
-
-            if view.yday_list.get_children().is_empty() {
-                view.yday_box.hide();
-            }
-
-            if view.week_list.get_children().is_empty() {
-                view.week_box.hide();
-            }
-
-            if view.month_list.get_children().is_empty() {
-                view.month_box.hide();
-            }
-
-            if view.rest_list.get_children().is_empty() {
-                view.rest_box.hide();
-            }
-        });
-
-        lazy_load_full(episodes, func, callback);
-
+        lazy_load_full(episodes, func, || {});
         view.container.show_all();
         Ok(view)
     }
@@ -144,6 +112,12 @@ impl EpisodesView {
     pub fn set_vadjustment(&self, vadjustment: &gtk::Adjustment) {
         self.scrolled_window.set_vadjustment(vadjustment)
     }
+}
+
+#[inline]
+fn add_to_box(widget: &EpisodesViewWidget, listbox: &gtk::ListBox, box_: &gtk::Box) {
+    listbox.add(&widget.container);
+    box_.show();
 }
 
 #[inline]
