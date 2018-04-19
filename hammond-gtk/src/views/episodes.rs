@@ -85,7 +85,7 @@ impl EpisodesView {
 
         let view = Rc::new(EpisodesView::default());
         let ignore = get_ignored_shows()?;
-        let episodes = dbqueries::get_episodes_widgets_filter_limit(&ignore, 200)?;
+        let episodes = dbqueries::get_episodes_widgets_filter_limit(&ignore, 100)?;
         let now_utc = Utc::now();
 
         let view_ = view.clone();
@@ -102,15 +102,36 @@ impl EpisodesView {
             }
         };
 
-        lazy_load_full(episodes, func, || {});
+        let view_ = view.clone();
+        let callback = move || {
+            view_
+                .set_vadjustment()
+                .map_err(|err| format!("{}", err))
+                .ok();
+        };
+
+        lazy_load_full(episodes, func, callback);
         view.container.show_all();
         Ok(view)
     }
 
     #[inline]
     /// Set scrolled window vertical adjustment.
-    pub fn set_vadjustment(&self, vadjustment: &gtk::Adjustment) {
-        self.scrolled_window.set_vadjustment(vadjustment)
+    fn set_vadjustment(&self) -> Result<(), Error> {
+        use stacks::EPISODES_VIEW_VALIGNMENT;
+
+        let guard = EPISODES_VIEW_VALIGNMENT
+            .lock()
+            .map_err(|err| format_err!("Failed to lock widget align mutex: {}", err))?;
+
+        if let Some(ref sendcell) = *guard {
+            // Copy the vertical scrollbar adjustment from the old view into the new one.
+            sendcell
+                .try_get()
+                .map(|x| self.scrolled_window.set_vadjustment(&x));
+        }
+
+        Ok(())
     }
 }
 

@@ -16,15 +16,15 @@ use widgets::ShowWidget;
 use std::sync::mpsc::Sender;
 use std::sync::{Arc, Mutex};
 
+lazy_static! {
+    static ref SHOW_WIDGET_VALIGNMENT: Mutex<Option<(i32, SendCell<gtk::Adjustment>)>> =
+        Mutex::new(None);
+}
+
 #[derive(Debug, Clone)]
 pub struct ShowStack {
     stack: gtk::Stack,
     sender: Sender<Action>,
-}
-
-lazy_static! {
-    static ref SHOW_WIDGET_VALIGNMENT: Mutex<Option<(i32, SendCell<gtk::Adjustment>)>> =
-        Mutex::new(None);
 }
 
 impl ShowStack {

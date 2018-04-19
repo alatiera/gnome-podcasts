@@ -5,11 +5,18 @@ use gtk::Cast;
 use failure::Error;
 use hammond_data::dbqueries::is_episodes_populated;
 use hammond_data::errors::DataError;
+use send_cell::SendCell;
 
 use app::Action;
 use views::{EmptyView, EpisodesView};
 
 use std::sync::mpsc::Sender;
+use std::sync::Mutex;
+
+lazy_static! {
+    pub static ref EPISODES_VIEW_VALIGNMENT: Mutex<Option<SendCell<gtk::Adjustment>>> =
+        Mutex::new(None);
+}
 
 #[derive(Debug, Clone)]
 pub struct EpisodeStack {
@@ -39,26 +46,18 @@ impl EpisodeStack {
             .map_err(|_| format_err!("Failed to downcast stack child to a Box."))?;
         debug!("Name: {:?}", WidgetExt::get_name(&old));
 
-        // let scrolled_window = old.get_children()
-        //     .first()
-        //     .ok_or_else(|| format_err!("Box container has no childs."))?
-        //     .clone()
-        //     .downcast::<gtk::ScrolledWindow>()
-        //     .map_err(|_| format_err!("Failed to downcast stack child to a ScrolledWindow."))?;
-        // debug!("Name: {:?}", WidgetExt::get_name(&scrolled_window));
+        // Copy the vertical scrollbar adjustment from the old view.
+        save_alignment(&old)
+            .map_err(|err| error!("Failed to set episodes_view allignment: {}", err))
+            .ok();
 
         let eps = EpisodesView::new(self.sender.clone())?;
-        // Copy the vertical scrollbar adjustment from the old view into the new one.
-        // scrolled_window
-        //     .get_vadjustment()
-        //     .map(|x| eps.set_vadjustment(&x));
 
         self.stack.remove(&old);
         self.stack.add_named(&eps.container, "episodes");
         set_stack_visible(&self.stack)?;
 
         old.destroy();
-
         Ok(())
     }
 
@@ -74,6 +73,28 @@ fn set_stack_visible(stack: &gtk::Stack) -> Result<(), DataError> {
     } else {
         stack.set_visible_child_name("empty");
     };
+
+    Ok(())
+}
+
+// ATTENTION: EXPECTS THE EPISODE_VIEW WIDGET CONTAINER
+fn save_alignment(old_widget: &gtk::Box) -> Result<(), Error> {
+    let scrolled_window = old_widget
+        .get_children()
+        .first()
+        .ok_or_else(|| format_err!("Box container has no childs."))?
+        .clone()
+        .downcast::<gtk::ScrolledWindow>()
+        .map_err(|_| format_err!("Failed to downcast stack child to a ScrolledWindow."))?;
+    debug!("Name: {:?}", WidgetExt::get_name(&scrolled_window));
+
+    if let Ok(mut guard) = EPISODES_VIEW_VALIGNMENT.lock() {
+        let adj = scrolled_window
+            .get_vadjustment()
+            .ok_or_else(|| format_err!("Could not get the adjustment"))?;
+        *guard = Some(SendCell::new(adj));
+        info!("Saved episodes_view alignment.");
+    }
 
     Ok(())
 }
