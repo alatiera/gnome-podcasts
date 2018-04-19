@@ -1,12 +1,12 @@
 #![cfg_attr(feature = "cargo-clippy", allow(type_complexity))]
 
 use gdk_pixbuf::Pixbuf;
-use gio::{Settings, SettingsExt};
 use glib;
 use gtk;
 use gtk::prelude::*;
 use gtk::{IsA, Widget};
 
+use chrono::prelude::*;
 use failure::Error;
 use rayon;
 use regex::Regex;
@@ -27,9 +27,6 @@ use std::sync::Arc;
 use std::sync::{Mutex, RwLock};
 
 use app::Action;
-
-use chrono::prelude::*;
-use chrono::Duration;
 
 /// Lazy evaluates and loads widgets to the parent `container` widget.
 ///
@@ -142,21 +139,6 @@ where
     refresh_feed(source, sender)
         .map_err(|err| error!("Failed to update feeds: {}", err))
         .ok();
-}
-
-pub fn get_refresh_interval(settings: &Settings) -> Duration {
-    let time = settings.get_int("refresh-interval-time") as i64;
-    let period = settings.get_string("refresh-interval-period").unwrap();
-
-    time_period_to_duration(time, period.as_str())
-}
-
-pub fn get_cleanup_date(settings: &Settings) -> DateTime<Utc> {
-    let time = settings.get_int("cleanup-age-time") as i64;
-    let period = settings.get_string("cleanup-age-period").unwrap();
-    let duration = time_period_to_duration(time, period.as_str());
-
-    Utc::now() - duration
 }
 
 /// Update the rss feed(s) originating from `source`.
@@ -313,16 +295,6 @@ fn lookup_id(id: u32) -> Result<String, Error> {
     rssurl()
         .map(From::from)
         .ok_or_else(|| format_err!("Failed to get url from itunes response"))
-}
-
-pub fn time_period_to_duration(time: i64, period: &str) -> Duration {
-    match period {
-        "weeks" => Duration::weeks(time),
-        "days" => Duration::days(time),
-        "hours" => Duration::hours(time),
-        "minutes" => Duration::minutes(time),
-        _ => Duration::seconds(time),
-    }
 }
 
 #[cfg(test)]

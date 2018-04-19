@@ -9,7 +9,7 @@ use gtk::SettingsExt as GtkSettingsExt;
 use hammond_data::Podcast;
 
 use headerbar::Header;
-use settings::WindowGeometry;
+use settings::{self, WindowGeometry};
 use stacks::Content;
 use utils;
 use widgets::{mark_all_notif, remove_show_notif};
@@ -60,6 +60,9 @@ impl App {
         // Weird magic I copy-pasted that sets the Application Name in the Shell.
         glib::set_application_name("Hammond");
         glib::set_prgname(Some("Hammond"));
+
+        let cleanup_date = settings::get_cleanup_date(&settings);
+        utils::cleanup(cleanup_date);
 
         // Create the main window
         let window = gtk::Window::new(gtk::WindowType::Toplevel);
@@ -119,13 +122,9 @@ impl App {
     fn setup_refresh_on_startup(&self) {
         // Update the feeds right after the Application is initialized.
         if self.settings.get_boolean("refresh-on-startup") {
-            let cleanup_date = utils::get_cleanup_date(&self.settings);
             let sender = self.sender.clone();
 
             info!("Refresh on startup.");
-
-            utils::cleanup(cleanup_date);
-
             // The ui loads async, after initialization
             // so we need to delay this a bit so it won't block
             // requests that will come from loading the gui on startup.
@@ -138,7 +137,7 @@ impl App {
     }
 
     fn setup_auto_refresh(&self) {
-        let refresh_interval = utils::get_refresh_interval(&self.settings).num_seconds() as u32;
+        let refresh_interval = settings::get_refresh_interval(&self.settings).num_seconds() as u32;
         let sender = self.sender.clone();
 
         info!("Auto-refresh every {:?} seconds.", refresh_interval);
