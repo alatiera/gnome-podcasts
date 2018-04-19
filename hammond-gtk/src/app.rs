@@ -126,7 +126,10 @@ impl App {
 
             utils::cleanup(cleanup_date);
 
-            gtk::idle_add(move || {
+            // The ui loads async, after initialization
+            // so we need to delay this a bit so it won't block
+            // requests that will come from loading the gui on startup.
+            gtk::timeout_add(1500, move || {
                 let s: Option<Vec<_>> = None;
                 utils::refresh(s, sender.clone());
                 glib::Continue(false)

@@ -64,6 +64,7 @@ use chrono::Duration;
 /// let list = gtk::ListBox::new();
 /// lazy_load(widgets, list, |w| w, || {});
 /// ```
+#[inline]
 pub fn lazy_load<T, C, F, W, U>(data: T, container: C, mut contructor: F, callback: U)
 where
     T: IntoIterator + 'static,
@@ -83,6 +84,7 @@ where
 /// This is a more flexible version of `lazy_load` with less constrains.
 /// If you just want to lazy add `widgets` to a `container` check if
 /// `lazy_load` fits your needs first.
+#[inline]
 pub fn lazy_load_full<T, F, U>(data: T, mut func: F, finish_callback: U)
 where
     T: IntoIterator + 'static,

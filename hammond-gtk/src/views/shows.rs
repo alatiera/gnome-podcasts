@@ -6,7 +6,7 @@ use hammond_data::dbqueries;
 use hammond_data::Podcast;
 
 use app::Action;
-use utils::{get_ignored_shows, set_image_from_path};
+use utils::{get_ignored_shows, lazy_load, set_image_from_path};
 
 use std::sync::mpsc::Sender;
 use std::sync::Arc;
@@ -58,17 +58,14 @@ impl ShowsPopulated {
         let ignore = get_ignored_shows()?;
         let podcasts = dbqueries::get_podcasts_filter(&ignore)?;
 
-        podcasts.iter().for_each(|parent| {
-            let flowbox_child = ShowsChild::new(parent);
-            self.flowbox.add(&flowbox_child.child);
-        });
-        self.flowbox.show_all();
-        Ok(())
-    }
+        let flowbox = self.flowbox.clone();
+        let constructor = |parent| ShowsChild::new(&parent).child;
+        let callback = move || flowbox.show_all();
 
-    #[inline]
-    pub fn is_empty(&self) -> bool {
-        self.flowbox.get_children().is_empty()
+        let flowbox = self.flowbox.clone();
+        lazy_load(podcasts, flowbox, constructor, callback);
+
+        Ok(())
     }
 
     #[inline]

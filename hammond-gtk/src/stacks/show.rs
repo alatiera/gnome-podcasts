@@ -6,6 +6,7 @@ use failure::Error;
 use send_cell::SendCell;
 
 use hammond_data::dbqueries;
+use hammond_data::errors::DataError;
 use hammond_data::Podcast;
 
 use views::{EmptyView, ShowsPopulated};
@@ -43,12 +44,7 @@ impl ShowStack {
         show.stack.add_named(&pop.container, "podcasts");
         show.stack.add_named(&widget.container, "widget");
         show.stack.add_named(&empty.container, "empty");
-
-        if pop.is_empty() {
-            show.stack.set_visible_child_name("empty")
-        } else {
-            show.stack.set_visible_child_name("podcasts")
-        }
+        set_stack_visible(&show.get_stack())?;
 
         Ok(show)
     }
@@ -70,24 +66,16 @@ impl ShowStack {
             .map_err(|_| format_err!("Failed to downcast stack child to a Box."))?;
         debug!("Name: {:?}", WidgetExt::get_name(&old));
 
-        let scrolled_window = old.get_children()
-            .first()
-            .ok_or_else(|| format_err!("Box container has no childs."))?
-            .clone()
-            .downcast::<gtk::ScrolledWindow>()
-            .map_err(|_| format_err!("Failed to downcast stack child to a ScrolledWindow."))?;
-        debug!("Name: {:?}", WidgetExt::get_name(&scrolled_window));
-
         let pop = ShowsPopulated::new(self.sender.clone())?;
         // Copy the vertical scrollbar adjustment from the old view into the new one.
-        scrolled_window
-            .get_vadjustment()
-            .map(|x| pop.set_vadjustment(&x));
+        // scrolled_window
+        //     .get_vadjustment()
+        //     .map(|x| pop.set_vadjustment(&x));
 
         self.stack.remove(&old);
         self.stack.add_named(&pop.container, "podcasts");
 
-        if pop.is_empty() {
+        if !dbqueries::is_podcasts_populated()? {
             self.stack.set_visible_child_name("empty");
         } else if vis != "empty" {
             self.stack.set_visible_child_name(&vis);
@@ -213,6 +201,17 @@ impl ShowStack {
     pub fn get_stack(&self) -> gtk::Stack {
         self.stack.clone()
     }
+}
+
+#[inline]
+fn set_stack_visible(stack: &gtk::Stack) -> Result<(), DataError> {
+    if dbqueries::is_podcasts_populated()? {
+        stack.set_visible_child_name("podcasts")
+    } else {
+        stack.set_visible_child_name("empty")
+    }
+
+    Ok(())
 }
 
 // ATTENTION: EXPECTS THE SHOW WIDGET CONTAINER

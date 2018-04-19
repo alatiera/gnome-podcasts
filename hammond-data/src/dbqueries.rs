@@ -377,6 +377,34 @@ pub fn is_episodes_populated() -> Result<bool, DataError> {
         .map_err(From::from)
 }
 
+/// Check `episode` table empty
+///
+// FIXME: Return true if `episode` table is populated.
+pub fn is_podcasts_populated() -> Result<bool, DataError> {
+    use schema::podcast::dsl::*;
+
+    let db = connection();
+    let con = db.get()?;
+
+    // FIXME
+    // select(exists(select(podcast)))
+    //     .get_result(&con)
+    //     .map_err(From::from)
+
+    podcast
+        .count()
+        .get_result(&con)
+        // FIXME: fix the diesel querry
+        .map(|b: i64| {
+            if b == 0 {
+                false
+            } else {
+                true
+            }
+        })
+        .map_err(From::from)
+}
+
 pub(crate) fn index_new_episodes(eps: &[NewEpisode]) -> Result<(), DataError> {
     use schema::episode::dsl::*;
     let db = connection();
