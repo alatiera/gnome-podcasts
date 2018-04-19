@@ -7,22 +7,22 @@ use app::Action;
 use stacks::EpisodeStack;
 use stacks::ShowStack;
 
+use std::rc::Rc;
 use std::sync::mpsc::Sender;
-use std::sync::Arc;
 
 #[derive(Debug, Clone)]
 pub struct Content {
     stack: gtk::Stack,
-    shows: Arc<ShowStack>,
-    episodes: Arc<EpisodeStack>,
+    shows: Rc<ShowStack>,
+    episodes: Rc<EpisodeStack>,
     sender: Sender<Action>,
 }
 
 impl Content {
     pub fn new(sender: Sender<Action>) -> Result<Content, Error> {
         let stack = gtk::Stack::new();
-        let episodes = Arc::new(EpisodeStack::new(sender.clone())?);
-        let shows = Arc::new(ShowStack::new(sender.clone())?);
+        let episodes = Rc::new(EpisodeStack::new(sender.clone())?);
+        let shows = Rc::new(ShowStack::new(sender.clone())?);
 
         stack.add_titled(&episodes.get_stack(), "episodes", "Episodes");
         stack.add_titled(&shows.get_stack(), "shows", "Shows");
@@ -88,7 +88,7 @@ impl Content {
         self.stack.clone()
     }
 
-    pub fn get_shows(&self) -> Arc<ShowStack> {
+    pub fn get_shows(&self) -> Rc<ShowStack> {
         self.shows.clone()
     }
 }

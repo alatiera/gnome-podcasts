@@ -17,7 +17,7 @@ use std::sync::mpsc::Sender;
 use std::sync::{Arc, Mutex};
 
 lazy_static! {
-    static ref SHOW_WIDGET_VALIGNMENT: Mutex<Option<(i32, SendCell<gtk::Adjustment>)>> =
+    pub static ref SHOW_WIDGET_VALIGNMENT: Mutex<Option<(i32, SendCell<gtk::Adjustment>)>> =
         Mutex::new(None);
 }
 

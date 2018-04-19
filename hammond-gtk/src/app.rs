@@ -14,6 +14,7 @@ use stacks::Content;
 use utils;
 use widgets::{mark_all_notif, remove_show_notif};
 
+use std::rc::Rc;
 use std::sync::mpsc::{channel, Receiver, Sender};
 use std::sync::Arc;
 
@@ -43,8 +44,8 @@ pub struct App {
     app_instance: gtk::Application,
     window: gtk::Window,
     overlay: gtk::Overlay,
-    header: Arc<Header>,
-    content: Arc<Content>,
+    header: Rc<Header>,
+    content: Rc<Content>,
     receiver: Receiver<Action>,
     sender: Sender<Action>,
     settings: Settings,
@@ -78,10 +79,10 @@ impl App {
 
         // Create a content instance
         let content =
-            Arc::new(Content::new(sender.clone()).expect("Content Initialization failed."));
+            Rc::new(Content::new(sender.clone()).expect("Content Initialization failed."));
 
         // Create the headerbar
-        let header = Arc::new(Header::new(&content, &window, sender.clone()));
+        let header = Rc::new(Header::new(&content, &window, sender.clone()));
 
         // Add the content main stack to the overlay.
         let overlay = gtk::Overlay::new();
