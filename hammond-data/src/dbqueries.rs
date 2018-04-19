@@ -351,15 +351,29 @@ pub(crate) fn episode_exists(title_: &str, podcast_id_: i32) -> Result<bool, Dat
 
 /// Check `episode` table empty
 ///
-/// Return true if `episode` table is populated.
+// FIXME: Return true if `episode` table is populated.
 pub fn is_episodes_populated() -> Result<bool, DataError> {
     use schema::episode::dsl::*;
 
     let db = connection();
     let con = db.get()?;
 
-    select(exists(episode.count()))
+    // FIXME
+    // select(exists(select(episode)))
+    //     .get_result(&con)
+    //     .map_err(From::from)
+
+    episode
+        .count()
         .get_result(&con)
+        // FIXME: fix the diesel querry
+        .map(|b: i64| {
+            if b == 0 {
+                false
+            } else {
+                true
+            }
+        })
         .map_err(From::from)
 }
 
