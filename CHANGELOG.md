@@ -7,30 +7,30 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [Unreleased]
 
 * Downlaoding and loading images now is done asynchronously and is not blocking programs execution.
-[#7](https://gitlab.gnome.org/alatiera/Hammond/issues/7)
+[#7](https://gitlab.gnome.org/World/hammond/issues/7)
 * Bold, italics links and some other `html` tags can now be rendered in the Show Description.
-[#25](https://gitlab.gnome.org/alatiera/Hammond/issues/25)
+[#25](https://gitlab.gnome.org/World/hammond/issues/25)
 
 ## [0.3.1] - 2018-03-28
 
 * Ability to mark all episodes of a Show as watched.
-[#47](https://gitlab.gnome.org/alatiera/Hammond/issues/47)
+[#47](https://gitlab.gnome.org/World/hammond/issues/47)
 * Now you are able to subscribe to itunes™ podcasts by using the itunes link of the show.
-[#49](https://gitlab.gnome.org/alatiera/Hammond/issues/49)
+[#49](https://gitlab.gnome.org/World/hammond/issues/49)
 * EpisdeWidget has been reimplemented as a compile time state machine.
-[!18](https://gitlab.gnome.org/alatiera/Hammond/merge_requests/18)
+[!18](https://gitlab.gnome.org/World/hammond/merge_requests/18)
 * Content Views no longer scroll horizontally when shrunk bellow their minimum size.
-[#35](https://gitlab.gnome.org/alatiera/Hammond/issues/35)
+[#35](https://gitlab.gnome.org/World/hammond/issues/35)
 * Double border aroun the main window was fixed. (Rowan Lewis)
-[#52](https://gitlab.gnome.org/alatiera/Hammond/issues/52)
+[#52](https://gitlab.gnome.org/World/hammond/issues/52)
 * Some requests now use the Tor Browser's user agent. (Rowan Lewis)
-[#53](https://gitlab.gnome.org/alatiera/Hammond/issues/53)
+[#53](https://gitlab.gnome.org/World/hammond/issues/53)
 * Hammond now remembers the window size and position. (Rowan Lewis)
-[#50](https://gitlab.gnome.org/alatiera/Hammond/issues/50)
+[#50](https://gitlab.gnome.org/World/hammond/issues/50)
 * Implemnted the initial work for integrating with GSettings and storing preferences. (Rowan Lewis)
-[!22](https://gitlab.gnome.org/alatiera/Hammond/merge_requests/22) [!23](https://gitlab.gnome.org/alatiera/Hammond/merge_requests/23)
+[!22](https://gitlab.gnome.org/World/hammond/merge_requests/22) [!23](https://gitlab.gnome.org/World/hammond/merge_requests/23)
 * Shows without episodes now display an empty message similar to EmptyView.
-[#44](https://gitlab.gnome.org/alatiera/Hammond/issues/44)
+[#44](https://gitlab.gnome.org/World/hammond/issues/44)
 
 ## [0.3.0] - 2018-02-11
 

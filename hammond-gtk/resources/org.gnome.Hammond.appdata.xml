@@ -12,25 +12,25 @@
       desktop written in Rust.
     </p>
   </description>
-  <url type="homepage">https://gitlab.gnome.org/alatiera/Hammond</url>
+  <url type="homepage">https://gitlab.gnome.org/World/hammond</url>
   <screenshots>
     <screenshot>
-      <image>https://gitlab.gnome.org/alatiera/hammond/raw/master/screenshots/episodes_view.png</image>
+      <image>https://gitlab.gnome.org/World/hammond/raw/master/screenshots/episodes_view.png</image>
       <caption>Page 1</caption>
     </screenshot>
     <screenshot>
-      <image>https://gitlab.gnome.org/alatiera/hammond/raw/master/screenshots/shows_view.png</image>
+      <image>https://gitlab.gnome.org/World/hammond/raw/master/screenshots/shows_view.png</image>
       <caption>Page 2</caption>
     </screenshot>
     <screenshot>
-      <image>https://gitlab.gnome.org/alatiera/hammond/raw/master/screenshots/show_widget.png</image>
+      <image>https://gitlab.gnome.org/World/hammond/raw/master/screenshots/show_widget.png</image>
       <caption>Page 3</caption>
     </screenshot>
   </screenshots>
   <releases>
     <release version="0.3.1" date="2018-03-28"/>
   </releases>
-  <url type="homepage">https://gitlab.gnome.org/alatiera/hammond</url>
+  <url type="homepage">https://gitlab.gnome.org/World/hammond</url>
   <update_contact>jpetridis@gnome.org</update_contact>
   <developer_name>Jordan Petridis and others</developer_name>
 </component>

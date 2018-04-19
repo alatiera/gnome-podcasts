@@ -307,7 +307,7 @@ mod tests {
     // This test inserts an rss feed to your `XDG_DATA/hammond/hammond.db` so we make it explicit
     // to run it.
     // #[ignore]
-    // Disabled till https://gitlab.gnome.org/alatiera/Hammond/issues/56
+    // Disabled till https://gitlab.gnome.org/World/hammond/issues/56
     // fn test_set_image_from_path() {
     //     let url = "https://web.archive.org/web/20180120110727if_/https://rss.acast.com/thetipoff";
     // Create and index a source

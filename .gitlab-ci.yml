@@ -53,7 +53,7 @@ flatpak:
     stage: test
     script:
         - flatpak-builder --stop-at=hammond app org.gnome.Hammond.json
-        # https://gitlab.gnome.org/alatiera/Hammond/issues/55
+        # https://gitlab.gnome.org/World/hammond/issues/55
         # Force regeneration of gresources regardless of artifacts chage
         - flatpak-builder --run app org.gnome.Hammond.json glib-compile-resources --sourcedir=hammond-gtk/resources/ hammond-gtk/resources/resources.xml
 
