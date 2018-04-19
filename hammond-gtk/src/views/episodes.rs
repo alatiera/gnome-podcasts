@@ -13,7 +13,6 @@ use widgets::EpisodeWidget;
 
 use std::rc::Rc;
 use std::sync::mpsc::Sender;
-use std::sync::Arc;
 
 #[derive(Debug, Clone)]
 enum ListSplit {
@@ -213,7 +212,6 @@ impl EpisodesViewWidget {
 
     #[inline]
     fn set_cover(&self, podcast_id: i32) -> Result<(), Error> {
-        let pd = Arc::new(dbqueries::get_podcast_cover_from_id(podcast_id)?);
-        set_image_from_path(&self.image, pd, 64)
+        set_image_from_path(&self.image, podcast_id, 64)
     }
 }

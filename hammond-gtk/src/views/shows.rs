@@ -3,7 +3,7 @@ use gtk;
 use gtk::prelude::*;
 
 use hammond_data::dbqueries;
-use hammond_data::{Podcast, PodcastCoverQuery};
+use hammond_data::Podcast;
 
 use app::Action;
 use utils::{get_ignored_shows, set_image_from_path};
@@ -58,7 +58,7 @@ impl ShowsPopulated {
         let ignore = get_ignored_shows()?;
         let podcasts = dbqueries::get_podcasts_filter(&ignore)?;
 
-        podcasts.into_iter().for_each(|parent| {
+        podcasts.iter().for_each(|parent| {
             let flowbox_child = ShowsChild::new(parent);
             self.flowbox.add(&flowbox_child.child);
         });
@@ -122,24 +122,24 @@ impl Default for ShowsChild {
 
 impl ShowsChild {
     #[inline]
-    pub fn new(pd: Podcast) -> ShowsChild {
+    pub fn new(pd: &Podcast) -> ShowsChild {
         let child = ShowsChild::default();
         child.init(pd);
         child
     }
 
     #[inline]
-    fn init(&self, pd: Podcast) {
+    fn init(&self, pd: &Podcast) {
         self.container.set_tooltip_text(pd.title());
         WidgetExt::set_name(&self.child, &pd.id().to_string());
 
-        self.set_cover(Arc::new(pd.into()))
+        self.set_cover(pd.id())
             .map_err(|err| error!("Failed to set a cover: {}", err))
             .ok();
     }
 
     #[inline]
-    fn set_cover(&self, pd: Arc<PodcastCoverQuery>) -> Result<(), Error> {
-        set_image_from_path(&self.cover, pd, 256)
+    fn set_cover(&self, podcast_id: i32) -> Result<(), Error> {
+        set_image_from_path(&self.cover, podcast_id, 256)
     }
 }

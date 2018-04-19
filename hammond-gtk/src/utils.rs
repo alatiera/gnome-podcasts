@@ -18,7 +18,7 @@ use serde_json::Value;
 use hammond_data::dbqueries;
 use hammond_data::pipeline;
 use hammond_data::utils::checkup;
-use hammond_data::{PodcastCoverQuery, Source};
+use hammond_data::Source;
 use hammond_downloader::downloader;
 
 use std::collections::{HashMap, HashSet};
@@ -212,19 +212,15 @@ lazy_static! {
 // Also lazy_static requires Sync trait, so that's what the mutexes are.
 // TODO: maybe use something that would just scale to requested size?
 #[inline]
-pub fn set_image_from_path(
-    image: &gtk::Image,
-    pd: Arc<PodcastCoverQuery>,
-    size: u32,
-) -> Result<(), Error> {
+pub fn set_image_from_path(image: &gtk::Image, podcast_id: i32, size: u32) -> Result<(), Error> {
     // Check if there's an active download about this show cover.
     // If there is, a callback will be set so this function will be called again.
     // If the download succedes, there should be a quick return from the pixbuf cache_image
     // If it fails another download will be scheduled.
     if let Ok(guard) = COVER_DL_REGISTRY.read() {
-        if guard.contains(&pd.id()) {
-            let callback = clone!(image, pd => move || {
-                 let _ = set_image_from_path(&image, pd.clone(), size);
+        if guard.contains(&podcast_id) {
+            let callback = clone!(image => move || {
+                 let _ = set_image_from_path(&image, podcast_id, size);
                  glib::Continue(false)
             });
             gtk::timeout_add(250, callback);
@@ -235,7 +231,7 @@ pub fn set_image_from_path(
     if let Ok(hashmap) = CACHED_PIXBUFS.read() {
         // Check if the requested (cover + size) is already in the chache
         // and if so do an early return after that.
-        if let Some(guard) = hashmap.get(&(pd.id(), size)) {
+        if let Some(guard) = hashmap.get(&(podcast_id, size)) {
             guard
                 .lock()
                 .map_err(|err| format_err!("SendCell Mutex: {}", err))
@@ -251,19 +247,20 @@ pub fn set_image_from_path(
     }
 
     let (sender, receiver) = channel();
-    let pd_ = pd.clone();
     THREADPOOL.spawn(move || {
         if let Ok(mut guard) = COVER_DL_REGISTRY.write() {
-            guard.insert(pd_.id());
+            guard.insert(podcast_id);
         }
 
-        sender
-            .send(downloader::cache_image(&pd_))
-            .map_err(|err| error!("Action Sender: {}", err))
-            .ok();
+        if let Ok(pd) = dbqueries::get_podcast_cover_from_id(podcast_id) {
+            sender
+                .send(downloader::cache_image(&pd))
+                .map_err(|err| error!("Action Sender: {}", err))
+                .ok();
+        }
 
         if let Ok(mut guard) = COVER_DL_REGISTRY.write() {
-            guard.remove(&pd_.id());
+            guard.remove(&podcast_id);
         }
     });
 
@@ -274,7 +271,7 @@ pub fn set_image_from_path(
             if let Ok(path) = path {
                 if let Ok(px) = Pixbuf::new_from_file_at_scale(&path, s, s, true) {
                     if let Ok(mut hashmap) = CACHED_PIXBUFS.write() {
-                        hashmap.insert((pd.id(), size), Mutex::new(SendCell::new(px.clone())));
+                        hashmap.insert((podcast_id, size), Mutex::new(SendCell::new(px.clone())));
                         image.set_from_pixbuf(&px);
                     }
                 }

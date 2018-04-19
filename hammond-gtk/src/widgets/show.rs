@@ -115,7 +115,7 @@ impl ShowWidget {
     #[inline]
     /// Set the show cover.
     fn set_cover(&self, pd: Arc<Podcast>) -> Result<(), Error> {
-        utils::set_image_from_path(&self.cover, Arc::new(pd.into()), 128)
+        utils::set_image_from_path(&self.cover, pd.id(), 128)
     }
 
     #[inline]
