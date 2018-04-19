@@ -303,24 +303,6 @@ mod tests {
     // use hammond_data::Source;
     // use hammond_data::dbqueries;
 
-    #[test]
-    fn test_time_period_to_duration() {
-        let time = 2;
-        let week = 604800 * time;
-        let day = 86400 * time;
-        let hour = 3600 * time;
-        let minute = 60 * time;
-
-        assert_eq!(week, time_period_to_duration(time, "weeks").num_seconds());
-        assert_eq!(day, time_period_to_duration(time, "days").num_seconds());
-        assert_eq!(hour, time_period_to_duration(time, "hours").num_seconds());
-        assert_eq!(
-            minute,
-            time_period_to_duration(time, "minutes").num_seconds()
-        );
-        assert_eq!(time, time_period_to_duration(time, "seconds").num_seconds());
-    }
-
     // #[test]
     // This test inserts an rss feed to your `XDG_DATA/hammond/hammond.db` so we make it explicit
     // to run it.
