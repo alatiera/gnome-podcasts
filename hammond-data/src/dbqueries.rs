@@ -5,6 +5,7 @@ use diesel::prelude::*;
 
 use diesel;
 use diesel::dsl::exists;
+use diesel::query_builder::AsQuery;
 use diesel::select;
 
 use database::connection;
@@ -349,59 +350,31 @@ pub(crate) fn episode_exists(title_: &str, podcast_id_: i32) -> Result<bool, Dat
         .map_err(From::from)
 }
 
-/// Check `episode` table empty
+/// Check if the `episode table contains any rows
 ///
-// FIXME: Return true if `episode` table is populated.
+/// Return true if `episode` table is populated.
 pub fn is_episodes_populated() -> Result<bool, DataError> {
     use schema::episode::dsl::*;
 
     let db = connection();
     let con = db.get()?;
 
-    // FIXME
-    // select(exists(select(episode)))
-    //     .get_result(&con)
-    //     .map_err(From::from)
-
-    episode
-        .count()
+    select(exists(episode.as_query()))
         .get_result(&con)
-        // FIXME: fix the diesel querry
-        .map(|b: i64| {
-            if b == 0 {
-                false
-            } else {
-                true
-            }
-        })
         .map_err(From::from)
 }
 
-/// Check `episode` table empty
+/// Check if the `podcast` table contains any rows
 ///
-// FIXME: Return true if `episode` table is populated.
+/// Return true if `podcast table is populated.
 pub fn is_podcasts_populated() -> Result<bool, DataError> {
     use schema::podcast::dsl::*;
 
     let db = connection();
     let con = db.get()?;
 
-    // FIXME
-    // select(exists(select(podcast)))
-    //     .get_result(&con)
-    //     .map_err(From::from)
-
-    podcast
-        .count()
+    select(exists(podcast.as_query()))
         .get_result(&con)
-        // FIXME: fix the diesel querry
-        .map(|b: i64| {
-            if b == 0 {
-                false
-            } else {
-                true
-            }
-        })
         .map_err(From::from)
 }
 
