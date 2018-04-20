@@ -28,7 +28,7 @@ pub struct EpisodeWidget {
     date: DateMachine,
     duration: DurationMachine,
     title: Rc<RefCell<TitleMachine>>,
-    media: Arc<Mutex<MediaMachine>>,
+    media: Rc<RefCell<MediaMachine>>,
 }
 
 impl Default for EpisodeWidget {
@@ -66,7 +66,7 @@ impl Default for EpisodeWidget {
             separator2,
             prog_separator,
         );
-        let media_machine = Arc::new(Mutex::new(media));
+        let media_machine = Rc::new(RefCell::new(media));
 
         EpisodeWidget {
             container,
@@ -110,7 +110,7 @@ impl EpisodeWidget {
     #[inline]
     fn connect_buttons(&self, episode: Arc<Mutex<EpisodeWidgetQuery>>, sender: Sender<Action>) {
         let title = self.title.clone();
-        if let Ok(media) = self.media.lock() {
+        if let Ok(media) = self.media.try_borrow_mut() {
             media.play_connect_clicked(clone!(episode, sender => move |_| {
                 if let Ok(mut ep) = episode.lock() {
                     on_play_bttn_clicked(&mut ep, title.clone(), sender.clone())
@@ -167,7 +167,7 @@ impl EpisodeWidget {
 
 #[inline]
 fn determine_media_state(
-    media_machine: Arc<Mutex<MediaMachine>>,
+    media_machine: Rc<RefCell<MediaMachine>>,
     episode: &EpisodeWidgetQuery,
 ) -> Result<(), Error> {
     let id = episode.rowid();
@@ -179,7 +179,7 @@ fn determine_media_state(
         Ok(m.get(&id).cloned())
     }()?;
 
-    let mut lock = media_machine.lock().map_err(|err| format_err!("{}", err))?;
+    let mut lock = media_machine.try_borrow_mut()?;
     take_mut::take(lock.deref_mut(), |media| {
         media.determine_state(
             episode.length(),
@@ -196,7 +196,7 @@ fn determine_media_state(
                 m.cancel();
             }
 
-            if let Ok(mut lock) = media_machine.lock() {
+            if let Ok(mut lock) = media_machine.try_borrow_mut() {
                 take_mut::take(lock.deref_mut(), |media| {
                     media.determine_state(
                         episode.length(),
@@ -272,21 +272,21 @@ fn open_uri(rowid: i32) -> Result<(), Error> {
 #[cfg_attr(feature = "cargo-clippy", allow(if_same_then_else))]
 fn update_progressbar_callback(
     prog: Arc<Mutex<manager::Progress>>,
-    media: Arc<Mutex<MediaMachine>>,
+    media: Rc<RefCell<MediaMachine>>,
     episode_rowid: i32,
 ) {
     let callback = clone!(prog, media => move || {
         progress_bar_helper(prog.clone(), media.clone(), episode_rowid)
             .unwrap_or(glib::Continue(false))
     });
-    timeout_add(400, callback);
+    timeout_add(300, callback);
 }
 
 #[inline]
 #[allow(if_same_then_else)]
 fn progress_bar_helper(
     prog: Arc<Mutex<manager::Progress>>,
-    media: Arc<Mutex<MediaMachine>>,
+    media: Rc<RefCell<MediaMachine>>,
     episode_rowid: i32,
 ) -> Result<glib::Continue, Error> {
     let (fraction, downloaded) = {
@@ -303,8 +303,9 @@ fn progress_bar_helper(
             .file_size(SIZE_OPTS.clone())
             .map_err(|err| format_err!("{}", err))?;
 
-        let mut m = media.lock().unwrap();
-        m.update_progress(&size, fraction);
+        if let Ok(mut m) = media.try_borrow_mut() {
+            m.update_progress(&size, fraction);
+        }
     }
 
     // info!("Fraction: {}", progress_bar.get_fraction());
@@ -333,7 +334,7 @@ fn progress_bar_helper(
 #[inline]
 fn update_total_size_callback(
     prog: Arc<Mutex<manager::Progress>>,
-    media: Arc<Mutex<MediaMachine>>,
+    media: Rc<RefCell<MediaMachine>>,
 ) {
     let callback = clone!(prog, media => move || {
         total_size_helper(prog.clone(), media.clone()).unwrap_or(glib::Continue(true))
@@ -344,7 +345,7 @@ fn update_total_size_callback(
 #[inline]
 fn total_size_helper(
     prog: Arc<Mutex<manager::Progress>>,
-    media: Arc<Mutex<MediaMachine>>,
+    media: Rc<RefCell<MediaMachine>>,
 ) -> Result<glib::Continue, Error> {
     // Get the total_bytes.
     let total_bytes = {
@@ -356,7 +357,7 @@ fn total_size_helper(
     debug!("Total Size: {}", total_bytes);
     if total_bytes != 0 {
         // Update the total_size label
-        if let Ok(mut m) = media.lock() {
+        if let Ok(mut m) = media.try_borrow_mut() {
             take_mut::take(m.deref_mut(), |machine| {
                 machine.set_size(Some(total_bytes as i32))
             });
