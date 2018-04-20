@@ -119,24 +119,17 @@ pub fn get_episodes_widgets_filter_limit(
     filter_ids: &[i32],
     limit: u32,
 ) -> Result<Vec<EpisodeWidgetQuery>, DataError> {
-    use schema::episode;
+    use schema::episode::dsl::*;
     let db = connection();
     let con = db.get()?;
+    let columns = (
+        rowid, title, uri, local_uri, epoch, length, duration, played, podcast_id,
+    );
 
-    episode::table
-        .select((
-            episode::rowid,
-            episode::title,
-            episode::uri,
-            episode::local_uri,
-            episode::epoch,
-            episode::length,
-            episode::duration,
-            episode::played,
-            episode::podcast_id,
-        ))
-        .order(episode::epoch.desc())
-        .filter(episode::podcast_id.ne_all(filter_ids))
+    episode
+        .select(columns)
+        .order(epoch.desc())
+        .filter(podcast_id.ne_all(filter_ids))
         .limit(i64::from(limit))
         .load::<EpisodeWidgetQuery>(&con)
         .map_err(From::from)
@@ -190,10 +183,13 @@ pub fn get_pd_episodeswidgets(parent: &Podcast) -> Result<Vec<EpisodeWidgetQuery
     use schema::episode::dsl::*;
     let db = connection();
     let con = db.get()?;
+    let columns = (
+        rowid, title, uri, local_uri, epoch, length, duration, played, podcast_id,
+    );
 
-    episode.select((rowid, title, uri, local_uri, epoch, length, duration, played, podcast_id))
+    episode
+        .select(columns)
         .filter(podcast_id.eq(parent.id()))
-        // .group_by(epoch)
         .order(epoch.desc())
         .load::<EpisodeWidgetQuery>(&con)
         .map_err(From::from)
