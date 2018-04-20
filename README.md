@@ -2,8 +2,8 @@
 
 ## A Podcast Client for the GNOME Desktop written in Rust.
 
-[![pipeline status](https://gitlab.gnome.org/alatiera/Hammond/badges/master/pipeline.svg)](https://gitlab.gnome.org/alatiera/Hammond/commits/master)
-[![Dependency Status](https://dependencyci.com/github/alatiera/Hammond/badge)](https://dependencyci.com/github/alatiera/Hammond)
+[![pipeline status](https://gitlab.gnome.org/World/hammond/badges/master/pipeline.svg)](https://gitlab.gnome.org/World/hammond/commits/master)
+[![Dependency Status](https://dependencyci.com/github/World/hammond/badge)](https://dependencyci.com/github/World/hammond)
 
 ### Features
 
@@ -22,7 +22,7 @@ Get Builder [here](https://wiki.gnome.org/Apps/Builder/Downloads)
 ## Broken Feeds
 
 Found a feed that does not work in Hammond?
-Please [open an issue](https://gitlab.gnome.org/alatiera/Hammond/issues/new) and choose the `BrokenFeed` template so we will know and fix it!
+Please [open an issue](https://gitlab.gnome.org/World/hammond/issues/new) and choose the `BrokenFeed` template so we will know and fix it!
 
 ## Getting in Touch
 
@@ -59,7 +59,7 @@ flatpak build-bundle repo hammond org.gnome.Hammond
 ### Building from soure
 
 ```sh
-git clone https://gitlab.gnome.org/alatiera/hammond.git
+git clone https://gitlab.gnome.org/World/hammond.git
 cd hammond/
 meson --prefix=/usr build
 ninja -C build
@@ -98,11 +98,11 @@ There alot of thins yet to be done.
 
 If you want to contribute, please check the [Contributions Guidelines][contribution-guidelines].
 
-You can start by taking a look at [Issues](https://gitlab.gnome.org/alatiera/Hammond/issues) or by opening a [New issue](https://gitlab.gnome.org/alatiera/Hammond/issues/new?issue%5Bassignee_id%5D=&issue%5Bmilestone_id%5D=).
+You can start by taking a look at [Issues](https://gitlab.gnome.org/World/hammond/issues) or by opening a [New issue](https://gitlab.gnome.org/World/hammond/issues/new?issue%5Bassignee_id%5D=&issue%5Bmilestone_id%5D=).
 
 There are also some minor tasks tagged with `TODO:` and `FIXME:` in the source code.
 
-[contribution-guidelines]: https://gitlab.gnome.org/alatiera/Hammond/blob/master/CONTRIBUTING.md
+[contribution-guidelines]: https://gitlab.gnome.org/World/hammond/blob/master/CONTRIBUTING.md
 
 
 ## Overview
