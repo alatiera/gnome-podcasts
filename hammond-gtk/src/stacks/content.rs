@@ -7,6 +7,7 @@ use app::Action;
 use stacks::EpisodeStack;
 use stacks::ShowStack;
 
+use std::cell::RefCell;
 use std::rc::Rc;
 use std::sync::mpsc::Sender;
 
@@ -14,17 +15,17 @@ use std::sync::mpsc::Sender;
 pub struct Content {
     stack: gtk::Stack,
     shows: Rc<ShowStack>,
-    episodes: Rc<EpisodeStack>,
+    episodes: Rc<RefCell<EpisodeStack>>,
     sender: Sender<Action>,
 }
 
 impl Content {
     pub fn new(sender: Sender<Action>) -> Result<Content, Error> {
         let stack = gtk::Stack::new();
-        let episodes = Rc::new(EpisodeStack::new(sender.clone())?);
+        let episodes = Rc::new(RefCell::new(EpisodeStack::new(sender.clone())?));
         let shows = Rc::new(ShowStack::new(sender.clone())?);
 
-        stack.add_titled(&episodes.get_stack(), "episodes", "Episodes");
+        stack.add_titled(&episodes.borrow().get_stack(), "episodes", "Episodes");
         stack.add_titled(&shows.get_stack(), "shows", "Shows");
 
         Ok(Content {
@@ -44,6 +45,7 @@ impl Content {
     // TODO: Maybe propagate the error?
     pub fn update_episode_view(&self) {
         self.episodes
+            .borrow_mut()
             .update()
             .map_err(|err| error!("Failed to update EpisodeView: {}", err))
             .ok();

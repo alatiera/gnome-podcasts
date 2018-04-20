@@ -5,6 +5,7 @@ use gtk::prelude::*;
 
 use hammond_data::dbqueries;
 use hammond_data::EpisodeWidgetQuery;
+use send_cell::SendCell;
 
 use app::Action;
 use utils::lazy_load_full;
@@ -13,6 +14,12 @@ use widgets::EpisodeWidget;
 
 use std::rc::Rc;
 use std::sync::mpsc::Sender;
+use std::sync::Mutex;
+
+lazy_static! {
+    pub static ref EPISODES_VIEW_VALIGNMENT: Mutex<Option<SendCell<gtk::Adjustment>>> =
+        Mutex::new(None);
+}
 
 #[derive(Debug, Clone)]
 enum ListSplit {
@@ -26,7 +33,7 @@ enum ListSplit {
 #[derive(Debug, Clone)]
 pub struct EpisodesView {
     pub container: gtk::Box,
-    scrolled_window: gtk::ScrolledWindow,
+    pub scrolled_window: gtk::ScrolledWindow,
     frame_parent: gtk::Box,
     today_box: gtk::Box,
     yday_box: gtk::Box,
@@ -117,8 +124,6 @@ impl EpisodesView {
     #[inline]
     /// Set scrolled window vertical adjustment.
     fn set_vadjustment(&self) -> Result<(), Error> {
-        use stacks::EPISODES_VIEW_VALIGNMENT;
-
         let guard = EPISODES_VIEW_VALIGNMENT
             .lock()
             .map_err(|err| format_err!("Failed to lock widget align mutex: {}", err))?;
@@ -128,6 +133,20 @@ impl EpisodesView {
             sendcell
                 .try_get()
                 .map(|x| self.scrolled_window.set_vadjustment(&x));
+        }
+
+        Ok(())
+    }
+
+    #[inline]
+    /// Save the vertical scrollbar position.
+    pub fn save_alignment(&self) -> Result<(), Error> {
+        if let Ok(mut guard) = EPISODES_VIEW_VALIGNMENT.lock() {
+            let adj = self.scrolled_window
+                .get_vadjustment()
+                .ok_or_else(|| format_err!("Could not get the adjustment"))?;
+            *guard = Some(SendCell::new(adj));
+            info!("Saved episodes_view alignment.");
         }
 
         Ok(())

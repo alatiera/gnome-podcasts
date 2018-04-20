@@ -1,26 +1,21 @@
 use gtk;
 use gtk::prelude::*;
-use gtk::Cast;
 
 use failure::Error;
 use hammond_data::dbqueries::is_episodes_populated;
 use hammond_data::errors::DataError;
-use send_cell::SendCell;
 
 use app::Action;
 use views::{EmptyView, EpisodesView};
 
+use std::rc::Rc;
 use std::sync::mpsc::Sender;
-use std::sync::Mutex;
-
-lazy_static! {
-    pub static ref EPISODES_VIEW_VALIGNMENT: Mutex<Option<SendCell<gtk::Adjustment>>> =
-        Mutex::new(None);
-}
 
 #[derive(Debug, Clone)]
 pub struct EpisodeStack {
     stack: gtk::Stack,
+    empty: EmptyView,
+    episodes: Rc<EpisodesView>,
     sender: Sender<Action>,
 }
 
@@ -34,30 +29,41 @@ impl EpisodeStack {
         stack.add_named(&empty.container, "empty");
         set_stack_visible(&stack)?;
 
-        Ok(EpisodeStack { stack, sender })
+        Ok(EpisodeStack {
+            stack,
+            empty,
+            episodes,
+            sender,
+        })
     }
 
-    // Look into refactoring to a state-machine.
-    pub fn update(&self) -> Result<(), Error> {
-        let old = self.stack
-            .get_child_by_name("episodes")
-            .ok_or_else(|| format_err!("Faild to get \"episodes\" child from the stack."))?
-            .downcast::<gtk::Box>()
-            .map_err(|_| format_err!("Failed to downcast stack child to a Box."))?;
-        debug!("Name: {:?}", WidgetExt::get_name(&old));
-
+    pub fn update(&mut self) -> Result<(), Error> {
         // Copy the vertical scrollbar adjustment from the old view.
-        save_alignment(&old)
+        self.episodes
+            .save_alignment()
             .map_err(|err| error!("Failed to set episodes_view allignment: {}", err))
             .ok();
 
+        self.replace_view()?;
+        set_stack_visible(&self.stack)?;
+        Ok(())
+    }
+
+    fn replace_view(&mut self) -> Result<(), Error> {
+        // Get the container of the view
+        let old = self.episodes.container.clone();
         let eps = EpisodesView::new(self.sender.clone())?;
 
+        // Remove the old widget and add the new one
         self.stack.remove(&old);
         self.stack.add_named(&eps.container, "episodes");
-        set_stack_visible(&self.stack)?;
 
+        // replace view in the struct too
+        self.episodes = eps;
+
+        // This might not be needed
         old.destroy();
+
         Ok(())
     }
 
@@ -73,28 +79,6 @@ fn set_stack_visible(stack: &gtk::Stack) -> Result<(), DataError> {
     } else {
         stack.set_visible_child_name("empty");
     };
-
-    Ok(())
-}
-
-// ATTENTION: EXPECTS THE EPISODE_VIEW WIDGET CONTAINER
-fn save_alignment(old_widget: &gtk::Box) -> Result<(), Error> {
-    let scrolled_window = old_widget
-        .get_children()
-        .first()
-        .ok_or_else(|| format_err!("Box container has no childs."))?
-        .clone()
-        .downcast::<gtk::ScrolledWindow>()
-        .map_err(|_| format_err!("Failed to downcast stack child to a ScrolledWindow."))?;
-    debug!("Name: {:?}", WidgetExt::get_name(&scrolled_window));
-
-    if let Ok(mut guard) = EPISODES_VIEW_VALIGNMENT.lock() {
-        let adj = scrolled_window
-            .get_vadjustment()
-            .ok_or_else(|| format_err!("Could not get the adjustment"))?;
-        *guard = Some(SendCell::new(adj));
-        info!("Saved episodes_view alignment.");
-    }
 
     Ok(())
 }
