@@ -115,6 +115,7 @@ Tobias Bernard
                                     <property name="label">This is embarrasing!
 Sorry, we could not find a description for this Show.</property>
                                     <property name="use_markup">True</property>
+                                    <property name="justify">center</property>
                                     <property name="wrap">True</property>
                                   </object>
                                 </child>
