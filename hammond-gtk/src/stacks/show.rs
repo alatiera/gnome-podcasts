@@ -1,6 +1,5 @@
 use gtk;
 use gtk::prelude::*;
-use gtk::Cast;
 
 use failure::Error;
 
@@ -20,7 +19,7 @@ use std::sync::Arc;
 #[derive(Debug, Clone)]
 pub struct ShowStack {
     stack: gtk::Stack,
-    podcasts: ShowsPopulated,
+    podcasts: Rc<ShowsPopulated>,
     show: Rc<ShowWidget>,
     empty: EmptyView,
     sender: Sender<Action>,
@@ -55,26 +54,18 @@ impl ShowStack {
     //     self.update_podcasts();
     // }
 
-    pub fn update_podcasts(&self) -> Result<(), Error> {
+    pub fn update_podcasts(&mut self) -> Result<(), Error> {
         let vis = self.stack
             .get_visible_child_name()
             .ok_or_else(|| format_err!("Failed to get visible child name."))?;
 
-        let old = self.stack
-            .get_child_by_name("podcasts")
-            .ok_or_else(|| format_err!("Faild to get \"podcasts\" child from the stack."))?
-            .downcast::<gtk::Box>()
-            .map_err(|_| format_err!("Failed to downcast stack child to a Box."))?;
-        debug!("Name: {:?}", WidgetExt::get_name(&old));
+        let old = &self.podcasts.container.clone();
+        debug!("Name: {:?}", WidgetExt::get_name(old));
 
         let pop = ShowsPopulated::new(self.sender.clone())?;
-        // Copy the vertical scrollbar adjustment from the old view into the new one.
-        // scrolled_window
-        //     .get_vadjustment()
-        //     .map(|x| pop.set_vadjustment(&x));
-
-        self.stack.remove(&old);
-        self.stack.add_named(&pop.container, "podcasts");
+        self.podcasts = pop;
+        self.stack.remove(old);
+        self.stack.add_named(&self.podcasts.container, "podcasts");
 
         if !dbqueries::is_podcasts_populated()? {
             self.stack.set_visible_child_name("empty");
@@ -108,10 +99,9 @@ impl ShowStack {
             WidgetExt::get_name(&new.container)
         );
 
-        let root = new.container.clone();
         self.show = new;
         self.stack.remove(&old);
-        self.stack.add_named(&root, "widget");
+        self.stack.add_named(&self.show.container, "widget");
         Ok(())
     }
 

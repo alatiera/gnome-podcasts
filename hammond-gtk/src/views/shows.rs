@@ -8,6 +8,7 @@ use hammond_data::Podcast;
 use app::Action;
 use utils::{get_ignored_shows, lazy_load, set_image_from_path};
 
+use std::rc::Rc;
 use std::sync::mpsc::Sender;
 use std::sync::Arc;
 
@@ -36,8 +37,8 @@ impl Default for ShowsPopulated {
 
 impl ShowsPopulated {
     #[inline]
-    pub fn new(sender: Sender<Action>) -> Result<ShowsPopulated, Error> {
-        let pop = ShowsPopulated::default();
+    pub fn new(sender: Sender<Action>) -> Result<Rc<ShowsPopulated>, Error> {
+        let pop = Rc::new(ShowsPopulated::default());
         pop.init(sender)?;
         Ok(pop)
     }
