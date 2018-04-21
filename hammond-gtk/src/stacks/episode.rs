@@ -51,11 +51,11 @@ impl EpisodeStack {
 
     fn replace_view(&mut self) -> Result<(), Error> {
         // Get the container of the view
-        let old = self.episodes.container.clone();
+        let old = &self.episodes.container.clone();
         let eps = EpisodesView::new(self.sender.clone())?;
 
         // Remove the old widget and add the new one
-        self.stack.remove(&old);
+        self.stack.remove(old);
         self.stack.add_named(&eps.container, "episodes");
 
         // replace view in the struct too

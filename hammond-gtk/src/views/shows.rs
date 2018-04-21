@@ -67,12 +67,6 @@ impl ShowsPopulated {
 
         Ok(())
     }
-
-    #[inline]
-    /// Set scrolled window vertical adjustment.
-    pub fn set_vadjustment(&self, vadjustment: &gtk::Adjustment) {
-        self.scrolled_window.set_vadjustment(vadjustment)
-    }
 }
 
 #[inline]

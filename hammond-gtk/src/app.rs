@@ -24,8 +24,6 @@ pub enum Action {
     RefreshEpisodesView,
     RefreshEpisodesViewBGR,
     RefreshShowsView,
-    RefreshWidget,
-    RefreshWidgetIfVis,
     ReplaceWidget(Arc<Podcast>),
     RefreshWidgetIfSame(i32),
     ShowWidgetAnimated,
@@ -36,7 +34,6 @@ pub enum Action {
     HeaderBarHideUpdateIndicator,
     MarkAllPlayerNotification(Arc<Podcast>),
     RemoveShow(Arc<Podcast>),
-    SetShowWidgetAlignment(Arc<Podcast>),
 }
 
 #[derive(Debug)]
@@ -170,21 +167,26 @@ impl App {
             match receiver.try_recv() {
                 Ok(Action::RefreshAllViews) => content.update(),
                 Ok(Action::RefreshShowsView) => content.update_shows_view(),
-                Ok(Action::RefreshWidget) => content.update_widget(),
-                Ok(Action::RefreshWidgetIfVis) => content.update_widget_if_visible(),
                 Ok(Action::RefreshWidgetIfSame(id)) => content.update_widget_if_same(id),
                 Ok(Action::RefreshEpisodesView) => content.update_episode_view(),
                 Ok(Action::RefreshEpisodesViewBGR) => content.update_episode_view_if_baground(),
                 Ok(Action::ReplaceWidget(pd)) => {
-                    content
-                        .get_shows()
+                    let mut shows = content.get_shows();
+                    shows
+                        .borrow_mut()
                         .replace_widget(pd.clone())
                         .map_err(|err| error!("Failed to update ShowWidget: {}", err))
                         .map_err(|_| error!("Failed ot update ShowWidget {}", pd.title()))
                         .ok();
                 }
-                Ok(Action::ShowWidgetAnimated) => content.get_shows().switch_widget_animated(),
-                Ok(Action::ShowShowsAnimated) => content.get_shows().switch_podcasts_animated(),
+                Ok(Action::ShowWidgetAnimated) => {
+                    let mut shows = content.get_shows();
+                    shows.borrow().switch_widget_animated();
+                }
+                Ok(Action::ShowShowsAnimated) => {
+                    let mut shows = content.get_shows();
+                    shows.borrow().switch_podcasts_animated();
+                }
                 Ok(Action::HeaderBarShowTile(title)) => headerbar.switch_to_back(&title),
                 Ok(Action::HeaderBarNormal) => headerbar.switch_to_normal(),
                 Ok(Action::HeaderBarShowUpdateIndicator) => headerbar.show_update_notification(),
@@ -196,13 +198,6 @@ impl App {
                 Ok(Action::RemoveShow(pd)) => {
                     let notif = remove_show_notif(pd, sender.clone());
                     notif.show(&overlay);
-                }
-                Ok(Action::SetShowWidgetAlignment(pd)) => {
-                    content
-                        .get_shows()
-                        .set_widget_scroll_alignment(pd)
-                        .map_err(|err| error!("Failed to set ShowWidget alignment: {}", err))
-                        .ok();
                 }
                 Err(_) => (),
             }

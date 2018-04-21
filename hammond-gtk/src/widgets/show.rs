@@ -6,6 +6,7 @@ use failure::Error;
 use html2pango::markup_from_raw;
 use open;
 use rayon;
+use send_cell::SendCell;
 
 use hammond_data::dbqueries;
 use hammond_data::utils::delete_show;
@@ -16,8 +17,14 @@ use appnotif::InAppNotification;
 use utils::{self, lazy_load};
 use widgets::EpisodeWidget;
 
+use std::rc::Rc;
 use std::sync::mpsc::{SendError, Sender};
-use std::sync::Arc;
+use std::sync::{Arc, Mutex};
+
+lazy_static! {
+    static ref SHOW_WIDGET_VALIGNMENT: Mutex<Option<(i32, SendCell<gtk::Adjustment>)>> =
+        Mutex::new(None);
+}
 
 #[derive(Debug, Clone)]
 pub struct ShowWidget {
@@ -60,9 +67,12 @@ impl Default for ShowWidget {
 
 impl ShowWidget {
     #[inline]
-    pub fn new(pd: Arc<Podcast>, sender: Sender<Action>) -> ShowWidget {
-        let pdw = ShowWidget::default();
-        pdw.init(pd, sender);
+    pub fn new(pd: Arc<Podcast>, sender: Sender<Action>) -> Rc<ShowWidget> {
+        let pdw = Rc::new(ShowWidget::default());
+        pdw.init(pd.clone(), sender.clone());
+        populate_listbox(&pdw, pd, sender)
+            .map_err(|err| error!("Failed to populate the listbox: {}", err))
+            .ok();
         pdw
     }
 
@@ -79,10 +89,6 @@ impl ShowWidget {
         }));
 
         self.set_description(pd.description());
-
-        self.populate_listbox(pd.clone(), sender.clone())
-            .map_err(|err| error!("Failed to populate the listbox: {}", err))
-            .ok();
 
         self.set_cover(pd.clone())
             .map_err(|err| error!("Failed to set a cover: {}", err))
@@ -125,59 +131,98 @@ impl ShowWidget {
     }
 
     #[inline]
-    /// Set scrolled window vertical adjustment.
-    pub fn set_vadjustment(&self, vadjustment: &gtk::Adjustment) {
-        self.scrolled_window.set_vadjustment(vadjustment)
-    }
-
-    #[inline]
-    /// Populate the listbox with the shows episodes.
-    fn populate_listbox(&self, pd: Arc<Podcast>, sender: Sender<Action>) -> Result<(), Error> {
-        use crossbeam_channel::bounded;
-        use crossbeam_channel::TryRecvError::*;
-
-        let count = dbqueries::get_pd_episodes_count(&pd)?;
-
-        let (sender_, receiver) = bounded(1);
-        rayon::spawn(clone!(pd => move || {
-            let episodes = dbqueries::get_pd_episodeswidgets(&pd).unwrap();
-            // The receiver can be dropped if there's an early return
-            // like on show without episodes for example.
-            sender_.send(episodes).ok();
-        }));
-
-        if count == 0 {
-            let builder = gtk::Builder::new_from_resource("/org/gnome/hammond/gtk/empty_show.ui");
-            let container: gtk::Box = builder.get_object("empty_show").unwrap();
-            self.episodes.add(&container);
-            return Ok(());
+    /// Save the scrollabar vajustment to the cache.
+    pub fn save_vadjustment(&self, oldid: i32) -> Result<(), Error> {
+        if let Ok(mut guard) = SHOW_WIDGET_VALIGNMENT.lock() {
+            let adj = self.scrolled_window
+                .get_vadjustment()
+                .ok_or_else(|| format_err!("Could not get the adjustment"))?;
+            *guard = Some((oldid, SendCell::new(adj)));
+            debug!("Widget Alignment was saved with ID: {}.", oldid);
         }
-
-        let list = self.episodes.clone();
-        gtk::idle_add(move || {
-            let episodes = match receiver.try_recv() {
-                Ok(e) => e,
-                Err(Empty) => return glib::Continue(true),
-                Err(Disconnected) => return glib::Continue(false),
-            };
-
-            let constructor = clone!(sender => move |ep| {
-                EpisodeWidget::new(ep, sender.clone()).container
-            });
-
-            let callback = clone!(pd, sender => move || {
-                sender.send(Action::SetShowWidgetAlignment(pd.clone()))
-                    .map_err(|err| error!("Action Sender: {}", err))
-                    .ok();
-            });
-
-            lazy_load(episodes, list.clone(), constructor, callback);
-
-            glib::Continue(false)
-        });
 
         Ok(())
     }
+
+    #[inline]
+    /// Set scrolled window vertical adjustment.
+    fn set_vadjustment(&self, pd: Arc<Podcast>) -> Result<(), Error> {
+        let guard = SHOW_WIDGET_VALIGNMENT
+            .lock()
+            .map_err(|err| format_err!("Failed to lock widget align mutex: {}", err))?;
+
+        if let Some((oldid, ref sendcell)) = *guard {
+            // Only copy the old scrollbar if both widget's represent the same podcast.
+            debug!("PID: {}", pd.id());
+            debug!("OLDID: {}", oldid);
+            if pd.id() != oldid {
+                debug!("Early return");
+                return Ok(());
+            };
+
+            // Copy the vertical scrollbar adjustment from the old view into the new one.
+            sendcell
+                .try_get()
+                .map(|x| self.scrolled_window.set_vadjustment(&x));
+        }
+
+        Ok(())
+    }
+}
+
+#[inline]
+/// Populate the listbox with the shows episodes.
+fn populate_listbox(
+    show: &Rc<ShowWidget>,
+    pd: Arc<Podcast>,
+    sender: Sender<Action>,
+) -> Result<(), Error> {
+    use crossbeam_channel::bounded;
+    use crossbeam_channel::TryRecvError::*;
+
+    let count = dbqueries::get_pd_episodes_count(&pd)?;
+
+    let (sender_, receiver) = bounded(1);
+    rayon::spawn(clone!(pd => move || {
+        let episodes = dbqueries::get_pd_episodeswidgets(&pd).unwrap();
+        // The receiver can be dropped if there's an early return
+        // like on show without episodes for example.
+        sender_.send(episodes).ok();
+    }));
+
+    if count == 0 {
+        let builder = gtk::Builder::new_from_resource("/org/gnome/hammond/gtk/empty_show.ui");
+        let container: gtk::Box = builder.get_object("empty_show").unwrap();
+        show.episodes.add(&container);
+        return Ok(());
+    }
+
+    let show_ = show.clone();
+    gtk::idle_add(move || {
+        let episodes = match receiver.try_recv() {
+            Ok(e) => e,
+            Err(Empty) => return glib::Continue(true),
+            Err(Disconnected) => return glib::Continue(false),
+        };
+
+        let list = show_.episodes.clone();
+
+        let constructor = clone!(sender => move |ep| {
+            EpisodeWidget::new(ep, sender.clone()).container
+        });
+
+        let callback = clone!(pd, show_ => move || {
+            show_.set_vadjustment(pd.clone())
+                .map_err(|err| error!("Failed to set ShowWidget Alignment: {}", err))
+                .ok();
+        });
+
+        lazy_load(episodes, list.clone(), constructor, callback);
+
+        glib::Continue(false)
+    });
+
+    Ok(())
 }
 
 #[inline]

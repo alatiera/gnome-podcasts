@@ -67,18 +67,18 @@ macro_rules! clone {
 
 // They do not need to be public
 // But it helps when looking at the generated docs.
-pub mod stacks;
-pub mod views;
-pub mod widgets;
+mod stacks;
+mod views;
+mod widgets;
 
-pub mod app;
-pub mod headerbar;
+mod app;
+mod headerbar;
 
-pub mod appnotif;
-pub mod manager;
-pub mod settings;
-pub mod static_resource;
-pub mod utils;
+mod appnotif;
+mod manager;
+mod settings;
+mod static_resource;
+mod utils;
 
 use app::App;
 
