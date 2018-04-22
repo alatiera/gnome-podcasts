@@ -65,8 +65,6 @@ macro_rules! clone {
     );
 }
 
-// They do not need to be public
-// But it helps when looking at the generated docs.
 mod stacks;
 mod views;
 mod widgets;

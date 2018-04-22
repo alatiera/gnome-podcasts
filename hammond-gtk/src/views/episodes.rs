@@ -33,7 +33,7 @@ enum ListSplit {
 #[derive(Debug, Clone)]
 pub struct EpisodesView {
     pub container: gtk::Box,
-    pub scrolled_window: gtk::ScrolledWindow,
+    scrolled_window: gtk::ScrolledWindow,
     frame_parent: gtk::Box,
     today_box: gtk::Box,
     yday_box: gtk::Box,
