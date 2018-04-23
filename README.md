@@ -53,7 +53,13 @@ flatpak --user install gnome-nightly org.gnome.Sdk org.gnome.Platform
 # Install the required rust-stable extension from flathub
 flatpak --user install flathub org.freedesktop.Sdk.Extension.rust-stable
 flatpak-builder --user --repo=repo hammond org.gnome.Hammond.json --force-clean
-flatpak build-bundle repo hammond org.gnome.Hammond
+```
+
+To install the resulting flatpak you can do:
+
+```bash
+flatpak build-bundle repo hammond.flatpak org.gnome.Hammond
+flatpak install --user --bundle hammond.flatpak
 ```
 
 ### Building from soure
