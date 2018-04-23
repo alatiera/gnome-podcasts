@@ -66,7 +66,6 @@ macro_rules! clone {
 }
 
 mod stacks;
-mod views;
 mod widgets;
 
 mod app;

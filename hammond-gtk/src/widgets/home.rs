@@ -31,7 +31,7 @@ enum ListSplit {
 }
 
 #[derive(Debug, Clone)]
-pub struct EpisodesView {
+pub struct HomeView {
     pub container: gtk::Box,
     scrolled_window: gtk::ScrolledWindow,
     frame_parent: gtk::Box,
@@ -47,7 +47,7 @@ pub struct EpisodesView {
     rest_list: gtk::ListBox,
 }
 
-impl Default for EpisodesView {
+impl Default for HomeView {
     #[inline]
     fn default() -> Self {
         let builder = gtk::Builder::new_from_resource("/org/gnome/hammond/gtk/episodes_view.ui");
@@ -65,7 +65,7 @@ impl Default for EpisodesView {
         let month_list: gtk::ListBox = builder.get_object("month_list").unwrap();
         let rest_list: gtk::ListBox = builder.get_object("rest_list").unwrap();
 
-        EpisodesView {
+        HomeView {
             container,
             scrolled_window,
             frame_parent,
@@ -84,12 +84,12 @@ impl Default for EpisodesView {
 }
 
 // TODO: REFACTOR ME
-impl EpisodesView {
+impl HomeView {
     #[inline]
-    pub fn new(sender: Sender<Action>) -> Result<Rc<EpisodesView>, Error> {
+    pub fn new(sender: Sender<Action>) -> Result<Rc<HomeView>, Error> {
         use self::ListSplit::*;
 
-        let view = Rc::new(EpisodesView::default());
+        let view = Rc::new(HomeView::default());
         let ignore = get_ignored_shows()?;
         let episodes = dbqueries::get_episodes_widgets_filter_limit(&ignore, 100)?;
         let now_utc = Utc::now();

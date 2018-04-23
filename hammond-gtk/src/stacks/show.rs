@@ -7,10 +7,8 @@ use hammond_data::dbqueries;
 use hammond_data::errors::DataError;
 use hammond_data::Podcast;
 
-use views::{EmptyView, ShowsPopulated};
-
 use app::Action;
-use widgets::ShowWidget;
+use widgets::{EmptyView, ShowWidget, ShowsPopulated};
 
 use std::rc::Rc;
 use std::sync::mpsc::Sender;

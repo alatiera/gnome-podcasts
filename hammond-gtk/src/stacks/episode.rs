@@ -6,7 +6,7 @@ use hammond_data::dbqueries::is_episodes_populated;
 use hammond_data::errors::DataError;
 
 use app::Action;
-use views::{EmptyView, EpisodesView};
+use widgets::{EmptyView, HomeView};
 
 use std::rc::Rc;
 use std::sync::mpsc::Sender;
@@ -15,13 +15,13 @@ use std::sync::mpsc::Sender;
 pub struct EpisodeStack {
     stack: gtk::Stack,
     empty: EmptyView,
-    episodes: Rc<EpisodesView>,
+    episodes: Rc<HomeView>,
     sender: Sender<Action>,
 }
 
 impl EpisodeStack {
     pub fn new(sender: Sender<Action>) -> Result<EpisodeStack, Error> {
-        let episodes = EpisodesView::new(sender.clone())?;
+        let episodes = HomeView::new(sender.clone())?;
         let empty = EmptyView::new();
         let stack = gtk::Stack::new();
 
@@ -52,7 +52,7 @@ impl EpisodeStack {
     fn replace_view(&mut self) -> Result<(), Error> {
         // Get the container of the view
         let old = &self.episodes.container.clone();
-        let eps = EpisodesView::new(self.sender.clone())?;
+        let eps = HomeView::new(self.sender.clone())?;
 
         // Remove the old widget and add the new one
         self.stack.remove(old);
