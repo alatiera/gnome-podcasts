@@ -12,10 +12,17 @@ use std::rc::Rc;
 use std::sync::mpsc::Sender;
 
 #[derive(Debug, Clone)]
+enum State {
+    Home,
+    Empty,
+}
+
+#[derive(Debug, Clone)]
 pub struct HomeStack {
-    stack: gtk::Stack,
     empty: EmptyView,
     episodes: Rc<HomeView>,
+    stack: gtk::Stack,
+    state: State,
     sender: Sender<Action>,
 }
 
@@ -24,17 +31,25 @@ impl HomeStack {
         let episodes = HomeView::new(sender.clone())?;
         let empty = EmptyView::new();
         let stack = gtk::Stack::new();
+        let state = State::Empty;
 
-        stack.add_named(&episodes.container, "episodes");
+        stack.add_named(&episodes.container, "home");
         stack.add_named(&empty.container, "empty");
-        set_stack_visible(&stack)?;
 
-        Ok(HomeStack {
-            stack,
+        let mut home = HomeStack {
             empty,
             episodes,
+            stack,
+            state,
             sender,
-        })
+        };
+
+        home.determine_state()?;
+        Ok(home)
+    }
+
+    pub fn get_stack(&self) -> gtk::Stack {
+        self.stack.clone()
     }
 
     pub fn update(&mut self) -> Result<(), Error> {
@@ -45,8 +60,7 @@ impl HomeStack {
             .ok();
 
         self.replace_view()?;
-        set_stack_visible(&self.stack)?;
-        Ok(())
+        self.determine_state().map_err(From::from)
     }
 
     fn replace_view(&mut self) -> Result<(), Error> {
@@ -56,7 +70,7 @@ impl HomeStack {
 
         // Remove the old widget and add the new one
         self.stack.remove(old);
-        self.stack.add_named(&eps.container, "episodes");
+        self.stack.add_named(&eps.container, "home");
 
         // replace view in the struct too
         self.episodes = eps;
@@ -67,18 +81,30 @@ impl HomeStack {
         Ok(())
     }
 
-    pub fn get_stack(&self) -> gtk::Stack {
-        self.stack.clone()
+    #[inline]
+    fn switch_visible(&mut self, s: State) {
+        use self::State::*;
+
+        match s {
+            Home => {
+                self.stack.set_visible_child_name("home");
+                self.state = Home;
+            }
+            Empty => {
+                self.stack.set_visible_child_name("empty");
+                self.state = Empty;
+            }
+        }
     }
-}
 
-#[inline]
-fn set_stack_visible(stack: &gtk::Stack) -> Result<(), DataError> {
-    if is_episodes_populated()? {
-        stack.set_visible_child_name("episodes");
-    } else {
-        stack.set_visible_child_name("empty");
-    };
+    #[inline]
+    fn determine_state(&mut self) -> Result<(), DataError> {
+        if is_episodes_populated()? {
+            self.switch_visible(State::Home);
+        } else {
+            self.switch_visible(State::Empty);
+        };
 
-    Ok(())
+        Ok(())
+    }
 }
