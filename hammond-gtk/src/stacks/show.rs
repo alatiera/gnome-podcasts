@@ -115,9 +115,9 @@ impl ShowStack {
         Ok(())
     }
 
-    // Only update widget if it's podcast_id is equal to pid.
+    // Only update widget if its podcast_id is equal to pid.
     pub fn update_widget_if_same(&mut self, pid: i32) -> Result<(), Error> {
-        if self.show.podcast_id() == Some(pid) {
+        if self.show.podcast_id() != Some(pid) {
             debug!("Different widget. Early return");
             return Ok(());
         }
