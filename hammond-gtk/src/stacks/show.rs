@@ -4,43 +4,45 @@ use gtk::prelude::*;
 use failure::Error;
 
 use hammond_data::dbqueries;
-use hammond_data::errors::DataError;
 use hammond_data::Podcast;
 
 use app::Action;
-use widgets::{EmptyView, ShowWidget, ShowsPopulated};
+use widgets::{ShowWidget, ShowsPopulated};
 
 use std::rc::Rc;
 use std::sync::mpsc::Sender;
 use std::sync::Arc;
 
 #[derive(Debug, Clone)]
+pub enum ShowState {
+    ShowsView,
+    ShowWidget,
+}
+
+#[derive(Debug, Clone)]
 pub struct ShowStack {
-    stack: gtk::Stack,
-    podcasts: Rc<ShowsPopulated>,
+    populated: Rc<ShowsPopulated>,
     show: Rc<ShowWidget>,
-    empty: EmptyView,
+    stack: gtk::Stack,
+    state: ShowState,
     sender: Sender<Action>,
 }
 
 impl ShowStack {
     pub fn new(sender: Sender<Action>) -> Result<ShowStack, Error> {
         let stack = gtk::Stack::new();
-
-        let podcasts = ShowsPopulated::new(sender.clone())?;
+        let state = ShowState::ShowsView;
+        let populated = ShowsPopulated::new(sender.clone())?;
         let show = Rc::new(ShowWidget::default());
-        let empty = EmptyView::new();
 
-        stack.add_named(&podcasts.container, "podcasts");
+        stack.add_named(&populated.container, "shows");
         stack.add_named(&show.container, "widget");
-        stack.add_named(&empty.container, "empty");
-        set_stack_visible(&stack)?;
 
         let show = ShowStack {
             stack,
-            podcasts,
+            populated,
             show,
-            empty,
+            state,
             sender,
         };
 
@@ -52,26 +54,20 @@ impl ShowStack {
     //     self.update_podcasts();
     // }
 
-    pub fn update_podcasts(&mut self) -> Result<(), Error> {
-        let vis = self.stack
-            .get_visible_child_name()
-            .ok_or_else(|| format_err!("Failed to get visible child name."))?;
-
-        let old = &self.podcasts.container.clone();
+    pub fn update_shows(&mut self) -> Result<(), Error> {
+        let old = &self.populated.container.clone();
         debug!("Name: {:?}", WidgetExt::get_name(old));
 
         let pop = ShowsPopulated::new(self.sender.clone())?;
-        self.podcasts = pop;
+        self.populated = pop;
         self.stack.remove(old);
-        self.stack.add_named(&self.podcasts.container, "podcasts");
+        self.stack.add_named(&self.populated.container, "shows");
 
-        if !dbqueries::is_podcasts_populated()? {
-            self.stack.set_visible_child_name("empty");
-        } else if vis != "empty" {
-            self.stack.set_visible_child_name(&vis);
-        } else {
-            self.stack.set_visible_child_name("podcasts");
-        }
+        // The current visible child might change depending on
+        // removal and insertion in the gtk::Stack, so we have
+        // to make sure it will stay the same.
+        let s = self.state.clone();
+        self.switch_visible(s);
 
         old.destroy();
         Ok(())
@@ -104,10 +100,6 @@ impl ShowStack {
     }
 
     pub fn update_widget(&mut self) -> Result<(), Error> {
-        let vis = self.stack
-            .get_visible_child_name()
-            .ok_or_else(|| format_err!("Failed to get visible child name."))?;
-
         let old = self.show.container.clone();
         let id = WidgetExt::get_name(&old);
         if id == Some("GtkBox".to_string()) || id.is_none() {
@@ -117,7 +109,13 @@ impl ShowStack {
         let id = id.ok_or_else(|| format_err!("Failed to get widget's name."))?;
         let pd = dbqueries::get_podcast_from_id(id.parse::<i32>()?)?;
         self.replace_widget(Arc::new(pd))?;
-        self.stack.set_visible_child_name(&vis);
+
+        // The current visible child might change depending on
+        // removal and insertion in the gtk::Stack, so we have
+        // to make sure it will stay the same.
+        let s = self.state.clone();
+        self.switch_visible(s);
+
         old.destroy();
         Ok(())
     }
@@ -134,28 +132,25 @@ impl ShowStack {
         self.update_widget()
     }
 
-    pub fn switch_podcasts_animated(&self) {
-        self.stack
-            .set_visible_child_full("podcasts", gtk::StackTransitionType::SlideRight);
-    }
-
-    pub fn switch_widget_animated(&self) {
-        self.stack
-            .set_visible_child_full("widget", gtk::StackTransitionType::SlideLeft)
-    }
-
     pub fn get_stack(&self) -> gtk::Stack {
         self.stack.clone()
     }
-}
 
-#[inline]
-fn set_stack_visible(stack: &gtk::Stack) -> Result<(), DataError> {
-    if dbqueries::is_podcasts_populated()? {
-        stack.set_visible_child_name("podcasts")
-    } else {
-        stack.set_visible_child_name("empty")
+    #[inline]
+    pub fn switch_visible(&mut self, state: ShowState) {
+        use self::ShowState::*;
+
+        match state {
+            ShowsView => {
+                self.stack
+                    .set_visible_child_full("shows", gtk::StackTransitionType::SlideRight);
+                self.state = ShowsView;
+            }
+            ShowWidget => {
+                self.stack
+                    .set_visible_child_full("widget", gtk::StackTransitionType::SlideLeft);
+                self.state = ShowWidget;
+            }
+        }
     }
-
-    Ok(())
 }

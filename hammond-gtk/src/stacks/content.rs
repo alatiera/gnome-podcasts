@@ -58,7 +58,7 @@ impl Content {
     pub fn update_shows_view(&self) {
         self.shows
             .borrow_mut()
-            .update_podcasts()
+            .update_shows()
             .map_err(|err| error!("Failed to update ShowsView: {}", err))
             .ok();
     }

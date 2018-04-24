@@ -10,7 +10,7 @@ use hammond_data::Podcast;
 
 use headerbar::Header;
 use settings::{self, WindowGeometry};
-use stacks::Content;
+use stacks::{Content, ShowState};
 use utils;
 use widgets::{mark_all_notif, remove_show_notif};
 
@@ -181,11 +181,11 @@ impl App {
                 }
                 Ok(Action::ShowWidgetAnimated) => {
                     let mut shows = content.get_shows();
-                    shows.borrow().switch_widget_animated();
+                    shows.borrow_mut().switch_visible(ShowState::ShowWidget);
                 }
                 Ok(Action::ShowShowsAnimated) => {
                     let mut shows = content.get_shows();
-                    shows.borrow().switch_podcasts_animated();
+                    shows.borrow_mut().switch_visible(ShowState::ShowsView);
                 }
                 Ok(Action::HeaderBarShowTile(title)) => headerbar.switch_to_back(&title),
                 Ok(Action::HeaderBarNormal) => headerbar.switch_to_normal(),
