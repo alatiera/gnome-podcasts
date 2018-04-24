@@ -14,45 +14,44 @@ use std::sync::mpsc::Sender;
 pub struct Content {
     stack: gtk::Stack,
     shows: Rc<RefCell<ShowStack>>,
-    episodes: Rc<RefCell<HomeStack>>,
+    home: Rc<RefCell<HomeStack>>,
     sender: Sender<Action>,
 }
 
 impl Content {
     pub fn new(sender: Sender<Action>) -> Result<Content, Error> {
         let stack = gtk::Stack::new();
-        let episodes = Rc::new(RefCell::new(HomeStack::new(sender.clone())?));
+        let home = Rc::new(RefCell::new(HomeStack::new(sender.clone())?));
         let shows = Rc::new(RefCell::new(ShowStack::new(sender.clone())?));
 
-        stack.add_titled(&episodes.borrow().get_stack(), "episodes", "Episodes");
+        stack.add_titled(&home.borrow().get_stack(), "home", "Recent Episodes");
         stack.add_titled(&shows.borrow().get_stack(), "shows", "Shows");
 
         Ok(Content {
             stack,
             shows,
-            episodes,
+            home,
             sender,
         })
     }
 
     pub fn update(&self) {
-        self.update_episode_view();
+        self.update_home();
         self.update_shows_view();
         self.update_widget()
     }
 
-    // TODO: Maybe propagate the error?
-    pub fn update_episode_view(&self) {
-        self.episodes
+    pub fn update_home(&self) {
+        self.home
             .borrow_mut()
             .update()
             .map_err(|err| error!("Failed to update EpisodeView: {}", err))
             .ok();
     }
 
-    pub fn update_episode_view_if_baground(&self) {
-        if self.stack.get_visible_child_name() != Some("episodes".into()) {
-            self.update_episode_view();
+    pub fn update_home_if_background(&self) {
+        if self.stack.get_visible_child_name() != Some("home".into()) {
+            self.update_home();
         }
     }
 

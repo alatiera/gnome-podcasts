@@ -168,8 +168,8 @@ impl App {
                 Ok(Action::RefreshAllViews) => content.update(),
                 Ok(Action::RefreshShowsView) => content.update_shows_view(),
                 Ok(Action::RefreshWidgetIfSame(id)) => content.update_widget_if_same(id),
-                Ok(Action::RefreshEpisodesView) => content.update_episode_view(),
-                Ok(Action::RefreshEpisodesViewBGR) => content.update_episode_view_if_baground(),
+                Ok(Action::RefreshEpisodesView) => content.update_home(),
+                Ok(Action::RefreshEpisodesViewBGR) => content.update_home_if_background(),
                 Ok(Action::ReplaceWidget(pd)) => {
                     let mut shows = content.get_shows();
                     shows
