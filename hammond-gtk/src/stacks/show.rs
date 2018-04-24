@@ -76,38 +76,33 @@ impl ShowStack {
     pub fn replace_widget(&mut self, pd: Arc<Podcast>) -> Result<(), Error> {
         let old = self.show.container.clone();
 
-        let oldname = WidgetExt::get_name(&old);
-        debug!("Name: {:?}", oldname);
-        oldname
-            .clone()
-            .and_then(|id| id.parse().ok())
+        // save the ShowWidget vertical scrollabar alignment
+        self.show
+            .podcast_id()
             .map(|id| self.show.save_vadjustment(id));
 
         let new = ShowWidget::new(pd, self.sender.clone());
-        // Each composite ShowWidget is a gtkBox with the Podcast.id encoded in the
-        // gtk::Widget name. It's a hack since we can't yet subclass GObject
-        // easily.
-        debug!(
-            "Old widget Name: {:?}\nNew widget Name: {:?}",
-            oldname,
-            WidgetExt::get_name(&new.container)
-        );
-
         self.show = new;
         self.stack.remove(&old);
         self.stack.add_named(&self.show.container, "widget");
+
+        // The current visible child might change depending on
+        // removal and insertion in the gtk::Stack, so we have
+        // to make sure it will stay the same.
+        let s = self.state.clone();
+        self.switch_visible(s);
+
         Ok(())
     }
 
     pub fn update_widget(&mut self) -> Result<(), Error> {
         let old = self.show.container.clone();
-        let id = WidgetExt::get_name(&old);
-        if id == Some("GtkBox".to_string()) || id.is_none() {
+        let id = self.show.podcast_id();
+        if id.is_none() {
             return Ok(());
         }
 
-        let id = id.ok_or_else(|| format_err!("Failed to get widget's name."))?;
-        let pd = dbqueries::get_podcast_from_id(id.parse::<i32>()?)?;
+        let pd = dbqueries::get_podcast_from_id(id.unwrap_or_default())?;
         self.replace_widget(Arc::new(pd))?;
 
         // The current visible child might change depending on
@@ -122,13 +117,11 @@ impl ShowStack {
 
     // Only update widget if it's podcast_id is equal to pid.
     pub fn update_widget_if_same(&mut self, pid: i32) -> Result<(), Error> {
-        let old = &self.show.container.clone();
-
-        let id = WidgetExt::get_name(old);
-        if id != Some(pid.to_string()) || id.is_none() {
+        if self.show.podcast_id() == Some(pid) {
             debug!("Different widget. Early return");
             return Ok(());
         }
+
         self.update_widget()
     }
 

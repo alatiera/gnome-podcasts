@@ -36,6 +36,7 @@ pub struct ShowWidget {
     settings: gtk::MenuButton,
     unsub: gtk::Button,
     episodes: gtk::ListBox,
+    podcast_id: Option<i32>,
 }
 
 impl Default for ShowWidget {
@@ -61,6 +62,7 @@ impl Default for ShowWidget {
             link,
             settings,
             episodes,
+            podcast_id: None,
         }
     }
 }
@@ -68,20 +70,19 @@ impl Default for ShowWidget {
 impl ShowWidget {
     #[inline]
     pub fn new(pd: Arc<Podcast>, sender: Sender<Action>) -> Rc<ShowWidget> {
-        let pdw = Rc::new(ShowWidget::default());
+        let mut pdw = ShowWidget::default();
         pdw.init(pd.clone(), sender.clone());
+        let pdw = Rc::new(pdw);
         populate_listbox(&pdw, pd, sender)
             .map_err(|err| error!("Failed to populate the listbox: {}", err))
             .ok();
+
         pdw
     }
 
     #[inline]
-    pub fn init(&self, pd: Arc<Podcast>, sender: Sender<Action>) {
+    pub fn init(&mut self, pd: Arc<Podcast>, sender: Sender<Action>) {
         let builder = gtk::Builder::new_from_resource("/org/gnome/hammond/gtk/show_widget.ui");
-
-        // Hacky workaround so the pd.id() can be retrieved from the `ShowStack`.
-        WidgetExt::set_name(&self.container, &pd.id().to_string());
 
         self.unsub
             .connect_clicked(clone!(pd, sender => move |bttn| {
@@ -89,6 +90,7 @@ impl ShowWidget {
         }));
 
         self.set_description(pd.description());
+        self.podcast_id = Some(pd.id());
 
         self.set_cover(pd.clone())
             .map_err(|err| error!("Failed to set a cover: {}", err))
@@ -167,6 +169,10 @@ impl ShowWidget {
         }
 
         Ok(())
+    }
+
+    pub fn podcast_id(&self) -> Option<i32> {
+        self.podcast_id
     }
 }
 
