@@ -4,8 +4,7 @@ use gtk::prelude::*;
 use failure::Error;
 
 use app::Action;
-use stacks::EpisodeStack;
-use stacks::ShowStack;
+use stacks::{HomeStack, ShowStack};
 
 use std::cell::RefCell;
 use std::rc::Rc;
@@ -15,14 +14,14 @@ use std::sync::mpsc::Sender;
 pub struct Content {
     stack: gtk::Stack,
     shows: Rc<RefCell<ShowStack>>,
-    episodes: Rc<RefCell<EpisodeStack>>,
+    episodes: Rc<RefCell<HomeStack>>,
     sender: Sender<Action>,
 }
 
 impl Content {
     pub fn new(sender: Sender<Action>) -> Result<Content, Error> {
         let stack = gtk::Stack::new();
-        let episodes = Rc::new(RefCell::new(EpisodeStack::new(sender.clone())?));
+        let episodes = Rc::new(RefCell::new(HomeStack::new(sender.clone())?));
         let shows = Rc::new(RefCell::new(ShowStack::new(sender.clone())?));
 
         stack.add_titled(&episodes.borrow().get_stack(), "episodes", "Episodes");

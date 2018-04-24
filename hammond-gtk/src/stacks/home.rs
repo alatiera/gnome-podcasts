@@ -12,15 +12,15 @@ use std::rc::Rc;
 use std::sync::mpsc::Sender;
 
 #[derive(Debug, Clone)]
-pub struct EpisodeStack {
+pub struct HomeStack {
     stack: gtk::Stack,
     empty: EmptyView,
     episodes: Rc<HomeView>,
     sender: Sender<Action>,
 }
 
-impl EpisodeStack {
-    pub fn new(sender: Sender<Action>) -> Result<EpisodeStack, Error> {
+impl HomeStack {
+    pub fn new(sender: Sender<Action>) -> Result<HomeStack, Error> {
         let episodes = HomeView::new(sender.clone())?;
         let empty = EmptyView::new();
         let stack = gtk::Stack::new();
@@ -29,7 +29,7 @@ impl EpisodeStack {
         stack.add_named(&empty.container, "empty");
         set_stack_visible(&stack)?;
 
-        Ok(EpisodeStack {
+        Ok(HomeStack {
             stack,
             empty,
             episodes,
