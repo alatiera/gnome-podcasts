@@ -20,7 +20,8 @@ Please [open an issue](https://gitlab.gnome.org/World/hammond/issues/new) and ch
 ## Getting in Touch
 
 If you have any questions regarding the use or development of Hammond,
-want to discuss design or simply hang out, please join us in [#hammond on irc.gnome.org.](irc://irc.gnome.org/#hammond)
+want to discuss design or simply hang out, please join us in `#hammond` on
+[irc.gnome.org.][irc] or [matrix][matrix].
 
 Note:
 
@@ -140,3 +141,5 @@ We also copied some elements from [GNOME News](https://wiki.gnome.org/Design/App
 And almost the entirety of the build system is copied from the [Fractal](https://gitlab.gnome.org/danigm/fractal) project.
 
 [vendor]: https://github.com/alexcrichton/cargo-vendor
+[irc]: irc://irc.gnome.org/#hammond
+[matrix]: https://matrix.to/#/#hammond:matrix.org
