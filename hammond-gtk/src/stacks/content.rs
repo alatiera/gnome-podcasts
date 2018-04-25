@@ -37,15 +37,14 @@ impl Content {
 
     pub fn update(&self) {
         self.update_home();
-        self.update_shows_view();
-        self.update_widget()
+        self.update_shows();
     }
 
     pub fn update_home(&self) {
         self.home
             .borrow_mut()
             .update()
-            .map_err(|err| error!("Failed to update EpisodeView: {}", err))
+            .map_err(|err| error!("Failed to update HomeView: {}", err))
             .ok();
     }
 
@@ -55,25 +54,25 @@ impl Content {
         }
     }
 
-    pub fn update_shows_view(&self) {
+    fn update_shows(&self) {
         self.shows
             .borrow_mut()
+            .update()
+            .map_err(|err| error!("Failed to update ShowsView: {}", err))
+            .ok();
+    }
+
+    pub fn update_shows_view(&self) {
+        let pop = self.shows.borrow().populated();
+        pop.borrow_mut()
             .update_shows()
             .map_err(|err| error!("Failed to update ShowsView: {}", err))
             .ok();
     }
 
-    pub fn update_widget(&self) {
-        self.shows
-            .borrow_mut()
-            .update_widget()
-            .map_err(|err| error!("Failed to update ShowsWidget: {}", err))
-            .ok();
-    }
-
     pub fn update_widget_if_same(&self, pid: i32) {
-        self.shows
-            .borrow_mut()
+        let pop = self.shows.borrow().populated();
+        pop.borrow_mut()
             .update_widget_if_same(pid)
             .map_err(|err| error!("Failed to update ShowsWidget: {}", err))
             .ok();

@@ -10,7 +10,7 @@ use hammond_data::Podcast;
 
 use headerbar::Header;
 use settings::{self, WindowGeometry};
-use stacks::{Content, ShowState};
+use stacks::{Content, PopulatedState};
 use utils;
 use widgets::{mark_all_notif, remove_show_notif};
 
@@ -171,21 +171,23 @@ impl App {
                 Ok(Action::RefreshEpisodesView) => content.update_home(),
                 Ok(Action::RefreshEpisodesViewBGR) => content.update_home_if_background(),
                 Ok(Action::ReplaceWidget(pd)) => {
-                    let mut shows = content.get_shows();
-                    shows
-                        .borrow_mut()
+                    let shows = content.get_shows();
+                    let mut pop = shows.borrow().populated();
+                    pop.borrow_mut()
                         .replace_widget(pd.clone())
                         .map_err(|err| error!("Failed to update ShowWidget: {}", err))
                         .map_err(|_| error!("Failed ot update ShowWidget {}", pd.title()))
                         .ok();
                 }
                 Ok(Action::ShowWidgetAnimated) => {
-                    let mut shows = content.get_shows();
-                    shows.borrow_mut().switch_visible(ShowState::ShowWidget);
+                    let shows = content.get_shows();
+                    let mut pop = shows.borrow().populated();
+                    pop.borrow_mut().switch_visible(PopulatedState::ShowWidget);
                 }
                 Ok(Action::ShowShowsAnimated) => {
-                    let mut shows = content.get_shows();
-                    shows.borrow_mut().switch_visible(ShowState::ShowsView);
+                    let shows = content.get_shows();
+                    let mut pop = shows.borrow().populated();
+                    pop.borrow_mut().switch_visible(PopulatedState::ShowsView);
                 }
                 Ok(Action::HeaderBarShowTile(title)) => headerbar.switch_to_back(&title),
                 Ok(Action::HeaderBarNormal) => headerbar.switch_to_normal(),

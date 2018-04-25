@@ -2,148 +2,92 @@ use gtk;
 use gtk::prelude::*;
 
 use failure::Error;
-
-use hammond_data::dbqueries;
-use hammond_data::Podcast;
+use hammond_data::dbqueries::is_podcasts_populated;
 
 use app::Action;
-use widgets::{ShowWidget, ShowsPopulated};
+use stacks::PopulatedStack;
+use widgets::EmptyView;
 
+use std::cell::RefCell;
 use std::rc::Rc;
 use std::sync::mpsc::Sender;
-use std::sync::Arc;
 
 #[derive(Debug, Clone)]
 pub enum ShowState {
-    ShowsView,
-    ShowWidget,
+    Populated,
+    Empty,
 }
 
 #[derive(Debug, Clone)]
 pub struct ShowStack {
-    populated: Rc<ShowsPopulated>,
-    show: Rc<ShowWidget>,
+    empty: EmptyView,
+    populated: Rc<RefCell<PopulatedStack>>,
     stack: gtk::Stack,
     state: ShowState,
     sender: Sender<Action>,
 }
 
 impl ShowStack {
-    pub fn new(sender: Sender<Action>) -> Result<ShowStack, Error> {
+    pub fn new(sender: Sender<Action>) -> Result<Self, Error> {
+        let populated = Rc::new(RefCell::new(PopulatedStack::new(sender.clone())?));
+        let empty = EmptyView::new();
         let stack = gtk::Stack::new();
-        let state = ShowState::ShowsView;
-        let populated = ShowsPopulated::new(sender.clone())?;
-        let show = Rc::new(ShowWidget::default());
+        let state = ShowState::Empty;
 
-        stack.add_named(&populated.container, "shows");
-        stack.add_named(&show.container, "widget");
+        stack.add_named(&populated.borrow().container(), "populated");
+        stack.add_named(&empty.container, "empty");
 
-        let show = ShowStack {
-            stack,
+        let mut show = ShowStack {
+            empty,
             populated,
-            show,
+            stack,
             state,
             sender,
         };
 
+        show.determine_state()?;
         Ok(show)
-    }
-
-    // pub fn update(&self) {
-    //     self.update_widget();
-    //     self.update_podcasts();
-    // }
-
-    pub fn update_shows(&mut self) -> Result<(), Error> {
-        let old = &self.populated.container.clone();
-        debug!("Name: {:?}", WidgetExt::get_name(old));
-
-        let pop = ShowsPopulated::new(self.sender.clone())?;
-        self.populated = pop;
-        self.stack.remove(old);
-        self.stack.add_named(&self.populated.container, "shows");
-
-        // The current visible child might change depending on
-        // removal and insertion in the gtk::Stack, so we have
-        // to make sure it will stay the same.
-        let s = self.state.clone();
-        self.switch_visible(s);
-
-        old.destroy();
-        Ok(())
-    }
-
-    pub fn replace_widget(&mut self, pd: Arc<Podcast>) -> Result<(), Error> {
-        let old = self.show.container.clone();
-
-        // save the ShowWidget vertical scrollabar alignment
-        self.show
-            .podcast_id()
-            .map(|id| self.show.save_vadjustment(id));
-
-        let new = ShowWidget::new(pd, self.sender.clone());
-        self.show = new;
-        self.stack.remove(&old);
-        self.stack.add_named(&self.show.container, "widget");
-
-        // The current visible child might change depending on
-        // removal and insertion in the gtk::Stack, so we have
-        // to make sure it will stay the same.
-        let s = self.state.clone();
-        self.switch_visible(s);
-
-        Ok(())
-    }
-
-    pub fn update_widget(&mut self) -> Result<(), Error> {
-        let old = self.show.container.clone();
-        let id = self.show.podcast_id();
-        if id.is_none() {
-            return Ok(());
-        }
-
-        let pd = dbqueries::get_podcast_from_id(id.unwrap_or_default())?;
-        self.replace_widget(Arc::new(pd))?;
-
-        // The current visible child might change depending on
-        // removal and insertion in the gtk::Stack, so we have
-        // to make sure it will stay the same.
-        let s = self.state.clone();
-        self.switch_visible(s);
-
-        old.destroy();
-        Ok(())
-    }
-
-    // Only update widget if its podcast_id is equal to pid.
-    pub fn update_widget_if_same(&mut self, pid: i32) -> Result<(), Error> {
-        if self.show.podcast_id() != Some(pid) {
-            debug!("Different widget. Early return");
-            return Ok(());
-        }
-
-        self.update_widget()
     }
 
     pub fn get_stack(&self) -> gtk::Stack {
         self.stack.clone()
     }
 
+    pub fn populated(&self) -> Rc<RefCell<PopulatedStack>> {
+        self.populated.clone()
+    }
+
+    pub fn update(&mut self) -> Result<(), Error> {
+        self.populated.borrow_mut().update();
+        self.determine_state()
+    }
+
     #[inline]
-    pub fn switch_visible(&mut self, state: ShowState) {
+    fn switch_visible(&mut self, s: ShowState) {
         use self::ShowState::*;
 
-        match state {
-            ShowsView => {
-                self.stack
-                    .set_visible_child_full("shows", gtk::StackTransitionType::SlideRight);
-                self.state = ShowsView;
+        match s {
+            Populated => {
+                self.stack.set_visible_child_name("populated");
+                self.state = Populated;
             }
-            ShowWidget => {
-                self.stack
-                    .set_visible_child_full("widget", gtk::StackTransitionType::SlideLeft);
-                self.state = ShowWidget;
+            Empty => {
+                self.stack.set_visible_child_name("empty");
+                self.state = Empty;
             }
-        }
+        };
+    }
+
+    #[inline]
+    fn determine_state(&mut self) -> Result<(), Error> {
+        use self::ShowState::*;
+
+        if is_podcasts_populated()? {
+            self.switch_visible(Populated);
+        } else {
+            self.switch_visible(Empty);
+        };
+
+        Ok(())
     }
 }
