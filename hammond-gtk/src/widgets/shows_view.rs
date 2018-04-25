@@ -13,13 +13,13 @@ use std::sync::mpsc::Sender;
 use std::sync::Arc;
 
 #[derive(Debug, Clone)]
-pub struct ShowsPopulated {
+pub struct ShowsView {
     pub container: gtk::Box,
     scrolled_window: gtk::ScrolledWindow,
     flowbox: gtk::FlowBox,
 }
 
-impl Default for ShowsPopulated {
+impl Default for ShowsView {
     #[inline]
     fn default() -> Self {
         let builder = gtk::Builder::new_from_resource("/org/gnome/hammond/gtk/shows_view.ui");
@@ -27,7 +27,7 @@ impl Default for ShowsPopulated {
         let scrolled_window: gtk::ScrolledWindow = builder.get_object("scrolled_window").unwrap();
         let flowbox: gtk::FlowBox = builder.get_object("flowbox").unwrap();
 
-        ShowsPopulated {
+        ShowsView {
             container,
             scrolled_window,
             flowbox,
@@ -35,10 +35,10 @@ impl Default for ShowsPopulated {
     }
 }
 
-impl ShowsPopulated {
+impl ShowsView {
     #[inline]
-    pub fn new(sender: Sender<Action>) -> Result<Rc<ShowsPopulated>, Error> {
-        let pop = Rc::new(ShowsPopulated::default());
+    pub fn new(sender: Sender<Action>) -> Result<Rc<Self>, Error> {
+        let pop = Rc::new(ShowsView::default());
         pop.init(sender)?;
         Ok(pop)
     }

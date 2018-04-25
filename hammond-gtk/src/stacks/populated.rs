@@ -7,7 +7,7 @@ use hammond_data::dbqueries;
 use hammond_data::Podcast;
 
 use app::Action;
-use widgets::{ShowWidget, ShowsPopulated};
+use widgets::{ShowWidget, ShowsView};
 
 use std::rc::Rc;
 use std::sync::mpsc::Sender;
@@ -15,14 +15,14 @@ use std::sync::Arc;
 
 #[derive(Debug, Clone)]
 pub enum PopulatedState {
-    ShowsView,
-    ShowWidget,
+    View,
+    Widget,
 }
 
 #[derive(Debug, Clone)]
 pub struct PopulatedStack {
     container: gtk::Box,
-    populated: Rc<ShowsPopulated>,
+    populated: Rc<ShowsView>,
     show: Rc<ShowWidget>,
     stack: gtk::Stack,
     state: PopulatedState,
@@ -32,8 +32,8 @@ pub struct PopulatedStack {
 impl PopulatedStack {
     pub fn new(sender: Sender<Action>) -> Result<PopulatedStack, Error> {
         let stack = gtk::Stack::new();
-        let state = PopulatedState::ShowsView;
-        let populated = ShowsPopulated::new(sender.clone())?;
+        let state = PopulatedState::View;
+        let populated = ShowsView::new(sender.clone())?;
         let show = Rc::new(ShowWidget::default());
         let container = gtk::Box::new(gtk::Orientation::Horizontal, 0);
 
@@ -63,7 +63,7 @@ impl PopulatedStack {
         let old = &self.populated.container.clone();
         debug!("Name: {:?}", WidgetExt::get_name(old));
 
-        let pop = ShowsPopulated::new(self.sender.clone())?;
+        let pop = ShowsView::new(self.sender.clone())?;
         self.populated = pop;
         self.stack.remove(old);
         self.stack.add_named(&self.populated.container, "shows");
@@ -139,15 +139,15 @@ impl PopulatedStack {
         use self::PopulatedState::*;
 
         match state {
-            ShowsView => {
+            View => {
                 self.stack
                     .set_visible_child_full("shows", gtk::StackTransitionType::SlideRight);
-                self.state = ShowsView;
+                self.state = View;
             }
-            ShowWidget => {
+            Widget => {
                 self.stack
                     .set_visible_child_full("widget", gtk::StackTransitionType::SlideLeft);
-                self.state = ShowWidget;
+                self.state = Widget;
             }
         }
     }

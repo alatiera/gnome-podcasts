@@ -122,7 +122,7 @@ $ tree -d
 │   ├── resources       # GResources folder
 │   │   └── gtk         # Contains the glade.ui files.
 │   └── src
-│       ├── views       # Contains the Empty, Episodes and Shows view.
+│       ├── stacks      # Contains the gtk Stacks that hold all the different views.
 │       └── widgets     # Contains custom widgets such as Show and Episode.
 ```
 
