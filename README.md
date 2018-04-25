@@ -1,13 +1,6 @@
 # Hammond
 
-## A Podcast Client for the GNOME Desktop written in Rust.
-
-[![pipeline status](https://gitlab.gnome.org/World/hammond/badges/master/pipeline.svg)](https://gitlab.gnome.org/World/hammond/commits/master)
-[![Dependency Status](https://dependencyci.com/github/World/hammond/badge)](https://dependencyci.com/github/World/hammond)
-
-### Features
-
-* TBA
+### A Podcast Client for GNOME written in Rust.
 
 ![episdes_view](./screenshots/episodes_view.png)
 ![shows_view](./screenshots/shows_view.png)
