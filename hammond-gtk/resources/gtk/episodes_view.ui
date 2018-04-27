@@ -32,13 +32,14 @@ Tobias Bernard
   <!-- interface-authors Jordan Petridis\nTobias Bernard -->
   <object class="GtkBox" id="container">
     <property name="name">container</property>
+    <property name="width_request">400</property>
+    <property name="height_request">600</property>
     <property name="visible">True</property>
     <property name="can_focus">False</property>
     <property name="orientation">vertical</property>
     <child>
       <object class="GtkScrolledWindow" id="scrolled_window">
         <property name="name">scrolled_window</property>
-        <property name="height_request">400</property>
         <property name="visible">True</property>
         <property name="can_focus">True</property>
         <property name="hscrollbar_policy">never</property>
@@ -68,8 +69,6 @@ Tobias Bernard
                 </child>
                 <child>
                   <object class="GtkBox" id="frame_parent">
-                    <property name="width_request">600</property>
-                    <property name="height_request">-1</property>
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="margin_left">32</property>

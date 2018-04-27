@@ -56,7 +56,7 @@ Tobias Bernard
                     <property name="can_focus">False</property>
                     <property name="label" translatable="yes">Episode Title</property>
                     <property name="ellipsize">end</property>
-                    <property name="width_chars">40</property>
+                    <property name="width_chars">55</property>
                     <property name="single_line_mode">True</property>
                     <property name="track_visited_links">False</property>
                     <property name="lines">1</property>
