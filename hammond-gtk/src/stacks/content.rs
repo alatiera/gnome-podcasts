@@ -24,7 +24,7 @@ impl Content {
         let home = Rc::new(RefCell::new(HomeStack::new(sender.clone())?));
         let shows = Rc::new(RefCell::new(ShowStack::new(sender.clone())?));
 
-        stack.add_titled(&home.borrow().get_stack(), "home", "Recent Episodes");
+        stack.add_titled(&home.borrow().get_stack(), "home", "Recent");
         stack.add_titled(&shows.borrow().get_stack(), "shows", "Shows");
 
         Ok(Content {
@@ -63,7 +63,8 @@ impl Content {
     }
 
     pub fn update_shows_view(&self) {
-        self.shows.borrow_mut()
+        self.shows
+            .borrow_mut()
             .update()
             .map_err(|err| error!("Failed to update ShowsView: {}", err))
             .ok();
