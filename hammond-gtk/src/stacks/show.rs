@@ -6,6 +6,7 @@ use hammond_data::dbqueries::is_podcasts_populated;
 
 use app::Action;
 use stacks::PopulatedStack;
+use utils::get_ignored_shows;
 use widgets::EmptyView;
 
 use std::cell::RefCell;
@@ -82,7 +83,9 @@ impl ShowStack {
     fn determine_state(&mut self) -> Result<(), Error> {
         use self::ShowState::*;
 
-        if is_podcasts_populated()? {
+        let ign = get_ignored_shows()?;
+        debug!("IGNORED SHOWS {:?}", ign);
+        if is_podcasts_populated(&ign)? {
             self.switch_visible(Populated);
         } else {
             self.switch_visible(Empty);

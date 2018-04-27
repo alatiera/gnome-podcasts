@@ -363,13 +363,13 @@ pub fn is_episodes_populated() -> Result<bool, DataError> {
 /// Check if the `podcast` table contains any rows
 ///
 /// Return true if `podcast table is populated.
-pub fn is_podcasts_populated() -> Result<bool, DataError> {
+pub fn is_podcasts_populated(filter_ids: &[i32]) -> Result<bool, DataError> {
     use schema::podcast::dsl::*;
 
     let db = connection();
     let con = db.get()?;
 
-    select(exists(podcast.as_query()))
+    select(exists(podcast.filter(id.ne_all(filter_ids))))
         .get_result(&con)
         .map_err(From::from)
 }

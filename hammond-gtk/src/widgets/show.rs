@@ -303,18 +303,20 @@ pub fn remove_show_notif(pd: Arc<Podcast>, sender: Sender<Action>) -> InAppNotif
         .map_err(|_| error!("Could not insert {} to the ignore list.", pd.title()))
         .ok();
 
-    let callback = clone!(pd => move || {
+    let callback = clone!(pd, sender => move || {
         utils::uningore_show(pd.id())
             .map_err(|err| error!("Error: {}", err))
             .map_err(|_| error!("Could not remove {} from the ignore list.", pd.title()))
             .ok();
 
         // Spawn a thread so it won't block the ui.
-        rayon::spawn(clone!(pd => move || {
+        rayon::spawn(clone!(pd, sender => move || {
             delete_show(&pd)
                 .map_err(|err| error!("Error: {}", err))
                 .map_err(|_| error!("Failed to delete {}", pd.title()))
                 .ok();
+
+            sender.send(Action::RefreshEpisodesView).ok();
         }));
         glib::Continue(false)
     });

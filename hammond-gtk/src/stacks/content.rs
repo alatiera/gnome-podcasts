@@ -63,9 +63,8 @@ impl Content {
     }
 
     pub fn update_shows_view(&self) {
-        let pop = self.shows.borrow().populated();
-        pop.borrow_mut()
-            .update_shows()
+        self.shows.borrow_mut()
+            .update()
             .map_err(|err| error!("Failed to update ShowsView: {}", err))
             .ok();
     }
