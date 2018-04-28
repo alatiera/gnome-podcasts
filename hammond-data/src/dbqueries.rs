@@ -103,6 +103,20 @@ pub fn get_episode_from_rowid(ep_id: i32) -> Result<Episode, DataError> {
         .map_err(From::from)
 }
 
+pub fn get_episode_widget_from_rowid(ep_id: i32) -> Result<EpisodeWidgetQuery, DataError> {
+    use schema::episode::dsl::*;
+    let db = connection();
+    let con = db.get()?;
+
+    episode
+        .select((
+            rowid, title, uri, local_uri, epoch, length, duration, played, podcast_id,
+        ))
+        .filter(rowid.eq(ep_id))
+        .get_result::<EpisodeWidgetQuery>(&con)
+        .map_err(From::from)
+}
+
 pub fn get_episode_local_uri_from_id(ep_id: i32) -> Result<Option<String>, DataError> {
     use schema::episode::dsl::*;
     let db = connection();

@@ -5,10 +5,7 @@ use rayon;
 use hammond_data::dbqueries;
 use hammond_downloader::downloader::{get_episode, DownloadProgress};
 
-use app::Action;
-
 use std::collections::HashMap;
-use std::sync::mpsc::Sender;
 use std::sync::{Arc, Mutex, RwLock};
 // use std::sync::atomic::AtomicUsize;
 // use std::path::PathBuf;
@@ -78,7 +75,7 @@ lazy_static! {
     static ref DLPOOL: rayon::ThreadPool = rayon::ThreadPoolBuilder::new().build().unwrap();
 }
 
-pub fn add(id: i32, directory: String, sender: Sender<Action>) -> Result<(), Error> {
+pub fn add(id: i32, directory: String) -> Result<(), Error> {
     // Create a new `Progress` struct to keep track of dl progress.
     let prog = Arc::new(Mutex::new(Progress::default()));
 
@@ -88,11 +85,10 @@ pub fn add(id: i32, directory: String, sender: Sender<Action>) -> Result<(), Err
     };
 
     DLPOOL.spawn(move || {
-        if let Ok(episode) = dbqueries::get_episode_from_rowid(id) {
+        if let Ok(mut episode) = dbqueries::get_episode_widget_from_rowid(id) {
             let id = episode.rowid();
-            let pid = episode.podcast_id();
 
-            get_episode(&mut episode.into(), directory.as_str(), Some(prog))
+            get_episode(&mut episode, directory.as_str(), Some(prog))
                 .map_err(|err| error!("Download Failed: {}", err))
                 .ok();
 
@@ -104,15 +100,6 @@ pub fn add(id: i32, directory: String, sender: Sender<Action>) -> Result<(), Err
             // if let Ok(m) = ACTIVE_DOWNLOADS.read() {
             //     debug!("ACTIVE DOWNLOADS: {:#?}", m);
             // }
-
-            sender
-                .send(Action::RefreshWidgetIfSame(pid))
-                .map_err(|err| error!("Action Sender: {}", err))
-                .ok();
-            sender
-                .send(Action::RefreshEpisodesView)
-                .map_err(|err| error!("Action Sender: {}", err))
-                .ok();
         }
     });
 

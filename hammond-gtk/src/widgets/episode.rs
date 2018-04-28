@@ -128,10 +128,10 @@ impl EpisodeWidget {
                         .and_then(|_| {
                             info!("Donwload started succesfully.");
                             determine_media_state(media_machine.clone(), &ep)
-                        })
-                        .map_err(|err| error!("Error: {}", err))
-                        .map_err(|_| error!("Could not determine Media State"))
-                        .ok();
+                    })
+                    .map_err(|err| error!("Error: {}", err))
+                    .map_err(|_| error!("Could not determine Media State"))
+                    .ok();
                 }
 
                 // Restore sensitivity after operations above complete
@@ -190,20 +190,42 @@ fn determine_media_state(
 
     // Show or hide the play/delete/download buttons upon widget initialization.
     if let Some(prog) = active_dl {
-        let episode = episode.clone();
+
+        // set a callback that will update the state when the download finishes
+        let id = episode.rowid();
+        let callback = clone!(media_machine => move || {
+            if let Ok(guard) = manager::ACTIVE_DOWNLOADS.read() {
+                if !guard.contains_key(&id) {
+                    if let Ok(ep) = dbqueries::get_episode_widget_from_rowid(id) {
+                        determine_media_state(media_machine.clone(), &ep)
+                            .map_err(|err| error!("Error: {}", err))
+                            .map_err(|_| error!("Could not determine Media State"))
+                            .ok();
+
+                        return glib::Continue(false)
+                    }
+                }
+            }
+
+            glib::Continue(true)
+        });
+        gtk::timeout_add(250, callback);
+
         lock.cancel_connect_clicked(clone!(prog, media_machine => move |_| {
             if let Ok(mut m) = prog.lock() {
                 m.cancel();
             }
 
             if let Ok(mut lock) = media_machine.try_borrow_mut() {
-                take_mut::take(lock.deref_mut(), |media| {
-                    media.determine_state(
-                        episode.length(),
-                        false,
-                        episode.local_uri().is_some(),
-                    )
-                });
+                if let Ok(episode) = dbqueries::get_episode_widget_from_rowid(id) {
+                    take_mut::take(lock.deref_mut(), |media| {
+                        media.determine_state(
+                            episode.length(),
+                            false,
+                            episode.local_uri().is_some(),
+                        )
+                    });
+                }
             }
         }));
         drop(lock);
@@ -221,12 +243,15 @@ fn determine_media_state(
 }
 
 #[inline]
-fn on_download_clicked(ep: &EpisodeWidgetQuery, sender: Sender<Action>) -> Result<(), Error> {
+fn on_download_clicked(
+    ep: &EpisodeWidgetQuery,
+    sender: Sender<Action>,
+) -> Result<(), Error> {
     let pd = dbqueries::get_podcast_from_id(ep.podcast_id())?;
     let download_fold = get_download_folder(&pd.title())?;
 
     // Start a new download.
-    manager::add(ep.rowid(), download_fold, sender.clone())?;
+    manager::add(ep.rowid(), download_fold)?;
 
     // Update Views
     sender.send(Action::RefreshEpisodesViewBGR)?;
