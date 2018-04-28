@@ -190,7 +190,6 @@ fn determine_media_state(
 
     // Show or hide the play/delete/download buttons upon widget initialization.
     if let Some(prog) = active_dl {
-
         // set a callback that will update the state when the download finishes
         let id = episode.rowid();
         let callback = clone!(media_machine => move || {
@@ -243,10 +242,7 @@ fn determine_media_state(
 }
 
 #[inline]
-fn on_download_clicked(
-    ep: &EpisodeWidgetQuery,
-    sender: Sender<Action>,
-) -> Result<(), Error> {
+fn on_download_clicked(ep: &EpisodeWidgetQuery, sender: Sender<Action>) -> Result<(), Error> {
     let pd = dbqueries::get_podcast_from_id(ep.podcast_id())?;
     let download_fold = get_download_folder(&pd.title())?;
 
