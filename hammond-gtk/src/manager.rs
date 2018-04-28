@@ -119,7 +119,6 @@ mod tests {
 
     use std::fs;
     use std::path::Path;
-    use std::sync::mpsc::channel;
     use std::{thread, time};
 
     #[test]
@@ -142,11 +141,9 @@ mod tests {
         // Get an episode
         let episode: Episode = dbqueries::get_episode_from_pk(title, pd.id()).unwrap();
 
-        let (sender, _rx) = channel();
-
         let download_fold = get_download_folder(&pd.title()).unwrap();
         let fold2 = download_fold.clone();
-        add(episode.rowid(), download_fold, sender).unwrap();
+        add(episode.rowid(), download_fold).unwrap();
         assert_eq!(ACTIVE_DOWNLOADS.read().unwrap().len(), 1);
 
         // Give it soem time to download the file
