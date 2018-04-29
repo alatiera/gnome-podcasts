@@ -132,7 +132,7 @@ impl HomeView {
             // Copy the vertical scrollbar adjustment from the old view into the new one.
             sendcell
                 .try_get()
-                .map(|x| utils::smooth_scroll_to(self.scrolled_window.clone(), x.clone()));
+                .map(|x| utils::smooth_scroll_to(&self.scrolled_window, &x));
         }
 
         Ok(())

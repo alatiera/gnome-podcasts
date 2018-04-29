@@ -104,7 +104,7 @@ where
 
 // Kudos to Julian Sparber
 // https://blogs.gnome.org/jsparber/2018/04/29/animate-a-scrolledwindow/
-pub fn smooth_scroll_to(view: gtk::ScrolledWindow, target: gtk::Adjustment) {
+pub fn smooth_scroll_to(view: &gtk::ScrolledWindow, target: &gtk::Adjustment) {
     if let Some(adj) = view.get_vadjustment() {
         if let Some(clock) = view.get_frame_clock() {
             let duration = 200;
@@ -119,10 +119,10 @@ pub fn smooth_scroll_to(view: gtk::ScrolledWindow, target: gtk::Adjustment) {
                     let mut t = (now - start_time) as f64 / (end_time - start_time) as f64;
                     t = ease_out_cubic(t);
                     adj.set_value(start + t * (end - start));
-                    return glib::Continue(true);
+                    glib::Continue(true)
                 } else {
                     adj.set_value(end);
-                    return glib::Continue(false);
+                    glib::Continue(false)
                 }
             });
         }
