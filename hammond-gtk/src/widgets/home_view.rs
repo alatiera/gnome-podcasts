@@ -1,5 +1,6 @@
 use chrono::prelude::*;
 use failure::Error;
+
 use gtk;
 use gtk::prelude::*;
 
@@ -8,8 +9,7 @@ use hammond_data::EpisodeWidgetQuery;
 use send_cell::SendCell;
 
 use app::Action;
-use utils::lazy_load_full;
-use utils::{get_ignored_shows, set_image_from_path};
+use utils::{self, lazy_load_full};
 use widgets::EpisodeWidget;
 
 use std::rc::Rc;
@@ -90,7 +90,7 @@ impl HomeView {
         use self::ListSplit::*;
 
         let view = Rc::new(HomeView::default());
-        let ignore = get_ignored_shows()?;
+        let ignore = utils::get_ignored_shows()?;
         let episodes = dbqueries::get_episodes_widgets_filter_limit(&ignore, 100)?;
         let now_utc = Utc::now();
 
@@ -132,7 +132,7 @@ impl HomeView {
             // Copy the vertical scrollbar adjustment from the old view into the new one.
             sendcell
                 .try_get()
-                .map(|x| self.scrolled_window.set_vadjustment(&x));
+                .map(|x| utils::smooth_scroll_to(self.scrolled_window.clone(), x.clone()));
         }
 
         Ok(())
@@ -231,6 +231,6 @@ impl EpisodesViewWidget {
 
     #[inline]
     fn set_cover(&self, podcast_id: i32) -> Result<(), Error> {
-        set_image_from_path(&self.image, podcast_id, 64)
+        utils::set_image_from_path(&self.image, podcast_id, 64)
     }
 }

@@ -1,5 +1,6 @@
 #![cfg_attr(feature = "cargo-clippy", allow(type_complexity))]
 
+use gdk::FrameClockExt;
 use gdk_pixbuf::Pixbuf;
 use glib;
 use gtk;
@@ -99,6 +100,40 @@ where
                 glib::Continue(false)
             })
     });
+}
+
+// Kudos to Julian Sparber
+// https://blogs.gnome.org/jsparber/2018/04/29/animate-a-scrolledwindow/
+pub fn smooth_scroll_to(view: gtk::ScrolledWindow, target: gtk::Adjustment) {
+    if let Some(adj) = view.get_vadjustment() {
+        if let Some(clock) = view.get_frame_clock() {
+            let duration = 200;
+            let start = adj.get_value();
+            let end = target.get_value();
+            let start_time = clock.get_frame_time();
+            let end_time = start_time + 1000 * duration;
+
+            view.add_tick_callback(move |_, clock| {
+                let now = clock.get_frame_time();
+                if now < end_time && adj.get_value() != end {
+                    let mut t = (now - start_time) as f64 / (end_time - start_time) as f64;
+                    t = ease_out_cubic(t);
+                    adj.set_value(start + t * (end - start));
+                    return glib::Continue(true);
+                } else {
+                    adj.set_value(end);
+                    return glib::Continue(false);
+                }
+            });
+        }
+    }
+}
+
+// From clutter-easing.c, based on Robert Penner's
+// infamous easing equations, MIT license.
+fn ease_out_cubic(t: f64) -> f64 {
+    let p = t - 1f64;
+    return p * p * p + 1f64;
 }
 
 lazy_static! {
