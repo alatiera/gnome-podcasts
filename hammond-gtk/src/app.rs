@@ -82,7 +82,7 @@ impl App {
             Rc::new(Content::new(sender.clone()).expect("Content Initialization failed."));
 
         // Create the headerbar
-        let header = Rc::new(Header::new(&content, &window, sender.clone()));
+        let header = Rc::new(Header::new(&content, &window, &sender));
 
         // Add the content main stack to the overlay.
         let overlay = gtk::Overlay::new();
@@ -194,7 +194,7 @@ impl App {
                 Ok(Action::HeaderBarShowUpdateIndicator) => headerbar.show_update_notification(),
                 Ok(Action::HeaderBarHideUpdateIndicator) => headerbar.hide_update_notification(),
                 Ok(Action::MarkAllPlayerNotification(pd)) => {
-                    let notif = mark_all_notif(pd, sender.clone());
+                    let notif = mark_all_notif(pd, &sender);
                     notif.show(&overlay);
                 }
                 Ok(Action::RemoveShow(pd)) => {

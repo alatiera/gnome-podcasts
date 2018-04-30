@@ -214,7 +214,7 @@ impl DateMachine {
         use self::DateMachine::*;
 
         let ts = Utc.timestamp(epoch, 0);
-        let is_old = !(NOW.year() == ts.year());
+        let is_old = NOW.year() != ts.year();
 
         match (self, is_old) {
             // Into Usual

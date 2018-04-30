@@ -97,7 +97,7 @@ impl HomeView {
         let view_ = view.clone();
         let func = move |ep: EpisodeWidgetQuery| {
             let epoch = ep.epoch();
-            let widget = EpisodesViewWidget::new(ep, sender.clone());
+            let widget = EpisodesViewWidget::new(ep, &sender);
 
             match split(&now_utc, i64::from(epoch)) {
                 Today => add_to_box(&widget, &view_.today_list, &view_.today_box),
@@ -202,13 +202,13 @@ impl Default for EpisodesViewWidget {
 }
 
 impl EpisodesViewWidget {
-    fn new(episode: EpisodeWidgetQuery, sender: Sender<Action>) -> EpisodesViewWidget {
+    fn new(episode: EpisodeWidgetQuery, sender: &Sender<Action>) -> EpisodesViewWidget {
         let builder =
             gtk::Builder::new_from_resource("/org/gnome/hammond/gtk/episodes_view_widget.ui");
         let container: gtk::Box = builder.get_object("container").unwrap();
         let image: gtk::Image = builder.get_object("cover").unwrap();
         let pid = episode.podcast_id();
-        let ep = EpisodeWidget::new(episode, sender.clone());
+        let ep = EpisodeWidget::new(episode, sender);
 
         let view = EpisodesViewWidget {
             container,

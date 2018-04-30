@@ -83,6 +83,7 @@ where
 /// If you just want to lazy add `widgets` to a `container` check if
 /// `lazy_load` fits your needs first.
 #[inline]
+#[cfg_attr(feature = "cargo-clippy", allow(redundant_closure))]
 pub fn lazy_load_full<T, F, U>(data: T, mut func: F, finish_callback: U)
 where
     T: IntoIterator + 'static,
@@ -104,6 +105,7 @@ where
 
 // Kudos to Julian Sparber
 // https://blogs.gnome.org/jsparber/2018/04/29/animate-a-scrolledwindow/
+#[cfg_attr(feature = "cargo-clippy", allow(float_cmp))]
 pub fn smooth_scroll_to(view: &gtk::ScrolledWindow, target: &gtk::Adjustment) {
     if let Some(adj) = view.get_vadjustment() {
         if let Some(clock) = view.get_frame_clock() {
@@ -115,7 +117,8 @@ pub fn smooth_scroll_to(view: &gtk::ScrolledWindow, target: &gtk::Adjustment) {
 
             view.add_tick_callback(move |_, clock| {
                 let now = clock.get_frame_time();
-                if now < end_time && adj.get_value() != end {
+                // FIXME: `adj.get_value != end` is a float comparison...
+                if now < end_time && adj.get_value().abs() != end.abs() {
                     let mut t = (now - start_time) as f64 / (end_time - start_time) as f64;
                     t = ease_out_cubic(t);
                     adj.set_value(start + t * (end - start));
@@ -133,7 +136,7 @@ pub fn smooth_scroll_to(view: &gtk::ScrolledWindow, target: &gtk::Adjustment) {
 // infamous easing equations, MIT license.
 fn ease_out_cubic(t: f64) -> f64 {
     let p = t - 1f64;
-    return p * p * p + 1f64;
+    p * p * p + 1f64
 }
 
 lazy_static! {

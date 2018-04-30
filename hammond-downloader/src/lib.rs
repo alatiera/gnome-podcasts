@@ -1,7 +1,7 @@
 #![recursion_limit = "1024"]
 #![deny(unused_extern_crates, unused)]
 #![allow(unknown_lints)]
-#![cfg_attr(feature = "cargo-clippy", allow(blacklisted_name))]
+#![cfg_attr(feature = "cargo-clippy", allow(blacklisted_name, option_map_unit_fn))]
 
 extern crate failure;
 #[macro_use]

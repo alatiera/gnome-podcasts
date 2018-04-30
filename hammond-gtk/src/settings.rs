@@ -71,14 +71,14 @@ impl WindowGeometry {
 }
 
 pub fn get_refresh_interval(settings: &Settings) -> Duration {
-    let time = settings.get_int("refresh-interval-time") as i64;
+    let time = i64::from(settings.get_int("refresh-interval-time"));
     let period = settings.get_string("refresh-interval-period").unwrap();
 
     time_period_to_duration(time, period.as_str())
 }
 
 pub fn get_cleanup_date(settings: &Settings) -> DateTime<Utc> {
-    let time = settings.get_int("cleanup-age-time") as i64;
+    let time = i64::from(settings.get_int("cleanup-age-time"));
     let period = settings.get_string("cleanup-age-period").unwrap();
     let duration = time_period_to_duration(time, period.as_str());
 

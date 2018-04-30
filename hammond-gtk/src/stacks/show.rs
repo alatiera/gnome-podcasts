@@ -13,7 +13,7 @@ use std::cell::RefCell;
 use std::rc::Rc;
 use std::sync::mpsc::Sender;
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Copy)]
 pub enum ShowState {
     Populated,
     Empty,

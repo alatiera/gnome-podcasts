@@ -46,7 +46,7 @@ impl ShowsView {
     #[inline]
     pub fn init(&self, sender: Sender<Action>) -> Result<(), Error> {
         self.flowbox.connect_child_activated(move |_, child| {
-            on_child_activate(child, sender.clone())
+            on_child_activate(child, &sender)
                 .map_err(|err| error!("Error along flowbox child activation: {}", err))
                 .ok();
         });
@@ -71,7 +71,7 @@ impl ShowsView {
 }
 
 #[inline]
-fn on_child_activate(child: &gtk::FlowBoxChild, sender: Sender<Action>) -> Result<(), Error> {
+fn on_child_activate(child: &gtk::FlowBoxChild, sender: &Sender<Action>) -> Result<(), Error> {
     use gtk::WidgetExt;
 
     // This is such an ugly hack...

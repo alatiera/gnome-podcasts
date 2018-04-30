@@ -71,7 +71,7 @@ impl ShowWidget {
     #[inline]
     pub fn new(pd: Arc<Podcast>, sender: Sender<Action>) -> Rc<ShowWidget> {
         let mut pdw = ShowWidget::default();
-        pdw.init(pd.clone(), sender.clone());
+        pdw.init(&pd, &sender);
         let pdw = Rc::new(pdw);
         populate_listbox(&pdw, pd, sender)
             .map_err(|err| error!("Failed to populate the listbox: {}", err))
@@ -81,18 +81,18 @@ impl ShowWidget {
     }
 
     #[inline]
-    pub fn init(&mut self, pd: Arc<Podcast>, sender: Sender<Action>) {
+    pub fn init(&mut self, pd: &Arc<Podcast>, sender: &Sender<Action>) {
         let builder = gtk::Builder::new_from_resource("/org/gnome/hammond/gtk/show_widget.ui");
 
         self.unsub
             .connect_clicked(clone!(pd, sender => move |bttn| {
-                on_unsub_button_clicked(pd.clone(), bttn, sender.clone());
+                on_unsub_button_clicked(pd.clone(), bttn, &sender);
         }));
 
         self.set_description(pd.description());
         self.podcast_id = Some(pd.id());
 
-        self.set_cover(pd.clone())
+        self.set_cover(&pd)
             .map_err(|err| error!("Failed to set a cover: {}", err))
             .ok();
 
@@ -114,7 +114,7 @@ impl ShowWidget {
             on_played_button_clicked(
                 pd.clone(),
                 &episodes,
-                sender.clone()
+                &sender
             )
         }));
         self.settings.set_popover(&show_menu);
@@ -122,7 +122,7 @@ impl ShowWidget {
 
     #[inline]
     /// Set the show cover.
-    fn set_cover(&self, pd: Arc<Podcast>) -> Result<(), Error> {
+    fn set_cover(&self, pd: &Arc<Podcast>) -> Result<(), Error> {
         utils::set_image_from_path(&self.cover, pd.id(), 256)
     }
 
@@ -148,7 +148,7 @@ impl ShowWidget {
 
     #[inline]
     /// Set scrolled window vertical adjustment.
-    fn set_vadjustment(&self, pd: Arc<Podcast>) -> Result<(), Error> {
+    fn set_vadjustment(&self, pd: &Arc<Podcast>) -> Result<(), Error> {
         let guard = SHOW_WIDGET_VALIGNMENT
             .lock()
             .map_err(|err| format_err!("Failed to lock widget align mutex: {}", err))?;
@@ -214,11 +214,11 @@ fn populate_listbox(
         let list = show_.episodes.clone();
 
         let constructor = clone!(sender => move |ep| {
-            EpisodeWidget::new(ep, sender.clone()).container
+            EpisodeWidget::new(ep, &sender).container
         });
 
         let callback = clone!(pd, show_ => move || {
-            show_.set_vadjustment(pd.clone())
+            show_.set_vadjustment(&pd)
                 .map_err(|err| error!("Failed to set ShowWidget Alignment: {}", err))
                 .ok();
         });
@@ -232,7 +232,7 @@ fn populate_listbox(
 }
 
 #[inline]
-fn on_unsub_button_clicked(pd: Arc<Podcast>, unsub_button: &gtk::Button, sender: Sender<Action>) {
+fn on_unsub_button_clicked(pd: Arc<Podcast>, unsub_button: &gtk::Button, sender: &Sender<Action>) {
     // hack to get away without properly checking for none.
     // if pressed twice would panic.
     unsub_button.set_sensitive(false);
@@ -253,7 +253,7 @@ fn on_unsub_button_clicked(pd: Arc<Podcast>, unsub_button: &gtk::Button, sender:
 }
 
 #[inline]
-fn on_played_button_clicked(pd: Arc<Podcast>, episodes: &gtk::ListBox, sender: Sender<Action>) {
+fn on_played_button_clicked(pd: Arc<Podcast>, episodes: &gtk::ListBox, sender: &Sender<Action>) {
     if dim_titles(episodes).is_none() {
         error!("Something went horribly wrong when dimming the titles.");
         warn!("RUN WHILE YOU STILL CAN!");
@@ -266,7 +266,7 @@ fn on_played_button_clicked(pd: Arc<Podcast>, episodes: &gtk::ListBox, sender: S
 }
 
 #[inline]
-fn mark_all_watched(pd: &Podcast, sender: Sender<Action>) -> Result<(), Error> {
+fn mark_all_watched(pd: &Podcast, sender: &Sender<Action>) -> Result<(), Error> {
     dbqueries::update_none_to_played_now(pd)?;
     // Not all widgets migth have been loaded when the mark_all is hit
     // So we will need to refresh again after it's done.
@@ -275,10 +275,10 @@ fn mark_all_watched(pd: &Podcast, sender: Sender<Action>) -> Result<(), Error> {
 }
 
 #[inline]
-pub fn mark_all_notif(pd: Arc<Podcast>, sender: Sender<Action>) -> InAppNotification {
+pub fn mark_all_notif(pd: Arc<Podcast>, sender: &Sender<Action>) -> InAppNotification {
     let id = pd.id();
     let callback = clone!(sender => move || {
-        mark_all_watched(&pd, sender.clone())
+        mark_all_watched(&pd, &sender)
             .map_err(|err| error!("Notif Callback Error: {}", err))
             .ok();
         glib::Continue(false)
@@ -290,7 +290,7 @@ pub fn mark_all_notif(pd: Arc<Podcast>, sender: Sender<Action>) -> InAppNotifica
             .ok();
     });
 
-    let text = "Marked all episodes as listened".into();
+    let text = "Marked all episodes as listened";
     InAppNotification::new(text, callback, undo_callback)
 }
 
@@ -332,7 +332,7 @@ pub fn remove_show_notif(pd: Arc<Podcast>, sender: Sender<Action>) -> InAppNotif
         undo_wrap().map_err(|err| error!("{}", err)).ok();
     };
 
-    InAppNotification::new(text, callback, undo_callback)
+    InAppNotification::new(&text, callback, undo_callback)
 }
 
 #[inline]

@@ -80,14 +80,14 @@ impl Default for EpisodeWidget {
 
 impl EpisodeWidget {
     #[inline]
-    pub fn new(episode: EpisodeWidgetQuery, sender: Sender<Action>) -> EpisodeWidget {
+    pub fn new(episode: EpisodeWidgetQuery, sender: &Sender<Action>) -> EpisodeWidget {
         let mut widget = EpisodeWidget::default();
         widget.init(episode, sender);
         widget
     }
 
     #[inline]
-    fn init(&mut self, episode: EpisodeWidgetQuery, sender: Sender<Action>) {
+    fn init(&mut self, episode: EpisodeWidgetQuery, sender: &Sender<Action>) {
         // Set the date label.
         self.set_date(episode.epoch());
 
@@ -98,22 +98,22 @@ impl EpisodeWidget {
         self.set_duration(episode.duration());
 
         // Determine what the state of the media widgets should be.
-        determine_media_state(self.media.clone(), &episode)
+        determine_media_state(&self.media, &episode)
             .map_err(|err| error!("Error: {}", err))
             .map_err(|_| error!("Could not determine Media State"))
             .ok();
 
         let episode = Arc::new(Mutex::new(episode));
-        self.connect_buttons(episode, sender);
+        self.connect_buttons(&episode, sender);
     }
 
     #[inline]
-    fn connect_buttons(&self, episode: Arc<Mutex<EpisodeWidgetQuery>>, sender: Sender<Action>) {
+    fn connect_buttons(&self, episode: &Arc<Mutex<EpisodeWidgetQuery>>, sender: &Sender<Action>) {
         let title = self.title.clone();
         if let Ok(media) = self.media.try_borrow_mut() {
             media.play_connect_clicked(clone!(episode, sender => move |_| {
                 if let Ok(mut ep) = episode.lock() {
-                    on_play_bttn_clicked(&mut ep, title.clone(), sender.clone())
+                    on_play_bttn_clicked(&mut ep, &title, &sender)
                         .map_err(|err| error!("Error: {}", err))
                         .ok();
                 }
@@ -124,10 +124,10 @@ impl EpisodeWidget {
                 // Make the button insensitive so it won't be pressed twice
                 dl.set_sensitive(false);
                 if let Ok(ep) = episode.lock() {
-                    on_download_clicked(&ep, sender.clone())
+                    on_download_clicked(&ep, &sender)
                         .and_then(|_| {
                             info!("Donwload started succesfully.");
-                            determine_media_state(media_machine.clone(), &ep)
+                            determine_media_state(&media_machine, &ep)
                     })
                     .map_err(|err| error!("Error: {}", err))
                     .map_err(|_| error!("Could not determine Media State"))
@@ -167,7 +167,7 @@ impl EpisodeWidget {
 
 #[inline]
 fn determine_media_state(
-    media_machine: Rc<RefCell<MediaMachine>>,
+    media_machine: &Rc<RefCell<MediaMachine>>,
     episode: &EpisodeWidgetQuery,
 ) -> Result<(), Error> {
     let id = episode.rowid();
@@ -196,7 +196,7 @@ fn determine_media_state(
             if let Ok(guard) = manager::ACTIVE_DOWNLOADS.read() {
                 if !guard.contains_key(&id) {
                     if let Ok(ep) = dbqueries::get_episode_widget_from_rowid(id) {
-                        determine_media_state(media_machine.clone(), &ep)
+                        determine_media_state(&media_machine, &ep)
                             .map_err(|err| error!("Error: {}", err))
                             .map_err(|_| error!("Could not determine Media State"))
                             .ok();
@@ -230,19 +230,19 @@ fn determine_media_state(
         drop(lock);
 
         // Setup a callback that will update the progress bar.
-        update_progressbar_callback(prog.clone(), media_machine.clone(), id);
+        update_progressbar_callback(&prog, &media_machine, id);
 
         // Setup a callback that will update the total_size label
         // with the http ContentLength header number rather than
         // relying to the RSS feed.
-        update_total_size_callback(prog.clone(), media_machine.clone());
+        update_total_size_callback(&prog, &media_machine);
     }
 
     Ok(())
 }
 
 #[inline]
-fn on_download_clicked(ep: &EpisodeWidgetQuery, sender: Sender<Action>) -> Result<(), Error> {
+fn on_download_clicked(ep: &EpisodeWidgetQuery, sender: &Sender<Action>) -> Result<(), Error> {
     let pd = dbqueries::get_podcast_from_id(ep.podcast_id())?;
     let download_fold = get_download_folder(&pd.title())?;
 
@@ -258,8 +258,8 @@ fn on_download_clicked(ep: &EpisodeWidgetQuery, sender: Sender<Action>) -> Resul
 #[inline]
 fn on_play_bttn_clicked(
     episode: &mut EpisodeWidgetQuery,
-    title: Rc<RefCell<TitleMachine>>,
-    sender: Sender<Action>,
+    title: &Rc<RefCell<TitleMachine>>,
+    sender: &Sender<Action>,
 ) -> Result<(), Error> {
     open_uri(episode.rowid())?;
     episode.set_played_now()?;
@@ -292,12 +292,12 @@ fn open_uri(rowid: i32) -> Result<(), Error> {
 #[inline]
 #[cfg_attr(feature = "cargo-clippy", allow(if_same_then_else))]
 fn update_progressbar_callback(
-    prog: Arc<Mutex<manager::Progress>>,
-    media: Rc<RefCell<MediaMachine>>,
+    prog: &Arc<Mutex<manager::Progress>>,
+    media: &Rc<RefCell<MediaMachine>>,
     episode_rowid: i32,
 ) {
     let callback = clone!(prog, media => move || {
-        progress_bar_helper(prog.clone(), media.clone(), episode_rowid)
+        progress_bar_helper(&prog, &media, episode_rowid)
             .unwrap_or(glib::Continue(false))
     });
     timeout_add(300, callback);
@@ -306,8 +306,8 @@ fn update_progressbar_callback(
 #[inline]
 #[allow(if_same_then_else)]
 fn progress_bar_helper(
-    prog: Arc<Mutex<manager::Progress>>,
-    media: Rc<RefCell<MediaMachine>>,
+    prog: &Arc<Mutex<manager::Progress>>,
+    media: &Rc<RefCell<MediaMachine>>,
     episode_rowid: i32,
 ) -> Result<glib::Continue, Error> {
     let (fraction, downloaded) = {
@@ -354,19 +354,19 @@ fn progress_bar_helper(
 // relying to the RSS feed.
 #[inline]
 fn update_total_size_callback(
-    prog: Arc<Mutex<manager::Progress>>,
-    media: Rc<RefCell<MediaMachine>>,
+    prog: &Arc<Mutex<manager::Progress>>,
+    media: &Rc<RefCell<MediaMachine>>,
 ) {
     let callback = clone!(prog, media => move || {
-        total_size_helper(prog.clone(), media.clone()).unwrap_or(glib::Continue(true))
+        total_size_helper(&prog, &media).unwrap_or(glib::Continue(true))
     });
     timeout_add(500, callback);
 }
 
 #[inline]
 fn total_size_helper(
-    prog: Arc<Mutex<manager::Progress>>,
-    media: Rc<RefCell<MediaMachine>>,
+    prog: &Arc<Mutex<manager::Progress>>,
+    media: &Rc<RefCell<MediaMachine>>,
 ) -> Result<glib::Continue, Error> {
     // Get the total_bytes.
     let total_bytes = {

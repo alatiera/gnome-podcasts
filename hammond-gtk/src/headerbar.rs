@@ -61,13 +61,13 @@ impl Default for Header {
 
 // TODO: Refactor components into smaller state machines
 impl Header {
-    pub fn new(content: &Content, window: &gtk::Window, sender: Sender<Action>) -> Header {
+    pub fn new(content: &Content, window: &gtk::Window, sender: &Sender<Action>) -> Header {
         let h = Header::default();
-        h.init(content, window, sender);
+        h.init(content, window, &sender);
         h
     }
 
-    pub fn init(&self, content: &Content, window: &gtk::Window, sender: Sender<Action>) {
+    pub fn init(&self, content: &Content, window: &gtk::Window, sender: &Sender<Action>) {
         let builder = gtk::Builder::new_from_resource("/org/gnome/hammond/gtk/headerbar.ui");
 
         let add_popover: gtk::Popover = builder.get_object("add_popover").unwrap();

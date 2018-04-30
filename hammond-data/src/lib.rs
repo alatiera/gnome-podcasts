@@ -1,6 +1,6 @@
 #![recursion_limit = "1024"]
 #![cfg_attr(all(test, feature = "clippy"), allow(option_unwrap_used, result_unwrap_used))]
-#![cfg_attr(feature = "cargo-clippy", allow(blacklisted_name))]
+#![cfg_attr(feature = "cargo-clippy", allow(option_map_unit_fn))]
 #![cfg_attr(
     feature = "clippy",
     warn(
@@ -76,8 +76,7 @@ pub use models::{Episode, EpisodeWidgetQuery, Podcast, PodcastCoverQuery, Source
 
 // Set the user agent, See #53 for more
 // Keep this in sync with Tor-browser releases
-const USER_AGENT: &'static str =
-    "Mozilla/5.0 (Windows NT 6.1; rv:52.0) Gecko/20100101 Firefox/52.0";
+const USER_AGENT: &str = "Mozilla/5.0 (Windows NT 6.1; rv:52.0) Gecko/20100101 Firefox/52.0";
 
 /// [XDG Base Direcotory](https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html) Paths.
 #[allow(missing_debug_implementations)]

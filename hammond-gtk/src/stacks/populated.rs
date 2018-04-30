@@ -13,7 +13,7 @@ use std::rc::Rc;
 use std::sync::mpsc::Sender;
 use std::sync::Arc;
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Copy)]
 pub enum PopulatedState {
     View,
     Widget,
@@ -71,7 +71,7 @@ impl PopulatedStack {
         // The current visible child might change depending on
         // removal and insertion in the gtk::Stack, so we have
         // to make sure it will stay the same.
-        let s = self.state.clone();
+        let s = self.state;
         self.switch_visible(s);
 
         old.destroy();
@@ -94,7 +94,7 @@ impl PopulatedStack {
         // The current visible child might change depending on
         // removal and insertion in the gtk::Stack, so we have
         // to make sure it will stay the same.
-        let s = self.state.clone();
+        let s = self.state;
         self.switch_visible(s);
 
         Ok(())
@@ -113,7 +113,7 @@ impl PopulatedStack {
         // The current visible child might change depending on
         // removal and insertion in the gtk::Stack, so we have
         // to make sure it will stay the same.
-        let s = self.state.clone();
+        let s = self.state;
         self.switch_visible(s);
 
         old.destroy();

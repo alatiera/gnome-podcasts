@@ -181,7 +181,7 @@ impl Source {
         let id = self.id();
         let response = loop_fn(self, move |source| {
             source
-                .request_constructor(client.clone(), ignore_etags)
+                .request_constructor(&client.clone(), ignore_etags)
                 .then(|res| match res {
                     Ok(response) => Ok(Loop::Break(response)),
                     Err(err) => match err {
@@ -195,7 +195,7 @@ impl Source {
         });
 
         let feed = response
-            .and_then(|res| response_to_channel(res))
+            .and_then(response_to_channel)
             .and_then(move |chan| {
                 FeedBuilder::default()
                     .channel(chan)
@@ -211,7 +211,7 @@ impl Source {
     // #bools_are_just_2variant_enmus
     fn request_constructor(
         self,
-        client: Client<HttpsConnector<HttpConnector>>,
+        client: &Client<HttpsConnector<HttpConnector>>,
         ignore_etags: bool,
     ) -> Box<Future<Item = Response, Error = DataError>> {
         // FIXME: remove unwrap somehow

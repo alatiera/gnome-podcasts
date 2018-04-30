@@ -11,7 +11,7 @@ use widgets::{EmptyView, HomeView};
 use std::rc::Rc;
 use std::sync::mpsc::Sender;
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Copy)]
 enum State {
     Home,
     Empty,

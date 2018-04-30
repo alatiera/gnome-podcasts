@@ -1,3 +1,4 @@
+#![cfg_attr(feature = "cargo-clippy", allow(unit_arg))]
 //! Index Feeds.
 
 use futures::future::*;
@@ -53,7 +54,7 @@ impl Feed {
         // Filter errors, Index updatable episodes, return insertables.
         let insertables = filter_episodes(episodes);
         // Batch index insertable episodes.
-        let idx = insertables.and_then(|eps| ok(batch_insert_episodes(eps)));
+        let idx = insertables.and_then(|eps| ok(batch_insert_episodes(&eps)));
 
         Box::new(idx)
     }
@@ -109,13 +110,13 @@ where
     Box::new(list)
 }
 
-fn batch_insert_episodes(episodes: Vec<NewEpisode>) {
+fn batch_insert_episodes(episodes: &[NewEpisode]) {
     if episodes.is_empty() {
         return;
     };
 
     info!("Indexing {} episodes.", episodes.len());
-    dbqueries::index_new_episodes(episodes.as_slice())
+    dbqueries::index_new_episodes(episodes)
         .map_err(|err| {
             error!("Failed batch indexng: {}", err);
             info!("Fallign back to individual indexing.");

@@ -32,7 +32,7 @@ impl Default for InAppNotification {
 }
 
 impl InAppNotification {
-    pub fn new<F, U>(text: String, mut callback: F, undo_callback: U) -> Self
+    pub fn new<F, U>(text: &str, mut callback: F, undo_callback: U) -> Self
     where
         F: FnMut() -> glib::Continue + 'static,
         U: Fn() + 'static,

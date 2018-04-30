@@ -49,7 +49,7 @@ type HttpsClient = Client<HttpsConnector<HttpConnector>>;
 pub fn pipeline<'a, S>(
     sources: S,
     ignore_etags: bool,
-    client: HttpsClient,
+    client: &HttpsClient,
 ) -> Box<Future<Item = Vec<()>, Error = DataError> + 'a>
 where
     S: Stream<Item = Source, Error = DataError> + 'a,
@@ -79,7 +79,7 @@ where
         .build(&handle);
 
     let stream = iter_ok::<_, DataError>(sources);
-    let p = pipeline(stream, ignore_etags, client);
+    let p = pipeline(stream, ignore_etags, &client);
     core.run(p).map(|_| ())
 }
 
