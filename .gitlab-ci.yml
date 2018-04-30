@@ -98,10 +98,15 @@ rustfmt:
 clippy:
     image: "rustlang/rust:nightly"
     stage: lint
+    variables:
+        RUSTFLAGS: "--cfg rayon_unstable"
+    before_script:
+        - apt-get update -yqq
+        - apt-get install -yqq --no-install-recommends build-essential libgtk-3-dev meson
     script:
         - rustc --version && cargo --version
         - cargo install clippy --force
         # Force regeneration of gresources regardless of artifacts chage
         - cd hammond-gtk/resources/ && glib-compile-resources --generate resources.xml && cd ../../
         - cargo clippy --all
-    when: manual
+    allow_failure: true
