@@ -3,7 +3,8 @@
     allow(clone_on_ref_ptr, blacklisted_name, match_same_arms, option_map_unit_fn)
 )]
 #![allow(unknown_lints)]
-#![deny(unused_extern_crates, unused)]
+#![warn(unused_extern_crates, unused)]
+#![deny(warnings)]
 
 extern crate gdk;
 extern crate gdk_pixbuf;
