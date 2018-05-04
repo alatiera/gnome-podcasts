@@ -72,7 +72,7 @@ impl PopulatedStack {
         // removal and insertion in the gtk::Stack, so we have
         // to make sure it will stay the same.
         let s = self.state;
-        self.switch_visible(s);
+        self.switch_visible(s, gtk::StackTransitionType::None);
 
         old.destroy();
         Ok(())
@@ -95,7 +95,7 @@ impl PopulatedStack {
         // removal and insertion in the gtk::Stack, so we have
         // to make sure it will stay the same.
         let s = self.state;
-        self.switch_visible(s);
+        self.switch_visible(s, gtk::StackTransitionType::None);
 
         Ok(())
     }
@@ -114,7 +114,7 @@ impl PopulatedStack {
         // removal and insertion in the gtk::Stack, so we have
         // to make sure it will stay the same.
         let s = self.state;
-        self.switch_visible(s);
+        self.switch_visible(s, gtk::StackTransitionType::None);
 
         old.destroy();
         Ok(())
@@ -135,18 +135,16 @@ impl PopulatedStack {
     }
 
     #[inline]
-    pub fn switch_visible(&mut self, state: PopulatedState) {
+    pub fn switch_visible(&mut self, state: PopulatedState, animation: gtk::StackTransitionType) {
         use self::PopulatedState::*;
 
         match state {
             View => {
-                self.stack
-                    .set_visible_child_full("shows", gtk::StackTransitionType::SlideRight);
+                self.stack.set_visible_child_full("shows", animation);
                 self.state = View;
             }
             Widget => {
-                self.stack
-                    .set_visible_child_full("widget", gtk::StackTransitionType::SlideLeft);
+                self.stack.set_visible_child_full("widget", animation);
                 self.state = Widget;
             }
         }

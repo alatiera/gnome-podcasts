@@ -182,12 +182,16 @@ impl App {
                 Ok(Action::ShowWidgetAnimated) => {
                     let shows = content.get_shows();
                     let mut pop = shows.borrow().populated();
-                    pop.borrow_mut().switch_visible(PopulatedState::Widget);
+                    pop.borrow_mut().switch_visible(
+                        PopulatedState::Widget,
+                        gtk::StackTransitionType::SlideLeft,
+                    );
                 }
                 Ok(Action::ShowShowsAnimated) => {
                     let shows = content.get_shows();
                     let mut pop = shows.borrow().populated();
-                    pop.borrow_mut().switch_visible(PopulatedState::View);
+                    pop.borrow_mut()
+                        .switch_visible(PopulatedState::View, gtk::StackTransitionType::SlideRight);
                 }
                 Ok(Action::HeaderBarShowTile(title)) => headerbar.switch_to_back(&title),
                 Ok(Action::HeaderBarNormal) => headerbar.switch_to_normal(),
