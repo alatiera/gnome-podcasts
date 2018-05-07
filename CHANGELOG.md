@@ -5,53 +5,68 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Added:
+- Vies now have a new fancy scrolling animation when they are refereshed.
 
-* Downlaoding and loading images now is done asynchronously and is not blocking programs execution.
+### Changed:
+- Downlaoding and loading images now is done asynchronously and is not blocking programs execution.
 [#7](https://gitlab.gnome.org/World/hammond/issues/7)
-* Bold, italics links and some other `html` tags can now be rendered in the Show Description.
+- Bold, italics links and some other `html` tags can now be rendered in the Show Description.
 [#25](https://gitlab.gnome.org/World/hammond/issues/25)
+- `Rayon` Threadpools are now used instead of unlimited one-off threads.
+- `EpisdeWidget`s are now loaded asynchronously accross views.
+- `EpisodeWidget`s no longer trigger a `View` refresh for trivial stuff 03bd95184808ccab3e0ea0e3713a52ee6b7c9ab4
+- `ShowWidget` layout was changed 9a5cc1595d982f3232ee7595b83b6512ac8f6c88
+- `ShowWidget` Description is inside a scrolled window now
+
+### Fixed:
+- `EpisodeWidget` Height now is consistent accros views [#57](https://gitlab.gnome.org/World/hammond/issues/57)
+- Implemented a tail-recursion loop to follow-up when a feed redirects to another url. c6a24e839a8ba77d09673f299cfc1e64ba7078f3
+
+### Removed:
+- Removed the custom configuration file and replaced instructions to just use meson. 1f1d4af8ba7db8f56435d13a1c191ecff3d4a85b
 
 ## [0.3.1] - 2018-03-28
-
-* Ability to mark all episodes of a Show as watched.
+### Added:
+- Ability to mark all episodes of a Show as watched.
 [#47](https://gitlab.gnome.org/World/hammond/issues/47)
-* Now you are able to subscribe to itunes™ podcasts by using the itunes link of the show.
+- Now you are able to subscribe to itunes™ podcasts by using the itunes link of the show.
 [#49](https://gitlab.gnome.org/World/hammond/issues/49)
-* EpisdeWidget has been reimplemented as a compile time state machine.
-[!18](https://gitlab.gnome.org/World/hammond/merge_requests/18)
-* Content Views no longer scroll horizontally when shrunk bellow their minimum size.
-[#35](https://gitlab.gnome.org/World/hammond/issues/35)
-* Double border aroun the main window was fixed. (Rowan Lewis)
-[#52](https://gitlab.gnome.org/World/hammond/issues/52)
-* Some requests now use the Tor Browser's user agent. (Rowan Lewis)
-[#53](https://gitlab.gnome.org/World/hammond/issues/53)
-* Hammond now remembers the window size and position. (Rowan Lewis)
+- Hammond now remembers the window size and position. (Rowan Lewis)
 [#50](https://gitlab.gnome.org/World/hammond/issues/50)
-* Implemnted the initial work for integrating with GSettings and storing preferences. (Rowan Lewis)
+- Implemnted the initial work for integrating with GSettings and storing preferences. (Rowan Lewis)
 [!22](https://gitlab.gnome.org/World/hammond/merge_requests/22) [!23](https://gitlab.gnome.org/World/hammond/merge_requests/23)
-* Shows without episodes now display an empty message similar to EmptyView.
+- Shows without episodes now display an empty message similar to EmptyView.
 [#44](https://gitlab.gnome.org/World/hammond/issues/44)
 
-## [0.3.0] - 2018-02-11
+### Changed:
+- EpisdeWidget has been reimplemented as a compile time state machine.
+[!18](https://gitlab.gnome.org/World/hammond/merge_requests/18)
+- Content Views no longer scroll horizontally when shrunk bellow their minimum size.
+[#35](https://gitlab.gnome.org/World/hammond/issues/35)
+- Some requests now use the Tor Browser's user agent. (Rowan Lewis)
+[#53](https://gitlab.gnome.org/World/hammond/issues/53)
 
-* Tobias Bernard Redesigned the whole Gtk+ client.
-* Complete re-write of hammond-data and hammond-gtk modules.
-* Error handling for all crates was migrated from error-chain to Failure.
-* Hammond-data now uses futures to parse feeds.
-* Custom gtk-widgets are now composed structs as opposed to functions returning Gtk widgets.
+### Fixed:
+- Double border aroun the main window was fixed. (Rowan Lewis)
+[#52](https://gitlab.gnome.org/World/hammond/issues/52)
+
+## [0.3.0] - 2018-02-11
+- Tobias Bernard Redesigned the whole Gtk+ client.
+- Complete re-write of hammond-data and hammond-gtk modules.
+- Error handling for all crates was migrated from error-chain to Failure.
+- Hammond-data now uses futures to parse feeds.
+- Custom gtk-widgets are now composed structs as opposed to functions returning Gtk widgets.
 
 ## [0.2.0] - 2017-11-28
-
-* Database Schema Breaking Changes.
-* Added url sanitization. #4.
-* Reworked and refactored of the hammond-data API.
-* Added some more unit tests
-* Documented hammond-data public API.
+- Database Schema Breaking Changes.
+- Added url sanitization. #4.
+- Reworked and refactored of the hammond-data API.
+- Added some more unit tests
+- Documented hammond-data public API.
 
 ## [0.1.1] - 2017-11-13
-
-* Added appdata.xml file
+- Added appdata.xml file
 
 ## [0.1.0] - 2017-11-13
-
-Initial Release
+- Initial Release
