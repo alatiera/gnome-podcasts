@@ -13,6 +13,7 @@ cp -rf hammond-data $DIST
 cp -rf hammond-gtk $DIST
 cp -rf hammond-downloader $DIST
 cp Cargo.toml $DIST
+cp Cargo.lock $DIST
 cp configure $DIST
 cp meson.build $DIST
 cp Hammond.doap $DIST
