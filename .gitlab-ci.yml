@@ -96,17 +96,13 @@ rustfmt:
 # Configure and run clippy on nightly
 # Only fails on errors atm.
 clippy:
-    image: "rustlang/rust:nightly"
+    image: "registry.gitlab.gnome.org/alatiera/hammond-container-images/clippy:nightly"
     stage: lint
     variables:
         RUSTFLAGS: "--cfg rayon_unstable"
-    before_script:
-        - apt-get update -yqq
-        - apt-get install -yqq --no-install-recommends build-essential libgtk-3-dev meson
     script:
         - rustc --version && cargo --version
-        - cargo install clippy --force
+        - cargo clippy --version
         # Force regeneration of gresources regardless of artifacts chage
         - cd hammond-gtk/resources/ && glib-compile-resources --generate resources.xml && cd ../../
         - cargo clippy --all
-    allow_failure: true
