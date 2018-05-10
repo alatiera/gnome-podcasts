@@ -72,7 +72,7 @@ flatpak:
     artifacts:
         paths:
             - hammond-dev.flatpak
-        expire_in: 2 days
+        expire_in: 30 days
 
     cache:
         # JOB_NAME - Each job will have it's own cache
