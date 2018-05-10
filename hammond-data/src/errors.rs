@@ -5,6 +5,7 @@ use hyper;
 use native_tls;
 use rss;
 use url;
+use xml;
 
 use std::io;
 
@@ -49,6 +50,8 @@ pub enum DataError {
     IOError(#[cause] io::Error),
     #[fail(display = "RSS Error: {}", _0)]
     RssError(#[cause] rss::Error),
+    #[fail(display = "XML Reader Error: {}", _0)]
+    XmlReaderError(#[cause] xml::reader::Error),
     #[fail(display = "Error: {}", _0)]
     Bail(String),
     #[fail(display = "{}", _0)]
@@ -112,6 +115,12 @@ impl From<io::Error> for DataError {
 impl From<rss::Error> for DataError {
     fn from(err: rss::Error) -> Self {
         DataError::RssError(err)
+    }
+}
+
+impl From<xml::reader::Error> for DataError {
+    fn from(err: xml::reader::Error) -> Self {
+        DataError::XmlReaderError(err)
     }
 }
 

@@ -29,6 +29,10 @@
 #[macro_use]
 extern crate pretty_assertions;
 
+#[cfg(test)]
+#[macro_use]
+extern crate maplit;
+
 #[macro_use]
 extern crate derive_builder;
 #[macro_use]
@@ -58,6 +62,8 @@ extern crate rss;
 extern crate tokio_core;
 extern crate url;
 extern crate xdg;
+#[allow(unused)]
+extern crate xml;
 
 pub mod database;
 #[allow(missing_docs)]
@@ -66,6 +72,7 @@ pub mod dbqueries;
 pub mod errors;
 mod feed;
 pub(crate) mod models;
+pub mod opml;
 mod parser;
 pub mod pipeline;
 mod schema;
