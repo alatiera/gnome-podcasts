@@ -25,23 +25,21 @@ pub struct Feed {
 
 impl Feed {
     /// Index the contents of the RSS `Feed` into the database.
-    pub fn index(self) -> Box<Future<Item = (), Error = DataError> + Send> {
-        let fut = self.parse_podcast_async()
+    pub fn index(self) -> impl Future<Item = (), Error = DataError> + Send {
+        self.parse_podcast_async()
             .and_then(|pd| pd.to_podcast())
-            .and_then(move |pd| self.index_channel_items(pd));
-
-        Box::new(fut)
+            .and_then(move |pd| self.index_channel_items(pd))
     }
 
     fn parse_podcast(&self) -> NewPodcast {
         NewPodcast::new(&self.channel, self.source_id)
     }
 
-    fn parse_podcast_async(&self) -> Box<Future<Item = NewPodcast, Error = DataError> + Send> {
-        Box::new(ok(self.parse_podcast()))
+    fn parse_podcast_async(&self) -> impl Future<Item = NewPodcast, Error = DataError> + Send {
+        ok(self.parse_podcast())
     }
 
-    fn index_channel_items(self, pd: Podcast) -> Box<Future<Item = (), Error = DataError> + Send> {
+    fn index_channel_items(self, pd: Podcast) -> impl Future<Item = (), Error = DataError> + Send {
         let stream = stream::iter_ok::<_, DataError>(self.channel.into_items());
 
         // Parse the episodes
@@ -52,11 +50,9 @@ impl Feed {
         });
 
         // Filter errors, Index updatable episodes, return insertables.
-        let insertables = filter_episodes(episodes);
-        // Batch index insertable episodes.
-        let idx = insertables.and_then(|eps| ok(batch_insert_episodes(&eps)));
-
-        Box::new(idx)
+        filter_episodes(episodes)
+            // Batch index insertable episodes.
+            .and_then(|eps| ok(batch_insert_episodes(&eps)))
     }
 }
 
@@ -87,11 +83,11 @@ fn determine_ep_state(
 
 fn filter_episodes<'a, S>(
     stream: S,
-) -> Box<Future<Item = Vec<NewEpisode>, Error = DataError> + Send + 'a>
+) -> impl Future<Item = Vec<NewEpisode>, Error = DataError> + Send + 'a
 where
     S: Stream<Item = IndexState<NewEpisode>, Error = DataError> + Send + 'a,
 {
-    let list = stream.filter_map(|state| match state {
+    stream.filter_map(|state| match state {
         IndexState::NotChanged => None,
         // Update individual rows, and filter them
         IndexState::Update((ref ep, rowid)) => {
@@ -105,9 +101,7 @@ where
         IndexState::Index(s) => Some(s),
     })
     // only Index is left, collect them for batch index
-    .collect();
-
-    Box::new(list)
+    .collect()
 }
 
 fn batch_insert_episodes(episodes: &[NewEpisode]) {

@@ -177,7 +177,7 @@ impl Source {
         self,
         client: Client<HttpsConnector<HttpConnector>>,
         ignore_etags: bool,
-    ) -> Box<Future<Item = Feed, Error = DataError>> {
+    ) -> impl Future<Item = Feed, Error = DataError> {
         let id = self.id();
         let response = loop_fn(self, move |source| {
             source
@@ -194,7 +194,7 @@ impl Source {
                 })
         });
 
-        let feed = response
+        response
             .and_then(response_to_channel)
             .and_then(move |chan| {
                 FeedBuilder::default()
@@ -202,9 +202,7 @@ impl Source {
                     .source_id(id)
                     .build()
                     .map_err(From::from)
-            });
-
-        Box::new(feed)
+            })
     }
 
     // TODO: make ignore_etags an Enum for better ergonomics.
@@ -213,7 +211,7 @@ impl Source {
         self,
         client: &Client<HttpsConnector<HttpConnector>>,
         ignore_etags: bool,
-    ) -> Box<Future<Item = Response, Error = DataError>> {
+    ) -> impl Future<Item = Response, Error = DataError> {
         // FIXME: remove unwrap somehow
         let uri = Uri::from_str(self.uri()).unwrap();
         let mut req = Request::new(Method::Get, uri);
@@ -234,25 +232,22 @@ impl Source {
             }
         }
 
-        let work = client
+        client
             .request(req)
             .map_err(From::from)
-            .and_then(move |res| self.match_status(res));
-        Box::new(work)
+            .and_then(move |res| self.match_status(res))
     }
 }
 
 #[allow(needless_pass_by_value)]
-fn response_to_channel(res: Response) -> Box<Future<Item = Channel, Error = DataError> + Send> {
-    let chan = res.body()
+fn response_to_channel(res: Response) -> impl Future<Item = Channel, Error = DataError> + Send {
+    res.body()
         .concat2()
         .map(|x| x.into_iter())
         .map_err(From::from)
         .map(|iter| iter.collect::<Vec<u8>>())
         .map(|utf_8_bytes| String::from_utf8_lossy(&utf_8_bytes).into_owned())
-        .and_then(|buf| Channel::from_str(&buf).map_err(From::from));
-
-    Box::new(chan)
+        .and_then(|buf| Channel::from_str(&buf).map_err(From::from))
 }
 
 #[cfg(test)]

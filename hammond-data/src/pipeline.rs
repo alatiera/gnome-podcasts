@@ -50,24 +50,22 @@ pub fn pipeline<'a, S>(
     sources: S,
     ignore_etags: bool,
     client: &HttpsClient,
-) -> Box<Future<Item = Vec<()>, Error = DataError> + 'a>
+) -> impl Future<Item = Vec<()>, Error = DataError> + 'a
 where
     S: Stream<Item = Source, Error = DataError> + 'a,
 {
-    let pipeline = sources
+    sources
         .and_then(clone!(client => move |s| s.into_feed(client.clone(), ignore_etags)))
         .and_then(|feed| rayon::scope(|s| s.spawn_future(feed.index())))
         // the stream will stop at the first error so
         // we ensure that everything will succeded regardless.
         .map_err(|err| error!("Error: {}", err))
         .then(|_| ok::<(), DataError>(()))
-        .collect();
-
-    Box::new(pipeline)
+        .collect()
 }
 
 /// Creates a tokio `reactor::Core`, and a `hyper::Client` and
-/// runs the pipeline.
+/// runs the pipeline to completion. The `reactor::Core` is dropped afterwards.
 pub fn run<S>(sources: S, ignore_etags: bool) -> Result<(), DataError>
 where
     S: IntoIterator<Item = Source>,
