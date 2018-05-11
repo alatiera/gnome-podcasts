@@ -68,7 +68,7 @@ sudo ninja -C build install
 
 #### Dependencies
 
-* Rust stable 1.22 or later along with cargo.
+* Rust stable 1.26 or later along with cargo.
 * Gtk+ 3.22 or later
 * Meson
 * A network connection
