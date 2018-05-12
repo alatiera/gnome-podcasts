@@ -25,12 +25,13 @@ pub struct Opml {
 }
 
 /// Import feed url's from a `R` into the `Source` table.
-pub fn opml_import<R: Read>(reader: R) -> Result<Vec<Result<Source, DataError>>, DataError> {
-    let feeds = extract_sources(reader)?;
-    Ok(feeds
+pub fn opml_import<R: Read>(reader: R) -> Result<Vec<Result<Source, DataError>>, reader::Error> {
+    let feeds = extract_sources(reader)?
         .iter()
         .map(|opml| Source::from_url(&opml.url))
-        .collect())
+        .collect();
+
+    Ok(feeds)
 }
 
 /// Extracts the `outline` elemnts from a reader `R` and returns a `HashSet` of `Opml` structs.
