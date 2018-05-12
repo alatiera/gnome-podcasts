@@ -231,7 +231,7 @@ fn on_url_change(
 
 fn on_import_clicked(window: &gtk::Window, sender: &Sender<Action>) {
     use glib::translate::ToGlib;
-    use gtk::{FileChooserAction, FileChooserDialog, ResponseType};
+    use gtk::{FileChooserAction, FileChooserDialog, FileFilter, ResponseType};
 
     // let dialog = FileChooserDialog::new(title, Some(&window), FileChooserAction::Open);
     // TODO: It might be better to use a FileChooserNative widget.
@@ -245,6 +245,13 @@ fn on_import_clicked(window: &gtk::Window, sender: &Sender<Action>) {
             ("_Open", ResponseType::Accept),
         ],
     );
+
+    // Set a filter to show only xml files
+    let filter = FileFilter::new();
+    FileFilterExt::set_name(&filter, Some("OPML file"));
+    filter.add_mime_type("application/xml");
+    filter.add_mime_type("text/xml");
+    dialog.add_filter(&filter);
 
     dialog.connect_response(clone!(sender => move |dialog, resp| {
         debug!("Dialong Response {}", resp);
