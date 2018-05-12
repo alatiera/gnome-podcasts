@@ -3,6 +3,9 @@ stages:
   - lint
   - review
 
+variables:
+    BUNDLE: "hammond-dev.flatpak"
+
 .cargo_test_template: &cargo_test
     stage: test
 
@@ -65,14 +68,14 @@ flatpak:
         - flatpak build-export repo app
 
         # Create a flatpak bundle
-        - flatpak build-bundle repo hammond-dev.flatpak org.gnome.Hammond
+        - flatpak build-bundle repo ${BUNDLE} org.gnome.Hammond
         # Run the tests
         # - flatpak-builder --run app org.gnome.Hammond.json cargo test -- --test-threads=1
         # - flatpak-builder --run app org.gnome.Hammond.json cargo test -- --test-threads=1 --ignored
 
     artifacts:
         paths:
-            - hammond-dev.flatpak
+            - $BUNDLE
         expire_in: 30 days
 
     cache:
@@ -92,7 +95,7 @@ review:
         - echo "Generating flatpak deployment"
     artifacts:
         paths:
-            - hammond-dev.flatpak
+            - $BUNDLE
         expire_in: 30 days
     environment:
         name: review/$CI_COMMIT_REF_NAME
