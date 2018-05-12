@@ -16,15 +16,16 @@ use stacks::Content;
 use utils::{itunes_to_rss, refresh};
 
 #[derive(Debug, Clone)]
+// TODO: split this into smaller
 pub struct Header {
     container: gtk::HeaderBar,
     add_toggle: gtk::MenuButton,
     switch: gtk::StackSwitcher,
-    back_button: gtk::Button,
+    back: gtk::Button,
     show_title: gtk::Label,
-    about_button: gtk::ModelButton,
-    import_button: gtk::ModelButton,
-    export_button: gtk::ModelButton,
+    about: gtk::ModelButton,
+    import: gtk::ModelButton,
+    export: gtk::ModelButton,
     update_button: gtk::ModelButton,
     update_box: gtk::Box,
     update_label: gtk::Label,
@@ -35,28 +36,28 @@ impl Default for Header {
     fn default() -> Header {
         let builder = gtk::Builder::new_from_resource("/org/gnome/hammond/gtk/headerbar.ui");
 
-        let header: gtk::HeaderBar = builder.get_object("headerbar").unwrap();
-        let add_toggle: gtk::MenuButton = builder.get_object("add_toggle").unwrap();
-        let switch: gtk::StackSwitcher = builder.get_object("switch").unwrap();
-        let back_button: gtk::Button = builder.get_object("back_button").unwrap();
-        let show_title: gtk::Label = builder.get_object("show_title").unwrap();
-        let import_button: gtk::ModelButton = builder.get_object("import_button").unwrap();
-        let export_button: gtk::ModelButton = builder.get_object("export_button").unwrap();
-        let update_button: gtk::ModelButton = builder.get_object("update_button").unwrap();
-        let update_box: gtk::Box = builder.get_object("update_notification").unwrap();
-        let update_label: gtk::Label = builder.get_object("update_label").unwrap();
-        let update_spinner: gtk::Spinner = builder.get_object("update_spinner").unwrap();
-        let about_button: gtk::ModelButton = builder.get_object("about_button").unwrap();
+        let header = builder.get_object("headerbar").unwrap();
+        let add_toggle = builder.get_object("add_toggle").unwrap();
+        let switch = builder.get_object("switch").unwrap();
+        let back = builder.get_object("back").unwrap();
+        let show_title = builder.get_object("show_title").unwrap();
+        let import = builder.get_object("import").unwrap();
+        let export = builder.get_object("export").unwrap();
+        let update_button = builder.get_object("update_button").unwrap();
+        let update_box = builder.get_object("update_notification").unwrap();
+        let update_label = builder.get_object("update_label").unwrap();
+        let update_spinner = builder.get_object("update_spinner").unwrap();
+        let about = builder.get_object("about").unwrap();
 
         Header {
             container: header,
             add_toggle,
             switch,
-            back_button,
+            back,
             show_title,
-            about_button,
-            import_button,
-            export_button,
+            about,
+            import,
+            export,
             update_button,
             update_box,
             update_label,
@@ -106,8 +107,7 @@ impl Header {
                 }));
         }));
 
-        self.about_button
-            .connect_clicked(clone!(window => move |_| {
+        self.about.connect_clicked(clone!(window => move |_| {
                 about_dialog(&window);
         }));
 
@@ -117,7 +117,7 @@ impl Header {
         let switch = &self.switch;
         let add_toggle = &self.add_toggle;
         let show_title = &self.show_title;
-        self.back_button.connect_clicked(
+        self.back.connect_clicked(
             clone!(switch, add_toggle, show_title, sender => move |back| {
                 switch.show();
                 add_toggle.show();
@@ -133,7 +133,7 @@ impl Header {
     pub fn switch_to_back(&self, title: &str) {
         self.switch.hide();
         self.add_toggle.hide();
-        self.back_button.show();
+        self.back.show();
         self.set_show_title(title);
         self.show_title.show();
     }
@@ -141,7 +141,7 @@ impl Header {
     pub fn switch_to_normal(&self) {
         self.switch.show();
         self.add_toggle.show();
-        self.back_button.hide();
+        self.back.hide();
         self.show_title.hide();
     }
 

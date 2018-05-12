@@ -168,7 +168,7 @@ Tobias Bernard
       </object>
     </child>
     <child>
-      <object class="GtkButton" id="back_button">
+      <object class="GtkButton" id="back">
         <property name="can_focus">True</property>
         <property name="receives_default">False</property>
         <property name="no_show_all">True</property>
@@ -321,7 +321,7 @@ Tobias Bernard
           </packing>
         </child>
         <child>
-          <object class="GtkModelButton" id="import_button">
+          <object class="GtkModelButton" id="import">
             <property name="visible">True</property>
             <property name="sensitive">False</property>
             <property name="can_focus">True</property>
@@ -335,7 +335,7 @@ Tobias Bernard
           </packing>
         </child>
         <child>
-          <object class="GtkModelButton" id="export_button">
+          <object class="GtkModelButton" id="export">
             <property name="visible">True</property>
             <property name="sensitive">False</property>
             <property name="can_focus">True</property>
@@ -360,7 +360,7 @@ Tobias Bernard
           </packing>
         </child>
         <child>
-          <object class="GtkModelButton" id="about_button">
+          <object class="GtkModelButton" id="about">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="receives_default">False</property>
