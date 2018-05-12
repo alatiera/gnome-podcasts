@@ -246,6 +246,9 @@ fn on_import_clicked(window: &gtk::Window, sender: &Sender<Action>) {
         ],
     );
 
+    // Do not show hidden(.thing) files
+    dialog.set_show_hidden(false);
+
     // Set a filter to show only xml files
     let filter = FileFilter::new();
     FileFilterExt::set_name(&filter, Some("OPML file"));
