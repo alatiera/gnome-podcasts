@@ -4,8 +4,9 @@ use rss::Channel;
 use url::Url;
 
 use hyper::client::HttpConnector;
-use hyper::header::{ETag, EntityTag, HttpDate, IfModifiedSince, IfNoneMatch, LastModified,
-                    Location, UserAgent};
+use hyper::header::{
+    ETag, EntityTag, HttpDate, IfModifiedSince, IfNoneMatch, LastModified, Location, UserAgent,
+};
 use hyper::{Client, Method, Request, Response, StatusCode, Uri};
 use hyper_tls::HttpsConnector;
 
