@@ -323,9 +323,8 @@ Tobias Bernard
         <child>
           <object class="GtkModelButton" id="import">
             <property name="visible">True</property>
-            <property name="sensitive">False</property>
             <property name="can_focus">True</property>
-            <property name="receives_default">False</property>
+            <property name="receives_default">True</property>
             <property name="text" translatable="yes">Import Shows</property>
           </object>
           <packing>

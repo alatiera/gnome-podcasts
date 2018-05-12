@@ -4,16 +4,16 @@ use gtk::prelude::*;
 
 use failure::Error;
 use failure::ResultExt;
+use rayon;
 use url::Url;
 
-use hammond_data::dbqueries;
-use hammond_data::Source;
+use hammond_data::{dbqueries, opml, Source};
 
 use std::sync::mpsc::Sender;
 
 use app::Action;
 use stacks::Content;
-use utils::{itunes_to_rss, refresh};
+use utils::{self, itunes_to_rss, refresh};
 
 #[derive(Debug, Clone)]
 // TODO: split this into smaller
@@ -107,9 +107,12 @@ impl Header {
                 }));
         }));
 
-        self.about.connect_clicked(clone!(window => move |_| {
-                about_dialog(&window);
-        }));
+        self.about
+            .connect_clicked(clone!(window => move |_| about_dialog(&window)));
+
+        self.import.connect_clicked(
+            clone!(window, sender => move |_| on_import_clicked(&window, &sender)),
+        );
 
         // Add the Headerbar to the window.
         window.set_titlebar(&self.container);
@@ -224,6 +227,49 @@ fn on_url_change(
             Ok(())
         }
     }
+}
+
+fn on_import_clicked(window: &gtk::Window, sender: &Sender<Action>) {
+    use glib::translate::ToGlib;
+    use gtk::{FileChooserAction, FileChooserDialog, ResponseType};
+
+    // let dialog = FileChooserDialog::new(title, Some(&window), FileChooserAction::Open);
+    // TODO: It might be better to use a FileChooserNative widget.
+    // Create the FileChooser Dialog
+    let dialog = FileChooserDialog::with_buttons(
+        Some("Select the file from which to you want to Import Shows."),
+        Some(window),
+        FileChooserAction::Open,
+        &[
+            ("_Cancel", ResponseType::Cancel),
+            ("_Open", ResponseType::Accept),
+        ],
+    );
+
+    dialog.connect_response(clone!(sender => move |dialog, resp| {
+        debug!("Dialong Response {}", resp);
+        if resp == ResponseType::Accept.to_glib() {
+            // TODO: Show an in-app notifictaion if the file can not be accessed
+            if let Some(filename) = dialog.get_filename() {
+                debug!("File selected: {:?}", filename);
+
+                rayon::spawn(clone!(sender => move || {
+                    // Parse the file and import the feeds
+                    if let Ok(sources) = opml::import_from_file(filename) {
+                        // Refresh the succesfully parsed feeds to index them
+                        utils::refresh(Some(sources), sender)
+                    } else {
+                        // TODO: Show an in-app notification if file can not be parsed
+                        error!("Failed to parse the Import file")
+                    }
+                }))
+            }
+        }
+
+        dialog.destroy();
+    }));
+
+    dialog.run();
 }
 
 // Totally copied it from fractal.

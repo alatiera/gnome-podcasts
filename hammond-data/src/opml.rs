@@ -7,7 +7,9 @@ use models::Source;
 use xml::reader;
 
 use std::collections::HashSet;
+use std::fs;
 use std::io::Read;
+use std::path::Path;
 
 // use std::fs::{File, OpenOptions};
 // use std::io::BufReader;
@@ -25,13 +27,33 @@ pub struct Opml {
 }
 
 /// Import feed url's from a `R` into the `Source` table.
-pub fn opml_import<R: Read>(reader: R) -> Result<Vec<Result<Source, DataError>>, reader::Error> {
+// TODO: Write test
+pub fn import_to_db<R: Read>(reader: R) -> Result<Vec<Source>, reader::Error> {
     let feeds = extract_sources(reader)?
         .iter()
         .map(|opml| Source::from_url(&opml.url))
+        .filter_map(|s| {
+            if let Err(ref err) = s {
+                let txt = "If you think this might be a bug please consider filling a report over \
+                           at https://gitlab.gnome.org/World/hammond/issues/new";
+
+                error!("Failed to import a Show: {}", err);
+                error!("{}", txt);
+            }
+
+            s.ok()
+        })
         .collect();
 
     Ok(feeds)
+}
+
+/// Open a File from `P`, try to parse the OPML then insert the Feeds in the database and
+/// return the new `Source`s
+// TODO: Write test
+pub fn import_from_file<P: AsRef<Path>>(path: P) -> Result<Vec<Source>, DataError> {
+    let content = fs::read_to_string(path)?;
+    import_to_db(content.as_bytes()).map_err(From::from)
 }
 
 /// Extracts the `outline` elemnts from a reader `R` and returns a `HashSet` of `Opml` structs.
