@@ -23,6 +23,8 @@ pub struct Header {
     back_button: gtk::Button,
     show_title: gtk::Label,
     about_button: gtk::ModelButton,
+    import_button: gtk::ModelButton,
+    export_button: gtk::ModelButton,
     update_button: gtk::ModelButton,
     update_box: gtk::Box,
     update_label: gtk::Label,
@@ -38,6 +40,8 @@ impl Default for Header {
         let switch: gtk::StackSwitcher = builder.get_object("switch").unwrap();
         let back_button: gtk::Button = builder.get_object("back_button").unwrap();
         let show_title: gtk::Label = builder.get_object("show_title").unwrap();
+        let import_button: gtk::ModelButton = builder.get_object("import_button").unwrap();
+        let export_button: gtk::ModelButton = builder.get_object("export_button").unwrap();
         let update_button: gtk::ModelButton = builder.get_object("update_button").unwrap();
         let update_box: gtk::Box = builder.get_object("update_notification").unwrap();
         let update_label: gtk::Label = builder.get_object("update_label").unwrap();
@@ -51,6 +55,8 @@ impl Default for Header {
             back_button,
             show_title,
             about_button,
+            import_button,
+            export_button,
             update_button,
             update_box,
             update_label,
