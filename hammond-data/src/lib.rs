@@ -1,4 +1,5 @@
 #![recursion_limit = "1024"]
+#![allow(unknown_lints)]
 #![cfg_attr(all(test, feature = "clippy"), allow(option_unwrap_used, result_unwrap_used))]
 #![cfg_attr(feature = "cargo-clippy", allow(option_map_unit_fn))]
 #![cfg_attr(
@@ -9,15 +10,12 @@
         items_after_statements, used_underscore_binding
     )
 )]
-#![allow(unknown_lints)]
 #![warn(
     bad_style, const_err, dead_code, improper_ctypes, legacy_directory_ownership,
     non_shorthand_field_patterns, no_mangle_generic_items, overflowing_literals, path_statements,
     patterns_in_fns_without_body, plugin_as_library, private_in_public, private_no_mangle_fns,
     private_no_mangle_statics, safe_extern_statics, unconditional_recursion,
-    unions_with_drop_fields, unused_allocation, unused_comparisons, unused_parens, while_true
-)]
-#![warn(
+    unions_with_drop_fields, unused_allocation, unused_comparisons, unused_parens, while_true,
     missing_debug_implementations, missing_docs, trivial_casts, trivial_numeric_casts,
     unused_extern_crates, unused
 )]
@@ -62,7 +60,6 @@ extern crate rss;
 extern crate tokio_core;
 extern crate url;
 extern crate xdg;
-#[allow(unused)]
 extern crate xml;
 
 pub mod database;
