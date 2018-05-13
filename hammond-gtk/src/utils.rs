@@ -62,7 +62,6 @@ use app::Action;
 /// let list = gtk::ListBox::new();
 /// lazy_load(widgets, list, |w| w, || {});
 /// ```
-#[inline]
 pub fn lazy_load<T, C, F, W, U>(data: T, container: C, mut contructor: F, callback: U)
 where
     T: IntoIterator + 'static,
@@ -82,7 +81,6 @@ where
 /// This is a more flexible version of `lazy_load` with less constrains.
 /// If you just want to lazy add `widgets` to a `container` check if
 /// `lazy_load` fits your needs first.
-#[inline]
 #[cfg_attr(feature = "cargo-clippy", allow(redundant_closure))]
 pub fn lazy_load_full<T, F, U>(data: T, mut func: F, finish_callback: U)
 where
@@ -233,7 +231,6 @@ lazy_static! {
 // GObjects do not implement Send trait, so SendCell is a way around that.
 // Also lazy_static requires Sync trait, so that's what the mutexes are.
 // TODO: maybe use something that would just scale to requested size?
-#[inline]
 pub fn set_image_from_path(image: &gtk::Image, podcast_id: i32, size: u32) -> Result<(), Error> {
     // Check if there's an active download about this show cover.
     // If there is, a callback will be set so this function will be called again.
@@ -306,14 +303,12 @@ pub fn set_image_from_path(image: &gtk::Image, podcast_id: i32, size: u32) -> Re
     Ok(())
 }
 
-#[inline]
 // FIXME: the signature should be `fn foo(s: Url) -> Result<Url, Error>`
 pub fn itunes_to_rss(url: &str) -> Result<String, Error> {
     let id = itunes_id_from_url(url).ok_or_else(|| format_err!("Failed to find an Itunes ID."))?;
     lookup_id(id)
 }
 
-#[inline]
 fn itunes_id_from_url(url: &str) -> Option<u32> {
     lazy_static! {
         static ref RE: Regex = Regex::new(r"/id([0-9]+)").unwrap();
@@ -325,7 +320,6 @@ fn itunes_id_from_url(url: &str) -> Option<u32> {
     foo.parse::<u32>().ok()
 }
 
-#[inline]
 fn lookup_id(id: u32) -> Result<String, Error> {
     let url = format!("https://itunes.apple.com/lookup?id={}&entity=podcast", id);
     let req: Value = reqwest::get(&url)?.json()?;

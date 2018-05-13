@@ -48,7 +48,6 @@ pub struct HomeView {
 }
 
 impl Default for HomeView {
-    #[inline]
     fn default() -> Self {
         let builder = gtk::Builder::new_from_resource("/org/gnome/hammond/gtk/episodes_view.ui");
         let container: gtk::Box = builder.get_object("container").unwrap();
@@ -85,7 +84,6 @@ impl Default for HomeView {
 
 // TODO: REFACTOR ME
 impl HomeView {
-    #[inline]
     pub fn new(sender: Sender<Action>) -> Result<Rc<HomeView>, Error> {
         use self::ListSplit::*;
 
@@ -121,7 +119,6 @@ impl HomeView {
         Ok(view)
     }
 
-    #[inline]
     /// Set scrolled window vertical adjustment.
     fn set_vadjustment(&self) -> Result<(), Error> {
         let guard = EPISODES_VIEW_VALIGNMENT
@@ -138,7 +135,6 @@ impl HomeView {
         Ok(())
     }
 
-    #[inline]
     /// Save the vertical scrollbar position.
     pub fn save_alignment(&self) -> Result<(), Error> {
         if let Ok(mut guard) = EPISODES_VIEW_VALIGNMENT.lock() {
@@ -153,13 +149,11 @@ impl HomeView {
     }
 }
 
-#[inline]
 fn add_to_box(widget: &EpisodesViewWidget, listbox: &gtk::ListBox, box_: &gtk::Box) {
     listbox.add(&widget.container);
     box_.show();
 }
 
-#[inline]
 fn split(now: &DateTime<Utc>, epoch: i64) -> ListSplit {
     let ep = Utc.timestamp(epoch, 0);
 
@@ -184,7 +178,6 @@ struct EpisodesViewWidget {
 }
 
 impl Default for EpisodesViewWidget {
-    #[inline]
     fn default() -> Self {
         let builder =
             gtk::Builder::new_from_resource("/org/gnome/hammond/gtk/episodes_view_widget.ui");
@@ -220,7 +213,6 @@ impl EpisodesViewWidget {
         view
     }
 
-    #[inline]
     fn init(&self, podcast_id: i32) {
         self.set_cover(podcast_id)
             .map_err(|err| error!("Failed to set a cover: {}", err))
@@ -229,7 +221,6 @@ impl EpisodesViewWidget {
         self.container.pack_start(&self.episode, true, true, 6);
     }
 
-    #[inline]
     fn set_cover(&self, podcast_id: i32) -> Result<(), Error> {
         utils::set_image_from_path(&self.image, podcast_id, 64)
     }

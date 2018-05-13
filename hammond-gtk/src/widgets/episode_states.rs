@@ -61,7 +61,6 @@ pub struct Title<S> {
 
 impl<S> Title<S> {
     #[allow(unused_must_use)]
-    #[inline]
     // This does not need to be &mut since gtk-rs does not model ownership
     // But I think it wouldn't hurt if we treat it as a Rust api.
     fn set_title(&mut self, s: &str) {
@@ -70,7 +69,6 @@ impl<S> Title<S> {
 }
 
 impl Title<Normal> {
-    #[inline]
     fn new(title: gtk::Label) -> Self {
         Title {
             title,
@@ -80,7 +78,6 @@ impl Title<Normal> {
 }
 
 impl From<Title<Normal>> for Title<GreyedOut> {
-    #[inline]
     fn from(f: Title<Normal>) -> Self {
         f.title
             .get_style_context()
@@ -94,7 +91,6 @@ impl From<Title<Normal>> for Title<GreyedOut> {
 }
 
 impl From<Title<GreyedOut>> for Title<Normal> {
-    #[inline]
     fn from(f: Title<GreyedOut>) -> Self {
         f.title
             .get_style_context()
@@ -114,13 +110,11 @@ pub enum TitleMachine {
 }
 
 impl TitleMachine {
-    #[inline]
     pub fn new(label: gtk::Label, is_played: bool) -> Self {
         let m = TitleMachine::Normal(Title::<Normal>::new(label));
         m.determine_state(is_played)
     }
 
-    #[inline]
     pub fn determine_state(self, is_played: bool) -> Self {
         use self::TitleMachine::*;
 
@@ -132,7 +126,6 @@ impl TitleMachine {
         }
     }
 
-    #[inline]
     pub fn set_title(&mut self, s: &str) {
         use self::TitleMachine::*;
 
@@ -156,7 +149,6 @@ pub struct Date<S> {
 }
 
 impl<S> Date<S> {
-    #[inline]
     fn into_usual(self, epoch: i64) -> Date<Usual> {
         let ts = Utc.timestamp(epoch, 0);
         self.date.set_text(ts.format("%e %b").to_string().trim());
@@ -168,7 +160,6 @@ impl<S> Date<S> {
         }
     }
 
-    #[inline]
     fn into_year_shown(self, epoch: i64) -> Date<YearShown> {
         let ts = Utc.timestamp(epoch, 0);
         self.date.set_text(ts.format("%e %b %Y").to_string().trim());
@@ -182,7 +173,6 @@ impl<S> Date<S> {
 }
 
 impl Date<UnInitialized> {
-    #[inline]
     fn new(date: gtk::Label, epoch: i64) -> Self {
         let ts = Utc.timestamp(epoch, 0);
         date.set_text(ts.format("%e %b %Y").to_string().trim());
@@ -203,13 +193,11 @@ pub enum DateMachine {
 }
 
 impl DateMachine {
-    #[inline]
     pub fn new(label: gtk::Label, epoch: i64) -> Self {
         let m = DateMachine::UnInitialized(Date::<UnInitialized>::new(label, epoch));
         m.determine_state(epoch)
     }
 
-    #[inline]
     pub fn determine_state(self, epoch: i64) -> Self {
         use self::DateMachine::*;
 
@@ -239,7 +227,6 @@ pub struct Duration<S: Visibility> {
 }
 
 impl<S: Visibility> Duration<S> {
-    #[inline]
     // This needs a better name.
     // TODO: make me mut
     fn set_duration(&self, minutes: i64) {
@@ -248,7 +235,6 @@ impl<S: Visibility> Duration<S> {
 }
 
 impl Duration<Hidden> {
-    #[inline]
     fn new(duration: gtk::Label, separator: gtk::Label) -> Self {
         duration.hide();
         separator.hide();
@@ -262,7 +248,6 @@ impl Duration<Hidden> {
 }
 
 impl From<Duration<Hidden>> for Duration<Shown> {
-    #[inline]
     fn from(f: Duration<Hidden>) -> Self {
         f.duration.show();
         f.separator.show();
@@ -276,7 +261,6 @@ impl From<Duration<Hidden>> for Duration<Shown> {
 }
 
 impl From<Duration<Shown>> for Duration<Hidden> {
-    #[inline]
     fn from(f: Duration<Shown>) -> Self {
         f.duration.hide();
         f.separator.hide();
@@ -296,13 +280,11 @@ pub enum DurationMachine {
 }
 
 impl DurationMachine {
-    #[inline]
     pub fn new(duration: gtk::Label, separator: gtk::Label, seconds: Option<i32>) -> Self {
         let m = DurationMachine::Hidden(Duration::<Hidden>::new(duration, separator));
         m.determine_state(seconds)
     }
 
-    #[inline]
     pub fn determine_state(self, seconds: Option<i32>) -> Self {
         match (self, seconds) {
             (d @ DurationMachine::Hidden(_), None) => d,
@@ -337,7 +319,6 @@ pub struct Size<S> {
 }
 
 impl<S> Size<S> {
-    #[inline]
     fn set_size(self, s: &str) -> Size<Shown> {
         self.size.set_text(s);
         self.size.show();
@@ -349,7 +330,6 @@ impl<S> Size<S> {
         }
     }
 
-    #[inline]
     // https://play.rust-lang.org/?gist=1acffaf62743eeb85be1ae6ecf474784&version=stable
     // It might be possible to make a generic definition with Specialization.
     // https://github.com/rust-lang/rust/issues/31844
@@ -364,7 +344,6 @@ impl<S> Size<S> {
         }
     }
 
-    #[inline]
     fn into_hidden(self) -> Size<Hidden> {
         self.size.hide();
         self.separator.hide();
@@ -378,7 +357,6 @@ impl<S> Size<S> {
 }
 
 impl Size<UnInitialized> {
-    #[inline]
     fn new(size: gtk::Label, separator: gtk::Label) -> Self {
         size.hide();
         separator.hide();
@@ -412,7 +390,6 @@ pub struct DownloadPlay<S> {
 }
 
 impl<S> DownloadPlay<S> {
-    #[inline]
     // https://play.rust-lang.org/?gist=1acffaf62743eeb85be1ae6ecf474784&version=stable
     // It might be possible to make a generic definition with Specialization.
     // https://github.com/rust-lang/rust/issues/31844
@@ -427,7 +404,6 @@ impl<S> DownloadPlay<S> {
         }
     }
 
-    #[inline]
     fn into_fetchable(self) -> DownloadPlay<Download> {
         self.play.hide();
         self.download.show();
@@ -439,7 +415,6 @@ impl<S> DownloadPlay<S> {
         }
     }
 
-    #[inline]
     fn into_hidden(self) -> DownloadPlay<Hidden> {
         self.play.hide();
         self.download.hide();
@@ -451,7 +426,6 @@ impl<S> DownloadPlay<S> {
         }
     }
 
-    #[inline]
     fn download_connect_clicked<F: Fn(&gtk::Button) + 'static>(
         &self,
         f: F,
@@ -459,14 +433,12 @@ impl<S> DownloadPlay<S> {
         self.download.connect_clicked(f)
     }
 
-    #[inline]
     fn play_connect_clicked<F: Fn(&gtk::Button) + 'static>(&self, f: F) -> glib::SignalHandlerId {
         self.play.connect_clicked(f)
     }
 }
 
 impl DownloadPlay<UnInitialized> {
-    #[inline]
     fn new(play: gtk::Button, download: gtk::Button) -> Self {
         play.hide();
         download.hide();
@@ -489,7 +461,6 @@ pub struct Progress<S> {
 }
 
 impl<S> Progress<S> {
-    #[inline]
     fn into_shown(self) -> Progress<Shown> {
         self.bar.show();
         self.cancel.show();
@@ -505,7 +476,6 @@ impl<S> Progress<S> {
         }
     }
 
-    #[inline]
     fn into_hidden(self) -> Progress<Hidden> {
         self.bar.hide();
         self.cancel.hide();
@@ -522,7 +492,6 @@ impl<S> Progress<S> {
     }
 
     #[allow(unused_must_use)]
-    #[inline]
     // This does not need to be &mut since gtk-rs does not model ownership
     // But I think it wouldn't hurt if we treat it as a Rust api.
     fn update_progress(&mut self, local_size: &str, fraction: f64) {
@@ -530,14 +499,12 @@ impl<S> Progress<S> {
         self.bar.set_fraction(fraction);
     }
 
-    #[inline]
     fn cancel_connect_clicked<F: Fn(&gtk::Button) + 'static>(&self, f: F) -> glib::SignalHandlerId {
         self.cancel.connect_clicked(f)
     }
 }
 
 impl Progress<UnInitialized> {
-    #[inline]
     fn new(
         bar: gtk::ProgressBar,
         cancel: gtk::Button,
@@ -571,7 +538,6 @@ type Playable<Y> = Media<Play, Y, Hidden>;
 type InProgress = Media<Hidden, Shown, Shown>;
 
 impl<X, Y, Z> Media<X, Y, Z> {
-    #[inline]
     fn set_size(self, s: &str) -> Media<X, Shown, Z> {
         Media {
             dl: self.dl,
@@ -580,7 +546,6 @@ impl<X, Y, Z> Media<X, Y, Z> {
         }
     }
 
-    #[inline]
     fn hide_size(self) -> Media<X, Hidden, Z> {
         Media {
             dl: self.dl,
@@ -589,7 +554,6 @@ impl<X, Y, Z> Media<X, Y, Z> {
         }
     }
 
-    #[inline]
     fn into_new(self, size: &str) -> New<Shown> {
         Media {
             dl: self.dl.into_fetchable(),
@@ -598,7 +562,6 @@ impl<X, Y, Z> Media<X, Y, Z> {
         }
     }
 
-    #[inline]
     fn into_new_without(self) -> New<Hidden> {
         Media {
             dl: self.dl.into_fetchable(),
@@ -607,7 +570,6 @@ impl<X, Y, Z> Media<X, Y, Z> {
         }
     }
 
-    #[inline]
     fn into_playable(self, size: &str) -> Playable<Shown> {
         Media {
             dl: self.dl.into_playable(),
@@ -616,7 +578,6 @@ impl<X, Y, Z> Media<X, Y, Z> {
         }
     }
 
-    #[inline]
     fn into_playable_without(self) -> Playable<Hidden> {
         Media {
             dl: self.dl.into_playable(),
@@ -627,7 +588,6 @@ impl<X, Y, Z> Media<X, Y, Z> {
 }
 
 impl<X, Z> Media<X, Shown, Z> {
-    #[inline]
     fn into_progress(self) -> InProgress {
         Media {
             dl: self.dl.into_hidden(),
@@ -638,7 +598,6 @@ impl<X, Z> Media<X, Shown, Z> {
 }
 
 impl<X, Z> Media<X, Hidden, Z> {
-    #[inline]
     fn into_progress(self) -> InProgress {
         Media {
             dl: self.dl.into_hidden(),
@@ -649,7 +608,6 @@ impl<X, Z> Media<X, Hidden, Z> {
 }
 
 impl<X, Z> Media<X, UnInitialized, Z> {
-    #[inline]
     fn into_progress(self, size: Option<String>) -> InProgress {
         if let Some(s) = size {
             Media {
@@ -668,7 +626,6 @@ impl<X, Z> Media<X, UnInitialized, Z> {
 }
 
 impl InProgress {
-    #[inline]
     #[allow(unused_must_use)]
     // This does not need to be &mut since gtk-rs does not model ownership
     // But I think it wouldn't hurt if we treat it as a Rust api.
@@ -686,7 +643,6 @@ pub enum ButtonsState {
 }
 
 impl ButtonsState {
-    #[inline]
     pub fn determine_state(self, size: Option<String>, is_downloaded: bool) -> Self {
         use self::ButtonsState::*;
 
@@ -721,7 +677,6 @@ impl ButtonsState {
         }
     }
 
-    #[inline]
     fn into_progress(self) -> InProgress {
         use self::ButtonsState::*;
 
@@ -733,7 +688,6 @@ impl ButtonsState {
         }
     }
 
-    #[inline]
     fn set_size(self, size: Option<String>) -> Self {
         use self::ButtonsState::*;
 
@@ -749,7 +703,6 @@ impl ButtonsState {
         }
     }
 
-    #[inline]
     pub fn download_connect_clicked<F: Fn(&gtk::Button) + 'static>(
         &self,
         f: F,
@@ -764,7 +717,6 @@ impl ButtonsState {
         }
     }
 
-    #[inline]
     pub fn play_connect_clicked<F: Fn(&gtk::Button) + 'static>(
         &self,
         f: F,
@@ -779,7 +731,6 @@ impl ButtonsState {
         }
     }
 
-    #[inline]
     fn cancel_connect_clicked<F: Fn(&gtk::Button) + 'static>(&self, f: F) -> glib::SignalHandlerId {
         use self::ButtonsState::*;
 
@@ -801,7 +752,6 @@ pub enum MediaMachine {
 
 impl MediaMachine {
     #[cfg_attr(feature = "cargo-clippy", allow(too_many_arguments))]
-    #[inline]
     pub fn new(
         play: gtk::Button,
         download: gtk::Button,
@@ -819,7 +769,6 @@ impl MediaMachine {
         MediaMachine::UnInitialized(Media { dl, progress, size })
     }
 
-    #[inline]
     pub fn download_connect_clicked<F: Fn(&gtk::Button) + 'static>(
         &self,
         f: F,
@@ -833,7 +782,6 @@ impl MediaMachine {
         }
     }
 
-    #[inline]
     pub fn play_connect_clicked<F: Fn(&gtk::Button) + 'static>(
         &self,
         f: F,
@@ -847,7 +795,6 @@ impl MediaMachine {
         }
     }
 
-    #[inline]
     pub fn cancel_connect_clicked<F: Fn(&gtk::Button) + 'static>(
         &self,
         f: F,
@@ -861,7 +808,6 @@ impl MediaMachine {
         }
     }
 
-    #[inline]
     pub fn determine_state(self, bytes: Option<i32>, is_active: bool, is_downloaded: bool) -> Self {
         use self::ButtonsState::*;
         use self::MediaMachine::*;
@@ -900,7 +846,6 @@ impl MediaMachine {
         }
     }
 
-    #[inline]
     pub fn set_size(self, bytes: Option<i32>) -> Self {
         use self::MediaMachine::*;
         let size = size_helper(bytes);
@@ -913,7 +858,6 @@ impl MediaMachine {
         }
     }
 
-    #[inline]
     pub fn update_progress(&mut self, local_size: &str, fraction: f64) {
         use self::MediaMachine::*;
 
@@ -925,7 +869,6 @@ impl MediaMachine {
     }
 }
 
-#[inline]
 fn size_helper(bytes: Option<i32>) -> Option<String> {
     let s = bytes?;
     if s == 0 {

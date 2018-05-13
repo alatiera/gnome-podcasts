@@ -134,7 +134,6 @@ impl PopulatedStack {
         self.container.clone()
     }
 
-    #[inline]
     pub fn switch_visible(&mut self, state: PopulatedState, animation: gtk::StackTransitionType) {
         use self::PopulatedState::*;
 

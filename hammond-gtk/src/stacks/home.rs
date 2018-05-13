@@ -81,7 +81,6 @@ impl HomeStack {
         Ok(())
     }
 
-    #[inline]
     fn switch_visible(&mut self, s: State) {
         use self::State::*;
 
@@ -97,7 +96,6 @@ impl HomeStack {
         }
     }
 
-    #[inline]
     fn determine_state(&mut self) -> Result<(), DataError> {
         if is_episodes_populated()? {
             self.switch_visible(State::Home);

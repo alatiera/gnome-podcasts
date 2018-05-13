@@ -63,7 +63,6 @@ impl ShowStack {
         self.determine_state()
     }
 
-    #[inline]
     fn switch_visible(&mut self, s: ShowState) {
         use self::ShowState::*;
 
@@ -79,7 +78,6 @@ impl ShowStack {
         };
     }
 
-    #[inline]
     fn determine_state(&mut self) -> Result<(), Error> {
         use self::ShowState::*;
 
