@@ -60,19 +60,29 @@ impl PopulatedStack {
     }
 
     pub fn update_shows(&mut self) -> Result<(), Error> {
+        // The current visible child might change depending on
+        // removal and insertion in the gtk::Stack, so we have
+        // to make sure it will stay the same.
+        let s = self.state;
+        self.replace_shows()?;
+        self.switch_visible(s, gtk::StackTransitionType::None);
+
+        Ok(())
+    }
+
+    pub fn replace_shows(&mut self) -> Result<(), Error> {
         let old = &self.populated.container.clone();
         debug!("Name: {:?}", WidgetExt::get_name(old));
+
+        self.populated
+            .save_alignment()
+            .map_err(|err| error!("Failed to set episodes_view allignment: {}", err))
+            .ok();
 
         let pop = ShowsView::new(self.sender.clone())?;
         self.populated = pop;
         self.stack.remove(old);
         self.stack.add_named(&self.populated.container, "shows");
-
-        // The current visible child might change depending on
-        // removal and insertion in the gtk::Stack, so we have
-        // to make sure it will stay the same.
-        let s = self.state;
-        self.switch_visible(s, gtk::StackTransitionType::None);
 
         old.destroy();
         Ok(())
