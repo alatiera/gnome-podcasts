@@ -63,17 +63,13 @@ impl App {
 
         // Create the main window
         let window = gtk::Window::new(gtk::WindowType::Toplevel);
-
         window.set_title("Hammond");
 
-        let app_clone = application.clone();
-        let window_clone = window.clone();
-        let settings_clone = settings.clone();
-        window.connect_delete_event(move |_, _| {
-            WindowGeometry::from_window(&window_clone).write(&settings_clone);
-            app_clone.quit();
+        window.connect_delete_event(clone!(application, settings, window => move |_, _| {
+            WindowGeometry::from_window(&window).write(&settings);
+            application.quit();
             Inhibit(false)
-        });
+        }));
 
         let (sender, receiver) = channel();
 
@@ -152,16 +148,16 @@ impl App {
         WindowGeometry::from_settings(&self.settings).apply(&self.window);
 
         let window = self.window.clone();
-
         self.app_instance.connect_startup(move |app| {
             build_ui(&window, app);
         });
+
         self.setup_timed_callbacks();
 
-        let content = self.content.clone();
-        let headerbar = self.header.clone();
-        let sender = self.sender.clone();
-        let overlay = self.overlay.clone();
+        let content = self.content;
+        let headerbar = self.header;
+        let sender = self.sender;
+        let overlay = self.overlay;
         let receiver = self.receiver;
         gtk::timeout_add(50, move || {
             match receiver.try_recv() {
