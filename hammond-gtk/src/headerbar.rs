@@ -269,10 +269,17 @@ fn on_import_clicked(window: &gtk::Window, sender: &Sender<Action>) {
                         // Refresh the succesfully parsed feeds to index them
                         utils::refresh(Some(sources), sender)
                     } else {
-                        // TODO: Show an in-app notification if file can not be parsed
-                        error!("Failed to parse the Import file")
+                        let text = String::from("Failed to parse the Imported file");
+                        sender.send(Action::ErrorNotification(text))
+                            .map_err(|err| error!("Action Sender: {}", err))
+                            .ok();
                     }
                 }))
+            } else {
+                let text = String::from("Selected File could not be accessed.");
+                sender.send(Action::ErrorNotification(text))
+                    .map_err(|err| error!("Action Sender: {}", err))
+                    .ok();
             }
         }
 

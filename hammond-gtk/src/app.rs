@@ -19,7 +19,6 @@ use std::rc::Rc;
 use std::sync::mpsc::{channel, Receiver, Sender};
 use std::sync::Arc;
 
-#[allow(dead_code)]
 #[derive(Debug, Clone)]
 pub enum Action {
     RefreshAllViews,
@@ -205,11 +204,8 @@ impl App {
                 }
                 Ok(Action::ErrorNotification(err)) => {
                     error!("An error notification was triggered: {}", err);
-                    // FIXME: this is not good user-facing messages.
-                    // should match on the error type and return a proper description of the Error.
-                    let text = &err;
                     let callback = || glib::Continue(false);
-                    let notif = InAppNotification::new(text, callback, || {}, UndoState::Hidden);
+                    let notif = InAppNotification::new(&err, callback, || {}, UndoState::Hidden);
                     notif.show(&overlay);
                 }
                 Err(_) => (),
