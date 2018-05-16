@@ -41,7 +41,7 @@ variables:
         - cargo test -- --test-threads=1 --ignored
     <<: *cargo_cache
 
-.rust:stable:
+rust:stable:
     # https://hub.docker.com/_/rust/
     image: "rust"
     <<: *cargo_test
@@ -50,9 +50,9 @@ rust:nightly:
     # https://hub.docker.com/r/rustlang/rust/
     image: "rustlang/rust:nightly"
     <<: *cargo_test
-    # only:
-    #     - schedule
-    #     - web
+    only:
+        - schedule
+        - web
 
 flatpak:
     image: registry.gitlab.com/alatiera/gnome-nightly-oci/rust-bundle:latest
