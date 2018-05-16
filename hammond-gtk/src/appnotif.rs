@@ -5,6 +5,13 @@ use gtk::prelude::*;
 use std::cell::RefCell;
 use std::rc::Rc;
 
+#[allow(dead_code)]
+#[derive(Debug, Clone)]
+pub enum UndoState {
+    Shown,
+    Hidden,
+}
+
 #[derive(Debug, Clone)]
 pub struct InAppNotification {
     revealer: gtk::Revealer,
@@ -32,7 +39,7 @@ impl Default for InAppNotification {
 }
 
 impl InAppNotification {
-    pub fn new<F, U>(text: &str, mut callback: F, undo_callback: U) -> Self
+    pub fn new<F, U>(text: &str, mut callback: F, undo_callback: U, show_undo: UndoState) -> Self
     where
         F: FnMut() -> glib::Continue + 'static,
         U: Fn() + 'static,
@@ -66,6 +73,11 @@ impl InAppNotification {
         notif.close.connect_clicked(move |_| {
             revealer.set_reveal_child(false);
         });
+
+        match show_undo {
+            UndoState::Shown => (),
+            UndoState::Hidden => notif.undo.hide(),
+        }
 
         notif
     }

@@ -13,7 +13,7 @@ use hammond_data::utils::delete_show;
 use hammond_data::Podcast;
 
 use app::Action;
-use appnotif::InAppNotification;
+use appnotif::{InAppNotification, UndoState};
 use utils::{self, lazy_load};
 use widgets::EpisodeWidget;
 
@@ -279,7 +279,7 @@ pub fn mark_all_notif(pd: Arc<Podcast>, sender: &Sender<Action>) -> InAppNotific
     });
 
     let text = "Marked all episodes as listened";
-    InAppNotification::new(text, callback, undo_callback)
+    InAppNotification::new(text, callback, undo_callback, UndoState::Shown)
 }
 
 pub fn remove_show_notif(pd: Arc<Podcast>, sender: Sender<Action>) -> InAppNotification {
@@ -319,7 +319,7 @@ pub fn remove_show_notif(pd: Arc<Podcast>, sender: Sender<Action>) -> InAppNotif
         undo_wrap().map_err(|err| error!("{}", err)).ok();
     };
 
-    InAppNotification::new(&text, callback, undo_callback)
+    InAppNotification::new(&text, callback, undo_callback, UndoState::Shown)
 }
 
 // Ideally if we had a custom widget this would have been as simple as:
