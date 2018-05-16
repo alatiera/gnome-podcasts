@@ -6,6 +6,16 @@ stages:
 variables:
     BUNDLE: "hammond-dev.flatpak"
 
+.cargo_cache_template: &cargo_cache
+    cache:
+        # JOB_NAME - Each job will have it's own cache
+        # COMMIT_REF_SLUG = Lowercase name of the branch
+        # ^ Keep diffrerent caches for each branch
+        key: "$CI_JOB_NAME"
+        paths:
+            - target/
+            - .cargo_cache/
+
 .cargo_test_template: &cargo_test
     stage: test
 
@@ -29,15 +39,7 @@ variables:
         - cargo build
         - cargo test -- --test-threads=1
         - cargo test -- --test-threads=1 --ignored
-
-    cache:
-        # JOB_NAME - Each job will have it's own cache
-        # COMMIT_REF_SLUG = Lowercase name of the branch
-        # ^ Keep diffrerent caches for each branch
-        key: "$CI_JOB_NAME"
-        paths:
-            - target/
-            - .cargo_cache/
+    <<: *cargo_cache
 
 .rust:stable:
     # https://hub.docker.com/_/rust/
@@ -138,3 +140,4 @@ clippy:
         # Force regeneration of gresources regardless of artifacts chage
         - cd hammond-gtk/resources/ && glib-compile-resources --generate resources.xml && cd ../../
         - cargo clippy --all
+    <<: *cargo_cache
