@@ -1,5 +1,6 @@
 use gtk;
 use gtk::prelude::*;
+use gtk::StackTransitionType;
 
 use failure::Error;
 
@@ -65,7 +66,7 @@ impl PopulatedStack {
         // to make sure it will stay the same.
         let s = self.state;
         self.replace_shows()?;
-        self.switch_visible(s, gtk::StackTransitionType::None);
+        self.switch_visible(s, StackTransitionType::Crossfade);
 
         Ok(())
     }
@@ -105,7 +106,7 @@ impl PopulatedStack {
         // removal and insertion in the gtk::Stack, so we have
         // to make sure it will stay the same.
         let s = self.state;
-        self.switch_visible(s, gtk::StackTransitionType::None);
+        self.switch_visible(s, StackTransitionType::None);
 
         Ok(())
     }
@@ -124,7 +125,7 @@ impl PopulatedStack {
         // removal and insertion in the gtk::Stack, so we have
         // to make sure it will stay the same.
         let s = self.state;
-        self.switch_visible(s, gtk::StackTransitionType::None);
+        self.switch_visible(s, StackTransitionType::Crossfade);
 
         old.destroy();
         Ok(())
@@ -144,7 +145,7 @@ impl PopulatedStack {
         self.container.clone()
     }
 
-    pub fn switch_visible(&mut self, state: PopulatedState, animation: gtk::StackTransitionType) {
+    pub fn switch_visible(&mut self, state: PopulatedState, animation: StackTransitionType) {
         use self::PopulatedState::*;
 
         match state {

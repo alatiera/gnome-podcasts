@@ -1,5 +1,6 @@
 use gtk;
 use gtk::prelude::*;
+use gtk::StackTransitionType;
 
 use failure::Error;
 use hammond_data::dbqueries::is_episodes_populated;
@@ -60,6 +61,7 @@ impl HomeStack {
             .ok();
 
         self.replace_view()?;
+        // Determine the actuall state.
         self.determine_state().map_err(From::from)
     }
 
@@ -69,8 +71,15 @@ impl HomeStack {
         let eps = HomeView::new(self.sender.clone())?;
 
         // Remove the old widget and add the new one
+        // during this the previous view is removed,
+        // and the visibile child fallsback to empty view.
         self.stack.remove(old);
         self.stack.add_named(&eps.container, "home");
+        // Keep the previous state.
+        let s = self.state;
+        // Set the visible child back to the previous one to avoid
+        // the stack transition animation to show the empty view
+        self.switch_visible(s, StackTransitionType::None);
 
         // replace view in the struct too
         self.episodes = eps;
@@ -81,16 +90,16 @@ impl HomeStack {
         Ok(())
     }
 
-    fn switch_visible(&mut self, s: State) {
+    fn switch_visible(&mut self, s: State, animation: StackTransitionType) {
         use self::State::*;
 
         match s {
             Home => {
-                self.stack.set_visible_child_name("home");
+                self.stack.set_visible_child_full("home", animation);
                 self.state = Home;
             }
             Empty => {
-                self.stack.set_visible_child_name("empty");
+                self.stack.set_visible_child_full("empty", animation);
                 self.state = Empty;
             }
         }
@@ -98,9 +107,9 @@ impl HomeStack {
 
     fn determine_state(&mut self) -> Result<(), DataError> {
         if is_episodes_populated()? {
-            self.switch_visible(State::Home);
+            self.switch_visible(State::Home, StackTransitionType::Crossfade);
         } else {
-            self.switch_visible(State::Empty);
+            self.switch_visible(State::Empty, StackTransitionType::Crossfade);
         };
 
         Ok(())
