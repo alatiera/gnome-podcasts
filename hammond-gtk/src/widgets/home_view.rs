@@ -95,7 +95,7 @@ impl HomeView {
         let view_ = view.clone();
         let func = move |ep: EpisodeWidgetQuery| {
             let epoch = ep.epoch();
-            let widget = EpisodesViewWidget::new(ep, &sender);
+            let widget = HomeEpisode::new(ep, &sender);
 
             match split(&now_utc, i64::from(epoch)) {
                 Today => add_to_box(&widget, &view_.today_list, &view_.today_box),
@@ -149,7 +149,7 @@ impl HomeView {
     }
 }
 
-fn add_to_box(widget: &EpisodesViewWidget, listbox: &gtk::ListBox, box_: &gtk::Box) {
+fn add_to_box(widget: &HomeEpisode, listbox: &gtk::ListBox, box_: &gtk::Box) {
     listbox.add(&widget.container);
     box_.show();
 }
@@ -171,13 +171,13 @@ fn split(now: &DateTime<Utc>, epoch: i64) -> ListSplit {
 }
 
 #[derive(Debug, Clone)]
-struct EpisodesViewWidget {
+struct HomeEpisode {
     container: gtk::Box,
     image: gtk::Image,
     episode: gtk::Box,
 }
 
-impl Default for EpisodesViewWidget {
+impl Default for HomeEpisode {
     fn default() -> Self {
         let builder =
             gtk::Builder::new_from_resource("/org/gnome/hammond/gtk/episodes_view_widget.ui");
@@ -186,7 +186,7 @@ impl Default for EpisodesViewWidget {
         let ep = EpisodeWidget::default();
         container.pack_start(&ep.container, true, true, 6);
 
-        EpisodesViewWidget {
+        HomeEpisode {
             container,
             image,
             episode: ep.container,
@@ -194,8 +194,8 @@ impl Default for EpisodesViewWidget {
     }
 }
 
-impl EpisodesViewWidget {
-    fn new(episode: EpisodeWidgetQuery, sender: &Sender<Action>) -> EpisodesViewWidget {
+impl HomeEpisode {
+    fn new(episode: EpisodeWidgetQuery, sender: &Sender<Action>) -> HomeEpisode {
         let builder =
             gtk::Builder::new_from_resource("/org/gnome/hammond/gtk/episodes_view_widget.ui");
         let container: gtk::Box = builder.get_object("container").unwrap();
@@ -203,7 +203,7 @@ impl EpisodesViewWidget {
         let pid = episode.podcast_id();
         let ep = EpisodeWidget::new(episode, sender);
 
-        let view = EpisodesViewWidget {
+        let view = HomeEpisode {
             container,
             image,
             episode: ep.container,
