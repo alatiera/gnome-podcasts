@@ -8,6 +8,7 @@ use gtk::SettingsExt as GtkSettingsExt;
 
 use hammond_data::Podcast;
 
+use appnotif::{InAppNotification, UndoState};
 use headerbar::Header;
 use settings::{self, WindowGeometry};
 use stacks::{Content, PopulatedState};
@@ -18,7 +19,8 @@ use std::rc::Rc;
 use std::sync::mpsc::{channel, Receiver, Sender};
 use std::sync::Arc;
 
-#[derive(Clone, Debug)]
+#[allow(dead_code)]
+#[derive(Debug, Clone)]
 pub enum Action {
     RefreshAllViews,
     RefreshEpisodesView,
@@ -34,6 +36,7 @@ pub enum Action {
     HeaderBarHideUpdateIndicator,
     MarkAllPlayerNotification(Arc<Podcast>),
     RemoveShow(Arc<Podcast>),
+    ErrorNotification(String),
 }
 
 #[derive(Debug)]
@@ -198,6 +201,15 @@ impl App {
                 }
                 Ok(Action::RemoveShow(pd)) => {
                     let notif = remove_show_notif(pd, sender.clone());
+                    notif.show(&overlay);
+                }
+                Ok(Action::ErrorNotification(err)) => {
+                    error!("An error notification was triggered: {}", err);
+                    // FIXME: this is not good user-facing messages.
+                    // should match on the error type and return a proper description of the Error.
+                    let text = &err;
+                    let callback = || glib::Continue(false);
+                    let notif = InAppNotification::new(text, callback, || {}, UndoState::Hidden);
                     notif.show(&overlay);
                 }
                 Err(_) => (),

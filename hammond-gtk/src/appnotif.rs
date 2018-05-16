@@ -5,7 +5,6 @@ use gtk::prelude::*;
 use std::cell::RefCell;
 use std::rc::Rc;
 
-#[allow(dead_code)]
 #[derive(Debug, Clone)]
 pub enum UndoState {
     Shown,
