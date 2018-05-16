@@ -93,18 +93,14 @@ fn populate_flowbox(shows: &Rc<ShowsView>) -> Result<(), Error> {
     let ignore = get_ignored_shows()?;
     let podcasts = dbqueries::get_podcasts_filter(&ignore)?;
 
-    let flowbox = shows.flowbox.clone();
-    let constructor = clone!(flowbox => move |parent| {
-        flowbox.show_all();
-        ShowsChild::new(&parent).child
-    });
-
+    let constructor = move |parent| ShowsChild::new(&parent).child;
     let callback = clone!(shows => move || {
          shows.set_vadjustment()
               .map_err(|err| error!("Failed to set ShowsView Alignment: {}", err))
               .ok();
      });
 
+    let flowbox = shows.flowbox.clone();
     lazy_load(podcasts, flowbox, constructor, callback);
     Ok(())
 }

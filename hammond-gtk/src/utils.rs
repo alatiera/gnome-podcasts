@@ -68,10 +68,14 @@ where
     T::Item: 'static,
     C: ContainerExt + 'static,
     F: FnMut(T::Item) -> W + 'static,
-    W: IsA<Widget>,
+    W: IsA<Widget> + WidgetExt,
     U: Fn() + 'static,
 {
-    let func = move |x| container.add(&contructor(x));
+    let func = move |x| {
+        let widget = contructor(x);
+        container.add(&widget);
+        widget.show();
+    };
     lazy_load_full(data, func, callback);
 }
 
