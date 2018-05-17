@@ -52,8 +52,8 @@ pub fn import_to_db<R: Read>(reader: R) -> Result<Vec<Source>, reader::Error> {
 /// return the new `Source`s
 // TODO: Write test
 pub fn import_from_file<P: AsRef<Path>>(path: P) -> Result<Vec<Source>, DataError> {
-    let content = fs::read_to_string(path)?;
-    import_to_db(content.as_bytes()).map_err(From::from)
+    let content = fs::read(path)?;
+    import_to_db(content.as_slice()).map_err(From::from)
 }
 
 /// Extracts the `outline` elemnts from a reader `R` and returns a `HashSet` of `Opml` structs.
