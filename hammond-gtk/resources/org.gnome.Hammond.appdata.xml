@@ -28,7 +28,7 @@
     </screenshot>
   </screenshots>
   <releases>
-    <release version="0.3.2" date="2018-05-07"/>
+    <release version="0.3.3" date="2018-05-19"/>
   </releases>
   <url type="homepage">https://gitlab.gnome.org/World/hammond</url>
   <update_contact>jpetridis@gnome.org</update_contact>

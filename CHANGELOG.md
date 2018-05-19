@@ -6,6 +6,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 ### Added:
+### Changed:
+### Fixed:
+### Removed:
+
+## [0.3.3] - 2018-05-19
+### Added:
 - Initial functionality for importing shows from an OPML file was implemented.
 - ShowsView now rembmers the vertical alignment of the scrollbar between refreshes. 4d2b64e79d8518454b3677612664cd32044cf837
 
@@ -16,8 +22,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Fixed:
 - Fixed a of by one bug in the `ShowsView` where the last show was never shown. bd12b09cbc8132fd39a266fd091e24bc6c3c040f
-
-### Removed:
 
 ## [0.3.2] - 2018-05-07
 ### Added:

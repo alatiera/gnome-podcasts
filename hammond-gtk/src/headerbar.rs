@@ -312,7 +312,7 @@ fn about_dialog(window: &gtk::Window) {
     dialog.set_modal(true);
     // TODO: make it show it fetches the commit hash from which it was built
     // and the version number is kept in sync automaticly
-    dialog.set_version("0.3.2");
+    dialog.set_version("0.3.3");
     dialog.set_program_name("Hammond");
     // TODO: Need a wiki page first.
     // dialog.set_website("https://wiki.gnome.org/Design/Apps/Potential/Podcasts");
