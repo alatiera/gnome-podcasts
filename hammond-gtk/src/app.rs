@@ -81,6 +81,16 @@ impl App {
         // Ideally a lot more than actions would happen in startup & window
         // creation would be in activate
         application.connect_startup(clone!(window, sender => move |app| {
+            let refresh = SimpleAction::new("refresh", None);
+            refresh.connect_activate(clone!(sender => move |_, _| {
+                gtk::idle_add(clone!(sender => move || {
+                    let s: Option<Vec<_>> = None;
+                    utils::refresh(s, sender.clone());
+                    glib::Continue(false)
+                }));
+            }));
+            app.add_action(&refresh);
+
             let import = SimpleAction::new("import", None);
             import.connect_activate(clone!(window, sender => move |_, _| on_import_clicked(&window, &sender)));
             app.add_action(&import);

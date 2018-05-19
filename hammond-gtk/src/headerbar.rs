@@ -23,7 +23,6 @@ pub struct Header {
     back: gtk::Button,
     show_title: gtk::Label,
     export: gtk::ModelButton,
-    update_button: gtk::ModelButton,
     update_box: gtk::Box,
     update_label: gtk::Label,
     update_spinner: gtk::Spinner,
@@ -39,7 +38,6 @@ impl Default for Header {
         let back = builder.get_object("back").unwrap();
         let show_title = builder.get_object("show_title").unwrap();
         let export = builder.get_object("export").unwrap();
-        let update_button = builder.get_object("update_button").unwrap();
         let update_box = builder.get_object("update_notification").unwrap();
         let update_label = builder.get_object("update_label").unwrap();
         let update_spinner = builder.get_object("update_spinner").unwrap();
@@ -51,7 +49,6 @@ impl Default for Header {
             back,
             show_title,
             export,
-            update_button,
             update_box,
             update_label,
             update_spinner,
@@ -90,15 +87,6 @@ impl Header {
         }));
 
         self.add_toggle.set_popover(&add_popover);
-
-        self.update_button
-            .connect_clicked(clone!(sender => move |_| {
-                gtk::idle_add(clone!(sender => move || {
-                    let s: Option<Vec<_>> = None;
-                    refresh(s, sender.clone());
-                    glib::Continue(false)
-                }));
-        }));
 
         // Add the Headerbar to the window.
         window.set_titlebar(&self.container);
