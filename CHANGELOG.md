@@ -5,7 +5,19 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Added:
+- Initial functionality for importing shows from an OPML file was implemented.
+- ShowsView now rembmers the vertical alignment of the scrollbar between refreshes. 4d2b64e79d8518454b3677612664cd32044cf837
 
+### Changed:
+- Minimum `rustc` version requirment was bumped to `1.26`
+- Some animations should be smoother now. 7d598bb1d08b05fd5ab532657acdad967c0afbc3
+- InAppNotification now can be used to propagate some erros to the user. 7035fe05c4741b3e7ccce6827f72766226d5fc0a and 118dac5a1ab79c0b4ebe78e88256a4a38b138c04
+
+### Fixed:
+- Fixed a of by one bug in the `ShowsView` where the last show was never shown. bd12b09cbc8132fd39a266fd091e24bc6c3c040f
+
+### Removed:
 
 ## [0.3.2] - 2018-05-07
 ### Added:
