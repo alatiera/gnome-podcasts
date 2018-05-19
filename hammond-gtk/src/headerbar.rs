@@ -4,16 +4,15 @@ use gtk::prelude::*;
 
 use failure::Error;
 use failure::ResultExt;
-use rayon;
 use url::Url;
 
-use hammond_data::{dbqueries, opml, Source};
+use hammond_data::{dbqueries, Source};
 
 use std::sync::mpsc::Sender;
 
 use app::Action;
 use stacks::Content;
-use utils::{self, itunes_to_rss, refresh};
+use utils::{itunes_to_rss, refresh};
 
 #[derive(Debug, Clone)]
 // TODO: split this into smaller
@@ -23,7 +22,6 @@ pub struct Header {
     switch: gtk::StackSwitcher,
     back: gtk::Button,
     show_title: gtk::Label,
-    import: gtk::ModelButton,
     export: gtk::ModelButton,
     update_button: gtk::ModelButton,
     update_box: gtk::Box,
@@ -40,7 +38,6 @@ impl Default for Header {
         let switch = builder.get_object("switch").unwrap();
         let back = builder.get_object("back").unwrap();
         let show_title = builder.get_object("show_title").unwrap();
-        let import = builder.get_object("import").unwrap();
         let export = builder.get_object("export").unwrap();
         let update_button = builder.get_object("update_button").unwrap();
         let update_box = builder.get_object("update_notification").unwrap();
@@ -53,7 +50,6 @@ impl Default for Header {
             switch,
             back,
             show_title,
-            import,
             export,
             update_button,
             update_box,
@@ -103,10 +99,6 @@ impl Header {
                     glib::Continue(false)
                 }));
         }));
-
-        self.import.connect_clicked(
-            clone!(window, sender => move |_| on_import_clicked(&window, &sender)),
-        );
 
         // Add the Headerbar to the window.
         window.set_titlebar(&self.container);
@@ -221,64 +213,4 @@ fn on_url_change(
             Ok(())
         }
     }
-}
-
-fn on_import_clicked(window: &gtk::Window, sender: &Sender<Action>) {
-    use glib::translate::ToGlib;
-    use gtk::{FileChooserAction, FileChooserDialog, FileFilter, ResponseType};
-
-    // let dialog = FileChooserDialog::new(title, Some(&window), FileChooserAction::Open);
-    // TODO: It might be better to use a FileChooserNative widget.
-    // Create the FileChooser Dialog
-    let dialog = FileChooserDialog::with_buttons(
-        Some("Select the file from which to you want to Import Shows."),
-        Some(window),
-        FileChooserAction::Open,
-        &[
-            ("_Cancel", ResponseType::Cancel),
-            ("_Open", ResponseType::Accept),
-        ],
-    );
-
-    // Do not show hidden(.thing) files
-    dialog.set_show_hidden(false);
-
-    // Set a filter to show only xml files
-    let filter = FileFilter::new();
-    FileFilterExt::set_name(&filter, Some("OPML file"));
-    filter.add_mime_type("application/xml");
-    filter.add_mime_type("text/xml");
-    dialog.add_filter(&filter);
-
-    dialog.connect_response(clone!(sender => move |dialog, resp| {
-        debug!("Dialong Response {}", resp);
-        if resp == ResponseType::Accept.to_glib() {
-            // TODO: Show an in-app notifictaion if the file can not be accessed
-            if let Some(filename) = dialog.get_filename() {
-                debug!("File selected: {:?}", filename);
-
-                rayon::spawn(clone!(sender => move || {
-                    // Parse the file and import the feeds
-                    if let Ok(sources) = opml::import_from_file(filename) {
-                        // Refresh the succesfully parsed feeds to index them
-                        utils::refresh(Some(sources), sender)
-                    } else {
-                        let text = String::from("Failed to parse the Imported file");
-                        sender.send(Action::ErrorNotification(text))
-                            .map_err(|err| error!("Action Sender: {}", err))
-                            .ok();
-                    }
-                }))
-            } else {
-                let text = String::from("Selected File could not be accessed.");
-                sender.send(Action::ErrorNotification(text))
-                    .map_err(|err| error!("Action Sender: {}", err))
-                    .ok();
-            }
-        }
-
-        dialog.destroy();
-    }));
-
-    dialog.run();
 }

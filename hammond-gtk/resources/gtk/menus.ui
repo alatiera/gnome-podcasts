@@ -4,6 +4,20 @@
   <menu id="app-menu">
     <section>
       <item>
+        <attribute name="label" translatable="yes">_Check for new episodes</attribute>
+        <attribute name="action">app.refresh</attribute>
+      </item>
+      <item>
+        <attribute name="label" translatable="yes">_Import Shows</attribute>
+        <attribute name="action">app.import</attribute>
+      </item>
+      <item>
+        <attribute name="label" translatable="yes">_Export Shows</attribute>
+        <attribute name="action">app.export</attribute>
+      </item>
+    </section>
+    <section>
+      <item>
         <attribute name="label" translatable="yes">_Preferences</attribute>
         <attribute name="action">app.preferences</attribute>
       </item>

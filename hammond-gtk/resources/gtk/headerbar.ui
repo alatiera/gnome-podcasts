@@ -326,6 +326,7 @@ Tobias Bernard
             <property name="can_focus">True</property>
             <property name="receives_default">True</property>
             <property name="text" translatable="yes">Import Shows</property>
+            <property name="action-name">app.import</property>
           </object>
           <packing>
             <property name="expand">False</property>

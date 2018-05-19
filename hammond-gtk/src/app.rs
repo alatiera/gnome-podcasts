@@ -7,6 +7,7 @@ use gtk::prelude::*;
 use gtk::SettingsExt as GtkSettingsExt;
 
 use hammond_data::Podcast;
+use hammond_data::{opml};
 
 use appnotif::{InAppNotification, UndoState};
 use headerbar::Header;
@@ -18,6 +19,8 @@ use widgets::{mark_all_notif, remove_show_notif};
 use std::rc::Rc;
 use std::sync::mpsc::{channel, Receiver, Sender};
 use std::sync::Arc;
+
+use rayon;
 
 #[derive(Debug, Clone)]
 pub enum Action {
@@ -67,9 +70,21 @@ impl App {
         let window = gtk::Window::new(gtk::WindowType::Toplevel);
         window.set_title("Hammond");
 
+        let (sender, receiver) = channel();
+
+        window.connect_delete_event(clone!(application, settings, window => move |_, _| {
+            WindowGeometry::from_window(&window).write(&settings);
+            application.quit();
+            Inhibit(false)
+        }));
+
         // Ideally a lot more than actions would happen in startup & window
         // creation would be in activate
-        application.connect_startup(clone!(window => move |app| {
+        application.connect_startup(clone!(window, sender => move |app| {
+            let import = SimpleAction::new("import", None);
+            import.connect_activate(clone!(window, sender => move |_, _| on_import_clicked(&window, &sender)));
+            app.add_action(&import);
+
             let about = SimpleAction::new("about", None);
             // Should investigate use of active_window here
             about.connect_activate(clone!(window => move |_, _| about_dialog(&window)));
@@ -79,14 +94,6 @@ impl App {
             quit.connect_activate(clone!(app => move |_, _| app.quit()));
             app.add_action(&quit);
         }));
-
-        window.connect_delete_event(clone!(application, settings, window => move |_, _| {
-            WindowGeometry::from_window(&window).write(&settings);
-            application.quit();
-            Inhibit(false)
-        }));
-
-        let (sender, receiver) = channel();
 
         // Create a content instance
         let content =
@@ -273,4 +280,64 @@ fn about_dialog(window: &gtk::Window) {
     dialog.set_authors(authors);
 
     dialog.show();
+}
+
+fn on_import_clicked(window: &gtk::Window, sender: &Sender<Action>) {
+    use glib::translate::ToGlib;
+    use gtk::{FileChooserAction, FileChooserDialog, FileFilter, ResponseType};
+
+    // let dialog = FileChooserDialog::new(title, Some(&window), FileChooserAction::Open);
+    // TODO: It might be better to use a FileChooserNative widget.
+    // Create the FileChooser Dialog
+    let dialog = FileChooserDialog::with_buttons(
+        Some("Select the file from which to you want to Import Shows."),
+        Some(window),
+        FileChooserAction::Open,
+        &[
+            ("_Cancel", ResponseType::Cancel),
+            ("_Open", ResponseType::Accept),
+        ],
+    );
+
+    // Do not show hidden(.thing) files
+    dialog.set_show_hidden(false);
+
+    // Set a filter to show only xml files
+    let filter = FileFilter::new();
+    FileFilterExt::set_name(&filter, Some("OPML file"));
+    filter.add_mime_type("application/xml");
+    filter.add_mime_type("text/xml");
+    dialog.add_filter(&filter);
+
+    dialog.connect_response(clone!(sender => move |dialog, resp| {
+        debug!("Dialong Response {}", resp);
+        if resp == ResponseType::Accept.to_glib() {
+            // TODO: Show an in-app notifictaion if the file can not be accessed
+            if let Some(filename) = dialog.get_filename() {
+                debug!("File selected: {:?}", filename);
+
+                rayon::spawn(clone!(sender => move || {
+                    // Parse the file and import the feeds
+                    if let Ok(sources) = opml::import_from_file(filename) {
+                        // Refresh the succesfully parsed feeds to index them
+                        utils::refresh(Some(sources), sender)
+                    } else {
+                        let text = String::from("Failed to parse the Imported file");
+                        sender.send(Action::ErrorNotification(text))
+                            .map_err(|err| error!("Action Sender: {}", err))
+                            .ok();
+                    }
+                }))
+            } else {
+                let text = String::from("Selected File could not be accessed.");
+                sender.send(Action::ErrorNotification(text))
+                    .map_err(|err| error!("Action Sender: {}", err))
+                    .ok();
+            }
+        }
+
+        dialog.destroy();
+    }));
+
+    dialog.run();
 }
