@@ -41,7 +41,7 @@ pub struct ShowWidget {
 
 impl Default for ShowWidget {
     fn default() -> Self {
-        let builder = gtk::Builder::new_from_resource("/org/gnome/hammond/gtk/show_widget.ui");
+        let builder = gtk::Builder::new_from_resource("/org/gnome/Hammond/gtk/show_widget.ui");
         let container: gtk::Box = builder.get_object("container").unwrap();
         let scrolled_window: gtk::ScrolledWindow = builder.get_object("scrolled_window").unwrap();
         let episodes = builder.get_object("episodes").unwrap();
@@ -79,7 +79,7 @@ impl ShowWidget {
     }
 
     pub fn init(&mut self, pd: &Arc<Podcast>, sender: &Sender<Action>) {
-        let builder = gtk::Builder::new_from_resource("/org/gnome/hammond/gtk/show_widget.ui");
+        let builder = gtk::Builder::new_from_resource("/org/gnome/Hammond/gtk/show_widget.ui");
 
         self.unsub
             .connect_clicked(clone!(pd, sender => move |bttn| {
@@ -189,7 +189,7 @@ fn populate_listbox(
     }));
 
     if count == 0 {
-        let builder = gtk::Builder::new_from_resource("/org/gnome/hammond/gtk/empty_show.ui");
+        let builder = gtk::Builder::new_from_resource("/org/gnome/Hammond/gtk/empty_show.ui");
         let container: gtk::Box = builder.get_object("empty_show").unwrap();
         show.episodes.add(&container);
         return Ok(());

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <gresources>
-  <gresource prefix="/org/gnome/hammond/">
+  <gresource prefix="/org/gnome/Hammond/">
       <file compressed="true" preprocess="xml-stripblanks">gtk/episode_widget.ui</file>
       <file compressed="true" preprocess="xml-stripblanks">gtk/show_widget.ui</file>
       <file compressed="true" preprocess="xml-stripblanks">gtk/empty_view.ui</file>
@@ -11,6 +11,7 @@
       <file compressed="true" preprocess="xml-stripblanks">gtk/shows_child.ui</file>
       <file compressed="true" preprocess="xml-stripblanks">gtk/headerbar.ui</file>
       <file compressed="true" preprocess="xml-stripblanks">gtk/inapp_notif.ui</file>
+      <file compressed="true" preprocess="xml-stripblanks">gtk/menus.ui</file>
       <file compressed="true">gtk/style.css</file>
   </gresource>
 </gresources>

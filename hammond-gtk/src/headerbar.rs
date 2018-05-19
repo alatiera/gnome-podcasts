@@ -23,7 +23,6 @@ pub struct Header {
     switch: gtk::StackSwitcher,
     back: gtk::Button,
     show_title: gtk::Label,
-    about: gtk::ModelButton,
     import: gtk::ModelButton,
     export: gtk::ModelButton,
     update_button: gtk::ModelButton,
@@ -34,7 +33,7 @@ pub struct Header {
 
 impl Default for Header {
     fn default() -> Header {
-        let builder = gtk::Builder::new_from_resource("/org/gnome/hammond/gtk/headerbar.ui");
+        let builder = gtk::Builder::new_from_resource("/org/gnome/Hammond/gtk/headerbar.ui");
 
         let header = builder.get_object("headerbar").unwrap();
         let add_toggle = builder.get_object("add_toggle").unwrap();
@@ -47,7 +46,6 @@ impl Default for Header {
         let update_box = builder.get_object("update_notification").unwrap();
         let update_label = builder.get_object("update_label").unwrap();
         let update_spinner = builder.get_object("update_spinner").unwrap();
-        let about = builder.get_object("about").unwrap();
 
         Header {
             container: header,
@@ -55,7 +53,6 @@ impl Default for Header {
             switch,
             back,
             show_title,
-            about,
             import,
             export,
             update_button,
@@ -75,7 +72,7 @@ impl Header {
     }
 
     pub fn init(&self, content: &Content, window: &gtk::Window, sender: &Sender<Action>) {
-        let builder = gtk::Builder::new_from_resource("/org/gnome/hammond/gtk/headerbar.ui");
+        let builder = gtk::Builder::new_from_resource("/org/gnome/Hammond/gtk/headerbar.ui");
 
         let add_popover: gtk::Popover = builder.get_object("add_popover").unwrap();
         let new_url: gtk::Entry = builder.get_object("new_url").unwrap();
@@ -106,9 +103,6 @@ impl Header {
                     glib::Continue(false)
                 }));
         }));
-
-        self.about
-            .connect_clicked(clone!(window => move |_| about_dialog(&window)));
 
         self.import.connect_clicked(
             clone!(window, sender => move |_| on_import_clicked(&window, &sender)),
@@ -287,40 +281,4 @@ fn on_import_clicked(window: &gtk::Window, sender: &Sender<Action>) {
     }));
 
     dialog.run();
-}
-
-// Totally copied it from fractal.
-// https://gitlab.gnome.org/danigm/fractal/blob/503e311e22b9d7540089d735b92af8e8f93560c5/fractal-gtk/src/app.rs#L1883-1912
-fn about_dialog(window: &gtk::Window) {
-    // Feel free to add yourself if you contribured.
-    let authors = &[
-        "Constantin Nickel",
-        "Gabriele Musco",
-        "James Wykeham-Martin",
-        "Jordan Petridis",
-        "Julian Sparber",
-        "Rowan Lewis",
-    ];
-
-    let dialog = gtk::AboutDialog::new();
-    // Waiting for a logo.
-    // dialog.set_logo_icon_name("org.gnome.Hammond");
-    dialog.set_logo_icon_name("multimedia-player");
-    dialog.set_comments("Podcast Client for the GNOME Desktop.");
-    dialog.set_copyright("© 2017, 2018 Jordan Petridis");
-    dialog.set_license_type(gtk::License::Gpl30);
-    dialog.set_modal(true);
-    // TODO: make it show it fetches the commit hash from which it was built
-    // and the version number is kept in sync automaticly
-    dialog.set_version("0.3.3");
-    dialog.set_program_name("Hammond");
-    // TODO: Need a wiki page first.
-    // dialog.set_website("https://wiki.gnome.org/Design/Apps/Potential/Podcasts");
-    // dialog.set_website_label("Learn more about Hammond");
-    dialog.set_transient_for(window);
-
-    dialog.set_artists(&["Tobias Bernard"]);
-    dialog.set_authors(authors);
-
-    dialog.show();
 }

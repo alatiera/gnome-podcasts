@@ -86,7 +86,7 @@ fn main() {
 
     // Add custom style
     let provider = gtk::CssProvider::new();
-    gtk::CssProvider::load_from_resource(&provider, "/org/gnome/hammond/gtk/style.css");
+    gtk::CssProvider::load_from_resource(&provider, "/org/gnome/Hammond/gtk/style.css");
     gtk::StyleContext::add_provider_for_screen(
         &gdk::Screen::get_default().expect("Error initializing gtk css provider."),
         &provider,

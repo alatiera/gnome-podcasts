@@ -1,6 +1,6 @@
 #![allow(new_without_default)]
 
-use gio::{ApplicationExt, ApplicationExtManual, ApplicationFlags, Settings, SettingsExt};
+use gio::{ApplicationExt, ApplicationExtManual, ApplicationFlags, Settings, SettingsExt, SimpleAction, SimpleActionExt, ActionMapExt};
 use glib;
 use gtk;
 use gtk::prelude::*;
@@ -66,6 +66,19 @@ impl App {
         // Create the main window
         let window = gtk::Window::new(gtk::WindowType::Toplevel);
         window.set_title("Hammond");
+
+        // Ideally a lot more than actions would happen in startup & window
+        // creation would be in activate
+        application.connect_startup(clone!(window => move |app| {
+            let about = SimpleAction::new("about", None);
+            // Should investigate use of active_window here
+            about.connect_activate(clone!(window => move |_, _| about_dialog(&window)));
+            app.add_action(&about);
+
+            let quit = SimpleAction::new("quit", None);
+            quit.connect_activate(clone!(app => move |_, _| app.quit()));
+            app.add_action(&quit);
+        }));
 
         window.connect_delete_event(clone!(application, settings, window => move |_, _| {
             WindowGeometry::from_window(&window).write(&settings);
@@ -223,4 +236,41 @@ fn build_ui(window: &gtk::Window, app: &gtk::Application) {
     window.show_all();
     window.activate();
     app.connect_activate(move |_| ());
+}
+
+// Totally copied it from fractal.
+// https://gitlab.gnome.org/danigm/fractal/blob/503e311e22b9d7540089d735b92af8e8f93560c5/fractal-gtk/src/app.rs#L1883-1912
+fn about_dialog(window: &gtk::Window) {
+    // Feel free to add yourself if you contribured.
+    let authors = &[
+        "Constantin Nickel",
+        "Gabriele Musco",
+        "James Wykeham-Martin",
+        "Jordan Petridis",
+        "Julian Sparber",
+        "Rowan Lewis",
+        "Zander Brown"
+    ];
+
+    let dialog = gtk::AboutDialog::new();
+    // Waiting for a logo.
+    // dialog.set_logo_icon_name("org.gnome.Hammond");
+    dialog.set_logo_icon_name("multimedia-player");
+    dialog.set_comments("Podcast Client for the GNOME Desktop.");
+    dialog.set_copyright("© 2017, 2018 Jordan Petridis");
+    dialog.set_license_type(gtk::License::Gpl30);
+    dialog.set_modal(true);
+    // TODO: make it show it fetches the commit hash from which it was built
+    // and the version number is kept in sync automaticly
+    dialog.set_version("0.3.3");
+    dialog.set_program_name("Hammond");
+    // TODO: Need a wiki page first.
+    // dialog.set_website("https://wiki.gnome.org/Design/Apps/Potential/Podcasts");
+    // dialog.set_website_label("Learn more about Hammond");
+    dialog.set_transient_for(window);
+
+    dialog.set_artists(&["Tobias Bernard"]);
+    dialog.set_authors(authors);
+
+    dialog.show();
 }

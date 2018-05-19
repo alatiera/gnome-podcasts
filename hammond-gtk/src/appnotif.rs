@@ -21,7 +21,7 @@ pub struct InAppNotification {
 
 impl Default for InAppNotification {
     fn default() -> Self {
-        let builder = gtk::Builder::new_from_resource("/org/gnome/hammond/gtk/inapp_notif.ui");
+        let builder = gtk::Builder::new_from_resource("/org/gnome/Hammond/gtk/inapp_notif.ui");
 
         let revealer: gtk::Revealer = builder.get_object("revealer").unwrap();
         let text: gtk::Label = builder.get_object("text").unwrap();
