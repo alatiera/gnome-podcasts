@@ -10,6 +10,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Fixed:
 ### Removed:
 
+## [0.3.4] - 2018-05-20
+### Fixed:
+- Flatpak can now access the Home folder. This fixes the OPML import feature from
+not being able to access any file.
+
 ## [0.3.3] - 2018-05-19
 ### Added:
 - Initial functionality for importing shows from an OPML file was implemented.
