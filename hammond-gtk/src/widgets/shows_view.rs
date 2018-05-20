@@ -78,7 +78,8 @@ impl ShowsView {
     /// Save the vertical scrollbar position.
     pub fn save_alignment(&self) -> Result<(), Error> {
         if let Ok(mut guard) = SHOWS_VIEW_VALIGNMENT.lock() {
-            let adj = self.scrolled_window
+            let adj = self
+                .scrolled_window
                 .get_vadjustment()
                 .ok_or_else(|| format_err!("Could not get the adjustment"))?;
             *guard = Some(SendCell::new(adj));

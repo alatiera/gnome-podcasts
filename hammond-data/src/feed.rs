@@ -174,7 +174,8 @@ mod tests {
     fn test_complete_index() {
         truncate_db().unwrap();
 
-        let feeds: Vec<_> = URLS.iter()
+        let feeds: Vec<_> = URLS
+            .iter()
             .map(|&(path, url)| {
                 // Create and insert a Source into db
                 let s = Source::from_url(url).unwrap();

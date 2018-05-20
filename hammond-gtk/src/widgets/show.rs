@@ -130,7 +130,8 @@ impl ShowWidget {
     /// Save the scrollabar vajustment to the cache.
     pub fn save_vadjustment(&self, oldid: i32) -> Result<(), Error> {
         if let Ok(mut guard) = SHOW_WIDGET_VALIGNMENT.lock() {
-            let adj = self.scrolled_window
+            let adj = self
+                .scrolled_window
                 .get_vadjustment()
                 .ok_or_else(|| format_err!("Could not get the adjustment"))?;
             *guard = Some((oldid, SendCell::new(adj)));

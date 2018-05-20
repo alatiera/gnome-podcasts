@@ -83,7 +83,8 @@ impl Index<()> for NewPodcast {
 
 impl PartialEq<Podcast> for NewPodcast {
     fn eq(&self, other: &Podcast) -> bool {
-        (self.link() == other.link()) && (self.title() == other.title())
+        (self.link() == other.link())
+            && (self.title() == other.title())
             && (self.image_uri() == other.image_uri())
             && (self.description() == other.description())
             && (self.source_id() == other.source_id())
@@ -103,7 +104,8 @@ impl NewPodcast {
             .to_string();
 
         // Try to get the itunes img first
-        let itunes_img = chan.itunes_ext()
+        let itunes_img = chan
+            .itunes_ext()
             .and_then(|s| s.image().map(|url| url.trim()))
             .map(|s| s.to_owned());
         // If itunes is None, try to get the channel.image from the rss spec

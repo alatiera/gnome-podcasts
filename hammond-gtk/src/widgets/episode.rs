@@ -299,7 +299,8 @@ fn progress_bar_helper(
     episode_rowid: i32,
 ) -> Result<glib::Continue, Error> {
     let (fraction, downloaded) = {
-        let m = prog.lock()
+        let m = prog
+            .lock()
             .map_err(|_| format_err!("Failed to get a lock on the mutex."))?;
         (m.get_fraction(), m.get_downloaded())
     };
@@ -357,7 +358,8 @@ fn total_size_helper(
 ) -> Result<glib::Continue, Error> {
     // Get the total_bytes.
     let total_bytes = {
-        let m = prog.lock()
+        let m = prog
+            .lock()
             .map_err(|_| format_err!("Failed to get a lock on the mutex."))?;
         m.get_total_size()
     };
