@@ -9,15 +9,15 @@ use gtk::SettingsExt as GtkSettingsExt;
 use hammond_data::Podcast;
 use hammond_data::{opml};
 
-use appnotif::{InAppNotification, UndoState};
+//use appnotif::{InAppNotification, UndoState};
 use headerbar::Header;
 use settings::{self, WindowGeometry};
-use stacks::{Content, PopulatedState};
+use stacks::{Content/*, PopulatedState*/};
 use utils;
-use widgets::{mark_all_notif, remove_show_notif};
+//use widgets::{mark_all_notif, remove_show_notif};
 
 use std::rc::Rc;
-use std::sync::mpsc::{channel, Receiver, Sender};
+use std::sync::mpsc::{channel, Sender};
 use std::sync::Arc;
 
 use rayon;
@@ -44,12 +44,6 @@ pub enum Action {
 #[derive(Debug)]
 pub struct App {
     app_instance: gtk::Application,
-    window: gtk::Window,
-    overlay: gtk::Overlay,
-    header: Rc<Header>,
-    content: Rc<Content>,
-    receiver: Receiver<Action>,
-    sender: Sender<Action>,
     settings: Settings,
 }
 
@@ -66,21 +60,11 @@ impl App {
         let cleanup_date = settings::get_cleanup_date(&settings);
         utils::cleanup(cleanup_date);
 
-        // Create the main window
-        let window = gtk::Window::new(gtk::WindowType::Toplevel);
-        window.set_title("Hammond");
-
-        let (sender, receiver) = channel();
-
-        window.connect_delete_event(clone!(application, settings, window => move |_, _| {
-            WindowGeometry::from_window(&window).write(&settings);
-            application.quit();
-            Inhibit(false)
-        }));
-
         // Ideally a lot more than actions would happen in startup & window
         // creation would be in activate
-        application.connect_startup(clone!(window, sender => move |app| {
+        application.connect_startup(clone!(settings => move |app| {
+            let (sender, _receiver) = channel();
+
             let refresh = SimpleAction::new("refresh", None);
             refresh.connect_activate(clone!(sender => move |_, _| {
                 gtk::idle_add(clone!(sender => move || {
@@ -92,63 +76,142 @@ impl App {
             app.add_action(&refresh);
 
             let import = SimpleAction::new("import", None);
-            import.connect_activate(clone!(window, sender => move |_, _| on_import_clicked(&window, &sender)));
+            import.connect_activate(clone!(sender, app => move |_, _| {
+                let window = app.get_active_window().expect("Failed to get active window");
+                on_import_clicked(&window, &sender);
+            }));
             app.add_action(&import);
 
             let about = SimpleAction::new("about", None);
-            // Should investigate use of active_window here
-            about.connect_activate(clone!(window => move |_, _| about_dialog(&window)));
+            about.connect_activate(clone!(app => move |_, _| {
+                let window = app.get_active_window().expect("Failed to get active window");
+                about_dialog(&window);
+            }));
             app.add_action(&about);
 
             let quit = SimpleAction::new("quit", None);
             quit.connect_activate(clone!(app => move |_, _| app.quit()));
             app.add_action(&quit);
+
+            app.connect_activate(clone!(sender, settings => move |app| {
+                // Get the current window (if any)
+                if let Some(window) = app.get_active_window() {
+                    // Already open, just raise the window
+                    window.present();
+                } else {
+                    // Time to open one!
+                    // Create the main window
+                    let window = gtk::ApplicationWindow::new(&app);
+                    window.set_title("Hammond");
+
+                    window.connect_delete_event(clone!(app, settings => move |window, _| {
+                        WindowGeometry::from_window(&window).write(&settings);
+                        app.quit();
+                        Inhibit(false)
+                    }));
+
+                    // Create a content instance
+                    let content =
+                        Rc::new(Content::new(sender.clone()).expect("Content Initialization failed."));
+
+                    // Create the headerbar
+                    let _header = Rc::new(Header::new(&content, &window, &sender));
+
+                    // Add the content main stack to the overlay.
+                    let overlay = gtk::Overlay::new();
+                    overlay.add(&content.get_stack());
+
+                    // Add the overlay to the main window
+                    window.add(&overlay);
+
+                    WindowGeometry::from_settings(&settings).apply(&window);
+
+                    App::setup_timed_callbacks(&sender, &settings);
+
+                    window.show_all();
+                    window.activate();
+
+                    let _headerbar = _header;
+                    gtk::timeout_add(50, move || {
+                        /*match receiver.try_recv() {
+                            Ok(Action::RefreshAllViews) => content.update(),
+                            Ok(Action::RefreshShowsView) => content.update_shows_view(),
+                            Ok(Action::RefreshWidgetIfSame(id)) => content.update_widget_if_same(id),
+                            Ok(Action::RefreshEpisodesView) => content.update_home(),
+                            Ok(Action::RefreshEpisodesViewBGR) => content.update_home_if_background(),
+                            Ok(Action::ReplaceWidget(pd)) => {
+                                let shows = content.get_shows();
+                                let mut pop = shows.borrow().populated();
+                                pop.borrow_mut()
+                                    .replace_widget(pd.clone())
+                                    .map_err(|err| error!("Failed to update ShowWidget: {}", err))
+                                    .map_err(|_| error!("Failed ot update ShowWidget {}", pd.title()))
+                                    .ok();
+                            }
+                            Ok(Action::ShowWidgetAnimated) => {
+                                let shows = content.get_shows();
+                                let mut pop = shows.borrow().populated();
+                                pop.borrow_mut().switch_visible(
+                                    PopulatedState::Widget,
+                                    gtk::StackTransitionType::SlideLeft,
+                                );
+                            }
+                            Ok(Action::ShowShowsAnimated) => {
+                                let shows = content.get_shows();
+                                let mut pop = shows.borrow().populated();
+                                pop.borrow_mut()
+                                    .switch_visible(PopulatedState::View, gtk::StackTransitionType::SlideRight);
+                            }
+                            Ok(Action::HeaderBarShowTile(title)) => headerbar.switch_to_back(&title),
+                            Ok(Action::HeaderBarNormal) => headerbar.switch_to_normal(),
+                            Ok(Action::HeaderBarShowUpdateIndicator) => headerbar.show_update_notification(),
+                            Ok(Action::HeaderBarHideUpdateIndicator) => headerbar.hide_update_notification(),
+                            Ok(Action::MarkAllPlayerNotification(pd)) => {
+                                let notif = mark_all_notif(pd, &sender);
+                                notif.show(&overlay);
+                            }
+                            Ok(Action::RemoveShow(pd)) => {
+                                let notif = remove_show_notif(pd, sender.clone());
+                                notif.show(&overlay);
+                            }
+                            Ok(Action::ErrorNotification(err)) => {
+                                error!("An error notification was triggered: {}", err);
+                                let callback = || glib::Continue(false);
+                                let notif = InAppNotification::new(&err, callback, || {}, UndoState::Hidden);
+                                notif.show(&overlay);
+                            }
+                            Err(_) => (),
+                        }*/
+
+                        Continue(true)
+                    });
+                }
+            }));
         }));
-
-        // Create a content instance
-        let content =
-            Rc::new(Content::new(sender.clone()).expect("Content Initialization failed."));
-
-        // Create the headerbar
-        let header = Rc::new(Header::new(&content, &window, &sender));
-
-        // Add the content main stack to the overlay.
-        let overlay = gtk::Overlay::new();
-        overlay.add(&content.get_stack());
-
-        // Add the overlay to the main window
-        window.add(&overlay);
 
         App {
             app_instance: application,
-            window,
-            overlay,
-            header,
-            content,
-            receiver,
-            sender,
             settings,
         }
     }
 
-    fn setup_timed_callbacks(&self) {
-        self.setup_dark_theme();
-        self.setup_refresh_on_startup();
-        self.setup_auto_refresh();
+    fn setup_timed_callbacks(sender: &Sender<Action>, settings: &Settings) {
+        App::setup_dark_theme(&sender, settings);
+        App::setup_refresh_on_startup(&sender, settings);
+        App::setup_auto_refresh(&sender, settings);
     }
 
-    fn setup_dark_theme(&self) {
-        let settings = gtk::Settings::get_default().unwrap();
-        let enabled = self.settings.get_boolean("dark-theme");
+    fn setup_dark_theme(_sender: &Sender<Action>, settings: &Settings) {
+        let gtk_settings = gtk::Settings::get_default().unwrap();
+        let enabled = settings.get_boolean("dark-theme");
 
-        settings.set_property_gtk_application_prefer_dark_theme(enabled);
+        gtk_settings.set_property_gtk_application_prefer_dark_theme(enabled);
     }
 
-    fn setup_refresh_on_startup(&self) {
+    fn setup_refresh_on_startup(sender: &Sender<Action>, settings: &Settings) {
         // Update the feeds right after the Application is initialized.
-        if self.settings.get_boolean("refresh-on-startup") {
-            let sender = self.sender.clone();
-
+        let sender = sender.clone();
+        if settings.get_boolean("refresh-on-startup") {
             info!("Refresh on startup.");
             // The ui loads async, after initialization
             // so we need to delay this a bit so it won't block
@@ -161,12 +224,12 @@ impl App {
         }
     }
 
-    fn setup_auto_refresh(&self) {
-        let refresh_interval = settings::get_refresh_interval(&self.settings).num_seconds() as u32;
-        let sender = self.sender.clone();
+    fn setup_auto_refresh(sender: &Sender<Action>, settings: &Settings) {
+        let refresh_interval = settings::get_refresh_interval(&settings).num_seconds() as u32;
 
         info!("Auto-refresh every {:?} seconds.", refresh_interval);
 
+        let sender = sender.clone();
         gtk::timeout_add_seconds(refresh_interval, move || {
             let s: Option<Vec<_>> = None;
             utils::refresh(s, sender.clone());
@@ -176,83 +239,8 @@ impl App {
     }
 
     pub fn run(self) {
-        WindowGeometry::from_settings(&self.settings).apply(&self.window);
-
-        let window = self.window.clone();
-        self.app_instance.connect_startup(move |app| {
-            build_ui(&window, app);
-        });
-
-        self.setup_timed_callbacks();
-
-        let content = self.content;
-        let headerbar = self.header;
-        let sender = self.sender;
-        let overlay = self.overlay;
-        let receiver = self.receiver;
-        gtk::timeout_add(50, move || {
-            match receiver.try_recv() {
-                Ok(Action::RefreshAllViews) => content.update(),
-                Ok(Action::RefreshShowsView) => content.update_shows_view(),
-                Ok(Action::RefreshWidgetIfSame(id)) => content.update_widget_if_same(id),
-                Ok(Action::RefreshEpisodesView) => content.update_home(),
-                Ok(Action::RefreshEpisodesViewBGR) => content.update_home_if_background(),
-                Ok(Action::ReplaceWidget(pd)) => {
-                    let shows = content.get_shows();
-                    let mut pop = shows.borrow().populated();
-                    pop.borrow_mut()
-                        .replace_widget(pd.clone())
-                        .map_err(|err| error!("Failed to update ShowWidget: {}", err))
-                        .map_err(|_| error!("Failed ot update ShowWidget {}", pd.title()))
-                        .ok();
-                }
-                Ok(Action::ShowWidgetAnimated) => {
-                    let shows = content.get_shows();
-                    let mut pop = shows.borrow().populated();
-                    pop.borrow_mut().switch_visible(
-                        PopulatedState::Widget,
-                        gtk::StackTransitionType::SlideLeft,
-                    );
-                }
-                Ok(Action::ShowShowsAnimated) => {
-                    let shows = content.get_shows();
-                    let mut pop = shows.borrow().populated();
-                    pop.borrow_mut()
-                        .switch_visible(PopulatedState::View, gtk::StackTransitionType::SlideRight);
-                }
-                Ok(Action::HeaderBarShowTile(title)) => headerbar.switch_to_back(&title),
-                Ok(Action::HeaderBarNormal) => headerbar.switch_to_normal(),
-                Ok(Action::HeaderBarShowUpdateIndicator) => headerbar.show_update_notification(),
-                Ok(Action::HeaderBarHideUpdateIndicator) => headerbar.hide_update_notification(),
-                Ok(Action::MarkAllPlayerNotification(pd)) => {
-                    let notif = mark_all_notif(pd, &sender);
-                    notif.show(&overlay);
-                }
-                Ok(Action::RemoveShow(pd)) => {
-                    let notif = remove_show_notif(pd, sender.clone());
-                    notif.show(&overlay);
-                }
-                Ok(Action::ErrorNotification(err)) => {
-                    error!("An error notification was triggered: {}", err);
-                    let callback = || glib::Continue(false);
-                    let notif = InAppNotification::new(&err, callback, || {}, UndoState::Hidden);
-                    notif.show(&overlay);
-                }
-                Err(_) => (),
-            }
-
-            Continue(true)
-        });
-
         ApplicationExtManual::run(&self.app_instance, &[]);
     }
-}
-
-fn build_ui(window: &gtk::Window, app: &gtk::Application) {
-    window.set_application(app);
-    window.show_all();
-    window.activate();
-    app.connect_activate(move |_| ());
 }
 
 // Totally copied it from fractal.

@@ -12,6 +12,7 @@
       <file compressed="true" preprocess="xml-stripblanks">gtk/headerbar.ui</file>
       <file compressed="true" preprocess="xml-stripblanks">gtk/inapp_notif.ui</file>
       <file compressed="true" preprocess="xml-stripblanks">gtk/menus.ui</file>
+      <file compressed="true" preprocess="xml-stripblanks">gtk/help-overlay.ui</file>
       <file compressed="true">gtk/style.css</file>
   </gresource>
 </gresources>

@@ -4,7 +4,7 @@
 )]
 #![allow(unknown_lints)]
 #![warn(unused_extern_crates, unused)]
-#![deny(warnings)]
+//#![deny(warnings)]
 
 extern crate gdk;
 extern crate gdk_pixbuf;
