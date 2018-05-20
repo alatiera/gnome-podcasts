@@ -125,7 +125,7 @@ rustfmt:
     script:
         - rustc -Vv && cargo -Vv
         - cargo fmt --version
-        - cargo fmt --all -- --write-mode=diff
+        - cargo fmt --all -- --check
 
 # Configure and run clippy on nightly
 # Only fails on errors atm.
