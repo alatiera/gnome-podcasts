@@ -6,13 +6,23 @@
       <object class="GtkShortcutsSection">
         <property name="section-name">shortcuts</property>
         <property name="max-height">12</property>
+        <property name="visible">True</property>
         <child>
           <object class="GtkShortcutsGroup">
-            <property name="title" translatable="yes">Miscellaneous</property>
+            <property name="title" translatable="yes">General</property>
+            <property name="visible">True</property>
             <child>
               <object class="GtkShortcutsShortcut">
+                <property name="visible">True</property>
+                <property name="accelerator">F5</property>
+                <property name="title" translatable="yes" context="shortcut window">Check for new episodes</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkShortcutsShortcut">
+                <property name="visible">True</property>
                 <property name="accelerator">&lt;primary&gt;q</property>
-                <property name="title" translatable="yes">Quit</property>
+                <property name="title" translatable="yes" context="shortcut window">Quit the application</property>
               </object>
             </child>
           </object>

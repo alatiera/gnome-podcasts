@@ -1,6 +1,7 @@
 #![allow(new_without_default)]
 
-use gio::{ApplicationExt, ApplicationExtManual, ApplicationFlags, Settings, SettingsExt, SimpleAction, SimpleActionExt, ActionMapExt};
+use gio::{ApplicationExt, ApplicationExtManual, ApplicationFlags, Settings,
+          SettingsExt, SimpleAction, SimpleActionExt, ActionMapExt};
 use glib;
 use gtk;
 use gtk::prelude::*;
@@ -62,8 +63,6 @@ impl App {
         let cleanup_date = settings::get_cleanup_date(&settings);
         utils::cleanup(cleanup_date);
 
-        // Ideally a lot more than actions would happen in startup & window
-        // creation would be in activate
         application.connect_startup(clone!(settings => move |app| {
             let (sender, receiver) = channel();
             let receiver = Rc::new(RefCell::new(receiver));
@@ -115,7 +114,8 @@ impl App {
 
                     // Create a content instance
                     let content =
-                        Rc::new(Content::new(sender.clone()).expect("Content Initialization failed."));
+                        Rc::new(Content::new(sender.clone()).expect(
+                            "Content Initialization failed."));
 
                     // Create the headerbar
                     let header = Rc::new(Header::new(&content, &window, &sender));
@@ -134,24 +134,26 @@ impl App {
                     window.show_all();
                     window.activate();
 
-                    let headerbar = header;
                     gtk::timeout_add(50, clone!(sender, receiver => move || {
-                        // Uses receiver, content, headerbar, sender, overlay
+                        // Uses receiver, content, header, sender, overlay
                         let act = receiver.borrow().try_recv();
                         //let act: Result<Action, RecvError> = Ok(Action::RefreshAllViews);
                         match act {
                             Ok(Action::RefreshAllViews) => content.update(),
                             Ok(Action::RefreshShowsView) => content.update_shows_view(),
-                            Ok(Action::RefreshWidgetIfSame(id)) => content.update_widget_if_same(id),
+                            Ok(Action::RefreshWidgetIfSame(id)) =>
+                                content.update_widget_if_same(id),
                             Ok(Action::RefreshEpisodesView) => content.update_home(),
-                            Ok(Action::RefreshEpisodesViewBGR) => content.update_home_if_background(),
+                            Ok(Action::RefreshEpisodesViewBGR) =>
+                                content.update_home_if_background(),
                             Ok(Action::ReplaceWidget(pd)) => {
                                 let shows = content.get_shows();
                                 let mut pop = shows.borrow().populated();
                                 pop.borrow_mut()
                                     .replace_widget(pd.clone())
                                     .map_err(|err| error!("Failed to update ShowWidget: {}", err))
-                                    .map_err(|_| error!("Failed ot update ShowWidget {}", pd.title()))
+                                    .map_err(|_|
+                                        error!("Failed ot update ShowWidget {}", pd.title()))
                                     .ok();
                             }
                             Ok(Action::ShowWidgetAnimated) => {
@@ -166,12 +168,16 @@ impl App {
                                 let shows = content.get_shows();
                                 let mut pop = shows.borrow().populated();
                                 pop.borrow_mut()
-                                    .switch_visible(PopulatedState::View, gtk::StackTransitionType::SlideRight);
+                                    .switch_visible(PopulatedState::View,
+                                                    gtk::StackTransitionType::SlideRight);
                             }
-                            Ok(Action::HeaderBarShowTile(title)) => headerbar.switch_to_back(&title),
-                            Ok(Action::HeaderBarNormal) => headerbar.switch_to_normal(),
-                            Ok(Action::HeaderBarShowUpdateIndicator) => headerbar.show_update_notification(),
-                            Ok(Action::HeaderBarHideUpdateIndicator) => headerbar.hide_update_notification(),
+                            Ok(Action::HeaderBarShowTile(title)) =>
+                                header.switch_to_back(&title),
+                            Ok(Action::HeaderBarNormal) => header.switch_to_normal(),
+                            Ok(Action::HeaderBarShowUpdateIndicator) =>
+                                header.show_update_notification(),
+                            Ok(Action::HeaderBarHideUpdateIndicator) =>
+                                header.hide_update_notification(),
                             Ok(Action::MarkAllPlayerNotification(pd)) => {
                                 let notif = mark_all_notif(pd, &sender);
                                 notif.show(&overlay);
@@ -183,7 +189,8 @@ impl App {
                             Ok(Action::ErrorNotification(err)) => {
                                 error!("An error notification was triggered: {}", err);
                                 let callback = || glib::Continue(false);
-                                let notif = InAppNotification::new(&err, callback, || {}, UndoState::Hidden);
+                                let notif = InAppNotification::new(&err, callback,
+                                                                   || {}, UndoState::Hidden);
                                 notif.show(&overlay);
                             }
                             Err(_) => (),
@@ -260,7 +267,7 @@ fn about_dialog(window: &gtk::Window) {
         "Jordan Petridis",
         "Julian Sparber",
         "Rowan Lewis",
-        "Zander Brown"
+        "Zander Brown",
     ];
 
     let dialog = gtk::AboutDialog::new();
@@ -297,8 +304,8 @@ fn on_import_clicked(window: &gtk::Window, sender: &Sender<Action>) {
         Some("Select the file from which to you want to Import Shows."),
         Some(window),
         FileChooserAction::Open,
-        Some("_Cancel"),
         Some("_Import"),
+        None,
     );
 
     // Do not show hidden(.thing) files

@@ -6,6 +6,7 @@
       <item>
         <attribute name="label" translatable="yes">_Check for new episodes</attribute>
         <attribute name="action">app.refresh</attribute>
+        <attribute name="accel">F5</attribute>
       </item>
       <item>
         <attribute name="label" translatable="yes">_Import Shows</attribute>
