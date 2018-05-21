@@ -1,6 +1,7 @@
 use glib;
 use gtk;
 use gtk::prelude::*;
+use gio::MenuModel;
 
 use failure::Error;
 use failure::ResultExt;
@@ -22,10 +23,12 @@ pub struct Header {
     switch: gtk::StackSwitcher,
     back: gtk::Button,
     show_title: gtk::Label,
-    export: gtk::ModelButton,
     update_box: gtk::Box,
     update_label: gtk::Label,
     update_spinner: gtk::Spinner,
+    menu_button: gtk::Button,
+    menu_popover: gtk::Popover,
+    app_menu: MenuModel
 }
 
 impl Default for Header {
@@ -37,10 +40,13 @@ impl Default for Header {
         let switch = builder.get_object("switch").unwrap();
         let back = builder.get_object("back").unwrap();
         let show_title = builder.get_object("show_title").unwrap();
-        let export = builder.get_object("export").unwrap();
         let update_box = builder.get_object("update_notification").unwrap();
         let update_label = builder.get_object("update_label").unwrap();
         let update_spinner = builder.get_object("update_spinner").unwrap();
+        let menu_button = builder.get_object("menu_toggle").unwrap();
+        let menu_popover = builder.get_object("menu_popover").unwrap();
+        let menus = gtk::Builder::new_from_resource("/org/gnome/Hammond/gtk/menus.ui");
+        let app_menu = menus.get_object("app-menu").unwrap();
 
         Header {
             container: header,
@@ -48,23 +54,27 @@ impl Default for Header {
             switch,
             back,
             show_title,
-            export,
             update_box,
             update_label,
             update_spinner,
+            menu_button,
+            menu_popover,
+            app_menu,
         }
     }
 }
 
 // TODO: Refactor components into smaller state machines
 impl Header {
-    pub fn new(content: &Content, window: &gtk::ApplicationWindow, sender: &Sender<Action>) -> Header {
+    pub fn new(content: &Content, window: &gtk::ApplicationWindow,
+               sender: &Sender<Action>, local_menu: bool) -> Header {
         let h = Header::default();
-        h.init(content, window, &sender);
+        h.init(content, window, &sender, local_menu);
         h
     }
 
-    pub fn init(&self, content: &Content, window: &gtk::ApplicationWindow, sender: &Sender<Action>) {
+    pub fn init(&self, content: &Content, window: &gtk::ApplicationWindow,
+                sender: &Sender<Action>, local_menu: bool) {
         let builder = gtk::Builder::new_from_resource("/org/gnome/Hammond/gtk/headerbar.ui");
 
         let add_popover: gtk::Popover = builder.get_object("add_popover").unwrap();
@@ -105,6 +115,11 @@ impl Header {
                     .ok();
             }),
         );
+
+        if local_menu {
+            self.menu_popover.bind_model(Some(&self.app_menu), None);
+            self.menu_button.set_visible(true);
+        }
     }
 
     pub fn switch_to_back(&self, title: &str) {
