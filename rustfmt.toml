@@ -1,5 +1,4 @@
 unstable_features = true
-verbose = false
 max_width = 100
 comment_width = 100
 wrap_comments = true

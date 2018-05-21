@@ -197,7 +197,8 @@ pub fn get_episode(
 }
 
 pub fn cache_image(pd: &PodcastCoverQuery) -> Result<String, DownloadError> {
-    let url = pd.image_uri()
+    let url = pd
+        .image_uri()
         .ok_or_else(|| DownloadError::NoImageLocation)?
         .to_owned();
 
@@ -215,7 +216,8 @@ pub fn cache_image(pd: &PodcastCoverQuery) -> Result<String, DownloadError> {
         // For some reason there is no .first() method so nth(0) is used
         let path = foo.nth(0).and_then(|x| x.ok());
         if let Some(p) = path {
-            return Ok(p.to_str()
+            return Ok(p
+                .to_str()
                 .ok_or_else(|| DownloadError::InvalidCachedImageLocation)?
                 .into());
         }
