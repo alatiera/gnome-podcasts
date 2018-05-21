@@ -90,7 +90,7 @@
                                           </packing>
                                         </child>
                                         <child>
-                                          <object class="GtkSwitch">
+                                          <object class="GtkSwitch" id="dark_toggle">
                                             <property name="visible">True</property>
                                             <property name="can_focus">True</property>
                                             <property name="valign">center</property>
@@ -178,7 +178,7 @@
                                           </packing>
                                         </child>
                                         <child>
-                                          <object class="GtkSwitch">
+                                          <object class="GtkSwitch" id="startup_toggle">
                                             <property name="visible">True</property>
                                             <property name="can_focus">True</property>
                                             <property name="valign">center</property>
@@ -221,7 +221,7 @@
                                           </packing>
                                         </child>
                                         <child>
-                                          <object class="GtkSwitch">
+                                          <object class="GtkSwitch" id="auto_toggle">
                                             <property name="visible">True</property>
                                             <property name="can_focus">True</property>
                                             <property name="valign">center</property>
@@ -268,7 +268,7 @@
                                             <property name="visible">True</property>
                                             <property name="can_focus">False</property>
                                             <child>
-                                              <object class="GtkSpinButton">
+                                              <object class="GtkSpinButton" id="refresh_value">
                                                 <property name="visible">True</property>
                                                 <property name="can_focus">True</property>
                                                 <property name="input_purpose">digits</property>
@@ -382,7 +382,7 @@
                                             <property name="visible">True</property>
                                             <property name="can_focus">False</property>
                                             <child>
-                                              <object class="GtkSpinButton">
+                                              <object class="GtkSpinButton" id="cleanup_value">
                                                 <property name="visible">True</property>
                                                 <property name="can_focus">True</property>
                                                 <property name="input_purpose">digits</property>
