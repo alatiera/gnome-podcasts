@@ -1,3 +1,5 @@
+#![allow(dead_code)]
+
 use gio;
 use gio::{Settings, SettingsExt};
 use gtk;
@@ -87,7 +89,7 @@ impl Prefs {
         let store = gtk::ListStore::new(&[gtk::Type::String]);
         let mut i = 0;
         for item in ["Seconds", "Minutes", "Hours", "Days", "Weeks"].iter() {
-            let row = [&(item) as &ToValue];
+            let row: &[&ToValue] = &[item];
             if item.to_lowercase() == refresh_p {
                 refresh_pos = i;
             }
@@ -95,7 +97,7 @@ impl Prefs {
                 cleanup_pos = i;
             }
             store.insert_with_values(None, &[0], &row);
-            i += 1 ;
+            i += 1;
         }
         for combo in [self.refresh_type.clone(), self.cleanup_type.clone()].iter() {
             combo.set_model(Some(&store));
@@ -119,7 +121,7 @@ impl Prefs {
         }));
     }
 
-    pub fn show(&self, parent: &gtk::Window) {
+    pub fn show(&self, parent: &gtk::ApplicationWindow) {
         self.dialog.set_transient_for(Some(parent));
         self.dialog.set_modal(true);
         self.dialog.show_all();

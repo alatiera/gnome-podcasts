@@ -1,13 +1,13 @@
 #![allow(new_without_default)]
+#![allow(unused)]
 
 use gio::{
-    self, ActionMapExt, ApplicationExt, ApplicationExtManual, ApplicationFlags, SettingsExt,
-    SimpleAction, SimpleActionExt,
+    self, ActionMapExt, ApplicationExt, ApplicationExtManual, ApplicationFlags,
+    SettingsBindFlags, SettingsExt, SimpleAction, SimpleActionExt,
 };
 use glib;
 use gtk;
 use gtk::prelude::*;
-use gtk::SettingsExt as GtkSettingsExt;
 
 use crossbeam_channel::{unbounded, Receiver, Sender};
 use hammond_data::Show;
@@ -150,9 +150,12 @@ impl App {
 
     fn setup_dark_theme(&self) {
         let gtk_settings = gtk::Settings::get_default().unwrap();
-        let enabled = self.settings.get_boolean("dark-theme");
-
-        gtk_settings.set_property_gtk_application_prefer_dark_theme(enabled);
+        self.settings.bind(
+            "dark-theme",
+            &gtk_settings,
+            "gtk-application-prefer-dark-theme",
+            SettingsBindFlags::DEFAULT,
+        );
     }
 
     fn setup_refresh_on_startup(&self) {
@@ -187,6 +190,7 @@ impl App {
         let win = &self.window;
         let instance = &self.instance;
         let header = &self.headerbar;
+        let settings = &self.settings;
 
         // Create the `refresh` action.
         //
