@@ -11,7 +11,7 @@
             <property name="title" translatable="yes">Miscellaneous</property>
             <child>
               <object class="GtkShortcutsShortcut">
-                <property name="accelerator">&lt;primar&gt;q</property>
+                <property name="accelerator">&lt;primary&gt;q</property>
                 <property name="title" translatable="yes">Quit</property>
               </object>
             </child>

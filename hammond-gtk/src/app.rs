@@ -9,18 +9,20 @@ use gtk::SettingsExt as GtkSettingsExt;
 use hammond_data::Podcast;
 use hammond_data::{opml};
 
-//use appnotif::{InAppNotification, UndoState};
+use appnotif::{InAppNotification, UndoState};
 use headerbar::Header;
 use settings::{self, WindowGeometry};
-use stacks::{Content/*, PopulatedState*/};
+use stacks::{Content, PopulatedState};
 use utils;
-//use widgets::{mark_all_notif, remove_show_notif};
+use widgets::{mark_all_notif, remove_show_notif};
 
 use std::rc::Rc;
 use std::sync::mpsc::{channel, Sender};
 use std::sync::Arc;
 
 use rayon;
+
+use std::cell::RefCell;
 
 #[derive(Debug, Clone)]
 pub enum Action {
@@ -63,7 +65,8 @@ impl App {
         // Ideally a lot more than actions would happen in startup & window
         // creation would be in activate
         application.connect_startup(clone!(settings => move |app| {
-            let (sender, _receiver) = channel();
+            let (sender, receiver) = channel();
+            let receiver = Rc::new(RefCell::new(receiver));
 
             let refresh = SimpleAction::new("refresh", None);
             refresh.connect_activate(clone!(sender => move |_, _| {
@@ -93,7 +96,7 @@ impl App {
             quit.connect_activate(clone!(app => move |_, _| app.quit()));
             app.add_action(&quit);
 
-            app.connect_activate(clone!(sender, settings => move |app| {
+            app.connect_activate(clone!(sender, settings, receiver => move |app| {
                 // Get the current window (if any)
                 if let Some(window) = app.get_active_window() {
                     // Already open, just raise the window
@@ -115,7 +118,7 @@ impl App {
                         Rc::new(Content::new(sender.clone()).expect("Content Initialization failed."));
 
                     // Create the headerbar
-                    let _header = Rc::new(Header::new(&content, &window, &sender));
+                    let header = Rc::new(Header::new(&content, &window, &sender));
 
                     // Add the content main stack to the overlay.
                     let overlay = gtk::Overlay::new();
@@ -131,9 +134,12 @@ impl App {
                     window.show_all();
                     window.activate();
 
-                    let _headerbar = _header;
-                    gtk::timeout_add(50, move || {
-                        /*match receiver.try_recv() {
+                    let headerbar = header;
+                    gtk::timeout_add(50, clone!(sender, receiver => move || {
+                        // Uses receiver, content, headerbar, sender, overlay
+                        let act = receiver.borrow().try_recv();
+                        //let act: Result<Action, RecvError> = Ok(Action::RefreshAllViews);
+                        match act {
                             Ok(Action::RefreshAllViews) => content.update(),
                             Ok(Action::RefreshShowsView) => content.update_shows_view(),
                             Ok(Action::RefreshWidgetIfSame(id)) => content.update_widget_if_same(id),
@@ -181,10 +187,10 @@ impl App {
                                 notif.show(&overlay);
                             }
                             Err(_) => (),
-                        }*/
+                        }
 
                         Continue(true)
-                    });
+                    }));
                 }
             }));
         }));
@@ -282,19 +288,17 @@ fn about_dialog(window: &gtk::Window) {
 
 fn on_import_clicked(window: &gtk::Window, sender: &Sender<Action>) {
     use glib::translate::ToGlib;
-    use gtk::{FileChooserAction, FileChooserDialog, FileFilter, ResponseType};
+    use gtk::{FileChooserAction, FileChooserNative, FileFilter, ResponseType};
 
     // let dialog = FileChooserDialog::new(title, Some(&window), FileChooserAction::Open);
     // TODO: It might be better to use a FileChooserNative widget.
     // Create the FileChooser Dialog
-    let dialog = FileChooserDialog::with_buttons(
+    let dialog = FileChooserNative::new(
         Some("Select the file from which to you want to Import Shows."),
         Some(window),
         FileChooserAction::Open,
-        &[
-            ("_Cancel", ResponseType::Cancel),
-            ("_Open", ResponseType::Accept),
-        ],
+        Some("_Cancel"),
+        Some("_Import"),
     );
 
     // Do not show hidden(.thing) files
