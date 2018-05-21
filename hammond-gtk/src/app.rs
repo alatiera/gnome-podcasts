@@ -14,6 +14,7 @@ use hammond_data::Show;
 use send_cell::SendCell;
 
 use headerbar::Header;
+use prefs::Prefs;
 use settings::{self, WindowGeometry};
 use stacks::{Content, PopulatedState};
 use utils;

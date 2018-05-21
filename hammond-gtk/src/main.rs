@@ -101,6 +101,7 @@ mod widgets;
 
 mod app;
 mod headerbar;
+mod prefs;
 
 mod manager;
 mod settings;
