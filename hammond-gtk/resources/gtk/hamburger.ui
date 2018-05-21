@@ -21,7 +21,7 @@
       <item>
         <attribute name="label" translatable="yes">_Preferences</attribute>
         <attribute name="action">app.preferences</attribute>
-        <attribute name="accel">&lt;primary&gt;,</attribute>
+        <attribute name="accel">&lt;primary&gt;e</attribute>
       </item>
     </section>
     <section>
