@@ -117,8 +117,7 @@ impl App {
                             "Content Initialization failed."));
 
                     // Create the headerbar
-                    let local_menu = !app.prefers_app_menu();
-                    let header = Rc::new(Header::new(&content, &window, &sender, local_menu));
+                    let header = Rc::new(Header::new(&content, &window, &sender));
 
                     // Add the content main stack to the overlay.
                     let overlay = gtk::Overlay::new();

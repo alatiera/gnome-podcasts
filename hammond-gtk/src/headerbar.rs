@@ -26,7 +26,6 @@ pub struct Header {
     update_box: gtk::Box,
     update_label: gtk::Label,
     update_spinner: gtk::Spinner,
-    menu_button: gtk::Button,
     menu_popover: gtk::Popover,
     app_menu: MenuModel,
 }
@@ -43,7 +42,6 @@ impl Default for Header {
         let update_box = builder.get_object("update_notification").unwrap();
         let update_label = builder.get_object("update_label").unwrap();
         let update_spinner = builder.get_object("update_spinner").unwrap();
-        let menu_button = builder.get_object("menu_toggle").unwrap();
         let menu_popover = builder.get_object("menu_popover").unwrap();
         let menus = gtk::Builder::new_from_resource("/org/gnome/Hammond/gtk/menus.ui");
         let app_menu = menus.get_object("app-menu").unwrap();
@@ -57,7 +55,6 @@ impl Default for Header {
             update_box,
             update_label,
             update_spinner,
-            menu_button,
             menu_popover,
             app_menu,
         }
@@ -70,10 +67,9 @@ impl Header {
         content: &Content,
         window: &gtk::ApplicationWindow,
         sender: &Sender<Action>,
-        local_menu: bool,
     ) -> Header {
         let h = Header::default();
-        h.init(content, window, &sender, local_menu);
+        h.init(content, window, &sender);
         h
     }
 
@@ -82,7 +78,6 @@ impl Header {
         content: &Content,
         window: &gtk::ApplicationWindow,
         sender: &Sender<Action>,
-        local_menu: bool,
     ) {
         let builder = gtk::Builder::new_from_resource("/org/gnome/Hammond/gtk/headerbar.ui");
 
@@ -125,10 +120,7 @@ impl Header {
             }),
         );
 
-        if local_menu {
-            self.menu_popover.bind_model(Some(&self.app_menu), None);
-            self.menu_button.set_visible(true);
-        }
+        self.menu_popover.bind_model(Some(&self.app_menu), None);
     }
 
     pub fn switch_to_back(&self, title: &str) {

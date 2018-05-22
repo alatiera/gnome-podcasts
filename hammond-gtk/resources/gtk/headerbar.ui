@@ -258,8 +258,7 @@ Tobias Bernard
     </child>
     <child>
       <object class="GtkMenuButton" id="menu_toggle">
-        <property name="visible">False</property>
-        <property name="no_show_all">True</property>
+        <property name="visible">True</property>
         <property name="can_focus">True</property>
         <property name="receives_default">False</property>
         <property name="valign">center</property>
