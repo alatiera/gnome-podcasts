@@ -9,7 +9,6 @@ use gtk;
 use gtk::prelude::*;
 use gtk::SettingsExt as GtkSettingsExt;
 
-use hammond_data::opml;
 use hammond_data::Podcast;
 
 use appnotif::{InAppNotification, UndoState};
@@ -17,13 +16,11 @@ use headerbar::Header;
 use settings::{self, WindowGeometry};
 use stacks::{Content, PopulatedState};
 use utils;
-use widgets::{mark_all_notif, remove_show_notif};
+use widgets::{about_dialog, mark_all_notif, remove_show_notif};
 
 use std::rc::Rc;
 use std::sync::mpsc::{channel, Sender};
 use std::sync::Arc;
-
-use rayon;
 
 use std::cell::RefCell;
 
@@ -82,7 +79,7 @@ impl App {
             let import = SimpleAction::new("import", None);
             import.connect_activate(clone!(sender, app => move |_, _| {
                 let window = app.get_active_window().expect("Failed to get active window");
-                on_import_clicked(&window, &sender);
+                utils::on_import_clicked(&window, &sender);
             }));
             app.add_action(&import);
 
@@ -257,99 +254,4 @@ impl App {
     pub fn run(self) {
         ApplicationExtManual::run(&self.app_instance, &[]);
     }
-}
-
-// Totally copied it from fractal.
-// https://gitlab.gnome.org/danigm/fractal/blob/503e311e22b9d7540089d735b92af8e8f93560c5/fractal-gtk/src/app.rs#L1883-1912
-fn about_dialog(window: &gtk::Window) {
-    // Feel free to add yourself if you contribured.
-    let authors = &[
-        "Constantin Nickel",
-        "Gabriele Musco",
-        "James Wykeham-Martin",
-        "Jordan Petridis",
-        "Julian Sparber",
-        "Rowan Lewis",
-        "Zander Brown",
-    ];
-
-    let dialog = gtk::AboutDialog::new();
-    // Waiting for a logo.
-    // dialog.set_logo_icon_name("org.gnome.Hammond");
-    dialog.set_logo_icon_name("multimedia-player");
-    dialog.set_comments("Podcast Client for the GNOME Desktop.");
-    dialog.set_copyright("© 2017, 2018 Jordan Petridis");
-    dialog.set_license_type(gtk::License::Gpl30);
-    dialog.set_modal(true);
-    // TODO: make it show it fetches the commit hash from which it was built
-    // and the version number is kept in sync automaticly
-    dialog.set_version("0.3.4");
-    dialog.set_program_name("Hammond");
-    // TODO: Need a wiki page first.
-    // dialog.set_website("https://wiki.gnome.org/Design/Apps/Potential/Podcasts");
-    // dialog.set_website_label("Learn more about Hammond");
-    dialog.set_transient_for(window);
-
-    dialog.set_artists(&["Tobias Bernard"]);
-    dialog.set_authors(authors);
-
-    dialog.show();
-}
-
-fn on_import_clicked(window: &gtk::Window, sender: &Sender<Action>) {
-    use glib::translate::ToGlib;
-    use gtk::{FileChooserAction, FileChooserNative, FileFilter, ResponseType};
-
-    // let dialog = FileChooserDialog::new(title, Some(&window), FileChooserAction::Open);
-    // TODO: It might be better to use a FileChooserNative widget.
-    // Create the FileChooser Dialog
-    let dialog = FileChooserNative::new(
-        Some("Select the file from which to you want to Import Shows."),
-        Some(window),
-        FileChooserAction::Open,
-        Some("_Import"),
-        None,
-    );
-
-    // Do not show hidden(.thing) files
-    dialog.set_show_hidden(false);
-
-    // Set a filter to show only xml files
-    let filter = FileFilter::new();
-    FileFilterExt::set_name(&filter, Some("OPML file"));
-    filter.add_mime_type("application/xml");
-    filter.add_mime_type("text/xml");
-    dialog.add_filter(&filter);
-
-    dialog.connect_response(clone!(sender => move |dialog, resp| {
-        debug!("Dialong Response {}", resp);
-        if resp == ResponseType::Accept.to_glib() {
-            // TODO: Show an in-app notifictaion if the file can not be accessed
-            if let Some(filename) = dialog.get_filename() {
-                debug!("File selected: {:?}", filename);
-
-                rayon::spawn(clone!(sender => move || {
-                    // Parse the file and import the feeds
-                    if let Ok(sources) = opml::import_from_file(filename) {
-                        // Refresh the succesfully parsed feeds to index them
-                        utils::refresh(Some(sources), sender)
-                    } else {
-                        let text = String::from("Failed to parse the Imported file");
-                        sender.send(Action::ErrorNotification(text))
-                            .map_err(|err| error!("Action Sender: {}", err))
-                            .ok();
-                    }
-                }))
-            } else {
-                let text = String::from("Selected File could not be accessed.");
-                sender.send(Action::ErrorNotification(text))
-                    .map_err(|err| error!("Action Sender: {}", err))
-                    .ok();
-            }
-        }
-
-        dialog.destroy();
-    }));
-
-    dialog.run();
 }

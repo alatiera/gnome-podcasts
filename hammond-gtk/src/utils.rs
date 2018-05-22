@@ -17,6 +17,7 @@ use serde_json::Value;
 
 // use hammond_data::feed;
 use hammond_data::dbqueries;
+use hammond_data::opml;
 use hammond_data::pipeline;
 use hammond_data::utils::checkup;
 use hammond_data::Source;
@@ -331,6 +332,64 @@ fn lookup_id(id: u32) -> Result<String, Error> {
     rssurl()
         .map(From::from)
         .ok_or_else(|| format_err!("Failed to get url from itunes response"))
+}
+
+pub fn on_import_clicked(window: &gtk::Window, sender: &Sender<Action>) {
+    use glib::translate::ToGlib;
+    use gtk::{FileChooserAction, FileChooserNative, FileFilter, ResponseType};
+
+    // let dialog = FileChooserDialog::new(title, Some(&window), FileChooserAction::Open);
+    // TODO: It might be better to use a FileChooserNative widget.
+    // Create the FileChooser Dialog
+    let dialog = FileChooserNative::new(
+        Some("Select the file from which to you want to Import Shows."),
+        Some(window),
+        FileChooserAction::Open,
+        Some("_Import"),
+        None,
+    );
+
+    // Do not show hidden(.thing) files
+    dialog.set_show_hidden(false);
+
+    // Set a filter to show only xml files
+    let filter = FileFilter::new();
+    FileFilterExt::set_name(&filter, Some("OPML file"));
+    filter.add_mime_type("application/xml");
+    filter.add_mime_type("text/xml");
+    dialog.add_filter(&filter);
+
+    dialog.connect_response(clone!(sender => move |dialog, resp| {
+        debug!("Dialong Response {}", resp);
+        if resp == ResponseType::Accept.to_glib() {
+            // TODO: Show an in-app notifictaion if the file can not be accessed
+            if let Some(filename) = dialog.get_filename() {
+                debug!("File selected: {:?}", filename);
+
+                rayon::spawn(clone!(sender => move || {
+                    // Parse the file and import the feeds
+                    if let Ok(sources) = opml::import_from_file(filename) {
+                        // Refresh the succesfully parsed feeds to index them
+                        refresh(Some(sources), sender)
+                    } else {
+                        let text = String::from("Failed to parse the Imported file");
+                        sender.send(Action::ErrorNotification(text))
+                            .map_err(|err| error!("Action Sender: {}", err))
+                            .ok();
+                    }
+                }))
+            } else {
+                let text = String::from("Selected File could not be accessed.");
+                sender.send(Action::ErrorNotification(text))
+                    .map_err(|err| error!("Action Sender: {}", err))
+                    .ok();
+            }
+        }
+
+        dialog.destroy();
+    }));
+
+    dialog.run();
 }
 
 #[cfg(test)]
