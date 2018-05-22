@@ -1,7 +1,7 @@
+use gio::MenuModel;
 use glib;
 use gtk;
 use gtk::prelude::*;
-use gio::MenuModel;
 
 use failure::Error;
 use failure::ResultExt;
@@ -28,7 +28,7 @@ pub struct Header {
     update_spinner: gtk::Spinner,
     menu_button: gtk::Button,
     menu_popover: gtk::Popover,
-    app_menu: MenuModel
+    app_menu: MenuModel,
 }
 
 impl Default for Header {
@@ -66,15 +66,24 @@ impl Default for Header {
 
 // TODO: Refactor components into smaller state machines
 impl Header {
-    pub fn new(content: &Content, window: &gtk::ApplicationWindow,
-               sender: &Sender<Action>, local_menu: bool) -> Header {
+    pub fn new(
+        content: &Content,
+        window: &gtk::ApplicationWindow,
+        sender: &Sender<Action>,
+        local_menu: bool,
+    ) -> Header {
         let h = Header::default();
         h.init(content, window, &sender, local_menu);
         h
     }
 
-    pub fn init(&self, content: &Content, window: &gtk::ApplicationWindow,
-                sender: &Sender<Action>, local_menu: bool) {
+    pub fn init(
+        &self,
+        content: &Content,
+        window: &gtk::ApplicationWindow,
+        sender: &Sender<Action>,
+        local_menu: bool,
+    ) {
         let builder = gtk::Builder::new_from_resource("/org/gnome/Hammond/gtk/headerbar.ui");
 
         let add_popover: gtk::Popover = builder.get_object("add_popover").unwrap();
@@ -217,4 +226,3 @@ fn on_url_change(
         }
     }
 }
-

@@ -1,14 +1,16 @@
 #![allow(new_without_default)]
 
-use gio::{ApplicationExt, ApplicationExtManual, ApplicationFlags, Settings,
-          SettingsExt, SimpleAction, SimpleActionExt, ActionMapExt};
+use gio::{
+    ActionMapExt, ApplicationExt, ApplicationExtManual, ApplicationFlags, Settings, SettingsExt,
+    SimpleAction, SimpleActionExt,
+};
 use glib;
 use gtk;
 use gtk::prelude::*;
 use gtk::SettingsExt as GtkSettingsExt;
 
+use hammond_data::opml;
 use hammond_data::Podcast;
-use hammond_data::{opml};
 
 use appnotif::{InAppNotification, UndoState};
 use headerbar::Header;
