@@ -44,7 +44,7 @@ impl Default for Header {
         let update_spinner = builder.get_object("update_spinner").unwrap();
         let menu_popover = builder.get_object("menu_popover").unwrap();
         let menus = gtk::Builder::new_from_resource("/org/gnome/Hammond/gtk/menus.ui");
-        let app_menu = menus.get_object("app-menu").unwrap();
+        let app_menu = menus.get_object("menu").unwrap();
 
         Header {
             container: header,

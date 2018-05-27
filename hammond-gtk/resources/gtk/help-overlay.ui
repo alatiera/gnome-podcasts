@@ -14,7 +14,7 @@
             <child>
               <object class="GtkShortcutsShortcut">
                 <property name="visible">True</property>
-                <property name="accelerator">F5</property>
+                <property name="accelerator">&lt;primary&gt;r</property>
                 <property name="title" translatable="yes" context="shortcut window">Check for new episodes</property>
               </object>
             </child>
