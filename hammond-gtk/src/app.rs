@@ -75,6 +75,7 @@ impl App {
                 }));
             }));
             app.add_action(&refresh);
+            app.set_accels_for_action("app.refresh", &["<primary>r"]);
 
             let import = SimpleAction::new("import", None);
             import.connect_activate(clone!(sender, app => move |_, _| {
@@ -93,6 +94,9 @@ impl App {
             let quit = SimpleAction::new("quit", None);
             quit.connect_activate(clone!(app => move |_, _| app.quit()));
             app.add_action(&quit);
+            app.set_accels_for_action("app.quit", &["<primary>q"]);
+
+            app.set_accels_for_action("win.menu", &["F10"]);
 
             app.connect_activate(clone!(sender, settings, receiver => move |app| {
                 // Get the current window (if any)
@@ -118,6 +122,12 @@ impl App {
 
                     // Create the headerbar
                     let header = Rc::new(Header::new(&content, &window, &sender));
+
+                    let menu = SimpleAction::new("menu", None);
+                    menu.connect_activate(clone!(header => move |_, _| {
+                        header.open_menu();
+                    }));
+                    window.add_action(&menu);
 
                     // Add the content main stack to the overlay.
                     let overlay = gtk::Overlay::new();
