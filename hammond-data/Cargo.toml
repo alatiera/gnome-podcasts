@@ -35,7 +35,7 @@ features = ["sqlite"]
 version = "1.2.0"
 
 [dev-dependencies]
-rand = "0.4.2"
+rand = "0.5.0"
 tempdir = "0.3.7"
 criterion = "0.2.3"
 pretty_assertions = "0.5.1"
