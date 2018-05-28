@@ -1,6 +1,7 @@
 use gtk;
 use gtk::prelude::*;
 
+use crossbeam_channel::Sender;
 use failure::Error;
 use hammond_data::dbqueries::is_podcasts_populated;
 
@@ -11,7 +12,6 @@ use widgets::EmptyView;
 
 use std::cell::RefCell;
 use std::rc::Rc;
-use std::sync::mpsc::Sender;
 
 #[derive(Debug, Clone, Copy)]
 pub enum ShowState {

@@ -1,6 +1,7 @@
 use gtk;
 use gtk::prelude::*;
 
+use crossbeam_channel::Sender;
 use failure::Error;
 
 use app::Action;
@@ -8,7 +9,6 @@ use stacks::{HomeStack, ShowStack};
 
 use std::cell::RefCell;
 use std::rc::Rc;
-use std::sync::mpsc::Sender;
 
 #[derive(Debug, Clone)]
 pub struct Content {

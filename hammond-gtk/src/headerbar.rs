@@ -7,9 +7,8 @@ use failure::Error;
 use failure::ResultExt;
 use url::Url;
 
+use crossbeam_channel::Sender;
 use hammond_data::{dbqueries, Source};
-
-use std::sync::mpsc::Sender;
 
 use app::Action;
 use stacks::Content;

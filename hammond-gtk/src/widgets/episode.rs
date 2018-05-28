@@ -2,6 +2,7 @@ use glib;
 use gtk;
 use gtk::prelude::*;
 
+use crossbeam_channel::Sender;
 use failure::Error;
 use humansize::FileSize;
 use open;
@@ -19,7 +20,6 @@ use std::cell::RefCell;
 use std::ops::DerefMut;
 use std::path::Path;
 use std::rc::Rc;
-use std::sync::mpsc::Sender;
 use std::sync::{Arc, Mutex};
 
 #[derive(Debug)]

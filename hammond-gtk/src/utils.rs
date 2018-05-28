@@ -8,6 +8,7 @@ use gtk::prelude::*;
 use gtk::{IsA, Widget};
 
 use chrono::prelude::*;
+use crossbeam_channel::Sender;
 use failure::Error;
 use rayon;
 use regex::Regex;
@@ -24,9 +25,8 @@ use hammond_data::Source;
 use hammond_downloader::downloader;
 
 use std::collections::{HashMap, HashSet};
-use std::sync::mpsc::*;
-use std::sync::Arc;
-use std::sync::{Mutex, RwLock};
+use std::sync::mpsc::channel;
+use std::sync::{Arc, Mutex, RwLock};
 
 use app::Action;
 

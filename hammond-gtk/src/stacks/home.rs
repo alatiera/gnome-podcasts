@@ -2,6 +2,7 @@ use gtk;
 use gtk::prelude::*;
 use gtk::StackTransitionType;
 
+use crossbeam_channel::Sender;
 use failure::Error;
 use hammond_data::dbqueries::is_episodes_populated;
 use hammond_data::errors::DataError;
@@ -10,7 +11,6 @@ use app::Action;
 use widgets::{EmptyView, HomeView};
 
 use std::rc::Rc;
-use std::sync::mpsc::Sender;
 
 #[derive(Debug, Clone, Copy)]
 enum State {

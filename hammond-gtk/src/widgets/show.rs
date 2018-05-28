@@ -2,6 +2,7 @@ use glib;
 use gtk;
 use gtk::prelude::*;
 
+use crossbeam_channel::{SendError, Sender};
 use failure::Error;
 use html2pango::markup_from_raw;
 use open;
@@ -18,7 +19,6 @@ use utils::{self, lazy_load};
 use widgets::EpisodeWidget;
 
 use std::rc::Rc;
-use std::sync::mpsc::{SendError, Sender};
 use std::sync::{Arc, Mutex};
 
 lazy_static! {

@@ -1,6 +1,7 @@
 use gtk;
 use gtk::prelude::*;
 
+use crossbeam_channel::Sender;
 use failure::Error;
 use send_cell::SendCell;
 
@@ -11,7 +12,6 @@ use app::Action;
 use utils::{self, get_ignored_shows, lazy_load, set_image_from_path};
 
 use std::rc::Rc;
-use std::sync::mpsc::Sender;
 use std::sync::Arc;
 use std::sync::Mutex;
 

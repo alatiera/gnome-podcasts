@@ -2,6 +2,7 @@ use gtk;
 use gtk::prelude::*;
 use gtk::StackTransitionType;
 
+use crossbeam_channel::Sender;
 use failure::Error;
 
 use hammond_data::dbqueries;
@@ -11,7 +12,6 @@ use app::Action;
 use widgets::{ShowWidget, ShowsView};
 
 use std::rc::Rc;
-use std::sync::mpsc::Sender;
 use std::sync::Arc;
 
 #[derive(Debug, Clone, Copy)]

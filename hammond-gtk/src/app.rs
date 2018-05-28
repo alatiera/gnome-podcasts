@@ -9,6 +9,7 @@ use gtk;
 use gtk::prelude::*;
 use gtk::SettingsExt as GtkSettingsExt;
 
+use crossbeam_channel::{unbounded, Sender};
 use hammond_data::Podcast;
 
 use appnotif::{InAppNotification, UndoState};
@@ -19,10 +20,7 @@ use utils;
 use widgets::{about_dialog, mark_all_notif, remove_show_notif};
 
 use std::rc::Rc;
-use std::sync::mpsc::{channel, Sender};
 use std::sync::Arc;
-
-use std::cell::RefCell;
 
 #[derive(Debug, Clone)]
 pub enum Action {
@@ -63,8 +61,7 @@ impl App {
         utils::cleanup(cleanup_date);
 
         application.connect_startup(clone!(settings => move |app| {
-            let (sender, receiver) = channel();
-            let receiver = Rc::new(RefCell::new(receiver));
+            let (sender, receiver) = unbounded();
 
             let refresh = SimpleAction::new("refresh", None);
             refresh.connect_activate(clone!(sender => move |_, _| {
@@ -145,9 +142,7 @@ impl App {
 
                     gtk::timeout_add(50, clone!(sender, receiver => move || {
                         // Uses receiver, content, header, sender, overlay
-                        let act = receiver.borrow().try_recv();
-                        //let act: Result<Action, RecvError> = Ok(Action::RefreshAllViews);
-                        match act {
+                        match receiver.try_recv() {
                             Ok(Action::RefreshAllViews) => content.update(),
                             Ok(Action::RefreshShowsView) => content.update_shows_view(),
                             Ok(Action::RefreshWidgetIfSame(id)) =>

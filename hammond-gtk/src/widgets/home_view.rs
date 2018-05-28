@@ -4,6 +4,7 @@ use failure::Error;
 use gtk;
 use gtk::prelude::*;
 
+use crossbeam_channel::Sender;
 use hammond_data::dbqueries;
 use hammond_data::EpisodeWidgetQuery;
 use send_cell::SendCell;
@@ -13,7 +14,6 @@ use utils::{self, lazy_load_full};
 use widgets::EpisodeWidget;
 
 use std::rc::Rc;
-use std::sync::mpsc::Sender;
 use std::sync::Mutex;
 
 lazy_static! {
