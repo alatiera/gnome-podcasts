@@ -49,7 +49,7 @@ pub struct HomeView {
 
 impl Default for HomeView {
     fn default() -> Self {
-        let builder = gtk::Builder::new_from_resource("/org/gnome/hammond/gtk/episodes_view.ui");
+        let builder = gtk::Builder::new_from_resource("/org/gnome/Hammond/gtk/episodes_view.ui");
         let container: gtk::Box = builder.get_object("container").unwrap();
         let scrolled_window: gtk::ScrolledWindow = builder.get_object("scrolled_window").unwrap();
         let frame_parent: gtk::Box = builder.get_object("frame_parent").unwrap();
@@ -181,7 +181,7 @@ struct HomeEpisode {
 impl Default for HomeEpisode {
     fn default() -> Self {
         let builder =
-            gtk::Builder::new_from_resource("/org/gnome/hammond/gtk/episodes_view_widget.ui");
+            gtk::Builder::new_from_resource("/org/gnome/Hammond/gtk/episodes_view_widget.ui");
         let container: gtk::Box = builder.get_object("container").unwrap();
         let image: gtk::Image = builder.get_object("cover").unwrap();
         let ep = EpisodeWidget::default();
@@ -198,7 +198,7 @@ impl Default for HomeEpisode {
 impl HomeEpisode {
     fn new(episode: EpisodeWidgetQuery, sender: &Sender<Action>) -> HomeEpisode {
         let builder =
-            gtk::Builder::new_from_resource("/org/gnome/hammond/gtk/episodes_view_widget.ui");
+            gtk::Builder::new_from_resource("/org/gnome/Hammond/gtk/episodes_view_widget.ui");
         let container: gtk::Box = builder.get_object("container").unwrap();
         let image: gtk::Image = builder.get_object("cover").unwrap();
         let pid = episode.podcast_id();

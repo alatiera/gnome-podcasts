@@ -15,7 +15,7 @@ pub struct WindowGeometry {
 }
 
 impl WindowGeometry {
-    pub fn from_window(window: &gtk::Window) -> WindowGeometry {
+    pub fn from_window(window: &gtk::ApplicationWindow) -> WindowGeometry {
         let position = window.get_position();
         let size = window.get_size();
         let left = position.0;
@@ -49,7 +49,7 @@ impl WindowGeometry {
         }
     }
 
-    pub fn apply(&self, window: &gtk::Window) {
+    pub fn apply(&self, window: &gtk::ApplicationWindow) {
         if self.width > 0 && self.height > 0 {
             window.resize(self.width, self.height);
         }

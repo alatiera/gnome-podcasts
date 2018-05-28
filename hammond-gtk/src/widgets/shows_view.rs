@@ -28,7 +28,7 @@ pub struct ShowsView {
 
 impl Default for ShowsView {
     fn default() -> Self {
-        let builder = gtk::Builder::new_from_resource("/org/gnome/hammond/gtk/shows_view.ui");
+        let builder = gtk::Builder::new_from_resource("/org/gnome/Hammond/gtk/shows_view.ui");
         let container: gtk::Box = builder.get_object("fb_parent").unwrap();
         let scrolled_window: gtk::ScrolledWindow = builder.get_object("scrolled_window").unwrap();
         let flowbox: gtk::FlowBox = builder.get_object("flowbox").unwrap();
@@ -130,7 +130,7 @@ struct ShowsChild {
 
 impl Default for ShowsChild {
     fn default() -> Self {
-        let builder = gtk::Builder::new_from_resource("/org/gnome/hammond/gtk/shows_child.ui");
+        let builder = gtk::Builder::new_from_resource("/org/gnome/Hammond/gtk/shows_child.ui");
 
         let container: gtk::Box = builder.get_object("fb_child").unwrap();
         let cover: gtk::Image = builder.get_object("pd_cover").unwrap();

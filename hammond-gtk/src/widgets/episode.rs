@@ -33,7 +33,7 @@ pub struct EpisodeWidget {
 
 impl Default for EpisodeWidget {
     fn default() -> Self {
-        let builder = gtk::Builder::new_from_resource("/org/gnome/hammond/gtk/episode_widget.ui");
+        let builder = gtk::Builder::new_from_resource("/org/gnome/Hammond/gtk/episode_widget.ui");
 
         let container: gtk::Box = builder.get_object("episode_container").unwrap();
         let progress: gtk::ProgressBar = builder.get_object("progress_bar").unwrap();
