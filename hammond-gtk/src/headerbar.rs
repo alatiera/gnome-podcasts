@@ -32,6 +32,7 @@ pub struct Header {
 impl Default for Header {
     fn default() -> Header {
         let builder = gtk::Builder::new_from_resource("/org/gnome/Hammond/gtk/headerbar.ui");
+        let menus = gtk::Builder::new_from_resource("/org/gnome/Hammond/gtk/menus.ui");
 
         let header = builder.get_object("headerbar").unwrap();
         let add_toggle = builder.get_object("add_toggle").unwrap();
@@ -42,7 +43,6 @@ impl Default for Header {
         let update_label = builder.get_object("update_label").unwrap();
         let update_spinner = builder.get_object("update_spinner").unwrap();
         let menu_button = builder.get_object("menu_button").unwrap();
-        let menus = gtk::Builder::new_from_resource("/org/gnome/Hammond/gtk/menus.ui");
         let app_menu = menus.get_object("menu").unwrap();
 
         Header {
