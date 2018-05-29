@@ -22,6 +22,20 @@ use widgets::{about_dialog, mark_all_notif, remove_show_notif};
 use std::rc::Rc;
 use std::sync::Arc;
 
+/// Creates an action named $called in the action map $on with the handler $handle
+macro_rules! action {
+    ($on:expr, $called:expr, $handle:expr) => {{
+        // Create a stateless, parameterless action
+        let act = SimpleAction::new($called, None);
+        // Connect the handler
+        act.connect_activate($handle);
+        // Add it to the map
+        $on.add_action(&act);
+        // Return the action
+        act
+    }};
+}
+
 #[derive(Debug, Clone)]
 pub enum Action {
     RefreshAllViews,
@@ -90,11 +104,9 @@ impl App {
                     // Create the headerbar
                     let header = Rc::new(Header::new(&content, &window, &sender));
 
-                    let menu = SimpleAction::new("menu", None);
-                    menu.connect_activate(clone!(header => move |_, _| {
+                    action!(window, "menu", clone!(header => move |_, _| {
                         header.open_menu();
                     }));
-                    window.add_action(&menu);
 
                     // Add the content main stack to the overlay.
                     let overlay = gtk::Overlay::new();
@@ -232,37 +244,41 @@ impl App {
         // Create the `refresh` action.
         //
         // This will trigger a refresh of all the shows in the database.
-        let refresh = SimpleAction::new("refresh", None);
-        refresh.connect_activate(clone!(sender => move |_, _| {
+        action!(
+            app,
+            "refresh",
+            clone!(sender => move |_, _| {
             gtk::idle_add(clone!(sender => move || {
                 let s: Option<Vec<_>> = None;
                 utils::refresh(s, sender.clone());
                 glib::Continue(false)
             }));
-        }));
-        app.add_action(&refresh);
+        })
+        );
         app.set_accels_for_action("app.refresh", &["<primary>r"]);
 
         // Create the `OPML` import action
-        let import = SimpleAction::new("import", None);
-        import.connect_activate(clone!(sender, app => move |_, _| {
+        action!(
+            app,
+            "import",
+            clone!(sender, app => move |_, _| {
             let window = app.get_active_window().expect("Failed to get active window");
             utils::on_import_clicked(&window, &sender);
-        }));
-        app.add_action(&import);
+        })
+        );
 
         // Create the action that shows a `gtk::AboutDialog`
-        let about = SimpleAction::new("about", None);
-        about.connect_activate(clone!(app => move |_, _| {
+        action!(
+            app,
+            "about",
+            clone!(app => move |_, _| {
             let window = app.get_active_window().expect("Failed to get active window");
             about_dialog(&window);
-        }));
-        app.add_action(&about);
+        })
+        );
 
         // Create the quit action
-        let quit = SimpleAction::new("quit", None);
-        quit.connect_activate(clone!(app => move |_, _| app.quit()));
-        app.add_action(&quit);
+        action!(app, "quit", clone!(app => move |_, _| app.quit()));
         app.set_accels_for_action("app.quit", &["<primary>q"]);
 
         // Bind the hamburger menu button to `F10`
