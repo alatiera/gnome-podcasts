@@ -213,12 +213,12 @@ impl App {
     }
 
     fn setup_timed_callbacks(sender: &Sender<Action>, settings: &Settings) {
-        App::setup_dark_theme(&sender, settings);
+        App::setup_dark_theme(settings);
         App::setup_refresh_on_startup(&sender, settings);
         App::setup_auto_refresh(&sender, settings);
     }
 
-    fn setup_dark_theme(_sender: &Sender<Action>, settings: &Settings) {
+    fn setup_dark_theme(settings: &Settings) {
         let gtk_settings = gtk::Settings::get_default().unwrap();
         let enabled = settings.get_boolean("dark-theme");
 
