@@ -10,6 +10,8 @@ extern crate gdk;
 extern crate gdk_pixbuf;
 extern crate gio;
 extern crate glib;
+extern crate gstreamer;
+extern crate gstreamer_player;
 extern crate gtk;
 
 #[macro_use]
@@ -42,6 +44,7 @@ extern crate url;
 
 use log::Level;
 
+use gstreamer as gst;
 use gtk::prelude::*;
 
 // http://gtk-rs.org/tuto/closures
@@ -80,6 +83,7 @@ fn main() {
     // TODO: make the the logger a cli -vv option
     loggerv::init_with_level(Level::Info).expect("Error initializing loggerv.");
     gtk::init().expect("Error initializing gtk.");
+    gst::init().expect("Error initializing gstreamer");
     static_resource::init().expect("Something went wrong with the resource file initialization.");
 
     // Add custom style

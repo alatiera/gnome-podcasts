@@ -1,3 +1,4 @@
+use gio::{File, FileExt};
 use glib;
 use gtk;
 use gtk::prelude::*;
@@ -7,6 +8,7 @@ use chrono::prelude::*;
 use crossbeam_channel::Sender;
 use failure::Error;
 use humansize::{file_size_opts as size_opts, FileSize};
+#[allow(unused_imports)]
 use open;
 
 use hammond_data::dbqueries;
@@ -446,15 +448,24 @@ fn on_play_bttn_clicked(
     episode: &mut EpisodeWidgetQuery,
     sender: &Sender<Action>,
 ) -> Result<(), Error> {
-    open_uri(episode.rowid())?;
-    episode.set_played_now()?;
+    let uri = dbqueries::get_episode_local_uri_from_id(episode.rowid())?
+        .ok_or_else(|| format_err!("Expected Some found None."))?;
+    let p = Path::new(&uri);
+    if p.exists() {
+        info!("Opening {}", uri);
+        // uri is actually a path, convert it (hacky)
+        let uri = File::new_for_path(p).get_uri().expect("Bad file path");
+        sender.send(Action::PlayEpisode(uri)).ok();
+    } else {
+        bail!("File \"{}\" does not exist.", uri);
+    }
 
     widget.info.set_title(&episode);
     sender
         .send(Action::RefreshEpisodesViewBGR)
         .map_err(From::from)
 }
-
+/*
 fn open_uri(rowid: i32) -> Result<(), Error> {
     let uri = dbqueries::get_episode_local_uri_from_id(rowid)?
         .ok_or_else(|| format_err!("Expected Some found None."))?;
@@ -468,7 +479,7 @@ fn open_uri(rowid: i32) -> Result<(), Error> {
 
     Ok(())
 }
-
+*/
 // Setup a callback that will update the progress bar.
 #[inline]
 #[cfg_attr(feature = "cargo-clippy", allow(if_same_then_else))]

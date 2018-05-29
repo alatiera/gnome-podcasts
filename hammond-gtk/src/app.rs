@@ -5,6 +5,7 @@ use gio::{
     SimpleAction, SimpleActionExt,
 };
 use glib;
+use gstreamer_player as gst;
 use gtk;
 use gtk::prelude::*;
 use gtk::SettingsExt as GtkSettingsExt;
@@ -53,6 +54,7 @@ pub enum Action {
     MarkAllPlayerNotification(Arc<Podcast>),
     RemoveShow(Arc<Podcast>),
     ErrorNotification(String),
+    PlayEpisode(String)
 }
 
 #[derive(Debug)]
@@ -127,6 +129,12 @@ impl App {
                     window.show_all();
                     window.activate();
 
+                    let player = gst::Player::new(None, None);
+                    player.connect_error(clone!(sender => move |_,err| {
+                        // Not the most user friendly...
+                        sender.send(Action::ErrorNotification(format!("Playback: {}", err))).ok();
+                    }));
+
                     gtk::timeout_add(50, clone!(sender, receiver => move || {
                         // Uses receiver, content, header, sender, overlay
                         match receiver.try_recv() {
@@ -183,7 +191,12 @@ impl App {
                                 let notif = InAppNotification::new(&err, callback,
                                                                    || {}, UndoState::Hidden);
                                 notif.show(&overlay);
-                            }
+                            },
+                            Ok(Action::PlayEpisode(uri)) => {
+                                // This must be a 'real' (file://) uri not a path
+                                player.set_uri(&uri);
+                                player.play();
+                            },
                             Err(_) => (),
                         }
 
