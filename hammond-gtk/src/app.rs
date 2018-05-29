@@ -63,39 +63,9 @@ impl App {
         application.connect_startup(clone!(settings => move |app| {
             let (sender, receiver) = unbounded();
 
-            let refresh = SimpleAction::new("refresh", None);
-            refresh.connect_activate(clone!(sender => move |_, _| {
-                gtk::idle_add(clone!(sender => move || {
-                    let s: Option<Vec<_>> = None;
-                    utils::refresh(s, sender.clone());
-                    glib::Continue(false)
-                }));
-            }));
-            app.add_action(&refresh);
-            app.set_accels_for_action("app.refresh", &["<primary>r"]);
+            App::setup_gactions(&app, &sender);
 
-            let import = SimpleAction::new("import", None);
-            import.connect_activate(clone!(sender, app => move |_, _| {
-                let window = app.get_active_window().expect("Failed to get active window");
-                utils::on_import_clicked(&window, &sender);
-            }));
-            app.add_action(&import);
-
-            let about = SimpleAction::new("about", None);
-            about.connect_activate(clone!(app => move |_, _| {
-                let window = app.get_active_window().expect("Failed to get active window");
-                about_dialog(&window);
-            }));
-            app.add_action(&about);
-
-            let quit = SimpleAction::new("quit", None);
-            quit.connect_activate(clone!(app => move |_, _| app.quit()));
-            app.add_action(&quit);
-            app.set_accels_for_action("app.quit", &["<primary>q"]);
-
-            app.set_accels_for_action("win.menu", &["F10"]);
-
-            app.connect_activate(clone!(sender, settings, receiver => move |app| {
+            app.connect_activate(clone!(sender, settings => move |app| {
                 // Get the current window (if any)
                 if let Some(window) = app.get_active_window() {
                     // Already open, just raise the window
@@ -253,6 +223,50 @@ impl App {
 
             glib::Continue(true)
         });
+    }
+
+    /// Define the `GAction`s.
+    ///
+    /// Used in menus and the keyboard shortcuts dialog.
+    fn setup_gactions(app: &gtk::Application, sender: &Sender<Action>) {
+        // Create the `refresh` action.
+        //
+        // This will trigger a refresh of all the shows in the database.
+        let refresh = SimpleAction::new("refresh", None);
+        refresh.connect_activate(clone!(sender => move |_, _| {
+            gtk::idle_add(clone!(sender => move || {
+                let s: Option<Vec<_>> = None;
+                utils::refresh(s, sender.clone());
+                glib::Continue(false)
+            }));
+        }));
+        app.add_action(&refresh);
+        app.set_accels_for_action("app.refresh", &["<primary>r"]);
+
+        // Create the `OPML` import action
+        let import = SimpleAction::new("import", None);
+        import.connect_activate(clone!(sender, app => move |_, _| {
+            let window = app.get_active_window().expect("Failed to get active window");
+            utils::on_import_clicked(&window, &sender);
+        }));
+        app.add_action(&import);
+
+        // Create the action that shows a `gtk::AboutDialog`
+        let about = SimpleAction::new("about", None);
+        about.connect_activate(clone!(app => move |_, _| {
+            let window = app.get_active_window().expect("Failed to get active window");
+            about_dialog(&window);
+        }));
+        app.add_action(&about);
+
+        // Create the quit action
+        let quit = SimpleAction::new("quit", None);
+        quit.connect_activate(clone!(app => move |_, _| app.quit()));
+        app.add_action(&quit);
+        app.set_accels_for_action("app.quit", &["<primary>q"]);
+
+        // Bind the hamburger menu button to `F10`
+        app.set_accels_for_action("win.menu", &["F10"]);
     }
 
     pub fn run(self) {
