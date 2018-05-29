@@ -5,6 +5,7 @@ mod episode;
 mod home_view;
 mod show;
 mod shows_view;
+mod playback;
 
 pub use self::aboutdialog::about_dialog;
 pub use self::empty::EmptyView;
@@ -13,3 +14,4 @@ pub use self::home_view::HomeView;
 pub use self::show::ShowWidget;
 pub use self::show::{mark_all_notif, remove_show_notif};
 pub use self::shows_view::ShowsView;
+pub use self::playback::Playback;

@@ -18,7 +18,7 @@ use settings::{self, WindowGeometry};
 use stacks::{Content, PopulatedState};
 use utils;
 use widgets::appnotif::{InAppNotification, UndoState};
-use widgets::{about_dialog, mark_all_notif, remove_show_notif};
+use widgets::{about_dialog, mark_all_notif, remove_show_notif, Playback};
 
 use std::rc::Rc;
 use std::sync::Arc;
@@ -69,10 +69,6 @@ impl App {
         let application = gtk::Application::new("org.gnome.Hammond", ApplicationFlags::empty())
             .expect("Application Initialization failed...");
 
-        // Weird magic I copy-pasted that sets the Application Name in the Shell.
-        glib::set_application_name("Hammond");
-        glib::set_prgname(Some("Hammond"));
-
         let cleanup_date = settings::get_cleanup_date(&settings);
         utils::cleanup(cleanup_date);
 
@@ -103,6 +99,9 @@ impl App {
                         Inhibit(false)
                     }));
 
+                    let wrap = gtk::Box::new(gtk::Orientation::Vertical, 0);
+                    window.add(&wrap);
+
                     // Create a content instance
                     let content =
                         Rc::new(Content::new(sender.clone()).expect(
@@ -120,7 +119,13 @@ impl App {
                     overlay.add(&content.get_stack());
 
                     // Add the overlay to the main window
-                    window.add(&overlay);
+                    wrap.add(&overlay);
+
+                    let playback = Playback::new();
+
+                    let reveal = gtk::Revealer::new();
+                    reveal.add(&playback.container);
+                    wrap.add(&reveal);
 
                     WindowGeometry::from_settings(&settings).apply(&window);
 
@@ -301,6 +306,11 @@ impl App {
     }
 
     pub fn run(self) {
+        // Weird magic I copy-pasted that sets the Application Name in the Shell.
+        glib::set_application_name("Hammond");
+        glib::set_prgname(Some("Hammond"));
+        // We need out own org.gnome.Hammon icon
+        gtk::Window::set_default_icon_name("multimedia-player");
         ApplicationExtManual::run(&self.app_instance, &[]);
     }
 }

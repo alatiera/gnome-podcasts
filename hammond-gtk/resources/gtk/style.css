@@ -9,3 +9,7 @@ row:last-child {
 list, border {
   border-radius: 4px;
 }
+
+.playback {
+  border-top: 1px solid @borders;
+}
