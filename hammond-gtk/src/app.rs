@@ -6,6 +6,7 @@ use gio::{
 };
 use glib;
 use gstreamer_player as gst;
+use gstreamer::ClockTime;
 use gtk;
 use gtk::prelude::*;
 use gtk::SettingsExt as GtkSettingsExt;
@@ -54,7 +55,10 @@ pub enum Action {
     MarkAllPlayerNotification(Arc<Podcast>),
     RemoveShow(Arc<Podcast>),
     ErrorNotification(String),
-    PlayEpisode(String)
+    PlayEpisode(String),
+    PlayerStateChanged(gst::PlayerState),
+    PlayerMediaChanged(Option<String>, ClockTime),
+    PlayerPositionChanged(ClockTime),
 }
 
 #[derive(Debug)]
@@ -121,11 +125,8 @@ impl App {
                     // Add the overlay to the main window
                     wrap.add(&overlay);
 
-                    let playback = Playback::new();
-
-                    let reveal = gtk::Revealer::new();
-                    reveal.add(&playback.container);
-                    wrap.add(&reveal);
+                    let playback = Rc::new(Playback::new());
+                    wrap.add(playback.get_widget());
 
                     WindowGeometry::from_settings(&settings).apply(&window);
 
@@ -140,8 +141,20 @@ impl App {
                         sender.send(Action::ErrorNotification(format!("Playback: {}", err))).ok();
                     }));
 
+                    player.connect_state_changed(clone!(sender => move |_,state| {
+                        sender.send(Action::PlayerStateChanged(state)).ok();
+                    }));
+
+                    player.connect_media_info_updated(clone!(sender => move |_,info| {
+                        sender.send(Action::PlayerMediaChanged(info.get_title(), info.get_duration())).ok();
+                    }));
+
+                    player.connect_property_position_notify(clone!(sender => move |p| {
+                        sender.send(Action::PlayerPositionChanged(p.get_position())).ok();
+                    }));
+
                     gtk::timeout_add(50, clone!(sender, receiver => move || {
-                        // Uses receiver, content, header, sender, overlay
+                        // Uses receiver, content, header, sender, overlay, playback
                         match receiver.try_recv() {
                             Ok(Action::RefreshAllViews) => content.update(),
                             Ok(Action::RefreshShowsView) => content.update_shows_view(),
@@ -202,6 +215,9 @@ impl App {
                                 player.set_uri(&uri);
                                 player.play();
                             },
+                            Ok(Action::PlayerStateChanged(state)) => playback.state_changed(state),
+                            Ok(Action::PlayerMediaChanged(t, l)) => playback.media_changed(t, l),
+                            Ok(Action::PlayerPositionChanged(t)) => playback.position_changed(t),
                             Err(_) => (),
                         }
 
