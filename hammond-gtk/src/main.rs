@@ -70,7 +70,6 @@ mod widgets;
 mod app;
 mod headerbar;
 
-mod appnotif;
 mod manager;
 mod settings;
 mod static_resource;

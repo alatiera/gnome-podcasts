@@ -1,4 +1,5 @@
 mod aboutdialog;
+pub mod appnotif;
 mod empty;
 mod episode;
 mod episode_states;

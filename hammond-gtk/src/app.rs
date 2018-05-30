@@ -12,11 +12,11 @@ use gtk::SettingsExt as GtkSettingsExt;
 use crossbeam_channel::{unbounded, Sender};
 use hammond_data::Podcast;
 
-use appnotif::{InAppNotification, UndoState};
 use headerbar::Header;
 use settings::{self, WindowGeometry};
 use stacks::{Content, PopulatedState};
 use utils;
+use widgets::appnotif::{InAppNotification, UndoState};
 use widgets::{about_dialog, mark_all_notif, remove_show_notif};
 
 use std::rc::Rc;

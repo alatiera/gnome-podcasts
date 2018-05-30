@@ -14,8 +14,8 @@ use hammond_data::utils::delete_show;
 use hammond_data::Podcast;
 
 use app::Action;
-use appnotif::{InAppNotification, UndoState};
 use utils::{self, lazy_load};
+use widgets::appnotif::{InAppNotification, UndoState};
 use widgets::EpisodeWidget;
 
 use std::rc::Rc;
