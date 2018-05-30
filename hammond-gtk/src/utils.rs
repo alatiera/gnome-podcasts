@@ -49,7 +49,7 @@ use app::Action;
 ///
 /// let messages: Vec<Message> = Vec::new();
 /// let list = gtk::ListBox::new();
-/// let constructor = |m| { MessageWidget::new(m).0};
+/// let constructor = |m| MessageWidget::new(m).0;
 /// lazy_load(messages, list, constructor, || {});
 /// ```
 ///
