@@ -36,5 +36,7 @@ pub fn about_dialog(window: &gtk::Window) {
     dialog.set_artists(&["Tobias Bernard"]);
     dialog.set_authors(authors);
 
+    dialog.connect_response(|dlg, _| dlg.destroy());
+
     dialog.show();
 }
