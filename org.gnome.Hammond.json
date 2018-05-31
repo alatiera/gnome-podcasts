@@ -30,7 +30,7 @@
         "env" : {
             "CARGO_HOME" : "/run/build/Hammond/cargo",
             "RUST_BACKTRACE" : "1",
-            "RUSTFLAGS" : "--cfg rayon_unstable"
+            "DEBUG" : "true"
         }
     },
     "modules" : [
