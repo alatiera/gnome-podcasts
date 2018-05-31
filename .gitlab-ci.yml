@@ -134,6 +134,7 @@ clippy:
     stage: lint
     variables:
         RUSTFLAGS: "--cfg rayon_unstable"
+        CARGO_HOME: ".cargo_cache"
     script:
         - rustc --version && cargo --version
         - cargo clippy --version
