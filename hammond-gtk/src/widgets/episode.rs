@@ -284,16 +284,46 @@ impl EpisodeWidget {
 
         // Check if the episode is being downloaded
         let id = episode.rowid();
-        let active_dl = || -> Result<Option<_>, Error> {
+        let active_dl = move || -> Result<Option<_>, Error> {
             let m = manager::ACTIVE_DOWNLOADS
                 .read()
                 .map_err(|_| format_err!("Failed to get a lock on the mutex."))?;
 
             Ok(m.get(&id).cloned())
-        }()?;
+        };
 
-        if let Some(_dl) = active_dl {
-            // FIXME: Wire cancel button
+        if let Some(prog) = active_dl()? {
+            // FIXME: Add again the callback ugly hack that makes things work somehow
+
+            // Wire the cancel button
+            widget
+                .buttons
+                .cancel
+                .connect_clicked(clone!(prog, widget, sender => move |_| {
+                    // Cancel the download
+                    if let Ok(mut m) = prog.lock() {
+                        m.cancel();
+                    }
+
+                    // Cancel is not instant so we have to wait a bit
+                    timeout_add(50, clone!(widget, sender => move || {
+                        if let Ok(thing) = active_dl() {
+                            if thing.is_none() {
+                                // Recalculate the widget state
+                                dbqueries::get_episode_widget_from_rowid(id)
+                                    .map_err(From::from)
+                                    .and_then(|ep| Self::determine_buttons_state(&widget, &ep, &sender))
+                                    .map_err(|err| error!("Error: {}", err))
+                                    .ok();
+
+                                return glib::Continue(false)
+                            }
+                        }
+
+                        glib::Continue(true)
+                    }));
+            }));
+
             // FIXME: Wire Total Size label
 
             // Change the widget layout/state
@@ -392,25 +422,6 @@ fn determine_media_state(
             glib::Continue(true)
         });
         gtk::timeout_add(250, callback);
-
-        lock.cancel_connect_clicked(clone!(prog, media_machine => move |_| {
-            if let Ok(mut m) = prog.lock() {
-                m.cancel();
-            }
-
-            if let Ok(mut lock) = media_machine.try_borrow_mut() {
-                if let Ok(episode) = dbqueries::get_episode_widget_from_rowid(id) {
-                    take_mut::take(lock.deref_mut(), |media| {
-                        media.determine_state(
-                            episode.length(),
-                            false,
-                            episode.local_uri().is_some(),
-                        )
-                    });
-                }
-            }
-        }));
-        drop(lock);
 
         // Setup a callback that will update the progress bar.
         update_progressbar_callback(&prog, &media_machine, id);

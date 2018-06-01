@@ -5,7 +5,6 @@
 //   Wrap the types into Struct-tuples and imple deref so it won't be possible to pass
 //   the wrong argument to the wrong position.
 
-use glib;
 use gtk;
 
 use gtk::prelude::*;
@@ -190,10 +189,6 @@ impl<S> Progress<S> {
         self.local_size.set_text(local_size);
         self.bar.set_fraction(fraction);
     }
-
-    fn cancel_connect_clicked<F: Fn(&gtk::Button) + 'static>(&self, f: F) -> glib::SignalHandlerId {
-        self.cancel.connect_clicked(f)
-    }
 }
 
 #[derive(Debug, Clone)]
@@ -354,17 +349,6 @@ impl ButtonsState {
             (PlayableWithoutSize(m), Some(s)) => Playable(m.into_playable(&s)),
         }
     }
-
-    fn cancel_connect_clicked<F: Fn(&gtk::Button) + 'static>(&self, f: F) -> glib::SignalHandlerId {
-        use self::ButtonsState::*;
-
-        match *self {
-            New(ref val) => val.progress.cancel_connect_clicked(f),
-            NewWithoutSize(ref val) => val.progress.cancel_connect_clicked(f),
-            Playable(ref val) => val.progress.cancel_connect_clicked(f),
-            PlayableWithoutSize(ref val) => val.progress.cancel_connect_clicked(f),
-        }
-    }
 }
 
 #[derive(Debug, Clone)]
@@ -374,18 +358,6 @@ pub enum MediaMachine {
 }
 
 impl MediaMachine {
-    pub fn cancel_connect_clicked<F: Fn(&gtk::Button) + 'static>(
-        &self,
-        f: F,
-    ) -> glib::SignalHandlerId {
-        use self::MediaMachine::*;
-
-        match *self {
-            Initialized(ref val) => val.cancel_connect_clicked(f),
-            InProgress(ref val) => val.progress.cancel_connect_clicked(f),
-        }
-    }
-
     pub fn determine_state(self, bytes: Option<i32>, is_active: bool, is_downloaded: bool) -> Self {
         use self::ButtonsState::*;
         use self::MediaMachine::*;
