@@ -5,11 +5,9 @@
 //   Wrap the types into Struct-tuples and imple deref so it won't be possible to pass
 //   the wrong argument to the wrong position.
 
-use chrono;
 use glib;
 use gtk;
 
-use chrono::prelude::*;
 use gtk::prelude::*;
 use humansize::{file_size_opts as size_opts, FileSize};
 
@@ -31,12 +29,7 @@ lazy_static! {
             allow_negative: false,
         })
     };
-
-    static ref NOW: DateTime<Utc> = Utc::now();
 }
-
-#[derive(Debug, Clone)]
-pub struct UnInitialized;
 
 #[derive(Debug, Clone)]
 pub struct Shown;
@@ -47,269 +40,6 @@ pub trait Visibility {}
 
 impl Visibility for Shown {}
 impl Visibility for Hidden {}
-
-#[derive(Debug, Clone)]
-pub struct Normal;
-#[derive(Debug, Clone)]
-pub struct GreyedOut;
-
-#[derive(Debug, Clone)]
-pub struct Title<S> {
-    title: gtk::Label,
-    state: S,
-}
-
-impl<S> Title<S> {
-    #[allow(unused_must_use)]
-    // This does not need to be &mut since gtk-rs does not model ownership
-    // But I think it wouldn't hurt if we treat it as a Rust api.
-    fn set_title(&mut self, s: &str) {
-        self.title.set_text(s);
-    }
-}
-
-impl Title<Normal> {
-    fn new(title: gtk::Label) -> Self {
-        Title {
-            title,
-            state: Normal {},
-        }
-    }
-}
-
-impl From<Title<Normal>> for Title<GreyedOut> {
-    fn from(f: Title<Normal>) -> Self {
-        f.title
-            .get_style_context()
-            .map(|c| c.add_class("dim-label"));
-
-        Title {
-            title: f.title,
-            state: GreyedOut {},
-        }
-    }
-}
-
-impl From<Title<GreyedOut>> for Title<Normal> {
-    fn from(f: Title<GreyedOut>) -> Self {
-        f.title
-            .get_style_context()
-            .map(|c| c.remove_class("dim-label"));
-
-        Title {
-            title: f.title,
-            state: Normal {},
-        }
-    }
-}
-
-#[derive(Debug, Clone)]
-pub enum TitleMachine {
-    Normal(Title<Normal>),
-    GreyedOut(Title<GreyedOut>),
-}
-
-impl TitleMachine {
-    pub fn new(label: gtk::Label, is_played: bool) -> Self {
-        let m = TitleMachine::Normal(Title::<Normal>::new(label));
-        m.determine_state(is_played)
-    }
-
-    pub fn determine_state(self, is_played: bool) -> Self {
-        use self::TitleMachine::*;
-
-        match (self, is_played) {
-            (title @ Normal(_), false) => title,
-            (title @ GreyedOut(_), true) => title,
-            (Normal(val), true) => GreyedOut(val.into()),
-            (GreyedOut(val), false) => Normal(val.into()),
-        }
-    }
-
-    pub fn set_title(&mut self, s: &str) {
-        use self::TitleMachine::*;
-
-        match *self {
-            Normal(ref mut val) => val.set_title(s),
-            GreyedOut(ref mut val) => val.set_title(s),
-        }
-    }
-}
-
-#[derive(Debug, Clone)]
-pub struct Usual;
-#[derive(Debug, Clone)]
-pub struct YearShown;
-
-#[derive(Debug, Clone)]
-pub struct Date<S> {
-    date: gtk::Label,
-    epoch: i64,
-    state: S,
-}
-
-impl<S> Date<S> {
-    fn into_usual(self, epoch: i64) -> Date<Usual> {
-        let ts = Utc.timestamp(epoch, 0);
-        self.date.set_text(ts.format("%e %b").to_string().trim());
-
-        Date {
-            date: self.date,
-            epoch: self.epoch,
-            state: Usual {},
-        }
-    }
-
-    fn into_year_shown(self, epoch: i64) -> Date<YearShown> {
-        let ts = Utc.timestamp(epoch, 0);
-        self.date.set_text(ts.format("%e %b %Y").to_string().trim());
-
-        Date {
-            date: self.date,
-            epoch: self.epoch,
-            state: YearShown {},
-        }
-    }
-}
-
-impl Date<UnInitialized> {
-    fn new(date: gtk::Label, epoch: i64) -> Self {
-        let ts = Utc.timestamp(epoch, 0);
-        date.set_text(ts.format("%e %b %Y").to_string().trim());
-
-        Date {
-            date,
-            epoch,
-            state: UnInitialized {},
-        }
-    }
-}
-
-#[derive(Debug, Clone)]
-pub enum DateMachine {
-    UnInitialized(Date<UnInitialized>),
-    Usual(Date<Usual>),
-    WithYear(Date<YearShown>),
-}
-
-impl DateMachine {
-    pub fn new(label: gtk::Label, epoch: i64) -> Self {
-        let m = DateMachine::UnInitialized(Date::<UnInitialized>::new(label, epoch));
-        m.determine_state(epoch)
-    }
-
-    pub fn determine_state(self, epoch: i64) -> Self {
-        use self::DateMachine::*;
-
-        let ts = Utc.timestamp(epoch, 0);
-        let is_old = NOW.year() != ts.year();
-
-        match (self, is_old) {
-            // Into Usual
-            (Usual(val), false) => Usual(val.into_usual(epoch)),
-            (WithYear(val), false) => Usual(val.into_usual(epoch)),
-            (UnInitialized(val), false) => Usual(val.into_usual(epoch)),
-
-            // Into Year Shown
-            (Usual(val), true) => WithYear(val.into_year_shown(epoch)),
-            (WithYear(val), true) => WithYear(val.into_year_shown(epoch)),
-            (UnInitialized(val), true) => WithYear(val.into_year_shown(epoch)),
-        }
-    }
-}
-
-#[derive(Debug, Clone)]
-pub struct Duration<S: Visibility> {
-    // TODO: make duration and separator diff types
-    duration: gtk::Label,
-    separator: gtk::Label,
-    state: S,
-}
-
-impl<S: Visibility> Duration<S> {
-    // This needs a better name.
-    // TODO: make me mut
-    fn set_duration(&self, minutes: i64) {
-        self.duration.set_text(&format!("{} min", minutes));
-    }
-}
-
-impl Duration<Hidden> {
-    fn new(duration: gtk::Label, separator: gtk::Label) -> Self {
-        duration.hide();
-        separator.hide();
-
-        Duration {
-            duration,
-            separator,
-            state: Hidden {},
-        }
-    }
-}
-
-impl From<Duration<Hidden>> for Duration<Shown> {
-    fn from(f: Duration<Hidden>) -> Self {
-        f.duration.show();
-        f.separator.show();
-
-        Duration {
-            duration: f.duration,
-            separator: f.separator,
-            state: Shown {},
-        }
-    }
-}
-
-impl From<Duration<Shown>> for Duration<Hidden> {
-    fn from(f: Duration<Shown>) -> Self {
-        f.duration.hide();
-        f.separator.hide();
-
-        Duration {
-            duration: f.duration,
-            separator: f.separator,
-            state: Hidden {},
-        }
-    }
-}
-
-#[derive(Debug, Clone)]
-pub enum DurationMachine {
-    Hidden(Duration<Hidden>),
-    Shown(Duration<Shown>),
-}
-
-impl DurationMachine {
-    pub fn new(duration: gtk::Label, separator: gtk::Label, seconds: Option<i32>) -> Self {
-        let m = DurationMachine::Hidden(Duration::<Hidden>::new(duration, separator));
-        m.determine_state(seconds)
-    }
-
-    pub fn determine_state(self, seconds: Option<i32>) -> Self {
-        match (self, seconds) {
-            (d @ DurationMachine::Hidden(_), None) => d,
-            (DurationMachine::Shown(val), None) => DurationMachine::Hidden(val.into()),
-            (DurationMachine::Hidden(val), Some(s)) => {
-                let minutes = chrono::Duration::seconds(s.into()).num_minutes();
-                if minutes == 0 {
-                    DurationMachine::Hidden(val)
-                } else {
-                    val.set_duration(minutes);
-                    DurationMachine::Shown(val.into())
-                }
-            }
-            (DurationMachine::Shown(val), Some(s)) => {
-                let minutes = chrono::Duration::seconds(s.into()).num_minutes();
-                if minutes == 0 {
-                    DurationMachine::Hidden(val.into())
-                } else {
-                    val.set_duration(minutes);
-                    DurationMachine::Shown(val)
-                }
-            }
-        }
-    }
-}
 
 #[derive(Debug, Clone)]
 pub struct Size<S> {
@@ -356,19 +86,6 @@ impl<S> Size<S> {
     }
 }
 
-impl Size<UnInitialized> {
-    fn new(size: gtk::Label, separator: gtk::Label) -> Self {
-        size.hide();
-        separator.hide();
-
-        Size {
-            size,
-            separator,
-            state: UnInitialized {},
-        }
-    }
-}
-
 // pub trait Playable {}
 
 // impl Playable for Download {}
@@ -390,8 +107,7 @@ pub struct DownloadPlay<S> {
 }
 
 impl<S> DownloadPlay<S> {
-    // https://play.rust-lang.org/?gist=1acffaf62743eeb85be1ae6ecf474784&version=stable
-    // It might be possible to make a generic definition with Specialization.
+    // https://play.rust-lang.org/?gist=1acffaf62743eeb85be1ae6ecf474784&version=stable // It might be possible to make a generic definition with Specialization.
     // https://github.com/rust-lang/rust/issues/31844
     fn into_playable(self) -> DownloadPlay<Play> {
         self.play.show();
@@ -423,30 +139,6 @@ impl<S> DownloadPlay<S> {
             play: self.play,
             download: self.download,
             state: Hidden {},
-        }
-    }
-
-    fn download_connect_clicked<F: Fn(&gtk::Button) + 'static>(
-        &self,
-        f: F,
-    ) -> glib::SignalHandlerId {
-        self.download.connect_clicked(f)
-    }
-
-    fn play_connect_clicked<F: Fn(&gtk::Button) + 'static>(&self, f: F) -> glib::SignalHandlerId {
-        self.play.connect_clicked(f)
-    }
-}
-
-impl DownloadPlay<UnInitialized> {
-    fn new(play: gtk::Button, download: gtk::Button) -> Self {
-        play.hide();
-        download.hide();
-
-        DownloadPlay {
-            play,
-            download,
-            state: UnInitialized {},
         }
     }
 }
@@ -501,28 +193,6 @@ impl<S> Progress<S> {
 
     fn cancel_connect_clicked<F: Fn(&gtk::Button) + 'static>(&self, f: F) -> glib::SignalHandlerId {
         self.cancel.connect_clicked(f)
-    }
-}
-
-impl Progress<UnInitialized> {
-    fn new(
-        bar: gtk::ProgressBar,
-        cancel: gtk::Button,
-        local_size: gtk::Label,
-        prog_separator: gtk::Label,
-    ) -> Self {
-        bar.hide();
-        cancel.hide();
-        local_size.hide();
-        prog_separator.hide();
-
-        Progress {
-            bar,
-            cancel,
-            local_size,
-            prog_separator,
-            state: UnInitialized {},
-        }
     }
 }
 
@@ -607,24 +277,6 @@ impl<X, Z> Media<X, Hidden, Z> {
     }
 }
 
-impl<X, Z> Media<X, UnInitialized, Z> {
-    fn into_progress(self, size: Option<String>) -> InProgress {
-        if let Some(s) = size {
-            Media {
-                dl: self.dl.into_hidden(),
-                size: self.size.set_size(&s),
-                progress: self.progress.into_shown(),
-            }
-        } else {
-            Media {
-                dl: self.dl.into_hidden(),
-                size: self.size.set_size("Unkown"),
-                progress: self.progress.into_shown(),
-            }
-        }
-    }
-}
-
 impl InProgress {
     #[allow(unused_must_use)]
     // This does not need to be &mut since gtk-rs does not model ownership
@@ -703,34 +355,6 @@ impl ButtonsState {
         }
     }
 
-    pub fn download_connect_clicked<F: Fn(&gtk::Button) + 'static>(
-        &self,
-        f: F,
-    ) -> glib::SignalHandlerId {
-        use self::ButtonsState::*;
-
-        match *self {
-            New(ref val) => val.dl.download_connect_clicked(f),
-            NewWithoutSize(ref val) => val.dl.download_connect_clicked(f),
-            Playable(ref val) => val.dl.download_connect_clicked(f),
-            PlayableWithoutSize(ref val) => val.dl.download_connect_clicked(f),
-        }
-    }
-
-    pub fn play_connect_clicked<F: Fn(&gtk::Button) + 'static>(
-        &self,
-        f: F,
-    ) -> glib::SignalHandlerId {
-        use self::ButtonsState::*;
-
-        match *self {
-            New(ref val) => val.dl.play_connect_clicked(f),
-            NewWithoutSize(ref val) => val.dl.play_connect_clicked(f),
-            Playable(ref val) => val.dl.play_connect_clicked(f),
-            PlayableWithoutSize(ref val) => val.dl.play_connect_clicked(f),
-        }
-    }
-
     fn cancel_connect_clicked<F: Fn(&gtk::Button) + 'static>(&self, f: F) -> glib::SignalHandlerId {
         use self::ButtonsState::*;
 
@@ -745,56 +369,11 @@ impl ButtonsState {
 
 #[derive(Debug, Clone)]
 pub enum MediaMachine {
-    UnInitialized(Media<UnInitialized, UnInitialized, UnInitialized>),
     Initialized(ButtonsState),
     InProgress(Media<Hidden, Shown, Shown>),
 }
 
 impl MediaMachine {
-    #[cfg_attr(feature = "cargo-clippy", allow(too_many_arguments))]
-    pub fn new(
-        play: gtk::Button,
-        download: gtk::Button,
-        bar: gtk::ProgressBar,
-        cancel: gtk::Button,
-        total_size: gtk::Label,
-        local_size: gtk::Label,
-        separator: gtk::Label,
-        prog_separator: gtk::Label,
-    ) -> Self {
-        let dl = DownloadPlay::<UnInitialized>::new(play, download);
-        let progress = Progress::<UnInitialized>::new(bar, cancel, local_size, prog_separator);
-        let size = Size::<UnInitialized>::new(total_size, separator);
-
-        MediaMachine::UnInitialized(Media { dl, progress, size })
-    }
-
-    pub fn download_connect_clicked<F: Fn(&gtk::Button) + 'static>(
-        &self,
-        f: F,
-    ) -> glib::SignalHandlerId {
-        use self::MediaMachine::*;
-
-        match *self {
-            UnInitialized(ref val) => val.dl.download_connect_clicked(f),
-            Initialized(ref val) => val.download_connect_clicked(f),
-            InProgress(ref val) => val.dl.download_connect_clicked(f),
-        }
-    }
-
-    pub fn play_connect_clicked<F: Fn(&gtk::Button) + 'static>(
-        &self,
-        f: F,
-    ) -> glib::SignalHandlerId {
-        use self::MediaMachine::*;
-
-        match *self {
-            UnInitialized(ref val) => val.dl.play_connect_clicked(f),
-            Initialized(ref val) => val.play_connect_clicked(f),
-            InProgress(ref val) => val.dl.play_connect_clicked(f),
-        }
-    }
-
     pub fn cancel_connect_clicked<F: Fn(&gtk::Button) + 'static>(
         &self,
         f: F,
@@ -802,7 +381,6 @@ impl MediaMachine {
         use self::MediaMachine::*;
 
         match *self {
-            UnInitialized(ref val) => val.progress.cancel_connect_clicked(f),
             Initialized(ref val) => val.cancel_connect_clicked(f),
             InProgress(ref val) => val.progress.cancel_connect_clicked(f),
         }
@@ -813,20 +391,6 @@ impl MediaMachine {
         use self::MediaMachine::*;
 
         match (self, size_helper(bytes), is_downloaded, is_active) {
-            (UnInitialized(m), s, _, true) => InProgress(m.into_progress(s)),
-
-            // Into New
-            (UnInitialized(m), Some(s), false, false) => Initialized(New(m.into_new(&s))),
-            (UnInitialized(m), None, false, false) => {
-                Initialized(NewWithoutSize(m.into_new_without()))
-            }
-
-            // Into Playable
-            (UnInitialized(m), Some(s), true, false) => Initialized(Playable(m.into_playable(&s))),
-            (UnInitialized(m), None, true, false) => {
-                Initialized(PlayableWithoutSize(m.into_playable_without()))
-            }
-
             (Initialized(bttn), s, dl, false) => Initialized(bttn.determine_state(s, dl)),
             (Initialized(bttn), _, _, true) => InProgress(bttn.into_progress()),
 
@@ -854,7 +418,6 @@ impl MediaMachine {
             (Initialized(bttn), s) => Initialized(bttn.set_size(s)),
             (InProgress(val), Some(s)) => InProgress(val.set_size(&s)),
             (n @ InProgress(_), None) => n,
-            (n @ UnInitialized(_), _) => n,
         }
     }
 
@@ -863,7 +426,6 @@ impl MediaMachine {
 
         match *self {
             Initialized(_) => (),
-            UnInitialized(_) => (),
             InProgress(ref mut val) => val.update_progress(local_size, fraction),
         }
     }
