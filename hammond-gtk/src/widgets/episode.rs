@@ -296,16 +296,33 @@ impl EpisodeWidget {
             // FIXME: Wire cancel button
             // FIXME: Wire Total Size label
 
+            // Change the widget layout/state
             widget.state_prog();
+
             return Ok(());
         }
 
         if let Some(path) = episode.local_uri() {
-            // FIXME: Wire play button?
+            // Change the widget layout/state
             widget.state_playable();
+
+            // Wire the play button
+            let id = episode.rowid();
+            widget
+                .buttons
+                .play
+                .connect_clicked(clone!(widget, sender => move |_| {
+                    if let Ok(mut ep) = dbqueries::get_episode_widget_from_rowid(id) {
+                        on_play_bttn_clicked(&widget, &mut ep, &sender)
+                            .map_err(|err| error!("Error: {}", err))
+                            .ok();
+                    }
+                }));
+
             return Ok(());
         }
 
+        // FIXME: Wire the download button
         widget.state_download();
         Ok(())
     }
@@ -315,16 +332,6 @@ impl EpisodeWidget {
     //     episode: Arc<Mutex<EpisodeWidgetQuery>>,
     //     sender: &Sender<Action>,
     // ) {
-    //     widget
-    //         .buttons
-    //         .play
-    //         .connect_clicked(clone!(widget, episode, sender => move |_| {
-    //             if let Ok(mut ep) = episode.lock() {
-    //                 on_play_bttn_clicked(&widget, &mut ep, &sender)
-    //                     .map_err(|err| error!("Error: {}", err))
-    //                     .ok();
-    //             }
-    //         }));
 
     //     widget
     //         .buttons
