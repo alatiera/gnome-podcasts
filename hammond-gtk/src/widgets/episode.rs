@@ -307,7 +307,6 @@ impl EpisodeWidget {
             widget.state_playable();
 
             // Wire the play button
-            let id = episode.rowid();
             widget
                 .buttons
                 .play
@@ -322,34 +321,32 @@ impl EpisodeWidget {
             return Ok(());
         }
 
-        // FIXME: Wire the download button
+        // Wire the download button
+        widget
+            .buttons
+            .download
+            .connect_clicked(clone!(widget, sender => move |dl| {
+                // Make the button insensitive so it won't be pressed twice
+                dl.set_sensitive(false);
+                if let Ok(ep) = dbqueries::get_episode_widget_from_rowid(id) {
+                    on_download_clicked(&ep, &sender)
+                        .and_then(|_| {
+                            info!("Donwload started succesfully.");
+                            Self::determine_buttons_state(&widget, &ep, &sender)
+                        })
+                        .map_err(|err| error!("Error: {}", err))
+                        .ok();
+                }
+
+                // Restore sensitivity after operations above complete
+                dl.set_sensitive(true);
+            }));
+
+        // Change the widget state into `ToDownload`
         widget.state_download();
+
         Ok(())
     }
-
-    // fn connect_buttons(
-    //     widget: Rc<Self>,
-    //     episode: Arc<Mutex<EpisodeWidgetQuery>>,
-    //     sender: &Sender<Action>,
-    // ) {
-
-    //     widget
-    //         .buttons
-    //         .download
-    //         .connect_clicked(clone!(widget, episode, sender => move |dl| {
-    //             // Make the button insensitive so it won't be pressed twice
-    //             dl.set_sensitive(false);
-    //             if let Ok(ep) = episode.lock() {
-    //                 // FIXME: Change the widget state too
-    //                 on_download_clicked(&ep, &sender)
-    //                     .map_err(|err| error!("Error: {}", err))
-    //                     .ok();
-    //             }
-
-    //             // Restore sensitivity after operations above complete
-    //             dl.set_sensitive(true);
-    //         }));
-    // }
 }
 
 fn determine_media_state(
