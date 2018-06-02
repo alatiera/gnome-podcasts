@@ -144,9 +144,9 @@ impl InfoLabels {
             }
 
             s.file_size(SIZE_OPTS.clone()).ok()
-        }();
+        };
 
-        if let Some(s) = size {
+        if let Some(s) = size() {
             self.total_size.set_text(&s);
             self.total_size.show();
             self.separator2.show();
@@ -262,9 +262,6 @@ impl EpisodeWidget {
         self.info.size_separator.hide();
 
         self.buttons.download.show();
-
-        // FIXME?
-        // self.info.set_size(size);
     }
 
     fn update_progress(&self, local_size: &str, fraction: f64) {
@@ -272,6 +269,32 @@ impl EpisodeWidget {
         self.progressbar.set_fraction(fraction);
     }
 
+    /// Change the state of the `EpisodeWidget`.
+    ///
+    /// Function Flowchart:
+    ///
+    /// -------------------       --------------
+    /// | Is the Episode  |  YES  |   State:   |
+    /// | currently being | ----> | InProgress |
+    /// |   downloaded?   |       |            |
+    /// -------------------       --------------
+    ///         |
+    ///         | NO
+    ///         |
+    ///        \_/
+    /// -------------------       --------------
+    /// | is the episode  |  YES  |   State:   |
+    /// |   downloaded    | ----> |  Playable  |
+    /// |    already?     |       |            |
+    /// -------------------       --------------
+    ///         |
+    ///         | NO
+    ///         |
+    ///        \_/
+    /// -------------------
+    /// |     State:      |
+    /// |   ToDownload    |
+    /// -------------------
     fn determine_buttons_state(
         widget: &Rc<Self>,
         episode: &EpisodeWidgetQuery,
@@ -293,6 +316,7 @@ impl EpisodeWidget {
             Ok(m.get(&id).cloned())
         };
 
+        // State: InProggress
         if let Some(prog) = active_dl()? {
             // set a callback that will update the state when the download finishes
             let callback = clone!(widget, sender => move || {
@@ -355,6 +379,7 @@ impl EpisodeWidget {
             return Ok(());
         }
 
+        // State: Playable
         if episode.local_uri().is_some() {
             // Change the widget layout/state
             widget.state_playable();
@@ -374,6 +399,7 @@ impl EpisodeWidget {
             return Ok(());
         }
 
+        // State: ToDownload
         // Wire the download button
         widget
             .buttons
@@ -410,9 +436,9 @@ fn on_download_clicked(ep: &EpisodeWidgetQuery, sender: &Sender<Action>) -> Resu
     manager::add(ep.rowid(), download_fold)?;
 
     // Update Views
-    sender.send(Action::RefreshEpisodesViewBGR)?;
-
-    Ok(())
+    sender
+        .send(Action::RefreshEpisodesViewBGR)
+        .map_err(From::from)
 }
 
 fn on_play_bttn_clicked(
