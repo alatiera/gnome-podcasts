@@ -161,25 +161,25 @@ impl Default for EpisodeWidget {
     fn default() -> Self {
         let builder = gtk::Builder::new_from_resource("/org/gnome/Hammond/gtk/episode_widget.ui");
 
-        let container: gtk::Box = builder.get_object("episode_container").unwrap();
-        let progressbar: gtk::ProgressBar = builder.get_object("progress_bar").unwrap();
+        let container = builder.get_object("episode_container").unwrap();
+        let progressbar = builder.get_object("progress_bar").unwrap();
 
-        let buttons_container: gtk::ButtonBox = builder.get_object("button_box").unwrap();
-        let download: gtk::Button = builder.get_object("download_button").unwrap();
-        let play: gtk::Button = builder.get_object("play_button").unwrap();
-        let cancel: gtk::Button = builder.get_object("cancel_button").unwrap();
+        let buttons_container = builder.get_object("button_box").unwrap();
+        let download = builder.get_object("download_button").unwrap();
+        let play = builder.get_object("play_button").unwrap();
+        let cancel = builder.get_object("cancel_button").unwrap();
 
-        let info_container: gtk::Box = builder.get_object("info_container").unwrap();
-        let title: gtk::Label = builder.get_object("title_label").unwrap();
-        let date: gtk::Label = builder.get_object("date_label").unwrap();
-        let duration: gtk::Label = builder.get_object("duration_label").unwrap();
-        let local_size: gtk::Label = builder.get_object("local_size").unwrap();
-        let total_size: gtk::Label = builder.get_object("total_size").unwrap();
+        let info_container = builder.get_object("info_container").unwrap();
+        let title = builder.get_object("title_label").unwrap();
+        let date = builder.get_object("date_label").unwrap();
+        let duration = builder.get_object("duration_label").unwrap();
+        let local_size = builder.get_object("local_size").unwrap();
+        let total_size = builder.get_object("total_size").unwrap();
 
-        let separator1: gtk::Label = builder.get_object("separator1").unwrap();
-        let separator2: gtk::Label = builder.get_object("separator2").unwrap();
+        let separator1 = builder.get_object("separator1").unwrap();
+        let separator2 = builder.get_object("separator2").unwrap();
 
-        let size_separator: gtk::Label = builder.get_object("prog_separator").unwrap();
+        let size_separator = builder.get_object("prog_separator").unwrap();
 
         EpisodeWidget {
             info: InfoLabels {
