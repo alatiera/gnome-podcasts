@@ -324,7 +324,12 @@ impl EpisodeWidget {
                     }));
             }));
 
-            // FIXME: Wire Total Size label
+            // Setup a callback that will update the total_size label
+            // with the http ContentLength header number rather than
+            // relying to the RSS feed.
+            update_total_size_callback(&widget, &prog);
+
+            // FIXME: Wire the progress_bar
 
             // Change the widget layout/state
             widget.state_prog();
@@ -425,11 +430,6 @@ fn determine_media_state(
 
         // Setup a callback that will update the progress bar.
         update_progressbar_callback(&prog, &media_machine, id);
-
-        // Setup a callback that will update the total_size label
-        // with the http ContentLength header number rather than
-        // relying to the RSS feed.
-        update_total_size_callback(&prog, &media_machine);
     }
 
     Ok(())
@@ -541,19 +541,16 @@ fn progress_bar_helper(
 // with the http ContentLength header number rather than
 // relying to the RSS feed.
 #[inline]
-fn update_total_size_callback(
-    prog: &Arc<Mutex<manager::Progress>>,
-    media: &Rc<RefCell<MediaMachine>>,
-) {
-    let callback = clone!(prog, media => move || {
-        total_size_helper(&prog, &media).unwrap_or(glib::Continue(true))
+fn update_total_size_callback(widget: &Rc<EpisodeWidget>, prog: &Arc<Mutex<manager::Progress>>) {
+    let callback = clone!(prog, widget => move || {
+        total_size_helper(&widget, &prog).unwrap_or(glib::Continue(true))
     });
     timeout_add(500, callback);
 }
 
 fn total_size_helper(
+    widget: &Rc<EpisodeWidget>,
     prog: &Arc<Mutex<manager::Progress>>,
-    media: &Rc<RefCell<MediaMachine>>,
 ) -> Result<glib::Continue, Error> {
     // Get the total_bytes.
     let total_bytes = {
@@ -566,11 +563,7 @@ fn total_size_helper(
     debug!("Total Size: {}", total_bytes);
     if total_bytes != 0 {
         // Update the total_size label
-        if let Ok(mut m) = media.try_borrow_mut() {
-            take_mut::take(m.deref_mut(), |machine| {
-                machine.set_size(Some(total_bytes as i32))
-            });
-        }
+        widget.info.set_size(Some(total_bytes as i32));
 
         // Do not call again the callback
         Ok(glib::Continue(false))

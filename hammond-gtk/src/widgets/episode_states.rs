@@ -203,14 +203,6 @@ type Playable<Y> = Media<Play, Y, Hidden>;
 type InProgress = Media<Hidden, Shown, Shown>;
 
 impl<X, Y, Z> Media<X, Y, Z> {
-    fn set_size(self, s: &str) -> Media<X, Shown, Z> {
-        Media {
-            dl: self.dl,
-            size: self.size.set_size(s),
-            progress: self.progress,
-        }
-    }
-
     fn hide_size(self) -> Media<X, Hidden, Z> {
         Media {
             dl: self.dl,
@@ -334,21 +326,6 @@ impl ButtonsState {
             PlayableWithoutSize(m) => m.into_progress(),
         }
     }
-
-    fn set_size(self, size: Option<String>) -> Self {
-        use self::ButtonsState::*;
-
-        match (self, size) {
-            (New(m), Some(s)) => New(m.set_size(&s)),
-            (New(m), None) => NewWithoutSize(m.hide_size()),
-            (Playable(m), Some(s)) => Playable(m.set_size(&s)),
-            (Playable(m), None) => PlayableWithoutSize(m.hide_size()),
-            (bttn @ NewWithoutSize(_), None) => bttn,
-            (bttn @ PlayableWithoutSize(_), None) => bttn,
-            (NewWithoutSize(m), Some(s)) => New(m.into_new(&s)),
-            (PlayableWithoutSize(m), Some(s)) => Playable(m.into_playable(&s)),
-        }
-    }
 }
 
 #[derive(Debug, Clone)]
@@ -379,17 +356,6 @@ impl MediaMachine {
             }
 
             (i @ InProgress(_), _, _, _) => i,
-        }
-    }
-
-    pub fn set_size(self, bytes: Option<i32>) -> Self {
-        use self::MediaMachine::*;
-        let size = size_helper(bytes);
-
-        match (self, size) {
-            (Initialized(bttn), s) => Initialized(bttn.set_size(s)),
-            (InProgress(val), Some(s)) => InProgress(val.set_size(&s)),
-            (n @ InProgress(_), None) => n,
         }
     }
 
