@@ -55,7 +55,7 @@ rust:nightly:
         - web
 
 flatpak:
-    image: registry.gitlab.com/alatiera/gnome-nightly-oci/rust-bundle:latest
+    image: registry.gitlab.gnome.org/gnome/gnome-nightly-oci/rust-bundle:latest
     stage: test
     script:
         - flatpak-builder --stop-at=hammond app org.gnome.Hammond.json
