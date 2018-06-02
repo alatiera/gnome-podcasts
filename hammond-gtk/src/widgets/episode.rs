@@ -1,5 +1,3 @@
-#![allow(warnings)]
-
 use glib;
 use gtk;
 use gtk::prelude::*;
@@ -10,7 +8,6 @@ use crossbeam_channel::Sender;
 use failure::Error;
 use humansize::{file_size_opts as size_opts, FileSize};
 use open;
-use take_mut;
 
 use hammond_data::dbqueries;
 use hammond_data::utils::get_download_folder;
@@ -18,13 +15,28 @@ use hammond_data::EpisodeWidgetQuery;
 
 use app::Action;
 use manager;
-use widgets::episode_states::*;
 
-use std::cell::RefCell;
-use std::ops::DerefMut;
 use std::path::Path;
 use std::rc::Rc;
 use std::sync::{Arc, Mutex};
+
+lazy_static! {
+    static ref SIZE_OPTS: Arc<size_opts::FileSizeOpts> =  {
+        // Declare a custom humansize option struct
+        // See: https://docs.rs/humansize/1.0.2/humansize/file_size_opts/struct.FileSizeOpts.html
+        Arc::new(size_opts::FileSizeOpts {
+            divider: size_opts::Kilo::Binary,
+            units: size_opts::Kilo::Decimal,
+            decimal_places: 0,
+            decimal_zeroes: 0,
+            fixed_at: size_opts::FixedAt::No,
+            long_units: false,
+            space: true,
+            suffix: "",
+            allow_negative: false,
+        })
+    };
+}
 
 #[derive(Clone, Debug)]
 pub struct EpisodeWidget {
@@ -35,7 +47,7 @@ pub struct EpisodeWidget {
 }
 
 #[derive(Clone, Debug)]
-pub struct InfoLabels {
+struct InfoLabels {
     container: gtk::Box,
     title: gtk::Label,
     date: gtk::Label,
@@ -48,7 +60,7 @@ pub struct InfoLabels {
 }
 
 #[derive(Clone, Debug)]
-pub struct Buttons {
+struct Buttons {
     container: gtk::ButtonBox,
     play: gtk::Button,
     download: gtk::Button,
@@ -124,24 +136,6 @@ impl InfoLabels {
 
     // Set the size label of the episode widget.
     fn set_size(&self, bytes: Option<i32>) {
-        lazy_static! {
-            static ref SIZE_OPTS: Arc<size_opts::FileSizeOpts> =  {
-                // Declare a custom humansize option struct
-                // See: https://docs.rs/humansize/1.0.2/humansize/file_size_opts/struct.FileSizeOpts.html
-                Arc::new(size_opts::FileSizeOpts {
-                    divider: size_opts::Kilo::Binary,
-                    units: size_opts::Kilo::Decimal,
-                    decimal_places: 0,
-                    decimal_zeroes: 0,
-                    fixed_at: size_opts::FixedAt::No,
-                    long_units: false,
-                    space: true,
-                    suffix: "",
-                    allow_negative: false,
-                })
-            };
-        }
-
         // Convert the bytes to a String label
         let size = || -> Option<String> {
             let s = bytes?;
@@ -215,7 +209,9 @@ impl EpisodeWidget {
     pub fn new(episode: EpisodeWidgetQuery, sender: &Sender<Action>) -> Rc<Self> {
         let widget = Rc::new(Self::default());
         widget.info.init(&episode);
-        Self::determine_buttons_state(&widget, &episode, sender);
+        Self::determine_buttons_state(&widget, &episode, sender)
+            .map_err(|err| error!("Error: {}", err))
+            .ok();
         widget
     }
 
@@ -298,7 +294,23 @@ impl EpisodeWidget {
         };
 
         if let Some(prog) = active_dl()? {
-            // FIXME: Add again the callback ugly hack that makes things work somehow
+            // set a callback that will update the state when the download finishes
+            let callback = clone!(widget, sender => move || {
+                if let Ok(guard) = manager::ACTIVE_DOWNLOADS.read() {
+                    if !guard.contains_key(&id) {
+                        if let Ok(ep) = dbqueries::get_episode_widget_from_rowid(id) {
+                            Self::determine_buttons_state(&widget, &ep, &sender)
+                                .map_err(|err| error!("Error: {}", err))
+                                .ok();
+
+                            return glib::Continue(false)
+                        }
+                    }
+                }
+
+                glib::Continue(true)
+            });
+            gtk::timeout_add(250, callback);
 
             // Wire the cancel button
             widget
@@ -343,7 +355,7 @@ impl EpisodeWidget {
             return Ok(());
         }
 
-        if let Some(path) = episode.local_uri() {
+        if episode.local_uri().is_some() {
             // Change the widget layout/state
             widget.state_playable();
 
@@ -388,54 +400,6 @@ impl EpisodeWidget {
 
         Ok(())
     }
-}
-
-fn determine_media_state(
-    media_machine: &Rc<RefCell<MediaMachine>>,
-    episode: &EpisodeWidgetQuery,
-) -> Result<(), Error> {
-    let id = episode.rowid();
-    let active_dl = || -> Result<Option<_>, Error> {
-        let m = manager::ACTIVE_DOWNLOADS
-            .read()
-            .map_err(|_| format_err!("Failed to get a lock on the mutex."))?;
-
-        Ok(m.get(&id).cloned())
-    }()?;
-
-    let mut lock = media_machine.try_borrow_mut()?;
-    take_mut::take(lock.deref_mut(), |media| {
-        media.determine_state(
-            episode.length(),
-            active_dl.is_some(),
-            episode.local_uri().is_some(),
-        )
-    });
-
-    // Show or hide the play/delete/download buttons upon widget initialization.
-    if let Some(prog) = active_dl {
-        // set a callback that will update the state when the download finishes
-        let id = episode.rowid();
-        let callback = clone!(media_machine => move || {
-            if let Ok(guard) = manager::ACTIVE_DOWNLOADS.read() {
-                if !guard.contains_key(&id) {
-                    if let Ok(ep) = dbqueries::get_episode_widget_from_rowid(id) {
-                        determine_media_state(&media_machine, &ep)
-                            .map_err(|err| error!("Error: {}", err))
-                            .map_err(|_| error!("Could not determine Media State"))
-                            .ok();
-
-                        return glib::Continue(false)
-                    }
-                }
-            }
-
-            glib::Continue(true)
-        });
-        gtk::timeout_add(250, callback);
-    }
-
-    Ok(())
 }
 
 fn on_download_clicked(ep: &EpisodeWidgetQuery, sender: &Sender<Action>) -> Result<(), Error> {

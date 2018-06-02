@@ -38,7 +38,6 @@ extern crate regex;
 extern crate reqwest;
 extern crate send_cell;
 extern crate serde_json;
-extern crate take_mut;
 extern crate url;
 
 use log::Level;
