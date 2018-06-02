@@ -271,6 +271,11 @@ impl EpisodeWidget {
         // self.info.set_size(size);
     }
 
+    fn update_progress(&self, local_size: &str, fraction: f64) {
+        self.info.local_size.set_text(local_size);
+        self.progressbar.set_fraction(fraction);
+    }
+
     fn determine_buttons_state(
         widget: &Rc<Self>,
         episode: &EpisodeWidgetQuery,
@@ -329,7 +334,8 @@ impl EpisodeWidget {
             // relying to the RSS feed.
             update_total_size_callback(&widget, &prog);
 
-            // FIXME: Wire the progress_bar
+            // Setup a callback that will update the progress bar.
+            update_progressbar_callback(&widget, &prog, id);
 
             // Change the widget layout/state
             widget.state_prog();
@@ -427,9 +433,6 @@ fn determine_media_state(
             glib::Continue(true)
         });
         gtk::timeout_add(250, callback);
-
-        // Setup a callback that will update the progress bar.
-        update_progressbar_callback(&prog, &media_machine, id);
     }
 
     Ok(())
@@ -480,21 +483,21 @@ fn open_uri(rowid: i32) -> Result<(), Error> {
 #[inline]
 #[cfg_attr(feature = "cargo-clippy", allow(if_same_then_else))]
 fn update_progressbar_callback(
+    widget: &Rc<EpisodeWidget>,
     prog: &Arc<Mutex<manager::Progress>>,
-    media: &Rc<RefCell<MediaMachine>>,
     episode_rowid: i32,
 ) {
-    let callback = clone!(prog, media => move || {
-        progress_bar_helper(&prog, &media, episode_rowid)
+    let callback = clone!(widget, prog => move || {
+        progress_bar_helper(&widget, &prog, episode_rowid)
             .unwrap_or(glib::Continue(false))
     });
-    timeout_add(300, callback);
+    timeout_add(150, callback);
 }
 
 #[allow(if_same_then_else)]
 fn progress_bar_helper(
+    widget: &Rc<EpisodeWidget>,
     prog: &Arc<Mutex<manager::Progress>>,
-    media: &Rc<RefCell<MediaMachine>>,
     episode_rowid: i32,
 ) -> Result<glib::Continue, Error> {
     let (fraction, downloaded) = {
@@ -512,9 +515,7 @@ fn progress_bar_helper(
             .file_size(SIZE_OPTS.clone())
             .map_err(|err| format_err!("{}", err))?;
 
-        if let Ok(mut m) = media.try_borrow_mut() {
-            m.update_progress(&size, fraction);
-        }
+        widget.update_progress(&size, fraction);
     }
 
     // info!("Fraction: {}", progress_bar.get_fraction());

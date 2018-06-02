@@ -181,14 +181,6 @@ impl<S> Progress<S> {
             state: Hidden {},
         }
     }
-
-    #[allow(unused_must_use)]
-    // This does not need to be &mut since gtk-rs does not model ownership
-    // But I think it wouldn't hurt if we treat it as a Rust api.
-    fn update_progress(&mut self, local_size: &str, fraction: f64) {
-        self.local_size.set_text(local_size);
-        self.bar.set_fraction(fraction);
-    }
 }
 
 #[derive(Debug, Clone)]
@@ -261,15 +253,6 @@ impl<X, Z> Media<X, Hidden, Z> {
             size: self.size.set_size("Unkown"),
             progress: self.progress.into_shown(),
         }
-    }
-}
-
-impl InProgress {
-    #[allow(unused_must_use)]
-    // This does not need to be &mut since gtk-rs does not model ownership
-    // But I think it wouldn't hurt if we treat it as a Rust api.
-    fn update_progress(&mut self, local_size: &str, fraction: f64) {
-        self.progress.update_progress(local_size, fraction)
     }
 }
 
@@ -356,15 +339,6 @@ impl MediaMachine {
             }
 
             (i @ InProgress(_), _, _, _) => i,
-        }
-    }
-
-    pub fn update_progress(&mut self, local_size: &str, fraction: f64) {
-        use self::MediaMachine::*;
-
-        match *self {
-            Initialized(_) => (),
-            InProgress(ref mut val) => val.update_progress(local_size, fraction),
         }
     }
 }
