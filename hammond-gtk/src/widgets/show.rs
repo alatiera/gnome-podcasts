@@ -207,7 +207,7 @@ fn populate_listbox(
         let list = show_.episodes.clone();
 
         let constructor = clone!(sender => move |ep| {
-            EpisodeWidget::new(ep, &sender).container
+            EpisodeWidget::new(&ep, &sender).container.clone()
         });
 
         let callback = clone!(pd, show_ => move || {
@@ -339,8 +339,7 @@ fn dim_titles(episodes: &gtk::ListBox) -> Option<()> {
             .downcast::<gtk::Box>()
             .ok()?;
         let bar = foo.get_children().remove(0).downcast::<gtk::Box>().ok()?;
-        let baz = bar.get_children().remove(0).downcast::<gtk::Box>().ok()?;
-        let title = baz.get_children().remove(0).downcast::<gtk::Label>().ok()?;
+        let title = bar.get_children().remove(0).downcast::<gtk::Label>().ok()?;
 
         title.get_style_context().map(|c| c.add_class("dim-label"));
     }

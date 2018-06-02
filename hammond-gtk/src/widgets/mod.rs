@@ -2,7 +2,6 @@ mod aboutdialog;
 pub mod appnotif;
 mod empty;
 mod episode;
-mod episode_states;
 mod home_view;
 mod show;
 mod shows_view;
