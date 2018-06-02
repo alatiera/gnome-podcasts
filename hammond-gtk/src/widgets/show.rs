@@ -207,7 +207,7 @@ fn populate_listbox(
         let list = show_.episodes.clone();
 
         let constructor = clone!(sender => move |ep| {
-            EpisodeWidget::new(ep, &sender).container.clone()
+            EpisodeWidget::new(&ep, &sender).container.clone()
         });
 
         let callback = clone!(pd, show_ => move || {
