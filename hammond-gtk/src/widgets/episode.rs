@@ -511,11 +511,9 @@ fn progress_bar_helper(
     // info!("Fraction: {}", fraction);
 
     // Check if the download is still active
-    let active = {
-        let m = manager::ACTIVE_DOWNLOADS
-            .read()
-            .map_err(|_| format_err!("Failed to get a lock on the mutex."))?;
-        m.contains_key(&episode_rowid)
+    let active = match manager::ACTIVE_DOWNLOADS.read() {
+        Ok(guard) => guard.contains_key(&episode_rowid),
+        Err(_) => return Err(format_err!("Failed to get a lock on the mutex.")),
     };
 
     if (fraction >= 1.0) && (!fraction.is_nan()) {
