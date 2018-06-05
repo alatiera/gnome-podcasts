@@ -18,7 +18,7 @@ use manager;
 
 use std::path::Path;
 use std::rc::Rc;
-use std::sync::{Arc, Mutex};
+use std::sync::{Arc, Mutex, TryLockError};
 
 lazy_static! {
     static ref SIZE_OPTS: Arc<size_opts::FileSizeOpts> =  {
@@ -481,7 +481,7 @@ fn update_progressbar_callback(
         progress_bar_helper(&widget, &prog, episode_rowid)
             .unwrap_or(glib::Continue(false))
     });
-    timeout_add(150, callback);
+    timeout_add(100, callback);
 }
 
 #[allow(if_same_then_else)]
@@ -490,11 +490,10 @@ fn progress_bar_helper(
     prog: &Arc<Mutex<manager::Progress>>,
     episode_rowid: i32,
 ) -> Result<glib::Continue, Error> {
-    let (fraction, downloaded) = {
-        let m = prog
-            .lock()
-            .map_err(|_| format_err!("Failed to get a lock on the mutex."))?;
-        (m.get_fraction(), m.get_downloaded())
+    let (fraction, downloaded) = match prog.try_lock() {
+        Ok(guard) => (guard.get_fraction(), guard.get_downloaded()),
+        Err(TryLockError::WouldBlock) => return Ok(glib::Continue(true)),
+        Err(TryLockError::Poisoned(_)) => return Err(format_err!("Progress Mutex is poisoned")),
     };
 
     // I hate floating points.
@@ -536,7 +535,7 @@ fn update_total_size_callback(widget: &Rc<EpisodeWidget>, prog: &Arc<Mutex<manag
     let callback = clone!(prog, widget => move || {
         total_size_helper(&widget, &prog).unwrap_or(glib::Continue(true))
     });
-    timeout_add(500, callback);
+    timeout_add(100, callback);
 }
 
 fn total_size_helper(
@@ -544,11 +543,10 @@ fn total_size_helper(
     prog: &Arc<Mutex<manager::Progress>>,
 ) -> Result<glib::Continue, Error> {
     // Get the total_bytes.
-    let total_bytes = {
-        let m = prog
-            .lock()
-            .map_err(|_| format_err!("Failed to get a lock on the mutex."))?;
-        m.get_total_size()
+    let total_bytes = match prog.try_lock() {
+        Ok(guard) => guard.get_total_size(),
+        Err(TryLockError::WouldBlock) => return Ok(glib::Continue(true)),
+        Err(TryLockError::Poisoned(_)) => return Err(format_err!("Progress Mutex is poisoned")),
     };
 
     debug!("Total Size: {}", total_bytes);
