@@ -4,7 +4,7 @@ use gtk::prelude::*;
 
 use crossbeam_channel::{SendError, Sender};
 use failure::Error;
-use html2pango::markup_from_raw;
+use html2text;
 use open;
 use rayon;
 use send_cell::SendCell;
@@ -124,7 +124,8 @@ impl ShowWidget {
 
     /// Set the descripton text.
     fn set_description(&self, text: &str) {
-        self.description.set_markup(&markup_from_raw(text));
+        self.description
+            .set_markup(&html2text::from_read(text.as_bytes(), 70));
     }
 
     /// Save the scrollabar vajustment to the cache.

@@ -29,7 +29,7 @@ extern crate chrono;
 extern crate crossbeam_channel;
 extern crate hammond_data;
 extern crate hammond_downloader;
-extern crate html2pango;
+extern crate html2text;
 extern crate humansize;
 extern crate loggerv;
 extern crate open;
