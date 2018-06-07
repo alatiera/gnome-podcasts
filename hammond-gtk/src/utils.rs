@@ -334,7 +334,7 @@ fn lookup_id(id: u32) -> Result<String, Error> {
         .ok_or_else(|| format_err!("Failed to get url from itunes response"))
 }
 
-pub fn on_import_clicked(window: &gtk::Window, sender: &Sender<Action>) {
+pub fn on_import_clicked(window: &gtk::ApplicationWindow, sender: &Sender<Action>) {
     use glib::translate::ToGlib;
     use gtk::{FileChooserAction, FileChooserNative, FileFilter, ResponseType};
 
