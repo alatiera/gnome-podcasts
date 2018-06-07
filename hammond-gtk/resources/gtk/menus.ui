@@ -5,22 +5,22 @@
     <section>
       <item>
         <attribute name="label" translatable="yes">_Check for new episodes</attribute>
-        <attribute name="action">app.refresh</attribute>
+        <attribute name="action">win.refresh</attribute>
         <attribute name="accel">&lt;primary&gt;r</attribute>
       </item>
       <item>
         <attribute name="label" translatable="yes">_Import Shows</attribute>
-        <attribute name="action">app.import</attribute>
+        <attribute name="action">win.import</attribute>
       </item>
       <item>
         <attribute name="label" translatable="yes">_Export Shows</attribute>
-        <attribute name="action">app.export</attribute>
+        <attribute name="action">win.export</attribute>
       </item>
     </section>
     <section>
       <item>
         <attribute name="label" translatable="yes">_Preferences</attribute>
-        <attribute name="action">app.preferences</attribute>
+        <attribute name="action">win.preferences</attribute>
       </item>
     </section>
     <section>
@@ -30,11 +30,11 @@
       </item>
       <item>
         <attribute name="label" translatable="yes">_Help</attribute>
-        <attribute name="action">app.help</attribute>
+        <attribute name="action">win.help</attribute>
       </item>
       <item>
         <attribute name="label" translatable="yes">_About</attribute>
-        <attribute name="action">app.about</attribute>
+        <attribute name="action">win.about</attribute>
       </item>
     </section>
   </menu>

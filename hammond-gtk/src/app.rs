@@ -77,7 +77,10 @@ impl App {
         application.connect_startup(clone!(settings => move |app| {
             let (sender, receiver) = unbounded();
 
-            App::setup_gactions(&app, &sender);
+            app.set_accels_for_action("win.refresh", &["<primary>r"]);
+            app.set_accels_for_action("win.quit", &["<primary>q"]);
+            // Bind the hamburger menu button to `F10`
+            app.set_accels_for_action("win.menu", &["F10"]);
 
             app.connect_activate(clone!(sender, settings => move |app| {
                 // Get the current window (if any)
@@ -89,6 +92,8 @@ impl App {
                     // Create the main window
                     let window = gtk::ApplicationWindow::new(&app);
                     window.set_title("Hammond");
+
+                    App::setup_gactions(&window, &sender);
 
                     window.connect_delete_event(clone!(app, settings => move |window, _| {
                         WindowGeometry::from_window(&window).write(&settings);
@@ -240,12 +245,12 @@ impl App {
     /// Define the `GAction`s.
     ///
     /// Used in menus and the keyboard shortcuts dialog.
-    fn setup_gactions(app: &gtk::Application, sender: &Sender<Action>) {
+    fn setup_gactions(win: &gtk::ApplicationWindow, sender: &Sender<Action>) {
         // Create the `refresh` action.
         //
         // This will trigger a refresh of all the shows in the database.
         action!(
-            app,
+            win,
             "refresh",
             clone!(sender => move |_, _| {
             gtk::idle_add(clone!(sender => move || {
@@ -255,34 +260,31 @@ impl App {
             }));
         })
         );
-        app.set_accels_for_action("app.refresh", &["<primary>r"]);
 
         // Create the `OPML` import action
         action!(
-            app,
+            win,
             "import",
-            clone!(sender, app => move |_, _| {
-            let window = app.get_active_window().expect("Failed to get active window");
-            utils::on_import_clicked(&window, &sender);
+            clone!(sender, win => move |_, _| {
+            utils::on_import_clicked(&win, &sender);
         })
         );
 
         // Create the action that shows a `gtk::AboutDialog`
         action!(
-            app,
+            win,
             "about",
-            clone!(app => move |_, _| {
-            let window = app.get_active_window().expect("Failed to get active window");
-            about_dialog(&window);
+            clone!(win => move |_, _| {
+            about_dialog(&win);
         })
         );
 
         // Create the quit action
-        action!(app, "quit", clone!(app => move |_, _| app.quit()));
-        app.set_accels_for_action("app.quit", &["<primary>q"]);
-
-        // Bind the hamburger menu button to `F10`
-        app.set_accels_for_action("win.menu", &["F10"]);
+        action!(
+            win,
+            "quit",
+            clone!(win => move |_, _| win.get_application().expect("Failed to get application").quit())
+        );
     }
 
     pub fn run(self) {
