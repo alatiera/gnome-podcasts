@@ -216,6 +216,15 @@ impl App {
         action!(win, "quit", clone!(instance => move |_, _| instance.quit()));
         self.instance.set_accels_for_action("win.quit", &["<primary>q"]);
 
+        action!(
+            win,
+            "preferences",
+            clone!(win, settings => move |_, _| {
+                let dialog = Prefs::new(&settings);
+                dialog.show(&win);
+            })
+        );
+
         // Create the menu action
         action!(win, "menu",clone!(header => move |_, _| header.open_menu()));
         // Bind the hamburger menu button to `F10`

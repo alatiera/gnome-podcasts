@@ -87,8 +87,7 @@ impl Prefs {
         let cleanup_p = settings.get_string("cleanup-age-period").unwrap();
         let mut cleanup_pos = 0;
         let store = gtk::ListStore::new(&[gtk::Type::String]);
-        let mut i = 0;
-        for item in ["Seconds", "Minutes", "Hours", "Days", "Weeks"].iter() {
+        for (i, item) in ["Seconds", "Minutes", "Hours", "Days", "Weeks"].iter().enumerate() {
             let row: &[&ToValue] = &[item];
             if item.to_lowercase() == refresh_p {
                 refresh_pos = i;
@@ -97,9 +96,8 @@ impl Prefs {
                 cleanup_pos = i;
             }
             store.insert_with_values(None, &[0], &row);
-            i += 1;
         }
-        for combo in [self.refresh_type.clone(), self.cleanup_type.clone()].iter() {
+        for combo in &[self.refresh_type.clone(), self.cleanup_type.clone()] {
             combo.set_model(Some(&store));
             let renderer = gtk::CellRendererText::new();
             combo.pack_start(&renderer, true);
