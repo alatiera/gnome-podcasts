@@ -55,7 +55,10 @@ impl Prefs {
         let cleanup_p = settings.get_string("cleanup-age-period").unwrap();
         let mut cleanup_pos = 0;
         let store = gtk::ListStore::new(&[gtk::Type::String]);
-        for (i, item) in ["Seconds", "Minutes", "Hours", "Days", "Weeks"].iter().enumerate() {
+        for (i, item) in ["Seconds", "Minutes", "Hours", "Days", "Weeks"]
+            .iter()
+            .enumerate()
+        {
             let row: &[&ToValue] = &[item];
             if item.to_lowercase() == cleanup_p {
                 cleanup_pos = i as i32;
