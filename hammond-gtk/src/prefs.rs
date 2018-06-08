@@ -9,10 +9,6 @@ use gtk::prelude::*;
 pub struct Prefs {
     dialog: gtk::Window,
     dark_toggle: gtk::Switch,
-    startup_toggle: gtk::Switch,
-    auto_toggle: gtk::Switch,
-    refresh_value: gtk::SpinButton,
-    refresh_type: gtk::ComboBox,
     cleanup_value: gtk::SpinButton,
     cleanup_type: gtk::ComboBox,
 }
@@ -23,20 +19,12 @@ impl Default for Prefs {
 
         let dialog = builder.get_object("prefs").unwrap();
         let dark_toggle = builder.get_object("dark_toggle").unwrap();
-        let startup_toggle = builder.get_object("startup_toggle").unwrap();
-        let auto_toggle = builder.get_object("auto_toggle").unwrap();
-        let refresh_value = builder.get_object("refresh_value").unwrap();
-        let refresh_type = builder.get_object("refresh_type").unwrap();
         let cleanup_value = builder.get_object("cleanup_value").unwrap();
         let cleanup_type = builder.get_object("cleanup_type").unwrap();
 
         Prefs {
             dialog,
             dark_toggle,
-            startup_toggle,
-            auto_toggle,
-            refresh_value,
-            refresh_type,
             cleanup_value,
             cleanup_type,
         }
@@ -59,57 +47,25 @@ impl Prefs {
             gio::SettingsBindFlags::DEFAULT,
         );
         settings.bind(
-            "refresh-on-startup",
-            &self.startup_toggle,
-            "active",
-            gio::SettingsBindFlags::DEFAULT,
-        );
-        settings.bind(
-            "refresh-interval",
-            &self.auto_toggle,
-            "active",
-            gio::SettingsBindFlags::DEFAULT,
-        );
-        settings.bind(
-            "refresh-interval-time",
-            &self.refresh_value,
-            "value",
-            gio::SettingsBindFlags::DEFAULT,
-        );
-        settings.bind(
             "cleanup-age-time",
             &self.cleanup_value,
             "value",
             gio::SettingsBindFlags::DEFAULT,
         );
-        let refresh_p = settings.get_string("refresh-interval-period").unwrap();
-        let mut refresh_pos = 0;
         let cleanup_p = settings.get_string("cleanup-age-period").unwrap();
         let mut cleanup_pos = 0;
         let store = gtk::ListStore::new(&[gtk::Type::String]);
         for (i, item) in ["Seconds", "Minutes", "Hours", "Days", "Weeks"].iter().enumerate() {
             let row: &[&ToValue] = &[item];
-            if item.to_lowercase() == refresh_p {
-                refresh_pos = i;
-            }
             if item.to_lowercase() == cleanup_p {
-                cleanup_pos = i;
+                cleanup_pos = i as i32;
             }
             store.insert_with_values(None, &[0], &row);
         }
-        for combo in &[self.refresh_type.clone(), self.cleanup_type.clone()] {
-            combo.set_model(Some(&store));
-            let renderer = gtk::CellRendererText::new();
-            combo.pack_start(&renderer, true);
-            combo.add_attribute(&renderer, "text", 0);
-        }
-        self.refresh_type.set_active(refresh_pos);
-        self.refresh_type
-            .connect_changed(clone!(settings, store => move |combo| {
-            let value = store.get_value(&combo.get_active_iter().unwrap(), 0);
-            let value: &str = value.get().unwrap();
-            settings.set_string("refresh-interval-period", &value.to_lowercase());
-        }));
+        self.cleanup_type.set_model(Some(&store));
+        let renderer = gtk::CellRendererText::new();
+        self.cleanup_type.pack_start(&renderer, true);
+        self.cleanup_type.add_attribute(&renderer, "text", 0);
         self.cleanup_type.set_active(cleanup_pos);
         self.cleanup_type
             .connect_changed(clone!(settings, store => move |combo| {
