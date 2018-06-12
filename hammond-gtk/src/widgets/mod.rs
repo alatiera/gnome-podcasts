@@ -6,6 +6,7 @@ mod home_view;
 mod show;
 mod shows_view;
 mod playback;
+mod player;
 
 pub use self::aboutdialog::about_dialog;
 pub use self::empty::EmptyView;

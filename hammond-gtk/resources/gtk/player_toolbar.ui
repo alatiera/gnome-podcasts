@@ -129,26 +129,16 @@
               </packing>
             </child>
             <child>
-              <object class="GtkImage" id="show_cover">
+              <object class="GtkBox" id="info">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="pixel_size">36</property>
-                <property name="icon_name">image-x-generic-symbolic</property>
-              </object>
-              <packing>
-                <property name="position">1</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkBox">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="orientation">vertical</property>
+                <property name="spacing">6</property>
                 <child>
-                  <object class="GtkLabel" id="show_label">
+                  <object class="GtkImage" id="show_cover">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="label" translatable="yes">Show Title</property>
+                    <property name="pixel_size">42</property>
+                    <property name="icon_name">image-x-generic-symbolic</property>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -157,10 +147,34 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkLabel" id="episode_label">
+                  <object class="GtkBox">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="label" translatable="yes">Episode Title</property>
+                    <property name="orientation">vertical</property>
+                    <child>
+                      <object class="GtkLabel" id="show_label">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="label" translatable="yes">Show Title</property>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">0</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkLabel" id="episode_label">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="label" translatable="yes">Episode Title</property>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">1</property>
+                      </packing>
+                    </child>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -170,7 +184,7 @@
                 </child>
               </object>
               <packing>
-                <property name="position">2</property>
+                <property name="position">1</property>
               </packing>
             </child>
             <child>
