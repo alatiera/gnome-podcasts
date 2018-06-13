@@ -25,7 +25,7 @@ variables:
 
     before_script:
         - apt-get update -yqq
-        - apt-get install -yqq --no-install-recommends build-essential libgtk-3-dev meson
+        - apt-get install -yqq --no-install-recommends build-essential libgtk-3-dev meson libgstreamer1.0-dev
 
         - mkdir -p .cargo_cache
         # Only stuff inside the repo directory can be cached
