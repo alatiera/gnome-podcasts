@@ -1,7 +1,7 @@
 #![allow(warnings)]
 
-use gstreamer_player as gst;
 use gstreamer::ClockTime;
+use gstreamer_player as gst;
 use gtk;
 use gtk::prelude::*;
 

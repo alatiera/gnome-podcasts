@@ -465,21 +465,21 @@ fn on_play_bttn_clicked(
         .send(Action::RefreshEpisodesViewBGR)
         .map_err(From::from)
 }
-/*
-fn open_uri(rowid: i32) -> Result<(), Error> {
-    let uri = dbqueries::get_episode_local_uri_from_id(rowid)?
-        .ok_or_else(|| format_err!("Expected Some found None."))?;
 
-    if Path::new(&uri).exists() {
-        info!("Opening {}", uri);
-        open::that(&uri)?;
-    } else {
-        bail!("File \"{}\" does not exist.", uri);
-    }
+// fn open_uri(rowid: i32) -> Result<(), Error> {
+//     let uri = dbqueries::get_episode_local_uri_from_id(rowid)?
+//         .ok_or_else(|| format_err!("Expected Some found None."))?;
 
-    Ok(())
-}
-*/
+//     if Path::new(&uri).exists() {
+//         info!("Opening {}", uri);
+//         open::that(&uri)?;
+//     } else {
+//         bail!("File \"{}\" does not exist.", uri);
+//     }
+
+//     Ok(())
+// }
+
 // Setup a callback that will update the progress bar.
 #[inline]
 #[cfg_attr(feature = "cargo-clippy", allow(if_same_then_else))]
