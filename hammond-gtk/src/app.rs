@@ -5,8 +5,6 @@ use gio::{
     SimpleAction, SimpleActionExt,
 };
 use glib;
-use gstreamer_player as gst;
-use gstreamer::ClockTime;
 use gtk;
 use gtk::prelude::*;
 use gtk::SettingsExt as GtkSettingsExt;
@@ -19,7 +17,7 @@ use settings::{self, WindowGeometry};
 use stacks::{Content, PopulatedState};
 use utils;
 use widgets::appnotif::{InAppNotification, UndoState};
-use widgets::{about_dialog, mark_all_notif, remove_show_notif, Playback};
+use widgets::{about_dialog, mark_all_notif, remove_show_notif, PlayerWidget};
 
 use std::rc::Rc;
 use std::sync::Arc;
@@ -56,9 +54,6 @@ pub enum Action {
     RemoveShow(Arc<Podcast>),
     ErrorNotification(String),
     PlayEpisode(String),
-    PlayerStateChanged(gst::PlayerState),
-    PlayerMediaChanged(Option<String>, ClockTime),
-    PlayerPositionChanged(ClockTime),
 }
 
 #[derive(Debug)]
@@ -103,8 +98,6 @@ impl App {
                         Inhibit(false)
                     }));
 
-                    let wrap = gtk::Box::new(gtk::Orientation::Vertical, 0);
-                    window.add(&wrap);
 
                     // Create a content instance
                     let content =
@@ -122,11 +115,17 @@ impl App {
                     let overlay = gtk::Overlay::new();
                     overlay.add(&content.get_stack());
 
-                    // Add the overlay to the main window
+                    let wrap = gtk::Box::new(gtk::Orientation::Vertical, 0);
+                    // Add the overlay to the main Box
                     wrap.add(&overlay);
 
-                    let playback = Rc::new(Playback::new());
-                    wrap.add(playback.get_widget());
+                    // FIXME: this should have a ::new() method instead.
+                    let player = PlayerWidget::default();
+                    // Add the player to the main Box
+                    wrap.add(&player.action_bar);
+                    // player.reveal();
+
+                    window.add(&wrap);
 
                     WindowGeometry::from_settings(&settings).apply(&window);
 
@@ -135,23 +134,22 @@ impl App {
                     window.show_all();
                     window.activate();
 
-                    let player = gst::Player::new(None, None);
-                    player.connect_error(clone!(sender => move |_,err| {
+                    // player.connect_error(clone!(sender => move |_,err| {
                         // Not the most user friendly...
-                        sender.send(Action::ErrorNotification(format!("Playback: {}", err))).ok();
-                    }));
+                    //     sender.send(Action::ErrorNotification(format!("Playback: {}", err))).ok();
+                    // }));
 
-                    player.connect_state_changed(clone!(sender => move |_,state| {
-                        sender.send(Action::PlayerStateChanged(state)).ok();
-                    }));
+                    // player.connect_state_changed(clone!(sender => move |_,state| {
+                    //     sender.send(Action::PlayerStateChanged(state)).ok();
+                    // }));
 
-                    player.connect_media_info_updated(clone!(sender => move |_,info| {
-                        sender.send(Action::PlayerMediaChanged(info.get_title(), info.get_duration())).ok();
-                    }));
+                    // player.connect_media_info_updated(clone!(sender => move |_,info| {
+                    //     sender.send(Action::PlayerMediaChanged(info.get_title(), info.get_duration())).ok();
+                    // }));
 
-                    player.connect_property_position_notify(clone!(sender => move |p| {
-                        sender.send(Action::PlayerPositionChanged(p.get_position())).ok();
-                    }));
+                    // player.connect_property_position_notify(clone!(sender => move |p| {
+                    //     sender.send(Action::PlayerPositionChanged(p.get_position())).ok();
+                    // }));
 
                     gtk::timeout_add(50, clone!(sender, receiver => move || {
                         // Uses receiver, content, header, sender, overlay, playback
@@ -210,14 +208,7 @@ impl App {
                                                                    || {}, UndoState::Hidden);
                                 notif.show(&overlay);
                             },
-                            Ok(Action::PlayEpisode(uri)) => {
-                                // This must be a 'real' (file://) uri not a path
-                                player.set_uri(&uri);
-                                player.play();
-                            },
-                            Ok(Action::PlayerStateChanged(state)) => playback.state_changed(state),
-                            Ok(Action::PlayerMediaChanged(t, l)) => playback.media_changed(t, l),
-                            Ok(Action::PlayerPositionChanged(t)) => playback.position_changed(t),
+                            Ok(Action::PlayEpisode(_uri)) => (),
                             Err(_) => (),
                         }
 

@@ -25,6 +25,12 @@ struct PlayerInfo {
     cover: gtk::Image,
 }
 
+impl PlayerInfo {
+    fn init(&self) -> Result<(), Error> {
+        unimplemented!()
+    }
+}
+
 #[derive(Debug, Clone)]
 struct PlayerTimes {
     container: gtk::Box,
@@ -54,9 +60,8 @@ struct PlayerControls {
 
 #[derive(Debug, Clone)]
 pub struct PlayerWidget {
+    pub action_bar: gtk::ActionBar,
     player: gst::Player,
-    revealer: gtk::Revealer,
-    action_bar: gtk::ActionBar,
     controls: PlayerControls,
     timer: PlayerTimes,
     info: PlayerInfo,
@@ -66,7 +71,6 @@ impl Default for PlayerWidget {
     fn default() -> Self {
         let builder = gtk::Builder::new_from_resource("/org/gnome/Hammond/gtk/player_toolbar.ui");
         let player = gst::Player::new(None, None);
-        let revealer = builder.get_object("revealer").unwrap();
         let action_bar = builder.get_object("action_bar").unwrap();
 
         let buttons = builder.get_object("buttons").unwrap();
@@ -86,7 +90,7 @@ impl Default for PlayerWidget {
 
         let timer_container = builder.get_object("timer").unwrap();
         let progressed = builder.get_object("progress_time_label").unwrap();
-        let duration = builder.get_object("total_duration").unwrap();
+        let duration = builder.get_object("total_duration_label").unwrap();
         let separator = builder.get_object("separator").unwrap();
         let scalebar = builder.get_object("seek").unwrap();
         let timer = PlayerTimes {
@@ -110,7 +114,6 @@ impl Default for PlayerWidget {
 
         PlayerWidget {
             player,
-            revealer,
             action_bar,
             controls,
             timer,
@@ -121,8 +124,7 @@ impl Default for PlayerWidget {
 
 impl PlayerWidget {
     fn reveal(&self) {
-        self.revealer.show();
-        self.revealer.set_reveal_child(true);
+        self.action_bar.show();
     }
 }
 
