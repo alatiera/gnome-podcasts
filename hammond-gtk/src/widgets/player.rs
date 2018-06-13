@@ -1,8 +1,21 @@
 #![allow(warnings)]
 
 use gstreamer_player as gst;
+use gstreamer::ClockTime;
 use gtk;
 use gtk::prelude::*;
+
+use failure::Error;
+
+pub trait PlayerExt {
+    fn play(&self);
+    fn pause(&self);
+    fn seek(&self, position: ClockTime);
+    fn fast_forward(&self);
+    fn rewind(&self);
+    // TODO: change playback rate
+    // fn set_playback_rate(&self);
+}
 
 #[derive(Debug, Clone)]
 struct PlayerInfo {
@@ -36,7 +49,7 @@ struct PlayerControls {
     pause: gtk::Button,
     forward: gtk::Button,
     rewind: gtk::Button,
-    state: PlayerState,
+    // state: PlayerState,
 }
 
 #[derive(Debug, Clone)]
@@ -68,7 +81,7 @@ impl Default for PlayerWidget {
             pause,
             forward,
             rewind,
-            state: PlayerState::Ready,
+            // state: PlayerState::Ready,
         };
 
         let timer_container = builder.get_object("timer").unwrap();
@@ -103,5 +116,50 @@ impl Default for PlayerWidget {
             timer,
             info,
         }
+    }
+}
+
+impl PlayerWidget {
+    fn reveal(&self) {
+        self.revealer.show();
+        self.revealer.set_reveal_child(true);
+    }
+}
+
+impl PlayerExt for PlayerWidget {
+    fn play(&self) {
+        // assert the state is either ready or paused
+        // TODO: assert!()
+
+        self.reveal();
+
+        self.controls.pause.hide();
+        self.controls.play.show();
+
+        self.player.play();
+    }
+
+    fn pause(&self) {
+        // assert the state is paused
+        // TODO: assert!()
+
+        self.controls.pause.show();
+        self.controls.play.hide();
+
+        self.player.pause();
+    }
+
+    fn seek(&self, position: ClockTime) {
+        self.player.seek(position);
+    }
+
+    // FIXME
+    fn rewind(&self) {
+        // self.seek()
+    }
+
+    // FIXME
+    fn fast_forward(&self) {
+        // self.seek()
     }
 }
