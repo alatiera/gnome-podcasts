@@ -1,4 +1,3 @@
-use gio::{File, FileExt};
 use glib;
 use gtk;
 use gtk::prelude::*;
@@ -18,7 +17,6 @@ use hammond_data::EpisodeWidgetQuery;
 use app::Action;
 use manager;
 
-use std::path::Path;
 use std::rc::Rc;
 use std::sync::{Arc, Mutex, TryLockError};
 
@@ -444,26 +442,18 @@ fn on_download_clicked(ep: &EpisodeWidgetQuery, sender: &Sender<Action>) -> Resu
 }
 
 fn on_play_bttn_clicked(
-    widget: &Rc<EpisodeWidget>,
+    _widget: &Rc<EpisodeWidget>,
     episode: &mut EpisodeWidgetQuery,
     sender: &Sender<Action>,
 ) -> Result<(), Error> {
-    let uri = dbqueries::get_episode_local_uri_from_id(episode.rowid())?
-        .ok_or_else(|| format_err!("Expected Some found None."))?;
-    let p = Path::new(&uri);
-    if p.exists() {
-        info!("Opening {}", uri);
-        // uri is actually a path, convert it (hacky)
-        let uri = File::new_for_path(p).get_uri().expect("Bad file path");
-        sender.send(Action::PlayEpisode(uri)).ok();
-    } else {
-        bail!("File \"{}\" does not exist.", uri);
-    }
-
-    widget.info.set_title(&episode);
     sender
-        .send(Action::RefreshEpisodesViewBGR)
+        .send(Action::InitEpisode(episode.rowid()))
         .map_err(From::from)
+
+    // widget.info.set_title(&episode);
+    // sender
+    //     .send(Action::RefreshEpisodesViewBGR)
+    //     .map_err(From::from)
 }
 
 // fn open_uri(rowid: i32) -> Result<(), Error> {

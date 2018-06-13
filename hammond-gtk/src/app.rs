@@ -53,7 +53,7 @@ pub enum Action {
     MarkAllPlayerNotification(Arc<Podcast>),
     RemoveShow(Arc<Podcast>),
     ErrorNotification(String),
-    PlayEpisode(String),
+    InitEpisode(i32),
 }
 
 #[derive(Debug)]
@@ -119,8 +119,7 @@ impl App {
                     // Add the overlay to the main Box
                     wrap.add(&overlay);
 
-                    // FIXME: this should have a ::new() method instead.
-                    let player = PlayerWidget::default();
+                    let player = PlayerWidget::new();
                     // Add the player to the main Box
                     wrap.add(&player.action_bar);
                     // player.reveal();
@@ -208,7 +207,7 @@ impl App {
                                                                    || {}, UndoState::Hidden);
                                 notif.show(&overlay);
                             },
-                            Ok(Action::PlayEpisode(_uri)) => (),
+                            Ok(Action::InitEpisode(rowid)) => player.initialize_episode(rowid).unwrap(),
                             Err(_) => (),
                         }
 

@@ -10,6 +10,11 @@ list, border {
   border-radius: 4px;
 }
 
-.playback {
-  border-top: 1px solid @borders;
+.player-show-label {
+    font-weight: bold;
+    font-size: smaller;
+}
+
+.player-episode-label {
+    font-size: smaller;
 }

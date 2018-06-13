@@ -1,11 +1,21 @@
 #![allow(warnings)]
 
+use gio::{File, FileExt};
+
 use gstreamer::ClockTime;
 use gstreamer_player as gst;
 use gtk;
 use gtk::prelude::*;
 
 use failure::Error;
+
+use hammond_data::dbqueries;
+use hammond_data::{EpisodeWidgetQuery, PodcastCoverQuery};
+
+use utils::set_image_from_path;
+
+use std::path::Path;
+use std::rc::Rc;
 
 pub trait PlayerExt {
     fn play(&self);
@@ -26,8 +36,25 @@ struct PlayerInfo {
 }
 
 impl PlayerInfo {
-    fn init(&self) -> Result<(), Error> {
-        unimplemented!()
+    // FIXME: create a Diesel Model of the joined episode and podcast query instead
+    fn init(&self, episode: &EpisodeWidgetQuery, podcast: &PodcastCoverQuery) {
+        self.set_cover_image(podcast);
+        self.set_show_title(podcast);
+        self.set_episode_title(episode);
+    }
+
+    fn set_episode_title(&self, episode: &EpisodeWidgetQuery) {
+        self.episode.set_text(&episode.title());
+    }
+
+    fn set_show_title(&self, show: &PodcastCoverQuery) {
+        self.show.set_text(&show.title());
+    }
+
+    fn set_cover_image(&self, show: &PodcastCoverQuery) {
+        set_image_from_path(&self.cover, show.id(), 24)
+            .map_err(|err| error!("Player Cover: {}", err))
+            .ok();
     }
 }
 
@@ -123,8 +150,50 @@ impl Default for PlayerWidget {
 }
 
 impl PlayerWidget {
+    pub fn new() -> Rc<Self> {
+        let w = Rc::new(Self::default());
+        Self::init(&w);
+        w
+    }
+
+    fn init(s: &Rc<Self>) {
+        // Connect the play button to the gst Player.
+        s.controls.play.connect_clicked(clone!(s => move |_| s.play()));
+
+        // Connect the pause button to the gst Player.
+        s.controls.pause.connect_clicked(clone!(s => move |_| s.pause()));
+    }
+
     fn reveal(&self) {
         self.action_bar.show();
+    }
+
+    pub fn initialize_episode(&self, rowid: i32) -> Result<(), Error> {
+        let ep = dbqueries::get_episode_widget_from_rowid(rowid)?;
+        let pd = dbqueries::get_podcast_cover_from_id(ep.podcast_id())?;
+
+        self.info.init(&ep, &pd);
+        // Currently that will always be the case since the play button is
+        // only shown if the file is downloaded
+        if let Some(ref path) = ep.local_uri() {
+            if Path::new(path).exists() {
+                // path is an absolute fs path ex. "foo/bar/baz".
+                // Convert it so it will have a "file:///"
+                // FIXME: convert it properly
+                let uri = File::new_for_path(path).get_uri().expect("Bad file path");
+
+                // FIXME: Should also reset/flush the pipeline and then add the file
+
+                // play the file
+                self.player.set_uri(&uri);
+                self.play();
+                return Ok(());
+            }
+            // TODO: log an error
+        }
+
+        // Stream stuff
+        unimplemented!()
     }
 }
 
@@ -135,8 +204,8 @@ impl PlayerExt for PlayerWidget {
 
         self.reveal();
 
-        self.controls.pause.hide();
-        self.controls.play.show();
+        self.controls.pause.show();
+        self.controls.play.hide();
 
         self.player.play();
     }
@@ -145,8 +214,8 @@ impl PlayerExt for PlayerWidget {
         // assert the state is paused
         // TODO: assert!()
 
-        self.controls.pause.show();
-        self.controls.play.hide();
+        self.controls.pause.hide();
+        self.controls.play.show();
 
         self.player.pause();
     }
