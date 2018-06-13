@@ -41,12 +41,12 @@ variables:
         - cargo test -- --test-threads=1 --ignored
     <<: *cargo_cache
 
-rust:stable:
+.rust:stable:
     # https://hub.docker.com/_/rust/
     image: "rust"
     <<: *cargo_test
 
-rust:nightly:
+.rust:nightly:
     # https://hub.docker.com/r/rustlang/rust/
     image: "rustlang/rust:nightly"
     <<: *cargo_test
@@ -129,7 +129,7 @@ rustfmt:
 
 # Configure and run clippy on nightly
 # Only fails on errors atm.
-clippy:
+.clippy:
     image: "registry.gitlab.gnome.org/alatiera/hammond-container-images/clippy:nightly"
     stage: lint
     variables:
