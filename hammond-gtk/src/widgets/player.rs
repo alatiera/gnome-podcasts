@@ -22,10 +22,16 @@ use utils::set_image_from_path;
 use std::path::Path;
 use std::rc::Rc;
 
+#[derive(Debug, Clone, Copy)]
+pub enum SeekDirection {
+    Backwards,
+    Forward,
+}
+
 pub trait PlayerExt {
     fn play(&self);
     fn pause(&self);
-    fn seek(&self, position: ClockTime);
+    fn seek(&self, offset: ClockTime, direction: SeekDirection);
     fn fast_forward(&self);
     fn rewind(&self);
     // TODO: change playback rate
@@ -106,6 +112,7 @@ impl Default for PlayerWidget {
         let mut config = player.get_config();
         config.set_user_agent(USER_AGENT);
         config.set_position_update_interval(250);
+        config.set_seek_accurate(true);
         player.set_config(config).unwrap();
 
         let builder = gtk::Builder::new_from_resource("/org/gnome/Hammond/gtk/player_toolbar.ui");
@@ -175,6 +182,12 @@ impl PlayerWidget {
 
         // Connect the pause button to the gst Player.
         s.controls.pause.connect_clicked(clone!(s => move |_| s.pause()));
+
+        // Connect the rewind button to the gst Player.
+        s.controls.rewind.connect_clicked(clone!(s => move |_| s.rewind()));
+
+        // Connect the fast-forward button to the gst Player.
+        s.controls.forward.connect_clicked(clone!(s => move |_| s.fast_forward()));
 
         s.player.connect_error(clone!(sender => move |_, error| {
             // FIXME: should never occur and should not be user facing.
@@ -259,7 +272,7 @@ impl PlayerWidget {
         let pipeline = &self.player.get_pipeline();
         let slider = &self.timer.scalebar;
 
-        if let Some(dur) = pipeline.query_duration::<gst::ClockTime>() {
+        if let Some(dur) = pipeline.query_duration::<ClockTime>() {
             let seconds = dur / gst::SECOND;
             let seconds = seconds.map(|v| v as f64).unwrap_or(0.0);
 
@@ -277,7 +290,7 @@ impl PlayerWidget {
         let pipeline = &self.player.get_pipeline();
         let slider = &self.timer.scalebar;
 
-        if let Some(pos) = pipeline.query_position::<gst::ClockTime>() {
+        if let Some(pos) = pipeline.query_position::<ClockTime>() {
             let seconds = pos / gst::SECOND;
             let seconds = seconds.map(|v| v as f64).unwrap_or(0.0);
 
@@ -315,17 +328,41 @@ impl PlayerExt for PlayerWidget {
         self.player.pause();
     }
 
-    fn seek(&self, position: ClockTime) {
-        self.player.seek(position);
+    // Adapted from https://github.com/philn/glide/blob/b52a65d99daeab0b487f79a0e1ccfad0cd433e22/src/player_context.rs#L219-L245
+    fn seek(&self, offset: ClockTime, direction: SeekDirection) {
+        let position = self.player.get_position();
+        if position == ClockTime::none() {
+            return;
+        }
+
+        let destination = match direction {
+            SeekDirection::Backwards => {
+                if position >= offset {
+                    Some(position - offset)
+                } else {
+                    None
+                }
+            }
+            SeekDirection::Forward => {
+                let duration = self.player.get_duration();
+                if duration != ClockTime::none() && position + offset <= duration {
+                    Some(position + offset)
+                } else {
+                    None
+                }
+            }
+        };
+
+        destination.map(|d| self.player.seek(d));
     }
 
-    // FIXME
+    // FIXME: make the interval a GSetting
     fn rewind(&self) {
-        // self.seek()
+        self.seek(ClockTime::from_seconds(10), SeekDirection::Backwards)
     }
 
-    // FIXME
+    // FIXME: make the interval a GSetting
     fn fast_forward(&self) {
-        // self.seek()
+        self.seek(ClockTime::from_seconds(10), SeekDirection::Forward)
     }
 }
