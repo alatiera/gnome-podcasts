@@ -119,7 +119,7 @@ impl App {
                     // Add the overlay to the main Box
                     wrap.add(&overlay);
 
-                    let player = PlayerWidget::new();
+                    let player = PlayerWidget::new(&sender);
                     // Add the player to the main Box
                     wrap.add(&player.action_bar);
                     // player.reveal();

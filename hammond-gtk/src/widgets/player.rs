@@ -10,11 +10,13 @@ use gstreamer_player as gst_player;
 use gtk;
 use gtk::prelude::*;
 
+use crossbeam_channel::Sender;
 use failure::Error;
 
 use hammond_data::{dbqueries, USER_AGENT};
 use hammond_data::{EpisodeWidgetQuery, PodcastCoverQuery};
 
+use app::Action;
 use utils::set_image_from_path;
 
 use std::path::Path;
@@ -160,19 +162,27 @@ impl Default for PlayerWidget {
 }
 
 impl PlayerWidget {
-    pub fn new() -> Rc<Self> {
+    pub fn new(sender: &Sender<Action>) -> Rc<Self> {
         let w = Rc::new(Self::default());
-        Self::init(&w);
+        Self::init(&w, sender);
         w
     }
 
     #[cfg_attr(rustfmt, rustfmt_skip)]
-    fn init(s: &Rc<Self>) {
+    fn init(s: &Rc<Self>, sender: &Sender<Action>) {
         // Connect the play button to the gst Player.
         s.controls.play.connect_clicked(clone!(s => move |_| s.play()));
 
         // Connect the pause button to the gst Player.
         s.controls.pause.connect_clicked(clone!(s => move |_| s.pause()));
+
+        s.player.connect_error(clone!(sender => move |_, error| {
+            // FIXME: should never occur and should not be user facing.
+            sender.send(Action::ErrorNotification(format!("Player Error: {}", error)))
+                .map_err(|err| error!("Error: {}", err))
+                .ok();
+
+        }));
 
         Self::connect_timers(s);
     }
