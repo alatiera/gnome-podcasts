@@ -1,5 +1,3 @@
-#![allow(warnings)]
-
 use gio::{File, FileExt};
 
 use glib::SignalHandlerId;
@@ -79,21 +77,12 @@ struct PlayerTimes {
 }
 
 #[derive(Debug, Clone)]
-// FIXME: This is a mock till stuff get sorted out.
-enum PlayerState {
-    Playing,
-    Paused,
-    Ready,
-}
-
-#[derive(Debug, Clone)]
 struct PlayerControls {
     container: gtk::Box,
     play: gtk::Button,
     pause: gtk::Button,
     forward: gtk::Button,
     rewind: gtk::Button,
-    // state: PlayerState,
 }
 
 #[derive(Debug, Clone)]
@@ -130,7 +119,6 @@ impl Default for PlayerWidget {
             pause,
             forward,
             rewind,
-            // state: PlayerState::Ready,
         };
 
         let timer_container = builder.get_object("timer").unwrap();
@@ -254,9 +242,6 @@ impl PlayerWidget {
         gtk::timeout_add(
             250,
             clone!(s => move || {
-                let pipeline = s.player.get_pipeline();
-                let slider = &s.timer.scalebar;
-
                 // TODO: use Player::connect_duration_changed() instead
                 s.on_duration_changed(&slider_update_signal_id);
                 // TODO: use Player::connect_position_updated() instead
