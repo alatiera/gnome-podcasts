@@ -11,7 +11,7 @@ use gtk::prelude::*;
 
 use failure::Error;
 
-use hammond_data::dbqueries;
+use hammond_data::{dbqueries, USER_AGENTR};
 use hammond_data::{EpisodeWidgetQuery, PodcastCoverQuery};
 
 use utils::set_image_from_path;
@@ -98,8 +98,14 @@ pub struct PlayerWidget {
 
 impl Default for PlayerWidget {
     fn default() -> Self {
-        let builder = gtk::Builder::new_from_resource("/org/gnome/Hammond/gtk/player_toolbar.ui");
         let player = gst_player::Player::new(None, None);
+
+        let mut config = player.get_config();
+        config.set_user_agent(USER_AGENT);
+        config.set_position_update_interval(250);
+        player.set_config(config).unwrap();
+
+        let builder = gtk::Builder::new_from_resource("/org/gnome/Hammond/gtk/player_toolbar.ui");
         let action_bar = builder.get_object("action_bar").unwrap();
 
         let buttons = builder.get_object("buttons").unwrap();
