@@ -2,6 +2,7 @@
 
 use gio::{File, FileExt};
 
+use glib::SignalHandlerId;
 use gst::prelude::*;
 use gstreamer as gst;
 use gstreamer::ClockTime;
@@ -11,7 +12,7 @@ use gtk::prelude::*;
 
 use failure::Error;
 
-use hammond_data::{dbqueries, USER_AGENTR};
+use hammond_data::{dbqueries, USER_AGENT};
 use hammond_data::{EpisodeWidgetQuery, PodcastCoverQuery};
 
 use utils::set_image_from_path;
@@ -194,7 +195,7 @@ impl PlayerWidget {
                 // FIXME: convert it properly
                 let uri = File::new_for_path(path).get_uri().expect("Bad file path");
 
-                // FIXME: Should also reset/flush the pipeline and then add the file
+                // FIXME: Maybe should also reset/flush the pipeline and then add the file?
 
                 // play the file
                 self.player.set_uri(&uri);
@@ -227,34 +228,57 @@ impl PlayerWidget {
         );
 
         // Update the PlayerTimes
-        gtk::timeout_add_seconds(
-            1,
+        gtk::timeout_add(
+            250,
             clone!(s => move || {
                 let pipeline = s.player.get_pipeline();
                 let slider = &s.timer.scalebar;
 
-                if let Some(dur) = pipeline.query_duration::<gst::ClockTime>() {
-                    let seconds = dur / gst::SECOND;
-                    let seconds = seconds.map(|v| v as f64).unwrap_or(0.0);
-
-                    slider.set_range(0.0, seconds);
-                    s.timer.duration.set_text(&format!("{:.2}", seconds / 60.0));
-                }
-
-                if let Some(pos) = pipeline.query_position::<gst::ClockTime>() {
-                    let seconds = pos / gst::SECOND;
-                    let seconds = seconds.map(|v| v as f64).unwrap_or(0.0);
-
-                    slider.block_signal(&slider_update_signal_id);
-                    slider.set_value(seconds);
-                    slider.unblock_signal(&slider_update_signal_id);
-
-                    s.timer.progressed.set_text(&format!("{:.2}", seconds / 60.0));
-                }
+                // TODO: use Player::connect_duration_changed() instead
+                s.on_duration_changed(&slider_update_signal_id);
+                // TODO: use Player::connect_position_updated() instead
+                s.on_position_changed(&slider_update_signal_id);
 
                 Continue(true)
             }),
         );
+    }
+
+    /// Update the duration `gtk::Label` and the max range of the `gtk::SclaeBar`.
+    fn on_duration_changed(&self, slider_update: &SignalHandlerId) {
+        let pipeline = &self.player.get_pipeline();
+        let slider = &self.timer.scalebar;
+
+        if let Some(dur) = pipeline.query_duration::<gst::ClockTime>() {
+            let seconds = dur / gst::SECOND;
+            let seconds = seconds.map(|v| v as f64).unwrap_or(0.0);
+
+            slider.block_signal(&slider_update);
+            slider.set_range(0.0, seconds);
+            slider.unblock_signal(&slider_update);
+            self.timer
+                .duration
+                .set_text(&format!("{:.2}", seconds / 60.0));
+        }
+    }
+
+    /// Update the `gtk::SclaeBar` when the pipeline position is changed..
+    fn on_position_changed(&self, slider_update: &SignalHandlerId) {
+        let pipeline = &self.player.get_pipeline();
+        let slider = &self.timer.scalebar;
+
+        if let Some(pos) = pipeline.query_position::<gst::ClockTime>() {
+            let seconds = pos / gst::SECOND;
+            let seconds = seconds.map(|v| v as f64).unwrap_or(0.0);
+
+            slider.block_signal(&slider_update);
+            slider.set_value(seconds);
+            slider.unblock_signal(&slider_update);
+
+            self.timer
+                .progressed
+                .set_text(&format!("{:.2}", seconds / 60.0));
+        }
     }
 }
 
