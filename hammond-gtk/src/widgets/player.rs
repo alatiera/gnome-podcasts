@@ -2,8 +2,10 @@
 
 use gio::{File, FileExt};
 
+use gst::prelude::*;
+use gstreamer as gst;
 use gstreamer::ClockTime;
-use gstreamer_player as gst;
+use gstreamer_player as gst_player;
 use gtk;
 use gtk::prelude::*;
 
@@ -88,7 +90,7 @@ struct PlayerControls {
 #[derive(Debug, Clone)]
 pub struct PlayerWidget {
     pub action_bar: gtk::ActionBar,
-    player: gst::Player,
+    player: gst_player::Player,
     controls: PlayerControls,
     timer: PlayerTimes,
     info: PlayerInfo,
@@ -97,7 +99,7 @@ pub struct PlayerWidget {
 impl Default for PlayerWidget {
     fn default() -> Self {
         let builder = gtk::Builder::new_from_resource("/org/gnome/Hammond/gtk/player_toolbar.ui");
-        let player = gst::Player::new(None, None);
+        let player = gst_player::Player::new(None, None);
         let action_bar = builder.get_object("action_bar").unwrap();
 
         let buttons = builder.get_object("buttons").unwrap();
@@ -119,7 +121,8 @@ impl Default for PlayerWidget {
         let progressed = builder.get_object("progress_time_label").unwrap();
         let duration = builder.get_object("total_duration_label").unwrap();
         let separator = builder.get_object("separator").unwrap();
-        let scalebar = builder.get_object("seek").unwrap();
+        let scalebar: gtk::Scale = builder.get_object("seek").unwrap();
+        scalebar.set_range(0.0, 1.0);
         let timer = PlayerTimes {
             container: timer_container,
             progressed,
@@ -156,12 +159,15 @@ impl PlayerWidget {
         w
     }
 
+    #[cfg_attr(rustfmt, rustfmt_skip)]
     fn init(s: &Rc<Self>) {
         // Connect the play button to the gst Player.
         s.controls.play.connect_clicked(clone!(s => move |_| s.play()));
 
         // Connect the pause button to the gst Player.
         s.controls.pause.connect_clicked(clone!(s => move |_| s.pause()));
+
+        Self::connect_timers(s);
     }
 
     fn reveal(&self) {
@@ -194,6 +200,55 @@ impl PlayerWidget {
 
         // Stream stuff
         unimplemented!()
+    }
+
+    // FIXME: Refactor to use gst_player::Player instead of raw pipeline.
+    // FIXME: Refactor the labels to use some kind of Human™ time/values.
+    // Adapted from https://github.com/sdroege/gstreamer-rs/blob/f4d57a66522183d4927b47af422e8f321182111f/tutorials/src/bin/basic-tutorial-5.rs#L131-L164
+    fn connect_timers(s: &Rc<Self>) {
+        let slider_update_signal_id = s.timer.scalebar.connect_value_changed(
+            clone!(s => move |slider| {
+                let pipeline = &s.player.get_pipeline();
+
+                let value = slider.get_value() as u64;
+                if let Err(_) = pipeline.seek_simple(
+                    gst::SeekFlags::FLUSH | gst::SeekFlags::KEY_UNIT,
+                    value * gst::SECOND,
+                ) {
+                    error!("Seeking to {} failed", value);
+                }
+            }),
+        );
+
+        // Update the PlayerTimes
+        gtk::timeout_add_seconds(
+            1,
+            clone!(s => move || {
+                let pipeline = s.player.get_pipeline();
+                let slider = &s.timer.scalebar;
+
+                if let Some(dur) = pipeline.query_duration::<gst::ClockTime>() {
+                    let seconds = dur / gst::SECOND;
+                    let seconds = seconds.map(|v| v as f64).unwrap_or(0.0);
+
+                    slider.set_range(0.0, seconds);
+                    s.timer.duration.set_text(&format!("{:.2}", seconds / 60.0));
+                }
+
+                if let Some(pos) = pipeline.query_position::<gst::ClockTime>() {
+                    let seconds = pos / gst::SECOND;
+                    let seconds = seconds.map(|v| v as f64).unwrap_or(0.0);
+
+                    slider.block_signal(&slider_update_signal_id);
+                    slider.set_value(seconds);
+                    slider.unblock_signal(&slider_update_signal_id);
+
+                    s.timer.progressed.set_text(&format!("{:.2}", seconds / 60.0));
+                }
+
+                Continue(true)
+            }),
+        );
     }
 }
 
