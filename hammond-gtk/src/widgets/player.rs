@@ -177,6 +177,10 @@ impl PlayerWidget {
         // Connect the fast-forward button to the gst Player.
         s.controls.forward.connect_clicked(clone!(s => move |_| s.fast_forward()));
 
+        // Log gst warnings.
+        s.player.connect_warning(move |_, warn| warn!("gst warning: {}", warn));
+
+        // Log gst errors.
         s.player.connect_error(clone!(sender => move |_, error| {
             // FIXME: should never occur and should not be user facing.
             sender.send(Action::ErrorNotification(format!("Player Error: {}", error)))
