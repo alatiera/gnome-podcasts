@@ -198,17 +198,7 @@ impl PlayerWidget {
 
     #[cfg_attr(rustfmt, rustfmt_skip)]
     fn init(s: &Rc<Self>, sender: &Sender<Action>) {
-        // Connect the play button to the gst Player.
-        s.controls.play.connect_clicked(clone!(s => move |_| s.play()));
-
-        // Connect the pause button to the gst Player.
-        s.controls.pause.connect_clicked(clone!(s => move |_| s.pause()));
-
-        // Connect the rewind button to the gst Player.
-        s.controls.rewind.connect_clicked(clone!(s => move |_| s.rewind()));
-
-        // Connect the fast-forward button to the gst Player.
-        s.controls.forward.connect_clicked(clone!(s => move |_| s.fast_forward()));
+        Self::connect_buttons(s);
 
         // Log gst warnings.
         s.player.connect_warning(move |_, warn| warn!("gst warning: {}", warn));
@@ -233,6 +223,22 @@ impl PlayerWidget {
                 .map_err(|err| error!("Error: {}", err))
                 .ok();
         }));
+    }
+
+    #[cfg_attr(rustfmt, rustfmt_skip)]
+    /// Connect the `PlayerControls` buttons to the `PlayerExt` methods.
+    fn connect_buttons(s: &Rc<Self>) {
+        // Connect the play button to the gst Player.
+        s.controls.play.connect_clicked(clone!(s => move |_| s.play()));
+
+        // Connect the pause button to the gst Player.
+        s.controls.pause.connect_clicked(clone!(s => move |_| s.pause()));
+
+        // Connect the rewind button to the gst Player.
+        s.controls.rewind.connect_clicked(clone!(s => move |_| s.rewind()));
+
+        // Connect the fast-forward button to the gst Player.
+        s.controls.forward.connect_clicked(clone!(s => move |_| s.fast_forward()));
     }
 
     fn reveal(&self) {
