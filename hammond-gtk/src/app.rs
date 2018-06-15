@@ -5,6 +5,7 @@ use gio::{
     SimpleAction, SimpleActionExt,
 };
 use glib;
+use gst::ClockTime;
 use gtk;
 use gtk::prelude::*;
 use gtk::SettingsExt as GtkSettingsExt;
@@ -17,7 +18,8 @@ use settings::{self, WindowGeometry};
 use stacks::{Content, PopulatedState};
 use utils;
 use widgets::appnotif::{InAppNotification, UndoState};
-use widgets::{about_dialog, mark_all_notif, remove_show_notif, PlayerWidget};
+use widgets::player::*;
+use widgets::{about_dialog, mark_all_notif, remove_show_notif};
 
 use std::rc::Rc;
 use std::sync::Arc;
@@ -54,6 +56,7 @@ pub enum Action {
     RemoveShow(Arc<Podcast>),
     ErrorNotification(String),
     InitEpisode(i32),
+    PlayerDurationChanged(ClockTime),
 }
 
 #[derive(Debug)]
@@ -208,6 +211,7 @@ impl App {
                                 notif.show(&overlay);
                             },
                             Ok(Action::InitEpisode(rowid)) => player.initialize_episode(rowid).unwrap(),
+                            Ok(Action::PlayerDurationChanged(clock)) => player.on_duration_changed(clock),
                             Err(_) => (),
                         }
 

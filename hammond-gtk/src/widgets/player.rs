@@ -1,15 +1,18 @@
+// #![allow(warnings)]
+
 use gio::{File, FileExt};
 
 use glib::SignalHandlerId;
+use gst;
 use gst::prelude::*;
-use gstreamer as gst;
-use gstreamer::ClockTime;
-use gstreamer_player as gst_player;
+use gst::ClockTime;
+use gst_player;
 use gtk;
 use gtk::prelude::*;
 
 use crossbeam_channel::Sender;
 use failure::Error;
+// use send_cell::SendCell;
 
 use hammond_data::{dbqueries, USER_AGENT};
 use hammond_data::{EpisodeWidgetQuery, PodcastCoverQuery};
@@ -19,6 +22,7 @@ use utils::set_image_from_path;
 
 use std::path::Path;
 use std::rc::Rc;
+use std::sync::Arc;
 
 #[derive(Debug, Clone, Copy)]
 pub enum SeekDirection {
@@ -68,12 +72,13 @@ impl PlayerInfo {
 }
 
 #[derive(Debug, Clone)]
-struct PlayerTimes {
+pub struct PlayerTimes {
     container: gtk::Box,
     progressed: gtk::Label,
     duration: gtk::Label,
     separator: gtk::Label,
-    scalebar: gtk::Scale,
+    slider: gtk::Scale,
+    slider_update: Arc<SignalHandlerId>,
 }
 
 #[derive(Debug, Clone)]
@@ -125,14 +130,16 @@ impl Default for PlayerWidget {
         let progressed = builder.get_object("progress_time_label").unwrap();
         let duration = builder.get_object("total_duration_label").unwrap();
         let separator = builder.get_object("separator").unwrap();
-        let scalebar: gtk::Scale = builder.get_object("seek").unwrap();
-        scalebar.set_range(0.0, 1.0);
+        let slider: gtk::Scale = builder.get_object("seek").unwrap();
+        slider.set_range(0.0, 1.0);
+        let slider_update = Arc::new(Self::connect_update_slider(&slider, &player));
         let timer = PlayerTimes {
             container: timer_container,
             progressed,
             duration,
             separator,
-            scalebar,
+            slider,
+            slider_update,
         };
 
         let labels = builder.get_object("info").unwrap();
@@ -189,8 +196,13 @@ impl PlayerWidget {
 
         }));
 
-        let slider_update_signal_id = Self::connect_update_seekbar_signal(s);
-        Self::connect_timers(s, slider_update_signal_id);
+        s.player.connect_duration_changed(clone!(sender => move |_, duration| {
+            sender.send(Action::PlayerDurationChanged(duration))
+                .map_err(|err| error!("Error: {}", err))
+                .ok();
+        }));
+
+        Self::connect_timers(s);
     }
 
     fn reveal(&self) {
@@ -228,62 +240,53 @@ impl PlayerWidget {
     // FIXME: Refactor to use gst_player::Player instead of raw pipeline.
     // FIXME: Refactor the labels to use some kind of Human™ time/values.
     // Adapted from https://github.com/sdroege/gstreamer-rs/blob/f4d57a66522183d4927b47af422e8f321182111f/tutorials/src/bin/basic-tutorial-5.rs#L131-L164
-    fn connect_timers(s: &Rc<Self>, update_signal_id: SignalHandlerId) {
+    fn connect_timers(s: &Rc<Self>) {
         // Update the PlayerTimes
         gtk::timeout_add(
             250,
             clone!(s => move || {
-                // TODO: use Player::connect_duration_changed() instead
-                s.on_duration_changed(&update_signal_id);
                 // TODO: use Player::connect_position_updated() instead
-                s.on_position_changed(&update_signal_id);
+                s.on_position_changed();
 
                 Continue(true)
             }),
         );
     }
 
-    fn connect_update_seekbar_signal(s: &Rc<Self>) -> SignalHandlerId {
-        s.timer
-            .scalebar
-            .connect_value_changed(clone!(s => move |slider| {
-                let player = &s.player;
-
-                let value = slider.get_value() as u64;
-                player.seek(gst::ClockTime::from_seconds(value as u64));
-            }))
+    fn connect_update_slider(slider: &gtk::Scale, player: &gst_player::Player) -> SignalHandlerId {
+        slider.connect_value_changed(clone!(player => move |slider| {
+            let value = slider.get_value() as u64;
+            player.seek(ClockTime::from_seconds(value as u64));
+        }))
     }
 
     /// Update the duration `gtk::Label` and the max range of the `gtk::SclaeBar`.
-    fn on_duration_changed(&self, slider_update: &SignalHandlerId) {
-        let pipeline = &self.player.get_pipeline();
-        let slider = &self.timer.scalebar;
+    // FIXME: Refactor the labels to use some kind of Human™ time/values.
+    pub fn on_duration_changed(&self, duration: ClockTime) {
+        let slider = &self.timer.slider;
+        let seconds = duration.seconds().map(|v| v as f64).unwrap_or(0.0);
 
-        if let Some(dur) = pipeline.query_duration::<ClockTime>() {
-            let seconds = dur / gst::SECOND;
-            let seconds = seconds.map(|v| v as f64).unwrap_or(0.0);
+        slider.block_signal(&self.timer.slider_update);
+        slider.set_range(0.0, seconds);
+        slider.unblock_signal(&self.timer.slider_update);
 
-            slider.block_signal(&slider_update);
-            slider.set_range(0.0, seconds);
-            slider.unblock_signal(&slider_update);
-            self.timer
-                .duration
-                .set_text(&format!("{:.2}", seconds / 60.0));
-        }
+        self.timer
+            .duration
+            .set_text(&format!("{:.2}", seconds / 60.0));
     }
 
     /// Update the `gtk::SclaeBar` when the pipeline position is changed..
-    fn on_position_changed(&self, slider_update: &SignalHandlerId) {
+    fn on_position_changed(&self) {
         let pipeline = &self.player.get_pipeline();
-        let slider = &self.timer.scalebar;
+        let slider = &self.timer.slider;
 
         if let Some(pos) = pipeline.query_position::<ClockTime>() {
             let seconds = pos / gst::SECOND;
             let seconds = seconds.map(|v| v as f64).unwrap_or(0.0);
 
-            slider.block_signal(&slider_update);
+            slider.block_signal(&self.timer.slider_update);
             slider.set_value(seconds);
-            slider.unblock_signal(&slider_update);
+            slider.unblock_signal(&self.timer.slider_update);
 
             self.timer
                 .progressed

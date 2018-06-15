@@ -10,8 +10,8 @@ extern crate gdk;
 extern crate gdk_pixbuf;
 extern crate gio;
 extern crate glib;
-extern crate gstreamer;
-extern crate gstreamer_player;
+extern crate gstreamer as gst;
+extern crate gstreamer_player as gst_player;
 extern crate gtk;
 
 #[macro_use]
@@ -44,7 +44,6 @@ extern crate url;
 
 use log::Level;
 
-use gstreamer as gst;
 use gtk::prelude::*;
 
 // http://gtk-rs.org/tuto/closures
