@@ -57,6 +57,7 @@ pub enum Action {
     ErrorNotification(String),
     InitEpisode(i32),
     PlayerDurationChanged(ClockTime),
+    PlayerPositionUpdated(ClockTime),
 }
 
 #[derive(Debug)]
@@ -212,6 +213,7 @@ impl App {
                             },
                             Ok(Action::InitEpisode(rowid)) => player.initialize_episode(rowid).unwrap(),
                             Ok(Action::PlayerDurationChanged(clock)) => player.on_duration_changed(clock),
+                            Ok(Action::PlayerPositionUpdated(clock)) => player.on_position_updated(clock),
                             Err(_) => (),
                         }
 

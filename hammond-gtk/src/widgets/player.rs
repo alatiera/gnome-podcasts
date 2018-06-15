@@ -1,14 +1,15 @@
 // #![allow(warnings)]
 
-use gio::{File, FileExt};
-
-use glib::SignalHandlerId;
-use gst;
+// use gst;
 use gst::prelude::*;
 use gst::ClockTime;
 use gst_player;
+
 use gtk;
 use gtk::prelude::*;
+
+use gio::{File, FileExt};
+use glib::SignalHandlerId;
 
 use crossbeam_channel::Sender;
 use failure::Error;
@@ -202,7 +203,11 @@ impl PlayerWidget {
                 .ok();
         }));
 
-        Self::connect_timers(s);
+        s.player.connect_position_updated(clone!(sender => move |_, position| {
+            sender.send(Action::PlayerPositionUpdated(position))
+                .map_err(|err| error!("Error: {}", err))
+                .ok();
+        }));
     }
 
     fn reveal(&self) {
@@ -237,22 +242,6 @@ impl PlayerWidget {
         unimplemented!()
     }
 
-    // FIXME: Refactor to use gst_player::Player instead of raw pipeline.
-    // FIXME: Refactor the labels to use some kind of Human™ time/values.
-    // Adapted from https://github.com/sdroege/gstreamer-rs/blob/f4d57a66522183d4927b47af422e8f321182111f/tutorials/src/bin/basic-tutorial-5.rs#L131-L164
-    fn connect_timers(s: &Rc<Self>) {
-        // Update the PlayerTimes
-        gtk::timeout_add(
-            250,
-            clone!(s => move || {
-                // TODO: use Player::connect_position_updated() instead
-                s.on_position_changed();
-
-                Continue(true)
-            }),
-        );
-    }
-
     fn connect_update_slider(slider: &gtk::Scale, player: &gst_player::Player) -> SignalHandlerId {
         slider.connect_value_changed(clone!(player => move |slider| {
             let value = slider.get_value() as u64;
@@ -275,23 +264,18 @@ impl PlayerWidget {
             .set_text(&format!("{:.2}", seconds / 60.0));
     }
 
-    /// Update the `gtk::SclaeBar` when the pipeline position is changed..
-    fn on_position_changed(&self) {
-        let pipeline = &self.player.get_pipeline();
+    /// Update the `gtk::SclaeBar` when the pipeline position is changed.
+    pub fn on_position_updated(&self, position: ClockTime) {
         let slider = &self.timer.slider;
+        let seconds = position.seconds().map(|v| v as f64).unwrap_or(0.0);
 
-        if let Some(pos) = pipeline.query_position::<ClockTime>() {
-            let seconds = pos / gst::SECOND;
-            let seconds = seconds.map(|v| v as f64).unwrap_or(0.0);
+        slider.block_signal(&self.timer.slider_update);
+        slider.set_value(seconds);
+        slider.unblock_signal(&self.timer.slider_update);
 
-            slider.block_signal(&self.timer.slider_update);
-            slider.set_value(seconds);
-            slider.unblock_signal(&self.timer.slider_update);
-
-            self.timer
-                .progressed
-                .set_text(&format!("{:.2}", seconds / 60.0));
-        }
+        self.timer
+            .progressed
+            .set_text(&format!("{:.2}", seconds / 60.0));
     }
 }
 
