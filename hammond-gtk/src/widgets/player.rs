@@ -189,7 +189,8 @@ impl PlayerWidget {
 
         }));
 
-        Self::connect_timers(s);
+        let slider_update_signal_id = Self::connect_update_seekbar_signal(s);
+        Self::connect_timers(s, slider_update_signal_id);
     }
 
     fn reveal(&self) {
@@ -227,33 +228,30 @@ impl PlayerWidget {
     // FIXME: Refactor to use gst_player::Player instead of raw pipeline.
     // FIXME: Refactor the labels to use some kind of Human™ time/values.
     // Adapted from https://github.com/sdroege/gstreamer-rs/blob/f4d57a66522183d4927b47af422e8f321182111f/tutorials/src/bin/basic-tutorial-5.rs#L131-L164
-    fn connect_timers(s: &Rc<Self>) {
-        let slider_update_signal_id = s.timer.scalebar.connect_value_changed(
-            clone!(s => move |slider| {
-                let pipeline = &s.player.get_pipeline();
-
-                let value = slider.get_value() as u64;
-                if let Err(_) = pipeline.seek_simple(
-                    gst::SeekFlags::FLUSH | gst::SeekFlags::KEY_UNIT,
-                    value * gst::SECOND,
-                ) {
-                    error!("Seeking to {} failed", value);
-                }
-            }),
-        );
-
+    fn connect_timers(s: &Rc<Self>, update_signal_id: SignalHandlerId) {
         // Update the PlayerTimes
         gtk::timeout_add(
             250,
             clone!(s => move || {
                 // TODO: use Player::connect_duration_changed() instead
-                s.on_duration_changed(&slider_update_signal_id);
+                s.on_duration_changed(&update_signal_id);
                 // TODO: use Player::connect_position_updated() instead
-                s.on_position_changed(&slider_update_signal_id);
+                s.on_position_changed(&update_signal_id);
 
                 Continue(true)
             }),
         );
+    }
+
+    fn connect_update_seekbar_signal(s: &Rc<Self>) -> SignalHandlerId {
+        s.timer
+            .scalebar
+            .connect_value_changed(clone!(s => move |slider| {
+                let player = &s.player;
+
+                let value = slider.get_value() as u64;
+                player.seek(gst::ClockTime::from_seconds(value as u64));
+            }))
     }
 
     /// Update the duration `gtk::Label` and the max range of the `gtk::SclaeBar`.
