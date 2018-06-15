@@ -82,6 +82,31 @@ pub struct PlayerTimes {
     slider_update: Arc<SignalHandlerId>,
 }
 
+impl PlayerTimes {
+    /// Update the duration `gtk::Label` and the max range of the `gtk::SclaeBar`.
+    // FIXME: Refactor the labels to use some kind of Human™ time/values.
+    pub fn on_duration_changed(&self, duration: ClockTime) {
+        let seconds = duration.seconds().map(|v| v as f64).unwrap_or(0.0);
+
+        self.slider.block_signal(&self.slider_update);
+        self.slider.set_range(0.0, seconds);
+        self.slider.unblock_signal(&self.slider_update);
+
+        self.duration.set_text(&format!("{:.2}", seconds / 60.0));
+    }
+
+    /// Update the `gtk::SclaeBar` when the pipeline position is changed.
+    pub fn on_position_updated(&self, position: ClockTime) {
+        let seconds = position.seconds().map(|v| v as f64).unwrap_or(0.0);
+
+        self.slider.block_signal(&self.slider_update);
+        self.slider.set_value(seconds);
+        self.slider.unblock_signal(&self.slider_update);
+
+        self.progressed.set_text(&format!("{:.2}", seconds / 60.0));
+    }
+}
+
 #[derive(Debug, Clone)]
 struct PlayerControls {
     container: gtk::Box,
@@ -96,7 +121,7 @@ pub struct PlayerWidget {
     pub action_bar: gtk::ActionBar,
     player: gst_player::Player,
     controls: PlayerControls,
-    timer: PlayerTimes,
+    pub timer: PlayerTimes,
     info: PlayerInfo,
 }
 
@@ -247,35 +272,6 @@ impl PlayerWidget {
             let value = slider.get_value() as u64;
             player.seek(ClockTime::from_seconds(value as u64));
         }))
-    }
-
-    /// Update the duration `gtk::Label` and the max range of the `gtk::SclaeBar`.
-    // FIXME: Refactor the labels to use some kind of Human™ time/values.
-    pub fn on_duration_changed(&self, duration: ClockTime) {
-        let slider = &self.timer.slider;
-        let seconds = duration.seconds().map(|v| v as f64).unwrap_or(0.0);
-
-        slider.block_signal(&self.timer.slider_update);
-        slider.set_range(0.0, seconds);
-        slider.unblock_signal(&self.timer.slider_update);
-
-        self.timer
-            .duration
-            .set_text(&format!("{:.2}", seconds / 60.0));
-    }
-
-    /// Update the `gtk::SclaeBar` when the pipeline position is changed.
-    pub fn on_position_updated(&self, position: ClockTime) {
-        let slider = &self.timer.slider;
-        let seconds = position.seconds().map(|v| v as f64).unwrap_or(0.0);
-
-        slider.block_signal(&self.timer.slider_update);
-        slider.set_value(seconds);
-        slider.unblock_signal(&self.timer.slider_update);
-
-        self.timer
-            .progressed
-            .set_text(&format!("{:.2}", seconds / 60.0));
     }
 }
 
