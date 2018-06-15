@@ -321,7 +321,7 @@ impl PlayerExt for PlayerWidget {
     // Adapted from https://github.com/philn/glide/blob/b52a65d99daeab0b487f79a0e1ccfad0cd433e22/src/player_context.rs#L219-L245
     fn seek(&self, offset: ClockTime, direction: SeekDirection) {
         let position = self.player.get_position();
-        if position == ClockTime::none() {
+        if position.is_none() || offset.is_none() {
             return;
         }
 
