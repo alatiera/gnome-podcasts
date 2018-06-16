@@ -162,7 +162,6 @@ impl Default for PlayerWidget {
         let mut config = player.get_config();
         config.set_user_agent(USER_AGENT);
         config.set_position_update_interval(250);
-        config.set_seek_accurate(true);
         player.set_config(config).unwrap();
 
         let builder = gtk::Builder::new_from_resource("/org/gnome/Hammond/gtk/player_toolbar.ui");
