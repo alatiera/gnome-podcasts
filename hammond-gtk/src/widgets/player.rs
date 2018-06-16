@@ -24,7 +24,6 @@ use utils::set_image_from_path;
 use std::ops::Deref;
 use std::path::Path;
 use std::rc::Rc;
-use std::sync::Arc;
 
 #[derive(Debug, Clone, Copy)]
 pub enum SeekDirection {
@@ -80,7 +79,7 @@ pub struct PlayerTimes {
     duration: gtk::Label,
     separator: gtk::Label,
     slider: gtk::Scale,
-    slider_update: Arc<SignalHandlerId>,
+    slider_update: Rc<SignalHandlerId>,
 }
 
 #[derive(Debug, Clone, Copy)]
@@ -179,7 +178,7 @@ impl Default for PlayerWidget {
         let separator = builder.get_object("separator").unwrap();
         let slider: gtk::Scale = builder.get_object("seek").unwrap();
         slider.set_range(0.0, 1.0);
-        let slider_update = Arc::new(Self::connect_update_slider(&slider, &player));
+        let slider_update = Rc::new(Self::connect_update_slider(&slider, &player));
         let timer = PlayerTimes {
             container: timer_container,
             progressed,
