@@ -21,6 +21,7 @@ use hammond_data::{EpisodeWidgetQuery, PodcastCoverQuery};
 use app::Action;
 use utils::set_image_from_path;
 
+use std::ops::Deref;
 use std::path::Path;
 use std::rc::Rc;
 use std::sync::Arc;
@@ -82,10 +83,30 @@ pub struct PlayerTimes {
     slider_update: Arc<SignalHandlerId>,
 }
 
+#[derive(Debug, Clone, Copy)]
+pub struct Duration(ClockTime);
+
+impl Deref for Duration {
+    type Target = ClockTime;
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+
+#[derive(Debug, Clone, Copy)]
+pub struct Position(ClockTime);
+
+impl Deref for Position {
+    type Target = ClockTime;
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+
 impl PlayerTimes {
     /// Update the duration `gtk::Label` and the max range of the `gtk::SclaeBar`.
     // FIXME: Refactor the labels to use some kind of Human™ time/values.
-    pub fn on_duration_changed(&self, duration: ClockTime) {
+    pub fn on_duration_changed(&self, duration: Duration) {
         let seconds = duration.seconds().map(|v| v as f64).unwrap_or(0.0);
 
         self.slider.block_signal(&self.slider_update);
@@ -96,7 +117,7 @@ impl PlayerTimes {
     }
 
     /// Update the `gtk::SclaeBar` when the pipeline position is changed.
-    pub fn on_position_updated(&self, position: ClockTime) {
+    pub fn on_position_updated(&self, position: Position) {
         let seconds = position.seconds().map(|v| v as f64).unwrap_or(0.0);
 
         self.slider.block_signal(&self.slider_update);
@@ -212,14 +233,14 @@ impl PlayerWidget {
 
         }));
 
-        s.player.connect_duration_changed(clone!(sender => move |_, duration| {
-            sender.send(Action::PlayerDurationChanged(duration))
+        s.player.connect_duration_changed(clone!(sender => move |_, clock| {
+            sender.send(Action::PlayerDurationChanged(Duration(clock)))
                 .map_err(|err| error!("Error: {}", err))
                 .ok();
         }));
 
-        s.player.connect_position_updated(clone!(sender => move |_, position| {
-            sender.send(Action::PlayerPositionUpdated(position))
+        s.player.connect_position_updated(clone!(sender => move |_, clock| {
+            sender.send(Action::PlayerPositionUpdated(Position(clock)))
                 .map_err(|err| error!("Error: {}", err))
                 .ok();
         }));

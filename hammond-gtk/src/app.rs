@@ -5,7 +5,6 @@ use gio::{
     SimpleAction, SimpleActionExt,
 };
 use glib;
-use gst::ClockTime;
 use gtk;
 use gtk::prelude::*;
 use gtk::SettingsExt as GtkSettingsExt;
@@ -18,7 +17,7 @@ use settings::{self, WindowGeometry};
 use stacks::{Content, PopulatedState};
 use utils;
 use widgets::appnotif::{InAppNotification, UndoState};
-use widgets::player::*;
+use widgets::player;
 use widgets::{about_dialog, mark_all_notif, remove_show_notif};
 
 use std::rc::Rc;
@@ -56,8 +55,8 @@ pub enum Action {
     RemoveShow(Arc<Podcast>),
     ErrorNotification(String),
     InitEpisode(i32),
-    PlayerDurationChanged(ClockTime),
-    PlayerPositionUpdated(ClockTime),
+    PlayerDurationChanged(player::Duration),
+    PlayerPositionUpdated(player::Position),
 }
 
 #[derive(Debug)]
@@ -123,7 +122,7 @@ impl App {
                     // Add the overlay to the main Box
                     wrap.add(&overlay);
 
-                    let player = PlayerWidget::new(&sender);
+                    let player = player::PlayerWidget::new(&sender);
                     // Add the player to the main Box
                     wrap.add(&player.action_bar);
                     // player.reveal();
@@ -212,8 +211,8 @@ impl App {
                                 notif.show(&overlay);
                             },
                             Ok(Action::InitEpisode(rowid)) => player.initialize_episode(rowid).unwrap(),
-                            Ok(Action::PlayerDurationChanged(clock)) => player.timer.on_duration_changed(clock),
-                            Ok(Action::PlayerPositionUpdated(clock)) => player.timer.on_position_updated(clock),
+                            Ok(Action::PlayerDurationChanged(dur)) => player.timer.on_duration_changed(dur),
+                            Ok(Action::PlayerPositionUpdated(pos)) => player.timer.on_position_updated(pos),
                             Err(_) => (),
                         }
 
