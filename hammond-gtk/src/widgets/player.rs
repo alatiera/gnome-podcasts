@@ -332,6 +332,7 @@ impl PlayerExt for PlayerWidget {
         self.controls.play.show();
 
         self.player.pause();
+        self.seek(ClockTime::from_seconds(5), SeekDirection::Backwards);
     }
 
     // Adapted from https://github.com/philn/glide/blob/b52a65d99daeab0b487f79a0e1ccfad0cd433e22/src/player_context.rs#L219-L245
