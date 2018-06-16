@@ -11,6 +11,7 @@ use gtk::prelude::*;
 use gio::{File, FileExt};
 use glib::SignalHandlerId;
 
+use chrono::NaiveTime;
 use crossbeam_channel::Sender;
 use failure::Error;
 // use send_cell::SendCell;
@@ -104,7 +105,6 @@ impl Deref for Position {
 
 impl PlayerTimes {
     /// Update the duration `gtk::Label` and the max range of the `gtk::SclaeBar`.
-    // FIXME: Refactor the labels to use some kind of Human™ time/values.
     pub fn on_duration_changed(&self, duration: Duration) {
         let seconds = duration.seconds().map(|v| v as f64).unwrap_or(0.0);
 
@@ -112,7 +112,7 @@ impl PlayerTimes {
         self.slider.set_range(0.0, seconds);
         self.slider.unblock_signal(&self.slider_update);
 
-        self.duration.set_text(&format!("{:.2}", seconds / 60.0));
+        self.duration.set_text(&format_duration(seconds as u32));
     }
 
     /// Update the `gtk::SclaeBar` when the pipeline position is changed.
@@ -123,7 +123,17 @@ impl PlayerTimes {
         self.slider.set_value(seconds);
         self.slider.unblock_signal(&self.slider_update);
 
-        self.progressed.set_text(&format!("{:.2}", seconds / 60.0));
+        self.progressed.set_text(&format_duration(seconds as u32));
+    }
+}
+
+fn format_duration(seconds: u32) -> String {
+    let time = NaiveTime::from_num_seconds_from_midnight(seconds, 0);
+
+    if seconds >= 3600 {
+        time.format("%T").to_string()
+    } else {
+        time.format("%M:%S").to_string()
     }
 }
 
