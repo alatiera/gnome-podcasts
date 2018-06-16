@@ -286,20 +286,21 @@ impl PlayerWidget {
                 // path is an absolute fs path ex. "foo/bar/baz".
                 // Convert it so it will have a "file:///"
                 // FIXME: convert it properly
-                let uri = File::new_for_path(path).get_uri().expect("Bad file path");
+                if let Some(uri) = File::new_for_path(path).get_uri() {
+                    // FIXME: Maybe should also reset/flush the pipeline and then add the file?
 
-                // FIXME: Maybe should also reset/flush the pipeline and then add the file?
-
-                // play the file
-                self.player.set_uri(&uri);
-                self.play();
-                return Ok(());
+                    // play the file
+                    self.player.set_uri(&uri);
+                    self.play();
+                    return Ok(());
+                }
             }
             // TODO: log an error
         }
 
-        // Stream stuff
-        unimplemented!()
+        // FIXME: Stream stuff
+        // unimplemented!()
+        Ok(())
     }
 
     fn connect_update_slider(slider: &gtk::Scale, player: &gst_player::Player) -> SignalHandlerId {
