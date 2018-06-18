@@ -70,7 +70,7 @@ impl PlayerInfo {
     }
 
     fn set_cover_image(&self, show: &PodcastCoverQuery) {
-        set_image_from_path(&self.cover, show.id(), 24)
+        set_image_from_path(&self.cover, show.id(), 34)
             .map_err(|err| error!("Player Cover: {}", err))
             .ok();
     }
