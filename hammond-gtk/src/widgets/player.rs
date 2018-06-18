@@ -342,22 +342,13 @@ impl PlayerExt for PlayerWidget {
             return;
         }
 
+        let duration = self.player.get_duration();
         let destination = match direction {
-            SeekDirection::Backwards => {
-                if position >= offset {
-                    Some(position - offset)
-                } else {
-                    None
-                }
+            SeekDirection::Backwards if position >= offset => Some(position - offset),
+            SeekDirection::Forward if !duration.is_none() && position + offset <= duration => {
+                Some(position + offset)
             }
-            SeekDirection::Forward => {
-                let duration = self.player.get_duration();
-                if duration != ClockTime::none() && position + offset <= duration {
-                    Some(position + offset)
-                } else {
-                    None
-                }
-            }
+            _ => None,
         };
 
         destination.map(|d| self.player.seek(d));
