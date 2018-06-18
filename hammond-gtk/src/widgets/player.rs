@@ -35,6 +35,7 @@ pub enum SeekDirection {
 pub trait PlayerExt {
     fn play(&self);
     fn pause(&self);
+    fn stop(&self);
     fn seek(&self, offset: ClockTime, direction: SeekDirection);
     fn fast_forward(&self);
     fn rewind(&self);
@@ -252,6 +253,12 @@ impl PlayerWidget {
                 .map_err(|err| error!("Error: {}", err))
                 .ok();
         }));
+
+        s.player.connect_end_of_stream(clone!(sender => move |player| {
+            sender.send(Action::PlayerEndofStream(player.clone()))
+                .map_err(|err| error!("Error: {}", err))
+                .ok();
+        }));
     }
 
     #[cfg_attr(rustfmt, rustfmt_skip)]
@@ -333,6 +340,16 @@ impl PlayerExt for PlayerWidget {
 
         self.player.pause();
         self.seek(ClockTime::from_seconds(5), SeekDirection::Backwards);
+    }
+
+    #[cfg_attr(rustfmt, rustfmt_skip)]
+    fn stop(&self) {
+        self.controls.pause.hide();
+        self.controls.play.show();
+
+        self.player.stop();
+
+        self.timer.on_position_updated(Position(ClockTime::from_seconds(0)));
     }
 
     // Adapted from https://github.com/philn/glide/blob/b52a65d99daeab0b487f79a0e1ccfad0cd433e22/src/player_context.rs#L219-L245
