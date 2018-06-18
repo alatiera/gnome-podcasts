@@ -60,11 +60,13 @@ impl PlayerInfo {
     }
 
     fn set_episode_title(&self, episode: &EpisodeWidgetQuery) {
-        self.episode.set_text(&episode.title());
+        self.episode.set_text(episode.title());
+        self.episode.set_tooltip_text(episode.title());
     }
 
     fn set_show_title(&self, show: &PodcastCoverQuery) {
-        self.show.set_text(&show.title());
+        self.show.set_text(show.title());
+        self.show.set_tooltip_text(show.title());
     }
 
     fn set_cover_image(&self, show: &PodcastCoverQuery) {
