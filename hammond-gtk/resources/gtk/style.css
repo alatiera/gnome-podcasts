@@ -10,11 +10,11 @@ list, border {
   border-radius: 4px;
 }
 
-.player-show-label {
+.player-episode-label {
     font-weight: bold;
     font-size: smaller;
 }
 
-.player-episode-label {
+.player-show-label {
     font-size: smaller;
 }
