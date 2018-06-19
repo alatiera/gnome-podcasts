@@ -1,6 +1,3 @@
-// #![allow(warnings)]
-
-// use gst;
 use gst::prelude::*;
 use gst::ClockTime;
 use gst_player;
@@ -14,7 +11,6 @@ use glib::SignalHandlerId;
 use chrono::NaiveTime;
 use crossbeam_channel::Sender;
 use failure::Error;
-// use send_cell::SendCell;
 
 use hammond_data::{dbqueries, USER_AGENT};
 use hammond_data::{EpisodeWidgetQuery, PodcastCoverQuery};
@@ -296,8 +292,6 @@ impl PlayerWidget {
                 // Convert it so it will have a "file:///"
                 // FIXME: convert it properly
                 if let Some(uri) = File::new_for_path(path).get_uri() {
-                    // FIXME: Maybe should also reset/flush the pipeline and then add the file?
-
                     // play the file
                     self.player.set_uri(&uri);
                     self.play();
@@ -322,9 +316,6 @@ impl PlayerWidget {
 
 impl PlayerExt for PlayerWidget {
     fn play(&self) {
-        // assert the state is either ready or paused
-        // TODO: assert!()
-
         self.reveal();
 
         self.controls.pause.show();
@@ -334,9 +325,6 @@ impl PlayerExt for PlayerWidget {
     }
 
     fn pause(&self) {
-        // assert the state is paused
-        // TODO: assert!()
-
         self.controls.pause.hide();
         self.controls.play.show();
 
