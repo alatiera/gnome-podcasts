@@ -6,12 +6,17 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 ### Added:
-- Keyboard Shortcuts and a Shortcuts dialog were implemented. (ZanderBrown) [!33](https://gitlab.gnome.org/World/hammond/merge_requests/33)
+- Keyboard Shortcuts and a Shortcuts dialog were implemented. (ZanderBrown)
+[!33](https://gitlab.gnome.org/World/hammond/merge_requests/33)
 
 ### Changed:
-- The `FileChooser` of the OPML import was changed to use the `FileChooserNative` widget/API. (ZanderBrown) [!33](https://gitlab.gnome.org/World/hammond/merge_requests/33)
-- The `EpisdeWidget` was refactored. [!38](https://gitlab.gnome.org/World/hammond/merge_requests/38)
+- The `FileChooser` of the OPML import was changed to use the `FileChooserNative` widget/API. (ZanderBrown)
+[!33](https://gitlab.gnome.org/World/hammond/merge_requests/33)
+- The `EpisdeWidget` was refactored.
+[!38](https://gitlab.gnome.org/World/hammond/merge_requests/38)
 - `EpisdeWidget`'s progressbar was changed to be non-blocking and should feel way more responsive now. 9b0ac5b83dadecdff51cd398293afdf0d5276012
+- An embeded audio player was implemented!
+[!40](https://gitlab.gnome.org/World/hammond/merge_requests/40)
 
 ### Fixed:
 - Fixed a bug whre the about dialog would be unclosable. (ZanderBrown) [!37](https://gitlab.gnome.org/World/hammond/merge_requests/37)
