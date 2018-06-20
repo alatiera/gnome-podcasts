@@ -35,8 +35,7 @@ pub trait PlayerExt {
     fn seek(&self, offset: ClockTime, direction: SeekDirection);
     fn fast_forward(&self);
     fn rewind(&self);
-    // TODO: change playback rate
-    // fn set_playback_rate(&self);
+    fn set_playback_rate(&self, f64);
 }
 
 #[derive(Debug, Clone)]
@@ -137,6 +136,16 @@ fn format_duration(seconds: u32) -> String {
 }
 
 #[derive(Debug, Clone)]
+struct PlayerRate {
+    radio150: gtk::RadioButton,
+    radio125: gtk::RadioButton,
+    radio_normal: gtk::RadioButton,
+    popover: gtk::Popover,
+    btn: gtk::MenuButton,
+    label: gtk::Label,
+}
+
+#[derive(Debug, Clone)]
 struct PlayerControls {
     container: gtk::Box,
     play: gtk::Button,
@@ -152,6 +161,7 @@ pub struct PlayerWidget {
     controls: PlayerControls,
     pub timer: PlayerTimes,
     info: PlayerInfo,
+    rate: PlayerRate,
 }
 
 impl Default for PlayerWidget {
@@ -207,12 +217,28 @@ impl Default for PlayerWidget {
             cover,
         };
 
+        let radio150 = builder.get_object("rate_1_50").unwrap();
+        let radio125 = builder.get_object("rate_1_25").unwrap();
+        let radio_normal = builder.get_object("normal_rate").unwrap();
+        let popover = builder.get_object("rate_popover").unwrap();
+        let btn = builder.get_object("rate_button").unwrap();
+        let label = builder.get_object("rate_label").unwrap();
+        let rate = PlayerRate {
+            radio150,
+            radio125,
+            radio_normal,
+            popover,
+            label,
+            btn,
+        };
+
         PlayerWidget {
             player,
             action_bar,
             controls,
             timer,
             info,
+            rate,
         }
     }
 }
@@ -226,7 +252,8 @@ impl PlayerWidget {
 
     #[cfg_attr(rustfmt, rustfmt_skip)]
     fn init(s: &Rc<Self>, sender: &Sender<Action>) {
-        Self::connect_buttons(s);
+        Self::connect_control_buttons(s);
+        Self::connect_rate_buttons(s);
 
         // Log gst warnings.
         s.player.connect_warning(move |_, warn| warn!("gst warning: {}", warn));
@@ -261,7 +288,7 @@ impl PlayerWidget {
 
     #[cfg_attr(rustfmt, rustfmt_skip)]
     /// Connect the `PlayerControls` buttons to the `PlayerExt` methods.
-    fn connect_buttons(s: &Rc<Self>) {
+    fn connect_control_buttons(s: &Rc<Self>) {
         // Connect the play button to the gst Player.
         s.controls.play.connect_clicked(clone!(s => move |_| s.play()));
 
@@ -273,6 +300,18 @@ impl PlayerWidget {
 
         // Connect the fast-forward button to the gst Player.
         s.controls.forward.connect_clicked(clone!(s => move |_| s.fast_forward()));
+    }
+
+    #[cfg_attr(rustfmt, rustfmt_skip)]
+    fn connect_rate_buttons(s: &Rc<Self>) {
+        s.rate.radio_normal.connect_toggled(clone!(s => move |_| s.on_rate_changed(1.00)));
+        s.rate.radio125.connect_toggled(clone!(s => move |_| s.on_rate_changed(1.25)));
+        s.rate.radio150.connect_toggled(clone!(s => move |_| s.on_rate_changed(1.50)));
+    }
+
+    fn on_rate_changed(&self, rate: f64) {
+        self.set_playback_rate(rate);
+        self.rate.label.set_text(&format!("{:.2}x", rate));
     }
 
     fn reveal(&self) {
@@ -369,5 +408,9 @@ impl PlayerExt for PlayerWidget {
     // FIXME: make the interval a GSetting
     fn fast_forward(&self) {
         self.seek(ClockTime::from_seconds(10), SeekDirection::Forward)
+    }
+
+    fn set_playback_rate(&self, rate: f64) {
+        self.player.set_rate(rate);
     }
 }
