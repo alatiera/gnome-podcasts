@@ -442,33 +442,22 @@ fn on_download_clicked(ep: &EpisodeWidgetQuery, sender: &Sender<Action>) -> Resu
 }
 
 fn on_play_bttn_clicked(
-    _widget: &Rc<EpisodeWidget>,
+    widget: &Rc<EpisodeWidget>,
     episode: &mut EpisodeWidgetQuery,
     sender: &Sender<Action>,
 ) -> Result<(), Error> {
+    // Mark played
+    episode.set_played_now()?;
+    // Grey out the title
+    widget.info.set_title(&episode);
+
+    // Play the episode
+    sender.send(Action::InitEpisode(episode.rowid()))?;
+    // Refresh background views to match the normal/greyout title state
     sender
-        .send(Action::InitEpisode(episode.rowid()))
+        .send(Action::RefreshEpisodesViewBGR)
         .map_err(From::from)
-
-    // widget.info.set_title(&episode);
-    // sender
-    //     .send(Action::RefreshEpisodesViewBGR)
-    //     .map_err(From::from)
 }
-
-// fn open_uri(rowid: i32) -> Result<(), Error> {
-//     let uri = dbqueries::get_episode_local_uri_from_id(rowid)?
-//         .ok_or_else(|| format_err!("Expected Some found None."))?;
-
-//     if Path::new(&uri).exists() {
-//         info!("Opening {}", uri);
-//         open::that(&uri)?;
-//     } else {
-//         bail!("File \"{}\" does not exist.", uri);
-//     }
-
-//     Ok(())
-// }
 
 // Setup a callback that will update the progress bar.
 #[inline]
