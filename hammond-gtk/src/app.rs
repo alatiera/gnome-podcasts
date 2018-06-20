@@ -128,7 +128,6 @@ impl App {
                     let player = player::PlayerWidget::new(&sender);
                     // Add the player to the main Box
                     wrap.add(&player.action_bar);
-                    // player.reveal();
 
                     window.add(&wrap);
 
@@ -138,23 +137,6 @@ impl App {
 
                     window.show_all();
                     window.activate();
-
-                    // player.connect_error(clone!(sender => move |_,err| {
-                        // Not the most user friendly...
-                    //     sender.send(Action::ErrorNotification(format!("Playback: {}", err))).ok();
-                    // }));
-
-                    // player.connect_state_changed(clone!(sender => move |_,state| {
-                    //     sender.send(Action::PlayerStateChanged(state)).ok();
-                    // }));
-
-                    // player.connect_media_info_updated(clone!(sender => move |_,info| {
-                    //     sender.send(Action::PlayerMediaChanged(info.get_title(), info.get_duration())).ok();
-                    // }));
-
-                    // player.connect_property_position_notify(clone!(sender => move |p| {
-                    //     sender.send(Action::PlayerPositionChanged(p.get_position())).ok();
-                    // }));
 
                     gtk::timeout_add(50, clone!(sender, receiver => move || {
                         // Uses receiver, content, header, sender, overlay, playback
