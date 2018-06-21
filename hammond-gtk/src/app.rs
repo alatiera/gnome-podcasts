@@ -138,7 +138,7 @@ impl App {
                     window.show_all();
                     window.activate();
 
-                    gtk::timeout_add(50, clone!(sender, receiver => move || {
+                    gtk::timeout_add(15, clone!(sender, receiver => move || {
                         // Uses receiver, content, header, sender, overlay, playback
                         match receiver.try_recv() {
                             Ok(Action::RefreshAllViews) => content.update(),
