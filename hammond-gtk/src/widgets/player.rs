@@ -11,6 +11,7 @@ use glib::SignalHandlerId;
 use chrono::NaiveTime;
 use crossbeam_channel::Sender;
 use failure::Error;
+use send_cell::SendCell;
 
 use hammond_data::{dbqueries, USER_AGENT};
 use hammond_data::{EpisodeWidgetQuery, PodcastCoverQuery};
@@ -23,12 +24,12 @@ use std::path::Path;
 use std::rc::Rc;
 
 #[derive(Debug, Clone, Copy)]
-pub enum SeekDirection {
+enum SeekDirection {
     Backwards,
     Forward,
 }
 
-pub trait PlayerExt {
+trait PlayerExt {
     fn play(&self);
     fn pause(&self);
     fn stop(&self);
@@ -72,7 +73,7 @@ impl PlayerInfo {
 }
 
 #[derive(Debug, Clone)]
-pub struct PlayerTimes {
+struct PlayerTimes {
     container: gtk::Box,
     progressed: gtk::Label,
     duration: gtk::Label,
@@ -82,7 +83,7 @@ pub struct PlayerTimes {
 }
 
 #[derive(Debug, Clone, Copy)]
-pub struct Duration(ClockTime);
+struct Duration(ClockTime);
 
 impl Deref for Duration {
     type Target = ClockTime;
@@ -92,7 +93,7 @@ impl Deref for Duration {
 }
 
 #[derive(Debug, Clone, Copy)]
-pub struct Position(ClockTime);
+struct Position(ClockTime);
 
 impl Deref for Position {
     type Target = ClockTime;
@@ -159,14 +160,19 @@ pub struct PlayerWidget {
     pub action_bar: gtk::ActionBar,
     player: gst_player::Player,
     controls: PlayerControls,
-    pub timer: PlayerTimes,
+    timer: PlayerTimes,
     info: PlayerInfo,
     rate: PlayerRate,
 }
 
 impl Default for PlayerWidget {
     fn default() -> Self {
-        let player = gst_player::Player::new(None, None);
+        let dispatcher = gst_player::PlayerGMainContextSignalDispatcher::new(None);
+        let player = gst_player::Player::new(
+            None,
+            // Use the gtk main thread
+            Some(&dispatcher.upcast::<gst_player::PlayerSignalDispatcher>()),
+        );
 
         let mut config = player.get_config();
         config.set_user_agent(USER_AGENT);
@@ -250,40 +256,10 @@ impl PlayerWidget {
         w
     }
 
-    #[cfg_attr(rustfmt, rustfmt_skip)]
     fn init(s: &Rc<Self>, sender: &Sender<Action>) {
         Self::connect_control_buttons(s);
         Self::connect_rate_buttons(s);
-
-        // Log gst warnings.
-        s.player.connect_warning(move |_, warn| warn!("gst warning: {}", warn));
-
-        // Log gst errors.
-        s.player.connect_error(clone!(sender => move |_, error| {
-            // FIXME: should never occur and should not be user facing.
-            sender.send(Action::ErrorNotification(format!("Player Error: {}", error)))
-                .map_err(|err| error!("Error: {}", err))
-                .ok();
-
-        }));
-
-        s.player.connect_duration_changed(clone!(sender => move |_, clock| {
-            sender.send(Action::PlayerDurationChanged(Duration(clock)))
-                .map_err(|err| error!("Error: {}", err))
-                .ok();
-        }));
-
-        s.player.connect_position_updated(clone!(sender => move |_, clock| {
-            sender.send(Action::PlayerPositionUpdated(Position(clock)))
-                .map_err(|err| error!("Error: {}", err))
-                .ok();
-        }));
-
-        s.player.connect_end_of_stream(clone!(sender => move |player| {
-            sender.send(Action::PlayerEndofStream(player.clone()))
-                .map_err(|err| error!("Error: {}", err))
-                .ok();
-        }));
+        Self::connect_gst_signals(s, sender);
     }
 
     #[cfg_attr(rustfmt, rustfmt_skip)]
@@ -300,6 +276,37 @@ impl PlayerWidget {
 
         // Connect the fast-forward button to the gst Player.
         s.controls.forward.connect_clicked(clone!(s => move |_| s.fast_forward()));
+    }
+
+    #[cfg_attr(rustfmt, rustfmt_skip)]
+    fn connect_gst_signals(s: &Rc<Self>, sender: &Sender<Action>) {
+        // Log gst warnings.
+        s.player.connect_warning(move |_, warn| warn!("gst warning: {}", warn));
+
+        // Log gst errors.
+        s.player.connect_error(clone!(sender => move |_, error| {
+            // FIXME: should never occur and should not be user facing.
+            sender.send(Action::ErrorNotification(format!("Player Error: {}", error)))
+                .map_err(|err| error!("Error: {}", err))
+                .ok();
+
+        }));
+
+        // The followign callbacks require `Send` but are handled by the gtk main loop
+        let s2 = SendCell::new(s.clone());
+
+        // Update the duration label and the slider
+        s.player.connect_duration_changed(clone!(s2 => move |_, clock| {
+            s2.borrow().timer.on_duration_changed(Duration(clock));
+        }));
+
+        // Update the position label and the slider
+        s.player.connect_position_updated(clone!(s2 => move |_, clock| {
+            s2.borrow().timer.on_position_updated(Position(clock));
+        }));
+
+        // Reset the slider to 0 and show a play button
+        s.player.connect_end_of_stream(clone!(s2 => move |_| s2.borrow().stop()));
     }
 
     #[cfg_attr(rustfmt, rustfmt_skip)]

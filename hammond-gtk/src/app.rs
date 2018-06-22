@@ -5,7 +5,6 @@ use gio::{
     SimpleAction, SimpleActionExt,
 };
 use glib;
-use gst_player;
 use gtk;
 use gtk::prelude::*;
 use gtk::SettingsExt as GtkSettingsExt;
@@ -19,7 +18,6 @@ use stacks::{Content, PopulatedState};
 use utils;
 use widgets::appnotif::{InAppNotification, UndoState};
 use widgets::player;
-use widgets::player::PlayerExt;
 use widgets::{about_dialog, mark_all_notif, remove_show_notif};
 
 use std::rc::Rc;
@@ -57,9 +55,6 @@ pub enum Action {
     RemoveShow(Arc<Podcast>),
     ErrorNotification(String),
     InitEpisode(i32),
-    PlayerDurationChanged(player::Duration),
-    PlayerPositionUpdated(player::Position),
-    PlayerEndofStream(gst_player::Player),
 }
 
 #[derive(Debug)]
@@ -138,7 +133,7 @@ impl App {
                     window.show_all();
                     window.activate();
 
-                    gtk::timeout_add(15, clone!(sender, receiver => move || {
+                    gtk::timeout_add(25, clone!(sender, receiver => move || {
                         // Uses receiver, content, header, sender, overlay, playback
                         match receiver.try_recv() {
                             Ok(Action::RefreshAllViews) => content.update(),
@@ -196,9 +191,6 @@ impl App {
                                 notif.show(&overlay);
                             },
                             Ok(Action::InitEpisode(rowid)) => player.initialize_episode(rowid).unwrap(),
-                            Ok(Action::PlayerDurationChanged(dur)) => player.timer.on_duration_changed(dur),
-                            Ok(Action::PlayerPositionUpdated(pos)) => player.timer.on_position_updated(pos),
-                            Ok(Action::PlayerEndofStream(_)) => player.stop(),
                             Err(_) => (),
                         }
 
