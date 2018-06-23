@@ -1,17 +1,24 @@
-Detailed description of the feature. Put as much information as you can.
+### Use cases
+<!-- 
+    Describe what problem(s) the user is experiencing and that this request
+    is trying to solve. 
+-->
 
-Proposed Mockups:
 
-(Add mockups of the proposed feature)
+### Desired behavior
+<!-- Describe the desired functionality. -->
 
-## Design Tasks
 
-* [ ]  design tasks
+### Benefits of the solution
+<!-- List the possible benefits of the solution and how it fits in the project. -->
 
-## Development Tasks
 
-* [ ]  development tasks
+### Possible drawbacks
+<!--
+     Describe possible drawbacks of the feature and list how it could affect
+     the project i.e. UI discoverability, complexity, impact in more or less
+     number of users, etc.
+-->
 
-## QA Tasks
-
-* [ ]  qa (quality assurance) tasks
+<!-- Ignore the text under this line. -->
+/label ~"Feature"
