@@ -375,7 +375,13 @@ impl PlayerExt for PlayerWidget {
         self.controls.play.show();
 
         self.player.pause();
-        self.seek(ClockTime::from_seconds(5), SeekDirection::Backwards);
+
+        // Only rewind on pause if the stream position is passed a certain point.
+        if let Some(sec) = self.player.get_position().seconds() {
+            if sec >= 90 {
+                self.seek(ClockTime::from_seconds(5), SeekDirection::Backwards);
+            }
+        }
     }
 
     #[cfg_attr(rustfmt, rustfmt_skip)]
@@ -385,6 +391,7 @@ impl PlayerExt for PlayerWidget {
 
         self.player.stop();
 
+        // Reset the slider bar to the start
         self.timer.on_position_updated(Position(ClockTime::from_seconds(0)));
     }
 
