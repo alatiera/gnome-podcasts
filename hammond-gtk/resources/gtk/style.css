@@ -9,3 +9,12 @@ row:last-child {
 list, border {
   border-radius: 4px;
 }
+
+.player-episode-label {
+    font-weight: bold;
+    font-size: smaller;
+}
+
+.player-show-label {
+    font-size: smaller;
+}

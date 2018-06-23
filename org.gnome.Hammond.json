@@ -20,6 +20,7 @@
         "--share=ipc",
         "--socket=x11",
         "--socket=wayland",
+        "--socket=pulseaudio",
         "--talk-name=org.freedesktop.Desktop"
     ],
     "build-options" : {

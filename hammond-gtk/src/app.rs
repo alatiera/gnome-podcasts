@@ -17,6 +17,7 @@ use settings::{self, WindowGeometry};
 use stacks::{Content, PopulatedState};
 use utils;
 use widgets::appnotif::{InAppNotification, UndoState};
+use widgets::player;
 use widgets::{about_dialog, mark_all_notif, remove_show_notif};
 
 use std::rc::Rc;
@@ -53,6 +54,7 @@ pub enum Action {
     MarkAllPlayerNotification(Arc<Podcast>),
     RemoveShow(Arc<Podcast>),
     ErrorNotification(String),
+    InitEpisode(i32),
 }
 
 #[derive(Debug)]
@@ -66,10 +68,6 @@ impl App {
         let settings = Settings::new("org.gnome.Hammond");
         let application = gtk::Application::new("org.gnome.Hammond", ApplicationFlags::empty())
             .expect("Application Initialization failed...");
-
-        // Weird magic I copy-pasted that sets the Application Name in the Shell.
-        glib::set_application_name("Hammond");
-        glib::set_prgname(Some("Hammond"));
 
         let cleanup_date = settings::get_cleanup_date(&settings);
         utils::cleanup(cleanup_date);
@@ -101,6 +99,7 @@ impl App {
                         Inhibit(false)
                     }));
 
+
                     // Create a content instance
                     let content =
                         Rc::new(Content::new(sender.clone()).expect(
@@ -117,8 +116,15 @@ impl App {
                     let overlay = gtk::Overlay::new();
                     overlay.add(&content.get_stack());
 
-                    // Add the overlay to the main window
-                    window.add(&overlay);
+                    let wrap = gtk::Box::new(gtk::Orientation::Vertical, 0);
+                    // Add the overlay to the main Box
+                    wrap.add(&overlay);
+
+                    let player = player::PlayerWidget::new(&sender);
+                    // Add the player to the main Box
+                    wrap.add(&player.action_bar);
+
+                    window.add(&wrap);
 
                     WindowGeometry::from_settings(&settings).apply(&window);
 
@@ -127,8 +133,8 @@ impl App {
                     window.show_all();
                     window.activate();
 
-                    gtk::timeout_add(50, clone!(sender, receiver => move || {
-                        // Uses receiver, content, header, sender, overlay
+                    gtk::timeout_add(25, clone!(sender, receiver => move || {
+                        // Uses receiver, content, header, sender, overlay, playback
                         match receiver.try_recv() {
                             Ok(Action::RefreshAllViews) => content.update(),
                             Ok(Action::RefreshShowsView) => content.update_shows_view(),
@@ -183,7 +189,8 @@ impl App {
                                 let notif = InAppNotification::new(&err, callback,
                                                                    || {}, UndoState::Hidden);
                                 notif.show(&overlay);
-                            }
+                            },
+                            Ok(Action::InitEpisode(rowid)) => player.initialize_episode(rowid).unwrap(),
                             Err(_) => (),
                         }
 
@@ -288,6 +295,11 @@ impl App {
     }
 
     pub fn run(self) {
+        // Weird magic I copy-pasted that sets the Application Name in the Shell.
+        glib::set_application_name("Hammond");
+        glib::set_prgname(Some("Hammond"));
+        // We need out own org.gnome.Hammon icon
+        gtk::Window::set_default_icon_name("multimedia-player");
         ApplicationExtManual::run(&self.app_instance, &[]);
     }
 }

@@ -10,6 +10,8 @@ extern crate gdk;
 extern crate gdk_pixbuf;
 extern crate gio;
 extern crate glib;
+extern crate gstreamer as gst;
+extern crate gstreamer_player as gst_player;
 extern crate gtk;
 
 #[macro_use]
@@ -80,6 +82,7 @@ fn main() {
     // TODO: make the the logger a cli -vv option
     loggerv::init_with_level(Level::Info).expect("Error initializing loggerv.");
     gtk::init().expect("Error initializing gtk.");
+    gst::init().expect("Error initializing gstreamer");
     static_resource::init().expect("Something went wrong with the resource file initialization.");
 
     // Add custom style

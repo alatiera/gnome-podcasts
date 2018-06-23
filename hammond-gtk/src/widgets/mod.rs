@@ -3,6 +3,7 @@ pub mod appnotif;
 mod empty;
 mod episode;
 mod home_view;
+pub mod player;
 mod show;
 mod shows_view;
 
