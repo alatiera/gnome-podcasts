@@ -127,7 +127,7 @@ fn save_io(
     info!("Downloading into: {}", file);
     let chunk_size = match content_lenght {
         Some(x) => x as usize / 99,
-        None => 1024 as usize, // default chunk size
+        None => 1024, // default chunk size
     };
 
     let mut writer = BufWriter::new(File::create(&file)?);
