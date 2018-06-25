@@ -68,8 +68,9 @@ sudo ninja -C build install
 
 #### Dependencies
 
-* Rust stable 1.26 or later along with cargo.
+* Rust stable 1.27 or later along with cargo.
 * Gtk+ 3.22 or later
+* Gstreamer 1.12 or later
 * Meson
 * A network connection
 
@@ -78,15 +79,23 @@ Offline build are possible too, but [`cargo-vendor`][vendor] would have to be se
 **Debian/Ubuntu**
 
 ```sh
-apt-get update -yqq
-apt-get install -yqq --no-install-recommends build-essential
-apt-get install -yqq --no-install-recommends rustc cargo libgtk-3-dev meson
+apt-get install -yqq cargo rustc libsqlite3-dev libssl-dev libgtk-3-dev meson \
+        libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev \
+        gstreamer1.0-plugins-base gstreamer1.0-plugins-good \
+        gstreamer1.0-plugins-bad gstreamer1.0-plugins-ugly \
+        gstreamer1.0-libav libgstrtspserver-1.0-dev ibgstreamer-plugins-bad1.0-dev
 ```
 
 **Fedora**
 
 ```sh
-dnf install -y rust cargo gtk3-devel glib2-devel openssl-devel sqlite-devel meson
+dnf install -y rust cargo gtk3-devel glib2-devel openssl-devel sqlite-devel meson \
+    gstreamer1-devel gstreamer1-plugins-base-tools gstreamer1-devel-docs \
+    gstreamer1-plugins-base-devel gstreamer1-plugins-base-devel-docs \
+    gstreamer1-plugins-good gstreamer1-plugins-good-extras \
+    gstreamer1-plugins-bad-free gstreamer1-plugins-bad-free-devel \
+    gstreamer1-plugins-bad-free-extras
+
 ```
 
 If you happen to build it on other distributions please let me know the names 
