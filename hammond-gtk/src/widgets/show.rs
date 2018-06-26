@@ -2,7 +2,7 @@ use glib;
 use gtk;
 use gtk::prelude::*;
 
-use crossbeam_channel::{SendError, Sender};
+use crossbeam_channel::Sender;
 use failure::Error;
 use html2text;
 use open;
@@ -178,7 +178,6 @@ fn populate_listbox(
     sender: Sender<Action>,
 ) -> Result<(), Error> {
     use crossbeam_channel::bounded;
-    use crossbeam_channel::TryRecvError::*;
 
     let count = dbqueries::get_pd_episodes_count(&pd)?;
 
@@ -187,7 +186,7 @@ fn populate_listbox(
         let episodes = dbqueries::get_pd_episodeswidgets(&pd).unwrap();
         // The receiver can be dropped if there's an early return
         // like on show without episodes for example.
-        sender_.send(episodes).ok();
+        sender_.send(episodes);
     }));
 
     if count == 0 {
@@ -200,9 +199,8 @@ fn populate_listbox(
     let show_ = show.clone();
     gtk::idle_add(move || {
         let episodes = match receiver.try_recv() {
-            Ok(e) => e,
-            Err(Empty) => return glib::Continue(true),
-            Err(Disconnected) => return glib::Continue(false),
+            Some(e) => e,
+            None => return glib::Continue(true),
         };
 
         let list = show_.episodes.clone();
@@ -230,18 +228,14 @@ fn on_unsub_button_clicked(pd: Arc<Podcast>, unsub_button: &gtk::Button, sender:
     // if pressed twice would panic.
     unsub_button.set_sensitive(false);
 
-    let wrap = || -> Result<(), SendError<_>> {
-        sender.send(Action::RemoveShow(pd))?;
+    sender.send(Action::RemoveShow(pd));
 
-        sender.send(Action::HeaderBarNormal)?;
-        sender.send(Action::ShowShowsAnimated)?;
-        // Queue a refresh after the switch to avoid blocking the db.
-        sender.send(Action::RefreshShowsView)?;
-        sender.send(Action::RefreshEpisodesView)?;
-        Ok(())
-    };
+    sender.send(Action::HeaderBarNormal);
+    sender.send(Action::ShowShowsAnimated);
+    // Queue a refresh after the switch to avoid blocking the db.
+    sender.send(Action::RefreshShowsView);
+    sender.send(Action::RefreshEpisodesView);
 
-    wrap().map_err(|err| error!("Action Sender: {}", err)).ok();
     unsub_button.set_sensitive(true);
 }
 
@@ -251,18 +245,16 @@ fn on_played_button_clicked(pd: Arc<Podcast>, episodes: &gtk::ListBox, sender: &
         warn!("RUN WHILE YOU STILL CAN!");
     }
 
-    sender
-        .send(Action::MarkAllPlayerNotification(pd))
-        .map_err(|err| error!("Action Sender: {}", err))
-        .ok();
+    sender.send(Action::MarkAllPlayerNotification(pd))
 }
 
 fn mark_all_watched(pd: &Podcast, sender: &Sender<Action>) -> Result<(), Error> {
     dbqueries::update_none_to_played_now(pd)?;
     // Not all widgets migth have been loaded when the mark_all is hit
     // So we will need to refresh again after it's done.
-    sender.send(Action::RefreshWidgetIfSame(pd.id()))?;
-    sender.send(Action::RefreshEpisodesView).map_err(From::from)
+    sender.send(Action::RefreshWidgetIfSame(pd.id()));
+    sender.send(Action::RefreshEpisodesView);
+    Ok(())
 }
 
 pub fn mark_all_notif(pd: Arc<Podcast>, sender: &Sender<Action>) -> InAppNotification {
@@ -274,12 +266,7 @@ pub fn mark_all_notif(pd: Arc<Podcast>, sender: &Sender<Action>) -> InAppNotific
         glib::Continue(false)
     });
 
-    let undo_callback = clone!(sender => move || {
-        sender.send(Action::RefreshWidgetIfSame(id))
-            .map_err(|err| error!("Action Sender: {}", err))
-            .ok();
-    });
-
+    let undo_callback = clone!(sender => move || sender.send(Action::RefreshWidgetIfSame(id)));
     let text = "Marked all episodes as listened";
     InAppNotification::new(text, callback, undo_callback, UndoState::Shown)
 }
@@ -305,20 +292,17 @@ pub fn remove_show_notif(pd: Arc<Podcast>, sender: Sender<Action>) -> InAppNotif
                 .map_err(|_| error!("Failed to delete {}", pd.title()))
                 .ok();
 
-            sender.send(Action::RefreshEpisodesView).ok();
+            sender.send(Action::RefreshEpisodesView);
         }));
         glib::Continue(false)
     });
 
-    let undo_wrap = move || -> Result<(), Error> {
-        utils::uningore_show(pd.id())?;
-        sender.send(Action::RefreshShowsView)?;
-        sender.send(Action::RefreshEpisodesView)?;
-        Ok(())
-    };
-
     let undo_callback = move || {
-        undo_wrap().map_err(|err| error!("{}", err)).ok();
+        utils::uningore_show(pd.id())
+            .map_err(|err| error!("{}", err))
+            .ok();
+        sender.send(Action::RefreshShowsView);
+        sender.send(Action::RefreshEpisodesView);
     };
 
     InAppNotification::new(&text, callback, undo_callback, UndoState::Shown)

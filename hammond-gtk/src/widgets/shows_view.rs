@@ -115,9 +115,9 @@ fn on_child_activate(child: &gtk::FlowBoxChild, sender: &Sender<Action>) -> Resu
         .parse::<i32>()?;
     let pd = Arc::new(dbqueries::get_podcast_from_id(id)?);
 
-    sender.send(Action::HeaderBarShowTile(pd.title().into()))?;
-    sender.send(Action::ReplaceWidget(pd))?;
-    sender.send(Action::ShowWidgetAnimated)?;
+    sender.send(Action::HeaderBarShowTile(pd.title().into()));
+    sender.send(Action::ReplaceWidget(pd));
+    sender.send(Action::ShowWidgetAnimated);
     Ok(())
 }
 

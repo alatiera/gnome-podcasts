@@ -436,9 +436,8 @@ fn on_download_clicked(ep: &EpisodeWidgetQuery, sender: &Sender<Action>) -> Resu
     manager::add(ep.rowid(), download_fold)?;
 
     // Update Views
-    sender
-        .send(Action::RefreshEpisodesViewBGR)
-        .map_err(From::from)
+    sender.send(Action::RefreshEpisodesViewBGR);
+    Ok(())
 }
 
 fn on_play_bttn_clicked(
@@ -452,11 +451,10 @@ fn on_play_bttn_clicked(
     widget.info.set_title(&episode);
 
     // Play the episode
-    sender.send(Action::InitEpisode(episode.rowid()))?;
+    sender.send(Action::InitEpisode(episode.rowid()));
     // Refresh background views to match the normal/greyout title state
-    sender
-        .send(Action::RefreshEpisodesViewBGR)
-        .map_err(From::from)
+    sender.send(Action::RefreshEpisodesViewBGR);
+    Ok(())
 }
 
 // Setup a callback that will update the progress bar.

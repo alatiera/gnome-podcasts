@@ -286,10 +286,7 @@ impl PlayerWidget {
         // Log gst errors.
         s.player.connect_error(clone!(sender => move |_, error| {
             // FIXME: should never occur and should not be user facing.
-            sender.send(Action::ErrorNotification(format!("Player Error: {}", error)))
-                .map_err(|err| error!("Error: {}", err))
-                .ok();
-
+            sender.send(Action::ErrorNotification(format!("Player Error: {}", error)));
         }));
 
         // The followign callbacks require `Send` but are handled by the gtk main loop

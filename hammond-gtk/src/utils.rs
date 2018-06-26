@@ -8,7 +8,7 @@ use gtk::prelude::*;
 use gtk::{IsA, Widget};
 
 use chrono::prelude::*;
-use crossbeam_channel::Sender;
+use crossbeam_channel::{unbounded, Sender};
 use failure::Error;
 use rayon;
 use regex::Regex;
@@ -25,7 +25,6 @@ use hammond_data::Source;
 use hammond_downloader::downloader;
 
 use std::collections::{HashMap, HashSet};
-use std::sync::mpsc::channel;
 use std::sync::{Arc, Mutex, RwLock};
 
 use app::Action;
@@ -189,10 +188,7 @@ fn refresh_feed<S>(source: Option<S>, sender: Sender<Action>) -> Result<(), Erro
 where
     S: IntoIterator<Item = Source> + Send + 'static,
 {
-    sender
-        .send(Action::HeaderBarShowUpdateIndicator)
-        .map_err(|err| error!("Action Sender: {}", err))
-        .ok();
+    sender.send(Action::HeaderBarShowUpdateIndicator);
 
     rayon::spawn(move || {
         if let Some(s) = source {
@@ -210,14 +206,8 @@ where
                 .ok();
         };
 
-        sender
-            .send(Action::HeaderBarHideUpdateIndicator)
-            .map_err(|err| error!("Action Sender: {}", err))
-            .ok();
-        sender
-            .send(Action::RefreshAllViews)
-            .map_err(|err| error!("Action Sender: {}", err))
-            .ok();
+        sender.send(Action::HeaderBarHideUpdateIndicator);
+        sender.send(Action::RefreshAllViews);
     });
     Ok(())
 }
@@ -270,20 +260,13 @@ pub fn set_image_from_path(image: &gtk::Image, podcast_id: i32, size: u32) -> Re
         }
     }
 
-    let (sender, receiver) = channel();
+    let (sender, receiver) = unbounded();
     THREADPOOL.spawn(move || {
         if let Ok(mut guard) = COVER_DL_REGISTRY.write() {
             guard.insert(podcast_id);
-        }
-
-        if let Ok(pd) = dbqueries::get_podcast_cover_from_id(podcast_id) {
-            sender
-                .send(downloader::cache_image(&pd))
-                .map_err(|err| error!("Action Sender: {}", err))
-                .ok();
-        }
-
-        if let Ok(mut guard) = COVER_DL_REGISTRY.write() {
+            if let Ok(pd) = dbqueries::get_podcast_cover_from_id(podcast_id) {
+                sender.send(downloader::cache_image(&pd));
+            }
             guard.remove(&podcast_id);
         }
     });
@@ -291,7 +274,7 @@ pub fn set_image_from_path(image: &gtk::Image, podcast_id: i32, size: u32) -> Re
     let image = image.clone();
     let s = size as i32;
     gtk::timeout_add(25, move || {
-        if let Ok(path) = receiver.try_recv() {
+        if let Some(path) = receiver.try_recv() {
             if let Ok(path) = path {
                 if let Ok(px) = Pixbuf::new_from_file_at_scale(&path, s, s, true) {
                     if let Ok(mut hashmap) = CACHED_PIXBUFS.write() {
@@ -373,16 +356,12 @@ pub fn on_import_clicked(window: &gtk::ApplicationWindow, sender: &Sender<Action
                         refresh(Some(sources), sender)
                     } else {
                         let text = String::from("Failed to parse the Imported file");
-                        sender.send(Action::ErrorNotification(text))
-                            .map_err(|err| error!("Action Sender: {}", err))
-                            .ok();
+                        sender.send(Action::ErrorNotification(text));
                     }
                 }))
             } else {
                 let text = String::from("Selected File could not be accessed.");
-                sender.send(Action::ErrorNotification(text))
-                    .map_err(|err| error!("Action Sender: {}", err))
-                    .ok();
+                sender.send(Action::ErrorNotification(text));
             }
         }
 

@@ -113,9 +113,7 @@ impl Header {
                 add_toggle.show();
                 back.hide();
                 show_title.hide();
-                sender.send(Action::ShowShowsAnimated)
-                    .map_err(|err| error!("Action Sender: {}", err))
-                    .ok();
+                sender.send(Action::ShowShowsAnimated);
             }),
         );
 

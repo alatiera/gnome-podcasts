@@ -136,14 +136,14 @@ impl App {
                     gtk::timeout_add(25, clone!(sender, receiver => move || {
                         // Uses receiver, content, header, sender, overlay, playback
                         match receiver.try_recv() {
-                            Ok(Action::RefreshAllViews) => content.update(),
-                            Ok(Action::RefreshShowsView) => content.update_shows_view(),
-                            Ok(Action::RefreshWidgetIfSame(id)) =>
+                            Some(Action::RefreshAllViews) => content.update(),
+                            Some(Action::RefreshShowsView) => content.update_shows_view(),
+                            Some(Action::RefreshWidgetIfSame(id)) =>
                                 content.update_widget_if_same(id),
-                            Ok(Action::RefreshEpisodesView) => content.update_home(),
-                            Ok(Action::RefreshEpisodesViewBGR) =>
+                            Some(Action::RefreshEpisodesView) => content.update_home(),
+                            Some(Action::RefreshEpisodesViewBGR) =>
                                 content.update_home_if_background(),
-                            Ok(Action::ReplaceWidget(pd)) => {
+                            Some(Action::ReplaceWidget(pd)) => {
                                 let shows = content.get_shows();
                                 let mut pop = shows.borrow().populated();
                                 pop.borrow_mut()
@@ -153,7 +153,7 @@ impl App {
                                         error!("Failed ot update ShowWidget {}", pd.title()))
                                     .ok();
                             }
-                            Ok(Action::ShowWidgetAnimated) => {
+                            Some(Action::ShowWidgetAnimated) => {
                                 let shows = content.get_shows();
                                 let mut pop = shows.borrow().populated();
                                 pop.borrow_mut().switch_visible(
@@ -161,37 +161,37 @@ impl App {
                                     gtk::StackTransitionType::SlideLeft,
                                 );
                             }
-                            Ok(Action::ShowShowsAnimated) => {
+                            Some(Action::ShowShowsAnimated) => {
                                 let shows = content.get_shows();
                                 let mut pop = shows.borrow().populated();
                                 pop.borrow_mut()
                                     .switch_visible(PopulatedState::View,
                                                     gtk::StackTransitionType::SlideRight);
                             }
-                            Ok(Action::HeaderBarShowTile(title)) =>
+                            Some(Action::HeaderBarShowTile(title)) =>
                                 header.switch_to_back(&title),
-                            Ok(Action::HeaderBarNormal) => header.switch_to_normal(),
-                            Ok(Action::HeaderBarShowUpdateIndicator) =>
+                            Some(Action::HeaderBarNormal) => header.switch_to_normal(),
+                            Some(Action::HeaderBarShowUpdateIndicator) =>
                                 header.show_update_notification(),
-                            Ok(Action::HeaderBarHideUpdateIndicator) =>
+                            Some(Action::HeaderBarHideUpdateIndicator) =>
                                 header.hide_update_notification(),
-                            Ok(Action::MarkAllPlayerNotification(pd)) => {
+                            Some(Action::MarkAllPlayerNotification(pd)) => {
                                 let notif = mark_all_notif(pd, &sender);
                                 notif.show(&overlay);
                             }
-                            Ok(Action::RemoveShow(pd)) => {
+                            Some(Action::RemoveShow(pd)) => {
                                 let notif = remove_show_notif(pd, sender.clone());
                                 notif.show(&overlay);
                             }
-                            Ok(Action::ErrorNotification(err)) => {
+                            Some(Action::ErrorNotification(err)) => {
                                 error!("An error notification was triggered: {}", err);
                                 let callback = || glib::Continue(false);
                                 let notif = InAppNotification::new(&err, callback,
                                                                    || {}, UndoState::Hidden);
                                 notif.show(&overlay);
                             },
-                            Ok(Action::InitEpisode(rowid)) => player.initialize_episode(rowid).unwrap(),
-                            Err(_) => (),
+                            Some(Action::InitEpisode(rowid)) => player.initialize_episode(rowid).unwrap(),
+                            None => (),
                         }
 
                         Continue(true)
