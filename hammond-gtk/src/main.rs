@@ -102,5 +102,5 @@ fn main() {
         600,
     );
 
-    App::new().run();
+    App::run();
 }

@@ -1,7 +1,7 @@
 #![allow(new_without_default)]
 
 use gio::{
-    ActionMapExt, ApplicationExt, ApplicationExtManual, ApplicationFlags, Settings, SettingsExt,
+    self, ActionMapExt, ApplicationExt, ApplicationExtManual, ApplicationFlags, SettingsExt,
     SimpleAction, SimpleActionExt,
 };
 use glib;
@@ -9,7 +9,7 @@ use gtk;
 use gtk::prelude::*;
 use gtk::SettingsExt as GtkSettingsExt;
 
-use crossbeam_channel::{unbounded, Sender};
+use crossbeam_channel::{unbounded, Receiver, Sender};
 use hammond_data::Podcast;
 
 use headerbar::Header;
@@ -57,173 +57,177 @@ pub enum Action {
     InitEpisode(i32),
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct App {
-    app_instance: gtk::Application,
-    settings: Settings,
+    instance: gtk::Application,
+    window: gtk::ApplicationWindow,
+    overlay: gtk::Overlay,
+    settings: gio::Settings,
+    content: Rc<Content>,
+    headerbar: Rc<Header>,
+    player: Rc<player::PlayerWidget>,
+    sender: Sender<Action>,
+    receiver: Receiver<Action>,
 }
 
 impl App {
-    pub fn new() -> App {
-        let settings = Settings::new("org.gnome.Hammond");
-        let application = gtk::Application::new("org.gnome.Hammond", ApplicationFlags::empty())
-            .expect("Application Initialization failed...");
+    pub fn new(application: &gtk::Application) -> Rc<Self> {
+        let settings = gio::Settings::new("org.gnome.Hammond");
 
-        let cleanup_date = settings::get_cleanup_date(&settings);
-        utils::cleanup(cleanup_date);
+        let (sender, receiver) = unbounded();
 
-        application.connect_startup(clone!(settings => move |app| {
-            let (sender, receiver) = unbounded();
-
-            app.set_accels_for_action("win.refresh", &["<primary>r"]);
-            app.set_accels_for_action("win.quit", &["<primary>q"]);
-            // Bind the hamburger menu button to `F10`
-            app.set_accels_for_action("win.menu", &["F10"]);
-
-            app.connect_activate(clone!(sender, settings => move |app| {
-                // Get the current window (if any)
-                if let Some(window) = app.get_active_window() {
-                    // Already open, just raise the window
-                    window.present();
-                } else {
-                    // Time to open one!
-                    // Create the main window
-                    let window = gtk::ApplicationWindow::new(&app);
-                    window.set_title("Hammond");
-
-                    App::setup_gactions(&window, &sender);
-
-                    window.connect_delete_event(clone!(app, settings => move |window, _| {
-                        WindowGeometry::from_window(&window).write(&settings);
-                        app.quit();
-                        Inhibit(false)
-                    }));
-
-
-                    // Create a content instance
-                    let content =
-                        Rc::new(Content::new(sender.clone()).expect(
-                            "Content Initialization failed."));
-
-                    // Create the headerbar
-                    let header = Rc::new(Header::new(&content, &window, &sender));
-
-                    action!(window, "menu", clone!(header => move |_, _| {
-                        header.open_menu();
-                    }));
-
-                    // Add the content main stack to the overlay.
-                    let overlay = gtk::Overlay::new();
-                    overlay.add(&content.get_stack());
-
-                    let wrap = gtk::Box::new(gtk::Orientation::Vertical, 0);
-                    // Add the overlay to the main Box
-                    wrap.add(&overlay);
-
-                    let player = player::PlayerWidget::new(&sender);
-                    // Add the player to the main Box
-                    wrap.add(&player.action_bar);
-
-                    window.add(&wrap);
-
-                    WindowGeometry::from_settings(&settings).apply(&window);
-
-                    App::setup_timed_callbacks(&sender, &settings);
-
-                    window.show_all();
-                    window.activate();
-
-                    gtk::timeout_add(25, clone!(sender, receiver => move || {
-                        // Uses receiver, content, header, sender, overlay, playback
-                        if let Some(action) = receiver.try_recv() {
-                            match action {
-                                Action::RefreshAllViews => content.update(),
-                                Action::RefreshShowsView => content.update_shows_view(),
-                                Action::RefreshWidgetIfSame(id) =>
-                                    content.update_widget_if_same(id),
-                                Action::RefreshEpisodesView => content.update_home(),
-                                Action::RefreshEpisodesViewBGR =>
-                                    content.update_home_if_background(),
-                                Action::ReplaceWidget(pd) => {
-                                    let shows = content.get_shows();
-                                    let mut pop = shows.borrow().populated();
-                                    pop.borrow_mut()
-                                        .replace_widget(pd.clone())
-                                        .map_err(|err| error!("Failed to update ShowWidget: {}", err))
-                                        .map_err(|_|
-                                            error!("Failed ot update ShowWidget {}", pd.title()))
-                                        .ok();
-                                }
-                                Action::ShowWidgetAnimated => {
-                                    let shows = content.get_shows();
-                                    let mut pop = shows.borrow().populated();
-                                    pop.borrow_mut().switch_visible(
-                                        PopulatedState::Widget,
-                                        gtk::StackTransitionType::SlideLeft,
-                                    );
-                                }
-                                Action::ShowShowsAnimated => {
-                                    let shows = content.get_shows();
-                                    let mut pop = shows.borrow().populated();
-                                    pop.borrow_mut()
-                                        .switch_visible(PopulatedState::View,
-                                                        gtk::StackTransitionType::SlideRight);
-                                }
-                                Action::HeaderBarShowTile(title) =>
-                                    header.switch_to_back(&title),
-                                Action::HeaderBarNormal => header.switch_to_normal(),
-                                Action::HeaderBarShowUpdateIndicator =>
-                                    header.show_update_notification(),
-                                Action::HeaderBarHideUpdateIndicator =>
-                                    header.hide_update_notification(),
-                                Action::MarkAllPlayerNotification(pd) => {
-                                    let notif = mark_all_notif(pd, &sender);
-                                    notif.show(&overlay);
-                                }
-                                Action::RemoveShow(pd) => {
-                                    let notif = remove_show_notif(pd, sender.clone());
-                                    notif.show(&overlay);
-                                }
-                                Action::ErrorNotification(err) => {
-                                    error!("An error notification was triggered: {}", err);
-                                    let callback = || glib::Continue(false);
-                                    let notif = InAppNotification::new(&err, callback,
-                                                                       || {}, UndoState::Hidden);
-                                    notif.show(&overlay);
-                                },
-                                Action::InitEpisode(rowid) => player.initialize_episode(rowid).unwrap(),
-                            }
-                        }
-
-                        Continue(true)
-                    }));
-                }
-            }));
+        let window = gtk::ApplicationWindow::new(application);
+        window.set_title("Hammond");
+        window.connect_delete_event(clone!(application, settings => move |window, _| {
+            WindowGeometry::from_window(&window).write(&settings);
+            application.quit();
+            Inhibit(false)
         }));
 
-        App {
-            app_instance: application,
+        // Create a content instance
+        let content =
+            Rc::new(Content::new(sender.clone()).expect("Content Initialization failed."));
+
+        // Create the headerbar
+        let header = Rc::new(Header::new(&content, &window, &sender));
+
+        action!(
+            window,
+            "menu",
+            clone!(header => move |_, _| {
+                header.open_menu();
+            })
+        );
+
+        // Add the content main stack to the overlay.
+        let overlay = gtk::Overlay::new();
+        overlay.add(&content.get_stack());
+
+        let wrap = gtk::Box::new(gtk::Orientation::Vertical, 0);
+        // Add the overlay to the main Box
+        wrap.add(&overlay);
+
+        let player = player::PlayerWidget::new(&sender);
+        // Add the player to the main Box
+        wrap.add(&player.action_bar);
+
+        window.add(&wrap);
+
+        let app = App {
+            instance: application.clone(),
+            window,
             settings,
-        }
+            overlay,
+            headerbar: header,
+            content,
+            player,
+            sender,
+            receiver,
+        };
+
+        Rc::new(app)
     }
 
-    fn setup_timed_callbacks(sender: &Sender<Action>, settings: &Settings) {
-        App::setup_dark_theme(settings);
-        App::setup_refresh_on_startup(&sender, settings);
-        App::setup_auto_refresh(&sender, settings);
+    fn init(app: &Rc<Self>) {
+        let cleanup_date = settings::get_cleanup_date(&app.settings);
+        utils::cleanup(cleanup_date);
+
+        app.setup_gactions();
+        app.setup_timed_callbacks();
+
+        app.instance
+            .set_accels_for_action("win.refresh", &["<primary>r"]);
+        app.instance
+            .set_accels_for_action("win.quit", &["<primary>q"]);
+        // Bind the hamburger menu button to `F10`
+        app.instance.set_accels_for_action("win.menu", &["F10"]);
+
+        WindowGeometry::from_settings(&app.settings).apply(&app.window);
+
+        app.instance.connect_activate(move |_| ());
+
+        // Setup the Action channel
+        gtk::timeout_add(
+            25,
+            clone!(app => move || {
+                if let Some(action) = app.receiver.try_recv() {
+                    trace!("Incoming channel action: {:?}", action);
+                    match action {
+                        Action::RefreshAllViews => app.content.update(),
+                        Action::RefreshShowsView => app.content.update_shows_view(),
+                        Action::RefreshWidgetIfSame(id) => app.content.update_widget_if_same(id),
+                        Action::RefreshEpisodesView => app.content.update_home(),
+                        Action::RefreshEpisodesViewBGR => app.content.update_home_if_background(),
+                        Action::ReplaceWidget(pd) => {
+                            let shows = app.content.get_shows();
+                            let mut pop = shows.borrow().populated();
+                            pop.borrow_mut()
+                                .replace_widget(pd.clone())
+                                .map_err(|err| error!("Failed to update ShowWidget: {}", err))
+                                .map_err(|_|
+                                    error!("Failed ot update ShowWidget {}", pd.title()))
+                                .ok();
+                        }
+                        Action::ShowWidgetAnimated => {
+                            let shows = app.content.get_shows();
+                            let mut pop = shows.borrow().populated();
+                            pop.borrow_mut().switch_visible(
+                                PopulatedState::Widget,
+                                gtk::StackTransitionType::SlideLeft,
+                            );
+                        }
+                        Action::ShowShowsAnimated => {
+                            let shows = app.content.get_shows();
+                            let mut pop = shows.borrow().populated();
+                            pop.borrow_mut()
+                                .switch_visible(PopulatedState::View,
+                                                gtk::StackTransitionType::SlideRight);
+                        }
+                        Action::HeaderBarShowTile(title) => app.headerbar.switch_to_back(&title),
+                        Action::HeaderBarNormal => app.headerbar.switch_to_normal(),
+                        Action::HeaderBarShowUpdateIndicator => app.headerbar.show_update_notification(),
+                        Action::HeaderBarHideUpdateIndicator => app.headerbar.hide_update_notification(),
+                        Action::MarkAllPlayerNotification(pd) => {
+                            let notif = mark_all_notif(pd, &app.sender);
+                            notif.show(&app.overlay);
+                        }
+                        Action::RemoveShow(pd) => {
+                            let notif = remove_show_notif(pd, app.sender.clone());
+                            notif.show(&app.overlay);
+                        }
+                        Action::ErrorNotification(err) => {
+                            error!("An error notification was triggered: {}", err);
+                            let callback = || glib::Continue(false);
+                            let notif = InAppNotification::new(&err, callback,
+                                                               || {}, UndoState::Hidden);
+                            notif.show(&app.overlay);
+                        },
+                        Action::InitEpisode(rowid) => app.player.initialize_episode(rowid).unwrap(),
+                    }
+                }
+
+                Continue(true)
+            }),
+        );
     }
 
-    fn setup_dark_theme(settings: &Settings) {
+    fn setup_timed_callbacks(&self) {
+        self.setup_dark_theme();
+        self.setup_refresh_on_startup();
+        self.setup_auto_refresh();
+    }
+
+    fn setup_dark_theme(&self) {
         let gtk_settings = gtk::Settings::get_default().unwrap();
-        let enabled = settings.get_boolean("dark-theme");
+        let enabled = self.settings.get_boolean("dark-theme");
 
         gtk_settings.set_property_gtk_application_prefer_dark_theme(enabled);
     }
 
-    fn setup_refresh_on_startup(sender: &Sender<Action>, settings: &Settings) {
+    fn setup_refresh_on_startup(&self) {
         // Update the feeds right after the Application is initialized.
-        let sender = sender.clone();
-        if settings.get_boolean("refresh-on-startup") {
+        let sender = self.sender.clone();
+        if self.settings.get_boolean("refresh-on-startup") {
             info!("Refresh on startup.");
             // The ui loads async, after initialization
             // so we need to delay this a bit so it won't block
@@ -236,12 +240,11 @@ impl App {
         }
     }
 
-    fn setup_auto_refresh(sender: &Sender<Action>, settings: &Settings) {
-        let refresh_interval = settings::get_refresh_interval(&settings).num_seconds() as u32;
-
+    fn setup_auto_refresh(&self) {
+        let refresh_interval = settings::get_refresh_interval(&self.settings).num_seconds() as u32;
         info!("Auto-refresh every {:?} seconds.", refresh_interval);
 
-        let sender = sender.clone();
+        let sender = self.sender.clone();
         gtk::timeout_add_seconds(refresh_interval, move || {
             let s: Option<Vec<_>> = None;
             utils::refresh(s, sender.clone());
@@ -253,7 +256,10 @@ impl App {
     /// Define the `GAction`s.
     ///
     /// Used in menus and the keyboard shortcuts dialog.
-    fn setup_gactions(win: &gtk::ApplicationWindow, sender: &Sender<Action>) {
+    fn setup_gactions(&self) {
+        let sender = &self.sender;
+        let win = &self.window;
+
         // Create the `refresh` action.
         //
         // This will trigger a refresh of all the shows in the database.
@@ -261,31 +267,23 @@ impl App {
             win,
             "refresh",
             clone!(sender => move |_, _| {
-            gtk::idle_add(clone!(sender => move || {
-                let s: Option<Vec<_>> = None;
-                utils::refresh(s, sender.clone());
-                glib::Continue(false)
-            }));
-        })
+                gtk::idle_add(clone!(sender => move || {
+                    let s: Option<Vec<_>> = None;
+                    utils::refresh(s, sender.clone());
+                    glib::Continue(false)
+                }));
+            })
         );
 
         // Create the `OPML` import action
         action!(
             win,
             "import",
-            clone!(sender, win => move |_, _| {
-            utils::on_import_clicked(&win, &sender);
-        })
+            clone!(sender, win => move |_, _| utils::on_import_clicked(&win, &sender))
         );
 
         // Create the action that shows a `gtk::AboutDialog`
-        action!(
-            win,
-            "about",
-            clone!(win => move |_, _| {
-            about_dialog(&win);
-        })
-        );
+        action!(win, "about", clone!(win => move |_, _| about_dialog(&win)));
 
         // Create the quit action
         action!(
@@ -295,12 +293,23 @@ impl App {
         );
     }
 
-    pub fn run(self) {
+    pub fn run() {
+        let application = gtk::Application::new("org.gnome.Hammond", ApplicationFlags::empty())
+            .expect("Application Initialization failed...");
+
+        application.connect_startup(clone!(application => move |_| {
+            info!("CONNECT STARTUP RUN");
+            let app = Self::new(&application);
+            Self::init(&app);
+            app.window.show_all();
+            app.window.activate();
+        }));
+
         // Weird magic I copy-pasted that sets the Application Name in the Shell.
         glib::set_application_name("Hammond");
         glib::set_prgname(Some("Hammond"));
         // We need out own org.gnome.Hammon icon
         gtk::Window::set_default_icon_name("multimedia-player");
-        ApplicationExtManual::run(&self.app_instance, &[]);
+        ApplicationExtManual::run(&application, &[]);
     }
 }
