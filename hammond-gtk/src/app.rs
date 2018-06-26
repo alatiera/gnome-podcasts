@@ -135,63 +135,64 @@ impl App {
 
                     gtk::timeout_add(25, clone!(sender, receiver => move || {
                         // Uses receiver, content, header, sender, overlay, playback
-                        match receiver.try_recv() {
-                            Some(Action::RefreshAllViews) => content.update(),
-                            Some(Action::RefreshShowsView) => content.update_shows_view(),
-                            Some(Action::RefreshWidgetIfSame(id)) =>
-                                content.update_widget_if_same(id),
-                            Some(Action::RefreshEpisodesView) => content.update_home(),
-                            Some(Action::RefreshEpisodesViewBGR) =>
-                                content.update_home_if_background(),
-                            Some(Action::ReplaceWidget(pd)) => {
-                                let shows = content.get_shows();
-                                let mut pop = shows.borrow().populated();
-                                pop.borrow_mut()
-                                    .replace_widget(pd.clone())
-                                    .map_err(|err| error!("Failed to update ShowWidget: {}", err))
-                                    .map_err(|_|
-                                        error!("Failed ot update ShowWidget {}", pd.title()))
-                                    .ok();
+                        if let Some(action) = receiver.try_recv() {
+                            match action {
+                                Action::RefreshAllViews => content.update(),
+                                Action::RefreshShowsView => content.update_shows_view(),
+                                Action::RefreshWidgetIfSame(id) =>
+                                    content.update_widget_if_same(id),
+                                Action::RefreshEpisodesView => content.update_home(),
+                                Action::RefreshEpisodesViewBGR =>
+                                    content.update_home_if_background(),
+                                Action::ReplaceWidget(pd) => {
+                                    let shows = content.get_shows();
+                                    let mut pop = shows.borrow().populated();
+                                    pop.borrow_mut()
+                                        .replace_widget(pd.clone())
+                                        .map_err(|err| error!("Failed to update ShowWidget: {}", err))
+                                        .map_err(|_|
+                                            error!("Failed ot update ShowWidget {}", pd.title()))
+                                        .ok();
+                                }
+                                Action::ShowWidgetAnimated => {
+                                    let shows = content.get_shows();
+                                    let mut pop = shows.borrow().populated();
+                                    pop.borrow_mut().switch_visible(
+                                        PopulatedState::Widget,
+                                        gtk::StackTransitionType::SlideLeft,
+                                    );
+                                }
+                                Action::ShowShowsAnimated => {
+                                    let shows = content.get_shows();
+                                    let mut pop = shows.borrow().populated();
+                                    pop.borrow_mut()
+                                        .switch_visible(PopulatedState::View,
+                                                        gtk::StackTransitionType::SlideRight);
+                                }
+                                Action::HeaderBarShowTile(title) =>
+                                    header.switch_to_back(&title),
+                                Action::HeaderBarNormal => header.switch_to_normal(),
+                                Action::HeaderBarShowUpdateIndicator =>
+                                    header.show_update_notification(),
+                                Action::HeaderBarHideUpdateIndicator =>
+                                    header.hide_update_notification(),
+                                Action::MarkAllPlayerNotification(pd) => {
+                                    let notif = mark_all_notif(pd, &sender);
+                                    notif.show(&overlay);
+                                }
+                                Action::RemoveShow(pd) => {
+                                    let notif = remove_show_notif(pd, sender.clone());
+                                    notif.show(&overlay);
+                                }
+                                Action::ErrorNotification(err) => {
+                                    error!("An error notification was triggered: {}", err);
+                                    let callback = || glib::Continue(false);
+                                    let notif = InAppNotification::new(&err, callback,
+                                                                       || {}, UndoState::Hidden);
+                                    notif.show(&overlay);
+                                },
+                                Action::InitEpisode(rowid) => player.initialize_episode(rowid).unwrap(),
                             }
-                            Some(Action::ShowWidgetAnimated) => {
-                                let shows = content.get_shows();
-                                let mut pop = shows.borrow().populated();
-                                pop.borrow_mut().switch_visible(
-                                    PopulatedState::Widget,
-                                    gtk::StackTransitionType::SlideLeft,
-                                );
-                            }
-                            Some(Action::ShowShowsAnimated) => {
-                                let shows = content.get_shows();
-                                let mut pop = shows.borrow().populated();
-                                pop.borrow_mut()
-                                    .switch_visible(PopulatedState::View,
-                                                    gtk::StackTransitionType::SlideRight);
-                            }
-                            Some(Action::HeaderBarShowTile(title)) =>
-                                header.switch_to_back(&title),
-                            Some(Action::HeaderBarNormal) => header.switch_to_normal(),
-                            Some(Action::HeaderBarShowUpdateIndicator) =>
-                                header.show_update_notification(),
-                            Some(Action::HeaderBarHideUpdateIndicator) =>
-                                header.hide_update_notification(),
-                            Some(Action::MarkAllPlayerNotification(pd)) => {
-                                let notif = mark_all_notif(pd, &sender);
-                                notif.show(&overlay);
-                            }
-                            Some(Action::RemoveShow(pd)) => {
-                                let notif = remove_show_notif(pd, sender.clone());
-                                notif.show(&overlay);
-                            }
-                            Some(Action::ErrorNotification(err)) => {
-                                error!("An error notification was triggered: {}", err);
-                                let callback = || glib::Continue(false);
-                                let notif = InAppNotification::new(&err, callback,
-                                                                   || {}, UndoState::Hidden);
-                                notif.show(&overlay);
-                            },
-                            Some(Action::InitEpisode(rowid)) => player.initialize_episode(rowid).unwrap(),
-                            None => (),
                         }
 
                         Continue(true)
