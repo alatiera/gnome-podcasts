@@ -14,6 +14,8 @@ use app::Action;
 use stacks::Content;
 use utils::{itunes_to_rss, refresh};
 
+use std::rc::Rc;
+
 #[derive(Debug, Clone)]
 // TODO: split this into smaller
 pub struct Header {
@@ -60,14 +62,14 @@ impl Default for Header {
     }
 }
 
-// TODO: Refactor components into smaller state machines
+// TODO: Refactor components into smaller widgets.
 impl Header {
     pub fn new(
         content: &Content,
         window: &gtk::ApplicationWindow,
         sender: &Sender<Action>,
-    ) -> Header {
-        let h = Header::default();
+    ) -> Rc<Self> {
+        let h = Rc::new(Header::default());
         h.init(content, window, &sender);
         h
     }
