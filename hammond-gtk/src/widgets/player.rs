@@ -262,20 +262,29 @@ impl PlayerWidget {
         Self::connect_gst_signals(s, sender);
     }
 
-    #[cfg_attr(rustfmt, rustfmt_skip)]
     /// Connect the `PlayerControls` buttons to the `PlayerExt` methods.
     fn connect_control_buttons(s: &Rc<Self>) {
+        let weak = Rc::downgrade(s);
+
         // Connect the play button to the gst Player.
-        s.controls.play.connect_clicked(clone!(s => move |_| s.play()));
+        s.controls.play.connect_clicked(clone!(weak => move |_| {
+             weak.upgrade().map(|p| p.play());
+        }));
 
         // Connect the pause button to the gst Player.
-        s.controls.pause.connect_clicked(clone!(s => move |_| s.pause()));
+        s.controls.pause.connect_clicked(clone!(weak => move |_| {
+            weak.upgrade().map(|p| p.pause());
+        }));
 
         // Connect the rewind button to the gst Player.
-        s.controls.rewind.connect_clicked(clone!(s => move |_| s.rewind()));
+        s.controls.rewind.connect_clicked(clone!(weak => move |_| {
+            weak.upgrade().map(|p| p.rewind());
+        }));
 
         // Connect the fast-forward button to the gst Player.
-        s.controls.forward.connect_clicked(clone!(s => move |_| s.fast_forward()));
+        s.controls.forward.connect_clicked(clone!(weak => move |_| {
+            weak.upgrade().map(|p| p.fast_forward());
+        }));
     }
 
     #[cfg_attr(rustfmt, rustfmt_skip)]
@@ -290,27 +299,51 @@ impl PlayerWidget {
         }));
 
         // The followign callbacks require `Send` but are handled by the gtk main loop
-        let s2 = SendCell::new(s.clone());
+        let weak = SendCell::new(Rc::downgrade(s));
 
         // Update the duration label and the slider
-        s.player.connect_duration_changed(clone!(s2 => move |_, clock| {
-            s2.borrow().timer.on_duration_changed(Duration(clock));
+        s.player.connect_duration_changed(clone!(weak => move |_, clock| {
+            weak.borrow()
+                .upgrade()
+                .map(|p| p.timer.on_duration_changed(Duration(clock)));
         }));
 
         // Update the position label and the slider
-        s.player.connect_position_updated(clone!(s2 => move |_, clock| {
-            s2.borrow().timer.on_position_updated(Position(clock));
+        s.player.connect_position_updated(clone!(weak => move |_, clock| {
+            weak.borrow()
+                .upgrade()
+                .map(|p| p.timer.on_position_updated(Position(clock)));
         }));
 
         // Reset the slider to 0 and show a play button
-        s.player.connect_end_of_stream(clone!(s2 => move |_| s2.borrow().stop()));
+        s.player.connect_end_of_stream(clone!(weak => move |_| {
+             weak.borrow()
+                 .upgrade()
+                 .map(|p| p.stop());
+        }));
     }
 
     #[cfg_attr(rustfmt, rustfmt_skip)]
     fn connect_rate_buttons(s: &Rc<Self>) {
-        s.rate.radio_normal.connect_toggled(clone!(s => move |_| s.on_rate_changed(1.00)));
-        s.rate.radio125.connect_toggled(clone!(s => move |_| s.on_rate_changed(1.25)));
-        s.rate.radio150.connect_toggled(clone!(s => move |_| s.on_rate_changed(1.50)));
+        let weak = Rc::downgrade(s);
+
+        s.rate
+            .radio_normal
+            .connect_toggled(clone!(weak => move |_| {
+                weak.upgrade().map(|p| p.on_rate_changed(1.00));
+            }));
+
+        s.rate
+            .radio125
+            .connect_toggled(clone!(weak => move |_| {
+                weak.upgrade().map(|p| p.on_rate_changed(1.25));
+            }));
+
+        s.rate
+            .radio150
+            .connect_toggled(clone!(weak => move |_| {
+                weak.upgrade().map(|p| p.on_rate_changed(1.50));
+            }));
     }
 
     fn on_rate_changed(&self, rate: f64) {
