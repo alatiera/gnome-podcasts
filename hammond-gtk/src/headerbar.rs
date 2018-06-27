@@ -24,11 +24,32 @@ pub struct Header {
     switch: gtk::StackSwitcher,
     back: gtk::Button,
     show_title: gtk::Label,
-    update_box: gtk::Box,
-    update_label: gtk::Label,
-    update_spinner: gtk::Spinner,
     menu_button: gtk::MenuButton,
     app_menu: MenuModel,
+    updater: UpdateIndicator,
+}
+
+#[derive(Debug, Clone)]
+struct UpdateIndicator {
+    container: gtk::Box,
+    text: gtk::Label,
+    spinner: gtk::Spinner,
+}
+
+impl UpdateIndicator {
+    fn show(&self) {
+        self.spinner.start();
+        self.spinner.show();
+        self.container.show();
+        self.text.show();
+    }
+
+    fn hide(&self) {
+        self.spinner.stop();
+        self.spinner.hide();
+        self.container.hide();
+        self.text.hide();
+    }
 }
 
 impl Default for Header {
@@ -47,17 +68,21 @@ impl Default for Header {
         let menu_button = builder.get_object("menu_button").unwrap();
         let app_menu = menus.get_object("menu").unwrap();
 
+        let updater = UpdateIndicator {
+            container: update_box,
+            text: update_label,
+            spinner: update_spinner,
+        };
+
         Header {
             container: header,
             add_toggle,
             switch,
             back,
             show_title,
-            update_box,
-            update_label,
-            update_spinner,
             menu_button,
             app_menu,
+            updater,
         }
     }
 }
@@ -142,17 +167,11 @@ impl Header {
     }
 
     pub fn show_update_notification(&self) {
-        self.update_spinner.start();
-        self.update_box.show();
-        self.update_spinner.show();
-        self.update_label.show();
+        self.updater.show();
     }
 
     pub fn hide_update_notification(&self) {
-        self.update_spinner.stop();
-        self.update_box.hide();
-        self.update_spinner.hide();
-        self.update_label.hide();
+        self.updater.hide();
     }
 
     pub fn open_menu(&self) {
