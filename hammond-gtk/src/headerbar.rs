@@ -18,7 +18,7 @@ use std::rc::Rc;
 #[derive(Debug, Clone)]
 // TODO: split this into smaller
 pub struct Header {
-    container: gtk::HeaderBar,
+    pub container: gtk::HeaderBar,
     switch: gtk::StackSwitcher,
     back: gtk::Button,
     show_title: gtk::Label,
@@ -180,22 +180,13 @@ impl Default for Header {
 
 // TODO: Refactor components into smaller widgets.
 impl Header {
-    pub fn new(
-        content: &Content,
-        window: &gtk::ApplicationWindow,
-        sender: &Sender<Action>,
-    ) -> Rc<Self> {
+    pub fn new(content: &Content, sender: &Sender<Action>) -> Rc<Self> {
         let h = Rc::new(Header::default());
-        Self::init(&h, content, window, &sender);
+        Self::init(&h, content, &sender);
         h
     }
 
-    pub fn init(
-        s: &Rc<Self>,
-        content: &Content,
-        window: &gtk::ApplicationWindow,
-        sender: &Sender<Action>,
-    ) {
+    pub fn init(s: &Rc<Self>, content: &Content, sender: &Sender<Action>) {
         let weak = Rc::downgrade(s);
 
         s.switch.set_stack(&content.get_stack());
@@ -211,9 +202,6 @@ impl Header {
         s.add.add.connect_clicked(clone!(weak, sender => move |_| {
             weak.upgrade().map(|h| h.add.on_add_clicked(&sender));
         }));
-
-        // Add the Headerbar to the window.
-        window.set_titlebar(&s.container);
 
         let switch = &s.switch;
         let add_toggle = &s.add.toggle;
