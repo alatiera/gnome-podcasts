@@ -85,8 +85,7 @@ impl App {
         }));
 
         // Create a content instance
-        let content =
-            Rc::new(Content::new(sender.clone()).expect("Content Initialization failed."));
+        let content = Content::new(&sender).expect("Content Initialization failed.");
 
         // Create the headerbar
         let header = Rc::new(Header::new(&content, &window, &sender));

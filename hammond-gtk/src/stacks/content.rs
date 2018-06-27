@@ -19,7 +19,7 @@ pub struct Content {
 }
 
 impl Content {
-    pub fn new(sender: Sender<Action>) -> Result<Content, Error> {
+    pub fn new(sender: &Sender<Action>) -> Result<Rc<Content>, Error> {
         let stack = gtk::Stack::new();
         let home = Rc::new(RefCell::new(HomeStack::new(sender.clone())?));
         let shows = Rc::new(RefCell::new(ShowStack::new(sender.clone())?));
@@ -27,12 +27,13 @@ impl Content {
         stack.add_titled(&home.borrow().get_stack(), "home", "New");
         stack.add_titled(&shows.borrow().get_stack(), "shows", "Shows");
 
-        Ok(Content {
+        let con = Content {
             stack,
             shows,
             home,
-            sender,
-        })
+            sender: sender.clone(),
+        };
+        Ok(Rc::new(con))
     }
 
     pub fn update(&self) {
