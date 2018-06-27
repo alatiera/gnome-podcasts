@@ -151,9 +151,10 @@ Tobias Bernard
       <object class="GtkMenuButton" id="add_toggle">
         <property name="visible">True</property>
         <property name="can_focus">True</property>
-        <property name="receives_default">False</property>
+        <property name="receives_default">True</property>
         <property name="tooltip_text" translatable="yes">Add a new feed</property>
         <property name="valign">center</property>
+        <property name="popover">add_popover</property>
         <child>
           <object class="GtkImage" id="add-button-image2">
             <property name="visible">True</property>
@@ -262,7 +263,6 @@ Tobias Bernard
         <property name="can_focus">True</property>
         <property name="receives_default">False</property>
         <property name="valign">center</property>
-        <property name="use_popover">True</property>
         <child>
           <object class="GtkImage">
             <property name="visible">True</property>
