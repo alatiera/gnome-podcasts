@@ -16,7 +16,8 @@ use utils::{itunes_to_rss, refresh};
 use std::rc::Rc;
 
 #[derive(Debug, Clone)]
-// TODO: split this into smaller
+// TODO: Factor out the hamburger menu
+// TODO: Make a proper state machine for the headerbar states
 pub struct Header {
     pub container: gtk::HeaderBar,
     switch: gtk::StackSwitcher,
@@ -178,7 +179,8 @@ impl Default for Header {
     }
 }
 
-// TODO: Refactor components into smaller widgets.
+// TODO: Factor out the hamburger menu
+// TODO: Make a proper state machine for the headerbar states
 impl Header {
     pub fn new(content: &Content, sender: &Sender<Action>) -> Rc<Self> {
         let h = Rc::new(Header::default());
@@ -206,12 +208,14 @@ impl Header {
         let switch = &s.switch;
         let add_toggle = &s.add.toggle;
         let show_title = &s.show_title;
+        let menu = &s.menu_button;
         s.back.connect_clicked(
-            clone!(switch, add_toggle, show_title, sender => move |back| {
+            clone!(switch, add_toggle, show_title, sender, menu => move |back| {
                 switch.show();
                 add_toggle.show();
                 back.hide();
                 show_title.hide();
+                menu.show();
                 sender.send(Action::ShowShowsAnimated);
             }),
         );
@@ -225,6 +229,7 @@ impl Header {
         self.back.show();
         self.set_show_title(title);
         self.show_title.show();
+        self.menu_button.hide();
     }
 
     pub fn switch_to_normal(&self) {
@@ -232,6 +237,7 @@ impl Header {
         self.add.toggle.show();
         self.back.hide();
         self.show_title.hide();
+        self.menu_button.show();
     }
 
     pub fn set_show_title(&self, title: &str) {
