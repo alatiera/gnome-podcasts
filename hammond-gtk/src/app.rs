@@ -91,14 +91,6 @@ impl App {
         // Create the headerbar
         let header = Rc::new(Header::new(&content, &window, &sender));
 
-        action!(
-            window,
-            "menu",
-            clone!(header => move |_, _| {
-                header.open_menu();
-            })
-        );
-
         // Add the content main stack to the overlay.
         let overlay = gtk::Overlay::new();
         overlay.add(&content.get_stack());
@@ -130,21 +122,16 @@ impl App {
 
     fn init(app: &Rc<Self>) {
         let cleanup_date = settings::get_cleanup_date(&app.settings);
+        // Garbage collect watched episodes from the disk
         utils::cleanup(cleanup_date);
 
         app.setup_gactions();
         app.setup_timed_callbacks();
 
-        app.instance
-            .set_accels_for_action("win.refresh", &["<primary>r"]);
-        app.instance
-            .set_accels_for_action("win.quit", &["<primary>q"]);
-        // Bind the hamburger menu button to `F10`
-        app.instance.set_accels_for_action("win.menu", &["F10"]);
-
-        WindowGeometry::from_settings(&app.settings).apply(&app.window);
-
         app.instance.connect_activate(move |_| ());
+
+        // Retrieve the previous window position and size.
+        WindowGeometry::from_settings(&app.settings).apply(&app.window);
 
         // Setup the Action channel
         gtk::timeout_add(25, clone!(app => move || app.setup_action_channel()));
@@ -195,38 +182,41 @@ impl App {
     /// Define the `GAction`s.
     ///
     /// Used in menus and the keyboard shortcuts dialog.
+    #[cfg_attr(rustfmt, rustfmt_skip)]
     fn setup_gactions(&self) {
         let sender = &self.sender;
         let win = &self.window;
         let instance = &self.instance;
+        let header = &self.headerbar;
 
         // Create the `refresh` action.
         //
         // This will trigger a refresh of all the shows in the database.
-        action!(
-            win,
-            "refresh",
-            clone!(sender => move |_, _| {
-                gtk::idle_add(clone!(sender => move || {
-                    let s: Option<Vec<_>> = None;
-                    utils::refresh(s, sender.clone());
-                    glib::Continue(false)
-                }));
-            })
-        );
+        action!(win, "refresh", clone!(sender => move |_, _| {
+            gtk::idle_add(clone!(sender => move || {
+                let s: Option<Vec<_>> = None;
+                utils::refresh(s, sender.clone());
+                glib::Continue(false)
+            }));
+        }));
+        self.instance.set_accels_for_action("win.refresh", &["<primary>r"]);
 
         // Create the `OPML` import action
-        action!(
-            win,
-            "import",
-            clone!(sender, win => move |_, _| utils::on_import_clicked(&win, &sender))
-        );
+        action!(win, "import", clone!(sender, win => move |_, _| {
+            utils::on_import_clicked(&win, &sender)
+        }));
 
         // Create the action that shows a `gtk::AboutDialog`
         action!(win, "about", clone!(win => move |_, _| about_dialog(&win)));
 
         // Create the quit action
-        action!(win, "quit", clone!(win => move |_, _| instance.quit()));
+        action!(win, "quit", clone!(instance => move |_, _| instance.quit()));
+        self.instance.set_accels_for_action("win.quit", &["<primary>q"]);
+
+        // Create the menu action
+        action!(win, "menu",clone!(header => move |_, _| header.open_menu()));
+        // Bind the hamburger menu button to `F10`
+        self.instance.set_accels_for_action("win.menu", &["F10"]);
     }
 
     fn setup_action_channel(&self) -> glib::Continue {
