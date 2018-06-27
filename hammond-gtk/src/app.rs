@@ -147,68 +147,7 @@ impl App {
         app.instance.connect_activate(move |_| ());
 
         // Setup the Action channel
-        gtk::timeout_add(
-            25,
-            clone!(app => move || {
-                if let Some(action) = app.receiver.try_recv() {
-                    trace!("Incoming channel action: {:?}", action);
-                    match action {
-                        Action::RefreshAllViews => app.content.update(),
-                        Action::RefreshShowsView => app.content.update_shows_view(),
-                        Action::RefreshWidgetIfSame(id) => app.content.update_widget_if_same(id),
-                        Action::RefreshEpisodesView => app.content.update_home(),
-                        Action::RefreshEpisodesViewBGR => app.content.update_home_if_background(),
-                        Action::ReplaceWidget(pd) => {
-                            let shows = app.content.get_shows();
-                            let mut pop = shows.borrow().populated();
-                            pop.borrow_mut()
-                                .replace_widget(pd.clone())
-                                .map_err(|err| error!("Failed to update ShowWidget: {}", err))
-                                .map_err(|_|
-                                    error!("Failed ot update ShowWidget {}", pd.title()))
-                                .ok();
-                        }
-                        Action::ShowWidgetAnimated => {
-                            let shows = app.content.get_shows();
-                            let mut pop = shows.borrow().populated();
-                            pop.borrow_mut().switch_visible(
-                                PopulatedState::Widget,
-                                gtk::StackTransitionType::SlideLeft,
-                            );
-                        }
-                        Action::ShowShowsAnimated => {
-                            let shows = app.content.get_shows();
-                            let mut pop = shows.borrow().populated();
-                            pop.borrow_mut()
-                                .switch_visible(PopulatedState::View,
-                                                gtk::StackTransitionType::SlideRight);
-                        }
-                        Action::HeaderBarShowTile(title) => app.headerbar.switch_to_back(&title),
-                        Action::HeaderBarNormal => app.headerbar.switch_to_normal(),
-                        Action::HeaderBarShowUpdateIndicator => app.headerbar.show_update_notification(),
-                        Action::HeaderBarHideUpdateIndicator => app.headerbar.hide_update_notification(),
-                        Action::MarkAllPlayerNotification(pd) => {
-                            let notif = mark_all_notif(pd, &app.sender);
-                            notif.show(&app.overlay);
-                        }
-                        Action::RemoveShow(pd) => {
-                            let notif = remove_show_notif(pd, app.sender.clone());
-                            notif.show(&app.overlay);
-                        }
-                        Action::ErrorNotification(err) => {
-                            error!("An error notification was triggered: {}", err);
-                            let callback = || glib::Continue(false);
-                            let notif = InAppNotification::new(&err, callback,
-                                                               || {}, UndoState::Hidden);
-                            notif.show(&app.overlay);
-                        },
-                        Action::InitEpisode(rowid) => app.player.initialize_episode(rowid).unwrap(),
-                    }
-                }
-
-                Continue(true)
-            }),
-        );
+        gtk::timeout_add(25, clone!(app => move || app.setup_action_channel()));
     }
 
     fn setup_timed_callbacks(&self) {
@@ -259,6 +198,7 @@ impl App {
     fn setup_gactions(&self) {
         let sender = &self.sender;
         let win = &self.window;
+        let instance = &self.instance;
 
         // Create the `refresh` action.
         //
@@ -286,11 +226,64 @@ impl App {
         action!(win, "about", clone!(win => move |_, _| about_dialog(&win)));
 
         // Create the quit action
-        action!(
-            win,
-            "quit",
-            clone!(win => move |_, _| win.get_application().expect("Failed to get application").quit())
-        );
+        action!(win, "quit", clone!(win => move |_, _| instance.quit()));
+    }
+
+    fn setup_action_channel(&self) -> glib::Continue {
+        if let Some(action) = self.receiver.try_recv() {
+            trace!("Incoming channel action: {:?}", action);
+            match action {
+                Action::RefreshAllViews => self.content.update(),
+                Action::RefreshShowsView => self.content.update_shows_view(),
+                Action::RefreshWidgetIfSame(id) => self.content.update_widget_if_same(id),
+                Action::RefreshEpisodesView => self.content.update_home(),
+                Action::RefreshEpisodesViewBGR => self.content.update_home_if_background(),
+                Action::ReplaceWidget(pd) => {
+                    let shows = self.content.get_shows();
+                    let mut pop = shows.borrow().populated();
+                    pop.borrow_mut()
+                        .replace_widget(pd.clone())
+                        .map_err(|err| error!("Failed to update ShowWidget: {}", err))
+                        .map_err(|_| error!("Failed ot update ShowWidget {}", pd.title()))
+                        .ok();
+                }
+                Action::ShowWidgetAnimated => {
+                    let shows = self.content.get_shows();
+                    let mut pop = shows.borrow().populated();
+                    pop.borrow_mut().switch_visible(
+                        PopulatedState::Widget,
+                        gtk::StackTransitionType::SlideLeft,
+                    );
+                }
+                Action::ShowShowsAnimated => {
+                    let shows = self.content.get_shows();
+                    let mut pop = shows.borrow().populated();
+                    pop.borrow_mut()
+                        .switch_visible(PopulatedState::View, gtk::StackTransitionType::SlideRight);
+                }
+                Action::HeaderBarShowTile(title) => self.headerbar.switch_to_back(&title),
+                Action::HeaderBarNormal => self.headerbar.switch_to_normal(),
+                Action::HeaderBarShowUpdateIndicator => self.headerbar.show_update_notification(),
+                Action::HeaderBarHideUpdateIndicator => self.headerbar.hide_update_notification(),
+                Action::MarkAllPlayerNotification(pd) => {
+                    let notif = mark_all_notif(pd, &self.sender);
+                    notif.show(&self.overlay);
+                }
+                Action::RemoveShow(pd) => {
+                    let notif = remove_show_notif(pd, self.sender.clone());
+                    notif.show(&self.overlay);
+                }
+                Action::ErrorNotification(err) => {
+                    error!("An error notification was triggered: {}", err);
+                    let callback = || glib::Continue(false);
+                    let notif = InAppNotification::new(&err, callback, || {}, UndoState::Hidden);
+                    notif.show(&self.overlay);
+                }
+                Action::InitEpisode(rowid) => self.player.initialize_episode(rowid).unwrap(),
+            }
+        }
+
+        glib::Continue(true)
     }
 
     pub fn run() {
