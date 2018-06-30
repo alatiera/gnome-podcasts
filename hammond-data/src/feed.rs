@@ -9,7 +9,7 @@ use rss;
 use dbqueries;
 use errors::DataError;
 use models::{Index, IndexState, Update};
-use models::{NewEpisode, NewEpisodeMinimal, NewPodcast, Podcast};
+use models::{NewEpisode, NewEpisodeMinimal, NewShow, Show};
 
 /// Wrapper struct that hold a `Source` id and the `rss::Channel`
 /// that corresponds to the `Source.uri` field.
@@ -31,15 +31,15 @@ impl Feed {
             .and_then(move |pd| self.index_channel_items(pd))
     }
 
-    fn parse_podcast(&self) -> NewPodcast {
-        NewPodcast::new(&self.channel, self.source_id)
+    fn parse_podcast(&self) -> NewShow {
+        NewShow::new(&self.channel, self.source_id)
     }
 
-    fn parse_podcast_async(&self) -> impl Future<Item = NewPodcast, Error = DataError> + Send {
+    fn parse_podcast_async(&self) -> impl Future<Item = NewShow, Error = DataError> + Send {
         ok(self.parse_podcast())
     }
 
-    fn index_channel_items(self, pd: Podcast) -> impl Future<Item = (), Error = DataError> + Send {
+    fn index_channel_items(self, pd: Show) -> impl Future<Item = (), Error = DataError> + Send {
         let stream = stream::iter_ok::<_, DataError>(self.channel.into_items());
 
         // Parse the episodes
@@ -65,12 +65,12 @@ fn determine_ep_state(
     item: &rss::Item,
 ) -> Result<IndexState<NewEpisode>, DataError> {
     // Check if feed exists
-    let exists = dbqueries::episode_exists(ep.title(), ep.podcast_id())?;
+    let exists = dbqueries::episode_exists(ep.title(), ep.show_id())?;
 
     if !exists {
         Ok(IndexState::Index(ep.into_new_episode(item)))
     } else {
-        let old = dbqueries::get_episode_minimal_from_pk(ep.title(), ep.podcast_id())?;
+        let old = dbqueries::get_episode_minimal_from_pk(ep.title(), ep.show_id())?;
         let rowid = old.rowid();
 
         if ep != old {
@@ -204,7 +204,7 @@ mod tests {
         let file = fs::File::open(path).unwrap();
         let channel = Channel::read_from(BufReader::new(file)).unwrap();
 
-        let pd = NewPodcast::new(&channel, 42);
+        let pd = NewShow::new(&channel, 42);
         assert_eq!(feed.parse_podcast(), pd);
     }
 

@@ -1,5 +1,7 @@
+#![allow(warnings)]
+
 table! {
-    episode (title, podcast_id) {
+    episodes (title, show_id) {
         rowid -> Integer,
         title -> Text,
         uri -> Nullable<Text>,
@@ -10,22 +12,17 @@ table! {
         duration -> Nullable<Integer>,
         guid -> Nullable<Text>,
         played -> Nullable<Integer>,
-        favorite -> Bool,
-        archive -> Bool,
-        podcast_id -> Integer,
+        show_id -> Integer,
     }
 }
 
 table! {
-    podcast (id) {
+    shows (id) {
         id -> Integer,
         title -> Text,
         link -> Text,
         description -> Text,
         image_uri -> Nullable<Text>,
-        favorite -> Bool,
-        archive -> Bool,
-        always_dl -> Bool,
         source_id -> Integer,
     }
 }
@@ -39,4 +36,4 @@ table! {
     }
 }
 
-allow_tables_to_appear_in_same_query!(episode, podcast, source,);
+allow_tables_to_appear_in_same_query!(episodes, shows, source);

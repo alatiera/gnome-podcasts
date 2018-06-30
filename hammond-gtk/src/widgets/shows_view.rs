@@ -6,7 +6,7 @@ use failure::Error;
 use send_cell::SendCell;
 
 use hammond_data::dbqueries;
-use hammond_data::Podcast;
+use hammond_data::Show;
 
 use app::Action;
 use utils::{self, get_ignored_shows, lazy_load, set_image_from_path};
@@ -45,7 +45,7 @@ impl ShowsView {
     pub fn new(sender: Sender<Action>) -> Result<Rc<Self>, Error> {
         let pop = Rc::new(ShowsView::default());
         pop.init(sender);
-        // Populate the flowbox with the Podcasts.
+        // Populate the flowbox with the Shows.
         populate_flowbox(&pop)?;
         Ok(pop)
     }
@@ -147,13 +147,13 @@ impl Default for ShowsChild {
 }
 
 impl ShowsChild {
-    pub fn new(pd: &Podcast) -> ShowsChild {
+    pub fn new(pd: &Show) -> ShowsChild {
         let child = ShowsChild::default();
         child.init(pd);
         child
     }
 
-    fn init(&self, pd: &Podcast) {
+    fn init(&self, pd: &Show) {
         self.container.set_tooltip_text(pd.title());
         WidgetExt::set_name(&self.child, &pd.id().to_string());
 
@@ -162,7 +162,7 @@ impl ShowsChild {
             .ok();
     }
 
-    fn set_cover(&self, podcast_id: i32) -> Result<(), Error> {
-        set_image_from_path(&self.cover, podcast_id, 256)
+    fn set_cover(&self, show_id: i32) -> Result<(), Error> {
+        set_image_from_path(&self.cover, show_id, 256)
     }
 }

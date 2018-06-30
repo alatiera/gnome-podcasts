@@ -5,14 +5,14 @@ use diesel::SaveChangesDsl;
 
 use database::connection;
 use errors::DataError;
-use models::{Podcast, Save};
-use schema::episode;
+use models::{Save, Show};
+use schema::episodes;
 
 #[derive(Queryable, Identifiable, AsChangeset, Associations, PartialEq)]
-#[table_name = "episode"]
+#[table_name = "episodes"]
 #[changeset_options(treat_none_as_null = "true")]
-#[primary_key(title, podcast_id)]
-#[belongs_to(Podcast, foreign_key = "podcast_id")]
+#[primary_key(title, show_id)]
+#[belongs_to(Show, foreign_key = "show_id")]
 #[derive(Debug, Clone)]
 /// Diesel Model of the episode table.
 pub struct Episode {
@@ -26,9 +26,7 @@ pub struct Episode {
     duration: Option<i32>,
     guid: Option<String>,
     played: Option<i32>,
-    favorite: bool,
-    archive: bool,
-    podcast_id: i32,
+    show_id: i32,
 }
 
 impl Save<Episode> for Episode {
@@ -154,32 +152,9 @@ impl Episode {
         self.played = value;
     }
 
-    /// Represents the archiving policy for the episode.
-    pub fn archive(&self) -> bool {
-        self.archive
-    }
-
-    /// Set the `archive` policy.
-    ///
-    /// If true, the download cleanr will ignore the episode
-    /// and the corresponding media value will never be automaticly deleted.
-    pub fn set_archive(&mut self, b: bool) {
-        self.archive = b
-    }
-
-    /// Get the `favorite` status of the `Episode`.
-    pub fn favorite(&self) -> bool {
-        self.favorite
-    }
-
-    /// Set `favorite` status.
-    pub fn set_favorite(&mut self, b: bool) {
-        self.favorite = b
-    }
-
-    /// `Podcast` table foreign key.
-    pub fn podcast_id(&self) -> i32 {
-        self.podcast_id
+    /// `Show` table foreign key.
+    pub fn show_id(&self) -> i32 {
+        self.show_id
     }
 
     /// Sets the `played` value with the current `epoch` timestap and save it.
@@ -191,12 +166,12 @@ impl Episode {
 }
 
 #[derive(Queryable, AsChangeset, PartialEq)]
-#[table_name = "episode"]
+#[table_name = "episodes"]
 #[changeset_options(treat_none_as_null = "true")]
-#[primary_key(title, podcast_id)]
+#[primary_key(title, show_id)]
 #[derive(Debug, Clone)]
 /// Diesel Model to be used for constructing `EpisodeWidgets`.
-pub struct EpisodeWidgetQuery {
+pub struct EpisodeWidgetModel {
     rowid: i32,
     title: String,
     uri: Option<String>,
@@ -205,14 +180,12 @@ pub struct EpisodeWidgetQuery {
     length: Option<i32>,
     duration: Option<i32>,
     played: Option<i32>,
-    // favorite: bool,
-    // archive: bool,
-    podcast_id: i32,
+    show_id: i32,
 }
 
-impl From<Episode> for EpisodeWidgetQuery {
-    fn from(e: Episode) -> EpisodeWidgetQuery {
-        EpisodeWidgetQuery {
+impl From<Episode> for EpisodeWidgetModel {
+    fn from(e: Episode) -> EpisodeWidgetModel {
+        EpisodeWidgetModel {
             rowid: e.rowid,
             title: e.title,
             uri: e.uri,
@@ -221,30 +194,30 @@ impl From<Episode> for EpisodeWidgetQuery {
             length: e.length,
             duration: e.duration,
             played: e.played,
-            podcast_id: e.podcast_id,
+            show_id: e.show_id,
         }
     }
 }
 
-impl Save<usize> for EpisodeWidgetQuery {
+impl Save<usize> for EpisodeWidgetModel {
     type Error = DataError;
 
     /// Helper method to easily save/"sync" current state of self to the
     /// Database.
     fn save(&self) -> Result<usize, Self::Error> {
-        use schema::episode::dsl::*;
+        use schema::episodes::dsl::*;
 
         let db = connection();
         let tempdb = db.get()?;
 
-        diesel::update(episode.filter(rowid.eq(self.rowid)))
+        diesel::update(episodes.filter(rowid.eq(self.rowid)))
             .set(self)
             .execute(&*tempdb)
             .map_err(From::from)
     }
 }
 
-impl EpisodeWidgetQuery {
+impl EpisodeWidgetModel {
     /// Get the value of the sqlite's `ROW_ID`
     pub fn rowid(&self) -> i32 {
         self.rowid
@@ -319,32 +292,9 @@ impl EpisodeWidgetQuery {
         self.played = value;
     }
 
-    // /// Represents the archiving policy for the episode.
-    // pub fn archive(&self) -> bool {
-    //     self.archive
-    // }
-
-    // /// Set the `archive` policy.
-    // ///
-    // /// If true, the download cleanr will ignore the episode
-    // /// and the corresponding media value will never be automaticly deleted.
-    // pub fn set_archive(&mut self, b: bool) {
-    //     self.archive = b
-    // }
-
-    // /// Get the `favorite` status of the `Episode`.
-    // pub fn favorite(&self) -> bool {
-    //     self.favorite
-    // }
-
-    // /// Set `favorite` status.
-    // pub fn set_favorite(&mut self, b: bool) {
-    //     self.favorite = b
-    // }
-
-    /// `Podcast` table foreign key.
-    pub fn podcast_id(&self) -> i32 {
-        self.podcast_id
+    /// `Show` table foreign key.
+    pub fn show_id(&self) -> i32 {
+        self.show_id
     }
 
     /// Sets the `played` value with the current `epoch` timestap and save it.
@@ -356,38 +306,38 @@ impl EpisodeWidgetQuery {
 }
 
 #[derive(Queryable, AsChangeset, PartialEq)]
-#[table_name = "episode"]
+#[table_name = "episodes"]
 #[changeset_options(treat_none_as_null = "true")]
-#[primary_key(title, podcast_id)]
+#[primary_key(title, show_id)]
 #[derive(Debug, Clone)]
 /// Diesel Model to be used internal with the `utils::checkup` function.
-pub struct EpisodeCleanerQuery {
+pub struct EpisodeCleanerModel {
     rowid: i32,
     local_uri: Option<String>,
     played: Option<i32>,
 }
 
-impl Save<usize> for EpisodeCleanerQuery {
+impl Save<usize> for EpisodeCleanerModel {
     type Error = DataError;
 
     /// Helper method to easily save/"sync" current state of self to the
     /// Database.
     fn save(&self) -> Result<usize, Self::Error> {
-        use schema::episode::dsl::*;
+        use schema::episodes::dsl::*;
 
         let db = connection();
         let tempdb = db.get()?;
 
-        diesel::update(episode.filter(rowid.eq(self.rowid)))
+        diesel::update(episodes.filter(rowid.eq(self.rowid)))
             .set(self)
             .execute(&*tempdb)
             .map_err(From::from)
     }
 }
 
-impl From<Episode> for EpisodeCleanerQuery {
-    fn from(e: Episode) -> EpisodeCleanerQuery {
-        EpisodeCleanerQuery {
+impl From<Episode> for EpisodeCleanerModel {
+    fn from(e: Episode) -> EpisodeCleanerModel {
+        EpisodeCleanerModel {
             rowid: e.rowid(),
             local_uri: e.local_uri,
             played: e.played,
@@ -395,7 +345,7 @@ impl From<Episode> for EpisodeCleanerQuery {
     }
 }
 
-impl EpisodeCleanerQuery {
+impl EpisodeCleanerModel {
     /// Get the value of the sqlite's `ROW_ID`
     pub fn rowid(&self) -> i32 {
         self.rowid
@@ -428,9 +378,9 @@ impl EpisodeCleanerQuery {
 }
 
 #[derive(Queryable, AsChangeset, PartialEq)]
-#[table_name = "episode"]
+#[table_name = "episodes"]
 #[changeset_options(treat_none_as_null = "true")]
-#[primary_key(title, podcast_id)]
+#[primary_key(title, show_id)]
 #[derive(Debug, Clone)]
 /// Diesel Model to be used for FIXME.
 pub struct EpisodeMinimal {
@@ -440,7 +390,7 @@ pub struct EpisodeMinimal {
     epoch: i32,
     duration: Option<i32>,
     guid: Option<String>,
-    podcast_id: i32,
+    show_id: i32,
 }
 
 impl From<Episode> for EpisodeMinimal {
@@ -452,7 +402,7 @@ impl From<Episode> for EpisodeMinimal {
             guid: e.guid,
             epoch: e.epoch,
             duration: e.duration,
-            podcast_id: e.podcast_id,
+            show_id: e.show_id,
         }
     }
 }
@@ -495,8 +445,8 @@ impl EpisodeMinimal {
         self.duration
     }
 
-    /// `Podcast` table foreign key.
-    pub fn podcast_id(&self) -> i32 {
-        self.podcast_id
+    /// `Show` table foreign key.
+    pub fn show_id(&self) -> i32 {
+        self.show_id
     }
 }

@@ -3,42 +3,37 @@ use diesel::SaveChangesDsl;
 use database::connection;
 use errors::DataError;
 use models::{Save, Source};
-use schema::podcast;
-
-use std::sync::Arc;
+use schema::shows;
 
 #[derive(Queryable, Identifiable, AsChangeset, Associations, PartialEq)]
 #[belongs_to(Source, foreign_key = "source_id")]
 #[changeset_options(treat_none_as_null = "true")]
-#[table_name = "podcast"]
+#[table_name = "shows"]
 #[derive(Debug, Clone)]
-/// Diesel Model of the podcast table.
-pub struct Podcast {
+/// Diesel Model of the shows table.
+pub struct Show {
     id: i32,
     title: String,
     link: String,
     description: String,
     image_uri: Option<String>,
-    favorite: bool,
-    archive: bool,
-    always_dl: bool,
     source_id: i32,
 }
 
-impl Save<Podcast> for Podcast {
+impl Save<Show> for Show {
     type Error = DataError;
 
     /// Helper method to easily save/"sync" current state of self to the
     /// Database.
-    fn save(&self) -> Result<Podcast, Self::Error> {
+    fn save(&self) -> Result<Show, Self::Error> {
         let db = connection();
         let tempdb = db.get()?;
 
-        self.save_changes::<Podcast>(&*tempdb).map_err(From::from)
+        self.save_changes::<Show>(&*tempdb).map_err(From::from)
     }
 }
 
-impl Podcast {
+impl Show {
     /// Get the Feed `id`.
     pub fn id(&self) -> i32 {
         self.id
@@ -56,7 +51,7 @@ impl Podcast {
         &self.link
     }
 
-    /// Set the Podcast/Feed `link`.
+    /// Set the Show/Feed `link`.
     pub fn set_link(&mut self, value: &str) {
         self.link = value.to_string();
     }
@@ -83,41 +78,6 @@ impl Podcast {
         self.image_uri = value.map(|x| x.to_string());
     }
 
-    /// Represents the archiving policy for the episode.
-    pub fn archive(&self) -> bool {
-        self.archive
-    }
-
-    /// Set the `archive` policy.
-    pub fn set_archive(&mut self, b: bool) {
-        self.archive = b
-    }
-
-    /// Get the `favorite` status of the `Podcast` Feed.
-    pub fn favorite(&self) -> bool {
-        self.favorite
-    }
-
-    /// Set `favorite` status.
-    pub fn set_favorite(&mut self, b: bool) {
-        self.favorite = b
-    }
-
-    /// Represents the download policy for the `Podcast` Feed.
-    ///
-    /// Reserved for the use with a Download manager, yet to be implemented.
-    ///
-    /// If true Podcast Episode should be downloaded automaticly/skipping
-    /// the selection queue.
-    pub fn always_download(&self) -> bool {
-        self.always_dl
-    }
-
-    /// Set the download policy.
-    pub fn set_always_download(&mut self, b: bool) {
-        self.always_dl = b
-    }
-
     /// `Source` table foreign key.
     pub fn source_id(&self) -> i32 {
         self.source_id
@@ -125,17 +85,17 @@ impl Podcast {
 }
 
 #[derive(Queryable, Debug, Clone)]
-/// Diesel Model of the podcast cover query.
-/// Used for fetching information about a Podcast's cover.
-pub struct PodcastCoverQuery {
+/// Diesel Model of the Show cover query.
+/// Used for fetching information about a Show's cover.
+pub struct ShowCoverModel {
     id: i32,
     title: String,
     image_uri: Option<String>,
 }
 
-impl From<Podcast> for PodcastCoverQuery {
-    fn from(p: Podcast) -> PodcastCoverQuery {
-        PodcastCoverQuery {
+impl From<Show> for ShowCoverModel {
+    fn from(p: Show) -> ShowCoverModel {
+        ShowCoverModel {
             id: p.id(),
             title: p.title,
             image_uri: p.image_uri,
@@ -143,17 +103,7 @@ impl From<Podcast> for PodcastCoverQuery {
     }
 }
 
-impl From<Arc<Podcast>> for PodcastCoverQuery {
-    fn from(p: Arc<Podcast>) -> PodcastCoverQuery {
-        PodcastCoverQuery {
-            id: p.id(),
-            title: p.title.clone(),
-            image_uri: p.image_uri.clone(),
-        }
-    }
-}
-
-impl PodcastCoverQuery {
+impl ShowCoverModel {
     /// Get the Feed `id`.
     pub fn id(&self) -> i32 {
         self.id

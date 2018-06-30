@@ -6,7 +6,7 @@ use crossbeam_channel::Sender;
 use failure::Error;
 
 use hammond_data::dbqueries;
-use hammond_data::Podcast;
+use hammond_data::Show;
 
 use app::Action;
 use widgets::{ShowWidget, ShowsView};
@@ -89,13 +89,11 @@ impl PopulatedStack {
         Ok(())
     }
 
-    pub fn replace_widget(&mut self, pd: Arc<Podcast>) -> Result<(), Error> {
+    pub fn replace_widget(&mut self, pd: Arc<Show>) -> Result<(), Error> {
         let old = self.show.container.clone();
 
         // save the ShowWidget vertical scrollabar alignment
-        self.show
-            .podcast_id()
-            .map(|id| self.show.save_vadjustment(id));
+        self.show.show_id().map(|id| self.show.save_vadjustment(id));
 
         let new = ShowWidget::new(pd, self.sender.clone());
         self.show = new;
@@ -113,7 +111,7 @@ impl PopulatedStack {
 
     pub fn update_widget(&mut self) -> Result<(), Error> {
         let old = self.show.container.clone();
-        let id = self.show.podcast_id();
+        let id = self.show.show_id();
         if id.is_none() {
             return Ok(());
         }
@@ -131,9 +129,9 @@ impl PopulatedStack {
         Ok(())
     }
 
-    // Only update widget if its podcast_id is equal to pid.
+    // Only update widget if its show_id is equal to pid.
     pub fn update_widget_if_same(&mut self, pid: i32) -> Result<(), Error> {
-        if self.show.podcast_id() != Some(pid) {
+        if self.show.show_id() != Some(pid) {
             debug!("Different widget. Early return");
             return Ok(());
         }

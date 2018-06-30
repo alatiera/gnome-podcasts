@@ -7,7 +7,7 @@ use url::{Position, Url};
 
 use dbqueries;
 use errors::DataError;
-use models::{EpisodeCleanerQuery, Podcast, Save};
+use models::{EpisodeCleanerModel, Save, Show};
 use xdg_dirs::DL_DIR;
 
 use std::fs;
@@ -59,7 +59,7 @@ fn played_cleaner(cleanup_date: DateTime<Utc>) -> Result<(), DataError> {
 }
 
 /// Check `ep.local_uri` field and delete the file it points to.
-fn delete_local_content(ep: &mut EpisodeCleanerQuery) -> Result<(), DataError> {
+fn delete_local_content(ep: &mut EpisodeCleanerModel) -> Result<(), DataError> {
     if ep.local_uri().is_some() {
         let uri = ep.local_uri().unwrap().to_owned();
         if Path::new(&uri).exists() {
@@ -108,9 +108,9 @@ pub fn url_cleaner(s: &str) -> String {
     }
 }
 
-/// Returns the URI of a Podcast Downloads given it's title.
+/// Returns the URI of a Show Downloads given it's title.
 pub fn get_download_folder(pd_title: &str) -> Result<String, DataError> {
-    // It might be better to make it a hash of the title or the podcast rowid
+    // It might be better to make it a hash of the title or the Show rowid
     let download_fold = format!("{}/{}", DL_DIR.to_str().unwrap(), pd_title);
 
     // Create the folder
@@ -123,7 +123,7 @@ pub fn get_download_folder(pd_title: &str) -> Result<String, DataError> {
 /// Removes all the entries associated with the given show from the database,
 /// and deletes all of the downloaded content.
 // TODO: Write Tests
-pub fn delete_show(pd: &Podcast) -> Result<(), DataError> {
+pub fn delete_show(pd: &Show) -> Result<(), DataError> {
     dbqueries::remove_feed(pd)?;
     info!("{} was removed succesfully.", pd.title());
 
@@ -183,7 +183,7 @@ mod tests {
         // Setup episodes
         let n1 = NewEpisodeBuilder::default()
             .title("foo_bar".to_string())
-            .podcast_id(0)
+            .show_id(0)
             .build()
             .unwrap()
             .to_episode()
@@ -191,14 +191,14 @@ mod tests {
 
         let n2 = NewEpisodeBuilder::default()
             .title("bar_baz".to_string())
-            .podcast_id(1)
+            .show_id(1)
             .build()
             .unwrap()
             .to_episode()
             .unwrap();
 
-        let mut ep1 = dbqueries::get_episode_from_pk(n1.title(), n1.podcast_id()).unwrap();
-        let mut ep2 = dbqueries::get_episode_from_pk(n2.title(), n2.podcast_id()).unwrap();
+        let mut ep1 = dbqueries::get_episode_from_pk(n1.title(), n1.show_id()).unwrap();
+        let mut ep2 = dbqueries::get_episode_from_pk(n2.title(), n2.show_id()).unwrap();
         ep1.set_local_uri(Some(valid_path.to_str().unwrap()));
         ep2.set_local_uri(Some(bad_path.to_str().unwrap()));
 
@@ -230,7 +230,7 @@ mod tests {
     #[test]
     fn test_download_cleaner() {
         let _tmp_dir = helper_db();
-        let mut episode: EpisodeCleanerQuery =
+        let mut episode: EpisodeCleanerModel =
             dbqueries::get_episode_from_pk("foo_bar", 0).unwrap().into();
 
         let valid_path = episode.local_uri().unwrap().to_owned();
