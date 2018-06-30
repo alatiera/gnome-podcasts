@@ -357,7 +357,7 @@ impl PlayerWidget {
 
     pub fn initialize_episode(&self, rowid: i32) -> Result<(), Error> {
         let ep = dbqueries::get_episode_widget_from_rowid(rowid)?;
-        let pd = dbqueries::get_podcast_cover_from_id(ep.podcast_id())?;
+        let pd = dbqueries::get_podcast_cover_from_id(ep.show_id())?;
 
         self.info.init(&ep, &pd);
         // Currently that will always be the case since the play button is

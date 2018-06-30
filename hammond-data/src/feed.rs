@@ -65,12 +65,12 @@ fn determine_ep_state(
     item: &rss::Item,
 ) -> Result<IndexState<NewEpisode>, DataError> {
     // Check if feed exists
-    let exists = dbqueries::episode_exists(ep.title(), ep.podcast_id())?;
+    let exists = dbqueries::episode_exists(ep.title(), ep.show_id())?;
 
     if !exists {
         Ok(IndexState::Index(ep.into_new_episode(item)))
     } else {
-        let old = dbqueries::get_episode_minimal_from_pk(ep.title(), ep.podcast_id())?;
+        let old = dbqueries::get_episode_minimal_from_pk(ep.title(), ep.show_id())?;
         let rowid = old.rowid();
 
         if ep != old {

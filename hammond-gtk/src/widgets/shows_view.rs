@@ -162,7 +162,7 @@ impl ShowsChild {
             .ok();
     }
 
-    fn set_cover(&self, podcast_id: i32) -> Result<(), Error> {
-        set_image_from_path(&self.cover, podcast_id, 256)
+    fn set_cover(&self, show_id: i32) -> Result<(), Error> {
+        set_image_from_path(&self.cover, show_id, 256)
     }
 }

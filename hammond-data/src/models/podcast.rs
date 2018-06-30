@@ -3,16 +3,16 @@ use diesel::SaveChangesDsl;
 use database::connection;
 use errors::DataError;
 use models::{Save, Source};
-use schema::podcast;
+use schema::shows;
 
 use std::sync::Arc;
 
 #[derive(Queryable, Identifiable, AsChangeset, Associations, PartialEq)]
 #[belongs_to(Source, foreign_key = "source_id")]
 #[changeset_options(treat_none_as_null = "true")]
-#[table_name = "podcast"]
+#[table_name = "shows"]
 #[derive(Debug, Clone)]
-/// Diesel Model of the podcast table.
+/// Diesel Model of the shows table.
 pub struct Podcast {
     id: i32,
     title: String,

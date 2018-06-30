@@ -429,7 +429,7 @@ impl EpisodeWidget {
 }
 
 fn on_download_clicked(ep: &EpisodeWidgetQuery, sender: &Sender<Action>) -> Result<(), Error> {
-    let pd = dbqueries::get_podcast_from_id(ep.podcast_id())?;
+    let pd = dbqueries::get_podcast_from_id(ep.show_id())?;
     let download_fold = get_download_folder(&pd.title())?;
 
     // Start a new download.

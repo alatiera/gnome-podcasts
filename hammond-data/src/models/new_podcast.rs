@@ -6,14 +6,14 @@ use rss;
 use errors::DataError;
 use models::Podcast;
 use models::{Index, Insert, Update};
-use schema::podcast;
+use schema::shows;
 
 use database::connection;
 use dbqueries;
 use utils::url_cleaner;
 
 #[derive(Insertable, AsChangeset)]
-#[table_name = "podcast"]
+#[table_name = "shows"]
 #[derive(Debug, Clone, Default, Builder, PartialEq)]
 #[builder(default)]
 #[builder(derive(Debug))]
@@ -30,11 +30,11 @@ impl Insert<()> for NewPodcast {
     type Error = DataError;
 
     fn insert(&self) -> Result<(), Self::Error> {
-        use schema::podcast::dsl::*;
+        use schema::shows::dsl::*;
         let db = connection();
         let con = db.get()?;
 
-        diesel::insert_into(podcast)
+        diesel::insert_into(shows)
             .values(self)
             .execute(&con)
             .map(|_| ())
@@ -45,13 +45,13 @@ impl Insert<()> for NewPodcast {
 impl Update<()> for NewPodcast {
     type Error = DataError;
 
-    fn update(&self, podcast_id: i32) -> Result<(), Self::Error> {
-        use schema::podcast::dsl::*;
+    fn update(&self, show_id: i32) -> Result<(), Self::Error> {
+        use schema::shows::dsl::*;
         let db = connection();
         let con = db.get()?;
 
         info!("Updating {}", self.title);
-        diesel::update(podcast.filter(id.eq(podcast_id)))
+        diesel::update(shows.filter(id.eq(show_id)))
             .set(self)
             .execute(&con)
             .map(|_| ())
@@ -160,7 +160,7 @@ mod tests {
     use rss::Channel;
 
     use database::truncate_db;
-    use models::{NewPodcastBuilder, Save};
+    use models::NewPodcastBuilder;
 
     use std::fs::File;
     use std::io::BufReader;
@@ -369,20 +369,13 @@ mod tests {
 
         let updated = &*UPDATED_DESC_INTERCEPTED;
         updated.update(old.id()).unwrap();
-        let mut new = dbqueries::get_podcast_from_source_id(42).unwrap();
+        let new = dbqueries::get_podcast_from_source_id(42).unwrap();
 
         assert_ne!(old, new);
         assert_eq!(old.id(), new.id());
         assert_eq!(old.source_id(), new.source_id());
         assert_eq!(updated, &new);
         assert_ne!(updated, &old);
-
-        // Chech that the update does not override user preferences.
-        new.set_archive(true);
-        new.save().unwrap();
-
-        let new2 = dbqueries::get_podcast_from_source_id(42).unwrap();
-        assert_eq!(true, new2.archive());
     }
 
     #[test]
@@ -424,16 +417,7 @@ mod tests {
         let pd = EXPECTED_INTERCEPTED.to_podcast().unwrap();
         // This should error as a unique constrain violation
         assert!(EXPECTED_INTERCEPTED.insert().is_err());
-        let mut old = dbqueries::get_podcast_from_source_id(42).unwrap();
-        assert_eq!(old, pd);
-
-        old.set_archive(true);
-        old.save().unwrap();
-
-        // Assert that it does not mess with user preferences
-        let pd = UPDATED_DESC_INTERCEPTED.to_podcast().unwrap();
         let old = dbqueries::get_podcast_from_source_id(42).unwrap();
         assert_eq!(old, pd);
-        assert_eq!(old.archive(), true);
     }
 }

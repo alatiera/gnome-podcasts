@@ -9,11 +9,11 @@ use dbqueries;
 use errors::DataError;
 use models::{Episode, EpisodeMinimal, Index, Insert, Update};
 use parser;
-use schema::episode;
+use schema::episodes;
 use utils::url_cleaner;
 
 #[derive(Insertable, AsChangeset)]
-#[table_name = "episode"]
+#[table_name = "episodes"]
 #[derive(Debug, Clone, Default, Builder, PartialEq)]
 #[builder(default)]
 #[builder(derive(Debug))]
@@ -26,7 +26,7 @@ pub(crate) struct NewEpisode {
     duration: Option<i32>,
     guid: Option<String>,
     epoch: i32,
-    podcast_id: i32,
+    show_id: i32,
 }
 
 impl From<NewEpisodeMinimal> for NewEpisode {
@@ -36,7 +36,7 @@ impl From<NewEpisodeMinimal> for NewEpisode {
             .uri(e.uri)
             .duration(e.duration)
             .epoch(e.epoch)
-            .podcast_id(e.podcast_id)
+            .show_id(e.show_id)
             .guid(e.guid)
             .build()
             .unwrap()
@@ -47,12 +47,12 @@ impl Insert<()> for NewEpisode {
     type Error = DataError;
 
     fn insert(&self) -> Result<(), DataError> {
-        use schema::episode::dsl::*;
+        use schema::episodes::dsl::*;
         let db = connection();
         let con = db.get()?;
 
         info!("Inserting {:?}", self.title);
-        diesel::insert_into(episode)
+        diesel::insert_into(episodes)
             .values(self)
             .execute(&con)
             .map_err(From::from)
@@ -64,12 +64,12 @@ impl Update<()> for NewEpisode {
     type Error = DataError;
 
     fn update(&self, episode_id: i32) -> Result<(), DataError> {
-        use schema::episode::dsl::*;
+        use schema::episodes::dsl::*;
         let db = connection();
         let con = db.get()?;
 
         info!("Updating {:?}", self.title);
-        diesel::update(episode.filter(rowid.eq(episode_id)))
+        diesel::update(episodes.filter(rowid.eq(episode_id)))
             .set(self)
             .execute(&con)
             .map_err(From::from)
@@ -83,10 +83,10 @@ impl Index<()> for NewEpisode {
     // Does not update the episode description if it's the only thing that has
     // changed.
     fn index(&self) -> Result<(), DataError> {
-        let exists = dbqueries::episode_exists(self.title(), self.podcast_id())?;
+        let exists = dbqueries::episode_exists(self.title(), self.show_id())?;
 
         if exists {
-            let other = dbqueries::get_episode_minimal_from_pk(self.title(), self.podcast_id())?;
+            let other = dbqueries::get_episode_minimal_from_pk(self.title(), self.show_id())?;
 
             if self != &other {
                 self.update(other.rowid())
@@ -106,7 +106,7 @@ impl PartialEq<EpisodeMinimal> for NewEpisode {
             && (self.duration() == other.duration())
             && (self.epoch() == other.epoch())
             && (self.guid() == other.guid())
-            && (self.podcast_id() == other.podcast_id())
+            && (self.show_id() == other.show_id())
     }
 }
 
@@ -117,7 +117,7 @@ impl PartialEq<Episode> for NewEpisode {
             && (self.duration() == other.duration())
             && (self.epoch() == other.epoch())
             && (self.guid() == other.guid())
-            && (self.podcast_id() == other.podcast_id())
+            && (self.show_id() == other.show_id())
             && (self.description() == other.description())
             && (self.length() == other.length())
     }
@@ -126,14 +126,14 @@ impl PartialEq<Episode> for NewEpisode {
 impl NewEpisode {
     /// Parses an `rss::Item` into a `NewEpisode` Struct.
     #[allow(dead_code)]
-    pub(crate) fn new(item: &rss::Item, podcast_id: i32) -> Result<Self, DataError> {
-        NewEpisodeMinimal::new(item, podcast_id).map(|ep| ep.into_new_episode(item))
+    pub(crate) fn new(item: &rss::Item, show_id: i32) -> Result<Self, DataError> {
+        NewEpisodeMinimal::new(item, show_id).map(|ep| ep.into_new_episode(item))
     }
 
     #[allow(dead_code)]
     pub(crate) fn to_episode(&self) -> Result<Episode, DataError> {
         self.index()?;
-        dbqueries::get_episode_from_pk(&self.title, self.podcast_id).map_err(From::from)
+        dbqueries::get_episode_from_pk(&self.title, self.show_id).map_err(From::from)
     }
 }
 
@@ -167,13 +167,13 @@ impl NewEpisode {
         self.length
     }
 
-    pub(crate) fn podcast_id(&self) -> i32 {
-        self.podcast_id
+    pub(crate) fn show_id(&self) -> i32 {
+        self.show_id
     }
 }
 
 #[derive(Insertable, AsChangeset)]
-#[table_name = "episode"]
+#[table_name = "episodes"]
 #[derive(Debug, Clone, Builder, PartialEq)]
 #[builder(derive(Debug))]
 #[builder(setter(into))]
@@ -183,7 +183,7 @@ pub(crate) struct NewEpisodeMinimal {
     duration: Option<i32>,
     epoch: i32,
     guid: Option<String>,
-    podcast_id: i32,
+    show_id: i32,
 }
 
 impl PartialEq<EpisodeMinimal> for NewEpisodeMinimal {
@@ -193,7 +193,7 @@ impl PartialEq<EpisodeMinimal> for NewEpisodeMinimal {
             && (self.duration() == other.duration())
             && (self.epoch() == other.epoch())
             && (self.guid() == other.guid())
-            && (self.podcast_id() == other.podcast_id())
+            && (self.show_id() == other.show_id())
     }
 }
 
@@ -241,7 +241,7 @@ impl NewEpisodeMinimal {
             .duration(duration)
             .epoch(epoch)
             .guid(guid)
-            .podcast_id(parent_id)
+            .show_id(parent_id)
             .build()
             .map_err(From::from)
     }
@@ -263,7 +263,7 @@ impl NewEpisodeMinimal {
             .uri(self.uri)
             .duration(self.duration)
             .epoch(self.epoch)
-            .podcast_id(self.podcast_id)
+            .show_id(self.show_id)
             .guid(self.guid)
             .length(length)
             .description(description)
@@ -294,8 +294,8 @@ impl NewEpisodeMinimal {
         self.epoch
     }
 
-    pub(crate) fn podcast_id(&self) -> i32 {
-        self.podcast_id
+    pub(crate) fn show_id(&self) -> i32 {
+        self.show_id
     }
 }
 #[cfg(test)]
@@ -324,7 +324,7 @@ mod tests {
                 .guid(Some(String::from("7df4070a-9832-11e7-adac-cb37b05d5e24")))
                 .epoch(1505296800)
                 .duration(Some(4171))
-                .podcast_id(42)
+                .show_id(42)
                 .build()
                 .unwrap()
         };
@@ -337,7 +337,7 @@ mod tests {
                 .guid(Some(String::from("7c207a24-e33f-11e6-9438-eb45dcf36a1d")))
                 .epoch(1502272800)
                 .duration(Some(4415))
-                .podcast_id(42)
+                .show_id(42)
                 .build()
                 .unwrap()
         };
@@ -358,7 +358,7 @@ mod tests {
                 .length(Some(66738886))
                 .epoch(1505296800)
                 .duration(Some(4171))
-                .podcast_id(42)
+                .show_id(42)
                 .build()
                 .unwrap()
         };
@@ -382,7 +382,7 @@ mod tests {
                 .length(Some(67527575))
                 .epoch(1502272800)
                 .duration(Some(4415))
-                .podcast_id(42)
+                .show_id(42)
                 .build()
                 .unwrap()
         };
@@ -397,7 +397,7 @@ mod tests {
                 .length(Some(66738886))
                 .epoch(1505296800)
                 .duration(Some(424242))
-                .podcast_id(42)
+                .show_id(42)
                 .build()
                 .unwrap()
         };
@@ -410,7 +410,7 @@ mod tests {
                 .guid(Some(String::from("78A682B4-73E8-47B8-88C0-1BE62DD4EF9D")))
                 .epoch(1505280282)
                 .duration(Some(5733))
-                .podcast_id(42)
+                .show_id(42)
                 .build()
                 .unwrap()
         };
@@ -423,7 +423,7 @@ mod tests {
                 .guid(Some(String::from("1CE57548-B36C-4F14-832A-5D5E0A24E35B")))
                 .epoch(1504670247)
                 .duration(Some(4491))
-                .podcast_id(42)
+                .show_id(42)
                 .build()
                 .unwrap()
         };
@@ -443,7 +443,7 @@ mod tests {
                 .length(Some(46479789))
                 .epoch(1505280282)
                 .duration(Some(5733))
-                .podcast_id(42)
+                .show_id(42)
                 .build()
                 .unwrap()
         };
@@ -465,7 +465,7 @@ mod tests {
                 .length(Some(36544272))
                 .epoch(1504670247)
                 .duration(Some(4491))
-                .podcast_id(42)
+                .show_id(42)
                 .build()
                 .unwrap()
         };
@@ -558,7 +558,7 @@ mod tests {
         let episode = channel.items().iter().nth(14).unwrap();
         let new_ep = NewEpisode::new(&episode, 42).unwrap();
         new_ep.insert().unwrap();
-        let ep = dbqueries::get_episode_from_pk(new_ep.title(), new_ep.podcast_id()).unwrap();
+        let ep = dbqueries::get_episode_from_pk(new_ep.title(), new_ep.show_id()).unwrap();
 
         assert_eq!(new_ep, ep);
         assert_eq!(&new_ep, &*EXPECTED_INTERCEPTED_1);
@@ -567,7 +567,7 @@ mod tests {
         let episode = channel.items().iter().nth(15).unwrap();
         let new_ep = NewEpisode::new(&episode, 42).unwrap();
         new_ep.insert().unwrap();
-        let ep = dbqueries::get_episode_from_pk(new_ep.title(), new_ep.podcast_id()).unwrap();
+        let ep = dbqueries::get_episode_from_pk(new_ep.title(), new_ep.show_id()).unwrap();
 
         assert_eq!(new_ep, ep);
         assert_eq!(&new_ep, &*EXPECTED_INTERCEPTED_2);
@@ -581,21 +581,15 @@ mod tests {
 
         let updated = &*UPDATED_DURATION_INTERCEPTED_1;
         updated.update(old.rowid()).unwrap();
-        let mut new = dbqueries::get_episode_from_pk(old.title(), old.podcast_id()).unwrap();
+        let new = dbqueries::get_episode_from_pk(old.title(), old.show_id()).unwrap();
 
-        // Assert that updating does not change the rowid and podcast_id
+        // Assert that updating does not change the rowid and show_id
         assert_ne!(old, new);
         assert_eq!(old.rowid(), new.rowid());
-        assert_eq!(old.podcast_id(), new.podcast_id());
+        assert_eq!(old.show_id(), new.show_id());
 
         assert_eq!(updated, &new);
         assert_ne!(updated, &old);
-
-        new.set_archive(true);
-        new.save().unwrap();
-
-        let new2 = dbqueries::get_episode_from_pk(old.title(), old.podcast_id()).unwrap();
-        assert_eq!(true, new2.archive());
     }
 
     #[test]
@@ -608,7 +602,7 @@ mod tests {
         // Second identical, This should take the early return path
         assert!(expected.index().is_ok());
         // Get the episode
-        let old = dbqueries::get_episode_from_pk(expected.title(), expected.podcast_id()).unwrap();
+        let old = dbqueries::get_episode_from_pk(expected.title(), expected.show_id()).unwrap();
         // Assert that NewPodcast is equal to the Indexed one
         assert_eq!(*expected, old);
 
@@ -617,23 +611,22 @@ mod tests {
         // Update the podcast
         assert!(updated.index().is_ok());
         // Get the new Podcast
-        let new = dbqueries::get_episode_from_pk(expected.title(), expected.podcast_id()).unwrap();
+        let new = dbqueries::get_episode_from_pk(expected.title(), expected.show_id()).unwrap();
         // Assert it's diff from the old one.
         assert_ne!(new, old);
         assert_eq!(*updated, new);
         assert_eq!(new.rowid(), old.rowid());
-        assert_eq!(new.podcast_id(), old.podcast_id());
+        assert_eq!(new.show_id(), old.show_id());
     }
 
     #[test]
     fn test_new_episode_to_episode() {
         let expected = &*EXPECTED_INTERCEPTED_1;
-        let updated = &*UPDATED_DURATION_INTERCEPTED_1;
 
         // Assert insert() produces the same result that you would get with to_podcast()
         truncate_db().unwrap();
         expected.insert().unwrap();
-        let old = dbqueries::get_episode_from_pk(expected.title(), expected.podcast_id()).unwrap();
+        let old = dbqueries::get_episode_from_pk(expected.title(), expected.show_id()).unwrap();
         let ep = expected.to_episode().unwrap();
         assert_eq!(old, ep);
 
@@ -642,17 +635,7 @@ mod tests {
         let ep = expected.to_episode().unwrap();
         // This should error as a unique constrain violation
         assert!(expected.insert().is_err());
-        let mut old =
-            dbqueries::get_episode_from_pk(expected.title(), expected.podcast_id()).unwrap();
+        let old = dbqueries::get_episode_from_pk(expected.title(), expected.show_id()).unwrap();
         assert_eq!(old, ep);
-
-        old.set_archive(true);
-        old.save().unwrap();
-
-        // Assert that it does not mess with user preferences
-        let ep = updated.to_episode().unwrap();
-        let old = dbqueries::get_episode_from_pk(expected.title(), expected.podcast_id()).unwrap();
-        assert_eq!(old, ep);
-        assert_eq!(old.archive(), true);
     }
 }

@@ -36,7 +36,7 @@ pub struct ShowWidget {
     settings: gtk::MenuButton,
     unsub: gtk::Button,
     episodes: gtk::ListBox,
-    podcast_id: Option<i32>,
+    show_id: Option<i32>,
 }
 
 impl Default for ShowWidget {
@@ -61,7 +61,7 @@ impl Default for ShowWidget {
             link,
             settings,
             episodes,
-            podcast_id: None,
+            show_id: None,
         }
     }
 }
@@ -87,7 +87,7 @@ impl ShowWidget {
         }));
 
         self.set_description(pd.description());
-        self.podcast_id = Some(pd.id());
+        self.show_id = Some(pd.id());
 
         self.set_cover(&pd)
             .map_err(|err| error!("Failed to set a cover: {}", err))
@@ -166,8 +166,8 @@ impl ShowWidget {
         Ok(())
     }
 
-    pub fn podcast_id(&self) -> Option<i32> {
-        self.podcast_id
+    pub fn show_id(&self) -> Option<i32> {
+        self.show_id
     }
 }
 

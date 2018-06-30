@@ -68,8 +68,8 @@ fn run_migration_on(connection: &SqliteConnection) -> Result<(), DataError> {
 pub fn truncate_db() -> Result<(), DataError> {
     let db = connection();
     let con = db.get()?;
-    con.execute("DELETE FROM episode")?;
-    con.execute("DELETE FROM podcast")?;
+    con.execute("DELETE FROM episodes")?;
+    con.execute("DELETE FROM shows")?;
     con.execute("DELETE FROM source")?;
     Ok(())
 }

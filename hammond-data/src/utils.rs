@@ -183,7 +183,7 @@ mod tests {
         // Setup episodes
         let n1 = NewEpisodeBuilder::default()
             .title("foo_bar".to_string())
-            .podcast_id(0)
+            .show_id(0)
             .build()
             .unwrap()
             .to_episode()
@@ -191,14 +191,14 @@ mod tests {
 
         let n2 = NewEpisodeBuilder::default()
             .title("bar_baz".to_string())
-            .podcast_id(1)
+            .show_id(1)
             .build()
             .unwrap()
             .to_episode()
             .unwrap();
 
-        let mut ep1 = dbqueries::get_episode_from_pk(n1.title(), n1.podcast_id()).unwrap();
-        let mut ep2 = dbqueries::get_episode_from_pk(n2.title(), n2.podcast_id()).unwrap();
+        let mut ep1 = dbqueries::get_episode_from_pk(n1.title(), n1.show_id()).unwrap();
+        let mut ep2 = dbqueries::get_episode_from_pk(n2.title(), n2.show_id()).unwrap();
         ep1.set_local_uri(Some(valid_path.to_str().unwrap()));
         ep2.set_local_uri(Some(bad_path.to_str().unwrap()));
 

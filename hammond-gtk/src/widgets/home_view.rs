@@ -202,7 +202,7 @@ impl HomeEpisode {
             gtk::Builder::new_from_resource("/org/gnome/Hammond/gtk/episodes_view_widget.ui");
         let container: gtk::Box = builder.get_object("container").unwrap();
         let image: gtk::Image = builder.get_object("cover").unwrap();
-        let pid = episode.podcast_id();
+        let pid = episode.show_id();
         let ep = EpisodeWidget::new(episode, sender);
 
         let view = HomeEpisode {
@@ -215,15 +215,15 @@ impl HomeEpisode {
         view
     }
 
-    fn init(&self, podcast_id: i32) {
-        self.set_cover(podcast_id)
+    fn init(&self, show_id: i32) {
+        self.set_cover(show_id)
             .map_err(|err| error!("Failed to set a cover: {}", err))
             .ok();
 
         self.container.pack_start(&self.episode, true, true, 6);
     }
 
-    fn set_cover(&self, podcast_id: i32) -> Result<(), Error> {
-        utils::set_image_from_path(&self.image, podcast_id, 64)
+    fn set_cover(&self, show_id: i32) -> Result<(), Error> {
+        utils::set_image_from_path(&self.image, show_id, 64)
     }
 }

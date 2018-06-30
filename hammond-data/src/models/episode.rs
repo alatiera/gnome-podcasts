@@ -6,13 +6,13 @@ use diesel::SaveChangesDsl;
 use database::connection;
 use errors::DataError;
 use models::{Podcast, Save};
-use schema::episode;
+use schema::episodes;
 
 #[derive(Queryable, Identifiable, AsChangeset, Associations, PartialEq)]
-#[table_name = "episode"]
+#[table_name = "episodes"]
 #[changeset_options(treat_none_as_null = "true")]
-#[primary_key(title, podcast_id)]
-#[belongs_to(Podcast, foreign_key = "podcast_id")]
+#[primary_key(title, show_id)]
+#[belongs_to(Podcast, foreign_key = "show_id")]
 #[derive(Debug, Clone)]
 /// Diesel Model of the episode table.
 pub struct Episode {
@@ -26,7 +26,7 @@ pub struct Episode {
     duration: Option<i32>,
     guid: Option<String>,
     played: Option<i32>,
-    podcast_id: i32,
+    show_id: i32,
 }
 
 impl Save<Episode> for Episode {
@@ -153,8 +153,8 @@ impl Episode {
     }
 
     /// `Podcast` table foreign key.
-    pub fn podcast_id(&self) -> i32 {
-        self.podcast_id
+    pub fn show_id(&self) -> i32 {
+        self.show_id
     }
 
     /// Sets the `played` value with the current `epoch` timestap and save it.
@@ -166,9 +166,9 @@ impl Episode {
 }
 
 #[derive(Queryable, AsChangeset, PartialEq)]
-#[table_name = "episode"]
+#[table_name = "episodes"]
 #[changeset_options(treat_none_as_null = "true")]
-#[primary_key(title, podcast_id)]
+#[primary_key(title, show_id)]
 #[derive(Debug, Clone)]
 /// Diesel Model to be used for constructing `EpisodeWidgets`.
 pub struct EpisodeWidgetQuery {
@@ -180,7 +180,7 @@ pub struct EpisodeWidgetQuery {
     length: Option<i32>,
     duration: Option<i32>,
     played: Option<i32>,
-    podcast_id: i32,
+    show_id: i32,
 }
 
 impl From<Episode> for EpisodeWidgetQuery {
@@ -194,7 +194,7 @@ impl From<Episode> for EpisodeWidgetQuery {
             length: e.length,
             duration: e.duration,
             played: e.played,
-            podcast_id: e.podcast_id,
+            show_id: e.show_id,
         }
     }
 }
@@ -205,12 +205,12 @@ impl Save<usize> for EpisodeWidgetQuery {
     /// Helper method to easily save/"sync" current state of self to the
     /// Database.
     fn save(&self) -> Result<usize, Self::Error> {
-        use schema::episode::dsl::*;
+        use schema::episodes::dsl::*;
 
         let db = connection();
         let tempdb = db.get()?;
 
-        diesel::update(episode.filter(rowid.eq(self.rowid)))
+        diesel::update(episodes.filter(rowid.eq(self.rowid)))
             .set(self)
             .execute(&*tempdb)
             .map_err(From::from)
@@ -293,8 +293,8 @@ impl EpisodeWidgetQuery {
     }
 
     /// `Podcast` table foreign key.
-    pub fn podcast_id(&self) -> i32 {
-        self.podcast_id
+    pub fn show_id(&self) -> i32 {
+        self.show_id
     }
 
     /// Sets the `played` value with the current `epoch` timestap and save it.
@@ -306,9 +306,9 @@ impl EpisodeWidgetQuery {
 }
 
 #[derive(Queryable, AsChangeset, PartialEq)]
-#[table_name = "episode"]
+#[table_name = "episodes"]
 #[changeset_options(treat_none_as_null = "true")]
-#[primary_key(title, podcast_id)]
+#[primary_key(title, show_id)]
 #[derive(Debug, Clone)]
 /// Diesel Model to be used internal with the `utils::checkup` function.
 pub struct EpisodeCleanerQuery {
@@ -323,12 +323,12 @@ impl Save<usize> for EpisodeCleanerQuery {
     /// Helper method to easily save/"sync" current state of self to the
     /// Database.
     fn save(&self) -> Result<usize, Self::Error> {
-        use schema::episode::dsl::*;
+        use schema::episodes::dsl::*;
 
         let db = connection();
         let tempdb = db.get()?;
 
-        diesel::update(episode.filter(rowid.eq(self.rowid)))
+        diesel::update(episodes.filter(rowid.eq(self.rowid)))
             .set(self)
             .execute(&*tempdb)
             .map_err(From::from)
@@ -378,9 +378,9 @@ impl EpisodeCleanerQuery {
 }
 
 #[derive(Queryable, AsChangeset, PartialEq)]
-#[table_name = "episode"]
+#[table_name = "episodes"]
 #[changeset_options(treat_none_as_null = "true")]
-#[primary_key(title, podcast_id)]
+#[primary_key(title, show_id)]
 #[derive(Debug, Clone)]
 /// Diesel Model to be used for FIXME.
 pub struct EpisodeMinimal {
@@ -390,7 +390,7 @@ pub struct EpisodeMinimal {
     epoch: i32,
     duration: Option<i32>,
     guid: Option<String>,
-    podcast_id: i32,
+    show_id: i32,
 }
 
 impl From<Episode> for EpisodeMinimal {
@@ -402,7 +402,7 @@ impl From<Episode> for EpisodeMinimal {
             guid: e.guid,
             epoch: e.epoch,
             duration: e.duration,
-            podcast_id: e.podcast_id,
+            show_id: e.show_id,
         }
     }
 }
@@ -446,7 +446,7 @@ impl EpisodeMinimal {
     }
 
     /// `Podcast` table foreign key.
-    pub fn podcast_id(&self) -> i32 {
-        self.podcast_id
+    pub fn show_id(&self) -> i32 {
+        self.show_id
     }
 }
