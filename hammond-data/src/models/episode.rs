@@ -26,8 +26,6 @@ pub struct Episode {
     duration: Option<i32>,
     guid: Option<String>,
     played: Option<i32>,
-    favorite: bool,
-    archive: bool,
     podcast_id: i32,
 }
 
@@ -154,29 +152,6 @@ impl Episode {
         self.played = value;
     }
 
-    /// Represents the archiving policy for the episode.
-    pub fn archive(&self) -> bool {
-        self.archive
-    }
-
-    /// Set the `archive` policy.
-    ///
-    /// If true, the download cleanr will ignore the episode
-    /// and the corresponding media value will never be automaticly deleted.
-    pub fn set_archive(&mut self, b: bool) {
-        self.archive = b
-    }
-
-    /// Get the `favorite` status of the `Episode`.
-    pub fn favorite(&self) -> bool {
-        self.favorite
-    }
-
-    /// Set `favorite` status.
-    pub fn set_favorite(&mut self, b: bool) {
-        self.favorite = b
-    }
-
     /// `Podcast` table foreign key.
     pub fn podcast_id(&self) -> i32 {
         self.podcast_id
@@ -205,8 +180,6 @@ pub struct EpisodeWidgetQuery {
     length: Option<i32>,
     duration: Option<i32>,
     played: Option<i32>,
-    // favorite: bool,
-    // archive: bool,
     podcast_id: i32,
 }
 
@@ -318,29 +291,6 @@ impl EpisodeWidgetQuery {
     pub fn set_played(&mut self, value: Option<i32>) {
         self.played = value;
     }
-
-    // /// Represents the archiving policy for the episode.
-    // pub fn archive(&self) -> bool {
-    //     self.archive
-    // }
-
-    // /// Set the `archive` policy.
-    // ///
-    // /// If true, the download cleanr will ignore the episode
-    // /// and the corresponding media value will never be automaticly deleted.
-    // pub fn set_archive(&mut self, b: bool) {
-    //     self.archive = b
-    // }
-
-    // /// Get the `favorite` status of the `Episode`.
-    // pub fn favorite(&self) -> bool {
-    //     self.favorite
-    // }
-
-    // /// Set `favorite` status.
-    // pub fn set_favorite(&mut self, b: bool) {
-    //     self.favorite = b
-    // }
 
     /// `Podcast` table foreign key.
     pub fn podcast_id(&self) -> i32 {

@@ -19,9 +19,6 @@ pub struct Podcast {
     link: String,
     description: String,
     image_uri: Option<String>,
-    favorite: bool,
-    archive: bool,
-    always_dl: bool,
     source_id: i32,
 }
 
@@ -81,41 +78,6 @@ impl Podcast {
     /// Set the `image_uri`.
     pub fn set_image_uri(&mut self, value: Option<&str>) {
         self.image_uri = value.map(|x| x.to_string());
-    }
-
-    /// Represents the archiving policy for the episode.
-    pub fn archive(&self) -> bool {
-        self.archive
-    }
-
-    /// Set the `archive` policy.
-    pub fn set_archive(&mut self, b: bool) {
-        self.archive = b
-    }
-
-    /// Get the `favorite` status of the `Podcast` Feed.
-    pub fn favorite(&self) -> bool {
-        self.favorite
-    }
-
-    /// Set `favorite` status.
-    pub fn set_favorite(&mut self, b: bool) {
-        self.favorite = b
-    }
-
-    /// Represents the download policy for the `Podcast` Feed.
-    ///
-    /// Reserved for the use with a Download manager, yet to be implemented.
-    ///
-    /// If true Podcast Episode should be downloaded automaticly/skipping
-    /// the selection queue.
-    pub fn always_download(&self) -> bool {
-        self.always_dl
-    }
-
-    /// Set the download policy.
-    pub fn set_always_download(&mut self, b: bool) {
-        self.always_dl = b
     }
 
     /// `Source` table foreign key.
