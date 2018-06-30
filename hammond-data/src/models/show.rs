@@ -87,15 +87,15 @@ impl Show {
 #[derive(Queryable, Debug, Clone)]
 /// Diesel Model of the Show cover query.
 /// Used for fetching information about a Show's cover.
-pub struct ShowCoverQuery {
+pub struct ShowCoverModel {
     id: i32,
     title: String,
     image_uri: Option<String>,
 }
 
-impl From<Show> for ShowCoverQuery {
-    fn from(p: Show) -> ShowCoverQuery {
-        ShowCoverQuery {
+impl From<Show> for ShowCoverModel {
+    fn from(p: Show) -> ShowCoverModel {
+        ShowCoverModel {
             id: p.id(),
             title: p.title,
             image_uri: p.image_uri,
@@ -103,7 +103,7 @@ impl From<Show> for ShowCoverQuery {
     }
 }
 
-impl ShowCoverQuery {
+impl ShowCoverModel {
     /// Get the Feed `id`.
     pub fn id(&self) -> i32 {
         self.id

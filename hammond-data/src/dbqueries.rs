@@ -57,7 +57,7 @@ pub fn get_episodes() -> Result<Vec<Episode>, DataError> {
         .map_err(From::from)
 }
 
-pub(crate) fn get_downloaded_episodes() -> Result<Vec<EpisodeCleanerQuery>, DataError> {
+pub(crate) fn get_downloaded_episodes() -> Result<Vec<EpisodeCleanerModel>, DataError> {
     use schema::episodes::dsl::*;
     let db = connection();
     let con = db.get()?;
@@ -65,7 +65,7 @@ pub(crate) fn get_downloaded_episodes() -> Result<Vec<EpisodeCleanerQuery>, Data
     episodes
         .select((rowid, local_uri, played))
         .filter(local_uri.is_not_null())
-        .load::<EpisodeCleanerQuery>(&con)
+        .load::<EpisodeCleanerModel>(&con)
         .map_err(From::from)
 }
 
@@ -80,7 +80,7 @@ pub(crate) fn get_downloaded_episodes() -> Result<Vec<EpisodeCleanerQuery>, Data
 //         .map_err(From::from)
 // }
 
-pub(crate) fn get_played_cleaner_episodes() -> Result<Vec<EpisodeCleanerQuery>, DataError> {
+pub(crate) fn get_played_cleaner_episodes() -> Result<Vec<EpisodeCleanerModel>, DataError> {
     use schema::episodes::dsl::*;
     let db = connection();
     let con = db.get()?;
@@ -88,7 +88,7 @@ pub(crate) fn get_played_cleaner_episodes() -> Result<Vec<EpisodeCleanerQuery>, 
     episodes
         .select((rowid, local_uri, played))
         .filter(played.is_not_null())
-        .load::<EpisodeCleanerQuery>(&con)
+        .load::<EpisodeCleanerModel>(&con)
         .map_err(From::from)
 }
 
@@ -103,7 +103,7 @@ pub fn get_episode_from_rowid(ep_id: i32) -> Result<Episode, DataError> {
         .map_err(From::from)
 }
 
-pub fn get_episode_widget_from_rowid(ep_id: i32) -> Result<EpisodeWidgetQuery, DataError> {
+pub fn get_episode_widget_from_rowid(ep_id: i32) -> Result<EpisodeWidgetModel, DataError> {
     use schema::episodes::dsl::*;
     let db = connection();
     let con = db.get()?;
@@ -113,7 +113,7 @@ pub fn get_episode_widget_from_rowid(ep_id: i32) -> Result<EpisodeWidgetQuery, D
             rowid, title, uri, local_uri, epoch, length, duration, played, show_id,
         ))
         .filter(rowid.eq(ep_id))
-        .get_result::<EpisodeWidgetQuery>(&con)
+        .get_result::<EpisodeWidgetModel>(&con)
         .map_err(From::from)
 }
 
@@ -132,7 +132,7 @@ pub fn get_episode_local_uri_from_id(ep_id: i32) -> Result<Option<String>, DataE
 pub fn get_episodes_widgets_filter_limit(
     filter_ids: &[i32],
     limit: u32,
-) -> Result<Vec<EpisodeWidgetQuery>, DataError> {
+) -> Result<Vec<EpisodeWidgetModel>, DataError> {
     use schema::episodes::dsl::*;
     let db = connection();
     let con = db.get()?;
@@ -145,7 +145,7 @@ pub fn get_episodes_widgets_filter_limit(
         .order(epoch.desc())
         .filter(show_id.ne_all(filter_ids))
         .limit(i64::from(limit))
-        .load::<EpisodeWidgetQuery>(&con)
+        .load::<EpisodeWidgetModel>(&con)
         .map_err(From::from)
 }
 
@@ -160,7 +160,7 @@ pub fn get_podcast_from_id(pid: i32) -> Result<Show, DataError> {
         .map_err(From::from)
 }
 
-pub fn get_podcast_cover_from_id(pid: i32) -> Result<ShowCoverQuery, DataError> {
+pub fn get_podcast_cover_from_id(pid: i32) -> Result<ShowCoverModel, DataError> {
     use schema::shows::dsl::*;
     let db = connection();
     let con = db.get()?;
@@ -168,7 +168,7 @@ pub fn get_podcast_cover_from_id(pid: i32) -> Result<ShowCoverQuery, DataError> 
     shows
         .select((id, title, image_uri))
         .filter(id.eq(pid))
-        .get_result::<ShowCoverQuery>(&con)
+        .get_result::<ShowCoverModel>(&con)
         .map_err(From::from)
 }
 
@@ -193,7 +193,7 @@ pub fn get_pd_episodes_count(parent: &Show) -> Result<i64, DataError> {
         .map_err(From::from)
 }
 
-pub fn get_pd_episodeswidgets(parent: &Show) -> Result<Vec<EpisodeWidgetQuery>, DataError> {
+pub fn get_pd_episodeswidgets(parent: &Show) -> Result<Vec<EpisodeWidgetModel>, DataError> {
     use schema::episodes::dsl::*;
     let db = connection();
     let con = db.get()?;
@@ -205,7 +205,7 @@ pub fn get_pd_episodeswidgets(parent: &Show) -> Result<Vec<EpisodeWidgetQuery>, 
         .select(columns)
         .filter(show_id.eq(parent.id()))
         .order(epoch.desc())
-        .load::<EpisodeWidgetQuery>(&con)
+        .load::<EpisodeWidgetModel>(&con)
         .map_err(From::from)
 }
 

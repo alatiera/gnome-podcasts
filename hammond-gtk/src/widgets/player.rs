@@ -14,7 +14,7 @@ use failure::Error;
 use send_cell::SendCell;
 
 use hammond_data::{dbqueries, USER_AGENT};
-use hammond_data::{EpisodeWidgetQuery, ShowCoverQuery};
+use hammond_data::{EpisodeWidgetModel, ShowCoverModel};
 
 use app::Action;
 use utils::set_image_from_path;
@@ -49,23 +49,23 @@ struct PlayerInfo {
 
 impl PlayerInfo {
     // FIXME: create a Diesel Model of the joined episode and podcast query instead
-    fn init(&self, episode: &EpisodeWidgetQuery, podcast: &ShowCoverQuery) {
+    fn init(&self, episode: &EpisodeWidgetModel, podcast: &ShowCoverModel) {
         self.set_cover_image(podcast);
         self.set_show_title(podcast);
         self.set_episode_title(episode);
     }
 
-    fn set_episode_title(&self, episode: &EpisodeWidgetQuery) {
+    fn set_episode_title(&self, episode: &EpisodeWidgetModel) {
         self.episode.set_text(episode.title());
         self.episode.set_tooltip_text(episode.title());
     }
 
-    fn set_show_title(&self, show: &ShowCoverQuery) {
+    fn set_show_title(&self, show: &ShowCoverModel) {
         self.show.set_text(show.title());
         self.show.set_tooltip_text(show.title());
     }
 
-    fn set_cover_image(&self, show: &ShowCoverQuery) {
+    fn set_cover_image(&self, show: &ShowCoverModel) {
         set_image_from_path(&self.cover, show.id(), 34)
             .map_err(|err| error!("Player Cover: {}", err))
             .ok();

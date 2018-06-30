@@ -171,7 +171,7 @@ impl Episode {
 #[primary_key(title, show_id)]
 #[derive(Debug, Clone)]
 /// Diesel Model to be used for constructing `EpisodeWidgets`.
-pub struct EpisodeWidgetQuery {
+pub struct EpisodeWidgetModel {
     rowid: i32,
     title: String,
     uri: Option<String>,
@@ -183,9 +183,9 @@ pub struct EpisodeWidgetQuery {
     show_id: i32,
 }
 
-impl From<Episode> for EpisodeWidgetQuery {
-    fn from(e: Episode) -> EpisodeWidgetQuery {
-        EpisodeWidgetQuery {
+impl From<Episode> for EpisodeWidgetModel {
+    fn from(e: Episode) -> EpisodeWidgetModel {
+        EpisodeWidgetModel {
             rowid: e.rowid,
             title: e.title,
             uri: e.uri,
@@ -199,7 +199,7 @@ impl From<Episode> for EpisodeWidgetQuery {
     }
 }
 
-impl Save<usize> for EpisodeWidgetQuery {
+impl Save<usize> for EpisodeWidgetModel {
     type Error = DataError;
 
     /// Helper method to easily save/"sync" current state of self to the
@@ -217,7 +217,7 @@ impl Save<usize> for EpisodeWidgetQuery {
     }
 }
 
-impl EpisodeWidgetQuery {
+impl EpisodeWidgetModel {
     /// Get the value of the sqlite's `ROW_ID`
     pub fn rowid(&self) -> i32 {
         self.rowid
@@ -311,13 +311,13 @@ impl EpisodeWidgetQuery {
 #[primary_key(title, show_id)]
 #[derive(Debug, Clone)]
 /// Diesel Model to be used internal with the `utils::checkup` function.
-pub struct EpisodeCleanerQuery {
+pub struct EpisodeCleanerModel {
     rowid: i32,
     local_uri: Option<String>,
     played: Option<i32>,
 }
 
-impl Save<usize> for EpisodeCleanerQuery {
+impl Save<usize> for EpisodeCleanerModel {
     type Error = DataError;
 
     /// Helper method to easily save/"sync" current state of self to the
@@ -335,9 +335,9 @@ impl Save<usize> for EpisodeCleanerQuery {
     }
 }
 
-impl From<Episode> for EpisodeCleanerQuery {
-    fn from(e: Episode) -> EpisodeCleanerQuery {
-        EpisodeCleanerQuery {
+impl From<Episode> for EpisodeCleanerModel {
+    fn from(e: Episode) -> EpisodeCleanerModel {
+        EpisodeCleanerModel {
             rowid: e.rowid(),
             local_uri: e.local_uri,
             played: e.played,
@@ -345,7 +345,7 @@ impl From<Episode> for EpisodeCleanerQuery {
     }
 }
 
-impl EpisodeCleanerQuery {
+impl EpisodeCleanerModel {
     /// Get the value of the sqlite's `ROW_ID`
     pub fn rowid(&self) -> i32 {
         self.rowid

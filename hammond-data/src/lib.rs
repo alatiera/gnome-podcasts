@@ -81,7 +81,7 @@ pub mod utils;
 
 pub use feed::{Feed, FeedBuilder};
 pub use models::Save;
-pub use models::{Episode, EpisodeWidgetQuery, Show, ShowCoverQuery, Source};
+pub use models::{Episode, EpisodeWidgetModel, Show, ShowCoverModel, Source};
 
 // Set the user agent, See #53 for more
 // Keep this in sync with Tor-browser releases

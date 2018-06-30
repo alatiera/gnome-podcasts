@@ -12,7 +12,7 @@ use open;
 
 use hammond_data::dbqueries;
 use hammond_data::utils::get_download_folder;
-use hammond_data::EpisodeWidgetQuery;
+use hammond_data::EpisodeWidgetModel;
 
 use app::Action;
 use manager;
@@ -68,7 +68,7 @@ struct Buttons {
 }
 
 impl InfoLabels {
-    fn init(&self, episode: &EpisodeWidgetQuery) {
+    fn init(&self, episode: &EpisodeWidgetModel) {
         // Set the title label state.
         self.set_title(episode);
 
@@ -82,7 +82,7 @@ impl InfoLabels {
         self.set_size(episode.length())
     }
 
-    fn set_title(&self, episode: &EpisodeWidgetQuery) {
+    fn set_title(&self, episode: &EpisodeWidgetModel) {
         self.title.set_text(episode.title());
 
         if episode.played().is_some() {
@@ -206,7 +206,7 @@ impl Default for EpisodeWidget {
 }
 
 impl EpisodeWidget {
-    pub fn new(episode: &EpisodeWidgetQuery, sender: &Sender<Action>) -> Rc<Self> {
+    pub fn new(episode: &EpisodeWidgetModel, sender: &Sender<Action>) -> Rc<Self> {
         let widget = Rc::new(Self::default());
         widget.info.init(episode);
         Self::determine_buttons_state(&widget, episode, sender)
@@ -297,7 +297,7 @@ impl EpisodeWidget {
     /// -------------------
     fn determine_buttons_state(
         widget: &Rc<Self>,
-        episode: &EpisodeWidgetQuery,
+        episode: &EpisodeWidgetModel,
         sender: &Sender<Action>,
     ) -> Result<(), Error> {
         // Reset the buttons state no matter the glade file.
@@ -428,7 +428,7 @@ impl EpisodeWidget {
     }
 }
 
-fn on_download_clicked(ep: &EpisodeWidgetQuery, sender: &Sender<Action>) -> Result<(), Error> {
+fn on_download_clicked(ep: &EpisodeWidgetModel, sender: &Sender<Action>) -> Result<(), Error> {
     let pd = dbqueries::get_podcast_from_id(ep.show_id())?;
     let download_fold = get_download_folder(&pd.title())?;
 
@@ -442,7 +442,7 @@ fn on_download_clicked(ep: &EpisodeWidgetQuery, sender: &Sender<Action>) -> Resu
 
 fn on_play_bttn_clicked(
     widget: &Rc<EpisodeWidget>,
-    episode: &mut EpisodeWidgetQuery,
+    episode: &mut EpisodeWidgetModel,
     sender: &Sender<Action>,
 ) -> Result<(), Error> {
     // Mark played

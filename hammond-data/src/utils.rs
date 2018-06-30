@@ -7,7 +7,7 @@ use url::{Position, Url};
 
 use dbqueries;
 use errors::DataError;
-use models::{EpisodeCleanerQuery, Save, Show};
+use models::{EpisodeCleanerModel, Save, Show};
 use xdg_dirs::DL_DIR;
 
 use std::fs;
@@ -59,7 +59,7 @@ fn played_cleaner(cleanup_date: DateTime<Utc>) -> Result<(), DataError> {
 }
 
 /// Check `ep.local_uri` field and delete the file it points to.
-fn delete_local_content(ep: &mut EpisodeCleanerQuery) -> Result<(), DataError> {
+fn delete_local_content(ep: &mut EpisodeCleanerModel) -> Result<(), DataError> {
     if ep.local_uri().is_some() {
         let uri = ep.local_uri().unwrap().to_owned();
         if Path::new(&uri).exists() {
@@ -230,7 +230,7 @@ mod tests {
     #[test]
     fn test_download_cleaner() {
         let _tmp_dir = helper_db();
-        let mut episode: EpisodeCleanerQuery =
+        let mut episode: EpisodeCleanerModel =
             dbqueries::get_episode_from_pk("foo_bar", 0).unwrap().into();
 
         let valid_path = episode.local_uri().unwrap().to_owned();

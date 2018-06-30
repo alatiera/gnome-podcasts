@@ -9,7 +9,7 @@ mod source;
 // use futures::prelude::*;
 // use futures::future::*;
 
-pub(crate) use self::episode::EpisodeCleanerQuery;
+pub(crate) use self::episode::EpisodeCleanerModel;
 pub(crate) use self::new_episode::{NewEpisode, NewEpisodeMinimal};
 pub(crate) use self::new_show::NewShow;
 pub(crate) use self::new_source::NewSource;
@@ -19,8 +19,8 @@ pub(crate) use self::new_episode::NewEpisodeBuilder;
 #[cfg(test)]
 pub(crate) use self::new_show::NewShowBuilder;
 
-pub use self::episode::{Episode, EpisodeMinimal, EpisodeWidgetQuery};
-pub use self::show::{Show, ShowCoverQuery};
+pub use self::episode::{Episode, EpisodeMinimal, EpisodeWidgetModel};
+pub use self::show::{Show, ShowCoverModel};
 pub use self::source::Source;
 
 #[derive(Debug, Clone, PartialEq)]

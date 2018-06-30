@@ -6,7 +6,7 @@ use gtk::prelude::*;
 
 use crossbeam_channel::Sender;
 use hammond_data::dbqueries;
-use hammond_data::EpisodeWidgetQuery;
+use hammond_data::EpisodeWidgetModel;
 use send_cell::SendCell;
 
 use app::Action;
@@ -93,7 +93,7 @@ impl HomeView {
         let now_utc = Utc::now();
 
         let view_ = view.clone();
-        let func = move |ep: EpisodeWidgetQuery| {
+        let func = move |ep: EpisodeWidgetModel| {
             let epoch = ep.epoch();
             let widget = HomeEpisode::new(&ep, &sender);
 
@@ -197,7 +197,7 @@ impl Default for HomeEpisode {
 }
 
 impl HomeEpisode {
-    fn new(episode: &EpisodeWidgetQuery, sender: &Sender<Action>) -> HomeEpisode {
+    fn new(episode: &EpisodeWidgetModel, sender: &Sender<Action>) -> HomeEpisode {
         let builder =
             gtk::Builder::new_from_resource("/org/gnome/Hammond/gtk/episodes_view_widget.ui");
         let container: gtk::Box = builder.get_object("container").unwrap();
