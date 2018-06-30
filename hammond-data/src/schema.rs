@@ -1,3 +1,5 @@
+#![allow(warnings)]
+
 table! {
     episodes (title, show_id) {
         rowid -> Integer,
