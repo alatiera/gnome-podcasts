@@ -11,7 +11,7 @@ use schema::shows;
 #[table_name = "shows"]
 #[derive(Debug, Clone)]
 /// Diesel Model of the shows table.
-pub struct Podcast {
+pub struct Show {
     id: i32,
     title: String,
     link: String,
@@ -20,20 +20,20 @@ pub struct Podcast {
     source_id: i32,
 }
 
-impl Save<Podcast> for Podcast {
+impl Save<Show> for Show {
     type Error = DataError;
 
     /// Helper method to easily save/"sync" current state of self to the
     /// Database.
-    fn save(&self) -> Result<Podcast, Self::Error> {
+    fn save(&self) -> Result<Show, Self::Error> {
         let db = connection();
         let tempdb = db.get()?;
 
-        self.save_changes::<Podcast>(&*tempdb).map_err(From::from)
+        self.save_changes::<Show>(&*tempdb).map_err(From::from)
     }
 }
 
-impl Podcast {
+impl Show {
     /// Get the Feed `id`.
     pub fn id(&self) -> i32 {
         self.id
@@ -51,7 +51,7 @@ impl Podcast {
         &self.link
     }
 
-    /// Set the Podcast/Feed `link`.
+    /// Set the Show/Feed `link`.
     pub fn set_link(&mut self, value: &str) {
         self.link = value.to_string();
     }
@@ -85,17 +85,17 @@ impl Podcast {
 }
 
 #[derive(Queryable, Debug, Clone)]
-/// Diesel Model of the podcast cover query.
-/// Used for fetching information about a Podcast's cover.
-pub struct PodcastCoverQuery {
+/// Diesel Model of the Show cover query.
+/// Used for fetching information about a Show's cover.
+pub struct ShowCoverQuery {
     id: i32,
     title: String,
     image_uri: Option<String>,
 }
 
-impl From<Podcast> for PodcastCoverQuery {
-    fn from(p: Podcast) -> PodcastCoverQuery {
-        PodcastCoverQuery {
+impl From<Show> for ShowCoverQuery {
+    fn from(p: Show) -> ShowCoverQuery {
+        ShowCoverQuery {
             id: p.id(),
             title: p.title,
             image_uri: p.image_uri,
@@ -103,7 +103,7 @@ impl From<Podcast> for PodcastCoverQuery {
     }
 }
 
-impl PodcastCoverQuery {
+impl ShowCoverQuery {
     /// Get the Feed `id`.
     pub fn id(&self) -> i32 {
         self.id

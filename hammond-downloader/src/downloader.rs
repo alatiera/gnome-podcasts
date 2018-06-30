@@ -12,7 +12,7 @@ use std::path::Path;
 use std::sync::{Arc, Mutex};
 
 use hammond_data::xdg_dirs::HAMMOND_CACHE;
-use hammond_data::{EpisodeWidgetQuery, PodcastCoverQuery, Save};
+use hammond_data::{EpisodeWidgetQuery, Save, ShowCoverQuery};
 
 // use failure::Error;
 use errors::DownloadError;
@@ -196,7 +196,7 @@ pub fn get_episode(
     Ok(())
 }
 
-pub fn cache_image(pd: &PodcastCoverQuery) -> Result<String, DownloadError> {
+pub fn cache_image(pd: &ShowCoverQuery) -> Result<String, DownloadError> {
     let url = pd
         .image_uri()
         .ok_or_else(|| DownloadError::NoImageLocation)?

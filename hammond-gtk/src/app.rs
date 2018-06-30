@@ -10,7 +10,7 @@ use gtk::prelude::*;
 use gtk::SettingsExt as GtkSettingsExt;
 
 use crossbeam_channel::{unbounded, Receiver, Sender};
-use hammond_data::Podcast;
+use hammond_data::Show;
 
 use headerbar::Header;
 use settings::{self, WindowGeometry};
@@ -43,7 +43,7 @@ pub enum Action {
     RefreshEpisodesView,
     RefreshEpisodesViewBGR,
     RefreshShowsView,
-    ReplaceWidget(Arc<Podcast>),
+    ReplaceWidget(Arc<Show>),
     RefreshWidgetIfSame(i32),
     ShowWidgetAnimated,
     ShowShowsAnimated,
@@ -51,8 +51,8 @@ pub enum Action {
     HeaderBarNormal,
     HeaderBarShowUpdateIndicator,
     HeaderBarHideUpdateIndicator,
-    MarkAllPlayerNotification(Arc<Podcast>),
-    RemoveShow(Arc<Podcast>),
+    MarkAllPlayerNotification(Arc<Show>),
+    RemoveShow(Arc<Show>),
     ErrorNotification(String),
     InitEpisode(i32),
 }

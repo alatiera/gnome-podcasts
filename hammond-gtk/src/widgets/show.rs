@@ -11,7 +11,7 @@ use send_cell::SendCell;
 
 use hammond_data::dbqueries;
 use hammond_data::utils::delete_show;
-use hammond_data::Podcast;
+use hammond_data::Show;
 
 use app::Action;
 use utils::{self, lazy_load};
@@ -67,7 +67,7 @@ impl Default for ShowWidget {
 }
 
 impl ShowWidget {
-    pub fn new(pd: Arc<Podcast>, sender: Sender<Action>) -> Rc<ShowWidget> {
+    pub fn new(pd: Arc<Show>, sender: Sender<Action>) -> Rc<ShowWidget> {
         let mut pdw = ShowWidget::default();
         pdw.init(&pd, &sender);
         let pdw = Rc::new(pdw);
@@ -78,7 +78,7 @@ impl ShowWidget {
         pdw
     }
 
-    pub fn init(&mut self, pd: &Arc<Podcast>, sender: &Sender<Action>) {
+    pub fn init(&mut self, pd: &Arc<Show>, sender: &Sender<Action>) {
         let builder = gtk::Builder::new_from_resource("/org/gnome/Hammond/gtk/show_widget.ui");
 
         self.unsub
@@ -118,7 +118,7 @@ impl ShowWidget {
     }
 
     /// Set the show cover.
-    fn set_cover(&self, pd: &Arc<Podcast>) -> Result<(), Error> {
+    fn set_cover(&self, pd: &Arc<Show>) -> Result<(), Error> {
         utils::set_image_from_path(&self.cover, pd.id(), 256)
     }
 
@@ -143,7 +143,7 @@ impl ShowWidget {
     }
 
     /// Set scrolled window vertical adjustment.
-    fn set_vadjustment(&self, pd: &Arc<Podcast>) -> Result<(), Error> {
+    fn set_vadjustment(&self, pd: &Arc<Show>) -> Result<(), Error> {
         let guard = SHOW_WIDGET_VALIGNMENT
             .lock()
             .map_err(|err| format_err!("Failed to lock widget align mutex: {}", err))?;
@@ -174,7 +174,7 @@ impl ShowWidget {
 /// Populate the listbox with the shows episodes.
 fn populate_listbox(
     show: &Rc<ShowWidget>,
-    pd: Arc<Podcast>,
+    pd: Arc<Show>,
     sender: Sender<Action>,
 ) -> Result<(), Error> {
     use crossbeam_channel::bounded;
@@ -223,7 +223,7 @@ fn populate_listbox(
     Ok(())
 }
 
-fn on_unsub_button_clicked(pd: Arc<Podcast>, unsub_button: &gtk::Button, sender: &Sender<Action>) {
+fn on_unsub_button_clicked(pd: Arc<Show>, unsub_button: &gtk::Button, sender: &Sender<Action>) {
     // hack to get away without properly checking for none.
     // if pressed twice would panic.
     unsub_button.set_sensitive(false);
@@ -239,7 +239,7 @@ fn on_unsub_button_clicked(pd: Arc<Podcast>, unsub_button: &gtk::Button, sender:
     unsub_button.set_sensitive(true);
 }
 
-fn on_played_button_clicked(pd: Arc<Podcast>, episodes: &gtk::ListBox, sender: &Sender<Action>) {
+fn on_played_button_clicked(pd: Arc<Show>, episodes: &gtk::ListBox, sender: &Sender<Action>) {
     if dim_titles(episodes).is_none() {
         error!("Something went horribly wrong when dimming the titles.");
         warn!("RUN WHILE YOU STILL CAN!");
@@ -248,7 +248,7 @@ fn on_played_button_clicked(pd: Arc<Podcast>, episodes: &gtk::ListBox, sender: &
     sender.send(Action::MarkAllPlayerNotification(pd))
 }
 
-fn mark_all_watched(pd: &Podcast, sender: &Sender<Action>) -> Result<(), Error> {
+fn mark_all_watched(pd: &Show, sender: &Sender<Action>) -> Result<(), Error> {
     dbqueries::update_none_to_played_now(pd)?;
     // Not all widgets migth have been loaded when the mark_all is hit
     // So we will need to refresh again after it's done.
@@ -257,7 +257,7 @@ fn mark_all_watched(pd: &Podcast, sender: &Sender<Action>) -> Result<(), Error> 
     Ok(())
 }
 
-pub fn mark_all_notif(pd: Arc<Podcast>, sender: &Sender<Action>) -> InAppNotification {
+pub fn mark_all_notif(pd: Arc<Show>, sender: &Sender<Action>) -> InAppNotification {
     let id = pd.id();
     let callback = clone!(sender => move || {
         mark_all_watched(&pd, &sender)
@@ -271,7 +271,7 @@ pub fn mark_all_notif(pd: Arc<Podcast>, sender: &Sender<Action>) -> InAppNotific
     InAppNotification::new(text, callback, undo_callback, UndoState::Shown)
 }
 
-pub fn remove_show_notif(pd: Arc<Podcast>, sender: Sender<Action>) -> InAppNotification {
+pub fn remove_show_notif(pd: Arc<Show>, sender: Sender<Action>) -> InAppNotification {
     let text = format!("Unsubscribed from {}", pd.title());
 
     utils::ignore_show(pd.id())

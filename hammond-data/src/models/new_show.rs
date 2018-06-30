@@ -4,7 +4,7 @@ use diesel::prelude::*;
 use rss;
 
 use errors::DataError;
-use models::Podcast;
+use models::Show;
 use models::{Index, Insert, Update};
 use schema::shows;
 
@@ -18,7 +18,7 @@ use utils::url_cleaner;
 #[builder(default)]
 #[builder(derive(Debug))]
 #[builder(setter(into))]
-pub(crate) struct NewPodcast {
+pub(crate) struct NewShow {
     title: String,
     link: String,
     description: String,
@@ -26,7 +26,7 @@ pub(crate) struct NewPodcast {
     source_id: i32,
 }
 
-impl Insert<()> for NewPodcast {
+impl Insert<()> for NewShow {
     type Error = DataError;
 
     fn insert(&self) -> Result<(), Self::Error> {
@@ -42,7 +42,7 @@ impl Insert<()> for NewPodcast {
     }
 }
 
-impl Update<()> for NewPodcast {
+impl Update<()> for NewShow {
     type Error = DataError;
 
     fn update(&self, show_id: i32) -> Result<(), Self::Error> {
@@ -61,7 +61,7 @@ impl Update<()> for NewPodcast {
 
 // TODO: Maybe return an Enum<Action(Resut)> Instead.
 // It would make unti testing better too.
-impl Index<()> for NewPodcast {
+impl Index<()> for NewShow {
     type Error = DataError;
 
     fn index(&self) -> Result<(), DataError> {
@@ -81,8 +81,8 @@ impl Index<()> for NewPodcast {
     }
 }
 
-impl PartialEq<Podcast> for NewPodcast {
-    fn eq(&self, other: &Podcast) -> bool {
+impl PartialEq<Show> for NewShow {
+    fn eq(&self, other: &Show) -> bool {
         (self.link() == other.link())
             && (self.title() == other.title())
             && (self.image_uri() == other.image_uri())
@@ -91,9 +91,9 @@ impl PartialEq<Podcast> for NewPodcast {
     }
 }
 
-impl NewPodcast {
-    /// Parses a `rss::Channel` into a `NewPodcast` Struct.
-    pub(crate) fn new(chan: &rss::Channel, source_id: i32) -> NewPodcast {
+impl NewShow {
+    /// Parses a `rss::Channel` into a `NewShow` Struct.
+    pub(crate) fn new(chan: &rss::Channel, source_id: i32) -> NewShow {
         let title = chan.title().trim();
         let link = url_cleaner(chan.link().trim());
 
@@ -111,7 +111,7 @@ impl NewPodcast {
         // If itunes is None, try to get the channel.image from the rss spec
         let image_uri = itunes_img.or_else(|| chan.image().map(|s| s.url().trim().to_owned()));
 
-        NewPodcastBuilder::default()
+        NewShowBuilder::default()
             .title(title)
             .description(description)
             .link(link)
@@ -122,14 +122,14 @@ impl NewPodcast {
     }
 
     // Look out for when tryinto lands into stable.
-    pub(crate) fn to_podcast(&self) -> Result<Podcast, DataError> {
+    pub(crate) fn to_podcast(&self) -> Result<Show, DataError> {
         self.index()?;
         dbqueries::get_podcast_from_source_id(self.source_id).map_err(From::from)
     }
 }
 
 // Ignore the following geters. They are used in unit tests mainly.
-impl NewPodcast {
+impl NewShow {
     #[allow(dead_code)]
     pub(crate) fn source_id(&self) -> i32 {
         self.source_id
@@ -160,14 +160,14 @@ mod tests {
     use rss::Channel;
 
     use database::truncate_db;
-    use models::NewPodcastBuilder;
+    use models::NewShowBuilder;
 
     use std::fs::File;
     use std::io::BufReader;
 
-    // Pre-built expected NewPodcast structs.
+    // Pre-built expected NewShow structs.
     lazy_static! {
-        static ref EXPECTED_INTERCEPTED: NewPodcast = {
+        static ref EXPECTED_INTERCEPTED: NewShow = {
             let descr = "The people behind The Intercept’s fearless reporting and incisive \
                          commentary—Jeremy Scahill, Glenn Greenwald, Betsy Reed and \
                          others—discuss the crucial issues of our time: national security, civil \
@@ -175,7 +175,7 @@ mod tests {
                          artists, thinkers, and newsmakers who challenge our preconceptions about \
                          the world we live in.";
 
-            NewPodcastBuilder::default()
+            NewShowBuilder::default()
                 .title("Intercepted with Jeremy Scahill")
                 .link("https://theintercept.com/podcasts")
                 .description(descr)
@@ -188,12 +188,12 @@ mod tests {
                 .build()
                 .unwrap()
         };
-        static ref EXPECTED_LUP: NewPodcast = {
+        static ref EXPECTED_LUP: NewShow = {
             let descr = "An open show powered by community LINUX Unplugged takes the best \
                          attributes of open collaboration and focuses them into a weekly \
                          lifestyle show about Linux.";
 
-            NewPodcastBuilder::default()
+            NewShowBuilder::default()
                 .title("LINUX Unplugged Podcast")
                 .link("http://www.jupiterbroadcasting.com/")
                 .description(descr)
@@ -204,7 +204,7 @@ mod tests {
                 .build()
                 .unwrap()
         };
-        static ref EXPECTED_TIPOFF: NewPodcast = {
+        static ref EXPECTED_TIPOFF: NewShow = {
             let desc = "<p>Welcome to The Tip Off- the podcast where we take you behind the \
                         scenes of some of the best investigative journalism from recent years. \
                         Each episode we’ll be digging into an investigative scoop- hearing from \
@@ -215,7 +215,7 @@ mod tests {
                         complicated detective work that goes into doing great investigative \
                         journalism- then this is the podcast for you.</p>";
 
-            NewPodcastBuilder::default()
+            NewShowBuilder::default()
                 .title("The Tip Off")
                 .link("http://www.acast.com/thetipoff")
                 .description(desc)
@@ -227,7 +227,7 @@ mod tests {
                 .build()
                 .unwrap()
         };
-        static ref EXPECTED_STARS: NewPodcast = {
+        static ref EXPECTED_STARS: NewShow = {
             let descr = "<p>The first audio drama from Tor Labs and Gideon Media, Steal the Stars \
                          is a gripping noir science fiction thriller in 14 episodes: Forbidden \
                          love, a crashed UFO, an alien body, and an impossible heist unlike any \
@@ -237,7 +237,7 @@ mod tests {
                        b183-7311d2e436c3/b3a4aa57a576bb662191f2a6bc2a436c8c4ae256ecffaff5c4c54fd42e\
                        923914941c264d01efb1833234b52c9530e67d28a8cebbe3d11a4bc0fbbdf13ecdf1c3.jpeg";
 
-            NewPodcastBuilder::default()
+            NewShowBuilder::default()
                 .title("Steal the Stars")
                 .link("http://tor-labs.com/")
                 .description(descr)
@@ -246,12 +246,12 @@ mod tests {
                 .build()
                 .unwrap()
         };
-        static ref EXPECTED_CODE: NewPodcast = {
+        static ref EXPECTED_CODE: NewShow = {
             let descr = "A podcast about humans and technology. Panelists: Coraline Ada Ehmke, \
                          David Brady, Jessica Kerr, Jay Bobo, Astrid Countee and Sam \
                          Livingston-Gray. Brought to you by @therubyrep.";
 
-            NewPodcastBuilder::default()
+            NewShowBuilder::default()
                 .title("Greater Than Code")
                 .link("https://www.greaterthancode.com/")
                 .description(descr)
@@ -262,8 +262,8 @@ mod tests {
                 .build()
                 .unwrap()
         };
-        static ref EXPECTED_ELLINOFRENEIA: NewPodcast = {
-            NewPodcastBuilder::default()
+        static ref EXPECTED_ELLINOFRENEIA: NewShow = {
+            NewShowBuilder::default()
                 .title("Ελληνοφρένεια")
                 .link("https://ellinofreneia.sealabs.net/feed.rss")
                 .description("Ανεπίσημο feed της Ελληνοφρένειας")
@@ -272,8 +272,8 @@ mod tests {
                 .build()
                 .unwrap()
         };
-        static ref UPDATED_DESC_INTERCEPTED: NewPodcast = {
-            NewPodcastBuilder::default()
+        static ref UPDATED_DESC_INTERCEPTED: NewShow = {
+            NewShowBuilder::default()
                 .title("Intercepted with Jeremy Scahill")
                 .link("https://theintercept.com/podcasts")
                 .description("New Description")
@@ -293,7 +293,7 @@ mod tests {
         let file = File::open("tests/feeds/2018-01-20-Intercepted.xml").unwrap();
         let channel = Channel::read_from(BufReader::new(file)).unwrap();
 
-        let pd = NewPodcast::new(&channel, 42);
+        let pd = NewShow::new(&channel, 42);
         assert_eq!(*EXPECTED_INTERCEPTED, pd);
     }
 
@@ -302,7 +302,7 @@ mod tests {
         let file = File::open("tests/feeds/2018-01-20-LinuxUnplugged.xml").unwrap();
         let channel = Channel::read_from(BufReader::new(file)).unwrap();
 
-        let pd = NewPodcast::new(&channel, 42);
+        let pd = NewShow::new(&channel, 42);
         assert_eq!(*EXPECTED_LUP, pd);
     }
 
@@ -311,7 +311,7 @@ mod tests {
         let file = File::open("tests/feeds/2018-01-20-TheTipOff.xml").unwrap();
         let channel = Channel::read_from(BufReader::new(file)).unwrap();
 
-        let pd = NewPodcast::new(&channel, 42);
+        let pd = NewShow::new(&channel, 42);
         assert_eq!(*EXPECTED_TIPOFF, pd);
     }
 
@@ -320,7 +320,7 @@ mod tests {
         let file = File::open("tests/feeds/2018-01-20-StealTheStars.xml").unwrap();
         let channel = Channel::read_from(BufReader::new(file)).unwrap();
 
-        let pd = NewPodcast::new(&channel, 42);
+        let pd = NewShow::new(&channel, 42);
         assert_eq!(*EXPECTED_STARS, pd);
     }
 
@@ -329,7 +329,7 @@ mod tests {
         let file = File::open("tests/feeds/2018-01-20-GreaterThanCode.xml").unwrap();
         let channel = Channel::read_from(BufReader::new(file)).unwrap();
 
-        let pd = NewPodcast::new(&channel, 42);
+        let pd = NewShow::new(&channel, 42);
         assert_eq!(*EXPECTED_CODE, pd);
     }
 
@@ -338,7 +338,7 @@ mod tests {
         let file = File::open("tests/feeds/2018-03-28-Ellinofreneia.xml").unwrap();
         let channel = Channel::read_from(BufReader::new(file)).unwrap();
 
-        let pd = NewPodcast::new(&channel, 42);
+        let pd = NewShow::new(&channel, 42);
         assert_eq!(*EXPECTED_ELLINOFRENEIA, pd);
     }
 
@@ -349,7 +349,7 @@ mod tests {
         let file = File::open("tests/feeds/2018-01-20-Intercepted.xml").unwrap();
         let channel = Channel::read_from(BufReader::new(file)).unwrap();
 
-        let npd = NewPodcast::new(&channel, 42);
+        let npd = NewShow::new(&channel, 42);
         npd.insert().unwrap();
         let pd = dbqueries::get_podcast_from_source_id(42).unwrap();
 
@@ -388,14 +388,14 @@ mod tests {
         assert!(EXPECTED_INTERCEPTED.index().is_ok());
         // Get the podcast
         let old = dbqueries::get_podcast_from_source_id(42).unwrap();
-        // Assert that NewPodcast is equal to the Indexed one
+        // Assert that NewShow is equal to the Indexed one
         assert_eq!(&*EXPECTED_INTERCEPTED, &old);
 
         let updated = &*UPDATED_DESC_INTERCEPTED;
 
         // Update the podcast
         assert!(updated.index().is_ok());
-        // Get the new Podcast
+        // Get the new Show
         let new = dbqueries::get_podcast_from_source_id(42).unwrap();
         // Assert it's diff from the old one.
         assert_ne!(new, old);

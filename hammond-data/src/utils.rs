@@ -7,7 +7,7 @@ use url::{Position, Url};
 
 use dbqueries;
 use errors::DataError;
-use models::{EpisodeCleanerQuery, Podcast, Save};
+use models::{EpisodeCleanerQuery, Save, Show};
 use xdg_dirs::DL_DIR;
 
 use std::fs;
@@ -108,9 +108,9 @@ pub fn url_cleaner(s: &str) -> String {
     }
 }
 
-/// Returns the URI of a Podcast Downloads given it's title.
+/// Returns the URI of a Show Downloads given it's title.
 pub fn get_download_folder(pd_title: &str) -> Result<String, DataError> {
-    // It might be better to make it a hash of the title or the podcast rowid
+    // It might be better to make it a hash of the title or the Show rowid
     let download_fold = format!("{}/{}", DL_DIR.to_str().unwrap(), pd_title);
 
     // Create the folder
@@ -123,7 +123,7 @@ pub fn get_download_folder(pd_title: &str) -> Result<String, DataError> {
 /// Removes all the entries associated with the given show from the database,
 /// and deletes all of the downloaded content.
 // TODO: Write Tests
-pub fn delete_show(pd: &Podcast) -> Result<(), DataError> {
+pub fn delete_show(pd: &Show) -> Result<(), DataError> {
     dbqueries::remove_feed(pd)?;
     info!("{} was removed succesfully.", pd.title());
 

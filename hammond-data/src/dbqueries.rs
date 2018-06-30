@@ -23,18 +23,18 @@ pub fn get_sources() -> Result<Vec<Source>, DataError> {
         .map_err(From::from)
 }
 
-pub fn get_podcasts() -> Result<Vec<Podcast>, DataError> {
+pub fn get_podcasts() -> Result<Vec<Show>, DataError> {
     use schema::shows::dsl::*;
     let db = connection();
     let con = db.get()?;
 
     shows
         .order(title.asc())
-        .load::<Podcast>(&con)
+        .load::<Show>(&con)
         .map_err(From::from)
 }
 
-pub fn get_podcasts_filter(filter_ids: &[i32]) -> Result<Vec<Podcast>, DataError> {
+pub fn get_podcasts_filter(filter_ids: &[i32]) -> Result<Vec<Show>, DataError> {
     use schema::shows::dsl::*;
     let db = connection();
     let con = db.get()?;
@@ -42,7 +42,7 @@ pub fn get_podcasts_filter(filter_ids: &[i32]) -> Result<Vec<Podcast>, DataError
     shows
         .order(title.asc())
         .filter(id.ne_all(filter_ids))
-        .load::<Podcast>(&con)
+        .load::<Show>(&con)
         .map_err(From::from)
 }
 
@@ -149,18 +149,18 @@ pub fn get_episodes_widgets_filter_limit(
         .map_err(From::from)
 }
 
-pub fn get_podcast_from_id(pid: i32) -> Result<Podcast, DataError> {
+pub fn get_podcast_from_id(pid: i32) -> Result<Show, DataError> {
     use schema::shows::dsl::*;
     let db = connection();
     let con = db.get()?;
 
     shows
         .filter(id.eq(pid))
-        .get_result::<Podcast>(&con)
+        .get_result::<Show>(&con)
         .map_err(From::from)
 }
 
-pub fn get_podcast_cover_from_id(pid: i32) -> Result<PodcastCoverQuery, DataError> {
+pub fn get_podcast_cover_from_id(pid: i32) -> Result<ShowCoverQuery, DataError> {
     use schema::shows::dsl::*;
     let db = connection();
     let con = db.get()?;
@@ -168,11 +168,11 @@ pub fn get_podcast_cover_from_id(pid: i32) -> Result<PodcastCoverQuery, DataErro
     shows
         .select((id, title, image_uri))
         .filter(id.eq(pid))
-        .get_result::<PodcastCoverQuery>(&con)
+        .get_result::<ShowCoverQuery>(&con)
         .map_err(From::from)
 }
 
-pub fn get_pd_episodes(parent: &Podcast) -> Result<Vec<Episode>, DataError> {
+pub fn get_pd_episodes(parent: &Show) -> Result<Vec<Episode>, DataError> {
     use schema::episodes::dsl::*;
     let db = connection();
     let con = db.get()?;
@@ -183,7 +183,7 @@ pub fn get_pd_episodes(parent: &Podcast) -> Result<Vec<Episode>, DataError> {
         .map_err(From::from)
 }
 
-pub fn get_pd_episodes_count(parent: &Podcast) -> Result<i64, DataError> {
+pub fn get_pd_episodes_count(parent: &Show) -> Result<i64, DataError> {
     let db = connection();
     let con = db.get()?;
 
@@ -193,7 +193,7 @@ pub fn get_pd_episodes_count(parent: &Podcast) -> Result<i64, DataError> {
         .map_err(From::from)
 }
 
-pub fn get_pd_episodeswidgets(parent: &Podcast) -> Result<Vec<EpisodeWidgetQuery>, DataError> {
+pub fn get_pd_episodeswidgets(parent: &Show) -> Result<Vec<EpisodeWidgetQuery>, DataError> {
     use schema::episodes::dsl::*;
     let db = connection();
     let con = db.get()?;
@@ -209,7 +209,7 @@ pub fn get_pd_episodeswidgets(parent: &Podcast) -> Result<Vec<EpisodeWidgetQuery
         .map_err(From::from)
 }
 
-pub fn get_pd_unplayed_episodes(parent: &Podcast) -> Result<Vec<Episode>, DataError> {
+pub fn get_pd_unplayed_episodes(parent: &Show) -> Result<Vec<Episode>, DataError> {
     use schema::episodes::dsl::*;
     let db = connection();
     let con = db.get()?;
@@ -221,7 +221,7 @@ pub fn get_pd_unplayed_episodes(parent: &Podcast) -> Result<Vec<Episode>, DataEr
         .map_err(From::from)
 }
 
-// pub(crate) fn get_pd_episodes_limit(parent: &Podcast, limit: u32) ->
+// pub(crate) fn get_pd_episodes_limit(parent: &Show, limit: u32) ->
 // Result<Vec<Episode>, DataError> {     use schema::episodes::dsl::*;
 
 //     let db = connection();
@@ -256,14 +256,14 @@ pub fn get_source_from_id(id_: i32) -> Result<Source, DataError> {
         .map_err(From::from)
 }
 
-pub fn get_podcast_from_source_id(sid: i32) -> Result<Podcast, DataError> {
+pub fn get_podcast_from_source_id(sid: i32) -> Result<Show, DataError> {
     use schema::shows::dsl::*;
     let db = connection();
     let con = db.get()?;
 
     shows
         .filter(source_id.eq(sid))
-        .get_result::<Podcast>(&con)
+        .get_result::<Show>(&con)
         .map_err(From::from)
 }
 
@@ -295,7 +295,7 @@ pub(crate) fn get_episode_minimal_from_pk(
         .map_err(From::from)
 }
 
-pub(crate) fn remove_feed(pd: &Podcast) -> Result<(), DataError> {
+pub(crate) fn remove_feed(pd: &Show) -> Result<(), DataError> {
     let db = connection();
     let con = db.get()?;
 
@@ -400,7 +400,7 @@ pub(crate) fn index_new_episodes(eps: &[NewEpisode]) -> Result<(), DataError> {
         .map(|_| ())
 }
 
-pub fn update_none_to_played_now(parent: &Podcast) -> Result<usize, DataError> {
+pub fn update_none_to_played_now(parent: &Show) -> Result<usize, DataError> {
     use schema::episodes::dsl::*;
     let db = connection();
     let con = db.get()?;

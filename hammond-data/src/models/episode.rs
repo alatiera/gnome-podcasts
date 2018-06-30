@@ -5,14 +5,14 @@ use diesel::SaveChangesDsl;
 
 use database::connection;
 use errors::DataError;
-use models::{Podcast, Save};
+use models::{Save, Show};
 use schema::episodes;
 
 #[derive(Queryable, Identifiable, AsChangeset, Associations, PartialEq)]
 #[table_name = "episodes"]
 #[changeset_options(treat_none_as_null = "true")]
 #[primary_key(title, show_id)]
-#[belongs_to(Podcast, foreign_key = "show_id")]
+#[belongs_to(Show, foreign_key = "show_id")]
 #[derive(Debug, Clone)]
 /// Diesel Model of the episode table.
 pub struct Episode {
@@ -152,7 +152,7 @@ impl Episode {
         self.played = value;
     }
 
-    /// `Podcast` table foreign key.
+    /// `Show` table foreign key.
     pub fn show_id(&self) -> i32 {
         self.show_id
     }
@@ -292,7 +292,7 @@ impl EpisodeWidgetQuery {
         self.played = value;
     }
 
-    /// `Podcast` table foreign key.
+    /// `Show` table foreign key.
     pub fn show_id(&self) -> i32 {
         self.show_id
     }
@@ -445,7 +445,7 @@ impl EpisodeMinimal {
         self.duration
     }
 
-    /// `Podcast` table foreign key.
+    /// `Show` table foreign key.
     pub fn show_id(&self) -> i32 {
         self.show_id
     }

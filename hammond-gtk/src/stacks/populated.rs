@@ -6,7 +6,7 @@ use crossbeam_channel::Sender;
 use failure::Error;
 
 use hammond_data::dbqueries;
-use hammond_data::Podcast;
+use hammond_data::Show;
 
 use app::Action;
 use widgets::{ShowWidget, ShowsView};
@@ -89,7 +89,7 @@ impl PopulatedStack {
         Ok(())
     }
 
-    pub fn replace_widget(&mut self, pd: Arc<Podcast>) -> Result<(), Error> {
+    pub fn replace_widget(&mut self, pd: Arc<Show>) -> Result<(), Error> {
         let old = self.show.container.clone();
 
         // save the ShowWidget vertical scrollabar alignment
