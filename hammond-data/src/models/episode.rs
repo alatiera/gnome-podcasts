@@ -388,6 +388,7 @@ pub struct EpisodeMinimal {
     title: String,
     uri: Option<String>,
     epoch: i32,
+    length: Option<i32>,
     duration: Option<i32>,
     guid: Option<String>,
     show_id: i32,
@@ -399,6 +400,7 @@ impl From<Episode> for EpisodeMinimal {
             rowid: e.rowid,
             title: e.title,
             uri: e.uri,
+            length: e.length,
             guid: e.guid,
             epoch: e.epoch,
             duration: e.duration,
@@ -436,6 +438,18 @@ impl EpisodeMinimal {
     /// Value is set to Utc whenever possible.
     pub fn epoch(&self) -> i32 {
         self.epoch
+    }
+
+    /// Get the `length`.
+    ///
+    /// The number represents the size of the file in bytes.
+    pub fn length(&self) -> Option<i32> {
+        self.length
+    }
+
+    /// Set the `length`.
+    pub fn set_length(&mut self, value: Option<i32>) {
+        self.length = value;
     }
 
     /// Get the `duration` value.

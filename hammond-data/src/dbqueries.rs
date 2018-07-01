@@ -288,7 +288,7 @@ pub(crate) fn get_episode_minimal_from_pk(
     let con = db.get()?;
 
     episodes
-        .select((rowid, title, uri, epoch, duration, guid, show_id))
+        .select((rowid, title, uri, epoch, length, duration, guid, show_id))
         .filter(title.eq(title_))
         .filter(show_id.eq(pid))
         .get_result::<EpisodeMinimal>(&con)

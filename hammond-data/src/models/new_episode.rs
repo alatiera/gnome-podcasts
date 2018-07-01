@@ -180,6 +180,7 @@ impl NewEpisode {
 pub(crate) struct NewEpisodeMinimal {
     title: String,
     uri: Option<String>,
+    length: Option<i32>,
     duration: Option<i32>,
     epoch: i32,
     guid: Option<String>,
@@ -211,12 +212,19 @@ impl NewEpisodeMinimal {
         let title = item.title().unwrap().trim().to_owned();
         let guid = item.guid().map(|s| s.value().trim().to_owned());
 
-        let uri = item.enclosure()
-            .map(|s| url_cleaner(s.url().trim()))
+        // Get the mime type, the `http` url and the length from the enclosure
+        // http://www.rssboard.org/rss-specification#ltenclosuregtSubelementOfLtitemgt
+        let enc = item.enclosure();
+
+        // Get the url
+        let uri = enc.map(|s| url_cleaner(s.url().trim()))
             // Fallback to Rss.Item.link if enclosure is None.
             .or_else(|| item.link().map(|s| url_cleaner(s.trim())));
 
-        // If url is still None return an Error as this behaviour is
+        // Get the size of the content, it should be in bytes
+        let length = enc.and_then(|x| x.length().parse().ok());
+
+        // If url is still None return an Error as this behaviour is not
         // compliant with the RSS Spec.
         if uri.is_none() {
             let err = DataError::ParseEpisodeError {
@@ -238,6 +246,7 @@ impl NewEpisodeMinimal {
         NewEpisodeMinimalBuilder::default()
             .title(title)
             .uri(uri)
+            .length(length)
             .duration(duration)
             .epoch(epoch)
             .guid(guid)
@@ -247,8 +256,8 @@ impl NewEpisodeMinimal {
     }
 
     // TODO: TryInto is stabilizing in rustc v1.26!
+    // ^ Jokes on you past self!
     pub(crate) fn into_new_episode(self, item: &rss::Item) -> NewEpisode {
-        let length = item.enclosure().and_then(|x| x.length().parse().ok());
         let description = item.description().and_then(|s| {
             let sanitized_html = ammonia::Builder::new()
                 // Remove `rel` attributes from `<a>` tags
@@ -265,7 +274,7 @@ impl NewEpisodeMinimal {
             .epoch(self.epoch)
             .show_id(self.show_id)
             .guid(self.guid)
-            .length(length)
+            .length(self.length)
             .description(description)
             .build()
             .unwrap()
@@ -298,6 +307,7 @@ impl NewEpisodeMinimal {
         self.show_id
     }
 }
+
 #[cfg(test)]
 mod tests {
     use database::truncate_db;
@@ -323,6 +333,7 @@ mod tests {
                 )))
                 .guid(Some(String::from("7df4070a-9832-11e7-adac-cb37b05d5e24")))
                 .epoch(1505296800)
+                .length(Some(66738886))
                 .duration(Some(4171))
                 .show_id(42)
                 .build()
@@ -336,6 +347,7 @@ mod tests {
                 )))
                 .guid(Some(String::from("7c207a24-e33f-11e6-9438-eb45dcf36a1d")))
                 .epoch(1502272800)
+                .length(Some(67527575))
                 .duration(Some(4415))
                 .show_id(42)
                 .build()
@@ -408,6 +420,7 @@ mod tests {
                     "http://www.podtrac.com/pts/redirect.mp3/traffic.libsyn.com/jnite/lup-0214.mp3",
                 )))
                 .guid(Some(String::from("78A682B4-73E8-47B8-88C0-1BE62DD4EF9D")))
+                .length(Some(46479789))
                 .epoch(1505280282)
                 .duration(Some(5733))
                 .show_id(42)
@@ -422,6 +435,7 @@ mod tests {
                 )))
                 .guid(Some(String::from("1CE57548-B36C-4F14-832A-5D5E0A24E35B")))
                 .epoch(1504670247)
+                .length(Some(36544272))
                 .duration(Some(4491))
                 .show_id(42)
                 .build()
@@ -539,6 +553,10 @@ mod tests {
         let ep = EXPECTED_MINIMAL_INTERCEPTED_1
             .clone()
             .into_new_episode(&item);
+        println!(
+            "EPISODE: {:#?}\nEXPECTED: {:#?}",
+            ep, *EXPECTED_INTERCEPTED_1
+        );
         assert_eq!(ep, *EXPECTED_INTERCEPTED_1);
 
         let item = channel.items().iter().nth(15).unwrap();
