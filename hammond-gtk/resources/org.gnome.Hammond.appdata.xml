@@ -5,10 +5,10 @@
   <project_license>GPL-3.0</project_license>
   <metadata_license>CC0-1.0</metadata_license>
   <developer_name>Jordan Petridis</developer_name>
-  <summary>Modern Podcast Client for the GNOME desktop</summary>
+  <summary>Modern Podcast application for the GNOME desktop</summary>
   <description xml:lang="en">
     <p>
-      Hammond is a modern, reliable, and fast Podcast Client for the GNOME
+      Hammond is a modern, reliable, and fast Podcast application for the GNOME
       desktop written in Rust.
     </p>
   </description>
@@ -28,7 +28,7 @@
     </screenshot>
   </screenshots>
   <releases>
-    <release version="0.3.4" date="2018-05-20"/>
+    <release version="0.4.0" date="2018-07-04"/>
   </releases>
   <url type="homepage">https://gitlab.gnome.org/World/hammond</url>
   <update_contact>jpetridis@gnome.org</update_contact>
