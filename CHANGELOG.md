@@ -17,6 +17,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - `EpisdeWidget`'s progressbar was changed to be non-blocking and should feel way more responsive now. 9b0ac5b83dadecdff51cd398293afdf0d5276012
 - An embeded audio player was implemented!
 [!40](https://gitlab.gnome.org/World/hammond/merge_requests/40)
+- Various Database changes.
+[!41](https://gitlab.gnome.org/World/hammond/merge_requests/41)
 
 ### Fixed:
 - Fixed a bug whre the about dialog would be unclosable. (ZanderBrown) [!37](https://gitlab.gnome.org/World/hammond/merge_requests/37)
