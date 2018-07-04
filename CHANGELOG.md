@@ -6,6 +6,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 ### Added:
+
+### Changed:
+
+### Fixed:
+
+### Removed:
+
+## [0.4.0] - 2018-07-04
+### Added:
 - Keyboard Shortcuts and a Shortcuts dialog were implemented. (ZanderBrown)
 [!33](https://gitlab.gnome.org/World/hammond/merge_requests/33)
 
@@ -22,8 +31,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Fixed:
 - Fixed a bug whre the about dialog would be unclosable. (ZanderBrown) [!37](https://gitlab.gnome.org/World/hammond/merge_requests/37)
-
-### Removed:
 
 ## [0.3.4] - 2018-05-20
 ### Fixed:
