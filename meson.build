@@ -16,6 +16,9 @@ hammond_version_micro = version_array[2].to_int()
 hammond_prefix = get_option('prefix')
 hammond_bindir = join_paths(hammond_prefix, get_option('bindir'))
 
+hammond_conf = configuration_data()
+hammond_conf.set('BINDIR', hammond_bindir)
+
 datadir = get_option('datadir')
 icondir = join_paths(datadir, 'icons')
 subdir('hammond-gtk/resources')

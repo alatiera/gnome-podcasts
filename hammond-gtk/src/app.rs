@@ -20,6 +20,7 @@ use widgets::appnotif::{InAppNotification, UndoState};
 use widgets::player;
 use widgets::{about_dialog, mark_all_notif, remove_show_notif};
 
+use std::env;
 use std::rc::Rc;
 use std::sync::Arc;
 
@@ -78,9 +79,8 @@ impl App {
 
         let window = gtk::ApplicationWindow::new(application);
         window.set_title("Hammond");
-        window.connect_delete_event(clone!(application, settings => move |window, _| {
+        window.connect_delete_event(clone!(settings => move |window, _| {
             WindowGeometry::from_window(&window).write(&settings);
-            application.quit();
             Inhibit(false)
         }));
 
@@ -285,8 +285,12 @@ impl App {
             info!("CONNECT STARTUP RUN");
             let app = Self::new(&application);
             Self::init(&app);
-            app.window.show_all();
-            app.window.activate();
+            info!("Init complete");
+            application.connect_activate(clone!(app => move |_| {
+                info!("GApplication::activate");
+                app.window.show_all();
+                app.window.activate();
+            }));
         }));
 
         // Weird magic I copy-pasted that sets the Application Name in the Shell.
@@ -294,6 +298,7 @@ impl App {
         glib::set_prgname(Some("Hammond"));
         // We need out own org.gnome.Hammon icon
         gtk::Window::set_default_icon_name("multimedia-player");
-        ApplicationExtManual::run(&application, &[]);
+        let args: Vec<String> = env::args().collect();
+        ApplicationExtManual::run(&application, &args);
     }
 }
