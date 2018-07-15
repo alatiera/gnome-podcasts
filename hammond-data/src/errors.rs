@@ -11,7 +11,12 @@ use std::io;
 
 use models::Source;
 
-#[fail(display = "Request to {} returned {}. Context: {}", url, status_code, context)]
+#[fail(
+    display = "Request to {} returned {}. Context: {}",
+    url,
+    status_code,
+    context
+)]
 #[derive(Fail, Debug)]
 pub struct HttpStatusError {
     url: String,
@@ -58,7 +63,10 @@ pub enum DataError {
     HttpStatusGeneral(HttpStatusError),
     #[fail(display = "FIXME: This should be better")]
     F301(Source),
-    #[fail(display = "Error occured while Parsing an Episode. Reason: {}", reason)]
+    #[fail(
+        display = "Error occured while Parsing an Episode. Reason: {}",
+        reason
+    )]
     ParseEpisodeError { reason: String, parent_id: i32 },
     #[fail(display = "Episode was not changed and thus skipped.")]
     EpisodeNotChanged,
