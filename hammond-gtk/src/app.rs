@@ -302,4 +302,3 @@ impl App {
         ApplicationExtManual::run(&application, &args);
     }
 }
-
