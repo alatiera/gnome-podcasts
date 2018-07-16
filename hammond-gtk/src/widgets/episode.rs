@@ -206,10 +206,10 @@ impl Default for EpisodeWidget {
 }
 
 impl EpisodeWidget {
-    pub fn new(episode: &EpisodeWidgetModel, sender: &Sender<Action>) -> Rc<Self> {
+    pub fn new(episode: EpisodeWidgetModel, sender: &Sender<Action>) -> Rc<Self> {
         let widget = Rc::new(Self::default());
-        widget.info.init(episode);
-        Self::determine_buttons_state(&widget, episode, sender)
+        widget.info.init(&episode);
+        Self::determine_buttons_state(&widget, &episode, sender)
             .map_err(|err| error!("Error: {}", err))
             .ok();
         widget
