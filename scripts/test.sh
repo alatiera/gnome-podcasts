@@ -1,4 +1,4 @@
-#!/usr/bin/sh
+#! /usr/bin/sh
 
 file="/.flatpak-info"
 if [ -f "$file" ]

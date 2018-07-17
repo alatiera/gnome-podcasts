@@ -17,6 +17,7 @@ use hammond_data::EpisodeWidgetModel;
 use app::Action;
 use manager;
 
+use std::cell::RefCell;
 use std::rc::Rc;
 use std::sync::{Arc, Mutex, TryLockError};
 
@@ -208,10 +209,23 @@ impl Default for EpisodeWidget {
 impl EpisodeWidget {
     pub fn new(episode: EpisodeWidgetModel, sender: &Sender<Action>) -> Rc<Self> {
         let widget = Rc::new(Self::default());
-        widget.info.init(&episode);
-        Self::determine_buttons_state(&widget, &episode, sender)
-            .map_err(|err| error!("Error: {}", err))
-            .ok();
+        let episode = RefCell::new(Some(episode));
+        // let weak = Rc::downgrade(widget);
+        let widget_ = widget.clone();
+        let sender = sender.clone();
+        widget.container.connect_draw(move |_, _| {
+            episode.borrow_mut().take().map(|ep| {
+                // widget.upgrade().map(|widget| {
+                widget_.info.init(&ep);
+                // FIXME: THERE IS A REFFERENCE CYCLE HERE
+                Self::determine_buttons_state(&widget_, &ep, &sender)
+                    .map_err(|err| error!("Error: {}", err))
+                    .ok();
+                // })
+            });
+
+            gtk::Inhibit(false)
+        });
         widget
     }
 
