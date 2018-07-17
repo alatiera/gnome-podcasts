@@ -18,7 +18,7 @@ use app::Action;
 use manager;
 
 use std::cell::RefCell;
-use std::rc::Rc;
+use std::rc::{Rc, Weak};
 use std::sync::{Arc, Mutex, TryLockError};
 
 lazy_static! {
@@ -210,22 +210,34 @@ impl EpisodeWidget {
     pub fn new(episode: EpisodeWidgetModel, sender: &Sender<Action>) -> Rc<Self> {
         let widget = Rc::new(Self::default());
         let episode = RefCell::new(Some(episode));
-        // let weak = Rc::downgrade(widget);
-        let widget_ = widget.clone();
-        let sender = sender.clone();
-        widget.container.connect_draw(move |_, _| {
+        let weak = Rc::downgrade(&widget);
+        widget.container.connect_draw(clone!(sender => move |_, _| {
             episode.borrow_mut().take().map(|ep| {
-                // widget.upgrade().map(|widget| {
-                widget_.info.init(&ep);
-                // FIXME: THERE IS A REFFERENCE CYCLE HERE
-                Self::determine_buttons_state(&widget_, &ep, &sender)
+                weak.upgrade().map(|w| w.info.init(&ep));
+                Self::determine_buttons_state(&weak, &ep, &sender)
                     .map_err(|err| error!("Error: {}", err))
                     .ok();
-                // })
             });
 
             gtk::Inhibit(false)
+        }));
+
+        // When the widget is attached to a parent,
+        // since it's a rust struct and not a widget the
+        // compiler drops the refference to it at the end of
+        // scope. That's cause we only attach the `self.container`
+        // to the parent.
+        //
+        // So this callback keeps a refference to the Rust Struct
+        // so the compiler won't drop it.
+        //
+        // When the widget is detached from it's parent view this
+        // callback runs freeing the last refference we were holding.
+        let foo = RefCell::new(Some(widget.clone()));
+        widget.container.connect_remove(move |_, _| {
+            foo.borrow_mut().take();
         });
+
         widget
     }
 
@@ -310,10 +322,13 @@ impl EpisodeWidget {
     /// |   ToDownload    |
     /// -------------------
     fn determine_buttons_state(
-        widget: &Rc<Self>,
+        weak: &Weak<Self>,
         episode: &EpisodeWidgetModel,
         sender: &Sender<Action>,
     ) -> Result<(), Error> {
+        let widget = weak
+            .upgrade()
+            .ok_or_else(|| format_err!("Widget is already dropped"))?;
         // Reset the buttons state no matter the glade file.
         // This is just to make it easier to port to relm in the future.
         widget.buttons.cancel.hide();
@@ -333,11 +348,11 @@ impl EpisodeWidget {
         // State: InProggress
         if let Some(prog) = active_dl()? {
             // set a callback that will update the state when the download finishes
-            let callback = clone!(widget, sender => move || {
+            let callback = clone!(weak, sender => move || {
                 if let Ok(guard) = manager::ACTIVE_DOWNLOADS.read() {
                     if !guard.contains_key(&id) {
                         if let Ok(ep) = dbqueries::get_episode_widget_from_rowid(id) {
-                            Self::determine_buttons_state(&widget, &ep, &sender)
+                            Self::determine_buttons_state(&weak, &ep, &sender)
                                 .map_err(|err| error!("Error: {}", err))
                                 .ok();
 
@@ -354,20 +369,20 @@ impl EpisodeWidget {
             widget
                 .buttons
                 .cancel
-                .connect_clicked(clone!(prog, widget, sender => move |_| {
+                .connect_clicked(clone!(prog, weak, sender => move |_| {
                     // Cancel the download
                     if let Ok(mut m) = prog.lock() {
                         m.cancel();
                     }
 
                     // Cancel is not instant so we have to wait a bit
-                    timeout_add(50, clone!(widget, sender => move || {
+                    timeout_add(50, clone!(weak, sender => move || {
                         if let Ok(thing) = active_dl() {
                             if thing.is_none() {
                                 // Recalculate the widget state
                                 dbqueries::get_episode_widget_from_rowid(id)
                                     .map_err(From::from)
-                                    .and_then(|ep| Self::determine_buttons_state(&widget, &ep, &sender))
+                                    .and_then(|ep| Self::determine_buttons_state(&weak, &ep, &sender))
                                     .map_err(|err| error!("Error: {}", err))
                                     .ok();
 
@@ -382,10 +397,10 @@ impl EpisodeWidget {
             // Setup a callback that will update the total_size label
             // with the http ContentLength header number rather than
             // relying to the RSS feed.
-            update_total_size_callback(&widget, &prog);
+            update_total_size_callback(&weak, &prog);
 
             // Setup a callback that will update the progress bar.
-            update_progressbar_callback(&widget, &prog, id);
+            update_progressbar_callback(&weak, &prog, id);
 
             // Change the widget layout/state
             widget.state_prog();
@@ -402,9 +417,9 @@ impl EpisodeWidget {
             widget
                 .buttons
                 .play
-                .connect_clicked(clone!(widget, sender => move |_| {
+                .connect_clicked(clone!(weak, sender => move |_| {
                     if let Ok(mut ep) = dbqueries::get_episode_widget_from_rowid(id) {
-                        on_play_bttn_clicked(&widget, &mut ep, &sender)
+                        on_play_bttn_clicked(&weak, &mut ep, &sender)
                             .map_err(|err| error!("Error: {}", err))
                             .ok();
                     }
@@ -418,14 +433,14 @@ impl EpisodeWidget {
         widget
             .buttons
             .download
-            .connect_clicked(clone!(widget, sender => move |dl| {
+            .connect_clicked(clone!(weak, sender => move |dl| {
                 // Make the button insensitive so it won't be pressed twice
                 dl.set_sensitive(false);
                 if let Ok(ep) = dbqueries::get_episode_widget_from_rowid(id) {
                     on_download_clicked(&ep, &sender)
                         .and_then(|_| {
                             info!("Donwload started succesfully.");
-                            Self::determine_buttons_state(&widget, &ep, &sender)
+                            Self::determine_buttons_state(&weak, &ep, &sender)
                         })
                         .map_err(|err| error!("Error: {}", err))
                         .ok();
@@ -455,10 +470,14 @@ fn on_download_clicked(ep: &EpisodeWidgetModel, sender: &Sender<Action>) -> Resu
 }
 
 fn on_play_bttn_clicked(
-    widget: &Rc<EpisodeWidget>,
+    widget: &Weak<EpisodeWidget>,
     episode: &mut EpisodeWidgetModel,
     sender: &Sender<Action>,
 ) -> Result<(), Error> {
+    let widget = widget
+        .upgrade()
+        .ok_or_else(|| format_err!("Widget is already dropped"))?;
+
     // Mark played
     episode.set_played_now()?;
     // Grey out the title
@@ -475,7 +494,7 @@ fn on_play_bttn_clicked(
 #[inline]
 #[cfg_attr(feature = "cargo-clippy", allow(if_same_then_else))]
 fn update_progressbar_callback(
-    widget: &Rc<EpisodeWidget>,
+    widget: &Weak<EpisodeWidget>,
     prog: &Arc<Mutex<manager::Progress>>,
     episode_rowid: i32,
 ) {
@@ -488,10 +507,15 @@ fn update_progressbar_callback(
 
 #[allow(if_same_then_else)]
 fn progress_bar_helper(
-    widget: &Rc<EpisodeWidget>,
+    widget: &Weak<EpisodeWidget>,
     prog: &Arc<Mutex<manager::Progress>>,
     episode_rowid: i32,
 ) -> Result<glib::Continue, Error> {
+    let widget = match widget.upgrade() {
+        Some(w) => w,
+        None => return Ok(glib::Continue(false)),
+    };
+
     let (fraction, downloaded) = match prog.try_lock() {
         Ok(guard) => (guard.get_fraction(), guard.get_downloaded()),
         Err(TryLockError::WouldBlock) => return Ok(glib::Continue(true)),
@@ -531,7 +555,7 @@ fn progress_bar_helper(
 // with the http ContentLength header number rather than
 // relying to the RSS feed.
 #[inline]
-fn update_total_size_callback(widget: &Rc<EpisodeWidget>, prog: &Arc<Mutex<manager::Progress>>) {
+fn update_total_size_callback(widget: &Weak<EpisodeWidget>, prog: &Arc<Mutex<manager::Progress>>) {
     let callback = clone!(prog, widget => move || {
         total_size_helper(&widget, &prog).unwrap_or(glib::Continue(true))
     });
@@ -539,9 +563,14 @@ fn update_total_size_callback(widget: &Rc<EpisodeWidget>, prog: &Arc<Mutex<manag
 }
 
 fn total_size_helper(
-    widget: &Rc<EpisodeWidget>,
+    widget: &Weak<EpisodeWidget>,
     prog: &Arc<Mutex<manager::Progress>>,
 ) -> Result<glib::Continue, Error> {
+    let widget = match widget.upgrade() {
+        Some(w) => w,
+        None => return Ok(glib::Continue(false)),
+    };
+
     // Get the total_bytes.
     let total_bytes = match prog.try_lock() {
         Ok(guard) => guard.get_total_size(),
