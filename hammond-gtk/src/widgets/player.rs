@@ -293,9 +293,10 @@ impl PlayerWidget {
         s.player.connect_warning(move |_, warn| warn!("gst warning: {}", warn));
 
         // Log gst errors.
-        s.player.connect_error(clone!(sender => move |_, error| {
-            // FIXME: should never occur and should not be user facing.
-            sender.send(Action::ErrorNotification(format!("Player Error: {}", error)));
+        s.player.connect_error(clone!(sender => move |_, _error| {
+            // sender.send(Action::ErrorNotification(format!("Player Error: {}", error)));
+            let s = "The media player was unable to execute an action.".into();
+            sender.send(Action::ErrorNotification(s));
         }));
 
         // The followign callbacks require `Send` but are handled by the gtk main loop
