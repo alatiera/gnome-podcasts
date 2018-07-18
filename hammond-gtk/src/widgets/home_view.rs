@@ -13,6 +13,7 @@ use app::Action;
 use utils::{self, lazy_load_full};
 use widgets::EpisodeWidget;
 
+use std::cell::Cell;
 use std::rc::Rc;
 use std::sync::Mutex;
 
@@ -95,7 +96,7 @@ impl HomeView {
         let view_ = view.clone();
         let func = move |ep: EpisodeWidgetModel| {
             let epoch = ep.epoch();
-            let widget = HomeEpisode::new(&ep, &sender);
+            let widget = HomeEpisode::new(ep, &sender);
 
             match split(&now_utc, i64::from(epoch)) {
                 Today => add_to_box(&widget, &view_.today_list, &view_.today_box),
@@ -197,7 +198,7 @@ impl Default for HomeEpisode {
 }
 
 impl HomeEpisode {
-    fn new(episode: &EpisodeWidgetModel, sender: &Sender<Action>) -> HomeEpisode {
+    fn new(episode: EpisodeWidgetModel, sender: &Sender<Action>) -> HomeEpisode {
         let builder =
             gtk::Builder::new_from_resource("/org/gnome/Hammond/gtk/episodes_view_widget.ui");
         let container: gtk::Box = builder.get_object("container").unwrap();
@@ -216,14 +217,27 @@ impl HomeEpisode {
     }
 
     fn init(&self, show_id: i32) {
-        self.set_cover(show_id)
-            .map_err(|err| error!("Failed to set a cover: {}", err))
-            .ok();
-
+        self.set_cover(show_id);
         self.container.pack_start(&self.episode, true, true, 6);
     }
 
-    fn set_cover(&self, show_id: i32) -> Result<(), Error> {
-        utils::set_image_from_path(&self.image, show_id, 64)
+    fn set_cover(&self, show_id: i32) {
+        // The closure above is a regular `Fn` closure.
+        // which means we can't mutate stuff inside it easily,
+        // so Cell is used.
+        //
+        // `Option<T>` along with the `.take()` method ensure
+        // that the function will only be run once, during the first execution.
+        let show_id = Cell::new(Some(show_id));
+
+        self.image.connect_draw(move |image, _| {
+            show_id.take().map(|id| {
+                utils::set_image_from_path(image, id, 64)
+                    .map_err(|err| error!("Failed to set a cover: {}", err))
+                    .ok();
+            });
+
+            gtk::Inhibit(false)
+        });
     }
 }

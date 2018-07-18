@@ -11,6 +11,7 @@ use hammond_data::Show;
 use app::Action;
 use utils::{self, get_ignored_shows, lazy_load, set_image_from_path};
 
+use std::cell::Cell;
 use std::rc::Rc;
 use std::sync::Arc;
 use std::sync::Mutex;
@@ -158,11 +159,25 @@ impl ShowsChild {
         WidgetExt::set_name(&self.child, &pd.id().to_string());
 
         self.set_cover(pd.id())
-            .map_err(|err| error!("Failed to set a cover: {}", err))
-            .ok();
     }
 
-    fn set_cover(&self, show_id: i32) -> Result<(), Error> {
-        set_image_from_path(&self.cover, show_id, 256)
+    fn set_cover(&self, show_id: i32) {
+        // The closure above is a regular `Fn` closure.
+        // which means we can't mutate stuff inside it easily,
+        // so Cell is used.
+        //
+        // `Option<T>` along with the `.take()` method ensure
+        // that the function will only be run once, during the first execution.
+        let show_id = Cell::new(Some(show_id));
+
+        self.cover.connect_draw(move |cover, _| {
+            show_id.take().map(|id| {
+                set_image_from_path(cover, id, 256)
+                    .map_err(|err| error!("Failed to set a cover: {}", err))
+                    .ok();
+            });
+
+            gtk::Inhibit(false)
+        });
     }
 }
