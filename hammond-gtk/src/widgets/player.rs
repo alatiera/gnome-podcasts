@@ -445,12 +445,10 @@ impl PlayerExt for PlayerWidget {
         destination.map(|d| self.player.seek(d));
     }
 
-    // FIXME: make the interval a GSetting
     fn rewind(&self) {
         self.seek(ClockTime::from_seconds(10), SeekDirection::Backwards)
     }
 
-    // FIXME: make the interval a GSetting
     fn fast_forward(&self) {
         self.seek(ClockTime::from_seconds(10), SeekDirection::Forward)
     }
