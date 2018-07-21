@@ -121,7 +121,6 @@ Sorry, we could not find a description for this Show.</property>
                                     <property name="use_markup">True</property>
                                     <property name="justify">center</property>
                                     <property name="wrap">True</property>
-                                    <property name="selectable">True</property>
                                     <property name="max_width_chars">70</property>
                                   </object>
                                 </child>

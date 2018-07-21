@@ -12,10 +12,7 @@
         <property name="can_focus">False</property>
         <property name="halign">center</property>
         <property name="valign">center</property>
-        <property name="margin_left">6</property>
-        <property name="margin_right">6</property>
-        <property name="margin_top">6</property>
-        <property name="margin_bottom">6</property>
+        <property name="border_width">6</property>
         <property name="orientation">vertical</property>
         <property name="spacing">6</property>
         <child>
@@ -24,7 +21,6 @@
             <property name="can_focus">True</property>
             <property name="receives_default">True</property>
             <property name="text" translatable="yes">Open Website</property>
-            <property name="centered">True</property>
           </object>
           <packing>
             <property name="expand">False</property>
@@ -38,7 +34,6 @@
             <property name="can_focus">True</property>
             <property name="receives_default">True</property>
             <property name="text" translatable="yes">Mark all as played</property>
-            <property name="centered">True</property>
           </object>
           <packing>
             <property name="expand">False</property>
@@ -47,17 +42,28 @@
           </packing>
         </child>
         <child>
-          <object class="GtkModelButton" id="unsub">
+          <object class="GtkSeparator">
             <property name="visible">True</property>
-            <property name="can_focus">True</property>
-            <property name="receives_default">True</property>
-            <property name="text" translatable="yes">Unsubscribe</property>
-            <property name="centered">True</property>
+            <property name="can_focus">False</property>
+            <property name="orientation">vertical</property>
           </object>
           <packing>
             <property name="expand">False</property>
             <property name="fill">True</property>
             <property name="position">2</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkModelButton" id="unsub">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+            <property name="text" translatable="yes">Unsubscribe</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">3</property>
           </packing>
         </child>
       </object>
