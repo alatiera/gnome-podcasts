@@ -187,7 +187,7 @@ impl Default for HomeEpisode {
         let container: gtk::Box = builder.get_object("container").unwrap();
         let image: gtk::Image = builder.get_object("cover").unwrap();
         let ep = EpisodeWidget::default();
-        container.pack_start(&ep.container, true, true, 6);
+        container.pack_start(&ep.container, true, true, 0);
 
         HomeEpisode {
             container,
@@ -218,7 +218,7 @@ impl HomeEpisode {
 
     fn init(&self, show_id: i32) {
         self.set_cover(show_id);
-        self.container.pack_start(&self.episode, true, true, 6);
+        self.container.pack_start(&self.episode, true, true, 0);
     }
 
     fn set_cover(&self, show_id: i32) {
