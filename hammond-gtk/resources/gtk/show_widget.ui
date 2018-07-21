@@ -79,12 +79,13 @@ Tobias Bernard
                     <property name="margin_bottom">32</property>
                     <property name="hexpand">True</property>
                     <property name="orientation">vertical</property>
+                    <property name="spacing">6</property>
                     <child>
                       <object class="GtkBox">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="orientation">vertical</property>
-                        <property name="spacing">12</property>
+                        <property name="spacing">6</property>
                         <child>
                           <object class="GtkImage" id="cover">
                             <property name="visible">True</property>
@@ -120,6 +121,7 @@ Sorry, we could not find a description for this Show.</property>
                                     <property name="use_markup">True</property>
                                     <property name="justify">center</property>
                                     <property name="wrap">True</property>
+                                    <property name="selectable">True</property>
                                     <property name="max_width_chars">70</property>
                                   </object>
                                 </child>
@@ -136,6 +138,7 @@ Sorry, we could not find a description for this Show.</property>
                       <packing>
                         <property name="expand">False</property>
                         <property name="fill">False</property>
+                        <property name="padding">6</property>
                         <property name="position">1</property>
                       </packing>
                     </child>
@@ -143,7 +146,6 @@ Sorry, we could not find a description for this Show.</property>
                       <object class="GtkFrame">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="margin_top">12</property>
                         <property name="label_xalign">0</property>
                         <property name="shadow_type">in</property>
                         <child>

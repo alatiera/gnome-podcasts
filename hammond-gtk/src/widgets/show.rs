@@ -85,7 +85,7 @@ impl ShowWidget {
     /// Set the descripton text.
     fn set_description(&self, text: &str) {
         self.description
-            .set_markup(&html2text::from_read(text.as_bytes(), 70));
+            .set_markup(html2text::from_read(text.as_bytes(), 70).trim());
     }
 
     /// Save the scrollabar vajustment to the cache.
