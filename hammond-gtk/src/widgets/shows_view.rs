@@ -43,24 +43,23 @@ impl Default for ShowsView {
 }
 
 impl ShowsView {
-    pub fn new(sender: Sender<Action>) -> Result<Rc<Self>, Error> {
+    pub fn new(sender: Sender<Action>) -> Rc<Self> {
         let pop = Rc::new(ShowsView::default());
         pop.init(sender);
         // Populate the flowbox with the Shows.
-        populate_flowbox(&pop)?;
-        Ok(pop)
+        let res = populate_flowbox(&pop);
+        debug_assert!(res.is_ok());
+        pop
     }
 
     pub fn init(&self, sender: Sender<Action>) {
         self.flowbox.connect_child_activated(move |_, child| {
-            on_child_activate(child, &sender)
-                .map_err(|err| error!("Error along flowbox child activation: {}", err))
-                .ok();
+            let res = on_child_activate(child, &sender);
+            debug_assert!(res.is_ok());
         });
     }
 
     /// Set scrolled window vertical adjustment.
-    #[allow(unused)]
     fn set_vadjustment(&self) -> Result<(), Error> {
         let guard = SHOWS_VIEW_VALIGNMENT
             .lock()

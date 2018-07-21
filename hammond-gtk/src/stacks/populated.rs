@@ -31,10 +31,10 @@ pub struct PopulatedStack {
 }
 
 impl PopulatedStack {
-    pub fn new(sender: Sender<Action>) -> Result<PopulatedStack, Error> {
+    pub fn new(sender: Sender<Action>) -> PopulatedStack {
         let stack = gtk::Stack::new();
         let state = PopulatedState::View;
-        let populated = ShowsView::new(sender.clone())?;
+        let populated = ShowsView::new(sender.clone());
         let show = Rc::new(ShowWidget::default());
         let container = gtk::Box::new(gtk::Orientation::Horizontal, 0);
 
@@ -43,16 +43,14 @@ impl PopulatedStack {
         container.add(&stack);
         container.show_all();
 
-        let show = PopulatedStack {
+        PopulatedStack {
             container,
             stack,
             populated,
             show,
             state,
             sender,
-        };
-
-        Ok(show)
+        }
     }
 
     pub fn update(&mut self) {
@@ -80,7 +78,7 @@ impl PopulatedStack {
             .map_err(|err| error!("Failed to set episodes_view allignment: {}", err))
             .ok();
 
-        let pop = ShowsView::new(self.sender.clone())?;
+        let pop = ShowsView::new(self.sender.clone());
         self.populated = pop;
         self.stack.remove(old);
         self.stack.add_named(&self.populated.container, "shows");

@@ -29,8 +29,8 @@ pub struct ShowStack {
 }
 
 impl ShowStack {
-    pub fn new(sender: Sender<Action>) -> Result<Self, Error> {
-        let populated = Rc::new(RefCell::new(PopulatedStack::new(sender.clone())?));
+    pub fn new(sender: Sender<Action>) -> Self {
+        let populated = Rc::new(RefCell::new(PopulatedStack::new(sender.clone())));
         let empty = EmptyView::new();
         let stack = gtk::Stack::new();
         let state = ShowState::Empty;
@@ -46,8 +46,9 @@ impl ShowStack {
             sender,
         };
 
-        show.determine_state()?;
-        Ok(show)
+        let res = show.determine_state();
+        debug_assert!(res.is_ok());
+        show
     }
 
     pub fn get_stack(&self) -> gtk::Stack {
