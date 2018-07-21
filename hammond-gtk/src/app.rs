@@ -224,6 +224,7 @@ impl App {
                 dialog.show(&win);
             })
         );
+        self.instance.set_accels_for_action("win.preferences", &["<primary>e"]);
 
         // Create the menu action
         action!(win, "menu",clone!(header => move |_, _| header.open_menu()));
