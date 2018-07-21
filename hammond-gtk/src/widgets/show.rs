@@ -63,9 +63,8 @@ impl ShowWidget {
         sender.send(Action::InitShowMenu(SendCell::new(menu)));
 
         let pdw = Rc::new(pdw);
-        populate_listbox(&pdw, pd.clone(), sender)
-            .map_err(|err| error!("Failed to populate the listbox: {}", err))
-            .ok();
+        let res = populate_listbox(&pdw, pd.clone(), sender);
+        debug_assert!(res.is_ok());
 
         pdw
     }
@@ -74,9 +73,8 @@ impl ShowWidget {
         self.set_description(pd.description());
         self.show_id = Some(pd.id());
 
-        self.set_cover(&pd)
-            .map_err(|err| error!("Failed to set a cover: {}", err))
-            .ok();
+        let res = self.set_cover(&pd);
+        debug_assert!(res.is_ok());
     }
 
     /// Set the show cover.
@@ -135,7 +133,6 @@ impl ShowWidget {
 
 /// Populate the listbox with the shows episodes.
 fn populate_listbox(
-    // FIXME: Refference cycle
     show: &Rc<ShowWidget>,
     pd: Arc<Show>,
     sender: Sender<Action>,
@@ -146,15 +143,18 @@ fn populate_listbox(
 
     let (sender_, receiver) = bounded(1);
     rayon::spawn(clone!(pd => move || {
-        let episodes = dbqueries::get_pd_episodeswidgets(&pd).unwrap();
-        // The receiver can be dropped if there's an early return
-        // like on show without episodes for example.
-        sender_.send(episodes);
+        if let Ok(episodes) = dbqueries::get_pd_episodeswidgets(&pd) {
+            // The receiver can be dropped if there's an early return
+            // like on show without episodes for example.
+            sender_.send(episodes);
+        }
     }));
 
     if count == 0 {
         let builder = gtk::Builder::new_from_resource("/org/gnome/Hammond/gtk/empty_show.ui");
-        let container: gtk::Box = builder.get_object("empty_show").unwrap();
+        let container: gtk::Box = builder
+            .get_object("empty_show")
+            .ok_or_else(|| format_err!("FOO"))?;
         show.episodes.add(&container);
         return Ok(());
     }
@@ -165,17 +165,16 @@ fn populate_listbox(
             Some(e) => e,
             None => return glib::Continue(true),
         };
+        debug_assert!(episodes.len() as i64 == count);
 
         let list = show_.episodes.clone();
-
         let constructor = clone!(sender => move |ep| {
             EpisodeWidget::new(ep, &sender).container.clone()
         });
 
         let callback = clone!(pd, show_ => move || {
-            show_.set_vadjustment(&pd)
-                .map_err(|err| error!("Failed to set ShowWidget Alignment: {}", err))
-                .ok();
+            let res = show_.set_vadjustment(&pd);
+            debug_assert!(res.is_ok());
         });
 
         lazy_load(episodes, list.clone(), constructor, callback);
