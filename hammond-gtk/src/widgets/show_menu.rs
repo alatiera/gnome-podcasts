@@ -60,10 +60,8 @@ impl ShowMenu {
         self.website.connect_clicked(clone!(pd => move |_| {
             let link = pd.link();
             info!("Opening link: {}", link);
-            open::that(link)
-                .map_err(|err| error!("Error: {}", err))
-                .map_err(|_| error!("Failed open link: {}", link))
-                .ok();
+            let res = open::that(link);
+            debug_assert!(res.is_ok());
         }));
     }
 
@@ -132,9 +130,8 @@ fn mark_all_watched(pd: &Show, sender: &Sender<Action>) -> Result<(), Error> {
 pub fn mark_all_notif(pd: Arc<Show>, sender: &Sender<Action>) -> InAppNotification {
     let id = pd.id();
     let callback = clone!(sender => move || {
-        mark_all_watched(&pd, &sender)
-            .map_err(|err| error!("Notif Callback Error: {}", err))
-            .ok();
+        let res = mark_all_watched(&pd, &sender);
+        debug_assert!(res.is_ok());
         glib::Continue(false)
     });
 
@@ -146,16 +143,12 @@ pub fn mark_all_notif(pd: Arc<Show>, sender: &Sender<Action>) -> InAppNotificati
 pub fn remove_show_notif(pd: Arc<Show>, sender: Sender<Action>) -> InAppNotification {
     let text = format!("Unsubscribed from {}", pd.title());
 
-    utils::ignore_show(pd.id())
-        .map_err(|err| error!("Error: {}", err))
-        .map_err(|_| error!("Could not insert {} to the ignore list.", pd.title()))
-        .ok();
+    let res = utils::ignore_show(pd.id());
+    debug_assert!(res.is_ok());
 
     let callback = clone!(pd, sender => move || {
-        utils::uningore_show(pd.id())
-            .map_err(|err| error!("Error: {}", err))
-            .map_err(|_| error!("Could not remove {} from the ignore list.", pd.title()))
-            .ok();
+        let res = utils::uningore_show(pd.id());
+        debug_assert!(res.is_ok());
 
         // Spawn a thread so it won't block the ui.
         rayon::spawn(clone!(pd, sender => move || {
@@ -170,9 +163,8 @@ pub fn remove_show_notif(pd: Arc<Show>, sender: Sender<Action>) -> InAppNotifica
     });
 
     let undo_callback = move || {
-        utils::uningore_show(pd.id())
-            .map_err(|err| error!("{}", err))
-            .ok();
+        let res = utils::uningore_show(pd.id());
+        debug_assert!(res.is_ok());
         sender.send(Action::RefreshShowsView);
         sender.send(Action::RefreshEpisodesView);
     };
