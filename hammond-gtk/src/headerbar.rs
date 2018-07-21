@@ -134,7 +134,7 @@ impl AddPopover {
 impl Default for Header {
     fn default() -> Header {
         let builder = gtk::Builder::new_from_resource("/org/gnome/Hammond/gtk/headerbar.ui");
-        let menus = gtk::Builder::new_from_resource("/org/gnome/Hammond/gtk/menus.ui");
+        let menus = gtk::Builder::new_from_resource("/org/gnome/Hammond/gtk/hamburger.ui");
 
         let header = builder.get_object("headerbar").unwrap();
         let switch = builder.get_object("switch").unwrap();
