@@ -33,7 +33,7 @@ pub fn about_dialog(window: &gtk::ApplicationWindow) {
     // dialog.set_website_label("Learn more about Hammond");
     dialog.set_transient_for(window);
 
-    dialog.set_artists(&["Tobias Bernard"]);
+    dialog.set_artists(&["Tobias Bernard", "Sam Hewitt"]);
     dialog.set_authors(authors);
 
     dialog.connect_response(|dlg, _| dlg.destroy());
