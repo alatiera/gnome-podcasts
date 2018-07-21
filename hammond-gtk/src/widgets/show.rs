@@ -5,18 +5,15 @@ use gtk::prelude::*;
 use crossbeam_channel::Sender;
 use failure::Error;
 use html2text;
-use open;
 use rayon;
 use send_cell::SendCell;
 
 use hammond_data::dbqueries;
-use hammond_data::utils::delete_show;
 use hammond_data::Show;
 
 use app::Action;
 use utils::{self, lazy_load};
-use widgets::appnotif::{InAppNotification, UndoState};
-use widgets::EpisodeWidget;
+use widgets::{EpisodeWidget, ShowMenu};
 
 use std::rc::Rc;
 use std::sync::{Arc, Mutex};
@@ -32,9 +29,6 @@ pub struct ShowWidget {
     scrolled_window: gtk::ScrolledWindow,
     cover: gtk::Image,
     description: gtk::Label,
-    link: gtk::Button,
-    settings: gtk::MenuButton,
-    unsub: gtk::Button,
     episodes: gtk::ListBox,
     show_id: Option<i32>,
 }
@@ -48,18 +42,12 @@ impl Default for ShowWidget {
 
         let cover: gtk::Image = builder.get_object("cover").unwrap();
         let description: gtk::Label = builder.get_object("description").unwrap();
-        let unsub: gtk::Button = builder.get_object("unsub_button").unwrap();
-        let link: gtk::Button = builder.get_object("link_button").unwrap();
-        let settings: gtk::MenuButton = builder.get_object("settings_button").unwrap();
 
         ShowWidget {
             container,
             scrolled_window,
             cover,
             description,
-            unsub,
-            link,
-            settings,
             episodes,
             show_id: None,
         }
@@ -69,52 +57,26 @@ impl Default for ShowWidget {
 impl ShowWidget {
     pub fn new(pd: Arc<Show>, sender: Sender<Action>) -> Rc<ShowWidget> {
         let mut pdw = ShowWidget::default();
-        pdw.init(&pd, &sender);
+        pdw.init(&pd);
+
+        let menu = ShowMenu::new(&pd, &pdw.episodes, &sender);
+        sender.send(Action::InitShowMenu(SendCell::new(menu)));
+
         let pdw = Rc::new(pdw);
-        populate_listbox(&pdw, pd, sender)
+        populate_listbox(&pdw, pd.clone(), sender)
             .map_err(|err| error!("Failed to populate the listbox: {}", err))
             .ok();
 
         pdw
     }
 
-    pub fn init(&mut self, pd: &Arc<Show>, sender: &Sender<Action>) {
-        let builder = gtk::Builder::new_from_resource("/org/gnome/Hammond/gtk/show_widget.ui");
-
-        self.unsub
-            .connect_clicked(clone!(pd, sender => move |bttn| {
-                on_unsub_button_clicked(pd.clone(), bttn, &sender);
-        }));
-
+    pub fn init(&mut self, pd: &Arc<Show>) {
         self.set_description(pd.description());
         self.show_id = Some(pd.id());
 
         self.set_cover(&pd)
             .map_err(|err| error!("Failed to set a cover: {}", err))
             .ok();
-
-        let link = pd.link().to_owned();
-        self.link.set_tooltip_text(Some(link.as_str()));
-        self.link.connect_clicked(move |_| {
-            info!("Opening link: {}", &link);
-            open::that(&link)
-                .map_err(|err| error!("Error: {}", err))
-                .map_err(|_| error!("Failed open link: {}", &link))
-                .ok();
-        });
-
-        let show_menu: gtk::Popover = builder.get_object("show_menu").unwrap();
-        let mark_all: gtk::ModelButton = builder.get_object("mark_all_watched").unwrap();
-
-        let episodes = self.episodes.clone();
-        mark_all.connect_clicked(clone!(pd, sender => move |_| {
-            on_played_button_clicked(
-                pd.clone(),
-                &episodes,
-                &sender
-            )
-        }));
-        self.settings.set_popover(&show_menu);
     }
 
     /// Set the show cover.
@@ -173,6 +135,7 @@ impl ShowWidget {
 
 /// Populate the listbox with the shows episodes.
 fn populate_listbox(
+    // FIXME: Refference cycle
     show: &Rc<ShowWidget>,
     pd: Arc<Show>,
     sender: Sender<Action>,
@@ -221,112 +184,4 @@ fn populate_listbox(
     });
 
     Ok(())
-}
-
-fn on_unsub_button_clicked(pd: Arc<Show>, unsub_button: &gtk::Button, sender: &Sender<Action>) {
-    // hack to get away without properly checking for none.
-    // if pressed twice would panic.
-    unsub_button.set_sensitive(false);
-
-    sender.send(Action::RemoveShow(pd));
-
-    sender.send(Action::HeaderBarNormal);
-    sender.send(Action::ShowShowsAnimated);
-    // Queue a refresh after the switch to avoid blocking the db.
-    sender.send(Action::RefreshShowsView);
-    sender.send(Action::RefreshEpisodesView);
-
-    unsub_button.set_sensitive(true);
-}
-
-fn on_played_button_clicked(pd: Arc<Show>, episodes: &gtk::ListBox, sender: &Sender<Action>) {
-    if dim_titles(episodes).is_none() {
-        error!("Something went horribly wrong when dimming the titles.");
-        warn!("RUN WHILE YOU STILL CAN!");
-    }
-
-    sender.send(Action::MarkAllPlayerNotification(pd))
-}
-
-fn mark_all_watched(pd: &Show, sender: &Sender<Action>) -> Result<(), Error> {
-    dbqueries::update_none_to_played_now(pd)?;
-    // Not all widgets migth have been loaded when the mark_all is hit
-    // So we will need to refresh again after it's done.
-    sender.send(Action::RefreshWidgetIfSame(pd.id()));
-    sender.send(Action::RefreshEpisodesView);
-    Ok(())
-}
-
-pub fn mark_all_notif(pd: Arc<Show>, sender: &Sender<Action>) -> InAppNotification {
-    let id = pd.id();
-    let callback = clone!(sender => move || {
-        mark_all_watched(&pd, &sender)
-            .map_err(|err| error!("Notif Callback Error: {}", err))
-            .ok();
-        glib::Continue(false)
-    });
-
-    let undo_callback = clone!(sender => move || sender.send(Action::RefreshWidgetIfSame(id)));
-    let text = "Marked all episodes as listened";
-    InAppNotification::new(text, callback, undo_callback, UndoState::Shown)
-}
-
-pub fn remove_show_notif(pd: Arc<Show>, sender: Sender<Action>) -> InAppNotification {
-    let text = format!("Unsubscribed from {}", pd.title());
-
-    utils::ignore_show(pd.id())
-        .map_err(|err| error!("Error: {}", err))
-        .map_err(|_| error!("Could not insert {} to the ignore list.", pd.title()))
-        .ok();
-
-    let callback = clone!(pd, sender => move || {
-        utils::uningore_show(pd.id())
-            .map_err(|err| error!("Error: {}", err))
-            .map_err(|_| error!("Could not remove {} from the ignore list.", pd.title()))
-            .ok();
-
-        // Spawn a thread so it won't block the ui.
-        rayon::spawn(clone!(pd, sender => move || {
-            delete_show(&pd)
-                .map_err(|err| error!("Error: {}", err))
-                .map_err(|_| error!("Failed to delete {}", pd.title()))
-                .ok();
-
-            sender.send(Action::RefreshEpisodesView);
-        }));
-        glib::Continue(false)
-    });
-
-    let undo_callback = move || {
-        utils::uningore_show(pd.id())
-            .map_err(|err| error!("{}", err))
-            .ok();
-        sender.send(Action::RefreshShowsView);
-        sender.send(Action::RefreshEpisodesView);
-    };
-
-    InAppNotification::new(&text, callback, undo_callback, UndoState::Shown)
-}
-
-// Ideally if we had a custom widget this would have been as simple as:
-// `for row in listbox { ep = row.get_episode(); ep.dim_title(); }`
-// But now I can't think of a better way to do it than hardcoding the title
-// position relative to the EpisodeWidget container gtk::Box.
-fn dim_titles(episodes: &gtk::ListBox) -> Option<()> {
-    let children = episodes.get_children();
-
-    for row in children {
-        let row = row.downcast::<gtk::ListBoxRow>().ok()?;
-        let container = row.get_children().remove(0).downcast::<gtk::Box>().ok()?;
-        let foo = container
-            .get_children()
-            .remove(0)
-            .downcast::<gtk::Box>()
-            .ok()?;
-        let bar = foo.get_children().remove(0).downcast::<gtk::Box>().ok()?;
-        let title = bar.get_children().remove(0).downcast::<gtk::Label>().ok()?;
-
-        title.get_style_context().map(|c| c.add_class("dim-label"));
-    }
-    Some(())
 }

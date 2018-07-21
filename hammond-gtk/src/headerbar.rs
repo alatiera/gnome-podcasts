@@ -27,6 +27,7 @@ pub struct Header {
     app_menu: MenuModel,
     updater: UpdateIndicator,
     add: AddPopover,
+    dots: gtk::MenuButton,
 }
 
 #[derive(Debug, Clone)]
@@ -141,6 +142,7 @@ impl Default for Header {
         let back = builder.get_object("back").unwrap();
         let show_title = builder.get_object("show_title").unwrap();
         let menu_button = builder.get_object("menu_button").unwrap();
+        let dots = builder.get_object("secondary_menu").unwrap();
         let app_menu = menus.get_object("menu").unwrap();
 
         let update_box = builder.get_object("update_notification").unwrap();
@@ -175,11 +177,11 @@ impl Default for Header {
             app_menu,
             updater,
             add,
+            dots,
         }
     }
 }
 
-// TODO: Factor out the hamburger menu
 // TODO: Make a proper state machine for the headerbar states
 impl Header {
     pub fn new(content: &Content, sender: &Sender<Action>) -> Rc<Self> {
@@ -209,13 +211,15 @@ impl Header {
         let add_toggle = &s.add.toggle;
         let show_title = &s.show_title;
         let menu = &s.menu_button;
+        let dots = &s.dots;
         s.back.connect_clicked(
-            clone!(switch, add_toggle, show_title, sender, menu => move |back| {
+            clone!(switch, add_toggle, show_title, sender, menu, dots => move |back| {
                 switch.show();
                 add_toggle.show();
                 back.hide();
                 show_title.hide();
                 menu.show();
+                dots.hide();
                 sender.send(Action::ShowShowsAnimated);
             }),
         );
@@ -230,6 +234,7 @@ impl Header {
         self.set_show_title(title);
         self.show_title.show();
         self.menu_button.hide();
+        self.dots.show();
     }
 
     pub fn switch_to_normal(&self) {
@@ -238,6 +243,7 @@ impl Header {
         self.back.hide();
         self.show_title.hide();
         self.menu_button.show();
+        self.dots.hide();
     }
 
     pub fn set_show_title(&self, title: &str) {
@@ -254,5 +260,9 @@ impl Header {
 
     pub fn open_menu(&self) {
         self.menu_button.clicked();
+    }
+
+    pub fn set_secondary_menu(&self, pop: &gtk::PopoverMenu) {
+        self.dots.set_popover(Some(pop));
     }
 }

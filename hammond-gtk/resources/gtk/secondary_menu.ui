@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<interface>
+  <!-- interface-requires gtk+ 3.0 -->
+  <menu id="menu">
+    <section>
+      <item>
+        <attribute name="label" translatable="yes">_Mark all episodes as played</attribute>
+        <!-- <attribute name="action">win.refresh</attribute> -->
+      </item>
+      <item>
+        <attribute name="label" translatable="yes">_Website</attribute>
+        <!-- <attribute name="action">win.import</attribute> -->
+      </item>
+      <item>
+        <attribute name="label" translatable="yes">_Unsubscribe</attribute>
+        <!-- <attribute name="action">win.export</attribute> -->
+      </item>
+    </section>
+  </menu>
+</interface>

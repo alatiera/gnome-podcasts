@@ -11,14 +11,16 @@ use gtk::SettingsExt as GtkSettingsExt;
 
 use crossbeam_channel::{unbounded, Receiver, Sender};
 use hammond_data::Show;
+use send_cell::SendCell;
 
 use headerbar::Header;
 use settings::{self, WindowGeometry};
 use stacks::{Content, PopulatedState};
 use utils;
+use widgets::about_dialog;
 use widgets::appnotif::{InAppNotification, UndoState};
 use widgets::player;
-use widgets::{about_dialog, mark_all_notif, remove_show_notif};
+use widgets::show_menu::{mark_all_notif, remove_show_notif, ShowMenu};
 
 use std::env;
 use std::rc::Rc;
@@ -56,6 +58,7 @@ pub enum Action {
     RemoveShow(Arc<Show>),
     ErrorNotification(String),
     InitEpisode(i32),
+    InitShowMenu(SendCell<ShowMenu>),
 }
 
 #[derive(Debug, Clone)]
@@ -265,6 +268,10 @@ impl App {
                     notif.show(&self.overlay);
                 }
                 Action::InitEpisode(rowid) => self.player.initialize_episode(rowid).unwrap(),
+                Action::InitShowMenu(s) => {
+                    let menu = s.borrow();
+                    self.headerbar.set_secondary_menu(&menu.container);
+                }
             }
         }
 
