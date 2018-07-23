@@ -1,5 +1,3 @@
-#![allow(dead_code)]
-
 use gio;
 use gio::{Settings, SettingsExt};
 use gtk;

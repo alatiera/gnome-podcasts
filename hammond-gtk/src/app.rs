@@ -1,5 +1,4 @@
 #![allow(new_without_default)]
-#![allow(unused)]
 
 use gio::{self, prelude::*, ApplicationFlags, SettingsBindFlags, SettingsExt, SimpleAction};
 use glib;
