@@ -1,10 +1,7 @@
 #![allow(new_without_default)]
 #![allow(unused)]
 
-use gio::{
-    self, ActionMapExt, ApplicationExt, ApplicationExtManual, ApplicationFlags,
-    SettingsBindFlags, SettingsExt, SimpleAction, SimpleActionExt,
-};
+use gio::{self, prelude::*, ApplicationFlags, SettingsBindFlags, SettingsExt, SimpleAction};
 use glib;
 use gtk;
 use gtk::prelude::*;
