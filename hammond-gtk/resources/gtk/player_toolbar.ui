@@ -46,7 +46,7 @@
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="receives_default">True</property>
-            <property name="tooltip_text" translatable="yes">Previous</property>
+            <property name="tooltip_text" translatable="yes">Rewind 10 seconds</property>
             <property name="image">previous_image</property>
             <property name="always_show_image">True</property>
           </object>
@@ -77,7 +77,7 @@
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="receives_default">True</property>
-            <property name="tooltip_text" translatable="yes">Play</property>
+            <property name="tooltip_text" translatable="yes">Pause</property>
             <property name="image">pause_image</property>
             <property name="always_show_image">True</property>
           </object>
@@ -93,7 +93,7 @@
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="receives_default">True</property>
-            <property name="tooltip_text" translatable="yes">Next</property>
+            <property name="tooltip_text" translatable="yes">Fast Forward 10 seconds</property>
             <property name="image">ff_image</property>
             <property name="always_show_image">True</property>
           </object>
@@ -259,6 +259,7 @@
         <property name="visible">True</property>
         <property name="can_focus">True</property>
         <property name="receives_default">True</property>
+        <property name="tooltip_text" translatable="yes">Change the Playback speed</property>
         <property name="halign">center</property>
         <property name="valign">center</property>
         <property name="margin_left">6</property>
@@ -321,6 +322,7 @@
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="receives_default">False</property>
+            <property name="tooltip_text" translatable="yes">1.5 speed rate</property>
             <property name="halign">center</property>
             <property name="valign">center</property>
             <property name="draw_indicator">True</property>
@@ -338,6 +340,7 @@
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="receives_default">False</property>
+            <property name="tooltip_text" translatable="yes">1.25 speed rate</property>
             <property name="halign">center</property>
             <property name="valign">center</property>
             <property name="draw_indicator">True</property>
@@ -355,6 +358,7 @@
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="receives_default">False</property>
+            <property name="tooltip_text" translatable="yes">Normal speed</property>
             <property name="halign">center</property>
             <property name="valign">center</property>
             <property name="active">True</property>
