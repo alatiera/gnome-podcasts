@@ -1,4 +1,4 @@
-use gio::MenuModel;
+use gio;
 use gtk;
 use gtk::prelude::*;
 
@@ -24,7 +24,6 @@ pub struct Header {
     back: gtk::Button,
     show_title: gtk::Label,
     menu_button: gtk::MenuButton,
-    app_menu: MenuModel,
     updater: UpdateIndicator,
     add: AddPopover,
     dots: gtk::MenuButton,
@@ -141,9 +140,14 @@ impl Default for Header {
         let switch = builder.get_object("switch").unwrap();
         let back = builder.get_object("back").unwrap();
         let show_title = builder.get_object("show_title").unwrap();
-        let menu_button = builder.get_object("menu_button").unwrap();
+
+        // The hamburger menu
+        let menu_button: gtk::MenuButton = builder.get_object("menu_button").unwrap();
+        let app_menu: gio::MenuModel = menus.get_object("menu").unwrap();
+        menu_button.set_menu_model(Some(&app_menu));
+
+        // The 3 dots secondary menu
         let dots = builder.get_object("secondary_menu").unwrap();
-        let app_menu = menus.get_object("menu").unwrap();
 
         let update_box = builder.get_object("update_notification").unwrap();
         let update_label = builder.get_object("update_label").unwrap();
@@ -174,7 +178,6 @@ impl Default for Header {
             back,
             show_title,
             menu_button,
-            app_menu,
             updater,
             add,
             dots,
@@ -223,8 +226,6 @@ impl Header {
                 sender.send(Action::ShowShowsAnimated);
             }),
         );
-
-        s.menu_button.set_menu_model(Some(&s.app_menu));
     }
 
     pub fn switch_to_back(&self, title: &str) {
