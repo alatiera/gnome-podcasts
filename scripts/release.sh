@@ -9,9 +9,9 @@ cd "${MESON_SOURCE_ROOT}"
 mkdir -p $DIST
 
 # copying files
-cp -rf hammond-data $DIST
-cp -rf hammond-gtk $DIST
-cp -rf hammond-downloader $DIST
+cp -rf podcasts-data $DIST
+cp -rf podcasts-gtk $DIST
+cp -rf podcasts-downloader $DIST
 cp Cargo.toml $DIST
 cp Cargo.lock $DIST
 cp configure $DIST

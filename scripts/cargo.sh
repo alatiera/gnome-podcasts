@@ -6,8 +6,8 @@ export RUSTFLAGS="--cfg rayon_unstable"
 if [[ $DEBUG = true ]]
 then
     echo "DEBUG MODE"
-    cargo build -p hammond-gtk && cp $1/target/debug/hammond-gtk $2
+    cargo build -p podcasts-gtk && cp $1/target/debug/podcasts-gtk $2
 else
     echo "RELEASE MODE"
-    cargo build --release -p hammond-gtk && cp $1/target/release/hammond-gtk $2
+    cargo build --release -p podcasts-gtk && cp $1/target/release/podcasts-gtk $2
 fi 

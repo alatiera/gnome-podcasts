@@ -1,4 +1,4 @@
-# Hammond
+# GNOME Podcasts
 
 ### A Podcast Client for GNOME written in Rust.
 
@@ -8,18 +8,18 @@
 
 ## Quick start
 
-Hammond can be built and run with [Gnome Builder](https://wiki.gnome.org/Apps/Builder) >= 3.28.
+GNOME Podcasts can be built and run with [Gnome Builder](https://wiki.gnome.org/Apps/Builder) >= 3.28.
 
 Get Builder [here](https://wiki.gnome.org/Apps/Builder/Downloads)
 
 ## Broken Feeds
 
-Found a feed that does not work in Hammond?
+Found a feed that does not work in GNOME Podcasts?
 Please [open an issue](https://gitlab.gnome.org/World/hammond/issues/new) and choose the `BrokenFeed` template so we will know and fix it!
 
 ## Getting in Touch
 
-If you have any questions regarding the use or development of Hammond,
+If you have any questions regarding the use or development of GNOME Podcasts,
 want to discuss design or simply hang out, please join us in `#hammond` on
 [irc.gnome.org.][irc] or [matrix][matrix].
 
@@ -31,11 +31,11 @@ There isn't much documentation yet, so you will probably have question about par
 
 ### Flatpak
 
-Flatpak is the reccomended way of building and installing Hammond.
+Flatpak is the reccomended way of building and installing GNOME Podcasts.
 
 #### Building a Flatpak
 
-Download the `org.gnome.Hammond.json` flatpak manifest from this repo.
+Download the `org.gnome.Podcasts.json` flatpak manifest from this repo.
 
 ```bash
 # Add flathub repo
@@ -46,21 +46,21 @@ flatpak --user remote-add gnome-nightly --if-not-exists https://sdk.gnome.org/gn
 flatpak --user install gnome-nightly org.gnome.Sdk org.gnome.Platform
 # Install the required rust-stable extension from flathub
 flatpak --user install flathub org.freedesktop.Sdk.Extension.rust-stable
-flatpak-builder --user --repo=repo hammond org.gnome.Hammond.json --force-clean
+flatpak-builder --user --repo=repo podcasts org.gnome.Podcasts.json --force-clean
 ```
 
 To install the resulting flatpak you can do:
 
 ```bash
-flatpak build-bundle repo hammond.flatpak org.gnome.Hammond
-flatpak install --user --bundle hammond.flatpak
+flatpak build-bundle repo gnome-podcasts.flatpak org.gnome.Podcasts
+flatpak install --user --bundle gnome-podcasts.flatpak
 ```
 
 ### Building from soure
 
 ```sh
 git clone https://gitlab.gnome.org/World/hammond.git
-cd hammond/
+cd gnome-podcasts/
 meson --prefix=/usr build
 ninja -C build
 sudo ninja -C build install
@@ -119,15 +119,15 @@ There are also some minor tasks tagged with `TODO:` and `FIXME:` in the source c
 ```sh
 $ tree -d
 ├── screenshots         # png's used in the README.md
-├── hammond-data        # Storate related stuff, SQLite, XDG setup, RSS Parser.
+├── podcasts-data        # Storate related stuff, SQLite, XDG setup, RSS Parser.
 │   ├── migrations      # Diesel SQL migrations.
 │   │   └── ...
 │   ├── src
 │   └── tests
 │       └── feeds       # Raw RSS Feeds used for tests.
-├── hammond-downloader  # Really basic, Really crappy downloader.
+├── podcasts-downloader  # Really basic, Really crappy downloader.
 │   └── src
-├── hammond-gtk         # The Gtk+ Client
+├── podcasts-gtk         # The Gtk+ Client
 │   ├── resources       # GResources folder
 │   │   └── gtk         # Contains the glade.ui files.
 │   └── src
@@ -137,13 +137,12 @@ $ tree -d
 
 ## A note about the project's name
 
-The project was named after Allan Moore's character [Evey Hammond](https://en.wikipedia.org/wiki/Evey_Hammond) from the graphic novel V for Vendetta.
-
-It has nothing to do with the horrible headlines on the news.
+The project used to be called Hammond, after Allan Moore's character [Evey Hammond](https://en.wikipedia.org/wiki/Evey_Hammond) from the graphic novel V for Vendetta.
+It was renamed to GNOME Podcasts on 2018/07/24 shortly before its first public release.
 
 ## Acknowledgments
 
-Hammond's design is heavily insired by [GNOME Music](https://wiki.gnome.org/Design/Apps/Music) and [Vocal](http://vocalproject.net/).
+GNOME Podcasts's design is heavily insired by [GNOME Music](https://wiki.gnome.org/Design/Apps/Music) and [Vocal](http://vocalproject.net/).
 
 We also copied some elements from [GNOME News](https://wiki.gnome.org/Design/Apps/Potential/News).
 
@@ -151,4 +150,4 @@ And almost the entirety of the build system is copied from the [Fractal](https:/
 
 [vendor]: https://github.com/alexcrichton/cargo-vendor
 [irc]: irc://irc.gnome.org/#hammond
-[matrix]: https://matrix.to/#/#hammond:matrix.org
+[matrix]: https://matrix.to/#/#gnome-podcasts:matrix.org

@@ -4,7 +4,7 @@ stages:
   - review
 
 variables:
-    BUNDLE: "hammond-dev.flatpak"
+    BUNDLE: "gnome-podcasts-dev.flatpak"
 
 .cargo_cache_template: &cargo_cache
     cache:
@@ -34,7 +34,7 @@ variables:
     script:
         - rustc -Vv && cargo -Vv
         # Force regeneration of gresources regardless of artifacts chage
-        - cd hammond-gtk/resources/ && glib-compile-resources --generate resources.xml && cd ../../
+        - cd podcasts-gtk/resources/ && glib-compile-resources --generate resources.xml && cd ../../
 
         - cargo build
         - cargo test -- --test-threads=1
@@ -58,22 +58,22 @@ flatpak:
     image: registry.gitlab.gnome.org/gnome/gnome-runtime-images/rust_bundle:3.28
     stage: test
     script:
-        - flatpak-builder --stop-at=hammond app org.gnome.Hammond.json
+        - flatpak-builder --stop-at=gnome-podcasts app org.gnome.Podcasts.json
         # https://gitlab.gnome.org/World/hammond/issues/55
         # Force regeneration of gresources regardless of artifacts chage
-        - flatpak-builder --run app org.gnome.Hammond.json glib-compile-resources --sourcedir=hammond-gtk/resources/ hammond-gtk/resources/resources.xml
+        - flatpak-builder --run app org.gnome.Podcasts.json glib-compile-resources --sourcedir=podcasts-gtk/resources/ podcasts-gtk/resources/resources.xml
 
         # Build the flatpak repo
-        - flatpak-builder --run app org.gnome.Hammond.json meson --prefix=/app --libdir=/app/lib _build
-        - flatpak-builder --run app org.gnome.Hammond.json ninja -C _build install
-        - flatpak-builder --finish-only app org.gnome.Hammond.json
+        - flatpak-builder --run app org.gnome.Podcasts.json meson --prefix=/app --libdir=/app/lib _build
+        - flatpak-builder --run app org.gnome.Podcasts.json ninja -C _build install
+        - flatpak-builder --finish-only app org.gnome.Podcasts.json
         - flatpak build-export repo app
 
         # Create a flatpak bundle
-        - flatpak build-bundle repo ${BUNDLE} org.gnome.Hammond
+        - flatpak build-bundle repo ${BUNDLE} org.gnome.Podcasts
         # Run the tests
-        # - flatpak-builder --run app org.gnome.Hammond.json cargo test -- --test-threads=1
-        # - flatpak-builder --run app org.gnome.Hammond.json cargo test -- --test-threads=1 --ignored
+        # - flatpak-builder --run app org.gnome.Podcasts.json cargo test -- --test-threads=1
+        # - flatpak-builder --run app org.gnome.Podcasts.json cargo test -- --test-threads=1 --ignored
 
     artifacts:
         paths:
@@ -139,6 +139,6 @@ rustfmt:
         - rustc --version && cargo --version
         - cargo clippy --version
         # Force regeneration of gresources regardless of artifacts chage
-        - cd hammond-gtk/resources/ && glib-compile-resources --generate resources.xml && cd ../../
+        - cd podcasts-gtk/resources/ && glib-compile-resources --generate resources.xml && cd ../../
         - cargo clippy --all
     <<: *cargo_cache

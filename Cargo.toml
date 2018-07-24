@@ -1,8 +1,8 @@
 [workspace]
 members = [
-    "hammond-data",
-    "hammond-downloader",
-    "hammond-gtk"
+    "podcasts-data",
+    "podcasts-downloader",
+    "podcasts-gtk"
 ]
 
 [profile.release]

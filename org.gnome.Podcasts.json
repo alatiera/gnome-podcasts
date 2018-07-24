@@ -1,0 +1,50 @@
+{
+    "app-id" : "org.gnome.Podcasts",
+    "runtime" : "org.gnome.Platform",
+    "runtime-version" : "3.28",
+    "sdk" : "org.gnome.Sdk",
+    "sdk-extensions" : [
+        "org.freedesktop.Sdk.Extension.rust-stable"
+    ],
+    "command" : "gnome-podcasts",
+    "tags" : [
+        "nightly"
+    ],
+    "desktop-file-name-prefix" : "(Nightly) ",
+    "finish-args" : [
+        "--filesystem=xdg-run/dconf",
+        "--filesystem=~/.config/dconf:ro",
+        "--talk-name=ca.desrt.dconf",
+        "--env=DCONF_USER_CONFIG_DIR=.config/dconf",
+        "--share=network",
+        "--share=ipc",
+        "--socket=x11",
+        "--socket=wayland",
+        "--socket=pulseaudio",
+        "--talk-name=org.freedesktop.Desktop"
+    ],
+    "build-options" : {
+        "append-path" : "/usr/lib/sdk/rust-stable/bin",
+        "build-args" : [
+            "--share=network"
+        ],
+        "env" : {
+            "CARGO_HOME" : "/run/build/Podcasts/cargo",
+            "RUST_BACKTRACE" : "1",
+            "DEBUG" : "true"
+        }
+    },
+    "modules" : [
+        {
+            "name" : "gnome-podcasts",
+            "buildsystem" : "meson",
+            "sources" : [
+                {
+                    "type" : "git",
+                    "url" : "https://gitlab.gnome.org/World/hammond.git",
+                    "branch" : "master"
+                }
+            ]
+        }
+    ]
+}

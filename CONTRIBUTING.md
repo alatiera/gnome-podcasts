@@ -1,17 +1,17 @@
-## Contributing to Hammond
+## Contributing to GNOME Podcasts
 
 Thank you for looking in this file!
 
-When contributing to the development of Hammond, please first discuss the change you wish to make via issue, email, or any other method with the maintainers before making a change.
+When contributing to the development of GNOME Podcasts, please first discuss the change you wish to make via issue, email, or any other method with the maintainers before making a change.
 
-If you have any questions regarding the use or development of Hammond,
+If you have any questions regarding the use or development of GNOME Podcasts,
 want to discuss design or simply hang out, please join us in [#hammond on irc.gnome.org.](irc://irc.gnome.org/#hammond)
 
 Please note we have a [code of conduct](https://wiki.gnome.org/Foundation/CodeOfConduc), please follow it in all your interactions with the project.
 
 ## Source repository
 
-Hammond's main source repository is at gitlab.gnome.org.  You can view
+GNOME Podcasts's main source repository is at gitlab.gnome.org.  You can view
 the web interface [here](https://gitlab.gnome.org/World/hammond)
 
 Development happens in the master branch.
@@ -50,8 +50,8 @@ In order to run the test suite use the following: `cargo test -- --test-threads=
 
 # Issues, issues and more issues!
 
-There are many ways you can contribute to Hammond, and all of them involve creating issues
-in [Hammond issue tracker](https://gitlab.gnome.org/World/hammond/issues). This is the entry point for your contribution.
+There are many ways you can contribute to GNOME Podcasts, and all of them involve creating issues
+in [GNOME Podcasts issue tracker](https://gitlab.gnome.org/World/hammond/issues). This is the entry point for your contribution.
 
 To create an effective and high quality ticket, try to put the following information on your
 ticket:
@@ -74,7 +74,7 @@ If it's an issue, add the steps to reproduce like this:
 
 Steps to reproduce:
 
-1. Open Hammond
+1. Open GNOME Podcasts
 2. Do an Action
 3. ...
 

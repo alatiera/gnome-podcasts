@@ -1,0 +1,3 @@
+[D-BUS Service]
+Name=org.gnome.Podcasts
+Exec=@BINDIR@/gnome-podcasts --gapplication-service

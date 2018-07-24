@@ -18,7 +18,7 @@ Some common cases might be:
 
 Steps to reproduce:
 
-1. Open Hammond
+1. Open GNOME Podcasts
 2. Do an action
 3. ...
 

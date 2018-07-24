@@ -1,0 +1,11 @@
+[Desktop Entry]
+Name=Podcasts
+Comment=Listen to your favorite podcasts, right from your desktop.
+Icon=org.gnome.Podcasts
+Exec=gnome-podcasts
+Terminal=false
+Type=Application
+StartupNotify=true
+Categories=GNOME;GTK;AudioVideo;Audio;
+Keywords=Podcast;RSS;
+DBusActivatable=true
