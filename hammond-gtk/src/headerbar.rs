@@ -64,10 +64,14 @@ struct AddPopover {
 impl AddPopover {
     // FIXME: THIS ALSO SUCKS!
     fn on_add_clicked(&self, sender: &Sender<Action>) -> Result<(), Error> {
-        let url = self
+        let mut url = self
             .entry
             .get_text()
             .ok_or_else(|| format_err!("GtkEntry blew up somehow."))?;
+
+        if !(url.starts_with("https://") || url.starts_with("http://")) {
+            url = format!("http://{}", url);
+        };
 
         debug!("Url: {}", url);
         let url = if url.contains("itunes.com") || url.contains("apple.com") {
@@ -78,8 +82,6 @@ impl AddPopover {
         } else {
             url.to_owned()
         };
-
-        self.entry.set_text("");
 
         rayon::spawn(clone!(sender => move || {
             if let Ok(source) = Source::from_url(&url) {
@@ -95,15 +97,19 @@ impl AddPopover {
 
     // FIXME: THIS SUCKS! REFACTOR ME.
     fn on_entry_changed(&self) -> Result<(), Error> {
-        let uri = self
+        let mut url = self
             .entry
             .get_text()
             .ok_or_else(|| format_err!("GtkEntry blew up somehow."))?;
-        debug!("Url: {}", uri);
+        debug!("Url: {}", url);
 
-        let url = Url::parse(&uri);
+        if !(url.starts_with("https://") || url.starts_with("http://")) {
+            url = format!("http://{}", url);
+        };
+
+        debug!("Url: {}", url);
         // TODO: refactor to avoid duplication
-        match url {
+        match Url::parse(&url) {
             Ok(u) => {
                 if !dbqueries::source_exists(u.as_str())? {
                     self.add.set_sensitive(true);
@@ -111,15 +117,16 @@ impl AddPopover {
                     self.result.set_label("");
                 } else {
                     self.add.set_sensitive(false);
-                    self.result.set_label("Show already exists.");
+                    self.result
+                        .set_label("You are already subscribed to this Show");
                     self.result.show();
                 }
                 Ok(())
             }
             Err(err) => {
                 self.add.set_sensitive(false);
-                if !uri.is_empty() {
-                    self.result.set_label("Invalid url.");
+                if !url.is_empty() {
+                    self.result.set_label("Invalid url");
                     self.result.show();
                     error!("Error: {}", err);
                 } else {
