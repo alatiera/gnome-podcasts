@@ -2,11 +2,11 @@
 Name=Hammond
 GenericName=Podcast Client
 Comment=Play, Subscribe and Manage Podcast Feeds.
-Icon=multimedia-player
+Icon=org.gnome.Hammond
 Exec=hammond
 Terminal=false
 Type=Application
 StartupNotify=true
-Categories=AudioVideo;Audio;Video;
+Categories=AudioVideo;Audio;
 Keywords=Podcast
 DBusActivatable=true

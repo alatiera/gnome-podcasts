@@ -18,8 +18,7 @@ pub fn about_dialog(window: &gtk::ApplicationWindow) {
 
     let dialog = gtk::AboutDialog::new();
     // Waiting for a logo.
-    // dialog.set_logo_icon_name("org.gnome.Hammond");
-    dialog.set_logo_icon_name("multimedia-player");
+    dialog.set_logo_icon_name("org.gnome.Hammond");
     dialog.set_comments("Podcast Client for the GNOME Desktop.");
     dialog.set_copyright("© 2017, 2018 Jordan Petridis");
     dialog.set_license_type(gtk::License::Gpl30);

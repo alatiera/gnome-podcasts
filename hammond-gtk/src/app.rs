@@ -308,8 +308,7 @@ impl App {
         // Weird magic I copy-pasted that sets the Application Name in the Shell.
         glib::set_application_name("Hammond");
         glib::set_prgname(Some("Hammond"));
-        // We need out own org.gnome.Hammon icon
-        gtk::Window::set_default_icon_name("multimedia-player");
+        gtk::Window::set_default_icon_name("org.gnome.Hammond");
         let args: Vec<String> = env::args().collect();
         ApplicationExtManual::run(&application, &args);
     }
