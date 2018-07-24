@@ -70,9 +70,11 @@ impl Prefs {
         self.cleanup_type.set_active(cleanup_pos);
         self.cleanup_type
             .connect_changed(clone!(settings, store => move |combo| {
-            let value = store.get_value(&combo.get_active_iter().unwrap(), 0);
-            let value: &str = value.get().unwrap();
-            settings.set_string("cleanup-age-period", &value.to_lowercase());
+                if let Some(ref treeiter) = combo.get_active_iter() {
+                    if let Some(s) = store.get_value(treeiter, 0).get::<&str>() {
+                        settings.set_string("cleanup-age-period", &s.to_lowercase());
+                    }
+                };
         }));
     }
 

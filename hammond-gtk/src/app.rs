@@ -278,7 +278,10 @@ impl App {
                     let notif = InAppNotification::new(&err, callback, || {}, UndoState::Hidden);
                     notif.show(&self.overlay);
                 }
-                Action::InitEpisode(rowid) => self.player.initialize_episode(rowid).unwrap(),
+                Action::InitEpisode(rowid) => {
+                    let res = self.player.initialize_episode(rowid);
+                    debug_assert!(res.is_ok());
+                }
                 Action::InitShowMenu(s) => {
                     let menu = s.borrow();
                     self.headerbar.set_secondary_menu(&menu.container);
