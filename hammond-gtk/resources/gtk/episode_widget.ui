@@ -175,7 +175,7 @@ Tobias Bernard
                   <object class="GtkLabel" id="total_size">
                     <property name="can_focus">False</property>
                     <property name="no_show_all">True</property>
-                    <property name="label" translatable="yes">XX MB</property>
+                    <property name="label" translatable="yes">Calculating episode size...</property>
                     <property name="single_line_mode">True</property>
                     <property name="track_visited_links">False</property>
                     <style>
