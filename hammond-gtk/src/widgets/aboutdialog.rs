@@ -7,8 +7,10 @@ use gtk::prelude::*;
 pub fn about_dialog(window: &gtk::ApplicationWindow) {
     // Feel free to add yourself if you contribured.
     let authors = &[
+        "Carlos Soriano",
         "Constantin Nickel",
         "Gabriele Musco",
+        "Ivan Augusto",
         "James Wykeham-Martin",
         "Jordan Petridis",
         "Julian Sparber",
