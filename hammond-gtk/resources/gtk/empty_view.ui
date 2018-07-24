@@ -43,9 +43,10 @@ Tobias Bernard
       <object class="GtkImage">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="pixel_size">265</property>
-        <property name="icon_name">application-rss+xml-symbolic</property>
-        <property name="use_fallback">True</property>
+        <property name="halign">center</property>
+        <property name="valign">center</property>
+        <property name="pixel_size">256</property>
+        <property name="icon_name">org.gnome.Podcasts-symbolic</property>
         <style>
           <class name="dim-label"/>
         </style>
@@ -60,7 +61,9 @@ Tobias Bernard
       <object class="GtkLabel">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="label" translatable="yes">Subscribe to some Shows!</property>
+        <property name="halign">center</property>
+        <property name="valign">center</property>
+        <property name="label" translatable="yes">Get some shows</property>
         <attributes>
           <attribute name="weight" value="bold"/>
           <attribute name="scale" value="1.4399999999999999"/>
@@ -77,7 +80,7 @@ Tobias Bernard
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="row_spacing">6</property>
-        <property name="column_spacing">6</property>
+        <property name="column_spacing">12</property>
         <child>
           <object class="GtkImage">
             <property name="visible">True</property>
@@ -96,7 +99,8 @@ Tobias Bernard
           <object class="GtkLabel">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="label" translatable="yes">Add shows using a url link</property>
+            <property name="halign">start</property>
+            <property name="label" translatable="yes">Add new shows via feed URL</property>
             <style>
               <class name="dim-label"/>
             </style>
@@ -124,6 +128,7 @@ Tobias Bernard
           <object class="GtkLabel">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
+            <property name="halign">start</property>
             <property name="label" translatable="yes">Import shows from another device</property>
             <style>
               <class name="dim-label"/>
