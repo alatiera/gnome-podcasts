@@ -1,19 +1,16 @@
 #![allow(new_without_default)]
 
-use gio::{
-    self, ActionMapExt, ApplicationExt, ApplicationExtManual, ApplicationFlags, SettingsExt,
-    SimpleAction, SimpleActionExt,
-};
+use gio::{self, prelude::*, ApplicationFlags, SettingsBindFlags, SettingsExt, SimpleAction};
 use glib;
 use gtk;
 use gtk::prelude::*;
-use gtk::SettingsExt as GtkSettingsExt;
 
 use crossbeam_channel::{unbounded, Receiver, Sender};
 use hammond_data::Show;
 use send_cell::SendCell;
 
 use headerbar::Header;
+use prefs::Prefs;
 use settings::{self, WindowGeometry};
 use stacks::{Content, PopulatedState};
 use utils;
@@ -149,9 +146,12 @@ impl App {
 
     fn setup_dark_theme(&self) {
         let gtk_settings = gtk::Settings::get_default().unwrap();
-        let enabled = self.settings.get_boolean("dark-theme");
-
-        gtk_settings.set_property_gtk_application_prefer_dark_theme(enabled);
+        self.settings.bind(
+            "dark-theme",
+            &gtk_settings,
+            "gtk-application-prefer-dark-theme",
+            SettingsBindFlags::DEFAULT,
+        );
     }
 
     fn setup_refresh_on_startup(&self) {
@@ -186,6 +186,7 @@ impl App {
         let win = &self.window;
         let instance = &self.instance;
         let header = &self.headerbar;
+        let settings = &self.settings;
 
         // Create the `refresh` action.
         //
@@ -210,6 +211,16 @@ impl App {
         // Create the quit action
         action!(win, "quit", clone!(instance => move |_, _| instance.quit()));
         self.instance.set_accels_for_action("win.quit", &["<primary>q"]);
+
+        action!(
+            win,
+            "preferences",
+            clone!(win, settings => move |_, _| {
+                let dialog = Prefs::new(&settings);
+                dialog.show(&win);
+            })
+        );
+        self.instance.set_accels_for_action("win.preferences", &["<primary>e"]);
 
         // Create the menu action
         action!(win, "menu",clone!(header => move |_, _| header.open_menu()));
