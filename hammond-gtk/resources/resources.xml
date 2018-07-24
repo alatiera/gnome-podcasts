@@ -15,8 +15,8 @@
       <file compressed="true" preprocess="xml-stripblanks">gtk/show_menu.ui</file>
       <file compressed="true" preprocess="xml-stripblanks">gtk/help-overlay.ui</file>
       <file compressed="true" preprocess="xml-stripblanks">gtk/player_toolbar.ui</file>
-      <file compressed="true" preprocess="xml-stripblanks">icons/src/skip-back-symbolic.svg</file>
-      <file compressed="true" preprocess="xml-stripblanks">icons/src/skip-forward-symbolic.svg</file>
+      <file compressed="true" preprocess="xml-stripblanks">icons/skip-back-symbolic.svg</file>
+      <file compressed="true" preprocess="xml-stripblanks">icons/skip-forward-symbolic.svg</file>
       <file compressed="true">gtk/style.css</file>
   </gresource>
 </gresources>

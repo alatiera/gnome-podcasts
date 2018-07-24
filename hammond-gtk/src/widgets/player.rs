@@ -188,13 +188,6 @@ impl Default for PlayerWidget {
         let forward: gtk::Button = builder.get_object("ff_button").unwrap();
         let rewind: gtk::Button = builder.get_object("rewind_button").unwrap();
 
-        let img =
-            gtk::Image::new_from_resource("/org/gnome/Hammond/icons/src/skip-forward-symbolic.svg");
-        forward.set_image(&img);
-        let img =
-            gtk::Image::new_from_resource("/org/gnome/Hammond/icons/src/skip-back-symbolic.svg");
-        rewind.set_image(&img);
-
         let controls = PlayerControls {
             container: buttons,
             play,
