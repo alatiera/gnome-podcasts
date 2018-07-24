@@ -35,7 +35,7 @@ pub fn import_to_db<R: Read>(reader: R) -> Result<Vec<Source>, reader::Error> {
         .filter_map(|s| {
             if let Err(ref err) = s {
                 let txt = "If you think this might be a bug please consider filling a report over \
-                           at https://gitlab.gnome.org/World/hammond/issues/new";
+                           at https://gitlab.gnome.org/World/gnome-podcasts/issues/new";
 
                 error!("Failed to import a Show: {}", err);
                 error!("{}", txt);

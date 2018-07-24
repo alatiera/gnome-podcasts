@@ -16,7 +16,7 @@
     </p>
   </description>
   <!-- <homepage rdf:resource="https://wiki.gnome.org/Apps/Hammond" /> -->
-  <bug-database rdf:resource="https://gitlab.gnome.org/World/hammond/issues" />
+  <bug-database rdf:resource="https://gitlab.gnome.org/World/gnome-podcasts/issues" />
 
   <category rdf:resource="http://api.gnome.org/doap-extensions#apps" />
   <programming-language>Rust</programming-language>

@@ -41,7 +41,7 @@
             "sources" : [
                 {
                     "type" : "git",
-                    "url" : "https://gitlab.gnome.org/World/hammond.git",
+                    "url" : "https://gitlab.gnome.org/World/gnome-podcasts.git",
                     "branch" : "master"
                 }
             ]

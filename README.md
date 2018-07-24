@@ -15,7 +15,7 @@ Get Builder [here](https://wiki.gnome.org/Apps/Builder/Downloads)
 ## Broken Feeds
 
 Found a feed that does not work in GNOME Podcasts?
-Please [open an issue](https://gitlab.gnome.org/World/hammond/issues/new) and choose the `BrokenFeed` template so we will know and fix it!
+Please [open an issue](https://gitlab.gnome.org/World/gnome-podcasts/issues/new) and choose the `BrokenFeed` template so we will know and fix it!
 
 ## Getting in Touch
 
@@ -59,7 +59,7 @@ flatpak install --user --bundle gnome-podcasts.flatpak
 ### Building from soure
 
 ```sh
-git clone https://gitlab.gnome.org/World/hammond.git
+git clone https://gitlab.gnome.org/World/gnome-podcasts.git
 cd gnome-podcasts/
 meson --prefix=/usr build
 ninja -C build
@@ -107,11 +107,11 @@ There alot of thins yet to be done.
 
 If you want to contribute, please check the [Contributions Guidelines][contribution-guidelines].
 
-You can start by taking a look at [Issues](https://gitlab.gnome.org/World/hammond/issues) or by opening a [New issue](https://gitlab.gnome.org/World/hammond/issues/new?issue%5Bassignee_id%5D=&issue%5Bmilestone_id%5D=).
+You can start by taking a look at [Issues](https://gitlab.gnome.org/World/gnome-podcasts/issues) or by opening a [New issue](https://gitlab.gnome.org/World/gnome-podcasts/issues/new?issue%5Bassignee_id%5D=&issue%5Bmilestone_id%5D=).
 
 There are also some minor tasks tagged with `TODO:` and `FIXME:` in the source code.
 
-[contribution-guidelines]: https://gitlab.gnome.org/World/hammond/blob/master/CONTRIBUTING.md
+[contribution-guidelines]: https://gitlab.gnome.org/World/gnome-podcasts/blob/master/CONTRIBUTING.md
 
 
 ## Overview

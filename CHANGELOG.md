@@ -16,21 +16,21 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [0.4.0] - 2018-07-04
 ### Added:
 - Keyboard Shortcuts and a Shortcuts dialog were implemented. (ZanderBrown)
-[!33](https://gitlab.gnome.org/World/hammond/merge_requests/33)
+[!33](https://gitlab.gnome.org/World/gnome-podcasts/merge_requests/33)
 
 ### Changed:
 - The `FileChooser` of the OPML import was changed to use the `FileChooserNative` widget/API. (ZanderBrown)
-[!33](https://gitlab.gnome.org/World/hammond/merge_requests/33)
+[!33](https://gitlab.gnome.org/World/gnome-podcasts/merge_requests/33)
 - The `EpisdeWidget` was refactored.
-[!38](https://gitlab.gnome.org/World/hammond/merge_requests/38)
+[!38](https://gitlab.gnome.org/World/gnome-podcasts/merge_requests/38)
 - `EpisdeWidget`'s progressbar was changed to be non-blocking and should feel way more responsive now. 9b0ac5b83dadecdff51cd398293afdf0d5276012
 - An embeded audio player was implemented!
-[!40](https://gitlab.gnome.org/World/hammond/merge_requests/40)
+[!40](https://gitlab.gnome.org/World/gnome-podcasts/merge_requests/40)
 - Various Database changes.
-[!41](https://gitlab.gnome.org/World/hammond/merge_requests/41)
+[!41](https://gitlab.gnome.org/World/gnome-podcasts/merge_requests/41)
 
 ### Fixed:
-- Fixed a bug whre the about dialog would be unclosable. (ZanderBrown) [!37](https://gitlab.gnome.org/World/hammond/merge_requests/37)
+- Fixed a bug whre the about dialog would be unclosable. (ZanderBrown) [!37](https://gitlab.gnome.org/World/gnome-podcasts/merge_requests/37)
 
 ## [0.3.4] - 2018-05-20
 ### Fixed:
@@ -56,9 +56,9 @@ not being able to access any file.
 
 ### Changed:
 - Downlaoding and loading images now is done asynchronously and is not blocking programs execution.
-[#7](https://gitlab.gnome.org/World/hammond/issues/7)
+[#7](https://gitlab.gnome.org/World/gnome-podcasts/issues/7)
 - Bold, italics links and some other `html` tags can now be rendered in the Show Description.
-[#25](https://gitlab.gnome.org/World/hammond/issues/25)
+[#25](https://gitlab.gnome.org/World/gnome-podcasts/issues/25)
 - `Rayon` Threadpools are now used instead of unlimited one-off threads.
 - `EpisdeWidget`s are now loaded asynchronously accross views.
 - `EpisodeWidget`s no longer trigger a `View` refresh for trivial stuff 03bd95184808ccab3e0ea0e3713a52ee6b7c9ab4
@@ -66,7 +66,7 @@ not being able to access any file.
 - `ShowWidget` Description is inside a scrolled window now
 
 ### Fixed:
-- `EpisodeWidget` Height now is consistent accros views [#57](https://gitlab.gnome.org/World/hammond/issues/57)
+- `EpisodeWidget` Height now is consistent accros views [#57](https://gitlab.gnome.org/World/gnome-podcasts/issues/57)
 - Implemented a tail-recursion loop to follow-up when a feed redirects to another url. c6a24e839a8ba77d09673f299cfc1e64ba7078f3
 
 ### Removed:
@@ -75,27 +75,27 @@ not being able to access any file.
 ## [0.3.1] - 2018-03-28
 ### Added:
 - Ability to mark all episodes of a Show as watched.
-[#47](https://gitlab.gnome.org/World/hammond/issues/47)
+[#47](https://gitlab.gnome.org/World/gnome-podcasts/issues/47)
 - Now you are able to subscribe to itunes™ podcasts by using the itunes link of the show.
-[#49](https://gitlab.gnome.org/World/hammond/issues/49)
+[#49](https://gitlab.gnome.org/World/gnome-podcasts/issues/49)
 - Hammond now remembers the window size and position. (Rowan Lewis)
-[#50](https://gitlab.gnome.org/World/hammond/issues/50)
+[#50](https://gitlab.gnome.org/World/gnome-podcasts/issues/50)
 - Implemnted the initial work for integrating with GSettings and storing preferences. (Rowan Lewis)
-[!22](https://gitlab.gnome.org/World/hammond/merge_requests/22) [!23](https://gitlab.gnome.org/World/hammond/merge_requests/23)
+[!22](https://gitlab.gnome.org/World/gnome-podcasts/merge_requests/22) [!23](https://gitlab.gnome.org/World/gnome-podcasts/merge_requests/23)
 - Shows without episodes now display an empty message similar to EmptyView.
-[#44](https://gitlab.gnome.org/World/hammond/issues/44)
+[#44](https://gitlab.gnome.org/World/gnome-podcasts/issues/44)
 
 ### Changed:
 - EpisdeWidget has been reimplemented as a compile time state machine.
-[!18](https://gitlab.gnome.org/World/hammond/merge_requests/18)
+[!18](https://gitlab.gnome.org/World/gnome-podcasts/merge_requests/18)
 - Content Views no longer scroll horizontally when shrunk bellow their minimum size.
-[#35](https://gitlab.gnome.org/World/hammond/issues/35)
+[#35](https://gitlab.gnome.org/World/gnome-podcasts/issues/35)
 - Some requests now use the Tor Browser's user agent. (Rowan Lewis)
-[#53](https://gitlab.gnome.org/World/hammond/issues/53)
+[#53](https://gitlab.gnome.org/World/gnome-podcasts/issues/53)
 
 ### Fixed:
 - Double border aroun the main window was fixed. (Rowan Lewis)
-[#52](https://gitlab.gnome.org/World/hammond/issues/52)
+[#52](https://gitlab.gnome.org/World/gnome-podcasts/issues/52)
 
 ## [0.3.0] - 2018-02-11
 - Tobias Bernard Redesigned the whole Gtk+ client.

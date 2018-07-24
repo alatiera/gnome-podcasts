@@ -12,7 +12,7 @@ Please note we have a [code of conduct](https://wiki.gnome.org/Foundation/CodeOf
 ## Source repository
 
 GNOME Podcasts's main source repository is at gitlab.gnome.org.  You can view
-the web interface [here](https://gitlab.gnome.org/World/hammond)
+the web interface [here](https://gitlab.gnome.org/World/gnome-podcasts)
 
 Development happens in the master branch.
 
@@ -51,7 +51,7 @@ In order to run the test suite use the following: `cargo test -- --test-threads=
 # Issues, issues and more issues!
 
 There are many ways you can contribute to GNOME Podcasts, and all of them involve creating issues
-in [GNOME Podcasts issue tracker](https://gitlab.gnome.org/World/hammond/issues). This is the entry point for your contribution.
+in [GNOME Podcasts issue tracker](https://gitlab.gnome.org/World/gnome-podcasts/issues). This is the entry point for your contribution.
 
 To create an effective and high quality ticket, try to put the following information on your
 ticket:
