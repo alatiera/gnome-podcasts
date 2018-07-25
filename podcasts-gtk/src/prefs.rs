@@ -68,14 +68,21 @@ impl Prefs {
         self.cleanup_type.pack_start(&renderer, true);
         self.cleanup_type.add_attribute(&renderer, "text", 0);
         self.cleanup_type.set_active(cleanup_pos);
-        self.cleanup_type
-            .connect_changed(clone!(settings, store => move |combo| {
-                if let Some(ref treeiter) = combo.get_active_iter() {
+
+        let weak_settings = settings.downgrade();
+        let weak_store = store.downgrade();
+        // Totally the prettiest stairway you ever saw
+        self.cleanup_type.connect_changed(move |combo| {
+            if let Some(ref treeiter) = combo.get_active_iter() {
+                if let Some(store) = weak_store.upgrade() {
                     if let Some(s) = store.get_value(treeiter, 0).get::<&str>() {
-                        settings.set_string("cleanup-age-period", &s.to_lowercase());
+                        if let Some(settings) = weak_settings.upgrade() {
+                            settings.set_string("cleanup-age-period", &s.to_lowercase());
+                        }
                     }
-                };
-        }));
+                }
+            };
+        });
     }
 
     pub fn show(&self, parent: &gtk::ApplicationWindow) {
