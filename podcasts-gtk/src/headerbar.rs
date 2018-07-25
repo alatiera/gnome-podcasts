@@ -23,7 +23,7 @@ pub struct Header {
     switch: gtk::StackSwitcher,
     back: gtk::Button,
     show_title: gtk::Label,
-    menu_button: gtk::MenuButton,
+    hamburger: gtk::MenuButton,
     updater: UpdateIndicator,
     add: AddPopover,
     dots: gtk::MenuButton,
@@ -149,9 +149,9 @@ impl Default for Header {
         let show_title = builder.get_object("show_title").unwrap();
 
         // The hamburger menu
-        let menu_button: gtk::MenuButton = builder.get_object("menu_button").unwrap();
+        let hamburger: gtk::MenuButton = builder.get_object("hamburger").unwrap();
         let app_menu: gio::MenuModel = menus.get_object("menu").unwrap();
-        menu_button.set_menu_model(Some(&app_menu));
+        hamburger.set_menu_model(Some(&app_menu));
 
         // The 3 dots secondary menu
         let dots = builder.get_object("secondary_menu").unwrap();
@@ -184,7 +184,7 @@ impl Default for Header {
             switch,
             back,
             show_title,
-            menu_button,
+            hamburger,
             updater,
             add,
             dots,
@@ -229,7 +229,7 @@ impl Header {
         self.back.show();
         self.set_show_title(title);
         self.show_title.show();
-        self.menu_button.hide();
+        self.hamburger.hide();
         self.dots.show();
     }
 
@@ -238,7 +238,7 @@ impl Header {
         self.add.toggle.show();
         self.back.hide();
         self.show_title.hide();
-        self.menu_button.show();
+        self.hamburger.show();
         self.dots.hide();
     }
 
@@ -255,7 +255,7 @@ impl Header {
     }
 
     pub fn open_menu(&self) {
-        self.menu_button.clicked();
+        self.hamburger.clicked();
     }
 
     pub fn set_secondary_menu(&self, pop: &gtk::PopoverMenu) {
