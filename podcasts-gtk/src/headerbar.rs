@@ -217,22 +217,10 @@ impl Header {
             weak.upgrade().map(|h| h.add.on_add_clicked(&sender));
         }));
 
-        let switch = &s.switch;
-        let add_toggle = &s.add.toggle;
-        let show_title = &s.show_title;
-        let menu = &s.menu_button;
-        let dots = &s.dots;
-        s.back.connect_clicked(
-            clone!(switch, add_toggle, show_title, sender, menu, dots => move |back| {
-                switch.show();
-                add_toggle.show();
-                back.hide();
-                show_title.hide();
-                menu.show();
-                dots.hide();
-                sender.send(Action::ShowShowsAnimated);
-            }),
-        );
+        s.back.connect_clicked(clone!(weak, sender => move |_| {
+            weak.upgrade().map(|h| h.switch_to_normal());
+            sender.send(Action::ShowShowsAnimated);
+        }));
     }
 
     pub fn switch_to_back(&self, title: &str) {
