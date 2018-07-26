@@ -305,9 +305,9 @@ impl App {
             info!("Init complete");
             application.connect_activate(clone!(app => move |_| {
                 info!("GApplication::activate");
-                app.window.show_all();
                 app.window.activate();
             }));
+            app.window.show_all();
         }));
 
         // Weird magic I copy-pasted that sets the Application Name in the Shell.
