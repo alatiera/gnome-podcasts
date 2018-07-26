@@ -59,7 +59,7 @@ flatpak:
     stage: test
     script:
         - flatpak-builder --stop-at=gnome-podcasts app org.gnome.Podcasts.json
-        # https://gitlab.gnome.org/World/gnome-podcasts/issues/55
+        # https://gitlab.gnome.org/World/podcasts/issues/55
         # Force regeneration of gresources regardless of artifacts chage
         - flatpak-builder --run app org.gnome.Podcasts.json glib-compile-resources --sourcedir=podcasts-gtk/resources/ podcasts-gtk/resources/resources.xml
 
@@ -104,7 +104,7 @@ review:
         url: https://gitlab.gnome.org/$CI_PROJECT_PATH/-/jobs/$CI_JOB_ID/artifacts/raw/${BUNDLE}
         on_stop: stop_review
     except:
-        - master@World/gnome-podcasts
+        - master@World/podcasts
 
 stop_review:
     stage: review
@@ -115,7 +115,7 @@ stop_review:
         name: review/$CI_COMMIT_REF_NAME
         action: stop
     except:
-        - master@World/gnome-podcasts
+        - master@World/podcasts
 
 # Configure and run rustfmt on nightly
 # Exits and builds fails if on bad format

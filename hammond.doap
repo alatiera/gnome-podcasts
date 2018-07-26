@@ -15,8 +15,8 @@
       desktop written in Rust.
     </p>
   </description>
-  <!-- <homepage rdf:resource="https://wiki.gnome.org/Apps/Hammond" /> -->
-  <bug-database rdf:resource="https://gitlab.gnome.org/World/gnome-podcasts/issues" />
+  <!-- <homepage rdf:resource="https://wiki.gnome.org/Apps/Podcasts" /> -->
+  <bug-database rdf:resource="https://gitlab.gnome.org/World/podcasts/issues" />
 
   <category rdf:resource="http://api.gnome.org/doap-extensions#apps" />
   <programming-language>Rust</programming-language>

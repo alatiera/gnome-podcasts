@@ -103,7 +103,7 @@ mod tests {
     /// Insert feeds and update/index them.
     fn test_pipeline() {
         truncate_db().unwrap();
-        let bad_url = "https://gitlab.gnome.org/World/gnome-podcasts.atom";
+        let bad_url = "https://gitlab.gnome.org/World/podcasts.atom";
         // if a stream returns error/None it stops
         // bad we want to parse all feeds regardless if one fails
         Source::from_url(bad_url).unwrap();

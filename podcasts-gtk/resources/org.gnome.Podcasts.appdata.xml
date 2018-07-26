@@ -12,25 +12,25 @@
       desktop written in Rust.
     </p>
   </description>
-  <url type="homepage">https://gitlab.gnome.org/World/gnome-podcasts</url>
+  <url type="homepage">https://gitlab.gnome.org/World/podcasts</url>
   <screenshots>
     <screenshot>
-      <image>https://gitlab.gnome.org/World/gnome-podcasts/raw/master/screenshots/episodes_view.png</image>
+      <image>https://gitlab.gnome.org/World/podcasts/raw/master/screenshots/episodes_view.png</image>
       <caption>Page 1</caption>
     </screenshot>
     <screenshot>
-      <image>https://gitlab.gnome.org/World/gnome-podcasts/raw/master/screenshots/shows_view.png</image>
+      <image>https://gitlab.gnome.org/World/podcasts/raw/master/screenshots/shows_view.png</image>
       <caption>Page 2</caption>
     </screenshot>
     <screenshot>
-      <image>https://gitlab.gnome.org/World/gnome-podcasts/raw/master/screenshots/show_widget.png</image>
+      <image>https://gitlab.gnome.org/World/podcasts/raw/master/screenshots/show_widget.png</image>
       <caption>Page 3</caption>
     </screenshot>
   </screenshots>
   <releases>
     <release version="0.4.0" date="2018-07-04"/>
   </releases>
-  <url type="homepage">https://gitlab.gnome.org/World/gnome-podcasts</url>
+  <url type="homepage">https://gitlab.gnome.org/World/podcasts</url>
   <update_contact>jpetridis@gnome.org</update_contact>
   <developer_name>Jordan Petridis and others</developer_name>
 </component>
