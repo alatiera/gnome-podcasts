@@ -81,10 +81,14 @@ impl App {
 
         let window = gtk::ApplicationWindow::new(application);
         window.set_title("Podcasts");
-        window.connect_delete_event(clone!(settings => move |window, _| {
-            WindowGeometry::from_window(&window).write(&settings);
+
+        let weak_s = settings.downgrade();
+        window.connect_delete_event(move |window, _| {
+            weak_s
+                .upgrade()
+                .map(|settings| WindowGeometry::from_window(&window).write(&settings));
             Inhibit(false)
-        }));
+        });
 
         // Create a content instance
         let content = Content::new(&sender).expect("Content Initialization failed.");
@@ -130,8 +134,6 @@ impl App {
 
         app.setup_gactions();
         app.setup_timed_callbacks();
-
-        app.instance.connect_activate(move |_| ());
 
         // Retrieve the previous window position and size.
         WindowGeometry::from_settings(&app.settings).apply(&app.window);
@@ -298,17 +300,23 @@ impl App {
         let application = gtk::Application::new(APP_ID, ApplicationFlags::empty())
             .expect("Application Initialization failed...");
 
-        application.connect_startup(clone!(application => move |_| {
-            info!("CONNECT STARTUP RUN");
-            let app = Self::new(&application);
-            Self::init(&app);
-            info!("Init complete");
-            application.connect_activate(clone!(app => move |_| {
-                info!("GApplication::activate");
-                app.window.activate();
-            }));
-            app.window.show_all();
-        }));
+        let weak_app = application.downgrade();
+        application.connect_startup(move |_| {
+            info!("GApplication::startup");
+            weak_app.upgrade().map(|application| {
+                let app = Self::new(&application);
+                Self::init(&app);
+
+                let weak = Rc::downgrade(&app);
+                application.connect_activate(move |_| {
+                    info!("GApplication::activate");
+                    weak.upgrade().map(|app| app.window.activate());
+                });
+
+                info!("Init complete");
+                app.window.show_all();
+            });
+        });
 
         // Weird magic I copy-pasted that sets the Application Name in the Shell.
         glib::set_application_name("Podcasts");
