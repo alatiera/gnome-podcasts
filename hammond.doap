@@ -7,13 +7,11 @@
 
   <name xml:lang="en">Hammond</name>
   <shortdesc xml:lang="en">
-    Modern Podcast Client for the GNOME desktop
+    Listen to your favorite podcasts, right from your desktop.
   </shortdesc>
   <description xml:lang="en">
-    <p>
-      Hammond is a modern, reliable, and fast Podcast Client for the GNOME
-      desktop written in Rust.
-    </p>
+      Modern, reliable, and fast Podcast application for the GNOME
+      desktop.
   </description>
   <!-- <homepage rdf:resource="https://wiki.gnome.org/Apps/Podcasts" /> -->
   <bug-database rdf:resource="https://gitlab.gnome.org/World/podcasts/issues" />

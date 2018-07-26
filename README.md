@@ -1,6 +1,7 @@
 # GNOME Podcasts
 
-### A Podcast Client for GNOME written in Rust.
+### A Podcast application for GNOME.
+Listen to your favorite podcasts, right from your desktop.
 
 ![episdes_view](./screenshots/episodes_view.png)
 ![shows_view](./screenshots/shows_view.png)

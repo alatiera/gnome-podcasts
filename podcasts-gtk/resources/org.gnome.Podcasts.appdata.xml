@@ -5,11 +5,11 @@
   <project_license>GPL-3.0</project_license>
   <metadata_license>CC0-1.0</metadata_license>
   <developer_name>Jordan Petridis</developer_name>
-  <summary>Modern Podcast application for the GNOME desktop</summary>
+  <summary>Listen to your favorite podcasts, right from your desktop.</summary>
   <description xml:lang="en">
     <p>
-      Podcasts is a modern, reliable, and fast Podcast application for the GNOME
-      desktop written in Rust.
+      Modern, reliable, and fast Podcast application for the GNOME
+      desktop.
     </p>
   </description>
   <url type="homepage">https://gitlab.gnome.org/World/podcasts</url>
