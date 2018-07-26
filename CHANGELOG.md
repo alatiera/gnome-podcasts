@@ -13,6 +13,29 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Removed:
 
+## [0.4.1] - 2018-07-26
+### Added:
+
+- Custom icons for the fast-forward and rewind actions in the Player were added. (Tobias Bernard) e77000076b3d78b8625f4c7ef367376d0130ece6
+- Hicolor and symbolic icons for the Application. (Tobias Bernard and Sam Hewitt) edae1b04801dba9d91d5d4145db79b287f0eec2c
+- Basic prefferences dialog (Zander Brown). [34](https://gitlab.gnome.org/World/podcasts/merge_requests/34)
+- Dbus service preperation. Not used till the MPRIS2 integration has landed. (Zander Brown) [42](https://gitlab.gnome.org/World/podcasts/merge_requests/42)
+- Episodes and Images will only get drawn when needed. Big Performance impact. (Jordan Petridis) [43](https://gitlab.gnome.org/World/podcasts/merge_requests/43)
+
+### Changed:
+
+- The `ShowWidget` control button were moved to a secondary menu in the Headerbar. (Jordan Petridis) 536805791e336a3e112799be554706bb804d2bef
+- EmptyView layout improvements. (Jorda Petridis) 3c3d6c1e7f15b88308a9054b15a6ca0d8fa233ce 518ea9c8b57885c44bda9c418b19fef26ae0e55d
+- Improved the `AddButton` behavior. (Jorda Petridis) 67ab54f8203f19aad198dc49e935127d25432b41
+
+### Fixed:
+
+- A couple reffence cycles where fixed. (Jorda Petridis)
+
+### Removed:
+
+- The delay between the application startup and the `update_on_startup` action. (Jorda Petridis) 7569465a612ee5ef84d0e58f4e1010c8d14080d4
+
 ## [0.4.0] - 2018-07-04
 ### Added:
 - Keyboard Shortcuts and a Shortcuts dialog were implemented. (ZanderBrown)
