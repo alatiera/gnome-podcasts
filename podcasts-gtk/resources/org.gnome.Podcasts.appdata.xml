@@ -5,11 +5,10 @@
   <project_license>GPL-3.0</project_license>
   <metadata_license>CC0-1.0</metadata_license>
   <developer_name>Jordan Petridis</developer_name>
-  <summary>Listen to your favorite podcasts, right from your desktop.</summary>
+  <summary>Podcast app for GNOME</summary>
   <description xml:lang="en">
     <p>
-      Modern, reliable, and fast Podcast application for the GNOME
-      desktop.
+      Listen to your favorite podcasts, right from your desktop.
     </p>
   </description>
   <url type="homepage">https://gitlab.gnome.org/World/podcasts</url>
