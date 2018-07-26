@@ -27,7 +27,7 @@ pub fn about_dialog(window: &gtk::ApplicationWindow) {
     dialog.set_modal(true);
     // TODO: make it show it fetches the commit hash from which it was built
     // and the version number is kept in sync automaticly
-    dialog.set_version("0.4.0");
+    dialog.set_version("0.4.1");
     dialog.set_program_name("Podcasts");
     // TODO: Need a wiki page first.
     // dialog.set_website("https://wiki.gnome.org/Design/Apps/Potential/Podcasts");
