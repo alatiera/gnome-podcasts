@@ -5,13 +5,12 @@
          xmlns:gnome="http://api.gnome.org/doap-extensions#"
          xmlns="http://usefulinc.com/ns/doap#">
 
-  <name xml:lang="en">Hammond</name>
+  <name xml:lang="en">Podcasts</name>
   <shortdesc xml:lang="en">
-    Listen to your favorite podcasts, right from your desktop.
+    Podcast app for GNOME
   </shortdesc>
   <description xml:lang="en">
-      Modern, reliable, and fast Podcast application for the GNOME
-      desktop.
+      Listen to your favorite podcasts, right from your desktop.
   </description>
   <!-- <homepage rdf:resource="https://wiki.gnome.org/Apps/Podcasts" /> -->
   <bug-database rdf:resource="https://gitlab.gnome.org/World/podcasts/issues" />
@@ -21,7 +20,7 @@
 
   <maintainer>
     <foaf:Person>
-      <foaf:name>Jordan petridis</foaf:name>
+      <foaf:name>Jordan Petridis</foaf:name>
       <foaf:mbox rdf:resource="mailto:jpetridis@gnome.org" />
       <gnome:userid>jpetridis</gnome:userid>
     </foaf:Person>
