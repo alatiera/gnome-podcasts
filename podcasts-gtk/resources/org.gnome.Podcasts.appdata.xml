@@ -24,7 +24,7 @@
     </screenshot>
   </screenshots>
   <releases>
-    <release version="0.4.2" date="2018-07-27"/>
+    <release version="0.4.3" date="2018-07-28"/>
   </releases>
   <url type="homepage">https://gitlab.gnome.org/World/podcasts</url>
   <update_contact>jpetridis@gnome.org</update_contact>

@@ -13,6 +13,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Removed:
 
+## [0.4.3] - 2018-07-27
+
+### Fixed:
+
+- Fix the cargo vendor config for the tarball releash script. (Jorda Petridis) a2440c19e11ca4dcdbcb67cd85259a41fe3754d6
+
 ## [0.4.2] - 2018-07-27
 
 ### Changed:
