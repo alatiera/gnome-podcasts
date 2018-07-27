@@ -21,9 +21,9 @@ cp README.md $DIST
 cp -rf screenshots $DIST
 cp -rf scripts $DIST
 
-# cargo vendor
+#cargo vendor
 mkdir $DIST/.cargo
-cargo vendor > $DIST/.cargo/config
+cargo vendor | sed 's/^directory = ".*"/directory = "vendor"/g' > $DIST/.cargo/config
 cp -rf vendor $DIST/
 
 # packaging
