@@ -13,6 +13,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Removed:
 
+## [0.4.2] - 2018-07-27
+
+### Changed:
+
+- Minimum size requested by the Views. (Jorda Petridis) 7c96152f3f53f271247230dccf1c9cd5947b685f
+
+### Fixed:
+
+- Screenshot metadata in appstream data. (Jorda Petridis) a2440c19e11ca4dcdbcb67cd85259a41fe3754d6
+
 ## [0.4.1] - 2018-07-26
 ### Added:
 
