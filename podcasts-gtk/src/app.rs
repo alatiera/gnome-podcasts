@@ -187,15 +187,12 @@ impl App {
     #[cfg_attr(rustfmt, rustfmt_skip)]
     fn setup_gactions(&self) {
         let sender = &self.sender;
-        let win = &self.window;
-        let instance = &self.instance;
-        let header = &self.headerbar;
-        let settings = &self.settings;
+        let weak_win = self.window.downgrade();
 
         // Create the `refresh` action.
         //
         // This will trigger a refresh of all the shows in the database.
-        action(win, "refresh", clone!(sender => move |_, _| {
+        action(&self.window, "refresh", clone!(sender => move |_, _| {
             gtk::idle_add(clone!(sender => move || {
                 let s: Option<Vec<_>> = None;
                 utils::refresh(s, sender.clone());
@@ -205,29 +202,39 @@ impl App {
         self.instance.set_accels_for_action("win.refresh", &["<primary>r"]);
 
         // Create the `OPML` import action
-        action(win, "import", clone!(sender, win => move |_, _| {
-            utils::on_import_clicked(&win, &sender)
+        action(&self.window, "import", clone!(sender, weak_win => move |_, _| {
+            weak_win.upgrade().map(|win| utils::on_import_clicked(&win, &sender));
         }));
 
         // Create the action that shows a `gtk::AboutDialog`
-        action(win, "about", clone!(win => move |_, _| about_dialog(&win)));
+        action(&self.window, "about", clone!(weak_win => move |_, _| {
+            weak_win.upgrade().map(|win| about_dialog(&win));
+        }));
 
         // Create the quit action
-        action(win, "quit", clone!(instance => move |_, _| instance.quit()));
+        let weak_instance = self.instance.downgrade();
+        action(&self.window, "quit", move |_, _| {
+            weak_instance.upgrade().map(|app| app.quit());
+        });
         self.instance.set_accels_for_action("win.quit", &["<primary>q"]);
 
-        action(
-            win,
-            "preferences",
-            clone!(win, settings => move |_, _| {
-                let dialog = Prefs::new(&settings);
-                dialog.show(&win);
-            })
-        );
+        let weak_settings = self.settings.downgrade();
+        action(&self.window, "preferences", clone!(weak_win => move |_, _| {
+            let (win, settings) = match (weak_win.upgrade(), weak_settings.upgrade()) {
+                (Some(win), Some(settings)) => (win, settings),
+                _ => return,
+            };
+
+            let dialog = Prefs::new(&settings);
+            dialog.show(&win);
+        }));
         self.instance.set_accels_for_action("win.preferences", &["<primary>e"]);
 
         // Create the menu action
-        action(win, "menu",clone!(header => move |_, _| header.open_menu()));
+        let header = Rc::downgrade(&self.headerbar);
+        action(&self.window, "menu", move |_, _| {
+            header.upgrade().map(|h| h.open_menu());
+        });
         // Bind the hamburger menu button to `F10`
         self.instance.set_accels_for_action("win.menu", &["F10"]);
     }
