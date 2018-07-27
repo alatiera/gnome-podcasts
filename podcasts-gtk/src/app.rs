@@ -1,7 +1,7 @@
 #![allow(new_without_default)]
 
-use gio::{self, prelude::*, ApplicationFlags, SettingsBindFlags, SettingsExt, SimpleAction};
-use glib;
+use gio::{self, prelude::*, ActionMapExt, SettingsExt};
+use glib::{self, Variant};
 use gtk;
 use gtk::prelude::*;
 
@@ -25,18 +25,18 @@ use std::sync::Arc;
 
 pub const APP_ID: &str = "org.gnome.Podcasts";
 
-/// Creates an action named $called in the action map $on with the handler $handle
-macro_rules! action {
-    ($on:expr, $called:expr, $handle:expr) => {{
-        // Create a stateless, parameterless action
-        let act = SimpleAction::new($called, None);
-        // Connect the handler
-        act.connect_activate($handle);
-        // Add it to the map
-        $on.add_action(&act);
-        // Return the action
-        act
-    }};
+/// Creates an action named `name` in the action map `T with the handler `F`
+fn action<T, F>(thing: &T, name: &str, action: F)
+where
+    T: ActionMapExt,
+    for<'r, 's> F: Fn(&'r gio::SimpleAction, &'s Option<Variant>) + 'static,
+{
+    // Create a stateless, parameterless action
+    let act = gio::SimpleAction::new(name, None);
+    // Connect the handler
+    act.connect_activate(action);
+    // Add it to the map
+    thing.add_action(&act);
 }
 
 #[derive(Debug, Clone)]
@@ -154,7 +154,7 @@ impl App {
             "dark-theme",
             &gtk_settings,
             "gtk-application-prefer-dark-theme",
-            SettingsBindFlags::DEFAULT,
+            gio::SettingsBindFlags::DEFAULT,
         );
     }
 
@@ -195,7 +195,7 @@ impl App {
         // Create the `refresh` action.
         //
         // This will trigger a refresh of all the shows in the database.
-        action!(win, "refresh", clone!(sender => move |_, _| {
+        action(win, "refresh", clone!(sender => move |_, _| {
             gtk::idle_add(clone!(sender => move || {
                 let s: Option<Vec<_>> = None;
                 utils::refresh(s, sender.clone());
@@ -205,18 +205,18 @@ impl App {
         self.instance.set_accels_for_action("win.refresh", &["<primary>r"]);
 
         // Create the `OPML` import action
-        action!(win, "import", clone!(sender, win => move |_, _| {
+        action(win, "import", clone!(sender, win => move |_, _| {
             utils::on_import_clicked(&win, &sender)
         }));
 
         // Create the action that shows a `gtk::AboutDialog`
-        action!(win, "about", clone!(win => move |_, _| about_dialog(&win)));
+        action(win, "about", clone!(win => move |_, _| about_dialog(&win)));
 
         // Create the quit action
-        action!(win, "quit", clone!(instance => move |_, _| instance.quit()));
+        action(win, "quit", clone!(instance => move |_, _| instance.quit()));
         self.instance.set_accels_for_action("win.quit", &["<primary>q"]);
 
-        action!(
+        action(
             win,
             "preferences",
             clone!(win, settings => move |_, _| {
@@ -227,7 +227,7 @@ impl App {
         self.instance.set_accels_for_action("win.preferences", &["<primary>e"]);
 
         // Create the menu action
-        action!(win, "menu",clone!(header => move |_, _| header.open_menu()));
+        action(win, "menu",clone!(header => move |_, _| header.open_menu()));
         // Bind the hamburger menu button to `F10`
         self.instance.set_accels_for_action("win.menu", &["F10"]);
     }
@@ -297,7 +297,7 @@ impl App {
     }
 
     pub fn run() {
-        let application = gtk::Application::new(APP_ID, ApplicationFlags::empty())
+        let application = gtk::Application::new(APP_ID, gio::ApplicationFlags::empty())
             .expect("Application Initialization failed...");
 
         let weak_app = application.downgrade();
