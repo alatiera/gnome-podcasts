@@ -4,9 +4,9 @@ use gtk::prelude::*;
 
 use crossbeam_channel::Sender;
 use failure::Error;
+use fragile::Fragile;
 use html2text;
 use rayon;
-use send_cell::SendCell;
 
 use podcasts_data::dbqueries;
 use podcasts_data::Show;
@@ -19,7 +19,7 @@ use std::rc::Rc;
 use std::sync::{Arc, Mutex};
 
 lazy_static! {
-    static ref SHOW_WIDGET_VALIGNMENT: Mutex<Option<(i32, SendCell<gtk::Adjustment>)>> =
+    static ref SHOW_WIDGET_VALIGNMENT: Mutex<Option<(i32, Fragile<gtk::Adjustment>)>> =
         Mutex::new(None);
 }
 
@@ -60,7 +60,7 @@ impl ShowWidget {
         pdw.init(&pd);
 
         let menu = ShowMenu::new(&pd, &pdw.episodes, &sender);
-        sender.send(Action::InitShowMenu(SendCell::new(menu)));
+        sender.send(Action::InitShowMenu(Fragile::new(menu)));
 
         let pdw = Rc::new(pdw);
         let res = populate_listbox(&pdw, pd.clone(), sender);
@@ -95,7 +95,7 @@ impl ShowWidget {
                 .scrolled_window
                 .get_vadjustment()
                 .ok_or_else(|| format_err!("Could not get the adjustment"))?;
-            *guard = Some((oldid, SendCell::new(adj)));
+            *guard = Some((oldid, Fragile::new(adj)));
             debug!("Widget Alignment was saved with ID: {}.", oldid);
         }
 
@@ -108,7 +108,7 @@ impl ShowWidget {
             .lock()
             .map_err(|err| format_err!("Failed to lock widget align mutex: {}", err))?;
 
-        if let Some((oldid, ref sendcell)) = *guard {
+        if let Some((oldid, ref fragile)) = *guard {
             // Only copy the old scrollbar if both widget's represent the same podcast.
             debug!("PID: {}", pd.id());
             debug!("OLDID: {}", oldid);
@@ -118,9 +118,13 @@ impl ShowWidget {
             };
 
             // Copy the vertical scrollbar adjustment from the old view into the new one.
-            sendcell
+            let res = fragile
                 .try_get()
-                .map(|x| utils::smooth_scroll_to(&self.scrolled_window, &x));
+                .map(|x| utils::smooth_scroll_to(&self.scrolled_window, &x))
+                .map_err(From::from);
+
+            debug_assert!(res.is_ok());
+            return res;
         }
 
         Ok(())

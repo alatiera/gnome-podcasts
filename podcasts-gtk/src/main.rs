@@ -60,6 +60,7 @@ extern crate pretty_assertions;
 
 extern crate chrono;
 extern crate crossbeam_channel;
+extern crate fragile;
 extern crate html2text;
 extern crate humansize;
 extern crate loggerv;
@@ -69,7 +70,6 @@ extern crate podcasts_downloader;
 extern crate rayon;
 extern crate regex;
 extern crate reqwest;
-extern crate send_cell;
 extern crate serde_json;
 extern crate url;
 

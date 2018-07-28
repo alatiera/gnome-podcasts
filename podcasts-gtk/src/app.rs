@@ -6,8 +6,8 @@ use gtk;
 use gtk::prelude::*;
 
 use crossbeam_channel::{unbounded, Receiver, Sender};
+use fragile::Fragile;
 use podcasts_data::Show;
-use send_cell::SendCell;
 
 use headerbar::Header;
 use prefs::Prefs;
@@ -57,7 +57,7 @@ pub enum Action {
     RemoveShow(Arc<Show>),
     ErrorNotification(String),
     InitEpisode(i32),
-    InitShowMenu(SendCell<ShowMenu>),
+    InitShowMenu(Fragile<ShowMenu>),
 }
 
 #[derive(Debug, Clone)]
@@ -287,8 +287,8 @@ impl App {
                     debug_assert!(res.is_ok());
                 }
                 Action::InitShowMenu(s) => {
-                    let menu = s.borrow();
-                    self.headerbar.set_secondary_menu(&menu.container);
+                    let menu = &s.get().container;
+                    self.headerbar.set_secondary_menu(menu);
                 }
             }
         }

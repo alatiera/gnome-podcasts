@@ -10,10 +10,10 @@ use gtk::{IsA, Widget};
 use chrono::prelude::*;
 use crossbeam_channel::{unbounded, Sender};
 use failure::Error;
+use fragile::Fragile;
 use rayon;
 use regex::Regex;
 use reqwest;
-use send_cell::SendCell;
 use serde_json::Value;
 
 // use podcasts_data::feed;
@@ -213,7 +213,7 @@ where
 }
 
 lazy_static! {
-    static ref CACHED_PIXBUFS: RwLock<HashMap<(i32, u32), Mutex<SendCell<Pixbuf>>>> =
+    static ref CACHED_PIXBUFS: RwLock<HashMap<(i32, u32), Mutex<Fragile<Pixbuf>>>> =
         { RwLock::new(HashMap::new()) };
     static ref COVER_DL_REGISTRY: RwLock<HashSet<i32>> = RwLock::new(HashSet::new());
     static ref THREADPOOL: rayon::ThreadPool = rayon::ThreadPoolBuilder::new().build().unwrap();
@@ -248,12 +248,12 @@ pub fn set_image_from_path(image: &gtk::Image, show_id: i32, size: u32) -> Resul
         if let Some(guard) = hashmap.get(&(show_id, size)) {
             guard
                 .lock()
-                .map_err(|err| format_err!("SendCell Mutex: {}", err))
-                .and_then(|sendcell| {
-                    sendcell
+                .map_err(|err| format_err!("Fragile Mutex: {}", err))
+                .and_then(|fragile| {
+                    fragile
                         .try_get()
                         .map(|px| image.set_from_pixbuf(px))
-                        .ok_or_else(|| format_err!("Pixbuf was accessed from a different thread"))
+                        .map_err(From::from)
                 })?;
 
             return Ok(());
@@ -278,7 +278,7 @@ pub fn set_image_from_path(image: &gtk::Image, show_id: i32, size: u32) -> Resul
             if let Ok(path) = path {
                 if let Ok(px) = Pixbuf::new_from_file_at_scale(&path, s, s, true) {
                     if let Ok(mut hashmap) = CACHED_PIXBUFS.write() {
-                        hashmap.insert((show_id, size), Mutex::new(SendCell::new(px.clone())));
+                        hashmap.insert((show_id, size), Mutex::new(Fragile::new(px.clone())));
                         image.set_from_pixbuf(&px);
                     }
                 }

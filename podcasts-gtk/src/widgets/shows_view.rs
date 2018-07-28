@@ -3,7 +3,7 @@ use gtk::prelude::*;
 
 use crossbeam_channel::Sender;
 use failure::Error;
-use send_cell::SendCell;
+use fragile::Fragile;
 
 use podcasts_data::dbqueries;
 use podcasts_data::Show;
@@ -17,7 +17,7 @@ use std::sync::Arc;
 use std::sync::Mutex;
 
 lazy_static! {
-    static ref SHOWS_VIEW_VALIGNMENT: Mutex<Option<SendCell<gtk::Adjustment>>> = Mutex::new(None);
+    static ref SHOWS_VIEW_VALIGNMENT: Mutex<Option<Fragile<gtk::Adjustment>>> = Mutex::new(None);
 }
 
 #[derive(Debug, Clone)]
@@ -65,11 +65,15 @@ impl ShowsView {
             .lock()
             .map_err(|err| format_err!("Failed to lock widget align mutex: {}", err))?;
 
-        if let Some(ref sendcell) = *guard {
+        if let Some(ref fragile) = *guard {
             // Copy the vertical scrollbar adjustment from the old view into the new one.
-            sendcell
+            let res = fragile
                 .try_get()
-                .map(|x| utils::smooth_scroll_to(&self.scrolled_window, &x));
+                .map(|x| utils::smooth_scroll_to(&self.scrolled_window, &x))
+                .map_err(From::from);
+
+            debug_assert!(res.is_ok());
+            return res;
         }
 
         Ok(())
@@ -82,7 +86,7 @@ impl ShowsView {
                 .scrolled_window
                 .get_vadjustment()
                 .ok_or_else(|| format_err!("Could not get the adjustment"))?;
-            *guard = Some(SendCell::new(adj));
+            *guard = Some(Fragile::new(adj));
             info!("Saved episodes_view alignment.");
         }
 

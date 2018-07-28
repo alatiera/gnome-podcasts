@@ -11,7 +11,7 @@ use glib::SignalHandlerId;
 use chrono::NaiveTime;
 use crossbeam_channel::Sender;
 use failure::Error;
-use send_cell::SendCell;
+use fragile::Fragile;
 
 use podcasts_data::{dbqueries, USER_AGENT};
 use podcasts_data::{EpisodeWidgetModel, ShowCoverModel};
@@ -300,25 +300,25 @@ impl PlayerWidget {
         }));
 
         // The followign callbacks require `Send` but are handled by the gtk main loop
-        let weak = SendCell::new(Rc::downgrade(s));
+        let weak = Fragile::new(Rc::downgrade(s));
 
         // Update the duration label and the slider
         s.player.connect_duration_changed(clone!(weak => move |_, clock| {
-            weak.borrow()
+            weak.get()
                 .upgrade()
                 .map(|p| p.timer.on_duration_changed(Duration(clock)));
         }));
 
         // Update the position label and the slider
         s.player.connect_position_updated(clone!(weak => move |_, clock| {
-            weak.borrow()
+            weak.get()
                 .upgrade()
                 .map(|p| p.timer.on_position_updated(Position(clock)));
         }));
 
         // Reset the slider to 0 and show a play button
         s.player.connect_end_of_stream(clone!(weak => move |_| {
-             weak.borrow()
+             weak.get()
                  .upgrade()
                  .map(|p| p.stop());
         }));
