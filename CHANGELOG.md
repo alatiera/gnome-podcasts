@@ -13,6 +13,17 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Removed:
 
+
+## [0.4.4] - 2018-07-31
+
+### Changed:
+- `SendCell` crate was replaced with `Fragile`. (Jorda Petridis) 838320785ebbea94e009698b473495cfec076f54
+- Update dependancies (Jorda Petridis) 91bea8551998b16e44e5358fdd43c53422bcc6f3
+
+### Fixed:
+- Fix more refference cycles. (Jorda Petridis) 3496df24f8d8bfa8c8a53d8f00262d42ee39b41c
+- Actually fix cargo-vendor (Jorda Petridis)
+
 ## [0.4.3] - 2018-07-27
 
 ### Fixed:
