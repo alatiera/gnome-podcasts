@@ -1,8 +1,4 @@
-use diesel::SaveChangesDsl;
-
-use database::connection;
-use errors::DataError;
-use models::{Save, Source};
+use models::Source;
 use schema::shows;
 
 #[derive(Queryable, Identifiable, AsChangeset, Associations, PartialEq)]
@@ -18,19 +14,6 @@ pub struct Show {
     description: String,
     image_uri: Option<String>,
     source_id: i32,
-}
-
-impl Save<Show> for Show {
-    type Error = DataError;
-
-    /// Helper method to easily save/"sync" current state of self to the
-    /// Database.
-    fn save(&self) -> Result<Show, Self::Error> {
-        let db = connection();
-        let tempdb = db.get()?;
-
-        self.save_changes::<Show>(&*tempdb).map_err(From::from)
-    }
 }
 
 impl Show {
@@ -51,19 +34,9 @@ impl Show {
         &self.link
     }
 
-    /// Set the Show/Feed `link`.
-    pub fn set_link(&mut self, value: &str) {
-        self.link = value.to_string();
-    }
-
     /// Get the `description`.
     pub fn description(&self) -> &str {
         &self.description
-    }
-
-    /// Set the `description`.
-    pub fn set_description(&mut self, value: &str) {
-        self.description = value.to_string();
     }
 
     /// Get the `image_uri`.
@@ -71,11 +44,6 @@ impl Show {
     /// Represents the uri(url usually) that the Feed cover image is located at.
     pub fn image_uri(&self) -> Option<&str> {
         self.image_uri.as_ref().map(|s| s.as_str())
-    }
-
-    /// Set the `image_uri`.
-    pub fn set_image_uri(&mut self, value: Option<&str>) {
-        self.image_uri = value.map(|x| x.to_string());
     }
 
     /// `Source` table foreign key.
