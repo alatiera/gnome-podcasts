@@ -53,21 +53,11 @@ impl Episode {
         &self.title
     }
 
-    /// Set the `title`.
-    pub fn set_title(&mut self, value: &str) {
-        self.title = value.to_string();
-    }
-
     /// Get the value of the `uri`.
     ///
     /// Represents the url(usually) that the media file will be located at.
     pub fn uri(&self) -> Option<&str> {
         self.uri.as_ref().map(|s| s.as_str())
-    }
-
-    /// Set the `uri`.
-    pub fn set_uri(&mut self, value: Option<&str>) {
-        self.uri = value.map(|x| x.to_string());
     }
 
     /// Get the value of the `local_uri`.
@@ -78,29 +68,14 @@ impl Episode {
         self.local_uri.as_ref().map(|s| s.as_str())
     }
 
-    /// Set the `local_uri`.
-    pub fn set_local_uri(&mut self, value: Option<&str>) {
-        self.local_uri = value.map(|x| x.to_string());
-    }
-
     /// Get the `description`.
     pub fn description(&self) -> Option<&str> {
         self.description.as_ref().map(|s| s.as_str())
     }
 
-    /// Set the `description`.
-    pub fn set_description(&mut self, value: Option<&str>) {
-        self.description = value.map(|x| x.to_string());
-    }
-
     /// Get the Episode's `guid`.
     pub fn guid(&self) -> Option<&str> {
         self.guid.as_ref().map(|s| s.as_str())
-    }
-
-    /// Set the `guid`.
-    pub fn set_guid(&mut self, value: Option<&str>) {
-        self.guid = value.map(|x| x.to_string());
     }
 
     /// Get the `epoch` value.
@@ -111,21 +86,11 @@ impl Episode {
         self.epoch
     }
 
-    /// Set the `epoch`.
-    pub fn set_epoch(&mut self, value: i32) {
-        self.epoch = value;
-    }
-
     /// Get the `length`.
     ///
     /// The number represents the size of the file in bytes.
     pub fn length(&self) -> Option<i32> {
         self.length
-    }
-
-    /// Set the `length`.
-    pub fn set_length(&mut self, value: Option<i32>) {
-        self.length = value;
     }
 
     /// Get the `duration` value.
@@ -135,11 +100,6 @@ impl Episode {
         self.duration
     }
 
-    /// Set the `duration`.
-    pub fn set_duration(&mut self, value: Option<i32>) {
-        self.duration = value;
-    }
-
     /// Epoch representation of the last time the episode was played.
     ///
     /// None/Null for unplayed.
@@ -147,21 +107,9 @@ impl Episode {
         self.played
     }
 
-    /// Set the `played` value.
-    pub fn set_played(&mut self, value: Option<i32>) {
-        self.played = value;
-    }
-
     /// `Show` table foreign key.
     pub fn show_id(&self) -> i32 {
         self.show_id
-    }
-
-    /// Sets the `played` value with the current `epoch` timestap and save it.
-    pub fn set_played_now(&mut self) -> Result<(), DataError> {
-        let epoch = Utc::now().timestamp() as i32;
-        self.set_played(Some(epoch));
-        self.save().map(|_| ())
     }
 }
 
@@ -275,11 +223,6 @@ impl EpisodeWidgetModel {
         self.duration
     }
 
-    /// Set the `duration`.
-    pub fn set_duration(&mut self, value: Option<i32>) {
-        self.duration = value;
-    }
-
     /// Epoch representation of the last time the episode was played.
     ///
     /// None/Null for unplayed.
@@ -288,7 +231,7 @@ impl EpisodeWidgetModel {
     }
 
     /// Set the `played` value.
-    pub fn set_played(&mut self, value: Option<i32>) {
+    fn set_played(&mut self, value: Option<i32>) {
         self.played = value;
     }
 
@@ -445,11 +388,6 @@ impl EpisodeMinimal {
     /// The number represents the size of the file in bytes.
     pub fn length(&self) -> Option<i32> {
         self.length
-    }
-
-    /// Set the `length`.
-    pub fn set_length(&mut self, value: Option<i32>) {
-        self.length = value;
     }
 
     /// Get the `duration` value.
