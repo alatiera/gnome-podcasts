@@ -7,7 +7,7 @@
   <content_rating type="oars-1.1" />
   <developer_name>Jordan Petridis</developer_name>
   <summary>Podcast app for GNOME</summary>
-  <description xml:lang="en">
+  <description>
     <p>
       Listen to your favorite podcasts, right from your desktop.
     </p>
