@@ -7,6 +7,24 @@ Listen to your favorite podcasts, right from your desktop.
 ![shows_view](./screenshots/shows_view.png)
 ![show_widget](./screenshots/show_widget.png)
 
+## Available from [Flathub](https://www.flathub.org/apps/details/org.gnome.Podcasts)
+
+Install by clicking and opening [this](https://www.flathub.org/apps/details/org.gnome.Podcasts) with GNOME Software
+
+### Command line options:
+
+Make sure to follow the [setup guide][flatpak_setup] before installing
+
+Install:
+```sh
+flatpak install flathub org.gnome.Podcasts
+```
+
+Run:
+```sh
+flatpak run org.gnome.Podcasts
+```
+
 ## Quick start
 
 GNOME Podcasts can be built and run with [Gnome Builder](https://wiki.gnome.org/Apps/Builder) >= 3.28.
@@ -152,3 +170,4 @@ And almost the entirety of the build system is copied from the [Fractal](https:/
 [vendor]: https://github.com/alexcrichton/cargo-vendor
 [irc]: irc://irc.gnome.org/#hammond
 [matrix]: https://matrix.to/#/#gnome-podcasts:matrix.org
+[flatpak_setup]: https://flatpak.org/setup/
