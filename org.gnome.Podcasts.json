@@ -20,8 +20,7 @@
         "--share=ipc",
         "--socket=x11",
         "--socket=wayland",
-        "--socket=pulseaudio",
-        "--talk-name=org.freedesktop.Desktop"
+        "--socket=pulseaudio"
     ],
     "build-options" : {
         "append-path" : "/usr/lib/sdk/rust-stable/bin",
