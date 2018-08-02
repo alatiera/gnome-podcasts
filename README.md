@@ -27,24 +27,19 @@ flatpak run org.gnome.Podcasts
 
 ## Quick start
 
-GNOME Podcasts can be built and run with [Gnome Builder](https://wiki.gnome.org/Apps/Builder) >= 3.28.
+GNOME Podcasts can be built and run with [Gnome Builder][builder] >= 3.28.
 
-Get Builder [here](https://wiki.gnome.org/Apps/Builder/Downloads)
+You can get Builder from [here][get_builder].
 
 ## Broken Feeds
 
 Found a feed that does not work in GNOME Podcasts?
-Please [open an issue](https://gitlab.gnome.org/World/podcasts/issues/new) and choose the `BrokenFeed` template so we will know and fix it!
+Please [open an issue][new_issue] and choose the `BrokenFeed` template so we will know and fix it!
 
 ## Getting in Touch
 
 If you have any questions regarding the use or development of GNOME Podcasts,
-want to discuss design or simply hang out, please join us in `#hammond` on
-[irc.gnome.org.][irc] or [matrix][matrix].
-
-Note:
-
-There isn't much documentation yet, so you will probably have question about parts of the Code.
+want to discuss design or simply hang out, please join us on our [irc][irc] or [matrix][matrix] channel.
 
 ## Building
 
@@ -56,7 +51,7 @@ Flatpak is the reccomended way of building and installing GNOME Podcasts.
 
 Download the `org.gnome.Podcasts.json` flatpak manifest from this repo.
 
-```bash
+```sh
 # Add flathub repo
 flatpak --user remote-add flathub --if-not-exists https://dl.flathub.org/repo/flathub.flatpakrepo
 # Add the gnome-nightly repo
@@ -126,7 +121,7 @@ There alot of thins yet to be done.
 
 If you want to contribute, please check the [Contributions Guidelines][contribution-guidelines].
 
-You can start by taking a look at [Issues](https://gitlab.gnome.org/World/podcasts/issues) or by opening a [New issue](https://gitlab.gnome.org/World/podcasts/issues/new?issue%5Bassignee_id%5D=&issue%5Bmilestone_id%5D=).
+You can start by taking a look at [Issues][issues] or by opening a [New issue][new_issue].
 
 There are also some minor tasks tagged with `TODO:` and `FIXME:` in the source code.
 
@@ -156,18 +151,27 @@ $ tree -d
 
 ## A note about the project's name
 
-The project used to be called Hammond, after Allan Moore's character [Evey Hammond](https://en.wikipedia.org/wiki/Evey_Hammond) from the graphic novel V for Vendetta.
+The project used to be called Hammond, after Allan Moore's character [Evey Hammond][hammond] from the graphic novel V for Vendetta.
 It was renamed to GNOME Podcasts on 2018/07/24 shortly before its first public release.
 
 ## Acknowledgments
 
-GNOME Podcasts's design is heavily insired by [GNOME Music](https://wiki.gnome.org/Design/Apps/Music) and [Vocal](http://vocalproject.net/).
+GNOME Podcasts's design is heavily insired by [GNOME Music][music] and [Vocal][vocal].
 
-We also copied some elements from [GNOME News](https://wiki.gnome.org/Design/Apps/Potential/News).
+We also copied some elements from [GNOME News][news].
 
-And almost the entirety of the build system is copied from the [Fractal](https://gitlab.gnome.org/danigm/fractal) project.
+And almost the entirety of the build system is copied from the [Fractal][fractal] project.
 
 [vendor]: https://github.com/alexcrichton/cargo-vendor
 [irc]: irc://irc.gnome.org/#hammond
 [matrix]: https://matrix.to/#/#gnome-podcasts:matrix.org
 [flatpak_setup]: https://flatpak.org/setup/
+[music]: https://wiki.gnome.org/Design/Apps/Music
+[vocal]: http://vocalproject.net/
+[news]: https://wiki.gnome.org/Design/Apps/Potential/News
+[fractal]: https://gitlab.gnome.org/World/fractal
+[hammond]: https://en.wikipedia.org/wiki/Evey_Hammond
+[issues]: https://gitlab.gnome.org/World/podcasts/issues
+[new_issue]: https://gitlab.gnome.org/World/podcasts/issues/new
+[builder]: https://wiki.gnome.org/Apps/Builder
+[get_builder]: https://wiki.gnome.org/Apps/Builder/Downloads
