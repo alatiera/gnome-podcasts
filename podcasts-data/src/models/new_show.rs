@@ -199,8 +199,7 @@ mod tests {
                 .description(descr)
                 .image_uri(Some(String::from(
                     "http://www.jupiterbroadcasting.com/images/LASUN-Badge1400.jpg",
-                )))
-                .source_id(42)
+                ))).source_id(42)
                 .build()
                 .unwrap()
         };
@@ -222,8 +221,7 @@ mod tests {
                 .image_uri(Some(String::from(
                     "https://imagecdn.acast.com/image?h=1500&w=1500&source=http%3A%2F%2Fi1.sndcdn.\
                      com%2Favatars-000317856075-a2coqz-original.jpg",
-                )))
-                .source_id(42)
+                ))).source_id(42)
                 .build()
                 .unwrap()
         };
@@ -257,8 +255,7 @@ mod tests {
                 .description(descr)
                 .image_uri(Some(String::from(
                     "http://www.greaterthancode.com/wp-content/uploads/2016/10/code1400-4.jpg",
-                )))
-                .source_id(42)
+                ))).source_id(42)
                 .build()
                 .unwrap()
         };

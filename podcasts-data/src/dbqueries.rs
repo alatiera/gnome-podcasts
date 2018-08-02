@@ -111,8 +111,7 @@ pub fn get_episode_widget_from_rowid(ep_id: i32) -> Result<EpisodeWidgetModel, D
     episodes
         .select((
             rowid, title, uri, local_uri, epoch, length, duration, played, show_id,
-        ))
-        .filter(rowid.eq(ep_id))
+        )).filter(rowid.eq(ep_id))
         .get_result::<EpisodeWidgetModel>(&con)
         .map_err(From::from)
 }

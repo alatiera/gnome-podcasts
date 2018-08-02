@@ -25,8 +25,7 @@ fn download_checker() -> Result<(), DataError> {
                 return Some(ep);
             }
             None
-        })
-        .for_each(|ep| {
+        }).for_each(|ep| {
             ep.set_local_uri(None);
             ep.save()
                 .map_err(|err| error!("{}", err))

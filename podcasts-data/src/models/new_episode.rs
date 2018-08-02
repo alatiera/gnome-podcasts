@@ -330,8 +330,7 @@ mod tests {
                 .title("The Super Bowl of Racism")
                 .uri(Some(String::from(
                     "http://traffic.megaphone.fm/PPY6458293736.mp3",
-                )))
-                .guid(Some(String::from("7df4070a-9832-11e7-adac-cb37b05d5e24")))
+                ))).guid(Some(String::from("7df4070a-9832-11e7-adac-cb37b05d5e24")))
                 .epoch(1505296800)
                 .length(Some(66738886))
                 .duration(Some(4171))
@@ -344,8 +343,7 @@ mod tests {
                 .title("Atlas Golfed — U.S.-Backed Think Tanks Target Latin America")
                 .uri(Some(String::from(
                     "http://traffic.megaphone.fm/FL5331443769.mp3",
-                )))
-                .guid(Some(String::from("7c207a24-e33f-11e6-9438-eb45dcf36a1d")))
+                ))).guid(Some(String::from("7c207a24-e33f-11e6-9438-eb45dcf36a1d")))
                 .epoch(1502272800)
                 .length(Some(67527575))
                 .duration(Some(4415))
@@ -364,8 +362,7 @@ mod tests {
                 .title("The Super Bowl of Racism")
                 .uri(Some(String::from(
                     "http://traffic.megaphone.fm/PPY6458293736.mp3",
-                )))
-                .description(Some(String::from(descr)))
+                ))).description(Some(String::from(descr)))
                 .guid(Some(String::from("7df4070a-9832-11e7-adac-cb37b05d5e24")))
                 .length(Some(66738886))
                 .epoch(1505296800)
@@ -388,8 +385,7 @@ mod tests {
                 .title("Atlas Golfed — U.S.-Backed Think Tanks Target Latin America")
                 .uri(Some(String::from(
                     "http://traffic.megaphone.fm/FL5331443769.mp3",
-                )))
-                .description(Some(String::from(descr)))
+                ))).description(Some(String::from(descr)))
                 .guid(Some(String::from("7c207a24-e33f-11e6-9438-eb45dcf36a1d")))
                 .length(Some(67527575))
                 .epoch(1502272800)
@@ -403,8 +399,7 @@ mod tests {
                 .title("The Super Bowl of Racism")
                 .uri(Some(String::from(
                     "http://traffic.megaphone.fm/PPY6458293736.mp3",
-                )))
-                .description(Some(String::from("New description")))
+                ))).description(Some(String::from("New description")))
                 .guid(Some(String::from("7df4070a-9832-11e7-adac-cb37b05d5e24")))
                 .length(Some(66738886))
                 .epoch(1505296800)
@@ -418,8 +413,7 @@ mod tests {
                 .title("Hacking Devices with Kali Linux | LUP 214")
                 .uri(Some(String::from(
                     "http://www.podtrac.com/pts/redirect.mp3/traffic.libsyn.com/jnite/lup-0214.mp3",
-                )))
-                .guid(Some(String::from("78A682B4-73E8-47B8-88C0-1BE62DD4EF9D")))
+                ))).guid(Some(String::from("78A682B4-73E8-47B8-88C0-1BE62DD4EF9D")))
                 .length(Some(46479789))
                 .epoch(1505280282)
                 .duration(Some(5733))
@@ -432,8 +426,7 @@ mod tests {
                 .title("Gnome Does it Again | LUP 213")
                 .uri(Some(String::from(
                     "http://www.podtrac.com/pts/redirect.mp3/traffic.libsyn.com/jnite/lup-0213.mp3",
-                )))
-                .guid(Some(String::from("1CE57548-B36C-4F14-832A-5D5E0A24E35B")))
+                ))).guid(Some(String::from("1CE57548-B36C-4F14-832A-5D5E0A24E35B")))
                 .epoch(1504670247)
                 .length(Some(36544272))
                 .duration(Some(4491))
@@ -451,8 +444,7 @@ mod tests {
                 .title("Hacking Devices with Kali Linux | LUP 214")
                 .uri(Some(String::from(
                     "http://www.podtrac.com/pts/redirect.mp3/traffic.libsyn.com/jnite/lup-0214.mp3",
-                )))
-                .description(Some(String::from(descr)))
+                ))).description(Some(String::from(descr)))
                 .guid(Some(String::from("78A682B4-73E8-47B8-88C0-1BE62DD4EF9D")))
                 .length(Some(46479789))
                 .epoch(1505280282)
@@ -473,8 +465,7 @@ mod tests {
                 .title("Gnome Does it Again | LUP 213")
                 .uri(Some(String::from(
                     "http://www.podtrac.com/pts/redirect.mp3/traffic.libsyn.com/jnite/lup-0213.mp3",
-                )))
-                .description(Some(String::from(descr)))
+                ))).description(Some(String::from(descr)))
                 .guid(Some(String::from("1CE57548-B36C-4F14-832A-5D5E0A24E35B")))
                 .length(Some(36544272))
                 .epoch(1504670247)

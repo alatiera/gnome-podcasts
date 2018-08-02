@@ -42,8 +42,7 @@ pub fn import_to_db<R: Read>(reader: R) -> Result<Vec<Source>, reader::Error> {
             }
 
             s.ok()
-        })
-        .collect();
+        }).collect();
 
     Ok(feeds)
 }
@@ -92,8 +91,7 @@ pub fn extract_sources<R: Read>(reader: R) -> Result<HashSet<Opml>, reader::Erro
             }
             Err(err) => Err(err),
             _ => Ok(()),
-        })
-        .collect::<Result<Vec<_>, reader::Error>>()?;
+        }).collect::<Result<Vec<_>, reader::Error>>()?;
 
     Ok(list)
 }
