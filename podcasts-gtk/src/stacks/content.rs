@@ -10,6 +10,8 @@ use stacks::{HomeStack, ShowStack};
 use std::cell::RefCell;
 use std::rc::Rc;
 
+use i18n::i18n;
+
 #[derive(Debug, Clone)]
 pub struct Content {
     stack: gtk::Stack,
@@ -24,8 +26,8 @@ impl Content {
         let home = Rc::new(RefCell::new(HomeStack::new(sender.clone())?));
         let shows = Rc::new(RefCell::new(ShowStack::new(sender.clone())));
 
-        stack.add_titled(&home.borrow().get_stack(), "home", "New");
-        stack.add_titled(&shows.borrow().get_stack(), "shows", "Shows");
+        stack.add_titled(&home.borrow().get_stack(), "home", &i18n("New"));
+        stack.add_titled(&shows.borrow().get_stack(), "shows", &i18n("Shows"));
 
         let con = Content {
             stack,

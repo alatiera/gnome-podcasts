@@ -3,6 +3,8 @@ use gio::{Settings, SettingsExt};
 use gtk;
 use gtk::prelude::*;
 
+use i18n::i18n;
+
 #[derive(Debug, Clone)]
 pub struct Prefs {
     dialog: gtk::Window,
@@ -53,7 +55,13 @@ impl Prefs {
         let cleanup_p = settings.get_string("cleanup-age-period").unwrap();
         let mut cleanup_pos = 0;
         let store = gtk::ListStore::new(&[gtk::Type::String]);
-        for (i, item) in ["Seconds", "Minutes", "Hours", "Days", "Weeks"]
+        for (i, item) in [
+            i18n("Seconds"),
+            i18n("Minutes"),
+            i18n("Hours"),
+            i18n("Days"),
+            i18n("Weeks"),
+        ]
             .iter()
             .enumerate()
         {

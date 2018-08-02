@@ -17,6 +17,8 @@ use widgets::appnotif::{InAppNotification, UndoState};
 
 use std::sync::Arc;
 
+use i18n::{i18n, i18n_f};
+
 #[derive(Debug, Clone)]
 pub struct ShowMenu {
     pub container: gtk::PopoverMenu,
@@ -136,12 +138,12 @@ pub fn mark_all_notif(pd: Arc<Show>, sender: &Sender<Action>) -> InAppNotificati
     });
 
     let undo_callback = clone!(sender => move || sender.send(Action::RefreshWidgetIfSame(id)));
-    let text = "Marked all episodes as listened";
-    InAppNotification::new(text, callback, undo_callback, UndoState::Shown)
+    let text = i18n("Marked all episodes as listened");
+    InAppNotification::new(&text, callback, undo_callback, UndoState::Shown)
 }
 
 pub fn remove_show_notif(pd: Arc<Show>, sender: Sender<Action>) -> InAppNotification {
-    let text = format!("Unsubscribed from {}", pd.title());
+    let text = i18n_f("Unsubscribed from {}", &[pd.title()]);
 
     let res = utils::ignore_show(pd.id());
     debug_assert!(res.is_ok());

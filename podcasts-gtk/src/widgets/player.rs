@@ -23,6 +23,8 @@ use std::ops::Deref;
 use std::path::Path;
 use std::rc::Rc;
 
+use i18n::i18n;
+
 #[derive(Debug, Clone, Copy)]
 enum SeekDirection {
     Backwards,
@@ -295,7 +297,7 @@ impl PlayerWidget {
         // Log gst errors.
         s.player.connect_error(clone!(sender => move |_, _error| {
             // sender.send(Action::ErrorNotification(format!("Player Error: {}", error)));
-            let s = "The media player was unable to execute an action.".into();
+            let s = i18n("The media player was unable to execute an action.");
             sender.send(Action::ErrorNotification(s));
         }));
 

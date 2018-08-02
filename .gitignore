@@ -8,3 +8,4 @@ build/
 vendor/
 .criterion/
 org.gnome.*.json~
+podcasts-gtk/po/gnome-podcasts.pot

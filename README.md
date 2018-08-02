@@ -127,6 +127,23 @@ There are also some minor tasks tagged with `TODO:` and `FIXME:` in the source c
 
 [contribution-guidelines]: https://gitlab.gnome.org/World/podcasts/blob/master/CONTRIBUTING.md
 
+### Translations
+
+If you want to add a new language you should update the file
+`podcasts-gtk/po/LINUGAS` and add the new lang to the list.
+
+To generate .pot files you should run:
+
+```
+ninja -C _build gnome-podcasts-pot
+```
+
+To generate .po files you should run:
+
+```
+ninja -C _build gnome-podcasts-update-po
+```
+
 
 ## Overview
 
