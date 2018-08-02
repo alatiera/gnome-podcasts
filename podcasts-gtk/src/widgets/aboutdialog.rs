@@ -2,6 +2,8 @@ use app::APP_ID;
 use gtk;
 use gtk::prelude::*;
 
+use i18n::i18n;
+
 // Totally copied it from fractal.
 // https://gitlab.gnome.org/danigm/fractal/blob/503e311e22b9d7540089d735b92af8e8f93560c5/fractal-gtk/src/app.rs#L1883-1912
 /// Given a `window` create and attach an `gtk::AboutDialog` to it.
@@ -21,8 +23,8 @@ pub fn about_dialog(window: &gtk::ApplicationWindow) {
 
     let dialog = gtk::AboutDialog::new();
     dialog.set_logo_icon_name(APP_ID);
-    dialog.set_comments("Podcast Client for the GNOME Desktop.");
-    dialog.set_copyright("© 2017, 2018 Jordan Petridis");
+    dialog.set_comments(i18n("Podcast Client for the GNOME Desktop.").as_str());
+    dialog.set_copyright(i18n("© 2017, 2018 Jordan Petridis").as_str());
     dialog.set_license_type(gtk::License::Gpl30);
     dialog.set_modal(true);
     // TODO: make it show it fetches the commit hash from which it was built
@@ -36,6 +38,7 @@ pub fn about_dialog(window: &gtk::ApplicationWindow) {
 
     dialog.set_artists(&["Tobias Bernard", "Sam Hewitt"]);
     dialog.set_authors(authors);
+    dialog.set_translator_credits(i18n("translator-credits").as_str());
 
     dialog.connect_response(|dlg, _| dlg.destroy());
 

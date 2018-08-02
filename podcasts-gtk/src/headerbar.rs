@@ -15,6 +15,8 @@ use utils::{itunes_to_rss, refresh};
 
 use std::rc::Rc;
 
+use i18n::i18n;
+
 #[derive(Debug, Clone)]
 // TODO: Factor out the hamburger menu
 // TODO: Make a proper state machine for the headerbar states
@@ -118,7 +120,7 @@ impl AddPopover {
                 } else {
                     self.add.set_sensitive(false);
                     self.result
-                        .set_label("You are already subscribed to this Show");
+                        .set_label(i18n("You are already subscribed to this Show").as_str());
                     self.result.show();
                 }
                 Ok(())
@@ -126,7 +128,7 @@ impl AddPopover {
             Err(err) => {
                 self.add.set_sensitive(false);
                 if !url.is_empty() {
-                    self.result.set_label("Invalid url");
+                    self.result.set_label(i18n("Invalid url").as_str());
                     self.result.show();
                     error!("Error: {}", err);
                 } else {

@@ -29,6 +29,8 @@ use std::sync::{Arc, Mutex, RwLock};
 
 use app::Action;
 
+use i18n::i18n;
+
 /// Lazy evaluates and loads widgets to the parent `container` widget.
 ///
 /// Accepts an `IntoIterator`, `data`, as the source from which each widget
@@ -325,10 +327,10 @@ pub fn on_import_clicked(window: &gtk::ApplicationWindow, sender: &Sender<Action
     // TODO: It might be better to use a FileChooserNative widget.
     // Create the FileChooser Dialog
     let dialog = FileChooserNative::new(
-        Some("Select the file from which to you want to Import Shows."),
+        Some(i18n("Select the file from which to you want to Import Shows.").as_str()),
         Some(window),
         FileChooserAction::Open,
-        Some("_Import"),
+        Some(i18n("_Import").as_str()),
         None,
     );
 
@@ -337,7 +339,7 @@ pub fn on_import_clicked(window: &gtk::ApplicationWindow, sender: &Sender<Action
 
     // Set a filter to show only xml files
     let filter = FileFilter::new();
-    FileFilterExt::set_name(&filter, Some("OPML file"));
+    FileFilterExt::set_name(&filter, Some(i18n("OPML file").as_str()));
     filter.add_mime_type("application/xml");
     filter.add_mime_type("text/xml");
     dialog.add_filter(&filter);
@@ -355,12 +357,12 @@ pub fn on_import_clicked(window: &gtk::ApplicationWindow, sender: &Sender<Action
                         // Refresh the succesfully parsed feeds to index them
                         refresh(Some(sources), sender)
                     } else {
-                        let text = String::from("Failed to parse the Imported file");
+                        let text = i18n("Failed to parse the Imported file");
                         sender.send(Action::ErrorNotification(text));
                     }
                 }))
             } else {
-                let text = String::from("Selected File could not be accessed.");
+                let text = i18n("Selected File could not be accessed.");
                 sender.send(Action::ErrorNotification(text));
             }
         }

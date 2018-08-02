@@ -73,6 +73,8 @@ extern crate reqwest;
 extern crate serde_json;
 extern crate url;
 
+extern crate gettextrs;
+
 use log::Level;
 
 use gtk::prelude::*;
@@ -107,6 +109,8 @@ mod manager;
 mod settings;
 mod static_resource;
 mod utils;
+
+mod i18n;
 
 use app::App;
 

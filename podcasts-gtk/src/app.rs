@@ -5,6 +5,8 @@ use glib::{self, Variant};
 use gtk;
 use gtk::prelude::*;
 
+use gettextrs::{bindtextdomain, setlocale, textdomain, LocaleCategory};
+
 use crossbeam_channel::{unbounded, Receiver, Sender};
 use fragile::Fragile;
 use podcasts_data::Show;
@@ -24,6 +26,8 @@ use std::rc::Rc;
 use std::sync::Arc;
 
 pub const APP_ID: &str = "org.gnome.Podcasts";
+
+include!(concat!(env!("OUT_DIR"), "/build_globals.rs"));
 
 /// Creates an action named `name` in the action map `T with the handler `F`
 fn action<T, F>(thing: &T, name: &str, action: F)
@@ -304,6 +308,11 @@ impl App {
     }
 
     pub fn run() {
+        // Set up the textdomain for gettext
+        setlocale(LocaleCategory::LcAll, "");
+        bindtextdomain("gnome-podcasts", LOCALEDIR);
+        textdomain("gnome-podcasts");
+
         let application = gtk::Application::new(APP_ID, gio::ApplicationFlags::empty())
             .expect("Application Initialization failed...");
 

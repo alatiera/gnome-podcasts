@@ -21,6 +21,8 @@ use std::cell::RefCell;
 use std::rc::{Rc, Weak};
 use std::sync::{Arc, Mutex, TryLockError};
 
+use i18n::i18n_f;
+
 lazy_static! {
     static ref SIZE_OPTS: Arc<size_opts::FileSizeOpts> =  {
         // Declare a custom humansize option struct
@@ -123,7 +125,8 @@ impl InfoLabels {
             // If the lenght is 1 or more minutes
             if minutes != 0 {
                 // Set the label and show them.
-                self.duration.set_text(&format!("{} min", minutes));
+                self.duration
+                    .set_text(&i18n_f("{} min", &[&minutes.to_string()]));
                 self.duration.show();
                 self.separator1.show();
                 return;

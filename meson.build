@@ -15,6 +15,7 @@ podcasts_version_micro = version_array[2].to_int()
 
 podcasts_prefix = get_option('prefix')
 podcasts_bindir = join_paths(podcasts_prefix, get_option('bindir'))
+podcasts_localedir = join_paths(podcasts_prefix, get_option('localedir'))
 
 podcasts_conf = configuration_data()
 podcasts_conf.set('BINDIR', podcasts_bindir)
@@ -22,6 +23,9 @@ podcasts_conf.set('BINDIR', podcasts_bindir)
 datadir = get_option('datadir')
 icondir = join_paths(datadir, 'icons')
 subdir('podcasts-gtk/resources')
+
+i18n = import('i18n')
+subdir('podcasts-gtk/po')
 
 cargo = find_program('cargo', required: false)
 gresource = find_program('glib-compile-resources', required: false)
@@ -34,7 +38,7 @@ cargo_release = custom_target('cargo-build',
                         output: ['gnome-podcasts'],
                         install: true,
                         install_dir: podcasts_bindir,
-                        command: [cargo_script, '@CURRENT_SOURCE_DIR@', '@OUTPUT@'])
+                        command: [cargo_script, '@CURRENT_SOURCE_DIR@', '@OUTPUT@', podcasts_localedir])
 
 run_target('release', command: ['scripts/release.sh',
                                 meson.project_name() + '-' + podcasts_version
