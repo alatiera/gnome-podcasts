@@ -45,7 +45,7 @@ want to discuss design or simply hang out, please join us on our [irc][irc] or [
 
 ### Flatpak
 
-Flatpak is the reccomended way of building and installing GNOME Podcasts.
+Flatpak is the recommended way of building and installing GNOME Podcasts.
 
 #### Building a Flatpak
 
@@ -70,7 +70,7 @@ flatpak build-bundle repo gnome-podcasts.flatpak org.gnome.Podcasts
 flatpak install --user --bundle gnome-podcasts.flatpak
 ```
 
-### Building from soure
+### Building from source
 
 ```sh
 git clone https://gitlab.gnome.org/World/podcasts.git
@@ -117,7 +117,7 @@ of the corresponding libraries. Feel free to open a MR or an Issue to note it.
 
 ## Contributing
 
-There alot of thins yet to be done.
+There are a lot of things yet to be done.
 
 If you want to contribute, please check the [Contributions Guidelines][contribution-guidelines].
 
@@ -173,7 +173,7 @@ It was renamed to GNOME Podcasts on 2018/07/24 shortly before its first public r
 
 ## Acknowledgments
 
-GNOME Podcasts's design is heavily insired by [GNOME Music][music] and [Vocal][vocal].
+GNOME Podcasts's design is heavily inspired by [GNOME Music][music] and [Vocal][vocal].
 
 We also copied some elements from [GNOME News][news].
 
