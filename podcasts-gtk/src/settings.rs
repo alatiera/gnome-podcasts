@@ -6,7 +6,7 @@ use gtk::GtkWindowExt;
 use chrono::prelude::*;
 use chrono::Duration;
 
-pub struct WindowGeometry {
+pub(crate) struct WindowGeometry {
     left: i32,
     top: i32,
     width: i32,
@@ -15,7 +15,7 @@ pub struct WindowGeometry {
 }
 
 impl WindowGeometry {
-    pub fn from_window(window: &gtk::ApplicationWindow) -> WindowGeometry {
+    pub(crate) fn from_window(window: &gtk::ApplicationWindow) -> WindowGeometry {
         let position = window.get_position();
         let size = window.get_size();
         let left = position.0;
@@ -33,7 +33,7 @@ impl WindowGeometry {
         }
     }
 
-    pub fn from_settings(settings: &gio::Settings) -> WindowGeometry {
+    pub(crate) fn from_settings(settings: &gio::Settings) -> WindowGeometry {
         let top = settings.get_int("persist-window-geometry-top");
         let left = settings.get_int("persist-window-geometry-left");
         let width = settings.get_int("persist-window-geometry-width");
@@ -49,7 +49,7 @@ impl WindowGeometry {
         }
     }
 
-    pub fn apply(&self, window: &gtk::ApplicationWindow) {
+    pub(crate) fn apply(&self, window: &gtk::ApplicationWindow) {
         if self.width > 0 && self.height > 0 {
             window.resize(self.width, self.height);
         }
@@ -61,7 +61,7 @@ impl WindowGeometry {
         }
     }
 
-    pub fn write(&self, settings: &gio::Settings) {
+    pub(crate) fn write(&self, settings: &gio::Settings) {
         settings.set_int("persist-window-geometry-left", self.left);
         settings.set_int("persist-window-geometry-top", self.top);
         settings.set_int("persist-window-geometry-width", self.width);
@@ -70,14 +70,14 @@ impl WindowGeometry {
     }
 }
 
-pub fn get_refresh_interval(settings: &Settings) -> Duration {
+pub(crate) fn get_refresh_interval(settings: &Settings) -> Duration {
     let time = i64::from(settings.get_int("refresh-interval-time"));
     let period = settings.get_string("refresh-interval-period").unwrap();
 
     time_period_to_duration(time, period.as_str())
 }
 
-pub fn get_cleanup_date(settings: &Settings) -> DateTime<Utc> {
+pub(crate) fn get_cleanup_date(settings: &Settings) -> DateTime<Utc> {
     let time = i64::from(settings.get_int("cleanup-age-time"));
     let period = settings.get_string("cleanup-age-period").unwrap();
     let duration = time_period_to_duration(time, period.as_str());
@@ -85,7 +85,7 @@ pub fn get_cleanup_date(settings: &Settings) -> DateTime<Utc> {
     Utc::now() - duration
 }
 
-pub fn time_period_to_duration(time: i64, period: &str) -> Duration {
+pub(crate) fn time_period_to_duration(time: i64, period: &str) -> Duration {
     match period {
         "weeks" => Duration::weeks(time),
         "days" => Duration::days(time),

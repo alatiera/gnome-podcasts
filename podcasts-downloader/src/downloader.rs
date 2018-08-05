@@ -38,7 +38,7 @@ fn download_into(
     dir: &str,
     file_title: &str,
     url: &str,
-    progress: Option<Arc<Mutex<DownloadProgress>>>,
+    progress: Option<Arc<Mutex<dyn DownloadProgress>>>,
 ) -> Result<String, DownloadError> {
     info!("GET request to: {}", url);
     // Haven't included the loop check as
@@ -122,7 +122,7 @@ fn save_io(
     file: &str,
     resp: &mut reqwest::Response,
     content_lenght: Option<u64>,
-    progress: Option<Arc<Mutex<DownloadProgress>>>,
+    progress: Option<Arc<Mutex<dyn DownloadProgress>>>,
 ) -> Result<(), DownloadError> {
     info!("Downloading into: {}", file);
     let chunk_size = match content_lenght {
@@ -163,7 +163,7 @@ fn save_io(
 pub fn get_episode(
     ep: &mut EpisodeWidgetModel,
     download_folder: &str,
-    progress: Option<Arc<Mutex<DownloadProgress>>>,
+    progress: Option<Arc<Mutex<dyn DownloadProgress>>>,
 ) -> Result<(), DownloadError> {
     // Check if its alrdy downloaded
     if ep.local_uri().is_some() {

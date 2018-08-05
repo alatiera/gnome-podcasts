@@ -1,8 +1,8 @@
 use gtk;
 
 #[derive(Debug, Clone)]
-pub struct EmptyView {
-    pub container: gtk::Box,
+pub(crate) struct EmptyView {
+    pub(crate) container: gtk::Box,
 }
 
 impl Default for EmptyView {
@@ -15,7 +15,7 @@ impl Default for EmptyView {
 }
 
 impl EmptyView {
-    pub fn new() -> EmptyView {
+    pub(crate) fn new() -> EmptyView {
         EmptyView::default()
     }
 }

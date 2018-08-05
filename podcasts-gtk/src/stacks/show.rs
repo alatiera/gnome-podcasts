@@ -14,13 +14,13 @@ use std::cell::RefCell;
 use std::rc::Rc;
 
 #[derive(Debug, Clone, Copy)]
-pub enum ShowState {
+pub(crate) enum ShowState {
     Populated,
     Empty,
 }
 
 #[derive(Debug, Clone)]
-pub struct ShowStack {
+pub(crate) struct ShowStack {
     empty: EmptyView,
     populated: Rc<RefCell<PopulatedStack>>,
     stack: gtk::Stack,
@@ -29,7 +29,7 @@ pub struct ShowStack {
 }
 
 impl ShowStack {
-    pub fn new(sender: Sender<Action>) -> Self {
+    pub(crate) fn new(sender: Sender<Action>) -> Self {
         let populated = Rc::new(RefCell::new(PopulatedStack::new(sender.clone())));
         let empty = EmptyView::new();
         let stack = gtk::Stack::new();
@@ -51,15 +51,15 @@ impl ShowStack {
         show
     }
 
-    pub fn get_stack(&self) -> gtk::Stack {
+    pub(crate) fn get_stack(&self) -> gtk::Stack {
         self.stack.clone()
     }
 
-    pub fn populated(&self) -> Rc<RefCell<PopulatedStack>> {
+    pub(crate) fn populated(&self) -> Rc<RefCell<PopulatedStack>> {
         self.populated.clone()
     }
 
-    pub fn update(&mut self) -> Result<(), Error> {
+    pub(crate) fn update(&mut self) -> Result<(), Error> {
         self.populated.borrow_mut().update();
         self.determine_state()
     }

@@ -14,7 +14,7 @@ use std::sync::{Arc, Mutex, RwLock};
 // I am terrible at writting downloaders and download managers.
 
 #[derive(Debug)]
-pub struct Progress {
+pub(crate) struct Progress {
     total_bytes: u64,
     downloaded_bytes: u64,
     cancel: bool,
@@ -31,7 +31,7 @@ impl Default for Progress {
 }
 
 impl Progress {
-    pub fn get_fraction(&self) -> f64 {
+    pub(crate) fn get_fraction(&self) -> f64 {
         let ratio = self.downloaded_bytes as f64 / self.total_bytes as f64;
         debug!("{:?}", self);
         debug!("Ratio completed: {}", ratio);
@@ -42,15 +42,15 @@ impl Progress {
         ratio
     }
 
-    pub fn get_total_size(&self) -> u64 {
+    pub(crate) fn get_total_size(&self) -> u64 {
         self.total_bytes
     }
 
-    pub fn get_downloaded(&self) -> u64 {
+    pub(crate) fn get_downloaded(&self) -> u64 {
         self.downloaded_bytes
     }
 
-    pub fn cancel(&mut self) {
+    pub(crate) fn cancel(&mut self) {
         self.cancel = true;
     }
 }
@@ -70,12 +70,12 @@ impl DownloadProgress for Progress {
 }
 
 lazy_static! {
-    pub static ref ACTIVE_DOWNLOADS: Arc<RwLock<HashMap<i32, Arc<Mutex<Progress>>>>> =
+    pub(crate) static ref ACTIVE_DOWNLOADS: Arc<RwLock<HashMap<i32, Arc<Mutex<Progress>>>>> =
         { Arc::new(RwLock::new(HashMap::new())) };
     static ref DLPOOL: rayon::ThreadPool = rayon::ThreadPoolBuilder::new().build().unwrap();
 }
 
-pub fn add(id: i32, directory: String) -> Result<(), Error> {
+pub(crate) fn add(id: i32, directory: String) -> Result<(), Error> {
     // Create a new `Progress` struct to keep track of dl progress.
     let prog = Arc::new(Mutex::new(Progress::default()));
 

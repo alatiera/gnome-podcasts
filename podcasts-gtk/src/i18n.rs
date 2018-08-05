@@ -30,35 +30,40 @@ fn kreplace(input: String, kwargs: &[(&str, &str)]) -> String {
 }
 
 #[allow(dead_code)]
-pub fn i18n(format: &str) -> String {
+pub(crate) fn i18n(format: &str) -> String {
     gettext(format)
 }
 
 #[allow(dead_code)]
-pub fn i18n_f(format: &str, args: &[&str]) -> String {
+pub(crate) fn i18n_f(format: &str, args: &[&str]) -> String {
     let s = gettext(format);
     freplace(s, args)
 }
 
 #[allow(dead_code)]
-pub fn i18n_k(format: &str, kwargs: &[(&str, &str)]) -> String {
+pub(crate) fn i18n_k(format: &str, kwargs: &[(&str, &str)]) -> String {
     let s = gettext(format);
     kreplace(s, kwargs)
 }
 
 #[allow(dead_code)]
-pub fn ni18n(single: &str, multiple: &str, number: u32) -> String {
+pub(crate) fn ni18n(single: &str, multiple: &str, number: u32) -> String {
     ngettext(single, multiple, number)
 }
 
 #[allow(dead_code)]
-pub fn ni18n_f(single: &str, multiple: &str, number: u32, args: &[&str]) -> String {
+pub(crate) fn ni18n_f(single: &str, multiple: &str, number: u32, args: &[&str]) -> String {
     let s = ngettext(single, multiple, number);
     freplace(s, args)
 }
 
 #[allow(dead_code)]
-pub fn ni18n_k(single: &str, multiple: &str, number: u32, kwargs: &[(&str, &str)]) -> String {
+pub(crate) fn ni18n_k(
+    single: &str,
+    multiple: &str,
+    number: u32,
+    kwargs: &[(&str, &str)],
+) -> String {
     let s = ngettext(single, multiple, number);
     kreplace(s, kwargs)
 }

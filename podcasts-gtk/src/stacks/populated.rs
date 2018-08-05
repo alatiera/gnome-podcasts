@@ -15,13 +15,13 @@ use std::rc::Rc;
 use std::sync::Arc;
 
 #[derive(Debug, Clone, Copy)]
-pub enum PopulatedState {
+pub(crate) enum PopulatedState {
     View,
     Widget,
 }
 
 #[derive(Debug, Clone)]
-pub struct PopulatedStack {
+pub(crate) struct PopulatedStack {
     container: gtk::Box,
     populated: Rc<ShowsView>,
     show: Rc<ShowWidget>,
@@ -31,7 +31,7 @@ pub struct PopulatedStack {
 }
 
 impl PopulatedStack {
-    pub fn new(sender: Sender<Action>) -> PopulatedStack {
+    pub(crate) fn new(sender: Sender<Action>) -> PopulatedStack {
         let stack = gtk::Stack::new();
         let state = PopulatedState::View;
         let populated = ShowsView::new(sender.clone());
@@ -53,12 +53,12 @@ impl PopulatedStack {
         }
     }
 
-    pub fn update(&mut self) {
+    pub(crate) fn update(&mut self) {
         self.update_widget().map_err(|err| format!("{}", err)).ok();
         self.update_shows().map_err(|err| format!("{}", err)).ok();
     }
 
-    pub fn update_shows(&mut self) -> Result<(), Error> {
+    pub(crate) fn update_shows(&mut self) -> Result<(), Error> {
         // The current visible child might change depending on
         // removal and insertion in the gtk::Stack, so we have
         // to make sure it will stay the same.
@@ -69,7 +69,7 @@ impl PopulatedStack {
         Ok(())
     }
 
-    pub fn replace_shows(&mut self) -> Result<(), Error> {
+    pub(crate) fn replace_shows(&mut self) -> Result<(), Error> {
         let old = &self.populated.container.clone();
         debug!("Name: {:?}", WidgetExt::get_name(old));
 
@@ -87,7 +87,7 @@ impl PopulatedStack {
         Ok(())
     }
 
-    pub fn replace_widget(&mut self, pd: Arc<Show>) -> Result<(), Error> {
+    pub(crate) fn replace_widget(&mut self, pd: Arc<Show>) -> Result<(), Error> {
         let old = self.show.container.clone();
 
         // save the ShowWidget vertical scrollabar alignment
@@ -107,7 +107,7 @@ impl PopulatedStack {
         Ok(())
     }
 
-    pub fn update_widget(&mut self) -> Result<(), Error> {
+    pub(crate) fn update_widget(&mut self) -> Result<(), Error> {
         let old = self.show.container.clone();
         let id = self.show.show_id();
         if id.is_none() {
@@ -128,7 +128,7 @@ impl PopulatedStack {
     }
 
     // Only update widget if its show_id is equal to pid.
-    pub fn update_widget_if_same(&mut self, pid: i32) -> Result<(), Error> {
+    pub(crate) fn update_widget_if_same(&mut self, pid: i32) -> Result<(), Error> {
         if self.show.show_id() != Some(pid) {
             debug!("Different widget. Early return");
             return Ok(());
@@ -137,11 +137,11 @@ impl PopulatedStack {
         self.update_widget()
     }
 
-    pub fn container(&self) -> gtk::Box {
+    pub(crate) fn container(&self) -> gtk::Box {
         self.container.clone()
     }
 
-    pub fn switch_visible(&mut self, state: PopulatedState, animation: StackTransitionType) {
+    pub(crate) fn switch_visible(&mut self, state: PopulatedState, animation: StackTransitionType) {
         use self::PopulatedState::*;
 
         match state {

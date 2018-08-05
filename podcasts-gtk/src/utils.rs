@@ -64,7 +64,7 @@ use i18n::i18n;
 /// let list = gtk::ListBox::new();
 /// lazy_load(widgets, list, |w| w, || {});
 /// ```
-pub fn lazy_load<T, C, F, W, U>(data: T, container: C, mut contructor: F, callback: U)
+pub(crate) fn lazy_load<T, C, F, W, U>(data: T, container: C, mut contructor: F, callback: U)
 where
     T: IntoIterator + 'static,
     T::Item: 'static,
@@ -88,7 +88,7 @@ where
 /// If you just want to lazy add `widgets` to a `container` check if
 /// `lazy_load` fits your needs first.
 #[cfg_attr(feature = "cargo-clippy", allow(redundant_closure))]
-pub fn lazy_load_full<T, F, U>(data: T, mut func: F, finish_callback: U)
+pub(crate) fn lazy_load_full<T, F, U>(data: T, mut func: F, finish_callback: U)
 where
     T: IntoIterator + 'static,
     T::Item: 'static,
@@ -110,7 +110,7 @@ where
 // Kudos to Julian Sparber
 // https://blogs.gnome.org/jsparber/2018/04/29/animate-a-scrolledwindow/
 #[cfg_attr(feature = "cargo-clippy", allow(float_cmp))]
-pub fn smooth_scroll_to(view: &gtk::ScrolledWindow, target: &gtk::Adjustment) {
+pub(crate) fn smooth_scroll_to(view: &gtk::ScrolledWindow, target: &gtk::Adjustment) {
     if let Some(adj) = view.get_vadjustment() {
         if let Some(clock) = view.get_frame_clock() {
             let duration = 200;
@@ -147,34 +147,34 @@ lazy_static! {
     static ref IGNORESHOWS: Arc<Mutex<HashSet<i32>>> = Arc::new(Mutex::new(HashSet::new()));
 }
 
-pub fn ignore_show(id: i32) -> Result<bool, Error> {
+pub(crate) fn ignore_show(id: i32) -> Result<bool, Error> {
     IGNORESHOWS
         .lock()
         .map(|mut guard| guard.insert(id))
         .map_err(|err| format_err!("{}", err))
 }
 
-pub fn uningore_show(id: i32) -> Result<bool, Error> {
+pub(crate) fn uningore_show(id: i32) -> Result<bool, Error> {
     IGNORESHOWS
         .lock()
         .map(|mut guard| guard.remove(&id))
         .map_err(|err| format_err!("{}", err))
 }
 
-pub fn get_ignored_shows() -> Result<Vec<i32>, Error> {
+pub(crate) fn get_ignored_shows() -> Result<Vec<i32>, Error> {
     IGNORESHOWS
         .lock()
         .map(|guard| guard.iter().cloned().collect::<Vec<_>>())
         .map_err(|err| format_err!("{}", err))
 }
 
-pub fn cleanup(cleanup_date: DateTime<Utc>) {
+pub(crate) fn cleanup(cleanup_date: DateTime<Utc>) {
     checkup(cleanup_date)
         .map_err(|err| error!("Check up failed: {}", err))
         .ok();
 }
 
-pub fn refresh<S>(source: Option<S>, sender: Sender<Action>)
+pub(crate) fn refresh<S>(source: Option<S>, sender: Sender<Action>)
 where
     S: IntoIterator<Item = Source> + Send + 'static,
 {
@@ -228,7 +228,11 @@ lazy_static! {
 // GObjects do not implement Send trait, so SendCell is a way around that.
 // Also lazy_static requires Sync trait, so that's what the mutexes are.
 // TODO: maybe use something that would just scale to requested size?
-pub fn set_image_from_path(image: &gtk::Image, show_id: i32, size: u32) -> Result<(), Error> {
+pub(crate) fn set_image_from_path(
+    image: &gtk::Image,
+    show_id: i32,
+    size: u32,
+) -> Result<(), Error> {
     // Check if there's an active download about this show cover.
     // If there is, a callback will be set so this function will be called again.
     // If the download succedes, there should be a quick return from the pixbuf cache_image
@@ -294,7 +298,7 @@ pub fn set_image_from_path(image: &gtk::Image, show_id: i32, size: u32) -> Resul
 }
 
 // FIXME: the signature should be `fn foo(s: Url) -> Result<Url, Error>`
-pub fn itunes_to_rss(url: &str) -> Result<String, Error> {
+pub(crate) fn itunes_to_rss(url: &str) -> Result<String, Error> {
     let id = itunes_id_from_url(url).ok_or_else(|| format_err!("Failed to find an Itunes ID."))?;
     lookup_id(id)
 }
@@ -319,7 +323,7 @@ fn lookup_id(id: u32) -> Result<String, Error> {
         .ok_or_else(|| format_err!("Failed to get url from itunes response"))
 }
 
-pub fn on_import_clicked(window: &gtk::ApplicationWindow, sender: &Sender<Action>) {
+pub(crate) fn on_import_clicked(window: &gtk::ApplicationWindow, sender: &Sender<Action>) {
     use glib::translate::ToGlib;
     use gtk::{FileChooserAction, FileChooserNative, FileFilter, ResponseType};
 

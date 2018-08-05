@@ -24,8 +24,8 @@ lazy_static! {
 }
 
 #[derive(Debug, Clone)]
-pub struct ShowWidget {
-    pub container: gtk::Box,
+pub(crate) struct ShowWidget {
+    pub(crate) container: gtk::Box,
     scrolled_window: gtk::ScrolledWindow,
     cover: gtk::Image,
     description: gtk::Label,
@@ -55,7 +55,7 @@ impl Default for ShowWidget {
 }
 
 impl ShowWidget {
-    pub fn new(pd: Arc<Show>, sender: Sender<Action>) -> Rc<ShowWidget> {
+    pub(crate) fn new(pd: Arc<Show>, sender: Sender<Action>) -> Rc<ShowWidget> {
         let mut pdw = ShowWidget::default();
         pdw.init(&pd);
 
@@ -69,7 +69,7 @@ impl ShowWidget {
         pdw
     }
 
-    pub fn init(&mut self, pd: &Arc<Show>) {
+    pub(crate) fn init(&mut self, pd: &Arc<Show>) {
         self.set_description(pd.description());
         self.show_id = Some(pd.id());
 
@@ -89,7 +89,7 @@ impl ShowWidget {
     }
 
     /// Save the scrollabar vajustment to the cache.
-    pub fn save_vadjustment(&self, oldid: i32) -> Result<(), Error> {
+    pub(crate) fn save_vadjustment(&self, oldid: i32) -> Result<(), Error> {
         if let Ok(mut guard) = SHOW_WIDGET_VALIGNMENT.lock() {
             let adj = self
                 .scrolled_window
@@ -130,7 +130,7 @@ impl ShowWidget {
         Ok(())
     }
 
-    pub fn show_id(&self) -> Option<i32> {
+    pub(crate) fn show_id(&self) -> Option<i32> {
         self.show_id
     }
 }

@@ -20,8 +20,8 @@ use i18n::i18n;
 #[derive(Debug, Clone)]
 // TODO: Factor out the hamburger menu
 // TODO: Make a proper state machine for the headerbar states
-pub struct Header {
-    pub container: gtk::HeaderBar,
+pub(crate) struct Header {
+    pub(crate) container: gtk::HeaderBar,
     switch: gtk::StackSwitcher,
     back: gtk::Button,
     show_title: gtk::Label,
@@ -196,13 +196,13 @@ impl Default for Header {
 
 // TODO: Make a proper state machine for the headerbar states
 impl Header {
-    pub fn new(content: &Content, sender: &Sender<Action>) -> Rc<Self> {
+    pub(crate) fn new(content: &Content, sender: &Sender<Action>) -> Rc<Self> {
         let h = Rc::new(Header::default());
         Self::init(&h, content, &sender);
         h
     }
 
-    pub fn init(s: &Rc<Self>, content: &Content, sender: &Sender<Action>) {
+    pub(crate) fn init(s: &Rc<Self>, content: &Content, sender: &Sender<Action>) {
         let weak = Rc::downgrade(s);
 
         s.switch.set_stack(&content.get_stack());
@@ -225,7 +225,7 @@ impl Header {
         }));
     }
 
-    pub fn switch_to_back(&self, title: &str) {
+    pub(crate) fn switch_to_back(&self, title: &str) {
         self.switch.hide();
         self.add.toggle.hide();
         self.back.show();
@@ -235,7 +235,7 @@ impl Header {
         self.dots.show();
     }
 
-    pub fn switch_to_normal(&self) {
+    pub(crate) fn switch_to_normal(&self) {
         self.switch.show();
         self.add.toggle.show();
         self.back.hide();
@@ -244,23 +244,23 @@ impl Header {
         self.dots.hide();
     }
 
-    pub fn set_show_title(&self, title: &str) {
+    pub(crate) fn set_show_title(&self, title: &str) {
         self.show_title.set_text(title)
     }
 
-    pub fn show_update_notification(&self) {
+    pub(crate) fn show_update_notification(&self) {
         self.updater.show();
     }
 
-    pub fn hide_update_notification(&self) {
+    pub(crate) fn hide_update_notification(&self) {
         self.updater.hide();
     }
 
-    pub fn open_menu(&self) {
+    pub(crate) fn open_menu(&self) {
         self.hamburger.clicked();
     }
 
-    pub fn set_secondary_menu(&self, pop: &gtk::PopoverMenu) {
+    pub(crate) fn set_secondary_menu(&self, pop: &gtk::PopoverMenu) {
         self.dots.set_popover(Some(pop));
     }
 }

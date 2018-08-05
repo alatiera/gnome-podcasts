@@ -1,7 +1,7 @@
 use gio::{resources_register, Error, Resource};
 use glib::Bytes;
 
-pub fn init() -> Result<(), Error> {
+pub(crate) fn init() -> Result<(), Error> {
     // load the gresource binary at build time and include/link it into the final
     // binary.
     let res_bytes = include_bytes!("../resources/resources.gresource");

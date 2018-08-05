@@ -3,7 +3,7 @@ mod home;
 mod populated;
 mod show;
 
-pub use self::content::Content;
-pub use self::home::HomeStack;
-pub use self::populated::{PopulatedStack, PopulatedState};
-pub use self::show::{ShowStack, ShowState};
+pub(crate) use self::content::Content;
+pub(crate) use self::home::HomeStack;
+pub(crate) use self::populated::{PopulatedStack, PopulatedState};
+pub(crate) use self::show::ShowStack;

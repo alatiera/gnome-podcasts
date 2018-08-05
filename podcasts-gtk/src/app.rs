@@ -25,7 +25,7 @@ use std::env;
 use std::rc::Rc;
 use std::sync::Arc;
 
-pub const APP_ID: &str = "org.gnome.Podcasts";
+pub(crate) const APP_ID: &str = "org.gnome.Podcasts";
 
 include!(concat!(env!("OUT_DIR"), "/build_globals.rs"));
 
@@ -44,7 +44,7 @@ where
 }
 
 #[derive(Debug, Clone)]
-pub enum Action {
+pub(crate) enum Action {
     RefreshAllViews,
     RefreshEpisodesView,
     RefreshEpisodesViewBGR,
@@ -65,7 +65,7 @@ pub enum Action {
 }
 
 #[derive(Debug, Clone)]
-pub struct App {
+pub(crate) struct App {
     instance: gtk::Application,
     window: gtk::ApplicationWindow,
     overlay: gtk::Overlay,
@@ -78,7 +78,7 @@ pub struct App {
 }
 
 impl App {
-    pub fn new(application: &gtk::Application) -> Rc<Self> {
+    pub(crate) fn new(application: &gtk::Application) -> Rc<Self> {
         let settings = gio::Settings::new(APP_ID);
 
         let (sender, receiver) = unbounded();
@@ -307,7 +307,7 @@ impl App {
         glib::Continue(true)
     }
 
-    pub fn run() {
+    pub(crate) fn run() {
         // Set up the textdomain for gettext
         setlocale(LocaleCategory::LcAll, "");
         bindtextdomain("gnome-podcasts", LOCALEDIR);

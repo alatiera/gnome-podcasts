@@ -20,8 +20,8 @@ use std::sync::Arc;
 use i18n::{i18n, i18n_f};
 
 #[derive(Debug, Clone)]
-pub struct ShowMenu {
-    pub container: gtk::PopoverMenu,
+pub(crate) struct ShowMenu {
+    pub(crate) container: gtk::PopoverMenu,
     website: gtk::ModelButton,
     played: gtk::ModelButton,
     unsub: gtk::ModelButton,
@@ -45,7 +45,7 @@ impl Default for ShowMenu {
 }
 
 impl ShowMenu {
-    pub fn new(pd: &Arc<Show>, episodes: &gtk::ListBox, sender: &Sender<Action>) -> Self {
+    pub(crate) fn new(pd: &Arc<Show>, episodes: &gtk::ListBox, sender: &Sender<Action>) -> Self {
         let s = Self::default();
         s.init(pd, episodes, sender);
         s
@@ -129,7 +129,7 @@ fn mark_all_watched(pd: &Show, sender: &Sender<Action>) -> Result<(), Error> {
     Ok(())
 }
 
-pub fn mark_all_notif(pd: Arc<Show>, sender: &Sender<Action>) -> InAppNotification {
+pub(crate) fn mark_all_notif(pd: Arc<Show>, sender: &Sender<Action>) -> InAppNotification {
     let id = pd.id();
     let callback = clone!(sender => move || {
         let res = mark_all_watched(&pd, &sender);
@@ -142,7 +142,7 @@ pub fn mark_all_notif(pd: Arc<Show>, sender: &Sender<Action>) -> InAppNotificati
     InAppNotification::new(&text, callback, undo_callback, UndoState::Shown)
 }
 
-pub fn remove_show_notif(pd: Arc<Show>, sender: Sender<Action>) -> InAppNotification {
+pub(crate) fn remove_show_notif(pd: Arc<Show>, sender: Sender<Action>) -> InAppNotification {
     let text = i18n_f("Unsubscribed from {}", &[pd.title()]);
 
     let res = utils::ignore_show(pd.id());

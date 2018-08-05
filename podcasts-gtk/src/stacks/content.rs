@@ -13,7 +13,7 @@ use std::rc::Rc;
 use i18n::i18n;
 
 #[derive(Debug, Clone)]
-pub struct Content {
+pub(crate) struct Content {
     stack: gtk::Stack,
     shows: Rc<RefCell<ShowStack>>,
     home: Rc<RefCell<HomeStack>>,
@@ -21,7 +21,7 @@ pub struct Content {
 }
 
 impl Content {
-    pub fn new(sender: &Sender<Action>) -> Result<Rc<Content>, Error> {
+    pub(crate) fn new(sender: &Sender<Action>) -> Result<Rc<Content>, Error> {
         let stack = gtk::Stack::new();
         let home = Rc::new(RefCell::new(HomeStack::new(sender.clone())?));
         let shows = Rc::new(RefCell::new(ShowStack::new(sender.clone())));
@@ -38,12 +38,12 @@ impl Content {
         Ok(Rc::new(con))
     }
 
-    pub fn update(&self) {
+    pub(crate) fn update(&self) {
         self.update_home();
         self.update_shows();
     }
 
-    pub fn update_home(&self) {
+    pub(crate) fn update_home(&self) {
         self.home
             .borrow_mut()
             .update()
@@ -51,7 +51,7 @@ impl Content {
             .ok();
     }
 
-    pub fn update_home_if_background(&self) {
+    pub(crate) fn update_home_if_background(&self) {
         if self.stack.get_visible_child_name() != Some("home".into()) {
             self.update_home();
         }
@@ -65,7 +65,7 @@ impl Content {
             .ok();
     }
 
-    pub fn update_shows_view(&self) {
+    pub(crate) fn update_shows_view(&self) {
         self.shows
             .borrow_mut()
             .update()
@@ -73,7 +73,7 @@ impl Content {
             .ok();
     }
 
-    pub fn update_widget_if_same(&self, pid: i32) {
+    pub(crate) fn update_widget_if_same(&self, pid: i32) {
         let pop = self.shows.borrow().populated();
         pop.borrow_mut()
             .update_widget_if_same(pid)
@@ -81,11 +81,11 @@ impl Content {
             .ok();
     }
 
-    pub fn get_stack(&self) -> gtk::Stack {
+    pub(crate) fn get_stack(&self) -> gtk::Stack {
         self.stack.clone()
     }
 
-    pub fn get_shows(&self) -> Rc<RefCell<ShowStack>> {
+    pub(crate) fn get_shows(&self) -> Rc<RefCell<ShowStack>> {
         self.shows.clone()
     }
 }

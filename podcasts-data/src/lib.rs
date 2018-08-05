@@ -23,13 +23,8 @@
     )
 )]
 // Enable lint group collections
-#![warn(
-    nonstandard_style,
-    edition_2018,
-    rust_2018_idioms,
-    bad_style,
-    unused
-)]
+#![warn(nonstandard_style, bad_style, unused)]
+#![allow(edition_2018, rust_2018_idioms)]
 // standalone lints
 #![warn(
     const_err,
@@ -51,8 +46,6 @@
     missing_copy_implementations
 )]
 #![deny(warnings)]
-// warn when code is not using dyn Trait syntax. req rustc 1.27
-// #![deny(bare_trait_object)]
 
 //! FIXME: Docs
 

@@ -6,7 +6,7 @@ use gtk::prelude::*;
 use i18n::i18n;
 
 #[derive(Debug, Clone)]
-pub struct Prefs {
+pub(crate) struct Prefs {
     dialog: gtk::Window,
     dark_toggle: gtk::Switch,
     cleanup_value: gtk::SpinButton,
@@ -33,13 +33,13 @@ impl Default for Prefs {
 
 // TODO: Refactor components into smaller state machines
 impl Prefs {
-    pub fn new(settings: &Settings) -> Prefs {
+    pub(crate) fn new(settings: &Settings) -> Prefs {
         let h = Prefs::default();
         h.init(settings);
         h
     }
 
-    pub fn init(&self, settings: &Settings) {
+    pub(crate) fn init(&self, settings: &Settings) {
         settings.bind(
             "dark-theme",
             &self.dark_toggle,
@@ -65,7 +65,7 @@ impl Prefs {
             .iter()
             .enumerate()
         {
-            let row: &[&ToValue] = &[item];
+            let row: &[&dyn ToValue] = &[item];
             if item.to_lowercase() == cleanup_p {
                 cleanup_pos = i as i32;
             }
@@ -93,7 +93,7 @@ impl Prefs {
         });
     }
 
-    pub fn show(&self, parent: &gtk::ApplicationWindow) {
+    pub(crate) fn show(&self, parent: &gtk::ApplicationWindow) {
         self.dialog.set_transient_for(Some(parent));
         self.dialog.set_modal(true);
         self.dialog.show_all();

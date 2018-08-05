@@ -1,3 +1,5 @@
+#![allow(bare_trait_objects)]
+
 use podcasts_data::errors::DataError;
 use reqwest;
 use std::io;

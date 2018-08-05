@@ -21,8 +21,8 @@ lazy_static! {
 }
 
 #[derive(Debug, Clone)]
-pub struct ShowsView {
-    pub container: gtk::Box,
+pub(crate) struct ShowsView {
+    pub(crate) container: gtk::Box,
     scrolled_window: gtk::ScrolledWindow,
     flowbox: gtk::FlowBox,
 }
@@ -43,7 +43,7 @@ impl Default for ShowsView {
 }
 
 impl ShowsView {
-    pub fn new(sender: Sender<Action>) -> Rc<Self> {
+    pub(crate) fn new(sender: Sender<Action>) -> Rc<Self> {
         let pop = Rc::new(ShowsView::default());
         pop.init(sender);
         // Populate the flowbox with the Shows.
@@ -52,7 +52,7 @@ impl ShowsView {
         pop
     }
 
-    pub fn init(&self, sender: Sender<Action>) {
+    pub(crate) fn init(&self, sender: Sender<Action>) {
         self.flowbox.connect_child_activated(move |_, child| {
             let res = on_child_activate(child, &sender);
             debug_assert!(res.is_ok());
@@ -80,7 +80,7 @@ impl ShowsView {
     }
 
     /// Save the vertical scrollbar position.
-    pub fn save_alignment(&self) -> Result<(), Error> {
+    pub(crate) fn save_alignment(&self) -> Result<(), Error> {
         if let Ok(mut guard) = SHOWS_VIEW_VALIGNMENT.lock() {
             let adj = self
                 .scrolled_window
@@ -151,7 +151,7 @@ impl Default for ShowsChild {
 }
 
 impl ShowsChild {
-    pub fn new(pd: &Show) -> ShowsChild {
+    pub(crate) fn new(pd: &Show) -> ShowsChild {
         let child = ShowsChild::default();
         child.init(pd);
         child

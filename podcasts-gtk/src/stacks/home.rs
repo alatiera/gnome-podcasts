@@ -19,7 +19,7 @@ enum State {
 }
 
 #[derive(Debug, Clone)]
-pub struct HomeStack {
+pub(crate) struct HomeStack {
     empty: EmptyView,
     episodes: Rc<HomeView>,
     stack: gtk::Stack,
@@ -28,7 +28,7 @@ pub struct HomeStack {
 }
 
 impl HomeStack {
-    pub fn new(sender: Sender<Action>) -> Result<HomeStack, Error> {
+    pub(crate) fn new(sender: Sender<Action>) -> Result<HomeStack, Error> {
         let episodes = HomeView::new(sender.clone())?;
         let empty = EmptyView::new();
         let stack = gtk::Stack::new();
@@ -49,11 +49,11 @@ impl HomeStack {
         Ok(home)
     }
 
-    pub fn get_stack(&self) -> gtk::Stack {
+    pub(crate) fn get_stack(&self) -> gtk::Stack {
         self.stack.clone()
     }
 
-    pub fn update(&mut self) -> Result<(), Error> {
+    pub(crate) fn update(&mut self) -> Result<(), Error> {
         // Copy the vertical scrollbar adjustment from the old view.
         self.episodes
             .save_alignment()

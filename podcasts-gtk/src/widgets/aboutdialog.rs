@@ -7,7 +7,7 @@ use i18n::i18n;
 // Totally copied it from fractal.
 // https://gitlab.gnome.org/danigm/fractal/blob/503e311e22b9d7540089d735b92af8e8f93560c5/fractal-gtk/src/app.rs#L1883-1912
 /// Given a `window` create and attach an `gtk::AboutDialog` to it.
-pub fn about_dialog(window: &gtk::ApplicationWindow) {
+pub(crate) fn about_dialog(window: &gtk::ApplicationWindow) {
     // Feel free to add yourself if you contribured.
     let authors = &[
         "Carlos Soriano",

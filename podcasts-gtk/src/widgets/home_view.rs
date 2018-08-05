@@ -18,7 +18,7 @@ use std::rc::Rc;
 use std::sync::Mutex;
 
 lazy_static! {
-    pub static ref EPISODES_VIEW_VALIGNMENT: Mutex<Option<Fragile<gtk::Adjustment>>> =
+    pub(crate) static ref EPISODES_VIEW_VALIGNMENT: Mutex<Option<Fragile<gtk::Adjustment>>> =
         Mutex::new(None);
 }
 
@@ -32,8 +32,8 @@ enum ListSplit {
 }
 
 #[derive(Debug, Clone)]
-pub struct HomeView {
-    pub container: gtk::Box,
+pub(crate) struct HomeView {
+    pub(crate) container: gtk::Box,
     scrolled_window: gtk::ScrolledWindow,
     frame_parent: gtk::Box,
     today_box: gtk::Box,
@@ -85,7 +85,7 @@ impl Default for HomeView {
 
 // TODO: REFACTOR ME
 impl HomeView {
-    pub fn new(sender: Sender<Action>) -> Result<Rc<HomeView>, Error> {
+    pub(crate) fn new(sender: Sender<Action>) -> Result<Rc<HomeView>, Error> {
         use self::ListSplit::*;
 
         let view = Rc::new(HomeView::default());
@@ -141,7 +141,7 @@ impl HomeView {
     }
 
     /// Save the vertical scrollbar position.
-    pub fn save_alignment(&self) -> Result<(), Error> {
+    pub(crate) fn save_alignment(&self) -> Result<(), Error> {
         if let Ok(mut guard) = EPISODES_VIEW_VALIGNMENT.lock() {
             let adj = self
                 .scrolled_window

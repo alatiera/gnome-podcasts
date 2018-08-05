@@ -24,7 +24,7 @@ fn main() {
 
     let globals = format!(
         "
-pub static LOCALEDIR: &'static str = \"{}\";
+pub(crate) static LOCALEDIR: &'static str = \"{}\";
 ",
         localedir
     );

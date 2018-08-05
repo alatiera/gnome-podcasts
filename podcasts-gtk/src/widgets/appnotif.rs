@@ -6,13 +6,13 @@ use std::cell::RefCell;
 use std::rc::Rc;
 
 #[derive(Debug, Clone, Copy)]
-pub enum UndoState {
+pub(crate) enum UndoState {
     Shown,
     Hidden,
 }
 
 #[derive(Debug, Clone)]
-pub struct InAppNotification {
+pub(crate) struct InAppNotification {
     revealer: gtk::Revealer,
     text: gtk::Label,
     undo: gtk::Button,
@@ -38,7 +38,12 @@ impl Default for InAppNotification {
 }
 
 impl InAppNotification {
-    pub fn new<F, U>(text: &str, mut callback: F, undo_callback: U, show_undo: UndoState) -> Self
+    pub(crate) fn new<F, U>(
+        text: &str,
+        mut callback: F,
+        undo_callback: U,
+        show_undo: UndoState,
+    ) -> Self
     where
         F: FnMut() -> glib::Continue + 'static,
         U: Fn() + 'static,
@@ -85,7 +90,7 @@ impl InAppNotification {
     // the revealer should be attached to something that displays it.
     // Previously we where doing it in the constructor, which had the result
     // of the animation being skipped cause there was no parent widget to display it.
-    pub fn show(&self, overlay: &gtk::Overlay) {
+    pub(crate) fn show(&self, overlay: &gtk::Overlay) {
         overlay.add_overlay(&self.revealer);
         // We need to display the notification after the widget is added to the overlay
         // so there will be a nice animation.

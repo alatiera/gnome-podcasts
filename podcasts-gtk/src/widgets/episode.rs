@@ -42,8 +42,8 @@ lazy_static! {
 }
 
 #[derive(Clone, Debug)]
-pub struct EpisodeWidget {
-    pub container: gtk::Box,
+pub(crate) struct EpisodeWidget {
+    pub(crate) container: gtk::Box,
     info: InfoLabels,
     buttons: Buttons,
     progressbar: gtk::ProgressBar,
@@ -210,7 +210,7 @@ impl Default for EpisodeWidget {
 }
 
 impl EpisodeWidget {
-    pub fn new(episode: EpisodeWidgetModel, sender: &Sender<Action>) -> Rc<Self> {
+    pub(crate) fn new(episode: EpisodeWidgetModel, sender: &Sender<Action>) -> Rc<Self> {
         let widget = Rc::new(Self::default());
         let episode = RefCell::new(Some(episode));
         let weak = Rc::downgrade(&widget);

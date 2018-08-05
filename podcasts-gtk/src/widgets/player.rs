@@ -106,7 +106,7 @@ impl Deref for Position {
 
 impl PlayerTimes {
     /// Update the duration `gtk::Label` and the max range of the `gtk::SclaeBar`.
-    pub fn on_duration_changed(&self, duration: Duration) {
+    pub(crate) fn on_duration_changed(&self, duration: Duration) {
         let seconds = duration.seconds().map(|v| v as f64).unwrap_or(0.0);
 
         self.slider.block_signal(&self.slider_update);
@@ -117,7 +117,7 @@ impl PlayerTimes {
     }
 
     /// Update the `gtk::SclaeBar` when the pipeline position is changed.
-    pub fn on_position_updated(&self, position: Position) {
+    pub(crate) fn on_position_updated(&self, position: Position) {
         let seconds = position.seconds().map(|v| v as f64).unwrap_or(0.0);
 
         self.slider.block_signal(&self.slider_update);
@@ -158,8 +158,8 @@ struct PlayerControls {
 }
 
 #[derive(Debug, Clone)]
-pub struct PlayerWidget {
-    pub action_bar: gtk::ActionBar,
+pub(crate) struct PlayerWidget {
+    pub(crate) action_bar: gtk::ActionBar,
     player: gst_player::Player,
     controls: PlayerControls,
     timer: PlayerTimes,
@@ -252,7 +252,7 @@ impl Default for PlayerWidget {
 }
 
 impl PlayerWidget {
-    pub fn new(sender: &Sender<Action>) -> Rc<Self> {
+    pub(crate) fn new(sender: &Sender<Action>) -> Rc<Self> {
         let w = Rc::new(Self::default());
         Self::init(&w, sender);
         w
@@ -358,7 +358,7 @@ impl PlayerWidget {
         self.action_bar.show();
     }
 
-    pub fn initialize_episode(&self, rowid: i32) -> Result<(), Error> {
+    pub(crate) fn initialize_episode(&self, rowid: i32) -> Result<(), Error> {
         let ep = dbqueries::get_episode_widget_from_rowid(rowid)?;
         let pd = dbqueries::get_podcast_cover_from_id(ep.show_id())?;
 
