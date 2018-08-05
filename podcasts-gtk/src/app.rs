@@ -87,10 +87,24 @@ impl App {
         window.set_title("Podcasts");
 
         let weak_s = settings.downgrade();
+        let weak_app = application.downgrade();
         window.connect_delete_event(move |window, _| {
-            weak_s
-                .upgrade()
-                .map(|settings| WindowGeometry::from_window(&window).write(&settings));
+            let app = match weak_app.upgrade() {
+                Some(a) => a,
+                None => return Inhibit(false),
+            };
+
+            let settings = match weak_s.upgrade() {
+                Some(s) => s,
+                None => return Inhibit(false),
+            };
+
+            info!("Savign window position");
+            WindowGeometry::from_window(&window).write(&settings);
+
+            info!("Application is exiting");
+            app.quit();
+
             Inhibit(false)
         });
 
