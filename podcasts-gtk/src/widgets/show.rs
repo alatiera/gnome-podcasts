@@ -1,5 +1,5 @@
 use glib;
-use gtk::{self, prelude::*, SelectionMode};
+use gtk::{self, prelude::*, Orientation, SelectionMode};
 
 use crossbeam_channel::Sender;
 use failure::Error;
@@ -35,10 +35,15 @@ pub(crate) struct ShowWidget {
 
 impl Default for ShowWidget {
     fn default() -> Self {
+        let container = gtk::Box::new(Orientation::Horizontal, 0);
+        let scrolled_window = gtk::ScrolledWindow::new(None, None);
+        container.add(&scrolled_window);
+
         let builder = gtk::Builder::new_from_resource("/org/gnome/Podcasts/gtk/show_widget.ui");
-        let container: gtk::Box = builder.get_object("container").unwrap();
-        let scrolled_window: gtk::ScrolledWindow = builder.get_object("scrolled_window").unwrap();
         let sub_cont: gtk::Box = builder.get_object("sub_container").unwrap();
+        let cover: gtk::Image = builder.get_object("cover").unwrap();
+        let description: gtk::Label = builder.get_object("description").unwrap();
+
         let frame = gtk::Frame::new(None);
         let episodes = gtk::ListBox::new();
         episodes.set_selection_mode(SelectionMode::None);
@@ -51,13 +56,11 @@ impl Default for ShowWidget {
         let column = column.downcast::<gtk::Container>().unwrap();
 
         frame.add(&episodes);
-        column.add(&frame);
-        sub_cont.add(&column);
-        sub_cont.show_all();
+        sub_cont.add(&frame);
+        column.add(&sub_cont);
+        scrolled_window.add(&column);
 
-        let cover: gtk::Image = builder.get_object("cover").unwrap();
-        let description: gtk::Label = builder.get_object("description").unwrap();
-
+        container.show_all();
         ShowWidget {
             container,
             scrolled_window,
