@@ -1,11 +1,11 @@
 use glib;
-use gtk;
-use gtk::prelude::*;
+use gtk::{self, prelude::*, SelectionMode};
 
 use crossbeam_channel::Sender;
 use failure::Error;
 use fragile::Fragile;
 use html2text;
+use libhandy::{Column, ColumnExt};
 use rayon;
 
 use podcasts_data::dbqueries;
@@ -29,7 +29,6 @@ pub(crate) struct ShowWidget {
     scrolled_window: gtk::ScrolledWindow,
     cover: gtk::Image,
     description: gtk::Label,
-    frame: gtk::Frame,
     episodes: gtk::ListBox,
     show_id: Option<i32>,
 }
@@ -39,10 +38,22 @@ impl Default for ShowWidget {
         let builder = gtk::Builder::new_from_resource("/org/gnome/Podcasts/gtk/show_widget.ui");
         let container: gtk::Box = builder.get_object("container").unwrap();
         let scrolled_window: gtk::ScrolledWindow = builder.get_object("scrolled_window").unwrap();
-        let frame: gtk::Frame = builder.get_object("frame").unwrap();
+        let sub_cont: gtk::Box = builder.get_object("sub_container").unwrap();
+        let frame = gtk::Frame::new(None);
         let episodes = gtk::ListBox::new();
-        episodes.show();
+        episodes.set_selection_mode(SelectionMode::None);
+
+        let column = Column::new();
+        column.set_maximum_width(700);
+        // For some reason the Column is not seen as a gtk::container
+        // and therefore we can't call add() without the cast
+        let column = column.upcast::<gtk::Widget>();
+        let column = column.downcast::<gtk::Container>().unwrap();
+
         frame.add(&episodes);
+        column.add(&frame);
+        sub_cont.add(&column);
+        sub_cont.show_all();
 
         let cover: gtk::Image = builder.get_object("cover").unwrap();
         let description: gtk::Label = builder.get_object("description").unwrap();
@@ -52,7 +63,6 @@ impl Default for ShowWidget {
             scrolled_window,
             cover,
             description,
-            frame,
             episodes,
             show_id: None,
         }

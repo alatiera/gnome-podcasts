@@ -61,8 +61,10 @@ extern crate pretty_assertions;
 extern crate chrono;
 extern crate crossbeam_channel;
 extern crate fragile;
+extern crate gettextrs;
 extern crate html2text;
 extern crate humansize;
+extern crate libhandy;
 extern crate loggerv;
 extern crate open;
 extern crate podcasts_data;
@@ -72,8 +74,6 @@ extern crate regex;
 extern crate reqwest;
 extern crate serde_json;
 extern crate url;
-
-extern crate gettextrs;
 
 use log::Level;
 
