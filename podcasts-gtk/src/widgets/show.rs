@@ -29,6 +29,7 @@ pub(crate) struct ShowWidget {
     scrolled_window: gtk::ScrolledWindow,
     cover: gtk::Image,
     description: gtk::Label,
+    frame: gtk::Frame,
     episodes: gtk::ListBox,
     show_id: Option<i32>,
 }
@@ -38,7 +39,10 @@ impl Default for ShowWidget {
         let builder = gtk::Builder::new_from_resource("/org/gnome/Podcasts/gtk/show_widget.ui");
         let container: gtk::Box = builder.get_object("container").unwrap();
         let scrolled_window: gtk::ScrolledWindow = builder.get_object("scrolled_window").unwrap();
-        let episodes = builder.get_object("episodes").unwrap();
+        let frame: gtk::Frame = builder.get_object("frame").unwrap();
+        let episodes = gtk::ListBox::new();
+        episodes.show();
+        frame.add(&episodes);
 
         let cover: gtk::Image = builder.get_object("cover").unwrap();
         let description: gtk::Label = builder.get_object("description").unwrap();
@@ -48,6 +52,7 @@ impl Default for ShowWidget {
             scrolled_window,
             cover,
             description,
+            frame,
             episodes,
             show_id: None,
         }
