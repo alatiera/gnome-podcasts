@@ -1,4 +1,5 @@
-use gtk::{self, prelude::*, Orientation, PolicyType};
+use gtk::{self, prelude::*, Adjustment, Orientation, PolicyType};
+use utils::smooth_scroll_to;
 
 #[derive(Debug, Clone)]
 pub(crate) struct BaseView {
@@ -33,5 +34,19 @@ impl BaseView {
 
     pub(crate) fn add<T: IsA<gtk::Widget>>(&self, widget: &T) {
         self.scrolled_window.add(widget);
+    }
+
+    pub(crate) fn set_adjutment<'a, 'b>(
+        &self,
+        hadjustment: Option<&'a Adjustment>,
+        vadjustment: Option<&'b Adjustment>,
+    ) {
+        if let Some(h) = hadjustment {
+            smooth_scroll_to(&self.scrolled_window, h);
+        }
+
+        if let Some(v) = vadjustment {
+            smooth_scroll_to(&self.scrolled_window, v);
+        }
     }
 }

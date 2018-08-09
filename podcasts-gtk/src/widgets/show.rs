@@ -94,10 +94,6 @@ impl ShowWidget {
         self.view.container()
     }
 
-    pub(crate) fn scrolled_window(&self) -> &gtk::ScrolledWindow {
-        self.view.scrolled_window()
-    }
-
     /// Set the show cover.
     fn set_cover(&self, pd: &Arc<Show>) -> Result<(), Error> {
         utils::set_image_from_path(&self.cover, pd.id(), 256)
@@ -113,6 +109,7 @@ impl ShowWidget {
     pub(crate) fn save_vadjustment(&self, oldid: i32) -> Result<(), Error> {
         if let Ok(mut guard) = SHOW_WIDGET_VALIGNMENT.lock() {
             let adj = self
+                .view
                 .scrolled_window()
                 .get_vadjustment()
                 .ok_or_else(|| format_err!("Could not get the adjustment"))?;
@@ -139,13 +136,8 @@ impl ShowWidget {
             };
 
             // Copy the vertical scrollbar adjustment from the old view into the new one.
-            let res = fragile
-                .try_get()
-                .map(|x| utils::smooth_scroll_to(self.scrolled_window(), &x))
-                .map_err(From::from);
-
-            debug_assert!(res.is_ok());
-            return res;
+            let vadj = fragile.try_get()?;
+            self.view.set_adjutment(None, Some(&vadj));
         }
 
         Ok(())
