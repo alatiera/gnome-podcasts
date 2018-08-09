@@ -39,7 +39,7 @@ impl PopulatedStack {
         let container = gtk::Box::new(gtk::Orientation::Horizontal, 0);
 
         stack.add_named(&populated.container, "shows");
-        stack.add_named(&show.container, "widget");
+        stack.add_named(show.container(), "widget");
         container.add(&stack);
         container.show_all();
 
@@ -88,7 +88,7 @@ impl PopulatedStack {
     }
 
     pub(crate) fn replace_widget(&mut self, pd: Arc<Show>) -> Result<(), Error> {
-        let old = self.show.container.clone();
+        let old = self.show.container().clone();
 
         // save the ShowWidget vertical scrollbar alignment
         self.show.show_id().map(|id| self.show.save_vadjustment(id));
@@ -96,7 +96,7 @@ impl PopulatedStack {
         let new = ShowWidget::new(pd, self.sender.clone());
         self.show = new;
         self.stack.remove(&old);
-        self.stack.add_named(&self.show.container, "widget");
+        self.stack.add_named(self.show.container(), "widget");
 
         // The current visible child might change depending on
         // removal and insertion in the gtk::Stack, so we have
@@ -108,7 +108,7 @@ impl PopulatedStack {
     }
 
     pub(crate) fn update_widget(&mut self) -> Result<(), Error> {
-        let old = self.show.container.clone();
+        let old = self.show.container().clone();
         let id = self.show.show_id();
         if id.is_none() {
             return Ok(());

@@ -1,5 +1,5 @@
 use glib;
-use gtk::{self, prelude::*, Orientation, SelectionMode};
+use gtk::{self, prelude::*, SelectionMode};
 
 use crossbeam_channel::Sender;
 use failure::Error;
@@ -13,7 +13,7 @@ use podcasts_data::Show;
 
 use app::Action;
 use utils::{self, lazy_load};
-use widgets::{EpisodeWidget, ShowMenu};
+use widgets::{BaseView, EpisodeWidget, ShowMenu};
 
 use std::rc::Rc;
 use std::sync::{Arc, Mutex};
@@ -25,8 +25,7 @@ lazy_static! {
 
 #[derive(Debug, Clone)]
 pub(crate) struct ShowWidget {
-    pub(crate) container: gtk::Box,
-    scrolled_window: gtk::ScrolledWindow,
+    view: BaseView,
     cover: gtk::Image,
     description: gtk::Label,
     episodes: gtk::ListBox,
@@ -35,14 +34,11 @@ pub(crate) struct ShowWidget {
 
 impl Default for ShowWidget {
     fn default() -> Self {
-        let container = gtk::Box::new(Orientation::Horizontal, 0);
-        let scrolled_window = gtk::ScrolledWindow::new(None, None);
-        container.add(&scrolled_window);
-
         let builder = gtk::Builder::new_from_resource("/org/gnome/Podcasts/gtk/show_widget.ui");
         let sub_cont: gtk::Box = builder.get_object("sub_container").unwrap();
         let cover: gtk::Image = builder.get_object("cover").unwrap();
         let description: gtk::Label = builder.get_object("description").unwrap();
+        let view = BaseView::default();
 
         let frame = gtk::Frame::new(None);
         let episodes = gtk::ListBox::new();
@@ -58,12 +54,11 @@ impl Default for ShowWidget {
         frame.add(&episodes);
         sub_cont.add(&frame);
         column.add(&sub_cont);
-        scrolled_window.add(&column);
+        view.add(&column);
+        column.show_all();
 
-        container.show_all();
         ShowWidget {
-            container,
-            scrolled_window,
+            view,
             cover,
             description,
             episodes,
@@ -95,6 +90,14 @@ impl ShowWidget {
         debug_assert!(res.is_ok());
     }
 
+    pub(crate) fn container(&self) -> &gtk::Box {
+        self.view.container()
+    }
+
+    pub(crate) fn scrolled_window(&self) -> &gtk::ScrolledWindow {
+        self.view.scrolled_window()
+    }
+
     /// Set the show cover.
     fn set_cover(&self, pd: &Arc<Show>) -> Result<(), Error> {
         utils::set_image_from_path(&self.cover, pd.id(), 256)
@@ -110,7 +113,7 @@ impl ShowWidget {
     pub(crate) fn save_vadjustment(&self, oldid: i32) -> Result<(), Error> {
         if let Ok(mut guard) = SHOW_WIDGET_VALIGNMENT.lock() {
             let adj = self
-                .scrolled_window
+                .scrolled_window()
                 .get_vadjustment()
                 .ok_or_else(|| format_err!("Could not get the adjustment"))?;
             *guard = Some((oldid, Fragile::new(adj)));
@@ -138,7 +141,7 @@ impl ShowWidget {
             // Copy the vertical scrollbar adjustment from the old view into the new one.
             let res = fragile
                 .try_get()
-                .map(|x| utils::smooth_scroll_to(&self.scrolled_window, &x))
+                .map(|x| utils::smooth_scroll_to(self.scrolled_window(), &x))
                 .map_err(From::from);
 
             debug_assert!(res.is_ok());
