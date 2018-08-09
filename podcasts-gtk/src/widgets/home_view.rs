@@ -6,6 +6,7 @@ use gtk::prelude::*;
 
 use crossbeam_channel::Sender;
 use fragile::Fragile;
+use libhandy::{Column, ColumnExt};
 use podcasts_data::dbqueries;
 use podcasts_data::EpisodeWidgetModel;
 
@@ -63,7 +64,16 @@ impl Default for HomeView {
         let month_list: gtk::ListBox = builder.get_object("month_list").unwrap();
         let rest_list: gtk::ListBox = builder.get_object("rest_list").unwrap();
 
-        view.add(&frame_parent);
+        let column = Column::new();
+        column.show();
+        column.set_maximum_width(700);
+        // For some reason the Column is not seen as a gtk::container
+        // and therefore we can't call add() without the cast
+        let column = column.upcast::<gtk::Widget>();
+        let column = column.downcast::<gtk::Container>().unwrap();
+
+        column.add(&frame_parent);
+        view.add(&column);
 
         HomeView {
             view,
