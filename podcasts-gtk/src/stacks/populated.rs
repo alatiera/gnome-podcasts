@@ -90,10 +90,15 @@ impl PopulatedStack {
     pub(crate) fn replace_widget(&mut self, pd: Arc<Show>) -> Result<(), Error> {
         let old = self.show.container().clone();
 
-        // save the ShowWidget vertical scrollbar alignment
-        self.show.show_id().map(|id| self.show.save_vadjustment(id));
+        // Get the ShowWidget vertical alignment
+        let vadj = self.show.get_vadjustment();
+        let new = match self.show.show_id() {
+            // If the previous show was the same, restore the alignment
+            Some(id) if id == pd.id() => ShowWidget::new(pd, self.sender.clone(), vadj),
+            // else leave the valignemnt to default
+            _ => ShowWidget::new(pd.clone(), self.sender.clone(), None),
+        };
 
-        let new = ShowWidget::new(pd, self.sender.clone());
         self.show = new;
         self.stack.remove(&old);
         self.stack.add_named(self.show.container(), "widget");

@@ -36,7 +36,7 @@ impl BaseView {
         self.scrolled_window.add(widget);
     }
 
-    pub(crate) fn set_adjutment<'a, 'b>(
+    pub(crate) fn set_adjutments<'a, 'b>(
         &self,
         hadjustment: Option<&'a Adjustment>,
         vadjustment: Option<&'b Adjustment>,
@@ -48,5 +48,9 @@ impl BaseView {
         if let Some(v) = vadjustment {
             smooth_scroll_to(&self.scrolled_window, v);
         }
+    }
+
+    pub(crate) fn get_vadjustment(&self) -> Option<Adjustment> {
+        self.scrolled_window().get_vadjustment()
     }
 }

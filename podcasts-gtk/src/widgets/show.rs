@@ -1,5 +1,5 @@
 use glib;
-use gtk::{self, prelude::*, SelectionMode};
+use gtk::{self, prelude::*, Adjustment, SelectionMode};
 
 use crossbeam_channel::Sender;
 use failure::Error;
@@ -16,12 +16,7 @@ use utils::{self, lazy_load};
 use widgets::{BaseView, EpisodeWidget, ShowMenu};
 
 use std::rc::Rc;
-use std::sync::{Arc, Mutex};
-
-lazy_static! {
-    static ref SHOW_WIDGET_VALIGNMENT: Mutex<Option<(i32, Fragile<gtk::Adjustment>)>> =
-        Mutex::new(None);
-}
+use std::sync::Arc;
 
 #[derive(Debug, Clone)]
 pub(crate) struct ShowWidget {
@@ -68,7 +63,11 @@ impl Default for ShowWidget {
 }
 
 impl ShowWidget {
-    pub(crate) fn new(pd: Arc<Show>, sender: Sender<Action>) -> Rc<ShowWidget> {
+    pub(crate) fn new(
+        pd: Arc<Show>,
+        sender: Sender<Action>,
+        vadj: Option<Adjustment>,
+    ) -> Rc<ShowWidget> {
         let mut pdw = ShowWidget::default();
         pdw.init(&pd);
 
@@ -76,7 +75,7 @@ impl ShowWidget {
         sender.send(Action::InitShowMenu(Fragile::new(menu)));
 
         let pdw = Rc::new(pdw);
-        let res = populate_listbox(&pdw, pd.clone(), sender);
+        let res = populate_listbox(&pdw, pd.clone(), sender, vadj);
         debug_assert!(res.is_ok());
 
         pdw
@@ -94,6 +93,10 @@ impl ShowWidget {
         self.view.container()
     }
 
+    pub(crate) fn get_vadjustment(&self) -> Option<Adjustment> {
+        self.view.get_vadjustment()
+    }
+
     /// Set the show cover.
     fn set_cover(&self, pd: &Arc<Show>) -> Result<(), Error> {
         utils::set_image_from_path(&self.cover, pd.id(), 256)
@@ -105,44 +108,6 @@ impl ShowWidget {
             .set_markup(html2text::from_read(text.as_bytes(), 70).trim());
     }
 
-    /// Save the scrollbar adjustment to the cache.
-    pub(crate) fn save_vadjustment(&self, oldid: i32) -> Result<(), Error> {
-        if let Ok(mut guard) = SHOW_WIDGET_VALIGNMENT.lock() {
-            let adj = self
-                .view
-                .scrolled_window()
-                .get_vadjustment()
-                .ok_or_else(|| format_err!("Could not get the adjustment"))?;
-            *guard = Some((oldid, Fragile::new(adj)));
-            debug!("Widget Alignment was saved with ID: {}.", oldid);
-        }
-
-        Ok(())
-    }
-
-    /// Set scrolled window vertical adjustment.
-    fn set_vadjustment(&self, pd: &Arc<Show>) -> Result<(), Error> {
-        let guard = SHOW_WIDGET_VALIGNMENT
-            .lock()
-            .map_err(|err| format_err!("Failed to lock widget align mutex: {}", err))?;
-
-        if let Some((oldid, ref fragile)) = *guard {
-            // Only copy the old scrollbar if both widgets represent the same podcast.
-            debug!("PID: {}", pd.id());
-            debug!("OLDID: {}", oldid);
-            if pd.id() != oldid {
-                debug!("Early return");
-                return Ok(());
-            };
-
-            // Copy the vertical scrollbar adjustment from the old view into the new one.
-            let vadj = fragile.try_get()?;
-            self.view.set_adjutment(None, Some(&vadj));
-        }
-
-        Ok(())
-    }
-
     pub(crate) fn show_id(&self) -> Option<i32> {
         self.show_id
     }
@@ -150,9 +115,11 @@ impl ShowWidget {
 
 /// Populate the listbox with the shows episodes.
 fn populate_listbox(
+    // FIXME: we are leaking strong refs here
     show: &Rc<ShowWidget>,
     pd: Arc<Show>,
     sender: Sender<Action>,
+    vadj: Option<Adjustment>,
 ) -> Result<(), Error> {
     use crossbeam_channel::bounded;
 
@@ -189,9 +156,10 @@ fn populate_listbox(
             EpisodeWidget::new(ep, &sender).container.clone()
         });
 
-        let callback = clone!(pd, show_ => move || {
-            let res = show_.set_vadjustment(&pd);
-            debug_assert!(res.is_ok());
+        let callback = clone!(show_, vadj => move || {
+            if let Some(ref v) = vadj {
+                show_.view.set_adjutments(None, Some(v))
+            };
         });
 
         lazy_load(episodes, list.clone(), constructor, callback);
