@@ -11,7 +11,7 @@ use podcasts_data::EpisodeWidgetModel;
 
 use app::Action;
 use utils::{self, lazy_load_full};
-use widgets::EpisodeWidget;
+use widgets::{BaseView, EpisodeWidget};
 
 use std::cell::Cell;
 use std::rc::Rc;
@@ -33,8 +33,7 @@ enum ListSplit {
 
 #[derive(Debug, Clone)]
 pub(crate) struct HomeView {
-    pub(crate) container: gtk::Box,
-    scrolled_window: gtk::ScrolledWindow,
+    view: BaseView,
     frame_parent: gtk::Box,
     today_box: gtk::Box,
     yday_box: gtk::Box,
@@ -50,9 +49,8 @@ pub(crate) struct HomeView {
 
 impl Default for HomeView {
     fn default() -> Self {
+        let view = BaseView::default();
         let builder = gtk::Builder::new_from_resource("/org/gnome/Podcasts/gtk/home_view.ui");
-        let container: gtk::Box = builder.get_object("container").unwrap();
-        let scrolled_window: gtk::ScrolledWindow = builder.get_object("scrolled_window").unwrap();
         let frame_parent: gtk::Box = builder.get_object("frame_parent").unwrap();
         let today_box: gtk::Box = builder.get_object("today_box").unwrap();
         let yday_box: gtk::Box = builder.get_object("yday_box").unwrap();
@@ -65,9 +63,10 @@ impl Default for HomeView {
         let month_list: gtk::ListBox = builder.get_object("month_list").unwrap();
         let rest_list: gtk::ListBox = builder.get_object("rest_list").unwrap();
 
+        view.add(&frame_parent);
+
         HomeView {
-            container,
-            scrolled_window,
+            view,
             frame_parent,
             today_box,
             yday_box,
@@ -116,8 +115,16 @@ impl HomeView {
         };
 
         lazy_load_full(episodes, func, callback);
-        view.container.show_all();
+        view.container().show_all();
         Ok(view)
+    }
+
+    pub(crate) fn container(&self) -> &gtk::Box {
+        self.view.container()
+    }
+
+    pub(crate) fn scrolled_window(&self) -> &gtk::ScrolledWindow {
+        self.view.scrolled_window()
     }
 
     /// Set scrolled window vertical adjustment.
@@ -130,7 +137,7 @@ impl HomeView {
             // Copy the vertical scrollbar adjustment from the old view into the new one.
             let res = fragile
                 .try_get()
-                .map(|x| utils::smooth_scroll_to(&self.scrolled_window, &x))
+                .map(|x| utils::smooth_scroll_to(self.scrolled_window(), &x))
                 .map_err(From::from);
 
             debug_assert!(res.is_ok());
@@ -144,7 +151,7 @@ impl HomeView {
     pub(crate) fn save_alignment(&self) -> Result<(), Error> {
         if let Ok(mut guard) = EPISODES_VIEW_VALIGNMENT.lock() {
             let adj = self
-                .scrolled_window
+                .scrolled_window()
                 .get_vadjustment()
                 .ok_or_else(|| format_err!("Could not get the adjustment"))?;
             *guard = Some(Fragile::new(adj));
