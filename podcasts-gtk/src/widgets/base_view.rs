@@ -1,4 +1,4 @@
-use gtk::{self, prelude::*, Orientation};
+use gtk::{self, prelude::*, Orientation, PolicyType};
 
 #[derive(Debug, Clone)]
 pub(crate) struct BaseView {
@@ -10,6 +10,8 @@ impl Default for BaseView {
     fn default() -> Self {
         let container = gtk::Box::new(Orientation::Horizontal, 0);
         let scrolled_window = gtk::ScrolledWindow::new(None, None);
+
+        scrolled_window.set_policy(PolicyType::Never, PolicyType::Automatic);
         container.add(&scrolled_window);
         container.show_all();
 
