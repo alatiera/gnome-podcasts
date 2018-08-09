@@ -34,7 +34,7 @@ enum ListSplit {
 
 #[derive(Debug, Clone)]
 pub(crate) struct HomeView {
-    view: BaseView,
+    pub(crate) view: BaseView,
     frame_parent: gtk::Box,
     today_box: gtk::Box,
     yday_box: gtk::Box,
@@ -125,16 +125,8 @@ impl HomeView {
         };
 
         lazy_load_full(episodes, func, callback);
-        view.container().show_all();
+        view.view.container().show_all();
         Ok(view)
-    }
-
-    pub(crate) fn container(&self) -> &gtk::Box {
-        self.view.container()
-    }
-
-    pub(crate) fn scrolled_window(&self) -> &gtk::ScrolledWindow {
-        self.view.scrolled_window()
     }
 
     /// Set scrolled window vertical adjustment.
@@ -147,7 +139,7 @@ impl HomeView {
             // Copy the vertical scrollbar adjustment from the old view into the new one.
             let res = fragile
                 .try_get()
-                .map(|x| utils::smooth_scroll_to(self.scrolled_window(), &x))
+                .map(|x| utils::smooth_scroll_to(self.view.scrolled_window(), &x))
                 .map_err(From::from);
 
             debug_assert!(res.is_ok());
@@ -161,6 +153,7 @@ impl HomeView {
     pub(crate) fn save_alignment(&self) -> Result<(), Error> {
         if let Ok(mut guard) = EPISODES_VIEW_VALIGNMENT.lock() {
             let adj = self
+                .view
                 .scrolled_window()
                 .get_vadjustment()
                 .ok_or_else(|| format_err!("Could not get the adjustment"))?;
