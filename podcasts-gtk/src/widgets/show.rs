@@ -20,7 +20,7 @@ use std::sync::Arc;
 
 #[derive(Debug, Clone)]
 pub(crate) struct ShowWidget {
-    view: BaseView,
+    pub(crate) view: BaseView,
     cover: gtk::Image,
     description: gtk::Label,
     episodes: gtk::ListBox,
@@ -87,14 +87,6 @@ impl ShowWidget {
 
         let res = self.set_cover(&pd);
         debug_assert!(res.is_ok());
-    }
-
-    pub(crate) fn container(&self) -> &gtk::Box {
-        self.view.container()
-    }
-
-    pub(crate) fn get_vadjustment(&self) -> Option<Adjustment> {
-        self.view.get_vadjustment()
     }
 
     /// Set the show cover.

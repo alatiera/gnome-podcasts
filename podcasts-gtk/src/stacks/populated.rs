@@ -39,7 +39,7 @@ impl PopulatedStack {
         let container = gtk::Box::new(gtk::Orientation::Horizontal, 0);
 
         stack.add_named(populated.container(), "shows");
-        stack.add_named(show.container(), "widget");
+        stack.add_named(show.view.container(), "widget");
         container.add(&stack);
         container.show_all();
 
@@ -88,10 +88,10 @@ impl PopulatedStack {
     }
 
     pub(crate) fn replace_widget(&mut self, pd: Arc<Show>) -> Result<(), Error> {
-        let old = self.show.container().clone();
+        let old = self.show.view.container().clone();
 
         // Get the ShowWidget vertical alignment
-        let vadj = self.show.get_vadjustment();
+        let vadj = self.show.view.get_vadjustment();
         let new = match self.show.show_id() {
             // If the previous show was the same, restore the alignment
             Some(id) if id == pd.id() => ShowWidget::new(pd, self.sender.clone(), vadj),
@@ -101,7 +101,7 @@ impl PopulatedStack {
 
         self.show = new;
         self.stack.remove(&old);
-        self.stack.add_named(self.show.container(), "widget");
+        self.stack.add_named(self.show.view.container(), "widget");
 
         // The current visible child might change depending on
         // removal and insertion in the gtk::Stack, so we have
@@ -113,7 +113,7 @@ impl PopulatedStack {
     }
 
     pub(crate) fn update_widget(&mut self) -> Result<(), Error> {
-        let old = self.show.container().clone();
+        let old = self.show.view.container().clone();
         let id = self.show.show_id();
         if id.is_none() {
             return Ok(());
