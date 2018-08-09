@@ -140,28 +140,22 @@ fn on_child_activate(child: &gtk::FlowBoxChild, sender: &Sender<Action>) -> Resu
     Ok(())
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 struct ShowsChild {
-    container: gtk::Box,
     cover: gtk::Image,
     child: gtk::FlowBoxChild,
 }
 
 impl Default for ShowsChild {
     fn default() -> Self {
-        let builder = gtk::Builder::new_from_resource("/org/gnome/Podcasts/gtk/shows_child.ui");
-
-        let container: gtk::Box = builder.get_object("fb_child").unwrap();
-        let cover: gtk::Image = builder.get_object("pd_cover").unwrap();
-
+        let cover = gtk::Image::new_from_icon_name("image-x-generic-symbolic", -1);
         let child = gtk::FlowBoxChild::new();
-        child.add(&container);
 
-        ShowsChild {
-            container,
-            cover,
-            child,
-        }
+        cover.set_pixel_size(256);
+        child.add(&cover);
+        child.show_all();
+
+        ShowsChild { cover, child }
     }
 }
 
@@ -173,7 +167,7 @@ impl ShowsChild {
     }
 
     fn init(&self, pd: &Show) {
-        self.container.set_tooltip_text(pd.title());
+        self.child.set_tooltip_text(pd.title());
         WidgetExt::set_name(&self.child, &pd.id().to_string());
 
         self.set_cover(pd.id())
