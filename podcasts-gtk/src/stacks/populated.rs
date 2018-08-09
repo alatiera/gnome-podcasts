@@ -34,7 +34,7 @@ impl PopulatedStack {
     pub(crate) fn new(sender: Sender<Action>) -> PopulatedStack {
         let stack = gtk::Stack::new();
         let state = PopulatedState::View;
-        let populated = ShowsView::new(sender.clone());
+        let populated = ShowsView::new(sender.clone(), None);
         let show = Rc::new(ShowWidget::default());
         let container = gtk::Box::new(gtk::Orientation::Horizontal, 0);
 
@@ -73,12 +73,8 @@ impl PopulatedStack {
         let old = &self.populated.view.container().clone();
         debug!("Name: {:?}", WidgetExt::get_name(old));
 
-        self.populated
-            .save_alignment()
-            .map_err(|err| error!("Failed to set episodes_view alignment: {}", err))
-            .ok();
-
-        let pop = ShowsView::new(self.sender.clone());
+        let vadj = self.populated.view.get_vadjustment();
+        let pop = ShowsView::new(self.sender.clone(), vadj);
         self.populated = pop;
         self.stack.remove(old);
         self.stack
