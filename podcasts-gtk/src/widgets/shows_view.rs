@@ -22,7 +22,7 @@ lazy_static! {
 
 #[derive(Debug, Clone)]
 pub(crate) struct ShowsView {
-    view: BaseView,
+    pub(crate) view: BaseView,
     flowbox: gtk::FlowBox,
 }
 
@@ -66,14 +66,6 @@ impl ShowsView {
         });
     }
 
-    pub(crate) fn container(&self) -> &gtk::Box {
-        self.view.container()
-    }
-
-    pub(crate) fn scrolled_window(&self) -> &gtk::ScrolledWindow {
-        self.view.scrolled_window()
-    }
-
     /// Set scrolled window vertical adjustment.
     fn set_vadjustment(&self) -> Result<(), Error> {
         let guard = SHOWS_VIEW_VALIGNMENT
@@ -84,7 +76,7 @@ impl ShowsView {
             // Copy the vertical scrollbar adjustment from the old view into the new one.
             let res = fragile
                 .try_get()
-                .map(|x| utils::smooth_scroll_to(self.scrolled_window(), &x))
+                .map(|x| utils::smooth_scroll_to(self.view.scrolled_window(), &x))
                 .map_err(From::from);
 
             debug_assert!(res.is_ok());
@@ -98,6 +90,7 @@ impl ShowsView {
     pub(crate) fn save_alignment(&self) -> Result<(), Error> {
         if let Ok(mut guard) = SHOWS_VIEW_VALIGNMENT.lock() {
             let adj = self
+                .view
                 .scrolled_window()
                 .get_vadjustment()
                 .ok_or_else(|| format_err!("Could not get the adjustment"))?;
@@ -114,6 +107,7 @@ fn populate_flowbox(shows: &Rc<ShowsView>) -> Result<(), Error> {
     let podcasts = dbqueries::get_podcasts_filter(&ignore)?;
 
     let constructor = move |parent| ShowsChild::new(&parent).child;
+    // FIXME: We are, possibly,leaking the strong ref here
     let callback = clone!(shows => move || {
          shows.set_vadjustment()
               .map_err(|err| error!("Failed to set ShowsView Alignment: {}", err))
