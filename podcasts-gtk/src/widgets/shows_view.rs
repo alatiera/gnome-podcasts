@@ -1,5 +1,4 @@
-use gtk;
-use gtk::prelude::*;
+use gtk::{self, prelude::*, Align, SelectionMode};
 
 use crossbeam_channel::Sender;
 use failure::Error;
@@ -10,6 +9,7 @@ use podcasts_data::Show;
 
 use app::Action;
 use utils::{self, get_ignored_shows, lazy_load, set_image_from_path};
+use widgets::BaseView;
 
 use std::cell::Cell;
 use std::rc::Rc;
@@ -22,23 +22,30 @@ lazy_static! {
 
 #[derive(Debug, Clone)]
 pub(crate) struct ShowsView {
-    pub(crate) container: gtk::Box,
-    scrolled_window: gtk::ScrolledWindow,
+    view: BaseView,
     flowbox: gtk::FlowBox,
 }
 
 impl Default for ShowsView {
     fn default() -> Self {
-        let builder = gtk::Builder::new_from_resource("/org/gnome/Podcasts/gtk/shows_view.ui");
-        let container: gtk::Box = builder.get_object("fb_parent").unwrap();
-        let scrolled_window: gtk::ScrolledWindow = builder.get_object("scrolled_window").unwrap();
-        let flowbox: gtk::FlowBox = builder.get_object("flowbox").unwrap();
+        let view = BaseView::default();
+        let flowbox = gtk::FlowBox::new();
 
-        ShowsView {
-            container,
-            scrolled_window,
-            flowbox,
-        }
+        flowbox.show();
+        flowbox.set_vexpand(true);
+        flowbox.set_hexpand(true);
+        flowbox.set_row_spacing(12);
+        flowbox.set_can_focus(false);
+        flowbox.set_margin_top(32);
+        flowbox.set_margin_bottom(32);
+        flowbox.set_homogeneous(true);
+        flowbox.set_column_spacing(12);
+        flowbox.set_valign(Align::Start);
+        flowbox.set_halign(Align::Center);
+        flowbox.set_selection_mode(SelectionMode::None);
+        view.add(&flowbox);
+
+        ShowsView { view, flowbox }
     }
 }
 
@@ -59,6 +66,14 @@ impl ShowsView {
         });
     }
 
+    pub(crate) fn container(&self) -> &gtk::Box {
+        self.view.container()
+    }
+
+    pub(crate) fn scrolled_window(&self) -> &gtk::ScrolledWindow {
+        self.view.scrolled_window()
+    }
+
     /// Set scrolled window vertical adjustment.
     fn set_vadjustment(&self) -> Result<(), Error> {
         let guard = SHOWS_VIEW_VALIGNMENT
@@ -69,7 +84,7 @@ impl ShowsView {
             // Copy the vertical scrollbar adjustment from the old view into the new one.
             let res = fragile
                 .try_get()
-                .map(|x| utils::smooth_scroll_to(&self.scrolled_window, &x))
+                .map(|x| utils::smooth_scroll_to(self.scrolled_window(), &x))
                 .map_err(From::from);
 
             debug_assert!(res.is_ok());
@@ -83,7 +98,7 @@ impl ShowsView {
     pub(crate) fn save_alignment(&self) -> Result<(), Error> {
         if let Ok(mut guard) = SHOWS_VIEW_VALIGNMENT.lock() {
             let adj = self
-                .scrolled_window
+                .scrolled_window()
                 .get_vadjustment()
                 .ok_or_else(|| format_err!("Could not get the adjustment"))?;
             *guard = Some(Fragile::new(adj));

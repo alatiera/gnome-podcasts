@@ -38,7 +38,7 @@ impl PopulatedStack {
         let show = Rc::new(ShowWidget::default());
         let container = gtk::Box::new(gtk::Orientation::Horizontal, 0);
 
-        stack.add_named(&populated.container, "shows");
+        stack.add_named(populated.container(), "shows");
         stack.add_named(show.container(), "widget");
         container.add(&stack);
         container.show_all();
@@ -70,7 +70,7 @@ impl PopulatedStack {
     }
 
     pub(crate) fn replace_shows(&mut self) -> Result<(), Error> {
-        let old = &self.populated.container.clone();
+        let old = &self.populated.container().clone();
         debug!("Name: {:?}", WidgetExt::get_name(old));
 
         self.populated
@@ -81,7 +81,7 @@ impl PopulatedStack {
         let pop = ShowsView::new(self.sender.clone());
         self.populated = pop;
         self.stack.remove(old);
-        self.stack.add_named(&self.populated.container, "shows");
+        self.stack.add_named(self.populated.container(), "shows");
 
         old.destroy();
         Ok(())

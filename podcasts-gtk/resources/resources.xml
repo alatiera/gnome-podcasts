@@ -7,7 +7,6 @@
       <file compressed="true" preprocess="xml-stripblanks">gtk/empty_show.ui</file>
       <file compressed="true" preprocess="xml-stripblanks">gtk/home_view.ui</file>
       <file compressed="true" preprocess="xml-stripblanks">gtk/home_episode.ui</file>
-      <file compressed="true" preprocess="xml-stripblanks">gtk/shows_view.ui</file>
       <file compressed="true" preprocess="xml-stripblanks">gtk/shows_child.ui</file>
       <file compressed="true" preprocess="xml-stripblanks">gtk/headerbar.ui</file>
       <file compressed="true" preprocess="xml-stripblanks">gtk/inapp_notif.ui</file>
