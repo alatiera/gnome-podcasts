@@ -4,7 +4,7 @@
   <menu id="menu">
     <section>
       <item>
-        <attribute name="label" translatable="yes">_Mark all episodes as played</attribute>
+        <attribute name="label" translatable="yes">_Mark All Episodes as Played</attribute>
         <!-- <attribute name="action">win.refresh</attribute> -->
       </item>
       <item>

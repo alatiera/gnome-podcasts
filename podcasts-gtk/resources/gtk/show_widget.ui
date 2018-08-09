@@ -116,8 +116,8 @@ Tobias Bernard
                                     <property name="can_focus">False</property>
                                     <property name="halign">center</property>
                                     <property name="valign">center</property>
-                                    <property name="label">This is embarrasing!
-Sorry, we could not find a description for this Show.</property>
+                                    <property name="label" translatable="yes">This is embarrassing!
+Sorry, we could not find a description for this show.</property>
                                     <property name="use_markup">True</property>
                                     <property name="justify">center</property>
                                     <property name="wrap">True</property>

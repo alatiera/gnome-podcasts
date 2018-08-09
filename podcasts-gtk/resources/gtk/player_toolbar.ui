@@ -88,7 +88,7 @@
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="receives_default">True</property>
-            <property name="tooltip_text" translatable="yes">Fast Forward 10 seconds</property>
+            <property name="tooltip_text" translatable="yes">Fast forward 10 seconds</property>
             <property name="image">fast_forward</property>
             <property name="always_show_image">True</property>
           </object>
@@ -254,7 +254,7 @@
         <property name="visible">True</property>
         <property name="can_focus">True</property>
         <property name="receives_default">True</property>
-        <property name="tooltip_text" translatable="yes">Change the Playback speed</property>
+        <property name="tooltip_text" translatable="yes">Change the playback speed</property>
         <property name="halign">center</property>
         <property name="valign">center</property>
         <property name="margin_left">6</property>
@@ -269,7 +269,7 @@
               <object class="GtkLabel" id="rate_label">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="label" translatable="yes">1.00x</property>
+                <property name="label" translatable="yes">1.00×</property>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -313,7 +313,7 @@
         <property name="spacing">3</property>
         <child>
           <object class="GtkRadioButton" id="rate_1_50">
-            <property name="label" translatable="yes">1.50x</property>
+            <property name="label" translatable="yes">1.50×</property>
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="receives_default">False</property>
@@ -331,7 +331,7 @@
         </child>
         <child>
           <object class="GtkRadioButton" id="rate_1_25">
-            <property name="label" translatable="yes">1.25x</property>
+            <property name="label" translatable="yes">1.25×</property>
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="receives_default">False</property>
@@ -349,7 +349,7 @@
         </child>
         <child>
           <object class="GtkRadioButton" id="normal_rate">
-            <property name="label" translatable="yes">1.00x</property>
+            <property name="label" translatable="yes">1.00×</property>
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="receives_default">False</property>

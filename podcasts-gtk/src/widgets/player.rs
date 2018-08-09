@@ -116,7 +116,7 @@ impl PlayerTimes {
         self.duration.set_text(&format_duration(seconds as u32));
     }
 
-    /// Update the `gtk::SclaeBar` when the pipeline position is changed.
+    /// Update the `gtk::Scale` bar when the pipeline position is changed.
     pub(crate) fn on_position_updated(&self, position: Position) {
         let seconds = position.seconds().map(|v| v as f64).unwrap_or(0.0);
 
@@ -134,7 +134,7 @@ fn format_duration(seconds: u32) -> String {
     if seconds >= 3600 {
         time.format("%T").to_string()
     } else {
-        time.format("%M:%S").to_string()
+        time.format("%M∶%S").to_string()
     }
 }
 
@@ -301,7 +301,7 @@ impl PlayerWidget {
             sender.send(Action::ErrorNotification(s));
         }));
 
-        // The followign callbacks require `Send` but are handled by the gtk main loop
+        // The following callbacks require `Send` but are handled by the gtk main loop
         let weak = Fragile::new(Rc::downgrade(s));
 
         // Update the duration label and the slider
@@ -351,7 +351,7 @@ impl PlayerWidget {
 
     fn on_rate_changed(&self, rate: f64) {
         self.set_playback_rate(rate);
-        self.rate.label.set_text(&format!("{:.2}x", rate));
+        self.rate.label.set_text(&format!("{:.2}×", rate));
     }
 
     fn reveal(&self) {

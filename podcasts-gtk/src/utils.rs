@@ -197,7 +197,7 @@ where
             // Refresh only specified feeds
             pipeline::run(s, false)
                 .map_err(|err| error!("Error: {}", err))
-                .map_err(|_| error!("Error While trying to update the database."))
+                .map_err(|_| error!("Error while trying to update the database."))
                 .ok();
         } else {
             // Refresh all the feeds
@@ -221,7 +221,7 @@ lazy_static! {
     static ref THREADPOOL: rayon::ThreadPool = rayon::ThreadPoolBuilder::new().build().unwrap();
 }
 
-// Since gdk_pixbuf::Pixbuf is refference counted and every episode,
+// Since gdk_pixbuf::Pixbuf is reference counted and every episode,
 // use the cover of the Podcast Feed/Show, We can only create a Pixbuf
 // cover per show and pass around the Rc pointer.
 //
@@ -235,7 +235,7 @@ pub(crate) fn set_image_from_path(
 ) -> Result<(), Error> {
     // Check if there's an active download about this show cover.
     // If there is, a callback will be set so this function will be called again.
-    // If the download succedes, there should be a quick return from the pixbuf cache_image
+    // If the download succeeds, there should be a quick return from the pixbuf cache_image
     // If it fails another download will be scheduled.
     if let Ok(guard) = COVER_DL_REGISTRY.read() {
         if guard.contains(&show_id) {
@@ -249,7 +249,7 @@ pub(crate) fn set_image_from_path(
     }
 
     if let Ok(hashmap) = CACHED_PIXBUFS.read() {
-        // Check if the requested (cover + size) is already in the chache
+        // Check if the requested (cover + size) is already in the cache
         // and if so do an early return after that.
         if let Some(guard) = hashmap.get(&(show_id, size)) {
             guard
@@ -299,7 +299,7 @@ pub(crate) fn set_image_from_path(
 
 // FIXME: the signature should be `fn foo(s: Url) -> Result<Url, Error>`
 pub(crate) fn itunes_to_rss(url: &str) -> Result<String, Error> {
-    let id = itunes_id_from_url(url).ok_or_else(|| format_err!("Failed to find an Itunes ID."))?;
+    let id = itunes_id_from_url(url).ok_or_else(|| format_err!("Failed to find an iTunes ID."))?;
     lookup_id(id)
 }
 
@@ -331,7 +331,7 @@ pub(crate) fn on_import_clicked(window: &gtk::ApplicationWindow, sender: &Sender
     // TODO: It might be better to use a FileChooserNative widget.
     // Create the FileChooser Dialog
     let dialog = FileChooserNative::new(
-        Some(i18n("Select the file from which to you want to Import Shows.").as_str()),
+        Some(i18n("Select the file from which to you want to import shows.").as_str()),
         Some(window),
         FileChooserAction::Open,
         Some(i18n("_Import").as_str()),
@@ -349,24 +349,24 @@ pub(crate) fn on_import_clicked(window: &gtk::ApplicationWindow, sender: &Sender
     dialog.add_filter(&filter);
 
     dialog.connect_response(clone!(sender => move |dialog, resp| {
-        debug!("Dialong Response {}", resp);
+        debug!("Dialog Response {}", resp);
         if resp == ResponseType::Accept.to_glib() {
-            // TODO: Show an in-app notifictaion if the file can not be accessed
+            // TODO: Show an in-app notification if the file can not be accessed
             if let Some(filename) = dialog.get_filename() {
                 debug!("File selected: {:?}", filename);
 
                 rayon::spawn(clone!(sender => move || {
                     // Parse the file and import the feeds
                     if let Ok(sources) = opml::import_from_file(filename) {
-                        // Refresh the succesfully parsed feeds to index them
+                        // Refresh the successfully parsed feeds to index them
                         refresh(Some(sources), sender)
                     } else {
-                        let text = i18n("Failed to parse the Imported file");
+                        let text = i18n("Failed to parse the imported file");
                         sender.send(Action::ErrorNotification(text));
                     }
                 }))
             } else {
-                let text = i18n("Selected File could not be accessed.");
+                let text = i18n("Selected file could not be accessed.");
                 sender.send(Action::ErrorNotification(text));
             }
         }

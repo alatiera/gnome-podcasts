@@ -33,7 +33,7 @@
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="receives_default">True</property>
-            <property name="text" translatable="yes">Mark all as played</property>
+            <property name="text" translatable="yes">Mark All as Played</property>
           </object>
           <packing>
             <property name="expand">False</property>

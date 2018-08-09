@@ -57,11 +57,11 @@ impl HomeStack {
         // Copy the vertical scrollbar adjustment from the old view.
         self.episodes
             .save_alignment()
-            .map_err(|err| error!("Failed to set episodes_view allignment: {}", err))
+            .map_err(|err| error!("Failed to set episodes_view alignment: {}", err))
             .ok();
 
         self.replace_view()?;
-        // Determine the actuall state.
+        // Determine the actual state.
         self.determine_state().map_err(From::from)
     }
 
@@ -72,7 +72,7 @@ impl HomeStack {
 
         // Remove the old widget and add the new one
         // during this the previous view is removed,
-        // and the visibile child fallsback to empty view.
+        // and the visible child falls back to empty view.
         self.stack.remove(old);
         self.stack.add_named(&eps.container, "home");
         // Keep the previous state.

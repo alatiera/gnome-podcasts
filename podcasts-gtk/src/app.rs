@@ -101,7 +101,7 @@ impl App {
                 None => return Inhibit(false),
             };
 
-            info!("Savign window position");
+            info!("Saving window position");
             WindowGeometry::from_window(&window).write(&settings);
 
             info!("Application is exiting");
@@ -111,7 +111,7 @@ impl App {
         });
 
         // Create a content instance
-        let content = Content::new(&sender).expect("Content Initialization failed.");
+        let content = Content::new(&sender).expect("Content initialization failed.");
 
         // Create the headerbar
         let header = Header::new(&content, &sender);
@@ -274,7 +274,7 @@ impl App {
                     pop.borrow_mut()
                         .replace_widget(pd.clone())
                         .map_err(|err| error!("Failed to update ShowWidget: {}", err))
-                        .map_err(|_| error!("Failed ot update ShowWidget {}", pd.title()))
+                        .map_err(|_| error!("Failed to update ShowWidget {}", pd.title()))
                         .ok();
                 }
                 Action::ShowWidgetAnimated => {
@@ -330,7 +330,7 @@ impl App {
         textdomain("gnome-podcasts");
 
         let application = gtk::Application::new(APP_ID, gio::ApplicationFlags::empty())
-            .expect("Application Initialization failed...");
+            .expect("Application initialization failed...");
 
         let weak_app = application.downgrade();
         application.connect_startup(move |_| {
