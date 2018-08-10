@@ -75,7 +75,7 @@ Tobias Bernard
                   <object class="GtkLabel" id="date_label">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="label" translatable="yes">3 Jan</property>
+                    <property name="label">3 Jan</property>
                     <property name="single_line_mode">True</property>
                     <property name="track_visited_links">False</property>
                     <style>
@@ -92,7 +92,7 @@ Tobias Bernard
                   <object class="GtkLabel" id="separator1">
                     <property name="can_focus">False</property>
                     <property name="no_show_all">True</property>
-                    <property name="label" translatable="yes">·</property>
+                    <property name="label">·</property>
                     <property name="track_visited_links">False</property>
                     <style>
                       <class name="dim-label"/>
@@ -108,7 +108,7 @@ Tobias Bernard
                   <object class="GtkLabel" id="duration_label">
                     <property name="can_focus">False</property>
                     <property name="no_show_all">True</property>
-                    <property name="label" translatable="yes">42 min</property>
+                    <property name="label">42 min</property>
                     <property name="single_line_mode">True</property>
                     <property name="track_visited_links">False</property>
                     <style>
@@ -125,7 +125,7 @@ Tobias Bernard
                   <object class="GtkLabel" id="separator2">
                     <property name="can_focus">False</property>
                     <property name="no_show_all">True</property>
-                    <property name="label" translatable="yes">·</property>
+                    <property name="label">·</property>
                     <property name="track_visited_links">False</property>
                     <style>
                       <class name="dim-label"/>
@@ -141,7 +141,7 @@ Tobias Bernard
                   <object class="GtkLabel" id="local_size">
                     <property name="can_focus">False</property>
                     <property name="no_show_all">True</property>
-                    <property name="label" translatable="yes">0 MB</property>
+                    <property name="label">0 MB</property>
                     <property name="single_line_mode">True</property>
                     <property name="track_visited_links">False</property>
                     <style>
@@ -158,7 +158,7 @@ Tobias Bernard
                   <object class="GtkLabel" id="prog_separator">
                     <property name="can_focus">False</property>
                     <property name="no_show_all">True</property>
-                    <property name="label" translatable="yes">/</property>
+                    <property name="label">/</property>
                     <property name="single_line_mode">True</property>
                     <property name="track_visited_links">False</property>
                     <style>
