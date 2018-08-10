@@ -55,7 +55,7 @@ variables:
         - web
 
 flatpak:
-    image: registry.gitlab.gnome.org/gnome/gnome-runtime-images/rust_bundle:master
+    image: registry.gitlab.gnome.org/gnome/gnome-runtime-images/rust_bundle:3.28
     stage: test
     script:
         - flatpak-builder --stop-at=gnome-podcasts app org.gnome.Podcasts.json
