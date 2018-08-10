@@ -29,12 +29,12 @@ pub(crate) struct HomeStack {
 
 impl HomeStack {
     pub(crate) fn new(sender: Sender<Action>) -> Result<HomeStack, Error> {
-        let episodes = HomeView::new(sender.clone())?;
+        let episodes = HomeView::new(sender.clone(), None)?;
         let empty = EmptyView::new();
         let stack = gtk::Stack::new();
         let state = State::Empty;
 
-        stack.add_named(&episodes.container, "home");
+        stack.add_named(episodes.view.container(), "home");
         stack.add_named(&empty.container, "empty");
 
         let mut home = HomeStack {
@@ -54,12 +54,6 @@ impl HomeStack {
     }
 
     pub(crate) fn update(&mut self) -> Result<(), Error> {
-        // Copy the vertical scrollbar adjustment from the old view.
-        self.episodes
-            .save_alignment()
-            .map_err(|err| error!("Failed to set episodes_view alignment: {}", err))
-            .ok();
-
         self.replace_view()?;
         // Determine the actual state.
         self.determine_state().map_err(From::from)
@@ -67,14 +61,17 @@ impl HomeStack {
 
     fn replace_view(&mut self) -> Result<(), Error> {
         // Get the container of the view
-        let old = &self.episodes.container.clone();
-        let eps = HomeView::new(self.sender.clone())?;
+        let old = &self.episodes.view.container().clone();
+
+        // Copy the vertical scrollbar adjustment from the old view.
+        let vadj = self.episodes.view.get_vadjustment();
+        let eps = HomeView::new(self.sender.clone(), vadj)?;
 
         // Remove the old widget and add the new one
         // during this the previous view is removed,
         // and the visible child falls back to empty view.
         self.stack.remove(old);
-        self.stack.add_named(&eps.container, "home");
+        self.stack.add_named(eps.view.container(), "home");
         // Keep the previous state.
         let s = self.state;
         // Set the visible child back to the previous one to avoid

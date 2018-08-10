@@ -38,6 +38,9 @@ version = "0.4.1"
 features = ["v2_50"]
 version = "0.4.1"
 
+[dependencies.libhandy]
+git = "https://gitlab.gnome.org/jsparber/libhandy-rs"
+
 [dependencies.podcasts-data]
 path = "../podcasts-data"
 

@@ -3,20 +3,20 @@
 
 Copyright (C) 2017 - 2018
 
-This file is part of Hammond.
+This file is part of GNOEM Podcasts.
 
-Hammond is free software: you can redistribute it and/or modify
+GNOEM Podcasts is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation, either version 3 of the License, or
 (at your option) any later version.
 
-Hammond is distributed in the hope that it will be useful,
+GNOEM Podcasts is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
-along with Hammond.  If not, see <http://www.gnu.org/licenses/>.
+along with GNOEM Podcasts.  If not, see <http://www.gnu.org/licenses/>.
 
 Authors:
 Jordan Petridis
@@ -24,9 +24,9 @@ Tobias Bernard
 
 -->
 <interface>
-  <requires lib="gtk+" version="3.20"/>
+  <requires lib="gtk+" version="3.22"/>
   <!-- interface-license-type gplv3 -->
-  <!-- interface-name Hammond -->
+  <!-- interface-name GNOEM Podcasts -->
   <!-- interface-description A podcast client for the GNOME Desktop -->
   <!-- interface-copyright 2017 - 2018 -->
   <!-- interface-authors Jordan Petridis\nTobias Bernard -->
@@ -41,10 +41,7 @@ Tobias Bernard
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="valign">center</property>
-        <property name="margin_left">6</property>
-        <property name="margin_right">6</property>
-        <property name="margin_top">6</property>
-        <property name="margin_bottom">6</property>
+        <property name="border_width">6</property>
         <property name="orientation">vertical</property>
         <property name="spacing">6</property>
         <child>
@@ -147,6 +144,43 @@ Tobias Bernard
   <object class="GtkHeaderBar" id="headerbar">
     <property name="can_focus">False</property>
     <property name="show_close_button">True</property>
+    <child type="title">
+      <object class="GtkBox">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="orientation">vertical</property>
+        <child>
+          <object class="GtkStackSwitcher" id="switch">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="halign">center</property>
+            <property name="valign">center</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="show_title">
+            <property name="can_focus">False</property>
+            <property name="no_show_all">True</property>
+            <property name="label" translatable="yes">Show Title</property>
+            <property name="ellipsize">end</property>
+            <property name="track_visited_links">False</property>
+            <attributes>
+              <attribute name="weight" value="bold"/>
+            </attributes>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
+      </object>
+    </child>
     <child>
       <object class="GtkMenuButton" id="add_toggle">
         <property name="visible">True</property>
@@ -192,72 +226,6 @@ Tobias Bernard
       </packing>
     </child>
     <child>
-      <object class="GtkBox" id="update_notification">
-        <property name="can_focus">False</property>
-        <property name="no_show_all">True</property>
-        <child>
-          <object class="GtkSpinner" id="update_spinner">
-            <property name="can_focus">False</property>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="padding">6</property>
-            <property name="position">0</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkLabel" id="update_label">
-            <property name="can_focus">False</property>
-            <property name="label" translatable="yes">Fetching new episodes</property>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">1</property>
-          </packing>
-        </child>
-      </object>
-      <packing>
-        <property name="position">3</property>
-      </packing>
-    </child>
-    <child type="title">
-      <object class="GtkBox">
-        <property name="visible">True</property>
-        <property name="can_focus">False</property>
-        <property name="orientation">vertical</property>
-        <child>
-          <object class="GtkStackSwitcher" id="switch">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="halign">center</property>
-            <property name="valign">center</property>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">0</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkLabel" id="show_title">
-            <property name="can_focus">False</property>
-            <property name="no_show_all">True</property>
-            <property name="label" translatable="yes">Show Title</property>
-            <attributes>
-              <attribute name="weight" value="bold"/>
-            </attributes>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">1</property>
-          </packing>
-        </child>
-      </object>
-    </child>
-    <child>
       <object class="GtkMenuButton" id="hamburger">
         <property name="visible">True</property>
         <property name="can_focus">True</property>
@@ -301,6 +269,42 @@ Tobias Bernard
       <packing>
         <property name="pack_type">end</property>
         <property name="position">2</property>
+      </packing>
+    </child>
+    <child>
+      <object class="GtkBox" id="update_notification">
+        <property name="can_focus">False</property>
+        <property name="no_show_all">True</property>
+        <child>
+          <object class="GtkSpinner" id="update_spinner">
+            <property name="can_focus">False</property>
+            <property name="halign">center</property>
+            <property name="valign">center</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="padding">6</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="update_label">
+            <property name="can_focus">False</property>
+            <property name="halign">center</property>
+            <property name="valign">center</property>
+            <property name="label" translatable="yes">Fetching new episodes</property>
+            <property name="ellipsize">end</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
+      </object>
+      <packing>
+        <property name="position">3</property>
       </packing>
     </child>
   </object>

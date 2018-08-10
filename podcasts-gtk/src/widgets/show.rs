@@ -1,11 +1,11 @@
 use glib;
-use gtk;
-use gtk::prelude::*;
+use gtk::{self, prelude::*, Adjustment};
 
 use crossbeam_channel::Sender;
 use failure::Error;
 use fragile::Fragile;
 use html2text;
+use libhandy::{Column, ColumnExt};
 use rayon;
 
 use podcasts_data::dbqueries;
@@ -13,20 +13,14 @@ use podcasts_data::Show;
 
 use app::Action;
 use utils::{self, lazy_load};
-use widgets::{EpisodeWidget, ShowMenu};
+use widgets::{BaseView, EpisodeWidget, ShowMenu};
 
 use std::rc::Rc;
-use std::sync::{Arc, Mutex};
-
-lazy_static! {
-    static ref SHOW_WIDGET_VALIGNMENT: Mutex<Option<(i32, Fragile<gtk::Adjustment>)>> =
-        Mutex::new(None);
-}
+use std::sync::Arc;
 
 #[derive(Debug, Clone)]
 pub(crate) struct ShowWidget {
-    pub(crate) container: gtk::Box,
-    scrolled_window: gtk::ScrolledWindow,
+    pub(crate) view: BaseView,
     cover: gtk::Image,
     description: gtk::Label,
     episodes: gtk::ListBox,
@@ -36,16 +30,25 @@ pub(crate) struct ShowWidget {
 impl Default for ShowWidget {
     fn default() -> Self {
         let builder = gtk::Builder::new_from_resource("/org/gnome/Podcasts/gtk/show_widget.ui");
-        let container: gtk::Box = builder.get_object("container").unwrap();
-        let scrolled_window: gtk::ScrolledWindow = builder.get_object("scrolled_window").unwrap();
-        let episodes = builder.get_object("episodes").unwrap();
-
+        let sub_cont: gtk::Box = builder.get_object("sub_container").unwrap();
         let cover: gtk::Image = builder.get_object("cover").unwrap();
         let description: gtk::Label = builder.get_object("description").unwrap();
+        let episodes = builder.get_object("episodes").unwrap();
+        let view = BaseView::default();
+
+        let column = Column::new();
+        column.set_maximum_width(700);
+        // For some reason the Column is not seen as a gtk::container
+        // and therefore we can't call add() without the cast
+        let column = column.upcast::<gtk::Widget>();
+        let column = column.downcast::<gtk::Container>().unwrap();
+
+        column.add(&sub_cont);
+        view.add(&column);
+        column.show_all();
 
         ShowWidget {
-            container,
-            scrolled_window,
+            view,
             cover,
             description,
             episodes,
@@ -55,7 +58,11 @@ impl Default for ShowWidget {
 }
 
 impl ShowWidget {
-    pub(crate) fn new(pd: Arc<Show>, sender: Sender<Action>) -> Rc<ShowWidget> {
+    pub(crate) fn new(
+        pd: Arc<Show>,
+        sender: Sender<Action>,
+        vadj: Option<Adjustment>,
+    ) -> Rc<ShowWidget> {
         let mut pdw = ShowWidget::default();
         pdw.init(&pd);
 
@@ -63,7 +70,7 @@ impl ShowWidget {
         sender.send(Action::InitShowMenu(Fragile::new(menu)));
 
         let pdw = Rc::new(pdw);
-        let res = populate_listbox(&pdw, pd.clone(), sender);
+        let res = populate_listbox(&pdw, pd.clone(), sender, vadj);
         debug_assert!(res.is_ok());
 
         pdw
@@ -85,49 +92,7 @@ impl ShowWidget {
     /// Set the description text.
     fn set_description(&self, text: &str) {
         self.description
-            .set_markup(html2text::from_read(text.as_bytes(), 70).trim());
-    }
-
-    /// Save the scrollbar adjustment to the cache.
-    pub(crate) fn save_vadjustment(&self, oldid: i32) -> Result<(), Error> {
-        if let Ok(mut guard) = SHOW_WIDGET_VALIGNMENT.lock() {
-            let adj = self
-                .scrolled_window
-                .get_vadjustment()
-                .ok_or_else(|| format_err!("Could not get the adjustment"))?;
-            *guard = Some((oldid, Fragile::new(adj)));
-            debug!("Widget Alignment was saved with ID: {}.", oldid);
-        }
-
-        Ok(())
-    }
-
-    /// Set scrolled window vertical adjustment.
-    fn set_vadjustment(&self, pd: &Arc<Show>) -> Result<(), Error> {
-        let guard = SHOW_WIDGET_VALIGNMENT
-            .lock()
-            .map_err(|err| format_err!("Failed to lock widget align mutex: {}", err))?;
-
-        if let Some((oldid, ref fragile)) = *guard {
-            // Only copy the old scrollbar if both widgets represent the same podcast.
-            debug!("PID: {}", pd.id());
-            debug!("OLDID: {}", oldid);
-            if pd.id() != oldid {
-                debug!("Early return");
-                return Ok(());
-            };
-
-            // Copy the vertical scrollbar adjustment from the old view into the new one.
-            let res = fragile
-                .try_get()
-                .map(|x| utils::smooth_scroll_to(&self.scrolled_window, &x))
-                .map_err(From::from);
-
-            debug_assert!(res.is_ok());
-            return res;
-        }
-
-        Ok(())
+            .set_markup(html2text::from_read(text.as_bytes(), 90).trim());
     }
 
     pub(crate) fn show_id(&self) -> Option<i32> {
@@ -137,9 +102,11 @@ impl ShowWidget {
 
 /// Populate the listbox with the shows episodes.
 fn populate_listbox(
+    // FIXME: we are leaking strong refs here
     show: &Rc<ShowWidget>,
     pd: Arc<Show>,
     sender: Sender<Action>,
+    vadj: Option<Adjustment>,
 ) -> Result<(), Error> {
     use crossbeam_channel::bounded;
 
@@ -176,9 +143,10 @@ fn populate_listbox(
             EpisodeWidget::new(ep, &sender).container.clone()
         });
 
-        let callback = clone!(pd, show_ => move || {
-            let res = show_.set_vadjustment(&pd);
-            debug_assert!(res.is_ok());
+        let callback = clone!(show_, vadj => move || {
+            if let Some(ref v) = vadj {
+                show_.view.set_adjutments(None, Some(v))
+            };
         });
 
         lazy_load(episodes, list.clone(), constructor, callback);

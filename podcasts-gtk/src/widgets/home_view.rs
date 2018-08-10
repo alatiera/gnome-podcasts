@@ -1,26 +1,19 @@
 use chrono::prelude::*;
 use failure::Error;
 
-use gtk;
-use gtk::prelude::*;
+use gtk::{self, prelude::*, Adjustment};
 
 use crossbeam_channel::Sender;
-use fragile::Fragile;
+use libhandy::{Column, ColumnExt};
 use podcasts_data::dbqueries;
 use podcasts_data::EpisodeWidgetModel;
 
 use app::Action;
 use utils::{self, lazy_load_full};
-use widgets::EpisodeWidget;
+use widgets::{BaseView, EpisodeWidget};
 
 use std::cell::Cell;
 use std::rc::Rc;
-use std::sync::Mutex;
-
-lazy_static! {
-    pub(crate) static ref EPISODES_VIEW_VALIGNMENT: Mutex<Option<Fragile<gtk::Adjustment>>> =
-        Mutex::new(None);
-}
 
 #[derive(Debug, Clone)]
 enum ListSplit {
@@ -33,8 +26,7 @@ enum ListSplit {
 
 #[derive(Debug, Clone)]
 pub(crate) struct HomeView {
-    pub(crate) container: gtk::Box,
-    scrolled_window: gtk::ScrolledWindow,
+    pub(crate) view: BaseView,
     frame_parent: gtk::Box,
     today_box: gtk::Box,
     yday_box: gtk::Box,
@@ -50,9 +42,8 @@ pub(crate) struct HomeView {
 
 impl Default for HomeView {
     fn default() -> Self {
+        let view = BaseView::default();
         let builder = gtk::Builder::new_from_resource("/org/gnome/Podcasts/gtk/home_view.ui");
-        let container: gtk::Box = builder.get_object("container").unwrap();
-        let scrolled_window: gtk::ScrolledWindow = builder.get_object("scrolled_window").unwrap();
         let frame_parent: gtk::Box = builder.get_object("frame_parent").unwrap();
         let today_box: gtk::Box = builder.get_object("today_box").unwrap();
         let yday_box: gtk::Box = builder.get_object("yday_box").unwrap();
@@ -65,9 +56,19 @@ impl Default for HomeView {
         let month_list: gtk::ListBox = builder.get_object("month_list").unwrap();
         let rest_list: gtk::ListBox = builder.get_object("rest_list").unwrap();
 
+        let column = Column::new();
+        column.show();
+        column.set_maximum_width(700);
+        // For some reason the Column is not seen as a gtk::container
+        // and therefore we can't call add() without the cast
+        let column = column.upcast::<gtk::Widget>();
+        let column = column.downcast::<gtk::Container>().unwrap();
+
+        column.add(&frame_parent);
+        view.add(&column);
+
         HomeView {
-            container,
-            scrolled_window,
+            view,
             frame_parent,
             today_box,
             yday_box,
@@ -85,73 +86,51 @@ impl Default for HomeView {
 
 // TODO: REFACTOR ME
 impl HomeView {
-    pub(crate) fn new(sender: Sender<Action>) -> Result<Rc<HomeView>, Error> {
+    pub(crate) fn new(
+        sender: Sender<Action>,
+        vadj: Option<Adjustment>,
+    ) -> Result<Rc<HomeView>, Error> {
         use self::ListSplit::*;
 
-        let view = Rc::new(HomeView::default());
+        let home = Rc::new(HomeView::default());
         let ignore = utils::get_ignored_shows()?;
         let episodes = dbqueries::get_episodes_widgets_filter_limit(&ignore, 100)?;
         let now_utc = Utc::now();
 
-        let view_ = view.clone();
+        let home_weak = Rc::downgrade(&home);
         let func = move |ep: EpisodeWidgetModel| {
+            let home = match home_weak.upgrade() {
+                Some(h) => h,
+                None => return,
+            };
+
             let epoch = ep.epoch();
             let widget = HomeEpisode::new(ep, &sender);
 
             match split(&now_utc, i64::from(epoch)) {
-                Today => add_to_box(&widget, &view_.today_list, &view_.today_box),
-                Yday => add_to_box(&widget, &view_.yday_list, &view_.yday_box),
-                Week => add_to_box(&widget, &view_.week_list, &view_.week_box),
-                Month => add_to_box(&widget, &view_.month_list, &view_.month_box),
-                Rest => add_to_box(&widget, &view_.rest_list, &view_.rest_box),
+                Today => add_to_box(&widget, &home.today_list, &home.today_box),
+                Yday => add_to_box(&widget, &home.yday_list, &home.yday_box),
+                Week => add_to_box(&widget, &home.week_list, &home.week_box),
+                Month => add_to_box(&widget, &home.month_list, &home.month_box),
+                Rest => add_to_box(&widget, &home.rest_list, &home.rest_box),
             }
         };
 
-        let view_ = view.clone();
+        let home_weak = Rc::downgrade(&home);
         let callback = move || {
-            view_
-                .set_vadjustment()
-                .map_err(|err| format!("{}", err))
-                .ok();
+            let home = match home_weak.upgrade() {
+                Some(h) => h,
+                None => return,
+            };
+
+            if let Some(ref v) = vadj {
+                home.view.set_adjutments(None, Some(v))
+            };
         };
 
         lazy_load_full(episodes, func, callback);
-        view.container.show_all();
-        Ok(view)
-    }
-
-    /// Set scrolled window vertical adjustment.
-    fn set_vadjustment(&self) -> Result<(), Error> {
-        let guard = EPISODES_VIEW_VALIGNMENT
-            .lock()
-            .map_err(|err| format_err!("Failed to lock widget align mutex: {}", err))?;
-
-        if let Some(ref fragile) = *guard {
-            // Copy the vertical scrollbar adjustment from the old view into the new one.
-            let res = fragile
-                .try_get()
-                .map(|x| utils::smooth_scroll_to(&self.scrolled_window, &x))
-                .map_err(From::from);
-
-            debug_assert!(res.is_ok());
-            return res;
-        }
-
-        Ok(())
-    }
-
-    /// Save the vertical scrollbar position.
-    pub(crate) fn save_alignment(&self) -> Result<(), Error> {
-        if let Ok(mut guard) = EPISODES_VIEW_VALIGNMENT.lock() {
-            let adj = self
-                .scrolled_window
-                .get_vadjustment()
-                .ok_or_else(|| format_err!("Could not get the adjustment"))?;
-            *guard = Some(Fragile::new(adj));
-            info!("Saved episodes_view alignment.");
-        }
-
-        Ok(())
+        home.view.container().show_all();
+        Ok(home)
     }
 }
 

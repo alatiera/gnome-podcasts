@@ -34,12 +34,12 @@ impl PopulatedStack {
     pub(crate) fn new(sender: Sender<Action>) -> PopulatedStack {
         let stack = gtk::Stack::new();
         let state = PopulatedState::View;
-        let populated = ShowsView::new(sender.clone());
+        let populated = ShowsView::new(sender.clone(), None);
         let show = Rc::new(ShowWidget::default());
         let container = gtk::Box::new(gtk::Orientation::Horizontal, 0);
 
-        stack.add_named(&populated.container, "shows");
-        stack.add_named(&show.container, "widget");
+        stack.add_named(populated.view.container(), "shows");
+        stack.add_named(show.view.container(), "widget");
         container.add(&stack);
         container.show_all();
 
@@ -70,33 +70,35 @@ impl PopulatedStack {
     }
 
     pub(crate) fn replace_shows(&mut self) -> Result<(), Error> {
-        let old = &self.populated.container.clone();
+        let old = &self.populated.view.container().clone();
         debug!("Name: {:?}", WidgetExt::get_name(old));
 
-        self.populated
-            .save_alignment()
-            .map_err(|err| error!("Failed to set episodes_view alignment: {}", err))
-            .ok();
-
-        let pop = ShowsView::new(self.sender.clone());
+        let vadj = self.populated.view.get_vadjustment();
+        let pop = ShowsView::new(self.sender.clone(), vadj);
         self.populated = pop;
         self.stack.remove(old);
-        self.stack.add_named(&self.populated.container, "shows");
+        self.stack
+            .add_named(self.populated.view.container(), "shows");
 
         old.destroy();
         Ok(())
     }
 
     pub(crate) fn replace_widget(&mut self, pd: Arc<Show>) -> Result<(), Error> {
-        let old = self.show.container.clone();
+        let old = self.show.view.container().clone();
 
-        // save the ShowWidget vertical scrollbar alignment
-        self.show.show_id().map(|id| self.show.save_vadjustment(id));
+        // Get the ShowWidget vertical alignment
+        let vadj = self.show.view.get_vadjustment();
+        let new = match self.show.show_id() {
+            // If the previous show was the same, restore the alignment
+            Some(id) if id == pd.id() => ShowWidget::new(pd, self.sender.clone(), vadj),
+            // else leave the valignemnt to default
+            _ => ShowWidget::new(pd.clone(), self.sender.clone(), None),
+        };
 
-        let new = ShowWidget::new(pd, self.sender.clone());
         self.show = new;
         self.stack.remove(&old);
-        self.stack.add_named(&self.show.container, "widget");
+        self.stack.add_named(self.show.view.container(), "widget");
 
         // The current visible child might change depending on
         // removal and insertion in the gtk::Stack, so we have
@@ -108,7 +110,7 @@ impl PopulatedStack {
     }
 
     pub(crate) fn update_widget(&mut self) -> Result<(), Error> {
-        let old = self.show.container.clone();
+        let old = self.show.view.container().clone();
         let id = self.show.show_id();
         if id.is_none() {
             return Ok(());
