@@ -24,7 +24,7 @@ pub(crate) fn about_dialog(window: &gtk::ApplicationWindow) {
     let dialog = gtk::AboutDialog::new();
     dialog.set_logo_icon_name(APP_ID);
     dialog.set_comments(i18n("Podcast Client for the GNOME Desktop.").as_str());
-    dialog.set_copyright(i18n("© 2017, 2018 Jordan Petridis").as_str());
+    dialog.set_copyright("© 2017, 2018 Jordan Petridis");
     dialog.set_license_type(gtk::License::Gpl30);
     dialog.set_modal(true);
     // TODO: make it show it fetches the commit hash from which it was built
