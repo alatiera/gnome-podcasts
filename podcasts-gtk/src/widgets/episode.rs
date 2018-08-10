@@ -78,7 +78,7 @@ impl InfoLabels {
         // Set the date label.
         self.set_date(episode.epoch());
 
-        // Set the duaration label.
+        // Set the duration label.
         self.set_duration(episode.duration());
 
         // Set the total_size label.
@@ -118,11 +118,11 @@ impl InfoLabels {
 
     // Set the duration label of the episode widget.
     fn set_duration(&self, seconds: Option<i32>) {
-        // If lenght is provided
+        // If length is provided
         if let Some(s) = seconds {
             // Convert seconds to minutes
             let minutes = chrono::Duration::seconds(s.into()).num_minutes();
-            // If the lenght is 1 or more minutes
+            // If the length is 1 or more minutes
             if minutes != 0 {
                 // Set the label and show them.
                 self.duration
@@ -227,15 +227,15 @@ impl EpisodeWidget {
 
         // When the widget is attached to a parent,
         // since it's a rust struct and not a widget the
-        // compiler drops the refference to it at the end of
+        // compiler drops the reference to it at the end of
         // scope. That's cause we only attach the `self.container`
         // to the parent.
         //
-        // So this callback keeps a refference to the Rust Struct
+        // So this callback keeps a reference to the Rust Struct
         // so the compiler won't drop it.
         //
-        // When the widget is detached from it's parent view this
-        // callback runs freeing the last refference we were holding.
+        // When the widget is detached from its parent view this
+        // callback runs freeing the last reference we were holding.
         let foo = RefCell::new(Some(widget.clone()));
         widget.container.connect_remove(move |_, _| {
             foo.borrow_mut().take();
@@ -348,7 +348,7 @@ impl EpisodeWidget {
             Ok(m.get(&id).cloned())
         };
 
-        // State: InProggress
+        // State: InProgress
         if let Some(prog) = active_dl()? {
             // set a callback that will update the state when the download finishes
             let callback = clone!(weak, sender => move || {
@@ -442,7 +442,7 @@ impl EpisodeWidget {
                 if let Ok(ep) = dbqueries::get_episode_widget_from_rowid(id) {
                     on_download_clicked(&ep, &sender)
                         .and_then(|_| {
-                            info!("Donwload started succesfully.");
+                            info!("Download started successfully.");
                             Self::determine_buttons_state(&weak, &ep, &sender)
                         })
                         .map_err(|err| error!("Error: {}", err))

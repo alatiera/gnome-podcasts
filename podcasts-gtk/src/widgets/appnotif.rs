@@ -86,7 +86,7 @@ impl InAppNotification {
         notif
     }
 
-    // This is a seperate method cause in order to get a nice animation
+    // This is a separate method cause in order to get a nice animation
     // the revealer should be attached to something that displays it.
     // Previously we where doing it in the constructor, which had the result
     // of the animation being skipped cause there was no parent widget to display it.

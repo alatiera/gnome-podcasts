@@ -115,7 +115,7 @@ fn on_child_activate(child: &gtk::FlowBoxChild, sender: &Sender<Action>) -> Resu
 
     // This is such an ugly hack...
     let id = WidgetExt::get_name(child)
-        .ok_or_else(|| format_err!("Faild to get \"episodes\" child from the stack."))?
+        .ok_or_else(|| format_err!("Failed to get \"episodes\" child from the stack."))?
         .parse::<i32>()?;
     let pd = Arc::new(dbqueries::get_podcast_from_id(id)?);
 

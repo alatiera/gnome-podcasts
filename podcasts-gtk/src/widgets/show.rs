@@ -82,13 +82,13 @@ impl ShowWidget {
         utils::set_image_from_path(&self.cover, pd.id(), 256)
     }
 
-    /// Set the descripton text.
+    /// Set the description text.
     fn set_description(&self, text: &str) {
         self.description
             .set_markup(html2text::from_read(text.as_bytes(), 70).trim());
     }
 
-    /// Save the scrollabar vajustment to the cache.
+    /// Save the scrollbar adjustment to the cache.
     pub(crate) fn save_vadjustment(&self, oldid: i32) -> Result<(), Error> {
         if let Ok(mut guard) = SHOW_WIDGET_VALIGNMENT.lock() {
             let adj = self
@@ -109,7 +109,7 @@ impl ShowWidget {
             .map_err(|err| format_err!("Failed to lock widget align mutex: {}", err))?;
 
         if let Some((oldid, ref fragile)) = *guard {
-            // Only copy the old scrollbar if both widget's represent the same podcast.
+            // Only copy the old scrollbar if both widgets represent the same podcast.
             debug!("PID: {}", pd.id());
             debug!("OLDID: {}", oldid);
             if pd.id() != oldid {

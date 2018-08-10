@@ -48,7 +48,7 @@
       <object class="GtkLabel">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="label" translatable="yes">If you think this is an Error, Plese consider opening a bug report.</property>
+        <property name="label" translatable="yes">If you think this is an error, please consider opening a bug report.</property>
         <style>
           <class name="dim-label"/>
         </style>

@@ -8,7 +8,7 @@ use i18n::i18n;
 // https://gitlab.gnome.org/danigm/fractal/blob/503e311e22b9d7540089d735b92af8e8f93560c5/fractal-gtk/src/app.rs#L1883-1912
 /// Given a `window` create and attach an `gtk::AboutDialog` to it.
 pub(crate) fn about_dialog(window: &gtk::ApplicationWindow) {
-    // Feel free to add yourself if you contribured.
+    // Feel free to add yourself if you contributed.
     let authors = &[
         "Carlos Soriano",
         "Constantin Nickel",
@@ -28,7 +28,7 @@ pub(crate) fn about_dialog(window: &gtk::ApplicationWindow) {
     dialog.set_license_type(gtk::License::Gpl30);
     dialog.set_modal(true);
     // TODO: make it show it fetches the commit hash from which it was built
-    // and the version number is kept in sync automaticly
+    // and the version number is kept in sync automatically
     dialog.set_version("0.4.4");
     dialog.set_program_name(&i18n("Podcasts"));
     // TODO: Need a wiki page first.

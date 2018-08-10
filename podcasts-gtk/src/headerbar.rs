@@ -120,7 +120,7 @@ impl AddPopover {
                 } else {
                     self.add.set_sensitive(false);
                     self.result
-                        .set_label(i18n("You are already subscribed to this Show").as_str());
+                        .set_label(i18n("You are already subscribed to this show").as_str());
                     self.result.show();
                 }
                 Ok(())
@@ -128,7 +128,7 @@ impl AddPopover {
             Err(err) => {
                 self.add.set_sensitive(false);
                 if !url.is_empty() {
-                    self.result.set_label(i18n("Invalid url").as_str());
+                    self.result.set_label(i18n("Invalid URL").as_str());
                     self.result.show();
                     error!("Error: {}", err);
                 } else {

@@ -10,7 +10,7 @@ pub(crate) fn init() -> Result<(), Error> {
     let gbytes = Bytes::from_static(res_bytes.as_ref());
     let resource = Resource::new_from_data(&gbytes)?;
 
-    // Register the resource so It wont be dropped and will continue to live in
+    // Register the resource so it won't be dropped and will continue to live in
     // memory.
     resources_register(&resource);
 

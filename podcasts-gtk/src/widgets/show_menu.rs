@@ -122,7 +122,7 @@ fn dim_titles(episodes: &gtk::ListBox) -> Option<()> {
 
 fn mark_all_watched(pd: &Show, sender: &Sender<Action>) -> Result<(), Error> {
     dbqueries::update_none_to_played_now(pd)?;
-    // Not all widgets migth have been loaded when the mark_all is hit
+    // Not all widgets might have been loaded when the mark_all is hit
     // So we will need to refresh again after it's done.
     sender.send(Action::RefreshWidgetIfSame(pd.id()));
     sender.send(Action::RefreshEpisodesView);

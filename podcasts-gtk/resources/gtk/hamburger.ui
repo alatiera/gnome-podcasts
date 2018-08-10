@@ -4,7 +4,7 @@
   <menu id="menu">
     <section>
       <item>
-        <attribute name="label" translatable="yes">_Check for new episodes</attribute>
+        <attribute name="label" translatable="yes">_Check for New Episodes</attribute>
         <attribute name="action">win.refresh</attribute>
         <attribute name="accel">&lt;primary&gt;r</attribute>
       </item>

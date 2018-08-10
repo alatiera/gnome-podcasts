@@ -11,7 +11,7 @@ use std::sync::{Arc, Mutex, RwLock};
 // use std::path::PathBuf;
 
 // This is messy, undocumented and hacky af.
-// I am terrible at writting downloaders and download managers.
+// I am terrible at writing downloaders and download managers.
 
 #[derive(Debug)]
 pub(crate) struct Progress {
@@ -81,7 +81,7 @@ pub(crate) fn add(id: i32, directory: String) -> Result<(), Error> {
 
     match ACTIVE_DOWNLOADS.write() {
         Ok(mut guard) => guard.insert(id, prog.clone()),
-        Err(err) => return Err(format_err!("ActiveDonwloads: {}.", err)),
+        Err(err) => return Err(format_err!("ActiveDownloads: {}.", err)),
     };
 
     DLPOOL.spawn(move || {
@@ -131,11 +131,11 @@ mod tests {
         let url = "https://web.archive.org/web/20180120110727if_/https://rss.acast.com/thetipoff";
         // Create and index a source
         let source = Source::from_url(url).unwrap();
-        // Copy it's id
+        // Copy its id
         let sid = source.id();
         pipeline::run(vec![source], true).unwrap();
 
-        // Get the Podcast
+        // Get the podcast
         let pd = dbqueries::get_podcast_from_source_id(sid).unwrap();
         let title = "Coming soon... The Tip Off";
         // Get an episode
@@ -146,7 +146,7 @@ mod tests {
         add(episode.rowid(), download_fold).unwrap();
         assert_eq!(ACTIVE_DOWNLOADS.read().unwrap().len(), 1);
 
-        // Give it soem time to download the file
+        // Give it some time to download the file
         thread::sleep(time::Duration::from_secs(20));
 
         let final_path = format!("{}/{}.mp3", &fold2, episode.rowid());
@@ -162,11 +162,11 @@ mod tests {
             "https://web.archive.org/web/20180120104957if_/https://rss.art19.com/steal-the-stars";
         // Create and index a source
         let source = Source::from_url(url).unwrap();
-        // Copy it's id
+        // Copy its id
         let sid = source.id();
         pipeline::run(vec![source], true).unwrap();
 
-        // Get the Podcast
+        // Get the podcast
         let pd = dbqueries::get_podcast_from_source_id(sid).unwrap();
         let title = "Introducing Steal the Stars";
         // Get an episode

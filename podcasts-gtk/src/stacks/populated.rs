@@ -75,7 +75,7 @@ impl PopulatedStack {
 
         self.populated
             .save_alignment()
-            .map_err(|err| error!("Failed to set episodes_view allignment: {}", err))
+            .map_err(|err| error!("Failed to set episodes_view alignment: {}", err))
             .ok();
 
         let pop = ShowsView::new(self.sender.clone());
@@ -90,7 +90,7 @@ impl PopulatedStack {
     pub(crate) fn replace_widget(&mut self, pd: Arc<Show>) -> Result<(), Error> {
         let old = self.show.container.clone();
 
-        // save the ShowWidget vertical scrollabar alignment
+        // save the ShowWidget vertical scrollbar alignment
         self.show.show_id().map(|id| self.show.save_vadjustment(id));
 
         let new = ShowWidget::new(pd, self.sender.clone());
