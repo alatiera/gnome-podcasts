@@ -25,6 +25,8 @@ use std::env;
 use std::rc::Rc;
 use std::sync::Arc;
 
+use i18n::i18n;
+
 pub(crate) const APP_ID: &str = "org.gnome.Podcasts";
 
 include!(concat!(env!("OUT_DIR"), "/build_globals.rs"));
@@ -84,7 +86,7 @@ impl App {
         let (sender, receiver) = unbounded();
 
         let window = gtk::ApplicationWindow::new(application);
-        window.set_title("Podcasts");
+        window.set_title(&i18n("Podcasts"));
 
         let weak_s = settings.downgrade();
         let weak_app = application.downgrade();
@@ -349,7 +351,7 @@ impl App {
         });
 
         // Weird magic I copy-pasted that sets the Application Name in the Shell.
-        glib::set_application_name("Podcasts");
+        glib::set_application_name(&i18n("Podcasts"));
         glib::set_prgname(Some("gnome-podcasts"));
         gtk::Window::set_default_icon_name(APP_ID);
         let args: Vec<String> = env::args().collect();
