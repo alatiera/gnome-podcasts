@@ -1,5 +1,5 @@
 use glib;
-use gtk::{self, prelude::*, Adjustment, SelectionMode};
+use gtk::{self, prelude::*, Adjustment};
 
 use crossbeam_channel::Sender;
 use failure::Error;
@@ -33,11 +33,8 @@ impl Default for ShowWidget {
         let sub_cont: gtk::Box = builder.get_object("sub_container").unwrap();
         let cover: gtk::Image = builder.get_object("cover").unwrap();
         let description: gtk::Label = builder.get_object("description").unwrap();
+        let episodes = builder.get_object("episodes").unwrap();
         let view = BaseView::default();
-
-        let frame = gtk::Frame::new(None);
-        let episodes = gtk::ListBox::new();
-        episodes.set_selection_mode(SelectionMode::None);
 
         let column = Column::new();
         column.set_maximum_width(700);
@@ -46,8 +43,6 @@ impl Default for ShowWidget {
         let column = column.upcast::<gtk::Widget>();
         let column = column.downcast::<gtk::Container>().unwrap();
 
-        frame.add(&episodes);
-        sub_cont.add(&frame);
         column.add(&sub_cont);
         view.add(&column);
         column.show_all();
