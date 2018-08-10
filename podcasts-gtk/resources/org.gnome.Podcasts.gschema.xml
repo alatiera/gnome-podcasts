@@ -9,7 +9,7 @@
         <value nick="months" value="6"/>
     </enum>
 
-    <schema path="/org/gnome/Podcasts/" id="org.gnome.Podcasts">
+    <schema path="/org/gnome/Podcasts/" id="org.gnome.Podcasts" gettext-domain="gnome-podcasts">
         <key name="persist-window-geometry-top" type="i">
             <default>-1</default>
             <summary>Top position of the last open main window</summary>
