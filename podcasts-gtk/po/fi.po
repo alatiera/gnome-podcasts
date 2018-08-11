@@ -1,0 +1,407 @@
+# Finnish translation for podcasts.
+# Copyright (C) 2018 podcasts's COPYRIGHT HOLDER
+# This file is distributed under the same license as the podcasts package.
+# Jiri Grönroos <jiri.gronroos@iki.fi>, 2018.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: podcasts master\n"
+"Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
+"POT-Creation-Date: 2018-08-11 09:24+0000\n"
+"PO-Revision-Date: 2018-08-11 17:09+0300\n"
+"Language-Team: Finnish <lokalisointi-lista@googlegroups.com>\n"
+"Language: fi\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Last-Translator: Jiri Grönroos <jiri.gronroos+l10n@iki.fi>\n"
+"X-Generator: Poedit 2.0.6\n"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml:15
+msgid "Top position of the last open main window"
+msgstr ""
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml:19
+msgid "Left position of the last open main window"
+msgstr ""
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml:23
+msgid "Height of the last open main window"
+msgstr ""
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml:27
+msgid "Width of the last open main window"
+msgstr ""
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml:31
+msgid "Maximized state of the last open main window"
+msgstr ""
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml:36
+msgid "Enable or disable dark theme"
+msgstr "Ota käyttöön tai poista käytöstä tumma teema"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml:41
+msgid "Whether to periodically refresh content"
+msgstr ""
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml:46
+msgid "How many periods of time to wait between automatic refreshes"
+msgstr ""
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml:50
+msgid "What period of time to wait between automatic refreshes"
+msgstr ""
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml:54
+msgid "Whether to refresh content after startup"
+msgstr "Päivitetäänkö sisältö sovelluksen käynnistyttyä"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml:60
+msgid "How many periods of time to wait between automatic cleanups"
+msgstr ""
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml:64
+msgid "What period of time to wait between automatic cleanups"
+msgstr ""
+
+#. Weird magic I copy-pasted that sets the Application Name in the Shell.
+#: podcasts-gtk/resources/org.gnome.Podcasts.desktop:3
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml:4
+#: podcasts-gtk/src/app.rs:89 podcasts-gtk/src/app.rs:354
+#: podcasts-gtk/src/widgets/aboutdialog.rs:33
+msgid "Podcasts"
+msgstr "Podcastit"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.desktop:4
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml:10
+msgid "Listen to your favorite podcasts, right from your desktop."
+msgstr "Kuuntele suosikkipodcastejasi suoraan työpöydältäsi."
+
+#. Translators: Do NOT translate or transliterate this text (this is an icon file name)!
+#: podcasts-gtk/resources/org.gnome.Podcasts.desktop:6
+msgid "org.gnome.Podcasts"
+msgstr "org.gnome.Podcasts"
+
+#. Translators: Search terms to find this application. Do NOT translate or localize the semicolons! The list MUST also end with a semicolon!
+#: podcasts-gtk/resources/org.gnome.Podcasts.desktop:13
+msgid "Podcast;RSS;"
+msgstr "Podcast;RSS;"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml:8
+msgid "Podcast app for GNOME"
+msgstr "Podcast-sovellus Gnomelle"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml:31
+msgid "Jordan Petridis"
+msgstr "Jordan Petridis"
+
+#: podcasts-gtk/resources/gtk/empty_show.ui:35
+msgid "This show does not have any episodes"
+msgstr "Tässä ohjelmassa ei ole yhtäkään jaksoa"
+
+#: podcasts-gtk/resources/gtk/empty_show.ui:51
+msgid "If you think this is an error, please consider opening a bug report."
+msgstr "Jos luulet tämän olevan virhe, teethän bugiraportin."
+
+#: podcasts-gtk/resources/gtk/empty_view.ui:66
+msgid "Get some shows"
+msgstr "Hanki ohjelmia"
+
+#: podcasts-gtk/resources/gtk/empty_view.ui:103
+msgid "Add new shows via feed URL"
+msgstr "Lisää uusia ohjelmia syötteen osoitteen avulla"
+
+#: podcasts-gtk/resources/gtk/empty_view.ui:132
+msgid "Import shows from another device"
+msgstr "Tuo ohjelmia toiselta laitteelta"
+
+#: podcasts-gtk/resources/gtk/episode_widget.ui:55
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:160
+msgid "Episode Title"
+msgstr "Jakson nimi"
+
+#: podcasts-gtk/resources/gtk/episode_widget.ui:177
+msgid "Calculating episode size…"
+msgstr "Lasketaan jakson kokoa…"
+
+#: podcasts-gtk/resources/gtk/episode_widget.ui:212
+msgid "Cancel"
+msgstr "Peru"
+
+#: podcasts-gtk/resources/gtk/episode_widget.ui:230
+msgid "Download this episode"
+msgstr "Lataa tämä jakso"
+
+#: podcasts-gtk/resources/gtk/episode_widget.ui:254
+msgid "Play this episode"
+msgstr "Toista tämä jakso"
+
+#: podcasts-gtk/resources/gtk/hamburger.ui:7
+msgid "_Check for New Episodes"
+msgstr "Ta_rkista uudet jaksot"
+
+#: podcasts-gtk/resources/gtk/hamburger.ui:12
+msgid "_Import Shows"
+msgstr "Tu_o jaksoja"
+
+#: podcasts-gtk/resources/gtk/hamburger.ui:22
+msgid "_Preferences"
+msgstr "_Asetukset"
+
+#: podcasts-gtk/resources/gtk/hamburger.ui:29
+msgid "_Keyboard Shortcuts"
+msgstr "_Pikanäppäimet"
+
+#: podcasts-gtk/resources/gtk/hamburger.ui:37
+msgid "_About"
+msgstr "_Tietoja"
+
+#: podcasts-gtk/resources/gtk/headerbar.ui:35
+#: podcasts-gtk/resources/gtk/headerbar.ui:189
+msgid "Add a new feed"
+msgstr "Lisää uusi syöte"
+
+#: podcasts-gtk/resources/gtk/headerbar.ui:53
+msgid "Enter feed address to add"
+msgstr "Anna lisättävän syötteen osoite"
+
+#: podcasts-gtk/resources/gtk/headerbar.ui:89
+msgid "Add"
+msgstr "Lisää"
+
+#: podcasts-gtk/resources/gtk/headerbar.ui:133
+msgid "You are already subscribed to that feed!"
+msgstr "Olet jo tilannut kyseisen syötteen!"
+
+#: podcasts-gtk/resources/gtk/headerbar.ui:169
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:141
+msgid "Show Title"
+msgstr "Ohjelman nimi"
+
+#: podcasts-gtk/resources/gtk/headerbar.ui:210
+msgid "Back"
+msgstr "Takaisin"
+
+#: podcasts-gtk/resources/gtk/headerbar.ui:296
+msgid "Fetching new episodes"
+msgstr "Noudetaan uusia jaksoja"
+
+#: podcasts-gtk/resources/gtk/help-overlay.ui:12
+msgid "General"
+msgstr "Yleiset"
+
+#: podcasts-gtk/resources/gtk/help-overlay.ui:18
+msgctxt "shortcut window"
+msgid "Check for new episodes"
+msgstr "Tarkista uudet jaksot"
+
+#: podcasts-gtk/resources/gtk/help-overlay.ui:25
+msgctxt "shortcut window"
+msgid "Preferences"
+msgstr "Asetukset"
+
+#: podcasts-gtk/resources/gtk/help-overlay.ui:32
+msgctxt "shortcut window"
+msgid "Quit the application"
+msgstr "Lopeta sovellus"
+
+#: podcasts-gtk/resources/gtk/home_view.ui:56
+msgid "Today"
+msgstr "Tänään"
+
+#: podcasts-gtk/resources/gtk/home_view.ui:112
+msgid "Yesterday"
+msgstr "Eilen"
+
+#: podcasts-gtk/resources/gtk/home_view.ui:168
+msgid "This Week"
+msgstr "Tällä viikolla"
+
+#: podcasts-gtk/resources/gtk/home_view.ui:224
+msgid "This Month"
+msgstr "Tässä kuussa"
+
+#: podcasts-gtk/resources/gtk/home_view.ui:281
+msgid "Older"
+msgstr "Vanhemmat"
+
+#: podcasts-gtk/resources/gtk/inapp_notif.ui:64
+msgid "An in-app action notification"
+msgstr "Sovelluksen sisäinen ilmoitus"
+
+#: podcasts-gtk/resources/gtk/inapp_notif.ui:102
+msgid "Undo"
+msgstr "Kumoa"
+
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:44
+msgid "Rewind 10 seconds"
+msgstr "Siirry taakse 10 sekuntia"
+
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:59
+msgid "Play"
+msgstr "Toista"
+
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:75
+msgid "Pause"
+msgstr "Keskeytä"
+
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:91
+msgid "Fast forward 10 seconds"
+msgstr "Siirry eteen 10 sekuntia"
+
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:257
+msgid "Change the playback speed"
+msgstr "Vaihda toistonopeutta"
+
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:272
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:352
+msgid "1.00×"
+msgstr "1.00×"
+
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:316
+msgid "1.50×"
+msgstr "1.50×"
+
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:320
+msgid "1.5 speed rate"
+msgstr "1,5-kertainen nopeus"
+
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:334
+msgid "1.25×"
+msgstr "1.25×"
+
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:338
+msgid "1.25 speed rate"
+msgstr "1,25-kertainen nopeus"
+
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:356
+msgid "Normal speed"
+msgstr "Tavallinen nopeus"
+
+#: podcasts-gtk/resources/gtk/prefs.ui:14
+#: podcasts-gtk/resources/gtk/prefs.ui:267
+msgid "Preferences"
+msgstr "Asetukset"
+
+#: podcasts-gtk/resources/gtk/prefs.ui:48
+msgid "Appearance"
+msgstr "Ulkoasu"
+
+#: podcasts-gtk/resources/gtk/prefs.ui:92
+msgid "Dark Theme"
+msgstr "Tumma teema"
+
+#: podcasts-gtk/resources/gtk/prefs.ui:138
+msgid "Delete played episodes"
+msgstr "Poista toistetut jaksot"
+
+#: podcasts-gtk/resources/gtk/prefs.ui:183
+msgid "After"
+msgstr "Viive"
+
+#: podcasts-gtk/resources/gtk/secondary_menu.ui:7
+msgid "_Mark All Episodes as Played"
+msgstr "_Merkitse kaikki jaksot toistetuiksi"
+
+#: podcasts-gtk/resources/gtk/secondary_menu.ui:11
+msgid "_Website"
+msgstr "_Verkkosivusto"
+
+#: podcasts-gtk/resources/gtk/secondary_menu.ui:15
+msgid "_Unsubscribe"
+msgstr "_Lopeta tilaus"
+
+#: podcasts-gtk/resources/gtk/show_menu.ui:23
+msgid "Open Website"
+msgstr "Avaa verkkosivusto"
+
+#: podcasts-gtk/resources/gtk/show_menu.ui:36
+msgid "Mark All as Played"
+msgstr "Merkitse kaikki toistetuiksi"
+
+#: podcasts-gtk/resources/gtk/show_menu.ui:61
+msgid "Unsubscribe"
+msgstr "Lopeta tilaus"
+
+#: podcasts-gtk/src/headerbar.rs:123
+msgid "You are already subscribed to this show"
+msgstr "Olet jo tilannut tämän ohjelman"
+
+#: podcasts-gtk/src/headerbar.rs:131
+msgid "Invalid URL"
+msgstr "Virheellinen osoite"
+
+#: podcasts-gtk/src/prefs.rs:59
+msgid "Seconds"
+msgstr "sekuntia"
+
+#: podcasts-gtk/src/prefs.rs:60
+msgid "Minutes"
+msgstr "minuuttia"
+
+#: podcasts-gtk/src/prefs.rs:61
+msgid "Hours"
+msgstr "tuntia"
+
+#: podcasts-gtk/src/prefs.rs:62
+msgid "Days"
+msgstr "päivää"
+
+#: podcasts-gtk/src/prefs.rs:63
+msgid "Weeks"
+msgstr "viikkoa"
+
+#: podcasts-gtk/src/stacks/content.rs:29
+msgid "New"
+msgstr "Uudet"
+
+#: podcasts-gtk/src/stacks/content.rs:30
+msgid "Shows"
+msgstr "Ohjelmat"
+
+#: podcasts-gtk/src/utils.rs:334
+msgid "Select the file from which to you want to import shows."
+msgstr "Valitse tiedosto, josta haluat tuoda ohjelmia."
+
+#: podcasts-gtk/src/utils.rs:337
+msgid "_Import"
+msgstr "_Tuo"
+
+#: podcasts-gtk/src/utils.rs:346
+msgid "OPML file"
+msgstr "OPML-tiedosto"
+
+#: podcasts-gtk/src/utils.rs:364
+msgid "Failed to parse the imported file"
+msgstr "Tuotua tiedostoa ei voitu jäsentää"
+
+#: podcasts-gtk/src/utils.rs:369
+msgid "Selected file could not be accessed."
+msgstr "Valittua tiedostoa ei voitu käyttää."
+
+#: podcasts-gtk/src/widgets/aboutdialog.rs:26
+msgid "Podcast Client for the GNOME Desktop."
+msgstr "Podcast-sovellus Gnome-työpöydlle."
+
+#: podcasts-gtk/src/widgets/aboutdialog.rs:41
+msgid "translator-credits"
+msgstr "Jiri Grönroos"
+
+#: podcasts-gtk/src/widgets/episode.rs:129
+msgid "{} min"
+msgstr "{} min"
+
+#. sender.send(Action::ErrorNotification(format!("Player Error: {}", error)));
+#: podcasts-gtk/src/widgets/player.rs:300
+msgid "The media player was unable to execute an action."
+msgstr "Mediasoitin ei kyennyt suorittamaan toimintoa."
+
+#: podcasts-gtk/src/widgets/show_menu.rs:141
+msgid "Marked all episodes as listened"
+msgstr "Merkitse kaikki jaksot toistetuiksi"
+
+#: podcasts-gtk/src/widgets/show_menu.rs:146
+msgid "Unsubscribed from {}"
+msgstr "Lopeta syötteen {} tilaus"
