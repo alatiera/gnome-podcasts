@@ -13,8 +13,9 @@ use podcasts_data::Show;
 
 use app::Action;
 use utils::{self, lazy_load};
-use widgets::{BaseView, EpisodeWidget, ShowMenu};
+use widgets::{BaseView, EmptyShow, EpisodeWidget, ShowMenu};
 
+use std::ops::Deref;
 use std::rc::Rc;
 use std::sync::Arc;
 
@@ -122,11 +123,8 @@ fn populate_listbox(
     }));
 
     if count == 0 {
-        let builder = gtk::Builder::new_from_resource("/org/gnome/Podcasts/gtk/empty_show.ui");
-        let container: gtk::Box = builder
-            .get_object("empty_show")
-            .ok_or_else(|| format_err!("FOO"))?;
-        show.episodes.add(&container);
+        let empty = EmptyShow::default();
+        show.episodes.add(empty.deref());
         return Ok(());
     }
 

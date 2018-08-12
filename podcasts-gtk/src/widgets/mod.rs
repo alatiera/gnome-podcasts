@@ -11,7 +11,7 @@ mod shows_view;
 
 pub(crate) use self::aboutdialog::about_dialog;
 pub(crate) use self::base_view::BaseView;
-pub(crate) use self::empty::EmptyView;
+pub(crate) use self::empty::{EmptyShow, EmptyView};
 pub(crate) use self::episode::EpisodeWidget;
 pub(crate) use self::home_view::HomeView;
 pub(crate) use self::show::ShowWidget;

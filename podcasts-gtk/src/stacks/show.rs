@@ -11,6 +11,7 @@ use utils::get_ignored_shows;
 use widgets::EmptyView;
 
 use std::cell::RefCell;
+use std::ops::Deref;
 use std::rc::Rc;
 
 #[derive(Debug, Clone, Copy)]
@@ -31,12 +32,12 @@ pub(crate) struct ShowStack {
 impl ShowStack {
     pub(crate) fn new(sender: Sender<Action>) -> Self {
         let populated = Rc::new(RefCell::new(PopulatedStack::new(sender.clone())));
-        let empty = EmptyView::new();
+        let empty = EmptyView::default();
         let stack = gtk::Stack::new();
         let state = ShowState::Empty;
 
         stack.add_named(&populated.borrow().container(), "populated");
-        stack.add_named(&empty.container, "empty");
+        stack.add_named(empty.deref(), "empty");
 
         let mut show = ShowStack {
             empty,

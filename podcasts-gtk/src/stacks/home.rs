@@ -10,6 +10,7 @@ use podcasts_data::errors::DataError;
 use app::Action;
 use widgets::{EmptyView, HomeView};
 
+use std::ops::Deref;
 use std::rc::Rc;
 
 #[derive(Debug, Clone, Copy)]
@@ -30,12 +31,12 @@ pub(crate) struct HomeStack {
 impl HomeStack {
     pub(crate) fn new(sender: Sender<Action>) -> Result<HomeStack, Error> {
         let episodes = HomeView::new(sender.clone(), None)?;
-        let empty = EmptyView::new();
+        let empty = EmptyView::default();
         let stack = gtk::Stack::new();
         let state = State::Empty;
 
         stack.add_named(episodes.view.container(), "home");
-        stack.add_named(&empty.container, "empty");
+        stack.add_named(empty.deref(), "empty");
 
         let mut home = HomeStack {
             empty,

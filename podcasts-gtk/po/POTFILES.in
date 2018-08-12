@@ -5,7 +5,6 @@ podcasts-gtk/resources/org.gnome.Podcasts.desktop
 podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml
 
 # ui files
-podcasts-gtk/resources/gtk/empty_show.ui
 podcasts-gtk/resources/gtk/empty_view.ui
 podcasts-gtk/resources/gtk/episode_widget.ui
 podcasts-gtk/resources/gtk/hamburger.ui
