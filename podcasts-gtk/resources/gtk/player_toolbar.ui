@@ -1,7 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.22.0 -->
+<!-- Generated with glade 3.22.0 
+
+Copyright (C) 2017 - 2018
+
+This file is part of GNOME Podcast.
+
+GNOME Podcast is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+GNOME Podcast is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with GNOME Podcast.  If not, see <http://www.gnu.org/licenses/>.
+
+Authors:
+Jordan Petridis
+Tobias Bernard
+
+-->
 <interface>
-  <requires lib="gtk+" version="3.20"/>
+  <requires lib="gtk+" version="3.22"/>
+  <!-- interface-license-type gplv3 -->
+  <!-- interface-name GNOME Podcast -->
+  <!-- interface-description A podcast client for the GNOME Desktop -->
+  <!-- interface-copyright 2017 - 2018 -->
+  <!-- interface-authors Jordan Petridis\nTobias Bernard -->
   <object class="GtkImage" id="fast_forward">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
@@ -138,7 +166,7 @@
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="halign">start</property>
-                <property name="label" translatable="yes">Show Title</property>
+                <property name="label">Show Title</property>
                 <property name="wrap">True</property>
                 <property name="ellipsize">end</property>
                 <property name="max_width_chars">20</property>
@@ -157,7 +185,7 @@
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="halign">start</property>
-                <property name="label" translatable="yes">Episode Title</property>
+                <property name="label">Episode Title</property>
                 <property name="wrap">True</property>
                 <property name="ellipsize">end</property>
                 <property name="max_width_chars">20</property>
@@ -257,7 +285,7 @@
         <property name="tooltip_text" translatable="yes">Change the playback speed</property>
         <property name="halign">center</property>
         <property name="valign">center</property>
-        <property name="margin_left">6</property>
+        <property name="margin_start">6</property>
         <property name="direction">up</property>
         <property name="popover">rate_popover</property>
         <child>
@@ -305,8 +333,8 @@
       <object class="GtkBox">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="margin_left">6</property>
-        <property name="margin_right">6</property>
+        <property name="margin_start">6</property>
+        <property name="margin_end">6</property>
         <property name="margin_top">6</property>
         <property name="margin_bottom">6</property>
         <property name="orientation">vertical</property>

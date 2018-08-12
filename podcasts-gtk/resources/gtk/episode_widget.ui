@@ -3,20 +3,20 @@
 
 Copyright (C) 2017 - 2018
 
-This file is part of Hammond.
+This file is part of GNOME Podcasts.
 
-Hammond is free software: you can redistribute it and/or modify
+GNOME Podcasts is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation, either version 3 of the License, or
 (at your option) any later version.
 
-Hammond is distributed in the hope that it will be useful,
+GNOME Podcasts is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
-along with Hammond.  If not, see <http://www.gnu.org/licenses/>.
+along with GNOME Podcasts.  If not, see <http://www.gnu.org/licenses/>.
 
 Authors:
 Jordan Petridis
@@ -24,9 +24,9 @@ Tobias Bernard
 
 -->
 <interface>
-  <requires lib="gtk+" version="3.20"/>
+  <requires lib="gtk+" version="3.22"/>
   <!-- interface-license-type gplv3 -->
-  <!-- interface-name Hammond -->
+  <!-- interface-name GNOME Podcasts -->
   <!-- interface-description A podcast client for the GNOME Desktop -->
   <!-- interface-copyright 2017 - 2018 -->
   <!-- interface-authors Jordan Petridis\nTobias Bernard -->
@@ -35,8 +35,8 @@ Tobias Bernard
     <property name="visible">True</property>
     <property name="can_focus">False</property>
     <property name="valign">center</property>
-    <property name="margin_left">6</property>
-    <property name="margin_right">6</property>
+    <property name="margin_start">6</property>
+    <property name="margin_end">6</property>
     <property name="orientation">vertical</property>
     <child>
       <object class="GtkBox">
@@ -52,7 +52,7 @@ Tobias Bernard
               <object class="GtkLabel" id="title_label">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="label" translatable="yes">Episode Title</property>
+                <property name="label">Episode Title</property>
                 <property name="ellipsize">end</property>
                 <property name="single_line_mode">True</property>
                 <property name="track_visited_links">False</property>
@@ -288,8 +288,8 @@ Tobias Bernard
       <object class="GtkProgressBar" id="progress_bar">
         <property name="can_focus">False</property>
         <property name="no_show_all">True</property>
-        <property name="margin_left">6</property>
-        <property name="margin_right">6</property>
+        <property name="margin_start">6</property>
+        <property name="margin_end">6</property>
         <property name="hexpand">True</property>
         <property name="pulse_step">0</property>
       </object>
