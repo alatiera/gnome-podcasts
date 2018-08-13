@@ -6,7 +6,7 @@ use gtk;
 use gtk::prelude::*;
 
 use gio::{File, FileExt};
-use glib::SignalHandlerId;
+use glib::{SignalHandlerId, WeakRef};
 
 use chrono::NaiveTime;
 use crossbeam_channel::Sender;
@@ -204,7 +204,8 @@ impl Default for PlayerWidget {
         let separator = builder.get_object("separator").unwrap();
         let slider: gtk::Scale = builder.get_object("seek").unwrap();
         slider.set_range(0.0, 1.0);
-        let slider_update = Rc::new(Self::connect_update_slider(&slider, &player));
+        let player_weak = player.downgrade();
+        let slider_update = Rc::new(Self::connect_update_slider(&slider, player_weak));
         let timer = PlayerTimes {
             container: timer_container,
             progressed,
@@ -385,11 +386,19 @@ impl PlayerWidget {
         Ok(())
     }
 
-    fn connect_update_slider(slider: &gtk::Scale, player: &gst_player::Player) -> SignalHandlerId {
-        slider.connect_value_changed(clone!(player => move |slider| {
+    fn connect_update_slider(
+        slider: &gtk::Scale,
+        player: WeakRef<gst_player::Player>,
+    ) -> SignalHandlerId {
+        slider.connect_value_changed(move |slider| {
+            let player = match player.upgrade() {
+                Some(p) => p,
+                None => return,
+            };
+
             let value = slider.get_value() as u64;
             player.seek(ClockTime::from_seconds(value));
-        }))
+        })
     }
 }
 

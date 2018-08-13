@@ -1,8 +1,8 @@
 #![cfg_attr(feature = "cargo-clippy", allow(type_complexity))]
 
 use gdk::FrameClockExt;
-use gdk_pixbuf::Pixbuf;
-use glib;
+use gdk_pixbuf::{Object, Pixbuf};
+use glib::{self, object::WeakRef};
 use gtk;
 use gtk::prelude::*;
 use gtk::{IsA, Widget};
@@ -64,16 +64,26 @@ use i18n::i18n;
 /// let list = gtk::ListBox::new();
 /// lazy_load(widgets, list, |w| w, || {});
 /// ```
-pub(crate) fn lazy_load<T, C, F, W, U>(data: T, container: C, mut contructor: F, callback: U)
-where
+pub(crate) fn lazy_load<T, C, F, W, U>(
+    data: T,
+    container: WeakRef<C>,
+    mut contructor: F,
+    callback: U,
+) where
     T: IntoIterator + 'static,
     T::Item: 'static,
-    C: ContainerExt + 'static,
+    // FIXME: leaking a strong refference here
+    C: IsA<Object> + ContainerExt + 'static,
     F: FnMut(T::Item) -> W + 'static,
     W: IsA<Widget> + WidgetExt,
     U: Fn() + 'static,
 {
     let func = move |x| {
+        let container = match container.upgrade() {
+            Some(c) => c,
+            None => return,
+        };
+
         let widget = contructor(x);
         container.add(&widget);
         widget.show();

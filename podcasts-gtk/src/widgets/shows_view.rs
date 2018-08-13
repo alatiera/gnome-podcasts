@@ -64,17 +64,18 @@ impl ShowsView {
 fn populate_flowbox(shows: &Rc<ShowsView>, vadj: Option<Adjustment>) -> Result<(), Error> {
     let ignore = get_ignored_shows()?;
     let podcasts = dbqueries::get_podcasts_filter(&ignore)?;
+    let show_weak = Rc::downgrade(&shows);
+    let flowbox_weak = shows.flowbox.downgrade();
 
     let constructor = move |parent| ShowsChild::new(&parent).child;
-    // FIXME: We are, possibly,leaking the strong ref here
-    let callback = clone!(shows => move || {
-        if let Some(ref v) = vadj {
-            shows.view.set_adjutments(None, Some(v))
+    let callback = move || {
+        match (show_weak.upgrade(), &vadj) {
+            (Some(ref shows), Some(ref v)) => shows.view.set_adjutments(None, Some(v)),
+            _ => (),
         };
-     });
+    };
 
-    let flowbox = shows.flowbox.clone();
-    lazy_load(podcasts, flowbox, constructor, callback);
+    lazy_load(podcasts, flowbox_weak, constructor, callback);
     Ok(())
 }
 
