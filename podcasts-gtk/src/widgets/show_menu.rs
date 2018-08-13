@@ -68,8 +68,13 @@ impl ShowMenu {
     }
 
     fn connect_played(&self, pd: &Arc<Show>, episodes: &gtk::ListBox, sender: &Sender<Action>) {
-        self.played
-            .connect_clicked(clone!(pd, episodes, sender => move |_| {
+        let episodes_weak = episodes.downgrade();
+        self.played.connect_clicked(clone!(pd, sender => move |_| {
+            let episodes = match episodes_weak.upgrade() {
+                Some(e) => e,
+                None => return,
+            };
+
             let res = dim_titles(&episodes);
             debug_assert!(res.is_some());
 
@@ -121,6 +126,7 @@ fn dim_titles(episodes: &gtk::ListBox) -> Option<()> {
 }
 
 fn mark_all_watched(pd: &Show, sender: &Sender<Action>) -> Result<(), Error> {
+    // TODO: If this fails for whatever reason, it should be impossible, show an error
     dbqueries::update_none_to_played_now(pd)?;
     // Not all widgets might have been loaded when the mark_all is hit
     // So we will need to refresh again after it's done.
