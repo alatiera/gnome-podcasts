@@ -47,8 +47,13 @@ impl InAppNotification {
         let notif = InAppNotification::default();
         notif.text.set_text(&text);
 
-        let revealer = notif.revealer.clone();
+        let revealer_weak = notif.revealer.downgrade();
         let id = timeout_add_seconds(6, move || {
+            let revealer = match revealer_weak.upgrade() {
+                Some(r) => r,
+                None => return,
+            };
+
             revealer.set_reveal_child(false);
             callback()
         });
@@ -75,8 +80,13 @@ impl InAppNotification {
         });
 
         // Hide the revealer when the close button is clicked
-        let revealer = notif.revealer.clone();
+        let revealer_weak = notif.revealer.downgrade();
         notif.close.connect_clicked(move |_| {
+            let revealer = match revealer_weak.upgrade() {
+                Some(r) => r,
+                None => return,
+            };
+
             revealer.set_reveal_child(false);
         });
 
