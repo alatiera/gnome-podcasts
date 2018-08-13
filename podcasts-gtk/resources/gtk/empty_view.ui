@@ -59,7 +59,7 @@ Tobias Bernard
       <object class="GtkLabel">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="label" translatable="yes">If you think this is an error, please consider writting a bug report.</property>
+        <property name="label" translatable="yes">If you think this is an error, please consider writing a bug report.</property>
         <style>
           <class name="dim-label"/>
         </style>
