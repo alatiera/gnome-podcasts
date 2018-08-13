@@ -1,7 +1,7 @@
 use glib;
 use gtk::{self, prelude::*, Adjustment};
 
-use crossbeam_channel::Sender;
+use crossbeam_channel::{bounded, Sender};
 use failure::Error;
 use fragile::Fragile;
 use html2text;
@@ -103,14 +103,11 @@ impl ShowWidget {
 
 /// Populate the listbox with the shows episodes.
 fn populate_listbox(
-    // FIXME: we are leaking strong refs here
     show: &Rc<ShowWidget>,
     pd: Arc<Show>,
     sender: Sender<Action>,
     vadj: Option<Adjustment>,
 ) -> Result<(), Error> {
-    use crossbeam_channel::bounded;
-
     let count = dbqueries::get_pd_episodes_count(&pd)?;
 
     let (sender_, receiver) = bounded(1);
@@ -128,7 +125,8 @@ fn populate_listbox(
         return Ok(());
     }
 
-    let show_ = show.clone();
+    let show_weak = Rc::downgrade(&show);
+    let list_weak = show.episodes.downgrade();
     gtk::idle_add(move || {
         let episodes = match receiver.try_recv() {
             Some(e) => e,
@@ -136,18 +134,18 @@ fn populate_listbox(
         };
         debug_assert!(episodes.len() as i64 == count);
 
-        let list = show_.episodes.clone();
         let constructor = clone!(sender => move |ep| {
             EpisodeWidget::new(ep, &sender).container.clone()
         });
 
-        let callback = clone!(show_, vadj => move || {
-            if let Some(ref v) = vadj {
-                show_.view.set_adjutments(None, Some(v))
+        let callback = clone!(show_weak, vadj => move || {
+            match (show_weak.upgrade(), &vadj) {
+                (Some(ref shows), Some(ref v)) => shows.view.set_adjutments(None, Some(v)),
+                _ => (),
             };
         });
 
-        lazy_load(episodes, list.clone(), constructor, callback);
+        lazy_load(episodes, list_weak.clone(), constructor, callback);
 
         glib::Continue(false)
     });
