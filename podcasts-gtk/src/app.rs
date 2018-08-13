@@ -307,7 +307,7 @@ impl App {
                     error!("An error notification was triggered: {}", err);
                     let callback = || glib::Continue(false);
                     let undo_cb: Option<fn()> = None;
-                    let notif = InAppNotification::new(&err, callback, undo_cb);
+                    let notif = InAppNotification::new(&err, 6, callback, undo_cb);
                     notif.show(&self.overlay);
                 }
                 Action::InitEpisode(rowid) => {

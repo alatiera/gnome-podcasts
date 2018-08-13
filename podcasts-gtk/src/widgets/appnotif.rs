@@ -39,7 +39,12 @@ impl Default for InAppNotification {
 }
 
 impl InAppNotification {
-    pub(crate) fn new<F, U>(text: &str, mut callback: F, undo_callback: Option<U>) -> Self
+    pub(crate) fn new<F, U>(
+        text: &str,
+        timer: u32,
+        mut callback: F,
+        undo_callback: Option<U>,
+    ) -> Self
     where
         F: FnMut() -> glib::Continue + 'static,
         U: Fn() + 'static,
@@ -48,10 +53,16 @@ impl InAppNotification {
         notif.text.set_text(&text);
 
         let revealer_weak = notif.revealer.downgrade();
-        let id = timeout_add_seconds(6, move || {
+        let mut time = 0;
+        let id = timeout_add_seconds(1, move || {
+            if time < timer {
+                time += 1;
+                return glib::Continue(true);
+            };
+
             let revealer = match revealer_weak.upgrade() {
                 Some(r) => r,
-                None => return,
+                None => return glib::Continue(false),
             };
 
             revealer.set_reveal_child(false);
