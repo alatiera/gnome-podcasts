@@ -13,7 +13,7 @@ use podcasts_data::Show;
 
 use app::Action;
 use utils;
-use widgets::appnotif::{InAppNotification, UndoState};
+use widgets::appnotif::InAppNotification;
 
 use std::sync::Arc;
 
@@ -145,7 +145,7 @@ pub(crate) fn mark_all_notif(pd: Arc<Show>, sender: &Sender<Action>) -> InAppNot
 
     let undo_callback = clone!(sender => move || sender.send(Action::RefreshWidgetIfSame(id)));
     let text = i18n("Marked all episodes as listened");
-    InAppNotification::new(&text, callback, undo_callback, UndoState::Shown)
+    InAppNotification::new(&text, callback, Some(undo_callback))
 }
 
 pub(crate) fn remove_show_notif(pd: Arc<Show>, sender: Sender<Action>) -> InAppNotification {
@@ -177,5 +177,5 @@ pub(crate) fn remove_show_notif(pd: Arc<Show>, sender: Sender<Action>) -> InAppN
         sender.send(Action::RefreshEpisodesView);
     };
 
-    InAppNotification::new(&text, callback, undo_callback, UndoState::Shown)
+    InAppNotification::new(&text, callback, Some(undo_callback))
 }

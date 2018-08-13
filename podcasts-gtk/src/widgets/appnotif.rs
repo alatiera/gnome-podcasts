@@ -6,6 +6,7 @@ use std::cell::RefCell;
 use std::rc::Rc;
 
 #[derive(Debug, Clone, Copy)]
+#[allow(dead_code)]
 pub(crate) enum UndoState {
     Shown,
     Hidden,
@@ -38,12 +39,7 @@ impl Default for InAppNotification {
 }
 
 impl InAppNotification {
-    pub(crate) fn new<F, U>(
-        text: &str,
-        mut callback: F,
-        undo_callback: U,
-        show_undo: UndoState,
-    ) -> Self
+    pub(crate) fn new<F, U>(text: &str, mut callback: F, undo_callback: Option<U>) -> Self
     where
         F: FnMut() -> glib::Continue + 'static,
         U: Fn() + 'static,
@@ -58,6 +54,10 @@ impl InAppNotification {
         });
         let id = Rc::new(RefCell::new(Some(id)));
 
+        if undo_callback.is_some() {
+            notif.set_undo_state(UndoState::Shown)
+        };
+
         // Cancel the callback
         let revealer = notif.revealer.clone();
         notif.undo.connect_clicked(move |_| {
@@ -66,7 +66,9 @@ impl InAppNotification {
                 glib::source::source_remove(id);
             }
 
-            undo_callback();
+            if let Some(ref f) = undo_callback {
+                f();
+            }
 
             // Hide the notification
             revealer.set_reveal_child(false);
@@ -77,11 +79,6 @@ impl InAppNotification {
         notif.close.connect_clicked(move |_| {
             revealer.set_reveal_child(false);
         });
-
-        match show_undo {
-            UndoState::Shown => (),
-            UndoState::Hidden => notif.undo.hide(),
-        }
 
         notif
     }
@@ -95,5 +92,12 @@ impl InAppNotification {
         // We need to display the notification after the widget is added to the overlay
         // so there will be a nice animation.
         self.revealer.set_reveal_child(true);
+    }
+
+    pub(crate) fn set_undo_state(&self, state: UndoState) {
+        match state {
+            UndoState::Shown => self.undo.show(),
+            UndoState::Hidden => self.undo.hide(),
+        }
     }
 }

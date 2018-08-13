@@ -17,7 +17,7 @@ use settings::{self, WindowGeometry};
 use stacks::{Content, PopulatedState};
 use utils;
 use widgets::about_dialog;
-use widgets::appnotif::{InAppNotification, UndoState};
+use widgets::appnotif::InAppNotification;
 use widgets::player;
 use widgets::show_menu::{mark_all_notif, remove_show_notif, ShowMenu};
 
@@ -306,7 +306,8 @@ impl App {
                 Action::ErrorNotification(err) => {
                     error!("An error notification was triggered: {}", err);
                     let callback = || glib::Continue(false);
-                    let notif = InAppNotification::new(&err, callback, || {}, UndoState::Hidden);
+                    let undo_cb: Option<fn()> = None;
+                    let notif = InAppNotification::new(&err, callback, undo_cb);
                     notif.show(&self.overlay);
                 }
                 Action::InitEpisode(rowid) => {

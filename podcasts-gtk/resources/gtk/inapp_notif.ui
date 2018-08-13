@@ -100,7 +100,6 @@ Tobias Bernard
             <child>
               <object class="GtkButton" id="undo">
                 <property name="label" translatable="yes">Undo</property>
-                <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
                 <property name="halign">center</property>
