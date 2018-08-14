@@ -201,21 +201,18 @@ where
     }
 
     refresh_feed(source, sender)
-        .map_err(|err| error!("Failed to update feeds: {}", err))
-        .ok();
 }
 
 /// Update the rss feed(s) originating from `source`.
 /// If `source` is None, Fetches all the `Source` entries in the database and updates them.
-/// When It's done,it queues up a `RefreshViews` action.
-fn refresh_feed<S>(source: Option<S>, sender: Sender<Action>) -> Result<(), Error>
+fn refresh_feed<S>(source: Option<S>, sender: Sender<Action>)
 where
     S: IntoIterator<Item = Source> + Send + 'static,
 {
-    let (up_sender, up_receiver) = bounded(1);
-    sender.send(Action::ShowUpdateNotif(up_receiver));
-
     rayon::spawn(move || {
+        let (up_sender, up_receiver) = bounded(1);
+        sender.send(Action::ShowUpdateNotif(up_receiver));
+
         if let Some(s) = source {
             // Refresh only specified feeds
             pipeline::run(s)
@@ -233,7 +230,6 @@ where
 
         up_sender.send(true);
     });
-    Ok(())
 }
 
 lazy_static! {
