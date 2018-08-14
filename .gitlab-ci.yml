@@ -6,54 +6,6 @@ stages:
 variables:
     BUNDLE: "gnome-podcasts-dev.flatpak"
 
-.cargo_cache_template: &cargo_cache
-    cache:
-        # JOB_NAME - Each job will have it's own cache
-        # COMMIT_REF_SLUG = Lowercase name of the branch
-        # ^ Keep diffrerent caches for each branch
-        key: "$CI_JOB_NAME"
-        paths:
-            - target/
-            - .cargo_cache/
-
-.cargo_test_template: &cargo_test
-    stage: test
-
-    variables:
-        RUSTFLAGS: "--cfg rayon_unstable"
-        RUST_BACKTRACE: "FULL"
-
-    before_script:
-        - apt-get update -yqq
-        - apt-get install -yqq --no-install-recommends build-essential libgtk-3-dev meson libgstreamer1.0-dev
-
-        - mkdir -p .cargo_cache
-        # Only stuff inside the repo directory can be cached
-        # Override the CARGO_HOME variable to force it location
-        - export CARGO_HOME="${PWD}/.cargo_cache"
-    script:
-        - rustc -Vv && cargo -Vv
-        # Force regeneration of gresources regardless of artifacts chage
-        - cd podcasts-gtk/resources/ && glib-compile-resources --generate resources.xml && cd ../../
-
-        - cargo build
-        - cargo test -- --test-threads=1
-        - cargo test -- --test-threads=1 --ignored
-    <<: *cargo_cache
-
-.rust:stable:
-    # https://hub.docker.com/_/rust/
-    image: "rust"
-    <<: *cargo_test
-
-.rust:nightly:
-    # https://hub.docker.com/r/rustlang/rust/
-    image: "rustlang/rust:nightly"
-    <<: *cargo_test
-    only:
-        - schedule
-        - web
-
 flatpak:
     image: registry.gitlab.gnome.org/gnome/gnome-runtime-images/rust_bundle:3.28
     stage: test
@@ -69,11 +21,11 @@ flatpak:
         - flatpak-builder --finish-only app org.gnome.Podcasts.json
         - flatpak build-export repo app
 
-        # Create a flatpak bundle
-        - flatpak build-bundle repo ${BUNDLE} org.gnome.Podcasts
         # Run the tests
         - flatpak-builder --run --env=RUSTFLAGS="--cfg rayon_unstable" app org.gnome.Podcasts.json cargo test -- --test-threads=1
         # - flatpak-builder --run app org.gnome.Podcasts.json cargo test -- --test-threads=1 --ignored
+        # Create a flatpak bundle
+        - flatpak build-bundle repo ${BUNDLE} org.gnome.Podcasts
 
     artifacts:
         paths:
@@ -81,10 +33,7 @@ flatpak:
         expire_in: 30 days
 
     cache:
-        # JOB_NAME - Each job will have it's own cache
-        # COMMIT_REF_SLUG = Lowercase name of the branch
-        # ^ Keep diffrerent caches for each branch
-        key: "$CI_JOB_NAME"
+        key: "flatpak"
         paths:
           - .flatpak-builder/cache/
           - target/
@@ -126,19 +75,3 @@ rustfmt:
         - rustc -Vv && cargo -Vv
         - cargo fmt --version
         - cargo fmt --all -- --check
-
-# Configure and run clippy on nightly
-# Only fails on errors atm.
-.clippy:
-    image: "registry.gitlab.gnome.org/alatiera/hammond-container-images/clippy:nightly"
-    stage: lint
-    variables:
-        RUSTFLAGS: "--cfg rayon_unstable"
-        CARGO_HOME: ".cargo_cache"
-    script:
-        - rustc --version && cargo --version
-        - cargo clippy --version
-        # Force regeneration of gresources regardless of artifacts chage
-        - cd podcasts-gtk/resources/ && glib-compile-resources --generate resources.xml && cd ../../
-        - cargo clippy --all
-    <<: *cargo_cache
