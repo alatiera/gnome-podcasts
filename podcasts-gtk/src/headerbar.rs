@@ -18,7 +18,6 @@ use std::rc::Rc;
 use i18n::i18n;
 
 #[derive(Debug, Clone)]
-// TODO: Factor out the hamburger menu
 // TODO: Make a proper state machine for the headerbar states
 pub(crate) struct Header {
     pub(crate) container: gtk::HeaderBar,

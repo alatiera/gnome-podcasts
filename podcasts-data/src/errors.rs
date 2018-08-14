@@ -47,7 +47,6 @@ pub enum DataError {
     #[fail(display = "Hyper Error: {}", _0)]
     HyperError(#[cause] hyper::Error),
     #[fail(display = "Failed to parse a url: {}", _0)]
-    // TODO: print the url too
     UrlError(#[cause] url::ParseError),
     #[fail(display = "TLS Error: {}", _0)]
     TLSError(#[cause] native_tls::Error),

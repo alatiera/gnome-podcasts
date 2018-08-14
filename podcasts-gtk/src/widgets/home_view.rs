@@ -159,7 +159,6 @@ fn split(now: &DateTime<Utc>, epoch: i64) -> ListSplit {
 struct HomeEpisode {
     container: gtk::Box,
     image: gtk::Image,
-    // FIXME: Change it to `EpisodeWidget` instead of a `Box`?
     episode: gtk::Box,
 }
 

@@ -72,7 +72,6 @@ pub(crate) fn lazy_load<T, C, F, W, U>(
 ) where
     T: IntoIterator + 'static,
     T::Item: 'static,
-    // FIXME: leaking a strong refference here
     C: IsA<Object> + ContainerExt + 'static,
     F: FnMut(T::Item) -> W + 'static,
     W: IsA<Widget> + WidgetExt,
@@ -337,8 +336,6 @@ pub(crate) fn on_import_clicked(window: &gtk::ApplicationWindow, sender: &Sender
     use glib::translate::ToGlib;
     use gtk::{FileChooserAction, FileChooserNative, FileFilter, ResponseType};
 
-    // let dialog = FileChooserDialog::new(title, Some(&window), FileChooserAction::Open);
-    // TODO: It might be better to use a FileChooserNative widget.
     // Create the FileChooser Dialog
     let dialog = FileChooserNative::new(
         Some(i18n("Select the file from which to you want to import shows.").as_str()),
@@ -361,7 +358,6 @@ pub(crate) fn on_import_clicked(window: &gtk::ApplicationWindow, sender: &Sender
     dialog.connect_response(clone!(sender => move |dialog, resp| {
         debug!("Dialog Response {}", resp);
         if resp == ResponseType::Accept.to_glib() {
-            // TODO: Show an in-app notification if the file can not be accessed
             if let Some(filename) = dialog.get_filename() {
                 debug!("File selected: {:?}", filename);
 
