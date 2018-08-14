@@ -200,7 +200,6 @@ fn refresh_feed<S>(source: Option<S>, sender: Sender<Action>) -> Result<(), Erro
 where
     S: IntoIterator<Item = Source> + Send + 'static,
 {
-    sender.send(Action::HeaderBarShowUpdateIndicator);
     let (up_sender, up_receiver) = bounded(1);
     sender.send(Action::ShowUpdateNotif(up_receiver));
 
@@ -221,8 +220,6 @@ where
         };
 
         up_sender.send(true);
-        sender.send(Action::HeaderBarHideUpdateIndicator);
-        sender.send(Action::RefreshAllViews);
     });
     Ok(())
 }

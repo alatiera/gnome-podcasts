@@ -58,8 +58,6 @@ pub(crate) enum Action {
     ShowShowsAnimated,
     HeaderBarShowTile(String),
     HeaderBarNormal,
-    HeaderBarShowUpdateIndicator,
-    HeaderBarHideUpdateIndicator,
     MarkAllPlayerNotification(Arc<Show>),
     ShowUpdateNotif(Receiver<bool>),
     RemoveShow(Arc<Show>),
@@ -299,8 +297,6 @@ impl App {
                 }
                 Action::HeaderBarShowTile(title) => self.headerbar.switch_to_back(&title),
                 Action::HeaderBarNormal => self.headerbar.switch_to_normal(),
-                Action::HeaderBarShowUpdateIndicator => self.headerbar.show_update_notification(),
-                Action::HeaderBarHideUpdateIndicator => self.headerbar.hide_update_notification(),
                 Action::MarkAllPlayerNotification(pd) => {
                     let notif = mark_all_notif(pd, &self.sender);
                     notif.show(&self.overlay);
@@ -320,9 +316,11 @@ impl App {
                     notif.show(&self.overlay);
                 }
                 Action::ShowUpdateNotif(receiver) => {
+                    let sender = self.sender.clone();
                     let callback = move |revealer: gtk::Revealer| {
                         if let Some(_) = receiver.try_recv() {
                             revealer.set_reveal_child(false);
+                            sender.send(Action::RefreshAllViews);
                             return glib::Continue(false);
                         }
 
