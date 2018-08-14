@@ -187,6 +187,19 @@ pub(crate) fn refresh<S>(source: Option<S>, sender: Sender<Action>)
 where
     S: IntoIterator<Item = Source> + Send + 'static,
 {
+    // If we try to update the whole db,
+    // Exit early if `source` table is empty
+    if source.is_none() {
+        match dbqueries::is_source_populated(&[]) {
+            Ok(false) => {
+                info!("No source of feeds where found, returning");
+                return;
+            }
+            Err(err) => debug_assert!(false, err),
+            _ => (),
+        };
+    }
+
     refresh_feed(source, sender)
         .map_err(|err| error!("Failed to update feeds: {}", err))
         .ok();

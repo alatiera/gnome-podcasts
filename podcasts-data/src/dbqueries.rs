@@ -392,7 +392,7 @@ pub fn is_episodes_populated() -> Result<bool, DataError> {
 
 /// Check if the `shows` table contains any rows
 ///
-/// Return true if `shows table is populated.
+/// Return true if `shows` table is populated.
 pub fn is_podcasts_populated(filter_ids: &[i32]) -> Result<bool, DataError> {
     use schema::shows::dsl::*;
 
@@ -400,6 +400,20 @@ pub fn is_podcasts_populated(filter_ids: &[i32]) -> Result<bool, DataError> {
     let con = db.get()?;
 
     select(exists(shows.filter(id.ne_all(filter_ids))))
+        .get_result(&con)
+        .map_err(From::from)
+}
+
+/// Check if the `source` table contains any rows
+///
+/// Return true if `source` table is populated.
+pub fn is_source_populated(filter_ids: &[i32]) -> Result<bool, DataError> {
+    use schema::source::dsl::*;
+
+    let db = connection();
+    let con = db.get()?;
+
+    select(exists(source.filter(id.ne_all(filter_ids))))
         .get_result(&con)
         .map_err(From::from)
 }
