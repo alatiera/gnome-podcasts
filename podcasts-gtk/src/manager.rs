@@ -133,7 +133,7 @@ mod tests {
         let source = Source::from_url(url).unwrap();
         // Copy its id
         let sid = source.id();
-        pipeline::run(vec![source], true).unwrap();
+        pipeline::run(vec![source]).unwrap();
 
         // Get the podcast
         let pd = dbqueries::get_podcast_from_source_id(sid).unwrap();
@@ -164,7 +164,7 @@ mod tests {
         let source = Source::from_url(url).unwrap();
         // Copy its id
         let sid = source.id();
-        pipeline::run(vec![source], true).unwrap();
+        pipeline::run(vec![source]).unwrap();
 
         // Get the podcast
         let pd = dbqueries::get_podcast_from_source_id(sid).unwrap();

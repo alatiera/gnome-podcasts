@@ -48,14 +48,13 @@ type HttpsClient = Client<HttpsConnector<HttpConnector>>;
 /// Convert `rss::Channel` into `Feed` -> Index Podcast -> Index Episodes.
 pub fn pipeline<'a, S>(
     sources: S,
-    ignore_etags: bool,
     client: &HttpsClient,
 ) -> impl Future<Item = Vec<()>, Error = DataError> + 'a
 where
     S: Stream<Item = Source, Error = DataError> + 'a,
 {
     sources
-        .and_then(clone!(client => move |s| s.into_feed(client.clone(), ignore_etags)))
+        .and_then(clone!(client => move |s| s.into_feed(client.clone())))
         .and_then(|feed| rayon::scope(|s| s.spawn_future(feed.index())))
         // the stream will stop at the first error so
         // we ensure that everything will succeded regardless.
@@ -66,7 +65,7 @@ where
 
 /// Creates a tokio `reactor::Core`, and a `hyper::Client` and
 /// runs the pipeline to completion. The `reactor::Core` is dropped afterwards.
-pub fn run<S>(sources: S, ignore_etags: bool) -> Result<(), DataError>
+pub fn run<S>(sources: S) -> Result<(), DataError>
 where
     S: IntoIterator<Item = Source>,
 {
@@ -77,7 +76,7 @@ where
         .build(&handle);
 
     let stream = iter_ok::<_, DataError>(sources);
-    let p = pipeline(stream, ignore_etags, &client);
+    let p = pipeline(stream, &client);
     core.run(p).map(|_| ())
 }
 
@@ -114,11 +113,11 @@ mod tests {
         });
 
         let sources = dbqueries::get_sources().unwrap();
-        run(sources, true).unwrap();
+        run(sources).unwrap();
 
         let sources = dbqueries::get_sources().unwrap();
         // Run again to cover Unique constrains erros.
-        run(sources, true).unwrap();
+        run(sources).unwrap();
 
         // Assert the index rows equal the controlled results
         assert_eq!(dbqueries::get_sources().unwrap().len(), 6);

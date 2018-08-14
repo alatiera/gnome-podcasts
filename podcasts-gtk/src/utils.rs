@@ -205,7 +205,7 @@ where
     rayon::spawn(move || {
         if let Some(s) = source {
             // Refresh only specified feeds
-            pipeline::run(s, false)
+            pipeline::run(s)
                 .map_err(|err| error!("Error: {}", err))
                 .map_err(|_| error!("Error while trying to update the database."))
                 .ok();
@@ -213,7 +213,7 @@ where
             // Refresh all the feeds
             dbqueries::get_sources()
                 .map(|s| s.into_iter())
-                .and_then(|s| pipeline::run(s, false))
+                .and_then(pipeline::run)
                 .map_err(|err| error!("Error: {}", err))
                 .ok();
         };

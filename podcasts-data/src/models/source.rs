@@ -177,12 +177,11 @@ impl Source {
     pub fn into_feed(
         self,
         client: Client<HttpsConnector<HttpConnector>>,
-        ignore_etags: bool,
     ) -> impl Future<Item = Feed, Error = DataError> {
         let id = self.id();
         let response = loop_fn(self, move |source| {
             source
-                .request_constructor(&client.clone(), ignore_etags)
+                .request_constructor(&client.clone())
                 .then(|res| match res {
                     Ok(response) => Ok(Loop::Break(response)),
                     Err(err) => match err {
@@ -206,12 +205,9 @@ impl Source {
             })
     }
 
-    // TODO: make ignore_etags an Enum for better ergonomics.
-    // #bools_are_just_2variant_enmus
     fn request_constructor(
         self,
         client: &Client<HttpsConnector<HttpConnector>>,
-        ignore_etags: bool,
     ) -> impl Future<Item = Response, Error = DataError> {
         // FIXME: remove unwrap somehow
         let uri = Uri::from_str(self.uri()).unwrap();
@@ -220,16 +216,14 @@ impl Source {
         // Set the UserAgent cause ppl still seem to check it for some reason...
         req.headers_mut().set(UserAgent::new(USER_AGENT));
 
-        if !ignore_etags {
-            if let Some(etag) = self.http_etag() {
-                let tag = vec![EntityTag::new(true, etag.to_owned())];
-                req.headers_mut().set(IfNoneMatch::Items(tag));
-            }
+        if let Some(etag) = self.http_etag() {
+            let tag = vec![EntityTag::new(true, etag.to_owned())];
+            req.headers_mut().set(IfNoneMatch::Items(tag));
+        }
 
-            if let Some(lmod) = self.last_modified() {
-                if let Ok(date) = lmod.parse::<HttpDate>() {
-                    req.headers_mut().set(IfModifiedSince(date));
-                }
+        if let Some(lmod) = self.last_modified() {
+            if let Ok(date) = lmod.parse::<HttpDate>() {
+                req.headers_mut().set(IfModifiedSince(date));
             }
         }
 
@@ -273,7 +267,7 @@ mod tests {
         let source = Source::from_url(url).unwrap();
         let id = source.id();
 
-        let feed = source.into_feed(client, true);
+        let feed = source.into_feed(client);
         let feed = core.run(feed).unwrap();
 
         let expected = get_feed("tests/feeds/2018-01-20-Intercepted.xml", id);

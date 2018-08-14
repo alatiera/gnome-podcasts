@@ -253,7 +253,7 @@ mod tests {
         // Copy it's id
         let sid = source.id();
         // Convert Source it into a future Feed and index it
-        pipeline::run(vec![source], true).unwrap();
+        pipeline::run(vec![source]).unwrap();
 
         // Get the Podcast
         let pd = dbqueries::get_podcast_from_source_id(sid).unwrap().into();

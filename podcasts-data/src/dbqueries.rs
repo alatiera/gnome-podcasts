@@ -427,7 +427,7 @@ mod tests {
                    com/InterceptedWithJeremyScahill";
         let source = Source::from_url(url).unwrap();
         let id = source.id();
-        pipeline::run(vec![source], true).unwrap();
+        pipeline::run(vec![source]).unwrap();
         let pd = get_podcast_from_source_id(id).unwrap();
 
         let eps_num = get_pd_unplayed_episodes(&pd).unwrap().len();
