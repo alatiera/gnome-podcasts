@@ -46,7 +46,7 @@ impl InAppNotification {
         undo_callback: Option<U>,
     ) -> Self
     where
-        F: FnMut() -> glib::Continue + 'static,
+        F: FnMut(gtk::Revealer) -> glib::Continue + 'static,
         U: Fn() + 'static,
     {
         let notif = InAppNotification::default();
@@ -65,8 +65,7 @@ impl InAppNotification {
                 None => return glib::Continue(false),
             };
 
-            revealer.set_reveal_child(false);
-            callback()
+            callback(revealer)
         });
         let id = Rc::new(RefCell::new(Some(id)));
 

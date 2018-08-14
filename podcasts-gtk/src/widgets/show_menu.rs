@@ -137,11 +137,14 @@ fn mark_all_watched(pd: &Show, sender: &Sender<Action>) -> Result<(), Error> {
 
 pub(crate) fn mark_all_notif(pd: Arc<Show>, sender: &Sender<Action>) -> InAppNotification {
     let id = pd.id();
-    let callback = clone!(sender => move || {
-        let res = mark_all_watched(&pd, &sender);
+    let sender_ = sender.clone();
+    let callback = move |revealer: gtk::Revealer| {
+        let res = mark_all_watched(&pd, &sender_);
         debug_assert!(res.is_ok());
+
+        revealer.set_reveal_child(false);
         glib::Continue(false)
-    });
+    };
 
     let undo_callback = clone!(sender => move || sender.send(Action::RefreshWidgetIfSame(id)));
     let text = i18n("Marked all episodes as listened");
@@ -154,21 +157,25 @@ pub(crate) fn remove_show_notif(pd: Arc<Show>, sender: Sender<Action>) -> InAppN
     let res = utils::ignore_show(pd.id());
     debug_assert!(res.is_ok());
 
-    let callback = clone!(pd, sender => move || {
-        let res = utils::uningore_show(pd.id());
+    let sender_ = sender.clone();
+    let pd_ = pd.clone();
+    let callback = move |revealer: gtk::Revealer| {
+        let res = utils::uningore_show(pd_.id());
         debug_assert!(res.is_ok());
 
         // Spawn a thread so it won't block the ui.
-        rayon::spawn(clone!(pd, sender => move || {
-            delete_show(&pd)
+        rayon::spawn(clone!(pd_, sender_ => move || {
+            delete_show(&pd_)
                 .map_err(|err| error!("Error: {}", err))
-                .map_err(|_| error!("Failed to delete {}", pd.title()))
+                .map_err(|_| error!("Failed to delete {}", pd_.title()))
                 .ok();
 
-            sender.send(Action::RefreshEpisodesView);
+            sender_.send(Action::RefreshEpisodesView);
         }));
+
+        revealer.set_reveal_child(false);
         glib::Continue(false)
-    });
+    };
 
     let undo_callback = move || {
         let res = utils::uningore_show(pd.id());

@@ -305,7 +305,10 @@ impl App {
                 }
                 Action::ErrorNotification(err) => {
                     error!("An error notification was triggered: {}", err);
-                    let callback = || glib::Continue(false);
+                    let callback = |revealer: gtk::Revealer| {
+                        revealer.set_reveal_child(false);
+                        glib::Continue(false)
+                    };
                     let undo_cb: Option<fn()> = None;
                     let notif = InAppNotification::new(&err, 6, callback, undo_cb);
                     notif.show(&self.overlay);
