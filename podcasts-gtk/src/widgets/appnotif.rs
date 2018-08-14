@@ -128,4 +128,8 @@ impl InAppNotification {
             State::Hidden => self.close.hide(),
         }
     }
+
+    pub(crate) fn destroy(self) {
+        self.revealer.destroy();
+    }
 }

@@ -17,10 +17,11 @@ use settings::{self, WindowGeometry};
 use stacks::{Content, PopulatedState};
 use utils;
 use widgets::about_dialog;
-use widgets::appnotif::InAppNotification;
+use widgets::appnotif::{InAppNotification, State};
 use widgets::player;
 use widgets::show_menu::{mark_all_notif, remove_show_notif, ShowMenu};
 
+use std::cell::RefCell;
 use std::env;
 use std::rc::Rc;
 use std::sync::Arc;
@@ -60,6 +61,7 @@ pub(crate) enum Action {
     HeaderBarShowUpdateIndicator,
     HeaderBarHideUpdateIndicator,
     MarkAllPlayerNotification(Arc<Show>),
+    ShowUpdateNotif(Receiver<bool>),
     RemoveShow(Arc<Show>),
     ErrorNotification(String),
     InitEpisode(i32),
@@ -75,6 +77,7 @@ pub(crate) struct App {
     content: Rc<Content>,
     headerbar: Rc<Header>,
     player: Rc<player::PlayerWidget>,
+    updater: RefCell<Option<InAppNotification>>,
     sender: Sender<Action>,
     receiver: Receiver<Action>,
 }
@@ -130,6 +133,8 @@ impl App {
         // Add the player to the main Box
         wrap.add(&player.action_bar);
 
+        let updater = RefCell::new(None);
+
         window.add(&wrap);
 
         let app = App {
@@ -140,6 +145,7 @@ impl App {
             headerbar: header,
             content,
             player,
+            updater,
             sender,
             receiver,
         };
@@ -312,6 +318,27 @@ impl App {
                     let undo_cb: Option<fn()> = None;
                     let notif = InAppNotification::new(&err, 6, callback, undo_cb);
                     notif.show(&self.overlay);
+                }
+                Action::ShowUpdateNotif(receiver) => {
+                    let callback = move |revealer: gtk::Revealer| {
+                        if let Some(_) = receiver.try_recv() {
+                            revealer.set_reveal_child(false);
+                            return glib::Continue(false);
+                        }
+
+                        glib::Continue(true)
+                    };
+                    let txt = i18n("Fetching new episodes");
+                    let undo_cb: Option<fn()> = None;
+                    let updater = InAppNotification::new(&txt, 1, callback, undo_cb);
+                    updater.set_close_state(State::Hidden);
+
+                    let old = self.updater.replace(Some(updater));
+                    old.map(|i| i.destroy());
+                    self.updater
+                        .borrow()
+                        .as_ref()
+                        .map(|i| i.show(&self.overlay));
                 }
                 Action::InitEpisode(rowid) => {
                     let res = self.player.initialize_episode(rowid);

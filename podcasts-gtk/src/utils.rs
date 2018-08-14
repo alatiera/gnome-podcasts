@@ -8,7 +8,7 @@ use gtk::prelude::*;
 use gtk::{IsA, Widget};
 
 use chrono::prelude::*;
-use crossbeam_channel::{unbounded, Sender};
+use crossbeam_channel::{bounded, unbounded, Sender};
 use failure::Error;
 use fragile::Fragile;
 use rayon;
@@ -201,6 +201,8 @@ where
     S: IntoIterator<Item = Source> + Send + 'static,
 {
     sender.send(Action::HeaderBarShowUpdateIndicator);
+    let (up_sender, up_receiver) = bounded(1);
+    sender.send(Action::ShowUpdateNotif(up_receiver));
 
     rayon::spawn(move || {
         if let Some(s) = source {
@@ -218,6 +220,7 @@ where
                 .ok();
         };
 
+        up_sender.send(true);
         sender.send(Action::HeaderBarHideUpdateIndicator);
         sender.send(Action::RefreshAllViews);
     });
