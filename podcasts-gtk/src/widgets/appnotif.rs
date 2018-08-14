@@ -7,7 +7,7 @@ use std::rc::Rc;
 
 #[derive(Debug, Clone, Copy)]
 #[allow(dead_code)]
-pub(crate) enum UndoState {
+pub(crate) enum State {
     Shown,
     Hidden,
 }
@@ -71,7 +71,7 @@ impl InAppNotification {
         let id = Rc::new(RefCell::new(Some(id)));
 
         if undo_callback.is_some() {
-            notif.set_undo_state(UndoState::Shown)
+            notif.set_undo_state(State::Shown)
         };
 
         // Cancel the callback
@@ -115,10 +115,18 @@ impl InAppNotification {
         self.revealer.set_reveal_child(true);
     }
 
-    pub(crate) fn set_undo_state(&self, state: UndoState) {
+    pub(crate) fn set_undo_state(&self, state: State) {
         match state {
-            UndoState::Shown => self.undo.show(),
-            UndoState::Hidden => self.undo.hide(),
+            State::Shown => self.undo.show(),
+            State::Hidden => self.undo.hide(),
+        }
+    }
+
+    #[allow(dead_code)]
+    pub(crate) fn set_close_state(&self, state: State) {
+        match state {
+            State::Shown => self.close.show(),
+            State::Hidden => self.close.hide(),
         }
     }
 }
