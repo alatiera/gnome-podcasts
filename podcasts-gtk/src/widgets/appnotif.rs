@@ -6,9 +6,17 @@ use std::cell::RefCell;
 use std::rc::Rc;
 
 #[derive(Debug, Clone, Copy)]
-pub(crate) enum UndoState {
+#[allow(dead_code)]
+pub(crate) enum State {
     Shown,
     Hidden,
+}
+
+#[derive(Debug, Clone, Copy)]
+#[allow(dead_code)]
+pub(crate) enum SpinnerState {
+    Active,
+    Stopped,
 }
 
 #[derive(Debug, Clone)]
@@ -17,6 +25,7 @@ pub(crate) struct InAppNotification {
     text: gtk::Label,
     undo: gtk::Button,
     close: gtk::Button,
+    spinner: gtk::Spinner,
 }
 
 impl Default for InAppNotification {
@@ -27,36 +36,53 @@ impl Default for InAppNotification {
         let text: gtk::Label = builder.get_object("text").unwrap();
         let undo: gtk::Button = builder.get_object("undo").unwrap();
         let close: gtk::Button = builder.get_object("close").unwrap();
+        let spinner = builder.get_object("spinner").unwrap();
 
         InAppNotification {
             revealer,
             text,
             undo,
             close,
+            spinner,
         }
     }
 }
 
+/// Timer should be in milliseconds
 impl InAppNotification {
     pub(crate) fn new<F, U>(
         text: &str,
+        timer: u32,
         mut callback: F,
-        undo_callback: U,
-        show_undo: UndoState,
+        undo_callback: Option<U>,
     ) -> Self
     where
-        F: FnMut() -> glib::Continue + 'static,
+        F: FnMut(gtk::Revealer) -> glib::Continue + 'static,
         U: Fn() + 'static,
     {
         let notif = InAppNotification::default();
         notif.text.set_text(&text);
 
-        let revealer = notif.revealer.clone();
-        let id = timeout_add_seconds(6, move || {
-            revealer.set_reveal_child(false);
-            callback()
+        let revealer_weak = notif.revealer.downgrade();
+        let mut time = 0;
+        let id = timeout_add(250, move || {
+            if time < timer {
+                time += 250;
+                return glib::Continue(true);
+            };
+
+            let revealer = match revealer_weak.upgrade() {
+                Some(r) => r,
+                None => return glib::Continue(false),
+            };
+
+            callback(revealer)
         });
         let id = Rc::new(RefCell::new(Some(id)));
+
+        if undo_callback.is_some() {
+            notif.set_undo_state(State::Shown)
+        };
 
         // Cancel the callback
         let revealer = notif.revealer.clone();
@@ -66,22 +92,24 @@ impl InAppNotification {
                 glib::source::source_remove(id);
             }
 
-            undo_callback();
+            if let Some(ref f) = undo_callback {
+                f();
+            }
 
             // Hide the notification
             revealer.set_reveal_child(false);
         });
 
         // Hide the revealer when the close button is clicked
-        let revealer = notif.revealer.clone();
+        let revealer_weak = notif.revealer.downgrade();
         notif.close.connect_clicked(move |_| {
+            let revealer = match revealer_weak.upgrade() {
+                Some(r) => r,
+                None => return,
+            };
+
             revealer.set_reveal_child(false);
         });
-
-        match show_undo {
-            UndoState::Shown => (),
-            UndoState::Hidden => notif.undo.hide(),
-        }
 
         notif
     }
@@ -95,5 +123,36 @@ impl InAppNotification {
         // We need to display the notification after the widget is added to the overlay
         // so there will be a nice animation.
         self.revealer.set_reveal_child(true);
+    }
+
+    pub(crate) fn set_undo_state(&self, state: State) {
+        match state {
+            State::Shown => self.undo.show(),
+            State::Hidden => self.undo.hide(),
+        }
+    }
+
+    pub(crate) fn set_close_state(&self, state: State) {
+        match state {
+            State::Shown => self.close.show(),
+            State::Hidden => self.close.hide(),
+        }
+    }
+
+    pub(crate) fn set_spinner_state(&self, state: SpinnerState) {
+        match state {
+            SpinnerState::Active => {
+                self.spinner.start();
+                self.spinner.show();
+            }
+            SpinnerState::Stopped => {
+                self.spinner.stop();
+                self.spinner.hide();
+            }
+        }
+    }
+
+    pub(crate) fn destroy(self) {
+        self.revealer.destroy();
     }
 }

@@ -271,41 +271,5 @@ Tobias Bernard
         <property name="position">2</property>
       </packing>
     </child>
-    <child>
-      <object class="GtkBox" id="update_notification">
-        <property name="can_focus">False</property>
-        <property name="no_show_all">True</property>
-        <child>
-          <object class="GtkSpinner" id="update_spinner">
-            <property name="can_focus">False</property>
-            <property name="halign">center</property>
-            <property name="valign">center</property>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="padding">6</property>
-            <property name="position">0</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkLabel" id="update_label">
-            <property name="can_focus">False</property>
-            <property name="halign">center</property>
-            <property name="valign">center</property>
-            <property name="label" translatable="yes">Fetching new episodes</property>
-            <property name="ellipsize">end</property>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">1</property>
-          </packing>
-        </child>
-      </object>
-      <packing>
-        <property name="position">3</property>
-      </packing>
-    </child>
   </object>
 </interface>

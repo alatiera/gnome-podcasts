@@ -17,10 +17,11 @@ use settings::{self, WindowGeometry};
 use stacks::{Content, PopulatedState};
 use utils;
 use widgets::about_dialog;
-use widgets::appnotif::{InAppNotification, UndoState};
+use widgets::appnotif::{InAppNotification, SpinnerState, State};
 use widgets::player;
 use widgets::show_menu::{mark_all_notif, remove_show_notif, ShowMenu};
 
+use std::cell::RefCell;
 use std::env;
 use std::rc::Rc;
 use std::sync::Arc;
@@ -57,9 +58,8 @@ pub(crate) enum Action {
     ShowShowsAnimated,
     HeaderBarShowTile(String),
     HeaderBarNormal,
-    HeaderBarShowUpdateIndicator,
-    HeaderBarHideUpdateIndicator,
     MarkAllPlayerNotification(Arc<Show>),
+    ShowUpdateNotif(Receiver<bool>),
     RemoveShow(Arc<Show>),
     ErrorNotification(String),
     InitEpisode(i32),
@@ -75,6 +75,7 @@ pub(crate) struct App {
     content: Rc<Content>,
     headerbar: Rc<Header>,
     player: Rc<player::PlayerWidget>,
+    updater: RefCell<Option<InAppNotification>>,
     sender: Sender<Action>,
     receiver: Receiver<Action>,
 }
@@ -130,6 +131,8 @@ impl App {
         // Add the player to the main Box
         wrap.add(&player.action_bar);
 
+        let updater = RefCell::new(None);
+
         window.add(&wrap);
 
         let app = App {
@@ -140,6 +143,7 @@ impl App {
             headerbar: header,
             content,
             player,
+            updater,
             sender,
             receiver,
         };
@@ -293,8 +297,6 @@ impl App {
                 }
                 Action::HeaderBarShowTile(title) => self.headerbar.switch_to_back(&title),
                 Action::HeaderBarNormal => self.headerbar.switch_to_normal(),
-                Action::HeaderBarShowUpdateIndicator => self.headerbar.show_update_notification(),
-                Action::HeaderBarHideUpdateIndicator => self.headerbar.hide_update_notification(),
                 Action::MarkAllPlayerNotification(pd) => {
                     let notif = mark_all_notif(pd, &self.sender);
                     notif.show(&self.overlay);
@@ -305,9 +307,37 @@ impl App {
                 }
                 Action::ErrorNotification(err) => {
                     error!("An error notification was triggered: {}", err);
-                    let callback = || glib::Continue(false);
-                    let notif = InAppNotification::new(&err, callback, || {}, UndoState::Hidden);
+                    let callback = |revealer: gtk::Revealer| {
+                        revealer.set_reveal_child(false);
+                        glib::Continue(false)
+                    };
+                    let undo_cb: Option<fn()> = None;
+                    let notif = InAppNotification::new(&err, 6000, callback, undo_cb);
                     notif.show(&self.overlay);
+                }
+                Action::ShowUpdateNotif(receiver) => {
+                    let sender = self.sender.clone();
+                    let callback = move |revealer: gtk::Revealer| {
+                        if let Some(_) = receiver.try_recv() {
+                            revealer.set_reveal_child(false);
+                            sender.send(Action::RefreshAllViews);
+                            return glib::Continue(false);
+                        }
+
+                        glib::Continue(true)
+                    };
+                    let txt = i18n("Fetching new episodes");
+                    let undo_cb: Option<fn()> = None;
+                    let updater = InAppNotification::new(&txt, 250, callback, undo_cb);
+                    updater.set_close_state(State::Hidden);
+                    updater.set_spinner_state(SpinnerState::Active);
+
+                    let old = self.updater.replace(Some(updater));
+                    old.map(|i| i.destroy());
+                    self.updater
+                        .borrow()
+                        .as_ref()
+                        .map(|i| i.show(&self.overlay));
                 }
                 Action::InitEpisode(rowid) => {
                     let res = self.player.initialize_episode(rowid);

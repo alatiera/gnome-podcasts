@@ -26,32 +26,8 @@ pub(crate) struct Header {
     back: gtk::Button,
     show_title: gtk::Label,
     hamburger: gtk::MenuButton,
-    updater: UpdateIndicator,
     add: AddPopover,
     dots: gtk::MenuButton,
-}
-
-#[derive(Debug, Clone)]
-struct UpdateIndicator {
-    container: gtk::Box,
-    text: gtk::Label,
-    spinner: gtk::Spinner,
-}
-
-impl UpdateIndicator {
-    fn show(&self) {
-        self.spinner.start();
-        self.spinner.show();
-        self.container.show();
-        self.text.show();
-    }
-
-    fn hide(&self) {
-        self.spinner.stop();
-        self.spinner.hide();
-        self.container.hide();
-        self.text.hide();
-    }
 }
 
 #[derive(Debug, Clone)]
@@ -158,16 +134,6 @@ impl Default for Header {
         // The 3 dots secondary menu
         let dots = builder.get_object("secondary_menu").unwrap();
 
-        let update_box = builder.get_object("update_notification").unwrap();
-        let update_label = builder.get_object("update_label").unwrap();
-        let update_spinner = builder.get_object("update_spinner").unwrap();
-
-        let updater = UpdateIndicator {
-            container: update_box,
-            text: update_label,
-            spinner: update_spinner,
-        };
-
         let add_toggle = builder.get_object("add_toggle").unwrap();
         let add_popover = builder.get_object("add_popover").unwrap();
         let new_url = builder.get_object("new_url").unwrap();
@@ -187,7 +153,6 @@ impl Default for Header {
             back,
             show_title,
             hamburger,
-            updater,
             add,
             dots,
         }
@@ -246,14 +211,6 @@ impl Header {
 
     pub(crate) fn set_show_title(&self, title: &str) {
         self.show_title.set_text(title)
-    }
-
-    pub(crate) fn show_update_notification(&self) {
-        self.updater.show();
-    }
-
-    pub(crate) fn hide_update_notification(&self) {
-        self.updater.hide();
     }
 
     pub(crate) fn open_menu(&self) {
