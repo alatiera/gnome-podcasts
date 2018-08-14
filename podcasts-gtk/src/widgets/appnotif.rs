@@ -48,6 +48,7 @@ impl Default for InAppNotification {
     }
 }
 
+/// Timer should be in milliseconds
 impl InAppNotification {
     pub(crate) fn new<F, U>(
         text: &str,
@@ -64,9 +65,9 @@ impl InAppNotification {
 
         let revealer_weak = notif.revealer.downgrade();
         let mut time = 0;
-        let id = timeout_add_seconds(1, move || {
+        let id = timeout_add(250, move || {
             if time < timer {
-                time += 1;
+                time += 250;
                 return glib::Continue(true);
             };
 

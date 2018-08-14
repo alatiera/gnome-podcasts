@@ -312,7 +312,7 @@ impl App {
                         glib::Continue(false)
                     };
                     let undo_cb: Option<fn()> = None;
-                    let notif = InAppNotification::new(&err, 6, callback, undo_cb);
+                    let notif = InAppNotification::new(&err, 6000, callback, undo_cb);
                     notif.show(&self.overlay);
                 }
                 Action::ShowUpdateNotif(receiver) => {
@@ -328,7 +328,7 @@ impl App {
                     };
                     let txt = i18n("Fetching new episodes");
                     let undo_cb: Option<fn()> = None;
-                    let updater = InAppNotification::new(&txt, 1, callback, undo_cb);
+                    let updater = InAppNotification::new(&txt, 250, callback, undo_cb);
                     updater.set_close_state(State::Hidden);
                     updater.set_spinner_state(SpinnerState::Active);
 
