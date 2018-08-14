@@ -30,7 +30,7 @@ flatpak:
     artifacts:
         paths:
             - $BUNDLE
-        expire_in: 30 days
+        expire_in: 2 days
 
     cache:
         key: "flatpak"
