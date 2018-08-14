@@ -93,7 +93,7 @@ impl ShowWidget {
     /// Set the description text.
     fn set_description(&self, text: &str) {
         self.description
-            .set_markup(html2text::from_read(text.as_bytes(), 90).trim());
+            .set_markup(html2text::from_read(text.as_bytes(), 80).trim());
     }
 
     pub(crate) fn show_id(&self) -> Option<i32> {
