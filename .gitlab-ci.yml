@@ -54,6 +54,7 @@ review:
         on_stop: stop_review
     except:
         - master@World/podcasts
+        - tags
 
 stop_review:
     stage: review
@@ -65,6 +66,7 @@ stop_review:
         action: stop
     except:
         - master@World/podcasts
+        - tags
 
 # Configure and run rustfmt on nightly
 # Exits and builds fails if on bad format
