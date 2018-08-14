@@ -12,12 +12,20 @@ pub(crate) enum State {
     Hidden,
 }
 
+#[derive(Debug, Clone, Copy)]
+#[allow(dead_code)]
+pub(crate) enum SpinnerState {
+    Active,
+    Stopped,
+}
+
 #[derive(Debug, Clone)]
 pub(crate) struct InAppNotification {
     revealer: gtk::Revealer,
     text: gtk::Label,
     undo: gtk::Button,
     close: gtk::Button,
+    spinner: gtk::Spinner,
 }
 
 impl Default for InAppNotification {
@@ -28,12 +36,14 @@ impl Default for InAppNotification {
         let text: gtk::Label = builder.get_object("text").unwrap();
         let undo: gtk::Button = builder.get_object("undo").unwrap();
         let close: gtk::Button = builder.get_object("close").unwrap();
+        let spinner = builder.get_object("spinner").unwrap();
 
         InAppNotification {
             revealer,
             text,
             undo,
             close,
+            spinner,
         }
     }
 }
@@ -121,11 +131,23 @@ impl InAppNotification {
         }
     }
 
-    #[allow(dead_code)]
     pub(crate) fn set_close_state(&self, state: State) {
         match state {
             State::Shown => self.close.show(),
             State::Hidden => self.close.hide(),
+        }
+    }
+
+    pub(crate) fn set_spinner_state(&self, state: SpinnerState) {
+        match state {
+            SpinnerState::Active => {
+                self.spinner.start();
+                self.spinner.show();
+            }
+            SpinnerState::Stopped => {
+                self.spinner.stop();
+                self.spinner.hide();
+            }
         }
     }
 

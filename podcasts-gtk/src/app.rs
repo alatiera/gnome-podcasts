@@ -17,7 +17,7 @@ use settings::{self, WindowGeometry};
 use stacks::{Content, PopulatedState};
 use utils;
 use widgets::about_dialog;
-use widgets::appnotif::{InAppNotification, State};
+use widgets::appnotif::{InAppNotification, SpinnerState, State};
 use widgets::player;
 use widgets::show_menu::{mark_all_notif, remove_show_notif, ShowMenu};
 
@@ -332,6 +332,7 @@ impl App {
                     let undo_cb: Option<fn()> = None;
                     let updater = InAppNotification::new(&txt, 1, callback, undo_cb);
                     updater.set_close_state(State::Hidden);
+                    updater.set_spinner_state(SpinnerState::Active);
 
                     let old = self.updater.replace(Some(updater));
                     old.map(|i| i.destroy());
