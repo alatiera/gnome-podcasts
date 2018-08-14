@@ -11,9 +11,7 @@ Reproducible in:
     Please test if the issue was already fixed in the unstable version of the app.
     For that, follow these steps:
     1. Make sure Flatpak is installed or install it following these steps https://flatpak.org/setup
-    2. Install the unstable version of the app following this link 
-    https://gitlab.gnome.org/GNOME/gnome-apps-nightly/raw/master/nautilus.flatpakref and save
-    it as a ".flatpakref" file
+    2. Install the unstable version of the app following, flatpak bundles can be found in the CI artifacts.
 
     If these steps failed, write in 'Other' the distribution you’re using and
     the version of the app.
