@@ -113,7 +113,7 @@ mod tests {
     use podcasts_data::dbqueries;
     use podcasts_data::pipeline;
     use podcasts_data::utils::get_download_folder;
-    use podcasts_data::{Episode, Source};
+    use podcasts_data::{Episode, Save, Source};
 
     use podcasts_downloader::downloader::get_episode;
 
@@ -130,9 +130,12 @@ mod tests {
     fn test_start_dl() {
         let url = "https://web.archive.org/web/20180120110727if_/https://rss.acast.com/thetipoff";
         // Create and index a source
-        let source = Source::from_url(url).unwrap();
+        let mut source = Source::from_url(url).unwrap();
         // Copy its id
         let sid = source.id();
+        source.set_http_etag(None);
+        source.set_last_modified(None);
+        source.save().unwrap();
         pipeline::run(vec![source]).unwrap();
 
         // Get the podcast
@@ -150,6 +153,7 @@ mod tests {
         thread::sleep(time::Duration::from_secs(20));
 
         let final_path = format!("{}/{}.mp3", &fold2, episode.rowid());
+        assert_eq!(ACTIVE_DOWNLOADS.read().unwrap().len(), 0);
         assert!(Path::new(&final_path).exists());
         fs::remove_file(final_path).unwrap();
     }
@@ -161,9 +165,12 @@ mod tests {
         let url =
             "https://web.archive.org/web/20180120104957if_/https://rss.art19.com/steal-the-stars";
         // Create and index a source
-        let source = Source::from_url(url).unwrap();
+        let mut source = Source::from_url(url).unwrap();
         // Copy its id
         let sid = source.id();
+        source.set_http_etag(None);
+        source.set_last_modified(None);
+        source.save().unwrap();
         pipeline::run(vec![source]).unwrap();
 
         // Get the podcast

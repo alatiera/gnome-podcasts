@@ -294,6 +294,23 @@ pub(crate) fn get_episode_minimal_from_pk(
         .map_err(From::from)
 }
 
+#[cfg(test)]
+pub(crate) fn get_episode_cleaner_from_pk(
+    title_: &str,
+    pid: i32,
+) -> Result<EpisodeCleanerModel, DataError> {
+    use schema::episodes::dsl::*;
+    let db = connection();
+    let con = db.get()?;
+
+    episodes
+        .select((rowid, local_uri, played))
+        .filter(title.eq(title_))
+        .filter(show_id.eq(pid))
+        .get_result::<EpisodeCleanerModel>(&con)
+        .map_err(From::from)
+}
+
 pub(crate) fn remove_feed(pd: &Show) -> Result<(), DataError> {
     let db = connection();
     let con = db.get()?;

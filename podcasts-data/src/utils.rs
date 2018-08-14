@@ -196,8 +196,8 @@ mod tests {
             .to_episode()
             .unwrap();
 
-        let mut ep1 = dbqueries::get_episode_from_pk(n1.title(), n1.show_id()).unwrap();
-        let mut ep2 = dbqueries::get_episode_from_pk(n2.title(), n2.show_id()).unwrap();
+        let mut ep1 = dbqueries::get_episode_cleaner_from_pk(n1.title(), n1.show_id()).unwrap();
+        let mut ep2 = dbqueries::get_episode_cleaner_from_pk(n2.title(), n2.show_id()).unwrap();
         ep1.set_local_uri(Some(valid_path.to_str().unwrap()));
         ep2.set_local_uri(Some(bad_path.to_str().unwrap()));
 
@@ -222,15 +222,16 @@ mod tests {
 
         let _tmp_dir = helper_db();
         download_checker().unwrap();
-        let episode = dbqueries::get_episode_from_pk("bar_baz", 1).unwrap();
+        let episode = dbqueries::get_episode_cleaner_from_pk("bar_baz", 1).unwrap();
         assert!(episode.local_uri().is_none());
     }
 
     #[test]
     fn test_download_cleaner() {
         let _tmp_dir = helper_db();
-        let mut episode: EpisodeCleanerModel =
-            dbqueries::get_episode_from_pk("foo_bar", 0).unwrap().into();
+        let mut episode: EpisodeCleanerModel = dbqueries::get_episode_cleaner_from_pk("foo_bar", 0)
+            .unwrap()
+            .into();
 
         let valid_path = episode.local_uri().unwrap().to_owned();
         delete_local_content(&mut episode).unwrap();
@@ -240,7 +241,7 @@ mod tests {
     #[test]
     fn test_played_cleaner_expired() {
         let _tmp_dir = helper_db();
-        let mut episode = dbqueries::get_episode_from_pk("foo_bar", 0).unwrap();
+        let mut episode = dbqueries::get_episode_cleaner_from_pk("foo_bar", 0).unwrap();
         let cleanup_date = Utc::now() - Duration::seconds(1000);
         let epoch = cleanup_date.timestamp() as i32 - 1;
         episode.set_played(Some(epoch));
@@ -255,7 +256,7 @@ mod tests {
     #[test]
     fn test_played_cleaner_none() {
         let _tmp_dir = helper_db();
-        let mut episode = dbqueries::get_episode_from_pk("foo_bar", 0).unwrap();
+        let mut episode = dbqueries::get_episode_cleaner_from_pk("foo_bar", 0).unwrap();
         let cleanup_date = Utc::now() - Duration::seconds(1000);
         let epoch = cleanup_date.timestamp() as i32 + 1;
         episode.set_played(Some(epoch));

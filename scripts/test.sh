@@ -16,7 +16,7 @@ cargo --version
 # cargo fmt --version
 
 cargo build --all && \
-cargo test -- --test-threads=1 && \
+# cargo test -- --test-threads=1 && \
 cargo test -- --test-threads=1 --ignored
 
 # Rustfmt from the flatpak bundle tends to be outdated,
