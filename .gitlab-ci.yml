@@ -4,7 +4,7 @@ stages:
   - review
 
 variables:
-    BUNDLE: "gnome-podcasts-dev.flatpak"
+    BUNDLE: "org.gnome.Podcasts.${CI_COMMIT_REF_SHA}.flatpak"
 
 flatpak:
     image: registry.gitlab.gnome.org/gnome/gnome-runtime-images/rust_bundle:3.28
@@ -23,14 +23,12 @@ flatpak:
 
         # Run the tests
         - |
-          flatpak-builder --run \
+          xvfb-run -a -s "-screen 0 1024x768x24" \
+              flatpak-builder --run \
               --env=CARGO_HOME="target/cargo-home/" \
               --env=RUSTFLAGS="--cfg rayon_unstable" \
               app org.gnome.Podcasts.json \
               cargo test -- --test-threads=1
-
-        - ls -alR
-        - tree -d
 
         # - flatpak-builder --run app org.gnome.Podcasts.json cargo test -- --test-threads=1 --ignored
 
