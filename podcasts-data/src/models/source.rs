@@ -145,13 +145,15 @@ impl Source {
 
         match code {
             StatusCode::NotModified => return Err(self.make_err("304: skipping..", code)),
-            StatusCode::MovedPermanently => {
+            StatusCode::MovedPermanently | StatusCode::Found | StatusCode::PermanentRedirect => {
                 error!("Feed was moved permanently.");
                 self = self.update_url(&res)?;
                 return Err(DataError::F301(self));
             }
-            StatusCode::TemporaryRedirect => debug!("307: Temporary Redirect."),
-            StatusCode::PermanentRedirect => warn!("308: Permanent Redirect."),
+            StatusCode::TemporaryRedirect => {
+                debug!("307: Temporary Redirect.");
+                return Err(DataError::F301(self));
+            }
             StatusCode::Unauthorized => return Err(self.make_err("401: Unauthorized.", code)),
             StatusCode::Forbidden => return Err(self.make_err("403:  Forbidden.", code)),
             StatusCode::NotFound => return Err(self.make_err("404: Not found.", code)),
@@ -164,13 +166,20 @@ impl Source {
     }
 
     fn update_url(mut self, res: &Response) -> Result<Self, DataError> {
+        let code = res.status();
         let headers = res.headers();
+        info!("HTTP StatusCode: {}", code);
+        debug!("Headers {:#?}", headers);
 
         if let Some(url) = headers.get::<Location>() {
+            debug!("Previous Source: {:#?}", &self);
+
             self.set_uri(url.to_string());
             self = self.save()?;
-            info!("Feed url was updated succesfully.");
             self = self.clear_etags()?;
+
+            debug!("Updated Source: {:#?}", &self);
+            info!("Feed url of Source {}, was updated succesfully.", self.id());
         }
 
         Ok(self)
