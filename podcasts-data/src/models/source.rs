@@ -91,7 +91,7 @@ impl Source {
 
     /// Extract Etag and LastModifier from res, and update self and the
     /// corresponding db row.
-    fn update_etag(&mut self, res: &Response) -> Result<(), DataError> {
+    fn update_etag(mut self, res: &Response) -> Result<Self, DataError> {
         let headers = res.headers();
 
         let etag = headers.get::<ETag>().map(|x| x.tag());
@@ -100,10 +100,24 @@ impl Source {
         if (self.http_etag() != etag) || (self.last_modified != lmod) {
             self.set_http_etag(etag);
             self.set_last_modified(lmod);
-            self.save()?;
+            self = self.save()?;
         }
 
-        Ok(())
+        Ok(self)
+    }
+
+    /// Clear the `HTTP` `Etag` and `Last-modified` headers.
+    fn clear_etags(mut self) -> Result<Self, DataError> {
+        if self.http_etag().is_some() || self.last_modified().is_some() {
+            debug!("Source etags before clear: {:#?}", &self);
+            self.http_etag = None;
+            self.last_modified = None;
+            self = self.save()?;
+            debug!("Source etags after clear: {:#?}", &self);
+            info!("Etag fields cleared succesfully for Source: {}", self.uri);
+        }
+
+        Ok(self)
     }
 
     fn make_err(self, context: &str, code: StatusCode) -> DataError {
@@ -121,14 +135,19 @@ impl Source {
     // 410: Feed deleted
     // TODO: Rething this api,
     fn match_status(mut self, res: Response) -> Result<Response, DataError> {
-        self.update_etag(&res)?;
         let code = res.status();
+        match code {
+            // If request is succesful save the etag
+            StatusCode::NotModified | StatusCode::Ok => self = self.update_etag(&res)?,
+            // Clear the Etag/lmod else
+            _ => self = self.clear_etags()?,
+        };
 
         match code {
             StatusCode::NotModified => return Err(self.make_err("304: skipping..", code)),
             StatusCode::MovedPermanently => {
                 error!("Feed was moved permanently.");
-                self.handle_301(&res)?;
+                self = self.update_url(&res)?;
                 return Err(DataError::F301(self));
             }
             StatusCode::TemporaryRedirect => debug!("307: Temporary Redirect."),
@@ -140,21 +159,21 @@ impl Source {
             StatusCode::Gone => return Err(self.make_err("410: Feed was deleted..", code)),
             _ => info!("HTTP StatusCode: {}", code),
         };
+
         Ok(res)
     }
 
-    fn handle_301(&mut self, res: &Response) -> Result<(), DataError> {
+    fn update_url(mut self, res: &Response) -> Result<Self, DataError> {
         let headers = res.headers();
 
         if let Some(url) = headers.get::<Location>() {
             self.set_uri(url.to_string());
-            self.http_etag = None;
-            self.last_modified = None;
-            self.save()?;
+            self = self.save()?;
             info!("Feed url was updated succesfully.");
+            self = self.clear_etags()?;
         }
 
-        Ok(())
+        Ok(self)
     }
 
     /// Construct a new `Source` with the given `uri` and index it.
