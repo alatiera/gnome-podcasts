@@ -175,7 +175,6 @@ impl Source {
             debug!("Previous Source: {:#?}", &self);
 
             self.set_uri(url.to_string());
-            self = self.save()?;
             self = self.clear_etags()?;
 
             debug!("Updated Source: {:#?}", &self);
