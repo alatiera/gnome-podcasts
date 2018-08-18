@@ -157,6 +157,7 @@ mod tests {
     use super::*;
     // use tokio_core::reactor::Core;
 
+    use failure::Error;
     use rss::Channel;
 
     use database::truncate_db;
@@ -286,73 +287,80 @@ mod tests {
     }
 
     #[test]
-    fn test_new_podcast_intercepted() {
-        let file = File::open("tests/feeds/2018-01-20-Intercepted.xml").unwrap();
-        let channel = Channel::read_from(BufReader::new(file)).unwrap();
+    fn test_new_podcast_intercepted() -> Result<(), Error> {
+        let file = File::open("tests/feeds/2018-01-20-Intercepted.xml")?;
+        let channel = Channel::read_from(BufReader::new(file))?;
 
         let pd = NewShow::new(&channel, 42);
         assert_eq!(*EXPECTED_INTERCEPTED, pd);
+        Ok(())
     }
 
     #[test]
-    fn test_new_podcast_lup() {
-        let file = File::open("tests/feeds/2018-01-20-LinuxUnplugged.xml").unwrap();
-        let channel = Channel::read_from(BufReader::new(file)).unwrap();
+    fn test_new_podcast_lup() -> Result<(), Error> {
+        let file = File::open("tests/feeds/2018-01-20-LinuxUnplugged.xml")?;
+        let channel = Channel::read_from(BufReader::new(file))?;
 
         let pd = NewShow::new(&channel, 42);
         assert_eq!(*EXPECTED_LUP, pd);
+        Ok(())
     }
 
     #[test]
-    fn test_new_podcast_thetipoff() {
-        let file = File::open("tests/feeds/2018-01-20-TheTipOff.xml").unwrap();
-        let channel = Channel::read_from(BufReader::new(file)).unwrap();
+    fn test_new_podcast_thetipoff() -> Result<(), Error> {
+        let file = File::open("tests/feeds/2018-01-20-TheTipOff.xml")?;
+        let channel = Channel::read_from(BufReader::new(file))?;
 
         let pd = NewShow::new(&channel, 42);
         assert_eq!(*EXPECTED_TIPOFF, pd);
+        Ok(())
     }
 
     #[test]
-    fn test_new_podcast_steal_the_stars() {
-        let file = File::open("tests/feeds/2018-01-20-StealTheStars.xml").unwrap();
-        let channel = Channel::read_from(BufReader::new(file)).unwrap();
+    fn test_new_podcast_steal_the_stars() -> Result<(), Error> {
+        let file = File::open("tests/feeds/2018-01-20-StealTheStars.xml")?;
+        let channel = Channel::read_from(BufReader::new(file))?;
 
         let pd = NewShow::new(&channel, 42);
         assert_eq!(*EXPECTED_STARS, pd);
+        Ok(())
     }
 
     #[test]
-    fn test_new_podcast_greater_than_code() {
-        let file = File::open("tests/feeds/2018-01-20-GreaterThanCode.xml").unwrap();
-        let channel = Channel::read_from(BufReader::new(file)).unwrap();
+    fn test_new_podcast_greater_than_code() -> Result<(), Error> {
+        let file = File::open("tests/feeds/2018-01-20-GreaterThanCode.xml")?;
+        let channel = Channel::read_from(BufReader::new(file))?;
 
         let pd = NewShow::new(&channel, 42);
         assert_eq!(*EXPECTED_CODE, pd);
+        Ok(())
     }
 
     #[test]
-    fn test_new_podcast_ellinofreneia() {
-        let file = File::open("tests/feeds/2018-03-28-Ellinofreneia.xml").unwrap();
-        let channel = Channel::read_from(BufReader::new(file)).unwrap();
+    fn test_new_podcast_ellinofreneia() -> Result<(), Error> {
+        let file = File::open("tests/feeds/2018-03-28-Ellinofreneia.xml")?;
+        let channel = Channel::read_from(BufReader::new(file))?;
 
         let pd = NewShow::new(&channel, 42);
         assert_eq!(*EXPECTED_ELLINOFRENEIA, pd);
+        Ok(())
     }
 
     #[test]
     // This maybe could be a doc test on insert.
-    fn test_new_podcast_insert() {
-        truncate_db().unwrap();
-        let file = File::open("tests/feeds/2018-01-20-Intercepted.xml").unwrap();
-        let channel = Channel::read_from(BufReader::new(file)).unwrap();
+    fn test_new_podcast_insert() -> Result<(), Error> {
+        truncate_db()?;
+        let file = File::open("tests/feeds/2018-01-20-Intercepted.xml")?;
+        let channel = Channel::read_from(BufReader::new(file))?;
 
         let npd = NewShow::new(&channel, 42);
-        npd.insert().unwrap();
-        let pd = dbqueries::get_podcast_from_source_id(42).unwrap();
+        npd.insert()?;
+        let pd = dbqueries::get_podcast_from_source_id(42)?;
 
         assert_eq!(npd, pd);
         assert_eq!(*EXPECTED_INTERCEPTED, npd);
         assert_eq!(&*EXPECTED_INTERCEPTED, &pd);
+        Ok(())
     }
 
     #[test]
@@ -360,31 +368,32 @@ mod tests {
     // Currently there's a test that only checks new description or title.
     // If you have time and want to help, implement the test for the other fields
     // too.
-    fn test_new_podcast_update() {
-        truncate_db().unwrap();
-        let old = EXPECTED_INTERCEPTED.to_podcast().unwrap();
+    fn test_new_podcast_update() -> Result<(), Error> {
+        truncate_db()?;
+        let old = EXPECTED_INTERCEPTED.to_podcast()?;
 
         let updated = &*UPDATED_DESC_INTERCEPTED;
-        updated.update(old.id()).unwrap();
-        let new = dbqueries::get_podcast_from_source_id(42).unwrap();
+        updated.update(old.id())?;
+        let new = dbqueries::get_podcast_from_source_id(42)?;
 
         assert_ne!(old, new);
         assert_eq!(old.id(), new.id());
         assert_eq!(old.source_id(), new.source_id());
         assert_eq!(updated, &new);
         assert_ne!(updated, &old);
+        Ok(())
     }
 
     #[test]
-    fn test_new_podcast_index() {
-        truncate_db().unwrap();
+    fn test_new_podcast_index() -> Result<(), Error> {
+        truncate_db()?;
 
         // First insert
         assert!(EXPECTED_INTERCEPTED.index().is_ok());
         // Second identical, This should take the early return path
         assert!(EXPECTED_INTERCEPTED.index().is_ok());
         // Get the podcast
-        let old = dbqueries::get_podcast_from_source_id(42).unwrap();
+        let old = dbqueries::get_podcast_from_source_id(42)?;
         // Assert that NewShow is equal to the Indexed one
         assert_eq!(&*EXPECTED_INTERCEPTED, &old);
 
@@ -393,28 +402,30 @@ mod tests {
         // Update the podcast
         assert!(updated.index().is_ok());
         // Get the new Show
-        let new = dbqueries::get_podcast_from_source_id(42).unwrap();
+        let new = dbqueries::get_podcast_from_source_id(42)?;
         // Assert it's diff from the old one.
         assert_ne!(new, old);
         assert_eq!(new.id(), old.id());
         assert_eq!(new.source_id(), old.source_id());
+        Ok(())
     }
 
     #[test]
-    fn test_to_podcast() {
+    fn test_to_podcast() -> Result<(), Error> {
         // Assert insert() produces the same result that you would get with to_podcast()
-        truncate_db().unwrap();
-        EXPECTED_INTERCEPTED.insert().unwrap();
-        let old = dbqueries::get_podcast_from_source_id(42).unwrap();
-        let pd = EXPECTED_INTERCEPTED.to_podcast().unwrap();
+        truncate_db()?;
+        EXPECTED_INTERCEPTED.insert()?;
+        let old = dbqueries::get_podcast_from_source_id(42)?;
+        let pd = EXPECTED_INTERCEPTED.to_podcast()?;
         assert_eq!(old, pd);
 
         // Same as above, diff order
-        truncate_db().unwrap();
-        let pd = EXPECTED_INTERCEPTED.to_podcast().unwrap();
+        truncate_db()?;
+        let pd = EXPECTED_INTERCEPTED.to_podcast()?;
         // This should error as a unique constrain violation
         assert!(EXPECTED_INTERCEPTED.insert().is_err());
-        let old = dbqueries::get_podcast_from_source_id(42).unwrap();
+        let old = dbqueries::get_podcast_from_source_id(42)?;
         assert_eq!(old, pd);
+        Ok(())
     }
 }

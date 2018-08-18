@@ -85,6 +85,7 @@ mod tests {
     use super::*;
     use database::truncate_db;
     use dbqueries;
+    use failure::Error;
     use Source;
 
     // (path, url) tuples.
@@ -100,28 +101,29 @@ mod tests {
 
     #[test]
     /// Insert feeds and update/index them.
-    fn test_pipeline() {
-        truncate_db().unwrap();
+    fn test_pipeline() -> Result<(), Error> {
+        truncate_db()?;
         let bad_url = "https://gitlab.gnome.org/World/podcasts.atom";
         // if a stream returns error/None it stops
         // bad we want to parse all feeds regardless if one fails
-        Source::from_url(bad_url).unwrap();
+        Source::from_url(bad_url)?;
 
         URLS.iter().for_each(|url| {
             // Index the urls into the source table.
             Source::from_url(url).unwrap();
         });
 
-        let sources = dbqueries::get_sources().unwrap();
-        run(sources).unwrap();
+        let sources = dbqueries::get_sources()?;
+        run(sources)?;
 
-        let sources = dbqueries::get_sources().unwrap();
+        let sources = dbqueries::get_sources()?;
         // Run again to cover Unique constrains erros.
-        run(sources).unwrap();
+        run(sources)?;
 
         // Assert the index rows equal the controlled results
-        assert_eq!(dbqueries::get_sources().unwrap().len(), 6);
-        assert_eq!(dbqueries::get_podcasts().unwrap().len(), 5);
-        assert_eq!(dbqueries::get_episodes().unwrap().len(), 354);
+        assert_eq!(dbqueries::get_sources()?.len(), 6);
+        assert_eq!(dbqueries::get_podcasts()?.len(), 5);
+        assert_eq!(dbqueries::get_episodes()?.len(), 354);
+        Ok(())
     }
 }

@@ -312,6 +312,7 @@ impl NewEpisodeMinimal {
 mod tests {
     use database::truncate_db;
     use dbqueries;
+    use failure::Error;
     use models::new_episode::{NewEpisodeMinimal, NewEpisodeMinimalBuilder};
     use models::*;
 
@@ -477,68 +478,72 @@ mod tests {
     }
 
     #[test]
-    fn test_new_episode_minimal_intercepted() {
-        let file = File::open("tests/feeds/2018-01-20-Intercepted.xml").unwrap();
-        let channel = Channel::read_from(BufReader::new(file)).unwrap();
+    fn test_new_episode_minimal_intercepted() -> Result<(), Error> {
+        let file = File::open("tests/feeds/2018-01-20-Intercepted.xml")?;
+        let channel = Channel::read_from(BufReader::new(file))?;
 
         let episode = channel.items().iter().nth(14).unwrap();
-        let ep = NewEpisodeMinimal::new(&episode, 42).unwrap();
+        let ep = NewEpisodeMinimal::new(&episode, 42)?;
         assert_eq!(ep, *EXPECTED_MINIMAL_INTERCEPTED_1);
 
         let episode = channel.items().iter().nth(15).unwrap();
-        let ep = NewEpisodeMinimal::new(&episode, 42).unwrap();
+        let ep = NewEpisodeMinimal::new(&episode, 42)?;
         assert_eq!(ep, *EXPECTED_MINIMAL_INTERCEPTED_2);
+        Ok(())
     }
 
     #[test]
-    fn test_new_episode_intercepted() {
-        let file = File::open("tests/feeds/2018-01-20-Intercepted.xml").unwrap();
-        let channel = Channel::read_from(BufReader::new(file)).unwrap();
+    fn test_new_episode_intercepted() -> Result<(), Error> {
+        let file = File::open("tests/feeds/2018-01-20-Intercepted.xml")?;
+        let channel = Channel::read_from(BufReader::new(file))?;
 
         let episode = channel.items().iter().nth(14).unwrap();
-        let ep = NewEpisode::new(&episode, 42).unwrap();
+        let ep = NewEpisode::new(&episode, 42)?;
         assert_eq!(ep, *EXPECTED_INTERCEPTED_1);
 
         let episode = channel.items().iter().nth(15).unwrap();
-        let ep = NewEpisode::new(&episode, 42).unwrap();
+        let ep = NewEpisode::new(&episode, 42)?;
 
         assert_eq!(ep, *EXPECTED_INTERCEPTED_2);
+        Ok(())
     }
 
     #[test]
-    fn test_new_episode_minimal_lup() {
-        let file = File::open("tests/feeds/2018-01-20-LinuxUnplugged.xml").unwrap();
-        let channel = Channel::read_from(BufReader::new(file)).unwrap();
+    fn test_new_episode_minimal_lup() -> Result<(), Error> {
+        let file = File::open("tests/feeds/2018-01-20-LinuxUnplugged.xml")?;
+        let channel = Channel::read_from(BufReader::new(file))?;
 
         let episode = channel.items().iter().nth(18).unwrap();
-        let ep = NewEpisodeMinimal::new(&episode, 42).unwrap();
+        let ep = NewEpisodeMinimal::new(&episode, 42)?;
         assert_eq!(ep, *EXPECTED_MINIMAL_LUP_1);
 
         let episode = channel.items().iter().nth(19).unwrap();
-        let ep = NewEpisodeMinimal::new(&episode, 42).unwrap();
+        let ep = NewEpisodeMinimal::new(&episode, 42)?;
         assert_eq!(ep, *EXPECTED_MINIMAL_LUP_2);
+        Ok(())
     }
 
     #[test]
-    fn test_new_episode_lup() {
-        let file = File::open("tests/feeds/2018-01-20-LinuxUnplugged.xml").unwrap();
-        let channel = Channel::read_from(BufReader::new(file)).unwrap();
+    fn test_new_episode_lup() -> Result<(), Error> {
+        let file = File::open("tests/feeds/2018-01-20-LinuxUnplugged.xml")?;
+        let channel = Channel::read_from(BufReader::new(file))?;
 
         let episode = channel.items().iter().nth(18).unwrap();
-        let ep = NewEpisode::new(&episode, 42).unwrap();
+        let ep = NewEpisode::new(&episode, 42)?;
         assert_eq!(ep, *EXPECTED_LUP_1);
 
         let episode = channel.items().iter().nth(19).unwrap();
-        let ep = NewEpisode::new(&episode, 42).unwrap();
+        let ep = NewEpisode::new(&episode, 42)?;
         assert_eq!(ep, *EXPECTED_LUP_2);
+        Ok(())
     }
 
     #[test]
-    fn test_minimal_into_new_episode() {
-        truncate_db().unwrap();
+    fn test_minimal_into_new_episode() -> Result<(), Error> {
+        truncate_db()?;
 
-        let file = File::open("tests/feeds/2018-01-20-Intercepted.xml").unwrap();
-        let channel = Channel::read_from(BufReader::new(file)).unwrap();
+        let file = File::open("tests/feeds/2018-01-20-Intercepted.xml")?;
+        let channel = Channel::read_from(BufReader::new(file))?;
 
         let item = channel.items().iter().nth(14).unwrap();
         let ep = EXPECTED_MINIMAL_INTERCEPTED_1
@@ -555,42 +560,44 @@ mod tests {
             .clone()
             .into_new_episode(&item);
         assert_eq!(ep, *EXPECTED_INTERCEPTED_2);
+        Ok(())
     }
 
     #[test]
-    fn test_new_episode_insert() {
-        truncate_db().unwrap();
+    fn test_new_episode_insert() -> Result<(), Error> {
+        truncate_db()?;
 
-        let file = File::open("tests/feeds/2018-01-20-Intercepted.xml").unwrap();
-        let channel = Channel::read_from(BufReader::new(file)).unwrap();
+        let file = File::open("tests/feeds/2018-01-20-Intercepted.xml")?;
+        let channel = Channel::read_from(BufReader::new(file))?;
 
         let episode = channel.items().iter().nth(14).unwrap();
-        let new_ep = NewEpisode::new(&episode, 42).unwrap();
-        new_ep.insert().unwrap();
-        let ep = dbqueries::get_episode_from_pk(new_ep.title(), new_ep.show_id()).unwrap();
+        let new_ep = NewEpisode::new(&episode, 42)?;
+        new_ep.insert()?;
+        let ep = dbqueries::get_episode_from_pk(new_ep.title(), new_ep.show_id())?;
 
         assert_eq!(new_ep, ep);
         assert_eq!(&new_ep, &*EXPECTED_INTERCEPTED_1);
         assert_eq!(&*EXPECTED_INTERCEPTED_1, &ep);
 
         let episode = channel.items().iter().nth(15).unwrap();
-        let new_ep = NewEpisode::new(&episode, 42).unwrap();
-        new_ep.insert().unwrap();
-        let ep = dbqueries::get_episode_from_pk(new_ep.title(), new_ep.show_id()).unwrap();
+        let new_ep = NewEpisode::new(&episode, 42)?;
+        new_ep.insert()?;
+        let ep = dbqueries::get_episode_from_pk(new_ep.title(), new_ep.show_id())?;
 
         assert_eq!(new_ep, ep);
         assert_eq!(&new_ep, &*EXPECTED_INTERCEPTED_2);
         assert_eq!(&*EXPECTED_INTERCEPTED_2, &ep);
+        Ok(())
     }
 
     #[test]
-    fn test_new_episode_update() {
-        truncate_db().unwrap();
-        let old = EXPECTED_INTERCEPTED_1.clone().to_episode().unwrap();
+    fn test_new_episode_update() -> Result<(), Error> {
+        truncate_db()?;
+        let old = EXPECTED_INTERCEPTED_1.clone().to_episode()?;
 
         let updated = &*UPDATED_DURATION_INTERCEPTED_1;
-        updated.update(old.rowid()).unwrap();
-        let new = dbqueries::get_episode_from_pk(old.title(), old.show_id()).unwrap();
+        updated.update(old.rowid())?;
+        let new = dbqueries::get_episode_from_pk(old.title(), old.show_id())?;
 
         // Assert that updating does not change the rowid and show_id
         assert_ne!(old, new);
@@ -599,11 +606,12 @@ mod tests {
 
         assert_eq!(updated, &new);
         assert_ne!(updated, &old);
+        Ok(())
     }
 
     #[test]
-    fn test_new_episode_index() {
-        truncate_db().unwrap();
+    fn test_new_episode_index() -> Result<(), Error> {
+        truncate_db()?;
         let expected = &*EXPECTED_INTERCEPTED_1;
 
         // First insert
@@ -611,7 +619,7 @@ mod tests {
         // Second identical, This should take the early return path
         assert!(expected.index().is_ok());
         // Get the episode
-        let old = dbqueries::get_episode_from_pk(expected.title(), expected.show_id()).unwrap();
+        let old = dbqueries::get_episode_from_pk(expected.title(), expected.show_id())?;
         // Assert that NewPodcast is equal to the Indexed one
         assert_eq!(*expected, old);
 
@@ -620,31 +628,33 @@ mod tests {
         // Update the podcast
         assert!(updated.index().is_ok());
         // Get the new Podcast
-        let new = dbqueries::get_episode_from_pk(expected.title(), expected.show_id()).unwrap();
+        let new = dbqueries::get_episode_from_pk(expected.title(), expected.show_id())?;
         // Assert it's diff from the old one.
         assert_ne!(new, old);
         assert_eq!(*updated, new);
         assert_eq!(new.rowid(), old.rowid());
         assert_eq!(new.show_id(), old.show_id());
+        Ok(())
     }
 
     #[test]
-    fn test_new_episode_to_episode() {
+    fn test_new_episode_to_episode() -> Result<(), Error> {
         let expected = &*EXPECTED_INTERCEPTED_1;
 
         // Assert insert() produces the same result that you would get with to_podcast()
-        truncate_db().unwrap();
-        expected.insert().unwrap();
-        let old = dbqueries::get_episode_from_pk(expected.title(), expected.show_id()).unwrap();
-        let ep = expected.to_episode().unwrap();
+        truncate_db()?;
+        expected.insert()?;
+        let old = dbqueries::get_episode_from_pk(expected.title(), expected.show_id())?;
+        let ep = expected.to_episode()?;
         assert_eq!(old, ep);
 
         // Same as above, diff order
-        truncate_db().unwrap();
-        let ep = expected.to_episode().unwrap();
+        truncate_db()?;
+        let ep = expected.to_episode()?;
         // This should error as a unique constrain violation
         assert!(expected.insert().is_err());
-        let old = dbqueries::get_episode_from_pk(expected.title(), expected.show_id()).unwrap();
+        let old = dbqueries::get_episode_from_pk(expected.title(), expected.show_id())?;
         assert_eq!(old, ep);
+        Ok(())
     }
 }

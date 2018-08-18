@@ -162,6 +162,7 @@ mod tests {
     use self::tempdir::TempDir;
     use super::*;
     use chrono::Duration;
+    use failure::Error;
 
     use database::truncate_db;
     use models::NewEpisodeBuilder;
@@ -169,15 +170,15 @@ mod tests {
     use std::fs::File;
     use std::io::Write;
 
-    fn helper_db() -> TempDir {
+    fn helper_db() -> Result<TempDir, Error> {
         // Clean the db
-        truncate_db().unwrap();
+        truncate_db()?;
         // Setup tmp file stuff
-        let tmp_dir = TempDir::new("podcasts_test").unwrap();
+        let tmp_dir = TempDir::new("podcasts_test")?;
         let valid_path = tmp_dir.path().join("virtual_dl.mp3");
         let bad_path = tmp_dir.path().join("invalid_thing.mp3");
-        let mut tmp_file = File::create(&valid_path).unwrap();
-        writeln!(tmp_file, "Foooo").unwrap();
+        let mut tmp_file = File::create(&valid_path)?;
+        writeln!(tmp_file, "Foooo")?;
 
         // Setup episodes
         let n1 = NewEpisodeBuilder::default()
@@ -185,33 +186,31 @@ mod tests {
             .show_id(0)
             .build()
             .unwrap()
-            .to_episode()
-            .unwrap();
+            .to_episode()?;
 
         let n2 = NewEpisodeBuilder::default()
             .title("bar_baz".to_string())
             .show_id(1)
             .build()
             .unwrap()
-            .to_episode()
-            .unwrap();
+            .to_episode()?;
 
-        let mut ep1 = dbqueries::get_episode_cleaner_from_pk(n1.title(), n1.show_id()).unwrap();
-        let mut ep2 = dbqueries::get_episode_cleaner_from_pk(n2.title(), n2.show_id()).unwrap();
+        let mut ep1 = dbqueries::get_episode_cleaner_from_pk(n1.title(), n1.show_id())?;
+        let mut ep2 = dbqueries::get_episode_cleaner_from_pk(n2.title(), n2.show_id())?;
         ep1.set_local_uri(Some(valid_path.to_str().unwrap()));
         ep2.set_local_uri(Some(bad_path.to_str().unwrap()));
 
-        ep1.save().unwrap();
-        ep2.save().unwrap();
+        ep1.save()?;
+        ep2.save()?;
 
-        tmp_dir
+        Ok(tmp_dir)
     }
 
     #[test]
-    fn test_download_checker() {
-        let tmp_dir = helper_db();
-        download_checker().unwrap();
-        let episodes = dbqueries::get_downloaded_episodes().unwrap();
+    fn test_download_checker() -> Result<(), Error> {
+        let tmp_dir = helper_db()?;
+        download_checker()?;
+        let episodes = dbqueries::get_downloaded_episodes()?;
         let valid_path = tmp_dir.path().join("virtual_dl.mp3");
 
         assert_eq!(episodes.len(), 1);
@@ -220,70 +219,75 @@ mod tests {
             episodes.first().unwrap().local_uri()
         );
 
-        let _tmp_dir = helper_db();
-        download_checker().unwrap();
-        let episode = dbqueries::get_episode_cleaner_from_pk("bar_baz", 1).unwrap();
+        let _tmp_dir = helper_db()?;
+        download_checker()?;
+        let episode = dbqueries::get_episode_cleaner_from_pk("bar_baz", 1)?;
         assert!(episode.local_uri().is_none());
+        Ok(())
     }
 
     #[test]
-    fn test_download_cleaner() {
-        let _tmp_dir = helper_db();
-        let mut episode: EpisodeCleanerModel = dbqueries::get_episode_cleaner_from_pk("foo_bar", 0)
-            .unwrap()
-            .into();
+    fn test_download_cleaner() -> Result<(), Error> {
+        let _tmp_dir = helper_db()?;
+        let mut episode: EpisodeCleanerModel =
+            dbqueries::get_episode_cleaner_from_pk("foo_bar", 0)?.into();
 
         let valid_path = episode.local_uri().unwrap().to_owned();
-        delete_local_content(&mut episode).unwrap();
+        delete_local_content(&mut episode)?;
         assert_eq!(Path::new(&valid_path).exists(), false);
+        Ok(())
     }
 
     #[test]
-    fn test_played_cleaner_expired() {
-        let _tmp_dir = helper_db();
-        let mut episode = dbqueries::get_episode_cleaner_from_pk("foo_bar", 0).unwrap();
+    fn test_played_cleaner_expired() -> Result<(), Error> {
+        let _tmp_dir = helper_db()?;
+        let mut episode = dbqueries::get_episode_cleaner_from_pk("foo_bar", 0)?;
         let cleanup_date = Utc::now() - Duration::seconds(1000);
         let epoch = cleanup_date.timestamp() as i32 - 1;
         episode.set_played(Some(epoch));
-        episode.save().unwrap();
+        episode.save()?;
         let valid_path = episode.local_uri().unwrap().to_owned();
 
         // This should delete the file
-        played_cleaner(cleanup_date).unwrap();
+        played_cleaner(cleanup_date)?;
         assert_eq!(Path::new(&valid_path).exists(), false);
+        Ok(())
     }
 
     #[test]
-    fn test_played_cleaner_none() {
-        let _tmp_dir = helper_db();
-        let mut episode = dbqueries::get_episode_cleaner_from_pk("foo_bar", 0).unwrap();
+    fn test_played_cleaner_none() -> Result<(), Error> {
+        let _tmp_dir = helper_db()?;
+        let mut episode = dbqueries::get_episode_cleaner_from_pk("foo_bar", 0)?;
         let cleanup_date = Utc::now() - Duration::seconds(1000);
         let epoch = cleanup_date.timestamp() as i32 + 1;
         episode.set_played(Some(epoch));
-        episode.save().unwrap();
+        episode.save()?;
         let valid_path = episode.local_uri().unwrap().to_owned();
 
         // This should not delete the file
-        played_cleaner(cleanup_date).unwrap();
+        played_cleaner(cleanup_date)?;
         assert_eq!(Path::new(&valid_path).exists(), true);
+        Ok(())
     }
 
     #[test]
-    fn test_url_cleaner() {
+    fn test_url_cleaner() -> Result<(), Error> {
         let good_url = "http://traffic.megaphone.fm/FL8608731318.mp3";
         let bad_url = "http://traffic.megaphone.fm/FL8608731318.mp3?updated=1484685184";
 
         assert_eq!(url_cleaner(bad_url), good_url);
         assert_eq!(url_cleaner(good_url), good_url);
         assert_eq!(url_cleaner(&format!("   {}\t\n", bad_url)), good_url);
+        Ok(())
     }
 
     #[test]
     // This test needs access to local system so we ignore it by default.
     #[ignore]
-    fn test_get_dl_folder() {
+    fn test_get_dl_folder() -> Result<(), Error> {
         let foo_ = format!("{}/{}", DL_DIR.to_str().unwrap(), "foo");
-        assert_eq!(get_download_folder("foo").unwrap(), foo_);
+        assert_eq!(get_download_folder("foo")?, foo_);
         let _ = fs::remove_dir_all(foo_);
+        Ok(())
     }
 }

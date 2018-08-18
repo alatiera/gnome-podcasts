@@ -66,7 +66,7 @@ fn run_migration_on(connection: &SqliteConnection) -> Result<(), DataError> {
 
 /// Reset the database into a clean state.
 // Test share a Temp file db.
-#[allow(dead_code)]
+#[cfg(test)]
 pub fn truncate_db() -> Result<(), DataError> {
     let db = connection();
     let con = db.get()?;

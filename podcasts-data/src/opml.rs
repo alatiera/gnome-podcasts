@@ -100,9 +100,10 @@ pub fn extract_sources<R: Read>(reader: R) -> Result<HashSet<Opml>, reader::Erro
 mod tests {
     use super::*;
     use chrono::Local;
+    use failure::Error;
 
     #[test]
-    fn test_extract() {
+    fn test_extract() -> Result<(), Error> {
         let int_title = String::from("Intercepted with Jeremy Scahill");
         let int_url = String::from("https://feeds.feedburner.com/InterceptedWithJeremyScahill");
         let int_desc =
@@ -160,6 +161,7 @@ mod tests {
                 url: dec_url
             },
         ];
-        assert_eq!(extract_sources(sample1.as_bytes()).unwrap(), map);
+        assert_eq!(extract_sources(sample1.as_bytes())?, map);
+        Ok(())
     }
 }

@@ -395,6 +395,7 @@ pub(crate) fn on_import_clicked(window: &gtk::ApplicationWindow, sender: &Sender
 #[cfg(test)]
 mod tests {
     use super::*;
+    use failure::Error;
     // use podcasts_data::Source;
     // use podcasts_data::dbqueries;
 
@@ -419,29 +420,32 @@ mod tests {
     // }
 
     #[test]
-    fn test_itunes_to_rss() {
+    fn test_itunes_to_rss() -> Result<(), Error> {
         let itunes_url = "https://itunes.apple.com/podcast/id1195206601";
         let rss_url = String::from("http://feeds.feedburner.com/InterceptedWithJeremyScahill");
-        assert_eq!(rss_url, itunes_to_rss(itunes_url).unwrap());
+        assert_eq!(rss_url, itunes_to_rss(itunes_url)?);
 
         let itunes_url = "https://itunes.apple.com/podcast/id000000000000000";
         assert!(itunes_to_rss(itunes_url).is_err());
+        Ok(())
     }
 
     #[test]
-    fn test_itunes_id() {
+    fn test_itunes_id() -> Result<(), Error> {
         let id = 1195206601;
         let itunes_url = "https://itunes.apple.com/podcast/id1195206601";
         assert_eq!(id, itunes_id_from_url(itunes_url).unwrap());
+        Ok(())
     }
 
     #[test]
-    fn test_itunes_lookup_id() {
+    fn test_itunes_lookup_id() -> Result<(), Error> {
         let id = 1195206601;
         let rss_url = "http://feeds.feedburner.com/InterceptedWithJeremyScahill";
-        assert_eq!(rss_url, lookup_id(id).unwrap());
+        assert_eq!(rss_url, lookup_id(id)?);
 
         let id = 000000000;
         assert!(lookup_id(id).is_err());
+        Ok(())
     }
 }

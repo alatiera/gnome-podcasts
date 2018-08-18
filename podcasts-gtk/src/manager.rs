@@ -127,26 +127,26 @@ mod tests {
     #[ignore]
     // THIS IS NOT A RELIABLE TEST
     // Just quick sanity check
-    fn test_start_dl() {
+    fn test_start_dl() -> Result<(), Error> {
         let url = "https://web.archive.org/web/20180120110727if_/https://rss.acast.com/thetipoff";
         // Create and index a source
-        let mut source = Source::from_url(url).unwrap();
+        let mut source = Source::from_url(url)?;
         // Copy its id
         let sid = source.id();
         source.set_http_etag(None);
         source.set_last_modified(None);
-        source.save().unwrap();
-        pipeline::run(vec![source]).unwrap();
+        source.save()?;
+        pipeline::run(vec![source])?;
 
         // Get the podcast
-        let pd = dbqueries::get_podcast_from_source_id(sid).unwrap();
+        let pd = dbqueries::get_podcast_from_source_id(sid)?;
         let title = "Coming soon... The Tip Off";
         // Get an episode
-        let episode: Episode = dbqueries::get_episode_from_pk(title, pd.id()).unwrap();
+        let episode: Episode = dbqueries::get_episode_from_pk(title, pd.id())?;
 
-        let download_fold = get_download_folder(&pd.title()).unwrap();
+        let download_fold = get_download_folder(&pd.title())?;
         let fold2 = download_fold.clone();
-        add(episode.rowid(), download_fold).unwrap();
+        add(episode.rowid(), download_fold)?;
         assert_eq!(ACTIVE_DOWNLOADS.read().unwrap().len(), 1);
 
         // Give it some time to download the file
@@ -155,37 +155,37 @@ mod tests {
         let final_path = format!("{}/{}.mp3", &fold2, episode.rowid());
         assert_eq!(ACTIVE_DOWNLOADS.read().unwrap().len(), 0);
         assert!(Path::new(&final_path).exists());
-        fs::remove_file(final_path).unwrap();
+        fs::remove_file(final_path)?;
+        Ok(())
     }
 
     #[test]
     // This test needs access to local system so we ignore it by default.
     #[ignore]
-    fn test_dl_steal_the_stars() {
+    fn test_dl_steal_the_stars() -> Result<(), Error> {
         let url =
             "https://web.archive.org/web/20180120104957if_/https://rss.art19.com/steal-the-stars";
         // Create and index a source
-        let mut source = Source::from_url(url).unwrap();
+        let mut source = Source::from_url(url)?;
         // Copy its id
         let sid = source.id();
         source.set_http_etag(None);
         source.set_last_modified(None);
-        source.save().unwrap();
-        pipeline::run(vec![source]).unwrap();
+        source.save()?;
+        pipeline::run(vec![source])?;
 
         // Get the podcast
-        let pd = dbqueries::get_podcast_from_source_id(sid).unwrap();
+        let pd = dbqueries::get_podcast_from_source_id(sid)?;
         let title = "Introducing Steal the Stars";
         // Get an episode
-        let mut episode = dbqueries::get_episode_from_pk(title, pd.id())
-            .unwrap()
-            .into();
-        let download_fold = get_download_folder(&pd.title()).unwrap();
+        let mut episode = dbqueries::get_episode_from_pk(title, pd.id())?.into();
+        let download_fold = get_download_folder(&pd.title())?;
 
-        get_episode(&mut episode, &download_fold, None).unwrap();
+        get_episode(&mut episode, &download_fold, None)?;
 
         let final_path = format!("{}/{}.mp3", &download_fold, episode.rowid());
         assert!(Path::new(&final_path).exists());
-        fs::remove_file(final_path).unwrap();
+        fs::remove_file(final_path)?;
+        Ok(())
     }
 }

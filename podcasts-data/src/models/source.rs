@@ -275,29 +275,31 @@ fn response_to_channel(res: Response) -> impl Future<Item = Channel, Error = Dat
 #[cfg(test)]
 mod tests {
     use super::*;
+    use failure::Error;
     use tokio_core::reactor::Core;
 
     use database::truncate_db;
     use utils::get_feed;
 
     #[test]
-    fn test_into_feed() {
-        truncate_db().unwrap();
+    fn test_into_feed() -> Result<(), Error> {
+        truncate_db()?;
 
-        let mut core = Core::new().unwrap();
+        let mut core = Core::new()?;
         let client = Client::configure()
-            .connector(HttpsConnector::new(4, &core.handle()).unwrap())
+            .connector(HttpsConnector::new(4, &core.handle())?)
             .build(&core.handle());
 
         let url = "https://web.archive.org/web/20180120083840if_/https://feeds.feedburner.\
                    com/InterceptedWithJeremyScahill";
-        let source = Source::from_url(url).unwrap();
+        let source = Source::from_url(url)?;
         let id = source.id();
 
         let feed = source.into_feed(client);
-        let feed = core.run(feed).unwrap();
+        let feed = core.run(feed)?;
 
         let expected = get_feed("tests/feeds/2018-01-20-Intercepted.xml", id);
         assert_eq!(expected, feed);
+        Ok(())
     }
 }

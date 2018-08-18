@@ -236,6 +236,7 @@ pub fn cache_image(pd: &ShowCoverModel) -> Result<String, DownloadError> {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use failure::Error;
     use podcasts_data::dbqueries;
     use podcasts_data::pipeline;
     use podcasts_data::Source;
@@ -246,17 +247,17 @@ mod tests {
     // This test inserts an rss feed to your `XDG_DATA/podcasts/podcasts.db` so we make it explicit
     // to run it.
     #[ignore]
-    fn test_cache_image() {
+    fn test_cache_image() -> Result<(), Error> {
         let url = "https://web.archive.org/web/20180120110727if_/https://rss.acast.com/thetipoff";
         // Create and index a source
-        let source = Source::from_url(url).unwrap();
+        let source = Source::from_url(url)?;
         // Copy it's id
         let sid = source.id();
         // Convert Source it into a future Feed and index it
-        pipeline::run(vec![source]).unwrap();
+        pipeline::run(vec![source])?;
 
         // Get the Podcast
-        let pd = dbqueries::get_podcast_from_source_id(sid).unwrap().into();
+        let pd = dbqueries::get_podcast_from_source_id(sid)?.into();
 
         let img_path = cache_image(&pd);
         let foo_ = format!(
@@ -264,7 +265,8 @@ mod tests {
             PODCASTS_CACHE.to_str().unwrap(),
             pd.title()
         );
-        assert_eq!(img_path.unwrap(), foo_);
-        fs::remove_file(foo_).unwrap();
+        assert_eq!(img_path?, foo_);
+        fs::remove_file(foo_)?;
+        Ok(())
     }
 }

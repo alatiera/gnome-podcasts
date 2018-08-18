@@ -448,24 +448,26 @@ pub fn update_none_to_played_now(parent: &Show) -> Result<usize, DataError> {
 mod tests {
     use super::*;
     use database::*;
+    use failure::Error;
     use pipeline;
 
     #[test]
-    fn test_update_none_to_played_now() {
-        truncate_db().unwrap();
+    fn test_update_none_to_played_now() -> Result<(), Error> {
+        truncate_db()?;
 
         let url = "https://web.archive.org/web/20180120083840if_/https://feeds.feedburner.\
                    com/InterceptedWithJeremyScahill";
-        let source = Source::from_url(url).unwrap();
+        let source = Source::from_url(url)?;
         let id = source.id();
-        pipeline::run(vec![source]).unwrap();
-        let pd = get_podcast_from_source_id(id).unwrap();
+        pipeline::run(vec![source])?;
+        let pd = get_podcast_from_source_id(id)?;
 
-        let eps_num = get_pd_unplayed_episodes(&pd).unwrap().len();
+        let eps_num = get_pd_unplayed_episodes(&pd)?.len();
         assert_ne!(eps_num, 0);
 
-        update_none_to_played_now(&pd).unwrap();
-        let eps_num2 = get_pd_unplayed_episodes(&pd).unwrap().len();
+        update_none_to_played_now(&pd)?;
+        let eps_num2 = get_pd_unplayed_episodes(&pd)?.len();
         assert_eq!(eps_num2, 0);
+        Ok(())
     }
 }

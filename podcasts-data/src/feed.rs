@@ -126,6 +126,7 @@ fn batch_insert_episodes(episodes: &[NewEpisode]) {
 
 #[cfg(test)]
 mod tests {
+    use failure::Error;
     use rss::Channel;
     use tokio_core::reactor::Core;
 
@@ -170,8 +171,8 @@ mod tests {
     };
 
     #[test]
-    fn test_complete_index() {
-        truncate_db().unwrap();
+    fn test_complete_index() -> Result<(), Error> {
+        truncate_db()?;
 
         let feeds: Vec<_> = URLS
             .iter()
@@ -181,41 +182,44 @@ mod tests {
                 get_feed(path, s.id())
             }).collect();
 
-        let mut core = Core::new().unwrap();
-        // Index the channels
+        let mut core = Core::new()?;
+        // Index the channes
         let list: Vec<_> = feeds.into_iter().map(|x| x.index()).collect();
         let _foo = core.run(join_all(list));
 
         // Assert the index rows equal the controlled results
-        assert_eq!(dbqueries::get_sources().unwrap().len(), 5);
-        assert_eq!(dbqueries::get_podcasts().unwrap().len(), 5);
-        assert_eq!(dbqueries::get_episodes().unwrap().len(), 354);
+        assert_eq!(dbqueries::get_sources()?.len(), 5);
+        assert_eq!(dbqueries::get_podcasts()?.len(), 5);
+        assert_eq!(dbqueries::get_episodes()?.len(), 354);
+        Ok(())
     }
 
     #[test]
-    fn test_feed_parse_podcast() {
-        truncate_db().unwrap();
+    fn test_feed_parse_podcast() -> Result<(), Error> {
+        truncate_db()?;
 
         let path = "tests/feeds/2018-01-20-Intercepted.xml";
         let feed = get_feed(path, 42);
 
-        let file = fs::File::open(path).unwrap();
-        let channel = Channel::read_from(BufReader::new(file)).unwrap();
+        let file = fs::File::open(path)?;
+        let channel = Channel::read_from(BufReader::new(file))?;
 
         let pd = NewShow::new(&channel, 42);
         assert_eq!(feed.parse_podcast(), pd);
+        Ok(())
     }
 
     #[test]
-    fn test_feed_index_channel_items() {
-        truncate_db().unwrap();
+    fn test_feed_index_channel_items() -> Result<(), Error> {
+        truncate_db()?;
 
         let path = "tests/feeds/2018-01-20-Intercepted.xml";
         let feed = get_feed(path, 42);
-        let pd = feed.parse_podcast().to_podcast().unwrap();
+        let pd = feed.parse_podcast().to_podcast()?;
 
-        feed.index_channel_items(pd).wait().unwrap();
-        assert_eq!(dbqueries::get_podcasts().unwrap().len(), 1);
-        assert_eq!(dbqueries::get_episodes().unwrap().len(), 43);
+        feed.index_channel_items(pd).wait()?;
+        assert_eq!(dbqueries::get_podcasts()?.len(), 1);
+        assert_eq!(dbqueries::get_episodes()?.len(), 43);
+        Ok(())
     }
 }
