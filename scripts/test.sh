@@ -14,7 +14,10 @@ flatpak-builder --run app ${MANIFEST_PATH} glib-compile-resources --sourcedir=po
 
 # Build the flatpak repo
 flatpak-builder --run app ${MANIFEST_PATH} meson --prefix=/app build
-flatpak-builder --run app ${MANIFEST_PATH} ninja -C build install
+flatpak-builder --run \
+    --env=CARGO_TARGET_DIR="target_build/" \
+    app ${MANIFEST_PATH} \
+    ninja -C build install
 
 # Run the tests
 xvfb-run -a -s "-screen 0 1024x768x24" \
