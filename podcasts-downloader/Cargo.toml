@@ -7,13 +7,13 @@ workspace = "../"
 [dependencies]
 error-chain = "0.12.0"
 hyper = "0.11.27"
-log = "0.4.3"
+log = "0.4.4"
 mime_guess = "1.8.6"
-reqwest = "0.8.6"
+reqwest = "0.8.8"
 tempdir = "0.3.7"
 glob = "0.2.11"
-failure = "0.1.1"
-failure_derive = "0.1.1"
+failure = "0.1.2"
+failure_derive = "0.1.2"
 
 [dependencies.podcasts-data]
 path = "../podcasts-data"
