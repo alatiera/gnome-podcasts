@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: podcasts master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2018-08-11 14:10+0000\n"
-"PO-Revision-Date: 2018-08-11 19:45+0300\n"
+"POT-Creation-Date: 2018-08-16 20:37+0000\n"
+"PO-Revision-Date: 2018-08-19 17:52+0300\n"
 "Last-Translator: Emin Tufan Çetin <etcetin@gmail.com>\n"
 "Language-Team: Türkçe <gnome-turk@gnome.org>\n"
 "Language: tr\n"
@@ -69,7 +69,7 @@ msgstr ""
 #. Weird magic I copy-pasted that sets the Application Name in the Shell.
 #: podcasts-gtk/resources/org.gnome.Podcasts.desktop:3
 #: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml:4
-#: podcasts-gtk/src/app.rs:89 podcasts-gtk/src/app.rs:354
+#: podcasts-gtk/src/app.rs:90 podcasts-gtk/src/app.rs:384
 #: podcasts-gtk/src/widgets/aboutdialog.rs:33
 msgid "Podcasts"
 msgstr "Podcastler"
@@ -97,31 +97,27 @@ msgstr "GNOME için Podcast uygulaması"
 msgid "Jordan Petridis"
 msgstr "Jordan Petridis"
 
-#: podcasts-gtk/resources/gtk/empty_show.ui:35
-msgid "This show does not have any episodes"
-msgstr "Bu herhangi bir bölümün olmadığını gösterir"
+#: podcasts-gtk/resources/gtk/empty_view.ui:46
+#| msgid "This show does not have any episodes"
+msgid "This show does not have episodes yet"
+msgstr "Bu gösterinin henüz herhangi bir bölümü yok"
 
-#: podcasts-gtk/resources/gtk/empty_show.ui:51
-msgid "If you think this is an error, please consider opening a bug report."
-msgstr ""
-"Bunun bir hata olduğunu düşünüyorsanız lütfen hata bildirimi yapmayı düşünün."
+#: podcasts-gtk/resources/gtk/empty_view.ui:62
+#| msgid "If you think this is an error, please consider opening a bug report."
+msgid "If you think this is an error, please consider writing a bug report."
+msgstr "Bunun bir hata olduğunu düşünüyorsanız lütfen hata bildirimi yazın."
 
-#: podcasts-gtk/resources/gtk/empty_view.ui:66
+#: podcasts-gtk/resources/gtk/empty_view.ui:107
 msgid "Get some shows"
 msgstr "Birkaç gösteri edinin"
 
-#: podcasts-gtk/resources/gtk/empty_view.ui:103
+#: podcasts-gtk/resources/gtk/empty_view.ui:144
 msgid "Add new shows via feed URL"
 msgstr "Besleme URLʼsi ile yeni gösteriler ekle"
 
-#: podcasts-gtk/resources/gtk/empty_view.ui:132
+#: podcasts-gtk/resources/gtk/empty_view.ui:173
 msgid "Import shows from another device"
 msgstr "Gösterileri başka aygıttan içe aktar"
-
-#: podcasts-gtk/resources/gtk/episode_widget.ui:55
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:160
-msgid "Episode Title"
-msgstr "Bölüm Başlığı"
 
 #: podcasts-gtk/resources/gtk/episode_widget.ui:177
 msgid "Calculating episode size…"
@@ -177,17 +173,12 @@ msgid "You are already subscribed to that feed!"
 msgstr "Bu beslemeye zaten abonesiniz!"
 
 #: podcasts-gtk/resources/gtk/headerbar.ui:169
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:141
 msgid "Show Title"
 msgstr "Gösteri Başlığı"
 
 #: podcasts-gtk/resources/gtk/headerbar.ui:210
 msgid "Back"
 msgstr "Geri"
-
-#: podcasts-gtk/resources/gtk/headerbar.ui:296
-msgid "Fetching new episodes"
-msgstr "Yeni bölümler alınıyor"
 
 #: podcasts-gtk/resources/gtk/help-overlay.ui:12
 msgid "General"
@@ -228,77 +219,77 @@ msgstr "Bu Ay"
 msgid "Older"
 msgstr "Daha Eski"
 
-#: podcasts-gtk/resources/gtk/inapp_notif.ui:64
+#: podcasts-gtk/resources/gtk/inapp_notif.ui:101
 msgid "An in-app action notification"
 msgstr "Uygulama içi eylem bildirimi"
 
-#: podcasts-gtk/resources/gtk/inapp_notif.ui:102
+#: podcasts-gtk/resources/gtk/inapp_notif.ui:112
 msgid "Undo"
 msgstr "Geri al"
 
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:44
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:72
 msgid "Rewind 10 seconds"
 msgstr "10 saniye geri sar"
 
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:59
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:87
 msgid "Play"
 msgstr "Oynat"
 
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:75
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:103
 msgid "Pause"
 msgstr "Duraklat"
 
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:91
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:119
 msgid "Fast forward 10 seconds"
 msgstr "10 saniye ileri sar"
 
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:257
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:285
 msgid "Change the playback speed"
 msgstr "Kayıttan yürütme hızını değiştir"
 
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:272
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:352
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:300
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:380
 msgid "1.00×"
 msgstr "1.00×"
 
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:316
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:344
 msgid "1.50×"
 msgstr "1.50×"
 
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:320
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:348
 msgid "1.5 speed rate"
 msgstr "1.5 hız oranı"
 
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:334
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:362
 msgid "1.25×"
 msgstr "1.25×"
 
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:338
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:366
 msgid "1.25 speed rate"
 msgstr "1.25 hız oranı"
 
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:356
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:384
 msgid "Normal speed"
 msgstr "Olağan hız"
 
-#: podcasts-gtk/resources/gtk/prefs.ui:14
-#: podcasts-gtk/resources/gtk/prefs.ui:267
+#: podcasts-gtk/resources/gtk/prefs.ui:42
+#: podcasts-gtk/resources/gtk/prefs.ui:295
 msgid "Preferences"
 msgstr "Tercihler"
 
-#: podcasts-gtk/resources/gtk/prefs.ui:48
+#: podcasts-gtk/resources/gtk/prefs.ui:76
 msgid "Appearance"
 msgstr "Görünüm"
 
-#: podcasts-gtk/resources/gtk/prefs.ui:92
+#: podcasts-gtk/resources/gtk/prefs.ui:120
 msgid "Dark Theme"
 msgstr "Karanlık Gövde"
 
-#: podcasts-gtk/resources/gtk/prefs.ui:138
+#: podcasts-gtk/resources/gtk/prefs.ui:166
 msgid "Delete played episodes"
 msgstr "Oynatılan bölümleri sil"
 
-#: podcasts-gtk/resources/gtk/prefs.ui:183
+#: podcasts-gtk/resources/gtk/prefs.ui:211
 msgid "After"
 msgstr "Şundan Sonra"
 
@@ -314,23 +305,27 @@ msgstr "_Web Sitesi"
 msgid "_Unsubscribe"
 msgstr "_Abonelikten Çık"
 
-#: podcasts-gtk/resources/gtk/show_menu.ui:23
+#: podcasts-gtk/resources/gtk/show_menu.ui:51
 msgid "Open Website"
 msgstr "Web Sitesini Aç"
 
-#: podcasts-gtk/resources/gtk/show_menu.ui:36
+#: podcasts-gtk/resources/gtk/show_menu.ui:64
 msgid "Mark All as Played"
 msgstr "Tümünü Oynatıldı Olarak İmle"
 
-#: podcasts-gtk/resources/gtk/show_menu.ui:61
+#: podcasts-gtk/resources/gtk/show_menu.ui:89
 msgid "Unsubscribe"
 msgstr "Abonelikten Çık"
 
-#: podcasts-gtk/src/headerbar.rs:123
+#: podcasts-gtk/src/app.rs:329
+msgid "Fetching new episodes"
+msgstr "Yeni bölümler alınıyor"
+
+#: podcasts-gtk/src/headerbar.rs:98
 msgid "You are already subscribed to this show"
 msgstr "Bu gösteriye zaten abonesiniz"
 
-#: podcasts-gtk/src/headerbar.rs:131
+#: podcasts-gtk/src/headerbar.rs:106
 msgid "Invalid URL"
 msgstr "Geçersiz URL"
 
@@ -362,23 +357,23 @@ msgstr "Yeni"
 msgid "Shows"
 msgstr "Gösteriler"
 
-#: podcasts-gtk/src/utils.rs:334
+#: podcasts-gtk/src/utils.rs:350
 msgid "Select the file from which to you want to import shows."
 msgstr "Gösterileri içe aktarmak istediğiniz dosyayı seçin"
 
-#: podcasts-gtk/src/utils.rs:337
+#: podcasts-gtk/src/utils.rs:353
 msgid "_Import"
 msgstr "_İçe Aktar"
 
-#: podcasts-gtk/src/utils.rs:346
+#: podcasts-gtk/src/utils.rs:362
 msgid "OPML file"
 msgstr "OPML dosyası"
 
-#: podcasts-gtk/src/utils.rs:364
+#: podcasts-gtk/src/utils.rs:379
 msgid "Failed to parse the imported file"
 msgstr "İçe aktarılan dosya ayrıştırılamadı"
 
-#: podcasts-gtk/src/utils.rs:369
+#: podcasts-gtk/src/utils.rs:384
 msgid "Selected file could not be accessed."
 msgstr "Seçilen dosyaya erişilemedi."
 
@@ -395,14 +390,17 @@ msgid "{} min"
 msgstr "{} dak"
 
 #. sender.send(Action::ErrorNotification(format!("Player Error: {}", error)));
-#: podcasts-gtk/src/widgets/player.rs:300
+#: podcasts-gtk/src/widgets/player.rs:301
 msgid "The media player was unable to execute an action."
 msgstr "Ortam oynatıcı eylemi yürütemiyor."
 
-#: podcasts-gtk/src/widgets/show_menu.rs:141
+#: podcasts-gtk/src/widgets/show_menu.rs:150
 msgid "Marked all episodes as listened"
 msgstr "Tüm bölümler dinlendi olarak imlendi"
 
-#: podcasts-gtk/src/widgets/show_menu.rs:146
+#: podcasts-gtk/src/widgets/show_menu.rs:155
 msgid "Unsubscribed from {}"
 msgstr "{} aboneliğinden çıkıldı"
+
+#~ msgid "Episode Title"
+#~ msgstr "Bölüm Başlığı"
