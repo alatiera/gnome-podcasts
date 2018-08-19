@@ -64,6 +64,8 @@ pub(crate) enum Action {
     ErrorNotification(String),
     InitEpisode(i32),
     InitShowMenu(Fragile<ShowMenu>),
+    EmptyState,
+    PopulatedState,
 }
 
 #[derive(Debug, Clone)]
@@ -347,6 +349,8 @@ impl App {
                     let menu = &s.get().container;
                     self.headerbar.set_secondary_menu(menu);
                 }
+                Action::EmptyState => self.content.switch_to_empty_views(),
+                Action::PopulatedState => self.content.switch_to_populated(),
             }
         }
 

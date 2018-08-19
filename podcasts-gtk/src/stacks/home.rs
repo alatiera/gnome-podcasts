@@ -4,20 +4,13 @@ use gtk::StackTransitionType;
 
 use crossbeam_channel::Sender;
 use failure::Error;
-use podcasts_data::dbqueries::is_episodes_populated;
-use podcasts_data::errors::DataError;
 
 use app::Action;
+use stacks::State;
 use widgets::{EmptyView, HomeView};
 
 use std::ops::Deref;
 use std::rc::Rc;
-
-#[derive(Debug, Clone, Copy)]
-enum State {
-    Home,
-    Empty,
-}
 
 #[derive(Debug, Clone)]
 pub(crate) struct HomeStack {
@@ -38,7 +31,7 @@ impl HomeStack {
         stack.add_named(episodes.view.container(), "home");
         stack.add_named(empty.deref(), "empty");
 
-        let mut home = HomeStack {
+        let home = HomeStack {
             empty,
             episodes,
             stack,
@@ -46,7 +39,6 @@ impl HomeStack {
             sender,
         };
 
-        home.determine_state()?;
         Ok(home)
     }
 
@@ -55,12 +47,6 @@ impl HomeStack {
     }
 
     pub(crate) fn update(&mut self) -> Result<(), Error> {
-        self.replace_view()?;
-        // Determine the actual state.
-        self.determine_state().map_err(From::from)
-    }
-
-    fn replace_view(&mut self) -> Result<(), Error> {
         // Get the container of the view
         let old = &self.episodes.view.container().clone();
 
@@ -88,28 +74,18 @@ impl HomeStack {
         Ok(())
     }
 
-    fn switch_visible(&mut self, s: State, animation: StackTransitionType) {
+    pub(crate) fn switch_visible(&mut self, s: State, animation: StackTransitionType) {
         use self::State::*;
 
         match s {
-            Home => {
+            Populated => {
                 self.stack.set_visible_child_full("home", animation);
-                self.state = Home;
+                self.state = Populated;
             }
             Empty => {
                 self.stack.set_visible_child_full("empty", animation);
                 self.state = Empty;
             }
         }
-    }
-
-    fn determine_state(&mut self) -> Result<(), DataError> {
-        if is_episodes_populated()? {
-            self.switch_visible(State::Home, StackTransitionType::Crossfade);
-        } else {
-            self.switch_visible(State::Empty, StackTransitionType::Crossfade);
-        };
-
-        Ok(())
     }
 }
