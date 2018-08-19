@@ -21,7 +21,7 @@ use i18n::i18n;
 // TODO: Make a proper state machine for the headerbar states
 pub(crate) struct Header {
     pub(crate) container: gtk::HeaderBar,
-    switch: gtk::StackSwitcher,
+    pub(crate) switch: gtk::StackSwitcher,
     back: gtk::Button,
     show_title: gtk::Label,
     hamburger: gtk::MenuButton,

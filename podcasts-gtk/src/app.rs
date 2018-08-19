@@ -356,6 +356,7 @@ impl App {
                         // Disable refresh action
                         .map(|action| action.set_enabled(false));
 
+                    self.headerbar.switch.set_sensitive(false);
                     self.content.switch_to_empty_views();
                 }
                 Action::PopulatedState => {
@@ -365,6 +366,7 @@ impl App {
                         // Enable refresh action
                         .map(|action| action.set_enabled(true));
 
+                    self.headerbar.switch.set_sensitive(true);
                     self.content.switch_to_populated();
                 }
             }
