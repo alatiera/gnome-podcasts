@@ -349,8 +349,24 @@ impl App {
                     let menu = &s.get().container;
                     self.headerbar.set_secondary_menu(menu);
                 }
-                Action::EmptyState => self.content.switch_to_empty_views(),
-                Action::PopulatedState => self.content.switch_to_populated(),
+                Action::EmptyState => {
+                    self.window
+                        .lookup_action("refresh")
+                        .and_then(|action| action.downcast::<gio::SimpleAction>().ok())
+                        // Disable refresh action
+                        .map(|action| action.set_enabled(false));
+
+                    self.content.switch_to_empty_views();
+                }
+                Action::PopulatedState => {
+                    self.window
+                        .lookup_action("refresh")
+                        .and_then(|action| action.downcast::<gio::SimpleAction>().ok())
+                        // Enable refresh action
+                        .map(|action| action.set_enabled(true));
+
+                    self.content.switch_to_populated();
+                }
             }
         }
 
