@@ -64,6 +64,8 @@ pub(crate) enum Action {
     ErrorNotification(String),
     InitEpisode(i32),
     InitShowMenu(Fragile<ShowMenu>),
+    EmptyState,
+    PopulatedState,
 }
 
 #[derive(Debug, Clone)]
@@ -346,6 +348,26 @@ impl App {
                 Action::InitShowMenu(s) => {
                     let menu = &s.get().container;
                     self.headerbar.set_secondary_menu(menu);
+                }
+                Action::EmptyState => {
+                    self.window
+                        .lookup_action("refresh")
+                        .and_then(|action| action.downcast::<gio::SimpleAction>().ok())
+                        // Disable refresh action
+                        .map(|action| action.set_enabled(false));
+
+                    self.headerbar.switch.set_sensitive(false);
+                    self.content.switch_to_empty_views();
+                }
+                Action::PopulatedState => {
+                    self.window
+                        .lookup_action("refresh")
+                        .and_then(|action| action.downcast::<gio::SimpleAction>().ok())
+                        // Enable refresh action
+                        .map(|action| action.set_enabled(true));
+
+                    self.headerbar.switch.set_sensitive(true);
+                    self.content.switch_to_populated();
                 }
             }
         }

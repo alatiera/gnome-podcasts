@@ -12,6 +12,12 @@ use std::rc::Rc;
 
 use i18n::i18n;
 
+#[derive(Debug, Clone, Copy)]
+pub(crate) enum State {
+    Populated,
+    Empty,
+}
+
 #[derive(Debug, Clone)]
 pub(crate) struct Content {
     stack: gtk::Stack,
@@ -87,5 +93,23 @@ impl Content {
 
     pub(crate) fn get_shows(&self) -> Rc<RefCell<ShowStack>> {
         self.shows.clone()
+    }
+
+    pub(crate) fn switch_to_empty_views(&self) {
+        use gtk::StackTransitionType::*;
+
+        self.home
+            .borrow_mut()
+            .switch_visible(State::Empty, Crossfade);
+        self.shows.borrow_mut().switch_visible(State::Empty);
+    }
+
+    pub(crate) fn switch_to_populated(&self) {
+        use gtk::StackTransitionType::*;
+
+        self.home
+            .borrow_mut()
+            .switch_visible(State::Populated, Crossfade);
+        self.shows.borrow_mut().switch_visible(State::Populated);
     }
 }
