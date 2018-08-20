@@ -6,8 +6,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: podcasts master\n"
-"Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2018-08-16 20:37+0000\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2018-08-20 14:08+0300\n"
 "PO-Revision-Date: 2018-08-19 17:52+0300\n"
 "Last-Translator: Emin Tufan Çetin <etcetin@gmail.com>\n"
 "Language-Team: Türkçe <gnome-turk@gnome.org>\n"
@@ -69,7 +69,7 @@ msgstr ""
 #. Weird magic I copy-pasted that sets the Application Name in the Shell.
 #: podcasts-gtk/resources/org.gnome.Podcasts.desktop:3
 #: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml:4
-#: podcasts-gtk/src/app.rs:90 podcasts-gtk/src/app.rs:384
+#: podcasts-gtk/src/app.rs:92 podcasts-gtk/src/app.rs:406
 #: podcasts-gtk/src/widgets/aboutdialog.rs:33
 msgid "Podcasts"
 msgstr "Podcastler"
@@ -98,12 +98,10 @@ msgid "Jordan Petridis"
 msgstr "Jordan Petridis"
 
 #: podcasts-gtk/resources/gtk/empty_view.ui:46
-#| msgid "This show does not have any episodes"
 msgid "This show does not have episodes yet"
 msgstr "Bu gösterinin henüz herhangi bir bölümü yok"
 
 #: podcasts-gtk/resources/gtk/empty_view.ui:62
-#| msgid "If you think this is an error, please consider opening a bug report."
 msgid "If you think this is an error, please consider writing a bug report."
 msgstr "Bunun bir hata olduğunu düşünüyorsanız lütfen hata bildirimi yazın."
 
@@ -317,7 +315,7 @@ msgstr "Tümünü Oynatıldı Olarak İmle"
 msgid "Unsubscribe"
 msgstr "Abonelikten Çık"
 
-#: podcasts-gtk/src/app.rs:329
+#: podcasts-gtk/src/app.rs:331
 msgid "Fetching new episodes"
 msgstr "Yeni bölümler alınıyor"
 
@@ -349,11 +347,11 @@ msgstr "Gün"
 msgid "Weeks"
 msgstr "Hafta"
 
-#: podcasts-gtk/src/stacks/content.rs:29
+#: podcasts-gtk/src/stacks/content.rs:35
 msgid "New"
 msgstr "Yeni"
 
-#: podcasts-gtk/src/stacks/content.rs:30
+#: podcasts-gtk/src/stacks/content.rs:36
 msgid "Shows"
 msgstr "Gösteriler"
 

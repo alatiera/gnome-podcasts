@@ -7,8 +7,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: podcasts master\n"
-"Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2018-08-14 12:34+0000\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2018-08-20 14:08+0300\n"
 "PO-Revision-Date: 2018-08-15 19:18+0200\n"
 "Last-Translator: Tim Sabsch <tim@sabsch.com>\n"
 "Language-Team: German <gnome-de@gnome.org>\n"
@@ -71,7 +71,7 @@ msgstr "Zeitintervall zwischen automatischen Löschvorgängen"
 #. Weird magic I copy-pasted that sets the Application Name in the Shell.
 #: podcasts-gtk/resources/org.gnome.Podcasts.desktop:3
 #: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml:4
-#: podcasts-gtk/src/app.rs:90 podcasts-gtk/src/app.rs:384
+#: podcasts-gtk/src/app.rs:92 podcasts-gtk/src/app.rs:406
 #: podcasts-gtk/src/widgets/aboutdialog.rs:33
 msgid "Podcasts"
 msgstr "Podcasts"
@@ -319,7 +319,7 @@ msgstr "Alle als angehört markieren"
 msgid "Unsubscribe"
 msgstr "Abbestellen"
 
-#: podcasts-gtk/src/app.rs:329
+#: podcasts-gtk/src/app.rs:331
 msgid "Fetching new episodes"
 msgstr "Neue Folgen werden abgerufen"
 
@@ -351,11 +351,11 @@ msgstr "Tage"
 msgid "Weeks"
 msgstr "Wochen"
 
-#: podcasts-gtk/src/stacks/content.rs:29
+#: podcasts-gtk/src/stacks/content.rs:35
 msgid "New"
 msgstr "Neu"
 
-#: podcasts-gtk/src/stacks/content.rs:30
+#: podcasts-gtk/src/stacks/content.rs:36
 msgid "Shows"
 msgstr "Shows"
 

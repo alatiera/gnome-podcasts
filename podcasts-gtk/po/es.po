@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-podcasts\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-08-02 11:42+0200\n"
+"POT-Creation-Date: 2018-08-20 14:08+0300\n"
 "PO-Revision-Date: 2018-08-02 11:46+0200\n"
 "Last-Translator: Daniel Garcia Moreno <danigm@wadobo.com>\n"
 "Language-Team: Español; Castellano <info@wadobo.com>\n"
@@ -69,28 +69,78 @@ msgstr "Cuántos periodos de tiempo hay que esperar entre limpiados automáticos
 
 #: podcasts-gtk/resources/org.gnome.Podcasts.desktop:3
 #: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml:4
+#: podcasts-gtk/src/app.rs:92 podcasts-gtk/src/app.rs:406
+#: podcasts-gtk/src/widgets/aboutdialog.rs:33
 msgid "Podcasts"
 msgstr "Podcasts"
 
 #: podcasts-gtk/resources/org.gnome.Podcasts.desktop:4
-#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml:11
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml:10
 msgid "Listen to your favorite podcasts, right from your desktop."
 msgstr "Escucha tus podcasts favoritos, directamente desde tu escritorio."
 
-#: podcasts-gtk/resources/org.gnome.Podcasts.desktop:5
+#. Translators: Do NOT translate or transliterate this text (this is an icon file name)!
+#: podcasts-gtk/resources/org.gnome.Podcasts.desktop:6
 msgid "org.gnome.Podcasts"
 msgstr "org.gnome.Podcasts"
 
-#: podcasts-gtk/resources/org.gnome.Podcasts.desktop:11
+#. Translators: Search terms to find this application. Do NOT translate or localize the semicolons! The list MUST also end with a semicolon!
+#: podcasts-gtk/resources/org.gnome.Podcasts.desktop:13
 msgid "Podcast;RSS;"
 msgstr "Podcast;RSS;"
 
-#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml:9
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml:8
 msgid "Podcast app for GNOME"
 msgstr "Aplicación de Podcast para GNOME"
 
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml:31
+#, fuzzy
+msgid "Jordan Petridis"
+msgstr "Jordan Petridis y otros"
+
+#: podcasts-gtk/resources/gtk/empty_view.ui:46
+#, fuzzy
+msgid "This show does not have episodes yet"
+msgstr "Este programa no tiene episodios todavía"
+
+#: podcasts-gtk/resources/gtk/empty_view.ui:62
+#, fuzzy
+msgid "If you think this is an error, please consider writing a bug report."
+msgstr ""
+"Si crees que esto es un error, por favor, considera abrir un bug report."
+
+#: podcasts-gtk/resources/gtk/empty_view.ui:107
+msgid "Get some shows"
+msgstr "Consigue algún programa"
+
+#: podcasts-gtk/resources/gtk/empty_view.ui:144
+msgid "Add new shows via feed URL"
+msgstr "Añadir nuevo programa a través de canal URL"
+
+#: podcasts-gtk/resources/gtk/empty_view.ui:173
+msgid "Import shows from another device"
+msgstr "Importar programas de otro dispositivo"
+
+#: podcasts-gtk/resources/gtk/episode_widget.ui:177
+#, fuzzy
+msgid "Calculating episode size…"
+msgstr "Calculando tamaño del episodio..."
+
+#: podcasts-gtk/resources/gtk/episode_widget.ui:212
+msgid "Cancel"
+msgstr "Cancelar"
+
+#: podcasts-gtk/resources/gtk/episode_widget.ui:230
+msgid "Download this episode"
+msgstr "Descargar este episodio"
+
+#: podcasts-gtk/resources/gtk/episode_widget.ui:254
+msgid "Play this episode"
+msgstr "Reproducir este episodio"
+
 #: podcasts-gtk/resources/gtk/hamburger.ui:7
-msgid "_Check for new episodes"
+#, fuzzy
+msgid "_Check for New Episodes"
 msgstr "_Comprobar si hay nuevos episodios"
 
 #: podcasts-gtk/resources/gtk/hamburger.ui:12
@@ -109,9 +159,30 @@ msgstr "Atajos de _teclado"
 msgid "_About"
 msgstr "_Acerca de"
 
-#: podcasts-gtk/resources/gtk/show_widget.ui:220
-msgid "Mark all episodes as listened"
-msgstr "Marcar todos los episodios como escuchados"
+#: podcasts-gtk/resources/gtk/headerbar.ui:35
+#: podcasts-gtk/resources/gtk/headerbar.ui:189
+msgid "Add a new feed"
+msgstr "Añadir un nuevo canal"
+
+#: podcasts-gtk/resources/gtk/headerbar.ui:53
+msgid "Enter feed address to add"
+msgstr "Introduce la dirección del canal a añadir"
+
+#: podcasts-gtk/resources/gtk/headerbar.ui:89
+msgid "Add"
+msgstr "Añadir"
+
+#: podcasts-gtk/resources/gtk/headerbar.ui:133
+msgid "You are already subscribed to that feed!"
+msgstr "¡Ya estás suscrito a este canal!"
+
+#: podcasts-gtk/resources/gtk/headerbar.ui:169
+msgid "Show Title"
+msgstr "Título de Programa"
+
+#: podcasts-gtk/resources/gtk/headerbar.ui:210
+msgid "Back"
+msgstr "Atrás"
 
 #: podcasts-gtk/resources/gtk/help-overlay.ui:12
 msgid "General"
@@ -132,90 +203,108 @@ msgctxt "shortcut window"
 msgid "Quit the application"
 msgstr "Salir de la aplicación"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:55
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:160
-msgid "Episode Title"
-msgstr "Título del episodio"
-
-#: podcasts-gtk/resources/gtk/episode_widget.ui:78
-msgid "3 Jan"
-msgstr "3 Jan"
-
-#: podcasts-gtk/resources/gtk/episode_widget.ui:95
-#: podcasts-gtk/resources/gtk/episode_widget.ui:128
-msgid "·"
-msgstr "·"
-
-#: podcasts-gtk/resources/gtk/episode_widget.ui:111
-msgid "42 min"
-msgstr "42 min"
-
-#: podcasts-gtk/resources/gtk/episode_widget.ui:144
-msgid "0 MB"
-msgstr "0 MB"
-
-#: podcasts-gtk/resources/gtk/episode_widget.ui:161
-msgid "/"
-msgstr "/"
-
-#: podcasts-gtk/resources/gtk/episode_widget.ui:178
-msgid "Calculating episode size..."
-msgstr "Calculando tamaño del episodio..."
-
-#: podcasts-gtk/resources/gtk/episode_widget.ui:213
-msgid "Cancel"
-msgstr "Cancelar"
-
-#: podcasts-gtk/resources/gtk/episode_widget.ui:231
-msgid "Download this episode"
-msgstr "Descargar este episodio"
-
-#: podcasts-gtk/resources/gtk/episode_widget.ui:255
-msgid "Play this episode"
-msgstr "Reproducir este episodio"
-
-#: podcasts-gtk/resources/gtk/prefs.ui:14
-msgid "Preferences"
-msgstr "Preferencias"
-
-#: podcasts-gtk/resources/gtk/prefs.ui:48
-msgid "Appearance"
-msgstr "Aspecto"
-
-#: podcasts-gtk/resources/gtk/prefs.ui:92
-msgid "Dark Theme"
-msgstr "Tema oscuro"
-
-#: podcasts-gtk/resources/gtk/prefs.ui:138
-msgid "Delete played episodes"
-msgstr "Eliminar episodios reproducidos"
-
-#: podcasts-gtk/resources/gtk/prefs.ui:183
-msgid "After"
-msgstr "Después"
-
-#: podcasts-gtk/resources/gtk/home_view.ui:94
+#: podcasts-gtk/resources/gtk/home_view.ui:56
 msgid "Today"
 msgstr "Hoy"
 
-#: podcasts-gtk/resources/gtk/home_view.ui:150
+#: podcasts-gtk/resources/gtk/home_view.ui:112
 msgid "Yesterday"
 msgstr "Ayer"
 
-#: podcasts-gtk/resources/gtk/home_view.ui:206
+#: podcasts-gtk/resources/gtk/home_view.ui:168
 msgid "This Week"
 msgstr "Esta semana"
 
-#: podcasts-gtk/resources/gtk/home_view.ui:262
+#: podcasts-gtk/resources/gtk/home_view.ui:224
 msgid "This Month"
 msgstr "Este mes"
 
-#: podcasts-gtk/resources/gtk/home_view.ui:319
+#: podcasts-gtk/resources/gtk/home_view.ui:281
 msgid "Older"
 msgstr "Antiguo"
 
+#: podcasts-gtk/resources/gtk/inapp_notif.ui:101
+msgid "An in-app action notification"
+msgstr "Una notificación de acción in-app"
+
+#: podcasts-gtk/resources/gtk/inapp_notif.ui:112
+msgid "Undo"
+msgstr "Deshacer"
+
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:72
+msgid "Rewind 10 seconds"
+msgstr "Atrás 10 segundos"
+
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:87
+msgid "Play"
+msgstr "Reproducir"
+
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:103
+msgid "Pause"
+msgstr "Pausa"
+
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:119
+#, fuzzy
+msgid "Fast forward 10 seconds"
+msgstr "Adelante 10 segundos"
+
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:285
+#, fuzzy
+msgid "Change the playback speed"
+msgstr "Cambiar velocidad de reproducción"
+
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:300
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:380
+#, fuzzy
+msgid "1.00×"
+msgstr "1.00x"
+
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:344
+#, fuzzy
+msgid "1.50×"
+msgstr "1.50x"
+
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:348
+msgid "1.5 speed rate"
+msgstr "velocidad 1.5"
+
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:362
+#, fuzzy
+msgid "1.25×"
+msgstr "1.25x"
+
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:366
+msgid "1.25 speed rate"
+msgstr "velocidad 1.25"
+
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:384
+msgid "Normal speed"
+msgstr "Velocidad normal"
+
+#: podcasts-gtk/resources/gtk/prefs.ui:42
+#: podcasts-gtk/resources/gtk/prefs.ui:295
+msgid "Preferences"
+msgstr "Preferencias"
+
+#: podcasts-gtk/resources/gtk/prefs.ui:76
+msgid "Appearance"
+msgstr "Aspecto"
+
+#: podcasts-gtk/resources/gtk/prefs.ui:120
+msgid "Dark Theme"
+msgstr "Tema oscuro"
+
+#: podcasts-gtk/resources/gtk/prefs.ui:166
+msgid "Delete played episodes"
+msgstr "Eliminar episodios reproducidos"
+
+#: podcasts-gtk/resources/gtk/prefs.ui:211
+msgid "After"
+msgstr "Después"
+
 #: podcasts-gtk/resources/gtk/secondary_menu.ui:7
-msgid "_Mark all episodes as played"
+#, fuzzy
+msgid "_Mark All Episodes as Played"
 msgstr "_Marcar todos los episodios como reproducidos"
 
 #: podcasts-gtk/resources/gtk/secondary_menu.ui:11
@@ -226,207 +315,129 @@ msgstr "Página _Web"
 msgid "_Unsubscribe"
 msgstr "_Cancelar suscripción"
 
-#: podcasts-gtk/resources/gtk/empty_view.ui:66
-msgid "Get some shows"
-msgstr "Consigue algún programa"
-
-#: podcasts-gtk/resources/gtk/empty_view.ui:103
-msgid "Add new shows via feed URL"
-msgstr "Añadir nuevo programa a través de canal URL"
-
-#: podcasts-gtk/resources/gtk/empty_view.ui:132
-msgid "Import shows from another device"
-msgstr "Importar programas de otro dispositivo"
-
-#: podcasts-gtk/resources/gtk/show_menu.ui:23
+#: podcasts-gtk/resources/gtk/show_menu.ui:51
 msgid "Open Website"
 msgstr "Abrir Web"
 
-#: podcasts-gtk/resources/gtk/show_menu.ui:36
-msgid "Mark all as played"
+#: podcasts-gtk/resources/gtk/show_menu.ui:64
+#, fuzzy
+msgid "Mark All as Played"
 msgstr "Marcar como reproducido"
 
-#: podcasts-gtk/resources/gtk/show_menu.ui:61
+#: podcasts-gtk/resources/gtk/show_menu.ui:89
 msgid "Unsubscribe"
 msgstr "Cancelar suscripción"
 
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:44
-msgid "Rewind 10 seconds"
-msgstr "Atrás 10 segundos"
-
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:59
-msgid "Play"
-msgstr "Reproducir"
-
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:75
-msgid "Pause"
-msgstr "Pausa"
-
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:91
-msgid "Fast Forward 10 seconds"
-msgstr "Adelante 10 segundos"
-
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:141
-#: podcasts-gtk/resources/gtk/headerbar.ui:247
-msgid "Show Title"
-msgstr "Título de Programa"
-
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:257
-msgid "Change the Playback speed"
-msgstr "Cambiar velocidad de reproducción"
-
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:272
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:352
-msgid "1.00x"
-msgstr "1.00x"
-
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:316
-msgid "1.50x"
-msgstr "1.50x"
-
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:320
-msgid "1.5 speed rate"
-msgstr "velocidad 1.5"
-
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:334
-msgid "1.25x"
-msgstr "1.25x"
-
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:338
-msgid "1.25 speed rate"
-msgstr "velocidad 1.25"
-
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:356
-msgid "Normal speed"
-msgstr "Velocidad normal"
-
-#: podcasts-gtk/resources/gtk/empty_show.ui:35
-msgid "This show does not have any episodes"
-msgstr "Este programa no tiene episodios todavía"
-
-#: podcasts-gtk/resources/gtk/empty_show.ui:51
-msgid "If you think this is an Error, Plese consider opening a bug report."
-msgstr ""
-"Si crees que esto es un error, por favor, considera abrir un bug report."
-
-#: podcasts-gtk/resources/gtk/headerbar.ui:35
-#: podcasts-gtk/resources/gtk/headerbar.ui:155
-msgid "Add a new feed"
-msgstr "Añadir un nuevo canal"
-
-#: podcasts-gtk/resources/gtk/headerbar.ui:56
-msgid "Enter feed address to add"
-msgstr "Introduce la dirección del canal a añadir"
-
-#: podcasts-gtk/resources/gtk/headerbar.ui:92
-msgid "Add"
-msgstr "Añadir"
-
-#: podcasts-gtk/resources/gtk/headerbar.ui:136
-msgid "You are already subscribed to that feed!"
-msgstr "¡Ya estás suscrito a este canal!"
-
-#: podcasts-gtk/resources/gtk/headerbar.ui:176
-msgid "Back"
-msgstr "Atrás"
-
-#: podcasts-gtk/resources/gtk/headerbar.ui:212
+#: podcasts-gtk/src/app.rs:331
 msgid "Fetching new episodes"
 msgstr "Obteniendo nuevos episodios"
 
-#: podcasts-gtk/resources/gtk/inapp_notif.ui:35
-msgid "An in-app action notification"
-msgstr "Una notificación de acción in-app"
+#: podcasts-gtk/src/headerbar.rs:98
+#, fuzzy
+msgid "You are already subscribed to this show"
+msgstr "Ya estás suscrito a este programa"
 
-#: podcasts-gtk/resources/gtk/inapp_notif.ui:72
-msgid "Undo"
-msgstr "Deshacer"
+#: podcasts-gtk/src/headerbar.rs:106
+#, fuzzy
+msgid "Invalid URL"
+msgstr "Url no válida"
 
-#: podcasts-gtk/src/widgets/show_menu.rs:141
-msgid "Marked all episodes as listened"
-msgstr "Marcar todos los episodios como escuchados"
+#: podcasts-gtk/src/prefs.rs:59
+msgid "Seconds"
+msgstr "Segundos"
 
-#: podcasts-gtk/src/widgets/show_menu.rs:146
-msgid "Unsubscribed from {}"
-msgstr "Suscripción cancelada para {}"
+#: podcasts-gtk/src/prefs.rs:60
+msgid "Minutes"
+msgstr "Minutos"
 
-#. sender.send(Action::ErrorNotification(format!("Player Error: {}", error)));
-#: podcasts-gtk/src/widgets/player.rs:300
-msgid "The media player was unable to execute an action."
-msgstr "El reproductor no ha podido reproducir una acción."
+#: podcasts-gtk/src/prefs.rs:61
+msgid "Hours"
+msgstr "Horas"
+
+#: podcasts-gtk/src/prefs.rs:62
+msgid "Days"
+msgstr "Días"
+
+#: podcasts-gtk/src/prefs.rs:63
+msgid "Weeks"
+msgstr "Semanas"
+
+#: podcasts-gtk/src/stacks/content.rs:35
+msgid "New"
+msgstr "Nuevo"
+
+#: podcasts-gtk/src/stacks/content.rs:36
+msgid "Shows"
+msgstr "Programas"
+
+#: podcasts-gtk/src/utils.rs:350
+#, fuzzy
+msgid "Select the file from which to you want to import shows."
+msgstr "Selecciona el fichero desde el cual quieres importar programas."
+
+#: podcasts-gtk/src/utils.rs:353
+msgid "_Import"
+msgstr "_Importar"
+
+#: podcasts-gtk/src/utils.rs:362
+msgid "OPML file"
+msgstr "fichero OPML"
+
+#: podcasts-gtk/src/utils.rs:379
+#, fuzzy
+msgid "Failed to parse the imported file"
+msgstr "Fallo al leer el fichero importado"
+
+#: podcasts-gtk/src/utils.rs:384
+#, fuzzy
+msgid "Selected file could not be accessed."
+msgstr "El fichero seleccionado no es accesible."
 
 #: podcasts-gtk/src/widgets/aboutdialog.rs:26
 msgid "Podcast Client for the GNOME Desktop."
 msgstr "Aplicación de Podcast para el escritorio GNOME."
 
-#: podcasts-gtk/src/widgets/aboutdialog.rs:27
-msgid "© 2017, 2018 Jordan Petridis"
-msgstr "© 2017, 2018 Jordan Petridis"
-
 #: podcasts-gtk/src/widgets/aboutdialog.rs:41
 msgid "translator-credits"
 msgstr "\"Daniel García Moreno <danigm@wadobo.com>\""
 
-#. Set the label and show them.
-#: podcasts-gtk/src/widgets/episode.rs:128
+#: podcasts-gtk/src/widgets/episode.rs:129
 msgid "{} min"
 msgstr "{} min"
 
-#: podcasts-gtk/src/headerbar.rs:123
-msgid "You are already subscribed to this Show"
-msgstr "Ya estás suscrito a este programa"
+#. sender.send(Action::ErrorNotification(format!("Player Error: {}", error)));
+#: podcasts-gtk/src/widgets/player.rs:301
+msgid "The media player was unable to execute an action."
+msgstr "El reproductor no ha podido reproducir una acción."
 
-#: podcasts-gtk/src/headerbar.rs:131
-msgid "Invalid url"
-msgstr "Url no válida"
+#: podcasts-gtk/src/widgets/show_menu.rs:150
+msgid "Marked all episodes as listened"
+msgstr "Marcar todos los episodios como escuchados"
 
-#: podcasts-gtk/src/utils.rs:330
-msgid "Select the file from which to you want to Import Shows."
-msgstr "Selecciona el fichero desde el cual quieres importar programas."
+#: podcasts-gtk/src/widgets/show_menu.rs:155
+msgid "Unsubscribed from {}"
+msgstr "Suscripción cancelada para {}"
 
-#: podcasts-gtk/src/utils.rs:333
-msgid "_Import"
-msgstr "_Importar"
+#~ msgid "Mark all episodes as listened"
+#~ msgstr "Marcar todos los episodios como escuchados"
 
-#: podcasts-gtk/src/utils.rs:342
-msgid "OPML file"
-msgstr "fichero OPML"
+#~ msgid "Episode Title"
+#~ msgstr "Título del episodio"
 
-#: podcasts-gtk/src/utils.rs:360
-msgid "Failed to parse the Imported file"
-msgstr "Fallo al leer el fichero importado"
+#~ msgid "3 Jan"
+#~ msgstr "3 Jan"
 
-#: podcasts-gtk/src/utils.rs:365
-msgid "Selected File could not be accessed."
-msgstr "El fichero seleccionado no es accesible."
+#~ msgid "·"
+#~ msgstr "·"
 
-#: podcasts-gtk/src/stacks/content.rs:29
-msgid "New"
-msgstr "Nuevo"
+#~ msgid "42 min"
+#~ msgstr "42 min"
 
-#: podcasts-gtk/src/stacks/content.rs:30
-msgid "Shows"
-msgstr "Programas"
+#~ msgid "0 MB"
+#~ msgstr "0 MB"
 
-#: podcasts-gtk/src/prefs.rs:58
-msgid "Seconds"
-msgstr "Segundos"
+#~ msgid "/"
+#~ msgstr "/"
 
-#: podcasts-gtk/src/prefs.rs:58
-msgid "Minutes"
-msgstr "Minutos"
-
-#: podcasts-gtk/src/prefs.rs:58
-msgid "Hours"
-msgstr "Horas"
-
-#: podcasts-gtk/src/prefs.rs:59
-msgid "Days"
-msgstr "Días"
-
-#: podcasts-gtk/src/prefs.rs:59
-msgid "Weeks"
-msgstr "Semanas"
-
-#~ msgid "Jordan Petridis and others"
-#~ msgstr "Jordan Petridis y otros"
+#~ msgid "© 2017, 2018 Jordan Petridis"
+#~ msgstr "© 2017, 2018 Jordan Petridis"

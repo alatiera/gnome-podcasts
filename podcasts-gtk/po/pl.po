@@ -7,8 +7,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: podcasts\n"
-"Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2018-08-13 01:05+0000\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2018-08-20 14:08+0300\n"
 "PO-Revision-Date: 2018-08-13 03:44+0200\n"
 "Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
 "Language-Team: Polish <community-poland@mozilla.org>\n"
@@ -70,7 +70,7 @@ msgstr "Jaki okres czekać między automatycznym czyszczeniem"
 #. Weird magic I copy-pasted that sets the Application Name in the Shell.
 #: podcasts-gtk/resources/org.gnome.Podcasts.desktop:3
 #: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml:4
-#: podcasts-gtk/src/app.rs:89 podcasts-gtk/src/app.rs:354
+#: podcasts-gtk/src/app.rs:92 podcasts-gtk/src/app.rs:406
 #: podcasts-gtk/src/widgets/aboutdialog.rs:33
 msgid "Podcasts"
 msgstr "Podcasty"
@@ -179,10 +179,6 @@ msgstr "Tytuł programu"
 msgid "Back"
 msgstr "Wstecz"
 
-#: podcasts-gtk/resources/gtk/headerbar.ui:296
-msgid "Fetching new episodes"
-msgstr "Pobieranie nowych odcinków"
-
 #: podcasts-gtk/resources/gtk/help-overlay.ui:12
 msgid "General"
 msgstr "Ogólne"
@@ -222,11 +218,11 @@ msgstr "Ten miesiąc"
 msgid "Older"
 msgstr "Starsze"
 
-#: podcasts-gtk/resources/gtk/inapp_notif.ui:64
+#: podcasts-gtk/resources/gtk/inapp_notif.ui:101
 msgid "An in-app action notification"
 msgstr "Powiadomienie z działaniem w programie"
 
-#: podcasts-gtk/resources/gtk/inapp_notif.ui:102
+#: podcasts-gtk/resources/gtk/inapp_notif.ui:112
 msgid "Undo"
 msgstr "Cofnij"
 
@@ -320,11 +316,15 @@ msgstr "Oznacz wszystkie jako odtworzone"
 msgid "Unsubscribe"
 msgstr "Zrezygnuj z subskrypcji"
 
-#: podcasts-gtk/src/headerbar.rs:123
+#: podcasts-gtk/src/app.rs:331
+msgid "Fetching new episodes"
+msgstr "Pobieranie nowych odcinków"
+
+#: podcasts-gtk/src/headerbar.rs:98
 msgid "You are already subscribed to this show"
 msgstr "Ten program jest już subskrybowany"
 
-#: podcasts-gtk/src/headerbar.rs:131
+#: podcasts-gtk/src/headerbar.rs:106
 msgid "Invalid URL"
 msgstr "Nieprawidłowy adres"
 
@@ -348,31 +348,31 @@ msgstr "Dni"
 msgid "Weeks"
 msgstr "Tygodnie"
 
-#: podcasts-gtk/src/stacks/content.rs:29
+#: podcasts-gtk/src/stacks/content.rs:35
 msgid "New"
 msgstr "Nowe"
 
-#: podcasts-gtk/src/stacks/content.rs:30
+#: podcasts-gtk/src/stacks/content.rs:36
 msgid "Shows"
 msgstr "Programy"
 
-#: podcasts-gtk/src/utils.rs:334
+#: podcasts-gtk/src/utils.rs:350
 msgid "Select the file from which to you want to import shows."
 msgstr "Proszę wybrać plik, z którego zaimportować programy."
 
-#: podcasts-gtk/src/utils.rs:337
+#: podcasts-gtk/src/utils.rs:353
 msgid "_Import"
 msgstr "Zai_mportuj"
 
-#: podcasts-gtk/src/utils.rs:346
+#: podcasts-gtk/src/utils.rs:362
 msgid "OPML file"
 msgstr "Plik OPML"
 
-#: podcasts-gtk/src/utils.rs:364
+#: podcasts-gtk/src/utils.rs:379
 msgid "Failed to parse the imported file"
 msgstr "Przetworzenie zaimportowanego pliku się nie powiodło"
 
-#: podcasts-gtk/src/utils.rs:369
+#: podcasts-gtk/src/utils.rs:384
 msgid "Selected file could not be accessed."
 msgstr "Nie można uzyskać dostępu do wybranego pliku."
 
@@ -391,14 +391,14 @@ msgid "{} min"
 msgstr "{} min"
 
 #. sender.send(Action::ErrorNotification(format!("Player Error: {}", error)));
-#: podcasts-gtk/src/widgets/player.rs:300
+#: podcasts-gtk/src/widgets/player.rs:301
 msgid "The media player was unable to execute an action."
 msgstr "Odtwarzacz multimediów nie może wykonać działania."
 
-#: podcasts-gtk/src/widgets/show_menu.rs:141
+#: podcasts-gtk/src/widgets/show_menu.rs:150
 msgid "Marked all episodes as listened"
 msgstr "Oznaczono wszystkie odcinki jako odsłuchane"
 
-#: podcasts-gtk/src/widgets/show_menu.rs:146
+#: podcasts-gtk/src/widgets/show_menu.rs:155
 msgid "Unsubscribed from {}"
 msgstr "Zrezygnowano z subskrypcji „{}”"
