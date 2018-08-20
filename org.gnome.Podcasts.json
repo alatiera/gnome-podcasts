@@ -41,7 +41,7 @@
             "sources" : [
                 {
                     "type" : "git",
-                    "url" : "https://source.puri.sm/Librem5/libhandy"
+                    "url" : "https://source.puri.sm/Librem5/libhandy.git"
                 }
             ]
         },
