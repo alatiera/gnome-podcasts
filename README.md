@@ -28,6 +28,7 @@ flatpak run org.gnome.Podcasts
 ## Quick start
 
 GNOME Podcasts can be built and run with [Gnome Builder][builder] >= 3.28.
+Just clone the repo and hit the run button!
 
 You can get Builder from [here][get_builder].
 
@@ -46,28 +47,24 @@ want to discuss design or simply hang out, please join us on our [irc][irc] or [
 ### Flatpak
 
 Flatpak is the recommended way of building and installing GNOME Podcasts.
-
-#### Building a Flatpak
-
-Download the `org.gnome.Podcasts.json` flatpak manifest from this repo.
+Here are the depencancies you will need.
 
 ```sh
-# Add flathub repo
-flatpak --user remote-add flathub --if-not-exists https://dl.flathub.org/repo/flathub.flatpakrepo
-# Add the gnome-nightly repo
-flatpak --user remote-add gnome-nightly --if-not-exists https://sdk.gnome.org/gnome-nightly.flatpakrepo
-# Install the gnome-nightly Sdk and Platform runtim
-flatpak --user install gnome-nightly org.gnome.Sdk org.gnome.Platform
+# Add flathub and the gnome-nightly repo
+flatpak remote-add --user --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
+flatpak remote-add --user --if-not-exists gnome-nightly https://sdk.gnome.org/gnome-nightly.flatpakrepo
+
+# Install the gnome-nightly Sdk and Platform runtime
+flatpak install --user gnome-nightly org.gnome.Sdk org.gnome.Platform
+
 # Install the required rust-stable extension from flathub
-flatpak --user install flathub org.freedesktop.Sdk.Extension.rust-stable
-flatpak-builder --user --repo=repo podcasts org.gnome.Podcasts.json --force-clean
+flatpak install --user flathub org.freedesktop.Sdk.Extension.rust-stable//18.08
 ```
 
 To install the resulting flatpak you can do:
 
 ```bash
-flatpak build-bundle repo gnome-podcasts.flatpak org.gnome.Podcasts
-flatpak install --user --bundle gnome-podcasts.flatpak
+flatpak-builder --user --install --force-clean --repo=repo podcasts org.gnome.Podcasts.json
 ```
 
 ### Building from source
@@ -85,35 +82,11 @@ sudo ninja -C build install
 * Rust stable 1.27 or later along with cargo.
 * Gtk+ 3.22 or later
 * Gstreamer 1.12 or later
+* libhandy
 * Meson
 * A network connection
 
 Offline build are possible too, but [`cargo-vendor`][vendor] would have to be setup first
-
-**Debian/Ubuntu**
-
-```sh
-apt-get install -yqq cargo rustc libsqlite3-dev libssl-dev libgtk-3-dev meson \
-        libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev \
-        gstreamer1.0-plugins-base gstreamer1.0-plugins-good \
-        gstreamer1.0-plugins-bad gstreamer1.0-plugins-ugly \
-        gstreamer1.0-libav libgstrtspserver-1.0-dev ibgstreamer-plugins-bad1.0-dev
-```
-
-**Fedora**
-
-```sh
-dnf install -y rust cargo gtk3-devel glib2-devel openssl-devel sqlite-devel meson \
-    gstreamer1-devel gstreamer1-plugins-base-tools gstreamer1-devel-docs \
-    gstreamer1-plugins-base-devel gstreamer1-plugins-base-devel-docs \
-    gstreamer1-plugins-good gstreamer1-plugins-good-extras \
-    gstreamer1-plugins-bad-free gstreamer1-plugins-bad-free-devel \
-    gstreamer1-plugins-bad-free-extras
-
-```
-
-If you happen to build it on other distributions please let me know the names 
-of the corresponding libraries. Feel free to open a MR or an Issue to note it.
 
 ## Contributing
 
