@@ -32,7 +32,7 @@ flatpak:
               --env=CARGO_HOME="target/cargo-home" \
               --env=CARGO_TARGET_DIR="target_test/" \
               app ${MANIFEST_PATH} \
-              cargo test -- --test-threads=1
+              cargo test -j 1 -- --test-threads=1
 
         # Create a flatpak bundle
         - flatpak-builder --finish-only app ${MANIFEST_PATH}

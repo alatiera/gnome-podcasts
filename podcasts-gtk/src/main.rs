@@ -114,6 +114,21 @@ mod i18n;
 
 use app::App;
 
+#[cfg(test)]
+fn init_gtk_tests() -> Result<(), failure::Error> {
+    // if gtk::is_initialized() {
+    //     assert!(gtk::is_initialized_main_thread())
+    // } else {
+    //     gtk::init()?;
+    //     static_resource::init()?;
+    // }
+
+    gtk::init()?;
+    static_resource::init()?;
+    gst::init()?;
+    Ok(())
+}
+
 fn main() {
     // TODO: make the the logger a cli -vv option
     loggerv::init_with_level(Level::Info).expect("Error initializing loggerv.");
@@ -131,4 +146,31 @@ fn main() {
     );
 
     App::run();
+}
+
+#[test]
+// Even while running the tests with -j 1 and --test-threads=1,
+// cargo seems to create new threads and gtk refuses to initialize again.
+// So we run every gtk related test here.
+fn test_stuff() -> Result<(), failure::Error> {
+    use headerbar::Header;
+    use widgets::*;
+
+    init_gtk_tests()?;
+
+    // If a widget does not exist in the `GtkBuilder`(.ui) file this should panic and fail.
+    Header::default();
+    ShowsView::default();
+    ShowWidget::default();
+    HomeView::default();
+    HomeEpisode::default();
+    EpisodeWidget::default();
+    EmptyView::default();
+    EmptyShow::default();
+
+    appnotif::InAppNotification::default();
+    show_menu::ShowMenu::default();
+    player::PlayerWidget::default();
+
+    Ok(())
 }

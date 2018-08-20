@@ -156,7 +156,7 @@ fn split(now: &DateTime<Utc>, epoch: i64) -> ListSplit {
 }
 
 #[derive(Debug, Clone)]
-struct HomeEpisode {
+pub(crate) struct HomeEpisode {
     container: gtk::Box,
     image: gtk::Image,
     episode: gtk::Box,

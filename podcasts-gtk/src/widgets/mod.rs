@@ -17,3 +17,6 @@ pub(crate) use self::home_view::HomeView;
 pub(crate) use self::show::ShowWidget;
 pub(crate) use self::show_menu::ShowMenu;
 pub(crate) use self::shows_view::ShowsView;
+
+#[cfg(test)]
+pub(crate) use self::home_view::HomeEpisode;
