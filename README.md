@@ -7,23 +7,9 @@ Listen to your favorite podcasts, right from your desktop.
 ![shows_view](./screenshots/shows_view.png)
 ![show_widget](./screenshots/show_widget.png)
 
-## Available from [Flathub](https://www.flathub.org/apps/details/org.gnome.Podcasts)
+## Available on Flathub
 
-Install by clicking and opening [this](https://www.flathub.org/apps/details/org.gnome.Podcasts) with GNOME Software
-
-### Command line options:
-
-Make sure to follow the [setup guide][flatpak_setup] before installing
-
-Install:
-```sh
-flatpak install flathub org.gnome.Podcasts
-```
-
-Run:
-```sh
-flatpak run org.gnome.Podcasts
-```
+[![Get it from Flathub!](https://flathub.org/assets/badges/flathub-badge-en.svg)](https://flathub.org/apps/details/org.gnome.Podcasts)
 
 ## Quick start
 
