@@ -26,7 +26,7 @@
   <releases>
     <release version="0.4.4" date="2018-07-31"/>
   </releases>
-  <url type="homepage">https://gitlab.gnome.org/World/podcasts</url>
+  <url type="homepage">https://wiki.gnome.org/Apps/Podcasts</url>
   <update_contact>jpetridis@gnome.org</update_contact>
   <developer_name>Jordan Petridis</developer_name>
 </component>
