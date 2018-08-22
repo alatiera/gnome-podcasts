@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: podcasts\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-08-20 14:08+0300\n"
+"POT-Creation-Date: 2018-08-22 06:50+0300\n"
 "PO-Revision-Date: 2018-08-13 03:44+0200\n"
 "Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
 "Language-Team: Polish <community-poland@mozilla.org>\n"
@@ -380,7 +380,11 @@ msgstr "Nie można uzyskać dostępu do wybranego pliku."
 msgid "Podcast Client for the GNOME Desktop."
 msgstr "Klient podcastów dla środowiska GNOME."
 
-#: podcasts-gtk/src/widgets/aboutdialog.rs:41
+#: podcasts-gtk/src/widgets/aboutdialog.rs:35
+msgid "Learn more about GNOME Podcasts"
+msgstr ""
+
+#: podcasts-gtk/src/widgets/aboutdialog.rs:40
 msgid "translator-credits"
 msgstr ""
 "Piotr Drąg <piotrdrag@gmail.com>, 2018\n"

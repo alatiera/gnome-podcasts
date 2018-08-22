@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: podcasts master\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-08-20 14:08+0300\n"
+"POT-Creation-Date: 2018-08-22 06:50+0300\n"
 "PO-Revision-Date: 2018-08-19 17:52+0300\n"
 "Last-Translator: Emin Tufan Çetin <etcetin@gmail.com>\n"
 "Language-Team: Türkçe <gnome-turk@gnome.org>\n"
@@ -379,7 +379,11 @@ msgstr "Seçilen dosyaya erişilemedi."
 msgid "Podcast Client for the GNOME Desktop."
 msgstr "GNOME Masaüstü için Podcast İstemcisi."
 
-#: podcasts-gtk/src/widgets/aboutdialog.rs:41
+#: podcasts-gtk/src/widgets/aboutdialog.rs:35
+msgid "Learn more about GNOME Podcasts"
+msgstr ""
+
+#: podcasts-gtk/src/widgets/aboutdialog.rs:40
 msgid "translator-credits"
 msgstr "Emin Tufan Çetin <etcetin@gmail.com>"
 

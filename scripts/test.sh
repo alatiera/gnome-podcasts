@@ -18,6 +18,7 @@ flatpak-builder --run \
     --env=CARGO_TARGET_DIR="target_build/" \
     app ${MANIFEST_PATH} \
     ninja -C build install
+    # ninja -C build gnome-podcasts-pot; ninja -C _build gnome-podcasts-update-po
 
 # Run the tests
 xvfb-run -a -s "-screen 0 1024x768x24" \

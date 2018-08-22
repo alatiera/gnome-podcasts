@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: podcasts master\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-08-20 14:08+0300\n"
+"POT-Creation-Date: 2018-08-22 06:50+0300\n"
 "PO-Revision-Date: 2018-08-15 19:18+0200\n"
 "Last-Translator: Tim Sabsch <tim@sabsch.com>\n"
 "Language-Team: German <gnome-de@gnome.org>\n"
@@ -383,7 +383,11 @@ msgstr "Auf die gewählte Datei konnte nicht zugegriffen werden."
 msgid "Podcast Client for the GNOME Desktop."
 msgstr "Podcast-Client für die GNOME-Arbeitsumgebung."
 
-#: podcasts-gtk/src/widgets/aboutdialog.rs:41
+#: podcasts-gtk/src/widgets/aboutdialog.rs:35
+msgid "Learn more about GNOME Podcasts"
+msgstr ""
+
+#: podcasts-gtk/src/widgets/aboutdialog.rs:40
 msgid "translator-credits"
 msgstr ""
 "Mario Blättermann <mario.blaettermann@gmail.com>\n"

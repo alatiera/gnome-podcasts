@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-podcasts\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-08-20 14:08+0300\n"
+"POT-Creation-Date: 2018-08-22 06:50+0300\n"
 "PO-Revision-Date: 2018-08-02 11:46+0200\n"
 "Last-Translator: Daniel Garcia Moreno <danigm@wadobo.com>\n"
 "Language-Team: Español; Castellano <info@wadobo.com>\n"
@@ -397,7 +397,11 @@ msgstr "El fichero seleccionado no es accesible."
 msgid "Podcast Client for the GNOME Desktop."
 msgstr "Aplicación de Podcast para el escritorio GNOME."
 
-#: podcasts-gtk/src/widgets/aboutdialog.rs:41
+#: podcasts-gtk/src/widgets/aboutdialog.rs:35
+msgid "Learn more about GNOME Podcasts"
+msgstr ""
+
+#: podcasts-gtk/src/widgets/aboutdialog.rs:40
 msgid "translator-credits"
 msgstr "\"Daniel García Moreno <danigm@wadobo.com>\""
 
