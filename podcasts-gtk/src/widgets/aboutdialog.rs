@@ -32,7 +32,7 @@ pub(crate) fn about_dialog(window: &gtk::ApplicationWindow) {
     dialog.set_version("0.4.4");
     dialog.set_program_name(&i18n("Podcasts"));
     dialog.set_website("https://wiki.gnome.org/Apps/Podcasts");
-    dialog.set_website_label("Learn more about GNOME Podcasts");
+    dialog.set_website_label(i18n("Learn more about GNOME Podcasts").as_str());
     dialog.set_transient_for(window);
 
     dialog.set_artists(&["Tobias Bernard", "Sam Hewitt"]);
