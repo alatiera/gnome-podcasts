@@ -2,9 +2,12 @@
 
 export CARGO_HOME=$1/target/cargo-home
 export RUSTFLAGS="--cfg rayon_unstable"
-export PODCASTS_LOCALEDIR="$3"
+export LOCALEDIR="$3"
+export APP_ID="$4"
+export VERSION="$5"
+export PROFILE="$6"
 
-if [[ $DEBUG = true ]]
+if [[ "$PROFILE" == "Devel" ]]
 then
     echo "DEBUG MODE"
     cargo build -p podcasts-gtk && cp $1/target/debug/podcasts-gtk $2

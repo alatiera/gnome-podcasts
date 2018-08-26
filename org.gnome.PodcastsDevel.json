@@ -1,5 +1,5 @@
 {
-    "app-id" : "org.gnome.Podcasts",
+    "app-id" : "org.gnome.PodcastsDevel",
     "runtime" : "org.gnome.Platform",
     "runtime-version" : "master",
     "sdk" : "org.gnome.Sdk",
@@ -30,8 +30,7 @@
         ],
         "env" : {
             "CARGO_HOME" : "/run/build/Podcasts/cargo",
-            "RUST_BACKTRACE" : "1",
-            "DEBUG" : "true"
+            "RUST_BACKTRACE" : "1"
         }
     },
     "modules" : [
@@ -48,6 +47,7 @@
         {
             "name" : "gnome-podcasts",
             "buildsystem" : "meson",
+            "config-opts" : [ "-Dprofile=development" ],
             "sources" : [
                 {
                     "type" : "git",

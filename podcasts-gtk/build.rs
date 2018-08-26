@@ -1,7 +1,3 @@
-use std::env;
-use std::fs::File;
-use std::io::Write;
-use std::path::Path;
 use std::process::Command;
 
 fn main() {
@@ -9,9 +5,10 @@ fn main() {
     println!("cargo:rerun-if-changed=resources");
     println!("cargo:rerun-if-changed=resources/*");
 
-    Command::new("glib-compile-resources")
+    let out = Command::new("glib-compile-resources")
         .args(&["--generate", "resources.xml"])
         .current_dir("resources")
         .status()
-        .unwrap();
+        .expect("failed to generate resources");
+    assert!(out.success());
 }

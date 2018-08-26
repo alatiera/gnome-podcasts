@@ -28,7 +28,8 @@ use std::sync::Arc;
 
 use i18n::i18n;
 
-pub(crate) const APP_ID: &str = "org.gnome.Podcasts";
+pub(crate) const APP_ID: &str = env!("APP_ID");
+pub(crate) const VERSION: &str = env!("VERSION");
 
 /// Creates an action named `name` in the action map `T with the handler `F`
 fn action<T, F>(thing: &T, name: &str, action: F)
@@ -82,12 +83,15 @@ pub(crate) struct App {
 
 impl App {
     pub(crate) fn new(application: &gtk::Application) -> Rc<Self> {
-        let settings = gio::Settings::new(APP_ID);
+        let settings = gio::Settings::new("org.gnome.Podcasts");
 
         let (sender, receiver) = unbounded();
 
         let window = gtk::ApplicationWindow::new(application);
         window.set_title(&i18n("Podcasts"));
+        if APP_ID.ends_with("Devel") {
+            window.get_style_context().map(|c| c.add_class("devel"));
+        }
 
         let weak_s = settings.downgrade();
         let weak_app = application.downgrade();
@@ -380,6 +384,7 @@ impl App {
 
         let application = gtk::Application::new(APP_ID, gio::ApplicationFlags::empty())
             .expect("Application initialization failed...");
+        application.set_resource_base_path("/org/gnome/Podcasts");
 
         let weak_app = application.downgrade();
         application.connect_startup(move |_| {
