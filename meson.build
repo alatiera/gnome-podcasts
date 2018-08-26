@@ -26,6 +26,7 @@ subdir('podcasts-gtk/resources')
 
 i18n = import('i18n')
 subdir('podcasts-gtk/po')
+podir = join_paths (meson.source_root (), 'podcasts-gtk', 'po')
 
 cargo = find_program('cargo', required: false)
 gresource = find_program('glib-compile-resources', required: false)
