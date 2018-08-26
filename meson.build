@@ -33,8 +33,7 @@ cargo_vendor = find_program('cargo-vendor', required: false)
 cargo_script = find_program('scripts/cargo.sh')
 
 cargo_release = custom_target('cargo-build',
-                        build_by_default: true,
-                        build_always: true,
+                        build_always_stale: true,
                         output: ['gnome-podcasts'],
                         install: true,
                         install_dir: podcasts_bindir,
