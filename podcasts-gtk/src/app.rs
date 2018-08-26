@@ -109,7 +109,6 @@ impl App {
 
             info!("Application is exiting");
             app.quit();
-
             Inhibit(false)
         });
 
@@ -394,11 +393,17 @@ impl App {
                 let weak = Rc::downgrade(&app);
                 application.connect_activate(move |_| {
                     info!("GApplication::activate");
-                    weak.upgrade().map(|app| app.window.activate());
+                    if let Some(app) = weak.upgrade() {
+                        // Ideally Gtk4/GtkBuilder make this irrelvent
+                        app.window.show_all();
+                        app.window.present();
+                        info!("Window presented");
+                    } else {
+                        debug_assert!(false, "I hate computers");
+                    }
                 });
 
                 info!("Init complete");
-                app.window.show_all();
             });
         });
 
