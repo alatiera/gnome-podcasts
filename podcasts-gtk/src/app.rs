@@ -30,8 +30,6 @@ use i18n::i18n;
 
 pub(crate) const APP_ID: &str = "org.gnome.Podcasts";
 
-include!(concat!(env!("OUT_DIR"), "/build_globals.rs"));
-
 /// Creates an action named `name` in the action map `T with the handler `F`
 fn action<T, F>(thing: &T, name: &str, action: F)
 where
@@ -377,7 +375,7 @@ impl App {
     pub(crate) fn run() {
         // Set up the textdomain for gettext
         setlocale(LocaleCategory::LcAll, "");
-        bindtextdomain("gnome-podcasts", LOCALEDIR);
+        bindtextdomain("gnome-podcasts", env!("LOCALEDIR"));
         textdomain("gnome-podcasts");
 
         let application = gtk::Application::new(APP_ID, gio::ApplicationFlags::empty())
