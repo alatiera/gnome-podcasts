@@ -9,7 +9,11 @@ vendor/
 .criterion/
 org.gnome.*.json~
 podcasts-gtk/po/gnome-podcasts.pot
+
 # scripts/test.sh
 target_*/
+
+# flatpak-builder stuff
 .flatpak-builder/
 app/
+repo/
