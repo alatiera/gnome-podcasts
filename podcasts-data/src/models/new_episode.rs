@@ -217,7 +217,8 @@ impl NewEpisodeMinimal {
         let enc = item.enclosure();
 
         // Get the url
-        let uri = enc.map(|s| url_cleaner(s.url().trim()))
+        let uri = enc
+            .map(|s| url_cleaner(s.url().trim()))
             // Fallback to Rss.Item.link if enclosure is None.
             .or_else(|| item.link().map(|s| url_cleaner(s.trim())));
 

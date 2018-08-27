@@ -87,21 +87,22 @@ fn filter_episodes<'a, S>(
 where
     S: Stream<Item = IndexState<NewEpisode>, Error = DataError> + Send + 'a,
 {
-    stream.filter_map(|state| match state {
-        IndexState::NotChanged => None,
-        // Update individual rows, and filter them
-        IndexState::Update((ref ep, rowid)) => {
-            ep.update(rowid)
-                .map_err(|err| error!("{}", err))
-                .map_err(|_| error!("Failed to index episode: {:?}.", ep.title()))
-                .ok();
+    stream
+        .filter_map(|state| match state {
+            IndexState::NotChanged => None,
+            // Update individual rows, and filter them
+            IndexState::Update((ref ep, rowid)) => {
+                ep.update(rowid)
+                    .map_err(|err| error!("{}", err))
+                    .map_err(|_| error!("Failed to index episode: {:?}.", ep.title()))
+                    .ok();
 
-            None
-        },
-        IndexState::Index(s) => Some(s),
-    })
-    // only Index is left, collect them for batch index
-    .collect()
+                None
+            }
+            IndexState::Index(s) => Some(s),
+        })
+        // only Index is left, collect them for batch index
+        .collect()
 }
 
 fn batch_insert_episodes(episodes: &[NewEpisode]) {
