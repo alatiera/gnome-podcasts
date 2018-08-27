@@ -364,32 +364,27 @@ pub(crate) fn on_import_clicked(window: &gtk::ApplicationWindow, sender: &Sender
     filter.add_mime_type("text/xml");
     dialog.add_filter(&filter);
 
-    dialog.connect_response(clone!(sender => move |dialog, resp| {
-        debug!("Dialog Response {}", resp);
-        if resp == ResponseType::Accept.to_glib() {
-            if let Some(filename) = dialog.get_filename() {
-                debug!("File selected: {:?}", filename);
+    let resp = dialog.run();
+    debug!("Dialog Response {}", resp);
+    if resp == ResponseType::Accept.to_glib() {
+        if let Some(filename) = dialog.get_filename() {
+            debug!("File selected: {:?}", filename);
 
-                rayon::spawn(clone!(sender => move || {
-                    // Parse the file and import the feeds
-                    if let Ok(sources) = opml::import_from_file(filename) {
-                        // Refresh the successfully parsed feeds to index them
-                        refresh(Some(sources), sender)
-                    } else {
-                        let text = i18n("Failed to parse the imported file");
-                        sender.send(Action::ErrorNotification(text));
-                    }
-                }))
-            } else {
-                let text = i18n("Selected file could not be accessed.");
-                sender.send(Action::ErrorNotification(text));
-            }
+            rayon::spawn(clone!(sender => move || {
+                // Parse the file and import the feeds
+                if let Ok(sources) = opml::import_from_file(filename) {
+                    // Refresh the successfully parsed feeds to index them
+                    refresh(Some(sources), sender)
+                } else {
+                    let text = i18n("Failed to parse the imported file");
+                    sender.send(Action::ErrorNotification(text));
+                }
+            }))
+        } else {
+            let text = i18n("Selected file could not be accessed.");
+            sender.send(Action::ErrorNotification(text));
         }
-
-        dialog.destroy();
-    }));
-
-    dialog.run();
+    }
 }
 
 #[cfg(test)]
