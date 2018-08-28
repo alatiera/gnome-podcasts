@@ -1,4 +1,4 @@
-use app::APP_ID;
+use app::{APP_ID, VERSION};
 use gtk;
 use gtk::prelude::*;
 
@@ -27,9 +27,7 @@ pub(crate) fn about_dialog(window: &gtk::ApplicationWindow) {
     dialog.set_copyright("© 2017, 2018 Jordan Petridis");
     dialog.set_license_type(gtk::License::Gpl30);
     dialog.set_modal(true);
-    // TODO: make it show it fetches the commit hash from which it was built
-    // and the version number is kept in sync automatically
-    dialog.set_version("0.4.4");
+    dialog.set_version(VERSION);
     dialog.set_program_name(&i18n("Podcasts"));
     dialog.set_website("https://wiki.gnome.org/Apps/Podcasts");
     dialog.set_website_label(i18n("Learn more about GNOME Podcasts").as_str());

@@ -1,4 +1,5 @@
-use gtk;
+use app::APP_ID;
+use gtk::{self, prelude::*};
 use std::ops::Deref;
 
 #[derive(Clone, Debug)]
@@ -15,6 +16,8 @@ impl Default for EmptyView {
     fn default() -> Self {
         let builder = gtk::Builder::new_from_resource("/org/gnome/Podcasts/gtk/empty_view.ui");
         let view: gtk::Box = builder.get_object("empty_view").unwrap();
+        let image: gtk::Image = builder.get_object("image").unwrap();
+        image.set_from_icon_name(format!("{}-symbolic", APP_ID).as_str(), 256);
         EmptyView(view)
     }
 }
