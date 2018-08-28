@@ -88,20 +88,10 @@ There are also some minor tasks tagged with `TODO:` and `FIXME:` in the source c
 
 ### Translations
 
-If you want to add a new language you should update the file
-`podcasts-gtk/po/LINUGAS` and add the new lang to the list.
-
-To generate .pot files you should run:
-
-```
-ninja -C _build gnome-podcasts-pot
-```
-
-To generate .po files you should run:
-
-```
-ninja -C _build gnome-podcasts-update-po
-```
+Translation of this project takes place on the GNOME translation platform,
+[Damned Lies](https://l10n.gnome.org/module/podcasts). For further
+information on how to join a language team, or even to create one, please see
+[GNOME Translation Project wiki page](https://wiki.gnome.org/TranslationProject).
 
 
 ## Overview
