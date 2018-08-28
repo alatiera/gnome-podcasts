@@ -251,21 +251,6 @@ pub(crate) fn set_image_from_path(
     show_id: i32,
     size: u32,
 ) -> Result<(), Error> {
-    // Check if there's an active download about this show cover.
-    // If there is, a callback will be set so this function will be called again.
-    // If the download succeeds, there should be a quick return from the pixbuf cache_image
-    // If it fails another download will be scheduled.
-    if let Ok(guard) = COVER_DL_REGISTRY.read() {
-        if guard.contains(&show_id) {
-            let callback = clone!(image => move || {
-                 let _ = set_image_from_path(&image, show_id, size);
-                 glib::Continue(false)
-            });
-            gtk::timeout_add(250, callback);
-            return Ok(());
-        }
-    }
-
     if let Ok(hashmap) = CACHED_PIXBUFS.read() {
         // Check if the requested (cover + size) is already in the cache
         // and if so do an early return after that.
@@ -280,6 +265,21 @@ pub(crate) fn set_image_from_path(
                         .map_err(From::from)
                 })?;
 
+            return Ok(());
+        }
+    }
+
+    // Check if there's an active download about this show cover.
+    // If there is, a callback will be set so this function will be called again.
+    // If the download succeeds, there should be a quick return from the pixbuf cache_image
+    // If it fails another download will be scheduled.
+    if let Ok(guard) = COVER_DL_REGISTRY.read() {
+        if guard.contains(&show_id) {
+            let callback = clone!(image => move || {
+                 let _ = set_image_from_path(&image, show_id, size);
+                 glib::Continue(false)
+            });
+            gtk::timeout_add(250, callback);
             return Ok(());
         }
     }
