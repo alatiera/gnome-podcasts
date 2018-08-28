@@ -285,20 +285,22 @@ pub(crate) fn set_image_from_path(
     }
 
     let (sender, receiver) = unbounded();
-    THREADPOOL.spawn(move || {
-        if let Ok(mut guard) = COVER_DL_REGISTRY.write() {
-            guard.insert(show_id);
-        }
+    if let Ok(mut guard) = COVER_DL_REGISTRY.write() {
+        // Add the id to the hashmap from the main thread to avoid queuing more than one downloads.
+        guard.insert(show_id);
+        drop(guard);
 
-        // This operation is polling and will block the thread till the download is finished
-        if let Ok(pd) = dbqueries::get_podcast_cover_from_id(show_id) {
-            sender.send(downloader::cache_image(&pd));
-        }
+        THREADPOOL.spawn(move || {
+            // This operation is polling and will block the thread till the download is finished
+            if let Ok(pd) = dbqueries::get_podcast_cover_from_id(show_id) {
+                sender.send(downloader::cache_image(&pd));
+            }
 
-        if let Ok(mut guard) = COVER_DL_REGISTRY.write() {
-            guard.remove(&show_id);
-        }
-    });
+            if let Ok(mut guard) = COVER_DL_REGISTRY.write() {
+                guard.remove(&show_id);
+            }
+        });
+    }
 
     let image = image.clone();
     let s = size as i32;
