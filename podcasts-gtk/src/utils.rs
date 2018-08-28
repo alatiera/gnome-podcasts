@@ -288,9 +288,14 @@ pub(crate) fn set_image_from_path(
     THREADPOOL.spawn(move || {
         if let Ok(mut guard) = COVER_DL_REGISTRY.write() {
             guard.insert(show_id);
-            if let Ok(pd) = dbqueries::get_podcast_cover_from_id(show_id) {
-                sender.send(downloader::cache_image(&pd));
-            }
+        }
+
+        // This operation is polling and will block the thread till the download is finished
+        if let Ok(pd) = dbqueries::get_podcast_cover_from_id(show_id) {
+            sender.send(downloader::cache_image(&pd));
+        }
+
+        if let Ok(mut guard) = COVER_DL_REGISTRY.write() {
             guard.remove(&show_id);
         }
     });
