@@ -251,21 +251,6 @@ pub(crate) fn set_image_from_path(
     show_id: i32,
     size: u32,
 ) -> Result<(), Error> {
-    // Check if there's an active download about this show cover.
-    // If there is, a callback will be set so this function will be called again.
-    // If the download succeeds, there should be a quick return from the pixbuf cache_image
-    // If it fails another download will be scheduled.
-    if let Ok(guard) = COVER_DL_REGISTRY.read() {
-        if guard.contains(&show_id) {
-            let callback = clone!(image => move || {
-                 let _ = set_image_from_path(&image, show_id, size);
-                 glib::Continue(false)
-            });
-            gtk::timeout_add(250, callback);
-            return Ok(());
-        }
-    }
-
     if let Ok(hashmap) = CACHED_PIXBUFS.read() {
         // Check if the requested (cover + size) is already in the cache
         // and if so do an early return after that.
@@ -284,16 +269,38 @@ pub(crate) fn set_image_from_path(
         }
     }
 
+    // Check if there's an active download about this show cover.
+    // If there is, a callback will be set so this function will be called again.
+    // If the download succeeds, there should be a quick return from the pixbuf cache_image
+    // If it fails another download will be scheduled.
+    if let Ok(guard) = COVER_DL_REGISTRY.read() {
+        if guard.contains(&show_id) {
+            let callback = clone!(image => move || {
+                 let _ = set_image_from_path(&image, show_id, size);
+                 glib::Continue(false)
+            });
+            gtk::timeout_add(250, callback);
+            return Ok(());
+        }
+    }
+
     let (sender, receiver) = unbounded();
-    THREADPOOL.spawn(move || {
-        if let Ok(mut guard) = COVER_DL_REGISTRY.write() {
-            guard.insert(show_id);
+    if let Ok(mut guard) = COVER_DL_REGISTRY.write() {
+        // Add the id to the hashmap from the main thread to avoid queuing more than one downloads.
+        guard.insert(show_id);
+        drop(guard);
+
+        THREADPOOL.spawn(move || {
+            // This operation is polling and will block the thread till the download is finished
             if let Ok(pd) = dbqueries::get_podcast_cover_from_id(show_id) {
                 sender.send(downloader::cache_image(&pd));
             }
-            guard.remove(&show_id);
-        }
-    });
+
+            if let Ok(mut guard) = COVER_DL_REGISTRY.write() {
+                guard.remove(&show_id);
+            }
+        });
+    }
 
     let image = image.clone();
     let s = size as i32;
