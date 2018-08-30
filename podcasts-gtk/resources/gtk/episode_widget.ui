@@ -141,6 +141,7 @@ Tobias Bernard
                     <property name="can_focus">False</property>
                     <property name="no_show_all">True</property>
                     <property name="label">0 MB</property>
+                    <property name="ellipsize">end</property>
                     <property name="single_line_mode">True</property>
                     <property name="track_visited_links">False</property>
                     <style>
@@ -175,6 +176,7 @@ Tobias Bernard
                     <property name="can_focus">False</property>
                     <property name="no_show_all">True</property>
                     <property name="label" translatable="yes">Calculating episode size…</property>
+                    <property name="ellipsize">end</property>
                     <property name="single_line_mode">True</property>
                     <property name="track_visited_links">False</property>
                     <style>
