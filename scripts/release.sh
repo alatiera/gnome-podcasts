@@ -15,6 +15,7 @@ cp -rf podcasts-downloader $DIST
 cp Cargo.toml $DIST
 cp Cargo.lock $DIST
 cp meson.build $DIST
+cp meson_options.txt $DIST
 cp podcasts.doap $DIST
 cp LICENSE $DIST
 cp README.md $DIST
