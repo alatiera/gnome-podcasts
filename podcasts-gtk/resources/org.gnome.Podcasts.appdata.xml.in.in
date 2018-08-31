@@ -24,7 +24,27 @@
     </screenshot>
   </screenshots>
   <releases>
-    <release version="0.4.5" date="2018-08-31"/>
+    <release version="0.4.5" date="2018-08-31">
+     <description>
+        <p>
+          Podcasts 0.4.5 brings a month of bug fixes, performance improvements and initial tranlations support.
+        </p>
+        <ul>
+          <li>Finish, Polish, Turkish, Spanish, German, Galician, Indonesian, Korean Translations were added.</li>
+          <li>Views now adapt better to different window sizes, thanks to libhandy HdyColumn</li>
+          <li>The update indacator was moved to an In-App notification</li>
+          <li>Performance improvments when loading Show Cover images.</li>
+          <li>Improved handling of HTTP Redirects</li>
+        </ul>
+      </description>
+    </release>
+    <release version="0.4.4" date="2018-07-31">
+      <description>
+        <p>
+          This is the first release available from Flathub!
+        </p>
+      </description>
+    </release>
   </releases>
   <url type="homepage">https://wiki.gnome.org/Apps/Podcasts</url>
   <update_contact>jpetridis@gnome.org</update_contact>
