@@ -13,6 +13,40 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Removed:
 
+### Translations:
+
+
+## [0.4.5] - 2018-08- 31
+
+### Added:
+- [OARS](https://hughsie.github.io/oars/) Tags where added for compatibility with Store clients b0c94dd9
+- Daniel added support for Translations !46
+- Svitozar Cherepii(@svito) created a [wiki page](https://wiki.gnome.org/Apps/Podcasts) 70e79e50
+- Libhandy was added as a dependancy #70
+- Development builds can now be installed in parallel with stable builds !64
+
+### Changed:
+- The update indication was moved to an In-App notification #72
+- The app icon's accent color was changed from orange to red 0dfb4859
+- The stack switcher in the Headerbar is now insesitive on Empty Views !63
+
+### Fixed:
+- Improved handling of HTTP redirections #64 !61 !62
+- Fixed a major performance regression when loading show covers !67
+- More refference cycles have been fixed !59
+- OPML import dialog now exits properly and no longer keeps the application from shuting down !65
+- Update action is disabled if there isn't something to update #71
+
+### Translations:
+- Added Finish 93696026
+- Added Polish 1bd6efc0
+- Added Turkish 73929f2d
+- Added Spanish !46
+- Added German 6b6c390c
+- Added Galician 0060a634
+- Added Indonesian ded0224f
+- Added Korean 36f16963
+
 
 ## [0.4.4] - 2018-07-31
 
