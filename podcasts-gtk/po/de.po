@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: podcasts master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2018-08-22 05:29+0000\n"
-"PO-Revision-Date: 2018-08-25 23:26+0200\n"
+"POT-Creation-Date: 2018-08-28 20:54+0000\n"
+"PO-Revision-Date: 2018-08-31 21:04+0200\n"
 "Last-Translator: Mario Blättermann <mario.blaettermann@gmail.com>\n"
 "Language-Team: German <gnome-de@gnome.org>\n"
 "Language: de\n"
@@ -69,33 +69,33 @@ msgid "What period of time to wait between automatic cleanups"
 msgstr "Zeitintervall zwischen automatischen Löschvorgängen"
 
 #. Weird magic I copy-pasted that sets the Application Name in the Shell.
-#: podcasts-gtk/resources/org.gnome.Podcasts.desktop:3
-#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml:4
-#: podcasts-gtk/src/app.rs:92 podcasts-gtk/src/app.rs:406
-#: podcasts-gtk/src/widgets/aboutdialog.rs:33
+#: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:3
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:4
+#: podcasts-gtk/src/app.rs:91 podcasts-gtk/src/app.rs:414
+#: podcasts-gtk/src/widgets/aboutdialog.rs:31
 msgid "Podcasts"
 msgstr "Podcasts"
 
-#: podcasts-gtk/resources/org.gnome.Podcasts.desktop:4
-#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml:10
+#: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:4
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:10
 msgid "Listen to your favorite podcasts, right from your desktop."
 msgstr "Hören Sie Ihre Lieblings-Podcasts direkt in Ihrer Arbeitsumgebung."
 
 #. Translators: Do NOT translate or transliterate this text (this is an icon file name)!
-#: podcasts-gtk/resources/org.gnome.Podcasts.desktop:6
-msgid "org.gnome.Podcasts"
-msgstr "org.gnome.Podcasts"
+#: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:6
+msgid "@icon@"
+msgstr "@icon@"
 
 #. Translators: Search terms to find this application. Do NOT translate or localize the semicolons! The list MUST also end with a semicolon!
-#: podcasts-gtk/resources/org.gnome.Podcasts.desktop:13
+#: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:13
 msgid "Podcast;RSS;"
 msgstr "Podcast;RSS;"
 
-#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml:8
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:8
 msgid "Podcast app for GNOME"
 msgstr "Podcast-Anwendung für GNOME"
 
-#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml:31
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:31
 msgid "Jordan Petridis"
 msgstr "Jordan Petridis"
 
@@ -109,15 +109,15 @@ msgstr ""
 "Falls Sie meinen, dass es sich um einen Fehler handeln könnte, schreiben Sie "
 "bitte einen Fehlerbericht."
 
-#: podcasts-gtk/resources/gtk/empty_view.ui:107
+#: podcasts-gtk/resources/gtk/empty_view.ui:106
 msgid "Get some shows"
 msgstr "Shows holen"
 
-#: podcasts-gtk/resources/gtk/empty_view.ui:144
+#: podcasts-gtk/resources/gtk/empty_view.ui:143
 msgid "Add new shows via feed URL"
 msgstr "Neue Shows mittels Quellen-Adresse hinzufügen"
 
-#: podcasts-gtk/resources/gtk/empty_view.ui:173
+#: podcasts-gtk/resources/gtk/empty_view.ui:172
 msgid "Import shows from another device"
 msgstr "Shows von einem anderen Gerät importieren"
 
@@ -319,7 +319,7 @@ msgstr "Alle als angehört markieren"
 msgid "Unsubscribe"
 msgstr "Abbestellen"
 
-#: podcasts-gtk/src/app.rs:331
+#: podcasts-gtk/src/app.rs:332
 msgid "Fetching new episodes"
 msgstr "Neue Folgen werden abgerufen"
 
@@ -383,11 +383,11 @@ msgstr "Auf die gewählte Datei konnte nicht zugegriffen werden."
 msgid "Podcast Client for the GNOME Desktop."
 msgstr "Podcast-Client für die GNOME-Arbeitsumgebung."
 
-#: podcasts-gtk/src/widgets/aboutdialog.rs:35
+#: podcasts-gtk/src/widgets/aboutdialog.rs:33
 msgid "Learn more about GNOME Podcasts"
 msgstr "Erfahren Sie mehr über GNOME Podcasts"
 
-#: podcasts-gtk/src/widgets/aboutdialog.rs:40
+#: podcasts-gtk/src/widgets/aboutdialog.rs:38
 msgid "translator-credits"
 msgstr ""
 "Mario Blättermann <mario.blaettermann@gmail.com>\n"
