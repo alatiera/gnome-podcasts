@@ -16,7 +16,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Translations:
 
 
-## [0.4.5] - 2018-08- 31
+## [0.4.5] - 2018-08-31
 
 ### Added:
 - [OARS](https://hughsie.github.io/oars/) Tags where added for compatibility with Store clients b0c94dd9

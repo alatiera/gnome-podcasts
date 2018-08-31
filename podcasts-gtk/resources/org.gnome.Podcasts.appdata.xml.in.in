@@ -24,7 +24,7 @@
     </screenshot>
   </screenshots>
   <releases>
-    <release version="0.4.4" date="2018-07-31"/>
+    <release version="0.4.5" date="2018-08-31"/>
   </releases>
   <url type="homepage">https://wiki.gnome.org/Apps/Podcasts</url>
   <update_contact>jpetridis@gnome.org</update_contact>
