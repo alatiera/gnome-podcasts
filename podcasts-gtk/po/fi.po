@@ -6,9 +6,9 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: podcasts master\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-08-22 06:50+0300\n"
-"PO-Revision-Date: 2018-08-11 17:09+0300\n"
+"Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
+"POT-Creation-Date: 2018-08-28 20:54+0000\n"
+"PO-Revision-Date: 2018-09-01 19:58+0300\n"
 "Last-Translator: Jiri Grönroos <jiri.gronroos+l10n@iki.fi>\n"
 "Language-Team: Finnish <lokalisointi-lista@googlegroups.com>\n"
 "Language: fi\n"
@@ -44,7 +44,7 @@ msgstr "Ota käyttöön tai poista käytöstä tumma teema"
 
 #: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml:41
 msgid "Whether to periodically refresh content"
-msgstr ""
+msgstr "Päivitetäänkö sisältö säännöllisesti"
 
 #: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml:46
 msgid "How many periods of time to wait between automatic refreshes"
@@ -67,55 +67,53 @@ msgid "What period of time to wait between automatic cleanups"
 msgstr ""
 
 #. Weird magic I copy-pasted that sets the Application Name in the Shell.
-#: podcasts-gtk/resources/org.gnome.Podcasts.desktop:3
-#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml:4
-#: podcasts-gtk/src/app.rs:92 podcasts-gtk/src/app.rs:406
-#: podcasts-gtk/src/widgets/aboutdialog.rs:33
+#: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:3
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:4
+#: podcasts-gtk/src/app.rs:91 podcasts-gtk/src/app.rs:414
+#: podcasts-gtk/src/widgets/aboutdialog.rs:31
 msgid "Podcasts"
 msgstr "Podcastit"
 
-#: podcasts-gtk/resources/org.gnome.Podcasts.desktop:4
-#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml:10
+#: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:4
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:10
 msgid "Listen to your favorite podcasts, right from your desktop."
 msgstr "Kuuntele suosikkipodcastejasi suoraan työpöydältäsi."
 
 #. Translators: Do NOT translate or transliterate this text (this is an icon file name)!
-#: podcasts-gtk/resources/org.gnome.Podcasts.desktop:6
-msgid "org.gnome.Podcasts"
-msgstr "org.gnome.Podcasts"
+#: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:6
+msgid "@icon@"
+msgstr "@icon@"
 
 #. Translators: Search terms to find this application. Do NOT translate or localize the semicolons! The list MUST also end with a semicolon!
-#: podcasts-gtk/resources/org.gnome.Podcasts.desktop:13
+#: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:13
 msgid "Podcast;RSS;"
 msgstr "Podcast;RSS;"
 
-#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml:8
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:8
 msgid "Podcast app for GNOME"
 msgstr "Podcast-sovellus Gnomelle"
 
-#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml:31
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:31
 msgid "Jordan Petridis"
 msgstr "Jordan Petridis"
 
 #: podcasts-gtk/resources/gtk/empty_view.ui:46
-#, fuzzy
 msgid "This show does not have episodes yet"
-msgstr "Tässä ohjelmassa ei ole yhtäkään jaksoa"
+msgstr "Tässä ohjelmassa ei ole vielä yhtäkään jaksoa"
 
 #: podcasts-gtk/resources/gtk/empty_view.ui:62
-#, fuzzy
 msgid "If you think this is an error, please consider writing a bug report."
-msgstr "Jos luulet tämän olevan virhe, teethän bugiraportin."
+msgstr "Jos tämä on mielestäsi virhe, teethän bugiraportin."
 
-#: podcasts-gtk/resources/gtk/empty_view.ui:107
+#: podcasts-gtk/resources/gtk/empty_view.ui:106
 msgid "Get some shows"
 msgstr "Hanki ohjelmia"
 
-#: podcasts-gtk/resources/gtk/empty_view.ui:144
+#: podcasts-gtk/resources/gtk/empty_view.ui:143
 msgid "Add new shows via feed URL"
 msgstr "Lisää uusia ohjelmia syötteen osoitteen avulla"
 
-#: podcasts-gtk/resources/gtk/empty_view.ui:173
+#: podcasts-gtk/resources/gtk/empty_view.ui:172
 msgid "Import shows from another device"
 msgstr "Tuo ohjelmia toiselta laitteelta"
 
@@ -317,7 +315,7 @@ msgstr "Merkitse kaikki toistetuiksi"
 msgid "Unsubscribe"
 msgstr "Lopeta tilaus"
 
-#: podcasts-gtk/src/app.rs:331
+#: podcasts-gtk/src/app.rs:332
 msgid "Fetching new episodes"
 msgstr "Noudetaan uusia jaksoja"
 
@@ -381,11 +379,11 @@ msgstr "Valittua tiedostoa ei voitu käyttää."
 msgid "Podcast Client for the GNOME Desktop."
 msgstr "Podcast-sovellus Gnome-työpöydlle."
 
-#: podcasts-gtk/src/widgets/aboutdialog.rs:35
+#: podcasts-gtk/src/widgets/aboutdialog.rs:33
 msgid "Learn more about GNOME Podcasts"
 msgstr ""
 
-#: podcasts-gtk/src/widgets/aboutdialog.rs:40
+#: podcasts-gtk/src/widgets/aboutdialog.rs:38
 msgid "translator-credits"
 msgstr "Jiri Grönroos"
 
@@ -405,6 +403,9 @@ msgstr "Merkitse kaikki jaksot toistetuiksi"
 #: podcasts-gtk/src/widgets/show_menu.rs:155
 msgid "Unsubscribed from {}"
 msgstr "Lopeta syötteen {} tilaus"
+
+#~ msgid "org.gnome.Podcasts"
+#~ msgstr "org.gnome.Podcasts"
 
 #~ msgid "Episode Title"
 #~ msgstr "Jakson nimi"
