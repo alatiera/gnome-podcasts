@@ -26,17 +26,13 @@ pub struct Feed {
 impl Feed {
     /// Index the contents of the RSS `Feed` into the database.
     pub fn index(self) -> impl Future<Item = (), Error = DataError> + Send {
-        self.parse_podcast_async()
+        ok(self.parse_podcast())
             .and_then(|pd| pd.to_podcast())
             .and_then(move |pd| self.index_channel_items(pd))
     }
 
     fn parse_podcast(&self) -> NewShow {
         NewShow::new(&self.channel, self.source_id)
-    }
-
-    fn parse_podcast_async(&self) -> impl Future<Item = NewShow, Error = DataError> + Send {
-        ok(self.parse_podcast())
     }
 
     fn index_channel_items(self, pd: Show) -> impl Future<Item = (), Error = DataError> + Send {
