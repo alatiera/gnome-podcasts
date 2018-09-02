@@ -83,6 +83,8 @@ extern crate rayon;
 extern crate rfc822_sanitizer;
 extern crate rss;
 extern crate tokio_core;
+extern crate tokio_executor;
+extern crate tokio_threadpool;
 extern crate url;
 extern crate xdg;
 extern crate xml;

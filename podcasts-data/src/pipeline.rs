@@ -9,6 +9,7 @@ use hyper::client::HttpConnector;
 use hyper::Client;
 use hyper_tls::HttpsConnector;
 use tokio_core::reactor::Core;
+use tokio_threadpool::{self, ThreadPool};
 
 use num_cpus;
 
@@ -47,13 +48,18 @@ type HttpsClient = Client<HttpsConnector<HttpConnector>>;
 pub fn pipeline<'a, S>(
     sources: S,
     client: &HttpsClient,
+    pool: &tokio_threadpool::Sender,
 ) -> impl Future<Item = Vec<()>, Error = DataError> + 'a
 where
     S: Stream<Item = Source, Error = DataError> + 'a,
 {
     sources
         .and_then(clone!(client => move |s| s.into_feed(client.clone())))
-        .and_then(|feed| feed.index())
+        .and_then(clone!(pool => move |feed| {
+            pool.spawn(lazy(|| {
+                feed.index().map_err(|err| error!("Error: {}", err))
+            })).map_err(From::from)
+        }))
         // the stream will stop at the first error so
         // we ensure that everything will succeded regardless.
         .map_err(|err| error!("Error: {}", err))
@@ -67,6 +73,7 @@ pub fn run<S>(sources: S) -> Result<(), DataError>
 where
     S: IntoIterator<Item = Source>,
 {
+    let pool = ThreadPool::new();
     let mut core = Core::new()?;
     let handle = core.handle();
     let client = Client::configure()
@@ -74,8 +81,14 @@ where
         .build(&handle);
 
     let stream = iter_ok::<_, DataError>(sources);
-    let p = pipeline(stream, &client);
-    core.run(p).map(|_| ())
+    let p = {
+        let sender = pool.sender();
+        pipeline(stream, &client, &sender)
+    };
+    core.run(p)?;
+
+    pool.shutdown_on_idle().wait().unwrap();
+    Ok(())
 }
 
 #[cfg(test)]
