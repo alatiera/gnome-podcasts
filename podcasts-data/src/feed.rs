@@ -40,7 +40,8 @@ impl Feed {
 
         // Parse the episodes
         let episodes = stream.filter_map(move |item| {
-            glue(&item, pd.id())
+            NewEpisodeMinimal::new(&item, pd.id())
+                .and_then(move |ep| determine_ep_state(ep, &item))
                 .map_err(|err| error!("Failed to parse an episode: {}", err))
                 .ok()
         });
@@ -50,10 +51,6 @@ impl Feed {
             // Batch index insertable episodes.
             .and_then(|eps| ok(batch_insert_episodes(&eps)))
     }
-}
-
-fn glue(item: &rss::Item, id: i32) -> Result<IndexState<NewEpisode>, DataError> {
-    NewEpisodeMinimal::new(item, id).and_then(move |ep| determine_ep_state(ep, item))
 }
 
 fn determine_ep_state(
