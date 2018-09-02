@@ -1,7 +1,6 @@
 #!/bin/sh
 
 export CARGO_HOME=$1/target/cargo-home
-export RUSTFLAGS="--cfg rayon_unstable"
 export LOCALEDIR="$3"
 export APP_ID="$4"
 export VERSION="$5"

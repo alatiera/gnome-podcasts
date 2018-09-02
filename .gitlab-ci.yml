@@ -32,7 +32,6 @@ flatpak:
               --env=APP_ID="org.gnome.PodcastsDevel" \
               --env=LOCALEDIR="./podcasts-gtk/po" \
               --env=VERSION="0.0.0" \
-              --env=RUSTFLAGS="--cfg rayon_unstable" \
               --env=CARGO_HOME="target/cargo-home" \
               --env=CARGO_TARGET_DIR="target_test/" \
               app ${MANIFEST_PATH} \

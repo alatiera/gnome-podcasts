@@ -11,8 +11,6 @@ use hyper_tls::HttpsConnector;
 use tokio_core::reactor::Core;
 
 use num_cpus;
-use rayon;
-use rayon_futures::ScopeFutureExt;
 
 use errors::DataError;
 use Source;
@@ -55,7 +53,7 @@ where
 {
     sources
         .and_then(clone!(client => move |s| s.into_feed(client.clone())))
-        .and_then(|feed| rayon::scope(|s| s.spawn_future(feed.index())))
+        .and_then(|feed| feed.index())
         // the stream will stop at the first error so
         // we ensure that everything will succeded regardless.
         .map_err(|err| error!("Error: {}", err))
