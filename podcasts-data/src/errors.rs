@@ -4,7 +4,6 @@ use diesel_migrations::RunMigrationsError;
 use hyper;
 use native_tls;
 use rss;
-use tokio_executor;
 use url;
 use xml;
 
@@ -47,8 +46,6 @@ pub enum DataError {
     R2D2PoolError(#[cause] r2d2::PoolError),
     #[fail(display = "Hyper Error: {}", _0)]
     HyperError(#[cause] hyper::Error),
-    #[fail(display = "Tokio Spawn Error: {}", _0)]
-    SpawnError(#[cause] tokio_executor::SpawnError),
     #[fail(display = "Failed to parse a url: {}", _0)]
     UrlError(#[cause] url::ParseError),
     #[fail(display = "TLS Error: {}", _0)]
@@ -101,12 +98,6 @@ impl From<r2d2::PoolError> for DataError {
 impl From<hyper::Error> for DataError {
     fn from(err: hyper::Error) -> Self {
         DataError::HyperError(err)
-    }
-}
-
-impl From<tokio_executor::SpawnError> for DataError {
-    fn from(err: tokio_executor::SpawnError) -> Self {
-        DataError::SpawnError(err)
     }
 }
 
