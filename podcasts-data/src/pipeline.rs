@@ -1,15 +1,14 @@
 // FIXME:
 //! Docs.
 
-use futures::future::*;
 use futures::prelude::*;
-use futures::stream::*;
+use futures::{future::ok, lazy, stream::iter_ok};
 
 use hyper::client::HttpConnector;
 use hyper::Client;
 use hyper_tls::HttpsConnector;
+use tokio::runtime::TaskExecutor;
 use tokio_core::reactor::Core;
-use tokio_threadpool::{self, ThreadPool};
 
 use num_cpus;
 
@@ -27,7 +26,7 @@ type HttpsClient = Client<HttpsConnector<HttpConnector>>;
 pub fn pipeline<'a, S>(
     sources: S,
     client: HttpsClient,
-    pool: tokio_threadpool::Sender,
+    executor: TaskExecutor,
 ) -> impl Future<Item = Vec<()>, Error = DataError> + 'a
 where
     S: Stream<Item = Source, Error = DataError> + 'a,
@@ -35,9 +34,9 @@ where
     sources
         .and_then(move |s| s.into_feed(client.clone()))
         .and_then(move |feed| {
-            pool.spawn(lazy(|| {
-                feed.index().map_err(|err| error!("Error: {}", err))
-            })).map_err(From::from)
+            let fut = lazy(|| feed.index().map_err(|err| error!("Error: {}", err)));
+            executor.spawn(fut);
+            Ok(())
         })
         // the stream will stop at the first error so
         // we ensure that everything will succeded regardless.
@@ -52,20 +51,16 @@ pub fn run<S>(sources: S) -> Result<(), DataError>
 where
     S: IntoIterator<Item = Source>,
 {
-    let pool = ThreadPool::new();
-    let sender = pool.sender().clone();
     let mut core = Core::new()?;
+    let executor = core.runtime().executor();
     let handle = core.handle();
     let client = Client::configure()
         .connector(HttpsConnector::new(num_cpus::get(), &handle)?)
         .build(&handle);
 
     let stream = iter_ok::<_, DataError>(sources);
-    let p = pipeline(stream, client, sender);
-    core.run(p)?;
-
-    pool.shutdown_on_idle().wait().unwrap();
-    Ok(())
+    let p = pipeline(stream, client, executor);
+    core.run(p).map(|_| ())
 }
 
 #[cfg(test)]
