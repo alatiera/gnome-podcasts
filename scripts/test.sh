@@ -3,7 +3,7 @@
 export MANIFEST_PATH="org.gnome.PodcastsDevel.json"
 export RUNTIME_REPO="https://sdk.gnome.org/gnome-nightly.flatpakrepo"
 export FLATPAK_MODULE="gnome-podcasts"
-export CONFIGURE_ARGS=""
+export CONFIGURE_ARGS="-Dprofile=development"
 export DBUS_ID="org.gnome.PodcastsDevel"
 export BUNDLE="org.gnome.Podcasts.Devel.flatpak"
 
@@ -13,9 +13,9 @@ flatpak-builder --stop-at=${FLATPAK_MODULE} --keep-build-dirs --force-clean app 
 flatpak-builder --run app ${MANIFEST_PATH} glib-compile-resources --sourcedir=podcasts-gtk/resources/ podcasts-gtk/resources/resources.xml
 
 # Build the flatpak repo
-flatpak-builder --run app ${MANIFEST_PATH} meson --prefix=/app build
+flatpak-builder --run app ${MANIFEST_PATH} meson --prefix=/app ${CONFIGURE_ARGS} build
 flatpak-builder --run \
-    --env=CARGO_TARGET_DIR="target_build/" \
+    --env=CARGO_TARGET_DIR="../target_build/" \
     app ${MANIFEST_PATH} \
     ninja -C build install
     # ninja -C build gnome-podcasts-pot; ninja -C _build gnome-podcasts-update-po
