@@ -35,9 +35,8 @@ where
     sources
         .and_then(move |s| s.into_feed(client.clone()))
         .and_then(move |feed| {
-            pool.spawn(lazy(|| {
-                feed.index().map_err(|err| error!("Error: {}", err))
-            })).map_err(From::from)
+            let fut = lazy(|| feed.index().map_err(|err| error!("Error: {}", err)));
+            pool.spawn(fut).map_err(From::from)
         })
         // the stream will stop at the first error so
         // we ensure that everything will succeded regardless.
