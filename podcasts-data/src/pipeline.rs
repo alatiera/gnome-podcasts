@@ -1,15 +1,13 @@
 // FIXME:
 //! Docs.
 
-use futures::future::*;
-use futures::prelude::*;
-use futures::stream::*;
+use futures::{future::ok, lazy, prelude::*, stream::iter_ok};
+use tokio_core::reactor::Core;
+use tokio_threadpool::{self, ThreadPool};
 
 use hyper::client::HttpConnector;
 use hyper::Client;
 use hyper_tls::HttpsConnector;
-use tokio_core::reactor::Core;
-use tokio_threadpool::{self, ThreadPool};
 
 use num_cpus;
 
