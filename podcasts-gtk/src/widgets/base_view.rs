@@ -13,6 +13,7 @@ impl Default for BaseView {
         let scrolled_window = gtk::ScrolledWindow::new(None, None);
 
         scrolled_window.set_policy(PolicyType::Never, PolicyType::Automatic);
+        container.set_size_request(360, -1);
         container.add(&scrolled_window);
         container.show_all();
 
