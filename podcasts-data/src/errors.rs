@@ -65,6 +65,8 @@ pub enum DataError {
     HttpStatusGeneral(HttpStatusError),
     #[fail(display = "Source redirects to a new url")]
     FeedRedirect(Source),
+    #[fail(display = "Feed is up to date")]
+    FeedNotModified(Source),
     #[fail(
         display = "Error occured while Parsing an Episode. Reason: {}",
         reason

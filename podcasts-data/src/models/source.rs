@@ -144,7 +144,10 @@ impl Source {
         };
 
         match code {
-            StatusCode::NotModified => return Err(self.make_err("304: skipping..", code)),
+            StatusCode::NotModified => {
+                info!("304: Source, (id: {}), is up to date", self.id());
+                return Err(DataError::FeedNotModified(self));
+            }
             StatusCode::MovedPermanently | StatusCode::Found | StatusCode::PermanentRedirect => {
                 warn!("Feed was moved permanently.");
                 self = self.update_url(&res)?;

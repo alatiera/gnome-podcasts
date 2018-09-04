@@ -38,8 +38,13 @@ where
         })
         // the stream will stop at the first error so
         // we ensure that everything will succeded regardless.
-        .map_err(|err| error!("Error: {}", err))
-        .then(|_| ok::<(), DataError>(()))
+        .map_err(|err| {
+            match err {
+                // Avoid spamming the stderr when its not an eactual error
+                DataError::FeedNotModified(_) => (),
+                _ => error!("Error: {}", err),
+            }
+        }).then(|_| ok::<(), DataError>(()))
         .collect()
 }
 
