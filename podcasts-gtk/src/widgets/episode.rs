@@ -65,7 +65,7 @@ struct InfoLabels {
 
 #[derive(Clone, Debug)]
 struct Buttons {
-    container: gtk::ButtonBox,
+    container: gtk::Box,
     play: gtk::Button,
     download: gtk::Button,
     cancel: gtk::Button,
