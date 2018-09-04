@@ -51,7 +51,8 @@ flatpak:
     cache:
         key: "flatpak"
         paths:
-          - .flatpak-builder/cache/
+          - .flatpak-builder/downloads/
+          - .flatpak-builder/git/
           - target/
           - target_test/
 
