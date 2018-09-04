@@ -63,8 +63,8 @@ pub enum DataError {
     Bail(String),
     #[fail(display = "{}", _0)]
     HttpStatusGeneral(HttpStatusError),
-    #[fail(display = "FIXME: This should be better")]
-    F301(Source),
+    #[fail(display = "Source redirects to a new url")]
+    FeedRedirect(Source),
     #[fail(
         display = "Error occured while Parsing an Episode. Reason: {}",
         reason

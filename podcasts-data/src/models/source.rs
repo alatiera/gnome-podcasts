@@ -146,13 +146,14 @@ impl Source {
         match code {
             StatusCode::NotModified => return Err(self.make_err("304: skipping..", code)),
             StatusCode::MovedPermanently | StatusCode::Found | StatusCode::PermanentRedirect => {
-                error!("Feed was moved permanently.");
+                warn!("Feed was moved permanently.");
                 self = self.update_url(&res)?;
-                return Err(DataError::F301(self));
+                return Err(DataError::FeedRedirect(self));
             }
             StatusCode::TemporaryRedirect => {
-                debug!("307: Temporary Redirect.");
-                return Err(DataError::F301(self));
+                warn!("307: Temporary Redirect.");
+                // FIXME: How is it actually handling the redirect?
+                return Err(DataError::FeedRedirect(self));
             }
             StatusCode::Unauthorized => return Err(self.make_err("401: Unauthorized.", code)),
             StatusCode::Forbidden => return Err(self.make_err("403:  Forbidden.", code)),
@@ -212,7 +213,7 @@ impl Source {
                 .then(|res| match res {
                     Ok(response) => Ok(Loop::Break(response)),
                     Err(err) => match err {
-                        DataError::F301(s) => {
+                        DataError::FeedRedirect(s) => {
                             info!("Following redirect...");
                             Ok(Loop::Continue(s))
                         }
