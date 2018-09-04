@@ -22,9 +22,12 @@ use errors::DownloadError;
 // with / or not.
 
 pub trait DownloadProgress {
+    fn get_downloaded(&self) -> u64;
     fn set_downloaded(&mut self, downloaded: u64);
+    fn get_size(&self) -> u64;
     fn set_size(&mut self, bytes: u64);
     fn should_cancel(&self) -> bool;
+    fn cancel(&mut self);
 }
 
 // Adapted from https://github.com/mattgathu/rget .
@@ -63,6 +66,12 @@ fn download_into(
     info!("Status Resp: {}", resp.status());
 
     if !resp.status().is_success() {
+        if let Some(ref prog) = progress {
+            if let Ok(mut m) = prog.lock() {
+                m.cancel();
+            }
+        }
+
         return Err(DownloadError::UnexpectedResponse(resp.status()));
     }
 
@@ -82,9 +91,10 @@ fn download_into(
     let out_file = format!("{}/temp.part", tempdir.path().to_str().unwrap(),);
 
     ct_len.map(|x| {
-        if let Some(p) = progress.clone() {
-            let mut m = p.lock().unwrap();
-            m.set_size(x);
+        if let Some(ref p) = progress {
+            if let Ok(mut m) = p.lock() {
+                m.set_size(x);
+            }
         }
     });
 

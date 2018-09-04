@@ -13,6 +13,7 @@ use open;
 use podcasts_data::dbqueries;
 use podcasts_data::utils::get_download_folder;
 use podcasts_data::EpisodeWidgetModel;
+use podcasts_downloader::downloader::DownloadProgress;
 
 use app::Action;
 use manager;
@@ -519,8 +520,12 @@ fn progress_bar_helper(
         None => return Ok(glib::Continue(false)),
     };
 
-    let (fraction, downloaded) = match prog.try_lock() {
-        Ok(guard) => (guard.get_fraction(), guard.get_downloaded()),
+    let (fraction, downloaded, cancel) = match prog.try_lock() {
+        Ok(guard) => (
+            guard.get_fraction(),
+            guard.get_downloaded(),
+            guard.should_cancel(),
+        ),
         Err(TryLockError::WouldBlock) => return Ok(glib::Continue(true)),
         Err(TryLockError::Poisoned(_)) => return Err(format_err!("Progress Mutex is poisoned")),
     };
@@ -547,7 +552,19 @@ fn progress_bar_helper(
 
     if (fraction >= 1.0) && (!fraction.is_nan()) {
         Ok(glib::Continue(false))
-    } else if !active {
+    } else if !active || cancel {
+        // if the total size is not a number, hide it
+        if widget
+            .info
+            .total_size
+            .get_text()
+            .as_ref()
+            .map(|s| s.trim_right_matches(" MB"))
+            .and_then(|s| s.parse::<i32>().ok())
+            .is_none()
+        {
+            widget.info.total_size.hide();
+        }
         Ok(glib::Continue(false))
     } else {
         Ok(glib::Continue(true))
@@ -576,7 +593,7 @@ fn total_size_helper(
 
     // Get the total_bytes.
     let total_bytes = match prog.try_lock() {
-        Ok(guard) => guard.get_total_size(),
+        Ok(guard) => guard.get_size(),
         Err(TryLockError::WouldBlock) => return Ok(glib::Continue(true)),
         Err(TryLockError::Poisoned(_)) => return Err(format_err!("Progress Mutex is poisoned")),
     };

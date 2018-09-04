@@ -41,21 +41,13 @@ impl Progress {
         };
         ratio
     }
-
-    pub(crate) fn get_total_size(&self) -> u64 {
-        self.total_bytes
-    }
-
-    pub(crate) fn get_downloaded(&self) -> u64 {
-        self.downloaded_bytes
-    }
-
-    pub(crate) fn cancel(&mut self) {
-        self.cancel = true;
-    }
 }
 
 impl DownloadProgress for Progress {
+    fn get_downloaded(&self) -> u64 {
+        self.downloaded_bytes
+    }
+
     fn set_downloaded(&mut self, downloaded: u64) {
         self.downloaded_bytes = downloaded
     }
@@ -64,8 +56,16 @@ impl DownloadProgress for Progress {
         self.total_bytes = bytes;
     }
 
+    fn get_size(&self) -> u64 {
+        self.total_bytes
+    }
+
     fn should_cancel(&self) -> bool {
         self.cancel
+    }
+
+    fn cancel(&mut self) {
+        self.cancel = true;
     }
 }
 
