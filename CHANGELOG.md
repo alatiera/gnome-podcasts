@@ -8,9 +8,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added:
 
 ### Changed:
+- Download Cancel button was changed to an Icon instead of a label !72
+- The applciation will no longer scale below 360p in width 1933c79f7a87d8261d91ca4e14eb51c1ddc66624
 
 ### Fixed:
 - Fixed a regression where indexing feeds was blocking the `tokio reactor` #88 !70
+- Episodeds Listbox no longer resizes when a download starts #89 !72
+- The `total_size` label of the `EpisodeWidget` now behaves correctly if the request fails. #90 !73
+- The Pipeline will no longer log things in stderr for Requests that returned 304 and are expected to be skipped. da361d0cb93cd8edd076859b2c607509a96dac8d
 
 ### Removed:
 
