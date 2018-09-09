@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: podcasts\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2018-08-28 20:54+0000\n"
-"PO-Revision-Date: 2018-09-01 19:49+0200\n"
+"POT-Creation-Date: 2018-09-08 17:18+0000\n"
+"PO-Revision-Date: 2018-09-09 18:59+0200\n"
 "Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
 "Language-Team: Polish <community-poland@mozilla.org>\n"
 "Language: pl\n"
@@ -94,7 +94,7 @@ msgstr "Podcast;Podkasty;RSS;Atom;"
 msgid "Podcast app for GNOME"
 msgstr "Aplikacja do słuchania podcastów w GNOME"
 
-#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:31
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:51
 msgid "Jordan Petridis"
 msgstr "Jordan Petridis"
 
@@ -118,21 +118,21 @@ msgstr "Dodaj nowe programy za pomocą adresu kanału"
 msgid "Import shows from another device"
 msgstr "Zaimportuj programy z innego urządzenia"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:177
+#: podcasts-gtk/resources/gtk/episode_widget.ui:180
 msgid "Calculating episode size…"
 msgstr "Obliczanie rozmiaru odcinka…"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:212
-msgid "Cancel"
-msgstr "Anuluj"
-
-#: podcasts-gtk/resources/gtk/episode_widget.ui:230
-msgid "Download this episode"
-msgstr "Pobiera ten odcinek"
-
-#: podcasts-gtk/resources/gtk/episode_widget.ui:254
+#: podcasts-gtk/resources/gtk/episode_widget.ui:220
 msgid "Play this episode"
 msgstr "Odtwarza ten odcinek"
+
+#: podcasts-gtk/resources/gtk/episode_widget.ui:241
+msgid "Cancel the download proccess"
+msgstr "Anuluje pobieranie"
+
+#: podcasts-gtk/resources/gtk/episode_widget.ui:264
+msgid "Download this episode"
+msgstr "Pobiera ten odcinek"
 
 #: podcasts-gtk/resources/gtk/hamburger.ui:7
 msgid "_Check for New Episodes"
@@ -356,23 +356,23 @@ msgstr "Nowe"
 msgid "Shows"
 msgstr "Programy"
 
-#: podcasts-gtk/src/utils.rs:350
+#: podcasts-gtk/src/utils.rs:357
 msgid "Select the file from which to you want to import shows."
 msgstr "Proszę wybrać plik, z którego zaimportować programy."
 
-#: podcasts-gtk/src/utils.rs:353
+#: podcasts-gtk/src/utils.rs:360
 msgid "_Import"
 msgstr "Zai_mportuj"
 
-#: podcasts-gtk/src/utils.rs:362
+#: podcasts-gtk/src/utils.rs:369
 msgid "OPML file"
 msgstr "Plik OPML"
 
-#: podcasts-gtk/src/utils.rs:379
+#: podcasts-gtk/src/utils.rs:386
 msgid "Failed to parse the imported file"
 msgstr "Przetworzenie zaimportowanego pliku się nie powiodło"
 
-#: podcasts-gtk/src/utils.rs:384
+#: podcasts-gtk/src/utils.rs:391
 msgid "Selected file could not be accessed."
 msgstr "Nie można uzyskać dostępu do wybranego pliku."
 
@@ -390,7 +390,7 @@ msgstr ""
 "Piotr Drąg <piotrdrag@gmail.com>, 2018\n"
 "Aviary.pl <community-poland@mozilla.org>, 2018"
 
-#: podcasts-gtk/src/widgets/episode.rs:129
+#: podcasts-gtk/src/widgets/episode.rs:130
 msgid "{} min"
 msgstr "{} min"
 
