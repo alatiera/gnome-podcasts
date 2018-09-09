@@ -7,15 +7,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: podcasts master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2018-08-31 19:05+0000\n"
-"PO-Revision-Date: 2018-09-01 02:05+0200\n"
+"POT-Creation-Date: 2018-09-08 17:18+0000\n"
+"PO-Revision-Date: 2018-09-09 19:38+0200\n"
+"Last-Translator: Anders Jonsson <anders.jonsson@norsjovallen.se>\n"
 "Language-Team: Swedish <tp-sv@listor.tp-sv.se>\n"
 "Language: sv\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"Last-Translator: Anders Jonsson <anders.jonsson@norsjovallen.se>\n"
 "X-Generator: Poedit 2.1.1\n"
 
 #: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml:15
@@ -117,21 +117,21 @@ msgstr "Lägg till nya shower via flödes-URL"
 msgid "Import shows from another device"
 msgstr "Importera shower från en annan enhet"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:178
+#: podcasts-gtk/resources/gtk/episode_widget.ui:180
 msgid "Calculating episode size…"
 msgstr "Beräknar avsnittsstorlek…"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:214
-msgid "Cancel"
-msgstr "Avbryt"
-
-#: podcasts-gtk/resources/gtk/episode_widget.ui:232
-msgid "Download this episode"
-msgstr "Hämta detta avsnitt"
-
-#: podcasts-gtk/resources/gtk/episode_widget.ui:256
+#: podcasts-gtk/resources/gtk/episode_widget.ui:220
 msgid "Play this episode"
 msgstr "Spela detta avsnitt"
+
+#: podcasts-gtk/resources/gtk/episode_widget.ui:241
+msgid "Cancel the download proccess"
+msgstr "Avbryt hämtningsprocessen"
+
+#: podcasts-gtk/resources/gtk/episode_widget.ui:264
+msgid "Download this episode"
+msgstr "Hämta detta avsnitt"
 
 #: podcasts-gtk/resources/gtk/hamburger.ui:7
 msgid "_Check for New Episodes"
@@ -391,7 +391,7 @@ msgstr ""
 "Skicka synpunkter på översättningen till\n"
 "<tp-sv@listor.tp-sv.se>."
 
-#: podcasts-gtk/src/widgets/episode.rs:129
+#: podcasts-gtk/src/widgets/episode.rs:130
 msgid "{} min"
 msgstr "{} min"
 
@@ -407,3 +407,6 @@ msgstr "Markerade alla avsnitt som lyssnade"
 #: podcasts-gtk/src/widgets/show_menu.rs:155
 msgid "Unsubscribed from {}"
 msgstr "Sade upp prenumeration från {}"
+
+#~ msgid "Cancel"
+#~ msgstr "Avbryt"
