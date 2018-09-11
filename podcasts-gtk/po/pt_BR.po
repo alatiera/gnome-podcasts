@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: podcasts master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2018-08-31 18:00+0000\n"
-"PO-Revision-Date: 2018-09-01 08:49-0200\n"
+"POT-Creation-Date: 2018-09-08 17:18+0000\n"
+"PO-Revision-Date: 2018-09-10 21:08-0200\n"
 "Last-Translator: Rafael Fontenelle <rafaelff@gnome.org>\n"
 "Language-Team: Brazilian Portuguese <gnome-pt_br-list@gnome.org>\n"
 "Language: pt_BR\n"
@@ -48,7 +48,8 @@ msgstr "Se deve atualizar periodicamente o conteúdo"
 
 #: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml:46
 msgid "How many periods of time to wait between automatic refreshes"
-msgstr "Quantos períodos de tempo deve esperar entre as atualizações automáticas"
+msgstr ""
+"Quantos períodos de tempo deve esperar entre as atualizações automáticas"
 
 #: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml:50
 msgid "What period of time to wait between automatic refreshes"
@@ -103,7 +104,9 @@ msgstr "Este podcast ainda não tem episódios"
 
 #: podcasts-gtk/resources/gtk/empty_view.ui:62
 msgid "If you think this is an error, please consider writing a bug report."
-msgstr "Se você acredita que isso é um erro, por favor considere preencher um relatório de erro."
+msgstr ""
+"Se você acredita que isso é um erro, por favor considere preencher um "
+"relatório de erro."
 
 #: podcasts-gtk/resources/gtk/empty_view.ui:106
 msgid "Get some shows"
@@ -117,21 +120,21 @@ msgstr "Adicionar novos podcasts via URL do feed"
 msgid "Import shows from another device"
 msgstr "Importar podcasts de outro dispositivo"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:178
+#: podcasts-gtk/resources/gtk/episode_widget.ui:180
 msgid "Calculating episode size…"
 msgstr "Calculando o tamanho do episódio…"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:214
-msgid "Cancel"
-msgstr "Cancelar"
-
-#: podcasts-gtk/resources/gtk/episode_widget.ui:232
-msgid "Download this episode"
-msgstr "Faz download deste episódio"
-
-#: podcasts-gtk/resources/gtk/episode_widget.ui:256
+#: podcasts-gtk/resources/gtk/episode_widget.ui:220
 msgid "Play this episode"
 msgstr "Inicia este episódio"
+
+#: podcasts-gtk/resources/gtk/episode_widget.ui:241
+msgid "Cancel the download proccess"
+msgstr "Cancela o processo de download"
+
+#: podcasts-gtk/resources/gtk/episode_widget.ui:264
+msgid "Download this episode"
+msgstr "Faz download deste episódio"
 
 #: podcasts-gtk/resources/gtk/hamburger.ui:7
 msgid "_Check for New Episodes"
@@ -389,7 +392,7 @@ msgstr ""
 "Rafael Fontenelle <rafaelff@gnome.org>\n"
 "Yuri Otávio Lopes Gomes <yuriotavio@hotmail.com>"
 
-#: podcasts-gtk/src/widgets/episode.rs:129
+#: podcasts-gtk/src/widgets/episode.rs:130
 msgid "{} min"
 msgstr "{} min"
 
@@ -405,3 +408,6 @@ msgstr "Marcados todos os episódios como ouvidos"
 #: podcasts-gtk/src/widgets/show_menu.rs:155
 msgid "Unsubscribed from {}"
 msgstr "Desinscrito de {}"
+
+#~ msgid "Cancel"
+#~ msgstr "Cancelar"
