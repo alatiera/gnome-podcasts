@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: podcasts master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2018-08-22 05:29+0000\n"
-"PO-Revision-Date: 2018-08-27 11:42+0300\n"
+"POT-Creation-Date: 2018-09-08 17:18+0000\n"
+"PO-Revision-Date: 2018-09-15 23:09+0300\n"
 "Last-Translator: Emin Tufan Çetin <etcetin@gmail.com>\n"
 "Language-Team: Türkçe <gnome-turk@gnome.org>\n"
 "Language: tr\n"
@@ -67,33 +67,33 @@ msgid "What period of time to wait between automatic cleanups"
 msgstr ""
 
 #. Weird magic I copy-pasted that sets the Application Name in the Shell.
-#: podcasts-gtk/resources/org.gnome.Podcasts.desktop:3
-#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml:4
-#: podcasts-gtk/src/app.rs:92 podcasts-gtk/src/app.rs:406
-#: podcasts-gtk/src/widgets/aboutdialog.rs:33
+#: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:3
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:4
+#: podcasts-gtk/src/app.rs:91 podcasts-gtk/src/app.rs:414
+#: podcasts-gtk/src/widgets/aboutdialog.rs:31
 msgid "Podcasts"
 msgstr "Podcastler"
 
-#: podcasts-gtk/resources/org.gnome.Podcasts.desktop:4
-#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml:10
+#: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:4
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:10
 msgid "Listen to your favorite podcasts, right from your desktop."
 msgstr "Gözde podcastlerinizi masaüstünüzden dinleyin."
 
 #. Translators: Do NOT translate or transliterate this text (this is an icon file name)!
-#: podcasts-gtk/resources/org.gnome.Podcasts.desktop:6
-msgid "org.gnome.Podcasts"
-msgstr "org.gnome.Podcasts"
+#: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:6
+msgid "@icon@"
+msgstr "@icon@"
 
 #. Translators: Search terms to find this application. Do NOT translate or localize the semicolons! The list MUST also end with a semicolon!
-#: podcasts-gtk/resources/org.gnome.Podcasts.desktop:13
+#: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:13
 msgid "Podcast;RSS;"
 msgstr "Podcast;RSS;Pod Yayını;"
 
-#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml:8
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:8
 msgid "Podcast app for GNOME"
 msgstr "GNOME için Podcast uygulaması"
 
-#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml:31
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:51
 msgid "Jordan Petridis"
 msgstr "Jordan Petridis"
 
@@ -105,33 +105,33 @@ msgstr "Bu gösterinin henüz herhangi bir bölümü yok"
 msgid "If you think this is an error, please consider writing a bug report."
 msgstr "Bunun bir hata olduğunu düşünüyorsanız lütfen hata bildirimi yazın."
 
-#: podcasts-gtk/resources/gtk/empty_view.ui:107
+#: podcasts-gtk/resources/gtk/empty_view.ui:106
 msgid "Get some shows"
 msgstr "Birkaç gösteri edinin"
 
-#: podcasts-gtk/resources/gtk/empty_view.ui:144
+#: podcasts-gtk/resources/gtk/empty_view.ui:143
 msgid "Add new shows via feed URL"
 msgstr "Besleme URLʼsi ile yeni gösteriler ekle"
 
-#: podcasts-gtk/resources/gtk/empty_view.ui:173
+#: podcasts-gtk/resources/gtk/empty_view.ui:172
 msgid "Import shows from another device"
 msgstr "Gösterileri başka aygıttan içe aktar"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:177
+#: podcasts-gtk/resources/gtk/episode_widget.ui:180
 msgid "Calculating episode size…"
 msgstr "Bölüm boyutu hesaplanıyor…"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:212
-msgid "Cancel"
-msgstr "İptal"
-
-#: podcasts-gtk/resources/gtk/episode_widget.ui:230
-msgid "Download this episode"
-msgstr "Bu bölümü indir"
-
-#: podcasts-gtk/resources/gtk/episode_widget.ui:254
+#: podcasts-gtk/resources/gtk/episode_widget.ui:220
 msgid "Play this episode"
 msgstr "Bu bölümü oynat"
+
+#: podcasts-gtk/resources/gtk/episode_widget.ui:241
+msgid "Cancel the download proccess"
+msgstr "İndirme sürecini iptal et"
+
+#: podcasts-gtk/resources/gtk/episode_widget.ui:264
+msgid "Download this episode"
+msgstr "Bu bölümü indir"
 
 #: podcasts-gtk/resources/gtk/hamburger.ui:7
 msgid "_Check for New Episodes"
@@ -315,7 +315,7 @@ msgstr "Tümünü Oynatıldı Olarak İmle"
 msgid "Unsubscribe"
 msgstr "Abonelikten Çık"
 
-#: podcasts-gtk/src/app.rs:331
+#: podcasts-gtk/src/app.rs:332
 msgid "Fetching new episodes"
 msgstr "Yeni bölümler alınıyor"
 
@@ -355,23 +355,23 @@ msgstr "Yeni"
 msgid "Shows"
 msgstr "Gösteriler"
 
-#: podcasts-gtk/src/utils.rs:350
+#: podcasts-gtk/src/utils.rs:357
 msgid "Select the file from which to you want to import shows."
 msgstr "Gösterileri içe aktarmak istediğiniz dosyayı seçin"
 
-#: podcasts-gtk/src/utils.rs:353
+#: podcasts-gtk/src/utils.rs:360
 msgid "_Import"
 msgstr "_İçe Aktar"
 
-#: podcasts-gtk/src/utils.rs:362
+#: podcasts-gtk/src/utils.rs:369
 msgid "OPML file"
 msgstr "OPML dosyası"
 
-#: podcasts-gtk/src/utils.rs:379
+#: podcasts-gtk/src/utils.rs:386
 msgid "Failed to parse the imported file"
 msgstr "İçe aktarılan dosya ayrıştırılamadı"
 
-#: podcasts-gtk/src/utils.rs:384
+#: podcasts-gtk/src/utils.rs:391
 msgid "Selected file could not be accessed."
 msgstr "Seçilen dosyaya erişilemedi."
 
@@ -379,15 +379,15 @@ msgstr "Seçilen dosyaya erişilemedi."
 msgid "Podcast Client for the GNOME Desktop."
 msgstr "GNOME Masaüstü için Podcast İstemcisi."
 
-#: podcasts-gtk/src/widgets/aboutdialog.rs:35
+#: podcasts-gtk/src/widgets/aboutdialog.rs:33
 msgid "Learn more about GNOME Podcasts"
 msgstr "GNOME Podcastler hakkında daha çoğunu öğrenin"
 
-#: podcasts-gtk/src/widgets/aboutdialog.rs:40
+#: podcasts-gtk/src/widgets/aboutdialog.rs:38
 msgid "translator-credits"
 msgstr "Emin Tufan Çetin <etcetin@gmail.com>"
 
-#: podcasts-gtk/src/widgets/episode.rs:129
+#: podcasts-gtk/src/widgets/episode.rs:130
 msgid "{} min"
 msgstr "{} dak"
 
@@ -403,6 +403,12 @@ msgstr "Tüm bölümler dinlendi olarak imlendi"
 #: podcasts-gtk/src/widgets/show_menu.rs:155
 msgid "Unsubscribed from {}"
 msgstr "{} aboneliğinden çıkıldı"
+
+#~ msgid "org.gnome.Podcasts"
+#~ msgstr "org.gnome.Podcasts"
+
+#~ msgid "Cancel"
+#~ msgstr "İptal"
 
 #~ msgid "Episode Title"
 #~ msgstr "Bölüm Başlığı"
