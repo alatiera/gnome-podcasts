@@ -7,15 +7,16 @@ msgid ""
 msgstr ""
 "Project-Id-Version: podcasts master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2018-09-05 22:10+0000\n"
-"PO-Revision-Date: 2018-09-06 20:27+0200\n"
+"POT-Creation-Date: 2018-09-08 17:18+0000\n"
+"PO-Revision-Date: 2018-09-19 14:24+0200\n"
+"Last-Translator: \n"
 "Language-Team: Croatian <hr@li.org>\n"
 "Language: hr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
-"Last-Translator: \n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
+"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "X-Generator: Poedit 2.1.1\n"
 
 #: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml:15
@@ -48,11 +49,13 @@ msgstr "Treba li povremeno osvježiti sadržaj"
 
 #: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml:46
 msgid "How many periods of time to wait between automatic refreshes"
-msgstr "Koliko vremenskih razdoblja treba pričekati između automatskih osvježavanja"
+msgstr ""
+"Koliko vremenskih razdoblja treba pričekati između automatskih osvježavanja"
 
 #: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml:50
 msgid "What period of time to wait between automatic refreshes"
-msgstr "Koliko vremensko razdoblje treba pričekati između automatskih osvježavanja"
+msgstr ""
+"Koliko vremensko razdoblje treba pričekati između automatskih osvježavanja"
 
 #: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml:54
 msgid "Whether to refresh content after startup"
@@ -60,7 +63,8 @@ msgstr "Treba li osvježiti sadržaj nakon pokretanja"
 
 #: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml:60
 msgid "How many periods of time to wait between automatic cleanups"
-msgstr "Koliko vremenskih razdoblja treba pričekati između automatskih čišćenja"
+msgstr ""
+"Koliko vremenskih razdoblja treba pričekati između automatskih čišćenja"
 
 #: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml:64
 msgid "What period of time to wait between automatic cleanups"
@@ -117,21 +121,21 @@ msgstr "Dodaj novu emisiju putem kanala ili URL-a"
 msgid "Import shows from another device"
 msgstr "Uvezi emisije iz drugog uređaja"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:178
+#: podcasts-gtk/resources/gtk/episode_widget.ui:180
 msgid "Calculating episode size…"
 msgstr "Izračunavanje veličine emisjie…"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:214
-msgid "Cancel"
-msgstr "Odustani"
-
-#: podcasts-gtk/resources/gtk/episode_widget.ui:232
-msgid "Download this episode"
-msgstr "Preuzmi ovu epizodu"
-
-#: podcasts-gtk/resources/gtk/episode_widget.ui:256
+#: podcasts-gtk/resources/gtk/episode_widget.ui:220
 msgid "Play this episode"
 msgstr "Slušaj ovu epizodu"
+
+#: podcasts-gtk/resources/gtk/episode_widget.ui:241
+msgid "Cancel the download proccess"
+msgstr "Prekini preuzimanja"
+
+#: podcasts-gtk/resources/gtk/episode_widget.ui:264
+msgid "Download this episode"
+msgstr "Preuzmi ovu epizodu"
 
 #: podcasts-gtk/resources/gtk/hamburger.ui:7
 msgid "_Check for New Episodes"
@@ -389,7 +393,7 @@ msgstr ""
 "Launchpad Contributions:\n"
 "  gogo https://launchpad.net/~trebelnik-stefina"
 
-#: podcasts-gtk/src/widgets/episode.rs:129
+#: podcasts-gtk/src/widgets/episode.rs:130
 msgid "{} min"
 msgstr "{} min"
 
@@ -405,3 +409,6 @@ msgstr "Označi sve epizodae kao odslušane"
 #: podcasts-gtk/src/widgets/show_menu.rs:155
 msgid "Unsubscribed from {}"
 msgstr "Ukini pretplatu za {}"
+
+#~ msgid "Cancel"
+#~ msgstr "Odustani"
