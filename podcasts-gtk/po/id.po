@@ -7,14 +7,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: podcasts master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2018-08-30 08:45+0000\n"
-"PO-Revision-Date: 2018-08-30 17:37+0700\n"
+"POT-Creation-Date: 2018-09-08 17:18+0000\n"
+"PO-Revision-Date: 2018-09-22 15:20+0700\n"
+"Last-Translator: Kukuh Syafaat <kukuhsyafaat@gnome.org>\n"
 "Language-Team: Indonesian <gnome-l10n-id@googlegroups.com>\n"
 "Language: id\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Last-Translator: Kukuh Syafaat <kukuhsyafaat@gnome.org>\n"
 "X-Generator: Poedit 2.0.6\n"
 
 #: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml:15
@@ -92,7 +92,7 @@ msgstr "Podcast;RSS;"
 msgid "Podcast app for GNOME"
 msgstr "Aplikasi Podcast untuk GNOME"
 
-#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:31
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:51
 msgid "Jordan Petridis"
 msgstr "Jordan Petridis"
 
@@ -102,7 +102,9 @@ msgstr "Acara ini belum memiliki episode"
 
 #: podcasts-gtk/resources/gtk/empty_view.ui:62
 msgid "If you think this is an error, please consider writing a bug report."
-msgstr "Jika Anda pikir ini adalah kesalahan, silakan mempertimbangkan untuk menulis laporan kutu."
+msgstr ""
+"Jika Anda pikir ini adalah kesalahan, silakan mempertimbangkan untuk menulis "
+"laporan kutu."
 
 #: podcasts-gtk/resources/gtk/empty_view.ui:106
 msgid "Get some shows"
@@ -116,21 +118,21 @@ msgstr "Tambahkan acara baru melalui URL feed"
 msgid "Import shows from another device"
 msgstr "Impor acara dari perangkat lain"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:177
+#: podcasts-gtk/resources/gtk/episode_widget.ui:180
 msgid "Calculating episode size…"
 msgstr "Menghitung ukuran episode…"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:212
-msgid "Cancel"
-msgstr "Batal"
-
-#: podcasts-gtk/resources/gtk/episode_widget.ui:230
-msgid "Download this episode"
-msgstr "Unduh episode ini"
-
-#: podcasts-gtk/resources/gtk/episode_widget.ui:254
+#: podcasts-gtk/resources/gtk/episode_widget.ui:220
 msgid "Play this episode"
 msgstr "Putar episode ini"
+
+#: podcasts-gtk/resources/gtk/episode_widget.ui:241
+msgid "Cancel the download proccess"
+msgstr "Batalkan proses pengunduhan"
+
+#: podcasts-gtk/resources/gtk/episode_widget.ui:264
+msgid "Download this episode"
+msgstr "Unduh episode ini"
 
 #: podcasts-gtk/resources/gtk/hamburger.ui:7
 msgid "_Check for New Episodes"
@@ -386,7 +388,7 @@ msgstr "Pelajari lebih lanjut tentang GNOME Podcast"
 msgid "translator-credits"
 msgstr "Kukuh Syafaat <kukuhsyafaat@gnome.org>, 2018."
 
-#: podcasts-gtk/src/widgets/episode.rs:129
+#: podcasts-gtk/src/widgets/episode.rs:130
 msgid "{} min"
 msgstr "{} mnt"
 
@@ -402,3 +404,6 @@ msgstr "Tandai semua episode sebagai sudah didengarkan"
 #: podcasts-gtk/src/widgets/show_menu.rs:155
 msgid "Unsubscribed from {}"
 msgstr "Berhenti berlangganan dari {}"
+
+#~ msgid "Cancel"
+#~ msgstr "Batal"
