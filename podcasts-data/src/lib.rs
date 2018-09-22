@@ -45,6 +45,7 @@
     elided_lifetime_in_paths,
     missing_copy_implementations
 )]
+#![allow(proc_macro_derive_resolution_fallback)]
 #![deny(warnings)]
 
 //! FIXME: Docs
