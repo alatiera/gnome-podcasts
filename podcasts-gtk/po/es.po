@@ -4,15 +4,16 @@
 # Automatically generated, 2018.
 # Daniel Garcia Moreno <danigm@wadobo.com>, 2018.
 # Daniel Mustieles <daniel.mustieles@gmail.com>, 2018.
+# Rodrigo <rodhos92@gmail.com>, 2018.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-podcasts\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2018-08-28 20:54+0000\n"
-"PO-Revision-Date: 2018-09-03 08:18+0200\n"
-"Last-Translator: Daniel Mustieles <daniel.mustieles@gmail.com>\n"
-"Language-Team: es <gnome-es-list@gnome.org>\n"
+"POT-Creation-Date: 2018-09-08 17:18+0000\n"
+"PO-Revision-Date: 2018-09-21 19:03+0200\n"
+"Last-Translator: Rodrigo <rodhos92@gmail.com>\n"
+"Language-Team: Español <gnome-es-list@gnome.org>\n"
 "Language: es\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -97,7 +98,7 @@ msgstr "Podcast;RSS;"
 msgid "Podcast app for GNOME"
 msgstr "Aplicación de Podcast para GNOME"
 
-#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:31
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:51
 msgid "Jordan Petridis"
 msgstr "Jordan Petridis"
 
@@ -121,21 +122,21 @@ msgstr "Añadir un programa nuevo a través de canal URL"
 msgid "Import shows from another device"
 msgstr "Importar programas de otro dispositivo"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:177
+#: podcasts-gtk/resources/gtk/episode_widget.ui:180
 msgid "Calculating episode size…"
 msgstr "Calculando tamaño del episodio…"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:212
-msgid "Cancel"
-msgstr "Cancelar"
-
-#: podcasts-gtk/resources/gtk/episode_widget.ui:230
-msgid "Download this episode"
-msgstr "Descargar este episodio"
-
-#: podcasts-gtk/resources/gtk/episode_widget.ui:254
+#: podcasts-gtk/resources/gtk/episode_widget.ui:220
 msgid "Play this episode"
 msgstr "Reproducir este episodio"
+
+#: podcasts-gtk/resources/gtk/episode_widget.ui:241
+msgid "Cancel the download proccess"
+msgstr "Cancelar el proceso de descarga"
+
+#: podcasts-gtk/resources/gtk/episode_widget.ui:264
+msgid "Download this episode"
+msgstr "Descargar este episodio"
 
 #: podcasts-gtk/resources/gtk/hamburger.ui:7
 msgid "_Check for New Episodes"
@@ -359,23 +360,23 @@ msgstr "Nuevo"
 msgid "Shows"
 msgstr "Programas"
 
-#: podcasts-gtk/src/utils.rs:350
+#: podcasts-gtk/src/utils.rs:357
 msgid "Select the file from which to you want to import shows."
 msgstr "Selecciona el fichero desde el que quiere importar programas."
 
-#: podcasts-gtk/src/utils.rs:353
+#: podcasts-gtk/src/utils.rs:360
 msgid "_Import"
 msgstr "_Importar"
 
-#: podcasts-gtk/src/utils.rs:362
+#: podcasts-gtk/src/utils.rs:369
 msgid "OPML file"
 msgstr "fichero OPML"
 
-#: podcasts-gtk/src/utils.rs:379
+#: podcasts-gtk/src/utils.rs:386
 msgid "Failed to parse the imported file"
 msgstr "Fallo al analizar el fichero importado"
 
-#: podcasts-gtk/src/utils.rs:384
+#: podcasts-gtk/src/utils.rs:391
 msgid "Selected file could not be accessed."
 msgstr "No se ha podido acceder al archivo seleccionado."
 
@@ -393,7 +394,7 @@ msgstr ""
 "Daniel Mustieles <daniel.musiteles@gmail.com>, 2018\n"
 "Daniel García Moreno <danigm@wadobo.com>"
 
-#: podcasts-gtk/src/widgets/episode.rs:129
+#: podcasts-gtk/src/widgets/episode.rs:130
 msgid "{} min"
 msgstr "{} min"
 
@@ -409,6 +410,9 @@ msgstr "Marcar todos los episodios como escuchados"
 #: podcasts-gtk/src/widgets/show_menu.rs:155
 msgid "Unsubscribed from {}"
 msgstr "Suscripción cancelada para {}"
+
+#~ msgid "Cancel"
+#~ msgstr "Cancelar"
 
 #~ msgid "org.gnome.Podcasts"
 #~ msgstr "org.gnome.Podcasts"
