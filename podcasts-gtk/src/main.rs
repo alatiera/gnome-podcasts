@@ -74,6 +74,7 @@ extern crate regex;
 extern crate reqwest;
 extern crate serde_json;
 extern crate url;
+extern crate mpris_player;
 
 use log::Level;
 

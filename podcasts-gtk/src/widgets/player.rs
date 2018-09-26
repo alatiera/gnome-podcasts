@@ -25,6 +25,10 @@ use std::rc::Rc;
 
 use i18n::i18n;
 
+use std::sync::Arc;
+use mpris_player::MprisPlayer;
+use mpris_player::Metadata;
+
 #[derive(Debug, Clone, Copy)]
 enum SeekDirection {
     Backwards,
@@ -47,6 +51,7 @@ struct PlayerInfo {
     show: gtk::Label,
     episode: gtk::Label,
     cover: gtk::Image,
+    mpris: Arc<MprisPlayer>,
 }
 
 impl PlayerInfo {
@@ -55,6 +60,15 @@ impl PlayerInfo {
         self.set_cover_image(podcast);
         self.set_show_title(podcast);
         self.set_episode_title(episode);
+
+        let mut metadata = Metadata::new();
+        metadata.artist = Some(vec![podcast.title().to_string()]);
+        metadata.title = Some(episode.title().to_string());
+
+        podcast.image_uri().map(|value|{
+            metadata.art_url = Some(value.to_string());
+        });
+        self.mpris.set_metadata(metadata);
     }
 
     fn set_episode_title(&self, episode: &EpisodeWidgetModel) {
@@ -161,6 +175,7 @@ struct PlayerControls {
 pub(crate) struct PlayerWidget {
     pub(crate) action_bar: gtk::ActionBar,
     player: gst_player::Player,
+    mpris: Arc<MprisPlayer>,
     controls: PlayerControls,
     timer: PlayerTimes,
     info: PlayerInfo,
@@ -175,6 +190,8 @@ impl Default for PlayerWidget {
             // Use the gtk main thread
             Some(&dispatcher.upcast::<gst_player::PlayerSignalDispatcher>()),
         );
+
+        let mpris = MprisPlayer::new("Podcasts".to_string(), "GNOME Podcasts".to_string(), "org.gnome.Podcasts.desktop".to_string());
 
         let mut config = player.get_config();
         config.set_user_agent(USER_AGENT);
@@ -220,6 +237,7 @@ impl Default for PlayerWidget {
         let episode = builder.get_object("episode_label").unwrap();
         let cover = builder.get_object("show_cover").unwrap();
         let info = PlayerInfo {
+            mpris: mpris.clone(),
             container: labels,
             show,
             episode,
@@ -243,6 +261,7 @@ impl Default for PlayerWidget {
 
         PlayerWidget {
             player,
+            mpris,
             action_bar,
             controls,
             timer,
@@ -410,6 +429,7 @@ impl PlayerExt for PlayerWidget {
         self.controls.play.hide();
 
         self.player.play();
+        self.mpris.set_playback_status(::mpris_player::PlaybackStatus::Playing);
     }
 
     fn pause(&self) {
@@ -417,6 +437,7 @@ impl PlayerExt for PlayerWidget {
         self.controls.play.show();
 
         self.player.pause();
+        self.mpris.set_playback_status(::mpris_player::PlaybackStatus::Paused);
 
         // Only rewind on pause if the stream position is passed a certain point.
         if let Some(sec) = self.player.get_position().seconds() {
@@ -432,6 +453,7 @@ impl PlayerExt for PlayerWidget {
         self.controls.play.show();
 
         self.player.stop();
+        self.mpris.set_playback_status(::mpris_player::PlaybackStatus::Paused);
 
         // Reset the slider bar to the start
         self.timer.on_position_updated(Position(ClockTime::from_seconds(0)));
