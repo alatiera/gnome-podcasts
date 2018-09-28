@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Changed:
 - Download Cancel button was changed to an Icon instead of a label !72
 - The applciation will no longer scale below 360p in width 1933c79f7a87d8261d91ca4e14eb51c1ddc66624
+- Update to the latest HIG 5050dda4d2f75b706842de8507d115dd5a1bd0a9
 
 ### Fixed:
 - Fixed a regression where indexing feeds was blocking the `tokio reactor` #88 !70
@@ -20,6 +21,26 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Removed:
 
 ### Translations:
+
+**Added**
+- Brazilian Portuguese translation 586cf16f
+- Swedish translation 2e527250
+- Italian translation a23297e5
+- Friulian translation 60e09c0d
+- Hungarian translation 2751a828
+- Croatian translation 0476b67b
+- Latvian translation a681b2c9
+- Czech translation 3563a964
+- Catalan translation 6ea3fc91
+
+**Updated**
+- German translation
+- Finnish translation
+- Polish translation
+- Turkish translation
+- Croatian translation 
+- Indonesian translation
+- Spanish translation 
 
 
 ## [0.4.5] - 2018-08-31
