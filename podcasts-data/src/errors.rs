@@ -1,6 +1,7 @@
 use diesel;
 use diesel::r2d2;
 use diesel_migrations::RunMigrationsError;
+use http;
 use hyper;
 use native_tls;
 use rss;
@@ -47,6 +48,8 @@ pub enum DataError {
     R2D2PoolError(#[cause] r2d2::PoolError),
     #[fail(display = "Hyper Error: {}", _0)]
     HyperError(#[cause] hyper::Error),
+    #[fail(display = "ToStr Error: {}", _0)]
+    HttpToStr(#[cause] http::header::ToStrError),
     #[fail(display = "Tokio Spawn Error: {}", _0)]
     SpawnError(#[cause] tokio_executor::SpawnError),
     #[fail(display = "Failed to parse a url: {}", _0)]
@@ -103,6 +106,12 @@ impl From<r2d2::PoolError> for DataError {
 impl From<hyper::Error> for DataError {
     fn from(err: hyper::Error) -> Self {
         DataError::HyperError(err)
+    }
+}
+
+impl From<http::header::ToStrError> for DataError {
+    fn from(err: http::header::ToStrError) -> Self {
+        DataError::HttpToStr(err)
     }
 }
 
