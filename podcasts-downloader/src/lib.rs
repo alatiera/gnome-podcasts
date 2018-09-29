@@ -44,7 +44,6 @@ extern crate log;
 extern crate pretty_assertions;
 
 extern crate glob;
-extern crate hyper;
 extern crate mime_guess;
 extern crate podcasts_data;
 extern crate reqwest;
