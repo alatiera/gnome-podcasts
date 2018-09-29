@@ -7,7 +7,7 @@ workspace = "../"
 
 [dependencies]
 chrono = "0.4.6"
-crossbeam-channel = "0.2.4"
+crossbeam-channel = "0.2.6"
 gdk = "0.9.0"
 gdk-pixbuf = "0.5.0"
 glib = "0.6.0"
@@ -25,7 +25,7 @@ failure_derive = "0.1.2"
 fragile = "0.3.0"
 regex = "1.0.4"
 reqwest = "0.9.2"
-serde_json = "1.0.26"
+serde_json = "1.0.31"
 # html2text = "0.1.8"
 html2text = { git = "https://github.com/alatiera/rust-html2text" }
 gettext-rs = { git = "https://github.com/danigm/gettext-rs", branch = "no-gettext", features = ["gettext-system"] }
