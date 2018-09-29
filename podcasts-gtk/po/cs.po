@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: podcasts master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2018-09-13 12:47+0000\n"
-"PO-Revision-Date: 2018-09-15 07:10+0200\n"
+"POT-Creation-Date: 2018-09-28 23:51+0000\n"
+"PO-Revision-Date: 2018-09-29 21:28+0200\n"
 "Last-Translator: Marek Černocký <marek@manet.cz>\n"
 "Language-Team: čeština <gnome-cs-list@gnome.org>\n"
 "Language: cs\n"
@@ -145,13 +145,13 @@ msgstr "Na_importovat pořady"
 msgid "_Preferences"
 msgstr "_Předvolby"
 
-#: podcasts-gtk/resources/gtk/hamburger.ui:29
+#: podcasts-gtk/resources/gtk/hamburger.ui:27
 msgid "_Keyboard Shortcuts"
 msgstr "_Klávesové zkratky"
 
-#: podcasts-gtk/resources/gtk/hamburger.ui:37
-msgid "_About"
-msgstr "O _aplikaci"
+#: podcasts-gtk/resources/gtk/hamburger.ui:35
+msgid "_About Podcasts"
+msgstr "O _aplikaci Podcasty"
 
 #: podcasts-gtk/resources/gtk/headerbar.ui:35
 #: podcasts-gtk/resources/gtk/headerbar.ui:189
