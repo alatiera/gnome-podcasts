@@ -7,7 +7,7 @@ export CONFIGURE_ARGS="-Dprofile=development"
 export DBUS_ID="org.gnome.PodcastsDevel"
 export BUNDLE="org.gnome.Podcasts.Devel.flatpak"
 
-flatpak-builder --stop-at=${FLATPAK_MODULE} --keep-build-dirs --force-clean app ${MANIFEST_PATH}
+flatpak-builder --stop-at=${FLATPAK_MODULE} --force-clean app ${MANIFEST_PATH}
 # https://gitlab.gnome.org/World/podcasts/issues/55
 # Force regeneration of gresources regardless of artifacts chage
 flatpak-builder --run app ${MANIFEST_PATH} glib-compile-resources --sourcedir=podcasts-gtk/resources/ podcasts-gtk/resources/resources.xml
