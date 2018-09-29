@@ -5,7 +5,6 @@ use http;
 use hyper;
 use native_tls;
 use rss;
-use tokio_executor;
 use url;
 use xml;
 
@@ -50,8 +49,6 @@ pub enum DataError {
     HyperError(#[cause] hyper::Error),
     #[fail(display = "ToStr Error: {}", _0)]
     HttpToStr(#[cause] http::header::ToStrError),
-    #[fail(display = "Tokio Spawn Error: {}", _0)]
-    SpawnError(#[cause] tokio_executor::SpawnError),
     #[fail(display = "Failed to parse a url: {}", _0)]
     UrlError(#[cause] url::ParseError),
     #[fail(display = "TLS Error: {}", _0)]
@@ -112,12 +109,6 @@ impl From<hyper::Error> for DataError {
 impl From<http::header::ToStrError> for DataError {
     fn from(err: http::header::ToStrError) -> Self {
         DataError::HttpToStr(err)
-    }
-}
-
-impl From<tokio_executor::SpawnError> for DataError {
-    fn from(err: tokio_executor::SpawnError) -> Self {
-        DataError::SpawnError(err)
     }
 }
 

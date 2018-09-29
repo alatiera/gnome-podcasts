@@ -1,9 +1,8 @@
 // FIXME:
 //! Docs.
 
-use futures::{lazy, prelude::*, stream::iter_ok};
-use tokio_core::reactor::Core;
-use tokio_threadpool::{self, ThreadPool};
+use futures::{lazy, prelude::*, future::ok, stream::FuturesOrdered};
+use tokio;
 
 use hyper::client::HttpConnector;
 use hyper::{Client, Body};
@@ -13,6 +12,8 @@ use num_cpus;
 
 use errors::DataError;
 use Source;
+
+use std::iter::FromIterator;
 
 type HttpsClient = Client<HttpsConnector<HttpConnector>>;
 
@@ -25,7 +26,6 @@ type HttpsClient = Client<HttpsConnector<HttpConnector>>;
 pub fn pipeline<'a, S>(
     sources: S,
     client: HttpsClient,
-    pool: tokio_threadpool::Sender,
 ) -> impl Future<Item = (), Error = ()> + 'a
 where
     S: Stream<Item = Source, Error = DataError> + 'a,
@@ -41,7 +41,7 @@ where
         })
         .for_each(move |feed| {
             let fut = lazy(|| feed.index().map_err(|err| error!("Error: {}", err)));
-            pool.spawn(fut).map_err(|_| ())
+            tokio::spawn(fut)
         })
 }
 
@@ -51,17 +51,14 @@ pub fn run<S>(sources: S) -> Result<(), DataError>
 where
     S: IntoIterator<Item = Source>,
 {
-    let pool = ThreadPool::new();
-    let sender = pool.sender().clone();
-    let mut core = Core::new()?;
     let https = HttpsConnector::new(num_cpus::get())?;
     let client = Client::builder().build::<_, Body>(https);
 
-    let stream = iter_ok::<_, DataError>(sources);
-    let p = pipeline(stream, client, sender);
-    let _ = core.run(p);
+    let foo = sources.into_iter().map(ok::<_, _>);
+    let stream = FuturesOrdered::from_iter(foo);
+    let p = pipeline(stream, client);
+    tokio::run(p);
 
-    pool.shutdown_on_idle().wait().unwrap();
     Ok(())
 }
 

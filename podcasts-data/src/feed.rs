@@ -122,7 +122,7 @@ fn batch_insert_episodes(episodes: &[NewEpisode]) {
 mod tests {
     use failure::Error;
     use rss::Channel;
-    use tokio_core::reactor::Core;
+    use tokio::{self, prelude::*};
 
     use database::truncate_db;
     use dbqueries;
@@ -176,10 +176,9 @@ mod tests {
                 get_feed(path, s.id())
             }).collect();
 
-        let mut core = Core::new()?;
         // Index the channes
-        let list: Vec<_> = feeds.into_iter().map(|x| x.index()).collect();
-        let _foo = core.run(join_all(list));
+        let stream_ = stream::iter_ok(feeds).for_each(|x| x.index());
+        tokio::run(stream_.map_err(|_| ()));
 
         // Assert the index rows equal the controlled results
         assert_eq!(dbqueries::get_sources()?.len(), 5);

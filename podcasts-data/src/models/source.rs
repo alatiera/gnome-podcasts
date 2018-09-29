@@ -286,8 +286,8 @@ fn response_to_channel(res: Response<Body>) -> impl Future<Item = Channel, Error
 mod tests {
     use super::*;
     use failure::Error;
-    use tokio_core::reactor::Core;
     use num_cpus;
+    use tokio;
 
     use database::truncate_db;
     use utils::get_feed;
@@ -296,7 +296,7 @@ mod tests {
     fn test_into_feed() -> Result<(), Error> {
         truncate_db()?;
 
-        let mut core = Core::new()?;
+        let mut rt = tokio::runtime::Runtime::new()?;
         let https = HttpsConnector::new(num_cpus::get())?;
         let client = Client::builder().build::<_, Body>(https);
 
@@ -304,9 +304,8 @@ mod tests {
                    com/InterceptedWithJeremyScahill";
         let source = Source::from_url(url)?;
         let id = source.id();
-
         let feed = source.into_feed(client);
-        let feed = core.run(feed)?;
+        let feed = rt.block_on(feed)?;
 
         let expected = get_feed("tests/feeds/2018-01-20-Intercepted.xml", id);
         assert_eq!(expected, feed);
