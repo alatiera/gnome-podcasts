@@ -6,7 +6,7 @@ use tokio_core::reactor::Core;
 use tokio_threadpool::{self, ThreadPool};
 
 use hyper::client::HttpConnector;
-use hyper::Client;
+use hyper::{Client, Body};
 use hyper_tls::HttpsConnector;
 
 use num_cpus;
@@ -57,10 +57,8 @@ where
     let pool = ThreadPool::new();
     let sender = pool.sender().clone();
     let mut core = Core::new()?;
-    let handle = core.handle();
-    let client = Client::configure()
-        .connector(HttpsConnector::new(num_cpus::get(), &handle)?)
-        .build(&handle);
+    let https = HttpsConnector::new(num_cpus::get())?;
+    let client = Client::builder().build::<_, Body>(https);
 
     let stream = iter_ok::<_, DataError>(sources);
     let p = pipeline(stream, client, sender);

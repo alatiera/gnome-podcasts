@@ -1,8 +1,8 @@
 use glob::glob;
-use hyper::header::*;
 use mime_guess;
 use reqwest;
 use reqwest::RedirectPolicy;
+use reqwest::header::*;
 use tempdir::TempDir;
 
 use std::fs;
@@ -76,12 +76,19 @@ fn download_into(
     }
 
     let headers = resp.headers().clone();
-    let ct_len = headers.get::<ContentLength>().map(|ct_len| **ct_len);
-    let ct_type = headers.get::<ContentType>();
+    let ct_len = headers
+        .get(CONTENT_LENGTH)
+        .and_then(|h| h.to_str().ok())
+        .and_then(|len| len.parse().ok());
+    let ct_type = headers
+        .get(CONTENT_TYPE)
+        .and_then(|h| h.to_str().ok())
+        .map(From::from);
+
     ct_len.map(|x| info!("File Lenght: {}", x));
     ct_type.map(|x| info!("Content Type: {}", x));
 
-    let ext = get_ext(ct_type.cloned()).unwrap_or_else(|| String::from("unknown"));
+    let ext = get_ext(ct_type).unwrap_or_else(|| String::from("unknown"));
     info!("Extension: {}", ext);
 
     // Construct a temp file to save desired content.
@@ -110,17 +117,17 @@ fn download_into(
 }
 
 /// Determine the file extension from the http content-type header.
-fn get_ext(content: Option<ContentType>) -> Option<String> {
-    let cont = content.clone()?;
-    content
-        .and_then(|c| mime_guess::get_extensions(c.type_().as_ref(), c.subtype().as_ref()))
-        .and_then(|c| {
-            if c.contains(&cont.subtype().as_ref()) {
-                Some(cont.subtype().as_ref().to_string())
-            } else {
-                Some(c.first().unwrap().to_string())
-            }
-        })
+fn get_ext(content: Option<&str>) -> Option<String> {
+    let mut iter = content?.split("/");
+    let type_ = iter.next()?;
+    let subtype = iter.next()?;
+    mime_guess::get_extensions(type_, subtype).and_then(|c| {
+        if c.contains(&&subtype) {
+            Some(subtype.to_string())
+        } else {
+            Some(c.first()?.to_string())
+        }
+    })
 }
 
 // TODO: Write unit-tests.
