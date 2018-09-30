@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: podcasts\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2018-09-08 17:18+0000\n"
-"PO-Revision-Date: 2018-09-09 18:59+0200\n"
+"POT-Creation-Date: 2018-09-28 23:51+0000\n"
+"PO-Revision-Date: 2018-09-30 19:15+0200\n"
 "Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
 "Language-Team: Polish <community-poland@mozilla.org>\n"
 "Language: pl\n"
@@ -146,12 +146,12 @@ msgstr "Zai_mportuj programy"
 msgid "_Preferences"
 msgstr "_Preferencje"
 
-#: podcasts-gtk/resources/gtk/hamburger.ui:29
+#: podcasts-gtk/resources/gtk/hamburger.ui:27
 msgid "_Keyboard Shortcuts"
 msgstr "_Skróty klawiszowe"
 
-#: podcasts-gtk/resources/gtk/hamburger.ui:37
-msgid "_About"
+#: podcasts-gtk/resources/gtk/hamburger.ui:35
+msgid "_About Podcasts"
 msgstr "_O programie"
 
 #: podcasts-gtk/resources/gtk/headerbar.ui:35
