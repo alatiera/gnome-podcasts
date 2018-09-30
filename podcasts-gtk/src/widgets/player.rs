@@ -8,7 +8,7 @@ use gtk::prelude::*;
 use gio::{File, FileExt};
 use glib::{SignalHandlerId, WeakRef};
 
-use chrono::NaiveTime;
+use chrono::{prelude::*, NaiveTime};
 use crossbeam_channel::Sender;
 use failure::Error;
 use fragile::Fragile;
@@ -22,6 +22,7 @@ use utils::set_image_from_path;
 use std::ops::Deref;
 use std::path::Path;
 use std::rc::Rc;
+use std::cell::RefCell;
 
 use i18n::i18n;
 
@@ -169,6 +170,7 @@ struct PlayerControls {
     pause: gtk::Button,
     forward: gtk::Button,
     rewind: gtk::Button,
+    last_pause: RefCell<Option<DateTime<Local>>>,
 }
 
 #[derive(Debug, Clone)]
@@ -219,6 +221,7 @@ impl Default for PlayerWidget {
             pause,
             forward,
             rewind,
+            last_pause: RefCell::new(None),
         };
 
         let timer_container = builder.get_object("timer").unwrap();
@@ -457,6 +460,23 @@ impl PlayerWidget {
             player.seek(ClockTime::from_seconds(value));
         })
     }
+
+    fn smart_rewind(&self) -> Option<()> {
+        let now = Local::now();
+        let last: &Option<DateTime<_>> = &*self.controls.last_pause.borrow();
+        let last = last.clone()?;
+        let delta = (now - last).num_seconds();
+
+        // Only rewind on pause if the stream position is passed a certain point,
+        // And the player has been paused for more than a minute.
+        let seconds_passed = self.player.get_position().seconds()?;
+        // FIXME: also check episode id
+        if seconds_passed >= 90 &&  delta >= 60 {
+            self.seek(ClockTime::from_seconds(5), SeekDirection::Backwards);
+        }
+
+        Some(())
+    }
 }
 
 impl PlayerExt for PlayerWidget {
@@ -466,6 +486,7 @@ impl PlayerExt for PlayerWidget {
         self.controls.pause.show();
         self.controls.play.hide();
 
+        self.smart_rewind();
         self.player.play();
         self.info.mpris.set_playback_status(PlaybackStatus::Playing);
     }
@@ -477,12 +498,7 @@ impl PlayerExt for PlayerWidget {
         self.player.pause();
         self.info.mpris.set_playback_status(PlaybackStatus::Paused);
 
-        // Only rewind on pause if the stream position is passed a certain point.
-        if let Some(sec) = self.player.get_position().seconds() {
-            if sec >= 90 {
-                self.seek(ClockTime::from_seconds(5), SeekDirection::Backwards);
-            }
-        }
+        self.controls.last_pause.replace(Some(Local::now()));
     }
 
     #[cfg_attr(rustfmt, rustfmt_skip)]
