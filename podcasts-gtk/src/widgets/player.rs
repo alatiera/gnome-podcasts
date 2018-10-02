@@ -28,6 +28,7 @@ use i18n::i18n;
 use std::sync::Arc;
 use mpris_player::MprisPlayer;
 use mpris_player::Metadata;
+use mpris_player::OrgMprisMediaPlayer2Player;
 
 #[derive(Debug, Clone, Copy)]
 enum SeekDirection {
@@ -69,6 +70,7 @@ impl PlayerInfo {
             metadata.art_url = Some(value.to_string());
         });
         self.mpris.set_metadata(metadata);
+        self.mpris.set_can_play(true);
     }
 
     fn set_episode_title(&self, episode: &EpisodeWidgetModel) {
@@ -192,6 +194,7 @@ impl Default for PlayerWidget {
         );
 
         let mpris = MprisPlayer::new("Podcasts".to_string(), "GNOME Podcasts".to_string(), "org.gnome.Podcasts.desktop".to_string());
+        mpris.set_can_play(false);
 
         let mut config = player.get_config();
         config.set_user_agent(USER_AGENT);
@@ -281,6 +284,7 @@ impl PlayerWidget {
     fn init(s: &Rc<Self>, sender: &Sender<Action>) {
         Self::connect_control_buttons(s);
         Self::connect_rate_buttons(s);
+        Self::connect_mpris_buttons(s);
         Self::connect_gst_signals(s, sender);
     }
 
@@ -306,6 +310,18 @@ impl PlayerWidget {
         // Connect the fast-forward button to the gst Player.
         s.controls.forward.connect_clicked(clone!(weak => move |_| {
             weak.upgrade().map(|p| p.fast_forward());
+        }));
+    }
+
+    fn connect_mpris_buttons(s: &Rc<Self>) {
+        let weak = Rc::downgrade(s);
+        let mpris = s.mpris.clone();
+        s.mpris.connect_play_pause(clone!(weak => move || {
+            match mpris.get_playback_status().unwrap().as_ref() {
+                "Paused" => weak.upgrade().map(|p| p.play()),
+                "Stopped" => weak.upgrade().map(|p| p.play()),
+                _ => weak.upgrade().map(|p| p.pause()),
+            };
         }));
     }
 
