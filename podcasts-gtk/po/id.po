@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: podcasts master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2018-09-08 17:18+0000\n"
-"PO-Revision-Date: 2018-09-22 15:20+0700\n"
+"POT-Creation-Date: 2018-09-28 23:51+0000\n"
+"PO-Revision-Date: 2018-10-02 20:34+0700\n"
 "Last-Translator: Kukuh Syafaat <kukuhsyafaat@gnome.org>\n"
 "Language-Team: Indonesian <gnome-l10n-id@googlegroups.com>\n"
 "Language: id\n"
@@ -146,13 +146,13 @@ msgstr "_Impor Acara"
 msgid "_Preferences"
 msgstr "_Preferensi"
 
-#: podcasts-gtk/resources/gtk/hamburger.ui:29
+#: podcasts-gtk/resources/gtk/hamburger.ui:27
 msgid "_Keyboard Shortcuts"
 msgstr "Pintasan Papan _Ketik"
 
-#: podcasts-gtk/resources/gtk/hamburger.ui:37
-msgid "_About"
-msgstr "Tent_ang"
+#: podcasts-gtk/resources/gtk/hamburger.ui:35
+msgid "_About Podcasts"
+msgstr "Tent_ang Podcast"
 
 #: podcasts-gtk/resources/gtk/headerbar.ui:35
 #: podcasts-gtk/resources/gtk/headerbar.ui:189
@@ -404,6 +404,9 @@ msgstr "Tandai semua episode sebagai sudah didengarkan"
 #: podcasts-gtk/src/widgets/show_menu.rs:155
 msgid "Unsubscribed from {}"
 msgstr "Berhenti berlangganan dari {}"
+
+#~ msgid "_About"
+#~ msgstr "Tent_ang"
 
 #~ msgid "Cancel"
 #~ msgstr "Batal"
