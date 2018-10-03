@@ -175,7 +175,6 @@ struct PlayerControls {
 pub(crate) struct PlayerWidget {
     pub(crate) action_bar: gtk::ActionBar,
     player: gst_player::Player,
-    mpris: Arc<MprisPlayer>,
     controls: PlayerControls,
     timer: PlayerTimes,
     info: PlayerInfo,
@@ -244,7 +243,7 @@ impl Default for PlayerWidget {
         let episode = builder.get_object("episode_label").unwrap();
         let cover = builder.get_object("show_cover").unwrap();
         let info = PlayerInfo {
-            mpris: mpris.clone(),
+            mpris,
             container: labels,
             show,
             episode,
@@ -268,7 +267,6 @@ impl Default for PlayerWidget {
 
         PlayerWidget {
             player,
-            mpris,
             action_bar,
             controls,
             timer,
@@ -336,15 +334,15 @@ impl PlayerWidget {
             }
         }));
 
-        s.mpris.connect_next(clone!(weak => move || {
+        s.info.mpris.connect_next(clone!(weak => move || {
             weak.upgrade().map(|p| p.fast_forward());
         }));
 
-        s.mpris.connect_previous(clone!(weak => move || {
+        s.info.mpris.connect_previous(clone!(weak => move || {
             weak.upgrade().map(|p| p.rewind());
         }));
 
-        //s.mpris.connect_raise(clone!(weak => move || {
+        //s.info.mpris.connect_raise(clone!(weak => move || {
         //  TODO: Do something here
         //}));
     }
@@ -469,7 +467,7 @@ impl PlayerExt for PlayerWidget {
         self.controls.play.hide();
 
         self.player.play();
-        self.mpris.set_playback_status(PlaybackStatus::Playing);
+        self.info.mpris.set_playback_status(PlaybackStatus::Playing);
     }
 
     fn pause(&self) {
@@ -477,7 +475,7 @@ impl PlayerExt for PlayerWidget {
         self.controls.play.show();
 
         self.player.pause();
-        self.mpris.set_playback_status(PlaybackStatus::Paused);
+        self.info.mpris.set_playback_status(PlaybackStatus::Paused);
 
         // Only rewind on pause if the stream position is passed a certain point.
         if let Some(sec) = self.player.get_position().seconds() {
@@ -493,7 +491,7 @@ impl PlayerExt for PlayerWidget {
         self.controls.play.show();
 
         self.player.stop();
-        self.mpris.set_playback_status(PlaybackStatus::Paused);
+        self.info.mpris.set_playback_status(PlaybackStatus::Paused);
 
         // Reset the slider bar to the start
         self.timer.on_position_updated(Position(ClockTime::from_seconds(0)));
