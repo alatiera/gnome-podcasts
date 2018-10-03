@@ -171,7 +171,6 @@ fn test_stuff() -> Result<(), failure::Error> {
 
     appnotif::InAppNotification::default();
     show_menu::ShowMenu::default();
-    player::PlayerWidget::default();
 
     Ok(())
 }
