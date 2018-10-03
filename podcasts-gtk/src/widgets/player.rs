@@ -26,9 +26,7 @@ use std::rc::Rc;
 use i18n::i18n;
 
 use std::sync::Arc;
-use mpris_player::MprisPlayer;
-use mpris_player::Metadata;
-use mpris_player::OrgMprisMediaPlayer2Player;
+use mpris_player::{PlaybackStatus, MprisPlayer, Metadata, OrgMprisMediaPlayer2Player};
 
 #[derive(Debug, Clone, Copy)]
 enum SeekDirection {
@@ -66,7 +64,7 @@ impl PlayerInfo {
         metadata.artist = Some(vec![podcast.title().to_string()]);
         metadata.title = Some(episode.title().to_string());
 
-        podcast.image_uri().map(|value|{
+        podcast.image_uri().map(|value| {
             metadata.art_url = Some(value.to_string());
         });
         self.mpris.set_metadata(metadata);
@@ -193,8 +191,14 @@ impl Default for PlayerWidget {
             Some(&dispatcher.upcast::<gst_player::PlayerSignalDispatcher>()),
         );
 
-        let mpris = MprisPlayer::new("Podcasts".to_string(), "GNOME Podcasts".to_string(), "org.gnome.Podcasts.desktop".to_string());
+        let mpris = MprisPlayer::new(
+            "Podcasts".to_string(),
+            "GNOME Podcasts".to_string(),
+            "org.gnome.Podcasts.desktop".to_string(),
+        );
         mpris.set_can_play(false);
+        mpris.set_can_seek(false);
+        mpris.set_can_set_fullscreen(false);
 
         let mut config = player.get_config();
         config.set_user_agent(USER_AGENT);
@@ -332,6 +336,10 @@ impl PlayerWidget {
         s.mpris.connect_previous(clone!(weak => move || {
             weak.upgrade().map(|p| p.rewind());
         }));
+
+        //s.mpris.connect_raise(clone!(weak => move || {
+        //  TODO: Do something here
+        //}));
     }
 
     #[cfg_attr(rustfmt, rustfmt_skip)]
@@ -454,7 +462,7 @@ impl PlayerExt for PlayerWidget {
         self.controls.play.hide();
 
         self.player.play();
-        self.mpris.set_playback_status(::mpris_player::PlaybackStatus::Playing);
+        self.mpris.set_playback_status(PlaybackStatus::Playing);
     }
 
     fn pause(&self) {
@@ -462,7 +470,7 @@ impl PlayerExt for PlayerWidget {
         self.controls.play.show();
 
         self.player.pause();
-        self.mpris.set_playback_status(::mpris_player::PlaybackStatus::Paused);
+        self.mpris.set_playback_status(PlaybackStatus::Paused);
 
         // Only rewind on pause if the stream position is passed a certain point.
         if let Some(sec) = self.player.get_position().seconds() {
@@ -478,7 +486,7 @@ impl PlayerExt for PlayerWidget {
         self.controls.play.show();
 
         self.player.stop();
-        self.mpris.set_playback_status(::mpris_player::PlaybackStatus::Paused);
+        self.mpris.set_playback_status(PlaybackStatus::Paused);
 
         // Reset the slider bar to the start
         self.timer.on_position_updated(Position(ClockTime::from_seconds(0)));
