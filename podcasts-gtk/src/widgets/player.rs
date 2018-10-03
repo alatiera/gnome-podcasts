@@ -315,6 +315,7 @@ impl PlayerWidget {
 
     fn connect_mpris_buttons(s: &Rc<Self>) {
         let weak = Rc::downgrade(s);
+
         let mpris = s.mpris.clone();
         s.mpris.connect_play_pause(clone!(weak => move || {
             match mpris.get_playback_status().unwrap().as_ref() {
@@ -322,6 +323,14 @@ impl PlayerWidget {
                 "Stopped" => weak.upgrade().map(|p| p.play()),
                 _ => weak.upgrade().map(|p| p.pause()),
             };
+        }));
+
+        s.mpris.connect_next(clone!(weak => move || {
+            weak.upgrade().map(|p| p.fast_forward());
+        }));
+
+        s.mpris.connect_previous(clone!(weak => move || {
+            weak.upgrade().map(|p| p.rewind());
         }));
     }
 
