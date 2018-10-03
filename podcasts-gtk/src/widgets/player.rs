@@ -320,13 +320,20 @@ impl PlayerWidget {
     fn connect_mpris_buttons(s: &Rc<Self>) {
         let weak = Rc::downgrade(s);
 
-        let mpris = s.mpris.clone();
-        s.mpris.connect_play_pause(clone!(weak => move || {
-            match mpris.get_playback_status().unwrap().as_ref() {
-                "Paused" => weak.upgrade().map(|p| p.play()),
-                "Stopped" => weak.upgrade().map(|p| p.play()),
-                _ => weak.upgrade().map(|p| p.pause()),
+        let mpris = s.info.mpris.clone();
+        s.info.mpris.connect_play_pause(clone!(weak => move || {
+            let player = match weak.upgrade() {
+                Some(s) => s,
+                None => return
             };
+
+            if let Ok(status) = mpris.get_playback_status() {
+                match status.as_ref() {
+                    "Paused" => player.play(),
+                    "Stopped" => player.play(),
+                    _ => player.pause(),
+                };
+            }
         }));
 
         s.mpris.connect_next(clone!(weak => move || {
