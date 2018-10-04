@@ -63,10 +63,10 @@ impl PlayerInfo {
         let mut metadata = Metadata::new();
         metadata.artist = Some(vec![podcast.title().to_string()]);
         metadata.title = Some(episode.title().to_string());
+        // FIXME: .image_uri() returns an http url, we should instead
+        // pass it the local path to the downloaded cover image.
+        metadata.art_url = podcast.image_uri().clone().map(From::from);
 
-        podcast.image_uri().map(|value| {
-            metadata.art_url = Some(value.to_string());
-        });
         self.mpris.set_metadata(metadata);
         self.mpris.set_can_play(true);
     }
