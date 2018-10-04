@@ -109,17 +109,12 @@ impl Source {
     }
 
     /// Clear the `HTTP` `Etag` and `Last-modified` headers.
-    fn clear_etags(mut self) -> Result<Self, DataError> {
-        if self.http_etag().is_some() || self.last_modified().is_some() {
-            debug!("Source etags before clear: {:#?}", &self);
-            self.http_etag = None;
-            self.last_modified = None;
-            self = self.save()?;
-            debug!("Source etags after clear: {:#?}", &self);
-            info!("Etag fields cleared succesfully for Source: {}", self.uri);
-        }
-
-        Ok(self)
+    /// This method does not sync the state of self in the database, call
+    /// .save() method explicitly
+    fn clear_etags(&mut self) {
+        debug!("Source etags before clear: {:#?}", &self);
+        self.http_etag = None;
+        self.last_modified = None;
     }
 
     fn make_err(self, context: &str, code: StatusCode) -> DataError {
@@ -147,7 +142,10 @@ impl Source {
                 // Save etags if it returns NotModified
                 304 => self = self.update_etag(&res)?,
                 // Clear the Etag/lmod else
-                _ => self = self.clear_etags()?,
+                _ => {
+                    self.clear_etags();
+                    self = self.save()?;
+                }
             };
         };
 
@@ -187,7 +185,8 @@ impl Source {
             debug!("Previous Source: {:#?}", &self);
 
             self.set_uri(url.to_str()?.into());
-            self = self.clear_etags()?;
+            self.clear_etags();
+            self = self.save()?;
 
             debug!("Updated Source: {:#?}", &self);
             info!("Feed url of Source {}, was updated succesfully.", self.id());
