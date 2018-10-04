@@ -52,11 +52,13 @@ struct PlayerInfo {
     episode: gtk::Label,
     cover: gtk::Image,
     mpris: Arc<MprisPlayer>,
+    episode_id: RefCell<Option<i32>>,
 }
 
 impl PlayerInfo {
     // FIXME: create a Diesel Model of the joined episode and podcast query instead
     fn init(&self, episode: &EpisodeWidgetModel, podcast: &ShowCoverModel) {
+        self.episode_id.replace(Some(episode.rowid()));
         self.set_cover_image(podcast);
         self.set_show_title(podcast);
         self.set_episode_title(episode);
@@ -251,6 +253,7 @@ impl Default for PlayerWidget {
             show,
             episode,
             cover,
+            episode_id: RefCell::new(None),
         };
 
         let radio150 = builder.get_object("rate_1_50").unwrap();
