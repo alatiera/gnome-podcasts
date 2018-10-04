@@ -23,6 +23,7 @@ use std::ops::Deref;
 use std::path::Path;
 use std::rc::Rc;
 use std::cell::RefCell;
+use std::sync::Mutex;
 
 use i18n::i18n;
 
@@ -465,18 +466,31 @@ impl PlayerWidget {
     }
 
     fn smart_rewind(&self) -> Option<()> {
+        lazy_static! {
+            static ref LAST_KNOWN_EPISODE: Mutex<Option<i32>> = Mutex::new(None);
+        };
+
+        // Figure out the time delta, in seconds, between the last pause and now
         let now = Local::now();
         let last: &Option<DateTime<_>> = &*self.controls.last_pause.borrow();
         let last = last.clone()?;
         let delta = (now - last).num_seconds();
 
-        // Only rewind on pause if the stream position is passed a certain point,
-        // And the player has been paused for more than a minute.
+        // Get interval passed in the gst stream
         let seconds_passed = self.player.get_position().seconds()?;
-        // FIXME: also check episode id
-        if seconds_passed >= 90 &&  delta >= 60 {
+        // get the last known episode id
+        let mut last = LAST_KNOWN_EPISODE.lock().unwrap();
+        // get the current playing episode id
+        let current_id = *self.info.episode_id.borrow();
+        // Only rewind on pause if the stream position is passed a certain point,
+        // and the player has been paused for more than a minute,
+        // and the episode id is the same
+        if seconds_passed >= 90 &&  delta >= 60 && current_id == *last {
             self.seek(ClockTime::from_seconds(5), SeekDirection::Backwards);
         }
+
+        // Set the last knows episode to the current one
+        *last = current_id;
 
         Some(())
     }
