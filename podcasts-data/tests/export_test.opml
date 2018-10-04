@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<opml version="2.0">
+  <head>
+    <title>GNOME Podcasts Subscriptions</title>
+  </head>
+  <body>
+    <outline text="David Harvey's Anti-Capitalist Chronicles" title="David Harvey's Anti-Capitalist Chronicles" type="rss" xmlUrl="https://web.archive.org/web/20190127005213if_/https://anticapitalistchronicles.libsyn.com/rss" htmlUrl="https://www.democracyatwork.info/acc" />
+    <outline text="Greater Than Code" title="Greater Than Code" type="rss" xmlUrl="https://web.archive.org/web/20180120104741if_/https://www.greaterthancode.com/feed/podcast" htmlUrl="https://www.greaterthancode.com/" />
+    <outline text="Intercepted with Jeremy Scahill" title="Intercepted with Jeremy Scahill" type="rss" xmlUrl="https://web.archive.org/web/20180120083840if_/https://feeds.feedburner.com/InterceptedWithJeremyScahill" htmlUrl="https://theintercept.com/podcasts" />
+    <outline text="LINUX Unplugged Podcast" title="LINUX Unplugged Podcast" type="rss" xmlUrl="https://web.archive.org/web/20180120110314if_/https://feeds.feedburner.com/linuxunplugged" htmlUrl="http://www.jupiterbroadcasting.com/" />
+    <outline text="Steal the Stars" title="Steal the Stars" type="rss" xmlUrl="https://web.archive.org/web/20180120104957if_/https://rss.art19.com/steal-the-stars" htmlUrl="http://tor-labs.com/" />
+    <outline text="The Tip Off" title="The Tip Off" type="rss" xmlUrl="https://web.archive.org/web/20180120110727if_/https://rss.acast.com/thetipoff" htmlUrl="http://www.acast.com/thetipoff" />
+  </body>
+</opml>

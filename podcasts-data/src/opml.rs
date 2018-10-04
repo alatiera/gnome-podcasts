@@ -23,15 +23,22 @@
 
 use crate::errors::DataError;
 use crate::models::Source;
-use xml::reader;
+use dbqueries;
+use xml::{
+    common::XmlVersion,
+    reader,
+    writer::{events::XmlEvent, EmitterConfig},
+};
 
 use std::collections::HashSet;
 use std::fs;
-use std::io::Read;
+use std::io::{Read, Write};
 use std::path::Path;
 
-// use std::fs::{File, OpenOptions};
+use std::fs::File;
 // use std::io::BufReader;
+
+use failure::Error;
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 // FIXME: Make it a Diesel model
@@ -73,6 +80,88 @@ pub fn import_to_db<R: Read>(reader: R) -> Result<Vec<Source>, reader::Error> {
 pub fn import_from_file<P: AsRef<Path>>(path: P) -> Result<Vec<Source>, DataError> {
     let content = fs::read(path)?;
     import_to_db(content.as_slice()).map_err(From::from)
+}
+
+/// Export a file to `P`, taking the feeds from the database and outputing
+/// them in opml format.
+pub fn export_from_db<P: AsRef<Path>>(path: P, export_title: &str) -> Result<(), Error> {
+    let file = File::create(path)?;
+    export_to_file(&file, export_title)
+}
+
+/// Export from `Source`s and `Show`s into `F` in OPML format
+pub fn export_to_file<F: Write>(file: F, export_title: &str) -> Result<(), Error> {
+    let mut config = EmitterConfig::new().perform_indent(true);
+    config.perform_escaping = false;
+
+    let mut writer = config.create_writer(file);
+
+    let mut events: Vec<XmlEvent<'_>> = Vec::new();
+
+    // Set up headers
+    let doc = XmlEvent::StartDocument {
+        version: XmlVersion::Version10,
+        encoding: Some("UTF-8"),
+        standalone: Some(false),
+    };
+    events.push(doc);
+
+    let opml: XmlEvent<'_> = XmlEvent::start_element("opml")
+        .attr("version", "2.0")
+        .into();
+    events.push(opml);
+
+    let head: XmlEvent<'_> = XmlEvent::start_element("head").into();
+    events.push(head);
+
+    let title_ev: XmlEvent<'_> = XmlEvent::start_element("title").into();
+    events.push(title_ev);
+
+    let title_chars: XmlEvent<'_> = XmlEvent::characters(export_title).into();
+    events.push(title_chars);
+
+    // Close <title> & <head>
+    events.push(XmlEvent::end_element().into());
+    events.push(XmlEvent::end_element().into());
+
+    let body: XmlEvent<'_> = XmlEvent::start_element("body").into();
+    events.push(body);
+
+    for event in events {
+        writer.write(event)?;
+    }
+
+    // FIXME: Make this a model of a joined query (http://docs.diesel.rs/diesel/macro.joinable.html)
+    let shows = dbqueries::get_podcasts()?.into_iter().map(|show| {
+        let source = dbqueries::get_source_from_id(show.source_id()).unwrap();
+        (source, show)
+    });
+
+    for (ref source, ref show) in shows {
+        let title = show.title();
+        let link = show.link();
+        let xml_url = source.uri();
+
+        let s_ev: XmlEvent<'_> = XmlEvent::start_element("outline")
+            .attr("text", title)
+            .attr("title", title)
+            .attr("type", "rss")
+            .attr("xmlUrl", xml_url)
+            .attr("htmlUrl", link)
+            .into();
+
+        let end_ev: XmlEvent<'_> = XmlEvent::end_element().into();
+        writer.write(s_ev)?;
+        writer.write(end_ev)?;
+    }
+
+    // Close <body> and <opml>
+    let end_bod: XmlEvent<'_> = XmlEvent::end_element().into();
+    writer.write(end_bod)?;
+    let end_opml: XmlEvent<'_> = XmlEvent::end_element().into();
+    writer.write(end_opml)?;
+
+    Ok(())
 }
 
 /// Extracts the `outline` elemnts from a reader `R` and returns a `HashSet` of `Opml` structs.
@@ -122,6 +211,43 @@ mod tests {
     use super::*;
     use chrono::Local;
     use failure::Error;
+    use futures::Future;
+
+    use database::{truncate_db, TEMPDIR};
+    use utils::get_feed;
+
+    const URLS: &[(&str, &str)] = {
+        &[
+            (
+                "tests/feeds/2018-01-20-Intercepted.xml",
+                "https://web.archive.org/web/20180120083840if_/https://feeds.feedburner.\
+                 com/InterceptedWithJeremyScahill",
+            ),
+            (
+                "tests/feeds/2018-01-20-LinuxUnplugged.xml",
+                "https://web.archive.org/web/20180120110314if_/https://feeds.feedburner.\
+                 com/linuxunplugged",
+            ),
+            (
+                "tests/feeds/2018-01-20-TheTipOff.xml",
+                "https://web.archive.org/web/20180120110727if_/https://rss.acast.com/thetipoff",
+            ),
+            (
+                "tests/feeds/2018-01-20-StealTheStars.xml",
+                "https://web.archive.org/web/20180120104957if_/https://rss.art19.\
+                 com/steal-the-stars",
+            ),
+            (
+                "tests/feeds/2018-01-20-GreaterThanCode.xml",
+                "https://web.archive.org/web/20180120104741if_/https://www.greaterthancode.\
+                 com/feed/podcast",
+            ),
+            (
+                "tests/feeds/2019-01-27-ACC.xml",
+                "https://web.archive.org/web/20190127005213if_/https://anticapitalistchronicles.libsyn.com/rss"
+            ),
+        ]
+    };
 
     #[test]
     fn test_extract() -> Result<(), Error> {
@@ -182,6 +308,49 @@ mod tests {
             },
         ];
         assert_eq!(extract_sources(sample1.as_bytes())?, map);
+        Ok(())
+    }
+
+    #[test]
+    fn text_export() -> Result<(), Error> {
+        truncate_db()?;
+
+        URLS.iter().for_each(|&(path, url)| {
+            // Create and insert a Source into db
+            let s = Source::from_url(url).unwrap();
+            let feed = get_feed(path, s.id());
+            feed.index().wait().unwrap();
+        });
+
+        let mut map: HashSet<Opml> = HashSet::new();
+        let shows = dbqueries::get_podcasts()?.into_iter().map(|show| {
+            let source = dbqueries::get_source_from_id(show.source_id()).unwrap();
+            (source, show)
+        });
+
+        for (ref source, ref show) in shows {
+            let title = show.title().to_string();
+            // description is an optional field that we don't export
+            let description = String::new();
+            let url = source.uri().to_string();
+
+            map.insert(Opml {
+                title,
+                description,
+                url,
+            });
+        }
+
+        let opml_path = TEMPDIR.path().join("podcasts.opml");
+        export_from_db(opml_path.as_path(), "GNOME Podcasts Subscriptions")?;
+        let opml_file = File::open(opml_path.as_path())?;
+        assert_eq!(extract_sources(&opml_file)?, map);
+
+        // extract_sources drains the reader its passed
+        let mut opml_file = File::open(opml_path.as_path())?;
+        let mut opml_str = String::new();
+        opml_file.read_to_string(&mut opml_str)?;
+        assert_eq!(opml_str, include_str!("../tests/export_test.opml"));
         Ok(())
     }
 }
