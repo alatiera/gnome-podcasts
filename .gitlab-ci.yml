@@ -4,7 +4,7 @@ stages:
   - review
 
 variables:
-    BUNDLE: "org.gnome.Podcasts.${CI_COMMIT_SHA}.flatpak"
+    BUNDLE: "org.gnome.Podcasts.Devel.flatpak"
 
 flatpak:
     image: "registry.gitlab.gnome.org/gnome/gnome-runtime-images/rust_bundle:master"
