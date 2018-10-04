@@ -8,7 +8,7 @@ use gtk::prelude::*;
 use gio::{File, FileExt};
 use glib::{SignalHandlerId, WeakRef};
 
-use chrono::NaiveTime;
+use chrono::{prelude::*, NaiveTime};
 use crossbeam_channel::Sender;
 use failure::Error;
 use fragile::Fragile;
@@ -22,6 +22,8 @@ use utils::set_image_from_path;
 use std::ops::Deref;
 use std::path::Path;
 use std::rc::Rc;
+use std::cell::RefCell;
+use std::sync::Mutex;
 
 use i18n::i18n;
 
@@ -51,11 +53,13 @@ struct PlayerInfo {
     episode: gtk::Label,
     cover: gtk::Image,
     mpris: Arc<MprisPlayer>,
+    episode_id: RefCell<Option<i32>>,
 }
 
 impl PlayerInfo {
     // FIXME: create a Diesel Model of the joined episode and podcast query instead
     fn init(&self, episode: &EpisodeWidgetModel, podcast: &ShowCoverModel) {
+        self.episode_id.replace(Some(episode.rowid()));
         self.set_cover_image(podcast);
         self.set_show_title(podcast);
         self.set_episode_title(episode);
@@ -169,6 +173,7 @@ struct PlayerControls {
     pause: gtk::Button,
     forward: gtk::Button,
     rewind: gtk::Button,
+    last_pause: RefCell<Option<DateTime<Local>>>,
 }
 
 #[derive(Debug, Clone)]
@@ -219,6 +224,7 @@ impl Default for PlayerWidget {
             pause,
             forward,
             rewind,
+            last_pause: RefCell::new(None),
         };
 
         let timer_container = builder.get_object("timer").unwrap();
@@ -248,6 +254,7 @@ impl Default for PlayerWidget {
             show,
             episode,
             cover,
+            episode_id: RefCell::new(None),
         };
 
         let radio150 = builder.get_object("rate_1_50").unwrap();
@@ -457,6 +464,36 @@ impl PlayerWidget {
             player.seek(ClockTime::from_seconds(value));
         })
     }
+
+    fn smart_rewind(&self) -> Option<()> {
+        lazy_static! {
+            static ref LAST_KNOWN_EPISODE: Mutex<Option<i32>> = Mutex::new(None);
+        };
+
+        // Figure out the time delta, in seconds, between the last pause and now
+        let now = Local::now();
+        let last: &Option<DateTime<_>> = &*self.controls.last_pause.borrow();
+        let last = last.clone()?;
+        let delta = (now - last).num_seconds();
+
+        // Get interval passed in the gst stream
+        let seconds_passed = self.player.get_position().seconds()?;
+        // get the last known episode id
+        let mut last = LAST_KNOWN_EPISODE.lock().unwrap();
+        // get the current playing episode id
+        let current_id = *self.info.episode_id.borrow();
+        // Only rewind on pause if the stream position is passed a certain point,
+        // and the player has been paused for more than a minute,
+        // and the episode id is the same
+        if seconds_passed >= 90 &&  delta >= 60 && current_id == *last {
+            self.seek(ClockTime::from_seconds(5), SeekDirection::Backwards);
+        }
+
+        // Set the last knows episode to the current one
+        *last = current_id;
+
+        Some(())
+    }
 }
 
 impl PlayerExt for PlayerWidget {
@@ -466,6 +503,7 @@ impl PlayerExt for PlayerWidget {
         self.controls.pause.show();
         self.controls.play.hide();
 
+        self.smart_rewind();
         self.player.play();
         self.info.mpris.set_playback_status(PlaybackStatus::Playing);
     }
@@ -477,12 +515,7 @@ impl PlayerExt for PlayerWidget {
         self.player.pause();
         self.info.mpris.set_playback_status(PlaybackStatus::Paused);
 
-        // Only rewind on pause if the stream position is passed a certain point.
-        if let Some(sec) = self.player.get_position().seconds() {
-            if sec >= 90 {
-                self.seek(ClockTime::from_seconds(5), SeekDirection::Backwards);
-            }
-        }
+        self.controls.last_pause.replace(Some(Local::now()));
     }
 
     #[cfg_attr(rustfmt, rustfmt_skip)]
