@@ -65,6 +65,7 @@ pub(crate) enum Action {
     InitShowMenu(Fragile<ShowMenu>),
     EmptyState,
     PopulatedState,
+    RaiseWindow,
 }
 
 #[derive(Debug, Clone)]
@@ -370,6 +371,7 @@ impl App {
                     self.headerbar.switch.set_sensitive(true);
                     self.content.switch_to_populated();
                 }
+                Action::RaiseWindow => self.window.present(),
             }
         }
 

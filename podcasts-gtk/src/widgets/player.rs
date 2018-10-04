@@ -293,7 +293,7 @@ impl PlayerWidget {
     fn init(s: &Rc<Self>, sender: &Sender<Action>) {
         Self::connect_control_buttons(s);
         Self::connect_rate_buttons(s);
-        Self::connect_mpris_buttons(s);
+        Self::connect_mpris_buttons(s, sender);
         Self::connect_gst_signals(s, sender);
     }
 
@@ -322,7 +322,7 @@ impl PlayerWidget {
         }));
     }
 
-    fn connect_mpris_buttons(s: &Rc<Self>) {
+    fn connect_mpris_buttons(s: &Rc<Self>, sender: &Sender<Action>) {
         let weak = Rc::downgrade(s);
 
         let mpris = s.info.mpris.clone();
@@ -349,9 +349,7 @@ impl PlayerWidget {
             weak.upgrade().map(|p| p.rewind());
         }));
 
-        //s.info.mpris.connect_raise(clone!(weak => move || {
-        //  TODO: Do something here
-        //}));
+        s.info.mpris.connect_raise(clone!(sender => move || sender.send(Action::RaiseWindow)));
     }
 
     #[cfg_attr(rustfmt, rustfmt_skip)]
