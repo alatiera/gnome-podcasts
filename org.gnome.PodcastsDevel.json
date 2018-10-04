@@ -21,7 +21,8 @@
         "--socket=x11",
         "--socket=wayland",
         "--socket=pulseaudio",
-        "--device=dri"
+        "--device=dri",
+        "--own-name=org.mpris.MediaPlayer2.Podcasts"
     ],
     "build-options" : {
         "append-path" : "/usr/lib/sdk/rust-stable/bin",

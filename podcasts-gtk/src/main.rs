@@ -74,6 +74,7 @@ extern crate regex;
 extern crate reqwest;
 extern crate serde_json;
 extern crate url;
+extern crate mpris_player;
 
 use log::Level;
 
@@ -170,7 +171,6 @@ fn test_stuff() -> Result<(), failure::Error> {
 
     appnotif::InAppNotification::default();
     show_menu::ShowMenu::default();
-    player::PlayerWidget::default();
 
     Ok(())
 }
