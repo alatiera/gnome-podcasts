@@ -6,11 +6,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 ### Added:
+- Felix, @@haecker-felix, wrote an [mpris crate](https://crates.io/crates/mpris-player) and implemented MPRIS2 client side support! !74 #68
 
 ### Changed:
 - Download Cancel button was changed to an Icon instead of a label !72
 - The applciation will no longer scale below 360p in width 1933c79f7a87d8261d91ca4e14eb51c1ddc66624
 - Update to the latest HIG 5050dda4d2f75b706842de8507d115dd5a1bd0a9
+- Chris, @brainblasted, upgraded hyper to 0.12, this brings openssl 1.1 support !75
+- Pipeline backend is now completly migrated to tokio-runtime 0887789f5e653dd92ad397fb39561df6dffcb45c
+- Resume playing an episode will attempt to rewind the track only if more than a minute has passed since the last pause !76
 
 ### Fixed:
 - Fixed a regression where indexing feeds was blocking the `tokio reactor` #88 !70
