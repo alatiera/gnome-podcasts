@@ -238,7 +238,7 @@ Tobias Bernard
               <object class="GtkButton" id="cancel_button">
                 <property name="can_focus">True</property>
                 <property name="receives_default">False</property>
-                <property name="tooltip_text" translatable="yes">Cancel the download proccess</property>
+                <property name="tooltip_text" translatable="yes">Cancel the download process</property>
                 <property name="halign">center</property>
                 <property name="valign">center</property>
                 <child>
