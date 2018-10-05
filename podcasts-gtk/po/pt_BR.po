@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: podcasts master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2018-09-08 17:18+0000\n"
-"PO-Revision-Date: 2018-09-10 21:08-0200\n"
+"POT-Creation-Date: 2018-10-05 11:47+0000\n"
+"PO-Revision-Date: 2018-10-05 11:18-0200\n"
 "Last-Translator: Rafael Fontenelle <rafaelff@gnome.org>\n"
 "Language-Team: Brazilian Portuguese <gnome-pt_br-list@gnome.org>\n"
 "Language: pt_BR\n"
@@ -70,7 +70,7 @@ msgstr "Qual período de tempo deve esperar entre limpezas automáticas"
 #. Weird magic I copy-pasted that sets the Application Name in the Shell.
 #: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:3
 #: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:4
-#: podcasts-gtk/src/app.rs:91 podcasts-gtk/src/app.rs:414
+#: podcasts-gtk/src/app.rs:92 podcasts-gtk/src/app.rs:416
 #: podcasts-gtk/src/widgets/aboutdialog.rs:31
 msgid "Podcasts"
 msgstr "Podcasts"
@@ -129,7 +129,8 @@ msgid "Play this episode"
 msgstr "Inicia este episódio"
 
 #: podcasts-gtk/resources/gtk/episode_widget.ui:241
-msgid "Cancel the download proccess"
+#| msgid "Cancel the download proccess"
+msgid "Cancel the download process"
 msgstr "Cancela o processo de download"
 
 #: podcasts-gtk/resources/gtk/episode_widget.ui:264
@@ -148,13 +149,14 @@ msgstr "_Importar podcasts"
 msgid "_Preferences"
 msgstr "_Preferências"
 
-#: podcasts-gtk/resources/gtk/hamburger.ui:29
+#: podcasts-gtk/resources/gtk/hamburger.ui:27
 msgid "_Keyboard Shortcuts"
 msgstr "Atal_hos de teclado"
 
-#: podcasts-gtk/resources/gtk/hamburger.ui:37
-msgid "_About"
-msgstr "_Sobre"
+#: podcasts-gtk/resources/gtk/hamburger.ui:35
+#| msgid "Podcasts"
+msgid "_About Podcasts"
+msgstr "_Sobre Podcasts"
 
 #: podcasts-gtk/resources/gtk/headerbar.ui:35
 #: podcasts-gtk/resources/gtk/headerbar.ui:189
@@ -318,7 +320,7 @@ msgstr "Marcar todos como reproduzidos"
 msgid "Unsubscribe"
 msgstr "Desinscrever"
 
-#: podcasts-gtk/src/app.rs:332
+#: podcasts-gtk/src/app.rs:333
 msgid "Fetching new episodes"
 msgstr "Buscando novos episódios"
 
@@ -397,7 +399,7 @@ msgid "{} min"
 msgstr "{} min"
 
 #. sender.send(Action::ErrorNotification(format!("Player Error: {}", error)));
-#: podcasts-gtk/src/widgets/player.rs:301
+#: podcasts-gtk/src/widgets/player.rs:363
 msgid "The media player was unable to execute an action."
 msgstr "O reprodutor de mídia não conseguiu executar uma ação."
 
@@ -408,6 +410,9 @@ msgstr "Marcados todos os episódios como ouvidos"
 #: podcasts-gtk/src/widgets/show_menu.rs:155
 msgid "Unsubscribed from {}"
 msgstr "Desinscrito de {}"
+
+#~ msgid "_About"
+#~ msgstr "_Sobre"
 
 #~ msgid "Cancel"
 #~ msgstr "Cancelar"
