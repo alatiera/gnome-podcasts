@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: podcasts master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2018-09-10 07:51+0000\n"
-"PO-Revision-Date: 2018-09-24 10:46-0400\n"
+"POT-Creation-Date: 2018-09-28 23:51+0000\n"
+"PO-Revision-Date: 2018-10-04 21:57-0400\n"
 "Last-Translator: Florian Heiser <gnu.l10n.de@gmail.com>\n"
 "Language-Team: Deutsch <gnome-de@gnome.org>\n"
 "Language: de\n"
@@ -101,7 +101,7 @@ msgstr "Jordan Petridis"
 
 #: podcasts-gtk/resources/gtk/empty_view.ui:46
 msgid "This show does not have episodes yet"
-msgstr "Diese Show hat noch keine Folgen"
+msgstr "Dieser Podcast hat noch keine Folgen"
 
 #: podcasts-gtk/resources/gtk/empty_view.ui:62
 msgid "If you think this is an error, please consider writing a bug report."
@@ -111,15 +111,15 @@ msgstr ""
 
 #: podcasts-gtk/resources/gtk/empty_view.ui:106
 msgid "Get some shows"
-msgstr "Shows abonnieren"
+msgstr "Podcasts abonnieren"
 
 #: podcasts-gtk/resources/gtk/empty_view.ui:143
 msgid "Add new shows via feed URL"
-msgstr "Neue Shows mittels Quellen-Adresse hinzufügen"
+msgstr "Neue Podcasts mittels Quellen-Adresse hinzufügen"
 
 #: podcasts-gtk/resources/gtk/empty_view.ui:172
 msgid "Import shows from another device"
-msgstr "Shows von einem anderen Gerät importieren"
+msgstr "Podcasts von einem anderen Gerät importieren"
 
 #: podcasts-gtk/resources/gtk/episode_widget.ui:180
 msgid "Calculating episode size…"
@@ -143,19 +143,19 @@ msgstr "Auf neue Folgen _prüfen"
 
 #: podcasts-gtk/resources/gtk/hamburger.ui:12
 msgid "_Import Shows"
-msgstr "Shows _importieren"
+msgstr "Podcasts _importieren"
 
 #: podcasts-gtk/resources/gtk/hamburger.ui:22
 msgid "_Preferences"
 msgstr "_Einstellungen"
 
-#: podcasts-gtk/resources/gtk/hamburger.ui:29
+#: podcasts-gtk/resources/gtk/hamburger.ui:27
 msgid "_Keyboard Shortcuts"
 msgstr "Tasten_kürzel"
 
-#: podcasts-gtk/resources/gtk/hamburger.ui:37
-msgid "_About"
-msgstr "I_nfo"
+#: podcasts-gtk/resources/gtk/hamburger.ui:35
+msgid "_About Podcasts"
+msgstr "Info zu _Podcasts"
 
 #: podcasts-gtk/resources/gtk/headerbar.ui:35
 #: podcasts-gtk/resources/gtk/headerbar.ui:189
@@ -357,7 +357,7 @@ msgstr "Neu"
 
 #: podcasts-gtk/src/stacks/content.rs:36
 msgid "Shows"
-msgstr "Shows"
+msgstr "Podcasts"
 
 #: podcasts-gtk/src/utils.rs:357
 msgid "Select the file from which to you want to import shows."
@@ -409,6 +409,9 @@ msgstr "Alle Folgen als angehört markieren"
 #: podcasts-gtk/src/widgets/show_menu.rs:155
 msgid "Unsubscribed from {}"
 msgstr "Abonnement von {} gekündigt"
+
+#~ msgid "_About"
+#~ msgstr "I_nfo"
 
 #~ msgid "Cancel"
 #~ msgstr "Abbrechen"
