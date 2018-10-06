@@ -9,14 +9,20 @@ use i18n::i18n;
 /// Given a `window` create and attach an `gtk::AboutDialog` to it.
 pub(crate) fn about_dialog(window: &gtk::ApplicationWindow) {
     // Feel free to add yourself if you contributed.
+    // Please keep it sorted alphabetically
     let authors = &[
+        "Alexandre Franke",
         "Carlos Soriano",
         "Constantin Nickel",
+        "Daniel García Moreno",
+        "Felix Häcker",
         "Gabriele Musco",
         "Ivan Augusto",
         "James Wykeham-Martin",
         "Jordan Petridis",
         "Julian Sparber",
+        "Matthew Martin",
+        "Piotr Drąg",
         "Rowan Lewis",
         "Zander Brown",
     ];
