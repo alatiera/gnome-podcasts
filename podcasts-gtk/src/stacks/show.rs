@@ -3,7 +3,7 @@ use gtk::prelude::*;
 
 use crossbeam_channel::Sender;
 use failure::Error;
-use podcasts_data::dbqueries::is_podcasts_populated;
+use podcasts_data::dbqueries::is_episodes_populated;
 
 use app::Action;
 use stacks::content::State;
@@ -78,7 +78,7 @@ impl ShowStack {
     fn determine_state(&mut self) -> Result<(), Error> {
         let ign = get_ignored_shows()?;
         debug!("IGNORED SHOWS {:?}", ign);
-        if is_podcasts_populated(&ign)? {
+        if is_episodes_populated(&ign)? {
             self.sender.send(Action::PopulatedState);
         } else {
             self.sender.send(Action::EmptyState);

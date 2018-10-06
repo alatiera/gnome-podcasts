@@ -5,7 +5,6 @@ use diesel::prelude::*;
 
 use diesel;
 use diesel::dsl::exists;
-use diesel::query_builder::AsQuery;
 use diesel::select;
 
 use database::connection;
@@ -379,13 +378,13 @@ pub(crate) fn episode_exists(title_: &str, show_id_: i32) -> Result<bool, DataEr
 /// Check if the `episodes table contains any rows
 ///
 /// Return true if `episodes` table is populated.
-pub fn is_episodes_populated() -> Result<bool, DataError> {
+pub fn is_episodes_populated(filter_show_ids: &[i32]) -> Result<bool, DataError> {
     use schema::episodes::dsl::*;
 
     let db = connection();
     let con = db.get()?;
 
-    select(exists(episodes.as_query()))
+    select(exists(episodes.filter(show_id.ne_all(filter_show_ids))))
         .get_result(&con)
         .map_err(From::from)
 }
