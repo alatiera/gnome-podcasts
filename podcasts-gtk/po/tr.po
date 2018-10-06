@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: podcasts master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2018-09-08 17:18+0000\n"
-"PO-Revision-Date: 2018-09-15 23:09+0300\n"
+"POT-Creation-Date: 2018-10-05 11:47+0000\n"
+"PO-Revision-Date: 2018-10-06 18:52+0300\n"
 "Last-Translator: Emin Tufan Çetin <etcetin@gmail.com>\n"
 "Language-Team: Türkçe <gnome-turk@gnome.org>\n"
 "Language: tr\n"
@@ -69,7 +69,7 @@ msgstr ""
 #. Weird magic I copy-pasted that sets the Application Name in the Shell.
 #: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:3
 #: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:4
-#: podcasts-gtk/src/app.rs:91 podcasts-gtk/src/app.rs:414
+#: podcasts-gtk/src/app.rs:92 podcasts-gtk/src/app.rs:416
 #: podcasts-gtk/src/widgets/aboutdialog.rs:31
 msgid "Podcasts"
 msgstr "Podcastler"
@@ -126,7 +126,8 @@ msgid "Play this episode"
 msgstr "Bu bölümü oynat"
 
 #: podcasts-gtk/resources/gtk/episode_widget.ui:241
-msgid "Cancel the download proccess"
+#| msgid "Cancel the download proccess"
+msgid "Cancel the download process"
 msgstr "İndirme sürecini iptal et"
 
 #: podcasts-gtk/resources/gtk/episode_widget.ui:264
@@ -145,13 +146,14 @@ msgstr "_Gösterileri İçe Aktar"
 msgid "_Preferences"
 msgstr "_Tercihler"
 
-#: podcasts-gtk/resources/gtk/hamburger.ui:29
+#: podcasts-gtk/resources/gtk/hamburger.ui:27
 msgid "_Keyboard Shortcuts"
 msgstr "_Klavye Kısayolları"
 
-#: podcasts-gtk/resources/gtk/hamburger.ui:37
-msgid "_About"
-msgstr "_Hakkında"
+#: podcasts-gtk/resources/gtk/hamburger.ui:35
+#| msgid "Podcasts"
+msgid "_About Podcasts"
+msgstr "Podcastler _Hakkında"
 
 #: podcasts-gtk/resources/gtk/headerbar.ui:35
 #: podcasts-gtk/resources/gtk/headerbar.ui:189
@@ -315,7 +317,7 @@ msgstr "Tümünü Oynatıldı Olarak İmle"
 msgid "Unsubscribe"
 msgstr "Abonelikten Çık"
 
-#: podcasts-gtk/src/app.rs:332
+#: podcasts-gtk/src/app.rs:333
 msgid "Fetching new episodes"
 msgstr "Yeni bölümler alınıyor"
 
@@ -392,7 +394,7 @@ msgid "{} min"
 msgstr "{} dak"
 
 #. sender.send(Action::ErrorNotification(format!("Player Error: {}", error)));
-#: podcasts-gtk/src/widgets/player.rs:301
+#: podcasts-gtk/src/widgets/player.rs:363
 msgid "The media player was unable to execute an action."
 msgstr "Ortam oynatıcı eylemi yürütemiyor."
 
@@ -403,6 +405,9 @@ msgstr "Tüm bölümler dinlendi olarak imlendi"
 #: podcasts-gtk/src/widgets/show_menu.rs:155
 msgid "Unsubscribed from {}"
 msgstr "{} aboneliğinden çıkıldı"
+
+#~ msgid "_About"
+#~ msgstr "_Hakkında"
 
 #~ msgid "org.gnome.Podcasts"
 #~ msgstr "org.gnome.Podcasts"
