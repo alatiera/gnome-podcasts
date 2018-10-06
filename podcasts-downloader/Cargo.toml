@@ -2,7 +2,6 @@
 authors = ["Jordan Petridis <jordanpetridis@protonmail.com>"]
 name = "podcasts-downloader"
 version = "0.1.0"
-workspace = "../"
 
 [dependencies]
 error-chain = "0.12.0"

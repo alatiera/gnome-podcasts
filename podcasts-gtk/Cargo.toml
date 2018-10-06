@@ -3,7 +3,6 @@ authors = ["Jordan Petridis <jordanpetridis@protonmail.com>"]
 build = "build.rs"
 name = "podcasts-gtk"
 version = "0.1.0"
-workspace = "../"
 
 [dependencies]
 chrono = "0.4.6"
