@@ -5,8 +5,19 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
 ### Added:
-- Felix, @@haecker-felix, wrote an [mpris crate](https://crates.io/crates/mpris-player) and implemented MPRIS2 client side support! !74 #68
+
+### Changed:
+
+### Fixed:
+
+### Removed:
+
+## [0.4.6] - 2018-10-07
+
+### Added:
+- Felix, @haecker-felix, wrote an [mpris crate](https://crates.io/crates/mpris-player) and implemented MPRIS2 client side support! !74 #68
 
 ### Changed:
 - Download Cancel button was changed to an Icon instead of a label !72
@@ -19,10 +30,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Fixed:
 - Fixed a regression where indexing feeds was blocking the `tokio reactor` #88 !70
 - Episodeds Listbox no longer resizes when a download starts #89 !72
-- The `total_size` label of the `EpisodeWidget` now behaves correctly if the request fails. #90 !73
-- The Pipeline will no longer log things in stderr for Requests that returned 304 and are expected to be skipped. da361d0cb93cd8edd076859b2c607509a96dac8d
-
-### Removed:
+- The `total_size` label of the `EpisodeWidget` now behaves correctly if the request fails #90 !73
+- The Pipeline will no longer log things in stderr for Requests that returned 304 and are expected to be skipped da361d0cb93cd8edd076859b2c607509a96dac8d
+- A bug where the HomeView wold get into an invalid state if your only shows had no episodes 32bd2a89a34e8e940b3b260c6be76defe11835ed
 
 ### Translations:
 
