@@ -24,13 +24,30 @@
     </screenshot>
   </screenshots>
   <releases>
+    <release version="0.4.6" date="2018-10-07">
+     <description>
+        <p>
+          After a month of work, the new version of Podcasts brings Desktop integration with MPRIS,
+          further UX polish, and a couple bugfixes and improvements.
+          Additionally existing translations were updated and 9 new were added.
+        </p>
+        <ul>
+          <li>Brazilian Portuguese, Swedish, Italian, Friulian, Hungarian, Croatian, Latvian, Czech and Catalan Translations were added.</li>
+          <li>The audio player now can integrate with Desktop Environments (MPRIS2)</li>
+          <li>Further UI and UX polishing and a handful bug fixes</li>
+          <li>Update to account for the GNOME 3.32 HIG changes</li>
+          <li>Openssl 1.1 support</li>
+          <li>Fixed a performance regression when updating RSS Feeds</li>
+        </ul>
+      </description>
+    </release>
     <release version="0.4.5" date="2018-08-31">
      <description>
         <p>
           Podcasts 0.4.5 brings a month of bug fixes, performance improvements and initial tranlations support.
         </p>
         <ul>
-          <li>Finish, Polish, Turkish, Spanish, German, Galician, Indonesian, Korean Translations were added.</li>
+          <li>Finish, Polish, Turkish, Spanish, German, Galician, Indonesian and Korean Translations were added.</li>
           <li>Views now adapt better to different window sizes, thanks to libhandy HdyColumn</li>
           <li>The update indacator was moved to an In-App notification</li>
           <li>Performance improvments when loading Show Cover images.</li>
@@ -50,3 +67,5 @@
   <update_contact>jpetridis@gnome.org</update_contact>
   <developer_name>Jordan Petridis</developer_name>
 </component>
+
+
