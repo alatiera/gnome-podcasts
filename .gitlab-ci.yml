@@ -94,4 +94,3 @@ rustfmt:
         - rustc -Vv && cargo -Vv
         - cargo fmt --version
         - cargo fmt --all -- --check
-    allow_failure: true

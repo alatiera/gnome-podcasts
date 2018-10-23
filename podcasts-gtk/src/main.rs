@@ -9,13 +9,7 @@
 )]
 #![allow(unknown_lints)]
 // Enable lint group collections
-#![warn(
-    nonstandard_style,
-    edition_2018,
-    rust_2018_idioms,
-    bad_style,
-    unused
-)]
+#![warn(nonstandard_style, edition_2018, rust_2018_idioms, bad_style, unused)]
 // standalone lints
 #![warn(
     const_err,
@@ -66,6 +60,7 @@ extern crate html2text;
 extern crate humansize;
 extern crate libhandy;
 extern crate loggerv;
+extern crate mpris_player;
 extern crate open;
 extern crate podcasts_data;
 extern crate podcasts_downloader;
@@ -74,7 +69,6 @@ extern crate regex;
 extern crate reqwest;
 extern crate serde_json;
 extern crate url;
-extern crate mpris_player;
 
 use log::Level;
 

@@ -108,7 +108,8 @@ fn batch_insert_episodes(episodes: &[NewEpisode]) {
         .map_err(|err| {
             error!("Failed batch indexng: {}", err);
             info!("Fallign back to individual indexing.");
-        }).unwrap_or_else(|_| {
+        })
+        .unwrap_or_else(|_| {
             episodes.iter().for_each(|ep| {
                 ep.index()
                     .map_err(|err| error!("Error: {}.", err))
@@ -174,7 +175,8 @@ mod tests {
                 // Create and insert a Source into db
                 let s = Source::from_url(url).unwrap();
                 get_feed(path, s.id())
-            }).collect();
+            })
+            .collect();
 
         // Index the channes
         let stream_ = stream::iter_ok(feeds).for_each(|x| x.index());

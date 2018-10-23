@@ -1,11 +1,11 @@
 // FIXME:
 //! Docs.
 
-use futures::{lazy, prelude::*, future::ok, stream::FuturesUnordered};
+use futures::{future::ok, lazy, prelude::*, stream::FuturesUnordered};
 use tokio;
 
 use hyper::client::HttpConnector;
-use hyper::{Client, Body};
+use hyper::{Body, Client};
 use hyper_tls::HttpsConnector;
 
 use num_cpus;
@@ -23,10 +23,7 @@ type HttpsClient = Client<HttpsConnector<HttpConnector>>;
 /// Messy temp diagram:
 /// Source -> GET Request -> Update Etags -> Check Status -> Parse `xml/Rss` ->
 /// Convert `rss::Channel` into `Feed` -> Index Podcast -> Index Episodes.
-pub fn pipeline<'a, S>(
-    sources: S,
-    client: HttpsClient,
-) -> impl Future<Item = (), Error = ()> + 'a
+pub fn pipeline<'a, S>(sources: S, client: HttpsClient) -> impl Future<Item = (), Error = ()> + 'a
 where
     S: Stream<Item = Source, Error = DataError> + Send + 'a,
 {

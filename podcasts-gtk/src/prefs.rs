@@ -62,8 +62,8 @@ impl Prefs {
             i18n("Days"),
             i18n("Weeks"),
         ]
-            .iter()
-            .enumerate()
+        .iter()
+        .enumerate()
         {
             let row: &[&dyn ToValue] = &[item];
             if item.to_lowercase() == cleanup_p {

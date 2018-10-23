@@ -4,14 +4,14 @@ use rss::Channel;
 use url::Url;
 
 use hyper::client::HttpConnector;
-use hyper::{Client, Body};
+use hyper::{Body, Client};
 use hyper_tls::HttpsConnector;
 
-use http::{Request, Response, StatusCode, Uri};
 use http::header::{
-    ETAG, IF_MODIFIED_SINCE, IF_NONE_MATCH, LAST_MODIFIED, LOCATION, USER_AGENT as USER_AGENT_HEADER,
-    HeaderValue,
+    HeaderValue, ETAG, IF_MODIFIED_SINCE, IF_NONE_MATCH, LAST_MODIFIED, LOCATION,
+    USER_AGENT as USER_AGENT_HEADER,
 };
+use http::{Request, Response, StatusCode, Uri};
 // use futures::future::ok;
 use futures::future::{loop_fn, Future, Loop};
 use futures::prelude::*;
@@ -96,8 +96,14 @@ impl Source {
     fn update_etag(mut self, res: &Response<Body>) -> Result<Self, DataError> {
         let headers = res.headers();
 
-        let etag = headers.get(ETAG).and_then(|h| h.to_str().ok()).map(From::from);
-        let lmod = headers.get(LAST_MODIFIED).and_then(|h| h.to_str().ok()).map(From::from);
+        let etag = headers
+            .get(ETAG)
+            .and_then(|h| h.to_str().ok())
+            .map(From::from);
+        let lmod = headers
+            .get(LAST_MODIFIED)
+            .and_then(|h| h.to_str().ok())
+            .map(From::from);
 
         if (self.http_etag() != etag) || (self.last_modified != lmod) {
             self.set_http_etag(etag);
@@ -249,19 +255,20 @@ impl Source {
     ) -> impl Future<Item = Response<Body>, Error = DataError> {
         // FIXME: remove unwrap somehow
         let uri = Uri::from_str(self.uri()).unwrap();
-        let mut req = Request::get(uri)
-            .body(Body::empty())
-            .unwrap();
+        let mut req = Request::get(uri).body(Body::empty()).unwrap();
 
         // Set the UserAgent cause ppl still seem to check it for some reason...
-        req.headers_mut().insert(USER_AGENT_HEADER, HeaderValue::from_static(USER_AGENT));
+        req.headers_mut()
+            .insert(USER_AGENT_HEADER, HeaderValue::from_static(USER_AGENT));
 
         if let Some(etag) = self.http_etag() {
-            req.headers_mut().insert(IF_NONE_MATCH, HeaderValue::from_str(etag).unwrap());
+            req.headers_mut()
+                .insert(IF_NONE_MATCH, HeaderValue::from_str(etag).unwrap());
         }
 
         if let Some(lmod) = self.last_modified() {
-            req.headers_mut().insert(IF_MODIFIED_SINCE, HeaderValue::from_str(lmod).unwrap());
+            req.headers_mut()
+                .insert(IF_MODIFIED_SINCE, HeaderValue::from_str(lmod).unwrap());
         }
 
         client
@@ -271,7 +278,9 @@ impl Source {
     }
 }
 
-fn response_to_channel(res: Response<Body>) -> impl Future<Item = Channel, Error = DataError> + Send {
+fn response_to_channel(
+    res: Response<Body>,
+) -> impl Future<Item = Channel, Error = DataError> + Send {
     res.into_body()
         .concat2()
         .map(|x| x.into_iter())

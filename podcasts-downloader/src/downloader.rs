@@ -1,8 +1,8 @@
 use glob::glob;
 use mime_guess;
 use reqwest;
-use reqwest::RedirectPolicy;
 use reqwest::header::*;
+use reqwest::RedirectPolicy;
 use tempdir::TempDir;
 
 use std::fs;

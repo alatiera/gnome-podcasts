@@ -19,16 +19,16 @@ use podcasts_data::{EpisodeWidgetModel, ShowCoverModel};
 use app::Action;
 use utils::set_image_from_path;
 
+use std::cell::RefCell;
 use std::ops::Deref;
 use std::path::Path;
 use std::rc::Rc;
-use std::cell::RefCell;
 use std::sync::Mutex;
 
 use i18n::i18n;
 
+use mpris_player::{Metadata, MprisPlayer, OrgMprisMediaPlayer2Player, PlaybackStatus};
 use std::sync::Arc;
-use mpris_player::{PlaybackStatus, MprisPlayer, Metadata, OrgMprisMediaPlayer2Player};
 
 #[derive(Debug, Clone, Copy)]
 enum SeekDirection {
@@ -349,7 +349,9 @@ impl PlayerWidget {
             weak.upgrade().map(|p| p.rewind());
         }));
 
-        s.info.mpris.connect_raise(clone!(sender => move || sender.send(Action::RaiseWindow)));
+        s.info
+            .mpris
+            .connect_raise(clone!(sender => move || sender.send(Action::RaiseWindow)));
     }
 
     #[cfg_attr(rustfmt, rustfmt_skip)]
@@ -483,7 +485,7 @@ impl PlayerWidget {
         // Only rewind on pause if the stream position is passed a certain point,
         // and the player has been paused for more than a minute,
         // and the episode id is the same
-        if seconds_passed >= 90 &&  delta >= 60 && current_id == *last {
+        if seconds_passed >= 90 && delta >= 60 && current_id == *last {
             self.seek(ClockTime::from_seconds(5), SeekDirection::Backwards);
         }
 
