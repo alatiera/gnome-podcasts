@@ -31,7 +31,7 @@
         ],
         "env" : {
             "CARGO_HOME" : "/run/build/Podcasts/cargo",
-            /* "RUSTFLAGS" : "--error-format=short", */
+            "RUSTFLAGS" : "--error-format=short --remap-path-prefix =../",
             "RUST_BACKTRACE" : "1"
         }
     },
