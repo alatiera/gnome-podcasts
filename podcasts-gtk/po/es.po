@@ -3,17 +3,17 @@
 # This file is distributed under the same license as the gnome-podcasts package.
 # Automatically generated, 2018.
 # Daniel Garcia Moreno <danigm@wadobo.com>, 2018.
-# Daniel Mustieles <daniel.mustieles@gmail.com>, 2018.
 # Rodrigo <rodhos92@gmail.com>, 2018.
+# Daniel Mustieles <daniel.mustieles@gmail.com>, 2018.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-podcasts\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2018-09-08 17:18+0000\n"
-"PO-Revision-Date: 2018-09-21 19:03+0200\n"
-"Last-Translator: Rodrigo <rodhos92@gmail.com>\n"
-"Language-Team: Español <gnome-es-list@gnome.org>\n"
+"POT-Creation-Date: 2018-10-05 11:47+0000\n"
+"PO-Revision-Date: 2018-10-31 16:39+0100\n"
+"Last-Translator: Daniel Mustieles <daniel.mustieles@gmail.com>\n"
+"Language-Team: es <gnome-es-list@gnome.org>\n"
 "Language: es\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -74,7 +74,7 @@ msgstr "Cuántos periodos de tiempo hay que esperar entre limpiezas automáticas
 #. Weird magic I copy-pasted that sets the Application Name in the Shell.
 #: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:3
 #: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:4
-#: podcasts-gtk/src/app.rs:91 podcasts-gtk/src/app.rs:414
+#: podcasts-gtk/src/app.rs:92 podcasts-gtk/src/app.rs:416
 #: podcasts-gtk/src/widgets/aboutdialog.rs:31
 msgid "Podcasts"
 msgstr "Podcasts"
@@ -131,7 +131,8 @@ msgid "Play this episode"
 msgstr "Reproducir este episodio"
 
 #: podcasts-gtk/resources/gtk/episode_widget.ui:241
-msgid "Cancel the download proccess"
+#| msgid "Cancel the download proccess"
+msgid "Cancel the download process"
 msgstr "Cancelar el proceso de descarga"
 
 #: podcasts-gtk/resources/gtk/episode_widget.ui:264
@@ -150,13 +151,14 @@ msgstr "_Importar programas"
 msgid "_Preferences"
 msgstr "_Preferencias"
 
-#: podcasts-gtk/resources/gtk/hamburger.ui:29
+#: podcasts-gtk/resources/gtk/hamburger.ui:27
 msgid "_Keyboard Shortcuts"
 msgstr "Atajos de _teclado"
 
-#: podcasts-gtk/resources/gtk/hamburger.ui:37
-msgid "_About"
-msgstr "_Acerca de"
+#: podcasts-gtk/resources/gtk/hamburger.ui:35
+#| msgid "Podcasts"
+msgid "_About Podcasts"
+msgstr "_Acerca de Podcasts"
 
 #: podcasts-gtk/resources/gtk/headerbar.ui:35
 #: podcasts-gtk/resources/gtk/headerbar.ui:189
@@ -320,7 +322,7 @@ msgstr "Marcar todo como reproducido"
 msgid "Unsubscribe"
 msgstr "Cancelar suscripción"
 
-#: podcasts-gtk/src/app.rs:332
+#: podcasts-gtk/src/app.rs:333
 msgid "Fetching new episodes"
 msgstr "Obteniendo nuevos episodios"
 
@@ -399,7 +401,7 @@ msgid "{} min"
 msgstr "{} min"
 
 #. sender.send(Action::ErrorNotification(format!("Player Error: {}", error)));
-#: podcasts-gtk/src/widgets/player.rs:301
+#: podcasts-gtk/src/widgets/player.rs:363
 msgid "The media player was unable to execute an action."
 msgstr "El reproductor no ha podido reproducir una acción."
 
@@ -410,6 +412,9 @@ msgstr "Marcar todos los episodios como escuchados"
 #: podcasts-gtk/src/widgets/show_menu.rs:155
 msgid "Unsubscribed from {}"
 msgstr "Suscripción cancelada para {}"
+
+#~ msgid "_About"
+#~ msgstr "_Acerca de"
 
 #~ msgid "Cancel"
 #~ msgstr "Cancelar"
