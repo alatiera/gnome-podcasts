@@ -36,6 +36,7 @@ extern crate pretty_assertions;
 
 extern crate glob;
 extern crate mime_guess;
+#[macro_use]
 extern crate podcasts_data;
 extern crate reqwest;
 extern crate tempdir;
