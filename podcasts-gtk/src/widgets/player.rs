@@ -220,6 +220,7 @@ impl Default for PlayerWidget {
             "GNOME Podcasts".to_string(),
             "org.gnome.Podcasts.desktop".to_string(),
         );
+        mpris.set_can_raise(true);
         mpris.set_can_play(false);
         mpris.set_can_seek(false);
         mpris.set_can_set_fullscreen(false);
