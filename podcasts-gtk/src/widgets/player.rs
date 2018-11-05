@@ -561,6 +561,7 @@ impl PlayerExt for PlayerWidget {
         let duration = self.player.get_duration();
         let destination = match direction {
             SeekDirection::Backwards if position >= offset => Some(position - offset),
+            SeekDirection::Backwards if position < offset => Some(ClockTime::from_seconds(0)),
             SeekDirection::Forward if !duration.is_none() && position + offset <= duration => {
                 Some(position + offset)
             }
