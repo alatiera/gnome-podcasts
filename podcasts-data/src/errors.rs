@@ -91,74 +91,34 @@ pub enum DataError {
     EpisodeNotChanged,
 }
 
-impl From<RunMigrationsError> for DataError {
-    fn from(err: RunMigrationsError) -> Self {
-        DataError::DieselMigrationError(err)
-    }
+// Maps a type to a variant of the DataError enum
+#[macro_export]
+macro_rules! easy_from_impl {
+    ($outer_type:ty, $from:ty => $to:expr) => (
+        impl From<$from> for $outer_type {
+            fn from(err: $from) -> Self {
+                $to(err)
+            }
+        }
+    );
+    ($outer_type:ty, $from:ty => $to:expr, $($f:ty => $t:expr),+) => (
+        easy_from_impl!($outer_type, $from => $to);
+        easy_from_impl!($outer_type, $($f => $t),+);
+    );
 }
 
-impl From<diesel::result::Error> for DataError {
-    fn from(err: diesel::result::Error) -> Self {
-        DataError::DieselResultError(err)
-    }
-}
-
-impl From<r2d2::Error> for DataError {
-    fn from(err: r2d2::Error) -> Self {
-        DataError::R2D2Error(err)
-    }
-}
-
-impl From<r2d2::PoolError> for DataError {
-    fn from(err: r2d2::PoolError) -> Self {
-        DataError::R2D2PoolError(err)
-    }
-}
-
-impl From<hyper::Error> for DataError {
-    fn from(err: hyper::Error) -> Self {
-        DataError::HyperError(err)
-    }
-}
-
-impl From<http::header::ToStrError> for DataError {
-    fn from(err: http::header::ToStrError) -> Self {
-        DataError::HttpToStr(err)
-    }
-}
-
-impl From<url::ParseError> for DataError {
-    fn from(err: url::ParseError) -> Self {
-        DataError::UrlError(err)
-    }
-}
-
-impl From<native_tls::Error> for DataError {
-    fn from(err: native_tls::Error) -> Self {
-        DataError::TLSError(err)
-    }
-}
-
-impl From<io::Error> for DataError {
-    fn from(err: io::Error) -> Self {
-        DataError::IOError(err)
-    }
-}
-
-impl From<rss::Error> for DataError {
-    fn from(err: rss::Error) -> Self {
-        DataError::RssError(err)
-    }
-}
-
-impl From<xml::reader::Error> for DataError {
-    fn from(err: xml::reader::Error) -> Self {
-        DataError::XmlReaderError(err)
-    }
-}
-
-impl From<String> for DataError {
-    fn from(err: String) -> Self {
-        DataError::Bail(err)
-    }
-}
+easy_from_impl!(
+    DataError,
+    RunMigrationsError       => DataError::DieselMigrationError,
+    diesel::result::Error    => DataError::DieselResultError,
+    r2d2::Error              => DataError::R2D2Error,
+    r2d2::PoolError          => DataError::R2D2PoolError,
+    hyper::Error             => DataError::HyperError,
+    http::header::ToStrError => DataError::HttpToStr,
+    url::ParseError          => DataError::UrlError,
+    native_tls::Error        => DataError::TLSError,
+    io::Error                => DataError::IOError,
+    rss::Error               => DataError::RssError,
+    xml::reader::Error       => DataError::XmlReaderError,
+    String                   => DataError::Bail
+);

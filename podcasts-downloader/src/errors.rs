@@ -44,20 +44,9 @@ pub enum DownloadError {
     InvalidCachedImageLocation,
 }
 
-impl From<reqwest::Error> for DownloadError {
-    fn from(err: reqwest::Error) -> Self {
-        DownloadError::RequestError(err)
-    }
-}
-
-impl From<io::Error> for DownloadError {
-    fn from(err: io::Error) -> Self {
-        DownloadError::IoError(err)
-    }
-}
-
-impl From<DataError> for DownloadError {
-    fn from(err: DataError) -> Self {
-        DownloadError::DataError(err)
-    }
-}
+easy_from_impl!(
+    DownloadError,
+    reqwest::Error => DownloadError::RequestError,
+    io::Error => DownloadError::IoError,
+    DataError => DownloadError::DataError
+);
