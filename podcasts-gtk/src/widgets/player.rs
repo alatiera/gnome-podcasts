@@ -553,20 +553,32 @@ impl PlayerExt for PlayerWidget {
 
     // Adapted from https://github.com/philn/glide/blob/b52a65d99daeab0b487f79a0e1ccfad0cd433e22/src/player_context.rs#L219-L245
     fn seek(&self, offset: ClockTime, direction: SeekDirection) {
+        // How far into the podcast we are
         let position = self.player.get_position();
         if position.is_none() || offset.is_none() {
             return;
         }
 
+        // How much podcast we have
         let duration = self.player.get_duration();
         let destination = match direction {
+            // If we are more than `offset` into the podcast, jump back that far
             SeekDirection::Backwards if position >= offset => Some(position - offset),
+            // If we haven't played `offset` yet just restart the podcast
+            SeekDirection::Backwards if position < offset => Some(ClockTime::from_seconds(0)),
+            // If we have more than `offset` remaining jump forward they amount
             SeekDirection::Forward if !duration.is_none() && position + offset <= duration => {
                 Some(position + offset)
             }
+            // We don't have `offset` remaining just move to the end (ending playback)
+            SeekDirection::Forward if !duration.is_none() && position + offset > duration => {
+                Some(duration)
+            }
+            // Who knows what's going on ¯\_(ツ)_/¯
             _ => None,
         };
 
+        // If we calucated a new position, jump to it
         destination.map(|d| self.player.seek(d));
     }
 
