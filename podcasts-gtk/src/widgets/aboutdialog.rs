@@ -17,7 +17,6 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-
 use app::{APP_ID, VERSION};
 use gtk;
 use gtk::prelude::*;

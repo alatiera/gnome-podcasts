@@ -17,7 +17,6 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-
 use gtk::{self, prelude::*, Adjustment, Align, SelectionMode};
 
 use crossbeam_channel::Sender;

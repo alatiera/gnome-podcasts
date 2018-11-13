@@ -17,7 +17,6 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-
 mod aboutdialog;
 pub(crate) mod appnotif;
 mod base_view;

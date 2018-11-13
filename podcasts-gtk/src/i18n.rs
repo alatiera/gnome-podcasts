@@ -17,7 +17,6 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-
 extern crate gettextrs;
 extern crate regex;
 use self::gettextrs::gettext;

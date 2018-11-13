@@ -17,7 +17,6 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-
 #![recursion_limit = "1024"]
 #![allow(unknown_lints)]
 #![cfg_attr(

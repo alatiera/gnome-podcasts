@@ -17,7 +17,6 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-
 use gtk::{self, prelude::*, Adjustment, Orientation, PolicyType};
 use utils::smooth_scroll_to;
 

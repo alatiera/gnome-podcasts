@@ -17,7 +17,6 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-
 //! Database Setup. This is only public to help with some unit tests.
 // Diesel embed_migrations! triggers the lint
 #![allow(unused_imports)]

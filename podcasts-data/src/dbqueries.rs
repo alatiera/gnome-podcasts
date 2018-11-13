@@ -17,7 +17,6 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-
 //! Random CRUD helper functions.
 
 use chrono::prelude::*;

@@ -17,7 +17,6 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-
 use gio::{resources_register, Error, Resource};
 use glib::Bytes;
 

@@ -17,7 +17,6 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-
 use gst::prelude::*;
 use gst::ClockTime;
 use gst_player;

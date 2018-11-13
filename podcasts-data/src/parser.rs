@@ -17,7 +17,6 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-
 use rss::extension::itunes::ITunesItemExtension;
 
 /// Parses an Item Itunes extension and returns it's duration value in seconds.
