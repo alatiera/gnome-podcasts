@@ -17,8 +17,8 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-use gtk::{self, prelude::*, Adjustment, Orientation, PolicyType};
 use crate::utils::smooth_scroll_to;
+use gtk::{self, prelude::*, Adjustment, Orientation, PolicyType};
 
 #[derive(Debug, Clone)]
 pub(crate) struct BaseView {

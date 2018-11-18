@@ -467,8 +467,8 @@ pub fn update_none_to_played_now(parent: &Show) -> Result<usize, DataError> {
 mod tests {
     use super::*;
     use crate::database::*;
-    use failure::Error;
     use crate::pipeline;
+    use failure::Error;
 
     #[test]
     fn test_update_none_to_played_now() -> Result<(), Error> {

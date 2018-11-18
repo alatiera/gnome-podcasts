@@ -19,6 +19,7 @@
 
 #![recursion_limit = "1024"]
 #![allow(unknown_lints)]
+#![feature(rust_2018_preview)]
 #![cfg_attr(
     all(test, feature = "clippy"),
     allow(option_unwrap_used, result_unwrap_used)
@@ -43,7 +44,7 @@
 )]
 // Enable lint group collections
 #![warn(nonstandard_style, bad_style, unused)]
-#![allow(edition_2018, rust_2018_idioms)]
+#![warn(edition_2018, rust_2018_idioms)]
 // standalone lints
 #![warn(
     const_err,

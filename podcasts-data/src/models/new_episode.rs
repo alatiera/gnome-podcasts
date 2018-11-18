@@ -332,9 +332,9 @@ impl NewEpisodeMinimal {
 mod tests {
     use crate::database::truncate_db;
     use crate::dbqueries;
-    use failure::Error;
     use crate::models::new_episode::{NewEpisodeMinimal, NewEpisodeMinimalBuilder};
     use crate::models::*;
+    use failure::Error;
 
     use rss::Channel;
 

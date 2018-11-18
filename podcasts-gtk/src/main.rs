@@ -27,6 +27,7 @@
     )
 )]
 #![allow(unknown_lints)]
+#![feature(rust_2018_preview)]
 // Enable lint group collections
 #![warn(nonstandard_style, edition_2018, rust_2018_idioms, bad_style, unused)]
 // standalone lints

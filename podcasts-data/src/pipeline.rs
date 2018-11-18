@@ -89,8 +89,8 @@ mod tests {
     use super::*;
     use crate::database::truncate_db;
     use crate::dbqueries;
-    use failure::Error;
     use crate::Source;
+    use failure::Error;
 
     // (path, url) tuples.
     const URLS: &[&str] = &[
