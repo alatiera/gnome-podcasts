@@ -25,9 +25,9 @@ use failure::Error;
 use podcasts_data::dbqueries;
 use podcasts_data::Show;
 
-use app::Action;
-use utils::{get_ignored_shows, lazy_load, set_image_from_path};
-use widgets::BaseView;
+use crate::app::Action;
+use crate::utils::{get_ignored_shows, lazy_load, set_image_from_path};
+use crate::widgets::BaseView;
 
 use std::cell::Cell;
 use std::rc::Rc;

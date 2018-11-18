@@ -58,7 +58,7 @@ pub trait Insert<T> {
 pub trait Update<T> {
     type Error;
 
-    fn update(&self, i32) -> Result<T, Self::Error>;
+    fn update(&self, _: i32) -> Result<T, Self::Error>;
 }
 
 // This might need to change in the future

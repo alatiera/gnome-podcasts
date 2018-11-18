@@ -28,10 +28,10 @@ use diesel::r2d2::ConnectionManager;
 use std::io;
 use std::path::PathBuf;
 
-use errors::DataError;
+use crate::errors::DataError;
 
 #[cfg(not(test))]
-use xdg_dirs;
+use crate::xdg_dirs;
 
 type Pool = r2d2::Pool<ConnectionManager<SqliteConnection>>;
 

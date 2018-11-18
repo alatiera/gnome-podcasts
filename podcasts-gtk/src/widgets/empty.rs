@@ -17,7 +17,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-use app::APP_ID;
+use crate::app::APP_ID;
 use gtk::{self, prelude::*};
 use std::ops::Deref;
 

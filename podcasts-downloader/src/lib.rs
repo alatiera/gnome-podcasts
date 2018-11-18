@@ -19,6 +19,7 @@
 
 #![recursion_limit = "1024"]
 #![allow(unknown_lints)]
+#![feature(rust_2018_preview)]
 #![cfg_attr(feature = "cargo-clippy", allow(blacklisted_name, option_map_unit_fn))]
 // Enable lint group collections
 #![warn(nonstandard_style, edition_2018, rust_2018_idioms, bad_style, unused)]

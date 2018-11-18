@@ -21,12 +21,12 @@ use diesel;
 use diesel::prelude::*;
 use url::Url;
 
-use database::connection;
-use dbqueries;
+use crate::database::connection;
+use crate::dbqueries;
 // use models::{Insert, Update};
-use errors::DataError;
-use models::Source;
-use schema::source;
+use crate::errors::DataError;
+use crate::models::Source;
+use crate::schema::source;
 
 #[derive(Insertable)]
 #[table_name = "source"]
@@ -50,7 +50,7 @@ impl NewSource {
     }
 
     pub(crate) fn insert_or_ignore(&self) -> Result<(), DataError> {
-        use schema::source::dsl::*;
+        use crate::schema::source::dsl::*;
         let db = connection();
         let con = db.get()?;
 

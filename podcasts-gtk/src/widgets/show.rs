@@ -30,9 +30,9 @@ use rayon;
 use podcasts_data::dbqueries;
 use podcasts_data::Show;
 
-use app::Action;
-use utils::{self, lazy_load};
-use widgets::{BaseView, EmptyShow, EpisodeWidget, ShowMenu};
+use crate::app::Action;
+use crate::utils::{self, lazy_load};
+use crate::widgets::{BaseView, EmptyShow, EpisodeWidget, ShowMenu};
 
 use std::ops::Deref;
 use std::rc::Rc;

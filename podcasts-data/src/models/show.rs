@@ -17,8 +17,8 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-use models::Source;
-use schema::shows;
+use crate::models::Source;
+use crate::schema::shows;
 
 #[derive(Queryable, Identifiable, AsChangeset, Associations, PartialEq)]
 #[belongs_to(Source, foreign_key = "source_id")]

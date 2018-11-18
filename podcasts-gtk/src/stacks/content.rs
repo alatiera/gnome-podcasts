@@ -23,13 +23,13 @@ use gtk::prelude::*;
 use crossbeam_channel::Sender;
 use failure::Error;
 
-use app::Action;
-use stacks::{HomeStack, ShowStack};
+use crate::app::Action;
+use crate::stacks::{HomeStack, ShowStack};
 
 use std::cell::RefCell;
 use std::rc::Rc;
 
-use i18n::i18n;
+use crate::i18n::i18n;
 
 #[derive(Debug, Clone, Copy)]
 pub(crate) enum State {

@@ -26,10 +26,10 @@ use futures::prelude::*;
 use futures::stream;
 use rss;
 
-use dbqueries;
-use errors::DataError;
-use models::{Index, IndexState, Update};
-use models::{NewEpisode, NewEpisodeMinimal, NewShow, Show};
+use crate::dbqueries;
+use crate::errors::DataError;
+use crate::models::{Index, IndexState, Update};
+use crate::models::{NewEpisode, NewEpisodeMinimal, NewShow, Show};
 
 /// Wrapper struct that hold a `Source` id and the `rss::Channel`
 /// that corresponds to the `Source.uri` field.
@@ -145,10 +145,10 @@ mod tests {
     use rss::Channel;
     use tokio::{self, prelude::*};
 
-    use database::truncate_db;
-    use dbqueries;
-    use utils::get_feed;
-    use Source;
+    use crate::database::truncate_db;
+    use crate::dbqueries;
+    use crate::utils::get_feed;
+    use crate::Source;
 
     use std::fs;
     use std::io::BufReader;

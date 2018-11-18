@@ -17,11 +17,11 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-use app::{APP_ID, VERSION};
+use crate::app::{APP_ID, VERSION};
 use gtk;
 use gtk::prelude::*;
 
-use i18n::i18n;
+use crate::i18n::i18n;
 
 // Totally copied it from fractal.
 // https://gitlab.gnome.org/danigm/fractal/blob/503e311e22b9d7540089d735b92af8e8f93560c5/fractal-gtk/src/app.rs#L1883-1912

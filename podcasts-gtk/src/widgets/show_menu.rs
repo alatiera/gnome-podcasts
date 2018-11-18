@@ -30,13 +30,13 @@ use podcasts_data::dbqueries;
 use podcasts_data::utils::delete_show;
 use podcasts_data::Show;
 
-use app::Action;
-use utils;
-use widgets::appnotif::InAppNotification;
+use crate::app::Action;
+use crate::utils;
+use crate::widgets::appnotif::InAppNotification;
 
 use std::sync::Arc;
 
-use i18n::{i18n, i18n_f};
+use crate::i18n::{i18n, i18n_f};
 
 #[derive(Debug, Clone)]
 pub(crate) struct ShowMenu {

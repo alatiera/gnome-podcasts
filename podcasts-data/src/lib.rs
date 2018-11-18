@@ -19,6 +19,7 @@
 
 #![recursion_limit = "1024"]
 #![allow(unknown_lints)]
+#![feature(rust_2018_preview)]
 #![cfg_attr(
     all(test, feature = "clippy"),
     allow(option_unwrap_used, result_unwrap_used)
@@ -43,7 +44,7 @@
 )]
 // Enable lint group collections
 #![warn(nonstandard_style, bad_style, unused)]
-#![allow(edition_2018, rust_2018_idioms)]
+#![warn(edition_2018, rust_2018_idioms)]
 // standalone lints
 #![warn(
     const_err,
@@ -121,9 +122,9 @@ pub mod pipeline;
 mod schema;
 pub mod utils;
 
-pub use feed::{Feed, FeedBuilder};
-pub use models::Save;
-pub use models::{Episode, EpisodeWidgetModel, Show, ShowCoverModel, Source};
+pub use crate::feed::{Feed, FeedBuilder};
+pub use crate::models::Save;
+pub use crate::models::{Episode, EpisodeWidgetModel, Show, ShowCoverModel, Source};
 
 // Set the user agent, See #53 for more
 // Keep this in sync with Tor-browser releases

@@ -24,11 +24,11 @@ use crossbeam_channel::Sender;
 use failure::Error;
 use podcasts_data::dbqueries::is_episodes_populated;
 
-use app::Action;
-use stacks::content::State;
-use stacks::PopulatedStack;
-use utils::get_ignored_shows;
-use widgets::EmptyView;
+use crate::app::Action;
+use crate::stacks::content::State;
+use crate::stacks::PopulatedStack;
+use crate::utils::get_ignored_shows;
+use crate::widgets::EmptyView;
 
 use std::cell::RefCell;
 use std::ops::Deref;

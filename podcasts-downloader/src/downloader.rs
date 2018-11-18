@@ -34,7 +34,7 @@ use podcasts_data::xdg_dirs::PODCASTS_CACHE;
 use podcasts_data::{EpisodeWidgetModel, Save, ShowCoverModel};
 
 // use failure::Error;
-use errors::DownloadError;
+use crate::errors::DownloadError;
 
 // TODO: Replace path that are of type &str with std::path.
 // TODO: Have a convention/document absolute/relative paths, if they should end

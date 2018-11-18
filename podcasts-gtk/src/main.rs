@@ -27,6 +27,7 @@
     )
 )]
 #![allow(unknown_lints)]
+#![feature(rust_2018_preview)]
 // Enable lint group collections
 #![warn(nonstandard_style, edition_2018, rust_2018_idioms, bad_style, unused)]
 // standalone lints
@@ -126,7 +127,7 @@ mod utils;
 
 mod i18n;
 
-use app::App;
+use crate::app::App;
 
 #[cfg(test)]
 fn init_gtk_tests() -> Result<(), failure::Error> {
@@ -167,8 +168,8 @@ fn main() {
 // cargo seems to create new threads and gtk refuses to initialize again.
 // So we run every gtk related test here.
 fn test_stuff() -> Result<(), failure::Error> {
-    use headerbar::Header;
-    use widgets::*;
+    use crate::headerbar::Header;
+    use crate::widgets::*;
 
     init_gtk_tests()?;
 

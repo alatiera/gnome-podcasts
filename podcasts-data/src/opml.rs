@@ -21,8 +21,8 @@
 
 // #![allow(unused)]
 
-use errors::DataError;
-use models::Source;
+use crate::errors::DataError;
+use crate::models::Source;
 use xml::reader;
 
 use std::collections::HashSet;
