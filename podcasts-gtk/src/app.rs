@@ -96,7 +96,7 @@ pub(crate) struct App {
     settings: gio::Settings,
     content: Rc<Content>,
     headerbar: Rc<Header>,
-    player: Rc<player::PlayerWidget>,
+    player: player::PlayerWrapper,
     updater: RefCell<Option<InAppNotification>>,
     sender: Sender<Action>,
     receiver: Receiver<Action>,
@@ -151,7 +151,7 @@ impl App {
         // Add the overlay to the main Box
         wrap.add(&overlay);
 
-        let player = player::PlayerWidget::new(&sender);
+        let player = player::PlayerWrapper::new(&sender);
         // Add the player to the main Box
         wrap.add(&player.action_bar);
 

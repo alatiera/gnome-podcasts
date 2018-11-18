@@ -304,136 +304,6 @@ impl Default for PlayerWidget {
 }
 
 impl PlayerWidget {
-    pub(crate) fn new(sender: &Sender<Action>) -> Rc<Self> {
-        let w = Rc::new(Self::default());
-        Self::init(&w, sender);
-        w
-    }
-
-    fn init(s: &Rc<Self>, sender: &Sender<Action>) {
-        Self::connect_control_buttons(s);
-        Self::connect_rate_buttons(s);
-        Self::connect_mpris_buttons(s, sender);
-        Self::connect_gst_signals(s, sender);
-    }
-
-    /// Connect the `PlayerControls` buttons to the `PlayerExt` methods.
-    fn connect_control_buttons(s: &Rc<Self>) {
-        let weak = Rc::downgrade(s);
-
-        // Connect the play button to the gst Player.
-        s.controls.play.connect_clicked(clone!(weak => move |_| {
-             weak.upgrade().map(|p| p.play());
-        }));
-
-        // Connect the pause button to the gst Player.
-        s.controls.pause.connect_clicked(clone!(weak => move |_| {
-            weak.upgrade().map(|p| p.pause());
-        }));
-
-        // Connect the rewind button to the gst Player.
-        s.controls.rewind.connect_clicked(clone!(weak => move |_| {
-            weak.upgrade().map(|p| p.rewind());
-        }));
-
-        // Connect the fast-forward button to the gst Player.
-        s.controls.forward.connect_clicked(clone!(weak => move |_| {
-            weak.upgrade().map(|p| p.fast_forward());
-        }));
-    }
-
-    fn connect_mpris_buttons(s: &Rc<Self>, sender: &Sender<Action>) {
-        let weak = Rc::downgrade(s);
-
-        let mpris = s.info.mpris.clone();
-        s.info.mpris.connect_play_pause(clone!(weak => move || {
-            let player = match weak.upgrade() {
-                Some(s) => s,
-                None => return
-            };
-
-            if let Ok(status) = mpris.get_playback_status() {
-                match status.as_ref() {
-                    "Paused" => player.play(),
-                    "Stopped" => player.play(),
-                    _ => player.pause(),
-                };
-            }
-        }));
-
-        s.info.mpris.connect_next(clone!(weak => move || {
-            weak.upgrade().map(|p| p.fast_forward());
-        }));
-
-        s.info.mpris.connect_previous(clone!(weak => move || {
-            weak.upgrade().map(|p| p.rewind());
-        }));
-
-        s.info
-            .mpris
-            .connect_raise(clone!(sender => move || sender.send(Action::RaiseWindow)));
-    }
-
-    #[cfg_attr(rustfmt, rustfmt_skip)]
-    fn connect_gst_signals(s: &Rc<Self>, sender: &Sender<Action>) {
-        // Log gst warnings.
-        s.player.connect_warning(move |_, warn| warn!("gst warning: {}", warn));
-
-        // Log gst errors.
-        s.player.connect_error(clone!(sender => move |_, _error| {
-            // sender.send(Action::ErrorNotification(format!("Player Error: {}", error)));
-            let s = i18n("The media player was unable to execute an action.");
-            sender.send(Action::ErrorNotification(s));
-        }));
-
-        // The following callbacks require `Send` but are handled by the gtk main loop
-        let weak = Fragile::new(Rc::downgrade(s));
-
-        // Update the duration label and the slider
-        s.player.connect_duration_changed(clone!(weak => move |_, clock| {
-            weak.get()
-                .upgrade()
-                .map(|p| p.timer.on_duration_changed(Duration(clock)));
-        }));
-
-        // Update the position label and the slider
-        s.player.connect_position_updated(clone!(weak => move |_, clock| {
-            weak.get()
-                .upgrade()
-                .map(|p| p.timer.on_position_updated(Position(clock)));
-        }));
-
-        // Reset the slider to 0 and show a play button
-        s.player.connect_end_of_stream(clone!(weak => move |_| {
-             weak.get()
-                 .upgrade()
-                 .map(|p| p.stop());
-        }));
-    }
-
-    #[cfg_attr(rustfmt, rustfmt_skip)]
-    fn connect_rate_buttons(s: &Rc<Self>) {
-        let weak = Rc::downgrade(s);
-
-        s.rate
-            .radio_normal
-            .connect_toggled(clone!(weak => move |_| {
-                weak.upgrade().map(|p| p.on_rate_changed(1.00));
-            }));
-
-        s.rate
-            .radio125
-            .connect_toggled(clone!(weak => move |_| {
-                weak.upgrade().map(|p| p.on_rate_changed(1.25));
-            }));
-
-        s.rate
-            .radio150
-            .connect_toggled(clone!(weak => move |_| {
-                weak.upgrade().map(|p| p.on_rate_changed(1.50));
-            }));
-    }
-
     fn on_rate_changed(&self, rate: f64) {
         self.set_playback_rate(rate);
         self.rate.label.set_text(&format!("{:.2}×", rate));
@@ -591,5 +461,160 @@ impl PlayerExt for PlayerWidget {
 
     fn set_playback_rate(&self, rate: f64) {
         self.player.set_rate(rate);
+    }
+}
+
+#[derive(Debug, Clone)]
+pub(crate) struct PlayerWrapper(pub Rc<PlayerWidget>);
+
+impl Default for PlayerWrapper {
+    fn default() -> Self {
+        PlayerWrapper(Rc::new(PlayerWidget::default()))
+    }
+}
+
+impl Deref for PlayerWrapper {
+    type Target = Rc<PlayerWidget>;
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+
+impl PlayerWrapper {
+    pub(crate) fn new(sender: &Sender<Action>) -> Self {
+        let w = Self::default();
+        w.init(sender);
+        w
+    }
+
+    fn init(&self, sender: &Sender<Action>) {
+        self.connect_control_buttons();
+        self.connect_rate_buttons();
+        self.connect_mpris_buttons(sender);
+        self.connect_gst_signals(sender);
+    }
+
+    /// Connect the `PlayerControls` buttons to the `PlayerExt` methods.
+    fn connect_control_buttons(&self) {
+        let weak = Rc::downgrade(self);
+
+        // Connect the play button to the gst Player.
+        self.controls.play.connect_clicked(clone!(weak => move |_| {
+             weak.upgrade().map(|p| p.play());
+        }));
+
+        // Connect the pause button to the gst Player.
+        self.controls
+            .pause
+            .connect_clicked(clone!(weak => move |_| {
+            weak.upgrade().map(|p| p.pause());
+        }));
+
+        // Connect the rewind button to the gst Player.
+        self.controls
+            .rewind
+            .connect_clicked(clone!(weak => move |_| {
+            weak.upgrade().map(|p| p.rewind());
+        }));
+
+        // Connect the fast-forward button to the gst Player.
+        self.controls
+            .forward
+            .connect_clicked(clone!(weak => move |_| {
+            weak.upgrade().map(|p| p.fast_forward());
+        }));
+    }
+
+    #[cfg_attr(rustfmt, rustfmt_skip)]
+    fn connect_gst_signals(&self, sender: &Sender<Action>) {
+        // Log gst warnings.
+        self.player.connect_warning(move |_, warn| warn!("gst warning: {}", warn));
+
+        // Log gst errors.
+        self.player.connect_error(clone!(sender => move |_, _error| {
+            // sender.send(Action::ErrorNotification(format!("Player Error: {}", error)));
+            let s = i18n("The media player was unable to execute an action.");
+            sender.send(Action::ErrorNotification(s));
+        }));
+
+        // The following callbacks require `Send` but are handled by the gtk main loop
+        let weak = Fragile::new(Rc::downgrade(self));
+
+        // Update the duration label and the slider
+        self.player.connect_duration_changed(clone!(weak => move |_, clock| {
+            weak.get()
+                .upgrade()
+                .map(|p| p.timer.on_duration_changed(Duration(clock)));
+        }));
+
+        // Update the position label and the slider
+        self.player.connect_position_updated(clone!(weak => move |_, clock| {
+            weak.get()
+                .upgrade()
+                .map(|p| p.timer.on_position_updated(Position(clock)));
+        }));
+
+        // Reset the slider to 0 and show a play button
+        self.player.connect_end_of_stream(clone!(weak => move |_| {
+             weak.get()
+                 .upgrade()
+                 .map(|p| p.stop());
+        }));
+    }
+
+    #[cfg_attr(rustfmt, rustfmt_skip)]
+    fn connect_rate_buttons(&self) {
+        let weak = Rc::downgrade(self);
+
+        self.rate
+            .radio_normal
+            .connect_toggled(clone!(weak => move |_| {
+                weak.upgrade().map(|p| p.on_rate_changed(1.00));
+            }));
+
+        self.rate
+            .radio125
+            .connect_toggled(clone!(weak => move |_| {
+                weak.upgrade().map(|p| p.on_rate_changed(1.25));
+            }));
+
+        self.rate
+            .radio150
+            .connect_toggled(clone!(weak => move |_| {
+                weak.upgrade().map(|p| p.on_rate_changed(1.50));
+            }));
+    }
+
+    fn connect_mpris_buttons(&self, sender: &Sender<Action>) {
+        let weak = Rc::downgrade(self);
+
+        // FIXME: Refference cycle with mpris
+        let mpris = self.info.mpris.clone();
+        self.info.mpris.connect_play_pause(clone!(weak => move || {
+            let player = match weak.upgrade() {
+                Some(s) => s,
+                None => return
+            };
+
+            if let Ok(status) = mpris.get_playback_status() {
+                match status.as_ref() {
+                    "Paused" => player.play(),
+                    "Stopped" => player.play(),
+                    _ => player.pause(),
+                };
+            }
+        }));
+
+        self.info.mpris.connect_next(clone!(weak => move || {
+            weak.upgrade().map(|p| p.fast_forward());
+        }));
+
+        self.info.mpris.connect_previous(clone!(weak => move || {
+            weak.upgrade().map(|p| p.rewind());
+        }));
+
+        self.info
+            .mpris
+            .connect_raise(clone!(sender => move || sender.send(Action::RaiseWindow)));
     }
 }
