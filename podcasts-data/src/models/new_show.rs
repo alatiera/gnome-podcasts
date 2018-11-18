@@ -22,14 +22,14 @@ use diesel;
 use diesel::prelude::*;
 use rss;
 
-use errors::DataError;
-use models::Show;
-use models::{Index, Insert, Update};
-use schema::shows;
+use crate::errors::DataError;
+use crate::models::Show;
+use crate::models::{Index, Insert, Update};
+use crate::schema::shows;
 
-use database::connection;
-use dbqueries;
-use utils::url_cleaner;
+use crate::database::connection;
+use crate::dbqueries;
+use crate::utils::url_cleaner;
 
 #[derive(Insertable, AsChangeset)]
 #[table_name = "shows"]
@@ -49,7 +49,7 @@ impl Insert<()> for NewShow {
     type Error = DataError;
 
     fn insert(&self) -> Result<(), Self::Error> {
-        use schema::shows::dsl::*;
+        use crate::schema::shows::dsl::*;
         let db = connection();
         let con = db.get()?;
 
@@ -65,7 +65,7 @@ impl Update<()> for NewShow {
     type Error = DataError;
 
     fn update(&self, show_id: i32) -> Result<(), Self::Error> {
-        use schema::shows::dsl::*;
+        use crate::schema::shows::dsl::*;
         let db = connection();
         let con = db.get()?;
 
@@ -179,8 +179,8 @@ mod tests {
     use failure::Error;
     use rss::Channel;
 
-    use database::truncate_db;
-    use models::NewShowBuilder;
+    use crate::database::truncate_db;
+    use crate::models::NewShowBuilder;
 
     use std::fs::File;
     use std::io::BufReader;

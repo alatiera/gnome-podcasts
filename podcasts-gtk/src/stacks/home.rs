@@ -24,9 +24,9 @@ use gtk::StackTransitionType;
 use crossbeam_channel::Sender;
 use failure::Error;
 
-use app::Action;
-use stacks::State;
-use widgets::{EmptyView, HomeView};
+use crate::app::Action;
+use crate::stacks::State;
+use crate::widgets::{EmptyView, HomeView};
 
 use std::ops::Deref;
 use std::rc::Rc;

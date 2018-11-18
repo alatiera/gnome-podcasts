@@ -23,13 +23,13 @@ use diesel::prelude::*;
 use rfc822_sanitizer::parse_from_rfc2822_with_fallback as parse_rfc822;
 use rss;
 
-use database::connection;
-use dbqueries;
-use errors::DataError;
-use models::{Episode, EpisodeMinimal, Index, Insert, Update};
-use parser;
-use schema::episodes;
-use utils::url_cleaner;
+use crate::database::connection;
+use crate::dbqueries;
+use crate::errors::DataError;
+use crate::models::{Episode, EpisodeMinimal, Index, Insert, Update};
+use crate::parser;
+use crate::schema::episodes;
+use crate::utils::url_cleaner;
 
 #[derive(Insertable, AsChangeset)]
 #[table_name = "episodes"]
@@ -66,7 +66,7 @@ impl Insert<()> for NewEpisode {
     type Error = DataError;
 
     fn insert(&self) -> Result<(), DataError> {
-        use schema::episodes::dsl::*;
+        use crate::schema::episodes::dsl::*;
         let db = connection();
         let con = db.get()?;
 
@@ -83,7 +83,7 @@ impl Update<()> for NewEpisode {
     type Error = DataError;
 
     fn update(&self, episode_id: i32) -> Result<(), DataError> {
-        use schema::episodes::dsl::*;
+        use crate::schema::episodes::dsl::*;
         let db = connection();
         let con = db.get()?;
 
@@ -330,11 +330,11 @@ impl NewEpisodeMinimal {
 
 #[cfg(test)]
 mod tests {
-    use database::truncate_db;
-    use dbqueries;
+    use crate::database::truncate_db;
+    use crate::dbqueries;
     use failure::Error;
-    use models::new_episode::{NewEpisodeMinimal, NewEpisodeMinimalBuilder};
-    use models::*;
+    use crate::models::new_episode::{NewEpisodeMinimal, NewEpisodeMinimalBuilder};
+    use crate::models::*;
 
     use rss::Channel;
 

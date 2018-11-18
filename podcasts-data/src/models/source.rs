@@ -35,12 +35,12 @@ use http::{Request, Response, StatusCode, Uri};
 use futures::future::{loop_fn, Future, Loop};
 use futures::prelude::*;
 
-use database::connection;
-use errors::*;
-use feed::{Feed, FeedBuilder};
-use models::{NewSource, Save};
-use schema::source;
-use USER_AGENT;
+use crate::database::connection;
+use crate::errors::*;
+use crate::feed::{Feed, FeedBuilder};
+use crate::models::{NewSource, Save};
+use crate::schema::source;
+use crate::USER_AGENT;
 
 use std::str::FromStr;
 
@@ -316,8 +316,8 @@ mod tests {
     use num_cpus;
     use tokio;
 
-    use database::truncate_db;
-    use utils::get_feed;
+    use crate::database::truncate_db;
+    use crate::utils::get_feed;
 
     #[test]
     fn test_into_feed() -> Result<(), Error> {

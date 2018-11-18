@@ -27,8 +27,8 @@ use failure::Error;
 use podcasts_data::dbqueries;
 use podcasts_data::Show;
 
-use app::Action;
-use widgets::{ShowWidget, ShowsView};
+use crate::app::Action;
+use crate::widgets::{ShowWidget, ShowsView};
 
 use std::rc::Rc;
 use std::sync::Arc;

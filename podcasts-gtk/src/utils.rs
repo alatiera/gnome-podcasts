@@ -47,9 +47,9 @@ use podcasts_downloader::downloader;
 use std::collections::{HashMap, HashSet};
 use std::sync::{Arc, Mutex, RwLock};
 
-use app::Action;
+use crate::app::Action;
 
-use i18n::i18n;
+use crate::i18n::i18n;
 
 /// Lazy evaluates and loads widgets to the parent `container` widget.
 ///

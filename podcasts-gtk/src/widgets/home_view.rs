@@ -27,9 +27,9 @@ use libhandy::{Column, ColumnExt};
 use podcasts_data::dbqueries;
 use podcasts_data::EpisodeWidgetModel;
 
-use app::Action;
-use utils::{self, lazy_load_full};
-use widgets::{BaseView, EpisodeWidget};
+use crate::app::Action;
+use crate::utils::{self, lazy_load_full};
+use crate::widgets::{BaseView, EpisodeWidget};
 
 use std::cell::Cell;
 use std::rc::Rc;

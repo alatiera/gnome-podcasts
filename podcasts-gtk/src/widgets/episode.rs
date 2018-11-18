@@ -34,14 +34,14 @@ use podcasts_data::utils::get_download_folder;
 use podcasts_data::EpisodeWidgetModel;
 use podcasts_downloader::downloader::DownloadProgress;
 
-use app::Action;
-use manager;
+use crate::app::Action;
+use crate::manager;
 
 use std::cell::RefCell;
 use std::rc::{Rc, Weak};
 use std::sync::{Arc, Mutex, TryLockError};
 
-use i18n::i18n_f;
+use crate::i18n::i18n_f;
 
 lazy_static! {
     static ref SIZE_OPTS: Arc<size_opts::FileSizeOpts> =  {

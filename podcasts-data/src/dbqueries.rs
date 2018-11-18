@@ -26,12 +26,12 @@ use diesel;
 use diesel::dsl::exists;
 use diesel::select;
 
-use database::connection;
-use errors::DataError;
-use models::*;
+use crate::database::connection;
+use crate::errors::DataError;
+use crate::models::*;
 
 pub fn get_sources() -> Result<Vec<Source>, DataError> {
-    use schema::source::dsl::*;
+    use crate::schema::source::dsl::*;
     let db = connection();
     let con = db.get()?;
 
@@ -42,7 +42,7 @@ pub fn get_sources() -> Result<Vec<Source>, DataError> {
 }
 
 pub fn get_podcasts() -> Result<Vec<Show>, DataError> {
-    use schema::shows::dsl::*;
+    use crate::schema::shows::dsl::*;
     let db = connection();
     let con = db.get()?;
 
@@ -53,7 +53,7 @@ pub fn get_podcasts() -> Result<Vec<Show>, DataError> {
 }
 
 pub fn get_podcasts_filter(filter_ids: &[i32]) -> Result<Vec<Show>, DataError> {
-    use schema::shows::dsl::*;
+    use crate::schema::shows::dsl::*;
     let db = connection();
     let con = db.get()?;
 
@@ -65,7 +65,7 @@ pub fn get_podcasts_filter(filter_ids: &[i32]) -> Result<Vec<Show>, DataError> {
 }
 
 pub fn get_episodes() -> Result<Vec<Episode>, DataError> {
-    use schema::episodes::dsl::*;
+    use crate::schema::episodes::dsl::*;
     let db = connection();
     let con = db.get()?;
 
@@ -76,7 +76,7 @@ pub fn get_episodes() -> Result<Vec<Episode>, DataError> {
 }
 
 pub(crate) fn get_downloaded_episodes() -> Result<Vec<EpisodeCleanerModel>, DataError> {
-    use schema::episodes::dsl::*;
+    use crate::schema::episodes::dsl::*;
     let db = connection();
     let con = db.get()?;
 
@@ -99,7 +99,7 @@ pub(crate) fn get_downloaded_episodes() -> Result<Vec<EpisodeCleanerModel>, Data
 // }
 
 pub(crate) fn get_played_cleaner_episodes() -> Result<Vec<EpisodeCleanerModel>, DataError> {
-    use schema::episodes::dsl::*;
+    use crate::schema::episodes::dsl::*;
     let db = connection();
     let con = db.get()?;
 
@@ -111,7 +111,7 @@ pub(crate) fn get_played_cleaner_episodes() -> Result<Vec<EpisodeCleanerModel>, 
 }
 
 pub fn get_episode_from_rowid(ep_id: i32) -> Result<Episode, DataError> {
-    use schema::episodes::dsl::*;
+    use crate::schema::episodes::dsl::*;
     let db = connection();
     let con = db.get()?;
 
@@ -122,7 +122,7 @@ pub fn get_episode_from_rowid(ep_id: i32) -> Result<Episode, DataError> {
 }
 
 pub fn get_episode_widget_from_rowid(ep_id: i32) -> Result<EpisodeWidgetModel, DataError> {
-    use schema::episodes::dsl::*;
+    use crate::schema::episodes::dsl::*;
     let db = connection();
     let con = db.get()?;
 
@@ -136,7 +136,7 @@ pub fn get_episode_widget_from_rowid(ep_id: i32) -> Result<EpisodeWidgetModel, D
 }
 
 pub fn get_episode_local_uri_from_id(ep_id: i32) -> Result<Option<String>, DataError> {
-    use schema::episodes::dsl::*;
+    use crate::schema::episodes::dsl::*;
     let db = connection();
     let con = db.get()?;
 
@@ -151,7 +151,7 @@ pub fn get_episodes_widgets_filter_limit(
     filter_ids: &[i32],
     limit: u32,
 ) -> Result<Vec<EpisodeWidgetModel>, DataError> {
-    use schema::episodes::dsl::*;
+    use crate::schema::episodes::dsl::*;
     let db = connection();
     let con = db.get()?;
     let columns = (
@@ -168,7 +168,7 @@ pub fn get_episodes_widgets_filter_limit(
 }
 
 pub fn get_podcast_from_id(pid: i32) -> Result<Show, DataError> {
-    use schema::shows::dsl::*;
+    use crate::schema::shows::dsl::*;
     let db = connection();
     let con = db.get()?;
 
@@ -179,7 +179,7 @@ pub fn get_podcast_from_id(pid: i32) -> Result<Show, DataError> {
 }
 
 pub fn get_podcast_cover_from_id(pid: i32) -> Result<ShowCoverModel, DataError> {
-    use schema::shows::dsl::*;
+    use crate::schema::shows::dsl::*;
     let db = connection();
     let con = db.get()?;
 
@@ -191,7 +191,7 @@ pub fn get_podcast_cover_from_id(pid: i32) -> Result<ShowCoverModel, DataError> 
 }
 
 pub fn get_pd_episodes(parent: &Show) -> Result<Vec<Episode>, DataError> {
-    use schema::episodes::dsl::*;
+    use crate::schema::episodes::dsl::*;
     let db = connection();
     let con = db.get()?;
 
@@ -212,7 +212,7 @@ pub fn get_pd_episodes_count(parent: &Show) -> Result<i64, DataError> {
 }
 
 pub fn get_pd_episodeswidgets(parent: &Show) -> Result<Vec<EpisodeWidgetModel>, DataError> {
-    use schema::episodes::dsl::*;
+    use crate::schema::episodes::dsl::*;
     let db = connection();
     let con = db.get()?;
     let columns = (
@@ -228,7 +228,7 @@ pub fn get_pd_episodeswidgets(parent: &Show) -> Result<Vec<EpisodeWidgetModel>, 
 }
 
 pub fn get_pd_unplayed_episodes(parent: &Show) -> Result<Vec<Episode>, DataError> {
-    use schema::episodes::dsl::*;
+    use crate::schema::episodes::dsl::*;
     let db = connection();
     let con = db.get()?;
 
@@ -253,7 +253,7 @@ pub fn get_pd_unplayed_episodes(parent: &Show) -> Result<Vec<Episode>, DataError
 // }
 
 pub fn get_source_from_uri(uri_: &str) -> Result<Source, DataError> {
-    use schema::source::dsl::*;
+    use crate::schema::source::dsl::*;
     let db = connection();
     let con = db.get()?;
 
@@ -264,7 +264,7 @@ pub fn get_source_from_uri(uri_: &str) -> Result<Source, DataError> {
 }
 
 pub fn get_source_from_id(id_: i32) -> Result<Source, DataError> {
-    use schema::source::dsl::*;
+    use crate::schema::source::dsl::*;
     let db = connection();
     let con = db.get()?;
 
@@ -275,7 +275,7 @@ pub fn get_source_from_id(id_: i32) -> Result<Source, DataError> {
 }
 
 pub fn get_podcast_from_source_id(sid: i32) -> Result<Show, DataError> {
-    use schema::shows::dsl::*;
+    use crate::schema::shows::dsl::*;
     let db = connection();
     let con = db.get()?;
 
@@ -286,7 +286,7 @@ pub fn get_podcast_from_source_id(sid: i32) -> Result<Show, DataError> {
 }
 
 pub fn get_episode_from_pk(title_: &str, pid: i32) -> Result<Episode, DataError> {
-    use schema::episodes::dsl::*;
+    use crate::schema::episodes::dsl::*;
     let db = connection();
     let con = db.get()?;
 
@@ -301,7 +301,7 @@ pub(crate) fn get_episode_minimal_from_pk(
     title_: &str,
     pid: i32,
 ) -> Result<EpisodeMinimal, DataError> {
-    use schema::episodes::dsl::*;
+    use crate::schema::episodes::dsl::*;
     let db = connection();
     let con = db.get()?;
 
@@ -318,7 +318,7 @@ pub(crate) fn get_episode_cleaner_from_pk(
     title_: &str,
     pid: i32,
 ) -> Result<EpisodeCleanerModel, DataError> {
-    use schema::episodes::dsl::*;
+    use crate::schema::episodes::dsl::*;
     let db = connection();
     let con = db.get()?;
 
@@ -344,25 +344,25 @@ pub(crate) fn remove_feed(pd: &Show) -> Result<(), DataError> {
 }
 
 fn delete_source(con: &SqliteConnection, source_id: i32) -> QueryResult<usize> {
-    use schema::source::dsl::*;
+    use crate::schema::source::dsl::*;
 
     diesel::delete(source.filter(id.eq(source_id))).execute(con)
 }
 
 fn delete_podcast(con: &SqliteConnection, show_id: i32) -> QueryResult<usize> {
-    use schema::shows::dsl::*;
+    use crate::schema::shows::dsl::*;
 
     diesel::delete(shows.filter(id.eq(show_id))).execute(con)
 }
 
 fn delete_podcast_episodes(con: &SqliteConnection, parent_id: i32) -> QueryResult<usize> {
-    use schema::episodes::dsl::*;
+    use crate::schema::episodes::dsl::*;
 
     diesel::delete(episodes.filter(show_id.eq(parent_id))).execute(con)
 }
 
 pub fn source_exists(url: &str) -> Result<bool, DataError> {
-    use schema::source::dsl::*;
+    use crate::schema::source::dsl::*;
 
     let db = connection();
     let con = db.get()?;
@@ -373,7 +373,7 @@ pub fn source_exists(url: &str) -> Result<bool, DataError> {
 }
 
 pub(crate) fn podcast_exists(source_id_: i32) -> Result<bool, DataError> {
-    use schema::shows::dsl::*;
+    use crate::schema::shows::dsl::*;
 
     let db = connection();
     let con = db.get()?;
@@ -385,7 +385,7 @@ pub(crate) fn podcast_exists(source_id_: i32) -> Result<bool, DataError> {
 
 #[cfg_attr(rustfmt, rustfmt_skip)]
 pub(crate) fn episode_exists(title_: &str, show_id_: i32) -> Result<bool, DataError> {
-    use schema::episodes::dsl::*;
+    use crate::schema::episodes::dsl::*;
 
     let db = connection();
     let con = db.get()?;
@@ -399,7 +399,7 @@ pub(crate) fn episode_exists(title_: &str, show_id_: i32) -> Result<bool, DataEr
 ///
 /// Return true if `episodes` table is populated.
 pub fn is_episodes_populated(filter_show_ids: &[i32]) -> Result<bool, DataError> {
-    use schema::episodes::dsl::*;
+    use crate::schema::episodes::dsl::*;
 
     let db = connection();
     let con = db.get()?;
@@ -413,7 +413,7 @@ pub fn is_episodes_populated(filter_show_ids: &[i32]) -> Result<bool, DataError>
 ///
 /// Return true if `shows` table is populated.
 pub fn is_podcasts_populated(filter_ids: &[i32]) -> Result<bool, DataError> {
-    use schema::shows::dsl::*;
+    use crate::schema::shows::dsl::*;
 
     let db = connection();
     let con = db.get()?;
@@ -427,7 +427,7 @@ pub fn is_podcasts_populated(filter_ids: &[i32]) -> Result<bool, DataError> {
 ///
 /// Return true if `source` table is populated.
 pub fn is_source_populated(filter_ids: &[i32]) -> Result<bool, DataError> {
-    use schema::source::dsl::*;
+    use crate::schema::source::dsl::*;
 
     let db = connection();
     let con = db.get()?;
@@ -438,7 +438,7 @@ pub fn is_source_populated(filter_ids: &[i32]) -> Result<bool, DataError> {
 }
 
 pub(crate) fn index_new_episodes(eps: &[NewEpisode]) -> Result<(), DataError> {
-    use schema::episodes::dsl::*;
+    use crate::schema::episodes::dsl::*;
     let db = connection();
     let con = db.get()?;
 
@@ -450,7 +450,7 @@ pub(crate) fn index_new_episodes(eps: &[NewEpisode]) -> Result<(), DataError> {
 }
 
 pub fn update_none_to_played_now(parent: &Show) -> Result<usize, DataError> {
-    use schema::episodes::dsl::*;
+    use crate::schema::episodes::dsl::*;
     let db = connection();
     let con = db.get()?;
 
@@ -466,9 +466,9 @@ pub fn update_none_to_played_now(parent: &Show) -> Result<usize, DataError> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use database::*;
+    use crate::database::*;
     use failure::Error;
-    use pipeline;
+    use crate::pipeline;
 
     #[test]
     fn test_update_none_to_played_now() -> Result<(), Error> {

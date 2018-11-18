@@ -121,9 +121,9 @@ pub mod pipeline;
 mod schema;
 pub mod utils;
 
-pub use feed::{Feed, FeedBuilder};
-pub use models::Save;
-pub use models::{Episode, EpisodeWidgetModel, Show, ShowCoverModel, Source};
+pub use crate::feed::{Feed, FeedBuilder};
+pub use crate::models::Save;
+pub use crate::models::{Episode, EpisodeWidgetModel, Show, ShowCoverModel, Source};
 
 // Set the user agent, See #53 for more
 // Keep this in sync with Tor-browser releases

@@ -22,7 +22,7 @@ use gio::{Settings, SettingsExt};
 use gtk;
 use gtk::prelude::*;
 
-use i18n::i18n;
+use crate::i18n::i18n;
 
 #[derive(Debug, Clone)]
 pub(crate) struct Prefs {

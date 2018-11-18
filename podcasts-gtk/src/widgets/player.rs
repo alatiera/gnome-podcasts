@@ -17,9 +17,9 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-use gst::prelude::*;
-use gst::ClockTime;
-use gst_player;
+use crate::gst::prelude::*;
+use crate::gst::ClockTime;
+use crate::gst_player;
 
 use gtk;
 use gtk::prelude::*;
@@ -35,8 +35,8 @@ use fragile::Fragile;
 use podcasts_data::{dbqueries, USER_AGENT};
 use podcasts_data::{EpisodeWidgetModel, ShowCoverModel};
 
-use app::Action;
-use utils::set_image_from_path;
+use crate::app::Action;
+use crate::utils::set_image_from_path;
 
 use std::cell::RefCell;
 use std::ops::Deref;
@@ -44,7 +44,7 @@ use std::path::Path;
 use std::rc::Rc;
 use std::sync::Mutex;
 
-use i18n::i18n;
+use crate::i18n::i18n;
 
 use mpris_player::{Metadata, MprisPlayer, OrgMprisMediaPlayer2Player, PlaybackStatus};
 use std::sync::Arc;
@@ -62,7 +62,7 @@ trait PlayerExt {
     fn seek(&self, offset: ClockTime, direction: SeekDirection);
     fn fast_forward(&self);
     fn rewind(&self);
-    fn set_playback_rate(&self, f64);
+    fn set_playback_rate(&self, _: f64);
 }
 
 #[derive(Debug, Clone)]

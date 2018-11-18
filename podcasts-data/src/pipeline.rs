@@ -29,8 +29,8 @@ use hyper_tls::HttpsConnector;
 
 use num_cpus;
 
-use errors::DataError;
-use Source;
+use crate::errors::DataError;
+use crate::Source;
 
 use std::iter::FromIterator;
 
@@ -87,10 +87,10 @@ where
 #[cfg(test)]
 mod tests {
     use super::*;
-    use database::truncate_db;
-    use dbqueries;
+    use crate::database::truncate_db;
+    use crate::dbqueries;
     use failure::Error;
-    use Source;
+    use crate::Source;
 
     // (path, url) tuples.
     const URLS: &[&str] = &[

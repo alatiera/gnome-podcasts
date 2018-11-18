@@ -28,13 +28,13 @@ use url::Url;
 
 use podcasts_data::{dbqueries, Source};
 
-use app::Action;
-use stacks::Content;
-use utils::{itunes_to_rss, refresh};
+use crate::app::Action;
+use crate::stacks::Content;
+use crate::utils::{itunes_to_rss, refresh};
 
 use std::rc::Rc;
 
-use i18n::i18n;
+use crate::i18n::i18n;
 
 #[derive(Debug, Clone)]
 // TODO: Make a proper state machine for the headerbar states

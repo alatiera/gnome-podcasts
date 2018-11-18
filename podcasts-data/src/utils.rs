@@ -24,10 +24,10 @@ use rayon::prelude::*;
 
 use url::{Position, Url};
 
-use dbqueries;
-use errors::DataError;
-use models::{EpisodeCleanerModel, Save, Show};
-use xdg_dirs::DL_DIR;
+use crate::dbqueries;
+use crate::errors::DataError;
+use crate::models::{EpisodeCleanerModel, Save, Show};
+use crate::xdg_dirs::DL_DIR;
 
 use std::fs;
 use std::path::Path;
@@ -153,13 +153,13 @@ pub fn delete_show(pd: &Show) -> Result<(), DataError> {
 }
 
 #[cfg(test)]
-use Feed;
+use crate::Feed;
 
 #[cfg(test)]
 /// Helper function that open a local file, parse the rss::Channel and gives back a Feed object.
 /// Alternative Feed constructor to be used for tests.
 pub fn get_feed(file_path: &str, id: i32) -> Feed {
-    use feed::FeedBuilder;
+    use crate::feed::FeedBuilder;
     use rss::Channel;
     use std::fs;
     use std::io::BufReader;
@@ -184,8 +184,8 @@ mod tests {
     use chrono::Duration;
     use failure::Error;
 
-    use database::truncate_db;
-    use models::NewEpisodeBuilder;
+    use crate::database::truncate_db;
+    use crate::models::NewEpisodeBuilder;
 
     use std::fs::File;
     use std::io::Write;

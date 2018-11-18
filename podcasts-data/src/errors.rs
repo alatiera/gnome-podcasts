@@ -29,7 +29,7 @@ use xml;
 
 use std::io;
 
-use models::Source;
+use crate::models::Source;
 
 #[fail(
     display = "Request to {} returned {}. Context: {}",

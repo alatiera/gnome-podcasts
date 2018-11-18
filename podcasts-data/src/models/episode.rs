@@ -22,10 +22,10 @@ use diesel;
 use diesel::prelude::*;
 use diesel::SaveChangesDsl;
 
-use database::connection;
-use errors::DataError;
-use models::{Save, Show};
-use schema::episodes;
+use crate::database::connection;
+use crate::errors::DataError;
+use crate::models::{Save, Show};
+use crate::schema::episodes;
 
 #[derive(Queryable, Identifiable, AsChangeset, Associations, PartialEq)]
 #[table_name = "episodes"]
@@ -172,7 +172,7 @@ impl Save<usize> for EpisodeWidgetModel {
     /// Helper method to easily save/"sync" current state of self to the
     /// Database.
     fn save(&self) -> Result<usize, Self::Error> {
-        use schema::episodes::dsl::*;
+        use crate::schema::episodes::dsl::*;
 
         let db = connection();
         let tempdb = db.get()?;
@@ -285,7 +285,7 @@ impl Save<usize> for EpisodeCleanerModel {
     /// Helper method to easily save/"sync" current state of self to the
     /// Database.
     fn save(&self) -> Result<usize, Self::Error> {
-        use schema::episodes::dsl::*;
+        use crate::schema::episodes::dsl::*;
 
         let db = connection();
         let tempdb = db.get()?;

@@ -31,22 +31,22 @@ use crossbeam_channel::{unbounded, Receiver, Sender};
 use fragile::Fragile;
 use podcasts_data::Show;
 
-use headerbar::Header;
-use prefs::Prefs;
-use settings::{self, WindowGeometry};
-use stacks::{Content, PopulatedState};
-use utils;
-use widgets::about_dialog;
-use widgets::appnotif::{InAppNotification, SpinnerState, State};
-use widgets::player;
-use widgets::show_menu::{mark_all_notif, remove_show_notif, ShowMenu};
+use crate::headerbar::Header;
+use crate::prefs::Prefs;
+use crate::settings::{self, WindowGeometry};
+use crate::stacks::{Content, PopulatedState};
+use crate::utils;
+use crate::widgets::about_dialog;
+use crate::widgets::appnotif::{InAppNotification, SpinnerState, State};
+use crate::widgets::player;
+use crate::widgets::show_menu::{mark_all_notif, remove_show_notif, ShowMenu};
 
 use std::cell::RefCell;
 use std::env;
 use std::rc::Rc;
 use std::sync::Arc;
 
-use i18n::i18n;
+use crate::i18n::i18n;
 
 pub(crate) const APP_ID: &str = env!("APP_ID");
 pub(crate) const VERSION: &str = env!("VERSION");
