@@ -104,20 +104,20 @@ impl ShowMenu {
     fn connect_unsub(&self, pd: &Arc<Show>, sender: &Sender<Action>) {
         self.unsub
             .connect_clicked(clone!(pd, sender => move |unsub| {
-            // hack to get away without properly checking for none.
-            // if pressed twice would panic.
-            unsub.set_sensitive(false);
+                // hack to get away without properly checking for none.
+                // if pressed twice would panic.
+                unsub.set_sensitive(false);
 
-            sender.send(Action::RemoveShow(pd.clone()));
+                sender.send(Action::RemoveShow(pd.clone()));
 
-            sender.send(Action::HeaderBarNormal);
-            sender.send(Action::ShowShowsAnimated);
-            // Queue a refresh after the switch to avoid blocking the db.
-            sender.send(Action::RefreshShowsView);
-            sender.send(Action::RefreshEpisodesView);
+                sender.send(Action::HeaderBarNormal);
+                sender.send(Action::ShowShowsAnimated);
+                // Queue a refresh after the switch to avoid blocking the db.
+                sender.send(Action::RefreshShowsView);
+                sender.send(Action::RefreshEpisodesView);
 
-            unsub.set_sensitive(true);
-        }));
+                unsub.set_sensitive(true);
+            }));
     }
 }
 

@@ -138,7 +138,7 @@ pub mod xdg_dirs {
     use std::path::PathBuf;
     use xdg;
 
-    lazy_static!{
+    lazy_static! {
         pub(crate) static ref PODCASTS_XDG: xdg::BaseDirectories = {
             xdg::BaseDirectories::with_prefix("gnome-podcasts").unwrap()
         };

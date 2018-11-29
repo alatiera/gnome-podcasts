@@ -507,22 +507,22 @@ impl PlayerWrapper {
         self.controls
             .pause
             .connect_clicked(clone!(weak => move |_| {
-            weak.upgrade().map(|p| p.pause());
-        }));
+                weak.upgrade().map(|p| p.pause());
+            }));
 
         // Connect the rewind button to the gst Player.
         self.controls
             .rewind
             .connect_clicked(clone!(weak => move |_| {
-            weak.upgrade().map(|p| p.rewind());
-        }));
+                weak.upgrade().map(|p| p.rewind());
+            }));
 
         // Connect the fast-forward button to the gst Player.
         self.controls
             .forward
             .connect_clicked(clone!(weak => move |_| {
-            weak.upgrade().map(|p| p.fast_forward());
-        }));
+                weak.upgrade().map(|p| p.fast_forward());
+            }));
     }
 
     #[cfg_attr(rustfmt, rustfmt_skip)]
