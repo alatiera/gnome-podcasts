@@ -1,6 +1,3 @@
-# Adatped from:
-# https://gitlab.gnome.org/danigm/fractal/blob/6e2911f9d2353c99a18a6c19fab7f903c4bbb431/meson.build
-
 project(
   'gnome-podcasts', 'rust',
   version: '0.4.6',
@@ -55,10 +52,6 @@ subdir('podcasts-gtk/po')
 podir = join_paths (meson.source_root (), 'podcasts-gtk', 'po')
 
 podcasts_version = meson.project_version()
-version_array = podcasts_version.split('.')
-podcasts_major_version = version_array[0].to_int()
-podcasts_minor_version = version_array[1].to_int()
-podcasts_version_micro = version_array[2].to_int()
 
 podcasts_prefix = get_option('prefix')
 podcasts_bindir = join_paths(podcasts_prefix, get_option('bindir'))
