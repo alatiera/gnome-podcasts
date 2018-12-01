@@ -23,9 +23,6 @@ flatpak-builder --run \
 # Run the tests
 xvfb-run -a -s "-screen 0 1024x768x24" \
     flatpak-builder --run \
-    --env=APP_ID="org.gnome.PodcastsDevel" \
-    --env=LOCALEDIR="./podcasts-gtk/po" \
-    --env=VERSION="0.0.0" \
     --env=CARGO_HOME="target/cargo-home" \
     --env=CARGO_TARGET_DIR="target_test/" \
     app ${MANIFEST_PATH} \
