@@ -48,8 +48,20 @@ use std::sync::Arc;
 
 use crate::i18n::i18n;
 
-pub(crate) const APP_ID: &str = env!("APP_ID");
-pub(crate) const VERSION: &str = env!("VERSION");
+#[rustfmt::skip]
+lazy_static! {
+    pub static ref APP_ID: &'static str = {
+        option_env!("APP_ID").unwrap_or("org.gnome.Podcasts")
+    };
+
+    pub static ref VERSION: &'static str = {
+        option_env!("VERSION").unwrap_or("0.0.1")
+    };
+
+    pub static ref LOCALEDIR: &'static str = {
+        option_env!("LOCALEDIR").unwrap_or("./podcasts-gtk/po")
+    };
+}
 
 /// Creates an action named `name` in the action map `T with the handler `F`
 fn action<T, F>(thing: &T, name: &str, action: F)
@@ -404,10 +416,10 @@ impl App {
     pub(crate) fn run() {
         // Set up the textdomain for gettext
         setlocale(LocaleCategory::LcAll, "");
-        bindtextdomain("gnome-podcasts", env!("LOCALEDIR"));
+        bindtextdomain("gnome-podcasts", *LOCALEDIR);
         textdomain("gnome-podcasts");
 
-        let application = gtk::Application::new(APP_ID, gio::ApplicationFlags::empty())
+        let application = gtk::Application::new(*APP_ID, gio::ApplicationFlags::empty())
             .expect("Application initialization failed...");
         application.set_resource_base_path("/org/gnome/Podcasts");
 
@@ -438,7 +450,7 @@ impl App {
         // Weird magic I copy-pasted that sets the Application Name in the Shell.
         glib::set_application_name(&i18n("Podcasts"));
         glib::set_prgname(Some("gnome-podcasts"));
-        gtk::Window::set_default_icon_name(APP_ID);
+        gtk::Window::set_default_icon_name(*APP_ID);
         let args: Vec<String> = env::args().collect();
         ApplicationExtManual::run(&application, &args);
     }
