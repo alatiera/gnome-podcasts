@@ -19,15 +19,9 @@
 
 #![cfg_attr(
     feature = "cargo-clippy",
-    allow(
-        clone_on_ref_ptr,
-        blacklisted_name,
-        match_same_arms,
-        option_map_unit_fn
-    )
+    allow(clone_on_ref_ptr, blacklisted_name, match_same_arms,)
 )]
 #![allow(unknown_lints)]
-#![feature(rust_2018_preview)]
 // Enable lint group collections
 #![warn(nonstandard_style, edition_2018, rust_2018_idioms, bad_style, unused)]
 // standalone lints
@@ -38,8 +32,6 @@
     no_mangle_generic_items,
     overflowing_literals,
     plugin_as_library,
-    private_no_mangle_fns,
-    private_no_mangle_statics,
     unconditional_recursion,
     unions_with_drop_fields,
     while_true,
