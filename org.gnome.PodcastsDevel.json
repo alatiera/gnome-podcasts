@@ -30,6 +30,7 @@
             "--share=network"
         ],
         "env" : {
+            "USE_PLAYBIN3" : "1",
             "CARGO_HOME" : "/run/build/Podcasts/cargo",
             "RUSTFLAGS" : "--error-format=short --remap-path-prefix =../",
             "RUST_BACKTRACE" : "1"
