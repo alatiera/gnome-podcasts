@@ -42,7 +42,7 @@
             "buildsystem" : "meson",
             "config-opts" : [
                 "-Dintrospection=true",
-                "-Dgtk-doc=false",
+                "-Dgtk_doc=false",
                 "-Dtests=false",
                 "-Dexamples=false",
                 "-Dvapi=false",
@@ -66,8 +66,7 @@
             "sources" : [
                 {
                     "type" : "git",
-                    "url" : "https://gitlab.gnome.org/World/podcasts.git",
-                    "branch" : "master"
+                    "url" : "https://gitlab.gnome.org/World/podcasts.git"
                 }
             ]
         }
