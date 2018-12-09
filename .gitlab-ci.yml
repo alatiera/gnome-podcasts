@@ -1,6 +1,6 @@
 stages:
-  - test
   - lint
+  - test
   - review
 
 variables:
