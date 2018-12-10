@@ -1,11 +1,11 @@
 #! /usr/bin/sh
 
 export MANIFEST_PATH="org.gnome.PodcastsDevel.json"
-export RUNTIME_REPO="https://sdk.gnome.org/gnome-nightly.flatpakrepo"
 export FLATPAK_MODULE="gnome-podcasts"
 export CONFIGURE_ARGS="-Dprofile=development"
-export DBUS_ID="org.gnome.PodcastsDevel"
-export BUNDLE="org.gnome.Podcasts.Devel.flatpak"
+# export DBUS_ID="org.gnome.PodcastsDevel"
+# export BUNDLE="org.gnome.Podcasts.Devel.flatpak"
+# export RUNTIME_REPO="https://sdk.gnome.org/gnome-nightly.flatpakrepo"
 
 flatpak-builder --stop-at=${FLATPAK_MODULE} --force-clean app ${MANIFEST_PATH}
 # https://gitlab.gnome.org/World/podcasts/issues/55
@@ -15,16 +15,18 @@ flatpak-builder --run app ${MANIFEST_PATH} glib-compile-resources --sourcedir=po
 # Build the flatpak repo
 flatpak-builder --run app ${MANIFEST_PATH} meson --prefix=/app ${CONFIGURE_ARGS} build
 flatpak-builder --run \
-    --env=CARGO_TARGET_DIR="../target_build/" \
+    --env=CARGO_HOME="target/cargo-home" \
+    --env=CARGO_TARGET_DIR="target_test/" \
+    --env=RUSTFLAGS="" \
     app ${MANIFEST_PATH} \
-    ninja -C build install
-    # ninja -C build gnome-podcasts-pot; ninja -C _build gnome-podcasts-update-po
+    ninja -C build
 
 # Run the tests
 xvfb-run -a -s "-screen 0 1024x768x24" \
     flatpak-builder --run \
     --env=CARGO_HOME="target/cargo-home" \
     --env=CARGO_TARGET_DIR="target_test/" \
+    --env=RUSTFLAGS="" \
     app ${MANIFEST_PATH} \
     cargo test -j 1 -- --test-threads=1
 
