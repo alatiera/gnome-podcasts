@@ -7,16 +7,16 @@ msgid ""
 msgstr ""
 "Project-Id-Version: podcasts master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2018-09-03 11:31+0000\n"
-"PO-Revision-Date: 2018-09-03 15:41+0200\n"
+"POT-Creation-Date: 2018-10-05 11:47+0000\n"
+"PO-Revision-Date: 2018-12-11 09:49+0100\n"
+"Last-Translator: Milo Casagrande <milo@milo.name>\n"
 "Language-Team: Italian <gnome-it-list@gnome.org>\n"
 "Language: it\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"Last-Translator: Milo Casagrande <milo@milo.name>\n"
-"X-Generator: Poedit 2.1.1\n"
+"X-Generator: Poedit 2.2\n"
 
 #: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml:15
 msgid "Top position of the last open main window"
@@ -69,7 +69,7 @@ msgstr "Che periodi di tempo aspettare tra la pulizia automatica"
 #. Weird magic I copy-pasted that sets the Application Name in the Shell.
 #: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:3
 #: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:4
-#: podcasts-gtk/src/app.rs:91 podcasts-gtk/src/app.rs:414
+#: podcasts-gtk/src/app.rs:92 podcasts-gtk/src/app.rs:416
 #: podcasts-gtk/src/widgets/aboutdialog.rs:31
 msgid "Podcasts"
 msgstr "Podcast"
@@ -117,21 +117,21 @@ msgstr "Aggiungi nuovi show via URL"
 msgid "Import shows from another device"
 msgstr "Importa show da un altro dispositivo"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:178
+#: podcasts-gtk/resources/gtk/episode_widget.ui:180
 msgid "Calculating episode size…"
 msgstr "Calcolo dimensione episodio…"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:214
-msgid "Cancel"
-msgstr "Annulla"
-
-#: podcasts-gtk/resources/gtk/episode_widget.ui:232
-msgid "Download this episode"
-msgstr "Scarica questo episodio"
-
-#: podcasts-gtk/resources/gtk/episode_widget.ui:256
+#: podcasts-gtk/resources/gtk/episode_widget.ui:220
 msgid "Play this episode"
 msgstr "Riproduci questo episodio"
+
+#: podcasts-gtk/resources/gtk/episode_widget.ui:241
+msgid "Cancel the download process"
+msgstr "Annulla lo scaricamento"
+
+#: podcasts-gtk/resources/gtk/episode_widget.ui:264
+msgid "Download this episode"
+msgstr "Scarica questo episodio"
 
 #: podcasts-gtk/resources/gtk/hamburger.ui:7
 msgid "_Check for New Episodes"
@@ -145,13 +145,13 @@ msgstr "_Importa show"
 msgid "_Preferences"
 msgstr "Preferen_ze"
 
-#: podcasts-gtk/resources/gtk/hamburger.ui:29
+#: podcasts-gtk/resources/gtk/hamburger.ui:27
 msgid "_Keyboard Shortcuts"
 msgstr "_Scorciatoie da tastiera"
 
-#: podcasts-gtk/resources/gtk/hamburger.ui:37
-msgid "_About"
-msgstr "I_nformazioni"
+#: podcasts-gtk/resources/gtk/hamburger.ui:35
+msgid "_About Podcasts"
+msgstr "I_nformazioni su Podcast"
 
 #: podcasts-gtk/resources/gtk/headerbar.ui:35
 #: podcasts-gtk/resources/gtk/headerbar.ui:189
@@ -315,7 +315,7 @@ msgstr "Segna tutti ascoltati"
 msgid "Unsubscribe"
 msgstr "Annulla abbonamento"
 
-#: podcasts-gtk/src/app.rs:332
+#: podcasts-gtk/src/app.rs:333
 msgid "Fetching new episodes"
 msgstr "Scaricamento nuovi episodi"
 
@@ -329,7 +329,7 @@ msgstr "URL non valido"
 
 #: podcasts-gtk/src/prefs.rs:59
 msgid "Seconds"
-msgstr "secondi"
+msgstr "Secondi"
 
 #: podcasts-gtk/src/prefs.rs:60
 msgid "Minutes"
@@ -387,12 +387,12 @@ msgstr "Maggiori informazioni su Podcast GNOME"
 msgid "translator-credits"
 msgstr "Milo Casagrande <milo@milo.name>"
 
-#: podcasts-gtk/src/widgets/episode.rs:129
+#: podcasts-gtk/src/widgets/episode.rs:130
 msgid "{} min"
 msgstr "{} min"
 
 #. sender.send(Action::ErrorNotification(format!("Player Error: {}", error)));
-#: podcasts-gtk/src/widgets/player.rs:301
+#: podcasts-gtk/src/widgets/player.rs:363
 msgid "The media player was unable to execute an action."
 msgstr "Il riproduttore multimediale non può eseguire un'azione."
 
@@ -403,3 +403,9 @@ msgstr "Episodi segnati come letti"
 #: podcasts-gtk/src/widgets/show_menu.rs:155
 msgid "Unsubscribed from {}"
 msgstr "Abbonamento a {} annullato"
+
+#~ msgid "Cancel"
+#~ msgstr "Annulla"
+
+#~ msgid "_About"
+#~ msgstr "I_nformazioni"
