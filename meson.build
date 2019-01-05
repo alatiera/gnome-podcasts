@@ -25,7 +25,6 @@ dependency('gstreamer-player-1.0', version: '>= 1.12')
 dependency('gstreamer-plugins-base-1.0', version: '>= 1.12')
 dependency('gstreamer-plugins-bad-1.0', version: '>= 1.12')
 dependency('gstreamer-bad-audio-1.0', version: '>= 1.12')
-dependency('gstreamer-bad-video-1.0', version: '>= 1.12')
 
 cargo = find_program('cargo', required: true)
 gresource = find_program('glib-compile-resources', required: true)
