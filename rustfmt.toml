@@ -1,7 +1,1 @@
-comment_width = 100
-wrap_comments = true
-newline_style = "Unix"
-format_strings = true
-normalize_comments = true
-use_field_init_shorthand = true
 edition = "2018"

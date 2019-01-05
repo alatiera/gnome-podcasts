@@ -242,7 +242,8 @@ mod tests {
                 .image_uri(Some(String::from(
                     "https://imagecdn.acast.com/image?h=1500&w=1500&source=http%3A%2F%2Fi1.sndcdn.\
                      com%2Favatars-000317856075-a2coqz-original.jpg",
-                ))).source_id(42)
+                )))
+                .source_id(42)
                 .build()
                 .unwrap()
         };

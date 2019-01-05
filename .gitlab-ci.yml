@@ -85,12 +85,13 @@ stop_review:
         - master@World/podcasts
         - tags
 
-# Configure and run rustfmt on nightly
+# Configure and run rustfmt
 # Exits and builds fails if on bad format
 rustfmt:
-    image: "registry.gitlab.com/alatiera/rustfmt-oci-image/rustfmt:nightly"
-    stage: lint
-    script:
-        - rustc -Vv && cargo -Vv
-        - cargo fmt --version
-        - cargo fmt --all -- --check
+  image: "rust:slim"
+  stage: "lint"
+  script:
+    - rustup component add rustfmt
+    - rustc -Vv && cargo -Vv
+    - cargo fmt --version
+    - cargo fmt --all -- --color=always --check

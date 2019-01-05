@@ -26,9 +26,12 @@ makes things easier for the maintainers.
 
 We use [rustfmt](https://github.com/rust-lang-nursery/rustfmt) for code formatting and we enforce it on the gitlab-CI server.
 
-Quick setup
+***Installing rustfmt*** As of 2019/Jan, our continuous integration
+pipeline assumes the version of rustfmt that is distributed through the
+stable channel of [rustup](rustup.rs).  You can install it with
+
 ```
-cargo install rustfmt-nightly
+rustup component add rustfmt
 cargo fmt --all
  ```
 
@@ -36,7 +39,7 @@ It is recommended to add a pre-commit hook to run cargo test and `cargo fmt`.
 Don't forget to `git add` again after `cargo fmt`.
 ```
 #!/bin/sh
-cargo test -- --test-threads=1 && cargo fmt --all -- --write-mode=diff
+cargo test -- --test-threads=1 && cargo fmt --all -- --check
 ```
 
 ## Running the test suite

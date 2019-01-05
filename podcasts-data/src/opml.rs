@@ -127,14 +127,13 @@ mod tests {
     fn test_extract() -> Result<(), Error> {
         let int_title = String::from("Intercepted with Jeremy Scahill");
         let int_url = String::from("https://feeds.feedburner.com/InterceptedWithJeremyScahill");
-        let int_desc =
-            String::from(
-                "The people behind The Intercept’s fearless reporting and incisive \
-                 commentary—Jeremy Scahill, Glenn Greenwald, Betsy Reed and others—discuss the \
-                 crucial issues of our time: national security, civil liberties, foreign policy, \
-                 and criminal justice.  Plus interviews with artists, thinkers, and newsmakers \
-                 who challenge our preconceptions about the world we live in.",
-            );
+        let int_desc = String::from(
+            "The people behind The Intercept’s fearless reporting and incisive \
+             commentary—Jeremy Scahill, Glenn Greenwald, Betsy Reed and others—discuss the \
+             crucial issues of our time: national security, civil liberties, foreign policy, \
+             and criminal justice.  Plus interviews with artists, thinkers, and newsmakers \
+             who challenge our preconceptions about the world we live in.",
+        );
 
         let dec_title = String::from("Deconstructed with Mehdi Hasan");
         let dec_url = String::from("https://rss.prod.firstlook.media/deconstructed/podcast.rss");
