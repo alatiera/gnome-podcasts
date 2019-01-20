@@ -22,7 +22,8 @@
         "--socket=wayland",
         "--socket=pulseaudio",
         "--device=dri",
-        "--own-name=org.mpris.MediaPlayer2.Podcasts"
+        "--own-name=org.mpris.MediaPlayer2.Podcasts",
+        "--env=USE_PLAYBING3=1"
     ],
     "build-options" : {
         "append-path" : "/usr/lib/sdk/rust-stable/bin",
@@ -30,7 +31,6 @@
             "--share=network"
         ],
         "env" : {
-            "USE_PLAYBIN3" : "1",
             "CARGO_HOME" : "/run/build/Podcasts/cargo",
             "RUSTFLAGS" : "--error-format=short --remap-path-prefix =../",
             "RUST_BACKTRACE" : "1"
