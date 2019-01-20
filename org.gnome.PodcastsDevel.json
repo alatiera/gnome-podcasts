@@ -41,12 +41,12 @@
             "name" : "libhandy",
             "buildsystem" : "meson",
             "config-opts" : [
-                "-Dintrospection=true",
+                "-Dintrospection=enabled",
                 "-Dgtk_doc=false",
                 "-Dtests=false",
                 "-Dexamples=false",
                 "-Dvapi=false",
-                "-Dglade_catalog=false"
+                "-Dglade_catalog=disabled"
             ],
             "cleanup" : [
               "/include",
@@ -55,7 +55,8 @@
             "sources" : [
                 {
                     "type" : "git",
-                    "url" : "https://source.puri.sm/Librem5/libhandy.git"
+                    "url" : "https://source.puri.sm/Librem5/libhandy.git",
+                    "commit": "fac9fa59a83f47655d604796632a932d58cf60bb"
                 }
             ]
         },
