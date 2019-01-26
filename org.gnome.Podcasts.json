@@ -1,0 +1,74 @@
+{
+    "app-id" : "org.gnome.Podcasts",
+    "runtime" : "org.gnome.Platform",
+    "runtime-version" : "master",
+    "sdk" : "org.gnome.Sdk",
+    "sdk-extensions" : [
+        "org.freedesktop.Sdk.Extension.rust-stable"
+    ],
+    "command" : "gnome-podcasts",
+    "tags" : [
+        "nightly"
+    ],
+    "desktop-file-name-prefix" : "(Nightly) ",
+    "finish-args" : [
+        "--filesystem=xdg-run/dconf",
+        "--filesystem=~/.config/dconf:ro",
+        "--talk-name=ca.desrt.dconf",
+        "--env=DCONF_USER_CONFIG_DIR=.config/dconf",
+        "--share=network",
+        "--share=ipc",
+        "--socket=x11",
+        "--socket=wayland",
+        "--socket=pulseaudio",
+        "--device=dri",
+        "--own-name=org.mpris.MediaPlayer2.Podcasts",
+        "--env=USE_PLAYBING3=1"
+    ],
+    "build-options" : {
+        "append-path" : "/usr/lib/sdk/rust-stable/bin",
+        "build-args" : [
+            "--share=network"
+        ],
+        "env" : {
+            "CARGO_HOME" : "/run/build/Podcasts/cargo",
+            "RUSTFLAGS" : "--error-format=short --remap-path-prefix =../",
+            "RUST_BACKTRACE" : "1"
+        }
+    },
+    "modules" : [
+        {
+            "name" : "libhandy",
+            "buildsystem" : "meson",
+            "config-opts" : [
+                "-Dintrospection=disabled",
+                "-Dgtk_doc=false",
+                "-Dtests=false",
+                "-Dexamples=false",
+                "-Dvapi=false",
+                "-Dglade_catalog=disabled"
+            ],
+            "cleanup" : [
+              "/include",
+              "/lib/pkgconfig"
+            ],
+            "sources" : [
+                {
+                    "type" : "git",
+                    "url" : "https://source.puri.sm/Librem5/libhandy.git",
+                    "commit": "fac9fa59a83f47655d604796632a932d58cf60bb"
+                }
+            ]
+        },
+        {
+            "name" : "gnome-podcasts",
+            "buildsystem" : "meson",
+            "sources" : [
+                {
+                    "type" : "git",
+                    "url" : "https://gitlab.gnome.org/World/podcasts.git"
+                }
+            ]
+        }
+    ]
+}
