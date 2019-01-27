@@ -1,5 +1,9 @@
 #! /usr/bin/sh
 
+set -o errexit
+set -o nounset
+set -o pipefail
+
 export MANIFEST_PATH="org.gnome.PodcastsDevel.json"
 export FLATPAK_MODULE="gnome-podcasts"
 export CONFIGURE_ARGS="-Dprofile=development"
@@ -28,7 +32,7 @@ xvfb-run -a -s "-screen 0 1024x768x24" \
     --env=CARGO_TARGET_DIR="target_test/" \
     --env=RUSTFLAGS="" \
     app ${MANIFEST_PATH} \
-    cargo test -j 1 -- --test-threads=1
+    cargo test -j 1 -- --test-threads=1 --nocapture
 
 # Create a flatpak bundle
 # flatpak-builder --finish-only app ${MANIFEST_PATH}
