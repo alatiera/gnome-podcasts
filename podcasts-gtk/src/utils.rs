@@ -414,6 +414,48 @@ pub(crate) fn on_import_clicked(window: &gtk::ApplicationWindow, sender: &Sender
     }
 }
 
+pub(crate) fn on_export_clicked(window: &gtk::ApplicationWindow, sender: &Sender<Action>) {
+    use glib::translate::ToGlib;
+    use gtk::{FileChooserAction, FileChooserNative, FileFilter, ResponseType};
+
+    // Create the FileChooser Dialog
+    let dialog = FileChooserNative::new(
+        Some(i18n("Export shows to...").as_str()),
+        Some(window),
+        FileChooserAction::Save,
+        Some(i18n("_Export").as_str()),
+        Some(i18n("_Cancel").as_str()),
+    );
+
+    // Do not show hidden(.thing) files
+    dialog.set_show_hidden(false);
+
+    // Set a filter to show only xml files
+    let filter = FileFilter::new();
+    FileFilterExt::set_name(&filter, Some(i18n("OPML file").as_str()));
+    filter.add_mime_type("application/xml");
+    filter.add_mime_type("text/xml");
+    dialog.add_filter(&filter);
+
+    let resp = dialog.run();
+    debug!("Dialog Response {}", resp);
+    if resp == ResponseType::Accept.to_glib() {
+        if let Some(filename) = dialog.get_filename() {
+            debug!("File selected: {:?}", filename);
+
+            rayon::spawn(clone!(sender => move || {
+                if opml::export_from_db(filename, i18n("GNOME Podcasts Subscriptions").as_str()).is_err() {
+                    let text = i18n("Failed to export podcasts");
+                    sender.send(Action::ErrorNotification(text));
+                }
+            }))
+        } else {
+            let text = i18n("Selected file could not be accessed.");
+            sender.send(Action::ErrorNotification(text));
+        }
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;

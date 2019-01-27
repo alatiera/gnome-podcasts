@@ -43,3 +43,9 @@ Raw file: https://web.archive.org/web/20180120104741if_/https://www.greaterthanc
 Web view: https://web.archive.org/web/20180328083913/https://ellinofreneia.sealabs.net/audio/podcast.rss
 
 Raw file: https://web.archive.org/web/20180328083913if_/https://ellinofreneia.sealabs.net/audio/podcast.rss
+
+#### David Harvey's Anti-Capitalist Chronicles
+
+Web view: https://web.archive.org/web/20190127005213/https://anticapitalistchronicles.libsyn.com/rss
+
+Raw file: https://web.archive.org/web/20190127005213if_/https://anticapitalistchronicles.libsyn.com/rss

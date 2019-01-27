@@ -12,10 +12,10 @@
         <attribute name="label" translatable="yes">_Import Shows</attribute>
         <attribute name="action">win.import</attribute>
       </item>
-      <!-- <item> -->
-      <!--   <attribute name="label" translatable="yes">_Export Shows</attribute> -->
-      <!--   <attribute name="action">win.export</attribute> -->
-      <!-- </item> -->
+      <item>
+        <attribute name="label" translatable="yes">_Export Shows</attribute>
+        <attribute name="action">win.export</attribute>
+      </item>
     </section>
     <section>
       <item>
@@ -38,3 +38,4 @@
     </section>
   </menu>
 </interface>
+

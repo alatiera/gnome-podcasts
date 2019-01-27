@@ -266,6 +266,10 @@ impl App {
             weak_win.upgrade().map(|win| utils::on_import_clicked(&win, &sender));
         }));
 
+        action(&self.window, "export", clone!(sender, weak_win => move |_, _| {
+            weak_win.upgrade().map(|win| utils::on_export_clicked(&win, &sender));
+        }));
+
         // Create the action that shows a `gtk::AboutDialog`
         action(&self.window, "about", clone!(weak_win => move |_, _| {
             weak_win.upgrade().map(|win| about_dialog(&win));
