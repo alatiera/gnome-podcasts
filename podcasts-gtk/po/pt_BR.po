@@ -1,22 +1,23 @@
 # Brazilian Portuguese translation for podcasts.
-# Copyright (C) 2018 podcasts's COPYRIGHT HOLDER
+# Copyright (C) 2019 podcasts's COPYRIGHT HOLDER
 # This file is distributed under the same license as the podcasts package.
-# Rafael Fontenelle <rafaelff@gnome.org>, 2018.
 # Yuri Otávio Lopes Gomes <yuriotavio@hotmail.com>, 2018.
+# Rafael Fontenelle <rafaelff@gnome.org>, 2018-2019.
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: podcasts master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2018-10-05 11:47+0000\n"
-"PO-Revision-Date: 2018-10-05 11:18-0200\n"
+"POT-Creation-Date: 2019-01-27 04:48+0000\n"
+"PO-Revision-Date: 2019-01-28 19:19-0200\n"
 "Last-Translator: Rafael Fontenelle <rafaelff@gnome.org>\n"
-"Language-Team: Brazilian Portuguese <gnome-pt_br-list@gnome.org>\n"
+"Language-Team: Portuguese - Brazil <gnome-pt_br-list@gnome.org>\n"
 "Language: pt_BR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Virtaal 1.0.0-beta1\n"
+"Plural-Forms: nplurals=2; plural=(n > 1)\n"
+"X-Generator: Gtranslator 3.31.0\n"
 
 #: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml:15
 msgid "Top position of the last open main window"
@@ -70,8 +71,8 @@ msgstr "Qual período de tempo deve esperar entre limpezas automáticas"
 #. Weird magic I copy-pasted that sets the Application Name in the Shell.
 #: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:3
 #: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:4
-#: podcasts-gtk/src/app.rs:92 podcasts-gtk/src/app.rs:416
-#: podcasts-gtk/src/widgets/aboutdialog.rs:31
+#: podcasts-gtk/src/app.rs:124 podcasts-gtk/src/app.rs:455
+#: podcasts-gtk/src/widgets/aboutdialog.rs:56
 msgid "Podcasts"
 msgstr "Podcasts"
 
@@ -94,7 +95,7 @@ msgstr "Podcast;RSS;"
 msgid "Podcast app for GNOME"
 msgstr "Aplicativo de podcast para o GNOME"
 
-#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:51
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:77
 msgid "Jordan Petridis"
 msgstr "Jordan Petridis"
 
@@ -129,7 +130,6 @@ msgid "Play this episode"
 msgstr "Inicia este episódio"
 
 #: podcasts-gtk/resources/gtk/episode_widget.ui:241
-#| msgid "Cancel the download proccess"
 msgid "Cancel the download process"
 msgstr "Cancela o processo de download"
 
@@ -145,6 +145,10 @@ msgstr "_Procurar novos episódios"
 msgid "_Import Shows"
 msgstr "_Importar podcasts"
 
+#: podcasts-gtk/resources/gtk/hamburger.ui:16
+msgid "_Export Shows"
+msgstr "_Exportar podcasts"
+
 #: podcasts-gtk/resources/gtk/hamburger.ui:22
 msgid "_Preferences"
 msgstr "_Preferências"
@@ -154,7 +158,6 @@ msgid "_Keyboard Shortcuts"
 msgstr "Atal_hos de teclado"
 
 #: podcasts-gtk/resources/gtk/hamburger.ui:35
-#| msgid "Podcasts"
 msgid "_About Podcasts"
 msgstr "_Sobre Podcasts"
 
@@ -320,99 +323,116 @@ msgstr "Marcar todos como reproduzidos"
 msgid "Unsubscribe"
 msgstr "Desinscrever"
 
-#: podcasts-gtk/src/app.rs:333
+#: podcasts-gtk/src/app.rs:369
 msgid "Fetching new episodes"
 msgstr "Buscando novos episódios"
 
-#: podcasts-gtk/src/headerbar.rs:98
+#: podcasts-gtk/src/headerbar.rs:117
 msgid "You are already subscribed to this show"
 msgstr "Você já está inscrito neste podcast"
 
-#: podcasts-gtk/src/headerbar.rs:106
+#: podcasts-gtk/src/headerbar.rs:125
 msgid "Invalid URL"
 msgstr "URL inválida"
 
-#: podcasts-gtk/src/prefs.rs:59
+#: podcasts-gtk/src/prefs.rs:78
 msgid "Seconds"
 msgstr "Segundos"
 
-#: podcasts-gtk/src/prefs.rs:60
+#: podcasts-gtk/src/prefs.rs:79
 msgid "Minutes"
 msgstr "Minutos"
 
-#: podcasts-gtk/src/prefs.rs:61
+#: podcasts-gtk/src/prefs.rs:80
 msgid "Hours"
 msgstr "Horas"
 
-#: podcasts-gtk/src/prefs.rs:62
+#: podcasts-gtk/src/prefs.rs:81
 msgid "Days"
 msgstr "Dias"
 
-#: podcasts-gtk/src/prefs.rs:63
+#: podcasts-gtk/src/prefs.rs:82
 msgid "Weeks"
 msgstr "Semanas"
 
-#: podcasts-gtk/src/stacks/content.rs:35
+#: podcasts-gtk/src/stacks/content.rs:54
 msgid "New"
 msgstr "Novo"
 
-#: podcasts-gtk/src/stacks/content.rs:36
+#: podcasts-gtk/src/stacks/content.rs:55
 msgid "Shows"
 msgstr "Podcasts"
 
-#: podcasts-gtk/src/utils.rs:357
+#: podcasts-gtk/src/utils.rs:377
 msgid "Select the file from which to you want to import shows."
 msgstr "Selecione o arquivo a partir do qual você deseja importar podcasts."
 
-#: podcasts-gtk/src/utils.rs:360
+#: podcasts-gtk/src/utils.rs:380
 msgid "_Import"
 msgstr "_Importar"
 
-#: podcasts-gtk/src/utils.rs:369
+#: podcasts-gtk/src/utils.rs:389 podcasts-gtk/src/utils.rs:435
 msgid "OPML file"
 msgstr "Arquivo OPML"
 
-#: podcasts-gtk/src/utils.rs:386
+#: podcasts-gtk/src/utils.rs:406
 msgid "Failed to parse the imported file"
 msgstr "Falha ao analisar o arquivo importado"
 
-#: podcasts-gtk/src/utils.rs:391
+#: podcasts-gtk/src/utils.rs:411 podcasts-gtk/src/utils.rs:453
 msgid "Selected file could not be accessed."
 msgstr "O arquivo selecionado não pôde ser acessado."
 
-#: podcasts-gtk/src/widgets/aboutdialog.rs:26
+#: podcasts-gtk/src/utils.rs:423
+msgid "Export shows to..."
+msgstr "Exportar podcasts para…"
+
+#: podcasts-gtk/src/utils.rs:426
+msgid "_Export"
+msgstr "_Exportar"
+
+#: podcasts-gtk/src/utils.rs:427
+msgid "_Cancel"
+msgstr "_Cancelar"
+
+#: podcasts-gtk/src/utils.rs:447
+msgid "GNOME Podcasts Subscriptions"
+msgstr "Inscrições do GNOME Podcasts"
+
+#: podcasts-gtk/src/utils.rs:448
+msgid "Failed to export podcasts"
+msgstr "Falha ao exportar podcasts"
+
+#: podcasts-gtk/src/widgets/aboutdialog.rs:51
 msgid "Podcast Client for the GNOME Desktop."
 msgstr "Cliente de podcast para o ambiente GNOME."
 
-#: podcasts-gtk/src/widgets/aboutdialog.rs:33
+#: podcasts-gtk/src/widgets/aboutdialog.rs:58
 msgid "Learn more about GNOME Podcasts"
 msgstr "Aprenda mais sobre o GNOME Podcasts"
 
-#: podcasts-gtk/src/widgets/aboutdialog.rs:38
+#: podcasts-gtk/src/widgets/aboutdialog.rs:63
 msgid "translator-credits"
 msgstr ""
 "Rafael Fontenelle <rafaelff@gnome.org>\n"
 "Yuri Otávio Lopes Gomes <yuriotavio@hotmail.com>"
 
-#: podcasts-gtk/src/widgets/episode.rs:130
+#: podcasts-gtk/src/widgets/episode.rs:149
 msgid "{} min"
 msgstr "{} min"
 
 #. sender.send(Action::ErrorNotification(format!("Player Error: {}", error)));
-#: podcasts-gtk/src/widgets/player.rs:363
+#: podcasts-gtk/src/widgets/player.rs:536
 msgid "The media player was unable to execute an action."
 msgstr "O reprodutor de mídia não conseguiu executar uma ação."
 
-#: podcasts-gtk/src/widgets/show_menu.rs:150
+#: podcasts-gtk/src/widgets/show_menu.rs:169
 msgid "Marked all episodes as listened"
 msgstr "Marcados todos os episódios como ouvidos"
 
-#: podcasts-gtk/src/widgets/show_menu.rs:155
+#: podcasts-gtk/src/widgets/show_menu.rs:174
 msgid "Unsubscribed from {}"
 msgstr "Desinscrito de {}"
 
 #~ msgid "_About"
 #~ msgstr "_Sobre"
-
-#~ msgid "Cancel"
-#~ msgstr "Cancelar"
