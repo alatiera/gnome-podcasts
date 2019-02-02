@@ -420,7 +420,7 @@ pub(crate) fn on_export_clicked(window: &gtk::ApplicationWindow, sender: &Sender
 
     // Create the FileChooser Dialog
     let dialog = FileChooserNative::new(
-        Some(i18n("Export shows to...").as_str()),
+        Some(i18n("Export shows to…").as_str()),
         Some(window),
         FileChooserAction::Save,
         Some(i18n("_Export").as_str()),
