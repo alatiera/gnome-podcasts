@@ -588,7 +588,7 @@ impl PlayerWrapper {
     fn connect_mpris_buttons(&self, sender: &Sender<Action>) {
         let weak = Rc::downgrade(self);
 
-        // FIXME: Refference cycle with mpris
+        // FIXME: Reference cycle with mpris
         let mpris = self.info.mpris.clone();
         self.info.mpris.connect_play_pause(clone!(weak => move || {
             let player = match weak.upgrade() {
@@ -603,6 +603,24 @@ impl PlayerWrapper {
                     _ => player.pause(),
                 };
             }
+        }));
+
+        self.info.mpris.connect_play(clone!(weak => move || {
+            let player = match weak.upgrade() {
+                Some(s) => s,
+                None => return
+            };
+
+            player.play();
+        }));
+
+        self.info.mpris.connect_pause(clone!(weak => move || {
+            let player = match weak.upgrade() {
+                Some(s) => s,
+                None => return
+            };
+
+            player.pause();
         }));
 
         self.info.mpris.connect_next(clone!(weak => move || {
