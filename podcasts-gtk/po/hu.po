@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: podcasts master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2019-01-27 04:48+0000\n"
-"PO-Revision-Date: 2019-01-28 23:41+0100\n"
+"POT-Creation-Date: 2019-02-02 15:17+0000\n"
+"PO-Revision-Date: 2019-02-05 21:44+0100\n"
 "Last-Translator: Balázs Úr <urbalazs@gmail.com>\n"
 "Language-Team: Hungarian <gnome-hu-list at gnome dot org>\n"
 "Language: hu\n"
@@ -381,7 +381,7 @@ msgid "Selected file could not be accessed."
 msgstr "A kiválasztott fájlok nem érhetőek el."
 
 #: podcasts-gtk/src/utils.rs:423
-msgid "Export shows to..."
+msgid "Export shows to…"
 msgstr "Műsorok exportálása ide…"
 
 #: podcasts-gtk/src/utils.rs:426
