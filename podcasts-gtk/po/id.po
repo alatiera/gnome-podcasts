@@ -1,21 +1,21 @@
 # Indonesian translation for podcasts.
 # Copyright (C) 2018 podcasts's COPYRIGHT HOLDER
 # This file is distributed under the same license as the podcasts package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# Kukuh Syafaat <kukuhsyafaat@gnome.org>, 2018, 2019.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: podcasts master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2018-10-05 11:47+0000\n"
-"PO-Revision-Date: 2018-11-15 23:41+0700\n"
+"POT-Creation-Date: 2019-02-02 15:17+0000\n"
+"PO-Revision-Date: 2019-03-02 19:18+0700\n"
 "Last-Translator: Kukuh Syafaat <kukuhsyafaat@gnome.org>\n"
 "Language-Team: Indonesian <gnome-l10n-id@googlegroups.com>\n"
 "Language: id\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 2.0.6\n"
+"X-Generator: Poedit 2.2.1\n"
 
 #: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml:15
 msgid "Top position of the last open main window"
@@ -68,8 +68,8 @@ msgstr "Berapa lama waktu untuk menunggu di antara pembersihan otomatis"
 #. Weird magic I copy-pasted that sets the Application Name in the Shell.
 #: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:3
 #: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:4
-#: podcasts-gtk/src/app.rs:92 podcasts-gtk/src/app.rs:416
-#: podcasts-gtk/src/widgets/aboutdialog.rs:31
+#: podcasts-gtk/src/app.rs:124 podcasts-gtk/src/app.rs:455
+#: podcasts-gtk/src/widgets/aboutdialog.rs:56
 msgid "Podcasts"
 msgstr "Podcast"
 
@@ -92,7 +92,7 @@ msgstr "Podcast;RSS;"
 msgid "Podcast app for GNOME"
 msgstr "Aplikasi Podcast untuk GNOME"
 
-#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:51
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:77
 msgid "Jordan Petridis"
 msgstr "Jordan Petridis"
 
@@ -141,6 +141,10 @@ msgstr "Periksa Episode _Baru"
 #: podcasts-gtk/resources/gtk/hamburger.ui:12
 msgid "_Import Shows"
 msgstr "_Impor Acara"
+
+#: podcasts-gtk/resources/gtk/hamburger.ui:16
+msgid "_Export Shows"
+msgstr "_Ekspor Acara"
 
 #: podcasts-gtk/resources/gtk/hamburger.ui:22
 msgid "_Preferences"
@@ -316,97 +320,114 @@ msgstr "Tandai Semua sebagai Sudah Diputar"
 msgid "Unsubscribe"
 msgstr "Berhenti Berlangganan"
 
-#: podcasts-gtk/src/app.rs:333
+#: podcasts-gtk/src/app.rs:369
 msgid "Fetching new episodes"
 msgstr "Mengambil episode baru"
 
-#: podcasts-gtk/src/headerbar.rs:98
+#: podcasts-gtk/src/headerbar.rs:117
 msgid "You are already subscribed to this show"
 msgstr "Anda sudah berlangganan ke acara ini"
 
-#: podcasts-gtk/src/headerbar.rs:106
+#: podcasts-gtk/src/headerbar.rs:125
 msgid "Invalid URL"
 msgstr "URL tak valid"
 
-#: podcasts-gtk/src/prefs.rs:59
+#: podcasts-gtk/src/prefs.rs:78
 msgid "Seconds"
 msgstr "Detik"
 
-#: podcasts-gtk/src/prefs.rs:60
+#: podcasts-gtk/src/prefs.rs:79
 msgid "Minutes"
 msgstr "Menit"
 
-#: podcasts-gtk/src/prefs.rs:61
+#: podcasts-gtk/src/prefs.rs:80
 msgid "Hours"
 msgstr "Jam"
 
-#: podcasts-gtk/src/prefs.rs:62
+#: podcasts-gtk/src/prefs.rs:81
 msgid "Days"
 msgstr "Hari"
 
-#: podcasts-gtk/src/prefs.rs:63
+#: podcasts-gtk/src/prefs.rs:82
 msgid "Weeks"
 msgstr "Minggu"
 
-#: podcasts-gtk/src/stacks/content.rs:35
+#: podcasts-gtk/src/stacks/content.rs:54
 msgid "New"
 msgstr "Baru"
 
-#: podcasts-gtk/src/stacks/content.rs:36
+#: podcasts-gtk/src/stacks/content.rs:55
 msgid "Shows"
 msgstr "Acara"
 
-#: podcasts-gtk/src/utils.rs:357
+#: podcasts-gtk/src/utils.rs:377
 msgid "Select the file from which to you want to import shows."
 msgstr "Pilih berkas dari mana Anda ingin mengimpor acara."
 
-#: podcasts-gtk/src/utils.rs:360
+#: podcasts-gtk/src/utils.rs:380
 msgid "_Import"
 msgstr "_Impor"
 
-#: podcasts-gtk/src/utils.rs:369
+#: podcasts-gtk/src/utils.rs:389 podcasts-gtk/src/utils.rs:435
 msgid "OPML file"
 msgstr "Berkas OPML"
 
-#: podcasts-gtk/src/utils.rs:386
+#: podcasts-gtk/src/utils.rs:406
 msgid "Failed to parse the imported file"
 msgstr "Gagal mengurai berkas yang diimpor"
 
-#: podcasts-gtk/src/utils.rs:391
+#: podcasts-gtk/src/utils.rs:411 podcasts-gtk/src/utils.rs:453
 msgid "Selected file could not be accessed."
 msgstr "Berkas yang dipilih tidak dapat diakses."
 
-#: podcasts-gtk/src/widgets/aboutdialog.rs:26
+#: podcasts-gtk/src/utils.rs:423
+msgid "Export shows to…"
+msgstr "Ekspor acara ke…"
+
+#: podcasts-gtk/src/utils.rs:426
+msgid "_Export"
+msgstr "_Ekspor"
+
+#: podcasts-gtk/src/utils.rs:427
+msgid "_Cancel"
+msgstr "_Batal"
+
+#: podcasts-gtk/src/utils.rs:447
+msgid "GNOME Podcasts Subscriptions"
+msgstr "Berlangganan GNOME Podcast"
+
+#: podcasts-gtk/src/utils.rs:448
+msgid "Failed to export podcasts"
+msgstr "Gagal mengekspor podcast"
+
+#: podcasts-gtk/src/widgets/aboutdialog.rs:51
 msgid "Podcast Client for the GNOME Desktop."
 msgstr "Klien Podcast untuk Destop GNOME."
 
-#: podcasts-gtk/src/widgets/aboutdialog.rs:33
+#: podcasts-gtk/src/widgets/aboutdialog.rs:58
 msgid "Learn more about GNOME Podcasts"
 msgstr "Pelajari lebih lanjut tentang GNOME Podcast"
 
-#: podcasts-gtk/src/widgets/aboutdialog.rs:38
+#: podcasts-gtk/src/widgets/aboutdialog.rs:63
 msgid "translator-credits"
-msgstr "Kukuh Syafaat <kukuhsyafaat@gnome.org>, 2018."
+msgstr "Kukuh Syafaat <kukuhsyafaat@gnome.org>, 2018, 2019."
 
-#: podcasts-gtk/src/widgets/episode.rs:130
+#: podcasts-gtk/src/widgets/episode.rs:149
 msgid "{} min"
 msgstr "{} mnt"
 
 #. sender.send(Action::ErrorNotification(format!("Player Error: {}", error)));
-#: podcasts-gtk/src/widgets/player.rs:363
+#: podcasts-gtk/src/widgets/player.rs:536
 msgid "The media player was unable to execute an action."
 msgstr "Pemutar media tidak dapat melakukan aksi."
 
-#: podcasts-gtk/src/widgets/show_menu.rs:150
+#: podcasts-gtk/src/widgets/show_menu.rs:169
 msgid "Marked all episodes as listened"
 msgstr "Tandai semua episode sebagai sudah didengarkan"
 
-#: podcasts-gtk/src/widgets/show_menu.rs:155
+#: podcasts-gtk/src/widgets/show_menu.rs:174
 msgid "Unsubscribed from {}"
 msgstr "Berhenti berlangganan dari {}"
 
 #~ msgid "_About"
 #~ msgstr "Tent_ang"
-
-#~ msgid "Cancel"
-#~ msgstr "Batal"
