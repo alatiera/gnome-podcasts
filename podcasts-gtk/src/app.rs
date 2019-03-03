@@ -123,7 +123,7 @@ impl App {
         let window = gtk::ApplicationWindow::new(application);
         window.set_title(&i18n("Podcasts"));
         if APP_ID.ends_with("Devel") {
-            window.get_style_context().map(|c| c.add_class("devel"));
+            window.get_style_context().add_class("devel");
         }
 
         let weak_s = settings.downgrade();

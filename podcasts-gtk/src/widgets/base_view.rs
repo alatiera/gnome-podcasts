@@ -29,7 +29,18 @@ pub(crate) struct BaseView {
 impl Default for BaseView {
     fn default() -> Self {
         let container = gtk::Box::new(Orientation::Horizontal, 0);
-        let scrolled_window = gtk::ScrolledWindow::new(None, None);
+        // TODO: Remember to file an issue about this API
+        // error[E0283]: type annotations required: cannot resolve `_: gdk_pixbuf::IsA<gtk::Adjustment>`
+        // --> ../podcasts-gtk/src/widgets/base_view.rs:32:31
+        //    |
+        // 32 |         let scrolled_window = gtk::ScrolledWindow::new(None, None);
+        //    |                               ^^^^^^^^^^^^^^^^^^^^^^^^
+        //    |
+        //    = note: required by `gtk::ScrolledWindow::new`
+        //
+        // error: aborting due to previous error
+        let foo: Option<&Adjustment> = None;
+        let scrolled_window = gtk::ScrolledWindow::new(foo.clone(), foo.clone());
 
         scrolled_window.set_policy(PolicyType::Never, PolicyType::Automatic);
         container.set_size_request(360, -1);

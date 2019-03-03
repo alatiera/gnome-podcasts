@@ -66,7 +66,7 @@ impl AddPopover {
             .ok_or_else(|| format_err!("GtkEntry blew up somehow."))?;
 
         if !(url.starts_with("https://") || url.starts_with("http://")) {
-            url = format!("http://{}", url);
+            url = format!("http://{}", url).into();
         };
 
         debug!("Url: {}", url);
@@ -100,7 +100,7 @@ impl AddPopover {
         debug!("Url: {}", url);
 
         if !(url.starts_with("https://") || url.starts_with("http://")) {
-            url = format!("http://{}", url);
+            url = format!("http://{}", url).into();
         };
 
         debug!("Url: {}", url);

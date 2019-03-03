@@ -111,11 +111,11 @@ impl InfoLabels {
         if episode.played().is_some() {
             self.title
                 .get_style_context()
-                .map(|c| c.add_class("dim-label"));
+                .add_class("dim-label");
         } else {
             self.title
                 .get_style_context()
-                .map(|c| c.remove_class("dim-label"));
+                .remove_class("dim-label");
         }
     }
 

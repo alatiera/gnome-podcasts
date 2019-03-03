@@ -155,10 +155,10 @@ pub(crate) fn smooth_scroll_to(view: &gtk::ScrolledWindow, target: &gtk::Adjustm
                     let mut t = (now - start_time) as f64 / (end_time - start_time) as f64;
                     t = ease_out_cubic(t);
                     adj.set_value(start + t * (end - start));
-                    glib::Continue(true)
+                    true
                 } else {
                     adj.set_value(end);
-                    glib::Continue(false)
+                    false
                 }
             });
         }
@@ -386,7 +386,7 @@ pub(crate) fn on_import_clicked(window: &gtk::ApplicationWindow, sender: &Sender
 
     // Set a filter to show only xml files
     let filter = FileFilter::new();
-    FileFilterExt::set_name(&filter, Some(i18n("OPML file").as_str()));
+    FileFilter::set_name(&filter, Some(i18n("OPML file").as_str()));
     filter.add_mime_type("application/xml");
     filter.add_mime_type("text/xml");
     dialog.add_filter(&filter);
@@ -432,7 +432,7 @@ pub(crate) fn on_export_clicked(window: &gtk::ApplicationWindow, sender: &Sender
 
     // Set a filter to show only xml files
     let filter = FileFilter::new();
-    FileFilterExt::set_name(&filter, Some(i18n("OPML file").as_str()));
+    FileFilter::set_name(&filter, Some(i18n("OPML file").as_str()));
     filter.add_mime_type("application/xml");
     filter.add_mime_type("text/xml");
     dialog.add_filter(&filter);

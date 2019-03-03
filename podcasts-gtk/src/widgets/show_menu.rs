@@ -139,7 +139,7 @@ fn dim_titles(episodes: &gtk::ListBox) -> Option<()> {
         let bar = foo.get_children().remove(0).downcast::<gtk::Box>().ok()?;
         let title = bar.get_children().remove(0).downcast::<gtk::Label>().ok()?;
 
-        title.get_style_context().map(|c| c.add_class("dim-label"));
+        title.get_style_context().add_class("dim-label");
     }
     Some(())
 }

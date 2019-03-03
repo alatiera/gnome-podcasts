@@ -86,7 +86,7 @@ impl Prefs {
         {
             let row: &[&dyn ToValue] = &[item];
             if item.to_lowercase() == cleanup_p {
-                cleanup_pos = i as i32;
+                cleanup_pos = i as u32;
             }
             store.insert_with_values(None, &[0], &row);
         }
