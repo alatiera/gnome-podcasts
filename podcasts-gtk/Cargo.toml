@@ -6,7 +6,7 @@ version = "0.1.0"
 
 [dependencies]
 chrono = "0.4.6"
-crossbeam-channel = "0.2.6"
+crossbeam-channel = "0.3.8"
 gdk = "0.10.0"
 gdk-pixbuf = "0.6.0"
 glib = "0.7.1"

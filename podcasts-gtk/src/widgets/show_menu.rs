@@ -97,7 +97,7 @@ impl ShowMenu {
             let res = dim_titles(&episodes);
             debug_assert!(res.is_some());
 
-            sender.send(Action::MarkAllPlayerNotification(pd.clone()))
+            sender.send(Action::MarkAllPlayerNotification(pd.clone())).expect("Action channel blew up somehow")
         }));
     }
 
@@ -108,13 +108,13 @@ impl ShowMenu {
                 // if pressed twice would panic.
                 unsub.set_sensitive(false);
 
-                sender.send(Action::RemoveShow(pd.clone()));
+                sender.send(Action::RemoveShow(pd.clone())).expect("Action channel blew up somehow");
 
-                sender.send(Action::HeaderBarNormal);
-                sender.send(Action::ShowShowsAnimated);
+                sender.send(Action::HeaderBarNormal).expect("Action channel blew up somehow");
+                sender.send(Action::ShowShowsAnimated).expect("Action channel blew up somehow");
                 // Queue a refresh after the switch to avoid blocking the db.
-                sender.send(Action::RefreshShowsView);
-                sender.send(Action::RefreshEpisodesView);
+                sender.send(Action::RefreshShowsView).expect("Action channel blew up somehow");
+                sender.send(Action::RefreshEpisodesView).expect("Action channel blew up somehow");
 
                 unsub.set_sensitive(true);
             }));
@@ -149,8 +149,12 @@ fn mark_all_watched(pd: &Show, sender: &Sender<Action>) -> Result<(), Error> {
     dbqueries::update_none_to_played_now(pd)?;
     // Not all widgets might have been loaded when the mark_all is hit
     // So we will need to refresh again after it's done.
-    sender.send(Action::RefreshWidgetIfSame(pd.id()));
-    sender.send(Action::RefreshEpisodesView);
+    sender
+        .send(Action::RefreshWidgetIfSame(pd.id()))
+        .expect("Action channel blew up somehow");
+    sender
+        .send(Action::RefreshEpisodesView)
+        .expect("Action channel blew up somehow");
     Ok(())
 }
 
@@ -165,7 +169,9 @@ pub(crate) fn mark_all_notif(pd: Arc<Show>, sender: &Sender<Action>) -> InAppNot
         glib::Continue(false)
     };
 
-    let undo_callback = clone!(sender => move || sender.send(Action::RefreshWidgetIfSame(id)));
+    let undo_callback = clone!(sender => move || {
+        sender.send(Action::RefreshWidgetIfSame(id)).expect("Action channel blew up somehow")
+    });
     let text = i18n("Marked all episodes as listened");
     InAppNotification::new(&text, 6000, callback, Some(undo_callback))
 }
@@ -189,7 +195,7 @@ pub(crate) fn remove_show_notif(pd: Arc<Show>, sender: Sender<Action>) -> InAppN
                 .map_err(|_| error!("Failed to delete {}", pd_.title()))
                 .ok();
 
-            sender_.send(Action::RefreshEpisodesView);
+            sender_.send(Action::RefreshEpisodesView).expect("Action channel blew up somehow");
         }));
 
         revealer.set_reveal_child(false);
@@ -199,8 +205,12 @@ pub(crate) fn remove_show_notif(pd: Arc<Show>, sender: Sender<Action>) -> InAppN
     let undo_callback = move || {
         let res = utils::uningore_show(pd.id());
         debug_assert!(res.is_ok());
-        sender.send(Action::RefreshShowsView);
-        sender.send(Action::RefreshEpisodesView);
+        sender
+            .send(Action::RefreshShowsView)
+            .expect("Action channel blew up somehow");
+        sender
+            .send(Action::RefreshEpisodesView)
+            .expect("Action channel blew up somehow");
     };
 
     InAppNotification::new(&text, 6000, callback, Some(undo_callback))

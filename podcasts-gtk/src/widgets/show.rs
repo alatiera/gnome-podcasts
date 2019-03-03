@@ -87,7 +87,9 @@ impl ShowWidget {
         pdw.init(&pd);
 
         let menu = ShowMenu::new(&pd, &pdw.episodes, &sender);
-        sender.send(Action::InitShowMenu(Fragile::new(menu)));
+        sender
+            .send(Action::InitShowMenu(Fragile::new(menu)))
+            .expect("Action channel blew up somehow");
 
         let pdw = Rc::new(pdw);
         let res = populate_listbox(&pdw, pd.clone(), sender, vadj);
@@ -127,6 +129,8 @@ fn populate_listbox(
     sender: Sender<Action>,
     vadj: Option<Adjustment>,
 ) -> Result<(), Error> {
+    use crossbeam_channel::TryRecvError;
+
     let count = dbqueries::get_pd_episodes_count(&pd)?;
 
     let (sender_, receiver) = bounded(1);
@@ -134,7 +138,7 @@ fn populate_listbox(
         if let Ok(episodes) = dbqueries::get_pd_episodeswidgets(&pd) {
             // The receiver can be dropped if there's an early return
             // like on show without episodes for example.
-            sender_.send(episodes);
+            let _ = sender_.send(episodes);
         }
     }));
 
@@ -148,9 +152,11 @@ fn populate_listbox(
     let list_weak = show.episodes.downgrade();
     gtk::idle_add(move || {
         let episodes = match receiver.try_recv() {
-            Some(e) => e,
-            None => return glib::Continue(true),
+            Ok(e) => e,
+            Err(TryRecvError::Empty) => return glib::Continue(true),
+            Err(TryRecvError::Disconnected) => return glib::Continue(false),
         };
+
         debug_assert!(episodes.len() as i64 == count);
 
         let constructor = clone!(sender => move |ep| {

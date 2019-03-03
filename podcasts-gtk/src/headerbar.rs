@@ -204,7 +204,7 @@ impl Header {
 
         s.back.connect_clicked(clone!(weak, sender => move |_| {
             weak.upgrade().map(|h| h.switch_to_normal());
-            sender.send(Action::ShowShowsAnimated);
+            sender.send(Action::ShowShowsAnimated).expect("Action channel blew up somehow");
         }));
     }
 

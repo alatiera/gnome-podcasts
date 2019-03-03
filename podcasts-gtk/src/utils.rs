@@ -231,7 +231,9 @@ where
 {
     rayon::spawn(move || {
         let (up_sender, up_receiver) = bounded(1);
-        sender.send(Action::ShowUpdateNotif(up_receiver));
+        sender
+            .send(Action::ShowUpdateNotif(up_receiver))
+            .expect("Action channel blew up somehow");
 
         if let Some(s) = source {
             // Refresh only specified feeds
@@ -248,7 +250,9 @@ where
                 .ok();
         };
 
-        up_sender.send(true);
+        up_sender
+            .send(true)
+            .expect("Channel was dropped unexpectedly");;
     });
 }
 
@@ -313,7 +317,9 @@ pub(crate) fn set_image_from_path(
         THREADPOOL.spawn(move || {
             // This operation is polling and will block the thread till the download is finished
             if let Ok(pd) = dbqueries::get_podcast_cover_from_id(show_id) {
-                sender.send(downloader::cache_image(&pd));
+                sender
+                    .send(downloader::cache_image(&pd))
+                    .expect("channel was dropped unexpectedly");
             }
 
             if let Ok(mut guard) = COVER_DL_REGISTRY.write() {
@@ -325,18 +331,22 @@ pub(crate) fn set_image_from_path(
     let image = image.clone();
     let s = size as i32;
     gtk::timeout_add(25, move || {
-        if let Some(path) = receiver.try_recv() {
-            if let Ok(path) = path {
-                if let Ok(px) = Pixbuf::new_from_file_at_scale(&path, s, s, true) {
-                    if let Ok(mut hashmap) = CACHED_PIXBUFS.write() {
-                        hashmap.insert((show_id, size), Mutex::new(Fragile::new(px.clone())));
-                        image.set_from_pixbuf(&px);
+        use crossbeam_channel::TryRecvError;
+
+        match receiver.try_recv() {
+            Err(TryRecvError::Empty) => glib::Continue(true),
+            Err(TryRecvError::Disconnected) => glib::Continue(false),
+            Ok(path) => {
+                if let Ok(path) = path {
+                    if let Ok(px) = Pixbuf::new_from_file_at_scale(&path, s, s, true) {
+                        if let Ok(mut hashmap) = CACHED_PIXBUFS.write() {
+                            hashmap.insert((show_id, size), Mutex::new(Fragile::new(px.clone())));
+                            image.set_from_pixbuf(&px);
+                        }
                     }
                 }
+                glib::Continue(false)
             }
-            glib::Continue(false)
-        } else {
-            glib::Continue(true)
         }
     });
     Ok(())
@@ -404,12 +414,14 @@ pub(crate) fn on_import_clicked(window: &gtk::ApplicationWindow, sender: &Sender
                     refresh(Some(sources), sender)
                 } else {
                     let text = i18n("Failed to parse the imported file");
-                    sender.send(Action::ErrorNotification(text));
+                    sender.send(Action::ErrorNotification(text)).expect("Action channel blew up somehow");;
                 }
             }))
         } else {
             let text = i18n("Selected file could not be accessed.");
-            sender.send(Action::ErrorNotification(text));
+            sender
+                .send(Action::ErrorNotification(text))
+                .expect("Action channel blew up somehow");;
         }
     }
 }
@@ -446,12 +458,14 @@ pub(crate) fn on_export_clicked(window: &gtk::ApplicationWindow, sender: &Sender
             rayon::spawn(clone!(sender => move || {
                 if opml::export_from_db(filename, i18n("GNOME Podcasts Subscriptions").as_str()).is_err() {
                     let text = i18n("Failed to export podcasts");
-                    sender.send(Action::ErrorNotification(text));
+                    sender.send(Action::ErrorNotification(text)).expect("Action channel blew up somehow");
                 }
             }))
         } else {
             let text = i18n("Selected file could not be accessed.");
-            sender.send(Action::ErrorNotification(text));
+            sender
+                .send(Action::ErrorNotification(text))
+                .expect("Action channel blew up somehow");;
         }
     }
 }

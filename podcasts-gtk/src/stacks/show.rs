@@ -98,9 +98,13 @@ impl ShowStack {
         let ign = get_ignored_shows()?;
         debug!("IGNORED SHOWS {:?}", ign);
         if is_episodes_populated(&ign)? {
-            self.sender.send(Action::PopulatedState);
+            self.sender
+                .send(Action::PopulatedState)
+                .expect("Action channel blew up somehow");;
         } else {
-            self.sender.send(Action::EmptyState);
+            self.sender
+                .send(Action::EmptyState)
+                .expect("Action channel blew up somehow");;
         };
 
         Ok(())

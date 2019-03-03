@@ -534,7 +534,7 @@ impl PlayerWrapper {
         self.player.connect_error(clone!(sender => move |_, _error| {
             // sender.send(Action::ErrorNotification(format!("Player Error: {}", error)));
             let s = i18n("The media player was unable to execute an action.");
-            sender.send(Action::ErrorNotification(s));
+            sender.send(Action::ErrorNotification(s)).expect("Action channel blew up somehow");
         }));
 
         // The following callbacks require `Send` but are handled by the gtk main loop
@@ -631,8 +631,8 @@ impl PlayerWrapper {
             weak.upgrade().map(|p| p.rewind());
         }));
 
-        self.info
-            .mpris
-            .connect_raise(clone!(sender => move || sender.send(Action::RaiseWindow)));
+        self.info.mpris.connect_raise(clone!(sender => move || {
+            sender.send(Action::RaiseWindow).expect("Action channel blew up somehow");
+        }));
     }
 }
