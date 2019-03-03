@@ -109,13 +109,9 @@ impl InfoLabels {
         self.title.set_text(episode.title());
 
         if episode.played().is_some() {
-            self.title
-                .get_style_context()
-                .add_class("dim-label");
+            self.title.get_style_context().add_class("dim-label");
         } else {
-            self.title
-                .get_style_context()
-                .remove_class("dim-label");
+            self.title.get_style_context().remove_class("dim-label");
         }
     }
 

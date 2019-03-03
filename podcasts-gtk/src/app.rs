@@ -333,10 +333,8 @@ impl App {
             Action::ShowWidgetAnimated => {
                 let shows = self.content.get_shows();
                 let mut pop = shows.borrow().populated();
-                pop.borrow_mut().switch_visible(
-                    PopulatedState::Widget,
-                    gtk::StackTransitionType::SlideLeft,
-                );
+                pop.borrow_mut()
+                    .switch_visible(PopulatedState::Widget, gtk::StackTransitionType::SlideLeft);
             }
             Action::ShowShowsAnimated => {
                 let shows = self.content.get_shows();

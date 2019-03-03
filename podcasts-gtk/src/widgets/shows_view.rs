@@ -127,7 +127,10 @@ struct ShowsChild {
 
 impl Default for ShowsChild {
     fn default() -> Self {
-        let cover = gtk::Image::new_from_icon_name("image-x-generic-symbolic", gtk::IconSize::__Unknown(-1));
+        let cover = gtk::Image::new_from_icon_name(
+            "image-x-generic-symbolic",
+            gtk::IconSize::__Unknown(-1),
+        );
         let child = gtk::FlowBoxChild::new();
 
         cover.set_pixel_size(256);
