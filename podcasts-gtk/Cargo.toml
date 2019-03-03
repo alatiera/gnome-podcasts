@@ -27,7 +27,11 @@ reqwest = "0.9.10"
 serde_json = "1.0.39"
 # html2text = "0.1.8"
 html2text = { git = "https://github.com/jugglerchris/rust-html2text" }
-gettext-rs = { git = "https://github.com/danigm/gettext-rs", branch = "no-gettext", features = ["gettext-system"] }
+
+[dependencies.gettext-rs]
+git = "https://github.com/danigm/gettext-rs"
+branch = "no-gettext"
+features = ["gettext-system"]
 
 [dependencies.gtk]
 features = ["v3_24"]
