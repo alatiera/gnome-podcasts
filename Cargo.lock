@@ -860,7 +860,7 @@ dependencies = [
 [[package]]
 name = "html2text"
 version = "0.1.8"
-source = "git+https://github.com/alatiera/rust-html2text#39a8015a6ff50a4f08140bb7a58157567bf137bf"
+source = "git+https://github.com/jugglerchris/rust-html2text#39a8015a6ff50a4f08140bb7a58157567bf137bf"
 dependencies = [
  "backtrace 0.3.14 (registry+https://github.com/rust-lang/crates.io-index)",
  "html5ever 0.22.5 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -1569,7 +1569,7 @@ dependencies = [
  "gstreamer 0.13.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "gstreamer-player 0.13.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "gtk 0.6.0 (registry+https://github.com/rust-lang/crates.io-index)",
- "html2text 0.1.8 (git+https://github.com/alatiera/rust-html2text)",
+ "html2text 0.1.8 (git+https://github.com/jugglerchris/rust-html2text)",
  "humansize 1.1.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "lazy_static 1.3.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "libhandy 0.3.0 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -2637,7 +2637,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 "checksum gtk 0.6.0 (registry+https://github.com/rust-lang/crates.io-index)" = "b52cfbd8c3e4a000c8374676352f3850c2d62c0f42ef0a993e5d3fcf47e0be64"
 "checksum gtk-sys 0.8.0 (registry+https://github.com/rust-lang/crates.io-index)" = "849835f05d46f605b00ee9fefb6d5921238c570af406f35ee7426ed01cd6795c"
 "checksum h2 0.1.16 (registry+https://github.com/rust-lang/crates.io-index)" = "ddb2b25a33e231484694267af28fec74ac63b5ccf51ee2065a5e313b834d836e"
-"checksum html2text 0.1.8 (git+https://github.com/alatiera/rust-html2text)" = "<none>"
+"checksum html2text 0.1.8 (git+https://github.com/jugglerchris/rust-html2text)" = "<none>"
 "checksum html5ever 0.22.5 (registry+https://github.com/rust-lang/crates.io-index)" = "c213fa6a618dc1da552f54f85cba74b05d8e883c92ec4e89067736938084c26e"
 "checksum html5ever-atoms 0.3.0 (registry+https://github.com/rust-lang/crates.io-index)" = "8e4a291981feff7291514f8219d5cd2c740d0c042d75cff248a7c00a025f9d40"
 "checksum http 0.1.16 (registry+https://github.com/rust-lang/crates.io-index)" = "fe67e3678f2827030e89cc4b9e7ecd16d52f132c0b940ab5005f88e821500f6a"
