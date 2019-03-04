@@ -1,6 +1,5 @@
 [package]
 authors = ["Jordan Petridis <jpetridis@gnome.com>"]
-build = "build.rs"
 name = "podcasts-gtk"
 version = "0.1.0"
 

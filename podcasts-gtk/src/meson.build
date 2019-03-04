@@ -15,12 +15,29 @@ run_command(
   check: true
 )
 
+# include_bytes! only takes a string literal
+resource_conf = configuration_data()
+resource_conf.set_quoted('RESOURCEFILE', podcasts_resources.full_path())
+resource_rs = configure_file(
+  input: 'static_resource.rs.in',
+  output: 'static_resource.rs',
+  configuration: resource_conf
+)
+
+run_command(
+  'cp',
+  resource_rs,
+  meson.current_source_dir(),
+  check: true
+)
+
 cargo_release = custom_target('cargo-build',
                         build_always_stale: true,
                         output: ['gnome-podcasts'],
                         install: true,
                         install_dir: podcasts_bindir,
                         console: true,
+                        depends: podcasts_resources,
                         command: [cargo_script,
                                   '@SOURCE_ROOT@',
                                   '@OUTPUT@',

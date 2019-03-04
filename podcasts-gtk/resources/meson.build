@@ -58,4 +58,11 @@ configure_file(
   install_dir: join_paths(datadir,'dbus-1', 'services')
 )
 
+podcasts_resources = gnome.compile_resources(
+  'resources',
+  'resources.xml',
+  gresource_bundle: true,
+  source_dir: meson.current_build_dir()
+)
+
 meson.add_install_script('../../scripts/compile-gschema.py')

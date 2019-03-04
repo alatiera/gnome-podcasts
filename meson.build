@@ -46,6 +46,7 @@ endif
 
 application_id = 'org.gnome.Podcasts@0@'.format(profile)
 i18n = import('i18n')
+gnome = import('gnome')
 
 subdir('podcasts-gtk/po')
 podir = join_paths (meson.source_root (), 'podcasts-gtk', 'po')

@@ -12,9 +12,6 @@ export CONFIGURE_ARGS="-Dprofile=development"
 # export RUNTIME_REPO="https://sdk.gnome.org/gnome-nightly.flatpakrepo"
 
 flatpak-builder --stop-at=${FLATPAK_MODULE} --force-clean app ${MANIFEST_PATH}
-# https://gitlab.gnome.org/World/podcasts/issues/55
-# Force regeneration of gresources regardless of artifacts chage
-flatpak-builder --run app ${MANIFEST_PATH} glib-compile-resources --sourcedir=podcasts-gtk/resources/ podcasts-gtk/resources/resources.xml
 
 # Build the flatpak repo
 flatpak-builder --run app ${MANIFEST_PATH} meson --prefix=/app ${CONFIGURE_ARGS} build
