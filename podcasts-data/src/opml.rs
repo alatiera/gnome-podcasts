@@ -91,8 +91,7 @@ pub fn export_from_db<P: AsRef<Path>>(path: P, export_title: &str) -> Result<(),
 
 /// Export from `Source`s and `Show`s into `F` in OPML format
 pub fn export_to_file<F: Write>(file: F, export_title: &str) -> Result<(), Error> {
-    let mut config = EmitterConfig::new().perform_indent(true);
-    config.perform_escaping = false;
+    let config = EmitterConfig::new().perform_indent(true);
 
     let mut writer = config.create_writer(file);
 
