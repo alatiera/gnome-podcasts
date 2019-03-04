@@ -65,20 +65,7 @@ subdir('podcasts-gtk/resources')
 
 cargo_script = find_program('scripts/cargo.sh')
 
-cargo_release = custom_target('cargo-build',
-                        build_always_stale: true,
-                        output: ['gnome-podcasts'],
-                        install: true,
-                        install_dir: podcasts_bindir,
-                        console: true,
-                        command: [cargo_script,
-                                  '@CURRENT_SOURCE_DIR@',
-                                  '@OUTPUT@',
-                                  podcasts_localedir,
-                                  application_id,
-                                  podcasts_version + version_suffix,
-                                  profile
-                                 ])
+subdir('podcasts-gtk/src')
 
 run_target('release', command: ['scripts/release.sh',
                                 meson.project_name() + '-' + podcasts_version
