@@ -69,9 +69,11 @@ test_script = find_program('scripts/test.sh')
 
 subdir('podcasts-gtk/src')
 
-run_target('release', command: ['scripts/release.sh',
-                                meson.project_name() + '-' + podcasts_version
-                               ])
+meson.add_dist_script(
+  'scripts/dist-vendor.sh',
+  meson.source_root(),
+  join_paths(meson.build_root(), 'meson-dist', meson.project_name() + '-' + podcasts_version)
+)
 
 test(
   'cargo-test',

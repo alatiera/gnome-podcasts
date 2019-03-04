@@ -22,4 +22,5 @@ if test -d vendor; then
     ARGS+=('--frozen')
 fi
 
-cargo build ${ARGS[@]} -p podcasts-gtk && cp $1/target/${TARGET}/podcasts-gtk $2
+cargo build ${ARGS[@]} --manifest-path="$1"/Cargo.toml -p podcasts-gtk &&
+cp $1/target/${TARGET}/podcasts-gtk $2
