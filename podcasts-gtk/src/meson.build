@@ -41,8 +41,6 @@ cargo_release = custom_target('cargo-build',
                         command: [cargo_script,
                                   '@SOURCE_ROOT@',
                                   '@OUTPUT@',
-                                  podcasts_localedir,
-                                  application_id,
-                                  podcasts_version + version_suffix,
+                                  meson.build_root(),
                                   profile
                                  ])

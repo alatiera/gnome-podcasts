@@ -78,6 +78,7 @@ meson.add_dist_script(
 test(
   'cargo-test',
   test_script,
+  args: meson.build_root(),
   workdir: meson.source_root(),
   timeout: 3000
 )
