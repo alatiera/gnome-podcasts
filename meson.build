@@ -67,6 +67,8 @@ subdir('podcasts-gtk/resources')
 cargo_script = find_program('scripts/cargo.sh')
 test_script = find_program('scripts/test.sh')
 
+subdir('podcasts-data/src')
+subdir('podcasts-downloader/src')
 subdir('podcasts-gtk/src')
 
 meson.add_dist_script(

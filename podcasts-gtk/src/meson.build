@@ -31,8 +31,39 @@ run_command(
   check: true
 )
 
+podcasts_sources = files(
+  'stacks/content.rs',
+  'stacks/home.rs',
+  'stacks/mod.rs',
+  'stacks/populated.rs',
+  'stacks/show.rs',
+  'widgets/aboutdialog.rs',
+  'widgets/appnotif.rs',
+  'widgets/base_view.rs',
+  'widgets/empty.rs',
+  'widgets/home_view.rs',
+  'widgets/mod.rs',
+  'widgets/player.rs',
+  'widgets/show.rs',
+  'widgets/show_menu.rs',
+  'widgets/shows_view.rs',
+  'app.rs',
+  'headerbar.rs',
+  'i18n.rs',
+  'main.rs',
+  'manager.rs',
+  'prefs.rs',
+  'settings.rs',
+  'utils.rs'
+)
+
 cargo_release = custom_target('cargo-build',
-                        build_always_stale: true,
+                        build_by_default: true,
+                        input: [
+                                data_sources,
+                                downloader_sources,
+                                podcasts_sources,
+                               ],
                         output: ['gnome-podcasts'],
                         install: true,
                         install_dir: podcasts_bindir,
