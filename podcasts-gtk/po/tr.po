@@ -1,14 +1,14 @@
 # Turkish translation for podcasts.
 # Copyright (C) 2018 podcasts's COPYRIGHT HOLDER
 # This file is distributed under the same license as the podcasts package.
-# Emin Tufan Çetin <etcetin@gmail.com>, 2018.
+# Emin Tufan Çetin <etcetin@gmail.com>, 2018-2019.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: podcasts master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2018-10-05 11:47+0000\n"
-"PO-Revision-Date: 2018-10-06 18:52+0300\n"
+"POT-Creation-Date: 2019-03-03 16:03+0000\n"
+"PO-Revision-Date: 2019-03-06 13:46+0300\n"
 "Last-Translator: Emin Tufan Çetin <etcetin@gmail.com>\n"
 "Language-Team: Türkçe <gnome-turk@gnome.org>\n"
 "Language: tr\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Gtranslator 2.91.7\n"
+"X-Generator: Gtranslator 3.30.1\n"
 
 #: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml:15
 msgid "Top position of the last open main window"
@@ -48,11 +48,11 @@ msgstr "Belirli aralıklarla içeriğin yenilenmesi"
 
 #: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml:46
 msgid "How many periods of time to wait between automatic refreshes"
-msgstr ""
+msgstr "Kendiliğinden yenilemeler arasında kaç zaman aralığı beklenecek"
 
 #: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml:50
 msgid "What period of time to wait between automatic refreshes"
-msgstr ""
+msgstr "Kendiliğinden yenilemeler arasında beklenecek zaman aralığı"
 
 #: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml:54
 msgid "Whether to refresh content after startup"
@@ -60,17 +60,17 @@ msgstr "Başlangıçtan sonra içeriğin yenilenmesi"
 
 #: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml:60
 msgid "How many periods of time to wait between automatic cleanups"
-msgstr ""
+msgstr "Kendiliğinden temizlemeler arasında kaç zaman aralığı beklenecek"
 
 #: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml:64
 msgid "What period of time to wait between automatic cleanups"
-msgstr ""
+msgstr "Kendiliğinden temizlemeler arasında beklenecek zaman aralığı"
 
 #. Weird magic I copy-pasted that sets the Application Name in the Shell.
 #: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:3
 #: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:4
-#: podcasts-gtk/src/app.rs:92 podcasts-gtk/src/app.rs:416
-#: podcasts-gtk/src/widgets/aboutdialog.rs:31
+#: podcasts-gtk/src/app.rs:124 podcasts-gtk/src/app.rs:463
+#: podcasts-gtk/src/widgets/aboutdialog.rs:56
 msgid "Podcasts"
 msgstr "Podcastler"
 
@@ -93,7 +93,7 @@ msgstr "Podcast;RSS;Pod Yayını;"
 msgid "Podcast app for GNOME"
 msgstr "GNOME için Podcast uygulaması"
 
-#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:51
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:77
 msgid "Jordan Petridis"
 msgstr "Jordan Petridis"
 
@@ -126,7 +126,6 @@ msgid "Play this episode"
 msgstr "Bu bölümü oynat"
 
 #: podcasts-gtk/resources/gtk/episode_widget.ui:241
-#| msgid "Cancel the download proccess"
 msgid "Cancel the download process"
 msgstr "İndirme sürecini iptal et"
 
@@ -142,6 +141,10 @@ msgstr "Yeni Bölümleri _Denetle"
 msgid "_Import Shows"
 msgstr "_Gösterileri İçe Aktar"
 
+#: podcasts-gtk/resources/gtk/hamburger.ui:16
+msgid "_Export Shows"
+msgstr "_Gösterileri Dışa Aktar"
+
 #: podcasts-gtk/resources/gtk/hamburger.ui:22
 msgid "_Preferences"
 msgstr "_Tercihler"
@@ -151,7 +154,6 @@ msgid "_Keyboard Shortcuts"
 msgstr "_Klavye Kısayolları"
 
 #: podcasts-gtk/resources/gtk/hamburger.ui:35
-#| msgid "Podcasts"
 msgid "_About Podcasts"
 msgstr "Podcastler _Hakkında"
 
@@ -317,92 +319,112 @@ msgstr "Tümünü Oynatıldı Olarak İmle"
 msgid "Unsubscribe"
 msgstr "Abonelikten Çık"
 
-#: podcasts-gtk/src/app.rs:333
+#: podcasts-gtk/src/app.rs:378
 msgid "Fetching new episodes"
 msgstr "Yeni bölümler alınıyor"
 
-#: podcasts-gtk/src/headerbar.rs:98
+#: podcasts-gtk/src/headerbar.rs:117
 msgid "You are already subscribed to this show"
 msgstr "Bu gösteriye zaten abonesiniz"
 
-#: podcasts-gtk/src/headerbar.rs:106
+#: podcasts-gtk/src/headerbar.rs:125
 msgid "Invalid URL"
 msgstr "Geçersiz URL"
 
-#: podcasts-gtk/src/prefs.rs:59
+#: podcasts-gtk/src/prefs.rs:78
 msgid "Seconds"
 msgstr "Saniye"
 
-#: podcasts-gtk/src/prefs.rs:60
+#: podcasts-gtk/src/prefs.rs:79
 msgid "Minutes"
 msgstr "Dakika"
 
-#: podcasts-gtk/src/prefs.rs:61
+#: podcasts-gtk/src/prefs.rs:80
 msgid "Hours"
 msgstr "Saat"
 
-#: podcasts-gtk/src/prefs.rs:62
+#: podcasts-gtk/src/prefs.rs:81
 msgid "Days"
 msgstr "Gün"
 
-#: podcasts-gtk/src/prefs.rs:63
+#: podcasts-gtk/src/prefs.rs:82
 msgid "Weeks"
 msgstr "Hafta"
 
-#: podcasts-gtk/src/stacks/content.rs:35
+#: podcasts-gtk/src/stacks/content.rs:54
 msgid "New"
 msgstr "Yeni"
 
-#: podcasts-gtk/src/stacks/content.rs:36
+#: podcasts-gtk/src/stacks/content.rs:55
 msgid "Shows"
 msgstr "Gösteriler"
 
-#: podcasts-gtk/src/utils.rs:357
+#: podcasts-gtk/src/utils.rs:387
 msgid "Select the file from which to you want to import shows."
-msgstr "Gösterileri içe aktarmak istediğiniz dosyayı seçin"
+msgstr "Gösterileri içe aktarmak istediğiniz dosyayı seçin."
 
-#: podcasts-gtk/src/utils.rs:360
+#: podcasts-gtk/src/utils.rs:390
 msgid "_Import"
 msgstr "_İçe Aktar"
 
-#: podcasts-gtk/src/utils.rs:369
+#: podcasts-gtk/src/utils.rs:399 podcasts-gtk/src/utils.rs:447
 msgid "OPML file"
 msgstr "OPML dosyası"
 
-#: podcasts-gtk/src/utils.rs:386
+#: podcasts-gtk/src/utils.rs:416
 msgid "Failed to parse the imported file"
 msgstr "İçe aktarılan dosya ayrıştırılamadı"
 
-#: podcasts-gtk/src/utils.rs:391
+#: podcasts-gtk/src/utils.rs:421 podcasts-gtk/src/utils.rs:465
 msgid "Selected file could not be accessed."
 msgstr "Seçilen dosyaya erişilemedi."
 
-#: podcasts-gtk/src/widgets/aboutdialog.rs:26
+#: podcasts-gtk/src/utils.rs:435
+msgid "Export shows to…"
+msgstr "Gösterileri dışa aktar…"
+
+#: podcasts-gtk/src/utils.rs:438
+msgid "_Export"
+msgstr "_Dışa Aktar"
+
+#: podcasts-gtk/src/utils.rs:439
+msgid "_Cancel"
+msgstr "_İptal"
+
+#: podcasts-gtk/src/utils.rs:459
+msgid "GNOME Podcasts Subscriptions"
+msgstr "GNOME Podcastler Abonelikleri"
+
+#: podcasts-gtk/src/utils.rs:460
+msgid "Failed to export podcasts"
+msgstr "Podcastler dışa aktarılamadı"
+
+#: podcasts-gtk/src/widgets/aboutdialog.rs:51
 msgid "Podcast Client for the GNOME Desktop."
 msgstr "GNOME Masaüstü için Podcast İstemcisi."
 
-#: podcasts-gtk/src/widgets/aboutdialog.rs:33
+#: podcasts-gtk/src/widgets/aboutdialog.rs:58
 msgid "Learn more about GNOME Podcasts"
 msgstr "GNOME Podcastler hakkında daha çoğunu öğrenin"
 
-#: podcasts-gtk/src/widgets/aboutdialog.rs:38
+#: podcasts-gtk/src/widgets/aboutdialog.rs:63
 msgid "translator-credits"
 msgstr "Emin Tufan Çetin <etcetin@gmail.com>"
 
-#: podcasts-gtk/src/widgets/episode.rs:130
+#: podcasts-gtk/src/widgets/episode.rs:145
 msgid "{} min"
 msgstr "{} dak"
 
 #. sender.send(Action::ErrorNotification(format!("Player Error: {}", error)));
-#: podcasts-gtk/src/widgets/player.rs:363
+#: podcasts-gtk/src/widgets/player.rs:536
 msgid "The media player was unable to execute an action."
 msgstr "Ortam oynatıcı eylemi yürütemiyor."
 
-#: podcasts-gtk/src/widgets/show_menu.rs:150
+#: podcasts-gtk/src/widgets/show_menu.rs:175
 msgid "Marked all episodes as listened"
 msgstr "Tüm bölümler dinlendi olarak imlendi"
 
-#: podcasts-gtk/src/widgets/show_menu.rs:155
+#: podcasts-gtk/src/widgets/show_menu.rs:180
 msgid "Unsubscribed from {}"
 msgstr "{} aboneliğinden çıkıldı"
 
@@ -411,9 +433,6 @@ msgstr "{} aboneliğinden çıkıldı"
 
 #~ msgid "org.gnome.Podcasts"
 #~ msgstr "org.gnome.Podcasts"
-
-#~ msgid "Cancel"
-#~ msgstr "İptal"
 
 #~ msgid "Episode Title"
 #~ msgstr "Bölüm Başlığı"
