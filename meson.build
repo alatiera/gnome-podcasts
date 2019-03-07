@@ -46,6 +46,7 @@ endif
 
 application_id = 'org.gnome.Podcasts@0@'.format(profile)
 i18n = import('i18n')
+gnome = import('gnome')
 
 subdir('podcasts-gtk/po')
 podir = join_paths (meson.source_root (), 'podcasts-gtk', 'po')
@@ -64,22 +65,22 @@ datadir = get_option('datadir')
 subdir('podcasts-gtk/resources')
 
 cargo_script = find_program('scripts/cargo.sh')
+test_script = find_program('scripts/test.sh')
 
-cargo_release = custom_target('cargo-build',
-                        build_always_stale: true,
-                        output: ['gnome-podcasts'],
-                        install: true,
-                        install_dir: podcasts_bindir,
-                        console: true,
-                        command: [cargo_script,
-                                  '@CURRENT_SOURCE_DIR@',
-                                  '@OUTPUT@',
-                                  podcasts_localedir,
-                                  application_id,
-                                  podcasts_version + version_suffix,
-                                  profile
-                                 ])
+subdir('podcasts-data/src')
+subdir('podcasts-downloader/src')
+subdir('podcasts-gtk/src')
 
-run_target('release', command: ['scripts/release.sh',
-                                meson.project_name() + '-' + podcasts_version
-                               ])
+meson.add_dist_script(
+  'scripts/dist-vendor.sh',
+  meson.source_root(),
+  join_paths(meson.build_root(), 'meson-dist', meson.project_name() + '-' + podcasts_version)
+)
+
+test(
+  'cargo-test',
+  test_script,
+  args: meson.build_root(),
+  workdir: meson.source_root(),
+  timeout: 3000
+)

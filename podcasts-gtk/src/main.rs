@@ -109,6 +109,7 @@ mod stacks;
 mod widgets;
 
 mod app;
+mod config;
 mod headerbar;
 mod prefs;
 

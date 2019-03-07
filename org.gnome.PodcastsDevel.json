@@ -63,6 +63,7 @@
         {
             "name" : "gnome-podcasts",
             "buildsystem" : "meson",
+            "builddir" : "true",
             "config-opts" : [ "-Dprofile=development" ],
             "sources" : [
                 {

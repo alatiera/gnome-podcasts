@@ -17,9 +17,6 @@ flatpak:
 
     script:
         - flatpak-builder --stop-at=${FLATPAK_MODULE} app ${MANIFEST_PATH}
-        # https://gitlab.gnome.org/World/podcasts/issues/55
-        # Force regeneration of gresources regardless of artifacts chage
-        - flatpak-builder --run app ${MANIFEST_PATH} glib-compile-resources --sourcedir=podcasts-gtk/resources/ podcasts-gtk/resources/resources.xml
 
         # Build the flatpak repo
         - flatpak-builder --run app ${MANIFEST_PATH} meson --prefix=/app ${CONFIGURE_ARGS} _build
@@ -29,13 +26,10 @@ flatpak:
         - |
           xvfb-run -a -s "-screen 0 1024x768x24" \
               flatpak-builder --run \
-              --env=APP_ID="org.gnome.PodcastsDevel" \
-              --env=LOCALEDIR="./podcasts-gtk/po" \
-              --env=VERSION="0.0.0" \
-              --env=CARGO_HOME="target/cargo-home" \
-              --env=CARGO_TARGET_DIR="target_test/" \
+              --env=CARGO_HOME="${CI_PROJECT_DIR}/target/cargo-home" \
+              --env=CARGO_TARGET_DIR="${CI_PROJECT_DIR}/target/" \
               app ${MANIFEST_PATH} \
-              cargo test --color=always -j 1 -- --test-threads=1
+              ninja -C _build test
 
         # Create a flatpak bundle
         - flatpak-builder --finish-only app ${MANIFEST_PATH}
@@ -92,6 +86,10 @@ rustfmt:
   stage: "lint"
   script:
     - rustup component add rustfmt
+    # Create blank versions of our configured files
+    # so rustfmt does not yell about non-existent files or completely empty files
+    - echo -e "" >> podcasts-gtk/src/config.rs
+    - echo -e "" >> podcasts-gtk/src/static_resource.rs
     - rustc -Vv && cargo -Vv
     - cargo fmt --version
     - cargo fmt --all -- --color=always --check

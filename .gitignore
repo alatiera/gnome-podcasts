@@ -17,3 +17,7 @@ target_*/
 .flatpak-builder/
 app/
 repo/
+
+# Files configured by meson
+podcasts-gtk/src/config.rs
+podcasts-gtk/src/static_resource.rs

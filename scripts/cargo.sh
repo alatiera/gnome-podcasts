@@ -2,11 +2,10 @@
 
 set -ex
 
-export CARGO_HOME=$1/target/cargo-home
-export LOCALEDIR="$3"
-export APP_ID="$4"
-export VERSION="$5"
-export PROFILE="$6"
+export OUTPUT="$2"
+export CARGO_TARGET_DIR="$3"/target
+export CARGO_HOME="$CARGO_TARGET_DIR"/cargo-home
+export PROFILE="$4"
 
 TARGET=debug
 ARGS=()
@@ -22,4 +21,5 @@ if test -d vendor; then
     ARGS+=('--frozen')
 fi
 
-cargo build ${ARGS[@]} -p podcasts-gtk && cp $1/target/${TARGET}/podcasts-gtk $2
+cargo build ${ARGS[@]} --manifest-path="$1"/Cargo.toml -p podcasts-gtk &&
+cp "$CARGO_TARGET_DIR"/${TARGET}/podcasts-gtk "$OUTPUT"

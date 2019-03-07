@@ -23,7 +23,7 @@ use glib::Bytes;
 pub(crate) fn init() -> Result<(), Error> {
     // load the gresource binary at build time and include/link it into the final
     // binary.
-    let res_bytes = include_bytes!("../resources/resources.gresource");
+    let res_bytes = include_bytes!(@RESOURCEFILE@);
 
     // Create Resource it will live as long the value lives.
     let gbytes = Bytes::from_static(res_bytes.as_ref());

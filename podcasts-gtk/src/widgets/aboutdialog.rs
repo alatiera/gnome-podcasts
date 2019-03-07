@@ -17,7 +17,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-use crate::app::{APP_ID, VERSION};
+use crate::config::{APP_ID, VERSION};
 use gtk;
 use gtk::prelude::*;
 
@@ -47,12 +47,12 @@ pub(crate) fn about_dialog(window: &gtk::ApplicationWindow) {
     ];
 
     let dialog = gtk::AboutDialog::new();
-    dialog.set_logo_icon_name(*APP_ID);
+    dialog.set_logo_icon_name(APP_ID);
     dialog.set_comments(i18n("Podcast Client for the GNOME Desktop.").as_str());
     dialog.set_copyright("© 2017, 2018 Jordan Petridis");
     dialog.set_license_type(gtk::License::Gpl30);
     dialog.set_modal(true);
-    dialog.set_version(*VERSION);
+    dialog.set_version(VERSION);
     dialog.set_program_name(&i18n("Podcasts"));
     dialog.set_website("https://wiki.gnome.org/Apps/Podcasts");
     dialog.set_website_label(i18n("Learn more about GNOME Podcasts").as_str());
