@@ -81,6 +81,24 @@ Tobias Bernard
         <property name="margin">6</property>
         <property name="orientation">vertical</property>
         <child>
+          <object class="GtkModelButton" id="rate_2_00">
+            <property name="text">&lt;span font-features="tnum=1"&gt;2.00×&lt;/span&gt;</property>
+            <property name="use-markup">True</property>
+            <property name="visible">True</property>
+            <property name="tooltip_text" translatable="yes">Double speed rate</property>
+            <property name="role">radio</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkModelButton" id="rate_1_75">
+            <property name="text">&lt;span font-features="tnum=1"&gt;1.75×&lt;/span&gt;</property>
+            <property name="use-markup">True</property>
+            <property name="visible">True</property>
+            <property name="tooltip_text" translatable="yes">1.75 speed rate</property>
+            <property name="role">radio</property>
+          </object>
+        </child>
+        <child>
           <object class="GtkModelButton" id="rate_1_50">
             <property name="text">&lt;span font-features="tnum=1"&gt;1.50×&lt;/span&gt;</property>
             <property name="use-markup">True</property>
@@ -88,11 +106,6 @@ Tobias Bernard
             <property name="tooltip_text" translatable="yes">1.5 speed rate</property>
             <property name="role">radio</property>
           </object>
-          <packing>
-            <property name="expand">True</property>
-            <property name="fill">True</property>
-            <property name="position">0</property>
-          </packing>
         </child>
         <child>
           <object class="GtkModelButton" id="rate_1_25">
@@ -102,11 +115,6 @@ Tobias Bernard
             <property name="tooltip_text" translatable="yes">1.25 speed rate</property>
             <property name="role">radio</property>
           </object>
-          <packing>
-            <property name="expand">True</property>
-            <property name="fill">True</property>
-            <property name="position">1</property>
-          </packing>
         </child>
         <child>
           <object class="GtkModelButton" id="normal_rate">
@@ -117,11 +125,6 @@ Tobias Bernard
             <property name="active">True</property>
             <property name="role">radio</property>
           </object>
-          <packing>
-            <property name="expand">True</property>
-            <property name="fill">True</property>
-            <property name="position">2</property>
-          </packing>
         </child>
       </object>
     </child>
