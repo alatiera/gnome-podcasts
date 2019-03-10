@@ -10,7 +10,7 @@
     "tags" : [
         "nightly"
     ],
-    "desktop-file-name-prefix" : "(Nightly) ",
+    "desktop-file-name-suffix" : " ☢️",
     "finish-args" : [
         "--filesystem=xdg-run/dconf",
         "--filesystem=~/.config/dconf:ro",
