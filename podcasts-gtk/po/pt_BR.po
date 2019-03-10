@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: podcasts master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2019-01-27 04:48+0000\n"
-"PO-Revision-Date: 2019-01-28 19:19-0200\n"
+"POT-Creation-Date: 2019-02-02 15:17+0000\n"
+"PO-Revision-Date: 2019-03-09 22:31-0300\n"
 "Last-Translator: Rafael Fontenelle <rafaelff@gnome.org>\n"
 "Language-Team: Portuguese - Brazil <gnome-pt_br-list@gnome.org>\n"
 "Language: pt_BR\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1)\n"
-"X-Generator: Gtranslator 3.31.0\n"
+"X-Generator: Gtranslator 3.31.90\n"
 
 #: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml:15
 msgid "Top position of the last open main window"
@@ -384,7 +384,8 @@ msgid "Selected file could not be accessed."
 msgstr "O arquivo selecionado não pôde ser acessado."
 
 #: podcasts-gtk/src/utils.rs:423
-msgid "Export shows to..."
+#| msgid "Export shows to..."
+msgid "Export shows to…"
 msgstr "Exportar podcasts para…"
 
 #: podcasts-gtk/src/utils.rs:426
