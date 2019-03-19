@@ -402,10 +402,7 @@ impl App {
                 self.headerbar.switch.set_sensitive(true);
                 self.content.switch_to_populated();
             }
-            // https://gitlab.gnome.org/GNOME/gtk/issues/624#note_109968
-            Action::RaiseWindow => self
-                .window
-                .present_with_time((glib::get_monotonic_time() / 1000) as u32),
+            Action::RaiseWindow => self.window.present(),
         };
 
         glib::Continue(true)
