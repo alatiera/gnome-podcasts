@@ -32,7 +32,7 @@ gschemas = find_program('glib-compile-schemas', required: true)
 cargo_vendor = find_program('cargo-vendor', required: false)
 
 if get_option('profile') == 'development'
-  profile = 'Devel'
+  profile = '.Devel'
   vcs_tag = run_command('git', 'rev-parse', '--short', 'HEAD').stdout().strip()
   if vcs_tag == ''
     version_suffix = '-devel'

@@ -1,5 +1,5 @@
 {
-    "app-id" : "org.gnome.PodcastsDevel",
+    "app-id" : "org.gnome.Podcasts.Devel",
     "runtime" : "org.gnome.Platform",
     "runtime-version" : "master",
     "sdk" : "org.gnome.Sdk",
@@ -31,8 +31,8 @@
             "--share=network"
         ],
         "env" : {
-            "CARGO_HOME" : "/run/build/Podcasts/cargo",
             "RUSTFLAGS" : "--error-format=short --remap-path-prefix =../",
+            "CARGO_HOME" : "/run/build/Podcasts/cargo",
             "RUST_BACKTRACE" : "1"
         }
     },
@@ -49,8 +49,8 @@
                 "-Dglade_catalog=disabled"
             ],
             "cleanup" : [
-              "/include",
-              "/lib/pkgconfig"
+                "/include",
+                "/lib/pkgconfig"
             ],
             "sources" : [
                 {
@@ -63,8 +63,9 @@
         {
             "name" : "gnome-podcasts",
             "buildsystem" : "meson",
-            "builddir" : "true",
-            "config-opts" : [ "-Dprofile=development" ],
+            "config-opts" : [
+                "-Dprofile=development"
+            ],
             "sources" : [
                 {
                     "type" : "git",
