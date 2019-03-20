@@ -4,9 +4,6 @@ project(
   license: 'GPLv3',
 )
 
-# FIXME: look for cargo and optionally cargo-vendor
-# dependency('cargo')
-
 dependency('sqlite3', version: '>= 3.20')
 dependency('openssl', version: '>= 1.0')
 dependency('dbus-1')
