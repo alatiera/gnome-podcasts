@@ -13,7 +13,7 @@ flatpak:
         MANIFEST_PATH: "org.gnome.Podcasts.Devel.json"
         FLATPAK_MODULE: "gnome-podcasts"
         CONFIGURE_ARGS: "-Dprofile=development"
-        DBUS_ID: "org.gnome.PodcastsDevel"
+        DBUS_ID: "org.gnome.Podcasts.Devel"
 
     script:
         - flatpak-builder --stop-at=${FLATPAK_MODULE} app ${MANIFEST_PATH}
