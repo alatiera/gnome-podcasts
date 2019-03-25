@@ -33,7 +33,7 @@ want to discuss design or simply hang out, please join us on our [irc][irc] or [
 ### Flatpak
 
 Flatpak is the recommended way of building and installing GNOME Podcasts.
-Here are the depencancies you will need.
+Here are the dependencies you will need.
 
 ```sh
 # Add flathub and the gnome-nightly repo
