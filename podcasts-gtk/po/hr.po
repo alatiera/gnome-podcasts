@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: podcasts master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2018-10-05 11:47+0000\n"
-"PO-Revision-Date: 2018-10-24 21:44+0200\n"
+"POT-Creation-Date: 2019-03-25 09:23+0000\n"
+"PO-Revision-Date: 2019-03-27 16:19+0100\n"
 "Last-Translator: \n"
 "Language-Team: Croatian <hr@li.org>\n"
 "Language: hr\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
-"X-Generator: Poedit 2.1.1\n"
+"X-Generator: Poedit 2.0.6\n"
 
 #: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml:15
 msgid "Top position of the last open main window"
@@ -73,8 +73,8 @@ msgstr "Koliko vremensko razdoblje treba pričekati između automatskih čišće
 #. Weird magic I copy-pasted that sets the Application Name in the Shell.
 #: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:3
 #: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:4
-#: podcasts-gtk/src/app.rs:92 podcasts-gtk/src/app.rs:416
-#: podcasts-gtk/src/widgets/aboutdialog.rs:31
+#: podcasts-gtk/src/app.rs:110 podcasts-gtk/src/app.rs:446
+#: podcasts-gtk/src/widgets/aboutdialog.rs:56
 msgid "Podcasts"
 msgstr "Podcasti"
 
@@ -82,11 +82,6 @@ msgstr "Podcasti"
 #: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:10
 msgid "Listen to your favorite podcasts, right from your desktop."
 msgstr "Slušajte svoje omiljene podcaste."
-
-#. Translators: Do NOT translate or transliterate this text (this is an icon file name)!
-#: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:6
-msgid "@icon@"
-msgstr "@icon@"
 
 #. Translators: Search terms to find this application. Do NOT translate or localize the semicolons! The list MUST also end with a semicolon!
 #: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:13
@@ -97,7 +92,7 @@ msgstr "Podcast;RSS;"
 msgid "Podcast app for GNOME"
 msgstr "Podcast aplikacija za GNOME"
 
-#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:51
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:77
 msgid "Jordan Petridis"
 msgstr "Jordan Petridis"
 
@@ -144,6 +139,10 @@ msgstr "_Provjeri ima li novih epizoda"
 #: podcasts-gtk/resources/gtk/hamburger.ui:12
 msgid "_Import Shows"
 msgstr "_Uvezi emisije"
+
+#: podcasts-gtk/resources/gtk/hamburger.ui:16
+msgid "_Export Shows"
+msgstr "_Izvezi emisije"
 
 #: podcasts-gtk/resources/gtk/hamburger.ui:22
 msgid "_Preferences"
@@ -319,99 +318,119 @@ msgstr "Označi sve kao odslušano"
 msgid "Unsubscribe"
 msgstr "Ukini pretplatu"
 
-#: podcasts-gtk/src/app.rs:333
+#: podcasts-gtk/src/app.rs:364
 msgid "Fetching new episodes"
 msgstr "Preuzimanje novi epizoda"
 
-#: podcasts-gtk/src/headerbar.rs:98
+#: podcasts-gtk/src/headerbar.rs:117
 msgid "You are already subscribed to this show"
 msgstr "Već ste pretplaćeni na ovu emisiju"
 
-#: podcasts-gtk/src/headerbar.rs:106
+#: podcasts-gtk/src/headerbar.rs:125
 msgid "Invalid URL"
 msgstr "Nevažeći URL"
 
-#: podcasts-gtk/src/prefs.rs:59
+#: podcasts-gtk/src/prefs.rs:78
 msgid "Seconds"
 msgstr "Sekunda"
 
-#: podcasts-gtk/src/prefs.rs:60
+#: podcasts-gtk/src/prefs.rs:79
 msgid "Minutes"
 msgstr "Minuta"
 
-#: podcasts-gtk/src/prefs.rs:61
+#: podcasts-gtk/src/prefs.rs:80
 msgid "Hours"
 msgstr "Sata"
 
-#: podcasts-gtk/src/prefs.rs:62
+#: podcasts-gtk/src/prefs.rs:81
 msgid "Days"
 msgstr "Dana"
 
-#: podcasts-gtk/src/prefs.rs:63
+#: podcasts-gtk/src/prefs.rs:82
 msgid "Weeks"
 msgstr "Tjedana"
 
-#: podcasts-gtk/src/stacks/content.rs:35
+#: podcasts-gtk/src/stacks/content.rs:54
 msgid "New"
 msgstr "Novo"
 
-#: podcasts-gtk/src/stacks/content.rs:36
+#: podcasts-gtk/src/stacks/content.rs:55
 msgid "Shows"
 msgstr "Emisije"
 
-#: podcasts-gtk/src/utils.rs:357
+#: podcasts-gtk/src/utils.rs:387
 msgid "Select the file from which to you want to import shows."
 msgstr "Odaberite datoteku iz koje želite uvesti emisije."
 
-#: podcasts-gtk/src/utils.rs:360
+#: podcasts-gtk/src/utils.rs:390
 msgid "_Import"
 msgstr "_Uvoz"
 
-#: podcasts-gtk/src/utils.rs:369
+#: podcasts-gtk/src/utils.rs:399 podcasts-gtk/src/utils.rs:447
 msgid "OPML file"
 msgstr "OPML datoteka"
 
-#: podcasts-gtk/src/utils.rs:386
+#: podcasts-gtk/src/utils.rs:416
 msgid "Failed to parse the imported file"
 msgstr "Neuspjela obrada uvezene datoteke"
 
-#: podcasts-gtk/src/utils.rs:391
+#: podcasts-gtk/src/utils.rs:421 podcasts-gtk/src/utils.rs:465
 msgid "Selected file could not be accessed."
 msgstr "Nemoguć pristup dabranoj datoteci."
 
-#: podcasts-gtk/src/widgets/aboutdialog.rs:26
+#: podcasts-gtk/src/utils.rs:435
+msgid "Export shows to…"
+msgstr "_Izvezi emisije u…"
+
+#: podcasts-gtk/src/utils.rs:438
+msgid "_Export"
+msgstr "_Uvoz"
+
+#: podcasts-gtk/src/utils.rs:439
+msgid "_Cancel"
+msgstr "_Odustani"
+
+#: podcasts-gtk/src/utils.rs:459
+msgid "GNOME Podcasts Subscriptions"
+msgstr "GNOME Podcast pretplate"
+
+#: podcasts-gtk/src/utils.rs:460
+msgid "Failed to export podcasts"
+msgstr "Neuspjeli uvoz podcasta"
+
+#: podcasts-gtk/src/widgets/aboutdialog.rs:51
 msgid "Podcast Client for the GNOME Desktop."
 msgstr "Podcast klijent za GNOME radnu površinu."
 
-#: podcasts-gtk/src/widgets/aboutdialog.rs:33
+#: podcasts-gtk/src/widgets/aboutdialog.rs:58
 msgid "Learn more about GNOME Podcasts"
 msgstr "Saznajte više o GNOME Podcasti"
 
-#: podcasts-gtk/src/widgets/aboutdialog.rs:38
+#: podcasts-gtk/src/widgets/aboutdialog.rs:63
 msgid "translator-credits"
 msgstr ""
 "Launchpad Contributions:\n"
 "  gogo https://launchpad.net/~trebelnik-stefina"
 
-#: podcasts-gtk/src/widgets/episode.rs:130
+#: podcasts-gtk/src/widgets/episode.rs:145
 msgid "{} min"
 msgstr "{} min"
 
 #. sender.send(Action::ErrorNotification(format!("Player Error: {}", error)));
-#: podcasts-gtk/src/widgets/player.rs:363
+#: podcasts-gtk/src/widgets/player.rs:536
 msgid "The media player was unable to execute an action."
 msgstr "Medijski reproduktor nije uspio izvršiti radnju."
 
-#: podcasts-gtk/src/widgets/show_menu.rs:150
+#: podcasts-gtk/src/widgets/show_menu.rs:175
 msgid "Marked all episodes as listened"
 msgstr "Označi sve epizodae kao odslušane"
 
-#: podcasts-gtk/src/widgets/show_menu.rs:155
+#: podcasts-gtk/src/widgets/show_menu.rs:180
 msgid "Unsubscribed from {}"
 msgstr "Ukini pretplatu za {}"
 
+#~ msgid "@icon@"
+#~ msgstr "@icon@"
+
 #~ msgid "_About"
 #~ msgstr "_O programu"
-
-#~ msgid "Cancel"
-#~ msgstr "Odustani"
