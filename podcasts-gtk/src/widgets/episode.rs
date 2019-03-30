@@ -580,7 +580,7 @@ fn progress_bar_helper(
             .total_size
             .get_text()
             .as_ref()
-            .map(|s| s.trim_right_matches(" MB"))
+            .map(|s| s.trim_end_matches(" MB"))
             .and_then(|s| s.parse::<i32>().ok())
             .is_none()
         {
