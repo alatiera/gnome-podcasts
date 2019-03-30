@@ -17,12 +17,10 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-extern crate gettextrs;
-extern crate regex;
-use self::gettextrs::gettext;
-use self::gettextrs::ngettext;
-use self::regex::Captures;
-use self::regex::Regex;
+use gettextrs::gettext;
+use gettextrs::ngettext;
+use regex::Captures;
+use regex::Regex;
 
 #[allow(dead_code)]
 fn freplace(input: String, args: &[&str]) -> String {

@@ -309,7 +309,7 @@ impl App {
             Action::RefreshEpisodesViewBGR => self.content.update_home_if_background(),
             Action::ReplaceWidget(pd) => {
                 let shows = self.content.get_shows();
-                let mut pop = shows.borrow().populated();
+                let pop = shows.borrow().populated();
                 pop.borrow_mut()
                     .replace_widget(pd.clone())
                     .map_err(|err| error!("Failed to update ShowWidget: {}", err))
@@ -318,13 +318,13 @@ impl App {
             }
             Action::ShowWidgetAnimated => {
                 let shows = self.content.get_shows();
-                let mut pop = shows.borrow().populated();
+                let pop = shows.borrow().populated();
                 pop.borrow_mut()
                     .switch_visible(PopulatedState::Widget, gtk::StackTransitionType::SlideLeft);
             }
             Action::ShowShowsAnimated => {
                 let shows = self.content.get_shows();
-                let mut pop = shows.borrow().populated();
+                let pop = shows.borrow().populated();
                 pop.borrow_mut()
                     .switch_visible(PopulatedState::View, gtk::StackTransitionType::SlideRight);
             }

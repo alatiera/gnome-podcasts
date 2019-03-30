@@ -17,9 +17,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-use crate::gst::prelude::*;
-use crate::gst::ClockTime;
-use crate::gst_player;
+use gst::ClockTime;
 
 use gtk;
 use gtk::prelude::*;

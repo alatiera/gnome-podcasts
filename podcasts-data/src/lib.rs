@@ -81,29 +81,13 @@ extern crate diesel;
 #[macro_use]
 extern crate diesel_migrations;
 // #[macro_use]
-extern crate failure;
+// extern crate failure;
 #[macro_use]
 extern crate failure_derive;
 #[macro_use]
 extern crate lazy_static;
 #[macro_use]
 extern crate log;
-
-extern crate ammonia;
-extern crate chrono;
-extern crate futures;
-extern crate http;
-extern crate hyper;
-extern crate hyper_tls;
-extern crate native_tls;
-extern crate num_cpus;
-extern crate rayon;
-extern crate rfc822_sanitizer;
-extern crate rss;
-extern crate tokio;
-extern crate url;
-extern crate xdg;
-extern crate xml;
 
 pub mod database;
 #[allow(missing_docs)]
