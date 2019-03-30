@@ -91,7 +91,6 @@ pub enum DataError {
 }
 
 // Maps a type to a variant of the DataError enum
-#[macro_export]
 macro_rules! easy_from_impl {
     ($outer_type:ty, $from:ty => $to:expr) => (
         impl From<$from> for $outer_type {

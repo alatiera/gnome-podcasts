@@ -44,6 +44,21 @@ pub enum DownloadError {
     InvalidCachedImageLocation,
 }
 
+// Maps a type to a variant of the DataError enum
+macro_rules! easy_from_impl {
+    ($outer_type:ty, $from:ty => $to:expr) => (
+        impl From<$from> for $outer_type {
+            fn from(err: $from) -> Self {
+                $to(err)
+            }
+        }
+    );
+    ($outer_type:ty, $from:ty => $to:expr, $($f:ty => $t:expr),+) => (
+        easy_from_impl!($outer_type, $from => $to);
+        easy_from_impl!($outer_type, $($f => $t),+);
+    );
+}
+
 easy_from_impl!(
     DownloadError,
     reqwest::Error => DownloadError::RequestError,
