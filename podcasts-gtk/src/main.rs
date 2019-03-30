@@ -41,7 +41,7 @@
     elided_lifetime_in_paths,
     missing_copy_implementations
 )]
-#![deny(warnings)]
+// #![deny(warnings)]
 
 extern crate gdk;
 extern crate gdk_pixbuf;
