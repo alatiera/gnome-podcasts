@@ -177,8 +177,6 @@ pub fn get_feed(file_path: &str, id: i32) -> Feed {
 
 #[cfg(test)]
 mod tests {
-    extern crate tempdir;
-
     use self::tempdir::TempDir;
     use super::*;
     use chrono::Duration;

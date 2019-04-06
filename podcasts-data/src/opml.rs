@@ -212,8 +212,8 @@ mod tests {
     use failure::Error;
     use futures::Future;
 
-    use database::{truncate_db, TEMPDIR};
-    use utils::get_feed;
+    use crate::database::{truncate_db, TEMPDIR};
+    use crate::utils::get_feed;
 
     const URLS: &[(&str, &str)] = {
         &[
