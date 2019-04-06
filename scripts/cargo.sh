@@ -10,7 +10,7 @@ export PROFILE="$4"
 TARGET=debug
 ARGS=()
 
-if test "$PROFILE" != "Devel"; then
+if test "$PROFILE" != ".Devel"; then
     echo "RELEASE MODE"
     ARGS+=('--release')
     TARGET=release
