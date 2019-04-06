@@ -177,10 +177,10 @@ pub fn get_feed(file_path: &str, id: i32) -> Feed {
 
 #[cfg(test)]
 mod tests {
-    use tempdir::TempDir;
     use super::*;
     use chrono::Duration;
     use failure::Error;
+    use tempdir::TempDir;
 
     use crate::database::truncate_db;
     use crate::models::NewEpisodeBuilder;
