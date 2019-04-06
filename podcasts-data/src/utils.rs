@@ -177,7 +177,7 @@ pub fn get_feed(file_path: &str, id: i32) -> Feed {
 
 #[cfg(test)]
 mod tests {
-    use self::tempdir::TempDir;
+    use tempdir::TempDir;
     use super::*;
     use chrono::Duration;
     use failure::Error;
