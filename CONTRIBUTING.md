@@ -5,7 +5,7 @@ Thank you for looking in this file!
 When contributing to the development of GNOME Podcasts, please first discuss the change you wish to make via issue, email, or any other method with the maintainers before making a change.
 
 If you have any questions regarding the use or development of GNOME Podcasts,
-want to discuss design or simply hang out, please join us in [#hammond on irc.gnome.org.](irc://irc.gnome.org/#hammond)
+want to discuss design or simply hang out, please join us in [#gnome-podcasts:matrix.org](https://matrix.to/#/#gnome-podcasts:matrix.org) or [#hammond on irc.gnome.org.](irc://irc.gnome.org/#hammond)
 
 Please note we have a [code of conduct](https://wiki.gnome.org/Foundation/CodeOfConduc), please follow it in all your interactions with the project.
 
@@ -94,11 +94,11 @@ Steps to reproduce:
 * [ ]  qa (quality assurance) tasks
 ```
 
-## Pull Request Process
+## Merge Request Process
 
-1. Ensure your code compiles. Run `make` before creating the pull request.
+1. Ensure your code compiles. Run `make` before creating the merge request.
 2. Ensure the test suit passes. Run `cargo test -- --test-threads=1`.
-3. Ensure your code is properly formated. Run `cargo fmt --all`.
+3. Ensure your code is properly formatted. Run `cargo fmt --all`.
 4. If you're adding new API, it must be properly documented.
 5. The commit message has to be formatted as follows:
    ```
@@ -110,7 +110,7 @@ Steps to reproduce:
 
    <link to the bug ticket>
    ```
-6. You may merge the pull request once you have the sign-off of the maintainers, or if you
+6. You may merge the merge request once you have the sign-off of the maintainers, or if you
    do not have permission to do that, you may request the second reviewer to merge it for you.
 
 ## Code of Conduct
