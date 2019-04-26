@@ -17,7 +17,6 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-
 #![cfg_attr(feature = "cargo-clippy", allow(type_complexity))]
 
 use gdk::FrameClockExt;
@@ -43,6 +42,7 @@ use podcasts_data::pipeline;
 use podcasts_data::utils::checkup;
 use podcasts_data::Source;
 use podcasts_downloader::downloader;
+use podcasts_downloader::errors::DownloadError;
 
 use std::collections::{HashMap, HashSet};
 use std::sync::{Arc, Mutex, RwLock};
@@ -337,13 +337,23 @@ pub(crate) fn set_image_from_path(
             Err(TryRecvError::Empty) => glib::Continue(true),
             Err(TryRecvError::Disconnected) => glib::Continue(false),
             Ok(path) => {
-                if let Ok(path) = path {
-                    if let Ok(px) = Pixbuf::new_from_file_at_scale(&path, s, s, true) {
-                        if let Ok(mut hashmap) = CACHED_PIXBUFS.write() {
-                            hashmap.insert((show_id, size), Mutex::new(Fragile::new(px.clone())));
-                            image.set_from_pixbuf(&px);
+                match path {
+                    Ok(path) => {
+                        if let Ok(px) = Pixbuf::new_from_file_at_scale(&path, s, s, true) {
+                            if let Ok(mut hashmap) = CACHED_PIXBUFS.write() {
+                                hashmap
+                                    .insert((show_id, size), Mutex::new(Fragile::new(px.clone())));
+                                image.set_from_pixbuf(&px);
+                            }
                         }
                     }
+                    Err(DownloadError::NoImageLocation) => {
+                        image.set_from_icon_name(
+                            "image-x-generic-symbolic",
+                            gtk::IconSize::__Unknown(s),
+                        );
+                    }
+                    _ => {}
                 }
                 glib::Continue(false)
             }
