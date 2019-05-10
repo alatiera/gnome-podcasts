@@ -52,7 +52,6 @@ podcasts_sources = files(
   'i18n.rs',
   'main.rs',
   'manager.rs',
-  'prefs.rs',
   'settings.rs',
   'utils.rs'
 )
