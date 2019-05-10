@@ -32,7 +32,6 @@ use fragile::Fragile;
 use podcasts_data::Show;
 
 use crate::headerbar::Header;
-use crate::prefs::Prefs;
 use crate::settings::{self, WindowGeometry};
 use crate::stacks::{Content, PopulatedState};
 use crate::utils;
@@ -267,18 +266,6 @@ impl App {
             weak_instance.upgrade().map(|app| app.quit());
         });
         self.instance.set_accels_for_action("win.quit", &["<primary>q"]);
-
-        let weak_settings = self.settings.downgrade();
-        action(&self.window, "preferences", clone!(weak_win => move |_, _| {
-            let (win, settings) = match (weak_win.upgrade(), weak_settings.upgrade()) {
-                (Some(win), Some(settings)) => (win, settings),
-                _ => return,
-            };
-
-            let dialog = Prefs::new(&settings);
-            dialog.show(&win);
-        }));
-        self.instance.set_accels_for_action("win.preferences", &["<primary>e"]);
 
         // Create the menu action
         let header = Rc::downgrade(&self.headerbar);

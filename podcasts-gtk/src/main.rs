@@ -85,7 +85,6 @@ mod widgets;
 mod app;
 mod config;
 mod headerbar;
-mod prefs;
 
 mod manager;
 mod settings;
