@@ -96,6 +96,7 @@ impl AddPopover {
             .entry
             .get_text()
             .ok_or_else(|| format_err!("GtkEntry blew up somehow."))?;
+        let is_input_url_empty = url.is_empty();
         debug!("Url: {}", url);
 
         if !(url.starts_with("https://") || url.starts_with("http://")) {
@@ -131,7 +132,7 @@ impl AddPopover {
             }
             Err(err) => {
                 self.add.set_sensitive(false);
-                if !url.is_empty() {
+                if !is_input_url_empty {
                     self.entry
                         .get_style_context()
                         .add_class(&gtk::STYLE_CLASS_ERROR);
