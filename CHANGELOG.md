@@ -14,6 +14,38 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Removed:
 
+## [0.4.7] - 2019-10-23
+
+### Added:
+- Improved appdata validation and meson tests World/podcasts!89
+- The ability to export show subscriptions to opml files World/podcasts!77
+- Support for feeds requiring authentication World/podcasts!120
+
+### Changed:
+
+- Episodes now have a checkmark to show whether or not they've been played World/podcasts!106
+- Changed to how errors are shown when adding podcasts World/podcasts!108 World/podcasts!109 World/podcasts!110
+- Improved integration of cargo and meson World/podcasts!94
+- Refactored some macros for error handling World/podcasts!82
+- Refactored the handling of styling changes World/podcasts!119
+- Updated the icon to better match the HIG guidlines World/podcasts#102
+- Made Podcasts use a GtkApplication subclass World/podcasts!113
+- Updated the MPRIS permissions in order to remove a sandbox hole World/podcasts!124
+- Bumped gtk and libhandy minimum versions
+
+### Fixed:
+
+- Rewind now works regardless if its the start or the end of the episode World/podcasts!83
+- Typos in the README and CONTRIBUTING docs World/podcast!97 World/podcast!98 World/podcast!99 World/podcasts!121
+- Show cover is reset properly now if there isn't an image World/podcasts#114
+- Query pairs are no longer stripped from URLs World/podcasts!111
+- Pause MPRIS button now works on KDE Plasma World/podcasts#115
+- The playback widget now properly reflects the playback state on episode change World/podcasts!116
+
+### Removed:
+
+- All preferences World/podcast!104
+
 ## [0.4.6] - 2018-10-07
 
 ### Added:
