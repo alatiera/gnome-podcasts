@@ -41,6 +41,7 @@ podcasts_sources = files(
   'widgets/appnotif.rs',
   'widgets/base_view.rs',
   'widgets/empty.rs',
+  'widgets/episode.rs',
   'widgets/home_view.rs',
   'widgets/mod.rs',
   'widgets/player.rs',

@@ -80,6 +80,7 @@ struct InfoLabels {
     local_size: gtk::Label,
     size_separator: gtk::Label,
     total_size: gtk::Label,
+    played_checkmark: gtk::Image,
 }
 
 #[derive(Clone, Debug)]
@@ -110,8 +111,10 @@ impl InfoLabels {
 
         if episode.played().is_some() {
             self.title.get_style_context().add_class("dim-label");
+            self.played_checkmark.show();
         } else {
             self.title.get_style_context().remove_class("dim-label");
+            self.played_checkmark.hide();
         }
     }
 
@@ -195,6 +198,7 @@ impl Default for EpisodeWidget {
         let duration = builder.get_object("duration_label").unwrap();
         let local_size = builder.get_object("local_size").unwrap();
         let total_size = builder.get_object("total_size").unwrap();
+        let played_checkmark = builder.get_object("played_checkmark").unwrap();
 
         let separator1 = builder.get_object("separator1").unwrap();
         let separator2 = builder.get_object("separator2").unwrap();
@@ -212,6 +216,7 @@ impl Default for EpisodeWidget {
                 local_size,
                 total_size,
                 size_separator,
+                played_checkmark,
             },
             buttons: Buttons {
                 container: buttons_container,
