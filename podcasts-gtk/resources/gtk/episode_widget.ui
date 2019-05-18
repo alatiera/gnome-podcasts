@@ -76,7 +76,7 @@ Tobias Bernard
                   <object class="GtkImage" id="played_checkmark">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="tooltip_text" translatable="yes">You've already listened to this episode.</property>
+                    <property name="tooltip_text" translatable="yes">You’ve already listened to this episode.</property>
                     <property name="icon_name">object-select-symbolic</property>
                     <style>
                       <class name="dim-label"/>
