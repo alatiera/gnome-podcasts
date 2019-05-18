@@ -51,7 +51,6 @@ pub(crate) struct Header {
 #[derive(Debug, Clone)]
 struct AddPopover {
     container: gtk::Popover,
-    result: gtk::Label,
     entry: gtk::Entry,
     add: gtk::Button,
     toggle: gtk::MenuButton,
@@ -108,25 +107,37 @@ impl AddPopover {
         match Url::parse(&url) {
             Ok(u) => {
                 if !dbqueries::source_exists(u.as_str())? {
+                    self.entry
+                        .set_icon_from_icon_name(gtk::EntryIconPosition::Secondary, None);
                     self.add.set_sensitive(true);
-                    self.result.hide();
-                    self.result.set_label("");
                 } else {
+                    self.entry.set_icon_from_icon_name(
+                        gtk::EntryIconPosition::Secondary,
+                        "dialog-error-symbolic",
+                    );
+                    self.entry.set_icon_tooltip_text(
+                        gtk::EntryIconPosition::Secondary,
+                        i18n("You are already subscribed to this show").as_str(),
+                    );
                     self.add.set_sensitive(false);
-                    self.result
-                        .set_label(i18n("You are already subscribed to this show").as_str());
-                    self.result.show();
                 }
                 Ok(())
             }
             Err(err) => {
                 self.add.set_sensitive(false);
                 if !url.is_empty() {
-                    self.result.set_label(i18n("Invalid URL").as_str());
-                    self.result.show();
+                    self.entry.set_icon_from_icon_name(
+                        gtk::EntryIconPosition::Secondary,
+                        "dialog-error-symbolic",
+                    );
+                    self.entry.set_icon_tooltip_text(
+                        gtk::EntryIconPosition::Secondary,
+                        i18n("Invalid URL").as_str(),
+                    );
                     error!("Error: {}", err);
                 } else {
-                    self.result.hide();
+                    self.entry
+                        .set_icon_from_icon_name(gtk::EntryIconPosition::Secondary, None);
                 }
                 Ok(())
             }
@@ -156,13 +167,11 @@ impl Default for Header {
         let add_popover = builder.get_object("add_popover").unwrap();
         let new_url = builder.get_object("new_url").unwrap();
         let add_button = builder.get_object("add_button").unwrap();
-        let result = builder.get_object("result_label").unwrap();
         let add = AddPopover {
             container: add_popover,
             entry: new_url,
             toggle: add_toggle,
             add: add_button,
-            result,
         };
 
         Header {
