@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: podcasts master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2019-02-02 15:17+0000\n"
-"PO-Revision-Date: 2019-03-02 10:50+0200\n"
+"POT-Creation-Date: 2019-05-18 12:55+0000\n"
+"PO-Revision-Date: 2019-06-01 20:20+0300\n"
 "Last-Translator: Jiri Grönroos <jiri.gronroos+l10n@iki.fi>\n"
 "Language-Team: Finnish <lokalisointi-lista@googlegroups.com>\n"
 "Language: fi\n"
@@ -20,11 +20,11 @@ msgstr ""
 
 #: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml:15
 msgid "Top position of the last open main window"
-msgstr ""
+msgstr "Viimeksi avoinna olleen pääikkunan yläsijainti"
 
 #: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml:19
 msgid "Left position of the last open main window"
-msgstr ""
+msgstr "Viimeksi avoinna olleen pääikkunan vasen sijainti"
 
 #: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml:23
 msgid "Height of the last open main window"
@@ -69,7 +69,7 @@ msgstr ""
 #. Weird magic I copy-pasted that sets the Application Name in the Shell.
 #: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:3
 #: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:4
-#: podcasts-gtk/src/app.rs:124 podcasts-gtk/src/app.rs:455
+#: podcasts-gtk/src/app.rs:109 podcasts-gtk/src/app.rs:433
 #: podcasts-gtk/src/widgets/aboutdialog.rs:56
 msgid "Podcasts"
 msgstr "Podcastit"
@@ -78,11 +78,6 @@ msgstr "Podcastit"
 #: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:10
 msgid "Listen to your favorite podcasts, right from your desktop."
 msgstr "Kuuntele suosikkipodcastejasi suoraan työpöydältäsi."
-
-#. Translators: Do NOT translate or transliterate this text (this is an icon file name)!
-#: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:6
-msgid "@icon@"
-msgstr "@icon@"
 
 #. Translators: Search terms to find this application. Do NOT translate or localize the semicolons! The list MUST also end with a semicolon!
 #: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:13
@@ -117,19 +112,23 @@ msgstr "Lisää uusia ohjelmia syötteen osoitteen avulla"
 msgid "Import shows from another device"
 msgstr "Tuo ohjelmia toiselta laitteelta"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:180
+#: podcasts-gtk/resources/gtk/episode_widget.ui:79
+msgid "You’ve already listened to this episode."
+msgstr "Olet jo kuunnellut tämän jakson."
+
+#: podcasts-gtk/resources/gtk/episode_widget.ui:208
 msgid "Calculating episode size…"
 msgstr "Lasketaan jakson kokoa…"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:220
+#: podcasts-gtk/resources/gtk/episode_widget.ui:248
 msgid "Play this episode"
 msgstr "Toista tämä jakso"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:241
+#: podcasts-gtk/resources/gtk/episode_widget.ui:269
 msgid "Cancel the download process"
 msgstr "Peru lataaminen"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:264
+#: podcasts-gtk/resources/gtk/episode_widget.ui:292
 msgid "Download this episode"
 msgstr "Lataa tämä jakso"
 
@@ -146,14 +145,10 @@ msgid "_Export Shows"
 msgstr "_Vie jaksoja"
 
 #: podcasts-gtk/resources/gtk/hamburger.ui:22
-msgid "_Preferences"
-msgstr "_Asetukset"
-
-#: podcasts-gtk/resources/gtk/hamburger.ui:27
 msgid "_Keyboard Shortcuts"
 msgstr "_Pikanäppäimet"
 
-#: podcasts-gtk/resources/gtk/hamburger.ui:35
+#: podcasts-gtk/resources/gtk/hamburger.ui:30
 msgid "_About Podcasts"
 msgstr "_Tietoja - Podcastit"
 
@@ -192,11 +187,6 @@ msgid "Check for new episodes"
 msgstr "Tarkista uudet jaksot"
 
 #: podcasts-gtk/resources/gtk/help-overlay.ui:25
-msgctxt "shortcut window"
-msgid "Preferences"
-msgstr "Asetukset"
-
-#: podcasts-gtk/resources/gtk/help-overlay.ui:32
 msgctxt "shortcut window"
 msgid "Quit the application"
 msgstr "Lopeta sovellus"
@@ -274,27 +264,6 @@ msgstr "1,25-kertainen nopeus"
 msgid "Normal speed"
 msgstr "Tavallinen nopeus"
 
-#: podcasts-gtk/resources/gtk/prefs.ui:42
-#: podcasts-gtk/resources/gtk/prefs.ui:295
-msgid "Preferences"
-msgstr "Asetukset"
-
-#: podcasts-gtk/resources/gtk/prefs.ui:76
-msgid "Appearance"
-msgstr "Ulkoasu"
-
-#: podcasts-gtk/resources/gtk/prefs.ui:120
-msgid "Dark Theme"
-msgstr "Tumma teema"
-
-#: podcasts-gtk/resources/gtk/prefs.ui:166
-msgid "Delete played episodes"
-msgstr "Poista toistetut jaksot"
-
-#: podcasts-gtk/resources/gtk/prefs.ui:211
-msgid "After"
-msgstr "Viive"
-
 #: podcasts-gtk/resources/gtk/secondary_menu.ui:7
 msgid "_Mark All Episodes as Played"
 msgstr "_Merkitse kaikki jaksot toistetuiksi"
@@ -319,7 +288,7 @@ msgstr "Merkitse kaikki toistetuiksi"
 msgid "Unsubscribe"
 msgstr "Lopeta tilaus"
 
-#: podcasts-gtk/src/app.rs:369
+#: podcasts-gtk/src/app.rs:351
 msgid "Fetching new episodes"
 msgstr "Noudetaan uusia jaksoja"
 
@@ -331,26 +300,6 @@ msgstr "Olet jo tilannut tämän ohjelman"
 msgid "Invalid URL"
 msgstr "Virheellinen osoite"
 
-#: podcasts-gtk/src/prefs.rs:78
-msgid "Seconds"
-msgstr "sekuntia"
-
-#: podcasts-gtk/src/prefs.rs:79
-msgid "Minutes"
-msgstr "minuuttia"
-
-#: podcasts-gtk/src/prefs.rs:80
-msgid "Hours"
-msgstr "tuntia"
-
-#: podcasts-gtk/src/prefs.rs:81
-msgid "Days"
-msgstr "päivää"
-
-#: podcasts-gtk/src/prefs.rs:82
-msgid "Weeks"
-msgstr "viikkoa"
-
 #: podcasts-gtk/src/stacks/content.rs:54
 msgid "New"
 msgstr "Uudet"
@@ -359,43 +308,43 @@ msgstr "Uudet"
 msgid "Shows"
 msgstr "Ohjelmat"
 
-#: podcasts-gtk/src/utils.rs:377
+#: podcasts-gtk/src/utils.rs:397
 msgid "Select the file from which to you want to import shows."
 msgstr "Valitse tiedosto, josta haluat tuoda ohjelmia."
 
-#: podcasts-gtk/src/utils.rs:380
+#: podcasts-gtk/src/utils.rs:400
 msgid "_Import"
 msgstr "_Tuo"
 
-#: podcasts-gtk/src/utils.rs:389 podcasts-gtk/src/utils.rs:435
+#: podcasts-gtk/src/utils.rs:409 podcasts-gtk/src/utils.rs:457
 msgid "OPML file"
 msgstr "OPML-tiedosto"
 
-#: podcasts-gtk/src/utils.rs:406
+#: podcasts-gtk/src/utils.rs:426
 msgid "Failed to parse the imported file"
 msgstr "Tuotua tiedostoa ei voitu jäsentää"
 
-#: podcasts-gtk/src/utils.rs:411 podcasts-gtk/src/utils.rs:453
+#: podcasts-gtk/src/utils.rs:431 podcasts-gtk/src/utils.rs:475
 msgid "Selected file could not be accessed."
 msgstr "Valittua tiedostoa ei voitu käyttää."
 
-#: podcasts-gtk/src/utils.rs:423
+#: podcasts-gtk/src/utils.rs:445
 msgid "Export shows to…"
 msgstr "Vie jaksot…"
 
-#: podcasts-gtk/src/utils.rs:426
+#: podcasts-gtk/src/utils.rs:448
 msgid "_Export"
 msgstr "_Vie"
 
-#: podcasts-gtk/src/utils.rs:427
+#: podcasts-gtk/src/utils.rs:449
 msgid "_Cancel"
 msgstr "_Peru"
 
-#: podcasts-gtk/src/utils.rs:447
+#: podcasts-gtk/src/utils.rs:469
 msgid "GNOME Podcasts Subscriptions"
 msgstr "Gnomen podcastsovelluksen tilaukset"
 
-#: podcasts-gtk/src/utils.rs:448
+#: podcasts-gtk/src/utils.rs:470
 msgid "Failed to export podcasts"
 msgstr "Podcastien vienti epäonnistui"
 
@@ -411,22 +360,62 @@ msgstr "Lisätietoja Gnomen podcast-sovelluksesta"
 msgid "translator-credits"
 msgstr "Jiri Grönroos"
 
-#: podcasts-gtk/src/widgets/episode.rs:149
+#: podcasts-gtk/src/widgets/episode.rs:148
 msgid "{} min"
 msgstr "{} min"
 
 #. sender.send(Action::ErrorNotification(format!("Player Error: {}", error)));
-#: podcasts-gtk/src/widgets/player.rs:536
+#: podcasts-gtk/src/widgets/player.rs:534
 msgid "The media player was unable to execute an action."
 msgstr "Mediasoitin ei kyennyt suorittamaan toimintoa."
 
-#: podcasts-gtk/src/widgets/show_menu.rs:169
+#: podcasts-gtk/src/widgets/show_menu.rs:179
 msgid "Marked all episodes as listened"
 msgstr "Merkitse kaikki jaksot toistetuiksi"
 
-#: podcasts-gtk/src/widgets/show_menu.rs:174
+#: podcasts-gtk/src/widgets/show_menu.rs:184
 msgid "Unsubscribed from {}"
 msgstr "Lopeta syötteen {} tilaus"
+
+#~ msgid "@icon@"
+#~ msgstr "@icon@"
+
+#~ msgid "_Preferences"
+#~ msgstr "_Asetukset"
+
+#~ msgctxt "shortcut window"
+#~ msgid "Preferences"
+#~ msgstr "Asetukset"
+
+#~ msgid "Preferences"
+#~ msgstr "Asetukset"
+
+#~ msgid "Appearance"
+#~ msgstr "Ulkoasu"
+
+#~ msgid "Dark Theme"
+#~ msgstr "Tumma teema"
+
+#~ msgid "Delete played episodes"
+#~ msgstr "Poista toistetut jaksot"
+
+#~ msgid "After"
+#~ msgstr "Viive"
+
+#~ msgid "Seconds"
+#~ msgstr "sekuntia"
+
+#~ msgid "Minutes"
+#~ msgstr "minuuttia"
+
+#~ msgid "Hours"
+#~ msgstr "tuntia"
+
+#~ msgid "Days"
+#~ msgstr "päivää"
+
+#~ msgid "Weeks"
+#~ msgstr "viikkoa"
 
 #~ msgid "_About"
 #~ msgstr "_Tietoja"
