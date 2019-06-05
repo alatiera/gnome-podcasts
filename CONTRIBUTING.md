@@ -7,7 +7,7 @@ When contributing to the development of GNOME Podcasts, please first discuss the
 If you have any questions regarding the use or development of GNOME Podcasts,
 want to discuss design or simply hang out, please join us in [#gnome-podcasts:matrix.org](https://matrix.to/#/#gnome-podcasts:matrix.org) or [#hammond on irc.gnome.org.](irc://irc.gnome.org/#hammond)
 
-Please note we have a [code of conduct](https://wiki.gnome.org/Foundation/CodeOfConduc), please follow it in all your interactions with the project.
+Please note we have a [code of conduct](/code-of-conduct.md), please follow it in all your interactions with the project.
 
 ## Source repository
 
@@ -114,4 +114,4 @@ Steps to reproduce:
    do not have permission to do that, you may request the second reviewer to merge it for you.
 
 ## Code of Conduct
-We follow the Gnome [Code of Conduct.](https://wiki.gnome.org/Foundation/CodeOfConduct)
+We follow the [Contributor Covenant](/code-of-conduct.md).
