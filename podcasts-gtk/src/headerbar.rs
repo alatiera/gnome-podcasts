@@ -108,9 +108,15 @@ impl AddPopover {
             Ok(u) => {
                 if !dbqueries::source_exists(u.as_str())? {
                     self.entry
+                        .get_style_context()
+                        .remove_class(&gtk::STYLE_CLASS_ERROR);
+                    self.entry
                         .set_icon_from_icon_name(gtk::EntryIconPosition::Secondary, None);
                     self.add.set_sensitive(true);
                 } else {
+                    self.entry
+                        .get_style_context()
+                        .add_class(&gtk::STYLE_CLASS_ERROR);
                     self.entry.set_icon_from_icon_name(
                         gtk::EntryIconPosition::Secondary,
                         "dialog-error-symbolic",
@@ -126,6 +132,9 @@ impl AddPopover {
             Err(err) => {
                 self.add.set_sensitive(false);
                 if !url.is_empty() {
+                    self.entry
+                        .get_style_context()
+                        .add_class(&gtk::STYLE_CLASS_ERROR);
                     self.entry.set_icon_from_icon_name(
                         gtk::EntryIconPosition::Secondary,
                         "dialog-error-symbolic",
@@ -136,6 +145,9 @@ impl AddPopover {
                     );
                     error!("Error: {}", err);
                 } else {
+                    self.entry
+                        .get_style_context()
+                        .remove_class(&gtk::STYLE_CLASS_ERROR);
                     self.entry
                         .set_icon_from_icon_name(gtk::EntryIconPosition::Secondary, None);
                 }
