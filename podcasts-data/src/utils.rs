@@ -122,7 +122,7 @@ pub fn url_cleaner(s: &str) -> String {
     // https://rust-lang-nursery.github.io/rust-cookbook/net.html
     // #remove-fragment-identifiers-and-query-pairs-from-a-url
     match Url::parse(s) {
-        Ok(parsed) => parsed[..Position::AfterPath].to_owned(),
+        Ok(parsed) => parsed[..Position::AfterQuery].to_owned(),
         _ => s.trim().to_owned(),
     }
 }
@@ -290,8 +290,8 @@ mod tests {
 
     #[test]
     fn test_url_cleaner() -> Result<(), Error> {
-        let good_url = "http://traffic.megaphone.fm/FL8608731318.mp3";
-        let bad_url = "http://traffic.megaphone.fm/FL8608731318.mp3?updated=1484685184";
+        let good_url = "http://traffic.megaphone.fm/FL8608731318.mp3?updated=1484685184";
+        let bad_url = "http://traffic.megaphone.fm/FL8608731318.mp3?updated=1484685184#foobar";
 
         assert_eq!(url_cleaner(bad_url), good_url);
         assert_eq!(url_cleaner(good_url), good_url);
