@@ -19,7 +19,6 @@
 
 #![cfg_attr(feature = "cargo-clippy", allow(type_complexity))]
 
-use gdk::FrameClockExt;
 use gdk_pixbuf::{Object, Pixbuf};
 use glib::{self, object::WeakRef};
 use gtk;
@@ -155,10 +154,10 @@ pub(crate) fn smooth_scroll_to(view: &gtk::ScrolledWindow, target: &gtk::Adjustm
                     let mut t = (now - start_time) as f64 / (end_time - start_time) as f64;
                     t = ease_out_cubic(t);
                     adj.set_value(start + t * (end - start));
-                    true
+                    Continue(true)
                 } else {
                     adj.set_value(end);
-                    false
+                    Continue(false)
                 }
             });
         }
@@ -285,7 +284,7 @@ pub(crate) fn set_image_from_path(
                 .and_then(|fragile| {
                     fragile
                         .try_get()
-                        .map(|px| image.set_from_pixbuf(px))
+                        .map(|px| image.set_from_pixbuf(Some(px)))
                         .map_err(From::from)
                 })?;
 
@@ -343,13 +342,13 @@ pub(crate) fn set_image_from_path(
                             if let Ok(mut hashmap) = CACHED_PIXBUFS.write() {
                                 hashmap
                                     .insert((show_id, size), Mutex::new(Fragile::new(px.clone())));
-                                image.set_from_pixbuf(&px);
+                                image.set_from_pixbuf(Some(&px));
                             }
                         }
                     }
                     Err(DownloadError::NoImageLocation) => {
                         image.set_from_icon_name(
-                            "image-x-generic-symbolic",
+                            Some("image-x-generic-symbolic"),
                             gtk::IconSize::__Unknown(s),
                         );
                     }

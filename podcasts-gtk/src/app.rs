@@ -52,7 +52,7 @@ use crate::i18n::i18n;
 fn action<T, F>(thing: &T, name: &str, action: F)
 where
     T: ActionMapExt,
-    for<'r, 's> F: Fn(&'r gio::SimpleAction, &'s Option<Variant>) + 'static,
+    for<'r, 's> F: Fn(&'r gio::SimpleAction, Option<&Variant>) + 'static,
 {
     // Create a stateless, parameterless action
     let act = gio::SimpleAction::new(name, None);
@@ -138,7 +138,7 @@ impl App {
         // Create the headerbar
         let header = Header::new(&content, &sender);
         // Add the Headerbar to the window.
-        window.set_titlebar(&header.container);
+        window.set_titlebar(Some(&header.container));
 
         // Add the content main stack to the overlay.
         let overlay = gtk::Overlay::new();
@@ -401,9 +401,9 @@ impl App {
         bindtextdomain("gnome-podcasts", LOCALEDIR);
         textdomain("gnome-podcasts");
 
-        let application = gtk::Application::new(APP_ID, gio::ApplicationFlags::empty())
+        let application = gtk::Application::new(Some(APP_ID), gio::ApplicationFlags::empty())
             .expect("Application initialization failed...");
-        application.set_resource_base_path("/org/gnome/Podcasts");
+        application.set_resource_base_path(Some("/org/gnome/Podcasts"));
 
         let weak_app = application.downgrade();
         application.connect_startup(move |_| {
