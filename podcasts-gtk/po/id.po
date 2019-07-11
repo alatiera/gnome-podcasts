@@ -7,15 +7,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: podcasts master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2019-02-02 15:17+0000\n"
-"PO-Revision-Date: 2019-03-02 19:18+0700\n"
+"POT-Creation-Date: 2019-06-15 10:55+0000\n"
+"PO-Revision-Date: 2019-07-11 15:21+0700\n"
 "Last-Translator: Kukuh Syafaat <kukuhsyafaat@gnome.org>\n"
 "Language-Team: Indonesian <gnome-l10n-id@googlegroups.com>\n"
 "Language: id\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 2.2.1\n"
+"X-Generator: Poedit 2.2.3\n"
 
 #: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml:15
 msgid "Top position of the last open main window"
@@ -68,7 +68,7 @@ msgstr "Berapa lama waktu untuk menunggu di antara pembersihan otomatis"
 #. Weird magic I copy-pasted that sets the Application Name in the Shell.
 #: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:3
 #: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:4
-#: podcasts-gtk/src/app.rs:124 podcasts-gtk/src/app.rs:455
+#: podcasts-gtk/src/app.rs:109 podcasts-gtk/src/app.rs:433
 #: podcasts-gtk/src/widgets/aboutdialog.rs:56
 msgid "Podcasts"
 msgstr "Podcast"
@@ -77,11 +77,6 @@ msgstr "Podcast"
 #: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:10
 msgid "Listen to your favorite podcasts, right from your desktop."
 msgstr "Dengarkan podcast favorit Anda, langsung dari destop Anda."
-
-#. Translators: Do NOT translate or transliterate this text (this is an icon file name)!
-#: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:6
-msgid "@icon@"
-msgstr "@icon@"
 
 #. Translators: Search terms to find this application. Do NOT translate or localize the semicolons! The list MUST also end with a semicolon!
 #: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:13
@@ -118,19 +113,23 @@ msgstr "Tambahkan acara baru melalui URL feed"
 msgid "Import shows from another device"
 msgstr "Impor acara dari perangkat lain"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:180
+#: podcasts-gtk/resources/gtk/episode_widget.ui:79
+msgid "You’ve already listened to this episode."
+msgstr "Anda sudah mendengarkan episode ini."
+
+#: podcasts-gtk/resources/gtk/episode_widget.ui:208
 msgid "Calculating episode size…"
 msgstr "Menghitung ukuran episode…"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:220
+#: podcasts-gtk/resources/gtk/episode_widget.ui:248
 msgid "Play this episode"
 msgstr "Putar episode ini"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:241
+#: podcasts-gtk/resources/gtk/episode_widget.ui:269
 msgid "Cancel the download process"
 msgstr "Batalkan proses pengunduhan"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:264
+#: podcasts-gtk/resources/gtk/episode_widget.ui:292
 msgid "Download this episode"
 msgstr "Unduh episode ini"
 
@@ -147,19 +146,15 @@ msgid "_Export Shows"
 msgstr "_Ekspor Acara"
 
 #: podcasts-gtk/resources/gtk/hamburger.ui:22
-msgid "_Preferences"
-msgstr "_Preferensi"
-
-#: podcasts-gtk/resources/gtk/hamburger.ui:27
 msgid "_Keyboard Shortcuts"
 msgstr "Pintasan Papan _Ketik"
 
-#: podcasts-gtk/resources/gtk/hamburger.ui:35
+#: podcasts-gtk/resources/gtk/hamburger.ui:30
 msgid "_About Podcasts"
 msgstr "Tent_ang Podcast"
 
 #: podcasts-gtk/resources/gtk/headerbar.ui:35
-#: podcasts-gtk/resources/gtk/headerbar.ui:189
+#: podcasts-gtk/resources/gtk/headerbar.ui:177
 msgid "Add a new feed"
 msgstr "Tambahkan feed baru"
 
@@ -171,15 +166,11 @@ msgstr "Masukkan alamat feed untuk ditambahkan"
 msgid "Add"
 msgstr "Tambah"
 
-#: podcasts-gtk/resources/gtk/headerbar.ui:133
-msgid "You are already subscribed to that feed!"
-msgstr "Anda sudah berlangganan feed itu!"
-
-#: podcasts-gtk/resources/gtk/headerbar.ui:169
+#: podcasts-gtk/resources/gtk/headerbar.ui:157
 msgid "Show Title"
 msgstr "Tampilkan Judul"
 
-#: podcasts-gtk/resources/gtk/headerbar.ui:210
+#: podcasts-gtk/resources/gtk/headerbar.ui:198
 msgid "Back"
 msgstr "Kembali"
 
@@ -193,11 +184,6 @@ msgid "Check for new episodes"
 msgstr "Periksa episode baru"
 
 #: podcasts-gtk/resources/gtk/help-overlay.ui:25
-msgctxt "shortcut window"
-msgid "Preferences"
-msgstr "Preferensi"
-
-#: podcasts-gtk/resources/gtk/help-overlay.ui:32
 msgctxt "shortcut window"
 msgid "Quit the application"
 msgstr "Keluar dari aplikasi"
@@ -275,27 +261,6 @@ msgstr "tingkat kecepatan 1.25"
 msgid "Normal speed"
 msgstr "Kecepatan normal"
 
-#: podcasts-gtk/resources/gtk/prefs.ui:42
-#: podcasts-gtk/resources/gtk/prefs.ui:295
-msgid "Preferences"
-msgstr "Preferensi"
-
-#: podcasts-gtk/resources/gtk/prefs.ui:76
-msgid "Appearance"
-msgstr "Penampilan"
-
-#: podcasts-gtk/resources/gtk/prefs.ui:120
-msgid "Dark Theme"
-msgstr "Tema Gelap"
-
-#: podcasts-gtk/resources/gtk/prefs.ui:166
-msgid "Delete played episodes"
-msgstr "Hapus episode yang diputar"
-
-#: podcasts-gtk/resources/gtk/prefs.ui:211
-msgid "After"
-msgstr "Sesudah"
-
 #: podcasts-gtk/resources/gtk/secondary_menu.ui:7
 msgid "_Mark All Episodes as Played"
 msgstr "Tandai Se_mua Episode sebagai Sudah Diputar"
@@ -320,37 +285,17 @@ msgstr "Tandai Semua sebagai Sudah Diputar"
 msgid "Unsubscribe"
 msgstr "Berhenti Berlangganan"
 
-#: podcasts-gtk/src/app.rs:369
+#: podcasts-gtk/src/app.rs:351
 msgid "Fetching new episodes"
 msgstr "Mengambil episode baru"
 
-#: podcasts-gtk/src/headerbar.rs:117
+#: podcasts-gtk/src/headerbar.rs:127
 msgid "You are already subscribed to this show"
 msgstr "Anda sudah berlangganan ke acara ini"
 
-#: podcasts-gtk/src/headerbar.rs:125
+#: podcasts-gtk/src/headerbar.rs:145
 msgid "Invalid URL"
 msgstr "URL tak valid"
-
-#: podcasts-gtk/src/prefs.rs:78
-msgid "Seconds"
-msgstr "Detik"
-
-#: podcasts-gtk/src/prefs.rs:79
-msgid "Minutes"
-msgstr "Menit"
-
-#: podcasts-gtk/src/prefs.rs:80
-msgid "Hours"
-msgstr "Jam"
-
-#: podcasts-gtk/src/prefs.rs:81
-msgid "Days"
-msgstr "Hari"
-
-#: podcasts-gtk/src/prefs.rs:82
-msgid "Weeks"
-msgstr "Minggu"
 
 #: podcasts-gtk/src/stacks/content.rs:54
 msgid "New"
@@ -360,43 +305,43 @@ msgstr "Baru"
 msgid "Shows"
 msgstr "Acara"
 
-#: podcasts-gtk/src/utils.rs:377
+#: podcasts-gtk/src/utils.rs:397
 msgid "Select the file from which to you want to import shows."
 msgstr "Pilih berkas dari mana Anda ingin mengimpor acara."
 
-#: podcasts-gtk/src/utils.rs:380
+#: podcasts-gtk/src/utils.rs:400
 msgid "_Import"
 msgstr "_Impor"
 
-#: podcasts-gtk/src/utils.rs:389 podcasts-gtk/src/utils.rs:435
+#: podcasts-gtk/src/utils.rs:409 podcasts-gtk/src/utils.rs:457
 msgid "OPML file"
 msgstr "Berkas OPML"
 
-#: podcasts-gtk/src/utils.rs:406
+#: podcasts-gtk/src/utils.rs:426
 msgid "Failed to parse the imported file"
 msgstr "Gagal mengurai berkas yang diimpor"
 
-#: podcasts-gtk/src/utils.rs:411 podcasts-gtk/src/utils.rs:453
+#: podcasts-gtk/src/utils.rs:431 podcasts-gtk/src/utils.rs:475
 msgid "Selected file could not be accessed."
 msgstr "Berkas yang dipilih tidak dapat diakses."
 
-#: podcasts-gtk/src/utils.rs:423
+#: podcasts-gtk/src/utils.rs:445
 msgid "Export shows to…"
 msgstr "Ekspor acara ke…"
 
-#: podcasts-gtk/src/utils.rs:426
+#: podcasts-gtk/src/utils.rs:448
 msgid "_Export"
 msgstr "_Ekspor"
 
-#: podcasts-gtk/src/utils.rs:427
+#: podcasts-gtk/src/utils.rs:449
 msgid "_Cancel"
 msgstr "_Batal"
 
-#: podcasts-gtk/src/utils.rs:447
+#: podcasts-gtk/src/utils.rs:469
 msgid "GNOME Podcasts Subscriptions"
 msgstr "Berlangganan GNOME Podcast"
 
-#: podcasts-gtk/src/utils.rs:448
+#: podcasts-gtk/src/utils.rs:470
 msgid "Failed to export podcasts"
 msgstr "Gagal mengekspor podcast"
 
@@ -412,22 +357,65 @@ msgstr "Pelajari lebih lanjut tentang GNOME Podcast"
 msgid "translator-credits"
 msgstr "Kukuh Syafaat <kukuhsyafaat@gnome.org>, 2018, 2019."
 
-#: podcasts-gtk/src/widgets/episode.rs:149
+#: podcasts-gtk/src/widgets/episode.rs:148
 msgid "{} min"
 msgstr "{} mnt"
 
 #. sender.send(Action::ErrorNotification(format!("Player Error: {}", error)));
-#: podcasts-gtk/src/widgets/player.rs:536
+#: podcasts-gtk/src/widgets/player.rs:534
 msgid "The media player was unable to execute an action."
 msgstr "Pemutar media tidak dapat melakukan aksi."
 
-#: podcasts-gtk/src/widgets/show_menu.rs:169
+#: podcasts-gtk/src/widgets/show_menu.rs:179
 msgid "Marked all episodes as listened"
 msgstr "Tandai semua episode sebagai sudah didengarkan"
 
-#: podcasts-gtk/src/widgets/show_menu.rs:174
+#: podcasts-gtk/src/widgets/show_menu.rs:184
 msgid "Unsubscribed from {}"
 msgstr "Berhenti berlangganan dari {}"
+
+#~ msgid "@icon@"
+#~ msgstr "@icon@"
+
+#~ msgid "_Preferences"
+#~ msgstr "_Preferensi"
+
+#~ msgid "You are already subscribed to that feed!"
+#~ msgstr "Anda sudah berlangganan feed itu!"
+
+#~ msgctxt "shortcut window"
+#~ msgid "Preferences"
+#~ msgstr "Preferensi"
+
+#~ msgid "Preferences"
+#~ msgstr "Preferensi"
+
+#~ msgid "Appearance"
+#~ msgstr "Penampilan"
+
+#~ msgid "Dark Theme"
+#~ msgstr "Tema Gelap"
+
+#~ msgid "Delete played episodes"
+#~ msgstr "Hapus episode yang diputar"
+
+#~ msgid "After"
+#~ msgstr "Sesudah"
+
+#~ msgid "Seconds"
+#~ msgstr "Detik"
+
+#~ msgid "Minutes"
+#~ msgstr "Menit"
+
+#~ msgid "Hours"
+#~ msgstr "Jam"
+
+#~ msgid "Days"
+#~ msgstr "Hari"
+
+#~ msgid "Weeks"
+#~ msgstr "Minggu"
 
 #~ msgid "_About"
 #~ msgstr "Tent_ang"
