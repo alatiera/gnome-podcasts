@@ -36,11 +36,15 @@ Flatpak is the recommended way of building and installing GNOME Podcasts.
 Here are the dependencies you will need.
 
 ```sh
-# Add flathub repo
+# Add flathub and the gnome-nightly repo
 flatpak remote-add --user --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
+flatpak remote-add --user --if-not-exists gnome-nightly https://sdk.gnome.org/gnome-nightly.flatpakrepo
 
-# Install the Nightly Sdk and Platform GNOME runtime and the rust Sdk extension
-flatpak install --user org.gnome.Sdk//3.32 org.gnome.Platform//3.32 org.freedesktop.Sdk.Extension.rust-stable//18.08
+# Install the gnome-nightly Sdk and Platform runtime
+flatpak install --user gnome-nightly org.gnome.Sdk org.gnome.Platform
+
+# Install the required rust-stable extension from flathub
+flatpak install --user flathub org.freedesktop.Sdk.Extension.rust-stable//18.08
 ```
 
 To install the resulting flatpak you can do:
