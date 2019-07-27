@@ -326,6 +326,7 @@ impl PlayerWidget {
                 let uri = File::new_for_path(path).get_uri();
                 // play the file
                 self.player.set_uri(uri.as_str());
+                self.rate.radio_normal.set_active(true);
                 self.play();
                 return Ok(());
             }
