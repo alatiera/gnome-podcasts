@@ -96,7 +96,7 @@ Steps to reproduce:
 
 ## Merge Request Process
 
-1. Ensure your code compiles. Run `make` before creating the merge request.
+1. Ensure your code compiles. Run `meson` & `ninja` before creating the merge request.
 2. Ensure the test suit passes. Run `cargo test -- --test-threads=1`.
 3. Ensure your code is properly formatted. Run `cargo fmt --all`.
 4. If you're adding new API, it must be properly documented.
