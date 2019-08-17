@@ -104,56 +104,61 @@ impl AddPopover {
         };
 
         debug!("Url: {}", url);
-        // TODO: refactor to avoid duplication
         match Url::parse(&url) {
             Ok(u) => {
                 if !dbqueries::source_exists(u.as_str())? {
-                    self.entry
-                        .get_style_context()
-                        .remove_class(&gtk::STYLE_CLASS_ERROR);
-                    self.entry
-                        .set_icon_from_icon_name(gtk::EntryIconPosition::Secondary, None);
-                    self.add.set_sensitive(true);
+                    self.style_neutral(true);
                 } else {
-                    self.entry
-                        .get_style_context()
-                        .add_class(&gtk::STYLE_CLASS_ERROR);
-                    self.entry.set_icon_from_icon_name(
-                        gtk::EntryIconPosition::Secondary,
-                        Some("dialog-error-symbolic"),
-                    );
-                    self.entry.set_icon_tooltip_text(
-                        gtk::EntryIconPosition::Secondary,
-                        Some(i18n("You are already subscribed to this show").as_str()),
-                    );
-                    self.add.set_sensitive(false);
+                    self.style_error("You are already subscribed to this show");
                 }
                 Ok(())
             }
             Err(err) => {
-                self.add.set_sensitive(false);
                 if !is_input_url_empty {
-                    self.entry
-                        .get_style_context()
-                        .add_class(&gtk::STYLE_CLASS_ERROR);
-                    self.entry.set_icon_from_icon_name(
-                        gtk::EntryIconPosition::Secondary,
-                        Some("dialog-error-symbolic"),
-                    );
-                    self.entry.set_icon_tooltip_text(
-                        gtk::EntryIconPosition::Secondary,
-                        Some(i18n("Invalid URL").as_str()),
-                    );
+                    self.style_error("Invalid URL");
                     error!("Error: {}", err);
                 } else {
-                    self.entry
-                        .get_style_context()
-                        .remove_class(&gtk::STYLE_CLASS_ERROR);
-                    self.entry
-                        .set_icon_from_icon_name(gtk::EntryIconPosition::Secondary, None);
+                    self.style_neutral(false);
                 }
                 Ok(())
             }
+        }
+    }
+
+    fn style_error(&self, icon_tooltip: &str) {
+        self.style(
+            true,
+            false,
+            Some("dialog-error-symbolic"),
+            Some(icon_tooltip),
+        );
+    }
+
+    fn style_neutral(&self, sensitive: bool) {
+        self.style(false, sensitive, None, None);
+    }
+
+    fn style(
+        &self,
+        error: bool,
+        sensitive: bool,
+        icon_name: Option<&str>,
+        icon_tooltip: Option<&str>,
+    ) {
+        let entry = &self.entry;
+        let icon_position = gtk::EntryIconPosition::Secondary;
+        entry.set_icon_from_icon_name(icon_position, icon_name);
+        if let Some(icon_tooltip_text) = icon_tooltip {
+            entry.set_icon_tooltip_text(icon_position, Some(i18n(icon_tooltip_text).as_str()));
+        }
+        self.add.set_sensitive(sensitive);
+
+        let error_style_class = &gtk::STYLE_CLASS_ERROR;
+        let style_context = entry.get_style_context();
+        if error {
+            style_context.add_class(error_style_class);
+        } else {
+            style_context.remove_class(error_style_class);
         }
     }
 }
