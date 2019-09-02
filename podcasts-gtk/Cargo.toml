@@ -7,18 +7,19 @@ edition = "2018"
 [dependencies]
 chrono = "0.4.6"
 crossbeam-channel = "0.3.8"
-gdk = "0.10.0"
-gdk-pixbuf = "0.6.0"
-glib = "0.7.1"
-gst = { version = "0.13.0", package = "gstreamer" }
-gst-player = { version = "0.13.0", package = "gstreamer-player" }
+gdk = "0.11.0"
+gdk-pixbuf = "0.7.0"
+gobject-sys = "0.9.0"
+glib-sys = "0.9.0"
+gst = { version = "0.14.0", package = "gstreamer" }
+gst-player = { version = "0.14.0", package = "gstreamer-player" }
 humansize = "1.1.0"
 lazy_static = "1.3.0"
 log = "0.4.6"
 loggerv = "0.7.1"
 open = "1.2.2"
 rayon = "1.0.3"
-url = "1.7.2"
+url = "2.1.0"
 failure = "0.1.5"
 failure_derive = "0.1.5"
 fragile = "0.3.0"
@@ -33,20 +34,24 @@ git = "https://github.com/danigm/gettext-rs"
 branch = "no-gettext"
 features = ["gettext-system"]
 
-[dependencies.gtk]
-features = ["v3_24"]
-version = "0.6.0"
+[dependencies.glib]
+features = ["subclassing"]
+version = "0.8.1"
 
 [dependencies.gio]
-features = ["v2_50"]
-version = "0.6.0"
+features = ["v2_50", "subclassing"]
+version = "0.7.0"
+
+[dependencies.gtk]
+features = ["v3_24", "subclassing"]
+version = "0.7.0"
 
 [dependencies.libhandy]
-version = "0.3.0"
-features = [ "v0_0_7"]
+version = "0.4.0"
+features = [ "v0_0_10"]
 
 [dependencies.mpris-player]
-version = "0.3.0"
+version = "0.4.0"
 # git = "https://gitlab.gnome.org/World/Rust/mpris-player"
 
 [dependencies.podcasts-data]

@@ -37,7 +37,7 @@ impl Default for EmptyView {
         let view: gtk::Box = builder.get_object("empty_view").unwrap();
         let image: gtk::Image = builder.get_object("image").unwrap();
         image.set_from_icon_name(
-            format!("{}-symbolic", APP_ID).as_str(),
+            Some(format!("{}-symbolic", APP_ID).as_str()),
             gtk::IconSize::__Unknown(256),
         );
         EmptyView(view)

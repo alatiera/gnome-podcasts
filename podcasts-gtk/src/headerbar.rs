@@ -120,11 +120,11 @@ impl AddPopover {
                         .add_class(&gtk::STYLE_CLASS_ERROR);
                     self.entry.set_icon_from_icon_name(
                         gtk::EntryIconPosition::Secondary,
-                        "dialog-error-symbolic",
+                        Some("dialog-error-symbolic"),
                     );
                     self.entry.set_icon_tooltip_text(
                         gtk::EntryIconPosition::Secondary,
-                        i18n("You are already subscribed to this show").as_str(),
+                        Some(i18n("You are already subscribed to this show").as_str()),
                     );
                     self.add.set_sensitive(false);
                 }
@@ -138,11 +138,11 @@ impl AddPopover {
                         .add_class(&gtk::STYLE_CLASS_ERROR);
                     self.entry.set_icon_from_icon_name(
                         gtk::EntryIconPosition::Secondary,
-                        "dialog-error-symbolic",
+                        Some("dialog-error-symbolic"),
                     );
                     self.entry.set_icon_tooltip_text(
                         gtk::EntryIconPosition::Secondary,
-                        i18n("Invalid URL").as_str(),
+                        Some(i18n("Invalid URL").as_str()),
                     );
                     error!("Error: {}", err);
                 } else {
@@ -210,7 +210,7 @@ impl Header {
     pub(crate) fn init(s: &Rc<Self>, content: &Content, sender: &Sender<Action>) {
         let weak = Rc::downgrade(s);
 
-        s.switch.set_stack(&content.get_stack());
+        s.switch.set_stack(Some(&content.get_stack()));
 
         s.add.entry.connect_changed(clone!(weak => move |_| {
             weak.upgrade().map(|h| {

@@ -85,6 +85,7 @@ mod widgets;
 mod app;
 mod config;
 mod headerbar;
+mod window;
 
 mod manager;
 mod settings;
@@ -93,7 +94,7 @@ mod utils;
 
 mod i18n;
 
-use crate::app::App;
+use crate::app::PdApplication;
 
 #[cfg(test)]
 fn init_gtk_tests() -> Result<(), failure::Error> {
@@ -126,7 +127,7 @@ fn main() {
         600,
     );
 
-    App::run();
+    PdApplication::run();
 }
 
 #[test]

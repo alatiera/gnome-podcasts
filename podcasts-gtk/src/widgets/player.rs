@@ -94,12 +94,12 @@ impl PlayerInfo {
 
     fn set_episode_title(&self, episode: &EpisodeWidgetModel) {
         self.episode.set_text(episode.title());
-        self.episode.set_tooltip_text(episode.title());
+        self.episode.set_tooltip_text(Some(episode.title()));
     }
 
     fn set_show_title(&self, show: &ShowCoverModel) {
         self.show.set_text(show.title());
-        self.show.set_tooltip_text(show.title());
+        self.show.set_tooltip_text(Some(show.title()));
     }
 
     fn set_cover_image(&self, show: &ShowCoverModel) {
@@ -323,12 +323,11 @@ impl PlayerWidget {
                 // path is an absolute fs path ex. "foo/bar/baz".
                 // Convert it so it will have a "file:///"
                 // FIXME: convert it properly
-                if let Some(uri) = File::new_for_path(path).get_uri() {
-                    // play the file
-                    self.player.set_uri(&uri);
-                    self.play();
-                    return Ok(());
-                }
+                let uri = File::new_for_path(path).get_uri();
+                // play the file
+                self.player.set_uri(uri.as_str());
+                self.play();
+                return Ok(());
             }
             // TODO: log an error
         }

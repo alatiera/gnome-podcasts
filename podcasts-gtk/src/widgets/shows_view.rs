@@ -128,7 +128,7 @@ struct ShowsChild {
 impl Default for ShowsChild {
     fn default() -> Self {
         let cover = gtk::Image::new_from_icon_name(
-            "image-x-generic-symbolic",
+            Some("image-x-generic-symbolic"),
             gtk::IconSize::__Unknown(-1),
         );
         let child = gtk::FlowBoxChild::new();
@@ -149,7 +149,7 @@ impl ShowsChild {
     }
 
     fn init(&self, pd: &Show) {
-        self.child.set_tooltip_text(pd.title());
+        self.child.set_tooltip_text(Some(pd.title()));
         WidgetExt::set_name(&self.child, &pd.id().to_string());
 
         self.set_cover(pd.id())
