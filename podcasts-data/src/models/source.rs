@@ -27,13 +27,15 @@ use hyper::{Body, Client};
 use hyper_tls::HttpsConnector;
 
 use http::header::{
-    HeaderValue, ETAG, IF_MODIFIED_SINCE, IF_NONE_MATCH, LAST_MODIFIED, LOCATION,
+    HeaderValue, AUTHORIZATION, ETAG, IF_MODIFIED_SINCE, IF_NONE_MATCH, LAST_MODIFIED, LOCATION,
     USER_AGENT as USER_AGENT_HEADER,
 };
 use http::{Request, Response, StatusCode, Uri};
 // use futures::future::ok;
 use futures::future::{loop_fn, Future, Loop};
 use futures::prelude::*;
+
+use base64::{encode_config, URL_SAFE};
 
 use crate::database::connection;
 use crate::errors::*;
@@ -275,6 +277,18 @@ impl Source {
         // FIXME: remove unwrap somehow
         let uri = Uri::from_str(self.uri()).unwrap();
         let mut req = Request::get(uri).body(Body::empty()).unwrap();
+
+        if let Ok(url) = Url::parse(self.uri()) {
+            if let Some(password) = url.password() {
+                let mut auth = "Basic ".to_owned();
+                auth.push_str(&encode_config(
+                    &format!("{}:{}", url.username(), password),
+                    URL_SAFE,
+                ));
+                req.headers_mut()
+                    .insert(AUTHORIZATION, HeaderValue::from_str(&auth).unwrap());
+            }
+        }
 
         // Set the UserAgent cause ppl still seem to check it for some reason...
         req.headers_mut()

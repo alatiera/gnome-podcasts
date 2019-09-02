@@ -25,6 +25,7 @@ native-tls = "0.2.2"
 num_cpus = "1.10.0"
 failure = "0.1.5"
 failure_derive = "0.1.5"
+base64 = "0.10.1"
 
 [dependencies.diesel]
 features = ["sqlite", "r2d2"]
