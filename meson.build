@@ -26,7 +26,6 @@ dependency('gstreamer-bad-audio-1.0', version: '>= 1.12')
 cargo = find_program('cargo', required: true)
 gresource = find_program('glib-compile-resources', required: true)
 gschemas = find_program('glib-compile-schemas', required: true)
-cargo_vendor = find_program('cargo-vendor', required: false)
 
 if get_option('profile') == 'development'
   profile = '.Devel'
