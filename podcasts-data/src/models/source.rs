@@ -67,7 +67,7 @@ impl Save<Source> for Source {
         let db = connection();
         let con = db.get()?;
 
-        self.save_changes::<Source>(&con).map_err(From::from)
+        self.save_changes::<Source>(&*con).map_err(From::from)
     }
 }
 
