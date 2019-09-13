@@ -56,13 +56,14 @@
                 {
                     "type" : "git",
                     "url" : "https://source.puri.sm/Librem5/libhandy.git",
-                    "commit" : "2d777677352d037b6f5cc24d9c1c8d9a74ac0ded"
+                    "commit" : "f5909a897f70143bdd2f89f47a63c1bf848330ce"
                 }
             ]
         },
         {
             "name" : "gnome-podcasts",
             "buildsystem" : "meson",
+            "builddir" : "true",
             "config-opts" : [
                 "-Dprofile=development"
             ],

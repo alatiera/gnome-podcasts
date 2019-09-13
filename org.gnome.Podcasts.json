@@ -49,14 +49,14 @@
                 "-Dglade_catalog=disabled"
             ],
             "cleanup" : [
-              "/include",
-              "/lib/pkgconfig"
+                "/include",
+                "/lib/pkgconfig"
             ],
             "sources" : [
                 {
                     "type" : "git",
                     "url" : "https://source.puri.sm/Librem5/libhandy.git",
-                    "commit" : "56b0aa62f6251ee19a88fc208b7ca8dcf9c9633c"
+                    "commit" : "f5909a897f70143bdd2f89f47a63c1bf848330ce"
                 }
             ]
         },
