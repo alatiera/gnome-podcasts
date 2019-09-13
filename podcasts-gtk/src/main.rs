@@ -41,7 +41,6 @@
     elided_lifetime_in_paths,
     missing_copy_implementations
 )]
-// #![deny(warnings)]
 
 #[macro_use]
 extern crate failure;

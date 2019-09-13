@@ -62,7 +62,6 @@
     missing_copy_implementations
 )]
 #![allow(proc_macro_derive_resolution_fallback)]
-// #![deny(warnings)]
 
 //! FIXME: Docs
 
