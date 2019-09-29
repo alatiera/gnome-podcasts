@@ -59,7 +59,7 @@ use log::Level;
 
 use gtk::prelude::*;
 
-// http://gtk-rs.org/tuto/closures
+// https://gtk-rs.org/docs-src/tutorial/closures
 #[macro_export]
 macro_rules! clone {
     (@param _) => ( _ );
@@ -111,7 +111,7 @@ fn init_gtk_tests() -> Result<(), failure::Error> {
 }
 
 fn main() {
-    // TODO: make the the logger a cli -vv option
+    // TODO: make the logger a cli -vv option
     loggerv::init_with_level(Level::Info).expect("Error initializing loggerv.");
     gtk::init().expect("Error initializing gtk.");
     gst::init().expect("Error initializing gstreamer");
