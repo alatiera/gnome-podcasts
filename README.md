@@ -38,13 +38,13 @@ Here are the dependencies you will need.
 ```sh
 # Add flathub and the gnome-nightly repo
 flatpak remote-add --user --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
-flatpak remote-add --user --if-not-exists gnome-nightly https://sdk.gnome.org/gnome-nightly.flatpakrepo
+flatpak remote-add --user --if-not-exists gnome-nightly https://nightly.gnome.org/gnome-nightly.flatpakrepo
 
 # Install the gnome-nightly Sdk and Platform runtime
 flatpak install --user gnome-nightly org.gnome.Sdk org.gnome.Platform
 
 # Install the required rust-stable extension from flathub
-flatpak install --user flathub org.freedesktop.Sdk.Extension.rust-stable//18.08
+flatpak install --user flathub org.freedesktop.Sdk.Extension.rust-stable//19.08
 ```
 
 To install the resulting flatpak you can do:
