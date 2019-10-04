@@ -251,7 +251,7 @@ where
 
         up_sender
             .send(true)
-            .expect("Channel was dropped unexpectedly");;
+            .expect("Channel was dropped unexpectedly");
     });
 }
 
@@ -430,7 +430,7 @@ pub(crate) fn on_import_clicked(window: &gtk::ApplicationWindow, sender: &Sender
             let text = i18n("Selected file could not be accessed.");
             sender
                 .send(Action::ErrorNotification(text))
-                .expect("Action channel blew up somehow");;
+                .expect("Action channel blew up somehow");
         }
     }
 }
@@ -474,7 +474,7 @@ pub(crate) fn on_export_clicked(window: &gtk::ApplicationWindow, sender: &Sender
             let text = i18n("Selected file could not be accessed.");
             sender
                 .send(Action::ErrorNotification(text))
-                .expect("Action channel blew up somehow");;
+                .expect("Action channel blew up somehow");
         }
     }
 }

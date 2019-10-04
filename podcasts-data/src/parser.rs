@@ -96,5 +96,4 @@ mod tests {
         let item = Some(&extension);
         assert_eq!(parse_itunes_duration(item), Some(6970));
     }
-
 }

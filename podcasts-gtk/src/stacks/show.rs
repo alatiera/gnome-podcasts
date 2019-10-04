@@ -100,11 +100,11 @@ impl ShowStack {
         if is_episodes_populated(&ign)? {
             self.sender
                 .send(Action::PopulatedState)
-                .expect("Action channel blew up somehow");;
+                .expect("Action channel blew up somehow");
         } else {
             self.sender
                 .send(Action::EmptyState)
-                .expect("Action channel blew up somehow");;
+                .expect("Action channel blew up somehow");
         };
 
         Ok(())
