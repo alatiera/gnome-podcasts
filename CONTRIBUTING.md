@@ -114,4 +114,4 @@ Steps to reproduce:
    do not have permission to do that, you may request the second reviewer to merge it for you.
 
 ## Code of Conduct
-We follow the [Contributor Covenant](/code-of-conduct.md).
+We follow the [GNOME Foundation Code of Conduct](/code-of-conduct.md).
