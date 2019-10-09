@@ -34,6 +34,7 @@ use podcasts_data::{dbqueries, USER_AGENT};
 use podcasts_data::{EpisodeWidgetModel, ShowCoverModel};
 
 use crate::app::Action;
+use crate::config::APP_ID;
 use crate::utils::set_image_from_path;
 
 use std::cell::RefCell;
@@ -213,9 +214,9 @@ impl Default for PlayerWidget {
         );
 
         let mpris = MprisPlayer::new(
-            "Podcasts".to_string(),
+            APP_ID.to_string(),
             "GNOME Podcasts".to_string(),
-            "org.gnome.Podcasts.desktop".to_string(),
+            format!("{}.desktop", APP_ID).to_string(),
         );
         mpris.set_can_raise(true);
         mpris.set_can_play(false);

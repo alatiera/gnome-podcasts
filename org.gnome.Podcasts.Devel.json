@@ -22,7 +22,6 @@
         "--socket=wayland",
         "--socket=pulseaudio",
         "--device=dri",
-        "--own-name=org.mpris.MediaPlayer2.Podcasts",
         "--env=USE_PLAYBING3=1"
     ],
     "build-options" : {
