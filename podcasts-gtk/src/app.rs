@@ -321,6 +321,9 @@ impl PdApplication {
         bindtextdomain("gnome-podcasts", LOCALEDIR);
         textdomain("gnome-podcasts");
 
+        // Make sure the app icon shows up in PulseAudio settings
+        env::set_var("PULSE_PROP_application.icon_name", APP_ID);
+
         let application = Self::new();
 
         // Weird magic I copy-pasted that sets the Application Name in the Shell.
