@@ -18,7 +18,6 @@
         "--socket=fallback-x11",
         "--socket=wayland",
         "--socket=pulseaudio",
-        "--device=dri",
         "--env=USE_PLAYBING3=1"
     ],
     "build-options" : {
