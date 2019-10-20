@@ -99,8 +99,6 @@ fn populate_flowbox(shows: &Rc<ShowsView>, vadj: Option<Adjustment>) -> Result<(
 }
 
 fn on_child_activate(child: &gtk::FlowBoxChild, sender: &Sender<Action>) -> Result<(), Error> {
-    use gtk::WidgetExt;
-
     // This is such an ugly hack...
     let id = WidgetExt::get_name(child)
         .ok_or_else(|| format_err!("Failed to get \"episodes\" child from the stack."))?
