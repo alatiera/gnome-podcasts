@@ -109,7 +109,7 @@ pub use crate::models::{Episode, EpisodeWidgetModel, Show, ShowCoverModel, Sourc
 // Keep this in sync with Tor-browser releases
 /// The user-agent to be used for all the requests.
 /// It originates from the Tor-browser UA.
-pub const USER_AGENT: &str = "Mozilla/5.0 (Windows NT 6.1; rv:52.0) Gecko/20100101 Firefox/52.0";
+pub const USER_AGENT: &str = "Mozilla/5.0 (Windows NT 6.1; rv:60.0) Gecko/20100101 Firefox/60.0";
 
 /// [XDG Base Direcotory](https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html) Paths.
 #[allow(missing_debug_implementations)]
