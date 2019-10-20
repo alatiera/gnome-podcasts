@@ -44,7 +44,7 @@ Tobias Bernard
         <property name="can_focus">False</property>
         <child>
           <object class="GtkBox" id="info_container">
-            <property name="width_request">230</property>
+            <property name="width_request">200</property>
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="halign">start</property>

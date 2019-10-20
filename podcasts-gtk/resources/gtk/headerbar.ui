@@ -70,7 +70,7 @@ Tobias Bernard
               <object class="GtkEntry" id="new_url">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
-                <property name="width_chars">30</property>
+                <property name="width_chars">26</property>
                 <property name="input_purpose">url</property>
               </object>
               <packing>
