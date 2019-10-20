@@ -35,7 +35,7 @@
             "name" : "libhandy",
             "buildsystem" : "meson",
             "config-opts" : [
-                "-Dintrospection=enabled",
+                "-Dintrospection=disabled",
                 "-Dgtk_doc=false",
                 "-Dtests=false",
                 "-Dexamples=false",
