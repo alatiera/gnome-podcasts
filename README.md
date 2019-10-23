@@ -65,10 +65,10 @@ sudo ninja -C build install
 
 #### Dependencies
 
-* Rust stable 1.27 or later along with cargo.
-* Gtk+ 3.22 or later
-* Gstreamer 1.12 or later
-* libhandy
+* Rust stable 1.34 or later along with cargo.
+* Gtk+ 3.24.11 or later
+* Gstreamer 1.16 or later
+* libhandy 0.0.11 or later
 * Meson
 * A network connection
 
