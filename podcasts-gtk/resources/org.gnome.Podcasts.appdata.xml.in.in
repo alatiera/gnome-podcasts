@@ -24,6 +24,13 @@
     </screenshot>
   </screenshots>
   <releases>
+    <release version="0.4.7" date="2019-10-23">
+     <description>
+        <p>
+          Small release including OPML export functionality, partial support for premium feeds, a couple of bugfixes and overall life improvements.
+        </p>
+      </description>
+    </release>
     <release version="0.4.6" date="2018-10-07">
      <description>
         <p>
