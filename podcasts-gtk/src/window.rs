@@ -124,6 +124,8 @@ impl MainWindow {
         // Add the player to the main Box
         wrap.add(&player.action_bar);
 
+        wrap.add(&header.bottom_switcher);
+
         let updater = RefCell::new(None);
 
         window.add(&wrap);

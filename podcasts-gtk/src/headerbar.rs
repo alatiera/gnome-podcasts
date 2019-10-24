@@ -20,6 +20,8 @@
 use gio;
 use gtk;
 use gtk::prelude::*;
+use libhandy;
+use libhandy::prelude::*;
 
 use crossbeam_channel::Sender;
 use failure::Error;
@@ -39,9 +41,12 @@ use crate::i18n::i18n;
 #[derive(Debug, Clone)]
 // TODO: Make a proper state machine for the headerbar states
 pub(crate) struct Header {
-    pub(crate) container: gtk::HeaderBar,
-    pub(crate) switch: gtk::StackSwitcher,
+    pub(crate) container: libhandy::HeaderBar,
+    pub(crate) switch: libhandy::ViewSwitcher,
+    pub(crate) bottom_switcher: libhandy::ViewSwitcherBar,
+    switch_squeezer: libhandy::Squeezer,
     back: gtk::Button,
+    title_stack: gtk::Stack,
     show_title: gtk::Label,
     hamburger: gtk::MenuButton,
     add: AddPopover,
@@ -169,8 +174,10 @@ impl Default for Header {
         let menus = gtk::Builder::new_from_resource("/org/gnome/Podcasts/gtk/hamburger.ui");
 
         let header = builder.get_object("headerbar").unwrap();
-        let switch = builder.get_object("switch").unwrap();
+        let switch: libhandy::ViewSwitcher = builder.get_object("switch").unwrap();
         let back = builder.get_object("back").unwrap();
+        let title_stack = builder.get_object("title_stack").unwrap();
+        let switch_squeezer: libhandy::Squeezer = builder.get_object("switch_squeezer").unwrap();
         let show_title = builder.get_object("show_title").unwrap();
 
         // The hamburger menu
@@ -192,10 +199,17 @@ impl Default for Header {
             add: add_button,
         };
 
+        // View switcher bar that goes at the bottom of the window
+        let switcher = libhandy::ViewSwitcherBar::new();
+        switcher.set_reveal(false);
+
         Header {
             container: header,
             switch,
             back,
+            title_stack,
+            switch_squeezer,
+            bottom_switcher: switcher,
             show_title,
             hamburger,
             add,
@@ -215,6 +229,7 @@ impl Header {
     pub(crate) fn init(s: &Rc<Self>, content: &Content, sender: &Sender<Action>) {
         let weak = Rc::downgrade(s);
 
+        s.bottom_switcher.set_stack(Some(&content.get_stack()));
         s.switch.set_stack(Some(&content.get_stack()));
 
         s.add.entry.connect_changed(clone!(weak => move |_| {
@@ -233,23 +248,29 @@ impl Header {
             weak.upgrade().map(|h| h.switch_to_normal());
             sender.send(Action::ShowShowsAnimated).expect("Action channel blew up somehow");
         }));
+
+        s.switch_squeezer
+            .connect_property_visible_child_notify(clone!(weak => move |_| {
+                weak.upgrade().map(|h| h.update_bottom_switcher());
+            }));
+        s.update_bottom_switcher();
     }
 
     pub(crate) fn switch_to_back(&self, title: &str) {
-        self.switch.hide();
         self.add.toggle.hide();
         self.back.show();
         self.set_show_title(title);
-        self.show_title.show();
+        self.title_stack.set_visible_child(&self.show_title);
+        self.bottom_switcher.set_reveal(false);
         self.hamburger.hide();
         self.dots.show();
     }
 
     pub(crate) fn switch_to_normal(&self) {
-        self.switch.show();
         self.add.toggle.show();
         self.back.hide();
-        self.show_title.hide();
+        self.title_stack.set_visible_child(&self.switch_squeezer);
+        self.update_bottom_switcher();
         self.hamburger.show();
         self.dots.hide();
     }
@@ -264,5 +285,11 @@ impl Header {
 
     pub(crate) fn set_secondary_menu(&self, pop: &gtk::PopoverMenu) {
         self.dots.set_popover(Some(pop));
+    }
+
+    fn update_bottom_switcher(&self) {
+        if let Some(child) = self.switch_squeezer.get_visible_child() {
+            self.bottom_switcher.set_reveal(child != self.switch);
+        }
     }
 }

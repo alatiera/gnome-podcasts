@@ -54,6 +54,15 @@ impl Content {
         stack.add_titled(&home.borrow().get_stack(), "home", &i18n("New"));
         stack.add_titled(&shows.borrow().get_stack(), "shows", &i18n("Shows"));
 
+        stack.set_child_icon_name(
+            &home.borrow().get_stack(),
+            Some("document-open-recent-symbolic"),
+        );
+        stack.set_child_icon_name(
+            &shows.borrow().get_stack(),
+            Some("audio-input-microphone-symbolic"),
+        );
+
         let con = Content {
             stack,
             shows,

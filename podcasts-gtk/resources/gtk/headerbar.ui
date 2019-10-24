@@ -129,43 +129,52 @@ Tobias Bernard
       </object>
     </child>
   </object>
-  <object class="GtkHeaderBar" id="headerbar">
+  <object class="HdyHeaderBar" id="headerbar">
     <property name="can_focus">False</property>
     <property name="show_close_button">True</property>
+    <property name="centering-policy">strict</property>
     <child type="title">
-      <object class="GtkBox">
+      <object class="GtkStack" id="title_stack">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="orientation">vertical</property>
+        <property name="transition_type">crossfade</property>
         <child>
-          <object class="GtkStackSwitcher" id="switch">
+          <object class="HdySqueezer" id="switch_squeezer">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="halign">center</property>
-            <property name="valign">center</property>
+            <property name="transition_type">crossfade</property>
+            <child>
+              <object class="HdyViewSwitcher" id="switch">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="halign">center</property>
+                <property name="policy">wide</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkLabel">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="label" translatable="yes">Podcasts</property>
+                <style>
+                  <class name="title"/>
+                </style>
+              </object>
+            </child>
           </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">0</property>
-          </packing>
         </child>
         <child>
           <object class="GtkLabel" id="show_title">
+            <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="no_show_all">True</property>
             <property name="label" translatable="yes">Show Title</property>
             <property name="ellipsize">end</property>
             <property name="track_visited_links">False</property>
-            <attributes>
-              <attribute name="weight" value="bold"/>
-            </attributes>
+            <style>
+              <class name="title" />
+            </style>
           </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">1</property>
-          </packing>
         </child>
       </object>
     </child>
