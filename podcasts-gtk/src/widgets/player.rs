@@ -213,6 +213,10 @@ impl Default for PlayerWidget {
             Some(&dispatcher.upcast::<gst_player::PlayerSignalDispatcher>()),
         );
 
+        // A few podcasts have a video track of the thumbnail, which GStreamer displays in a new
+        // window. Make sure it doesn't do that.
+        player.set_video_track_enabled(false);
+
         let mpris = MprisPlayer::new(
             APP_ID.to_string(),
             "GNOME Podcasts".to_string(),
