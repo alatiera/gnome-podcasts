@@ -244,6 +244,16 @@ impl Header {
             weak.upgrade().map(|h| h.add.on_add_clicked(&sender));
         }));
 
+        s.add
+            .entry
+            .connect_activate(clone!(weak, sender => move |_| {
+                weak.upgrade().map(|h| {
+                    if h.add.add.get_sensitive() {
+                        h.add.on_add_clicked(&sender);
+                    }
+                });
+            }));
+
         s.back.connect_clicked(clone!(weak, sender => move |_| {
             weak.upgrade().map(|h| h.switch_to_normal());
             sender.send(Action::ShowShowsAnimated).expect("Action channel blew up somehow");
