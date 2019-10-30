@@ -43,6 +43,10 @@ pub(crate) struct ShowWidget {
     pub(crate) view: BaseView,
     cover: gtk::Image,
     description: gtk::Label,
+    description_short: gtk::Label,
+    description_stack: gtk::Stack,
+    description_button: gtk::Button,
+    description_button_revealer: gtk::Revealer,
     episodes: gtk::ListBox,
     show_id: Option<i32>,
 }
@@ -53,6 +57,11 @@ impl Default for ShowWidget {
         let sub_cont: gtk::Box = builder.get_object("sub_container").unwrap();
         let cover: gtk::Image = builder.get_object("cover").unwrap();
         let description: gtk::Label = builder.get_object("description").unwrap();
+        let description_short: gtk::Label = builder.get_object("description_short").unwrap();
+        let description_stack: gtk::Stack = builder.get_object("description_stack").unwrap();
+        let description_button: gtk::Button = builder.get_object("description_button").unwrap();
+        let description_button_revealer =
+            builder.get_object("description_button_revealer").unwrap();
         let episodes = builder.get_object("episodes").unwrap();
         let view = BaseView::default();
 
@@ -71,6 +80,10 @@ impl Default for ShowWidget {
             view,
             cover,
             description,
+            description_short,
+            description_stack,
+            description_button,
+            description_button_revealer,
             episodes,
             show_id: None,
         }
@@ -95,6 +108,18 @@ impl ShowWidget {
         let res = populate_listbox(&pdw, pd.clone(), sender, vadj);
         debug_assert!(res.is_ok());
 
+        let weak = Rc::downgrade(&pdw);
+        pdw.description_short
+            .connect_size_allocate(clone!(weak => move |_, _2| {
+                weak.upgrade().map(|w| w.update_read_more());
+            }));
+
+        pdw.description_button
+            .connect_clicked(clone!(weak => move |_| {
+                weak.upgrade()
+                    .map(|w| w.description_stack.set_visible_child_name("full"));
+            }));
+
         pdw
     }
 
@@ -111,10 +136,31 @@ impl ShowWidget {
         utils::set_image_from_path(&self.cover, pd.id(), 256)
     }
 
+    fn update_read_more(&self) {
+        if let Some(layout) = self.description_short.get_layout() {
+            let more = layout.is_ellipsized()
+                || self.description.get_label() != self.description_short.get_label();
+            self.description_button_revealer.set_reveal_child(more);
+        }
+    }
+
     /// Set the description text.
     fn set_description(&self, text: &str) {
-        self.description
-            .set_markup(html2text::from_read(text.as_bytes(), 80).trim());
+        let markup = html2text::from_read(text.as_bytes(), text.as_bytes().len());
+        let markup = markup.trim();
+        let lines: Vec<&str> = markup.lines().collect();
+
+        if markup.is_empty() {
+            self.description_stack.set_visible(false);
+        } else {
+            self.description_stack.set_visible(true);
+
+            self.description.set_markup(markup);
+            debug_assert!(lines.len() > 0);
+            if lines.len() > 0 {
+                self.description_short.set_markup(lines[0]);
+            }
+        }
     }
 
     pub(crate) fn show_id(&self) -> Option<i32> {
