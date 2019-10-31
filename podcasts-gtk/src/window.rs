@@ -122,7 +122,7 @@ impl MainWindow {
 
         let player = player::PlayerWrapper::new(&sender);
         // Add the player to the main Box
-        wrap.add(&player.action_bar);
+        wrap.add(&player.container);
 
         wrap.add(&header.bottom_switcher);
 

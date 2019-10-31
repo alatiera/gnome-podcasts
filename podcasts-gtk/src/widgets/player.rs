@@ -22,6 +22,10 @@ use gst::ClockTime;
 use gtk;
 use gtk::prelude::*;
 
+use libhandy as hdy;
+use libhandy::prelude::HeaderBarExt;
+use libhandy::prelude::*;
+
 use gio::{File, FileExt};
 use glib::{SignalHandlerId, WeakRef};
 
@@ -70,11 +74,29 @@ struct PlayerInfo {
     show: gtk::Label,
     episode: gtk::Label,
     cover: gtk::Image,
+    show_small: gtk::Label,
+    episode_small: gtk::Label,
+    cover_small: gtk::Image,
     mpris: Arc<MprisPlayer>,
     episode_id: RefCell<Option<i32>>,
 }
 
 impl PlayerInfo {
+    fn create_bindings(&self) {
+        self.show
+            .bind_property("label", &self.show_small, "label")
+            .flags(glib::BindingFlags::SYNC_CREATE)
+            .build();
+        self.episode
+            .bind_property("label", &self.episode_small, "label")
+            .flags(glib::BindingFlags::SYNC_CREATE)
+            .build();
+        self.cover
+            .bind_property("pixbuf", &self.cover_small, "pixbuf")
+            .flags(glib::BindingFlags::SYNC_CREATE)
+            .build();
+    }
+
     // FIXME: create a Diesel Model of the joined episode and podcast query instead
     fn init(&self, episode: &EpisodeWidgetModel, podcast: &ShowCoverModel) {
         self.episode_id.replace(Some(episode.rowid()));
@@ -118,6 +140,7 @@ struct PlayerTimes {
     separator: gtk::Label,
     slider: gtk::Scale,
     slider_update: Rc<SignalHandlerId>,
+    progress_bar: gtk::ProgressBar,
 }
 
 #[derive(Debug, Clone, Copy)]
@@ -150,6 +173,8 @@ impl PlayerTimes {
         self.slider.unblock_signal(&self.slider_update);
 
         self.duration.set_text(&format_duration(seconds as u32));
+
+        self.update_progress_bar();
     }
 
     /// Update the `gtk::Scale` bar when the pipeline position is changed.
@@ -161,6 +186,13 @@ impl PlayerTimes {
         self.slider.unblock_signal(&self.slider_update);
 
         self.progressed.set_text(&format_duration(seconds as u32));
+
+        self.update_progress_bar();
+    }
+
+    fn update_progress_bar(&self) {
+        let fraction = self.slider.get_value() / self.slider.get_adjustment().get_upper();
+        self.progress_bar.set_fraction(fraction);
     }
 }
 
@@ -184,21 +216,140 @@ struct PlayerRate {
     label: gtk::Label,
 }
 
+impl PlayerRate {
+    fn new() -> Self {
+        let builder = gtk::Builder::new_from_resource("/org/gnome/Podcasts/gtk/player_rate.ui");
+
+        let radio150: gtk::RadioButton = builder.get_object("rate_1_50").unwrap();
+        let radio125: gtk::RadioButton = builder.get_object("rate_1_25").unwrap();
+        let radio_normal: gtk::RadioButton = builder.get_object("normal_rate").unwrap();
+        let popover = builder.get_object("rate_popover").unwrap();
+        let btn = builder.get_object("rate_button").unwrap();
+        let label = builder.get_object("rate_label").unwrap();
+
+        PlayerRate {
+            radio150,
+            radio125,
+            radio_normal,
+            popover,
+            label,
+            btn,
+        }
+    }
+
+    fn set_rate(&self, rate: f64) {
+        self.label.set_text(&format!("{:.2}×", rate));
+    }
+
+    fn connect_signals(&self, widget: &Rc<PlayerWidget>) {
+        let weak = Rc::downgrade(widget);
+
+        self.radio_normal
+            .connect_toggled(clone!(weak => move |rate| {
+                weak.upgrade().map(|w| w.on_rate_changed(1.00));
+            }));
+        self.radio125.connect_toggled(clone!(weak => move |rate| {
+            weak.upgrade().map(|w| w.on_rate_changed(1.25));
+        }));
+        self.radio150.connect_toggled(clone!(weak => move |rate| {
+            weak.upgrade().map(|w| w.on_rate_changed(1.50));
+        }));
+    }
+}
+
 #[derive(Debug, Clone)]
 struct PlayerControls {
     container: gtk::Box,
     play: gtk::Button,
     pause: gtk::Button,
+    play_small: gtk::Button,
+    pause_small: gtk::Button,
+    play_pause_small: gtk::Stack,
     forward: gtk::Button,
     rewind: gtk::Button,
     last_pause: RefCell<Option<DateTime<Local>>>,
 }
 
 #[derive(Debug, Clone)]
+struct PlayerDialog {
+    dialog: hdy::Dialog,
+    close: gtk::Button,
+    headerbar: hdy::HeaderBar,
+    cover: gtk::Image,
+    play_pause: gtk::Stack,
+    play: gtk::Button,
+    pause: gtk::Button,
+    duration: gtk::Label,
+    progressed: gtk::Label,
+    slider: gtk::Scale,
+    forward: gtk::Button,
+    rewind: gtk::Button,
+    rate: PlayerRate,
+    show: gtk::Label,
+    episode: gtk::Label,
+}
+
+impl PlayerDialog {
+    fn new(rate: PlayerRate) -> Self {
+        let builder = gtk::Builder::new_from_resource("/org/gnome/Podcasts/gtk/player_dialog.ui");
+        let dialog = builder.get_object("dialog").unwrap();
+
+        let close = builder.get_object("close").unwrap();
+        let headerbar = builder.get_object("headerbar").unwrap();
+        let cover = builder.get_object("cover").unwrap();
+        let play_pause = builder.get_object("play_pause").unwrap();
+        let play = builder.get_object("play").unwrap();
+        let pause = builder.get_object("pause").unwrap();
+        let duration = builder.get_object("duration").unwrap();
+        let progressed = builder.get_object("progressed").unwrap();
+        let slider = builder.get_object("slider").unwrap();
+        let rewind = builder.get_object("rewind").unwrap();
+        let forward = builder.get_object("forward").unwrap();
+        let bottom: gtk::Box = builder.get_object("bottom").unwrap();
+        let show = builder.get_object("show_label").unwrap();
+        let episode = builder.get_object("episode_label").unwrap();
+
+        bottom.pack_start(&rate.btn, false, true, 0);
+
+        PlayerDialog {
+            dialog,
+            close,
+            headerbar,
+            cover,
+            play_pause,
+            play,
+            pause,
+            duration,
+            progressed,
+            slider,
+            forward,
+            rewind,
+            rate,
+            show,
+            episode,
+        }
+    }
+
+    fn initialize_episode(&self, episode: &EpisodeWidgetModel, show: &ShowCoverModel) {
+        self.episode.set_text(episode.title());
+        self.show.set_text(show.title());
+
+        set_image_from_path(&self.cover, show.id(), 256)
+            .map_err(|err| error!("Player Cover: {}", err))
+            .ok();
+    }
+}
+
+#[derive(Debug, Clone)]
 pub(crate) struct PlayerWidget {
-    pub(crate) action_bar: gtk::ActionBar,
+    pub(crate) container: gtk::Box,
+    action_bar: gtk::ActionBar,
+    evbox: gtk::EventBox,
     player: gst_player::Player,
     controls: PlayerControls,
+    dialog: PlayerDialog,
+    full: gtk::Box,
+    squeezer: hdy::Squeezer,
     timer: PlayerTimes,
     info: PlayerInfo,
     rate: PlayerRate,
@@ -233,18 +384,23 @@ impl Default for PlayerWidget {
         player.set_config(config).unwrap();
 
         let builder = gtk::Builder::new_from_resource("/org/gnome/Podcasts/gtk/player_toolbar.ui");
-        let action_bar = builder.get_object("action_bar").unwrap();
 
         let buttons = builder.get_object("buttons").unwrap();
         let play = builder.get_object("play_button").unwrap();
         let pause = builder.get_object("pause_button").unwrap();
+        let play_small = builder.get_object("play_button_small").unwrap();
+        let pause_small = builder.get_object("pause_button_small").unwrap();
         let forward: gtk::Button = builder.get_object("ff_button").unwrap();
         let rewind: gtk::Button = builder.get_object("rewind_button").unwrap();
+        let play_pause_small = builder.get_object("play_pause_small").unwrap();
 
         let controls = PlayerControls {
             container: buttons,
             play,
             pause,
+            play_small,
+            pause_small,
+            play_pause_small,
             forward,
             rewind,
             last_pause: RefCell::new(None),
@@ -258,6 +414,7 @@ impl Default for PlayerWidget {
         slider.set_range(0.0, 1.0);
         let player_weak = player.downgrade();
         let slider_update = Rc::new(Self::connect_update_slider(&slider, player_weak));
+        let progress_bar = builder.get_object("progress_bar").unwrap();
         let timer = PlayerTimes {
             container: timer_container,
             progressed,
@@ -265,40 +422,50 @@ impl Default for PlayerWidget {
             separator,
             slider,
             slider_update,
+            progress_bar,
         };
 
         let labels = builder.get_object("info").unwrap();
         let show = builder.get_object("show_label").unwrap();
         let episode = builder.get_object("episode_label").unwrap();
         let cover = builder.get_object("show_cover").unwrap();
+        let show_small = builder.get_object("show_label_small").unwrap();
+        let episode_small = builder.get_object("episode_label_small").unwrap();
+        let cover_small = builder.get_object("show_cover_small").unwrap();
         let info = PlayerInfo {
             mpris,
             container: labels,
             show,
             episode,
             cover,
+            show_small,
+            episode_small,
+            cover_small,
             episode_id: RefCell::new(None),
         };
+        info.create_bindings();
 
-        let radio150 = builder.get_object("rate_1_50").unwrap();
-        let radio125 = builder.get_object("rate_1_25").unwrap();
-        let radio_normal = builder.get_object("normal_rate").unwrap();
-        let popover = builder.get_object("rate_popover").unwrap();
-        let btn = builder.get_object("rate_button").unwrap();
-        let label = builder.get_object("rate_label").unwrap();
-        let rate = PlayerRate {
-            radio150,
-            radio125,
-            radio_normal,
-            popover,
-            label,
-            btn,
-        };
+        let dialog_rate = PlayerRate::new();
+        let dialog = PlayerDialog::new(dialog_rate);
+
+        let container = builder.get_object("container").unwrap();
+        let action_bar: gtk::ActionBar = builder.get_object("action_bar").unwrap();
+        let evbox = builder.get_object("evbox").unwrap();
+        let full: gtk::Box = builder.get_object("full").unwrap();
+        let squeezer = builder.get_object("squeezer").unwrap();
+
+        let rate = PlayerRate::new();
+        full.pack_end(&rate.btn, false, true, 0);
 
         PlayerWidget {
             player,
+            container,
             action_bar,
+            evbox,
             controls,
+            dialog,
+            full,
+            squeezer,
             timer,
             info,
             rate,
@@ -309,7 +476,8 @@ impl Default for PlayerWidget {
 impl PlayerWidget {
     fn on_rate_changed(&self, rate: f64) {
         self.set_playback_rate(rate);
-        self.rate.label.set_text(&format!("{:.2}×", rate));
+        self.rate.set_rate(rate);
+        self.dialog.rate.set_rate(rate);
     }
 
     fn reveal(&self) {
@@ -319,6 +487,8 @@ impl PlayerWidget {
     pub(crate) fn initialize_episode(&self, rowid: i32) -> Result<(), Error> {
         let ep = dbqueries::get_episode_widget_from_rowid(rowid)?;
         let pd = dbqueries::get_podcast_cover_from_id(ep.show_id())?;
+
+        self.dialog.initialize_episode(&ep, &pd);
 
         self.info.init(&ep, &pd);
         // Currently that will always be the case since the play button is
@@ -331,8 +501,10 @@ impl PlayerWidget {
                 let uri = File::new_for_path(path).get_uri();
                 // play the file
                 self.player.set_uri(uri.as_str());
-                self.rate.radio_normal.set_active(true);
+                self.rate.set_rate(1.0);
+                self.dialog.rate.set_rate(1.0);
                 self.play();
+
                 return Ok(());
             }
             // TODO: log an error
@@ -391,10 +563,15 @@ impl PlayerWidget {
 
 impl PlayerExt for PlayerWidget {
     fn play(&self) {
+        self.dialog.play_pause.set_visible_child(&self.dialog.pause);
+
         self.reveal();
 
         self.controls.pause.show();
         self.controls.play.hide();
+        self.controls
+            .play_pause_small
+            .set_visible_child(&self.controls.pause_small);
 
         self.smart_rewind();
         self.player.play();
@@ -402,8 +579,13 @@ impl PlayerExt for PlayerWidget {
     }
 
     fn pause(&self) {
+        self.dialog.play_pause.set_visible_child(&self.dialog.play);
+
         self.controls.pause.hide();
         self.controls.play.show();
+        self.controls
+            .play_pause_small
+            .set_visible_child(&self.controls.play_small);
 
         self.player.pause();
         self.info.mpris.set_playback_status(PlaybackStatus::Paused);
@@ -413,6 +595,7 @@ impl PlayerExt for PlayerWidget {
 
     #[cfg_attr(rustfmt, rustfmt_skip)]
     fn stop(&self) {
+
         self.controls.pause.hide();
         self.controls.play.show();
 
@@ -495,6 +678,72 @@ impl PlayerWrapper {
         self.connect_rate_buttons();
         self.connect_mpris_buttons(sender);
         self.connect_gst_signals(sender);
+        self.connect_dialog();
+    }
+
+    fn connect_dialog(&self) {
+        let weak = Rc::downgrade(self);
+
+        self.squeezer
+            .connect_property_visible_child_notify(clone!(weak => move |_| {
+                weak.upgrade().map(|w| {
+                    if let Some(child) = w.squeezer.get_visible_child() {
+                        let full = child == w.full;
+                        w.timer.progress_bar.set_visible(!full);
+                        if full {
+                            w.action_bar.get_style_context().remove_class("player-small");
+                        } else {
+                            w.action_bar.get_style_context().add_class("player-small");
+                        }
+                    }
+                });
+            }));
+
+        self.timer
+            .duration
+            .bind_property("label", &self.dialog.duration, "label")
+            .flags(glib::BindingFlags::SYNC_CREATE)
+            .build();
+        self.timer
+            .progressed
+            .bind_property("label", &self.dialog.progressed, "label")
+            .flags(glib::BindingFlags::SYNC_CREATE)
+            .build();
+        self.dialog
+            .slider
+            .set_adjustment(&self.timer.slider.get_adjustment());
+
+        self.evbox
+            .connect_button_press_event(clone!(weak => move |_, event| {
+                if event.get_button() != 1 {
+                    return Inhibit(false);
+                }
+
+                if let Some(w) = weak.upgrade() {
+                    // only open the dialog when the small toolbar is visible
+                    if let Some(child) = w.squeezer.get_visible_child() {
+                        if child == w.full {
+                            return Inhibit(false);
+                        }
+                    }
+
+                    let parent = w.container.get_toplevel().and_then(|toplevel| {
+                        toplevel
+                            .downcast::<gtk::Window>()
+                            .ok()
+                    }).unwrap();
+
+                    info!("showing dialog");
+                    w.dialog.dialog.set_transient_for(Some(&parent));
+                    w.dialog.dialog.show();
+                }
+
+                Inhibit(false)
+            }));
+
+        self.dialog.close.connect_clicked(clone!(weak => move |_| {
+            weak.upgrade().map(|w| w.dialog.dialog.hide());
+        }));
     }
 
     /// Connect the `PlayerControls` buttons to the `PlayerExt` methods.
@@ -513,6 +762,20 @@ impl PlayerWrapper {
                 weak.upgrade().map(|p| p.pause());
             }));
 
+        // Connect the play button to the gst Player.
+        self.controls
+            .play_small
+            .connect_clicked(clone!(weak => move |_| {
+                 weak.upgrade().map(|p| p.play());
+            }));
+
+        // Connect the pause button to the gst Player.
+        self.controls
+            .pause_small
+            .connect_clicked(clone!(weak => move |_| {
+                weak.upgrade().map(|p| p.pause());
+            }));
+
         // Connect the rewind button to the gst Player.
         self.controls
             .rewind
@@ -522,6 +785,28 @@ impl PlayerWrapper {
 
         // Connect the fast-forward button to the gst Player.
         self.controls
+            .forward
+            .connect_clicked(clone!(weak => move |_| {
+                weak.upgrade().map(|p| p.fast_forward());
+            }));
+
+        // Connect the play button to the gst Player.
+        self.dialog.play.connect_clicked(clone!(weak => move |_| {
+             weak.upgrade().map(|p| p.play());
+        }));
+
+        // Connect the pause button to the gst Player.
+        self.dialog.pause.connect_clicked(clone!(weak => move |_| {
+            weak.upgrade().map(|p| p.pause());
+        }));
+
+        // Connect the rewind button to the gst Player.
+        self.dialog.rewind.connect_clicked(clone!(weak => move |_| {
+            weak.upgrade().map(|p| p.rewind());
+        }));
+
+        // Connect the fast-forward button to the gst Player.
+        self.dialog
             .forward
             .connect_clicked(clone!(weak => move |_| {
                 weak.upgrade().map(|p| p.fast_forward());
@@ -567,25 +852,8 @@ impl PlayerWrapper {
 
     #[cfg_attr(rustfmt, rustfmt_skip)]
     fn connect_rate_buttons(&self) {
-        let weak = Rc::downgrade(self);
-
-        self.rate
-            .radio_normal
-            .connect_toggled(clone!(weak => move |_| {
-                weak.upgrade().map(|p| p.on_rate_changed(1.00));
-            }));
-
-        self.rate
-            .radio125
-            .connect_toggled(clone!(weak => move |_| {
-                weak.upgrade().map(|p| p.on_rate_changed(1.25));
-            }));
-
-        self.rate
-            .radio150
-            .connect_toggled(clone!(weak => move |_| {
-                weak.upgrade().map(|p| p.on_rate_changed(1.50));
-            }));
+        self.rate.connect_signals(self);
+        self.dialog.rate.connect_signals(self);
     }
 
     fn connect_mpris_buttons(&self, sender: &Sender<Action>) {
