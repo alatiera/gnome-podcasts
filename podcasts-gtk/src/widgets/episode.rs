@@ -491,7 +491,7 @@ fn on_download_clicked(ep: &EpisodeWidgetModel, sender: &Sender<Action>) -> Resu
     // Update Views
     sender
         .send(Action::RefreshEpisodesViewBGR)
-        .expect("Action channel blew up somehow");;
+        .expect("Action channel blew up somehow");
     Ok(())
 }
 
@@ -512,11 +512,11 @@ fn on_play_bttn_clicked(
     // Play the episode
     sender
         .send(Action::InitEpisode(episode.rowid()))
-        .expect("Action channel blew up somehow");;
+        .expect("Action channel blew up somehow");
     // Refresh background views to match the normal/greyout title state
     sender
         .send(Action::RefreshEpisodesViewBGR)
-        .expect("Action channel blew up somehow");;
+        .expect("Action channel blew up somehow");
     Ok(())
 }
 
