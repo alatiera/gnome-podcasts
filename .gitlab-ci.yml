@@ -4,6 +4,7 @@ include:
     # ref: ''
 
 flatpak:
+  image: 'registry.gitlab.gnome.org/gnome/gnome-runtime-images/rust_bundle:master'
   variables:
     MANIFEST_PATH: "org.gnome.Podcasts.Devel.json"
     FLATPAK_MODULE: "gnome-podcasts"
@@ -11,7 +12,7 @@ flatpak:
     APP_ID: "org.gnome.Podcasts.Devel"
     RUNTIME_REPO: "https://nightly.gnome.org/gnome-nightly.flatpakrepo"
     BUNDLE: "org.gnome.Podcasts.Devel.flatpak"
-  .extends: '.flatpak'
+  extends: '.flatpak'
 
 # Configure and run rustfmt
 # Exits and builds fails if on bad format
