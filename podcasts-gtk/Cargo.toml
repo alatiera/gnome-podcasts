@@ -29,6 +29,7 @@ serde_json = "1.0.41"
 # html2text = "0.1.8"
 html2text = { git = "https://github.com/jugglerchris/rust-html2text" }
 mpris-player = "0.4.0"
+pango = "0.7.0"
 
 [dependencies.gettext-rs]
 git = "https://github.com/danigm/gettext-rs"

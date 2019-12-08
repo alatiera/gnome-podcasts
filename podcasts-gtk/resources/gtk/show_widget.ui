@@ -58,38 +58,78 @@ Tobias Bernard
           </packing>
         </child>
         <child>
-          <object class="GtkScrolledWindow">
+          <object class="HdyColumn">
             <property name="visible">True</property>
-            <property name="can_focus">True</property>
-            <property name="hscrollbar_policy">never</property>
-            <property name="min_content_height">80</property>
+            <property name="maximum_width">600</property>
             <child>
-              <object class="GtkViewport">
+              <object class="GtkStack" id="description_stack">
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="shadow_type">none</property>
+                <property name="can_focus">True</property>
+                <property name="vhomogeneous">False</property>
+                <property name="transition_type">none</property>
+                <property name="interpolate_size">True</property>
+                <property name="margin">12</property>
+                <child>
+                  <object class="GtkBox">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="halign">fill</property>
+                    <property name="orientation">vertical</property>
+                    <child>
+                      <object class="GtkLabel" id="description_short">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="halign">center</property>
+                        <property name="valign">center</property>
+                        <property name="use_markup">True</property>
+                        <property name="justify">center</property>
+                        <property name="wrap">True</property>
+                        <property name="wrap_mode">word-char</property>
+                        <property name="ellipsize">end</property>
+                        <property name="lines">4</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkRevealer" id="description_button_revealer">
+                        <property name="visible">True</property>
+                        <property name="reveal_child">False</property>
+                        <property name="transition_duration">1</property>
+                        <child>
+                          <object class="GtkButton" id="description_button">
+                            <property name="label" translatable="yes">Read More</property>
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="receives_default">False</property>
+                            <property name="halign">center</property>
+                            <property name="margin_top">12</property>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="name">short</property>
+                  </packing>
+                </child>
                 <child>
                   <object class="GtkLabel" id="description">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="halign">center</property>
                     <property name="valign">center</property>
-                    <property name="label">This is embarrasing!
-Sorry, we could not find a description for this Show.</property>
                     <property name="use_markup">True</property>
                     <property name="justify">center</property>
                     <property name="wrap">True</property>
                     <property name="wrap_mode">word-char</property>
                   </object>
+                  <packing>
+                    <property name="name">full</property>
+                    <property name="position">1</property>
+                  </packing>
                 </child>
               </object>
             </child>
           </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">False</property>
-            <property name="position">1</property>
-          </packing>
         </child>
       </object>
       <packing>
