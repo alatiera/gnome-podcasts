@@ -35,7 +35,7 @@ msgstr "Amplada de l'última finestra principal oberta"
 
 #: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml:31
 msgid "Maximized state of the last open main window"
-msgstr "Estat de maximització de l'ultima finestra principal oberta"
+msgstr "Estat de maximització de l'última finestra principal oberta"
 
 #: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml:36
 msgid "Enable or disable dark theme"
