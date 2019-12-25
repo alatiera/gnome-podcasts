@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: podcasts\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2019-05-18 12:55+0000\n"
-"PO-Revision-Date: 2019-05-19 12:37+0200\n"
+"POT-Creation-Date: 2019-12-11 11:32+0000\n"
+"PO-Revision-Date: 2019-12-25 17:05+0100\n"
 "Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
 "Language-Team: Polish <community-poland@mozilla.org>\n"
 "Language: pl\n"
@@ -70,7 +70,7 @@ msgstr "Jaki okres czekać między automatycznym czyszczeniem"
 #. Weird magic I copy-pasted that sets the Application Name in the Shell.
 #: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:3
 #: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:4
-#: podcasts-gtk/src/app.rs:109 podcasts-gtk/src/app.rs:433
+#: podcasts-gtk/resources/gtk/headerbar.ui:158 podcasts-gtk/src/app.rs:330
 #: podcasts-gtk/src/widgets/aboutdialog.rs:56
 msgid "Podcasts"
 msgstr "Podcasty"
@@ -89,7 +89,7 @@ msgstr "Podcast;Podkasty;RSS;Atom;"
 msgid "Podcast app for GNOME"
 msgstr "Aplikacja do słuchania podcastów w GNOME"
 
-#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:77
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:84
 msgid "Jordan Petridis"
 msgstr "Jordan Petridis"
 
@@ -154,7 +154,7 @@ msgid "_About Podcasts"
 msgstr "_O programie"
 
 #: podcasts-gtk/resources/gtk/headerbar.ui:35
-#: podcasts-gtk/resources/gtk/headerbar.ui:189
+#: podcasts-gtk/resources/gtk/headerbar.ui:186
 msgid "Add a new feed"
 msgstr "Dodaje nowy kanał"
 
@@ -166,15 +166,11 @@ msgstr "Adres kanału do dodania"
 msgid "Add"
 msgstr "Dodaj"
 
-#: podcasts-gtk/resources/gtk/headerbar.ui:133
-msgid "You are already subscribed to that feed!"
-msgstr "Ten kanał jest już subskrybowany."
-
-#: podcasts-gtk/resources/gtk/headerbar.ui:169
+#: podcasts-gtk/resources/gtk/headerbar.ui:171
 msgid "Show Title"
 msgstr "Tytuł programu"
 
-#: podcasts-gtk/resources/gtk/headerbar.ui:210
+#: podcasts-gtk/resources/gtk/headerbar.ui:207
 msgid "Back"
 msgstr "Wstecz"
 
@@ -289,17 +285,13 @@ msgstr "Oznacz wszystkie jako odtworzone"
 msgid "Unsubscribe"
 msgstr "Zrezygnuj z subskrypcji"
 
-#: podcasts-gtk/src/app.rs:351
+#: podcasts-gtk/resources/gtk/show_widget.ui:99
+msgid "Read More"
+msgstr "Czytaj dalej"
+
+#: podcasts-gtk/src/app.rs:265
 msgid "Fetching new episodes"
 msgstr "Pobieranie nowych odcinków"
-
-#: podcasts-gtk/src/headerbar.rs:117
-msgid "You are already subscribed to this show"
-msgstr "Ten program jest już subskrybowany"
-
-#: podcasts-gtk/src/headerbar.rs:125
-msgid "Invalid URL"
-msgstr "Nieprawidłowy adres"
 
 #: podcasts-gtk/src/stacks/content.rs:54
 msgid "New"
@@ -309,43 +301,43 @@ msgstr "Nowe"
 msgid "Shows"
 msgstr "Programy"
 
-#: podcasts-gtk/src/utils.rs:397
+#: podcasts-gtk/src/utils.rs:396
 msgid "Select the file from which to you want to import shows."
 msgstr "Proszę wybrać plik, z którego zaimportować programy."
 
-#: podcasts-gtk/src/utils.rs:400
+#: podcasts-gtk/src/utils.rs:399
 msgid "_Import"
 msgstr "Zai_mportuj"
 
-#: podcasts-gtk/src/utils.rs:409 podcasts-gtk/src/utils.rs:457
+#: podcasts-gtk/src/utils.rs:408 podcasts-gtk/src/utils.rs:456
 msgid "OPML file"
 msgstr "Plik OPML"
 
-#: podcasts-gtk/src/utils.rs:426
+#: podcasts-gtk/src/utils.rs:425
 msgid "Failed to parse the imported file"
 msgstr "Przetworzenie zaimportowanego pliku się nie powiodło"
 
-#: podcasts-gtk/src/utils.rs:431 podcasts-gtk/src/utils.rs:475
+#: podcasts-gtk/src/utils.rs:430 podcasts-gtk/src/utils.rs:474
 msgid "Selected file could not be accessed."
 msgstr "Nie można uzyskać dostępu do wybranego pliku."
 
-#: podcasts-gtk/src/utils.rs:445
+#: podcasts-gtk/src/utils.rs:444
 msgid "Export shows to…"
 msgstr "Eksport programów do…"
 
-#: podcasts-gtk/src/utils.rs:448
+#: podcasts-gtk/src/utils.rs:447
 msgid "_Export"
 msgstr "Wy_eksportuj"
 
-#: podcasts-gtk/src/utils.rs:449
+#: podcasts-gtk/src/utils.rs:448
 msgid "_Cancel"
 msgstr "_Anuluj"
 
-#: podcasts-gtk/src/utils.rs:469
+#: podcasts-gtk/src/utils.rs:468
 msgid "GNOME Podcasts Subscriptions"
 msgstr "Subskrypcje Podcastów GNOME"
 
-#: podcasts-gtk/src/utils.rs:470
+#: podcasts-gtk/src/utils.rs:469
 msgid "Failed to export podcasts"
 msgstr "Wyeksportowanie podcastów się nie powiodło"
 
@@ -368,7 +360,7 @@ msgid "{} min"
 msgstr "{} min"
 
 #. sender.send(Action::ErrorNotification(format!("Player Error: {}", error)));
-#: podcasts-gtk/src/widgets/player.rs:534
+#: podcasts-gtk/src/widgets/player.rs:539
 msgid "The media player was unable to execute an action."
 msgstr "Odtwarzacz multimediów nie może wykonać działania."
 
