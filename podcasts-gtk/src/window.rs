@@ -36,7 +36,7 @@ use crate::widgets::about_dialog;
 use crate::widgets::appnotif::InAppNotification;
 use crate::widgets::player;
 
-use std::cell::RefCell;
+use std::cell::{Cell, RefCell};
 use std::ops::Deref;
 use std::rc::Rc;
 
@@ -65,6 +65,7 @@ pub struct MainWindow {
     pub(crate) content: Rc<Content>,
     pub(crate) headerbar: Rc<Header>,
     pub(crate) player: player::PlayerWrapper,
+    pub(crate) updating: Cell<bool>,
     pub(crate) updater: RefCell<Option<InAppNotification>>,
     pub(crate) sender: Sender<Action>,
     pub(crate) receiver: Receiver<Action>,
@@ -158,6 +159,7 @@ impl MainWindow {
             headerbar: header,
             content,
             player,
+            updating: Cell::new(false),
             updater,
             sender,
             receiver,
