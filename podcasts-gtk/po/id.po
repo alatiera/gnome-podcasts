@@ -1,21 +1,21 @@
 # Indonesian translation for podcasts.
 # Copyright (C) 2018 podcasts's COPYRIGHT HOLDER
 # This file is distributed under the same license as the podcasts package.
-# Kukuh Syafaat <kukuhsyafaat@gnome.org>, 2018, 2019.
+# Kukuh Syafaat <kukuhsyafaat@gnome.org>, 2018-2020.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: podcasts master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2019-06-15 10:55+0000\n"
-"PO-Revision-Date: 2019-07-11 15:21+0700\n"
+"POT-Creation-Date: 2019-12-16 06:31+0000\n"
+"PO-Revision-Date: 2020-01-15 19:28+0700\n"
 "Last-Translator: Kukuh Syafaat <kukuhsyafaat@gnome.org>\n"
 "Language-Team: Indonesian <gnome-l10n-id@googlegroups.com>\n"
 "Language: id\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 2.2.3\n"
+"X-Generator: Poedit 2.2.4\n"
 
 #: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml:15
 msgid "Top position of the last open main window"
@@ -68,7 +68,7 @@ msgstr "Berapa lama waktu untuk menunggu di antara pembersihan otomatis"
 #. Weird magic I copy-pasted that sets the Application Name in the Shell.
 #: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:3
 #: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:4
-#: podcasts-gtk/src/app.rs:109 podcasts-gtk/src/app.rs:433
+#: podcasts-gtk/resources/gtk/headerbar.ui:158 podcasts-gtk/src/app.rs:330
 #: podcasts-gtk/src/widgets/aboutdialog.rs:56
 msgid "Podcasts"
 msgstr "Podcast"
@@ -87,7 +87,7 @@ msgstr "Podcast;RSS;"
 msgid "Podcast app for GNOME"
 msgstr "Aplikasi Podcast untuk GNOME"
 
-#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:77
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:84
 msgid "Jordan Petridis"
 msgstr "Jordan Petridis"
 
@@ -154,7 +154,7 @@ msgid "_About Podcasts"
 msgstr "Tent_ang Podcast"
 
 #: podcasts-gtk/resources/gtk/headerbar.ui:35
-#: podcasts-gtk/resources/gtk/headerbar.ui:177
+#: podcasts-gtk/resources/gtk/headerbar.ui:186
 msgid "Add a new feed"
 msgstr "Tambahkan feed baru"
 
@@ -166,11 +166,11 @@ msgstr "Masukkan alamat feed untuk ditambahkan"
 msgid "Add"
 msgstr "Tambah"
 
-#: podcasts-gtk/resources/gtk/headerbar.ui:157
+#: podcasts-gtk/resources/gtk/headerbar.ui:171
 msgid "Show Title"
 msgstr "Tampilkan Judul"
 
-#: podcasts-gtk/resources/gtk/headerbar.ui:198
+#: podcasts-gtk/resources/gtk/headerbar.ui:207
 msgid "Back"
 msgstr "Kembali"
 
@@ -285,17 +285,13 @@ msgstr "Tandai Semua sebagai Sudah Diputar"
 msgid "Unsubscribe"
 msgstr "Berhenti Berlangganan"
 
-#: podcasts-gtk/src/app.rs:351
+#: podcasts-gtk/resources/gtk/show_widget.ui:99
+msgid "Read More"
+msgstr "Baca Lebih Lanjut"
+
+#: podcasts-gtk/src/app.rs:265
 msgid "Fetching new episodes"
 msgstr "Mengambil episode baru"
-
-#: podcasts-gtk/src/headerbar.rs:127
-msgid "You are already subscribed to this show"
-msgstr "Anda sudah berlangganan ke acara ini"
-
-#: podcasts-gtk/src/headerbar.rs:145
-msgid "Invalid URL"
-msgstr "URL tak valid"
 
 #: podcasts-gtk/src/stacks/content.rs:54
 msgid "New"
@@ -305,43 +301,43 @@ msgstr "Baru"
 msgid "Shows"
 msgstr "Acara"
 
-#: podcasts-gtk/src/utils.rs:397
+#: podcasts-gtk/src/utils.rs:396
 msgid "Select the file from which to you want to import shows."
 msgstr "Pilih berkas dari mana Anda ingin mengimpor acara."
 
-#: podcasts-gtk/src/utils.rs:400
+#: podcasts-gtk/src/utils.rs:399
 msgid "_Import"
 msgstr "_Impor"
 
-#: podcasts-gtk/src/utils.rs:409 podcasts-gtk/src/utils.rs:457
+#: podcasts-gtk/src/utils.rs:408 podcasts-gtk/src/utils.rs:456
 msgid "OPML file"
 msgstr "Berkas OPML"
 
-#: podcasts-gtk/src/utils.rs:426
+#: podcasts-gtk/src/utils.rs:425
 msgid "Failed to parse the imported file"
 msgstr "Gagal mengurai berkas yang diimpor"
 
-#: podcasts-gtk/src/utils.rs:431 podcasts-gtk/src/utils.rs:475
+#: podcasts-gtk/src/utils.rs:430 podcasts-gtk/src/utils.rs:474
 msgid "Selected file could not be accessed."
 msgstr "Berkas yang dipilih tidak dapat diakses."
 
-#: podcasts-gtk/src/utils.rs:445
+#: podcasts-gtk/src/utils.rs:444
 msgid "Export shows to…"
 msgstr "Ekspor acara ke…"
 
-#: podcasts-gtk/src/utils.rs:448
+#: podcasts-gtk/src/utils.rs:447
 msgid "_Export"
 msgstr "_Ekspor"
 
-#: podcasts-gtk/src/utils.rs:449
+#: podcasts-gtk/src/utils.rs:448
 msgid "_Cancel"
 msgstr "_Batal"
 
-#: podcasts-gtk/src/utils.rs:469
+#: podcasts-gtk/src/utils.rs:468
 msgid "GNOME Podcasts Subscriptions"
 msgstr "Berlangganan GNOME Podcast"
 
-#: podcasts-gtk/src/utils.rs:470
+#: podcasts-gtk/src/utils.rs:469
 msgid "Failed to export podcasts"
 msgstr "Gagal mengekspor podcast"
 
@@ -355,14 +351,14 @@ msgstr "Pelajari lebih lanjut tentang GNOME Podcast"
 
 #: podcasts-gtk/src/widgets/aboutdialog.rs:63
 msgid "translator-credits"
-msgstr "Kukuh Syafaat <kukuhsyafaat@gnome.org>, 2018, 2019."
+msgstr "Kukuh Syafaat <kukuhsyafaat@gnome.org>, 2018-2020."
 
 #: podcasts-gtk/src/widgets/episode.rs:148
 msgid "{} min"
 msgstr "{} mnt"
 
 #. sender.send(Action::ErrorNotification(format!("Player Error: {}", error)));
-#: podcasts-gtk/src/widgets/player.rs:534
+#: podcasts-gtk/src/widgets/player.rs:539
 msgid "The media player was unable to execute an action."
 msgstr "Pemutar media tidak dapat melakukan aksi."
 
@@ -373,6 +369,12 @@ msgstr "Tandai semua episode sebagai sudah didengarkan"
 #: podcasts-gtk/src/widgets/show_menu.rs:184
 msgid "Unsubscribed from {}"
 msgstr "Berhenti berlangganan dari {}"
+
+#~ msgid "You are already subscribed to this show"
+#~ msgstr "Anda sudah berlangganan ke acara ini"
+
+#~ msgid "Invalid URL"
+#~ msgstr "URL tak valid"
 
 #~ msgid "@icon@"
 #~ msgstr "@icon@"
