@@ -7,15 +7,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: podcasts master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2018-09-03 13:42+0000\n"
-"PO-Revision-Date: 2018-09-04 20:17+0200\n"
+"POT-Creation-Date: 2019-12-08 20:03+0000\n"
+"PO-Revision-Date: 2020-01-21 11:00+0100\n"
+"Last-Translator: Fabio Tomat <f.t.public@gmail.com>\n"
 "Language-Team: Friulian <fur@li.org>\n"
 "Language: fur\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Last-Translator: \n"
-"X-Generator: Poedit 2.0.7\n"
+"X-Generator: Poedit 2.2.4\n"
 
 #: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml:15
 msgid "Top position of the last open main window"
@@ -68,8 +68,8 @@ msgstr "Ce periodi di timp di spietâ tra lis netisiis automatichis"
 #. Weird magic I copy-pasted that sets the Application Name in the Shell.
 #: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:3
 #: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:4
-#: podcasts-gtk/src/app.rs:91 podcasts-gtk/src/app.rs:414
-#: podcasts-gtk/src/widgets/aboutdialog.rs:31
+#: podcasts-gtk/resources/gtk/headerbar.ui:158 podcasts-gtk/src/app.rs:330
+#: podcasts-gtk/src/widgets/aboutdialog.rs:56
 msgid "Podcasts"
 msgstr "Podcasts"
 
@@ -77,11 +77,6 @@ msgstr "Podcasts"
 #: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:10
 msgid "Listen to your favorite podcasts, right from your desktop."
 msgstr "Scolte i tiei podcast preferîts, daurman dal to scritori."
-
-#. Translators: Do NOT translate or transliterate this text (this is an icon file name)!
-#: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:6
-msgid "@icon@"
-msgstr "@icon@"
 
 #. Translators: Search terms to find this application. Do NOT translate or localize the semicolons! The list MUST also end with a semicolon!
 #: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:13
@@ -92,7 +87,7 @@ msgstr "Podcast;RSS;Regjistrazion;Trasmission;"
 msgid "Podcast app for GNOME"
 msgstr "Aplicazion podcast par GNOME"
 
-#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:51
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:84
 msgid "Jordan Petridis"
 msgstr "Jordan Petridis"
 
@@ -102,7 +97,9 @@ msgstr "Chest spetacul nol à ancjemò episodis"
 
 #: podcasts-gtk/resources/gtk/empty_view.ui:62
 msgid "If you think this is an error, please consider writing a bug report."
-msgstr "Se tu pensis che chest al sedi un erôr, considere di scrivi une segnalazion di erôr."
+msgstr ""
+"Se tu pensis che chest al sedi un erôr, considere di scrivi une segnalazion "
+"di erôr."
 
 #: podcasts-gtk/resources/gtk/empty_view.ui:106
 msgid "Get some shows"
@@ -116,21 +113,25 @@ msgstr "Zonte gnûfs spetacui vie URL di feed"
 msgid "Import shows from another device"
 msgstr "Impuarte i spetacui di un altri dispositîf"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:178
+#: podcasts-gtk/resources/gtk/episode_widget.ui:79
+msgid "You’ve already listened to this episode."
+msgstr "Tu âs za scoltât chest episodi."
+
+#: podcasts-gtk/resources/gtk/episode_widget.ui:208
 msgid "Calculating episode size…"
 msgstr "Calcul de dimension dal episodi…"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:214
-msgid "Cancel"
-msgstr "Anule"
-
-#: podcasts-gtk/resources/gtk/episode_widget.ui:232
-msgid "Download this episode"
-msgstr "Discjarie chest episodi"
-
-#: podcasts-gtk/resources/gtk/episode_widget.ui:256
+#: podcasts-gtk/resources/gtk/episode_widget.ui:248
 msgid "Play this episode"
 msgstr "Viôt chest episodi"
+
+#: podcasts-gtk/resources/gtk/episode_widget.ui:269
+msgid "Cancel the download process"
+msgstr "Anule il procès di discjariament"
+
+#: podcasts-gtk/resources/gtk/episode_widget.ui:292
+msgid "Download this episode"
+msgstr "Discjarie chest episodi"
 
 #: podcasts-gtk/resources/gtk/hamburger.ui:7
 msgid "_Check for New Episodes"
@@ -140,20 +141,20 @@ msgstr "_Controle par gnûfs episodis"
 msgid "_Import Shows"
 msgstr "_Impuarte spetacui"
 
-#: podcasts-gtk/resources/gtk/hamburger.ui:22
-msgid "_Preferences"
-msgstr "_Preferencis"
+#: podcasts-gtk/resources/gtk/hamburger.ui:16
+msgid "_Export Shows"
+msgstr "_Espuarte spetacui"
 
-#: podcasts-gtk/resources/gtk/hamburger.ui:29
+#: podcasts-gtk/resources/gtk/hamburger.ui:22
 msgid "_Keyboard Shortcuts"
 msgstr "_Scurtis tastiere"
 
-#: podcasts-gtk/resources/gtk/hamburger.ui:37
-msgid "_About"
-msgstr "_Informazions"
+#: podcasts-gtk/resources/gtk/hamburger.ui:30
+msgid "_About Podcasts"
+msgstr "_Informazions su Podcasts"
 
 #: podcasts-gtk/resources/gtk/headerbar.ui:35
-#: podcasts-gtk/resources/gtk/headerbar.ui:189
+#: podcasts-gtk/resources/gtk/headerbar.ui:186
 msgid "Add a new feed"
 msgstr "Zonte un gnûf feed"
 
@@ -165,15 +166,11 @@ msgstr "Inserìs la direzion dal feed di zontâ"
 msgid "Add"
 msgstr "Zonte"
 
-#: podcasts-gtk/resources/gtk/headerbar.ui:133
-msgid "You are already subscribed to that feed!"
-msgstr "Tu sês za sotscrit a chest feed!"
-
-#: podcasts-gtk/resources/gtk/headerbar.ui:169
+#: podcasts-gtk/resources/gtk/headerbar.ui:171
 msgid "Show Title"
 msgstr "Titul dal spetacul"
 
-#: podcasts-gtk/resources/gtk/headerbar.ui:210
+#: podcasts-gtk/resources/gtk/headerbar.ui:207
 msgid "Back"
 msgstr "Indaûr"
 
@@ -187,11 +184,6 @@ msgid "Check for new episodes"
 msgstr "Controle se a son gnûfs episodis"
 
 #: podcasts-gtk/resources/gtk/help-overlay.ui:25
-msgctxt "shortcut window"
-msgid "Preferences"
-msgstr "Preferencis"
-
-#: podcasts-gtk/resources/gtk/help-overlay.ui:32
 msgctxt "shortcut window"
 msgid "Quit the application"
 msgstr "Jes de aplicazion"
@@ -269,27 +261,6 @@ msgstr "rapuart di velocitât 1.25"
 msgid "Normal speed"
 msgstr "Velocitât normâl"
 
-#: podcasts-gtk/resources/gtk/prefs.ui:42
-#: podcasts-gtk/resources/gtk/prefs.ui:295
-msgid "Preferences"
-msgstr "Preferencis"
-
-#: podcasts-gtk/resources/gtk/prefs.ui:76
-msgid "Appearance"
-msgstr "Aspiet"
-
-#: podcasts-gtk/resources/gtk/prefs.ui:120
-msgid "Dark Theme"
-msgstr "Teme scûr"
-
-#: podcasts-gtk/resources/gtk/prefs.ui:166
-msgid "Delete played episodes"
-msgstr "Elimine i episodis viodûts"
-
-#: podcasts-gtk/resources/gtk/prefs.ui:211
-msgid "After"
-msgstr "Dopo"
-
 #: podcasts-gtk/resources/gtk/secondary_menu.ui:7
 msgid "_Mark All Episodes as Played"
 msgstr "_Segne ducj i episodis come viodûts"
@@ -314,91 +285,136 @@ msgstr "Segne dut come viodût"
 msgid "Unsubscribe"
 msgstr "Anule sotscrizion"
 
-#: podcasts-gtk/src/app.rs:332
+#: podcasts-gtk/resources/gtk/show_widget.ui:99
+msgid "Read More"
+msgstr "Lei di plui"
+
+#: podcasts-gtk/src/app.rs:265
 msgid "Fetching new episodes"
 msgstr "Daûr a recuperâ i gnûfs episodis"
 
-#: podcasts-gtk/src/headerbar.rs:98
-msgid "You are already subscribed to this show"
-msgstr "Tu sês za sotscrit a chest spetacul"
-
-#: podcasts-gtk/src/headerbar.rs:106
-msgid "Invalid URL"
-msgstr "URL no valit"
-
-#: podcasts-gtk/src/prefs.rs:59
-msgid "Seconds"
-msgstr "Seconts"
-
-#: podcasts-gtk/src/prefs.rs:60
-msgid "Minutes"
-msgstr "Minûts"
-
-#: podcasts-gtk/src/prefs.rs:61
-msgid "Hours"
-msgstr "Oris"
-
-#: podcasts-gtk/src/prefs.rs:62
-msgid "Days"
-msgstr "Diis"
-
-#: podcasts-gtk/src/prefs.rs:63
-msgid "Weeks"
-msgstr "Setemanis"
-
-#: podcasts-gtk/src/stacks/content.rs:35
+#: podcasts-gtk/src/stacks/content.rs:54
 msgid "New"
 msgstr "Gnûf"
 
-#: podcasts-gtk/src/stacks/content.rs:36
+#: podcasts-gtk/src/stacks/content.rs:55
 msgid "Shows"
 msgstr "Spetacui"
 
-#: podcasts-gtk/src/utils.rs:357
+#: podcasts-gtk/src/utils.rs:396
 msgid "Select the file from which to you want to import shows."
 msgstr "Selezione il file che di chei si desidere impuartâ i spetacui."
 
-#: podcasts-gtk/src/utils.rs:360
+#: podcasts-gtk/src/utils.rs:399
 msgid "_Import"
 msgstr "_Impuarte"
 
-#: podcasts-gtk/src/utils.rs:369
+#: podcasts-gtk/src/utils.rs:408 podcasts-gtk/src/utils.rs:456
 msgid "OPML file"
 msgstr "File OPML"
 
-#: podcasts-gtk/src/utils.rs:386
+#: podcasts-gtk/src/utils.rs:425
 msgid "Failed to parse the imported file"
 msgstr "No si è rivâts a analizâ il file impuartât"
 
-#: podcasts-gtk/src/utils.rs:391
+#: podcasts-gtk/src/utils.rs:430 podcasts-gtk/src/utils.rs:474
 msgid "Selected file could not be accessed."
 msgstr "Il file selezionât nol pues jessi doprât."
 
-#: podcasts-gtk/src/widgets/aboutdialog.rs:26
+#: podcasts-gtk/src/utils.rs:444
+msgid "Export shows to…"
+msgstr "_Espuarte spetacui su…"
+
+#: podcasts-gtk/src/utils.rs:447
+msgid "_Export"
+msgstr "_Espuarte"
+
+#: podcasts-gtk/src/utils.rs:448
+msgid "_Cancel"
+msgstr "_Anule"
+
+#: podcasts-gtk/src/utils.rs:468
+msgid "GNOME Podcasts Subscriptions"
+msgstr "Sotscrizions di GNOME Podcasts"
+
+#: podcasts-gtk/src/utils.rs:469
+msgid "Failed to export podcasts"
+msgstr "No si è rivâts a espuartâ i podcast"
+
+#: podcasts-gtk/src/widgets/aboutdialog.rs:51
 msgid "Podcast Client for the GNOME Desktop."
 msgstr "Client podcast pal scritori GNOME."
 
-#: podcasts-gtk/src/widgets/aboutdialog.rs:33
+#: podcasts-gtk/src/widgets/aboutdialog.rs:58
 msgid "Learn more about GNOME Podcasts"
 msgstr "Plui informazions su GNOME Podcasts"
 
-#: podcasts-gtk/src/widgets/aboutdialog.rs:38
+#: podcasts-gtk/src/widgets/aboutdialog.rs:63
 msgid "translator-credits"
 msgstr "Fabio Tomat <f.t.public@gmail.com>"
 
-#: podcasts-gtk/src/widgets/episode.rs:129
+#: podcasts-gtk/src/widgets/episode.rs:148
 msgid "{} min"
 msgstr "{} min"
 
 #. sender.send(Action::ErrorNotification(format!("Player Error: {}", error)));
-#: podcasts-gtk/src/widgets/player.rs:301
+#: podcasts-gtk/src/widgets/player.rs:539
 msgid "The media player was unable to execute an action."
 msgstr "Il riprodutôr multimediâl nol è stât bon di eseguî une azion."
 
-#: podcasts-gtk/src/widgets/show_menu.rs:150
+#: podcasts-gtk/src/widgets/show_menu.rs:179
 msgid "Marked all episodes as listened"
 msgstr "Segnât ducj i episodis come scoltâts"
 
-#: podcasts-gtk/src/widgets/show_menu.rs:155
+#: podcasts-gtk/src/widgets/show_menu.rs:184
 msgid "Unsubscribed from {}"
 msgstr "Sotscrizion anulade di {}"
+
+#~ msgid "@icon@"
+#~ msgstr "@icon@"
+
+#~ msgid "_Preferences"
+#~ msgstr "_Preferencis"
+
+#~ msgid "_About"
+#~ msgstr "_Informazions"
+
+#~ msgid "You are already subscribed to that feed!"
+#~ msgstr "Tu sês za sotscrit a chest feed!"
+
+#~ msgctxt "shortcut window"
+#~ msgid "Preferences"
+#~ msgstr "Preferencis"
+
+#~ msgid "Preferences"
+#~ msgstr "Preferencis"
+
+#~ msgid "Appearance"
+#~ msgstr "Aspiet"
+
+#~ msgid "Dark Theme"
+#~ msgstr "Teme scûr"
+
+#~ msgid "Delete played episodes"
+#~ msgstr "Elimine i episodis viodûts"
+
+#~ msgid "After"
+#~ msgstr "Dopo"
+
+#~ msgid "Invalid URL"
+#~ msgstr "URL no valit"
+
+#~ msgid "Seconds"
+#~ msgstr "Seconts"
+
+#~ msgid "Minutes"
+#~ msgstr "Minûts"
+
+#~ msgid "Hours"
+#~ msgstr "Oris"
+
+#~ msgid "Days"
+#~ msgstr "Diis"
+
+#~ msgid "Weeks"
+#~ msgstr "Setemanis"
