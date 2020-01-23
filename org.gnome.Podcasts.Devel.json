@@ -25,7 +25,6 @@
             "--share=network"
         ],
         "env" : {
-            "RUSTFLAGS" : "--error-format=short --remap-path-prefix =../",
             "CARGO_HOME" : "/run/build/Podcasts/cargo",
             "RUSTFLAGS" : "",
             "RUST_BACKTRACE" : "1"
