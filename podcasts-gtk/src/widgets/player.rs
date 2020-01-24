@@ -208,9 +208,9 @@ fn format_duration(seconds: u32) -> String {
 
 #[derive(Debug, Clone)]
 struct PlayerRate {
-    radio150: gtk::RadioButton,
-    radio125: gtk::RadioButton,
-    radio_normal: gtk::RadioButton,
+    radio150: gtk::ModelButton,
+    radio125: gtk::ModelButton,
+    radio_normal: gtk::ModelButton,
     popover: gtk::Popover,
     btn: gtk::MenuButton,
     label: gtk::Label,
@@ -220,9 +220,9 @@ impl PlayerRate {
     fn new() -> Self {
         let builder = gtk::Builder::new_from_resource("/org/gnome/Podcasts/gtk/player_rate.ui");
 
-        let radio150: gtk::RadioButton = builder.get_object("rate_1_50").unwrap();
-        let radio125: gtk::RadioButton = builder.get_object("rate_1_25").unwrap();
-        let radio_normal: gtk::RadioButton = builder.get_object("normal_rate").unwrap();
+        let radio150: gtk::ModelButton = builder.get_object("rate_1_50").unwrap();
+        let radio125: gtk::ModelButton = builder.get_object("rate_1_25").unwrap();
+        let radio_normal: gtk::ModelButton = builder.get_object("normal_rate").unwrap();
         let popover = builder.get_object("rate_popover").unwrap();
         let btn = builder.get_object("rate_button").unwrap();
         let label = builder.get_object("rate_label").unwrap();
@@ -239,19 +239,22 @@ impl PlayerRate {
 
     fn set_rate(&self, rate: f64) {
         self.label.set_text(&format!("{:.2}×", rate));
+        self.radio_normal.set_property_active(rate == 1.0);
+        self.radio125.set_property_active(rate == 1.25);
+        self.radio150.set_property_active(rate == 1.5);
     }
 
     fn connect_signals(&self, widget: &Rc<PlayerWidget>) {
         self.radio_normal
-            .connect_toggled(clone!(@weak widget => move |_| {
+            .connect_clicked(clone!(@weak widget => move |_| {
                 widget.on_rate_changed(1.00);
             }));
         self.radio125
-            .connect_toggled(clone!(@weak widget => move |_| {
+            .connect_clicked(clone!(@weak widget => move |_| {
                 widget.on_rate_changed(1.25);
             }));
         self.radio150
-            .connect_toggled(clone!(@weak widget => move |_| {
+            .connect_clicked(clone!(@weak widget => move |_| {
                 widget.on_rate_changed(1.50);
             }));
     }
