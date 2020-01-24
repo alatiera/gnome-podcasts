@@ -45,6 +45,9 @@ Tobias Bernard
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="label" translatable="yes">1.00×</property>
+            <attributes>
+              <attribute name="font-features" value="tnum=1"/>
+            </attributes>
           </object>
           <packing>
             <property name="expand">False</property>
@@ -79,7 +82,8 @@ Tobias Bernard
         <property name="orientation">vertical</property>
         <child>
           <object class="GtkModelButton" id="rate_1_50">
-            <property name="text" translatable="yes">1.50×</property>
+            <property name="text">&lt;span font-features="tnum=1"&gt;1.50×&lt;/span&gt;</property>
+            <property name="use-markup">True</property>
             <property name="visible">True</property>
             <property name="tooltip_text" translatable="yes">1.5 speed rate</property>
             <property name="role">radio</property>
@@ -92,7 +96,8 @@ Tobias Bernard
         </child>
         <child>
           <object class="GtkModelButton" id="rate_1_25">
-            <property name="text" translatable="yes">1.25×</property>
+            <property name="text">&lt;span font-features="tnum=1"&gt;1.25×&lt;/span&gt;</property>
+            <property name="use-markup">True</property>
             <property name="visible">True</property>
             <property name="tooltip_text" translatable="yes">1.25 speed rate</property>
             <property name="role">radio</property>
@@ -105,7 +110,8 @@ Tobias Bernard
         </child>
         <child>
           <object class="GtkModelButton" id="normal_rate">
-            <property name="text" translatable="yes">1.00×</property>
+            <property name="text">&lt;span font-features="tnum=1"&gt;1.00×&lt;/span&gt;</property>
+            <property name="use-markup">True</property>
             <property name="visible">True</property>
             <property name="tooltip_text" translatable="yes">Normal speed</property>
             <property name="active">True</property>
