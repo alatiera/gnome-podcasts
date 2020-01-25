@@ -50,7 +50,7 @@
                 {
                     "type" : "git",
                     "url" : "https://source.puri.sm/Librem5/libhandy.git",
-                    "commit" : "f5909a897f70143bdd2f89f47a63c1bf848330ce"
+                    "tag" : "v0.0.13"
                 }
             ]
         },

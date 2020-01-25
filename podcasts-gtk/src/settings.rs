@@ -81,11 +81,21 @@ impl WindowGeometry {
     }
 
     pub(crate) fn write(&self, settings: &gio::Settings) {
-        settings.set_int("persist-window-geometry-left", self.left);
-        settings.set_int("persist-window-geometry-top", self.top);
-        settings.set_int("persist-window-geometry-width", self.width);
-        settings.set_int("persist-window-geometry-height", self.height);
-        settings.set_boolean("persist-window-geometry-maximized", self.is_maximized);
+        settings
+            .set_int("persist-window-geometry-left", self.left)
+            .unwrap();
+        settings
+            .set_int("persist-window-geometry-top", self.top)
+            .unwrap();
+        settings
+            .set_int("persist-window-geometry-width", self.width)
+            .unwrap();
+        settings
+            .set_int("persist-window-geometry-height", self.height)
+            .unwrap();
+        settings
+            .set_boolean("persist-window-geometry-maximized", self.is_maximized)
+            .unwrap();
     }
 }
 

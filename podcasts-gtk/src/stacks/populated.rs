@@ -90,7 +90,7 @@ impl PopulatedStack {
 
     pub(crate) fn replace_shows(&mut self) -> Result<(), Error> {
         let old = &self.populated.view.container().clone();
-        debug!("Name: {:?}", WidgetExt::get_name(old));
+        debug!("Name: {:?}", old.get_widget_name());
 
         let vadj = self.populated.view.get_vadjustment();
         let pop = ShowsView::new(self.sender.clone(), vadj);

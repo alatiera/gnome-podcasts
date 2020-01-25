@@ -19,11 +19,12 @@
 
 #![allow(clippy::type_complexity)]
 
-use gdk_pixbuf::{Object, Pixbuf};
+use gdk_pixbuf::Pixbuf;
 use glib::{self, object::WeakRef};
+use glib::{IsA, Object};
 use gtk;
 use gtk::prelude::*;
-use gtk::{IsA, Widget};
+use gtk::Widget;
 
 use chrono::prelude::*;
 use crossbeam_channel::{bounded, unbounded, Sender};
@@ -388,7 +389,6 @@ fn lookup_id(id: u32) -> Result<String, Error> {
 }
 
 pub(crate) fn on_import_clicked(window: &gtk::ApplicationWindow, sender: &Sender<Action>) {
-    use glib::translate::ToGlib;
     use gtk::{FileChooserAction, FileChooserNative, FileFilter, ResponseType};
 
     // Create the FileChooser Dialog
@@ -412,7 +412,7 @@ pub(crate) fn on_import_clicked(window: &gtk::ApplicationWindow, sender: &Sender
 
     let resp = dialog.run();
     debug!("Dialog Response {}", resp);
-    if resp == ResponseType::Accept.to_glib() {
+    if resp == ResponseType::Accept {
         if let Some(filename) = dialog.get_filename() {
             debug!("File selected: {:?}", filename);
 
@@ -436,7 +436,6 @@ pub(crate) fn on_import_clicked(window: &gtk::ApplicationWindow, sender: &Sender
 }
 
 pub(crate) fn on_export_clicked(window: &gtk::ApplicationWindow, sender: &Sender<Action>) {
-    use glib::translate::ToGlib;
     use gtk::{FileChooserAction, FileChooserNative, FileFilter, ResponseType};
 
     // Create the FileChooser Dialog
@@ -460,7 +459,7 @@ pub(crate) fn on_export_clicked(window: &gtk::ApplicationWindow, sender: &Sender
 
     let resp = dialog.run();
     debug!("Dialog Response {}", resp);
-    if resp == ResponseType::Accept.to_glib() {
+    if resp == ResponseType::Accept {
         if let Some(filename) = dialog.get_filename() {
             debug!("File selected: {:?}", filename);
 
