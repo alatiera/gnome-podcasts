@@ -18,3 +18,24 @@ list, border {
 .player-show-label {
     font-size: smaller;
 }
+
+.small-label {
+    font-size: smaller;
+}
+
+.bold-label {
+    font-weight: bold;
+}
+
+progressbar.playback-progress trough {
+    border-radius: 0;
+}
+progressbar.playback-progress trough progress {
+    border-radius: 0;
+    border-right: none;
+    border-left: none;
+}
+
+actionbar.player-small revealer box {
+    border-top: none
+}
