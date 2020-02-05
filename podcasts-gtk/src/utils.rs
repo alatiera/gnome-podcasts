@@ -17,7 +17,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#![cfg_attr(feature = "cargo-clippy", allow(type_complexity))]
+#![allow(clippy::type_complexity)]
 
 use gdk_pixbuf::{Object, Pixbuf};
 use glib::{self, object::WeakRef};
@@ -115,7 +115,7 @@ pub(crate) fn lazy_load<T, C, F, W, U>(
 /// This is a more flexible version of `lazy_load` with less constrains.
 /// If you just want to lazy add `widgets` to a `container` check if
 /// `lazy_load` fits your needs first.
-#[cfg_attr(feature = "cargo-clippy", allow(redundant_closure))]
+#[allow(clippy::redundant_closure)]
 pub(crate) fn lazy_load_full<T, F, U>(data: T, mut func: F, finish_callback: U)
 where
     T: IntoIterator + 'static,
@@ -137,7 +137,7 @@ where
 
 // Kudos to Julian Sparber
 // https://blogs.gnome.org/jsparber/2018/04/29/animate-a-scrolledwindow/
-#[cfg_attr(feature = "cargo-clippy", allow(float_cmp))]
+#[allow(clippy::float_cmp)]
 pub(crate) fn smooth_scroll_to(view: &gtk::ScrolledWindow, target: &gtk::Adjustment) {
     if let Some(adj) = view.get_vadjustment() {
         if let Some(clock) = view.get_frame_clock() {
@@ -423,7 +423,7 @@ pub(crate) fn on_import_clicked(window: &gtk::ApplicationWindow, sender: &Sender
                     refresh(Some(sources), sender)
                 } else {
                     let text = i18n("Failed to parse the imported file");
-                    sender.send(Action::ErrorNotification(text)).expect("Action channel blew up somehow");;
+                    sender.send(Action::ErrorNotification(text)).expect("Action channel blew up somehow");
                 }
             }))
         } else {

@@ -522,7 +522,7 @@ fn on_play_bttn_clicked(
 
 // Setup a callback that will update the progress bar.
 #[inline]
-#[cfg_attr(feature = "cargo-clippy", allow(if_same_then_else))]
+#[allow(clippy::if_same_then_else)]
 fn update_progressbar_callback(
     widget: &Weak<EpisodeWidget>,
     prog: &Arc<Mutex<manager::Progress>>,
@@ -535,7 +535,7 @@ fn update_progressbar_callback(
     timeout_add(100, callback);
 }
 
-#[allow(if_same_then_else)]
+#[allow(clippy::if_same_then_else)]
 fn progress_bar_helper(
     widget: &Weak<EpisodeWidget>,
     prog: &Arc<Mutex<manager::Progress>>,

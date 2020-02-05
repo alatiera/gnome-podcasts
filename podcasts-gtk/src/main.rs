@@ -17,11 +17,12 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#![cfg_attr(
-    feature = "cargo-clippy",
-    allow(clone_on_ref_ptr, blacklisted_name, match_same_arms,)
+#![allow(
+    clippy::clone_on_ref_ptr,
+    clippy::blacklisted_name,
+    clippy::match_same_arms,
+    unknown_lints
 )]
-#![allow(unknown_lints)]
 // Enable lint group collections
 #![warn(nonstandard_style, edition_2018, rust_2018_idioms, bad_style, unused)]
 // standalone lints

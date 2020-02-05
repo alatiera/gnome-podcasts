@@ -161,7 +161,6 @@ use crate::Feed;
 pub fn get_feed(file_path: &str, id: i32) -> Feed {
     use crate::feed::FeedBuilder;
     use rss::Channel;
-    use std::fs;
     use std::io::BufReader;
 
     // open the xml file

@@ -18,7 +18,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 
-#![allow(new_without_default)]
+#![allow(clippy::new_without_default)]
 
 use glib::subclass;
 use glib::subclass::prelude::*;
