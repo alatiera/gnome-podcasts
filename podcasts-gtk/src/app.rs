@@ -17,11 +17,10 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+#![allow(clippy::new_without_default)]
 
-#![allow(new_without_default)]
-
-use glib::subclass;
 use glib::subclass::prelude::*;
+use glib::subclass::simple::{ClassStruct, InstanceStruct};
 use glib::translate::*;
 use glib::{glib_object_impl, glib_object_subclass, glib_object_wrapper, glib_wrapper};
 
@@ -59,8 +58,8 @@ pub struct PdApplicationPrivate {
 impl ObjectSubclass for PdApplicationPrivate {
     const NAME: &'static str = "PdApplication";
     type ParentType = gtk::Application;
-    type Instance = subclass::simple::InstanceStruct<Self>;
-    type Class = subclass::simple::ClassStruct<Self>;
+    type Instance = InstanceStruct<Self>;
+    type Class = ClassStruct<Self>;
 
     glib_object_subclass!();
 
@@ -119,7 +118,7 @@ impl gio::subclass::prelude::ApplicationImpl for PdApplicationPrivate {
 impl gtk::subclass::application::GtkApplicationImpl for PdApplicationPrivate {}
 
 glib_wrapper! {
-    pub struct PdApplication(Object<subclass::simple::InstanceStruct<PdApplicationPrivate>, subclass::simple::ClassStruct<PdApplicationPrivate>, PdApplicationClass>) @extends gio::Application, gtk::Application;
+    pub struct PdApplication(Object<InstanceStruct<PdApplicationPrivate>, ClassStruct<PdApplicationPrivate>, PdApplicationClass>) @extends gio::Application, gtk::Application;
 
     match fn {
         get_type => || PdApplicationPrivate::get_type().to_glib(),

@@ -18,7 +18,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 
-#![cfg_attr(feature = "cargo-clippy", allow(unit_arg))]
+#![allow(clippy::unit_arg)]
 //! Index Feeds.
 
 use futures::future::*;

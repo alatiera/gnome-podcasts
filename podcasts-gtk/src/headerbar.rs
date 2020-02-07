@@ -249,7 +249,7 @@ impl Header {
             .connect_activate(clone!(weak, sender => move |_| {
                 weak.upgrade().map(|h| {
                     if h.add.add.get_sensitive() {
-                        h.add.on_add_clicked(&sender);
+                        h.add.on_add_clicked(&sender).unwrap();
                     }
                 });
             }));

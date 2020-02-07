@@ -23,7 +23,6 @@ use gtk;
 use gtk::prelude::*;
 
 use libhandy as hdy;
-use libhandy::prelude::HeaderBarExt;
 use libhandy::prelude::*;
 
 use gio::{File, FileExt};
@@ -244,14 +243,13 @@ impl PlayerRate {
     fn connect_signals(&self, widget: &Rc<PlayerWidget>) {
         let weak = Rc::downgrade(widget);
 
-        self.radio_normal
-            .connect_toggled(clone!(weak => move |rate| {
-                weak.upgrade().map(|w| w.on_rate_changed(1.00));
-            }));
-        self.radio125.connect_toggled(clone!(weak => move |rate| {
+        self.radio_normal.connect_toggled(clone!(weak => move |_| {
+            weak.upgrade().map(|w| w.on_rate_changed(1.00));
+        }));
+        self.radio125.connect_toggled(clone!(weak => move |_| {
             weak.upgrade().map(|w| w.on_rate_changed(1.25));
         }));
-        self.radio150.connect_toggled(clone!(weak => move |rate| {
+        self.radio150.connect_toggled(clone!(weak => move |_| {
             weak.upgrade().map(|w| w.on_rate_changed(1.50));
         }));
     }
