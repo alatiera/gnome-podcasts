@@ -100,7 +100,8 @@ fn populate_flowbox(shows: &Rc<ShowsView>, vadj: Option<Adjustment>) -> Result<(
 
 fn on_child_activate(child: &gtk::FlowBoxChild, sender: &Sender<Action>) -> Result<(), Error> {
     // This is such an ugly hack...
-    let id = WidgetExt::get_name(child)
+    let id = child
+        .get_widget_name()
         .ok_or_else(|| format_err!("Failed to get \"episodes\" child from the stack."))?
         .parse::<i32>()?;
     let pd = Arc::new(dbqueries::get_podcast_from_id(id)?);
@@ -148,7 +149,7 @@ impl ShowsChild {
 
     fn init(&self, pd: &Show) {
         self.child.set_tooltip_text(Some(pd.title()));
-        WidgetExt::set_name(&self.child, &pd.id().to_string());
+        self.child.set_widget_name(&pd.id().to_string());
 
         self.set_cover(pd.id())
     }

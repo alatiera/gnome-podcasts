@@ -7,12 +7,12 @@ edition = "2018"
 [dependencies]
 chrono = "0.4.9"
 crossbeam-channel = "0.3.9"
-gdk = "0.11.0"
-gdk-pixbuf = "0.7.0"
-gobject-sys = "0.9.0"
-glib-sys = "0.9.0"
-gst = { version = "0.14.0", package = "gstreamer" }
-gst-player = { version = "0.14.0", package = "gstreamer-player" }
+gdk = "0.12.0"
+gdk-pixbuf = "0.8.0"
+gobject-sys = "0.9.1"
+glib-sys = "0.9.1"
+gst = { version = "0.15.2", package = "gstreamer" }
+gst-player = { version = "0.15.0", package = "gstreamer-player" }
 humansize = "1.1.0"
 lazy_static = "1.4.0"
 log = "0.4.8"
@@ -28,8 +28,8 @@ reqwest = "0.9.22"
 serde_json = "1.0.41"
 # html2text = "0.1.8"
 html2text = { git = "https://github.com/jugglerchris/rust-html2text" }
-mpris-player = "0.4.0"
-pango = "0.7.0"
+mpris-player = "0.5.0"
+pango = "0.8.0"
 
 [dependencies.gettext-rs]
 git = "https://github.com/danigm/gettext-rs"
@@ -37,19 +37,18 @@ branch = "no-gettext"
 features = ["gettext-system"]
 
 [dependencies.glib]
-features = ["subclassing"]
-version = "0.8.2"
+version = "0.9.1"
 
 [dependencies.gio]
-features = ["v2_50", "subclassing"]
-version = "0.7.0"
+features = ["v2_50"]
+version = "0.8.0"
 
 [dependencies.gtk]
-features = ["v3_24", "subclassing"]
-version = "0.7.0"
+features = ["v3_24"]
+version = "0.8.0"
 
 [dependencies.libhandy]
-version = "0.4.0"
+version = "0.5.0"
 features = [ "v0_0_10"]
 
 # [dependencies.mpris-player]

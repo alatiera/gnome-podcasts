@@ -17,8 +17,8 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-use gio::{resources_register, Error, Resource};
-use glib::Bytes;
+use gio::{resources_register, Resource};
+use glib::{Error, Bytes};
 
 pub(crate) fn init() -> Result<(), Error> {
     // load the gresource binary at build time and include/link it into the final
