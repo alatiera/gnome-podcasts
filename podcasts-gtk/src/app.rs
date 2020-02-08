@@ -34,7 +34,7 @@ use gettextrs::{bindtextdomain, setlocale, textdomain, LocaleCategory};
 
 use crossbeam_channel::Receiver;
 use fragile::Fragile;
-use podcasts_data::Show;
+use podcasts_data::{Show, Source};
 
 use crate::settings;
 use crate::stacks::PopulatedState;
@@ -138,7 +138,9 @@ pub(crate) enum Action {
     HeaderBarShowTile(String),
     HeaderBarNormal,
     MarkAllPlayerNotification(Arc<Show>),
+    UpdateFeed(Option<Vec<Source>>),
     ShowUpdateNotif(Receiver<bool>),
+    StopUpdating,
     RemoveShow(Arc<Show>),
     ErrorNotification(String),
     InitEpisode(i32),
@@ -248,6 +250,17 @@ impl PdApplication {
                     let notif = InAppNotification::new(&err, 6000, callback, undo_cb);
                     notif.show(&window.overlay);
                 }
+                Action::UpdateFeed(source) => {
+                    if window.updating.get() {
+                        info!("Ignoring feed update request (another one is already running)")
+                    } else {
+                        window.updating.set(true);
+                        utils::refresh_feed(source, window.sender.clone())
+                    }
+                }
+                Action::StopUpdating => {
+                    window.updating.set(false);
+                }
                 Action::ShowUpdateNotif(receiver) => {
                     let sender = window.sender.clone();
                     let callback = move |revealer: gtk::Revealer| match receiver.try_recv() {
@@ -255,9 +268,15 @@ impl PdApplication {
                         Err(TryRecvError::Disconnected) => glib::Continue(false),
                         Ok(_) => {
                             revealer.set_reveal_child(false);
+
+                            sender
+                                .send(Action::StopUpdating)
+                                .expect("Action channel blew up somehow");
+
                             sender
                                 .send(Action::RefreshAllViews)
                                 .expect("Action channel blew up somehow");
+
                             glib::Continue(false)
                         }
                     };
@@ -269,6 +288,7 @@ impl PdApplication {
 
                     let old = window.updater.replace(Some(updater));
                     old.map(|i| i.destroy());
+
                     window
                         .updater
                         .borrow()

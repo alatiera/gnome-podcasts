@@ -36,7 +36,7 @@ use crate::widgets::about_dialog;
 use crate::widgets::appnotif::InAppNotification;
 use crate::widgets::player;
 
-use std::cell::RefCell;
+use std::cell::{Cell, RefCell};
 use std::ops::Deref;
 use std::rc::Rc;
 
@@ -65,6 +65,7 @@ pub struct MainWindow {
     pub(crate) content: Rc<Content>,
     pub(crate) headerbar: Rc<Header>,
     pub(crate) player: player::PlayerWrapper,
+    pub(crate) updating: Cell<bool>,
     pub(crate) updater: RefCell<Option<InAppNotification>>,
     pub(crate) sender: Sender<Action>,
     pub(crate) receiver: Receiver<Action>,
@@ -137,7 +138,7 @@ impl MainWindow {
         if settings.get_boolean("refresh-on-startup") {
             info!("Refresh on startup.");
             let s: Option<Vec<_>> = None;
-            utils::refresh(s, sender.clone());
+            utils::schedule_refresh(s, sender.clone());
         }
 
         let refresh_interval = settings::get_refresh_interval(&settings).num_seconds() as u32;
@@ -146,7 +147,7 @@ impl MainWindow {
         let r_sender = sender.clone();
         gtk::timeout_add_seconds(refresh_interval, move || {
             let s: Option<Vec<_>> = None;
-            utils::refresh(s, r_sender.clone());
+            utils::schedule_refresh(s, r_sender.clone());
 
             glib::Continue(true)
         });
@@ -158,6 +159,7 @@ impl MainWindow {
             headerbar: header,
             content,
             player,
+            updating: Cell::new(false),
             updater,
             sender,
             receiver,
@@ -178,7 +180,7 @@ impl MainWindow {
         action(&self.window, "refresh", clone!(sender => move |_, _| {
             gtk::idle_add(clone!(sender => move || {
                 let s: Option<Vec<_>> = None;
-                utils::refresh(s, sender.clone());
+                utils::schedule_refresh(s, sender.clone());
                 glib::Continue(false)
             }));
         }));

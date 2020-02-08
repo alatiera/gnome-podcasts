@@ -203,10 +203,10 @@ pub(crate) fn cleanup(cleanup_date: DateTime<Utc>) {
         .ok();
 }
 
-pub(crate) fn refresh<S>(source: Option<S>, sender: Sender<Action>)
-where
-    S: IntoIterator<Item = Source> + Send + 'static,
-{
+/// Schedule feed refresh
+/// If `source` is None, Refreshes all sources in the database.
+/// Current implementation ignores update request if another update is already running
+pub(crate) fn schedule_refresh(source: Option<Vec<Source>>, sender: Sender<Action>) {
     // If we try to update the whole db,
     // Exit early if `source` table is empty
     if source.is_none() {
@@ -220,15 +220,16 @@ where
         };
     }
 
-    refresh_feed(source, sender)
+    sender
+        .send(Action::UpdateFeed(source))
+        .expect("Action channel blew up somehow")
 }
 
 /// Update the rss feed(s) originating from `source`.
 /// If `source` is None, Fetches all the `Source` entries in the database and updates them.
-fn refresh_feed<S>(source: Option<S>, sender: Sender<Action>)
-where
-    S: IntoIterator<Item = Source> + Send + 'static,
-{
+/// Do not call this function directly unless you are sure no other updates are running.
+/// Use `schedule_refresh()` instead
+pub(crate) fn refresh_feed(source: Option<Vec<Source>>, sender: Sender<Action>) {
     rayon::spawn(move || {
         let (up_sender, up_receiver) = bounded(1);
         sender
@@ -420,7 +421,7 @@ pub(crate) fn on_import_clicked(window: &gtk::ApplicationWindow, sender: &Sender
                 // Parse the file and import the feeds
                 if let Ok(sources) = opml::import_from_file(filename) {
                     // Refresh the successfully parsed feeds to index them
-                    refresh(Some(sources), sender)
+                    schedule_refresh(Some(sources), sender)
                 } else {
                     let text = i18n("Failed to parse the imported file");
                     sender.send(Action::ErrorNotification(text)).expect("Action channel blew up somehow");

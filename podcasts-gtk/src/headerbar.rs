@@ -32,7 +32,7 @@ use podcasts_data::{dbqueries, Source};
 
 use crate::app::Action;
 use crate::stacks::Content;
-use crate::utils::{itunes_to_rss, refresh};
+use crate::utils::{itunes_to_rss, schedule_refresh};
 
 use std::rc::Rc;
 
@@ -85,7 +85,7 @@ impl AddPopover {
 
         rayon::spawn(clone!(sender => move || {
             if let Ok(source) = Source::from_url(&url) {
-                refresh(Some(vec![source]), sender.clone());
+                schedule_refresh(Some(vec![source]), sender.clone());
             } else {
                 error!("Failed to convert, url: {}, to a source entry", url);
             }
