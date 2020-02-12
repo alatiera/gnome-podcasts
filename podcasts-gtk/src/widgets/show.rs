@@ -18,6 +18,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 use glib;
+use glib::clone;
 use gtk::{self, prelude::*, Adjustment};
 
 use crossbeam_channel::{bounded, Sender};
@@ -108,16 +109,14 @@ impl ShowWidget {
         let res = populate_listbox(&pdw, pd.clone(), sender, vadj);
         debug_assert!(res.is_ok());
 
-        let weak = Rc::downgrade(&pdw);
         pdw.description_short
-            .connect_size_allocate(clone!(weak => move |_, _2| {
-                weak.upgrade().map(|w| w.update_read_more());
+            .connect_size_allocate(clone!(@weak pdw => move |_, _2| {
+                pdw.update_read_more();
             }));
 
         pdw.description_button
-            .connect_clicked(clone!(weak => move |_| {
-                weak.upgrade()
-                    .map(|w| w.description_stack.set_visible_child_name("full"));
+            .connect_clicked(clone!(@weak pdw => move |_| {
+                pdw.description_stack.set_visible_child_name("full");
             }));
 
         pdw
@@ -180,7 +179,7 @@ fn populate_listbox(
     let count = dbqueries::get_pd_episodes_count(&pd)?;
 
     let (sender_, receiver) = bounded(1);
-    rayon::spawn(clone!(pd => move || {
+    rayon::spawn(clone!(@strong pd => move || {
         if let Ok(episodes) = dbqueries::get_pd_episodeswidgets(&pd) {
             // The receiver can be dropped if there's an early return
             // like on show without episodes for example.
@@ -205,13 +204,13 @@ fn populate_listbox(
 
         debug_assert!(episodes.len() as i64 == count);
 
-        let constructor = clone!(sender => move |ep| {
+        let constructor = clone!(@strong sender => move |ep| {
             EpisodeWidget::new(ep, &sender).container.clone()
         });
 
-        let callback = clone!(show_weak, vadj => move || {
+        let callback = clone!(@strong show_weak, @strong vadj => move || {
             match (show_weak.upgrade(), &vadj) {
-                (Some(ref shows), Some(ref v)) => shows.view.set_adjutments(None, Some(v)),
+                (Some(ref shows), Some(ref v)) => shows.view.set_adjustments(None, Some(v)),
                 _ => (),
             };
         });

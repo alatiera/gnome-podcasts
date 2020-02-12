@@ -20,6 +20,7 @@
 #![allow(clippy::type_complexity)]
 
 use gdk_pixbuf::Pixbuf;
+use glib::clone;
 use glib::{self, object::WeakRef};
 use glib::{IsA, Object};
 use gtk;
@@ -183,7 +184,7 @@ pub(crate) fn ignore_show(id: i32) -> Result<bool, Error> {
         .map_err(|err| format_err!("{}", err))
 }
 
-pub(crate) fn uningore_show(id: i32) -> Result<bool, Error> {
+pub(crate) fn unignore_show(id: i32) -> Result<bool, Error> {
     IGNORESHOWS
         .lock()
         .map(|mut guard| guard.remove(&id))
@@ -300,7 +301,7 @@ pub(crate) fn set_image_from_path(
     // If it fails another download will be scheduled.
     if let Ok(guard) = COVER_DL_REGISTRY.read() {
         if guard.contains(&show_id) {
-            let callback = clone!(image => move || {
+            let callback = clone!(@weak image => @default-return glib::Continue(false), move || {
                  let _ = set_image_from_path(&image, show_id, size);
                  glib::Continue(false)
             });
@@ -417,7 +418,7 @@ pub(crate) fn on_import_clicked(window: &gtk::ApplicationWindow, sender: &Sender
         if let Some(filename) = dialog.get_filename() {
             debug!("File selected: {:?}", filename);
 
-            rayon::spawn(clone!(sender => move || {
+            rayon::spawn(clone!(@strong sender => move || {
                 // Parse the file and import the feeds
                 if let Ok(sources) = opml::import_from_file(filename) {
                     // Refresh the successfully parsed feeds to index them
@@ -464,7 +465,7 @@ pub(crate) fn on_export_clicked(window: &gtk::ApplicationWindow, sender: &Sender
         if let Some(filename) = dialog.get_filename() {
             debug!("File selected: {:?}", filename);
 
-            rayon::spawn(clone!(sender => move || {
+            rayon::spawn(clone!(@strong sender => move || {
                 if opml::export_from_db(filename, i18n("GNOME Podcasts Subscriptions").as_str()).is_err() {
                     let text = i18n("Failed to export podcasts");
                     sender.send(Action::ErrorNotification(text)).expect("Action channel blew up somehow");

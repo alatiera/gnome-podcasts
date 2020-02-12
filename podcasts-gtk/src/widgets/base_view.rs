@@ -67,7 +67,7 @@ impl BaseView {
         self.scrolled_window.add(widget);
     }
 
-    pub(crate) fn set_adjutments<'a, 'b>(
+    pub(crate) fn set_adjustments<'a, 'b>(
         &self,
         hadjustment: Option<&'a Adjustment>,
         vadjustment: Option<&'b Adjustment>,

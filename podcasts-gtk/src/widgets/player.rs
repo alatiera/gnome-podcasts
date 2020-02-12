@@ -26,6 +26,7 @@ use libhandy as hdy;
 use libhandy::prelude::*;
 
 use gio::{File, FileExt};
+use glib::clone;
 use glib::{SignalHandlerId, WeakRef};
 
 use chrono::{prelude::*, NaiveTime};
@@ -241,17 +242,18 @@ impl PlayerRate {
     }
 
     fn connect_signals(&self, widget: &Rc<PlayerWidget>) {
-        let weak = Rc::downgrade(widget);
-
-        self.radio_normal.connect_toggled(clone!(weak => move |_| {
-            weak.upgrade().map(|w| w.on_rate_changed(1.00));
-        }));
-        self.radio125.connect_toggled(clone!(weak => move |_| {
-            weak.upgrade().map(|w| w.on_rate_changed(1.25));
-        }));
-        self.radio150.connect_toggled(clone!(weak => move |_| {
-            weak.upgrade().map(|w| w.on_rate_changed(1.50));
-        }));
+        self.radio_normal
+            .connect_toggled(clone!(@weak widget => move |_| {
+                widget.on_rate_changed(1.00);
+            }));
+        self.radio125
+            .connect_toggled(clone!(@weak widget => move |_| {
+                widget.on_rate_changed(1.25);
+            }));
+        self.radio150
+            .connect_toggled(clone!(@weak widget => move |_| {
+                widget.on_rate_changed(1.50);
+            }));
     }
 }
 
@@ -680,21 +682,18 @@ impl PlayerWrapper {
     }
 
     fn connect_dialog(&self) {
-        let weak = Rc::downgrade(self);
-
+        let this = self.deref();
         self.squeezer
-            .connect_property_visible_child_notify(clone!(weak => move |_| {
-                weak.upgrade().map(|w| {
-                    if let Some(child) = w.squeezer.get_visible_child() {
-                        let full = child == w.full;
-                        w.timer.progress_bar.set_visible(!full);
+            .connect_property_visible_child_notify(clone!(@weak this => move |_| {
+                    if let Some(child) = this.squeezer.get_visible_child() {
+                        let full = child == this.full;
+                        this.timer.progress_bar.set_visible(!full);
                         if full {
-                            w.action_bar.get_style_context().remove_class("player-small");
+                            this.action_bar.get_style_context().remove_class("player-small");
                         } else {
-                            w.action_bar.get_style_context().add_class("player-small");
+                            this.action_bar.get_style_context().add_class("player-small");
                         }
                     }
-                });
             }));
 
         self.timer
@@ -711,103 +710,110 @@ impl PlayerWrapper {
             .slider
             .set_adjustment(&self.timer.slider.get_adjustment());
 
-        self.evbox
-            .connect_button_press_event(clone!(weak => move |_, event| {
+        self.evbox.connect_button_press_event(
+            clone!(@weak this =>  @default-return Inhibit(false), move |_, event| {
                 if event.get_button() != 1 {
                     return Inhibit(false);
                 }
-
-                if let Some(w) = weak.upgrade() {
-                    // only open the dialog when the small toolbar is visible
-                    if let Some(child) = w.squeezer.get_visible_child() {
-                        if child == w.full {
-                            return Inhibit(false);
-                        }
+                // only open the dialog when the small toolbar is visible
+                if let Some(child) = this.squeezer.get_visible_child() {
+                    if child == this.full {
+                        return Inhibit(false);
                     }
-
-                    let parent = w.container.get_toplevel().and_then(|toplevel| {
-                        toplevel
-                            .downcast::<gtk::Window>()
-                            .ok()
-                    }).unwrap();
-
-                    info!("showing dialog");
-                    w.dialog.dialog.set_transient_for(Some(&parent));
-                    w.dialog.dialog.show();
                 }
 
-                Inhibit(false)
-            }));
+                let parent = this.container.get_toplevel().and_then(|toplevel| {
+                    toplevel
+                        .downcast::<gtk::Window>()
+                        .ok()
+                }).unwrap();
 
-        self.dialog.close.connect_clicked(clone!(weak => move |_| {
-            weak.upgrade().map(|w| w.dialog.dialog.hide());
-        }));
+                info!("showing dialog");
+                this.dialog.dialog.set_transient_for(Some(&parent));
+                this.dialog.dialog.show();
+
+                Inhibit(false)
+            }),
+        );
+
+        self.dialog
+            .close
+            .connect_clicked(clone!(@weak this => move |_| {
+                    this.dialog.dialog.hide();
+            }));
     }
 
     /// Connect the `PlayerControls` buttons to the `PlayerExt` methods.
     fn connect_control_buttons(&self) {
-        let weak = Rc::downgrade(self);
-
+        let this = self.deref();
         // Connect the play button to the gst Player.
-        self.controls.play.connect_clicked(clone!(weak => move |_| {
-             weak.upgrade().map(|p| p.play());
-        }));
+        self.controls
+            .play
+            .connect_clicked(clone!(@weak this => move |_| {
+                     this.play();
+            }));
 
         // Connect the pause button to the gst Player.
         self.controls
             .pause
-            .connect_clicked(clone!(weak => move |_| {
-                weak.upgrade().map(|p| p.pause());
+            .connect_clicked(clone!(@weak this => move |_| {
+                this.pause();
             }));
 
         // Connect the play button to the gst Player.
         self.controls
             .play_small
-            .connect_clicked(clone!(weak => move |_| {
-                 weak.upgrade().map(|p| p.play());
+            .connect_clicked(clone!(@weak this => move |_| {
+                 this.play();
             }));
 
         // Connect the pause button to the gst Player.
         self.controls
             .pause_small
-            .connect_clicked(clone!(weak => move |_| {
-                weak.upgrade().map(|p| p.pause());
+            .connect_clicked(clone!(@weak this => move |_| {
+                this.pause();
             }));
 
         // Connect the rewind button to the gst Player.
         self.controls
             .rewind
-            .connect_clicked(clone!(weak => move |_| {
-                weak.upgrade().map(|p| p.rewind());
+            .connect_clicked(clone!(@weak this => move |_| {
+                this.rewind();
             }));
 
         // Connect the fast-forward button to the gst Player.
         self.controls
             .forward
-            .connect_clicked(clone!(weak => move |_| {
-                weak.upgrade().map(|p| p.fast_forward());
+            .connect_clicked(clone!(@weak this => move |_| {
+                this.fast_forward();
             }));
 
         // Connect the play button to the gst Player.
-        self.dialog.play.connect_clicked(clone!(weak => move |_| {
-             weak.upgrade().map(|p| p.play());
-        }));
+        self.dialog
+            .play
+            .connect_clicked(clone!(@weak this => move |_| {
+                     this.play();
+            }));
 
         // Connect the pause button to the gst Player.
-        self.dialog.pause.connect_clicked(clone!(weak => move |_| {
-            weak.upgrade().map(|p| p.pause());
-        }));
+        self.dialog
+            .pause
+            .connect_clicked(clone!(@weak this => move |_| {
+                    this.pause();
+            }));
 
         // Connect the rewind button to the gst Player.
-        self.dialog.rewind.connect_clicked(clone!(weak => move |_| {
-            weak.upgrade().map(|p| p.rewind());
-        }));
+        self.dialog
+            .rewind
+            .connect_clicked(clone!(@weak this => move |_| {
+                    this.rewind();
+            }));
 
         // Connect the fast-forward button to the gst Player.
         self.dialog
             .forward
-            .connect_clicked(clone!(weak => move |_| {
-                weak.upgrade().map(|p| p.fast_forward());
+            .connect_clicked(clone!(@weak this => move |_| {
+                this.fast_forward();
             }));
     }
 
@@ -817,7 +823,7 @@ impl PlayerWrapper {
         self.player.connect_warning(move |_, warn| warn!("gst warning: {}", warn));
 
         // Log gst errors.
-        self.player.connect_error(clone!(sender => move |_, _error| {
+        self.player.connect_error(clone!(@strong sender => move |_, _error| {
             // sender.send(Action::ErrorNotification(format!("Player Error: {}", error)));
             let s = i18n("The media player was unable to execute an action.");
             sender.send(Action::ErrorNotification(s)).expect("Action channel blew up somehow");
@@ -827,21 +833,21 @@ impl PlayerWrapper {
         let weak = Fragile::new(Rc::downgrade(self));
 
         // Update the duration label and the slider
-        self.player.connect_duration_changed(clone!(weak => move |_, clock| {
+        self.player.connect_duration_changed(clone!(@strong weak => move |_, clock| {
             weak.get()
                 .upgrade()
                 .map(|p| p.timer.on_duration_changed(Duration(clock)));
         }));
 
         // Update the position label and the slider
-        self.player.connect_position_updated(clone!(weak => move |_, clock| {
+        self.player.connect_position_updated(clone!(@strong weak => move |_, clock| {
             weak.get()
                 .upgrade()
                 .map(|p| p.timer.on_position_updated(Position(clock)));
         }));
 
         // Reset the slider to 0 and show a play button
-        self.player.connect_end_of_stream(clone!(weak => move |_| {
+        self.player.connect_end_of_stream(clone!(@strong weak => move |_| {
              weak.get()
                  .upgrade()
                  .map(|p| p.stop());
@@ -859,49 +865,60 @@ impl PlayerWrapper {
 
         // FIXME: Reference cycle with mpris
         let mpris = self.info.mpris.clone();
-        self.info.mpris.connect_play_pause(clone!(weak => move || {
-            let player = match weak.upgrade() {
-                Some(s) => s,
-                None => return
-            };
-
-            if let Ok(status) = mpris.get_playback_status() {
-                match status.as_ref() {
-                    "Paused" => player.play(),
-                    "Stopped" => player.play(),
-                    _ => player.pause(),
+        self.info
+            .mpris
+            .connect_play_pause(clone!(@strong weak => move || {
+                let player = match weak.upgrade() {
+                    Some(s) => s,
+                    None => return
                 };
-            }
-        }));
 
-        self.info.mpris.connect_play(clone!(weak => move || {
-            let player = match weak.upgrade() {
-                Some(s) => s,
-                None => return
-            };
+                if let Ok(status) = mpris.get_playback_status() {
+                    match status.as_ref() {
+                        "Paused" => player.play(),
+                        "Stopped" => player.play(),
+                        _ => player.pause(),
+                    };
+                }
+            }));
+        self.info
+            .mpris
+            .connect_play(clone!(@strong weak => move || {
+                let player = match weak.upgrade() {
+                    Some(s) => s,
+                    None => return
+                };
 
-            player.play();
-        }));
+                player.play();
+            }));
 
-        self.info.mpris.connect_pause(clone!(weak => move || {
-            let player = match weak.upgrade() {
-                Some(s) => s,
-                None => return
-            };
+        self.info
+            .mpris
+            .connect_pause(clone!(@strong weak => move || {
+                let player = match weak.upgrade() {
+                    Some(s) => s,
+                    None => return
+                };
 
-            player.pause();
-        }));
+                player.pause();
+            }));
 
-        self.info.mpris.connect_next(clone!(weak => move || {
-            weak.upgrade().map(|p| p.fast_forward());
-        }));
+        self.info
+            .mpris
+            .connect_next(clone!(@strong weak => move || {
+                weak.upgrade().map(|p| p.fast_forward());
+            }));
 
-        self.info.mpris.connect_previous(clone!(weak => move || {
-            weak.upgrade().map(|p| p.rewind());
-        }));
+        self.info
+            .mpris
+            .connect_previous(clone!(@strong weak => move || {
+                weak.upgrade().map(|p| p.rewind());
+            }));
 
-        self.info.mpris.connect_raise(clone!(sender => move || {
-            sender.send(Action::RaiseWindow).expect("Action channel blew up somehow");
-        }));
+        self.info
+            .mpris
+            .connect_raise(clone!(@strong sender => move || {
+                sender.send(Action::RaiseWindow).expect("Action channel blew up somehow");
+            }));
     }
 }
