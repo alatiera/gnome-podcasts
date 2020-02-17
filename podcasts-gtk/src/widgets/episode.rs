@@ -18,6 +18,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 use glib;
+use glib::clone;
 use gtk;
 use gtk::prelude::*;
 
@@ -235,16 +236,18 @@ impl EpisodeWidget {
         let widget = Rc::new(Self::default());
         let episode = RefCell::new(Some(episode));
         let weak = Rc::downgrade(&widget);
-        widget.container.connect_draw(clone!(sender => move |_, _| {
-            episode.borrow_mut().take().map(|ep| {
-                weak.upgrade().map(|w| w.info.init(&ep));
-                Self::determine_buttons_state(&weak, &ep, &sender)
-                    .map_err(|err| error!("Error: {}", err))
-                    .ok();
-            });
+        widget
+            .container
+            .connect_draw(clone!(@strong sender => move |_, _| {
+                episode.borrow_mut().take().map(|ep| {
+                    weak.upgrade().map(|w| w.info.init(&ep));
+                    Self::determine_buttons_state(&weak, &ep, &sender)
+                        .map_err(|err| error!("Error: {}", err))
+                        .ok();
+                });
 
-            gtk::Inhibit(false)
-        }));
+                gtk::Inhibit(false)
+            }));
 
         // When the widget is attached to a parent,
         // since it's a rust struct and not a widget the
@@ -372,7 +375,7 @@ impl EpisodeWidget {
         // State: InProgress
         if let Some(prog) = active_dl()? {
             // set a callback that will update the state when the download finishes
-            let callback = clone!(weak, sender => move || {
+            let callback = clone!(@strong weak, @strong sender => move || {
                 if let Ok(guard) = manager::ACTIVE_DOWNLOADS.read() {
                     if !guard.contains_key(&id) {
                         if let Ok(ep) = dbqueries::get_episode_widget_from_rowid(id) {
@@ -393,14 +396,14 @@ impl EpisodeWidget {
             widget
                 .buttons
                 .cancel
-                .connect_clicked(clone!(prog, weak, sender => move |_| {
+                .connect_clicked(clone!(@strong prog, @strong weak, @strong sender => move |_| {
                     // Cancel the download
                     if let Ok(mut m) = prog.lock() {
                         m.cancel();
                     }
 
                     // Cancel is not instant so we have to wait a bit
-                    timeout_add(50, clone!(weak, sender => move || {
+                    timeout_add(50, clone!(@strong weak, @strong sender => move || {
                         if let Ok(thing) = active_dl() {
                             if thing.is_none() {
                                 // Recalculate the widget state
@@ -441,7 +444,7 @@ impl EpisodeWidget {
             widget
                 .buttons
                 .play
-                .connect_clicked(clone!(weak, sender => move |_| {
+                .connect_clicked(clone!(@strong weak, @strong sender => move |_| {
                     if let Ok(mut ep) = dbqueries::get_episode_widget_from_rowid(id) {
                         on_play_bttn_clicked(&weak, &mut ep, &sender)
                             .map_err(|err| error!("Error: {}", err))
@@ -457,7 +460,7 @@ impl EpisodeWidget {
         widget
             .buttons
             .download
-            .connect_clicked(clone!(weak, sender => move |dl| {
+            .connect_clicked(clone!(@strong weak, @strong sender => move |dl| {
                 // Make the button insensitive so it won't be pressed twice
                 dl.set_sensitive(false);
                 if let Ok(ep) = dbqueries::get_episode_widget_from_rowid(id) {
@@ -528,7 +531,7 @@ fn update_progressbar_callback(
     prog: &Arc<Mutex<manager::Progress>>,
     episode_rowid: i32,
 ) {
-    let callback = clone!(widget, prog => move || {
+    let callback = clone!(@strong widget,@strong prog => move || {
         progress_bar_helper(&widget, &prog, episode_rowid)
             .unwrap_or(glib::Continue(false))
     });
@@ -602,7 +605,7 @@ fn progress_bar_helper(
 // relying to the RSS feed.
 #[inline]
 fn update_total_size_callback(widget: &Weak<EpisodeWidget>, prog: &Arc<Mutex<manager::Progress>>) {
-    let callback = clone!(prog, widget => move || {
+    let callback = clone!(@strong prog, @strong widget => move || {
         total_size_helper(&widget, &prog).unwrap_or(glib::Continue(true))
     });
     timeout_add(100, callback);

@@ -89,7 +89,7 @@ fn populate_flowbox(shows: &Rc<ShowsView>, vadj: Option<Adjustment>) -> Result<(
     let constructor = move |parent| ShowsChild::new(&parent).child;
     let callback = move || {
         match (show_weak.upgrade(), &vadj) {
-            (Some(ref shows), Some(ref v)) => shows.view.set_adjutments(None, Some(v)),
+            (Some(ref shows), Some(ref v)) => shows.view.set_adjustments(None, Some(v)),
             _ => (),
         };
     };

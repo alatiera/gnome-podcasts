@@ -19,6 +19,7 @@
 
 #![allow(clippy::new_without_default)]
 
+use glib::clone;
 use glib::subclass::prelude::*;
 use glib::subclass::simple::{ClassStruct, InstanceStruct};
 use glib::translate::*;
@@ -94,7 +95,10 @@ impl gio::subclass::prelude::ApplicationImpl for PdApplicationPrivate {
         window.present();
         self.window.replace(Some(window));
         // Setup the Action channel
-        gtk::timeout_add(25, clone!(app => move || app.setup_action_channel()));
+        gtk::timeout_add(
+            25,
+            clone!(@strong app => move || app.setup_action_channel()),
+        );
     }
 
     fn startup(&self, app: &gio::Application) {

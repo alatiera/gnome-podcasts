@@ -143,7 +143,7 @@ impl HomeView {
             };
 
             if let Some(ref v) = vadj {
-                home.view.set_adjutments(None, Some(v))
+                home.view.set_adjustments(None, Some(v))
             };
         };
 

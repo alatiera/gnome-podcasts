@@ -18,6 +18,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 use gio;
+use glib::clone;
 use gtk;
 use gtk::prelude::*;
 use libhandy;
@@ -83,7 +84,7 @@ impl AddPopover {
             url.to_owned()
         };
 
-        rayon::spawn(clone!(sender => move || {
+        rayon::spawn(clone!(@strong sender => move || {
             if let Ok(source) = Source::from_url(&url) {
                 schedule_refresh(Some(vec![source]), sender.clone());
             } else {
@@ -227,41 +228,38 @@ impl Header {
     }
 
     pub(crate) fn init(s: &Rc<Self>, content: &Content, sender: &Sender<Action>) {
-        let weak = Rc::downgrade(s);
-
         s.bottom_switcher.set_stack(Some(&content.get_stack()));
         s.switch.set_stack(Some(&content.get_stack()));
 
-        s.add.entry.connect_changed(clone!(weak => move |_| {
-            weak.upgrade().map(|h| {
-                h.add.on_entry_changed()
-                    .map_err(|err| error!("Error: {}", err))
-                    .ok();
-            });
-        }));
-
-        s.add.add.connect_clicked(clone!(weak, sender => move |_| {
-            weak.upgrade().map(|h| h.add.on_add_clicked(&sender));
+        s.add.entry.connect_changed(clone!(@weak s => move |_| {
+            s.add.on_entry_changed()
+            .map_err(|err| error!("Error: {}", err))
+            .ok();
         }));
 
         s.add
-            .entry
-            .connect_activate(clone!(weak, sender => move |_| {
-                weak.upgrade().map(|h| {
-                    if h.add.add.get_sensitive() {
-                        h.add.on_add_clicked(&sender).unwrap();
-                    }
-                });
+            .add
+            .connect_clicked(clone!(@weak s, @strong sender => move |_| {
+                s.add.on_add_clicked(&sender).unwrap();
             }));
 
-        s.back.connect_clicked(clone!(weak, sender => move |_| {
-            weak.upgrade().map(|h| h.switch_to_normal());
-            sender.send(Action::ShowShowsAnimated).expect("Action channel blew up somehow");
-        }));
+        s.add
+            .entry
+            .connect_activate(clone!(@weak s, @strong sender => move |_| {
+                if s.add.add.get_sensitive() {
+                        s.add.on_add_clicked(&sender).unwrap();
+                    }
+            }));
+
+        s.back
+            .connect_clicked(clone!(@weak s, @strong sender => move |_| {
+                s.switch_to_normal();
+                sender.send(Action::ShowShowsAnimated).expect("Action channel blew up somehow");
+            }));
 
         s.switch_squeezer
-            .connect_property_visible_child_notify(clone!(weak => move |_| {
-                weak.upgrade().map(|h| h.update_bottom_switcher());
+            .connect_property_visible_child_notify(clone!(@weak s => move |_| {
+                s.update_bottom_switcher();
             }));
         s.update_bottom_switcher();
     }

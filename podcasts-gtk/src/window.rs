@@ -18,6 +18,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 use glib;
+use glib::clone;
 use glib::Variant;
 
 use gio::{self, prelude::*, ActionMapExt, SettingsExt};
@@ -172,13 +173,11 @@ impl MainWindow {
     #[cfg_attr(rustfmt, rustfmt_skip)]
     pub fn setup_gactions(&self) {
         let sender = &self.sender;
-        let weak_win = self.window.downgrade();
-
         // Create the `refresh` action.
         //
         // This will trigger a refresh of all the shows in the database.
-        action(&self.window, "refresh", clone!(sender => move |_, _| {
-            gtk::idle_add(clone!(sender => move || {
+        action(&self.window, "refresh", clone!(@strong sender => move |_, _| {
+            gtk::idle_add(clone!(@strong sender => move || {
                 let s: Option<Vec<_>> = None;
                 utils::schedule_refresh(s, sender.clone());
                 glib::Continue(false)
@@ -187,17 +186,17 @@ impl MainWindow {
         self.app.set_accels_for_action("win.refresh", &["<primary>r"]);
 
         // Create the `OPML` import action
-        action(&self.window, "import", clone!(sender, weak_win => move |_, _| {
-            weak_win.upgrade().map(|win| utils::on_import_clicked(&win, &sender));
+        action(&self.window, "import", clone!(@strong sender, @weak self.window as win => move |_, _| {
+            utils::on_import_clicked(&win, &sender);
         }));
 
-        action(&self.window, "export", clone!(sender, weak_win => move |_, _| {
-            weak_win.upgrade().map(|win| utils::on_export_clicked(&win, &sender));
+        action(&self.window, "export", clone!(@strong sender, @weak self.window as win => move |_, _| {
+            utils::on_export_clicked(&win, &sender);
         }));
 
         // Create the action that shows a `gtk::AboutDialog`
-        action(&self.window, "about", clone!(weak_win => move |_, _| {
-            weak_win.upgrade().map(|win| about_dialog(&win));
+        action(&self.window, "about", clone!(@weak self.window as win => move |_, _| {
+            about_dialog(&win);
         }));
 
         // Create the quit action

@@ -18,6 +18,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 use glib;
+use glib::clone;
 use gtk;
 use gtk::prelude::*;
 
@@ -78,7 +79,7 @@ impl ShowMenu {
 
     fn connect_website(&self, pd: &Arc<Show>) {
         self.website.set_tooltip_text(Some(pd.link()));
-        self.website.connect_clicked(clone!(pd => move |_| {
+        self.website.connect_clicked(clone!(@strong pd => move |_| {
             let link = pd.link();
             info!("Opening link: {}", link);
             let res = open::that(link);
@@ -87,13 +88,7 @@ impl ShowMenu {
     }
 
     fn connect_played(&self, pd: &Arc<Show>, episodes: &gtk::ListBox, sender: &Sender<Action>) {
-        let episodes_weak = episodes.downgrade();
-        self.played.connect_clicked(clone!(pd, sender => move |_| {
-            let episodes = match episodes_weak.upgrade() {
-                Some(e) => e,
-                None => return,
-            };
-
+        self.played.connect_clicked(clone!(@strong pd, @strong sender, @weak episodes => move |_| {
             let res = dim_titles(&episodes);
             debug_assert!(res.is_some());
 
@@ -103,7 +98,7 @@ impl ShowMenu {
 
     fn connect_unsub(&self, pd: &Arc<Show>, sender: &Sender<Action>) {
         self.unsub
-            .connect_clicked(clone!(pd, sender => move |unsub| {
+            .connect_clicked(clone!(@strong pd, @strong sender => move |unsub| {
                 // hack to get away without properly checking for none.
                 // if pressed twice would panic.
                 unsub.set_sensitive(false);
@@ -173,7 +168,7 @@ pub(crate) fn mark_all_notif(pd: Arc<Show>, sender: &Sender<Action>) -> InAppNot
         glib::Continue(false)
     };
 
-    let undo_callback = clone!(sender => move || {
+    let undo_callback = clone!(@strong sender => move || {
         sender.send(Action::RefreshWidgetIfSame(id)).expect("Action channel blew up somehow")
     });
     let text = i18n("Marked all episodes as listened");
@@ -189,11 +184,11 @@ pub(crate) fn remove_show_notif(pd: Arc<Show>, sender: Sender<Action>) -> InAppN
     let sender_ = sender.clone();
     let pd_ = pd.clone();
     let callback = move |revealer: gtk::Revealer| {
-        let res = utils::uningore_show(pd_.id());
+        let res = utils::unignore_show(pd_.id());
         debug_assert!(res.is_ok());
 
         // Spawn a thread so it won't block the ui.
-        rayon::spawn(clone!(pd_, sender_ => move || {
+        rayon::spawn(clone!(@strong pd_, @strong sender_ => move || {
             delete_show(&pd_)
                 .map_err(|err| error!("Error: {}", err))
                 .map_err(|_| error!("Failed to delete {}", pd_.title()))
@@ -207,7 +202,7 @@ pub(crate) fn remove_show_notif(pd: Arc<Show>, sender: Sender<Action>) -> InAppN
     };
 
     let undo_callback = move || {
-        let res = utils::uningore_show(pd.id());
+        let res = utils::unignore_show(pd.id());
         debug_assert!(res.is_ok());
         sender
             .send(Action::RefreshShowsView)
