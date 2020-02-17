@@ -1,15 +1,15 @@
 # Hungarian translation for podcasts.
-# Copyright (C) 2018, 2019. Free Software Foundation, Inc.
+# Copyright (C) 2018, 2019, 2020 Free Software Foundation, Inc.
 # This file is distributed under the same license as the podcasts package.
 #
 # Meskó Balázs <mesko.balazs at fsf dot hu>, 2018.
-# Balázs Úr <ur.balazs at fsf dot hu>, 2019.
+# Balázs Úr <ur.balazs at fsf dot hu>, 2019, 2020.
 msgid ""
 msgstr ""
 "Project-Id-Version: podcasts master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2019-05-18 12:55+0000\n"
-"PO-Revision-Date: 2019-06-03 22:27+0200\n"
+"POT-Creation-Date: 2020-02-07 11:33+0000\n"
+"PO-Revision-Date: 2020-02-17 23:31+0100\n"
 "Last-Translator: Balázs Úr <ur.balazs at fsf dot hu>\n"
 "Language-Team: Hungarian <gnome-hu-list at gnome dot org>\n"
 "Language: hu\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Lokalize 18.12.3\n"
+"X-Generator: Lokalize 19.04.3\n"
 
 #: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml:15
 msgid "Top position of the last open main window"
@@ -70,8 +70,8 @@ msgstr "Milyen időközöket várjon az automatikus tisztítások között"
 #. Weird magic I copy-pasted that sets the Application Name in the Shell.
 #: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:3
 #: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:4
-#: podcasts-gtk/src/app.rs:109 podcasts-gtk/src/app.rs:433
-#: podcasts-gtk/src/widgets/aboutdialog.rs:56
+#: podcasts-gtk/resources/gtk/headerbar.ui:158 podcasts-gtk/src/app.rs:330
+#: podcasts-gtk/src/widgets/aboutdialog.rs:56 podcasts-gtk/src/window.rs:80
 msgid "Podcasts"
 msgstr "Podcastok"
 
@@ -89,7 +89,7 @@ msgstr "Podcast;RSS;"
 msgid "Podcast app for GNOME"
 msgstr "Podcast alkalmazás a GNOME-hoz"
 
-#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:77
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:84
 msgid "Jordan Petridis"
 msgstr "Jordan Petridis"
 
@@ -114,7 +114,6 @@ msgid "Import shows from another device"
 msgstr "Műsorok importálása egy másik eszközről"
 
 #: podcasts-gtk/resources/gtk/episode_widget.ui:79
-#| msgid "You are already subscribed to this show"
 msgid "You’ve already listened to this episode."
 msgstr "Már meghallgatta ezt az epizódot."
 
@@ -155,7 +154,7 @@ msgid "_About Podcasts"
 msgstr "A Podcastok _névjegye"
 
 #: podcasts-gtk/resources/gtk/headerbar.ui:35
-#: podcasts-gtk/resources/gtk/headerbar.ui:189
+#: podcasts-gtk/resources/gtk/headerbar.ui:186
 msgid "Add a new feed"
 msgstr "Új csatorna hozzáadása"
 
@@ -167,15 +166,11 @@ msgstr "Adja meg a hozzáadandó csatorna címét"
 msgid "Add"
 msgstr "Hozzáadás"
 
-#: podcasts-gtk/resources/gtk/headerbar.ui:133
-msgid "You are already subscribed to that feed!"
-msgstr "Már feliratkozott erre a csatornára."
-
-#: podcasts-gtk/resources/gtk/headerbar.ui:169
+#: podcasts-gtk/resources/gtk/headerbar.ui:171
 msgid "Show Title"
 msgstr "Műsor címe"
 
-#: podcasts-gtk/resources/gtk/headerbar.ui:210
+#: podcasts-gtk/resources/gtk/headerbar.ui:207
 msgid "Back"
 msgstr "Vissza"
 
@@ -221,50 +216,54 @@ msgstr "Alkalmazáson belüli műveletértesítések"
 msgid "Undo"
 msgstr "Visszavonás"
 
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:72
-msgid "Rewind 10 seconds"
-msgstr "Visszatekerés 10 másodperccel"
+#: podcasts-gtk/resources/gtk/player_dialog.ui:14
+msgid "Now Playing"
+msgstr "Most játssza"
 
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:87
-msgid "Play"
-msgstr "Lejátszás"
-
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:103
-msgid "Pause"
-msgstr "Szünet"
-
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:119
-msgid "Fast forward 10 seconds"
-msgstr "Előretekerés 10 másodperccel"
-
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:285
+#: podcasts-gtk/resources/gtk/player_rate.ui:32
 msgid "Change the playback speed"
 msgstr "Lejátszási sebesség módosítása"
 
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:300
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:380
+#: podcasts-gtk/resources/gtk/player_rate.ui:47
+#: podcasts-gtk/resources/gtk/player_rate.ui:122
 msgid "1.00×"
 msgstr "1,00×"
 
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:344
+#: podcasts-gtk/resources/gtk/player_rate.ui:86
 msgid "1.50×"
 msgstr "1,50×"
 
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:348
+#: podcasts-gtk/resources/gtk/player_rate.ui:90
 msgid "1.5 speed rate"
 msgstr "1,5-szeres sebesség"
 
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:362
+#: podcasts-gtk/resources/gtk/player_rate.ui:104
 msgid "1.25×"
 msgstr "1,25×"
 
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:366
+#: podcasts-gtk/resources/gtk/player_rate.ui:108
 msgid "1.25 speed rate"
 msgstr "1,25-szörös sebesség"
 
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:384
+#: podcasts-gtk/resources/gtk/player_rate.ui:126
 msgid "Normal speed"
 msgstr "Normál sebesség"
+
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:97
+msgid "Rewind 10 seconds"
+msgstr "Visszatekerés 10 másodperccel"
+
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:112
+msgid "Play"
+msgstr "Lejátszás"
+
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:128
+msgid "Pause"
+msgstr "Szünet"
+
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:144
+msgid "Fast forward 10 seconds"
+msgstr "Előretekerés 10 másodperccel"
 
 #: podcasts-gtk/resources/gtk/secondary_menu.ui:7
 msgid "_Mark All Episodes as Played"
@@ -290,17 +289,13 @@ msgstr "Összes megjelölése lejátszottként"
 msgid "Unsubscribe"
 msgstr "Leiratkozás"
 
-#: podcasts-gtk/src/app.rs:351
+#: podcasts-gtk/resources/gtk/show_widget.ui:99
+msgid "Read More"
+msgstr "Olvassa tovább"
+
+#: podcasts-gtk/src/app.rs:265
 msgid "Fetching new episodes"
 msgstr "Új epizódok lekérése"
-
-#: podcasts-gtk/src/headerbar.rs:117
-msgid "You are already subscribed to this show"
-msgstr "Már feliratkozott erre a műsorra"
-
-#: podcasts-gtk/src/headerbar.rs:125
-msgid "Invalid URL"
-msgstr "Érvénytelen URL"
 
 #: podcasts-gtk/src/stacks/content.rs:54
 msgid "New"
@@ -310,43 +305,43 @@ msgstr "Új"
 msgid "Shows"
 msgstr "Műsorok"
 
-#: podcasts-gtk/src/utils.rs:397
+#: podcasts-gtk/src/utils.rs:396
 msgid "Select the file from which to you want to import shows."
 msgstr "Válasszon egy fájlt, amelyből műsorokat akar importálni."
 
-#: podcasts-gtk/src/utils.rs:400
+#: podcasts-gtk/src/utils.rs:399
 msgid "_Import"
 msgstr "_Importálás"
 
-#: podcasts-gtk/src/utils.rs:409 podcasts-gtk/src/utils.rs:457
+#: podcasts-gtk/src/utils.rs:408 podcasts-gtk/src/utils.rs:456
 msgid "OPML file"
 msgstr "OPML fájl"
 
-#: podcasts-gtk/src/utils.rs:426
+#: podcasts-gtk/src/utils.rs:425
 msgid "Failed to parse the imported file"
 msgstr "Az importált fájl feldolgozása meghiúsult"
 
-#: podcasts-gtk/src/utils.rs:431 podcasts-gtk/src/utils.rs:475
+#: podcasts-gtk/src/utils.rs:430 podcasts-gtk/src/utils.rs:474
 msgid "Selected file could not be accessed."
 msgstr "A kiválasztott fájlok nem érhetőek el."
 
-#: podcasts-gtk/src/utils.rs:445
+#: podcasts-gtk/src/utils.rs:444
 msgid "Export shows to…"
 msgstr "Műsorok exportálása ide…"
 
-#: podcasts-gtk/src/utils.rs:448
+#: podcasts-gtk/src/utils.rs:447
 msgid "_Export"
 msgstr "_Exportálás"
 
-#: podcasts-gtk/src/utils.rs:449
+#: podcasts-gtk/src/utils.rs:448
 msgid "_Cancel"
 msgstr "_Mégse"
 
-#: podcasts-gtk/src/utils.rs:469
+#: podcasts-gtk/src/utils.rs:468
 msgid "GNOME Podcasts Subscriptions"
 msgstr "GNOME Podcastok feliratkozások"
 
-#: podcasts-gtk/src/utils.rs:470
+#: podcasts-gtk/src/utils.rs:469
 msgid "Failed to export podcasts"
 msgstr "A podcastok exportálása meghiúsult"
 
@@ -367,7 +362,7 @@ msgid "{} min"
 msgstr "{} perc"
 
 #. sender.send(Action::ErrorNotification(format!("Player Error: {}", error)));
-#: podcasts-gtk/src/widgets/player.rs:534
+#: podcasts-gtk/src/widgets/player.rs:824
 msgid "The media player was unable to execute an action."
 msgstr "A médialejátszó nem tudott végrehajtani egy műveletet."
 
