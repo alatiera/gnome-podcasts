@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: podcasts master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2019-05-18 12:55+0000\n"
-"PO-Revision-Date: 2019-06-01 20:20+0300\n"
+"POT-Creation-Date: 2020-02-07 11:33+0000\n"
+"PO-Revision-Date: 2020-02-23 13:44+0200\n"
 "Last-Translator: Jiri Grönroos <jiri.gronroos+l10n@iki.fi>\n"
 "Language-Team: Finnish <lokalisointi-lista@googlegroups.com>\n"
 "Language: fi\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 2.0.6\n"
+"X-Generator: Poedit 2.3\n"
 
 #: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml:15
 msgid "Top position of the last open main window"
@@ -69,8 +69,8 @@ msgstr ""
 #. Weird magic I copy-pasted that sets the Application Name in the Shell.
 #: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:3
 #: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:4
-#: podcasts-gtk/src/app.rs:109 podcasts-gtk/src/app.rs:433
-#: podcasts-gtk/src/widgets/aboutdialog.rs:56
+#: podcasts-gtk/resources/gtk/headerbar.ui:158 podcasts-gtk/src/app.rs:330
+#: podcasts-gtk/src/widgets/aboutdialog.rs:56 podcasts-gtk/src/window.rs:80
 msgid "Podcasts"
 msgstr "Podcastit"
 
@@ -88,7 +88,7 @@ msgstr "Podcast;RSS;"
 msgid "Podcast app for GNOME"
 msgstr "Podcast-sovellus Gnomelle"
 
-#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:77
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:84
 msgid "Jordan Petridis"
 msgstr "Jordan Petridis"
 
@@ -153,7 +153,7 @@ msgid "_About Podcasts"
 msgstr "_Tietoja - Podcastit"
 
 #: podcasts-gtk/resources/gtk/headerbar.ui:35
-#: podcasts-gtk/resources/gtk/headerbar.ui:189
+#: podcasts-gtk/resources/gtk/headerbar.ui:186
 msgid "Add a new feed"
 msgstr "Lisää uusi syöte"
 
@@ -165,15 +165,11 @@ msgstr "Anna lisättävän syötteen osoite"
 msgid "Add"
 msgstr "Lisää"
 
-#: podcasts-gtk/resources/gtk/headerbar.ui:133
-msgid "You are already subscribed to that feed!"
-msgstr "Olet jo tilannut kyseisen syötteen!"
-
-#: podcasts-gtk/resources/gtk/headerbar.ui:169
+#: podcasts-gtk/resources/gtk/headerbar.ui:171
 msgid "Show Title"
 msgstr "Ohjelman nimi"
 
-#: podcasts-gtk/resources/gtk/headerbar.ui:210
+#: podcasts-gtk/resources/gtk/headerbar.ui:207
 msgid "Back"
 msgstr "Takaisin"
 
@@ -219,50 +215,54 @@ msgstr "Sovelluksen sisäinen ilmoitus"
 msgid "Undo"
 msgstr "Kumoa"
 
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:72
-msgid "Rewind 10 seconds"
-msgstr "Siirry taakse 10 sekuntia"
+#: podcasts-gtk/resources/gtk/player_dialog.ui:14
+msgid "Now Playing"
+msgstr "Nyt toistetaan"
 
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:87
-msgid "Play"
-msgstr "Toista"
-
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:103
-msgid "Pause"
-msgstr "Keskeytä"
-
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:119
-msgid "Fast forward 10 seconds"
-msgstr "Siirry eteen 10 sekuntia"
-
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:285
+#: podcasts-gtk/resources/gtk/player_rate.ui:32
 msgid "Change the playback speed"
 msgstr "Vaihda toistonopeutta"
 
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:300
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:380
+#: podcasts-gtk/resources/gtk/player_rate.ui:47
+#: podcasts-gtk/resources/gtk/player_rate.ui:122
 msgid "1.00×"
 msgstr "1.00×"
 
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:344
+#: podcasts-gtk/resources/gtk/player_rate.ui:86
 msgid "1.50×"
 msgstr "1.50×"
 
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:348
+#: podcasts-gtk/resources/gtk/player_rate.ui:90
 msgid "1.5 speed rate"
 msgstr "1,5-kertainen nopeus"
 
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:362
+#: podcasts-gtk/resources/gtk/player_rate.ui:104
 msgid "1.25×"
 msgstr "1.25×"
 
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:366
+#: podcasts-gtk/resources/gtk/player_rate.ui:108
 msgid "1.25 speed rate"
 msgstr "1,25-kertainen nopeus"
 
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:384
+#: podcasts-gtk/resources/gtk/player_rate.ui:126
 msgid "Normal speed"
 msgstr "Tavallinen nopeus"
+
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:97
+msgid "Rewind 10 seconds"
+msgstr "Siirry taakse 10 sekuntia"
+
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:112
+msgid "Play"
+msgstr "Toista"
+
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:128
+msgid "Pause"
+msgstr "Keskeytä"
+
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:144
+msgid "Fast forward 10 seconds"
+msgstr "Siirry eteen 10 sekuntia"
 
 #: podcasts-gtk/resources/gtk/secondary_menu.ui:7
 msgid "_Mark All Episodes as Played"
@@ -288,17 +288,13 @@ msgstr "Merkitse kaikki toistetuiksi"
 msgid "Unsubscribe"
 msgstr "Lopeta tilaus"
 
-#: podcasts-gtk/src/app.rs:351
+#: podcasts-gtk/resources/gtk/show_widget.ui:99
+msgid "Read More"
+msgstr "Lue lisää"
+
+#: podcasts-gtk/src/app.rs:265
 msgid "Fetching new episodes"
 msgstr "Noudetaan uusia jaksoja"
-
-#: podcasts-gtk/src/headerbar.rs:117
-msgid "You are already subscribed to this show"
-msgstr "Olet jo tilannut tämän ohjelman"
-
-#: podcasts-gtk/src/headerbar.rs:125
-msgid "Invalid URL"
-msgstr "Virheellinen osoite"
 
 #: podcasts-gtk/src/stacks/content.rs:54
 msgid "New"
@@ -308,43 +304,43 @@ msgstr "Uudet"
 msgid "Shows"
 msgstr "Ohjelmat"
 
-#: podcasts-gtk/src/utils.rs:397
+#: podcasts-gtk/src/utils.rs:396
 msgid "Select the file from which to you want to import shows."
 msgstr "Valitse tiedosto, josta haluat tuoda ohjelmia."
 
-#: podcasts-gtk/src/utils.rs:400
+#: podcasts-gtk/src/utils.rs:399
 msgid "_Import"
 msgstr "_Tuo"
 
-#: podcasts-gtk/src/utils.rs:409 podcasts-gtk/src/utils.rs:457
+#: podcasts-gtk/src/utils.rs:408 podcasts-gtk/src/utils.rs:456
 msgid "OPML file"
 msgstr "OPML-tiedosto"
 
-#: podcasts-gtk/src/utils.rs:426
+#: podcasts-gtk/src/utils.rs:425
 msgid "Failed to parse the imported file"
 msgstr "Tuotua tiedostoa ei voitu jäsentää"
 
-#: podcasts-gtk/src/utils.rs:431 podcasts-gtk/src/utils.rs:475
+#: podcasts-gtk/src/utils.rs:430 podcasts-gtk/src/utils.rs:474
 msgid "Selected file could not be accessed."
 msgstr "Valittua tiedostoa ei voitu käyttää."
 
-#: podcasts-gtk/src/utils.rs:445
+#: podcasts-gtk/src/utils.rs:444
 msgid "Export shows to…"
 msgstr "Vie jaksot…"
 
-#: podcasts-gtk/src/utils.rs:448
+#: podcasts-gtk/src/utils.rs:447
 msgid "_Export"
 msgstr "_Vie"
 
-#: podcasts-gtk/src/utils.rs:449
+#: podcasts-gtk/src/utils.rs:448
 msgid "_Cancel"
 msgstr "_Peru"
 
-#: podcasts-gtk/src/utils.rs:469
+#: podcasts-gtk/src/utils.rs:468
 msgid "GNOME Podcasts Subscriptions"
 msgstr "Gnomen podcastsovelluksen tilaukset"
 
-#: podcasts-gtk/src/utils.rs:470
+#: podcasts-gtk/src/utils.rs:469
 msgid "Failed to export podcasts"
 msgstr "Podcastien vienti epäonnistui"
 
@@ -365,7 +361,7 @@ msgid "{} min"
 msgstr "{} min"
 
 #. sender.send(Action::ErrorNotification(format!("Player Error: {}", error)));
-#: podcasts-gtk/src/widgets/player.rs:534
+#: podcasts-gtk/src/widgets/player.rs:824
 msgid "The media player was unable to execute an action."
 msgstr "Mediasoitin ei kyennyt suorittamaan toimintoa."
 
@@ -376,6 +372,15 @@ msgstr "Merkitse kaikki jaksot toistetuiksi"
 #: podcasts-gtk/src/widgets/show_menu.rs:184
 msgid "Unsubscribed from {}"
 msgstr "Lopeta syötteen {} tilaus"
+
+#~ msgid "You are already subscribed to that feed!"
+#~ msgstr "Olet jo tilannut kyseisen syötteen!"
+
+#~ msgid "You are already subscribed to this show"
+#~ msgstr "Olet jo tilannut tämän ohjelman"
+
+#~ msgid "Invalid URL"
+#~ msgstr "Virheellinen osoite"
 
 #~ msgid "@icon@"
 #~ msgstr "@icon@"
