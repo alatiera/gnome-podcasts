@@ -7,15 +7,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: podcasts master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2019-12-16 06:31+0000\n"
-"PO-Revision-Date: 2020-01-15 19:28+0700\n"
+"POT-Creation-Date: 2020-02-07 11:33+0000\n"
+"PO-Revision-Date: 2020-02-13 19:33+0700\n"
 "Last-Translator: Kukuh Syafaat <kukuhsyafaat@gnome.org>\n"
 "Language-Team: Indonesian <gnome-l10n-id@googlegroups.com>\n"
 "Language: id\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 2.2.4\n"
+"X-Generator: Poedit 2.3\n"
 
 #: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml:15
 msgid "Top position of the last open main window"
@@ -69,7 +69,7 @@ msgstr "Berapa lama waktu untuk menunggu di antara pembersihan otomatis"
 #: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:3
 #: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:4
 #: podcasts-gtk/resources/gtk/headerbar.ui:158 podcasts-gtk/src/app.rs:330
-#: podcasts-gtk/src/widgets/aboutdialog.rs:56
+#: podcasts-gtk/src/widgets/aboutdialog.rs:56 podcasts-gtk/src/window.rs:80
 msgid "Podcasts"
 msgstr "Podcast"
 
@@ -216,50 +216,54 @@ msgstr "Notifikasi aksi dalam aplikasi"
 msgid "Undo"
 msgstr "Tak Jadi"
 
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:72
-msgid "Rewind 10 seconds"
-msgstr "Putar mundur 10 detik"
+#: podcasts-gtk/resources/gtk/player_dialog.ui:14
+msgid "Now Playing"
+msgstr "Sedang Diputar"
 
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:87
-msgid "Play"
-msgstr "Putar"
-
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:103
-msgid "Pause"
-msgstr "Jeda"
-
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:119
-msgid "Fast forward 10 seconds"
-msgstr "Maju cepat 10 detik"
-
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:285
+#: podcasts-gtk/resources/gtk/player_rate.ui:32
 msgid "Change the playback speed"
 msgstr "Ubah kecepatan pemutaran"
 
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:300
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:380
+#: podcasts-gtk/resources/gtk/player_rate.ui:47
+#: podcasts-gtk/resources/gtk/player_rate.ui:122
 msgid "1.00×"
 msgstr "Ubah kecepatan pemutaran"
 
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:344
+#: podcasts-gtk/resources/gtk/player_rate.ui:86
 msgid "1.50×"
 msgstr "1.50×"
 
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:348
+#: podcasts-gtk/resources/gtk/player_rate.ui:90
 msgid "1.5 speed rate"
 msgstr "tingkat kecepatan 1.5"
 
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:362
+#: podcasts-gtk/resources/gtk/player_rate.ui:104
 msgid "1.25×"
 msgstr "1.25×"
 
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:366
+#: podcasts-gtk/resources/gtk/player_rate.ui:108
 msgid "1.25 speed rate"
 msgstr "tingkat kecepatan 1.25"
 
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:384
+#: podcasts-gtk/resources/gtk/player_rate.ui:126
 msgid "Normal speed"
 msgstr "Kecepatan normal"
+
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:97
+msgid "Rewind 10 seconds"
+msgstr "Putar mundur 10 detik"
+
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:112
+msgid "Play"
+msgstr "Putar"
+
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:128
+msgid "Pause"
+msgstr "Jeda"
+
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:144
+msgid "Fast forward 10 seconds"
+msgstr "Maju cepat 10 detik"
 
 #: podcasts-gtk/resources/gtk/secondary_menu.ui:7
 msgid "_Mark All Episodes as Played"
@@ -358,7 +362,7 @@ msgid "{} min"
 msgstr "{} mnt"
 
 #. sender.send(Action::ErrorNotification(format!("Player Error: {}", error)));
-#: podcasts-gtk/src/widgets/player.rs:539
+#: podcasts-gtk/src/widgets/player.rs:824
 msgid "The media player was unable to execute an action."
 msgstr "Pemutar media tidak dapat melakukan aksi."
 
