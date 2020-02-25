@@ -211,6 +211,7 @@ mod tests {
     use chrono::Local;
     use failure::Error;
     use futures::Future;
+    use futures::executor::block_on;
 
     use crate::database::{truncate_db, TEMPDIR};
     use crate::utils::get_feed;
@@ -318,7 +319,7 @@ mod tests {
             // Create and insert a Source into db
             let s = Source::from_url(url).unwrap();
             let feed = get_feed(path, s.id());
-            feed.index().wait().unwrap();
+            block_on(feed.index()).unwrap();
         });
 
         let mut map: HashSet<Opml> = HashSet::new();
