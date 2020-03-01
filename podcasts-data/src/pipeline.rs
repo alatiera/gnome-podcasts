@@ -27,8 +27,6 @@ use hyper::client::HttpConnector;
 use hyper::{Body, Client};
 use hyper_tls::HttpsConnector;
 
-use num_cpus;
-
 use crate::errors::DataError;
 use crate::Source;
 
@@ -48,9 +46,14 @@ where
 {
     while let Some(source_result) = sources.next().await {
         if let Ok(source) = source_result {
-            if let Ok(feed) = source.into_feed(client.clone()).await {
-                let fut = lazy(|_| feed.index().map_err(|err| error!("Error: {}", err)));
-                tokio::spawn(fut);
+            match source.into_feed(client.clone()).await {
+                Ok(feed) => {
+                    let fut = lazy(|_| feed.index().map_err(|err| error!("Error: {}", err)));
+                    tokio::spawn(fut);
+                },
+                // Avoid spamming the stderr when it's not an actual error
+                Err(DataError::FeedNotModified(_)) => (),
+                Err(err) => error!("Error: {}", err),                
             };
         }
     }
@@ -100,7 +103,6 @@ mod tests {
         let bad_url = "https://gitlab.gnome.org/World/podcasts.atom";
         // if a stream returns error/None it stops
         // bad we want to parse all feeds regardless if one fails
-        //TODO_JH: Remove comment
         Source::from_url(bad_url)?;
 
         URLS.iter().for_each(|url| {

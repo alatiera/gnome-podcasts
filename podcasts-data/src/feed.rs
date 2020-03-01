@@ -147,7 +147,7 @@ fn batch_insert_episodes(episodes: &[NewEpisode]) {
 mod tests {
     use failure::Error;
     use rss::Channel;
-    use tokio::{self, prelude::*};
+    use tokio;
     use futures::executor::block_on;
 
     use crate::database::truncate_db;

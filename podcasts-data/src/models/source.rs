@@ -31,9 +31,6 @@ use http::header::{
     USER_AGENT as USER_AGENT_HEADER,
 };
 use http::{Request, Response, StatusCode, Uri};
-// use futures::future::ok;
-use futures::future::Future;
-use futures::prelude::*;
 
 use base64::{encode_config, URL_SAFE};
 
@@ -325,7 +322,6 @@ async fn response_to_channel(
 mod tests {
     use super::*;
     use failure::Error;
-    use num_cpus;
     use tokio;
 
     use crate::database::truncate_db;

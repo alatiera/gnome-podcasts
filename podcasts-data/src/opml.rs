@@ -210,7 +210,6 @@ mod tests {
     use super::*;
     use chrono::Local;
     use failure::Error;
-    use futures::Future;
     use futures::executor::block_on;
 
     use crate::database::{truncate_db, TEMPDIR};
