@@ -45,7 +45,7 @@ pub struct Feed {
 
 impl Feed {
     /// Index the contents of the RSS `Feed` into the database.
-    pub async fn index(self) -> Result<(), DataError>{
+    pub async fn index(self) -> Result<(), DataError> {
         let show = self.parse_podcast().to_podcast()?;
         self.index_channel_items(show).await
     }
@@ -58,16 +58,14 @@ impl Feed {
         let stream = stream::iter(self.channel.into_items());
         // Parse the episodes
         let episodes = stream.filter_map(move |item| {
-            let ret = NewEpisodeMinimal::new(&item, pd.id()) 
+            let ret = NewEpisodeMinimal::new(&item, pd.id())
                 .and_then(move |ep| determine_ep_state(ep, &item));
             if ret.is_ok() {
                 future::ready(Some(ret))
-            }
-            else {
+            } else {
                 future::ready(None)
-            }            
-        }); 
-
+            }
+        });
         // Filter errors, Index updatable episodes, return insertables.
         filter_episodes(episodes)
             // Batch index insertable episodes.
@@ -103,23 +101,25 @@ where
     S: Stream<Item = Result<IndexState<NewEpisode>, DataError>> + Send + 'a,
 {
     stream
-        .try_filter_map(|state| async move {
-            match state {
-                IndexState::NotChanged => Ok(None),
-                // Update individual rows, and filter them
-                IndexState::Update((ref ep, rowid)) => {
-                    ep.update(rowid)
-                        .map_err(|err| error!("{}", err))
-                        .map_err(|_| error!("Failed to index episode: {:?}.", ep.title()))
-                        .ok();
+        .try_filter_map(|state| {
+            async move {
+                match state {
+                    IndexState::NotChanged => Ok(None),
+                    // Update individual rows, and filter them
+                    IndexState::Update((ref ep, rowid)) => {
+                        ep.update(rowid)
+                            .map_err(|err| error!("{}", err))
+                            .map_err(|_| error!("Failed to index episode: {:?}.", ep.title()))
+                            .ok();
 
-                    Ok(None)
+                        Ok(None)
+                    }
+                    IndexState::Index(s) => Ok(Some(s)),
                 }
-                IndexState::Index(s) => Ok(Some(s)),
             }
         })
         // only Index is left, collect them for batch index
-        .try_collect() 
+        .try_collect()
 }
 
 fn batch_insert_episodes(episodes: &[NewEpisode]) {
@@ -146,9 +146,9 @@ fn batch_insert_episodes(episodes: &[NewEpisode]) {
 #[cfg(test)]
 mod tests {
     use failure::Error;
+    use futures::executor::block_on;
     use rss::Channel;
     use tokio;
-    use futures::executor::block_on;
 
     use crate::database::truncate_db;
     use crate::dbqueries;

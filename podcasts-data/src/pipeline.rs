@@ -20,7 +20,7 @@
 // FIXME:
 //! Docs.
 
-use futures::{future::ok, future::lazy, prelude::*, stream::FuturesUnordered};
+use futures::{future::ok, prelude::*, stream::FuturesUnordered};
 use tokio;
 
 use hyper::client::HttpConnector;
@@ -42,18 +42,18 @@ type HttpsClient = Client<HttpsConnector<HttpConnector>>;
 /// Convert `rss::Channel` into `Feed` -> Index Podcast -> Index Episodes.
 pub async fn pipeline<'a, S>(mut sources: S, client: HttpsClient)
 where
-    S: Stream<Item = Result<Source, DataError>> + Send + 'a + std::marker::Unpin
+    S: Stream<Item = Result<Source, DataError>> + Send + 'a + std::marker::Unpin,
 {
     while let Some(source_result) = sources.next().await {
         if let Ok(source) = source_result {
             match source.into_feed(client.clone()).await {
                 Ok(feed) => {
-                    let fut = lazy(|_| feed.index().map_err(|err| error!("Error: {}", err)));
+                    let fut = feed.index().map_err(|err| error!("Error: {}", err));
                     tokio::spawn(fut);
-                },
+                }
                 // Avoid spamming the stderr when it's not an actual error
                 Err(DataError::FeedNotModified(_)) => (),
-                Err(err) => error!("Error: {}", err),                
+                Err(err) => error!("Error: {}", err),
             };
         }
     }

@@ -159,7 +159,7 @@ impl Source {
         let code = res.status();
 
         if code.is_success() {
-            // If request is succesful save the etag
+            // If request is successful save the etag
             self = self.update_etag(&res)?
         } else {
             match code.as_u16() {
@@ -189,7 +189,7 @@ impl Source {
                 return Err(DataError::FeedRedirect(self));
             }
             401 => return Err(self.make_err("401: Unauthorized.", code)),
-            403 => return Err(self.make_err("403:  Forbidden.", code)),
+            403 => return Err(self.make_err("403: Forbidden.", code)),
             404 => return Err(self.make_err("404: Not found.", code)),
             408 => return Err(self.make_err("408: Request Timeout.", code)),
             410 => return Err(self.make_err("410: Feed was deleted..", code)),
@@ -240,23 +240,24 @@ impl Source {
         self,
         client: Client<HttpsConnector<HttpConnector>>,
     ) -> Result<Feed, DataError> {
-        
         let id = self.id();
 
         let resp = self.get_response(&client).await?;
         let chan = response_to_channel(resp).await?;
-            
+
         FeedBuilder::default()
             .channel(chan)
             .source_id(id)
             .build()
-            .map_err(From::from)            
+            .map_err(From::from)
     }
 
-    async fn get_response(self, client: &Client<HttpsConnector<HttpConnector>>) -> Result<Response<Body>, DataError> {
+    async fn get_response(
+        self,
+        client: &Client<HttpsConnector<HttpConnector>>,
+    ) -> Result<Response<Body>, DataError> {
         let mut source = self;
-        loop
-        {                
+        loop {
             match source.request_constructor(&client.clone()).await {
                 Ok(response) => return Ok(response),
                 Err(err) => match err {
@@ -267,7 +268,7 @@ impl Source {
                     e => return Err(e),
                 },
             }
-        };
+        }
     }
 
     async fn request_constructor(
@@ -305,14 +306,12 @@ impl Source {
         }
 
         let res = client.request(req).await?;
-            //.map_err(From::from)
+        //.map_err(From::from)
         self.match_status(res)
     }
 }
 
-async fn response_to_channel(
-    res: Response<Body>,
-) -> Result<Channel, DataError> {
+async fn response_to_channel(res: Response<Body>) -> Result<Channel, DataError> {
     let chunk = hyper::body::to_bytes(res.into_body()).await?;
     let buf = String::from_utf8_lossy(&chunk).into_owned();
     Channel::from_str(&buf).map_err(From::from)
