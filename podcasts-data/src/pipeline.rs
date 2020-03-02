@@ -40,6 +40,7 @@ type HttpsClient = Client<HttpsConnector<HttpConnector>>;
 /// Messy temp diagram:
 /// Source -> GET Request -> Update Etags -> Check Status -> Parse `xml/Rss` ->
 /// Convert `rss::Channel` into `Feed` -> Index Podcast -> Index Episodes.
+#[tokio::main]
 pub async fn pipeline<'a, S>(mut sources: S, client: HttpsClient)
 where
     S: Stream<Item = Result<Source, DataError>> + Send + 'a + std::marker::Unpin,
@@ -70,9 +71,7 @@ where
 
     let foo = sources.into_iter().map(ok::<_, _>);
     let stream = FuturesUnordered::from_iter(foo);
-    let p = pipeline(stream, client);
-    let mut rt = tokio::runtime::Runtime::new()?;
-    rt.block_on(p);
+    pipeline(stream, client);
 
     Ok(())
 }

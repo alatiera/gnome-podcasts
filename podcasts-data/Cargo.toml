@@ -35,7 +35,7 @@ features = ["sqlite"]
 version = "1.4.0"
 
 [dependencies.tokio]
-features = ["rt-core", "rt-threaded"]
+features = ["rt-core", "rt-threaded", "macros"]
 version = "0.2.13"
 
 [dev-dependencies]
