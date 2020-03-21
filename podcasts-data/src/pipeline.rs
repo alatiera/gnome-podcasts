@@ -20,14 +20,12 @@
 // FIXME:
 //! Docs.
 
-use futures::{future::ok, lazy, prelude::*, stream::FuturesUnordered};
+use futures::{future::ok, prelude::*, stream::FuturesUnordered};
 use tokio;
 
 use hyper::client::HttpConnector;
 use hyper::{Body, Client};
 use hyper_tls::HttpsConnector;
-
-use num_cpus;
 
 use crate::errors::DataError;
 use crate::Source;
@@ -42,29 +40,24 @@ type HttpsClient = Client<HttpsConnector<HttpConnector>>;
 /// Messy temp diagram:
 /// Source -> GET Request -> Update Etags -> Check Status -> Parse `xml/Rss` ->
 /// Convert `rss::Channel` into `Feed` -> Index Podcast -> Index Episodes.
-pub fn pipeline<'a, S>(sources: S, client: HttpsClient) -> impl Future<Item = (), Error = ()> + 'a
+#[tokio::main]
+pub async fn pipeline<'a, S>(mut sources: S, client: HttpsClient)
 where
-    S: Stream<Item = Source, Error = DataError> + Send + 'a,
+    S: Stream<Item = Result<Source, DataError>> + Send + 'a + std::marker::Unpin,
 {
-    sources
-        .and_then(move |s| s.into_feed(client.clone()))
-        .map_err(|err| {
-            match err {
-                // Avoid spamming the stderr when its not an eactual error
-                DataError::FeedNotModified(_) => (),
-                _ => error!("Error: {}", err),
-            }
-        })
-        .and_then(move |feed| {
-            let fut = lazy(|| feed.index().map_err(|err| error!("Error: {}", err)));
-            tokio::spawn(fut);
-            Ok(())
-        })
-        // For each terminates the stream at the first error so we make sure
-        // we pass good values regardless
-        .then(move |_| ok(()))
-        // Convert the stream into a Future to later execute as a tokio task
-        .for_each(move |_| ok(()))
+    while let Some(source_result) = sources.next().await {
+        if let Ok(source) = source_result {
+            match source.into_feed(client.clone()).await {
+                Ok(feed) => {
+                    let fut = feed.index().map_err(|err| error!("Error: {}", err));
+                    tokio::spawn(fut);
+                }
+                // Avoid spamming the stderr when it's not an actual error
+                Err(DataError::FeedNotModified(_)) => (),
+                Err(err) => error!("Error: {}", err),
+            };
+        }
+    }
 }
 
 /// Creates a tokio `reactor::Core`, and a `hyper::Client` and
@@ -73,13 +66,12 @@ pub fn run<S>(sources: S) -> Result<(), DataError>
 where
     S: IntoIterator<Item = Source>,
 {
-    let https = HttpsConnector::new(num_cpus::get())?;
+    let https = HttpsConnector::new();
     let client = Client::builder().build::<_, Body>(https);
 
     let foo = sources.into_iter().map(ok::<_, _>);
     let stream = FuturesUnordered::from_iter(foo);
-    let p = pipeline(stream, client);
-    tokio::run(p);
+    pipeline(stream, client);
 
     Ok(())
 }
@@ -121,7 +113,7 @@ mod tests {
         run(sources)?;
 
         let sources = dbqueries::get_sources()?;
-        // Run again to cover Unique constrains erros.
+        // Run again to cover Unique constrains errors.
         run(sources)?;
 
         // Assert the index rows equal the controlled results
