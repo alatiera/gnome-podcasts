@@ -22,6 +22,8 @@ use failure::Error;
 
 use gtk::{self, prelude::*, Adjustment};
 
+use glib::clone;
+
 use crossbeam_channel::Sender;
 use libhandy::{Column, ColumnExt};
 use podcasts_data::dbqueries;
@@ -135,17 +137,11 @@ impl HomeView {
             }
         };
 
-        let home_weak = Rc::downgrade(&home);
-        let callback = move || {
-            let home = match home_weak.upgrade() {
-                Some(h) => h,
-                None => return,
-            };
-
+        let callback = clone!(@weak home => move || {
             if let Some(ref v) = vadj {
                 home.view.set_adjustments(None, Some(v))
             };
-        };
+        });
 
         lazy_load_full(episodes, func, callback);
         home.view.container().show_all();

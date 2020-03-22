@@ -17,6 +17,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+use glib::clone;
 use gtk::{self, prelude::*, Adjustment, Align, SelectionMode};
 
 use crossbeam_channel::Sender;
@@ -83,16 +84,14 @@ impl ShowsView {
 fn populate_flowbox(shows: &Rc<ShowsView>, vadj: Option<Adjustment>) -> Result<(), Error> {
     let ignore = get_ignored_shows()?;
     let podcasts = dbqueries::get_podcasts_filter(&ignore)?;
-    let show_weak = Rc::downgrade(&shows);
     let flowbox_weak = shows.flowbox.downgrade();
 
     let constructor = move |parent| ShowsChild::new(&parent).child;
-    let callback = move || {
-        match (show_weak.upgrade(), &vadj) {
-            (Some(ref shows), Some(ref v)) => shows.view.set_adjustments(None, Some(v)),
-            _ => (),
-        };
-    };
+    let callback = clone!(@weak shows => move || {
+        if vadj.is_some() {
+            shows.view.set_adjustments(None, vadj.as_ref())
+        }
+    });
 
     lazy_load(podcasts, flowbox_weak, constructor, callback);
     Ok(())
