@@ -85,7 +85,7 @@ impl MainWindow {
         }
 
         window.connect_delete_event(
-            clone!(@weak settings, @weak app => @default-return Inhibit(false), move |window, _| {
+            clone!(@strong settings, @weak app => @default-return Inhibit(false), move |window, _| {
                     info!("Saving window position");
                     WindowGeometry::from_window(&window).write(&settings);
 
