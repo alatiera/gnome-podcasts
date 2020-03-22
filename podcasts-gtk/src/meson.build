@@ -54,7 +54,8 @@ podcasts_sources = files(
   'main.rs',
   'manager.rs',
   'settings.rs',
-  'utils.rs'
+  'utils.rs',
+  'window.rs',
 )
 
 cargo_release = custom_target('cargo-build',
