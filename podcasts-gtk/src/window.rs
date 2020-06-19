@@ -48,7 +48,7 @@ use crate::i18n::i18n;
 fn action<T, F>(thing: &T, name: &str, action: F)
 where
     T: ActionMapExt,
-    for<'r, 's> F: Fn(&'r gio::SimpleAction, Option<&Variant>) + 'static,
+    F: Fn(&gio::SimpleAction, Option<&Variant>) + 'static,
 {
     // Create a stateless, parameterless action
     let act = gio::SimpleAction::new(name, None);
@@ -84,27 +84,17 @@ impl MainWindow {
             window.get_style_context().add_class("devel");
         }
 
-        let weak_s = settings.downgrade();
-        let weak_app = app.downgrade();
-        window.connect_delete_event(move |window, _| {
-            let app = match weak_app.upgrade() {
-                Some(a) => a,
-                None => return Inhibit(false),
-            };
+        window.connect_delete_event(
+            clone!(@strong settings, @weak app => @default-return Inhibit(false), move |window, _| {
+                    info!("Saving window position");
+                    WindowGeometry::from_window(&window).write(&settings);
 
-            let settings = match weak_s.upgrade() {
-                Some(s) => s,
-                None => return Inhibit(false),
-            };
-
-            info!("Saving window position");
-            WindowGeometry::from_window(&window).write(&settings);
-
-            info!("Application is exiting");
-            let app = app.clone().upcast::<gio::Application>();
-            app.quit();
-            Inhibit(false)
-        });
+                    info!("Application is exiting");
+                    let app = app.upcast::<gio::Application>();
+                    app.quit();
+                    Inhibit(false)
+            }),
+        );
 
         // Create a content instance
         let content = Content::new(&sender).expect("Content initialization failed.");
@@ -128,8 +118,6 @@ impl MainWindow {
 
         wrap.add(&header.bottom_switcher);
 
-        let updater = RefCell::new(None);
-
         window.add(&wrap);
 
         // Retrieve the previous window position and size.
@@ -138,20 +126,19 @@ impl MainWindow {
         // Update the feeds right after the Window is initialized.
         if settings.get_boolean("refresh-on-startup") {
             info!("Refresh on startup.");
-            let s: Option<Vec<_>> = None;
-            utils::schedule_refresh(s, sender.clone());
+            utils::schedule_refresh(None, sender.clone());
         }
 
         let refresh_interval = settings::get_refresh_interval(&settings).num_seconds() as u32;
         info!("Auto-refresh every {:?} seconds.", refresh_interval);
 
-        let r_sender = sender.clone();
-        gtk::timeout_add_seconds(refresh_interval, move || {
-            let s: Option<Vec<_>> = None;
-            utils::schedule_refresh(s, r_sender.clone());
-
-            glib::Continue(true)
-        });
+        gtk::timeout_add_seconds(
+            refresh_interval,
+            clone!(@strong sender => move || {
+                    utils::schedule_refresh(None, sender.clone());
+                    glib::Continue(true)
+            }),
+        );
 
         Self {
             app: app.clone(),
@@ -161,7 +148,7 @@ impl MainWindow {
             content,
             player,
             updating: Cell::new(false),
-            updater,
+            updater: RefCell::new(None),
             sender,
             receiver,
         }
@@ -176,41 +163,45 @@ impl MainWindow {
         // Create the `refresh` action.
         //
         // This will trigger a refresh of all the shows in the database.
-        action(&self.window, "refresh", clone!(@strong sender => move |_, _| {
-            gtk::idle_add(clone!(@strong sender => move || {
-                let s: Option<Vec<_>> = None;
-                utils::schedule_refresh(s, sender.clone());
-                glib::Continue(false)
+        action(&self.window, "refresh", 
+            clone!(@strong sender => move |_, _| {
+                gtk::idle_add(
+                    clone!(@strong sender => move || {
+                        utils::schedule_refresh(None, sender.clone());
+                        glib::Continue(false)
             }));
         }));
         self.app.set_accels_for_action("win.refresh", &["<primary>r"]);
 
         // Create the `OPML` import action
-        action(&self.window, "import", clone!(@strong sender, @weak self.window as win => move |_, _| {
-            utils::on_import_clicked(&win, &sender);
+        action(&self.window, "import", 
+            clone!(@strong sender, @weak self.window as window => move |_, _| {
+                utils::on_import_clicked(&window, &sender);
         }));
 
-        action(&self.window, "export", clone!(@strong sender, @weak self.window as win => move |_, _| {
-            utils::on_export_clicked(&win, &sender);
+        action(&self.window, "export", 
+            clone!(@strong sender, @weak self.window as window => move |_, _| {
+                utils::on_export_clicked(&window, &sender);
         }));
 
         // Create the action that shows a `gtk::AboutDialog`
-        action(&self.window, "about", clone!(@weak self.window as win => move |_, _| {
-            about_dialog(&win);
+        action(&self.window, "about", 
+            clone!(@weak self.window as win => move |_, _| {
+                about_dialog(&win);
         }));
 
         // Create the quit action
-        let weak_instance = self.app.downgrade();
-        action(&self.window, "quit", move |_, _| {
-            weak_instance.upgrade().map(|app| app.quit());
-        });
+        action(&self.window, "quit", 
+            clone!(@weak self.app as app => move |_, _| {
+                app.quit();
+        }));
         self.app.set_accels_for_action("win.quit", &["<primary>q"]);
 
-        // Create the menu action
-        let header = Rc::downgrade(&self.headerbar);
-        action(&self.window, "menu", move |_, _| {
-            header.upgrade().map(|h| h.open_menu());
-        });
+        // Create the menu actions
+        action(&self.window, "menu",
+            clone!(@weak self.headerbar as headerbar => move |_, _| {
+                headerbar.open_menu();
+        }));
         // Bind the hamburger menu button to `F10`
         self.app.set_accels_for_action("win.menu", &["F10"]);
     }
