@@ -5,14 +5,14 @@ version = "0.1.0"
 edition = "2018"
 
 [dependencies]
-error-chain = "0.12.1"
+error-chain = "0.12.2"
 log = "0.4.8"
-mime_guess = "2.0.1"
+mime_guess = "2.0.3"
 reqwest = "0.9.22"
 tempdir = "0.3.7"
 glob = "0.3.0"
-failure = "0.1.6"
-failure_derive = "0.1.6"
+failure = "0.1.8"
+failure_derive = "0.1.8"
 
 [dependencies.podcasts-data]
 path = "../podcasts-data"
