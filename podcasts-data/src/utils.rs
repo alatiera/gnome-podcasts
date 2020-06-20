@@ -56,7 +56,7 @@ fn download_checker() -> Result<(), DataError> {
     Ok(())
 }
 
-/// Delete watched `episodes` that have exceded their liftime after played.
+/// Delete watched `episodes` that have exceeded their lifetime after played.
 fn played_cleaner(cleanup_date: DateTime<Utc>) -> Result<(), DataError> {
     let mut episodes = dbqueries::get_played_cleaner_episodes()?;
     let now_utc = cleanup_date.timestamp() as i32;
@@ -68,7 +68,7 @@ fn played_cleaner(cleanup_date: DateTime<Utc>) -> Result<(), DataError> {
             let limit = ep.played().unwrap();
             if now_utc > limit {
                 delete_local_content(ep)
-                    .map(|_| info!("Episode {:?} was deleted succesfully.", ep.local_uri()))
+                    .map(|_| info!("Episode {:?} was deleted successfully.", ep.local_uri()))
                     .map_err(|err| error!("Error: {}", err))
                     .map_err(|_| error!("Failed to delete file: {:?}", ep.local_uri()))
                     .ok();
@@ -144,11 +144,11 @@ pub fn get_download_folder(pd_title: &str) -> Result<String, DataError> {
 // TODO: Write Tests
 pub fn delete_show(pd: &Show) -> Result<(), DataError> {
     dbqueries::remove_feed(pd)?;
-    info!("{} was removed succesfully.", pd.title());
+    info!("{} was removed successfully.", pd.title());
 
     let fold = get_download_folder(pd.title())?;
     fs::remove_dir_all(&fold)?;
-    info!("All the content at, {} was removed succesfully", &fold);
+    info!("All the content at, {} was removed successfully", &fold);
     Ok(())
 }
 

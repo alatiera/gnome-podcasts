@@ -88,7 +88,7 @@ use crate::i18n::i18n;
 pub(crate) fn lazy_load<T, C, F, W, U>(
     data: T,
     container: WeakRef<C>,
-    mut contructor: F,
+    mut constructor: F,
     callback: U,
 ) where
     T: IntoIterator + 'static,
@@ -104,7 +104,7 @@ pub(crate) fn lazy_load<T, C, F, W, U>(
             None => return,
         };
 
-        let widget = contructor(x);
+        let widget = constructor(x);
         container.add(&widget);
         widget.show();
     };

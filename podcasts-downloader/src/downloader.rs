@@ -54,7 +54,7 @@ pub trait DownloadProgress {
 // Sorry to those who will have to work with that code.
 // Would much rather use a crate,
 // or bindings for a lib like youtube-dl(python),
-// But cant seem to find one.
+// But can't seem to find one.
 // TODO: Write unit-tests.
 fn download_into(
     dir: &str,
@@ -64,7 +64,7 @@ fn download_into(
 ) -> Result<String, DownloadError> {
     info!("GET request to: {}", url);
     // Haven't included the loop check as
-    // Steal the Stars would tigger it as
+    // Steal the Stars would trigger it as
     // it has a loop back before giving correct url
     let policy = RedirectPolicy::custom(|attempt| {
         info!("Redirect Attempt URL: {:?}", attempt.url());
@@ -104,7 +104,7 @@ fn download_into(
         .and_then(|h| h.to_str().ok())
         .map(From::from);
 
-    ct_len.map(|x| info!("File Lenght: {}", x));
+    ct_len.map(|x| info!("File Length: {}", x));
     ct_type.map(|x| info!("Content Type: {}", x));
 
     let ext = get_ext(ct_type).unwrap_or_else(|| String::from("unknown"));
@@ -131,7 +131,7 @@ fn download_into(
     let target = format!("{}/{}.{}", dir, file_title, ext);
     // Rename/move the tempfile into a permanent place upon success.
     rename(out_file, &target)?;
-    info!("Downloading of {} completed succesfully.", &target);
+    info!("Downloading of {} completed successfully.", &target);
     Ok(target)
 }
 
@@ -219,10 +219,10 @@ pub fn get_episode(
         progress,
     )?;
 
-    // If download succedes set episode local_uri to dlpath.
+    // If download succeeds set episode local_uri to dlpath.
     ep.set_local_uri(Some(&path));
 
-    // Over-write episode lenght
+    // Over-write episode length
     let size = fs::metadata(path);
     if let Ok(s) = size {
         ep.set_length(Some(s.len() as i32))

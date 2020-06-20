@@ -43,7 +43,7 @@ use failure::Error;
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 // FIXME: Make it a Diesel model
 /// Represents an `outline` xml element as per the `OPML` [specification][spec]
-/// not `RSS` related sub-elements are ommited.
+/// not `RSS` related sub-elements are omitted.
 ///
 /// [spec]: http://dev.opml.org/spec2.html
 pub struct Opml {
@@ -82,7 +82,7 @@ pub fn import_from_file<P: AsRef<Path>>(path: P) -> Result<Vec<Source>, DataErro
     import_to_db(content.as_slice()).map_err(From::from)
 }
 
-/// Export a file to `P`, taking the feeds from the database and outputing
+/// Export a file to `P`, taking the feeds from the database and outputting
 /// them in opml format.
 pub fn export_from_db<P: AsRef<Path>>(path: P, export_title: &str) -> Result<(), Error> {
     let file = File::create(path)?;
@@ -163,7 +163,7 @@ pub fn export_to_file<F: Write>(file: F, export_title: &str) -> Result<(), Error
     Ok(())
 }
 
-/// Extracts the `outline` elemnts from a reader `R` and returns a `HashSet` of `Opml` structs.
+/// Extracts the `outline` elements from a reader `R` and returns a `HashSet` of `Opml` structs.
 pub fn extract_sources<R: Read>(reader: R) -> Result<HashSet<Opml>, reader::Error> {
     let mut list = HashSet::new();
     let parser = reader::EventReader::new(reader);

@@ -255,7 +255,7 @@ impl NewEpisodeMinimal {
             return Err(err);
         };
 
-        // Default to rfc2822 represantation of epoch 0.
+        // Default to rfc2822 representation of epoch 0.
         let date = parse_rfc822(item.pub_date().unwrap_or("Thu, 1 Jan 1970 00:00:00 +0000"));
         // Should treat information from the rss feeds as invalid by default.
         // Case: "Thu, 05 Aug 2016 06:00:00 -0400" <-- Actually that was friday.
@@ -342,7 +342,7 @@ mod tests {
     use std::io::BufReader;
 
     // TODO: Add tests for other feeds too.
-    // Especially if you find an *intresting* generated feed.
+    // Especially if you find an *interesting* generated feed.
 
     // Known prebuilt expected objects.
     lazy_static! {
