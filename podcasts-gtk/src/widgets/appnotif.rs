@@ -18,6 +18,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 use glib;
+use glib::clone;
 use gtk;
 use gtk::prelude::*;
 
@@ -82,21 +83,17 @@ impl InAppNotification {
         let notif = InAppNotification::default();
         notif.text.set_text(&text);
 
-        let revealer_weak = notif.revealer.downgrade();
         let mut time = 0;
-        let id = timeout_add(250, move || {
-            if time < timer {
-                time += 250;
-                return glib::Continue(true);
-            };
-
-            let revealer = match revealer_weak.upgrade() {
-                Some(r) => r,
-                None => return glib::Continue(false),
-            };
-
-            callback(revealer)
-        });
+        let id = timeout_add(
+            250,
+            clone!(@weak notif.revealer as revealer => @default-return glib::Continue(false), move || {
+                    if time < timer {
+                        time += 250;
+                        return glib::Continue(true);
+                    };
+                    callback(revealer)
+            }),
+        );
         let id = Rc::new(RefCell::new(Some(id)));
 
         if undo_callback.is_some() {
