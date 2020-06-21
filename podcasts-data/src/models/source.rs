@@ -216,7 +216,7 @@ impl Source {
             self = self.save()?;
 
             debug!("Updated Source: {:#?}", &self);
-            info!("Feed url of Source {}, was updated succesfully.", self.id());
+            info!("Feed url of Source {}, was updated successfully.", self.id());
         }
 
         Ok(self)

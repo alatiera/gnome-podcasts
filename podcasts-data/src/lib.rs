@@ -111,7 +111,7 @@ pub use crate::models::{Episode, EpisodeWidgetModel, Show, ShowCoverModel, Sourc
 /// It originates from the Tor-browser UA.
 pub const USER_AGENT: &str = "Mozilla/5.0 (Windows NT 6.1; rv:60.0) Gecko/20100101 Firefox/60.0";
 
-/// [XDG Base Direcotory](https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html) Paths.
+/// [XDG Base Directory](https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html) Paths.
 #[allow(missing_debug_implementations)]
 pub mod xdg_dirs {
     use std::path::PathBuf;
@@ -137,7 +137,7 @@ pub mod xdg_dirs {
             PODCASTS_XDG.create_cache_directory(PODCASTS_XDG.get_cache_home()).unwrap()
         };
 
-        /// GNOME Podcasts Download Direcotry `PathBuf`.
+        /// GNOME Podcasts Download Directory `PathBuf`.
         pub static ref DL_DIR: PathBuf = {
             PODCASTS_XDG.create_data_directory("Downloads").unwrap()
         };

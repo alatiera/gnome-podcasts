@@ -198,7 +198,7 @@ mod tests {
             })
             .collect();
 
-        // Index the channes
+        // Index the channels
         let stream_ = stream::iter_ok(feeds).for_each(|x| x.index());
         tokio::run(stream_.map_err(|_| ()));
 
