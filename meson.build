@@ -40,6 +40,14 @@ else
   version_suffix = ''
 endif
 
+podcast_toml = files(
+  'Cargo.toml',
+  'Cargo.lock',
+  'podcasts-data/Cargo.toml',
+  'podcasts-downloader/Cargo.toml',
+  'podcasts-gtk/Cargo.toml',
+)
+
 application_id = 'org.gnome.Podcasts@0@'.format(profile)
 i18n = import('i18n')
 gnome = import('gnome')

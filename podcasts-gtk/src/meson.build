@@ -61,6 +61,7 @@ podcasts_sources = files(
 cargo_release = custom_target('cargo-build',
                         build_by_default: true,
                         input: [
+                                podcast_toml,
                                 data_sources,
                                 downloader_sources,
                                 podcasts_sources,
