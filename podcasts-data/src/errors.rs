@@ -84,7 +84,10 @@ pub enum DataError {
     FeedRedirect(Source),
     #[fail(display = "Feed is up to date")]
     FeedNotModified(Source),
-    #[fail(display = "Error occurred while Parsing an Episode. Reason: {}", reason)]
+    #[fail(
+        display = "Error occurred while Parsing an Episode. Reason: {}",
+        reason
+    )]
     ParseEpisodeError { reason: String, parent_id: i32 },
     #[fail(display = "Episode was not changed and thus skipped.")]
     EpisodeNotChanged,
