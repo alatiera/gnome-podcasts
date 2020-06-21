@@ -31,6 +31,9 @@ use http::header::{
     USER_AGENT as USER_AGENT_HEADER,
 };
 use http::{Request, Response, StatusCode, Uri};
+// use futures::future::ok;
+use futures::future::{loop_fn, Future, Loop};
+use futures::prelude::*;
 
 use base64::{encode_config, URL_SAFE};
 
@@ -159,7 +162,7 @@ impl Source {
         let code = res.status();
 
         if code.is_success() {
-            // If request is successful save the etag
+            // If request is succesful save the etag
             self = self.update_etag(&res)?
         } else {
             match code.as_u16() {
@@ -189,7 +192,7 @@ impl Source {
                 return Err(DataError::FeedRedirect(self));
             }
             401 => return Err(self.make_err("401: Unauthorized.", code)),
-            403 => return Err(self.make_err("403: Forbidden.", code)),
+            403 => return Err(self.make_err("403:  Forbidden.", code)),
             404 => return Err(self.make_err("404: Not found.", code)),
             408 => return Err(self.make_err("408: Request Timeout.", code)),
             410 => return Err(self.make_err("410: Feed was deleted..", code)),
@@ -236,45 +239,41 @@ impl Source {
     ///
     /// Consumes `self` and Returns the corresponding `Feed` Object.
     // Refactor into TryInto once it lands on stable.
-    pub async fn into_feed(
+    pub fn into_feed(
         self,
         client: Client<HttpsConnector<HttpConnector>>,
-    ) -> Result<Feed, DataError> {
+    ) -> impl Future<Item = Feed, Error = DataError> {
         let id = self.id();
+        let response = loop_fn(self, move |source| {
+            source
+                .request_constructor(&client.clone())
+                .then(|res| match res {
+                    Ok(response) => Ok(Loop::Break(response)),
+                    Err(err) => match err {
+                        DataError::FeedRedirect(s) => {
+                            info!("Following redirect...");
+                            Ok(Loop::Continue(s))
+                        }
+                        e => Err(e),
+                    },
+                })
+        });
 
-        let resp = self.get_response(&client).await?;
-        let chan = response_to_channel(resp).await?;
-
-        FeedBuilder::default()
-            .channel(chan)
-            .source_id(id)
-            .build()
-            .map_err(From::from)
+        response
+            .and_then(response_to_channel)
+            .and_then(move |chan| {
+                FeedBuilder::default()
+                    .channel(chan)
+                    .source_id(id)
+                    .build()
+                    .map_err(From::from)
+            })
     }
 
-    async fn get_response(
+    fn request_constructor(
         self,
         client: &Client<HttpsConnector<HttpConnector>>,
-    ) -> Result<Response<Body>, DataError> {
-        let mut source = self;
-        loop {
-            match source.request_constructor(&client.clone()).await {
-                Ok(response) => return Ok(response),
-                Err(err) => match err {
-                    DataError::FeedRedirect(s) => {
-                        info!("Following redirect...");
-                        source = s;
-                    }
-                    e => return Err(e),
-                },
-            }
-        }
-    }
-
-    async fn request_constructor(
-        self,
-        client: &Client<HttpsConnector<HttpConnector>>,
-    ) -> Result<Response<Body>, DataError> {
+    ) -> impl Future<Item = Response<Body>, Error = DataError> {
         // FIXME: remove unwrap somehow
         let uri = Uri::from_str(self.uri()).unwrap();
         let mut req = Request::get(uri).body(Body::empty()).unwrap();
@@ -305,22 +304,30 @@ impl Source {
                 .insert(IF_MODIFIED_SINCE, HeaderValue::from_str(lmod).unwrap());
         }
 
-        let res = client.request(req).await?;
-        //.map_err(From::from)
-        self.match_status(res)
+        client
+            .request(req)
+            .map_err(From::from)
+            .and_then(move |res| self.match_status(res))
     }
 }
 
-async fn response_to_channel(res: Response<Body>) -> Result<Channel, DataError> {
-    let chunk = hyper::body::to_bytes(res.into_body()).await?;
-    let buf = String::from_utf8_lossy(&chunk).into_owned();
-    Channel::from_str(&buf).map_err(From::from)
+fn response_to_channel(
+    res: Response<Body>,
+) -> impl Future<Item = Channel, Error = DataError> + Send {
+    res.into_body()
+        .concat2()
+        .map(|x| x.into_iter())
+        .map_err(From::from)
+        .map(|iter| iter.collect::<Vec<u8>>())
+        .map(|utf_8_bytes| String::from_utf8_lossy(&utf_8_bytes).into_owned())
+        .and_then(|buf| Channel::from_str(&buf).map_err(From::from))
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
     use failure::Error;
+    use num_cpus;
     use tokio;
 
     use crate::database::truncate_db;
@@ -331,7 +338,7 @@ mod tests {
         truncate_db()?;
 
         let mut rt = tokio::runtime::Runtime::new()?;
-        let https = HttpsConnector::new();
+        let https = HttpsConnector::new(num_cpus::get())?;
         let client = Client::builder().build::<_, Body>(https);
 
         let url = "https://web.archive.org/web/20180120083840if_/https://feeds.feedburner.\
