@@ -578,6 +578,10 @@ mod tests {
         let ep = EXPECTED_MINIMAL_INTERCEPTED_1
             .clone()
             .into_new_episode(&item);
+        println!(
+            "EPISODE: {:#?}\nEXPECTED: {:#?}",
+            ep, *EXPECTED_INTERCEPTED_1
+        );
         assert_eq!(ep, *EXPECTED_INTERCEPTED_1);
 
         let item = channel.items().iter().nth(15).unwrap();
