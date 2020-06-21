@@ -5,7 +5,6 @@ version = "0.1.0"
 edition = "2018"
 
 [dependencies]
-error-chain = "0.12.2"
 log = "0.4.8"
 mime_guess = "2.0.3"
 reqwest = "0.9.22"

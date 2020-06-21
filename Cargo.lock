@@ -490,7 +490,6 @@ version = "0.12.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "d371106cc88ffdfb1eabd7111e432da544f16f3e2d7bf1dfe8bf575f1df045cd"
 dependencies = [
- "backtrace",
  "version_check",
 ]
 
@@ -1855,7 +1854,6 @@ dependencies = [
 name = "podcasts-downloader"
 version = "0.1.0"
 dependencies = [
- "error-chain",
  "failure",
  "failure_derive",
  "glob",
