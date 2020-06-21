@@ -17,12 +17,11 @@ reqwest = "0.9.22"
 url = "2.1.1"
 xdg = "2.2.0"
 xml-rs = "0.8.3"
-futures = "0.1.29"
-hyper = "0.12.35"
-http = "0.1.19"
-tokio = "0.1.22"
-hyper-tls = "0.3.2"
-native-tls = "0.2.3"
+futures = "0.3.5"
+hyper = "0.13.6"
+http = "0.2.1"
+hyper-tls = "0.4.1"
+native-tls = "0.2.4"
 num_cpus = "1.13.0"
 failure = "0.1.8"
 failure_derive = "0.1.8"
@@ -38,6 +37,10 @@ version = "1.4.5"
 [dependencies.diesel_migrations]
 features = ["sqlite"]
 version = "1.4.0"
+
+[dependencies.tokio]
+features = ["rt-core", "rt-threaded", "macros"]
+version = "0.2.21"
 
 [dev-dependencies]
 rand = "0.7.2"
