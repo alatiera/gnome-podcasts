@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: podcasts master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2020-03-21 20:34+0000\n"
-"PO-Revision-Date: 2020-04-06 19:49+0300\n"
+"POT-Creation-Date: 2020-06-21 21:43+0000\n"
+"PO-Revision-Date: 2020-06-22 09:19+0300\n"
 "Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
 "Language-Team: Ukrainian <trans-uk@lists.fedoraproject.org>\n"
 "Language: uk\n"
@@ -52,14 +52,14 @@ msgstr "Чи слід періодично оновлювати дані"
 #: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml:46
 msgid "How many periods of time to wait between automatic refreshes"
 msgstr ""
-"Скільки періодів часу слід очікувати між двома послідовними автоматичними"
-" оновленнями"
+"Скільки періодів часу слід очікувати між двома послідовними автоматичними "
+"оновленнями"
 
 #: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml:50
 msgid "What period of time to wait between automatic refreshes"
 msgstr ""
-"Який період часу слід використовувати для очікування між двома послідовними"
-" автоматичними оновленнями"
+"Який період часу слід використовувати для очікування між двома послідовними "
+"автоматичними оновленнями"
 
 #: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml:54
 msgid "Whether to refresh content after startup"
@@ -68,14 +68,14 @@ msgstr "Чи слід оновлювати дані після запуску"
 #: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml:60
 msgid "How many periods of time to wait between automatic cleanups"
 msgstr ""
-"Скільки періодів часу слід очікувати між двома послідовними автоматичними"
-" очищеннями"
+"Скільки періодів часу слід очікувати між двома послідовними автоматичними "
+"очищеннями"
 
 #: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml:64
 msgid "What period of time to wait between automatic cleanups"
 msgstr ""
-"Який період часу слід використовувати для очікування між двома послідовними"
-" автоматичними очищеннями"
+"Який період часу слід використовувати для очікування між двома послідовними "
+"автоматичними очищеннями"
 
 #. Weird magic I copy-pasted that sets the Application Name in the Shell.
 #: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:3
@@ -128,19 +128,19 @@ msgstr "Імпортувати шоу з іншого пристрою"
 msgid "You’ve already listened to this episode."
 msgstr "Ви вже прослуховували цю серію."
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:208
+#: podcasts-gtk/resources/gtk/episode_widget.ui:217
 msgid "Calculating episode size…"
 msgstr "Обчислюємо розмір серії…"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:248
+#: podcasts-gtk/resources/gtk/episode_widget.ui:260
 msgid "Play this episode"
 msgstr "Відтворити цю серію"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:269
+#: podcasts-gtk/resources/gtk/episode_widget.ui:281
 msgid "Cancel the download process"
 msgstr "Скасувати процедуру отримання"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:292
+#: podcasts-gtk/resources/gtk/episode_widget.ui:304
 msgid "Download this episode"
 msgstr "Отримати цю серію"
 
@@ -236,27 +236,28 @@ msgid "Change the playback speed"
 msgstr "Змінити швидкість відтворення"
 
 #: podcasts-gtk/resources/gtk/player_rate.ui:47
-#: podcasts-gtk/resources/gtk/player_rate.ui:122
 msgid "1.00×"
 msgstr "1,00×"
 
-#: podcasts-gtk/resources/gtk/player_rate.ui:86
-msgid "1.50×"
-msgstr "1,50×"
+#: podcasts-gtk/resources/gtk/player_rate.ui:88
+#| msgid "1.5 speed rate"
+msgid "Double speed rate"
+msgstr "Подвоєна швидкість відтворення"
 
-#: podcasts-gtk/resources/gtk/player_rate.ui:90
+#: podcasts-gtk/resources/gtk/player_rate.ui:97
+#| msgid "1.5 speed rate"
+msgid "1.75 speed rate"
+msgstr "Швидкість відтворення 1,75"
+
+#: podcasts-gtk/resources/gtk/player_rate.ui:106
 msgid "1.5 speed rate"
 msgstr "Швидкість відтворення 1,5"
 
-#: podcasts-gtk/resources/gtk/player_rate.ui:104
-msgid "1.25×"
-msgstr "1,25×"
-
-#: podcasts-gtk/resources/gtk/player_rate.ui:108
+#: podcasts-gtk/resources/gtk/player_rate.ui:115
 msgid "1.25 speed rate"
 msgstr "Швидкість відтворення 1,25"
 
-#: podcasts-gtk/resources/gtk/player_rate.ui:126
+#: podcasts-gtk/resources/gtk/player_rate.ui:124
 msgid "Normal speed"
 msgstr "Звичайна швидкість"
 
@@ -373,7 +374,7 @@ msgid "{} min"
 msgstr "{} хв."
 
 #. sender.send(Action::ErrorNotification(format!("Player Error: {}", error)));
-#: podcasts-gtk/src/widgets/player.rs:828
+#: podcasts-gtk/src/widgets/player.rs:847
 msgid "The media player was unable to execute an action."
 msgstr "Програвачеві мультимедійних даних не вдалося виконати цю дію."
 
@@ -384,3 +385,9 @@ msgstr "Усі серії позначено як прослухані"
 #: podcasts-gtk/src/widgets/show_menu.rs:179
 msgid "Unsubscribed from {}"
 msgstr "Скасовано підписку на {}"
+
+#~ msgid "1.50×"
+#~ msgstr "1,50×"
+
+#~ msgid "1.25×"
+#~ msgstr "1,25×"
