@@ -55,8 +55,5 @@ features = [ "v0_0_10"]
 [dependencies.podcasts-data]
 path = "../podcasts-data"
 
-[dependencies.podcasts-downloader]
-path = "../podcasts-downloader"
-
 [dev-dependencies]
 pretty_assertions = "0.6.1"

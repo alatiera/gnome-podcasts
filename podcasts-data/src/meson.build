@@ -7,6 +7,7 @@ data_sources = files(
   'models/show.rs',
   'models/source.rs',
   'database.rs',
+  'downloader.rs',
   'dbqueries.rs',
   'errors.rs',
   'feed.rs',

@@ -63,7 +63,6 @@ cargo_release = custom_target('cargo-build',
                         input: [
                                 podcast_toml,
                                 data_sources,
-                                downloader_sources,
                                 podcasts_sources,
                                ],
                         output: ['gnome-podcasts'],

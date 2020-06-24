@@ -105,8 +105,6 @@ $ tree -d
 │   ├── src
 │   └── tests
 │       └── feeds       # Raw RSS Feeds used for tests.
-├── podcasts-downloader  # Really basic, Really crappy downloader.
-│   └── src
 ├── podcasts-gtk         # The Gtk+ Client
 │   ├── resources       # GResources folder
 │   │   └── gtk         # Contains the glade.ui files.

@@ -44,7 +44,6 @@ podcast_toml = files(
   'Cargo.toml',
   'Cargo.lock',
   'podcasts-data/Cargo.toml',
-  'podcasts-downloader/Cargo.toml',
   'podcasts-gtk/Cargo.toml',
 )
 
@@ -72,7 +71,6 @@ cargo_script = find_program('scripts/cargo.sh')
 test_script = find_program('scripts/test.sh')
 
 subdir('podcasts-data/src')
-subdir('podcasts-downloader/src')
 subdir('podcasts-gtk/src')
 
 meson.add_dist_script(

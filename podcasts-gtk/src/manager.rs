@@ -22,7 +22,7 @@ use rayon;
 
 // use podcasts_data::Episode;
 use podcasts_data::dbqueries;
-use podcasts_downloader::downloader::{get_episode, DownloadProgress};
+use podcasts_data::downloader::{get_episode, DownloadProgress};
 
 use std::collections::HashMap;
 use std::sync::{Arc, Mutex, RwLock};

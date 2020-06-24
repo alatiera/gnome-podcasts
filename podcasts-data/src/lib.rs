@@ -93,6 +93,8 @@ pub mod database;
 pub mod dbqueries;
 #[allow(missing_docs)]
 pub mod errors;
+#[allow(missing_docs)]
+pub mod downloader;
 mod feed;
 pub(crate) mod models;
 pub mod opml;

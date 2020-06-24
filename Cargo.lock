@@ -1830,17 +1830,20 @@ dependencies = [
  "failure",
  "failure_derive",
  "futures",
+ "glob",
  "http",
  "hyper",
  "hyper-tls",
  "lazy_static 1.4.0",
  "log",
  "maplit",
+ "mime_guess",
  "native-tls",
  "num_cpus",
  "pretty_assertions",
  "rand 0.7.3",
  "rayon",
+ "reqwest",
  "rfc822_sanitizer",
  "rss",
  "tempdir",
@@ -1848,21 +1851,6 @@ dependencies = [
  "url 2.1.1",
  "xdg",
  "xml-rs",
-]
-
-[[package]]
-name = "podcasts-downloader"
-version = "0.1.0"
-dependencies = [
- "failure",
- "failure_derive",
- "glob",
- "log",
- "mime_guess",
- "podcasts-data",
- "pretty_assertions",
- "reqwest",
- "tempdir",
 ]
 
 [[package]]
@@ -1894,7 +1882,6 @@ dependencies = [
  "open",
  "pango",
  "podcasts-data",
- "podcasts-downloader",
  "pretty_assertions",
  "rayon",
  "regex 1.3.9",

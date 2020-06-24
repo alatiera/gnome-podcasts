@@ -22,6 +22,7 @@ use diesel::r2d2;
 use diesel_migrations::RunMigrationsError;
 use http;
 use hyper;
+use reqwest;
 use native_tls;
 use rss;
 use url;
@@ -122,4 +123,31 @@ easy_from_impl!(
     rss::Error               => DataError::RssError,
     xml::reader::Error       => DataError::XmlReaderError,
     String                   => DataError::Bail
+);
+
+#[derive(Fail, Debug)]
+pub enum DownloadError {
+    #[fail(display = "Reqwest error: {}", _0)]
+    RequestError(#[cause] reqwest::Error),
+    #[fail(display = "Data error: {}", _0)]
+    DataError(#[cause] DataError),
+    #[fail(display = "Io error: {}", _0)]
+    IoError(#[cause] io::Error),
+    #[fail(display = "Unexpected server response: {}", _0)]
+    UnexpectedResponse(reqwest::StatusCode),
+    #[fail(display = "The Download was cancelled.")]
+    DownloadCancelled,
+    #[fail(display = "Remote Image location not found.")]
+    NoImageLocation,
+    #[fail(display = "Failed to parse CacheLocation.")]
+    InvalidCacheLocation,
+    #[fail(display = "Failed to parse Cached Image Location.")]
+    InvalidCachedImageLocation,
+}
+
+easy_from_impl!(
+    DownloadError,
+    reqwest::Error => DownloadError::RequestError,
+    io::Error => DownloadError::IoError,
+    DataError => DownloadError::DataError
 );

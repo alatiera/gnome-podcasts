@@ -1,8 +1,7 @@
 [workspace]
 members = [
     "podcasts-data",
-    "podcasts-downloader",
-    "podcasts-gtk"
+    "podcasts-gtk",
 ]
 
 [profile.release]

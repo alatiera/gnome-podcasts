@@ -1,3 +1,4 @@
+
 // downloader.rs
 //
 // Copyright 2017 Jordan Petridis <jpetridis@gnome.org>
@@ -30,11 +31,11 @@ use std::io::{BufWriter, Read, Write};
 use std::path::Path;
 use std::sync::{Arc, Mutex};
 
-use podcasts_data::xdg_dirs::PODCASTS_CACHE;
-use podcasts_data::{EpisodeWidgetModel, Save, ShowCoverModel};
+use crate::xdg_dirs::PODCASTS_CACHE;
+use crate::{EpisodeWidgetModel, Save, ShowCoverModel};
+use crate::errors::DownloadError;
 
 // use failure::Error;
-use crate::errors::DownloadError;
 
 // TODO: Replace path that are of type &str with std::path.
 // TODO: Have a convention/document absolute/relative paths, if they should end
