@@ -10,7 +10,6 @@
     "tags" : [
         "nightly"
     ],
-    "desktop-file-name-suffix" : " ☢️",
     "finish-args" : [
         "--share=network",
         "--share=ipc",
