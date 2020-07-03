@@ -26,7 +26,7 @@
             "--share=network"
         ],
         "env" : {
-            "CARGO_HOME" : "/run/build/Podcasts/cargo",
+            "CARGO_HOME" : "/run/build/gnome-podcasts/cargo",
             "RUST_BACKTRACE" : "1"
         }
     },
