@@ -260,7 +260,7 @@ pub(crate) fn refresh_feed(source: Option<Vec<Source>>, sender: Sender<Action>) 
 
 lazy_static! {
     static ref CACHED_PIXBUFS: RwLock<HashMap<(i32, u32), Mutex<Fragile<Pixbuf>>>> =
-        { RwLock::new(HashMap::new()) };
+        RwLock::new(HashMap::new());
     static ref COVER_DL_REGISTRY: RwLock<HashSet<i32>> = RwLock::new(HashSet::new());
     static ref THREADPOOL: rayon::ThreadPool = rayon::ThreadPoolBuilder::new().build().unwrap();
 }
@@ -510,7 +510,7 @@ mod tests {
     #[test]
     fn test_itunes_to_rss() -> Result<(), Error> {
         let itunes_url = "https://itunes.apple.com/podcast/id1195206601";
-        let rss_url = String::from("http://feeds.feedburner.com/InterceptedWithJeremyScahill");
+        let rss_url = String::from("https://rss.acast.com/intercepted-with-jeremy-scahill");
         assert_eq!(rss_url, itunes_to_rss(itunes_url)?);
 
         let itunes_url = "https://itunes.apple.com/podcast/id000000000000000";
@@ -529,7 +529,7 @@ mod tests {
     #[test]
     fn test_itunes_lookup_id() -> Result<(), Error> {
         let id = 1195206601;
-        let rss_url = "http://feeds.feedburner.com/InterceptedWithJeremyScahill";
+        let rss_url = "https://rss.acast.com/intercepted-with-jeremy-scahill";
         assert_eq!(rss_url, lookup_id(id)?);
 
         let id = 000000000;
