@@ -90,7 +90,7 @@ impl DownloadProgress for Progress {
 
 lazy_static! {
     pub(crate) static ref ACTIVE_DOWNLOADS: Arc<RwLock<HashMap<i32, Arc<Mutex<Progress>>>>> =
-        { Arc::new(RwLock::new(HashMap::new())) };
+        Arc::new(RwLock::new(HashMap::new()));
     static ref DLPOOL: rayon::ThreadPool = rayon::ThreadPoolBuilder::new().build().unwrap();
 }
 
@@ -134,7 +134,7 @@ mod tests {
     use podcasts_data::utils::get_download_folder;
     use podcasts_data::{Episode, Save, Source};
 
-    use podcasts_downloader::downloader::get_episode;
+    use podcasts_data::downloader::get_episode;
 
     use std::fs;
     use std::path::Path;

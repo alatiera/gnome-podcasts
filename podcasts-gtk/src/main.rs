@@ -32,7 +32,6 @@
     non_shorthand_field_patterns,
     no_mangle_generic_items,
     overflowing_literals,
-    plugin_as_library,
     unconditional_recursion,
     unions_with_drop_fields,
     while_true,

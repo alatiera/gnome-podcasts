@@ -1,4 +1,3 @@
-
 // downloader.rs
 //
 // Copyright 2017 Jordan Petridis <jpetridis@gnome.org>
@@ -31,9 +30,9 @@ use std::io::{BufWriter, Read, Write};
 use std::path::Path;
 use std::sync::{Arc, Mutex};
 
+use crate::errors::DownloadError;
 use crate::xdg_dirs::PODCASTS_CACHE;
 use crate::{EpisodeWidgetModel, Save, ShowCoverModel};
-use crate::errors::DownloadError;
 
 // use failure::Error;
 
@@ -273,10 +272,10 @@ pub fn cache_image(pd: &ShowCoverModel) -> Result<String, DownloadError> {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::dbqueries;
+    use crate::pipeline;
+    use crate::Source;
     use failure::Error;
-    use podcasts_data::dbqueries;
-    use podcasts_data::pipeline;
-    use podcasts_data::Source;
 
     use std::fs;
 

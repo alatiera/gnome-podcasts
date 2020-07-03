@@ -50,7 +50,6 @@
     non_shorthand_field_patterns,
     no_mangle_generic_items,
     overflowing_literals,
-    plugin_as_library,
     unconditional_recursion,
     unions_with_drop_fields,
     while_true,
@@ -92,9 +91,9 @@ pub mod database;
 #[allow(missing_docs)]
 pub mod dbqueries;
 #[allow(missing_docs)]
-pub mod errors;
-#[allow(missing_docs)]
 pub mod downloader;
+#[allow(missing_docs)]
+pub mod errors;
 mod feed;
 pub(crate) mod models;
 pub mod opml;

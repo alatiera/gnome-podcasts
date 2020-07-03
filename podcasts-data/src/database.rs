@@ -51,7 +51,7 @@ lazy_static! {
 #[cfg(test)]
 lazy_static! {
     pub(crate) static ref TEMPDIR: tempdir::TempDir =
-        { tempdir::TempDir::new("podcasts_unit_test").unwrap() };
+        tempdir::TempDir::new("podcasts_unit_test").unwrap();
     static ref DB_PATH: PathBuf = TEMPDIR.path().join("podcasts.db");
 }
 

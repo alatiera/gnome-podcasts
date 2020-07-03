@@ -38,12 +38,12 @@ use serde_json::Value;
 
 // use podcasts_data::feed;
 use podcasts_data::dbqueries;
+use podcasts_data::downloader;
+use podcasts_data::errors::DownloadError;
 use podcasts_data::opml;
 use podcasts_data::pipeline;
 use podcasts_data::utils::checkup;
 use podcasts_data::Source;
-use podcasts_data::errors::DownloadError;
-use podcasts_data::downloader;
 
 use std::collections::{HashMap, HashSet};
 use std::sync::{Arc, Mutex, RwLock};

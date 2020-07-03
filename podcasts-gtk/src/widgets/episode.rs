@@ -31,9 +31,9 @@ use humansize::{file_size_opts as size_opts, FileSize};
 use open;
 
 use podcasts_data::dbqueries;
+use podcasts_data::downloader::DownloadProgress;
 use podcasts_data::utils::get_download_folder;
 use podcasts_data::EpisodeWidgetModel;
-use podcasts_data::downloader::DownloadProgress;
 
 use crate::app::Action;
 use crate::manager;
