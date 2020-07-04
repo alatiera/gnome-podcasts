@@ -92,6 +92,8 @@ pub enum DataError {
     ParseEpisodeError { reason: String, parent_id: i32 },
     #[fail(display = "Episode was not changed and thus skipped.")]
     EpisodeNotChanged,
+    #[fail(display = "Invalid Uri Error: {}", _0)]
+    InvalidUri(#[cause] http::uri::InvalidUri),
 }
 
 // Maps a type to a variant of the DataError enum
@@ -122,6 +124,7 @@ easy_from_impl!(
     io::Error                => DataError::IOError,
     rss::Error               => DataError::RssError,
     xml::reader::Error       => DataError::XmlReaderError,
+    http::uri::InvalidUri    => DataError::InvalidUri,
     String                   => DataError::Bail
 );
 

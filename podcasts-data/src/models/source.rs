@@ -279,7 +279,7 @@ impl Source {
         client: &Client<HttpsConnector<HttpConnector>>,
     ) -> Result<Response<Body>, DataError> {
         // FIXME: remove unwrap somehow
-        let uri = Uri::from_str(self.uri()).unwrap();
+        let uri = Uri::from_str(self.uri())?;
         let mut req = Request::get(uri).body(Body::empty()).unwrap();
 
         if let Ok(url) = Url::parse(self.uri()) {
