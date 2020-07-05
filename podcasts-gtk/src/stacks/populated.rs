@@ -21,8 +21,8 @@ use gtk;
 use gtk::prelude::*;
 use gtk::StackTransitionType;
 
+use anyhow::Result;
 use crossbeam_channel::Sender;
-use failure::Error;
 
 use podcasts_data::dbqueries;
 use podcasts_data::Show;
@@ -77,7 +77,7 @@ impl PopulatedStack {
         self.update_shows().map_err(|err| format!("{}", err)).ok();
     }
 
-    pub(crate) fn update_shows(&mut self) -> Result<(), Error> {
+    pub(crate) fn update_shows(&mut self) -> Result<()> {
         // The current visible child might change depending on
         // removal and insertion in the gtk::Stack, so we have
         // to make sure it will stay the same.
@@ -88,7 +88,7 @@ impl PopulatedStack {
         Ok(())
     }
 
-    pub(crate) fn replace_shows(&mut self) -> Result<(), Error> {
+    pub(crate) fn replace_shows(&mut self) -> Result<()> {
         let old = &self.populated.view.container().clone();
         debug!("Name: {:?}", old.get_widget_name());
 
@@ -103,7 +103,7 @@ impl PopulatedStack {
         Ok(())
     }
 
-    pub(crate) fn replace_widget(&mut self, pd: Arc<Show>) -> Result<(), Error> {
+    pub(crate) fn replace_widget(&mut self, pd: Arc<Show>) -> Result<()> {
         let old = self.show.view.container().clone();
 
         // Get the ShowWidget vertical alignment
@@ -128,7 +128,7 @@ impl PopulatedStack {
         Ok(())
     }
 
-    pub(crate) fn update_widget(&mut self) -> Result<(), Error> {
+    pub(crate) fn update_widget(&mut self) -> Result<()> {
         let old = self.show.view.container().clone();
         let id = self.show.show_id();
         if id.is_none() {
@@ -149,7 +149,7 @@ impl PopulatedStack {
     }
 
     // Only update widget if its show_id is equal to pid.
-    pub(crate) fn update_widget_if_same(&mut self, pid: i32) -> Result<(), Error> {
+    pub(crate) fn update_widget_if_same(&mut self, pid: i32) -> Result<()> {
         if self.show.show_id() != Some(pid) {
             debug!("Different widget. Early return");
             return Ok(());

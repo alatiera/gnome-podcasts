@@ -22,8 +22,8 @@ use glib::clone;
 use gtk;
 use gtk::prelude::*;
 
+use anyhow::Result;
 use crossbeam_channel::Sender;
-use failure::Error;
 use open;
 use rayon;
 
@@ -143,7 +143,7 @@ fn dim_titles(episodes: &gtk::ListBox) -> Option<()> {
     Some(())
 }
 
-fn mark_all_watched(pd: &Show, sender: &Sender<Action>) -> Result<(), Error> {
+fn mark_all_watched(pd: &Show, sender: &Sender<Action>) -> Result<()> {
     // TODO: If this fails for whatever reason, it should be impossible, show an error
     dbqueries::update_none_to_played_now(pd)?;
     // Not all widgets might have been loaded when the mark_all is hit

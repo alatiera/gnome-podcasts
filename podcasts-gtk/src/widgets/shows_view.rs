@@ -20,8 +20,8 @@
 use glib::clone;
 use gtk::{self, prelude::*, Adjustment, Align, SelectionMode};
 
+use anyhow::{anyhow, Result};
 use crossbeam_channel::Sender;
-use failure::Error;
 
 use podcasts_data::dbqueries;
 use podcasts_data::Show;
@@ -81,7 +81,7 @@ impl ShowsView {
     }
 }
 
-fn populate_flowbox(shows: &Rc<ShowsView>, vadj: Option<Adjustment>) -> Result<(), Error> {
+fn populate_flowbox(shows: &Rc<ShowsView>, vadj: Option<Adjustment>) -> Result<()> {
     let ignore = get_ignored_shows()?;
     let podcasts = dbqueries::get_podcasts_filter(&ignore)?;
     let flowbox_weak = shows.flowbox.downgrade();
@@ -97,11 +97,11 @@ fn populate_flowbox(shows: &Rc<ShowsView>, vadj: Option<Adjustment>) -> Result<(
     Ok(())
 }
 
-fn on_child_activate(child: &gtk::FlowBoxChild, sender: &Sender<Action>) -> Result<(), Error> {
+fn on_child_activate(child: &gtk::FlowBoxChild, sender: &Sender<Action>) -> Result<()> {
     // This is such an ugly hack...
     let id = child
         .get_widget_name()
-        .ok_or_else(|| format_err!("Failed to get \"episodes\" child from the stack."))?
+        .ok_or_else(|| anyhow!("Failed to get \"episodes\" child from the stack."))?
         .parse::<i32>()?;
     let pd = Arc::new(dbqueries::get_podcast_from_id(id)?);
 

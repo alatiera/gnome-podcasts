@@ -468,10 +468,10 @@ mod tests {
     use super::*;
     use crate::database::*;
     use crate::pipeline;
-    use failure::Error;
+    use anyhow::Result;
 
     #[test]
-    fn test_update_none_to_played_now() -> Result<(), Error> {
+    fn test_update_none_to_played_now() -> Result<()> {
         truncate_db()?;
 
         let url = "https://web.archive.org/web/20180120083840if_/https://feeds.feedburner.\

@@ -143,7 +143,7 @@ fn batch_insert_episodes(episodes: &[NewEpisode]) {
 
 #[cfg(test)]
 mod tests {
-    use failure::Error;
+    use anyhow::Result;
     use futures::executor::block_on;
     use rss::Channel;
     use tokio;
@@ -189,7 +189,7 @@ mod tests {
     };
 
     #[test]
-    fn test_complete_index() -> Result<(), Error> {
+    fn test_complete_index() -> Result<()> {
         truncate_db()?;
 
         let feeds: Vec<_> = URLS
@@ -214,7 +214,7 @@ mod tests {
     }
 
     #[test]
-    fn test_feed_parse_podcast() -> Result<(), Error> {
+    fn test_feed_parse_podcast() -> Result<()> {
         truncate_db()?;
 
         let path = "tests/feeds/2018-01-20-Intercepted.xml";
@@ -229,7 +229,7 @@ mod tests {
     }
 
     #[test]
-    fn test_feed_index_channel_items() -> Result<(), Error> {
+    fn test_feed_index_channel_items() -> Result<()> {
         truncate_db()?;
 
         let path = "tests/feeds/2018-01-20-Intercepted.xml";

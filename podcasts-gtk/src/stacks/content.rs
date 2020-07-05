@@ -20,8 +20,8 @@
 use gtk;
 use gtk::prelude::*;
 
+use anyhow::Result;
 use crossbeam_channel::Sender;
-use failure::Error;
 
 use crate::app::Action;
 use crate::stacks::{HomeStack, ShowStack};
@@ -46,7 +46,7 @@ pub(crate) struct Content {
 }
 
 impl Content {
-    pub(crate) fn new(sender: &Sender<Action>) -> Result<Rc<Content>, Error> {
+    pub(crate) fn new(sender: &Sender<Action>) -> Result<Rc<Content>> {
         let stack = gtk::Stack::new();
         let home = Rc::new(RefCell::new(HomeStack::new(sender.clone())?));
         let shows = Rc::new(RefCell::new(ShowStack::new(sender.clone())));

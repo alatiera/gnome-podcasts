@@ -18,7 +18,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 use diesel::SaveChangesDsl;
-// use failure::ResultExt;
 use rss::Channel;
 use url::Url;
 
@@ -142,7 +141,11 @@ impl Source {
     }
 
     fn make_err(self, context: &str, code: StatusCode) -> DataError {
-        DataError::HttpStatusGeneral(HttpStatusError::new(self.uri, code, context.into()))
+        DataError::HttpStatusGeneral {
+            url: self.uri,
+            status_code: code,
+            context: context.into(),
+        }
     }
 
     // TODO match on more stuff
@@ -252,7 +255,7 @@ impl Source {
             .channel(chan)
             .source_id(id)
             .build()
-            .map_err(From::from)
+            .map_err(DataError::BuilderError)
     }
 
     async fn get_response(
@@ -278,7 +281,6 @@ impl Source {
         self,
         client: &Client<HttpsConnector<HttpConnector>>,
     ) -> Result<Response<Body>, DataError> {
-        // FIXME: remove unwrap somehow
         let uri = Uri::from_str(self.uri())?;
         let mut req = Request::get(uri).body(Body::empty()).unwrap();
 
@@ -322,14 +324,14 @@ async fn response_to_channel(res: Response<Body>) -> Result<Channel, DataError> 
 #[cfg(test)]
 mod tests {
     use super::*;
-    use failure::Error;
+    use anyhow::Result;
     use tokio;
 
     use crate::database::truncate_db;
     use crate::utils::get_feed;
 
     #[test]
-    fn test_into_feed() -> Result<(), Error> {
+    fn test_into_feed() -> Result<()> {
         truncate_db()?;
 
         let mut rt = tokio::runtime::Runtime::new()?;

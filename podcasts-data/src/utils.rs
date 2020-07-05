@@ -177,8 +177,8 @@ pub fn get_feed(file_path: &str, id: i32) -> Feed {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use anyhow::Result;
     use chrono::Duration;
-    use failure::Error;
     use tempdir::TempDir;
 
     use crate::database::truncate_db;
@@ -187,7 +187,7 @@ mod tests {
     use std::fs::File;
     use std::io::Write;
 
-    fn helper_db() -> Result<TempDir, Error> {
+    fn helper_db() -> Result<TempDir> {
         // Clean the db
         truncate_db()?;
         // Setup tmp file stuff
@@ -224,7 +224,7 @@ mod tests {
     }
 
     #[test]
-    fn test_download_checker() -> Result<(), Error> {
+    fn test_download_checker() -> Result<()> {
         let tmp_dir = helper_db()?;
         download_checker()?;
         let episodes = dbqueries::get_downloaded_episodes()?;
@@ -244,7 +244,7 @@ mod tests {
     }
 
     #[test]
-    fn test_download_cleaner() -> Result<(), Error> {
+    fn test_download_cleaner() -> Result<()> {
         let _tmp_dir = helper_db()?;
         let mut episode: EpisodeCleanerModel =
             dbqueries::get_episode_cleaner_from_pk("foo_bar", 0)?.into();
@@ -256,7 +256,7 @@ mod tests {
     }
 
     #[test]
-    fn test_played_cleaner_expired() -> Result<(), Error> {
+    fn test_played_cleaner_expired() -> Result<()> {
         let _tmp_dir = helper_db()?;
         let mut episode = dbqueries::get_episode_cleaner_from_pk("foo_bar", 0)?;
         let cleanup_date = Utc::now() - Duration::seconds(1000);
@@ -272,7 +272,7 @@ mod tests {
     }
 
     #[test]
-    fn test_played_cleaner_none() -> Result<(), Error> {
+    fn test_played_cleaner_none() -> Result<()> {
         let _tmp_dir = helper_db()?;
         let mut episode = dbqueries::get_episode_cleaner_from_pk("foo_bar", 0)?;
         let cleanup_date = Utc::now() - Duration::seconds(1000);
@@ -288,7 +288,7 @@ mod tests {
     }
 
     #[test]
-    fn test_url_cleaner() -> Result<(), Error> {
+    fn test_url_cleaner() -> Result<()> {
         let good_url = "http://traffic.megaphone.fm/FL8608731318.mp3?updated=1484685184";
         let bad_url = "http://traffic.megaphone.fm/FL8608731318.mp3?updated=1484685184#foobar";
 
@@ -301,7 +301,7 @@ mod tests {
     #[test]
     // This test needs access to local system so we ignore it by default.
     #[ignore]
-    fn test_get_dl_folder() -> Result<(), Error> {
+    fn test_get_dl_folder() -> Result<()> {
         let foo_ = format!("{}/{}", DL_DIR.to_str().unwrap(), "foo");
         assert_eq!(get_download_folder("foo")?, foo_);
         let _ = fs::remove_dir_all(foo_);

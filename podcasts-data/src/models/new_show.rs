@@ -174,9 +174,8 @@ impl NewShow {
 #[cfg(test)]
 mod tests {
     use super::*;
-    // use tokio_core::reactor::Core;
 
-    use failure::Error;
+    use anyhow::Result;
     use rss::Channel;
 
     use crate::database::truncate_db;
@@ -309,7 +308,7 @@ mod tests {
     }
 
     #[test]
-    fn test_new_podcast_intercepted() -> Result<(), Error> {
+    fn test_new_podcast_intercepted() -> Result<()> {
         let file = File::open("tests/feeds/2018-01-20-Intercepted.xml")?;
         let channel = Channel::read_from(BufReader::new(file))?;
 
@@ -319,7 +318,7 @@ mod tests {
     }
 
     #[test]
-    fn test_new_podcast_lup() -> Result<(), Error> {
+    fn test_new_podcast_lup() -> Result<()> {
         let file = File::open("tests/feeds/2018-01-20-LinuxUnplugged.xml")?;
         let channel = Channel::read_from(BufReader::new(file))?;
 
@@ -329,7 +328,7 @@ mod tests {
     }
 
     #[test]
-    fn test_new_podcast_thetipoff() -> Result<(), Error> {
+    fn test_new_podcast_thetipoff() -> Result<()> {
         let file = File::open("tests/feeds/2018-01-20-TheTipOff.xml")?;
         let channel = Channel::read_from(BufReader::new(file))?;
 
@@ -339,7 +338,7 @@ mod tests {
     }
 
     #[test]
-    fn test_new_podcast_steal_the_stars() -> Result<(), Error> {
+    fn test_new_podcast_steal_the_stars() -> Result<()> {
         let file = File::open("tests/feeds/2018-01-20-StealTheStars.xml")?;
         let channel = Channel::read_from(BufReader::new(file))?;
 
@@ -349,7 +348,7 @@ mod tests {
     }
 
     #[test]
-    fn test_new_podcast_greater_than_code() -> Result<(), Error> {
+    fn test_new_podcast_greater_than_code() -> Result<()> {
         let file = File::open("tests/feeds/2018-01-20-GreaterThanCode.xml")?;
         let channel = Channel::read_from(BufReader::new(file))?;
 
@@ -359,7 +358,7 @@ mod tests {
     }
 
     #[test]
-    fn test_new_podcast_ellinofreneia() -> Result<(), Error> {
+    fn test_new_podcast_ellinofreneia() -> Result<()> {
         let file = File::open("tests/feeds/2018-03-28-Ellinofreneia.xml")?;
         let channel = Channel::read_from(BufReader::new(file))?;
 
@@ -370,7 +369,7 @@ mod tests {
 
     #[test]
     // This maybe could be a doc test on insert.
-    fn test_new_podcast_insert() -> Result<(), Error> {
+    fn test_new_podcast_insert() -> Result<()> {
         truncate_db()?;
         let file = File::open("tests/feeds/2018-01-20-Intercepted.xml")?;
         let channel = Channel::read_from(BufReader::new(file))?;
@@ -390,7 +389,7 @@ mod tests {
     // Currently there's a test that only checks new description or title.
     // If you have time and want to help, implement the test for the other fields
     // too.
-    fn test_new_podcast_update() -> Result<(), Error> {
+    fn test_new_podcast_update() -> Result<()> {
         truncate_db()?;
         let old = EXPECTED_INTERCEPTED.to_podcast()?;
 
@@ -407,7 +406,7 @@ mod tests {
     }
 
     #[test]
-    fn test_new_podcast_index() -> Result<(), Error> {
+    fn test_new_podcast_index() -> Result<()> {
         truncate_db()?;
 
         // First insert
@@ -433,7 +432,7 @@ mod tests {
     }
 
     #[test]
-    fn test_to_podcast() -> Result<(), Error> {
+    fn test_to_podcast() -> Result<()> {
         // Assert insert() produces the same result that you would get with to_podcast()
         truncate_db()?;
         EXPECTED_INTERCEPTED.insert()?;

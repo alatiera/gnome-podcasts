@@ -55,11 +55,19 @@ where
                 }
                 // Avoid spamming the stderr when it's not an actual error
                 Err(DataError::FeedNotModified(_)) => (),
-                Err(err) => error!("Error: {}", err),
+                Err(err) => error!("Error while converting source into feed: {}", err),
             }
         }
     }
-    futures::future::join_all(handles).await;
+    let results = futures::future::join_all(handles).await;
+    for res in results {
+        if let Err(err) = res {
+            error!(
+                "Error while indexing content feed into the database: {}",
+                err
+            )
+        }
+    }
 }
 
 /// Creates a tokio `reactor::Core`, and a `hyper::Client` and
@@ -85,7 +93,7 @@ mod tests {
     use crate::database::truncate_db;
     use crate::dbqueries;
     use crate::Source;
-    use failure::Error;
+    use anyhow::Result;
 
     // (path, url) tuples.
     const URLS: &[&str] = &[
@@ -100,7 +108,7 @@ mod tests {
 
     #[test]
     /// Insert feeds and update/index them.
-    fn test_pipeline() -> Result<(), Error> {
+    fn test_pipeline() -> Result<()> {
         truncate_db()?;
         let bad_url = "https://gitlab.gnome.org/World/podcasts.atom";
         // if a stream returns error/None it stops

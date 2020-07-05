@@ -43,10 +43,6 @@
 )]
 
 #[macro_use]
-extern crate failure;
-// #[macro_use]
-// extern crate failure_derive;
-#[macro_use]
 extern crate lazy_static;
 #[macro_use]
 extern crate log;
@@ -77,7 +73,7 @@ mod i18n;
 use crate::app::PdApplication;
 
 #[cfg(test)]
-fn init_gtk_tests() -> Result<(), failure::Error> {
+fn init_gtk_tests() -> anyhow::Result<()> {
     // if gtk::is_initialized() {
     //     assert!(gtk::is_initialized_main_thread())
     // } else {
@@ -114,7 +110,7 @@ fn main() {
 // Even while running the tests with -j 1 and --test-threads=1,
 // cargo seems to create new threads and gtk refuses to initialize again.
 // So we run every gtk related test here.
-fn test_stuff() -> Result<(), failure::Error> {
+fn test_stuff() -> anyhow::Result<()> {
     use crate::headerbar::Header;
     use crate::widgets::*;
 

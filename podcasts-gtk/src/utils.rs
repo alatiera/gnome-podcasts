@@ -27,9 +27,9 @@ use gtk;
 use gtk::prelude::*;
 use gtk::Widget;
 
+use anyhow::{anyhow, Result};
 use chrono::prelude::*;
 use crossbeam_channel::{bounded, unbounded, Sender};
-use failure::Error;
 use fragile::Fragile;
 use rayon;
 use regex::Regex;
@@ -177,25 +177,25 @@ lazy_static! {
     static ref IGNORESHOWS: Arc<Mutex<HashSet<i32>>> = Arc::new(Mutex::new(HashSet::new()));
 }
 
-pub(crate) fn ignore_show(id: i32) -> Result<bool, Error> {
+pub(crate) fn ignore_show(id: i32) -> Result<bool> {
     IGNORESHOWS
         .lock()
         .map(|mut guard| guard.insert(id))
-        .map_err(|err| format_err!("{}", err))
+        .map_err(|err| anyhow!("{}", err))
 }
 
-pub(crate) fn unignore_show(id: i32) -> Result<bool, Error> {
+pub(crate) fn unignore_show(id: i32) -> Result<bool> {
     IGNORESHOWS
         .lock()
         .map(|mut guard| guard.remove(&id))
-        .map_err(|err| format_err!("{}", err))
+        .map_err(|err| anyhow!("{}", err))
 }
 
-pub(crate) fn get_ignored_shows() -> Result<Vec<i32>, Error> {
+pub(crate) fn get_ignored_shows() -> Result<Vec<i32>> {
     IGNORESHOWS
         .lock()
         .map(|guard| guard.iter().cloned().collect::<Vec<_>>())
-        .map_err(|err| format_err!("{}", err))
+        .map_err(|err| anyhow!("{}", err))
 }
 
 pub(crate) fn cleanup(cleanup_date: DateTime<Utc>) {
@@ -272,18 +272,14 @@ lazy_static! {
 // GObjects do not implement Send trait, so SendCell is a way around that.
 // Also lazy_static requires Sync trait, so that's what the mutexes are.
 // TODO: maybe use something that would just scale to requested size?
-pub(crate) fn set_image_from_path(
-    image: &gtk::Image,
-    show_id: i32,
-    size: u32,
-) -> Result<(), Error> {
+pub(crate) fn set_image_from_path(image: &gtk::Image, show_id: i32, size: u32) -> Result<()> {
     if let Ok(hashmap) = CACHED_PIXBUFS.read() {
         // Check if the requested (cover + size) is already in the cache
         // and if so do an early return after that.
         if let Some(guard) = hashmap.get(&(show_id, size)) {
             guard
                 .lock()
-                .map_err(|err| format_err!("Fragile Mutex: {}", err))
+                .map_err(|err| anyhow!("Fragile Mutex: {}", err))
                 .and_then(|fragile| {
                     fragile
                         .try_get()
@@ -364,9 +360,9 @@ pub(crate) fn set_image_from_path(
     Ok(())
 }
 
-// FIXME: the signature should be `fn foo(s: Url) -> Result<Url, Error>`
-pub(crate) fn itunes_to_rss(url: &str) -> Result<String, Error> {
-    let id = itunes_id_from_url(url).ok_or_else(|| format_err!("Failed to find an iTunes ID."))?;
+// FIXME: the signature should be `fn foo(s: Url) -> Result<Url>`
+pub(crate) fn itunes_to_rss(url: &str) -> Result<String> {
+    let id = itunes_id_from_url(url).ok_or_else(|| anyhow!("Failed to find an iTunes ID."))?;
     lookup_id(id)
 }
 
@@ -381,13 +377,13 @@ fn itunes_id_from_url(url: &str) -> Option<u32> {
     foo.parse::<u32>().ok()
 }
 
-fn lookup_id(id: u32) -> Result<String, Error> {
+fn lookup_id(id: u32) -> Result<String> {
     let url = format!("https://itunes.apple.com/lookup?id={}&entity=podcast", id);
     let req: Value = reqwest::get(&url)?.json()?;
     let rssurl = || -> Option<&str> { req.get("results")?.get(0)?.get("feedUrl")?.as_str() };
     rssurl()
         .map(From::from)
-        .ok_or_else(|| format_err!("Failed to get url from itunes response"))
+        .ok_or_else(|| anyhow!("Failed to get url from itunes response"))
 }
 
 pub(crate) fn on_import_clicked(window: &gtk::ApplicationWindow, sender: &Sender<Action>) {
@@ -483,7 +479,7 @@ pub(crate) fn on_export_clicked(window: &gtk::ApplicationWindow, sender: &Sender
 #[cfg(test)]
 mod tests {
     use super::*;
-    use failure::Error;
+    use anyhow::Result;
     // use podcasts_data::Source;
     // use podcasts_data::dbqueries;
 
@@ -508,7 +504,7 @@ mod tests {
     // }
 
     #[test]
-    fn test_itunes_to_rss() -> Result<(), Error> {
+    fn test_itunes_to_rss() -> Result<()> {
         let itunes_url = "https://itunes.apple.com/podcast/id1195206601";
         let rss_url = String::from("https://rss.acast.com/intercepted-with-jeremy-scahill");
         assert_eq!(rss_url, itunes_to_rss(itunes_url)?);
@@ -519,7 +515,7 @@ mod tests {
     }
 
     #[test]
-    fn test_itunes_id() -> Result<(), Error> {
+    fn test_itunes_id() -> Result<()> {
         let id = 1195206601;
         let itunes_url = "https://itunes.apple.com/podcast/id1195206601";
         assert_eq!(id, itunes_id_from_url(itunes_url).unwrap());
@@ -527,7 +523,7 @@ mod tests {
     }
 
     #[test]
-    fn test_itunes_lookup_id() -> Result<(), Error> {
+    fn test_itunes_lookup_id() -> Result<()> {
         let id = 1195206601;
         let rss_url = "https://rss.acast.com/intercepted-with-jeremy-scahill";
         assert_eq!(rss_url, lookup_id(id)?);

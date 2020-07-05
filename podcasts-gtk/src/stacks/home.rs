@@ -21,8 +21,8 @@ use gtk;
 use gtk::prelude::*;
 use gtk::StackTransitionType;
 
+use anyhow::Result;
 use crossbeam_channel::Sender;
-use failure::Error;
 
 use crate::app::Action;
 use crate::stacks::State;
@@ -41,7 +41,7 @@ pub(crate) struct HomeStack {
 }
 
 impl HomeStack {
-    pub(crate) fn new(sender: Sender<Action>) -> Result<HomeStack, Error> {
+    pub(crate) fn new(sender: Sender<Action>) -> Result<HomeStack> {
         let episodes = HomeView::new(sender.clone(), None)?;
         let empty = EmptyView::default();
         let stack = gtk::Stack::new();
@@ -65,7 +65,7 @@ impl HomeStack {
         self.stack.clone()
     }
 
-    pub(crate) fn update(&mut self) -> Result<(), Error> {
+    pub(crate) fn update(&mut self) -> Result<()> {
         // Get the container of the view
         let old = &self.episodes.view.container().clone();
 
