@@ -20,8 +20,8 @@
 use gtk;
 use gtk::prelude::*;
 
+use anyhow::Result;
 use crossbeam_channel::Sender;
-use failure::Error;
 use podcasts_data::dbqueries::is_episodes_populated;
 
 use crate::app::Action;
@@ -74,7 +74,7 @@ impl ShowStack {
         self.populated.clone()
     }
 
-    pub(crate) fn update(&mut self) -> Result<(), Error> {
+    pub(crate) fn update(&mut self) -> Result<()> {
         self.populated.borrow_mut().update();
         self.determine_state()
     }
@@ -94,7 +94,7 @@ impl ShowStack {
         };
     }
 
-    fn determine_state(&mut self) -> Result<(), Error> {
+    fn determine_state(&mut self) -> Result<()> {
         let ign = get_ignored_shows()?;
         debug!("IGNORED SHOWS {:?}", ign);
         if is_episodes_populated(&ign)? {

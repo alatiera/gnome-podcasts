@@ -34,8 +34,6 @@ use crate::errors::DownloadError;
 use crate::xdg_dirs::PODCASTS_CACHE;
 use crate::{EpisodeWidgetModel, Save, ShowCoverModel};
 
-// use failure::Error;
-
 // TODO: Replace path that are of type &str with std::path.
 // TODO: Have a convention/document absolute/relative paths, if they should end
 // with / or not.
@@ -275,7 +273,7 @@ mod tests {
     use crate::dbqueries;
     use crate::pipeline;
     use crate::Source;
-    use failure::Error;
+    use anyhow::Result;
 
     use std::fs;
 
@@ -283,7 +281,7 @@ mod tests {
     // This test inserts an rss feed to your `XDG_DATA/podcasts/podcasts.db` so we make it explicit
     // to run it.
     #[ignore]
-    fn test_cache_image() -> Result<(), Error> {
+    fn test_cache_image() -> Result<()> {
         let url = "https://web.archive.org/web/20180120110727if_/https://rss.acast.com/thetipoff";
         // Create and index a source
         let source = Source::from_url(url)?;

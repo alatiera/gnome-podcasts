@@ -22,10 +22,10 @@ use glib::clone;
 use gtk;
 use gtk::prelude::*;
 
+use anyhow::{anyhow, Result};
 use chrono;
 use chrono::prelude::*;
 use crossbeam_channel::Sender;
-use failure::Error;
 use humansize::{file_size_opts as size_opts, FileSize};
 #[allow(unused_imports)]
 use open;
@@ -352,10 +352,10 @@ impl EpisodeWidget {
         weak: &Weak<Self>,
         episode: &EpisodeWidgetModel,
         sender: &Sender<Action>,
-    ) -> Result<(), Error> {
+    ) -> Result<()> {
         let widget = weak
             .upgrade()
-            .ok_or_else(|| format_err!("Widget is already dropped"))?;
+            .ok_or_else(|| anyhow!("Widget is already dropped"))?;
         // Reset the buttons state no matter the glade file.
         // This is just to make it easier to port to relm in the future.
         widget.buttons.cancel.hide();
@@ -364,10 +364,10 @@ impl EpisodeWidget {
 
         // Check if the episode is being downloaded
         let id = episode.rowid();
-        let active_dl = move || -> Result<Option<_>, Error> {
+        let active_dl = move || -> Result<Option<_>> {
             let m = manager::ACTIVE_DOWNLOADS
                 .read()
-                .map_err(|_| format_err!("Failed to get a lock on the mutex."))?;
+                .map_err(|_| anyhow!("Failed to get a lock on the mutex."))?;
 
             Ok(m.get(&id).cloned())
         };
@@ -484,7 +484,7 @@ impl EpisodeWidget {
     }
 }
 
-fn on_download_clicked(ep: &EpisodeWidgetModel, sender: &Sender<Action>) -> Result<(), Error> {
+fn on_download_clicked(ep: &EpisodeWidgetModel, sender: &Sender<Action>) -> Result<()> {
     let pd = dbqueries::get_podcast_from_id(ep.show_id())?;
     let download_fold = get_download_folder(&pd.title())?;
 
@@ -502,10 +502,10 @@ fn on_play_bttn_clicked(
     widget: &Weak<EpisodeWidget>,
     episode: &mut EpisodeWidgetModel,
     sender: &Sender<Action>,
-) -> Result<(), Error> {
+) -> Result<()> {
     let widget = widget
         .upgrade()
-        .ok_or_else(|| format_err!("Widget is already dropped"))?;
+        .ok_or_else(|| anyhow!("Widget is already dropped"))?;
 
     // Mark played
     episode.set_played_now()?;
@@ -543,7 +543,7 @@ fn progress_bar_helper(
     widget: &Weak<EpisodeWidget>,
     prog: &Arc<Mutex<manager::Progress>>,
     episode_rowid: i32,
-) -> Result<glib::Continue, Error> {
+) -> Result<glib::Continue> {
     let widget = match widget.upgrade() {
         Some(w) => w,
         None => return Ok(glib::Continue(false)),
@@ -556,7 +556,7 @@ fn progress_bar_helper(
             guard.should_cancel(),
         ),
         Err(TryLockError::WouldBlock) => return Ok(glib::Continue(true)),
-        Err(TryLockError::Poisoned(_)) => return Err(format_err!("Progress Mutex is poisoned")),
+        Err(TryLockError::Poisoned(_)) => return Err(anyhow!("Progress Mutex is poisoned")),
     };
 
     // I hate floating points.
@@ -565,7 +565,7 @@ fn progress_bar_helper(
         // Update local_size label
         let size = downloaded
             .file_size(SIZE_OPTS.clone())
-            .map_err(|err| format_err!("{}", err))?;
+            .map_err(|err| anyhow!("{}", err))?;
 
         widget.update_progress(&size, fraction);
     }
@@ -576,7 +576,7 @@ fn progress_bar_helper(
     // Check if the download is still active
     let active = match manager::ACTIVE_DOWNLOADS.read() {
         Ok(guard) => guard.contains_key(&episode_rowid),
-        Err(_) => return Err(format_err!("Failed to get a lock on the mutex.")),
+        Err(_) => return Err(anyhow!("Failed to get a lock on the mutex.")),
     };
 
     if (fraction >= 1.0) && (!fraction.is_nan()) {
@@ -614,7 +614,7 @@ fn update_total_size_callback(widget: &Weak<EpisodeWidget>, prog: &Arc<Mutex<man
 fn total_size_helper(
     widget: &Weak<EpisodeWidget>,
     prog: &Arc<Mutex<manager::Progress>>,
-) -> Result<glib::Continue, Error> {
+) -> Result<glib::Continue> {
     let widget = match widget.upgrade() {
         Some(w) => w,
         None => return Ok(glib::Continue(false)),
@@ -624,7 +624,7 @@ fn total_size_helper(
     let total_bytes = match prog.try_lock() {
         Ok(guard) => guard.get_size(),
         Err(TryLockError::WouldBlock) => return Ok(glib::Continue(true)),
-        Err(TryLockError::Poisoned(_)) => return Err(format_err!("Progress Mutex is poisoned")),
+        Err(TryLockError::Poisoned(_)) => return Err(anyhow!("Progress Mutex is poisoned")),
     };
 
     debug!("Total Size: {}", total_bytes);
@@ -639,7 +639,7 @@ fn total_size_helper(
     }
 }
 
-// fn on_delete_bttn_clicked(episode_id: i32) -> Result<(), Error> {
+// fn on_delete_bttn_clicked(episode_id: i32) -> Result<()> {
 //     let mut ep = dbqueries::get_episode_from_rowid(episode_id)?.into();
 //     delete_local_content(&mut ep).map_err(From::from).map(|_| ())
 // }

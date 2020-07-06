@@ -17,7 +17,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-use failure::Error;
+use anyhow::{anyhow, Result};
 use rayon;
 
 // use podcasts_data::Episode;
@@ -94,13 +94,13 @@ lazy_static! {
     static ref DLPOOL: rayon::ThreadPool = rayon::ThreadPoolBuilder::new().build().unwrap();
 }
 
-pub(crate) fn add(id: i32, directory: String) -> Result<(), Error> {
+pub(crate) fn add(id: i32, directory: String) -> Result<()> {
     // Create a new `Progress` struct to keep track of dl progress.
     let prog = Arc::new(Mutex::new(Progress::default()));
 
     match ACTIVE_DOWNLOADS.write() {
         Ok(mut guard) => guard.insert(id, prog.clone()),
-        Err(err) => return Err(format_err!("ActiveDownloads: {}.", err)),
+        Err(err) => return Err(anyhow!("ActiveDownloads: {}.", err)),
     };
 
     DLPOOL.spawn(move || {
@@ -146,7 +146,7 @@ mod tests {
     #[ignore]
     // THIS IS NOT A RELIABLE TEST
     // Just quick sanity check
-    fn test_start_dl() -> Result<(), Error> {
+    fn test_start_dl() -> Result<()> {
         let url = "https://web.archive.org/web/20180120110727if_/https://rss.acast.com/thetipoff";
         // Create and index a source
         let mut source = Source::from_url(url)?;
@@ -181,7 +181,7 @@ mod tests {
     #[test]
     // This test needs access to local system so we ignore it by default.
     #[ignore]
-    fn test_dl_steal_the_stars() -> Result<(), Error> {
+    fn test_dl_steal_the_stars() -> Result<()> {
         let url =
             "https://web.archive.org/web/20180120104957if_/https://rss.art19.com/steal-the-stars";
         // Create and index a source

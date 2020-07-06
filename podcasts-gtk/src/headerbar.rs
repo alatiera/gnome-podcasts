@@ -24,8 +24,8 @@ use gtk::prelude::*;
 use libhandy;
 use libhandy::prelude::*;
 
+use anyhow::{anyhow, Result};
 use crossbeam_channel::Sender;
-use failure::Error;
 use rayon;
 use url::Url;
 
@@ -64,11 +64,11 @@ struct AddPopover {
 
 impl AddPopover {
     // FIXME: THIS ALSO SUCKS!
-    fn on_add_clicked(&self, sender: &Sender<Action>) -> Result<(), Error> {
+    fn on_add_clicked(&self, sender: &Sender<Action>) -> Result<()> {
         let mut url = self
             .entry
             .get_text()
-            .ok_or_else(|| format_err!("GtkEntry blew up somehow."))?;
+            .ok_or_else(|| anyhow!("GtkEntry blew up somehow."))?;
 
         if !(url.starts_with("https://") || url.starts_with("http://")) {
             url = format!("http://{}", url).into();
@@ -97,11 +97,11 @@ impl AddPopover {
     }
 
     // FIXME: THIS SUCKS! REFACTOR ME.
-    fn on_entry_changed(&self) -> Result<(), Error> {
+    fn on_entry_changed(&self) -> Result<()> {
         let mut url = self
             .entry
             .get_text()
-            .ok_or_else(|| format_err!("GtkEntry blew up somehow."))?;
+            .ok_or_else(|| anyhow!("GtkEntry blew up somehow."))?;
         let is_input_url_empty = url.is_empty();
         debug!("Url: {}", url);
 

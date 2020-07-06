@@ -29,9 +29,9 @@ use gio::{File, FileExt};
 use glib::clone;
 use glib::{SignalHandlerId, WeakRef};
 
+use anyhow::Result;
 use chrono::{prelude::*, NaiveTime};
 use crossbeam_channel::Sender;
-use failure::Error;
 use fragile::Fragile;
 
 use podcasts_data::{dbqueries, USER_AGENT};
@@ -503,7 +503,7 @@ impl PlayerWidget {
         self.action_bar.show();
     }
 
-    pub(crate) fn initialize_episode(&self, rowid: i32) -> Result<(), Error> {
+    pub(crate) fn initialize_episode(&self, rowid: i32) -> Result<()> {
         let ep = dbqueries::get_episode_widget_from_rowid(rowid)?;
         let pd = dbqueries::get_podcast_cover_from_id(ep.show_id())?;
 

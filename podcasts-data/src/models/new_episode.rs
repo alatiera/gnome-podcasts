@@ -272,7 +272,7 @@ impl NewEpisodeMinimal {
             .guid(guid)
             .show_id(parent_id)
             .build()
-            .map_err(From::from)
+            .map_err(DataError::BuilderError)
     }
 
     // TODO: TryInto is stabilizing in rustc v1.26!
@@ -334,7 +334,7 @@ mod tests {
     use crate::dbqueries;
     use crate::models::new_episode::{NewEpisodeMinimal, NewEpisodeMinimalBuilder};
     use crate::models::*;
-    use failure::Error;
+    use anyhow::Result;
 
     use rss::Channel;
 
@@ -507,7 +507,7 @@ mod tests {
     }
 
     #[test]
-    fn test_new_episode_minimal_intercepted() -> Result<(), Error> {
+    fn test_new_episode_minimal_intercepted() -> Result<()> {
         let file = File::open("tests/feeds/2018-01-20-Intercepted.xml")?;
         let channel = Channel::read_from(BufReader::new(file))?;
 
@@ -522,7 +522,7 @@ mod tests {
     }
 
     #[test]
-    fn test_new_episode_intercepted() -> Result<(), Error> {
+    fn test_new_episode_intercepted() -> Result<()> {
         let file = File::open("tests/feeds/2018-01-20-Intercepted.xml")?;
         let channel = Channel::read_from(BufReader::new(file))?;
 
@@ -538,7 +538,7 @@ mod tests {
     }
 
     #[test]
-    fn test_new_episode_minimal_lup() -> Result<(), Error> {
+    fn test_new_episode_minimal_lup() -> Result<()> {
         let file = File::open("tests/feeds/2018-01-20-LinuxUnplugged.xml")?;
         let channel = Channel::read_from(BufReader::new(file))?;
 
@@ -553,7 +553,7 @@ mod tests {
     }
 
     #[test]
-    fn test_new_episode_lup() -> Result<(), Error> {
+    fn test_new_episode_lup() -> Result<()> {
         let file = File::open("tests/feeds/2018-01-20-LinuxUnplugged.xml")?;
         let channel = Channel::read_from(BufReader::new(file))?;
 
@@ -568,7 +568,7 @@ mod tests {
     }
 
     #[test]
-    fn test_minimal_into_new_episode() -> Result<(), Error> {
+    fn test_minimal_into_new_episode() -> Result<()> {
         truncate_db()?;
 
         let file = File::open("tests/feeds/2018-01-20-Intercepted.xml")?;
@@ -589,7 +589,7 @@ mod tests {
     }
 
     #[test]
-    fn test_new_episode_insert() -> Result<(), Error> {
+    fn test_new_episode_insert() -> Result<()> {
         truncate_db()?;
 
         let file = File::open("tests/feeds/2018-01-20-Intercepted.xml")?;
@@ -616,7 +616,7 @@ mod tests {
     }
 
     #[test]
-    fn test_new_episode_update() -> Result<(), Error> {
+    fn test_new_episode_update() -> Result<()> {
         truncate_db()?;
         let old = EXPECTED_INTERCEPTED_1.clone().to_episode()?;
 
@@ -635,7 +635,7 @@ mod tests {
     }
 
     #[test]
-    fn test_new_episode_index() -> Result<(), Error> {
+    fn test_new_episode_index() -> Result<()> {
         truncate_db()?;
         let expected = &*EXPECTED_INTERCEPTED_1;
 
@@ -663,7 +663,7 @@ mod tests {
     }
 
     #[test]
-    fn test_new_episode_to_episode() -> Result<(), Error> {
+    fn test_new_episode_to_episode() -> Result<()> {
         let expected = &*EXPECTED_INTERCEPTED_1;
 
         // Assert insert() produces the same result that you would get with to_podcast()

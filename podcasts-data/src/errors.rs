@@ -25,132 +25,75 @@ use hyper;
 use native_tls;
 use reqwest;
 use rss;
-use url;
 use xml;
 
 use std::io;
 
 use crate::models::Source;
+use thiserror::Error;
 
-#[fail(
-    display = "Request to {} returned {}. Context: {}",
-    url, status_code, context
-)]
-#[derive(Fail, Debug)]
-pub struct HttpStatusError {
-    url: String,
-    status_code: hyper::StatusCode,
-    context: String,
-}
-
-impl HttpStatusError {
-    pub fn new(url: String, code: hyper::StatusCode, context: String) -> Self {
-        HttpStatusError {
-            url,
-            status_code: code,
-            context,
-        }
-    }
-}
-
-#[derive(Fail, Debug)]
+#[derive(Error, Debug)]
 pub enum DataError {
-    #[fail(display = "SQL Query failed: {}", _0)]
-    DieselResultError(#[cause] diesel::result::Error),
-    #[fail(display = "Database Migration error: {}", _0)]
-    DieselMigrationError(#[cause] RunMigrationsError),
-    #[fail(display = "R2D2 error: {}", _0)]
-    R2D2Error(#[cause] r2d2::Error),
-    #[fail(display = "R2D2 Pool error: {}", _0)]
-    R2D2PoolError(#[cause] r2d2::PoolError),
-    #[fail(display = "Hyper Error: {}", _0)]
-    HyperError(#[cause] hyper::Error),
-    #[fail(display = "ToStr Error: {}", _0)]
-    HttpToStr(#[cause] http::header::ToStrError),
-    #[fail(display = "Failed to parse a url: {}", _0)]
-    UrlError(#[cause] url::ParseError),
-    #[fail(display = "TLS Error: {}", _0)]
-    TLSError(#[cause] native_tls::Error),
-    #[fail(display = "IO Error: {}", _0)]
-    IOError(#[cause] io::Error),
-    #[fail(display = "RSS Error: {}", _0)]
-    RssError(#[cause] rss::Error),
-    #[fail(display = "XML Reader Error: {}", _0)]
-    XmlReaderError(#[cause] xml::reader::Error),
-    #[fail(display = "Error: {}", _0)]
+    #[error("SQL Query failed: {0}")]
+    DieselResultError(#[from] diesel::result::Error),
+    #[error("Database Migration error: {0}")]
+    DieselMigrationError(#[from] RunMigrationsError),
+    #[error("R2D2 error: {0}")]
+    R2D2Error(#[from] r2d2::Error),
+    #[error("R2D2 Pool error: {0}")]
+    R2D2PoolError(#[from] r2d2::PoolError),
+    #[error("Hyper Error: {0}")]
+    HyperError(#[from] hyper::Error),
+    #[error("ToStr Error: {0}")]
+    HttpToStr(#[from] http::header::ToStrError),
+    #[error("Failed to parse a url: {0}")]
+    UrlError(#[from] url::ParseError),
+    #[error("TLS Error: {0}")]
+    TLSError(#[from] native_tls::Error),
+    #[error("IO Error: {0}")]
+    IOError(#[from] io::Error),
+    #[error("RSS Error: {0}")]
+    RssError(#[from] rss::Error),
+    #[error("XML Reader Error: {0}")]
+    XmlReaderError(#[from] xml::reader::Error),
+    #[error("Error: {0}")]
     Bail(String),
-    #[fail(display = "{}", _0)]
-    HttpStatusGeneral(HttpStatusError),
-    #[fail(display = "Source redirects to a new url")]
+    #[error("Request to {url} returned {status_code}. Context: {context}")]
+    HttpStatusGeneral {
+        url: String,
+        status_code: hyper::StatusCode,
+        context: String,
+    },
+    #[error("Source redirects to a new url")]
     FeedRedirect(Source),
-    #[fail(display = "Feed is up to date")]
+    #[error("Feed is up to date")]
     FeedNotModified(Source),
-    #[fail(
-        display = "Error occurred while Parsing an Episode. Reason: {}",
-        reason
-    )]
+    #[error("Error occurred while Parsing an Episode. Reason: {}", reason)]
     ParseEpisodeError { reason: String, parent_id: i32 },
-    #[fail(display = "Episode was not changed and thus skipped.")]
+    #[error("Episode was not changed and thus skipped.")]
     EpisodeNotChanged,
-    #[fail(display = "Invalid Uri Error: {}", _0)]
-    InvalidUri(#[cause] http::uri::InvalidUri),
+    #[error("Invalid Uri Error: {0}")]
+    InvalidUri(#[from] http::uri::InvalidUri),
+    #[error("Builder error: {0}")]
+    BuilderError(String),
 }
 
-// Maps a type to a variant of the DataError enum
-macro_rules! easy_from_impl {
-    ($outer_type:ty, $from:ty => $to:expr) => (
-        impl From<$from> for $outer_type {
-            fn from(err: $from) -> Self {
-                $to(err)
-            }
-        }
-    );
-    ($outer_type:ty, $from:ty => $to:expr, $($f:ty => $t:expr),+) => (
-        easy_from_impl!($outer_type, $from => $to);
-        easy_from_impl!($outer_type, $($f => $t),+);
-    );
-}
-
-easy_from_impl!(
-    DataError,
-    RunMigrationsError       => DataError::DieselMigrationError,
-    diesel::result::Error    => DataError::DieselResultError,
-    r2d2::Error              => DataError::R2D2Error,
-    r2d2::PoolError          => DataError::R2D2PoolError,
-    hyper::Error             => DataError::HyperError,
-    http::header::ToStrError => DataError::HttpToStr,
-    url::ParseError          => DataError::UrlError,
-    native_tls::Error        => DataError::TLSError,
-    io::Error                => DataError::IOError,
-    rss::Error               => DataError::RssError,
-    xml::reader::Error       => DataError::XmlReaderError,
-    http::uri::InvalidUri    => DataError::InvalidUri,
-    String                   => DataError::Bail
-);
-
-#[derive(Fail, Debug)]
+#[derive(Error, Debug)]
 pub enum DownloadError {
-    #[fail(display = "Reqwest error: {}", _0)]
-    RequestError(#[cause] reqwest::Error),
-    #[fail(display = "Data error: {}", _0)]
-    DataError(#[cause] DataError),
-    #[fail(display = "Io error: {}", _0)]
-    IoError(#[cause] io::Error),
-    #[fail(display = "Unexpected server response: {}", _0)]
+    #[error("Reqwest error: {0}")]
+    RequestError(#[from] reqwest::Error),
+    #[error("Data error: {0}")]
+    DataError(#[from] DataError),
+    #[error("Io error: {0}")]
+    IoError(#[from] io::Error),
+    #[error("Unexpected server response: {0}")]
     UnexpectedResponse(reqwest::StatusCode),
-    #[fail(display = "The Download was cancelled.")]
+    #[error("The Download was cancelled.")]
     DownloadCancelled,
-    #[fail(display = "Remote Image location not found.")]
+    #[error("Remote Image location not found.")]
     NoImageLocation,
-    #[fail(display = "Failed to parse CacheLocation.")]
+    #[error("Failed to parse CacheLocation.")]
     InvalidCacheLocation,
-    #[fail(display = "Failed to parse Cached Image Location.")]
+    #[error("Failed to parse Cached Image Location.")]
     InvalidCachedImageLocation,
 }
-
-easy_from_impl!(
-    DownloadError,
-    reqwest::Error => DownloadError::RequestError,
-    io::Error => DownloadError::IoError,
-    DataError => DownloadError::DataError
-);

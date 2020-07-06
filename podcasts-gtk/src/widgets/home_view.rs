@@ -17,8 +17,8 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+use anyhow::Result;
 use chrono::prelude::*;
-use failure::Error;
 
 use gtk::{self, prelude::*, Adjustment};
 
@@ -107,10 +107,7 @@ impl Default for HomeView {
 
 // TODO: REFACTOR ME
 impl HomeView {
-    pub(crate) fn new(
-        sender: Sender<Action>,
-        vadj: Option<Adjustment>,
-    ) -> Result<Rc<HomeView>, Error> {
+    pub(crate) fn new(sender: Sender<Action>, vadj: Option<Adjustment>) -> Result<Rc<HomeView>> {
         use self::ListSplit::*;
 
         let home = Rc::new(HomeView::default());

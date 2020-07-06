@@ -21,8 +21,8 @@ use glib;
 use glib::clone;
 use gtk::{self, prelude::*, Adjustment};
 
+use anyhow::Result;
 use crossbeam_channel::{bounded, Sender};
-use failure::Error;
 use fragile::Fragile;
 use html2text;
 use libhandy::{Column, ColumnExt};
@@ -131,7 +131,7 @@ impl ShowWidget {
     }
 
     /// Set the show cover.
-    fn set_cover(&self, pd: &Arc<Show>) -> Result<(), Error> {
+    fn set_cover(&self, pd: &Arc<Show>) -> Result<()> {
         utils::set_image_from_path(&self.cover, pd.id(), 256)
     }
 
@@ -173,7 +173,7 @@ fn populate_listbox(
     pd: Arc<Show>,
     sender: Sender<Action>,
     vadj: Option<Adjustment>,
-) -> Result<(), Error> {
+) -> Result<()> {
     use crossbeam_channel::TryRecvError;
 
     let count = dbqueries::get_pd_episodes_count(&pd)?;

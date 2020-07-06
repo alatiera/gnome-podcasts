@@ -38,7 +38,7 @@ use std::path::Path;
 use std::fs::File;
 // use std::io::BufReader;
 
-use failure::Error;
+use anyhow::Result;
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 // FIXME: Make it a Diesel model
@@ -84,13 +84,13 @@ pub fn import_from_file<P: AsRef<Path>>(path: P) -> Result<Vec<Source>, DataErro
 
 /// Export a file to `P`, taking the feeds from the database and outputting
 /// them in opml format.
-pub fn export_from_db<P: AsRef<Path>>(path: P, export_title: &str) -> Result<(), Error> {
+pub fn export_from_db<P: AsRef<Path>>(path: P, export_title: &str) -> Result<()> {
     let file = File::create(path)?;
     export_to_file(&file, export_title)
 }
 
 /// Export from `Source`s and `Show`s into `F` in OPML format
-pub fn export_to_file<F: Write>(file: F, export_title: &str) -> Result<(), Error> {
+pub fn export_to_file<F: Write>(file: F, export_title: &str) -> Result<()> {
     let config = EmitterConfig::new().perform_indent(true);
 
     let mut writer = config.create_writer(file);
@@ -208,8 +208,8 @@ pub fn extract_sources<R: Read>(reader: R) -> Result<HashSet<Opml>, reader::Erro
 #[cfg(test)]
 mod tests {
     use super::*;
+    use anyhow::Result;
     use chrono::Local;
-    use failure::Error;
     use futures::executor::block_on;
 
     use crate::database::{truncate_db, TEMPDIR};
@@ -249,7 +249,7 @@ mod tests {
     };
 
     #[test]
-    fn test_extract() -> Result<(), Error> {
+    fn test_extract() -> Result<()> {
         let int_title = String::from("Intercepted with Jeremy Scahill");
         let int_url = String::from("https://feeds.feedburner.com/InterceptedWithJeremyScahill");
         let int_desc = String::from(
@@ -311,7 +311,7 @@ mod tests {
     }
 
     #[test]
-    fn text_export() -> Result<(), Error> {
+    fn text_export() -> Result<()> {
         truncate_db()?;
 
         URLS.iter().for_each(|&(path, url)| {
