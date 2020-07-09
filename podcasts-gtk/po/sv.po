@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: podcasts master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2020-02-07 11:33+0000\n"
-"PO-Revision-Date: 2020-02-13 22:38+0100\n"
+"POT-Creation-Date: 2020-06-21 21:43+0000\n"
+"PO-Revision-Date: 2020-07-10 01:27+0200\n"
 "Last-Translator: Anders Jonsson <anders.jonsson@norsjovallen.se>\n"
 "Language-Team: Swedish <tp-sv@listor.tp-sv.se>\n"
 "Language: sv\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 2.2.4\n"
+"X-Generator: Poedit 2.3.1\n"
 
 #: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml:15
 msgid "Top position of the last open main window"
@@ -69,8 +69,8 @@ msgstr "Vilken sorts tidsperiod att vänta mellan automatiska upprensningar"
 #. Weird magic I copy-pasted that sets the Application Name in the Shell.
 #: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:3
 #: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:4
-#: podcasts-gtk/resources/gtk/headerbar.ui:158 podcasts-gtk/src/app.rs:330
-#: podcasts-gtk/src/widgets/aboutdialog.rs:56 podcasts-gtk/src/window.rs:80
+#: podcasts-gtk/resources/gtk/headerbar.ui:158 podcasts-gtk/src/app.rs:353
+#: podcasts-gtk/src/widgets/aboutdialog.rs:56 podcasts-gtk/src/window.rs:82
 msgid "Podcasts"
 msgstr "Poddsändningar"
 
@@ -116,19 +116,19 @@ msgstr "Importera shower från en annan enhet"
 msgid "You’ve already listened to this episode."
 msgstr "Du har redan lyssnat på detta avsnitt."
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:208
+#: podcasts-gtk/resources/gtk/episode_widget.ui:217
 msgid "Calculating episode size…"
 msgstr "Beräknar avsnittsstorlek…"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:248
+#: podcasts-gtk/resources/gtk/episode_widget.ui:260
 msgid "Play this episode"
 msgstr "Spela detta avsnitt"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:269
+#: podcasts-gtk/resources/gtk/episode_widget.ui:281
 msgid "Cancel the download process"
 msgstr "Avbryt hämtningsprocessen"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:292
+#: podcasts-gtk/resources/gtk/episode_widget.ui:304
 msgid "Download this episode"
 msgstr "Hämta detta avsnitt"
 
@@ -224,27 +224,26 @@ msgid "Change the playback speed"
 msgstr "Ändra uppspelningshastigheten"
 
 #: podcasts-gtk/resources/gtk/player_rate.ui:47
-#: podcasts-gtk/resources/gtk/player_rate.ui:122
 msgid "1.00×"
 msgstr "1,00×"
 
-#: podcasts-gtk/resources/gtk/player_rate.ui:86
-msgid "1.50×"
-msgstr "1,50×"
+#: podcasts-gtk/resources/gtk/player_rate.ui:88
+msgid "Double speed rate"
+msgstr "Dubbel hastighet"
 
-#: podcasts-gtk/resources/gtk/player_rate.ui:90
+#: podcasts-gtk/resources/gtk/player_rate.ui:97
+msgid "1.75 speed rate"
+msgstr "Hastighetsfaktor 1,75"
+
+#: podcasts-gtk/resources/gtk/player_rate.ui:106
 msgid "1.5 speed rate"
 msgstr "Hastighetsfaktor 1,5"
 
-#: podcasts-gtk/resources/gtk/player_rate.ui:104
-msgid "1.25×"
-msgstr "1,25×"
-
-#: podcasts-gtk/resources/gtk/player_rate.ui:108
+#: podcasts-gtk/resources/gtk/player_rate.ui:115
 msgid "1.25 speed rate"
 msgstr "Hastighetsfaktor 1,25"
 
-#: podcasts-gtk/resources/gtk/player_rate.ui:126
+#: podcasts-gtk/resources/gtk/player_rate.ui:124
 msgid "Normal speed"
 msgstr "Normal hastighet"
 
@@ -292,7 +291,7 @@ msgstr "Säg upp prenumeration"
 msgid "Read More"
 msgstr "Läs mer"
 
-#: podcasts-gtk/src/app.rs:265
+#: podcasts-gtk/src/app.rs:287
 msgid "Fetching new episodes"
 msgstr "Hämtar nya avsnitt"
 
@@ -304,43 +303,43 @@ msgstr "Nytt"
 msgid "Shows"
 msgstr "Shower"
 
-#: podcasts-gtk/src/utils.rs:396
+#: podcasts-gtk/src/utils.rs:398
 msgid "Select the file from which to you want to import shows."
 msgstr "Välj filen från vilken du vill importera shower."
 
-#: podcasts-gtk/src/utils.rs:399
+#: podcasts-gtk/src/utils.rs:401
 msgid "_Import"
 msgstr "_Importera"
 
-#: podcasts-gtk/src/utils.rs:408 podcasts-gtk/src/utils.rs:456
+#: podcasts-gtk/src/utils.rs:410 podcasts-gtk/src/utils.rs:457
 msgid "OPML file"
 msgstr "OPML-fil"
 
-#: podcasts-gtk/src/utils.rs:425
+#: podcasts-gtk/src/utils.rs:427
 msgid "Failed to parse the imported file"
 msgstr "Misslyckades med att tolka den importerade filen"
 
-#: podcasts-gtk/src/utils.rs:430 podcasts-gtk/src/utils.rs:474
+#: podcasts-gtk/src/utils.rs:432 podcasts-gtk/src/utils.rs:475
 msgid "Selected file could not be accessed."
 msgstr "Den markerade filen kunde inte kommas åt."
 
-#: podcasts-gtk/src/utils.rs:444
+#: podcasts-gtk/src/utils.rs:445
 msgid "Export shows to…"
 msgstr "Exportera shower till…"
 
-#: podcasts-gtk/src/utils.rs:447
+#: podcasts-gtk/src/utils.rs:448
 msgid "_Export"
 msgstr "_Exportera"
 
-#: podcasts-gtk/src/utils.rs:448
+#: podcasts-gtk/src/utils.rs:449
 msgid "_Cancel"
 msgstr "A_vbryt"
 
-#: podcasts-gtk/src/utils.rs:468
+#: podcasts-gtk/src/utils.rs:469
 msgid "GNOME Podcasts Subscriptions"
 msgstr "GNOME Poddsändningar-prenumerationer"
 
-#: podcasts-gtk/src/utils.rs:469
+#: podcasts-gtk/src/utils.rs:470
 msgid "Failed to export podcasts"
 msgstr "Misslyckades med att exportera poddsändningar"
 
@@ -360,22 +359,28 @@ msgstr ""
 "Skicka synpunkter på översättningen till\n"
 "<tp-sv@listor.tp-sv.se>."
 
-#: podcasts-gtk/src/widgets/episode.rs:148
+#: podcasts-gtk/src/widgets/episode.rs:149
 msgid "{} min"
 msgstr "{} min"
 
 #. sender.send(Action::ErrorNotification(format!("Player Error: {}", error)));
-#: podcasts-gtk/src/widgets/player.rs:824
+#: podcasts-gtk/src/widgets/player.rs:847
 msgid "The media player was unable to execute an action."
 msgstr "Mediaspelaren kunde inte utföra en åtgärd."
 
-#: podcasts-gtk/src/widgets/show_menu.rs:179
+#: podcasts-gtk/src/widgets/show_menu.rs:174
 msgid "Marked all episodes as listened"
 msgstr "Markerade alla avsnitt som lyssnade"
 
-#: podcasts-gtk/src/widgets/show_menu.rs:184
+#: podcasts-gtk/src/widgets/show_menu.rs:179
 msgid "Unsubscribed from {}"
 msgstr "Sade upp prenumeration från {}"
+
+#~ msgid "1.50×"
+#~ msgstr "1,50×"
+
+#~ msgid "1.25×"
+#~ msgstr "1,25×"
 
 #~ msgid "You are already subscribed to this show"
 #~ msgstr "Du prenumererar redan på denna show"
