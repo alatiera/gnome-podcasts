@@ -54,7 +54,7 @@ pub(crate) struct ShowWidget {
 
 impl Default for ShowWidget {
     fn default() -> Self {
-        let builder = gtk::Builder::new_from_resource("/org/gnome/Podcasts/gtk/show_widget.ui");
+        let builder = gtk::Builder::from_resource("/org/gnome/Podcasts/gtk/show_widget.ui");
         let sub_cont: gtk::Box = builder.get_object("sub_container").unwrap();
         let cover: gtk::Image = builder.get_object("cover").unwrap();
         let description: gtk::Label = builder.get_object("description").unwrap();

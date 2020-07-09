@@ -50,7 +50,7 @@ pub(crate) struct InAppNotification {
 
 impl Default for InAppNotification {
     fn default() -> Self {
-        let builder = gtk::Builder::new_from_resource("/org/gnome/Podcasts/gtk/inapp_notif.ui");
+        let builder = gtk::Builder::from_resource("/org/gnome/Podcasts/gtk/inapp_notif.ui");
 
         let revealer: gtk::Revealer = builder.get_object("revealer").unwrap();
         let text: gtk::Label = builder.get_object("text").unwrap();
@@ -168,7 +168,7 @@ impl InAppNotification {
         }
     }
 
-    pub(crate) fn destroy(self) {
+    pub(crate) unsafe fn destroy(self) {
         self.revealer.destroy();
     }
 }

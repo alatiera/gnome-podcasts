@@ -62,7 +62,7 @@ pub(crate) fn about_dialog(window: &gtk::ApplicationWindow) {
     dialog.set_authors(authors);
     dialog.set_translator_credits(Some(i18n("translator-credits").as_str()));
 
-    dialog.connect_response(|dlg, _| dlg.destroy());
+    dialog.connect_response(|dlg, _| dlg.close());
 
     dialog.show();
 }

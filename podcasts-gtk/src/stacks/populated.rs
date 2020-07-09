@@ -99,7 +99,11 @@ impl PopulatedStack {
         self.stack
             .add_named(self.populated.view.container(), "shows");
 
-        old.destroy();
+        // This might not be needed
+        unsafe {
+            old.destroy();
+        }
+
         Ok(())
     }
 
@@ -144,7 +148,11 @@ impl PopulatedStack {
         let s = self.state;
         self.switch_visible(s, StackTransitionType::Crossfade);
 
-        old.destroy();
+        // This might not be needed
+        unsafe {
+            old.destroy();
+        }
+
         Ok(())
     }
 

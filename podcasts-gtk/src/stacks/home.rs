@@ -88,7 +88,9 @@ impl HomeStack {
         self.episodes = eps;
 
         // This might not be needed
-        old.destroy();
+        unsafe {
+            old.destroy();
+        }
 
         Ok(())
     }

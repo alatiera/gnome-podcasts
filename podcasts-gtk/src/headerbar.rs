@@ -24,7 +24,7 @@ use gtk::prelude::*;
 use libhandy;
 use libhandy::prelude::*;
 
-use anyhow::{anyhow, Result};
+use anyhow::Result;
 use crossbeam_channel::Sender;
 use rayon;
 use url::Url;
@@ -65,10 +65,7 @@ struct AddPopover {
 impl AddPopover {
     // FIXME: THIS ALSO SUCKS!
     fn on_add_clicked(&self, sender: &Sender<Action>) -> Result<()> {
-        let mut url = self
-            .entry
-            .get_text()
-            .ok_or_else(|| anyhow!("GtkEntry blew up somehow."))?;
+        let mut url = self.entry.get_text();
 
         if !(url.starts_with("https://") || url.starts_with("http://")) {
             url = format!("http://{}", url).into();
@@ -98,10 +95,7 @@ impl AddPopover {
 
     // FIXME: THIS SUCKS! REFACTOR ME.
     fn on_entry_changed(&self) -> Result<()> {
-        let mut url = self
-            .entry
-            .get_text()
-            .ok_or_else(|| anyhow!("GtkEntry blew up somehow."))?;
+        let mut url = self.entry.get_text();
         let is_input_url_empty = url.is_empty();
         debug!("Url: {}", url);
 
@@ -171,8 +165,8 @@ impl AddPopover {
 
 impl Default for Header {
     fn default() -> Header {
-        let builder = gtk::Builder::new_from_resource("/org/gnome/Podcasts/gtk/headerbar.ui");
-        let menus = gtk::Builder::new_from_resource("/org/gnome/Podcasts/gtk/hamburger.ui");
+        let builder = gtk::Builder::from_resource("/org/gnome/Podcasts/gtk/headerbar.ui");
+        let menus = gtk::Builder::from_resource("/org/gnome/Podcasts/gtk/hamburger.ui");
 
         let header = builder.get_object("headerbar").unwrap();
         let switch: libhandy::ViewSwitcher = builder.get_object("switch").unwrap();

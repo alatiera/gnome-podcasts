@@ -49,7 +49,7 @@ pub(crate) struct ShowMenu {
 
 impl Default for ShowMenu {
     fn default() -> Self {
-        let builder = gtk::Builder::new_from_resource("/org/gnome/Podcasts/gtk/show_menu.ui");
+        let builder = gtk::Builder::from_resource("/org/gnome/Podcasts/gtk/show_menu.ui");
         let container = builder.get_object("menu").unwrap();
         let website = builder.get_object("website").unwrap();
         let played = builder.get_object("played").unwrap();
