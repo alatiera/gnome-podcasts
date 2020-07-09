@@ -24,6 +24,14 @@
     </screenshot>
   </screenshots>
   <releases>
+    <release version="0.4.8" date="2020-07-09">
+     <description>
+        <p>
+            Another Incremental relase, bringing more quality of life changes, bugfixes and continuing to improves adaptiveness of the application.
+            Most notable is the addition of a "Now Playing" widget and the new 1.75 and 2.0 playback speed options.
+        </p>
+      </description>
+    </release>
     <release version="0.4.7" date="2019-10-23">
      <description>
         <p>

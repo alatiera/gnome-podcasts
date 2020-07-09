@@ -14,6 +14,27 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Removed:
 
+## [0.4.8] - 2020-07-09
+### Added:
+ - Handy Header/Switcher World/podcasts!130
+ - Revealer for long show descriptions World/podcasts!129
+ - Adaptive player World/podcasts!131
+ - Add 1.75 and 2x playback options World/podcasts!131
+
+### Changed:
+ - Use standard macros World/podcasts!138
+ - Use async functions and upgrade to futures 0.3 World/podcasts!145
+ - Store window size World/podcasts!140
+ - Use monospace font for numbers World/podcasts!134
+ - Translation updates
+
+### Fixed:
+ - Fix phantom window World/podcasts!128
+ - <enter> to add feed World/podcasts!130
+ - Prevent simultanious refreshes World/podcasts!133
+ - Fix buttons in speed menu World/podcasts!134
+ - Internationalisation fixes
+
 ## [0.4.7] - 2019-10-23
 
 ### Added:
@@ -84,9 +105,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Finnish translation
 - Polish translation
 - Turkish translation
-- Croatian translation 
+- Croatian translation
 - Indonesian translation
-- Spanish translation 
+- Spanish translation
 
 
 ## [0.4.5] - 2018-08-31
