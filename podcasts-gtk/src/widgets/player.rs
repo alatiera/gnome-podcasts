@@ -220,7 +220,7 @@ struct PlayerRate {
 
 impl PlayerRate {
     fn new() -> Self {
-        let builder = gtk::Builder::new_from_resource("/org/gnome/Podcasts/gtk/player_rate.ui");
+        let builder = gtk::Builder::from_resource("/org/gnome/Podcasts/gtk/player_rate.ui");
 
         let radio200: gtk::ModelButton = builder.get_object("rate_2_00").unwrap();
         let radio175: gtk::ModelButton = builder.get_object("rate_1_75").unwrap();
@@ -310,7 +310,7 @@ struct PlayerDialog {
 
 impl PlayerDialog {
     fn new(rate: PlayerRate) -> Self {
-        let builder = gtk::Builder::new_from_resource("/org/gnome/Podcasts/gtk/player_dialog.ui");
+        let builder = gtk::Builder::from_resource("/org/gnome/Podcasts/gtk/player_dialog.ui");
         let dialog = builder.get_object("dialog").unwrap();
 
         let close = builder.get_object("close").unwrap();
@@ -402,7 +402,7 @@ impl Default for PlayerWidget {
         config.set_position_update_interval(250);
         player.set_config(config).unwrap();
 
-        let builder = gtk::Builder::new_from_resource("/org/gnome/Podcasts/gtk/player_toolbar.ui");
+        let builder = gtk::Builder::from_resource("/org/gnome/Podcasts/gtk/player_toolbar.ui");
 
         let buttons = builder.get_object("buttons").unwrap();
         let play = builder.get_object("play_button").unwrap();

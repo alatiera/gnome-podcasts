@@ -25,7 +25,7 @@ use glib::subclass::simple::{ClassStruct, InstanceStruct};
 use glib::translate::*;
 use glib::{glib_object_impl, glib_object_subclass, glib_object_wrapper, glib_wrapper};
 
-use gio::subclass::application::ApplicationImplExt;
+use gio::subclass::ApplicationImplExt;
 use gio::{self, prelude::*, ActionMapExt, ApplicationFlags, SettingsExt};
 
 use gtk;
@@ -291,7 +291,7 @@ impl PdApplication {
                     updater.set_spinner_state(SpinnerState::Active);
 
                     let old = window.updater.replace(Some(updater));
-                    old.map(|i| i.destroy());
+                    old.map(|i| unsafe { i.destroy() });
 
                     window
                         .updater

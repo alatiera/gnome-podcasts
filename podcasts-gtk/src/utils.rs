@@ -337,7 +337,7 @@ pub(crate) fn set_image_from_path(image: &gtk::Image, show_id: i32, size: u32) -
             Ok(path) => {
                 match path {
                     Ok(path) => {
-                        if let Ok(px) = Pixbuf::new_from_file_at_scale(&path, s, s, true) {
+                        if let Ok(px) = Pixbuf::from_file_at_scale(&path, s, s, true) {
                             if let Ok(mut hashmap) = CACHED_PIXBUFS.write() {
                                 hashmap
                                     .insert((show_id, size), Mutex::new(Fragile::new(px.clone())));
@@ -379,7 +379,7 @@ fn itunes_id_from_url(url: &str) -> Option<u32> {
 
 fn lookup_id(id: u32) -> Result<String> {
     let url = format!("https://itunes.apple.com/lookup?id={}&entity=podcast", id);
-    let req: Value = reqwest::get(&url)?.json()?;
+    let req: Value = reqwest::blocking::get(&url)?.json()?;
     let rssurl = || -> Option<&str> { req.get("results")?.get(0)?.get("feedUrl")?.as_str() };
     rssurl()
         .map(From::from)

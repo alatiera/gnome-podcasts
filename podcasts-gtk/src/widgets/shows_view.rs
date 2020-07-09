@@ -20,7 +20,7 @@
 use glib::clone;
 use gtk::{self, prelude::*, Adjustment, Align, SelectionMode};
 
-use anyhow::{anyhow, Result};
+use anyhow::Result;
 use crossbeam_channel::Sender;
 
 use podcasts_data::dbqueries;
@@ -99,10 +99,7 @@ fn populate_flowbox(shows: &Rc<ShowsView>, vadj: Option<Adjustment>) -> Result<(
 
 fn on_child_activate(child: &gtk::FlowBoxChild, sender: &Sender<Action>) -> Result<()> {
     // This is such an ugly hack...
-    let id = child
-        .get_widget_name()
-        .ok_or_else(|| anyhow!("Failed to get \"episodes\" child from the stack."))?
-        .parse::<i32>()?;
+    let id = child.get_widget_name().parse::<i32>()?;
     let pd = Arc::new(dbqueries::get_podcast_from_id(id)?);
 
     sender
@@ -125,7 +122,7 @@ struct ShowsChild {
 
 impl Default for ShowsChild {
     fn default() -> Self {
-        let cover = gtk::Image::new_from_icon_name(
+        let cover = gtk::Image::from_icon_name(
             Some("image-x-generic-symbolic"),
             gtk::IconSize::__Unknown(-1),
         );

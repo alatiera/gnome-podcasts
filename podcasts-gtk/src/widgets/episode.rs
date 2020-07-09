@@ -183,7 +183,7 @@ impl InfoLabels {
 
 impl Default for EpisodeWidget {
     fn default() -> Self {
-        let builder = gtk::Builder::new_from_resource("/org/gnome/Podcasts/gtk/episode_widget.ui");
+        let builder = gtk::Builder::from_resource("/org/gnome/Podcasts/gtk/episode_widget.ui");
 
         let container = builder.get_object("episode_container").unwrap();
         let progressbar = builder.get_object("progress_bar").unwrap();
@@ -587,10 +587,9 @@ fn progress_bar_helper(
             .info
             .total_size
             .get_text()
-            .as_ref()
-            .map(|s| s.trim_end_matches(" MB"))
-            .and_then(|s| s.parse::<i32>().ok())
-            .is_none()
+            .trim_end_matches(" MB")
+            .parse::<i32>()
+            .is_err()
         {
             widget.info.total_size.hide();
         }
