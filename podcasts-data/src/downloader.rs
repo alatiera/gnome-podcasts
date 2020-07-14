@@ -21,7 +21,7 @@ use glob::glob;
 use mime_guess;
 use reqwest;
 use reqwest::header::*;
-use reqwest::RedirectPolicy;
+use reqwest::redirect::Policy;
 use tempdir::TempDir;
 
 use std::fs;
@@ -64,18 +64,19 @@ fn download_into(
     // Haven't included the loop check as
     // Steal the Stars would trigger it as
     // it has a loop back before giving correct url
-    let policy = RedirectPolicy::custom(|attempt| {
+    let policy = Policy::custom(|attempt| {
         info!("Redirect Attempt URL: {:?}", attempt.url());
         if attempt.previous().len() > 5 {
-            attempt.too_many_redirects()
+            attempt.error("too many redirects")
         } else if Some(attempt.url()) == attempt.previous().last() {
-            attempt.loop_detected()
+            // avoid redirect loops
+            attempt.stop()
         } else {
             attempt.follow()
         }
     });
 
-    let client = reqwest::Client::builder()
+    let client = reqwest::blocking::Client::builder()
         .redirect(policy)
         .referer(false)
         .build()?;
@@ -154,7 +155,7 @@ fn get_ext(content: Option<&str>) -> Option<String> {
 #[allow(clippy::needless_pass_by_value)]
 fn save_io(
     file: &str,
-    resp: &mut reqwest::Response,
+    resp: &mut reqwest::blocking::Response,
     content_lenght: Option<u64>,
     progress: Option<Arc<Mutex<dyn DownloadProgress>>>,
 ) -> Result<(), DownloadError> {
