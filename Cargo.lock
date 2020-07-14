@@ -235,11 +235,12 @@ checksum = "b3a71ab494c0b5b860bdc8407ae08978052417070c2ced38573a9157ad75b8ac"
 
 [[package]]
 name = "crossbeam-channel"
-version = "0.3.9"
+version = "0.4.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c8ec7fcd21571dc78f96cc96243cab8d8f035247c3efd16c687be154c3fa9efa"
+checksum = "cced8691919c02aac3cb0a1bc2e9b73d89e832bf9a06fc579d4e71b68a2da061"
 dependencies = [
- "crossbeam-utils 0.6.6",
+ "crossbeam-utils",
+ "maybe-uninit",
 ]
 
 [[package]]
@@ -249,7 +250,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "9f02af974daeee82218205558e51ec8768b48cf524bd01d550abe5573a608285"
 dependencies = [
  "crossbeam-epoch",
- "crossbeam-utils 0.7.2",
+ "crossbeam-utils",
  "maybe-uninit",
 ]
 
@@ -261,7 +262,7 @@ checksum = "058ed274caafc1f60c4997b5fc07bf7dc7cca454af7c6e81edffe5f33f70dace"
 dependencies = [
  "autocfg",
  "cfg-if",
- "crossbeam-utils 0.7.2",
+ "crossbeam-utils",
  "lazy_static 1.4.0",
  "maybe-uninit",
  "memoffset",
@@ -275,18 +276,8 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "774ba60a54c213d409d5353bda12d49cd68d14e45036a285234c8d6f91f92570"
 dependencies = [
  "cfg-if",
- "crossbeam-utils 0.7.2",
+ "crossbeam-utils",
  "maybe-uninit",
-]
-
-[[package]]
-name = "crossbeam-utils"
-version = "0.6.6"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "04973fa96e96579258a5091af6003abde64af786b860f18622b82e026cca60e6"
-dependencies = [
- "cfg-if",
- "lazy_static 1.4.0",
 ]
 
 [[package]]
@@ -2027,7 +2018,7 @@ checksum = "e92e15d89083484e11353891f1af602cc661426deb9564c298b270c726973280"
 dependencies = [
  "crossbeam-deque",
  "crossbeam-queue",
- "crossbeam-utils 0.7.2",
+ "crossbeam-utils",
  "lazy_static 1.4.0",
  "num_cpus",
 ]
