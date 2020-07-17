@@ -467,7 +467,7 @@ pub fn update_none_to_played_now(parent: &Show) -> Result<usize, DataError> {
 mod tests {
     use super::*;
     use crate::database::*;
-    use crate::pipeline;
+    use crate::pipeline::pipeline;
     use anyhow::Result;
 
     #[test]
@@ -478,7 +478,8 @@ mod tests {
                    com/InterceptedWithJeremyScahill";
         let source = Source::from_url(url)?;
         let id = source.id();
-        pipeline::run(vec![source])?;
+        let mut rt = tokio::runtime::Runtime::new()?;
+        rt.block_on(pipeline(vec![source], None));
         let pd = get_podcast_from_source_id(id)?;
 
         let eps_num = get_pd_unplayed_episodes(&pd)?.len();

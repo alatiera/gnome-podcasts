@@ -130,7 +130,7 @@ mod tests {
     use super::*;
 
     use podcasts_data::dbqueries;
-    use podcasts_data::pipeline;
+    use podcasts_data::pipeline::pipeline;
     use podcasts_data::utils::get_download_folder;
     use podcasts_data::{Episode, Save, Source};
 
@@ -155,7 +155,8 @@ mod tests {
         source.set_http_etag(None);
         source.set_last_modified(None);
         source.save()?;
-        pipeline::run(vec![source])?;
+        let mut rt = tokio::runtime::Runtime::new()?;
+        rt.block_on(pipeline(vec![source], None));
 
         // Get the podcast
         let pd = dbqueries::get_podcast_from_source_id(sid)?;
@@ -191,7 +192,8 @@ mod tests {
         source.set_http_etag(None);
         source.set_last_modified(None);
         source.save()?;
-        pipeline::run(vec![source])?;
+        let mut rt = tokio::runtime::Runtime::new()?;
+        rt.block_on(pipeline(vec![source], None));
 
         // Get the podcast
         let pd = dbqueries::get_podcast_from_source_id(sid)?;

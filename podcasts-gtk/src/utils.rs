@@ -41,7 +41,7 @@ use podcasts_data::dbqueries;
 use podcasts_data::downloader;
 use podcasts_data::errors::DownloadError;
 use podcasts_data::opml;
-use podcasts_data::pipeline;
+use podcasts_data::pipeline::pipeline;
 use podcasts_data::utils::checkup;
 use podcasts_data::Source;
 
@@ -231,31 +231,19 @@ pub(crate) fn schedule_refresh(source: Option<Vec<Source>>, sender: Sender<Actio
 /// Do not call this function directly unless you are sure no other updates are running.
 /// Use `schedule_refresh()` instead
 pub(crate) fn refresh_feed(source: Option<Vec<Source>>, sender: Sender<Action>) {
-    rayon::spawn(move || {
-        let (up_sender, up_receiver) = bounded(1);
-        sender
-            .send(Action::ShowUpdateNotif(up_receiver))
-            .expect("Action channel blew up somehow");
+    let (up_sender, up_receiver) = bounded(1);
+    sender
+        .send(Action::ShowUpdateNotif(up_receiver))
+        .expect("Action channel blew up somehow");
 
-        if let Some(s) = source {
-            // Refresh only specified feeds
-            pipeline::run(s)
-                .map_err(|err| error!("Error: {}", err))
-                .map_err(|_| error!("Error while trying to update the database."))
-                .ok();
-        } else {
-            // Refresh all the feeds
-            dbqueries::get_sources()
-                .map(|s| s.into_iter())
-                .and_then(pipeline::run)
-                .map_err(|err| error!("Error: {}", err))
-                .ok();
-        };
-
-        up_sender
-            .send(true)
-            .expect("Channel was dropped unexpectedly");
-    });
+    if let Some(s) = source {
+        // Refresh only specified feeds
+        tokio::spawn(pipeline(s, Some(up_sender)))
+    } else {
+        // Refresh all the feeds
+        let sources = dbqueries::get_sources().map(|s| s.into_iter()).unwrap();
+        tokio::spawn(pipeline(sources, Some(up_sender)))
+    };
 }
 
 lazy_static! {

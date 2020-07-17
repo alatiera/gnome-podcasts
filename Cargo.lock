@@ -1742,6 +1742,7 @@ dependencies = [
  "anyhow",
  "base64",
  "chrono",
+ "crossbeam-channel",
  "derive_builder",
  "diesel",
  "diesel_migrations",
@@ -1800,6 +1801,7 @@ dependencies = [
  "regex 1.3.9",
  "reqwest",
  "serde_json",
+ "tokio",
  "url",
 ]
 
