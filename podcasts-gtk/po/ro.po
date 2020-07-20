@@ -1,0 +1,373 @@
+# Romanian translation for podcasts.
+# Copyright (C) 2020 podcasts's COPYRIGHT HOLDER
+# This file is distributed under the same license as the podcasts package.
+# Florentina Mușat <florentina.musat.28@gmail.com>, 2020.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: podcasts master\n"
+"Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
+"POT-Creation-Date: 2020-07-20 07:18+0000\n"
+"PO-Revision-Date: 2020-07-20 13:42+0300\n"
+"Language-Team: Romanian <gnomero-list@lists.sourceforge.net>\n"
+"Language: ro\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : (n==0 || (n%100 > 0 && n%100 < 20)) ? 1 : 2);;\n"
+"Last-Translator: Florentina Mușat <florentina.musat.28@gmail.com>\n"
+"X-Generator: Poedit 2.3.1\n"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml:15
+msgid "Top position of the last open main window"
+msgstr "Poziția de top a ultimei ferestre principale deschise"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml:19
+msgid "Left position of the last open main window"
+msgstr "Poziția din stânga a ultimei ferestre principale deschise"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml:23
+msgid "Height of the last open main window"
+msgstr "Înălțimea ultimei ferestre principale deschise"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml:27
+msgid "Width of the last open main window"
+msgstr "Lățimea ultimei ferestre principale deschise"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml:31
+msgid "Maximized state of the last open main window"
+msgstr "Starea maximizată a ultimei ferestre principale deschise"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml:36
+msgid "Enable or disable dark theme"
+msgstr "Activează sau dezactivează tema întunecată"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml:41
+msgid "Whether to periodically refresh content"
+msgstr "Dacă să se reîmprospăteze periodic conținutul"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml:46
+msgid "How many periods of time to wait between automatic refreshes"
+msgstr "Câte perioade de timp să se aștepte între reîmprospătări automate"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml:50
+msgid "What period of time to wait between automatic refreshes"
+msgstr "Ce perioadă de timp să se aștepte între reîmprospătări automate"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml:54
+msgid "Whether to refresh content after startup"
+msgstr "Dacă să se reîmprospăteze conținutul după pornirea sistemului"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml:60
+msgid "How many periods of time to wait between automatic cleanups"
+msgstr "Câte perioade de timp să se aștepte între curățări automate"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml:64
+msgid "What period of time to wait between automatic cleanups"
+msgstr "Ce perioadă de timp să se aștepte între curățări automate"
+
+#. Weird magic I copy-pasted that sets the Application Name in the Shell.
+#: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:3
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:4
+#: podcasts-gtk/resources/gtk/headerbar.ui:158 podcasts-gtk/src/app.rs:353
+#: podcasts-gtk/src/widgets/aboutdialog.rs:56 podcasts-gtk/src/window.rs:82
+msgid "Podcasts"
+msgstr "Podcasturi"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:4
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:10
+msgid "Listen to your favorite podcasts, right from your desktop."
+msgstr "Ascultă podcasturile preferate, chiar de pe desktop."
+
+#. Translators: Search terms to find this application. Do NOT translate or localize the semicolons! The list MUST also end with a semicolon!
+#: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:13
+msgid "Podcast;RSS;"
+msgstr "Podcast;RSS;"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:8
+msgid "Podcast app for GNOME"
+msgstr "Aplicație podcast pentru GNOME"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:92
+msgid "Jordan Petridis"
+msgstr "Jordan Petridis"
+
+#: podcasts-gtk/resources/gtk/empty_view.ui:46
+msgid "This show does not have episodes yet"
+msgstr "Acest spectacol nu are episoade încă"
+
+#: podcasts-gtk/resources/gtk/empty_view.ui:62
+msgid "If you think this is an error, please consider writing a bug report."
+msgstr "Dacă credeți că aceasta este o eroare, considerați scrierea unui raport de defecțiune."
+
+#: podcasts-gtk/resources/gtk/empty_view.ui:106
+msgid "Get some shows"
+msgstr "Obține niște spectacole"
+
+#: podcasts-gtk/resources/gtk/empty_view.ui:143
+msgid "Add new shows via feed URL"
+msgstr "Adaugă spectacole noi via URL flux"
+
+#: podcasts-gtk/resources/gtk/empty_view.ui:172
+msgid "Import shows from another device"
+msgstr "Importă spectacole de la alt dispozitiv"
+
+#: podcasts-gtk/resources/gtk/episode_widget.ui:79
+msgid "You’ve already listened to this episode."
+msgstr "Ați ascultat deja la acest episod."
+
+#: podcasts-gtk/resources/gtk/episode_widget.ui:217
+msgid "Calculating episode size…"
+msgstr "Se calculează dimensiunea episodului…"
+
+#: podcasts-gtk/resources/gtk/episode_widget.ui:260
+msgid "Play this episode"
+msgstr "Redă acest episod"
+
+#: podcasts-gtk/resources/gtk/episode_widget.ui:281
+msgid "Cancel the download process"
+msgstr "Anulează procesul de descărcare"
+
+#: podcasts-gtk/resources/gtk/episode_widget.ui:304
+msgid "Download this episode"
+msgstr "Descarcă acest episod"
+
+#: podcasts-gtk/resources/gtk/hamburger.ui:7
+msgid "_Check for New Episodes"
+msgstr "Verifi_că pentru episoade noi"
+
+#: podcasts-gtk/resources/gtk/hamburger.ui:12
+msgid "_Import Shows"
+msgstr "_Importă spectacole"
+
+#: podcasts-gtk/resources/gtk/hamburger.ui:16
+msgid "_Export Shows"
+msgstr "_Exportă spectacole"
+
+#: podcasts-gtk/resources/gtk/hamburger.ui:22
+msgid "_Keyboard Shortcuts"
+msgstr "Scurtături de _tastatură"
+
+#: podcasts-gtk/resources/gtk/hamburger.ui:30
+msgid "_About Podcasts"
+msgstr "_Despre Podcasturi"
+
+#: podcasts-gtk/resources/gtk/headerbar.ui:35
+#: podcasts-gtk/resources/gtk/headerbar.ui:186
+msgid "Add a new feed"
+msgstr "Adaugă un flux nou"
+
+#: podcasts-gtk/resources/gtk/headerbar.ui:53
+msgid "Enter feed address to add"
+msgstr "Introduceți adresa de flux de adăugat"
+
+#: podcasts-gtk/resources/gtk/headerbar.ui:89
+msgid "Add"
+msgstr "Adaugă"
+
+#: podcasts-gtk/resources/gtk/headerbar.ui:171
+msgid "Show Title"
+msgstr "Arată titlul"
+
+#: podcasts-gtk/resources/gtk/headerbar.ui:207
+msgid "Back"
+msgstr "Înapoi"
+
+#: podcasts-gtk/resources/gtk/help-overlay.ui:12
+msgid "General"
+msgstr "Generale"
+
+#: podcasts-gtk/resources/gtk/help-overlay.ui:18
+msgctxt "shortcut window"
+msgid "Check for new episodes"
+msgstr "Verifică pentru episoade noi"
+
+#: podcasts-gtk/resources/gtk/help-overlay.ui:25
+msgctxt "shortcut window"
+msgid "Quit the application"
+msgstr "Ieșire din aplicație"
+
+#: podcasts-gtk/resources/gtk/home_view.ui:56
+msgid "Today"
+msgstr "Azi"
+
+#: podcasts-gtk/resources/gtk/home_view.ui:112
+msgid "Yesterday"
+msgstr "Ieri"
+
+#: podcasts-gtk/resources/gtk/home_view.ui:168
+msgid "This Week"
+msgstr "Această săptămână"
+
+#: podcasts-gtk/resources/gtk/home_view.ui:224
+msgid "This Month"
+msgstr "În această lună"
+
+#: podcasts-gtk/resources/gtk/home_view.ui:281
+msgid "Older"
+msgstr "Mai vechi"
+
+#: podcasts-gtk/resources/gtk/inapp_notif.ui:101
+msgid "An in-app action notification"
+msgstr "O înștiințare de acțiune în aplicație"
+
+#: podcasts-gtk/resources/gtk/inapp_notif.ui:112
+msgid "Undo"
+msgstr "Refă"
+
+#: podcasts-gtk/resources/gtk/player_dialog.ui:14
+msgid "Now Playing"
+msgstr "Acum se redă"
+
+#: podcasts-gtk/resources/gtk/player_rate.ui:32
+msgid "Change the playback speed"
+msgstr "Modifică viteza de playback"
+
+#: podcasts-gtk/resources/gtk/player_rate.ui:47
+msgid "1.00×"
+msgstr "1.00×"
+
+#: podcasts-gtk/resources/gtk/player_rate.ui:88
+msgid "Double speed rate"
+msgstr "Dublează rata vitezei"
+
+#: podcasts-gtk/resources/gtk/player_rate.ui:97
+msgid "1.75 speed rate"
+msgstr "1.75 rată viteză"
+
+#: podcasts-gtk/resources/gtk/player_rate.ui:106
+msgid "1.5 speed rate"
+msgstr "1.5 rată viteză"
+
+#: podcasts-gtk/resources/gtk/player_rate.ui:115
+msgid "1.25 speed rate"
+msgstr "1.25 rată viteză"
+
+#: podcasts-gtk/resources/gtk/player_rate.ui:124
+msgid "Normal speed"
+msgstr "Viteză normală"
+
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:97
+msgid "Rewind 10 seconds"
+msgstr "Derulează înapoi 10 secunde"
+
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:112
+msgid "Play"
+msgstr "Redă"
+
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:128
+msgid "Pause"
+msgstr "Pauză"
+
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:144
+msgid "Fast forward 10 seconds"
+msgstr "Derulează înainte 10 secunde"
+
+#: podcasts-gtk/resources/gtk/secondary_menu.ui:7
+msgid "_Mark All Episodes as Played"
+msgstr "_Marchează toate episoadele ca redate"
+
+#: podcasts-gtk/resources/gtk/secondary_menu.ui:11
+msgid "_Website"
+msgstr "Pagină _web"
+
+#: podcasts-gtk/resources/gtk/secondary_menu.ui:15
+msgid "_Unsubscribe"
+msgstr "_Dezabonează-mă"
+
+#: podcasts-gtk/resources/gtk/show_menu.ui:51
+msgid "Open Website"
+msgstr "Deschide pagina web"
+
+#: podcasts-gtk/resources/gtk/show_menu.ui:64
+msgid "Mark All as Played"
+msgstr "Marchează toate ca redate"
+
+#: podcasts-gtk/resources/gtk/show_menu.ui:89
+msgid "Unsubscribe"
+msgstr "Dezabonează-mă"
+
+#: podcasts-gtk/resources/gtk/show_widget.ui:99
+msgid "Read More"
+msgstr "Citește mai mult"
+
+#: podcasts-gtk/src/app.rs:287
+msgid "Fetching new episodes"
+msgstr "Se aduc episoade noi"
+
+#: podcasts-gtk/src/stacks/content.rs:54
+msgid "New"
+msgstr "Nou"
+
+#: podcasts-gtk/src/stacks/content.rs:55
+msgid "Shows"
+msgstr "Spectacole"
+
+#: podcasts-gtk/src/utils.rs:394
+msgid "Select the file from which to you want to import shows."
+msgstr "Selectează fișierul de la care doriți să importați spectacole."
+
+#: podcasts-gtk/src/utils.rs:397
+msgid "_Import"
+msgstr "_Importă"
+
+#: podcasts-gtk/src/utils.rs:406 podcasts-gtk/src/utils.rs:453
+msgid "OPML file"
+msgstr "Fișier OPML"
+
+#: podcasts-gtk/src/utils.rs:423
+msgid "Failed to parse the imported file"
+msgstr "Nu s-a putut parsa fișierul importat"
+
+#: podcasts-gtk/src/utils.rs:428 podcasts-gtk/src/utils.rs:471
+msgid "Selected file could not be accessed."
+msgstr "Fișierul selectat nu a putut fi accesat."
+
+#: podcasts-gtk/src/utils.rs:441
+msgid "Export shows to…"
+msgstr "Exportă spectacole la…"
+
+#: podcasts-gtk/src/utils.rs:444
+msgid "_Export"
+msgstr "_Exportă"
+
+#: podcasts-gtk/src/utils.rs:445
+msgid "_Cancel"
+msgstr "_Anulează"
+
+#: podcasts-gtk/src/utils.rs:465
+msgid "GNOME Podcasts Subscriptions"
+msgstr "Abonări GNOME Podcasturi"
+
+#: podcasts-gtk/src/utils.rs:466
+msgid "Failed to export podcasts"
+msgstr "Nu s-au putut exporta podcasturile"
+
+#: podcasts-gtk/src/widgets/aboutdialog.rs:51
+msgid "Podcast Client for the GNOME Desktop."
+msgstr "Client de podcast pentru GNOME Desktop."
+
+#: podcasts-gtk/src/widgets/aboutdialog.rs:58
+msgid "Learn more about GNOME Podcasts"
+msgstr "Învață mai multe despre GNOME Podcasturi"
+
+#: podcasts-gtk/src/widgets/aboutdialog.rs:63
+msgid "translator-credits"
+msgstr "Florentina Mușat <florentina [dot] musat [dot] 28 [at] gmail [dot] com>, 2020"
+
+#: podcasts-gtk/src/widgets/episode.rs:149
+msgid "{} min"
+msgstr "{} min"
+
+#. sender.send(Action::ErrorNotification(format!("Player Error: {}", error)));
+#: podcasts-gtk/src/widgets/player.rs:847
+msgid "The media player was unable to execute an action."
+msgstr "Playerul media nu a putut executa o acțiune."
+
+#: podcasts-gtk/src/widgets/show_menu.rs:174
+msgid "Marked all episodes as listened"
+msgstr "S-au marcat toate episoadele ca ascultate"
+
+#: podcasts-gtk/src/widgets/show_menu.rs:179
+msgid "Unsubscribed from {}"
+msgstr "Dezabonat de la {}"
