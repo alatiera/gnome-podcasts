@@ -26,45 +26,39 @@ use hyper_tls::HttpsConnector;
 use crate::errors::DataError;
 use crate::Source;
 
-use crossbeam_channel::Sender;
-
 /// The pipline to be run for indexing and updating a Podcast feed that originates from
 /// `Source.uri`.
 ///
 /// Messy temp diagram:
 /// Source -> GET Request -> Update Etags -> Check Status -> Parse `xml/Rss` ->
 /// Convert `rss::Channel` into `Feed` -> Index Podcast -> Index Episodes.
-pub async fn pipeline<S>(sources: S, sender: Option<Sender<bool>>)
+pub async fn pipeline<S>(sources: S)
 where
     S: IntoIterator<Item = Source>,
 {
     let https = HttpsConnector::new();
     let client = Client::builder().build::<_, Body>(https);
 
-    let mut handles = Vec::new();
-    for source in sources {
-        match source.into_feed(client.clone()).await {
-            Ok(feed) => {
-                let fut = feed.index();
-                handles.push(fut);
+    let handles: Vec<_> = sources
+        .into_iter()
+        .map(|source| async {
+            match source.into_feed(client.clone()).await {
+                Ok(feed) => feed.index().await,
+                Err(err) => Err(err),
             }
-            // Avoid spamming the stderr when it's not an actual error
-            Err(DataError::FeedNotModified(_)) => (),
-            Err(err) => error!("Error while converting source into feed: {}", err),
-        }
-    }
+        })
+        .collect();
     let results = futures::future::join_all(handles).await;
     for res in results {
-        if let Err(err) = res {
-            error!(
+        match res {
+            Ok(_) => (),
+            // Avoid spamming the stderr when it's not an actual error
+            Err(DataError::FeedNotModified(_)) => (),
+            Err(err) => error!(
                 "Error while indexing content feed into the database: {}",
                 err
-            )
+            ),
         }
-    }
-
-    if let Some(sender) = sender {
-        sender.send(true).expect("Channel was dropped unexpectedly");
     }
 }
 
@@ -103,11 +97,11 @@ mod tests {
 
         let sources = dbqueries::get_sources()?;
         let mut rt = tokio::runtime::Runtime::new()?;
-        rt.block_on(pipeline(sources, None));
+        rt.block_on(pipeline(sources));
 
         let sources = dbqueries::get_sources()?;
         // Run again to cover Unique constrains errors.
-        rt.block_on(pipeline(sources, None));
+        rt.block_on(pipeline(sources));
 
         // Assert the index rows equal the controlled results
         assert_eq!(dbqueries::get_sources()?.len(), 6);

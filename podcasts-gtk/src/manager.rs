@@ -156,7 +156,7 @@ mod tests {
         source.set_last_modified(None);
         source.save()?;
         let mut rt = tokio::runtime::Runtime::new()?;
-        rt.block_on(pipeline(vec![source], None));
+        rt.block_on(pipeline(vec![source]));
 
         // Get the podcast
         let pd = dbqueries::get_podcast_from_source_id(sid)?;
@@ -193,7 +193,7 @@ mod tests {
         source.set_last_modified(None);
         source.save()?;
         let mut rt = tokio::runtime::Runtime::new()?;
-        rt.block_on(pipeline(vec![source], None));
+        rt.block_on(pipeline(vec![source]));
 
         // Get the podcast
         let pd = dbqueries::get_podcast_from_source_id(sid)?;

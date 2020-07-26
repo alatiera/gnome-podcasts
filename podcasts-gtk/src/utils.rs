@@ -238,11 +238,21 @@ pub(crate) fn refresh_feed(source: Option<Vec<Source>>, sender: Sender<Action>) 
 
     if let Some(s) = source {
         // Refresh only specified feeds
-        tokio::spawn(pipeline(s, Some(up_sender)))
+        tokio::spawn(async move {
+            pipeline(s).await;
+            up_sender
+                .send(true)
+                .expect("Channel was dropped unexpectedly");
+        })
     } else {
         // Refresh all the feeds
-        let sources = dbqueries::get_sources().map(|s| s.into_iter()).unwrap();
-        tokio::spawn(pipeline(sources, Some(up_sender)))
+        tokio::spawn(async move {
+            let sources = dbqueries::get_sources().map(|s| s.into_iter()).unwrap();
+            pipeline(sources).await;
+            up_sender
+                .send(true)
+                .expect("Channel was dropped unexpectedly");
+        })
     };
 }
 
