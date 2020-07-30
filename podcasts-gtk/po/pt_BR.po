@@ -2,22 +2,22 @@
 # Copyright (C) 2020 podcasts's COPYRIGHT HOLDER
 # This file is distributed under the same license as the podcasts package.
 # Yuri Otávio Lopes Gomes <yuriotavio@hotmail.com>, 2018, 2020.
-# Rafael Fontenelle <rafaelff@gnome.org>, 2018-2019.
+# Rafael Fontenelle <rafaelff@gnome.org>, 2018-2020.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: podcasts master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2020-02-07 19:22+0000\n"
-"PO-Revision-Date: 2020-02-07 15:18-0300\n"
-"Last-Translator: Yuri Otávio Lopes Gomes <yuriotavio@hotmail.com>\n"
+"POT-Creation-Date: 2020-06-21 21:43+0000\n"
+"PO-Revision-Date: 2020-07-30 17:12-0300\n"
+"Last-Translator: Rafael Fontenelle <rafaelff@gnome.org>\n"
 "Language-Team: Brazilian Portuguese <gnome-pt_br-list@gnome.org>\n"
 "Language: pt_BR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Poedit 2.3\n"
+"Plural-Forms: nplurals=2; plural=(n > 1)\n"
+"X-Generator: Gtranslator 3.36.0\n"
 
 #: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml:15
 msgid "Top position of the last open main window"
@@ -71,8 +71,8 @@ msgstr "Qual período de tempo deve esperar entre limpezas automáticas"
 #. Weird magic I copy-pasted that sets the Application Name in the Shell.
 #: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:3
 #: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:4
-#: podcasts-gtk/resources/gtk/headerbar.ui:158 podcasts-gtk/src/app.rs:329
-#: podcasts-gtk/src/widgets/aboutdialog.rs:56 podcasts-gtk/src/window.rs:80
+#: podcasts-gtk/resources/gtk/headerbar.ui:158 podcasts-gtk/src/app.rs:353
+#: podcasts-gtk/src/widgets/aboutdialog.rs:56 podcasts-gtk/src/window.rs:82
 msgid "Podcasts"
 msgstr "Podcasts"
 
@@ -120,19 +120,19 @@ msgstr "Importar podcasts de outro dispositivo"
 msgid "You’ve already listened to this episode."
 msgstr "Você já ouviu este episódio."
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:208
+#: podcasts-gtk/resources/gtk/episode_widget.ui:217
 msgid "Calculating episode size…"
 msgstr "Calculando o tamanho do episódio…"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:248
+#: podcasts-gtk/resources/gtk/episode_widget.ui:260
 msgid "Play this episode"
 msgstr "Inicia este episódio"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:269
+#: podcasts-gtk/resources/gtk/episode_widget.ui:281
 msgid "Cancel the download process"
 msgstr "Cancela o processo de download"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:292
+#: podcasts-gtk/resources/gtk/episode_widget.ui:304
 msgid "Download this episode"
 msgstr "Faz download deste episódio"
 
@@ -228,27 +228,28 @@ msgid "Change the playback speed"
 msgstr "Altera a velocidade de reprodução"
 
 #: podcasts-gtk/resources/gtk/player_rate.ui:47
-#: podcasts-gtk/resources/gtk/player_rate.ui:122
 msgid "1.00×"
 msgstr "1,00×"
 
-#: podcasts-gtk/resources/gtk/player_rate.ui:86
-msgid "1.50×"
-msgstr "1,50×"
+#: podcasts-gtk/resources/gtk/player_rate.ui:88
+#| msgid "1.5 speed rate"
+msgid "Double speed rate"
+msgstr "Taxa de velocidade duplicada"
 
-#: podcasts-gtk/resources/gtk/player_rate.ui:90
+#: podcasts-gtk/resources/gtk/player_rate.ui:97
+#| msgid "1.5 speed rate"
+msgid "1.75 speed rate"
+msgstr "Taxa de velocidade de 1,75"
+
+#: podcasts-gtk/resources/gtk/player_rate.ui:106
 msgid "1.5 speed rate"
 msgstr "Taxa de velocidade de 1,5"
 
-#: podcasts-gtk/resources/gtk/player_rate.ui:104
-msgid "1.25×"
-msgstr "1,25×"
-
-#: podcasts-gtk/resources/gtk/player_rate.ui:108
+#: podcasts-gtk/resources/gtk/player_rate.ui:115
 msgid "1.25 speed rate"
 msgstr "Taxa de velocidade de 1,25"
 
-#: podcasts-gtk/resources/gtk/player_rate.ui:126
+#: podcasts-gtk/resources/gtk/player_rate.ui:124
 msgid "Normal speed"
 msgstr "Velocidade normal"
 
@@ -296,7 +297,7 @@ msgstr "Desinscrever"
 msgid "Read More"
 msgstr "Leia mais"
 
-#: podcasts-gtk/src/app.rs:264
+#: podcasts-gtk/src/app.rs:287
 msgid "Fetching new episodes"
 msgstr "Buscando novos episódios"
 
@@ -308,43 +309,43 @@ msgstr "Novo"
 msgid "Shows"
 msgstr "Podcasts"
 
-#: podcasts-gtk/src/utils.rs:396
+#: podcasts-gtk/src/utils.rs:398
 msgid "Select the file from which to you want to import shows."
 msgstr "Selecione o arquivo a partir do qual você deseja importar podcasts."
 
-#: podcasts-gtk/src/utils.rs:399
+#: podcasts-gtk/src/utils.rs:401
 msgid "_Import"
 msgstr "_Importar"
 
-#: podcasts-gtk/src/utils.rs:408 podcasts-gtk/src/utils.rs:455
+#: podcasts-gtk/src/utils.rs:410 podcasts-gtk/src/utils.rs:457
 msgid "OPML file"
 msgstr "Arquivo OPML"
 
-#: podcasts-gtk/src/utils.rs:425
+#: podcasts-gtk/src/utils.rs:427
 msgid "Failed to parse the imported file"
 msgstr "Falha ao analisar o arquivo importado"
 
-#: podcasts-gtk/src/utils.rs:430 podcasts-gtk/src/utils.rs:473
+#: podcasts-gtk/src/utils.rs:432 podcasts-gtk/src/utils.rs:475
 msgid "Selected file could not be accessed."
 msgstr "O arquivo selecionado não pôde ser acessado."
 
-#: podcasts-gtk/src/utils.rs:443
+#: podcasts-gtk/src/utils.rs:445
 msgid "Export shows to…"
 msgstr "Exportar podcasts para…"
 
-#: podcasts-gtk/src/utils.rs:446
+#: podcasts-gtk/src/utils.rs:448
 msgid "_Export"
 msgstr "_Exportar"
 
-#: podcasts-gtk/src/utils.rs:447
+#: podcasts-gtk/src/utils.rs:449
 msgid "_Cancel"
 msgstr "_Cancelar"
 
-#: podcasts-gtk/src/utils.rs:467
+#: podcasts-gtk/src/utils.rs:469
 msgid "GNOME Podcasts Subscriptions"
 msgstr "Inscrições do GNOME Podcasts"
 
-#: podcasts-gtk/src/utils.rs:468
+#: podcasts-gtk/src/utils.rs:470
 msgid "Failed to export podcasts"
 msgstr "Falha ao exportar podcasts"
 
@@ -362,22 +363,28 @@ msgstr ""
 "Rafael Fontenelle <rafaelff@gnome.org>\n"
 "Yuri Otávio Lopes Gomes <yuriotavio@hotmail.com>"
 
-#: podcasts-gtk/src/widgets/episode.rs:148
+#: podcasts-gtk/src/widgets/episode.rs:149
 msgid "{} min"
 msgstr "{} min"
 
 #. sender.send(Action::ErrorNotification(format!("Player Error: {}", error)));
-#: podcasts-gtk/src/widgets/player.rs:822
+#: podcasts-gtk/src/widgets/player.rs:847
 msgid "The media player was unable to execute an action."
 msgstr "O reprodutor de mídia não conseguiu executar uma ação."
 
-#: podcasts-gtk/src/widgets/show_menu.rs:179
+#: podcasts-gtk/src/widgets/show_menu.rs:174
 msgid "Marked all episodes as listened"
 msgstr "Marcados todos os episódios como ouvidos"
 
-#: podcasts-gtk/src/widgets/show_menu.rs:184
+#: podcasts-gtk/src/widgets/show_menu.rs:179
 msgid "Unsubscribed from {}"
 msgstr "Desinscrito de {}"
+
+#~ msgid "1.50×"
+#~ msgstr "1,50×"
+
+#~ msgid "1.25×"
+#~ msgstr "1,25×"
 
 #~ msgid "You are already subscribed to this show"
 #~ msgstr "Você já está inscrito neste podcast"
