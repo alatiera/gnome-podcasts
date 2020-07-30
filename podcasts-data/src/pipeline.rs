@@ -43,23 +43,20 @@ where
         .into_iter()
         .map(|source| async {
             match source.into_feed(client.clone()).await {
-                Ok(feed) => feed.index().await,
-                Err(err) => Err(err),
+                Ok(feed) => match feed.index().await {
+                    Ok(_) => (),
+                    Err(err) => error!(
+                        "Error while indexing content feed into the database: {}",
+                        err
+                    ),
+                },
+                // Avoid spamming the stderr when it's not an actual error
+                Err(DataError::FeedNotModified(_)) => (),
+                Err(err) => error!("Error while fetching the latest xml feed: {}", err),
             }
         })
         .collect();
-    let results = futures::future::join_all(handles).await;
-    for res in results {
-        match res {
-            Ok(_) => (),
-            // Avoid spamming the stderr when it's not an actual error
-            Err(DataError::FeedNotModified(_)) => (),
-            Err(err) => error!(
-                "Error while indexing content feed into the database: {}",
-                err
-            ),
-        }
-    }
+    futures::future::join_all(handles).await;
 }
 
 #[cfg(test)]
