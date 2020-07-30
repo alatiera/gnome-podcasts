@@ -68,8 +68,17 @@ impl Default for InAppNotification {
     }
 }
 
-/// Timer should be in milliseconds
 impl InAppNotification {
+    /// Creates a new instance of InAppNotification
+    ///
+    /// # Arguments
+    ///
+    /// * `text` - Text which is displayed within the revealer
+    /// * `timer` - Time in ms until the callback is called
+    /// * `callback` - Function to call after `timer` is passed.
+    ///                You will probably want to call `set_reveal_child(false)` within it
+    /// * `undo_callback` - If undo_callback is `is_some()`, then the revealer will include an undo-button.
+    ///                     If the undo-button is pressed, undo_callback will be called.
     pub(crate) fn new<F, U>(
         text: &str,
         timer: u32,
@@ -84,11 +93,12 @@ impl InAppNotification {
         notif.text.set_text(&text);
 
         let mut time = 0;
+        let interval = 250;
         let id = timeout_add(
-            250,
+            interval,
             clone!(@weak notif.revealer as revealer => @default-return glib::Continue(false), move || {
                     if time < timer {
-                        time += 250;
+                        time += interval;
                         return glib::Continue(true);
                     };
                     callback(revealer)
@@ -100,32 +110,29 @@ impl InAppNotification {
             notif.set_undo_state(State::Shown)
         };
 
-        // Cancel the callback
-        let revealer = notif.revealer.clone();
-        notif.undo.connect_clicked(move |_| {
-            let foo = id.borrow_mut().take();
-            if let Some(id) = foo {
-                glib::source::source_remove(id);
-            }
+        notif
+            .undo
+            .connect_clicked(clone!(@weak notif.revealer as revealer => move |_| {
+                let foo = id.borrow_mut().take();
+                if let Some(id) = foo {
+                    // Cancel the callback
+                    glib::source::source_remove(id);
+                }
 
-            if let Some(ref f) = undo_callback {
-                f();
-            }
+                if let Some(ref f) = undo_callback {
+                    f();
+                }
 
-            // Hide the notification
-            revealer.set_reveal_child(false);
-        });
+                // Hide the notification
+                revealer.set_reveal_child(false);
+            }));
 
         // Hide the revealer when the close button is clicked
-        let revealer_weak = notif.revealer.downgrade();
-        notif.close.connect_clicked(move |_| {
-            let revealer = match revealer_weak.upgrade() {
-                Some(r) => r,
-                None => return,
-            };
-
-            revealer.set_reveal_child(false);
-        });
+        notif
+            .close
+            .connect_clicked(clone!(@weak notif.revealer as revealer => move |_| {
+                revealer.set_reveal_child(false);
+            }));
 
         notif
     }

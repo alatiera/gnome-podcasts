@@ -53,3 +53,7 @@ path = "../podcasts-data"
 
 [dev-dependencies]
 pretty_assertions = "0.6.1"
+
+[dependencies.tokio]
+features = ["rt-core", "rt-threaded", "macros"]
+version = "0.2.21"

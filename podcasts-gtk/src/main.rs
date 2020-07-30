@@ -86,8 +86,8 @@ fn init_gtk_tests() -> anyhow::Result<()> {
     gst::init()?;
     Ok(())
 }
-
-fn main() {
+#[tokio::main]
+async fn main() {
     // TODO: make the logger a cli -vv option
     loggerv::init_with_level(Level::Info).expect("Error initializing loggerv.");
     gtk::init().expect("Error initializing gtk.");

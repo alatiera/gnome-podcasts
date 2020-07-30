@@ -20,20 +20,11 @@
 // FIXME:
 //! Docs.
 
-use futures::{future::ok, prelude::*, stream::FuturesUnordered};
-use tokio;
-
-use hyper::client::HttpConnector;
 use hyper::{Body, Client};
 use hyper_tls::HttpsConnector;
-use tokio::runtime::Runtime;
 
 use crate::errors::DataError;
 use crate::Source;
-
-use std::iter::FromIterator;
-
-type HttpsClient = Client<HttpsConnector<HttpConnector>>;
 
 /// The pipline to be run for indexing and updating a Podcast feed that originates from
 /// `Source.uri`.
@@ -41,50 +32,31 @@ type HttpsClient = Client<HttpsConnector<HttpConnector>>;
 /// Messy temp diagram:
 /// Source -> GET Request -> Update Etags -> Check Status -> Parse `xml/Rss` ->
 /// Convert `rss::Channel` into `Feed` -> Index Podcast -> Index Episodes.
-pub async fn pipeline<'a, S>(mut sources: S, client: HttpsClient)
-where
-    S: Stream<Item = Result<Source, DataError>> + Send + 'a + std::marker::Unpin,
-{
-    let mut handles = Vec::new();
-    while let Some(source_result) = sources.next().await {
-        if let Ok(source) = source_result {
-            match source.into_feed(client.clone()).await {
-                Ok(feed) => {
-                    let fut = feed.index();
-                    handles.push(fut);
-                }
-                // Avoid spamming the stderr when it's not an actual error
-                Err(DataError::FeedNotModified(_)) => (),
-                Err(err) => error!("Error while converting source into feed: {}", err),
-            }
-        }
-    }
-    let results = futures::future::join_all(handles).await;
-    for res in results {
-        if let Err(err) = res {
-            error!(
-                "Error while indexing content feed into the database: {}",
-                err
-            )
-        }
-    }
-}
-
-/// Creates a tokio `reactor::Core`, and a `hyper::Client` and
-/// runs the pipeline to completion. The `reactor::Core` is dropped afterwards.
-pub fn run<S>(sources: S) -> Result<(), DataError>
+pub async fn pipeline<S>(sources: S)
 where
     S: IntoIterator<Item = Source>,
 {
-    let mut rt = Runtime::new().unwrap();
     let https = HttpsConnector::new();
     let client = Client::builder().build::<_, Body>(https);
 
-    let foo = sources.into_iter().map(ok::<_, _>);
-    let stream = FuturesUnordered::from_iter(foo);
-    rt.block_on(pipeline(stream, client));
-
-    Ok(())
+    let handles: Vec<_> = sources
+        .into_iter()
+        .map(|source| async {
+            match source.into_feed(client.clone()).await {
+                Ok(feed) => match feed.index().await {
+                    Ok(_) => (),
+                    Err(err) => error!(
+                        "Error while indexing content feed into the database: {}",
+                        err
+                    ),
+                },
+                // Avoid spamming the stderr when it's not an actual error
+                Err(DataError::FeedNotModified(_)) => (),
+                Err(err) => error!("Error while fetching the latest xml feed: {}", err),
+            }
+        })
+        .collect();
+    futures::future::join_all(handles).await;
 }
 
 #[cfg(test)]
@@ -121,11 +93,12 @@ mod tests {
         });
 
         let sources = dbqueries::get_sources()?;
-        run(sources)?;
+        let mut rt = tokio::runtime::Runtime::new()?;
+        rt.block_on(pipeline(sources));
 
         let sources = dbqueries::get_sources()?;
         // Run again to cover Unique constrains errors.
-        run(sources)?;
+        rt.block_on(pipeline(sources));
 
         // Assert the index rows equal the controlled results
         assert_eq!(dbqueries::get_sources()?.len(), 6);

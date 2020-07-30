@@ -272,7 +272,7 @@ pub fn cache_image(pd: &ShowCoverModel) -> Result<String, DownloadError> {
 mod tests {
     use super::*;
     use crate::dbqueries;
-    use crate::pipeline;
+    use crate::pipeline::pipeline;
     use crate::Source;
     use anyhow::Result;
 
@@ -289,7 +289,8 @@ mod tests {
         // Copy it's id
         let sid = source.id();
         // Convert Source it into a future Feed and index it
-        pipeline::run(vec![source])?;
+        let mut rt = tokio::runtime::Runtime::new()?;
+        rt.block_on(pipeline(vec![source]));
 
         // Get the Podcast
         let pd = dbqueries::get_podcast_from_source_id(sid)?.into();
