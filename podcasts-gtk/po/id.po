@@ -7,15 +7,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: podcasts master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2020-02-07 11:33+0000\n"
-"PO-Revision-Date: 2020-02-13 19:33+0700\n"
+"POT-Creation-Date: 2020-06-21 21:43+0000\n"
+"PO-Revision-Date: 2020-07-31 19:42+0700\n"
 "Last-Translator: Kukuh Syafaat <kukuhsyafaat@gnome.org>\n"
 "Language-Team: Indonesian <gnome-l10n-id@googlegroups.com>\n"
 "Language: id\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 2.3\n"
+"X-Generator: Poedit 2.4\n"
 
 #: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml:15
 msgid "Top position of the last open main window"
@@ -68,24 +68,24 @@ msgstr "Berapa lama waktu untuk menunggu di antara pembersihan otomatis"
 #. Weird magic I copy-pasted that sets the Application Name in the Shell.
 #: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:3
 #: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:4
-#: podcasts-gtk/resources/gtk/headerbar.ui:158 podcasts-gtk/src/app.rs:330
-#: podcasts-gtk/src/widgets/aboutdialog.rs:56 podcasts-gtk/src/window.rs:80
+#: podcasts-gtk/resources/gtk/headerbar.ui:158 podcasts-gtk/src/app.rs:353
+#: podcasts-gtk/src/widgets/aboutdialog.rs:56 podcasts-gtk/src/window.rs:82
 msgid "Podcasts"
-msgstr "Podcast"
+msgstr "Siniar"
 
 #: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:4
 #: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:10
 msgid "Listen to your favorite podcasts, right from your desktop."
-msgstr "Dengarkan podcast favorit Anda, langsung dari destop Anda."
+msgstr "Dengarkan siniar favorit Anda, langsung dari destop Anda."
 
 #. Translators: Search terms to find this application. Do NOT translate or localize the semicolons! The list MUST also end with a semicolon!
 #: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:13
 msgid "Podcast;RSS;"
-msgstr "Podcast;RSS;"
+msgstr "Siniar;RSS;"
 
 #: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:8
 msgid "Podcast app for GNOME"
-msgstr "Aplikasi Podcast untuk GNOME"
+msgstr "Aplikasi Siniar untuk GNOME"
 
 #: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:84
 msgid "Jordan Petridis"
@@ -117,19 +117,19 @@ msgstr "Impor acara dari perangkat lain"
 msgid "You’ve already listened to this episode."
 msgstr "Anda sudah mendengarkan episode ini."
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:208
+#: podcasts-gtk/resources/gtk/episode_widget.ui:217
 msgid "Calculating episode size…"
 msgstr "Menghitung ukuran episode…"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:248
+#: podcasts-gtk/resources/gtk/episode_widget.ui:260
 msgid "Play this episode"
 msgstr "Putar episode ini"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:269
+#: podcasts-gtk/resources/gtk/episode_widget.ui:281
 msgid "Cancel the download process"
 msgstr "Batalkan proses pengunduhan"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:292
+#: podcasts-gtk/resources/gtk/episode_widget.ui:304
 msgid "Download this episode"
 msgstr "Unduh episode ini"
 
@@ -151,7 +151,7 @@ msgstr "Pintasan Papan _Ketik"
 
 #: podcasts-gtk/resources/gtk/hamburger.ui:30
 msgid "_About Podcasts"
-msgstr "Tent_ang Podcast"
+msgstr "Tent_ang Siniar"
 
 #: podcasts-gtk/resources/gtk/headerbar.ui:35
 #: podcasts-gtk/resources/gtk/headerbar.ui:186
@@ -225,27 +225,26 @@ msgid "Change the playback speed"
 msgstr "Ubah kecepatan pemutaran"
 
 #: podcasts-gtk/resources/gtk/player_rate.ui:47
-#: podcasts-gtk/resources/gtk/player_rate.ui:122
 msgid "1.00×"
 msgstr "Ubah kecepatan pemutaran"
 
-#: podcasts-gtk/resources/gtk/player_rate.ui:86
-msgid "1.50×"
-msgstr "1.50×"
+#: podcasts-gtk/resources/gtk/player_rate.ui:88
+msgid "Double speed rate"
+msgstr "Laju kecepatan ganda"
 
-#: podcasts-gtk/resources/gtk/player_rate.ui:90
+#: podcasts-gtk/resources/gtk/player_rate.ui:97
+msgid "1.75 speed rate"
+msgstr "Laju kecepatan 1,75"
+
+#: podcasts-gtk/resources/gtk/player_rate.ui:106
 msgid "1.5 speed rate"
 msgstr "tingkat kecepatan 1.5"
 
-#: podcasts-gtk/resources/gtk/player_rate.ui:104
-msgid "1.25×"
-msgstr "1.25×"
-
-#: podcasts-gtk/resources/gtk/player_rate.ui:108
+#: podcasts-gtk/resources/gtk/player_rate.ui:115
 msgid "1.25 speed rate"
 msgstr "tingkat kecepatan 1.25"
 
-#: podcasts-gtk/resources/gtk/player_rate.ui:126
+#: podcasts-gtk/resources/gtk/player_rate.ui:124
 msgid "Normal speed"
 msgstr "Kecepatan normal"
 
@@ -293,7 +292,7 @@ msgstr "Berhenti Berlangganan"
 msgid "Read More"
 msgstr "Baca Lebih Lanjut"
 
-#: podcasts-gtk/src/app.rs:265
+#: podcasts-gtk/src/app.rs:287
 msgid "Fetching new episodes"
 msgstr "Mengambil episode baru"
 
@@ -305,74 +304,80 @@ msgstr "Baru"
 msgid "Shows"
 msgstr "Acara"
 
-#: podcasts-gtk/src/utils.rs:396
+#: podcasts-gtk/src/utils.rs:398
 msgid "Select the file from which to you want to import shows."
 msgstr "Pilih berkas dari mana Anda ingin mengimpor acara."
 
-#: podcasts-gtk/src/utils.rs:399
+#: podcasts-gtk/src/utils.rs:401
 msgid "_Import"
 msgstr "_Impor"
 
-#: podcasts-gtk/src/utils.rs:408 podcasts-gtk/src/utils.rs:456
+#: podcasts-gtk/src/utils.rs:410 podcasts-gtk/src/utils.rs:457
 msgid "OPML file"
 msgstr "Berkas OPML"
 
-#: podcasts-gtk/src/utils.rs:425
+#: podcasts-gtk/src/utils.rs:427
 msgid "Failed to parse the imported file"
 msgstr "Gagal mengurai berkas yang diimpor"
 
-#: podcasts-gtk/src/utils.rs:430 podcasts-gtk/src/utils.rs:474
+#: podcasts-gtk/src/utils.rs:432 podcasts-gtk/src/utils.rs:475
 msgid "Selected file could not be accessed."
 msgstr "Berkas yang dipilih tidak dapat diakses."
 
-#: podcasts-gtk/src/utils.rs:444
+#: podcasts-gtk/src/utils.rs:445
 msgid "Export shows to…"
 msgstr "Ekspor acara ke…"
 
-#: podcasts-gtk/src/utils.rs:447
+#: podcasts-gtk/src/utils.rs:448
 msgid "_Export"
 msgstr "_Ekspor"
 
-#: podcasts-gtk/src/utils.rs:448
+#: podcasts-gtk/src/utils.rs:449
 msgid "_Cancel"
 msgstr "_Batal"
 
-#: podcasts-gtk/src/utils.rs:468
-msgid "GNOME Podcasts Subscriptions"
-msgstr "Berlangganan GNOME Podcast"
-
 #: podcasts-gtk/src/utils.rs:469
+msgid "GNOME Podcasts Subscriptions"
+msgstr "Berlangganan GNOME Siniar"
+
+#: podcasts-gtk/src/utils.rs:470
 msgid "Failed to export podcasts"
-msgstr "Gagal mengekspor podcast"
+msgstr "Gagal mengekspor siniar"
 
 #: podcasts-gtk/src/widgets/aboutdialog.rs:51
 msgid "Podcast Client for the GNOME Desktop."
-msgstr "Klien Podcast untuk Destop GNOME."
+msgstr "Klien Siniar untuk Destop GNOME."
 
 #: podcasts-gtk/src/widgets/aboutdialog.rs:58
 msgid "Learn more about GNOME Podcasts"
-msgstr "Pelajari lebih lanjut tentang GNOME Podcast"
+msgstr "Pelajari lebih lanjut tentang GNOME Siniar"
 
 #: podcasts-gtk/src/widgets/aboutdialog.rs:63
 msgid "translator-credits"
 msgstr "Kukuh Syafaat <kukuhsyafaat@gnome.org>, 2018-2020."
 
-#: podcasts-gtk/src/widgets/episode.rs:148
+#: podcasts-gtk/src/widgets/episode.rs:149
 msgid "{} min"
 msgstr "{} mnt"
 
 #. sender.send(Action::ErrorNotification(format!("Player Error: {}", error)));
-#: podcasts-gtk/src/widgets/player.rs:824
+#: podcasts-gtk/src/widgets/player.rs:847
 msgid "The media player was unable to execute an action."
 msgstr "Pemutar media tidak dapat melakukan aksi."
 
-#: podcasts-gtk/src/widgets/show_menu.rs:179
+#: podcasts-gtk/src/widgets/show_menu.rs:174
 msgid "Marked all episodes as listened"
 msgstr "Tandai semua episode sebagai sudah didengarkan"
 
-#: podcasts-gtk/src/widgets/show_menu.rs:184
+#: podcasts-gtk/src/widgets/show_menu.rs:179
 msgid "Unsubscribed from {}"
 msgstr "Berhenti berlangganan dari {}"
+
+#~ msgid "1.50×"
+#~ msgstr "1.50×"
+
+#~ msgid "1.25×"
+#~ msgstr "1.25×"
 
 #~ msgid "You are already subscribed to this show"
 #~ msgstr "Anda sudah berlangganan ke acara ini"
