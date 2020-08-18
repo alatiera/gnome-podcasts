@@ -17,7 +17,7 @@
         "--socket=fallback-x11",
         "--socket=wayland",
         "--socket=pulseaudio",
-        "--env=USE_PLAYBING3=1"
+        "--env=USE_PLAYBIN3=1"
     ],
     "build-options" : {
         "append-path" : "/usr/lib/sdk/rust-stable/bin",
