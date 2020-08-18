@@ -22,6 +22,8 @@ use gio::{Settings, SettingsExt};
 use gtk;
 use gtk::GtkWindowExt;
 
+use libhandy as hdy;
+
 use chrono::prelude::*;
 use chrono::Duration;
 
@@ -34,7 +36,7 @@ pub(crate) struct WindowGeometry {
 }
 
 impl WindowGeometry {
-    pub(crate) fn from_window(window: &gtk::ApplicationWindow) -> WindowGeometry {
+    pub(crate) fn from_window(window: &hdy::ApplicationWindow) -> WindowGeometry {
         let position = window.get_position();
         let size = window.get_size();
         let left = position.0;
@@ -68,7 +70,7 @@ impl WindowGeometry {
         }
     }
 
-    pub(crate) fn apply(&self, window: &gtk::ApplicationWindow) {
+    pub(crate) fn apply(&self, window: &hdy::ApplicationWindow) {
         if self.width > 0 && self.height > 0 {
             window.resize(self.width, self.height);
         }
