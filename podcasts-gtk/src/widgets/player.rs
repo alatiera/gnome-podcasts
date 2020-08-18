@@ -291,7 +291,7 @@ struct PlayerControls {
 
 #[derive(Debug, Clone)]
 struct PlayerDialog {
-    dialog: hdy::Dialog,
+    dialog: gtk::Dialog,
     close: gtk::Button,
     headerbar: hdy::HeaderBar,
     cover: gtk::Image,

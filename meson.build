@@ -12,7 +12,7 @@ dependency('glib-2.0', version: '>= 2.56')
 dependency('gio-2.0', version: '>= 2.56')
 dependency('gdk-pixbuf-2.0')
 dependency('gtk+-3.0', version: '>= 3.24.11')
-dependency('libhandy-0.0', version: '>= 0.0.13')
+dependency('libhandy-1', version: '>= 0.84.0')
 
 dependency('gstreamer-1.0', version: '>= 1.16')
 dependency('gstreamer-base-1.0', version: '>= 1.16')

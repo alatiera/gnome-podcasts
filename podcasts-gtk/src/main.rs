@@ -81,17 +81,19 @@ fn init_gtk_tests() -> anyhow::Result<()> {
     //     static_resource::init()?;
     // }
 
-    gtk::init()?;
-    static_resource::init()?;
     gst::init()?;
+    gtk::init()?;
+    libhandy::init();
+    static_resource::init()?;
     Ok(())
 }
 #[tokio::main]
 async fn main() {
     // TODO: make the logger a cli -vv option
     loggerv::init_with_level(Level::Info).expect("Error initializing loggerv.");
-    gtk::init().expect("Error initializing gtk.");
     gst::init().expect("Error initializing gstreamer");
+    gtk::init().expect("Error initializing gtk.");
+    libhandy::init();
     static_resource::init().expect("Something went wrong with the resource file initialization.");
 
     // Add custom style

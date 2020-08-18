@@ -25,7 +25,7 @@ use anyhow::Result;
 use crossbeam_channel::{bounded, Sender};
 use fragile::Fragile;
 use html2text;
-use libhandy::{Column, ColumnExt};
+use libhandy::{Clamp, ClampExt};
 use rayon;
 
 use podcasts_data::dbqueries;
@@ -66,16 +66,12 @@ impl Default for ShowWidget {
         let episodes = builder.get_object("episodes").unwrap();
         let view = BaseView::default();
 
-        let column = Column::new();
-        column.set_maximum_width(700);
-        // For some reason the Column is not seen as a gtk::container
-        // and therefore we can't call add() without the cast
-        let column = column.upcast::<gtk::Widget>();
-        let column = column.downcast::<gtk::Container>().unwrap();
+        let clamp = Clamp::new();
+        clamp.set_maximum_size(700);
 
-        column.add(&sub_cont);
-        view.add(&column);
-        column.show_all();
+        clamp.add(&sub_cont);
+        view.add(&clamp);
+        clamp.show_all();
 
         ShowWidget {
             view,

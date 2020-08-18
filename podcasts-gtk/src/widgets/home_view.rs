@@ -25,7 +25,7 @@ use gtk::{self, prelude::*, Adjustment};
 use glib::clone;
 
 use crossbeam_channel::Sender;
-use libhandy::{Column, ColumnExt};
+use libhandy::{Clamp, ClampExt};
 use podcasts_data::dbqueries;
 use podcasts_data::EpisodeWidgetModel;
 
@@ -77,16 +77,12 @@ impl Default for HomeView {
         let month_list: gtk::ListBox = builder.get_object("month_list").unwrap();
         let rest_list: gtk::ListBox = builder.get_object("rest_list").unwrap();
 
-        let column = Column::new();
-        column.show();
-        column.set_maximum_width(700);
-        // For some reason the Column is not seen as a gtk::container
-        // and therefore we can't call add() without the cast
-        let column = column.upcast::<gtk::Widget>();
-        let column = column.downcast::<gtk::Container>().unwrap();
+        let clamp = Clamp::new();
+        clamp.show();
+        clamp.set_maximum_size(700);
 
-        column.add(&frame_parent);
-        view.add(&column);
+        clamp.add(&frame_parent);
+        view.add(&clamp);
 
         HomeView {
             view,
