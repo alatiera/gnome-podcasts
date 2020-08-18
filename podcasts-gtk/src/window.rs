@@ -26,6 +26,8 @@ use gio::{self, prelude::*, ActionMapExt, SettingsExt};
 use gtk;
 use gtk::prelude::*;
 
+use libhandy as hdy;
+
 use crossbeam_channel::{unbounded, Receiver, Sender};
 
 use crate::app::{Action, PdApplication};
@@ -61,7 +63,7 @@ where
 #[derive(Debug)]
 pub struct MainWindow {
     app: PdApplication,
-    pub(crate) window: gtk::ApplicationWindow,
+    pub(crate) window: hdy::ApplicationWindow,
     pub(crate) overlay: gtk::Overlay,
     pub(crate) content: Rc<Content>,
     pub(crate) headerbar: Rc<Header>,
@@ -78,7 +80,8 @@ impl MainWindow {
 
         let (sender, receiver) = unbounded();
 
-        let window = gtk::ApplicationWindow::new(app);
+        let window = hdy::ApplicationWindow::new();
+        window.set_application(Some(app));
         window.set_title(&i18n("Podcasts"));
         if APP_ID.ends_with("Devel") {
             window.get_style_context().add_class("devel");
@@ -101,14 +104,16 @@ impl MainWindow {
 
         // Create the headerbar
         let header = Header::new(&content, &sender);
-        // Add the Headerbar to the window.
-        window.set_titlebar(Some(&header.container));
 
         // Add the content main stack to the overlay.
         let overlay = gtk::Overlay::new();
         overlay.add(&content.get_stack());
 
         let wrap = gtk::Box::new(gtk::Orientation::Vertical, 0);
+
+        // Add the Headerbar to the window.
+        wrap.add(&header.container);
+
         // Add the overlay to the main Box
         wrap.add(&overlay);
 
@@ -176,18 +181,18 @@ impl MainWindow {
         // Create the `OPML` import action
         action(&self.window, "import", 
             clone!(@strong sender, @weak self.window as window => move |_, _| {
-                utils::on_import_clicked(&window, &sender);
+                utils::on_import_clicked(&window.upcast(), &sender);
         }));
 
         action(&self.window, "export", 
             clone!(@strong sender, @weak self.window as window => move |_, _| {
-                utils::on_export_clicked(&window, &sender);
+                utils::on_export_clicked(&window.upcast(), &sender);
         }));
 
         // Create the action that shows a `gtk::AboutDialog`
         action(&self.window, "about", 
             clone!(@weak self.window as win => move |_, _| {
-                about_dialog(&win);
+                about_dialog(&win.upcast());
         }));
 
         // Create the quit action
@@ -208,7 +213,7 @@ impl MainWindow {
 }
 
 impl Deref for MainWindow {
-    type Target = gtk::ApplicationWindow;
+    type Target = hdy::ApplicationWindow;
 
     fn deref(&self) -> &Self::Target {
         &self.window
