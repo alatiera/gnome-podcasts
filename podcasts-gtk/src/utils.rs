@@ -487,6 +487,8 @@ pub(crate) fn on_export_clicked(window: &gtk::ApplicationWindow, sender: &Sender
         Some(i18n("_Cancel").as_str()),
     );
 
+    dialog.set_current_name(format!("{}.opml", i18n("gnome-podcasts-exported-shows")));
+
     // Do not show hidden(.thing) files
     dialog.set_show_hidden(false);
 
