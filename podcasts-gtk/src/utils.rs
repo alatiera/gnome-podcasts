@@ -20,8 +20,10 @@
 #![allow(clippy::type_complexity)]
 
 use gdk_pixbuf::Pixbuf;
+use gio::ActionMapExt;
 use glib::clone;
 use glib::Sender;
+use glib::Variant;
 use glib::{self, object::WeakRef};
 use glib::{IsA, Object};
 use gtk;
@@ -83,6 +85,20 @@ macro_rules! send {
             ));
         }
     };
+}
+
+/// Creates an action named `name` in the action map `T with the handler `F`
+pub fn make_action<T, F>(thing: &T, name: &str, action: F)
+where
+    T: ActionMapExt,
+    F: Fn(&gio::SimpleAction, Option<&Variant>) + 'static,
+{
+    // Create a stateless, parameterless action
+    let act = gio::SimpleAction::new(name, None);
+    // Connect the handler
+    act.connect_activate(action);
+    // Add it to the map
+    thing.add_action(&act);
 }
 
 /// Lazy evaluates and loads widgets to the parent `container` widget.

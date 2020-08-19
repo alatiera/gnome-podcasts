@@ -20,9 +20,8 @@
 use glib;
 use glib::clone;
 use glib::Sender;
-use glib::Variant;
 
-use gio::{self, prelude::*, ActionMapExt, SettingsExt};
+use gio::{self, prelude::*, SettingsExt};
 
 use gtk;
 use gtk::prelude::*;
@@ -33,7 +32,7 @@ use crate::app::{Action, PdApplication};
 use crate::headerbar::Header;
 use crate::settings::{self, WindowGeometry};
 use crate::stacks::Content;
-use crate::utils;
+use crate::utils::{self, make_action};
 use crate::widgets::about_dialog;
 use crate::widgets::appnotif::InAppNotification;
 use crate::widgets::player;
@@ -44,20 +43,6 @@ use std::rc::Rc;
 
 use crate::config::APP_ID;
 use crate::i18n::i18n;
-
-/// Creates an action named `name` in the action map `T with the handler `F`
-fn action<T, F>(thing: &T, name: &str, action: F)
-where
-    T: ActionMapExt,
-    F: Fn(&gio::SimpleAction, Option<&Variant>) + 'static,
-{
-    // Create a stateless, parameterless action
-    let act = gio::SimpleAction::new(name, None);
-    // Connect the handler
-    act.connect_activate(action);
-    // Add it to the map
-    thing.add_action(&act);
-}
 
 #[derive(Debug)]
 pub struct MainWindow {
@@ -164,7 +149,7 @@ impl MainWindow {
         // Create the `refresh` action.
         //
         // This will trigger a refresh of all the shows in the database.
-        action(&self.window, "refresh", 
+        make_action(&self.window, "refresh",
             clone!(@strong sender => move |_, _| {
                 gtk::idle_add(
                     clone!(@strong sender => move || {
@@ -175,31 +160,31 @@ impl MainWindow {
         self.app.set_accels_for_action("win.refresh", &["<primary>r"]);
 
         // Create the `OPML` import action
-        action(&self.window, "import", 
+        make_action(&self.window, "import",
             clone!(@strong sender, @weak self.window as window => move |_, _| {
                 utils::on_import_clicked(&window.upcast(), &sender);
         }));
 
-        action(&self.window, "export", 
+        make_action(&self.window, "export",
             clone!(@strong sender, @weak self.window as window => move |_, _| {
                 utils::on_export_clicked(&window.upcast(), &sender);
         }));
 
         // Create the action that shows a `gtk::AboutDialog`
-        action(&self.window, "about", 
+        make_action(&self.window, "about",
             clone!(@weak self.window as win => move |_, _| {
                 about_dialog(&win.upcast());
         }));
 
         // Create the quit action
-        action(&self.window, "quit", 
+        make_action(&self.window, "quit",
             clone!(@weak self.app as app => move |_, _| {
                 app.quit();
         }));
         self.app.set_accels_for_action("win.quit", &["<primary>q"]);
 
         // Create the menu actions
-        action(&self.window, "menu",
+        make_action(&self.window, "menu",
             clone!(@weak self.headerbar as headerbar => move |_, _| {
                 headerbar.open_menu();
         }));
