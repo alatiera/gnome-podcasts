@@ -21,6 +21,7 @@
 
 use gdk_pixbuf::Pixbuf;
 use glib::clone;
+use glib::Sender;
 use glib::{self, object::WeakRef};
 use glib::{IsA, Object};
 use gtk;
@@ -29,7 +30,7 @@ use gtk::Widget;
 
 use anyhow::{anyhow, Result};
 use chrono::prelude::*;
-use crossbeam_channel::{bounded, unbounded, Sender};
+use crossbeam_channel::{bounded, unbounded};
 use fragile::Fragile;
 use rayon;
 use regex::Regex;

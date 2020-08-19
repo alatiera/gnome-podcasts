@@ -25,7 +25,7 @@ use gtk::prelude::*;
 use anyhow::{anyhow, Result};
 use chrono;
 use chrono::prelude::*;
-use crossbeam_channel::Sender;
+use glib::Sender;
 use humansize::{file_size_opts as size_opts, FileSize};
 #[allow(unused_imports)]
 use open;

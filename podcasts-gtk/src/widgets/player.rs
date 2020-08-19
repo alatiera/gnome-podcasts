@@ -31,8 +31,8 @@ use glib::{SignalHandlerId, WeakRef};
 
 use anyhow::Result;
 use chrono::{prelude::*, NaiveTime};
-use crossbeam_channel::Sender;
 use fragile::Fragile;
+use glib::Sender;
 
 use podcasts_data::{dbqueries, USER_AGENT};
 use podcasts_data::{EpisodeWidgetModel, ShowCoverModel};

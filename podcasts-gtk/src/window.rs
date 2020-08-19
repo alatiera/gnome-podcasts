@@ -19,6 +19,7 @@
 
 use glib;
 use glib::clone;
+use glib::Sender;
 use glib::Variant;
 
 use gio::{self, prelude::*, ActionMapExt, SettingsExt};
@@ -27,8 +28,6 @@ use gtk;
 use gtk::prelude::*;
 
 use libhandy as hdy;
-
-use crossbeam_channel::{unbounded, Receiver, Sender};
 
 use crate::app::{Action, PdApplication};
 use crate::headerbar::Header;
@@ -71,17 +70,15 @@ pub struct MainWindow {
     pub(crate) updating: Cell<bool>,
     pub(crate) updater: RefCell<Option<InAppNotification>>,
     pub(crate) sender: Sender<Action>,
-    pub(crate) receiver: Receiver<Action>,
 }
 
 impl MainWindow {
-    pub fn new(app: &PdApplication) -> Self {
+    pub(crate) fn new(app: &PdApplication, sender: &Sender<Action>) -> Self {
         let settings = gio::Settings::new("org.gnome.Podcasts");
-
-        let (sender, receiver) = unbounded();
 
         let window = hdy::ApplicationWindow::new();
         window.set_application(Some(app));
+
         window.set_title(&i18n("Podcasts"));
         if APP_ID.ends_with("Devel") {
             window.get_style_context().add_class("devel");
@@ -154,8 +151,7 @@ impl MainWindow {
             player,
             updating: Cell::new(false),
             updater: RefCell::new(None),
-            sender,
-            receiver,
+            sender: sender.clone(),
         }
     }
 

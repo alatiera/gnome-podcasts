@@ -22,7 +22,7 @@ use gtk::prelude::*;
 use gtk::StackTransitionType;
 
 use anyhow::Result;
-use crossbeam_channel::Sender;
+use glib::Sender;
 
 use podcasts_data::dbqueries;
 use podcasts_data::Show;

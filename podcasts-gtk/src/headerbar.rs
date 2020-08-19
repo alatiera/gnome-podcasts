@@ -25,7 +25,7 @@ use libhandy;
 use libhandy::prelude::*;
 
 use anyhow::Result;
-use crossbeam_channel::Sender;
+use glib::Sender;
 use rayon;
 use url::Url;
 

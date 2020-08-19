@@ -19,10 +19,11 @@
 
 use glib;
 use glib::clone;
+use glib::Sender;
 use gtk::{self, prelude::*, Adjustment};
 
 use anyhow::Result;
-use crossbeam_channel::{bounded, Sender};
+use crossbeam_channel::bounded;
 use fragile::Fragile;
 use html2text;
 use libhandy::{Clamp, ClampExt};

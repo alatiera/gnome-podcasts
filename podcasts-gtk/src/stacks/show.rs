@@ -21,7 +21,7 @@ use gtk;
 use gtk::prelude::*;
 
 use anyhow::Result;
-use crossbeam_channel::Sender;
+use glib::Sender;
 use podcasts_data::dbqueries::is_episodes_populated;
 
 use crate::app::Action;

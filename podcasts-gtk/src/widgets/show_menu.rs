@@ -23,7 +23,7 @@ use gtk;
 use gtk::prelude::*;
 
 use anyhow::Result;
-use crossbeam_channel::Sender;
+use glib::Sender;
 use open;
 use rayon;
 

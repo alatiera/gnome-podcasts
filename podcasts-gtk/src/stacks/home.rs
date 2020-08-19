@@ -22,7 +22,7 @@ use gtk::prelude::*;
 use gtk::StackTransitionType;
 
 use anyhow::Result;
-use crossbeam_channel::Sender;
+use glib::Sender;
 
 use crate::app::Action;
 use crate::stacks::State;
