@@ -201,7 +201,7 @@ impl PdApplication {
         let w = data.window.borrow();
         let window = w.as_ref().expect("Window is not initialized");
 
-        trace!("Incoming channel action: {:?}", action);
+        info!("Incoming channel action: {:?}", action);
         match action {
             Action::RefreshAllViews => window.content.update(),
             Action::RefreshShowsView => window.content.update_shows_view(),
