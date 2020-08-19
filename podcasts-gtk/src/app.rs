@@ -33,7 +33,6 @@ use gtk::prelude::*;
 
 use gettextrs::{bindtextdomain, setlocale, textdomain, LocaleCategory};
 
-use crossbeam_channel::Receiver;
 use fragile::Fragile;
 use podcasts_data::{Show, Source};
 
@@ -51,7 +50,10 @@ use std::sync::Arc;
 use crate::config::{APP_ID, LOCALEDIR};
 use crate::i18n::i18n;
 
+// FIXME: port Optionals to OnceCell
 pub struct PdApplicationPrivate {
+    sender: glib::Sender<Action>,
+    receiver: RefCell<Option<glib::Receiver<Action>>>,
     window: RefCell<Option<MainWindow>>,
     settings: RefCell<Option<gio::Settings>>,
 }
@@ -65,7 +67,12 @@ impl ObjectSubclass for PdApplicationPrivate {
     glib_object_subclass!();
 
     fn new() -> Self {
+        let (sender, r) = glib::MainContext::channel(glib::PRIORITY_DEFAULT);
+        let receiver = RefCell::new(Some(r));
+
         Self {
+            sender,
+            receiver,
             window: RefCell::new(None),
             settings: RefCell::new(None),
         }
@@ -89,16 +96,19 @@ impl gio::subclass::prelude::ApplicationImpl for PdApplicationPrivate {
         }
 
         let app = app.clone().downcast::<PdApplication>().expect("How?");
-        let window = MainWindow::new(&app);
+        app.setup_gactions();
+
+        let window = MainWindow::new(&app, &self.sender);
         window.setup_gactions();
         window.show_all();
         window.present();
         self.window.replace(Some(window));
-        // Setup the Action channel
-        gtk::timeout_add(
-            25,
-            clone!(@strong app => move || app.setup_action_channel()),
-        );
+
+        app.setup_accels();
+
+        // Setup action channel
+        let receiver = self.receiver.borrow_mut().take().unwrap();
+        receiver.attach(None, move |action| app.do_action(action));
     }
 
     fn startup(&self, app: &gio::Application) {
@@ -143,7 +153,7 @@ pub(crate) enum Action {
     HeaderBarNormal,
     MarkAllPlayerNotification(Arc<Show>),
     UpdateFeed(Option<Vec<Source>>),
-    ShowUpdateNotif(Receiver<bool>),
+    ShowUpdateNotif(crossbeam_channel::Receiver<bool>),
     StopUpdating,
     RemoveShow(Arc<Show>),
     ErrorNotification(String),
@@ -176,6 +186,24 @@ impl PdApplication {
         self.setup_dark_theme();
     }
 
+    fn setup_gactions(&self) {
+        // Create the quit action
+        utils::make_action(
+            self.upcast_ref::<gtk::Application>(),
+            "quit",
+            clone!(@weak self as app => move |_, _| {
+                    app.quit();
+            }),
+        );
+    }
+
+    fn setup_accels(&self) {
+        self.set_accels_for_action("app.quit", &["<primary>q"]);
+        // Bind the hamburger menu button to `F10`
+        self.set_accels_for_action("win.menu", &["F10"]);
+        self.set_accels_for_action("win.refresh", &["<primary>r"]);
+    }
+
     fn setup_dark_theme(&self) {
         let data = PdApplicationPrivate::from_instance(self);
         if let Some(ref settings) = *data.settings.borrow() {
@@ -191,149 +219,133 @@ impl PdApplication {
         }
     }
 
-    fn setup_action_channel(&self) -> glib::Continue {
-        use crossbeam_channel::TryRecvError;
+    fn do_action(&self, action: Action) -> glib::Continue {
         let data = PdApplicationPrivate::from_instance(self);
+        let w = data.window.borrow();
+        let window = w.as_ref().expect("Window is not initialized");
 
-        if let Some(ref window) = *data.window.borrow() {
-            let action = match window.receiver.try_recv() {
-                Ok(a) => a,
-                Err(TryRecvError::Empty) => return glib::Continue(true),
-                Err(TryRecvError::Disconnected) => {
-                    unreachable!("How the hell was the action channel dropped.")
+        info!("Incoming channel action: {:?}", action);
+        match action {
+            Action::RefreshAllViews => window.content.update(),
+            Action::RefreshShowsView => window.content.update_shows_view(),
+            Action::RefreshWidgetIfSame(id) => window.content.update_widget_if_same(id),
+            Action::RefreshEpisodesView => window.content.update_home(),
+            Action::RefreshEpisodesViewBGR => window.content.update_home_if_background(),
+            Action::ReplaceWidget(pd) => {
+                let shows = window.content.get_shows();
+                let pop = shows.borrow().populated();
+                pop.borrow_mut()
+                    .replace_widget(pd.clone())
+                    .map_err(|err| error!("Failed to update ShowWidget: {}", err))
+                    .map_err(|_| error!("Failed to update ShowWidget {}", pd.title()))
+                    .ok();
+            }
+            Action::ShowWidgetAnimated => {
+                let shows = window.content.get_shows();
+                let pop = shows.borrow().populated();
+                pop.borrow_mut()
+                    .switch_visible(PopulatedState::Widget, gtk::StackTransitionType::SlideLeft);
+            }
+            Action::ShowShowsAnimated => {
+                let shows = window.content.get_shows();
+                let pop = shows.borrow().populated();
+                pop.borrow_mut()
+                    .switch_visible(PopulatedState::View, gtk::StackTransitionType::SlideRight);
+            }
+            Action::HeaderBarShowTile(title) => window.headerbar.switch_to_back(&title),
+            Action::HeaderBarNormal => window.headerbar.switch_to_normal(),
+            Action::MarkAllPlayerNotification(pd) => {
+                let notif = mark_all_notif(pd, &data.sender);
+                notif.show(&window.overlay);
+            }
+            Action::RemoveShow(pd) => {
+                let notif = remove_show_notif(pd, data.sender.clone());
+                notif.show(&window.overlay);
+            }
+            Action::ErrorNotification(err) => {
+                error!("An error notification was triggered: {}", err);
+                let callback = |revealer: gtk::Revealer| {
+                    revealer.set_reveal_child(false);
+                    glib::Continue(false)
+                };
+                let undo_cb: Option<fn()> = None;
+                let notif = InAppNotification::new(&err, 6000, callback, undo_cb);
+                notif.show(&window.overlay);
+            }
+            Action::UpdateFeed(source) => {
+                if window.updating.get() {
+                    info!("Ignoring feed update request (another one is already running)")
+                } else {
+                    window.updating.set(true);
+                    utils::refresh_feed(source, data.sender.clone())
                 }
-            };
+            }
+            Action::StopUpdating => {
+                window.updating.set(false);
+            }
+            Action::ShowUpdateNotif(receiver) => {
+                use crossbeam_channel::TryRecvError;
 
-            trace!("Incoming channel action: {:?}", action);
-            match action {
-                Action::RefreshAllViews => window.content.update(),
-                Action::RefreshShowsView => window.content.update_shows_view(),
-                Action::RefreshWidgetIfSame(id) => window.content.update_widget_if_same(id),
-                Action::RefreshEpisodesView => window.content.update_home(),
-                Action::RefreshEpisodesViewBGR => window.content.update_home_if_background(),
-                Action::ReplaceWidget(pd) => {
-                    let shows = window.content.get_shows();
-                    let pop = shows.borrow().populated();
-                    pop.borrow_mut()
-                        .replace_widget(pd.clone())
-                        .map_err(|err| error!("Failed to update ShowWidget: {}", err))
-                        .map_err(|_| error!("Failed to update ShowWidget {}", pd.title()))
-                        .ok();
-                }
-                Action::ShowWidgetAnimated => {
-                    let shows = window.content.get_shows();
-                    let pop = shows.borrow().populated();
-                    pop.borrow_mut().switch_visible(
-                        PopulatedState::Widget,
-                        gtk::StackTransitionType::SlideLeft,
-                    );
-                }
-                Action::ShowShowsAnimated => {
-                    let shows = window.content.get_shows();
-                    let pop = shows.borrow().populated();
-                    pop.borrow_mut()
-                        .switch_visible(PopulatedState::View, gtk::StackTransitionType::SlideRight);
-                }
-                Action::HeaderBarShowTile(title) => window.headerbar.switch_to_back(&title),
-                Action::HeaderBarNormal => window.headerbar.switch_to_normal(),
-                Action::MarkAllPlayerNotification(pd) => {
-                    let notif = mark_all_notif(pd, &window.sender);
-                    notif.show(&window.overlay);
-                }
-                Action::RemoveShow(pd) => {
-                    let notif = remove_show_notif(pd, window.sender.clone());
-                    notif.show(&window.overlay);
-                }
-                Action::ErrorNotification(err) => {
-                    error!("An error notification was triggered: {}", err);
-                    let callback = |revealer: gtk::Revealer| {
+                let sender = data.sender.clone();
+                let callback = move |revealer: gtk::Revealer| match receiver.try_recv() {
+                    Err(TryRecvError::Empty) => glib::Continue(true),
+                    Err(TryRecvError::Disconnected) => glib::Continue(false),
+                    Ok(_) => {
                         revealer.set_reveal_child(false);
+
+                        send!(sender, Action::StopUpdating);
+                        send!(sender, Action::RefreshAllViews);
+
                         glib::Continue(false)
-                    };
-                    let undo_cb: Option<fn()> = None;
-                    let notif = InAppNotification::new(&err, 6000, callback, undo_cb);
-                    notif.show(&window.overlay);
-                }
-                Action::UpdateFeed(source) => {
-                    if window.updating.get() {
-                        info!("Ignoring feed update request (another one is already running)")
-                    } else {
-                        window.updating.set(true);
-                        utils::refresh_feed(source, window.sender.clone())
                     }
-                }
-                Action::StopUpdating => {
-                    window.updating.set(false);
-                }
-                Action::ShowUpdateNotif(receiver) => {
-                    let sender = window.sender.clone();
-                    let callback = move |revealer: gtk::Revealer| match receiver.try_recv() {
-                        Err(TryRecvError::Empty) => glib::Continue(true),
-                        Err(TryRecvError::Disconnected) => glib::Continue(false),
-                        Ok(_) => {
-                            revealer.set_reveal_child(false);
+                };
+                let txt = i18n("Fetching new episodes");
+                let undo_cb: Option<fn()> = None;
+                let updater = InAppNotification::new(&txt, 250, callback, undo_cb);
+                updater.set_close_state(State::Hidden);
+                updater.set_spinner_state(SpinnerState::Active);
 
-                            sender
-                                .send(Action::StopUpdating)
-                                .expect("Action channel blew up somehow");
+                let old = window.updater.replace(Some(updater));
+                old.map(|i| unsafe { i.destroy() });
 
-                            sender
-                                .send(Action::RefreshAllViews)
-                                .expect("Action channel blew up somehow");
+                window
+                    .updater
+                    .borrow()
+                    .as_ref()
+                    .map(|i| i.show(&window.overlay));
+            }
+            Action::InitEpisode(rowid) => {
+                let res = window.player.initialize_episode(rowid);
+                debug_assert!(res.is_ok());
+            }
+            Action::InitShowMenu(s) => {
+                let menu = &s.get().container;
+                window.headerbar.set_secondary_menu(menu);
+            }
+            Action::EmptyState => {
+                window
+                    .window
+                    .lookup_action("refresh")
+                    .and_then(|action| action.downcast::<gio::SimpleAction>().ok())
+                    // Disable refresh action
+                    .map(|action| action.set_enabled(false));
 
-                            glib::Continue(false)
-                        }
-                    };
-                    let txt = i18n("Fetching new episodes");
-                    let undo_cb: Option<fn()> = None;
-                    let updater = InAppNotification::new(&txt, 250, callback, undo_cb);
-                    updater.set_close_state(State::Hidden);
-                    updater.set_spinner_state(SpinnerState::Active);
+                window.headerbar.switch.set_sensitive(false);
+                window.content.switch_to_empty_views();
+            }
+            Action::PopulatedState => {
+                window
+                    .window
+                    .lookup_action("refresh")
+                    .and_then(|action| action.downcast::<gio::SimpleAction>().ok())
+                    // Enable refresh action
+                    .map(|action| action.set_enabled(true));
 
-                    let old = window.updater.replace(Some(updater));
-                    old.map(|i| unsafe { i.destroy() });
-
-                    window
-                        .updater
-                        .borrow()
-                        .as_ref()
-                        .map(|i| i.show(&window.overlay));
-                }
-                Action::InitEpisode(rowid) => {
-                    let res = window.player.initialize_episode(rowid);
-                    debug_assert!(res.is_ok());
-                }
-                Action::InitShowMenu(s) => {
-                    let menu = &s.get().container;
-                    window.headerbar.set_secondary_menu(menu);
-                }
-                Action::EmptyState => {
-                    window
-                        .window
-                        .lookup_action("refresh")
-                        .and_then(|action| action.downcast::<gio::SimpleAction>().ok())
-                        // Disable refresh action
-                        .map(|action| action.set_enabled(false));
-
-                    window.headerbar.switch.set_sensitive(false);
-                    window.content.switch_to_empty_views();
-                }
-                Action::PopulatedState => {
-                    window
-                        .window
-                        .lookup_action("refresh")
-                        .and_then(|action| action.downcast::<gio::SimpleAction>().ok())
-                        // Enable refresh action
-                        .map(|action| action.set_enabled(true));
-
-                    window.headerbar.switch.set_sensitive(true);
-                    window.content.switch_to_populated();
-                }
-                Action::RaiseWindow => window.window.present(),
-            };
-        } else {
-            debug_assert!(false, "Huh that's odd then");
-        }
+                window.headerbar.switch.set_sensitive(true);
+                window.content.switch_to_populated();
+            }
+            Action::RaiseWindow => window.window.present(),
+        };
 
         glib::Continue(true)
     }

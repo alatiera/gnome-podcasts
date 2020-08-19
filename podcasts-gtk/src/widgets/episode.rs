@@ -25,7 +25,7 @@ use gtk::prelude::*;
 use anyhow::{anyhow, Result};
 use chrono;
 use chrono::prelude::*;
-use crossbeam_channel::Sender;
+use glib::Sender;
 use humansize::{file_size_opts as size_opts, FileSize};
 #[allow(unused_imports)]
 use open;
@@ -492,9 +492,7 @@ fn on_download_clicked(ep: &EpisodeWidgetModel, sender: &Sender<Action>) -> Resu
     manager::add(ep.rowid(), download_fold)?;
 
     // Update Views
-    sender
-        .send(Action::RefreshEpisodesViewBGR)
-        .expect("Action channel blew up somehow");
+    send!(sender, Action::RefreshEpisodesViewBGR);
     Ok(())
 }
 
@@ -513,13 +511,9 @@ fn on_play_bttn_clicked(
     widget.info.set_title(&episode);
 
     // Play the episode
-    sender
-        .send(Action::InitEpisode(episode.rowid()))
-        .expect("Action channel blew up somehow");
+    send!(sender, Action::InitEpisode(episode.rowid()));
     // Refresh background views to match the normal/greyout title state
-    sender
-        .send(Action::RefreshEpisodesViewBGR)
-        .expect("Action channel blew up somehow");
+    send!(sender, Action::RefreshEpisodesViewBGR);
     Ok(())
 }
 

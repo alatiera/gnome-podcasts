@@ -25,7 +25,7 @@ use libhandy;
 use libhandy::prelude::*;
 
 use anyhow::Result;
-use crossbeam_channel::Sender;
+use glib::Sender;
 use rayon;
 use url::Url;
 
@@ -248,7 +248,7 @@ impl Header {
         s.back
             .connect_clicked(clone!(@weak s, @strong sender => move |_| {
                 s.switch_to_normal();
-                sender.send(Action::ShowShowsAnimated).expect("Action channel blew up somehow");
+                send!(sender, Action::ShowShowsAnimated);
             }));
 
         s.switch_squeezer

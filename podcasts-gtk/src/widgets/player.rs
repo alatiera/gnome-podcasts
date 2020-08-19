@@ -31,8 +31,8 @@ use glib::{SignalHandlerId, WeakRef};
 
 use anyhow::Result;
 use chrono::{prelude::*, NaiveTime};
-use crossbeam_channel::Sender;
 use fragile::Fragile;
+use glib::Sender;
 
 use podcasts_data::{dbqueries, USER_AGENT};
 use podcasts_data::{EpisodeWidgetModel, ShowCoverModel};
@@ -843,9 +843,9 @@ impl PlayerWrapper {
 
         // Log gst errors.
         self.player.connect_error(clone!(@strong sender => move |_, _error| {
-            // sender.send(Action::ErrorNotification(format!("Player Error: {}", error)));
+            send!(sender, Action::ErrorNotification(format!("Player Error: {}", _error)));
             let s = i18n("The media player was unable to execute an action.");
-            sender.send(Action::ErrorNotification(s)).expect("Action channel blew up somehow");
+            send!(sender, Action::ErrorNotification(s));
         }));
 
         // The following callbacks require `Send` but are handled by the gtk main loop
@@ -937,7 +937,7 @@ impl PlayerWrapper {
         self.info
             .mpris
             .connect_raise(clone!(@strong sender => move || {
-                sender.send(Action::RaiseWindow).expect("Action channel blew up somehow");
+                send!(sender, Action::RaiseWindow);
             }));
     }
 }

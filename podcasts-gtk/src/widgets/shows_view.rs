@@ -21,7 +21,7 @@ use glib::clone;
 use gtk::{self, prelude::*, Adjustment, Align, SelectionMode};
 
 use anyhow::Result;
-use crossbeam_channel::Sender;
+use glib::Sender;
 
 use podcasts_data::dbqueries;
 use podcasts_data::Show;
@@ -102,15 +102,9 @@ fn on_child_activate(child: &gtk::FlowBoxChild, sender: &Sender<Action>) -> Resu
     let id = child.get_widget_name().parse::<i32>()?;
     let pd = Arc::new(dbqueries::get_podcast_from_id(id)?);
 
-    sender
-        .send(Action::HeaderBarShowTile(pd.title().into()))
-        .expect("Action channel blew up somehow");
-    sender
-        .send(Action::ReplaceWidget(pd))
-        .expect("Action channel blew up somehow");
-    sender
-        .send(Action::ShowWidgetAnimated)
-        .expect("Action channel blew up somehow");
+    send!(sender, Action::HeaderBarShowTile(pd.title().into()));
+    send!(sender, Action::ReplaceWidget(pd));
+    send!(sender, Action::ShowWidgetAnimated);
     Ok(())
 }
 

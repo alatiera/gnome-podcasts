@@ -24,7 +24,7 @@ use gtk::{self, prelude::*, Adjustment};
 
 use glib::clone;
 
-use crossbeam_channel::Sender;
+use glib::Sender;
 use libhandy::{Clamp, ClampExt};
 use podcasts_data::dbqueries;
 use podcasts_data::EpisodeWidgetModel;

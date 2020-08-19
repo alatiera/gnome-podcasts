@@ -23,7 +23,7 @@ use gtk;
 use gtk::prelude::*;
 
 use anyhow::Result;
-use crossbeam_channel::Sender;
+use glib::Sender;
 use open;
 use rayon;
 
@@ -88,12 +88,14 @@ impl ShowMenu {
     }
 
     fn connect_played(&self, pd: &Arc<Show>, episodes: &gtk::ListBox, sender: &Sender<Action>) {
-        self.played.connect_clicked(clone!(@strong pd, @strong sender, @weak episodes => move |_| {
-            let res = dim_titles(&episodes);
-            debug_assert!(res.is_some());
+        self.played.connect_clicked(
+            clone!(@strong pd, @strong sender, @weak episodes => move |_| {
+                let res = dim_titles(&episodes);
+                debug_assert!(res.is_some());
 
-            sender.send(Action::MarkAllPlayerNotification(pd.clone())).expect("Action channel blew up somehow")
-        }));
+                send!(sender, Action::MarkAllPlayerNotification(pd.clone()));
+            }),
+        );
     }
 
     fn connect_unsub(&self, pd: &Arc<Show>, sender: &Sender<Action>) {
@@ -103,13 +105,13 @@ impl ShowMenu {
                 // if pressed twice would panic.
                 unsub.set_sensitive(false);
 
-                sender.send(Action::RemoveShow(pd.clone())).expect("Action channel blew up somehow");
+                send!(sender, Action::RemoveShow(pd.clone()));
 
-                sender.send(Action::HeaderBarNormal).expect("Action channel blew up somehow");
-                sender.send(Action::ShowShowsAnimated).expect("Action channel blew up somehow");
+                send!(sender, Action::HeaderBarNormal);
+                send!(sender, Action::ShowShowsAnimated);
                 // Queue a refresh after the switch to avoid blocking the db.
-                sender.send(Action::RefreshShowsView).expect("Action channel blew up somehow");
-                sender.send(Action::RefreshEpisodesView).expect("Action channel blew up somehow");
+                send!(sender, Action::RefreshShowsView);
+                send!(sender, Action::RefreshEpisodesView);
 
                 unsub.set_sensitive(true);
             }));
@@ -148,12 +150,8 @@ fn mark_all_watched(pd: &Show, sender: &Sender<Action>) -> Result<()> {
     dbqueries::update_none_to_played_now(pd)?;
     // Not all widgets might have been loaded when the mark_all is hit
     // So we will need to refresh again after it's done.
-    sender
-        .send(Action::RefreshWidgetIfSame(pd.id()))
-        .expect("Action channel blew up somehow");
-    sender
-        .send(Action::RefreshEpisodesView)
-        .expect("Action channel blew up somehow");
+    send!(sender, Action::RefreshWidgetIfSame(pd.id()));
+    send!(sender, Action::RefreshEpisodesView);
     Ok(())
 }
 
@@ -169,7 +167,7 @@ pub(crate) fn mark_all_notif(pd: Arc<Show>, sender: &Sender<Action>) -> InAppNot
     };
 
     let undo_callback = clone!(@strong sender => move || {
-        sender.send(Action::RefreshWidgetIfSame(id)).expect("Action channel blew up somehow")
+        send!(sender, Action::RefreshWidgetIfSame(id));
     });
     let text = i18n("Marked all episodes as listened");
     InAppNotification::new(&text, 6000, callback, Some(undo_callback))
@@ -194,7 +192,7 @@ pub(crate) fn remove_show_notif(pd: Arc<Show>, sender: Sender<Action>) -> InAppN
                 .map_err(|_| error!("Failed to delete {}", pd_.title()))
                 .ok();
 
-            sender_.send(Action::RefreshEpisodesView).expect("Action channel blew up somehow");
+            send!(sender_, Action::RefreshEpisodesView);
         }));
 
         revealer.set_reveal_child(false);
@@ -204,12 +202,8 @@ pub(crate) fn remove_show_notif(pd: Arc<Show>, sender: Sender<Action>) -> InAppN
     let undo_callback = move || {
         let res = utils::unignore_show(pd.id());
         debug_assert!(res.is_ok());
-        sender
-            .send(Action::RefreshShowsView)
-            .expect("Action channel blew up somehow");
-        sender
-            .send(Action::RefreshEpisodesView)
-            .expect("Action channel blew up somehow");
+        send!(sender, Action::RefreshShowsView);
+        send!(sender, Action::RefreshEpisodesView);
     };
 
     InAppNotification::new(&text, 6000, callback, Some(undo_callback))

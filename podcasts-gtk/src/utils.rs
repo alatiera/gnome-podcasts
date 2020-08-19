@@ -20,7 +20,10 @@
 #![allow(clippy::type_complexity)]
 
 use gdk_pixbuf::Pixbuf;
+use gio::ActionMapExt;
 use glib::clone;
+use glib::Sender;
+use glib::Variant;
 use glib::{self, object::WeakRef};
 use glib::{IsA, Object};
 use gtk;
@@ -29,7 +32,7 @@ use gtk::Widget;
 
 use anyhow::{anyhow, Result};
 use chrono::prelude::*;
-use crossbeam_channel::{bounded, unbounded, Sender};
+use crossbeam_channel::{bounded, unbounded};
 use fragile::Fragile;
 use rayon;
 use regex::Regex;
@@ -51,6 +54,52 @@ use std::sync::{Arc, Mutex, RwLock};
 use crate::app::Action;
 
 use crate::i18n::i18n;
+
+/// Copied from the gtk-macros crate
+///
+/// Send an event through a glib::Sender
+///
+/// - Before:
+///
+///     Example:
+///
+///     ```no_run
+///     sender.send(Action::DoThing).expect("Failed to send DoThing through the glib channel?");
+///     ```
+///
+/// - After:
+///
+///     Example:
+///
+///     ```no_run
+///     send!(self.sender, Action::DoThing);
+///     ```
+#[macro_export]
+macro_rules! send {
+    ($sender:expr, $action:expr) => {
+        if let Err(err) = $sender.send($action) {
+            panic!(format!(
+                "Failed to send \"{}\" action due to {}",
+                stringify!($action),
+                err
+            ));
+        }
+    };
+}
+
+/// Creates an action named `name` in the action map `T with the handler `F`
+pub fn make_action<T, F>(thing: &T, name: &str, action: F)
+where
+    T: ActionMapExt,
+    F: Fn(&gio::SimpleAction, Option<&Variant>) + 'static,
+{
+    // Create a stateless, parameterless action
+    let act = gio::SimpleAction::new(name, None);
+    // Connect the handler
+    act.connect_activate(action);
+    // Add it to the map
+    thing.add_action(&act);
+}
 
 /// Lazy evaluates and loads widgets to the parent `container` widget.
 ///
@@ -221,9 +270,7 @@ pub(crate) fn schedule_refresh(source: Option<Vec<Source>>, sender: Sender<Actio
         };
     }
 
-    sender
-        .send(Action::UpdateFeed(source))
-        .expect("Action channel blew up somehow")
+    send!(sender, Action::UpdateFeed(source));
 }
 
 /// Update the rss feed(s) originating from `source`.
@@ -232,9 +279,7 @@ pub(crate) fn schedule_refresh(source: Option<Vec<Source>>, sender: Sender<Actio
 /// Use `schedule_refresh()` instead
 pub(crate) fn refresh_feed(source: Option<Vec<Source>>, sender: Sender<Action>) {
     let (up_sender, up_receiver) = bounded(1);
-    sender
-        .send(Action::ShowUpdateNotif(up_receiver))
-        .expect("Action channel blew up somehow");
+    send!(sender, Action::ShowUpdateNotif(up_receiver));
 
     if let Some(s) = source {
         // Refresh only specified feeds
@@ -419,14 +464,12 @@ pub(crate) fn on_import_clicked(window: &gtk::ApplicationWindow, sender: &Sender
                     schedule_refresh(Some(sources), sender)
                 } else {
                     let text = i18n("Failed to parse the imported file");
-                    sender.send(Action::ErrorNotification(text)).expect("Action channel blew up somehow");
+                    send!(sender, Action::ErrorNotification(text));
                 }
             }))
         } else {
             let text = i18n("Selected file could not be accessed.");
-            sender
-                .send(Action::ErrorNotification(text))
-                .expect("Action channel blew up somehow");
+            send!(sender, Action::ErrorNotification(text))
         }
     }
 }
@@ -462,14 +505,12 @@ pub(crate) fn on_export_clicked(window: &gtk::ApplicationWindow, sender: &Sender
             rayon::spawn(clone!(@strong sender => move || {
                 if opml::export_from_db(filename, i18n("GNOME Podcasts Subscriptions").as_str()).is_err() {
                     let text = i18n("Failed to export podcasts");
-                    sender.send(Action::ErrorNotification(text)).expect("Action channel blew up somehow");
+                    send!(sender, Action::ErrorNotification(text));
                 }
             }))
         } else {
             let text = i18n("Selected file could not be accessed.");
-            sender
-                .send(Action::ErrorNotification(text))
-                .expect("Action channel blew up somehow");
+            send!(sender, Action::ErrorNotification(text));
         }
     }
 }

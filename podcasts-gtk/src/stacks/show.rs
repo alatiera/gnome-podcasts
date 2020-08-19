@@ -21,7 +21,7 @@ use gtk;
 use gtk::prelude::*;
 
 use anyhow::Result;
-use crossbeam_channel::Sender;
+use glib::Sender;
 use podcasts_data::dbqueries::is_episodes_populated;
 
 use crate::app::Action;
@@ -98,13 +98,9 @@ impl ShowStack {
         let ign = get_ignored_shows()?;
         debug!("IGNORED SHOWS {:?}", ign);
         if is_episodes_populated(&ign)? {
-            self.sender
-                .send(Action::PopulatedState)
-                .expect("Action channel blew up somehow");
+            send!(self.sender, Action::PopulatedState)
         } else {
-            self.sender
-                .send(Action::EmptyState)
-                .expect("Action channel blew up somehow");
+            send!(self.sender, Action::EmptyState)
         };
 
         Ok(())
