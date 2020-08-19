@@ -449,6 +449,7 @@ pub(crate) fn on_import_clicked(window: &gtk::ApplicationWindow, sender: &Sender
     FileFilter::set_name(&filter, Some(i18n("OPML file").as_str()));
     filter.add_mime_type("application/xml");
     filter.add_mime_type("text/xml");
+    filter.add_mime_type("text/x-opml");
     dialog.add_filter(&filter);
 
     let resp = dialog.run();
@@ -494,6 +495,7 @@ pub(crate) fn on_export_clicked(window: &gtk::ApplicationWindow, sender: &Sender
     FileFilter::set_name(&filter, Some(i18n("OPML file").as_str()));
     filter.add_mime_type("application/xml");
     filter.add_mime_type("text/xml");
+    filter.add_mime_type("text/x-opml");
     dialog.add_filter(&filter);
 
     let resp = dialog.run();
