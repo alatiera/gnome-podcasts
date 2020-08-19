@@ -273,13 +273,8 @@ impl PdApplication {
                         Ok(_) => {
                             revealer.set_reveal_child(false);
 
-                            sender
-                                .send(Action::StopUpdating)
-                                .expect("Action channel blew up somehow");
-
-                            sender
-                                .send(Action::RefreshAllViews)
-                                .expect("Action channel blew up somehow");
+                            send!(sender, Action::StopUpdating);
+                            send!(sender, Action::RefreshAllViews);
 
                             glib::Continue(false)
                         }

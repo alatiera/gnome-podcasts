@@ -97,9 +97,7 @@ impl ShowWidget {
         pdw.init(&pd);
 
         let menu = ShowMenu::new(&pd, &pdw.episodes, &sender);
-        sender
-            .send(Action::InitShowMenu(Fragile::new(menu)))
-            .expect("Action channel blew up somehow");
+        send!(sender, Action::InitShowMenu(Fragile::new(menu)));
 
         let pdw = Rc::new(pdw);
         let res = populate_listbox(&pdw, pd.clone(), sender, vadj);

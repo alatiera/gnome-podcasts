@@ -55,6 +55,11 @@ use log::Level;
 
 use gtk::prelude::*;
 
+// Exports the macros defined in utils to the namespace of the crate so they can be used
+// easily without import
+#[macro_use]
+mod utils;
+
 mod stacks;
 mod widgets;
 
@@ -66,7 +71,6 @@ mod window;
 mod manager;
 mod settings;
 mod static_resource;
-mod utils;
 
 mod i18n;
 
@@ -87,6 +91,7 @@ fn init_gtk_tests() -> anyhow::Result<()> {
     static_resource::init()?;
     Ok(())
 }
+
 #[tokio::main]
 async fn main() {
     // TODO: make the logger a cli -vv option
