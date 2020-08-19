@@ -46,7 +46,6 @@ use crate::i18n::i18n;
 
 #[derive(Debug)]
 pub struct MainWindow {
-    app: PdApplication,
     pub(crate) window: hdy::ApplicationWindow,
     pub(crate) overlay: gtk::Overlay,
     pub(crate) content: Rc<Content>,
@@ -128,7 +127,6 @@ impl MainWindow {
         );
 
         Self {
-            app: app.clone(),
             window,
             overlay,
             headerbar: header,
@@ -157,7 +155,6 @@ impl MainWindow {
                         glib::Continue(false)
             }));
         }));
-        self.app.set_accels_for_action("win.refresh", &["<primary>r"]);
 
         // Create the `OPML` import action
         make_action(&self.window, "import",
@@ -176,20 +173,11 @@ impl MainWindow {
                 about_dialog(&win.upcast());
         }));
 
-        // Create the quit action
-        make_action(&self.window, "quit",
-            clone!(@weak self.app as app => move |_, _| {
-                app.quit();
-        }));
-        self.app.set_accels_for_action("win.quit", &["<primary>q"]);
-
         // Create the menu actions
         make_action(&self.window, "menu",
             clone!(@weak self.headerbar as headerbar => move |_, _| {
                 headerbar.open_menu();
         }));
-        // Bind the hamburger menu button to `F10`
-        self.app.set_accels_for_action("win.menu", &["F10"]);
     }
 }
 

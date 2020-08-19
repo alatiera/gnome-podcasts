@@ -19,6 +19,7 @@
 
 #![allow(clippy::new_without_default)]
 
+use glib::clone;
 use glib::subclass::prelude::*;
 use glib::subclass::simple::{ClassStruct, InstanceStruct};
 use glib::translate::*;
@@ -95,11 +96,15 @@ impl gio::subclass::prelude::ApplicationImpl for PdApplicationPrivate {
         }
 
         let app = app.clone().downcast::<PdApplication>().expect("How?");
+        app.setup_gactions();
+
         let window = MainWindow::new(&app, &self.sender);
         window.setup_gactions();
         window.show_all();
         window.present();
         self.window.replace(Some(window));
+
+        app.setup_accels();
 
         // Setup action channel
         let receiver = self.receiver.borrow_mut().take().unwrap();
@@ -179,6 +184,24 @@ impl PdApplication {
 
     fn setup_timed_callbacks(&self) {
         self.setup_dark_theme();
+    }
+
+    fn setup_gactions(&self) {
+        // Create the quit action
+        utils::make_action(
+            self.upcast_ref::<gtk::Application>(),
+            "quit",
+            clone!(@weak self as app => move |_, _| {
+                    app.quit();
+            }),
+        );
+    }
+
+    fn setup_accels(&self) {
+        self.set_accels_for_action("app.quit", &["<primary>q"]);
+        // Bind the hamburger menu button to `F10`
+        self.set_accels_for_action("win.menu", &["F10"]);
+        self.set_accels_for_action("win.refresh", &["<primary>r"]);
     }
 
     fn setup_dark_theme(&self) {
