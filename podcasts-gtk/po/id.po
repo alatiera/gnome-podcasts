@@ -7,15 +7,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: podcasts master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2020-06-21 21:43+0000\n"
-"PO-Revision-Date: 2020-07-31 19:42+0700\n"
+"POT-Creation-Date: 2020-08-19 06:47+0000\n"
+"PO-Revision-Date: 2020-08-21 23:38+0700\n"
 "Last-Translator: Kukuh Syafaat <kukuhsyafaat@gnome.org>\n"
 "Language-Team: Indonesian <gnome-l10n-id@googlegroups.com>\n"
 "Language: id\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 2.4\n"
+"X-Generator: Poedit 2.4.1\n"
 
 #: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml:15
 msgid "Top position of the last open main window"
@@ -68,8 +68,8 @@ msgstr "Berapa lama waktu untuk menunggu di antara pembersihan otomatis"
 #. Weird magic I copy-pasted that sets the Application Name in the Shell.
 #: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:3
 #: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:4
-#: podcasts-gtk/resources/gtk/headerbar.ui:158 podcasts-gtk/src/app.rs:353
-#: podcasts-gtk/src/widgets/aboutdialog.rs:56 podcasts-gtk/src/window.rs:82
+#: podcasts-gtk/resources/gtk/headerbar.ui:158 podcasts-gtk/src/app.rs:365
+#: podcasts-gtk/src/widgets/aboutdialog.rs:56 podcasts-gtk/src/window.rs:66
 msgid "Podcasts"
 msgstr "Siniar"
 
@@ -87,7 +87,7 @@ msgstr "Siniar;RSS;"
 msgid "Podcast app for GNOME"
 msgstr "Aplikasi Siniar untuk GNOME"
 
-#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:84
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:92
 msgid "Jordan Petridis"
 msgstr "Jordan Petridis"
 
@@ -292,7 +292,7 @@ msgstr "Berhenti Berlangganan"
 msgid "Read More"
 msgstr "Baca Lebih Lanjut"
 
-#: podcasts-gtk/src/app.rs:287
+#: podcasts-gtk/src/app.rs:302
 msgid "Fetching new episodes"
 msgstr "Mengambil episode baru"
 
@@ -304,43 +304,47 @@ msgstr "Baru"
 msgid "Shows"
 msgstr "Acara"
 
-#: podcasts-gtk/src/utils.rs:398
+#: podcasts-gtk/src/utils.rs:437
 msgid "Select the file from which to you want to import shows."
 msgstr "Pilih berkas dari mana Anda ingin mengimpor acara."
 
-#: podcasts-gtk/src/utils.rs:401
+#: podcasts-gtk/src/utils.rs:440
 msgid "_Import"
 msgstr "_Impor"
 
-#: podcasts-gtk/src/utils.rs:410 podcasts-gtk/src/utils.rs:457
+#: podcasts-gtk/src/utils.rs:449 podcasts-gtk/src/utils.rs:497
 msgid "OPML file"
 msgstr "Berkas OPML"
 
-#: podcasts-gtk/src/utils.rs:427
+#: podcasts-gtk/src/utils.rs:467
 msgid "Failed to parse the imported file"
 msgstr "Gagal mengurai berkas yang diimpor"
 
-#: podcasts-gtk/src/utils.rs:432 podcasts-gtk/src/utils.rs:475
+#: podcasts-gtk/src/utils.rs:472 podcasts-gtk/src/utils.rs:516
 msgid "Selected file could not be accessed."
 msgstr "Berkas yang dipilih tidak dapat diakses."
 
-#: podcasts-gtk/src/utils.rs:445
+#: podcasts-gtk/src/utils.rs:483
 msgid "Export shows to…"
 msgstr "Ekspor acara ke…"
 
-#: podcasts-gtk/src/utils.rs:448
+#: podcasts-gtk/src/utils.rs:486
 msgid "_Export"
 msgstr "_Ekspor"
 
-#: podcasts-gtk/src/utils.rs:449
+#: podcasts-gtk/src/utils.rs:487
 msgid "_Cancel"
 msgstr "_Batal"
 
-#: podcasts-gtk/src/utils.rs:469
+#: podcasts-gtk/src/utils.rs:490
+msgid "gnome-podcasts-exported-shows"
+msgstr "gnome-podcasts-exported-shows"
+
+#: podcasts-gtk/src/utils.rs:510
 msgid "GNOME Podcasts Subscriptions"
 msgstr "Berlangganan GNOME Siniar"
 
-#: podcasts-gtk/src/utils.rs:470
+#: podcasts-gtk/src/utils.rs:511
 msgid "Failed to export podcasts"
 msgstr "Gagal mengekspor siniar"
 
@@ -360,16 +364,15 @@ msgstr "Kukuh Syafaat <kukuhsyafaat@gnome.org>, 2018-2020."
 msgid "{} min"
 msgstr "{} mnt"
 
-#. sender.send(Action::ErrorNotification(format!("Player Error: {}", error)));
 #: podcasts-gtk/src/widgets/player.rs:847
 msgid "The media player was unable to execute an action."
 msgstr "Pemutar media tidak dapat melakukan aksi."
 
-#: podcasts-gtk/src/widgets/show_menu.rs:174
+#: podcasts-gtk/src/widgets/show_menu.rs:172
 msgid "Marked all episodes as listened"
 msgstr "Tandai semua episode sebagai sudah didengarkan"
 
-#: podcasts-gtk/src/widgets/show_menu.rs:179
+#: podcasts-gtk/src/widgets/show_menu.rs:177
 msgid "Unsubscribed from {}"
 msgstr "Berhenti berlangganan dari {}"
 
