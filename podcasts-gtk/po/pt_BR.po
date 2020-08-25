@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: podcasts master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2020-06-21 21:43+0000\n"
-"PO-Revision-Date: 2020-07-30 17:12-0300\n"
+"POT-Creation-Date: 2020-08-23 07:57+0000\n"
+"PO-Revision-Date: 2020-08-25 09:12-0300\n"
 "Last-Translator: Rafael Fontenelle <rafaelff@gnome.org>\n"
 "Language-Team: Brazilian Portuguese <gnome-pt_br-list@gnome.org>\n"
 "Language: pt_BR\n"
@@ -71,8 +71,8 @@ msgstr "Qual período de tempo deve esperar entre limpezas automáticas"
 #. Weird magic I copy-pasted that sets the Application Name in the Shell.
 #: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:3
 #: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:4
-#: podcasts-gtk/resources/gtk/headerbar.ui:158 podcasts-gtk/src/app.rs:353
-#: podcasts-gtk/src/widgets/aboutdialog.rs:56 podcasts-gtk/src/window.rs:82
+#: podcasts-gtk/resources/gtk/headerbar.ui:158 podcasts-gtk/src/app.rs:365
+#: podcasts-gtk/src/widgets/aboutdialog.rs:56 podcasts-gtk/src/window.rs:66
 msgid "Podcasts"
 msgstr "Podcasts"
 
@@ -90,7 +90,7 @@ msgstr "Podcast;RSS;"
 msgid "Podcast app for GNOME"
 msgstr "Aplicativo de podcast para o GNOME"
 
-#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:84
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:92
 msgid "Jordan Petridis"
 msgstr "Jordan Petridis"
 
@@ -232,12 +232,10 @@ msgid "1.00×"
 msgstr "1,00×"
 
 #: podcasts-gtk/resources/gtk/player_rate.ui:88
-#| msgid "1.5 speed rate"
 msgid "Double speed rate"
 msgstr "Taxa de velocidade duplicada"
 
 #: podcasts-gtk/resources/gtk/player_rate.ui:97
-#| msgid "1.5 speed rate"
 msgid "1.75 speed rate"
 msgstr "Taxa de velocidade de 1,75"
 
@@ -297,7 +295,7 @@ msgstr "Desinscrever"
 msgid "Read More"
 msgstr "Leia mais"
 
-#: podcasts-gtk/src/app.rs:287
+#: podcasts-gtk/src/app.rs:302
 msgid "Fetching new episodes"
 msgstr "Buscando novos episódios"
 
@@ -309,43 +307,48 @@ msgstr "Novo"
 msgid "Shows"
 msgstr "Podcasts"
 
-#: podcasts-gtk/src/utils.rs:398
+#: podcasts-gtk/src/utils.rs:437
 msgid "Select the file from which to you want to import shows."
 msgstr "Selecione o arquivo a partir do qual você deseja importar podcasts."
 
-#: podcasts-gtk/src/utils.rs:401
+#: podcasts-gtk/src/utils.rs:440
 msgid "_Import"
 msgstr "_Importar"
 
-#: podcasts-gtk/src/utils.rs:410 podcasts-gtk/src/utils.rs:457
+#: podcasts-gtk/src/utils.rs:449 podcasts-gtk/src/utils.rs:498
 msgid "OPML file"
 msgstr "Arquivo OPML"
 
-#: podcasts-gtk/src/utils.rs:427
+#: podcasts-gtk/src/utils.rs:467
 msgid "Failed to parse the imported file"
 msgstr "Falha ao analisar o arquivo importado"
 
-#: podcasts-gtk/src/utils.rs:432 podcasts-gtk/src/utils.rs:475
+#: podcasts-gtk/src/utils.rs:472 podcasts-gtk/src/utils.rs:517
 msgid "Selected file could not be accessed."
 msgstr "O arquivo selecionado não pôde ser acessado."
 
-#: podcasts-gtk/src/utils.rs:445
+#: podcasts-gtk/src/utils.rs:483
 msgid "Export shows to…"
 msgstr "Exportar podcasts para…"
 
-#: podcasts-gtk/src/utils.rs:448
+#: podcasts-gtk/src/utils.rs:486
 msgid "_Export"
 msgstr "_Exportar"
 
-#: podcasts-gtk/src/utils.rs:449
+#: podcasts-gtk/src/utils.rs:487
 msgid "_Cancel"
 msgstr "_Cancelar"
 
-#: podcasts-gtk/src/utils.rs:469
+#. Translators: This is the string of the suggested name for the exported opml file
+#: podcasts-gtk/src/utils.rs:491
+msgid "gnome-podcasts-exported-shows"
+msgstr "gnome-podcasts-shows-exportados"
+
+#: podcasts-gtk/src/utils.rs:511
 msgid "GNOME Podcasts Subscriptions"
 msgstr "Inscrições do GNOME Podcasts"
 
-#: podcasts-gtk/src/utils.rs:470
+#: podcasts-gtk/src/utils.rs:512
 msgid "Failed to export podcasts"
 msgstr "Falha ao exportar podcasts"
 
@@ -367,16 +370,15 @@ msgstr ""
 msgid "{} min"
 msgstr "{} min"
 
-#. sender.send(Action::ErrorNotification(format!("Player Error: {}", error)));
 #: podcasts-gtk/src/widgets/player.rs:847
 msgid "The media player was unable to execute an action."
 msgstr "O reprodutor de mídia não conseguiu executar uma ação."
 
-#: podcasts-gtk/src/widgets/show_menu.rs:174
+#: podcasts-gtk/src/widgets/show_menu.rs:172
 msgid "Marked all episodes as listened"
 msgstr "Marcados todos os episódios como ouvidos"
 
-#: podcasts-gtk/src/widgets/show_menu.rs:179
+#: podcasts-gtk/src/widgets/show_menu.rs:177
 msgid "Unsubscribed from {}"
 msgstr "Desinscrito de {}"
 
