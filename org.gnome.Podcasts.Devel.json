@@ -1,16 +1,16 @@
 {
-    "app-id" : "org.gnome.Podcasts.Devel",
-    "runtime" : "org.gnome.Platform",
-    "runtime-version" : "3.36",
-    "sdk" : "org.gnome.Sdk",
-    "sdk-extensions" : [
+    "app-id": "org.gnome.Podcasts.Devel",
+    "runtime": "org.gnome.Platform",
+    "runtime-version": "3.36",
+    "sdk": "org.gnome.Sdk",
+    "sdk-extensions": [
         "org.freedesktop.Sdk.Extension.rust-stable"
     ],
-    "command" : "gnome-podcasts",
-    "tags" : [
+    "command": "gnome-podcasts",
+    "tags": [
         "nightly"
     ],
-    "finish-args" : [
+    "finish-args": [
         "--share=network",
         "--share=ipc",
         "--socket=x11",
@@ -19,22 +19,22 @@
         "--socket=pulseaudio",
         "--env=USE_PLAYBING3=1"
     ],
-    "build-options" : {
-        "append-path" : "/usr/lib/sdk/rust-stable/bin",
-        "build-args" : [
+    "build-options": {
+        "append-path": "/usr/lib/sdk/rust-stable/bin",
+        "build-args": [
             "--share=network"
         ],
-        "env" : {
-            "CARGO_HOME" : "/run/build/gnome-podcasts/cargo",
-            "RUSTFLAGS" : "",
-            "RUST_BACKTRACE" : "1"
+        "env": {
+            "CARGO_HOME": "/run/build/gnome-podcasts/cargo",
+            "RUSTFLAGS": "",
+            "RUST_BACKTRACE": "1"
         }
     },
-    "modules" : [
+    "modules": [
         {
-            "name" : "libhandy",
-            "buildsystem" : "meson",
-            "config-opts" : [
+            "name": "libhandy",
+            "buildsystem": "meson",
+            "config-opts": [
                 "-Dintrospection=disabled",
                 "-Dgtk_doc=false",
                 "-Dtests=false",
@@ -42,29 +42,29 @@
                 "-Dvapi=false",
                 "-Dglade_catalog=disabled"
             ],
-            "cleanup" : [
+            "cleanup": [
                 "/include",
                 "/lib/pkgconfig"
             ],
-            "sources" : [
+            "sources": [
                 {
-                    "type" : "git",
-                    "url" : "https://gitlab.gnome.org/GNOME/libhandy.git",
+                    "type": "git",
+                    "url": "https://gitlab.gnome.org/GNOME/libhandy.git",
                     "commit": "ca9430d8e65d968013687f9b58b21d15187e74e5"
                 }
             ]
         },
         {
-            "name" : "gnome-podcasts",
-            "buildsystem" : "meson",
-            "builddir" : "true",
-            "config-opts" : [
+            "name": "gnome-podcasts",
+            "buildsystem": "meson",
+            "builddir": "true",
+            "config-opts": [
                 "-Dprofile=development"
             ],
-            "sources" : [
+            "sources": [
                 {
-                    "type" : "git",
-                    "url" : "https://gitlab.gnome.org/World/podcasts.git"
+                    "type": "git",
+                    "url": "https://gitlab.gnome.org/World/podcasts.git"
                 }
             ]
         }
