@@ -4,14 +4,15 @@
 # arverne73 <arverne@wanadoo.fr>, 2018.
 # Alexandre Franke <alexandre.franke@gmail.com>, 2018, 2020
 # Thibault Martin <mail@thibaultmart.in>, 2020.
+# Sylvestris <sylvestris@tutanota.com>, 2020.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: podcasts master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2020-06-03 20:13+0000\n"
-"PO-Revision-Date: 2020-06-19 17:15+0200\n"
-"Last-Translator: Thibault Martin <mail@thibaultmart.in>\n"
+"POT-Creation-Date: 2020-08-23 07:57+0000\n"
+"PO-Revision-Date: 2020-08-27 10:52+0200\n"
+"Last-Translator: Sylvestris <sylvestris@tutanota.com>\n"
 "Language-Team: French <gnomefr@traduc.org>\n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
@@ -71,8 +72,8 @@ msgstr "Délai entre les nettoyages automatiques"
 #. Weird magic I copy-pasted that sets the Application Name in the Shell.
 #: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:3
 #: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:4
-#: podcasts-gtk/resources/gtk/headerbar.ui:158 podcasts-gtk/src/app.rs:353
-#: podcasts-gtk/src/widgets/aboutdialog.rs:56 podcasts-gtk/src/window.rs:82
+#: podcasts-gtk/resources/gtk/headerbar.ui:158 podcasts-gtk/src/app.rs:365
+#: podcasts-gtk/src/widgets/aboutdialog.rs:56 podcasts-gtk/src/window.rs:66
 msgid "Podcasts"
 msgstr "Podcasts"
 
@@ -90,7 +91,7 @@ msgstr "Podcast;RSS;Baladodiffusion;Émissions;"
 msgid "Podcast app for GNOME"
 msgstr "Application de podcast pour GNOME"
 
-#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:84
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:92
 msgid "Jordan Petridis"
 msgstr "Jordan Petridis"
 
@@ -118,19 +119,19 @@ msgstr "Importer des émissions à partir d’un autre appareil"
 msgid "You’ve already listened to this episode."
 msgstr "Vous avez déjà écouté cet épisode."
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:208
+#: podcasts-gtk/resources/gtk/episode_widget.ui:217
 msgid "Calculating episode size…"
 msgstr "Calcul de la taille de l’épisode…"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:248
+#: podcasts-gtk/resources/gtk/episode_widget.ui:260
 msgid "Play this episode"
 msgstr "Lire cet épisode"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:269
+#: podcasts-gtk/resources/gtk/episode_widget.ui:281
 msgid "Cancel the download process"
 msgstr "Annuler le téléchargement"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:292
+#: podcasts-gtk/resources/gtk/episode_widget.ui:304
 msgid "Download this episode"
 msgstr "Télécharger cet épisode"
 
@@ -226,27 +227,28 @@ msgid "Change the playback speed"
 msgstr "Changer la vitesse de lecture"
 
 #: podcasts-gtk/resources/gtk/player_rate.ui:47
-#: podcasts-gtk/resources/gtk/player_rate.ui:122
 msgid "1.00×"
 msgstr "1,00×"
 
-#: podcasts-gtk/resources/gtk/player_rate.ui:86
-msgid "1.50×"
-msgstr "1,50×"
+#: podcasts-gtk/resources/gtk/player_rate.ui:88
+#| msgid "1.5 speed rate"
+msgid "Double speed rate"
+msgstr "Débit × 2"
 
-#: podcasts-gtk/resources/gtk/player_rate.ui:90
+#: podcasts-gtk/resources/gtk/player_rate.ui:97
+#| msgid "1.5 speed rate"
+msgid "1.75 speed rate"
+msgstr "Débit × 1,75"
+
+#: podcasts-gtk/resources/gtk/player_rate.ui:106
 msgid "1.5 speed rate"
 msgstr "Débit × 1,5"
 
-#: podcasts-gtk/resources/gtk/player_rate.ui:104
-msgid "1.25×"
-msgstr "1,25×"
-
-#: podcasts-gtk/resources/gtk/player_rate.ui:108
+#: podcasts-gtk/resources/gtk/player_rate.ui:115
 msgid "1.25 speed rate"
 msgstr "Débit × 1,25"
 
-#: podcasts-gtk/resources/gtk/player_rate.ui:126
+#: podcasts-gtk/resources/gtk/player_rate.ui:124
 msgid "Normal speed"
 msgstr "Vitesse normale"
 
@@ -294,7 +296,7 @@ msgstr "Se désabonner"
 msgid "Read More"
 msgstr "En savoir plus"
 
-#: podcasts-gtk/src/app.rs:287
+#: podcasts-gtk/src/app.rs:302
 msgid "Fetching new episodes"
 msgstr "Récupérer les nouveaux épisodes"
 
@@ -306,43 +308,48 @@ msgstr "Nouveau"
 msgid "Shows"
 msgstr "Émissions"
 
-#: podcasts-gtk/src/utils.rs:398
+#: podcasts-gtk/src/utils.rs:437
 msgid "Select the file from which to you want to import shows."
 msgstr "Sélectionnez le fichier à partir duquel importer les émissions."
 
-#: podcasts-gtk/src/utils.rs:401
+#: podcasts-gtk/src/utils.rs:440
 msgid "_Import"
 msgstr "_Importer"
 
-#: podcasts-gtk/src/utils.rs:410 podcasts-gtk/src/utils.rs:457
+#: podcasts-gtk/src/utils.rs:449 podcasts-gtk/src/utils.rs:498
 msgid "OPML file"
 msgstr "Fichier OPML"
 
-#: podcasts-gtk/src/utils.rs:427
+#: podcasts-gtk/src/utils.rs:467
 msgid "Failed to parse the imported file"
 msgstr "Échec de l’analyse du fichier importé"
 
-#: podcasts-gtk/src/utils.rs:432 podcasts-gtk/src/utils.rs:475
+#: podcasts-gtk/src/utils.rs:472 podcasts-gtk/src/utils.rs:517
 msgid "Selected file could not be accessed."
 msgstr "Le fichier sélectionné n’est pas accessible."
 
-#: podcasts-gtk/src/utils.rs:445
+#: podcasts-gtk/src/utils.rs:483
 msgid "Export shows to…"
 msgstr "Exporter les émissions vers…"
 
-#: podcasts-gtk/src/utils.rs:448
+#: podcasts-gtk/src/utils.rs:486
 msgid "_Export"
 msgstr "_Exporter"
 
-#: podcasts-gtk/src/utils.rs:449
+#: podcasts-gtk/src/utils.rs:487
 msgid "_Cancel"
 msgstr "A_nnuler"
 
-#: podcasts-gtk/src/utils.rs:469
+#. Translators: This is the string of the suggested name for the exported opml file
+#: podcasts-gtk/src/utils.rs:491
+msgid "gnome-podcasts-exported-shows"
+msgstr "gnome-podcasts-émissions-exportées"
+
+#: podcasts-gtk/src/utils.rs:511
 msgid "GNOME Podcasts Subscriptions"
 msgstr "Abonnements GNOME Podcasts"
 
-#: podcasts-gtk/src/utils.rs:470
+#: podcasts-gtk/src/utils.rs:512
 msgid "Failed to export podcasts"
 msgstr "Échec de l’exportation des podcasts"
 
@@ -364,18 +371,23 @@ msgstr ""
 msgid "{} min"
 msgstr "{} min"
 
-#. sender.send(Action::ErrorNotification(format!("Player Error: {}", error)));
-#: podcasts-gtk/src/widgets/player.rs:828
+#: podcasts-gtk/src/widgets/player.rs:847
 msgid "The media player was unable to execute an action."
 msgstr "Le lecteur n’a pas pu réaliser l’action."
 
-#: podcasts-gtk/src/widgets/show_menu.rs:174
+#: podcasts-gtk/src/widgets/show_menu.rs:172
 msgid "Marked all episodes as listened"
 msgstr "Marquer tous les épisodes comme écoutés"
 
-#: podcasts-gtk/src/widgets/show_menu.rs:179
+#: podcasts-gtk/src/widgets/show_menu.rs:177
 msgid "Unsubscribed from {}"
 msgstr "Se désabonner de {}"
+
+#~ msgid "1.50×"
+#~ msgstr "1,50×"
+
+#~ msgid "1.25×"
+#~ msgstr "1,25×"
 
 #~ msgid "@icon@"
 #~ msgstr "@icon@"
