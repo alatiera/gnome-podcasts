@@ -20,6 +20,7 @@
 // FIXME:
 //! Docs.
 
+use hyper::client::connect::HttpConnector;
 use hyper::{Body, Client};
 use hyper_tls::HttpsConnector;
 
@@ -36,13 +37,17 @@ pub async fn pipeline<S>(sources: S)
 where
     S: IntoIterator<Item = Source>,
 {
-    let https = HttpsConnector::new();
-    let client = Client::builder().build::<_, Body>(https);
+    lazy_static! {
+        static ref CLIENT: Client<HttpsConnector<HttpConnector>> = {
+            let https = HttpsConnector::new();
+            Client::builder().build::<_, Body>(https)
+        };
+    }
 
     let handles: Vec<_> = sources
         .into_iter()
         .map(|source| async {
-            match source.into_feed(client.clone()).await {
+            match source.into_feed(&CLIENT).await {
                 Ok(feed) => match feed.index().await {
                     Ok(_) => (),
                     Err(err) => error!(

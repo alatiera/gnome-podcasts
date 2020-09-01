@@ -244,11 +244,11 @@ impl Source {
     // Refactor into TryInto once it lands on stable.
     pub async fn into_feed(
         self,
-        client: Client<HttpsConnector<HttpConnector>>,
+        client: &Client<HttpsConnector<HttpConnector>>,
     ) -> Result<Feed, DataError> {
         let id = self.id();
 
-        let resp = self.get_response(&client).await?;
+        let resp = self.get_response(client).await?;
         let chan = response_to_channel(resp).await?;
 
         FeedBuilder::default()
@@ -264,7 +264,7 @@ impl Source {
     ) -> Result<Response<Body>, DataError> {
         let mut source = self;
         loop {
-            match source.request_constructor(&client.clone()).await {
+            match source.request_constructor(&client).await {
                 Ok(response) => return Ok(response),
                 Err(err) => match err {
                     DataError::FeedRedirect(s) => {
@@ -342,7 +342,7 @@ mod tests {
                    com/InterceptedWithJeremyScahill";
         let source = Source::from_url(url)?;
         let id = source.id();
-        let feed = source.into_feed(client);
+        let feed = source.into_feed(&client);
         let feed = rt.block_on(feed)?;
 
         let expected = get_feed("tests/feeds/2018-01-20-Intercepted.xml", id);
