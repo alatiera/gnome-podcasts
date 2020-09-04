@@ -94,8 +94,7 @@ fn init_gtk_tests() -> anyhow::Result<()> {
 
 #[tokio::main]
 async fn main() {
-    // TODO: make the logger a cli -vv option
-    loggerv::init_with_level(Level::Info).expect("Error initializing loggerv.");
+    pretty_env_logger::init();
     gst::init().expect("Error initializing gstreamer");
     gtk::init().expect("Error initializing gtk.");
     libhandy::init();
