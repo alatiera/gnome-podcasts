@@ -19,8 +19,6 @@
 
 //! FIXME: Docs
 
-// #![allow(unused)]
-
 use crate::dbqueries;
 use crate::errors::DataError;
 use crate::models::Source;
