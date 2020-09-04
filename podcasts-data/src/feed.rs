@@ -19,8 +19,6 @@
 
 //! Index Feeds.
 
-use futures::prelude::*;
-use futures::stream;
 use rss;
 
 use crate::dbqueries;
@@ -42,30 +40,30 @@ pub struct Feed {
 
 impl Feed {
     /// Index the contents of the RSS `Feed` into the database.
-    pub async fn index(self) -> Result<(), DataError> {
+    pub fn index(self) -> Result<(), DataError> {
         let show = self.parse_podcast().to_podcast()?;
-        self.index_channel_items(show).await
+        self.index_channel_items(show)
     }
 
     fn parse_podcast(&self) -> NewShow {
         NewShow::new(&self.channel, self.source_id)
     }
 
-    async fn index_channel_items(self, pd: Show) -> Result<(), DataError> {
-        let stream = stream::iter(self.channel.into_items());
+    fn index_channel_items(self, pd: Show) -> Result<(), DataError> {
+        let stream = self.channel.into_items().into_iter();
         // Parse the episodes
         let episodes = stream.filter_map(move |item| {
             let ret = NewEpisodeMinimal::new(&item, pd.id())
                 .and_then(move |ep| determine_ep_state(ep, &item));
             if ret.is_ok() {
-                future::ready(Some(ret))
+                Some(ret)
             } else {
                 error!("{:?}", ret);
-                future::ready(None)
+                None
             }
         });
         // Filter errors, Index updatable episodes, return insertables.
-        let insertable_episodes = filter_episodes(episodes).await?;
+        let insertable_episodes = filter_episodes(episodes);
         batch_insert_episodes(&insertable_episodes);
         Ok(())
     }
@@ -92,31 +90,28 @@ fn determine_ep_state(
     }
 }
 
-async fn filter_episodes<'a, S>(stream: S) -> Result<Vec<NewEpisode>, DataError>
+fn filter_episodes<S>(stream: S) -> Vec<NewEpisode>
 where
-    S: Stream<Item = Result<IndexState<NewEpisode>, DataError>>,
+    S: Iterator<Item = Result<IndexState<NewEpisode>, DataError>>,
 {
     stream
-        .try_filter_map(|state| {
-            async {
-                let result = match state {
-                    IndexState::NotChanged => None,
-                    // Update individual rows, and filter them
-                    IndexState::Update((ref ep, rowid)) => {
-                        ep.update(rowid)
-                            .map_err(|err| error!("{}", err))
-                            .map_err(|_| error!("Failed to index episode: {:?}.", ep.title()))
-                            .ok();
-                        None
-                    }
-                    IndexState::Index(s) => Some(s),
-                };
-                Ok(result)
+        .filter_map(Result::ok)
+        .filter_map(|state| {
+            match state {
+                IndexState::NotChanged => None,
+                // Update individual rows, and filter them
+                IndexState::Update((ref ep, rowid)) => {
+                    ep.update(rowid)
+                        .map_err(|err| error!("{}", err))
+                        .map_err(|_| error!("Failed to index episode: {:?}.", ep.title()))
+                        .ok();
+                    None
+                }
+                IndexState::Index(s) => Some(s),
             }
         })
         // only Index is left, collect them for batch index
-        .try_collect()
-        .await
+        .collect()
 }
 
 fn batch_insert_episodes(episodes: &[NewEpisode]) {
@@ -143,9 +138,7 @@ fn batch_insert_episodes(episodes: &[NewEpisode]) {
 #[cfg(test)]
 mod tests {
     use anyhow::Result;
-    use futures::executor::block_on;
     use rss::Channel;
-    use tokio;
 
     use crate::database::truncate_db;
     use crate::dbqueries;
@@ -200,10 +193,10 @@ mod tests {
             })
             .collect();
 
-        // Index the channes
-        let stream_ = stream::iter(feeds).for_each(|x| x.index().map(|x| x.unwrap()));
-        let mut rt = tokio::runtime::Runtime::new()?;
-        rt.block_on(stream_);
+        // Index the channels
+        for feed in feeds {
+            feed.index()?
+        }
 
         // Assert the index rows equal the controlled results
         assert_eq!(dbqueries::get_sources()?.len(), 5);
@@ -235,7 +228,7 @@ mod tests {
         let feed = get_feed(path, 42);
         let pd = feed.parse_podcast().to_podcast()?;
 
-        block_on(feed.index_channel_items(pd))?;
+        feed.index_channel_items(pd)?;
         assert_eq!(dbqueries::get_podcasts()?.len(), 1);
         assert_eq!(dbqueries::get_episodes()?.len(), 43);
         Ok(())
