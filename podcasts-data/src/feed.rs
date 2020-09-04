@@ -17,7 +17,6 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#![allow(clippy::unit_arg)]
 //! Index Feeds.
 
 use futures::prelude::*;

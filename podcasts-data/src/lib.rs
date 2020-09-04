@@ -18,7 +18,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #![recursion_limit = "1024"]
-#![allow(unknown_lints)]
 #![cfg_attr(
     all(test, feature = "clippy"),
     allow(option_unwrap_used, result_unwrap_used)
@@ -42,7 +41,7 @@
 )]
 // Enable lint group collections
 #![warn(nonstandard_style, bad_style, unused)]
-#![warn(edition_2018, rust_2018_idioms)]
+#![warn(rust_2018_idioms)]
 // standalone lints
 #![warn(
     const_err,
@@ -51,16 +50,13 @@
     no_mangle_generic_items,
     overflowing_literals,
     unconditional_recursion,
-    unions_with_drop_fields,
     while_true,
     missing_debug_implementations,
     missing_docs,
     trivial_casts,
     trivial_numeric_casts,
-    elided_lifetime_in_paths,
     missing_copy_implementations
 )]
-#![allow(proc_macro_derive_resolution_fallback)]
 
 //! FIXME: Docs
 

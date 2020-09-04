@@ -19,7 +19,6 @@
 
 //! Database Setup. This is only public to help with some unit tests.
 // Diesel embed_migrations! triggers the lint
-#![allow(unused_imports)]
 
 use diesel::prelude::*;
 use diesel::r2d2;

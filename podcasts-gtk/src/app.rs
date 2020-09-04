@@ -17,8 +17,6 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#![allow(clippy::new_without_default)]
-
 use glib::clone;
 use glib::subclass::prelude::*;
 use glib::subclass::simple::{ClassStruct, InstanceStruct};

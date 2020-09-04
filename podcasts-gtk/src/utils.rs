@@ -17,8 +17,6 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#![allow(clippy::type_complexity)]
-
 use gdk_pixbuf::Pixbuf;
 use gio::ActionMapExt;
 use glib::clone;
