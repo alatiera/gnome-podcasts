@@ -149,12 +149,15 @@ fn add_to_box(widget: &HomeEpisode, listbox: &gtk::ListBox, box_: &gtk::Box) {
 
 fn split(now: &DateTime<Utc>, epoch: i64) -> ListSplit {
     let ep = Utc.timestamp(epoch, 0);
+    let days_now = now.num_days_from_ce();
+    let days_ep = ep.num_days_from_ce();
+    let weekday = now.weekday().num_days_from_monday() as i32;
 
-    if now.ordinal() == ep.ordinal() && now.year() == ep.year() {
+    if days_ep == days_now {
         ListSplit::Today
-    } else if now.ordinal() == ep.ordinal() + 1 && now.year() == ep.year() {
+    } else if days_ep == days_now - 1 {
         ListSplit::Yday
-    } else if now.iso_week().week() == ep.iso_week().week() && now.year() == ep.year() {
+    } else if days_ep >= days_now - weekday {
         ListSplit::Week
     } else if now.month() == ep.month() && now.year() == ep.year() {
         ListSplit::Month
