@@ -3,9 +3,9 @@
 ### A Podcast application for GNOME.
 Listen to your favorite podcasts, right from your desktop.
 
-![episdes_view](./screenshots/home_view.png)
-![shows_view](./screenshots/shows_view.png)
-![show_widget](./screenshots/show_widget.png)
+![Episodes view](./screenshots/home_view.png)
+![Shows view](./screenshots/shows_view.png)
+![Show widget](./screenshots/show_widget.png)
 
 ## Available on Flathub
 
