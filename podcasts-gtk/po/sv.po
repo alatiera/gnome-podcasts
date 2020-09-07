@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: podcasts master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2020-06-21 21:43+0000\n"
-"PO-Revision-Date: 2020-07-10 01:27+0200\n"
+"POT-Creation-Date: 2020-08-23 07:57+0000\n"
+"PO-Revision-Date: 2020-09-07 13:55+0200\n"
 "Last-Translator: Anders Jonsson <anders.jonsson@norsjovallen.se>\n"
 "Language-Team: Swedish <tp-sv@listor.tp-sv.se>\n"
 "Language: sv\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 2.3.1\n"
+"X-Generator: Poedit 2.4.1\n"
 
 #: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml:15
 msgid "Top position of the last open main window"
@@ -69,8 +69,8 @@ msgstr "Vilken sorts tidsperiod att vänta mellan automatiska upprensningar"
 #. Weird magic I copy-pasted that sets the Application Name in the Shell.
 #: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:3
 #: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:4
-#: podcasts-gtk/resources/gtk/headerbar.ui:158 podcasts-gtk/src/app.rs:353
-#: podcasts-gtk/src/widgets/aboutdialog.rs:56 podcasts-gtk/src/window.rs:82
+#: podcasts-gtk/resources/gtk/headerbar.ui:158 podcasts-gtk/src/app.rs:365
+#: podcasts-gtk/src/widgets/aboutdialog.rs:56 podcasts-gtk/src/window.rs:66
 msgid "Podcasts"
 msgstr "Poddsändningar"
 
@@ -88,7 +88,7 @@ msgstr "Poddsändning;Podcast;RSS;"
 msgid "Podcast app for GNOME"
 msgstr "Poddsändningsprogram för GNOME"
 
-#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:84
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:92
 msgid "Jordan Petridis"
 msgstr "Jordan Petridis"
 
@@ -291,7 +291,7 @@ msgstr "Säg upp prenumeration"
 msgid "Read More"
 msgstr "Läs mer"
 
-#: podcasts-gtk/src/app.rs:287
+#: podcasts-gtk/src/app.rs:302
 msgid "Fetching new episodes"
 msgstr "Hämtar nya avsnitt"
 
@@ -303,43 +303,48 @@ msgstr "Nytt"
 msgid "Shows"
 msgstr "Shower"
 
-#: podcasts-gtk/src/utils.rs:398
+#: podcasts-gtk/src/utils.rs:437
 msgid "Select the file from which to you want to import shows."
 msgstr "Välj filen från vilken du vill importera shower."
 
-#: podcasts-gtk/src/utils.rs:401
+#: podcasts-gtk/src/utils.rs:440
 msgid "_Import"
 msgstr "_Importera"
 
-#: podcasts-gtk/src/utils.rs:410 podcasts-gtk/src/utils.rs:457
+#: podcasts-gtk/src/utils.rs:449 podcasts-gtk/src/utils.rs:498
 msgid "OPML file"
 msgstr "OPML-fil"
 
-#: podcasts-gtk/src/utils.rs:427
+#: podcasts-gtk/src/utils.rs:467
 msgid "Failed to parse the imported file"
 msgstr "Misslyckades med att tolka den importerade filen"
 
-#: podcasts-gtk/src/utils.rs:432 podcasts-gtk/src/utils.rs:475
+#: podcasts-gtk/src/utils.rs:472 podcasts-gtk/src/utils.rs:517
 msgid "Selected file could not be accessed."
 msgstr "Den markerade filen kunde inte kommas åt."
 
-#: podcasts-gtk/src/utils.rs:445
+#: podcasts-gtk/src/utils.rs:483
 msgid "Export shows to…"
 msgstr "Exportera shower till…"
 
-#: podcasts-gtk/src/utils.rs:448
+#: podcasts-gtk/src/utils.rs:486
 msgid "_Export"
 msgstr "_Exportera"
 
-#: podcasts-gtk/src/utils.rs:449
+#: podcasts-gtk/src/utils.rs:487
 msgid "_Cancel"
 msgstr "A_vbryt"
 
-#: podcasts-gtk/src/utils.rs:469
+#. Translators: This is the string of the suggested name for the exported opml file
+#: podcasts-gtk/src/utils.rs:491
+msgid "gnome-podcasts-exported-shows"
+msgstr "gnome-poddsändningar-exporterade-shower"
+
+#: podcasts-gtk/src/utils.rs:511
 msgid "GNOME Podcasts Subscriptions"
 msgstr "GNOME Poddsändningar-prenumerationer"
 
-#: podcasts-gtk/src/utils.rs:470
+#: podcasts-gtk/src/utils.rs:512
 msgid "Failed to export podcasts"
 msgstr "Misslyckades med att exportera poddsändningar"
 
@@ -363,16 +368,15 @@ msgstr ""
 msgid "{} min"
 msgstr "{} min"
 
-#. sender.send(Action::ErrorNotification(format!("Player Error: {}", error)));
 #: podcasts-gtk/src/widgets/player.rs:847
 msgid "The media player was unable to execute an action."
 msgstr "Mediaspelaren kunde inte utföra en åtgärd."
 
-#: podcasts-gtk/src/widgets/show_menu.rs:174
+#: podcasts-gtk/src/widgets/show_menu.rs:172
 msgid "Marked all episodes as listened"
 msgstr "Markerade alla avsnitt som lyssnade"
 
-#: podcasts-gtk/src/widgets/show_menu.rs:179
+#: podcasts-gtk/src/widgets/show_menu.rs:177
 msgid "Unsubscribed from {}"
 msgstr "Sade upp prenumeration från {}"
 
