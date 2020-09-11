@@ -48,8 +48,13 @@ if appstream_util.found()
   )
 endif
 
-
-install_data('org.gnome.Podcasts.gschema.xml', install_dir: join_paths(datadir, 'glib-2.0', 'schemas'))
+configure_file(
+  input: 'org.gnome.Podcasts.gschema.xml.in',
+  output: 'org.gnome.Podcasts.gschema.xml',
+  configuration: podcasts_conf,
+  install: true,
+  install_dir: join_paths(datadir, 'glib-2.0', 'schemas')
+)
 
 configure_file(
   input: 'org.gnome.Podcasts.service.in',
