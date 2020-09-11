@@ -18,7 +18,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 // Enable lint group collections
-#![warn(nonstandard_style, edition_2018, rust_2018_idioms, bad_style, unused)]
+#![warn(nonstandard_style, rust_2018_idioms, bad_style, unused)]
 // standalone lints
 #![warn(
     const_err,
@@ -27,12 +27,11 @@
     no_mangle_generic_items,
     overflowing_literals,
     unconditional_recursion,
-    unions_with_drop_fields,
     while_true,
     missing_debug_implementations,
     trivial_casts,
     trivial_numeric_casts,
-    elided_lifetime_in_paths,
+    elided_lifetimes_in_paths,
     missing_copy_implementations
 )]
 
@@ -44,8 +43,6 @@ extern crate log;
 #[cfg(test)]
 #[macro_use]
 extern crate pretty_assertions;
-
-use log::Level;
 
 use gtk::prelude::*;
 
