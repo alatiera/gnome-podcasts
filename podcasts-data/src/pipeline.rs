@@ -48,7 +48,7 @@ where
         .into_iter()
         .map(|source| async {
             match source.into_feed(&CLIENT).await {
-                Ok(feed) => match feed.index().await {
+                Ok(feed) => match feed.index() {
                     Ok(_) => (),
                     Err(err) => error!(
                         "Error while indexing content feed into the database: {}",
