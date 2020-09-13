@@ -40,7 +40,7 @@ features = ["v3_24"]
 version = "0.9"
 
 [dependencies.libhandy]
-version = "1.0.0-alpha"
+version = "0.7.0"
 
 [dependencies.mpris-player]
 # git = "https://gitlab.gnome.org/World/Rust/mpris-player.git"
