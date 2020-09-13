@@ -64,7 +64,8 @@ impl Default for ShowWidget {
         let description_button: gtk::Button = builder.get_object("description_button").unwrap();
         let description_button_revealer =
             builder.get_object("description_button_revealer").unwrap();
-        let episodes = builder.get_object("episodes").unwrap();
+        let episodes: gtk::ListBox = builder.get_object("episodes").unwrap();
+        episodes.set_header_func(Some(Box::new(utils::separator_header)));
         let view = BaseView::default();
 
         let clamp = Clamp::new();
