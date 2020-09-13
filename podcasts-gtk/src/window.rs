@@ -58,7 +58,7 @@ pub struct MainWindow {
 
 impl MainWindow {
     pub(crate) fn new(app: &PdApplication, sender: &Sender<Action>) -> Self {
-        let settings = gio::Settings::new("org.gnome.Podcasts");
+        let settings = gio::Settings::new(APP_ID);
 
         let window = hdy::ApplicationWindow::new();
         window.set_application(Some(app));

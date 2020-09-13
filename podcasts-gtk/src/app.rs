@@ -114,7 +114,7 @@ impl gio::subclass::prelude::ApplicationImpl for PdApplicationPrivate {
 
         self.parent_startup(app);
 
-        let settings = gio::Settings::new("org.gnome.Podcasts");
+        let settings = gio::Settings::new(APP_ID);
 
         let cleanup_date = settings::get_cleanup_date(&settings);
         // Garbage collect watched episodes from the disk
