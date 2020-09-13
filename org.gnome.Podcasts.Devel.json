@@ -28,7 +28,8 @@
             "CARGO_HOME": "/run/build/gnome-podcasts/cargo",
             "RUSTFLAGS": "",
             "RUST_BACKTRACE": "1",
-            "RUST_LOG": "info"
+            "RUST_LOG": "podcasts_gtk=debug,podcasts_data=debug,glib=debug",
+            "G_MESSAGES_DEBUG" : "none"
         }
     },
     "modules": [
