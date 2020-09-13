@@ -1,6 +1,6 @@
 # List of source files containing translatable strings.
 # Please keep this file sorted alphabetically.
-podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml
+podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in
 podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in
 podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in
 
