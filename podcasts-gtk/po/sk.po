@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: podcasts master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2018-10-28 15:31+0000\n"
-"PO-Revision-Date: 2018-10-28 22:00+0100\n"
+"POT-Creation-Date: 2020-08-23 07:57+0000\n"
+"PO-Revision-Date: 2020-09-23 10:02+0200\n"
 "Last-Translator: Dušan Kazik <prescott66@gmail.com>\n"
 "Language-Team: Slovak <gnome-sk-list@gnome.org>\n"
 "Language: sk\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 1 : (n>=2 && n<=4) ? 2 : 0;\n"
-"X-Generator: Poedit 2.2\n"
+"X-Generator: Poedit 2.4.1\n"
 
 #: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml:15
 msgid "Top position of the last open main window"
@@ -69,8 +69,8 @@ msgstr "Aká je doba čakania medzi automatickými čisteniami"
 #. Weird magic I copy-pasted that sets the Application Name in the Shell.
 #: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:3
 #: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:4
-#: podcasts-gtk/src/app.rs:92 podcasts-gtk/src/app.rs:416
-#: podcasts-gtk/src/widgets/aboutdialog.rs:37
+#: podcasts-gtk/resources/gtk/headerbar.ui:158 podcasts-gtk/src/app.rs:365
+#: podcasts-gtk/src/widgets/aboutdialog.rs:56 podcasts-gtk/src/window.rs:66
 msgid "Podcasts"
 msgstr "Podcasty"
 
@@ -78,11 +78,6 @@ msgstr "Podcasty"
 #: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:10
 msgid "Listen to your favorite podcasts, right from your desktop."
 msgstr "Počúvajte vaše obľúbené podcasty priamo z vášho pracovného prostredia."
-
-#. Translators: Do NOT translate or transliterate this text (this is an icon file name)!
-#: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:6
-msgid "@icon@"
-msgstr "@icon@"
 
 #. Translators: Search terms to find this application. Do NOT translate or localize the semicolons! The list MUST also end with a semicolon!
 #: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:13
@@ -93,7 +88,7 @@ msgstr "Podcast;RSS;"
 msgid "Podcast app for GNOME"
 msgstr "Aplikácia na správu podcastov pre prostredie GNOME"
 
-#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:68
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:92
 msgid "Jordan Petridis"
 msgstr "Jordan Petridis"
 
@@ -117,22 +112,26 @@ msgstr "Pridajte nové relácie prostredníctvom URL kanálu"
 msgid "Import shows from another device"
 msgstr "Importujte relácie z iného zariadenia"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:180
+#: podcasts-gtk/resources/gtk/episode_widget.ui:79
+msgid "You’ve already listened to this episode."
+msgstr "Túto epizódu ste už počúvali."
+
+#: podcasts-gtk/resources/gtk/episode_widget.ui:217
 msgid "Calculating episode size…"
 msgstr "Vypočítava sa veľkosť epizódy…"
 
 # tooltip
-#: podcasts-gtk/resources/gtk/episode_widget.ui:220
+#: podcasts-gtk/resources/gtk/episode_widget.ui:260
 msgid "Play this episode"
 msgstr "Prehrá túto epizódu"
 
 # tooltip
-#: podcasts-gtk/resources/gtk/episode_widget.ui:241
+#: podcasts-gtk/resources/gtk/episode_widget.ui:281
 msgid "Cancel the download process"
 msgstr "Zruší preberanie"
 
 # tooltip
-#: podcasts-gtk/resources/gtk/episode_widget.ui:264
+#: podcasts-gtk/resources/gtk/episode_widget.ui:304
 msgid "Download this episode"
 msgstr "Preberie túto epizódu"
 
@@ -144,21 +143,21 @@ msgstr "_Skontrolovať nové epizódy"
 msgid "_Import Shows"
 msgstr "_Importovať relácie"
 
-#: podcasts-gtk/resources/gtk/hamburger.ui:22
-msgid "_Preferences"
-msgstr "_Nastavenia"
+#: podcasts-gtk/resources/gtk/hamburger.ui:16
+msgid "_Export Shows"
+msgstr "_Exportovať relácie"
 
-#: podcasts-gtk/resources/gtk/hamburger.ui:27
+#: podcasts-gtk/resources/gtk/hamburger.ui:22
 msgid "_Keyboard Shortcuts"
 msgstr "_Klávesové skratky"
 
-#: podcasts-gtk/resources/gtk/hamburger.ui:35
+#: podcasts-gtk/resources/gtk/hamburger.ui:30
 msgid "_About Podcasts"
 msgstr "_O aplikácii Podcasty"
 
 # tooltip
 #: podcasts-gtk/resources/gtk/headerbar.ui:35
-#: podcasts-gtk/resources/gtk/headerbar.ui:189
+#: podcasts-gtk/resources/gtk/headerbar.ui:186
 msgid "Add a new feed"
 msgstr "Pridá nový kanál"
 
@@ -170,16 +169,12 @@ msgstr "Zadajte adresu kanálu, ktorý sa má pridať"
 msgid "Add"
 msgstr "Pridať"
 
-#: podcasts-gtk/resources/gtk/headerbar.ui:133
-msgid "You are already subscribed to that feed!"
-msgstr "Už ste prihlásený na odber tohoto kanálu!"
-
-#: podcasts-gtk/resources/gtk/headerbar.ui:169
+#: podcasts-gtk/resources/gtk/headerbar.ui:171
 msgid "Show Title"
 msgstr "Zobrazenie názvu"
 
 # tooltip
-#: podcasts-gtk/resources/gtk/headerbar.ui:210
+#: podcasts-gtk/resources/gtk/headerbar.ui:207
 msgid "Back"
 msgstr "Prejde späť"
 
@@ -193,11 +188,6 @@ msgid "Check for new episodes"
 msgstr "Kontrola nových epizód"
 
 #: podcasts-gtk/resources/gtk/help-overlay.ui:25
-msgctxt "shortcut window"
-msgid "Preferences"
-msgstr "Nastavenia"
-
-#: podcasts-gtk/resources/gtk/help-overlay.ui:32
 msgctxt "shortcut window"
 msgid "Quit the application"
 msgstr "Ukončenie aplikácie"
@@ -230,78 +220,62 @@ msgstr "Oznámenie o činnosti v aplikácii"
 msgid "Undo"
 msgstr "Vrátiť späť"
 
-# tooltip
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:72
-msgid "Rewind 10 seconds"
-msgstr "Previnie o 10 sekúnd dozadu"
+#: podcasts-gtk/resources/gtk/player_dialog.ui:14
+msgid "Now Playing"
+msgstr "Teraz sa prehráva"
 
 # tooltip
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:87
-msgid "Play"
-msgstr "Prehrá"
-
-# tooltip
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:103
-msgid "Pause"
-msgstr "Pozastaví"
-
-# tooltip
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:119
-msgid "Fast forward 10 seconds"
-msgstr "Previnie o 10 sekúnd dopredu"
-
-# tooltip
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:285
+#: podcasts-gtk/resources/gtk/player_rate.ui:32
 msgid "Change the playback speed"
 msgstr "Zmení rýchlosť prehrávania"
 
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:300
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:380
+#: podcasts-gtk/resources/gtk/player_rate.ui:47
 msgid "1.00×"
 msgstr "1,00×"
 
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:344
-msgid "1.50×"
-msgstr "1,50×"
+# tooltip
+#: podcasts-gtk/resources/gtk/player_rate.ui:88
+msgid "Double speed rate"
+msgstr "Dvojnásobná rýchlosť"
 
 # tooltip
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:348
+#: podcasts-gtk/resources/gtk/player_rate.ui:97
+msgid "1.75 speed rate"
+msgstr "1,75 násobná rýchlosť"
+
+# tooltip
+#: podcasts-gtk/resources/gtk/player_rate.ui:106
 msgid "1.5 speed rate"
 msgstr "1,5 násobná rýchlosť"
 
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:362
-msgid "1.25×"
-msgstr "1,25×"
-
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:366
+#: podcasts-gtk/resources/gtk/player_rate.ui:115
 msgid "1.25 speed rate"
 msgstr "1,25 násobná rýchlosť"
 
 # tooltip
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:384
+#: podcasts-gtk/resources/gtk/player_rate.ui:124
 msgid "Normal speed"
 msgstr "Normálna rýchlosť"
 
-#: podcasts-gtk/resources/gtk/prefs.ui:42
-#: podcasts-gtk/resources/gtk/prefs.ui:295
-msgid "Preferences"
-msgstr "Nastavenia"
+# tooltip
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:97
+msgid "Rewind 10 seconds"
+msgstr "Previnie o 10 sekúnd dozadu"
 
-#: podcasts-gtk/resources/gtk/prefs.ui:76
-msgid "Appearance"
-msgstr "Vzhľad"
+# tooltip
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:112
+msgid "Play"
+msgstr "Prehrá"
 
-#: podcasts-gtk/resources/gtk/prefs.ui:120
-msgid "Dark Theme"
-msgstr "Tmavá téma"
+# tooltip
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:128
+msgid "Pause"
+msgstr "Pozastaví"
 
-#: podcasts-gtk/resources/gtk/prefs.ui:166
-msgid "Delete played episodes"
-msgstr "Odstránenie prehraných epizód"
-
-#: podcasts-gtk/resources/gtk/prefs.ui:211
-msgid "After"
-msgstr "Po"
+# tooltip
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:144
+msgid "Fast forward 10 seconds"
+msgstr "Previnie o 10 sekúnd dopredu"
 
 #: podcasts-gtk/resources/gtk/secondary_menu.ui:7
 msgid "_Mark All Episodes as Played"
@@ -327,91 +301,144 @@ msgstr "Označiť všetko ako prehrané"
 msgid "Unsubscribe"
 msgstr "Odhlásiť sa z odberu"
 
-#: podcasts-gtk/src/app.rs:333
+#: podcasts-gtk/resources/gtk/show_widget.ui:99
+msgid "Read More"
+msgstr "Prečítať viac"
+
+#: podcasts-gtk/src/app.rs:302
 msgid "Fetching new episodes"
 msgstr "Získavajú sa nové epizódy"
 
-#: podcasts-gtk/src/headerbar.rs:98
-msgid "You are already subscribed to this show"
-msgstr "Už ste prihlásený na odber tejto relácie"
-
-#: podcasts-gtk/src/headerbar.rs:106
-msgid "Invalid URL"
-msgstr "Neplatná URL"
-
-#: podcasts-gtk/src/prefs.rs:59
-msgid "Seconds"
-msgstr "Sekundách"
-
-#: podcasts-gtk/src/prefs.rs:60
-msgid "Minutes"
-msgstr "Minútach"
-
-#: podcasts-gtk/src/prefs.rs:61
-msgid "Hours"
-msgstr "Hodinách"
-
-#: podcasts-gtk/src/prefs.rs:62
-msgid "Days"
-msgstr "Dňoch"
-
-#: podcasts-gtk/src/prefs.rs:63
-msgid "Weeks"
-msgstr "Týždňoch"
-
-#: podcasts-gtk/src/stacks/content.rs:35
+#: podcasts-gtk/src/stacks/content.rs:54
 msgid "New"
 msgstr "Nové"
 
-#: podcasts-gtk/src/stacks/content.rs:36
+#: podcasts-gtk/src/stacks/content.rs:55
 msgid "Shows"
 msgstr "Relácie"
 
-#: podcasts-gtk/src/utils.rs:357
+#: podcasts-gtk/src/utils.rs:437
 msgid "Select the file from which to you want to import shows."
 msgstr "Vyberte súbor, z ktorého chcete importovať relácie."
 
-#: podcasts-gtk/src/utils.rs:360
+#: podcasts-gtk/src/utils.rs:440
 msgid "_Import"
 msgstr "_Importovať"
 
-#: podcasts-gtk/src/utils.rs:369
+#: podcasts-gtk/src/utils.rs:449 podcasts-gtk/src/utils.rs:498
 msgid "OPML file"
 msgstr "Súbor OPML"
 
-#: podcasts-gtk/src/utils.rs:386
+#: podcasts-gtk/src/utils.rs:467
 msgid "Failed to parse the imported file"
 msgstr "Zlyhala analýza importovaného súboru"
 
-#: podcasts-gtk/src/utils.rs:391
+#: podcasts-gtk/src/utils.rs:472 podcasts-gtk/src/utils.rs:517
 msgid "Selected file could not be accessed."
 msgstr "Nedá sa získať prístup k vybranému súboru."
 
-#: podcasts-gtk/src/widgets/aboutdialog.rs:32
+# file chooser dialog title
+#: podcasts-gtk/src/utils.rs:483
+msgid "Export shows to…"
+msgstr "Export relácií do…"
+
+#: podcasts-gtk/src/utils.rs:486
+msgid "_Export"
+msgstr "_Exportovať"
+
+#: podcasts-gtk/src/utils.rs:487
+msgid "_Cancel"
+msgstr "_Zrušiť"
+
+#. Translators: This is the string of the suggested name for the exported opml file
+#: podcasts-gtk/src/utils.rs:491
+msgid "gnome-podcasts-exported-shows"
+msgstr "gnome-podcasty-exportovane-relacie"
+
+#: podcasts-gtk/src/utils.rs:511
+msgid "GNOME Podcasts Subscriptions"
+msgstr "Prihlásenia k odberu aplikácie Podcasty prostredia GNOME"
+
+#: podcasts-gtk/src/utils.rs:512
+msgid "Failed to export podcasts"
+msgstr "Zlyhalo exportovanie podcastov"
+
+#: podcasts-gtk/src/widgets/aboutdialog.rs:51
 msgid "Podcast Client for the GNOME Desktop."
 msgstr "Klient pre podcasty prostredia GNOME."
 
-#: podcasts-gtk/src/widgets/aboutdialog.rs:39
+#: podcasts-gtk/src/widgets/aboutdialog.rs:58
 msgid "Learn more about GNOME Podcasts"
 msgstr "Zistite viac o aplikácii Podcasty prostredia GNOME"
 
-#: podcasts-gtk/src/widgets/aboutdialog.rs:44
+#: podcasts-gtk/src/widgets/aboutdialog.rs:63
 msgid "translator-credits"
 msgstr "Dušan Kazik <prescott66@gmail.com>"
 
-#: podcasts-gtk/src/widgets/episode.rs:130
+#: podcasts-gtk/src/widgets/episode.rs:149
 msgid "{} min"
 msgstr "{} min"
 
-#. sender.send(Action::ErrorNotification(format!("Player Error: {}", error)));
-#: podcasts-gtk/src/widgets/player.rs:365
+#: podcasts-gtk/src/widgets/player.rs:847
 msgid "The media player was unable to execute an action."
 msgstr "Prehrávač médií nedokázal vykonať akciu."
 
-#: podcasts-gtk/src/widgets/show_menu.rs:150
+#: podcasts-gtk/src/widgets/show_menu.rs:172
 msgid "Marked all episodes as listened"
 msgstr "Všetky epizódy boli označené ako vypočuté"
 
-#: podcasts-gtk/src/widgets/show_menu.rs:155
+#: podcasts-gtk/src/widgets/show_menu.rs:177
 msgid "Unsubscribed from {}"
 msgstr "Bol odhlásený odber z kanálu {}"
+
+#~ msgid "@icon@"
+#~ msgstr "@icon@"
+
+#~ msgid "_Preferences"
+#~ msgstr "_Nastavenia"
+
+#~ msgid "You are already subscribed to that feed!"
+#~ msgstr "Už ste prihlásený na odber tohoto kanálu!"
+
+#~ msgctxt "shortcut window"
+#~ msgid "Preferences"
+#~ msgstr "Nastavenia"
+
+#~ msgid "1.50×"
+#~ msgstr "1,50×"
+
+#~ msgid "1.25×"
+#~ msgstr "1,25×"
+
+#~ msgid "Preferences"
+#~ msgstr "Nastavenia"
+
+#~ msgid "Appearance"
+#~ msgstr "Vzhľad"
+
+#~ msgid "Dark Theme"
+#~ msgstr "Tmavá téma"
+
+#~ msgid "Delete played episodes"
+#~ msgstr "Odstránenie prehraných epizód"
+
+#~ msgid "After"
+#~ msgstr "Po"
+
+#~ msgid "Invalid URL"
+#~ msgstr "Neplatná URL"
+
+#~ msgid "Seconds"
+#~ msgstr "Sekundách"
+
+#~ msgid "Minutes"
+#~ msgstr "Minútach"
+
+#~ msgid "Hours"
+#~ msgstr "Hodinách"
+
+#~ msgid "Days"
+#~ msgstr "Dňoch"
+
+#~ msgid "Weeks"
+#~ msgstr "Týždňoch"
