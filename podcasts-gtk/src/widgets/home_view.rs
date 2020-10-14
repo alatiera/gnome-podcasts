@@ -77,12 +77,6 @@ impl Default for HomeView {
         let month_list: gtk::ListBox = builder.get_object("month_list").unwrap();
         let rest_list: gtk::ListBox = builder.get_object("rest_list").unwrap();
 
-        today_list.set_header_func(Some(Box::new(utils::separator_header)));
-        yday_list.set_header_func(Some(Box::new(utils::separator_header)));
-        week_list.set_header_func(Some(Box::new(utils::separator_header)));
-        month_list.set_header_func(Some(Box::new(utils::separator_header)));
-        rest_list.set_header_func(Some(Box::new(utils::separator_header)));
-
         let clamp = Clamp::new();
         clamp.show();
         clamp.set_maximum_size(700);
