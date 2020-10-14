@@ -4,7 +4,7 @@ include:
     # ref: ''
 
 flatpak:
-  image: 'registry.gitlab.gnome.org/gnome/gnome-runtime-images/rust_bundle:3.36'
+  image: 'registry.gitlab.gnome.org/gnome/gnome-runtime-images/rust_bundle:master'
   variables:
     MANIFEST_PATH: "org.gnome.Podcasts.Devel.json"
     FLATPAK_MODULE: "gnome-podcasts"
