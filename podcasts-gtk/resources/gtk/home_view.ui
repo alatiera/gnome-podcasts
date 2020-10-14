@@ -66,23 +66,14 @@ Tobias Bernard
           </packing>
         </child>
         <child>
-          <object class="GtkFrame">
+          <object class="GtkListBox" id="today_list">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="hexpand">True</property>
-            <property name="label_xalign">0</property>
-            <property name="shadow_type">in</property>
-            <child>
-              <object class="GtkListBox" id="today_list">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="hexpand">True</property>
-                <property name="selection_mode">none</property>
-              </object>
-            </child>
-            <child type="label_item">
-              <placeholder/>
-            </child>
+            <property name="selection_mode">none</property>
+            <style>
+              <class name="content"/>
+            </style>
           </object>
           <packing>
             <property name="expand">False</property>
@@ -122,23 +113,14 @@ Tobias Bernard
           </packing>
         </child>
         <child>
-          <object class="GtkFrame">
+          <object class="GtkListBox" id="yday_list">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="hexpand">True</property>
-            <property name="label_xalign">0</property>
-            <property name="shadow_type">in</property>
-            <child>
-              <object class="GtkListBox" id="yday_list">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="hexpand">True</property>
-                <property name="selection_mode">none</property>
-              </object>
-            </child>
-            <child type="label_item">
-              <placeholder/>
-            </child>
+            <property name="selection_mode">none</property>
+            <style>
+              <class name="content"/>
+            </style>
           </object>
           <packing>
             <property name="expand">False</property>
@@ -178,23 +160,14 @@ Tobias Bernard
           </packing>
         </child>
         <child>
-          <object class="GtkFrame">
+          <object class="GtkListBox" id="week_list">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="hexpand">True</property>
-            <property name="label_xalign">0</property>
-            <property name="shadow_type">in</property>
-            <child>
-              <object class="GtkListBox" id="week_list">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="hexpand">True</property>
-                <property name="selection_mode">none</property>
-              </object>
-            </child>
-            <child type="label_item">
-              <placeholder/>
-            </child>
+            <property name="selection_mode">none</property>
+            <style>
+              <class name="content"/>
+            </style>
           </object>
           <packing>
             <property name="expand">False</property>
@@ -234,23 +207,14 @@ Tobias Bernard
           </packing>
         </child>
         <child>
-          <object class="GtkFrame">
+          <object class="GtkListBox" id="month_list">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="hexpand">True</property>
-            <property name="label_xalign">0</property>
-            <property name="shadow_type">in</property>
-            <child>
-              <object class="GtkListBox" id="month_list">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="hexpand">True</property>
-                <property name="selection_mode">none</property>
-              </object>
-            </child>
-            <child type="label_item">
-              <placeholder/>
-            </child>
+            <property name="selection_mode">none</property>
+            <style>
+              <class name="content"/>
+            </style>
           </object>
           <packing>
             <property name="expand">False</property>
@@ -291,24 +255,15 @@ Tobias Bernard
           </packing>
         </child>
         <child>
-          <object class="GtkFrame">
+          <object class="GtkListBox" id="rest_list">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
+            <property name="no_show_all">True</property>
             <property name="hexpand">True</property>
-            <property name="label_xalign">0</property>
-            <property name="shadow_type">in</property>
-            <child>
-              <object class="GtkListBox" id="rest_list">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="no_show_all">True</property>
-                <property name="hexpand">True</property>
-                <property name="selection_mode">none</property>
-              </object>
-            </child>
-            <child type="label_item">
-              <placeholder/>
-            </child>
+            <property name="selection_mode">none</property>
+            <style>
+              <class name="content"/>
+            </style>
           </object>
           <packing>
             <property name="expand">False</property>

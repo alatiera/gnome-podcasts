@@ -220,22 +220,6 @@ fn ease_out_cubic(t: f64) -> f64 {
     p * p * p + 1f64
 }
 
-/// Header func for gtk_listbox_set_header_func to add a separator between
-/// each ListBoxRow
-pub(crate) fn separator_header(row: &gtk::ListBoxRow, before_row: Option<&gtk::ListBoxRow>) {
-    if before_row.is_none() {
-        row.set_header(None::<&gtk::Widget>);
-        return;
-    }
-
-    let current = row.get_header();
-    if current.is_none() {
-        let s = gtk::Separator::new(gtk::Orientation::Horizontal);
-        s.set_visible(true);
-        row.set_header(Some(&s));
-    }
-}
-
 lazy_static! {
     static ref IGNORESHOWS: Arc<Mutex<HashSet<i32>>> = Arc::new(Mutex::new(HashSet::new()));
 }
