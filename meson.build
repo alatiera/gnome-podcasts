@@ -64,6 +64,7 @@ podcasts_conf.set('appid', application_id)
 podcasts_conf.set('bindir', podcasts_bindir)
 
 datadir = get_option('datadir')
+pkgdatadir = join_paths(podcasts_prefix, datadir, meson.project_name())
 subdir('podcasts-gtk/resources')
 
 cargo_script = find_program('scripts/cargo.sh')

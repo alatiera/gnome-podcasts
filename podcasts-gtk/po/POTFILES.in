@@ -31,7 +31,6 @@ podcasts-gtk/src/stacks/home.rs
 podcasts-gtk/src/stacks/mod.rs
 podcasts-gtk/src/stacks/populated.rs
 podcasts-gtk/src/stacks/show.rs
-podcasts-gtk/src/static_resource.rs.in
 podcasts-gtk/src/utils.rs
 podcasts-gtk/src/widgets/aboutdialog.rs
 podcasts-gtk/src/widgets/appnotif.rs

@@ -61,7 +61,6 @@ mod window;
 
 mod manager;
 mod settings;
-mod static_resource;
 
 mod i18n;
 
@@ -73,13 +72,13 @@ fn init_gtk_tests() -> anyhow::Result<()> {
     //     assert!(gtk::is_initialized_main_thread())
     // } else {
     //     gtk::init()?;
-    //     static_resource::init()?;
+    //     register_resources()?;
     // }
 
     gst::init()?;
     gtk::init()?;
     libhandy::init();
-    static_resource::init()?;
+    register_resources()?;
     Ok(())
 }
 
@@ -89,7 +88,7 @@ async fn main() {
     gst::init().expect("Error initializing gstreamer");
     gtk::init().expect("Error initializing gtk.");
     libhandy::init();
-    static_resource::init().expect("Something went wrong with the resource file initialization.");
+    register_resources().expect("Error registering resources");
 
     // Add custom style
     let provider = gtk::CssProvider::new();
@@ -101,6 +100,12 @@ async fn main() {
     );
 
     PdApplication::run();
+}
+
+fn register_resources() -> anyhow::Result<()> {
+    let res = gio::Resource::load(config::PKGDATADIR.to_owned() + "/resources.gresource")?;
+    gio::resources_register(&res);
+    Ok(())
 }
 
 #[test]

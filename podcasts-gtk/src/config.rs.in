@@ -21,3 +21,4 @@
 pub static APP_ID: &'static str = @APP_ID@;
 pub static VERSION: &'static str = @VERSION@;
 pub static LOCALEDIR: &'static str = @LOCALEDIR@;
+pub static PKGDATADIR: &'static str = @PKGDATADIR@;
