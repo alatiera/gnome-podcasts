@@ -23,12 +23,14 @@
         "build-args": [
             "--share=network"
         ],
+        "cflags": "-DGDK_DISABLE_DEPRECATED -DGTK_DISABLE_DEPRECATED",
         "env": {
             "CARGO_HOME": "/run/build/gnome-podcasts/cargo",
             "RUSTFLAGS": "",
             "RUST_BACKTRACE": "1",
             "RUST_LOG": "podcasts_gtk=debug,podcasts_data=debug,glib=debug",
-            "G_MESSAGES_DEBUG" : "none"
+            "G_MESSAGES_DEBUG" : "none",
+            "G_ENABLE_DIAGNOSTIC": "1"
         }
     },
     "modules": [
