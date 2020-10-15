@@ -42,18 +42,26 @@ Tobias Bernard
       <object class="GtkBox">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
+        <property name="margin_start">6</property>
+        <property name="margin_end">6</property>
+        <property name="margin_top">6</property>
+        <property name="margin_bottom">6</property>
+        <property name="hexpand">True</property>
+        <property name="vexpand">True</property>
         <child>
           <object class="GtkBox" id="info_container">
             <property name="width_request">200</property>
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="halign">start</property>
+            <property name="valign">center</property>
             <property name="orientation">vertical</property>
             <property name="spacing">6</property>
             <child>
               <object class="GtkBox">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
+                <property name="halign">start</property>
                 <property name="spacing">6</property>
                 <child>
                   <object class="GtkLabel" id="title_label">
@@ -66,11 +74,6 @@ Tobias Bernard
                     <property name="lines">1</property>
                     <property name="xalign">0</property>
                   </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">0</property>
-                  </packing>
                 </child>
                 <child>
                   <object class="GtkImage" id="played_checkmark">
@@ -82,18 +85,8 @@ Tobias Bernard
                       <class name="dim-label"/>
                     </style>
                   </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">1</property>
-                  </packing>
                 </child>
               </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">False</property>
-                <property name="position">0</property>
-              </packing>
             </child>
             <child>
               <object class="GtkBox">
@@ -103,6 +96,7 @@ Tobias Bernard
                 <child>
                   <object class="GtkLabel" id="date_label">
                     <property name="visible">True</property>
+                    <property name="halign">start</property>
                     <property name="can_focus">False</property>
                     <property name="label">3 Jan</property>
                     <property name="single_line_mode">True</property>
@@ -114,14 +108,10 @@ Tobias Bernard
                       <attribute name="font-features" value="tnum=1"/>
                     </attributes>
                   </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">False</property>
-                    <property name="position">0</property>
-                  </packing>
                 </child>
                 <child>
                   <object class="GtkLabel" id="separator1">
+                    <property name="halign">start</property>
                     <property name="can_focus">False</property>
                     <property name="no_show_all">True</property>
                     <property name="label">·</property>
@@ -130,14 +120,10 @@ Tobias Bernard
                       <class name="dim-label"/>
                     </style>
                   </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">False</property>
-                    <property name="position">1</property>
-                  </packing>
                 </child>
                 <child>
                   <object class="GtkLabel" id="duration_label">
+                    <property name="halign">start</property>
                     <property name="can_focus">False</property>
                     <property name="no_show_all">True</property>
                     <property name="label">42 min</property>
@@ -150,14 +136,10 @@ Tobias Bernard
                       <attribute name="font-features" value="tnum=1"/>
                     </attributes>
                   </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">False</property>
-                    <property name="position">2</property>
-                  </packing>
                 </child>
                 <child>
                   <object class="GtkLabel" id="separator2">
+                    <property name="halign">start</property>
                     <property name="can_focus">False</property>
                     <property name="no_show_all">True</property>
                     <property name="label">·</property>
@@ -166,14 +148,10 @@ Tobias Bernard
                       <class name="dim-label"/>
                     </style>
                   </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">False</property>
-                    <property name="position">3</property>
-                  </packing>
                 </child>
                 <child>
                   <object class="GtkLabel" id="local_size">
+                    <property name="halign">start</property>
                     <property name="can_focus">False</property>
                     <property name="no_show_all">True</property>
                     <property name="label">0 MB</property>
@@ -187,14 +165,10 @@ Tobias Bernard
                       <attribute name="font-features" value="tnum=1"/>
                     </attributes>
                   </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">False</property>
-                    <property name="position">4</property>
-                  </packing>
                 </child>
                 <child>
                   <object class="GtkLabel" id="prog_separator">
+                    <property name="halign">start</property>
                     <property name="can_focus">False</property>
                     <property name="no_show_all">True</property>
                     <property name="label">/</property>
@@ -204,14 +178,10 @@ Tobias Bernard
                       <class name="dim-label"/>
                     </style>
                   </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">False</property>
-                    <property name="position">5</property>
-                  </packing>
                 </child>
                 <child>
                   <object class="GtkLabel" id="total_size">
+                    <property name="halign">start</property>
                     <property name="can_focus">False</property>
                     <property name="no_show_all">True</property>
                     <property name="label" translatable="yes">Calculating episode size…</property>
@@ -225,26 +195,10 @@ Tobias Bernard
                       <attribute name="font-features" value="tnum=1"/>
                     </attributes>
                   </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">False</property>
-                    <property name="position">6</property>
-                  </packing>
                 </child>
               </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">False</property>
-                <property name="position">1</property>
-              </packing>
             </child>
           </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">False</property>
-            <property name="padding">6</property>
-            <property name="position">0</property>
-          </packing>
         </child>
         <child>
           <object class="GtkBox" id="button_box">
@@ -268,11 +222,6 @@ Tobias Bernard
                   </object>
                 </child>
               </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">False</property>
-                <property name="position">0</property>
-              </packing>
             </child>
             <child>
               <object class="GtkButton" id="cancel_button">
@@ -290,10 +239,7 @@ Tobias Bernard
                 </child>
               </object>
               <packing>
-                <property name="expand">False</property>
-                <property name="fill">False</property>
                 <property name="pack_type">end</property>
-                <property name="position">1</property>
               </packing>
             </child>
             <child>
@@ -313,26 +259,13 @@ Tobias Bernard
                   </object>
                 </child>
               </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">False</property>
-                <property name="position">2</property>
-              </packing>
             </child>
           </object>
           <packing>
-            <property name="expand">False</property>
-            <property name="fill">False</property>
             <property name="pack_type">end</property>
-            <property name="position">1</property>
           </packing>
         </child>
       </object>
-      <packing>
-        <property name="expand">True</property>
-        <property name="fill">False</property>
-        <property name="position">0</property>
-      </packing>
     </child>
     <child>
       <object class="GtkProgressBar" id="progress_bar">
@@ -340,15 +273,11 @@ Tobias Bernard
         <property name="no_show_all">True</property>
         <property name="margin_start">6</property>
         <property name="margin_end">6</property>
+        <property name="margin_top">6</property>
+        <property name="margin_bottom">6</property>
         <property name="hexpand">True</property>
         <property name="pulse_step">0</property>
       </object>
-      <packing>
-        <property name="expand">False</property>
-        <property name="fill">False</property>
-        <property name="padding">6</property>
-        <property name="position">1</property>
-      </packing>
     </child>
   </object>
 </interface>

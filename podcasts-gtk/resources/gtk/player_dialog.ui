@@ -30,22 +30,6 @@
         <property name="can_focus">False</property>
         <property name="orientation">vertical</property>
         <property name="spacing">2</property>
-        <child internal-child="action_area">
-          <object class="GtkButtonBox">
-            <property name="can_focus">False</property>
-            <property name="layout_style">end</property>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">False</property>
-          </packing>
-        </child>
         <child>
           <object class="GtkBox">
             <property name="visible">True</property>
@@ -56,6 +40,9 @@
             <property name="margin_bottom">6</property>
             <property name="orientation">vertical</property>
             <property name="spacing">18</property>
+            <property name="hexpand">True</property>
+            <property name="vexpand">True</property>
+            <property name="valign">center</property>
             <child>
               <object class="GtkBox">
                 <property name="visible">True</property>
@@ -142,11 +129,9 @@
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="draw_value">False</property>
+                    <property name="hexpand">True</property>
+                    <property name="vexpand">True</property>
                   </object>
-                  <packing>
-                    <property name="expand">True</property>
-                    <property name="fill">True</property>
-                  </packing>
                 </child>
                 <child>
                   <object class="GtkLabel" id="duration">
@@ -163,10 +148,6 @@
                   </object>
                 </child>
               </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">True</property>
-              </packing>
             </child>
             <child>
               <object class="GtkBox">
@@ -194,10 +175,6 @@
                       <class name="circular"/>
                     </style>
                   </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                  </packing>
                 </child>
                 <child>
                   <object class="GtkStack" id="play_pause">
@@ -242,10 +219,6 @@
                       </object>
                     </child>
                   </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                  </packing>
                 </child>
                 <child>
                   <object class="GtkButton" id="forward">
@@ -268,33 +241,20 @@
                       <class name="circular"/>
                     </style>
                   </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                  </packing>
                 </child>
               </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">True</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkBox" id="bottom">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">True</property>
-                <property name="pack_type">end</property>
-              </packing>
             </child>
           </object>
-          <packing>
-            <property name="expand">True</property>
-            <property name="fill">True</property>
-          </packing>
+        </child>
+        <child>
+          <object class="GtkBox" id="bottom">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="margin_start">12</property>
+            <property name="margin_end">12</property>
+            <property name="margin_top">12</property>
+            <property name="margin_bottom">12</property>
+          </object>
         </child>
       </object>
     </child>

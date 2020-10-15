@@ -32,7 +32,6 @@ Tobias Bernard
     <property name="tooltip_text" translatable="yes">Change the playback speed</property>
     <property name="halign">center</property>
     <property name="valign">center</property>
-    <property name="margin_start">6</property>
     <property name="direction">up</property>
     <property name="popover">rate_popover</property>
     <child>
