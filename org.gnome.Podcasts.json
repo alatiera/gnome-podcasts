@@ -55,7 +55,7 @@
         },
         {
             "name": "gnome-podcasts",
-            "builddir": "true",
+            "builddir": true,
             "buildsystem": "meson",
             "sources": [
                 {
