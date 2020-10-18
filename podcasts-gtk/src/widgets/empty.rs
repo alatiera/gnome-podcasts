@@ -18,7 +18,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 use crate::config::APP_ID;
-use gtk::{self, prelude::*};
+
 use std::ops::Deref;
 
 #[derive(Clone, Debug)]
@@ -36,10 +36,7 @@ impl Default for EmptyView {
         let builder = gtk::Builder::from_resource("/org/gnome/Podcasts/gtk/empty_view.ui");
         let view: gtk::Box = builder.object("empty_view").unwrap();
         let image: gtk::Image = builder.object("image").unwrap();
-        image.set_from_icon_name(
-            Some(format!("{}-symbolic", APP_ID).as_str()),
-            gtk::IconSize::__Unknown(256),
-        );
+        image.set_from_icon_name(Some(format!("{}-symbolic", APP_ID).as_str()));
         EmptyView(view)
     }
 }

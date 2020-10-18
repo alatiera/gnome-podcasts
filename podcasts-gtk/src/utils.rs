@@ -17,13 +17,13 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-use gdk_pixbuf::Pixbuf;
 use gio::prelude::ActionMapExt;
 use glib::clone;
+use glib::IsA;
 use glib::Sender;
 use glib::Variant;
 use glib::{self, object::WeakRef};
-use glib::{IsA, Object};
+use gtk::gdk_pixbuf::Pixbuf;
 use gtk::prelude::*;
 use gtk::Widget;
 
@@ -130,15 +130,14 @@ where
 /// let list = gtk::ListBox::new();
 /// lazy_load(widgets, list, |w| w, || {});
 /// ```
-pub(crate) fn lazy_load<T, C, F, W, U>(
+pub(crate) fn lazy_load<T, F, W, U>(
     data: T,
-    container: WeakRef<C>,
+    container: WeakRef<gtk::ListBox>,
     mut constructor: F,
     callback: U,
 ) where
     T: IntoIterator + 'static,
     T::Item: 'static,
-    C: IsA<Object> + ContainerExt + 'static,
     F: FnMut(T::Item) -> W + 'static,
     W: IsA<Widget> + WidgetExt,
     U: Fn() + 'static,
@@ -150,7 +149,32 @@ pub(crate) fn lazy_load<T, C, F, W, U>(
         };
 
         let widget = constructor(x);
-        container.add(&widget);
+        container.append(&widget);
+        widget.show();
+    };
+    lazy_load_full(data, func, callback);
+}
+
+pub(crate) fn lazy_load_flowbox<T, F, W, U>(
+    data: T,
+    container: WeakRef<gtk::FlowBox>,
+    mut constructor: F,
+    callback: U,
+) where
+    T: IntoIterator + 'static,
+    T::Item: 'static,
+    F: FnMut(T::Item) -> W + 'static,
+    W: IsA<Widget> + WidgetExt,
+    U: Fn() + 'static,
+{
+    let func = move |x| {
+        let container = match container.upgrade() {
+            Some(c) => c,
+            None => return,
+        };
+
+        let widget = constructor(x);
+        container.insert(&widget, -1);
         widget.show();
     };
     lazy_load_full(data, func, callback);
@@ -186,7 +210,7 @@ where
 // https://blogs.gnome.org/jsparber/2018/04/29/animate-a-scrolledwindow/
 #[allow(clippy::float_cmp)]
 pub(crate) fn smooth_scroll_to(view: &gtk::ScrolledWindow, target: &gtk::Adjustment) {
-    let adj = view.vadjustment();
+    let adj = view.vadjustment().unwrap();
     if let Some(clock) = view.frame_clock() {
         let duration = 200;
         let start = adj.value();
@@ -390,10 +414,7 @@ pub(crate) fn set_image_from_path(image: &gtk::Image, show_id: i32, size: u32) -
                         }
                     }
                     Err(DownloadError::NoImageLocation) => {
-                        image.set_from_icon_name(
-                            Some("image-x-generic-symbolic"),
-                            gtk::IconSize::__Unknown(s),
-                        );
+                        image.set_from_icon_name(Some("image-x-generic-symbolic"));
                     }
                     _ => {}
                 }
@@ -505,9 +526,6 @@ pub(crate) fn on_import_clicked(window: &gtk::ApplicationWindow, sender: &Sender
         None,
     );
 
-    // Do not show hidden(.thing) files
-    dialog.set_show_hidden(false);
-
     // Set a filter to show only xml files
     let filter = FileFilter::new();
     FileFilter::set_name(&filter, Some(i18n("OPML file").as_str()));
@@ -516,27 +534,31 @@ pub(crate) fn on_import_clicked(window: &gtk::ApplicationWindow, sender: &Sender
     filter.add_mime_type("text/x-opml");
     dialog.add_filter(&filter);
 
-    let resp = dialog.run();
-    debug!("Dialog Response {}", resp);
-    if resp == ResponseType::Accept {
-        if let Some(filename) = dialog.filename() {
-            debug!("File selected: {:?}", filename);
-
-            rayon::spawn(clone!(@strong sender => move || {
-                // Parse the file and import the feeds
-                if let Ok(sources) = opml::import_from_file(filename) {
-                    // Refresh the successfully parsed feeds to index them
-                    schedule_refresh(Some(sources), sender)
-                } else {
-                    let text = i18n("Failed to parse the imported file");
-                    send!(sender, Action::ErrorNotification(text));
+    dialog.connect_response(clone!(@strong sender, @strong dialog => move |_, resp| {
+        debug!("Dialog Response {}", resp);
+        dialog.destroy();
+        if resp == ResponseType::Accept {
+            if let Some(file) = dialog.file() {
+                if let Some(path) = file.peek_path() {
+                    rayon::spawn(clone!(@strong sender => move || {
+                        // Parse the file and import the feeds
+                        if let Ok(sources) = opml::import_from_file(path) {
+                            // Refresh the successfully parsed feeds to index them
+                            schedule_refresh(Some(sources), sender)
+                        } else {
+                            let text = i18n("Failed to parse the imported file");
+                            send!(sender, Action::ErrorNotification(text));
+                        }
+                    }))
                 }
-            }))
-        } else {
-            let text = i18n("Selected file could not be accessed.");
-            send!(sender, Action::ErrorNotification(text))
+            } else {
+                let text = i18n("Selected file could not be accessed.");
+                send!(sender, Action::ErrorNotification(text))
+            }
         }
-    }
+    }));
+
+    dialog.show();
 }
 
 pub(crate) fn on_export_clicked(window: &gtk::ApplicationWindow, sender: &Sender<Action>) {
@@ -554,9 +576,6 @@ pub(crate) fn on_export_clicked(window: &gtk::ApplicationWindow, sender: &Sender
     // Translators: This is the string of the suggested name for the exported opml file
     dialog.set_current_name(&format!("{}.opml", i18n("gnome-podcasts-exported-shows")));
 
-    // Do not show hidden(.thing) files
-    dialog.set_show_hidden(false);
-
     // Set a filter to show only xml files
     let filter = FileFilter::new();
     FileFilter::set_name(&filter, Some(i18n("OPML file").as_str()));
@@ -565,23 +584,28 @@ pub(crate) fn on_export_clicked(window: &gtk::ApplicationWindow, sender: &Sender
     filter.add_mime_type("text/x-opml");
     dialog.add_filter(&filter);
 
-    let resp = dialog.run();
-    debug!("Dialog Response {}", resp);
-    if resp == ResponseType::Accept {
-        if let Some(filename) = dialog.filename() {
-            debug!("File selected: {:?}", filename);
-
-            rayon::spawn(clone!(@strong sender => move || {
-                if opml::export_from_db(filename, i18n("GNOME Podcasts Subscriptions").as_str()).is_err() {
-                    let text = i18n("Failed to export podcasts");
-                    send!(sender, Action::ErrorNotification(text));
+    dialog.connect_response(clone!(@strong sender, @strong dialog => move |_, resp| {
+        debug!("Dialog Response {}", resp);
+        dialog.destroy();
+        if resp == ResponseType::Accept {
+            if let Some(file) = dialog.file() {
+                if let Some(path) = file.peek_path() {
+                    debug!("File selected: {:?}", path);
+                    rayon::spawn(clone!(@strong sender => move || {
+                        if opml::export_from_db(path, i18n("GNOME Podcasts Subscriptions").as_str()).is_err() {
+                            let text = i18n("Failed to export podcasts");
+                            send!(sender, Action::ErrorNotification(text));
+                        }
+                    }))
                 }
-            }))
-        } else {
-            let text = i18n("Selected file could not be accessed.");
-            send!(sender, Action::ErrorNotification(text));
+            } else {
+                let text = i18n("Selected file could not be accessed.");
+                send!(sender, Action::ErrorNotification(text));
+            }
         }
-    }
+    }));
+
+    dialog.show();
 }
 
 #[cfg(test)]

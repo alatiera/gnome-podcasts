@@ -39,7 +39,7 @@ pub(crate) enum State {
 #[derive(Debug, Clone)]
 pub(crate) struct Content {
     container: gtk::Box,
-    stack: gtk::Stack,
+    stack: adw::ViewStack,
     shows: Rc<RefCell<ShowStack>>,
     home: Rc<RefCell<HomeStack>>,
     sender: Sender<Action>,
@@ -48,24 +48,22 @@ pub(crate) struct Content {
 impl Content {
     pub(crate) fn new(sender: &Sender<Action>) -> Result<Rc<Content>> {
         let container = gtk::Box::new(gtk::Orientation::Vertical, 0);
-        let stack = gtk::Stack::new();
+        let stack = adw::ViewStack::new();
         let home = Rc::new(RefCell::new(HomeStack::new(sender.clone())?));
         let shows = Rc::new(RefCell::new(ShowStack::new(sender.clone())));
 
         // container will hold the header bar and the content
         container.set_widget_name("content");
-        container.pack_end(&stack, true, true, 0);
-        stack.add_titled(&home.borrow().get_stack(), "home", &i18n("New"));
-        stack.add_titled(&shows.borrow().get_stack(), "shows", &i18n("Shows"));
+        container.append(&stack);
+        let home_page = stack
+            .add_titled(&home.borrow().get_stack(), Some("home"), &i18n("New"))
+            .unwrap();
+        let shows_page = stack
+            .add_titled(&shows.borrow().get_stack(), Some("shows"), &i18n("Shows"))
+            .unwrap();
 
-        stack.set_child_icon_name(
-            &home.borrow().get_stack(),
-            Some("document-open-recent-symbolic"),
-        );
-        stack.set_child_icon_name(
-            &shows.borrow().get_stack(),
-            Some("audio-input-microphone-symbolic"),
-        );
+        home_page.set_icon_name(Some("document-open-recent-symbolic"));
+        shows_page.set_icon_name(Some("audio-input-microphone-symbolic"));
 
         let con = Content {
             container,
@@ -120,7 +118,7 @@ impl Content {
             .ok();
     }
 
-    pub(crate) fn get_stack(&self) -> gtk::Stack {
+    pub(crate) fn get_stack(&self) -> adw::ViewStack {
         self.stack.clone()
     }
     pub(crate) fn get_container(&self) -> gtk::Box {

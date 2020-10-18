@@ -17,8 +17,6 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-use gtk::prelude::*;
-
 use anyhow::Result;
 use glib::Sender;
 use podcasts_data::dbqueries::is_episodes_populated;
@@ -49,8 +47,8 @@ impl ShowStack {
         let stack = gtk::Stack::new();
         let state = State::Empty;
 
-        stack.add_named(&populated.borrow().container(), "populated");
-        stack.add_named(empty.deref(), "empty");
+        stack.add_named(&populated.borrow().container(), Some("populated"));
+        stack.add_named(empty.deref(), Some("empty"));
 
         let mut show = ShowStack {
             empty,

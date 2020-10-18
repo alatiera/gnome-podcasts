@@ -7,8 +7,6 @@ edition = "2018"
 [dependencies]
 chrono = "0.4"
 crossbeam-channel = "0.5.1"
-gdk = "0.14.0"
-gdk-pixbuf = "0.14.0"
 gst = { version = "0.17.0", package = "gstreamer" }
 gst-player = { version = "0.17.0", package = "gstreamer-player" }
 humansize = "1.1"
@@ -27,7 +25,7 @@ html5ever = "0.25"
 markup5ever_rcdom = "0.1"
 html2text = "0.2.1"
 glib = "0.14.2"
-libhandy = "0.8.0"
+adw = {package = "libadwaita", version = "0.1.0-beta"}
 
 [dependencies.gettext-rs]
 git = "https://github.com/danigm/gettext-rs"
@@ -39,8 +37,8 @@ features = ["v2_50"]
 version = "0.14.0"
 
 [dependencies.gtk]
-features = ["v3_24"]
-version = "0.14.0"
+package = "gtk4"
+version = "0.3.0"
 
 [dependencies.mpris-player]
 # git = "https://gitlab.gnome.org/World/Rust/mpris-player.git"

@@ -10,14 +10,6 @@
     </enum>
 
     <schema path="/org/gnome/Podcasts/" id="@appid@" gettext-domain="gnome-podcasts">
-        <key name="persist-window-geometry-top" type="i">
-            <default>-1</default>
-            <summary>Top position of the last open main window</summary>
-        </key>
-        <key name="persist-window-geometry-left" type="i">
-            <default>-1</default>
-            <summary>Left position of the last open main window</summary>
-        </key>
         <key name="persist-window-geometry-height" type="i">
             <default>640</default>
             <summary>Height of the last open main window</summary>

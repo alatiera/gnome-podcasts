@@ -97,8 +97,8 @@ impl EpisodeMenu {
 }
 
 fn copy_text(text: &str) -> Option<()> {
-    let display = gdk::Display::default()?;
-    let clipboard = gtk::Clipboard::default(&display)?;
+    let display = gtk::gdk::Display::default()?;
+    let clipboard = display.clipboard();
     clipboard.set_text(text);
     Some(())
 }

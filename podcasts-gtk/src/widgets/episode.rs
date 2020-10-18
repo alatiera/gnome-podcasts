@@ -230,22 +230,11 @@ impl Default for EpisodeWidget {
 impl EpisodeWidget {
     pub(crate) fn new(episode: EpisodeWidgetModel, sender: &Sender<Action>) -> Rc<Self> {
         let widget = Rc::new(Self::default());
-        let episode = RefCell::new(Some(episode));
         let weak = Rc::downgrade(&widget);
-        widget
-            .container
-            .connect_draw(clone!(@strong sender => move |_, _| {
-                if let Some(ep) = episode.borrow_mut().take() {
-                    if let Some(w) = weak.upgrade() {
-                        w.info.init(&ep)
-                    }
-                    Self::determine_buttons_state(&weak, &ep, &sender)
-                        .map_err(|err| error!("Error: {}", err))
-                        .ok();
-                };
-
-                gtk::Inhibit(false)
-            }));
+        widget.info.init(&episode);
+        Self::determine_buttons_state(&weak, &episode, &sender)
+            .map_err(|err| error!("Error: {}", err))
+            .ok();
 
         // When the widget is attached to a parent,
         // since it's a rust struct and not a widget the
@@ -258,9 +247,10 @@ impl EpisodeWidget {
         //
         // When the widget is detached from its parent view this
         // callback runs freeing the last reference we were holding.
-        let episode_widget = RefCell::new(Some(widget.clone()));
-        widget.container.connect_remove(move |_, _| {
-            episode_widget.borrow_mut().take();
+        // FIXME This hack feels even worse for GTK4; Use subclassing for EpisodeWidget?
+        let foo = RefCell::new(Some(widget.clone()));
+        widget.container.connect_destroy(move |_| {
+            foo.borrow_mut().take();
         });
 
         widget
@@ -459,8 +449,6 @@ impl EpisodeWidget {
             .buttons
             .download
             .connect_clicked(clone!(@strong weak, @strong sender => move |dl| {
-                // Make the button insensitive so it won't be pressed twice
-                dl.set_sensitive(false);
                 if let Ok(ep) = dbqueries::get_episode_widget_from_rowid(id) {
                     on_download_clicked(&ep, &sender)
                         .and_then(|_| {

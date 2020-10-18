@@ -18,7 +18,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 use glib::clone;
-use gtk::{self, prelude::*, Adjustment, Align, SelectionMode};
+use gtk::glib;
+use gtk::{prelude::*, Adjustment, Align, SelectionMode};
 
 use anyhow::Result;
 use glib::Sender;
@@ -27,10 +28,9 @@ use podcasts_data::dbqueries;
 use podcasts_data::Show;
 
 use crate::app::Action;
-use crate::utils::{get_ignored_shows, lazy_load, set_image_from_path};
+use crate::utils::{get_ignored_shows, lazy_load_flowbox, set_image_from_path};
 use crate::widgets::BaseView;
 
-use std::cell::Cell;
 use std::rc::Rc;
 use std::sync::Arc;
 
@@ -57,7 +57,7 @@ impl Default for ShowsView {
         flowbox.set_valign(Align::Start);
         flowbox.set_halign(Align::Center);
         flowbox.set_selection_mode(SelectionMode::None);
-        view.add(&flowbox);
+        view.set_child(&flowbox);
 
         ShowsView { view, flowbox }
     }
@@ -93,7 +93,7 @@ fn populate_flowbox(shows: &Rc<ShowsView>, vadj: Option<Adjustment>) -> Result<(
         }
     });
 
-    lazy_load(podcasts, flowbox_weak, constructor, callback);
+    lazy_load_flowbox(podcasts, flowbox_weak, constructor, callback);
     Ok(())
 }
 
@@ -116,15 +116,11 @@ struct ShowsChild {
 
 impl Default for ShowsChild {
     fn default() -> Self {
-        let cover = gtk::Image::from_icon_name(
-            Some("image-x-generic-symbolic"),
-            gtk::IconSize::__Unknown(-1),
-        );
+        let cover = gtk::Image::from_icon_name(Some("image-x-generic-symbolic"));
         let child = gtk::FlowBoxChild::new();
 
         cover.set_pixel_size(256);
-        child.add(&cover);
-        child.show_all();
+        child.set_child(Some(&cover));
 
         ShowsChild { cover, child }
     }
@@ -145,22 +141,8 @@ impl ShowsChild {
     }
 
     fn set_cover(&self, show_id: i32) {
-        // The closure above is a regular `Fn` closure.
-        // which means we can't mutate stuff inside it easily,
-        // so Cell is used.
-        //
-        // `Option<T>` along with the `.take()` method ensure
-        // that the function will only be run once, during the first execution.
-        let show_id = Cell::new(Some(show_id));
-
-        self.cover.connect_draw(move |cover, _| {
-            if let Some(id) = show_id.take() {
-                set_image_from_path(cover, id, 256)
-                    .map_err(|err| error!("Failed to set a cover: {}", err))
-                    .ok();
-            }
-
-            gtk::Inhibit(false)
-        });
+        set_image_from_path(&self.cover, show_id, 256)
+            .map_err(|err| error!("Failed to set a cover: {}", err))
+            .ok();
     }
 }

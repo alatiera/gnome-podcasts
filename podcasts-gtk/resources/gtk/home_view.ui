@@ -24,15 +24,12 @@ Tobias Bernard
 
 -->
 <interface>
-  <requires lib="gtk+" version="3.22"/>
   <!-- interface-license-type gplv3 -->
   <!-- interface-name GNOME Podcasts -->
   <!-- interface-description A podcast client for the GNOME Desktop -->
   <!-- interface-copyright 2017 - 2018 -->
   <!-- interface-authors Jordan Petridis\nTobias Bernard -->
   <object class="GtkBox" id="frame_parent">
-    <property name="visible">True</property>
-    <property name="can_focus">False</property>
     <property name="margin_start">6</property>
     <property name="margin_end">6</property>
     <property name="margin_top">32</property>
@@ -42,15 +39,12 @@ Tobias Bernard
     <property name="spacing">24</property>
     <child>
       <object class="GtkBox" id="today_box">
-        <property name="can_focus">False</property>
-        <property name="no_show_all">True</property>
+        <property name="visible">False</property>
         <property name="hexpand">True</property>
         <property name="orientation">vertical</property>
         <property name="spacing">6</property>
         <child>
           <object class="GtkLabel">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
             <property name="halign">start</property>
             <property name="hexpand">True</property>
             <property name="label" translatable="yes">Today</property>
@@ -62,8 +56,6 @@ Tobias Bernard
         </child>
         <child>
           <object class="GtkListBox" id="today_list">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
             <property name="hexpand">True</property>
             <property name="activate_on_single_click">True</property>
             <property name="selection_mode">none</property>
@@ -76,15 +68,12 @@ Tobias Bernard
     </child>
     <child>
       <object class="GtkBox" id="yday_box">
-        <property name="can_focus">False</property>
-        <property name="no_show_all">True</property>
+        <property name="visible">False</property>
         <property name="hexpand">True</property>
         <property name="orientation">vertical</property>
         <property name="spacing">6</property>
         <child>
           <object class="GtkLabel">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
             <property name="halign">start</property>
             <property name="label" translatable="yes">Yesterday</property>
             <attributes>
@@ -95,8 +84,6 @@ Tobias Bernard
         </child>
         <child>
           <object class="GtkListBox" id="yday_list">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
             <property name="hexpand">True</property>
             <property name="activate_on_single_click">True</property>
             <property name="selection_mode">none</property>
@@ -109,15 +96,12 @@ Tobias Bernard
     </child>
     <child>
       <object class="GtkBox" id="week_box">
-        <property name="can_focus">False</property>
-        <property name="no_show_all">True</property>
+        <property name="visible">False</property>
         <property name="hexpand">True</property>
         <property name="orientation">vertical</property>
         <property name="spacing">6</property>
         <child>
           <object class="GtkLabel">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
             <property name="halign">start</property>
             <property name="label" translatable="yes">This Week</property>
             <attributes>
@@ -128,8 +112,6 @@ Tobias Bernard
         </child>
         <child>
           <object class="GtkListBox" id="week_list">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
             <property name="hexpand">True</property>
             <property name="activate_on_single_click">True</property>
             <property name="selection_mode">none</property>
@@ -142,15 +124,12 @@ Tobias Bernard
     </child>
     <child>
       <object class="GtkBox" id="month_box">
-        <property name="can_focus">False</property>
-        <property name="no_show_all">True</property>
+        <property name="visible">False</property>
         <property name="hexpand">True</property>
         <property name="orientation">vertical</property>
         <property name="spacing">6</property>
         <child>
           <object class="GtkLabel">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
             <property name="halign">start</property>
             <property name="label" translatable="yes">This Month</property>
             <attributes>
@@ -161,8 +140,6 @@ Tobias Bernard
         </child>
         <child>
           <object class="GtkListBox" id="month_list">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
             <property name="hexpand">True</property>
             <property name="activate_on_single_click">True</property>
             <property name="selection_mode">none</property>
@@ -175,15 +152,12 @@ Tobias Bernard
     </child>
     <child>
       <object class="GtkBox" id="rest_box">
-        <property name="can_focus">False</property>
-        <property name="no_show_all">True</property>
+        <property name="visible">False</property>
         <property name="hexpand">True</property>
         <property name="orientation">vertical</property>
         <property name="spacing">6</property>
         <child>
           <object class="GtkLabel">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
             <property name="halign">start</property>
             <property name="hexpand">True</property>
             <property name="label" translatable="yes">Older</property>
@@ -195,9 +169,6 @@ Tobias Bernard
         </child>
         <child>
           <object class="GtkListBox" id="rest_list">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="no_show_all">True</property>
             <property name="hexpand">True</property>
             <property name="activate_on_single_click">True</property>
             <property name="selection_mode">none</property>

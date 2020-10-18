@@ -19,12 +19,12 @@
 
 use glib::clone;
 use glib::Sender;
-use gtk::{self, prelude::*, Adjustment};
+use gtk::{prelude::*, Adjustment};
 
+use adw::Clamp;
 use anyhow::Result;
 use crossbeam_channel::bounded;
 use fragile::Fragile;
-use libhandy::Clamp;
 
 use podcasts_data::dbqueries;
 use podcasts_data::EpisodeWidgetModel;
@@ -67,9 +67,8 @@ impl Default for ShowWidget {
         let clamp = Clamp::new();
         clamp.set_maximum_size(700);
 
-        clamp.add(&sub_cont);
-        view.add(&clamp);
-        clamp.show_all();
+        clamp.set_child(Some(&sub_cont));
+        view.set_child(&clamp);
 
         ShowWidget {
             view,
@@ -101,10 +100,7 @@ impl ShowWidget {
         let res = populate_listbox(&pdw, pd, sender, vadj);
         debug_assert!(res.is_ok());
 
-        pdw.description_short
-            .connect_size_allocate(clone!(@weak pdw => move |_, _2| {
-                pdw.update_read_more();
-            }));
+        pdw.update_read_more();
 
         pdw.description_button
             .connect_clicked(clone!(@weak pdw => move |_| {
@@ -128,11 +124,10 @@ impl ShowWidget {
     }
 
     fn update_read_more(&self) {
-        if let Some(layout) = self.description_short.layout() {
-            let more = layout.is_ellipsized()
-                || self.description.label() != self.description_short.label();
-            self.description_button_revealer.set_reveal_child(more);
-        }
+        let layout = self.description_short.layout();
+        let more =
+            layout.is_ellipsized() || self.description.label() != self.description_short.label();
+        self.description_button_revealer.set_reveal_child(more);
     }
 
     /// Set the description text.
@@ -181,7 +176,7 @@ fn populate_listbox(
 
     if count == 0 {
         let empty = EmptyShow::default();
-        show.episodes.add(empty.deref());
+        show.episodes.append(empty.deref());
         return Ok(());
     }
 
@@ -200,7 +195,7 @@ fn populate_listbox(
             let id = ep.rowid();
             let episode_widget = EpisodeWidget::new(ep, &sender).container.clone();
             let row = gtk::ListBoxRow::new();
-            row.add(&episode_widget);
+            row.set_child(Some(&episode_widget));
             row.set_action_name(Some("app.go-to-episode"));
             row.set_action_target_value(Some(&id.to_variant()));
             row

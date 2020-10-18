@@ -1,39 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.22.1 -->
 <interface>
-  <requires lib="gtk+" version="3.20"/>
-  <requires lib="libhandy" version="0.0"/>
   <object class="GtkDialog" id="dialog">
-    <property name="can_focus">False</property>
-    <property name="type_hint">dialog</property>
     <property name="modal">True</property>
     <child type="titlebar">
-      <object class="HdyHeaderBar" id="headerbar">
-        <property name="visible">True</property>
-        <property name="can_focus">False</property>
-        <property name="title" translatable="yes">Now Playing</property>
+      <object class="GtkHeaderBar" id="headerbar">
+        <property name="show-title-buttons">False</property>
+        <property name="title-widget">
+          <object class="AdwWindowTitle">
+            <property name="title" translatable="yes">Now Playing</property>
+          </object>
+        </property>
         <child>
           <object class="GtkButton" id="close">
-            <property name="visible">True</property>
-            <child>
-              <object class="GtkImage">
-                <property name="visible">True</property>
-                <property name="icon_name">go-previous-symbolic</property>
-              </object>
-            </child>
+            <property name="icon_name">go-previous-symbolic</property>
           </object>
         </child>
       </object>
     </child>
-    <child internal-child="vbox">
+    <child internal-child="content_area">
       <object class="GtkBox">
-        <property name="can_focus">False</property>
         <property name="orientation">vertical</property>
         <property name="spacing">2</property>
         <child>
           <object class="GtkBox">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
             <property name="margin_start">6</property>
             <property name="margin_end">6</property>
             <property name="margin_top">6</property>
@@ -45,8 +34,6 @@
             <property name="valign">center</property>
             <child>
               <object class="GtkBox">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
                 <property name="valign">center</property>
                 <property name="hexpand">True</property>
                 <property name="vexpand">True</property>
@@ -57,12 +44,11 @@
                     <property name="height_request">256</property>
                     <property name="hexpand">True</property>
                     <property name="vexpand">True</property>
-                    <property name="margin">18</property>
+                    <property name="margin-start">18</property>
+                    <property name="margin-end">18</property>
                     <property name="margin-top">36</property>
                     <property name="margin-bottom">6</property>
                     <property name="valign">center</property>
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
                     <property name="icon_name">gtk-missing-image</property>
                   </object>
                 </child>
@@ -70,15 +56,12 @@
             </child>
             <child>
               <object class="GtkBox">
-                <property name="visible">True</property>
                 <property name="spacing">6</property>
                 <property name="orientation">vertical</property>
                 <property name="margin-start">6</property>
                 <property name="margin-end">6</property>
                 <child>
                   <object class="GtkLabel" id="episode_label">
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
                     <property name="halign">center</property>
                     <property name="label">Episode Title</property>
                     <property name="wrap">True</property>
@@ -90,8 +73,6 @@
                 </child>
                 <child>
                   <object class="GtkLabel" id="show_label">
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
                     <property name="halign">center</property>
                     <property name="label">Show Title</property>
                     <property name="wrap">True</property>
@@ -105,14 +86,10 @@
             </child>
             <child>
               <object class="GtkBox">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
                 <property name="margin-start">12</property>
                 <property name="margin-end">12</property>
                 <child>
                   <object class="GtkLabel" id="progressed">
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
                     <property name="width_chars">5</property>
                     <property name="xalign">1</property>
                     <attributes>
@@ -126,8 +103,6 @@
                 </child>
                 <child>
                   <object class="GtkScale" id="slider">
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
                     <property name="draw_value">False</property>
                     <property name="hexpand">True</property>
                     <property name="vexpand">True</property>
@@ -135,8 +110,6 @@
                 </child>
                 <child>
                   <object class="GtkLabel" id="duration">
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
                     <property name="width_chars">5</property>
                     <attributes>
                       <attribute name="font-features" value="tnum=1"/>
@@ -151,26 +124,15 @@
             </child>
             <child>
               <object class="GtkBox">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
                 <property name="halign">center</property>
                 <property name="spacing">12</property>
                 <child>
                   <object class="GtkButton" id="rewind">
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
                     <property name="width_request">60</property>
                     <property name="height_request">60</property>
                     <property name="valign">center</property>
                     <property name="margin-end">12</property>
-                    <child>
-                      <object class="GtkImage">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="icon_name">skip-back-large-symbolic</property>
-                        <property name="icon_size">5</property>
-                      </object>
-                    </child>
+                    <property name="icon_name">skip-back-large-symbolic</property>
                     <style>
                       <class name="circular"/>
                     </style>
@@ -178,22 +140,12 @@
                 </child>
                 <child>
                   <object class="GtkStack" id="play_pause">
-                    <property name="visible">True</property>
                     <child>
                       <object class="GtkButton" id="play">
-                        <property name="visible">True</property>
-                        <property name="can_focus">True</property>
                         <property name="receives_default">True</property>
                         <property name="width_request">80</property>
                         <property name="height_request">80</property>
-                        <child>
-                          <object class="GtkImage">
-                            <property name="visible">True</property>
-                            <property name="can_focus">False</property>
-                            <property name="icon_name">media-playback-start-symbolic</property>
-                            <property name="icon_size">6</property>
-                          </object>
-                        </child>
+                        <property name="icon_name">media-playback-start-symbolic</property>
                         <style>
                           <class name="circular"/>
                         </style>
@@ -201,18 +153,9 @@
                     </child>
                     <child>
                       <object class="GtkButton" id="pause">
-                        <property name="visible">True</property>
-                        <property name="can_focus">True</property>
                         <property name="width_request">80</property>
                         <property name="height_request">80</property>
-                        <child>
-                          <object class="GtkImage">
-                            <property name="visible">True</property>
-                            <property name="can_focus">False</property>
-                            <property name="icon_name">media-playback-pause-symbolic</property>
-                            <property name="icon_size">6</property>
-                          </object>
-                        </child>
+                        <property name="icon_name">media-playback-pause-symbolic</property>
                         <style>
                           <class name="circular"/>
                         </style>
@@ -222,21 +165,12 @@
                 </child>
                 <child>
                   <object class="GtkButton" id="forward">
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
                     <property name="width_request">60</property>
                     <property name="height_request">60</property>
                     <property name="valign">center</property>
                     <property name="margin-start">12</property>
-                    <child>
-                      <object class="GtkImage">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="icon_name">skip-forward-large-symbolic</property>
-                        <property name="icon_size">5</property>
-                      </object>
-                    </child>
+                    <property name="icon_name">skip-forward-large-symbolic</property>
                     <style>
                       <class name="circular"/>
                     </style>
@@ -248,8 +182,6 @@
         </child>
         <child>
           <object class="GtkBox" id="bottom">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
             <property name="margin_start">12</property>
             <property name="margin_end">12</property>
             <property name="margin_top">12</property>

@@ -11,6 +11,7 @@
         "nightly"
     ],
     "finish-args": [
+        "--device=dri",
         "--share=network",
         "--share=ipc",
         "--socket=x11",

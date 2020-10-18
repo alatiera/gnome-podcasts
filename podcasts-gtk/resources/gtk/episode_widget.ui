@@ -24,7 +24,6 @@ Tobias Bernard
 
 -->
 <interface>
-  <requires lib="gtk+" version="3.22"/>
   <!-- interface-license-type gplv3 -->
   <!-- interface-name GNOME Podcasts -->
   <!-- interface-description A podcast client for the GNOME Desktop -->
@@ -32,53 +31,42 @@ Tobias Bernard
   <!-- interface-authors Jordan Petridis\nTobias Bernard -->
   <object class="GtkBox" id="episode_container">
     <property name="height_request">64</property>
-    <property name="visible">True</property>
-    <property name="can_focus">False</property>
     <property name="valign">center</property>
     <property name="margin_start">6</property>
     <property name="margin_end">6</property>
     <property name="orientation">vertical</property>
     <child>
       <object class="GtkBox">
-        <property name="visible">True</property>
-        <property name="can_focus">False</property>
         <property name="margin_start">6</property>
         <property name="margin_end">6</property>
         <property name="margin_top">6</property>
         <property name="margin_bottom">6</property>
         <property name="hexpand">True</property>
         <property name="vexpand">True</property>
+        <property name="spacing">12</property>
         <child>
           <object class="GtkBox" id="info_container">
             <property name="width_request">200</property>
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
             <property name="halign">start</property>
             <property name="valign">center</property>
             <property name="orientation">vertical</property>
             <property name="spacing">6</property>
+            <property name="hexpand">True</property>
             <child>
               <object class="GtkBox">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
                 <property name="halign">start</property>
                 <property name="spacing">6</property>
                 <child>
                   <object class="GtkLabel" id="title_label">
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
                     <property name="label">Episode Title</property>
                     <property name="ellipsize">end</property>
                     <property name="single_line_mode">True</property>
-                    <property name="track_visited_links">False</property>
                     <property name="lines">1</property>
                     <property name="xalign">0</property>
                   </object>
                 </child>
                 <child>
                   <object class="GtkImage" id="played_checkmark">
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
                     <property name="tooltip_text" translatable="yes">You’ve already listened to this episode.</property>
                     <property name="icon_name">object-select-symbolic</property>
                     <style>
@@ -90,17 +78,12 @@ Tobias Bernard
             </child>
             <child>
               <object class="GtkBox">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
                 <property name="spacing">6</property>
                 <child>
                   <object class="GtkLabel" id="date_label">
-                    <property name="visible">True</property>
                     <property name="halign">start</property>
-                    <property name="can_focus">False</property>
                     <property name="label">3 Jan</property>
                     <property name="single_line_mode">True</property>
-                    <property name="track_visited_links">False</property>
                     <style>
                       <class name="dim-label"/>
                     </style>
@@ -112,10 +95,8 @@ Tobias Bernard
                 <child>
                   <object class="GtkLabel" id="separator1">
                     <property name="halign">start</property>
-                    <property name="can_focus">False</property>
-                    <property name="no_show_all">True</property>
+                    <property name="visible">False</property>
                     <property name="label">·</property>
-                    <property name="track_visited_links">False</property>
                     <style>
                       <class name="dim-label"/>
                     </style>
@@ -124,11 +105,9 @@ Tobias Bernard
                 <child>
                   <object class="GtkLabel" id="duration_label">
                     <property name="halign">start</property>
-                    <property name="can_focus">False</property>
-                    <property name="no_show_all">True</property>
+                    <property name="visible">False</property>
                     <property name="label">42 min</property>
                     <property name="single_line_mode">True</property>
-                    <property name="track_visited_links">False</property>
                     <style>
                       <class name="dim-label"/>
                     </style>
@@ -140,10 +119,8 @@ Tobias Bernard
                 <child>
                   <object class="GtkLabel" id="separator2">
                     <property name="halign">start</property>
-                    <property name="can_focus">False</property>
-                    <property name="no_show_all">True</property>
+                    <property name="visible">False</property>
                     <property name="label">·</property>
-                    <property name="track_visited_links">False</property>
                     <style>
                       <class name="dim-label"/>
                     </style>
@@ -152,12 +129,10 @@ Tobias Bernard
                 <child>
                   <object class="GtkLabel" id="local_size">
                     <property name="halign">start</property>
-                    <property name="can_focus">False</property>
-                    <property name="no_show_all">True</property>
+                    <property name="visible">False</property>
                     <property name="label">0 MB</property>
                     <property name="ellipsize">end</property>
                     <property name="single_line_mode">True</property>
-                    <property name="track_visited_links">False</property>
                     <style>
                       <class name="dim-label"/>
                     </style>
@@ -169,11 +144,9 @@ Tobias Bernard
                 <child>
                   <object class="GtkLabel" id="prog_separator">
                     <property name="halign">start</property>
-                    <property name="can_focus">False</property>
-                    <property name="no_show_all">True</property>
+                    <property name="visible">False</property>
                     <property name="label">/</property>
                     <property name="single_line_mode">True</property>
-                    <property name="track_visited_links">False</property>
                     <style>
                       <class name="dim-label"/>
                     </style>
@@ -182,12 +155,10 @@ Tobias Bernard
                 <child>
                   <object class="GtkLabel" id="total_size">
                     <property name="halign">start</property>
-                    <property name="can_focus">False</property>
-                    <property name="no_show_all">True</property>
+                    <property name="visible">False</property>
                     <property name="label" translatable="yes">Calculating episode size…</property>
                     <property name="ellipsize">end</property>
                     <property name="single_line_mode">True</property>
-                    <property name="track_visited_links">False</property>
                     <style>
                       <class name="dim-label"/>
                     </style>
@@ -202,75 +173,43 @@ Tobias Bernard
         </child>
         <child>
           <object class="GtkBox" id="button_box">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
             <property name="halign">end</property>
             <property name="spacing">6</property>
             <child>
               <object class="GtkButton" id="play_button">
-                <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
-                <property name="no_show_all">True</property>
+                <property name="visible">False</property>
                 <property name="tooltip_text" translatable="yes">Play this episode</property>
                 <property name="halign">center</property>
                 <property name="valign">center</property>
-                <child>
-                  <object class="GtkImage">
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="icon_name">media-playback-start-symbolic</property>
-                  </object>
-                </child>
+                <property name="icon_name">media-playback-start-symbolic</property>
               </object>
             </child>
             <child>
               <object class="GtkButton" id="cancel_button">
-                <property name="can_focus">True</property>
                 <property name="receives_default">False</property>
                 <property name="tooltip_text" translatable="yes">Cancel the download process</property>
                 <property name="halign">center</property>
                 <property name="valign">center</property>
-                <child>
-                  <object class="GtkImage">
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="icon_name">media-playback-stop-symbolic</property>
-                  </object>
-                </child>
+                <property name="icon_name">media-playback-stop-symbolic</property>
               </object>
-              <packing>
-                <property name="pack_type">end</property>
-              </packing>
             </child>
             <child>
               <object class="GtkButton" id="download_button">
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
                 <property name="tooltip_text" translatable="yes">Download this episode</property>
                 <property name="halign">center</property>
                 <property name="valign">center</property>
-                <property name="always_show_image">True</property>
-                <child>
-                  <object class="GtkImage">
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="icon_name">document-save-symbolic</property>
-                  </object>
-                </child>
+                <property name="icon_name">document-save-symbolic</property>
               </object>
             </child>
           </object>
-          <packing>
-            <property name="pack_type">end</property>
-          </packing>
         </child>
       </object>
     </child>
     <child>
       <object class="GtkProgressBar" id="progress_bar">
-        <property name="can_focus">False</property>
-        <property name="no_show_all">True</property>
+        <property name="visible">False</property>
         <property name="margin_start">6</property>
         <property name="margin_end">6</property>
         <property name="margin_top">6</property>

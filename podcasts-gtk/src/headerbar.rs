@@ -37,10 +37,10 @@ use crate::i18n::i18n;
 #[derive(Debug, Clone)]
 // TODO: Make a proper state machine for the headerbar states
 pub(crate) struct Header {
-    pub(crate) container: libhandy::HeaderBar,
-    pub(crate) switch: libhandy::ViewSwitcher,
-    pub(crate) bottom_switcher: libhandy::ViewSwitcherBar,
-    switch_squeezer: libhandy::Squeezer,
+    pub(crate) container: adw::HeaderBar,
+    pub(crate) switch: adw::ViewSwitcher,
+    pub(crate) bottom_switcher: adw::ViewSwitcherBar,
+    switch_squeezer: adw::Squeezer,
     back: gtk::Button,
     title_stack: gtk::Stack,
     show_title: gtk::Label,
@@ -92,9 +92,10 @@ impl AddPopover {
     // FIXME: THIS ALSO SUCKS!
     fn on_add_clicked(&self, sender: &Sender<Action>) -> Result<()> {
         let url = self.entry.text();
-        let sender2 = sender.clone();
 
-        tokio::spawn(async move { add_podcast_from_url(url.to_string(), &sender2).await });
+        tokio::spawn(clone!(@strong sender => async move {
+            add_podcast_from_url(url.to_string(), &sender).await;
+        }));
 
         self.container.hide();
         Ok(())
@@ -153,19 +154,16 @@ impl AddPopover {
         icon_tooltip: Option<&str>,
     ) {
         let entry = &self.entry;
-        let icon_position = gtk::EntryIconPosition::Secondary;
-        entry.set_icon_from_icon_name(icon_position, icon_name);
+        entry.set_secondary_icon_name(icon_name);
         if let Some(icon_tooltip_text) = icon_tooltip {
-            entry.set_icon_tooltip_text(icon_position, Some(i18n(icon_tooltip_text).as_str()));
+            entry.set_secondary_icon_tooltip_text(Some(i18n(icon_tooltip_text).as_str()));
         }
         self.add.set_sensitive(sensitive);
 
-        let error_style_class = &gtk::STYLE_CLASS_ERROR;
-        let style_context = entry.style_context();
         if error {
-            style_context.add_class(error_style_class);
+            entry.add_css_class("error");
         } else {
-            style_context.remove_class(error_style_class);
+            entry.remove_css_class("error");
         }
     }
 }
@@ -176,10 +174,10 @@ impl Default for Header {
         let menus = gtk::Builder::from_resource("/org/gnome/Podcasts/gtk/hamburger.ui");
 
         let header = builder.object("headerbar").unwrap();
-        let switch: libhandy::ViewSwitcher = builder.object("switch").unwrap();
+        let switch: adw::ViewSwitcher = builder.object("switch").unwrap();
         let back = builder.object("back").unwrap();
         let title_stack = builder.object("title_stack").unwrap();
-        let switch_squeezer: libhandy::Squeezer = builder.object("switch_squeezer").unwrap();
+        let switch_squeezer: adw::Squeezer = builder.object("switch_squeezer").unwrap();
         let show_title = builder.object("show_title").unwrap();
 
         // The hamburger menu
@@ -202,7 +200,7 @@ impl Default for Header {
         };
 
         // View switcher bar that goes at the bottom of the window
-        let switcher = libhandy::ViewSwitcherBar::new();
+        let switcher = adw::ViewSwitcherBar::new();
         switcher.set_reveal(false);
 
         Header {
@@ -289,7 +287,7 @@ impl Header {
     }
 
     pub(crate) fn open_menu(&self) {
-        self.hamburger.clicked();
+        self.hamburger.popup();
     }
 
     pub(crate) fn set_secondary_menu(&self, menu: &gio::MenuModel) {

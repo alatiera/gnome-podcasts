@@ -18,7 +18,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 use crate::config::{APP_ID, VERSION};
-use gtk::{prelude::*, AboutDialogBuilder};
+use gtk::prelude::*;
 
 use crate::i18n::i18n;
 
@@ -43,31 +43,23 @@ pub(crate) fn about_dialog(window: &gtk::ApplicationWindow) {
         "Piotr Drąg",
         "Rowan Lewis",
         "Zander Brown",
-    ]
-    .iter()
-    .map(|name| name.to_string())
-    .collect();
+    ];
 
-    let artists = ["Tobias Bernard", "Sam Hewitt"]
-        .iter()
-        .map(|name| name.to_string())
-        .collect();
+    let dialog = gtk::AboutDialog::new();
+    dialog.set_logo_icon_name(Some(APP_ID));
+    dialog.set_comments(Some(i18n("Podcast Client for the GNOME Desktop.").as_str()));
+    dialog.set_copyright(Some("© 2017, 2018 Jordan Petridis"));
+    dialog.set_license_type(gtk::License::Gpl30);
+    dialog.set_modal(true);
+    dialog.set_version(Some(VERSION));
+    dialog.set_program_name(Some(&i18n("Podcasts")));
+    dialog.set_website(Some("https://wiki.gnome.org/Apps/Podcasts"));
+    dialog.set_website_label(&i18n("Learn more about GNOME Podcasts"));
+    dialog.set_transient_for(Some(window));
 
-    let dialog = AboutDialogBuilder::new()
-        .logo_icon_name(APP_ID)
-        .comments(i18n("Podcast Client for the GNOME Desktop.").as_str())
-        .copyright("© 2017-2021 Jordan Petridis")
-        .license_type(gtk::License::Gpl30)
-        .modal(true)
-        .version(VERSION)
-        .program_name(&i18n("Podcasts"))
-        .website("https://gitlab.gnome.org/World/podcasts")
-        .website_label(i18n("Learn more about GNOME Podcasts").as_str())
-        .transient_for(window)
-        .artists(artists)
-        .authors(authors)
-        .translator_credits(i18n("translator-credits").as_str())
-        .build();
+    dialog.set_artists(&["Tobias Bernard", "Sam Hewitt"]);
+    dialog.set_authors(&authors);
+    dialog.set_translator_credits(Some(i18n("translator-credits").as_str()));
 
     dialog.show();
 }

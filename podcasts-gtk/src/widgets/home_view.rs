@@ -20,12 +20,12 @@
 use anyhow::Result;
 use chrono::prelude::*;
 
-use gtk::{self, prelude::*, Adjustment};
+use gtk::{prelude::*, Adjustment};
 
 use glib::clone;
 
+use adw::Clamp;
 use glib::Sender;
-use libhandy::Clamp;
 use podcasts_data::dbqueries;
 use podcasts_data::EpisodeWidgetModel;
 
@@ -33,7 +33,6 @@ use crate::app::Action;
 use crate::utils::{self, lazy_load_full};
 use crate::widgets::{BaseView, EpisodeWidget};
 
-use std::cell::Cell;
 use std::rc::Rc;
 
 #[derive(Debug, Clone)]
@@ -81,8 +80,8 @@ impl Default for HomeView {
         clamp.show();
         clamp.set_maximum_size(700);
 
-        clamp.add(&frame_parent);
-        view.add(&clamp);
+        clamp.set_child(Some(&frame_parent));
+        view.set_child(&clamp);
 
         HomeView {
             view,
@@ -130,20 +129,19 @@ impl HomeView {
             }
         };
 
-        let callback = clone!(@weak home => move || {
+        let callback = clone!(@weak home => @default-return (), move || {
             if let Some(ref v) = vadj {
                 home.view.set_adjustments(None, Some(v))
             };
         });
 
         lazy_load_full(episodes, func, callback);
-        home.view.container().show_all();
         Ok(home)
     }
 }
 
 fn add_to_box(widget: &HomeEpisode, listbox: &gtk::ListBox, box_: &gtk::Box) {
-    listbox.add(&widget.row);
+    listbox.append(&widget.row);
     box_.show();
 }
 
@@ -180,9 +178,9 @@ impl Default for HomeEpisode {
         let container: gtk::Box = builder.object("container").unwrap();
         let image: gtk::Image = builder.object("cover").unwrap();
         let ep = EpisodeWidget::default();
-        container.pack_start(&ep.container, true, true, 0);
+        container.append(&ep.container);
         let row = gtk::ListBoxRow::new();
-        row.add(&container);
+        row.set_child(Some(&container));
         row.show();
 
         HomeEpisode {
@@ -203,7 +201,7 @@ impl HomeEpisode {
         let id = episode.rowid();
         let ep = EpisodeWidget::new(episode, sender);
         let row = gtk::ListBoxRow::new();
-        row.add(&container);
+        row.set_child(Some(&container));
         row.set_action_name(Some("app.go-to-episode"));
         row.set_action_target_value(Some(&id.to_variant()));
         row.show();
@@ -221,26 +219,12 @@ impl HomeEpisode {
 
     fn init(&self, show_id: i32) {
         self.set_cover(show_id);
-        self.container.pack_start(&self.episode, true, true, 0);
+        self.container.append(&self.episode);
     }
 
     fn set_cover(&self, show_id: i32) {
-        // The closure above is a regular `Fn` closure.
-        // which means we can't mutate stuff inside it easily,
-        // so Cell is used.
-        //
-        // `Option<T>` along with the `.take()` method ensure
-        // that the function will only be run once, during the first execution.
-        let show_id = Cell::new(Some(show_id));
-
-        self.image.connect_draw(move |image, _| {
-            if let Some(id) = show_id.take() {
-                utils::set_image_from_path(image, id, 64)
-                    .map_err(|err| error!("Failed to set a cover: {}", err))
-                    .ok();
-            }
-
-            gtk::Inhibit(false)
-        });
+        utils::set_image_from_path(&self.image, show_id, 64)
+            .map_err(|err| error!("Failed to set a cover: {}", err))
+            .ok();
     }
 }

@@ -17,7 +17,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-use gtk::{self, prelude::*};
+use gtk::prelude::*;
 
 use glib::{clone, Sender};
 use podcasts_data::{Episode, Show};
@@ -30,7 +30,6 @@ use crate::widgets::EpisodeMenu;
 use crate::episode_description_parser;
 use crate::i18n::i18n;
 use chrono::prelude::*;
-use std::cell::Cell;
 use std::rc::Rc;
 use std::sync::Arc;
 
@@ -138,23 +137,9 @@ impl EpisodeDescription {
     }
 
     fn set_cover(&self, show_id: i32) {
-        // The closure above is a regular `Fn` closure.
-        // which means we can't mutate stuff inside it easily,
-        // so Cell is used.
-        //
-        // `Option<T>` along with the `.take()` method ensure
-        // that the function will only be run once, during the first execution.
-        let show_id = Cell::new(Some(show_id));
-
-        self.image.connect_draw(move |image, _| {
-            if let Some(id) = show_id.take() {
-                utils::set_image_from_path(image, id, 64)
-                    .map_err(|err| error!("Failed to set a cover: {}", err))
-                    .ok();
-            }
-
-            gtk::Inhibit(false)
-        });
+        utils::set_image_from_path(&self.image, show_id, 64)
+            .map_err(|err| error!("Failed to set a cover: {}", err))
+            .ok();
     }
 
     pub(crate) fn copied_url_notif() -> InAppNotification {

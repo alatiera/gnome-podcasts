@@ -21,8 +21,6 @@ use gst::ClockTime;
 
 use gtk::prelude::*;
 
-use libhandy as hdy;
-
 use gio::File;
 use glib::clone;
 use glib::{SignalHandlerId, WeakRef};
@@ -92,10 +90,6 @@ impl PlayerInfo {
             .bind_property("label", &self.episode_small, "label")
             .flags(glib::BindingFlags::SYNC_CREATE)
             .build();
-        self.cover
-            .bind_property("pixbuf", &self.cover_small, "pixbuf")
-            .flags(glib::BindingFlags::SYNC_CREATE)
-            .build();
     }
 
     // FIXME: create a Diesel Model of the joined episode and podcast query instead
@@ -137,6 +131,9 @@ impl PlayerInfo {
 
     fn set_cover_image(&self, show: &ShowCoverModel) {
         set_image_from_path(&self.cover, show.id(), 34)
+            .map_err(|err| error!("Player Cover: {}", err))
+            .ok();
+        set_image_from_path(&self.cover_small, show.id(), 34)
             .map_err(|err| error!("Player Cover: {}", err))
             .ok();
     }
@@ -220,7 +217,6 @@ fn format_duration(seconds: u32) -> String {
 struct PlayerRate {
     action: gio::SimpleAction,
     btn: gtk::MenuButton,
-    label: gtk::Label,
 }
 
 impl PlayerRate {
@@ -232,9 +228,8 @@ impl PlayerRate {
         let action =
             gio::SimpleAction::new_stateful("set", Some(&variant_type), &"1.00".to_variant());
         let btn: gtk::MenuButton = builder.object("rate_button").unwrap();
-        let label = builder.object("rate_label").unwrap();
 
-        PlayerRate { action, label, btn }
+        PlayerRate { action, btn }
     }
 
     fn connect_signals(&self, widget: &Rc<RefCell<PlayerWidget>>) {
@@ -280,7 +275,7 @@ struct PlayerControls {
 struct PlayerDialog {
     dialog: gtk::Dialog,
     close: gtk::Button,
-    headerbar: hdy::HeaderBar,
+    headerbar: gtk::HeaderBar,
     cover: gtk::Image,
     play_pause: gtk::Stack,
     play: gtk::Button,
@@ -315,7 +310,7 @@ impl PlayerDialog {
         let show = builder.object("show_label").unwrap();
         let episode = builder.object("episode_label").unwrap();
 
-        bottom.pack_start(&rate.btn, false, true, 0);
+        bottom.prepend(&rate.btn);
 
         PlayerDialog {
             dialog,
@@ -349,13 +344,13 @@ impl PlayerDialog {
 #[derive(Debug, Clone)]
 pub(crate) struct PlayerWidget {
     pub(crate) container: gtk::Box,
-    action_bar: gtk::ActionBar,
-    evbox: gtk::EventBox,
+    revealer: gtk::Revealer,
+    gesture_click: gtk::GestureClick,
     player: gst_player::Player,
     controls: PlayerControls,
     dialog: PlayerDialog,
     full: gtk::Box,
-    squeezer: hdy::Squeezer,
+    squeezer: adw::Squeezer,
     timer: PlayerTimes,
     info: PlayerInfo,
     rate: PlayerRate,
@@ -459,19 +454,19 @@ impl Default for PlayerWidget {
         let dialog = PlayerDialog::new(dialog_rate);
 
         let container = builder.object("container").unwrap();
-        let action_bar: gtk::ActionBar = builder.object("action_bar").unwrap();
-        let evbox = builder.object("evbox").unwrap();
+        let revealer: gtk::Revealer = builder.object("revealer").unwrap();
+        let gesture_click = builder.object("gesture_click").unwrap();
         let full: gtk::Box = builder.object("full").unwrap();
         let squeezer = builder.object("squeezer").unwrap();
 
         let rate = PlayerRate::new();
-        full.pack_end(&rate.btn, false, true, 0);
+        full.append(&rate.btn);
 
         PlayerWidget {
             player,
             container,
-            action_bar,
-            evbox,
+            revealer,
+            gesture_click,
             controls,
             dialog,
             full,
@@ -487,12 +482,12 @@ impl Default for PlayerWidget {
 impl PlayerWidget {
     fn on_rate_changed(&self, rate: f64) {
         self.set_playback_rate(rate);
-        self.rate.label.set_text(&format!("{:.2}×", rate));
-        self.dialog.rate.label.set_text(&format!("{:.2}×", rate));
+        self.rate.btn.set_label(&format!("{:.2}×", rate));
+        self.dialog.rate.btn.set_label(&format!("{:.2}×", rate));
     }
 
     fn reveal(&self) {
-        self.action_bar.show();
+        self.revealer.set_reveal_child(true);
     }
 
     pub(crate) fn initialize_episode(&mut self, rowid: i32) -> Result<()> {
@@ -749,11 +744,10 @@ impl PlayerWrapper {
                 let widget = this.borrow();
                 if let Some(child) = widget.squeezer.visible_child() {
                     let full = child == this.borrow().full;
-                    this.borrow().timer.progress_bar.set_visible(!full);
                     if full {
-                        this.borrow().action_bar.style_context().remove_class("player-small");
+                        this.borrow().revealer.remove_css_class("player-small");
                     } else {
-                        this.borrow().action_bar.style_context().add_class("player-small");
+                        this.borrow().revealer.add_css_class("player-small");
                     }
                 }
             }));
@@ -775,32 +769,19 @@ impl PlayerWrapper {
             .slider
             .set_adjustment(&widget.timer.slider.adjustment());
 
-        widget.evbox.connect_button_press_event(
-            clone!(@weak this =>  @default-return Inhibit(false), move |_, event| {
-                let widget = this.borrow();
-                if event.button() != 1 {
-                    return Inhibit(false);
-                }
-                // only open the dialog when the small toolbar is visible
-                if let Some(child) = widget.squeezer.visible_child() {
-                    if child == widget.full {
-                        return Inhibit(false);
-                    }
-                }
+        widget
+            .gesture_click
+            .connect_released(clone!(@weak this => move |_, _, _, _| {
+                let this = this.borrow();
 
-                let parent = widget.container.toplevel().and_then(|toplevel| {
-                    toplevel
-                        .downcast::<gtk::Window>()
-                        .ok()
+                let parent = this.container.root().and_then(|root| {
+                    root.downcast::<gtk::Window>().ok()
                 }).unwrap();
 
                 info!("showing dialog");
-                widget.dialog.dialog.set_transient_for(Some(&parent));
-                widget.dialog.dialog.show();
-
-                Inhibit(false)
-            }),
-        );
+                this.dialog.dialog.set_transient_for(Some(&parent));
+                this.dialog.dialog.show();
+            }));
 
         widget
             .dialog

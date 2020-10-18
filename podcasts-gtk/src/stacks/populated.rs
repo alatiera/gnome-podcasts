@@ -56,10 +56,9 @@ impl PopulatedStack {
         let show = Rc::new(ShowWidget::default());
         let container = gtk::Box::new(gtk::Orientation::Horizontal, 0);
 
-        stack.add_named(populated.view.container(), "shows");
-        stack.add_named(show.view.container(), "widget");
-        container.add(&stack);
-        container.show_all();
+        stack.add_named(populated.view.container(), Some("shows"));
+        stack.add_named(show.view.container(), Some("widget"));
+        container.append(&stack);
 
         PopulatedStack {
             container,
@@ -96,12 +95,7 @@ impl PopulatedStack {
         self.populated = pop;
         self.stack.remove(old);
         self.stack
-            .add_named(self.populated.view.container(), "shows");
-
-        // This might not be needed
-        unsafe {
-            old.destroy();
-        }
+            .add_named(self.populated.view.container(), Some("shows"));
 
         Ok(())
     }
@@ -120,7 +114,8 @@ impl PopulatedStack {
 
         self.show = new;
         self.stack.remove(&old);
-        self.stack.add_named(self.show.view.container(), "widget");
+        self.stack
+            .add_named(self.show.view.container(), Some("widget"));
 
         // The current visible child might change depending on
         // removal and insertion in the gtk::Stack, so we have
@@ -132,7 +127,6 @@ impl PopulatedStack {
     }
 
     pub(crate) fn update_widget(&mut self) -> Result<()> {
-        let old = self.show.view.container().clone();
         let id = self.show.show_id();
         if id.is_none() {
             return Ok(());
@@ -146,11 +140,6 @@ impl PopulatedStack {
         // to make sure it will stay the same.
         let s = self.state;
         self.switch_visible(s, StackTransitionType::Crossfade);
-
-        // This might not be needed
-        unsafe {
-            old.destroy();
-        }
 
         Ok(())
     }

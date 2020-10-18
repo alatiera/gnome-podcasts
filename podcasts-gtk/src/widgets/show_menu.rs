@@ -133,37 +133,26 @@ impl ShowMenu {
 // But now I can't think of a better way to do it than hardcoding the title
 // position relative to the EpisodeWidget container gtk::Box.
 fn dim_titles(episodes: &gtk::ListBox) -> Option<()> {
-    let children = episodes.children();
-
-    for row in children {
-        let row = row.downcast::<gtk::ListBoxRow>().ok()?;
-        let container = row.children().remove(0).downcast::<gtk::Box>().ok()?;
-        let first_children_box = container.children().remove(0).downcast::<gtk::Box>().ok()?;
-        let second_children_box = first_children_box
-            .children()
-            .remove(0)
-            .downcast::<gtk::Box>()
-            .ok()?;
-        let third_children_box = second_children_box
-            .children()
-            .remove(0)
-            .downcast::<gtk::Box>()
-            .ok()?;
-        let title = third_children_box
-            .children()
-            .remove(0)
-            .downcast::<gtk::Label>()
-            .ok()?;
-
-        title.style_context().add_class("dim-label");
-
-        let checkmark = third_children_box
-            .children()
-            .remove(1)
-            .downcast::<gtk::Image>()
-            .ok()?;
-        checkmark.show();
+    let listmodel = episodes.observe_children();
+    for i in 0..listmodel.n_items() {
+        let obj = listmodel.item(i)?;
+        let row = obj.downcast_ref::<gtk::ListBoxRow>()?;
+        dim_row_title(&row)?;
     }
+    Some(())
+}
+
+fn dim_row_title(row: &gtk::ListBoxRow) -> Option<()> {
+    let container = row.first_child()?.downcast::<gtk::Box>().ok()?;
+    let foo = container.first_child()?.downcast::<gtk::Box>().ok()?;
+    let bar = foo.first_child()?.downcast::<gtk::Box>().ok()?;
+    let baz = bar.first_child()?.downcast::<gtk::Box>().ok()?;
+    let title = baz.first_child()?.downcast::<gtk::Label>().ok()?;
+
+    title.add_css_class("dim-label");
+
+    let checkmark = title.next_sibling()?.downcast::<gtk::Image>().ok()?;
+    checkmark.show();
     Some(())
 }
 

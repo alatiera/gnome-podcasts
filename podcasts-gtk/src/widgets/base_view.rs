@@ -18,7 +18,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 use crate::utils::smooth_scroll_to;
-use gtk::{self, prelude::*, Adjustment, Orientation, PolicyType};
+use gtk::{prelude::*, Adjustment, Orientation, PolicyType};
 
 #[derive(Debug, Clone)]
 pub(crate) struct BaseView {
@@ -29,12 +29,11 @@ pub(crate) struct BaseView {
 impl Default for BaseView {
     fn default() -> Self {
         let container = gtk::Box::new(Orientation::Horizontal, 0);
-        let scrolled_window = gtk::ScrolledWindow::new(None::<&Adjustment>, None::<&Adjustment>);
+        let scrolled_window = gtk::ScrolledWindow::new();
 
         scrolled_window.set_policy(PolicyType::Never, PolicyType::Automatic);
         container.set_size_request(360, -1);
-        container.add(&scrolled_window);
-        container.show_all();
+        container.append(&scrolled_window);
 
         BaseView {
             container,
@@ -52,8 +51,8 @@ impl BaseView {
         &self.scrolled_window
     }
 
-    pub(crate) fn add<T: IsA<gtk::Widget>>(&self, widget: &T) {
-        self.scrolled_window.add(widget);
+    pub(crate) fn set_child<T: IsA<gtk::Widget>>(&self, widget: &T) {
+        self.scrolled_window.set_child(Some(widget));
     }
 
     pub(crate) fn set_adjustments(
@@ -71,6 +70,6 @@ impl BaseView {
     }
 
     pub(crate) fn vadjustment(&self) -> Adjustment {
-        self.scrolled_window().vadjustment()
+        self.scrolled_window().vadjustment().unwrap()
     }
 }

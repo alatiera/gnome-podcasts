@@ -24,9 +24,6 @@ use gio::{self, prelude::*};
 
 use gtk::prelude::*;
 
-use libhandy as hdy;
-use libhandy::prelude::DeckExt;
-
 use crate::app::{Action, PdApplication};
 use crate::headerbar::Header;
 use crate::settings::{self, WindowGeometry};
@@ -45,12 +42,12 @@ use crate::i18n::i18n;
 
 #[derive(Debug)]
 pub struct MainWindow {
-    pub(crate) window: hdy::ApplicationWindow,
+    pub(crate) window: adw::ApplicationWindow,
     pub(crate) overlay: gtk::Overlay,
     pub(crate) content: Rc<Content>,
     pub(crate) headerbar: Rc<Header>,
     pub(crate) player: player::PlayerWrapper,
-    pub(crate) main_deck: libhandy::Deck,
+    pub(crate) main_deck: adw::Leaflet,
     pub(crate) updating: Cell<bool>,
     pub(crate) updater: RefCell<Option<InAppNotification>>,
     pub(crate) sender: Sender<Action>,
@@ -60,23 +57,22 @@ impl MainWindow {
     pub(crate) fn new(app: &PdApplication, sender: &Sender<Action>) -> Self {
         let settings = gio::Settings::new(APP_ID);
 
-        let window = hdy::ApplicationWindow::new();
-        window.set_application(Some(app));
+        let window = adw::ApplicationWindow::new(app);
 
-        window.set_title(&i18n("Podcasts"));
+        window.set_title(Some(&i18n("Podcasts")));
         if APP_ID.ends_with("Devel") {
             window.style_context().add_class("devel");
         }
 
-        window.connect_delete_event(
-            clone!(@strong settings, @weak app => @default-return Inhibit(false), move |window, _| {
+        window.connect_close_request(
+            clone!(@strong settings, @weak app => @default-return gtk::Inhibit(false), move |window| {
                     info!("Saving window position");
                     WindowGeometry::from_window(&window).write(&settings);
 
                     info!("Application is exiting");
                     let app = app.upcast::<gio::Application>();
                     app.quit();
-                    Inhibit(false)
+                    gtk::Inhibit(false)
             }),
         );
 
@@ -88,28 +84,27 @@ impl MainWindow {
 
         // Add the content main stack to the overlay.
         let overlay = gtk::Overlay::new();
-        let main_deck = libhandy::Deck::new();
-        main_deck.set_can_swipe_forward(false);
-        main_deck.add(&content.get_container());
-        overlay.add(&main_deck);
+        let main_deck = adw::Leaflet::new();
+        main_deck.set_can_unfold(false);
+        main_deck.set_can_navigate_forward(false);
+        main_deck.append(&content.get_container());
+        overlay.set_child(Some(&main_deck));
 
         let wrap = gtk::Box::new(gtk::Orientation::Vertical, 0);
 
         // Add the Headerbar to the window.
-        content
-            .get_container()
-            .pack_start(&header.container, false, true, 0);
+        content.get_container().prepend(&header.container);
 
         // Add the overlay to the main Box
-        wrap.add(&overlay);
+        wrap.append(&overlay);
 
         let player = player::PlayerWrapper::new(&sender);
         // Add the player to the main Box
-        wrap.add(&player.borrow().container);
+        wrap.append(&player.borrow().container);
 
-        wrap.add(&header.bottom_switcher);
+        wrap.append(&header.bottom_switcher);
 
-        window.add(&wrap);
+        adw::traits::ApplicationWindowExt::set_content(&window, Some(&wrap));
 
         // Retrieve the previous window position and size.
         WindowGeometry::from_settings(&settings).apply(&window);
@@ -201,16 +196,14 @@ impl MainWindow {
     }
     /// Remove all items from the `main_deck` except from the content
     pub fn clear_deck(&self) {
-        for c in self.main_deck.children() {
-            if c.widget_name() != "content" {
-                self.main_deck.remove(&c);
-            }
+        if let Some(page) = self.main_deck.child_by_name("description") {
+            self.main_deck.remove(&page);
         }
     }
 }
 
 impl Deref for MainWindow {
-    type Target = hdy::ApplicationWindow;
+    type Target = adw::ApplicationWindow;
 
     fn deref(&self) -> &Self::Target {
         &self.window

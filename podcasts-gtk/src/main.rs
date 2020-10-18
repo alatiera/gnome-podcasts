@@ -18,7 +18,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 // Enable lint group collections
-#![warn(nonstandard_style, rust_2018_idioms, bad_style, unused)]
+#![warn(nonstandard_style, rust_2018_idioms, bad_style)]
 // standalone lints
 #![warn(
     const_err,
@@ -46,8 +46,6 @@ extern crate log;
 extern crate pretty_assertions;
 #[macro_use]
 extern crate html5ever;
-
-use gtk::prelude::*;
 
 // Exports the macros defined in utils to the namespace of the crate so they can be used
 // easily without import
@@ -82,7 +80,7 @@ fn init_gtk_tests() -> anyhow::Result<()> {
 
     gst::init()?;
     gtk::init()?;
-    libhandy::init();
+    adw::init();
     register_resources()?;
     Ok(())
 }
@@ -92,16 +90,16 @@ async fn main() {
     pretty_env_logger::init();
     gst::init().expect("Error initializing gstreamer");
     gtk::init().expect("Error initializing gtk.");
-    libhandy::init();
+    adw::init();
     register_resources().expect("Error registering resources");
 
     // Add custom style
     let provider = gtk::CssProvider::new();
-    gtk::CssProvider::load_from_resource(&provider, "/org/gnome/Podcasts/gtk/style.css");
-    gtk::StyleContext::add_provider_for_screen(
-        &gdk::Screen::default().expect("Error initializing gtk css provider."),
+    provider.load_from_resource("/org/gnome/Podcasts/gtk/style.css");
+    gtk::StyleContext::add_provider_for_display(
+        &gtk::gdk::Display::default().expect("Error initializing gtk css provider."),
         &provider,
-        600,
+        gtk::STYLE_PROVIDER_PRIORITY_APPLICATION,
     );
 
     PdApplication::run();

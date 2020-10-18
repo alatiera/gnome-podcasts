@@ -24,8 +24,6 @@ Tobias Bernard
 
 -->
 <interface>
-  <requires lib="gtk+" version="3.22"/>
-  <requires lib="libhandy" version="1.0"/>
   <!-- interface-license-type gplv3 -->
   <!-- interface-name GNOME Podcasts -->
   <!-- interface-description A podcast client for the GNOME Desktop -->
@@ -33,19 +31,12 @@ Tobias Bernard
   <!-- interface-authors Jordan Petridis\nTobias Bernard -->
   <object class="GtkBox" id="episode_container">
     <property name="height_request">64</property>
-    <property name="visible">True</property>
-    <property name="can_focus">False</property>
     <property name="vexpand">True</property>
     <property name="orientation">vertical</property>
     <child>
-      <object class="HdyHeaderBar" id="header">
-        <property name="visible">True</property>
-        <property name="can_focus">False</property>
-        <property name="show_close_button">True</property>
+      <object class="AdwHeaderBar" id="header">
         <child type="title">
           <object class="GtkLabel" id="title">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
             <property name="label" translatable="yes">Episode Details</property>
             <style>
               <class name="title"/>
@@ -54,61 +45,30 @@ Tobias Bernard
         </child>
         <child>
           <object class="GtkButton" id="back_button">
-            <property name="visible">True</property>
-            <property name="can_focus">True</property>
             <property name="receives_default">True</property>
-            <child>
-              <object class="GtkImage">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="tooltip_text" translatable="yes">Back</property>
-                <property name="icon_name">go-previous-symbolic</property>
-              </object>
-            </child>
+            <property name="icon_name">go-previous-symbolic</property>
+            <property name="tooltip_text" translatable="yes">Back</property>
           </object>
         </child>
-        <child>
+        <child type="end">
           <object class="GtkMenuButton" id="menu_button">
-            <property name="visible">True</property>
-            <property name="can_focus">True</property>
             <property name="receives_default">True</property>
-            <child>
-              <object class="GtkImage">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="icon_name">view-more-symbolic</property>
-              </object>
-            </child>
+            <property name="icon_name">view-more-symbolic</property>
           </object>
-          <packing>
-            <property name="pack_type">end</property>
-            <property name="position">1</property>
-          </packing>
         </child>
       </object>
-      <packing>
-        <property name="expand">False</property>
-        <property name="fill">False</property>
-        <property name="position">0</property>
-      </packing>
     </child>
     <child>
-      <object class="HdyClamp" id="clamp">
-        <property name="visible">True</property>
-        <property name="can_focus">False</property>
+      <object class="AdwClamp" id="clamp">
         <property name="vexpand">True</property>
         <property name="maximum_size">700</property>
         <child>
           <object class="GtkBox" id="content">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
             <property name="vexpand">True</property>
             <property name="orientation">vertical</property>
             <property name="baseline_position">top</property>
             <child>
               <object class="GtkBox" id="episode_info">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
                 <property name="valign">start</property>
                 <property name="margin_top">18</property>
                 <property name="margin_bottom">18</property>
@@ -116,35 +76,22 @@ Tobias Bernard
                 <property name="orientation">vertical</property>
                 <child>
                   <object class="GtkBox">
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="margin_left">18</property>
-                    <property name="margin_right">18</property>
+                    <property name="margin_start">18</property>
+                    <property name="margin_end">18</property>
                     <child>
                       <object class="GtkImage" id="cover">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="margin_right">12</property>
+                        <property name="margin_end">12</property>
                         <property name="hexpand">False</property>
                         <property name="vexpand">False</property>
                         <property name="pixel_size">64</property>
                         <property name="icon_name">image-x-generic-symbolic</property>
                       </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
-                        <property name="position">0</property>
-                      </packing>
                     </child>
                     <child>
                       <object class="GtkBox">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
                         <property name="orientation">vertical</property>
                         <child>
                           <object class="GtkLabel" id="podcast_title">
-                            <property name="visible">True</property>
-                            <property name="can_focus">False</property>
                             <property name="label" translatable="yes">Podcast Title</property>
                             <property name="wrap">True</property>
                             <property name="wrap_mode">word-char</property>
@@ -153,89 +100,46 @@ Tobias Bernard
                               <class name="podcast_title"/>
                             </style>
                           </object>
-                          <packing>
-                            <property name="expand">False</property>
-                            <property name="fill">True</property>
-                            <property name="position">0</property>
-                          </packing>
                         </child>
                         <child>
                           <object class="GtkLabel" id="episode_title">
-                            <property name="visible">True</property>
-                            <property name="can_focus">False</property>
                             <property name="label">Episode Title</property>
                             <property name="wrap">True</property>
                             <property name="wrap_mode">word-char</property>
-                            <property name="track_visited_links">False</property>
                             <property name="lines">1</property>
                             <property name="xalign">0</property>
                             <style>
                               <class name="episode_title"/>
                             </style>
                           </object>
-                          <packing>
-                            <property name="expand">True</property>
-                            <property name="fill">True</property>
-                            <property name="position">1</property>
-                          </packing>
                         </child>
                         <child>
                           <object class="GtkLabel" id="episode_duration_date">
-                            <property name="visible">True</property>
-                            <property name="can_focus">False</property>
                             <property name="label" translatable="yes">Duration - Date</property>
                             <property name="xalign">0</property>
                             <style>
                               <class name="episode_duration_date"/>
                             </style>
                           </object>
-                          <packing>
-                            <property name="expand">False</property>
-                            <property name="fill">True</property>
-                            <property name="position">2</property>
-                          </packing>
                         </child>
                       </object>
-                      <packing>
-                        <property name="expand">True</property>
-                        <property name="fill">True</property>
-                        <property name="position">1</property>
-                      </packing>
                     </child>
                   </object>
-                  <packing>
-                    <property name="expand">True</property>
-                    <property name="fill">True</property>
-                    <property name="position">1</property>
-                  </packing>
                 </child>
               </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">True</property>
-                <property name="position">0</property>
-              </packing>
             </child>
             <child>
               <object class="GtkScrolledWindow">
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
                 <property name="vexpand">True</property>
-                <property name="border_width">0</property>
                 <property name="hscrollbar_policy">never</property>
                 <child>
                   <object class="GtkViewport">
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
                     <property name="vexpand">True</property>
-                    <property name="border_width">0</property>
                     <child>
                       <object class="GtkLabel" id="episode_description">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
                         <property name="valign">start</property>
-                        <property name="margin_left">18</property>
-                        <property name="margin_right">18</property>
+                        <property name="margin_start">18</property>
+                        <property name="margin_end">18</property>
                         <property name="margin_bottom">18</property>
                         <property name="vexpand">True</property>
                         <property name="label" translatable="yes">Episode Description</property>
@@ -249,20 +153,10 @@ Tobias Bernard
                   </object>
                 </child>
               </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">True</property>
-                <property name="position">2</property>
-              </packing>
             </child>
           </object>
         </child>
       </object>
-      <packing>
-        <property name="expand">True</property>
-        <property name="fill">True</property>
-        <property name="position">1</property>
-      </packing>
     </child>
     <style>
       <class name="episode_description"/>

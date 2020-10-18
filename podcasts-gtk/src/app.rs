@@ -21,11 +21,8 @@ use glib::clone;
 use glib::prelude::*;
 use glib::subclass::prelude::*;
 
-use gio::subclass::prelude::ApplicationImplExt;
-use gio::{self, prelude::*, ApplicationFlags};
-
 use gtk::prelude::*;
-use libhandy::prelude::*;
+use gtk::subclass::prelude::*;
 
 use gettextrs::{bindtextdomain, setlocale, textdomain, LocaleCategory};
 
@@ -82,13 +79,12 @@ impl ObjectSubclass for PdApplicationPrivate {
 
 impl ObjectImpl for PdApplicationPrivate {}
 
-impl gio::subclass::prelude::ApplicationImpl for PdApplicationPrivate {
+impl ApplicationImpl for PdApplicationPrivate {
     fn activate(&self, app: &PdApplication) {
         debug!("GtkApplication<PdApplication>::activate");
 
         if let Some(ref window) = *self.window.borrow() {
             // Ideally Gtk4/GtkBuilder make this irrelvent
-            window.show_all();
             window.present();
             info!("Window presented");
             return;
@@ -99,7 +95,6 @@ impl gio::subclass::prelude::ApplicationImpl for PdApplicationPrivate {
 
         let window = MainWindow::new(&app, &self.sender);
         window.setup_gactions();
-        window.show_all();
         window.present();
         self.window.replace(Some(window));
 
@@ -128,7 +123,7 @@ impl gio::subclass::prelude::ApplicationImpl for PdApplicationPrivate {
     }
 }
 
-impl gtk::subclass::application::GtkApplicationImpl for PdApplicationPrivate {}
+impl GtkApplicationImpl for PdApplicationPrivate {}
 
 glib::wrapper! {
     pub struct PdApplication(ObjectSubclass<PdApplicationPrivate>) @extends gio::Application, gtk::Application;
@@ -166,15 +161,11 @@ pub(crate) enum Action {
 
 impl PdApplication {
     pub(crate) fn new() -> Self {
-        let application = glib::Object::new::<PdApplication>(&[
+        glib::Object::new(&[
             ("application-id", &Some(APP_ID)),
-            ("flags", &ApplicationFlags::empty()),
+            ("resource-base-path", &Some("/org/gnome/Podcasts")),
         ])
-        .expect("Application initialization failed...");
-
-        application.set_resource_base_path(Some("/org/gnome/Podcasts"));
-
-        application
+        .expect("Application initialization failed...")
     }
 
     fn setup_timed_callbacks(&self) {
@@ -261,57 +252,50 @@ impl PdApplication {
                     .ok();
             }
             Action::ShowWidgetAnimated => {
-                window
-                    .main_deck
-                    .navigate(libhandy::NavigationDirection::Back);
+                window.main_deck.navigate(adw::NavigationDirection::Back);
                 let shows = window.content.get_shows();
                 let pop = shows.borrow().populated();
-                window
-                    .content
-                    .get_stack()
-                    .set_visible_child_full("shows", gtk::StackTransitionType::SlideLeft);
+                window.content.get_stack().set_visible_child_name("shows");
                 pop.borrow_mut()
                     .switch_visible(PopulatedState::Widget, gtk::StackTransitionType::SlideLeft);
             }
             Action::ShowShowsAnimated => {
-                window
-                    .main_deck
-                    .navigate(libhandy::NavigationDirection::Back);
+                window.main_deck.navigate(adw::NavigationDirection::Back);
                 let shows = window.content.get_shows();
                 let pop = shows.borrow().populated();
                 pop.borrow_mut()
                     .switch_visible(PopulatedState::View, gtk::StackTransitionType::SlideRight);
             }
             Action::MoveBackOnDeck => {
-                window
-                    .main_deck
-                    .navigate(libhandy::NavigationDirection::Back);
+                window.main_deck.navigate(adw::NavigationDirection::Back);
                 window.headerbar.reveal_bottom_switcher(true);
                 window.headerbar.update_bottom_switcher();
             }
             Action::GoToEpisodeDescription(show, ep) => {
                 window.clear_deck();
                 let description_widget = EpisodeDescription::new(ep, show, window.sender.clone());
-                description_widget.container.set_widget_name("description");
-                window.main_deck.add(&description_widget.container);
+                window.main_deck.append(&description_widget.container);
                 window
                     .main_deck
-                    .navigate(libhandy::NavigationDirection::Forward);
+                    .page(&description_widget.container)
+                    .unwrap()
+                    .set_name(Some("description"));
+                window.main_deck.navigate(adw::NavigationDirection::Forward);
                 window.headerbar.reveal_bottom_switcher(false);
             }
             Action::HeaderBarShowTile(title) => window.headerbar.switch_to_back(&title),
             Action::HeaderBarNormal => window.headerbar.switch_to_normal(),
             Action::CopiedUrlNotification => {
                 let notif = EpisodeDescription::copied_url_notif();
-                notif.show(&window.overlay, &window.headerbar.container);
+                notif.show(&window.overlay);
             }
             Action::MarkAllPlayerNotification(pd) => {
                 let notif = mark_all_notif(pd, &data.sender);
-                notif.show(&window.overlay, &window.headerbar.container);
+                notif.show(&window.overlay);
             }
             Action::RemoveShow(pd) => {
                 let notif = remove_show_notif(pd, data.sender.clone());
-                notif.show(&window.overlay, &window.headerbar.container);
+                notif.show(&window.overlay);
             }
             Action::ErrorNotification(err) => {
                 error!("An error notification was triggered: {}", err);
@@ -321,7 +305,7 @@ impl PdApplication {
                 };
                 let undo_cb: Option<fn()> = None;
                 let notif = InAppNotification::new(&err, 6000, callback, undo_cb);
-                notif.show(&window.overlay, &window.headerbar.container);
+                notif.show(&window.overlay);
             }
             Action::UpdateFeed(source) => {
                 if window.updating.get() {
@@ -356,13 +340,8 @@ impl PdApplication {
                 updater.set_close_state(State::Hidden);
                 updater.set_spinner_state(SpinnerState::Active);
 
-                let old = window.updater.replace(Some(updater));
-                if let Some(i) = old {
-                    unsafe { i.destroy() }
-                }
-
                 if let Some(i) = window.updater.borrow().as_ref() {
-                    i.show(&window.overlay, &window.headerbar.container)
+                    i.show(&window.overlay)
                 }
             }
             Action::InitEpisode(rowid) => {
@@ -436,7 +415,6 @@ impl PdApplication {
 
         // Weird magic I copy-pasted that sets the Application Name in the Shell.
         glib::set_application_name(&i18n("Podcasts"));
-        glib::set_prgname(Some("gnome-podcasts"));
         gtk::Window::set_default_icon_name(APP_ID);
         let args: Vec<String> = env::args().collect();
         ApplicationExtManual::run_with_args(&application, &args);

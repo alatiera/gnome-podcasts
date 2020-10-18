@@ -17,7 +17,6 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-use gtk::prelude::*;
 use gtk::StackTransitionType;
 
 use anyhow::Result;
@@ -46,8 +45,8 @@ impl HomeStack {
         let stack = gtk::Stack::new();
         let state = State::Empty;
 
-        stack.add_named(episodes.view.container(), "home");
-        stack.add_named(empty.deref(), "empty");
+        stack.add_named(episodes.view.container(), Some("home"));
+        stack.add_named(empty.deref(), Some("empty"));
 
         let home = HomeStack {
             empty,
@@ -76,7 +75,7 @@ impl HomeStack {
         // during this the previous view is removed,
         // and the visible child falls back to empty view.
         self.stack.remove(old);
-        self.stack.add_named(eps.view.container(), "home");
+        self.stack.add_named(eps.view.container(), Some("home"));
         // Keep the previous state.
         let s = self.state;
         // Set the visible child back to the previous one to avoid
@@ -85,11 +84,6 @@ impl HomeStack {
 
         // replace view in the struct too
         self.episodes = eps;
-
-        // This might not be needed
-        unsafe {
-            old.destroy();
-        }
 
         Ok(())
     }
