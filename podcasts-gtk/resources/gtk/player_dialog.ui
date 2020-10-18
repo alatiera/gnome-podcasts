@@ -132,7 +132,12 @@
                     <property name="height_request">60</property>
                     <property name="valign">center</property>
                     <property name="margin-end">12</property>
-                    <property name="icon_name">skip-back-large-symbolic</property>
+                    <child>
+                      <object class="GtkImage">
+                        <property name="icon_name">skip-back-large-symbolic</property>
+                        <property name="icon_size">2</property>
+                      </object>
+                    </child>
                     <style>
                       <class name="circular"/>
                     </style>
@@ -145,7 +150,12 @@
                         <property name="receives_default">True</property>
                         <property name="width_request">80</property>
                         <property name="height_request">80</property>
-                        <property name="icon_name">media-playback-start-symbolic</property>
+                        <child>
+                          <object class="GtkImage">
+                            <property name="icon_name">media-playback-start-symbolic</property>
+                            <property name="icon_size">2</property>
+                          </object>
+                        </child>
                         <style>
                           <class name="circular"/>
                         </style>
@@ -155,7 +165,12 @@
                       <object class="GtkButton" id="pause">
                         <property name="width_request">80</property>
                         <property name="height_request">80</property>
-                        <property name="icon_name">media-playback-pause-symbolic</property>
+                        <child>
+                          <object class="GtkImage">
+                            <property name="icon_name">media-playback-pause-symbolic</property>
+                            <property name="icon_size">2</property>
+                          </object>
+                        </child>
                         <style>
                           <class name="circular"/>
                         </style>
@@ -170,7 +185,12 @@
                     <property name="height_request">60</property>
                     <property name="valign">center</property>
                     <property name="margin-start">12</property>
-                    <property name="icon_name">skip-forward-large-symbolic</property>
+                    <child>
+                      <object class="GtkImage">
+                        <property name="icon_name">skip-forward-large-symbolic</property>
+                        <property name="icon_size">2</property>
+                      </object>
+                    </child>
                     <style>
                       <class name="circular"/>
                     </style>
