@@ -285,8 +285,8 @@ impl Header {
         self.hamburger.clicked();
     }
 
-    pub(crate) fn set_secondary_menu(&self, pop: &gtk::PopoverMenu) {
-        self.dots.set_popover(Some(pop));
+    pub(crate) fn set_secondary_menu(&self, menu: &gio::MenuModel) {
+        self.dots.set_menu_model(Some(menu))
     }
 
     fn update_bottom_switcher(&self) {

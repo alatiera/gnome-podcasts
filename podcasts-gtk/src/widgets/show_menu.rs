@@ -17,6 +17,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+use gio::ActionMapExt;
 use glib;
 use glib::clone;
 use gtk;
@@ -41,25 +42,32 @@ use crate::i18n::{i18n, i18n_f};
 
 #[derive(Debug, Clone)]
 pub(crate) struct ShowMenu {
-    pub(crate) container: gtk::PopoverMenu,
-    website: gtk::ModelButton,
-    played: gtk::ModelButton,
-    unsub: gtk::ModelButton,
+    pub(crate) menu: gio::MenuModel,
+    website: gio::SimpleAction,
+    played: gio::SimpleAction,
+    unsub: gio::SimpleAction,
+    group: gio::SimpleActionGroup,
 }
 
 impl Default for ShowMenu {
     fn default() -> Self {
         let builder = gtk::Builder::from_resource("/org/gnome/Podcasts/gtk/show_menu.ui");
-        let container = builder.get_object("menu").unwrap();
-        let website = builder.get_object("website").unwrap();
-        let played = builder.get_object("played").unwrap();
-        let unsub = builder.get_object("unsub").unwrap();
+        let menu = builder.get_object("show_menu").unwrap();
+        let website = gio::SimpleAction::new("open-website", None);
+        let played = gio::SimpleAction::new("mark-played", None);
+        let unsub = gio::SimpleAction::new("unsubscribe", None);
+        let group = gio::SimpleActionGroup::new();
+
+        group.add_action(&website);
+        group.add_action(&played);
+        group.add_action(&unsub);
 
         ShowMenu {
-            container,
+            menu,
             website,
             played,
             unsub,
+            group,
         }
     }
 }
@@ -74,22 +82,30 @@ impl ShowMenu {
     fn init(&self, pd: &Arc<Show>, episodes: &gtk::ListBox, sender: &Sender<Action>) {
         self.connect_website(pd);
         self.connect_played(pd, episodes, sender);
-        self.connect_unsub(pd, sender)
+        self.connect_unsub(pd, sender);
+
+        let app = gio::Application::get_default()
+            .expect("Could not get default application")
+            .downcast::<gtk::Application>()
+            .unwrap();
+        let win = app.get_active_window().expect("No active window");
+        win.insert_action_group("show", Some(&self.group));
     }
 
     fn connect_website(&self, pd: &Arc<Show>) {
-        self.website.set_tooltip_text(Some(pd.link()));
-        self.website.connect_clicked(clone!(@strong pd => move |_| {
-            let link = pd.link();
-            info!("Opening link: {}", link);
-            let res = open::that(link);
-            debug_assert!(res.is_ok());
-        }));
+        // TODO: tooltips for actions?
+        self.website
+            .connect_activate(clone!(@strong pd => move |_, _| {
+                let link = pd.link();
+                info!("Opening link: {}", link);
+                let res = open::that(link);
+                debug_assert!(res.is_ok());
+            }));
     }
 
     fn connect_played(&self, pd: &Arc<Show>, episodes: &gtk::ListBox, sender: &Sender<Action>) {
-        self.played.connect_clicked(
-            clone!(@strong pd, @strong sender, @weak episodes => move |_| {
+        self.played.connect_activate(
+            clone!(@strong pd, @strong sender, @weak episodes => move |_, _| {
                 let res = dim_titles(&episodes);
                 debug_assert!(res.is_some());
 
@@ -100,10 +116,8 @@ impl ShowMenu {
 
     fn connect_unsub(&self, pd: &Arc<Show>, sender: &Sender<Action>) {
         self.unsub
-            .connect_clicked(clone!(@strong pd, @strong sender => move |unsub| {
-                // hack to get away without properly checking for none.
-                // if pressed twice would panic.
-                unsub.set_sensitive(false);
+            .connect_activate(clone!(@strong pd, @strong sender => move |unsub, _| {
+                unsub.set_enabled(false);
 
                 send!(sender, Action::RemoveShow(pd.clone()));
 
@@ -113,7 +127,7 @@ impl ShowMenu {
                 send!(sender, Action::RefreshShowsView);
                 send!(sender, Action::RefreshEpisodesView);
 
-                unsub.set_sensitive(true);
+                unsub.set_enabled(true);
             }));
     }
 }
