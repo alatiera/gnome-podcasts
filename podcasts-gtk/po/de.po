@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: podcasts master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2020-04-06 16:50+0000\n"
-"PO-Revision-Date: 2020-05-09 16:54+0200\n"
+"POT-Creation-Date: 2020-10-15 18:08+0000\n"
+"PO-Revision-Date: 2020-10-15 21:54+0200\n"
 "Last-Translator: Onno Giesmann <nutzer3105@gmail.com>\n"
 "Language-Team: Deutsch <gnome-de@gnome.org>\n"
 "Language: de\n"
@@ -17,62 +17,62 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 2.3\n"
+"X-Generator: Poedit 2.4.1\n"
 
-#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml:15
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:15
 msgid "Top position of the last open main window"
 msgstr "Obere Position des zuletzt geöffneten Hauptfensters"
 
-#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml:19
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:19
 msgid "Left position of the last open main window"
 msgstr "Linke Position des zuletzt geöffneten Hauptfensters"
 
-#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml:23
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:23
 msgid "Height of the last open main window"
 msgstr "Höhe des zuletzt geöffneten Hauptfensters"
 
-#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml:27
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:27
 msgid "Width of the last open main window"
 msgstr "Breite des zuletzt geöffneten Hauptfensters"
 
-#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml:31
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:31
 msgid "Maximized state of the last open main window"
 msgstr "Maximierungsstatus des zuletzt geöffneten Hauptfensters"
 
-#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml:36
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:36
 msgid "Enable or disable dark theme"
 msgstr "Dunkles Thema aktivieren oder deaktivieren"
 
-#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml:41
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:41
 msgid "Whether to periodically refresh content"
 msgstr ""
 "Legt fest, ob Inhalte in regelmäßigen Abständen aktualisiert werden sollen"
 
-#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml:46
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:46
 msgid "How many periods of time to wait between automatic refreshes"
 msgstr "Zeitintervall zwischen automatischen Aktualisierungsvorgängen"
 
-#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml:50
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:50
 msgid "What period of time to wait between automatic refreshes"
 msgstr "Zeitintervall zwischen automatischen Aktualisierungsvorgängen"
 
-#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml:54
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:54
 msgid "Whether to refresh content after startup"
 msgstr "Legt fest, ob Inhalte beim Programmstart aktualisiert werden sollen"
 
-#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml:60
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:60
 msgid "How many periods of time to wait between automatic cleanups"
 msgstr "Zeitintervall zwischen automatischen Löschvorgängen"
 
-#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml:64
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:64
 msgid "What period of time to wait between automatic cleanups"
 msgstr "Zeitintervall zwischen automatischen Löschvorgängen"
 
 #. Weird magic I copy-pasted that sets the Application Name in the Shell.
 #: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:3
 #: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:4
-#: podcasts-gtk/resources/gtk/headerbar.ui:158 podcasts-gtk/src/app.rs:353
-#: podcasts-gtk/src/widgets/aboutdialog.rs:56 podcasts-gtk/src/window.rs:82
+#: podcasts-gtk/resources/gtk/headerbar.ui:158 podcasts-gtk/src/app.rs:363
+#: podcasts-gtk/src/widgets/aboutdialog.rs:56 podcasts-gtk/src/window.rs:66
 msgid "Podcasts"
 msgstr "Podcasts"
 
@@ -90,7 +90,7 @@ msgstr "Podcast;RSS;"
 msgid "Podcast app for GNOME"
 msgstr "Podcast-Anwendung für GNOME"
 
-#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:84
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:92
 msgid "Jordan Petridis"
 msgstr "Jordan Petridis"
 
@@ -120,19 +120,19 @@ msgstr "Podcasts von einem anderen Gerät importieren"
 msgid "You’ve already listened to this episode."
 msgstr "Sie haben sich diese Folge bereits angehört."
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:208
+#: podcasts-gtk/resources/gtk/episode_widget.ui:217
 msgid "Calculating episode size…"
 msgstr "Größe der Folge wird ermittelt …"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:248
+#: podcasts-gtk/resources/gtk/episode_widget.ui:260
 msgid "Play this episode"
 msgstr "Diese Folge abspielen"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:269
+#: podcasts-gtk/resources/gtk/episode_widget.ui:281
 msgid "Cancel the download process"
 msgstr "Herunterladen abbrechen"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:292
+#: podcasts-gtk/resources/gtk/episode_widget.ui:304
 msgid "Download this episode"
 msgstr "Diese Folge herunterladen"
 
@@ -195,19 +195,19 @@ msgstr "Die Anwendung beenden"
 msgid "Today"
 msgstr "Heute"
 
-#: podcasts-gtk/resources/gtk/home_view.ui:112
+#: podcasts-gtk/resources/gtk/home_view.ui:103
 msgid "Yesterday"
 msgstr "Gestern"
 
-#: podcasts-gtk/resources/gtk/home_view.ui:168
+#: podcasts-gtk/resources/gtk/home_view.ui:150
 msgid "This Week"
 msgstr "Diese Woche"
 
-#: podcasts-gtk/resources/gtk/home_view.ui:224
+#: podcasts-gtk/resources/gtk/home_view.ui:197
 msgid "This Month"
 msgstr "Diesen Monat"
 
-#: podcasts-gtk/resources/gtk/home_view.ui:281
+#: podcasts-gtk/resources/gtk/home_view.ui:245
 msgid "Older"
 msgstr "Älter"
 
@@ -228,27 +228,26 @@ msgid "Change the playback speed"
 msgstr "Die Wiedergabegeschwindigkeit ändern"
 
 #: podcasts-gtk/resources/gtk/player_rate.ui:47
-#: podcasts-gtk/resources/gtk/player_rate.ui:122
 msgid "1.00×"
 msgstr "1,00×"
 
-#: podcasts-gtk/resources/gtk/player_rate.ui:86
-msgid "1.50×"
-msgstr "1,50×"
+#: podcasts-gtk/resources/gtk/player_rate.ui:88
+msgid "Double speed rate"
+msgstr "Doppelte Geschwindigkeit"
 
-#: podcasts-gtk/resources/gtk/player_rate.ui:90
+#: podcasts-gtk/resources/gtk/player_rate.ui:97
+msgid "1.75 speed rate"
+msgstr "1,75-fache Geschwindigkeit"
+
+#: podcasts-gtk/resources/gtk/player_rate.ui:106
 msgid "1.5 speed rate"
 msgstr "1,5-fache Geschwindigkeit"
 
-#: podcasts-gtk/resources/gtk/player_rate.ui:104
-msgid "1.25×"
-msgstr "1,25×"
-
-#: podcasts-gtk/resources/gtk/player_rate.ui:108
+#: podcasts-gtk/resources/gtk/player_rate.ui:115
 msgid "1.25 speed rate"
 msgstr "1,25-fache Geschwindigkeit"
 
-#: podcasts-gtk/resources/gtk/player_rate.ui:126
+#: podcasts-gtk/resources/gtk/player_rate.ui:124
 msgid "Normal speed"
 msgstr "Normale Geschwindigkeit"
 
@@ -296,7 +295,7 @@ msgstr "Abbestellen"
 msgid "Read More"
 msgstr "Weiterlesen"
 
-#: podcasts-gtk/src/app.rs:287
+#: podcasts-gtk/src/app.rs:300
 msgid "Fetching new episodes"
 msgstr "Neue Folgen werden abgerufen"
 
@@ -308,43 +307,48 @@ msgstr "Neu"
 msgid "Shows"
 msgstr "Podcasts"
 
-#: podcasts-gtk/src/utils.rs:398
+#: podcasts-gtk/src/utils.rs:435
 msgid "Select the file from which to you want to import shows."
 msgstr "Wählen Sie die Datei aus, aus der Sie Podcasts importieren wollen."
 
-#: podcasts-gtk/src/utils.rs:401
+#: podcasts-gtk/src/utils.rs:438
 msgid "_Import"
 msgstr "_Importieren"
 
-#: podcasts-gtk/src/utils.rs:410 podcasts-gtk/src/utils.rs:457
+#: podcasts-gtk/src/utils.rs:447 podcasts-gtk/src/utils.rs:496
 msgid "OPML file"
 msgstr "OPML-Datei"
 
-#: podcasts-gtk/src/utils.rs:427
+#: podcasts-gtk/src/utils.rs:465
 msgid "Failed to parse the imported file"
 msgstr "Die importierte Datei konnte nicht ausgewertet werden"
 
-#: podcasts-gtk/src/utils.rs:432 podcasts-gtk/src/utils.rs:475
+#: podcasts-gtk/src/utils.rs:470 podcasts-gtk/src/utils.rs:515
 msgid "Selected file could not be accessed."
 msgstr "Auf die gewählte Datei konnte nicht zugegriffen werden."
 
-#: podcasts-gtk/src/utils.rs:445
+#: podcasts-gtk/src/utils.rs:481
 msgid "Export shows to…"
 msgstr "Podcasts exportieren nach …"
 
-#: podcasts-gtk/src/utils.rs:448
+#: podcasts-gtk/src/utils.rs:484
 msgid "_Export"
 msgstr "E_xportieren"
 
-#: podcasts-gtk/src/utils.rs:449
+#: podcasts-gtk/src/utils.rs:485
 msgid "_Cancel"
 msgstr "A_bbrechen"
 
-#: podcasts-gtk/src/utils.rs:469
+#. Translators: This is the string of the suggested name for the exported opml file
+#: podcasts-gtk/src/utils.rs:489
+msgid "gnome-podcasts-exported-shows"
+msgstr "gnome-podcasts-sendungen-export"
+
+#: podcasts-gtk/src/utils.rs:509
 msgid "GNOME Podcasts Subscriptions"
 msgstr "GNOME Podcasts Abonnements"
 
-#: podcasts-gtk/src/utils.rs:470
+#: podcasts-gtk/src/utils.rs:510
 msgid "Failed to export podcasts"
 msgstr "Export der Podcasts ist fehlgeschlagen"
 
@@ -367,18 +371,23 @@ msgstr ""
 msgid "{} min"
 msgstr "{} min"
 
-#. sender.send(Action::ErrorNotification(format!("Player Error: {}", error)));
-#: podcasts-gtk/src/widgets/player.rs:828
+#: podcasts-gtk/src/widgets/player.rs:847
 msgid "The media player was unable to execute an action."
 msgstr "Die Medienwiedergabe konnte eine Aktion nicht ausführen."
 
-#: podcasts-gtk/src/widgets/show_menu.rs:174
+#: podcasts-gtk/src/widgets/show_menu.rs:172
 msgid "Marked all episodes as listened"
 msgstr "Alle Folgen als angehört markieren"
 
-#: podcasts-gtk/src/widgets/show_menu.rs:179
+#: podcasts-gtk/src/widgets/show_menu.rs:177
 msgid "Unsubscribed from {}"
 msgstr "Abonnement von {} gekündigt"
+
+#~ msgid "1.50×"
+#~ msgstr "1,50×"
+
+#~ msgid "1.25×"
+#~ msgstr "1,25×"
 
 #~ msgid "@icon@"
 #~ msgstr "@icon@"
