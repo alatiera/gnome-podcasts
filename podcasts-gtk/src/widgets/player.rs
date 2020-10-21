@@ -25,7 +25,7 @@ use gtk::prelude::*;
 use libhandy as hdy;
 use libhandy::prelude::*;
 
-use gio::{File, FileExt};
+use gio::{ActionMapExt, File, FileExt};
 use glib::clone;
 use glib::{SignalHandlerId, WeakRef};
 
@@ -208,12 +208,7 @@ fn format_duration(seconds: u32) -> String {
 
 #[derive(Debug, Clone)]
 struct PlayerRate {
-    radio200: gtk::ModelButton,
-    radio175: gtk::ModelButton,
-    radio150: gtk::ModelButton,
-    radio125: gtk::ModelButton,
-    radio_normal: gtk::ModelButton,
-    popover: gtk::Popover,
+    action: gio::SimpleAction,
     btn: gtk::MenuButton,
     label: gtk::Label,
 }
@@ -222,57 +217,35 @@ impl PlayerRate {
     fn new() -> Self {
         let builder = gtk::Builder::from_resource("/org/gnome/Podcasts/gtk/player_rate.ui");
 
-        let radio200: gtk::ModelButton = builder.get_object("rate_2_00").unwrap();
-        let radio175: gtk::ModelButton = builder.get_object("rate_1_75").unwrap();
-        let radio150: gtk::ModelButton = builder.get_object("rate_1_50").unwrap();
-        let radio125: gtk::ModelButton = builder.get_object("rate_1_25").unwrap();
-        let radio_normal: gtk::ModelButton = builder.get_object("normal_rate").unwrap();
-        let popover = builder.get_object("rate_popover").unwrap();
-        let btn = builder.get_object("rate_button").unwrap();
+        // This needs to be a string to work with GMenuModel
+        let variant_type = glib::VariantTy::new("s").expect("Could not parse variant type");
+        let action =
+            gio::SimpleAction::new_stateful("set", Some(&variant_type), &"1.00".to_variant());
+        let btn: gtk::MenuButton = builder.get_object("rate_button").unwrap();
         let label = builder.get_object("rate_label").unwrap();
 
-        PlayerRate {
-            radio200,
-            radio175,
-            radio150,
-            radio125,
-            radio_normal,
-            popover,
-            label,
-            btn,
-        }
-    }
-
-    fn set_rate(&self, rate: f64) {
-        self.label.set_text(&format!("{:.2}×", rate));
-        self.radio200.set_property_active(rate == 2.0);
-        self.radio175.set_property_active(rate == 1.75);
-        self.radio150.set_property_active(rate == 1.5);
-        self.radio125.set_property_active(rate == 1.25);
-        self.radio_normal.set_property_active(rate == 1.0);
+        PlayerRate { action, label, btn }
     }
 
     fn connect_signals(&self, widget: &Rc<PlayerWidget>) {
-        self.radio200
-            .connect_clicked(clone!(@weak widget => move |_| {
-                widget.on_rate_changed(2.00);
+        let group = gio::SimpleActionGroup::new();
+        self.action
+            .connect_activate(clone!(@weak widget => move |action, rate_v| {
+                let variant = rate_v.unwrap();
+                action.set_state(&variant);
+                let rate = variant
+                    .get::<String>()
+                    .expect("Could not get rate from variant")
+                    .parse::<f64>()
+                    .expect("Could not parse float from variant string");
+                widget.on_rate_changed(rate);
             }));
-        self.radio175
-            .connect_clicked(clone!(@weak widget => move |_| {
-                widget.on_rate_changed(1.75);
-            }));
-        self.radio150
-            .connect_clicked(clone!(@weak widget => move |_| {
-                widget.on_rate_changed(1.50);
-            }));
-        self.radio125
-            .connect_clicked(clone!(@weak widget => move |_| {
-                widget.on_rate_changed(1.25);
-            }));
-        self.radio_normal
-            .connect_clicked(clone!(@weak widget => move |_| {
-                widget.on_rate_changed(1.00);
-            }));
+        group.add_action(&self.action);
+        widget.container.insert_action_group("rate", Some(&group));
+        widget
+            .dialog
+            .dialog
+            .insert_action_group("rate", Some(&group));
     }
 }
 
@@ -495,8 +468,8 @@ impl Default for PlayerWidget {
 impl PlayerWidget {
     fn on_rate_changed(&self, rate: f64) {
         self.set_playback_rate(rate);
-        self.rate.set_rate(rate);
-        self.dialog.rate.set_rate(rate);
+        self.rate.label.set_text(&format!("{:.2}×", rate));
+        self.dialog.rate.label.set_text(&format!("{:.2}×", rate));
     }
 
     fn reveal(&self) {
@@ -520,8 +493,6 @@ impl PlayerWidget {
                 let uri = File::new_for_path(path).get_uri();
                 // play the file
                 self.player.set_uri(uri.as_str());
-                self.rate.set_rate(1.0);
-                self.dialog.rate.set_rate(1.0);
                 self.play();
 
                 return Ok(());

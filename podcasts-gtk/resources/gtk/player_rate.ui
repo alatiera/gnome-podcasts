@@ -33,9 +33,9 @@ Tobias Bernard
     <property name="halign">center</property>
     <property name="valign">center</property>
     <property name="direction">up</property>
-    <property name="popover">rate_popover</property>
+    <property name="menu_model">rate_menu</property>
     <child>
-      <object class="GtkBox">
+      <object class="GtkBox" id="menu_box">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="spacing">6</property>
@@ -48,84 +48,44 @@ Tobias Bernard
               <attribute name="font-features" value="tnum=1"/>
             </attributes>
           </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">0</property>
-          </packing>
         </child>
         <child>
           <object class="GtkImage">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="icon_name">pan-down-symbolic</property>
-            <property name="icon_size">1</property>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">1</property>
-          </packing>
-        </child>
-      </object>
-    </child>
-  </object>
-  <object class="GtkPopover" id="rate_popover">
-    <property name="can_focus">False</property>
-    <property name="relative_to">rate_button</property>
-    <child>
-      <object class="GtkBox">
-        <property name="visible">True</property>
-        <property name="can_focus">False</property>
-        <property name="margin">6</property>
-        <property name="orientation">vertical</property>
-        <child>
-          <object class="GtkModelButton" id="rate_2_00">
-            <property name="text">&lt;span font-features="tnum=1"&gt;2.00×&lt;/span&gt;</property>
-            <property name="use-markup">True</property>
-            <property name="visible">True</property>
-            <property name="tooltip_text" translatable="yes">Double speed rate</property>
-            <property name="role">radio</property>
-          </object>
-        </child>
-        <child>
-          <object class="GtkModelButton" id="rate_1_75">
-            <property name="text">&lt;span font-features="tnum=1"&gt;1.75×&lt;/span&gt;</property>
-            <property name="use-markup">True</property>
-            <property name="visible">True</property>
-            <property name="tooltip_text" translatable="yes">1.75 speed rate</property>
-            <property name="role">radio</property>
-          </object>
-        </child>
-        <child>
-          <object class="GtkModelButton" id="rate_1_50">
-            <property name="text">&lt;span font-features="tnum=1"&gt;1.50×&lt;/span&gt;</property>
-            <property name="use-markup">True</property>
-            <property name="visible">True</property>
-            <property name="tooltip_text" translatable="yes">1.5 speed rate</property>
-            <property name="role">radio</property>
-          </object>
-        </child>
-        <child>
-          <object class="GtkModelButton" id="rate_1_25">
-            <property name="text">&lt;span font-features="tnum=1"&gt;1.25×&lt;/span&gt;</property>
-            <property name="use-markup">True</property>
-            <property name="visible">True</property>
-            <property name="tooltip_text" translatable="yes">1.25 speed rate</property>
-            <property name="role">radio</property>
-          </object>
-        </child>
-        <child>
-          <object class="GtkModelButton" id="normal_rate">
-            <property name="text">&lt;span font-features="tnum=1"&gt;1.00×&lt;/span&gt;</property>
-            <property name="use-markup">True</property>
-            <property name="visible">True</property>
-            <property name="tooltip_text" translatable="yes">Normal speed</property>
-            <property name="active">True</property>
-            <property name="role">radio</property>
           </object>
         </child>
       </object>
     </child>
   </object>
+  <menu id="rate_menu">
+    <section>
+      <item>
+        <attribute name="label" translatable="yes">2.00×</attribute>
+        <attribute name="action">rate.set</attribute>
+        <attribute name="target">2.00</attribute>
+      </item>
+      <item>
+        <attribute name="label" translatable="yes">1.75×</attribute>
+        <attribute name="action">rate.set</attribute>
+        <attribute name="target">1.75</attribute>
+      </item>
+      <item>
+        <attribute name="label" translatable="yes">1.50×</attribute>
+        <attribute name="action">rate.set</attribute>
+        <attribute name="target">1.50</attribute>
+      </item>
+      <item>
+        <attribute name="label" translatable="yes">1.25×</attribute>
+        <attribute name="action">rate.set</attribute>
+        <attribute name="target">1.25</attribute>
+      </item>
+      <item>
+        <attribute name="label" translatable="yes">1.00×</attribute>
+        <attribute name="action">rate.set</attribute>
+        <attribute name="target">1.00</attribute>
+      </item>
+    </section>
+  </menu>
 </interface>
