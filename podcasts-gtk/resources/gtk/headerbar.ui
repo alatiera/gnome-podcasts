@@ -55,11 +55,6 @@ Tobias Bernard
               <class name="dim-label"/>
             </style>
           </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">0</property>
-          </packing>
         </child>
         <child>
           <object class="GtkBox" id="add_entry_box">
@@ -73,11 +68,6 @@ Tobias Bernard
                 <property name="width_chars">26</property>
                 <property name="input_purpose">url</property>
               </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">True</property>
-                <property name="position">0</property>
-              </packing>
             </child>
             <child>
               <object class="GtkStack" id="add_button_stack">
@@ -109,22 +99,11 @@ Tobias Bernard
                   </object>
                   <packing>
                     <property name="name">spinner</property>
-                    <property name="position">1</property>
                   </packing>
                 </child>
               </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">True</property>
-                <property name="position">1</property>
-              </packing>
             </child>
           </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">1</property>
-          </packing>
         </child>
       </object>
     </child>
@@ -218,9 +197,6 @@ Tobias Bernard
           <class name="image-button"/>
         </style>
       </object>
-      <packing>
-        <property name="position">1</property>
-      </packing>
     </child>
     <child>
       <object class="GtkMenuButton" id="hamburger">
@@ -242,7 +218,6 @@ Tobias Bernard
       </object>
       <packing>
         <property name="pack_type">end</property>
-        <property name="position">2</property>
       </packing>
     </child>
     <child>
@@ -265,7 +240,6 @@ Tobias Bernard
       </object>
       <packing>
         <property name="pack_type">end</property>
-        <property name="position">2</property>
       </packing>
     </child>
   </object>

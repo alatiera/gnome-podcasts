@@ -56,11 +56,31 @@ Tobias Bernard
               <object class="GtkSpinner" id="spinner">
                 <property name="can_focus">False</property>
               </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">True</property>
-                <property name="position">0</property>
-              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="text">
+                <property name="width_request">150</property>
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="halign">center</property>
+                <property name="valign">center</property>
+                <property name="margin_start">12</property>
+                <property name="margin_end">12</property>
+                <property name="label" translatable="yes">An in-app action notification</property>
+                <property name="ellipsize">start</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkButton" id="undo">
+                <property name="label" translatable="yes">Undo</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="halign">center</property>
+                <property name="valign">center</property>
+                <style>
+                  <class name="text-button"/>
+                </style>
+              </object>
             </child>
             <child>
               <object class="GtkButton" id="close">
@@ -82,48 +102,6 @@ Tobias Bernard
                   <class name="flat image-button"/>
                 </style>
               </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">False</property>
-                <property name="pack_type">end</property>
-                <property name="position">1</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkLabel" id="text">
-                <property name="width_request">150</property>
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="halign">center</property>
-                <property name="valign">center</property>
-                <property name="margin_start">12</property>
-                <property name="margin_end">12</property>
-                <property name="label" translatable="yes">An in-app action notification</property>
-                <property name="ellipsize">start</property>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">False</property>
-                <property name="position">2</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkButton" id="undo">
-                <property name="label" translatable="yes">Undo</property>
-                <property name="can_focus">True</property>
-                <property name="receives_default">True</property>
-                <property name="halign">center</property>
-                <property name="valign">center</property>
-                <style>
-                  <class name="text-button"/>
-                </style>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">False</property>
-                <property name="pack_type">end</property>
-                <property name="position">3</property>
-              </packing>
             </child>
           </object>
         </child>

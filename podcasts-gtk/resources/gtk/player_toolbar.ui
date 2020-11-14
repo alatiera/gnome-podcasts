@@ -98,11 +98,6 @@ Tobias Bernard
                             <property name="image">rewind</property>
                             <property name="always_show_image">True</property>
                           </object>
-                          <packing>
-                            <property name="expand">False</property>
-                            <property name="fill">False</property>
-                            <property name="position">0</property>
-                          </packing>
                         </child>
                         <child>
                           <object class="GtkButton" id="play_button">
@@ -113,11 +108,6 @@ Tobias Bernard
                             <property name="image">play_image</property>
                             <property name="always_show_image">True</property>
                           </object>
-                          <packing>
-                            <property name="expand">False</property>
-                            <property name="fill">False</property>
-                            <property name="position">1</property>
-                          </packing>
                         </child>
                         <child>
                           <object class="GtkButton" id="pause_button">
@@ -129,11 +119,6 @@ Tobias Bernard
                             <property name="image">pause_image</property>
                             <property name="always_show_image">True</property>
                           </object>
-                          <packing>
-                            <property name="expand">False</property>
-                            <property name="fill">False</property>
-                            <property name="position">2</property>
-                          </packing>
                         </child>
                         <child>
                           <object class="GtkButton" id="ff_button">
@@ -145,19 +130,11 @@ Tobias Bernard
                             <property name="image">fast_forward</property>
                             <property name="always_show_image">True</property>
                           </object>
-                          <packing>
-                            <property name="expand">False</property>
-                            <property name="fill">False</property>
-                            <property name="position">3</property>
-                          </packing>
                         </child>
                         <style>
                           <class name="linked"/>
                         </style>
                       </object>
-                      <packing>
-                        <property name="position">0</property>
-                      </packing>
                     </child>
                     <child>
                       <object class="GtkBox" id="info">
@@ -173,11 +150,6 @@ Tobias Bernard
                             <property name="pixel_size">34</property>
                             <property name="icon_name">image-x-generic-symbolic</property>
                           </object>
-                          <packing>
-                            <property name="expand">False</property>
-                            <property name="fill">True</property>
-                            <property name="position">0</property>
-                          </packing>
                         </child>
                         <child>
                           <object class="GtkBox">
@@ -201,11 +173,6 @@ Tobias Bernard
                                   <class name="player-show-label"/>
                                 </style>
                               </object>
-                              <packing>
-                                <property name="expand">False</property>
-                                <property name="fill">True</property>
-                                <property name="position">0</property>
-                              </packing>
                             </child>
                             <child>
                               <object class="GtkLabel" id="episode_label">
@@ -221,18 +188,8 @@ Tobias Bernard
                                   <class name="player-episode-label"/>
                                 </style>
                               </object>
-                              <packing>
-                                <property name="expand">False</property>
-                                <property name="fill">True</property>
-                                <property name="position">1</property>
-                              </packing>
                             </child>
                           </object>
-                          <packing>
-                            <property name="expand">False</property>
-                            <property name="fill">True</property>
-                            <property name="position">1</property>
-                          </packing>
                         </child>
                       </object>
                     </child>
@@ -245,9 +202,6 @@ Tobias Bernard
                         <property name="draw_value">False</property>
                         <property name="width_request">150</property>
                       </object>
-                      <packing>
-                        <property name="position">2</property>
-                      </packing>
                     </child>
                     <child>
                       <object class="GtkBox" id="timer">
@@ -267,11 +221,6 @@ Tobias Bernard
                               <attribute name="font-features" value="tnum=1"/>
                             </attributes>
                           </object>
-                          <packing>
-                            <property name="expand">False</property>
-                            <property name="fill">False</property>
-                            <property name="position">0</property>
-                          </packing>
                         </child>
                         <child>
                           <object class="GtkLabel" id="separator">
@@ -281,11 +230,6 @@ Tobias Bernard
                             <property name="valign">center</property>
                             <property name="label">/</property>
                           </object>
-                          <packing>
-                            <property name="expand">False</property>
-                            <property name="fill">False</property>
-                            <property name="position">1</property>
-                          </packing>
                         </child>
                         <child>
                           <object class="GtkLabel" id="total_duration_label">
@@ -298,16 +242,8 @@ Tobias Bernard
                               <attribute name="font-features" value="tnum=1"/>
                             </attributes>
                           </object>
-                          <packing>
-                            <property name="expand">False</property>
-                            <property name="fill">False</property>
-                            <property name="position">2</property>
-                          </packing>
                         </child>
                       </object>
-                      <packing>
-                        <property name="position">3</property>
-                      </packing>
                     </child>
                   </object>
                 </child>
@@ -324,11 +260,6 @@ Tobias Bernard
                         <property name="pixel_size">34</property>
                         <property name="icon_name">image-x-generic-symbolic</property>
                       </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
-                        <property name="position">0</property>
-                      </packing>
                     </child>
                     <child>
                       <object class="GtkBox">
@@ -350,11 +281,6 @@ Tobias Bernard
                               <class name="player-show-label"/>
                             </style>
                           </object>
-                          <packing>
-                            <property name="expand">False</property>
-                            <property name="fill">True</property>
-                            <property name="position">0</property>
-                          </packing>
                         </child>
                         <child>
                           <object class="GtkLabel" id="episode_label_small">
@@ -368,22 +294,14 @@ Tobias Bernard
                               <class name="player-episode-label"/>
                             </style>
                           </object>
-                          <packing>
-                            <property name="expand">False</property>
-                            <property name="fill">True</property>
-                            <property name="position">1</property>
-                          </packing>
                         </child>
                       </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
-                        <property name="position">1</property>
-                      </packing>
                     </child>
                     <child>
                       <object class="GtkStack" id="play_pause_small">
                         <property name="visible">True</property>
+                        <property name="hexpand">True</property>
+                        <property name="halign">end</property>
                         <child>
                           <object class="GtkButton" id="play_button_small">
                             <property name="visible">True</property>
@@ -407,9 +325,6 @@ Tobias Bernard
                           </object>
                         </child>
                       </object>
-                      <packing>
-                        <property name="pack_type">end</property>
-                      </packing>
                     </child>
                   </object>
                 </child>

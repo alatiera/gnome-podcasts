@@ -44,6 +44,10 @@ Tobias Bernard
         <property name="can_focus">False</property>
         <property name="orientation">vertical</property>
         <property name="spacing">6</property>
+        <property name="margin_start">6</property>
+        <property name="margin_end">6</property>
+        <property name="margin_top">6</property>
+        <property name="margin_bottom">6</property>
         <child>
           <object class="GtkImage" id="cover">
             <property name="visible">True</property>
@@ -51,11 +55,6 @@ Tobias Bernard
             <property name="pixel_size">256</property>
             <property name="icon_name">image-x-generic-symbolic</property>
           </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">False</property>
-            <property name="position">0</property>
-          </packing>
         </child>
         <child>
           <object class="HdyClamp">
@@ -124,7 +123,6 @@ Tobias Bernard
                   </object>
                   <packing>
                     <property name="name">full</property>
-                    <property name="position">1</property>
                   </packing>
                 </child>
               </object>
@@ -132,12 +130,6 @@ Tobias Bernard
           </object>
         </child>
       </object>
-      <packing>
-        <property name="expand">False</property>
-        <property name="fill">False</property>
-        <property name="padding">6</property>
-        <property name="position">0</property>
-      </packing>
     </child>
     <child>
       <object class="GtkListBox" id="episodes">
@@ -150,11 +142,6 @@ Tobias Bernard
           <class name="content"/>
         </style>
       </object>
-      <packing>
-        <property name="expand">False</property>
-        <property name="fill">False</property>
-        <property name="position">1</property>
-      </packing>
     </child>
   </object>
 </interface>

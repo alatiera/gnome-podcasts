@@ -317,7 +317,7 @@ impl PdApplication {
                 debug_assert!(res.is_ok());
             }
             Action::InitShowMenu(s) => {
-                let menu = &s.get().container;
+                let menu = &s.get().menu;
                 window.headerbar.set_secondary_menu(menu);
             }
             Action::EmptyState => {

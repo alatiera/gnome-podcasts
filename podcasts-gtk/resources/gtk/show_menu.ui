@@ -30,75 +30,22 @@ Tobias Bernard
   <!-- interface-description A podcast client for the GNOME Desktop -->
   <!-- interface-copyright 2017 - 2018 -->
   <!-- interface-authors Jordan Petridis\nTobias Bernard -->
-  <object class="GtkPopoverMenu" id="menu">
-    <property name="can_focus">False</property>
-    <property name="halign">center</property>
-    <property name="valign">center</property>
-    <child>
-      <object class="GtkBox">
-        <property name="visible">True</property>
-        <property name="can_focus">False</property>
-        <property name="halign">center</property>
-        <property name="valign">center</property>
-        <property name="border_width">6</property>
-        <property name="orientation">vertical</property>
-        <property name="spacing">6</property>
-        <child>
-          <object class="GtkModelButton" id="website">
-            <property name="visible">True</property>
-            <property name="can_focus">True</property>
-            <property name="receives_default">True</property>
-            <property name="text" translatable="yes">Open Website</property>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">0</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkModelButton" id="played">
-            <property name="visible">True</property>
-            <property name="can_focus">True</property>
-            <property name="receives_default">True</property>
-            <property name="text" translatable="yes">Mark All as Played</property>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">1</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkSeparator">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="orientation">vertical</property>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">2</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkModelButton" id="unsub">
-            <property name="visible">True</property>
-            <property name="can_focus">True</property>
-            <property name="receives_default">True</property>
-            <property name="text" translatable="yes">Unsubscribe</property>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">3</property>
-          </packing>
-        </child>
-      </object>
-      <packing>
-        <property name="submenu">main</property>
-        <property name="position">1</property>
-      </packing>
-    </child>
-  </object>
+  <menu id="show_menu">
+    <section>
+      <item>
+        <attribute name="label" translatable="yes">Open Website</attribute>
+        <attribute name="action">show.open-website</attribute>
+      </item>
+      <item>
+        <attribute name="label" translatable="yes">Mark All as Played</attribute>
+        <attribute name="action">show.mark-played</attribute>
+      </item>
+    </section>
+    <section>
+      <item>
+        <attribute name="label" translatable="yes">Unsubscribe</attribute>
+        <attribute name="action">show.unsubscribe</attribute>
+      </item>
+    </section>
+  </menu>
 </interface>

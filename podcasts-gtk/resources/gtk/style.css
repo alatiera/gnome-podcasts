@@ -27,3 +27,7 @@ progressbar.playback-progress trough progress {
 actionbar.player-small revealer box {
     border-top: none
 }
+
+popover modelbutton > box > label {
+    font-feature-settings: "tnum";
+}
