@@ -17,8 +17,14 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+use crate::errors::DataError;
 use crate::models::Source;
 use crate::schema::shows;
+
+use crate::database::connection;
+use chrono::{NaiveDateTime, Utc};
+use diesel::query_dsl::filter_dsl::FilterDsl;
+use diesel::{ExpressionMethods, RunQueryDsl};
 
 #[derive(Queryable, Identifiable, AsChangeset, Associations, PartialEq)]
 #[belongs_to(Source, foreign_key = "source_id")]
@@ -32,6 +38,7 @@ pub struct Show {
     link: String,
     description: String,
     image_uri: Option<String>,
+    image_cached: NaiveDateTime,
     source_id: i32,
 }
 
@@ -65,9 +72,31 @@ impl Show {
         self.image_uri.as_ref().map(|s| s.as_str())
     }
 
+    /// Get the Feed `image_cached`.
+    pub fn image_cached(&self) -> &NaiveDateTime {
+        &self.image_cached
+    }
+
     /// `Source` table foreign key.
     pub fn source_id(&self) -> i32 {
         self.source_id
+    }
+
+    /// Update the timestamp when the image has been cached.
+    pub fn update_image_cached(&self) -> Result<(), DataError> {
+        use crate::schema::shows::dsl::*;
+        let db = connection();
+        let con = db.get()?;
+
+        info!(
+            "Updating the timestamp for when the image was last downloaded for podcast {}",
+            self.title
+        );
+        diesel::update(shows.filter(id.eq(self.source_id)))
+            .set(image_cached.eq(Utc::now().naive_utc()))
+            .execute(&con)
+            .map(|_| ())
+            .map_err(From::from)
     }
 }
 
@@ -78,6 +107,7 @@ pub struct ShowCoverModel {
     id: i32,
     title: String,
     image_uri: Option<String>,
+    image_cached: NaiveDateTime,
 }
 
 impl From<Show> for ShowCoverModel {
@@ -86,6 +116,7 @@ impl From<Show> for ShowCoverModel {
             id: p.id(),
             title: p.title,
             image_uri: p.image_uri,
+            image_cached: p.image_cached,
         }
     }
 }
@@ -106,5 +137,10 @@ impl ShowCoverModel {
     /// Represents the uri(url usually) that the Feed cover image is located at.
     pub fn image_uri(&self) -> Option<&str> {
         self.image_uri.as_ref().map(|s| s.as_str())
+    }
+
+    /// Get the Feed `image_cached`.
+    pub fn image_cached(&self) -> &NaiveDateTime {
+        &self.image_cached
     }
 }

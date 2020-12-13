@@ -31,9 +31,11 @@ use crate::database::connection;
 use crate::dbqueries;
 use crate::utils::url_cleaner;
 
+use chrono::{NaiveDateTime, Utc};
+
 #[derive(Insertable, AsChangeset)]
 #[table_name = "shows"]
-#[derive(Debug, Clone, Default, Builder, PartialEq)]
+#[derive(Debug, Clone, Default, Builder)]
 #[builder(default)]
 #[builder(derive(Debug))]
 #[builder(setter(into))]
@@ -42,6 +44,7 @@ pub(crate) struct NewShow {
     link: String,
     description: String,
     image_uri: Option<String>,
+    image_cached: Option<NaiveDateTime>,
     source_id: i32,
 }
 
@@ -100,6 +103,16 @@ impl Index<()> for NewShow {
     }
 }
 
+impl PartialEq<NewShow> for NewShow {
+    fn eq(&self, other: &NewShow) -> bool {
+        (self.link() == other.link())
+            && (self.title() == other.title())
+            && (self.image_uri() == other.image_uri())
+            && (self.description() == other.description())
+            && (self.source_id() == other.source_id())
+    }
+}
+
 impl PartialEq<Show> for NewShow {
     fn eq(&self, other: &Show) -> bool {
         (self.link() == other.link())
@@ -135,6 +148,7 @@ impl NewShow {
             .description(description)
             .link(link)
             .image_uri(image_uri)
+            .image_cached(Utc::now().naive_utc())
             .source_id(source_id)
             .build()
             .unwrap()

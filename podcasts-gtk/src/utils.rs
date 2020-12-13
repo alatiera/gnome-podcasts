@@ -53,6 +53,7 @@ use std::sync::{Arc, Mutex, RwLock};
 use crate::app::Action;
 
 use crate::i18n::i18n;
+use chrono::Duration;
 
 /// Copied from the gtk-macros crate
 ///
@@ -307,6 +308,17 @@ lazy_static! {
     static ref THREADPOOL: rayon::ThreadPool = rayon::ThreadPoolBuilder::new().build().unwrap();
 }
 
+// Determine whether a cached image is still valid.
+//
+// A cached image is valid for 4 weeks from the time of its previous download.
+fn cached_image_valid(pd: &podcasts_data::ShowCoverModel) -> bool {
+    let cache_valid_duration = Duration::weeks(4);
+    Utc::now()
+        .naive_utc()
+        .signed_duration_since(*pd.image_cached())
+        <= cache_valid_duration
+}
+
 // Since gdk_pixbuf::Pixbuf is reference counted and every episode,
 // use the cover of the Podcast Feed/Show, We can only create a Pixbuf
 // cover per show and pass around the Rc pointer.
@@ -316,20 +328,25 @@ lazy_static! {
 // TODO: maybe use something that would just scale to requested size?
 pub(crate) fn set_image_from_path(image: &gtk::Image, show_id: i32, size: u32) -> Result<()> {
     if let Ok(hashmap) = CACHED_PIXBUFS.read() {
-        // Check if the requested (cover + size) is already in the cache
-        // and if so do an early return after that.
-        if let Some(guard) = hashmap.get(&(show_id, size)) {
-            guard
-                .lock()
-                .map_err(|err| anyhow!("Fragile Mutex: {}", err))
-                .and_then(|fragile| {
-                    fragile
-                        .try_get()
-                        .map(|px| image.set_from_pixbuf(Some(px)))
-                        .map_err(From::from)
-                })?;
+        // todo Add caching refresh logic here.
+        if let Ok(pd) = dbqueries::get_podcast_cover_from_id(show_id) {
+            // If the image is still valid, check if the requested (cover + size) is already in the
+            // cache and if so do an early return after that.
+            if cached_image_valid(&pd) {
+                if let Some(guard) = hashmap.get(&(show_id, size)) {
+                    guard
+                        .lock()
+                        .map_err(|err| anyhow!("Fragile Mutex: {}", err))
+                        .and_then(|fragile| {
+                            fragile
+                                .try_get()
+                                .map(|px| image.set_from_pixbuf(Some(px)))
+                                .map_err(From::from)
+                        })?;
 
-            return Ok(());
+                    return Ok(());
+                }
+            }
         }
     }
 
@@ -394,6 +411,15 @@ pub(crate) fn set_image_from_path(image: &gtk::Image, show_id: i32, size: u32) -
                         );
                     }
                     _ => {}
+                }
+                if let Ok(pd) = dbqueries::get_podcast_from_id(show_id) {
+                    if let Err(err) = pd.update_image_cached() {
+                        error!(
+                            "Failed to update the image cached timestamp for podcast {}: {}",
+                            pd.title(),
+                            err
+                        )
+                    }
                 }
                 glib::Continue(false)
             }

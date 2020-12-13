@@ -32,7 +32,7 @@ glob = "0.3"
 crossbeam-channel = "0.4"
 
 [dependencies.diesel]
-features = ["sqlite", "r2d2"]
+features = ["chrono", "sqlite", "r2d2"]
 version = "1.4"
 
 [dependencies.diesel_migrations]

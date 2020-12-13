@@ -23,6 +23,7 @@ table! {
         link -> Text,
         description -> Text,
         image_uri -> Nullable<Text>,
+        image_cached -> Timestamp,
         source_id -> Integer,
     }
 }
