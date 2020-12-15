@@ -44,7 +44,7 @@ use podcasts_data::downloader;
 use podcasts_data::errors::DownloadError;
 use podcasts_data::opml;
 use podcasts_data::pipeline::pipeline;
-use podcasts_data::utils::checkup;
+use podcasts_data::utils::{calculate_hash, checkup};
 use podcasts_data::Source;
 
 use std::collections::{HashMap, HashSet};
@@ -308,15 +308,25 @@ lazy_static! {
     static ref THREADPOOL: rayon::ThreadPool = rayon::ThreadPoolBuilder::new().build().unwrap();
 }
 
-// Determine whether a cached image is still valid.
+// Determine whether a cached image is valid.
 //
-// A cached image is valid for 4 weeks from the time of its previous download.
+// A cached image is valid for a maximum of 4 weeks from the time of its previous download.
+// Otherwise, a cached image is only valid so long as the hash of its URI remains unchanged.
 fn cached_image_valid(pd: &podcasts_data::ShowCoverModel) -> bool {
     let cache_valid_duration = Duration::weeks(4);
-    Utc::now()
+    if Utc::now()
         .naive_utc()
         .signed_duration_since(*pd.image_cached())
-        <= cache_valid_duration
+        > cache_valid_duration
+    {
+        return false;
+    }
+    if let Some(new) = &pd.image_uri() {
+        if let Some(orig) = pd.image_uri_hash() {
+            return calculate_hash(new) == orig;
+        }
+    }
+    false
 }
 
 // Since gdk_pixbuf::Pixbuf is reference counted and every episode,
@@ -328,7 +338,6 @@ fn cached_image_valid(pd: &podcasts_data::ShowCoverModel) -> bool {
 // TODO: maybe use something that would just scale to requested size?
 pub(crate) fn set_image_from_path(image: &gtk::Image, show_id: i32, size: u32) -> Result<()> {
     if let Ok(hashmap) = CACHED_PIXBUFS.read() {
-        // todo Add caching refresh logic here.
         if let Ok(pd) = dbqueries::get_podcast_cover_from_id(show_id) {
             // If the image is still valid, check if the requested (cover + size) is already in the
             // cache and if so do an early return after that.
@@ -413,9 +422,9 @@ pub(crate) fn set_image_from_path(image: &gtk::Image, show_id: i32, size: u32) -
                     _ => {}
                 }
                 if let Ok(pd) = dbqueries::get_podcast_from_id(show_id) {
-                    if let Err(err) = pd.update_image_cached() {
+                    if let Err(err) = pd.update_image_cache_values() {
                         error!(
-                            "Failed to update the image cached timestamp for podcast {}: {}",
+                            "Failed to update the image's cache values for podcast {}: {}",
                             pd.title(),
                             err
                         )

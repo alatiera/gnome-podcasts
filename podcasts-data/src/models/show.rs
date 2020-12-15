@@ -22,6 +22,7 @@ use crate::models::Source;
 use crate::schema::shows;
 
 use crate::database::connection;
+use crate::utils::calculate_hash;
 use chrono::{NaiveDateTime, Utc};
 use diesel::query_dsl::filter_dsl::FilterDsl;
 use diesel::{ExpressionMethods, RunQueryDsl};
@@ -38,6 +39,7 @@ pub struct Show {
     link: String,
     description: String,
     image_uri: Option<String>,
+    image_uri_hash: Option<i64>,
     image_cached: NaiveDateTime,
     source_id: i32,
 }
@@ -72,7 +74,12 @@ impl Show {
         self.image_uri.as_ref().map(|s| s.as_str())
     }
 
-    /// Get the Feed `image_cached`.
+    /// Get the `image_uri_hash`.
+    pub fn image_uri_hash(&self) -> Option<i64> {
+        self.image_uri_hash
+    }
+
+    /// Get the `image_cached`.
     pub fn image_cached(&self) -> &NaiveDateTime {
         &self.image_cached
     }
@@ -80,6 +87,20 @@ impl Show {
     /// `Source` table foreign key.
     pub fn source_id(&self) -> i32 {
         self.source_id
+    }
+
+    /// Update the hash of the image's URI.
+    pub fn update_image_uri_hash(&self) -> Result<(), DataError> {
+        use crate::schema::shows::dsl::*;
+        let db = connection();
+        let con = db.get()?;
+
+        info!("Updating the hash for image URI for podcast {}", self.title);
+        diesel::update(shows.filter(id.eq(self.source_id)))
+            .set(image_uri_hash.eq(calculate_hash(&self.image_uri)))
+            .execute(&con)
+            .map(|_| ())
+            .map_err(From::from)
     }
 
     /// Update the timestamp when the image has been cached.
@@ -98,6 +119,22 @@ impl Show {
             .map(|_| ())
             .map_err(From::from)
     }
+
+    /// Update the image's timestamp and URI hash value.
+    pub fn update_image_cache_values(&self) -> Result<(), DataError> {
+        match self.image_uri_hash() {
+            None => self.update_image_uri_hash()?,
+            Some(hash) => {
+                if calculate_hash(&self.image_uri()) != hash {
+                    self.update_image_uri_hash()?;
+                }
+            }
+        }
+        match self.update_image_cached() {
+            Ok(s) => Ok(s),
+            Err(e) => Err(e),
+        }
+    }
 }
 
 #[derive(Queryable, Debug, Clone)]
@@ -107,6 +144,7 @@ pub struct ShowCoverModel {
     id: i32,
     title: String,
     image_uri: Option<String>,
+    image_uri_hash: Option<i64>,
     image_cached: NaiveDateTime,
 }
 
@@ -116,6 +154,7 @@ impl From<Show> for ShowCoverModel {
             id: p.id(),
             title: p.title,
             image_uri: p.image_uri,
+            image_uri_hash: p.image_uri_hash,
             image_cached: p.image_cached,
         }
     }
@@ -139,7 +178,12 @@ impl ShowCoverModel {
         self.image_uri.as_ref().map(|s| s.as_str())
     }
 
-    /// Get the Feed `image_cached`.
+    /// Get the `image_uri_hash`.
+    pub fn image_uri_hash(&self) -> Option<i64> {
+        self.image_uri_hash
+    }
+
+    /// Get the `image_cached`.
     pub fn image_cached(&self) -> &NaiveDateTime {
         &self.image_cached
     }

@@ -32,6 +32,13 @@ use crate::xdg_dirs::DL_DIR;
 use std::fs;
 use std::path::Path;
 
+/// Hash a given value.
+pub fn calculate_hash<T: Hash>(t: &T) -> i64 {
+    let mut s = DefaultHasher::new();
+    t.hash(&mut s);
+    s.finish() as i64
+}
+
 /// Scan downloaded `episode` entries that might have broken `local_uri`s and
 /// set them to `None`.
 fn download_checker() -> Result<(), DataError> {
@@ -154,6 +161,8 @@ pub fn delete_show(pd: &Show) -> Result<(), DataError> {
 
 #[cfg(test)]
 use crate::Feed;
+use std::collections::hash_map::DefaultHasher;
+use std::hash::{Hash, Hasher};
 
 #[cfg(test)]
 /// Helper function that open a local file, parse the rss::Channel and gives back a Feed object.

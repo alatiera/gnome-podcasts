@@ -29,7 +29,7 @@ use crate::schema::shows;
 
 use crate::database::connection;
 use crate::dbqueries;
-use crate::utils::url_cleaner;
+use crate::utils::{calculate_hash, url_cleaner};
 
 use chrono::{NaiveDateTime, Utc};
 
@@ -44,6 +44,7 @@ pub(crate) struct NewShow {
     link: String,
     description: String,
     image_uri: Option<String>,
+    image_uri_hash: Option<i64>,
     image_cached: Option<NaiveDateTime>,
     source_id: i32,
 }
@@ -147,6 +148,7 @@ impl NewShow {
             .title(title)
             .description(description)
             .link(link)
+            .image_uri_hash(calculate_hash(&image_uri))
             .image_uri(image_uri)
             .image_cached(Utc::now().naive_utc())
             .source_id(source_id)
