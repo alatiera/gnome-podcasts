@@ -305,6 +305,7 @@ lazy_static! {
         RwLock::new(HashMap::new());
     static ref COVER_DL_REGISTRY: RwLock<HashSet<i32>> = RwLock::new(HashSet::new());
     static ref THREADPOOL: rayon::ThreadPool = rayon::ThreadPoolBuilder::new().build().unwrap();
+    static ref CACHE_VALID_DURATION: chrono::Duration = chrono::Duration::weeks(4);
 }
 
 // Since gdk_pixbuf::Pixbuf is reference counted and every episode,
@@ -319,7 +320,7 @@ pub(crate) fn set_image_from_path(image: &gtk::Image, show_id: i32, size: u32) -
         if let Ok(pd) = dbqueries::get_podcast_cover_from_id(show_id) {
             // If the image is still valid, check if the requested (cover + size) is already in the
             // cache and if so do an early return after that.
-            if pd.is_cached_image_valid() {
+            if pd.is_cached_image_valid(&CACHE_VALID_DURATION) {
                 if let Some(guard) = hashmap.get(&(show_id, size)) {
                     guard
                         .lock()

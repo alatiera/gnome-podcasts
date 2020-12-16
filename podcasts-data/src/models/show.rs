@@ -190,14 +190,13 @@ impl ShowCoverModel {
 
     /// Determine whether a cached image is valid.
     ///
-    /// A cached image is valid for a maximum of 4 weeks from the time of its previous download.
-    /// Otherwise, a cached image is only valid so long as the hash of its URI remains unchanged.
-    pub fn is_cached_image_valid(&self) -> bool {
-        let cache_valid_duration = Duration::weeks(4);
+    /// A cached image is valid from the time of its previous download for the given length of time.
+    /// Otherwise, a cached image is invalidated when the hash of its URI has changed.
+    pub fn is_cached_image_valid(&self, valid: &Duration) -> bool {
         if Utc::now()
             .naive_utc()
             .signed_duration_since(*self.image_cached())
-            > cache_valid_duration
+            > *valid
         {
             return false;
         }
