@@ -44,7 +44,7 @@ use podcasts_data::downloader;
 use podcasts_data::errors::DownloadError;
 use podcasts_data::opml;
 use podcasts_data::pipeline::pipeline;
-use podcasts_data::utils::{calculate_hash, checkup};
+use podcasts_data::utils::checkup;
 use podcasts_data::Source;
 
 use std::collections::{HashMap, HashSet};
@@ -53,7 +53,6 @@ use std::sync::{Arc, Mutex, RwLock};
 use crate::app::Action;
 
 use crate::i18n::i18n;
-use chrono::Duration;
 
 /// Copied from the gtk-macros crate
 ///
@@ -308,27 +307,6 @@ lazy_static! {
     static ref THREADPOOL: rayon::ThreadPool = rayon::ThreadPoolBuilder::new().build().unwrap();
 }
 
-// Determine whether a cached image is valid.
-//
-// A cached image is valid for a maximum of 4 weeks from the time of its previous download.
-// Otherwise, a cached image is only valid so long as the hash of its URI remains unchanged.
-fn cached_image_valid(pd: &podcasts_data::ShowCoverModel) -> bool {
-    let cache_valid_duration = Duration::weeks(4);
-    if Utc::now()
-        .naive_utc()
-        .signed_duration_since(*pd.image_cached())
-        > cache_valid_duration
-    {
-        return false;
-    }
-    if let Some(new) = &pd.image_uri() {
-        if let Some(orig) = pd.image_uri_hash() {
-            return calculate_hash(new) == orig;
-        }
-    }
-    false
-}
-
 // Since gdk_pixbuf::Pixbuf is reference counted and every episode,
 // use the cover of the Podcast Feed/Show, We can only create a Pixbuf
 // cover per show and pass around the Rc pointer.
@@ -341,7 +319,7 @@ pub(crate) fn set_image_from_path(image: &gtk::Image, show_id: i32, size: u32) -
         if let Ok(pd) = dbqueries::get_podcast_cover_from_id(show_id) {
             // If the image is still valid, check if the requested (cover + size) is already in the
             // cache and if so do an early return after that.
-            if cached_image_valid(&pd) {
+            if pd.is_cached_image_valid() {
                 if let Some(guard) = hashmap.get(&(show_id, size)) {
                     guard
                         .lock()

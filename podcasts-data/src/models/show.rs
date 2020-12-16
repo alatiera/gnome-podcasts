@@ -23,7 +23,7 @@ use crate::schema::shows;
 
 use crate::database::connection;
 use crate::utils::calculate_hash;
-use chrono::{NaiveDateTime, Utc};
+use chrono::{Duration, NaiveDateTime, Utc};
 use diesel::query_dsl::filter_dsl::FilterDsl;
 use diesel::{ExpressionMethods, RunQueryDsl};
 
@@ -186,5 +186,26 @@ impl ShowCoverModel {
     /// Get the `image_cached`.
     pub fn image_cached(&self) -> &NaiveDateTime {
         &self.image_cached
+    }
+
+    /// Determine whether a cached image is valid.
+    ///
+    /// A cached image is valid for a maximum of 4 weeks from the time of its previous download.
+    /// Otherwise, a cached image is only valid so long as the hash of its URI remains unchanged.
+    pub fn is_cached_image_valid(&self) -> bool {
+        let cache_valid_duration = Duration::weeks(4);
+        if Utc::now()
+            .naive_utc()
+            .signed_duration_since(*self.image_cached())
+            > cache_valid_duration
+        {
+            return false;
+        }
+        if let Some(new) = &self.image_uri() {
+            if let Some(orig) = self.image_uri_hash() {
+                return calculate_hash(new) == orig;
+            }
+        }
+        false
     }
 }
