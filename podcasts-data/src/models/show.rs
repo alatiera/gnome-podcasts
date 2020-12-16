@@ -90,6 +90,7 @@ impl Show {
     }
 
     /// Update the hash of the image's URI.
+    /// todo Unit test.
     pub fn update_image_uri_hash(&self) -> Result<(), DataError> {
         use crate::schema::shows::dsl::*;
         let db = connection();
@@ -104,6 +105,7 @@ impl Show {
     }
 
     /// Update the timestamp when the image has been cached.
+    /// todo Unit test.
     pub fn update_image_cached(&self) -> Result<(), DataError> {
         use crate::schema::shows::dsl::*;
         let db = connection();
@@ -121,6 +123,7 @@ impl Show {
     }
 
     /// Update the image's timestamp and URI hash value.
+    /// todo Unit test.
     pub fn update_image_cache_values(&self) -> Result<(), DataError> {
         match self.image_uri_hash() {
             None => self.update_image_uri_hash()?,
@@ -192,6 +195,7 @@ impl ShowCoverModel {
     ///
     /// A cached image is valid from the time of its previous download for the given length of time.
     /// Otherwise, a cached image is invalidated when the hash of its URI has changed.
+    /// todo Unit test.
     pub fn is_cached_image_valid(&self, valid: &Duration) -> bool {
         if Utc::now()
             .naive_utc()

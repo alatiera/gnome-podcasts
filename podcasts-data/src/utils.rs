@@ -33,6 +33,7 @@ use std::fs;
 use std::path::Path;
 
 /// Hash a given value.
+/// todo Unit test.
 pub fn calculate_hash<T: Hash>(t: &T) -> i64 {
     let mut s = DefaultHasher::new();
     t.hash(&mut s);

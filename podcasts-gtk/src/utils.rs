@@ -315,6 +315,7 @@ lazy_static! {
 // GObjects do not implement Send trait, so SendCell is a way around that.
 // Also lazy_static requires Sync trait, so that's what the mutexes are.
 // TODO: maybe use something that would just scale to requested size?
+// todo Unit test.
 pub(crate) fn set_image_from_path(image: &gtk::Image, show_id: i32, size: u32) -> Result<()> {
     if let Ok(hashmap) = CACHED_PIXBUFS.read() {
         if let Ok(pd) = dbqueries::get_podcast_cover_from_id(show_id) {
