@@ -195,7 +195,6 @@ impl ShowCoverModel {
     ///
     /// A cached image is valid from the time of its previous download for the given length of time.
     /// Otherwise, a cached image is invalidated when the hash of its URI has changed.
-    /// todo Unit test.
     pub fn is_cached_image_valid(&self, valid: &Duration) -> bool {
         if Utc::now()
             .naive_utc()
@@ -210,5 +209,70 @@ impl ShowCoverModel {
             }
         }
         false
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use anyhow::Result;
+    use std::{thread, time};
+
+    #[test]
+    fn cached_image_should_be_valid_when_uri_and_hash_are_unchanged() -> Result<()> {
+        let image_uri = String::from(
+            "http://www.jupiterbroadcasting.com/wp-content/uploads/2018/01/lup-0232-v.jpg",
+        );
+        let image_uri_hash = calculate_hash(&image_uri);
+        let cover = ShowCoverModel {
+            id: 0,
+            title: String::from("Linux Unplugged"),
+            image_uri: Some(image_uri),
+            image_uri_hash: Some(image_uri_hash),
+            image_cached: Utc::now().naive_utc(),
+        };
+        let valid = Duration::weeks(4);
+        assert!(cover.is_cached_image_valid(&valid));
+        Ok(())
+    }
+
+    #[test]
+    fn a_different_uri_should_invalidate_cached_image() -> Result<()> {
+        let old_image_uri = String::from(
+            "http://www.jupiterbroadcasting.com/wp-content/uploads/2018/01/lup-0232-v.jpg",
+        );
+        let old_image_uri_hash = calculate_hash(&old_image_uri);
+        let new_image_uri = String::from(
+            "https://assets.fireside.fm/file/fireside-images/podcasts/images/f/f31a453c-fa15-491f-8618-3f71f1d565e5/cover.jpg?v=3",
+        );
+        let cover = ShowCoverModel {
+            id: 0,
+            title: String::from("Linux Unplugged"),
+            image_uri: Some(new_image_uri),
+            image_uri_hash: Some(old_image_uri_hash),
+            image_cached: Utc::now().naive_utc(),
+        };
+        let valid = Duration::weeks(4);
+        assert!(!cover.is_cached_image_valid(&valid));
+        Ok(())
+    }
+
+    #[test]
+    fn cached_image_should_be_invalidated_after_valid_duration() -> Result<()> {
+        let image_uri = String::from(
+            "http://www.jupiterbroadcasting.com/wp-content/uploads/2018/01/lup-0232-v.jpg",
+        );
+        let image_uri_hash = calculate_hash(&image_uri);
+        let cover = ShowCoverModel {
+            id: 0,
+            title: String::from("Linux Unplugged"),
+            image_uri: Some(image_uri),
+            image_uri_hash: Some(image_uri_hash),
+            image_cached: Utc::now().naive_utc(),
+        };
+        let valid = Duration::nanoseconds(1);
+        thread::sleep(time::Duration::from_nanos(2));
+        assert!(!cover.is_cached_image_valid(&valid));
+        Ok(())
     }
 }
