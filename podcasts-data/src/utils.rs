@@ -33,7 +33,6 @@ use std::fs;
 use std::path::Path;
 
 /// Hash a given value.
-/// todo Unit test.
 pub fn calculate_hash<T: Hash>(t: &T) -> i64 {
     let mut s = DefaultHasher::new();
     t.hash(&mut s);
@@ -315,6 +314,38 @@ mod tests {
         let foo_ = format!("{}/{}", DL_DIR.to_str().unwrap(), "foo");
         assert_eq!(get_download_folder("foo")?, foo_);
         let _ = fs::remove_dir_all(foo_);
+        Ok(())
+    }
+
+    #[test]
+    fn hash_should_be_the_same_given_the_same_input() -> Result<()> {
+        let image_uri =
+            "http://www.jupiterbroadcasting.com/wp-content/uploads/2018/01/lup-0232-v.jpg";
+        let first_hash = calculate_hash(&image_uri);
+        let second_hash = calculate_hash(&image_uri);
+        assert_eq!(first_hash, second_hash);
+        Ok(())
+    }
+
+    #[test]
+    fn hash_should_be_different_for_different_inputs() -> Result<()> {
+        let old_image_uri =
+            "http://www.jupiterbroadcasting.com/wp-content/uploads/2018/01/lup-0232-v.jpg";
+        let new_image_uri = "https://assets.fireside.fm/file/fireside-images/podcasts/images/f/f31a453c-fa15-491f-8618-3f71f1d565e5/cover.jpg?v=3";
+        let old_hash = calculate_hash(&old_image_uri);
+        let new_hash = calculate_hash(&new_image_uri);
+        assert_ne!(old_hash, new_hash);
+        Ok(())
+    }
+
+    #[test]
+    fn hash_should_be_different_for_similar_inputs() -> Result<()> {
+        let image_uri_v2 =
+            "https://assets.fireside.fm/file/fireside-images/podcasts/images/f/f31a453c-fa15-491f-8618-3f71f1d565e5/cover.jpg?v=2";
+        let image_uri_v3 = "https://assets.fireside.fm/file/fireside-images/podcasts/images/f/f31a453c-fa15-491f-8618-3f71f1d565e5/cover.jpg?v=3";
+        let v2_hash = calculate_hash(&image_uri_v2);
+        let v3_hash = calculate_hash(&image_uri_v3);
+        assert_ne!(v2_hash, v3_hash);
         Ok(())
     }
 }
