@@ -143,13 +143,14 @@ impl NewShow {
             .map(|s| s.to_owned());
         // If itunes is None, try to get the channel.image from the rss spec
         let image_uri = itunes_img.or_else(|| chan.image().map(|s| s.url().trim().to_owned()));
+        let hash = calculate_hash(&image_uri);
 
         NewShowBuilder::default()
             .title(title)
             .description(description)
             .link(link)
-            .image_uri_hash(calculate_hash(&image_uri))
             .image_uri(image_uri)
+            .image_uri_hash(hash)
             .image_cached(Utc::now().naive_utc())
             .source_id(source_id)
             .build()
@@ -184,6 +185,16 @@ impl NewShow {
 
     pub(crate) fn image_uri(&self) -> Option<&str> {
         self.image_uri.as_ref().map(|s| s.as_str())
+    }
+
+    #[allow(dead_code)]
+    pub(crate) fn image_uri_hash(&self) -> Option<i64> {
+        self.image_uri_hash
+    }
+
+    #[allow(dead_code)]
+    pub(crate) fn image_cached(&self) -> Option<NaiveDateTime> {
+        self.image_cached
     }
 }
 

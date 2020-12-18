@@ -90,32 +90,23 @@ impl Show {
     }
 
     /// Update the hash of the image's URI.
-    /// todo Unit test.
     pub fn update_image_uri_hash(&self) -> Result<(), DataError> {
         use crate::schema::shows::dsl::*;
         let db = connection();
         let con = db.get()?;
-
-        info!("Updating the hash for image URI for podcast {}", self.title);
-        diesel::update(shows.filter(id.eq(self.source_id)))
-            .set(image_uri_hash.eq(calculate_hash(&self.image_uri)))
+        diesel::update(shows.filter(id.eq(self.id)))
+            .set(image_uri_hash.eq(Some(calculate_hash(&self.image_uri))))
             .execute(&con)
             .map(|_| ())
             .map_err(From::from)
     }
 
     /// Update the timestamp when the image has been cached.
-    /// todo Unit test.
     pub fn update_image_cached(&self) -> Result<(), DataError> {
         use crate::schema::shows::dsl::*;
         let db = connection();
         let con = db.get()?;
-
-        info!(
-            "Updating the timestamp for when the image was last downloaded for podcast {}",
-            self.title
-        );
-        diesel::update(shows.filter(id.eq(self.source_id)))
+        diesel::update(shows.filter(id.eq(self.id)))
             .set(image_cached.eq(Utc::now().naive_utc()))
             .execute(&con)
             .map(|_| ())
@@ -123,7 +114,6 @@ impl Show {
     }
 
     /// Update the image's timestamp and URI hash value.
-    /// todo Unit test.
     pub fn update_image_cache_values(&self) -> Result<(), DataError> {
         match self.image_uri_hash() {
             None => self.update_image_uri_hash()?,
@@ -154,7 +144,7 @@ pub struct ShowCoverModel {
 impl From<Show> for ShowCoverModel {
     fn from(p: Show) -> ShowCoverModel {
         ShowCoverModel {
-            id: p.id(),
+            id: p.id,
             title: p.title,
             image_uri: p.image_uri,
             image_uri_hash: p.image_uri_hash,
@@ -215,8 +205,196 @@ impl ShowCoverModel {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::database::truncate_db;
+    use crate::dbqueries;
+    use crate::models::NewShowBuilder;
+    use crate::models::Update;
+    use crate::models::{Insert, NewShow};
     use anyhow::Result;
     use std::{thread, time};
+
+    lazy_static! {
+        static ref EXPECTED_INTERCEPTED: NewShow = {
+            let descr = "The people behind The Intercept’s fearless reporting and incisive \
+                         commentary—Jeremy Scahill, Glenn Greenwald, Betsy Reed and \
+                         others—discuss the crucial issues of our time: national security, civil \
+                         liberties, foreign policy, and criminal justice.  Plus interviews with \
+                         artists, thinkers, and newsmakers who challenge our preconceptions about \
+                         the world we live in.";
+
+            let image_uri =
+                "http://static.megaphone.fm/podcasts/d5735a50-d904-11e6-8532-73c7de466ea6/image/\
+                 uploads_2F1484252190700-qhn5krasklbce3dh-a797539282700ea0298a3a26f7e49b0b_\
+                 2FIntercepted_COVER%2B_281_29.png";
+            let image_uri_hash = calculate_hash(&image_uri);
+
+            NewShowBuilder::default()
+                .title("Intercepted with Jeremy Scahill")
+                .link("https://theintercept.com/podcasts")
+                .description(descr)
+                .image_uri(String::from(image_uri))
+                .image_uri_hash(image_uri_hash)
+                .image_cached(Utc::now().naive_utc())
+                .source_id(42)
+                .build()
+                .unwrap()
+        };
+        static ref UPDATED_IMAGE_URI_INTERCEPTED: NewShow = {
+            let image_uri =
+                "http://static.megaphone.fm/podcasts/d5735a50-d904-11e6-8532-73c7de466ea6/image/\
+                 uploads_2F1484252190700-qhn5krasklbce3dh-a797539282700ea0298a3a26f7e49b0b_\
+                 2FIntercepted_COVER%2B_281_30.png";
+
+            NewShowBuilder::default()
+                .title("Intercepted with Jeremy Scahill")
+                .link("https://theintercept.com/podcasts")
+                .description(EXPECTED_INTERCEPTED.description())
+                .image_uri(String::from(image_uri))
+                .image_uri_hash(EXPECTED_INTERCEPTED.image_uri_hash().unwrap())
+                .image_cached(EXPECTED_INTERCEPTED.image_cached().unwrap())
+                .source_id(42)
+                .build()
+                .unwrap()
+        };
+    }
+
+    #[test]
+    fn update_image_cached_timestamp() -> Result<()> {
+        truncate_db()?;
+        EXPECTED_INTERCEPTED.insert()?;
+        let show = EXPECTED_INTERCEPTED.to_podcast()?;
+        let original_timestamp = show.image_cached();
+        show.update_image_cached().unwrap();
+        let show = dbqueries::get_podcast_from_id(show.id())?;
+        let updated_timestamp = show.image_cached();
+        assert!(original_timestamp < updated_timestamp);
+        assert_eq!(show.title(), "Intercepted with Jeremy Scahill");
+        assert_eq!(show.link(), "https://theintercept.com/podcasts");
+        assert_eq!(
+            show.description(),
+            "The people behind The Intercept’s fearless reporting and incisive \
+                         commentary—Jeremy Scahill, Glenn Greenwald, Betsy Reed and \
+                         others—discuss the crucial issues of our time: national security, civil \
+                         liberties, foreign policy, and criminal justice.  Plus interviews with \
+                         artists, thinkers, and newsmakers who challenge our preconceptions about \
+                         the world we live in."
+        );
+        assert_eq!(
+            show.image_uri().unwrap(),
+            "http://static.megaphone.fm/podcasts/d5735a50-d904-11e6-8532-73c7de466ea6/image/\
+                     uploads_2F1484252190700-qhn5krasklbce3dh-a797539282700ea0298a3a26f7e49b0b_\
+                     2FIntercepted_COVER%2B_281_29.png"
+        );
+        assert_eq!(show.image_uri_hash(), EXPECTED_INTERCEPTED.image_uri_hash());
+        assert_eq!(show.source_id(), 42);
+        Ok(())
+    }
+
+    #[test]
+    fn update_image_uri_hash() -> Result<()> {
+        truncate_db()?;
+        EXPECTED_INTERCEPTED.insert()?;
+        let original = EXPECTED_INTERCEPTED.to_podcast()?;
+        let original_hash = original.image_uri_hash();
+        let updated = &*UPDATED_IMAGE_URI_INTERCEPTED;
+        updated.update(original.id())?;
+        let show = dbqueries::get_podcast_from_id(original.id())?;
+        let not_updated_hash = updated.image_uri_hash();
+        assert_eq!(original_hash, not_updated_hash);
+        show.update_image_uri_hash().unwrap();
+        let show = dbqueries::get_podcast_from_id(original.id())?;
+        let updated_hash = show.image_uri_hash();
+        assert_ne!(original_hash, updated_hash);
+        assert_eq!(show.title(), "Intercepted with Jeremy Scahill");
+        assert_eq!(show.link(), "https://theintercept.com/podcasts");
+        assert_eq!(
+            show.description(),
+            "The people behind The Intercept’s fearless reporting and incisive \
+                         commentary—Jeremy Scahill, Glenn Greenwald, Betsy Reed and \
+                         others—discuss the crucial issues of our time: national security, civil \
+                         liberties, foreign policy, and criminal justice.  Plus interviews with \
+                         artists, thinkers, and newsmakers who challenge our preconceptions about \
+                         the world we live in."
+        );
+        assert_eq!(
+            show.image_uri().unwrap(),
+            "http://static.megaphone.fm/podcasts/d5735a50-d904-11e6-8532-73c7de466ea6/image/\
+                     uploads_2F1484252190700-qhn5krasklbce3dh-a797539282700ea0298a3a26f7e49b0b_\
+                     2FIntercepted_COVER%2B_281_30.png"
+        );
+        assert_eq!(show.source_id(), 42);
+        Ok(())
+    }
+
+    #[test]
+    fn update_image_cached_values_timestamp_only() -> Result<()> {
+        truncate_db()?;
+        EXPECTED_INTERCEPTED.insert()?;
+        let show = EXPECTED_INTERCEPTED.to_podcast()?;
+        let original_timestamp = show.image_cached();
+        show.update_image_cache_values().unwrap();
+        let show = dbqueries::get_podcast_from_id(show.id())?;
+        let updated_timestamp = show.image_cached();
+        assert!(original_timestamp < updated_timestamp);
+        assert_ne!(show.image_uri_hash(), EXPECTED_INTERCEPTED.image_uri_hash());
+        assert_eq!(show.title(), "Intercepted with Jeremy Scahill");
+        assert_eq!(show.link(), "https://theintercept.com/podcasts");
+        assert_eq!(
+            show.description(),
+            "The people behind The Intercept’s fearless reporting and incisive \
+                         commentary—Jeremy Scahill, Glenn Greenwald, Betsy Reed and \
+                         others—discuss the crucial issues of our time: national security, civil \
+                         liberties, foreign policy, and criminal justice.  Plus interviews with \
+                         artists, thinkers, and newsmakers who challenge our preconceptions about \
+                         the world we live in."
+        );
+        assert_eq!(
+            show.image_uri().unwrap(),
+            "http://static.megaphone.fm/podcasts/d5735a50-d904-11e6-8532-73c7de466ea6/image/\
+                     uploads_2F1484252190700-qhn5krasklbce3dh-a797539282700ea0298a3a26f7e49b0b_\
+                     2FIntercepted_COVER%2B_281_29.png"
+        );
+        assert_eq!(show.source_id(), 42);
+        Ok(())
+    }
+
+    #[test]
+    fn update_image_cached_values_timestamp_and_hash() -> Result<()> {
+        truncate_db()?;
+        EXPECTED_INTERCEPTED.insert()?;
+        let original = EXPECTED_INTERCEPTED.to_podcast()?;
+        let original_timestamp = original.image_cached();
+        let original_hash = original.image_uri_hash();
+        let updated = &*UPDATED_IMAGE_URI_INTERCEPTED;
+        updated.update(original.id())?;
+        let show = dbqueries::get_podcast_from_id(original.id())?;
+        let not_updated_hash = show.image_uri_hash();
+        assert_eq!(original_hash, not_updated_hash);
+        show.update_image_cache_values().unwrap();
+        let show = dbqueries::get_podcast_from_id(show.id())?;
+        let updated_timestamp = show.image_cached();
+        assert!(original_timestamp < updated_timestamp);
+        assert_ne!(show.image_uri_hash(), original_hash);
+        assert_eq!(show.title(), "Intercepted with Jeremy Scahill");
+        assert_eq!(show.link(), "https://theintercept.com/podcasts");
+        assert_eq!(
+            show.description(),
+            "The people behind The Intercept’s fearless reporting and incisive \
+                         commentary—Jeremy Scahill, Glenn Greenwald, Betsy Reed and \
+                         others—discuss the crucial issues of our time: national security, civil \
+                         liberties, foreign policy, and criminal justice.  Plus interviews with \
+                         artists, thinkers, and newsmakers who challenge our preconceptions about \
+                         the world we live in."
+        );
+        assert_eq!(
+            show.image_uri().unwrap(),
+            "http://static.megaphone.fm/podcasts/d5735a50-d904-11e6-8532-73c7de466ea6/image/\
+                     uploads_2F1484252190700-qhn5krasklbce3dh-a797539282700ea0298a3a26f7e49b0b_\
+                     2FIntercepted_COVER%2B_281_30.png"
+        );
+        assert_eq!(show.source_id(), 42);
+        Ok(())
+    }
 
     #[test]
     fn cached_image_should_be_valid_when_uri_and_hash_are_unchanged() -> Result<()> {
