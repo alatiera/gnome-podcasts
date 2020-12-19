@@ -36,6 +36,7 @@ use rayon;
 use regex::Regex;
 use reqwest;
 use serde_json::Value;
+use url::Url;
 
 // use podcasts_data::feed;
 use podcasts_data::dbqueries;
@@ -427,6 +428,29 @@ fn lookup_id(id: u32) -> Result<String> {
         .ok_or_else(|| anyhow!("Failed to get url from itunes response"))
 }
 
+pub(crate) fn soundcloud_to_rss(url: &Url) -> Result<Url> {
+    // Turn: https://soundcloud.com/chapo-trap-house
+    // into: https://feeds.soundcloud.com/users/soundcloud:users:211911700/sounds.rss
+    let id = soundcloud_lookup_id(url).ok_or_else(|| anyhow!("Failed to find a soundcloud ID."))?;
+    let url = format!(
+        "https://feeds.soundcloud.com/users/soundcloud:users:{}/sounds.rss",
+        id
+    );
+    Ok(Url::parse(&url)?)
+}
+
+fn soundcloud_lookup_id(url: &Url) -> Option<u64> {
+    // lookup the users: id for a soundcloud url
+    lazy_static! {
+        static ref RE: Regex = Regex::new(r"soundcloud://users:([0-9]+)").unwrap();
+    }
+    let url_str = url.to_string();
+    let response_text = reqwest::blocking::get(&url_str).ok()?.text().ok()?;
+    let id = RE.captures_iter(&response_text).nth(0)?.get(1)?.as_str();
+    // Parse it to a u64, this *should* never fail
+    id.parse::<u64>().ok()
+}
+
 pub(crate) fn on_import_clicked(window: &gtk::ApplicationWindow, sender: &Sender<Action>) {
     use gtk::{FileChooserAction, FileChooserNative, FileFilter, ResponseType};
 
@@ -572,6 +596,20 @@ mod tests {
 
         let id = 000000000;
         assert!(lookup_id(id).is_err());
+        Ok(())
+    }
+
+    #[test]
+    fn test_soundcloud_to_rss() -> Result<()> {
+        let soundcloud_url = Url::parse("https://soundcloud.com/chapo-trap-house")?;
+        let rss_url = String::from(
+            "https://feeds.soundcloud.com/users/soundcloud:users:211911700/sounds.rss",
+        );
+        assert_eq!(Url::parse(&rss_url)?, soundcloud_to_rss(&soundcloud_url)?);
+
+        let soundcloud_url =
+            Url::parse("https://soundcloud.com/id000000000000000ajlsfhlsfhwoerzuweioh")?;
+        assert!(soundcloud_to_rss(&soundcloud_url).is_err());
         Ok(())
     }
 }

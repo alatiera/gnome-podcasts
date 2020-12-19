@@ -33,7 +33,7 @@ use podcasts_data::{dbqueries, Source};
 
 use crate::app::Action;
 use crate::stacks::Content;
-use crate::utils::{itunes_to_rss, schedule_refresh};
+use crate::utils::{itunes_to_rss, schedule_refresh, soundcloud_to_rss};
 
 use std::rc::Rc;
 
@@ -77,6 +77,11 @@ impl AddPopover {
             let foo = itunes_to_rss(&url)?;
             info!("Resolved to {}", foo);
             foo
+        } else if url.contains("soundcloud.com") && !url.contains("feeds.soundcloud.com") {
+            info!("Detected soundcloud url.");
+            let foo = soundcloud_to_rss(&Url::parse(&url)?)?;
+            info!("Resolved to {}", foo);
+            foo.to_string()
         } else {
             url.to_owned()
         };
