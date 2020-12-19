@@ -207,9 +207,7 @@ mod tests {
     use super::*;
     use crate::database::truncate_db;
     use crate::dbqueries;
-    use crate::models::NewShowBuilder;
-    use crate::models::Update;
-    use crate::models::{Insert, NewShow};
+    use crate::models::{Insert, NewShow, NewShowBuilder, Update};
     use anyhow::Result;
     use std::{thread, time};
 
@@ -240,10 +238,7 @@ mod tests {
                 .unwrap()
         };
         static ref UPDATED_IMAGE_URI_INTERCEPTED: NewShow = {
-            let image_uri =
-                "http://static.megaphone.fm/podcasts/d5735a50-d904-11e6-8532-73c7de466ea6/image/\
-                 uploads_2F1484252190700-qhn5krasklbce3dh-a797539282700ea0298a3a26f7e49b0b_\
-                 2FIntercepted_COVER%2B_281_30.png";
+            let image_uri = "https://assets.fireside.fm/file/fireside-images/podcasts/images/f/f31a453c-fa15-491f-8618-3f71f1d565e5/cover.jpg?v=3";
 
             NewShowBuilder::default()
                 .title("Intercepted with Jeremy Scahill")
@@ -318,9 +313,7 @@ mod tests {
         );
         assert_eq!(
             show.image_uri().unwrap(),
-            "http://static.megaphone.fm/podcasts/d5735a50-d904-11e6-8532-73c7de466ea6/image/\
-                     uploads_2F1484252190700-qhn5krasklbce3dh-a797539282700ea0298a3a26f7e49b0b_\
-                     2FIntercepted_COVER%2B_281_30.png"
+            "https://assets.fireside.fm/file/fireside-images/podcasts/images/f/f31a453c-fa15-491f-8618-3f71f1d565e5/cover.jpg?v=3"
         );
         assert_eq!(show.source_id(), 42);
         Ok(())
@@ -388,9 +381,7 @@ mod tests {
         );
         assert_eq!(
             show.image_uri().unwrap(),
-            "http://static.megaphone.fm/podcasts/d5735a50-d904-11e6-8532-73c7de466ea6/image/\
-                     uploads_2F1484252190700-qhn5krasklbce3dh-a797539282700ea0298a3a26f7e49b0b_\
-                     2FIntercepted_COVER%2B_281_30.png"
+            "https://assets.fireside.fm/file/fireside-images/podcasts/images/f/f31a453c-fa15-491f-8618-3f71f1d565e5/cover.jpg?v=3"
         );
         assert_eq!(show.source_id(), 42);
         Ok(())

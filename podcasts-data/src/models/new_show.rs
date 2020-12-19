@@ -188,7 +188,7 @@ impl NewShow {
     }
 
     #[allow(dead_code)]
-    pub(crate) fn image_uri_hash(&self) -> Option<i64> {
+    pub fn image_uri_hash(&self) -> Option<i64> {
         self.image_uri_hash
     }
 
