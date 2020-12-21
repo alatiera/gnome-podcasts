@@ -25,6 +25,7 @@ use gio::{self, prelude::*, SettingsExt};
 use gtk::prelude::*;
 
 use libhandy as hdy;
+use libhandy::DeckExt;
 
 use crate::app::{Action, PdApplication};
 use crate::headerbar::Header;
@@ -49,6 +50,7 @@ pub struct MainWindow {
     pub(crate) content: Rc<Content>,
     pub(crate) headerbar: Rc<Header>,
     pub(crate) player: player::PlayerWrapper,
+    pub(crate) main_deck: libhandy::Deck,
     pub(crate) updating: Cell<bool>,
     pub(crate) updater: RefCell<Option<InAppNotification>>,
     pub(crate) sender: Sender<Action>,
@@ -86,12 +88,17 @@ impl MainWindow {
 
         // Add the content main stack to the overlay.
         let overlay = gtk::Overlay::new();
-        overlay.add(&content.get_stack());
+        let main_deck = libhandy::Deck::new();
+        main_deck.set_can_swipe_forward(false);
+        main_deck.add(&content.get_container());
+        overlay.add(&main_deck);
 
         let wrap = gtk::Box::new(gtk::Orientation::Vertical, 0);
 
         // Add the Headerbar to the window.
-        wrap.add(&header.container);
+        content
+            .get_container()
+            .pack_start(&header.container, false, true, 0);
 
         // Add the overlay to the main Box
         wrap.add(&overlay);
@@ -130,6 +137,7 @@ impl MainWindow {
             headerbar: header,
             content,
             player,
+            main_deck,
             updating: Cell::new(false),
             updater: RefCell::new(None),
             sender: sender.clone(),
@@ -191,6 +199,14 @@ impl MainWindow {
                     headerbar.open_menu();
             }),
         );
+    }
+    /// Remove all items from the `main_deck` except from the content
+    pub fn clear_deck(&self) {
+        for c in self.main_deck.get_children() {
+            if c.get_widget_name() != "content" {
+                self.main_deck.remove(&c);
+            }
+        }
     }
 }
 

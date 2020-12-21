@@ -128,9 +128,11 @@ fn test_stuff() -> anyhow::Result<()> {
     EpisodeWidget::default();
     EmptyView::default();
     EmptyShow::default();
+    EpisodeDescription::default();
 
     appnotif::InAppNotification::default();
     show_menu::ShowMenu::default();
+    episode_menu::EpisodeMenu::default();
 
     Ok(())
 }

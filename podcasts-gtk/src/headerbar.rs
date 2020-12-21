@@ -280,8 +280,8 @@ impl Header {
         self.add.toggle.show();
         self.back.hide();
         self.title_stack.set_visible_child(&self.switch_squeezer);
-        self.update_bottom_switcher();
         self.hamburger.show();
+        self.update_bottom_switcher();
         self.dots.hide();
     }
 
@@ -297,9 +297,16 @@ impl Header {
         self.dots.set_menu_model(Some(menu))
     }
 
-    fn update_bottom_switcher(&self) {
+    pub(crate) fn reveal_bottom_switcher(&self, value: bool) {
+        self.bottom_switcher.set_reveal(value);
+    }
+
+    pub(crate) fn update_bottom_switcher(&self) {
         if let Some(child) = self.switch_squeezer.get_visible_child() {
-            self.bottom_switcher.set_reveal(child != self.switch);
+            // only show the bottom switcher if we are on the current page
+            // and have no title menu customization (e.g.: ShowWidget)
+            let reveal = (child != self.switch) && self.hamburger.is_visible();
+            self.bottom_switcher.set_reveal(reveal);
         }
     }
 }

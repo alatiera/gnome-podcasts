@@ -27,6 +27,7 @@ use fragile::Fragile;
 use libhandy::{Clamp, ClampExt};
 
 use podcasts_data::dbqueries;
+use podcasts_data::EpisodeWidgetModel;
 use podcasts_data::Show;
 
 use crate::app::Action;
@@ -95,7 +96,7 @@ impl ShowWidget {
         pdw.init(&pd);
 
         let menu = ShowMenu::new(&pd, &pdw.episodes, &sender);
-        send!(sender, Action::InitShowMenu(Fragile::new(menu)));
+        send!(sender, Action::InitSecondaryMenu(Fragile::new(menu.menu)));
 
         let pdw = Rc::new(pdw);
         let res = populate_listbox(&pdw, pd, sender, vadj);
@@ -196,8 +197,14 @@ fn populate_listbox(
 
         debug_assert!(episodes.len() as i64 == count);
 
-        let constructor = clone!(@strong sender => move |ep| {
-            EpisodeWidget::new(ep, &sender).container.clone()
+        let constructor = clone!(@strong sender => move |ep: EpisodeWidgetModel| {
+            let id = ep.rowid();
+            let episode_widget = EpisodeWidget::new(ep, &sender).container.clone();
+            let row = gtk::ListBoxRow::new();
+            row.add(&episode_widget);
+            row.set_action_name(Some("app.go-to-episode"));
+            row.set_action_target_value(Some(&id.to_variant()));
+            row
         });
 
         let callback = clone!(@strong show_weak, @strong vadj => move || {

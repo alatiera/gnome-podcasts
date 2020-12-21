@@ -38,6 +38,7 @@ pub(crate) enum State {
 
 #[derive(Debug, Clone)]
 pub(crate) struct Content {
+    container: gtk::Box,
     stack: gtk::Stack,
     shows: Rc<RefCell<ShowStack>>,
     home: Rc<RefCell<HomeStack>>,
@@ -46,10 +47,14 @@ pub(crate) struct Content {
 
 impl Content {
     pub(crate) fn new(sender: &Sender<Action>) -> Result<Rc<Content>> {
+        let container = gtk::Box::new(gtk::Orientation::Vertical, 0);
         let stack = gtk::Stack::new();
         let home = Rc::new(RefCell::new(HomeStack::new(sender.clone())?));
         let shows = Rc::new(RefCell::new(ShowStack::new(sender.clone())));
 
+        // container will hold the header bar and the content
+        container.set_widget_name("content");
+        container.pack_end(&stack, true, true, 0);
         stack.add_titled(&home.borrow().get_stack(), "home", &i18n("New"));
         stack.add_titled(&shows.borrow().get_stack(), "shows", &i18n("Shows"));
 
@@ -63,6 +68,7 @@ impl Content {
         );
 
         let con = Content {
+            container,
             stack,
             shows,
             home,
@@ -116,6 +122,9 @@ impl Content {
 
     pub(crate) fn get_stack(&self) -> gtk::Stack {
         self.stack.clone()
+    }
+    pub(crate) fn get_container(&self) -> gtk::Box {
+        self.container.clone()
     }
 
     pub(crate) fn get_shows(&self) -> Rc<RefCell<ShowStack>> {

@@ -138,7 +138,9 @@ impl InAppNotification {
     // the revealer should be attached to something that displays it.
     // Previously we where doing it in the constructor, which had the result
     // of the animation being skipped cause there was no parent widget to display it.
-    pub(crate) fn show(&self, overlay: &gtk::Overlay) {
+    pub(crate) fn show(&self, overlay: &gtk::Overlay, headerbar: &libhandy::HeaderBar) {
+        self.revealer
+            .set_margin_top(headerbar.get_preferred_height().1);
         overlay.add_overlay(&self.revealer);
         // We need to display the notification after the widget is added to the overlay
         // so there will be a nice animation.

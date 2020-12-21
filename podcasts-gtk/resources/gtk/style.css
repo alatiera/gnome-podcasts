@@ -31,3 +31,14 @@ actionbar.player-small revealer box {
 popover modelbutton > box > label {
     font-feature-settings: "tnum";
 }
+
+.episode_description .podcast_title {
+    color: @insensitive_fg_color;
+}
+.episode_description .episode_title {
+    font-weight: bold;
+    font-size: larger;
+}
+.episode_description .episode_duration_date {
+    color: @insensitive_fg_color;
+}

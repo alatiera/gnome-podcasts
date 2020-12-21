@@ -27,17 +27,21 @@ use gio::subclass::ApplicationImplExt;
 use gio::{self, prelude::*, ActionMapExt, ApplicationFlags, SettingsExt};
 
 use gtk::prelude::*;
+use libhandy::prelude::*;
 
 use gettextrs::{bindtextdomain, setlocale, textdomain, LocaleCategory};
 
+use anyhow::Result;
 use fragile::Fragile;
-use podcasts_data::{Show, Source};
+use podcasts_data::dbqueries;
+use podcasts_data::{Episode, Show, Source};
 
 use crate::settings;
 use crate::stacks::PopulatedState;
 use crate::utils;
 use crate::widgets::appnotif::{InAppNotification, SpinnerState, State};
-use crate::widgets::show_menu::{mark_all_notif, remove_show_notif, ShowMenu};
+use crate::widgets::show_menu::{mark_all_notif, remove_show_notif};
+use crate::widgets::EpisodeDescription;
 use crate::window::MainWindow;
 
 use std::cell::RefCell;
@@ -148,8 +152,10 @@ pub(crate) enum Action {
     RefreshWidgetIfSame(i32),
     ShowWidgetAnimated,
     ShowShowsAnimated,
+    GoToEpisodeDescription(Arc<Show>, Arc<Episode>),
     HeaderBarShowTile(String),
     HeaderBarNormal,
+    CopiedUrlNotification,
     MarkAllPlayerNotification(Arc<Show>),
     UpdateFeed(Option<Vec<Source>>),
     ShowUpdateNotif(crossbeam_channel::Receiver<bool>),
@@ -157,7 +163,8 @@ pub(crate) enum Action {
     RemoveShow(Arc<Show>),
     ErrorNotification(String),
     InitEpisode(i32),
-    InitShowMenu(Fragile<ShowMenu>),
+    InitSecondaryMenu(Fragile<gio::MenuModel>),
+    MoveBackOnDeck,
     EmptyState,
     PopulatedState,
     RaiseWindow,
@@ -188,14 +195,37 @@ impl PdApplication {
     }
 
     fn setup_gactions(&self) {
+        let app = self.upcast_ref::<gtk::Application>();
         // Create the quit action
         utils::make_action(
-            self.upcast_ref::<gtk::Application>(),
+            app,
             "quit",
             clone!(@weak self as app => move |_, _| {
                     app.quit();
             }),
         );
+        let i32_variant_type = i32::static_variant_type();
+        let show_episode = gio::SimpleAction::new("go-to-episode", Some(&i32_variant_type));
+        show_episode.connect_activate(clone!(@weak self as app => move |_, id_variant_option| {
+            match app.go_to_episode(id_variant_option) {
+                Ok(_) => (),
+                Err(e) => eprintln!("failed action app.go-to-episode: {}", e)
+            }
+        }));
+        app.add_action(&show_episode);
+    }
+
+    fn go_to_episode(&self, id_variant_option: Option<&glib::Variant>) -> Result<()> {
+        let id_variant = id_variant_option.expect("missing action_target_value");
+        let id = id_variant.get::<i32>().expect("invalid variant type");
+        let ep = dbqueries::get_episode_from_rowid(id)?;
+        let show = dbqueries::get_podcast_from_id(ep.show_id())?;
+        let data = PdApplicationPrivate::from_instance(self);
+        send!(
+            data.sender,
+            Action::GoToEpisodeDescription(Arc::new(show), Arc::new(ep))
+        );
+        Ok(())
     }
 
     fn setup_accels(&self) {
@@ -242,26 +272,57 @@ impl PdApplication {
                     .ok();
             }
             Action::ShowWidgetAnimated => {
+                window
+                    .main_deck
+                    .navigate(libhandy::NavigationDirection::Back);
                 let shows = window.content.get_shows();
                 let pop = shows.borrow().populated();
+                window
+                    .content
+                    .get_stack()
+                    .set_visible_child_full("shows", gtk::StackTransitionType::SlideLeft);
                 pop.borrow_mut()
                     .switch_visible(PopulatedState::Widget, gtk::StackTransitionType::SlideLeft);
             }
             Action::ShowShowsAnimated => {
+                window
+                    .main_deck
+                    .navigate(libhandy::NavigationDirection::Back);
                 let shows = window.content.get_shows();
                 let pop = shows.borrow().populated();
                 pop.borrow_mut()
                     .switch_visible(PopulatedState::View, gtk::StackTransitionType::SlideRight);
             }
+            Action::MoveBackOnDeck => {
+                window
+                    .main_deck
+                    .navigate(libhandy::NavigationDirection::Back);
+                window.headerbar.reveal_bottom_switcher(true);
+                window.headerbar.update_bottom_switcher();
+            }
+            Action::GoToEpisodeDescription(show, ep) => {
+                window.clear_deck();
+                let description_widget = EpisodeDescription::new(ep, show, window.sender.clone());
+                description_widget.container.set_widget_name("description");
+                window.main_deck.add(&description_widget.container);
+                window
+                    .main_deck
+                    .navigate(libhandy::NavigationDirection::Forward);
+                window.headerbar.reveal_bottom_switcher(false);
+            }
             Action::HeaderBarShowTile(title) => window.headerbar.switch_to_back(&title),
             Action::HeaderBarNormal => window.headerbar.switch_to_normal(),
+            Action::CopiedUrlNotification => {
+                let notif = EpisodeDescription::copied_url_notif();
+                notif.show(&window.overlay, &window.headerbar.container);
+            }
             Action::MarkAllPlayerNotification(pd) => {
                 let notif = mark_all_notif(pd, &data.sender);
-                notif.show(&window.overlay);
+                notif.show(&window.overlay, &window.headerbar.container);
             }
             Action::RemoveShow(pd) => {
                 let notif = remove_show_notif(pd, data.sender.clone());
-                notif.show(&window.overlay);
+                notif.show(&window.overlay, &window.headerbar.container);
             }
             Action::ErrorNotification(err) => {
                 error!("An error notification was triggered: {}", err);
@@ -271,7 +332,7 @@ impl PdApplication {
                 };
                 let undo_cb: Option<fn()> = None;
                 let notif = InAppNotification::new(&err, 6000, callback, undo_cb);
-                notif.show(&window.overlay);
+                notif.show(&window.overlay, &window.headerbar.container);
             }
             Action::UpdateFeed(source) => {
                 if window.updating.get() {
@@ -312,15 +373,15 @@ impl PdApplication {
                 }
 
                 if let Some(i) = window.updater.borrow().as_ref() {
-                    i.show(&window.overlay)
+                    i.show(&window.overlay, &window.headerbar.container)
                 }
             }
             Action::InitEpisode(rowid) => {
                 let res = window.player.borrow_mut().initialize_episode(rowid);
                 debug_assert!(res.is_ok());
             }
-            Action::InitShowMenu(s) => {
-                let menu = &s.get().menu;
+            Action::InitSecondaryMenu(s) => {
+                let menu = &s.get();
                 window.headerbar.set_secondary_menu(menu);
             }
             Action::EmptyState => {
