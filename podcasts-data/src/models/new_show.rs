@@ -166,7 +166,6 @@ impl NewShow {
 
 // Ignore the following geters. They are used in unit tests mainly.
 impl NewShow {
-    #[allow(dead_code)]
     pub(crate) fn source_id(&self) -> i32 {
         self.source_id
     }
@@ -187,12 +186,12 @@ impl NewShow {
         self.image_uri.as_ref().map(|s| s.as_str())
     }
 
-    #[allow(dead_code)]
+    #[cfg(test)]
     pub fn image_uri_hash(&self) -> Option<i64> {
         self.image_uri_hash
     }
 
-    #[allow(dead_code)]
+    #[cfg(test)]
     pub(crate) fn image_cached(&self) -> Option<NaiveDateTime> {
         self.image_cached
     }
