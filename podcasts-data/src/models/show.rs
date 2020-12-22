@@ -224,14 +224,13 @@ mod tests {
                 "http://static.megaphone.fm/podcasts/d5735a50-d904-11e6-8532-73c7de466ea6/image/\
                  uploads_2F1484252190700-qhn5krasklbce3dh-a797539282700ea0298a3a26f7e49b0b_\
                  2FIntercepted_COVER%2B_281_29.png";
-            let image_uri_hash = calculate_hash(&image_uri);
 
             NewShowBuilder::default()
                 .title("Intercepted with Jeremy Scahill")
                 .link("https://theintercept.com/podcasts")
                 .description(descr)
                 .image_uri(String::from(image_uri))
-                .image_uri_hash(image_uri_hash)
+                .image_uri_hash(2965280433145069220)
                 .image_cached(Utc::now().naive_utc())
                 .source_id(42)
                 .build()
@@ -245,7 +244,7 @@ mod tests {
                 .link("https://theintercept.com/podcasts")
                 .description(EXPECTED_INTERCEPTED.description())
                 .image_uri(String::from(image_uri))
-                .image_uri_hash(EXPECTED_INTERCEPTED.image_uri_hash().unwrap())
+                .image_uri_hash(2965280433145069220)
                 .image_cached(EXPECTED_INTERCEPTED.image_cached().unwrap())
                 .source_id(42)
                 .build()
@@ -254,7 +253,8 @@ mod tests {
     }
 
     #[test]
-    fn update_image_cached_timestamp() -> Result<()> {
+    fn should_update_timestamp_when_update_image_cached_is_called_after_the_timestamp_has_expired(
+    ) -> Result<()> {
         truncate_db()?;
         EXPECTED_INTERCEPTED.insert()?;
         let show = EXPECTED_INTERCEPTED.to_podcast()?;
@@ -263,64 +263,45 @@ mod tests {
         let show = dbqueries::get_podcast_from_id(show.id())?;
         let updated_timestamp = show.image_cached();
         assert!(original_timestamp < updated_timestamp);
-        assert_eq!(show.title(), "Intercepted with Jeremy Scahill");
-        assert_eq!(show.link(), "https://theintercept.com/podcasts");
-        assert_eq!(
-            show.description(),
-            "The people behind The Intercept’s fearless reporting and incisive \
-                         commentary—Jeremy Scahill, Glenn Greenwald, Betsy Reed and \
-                         others—discuss the crucial issues of our time: national security, civil \
-                         liberties, foreign policy, and criminal justice.  Plus interviews with \
-                         artists, thinkers, and newsmakers who challenge our preconceptions about \
-                         the world we live in."
-        );
+
+        // The image's URI and its hash should remain unchanged.
         assert_eq!(
             show.image_uri().unwrap(),
             "http://static.megaphone.fm/podcasts/d5735a50-d904-11e6-8532-73c7de466ea6/image/\
                      uploads_2F1484252190700-qhn5krasklbce3dh-a797539282700ea0298a3a26f7e49b0b_\
                      2FIntercepted_COVER%2B_281_29.png"
         );
-        assert_eq!(show.image_uri_hash(), EXPECTED_INTERCEPTED.image_uri_hash());
-        assert_eq!(show.source_id(), 42);
+        assert_eq!(show.image_uri_hash().unwrap(), 2965280433145069220);
         Ok(())
     }
 
     #[test]
-    fn update_image_uri_hash() -> Result<()> {
+    fn should_update_hash_when_update_image_uri_hash_is_called_when_the_hash_is_invalid(
+    ) -> Result<()> {
         truncate_db()?;
         EXPECTED_INTERCEPTED.insert()?;
         let original = EXPECTED_INTERCEPTED.to_podcast()?;
-        let original_hash = original.image_uri_hash();
+        let original_hash: i64 = 2965280433145069220;
         let updated = &*UPDATED_IMAGE_URI_INTERCEPTED;
         updated.update(original.id())?;
         let show = dbqueries::get_podcast_from_id(original.id())?;
-        let not_updated_hash = updated.image_uri_hash();
-        assert_eq!(original_hash, not_updated_hash);
+        let not_yet_updated_hash = updated.image_uri_hash().unwrap();
+        assert_eq!(not_yet_updated_hash, original_hash);
         show.update_image_uri_hash().unwrap();
         let show = dbqueries::get_podcast_from_id(original.id())?;
-        let updated_hash = show.image_uri_hash();
-        assert_ne!(original_hash, updated_hash);
-        assert_eq!(show.title(), "Intercepted with Jeremy Scahill");
-        assert_eq!(show.link(), "https://theintercept.com/podcasts");
-        assert_eq!(
-            show.description(),
-            "The people behind The Intercept’s fearless reporting and incisive \
-                         commentary—Jeremy Scahill, Glenn Greenwald, Betsy Reed and \
-                         others—discuss the crucial issues of our time: national security, civil \
-                         liberties, foreign policy, and criminal justice.  Plus interviews with \
-                         artists, thinkers, and newsmakers who challenge our preconceptions about \
-                         the world we live in."
-        );
+        let updated_hash = show.image_uri_hash().unwrap();
+        let expected_updated_hash: i64 = 4791723445873115209;
+        assert_eq!(updated_hash, expected_updated_hash);
         assert_eq!(
             show.image_uri().unwrap(),
             "https://assets.fireside.fm/file/fireside-images/podcasts/images/f/f31a453c-fa15-491f-8618-3f71f1d565e5/cover.jpg?v=3"
         );
-        assert_eq!(show.source_id(), 42);
         Ok(())
     }
 
     #[test]
-    fn update_image_cached_values_timestamp_only() -> Result<()> {
+    fn should_update_timestamp_only_when_update_image_cached_values_is_called_after_the_timestamp_has_expired(
+    ) -> Result<()> {
         truncate_db()?;
         EXPECTED_INTERCEPTED.insert()?;
         let show = EXPECTED_INTERCEPTED.to_podcast()?;
@@ -329,61 +310,44 @@ mod tests {
         let show = dbqueries::get_podcast_from_id(show.id())?;
         let updated_timestamp = show.image_cached();
         assert!(original_timestamp < updated_timestamp);
-        assert_ne!(show.image_uri_hash(), EXPECTED_INTERCEPTED.image_uri_hash());
-        assert_eq!(show.title(), "Intercepted with Jeremy Scahill");
-        assert_eq!(show.link(), "https://theintercept.com/podcasts");
-        assert_eq!(
-            show.description(),
-            "The people behind The Intercept’s fearless reporting and incisive \
-                         commentary—Jeremy Scahill, Glenn Greenwald, Betsy Reed and \
-                         others—discuss the crucial issues of our time: national security, civil \
-                         liberties, foreign policy, and criminal justice.  Plus interviews with \
-                         artists, thinkers, and newsmakers who challenge our preconceptions about \
-                         the world we live in."
-        );
+        assert_ne!(show.image_uri_hash().unwrap(), 2965280433145069220);
         assert_eq!(
             show.image_uri().unwrap(),
             "http://static.megaphone.fm/podcasts/d5735a50-d904-11e6-8532-73c7de466ea6/image/\
                      uploads_2F1484252190700-qhn5krasklbce3dh-a797539282700ea0298a3a26f7e49b0b_\
                      2FIntercepted_COVER%2B_281_29.png"
         );
-        assert_eq!(show.source_id(), 42);
         Ok(())
     }
 
     #[test]
-    fn update_image_cached_values_timestamp_and_hash() -> Result<()> {
+    fn should_update_timestamp_and_hash_when_update_image_cached_values_is_called_when_hash_is_invalid(
+    ) -> Result<()> {
         truncate_db()?;
         EXPECTED_INTERCEPTED.insert()?;
         let original = EXPECTED_INTERCEPTED.to_podcast()?;
         let original_timestamp = original.image_cached();
-        let original_hash = original.image_uri_hash();
         let updated = &*UPDATED_IMAGE_URI_INTERCEPTED;
         updated.update(original.id())?;
         let show = dbqueries::get_podcast_from_id(original.id())?;
-        let not_updated_hash = show.image_uri_hash();
-        assert_eq!(original_hash, not_updated_hash);
+
+        let not_yet_updated_hash = show.image_uri_hash().unwrap();
+        let original_hash: i64 = 2965280433145069220;
+        assert_eq!(not_yet_updated_hash, original_hash);
+
         show.update_image_cache_values().unwrap();
         let show = dbqueries::get_podcast_from_id(show.id())?;
         let updated_timestamp = show.image_cached();
         assert!(original_timestamp < updated_timestamp);
-        assert_ne!(show.image_uri_hash(), original_hash);
-        assert_eq!(show.title(), "Intercepted with Jeremy Scahill");
-        assert_eq!(show.link(), "https://theintercept.com/podcasts");
-        assert_eq!(
-            show.description(),
-            "The people behind The Intercept’s fearless reporting and incisive \
-                         commentary—Jeremy Scahill, Glenn Greenwald, Betsy Reed and \
-                         others—discuss the crucial issues of our time: national security, civil \
-                         liberties, foreign policy, and criminal justice.  Plus interviews with \
-                         artists, thinkers, and newsmakers who challenge our preconceptions about \
-                         the world we live in."
-        );
+
+        let updated_hash = show.image_uri_hash().unwrap();
+        let expected_updated_hash: i64 = 4791723445873115209;
+        assert_eq!(updated_hash, expected_updated_hash);
+
         assert_eq!(
             show.image_uri().unwrap(),
             "https://assets.fireside.fm/file/fireside-images/podcasts/images/f/f31a453c-fa15-491f-8618-3f71f1d565e5/cover.jpg?v=3"
         );
-        assert_eq!(show.source_id(), 42);
         Ok(())
     }
 
@@ -392,12 +356,11 @@ mod tests {
         let image_uri = String::from(
             "http://www.jupiterbroadcasting.com/wp-content/uploads/2018/01/lup-0232-v.jpg",
         );
-        let image_uri_hash = calculate_hash(&image_uri);
         let cover = ShowCoverModel {
             id: 0,
             title: String::from("Linux Unplugged"),
             image_uri: Some(image_uri),
-            image_uri_hash: Some(image_uri_hash),
+            image_uri_hash: Some(-2088179622040000833),
             image_cached: Utc::now().naive_utc(),
         };
         let valid = Duration::weeks(4);
@@ -407,10 +370,9 @@ mod tests {
 
     #[test]
     fn a_different_uri_should_invalidate_cached_image() -> Result<()> {
-        let old_image_uri = String::from(
-            "http://www.jupiterbroadcasting.com/wp-content/uploads/2018/01/lup-0232-v.jpg",
-        );
-        let old_image_uri_hash = calculate_hash(&old_image_uri);
+        // The old image URI used for the hash here is:
+        // http://www.jupiterbroadcasting.com/wp-content/uploads/2018/01/lup-0232-v.jpg
+        let old_image_uri_hash = -2088179622040000833;
         let new_image_uri = String::from(
             "https://assets.fireside.fm/file/fireside-images/podcasts/images/f/f31a453c-fa15-491f-8618-3f71f1d565e5/cover.jpg?v=3",
         );
@@ -431,12 +393,11 @@ mod tests {
         let image_uri = String::from(
             "http://www.jupiterbroadcasting.com/wp-content/uploads/2018/01/lup-0232-v.jpg",
         );
-        let image_uri_hash = calculate_hash(&image_uri);
         let cover = ShowCoverModel {
             id: 0,
             title: String::from("Linux Unplugged"),
             image_uri: Some(image_uri),
-            image_uri_hash: Some(image_uri_hash),
+            image_uri_hash: Some(-2088179622040000833),
             image_cached: Utc::now().naive_utc(),
         };
         let valid = Duration::nanoseconds(1);
