@@ -36,6 +36,7 @@ use rayon;
 use regex::Regex;
 use reqwest;
 use serde_json::Value;
+use url::Url;
 
 // use podcasts_data::feed;
 use podcasts_data::dbqueries;
@@ -402,9 +403,9 @@ pub(crate) fn set_image_from_path(image: &gtk::Image, show_id: i32, size: u32) -
 }
 
 // FIXME: the signature should be `fn foo(s: Url) -> Result<Url>`
-pub(crate) fn itunes_to_rss(url: &str) -> Result<String> {
+pub(crate) async fn itunes_to_rss(url: &str) -> Result<String> {
     let id = itunes_id_from_url(url).ok_or_else(|| anyhow!("Failed to find an iTunes ID."))?;
-    lookup_id(id)
+    itunes_lookup_id(id).await
 }
 
 fn itunes_id_from_url(url: &str) -> Option<u32> {
@@ -418,13 +419,38 @@ fn itunes_id_from_url(url: &str) -> Option<u32> {
     foo.parse::<u32>().ok()
 }
 
-fn lookup_id(id: u32) -> Result<String> {
+async fn itunes_lookup_id(id: u32) -> Result<String> {
     let url = format!("https://itunes.apple.com/lookup?id={}&entity=podcast", id);
-    let req: Value = reqwest::blocking::get(&url)?.json()?;
+    let req: Value = reqwest::get(&url).await?.json().await?;
     let rssurl = || -> Option<&str> { req.get("results")?.get(0)?.get("feedUrl")?.as_str() };
     rssurl()
         .map(From::from)
         .ok_or_else(|| anyhow!("Failed to get url from itunes response"))
+}
+
+pub(crate) async fn soundcloud_to_rss(url: &Url) -> Result<Url> {
+    // Turn: https://soundcloud.com/chapo-trap-house
+    // into: https://feeds.soundcloud.com/users/soundcloud:users:211911700/sounds.rss
+    let id = soundcloud_lookup_id(url)
+        .await
+        .ok_or_else(|| anyhow!("Failed to find a soundcloud ID."))?;
+    let url = format!(
+        "https://feeds.soundcloud.com/users/soundcloud:users:{}/sounds.rss",
+        id
+    );
+    Ok(Url::parse(&url)?)
+}
+
+async fn soundcloud_lookup_id(url: &Url) -> Option<u64> {
+    // lookup the users: id for a soundcloud url
+    lazy_static! {
+        static ref RE: Regex = Regex::new(r"soundcloud://users:([0-9]+)").unwrap();
+    }
+    let url_str = url.to_string();
+    let response_text = reqwest::get(&url_str).await.ok()?.text().await.ok()?;
+    let id = RE.captures_iter(&response_text).nth(0)?.get(1)?.as_str();
+    // Parse it to a u64, this *should* never fail
+    id.parse::<u64>().ok()
 }
 
 pub(crate) fn on_import_clicked(window: &gtk::ApplicationWindow, sender: &Sender<Action>) {
@@ -545,14 +571,14 @@ mod tests {
     //     assert!(pxbuf.is_ok());
     // }
 
-    #[test]
-    fn test_itunes_to_rss() -> Result<()> {
+    #[tokio::test]
+    async fn test_itunes_to_rss() -> Result<()> {
         let itunes_url = "https://itunes.apple.com/podcast/id1195206601";
         let rss_url = String::from("https://rss.acast.com/intercepted-with-jeremy-scahill");
-        assert_eq!(rss_url, itunes_to_rss(itunes_url)?);
+        assert_eq!(rss_url, itunes_to_rss(itunes_url).await?);
 
         let itunes_url = "https://itunes.apple.com/podcast/id000000000000000";
-        assert!(itunes_to_rss(itunes_url).is_err());
+        assert!(itunes_to_rss(itunes_url).await.is_err());
         Ok(())
     }
 
@@ -564,14 +590,31 @@ mod tests {
         Ok(())
     }
 
-    #[test]
-    fn test_itunes_lookup_id() -> Result<()> {
+    #[tokio::test]
+    async fn test_itunes_lookup_id() -> Result<()> {
         let id = 1195206601;
         let rss_url = "https://rss.acast.com/intercepted-with-jeremy-scahill";
-        assert_eq!(rss_url, lookup_id(id)?);
+        assert_eq!(rss_url, itunes_lookup_id(id).await?);
 
         let id = 000000000;
-        assert!(lookup_id(id).is_err());
+        assert!(itunes_lookup_id(id).await.is_err());
+        Ok(())
+    }
+
+    #[tokio::test]
+    async fn test_soundcloud_to_rss() -> Result<()> {
+        let soundcloud_url = Url::parse("https://soundcloud.com/chapo-trap-house")?;
+        let rss_url = String::from(
+            "https://feeds.soundcloud.com/users/soundcloud:users:211911700/sounds.rss",
+        );
+        assert_eq!(
+            Url::parse(&rss_url)?,
+            soundcloud_to_rss(&soundcloud_url).await?
+        );
+
+        let soundcloud_url =
+            Url::parse("https://soundcloud.com/id000000000000000ajlsfhlsfhwoerzuweioh")?;
+        assert!(soundcloud_to_rss(&soundcloud_url).await.is_err());
         Ok(())
     }
 }

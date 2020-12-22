@@ -33,7 +33,7 @@ use podcasts_data::{dbqueries, Source};
 
 use crate::app::Action;
 use crate::stacks::Content;
-use crate::utils::{itunes_to_rss, schedule_refresh};
+use crate::utils::{itunes_to_rss, schedule_refresh, soundcloud_to_rss};
 
 use std::rc::Rc;
 
@@ -62,32 +62,44 @@ struct AddPopover {
     toggle: gtk::MenuButton,
 }
 
+async fn add_podcast_from_url(url_input: String, sender: &Sender<Action>) -> Result<()> {
+    let mut url = url_input;
+    if !(url.starts_with("https://") || url.starts_with("http://")) {
+        url = format!("http://{}", url).into();
+    };
+
+    debug!("Url: {}", url);
+    let url = if url.contains("itunes.com") || url.contains("apple.com") {
+        info!("Detected itunes url.");
+        let foo = itunes_to_rss(&url).await?;
+        info!("Resolved to {}", foo);
+        foo
+    } else if url.contains("soundcloud.com") && !url.contains("feeds.soundcloud.com") {
+        info!("Detected soundcloud url.");
+        let foo = soundcloud_to_rss(&Url::parse(&url)?).await?;
+        info!("Resolved to {}", foo);
+        foo.to_string()
+    } else {
+        url.to_owned()
+    };
+
+    rayon::spawn(clone!(@strong sender => move || {
+        if let Ok(source) = Source::from_url(&url) {
+            schedule_refresh(Some(vec![source]), sender.clone());
+        } else {
+            error!("Failed to convert, url: {}, to a source entry", url);
+        }
+    }));
+    Ok(())
+}
+
 impl AddPopover {
     // FIXME: THIS ALSO SUCKS!
     fn on_add_clicked(&self, sender: &Sender<Action>) -> Result<()> {
-        let mut url = self.entry.get_text();
+        let url = self.entry.get_text();
+        let sender2 = sender.clone();
 
-        if !(url.starts_with("https://") || url.starts_with("http://")) {
-            url = format!("http://{}", url).into();
-        };
-
-        debug!("Url: {}", url);
-        let url = if url.contains("itunes.com") || url.contains("apple.com") {
-            info!("Detected itunes url.");
-            let foo = itunes_to_rss(&url)?;
-            info!("Resolved to {}", foo);
-            foo
-        } else {
-            url.to_owned()
-        };
-
-        rayon::spawn(clone!(@strong sender => move || {
-            if let Ok(source) = Source::from_url(&url) {
-                schedule_refresh(Some(vec![source]), sender.clone());
-            } else {
-                error!("Failed to convert, url: {}, to a source entry", url);
-            }
-        }));
+        tokio::spawn(async move { add_podcast_from_url(url.to_string(), &sender2).await });
 
         self.container.hide();
         Ok(())
