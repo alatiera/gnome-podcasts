@@ -8,7 +8,7 @@ CREATE TABLE shows
     `link`           TEXT    NOT NULL,
     `description`    TEXT    NOT NULL,
     `image_uri`      TEXT,
-    `image_uri_hash` BIGINT,
+    `image_uri_hash` BLOB,
     `image_cached`   TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     `source_id`      INTEGER NOT NULL UNIQUE
 );

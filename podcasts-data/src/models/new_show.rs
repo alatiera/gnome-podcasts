@@ -29,7 +29,10 @@ use crate::schema::shows;
 
 use crate::database::connection;
 use crate::dbqueries;
-use crate::utils::{calculate_hash, url_cleaner};
+use crate::utils::{calculate_hash, u64_to_vec_u8, url_cleaner};
+
+#[cfg(test)]
+use crate::utils::vec_u8_to_u64;
 
 use chrono::{NaiveDateTime, Utc};
 
@@ -44,7 +47,7 @@ pub(crate) struct NewShow {
     link: String,
     description: String,
     image_uri: Option<String>,
-    image_uri_hash: Option<i64>,
+    image_uri_hash: Option<Vec<u8>>,
     image_cached: Option<NaiveDateTime>,
     source_id: i32,
 }
@@ -143,7 +146,11 @@ impl NewShow {
             .map(|s| s.to_owned());
         // If itunes is None, try to get the channel.image from the rss spec
         let image_uri = itunes_img.or_else(|| chan.image().map(|s| s.url().trim().to_owned()));
-        let hash = calculate_hash(&image_uri);
+
+        let mut hash: Option<Vec<u8>> = None;
+        if let Some(i) = &image_uri {
+            hash = Some(u64_to_vec_u8(calculate_hash(i)));
+        }
 
         NewShowBuilder::default()
             .title(title)
@@ -187,8 +194,11 @@ impl NewShow {
     }
 
     #[cfg(test)]
-    pub fn image_uri_hash(&self) -> Option<i64> {
-        self.image_uri_hash
+    pub fn image_uri_hash(&self) -> Option<u64> {
+        if let Some(b) = &self.image_uri_hash {
+            return Some(vec_u8_to_u64(b.clone()));
+        }
+        None
     }
 
     #[cfg(test)]

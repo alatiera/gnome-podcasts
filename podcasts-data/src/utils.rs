@@ -32,11 +32,35 @@ use crate::xdg_dirs::DL_DIR;
 use std::fs;
 use std::path::Path;
 
+/// Convert a `u64` to a `Vec<u8>`.
+///
+/// This function is used to convert hash values into a format suitable for the database, i.e. `Vec<u8>`.
+/// The resulting vector will always have exactly 8 values.
+/// The individual bytes are extracted from the given `u64`, which is parsed as little-endian.
+pub fn u64_to_vec_u8(u: u64) -> Vec<u8> {
+    let bytes: Vec<u8> = u.to_le_bytes().iter().cloned().collect();
+    debug_assert_eq!(bytes.len(), 8);
+    bytes
+}
+
+/// Convert a `Vec<u8>` of bytes to a `u64`.
+///
+/// These values together should represent a `u64` value in little-endian byte order.
+///
+/// # Panics
+///
+/// The given vector must have exactly 8 elements otherwise it will panic.
+///
+pub fn vec_u8_to_u64(v: Vec<u8>) -> u64 {
+    assert_eq!(v.len(), 8);
+    u64::from_le_bytes(v[..].try_into().unwrap())
+}
+
 /// Hash a given value.
-pub fn calculate_hash<T: Hash>(t: &T) -> i64 {
+pub fn calculate_hash<T: Hash>(t: &T) -> u64 {
     let mut s = DefaultHasher::new();
     t.hash(&mut s);
-    s.finish() as i64
+    s.finish()
 }
 
 /// Scan downloaded `episode` entries that might have broken `local_uri`s and
@@ -162,6 +186,7 @@ pub fn delete_show(pd: &Show) -> Result<(), DataError> {
 #[cfg(test)]
 use crate::Feed;
 use std::collections::hash_map::DefaultHasher;
+use std::convert::TryInto;
 use std::hash::{Hash, Hasher};
 
 #[cfg(test)]
@@ -346,6 +371,60 @@ mod tests {
         let v2_hash = calculate_hash(&image_uri_v2);
         let v3_hash = calculate_hash(&image_uri_v3);
         assert_ne!(v2_hash, v3_hash);
+        Ok(())
+    }
+
+    #[test]
+    fn u64_to_vec_u8_should_convert() -> Result<()> {
+        assert_eq!(
+            u64_to_vec_u8(16358564451669550783),
+            vec![191, 166, 24, 137, 178, 75, 5, 227]
+        );
+        Ok(())
+    }
+
+    #[test]
+    fn u64_to_vec_u8_should_produce_a_vector_of_exactly_8_elements() -> Result<()> {
+        assert_eq!(u64_to_vec_u8(u64::MAX).len(), 8);
+        Ok(())
+    }
+
+    #[test]
+    fn vec_u8_to_u64_should_convert() -> Result<()> {
+        assert_eq!(
+            vec_u8_to_u64(vec![0, 1, 2, 3, 4, 5, 6, 7]),
+            506097522914230528
+        );
+        Ok(())
+    }
+
+    #[test]
+    #[should_panic(expected = "8")]
+    fn vec_u8_to_u64_should_panic_given_an_empty_vector() {
+        vec_u8_to_u64(vec![]);
+    }
+
+    #[test]
+    #[should_panic(expected = "8")]
+    fn vec_u8_to_u64_should_panic_given_a_vector_with_1_element() {
+        vec_u8_to_u64(vec![1]);
+    }
+
+    #[test]
+    #[should_panic(expected = "8")]
+    fn vec_u8_to_u64_should_panic_given_a_vector_with_7_elements() {
+        vec_u8_to_u64(vec![10; 7]);
+    }
+
+    #[test]
+    #[should_panic(expected = "8")]
+    fn vec_u8_to_u64_should_panic_given_a_vector_with_9_elements() {
+        vec_u8_to_u64(vec![12; 9]);
+    }
+
+    #[test]
+    fn vec_u8_to_u64_should_be_the_inverse_of_u64_to_vec_u8() -> Result<()> {
+        assert_eq!(10, vec_u8_to_u64(u64_to_vec_u8(10)));
         Ok(())
     }
 }

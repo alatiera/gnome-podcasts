@@ -22,7 +22,7 @@ use crate::models::Source;
 use crate::schema::shows;
 
 use crate::database::connection;
-use crate::utils::calculate_hash;
+use crate::utils::{calculate_hash, u64_to_vec_u8, vec_u8_to_u64};
 use chrono::{Duration, NaiveDateTime, Utc};
 use diesel::query_dsl::filter_dsl::FilterDsl;
 use diesel::{ExpressionMethods, RunQueryDsl};
@@ -39,7 +39,7 @@ pub struct Show {
     link: String,
     description: String,
     image_uri: Option<String>,
-    image_uri_hash: Option<i64>,
+    image_uri_hash: Option<Vec<u8>>,
     image_cached: NaiveDateTime,
     source_id: i32,
 }
@@ -75,8 +75,11 @@ impl Show {
     }
 
     /// Get the `image_uri_hash`.
-    pub fn image_uri_hash(&self) -> Option<i64> {
-        self.image_uri_hash
+    pub fn image_uri_hash(&self) -> Option<u64> {
+        if let Some(b) = &self.image_uri_hash {
+            return Some(vec_u8_to_u64(b.clone()));
+        }
+        None
     }
 
     /// Get the `image_cached`.
@@ -94,8 +97,14 @@ impl Show {
         use crate::schema::shows::dsl::*;
         let db = connection();
         let con = db.get()?;
+
+        let mut hash: Option<Vec<u8>> = None;
+        if let Some(i) = &self.image_uri {
+            hash = Some(u64_to_vec_u8(calculate_hash(i)));
+        }
+
         diesel::update(shows.filter(id.eq(self.id)))
-            .set(image_uri_hash.eq(Some(calculate_hash(&self.image_uri))))
+            .set(image_uri_hash.eq(&hash))
             .execute(&con)
             .map(|_| ())
             .map_err(From::from)
@@ -117,11 +126,14 @@ impl Show {
     pub fn update_image_cache_values(&self) -> Result<(), DataError> {
         match self.image_uri_hash() {
             None => self.update_image_uri_hash()?,
-            Some(hash) => {
-                if calculate_hash(&self.image_uri()) != hash {
-                    self.update_image_uri_hash()?;
+            Some(hash) => match self.image_uri() {
+                None => self.update_image_uri_hash()?,
+                Some(image_uri) => {
+                    if calculate_hash(&image_uri) != hash {
+                        self.update_image_uri_hash()?;
+                    }
                 }
-            }
+            },
         }
         match self.update_image_cached() {
             Ok(s) => Ok(s),
@@ -137,7 +149,7 @@ pub struct ShowCoverModel {
     id: i32,
     title: String,
     image_uri: Option<String>,
-    image_uri_hash: Option<i64>,
+    image_uri_hash: Option<Vec<u8>>,
     image_cached: NaiveDateTime,
 }
 
@@ -172,8 +184,11 @@ impl ShowCoverModel {
     }
 
     /// Get the `image_uri_hash`.
-    pub fn image_uri_hash(&self) -> Option<i64> {
-        self.image_uri_hash
+    pub fn image_uri_hash(&self) -> Option<u64> {
+        if let Some(b) = &self.image_uri_hash {
+            return Some(vec_u8_to_u64(b.clone()));
+        }
+        None
     }
 
     /// Get the `image_cached`.
@@ -219,7 +234,6 @@ mod tests {
                          liberties, foreign policy, and criminal justice.  Plus interviews with \
                          artists, thinkers, and newsmakers who challenge our preconceptions about \
                          the world we live in.";
-
             let image_uri =
                 "http://static.megaphone.fm/podcasts/d5735a50-d904-11e6-8532-73c7de466ea6/image/\
                  uploads_2F1484252190700-qhn5krasklbce3dh-a797539282700ea0298a3a26f7e49b0b_\
@@ -230,7 +244,7 @@ mod tests {
                 .link("https://theintercept.com/podcasts")
                 .description(descr)
                 .image_uri(String::from(image_uri))
-                .image_uri_hash(2965280433145069220)
+                .image_uri_hash(Some(vec![164, 62, 7, 221, 215, 202, 38, 41]))
                 .image_cached(Utc::now().naive_utc())
                 .source_id(42)
                 .build()
@@ -244,7 +258,7 @@ mod tests {
                 .link("https://theintercept.com/podcasts")
                 .description(EXPECTED_INTERCEPTED.description())
                 .image_uri(String::from(image_uri))
-                .image_uri_hash(2965280433145069220)
+                .image_uri_hash(Some(vec![164, 62, 7, 221, 215, 202, 38, 41]))
                 .image_cached(EXPECTED_INTERCEPTED.image_cached().unwrap())
                 .source_id(42)
                 .build()
@@ -281,16 +295,18 @@ mod tests {
         truncate_db()?;
         EXPECTED_INTERCEPTED.insert()?;
         let original = EXPECTED_INTERCEPTED.to_podcast()?;
-        let original_hash: i64 = 2965280433145069220;
+        let original_hash: u64 = 2965280433145069220;
         let updated = &*UPDATED_IMAGE_URI_INTERCEPTED;
         updated.update(original.id())?;
         let show = dbqueries::get_podcast_from_id(original.id())?;
+
         let not_yet_updated_hash = updated.image_uri_hash().unwrap();
         assert_eq!(not_yet_updated_hash, original_hash);
+
         show.update_image_uri_hash().unwrap();
         let show = dbqueries::get_podcast_from_id(original.id())?;
         let updated_hash = show.image_uri_hash().unwrap();
-        let expected_updated_hash: i64 = 4791723445873115209;
+        let expected_updated_hash: u64 = 1748982167920802687;
         assert_eq!(updated_hash, expected_updated_hash);
         assert_eq!(
             show.image_uri().unwrap(),
@@ -310,13 +326,13 @@ mod tests {
         let show = dbqueries::get_podcast_from_id(show.id())?;
         let updated_timestamp = show.image_cached();
         assert!(original_timestamp < updated_timestamp);
-        assert_ne!(show.image_uri_hash().unwrap(), 2965280433145069220);
         assert_eq!(
             show.image_uri().unwrap(),
             "http://static.megaphone.fm/podcasts/d5735a50-d904-11e6-8532-73c7de466ea6/image/\
                      uploads_2F1484252190700-qhn5krasklbce3dh-a797539282700ea0298a3a26f7e49b0b_\
                      2FIntercepted_COVER%2B_281_29.png"
         );
+        assert_eq!(show.image_uri_hash().unwrap(), 2965280433145069220);
         Ok(())
     }
 
@@ -332,7 +348,7 @@ mod tests {
         let show = dbqueries::get_podcast_from_id(original.id())?;
 
         let not_yet_updated_hash = show.image_uri_hash().unwrap();
-        let original_hash: i64 = 2965280433145069220;
+        let original_hash: u64 = 2965280433145069220;
         assert_eq!(not_yet_updated_hash, original_hash);
 
         show.update_image_cache_values().unwrap();
@@ -341,7 +357,7 @@ mod tests {
         assert!(original_timestamp < updated_timestamp);
 
         let updated_hash = show.image_uri_hash().unwrap();
-        let expected_updated_hash: i64 = 4791723445873115209;
+        let expected_updated_hash: u64 = 1748982167920802687;
         assert_eq!(updated_hash, expected_updated_hash);
 
         assert_eq!(
@@ -356,11 +372,12 @@ mod tests {
         let image_uri = String::from(
             "http://www.jupiterbroadcasting.com/wp-content/uploads/2018/01/lup-0232-v.jpg",
         );
+        let hash = vec![191, 166, 24, 137, 178, 75, 5, 227];
         let cover = ShowCoverModel {
             id: 0,
             title: String::from("Linux Unplugged"),
             image_uri: Some(image_uri),
-            image_uri_hash: Some(-2088179622040000833),
+            image_uri_hash: Some(hash),
             image_cached: Utc::now().naive_utc(),
         };
         let valid = Duration::weeks(4);
@@ -372,15 +389,15 @@ mod tests {
     fn a_different_uri_should_invalidate_cached_image() -> Result<()> {
         // The old image URI used for the hash here is:
         // http://www.jupiterbroadcasting.com/wp-content/uploads/2018/01/lup-0232-v.jpg
-        let old_image_uri_hash = -2088179622040000833;
         let new_image_uri = String::from(
             "https://assets.fireside.fm/file/fireside-images/podcasts/images/f/f31a453c-fa15-491f-8618-3f71f1d565e5/cover.jpg?v=3",
         );
+        let hash = vec![191, 166, 24, 137, 178, 75, 5, 227];
         let cover = ShowCoverModel {
             id: 0,
             title: String::from("Linux Unplugged"),
             image_uri: Some(new_image_uri),
-            image_uri_hash: Some(old_image_uri_hash),
+            image_uri_hash: Some(hash),
             image_cached: Utc::now().naive_utc(),
         };
         let valid = Duration::weeks(4);
@@ -393,11 +410,12 @@ mod tests {
         let image_uri = String::from(
             "http://www.jupiterbroadcasting.com/wp-content/uploads/2018/01/lup-0232-v.jpg",
         );
+        let hash = vec![191, 166, 24, 137, 178, 75, 5, 227];
         let cover = ShowCoverModel {
             id: 0,
             title: String::from("Linux Unplugged"),
             image_uri: Some(image_uri),
-            image_uri_hash: Some(-2088179622040000833),
+            image_uri_hash: Some(hash),
             image_cached: Utc::now().naive_utc(),
         };
         let valid = Duration::nanoseconds(1);
