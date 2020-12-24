@@ -1,7 +1,6 @@
 target/
 **/*.rs.bk
 .vscode
-*.ui~
 resources.gresource
 _build/
 build/
@@ -14,6 +13,7 @@ podcasts-gtk/po/gnome-podcasts.pot
 target_*/
 
 # flatpak-builder stuff
+.flatpak/
 .flatpak-builder/
 app/
 repo/
