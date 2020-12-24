@@ -184,7 +184,7 @@ pub fn get_podcast_cover_from_id(pid: i32) -> Result<ShowCoverModel, DataError> 
     let con = db.get()?;
 
     shows
-        .select((id, title, image_uri))
+        .select((id, title, image_uri, image_uri_hash, image_cached))
         .filter(id.eq(pid))
         .get_result::<ShowCoverModel>(&con)
         .map_err(From::from)

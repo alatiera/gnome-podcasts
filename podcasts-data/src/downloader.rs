@@ -271,11 +271,9 @@ pub fn cache_image(pd: &ShowCoverModel) -> Result<String, DownloadError> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::dbqueries;
     use crate::pipeline::pipeline;
-    use crate::Source;
+    use crate::{dbqueries, Source};
     use anyhow::Result;
-
     use std::fs;
 
     #[test]

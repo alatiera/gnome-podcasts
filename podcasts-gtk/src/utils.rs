@@ -305,6 +305,7 @@ lazy_static! {
         RwLock::new(HashMap::new());
     static ref COVER_DL_REGISTRY: RwLock<HashSet<i32>> = RwLock::new(HashSet::new());
     static ref THREADPOOL: rayon::ThreadPool = rayon::ThreadPoolBuilder::new().build().unwrap();
+    static ref CACHE_VALID_DURATION: chrono::Duration = chrono::Duration::weeks(4);
 }
 
 // Since gdk_pixbuf::Pixbuf is reference counted and every episode,
@@ -314,22 +315,27 @@ lazy_static! {
 // GObjects do not implement Send trait, so SendCell is a way around that.
 // Also lazy_static requires Sync trait, so that's what the mutexes are.
 // TODO: maybe use something that would just scale to requested size?
+// todo Unit test.
 pub(crate) fn set_image_from_path(image: &gtk::Image, show_id: i32, size: u32) -> Result<()> {
     if let Ok(hashmap) = CACHED_PIXBUFS.read() {
-        // Check if the requested (cover + size) is already in the cache
-        // and if so do an early return after that.
-        if let Some(guard) = hashmap.get(&(show_id, size)) {
-            guard
-                .lock()
-                .map_err(|err| anyhow!("Fragile Mutex: {}", err))
-                .and_then(|fragile| {
-                    fragile
-                        .try_get()
-                        .map(|px| image.set_from_pixbuf(Some(px)))
-                        .map_err(From::from)
-                })?;
+        if let Ok(pd) = dbqueries::get_podcast_cover_from_id(show_id) {
+            // If the image is still valid, check if the requested (cover + size) is already in the
+            // cache and if so do an early return after that.
+            if pd.is_cached_image_valid(&CACHE_VALID_DURATION) {
+                if let Some(guard) = hashmap.get(&(show_id, size)) {
+                    guard
+                        .lock()
+                        .map_err(|err| anyhow!("Fragile Mutex: {}", err))
+                        .and_then(|fragile| {
+                            fragile
+                                .try_get()
+                                .map(|px| image.set_from_pixbuf(Some(px)))
+                                .map_err(From::from)
+                        })?;
 
-            return Ok(());
+                    return Ok(());
+                }
+            }
         }
     }
 
@@ -394,6 +400,15 @@ pub(crate) fn set_image_from_path(image: &gtk::Image, show_id: i32, size: u32) -
                         );
                     }
                     _ => {}
+                }
+                if let Ok(pd) = dbqueries::get_podcast_from_id(show_id) {
+                    if let Err(err) = pd.update_image_cache_values() {
+                        error!(
+                            "Failed to update the image's cache values for podcast {}: {}",
+                            pd.title(),
+                            err
+                        )
+                    }
                 }
                 glib::Continue(false)
             }
@@ -548,6 +563,13 @@ pub(crate) fn on_export_clicked(window: &gtk::ApplicationWindow, sender: &Sender
 mod tests {
     use super::*;
     use anyhow::Result;
+    use podcasts_data::database::truncate_db;
+    use podcasts_data::dbqueries;
+    use podcasts_data::pipeline::pipeline;
+    use podcasts_data::utils::get_download_folder;
+    use podcasts_data::{Save, Source};
+    use std::fs;
+    use std::path::PathBuf;
     // use podcasts_data::Source;
     // use podcasts_data::dbqueries;
 
@@ -615,6 +637,77 @@ mod tests {
         let soundcloud_url =
             Url::parse("https://soundcloud.com/id000000000000000ajlsfhlsfhwoerzuweioh")?;
         assert!(soundcloud_to_rss(&soundcloud_url).await.is_err());
+        Ok(())
+    }
+
+    #[test]
+    #[ignore]
+    fn should_refresh_cached_image_when_the_image_uri_changes() -> Result<()> {
+        truncate_db()?;
+        let mut original_feed = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
+        original_feed.push("resources/test/feeds/2018-01-20-LinuxUnplugged.xml");
+        let original_url = format!(
+            "{}{}",
+            "file:/",
+            fs::canonicalize(original_feed)?.to_str().unwrap()
+        );
+        println!("Made it here! (1)");
+        let mut source = Source::from_url(&original_url)?;
+        println!("Made it here! (2)");
+        source.set_http_etag(None);
+        source.set_last_modified(None);
+        let sid = source.save()?.id();
+        println!("Made it here! (3)");
+        let mut rt = tokio::runtime::Runtime::new()?;
+        rt.block_on(pipeline(vec![source]));
+        println!("Made it here! (4)");
+        println!("The source id is {}!", sid);
+        dbqueries::get_sources().unwrap().iter().for_each(|s| {
+            println!("{}:{}", s.id(), s.uri());
+        });
+
+        let original = dbqueries::get_podcast_from_source_id(sid)?;
+        println!("Made it here! (5)");
+        let original_image_uri = original.image_uri();
+        let original_image_uri_hash = original.image_uri_hash();
+        let original_image_cached = original.image_cached();
+        let download_folder = get_download_folder(&original.title())?;
+        let image_path = download_folder + "/cover.jpeg";
+        let original_image_file_size = fs::metadata(&image_path)?.len(); // 693,343
+        println!("Made it here! (6)");
+
+        // Update the URI and refresh the feed
+        let mut new_feed = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
+        new_feed.push("resources/test/feeds/2020-12-19-LinuxUnplugged.xml");
+        let mut source = dbqueries::get_source_from_id(sid)?;
+        let new_url = format!(
+            "{}{}",
+            "file:/",
+            fs::canonicalize(new_feed)?.to_str().unwrap()
+        );
+        source.set_uri(new_url);
+        source.set_http_etag(None);
+        source.set_last_modified(None);
+        source.save()?;
+        println!("Made it here! (7)");
+        let mut rt = tokio::runtime::Runtime::new()?;
+        rt.block_on(pipeline(vec![source]));
+
+        println!("Made it here! (8)");
+        let new = dbqueries::get_podcast_from_source_id(sid)?;
+        let new_image_uri = new.image_uri();
+        let new_image_uri_hash = new.image_uri_hash();
+        let new_image_cached = new.image_cached();
+        let new_image_file_size = fs::metadata(&image_path)?.len();
+
+        println!("Made it here! (9)");
+        assert_eq!(original.title(), new.title());
+        assert_ne!(original_image_uri, new_image_uri);
+        assert_ne!(original_image_uri_hash, new_image_uri_hash);
+        assert_ne!(original_image_cached, new_image_cached);
+        assert_ne!(original_image_file_size, new_image_file_size);
+
+        fs::remove_file(image_path)?;
         Ok(())
     }
 }

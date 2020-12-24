@@ -29,11 +29,16 @@ use crate::schema::shows;
 
 use crate::database::connection;
 use crate::dbqueries;
-use crate::utils::url_cleaner;
+use crate::utils::{calculate_hash, u64_to_vec_u8, url_cleaner};
+
+#[cfg(test)]
+use crate::utils::vec_u8_to_u64;
+
+use chrono::{NaiveDateTime, Utc};
 
 #[derive(Insertable, AsChangeset)]
 #[table_name = "shows"]
-#[derive(Debug, Clone, Default, Builder, PartialEq)]
+#[derive(Debug, Clone, Default, Builder)]
 #[builder(default)]
 #[builder(derive(Debug))]
 #[builder(setter(into))]
@@ -42,6 +47,8 @@ pub(crate) struct NewShow {
     link: String,
     description: String,
     image_uri: Option<String>,
+    image_uri_hash: Option<Vec<u8>>,
+    image_cached: Option<NaiveDateTime>,
     source_id: i32,
 }
 
@@ -100,6 +107,16 @@ impl Index<()> for NewShow {
     }
 }
 
+impl PartialEq<NewShow> for NewShow {
+    fn eq(&self, other: &NewShow) -> bool {
+        (self.link() == other.link())
+            && (self.title() == other.title())
+            && (self.image_uri() == other.image_uri())
+            && (self.description() == other.description())
+            && (self.source_id() == other.source_id())
+    }
+}
+
 impl PartialEq<Show> for NewShow {
     fn eq(&self, other: &Show) -> bool {
         (self.link() == other.link())
@@ -130,11 +147,18 @@ impl NewShow {
         // If itunes is None, try to get the channel.image from the rss spec
         let image_uri = itunes_img.or_else(|| chan.image().map(|s| s.url().trim().to_owned()));
 
+        let mut hash: Option<Vec<u8>> = None;
+        if let Some(i) = &image_uri {
+            hash = Some(u64_to_vec_u8(calculate_hash(i)));
+        }
+
         NewShowBuilder::default()
             .title(title)
             .description(description)
             .link(link)
             .image_uri(image_uri)
+            .image_uri_hash(hash)
+            .image_cached(Utc::now().naive_utc())
             .source_id(source_id)
             .build()
             .unwrap()
@@ -149,7 +173,6 @@ impl NewShow {
 
 // Ignore the following geters. They are used in unit tests mainly.
 impl NewShow {
-    #[allow(dead_code)]
     pub(crate) fn source_id(&self) -> i32 {
         self.source_id
     }
@@ -168,6 +191,19 @@ impl NewShow {
 
     pub(crate) fn image_uri(&self) -> Option<&str> {
         self.image_uri.as_ref().map(|s| s.as_str())
+    }
+
+    #[cfg(test)]
+    pub fn image_uri_hash(&self) -> Option<u64> {
+        if let Some(b) = &self.image_uri_hash {
+            return Some(vec_u8_to_u64(b.clone()));
+        }
+        None
+    }
+
+    #[cfg(test)]
+    pub(crate) fn image_cached(&self) -> Option<NaiveDateTime> {
+        self.image_cached
     }
 }
 

@@ -39,6 +39,7 @@ pub(crate) fn about_dialog(window: &gtk::ApplicationWindow) {
         "Ivan Augusto",
         "James Wykeham-Martin",
         "Jordan Petridis",
+        "Jordan Williams",
         "Julian Sparber",
         "Matthew Martin",
         "Piotr Drąg",
