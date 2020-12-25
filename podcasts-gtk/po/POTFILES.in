@@ -5,6 +5,7 @@ podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in
 podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in
 
 # ui files
+podcasts-gtk/resources/gtk/empty_show.ui
 podcasts-gtk/resources/gtk/empty_view.ui
 podcasts-gtk/resources/gtk/episode_description.ui
 podcasts-gtk/resources/gtk/episode_menu.ui

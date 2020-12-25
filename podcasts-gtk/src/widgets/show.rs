@@ -34,7 +34,6 @@ use crate::utils::{self, lazy_load};
 use crate::widgets::{BaseView, EmptyShow, EpisodeWidget, ShortDesc, ShowMenu};
 
 use std::cell::Cell;
-use std::ops::Deref;
 use std::sync::Arc;
 
 use gtk::glib;
@@ -210,7 +209,7 @@ fn populate_listbox(
 
     if count == 0 {
         let empty = EmptyShow::default();
-        show_.episodes.append(empty.deref());
+        show_.episodes.append(&empty);
         return Ok(());
     }
 

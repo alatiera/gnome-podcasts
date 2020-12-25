@@ -24,34 +24,7 @@ Tobias Bernard
 
 -->
 <interface>
-  <!-- interface-license-type gplv3 -->
-  <!-- interface-name GNOME Podcasts -->
-  <!-- interface-description A podcast client for the GNOME Desktop -->
-  <!-- interface-copyright 2017 - 2018 -->
-  <!-- interface-authors Jordan Petridis\nTobias Bernard -->
-  <object class="GtkBox" id="empty_show">
-    <property name="orientation">vertical</property>
-    <property name="margin-top">6</property>
-    <property name="margin-bottom">6</property>
-    <property name="margin-start">6</property>
-    <property name="margin-end">6</property>
-    <child>
-      <object class="GtkLabel">
-        <property name="label" translatable="yes">This show does not have episodes yet</property>
-        <style>
-          <class name="title-3"/>
-        </style>
-      </object>
-    </child>
-    <child>
-      <object class="GtkLabel">
-        <property name="label" translatable="yes">If you think this is an error, please consider writing a bug report.</property>
-        <style>
-          <class name="dim-label"/>
-        </style>
-      </object>
-    </child>
-  </object>
+  <requires lib="gtk" version="4.0"/>
   <object class="GtkBox" id="empty_view">
     <property name="halign">center</property>
     <property name="valign">center</property>

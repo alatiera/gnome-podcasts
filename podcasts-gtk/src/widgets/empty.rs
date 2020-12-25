@@ -18,7 +18,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 use crate::config::APP_ID;
-
 use std::ops::Deref;
 
 #[derive(Clone, Debug)]
@@ -38,23 +37,5 @@ impl Default for EmptyView {
         let image: gtk::Image = builder.object("image").unwrap();
         image.set_from_icon_name(Some(format!("{}-symbolic", APP_ID).as_str()));
         EmptyView(view)
-    }
-}
-
-#[derive(Clone, Debug)]
-pub(crate) struct EmptyShow(gtk::Box);
-
-impl Deref for EmptyShow {
-    type Target = gtk::Box;
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-
-impl Default for EmptyShow {
-    fn default() -> Self {
-        let builder = gtk::Builder::from_resource("/org/gnome/Podcasts/gtk/empty_view.ui");
-        let box_: gtk::Box = builder.object("empty_show").unwrap();
-        EmptyShow(box_)
     }
 }
