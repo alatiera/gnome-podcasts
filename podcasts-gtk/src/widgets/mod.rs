@@ -19,8 +19,8 @@
 
 mod aboutdialog;
 mod base_view;
-mod empty;
 mod empty_show;
+mod empty_view;
 mod episode;
 mod episode_description;
 pub(crate) mod episode_menu;
@@ -34,8 +34,8 @@ mod shows_view;
 
 pub(crate) use self::aboutdialog::about_dialog;
 pub(crate) use self::base_view::BaseView;
-pub(crate) use self::empty::EmptyView;
 pub(crate) use self::empty_show::EmptyShow;
+pub(crate) use self::empty_view::EmptyView;
 pub(crate) use self::episode::EpisodeWidget;
 pub(crate) use self::episode_description::EpisodeDescription;
 pub(crate) use self::episode_menu::EpisodeMenu;

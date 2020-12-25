@@ -28,7 +28,6 @@ use crate::utils::get_ignored_shows;
 use crate::widgets::EmptyView;
 
 use std::cell::RefCell;
-use std::ops::Deref;
 use std::rc::Rc;
 
 #[derive(Debug, Clone)]
@@ -48,7 +47,7 @@ impl ShowStack {
         let state = State::Empty;
 
         stack.add_named(&populated.borrow().container(), Some("populated"));
-        stack.add_named(empty.deref(), Some("empty"));
+        stack.add_named(&empty, Some("empty"));
 
         let mut show = ShowStack {
             empty,

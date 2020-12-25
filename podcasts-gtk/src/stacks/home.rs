@@ -26,7 +26,6 @@ use crate::app::Action;
 use crate::stacks::State;
 use crate::widgets::{EmptyView, HomeView};
 
-use std::ops::Deref;
 use std::rc::Rc;
 
 #[derive(Debug, Clone)]
@@ -46,7 +45,7 @@ impl HomeStack {
         let state = State::Empty;
 
         stack.add_named(&episodes.view, Some("home"));
-        stack.add_named(empty.deref(), Some("empty"));
+        stack.add_named(&empty, Some("empty"));
 
         let home = HomeStack {
             empty,

@@ -36,7 +36,6 @@ podcasts-gtk/src/stacks/show.rs
 podcasts-gtk/src/utils.rs
 podcasts-gtk/src/widgets/aboutdialog.rs
 podcasts-gtk/src/widgets/base_view.rs
-podcasts-gtk/src/widgets/empty.rs
 podcasts-gtk/src/widgets/episode.rs
 podcasts-gtk/src/widgets/episode_description.rs
 podcasts-gtk/src/widgets/episode_menu.rs

@@ -128,7 +128,6 @@ fn test_stuff() -> anyhow::Result<()> {
     HomeView::default();
     HomeEpisode::default();
     EpisodeWidget::default();
-    EmptyView::default();
 
     show_menu::ShowMenu::default();
     episode_menu::EpisodeMenu::default();
