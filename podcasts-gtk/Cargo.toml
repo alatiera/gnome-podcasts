@@ -9,6 +9,7 @@ chrono = "0.4"
 crossbeam-channel = "0.5.1"
 gst = { version = "0.18.0", package = "gstreamer" }
 gst-player = { version = "0.18.0", package = "gstreamer-player" }
+glob = "0.3"
 humansize = "1.1"
 lazy_static = "1.4"
 log = "0.4"

@@ -1927,6 +1927,7 @@ dependencies = [
  "gettext-rs",
  "gio",
  "glib 0.15.10",
+ "glob",
  "gstreamer",
  "gstreamer-player",
  "gtk4",

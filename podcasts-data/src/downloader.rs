@@ -25,7 +25,7 @@ use tempdir::TempDir;
 use std::fs;
 use std::fs::{copy, remove_file, DirBuilder, File};
 use std::io::{BufWriter, Read, Write};
-use std::path::Path;
+use std::path::{Path, PathBuf};
 use std::sync::{Arc, Mutex};
 
 use crate::errors::DownloadError;
@@ -237,7 +237,37 @@ pub fn get_episode(
     Ok(())
 }
 
+fn determine_cover_dir(pd: &ShowCoverModel) -> PathBuf {
+    let mut cache_path = PODCASTS_CACHE.clone();
+    cache_path.push(pd.title());
+    cache_path
+}
+
+pub fn check_for_cached_cover(pd: &ShowCoverModel) -> Option<PathBuf> {
+    let cache_path = determine_cover_dir(pd);
+
+    // try to match the cover file
+    // FIXME: in case the cover changes filetype we will be matching the
+    // existing one instead of downloading the new one.
+    // Should probably make sure that 'cover.*' is removed when we
+    // download new files.
+    if let Ok(mut foo) = glob(&format!("{}/cover.*", cache_path.to_str().unwrap())) {
+        // For some reason there is no .first() method so nth(0) is used
+        let path = foo.nth(0).and_then(|x| x.ok());
+        return path;
+    }
+
+    return None;
+}
+
 pub fn cache_image(pd: &ShowCoverModel, download: bool) -> Result<String, DownloadError> {
+    if let Some(path) = check_for_cached_cover(pd) {
+        return Ok(path
+            .to_str()
+            .ok_or_else(|| DownloadError::InvalidCachedImageLocation)?
+            .to_owned());
+    }
+
     let url = pd
         .image_uri()
         .ok_or(DownloadError::NoImageLocation)?
@@ -247,29 +277,16 @@ pub fn cache_image(pd: &ShowCoverModel, download: bool) -> Result<String, Downlo
         return Err(DownloadError::NoImageLocation);
     }
 
-    let cache_path = PODCASTS_CACHE
+    let cache_path = determine_cover_dir(pd)
         .to_str()
-        .ok_or(DownloadError::InvalidCacheLocation)?;
-    let cache_download_fold = format!("{}{}", cache_path, pd.title().to_owned());
-
-    // Retrive existing cover paths with any file extension
-    if let Ok(mut paths) = glob(&format!("{}/cover.*", cache_download_fold)) {
-        let path = paths.next().and_then(|x| x.ok());
-        if let Some(p) = path {
-            return Ok(p
-                .to_str()
-                .ok_or(DownloadError::InvalidCachedImageLocation)?
-                .into());
-        }
-    };
+        .ok_or_else(|| DownloadError::InvalidCachedImageLocation)?
+        .to_owned();
 
     // Create the folders if they don't exist.
-    DirBuilder::new()
-        .recursive(true)
-        .create(&cache_download_fold)?;
+    DirBuilder::new().recursive(true).create(&cache_path)?;
 
     if download {
-        let path = download_into(&cache_download_fold, "cover", &url, None)?;
+        let path = download_into(&cache_path, "cover", &url, None)?;
         info!("Cached img into: {}", &path);
         Ok(path)
     } else {

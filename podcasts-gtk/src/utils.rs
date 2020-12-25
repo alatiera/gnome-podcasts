@@ -324,6 +324,20 @@ lazy_static! {
 // TODO: maybe use something that would just scale to requested size?
 // todo Unit test.
 pub(crate) fn set_image_from_path(image: &gtk::Image, show_id: i32, size: u32) -> Result<()> {
+    // get the PodcastCover struct
+    let pd = dbqueries::get_podcast_cover_from_id(show_id)?;
+
+    // Check if the cover is already downloaded and set it
+    if pd.is_cached_image_valid(&CACHE_VALID_DURATION) {
+        if let Some(cached_path) = downloader::check_for_cached_cover(&pd) {
+            if let Ok(px) = Pixbuf::from_file_at_scale(&cached_path, size as i32, size as i32, true)
+            {
+                image.set_from_pixbuf(Some(&px));
+            }
+            return Ok(());
+        }
+    }
+
     // Check if there's an active download about this show cover.
     // If there is, a callback will be set so this function will be called again.
     // If it fails another download will be scheduled. WTF??? how is this not downlaoding infinitly
@@ -346,11 +360,9 @@ pub(crate) fn set_image_from_path(image: &gtk::Image, show_id: i32, size: u32) -
 
         THREADPOOL.spawn(move || {
             // This operation is polling and will block the thread till the download is finished
-            if let Ok(pd) = dbqueries::get_podcast_cover_from_id(show_id) {
-                sender
-                    .send(downloader::cache_image(&pd, true))
-                    .expect("channel was dropped unexpectedly");
-            }
+            sender
+                .send(downloader::cache_image(&pd, true))
+                .expect("channel was dropped unexpectedly");
 
             if let Ok(mut guard) = COVER_DL_REGISTRY.write() {
                 guard.remove(&show_id);
