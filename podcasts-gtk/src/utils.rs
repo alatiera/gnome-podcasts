@@ -30,7 +30,7 @@ use gtk::Widget;
 use anyhow::{anyhow, Result};
 use chrono::prelude::*;
 use crossbeam_channel::unbounded;
-use fragile::Fragile;
+use rayon;
 use regex::Regex;
 use serde_json::Value;
 use url::Url;
@@ -43,7 +43,7 @@ use podcasts_data::pipeline::pipeline;
 use podcasts_data::utils::checkup;
 use podcasts_data::Source;
 
-use std::collections::{HashMap, HashSet};
+use std::collections::HashSet;
 use std::sync::{Arc, Mutex, RwLock};
 use std::time::Duration;
 
@@ -314,48 +314,19 @@ pub(crate) fn refresh_feed(source: Option<Vec<Source>>, sender: Sender<Action>) 
 }
 
 lazy_static! {
-    static ref CACHED_PIXBUFS: RwLock<HashMap<(i32, u32), Mutex<Fragile<Pixbuf>>>> =
-        RwLock::new(HashMap::new());
     static ref COVER_DL_REGISTRY: RwLock<HashSet<i32>> = RwLock::new(HashSet::new());
     static ref THREADPOOL: rayon::ThreadPool = rayon::ThreadPoolBuilder::new().build().unwrap();
     static ref CACHE_VALID_DURATION: chrono::Duration = chrono::Duration::weeks(4);
 }
 
-// Since gdk_pixbuf::Pixbuf is reference counted and every episode,
-// use the cover of the Podcast Feed/Show, We can only create a Pixbuf
-// cover per show and pass around the Rc pointer.
-//
-// GObjects do not implement Send trait, so SendCell is a way around that.
+// GObjects do not implement Send trait, so Fragile is a way around that.
 // Also lazy_static requires Sync trait, so that's what the mutexes are.
 // TODO: maybe use something that would just scale to requested size?
 // todo Unit test.
 pub(crate) fn set_image_from_path(image: &gtk::Image, show_id: i32, size: u32) -> Result<()> {
-    if let Ok(hashmap) = CACHED_PIXBUFS.read() {
-        if let Ok(pd) = dbqueries::get_podcast_cover_from_id(show_id) {
-            // If the image is still valid, check if the requested (cover + size) is already in the
-            // cache and if so do an early return after that.
-            if pd.is_cached_image_valid(&CACHE_VALID_DURATION) {
-                if let Some(guard) = hashmap.get(&(show_id, size)) {
-                    guard
-                        .lock()
-                        .map_err(|err| anyhow!("Fragile Mutex: {}", err))
-                        .and_then(|fragile| {
-                            fragile
-                                .try_get()
-                                .map(|px| image.set_from_pixbuf(Some(px)))
-                                .map_err(From::from)
-                        })?;
-
-                    return Ok(());
-                }
-            }
-        }
-    }
-
     // Check if there's an active download about this show cover.
     // If there is, a callback will be set so this function will be called again.
-    // If the download succeeds, there should be a quick return from the pixbuf cache_image
-    // If it fails another download will be scheduled.
+    // If it fails another download will be scheduled. WTF??? how is this not downlaoding infinitly
     if let Ok(guard) = COVER_DL_REGISTRY.read() {
         if guard.contains(&show_id) {
             let callback = clone!(@weak image => @default-return glib::Continue(false), move || {
@@ -399,11 +370,7 @@ pub(crate) fn set_image_from_path(image: &gtk::Image, show_id: i32, size: u32) -
                 match path {
                     Ok(path) => {
                         if let Ok(px) = Pixbuf::from_file_at_scale(&path, s, s, true) {
-                            if let Ok(mut hashmap) = CACHED_PIXBUFS.write() {
-                                hashmap
-                                    .insert((show_id, size), Mutex::new(Fragile::new(px.clone())));
-                                image.set_from_pixbuf(Some(&px));
-                            }
+                            image.set_from_pixbuf(Some(&px));
                         }
                     }
                     Err(DownloadError::NoImageLocation) => {
