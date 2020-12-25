@@ -88,7 +88,7 @@ fn populate_flowbox(shows: &Rc<ShowsView>, vadj: Option<Adjustment>) -> Result<(
     let podcasts = dbqueries::get_podcasts_filter(&ignore)?;
     let flowbox_weak = shows.flowbox.downgrade();
 
-    let constructor = move |parent| ShowsChild::new(&parent).child;
+    let constructor = move |parent| ShowsChild::new(&parent).row;
     let callback = clone!(@weak shows => move || {
         if vadj.is_some() {
             shows.view.set_adjustments(None, vadj.as_ref())
@@ -177,37 +177,26 @@ impl ShowCover {
     }
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug)]
 struct ShowsChild {
     cover: ShowCover,
-    child: gtk::FlowBoxChild,
-}
-
-impl Default for ShowsChild {
-    fn default() -> Self {
-        let cover = ShowCover::new();
-        let child = gtk::FlowBoxChild::new();
-
-        child.set_child(Some(&cover));
-
-        ShowsChild { cover, child }
-    }
+    row: gtk::FlowBoxChild,
 }
 
 impl ShowsChild {
-    pub(crate) fn new(pd: &Show) -> ShowsChild {
+    fn new(pd: &Show) -> ShowsChild {
         let cover = ShowCover::new();
-        let child = gtk::FlowBoxChild::new();
+        let row = gtk::FlowBoxChild::new();
+        row.set_child(Some(&cover));
 
-        child.set_child(Some(&cover));
-
-        let shows_child = ShowsChild { cover, child };
-        shows_child.init(pd);
-        shows_child
+        let child = ShowsChild { cover, row };
+        child.init(pd);
+        child
     }
 
     fn init(&self, pd: &Show) {
-        self.child.set_tooltip_text(Some(pd.title()));
+        self.row.set_tooltip_text(Some(pd.title()));
+        self.cover.set_id(pd.id());
 
         self.cover.set_id(pd.id());
         self.set_cover();
