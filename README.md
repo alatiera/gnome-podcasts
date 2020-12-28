@@ -13,10 +13,16 @@ Listen to your favorite podcasts, right from your desktop.
 
 ## Quick start
 
-GNOME Podcasts can be built and run with [Gnome Builder][builder] >= 3.28.
-Just clone the repo and hit the run button!
-
+GNOME Podcasts can be built and run with [GNOME Builder][builder] >= 3.28.
 You can get Builder from [here][get_builder].
+
+You will also need to install the rust-stable extension from flathub.
+
+```sh
+flatpak install --user flathub org.freedesktop.Sdk.Extension.rust-stable//20.08
+```
+
+Then from Builder, just clone the repo and hit the run button!
 
 ## Broken Feeds
 
@@ -44,13 +50,13 @@ flatpak remote-add --user --if-not-exists gnome-nightly https://nightly.gnome.or
 flatpak install --user gnome-nightly org.gnome.Sdk org.gnome.Platform
 
 # Install the required rust-stable extension from flathub
-flatpak install --user flathub org.freedesktop.Sdk.Extension.rust-stable//19.08
+flatpak install --user flathub org.freedesktop.Sdk.Extension.rust-stable//20.08
 ```
 
 To install the resulting flatpak you can do:
 
 ```bash
-flatpak-builder --user --install --force-clean --repo=repo podcasts org.gnome.Podcasts.json
+flatpak-builder --user --install --force-clean --repo=repo podcasts org.gnome.Podcasts.Devel.json
 ```
 
 ### Building from source
