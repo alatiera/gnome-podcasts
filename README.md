@@ -13,10 +13,16 @@ Listen to your favorite podcasts, right from your desktop.
 
 ## Quick start
 
-GNOME Podcasts can be built and run with [Gnome Builder][builder] >= 3.28.
-Just clone the repo and hit the run button!
-
+GNOME Podcasts can be built and run with [GNOME Builder][builder] >= 3.28.
 You can get Builder from [here][get_builder].
+
+You will also need to install the rust-stable extension from flathub.
+
+```sh
+flatpak install --user flathub org.freedesktop.Sdk.Extension.rust-stable//20.08
+```
+
+Then from Builder, just clone the repo and hit the run button!
 
 ## Broken Feeds
 
