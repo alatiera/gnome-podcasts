@@ -50,7 +50,7 @@ flatpak install --user flathub org.freedesktop.Sdk.Extension.rust-stable//19.08
 To install the resulting flatpak you can do:
 
 ```bash
-flatpak-builder --user --install --force-clean --repo=repo podcasts org.gnome.Podcasts.json
+flatpak-builder --user --install --force-clean --repo=repo podcasts org.gnome.Podcasts.Devel.json
 ```
 
 ### Building from source
