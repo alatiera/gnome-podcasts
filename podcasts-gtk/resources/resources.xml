@@ -16,10 +16,10 @@
       <file compressed="true" preprocess="xml-stripblanks">gtk/player_dialog.ui</file>
       <file compressed="true" preprocess="xml-stripblanks">gtk/player_rate.ui</file>
       <file compressed="true" preprocess="xml-stripblanks">gtk/player_toolbar.ui</file>
-      <file compressed="true" preprocess="xml-stripblanks">icons/skip-back-large-symbolic.svg</file>
-      <file compressed="true" preprocess="xml-stripblanks">icons/skip-back-symbolic.svg</file>
-      <file compressed="true" preprocess="xml-stripblanks">icons/skip-forward-large-symbolic.svg</file>
-      <file compressed="true" preprocess="xml-stripblanks">icons/skip-forward-symbolic.svg</file>
+      <file compressed="true" preprocess="xml-stripblanks">icons/scalable/actions/skip-back-large-symbolic.svg</file>
+      <file compressed="true" preprocess="xml-stripblanks">icons/scalable/actions/skip-back-symbolic.svg</file>
+      <file compressed="true" preprocess="xml-stripblanks">icons/scalable/actions/skip-forward-large-symbolic.svg</file>
+      <file compressed="true" preprocess="xml-stripblanks">icons/scalable/actions/skip-forward-symbolic.svg</file>
       <file compressed="true">gtk/style.css</file>
   </gresource>
 </gresources>
