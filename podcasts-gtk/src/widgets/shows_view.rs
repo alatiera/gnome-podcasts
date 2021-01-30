@@ -154,11 +154,11 @@ impl ShowsChild {
         let show_id = Cell::new(Some(show_id));
 
         self.cover.connect_draw(move |cover, _| {
-            show_id.take().map(|id| {
+            if let Some(id) = show_id.take() {
                 set_image_from_path(cover, id, 256)
                     .map_err(|err| error!("Failed to set a cover: {}", err))
                     .ok();
-            });
+            }
 
             gtk::Inhibit(false)
         });

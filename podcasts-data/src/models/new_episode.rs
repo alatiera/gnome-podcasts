@@ -17,11 +17,8 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-use ammonia;
-use diesel;
 use diesel::prelude::*;
 use rfc822_sanitizer::parse_from_rfc2822_with_fallback as parse_rfc822;
-use rss;
 
 use crate::database::connection;
 use crate::dbqueries;
@@ -163,15 +160,15 @@ impl NewEpisode {
     }
 
     pub(crate) fn uri(&self) -> Option<&str> {
-        self.uri.as_ref().map(|s| s.as_str())
+        self.uri.as_deref()
     }
 
     pub(crate) fn description(&self) -> Option<&str> {
-        self.description.as_ref().map(|s| s.as_str())
+        self.description.as_deref()
     }
 
     pub(crate) fn guid(&self) -> Option<&str> {
-        self.guid.as_ref().map(|s| s.as_str())
+        self.guid.as_deref()
     }
 
     pub(crate) fn epoch(&self) -> i32 {
@@ -278,13 +275,13 @@ impl NewEpisodeMinimal {
     // TODO: TryInto is stabilizing in rustc v1.26!
     // ^ Jokes on you past self!
     pub(crate) fn into_new_episode(self, item: &rss::Item) -> NewEpisode {
-        let description = item.description().and_then(|s| {
+        let description = item.description().map(|s| {
             let sanitized_html = ammonia::Builder::new()
                 // Remove `rel` attributes from `<a>` tags
                 .link_rel(None)
                 .clean(s.trim())
                 .to_string();
-            Some(sanitized_html)
+            sanitized_html
         });
 
         NewEpisodeBuilder::default()
@@ -308,11 +305,11 @@ impl NewEpisodeMinimal {
     }
 
     pub(crate) fn uri(&self) -> Option<&str> {
-        self.uri.as_ref().map(|s| s.as_str())
+        self.uri.as_deref()
     }
 
     pub(crate) fn guid(&self) -> Option<&str> {
-        self.guid.as_ref().map(|s| s.as_str())
+        self.guid.as_deref()
     }
 
     pub(crate) fn duration(&self) -> Option<i32> {

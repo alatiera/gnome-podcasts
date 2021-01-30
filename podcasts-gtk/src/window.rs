@@ -17,13 +17,11 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-use glib;
 use glib::clone;
 use glib::Sender;
 
 use gio::{self, prelude::*, SettingsExt};
 
-use gtk;
 use gtk::prelude::*;
 
 use libhandy as hdy;
@@ -141,43 +139,58 @@ impl MainWindow {
     /// Define the `GAction`s.
     ///
     /// Used in menus and the keyboard shortcuts dialog.
-    #[cfg_attr(rustfmt, rustfmt_skip)]
+
     pub fn setup_gactions(&self) {
         let sender = &self.sender;
         // Create the `refresh` action.
         //
         // This will trigger a refresh of all the shows in the database.
-        make_action(&self.window, "refresh",
+        make_action(
+            &self.window,
+            "refresh",
             clone!(@strong sender => move |_, _| {
-                gtk::idle_add(
-                    clone!(@strong sender => move || {
-                        utils::schedule_refresh(None, sender.clone());
-                        glib::Continue(false)
-            }));
-        }));
+                    gtk::idle_add(
+                        clone!(@strong sender => move || {
+                            utils::schedule_refresh(None, sender.clone());
+                            glib::Continue(false)
+                }));
+            }),
+        );
 
         // Create the `OPML` import action
-        make_action(&self.window, "import",
+        make_action(
+            &self.window,
+            "import",
             clone!(@strong sender, @weak self.window as window => move |_, _| {
-                utils::on_import_clicked(&window.upcast(), &sender);
-        }));
+                    utils::on_import_clicked(&window.upcast(), &sender);
+            }),
+        );
 
-        make_action(&self.window, "export",
+        make_action(
+            &self.window,
+            "export",
             clone!(@strong sender, @weak self.window as window => move |_, _| {
-                utils::on_export_clicked(&window.upcast(), &sender);
-        }));
+                    utils::on_export_clicked(&window.upcast(), &sender);
+            }),
+        );
 
         // Create the action that shows a `gtk::AboutDialog`
-        make_action(&self.window, "about",
+        make_action(
+            &self.window,
+            "about",
             clone!(@weak self.window as win => move |_, _| {
-                about_dialog(&win.upcast());
-        }));
+                    about_dialog(&win.upcast());
+            }),
+        );
 
         // Create the menu actions
-        make_action(&self.window, "menu",
+        make_action(
+            &self.window,
+            "menu",
             clone!(@weak self.headerbar as headerbar => move |_, _| {
-                headerbar.open_menu();
-        }));
+                    headerbar.open_menu();
+            }),
+        );
     }
 }
 

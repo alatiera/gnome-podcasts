@@ -34,6 +34,7 @@
     elided_lifetimes_in_paths,
     missing_copy_implementations
 )]
+#![allow(clippy::type_complexity)]
 
 #[macro_use]
 extern crate lazy_static;

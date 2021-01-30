@@ -18,16 +18,12 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 use anyhow::{anyhow, Result};
-use rayon;
 
-// use podcasts_data::Episode;
 use podcasts_data::dbqueries;
 use podcasts_data::downloader::{get_episode, DownloadProgress};
 
 use std::collections::HashMap;
 use std::sync::{Arc, Mutex, RwLock};
-// use std::sync::atomic::AtomicUsize;
-// use std::path::PathBuf;
 
 // This is messy, undocumented and hacky af.
 // I am terrible at writing downloaders and download managers.
@@ -112,8 +108,8 @@ pub(crate) fn add(id: i32, directory: String) -> Result<()> {
                 .ok();
 
             if let Ok(mut m) = ACTIVE_DOWNLOADS.write() {
-                let foo = m.remove(&id);
-                debug!("Removed: {:?}", foo);
+                let progress = m.remove(&id);
+                debug!("Removed: {:?}", progress);
             }
 
             // if let Ok(m) = ACTIVE_DOWNLOADS.read() {

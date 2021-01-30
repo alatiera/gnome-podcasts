@@ -18,8 +18,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 use glob::glob;
-use mime_guess;
-use reqwest;
 use reqwest::header::*;
 use reqwest::redirect::Policy;
 use tempdir::TempDir;
@@ -103,8 +101,12 @@ fn download_into(
         .and_then(|h| h.to_str().ok())
         .map(From::from);
 
-    ct_len.map(|x| info!("File Length: {}", x));
-    ct_type.map(|x| info!("Content Type: {}", x));
+    if let Some(ct_len) = ct_len {
+        info!("File Length: {}", ct_len);
+    }
+    if let Some(ct_type) = ct_type {
+        info!("Content Type: {}", ct_type);
+    }
 
     let ext = get_ext(ct_type).unwrap_or_else(|| String::from("unknown"));
     info!("Extension: {}", ext);
@@ -115,13 +117,13 @@ fn download_into(
     let tempdir = TempDir::new_in(PODCASTS_CACHE.to_str().unwrap(), "temp_download")?;
     let out_file = format!("{}/temp.part", tempdir.path().to_str().unwrap(),);
 
-    ct_len.map(|x| {
+    if let Some(ct_len) = ct_len {
         if let Some(ref p) = progress {
             if let Ok(mut m) = p.lock() {
-                m.set_size(x);
+                m.set_size(ct_len);
             }
         }
-    });
+    };
 
     // Save requested content into the file.
     save_io(&out_file, &mut resp, ct_len, progress)?;
@@ -139,7 +141,7 @@ fn download_into(
 
 /// Determine the file extension from the http content-type header.
 fn get_ext(content: Option<&str>) -> Option<String> {
-    let mut iter = content?.split("/");
+    let mut iter = content?.split('/');
     let type_ = iter.next()?;
     let subtype = iter.next()?;
     mime_guess::get_extensions(type_, subtype).and_then(|c| {
@@ -237,26 +239,25 @@ pub fn get_episode(
 pub fn cache_image(pd: &ShowCoverModel) -> Result<String, DownloadError> {
     let url = pd
         .image_uri()
-        .ok_or_else(|| DownloadError::NoImageLocation)?
+        .ok_or(DownloadError::NoImageLocation)?
         .to_owned();
 
-    if url == "" {
+    if url.is_empty() {
         return Err(DownloadError::NoImageLocation);
     }
 
     let cache_path = PODCASTS_CACHE
         .to_str()
-        .ok_or_else(|| DownloadError::InvalidCacheLocation)?;
+        .ok_or(DownloadError::InvalidCacheLocation)?;
     let cache_download_fold = format!("{}{}", cache_path, pd.title().to_owned());
 
     // Weird glob magic.
-    if let Ok(mut foo) = glob(&format!("{}/cover.*", cache_download_fold)) {
-        // For some reason there is no .first() method so nth(0) is used
-        let path = foo.nth(0).and_then(|x| x.ok());
+    if let Ok(mut paths) = glob(&format!("{}/cover.*", cache_download_fold)) {
+        let path = paths.next().and_then(|x| x.ok());
         if let Some(p) = path {
             return Ok(p
                 .to_str()
-                .ok_or_else(|| DownloadError::InvalidCachedImageLocation)?
+                .ok_or(DownloadError::InvalidCachedImageLocation)?
                 .into());
         }
     };

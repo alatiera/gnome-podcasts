@@ -17,15 +17,8 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-use diesel;
 use diesel::r2d2;
 use diesel_migrations::RunMigrationsError;
-use http;
-use hyper;
-use native_tls;
-use reqwest;
-use rss;
-use xml;
 
 use std::io;
 

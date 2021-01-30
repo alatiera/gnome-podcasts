@@ -108,7 +108,6 @@ pub const USER_AGENT: &str = "Mozilla/5.0 (Windows NT 6.1; rv:60.0) Gecko/201001
 #[allow(missing_debug_implementations)]
 pub mod xdg_dirs {
     use std::path::PathBuf;
-    use xdg;
 
     lazy_static! {
         pub(crate) static ref PODCASTS_XDG: xdg::BaseDirectories = {

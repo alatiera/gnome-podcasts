@@ -87,7 +87,7 @@ impl Source {
     ///
     /// See [RFC 7231](https://tools.ietf.org/html/rfc7231#section-7.2) for more.
     pub fn last_modified(&self) -> Option<&str> {
-        self.last_modified.as_ref().map(|s| s.as_str())
+        self.last_modified.as_deref()
     }
 
     /// Set `last_modified` value.
@@ -100,7 +100,7 @@ impl Source {
     ///
     /// See [RFC 7231](https://tools.ietf.org/html/rfc7231#section-7.2) for more.
     pub fn http_etag(&self) -> Option<&str> {
-        self.http_etag.as_ref().map(|s| s.as_str())
+        self.http_etag.as_deref()
     }
 
     /// Set `http_etag` value.
@@ -325,7 +325,6 @@ async fn response_to_channel(res: Response<Body>) -> Result<Channel, DataError> 
 mod tests {
     use super::*;
     use anyhow::Result;
-    use tokio;
 
     use crate::database::truncate_db;
     use crate::utils::get_feed;

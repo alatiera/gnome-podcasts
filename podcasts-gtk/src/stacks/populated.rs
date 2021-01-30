@@ -17,7 +17,6 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-use gtk;
 use gtk::prelude::*;
 use gtk::StackTransitionType;
 
@@ -116,7 +115,7 @@ impl PopulatedStack {
             // If the previous show was the same, restore the alignment
             Some(id) if id == pd.id() => ShowWidget::new(pd, self.sender.clone(), vadj),
             // else leave the valignemnt to default
-            _ => ShowWidget::new(pd.clone(), self.sender.clone(), None),
+            _ => ShowWidget::new(pd, self.sender.clone(), None),
         };
 
         self.show = new;

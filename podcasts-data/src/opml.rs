@@ -114,7 +114,7 @@ pub fn export_to_file<F: Write>(file: F, export_title: &str) -> Result<()> {
     let title_ev: XmlEvent<'_> = XmlEvent::start_element("title").into();
     events.push(title_ev);
 
-    let title_chars: XmlEvent<'_> = XmlEvent::characters(export_title).into();
+    let title_chars: XmlEvent<'_> = XmlEvent::characters(export_title);
     events.push(title_chars);
 
     // Close <title> & <head>
@@ -268,7 +268,6 @@ mod tests {
              American—and global—politics.",
         );
 
-        #[cfg_attr(rustfmt, rustfmt_skip)]
         let sample1 = format!(
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?> \
              <opml version=\"2.0\"> \
