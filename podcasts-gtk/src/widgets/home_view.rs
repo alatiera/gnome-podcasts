@@ -222,11 +222,11 @@ impl HomeEpisode {
         let show_id = Cell::new(Some(show_id));
 
         self.image.connect_draw(move |image, _| {
-            show_id.take().map(|id| {
+            if let Some(id) = show_id.take() {
                 utils::set_image_from_path(image, id, 64)
                     .map_err(|err| error!("Failed to set a cover: {}", err))
                     .ok();
-            });
+            }
 
             gtk::Inhibit(false)
         });

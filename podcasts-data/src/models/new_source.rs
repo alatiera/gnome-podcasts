@@ -17,7 +17,6 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-use diesel;
 use diesel::prelude::*;
 use url::Url;
 

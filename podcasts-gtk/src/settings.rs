@@ -16,10 +16,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
-
-use gio;
 use gio::{Settings, SettingsExt};
-use gtk;
 use gtk::GtkWindowExt;
 
 use libhandy as hdy;

@@ -26,7 +26,6 @@ use glib::{glib_object_impl, glib_object_subclass, glib_object_wrapper, glib_wra
 use gio::subclass::ApplicationImplExt;
 use gio::{self, prelude::*, ActionMapExt, ApplicationFlags, SettingsExt};
 
-use gtk;
 use gtk::prelude::*;
 
 use gettextrs::{bindtextdomain, setlocale, textdomain, LocaleCategory};
@@ -304,13 +303,13 @@ impl PdApplication {
                 updater.set_spinner_state(SpinnerState::Active);
 
                 let old = window.updater.replace(Some(updater));
-                old.map(|i| unsafe { i.destroy() });
+                if let Some(i) = old {
+                    unsafe { i.destroy() }
+                }
 
-                window
-                    .updater
-                    .borrow()
-                    .as_ref()
-                    .map(|i| i.show(&window.overlay));
+                if let Some(i) = window.updater.borrow().as_ref() {
+                    i.show(&window.overlay)
+                }
             }
             Action::InitEpisode(rowid) => {
                 let res = window.player.initialize_episode(rowid);
@@ -321,23 +320,25 @@ impl PdApplication {
                 window.headerbar.set_secondary_menu(menu);
             }
             Action::EmptyState => {
-                window
+                if let Some(refresh_action) = window
                     .window
                     .lookup_action("refresh")
                     .and_then(|action| action.downcast::<gio::SimpleAction>().ok())
-                    // Disable refresh action
-                    .map(|action| action.set_enabled(false));
+                {
+                    refresh_action.set_enabled(false)
+                }
 
                 window.headerbar.switch.set_sensitive(false);
                 window.content.switch_to_empty_views();
             }
             Action::PopulatedState => {
-                window
+                if let Some(refresh_action) = window
                     .window
                     .lookup_action("refresh")
                     .and_then(|action| action.downcast::<gio::SimpleAction>().ok())
-                    // Enable refresh action
-                    .map(|action| action.set_enabled(true));
+                {
+                    refresh_action.set_enabled(true)
+                }
 
                 window.headerbar.switch.set_sensitive(true);
                 window.content.switch_to_populated();

@@ -17,9 +17,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-use glib;
 use glib::clone;
-use gtk;
 use gtk::prelude::*;
 
 use std::cell::RefCell;
@@ -113,8 +111,7 @@ impl InAppNotification {
         notif
             .undo
             .connect_clicked(clone!(@weak notif.revealer as revealer => move |_| {
-                let foo = id.borrow_mut().take();
-                if let Some(id) = foo {
+                if let Some(id) = id.borrow_mut().take() {
                     // Cancel the callback
                     glib::source::source_remove(id);
                 }

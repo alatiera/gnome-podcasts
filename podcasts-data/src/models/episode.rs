@@ -18,7 +18,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 use chrono::prelude::*;
-use diesel;
+
 use diesel::prelude::*;
 use diesel::SaveChangesDsl;
 
@@ -76,7 +76,7 @@ impl Episode {
     ///
     /// Represents the url(usually) that the media file will be located at.
     pub fn uri(&self) -> Option<&str> {
-        self.uri.as_ref().map(|s| s.as_str())
+        self.uri.as_deref()
     }
 
     /// Get the value of the `local_uri`.
@@ -84,17 +84,17 @@ impl Episode {
     /// Represents the local uri,usually filesystem path,
     /// that the media file will be located at.
     pub fn local_uri(&self) -> Option<&str> {
-        self.local_uri.as_ref().map(|s| s.as_str())
+        self.local_uri.as_deref()
     }
 
     /// Get the `description`.
     pub fn description(&self) -> Option<&str> {
-        self.description.as_ref().map(|s| s.as_str())
+        self.description.as_deref()
     }
 
     /// Get the Episode's `guid`.
     pub fn guid(&self) -> Option<&str> {
-        self.guid.as_ref().map(|s| s.as_str())
+        self.guid.as_deref()
     }
 
     /// Get the `epoch` value.
@@ -199,7 +199,7 @@ impl EpisodeWidgetModel {
     ///
     /// Represents the url(usually) that the media file will be located at.
     pub fn uri(&self) -> Option<&str> {
-        self.uri.as_ref().map(|s| s.as_str())
+        self.uri.as_deref()
     }
 
     /// Get the value of the `local_uri`.
@@ -207,7 +207,7 @@ impl EpisodeWidgetModel {
     /// Represents the local uri,usually filesystem path,
     /// that the media file will be located at.
     pub fn local_uri(&self) -> Option<&str> {
-        self.local_uri.as_ref().map(|s| s.as_str())
+        self.local_uri.as_deref()
     }
 
     /// Set the `local_uri`.
@@ -318,7 +318,7 @@ impl EpisodeCleanerModel {
     /// Represents the local uri,usually filesystem path,
     /// that the media file will be located at.
     pub fn local_uri(&self) -> Option<&str> {
-        self.local_uri.as_ref().map(|s| s.as_str())
+        self.local_uri.as_deref()
     }
 
     /// Set the `local_uri`.
@@ -386,12 +386,12 @@ impl EpisodeMinimal {
     ///
     /// Represents the url(usually) that the media file will be located at.
     pub fn uri(&self) -> Option<&str> {
-        self.uri.as_ref().map(|s| s.as_str())
+        self.uri.as_deref()
     }
 
     /// Get the Episode's `guid`.
     pub fn guid(&self) -> Option<&str> {
-        self.guid.as_ref().map(|s| s.as_str())
+        self.guid.as_deref()
     }
 
     /// Get the `epoch` value.

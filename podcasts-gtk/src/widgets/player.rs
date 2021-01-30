@@ -19,7 +19,6 @@
 
 use gst::ClockTime;
 
-use gtk;
 use gtk::prelude::*;
 
 use libhandy as hdy;
@@ -363,7 +362,7 @@ impl Default for PlayerWidget {
         let mpris = MprisPlayer::new(
             APP_ID.to_string(),
             "GNOME Podcasts".to_string(),
-            format!("{}.desktop", APP_ID).to_string(),
+            format!("{}.desktop", APP_ID),
         );
         mpris.set_can_raise(true);
         mpris.set_can_play(false);
@@ -528,8 +527,7 @@ impl PlayerWidget {
         // Figure out the time delta, in seconds, between the last pause and now
         let now = Local::now();
         let last: &Option<DateTime<_>> = &*self.controls.last_pause.borrow();
-        let last = last.clone()?;
-        let delta = (now - last).num_seconds();
+        let delta = (now - (*last)?).num_seconds();
 
         // Get interval passed in the gst stream
         let seconds_passed = self.player.get_position().seconds()?;
@@ -583,9 +581,7 @@ impl PlayerExt for PlayerWidget {
         self.controls.last_pause.replace(Some(Local::now()));
     }
 
-    #[cfg_attr(rustfmt, rustfmt_skip)]
     fn stop(&self) {
-
         self.controls.pause.hide();
         self.controls.play.show();
 
@@ -593,7 +589,8 @@ impl PlayerExt for PlayerWidget {
         self.info.mpris.set_playback_status(PlaybackStatus::Paused);
 
         // Reset the slider bar to the start
-        self.timer.on_position_updated(Position(ClockTime::from_seconds(0)));
+        self.timer
+            .on_position_updated(Position(ClockTime::from_seconds(0)));
     }
 
     // Adapted from https://github.com/philn/glide/blob/b52a65d99daeab0b487f79a0e1ccfad0cd433e22/src/player_context.rs#L219-L245
@@ -624,7 +621,9 @@ impl PlayerExt for PlayerWidget {
         };
 
         // If we calucated a new position, jump to it
-        destination.map(|d| self.player.seek(d));
+        if let Some(destination) = destination {
+            self.player.seek(destination)
+        }
     }
 
     fn rewind(&self) {
@@ -807,44 +806,47 @@ impl PlayerWrapper {
             }));
     }
 
-    #[cfg_attr(rustfmt, rustfmt_skip)]
     fn connect_gst_signals(&self, sender: &Sender<Action>) {
         // Log gst warnings.
-        self.player.connect_warning(move |_, warn| warn!("gst warning: {}", warn));
+        self.player
+            .connect_warning(move |_, warn| warn!("gst warning: {}", warn));
 
         // Log gst errors.
-        self.player.connect_error(clone!(@strong sender => move |_, _error| {
-            send!(sender, Action::ErrorNotification(format!("Player Error: {}", _error)));
-            let s = i18n("The media player was unable to execute an action.");
-            send!(sender, Action::ErrorNotification(s));
-        }));
+        self.player
+            .connect_error(clone!(@strong sender => move |_, _error| {
+                send!(sender, Action::ErrorNotification(format!("Player Error: {}", _error)));
+                let s = i18n("The media player was unable to execute an action.");
+                send!(sender, Action::ErrorNotification(s));
+            }));
 
         // The following callbacks require `Send` but are handled by the gtk main loop
         let weak = Fragile::new(Rc::downgrade(self));
 
         // Update the duration label and the slider
-        self.player.connect_duration_changed(clone!(@strong weak => move |_, clock| {
-            weak.get()
-                .upgrade()
-                .map(|p| p.timer.on_duration_changed(Duration(clock)));
-        }));
+        self.player
+            .connect_duration_changed(clone!(@strong weak => move |_, clock| {
+                if let Some(player_widget) = weak.get().upgrade() {
+                    player_widget.timer.on_duration_changed(Duration(clock))
+                }
+            }));
 
         // Update the position label and the slider
-        self.player.connect_position_updated(clone!(@strong weak => move |_, clock| {
-            weak.get()
-                .upgrade()
-                .map(|p| p.timer.on_position_updated(Position(clock)));
-        }));
+        self.player
+            .connect_position_updated(clone!(@strong weak => move |_, clock| {
+                if let Some(player_widget) = weak.get().upgrade() {
+                    player_widget.timer.on_position_updated(Position(clock))
+                }
+            }));
 
         // Reset the slider to 0 and show a play button
-        self.player.connect_end_of_stream(clone!(@strong weak => move |_| {
-             weak.get()
-                 .upgrade()
-                 .map(|p| p.stop());
-        }));
+        self.player
+            .connect_end_of_stream(clone!(@strong weak => move |_| {
+                if let Some(player_widget) = weak.get().upgrade() {
+                    player_widget.stop()
+                }
+            }));
     }
 
-    #[cfg_attr(rustfmt, rustfmt_skip)]
     fn connect_rate_buttons(&self) {
         self.rate.connect_signals(self);
         self.dialog.rate.connect_signals(self);
@@ -896,13 +898,17 @@ impl PlayerWrapper {
         self.info
             .mpris
             .connect_next(clone!(@strong weak => move || {
-                weak.upgrade().map(|p| p.fast_forward());
+                if let Some(p) = weak.upgrade() {
+                    p.fast_forward()
+                }
             }));
 
         self.info
             .mpris
             .connect_previous(clone!(@strong weak => move || {
-                weak.upgrade().map(|p| p.rewind());
+                if let Some(p) = weak.upgrade() {
+                    p.rewind()
+                }
             }));
 
         self.info

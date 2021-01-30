@@ -71,7 +71,7 @@ impl Show {
     ///
     /// Represents the uri(url usually) that the Feed cover image is located at.
     pub fn image_uri(&self) -> Option<&str> {
-        self.image_uri.as_ref().map(|s| s.as_str())
+        self.image_uri.as_deref()
     }
 
     /// Get the `image_uri_hash`.
@@ -135,10 +135,7 @@ impl Show {
                 }
             },
         }
-        match self.update_image_cached() {
-            Ok(s) => Ok(s),
-            Err(e) => Err(e),
-        }
+        self.update_image_cached()
     }
 }
 
@@ -180,7 +177,7 @@ impl ShowCoverModel {
     ///
     /// Represents the uri(url usually) that the Feed cover image is located at.
     pub fn image_uri(&self) -> Option<&str> {
-        self.image_uri.as_ref().map(|s| s.as_str())
+        self.image_uri.as_deref()
     }
 
     /// Get the `image_uri_hash`.

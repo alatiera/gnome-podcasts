@@ -19,8 +19,6 @@
 
 //! Index Feeds.
 
-use rss;
-
 use crate::dbqueries;
 use crate::errors::DataError;
 use crate::models::{Index, IndexState, Update};

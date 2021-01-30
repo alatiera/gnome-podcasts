@@ -17,16 +17,12 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-use gio;
 use glib::clone;
-use gtk;
 use gtk::prelude::*;
-use libhandy;
 use libhandy::prelude::*;
 
 use anyhow::Result;
 use glib::Sender;
-use rayon;
 use url::Url;
 
 use podcasts_data::{dbqueries, Source};
@@ -65,20 +61,20 @@ struct AddPopover {
 async fn add_podcast_from_url(url_input: String, sender: &Sender<Action>) -> Result<()> {
     let mut url = url_input;
     if !(url.starts_with("https://") || url.starts_with("http://")) {
-        url = format!("http://{}", url).into();
+        url = format!("http://{}", url);
     };
 
     debug!("Url: {}", url);
     let url = if url.contains("itunes.com") || url.contains("apple.com") {
         info!("Detected itunes url.");
-        let foo = itunes_to_rss(&url).await?;
-        info!("Resolved to {}", foo);
-        foo
+        let itunes_url = itunes_to_rss(&url).await?;
+        info!("Resolved to {}", itunes_url);
+        itunes_url
     } else if url.contains("soundcloud.com") && !url.contains("feeds.soundcloud.com") {
         info!("Detected soundcloud url.");
-        let foo = soundcloud_to_rss(&Url::parse(&url)?).await?;
-        info!("Resolved to {}", foo);
-        foo.to_string()
+        let soundcloud_url = soundcloud_to_rss(&Url::parse(&url)?).await?;
+        info!("Resolved to {}", soundcloud_url);
+        soundcloud_url.to_string()
     } else {
         url.to_owned()
     };

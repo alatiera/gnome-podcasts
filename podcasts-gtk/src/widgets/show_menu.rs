@@ -18,15 +18,11 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 use gio::ActionMapExt;
-use glib;
 use glib::clone;
-use gtk;
 use gtk::prelude::*;
 
 use anyhow::Result;
 use glib::Sender;
-use open;
-use rayon;
 
 use podcasts_data::dbqueries;
 use podcasts_data::utils::delete_show;
@@ -142,18 +138,34 @@ fn dim_titles(episodes: &gtk::ListBox) -> Option<()> {
     for row in children {
         let row = row.downcast::<gtk::ListBoxRow>().ok()?;
         let container = row.get_children().remove(0).downcast::<gtk::Box>().ok()?;
-        let foo = container
+        let first_children_box = container
             .get_children()
             .remove(0)
             .downcast::<gtk::Box>()
             .ok()?;
-        let bar = foo.get_children().remove(0).downcast::<gtk::Box>().ok()?;
-        let baz = bar.get_children().remove(0).downcast::<gtk::Box>().ok()?;
-        let title = baz.get_children().remove(0).downcast::<gtk::Label>().ok()?;
+        let second_children_box = first_children_box
+            .get_children()
+            .remove(0)
+            .downcast::<gtk::Box>()
+            .ok()?;
+        let third_children_box = second_children_box
+            .get_children()
+            .remove(0)
+            .downcast::<gtk::Box>()
+            .ok()?;
+        let title = third_children_box
+            .get_children()
+            .remove(0)
+            .downcast::<gtk::Label>()
+            .ok()?;
 
         title.get_style_context().add_class("dim-label");
 
-        let checkmark = baz.get_children().remove(1).downcast::<gtk::Image>().ok()?;
+        let checkmark = third_children_box
+            .get_children()
+            .remove(1)
+            .downcast::<gtk::Image>()
+            .ok()?;
         checkmark.show();
     }
     Some(())

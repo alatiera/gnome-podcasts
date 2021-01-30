@@ -22,7 +22,6 @@
 use chrono::prelude::*;
 use diesel::prelude::*;
 
-use diesel;
 use diesel::dsl::exists;
 use diesel::select;
 
@@ -383,16 +382,19 @@ pub(crate) fn podcast_exists(source_id_: i32) -> Result<bool, DataError> {
         .map_err(From::from)
 }
 
-#[cfg_attr(rustfmt, rustfmt_skip)]
 pub(crate) fn episode_exists(title_: &str, show_id_: i32) -> Result<bool, DataError> {
     use crate::schema::episodes::dsl::*;
 
     let db = connection();
     let con = db.get()?;
 
-    select(exists(episodes.filter(show_id.eq(show_id_)).filter(title.eq(title_))))
-        .get_result(&con)
-        .map_err(From::from)
+    select(exists(
+        episodes
+            .filter(show_id.eq(show_id_))
+            .filter(title.eq(title_)),
+    ))
+    .get_result(&con)
+    .map_err(From::from)
 }
 
 /// Check if the `episodes table contains any rows

@@ -38,7 +38,7 @@ use std::path::Path;
 /// The resulting vector will always have exactly 8 values.
 /// The individual bytes are extracted from the given `u64`, which is parsed as little-endian.
 pub fn u64_to_vec_u8(u: u64) -> Vec<u8> {
-    let bytes: Vec<u8> = u.to_le_bytes().iter().cloned().collect();
+    let bytes: Vec<u8> = u.to_le_bytes().to_vec();
     debug_assert_eq!(bytes.len(), 8);
     bytes
 }
@@ -281,7 +281,7 @@ mod tests {
     fn test_download_cleaner() -> Result<()> {
         let _tmp_dir = helper_db()?;
         let mut episode: EpisodeCleanerModel =
-            dbqueries::get_episode_cleaner_from_pk("foo_bar", 0)?.into();
+            dbqueries::get_episode_cleaner_from_pk("foo_bar", 0)?;
 
         let valid_path = episode.local_uri().unwrap().to_owned();
         delete_local_content(&mut episode)?;

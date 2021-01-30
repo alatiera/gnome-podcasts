@@ -17,7 +17,6 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-use glib;
 use glib::clone;
 use glib::Sender;
 use gtk::{self, prelude::*, Adjustment};
@@ -25,9 +24,7 @@ use gtk::{self, prelude::*, Adjustment};
 use anyhow::Result;
 use crossbeam_channel::bounded;
 use fragile::Fragile;
-use html2text;
 use libhandy::{Clamp, ClampExt};
-use rayon;
 
 use podcasts_data::dbqueries;
 use podcasts_data::Show;
@@ -101,7 +98,7 @@ impl ShowWidget {
         send!(sender, Action::InitShowMenu(Fragile::new(menu)));
 
         let pdw = Rc::new(pdw);
-        let res = populate_listbox(&pdw, pd.clone(), sender, vadj);
+        let res = populate_listbox(&pdw, pd, sender, vadj);
         debug_assert!(res.is_ok());
 
         pdw.description_short
@@ -150,8 +147,8 @@ impl ShowWidget {
             self.description_stack.set_visible(true);
 
             self.description.set_markup(markup);
-            debug_assert!(lines.len() > 0);
-            if lines.len() > 0 {
+            debug_assert!(!lines.is_empty());
+            if !lines.is_empty() {
                 self.description_short.set_markup(lines[0]);
             }
         }
@@ -204,10 +201,10 @@ fn populate_listbox(
         });
 
         let callback = clone!(@strong show_weak, @strong vadj => move || {
-            match (show_weak.upgrade(), &vadj) {
-                (Some(ref shows), Some(ref v)) => shows.view.set_adjustments(None, Some(v)),
-                _ => (),
-            };
+            if let (Some(ref shows), Some(ref v)) = (show_weak.upgrade(), &vadj)
+            {
+                shows.view.set_adjustments(None, Some(v))
+            }
         });
 
         lazy_load(episodes, list_weak.clone(), constructor, callback);

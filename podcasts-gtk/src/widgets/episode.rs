@@ -17,18 +17,13 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-use glib;
 use glib::clone;
-use gtk;
 use gtk::prelude::*;
 
 use anyhow::{anyhow, Result};
-use chrono;
 use chrono::prelude::*;
 use glib::Sender;
 use humansize::{file_size_opts as size_opts, FileSize};
-#[allow(unused_imports)]
-use open;
 
 use podcasts_data::dbqueries;
 use podcasts_data::downloader::DownloadProgress;
@@ -239,12 +234,14 @@ impl EpisodeWidget {
         widget
             .container
             .connect_draw(clone!(@strong sender => move |_, _| {
-                episode.borrow_mut().take().map(|ep| {
-                    weak.upgrade().map(|w| w.info.init(&ep));
+                if let Some(ep) = episode.borrow_mut().take() {
+                    if let Some(w) = weak.upgrade() {
+                        w.info.init(&ep)
+                    }
                     Self::determine_buttons_state(&weak, &ep, &sender)
                         .map_err(|err| error!("Error: {}", err))
                         .ok();
-                });
+                };
 
                 gtk::Inhibit(false)
             }));
@@ -260,9 +257,9 @@ impl EpisodeWidget {
         //
         // When the widget is detached from its parent view this
         // callback runs freeing the last reference we were holding.
-        let foo = RefCell::new(Some(widget.clone()));
+        let episode_widget = RefCell::new(Some(widget.clone()));
         widget.container.connect_remove(move |_, _| {
-            foo.borrow_mut().take();
+            episode_widget.borrow_mut().take();
         });
 
         widget
@@ -553,9 +550,8 @@ fn progress_bar_helper(
         Err(TryLockError::Poisoned(_)) => return Err(anyhow!("Progress Mutex is poisoned")),
     };
 
-    // I hate floating points.
     // Update the progress_bar.
-    if (fraction >= 0.0) && (fraction <= 1.0) && (!fraction.is_nan()) {
+    if (0.0..=1.0).contains(&fraction) && (!fraction.is_nan()) {
         // Update local_size label
         let size = downloaded
             .file_size(SIZE_OPTS.clone())
@@ -563,9 +559,6 @@ fn progress_bar_helper(
 
         widget.update_progress(&size, fraction);
     }
-
-    // info!("Fraction: {}", progress_bar.get_fraction());
-    // info!("Fraction: {}", fraction);
 
     // Check if the download is still active
     let active = match manager::ACTIVE_DOWNLOADS.read() {

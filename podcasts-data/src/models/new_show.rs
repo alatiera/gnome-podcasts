@@ -17,10 +17,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-use ammonia;
-use diesel;
 use diesel::prelude::*;
-use rss;
 
 use crate::errors::DataError;
 use crate::models::Show;
@@ -190,7 +187,7 @@ impl NewShow {
     }
 
     pub(crate) fn image_uri(&self) -> Option<&str> {
-        self.image_uri.as_ref().map(|s| s.as_str())
+        self.image_uri.as_deref()
     }
 
     #[cfg(test)]

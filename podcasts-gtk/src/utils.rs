@@ -24,7 +24,6 @@ use glib::Sender;
 use glib::Variant;
 use glib::{self, object::WeakRef};
 use glib::{IsA, Object};
-use gtk;
 use gtk::prelude::*;
 use gtk::Widget;
 
@@ -32,13 +31,10 @@ use anyhow::{anyhow, Result};
 use chrono::prelude::*;
 use crossbeam_channel::{bounded, unbounded};
 use fragile::Fragile;
-use rayon;
 use regex::Regex;
-use reqwest;
 use serde_json::Value;
 use url::Url;
 
-// use podcasts_data::feed;
 use podcasts_data::dbqueries;
 use podcasts_data::downloader;
 use podcasts_data::errors::DownloadError;
@@ -429,9 +425,9 @@ fn itunes_id_from_url(url: &str) -> Option<u32> {
     }
 
     // Get the itunes id from the url
-    let foo = RE.captures_iter(url).nth(0)?.get(1)?.as_str();
+    let itunes_id = RE.captures_iter(url).next()?.get(1)?.as_str();
     // Parse it to a u32, this *should* never fail
-    foo.parse::<u32>().ok()
+    itunes_id.parse::<u32>().ok()
 }
 
 async fn itunes_lookup_id(id: u32) -> Result<String> {
@@ -463,7 +459,7 @@ async fn soundcloud_lookup_id(url: &Url) -> Option<u64> {
     }
     let url_str = url.to_string();
     let response_text = reqwest::get(&url_str).await.ok()?.text().await.ok()?;
-    let id = RE.captures_iter(&response_text).nth(0)?.get(1)?.as_str();
+    let id = RE.captures_iter(&response_text).next()?.get(1)?.as_str();
     // Parse it to a u64, this *should* never fail
     id.parse::<u64>().ok()
 }
