@@ -1,0 +1,376 @@
+# Serbian translation for podcasts.
+# Copyright © 2021 podcasts's COPYRIGHT HOLDER
+# This file is distributed under the same license as the podcasts package.
+# Мирослав Николић <miroslavnikolic@rocketmail.com>, 2021.
+msgid ""
+msgstr ""
+"Project-Id-Version: podcasts master\n"
+"Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
+"POT-Creation-Date: 2021-02-16 15:47+0000\n"
+"PO-Revision-Date: 2021-03-02 20:11+0200\n"
+"Last-Translator: Мирослав Николић <miroslavnikolic@rocketmail.com>\n"
+"Language-Team: српски <gnome-sr@googlegroups.org>\n"
+"Language: sr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=4; plural=n==1? 3 : n%10==1 && n%100!=11 ?"
+"0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:15
+msgid "Top position of the last open main window"
+msgstr "Горњи положај последњег отвореног главног прозора"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:19
+msgid "Left position of the last open main window"
+msgstr "Леви положај последњег отвореног главног прозора"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:23
+msgid "Height of the last open main window"
+msgstr "Висина последњег отвореног главног прозора"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:27
+msgid "Width of the last open main window"
+msgstr "Ширина последњег отвореног главног прозора"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:31
+msgid "Maximized state of the last open main window"
+msgstr "Увећано стање последњег отвореног главног прозора"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:36
+msgid "Enable or disable dark theme"
+msgstr "Укључује или искључује тамну тему"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:41
+msgid "Whether to periodically refresh content"
+msgstr "Да ли повремено да освежи садржај"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:46
+msgid "How many periods of time to wait between automatic refreshes"
+msgstr "Колико времена да чека између самосталних освежавања"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:50
+msgid "What period of time to wait between automatic refreshes"
+msgstr "Које време да чека између самосталних освежавања"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:54
+msgid "Whether to refresh content after startup"
+msgstr "Да ли да освежи садржај након покретања"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:60
+msgid "How many periods of time to wait between automatic cleanups"
+msgstr "Колико времена да чека између самосталних чишћења"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:64
+msgid "What period of time to wait between automatic cleanups"
+msgstr "Које време да чека између самосталних чишћења"
+
+#. Weird magic I copy-pasted that sets the Application Name in the Shell.
+#: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:3
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:4
+#: podcasts-gtk/resources/gtk/headerbar.ui:137 podcasts-gtk/src/app.rs:364
+#: podcasts-gtk/src/widgets/aboutdialog.rs:63 podcasts-gtk/src/window.rs:64
+msgid "Podcasts"
+msgstr "Подемисије"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:4
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:10
+msgid "Listen to your favorite podcasts, right from your desktop."
+msgstr "Слушајте ваше омиљене подемисије, управо са ваше радне површи."
+
+#. Translators: Search terms to find this application. Do NOT translate or localize the semicolons! The list MUST also end with a semicolon!
+#: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:13
+msgid "Podcast;RSS;"
+msgstr "Подемисија;РСС;Podcast;RSS;"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:8
+msgid "Podcast app for GNOME"
+msgstr "Програм подемисије за Гном"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:92
+msgid "Jordan Petridis"
+msgstr "Јордан Петридис"
+
+#: podcasts-gtk/resources/gtk/empty_view.ui:46
+msgid "This show does not have episodes yet"
+msgstr "Ова емисија још нема епизода"
+
+#: podcasts-gtk/resources/gtk/empty_view.ui:57
+msgid "If you think this is an error, please consider writing a bug report."
+msgstr "Ако мислите да је ово грешка, размотрите писање извештаја о грешци."
+
+#: podcasts-gtk/resources/gtk/empty_view.ui:91
+msgid "Get some shows"
+msgstr "Набавите неке емисије"
+
+#: podcasts-gtk/resources/gtk/empty_view.ui:123
+msgid "Add new shows via feed URL"
+msgstr "Додајте нове емисије путем адресе тока"
+
+#: podcasts-gtk/resources/gtk/empty_view.ui:152
+msgid "Import shows from another device"
+msgstr "Увезитеемисије са другог уређаја"
+
+#: podcasts-gtk/resources/gtk/episode_widget.ui:82
+msgid "You’ve already listened to this episode."
+msgstr "Већ сте одслушали ову епизоду."
+
+#: podcasts-gtk/resources/gtk/episode_widget.ui:187
+msgid "Calculating episode size…"
+msgstr "Израчунавам величину епизоде…"
+
+#: podcasts-gtk/resources/gtk/episode_widget.ui:214
+msgid "Play this episode"
+msgstr "Пустите ову епизоду"
+
+#: podcasts-gtk/resources/gtk/episode_widget.ui:230
+msgid "Cancel the download process"
+msgstr "Откажите процес преузимања"
+
+#: podcasts-gtk/resources/gtk/episode_widget.ui:250
+msgid "Download this episode"
+msgstr "Преузмите ову епизоду"
+
+#: podcasts-gtk/resources/gtk/hamburger.ui:7
+msgid "_Check for New Episodes"
+msgstr "_Потражи нове епизоде"
+
+#: podcasts-gtk/resources/gtk/hamburger.ui:12
+msgid "_Import Shows"
+msgstr "_Увези емисије"
+
+#: podcasts-gtk/resources/gtk/hamburger.ui:16
+msgid "_Export Shows"
+msgstr "_Извези емисије"
+
+#: podcasts-gtk/resources/gtk/hamburger.ui:22
+msgid "_Keyboard Shortcuts"
+msgstr "Пречице _тастатуре"
+
+#: podcasts-gtk/resources/gtk/hamburger.ui:30
+msgid "_About Podcasts"
+msgstr "_О Подемисијама"
+
+#: podcasts-gtk/resources/gtk/headerbar.ui:35
+#: podcasts-gtk/resources/gtk/headerbar.ui:165
+msgid "Add a new feed"
+msgstr "Додајте нови ток"
+
+#: podcasts-gtk/resources/gtk/headerbar.ui:53
+msgid "Enter feed address to add"
+msgstr "Унесите адресу тока за додавање"
+
+#: podcasts-gtk/resources/gtk/headerbar.ui:79
+msgid "Add"
+msgstr "Додај"
+
+#: podcasts-gtk/resources/gtk/headerbar.ui:150
+msgid "Show Title"
+msgstr "Прикажи наслов"
+
+#: podcasts-gtk/resources/gtk/headerbar.ui:186
+msgid "Back"
+msgstr "Назад"
+
+#: podcasts-gtk/resources/gtk/help-overlay.ui:12
+msgid "General"
+msgstr "Опште"
+
+#: podcasts-gtk/resources/gtk/help-overlay.ui:18
+msgctxt "shortcut window"
+msgid "Check for new episodes"
+msgstr "Потражите нове епизоде"
+
+#: podcasts-gtk/resources/gtk/help-overlay.ui:25
+msgctxt "shortcut window"
+msgid "Quit the application"
+msgstr "Изађите из програма"
+
+#: podcasts-gtk/resources/gtk/home_view.ui:56
+msgid "Today"
+msgstr "Данас"
+
+#: podcasts-gtk/resources/gtk/home_view.ui:88
+msgid "Yesterday"
+msgstr "Јуче"
+
+#: podcasts-gtk/resources/gtk/home_view.ui:120
+msgid "This Week"
+msgstr "Ове седмице"
+
+#: podcasts-gtk/resources/gtk/home_view.ui:152
+msgid "This Month"
+msgstr "Овог месеца"
+
+#: podcasts-gtk/resources/gtk/home_view.ui:185
+msgid "Older"
+msgstr "Старије"
+
+#: podcasts-gtk/resources/gtk/inapp_notif.ui:69
+msgid "An in-app action notification"
+msgstr "Обавештење радње у програму"
+
+#: podcasts-gtk/resources/gtk/inapp_notif.ui:75
+msgid "Undo"
+msgstr "Поништи"
+
+#: podcasts-gtk/resources/gtk/player_dialog.ui:14
+msgid "Now Playing"
+msgstr "Тренутно пуштам"
+
+#: podcasts-gtk/resources/gtk/player_rate.ui:32
+msgid "Change the playback speed"
+msgstr "Промените брзину пуштања"
+
+#: podcasts-gtk/resources/gtk/player_rate.ui:46
+#: podcasts-gtk/resources/gtk/player_rate.ui:85
+msgid "1.00×"
+msgstr "1.00×"
+
+#: podcasts-gtk/resources/gtk/player_rate.ui:65
+msgid "2.00×"
+msgstr "2.00×"
+
+#: podcasts-gtk/resources/gtk/player_rate.ui:70
+msgid "1.75×"
+msgstr "1.75×"
+
+#: podcasts-gtk/resources/gtk/player_rate.ui:75
+msgid "1.50×"
+msgstr "1.50×"
+
+#: podcasts-gtk/resources/gtk/player_rate.ui:80
+msgid "1.25×"
+msgstr "1.25×"
+
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:97
+msgid "Rewind 10 seconds"
+msgstr "Уназад 10 секунди"
+
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:107
+msgid "Play"
+msgstr "Пусти"
+
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:118
+msgid "Pause"
+msgstr "Застани"
+
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:129
+msgid "Fast forward 10 seconds"
+msgstr "Унапред 10 секунди"
+
+#: podcasts-gtk/resources/gtk/secondary_menu.ui:7
+msgid "_Mark All Episodes as Played"
+msgstr "_Означи све епизоде да су пуштене"
+
+#: podcasts-gtk/resources/gtk/secondary_menu.ui:11
+msgid "_Website"
+msgstr "_Веб страница"
+
+#: podcasts-gtk/resources/gtk/secondary_menu.ui:15
+msgid "_Unsubscribe"
+msgstr "_Одјави се"
+
+#: podcasts-gtk/resources/gtk/show_menu.ui:36
+msgid "Open Website"
+msgstr "Отвори Веб сајт"
+
+#: podcasts-gtk/resources/gtk/show_menu.ui:40
+msgid "Mark All as Played"
+msgstr "Означите све да су пуштене"
+
+#: podcasts-gtk/resources/gtk/show_menu.ui:46
+msgid "Unsubscribe"
+msgstr "Одјавите се"
+
+#: podcasts-gtk/resources/gtk/show_widget.ui:98
+msgid "Read More"
+msgstr "Прочитајте више"
+
+#: podcasts-gtk/src/app.rs:299
+msgid "Fetching new episodes"
+msgstr "Довлачим нове епизоде"
+
+#: podcasts-gtk/src/stacks/content.rs:53
+msgid "New"
+msgstr "Нова"
+
+#: podcasts-gtk/src/stacks/content.rs:54
+msgid "Shows"
+msgstr "Емисије"
+
+#: podcasts-gtk/src/utils.rs:472
+msgid "Select the file from which to you want to import shows."
+msgstr "Изаберите датотеку из које желите да увезете емисије."
+
+#: podcasts-gtk/src/utils.rs:475
+msgid "_Import"
+msgstr "_Увези"
+
+#: podcasts-gtk/src/utils.rs:484 podcasts-gtk/src/utils.rs:533
+msgid "OPML file"
+msgstr "ОПМЛ датотека"
+
+#: podcasts-gtk/src/utils.rs:502
+msgid "Failed to parse the imported file"
+msgstr "Нисам успео да обрадим увезену датотеку"
+
+#: podcasts-gtk/src/utils.rs:507 podcasts-gtk/src/utils.rs:552
+msgid "Selected file could not be accessed."
+msgstr "Не могу да приступим изабраној датотеци."
+
+#: podcasts-gtk/src/utils.rs:518
+msgid "Export shows to…"
+msgstr "Извези емисије у…"
+
+#: podcasts-gtk/src/utils.rs:521
+msgid "_Export"
+msgstr "_Извези"
+
+#: podcasts-gtk/src/utils.rs:522
+msgid "_Cancel"
+msgstr "_Откажи"
+
+#. Translators: This is the string of the suggested name for the exported opml file
+#: podcasts-gtk/src/utils.rs:526
+msgid "gnome-podcasts-exported-shows"
+msgstr "gnome-podcasts-exported-shows"
+
+#: podcasts-gtk/src/utils.rs:546
+msgid "GNOME Podcasts Subscriptions"
+msgstr "Пријављивање на Гном Подемисије"
+
+#: podcasts-gtk/src/utils.rs:547
+msgid "Failed to export podcasts"
+msgstr "Нисам успео да увезем обележиваче"
+
+#: podcasts-gtk/src/widgets/aboutdialog.rs:58
+msgid "Podcast Client for the GNOME Desktop."
+msgstr "Клијент подемисије за Гномову радну површ."
+
+#: podcasts-gtk/src/widgets/aboutdialog.rs:65
+msgid "Learn more about GNOME Podcasts"
+msgstr "Сазнајте више о Гном Подемисијама"
+
+#: podcasts-gtk/src/widgets/aboutdialog.rs:69
+msgid "translator-credits"
+msgstr ""
+"Мирослав Николић <miroslavnikolic@rocketmail.com>  \n"
+"\n"
+"http://prevod.org — превод на српски језик"
+
+#: podcasts-gtk/src/widgets/episode.rs:144
+msgid "{} min"
+msgstr "{} min"
+
+#: podcasts-gtk/src/widgets/player.rs:818
+msgid "The media player was unable to execute an action."
+msgstr "Програм за пуштање није могао да изврши радњу."
+
+#: podcasts-gtk/src/widgets/show_menu.rs:198
+msgid "Marked all episodes as listened"
+msgstr "Све епизоде су означене да су слушане"
+
+#: podcasts-gtk/src/widgets/show_menu.rs:203
+msgid "Unsubscribed from {}"
+msgstr "Отказали сте претплату са „{}“"
