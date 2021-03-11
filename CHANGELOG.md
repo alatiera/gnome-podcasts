@@ -7,14 +7,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [Unreleased]
 
 ### Added:
- 
+
 ### Changed:
 
 ### Fixed:
 
 ### Removed:
 
-## [0.4.9] - 2021-01-07
+## [0.4.9] - 2021-03-11
 
 ### Added:
 - Automatically refresh Show artwork/covers World/podcasts!176
