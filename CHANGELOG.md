@@ -7,13 +7,35 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [Unreleased]
 
 ### Added:
- - Refresh cached cover art World/podcasts!176
-
+ 
 ### Changed:
 
 ### Fixed:
 
 ### Removed:
+
+## [0.4.9] - 2021-01-07
+
+### Added:
+- Automatically refresh Show artwork/covers World/podcasts!176
+- Suggest a filename on the export opml dialog World/podcasts!155
+- Extract RSS feeds from soundcloud links World/podcasts!177
+
+### Changed:
+- Upgrade dependencies World/podcasts!148 World/podcasts!149
+- Improve indexing pipeline World/podcasts!150
+- Upgrade to `libhandy-1.0` World/podcasts!160 World/podcasts!153
+- Use glib channels and refactor actions handling World/podcasts!154
+- Use libhandy styling for lists World/podcasts!169
+- GTK 3 cleanups in preparation for the GTk 4 port World/podcasts!175
+- Translation updates
+
+### Fixed:
+- Fix date comparison with episodes from previous year World/podcasts!161
+- Fix copying downloads across filesystems World/podcasts!180
+
+### Removed:
+- Remove static resources World/podcasts!170
 
 ## [0.4.8] - 2020-07-09
 ### Added:
