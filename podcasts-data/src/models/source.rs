@@ -288,6 +288,7 @@ impl Source {
             if let Some(password) = url.password() {
                 let mut auth = "Basic ".to_owned();
                 auth.push_str(&encode_config(
+                    //url.username() converts @ symbols to %40 automatically.  The "replace" undoes that.
                     &format!("{}:{}", url.username().replace("%40", "@"), password),
                     URL_SAFE,
                 ));
