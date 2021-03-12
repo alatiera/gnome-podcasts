@@ -288,7 +288,7 @@ impl Source {
             if let Some(password) = url.password() {
                 let mut auth = "Basic ".to_owned();
                 auth.push_str(&encode_config(
-                    &format!("{}:{}", url.username().replace("%40","@"), password),
+                    &format!("{}:{}", url.username().replace("%40", "@"), password),
                     URL_SAFE,
                 ));
                 req.headers_mut()
