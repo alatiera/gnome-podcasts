@@ -56,8 +56,8 @@ cargo_release = custom_target('cargo-build',
                         console: true,
                         depends: podcasts_resources,
                         command: [cargo_script,
-                                  '@SOURCE_ROOT@',
-                                  '@OUTPUT@',
                                   meson.build_root(),
-                                  profile
-                                 ])
+                                  meson.source_root(),
+                                  '@OUTPUT@',
+                                  profile,
+                        ])

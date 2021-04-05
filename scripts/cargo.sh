@@ -2,10 +2,12 @@
 
 set -ex
 
-export OUTPUT="$2"
-export CARGO_TARGET_DIR="$3"/target
-export CARGO_HOME="$CARGO_TARGET_DIR"/cargo-home
+export MESON_BUILD_ROOT="$1"
+export MESON_SOURCE_ROOT="$2"
+export OUTPUT="$3"
 export PROFILE="$4"
+export CARGO_TARGET_DIR="$MESON_BUILD_ROOT"/target
+export CARGO_HOME="$MESON_BUILD_ROOT"/cargo-home
 
 TARGET=debug
 ARGS=()
@@ -21,5 +23,5 @@ if test -d vendor; then
     ARGS+=('--frozen')
 fi
 
-cargo build ${ARGS[@]} --manifest-path="$1"/Cargo.toml -p podcasts-gtk
+cargo build ${ARGS[@]} --manifest-path="$MESON_SOURCE_ROOT"/Cargo.toml -p podcasts-gtk
 cp "$CARGO_TARGET_DIR"/${TARGET}/podcasts-gtk "$OUTPUT"

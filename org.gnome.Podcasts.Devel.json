@@ -25,7 +25,6 @@
         ],
         "cflags": "-DGDK_DISABLE_DEPRECATED -DGTK_DISABLE_DEPRECATED",
         "env": {
-            "CARGO_HOME": "/run/build/gnome-podcasts/cargo",
             "RUSTFLAGS": "",
             "RUST_BACKTRACE": "1",
             "RUST_LOG": "podcasts_gtk=debug,podcasts_data=debug,glib=debug",
