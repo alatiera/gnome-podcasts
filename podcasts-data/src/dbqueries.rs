@@ -127,7 +127,16 @@ pub fn get_episode_widget_from_rowid(ep_id: i32) -> Result<EpisodeWidgetModel, D
 
     episodes
         .select((
-            rowid, title, uri, local_uri, epoch, length, duration, played, show_id,
+            rowid,
+            title,
+            uri,
+            local_uri,
+            epoch,
+            length,
+            duration,
+            played,
+            play_position,
+            show_id,
         ))
         .filter(rowid.eq(ep_id))
         .get_result::<EpisodeWidgetModel>(&con)
@@ -154,7 +163,16 @@ pub fn get_episodes_widgets_filter_limit(
     let db = connection();
     let con = db.get()?;
     let columns = (
-        rowid, title, uri, local_uri, epoch, length, duration, played, show_id,
+        rowid,
+        title,
+        uri,
+        local_uri,
+        epoch,
+        length,
+        duration,
+        played,
+        play_position,
+        show_id,
     );
 
     episodes
@@ -215,7 +233,16 @@ pub fn get_pd_episodeswidgets(parent: &Show) -> Result<Vec<EpisodeWidgetModel>, 
     let db = connection();
     let con = db.get()?;
     let columns = (
-        rowid, title, uri, local_uri, epoch, length, duration, played, show_id,
+        rowid,
+        title,
+        uri,
+        local_uri,
+        epoch,
+        length,
+        duration,
+        played,
+        play_position,
+        show_id,
     );
 
     episodes
@@ -305,7 +332,17 @@ pub(crate) fn get_episode_minimal_from_pk(
     let con = db.get()?;
 
     episodes
-        .select((rowid, title, uri, epoch, length, duration, guid, show_id))
+        .select((
+            rowid,
+            title,
+            uri,
+            epoch,
+            length,
+            duration,
+            play_position,
+            guid,
+            show_id,
+        ))
         .filter(title.eq(title_))
         .filter(show_id.eq(pid))
         .get_result::<EpisodeMinimal>(&con)

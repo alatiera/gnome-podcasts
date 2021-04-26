@@ -40,6 +40,7 @@ pub(crate) struct NewEpisode {
     description: Option<String>,
     length: Option<i32>,
     duration: Option<i32>,
+    play_position: i32,
     guid: Option<String>,
     epoch: i32,
     show_id: i32,
@@ -131,6 +132,7 @@ impl PartialEq<Episode> for NewEpisode {
         (self.title() == other.title())
             && (self.uri() == other.uri())
             && (self.duration() == other.duration())
+            && (self.play_position() == other.play_position())
             && (self.epoch() == other.epoch())
             && (self.guid() == other.guid())
             && (self.show_id() == other.show_id())
@@ -179,6 +181,10 @@ impl NewEpisode {
         self.duration
     }
 
+    pub(crate) fn play_position(&self) -> i32 {
+        self.play_position
+    }
+
     pub(crate) fn length(&self) -> Option<i32> {
         self.length
     }
@@ -198,6 +204,8 @@ pub(crate) struct NewEpisodeMinimal {
     uri: Option<String>,
     length: Option<i32>,
     duration: Option<i32>,
+    #[builder(default = "0")]
+    play_position: i32,
     epoch: i32,
     guid: Option<String>,
     show_id: i32,

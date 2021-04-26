@@ -10,6 +10,7 @@ table! {
         epoch -> Integer,
         length -> Nullable<Integer>,
         duration -> Nullable<Integer>,
+        play_position -> Integer,
         guid -> Nullable<Text>,
         played -> Nullable<Integer>,
         show_id -> Integer,

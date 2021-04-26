@@ -40,7 +40,8 @@ use crate::app::Action;
 use crate::config::APP_ID;
 use crate::utils::set_image_from_path;
 
-use std::cell::RefCell;
+use std::cell::{RefCell, RefMut};
+use std::convert::TryInto;
 use std::ops::Deref;
 use std::path::Path;
 use std::rc::Rc;
@@ -59,8 +60,8 @@ enum SeekDirection {
 
 trait PlayerExt {
     fn play(&self);
-    fn pause(&self);
-    fn stop(&self);
+    fn pause(&mut self);
+    fn stop(&mut self);
     fn seek(&self, offset: ClockTime, direction: SeekDirection);
     fn fast_forward(&self);
     fn rewind(&self);
@@ -77,6 +78,8 @@ struct PlayerInfo {
     episode_small: gtk::Label,
     cover_small: gtk::Image,
     mpris: Arc<MprisPlayer>,
+    finished_restore: bool,
+    ep: Option<EpisodeWidgetModel>,
     episode_id: RefCell<Option<i32>>,
 }
 
@@ -97,7 +100,8 @@ impl PlayerInfo {
     }
 
     // FIXME: create a Diesel Model of the joined episode and podcast query instead
-    fn init(&self, episode: &EpisodeWidgetModel, podcast: &ShowCoverModel) {
+    fn init(&mut self, episode: &EpisodeWidgetModel, podcast: &ShowCoverModel) {
+        self.ep = Some(episode.clone());
         self.episode_id.replace(Some(episode.rowid()));
         self.set_cover_image(podcast);
         self.set_show_title(podcast);
@@ -226,7 +230,7 @@ impl PlayerRate {
         PlayerRate { action, label, btn }
     }
 
-    fn connect_signals(&self, widget: &Rc<PlayerWidget>) {
+    fn connect_signals(&self, widget: &Rc<RefCell<PlayerWidget>>) {
         let group = gio::SimpleActionGroup::new();
         self.action
             .connect_activate(clone!(@weak widget => move |action, rate_v| {
@@ -237,11 +241,15 @@ impl PlayerRate {
                     .expect("Could not get rate from variant")
                     .parse::<f64>()
                     .expect("Could not parse float from variant string");
-                widget.on_rate_changed(rate);
+                widget.borrow().on_rate_changed(rate);
             }));
         group.add_action(&self.action);
-        widget.container.insert_action_group("rate", Some(&group));
         widget
+            .borrow()
+            .container
+            .insert_action_group("rate", Some(&group));
+        widget
+            .borrow()
             .dialog
             .dialog
             .insert_action_group("rate", Some(&group));
@@ -424,15 +432,18 @@ impl Default for PlayerWidget {
         let show_small = builder.get_object("show_label_small").unwrap();
         let episode_small = builder.get_object("episode_label_small").unwrap();
         let cover_small = builder.get_object("show_cover_small").unwrap();
+        let ep = None;
         let info = PlayerInfo {
             mpris,
             container: labels,
             show,
+            ep,
             episode,
             cover,
             show_small,
             episode_small,
             cover_small,
+            finished_restore: false,
             episode_id: RefCell::new(None),
         };
         info.create_bindings();
@@ -477,13 +488,15 @@ impl PlayerWidget {
         self.action_bar.show();
     }
 
-    pub(crate) fn initialize_episode(&self, rowid: i32) -> Result<()> {
+    pub(crate) fn initialize_episode(&mut self, rowid: i32) -> Result<()> {
         let ep = dbqueries::get_episode_widget_from_rowid(rowid)?;
         let pd = dbqueries::get_podcast_cover_from_id(ep.show_id())?;
 
         self.dialog.initialize_episode(&ep, &pd);
 
+        self.info.finished_restore = false;
         self.info.init(&ep, &pd);
+
         // Currently that will always be the case since the play button is
         // only shown if the file is downloaded
         if let Some(ref path) = ep.local_uri() {
@@ -492,8 +505,15 @@ impl PlayerWidget {
                 // Convert it so it will have a "file:///"
                 // FIXME: convert it properly
                 let uri = File::new_for_path(path).get_uri();
+
+                // If it's not the same file load the uri, otherwise just unpause
+                if self.player.get_uri().map_or(true, |s| s != uri.as_str()) {
+                    self.player.set_uri(uri.as_str());
+                } else {
+                    // just unpause, no restore required
+                    self.info.finished_restore = true;
+                }
                 // play the file
-                self.player.set_uri(uri.as_str());
                 self.play();
 
                 return Ok(());
@@ -549,6 +569,20 @@ impl PlayerWidget {
 
         Some(())
     }
+
+    /// Seek to the `play_position` stored in the episode.
+    /// Returns Some(()) if the restore was successful and None otherwise.
+    fn restore_play_position(&self) -> Option<()> {
+        let ep = self.info.ep.as_ref()?;
+        let pos = ep.play_position();
+        let s: u64 = pos.try_into().ok()?;
+        if pos != 0 {
+            self.player.seek(ClockTime::from_seconds(s));
+            Some(())
+        } else {
+            None
+        }
+    }
 }
 
 impl PlayerExt for PlayerWidget {
@@ -571,7 +605,7 @@ impl PlayerExt for PlayerWidget {
         }
     }
 
-    fn pause(&self) {
+    fn pause(&mut self) {
         self.dialog.play_pause.set_visible_child(&self.dialog.play);
 
         self.controls.pause.hide();
@@ -584,16 +618,22 @@ impl PlayerExt for PlayerWidget {
         self.info.mpris.set_playback_status(PlaybackStatus::Paused);
 
         self.controls.last_pause.replace(Some(Local::now()));
+        let pos = self.player.get_position();
+        self.info.ep.as_mut().map(|ep| {
+            ep.set_play_position(pos.seconds().and_then(|s| s.try_into().ok()).unwrap_or(0))
+        });
     }
 
-    fn stop(&self) {
+    fn stop(&mut self) {
         self.controls.pause.hide();
         self.controls.play.show();
 
+        self.info.ep = None;
         self.player.stop();
         self.info.mpris.set_playback_status(PlaybackStatus::Paused);
 
         // Reset the slider bar to the start
+
         self.timer
             .on_position_updated(Position(ClockTime::from_seconds(0)));
         if let Some(sender) = &self.sender {
@@ -648,31 +688,33 @@ impl PlayerExt for PlayerWidget {
 }
 
 #[derive(Debug, Clone)]
-pub(crate) struct PlayerWrapper(pub Rc<PlayerWidget>);
+pub(crate) struct PlayerWrapper(pub Rc<RefCell<PlayerWidget>>);
 
 impl Default for PlayerWrapper {
     fn default() -> Self {
-        PlayerWrapper(Rc::new(PlayerWidget::default()))
+        PlayerWrapper(Rc::new(RefCell::new(PlayerWidget::default())))
     }
 }
 
 impl Deref for PlayerWrapper {
-    type Target = Rc<PlayerWidget>;
+    type Target = Rc<RefCell<PlayerWidget>>;
     fn deref(&self) -> &Self::Target {
         &self.0
     }
 }
 
 impl PlayerWrapper {
+    pub(crate) fn borrow_mut(&self) -> RefMut<'_, PlayerWidget> {
+        self.0.borrow_mut()
+    }
     pub(crate) fn new(sender: &Sender<Action>) -> Self {
-        let mut widget = PlayerWidget::default();
-        widget.sender = Some(sender.clone());
-        let w = PlayerWrapper(Rc::new(widget));
+        let w = PlayerWrapper::default();
         w.init(sender);
         w
     }
 
     fn init(&self, sender: &Sender<Action>) {
+        self.borrow_mut().sender = Some(sender.clone());
         self.connect_control_buttons();
         self.connect_rate_buttons();
         self.connect_mpris_buttons(sender);
@@ -682,147 +724,169 @@ impl PlayerWrapper {
 
     fn connect_dialog(&self) {
         let this = self.deref();
-        self.squeezer
+        let widget = self.borrow();
+        widget
+            .squeezer
             .connect_property_visible_child_notify(clone!(@weak this => move |_| {
-                    if let Some(child) = this.squeezer.get_visible_child() {
-                        let full = child == this.full;
-                        this.timer.progress_bar.set_visible(!full);
-                        if full {
-                            this.action_bar.get_style_context().remove_class("player-small");
-                        } else {
-                            this.action_bar.get_style_context().add_class("player-small");
-                        }
+                let widget = this.borrow();
+                if let Some(child) = widget.squeezer.get_visible_child() {
+                    let full = child == this.borrow().full;
+                    this.borrow().timer.progress_bar.set_visible(!full);
+                    if full {
+                        this.borrow().action_bar.get_style_context().remove_class("player-small");
+                    } else {
+                        this.borrow().action_bar.get_style_context().add_class("player-small");
                     }
+                }
             }));
 
-        self.timer
+        widget
+            .timer
             .duration
-            .bind_property("label", &self.dialog.duration, "label")
+            .bind_property("label", &widget.dialog.duration, "label")
             .flags(glib::BindingFlags::SYNC_CREATE)
             .build();
-        self.timer
+        widget
+            .timer
             .progressed
-            .bind_property("label", &self.dialog.progressed, "label")
+            .bind_property("label", &widget.dialog.progressed, "label")
             .flags(glib::BindingFlags::SYNC_CREATE)
             .build();
-        self.dialog
+        widget
+            .dialog
             .slider
-            .set_adjustment(&self.timer.slider.get_adjustment());
+            .set_adjustment(&widget.timer.slider.get_adjustment());
 
-        self.evbox.connect_button_press_event(
+        widget.evbox.connect_button_press_event(
             clone!(@weak this =>  @default-return Inhibit(false), move |_, event| {
+                let widget = this.borrow();
                 if event.get_button() != 1 {
                     return Inhibit(false);
                 }
                 // only open the dialog when the small toolbar is visible
-                if let Some(child) = this.squeezer.get_visible_child() {
-                    if child == this.full {
+                if let Some(child) = widget.squeezer.get_visible_child() {
+                    if child == widget.full {
                         return Inhibit(false);
                     }
                 }
 
-                let parent = this.container.get_toplevel().and_then(|toplevel| {
+                let parent = widget.container.get_toplevel().and_then(|toplevel| {
                     toplevel
                         .downcast::<gtk::Window>()
                         .ok()
                 }).unwrap();
 
                 info!("showing dialog");
-                this.dialog.dialog.set_transient_for(Some(&parent));
-                this.dialog.dialog.show();
+                widget.dialog.dialog.set_transient_for(Some(&parent));
+                widget.dialog.dialog.show();
 
                 Inhibit(false)
             }),
         );
 
-        self.dialog
+        widget
+            .dialog
             .close
             .connect_clicked(clone!(@weak this => move |_| {
-                    this.dialog.dialog.hide();
+                    this.borrow().dialog.dialog.hide();
             }));
     }
 
     /// Connect the `PlayerControls` buttons to the `PlayerExt` methods.
     fn connect_control_buttons(&self) {
         let this = self.deref();
+        let widget = self.borrow();
         // Connect the play button to the gst Player.
-        self.controls
+        widget
+            .controls
             .play
             .connect_clicked(clone!(@weak this => move |_| {
-                     this.play();
+                     this.borrow().play();
             }));
 
         // Connect the pause button to the gst Player.
-        self.controls
+        widget
+            .controls
             .pause
             .connect_clicked(clone!(@weak this => move |_| {
-                this.pause();
+                this.borrow_mut().pause();
             }));
 
         // Connect the play button to the gst Player.
-        self.controls
+        widget
+            .controls
             .play_small
             .connect_clicked(clone!(@weak this => move |_| {
-                 this.play();
+                 this.borrow().play();
             }));
 
         // Connect the pause button to the gst Player.
-        self.controls
+        widget
+            .controls
             .pause_small
             .connect_clicked(clone!(@weak this => move |_| {
-                this.pause();
+                this.borrow_mut().pause();
             }));
 
         // Connect the rewind button to the gst Player.
-        self.controls
+        widget
+            .controls
             .rewind
             .connect_clicked(clone!(@weak this => move |_| {
-                this.rewind();
+                this.borrow().rewind();
             }));
 
         // Connect the fast-forward button to the gst Player.
-        self.controls
+        widget
+            .controls
             .forward
             .connect_clicked(clone!(@weak this => move |_| {
-                this.fast_forward();
+                this.borrow().fast_forward();
             }));
 
         // Connect the play button to the gst Player.
-        self.dialog
+        widget
+            .dialog
             .play
             .connect_clicked(clone!(@weak this => move |_| {
-                     this.play();
+                     this.borrow().play();
             }));
 
         // Connect the pause button to the gst Player.
-        self.dialog
+        widget
+            .dialog
             .pause
             .connect_clicked(clone!(@weak this => move |_| {
-                    this.pause();
+                    this.borrow_mut().pause();
             }));
 
         // Connect the rewind button to the gst Player.
-        self.dialog
+        widget
+            .dialog
             .rewind
             .connect_clicked(clone!(@weak this => move |_| {
-                    this.rewind();
+                    this.borrow().rewind();
             }));
 
         // Connect the fast-forward button to the gst Player.
-        self.dialog
+        widget
+            .dialog
             .forward
             .connect_clicked(clone!(@weak this => move |_| {
-                this.fast_forward();
+                this.borrow().fast_forward();
             }));
     }
 
     fn connect_gst_signals(&self, sender: &Sender<Action>) {
+        let widget = self.borrow();
         // Log gst warnings.
-        self.player
+        widget
+            .player
             .connect_warning(move |_, warn| warn!("gst warning: {}", warn));
 
         // Log gst errors.
-        self.player
+        widget
+            .player
             .connect_error(clone!(@strong sender => move |_, _error| {
                 send!(sender, Action::ErrorNotification(format!("Player Error: {}", _error)));
                 let s = i18n("The media player was unable to execute an action.");
@@ -832,42 +896,79 @@ impl PlayerWrapper {
         // The following callbacks require `Send` but are handled by the gtk main loop
         let weak = Fragile::new(Rc::downgrade(self));
 
+        widget
+            .player
+            .connect_uri_loaded(clone!(@strong weak => move |_, _| {
+                if let Some(player_widget) = weak.get().upgrade() {
+                    player_widget.borrow().restore_play_position();
+                    player_widget.borrow_mut().info.finished_restore = true;
+                }
+            }));
+
         // Update the duration label and the slider
-        self.player
+        widget
+            .player
             .connect_duration_changed(clone!(@strong weak => move |_, clock| {
                 if let Some(player_widget) = weak.get().upgrade() {
-                    player_widget.timer.on_duration_changed(Duration(clock))
+                    player_widget.borrow().timer.on_duration_changed(Duration(clock));
                 }
             }));
 
         // Update the position label and the slider
-        self.player
+        widget.player
             .connect_position_updated(clone!(@strong weak => move |_, clock| {
                 if let Some(player_widget) = weak.get().upgrade() {
-                    player_widget.timer.on_position_updated(Position(clock))
+                    // write to db
+                    let pos = Position(clock);
+                    let finished_restore = player_widget.borrow().info.finished_restore;
+                    player_widget.borrow_mut().info.ep.as_mut().map(|ep| {
+                        if finished_restore {
+                            ep.set_play_position_if_divergent(pos.seconds().and_then(|s| s.try_into().ok()).unwrap_or(0))
+                        } else {
+                            Ok(())
+                        }
+                    });
+                    player_widget.borrow().timer.on_position_updated(pos)
                 }
             }));
 
         // Reset the slider to 0 and show a play button
-        self.player
-            .connect_end_of_stream(clone!(@strong weak => move |_| {
+        widget
+            .player
+            .connect_end_of_stream(clone!(@strong sender, @strong weak => move |_| {
                 if let Some(player_widget) = weak.get().upgrade() {
-                    player_widget.stop()
+                    // write postion to db
+                    player_widget.borrow_mut().info.ep.as_mut().map(|ep| {
+                        ep.set_play_position(0)?;
+                        ep.set_played_now()?;
+                        send!(sender, Action::RefreshEpisodesViewBGR);
+                        send!(sender, Action::RefreshWidgetIfSame(ep.show_id()));
+                        let ok : Result<(), podcasts_data::errors::DataError> = Ok(());
+                        ok
+                    });
+
+                    player_widget.borrow_mut().stop()
                 }
             }));
     }
 
     fn connect_rate_buttons(&self) {
-        self.rate.connect_signals(self);
-        self.dialog.rate.connect_signals(self);
+        self.deref().borrow().rate.connect_signals(self.deref());
+        self.deref()
+            .borrow()
+            .dialog
+            .rate
+            .connect_signals(self.deref());
     }
 
     fn connect_mpris_buttons(&self, sender: &Sender<Action>) {
         let weak = Rc::downgrade(self);
+        let widget = self.borrow();
 
         // FIXME: Reference cycle with mpris
-        let mpris = self.info.mpris.clone();
-        self.info
+        let mpris = widget.info.mpris.clone();
+        widget
+            .info
             .mpris
             .connect_play_pause(clone!(@strong weak => move || {
                 let player = match weak.upgrade() {
@@ -877,13 +978,14 @@ impl PlayerWrapper {
 
                 if let Ok(status) = mpris.get_playback_status() {
                     match status.as_ref() {
-                        "Paused" => player.play(),
-                        "Stopped" => player.play(),
-                        _ => player.pause(),
+                        "Paused" => player.borrow().play(),
+                        "Stopped" => player.borrow().play(),
+                        _ => player.borrow_mut().pause(),
                     };
                 }
             }));
-        self.info
+        widget
+            .info
             .mpris
             .connect_play(clone!(@strong weak => move || {
                 let player = match weak.upgrade() {
@@ -891,10 +993,11 @@ impl PlayerWrapper {
                     None => return
                 };
 
-                player.play();
+                player.borrow().play();
             }));
 
-        self.info
+        widget
+            .info
             .mpris
             .connect_pause(clone!(@strong weak => move || {
                 let player = match weak.upgrade() {
@@ -902,26 +1005,29 @@ impl PlayerWrapper {
                     None => return
                 };
 
-                player.pause();
+                player.borrow_mut().pause();
             }));
 
-        self.info
+        widget
+            .info
             .mpris
             .connect_next(clone!(@strong weak => move || {
                 if let Some(p) = weak.upgrade() {
-                    p.fast_forward()
+                    p.borrow().fast_forward()
                 }
             }));
 
-        self.info
+        widget
+            .info
             .mpris
             .connect_previous(clone!(@strong weak => move || {
                 if let Some(p) = weak.upgrade() {
-                    p.rewind()
+                    p.borrow().rewind()
                 }
             }));
 
-        self.info
+        widget
+            .info
             .mpris
             .connect_raise(clone!(@strong sender => move || {
                 send!(sender, Action::RaiseWindow);

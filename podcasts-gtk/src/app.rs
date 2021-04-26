@@ -316,7 +316,7 @@ impl PdApplication {
                 }
             }
             Action::InitEpisode(rowid) => {
-                let res = window.player.initialize_episode(rowid);
+                let res = window.player.borrow_mut().initialize_episode(rowid);
                 debug_assert!(res.is_ok());
             }
             Action::InitShowMenu(s) => {

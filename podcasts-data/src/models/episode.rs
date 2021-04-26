@@ -43,6 +43,7 @@ pub struct Episode {
     epoch: i32,
     length: Option<i32>,
     duration: Option<i32>,
+    play_position: i32,
     guid: Option<String>,
     played: Option<i32>,
     show_id: i32,
@@ -130,6 +131,14 @@ impl Episode {
     pub fn show_id(&self) -> i32 {
         self.show_id
     }
+
+    /// Get play_position
+    ///
+    /// The number represents the number of seconds played in the episode.
+    /// 0 means the episode was either not played or continued to play to the end.
+    pub fn play_position(&self) -> i32 {
+        self.play_position
+    }
 }
 
 #[derive(Queryable, AsChangeset, PartialEq)]
@@ -147,6 +156,7 @@ pub struct EpisodeWidgetModel {
     length: Option<i32>,
     duration: Option<i32>,
     played: Option<i32>,
+    play_position: i32,
     show_id: i32,
 }
 
@@ -161,6 +171,7 @@ impl From<Episode> for EpisodeWidgetModel {
             length: e.length,
             duration: e.duration,
             played: e.played,
+            play_position: e.play_position,
             show_id: e.show_id,
         }
     }
@@ -265,6 +276,33 @@ impl EpisodeWidgetModel {
         self.set_played(Some(epoch));
         self.save().map(|_| ())
     }
+
+    /// Get play_position
+    ///
+    /// The number represents the number of seconds played in the episode.
+    /// `0` means the episode was either not played or continued to play to the end.
+    pub fn play_position(&self) -> i32 {
+        self.play_position
+    }
+
+    /// Sets `play_position` and saves the record.
+    pub fn set_play_position(&mut self, seconds: i32) -> Result<(), DataError> {
+        self.play_position = seconds;
+        self.save().map(|_| ())
+    }
+
+    /// Sets `play_position` if it diverges multiple seconds (10) from the last value.
+    /// If it doesn't diverge Ok(()) is returned, nothing is written.
+    pub fn set_play_position_if_divergent(&mut self, seconds: i32) -> Result<(), DataError> {
+        if seconds != 0 && self.play_position != 0 {
+            if (seconds - self.play_position).abs() > 10 {
+                return self.set_play_position(seconds);
+            }
+        } else {
+            return self.set_play_position(seconds);
+        }
+        Ok(())
+    }
 }
 
 #[derive(Queryable, AsChangeset, PartialEq)]
@@ -352,6 +390,7 @@ pub struct EpisodeMinimal {
     epoch: i32,
     length: Option<i32>,
     duration: Option<i32>,
+    play_position: i32,
     guid: Option<String>,
     show_id: i32,
 }
@@ -366,6 +405,7 @@ impl From<Episode> for EpisodeMinimal {
             guid: e.guid,
             epoch: e.epoch,
             duration: e.duration,
+            play_position: e.play_position,
             show_id: e.show_id,
         }
     }

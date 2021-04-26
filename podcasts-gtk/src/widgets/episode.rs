@@ -502,8 +502,6 @@ fn on_play_bttn_clicked(
         .upgrade()
         .ok_or_else(|| anyhow!("Widget is already dropped"))?;
 
-    // Mark played
-    episode.set_played_now()?;
     // Grey out the title
     widget.info.set_title(&episode);
 
