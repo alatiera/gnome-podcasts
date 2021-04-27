@@ -73,11 +73,11 @@ use crate::i18n::i18n;
 macro_rules! send {
     ($sender:expr, $action:expr) => {
         if let Err(err) = $sender.send($action) {
-            panic!(format!(
+            panic!(
                 "Failed to send \"{}\" action due to {}",
                 stringify!($action),
                 err
-            ));
+            );
         }
     };
 }
@@ -260,7 +260,7 @@ pub(crate) fn schedule_refresh(source: Option<Vec<Source>>, sender: Sender<Actio
                 info!("No source of feeds where found, returning");
                 return;
             }
-            Err(err) => debug_assert!(false, err),
+            Err(err) => debug_assert!(false, "{}", err),
             _ => (),
         };
     }
