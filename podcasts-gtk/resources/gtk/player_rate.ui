@@ -86,6 +86,16 @@ Tobias Bernard
         <attribute name="action">rate.set</attribute>
         <attribute name="target">1.00</attribute>
       </item>
+      <item>
+        <attribute name="label" translatable="yes">0.90×</attribute>
+        <attribute name="action">rate.set</attribute>
+        <attribute name="target">0.90</attribute>
+      </item>
+      <item>
+        <attribute name="label" translatable="yes">0.75×</attribute>
+        <attribute name="action">rate.set</attribute>
+        <attribute name="target">0.75</attribute>
+      </item>
     </section>
   </menu>
 </interface>
