@@ -344,6 +344,7 @@ pub(crate) struct PlayerWidget {
     timer: PlayerTimes,
     info: PlayerInfo,
     rate: PlayerRate,
+    sender: Option<Sender<Action>>,
 }
 
 impl Default for PlayerWidget {
@@ -460,6 +461,7 @@ impl Default for PlayerWidget {
             timer,
             info,
             rate,
+            sender: None,
         }
     }
 }
@@ -564,6 +566,9 @@ impl PlayerExt for PlayerWidget {
         self.smart_rewind();
         self.player.play();
         self.info.mpris.set_playback_status(PlaybackStatus::Playing);
+        if let Some(sender) = &self.sender {
+            send!(sender, Action::InhibitSuspend);
+        }
     }
 
     fn pause(&self) {
@@ -591,6 +596,9 @@ impl PlayerExt for PlayerWidget {
         // Reset the slider bar to the start
         self.timer
             .on_position_updated(Position(ClockTime::from_seconds(0)));
+        if let Some(sender) = &self.sender {
+            send!(sender, Action::UninhibitSuspend);
+        }
     }
 
     // Adapted from https://github.com/philn/glide/blob/b52a65d99daeab0b487f79a0e1ccfad0cd433e22/src/player_context.rs#L219-L245
@@ -657,7 +665,9 @@ impl Deref for PlayerWrapper {
 
 impl PlayerWrapper {
     pub(crate) fn new(sender: &Sender<Action>) -> Self {
-        let w = Self::default();
+        let mut widget = PlayerWidget::default();
+        widget.sender = Some(sender.clone());
+        let w = PlayerWrapper(Rc::new(widget));
         w.init(sender);
         w
     }

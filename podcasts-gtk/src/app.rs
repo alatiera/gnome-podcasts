@@ -53,6 +53,7 @@ pub struct PdApplicationPrivate {
     receiver: RefCell<Option<glib::Receiver<Action>>>,
     window: RefCell<Option<MainWindow>>,
     settings: RefCell<Option<gio::Settings>>,
+    inhibit_cookie: RefCell<u32>,
 }
 
 impl ObjectSubclass for PdApplicationPrivate {
@@ -72,6 +73,7 @@ impl ObjectSubclass for PdApplicationPrivate {
             receiver,
             window: RefCell::new(None),
             settings: RefCell::new(None),
+            inhibit_cookie: RefCell::new(0),
         }
     }
 }
@@ -159,6 +161,8 @@ pub(crate) enum Action {
     EmptyState,
     PopulatedState,
     RaiseWindow,
+    InhibitSuspend,
+    UninhibitSuspend,
 }
 
 impl PdApplication {
@@ -344,6 +348,26 @@ impl PdApplication {
                 window.content.switch_to_populated();
             }
             Action::RaiseWindow => window.window.present(),
+            Action::InhibitSuspend => {
+                let window: Option<&gtk::Window> = None;
+                let old_cookie = *data.inhibit_cookie.borrow();
+                let cookie = self.inhibit(
+                    window,
+                    gtk::ApplicationInhibitFlags::SUSPEND,
+                    Some("podcast playing"),
+                );
+                *data.inhibit_cookie.borrow_mut() = cookie;
+                if old_cookie != 0 {
+                    self.uninhibit(old_cookie);
+                }
+            }
+            Action::UninhibitSuspend => {
+                let cookie = *data.inhibit_cookie.borrow();
+                if cookie != 0 {
+                    self.uninhibit(cookie);
+                    *data.inhibit_cookie.borrow_mut() = 0;
+                }
+            }
         };
 
         glib::Continue(true)
