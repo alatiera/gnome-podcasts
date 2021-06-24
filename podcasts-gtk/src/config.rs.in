@@ -18,7 +18,7 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-pub static APP_ID: &'static str = @APP_ID@;
-pub static VERSION: &'static str = @VERSION@;
-pub static LOCALEDIR: &'static str = @LOCALEDIR@;
-pub static PKGDATADIR: &'static str = @PKGDATADIR@;
+pub static APP_ID: &str = @APP_ID@;
+pub static VERSION: &str = @VERSION@;
+pub static LOCALEDIR: &str = @LOCALEDIR@;
+pub static PKGDATADIR: &str = @PKGDATADIR@;
