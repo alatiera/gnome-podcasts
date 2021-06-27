@@ -1,76 +1,77 @@
 # Chinese (China) translation for podcasts.
 # Copyright (C) 2018 podcasts's COPYRIGHT HOLDER
 # This file is distributed under the same license as the podcasts package.
-# Dingzhong Chen <wsxy162@gmail.com>, 2018.
+# Tranquilo Chan <cdh4227@qq.com>, 2020.
+# Dingzhong Chen <wsxy162@gmail.com>, 2018-2021.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: podcasts master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2018-09-06 18:29+0000\n"
-"PO-Revision-Date: 2018-09-07 12:07+0800\n"
-"Language-Team: Chinese (China) <i18n-zh@googlegroups.com>\n"
+"POT-Creation-Date: 2021-06-24 16:39+0000\n"
+"PO-Revision-Date: 2021-06-27 15:32-0400\n"
+"Last-Translator: Boyuan Yang <073plan@gmail.com>\n"
+"Language-Team: Chinese - China <i18n-zh@googlegroups.com>\n"
 "Language: zh_CN\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Last-Translator: Dingzhong Chen <wsxy162@gmail.com>\n"
-"X-Generator: Gtranslator 2.91.7\n"
+"X-Generator: Poedit 2.4.2\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml:15
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:15
 msgid "Top position of the last open main window"
 msgstr "最后打开的主窗口顶部位置"
 
-#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml:19
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:19
 msgid "Left position of the last open main window"
 msgstr "最后打开的主窗口左侧位置"
 
-#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml:23
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:23
 msgid "Height of the last open main window"
 msgstr "最后打开的主窗口高度"
 
-#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml:27
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:27
 msgid "Width of the last open main window"
 msgstr "最后打开的主窗口宽度"
 
-#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml:31
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:31
 msgid "Maximized state of the last open main window"
 msgstr "最后打开的主窗口最大化状态"
 
-#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml:36
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:36
 msgid "Enable or disable dark theme"
 msgstr "启用或禁用暗色主题"
 
-#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml:41
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:41
 msgid "Whether to periodically refresh content"
 msgstr "是否定期刷新内容"
 
-#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml:46
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:46
 msgid "How many periods of time to wait between automatic refreshes"
 msgstr "自动刷新之间要等待多久的时间"
 
-#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml:50
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:50
 msgid "What period of time to wait between automatic refreshes"
 msgstr "自动刷新之间要等待的时间段"
 
-#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml:54
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:54
 msgid "Whether to refresh content after startup"
 msgstr "启动后是否刷新内容"
 
-#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml:60
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:60
 msgid "How many periods of time to wait between automatic cleanups"
 msgstr "自动清理之间要等待多久的时间"
 
-#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml:64
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:64
 msgid "What period of time to wait between automatic cleanups"
 msgstr "自动清理之间要等待的时间段"
 
 #. Weird magic I copy-pasted that sets the Application Name in the Shell.
 #: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:3
 #: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:4
-#: podcasts-gtk/src/app.rs:91 podcasts-gtk/src/app.rs:414
-#: podcasts-gtk/src/widgets/aboutdialog.rs:31
+#: podcasts-gtk/resources/gtk/headerbar.ui:137 podcasts-gtk/src/app.rs:388
+#: podcasts-gtk/src/widgets/aboutdialog.rs:63 podcasts-gtk/src/window.rs:64
 msgid "Podcasts"
 msgstr "播客"
 
@@ -78,11 +79,6 @@ msgstr "播客"
 #: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:10
 msgid "Listen to your favorite podcasts, right from your desktop."
 msgstr "直接在您的桌面上收听喜欢的播客。"
-
-#. Translators: Do NOT translate or transliterate this text (this is an icon file name)!
-#: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:6
-msgid "@icon@"
-msgstr "@icon@"
 
 #. Translators: Search terms to find this application. Do NOT translate or localize the semicolons! The list MUST also end with a semicolon!
 #: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:13
@@ -93,7 +89,7 @@ msgstr "Podcast;RSS;播客;订阅;聚合;"
 msgid "Podcast app for GNOME"
 msgstr "GNOME 的播客应用"
 
-#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:51
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:99
 msgid "Jordan Petridis"
 msgstr "Jordan Petridis"
 
@@ -101,37 +97,41 @@ msgstr "Jordan Petridis"
 msgid "This show does not have episodes yet"
 msgstr "这个节目还没有剧集"
 
-#: podcasts-gtk/resources/gtk/empty_view.ui:62
+#: podcasts-gtk/resources/gtk/empty_view.ui:57
 msgid "If you think this is an error, please consider writing a bug report."
 msgstr "如果您认为这是个错误，请考虑编写个缺陷报告。"
 
-#: podcasts-gtk/resources/gtk/empty_view.ui:106
+#: podcasts-gtk/resources/gtk/empty_view.ui:91
 msgid "Get some shows"
 msgstr "获取节目"
 
-#: podcasts-gtk/resources/gtk/empty_view.ui:143
+#: podcasts-gtk/resources/gtk/empty_view.ui:123
 msgid "Add new shows via feed URL"
 msgstr "通过订阅源 URL 添加新节目"
 
-#: podcasts-gtk/resources/gtk/empty_view.ui:172
+#: podcasts-gtk/resources/gtk/empty_view.ui:152
 msgid "Import shows from another device"
 msgstr "从另一设备导入节目"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:178
+#: podcasts-gtk/resources/gtk/episode_widget.ui:82
+msgid "You’ve already listened to this episode."
+msgstr "您已经听过此节目了。"
+
+#: podcasts-gtk/resources/gtk/episode_widget.ui:187
 msgid "Calculating episode size…"
 msgstr "正在计算剧集大小……"
 
 #: podcasts-gtk/resources/gtk/episode_widget.ui:214
-msgid "Cancel"
-msgstr "取消"
-
-#: podcasts-gtk/resources/gtk/episode_widget.ui:232
-msgid "Download this episode"
-msgstr "下载此剧集"
-
-#: podcasts-gtk/resources/gtk/episode_widget.ui:256
 msgid "Play this episode"
 msgstr "播放此剧集"
+
+#: podcasts-gtk/resources/gtk/episode_widget.ui:230
+msgid "Cancel the download process"
+msgstr "取消下载进程"
+
+#: podcasts-gtk/resources/gtk/episode_widget.ui:250
+msgid "Download this episode"
+msgstr "下载此剧集"
 
 #: podcasts-gtk/resources/gtk/hamburger.ui:7
 msgid "_Check for New Episodes"
@@ -141,20 +141,20 @@ msgstr "检查新剧集(_C)"
 msgid "_Import Shows"
 msgstr "导入节目(_I)"
 
+#: podcasts-gtk/resources/gtk/hamburger.ui:16
+msgid "_Export Shows"
+msgstr "导出节目(_E)"
+
 #: podcasts-gtk/resources/gtk/hamburger.ui:22
-msgid "_Preferences"
-msgstr "首选项(_P)"
-
-#: podcasts-gtk/resources/gtk/hamburger.ui:29
 msgid "_Keyboard Shortcuts"
-msgstr "键盘快捷键(_K)"
+msgstr "快捷键(_K)"
 
-#: podcasts-gtk/resources/gtk/hamburger.ui:37
-msgid "_About"
-msgstr "关于(_A)"
+#: podcasts-gtk/resources/gtk/hamburger.ui:30
+msgid "_About Podcasts"
+msgstr "关于播客(_A)"
 
 #: podcasts-gtk/resources/gtk/headerbar.ui:35
-#: podcasts-gtk/resources/gtk/headerbar.ui:189
+#: podcasts-gtk/resources/gtk/headerbar.ui:165
 msgid "Add a new feed"
 msgstr "添加新订阅源"
 
@@ -162,19 +162,15 @@ msgstr "添加新订阅源"
 msgid "Enter feed address to add"
 msgstr "输入要添加的订阅源地址"
 
-#: podcasts-gtk/resources/gtk/headerbar.ui:89
+#: podcasts-gtk/resources/gtk/headerbar.ui:79
 msgid "Add"
 msgstr "添加"
 
-#: podcasts-gtk/resources/gtk/headerbar.ui:133
-msgid "You are already subscribed to that feed!"
-msgstr "您已经订阅了那条订阅源！"
-
-#: podcasts-gtk/resources/gtk/headerbar.ui:169
+#: podcasts-gtk/resources/gtk/headerbar.ui:150
 msgid "Show Title"
 msgstr "显示标题"
 
-#: podcasts-gtk/resources/gtk/headerbar.ui:210
+#: podcasts-gtk/resources/gtk/headerbar.ui:186
 msgid "Back"
 msgstr "后退"
 
@@ -189,11 +185,6 @@ msgstr "检查新剧集"
 
 #: podcasts-gtk/resources/gtk/help-overlay.ui:25
 msgctxt "shortcut window"
-msgid "Preferences"
-msgstr "首选项"
-
-#: podcasts-gtk/resources/gtk/help-overlay.ui:32
-msgctxt "shortcut window"
 msgid "Quit the application"
 msgstr "退出程序"
 
@@ -201,95 +192,82 @@ msgstr "退出程序"
 msgid "Today"
 msgstr "今天"
 
-#: podcasts-gtk/resources/gtk/home_view.ui:112
+#: podcasts-gtk/resources/gtk/home_view.ui:88
 msgid "Yesterday"
 msgstr "昨天"
 
-#: podcasts-gtk/resources/gtk/home_view.ui:168
+#: podcasts-gtk/resources/gtk/home_view.ui:120
 msgid "This Week"
 msgstr "本周"
 
-#: podcasts-gtk/resources/gtk/home_view.ui:224
+#: podcasts-gtk/resources/gtk/home_view.ui:152
 msgid "This Month"
 msgstr "本月"
 
-#: podcasts-gtk/resources/gtk/home_view.ui:281
+#: podcasts-gtk/resources/gtk/home_view.ui:185
 msgid "Older"
 msgstr "更早"
 
-#: podcasts-gtk/resources/gtk/inapp_notif.ui:101
+#: podcasts-gtk/resources/gtk/inapp_notif.ui:69
 msgid "An in-app action notification"
 msgstr "应用内操作通知"
 
-#: podcasts-gtk/resources/gtk/inapp_notif.ui:112
+#: podcasts-gtk/resources/gtk/inapp_notif.ui:75
 msgid "Undo"
 msgstr "撤消"
 
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:72
-msgid "Rewind 10 seconds"
-msgstr "后退 10 秒"
+#: podcasts-gtk/resources/gtk/player_dialog.ui:14
+msgid "Now Playing"
+msgstr "正在播放"
 
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:87
-msgid "Play"
-msgstr "播放"
-
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:103
-msgid "Pause"
-msgstr "暂停"
-
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:119
-msgid "Fast forward 10 seconds"
-msgstr "快进 10 秒"
-
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:285
+#: podcasts-gtk/resources/gtk/player_rate.ui:32
 msgid "Change the playback speed"
 msgstr "更改播放速度"
 
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:300
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:380
+#: podcasts-gtk/resources/gtk/player_rate.ui:46
+#: podcasts-gtk/resources/gtk/player_rate.ui:85
 msgid "1.00×"
 msgstr "1.00×"
 
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:344
+#: podcasts-gtk/resources/gtk/player_rate.ui:65
+msgid "2.00×"
+msgstr "2.00×"
+
+#: podcasts-gtk/resources/gtk/player_rate.ui:70
+msgid "1.75×"
+msgstr "1.75×"
+
+#: podcasts-gtk/resources/gtk/player_rate.ui:75
 msgid "1.50×"
 msgstr "1.50×"
 
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:348
-msgid "1.5 speed rate"
-msgstr "1.5 倍速率"
-
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:362
+#: podcasts-gtk/resources/gtk/player_rate.ui:80
 msgid "1.25×"
 msgstr "1.25×"
 
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:366
-msgid "1.25 speed rate"
-msgstr "1.25 倍速率"
+#: podcasts-gtk/resources/gtk/player_rate.ui:90
+msgid "0.90×"
+msgstr "0.90×"
 
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:384
-msgid "Normal speed"
-msgstr "正常速度"
+#: podcasts-gtk/resources/gtk/player_rate.ui:95
+msgid "0.75×"
+msgstr "0.75×"
 
-#: podcasts-gtk/resources/gtk/prefs.ui:42
-#: podcasts-gtk/resources/gtk/prefs.ui:295
-msgid "Preferences"
-msgstr "首选项"
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:97
+msgid "Rewind 10 seconds"
+msgstr "后退 10 秒"
 
-#: podcasts-gtk/resources/gtk/prefs.ui:76
-msgid "Appearance"
-msgstr "外观"
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:107
+msgid "Play"
+msgstr "播放"
 
-#: podcasts-gtk/resources/gtk/prefs.ui:120
-msgid "Dark Theme"
-msgstr "暗色主题"
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:118
+msgid "Pause"
+msgstr "暂停"
 
-#: podcasts-gtk/resources/gtk/prefs.ui:166
-msgid "Delete played episodes"
-msgstr "删除播放过的剧集"
-
-#: podcasts-gtk/resources/gtk/prefs.ui:211
-msgid "After"
-msgstr "经过"
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:129
+msgid "Fast forward 10 seconds"
+msgstr "快进 10 秒"
 
 #: podcasts-gtk/resources/gtk/secondary_menu.ui:7
 msgid "_Mark All Episodes as Played"
@@ -303,103 +281,171 @@ msgstr "网站(_W)"
 msgid "_Unsubscribe"
 msgstr "退订(_U)"
 
-#: podcasts-gtk/resources/gtk/show_menu.ui:51
+#: podcasts-gtk/resources/gtk/show_menu.ui:36
 msgid "Open Website"
 msgstr "打开网站"
 
-#: podcasts-gtk/resources/gtk/show_menu.ui:64
+#: podcasts-gtk/resources/gtk/show_menu.ui:40
 msgid "Mark All as Played"
 msgstr "全部标记为已播放"
 
-#: podcasts-gtk/resources/gtk/show_menu.ui:89
+#: podcasts-gtk/resources/gtk/show_menu.ui:46
 msgid "Unsubscribe"
 msgstr "退订"
 
-#: podcasts-gtk/src/app.rs:332
+#: podcasts-gtk/resources/gtk/show_widget.ui:98
+msgid "Read More"
+msgstr "阅读更多"
+
+#: podcasts-gtk/src/app.rs:303
 msgid "Fetching new episodes"
 msgstr "正在提取新剧集"
 
-#: podcasts-gtk/src/headerbar.rs:98
-msgid "You are already subscribed to this show"
-msgstr "您已经订阅了此节目"
-
-#: podcasts-gtk/src/headerbar.rs:106
-msgid "Invalid URL"
-msgstr "无效的 URL"
-
-#: podcasts-gtk/src/prefs.rs:59
-msgid "Seconds"
-msgstr "秒"
-
-#: podcasts-gtk/src/prefs.rs:60
-msgid "Minutes"
-msgstr "分"
-
-#: podcasts-gtk/src/prefs.rs:61
-msgid "Hours"
-msgstr "小时"
-
-#: podcasts-gtk/src/prefs.rs:62
-msgid "Days"
-msgstr "天"
-
-#: podcasts-gtk/src/prefs.rs:63
-msgid "Weeks"
-msgstr "周"
-
-#: podcasts-gtk/src/stacks/content.rs:35
+#: podcasts-gtk/src/stacks/content.rs:53
 msgid "New"
 msgstr "更新"
 
-#: podcasts-gtk/src/stacks/content.rs:36
+#: podcasts-gtk/src/stacks/content.rs:54
 msgid "Shows"
 msgstr "节目"
 
-#: podcasts-gtk/src/utils.rs:357
+#: podcasts-gtk/src/utils.rs:472
 msgid "Select the file from which to you want to import shows."
 msgstr "选择您想要从中导入节目的文件。"
 
-#: podcasts-gtk/src/utils.rs:360
+#: podcasts-gtk/src/utils.rs:475
 msgid "_Import"
 msgstr "导入(_I)"
 
-#: podcasts-gtk/src/utils.rs:369
+#: podcasts-gtk/src/utils.rs:484 podcasts-gtk/src/utils.rs:533
 msgid "OPML file"
 msgstr "OPML 文件"
 
-#: podcasts-gtk/src/utils.rs:386
+#: podcasts-gtk/src/utils.rs:502
 msgid "Failed to parse the imported file"
 msgstr "解析导入文件失败"
 
-#: podcasts-gtk/src/utils.rs:391
+#: podcasts-gtk/src/utils.rs:507 podcasts-gtk/src/utils.rs:552
 msgid "Selected file could not be accessed."
 msgstr "所选文件无法访问。"
 
-#: podcasts-gtk/src/widgets/aboutdialog.rs:26
+#: podcasts-gtk/src/utils.rs:518
+msgid "Export shows to…"
+msgstr "导出节目到…"
+
+#: podcasts-gtk/src/utils.rs:521
+msgid "_Export"
+msgstr "导出(_E)"
+
+#: podcasts-gtk/src/utils.rs:522
+msgid "_Cancel"
+msgstr "取消(_C)"
+
+#. Translators: This is the string of the suggested name for the exported opml file
+#: podcasts-gtk/src/utils.rs:526
+msgid "gnome-podcasts-exported-shows"
+msgstr "gnome播客导出的节目"
+
+#: podcasts-gtk/src/utils.rs:546
+msgid "GNOME Podcasts Subscriptions"
+msgstr "GNOME 播客订阅"
+
+#: podcasts-gtk/src/utils.rs:547
+msgid "Failed to export podcasts"
+msgstr "播客导出失败"
+
+#: podcasts-gtk/src/widgets/aboutdialog.rs:58
 msgid "Podcast Client for the GNOME Desktop."
 msgstr "GNOME 桌面的播客客户端。"
 
-#: podcasts-gtk/src/widgets/aboutdialog.rs:33
+#: podcasts-gtk/src/widgets/aboutdialog.rs:65
 msgid "Learn more about GNOME Podcasts"
 msgstr "了解关于 GNOME 播客的更多信息"
 
-#: podcasts-gtk/src/widgets/aboutdialog.rs:38
+#: podcasts-gtk/src/widgets/aboutdialog.rs:69
 msgid "translator-credits"
-msgstr "Dingzhong Chen <wsxy162@gmail.com>, 2018."
+msgstr ""
+"Dingzhong Chen <wsxy162@gmail.com>, 2018.\n"
+"Tranquilo Chan <cdh4227@qq.com>, 2020."
 
-#: podcasts-gtk/src/widgets/episode.rs:129
+#: podcasts-gtk/src/widgets/episode.rs:144
 msgid "{} min"
 msgstr "{} 分钟"
 
-#. sender.send(Action::ErrorNotification(format!("Player Error: {}", error)));
-#: podcasts-gtk/src/widgets/player.rs:301
+#: podcasts-gtk/src/widgets/player.rs:828
 msgid "The media player was unable to execute an action."
 msgstr "媒体播放器无法执行此操作。"
 
-#: podcasts-gtk/src/widgets/show_menu.rs:150
+#: podcasts-gtk/src/widgets/show_menu.rs:198
 msgid "Marked all episodes as listened"
 msgstr "标记所有剧集为已听过"
 
-#: podcasts-gtk/src/widgets/show_menu.rs:155
+#: podcasts-gtk/src/widgets/show_menu.rs:203
 msgid "Unsubscribed from {}"
 msgstr "已退订 {}"
+
+#~| msgid "1.5 speed rate"
+#~ msgid "Double speed rate"
+#~ msgstr "2 倍速率"
+
+#~| msgid "1.5 speed rate"
+#~ msgid "1.75 speed rate"
+#~ msgstr "1.75 倍速率"
+
+#~ msgid "1.5 speed rate"
+#~ msgstr "1.5 倍速率"
+
+#~ msgid "1.25 speed rate"
+#~ msgstr "1.25 倍速率"
+
+#~ msgid "Normal speed"
+#~ msgstr "正常速度"
+
+#~ msgid "@icon@"
+#~ msgstr "@icon@"
+
+#~ msgid "_Preferences"
+#~ msgstr "首选项(_P)"
+
+#~ msgid "_About"
+#~ msgstr "关于(_A)"
+
+#~ msgid "You are already subscribed to that feed!"
+#~ msgstr "您已经订阅了那条订阅源！"
+
+#~ msgctxt "shortcut window"
+#~ msgid "Preferences"
+#~ msgstr "首选项"
+
+#~ msgid "Preferences"
+#~ msgstr "首选项"
+
+#~ msgid "Appearance"
+#~ msgstr "外观"
+
+#~ msgid "Dark Theme"
+#~ msgstr "暗色主题"
+
+#~ msgid "Delete played episodes"
+#~ msgstr "删除播放过的剧集"
+
+#~ msgid "After"
+#~ msgstr "经过"
+
+#~ msgid "Invalid URL"
+#~ msgstr "无效的 URL"
+
+#~ msgid "Seconds"
+#~ msgstr "秒"
+
+#~ msgid "Minutes"
+#~ msgstr "分"
+
+#~ msgid "Hours"
+#~ msgstr "小时"
+
+#~ msgid "Days"
+#~ msgstr "天"
+
+#~ msgid "Weeks"
+#~ msgstr "周"
