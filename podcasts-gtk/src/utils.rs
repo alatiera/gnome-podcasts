@@ -439,29 +439,58 @@ async fn itunes_lookup_id(id: u32) -> Result<String> {
         .ok_or_else(|| anyhow!("Failed to get url from itunes response"))
 }
 
+/// Convert soundcloud page links to rss feed links.
+/// Works for users and playlists.
 pub(crate) async fn soundcloud_to_rss(url: &Url) -> Result<Url> {
     // Turn: https://soundcloud.com/chapo-trap-house
     // into: https://feeds.soundcloud.com/users/soundcloud:users:211911700/sounds.rss
-    let id = soundcloud_lookup_id(url)
+    let (user_id, playlist_id) = soundcloud_lookup_id(url)
         .await
         .ok_or_else(|| anyhow!("Failed to find a soundcloud ID."))?;
-    let url = format!(
-        "https://feeds.soundcloud.com/users/soundcloud:users:{}/sounds.rss",
-        id
-    );
-    Ok(Url::parse(&url)?)
+    if playlist_id != 0 {
+        let url = format!(
+            "https://feeds.soundcloud.com/playlists/soundcloud:playlists:{}/sounds.rss",
+            playlist_id
+        );
+        Ok(Url::parse(&url)?)
+    } else if user_id != 0 {
+        let url = format!(
+            "https://feeds.soundcloud.com/users/soundcloud:users:{}/sounds.rss",
+            user_id
+        );
+        Ok(Url::parse(&url)?)
+    } else {
+        Err(anyhow!("No valid id's in soundcloud page."))
+    }
 }
 
-async fn soundcloud_lookup_id(url: &Url) -> Option<u64> {
-    // lookup the users: id for a soundcloud url
+/// Extract (user, playlist) id's from a soundcloud page.
+/// The id's are 0 if none was found.
+/// If fetching the html page fails an Error is returned.
+async fn soundcloud_lookup_id(url: &Url) -> Option<(u64, u64)> {
     lazy_static! {
-        static ref RE: Regex = Regex::new(r"soundcloud://users:([0-9]+)").unwrap();
+        static ref RE_U: Regex = Regex::new(r"soundcloud://users:([0-9]+)").unwrap();
+    }
+    lazy_static! {
+        static ref RE_P: Regex = Regex::new(r"soundcloud://playlists:([0-9]+)").unwrap();
     }
     let url_str = url.to_string();
     let response_text = reqwest::get(&url_str).await.ok()?.text().await.ok()?;
-    let id = RE.captures_iter(&response_text).next()?.get(1)?.as_str();
+    let user_id = RE_U
+        .captures_iter(&response_text)
+        .next()
+        .and_then(|r| r.get(1).map(|u| u.as_str()));
+    let playlist_id = RE_P
+        .captures_iter(&response_text)
+        .next()
+        .and_then(|r| r.get(1).map(|u| u.as_str()));
     // Parse it to a u64, this *should* never fail
-    id.parse::<u64>().ok()
+    Some((
+        user_id.and_then(|id| id.parse::<u64>().ok()).unwrap_or(0),
+        playlist_id
+            .and_then(|id| id.parse::<u64>().ok())
+            .unwrap_or(0),
+    ))
 }
 
 pub(crate) fn on_import_clicked(window: &gtk::ApplicationWindow, sender: &Sender<Action>) {
@@ -633,6 +662,47 @@ mod tests {
         let soundcloud_url =
             Url::parse("https://soundcloud.com/id000000000000000ajlsfhlsfhwoerzuweioh")?;
         assert!(soundcloud_to_rss(&soundcloud_url).await.is_err());
+        Ok(())
+    }
+
+    #[tokio::test]
+    async fn test_soundcloud_playlist_to_rss() -> Result<()> {
+        // valid playlist
+        let soundcloud_url =
+            Url::parse("https://soundcloud.com/languagetransfer/sets/introduction-to-italian")?;
+        let rss_url = String::from(
+            "https://feeds.soundcloud.com/playlists/soundcloud:playlists:220248349/sounds.rss",
+        );
+        assert_eq!(
+            Url::parse(&rss_url)?,
+            soundcloud_to_rss(&soundcloud_url).await?
+        );
+
+        // invalid playlist link
+        let soundcloud_url =
+            Url::parse("https://soundcloud.com/languagetransfer/sets/does-not-exist")?;
+        assert!(soundcloud_to_rss(&soundcloud_url).await.is_err());
+
+        // user page with a playlist pinned at the top, should return user rss not playlist
+        let soundcloud_url = Url::parse("https://soundcloud.com/yung-chomsky")?;
+        let rss_url = String::from(
+            "https://feeds.soundcloud.com/users/soundcloud:users:418603470/sounds.rss",
+        );
+        assert_eq!(
+            Url::parse(&rss_url)?,
+            soundcloud_to_rss(&soundcloud_url).await?
+        );
+
+        // playlist without rss entries
+        let soundcloud_url =
+            Url::parse("https://soundcloud.com/yung-chomsky/sets/music-for-podcasts-volume-1")?;
+        let rss_url = String::from(
+            "https://feeds.soundcloud.com/playlists/soundcloud:playlists:1165448311/sounds.rss",
+        );
+        assert_eq!(
+            Url::parse(&rss_url)?,
+            soundcloud_to_rss(&soundcloud_url).await?
+        );
         Ok(())
     }
 
