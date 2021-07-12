@@ -616,6 +616,9 @@ impl PlayerExt for PlayerWidget {
 
         self.player.pause();
         self.info.mpris.set_playback_status(PlaybackStatus::Paused);
+        if let Some(sender) = &self.sender {
+            send!(sender, Action::UninhibitSuspend);
+        }
 
         self.controls.last_pause.replace(Some(Local::now()));
         let pos = self.player.get_position();
