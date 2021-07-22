@@ -89,6 +89,14 @@
     <kudo>ModernToolkit</kudo>
     <kudo>HiDpiIcon</kudo>
   </kudos>
+  <recommends>
+    <control>keyboard</control>
+    <control>pointing</control>
+    <control>touch</control>
+  </recommends>
+  <requires>
+    <display_length compare="ge">small</display_length>
+  </requires>
   <launchable type="desktop-id">@appid@.desktop</launchable>
   <url type="homepage">https://wiki.gnome.org/Apps/Podcasts</url>
   <url type="bugtracker">https://gitlab.gnome.org/World/podcasts/issues/</url>
