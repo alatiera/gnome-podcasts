@@ -77,7 +77,7 @@ fn download_into(
     let client = reqwest::blocking::Client::builder()
         .redirect(policy)
         .referer(false)
-        .user_agent("gnome-podcasts")
+        .user_agent(USER_AGENT)
         .build()?;
     let mut resp = client.get(url).send()?;
     info!("Status Resp: {}", resp.status());
