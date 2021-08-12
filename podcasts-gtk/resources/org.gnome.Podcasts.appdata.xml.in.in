@@ -92,7 +92,7 @@
   <launchable type="desktop-id">@appid@.desktop</launchable>
   <url type="homepage">https://wiki.gnome.org/Apps/Podcasts</url>
   <url type="bugtracker">https://gitlab.gnome.org/World/podcasts/issues/</url>
-  <url type="donation">http://www.gnome.org/friends/</url>
+  <url type="donation">https://www.gnome.org/donate/</url>
   <translation type="gettext">gnome-podcasts</translation>
   <project_group>GNOME</project_group>
   <update_contact>jpetridis@gnome.org</update_contact>
