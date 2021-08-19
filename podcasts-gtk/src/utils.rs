@@ -18,7 +18,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 use gdk_pixbuf::Pixbuf;
-use gio::ActionMapExt;
+use gio::prelude::ActionMapExt;
 use glib::clone;
 use glib::Sender;
 use glib::Variant;
@@ -45,6 +45,7 @@ use podcasts_data::Source;
 
 use std::collections::{HashMap, HashSet};
 use std::sync::{Arc, Mutex, RwLock};
+use std::time::Duration;
 
 use crate::app::Action;
 
@@ -185,28 +186,27 @@ where
 // https://blogs.gnome.org/jsparber/2018/04/29/animate-a-scrolledwindow/
 #[allow(clippy::float_cmp)]
 pub(crate) fn smooth_scroll_to(view: &gtk::ScrolledWindow, target: &gtk::Adjustment) {
-    if let Some(adj) = view.get_vadjustment() {
-        if let Some(clock) = view.get_frame_clock() {
-            let duration = 200;
-            let start = adj.get_value();
-            let end = target.get_value();
-            let start_time = clock.get_frame_time();
-            let end_time = start_time + 1000 * duration;
+    let adj = view.vadjustment();
+    if let Some(clock) = view.frame_clock() {
+        let duration = 200;
+        let start = adj.value();
+        let end = target.value();
+        let start_time = clock.frame_time();
+        let end_time = start_time + 1000 * duration;
 
-            view.add_tick_callback(move |_, clock| {
-                let now = clock.get_frame_time();
-                // FIXME: `adj.get_value != end` is a float comparison...
-                if now < end_time && adj.get_value().abs() != end.abs() {
-                    let mut t = (now - start_time) as f64 / (end_time - start_time) as f64;
-                    t = ease_out_cubic(t);
-                    adj.set_value(start + t * (end - start));
-                    Continue(true)
-                } else {
-                    adj.set_value(end);
-                    Continue(false)
-                }
-            });
-        }
+        view.add_tick_callback(move |_, clock| {
+            let now = clock.frame_time();
+            // FIXME: `adj.get_value != end` is a float comparison...
+            if now < end_time && adj.value().abs() != end.abs() {
+                let mut t = (now - start_time) as f64 / (end_time - start_time) as f64;
+                t = ease_out_cubic(t);
+                adj.set_value(start + t * (end - start));
+                Continue(true)
+            } else {
+                adj.set_value(end);
+                Continue(false)
+            }
+        });
     }
 }
 
@@ -345,7 +345,7 @@ pub(crate) fn set_image_from_path(image: &gtk::Image, show_id: i32, size: u32) -
                  let _ = set_image_from_path(&image, show_id, size);
                  glib::Continue(false)
             });
-            glib::timeout_add_local(250, callback);
+            glib::timeout_add_local(Duration::from_millis(250), callback);
             return Ok(());
         }
     }
@@ -372,7 +372,7 @@ pub(crate) fn set_image_from_path(image: &gtk::Image, show_id: i32, size: u32) -
 
     let image = image.clone();
     let s = size as i32;
-    glib::timeout_add_local(25, move || {
+    glib::timeout_add_local(Duration::from_millis(25), move || {
         use crossbeam_channel::TryRecvError;
 
         match receiver.try_recv() {
@@ -519,7 +519,7 @@ pub(crate) fn on_import_clicked(window: &gtk::ApplicationWindow, sender: &Sender
     let resp = dialog.run();
     debug!("Dialog Response {}", resp);
     if resp == ResponseType::Accept {
-        if let Some(filename) = dialog.get_filename() {
+        if let Some(filename) = dialog.filename() {
             debug!("File selected: {:?}", filename);
 
             rayon::spawn(clone!(@strong sender => move || {
@@ -552,7 +552,7 @@ pub(crate) fn on_export_clicked(window: &gtk::ApplicationWindow, sender: &Sender
     );
 
     // Translators: This is the string of the suggested name for the exported opml file
-    dialog.set_current_name(format!("{}.opml", i18n("gnome-podcasts-exported-shows")));
+    dialog.set_current_name(&format!("{}.opml", i18n("gnome-podcasts-exported-shows")));
 
     // Do not show hidden(.thing) files
     dialog.set_show_hidden(false);
@@ -568,7 +568,7 @@ pub(crate) fn on_export_clicked(window: &gtk::ApplicationWindow, sender: &Sender
     let resp = dialog.run();
     debug!("Dialog Response {}", resp);
     if resp == ResponseType::Accept {
-        if let Some(filename) = dialog.get_filename() {
+        if let Some(filename) = dialog.filename() {
             debug!("File selected: {:?}", filename);
 
             rayon::spawn(clone!(@strong sender => move || {

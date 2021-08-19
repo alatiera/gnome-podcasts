@@ -50,15 +50,15 @@ pub(crate) struct EpisodeDescription {
 impl Default for EpisodeDescription {
     fn default() -> Self {
         let builder = gtk::Builder::from_resource("/org/gnome/Podcasts/gtk/episode_description.ui");
-        let container: gtk::Box = builder.get_object("episode_container").unwrap();
-        let back_button: gtk::Button = builder.get_object("back_button").unwrap();
-        let menu_button: gtk::MenuButton = builder.get_object("menu_button").unwrap();
-        let image = builder.get_object("cover").unwrap();
-        let podcast_title: gtk::Label = builder.get_object("podcast_title").unwrap();
-        let title: gtk::Label = builder.get_object("episode_title").unwrap();
-        let duration_date_label: gtk::Label = builder.get_object("episode_duration_date").unwrap();
+        let container: gtk::Box = builder.object("episode_container").unwrap();
+        let back_button: gtk::Button = builder.object("back_button").unwrap();
+        let menu_button: gtk::MenuButton = builder.object("menu_button").unwrap();
+        let image = builder.object("cover").unwrap();
+        let podcast_title: gtk::Label = builder.object("podcast_title").unwrap();
+        let title: gtk::Label = builder.object("episode_title").unwrap();
+        let duration_date_label: gtk::Label = builder.object("episode_duration_date").unwrap();
 
-        let label: gtk::Label = builder.get_object("episode_description").unwrap();
+        let label: gtk::Label = builder.object("episode_description").unwrap();
 
         EpisodeDescription {
             container,
@@ -101,12 +101,12 @@ impl EpisodeDescription {
         self.episode_id = Some(ep.rowid());
 
         if let Some(t) = ep.description() {
-            let default_text = self.description_label.get_text();
+            let default_text = self.description_label.text();
             let markup = html2pango_markup(&t);
             self.description_label.set_markup(&markup);
 
             // plaintext fallback if setting markup didn't work
-            if self.description_label.get_text() == default_text {
+            if self.description_label.text() == default_text {
                 self.description_label.set_text(&t);
             }
         };

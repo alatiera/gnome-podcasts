@@ -25,7 +25,7 @@ use gtk::{self, prelude::*, Adjustment};
 use glib::clone;
 
 use glib::Sender;
-use libhandy::{Clamp, ClampExt};
+use libhandy::Clamp;
 use podcasts_data::dbqueries;
 use podcasts_data::EpisodeWidgetModel;
 
@@ -65,17 +65,17 @@ impl Default for HomeView {
     fn default() -> Self {
         let view = BaseView::default();
         let builder = gtk::Builder::from_resource("/org/gnome/Podcasts/gtk/home_view.ui");
-        let frame_parent: gtk::Box = builder.get_object("frame_parent").unwrap();
-        let today_box: gtk::Box = builder.get_object("today_box").unwrap();
-        let yday_box: gtk::Box = builder.get_object("yday_box").unwrap();
-        let week_box: gtk::Box = builder.get_object("week_box").unwrap();
-        let month_box: gtk::Box = builder.get_object("month_box").unwrap();
-        let rest_box: gtk::Box = builder.get_object("rest_box").unwrap();
-        let today_list: gtk::ListBox = builder.get_object("today_list").unwrap();
-        let yday_list: gtk::ListBox = builder.get_object("yday_list").unwrap();
-        let week_list: gtk::ListBox = builder.get_object("week_list").unwrap();
-        let month_list: gtk::ListBox = builder.get_object("month_list").unwrap();
-        let rest_list: gtk::ListBox = builder.get_object("rest_list").unwrap();
+        let frame_parent: gtk::Box = builder.object("frame_parent").unwrap();
+        let today_box: gtk::Box = builder.object("today_box").unwrap();
+        let yday_box: gtk::Box = builder.object("yday_box").unwrap();
+        let week_box: gtk::Box = builder.object("week_box").unwrap();
+        let month_box: gtk::Box = builder.object("month_box").unwrap();
+        let rest_box: gtk::Box = builder.object("rest_box").unwrap();
+        let today_list: gtk::ListBox = builder.object("today_list").unwrap();
+        let yday_list: gtk::ListBox = builder.object("yday_list").unwrap();
+        let week_list: gtk::ListBox = builder.object("week_list").unwrap();
+        let month_list: gtk::ListBox = builder.object("month_list").unwrap();
+        let rest_list: gtk::ListBox = builder.object("rest_list").unwrap();
 
         let clamp = Clamp::new();
         clamp.show();
@@ -177,8 +177,8 @@ pub(crate) struct HomeEpisode {
 impl Default for HomeEpisode {
     fn default() -> Self {
         let builder = gtk::Builder::from_resource("/org/gnome/Podcasts/gtk/home_episode.ui");
-        let container: gtk::Box = builder.get_object("container").unwrap();
-        let image: gtk::Image = builder.get_object("cover").unwrap();
+        let container: gtk::Box = builder.object("container").unwrap();
+        let image: gtk::Image = builder.object("cover").unwrap();
         let ep = EpisodeWidget::default();
         container.pack_start(&ep.container, true, true, 0);
         let row = gtk::ListBoxRow::new();
@@ -197,8 +197,8 @@ impl Default for HomeEpisode {
 impl HomeEpisode {
     fn new(episode: EpisodeWidgetModel, sender: &Sender<Action>) -> HomeEpisode {
         let builder = gtk::Builder::from_resource("/org/gnome/Podcasts/gtk/home_episode.ui");
-        let container: gtk::Box = builder.get_object("container").unwrap();
-        let image: gtk::Image = builder.get_object("cover").unwrap();
+        let container: gtk::Box = builder.object("container").unwrap();
+        let image: gtk::Image = builder.object("cover").unwrap();
         let pid = episode.show_id();
         let id = episode.rowid();
         let ep = EpisodeWidget::new(episode, sender);

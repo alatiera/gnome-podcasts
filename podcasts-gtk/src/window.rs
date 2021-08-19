@@ -20,12 +20,12 @@
 use glib::clone;
 use glib::Sender;
 
-use gio::{self, prelude::*, SettingsExt};
+use gio::{self, prelude::*};
 
 use gtk::prelude::*;
 
 use libhandy as hdy;
-use libhandy::DeckExt;
+use libhandy::prelude::DeckExt;
 
 use crate::app::{Action, PdApplication};
 use crate::headerbar::Header;
@@ -65,7 +65,7 @@ impl MainWindow {
 
         window.set_title(&i18n("Podcasts"));
         if APP_ID.ends_with("Devel") {
-            window.get_style_context().add_class("devel");
+            window.style_context().add_class("devel");
         }
 
         window.connect_delete_event(
@@ -115,7 +115,7 @@ impl MainWindow {
         WindowGeometry::from_settings(&settings).apply(&window);
 
         // Update the feeds right after the Window is initialized.
-        if settings.get_boolean("refresh-on-startup") {
+        if settings.boolean("refresh-on-startup") {
             info!("Refresh on startup.");
             utils::schedule_refresh(None, sender.clone());
         }
@@ -201,8 +201,8 @@ impl MainWindow {
     }
     /// Remove all items from the `main_deck` except from the content
     pub fn clear_deck(&self) {
-        for c in self.main_deck.get_children() {
-            if c.get_widget_name() != "content" {
+        for c in self.main_deck.children() {
+            if c.widget_name() != "content" {
                 self.main_deck.remove(&c);
             }
         }

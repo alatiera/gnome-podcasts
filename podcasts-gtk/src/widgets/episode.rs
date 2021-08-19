@@ -36,6 +36,7 @@ use crate::manager;
 use std::cell::RefCell;
 use std::rc::{Rc, Weak};
 use std::sync::{Arc, Mutex, TryLockError};
+use std::time::Duration;
 
 use crate::i18n::i18n_f;
 
@@ -106,10 +107,10 @@ impl InfoLabels {
         self.title.set_text(episode.title());
 
         if episode.played().is_some() {
-            self.title.get_style_context().add_class("dim-label");
+            self.title.style_context().add_class("dim-label");
             self.played_checkmark.show();
         } else {
-            self.title.get_style_context().remove_class("dim-label");
+            self.title.style_context().remove_class("dim-label");
             self.played_checkmark.hide();
         }
     }
@@ -180,26 +181,26 @@ impl Default for EpisodeWidget {
     fn default() -> Self {
         let builder = gtk::Builder::from_resource("/org/gnome/Podcasts/gtk/episode_widget.ui");
 
-        let container = builder.get_object("episode_container").unwrap();
-        let progressbar = builder.get_object("progress_bar").unwrap();
+        let container = builder.object("episode_container").unwrap();
+        let progressbar = builder.object("progress_bar").unwrap();
 
-        let buttons_container = builder.get_object("button_box").unwrap();
-        let download = builder.get_object("download_button").unwrap();
-        let play = builder.get_object("play_button").unwrap();
-        let cancel = builder.get_object("cancel_button").unwrap();
+        let buttons_container = builder.object("button_box").unwrap();
+        let download = builder.object("download_button").unwrap();
+        let play = builder.object("play_button").unwrap();
+        let cancel = builder.object("cancel_button").unwrap();
 
-        let info_container = builder.get_object("info_container").unwrap();
-        let title = builder.get_object("title_label").unwrap();
-        let date = builder.get_object("date_label").unwrap();
-        let duration = builder.get_object("duration_label").unwrap();
-        let local_size = builder.get_object("local_size").unwrap();
-        let total_size = builder.get_object("total_size").unwrap();
-        let played_checkmark = builder.get_object("played_checkmark").unwrap();
+        let info_container = builder.object("info_container").unwrap();
+        let title = builder.object("title_label").unwrap();
+        let date = builder.object("date_label").unwrap();
+        let duration = builder.object("duration_label").unwrap();
+        let local_size = builder.object("local_size").unwrap();
+        let total_size = builder.object("total_size").unwrap();
+        let played_checkmark = builder.object("played_checkmark").unwrap();
 
-        let separator1 = builder.get_object("separator1").unwrap();
-        let separator2 = builder.get_object("separator2").unwrap();
+        let separator1 = builder.object("separator1").unwrap();
+        let separator2 = builder.object("separator2").unwrap();
 
-        let size_separator = builder.get_object("prog_separator").unwrap();
+        let size_separator = builder.object("prog_separator").unwrap();
 
         EpisodeWidget {
             info: InfoLabels {
@@ -387,7 +388,7 @@ impl EpisodeWidget {
 
                 glib::Continue(true)
             });
-            glib::timeout_add_local(250, callback);
+            glib::timeout_add_local(Duration::from_millis(250), callback);
 
             // Wire the cancel button
             widget
@@ -400,7 +401,7 @@ impl EpisodeWidget {
                     }
 
                     // Cancel is not instant so we have to wait a bit
-                    glib::timeout_add_local(50, clone!(@strong weak, @strong sender => move || {
+                    glib::timeout_add_local(Duration::from_millis(50), clone!(@strong weak, @strong sender => move || {
                         if let Ok(thing) = active_dl() {
                             if thing.is_none() {
                                 // Recalculate the widget state
@@ -524,7 +525,7 @@ fn update_progressbar_callback(
         progress_bar_helper(&widget, &prog, episode_rowid)
             .unwrap_or(glib::Continue(false))
     });
-    glib::timeout_add_local(100, callback);
+    glib::timeout_add_local(Duration::from_millis(100), callback);
 }
 
 #[allow(clippy::if_same_then_else)]
@@ -571,7 +572,7 @@ fn progress_bar_helper(
         if widget
             .info
             .total_size
-            .get_text()
+            .text()
             .trim_end_matches(" MB")
             .parse::<i32>()
             .is_err()
@@ -592,7 +593,7 @@ fn update_total_size_callback(widget: &Weak<EpisodeWidget>, prog: &Arc<Mutex<man
     let callback = clone!(@strong prog, @strong widget => move || {
         total_size_helper(&widget, &prog).unwrap_or(glib::Continue(true))
     });
-    glib::timeout_add_local(100, callback);
+    glib::timeout_add_local(Duration::from_millis(100), callback);
 }
 
 fn total_size_helper(

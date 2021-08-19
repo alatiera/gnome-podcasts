@@ -17,7 +17,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-use gio::ActionMapExt;
+use gio::prelude::ActionMapExt;
 use glib::clone;
 use gtk::prelude::*;
 
@@ -48,7 +48,7 @@ pub(crate) struct ShowMenu {
 impl Default for ShowMenu {
     fn default() -> Self {
         let builder = gtk::Builder::from_resource("/org/gnome/Podcasts/gtk/show_menu.ui");
-        let menu = builder.get_object("show_menu").unwrap();
+        let menu = builder.object("show_menu").unwrap();
         let website = gio::SimpleAction::new("open-website", None);
         let played = gio::SimpleAction::new("mark-played", None);
         let unsub = gio::SimpleAction::new("unsubscribe", None);
@@ -80,11 +80,11 @@ impl ShowMenu {
         self.connect_played(pd, episodes, sender);
         self.connect_unsub(pd, sender);
 
-        let app = gio::Application::get_default()
+        let app = gio::Application::default()
             .expect("Could not get default application")
             .downcast::<gtk::Application>()
             .unwrap();
-        let win = app.get_active_window().expect("No active window");
+        let win = app.active_window().expect("No active window");
         win.insert_action_group("show", Some(&self.group));
     }
 
@@ -133,36 +133,32 @@ impl ShowMenu {
 // But now I can't think of a better way to do it than hardcoding the title
 // position relative to the EpisodeWidget container gtk::Box.
 fn dim_titles(episodes: &gtk::ListBox) -> Option<()> {
-    let children = episodes.get_children();
+    let children = episodes.children();
 
     for row in children {
         let row = row.downcast::<gtk::ListBoxRow>().ok()?;
-        let container = row.get_children().remove(0).downcast::<gtk::Box>().ok()?;
-        let first_children_box = container
-            .get_children()
-            .remove(0)
-            .downcast::<gtk::Box>()
-            .ok()?;
+        let container = row.children().remove(0).downcast::<gtk::Box>().ok()?;
+        let first_children_box = container.children().remove(0).downcast::<gtk::Box>().ok()?;
         let second_children_box = first_children_box
-            .get_children()
+            .children()
             .remove(0)
             .downcast::<gtk::Box>()
             .ok()?;
         let third_children_box = second_children_box
-            .get_children()
+            .children()
             .remove(0)
             .downcast::<gtk::Box>()
             .ok()?;
         let title = third_children_box
-            .get_children()
+            .children()
             .remove(0)
             .downcast::<gtk::Label>()
             .ok()?;
 
-        title.get_style_context().add_class("dim-label");
+        title.style_context().add_class("dim-label");
 
         let checkmark = third_children_box
-            .get_children()
+            .children()
             .remove(1)
             .downcast::<gtk::Image>()
             .ok()?;

@@ -17,7 +17,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-use gio::ActionMapExt;
+use gio::prelude::ActionMapExt;
 use glib::clone;
 use gtk::prelude::*;
 
@@ -41,7 +41,7 @@ pub(crate) struct EpisodeMenu {
 impl Default for EpisodeMenu {
     fn default() -> Self {
         let builder = gtk::Builder::from_resource("/org/gnome/Podcasts/gtk/episode_menu.ui");
-        let menu = builder.get_object("episode_menu").unwrap();
+        let menu = builder.object("episode_menu").unwrap();
         let go_to_show = gio::SimpleAction::new("go-to-show", None);
         let copy_episode_url = gio::SimpleAction::new("copy-episode-url", None);
         let group = gio::SimpleActionGroup::new();
@@ -66,11 +66,11 @@ impl EpisodeMenu {
         self.connect_go_to_show(sender, show);
         self.connect_copy_episode_url(sender, ep);
 
-        let app = gio::Application::get_default()
+        let app = gio::Application::default()
             .expect("Could not get default application")
             .downcast::<gtk::Application>()
             .unwrap();
-        let win = app.get_active_window().expect("No active window");
+        let win = app.active_window().expect("No active window");
         win.insert_action_group("episode", Some(&self.group));
     }
 
@@ -97,8 +97,8 @@ impl EpisodeMenu {
 }
 
 fn copy_text(text: &str) -> Option<()> {
-    let display = gdk::Display::get_default()?;
-    let clipboard = gtk::Clipboard::get_default(&display)?;
+    let display = gdk::Display::default()?;
+    let clipboard = gtk::Clipboard::default(&display)?;
     clipboard.set_text(text);
     Some(())
 }

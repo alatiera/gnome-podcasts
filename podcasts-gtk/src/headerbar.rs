@@ -19,7 +19,6 @@
 
 use glib::clone;
 use gtk::prelude::*;
-use libhandy::prelude::*;
 
 use anyhow::Result;
 use glib::Sender;
@@ -92,7 +91,7 @@ async fn add_podcast_from_url(url_input: String, sender: &Sender<Action>) -> Res
 impl AddPopover {
     // FIXME: THIS ALSO SUCKS!
     fn on_add_clicked(&self, sender: &Sender<Action>) -> Result<()> {
-        let url = self.entry.get_text();
+        let url = self.entry.text();
         let sender2 = sender.clone();
 
         tokio::spawn(async move { add_podcast_from_url(url.to_string(), &sender2).await });
@@ -103,7 +102,7 @@ impl AddPopover {
 
     // FIXME: THIS SUCKS! REFACTOR ME.
     fn on_entry_changed(&self) -> Result<()> {
-        let mut url = self.entry.get_text();
+        let mut url = self.entry.text();
         let is_input_url_empty = url.is_empty();
         debug!("Url: {}", url);
 
@@ -162,7 +161,7 @@ impl AddPopover {
         self.add.set_sensitive(sensitive);
 
         let error_style_class = &gtk::STYLE_CLASS_ERROR;
-        let style_context = entry.get_style_context();
+        let style_context = entry.style_context();
         if error {
             style_context.add_class(error_style_class);
         } else {
@@ -176,25 +175,25 @@ impl Default for Header {
         let builder = gtk::Builder::from_resource("/org/gnome/Podcasts/gtk/headerbar.ui");
         let menus = gtk::Builder::from_resource("/org/gnome/Podcasts/gtk/hamburger.ui");
 
-        let header = builder.get_object("headerbar").unwrap();
-        let switch: libhandy::ViewSwitcher = builder.get_object("switch").unwrap();
-        let back = builder.get_object("back").unwrap();
-        let title_stack = builder.get_object("title_stack").unwrap();
-        let switch_squeezer: libhandy::Squeezer = builder.get_object("switch_squeezer").unwrap();
-        let show_title = builder.get_object("show_title").unwrap();
+        let header = builder.object("headerbar").unwrap();
+        let switch: libhandy::ViewSwitcher = builder.object("switch").unwrap();
+        let back = builder.object("back").unwrap();
+        let title_stack = builder.object("title_stack").unwrap();
+        let switch_squeezer: libhandy::Squeezer = builder.object("switch_squeezer").unwrap();
+        let show_title = builder.object("show_title").unwrap();
 
         // The hamburger menu
-        let hamburger: gtk::MenuButton = builder.get_object("hamburger").unwrap();
-        let app_menu: gio::MenuModel = menus.get_object("menu").unwrap();
+        let hamburger: gtk::MenuButton = builder.object("hamburger").unwrap();
+        let app_menu: gio::MenuModel = menus.object("menu").unwrap();
         hamburger.set_menu_model(Some(&app_menu));
 
         // The 3 dots secondary menu
-        let dots = builder.get_object("secondary_menu").unwrap();
+        let dots = builder.object("secondary_menu").unwrap();
 
-        let add_toggle = builder.get_object("add_toggle").unwrap();
-        let add_popover = builder.get_object("add_popover").unwrap();
-        let new_url = builder.get_object("new_url").unwrap();
-        let add_button = builder.get_object("add_button").unwrap();
+        let add_toggle = builder.object("add_toggle").unwrap();
+        let add_popover = builder.object("add_popover").unwrap();
+        let new_url = builder.object("new_url").unwrap();
+        let add_button = builder.object("add_button").unwrap();
         let add = AddPopover {
             container: add_popover,
             entry: new_url,
@@ -260,7 +259,7 @@ impl Header {
             }));
 
         s.switch_squeezer
-            .connect_property_visible_child_notify(clone!(@weak s => move |_| {
+            .connect_visible_child_notify(clone!(@weak s => move |_| {
                 s.update_bottom_switcher();
             }));
         s.update_bottom_switcher();
@@ -302,7 +301,7 @@ impl Header {
     }
 
     pub(crate) fn update_bottom_switcher(&self) {
-        if let Some(child) = self.switch_squeezer.get_visible_child() {
+        if let Some(child) = self.switch_squeezer.visible_child() {
             // only show the bottom switcher if we are on the current page
             // and have no title menu customization (e.g.: ShowWidget)
             let reveal = (child != self.switch) && self.hamburger.is_visible();

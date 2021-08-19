@@ -69,8 +69,8 @@ impl HomeStack {
         let old = &self.episodes.view.container().clone();
 
         // Copy the vertical scrollbar adjustment from the old view.
-        let vadj = self.episodes.view.get_vadjustment();
-        let eps = HomeView::new(self.sender.clone(), vadj)?;
+        let vadj = self.episodes.view.vadjustment();
+        let eps = HomeView::new(self.sender.clone(), Some(vadj))?;
 
         // Remove the old widget and add the new one
         // during this the previous view is removed,

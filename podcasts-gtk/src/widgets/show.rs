@@ -24,7 +24,7 @@ use gtk::{self, prelude::*, Adjustment};
 use anyhow::Result;
 use crossbeam_channel::bounded;
 use fragile::Fragile;
-use libhandy::{Clamp, ClampExt};
+use libhandy::Clamp;
 
 use podcasts_data::dbqueries;
 use podcasts_data::EpisodeWidgetModel;
@@ -54,15 +54,14 @@ pub(crate) struct ShowWidget {
 impl Default for ShowWidget {
     fn default() -> Self {
         let builder = gtk::Builder::from_resource("/org/gnome/Podcasts/gtk/show_widget.ui");
-        let sub_cont: gtk::Box = builder.get_object("sub_container").unwrap();
-        let cover: gtk::Image = builder.get_object("cover").unwrap();
-        let description: gtk::Label = builder.get_object("description").unwrap();
-        let description_short: gtk::Label = builder.get_object("description_short").unwrap();
-        let description_stack: gtk::Stack = builder.get_object("description_stack").unwrap();
-        let description_button: gtk::Button = builder.get_object("description_button").unwrap();
-        let description_button_revealer =
-            builder.get_object("description_button_revealer").unwrap();
-        let episodes: gtk::ListBox = builder.get_object("episodes").unwrap();
+        let sub_cont: gtk::Box = builder.object("sub_container").unwrap();
+        let cover: gtk::Image = builder.object("cover").unwrap();
+        let description: gtk::Label = builder.object("description").unwrap();
+        let description_short: gtk::Label = builder.object("description_short").unwrap();
+        let description_stack: gtk::Stack = builder.object("description_stack").unwrap();
+        let description_button: gtk::Button = builder.object("description_button").unwrap();
+        let description_button_revealer = builder.object("description_button_revealer").unwrap();
+        let episodes: gtk::ListBox = builder.object("episodes").unwrap();
         let view = BaseView::default();
 
         let clamp = Clamp::new();
@@ -129,9 +128,9 @@ impl ShowWidget {
     }
 
     fn update_read_more(&self) {
-        if let Some(layout) = self.description_short.get_layout() {
+        if let Some(layout) = self.description_short.layout() {
             let more = layout.is_ellipsized()
-                || self.description.get_label() != self.description_short.get_label();
+                || self.description.label() != self.description_short.label();
             self.description_button_revealer.set_reveal_child(more);
         }
     }

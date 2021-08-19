@@ -22,9 +22,8 @@ use gst::ClockTime;
 use gtk::prelude::*;
 
 use libhandy as hdy;
-use libhandy::prelude::*;
 
-use gio::{ActionMapExt, File, FileExt};
+use gio::File;
 use glib::clone;
 use glib::{SignalHandlerId, WeakRef};
 
@@ -62,7 +61,7 @@ trait PlayerExt {
     fn play(&self);
     fn pause(&mut self);
     fn stop(&mut self);
-    fn seek(&self, offset: ClockTime, direction: SeekDirection);
+    fn seek(&self, offset: ClockTime, direction: SeekDirection) -> Option<()>;
     fn fast_forward(&self);
     fn rewind(&self);
     fn set_playback_rate(&self, _: f64);
@@ -169,10 +168,10 @@ impl Deref for Position {
 impl PlayerTimes {
     /// Update the duration `gtk::Label` and the max range of the `gtk::SclaeBar`.
     pub(crate) fn on_duration_changed(&self, duration: Duration) {
-        let seconds = duration.seconds().map(|v| v as f64).unwrap_or(0.0);
+        let seconds = duration.seconds();
 
         self.slider.block_signal(&self.slider_update);
-        self.slider.set_range(0.0, seconds);
+        self.slider.set_range(0.0, seconds as f64);
         self.slider.unblock_signal(&self.slider_update);
 
         self.duration.set_text(&format_duration(seconds as u32));
@@ -182,10 +181,10 @@ impl PlayerTimes {
 
     /// Update the `gtk::Scale` bar when the pipeline position is changed.
     pub(crate) fn on_position_updated(&self, position: Position) {
-        let seconds = position.seconds().map(|v| v as f64).unwrap_or(0.0);
+        let seconds = position.seconds();
 
         self.slider.block_signal(&self.slider_update);
-        self.slider.set_value(seconds);
+        self.slider.set_value(seconds as f64);
         self.slider.unblock_signal(&self.slider_update);
 
         self.progressed.set_text(&format_duration(seconds as u32));
@@ -194,7 +193,7 @@ impl PlayerTimes {
     }
 
     fn update_progress_bar(&self) {
-        let fraction = self.slider.get_value() / self.slider.get_adjustment().get_upper();
+        let fraction = self.slider.value() / self.slider.adjustment().upper();
         self.progress_bar.set_fraction(fraction);
     }
 }
@@ -224,8 +223,8 @@ impl PlayerRate {
         let variant_type = glib::VariantTy::new("s").expect("Could not parse variant type");
         let action =
             gio::SimpleAction::new_stateful("set", Some(&variant_type), &"1.00".to_variant());
-        let btn: gtk::MenuButton = builder.get_object("rate_button").unwrap();
-        let label = builder.get_object("rate_label").unwrap();
+        let btn: gtk::MenuButton = builder.object("rate_button").unwrap();
+        let label = builder.object("rate_label").unwrap();
 
         PlayerRate { action, label, btn }
     }
@@ -291,22 +290,22 @@ struct PlayerDialog {
 impl PlayerDialog {
     fn new(rate: PlayerRate) -> Self {
         let builder = gtk::Builder::from_resource("/org/gnome/Podcasts/gtk/player_dialog.ui");
-        let dialog = builder.get_object("dialog").unwrap();
+        let dialog = builder.object("dialog").unwrap();
 
-        let close = builder.get_object("close").unwrap();
-        let headerbar = builder.get_object("headerbar").unwrap();
-        let cover = builder.get_object("cover").unwrap();
-        let play_pause = builder.get_object("play_pause").unwrap();
-        let play = builder.get_object("play").unwrap();
-        let pause = builder.get_object("pause").unwrap();
-        let duration = builder.get_object("duration").unwrap();
-        let progressed = builder.get_object("progressed").unwrap();
-        let slider = builder.get_object("slider").unwrap();
-        let rewind = builder.get_object("rewind").unwrap();
-        let forward = builder.get_object("forward").unwrap();
-        let bottom: gtk::Box = builder.get_object("bottom").unwrap();
-        let show = builder.get_object("show_label").unwrap();
-        let episode = builder.get_object("episode_label").unwrap();
+        let close = builder.object("close").unwrap();
+        let headerbar = builder.object("headerbar").unwrap();
+        let cover = builder.object("cover").unwrap();
+        let play_pause = builder.object("play_pause").unwrap();
+        let play = builder.object("play").unwrap();
+        let pause = builder.object("pause").unwrap();
+        let duration = builder.object("duration").unwrap();
+        let progressed = builder.object("progressed").unwrap();
+        let slider = builder.object("slider").unwrap();
+        let rewind = builder.object("rewind").unwrap();
+        let forward = builder.object("forward").unwrap();
+        let bottom: gtk::Box = builder.object("bottom").unwrap();
+        let show = builder.object("show_label").unwrap();
+        let episode = builder.object("episode_label").unwrap();
 
         bottom.pack_start(&rate.btn, false, true, 0);
 
@@ -378,21 +377,21 @@ impl Default for PlayerWidget {
         mpris.set_can_seek(false);
         mpris.set_can_set_fullscreen(false);
 
-        let mut config = player.get_config();
+        let mut config = player.config();
         config.set_user_agent(USER_AGENT);
         config.set_position_update_interval(250);
         player.set_config(config).unwrap();
 
         let builder = gtk::Builder::from_resource("/org/gnome/Podcasts/gtk/player_toolbar.ui");
 
-        let buttons = builder.get_object("buttons").unwrap();
-        let play = builder.get_object("play_button").unwrap();
-        let pause = builder.get_object("pause_button").unwrap();
-        let play_small = builder.get_object("play_button_small").unwrap();
-        let pause_small = builder.get_object("pause_button_small").unwrap();
-        let forward: gtk::Button = builder.get_object("ff_button").unwrap();
-        let rewind: gtk::Button = builder.get_object("rewind_button").unwrap();
-        let play_pause_small = builder.get_object("play_pause_small").unwrap();
+        let buttons = builder.object("buttons").unwrap();
+        let play = builder.object("play_button").unwrap();
+        let pause = builder.object("pause_button").unwrap();
+        let play_small = builder.object("play_button_small").unwrap();
+        let pause_small = builder.object("pause_button_small").unwrap();
+        let forward: gtk::Button = builder.object("ff_button").unwrap();
+        let rewind: gtk::Button = builder.object("rewind_button").unwrap();
+        let play_pause_small = builder.object("play_pause_small").unwrap();
 
         let controls = PlayerControls {
             container: buttons,
@@ -406,15 +405,15 @@ impl Default for PlayerWidget {
             last_pause: RefCell::new(None),
         };
 
-        let timer_container = builder.get_object("timer").unwrap();
-        let progressed = builder.get_object("progress_time_label").unwrap();
-        let duration = builder.get_object("total_duration_label").unwrap();
-        let separator = builder.get_object("separator").unwrap();
-        let slider: gtk::Scale = builder.get_object("seek").unwrap();
+        let timer_container = builder.object("timer").unwrap();
+        let progressed = builder.object("progress_time_label").unwrap();
+        let duration = builder.object("total_duration_label").unwrap();
+        let separator = builder.object("separator").unwrap();
+        let slider: gtk::Scale = builder.object("seek").unwrap();
         slider.set_range(0.0, 1.0);
         let player_weak = player.downgrade();
         let slider_update = Rc::new(Self::connect_update_slider(&slider, player_weak));
-        let progress_bar = builder.get_object("progress_bar").unwrap();
+        let progress_bar = builder.object("progress_bar").unwrap();
         let timer = PlayerTimes {
             container: timer_container,
             progressed,
@@ -425,13 +424,13 @@ impl Default for PlayerWidget {
             progress_bar,
         };
 
-        let labels = builder.get_object("info").unwrap();
-        let show = builder.get_object("show_label").unwrap();
-        let episode = builder.get_object("episode_label").unwrap();
-        let cover = builder.get_object("show_cover").unwrap();
-        let show_small = builder.get_object("show_label_small").unwrap();
-        let episode_small = builder.get_object("episode_label_small").unwrap();
-        let cover_small = builder.get_object("show_cover_small").unwrap();
+        let labels = builder.object("info").unwrap();
+        let show = builder.object("show_label").unwrap();
+        let episode = builder.object("episode_label").unwrap();
+        let cover = builder.object("show_cover").unwrap();
+        let show_small = builder.object("show_label_small").unwrap();
+        let episode_small = builder.object("episode_label_small").unwrap();
+        let cover_small = builder.object("show_cover_small").unwrap();
         let ep = None;
         let info = PlayerInfo {
             mpris,
@@ -451,11 +450,11 @@ impl Default for PlayerWidget {
         let dialog_rate = PlayerRate::new();
         let dialog = PlayerDialog::new(dialog_rate);
 
-        let container = builder.get_object("container").unwrap();
-        let action_bar: gtk::ActionBar = builder.get_object("action_bar").unwrap();
-        let evbox = builder.get_object("evbox").unwrap();
-        let full: gtk::Box = builder.get_object("full").unwrap();
-        let squeezer = builder.get_object("squeezer").unwrap();
+        let container = builder.object("container").unwrap();
+        let action_bar: gtk::ActionBar = builder.object("action_bar").unwrap();
+        let evbox = builder.object("evbox").unwrap();
+        let full: gtk::Box = builder.object("full").unwrap();
+        let squeezer = builder.object("squeezer").unwrap();
 
         let rate = PlayerRate::new();
         full.pack_end(&rate.btn, false, true, 0);
@@ -504,10 +503,10 @@ impl PlayerWidget {
                 // path is an absolute fs path ex. "foo/bar/baz".
                 // Convert it so it will have a "file:///"
                 // FIXME: convert it properly
-                let uri = File::new_for_path(path).get_uri();
+                let uri = File::for_path(path).uri();
 
                 // If it's not the same file load the uri, otherwise just unpause
-                if self.player.get_uri().map_or(true, |s| s != uri.as_str()) {
+                if self.player.uri().map_or(true, |s| s != uri.as_str()) {
                     self.player.set_uri(uri.as_str());
                 } else {
                     // just unpause, no restore required
@@ -536,7 +535,7 @@ impl PlayerWidget {
                 None => return,
             };
 
-            let value = slider.get_value() as u64;
+            let value = slider.value() as u64;
             player.seek(ClockTime::from_seconds(value));
         })
     }
@@ -552,7 +551,7 @@ impl PlayerWidget {
         let delta = (now - (*last)?).num_seconds();
 
         // Get interval passed in the gst stream
-        let seconds_passed = self.player.get_position().seconds()?;
+        let seconds_passed = self.player.position()?.seconds();
         // get the last known episode id
         let mut last = LAST_KNOWN_EPISODE.lock().unwrap();
         // get the current playing episode id
@@ -621,9 +620,9 @@ impl PlayerExt for PlayerWidget {
         }
 
         self.controls.last_pause.replace(Some(Local::now()));
-        let pos = self.player.get_position();
+        let pos = self.player.position();
         self.info.ep.as_mut().map(|ep| {
-            ep.set_play_position(pos.seconds().and_then(|s| s.try_into().ok()).unwrap_or(0))
+            ep.set_play_position(pos.and_then(|s| s.seconds().try_into().ok()).unwrap_or(0))
         });
     }
 
@@ -645,26 +644,26 @@ impl PlayerExt for PlayerWidget {
     }
 
     // Adapted from https://github.com/philn/glide/blob/b52a65d99daeab0b487f79a0e1ccfad0cd433e22/src/player_context.rs#L219-L245
-    fn seek(&self, offset: ClockTime, direction: SeekDirection) {
+    fn seek(&self, offset: ClockTime, direction: SeekDirection) -> Option<()> {
         // How far into the podcast we are
-        let position = self.player.get_position();
-        if position.is_none() || offset.is_none() {
-            return;
+        let position = self.player.position()?;
+        if offset.is_zero() {
+            return Some(());
         }
 
         // How much podcast we have
-        let duration = self.player.get_duration();
+        let duration = self.player.duration()?;
         let destination = match direction {
             // If we are more than `offset` into the podcast, jump back that far
-            SeekDirection::Backwards if position >= offset => Some(position - offset),
+            SeekDirection::Backwards if position >= offset => position.checked_sub(offset),
             // If we haven't played `offset` yet just restart the podcast
             SeekDirection::Backwards if position < offset => Some(ClockTime::from_seconds(0)),
             // If we have more than `offset` remaining jump forward they amount
-            SeekDirection::Forward if !duration.is_none() && position + offset <= duration => {
-                Some(position + offset)
+            SeekDirection::Forward if !duration.is_zero() && position + offset <= duration => {
+                position.checked_add(offset)
             }
             // We don't have `offset` remaining just move to the end (ending playback)
-            SeekDirection::Forward if !duration.is_none() && position + offset > duration => {
+            SeekDirection::Forward if !duration.is_zero() && position + offset > duration => {
                 Some(duration)
             }
             // Who knows what's going on ¯\_(ツ)_/¯
@@ -675,14 +674,22 @@ impl PlayerExt for PlayerWidget {
         if let Some(destination) = destination {
             self.player.seek(destination)
         }
+
+        Some(())
     }
 
     fn rewind(&self) {
-        self.seek(ClockTime::from_seconds(10), SeekDirection::Backwards)
+        let r = self.seek(ClockTime::from_seconds(10), SeekDirection::Backwards);
+        if r.is_none() {
+            warn!("Failed to rewind");
+        }
     }
 
     fn fast_forward(&self) {
-        self.seek(ClockTime::from_seconds(10), SeekDirection::Forward)
+        let r = self.seek(ClockTime::from_seconds(10), SeekDirection::Forward);
+        if r.is_none() {
+            warn!("Failed to fast-forward");
+        }
     }
 
     fn set_playback_rate(&self, rate: f64) {
@@ -730,15 +737,15 @@ impl PlayerWrapper {
         let widget = self.borrow();
         widget
             .squeezer
-            .connect_property_visible_child_notify(clone!(@weak this => move |_| {
+            .connect_visible_child_notify(clone!(@weak this => move |_| {
                 let widget = this.borrow();
-                if let Some(child) = widget.squeezer.get_visible_child() {
+                if let Some(child) = widget.squeezer.visible_child() {
                     let full = child == this.borrow().full;
                     this.borrow().timer.progress_bar.set_visible(!full);
                     if full {
-                        this.borrow().action_bar.get_style_context().remove_class("player-small");
+                        this.borrow().action_bar.style_context().remove_class("player-small");
                     } else {
-                        this.borrow().action_bar.get_style_context().add_class("player-small");
+                        this.borrow().action_bar.style_context().add_class("player-small");
                     }
                 }
             }));
@@ -758,22 +765,22 @@ impl PlayerWrapper {
         widget
             .dialog
             .slider
-            .set_adjustment(&widget.timer.slider.get_adjustment());
+            .set_adjustment(&widget.timer.slider.adjustment());
 
         widget.evbox.connect_button_press_event(
             clone!(@weak this =>  @default-return Inhibit(false), move |_, event| {
                 let widget = this.borrow();
-                if event.get_button() != 1 {
+                if event.button() != 1 {
                     return Inhibit(false);
                 }
                 // only open the dialog when the small toolbar is visible
-                if let Some(child) = widget.squeezer.get_visible_child() {
+                if let Some(child) = widget.squeezer.visible_child() {
                     if child == widget.full {
                         return Inhibit(false);
                     }
                 }
 
-                let parent = widget.container.get_toplevel().and_then(|toplevel| {
+                let parent = widget.container.toplevel().and_then(|toplevel| {
                     toplevel
                         .downcast::<gtk::Window>()
                         .ok()
@@ -913,25 +920,30 @@ impl PlayerWrapper {
             .player
             .connect_duration_changed(clone!(@strong weak => move |_, clock| {
                 if let Some(player_widget) = weak.get().upgrade() {
-                    player_widget.borrow().timer.on_duration_changed(Duration(clock));
+                    if let Some(c) = clock {
+                        player_widget.borrow().timer.on_duration_changed(Duration(c));
+                    }
                 }
             }));
 
         // Update the position label and the slider
-        widget.player
+        widget
+            .player
             .connect_position_updated(clone!(@strong weak => move |_, clock| {
                 if let Some(player_widget) = weak.get().upgrade() {
                     // write to db
-                    let pos = Position(clock);
-                    let finished_restore = player_widget.borrow().info.finished_restore;
-                    player_widget.borrow_mut().info.ep.as_mut().map(|ep| {
-                        if finished_restore {
-                            ep.set_play_position_if_divergent(pos.seconds().and_then(|s| s.try_into().ok()).unwrap_or(0))
-                        } else {
-                            Ok(())
-                        }
-                    });
-                    player_widget.borrow().timer.on_position_updated(pos)
+                    if let Some(c) = clock {
+                        let pos = Position(c);
+                        let finished_restore = player_widget.borrow().info.finished_restore;
+                        player_widget.borrow_mut().info.ep.as_mut().map(|ep| {
+                            if finished_restore {
+                                ep.set_play_position_if_divergent(pos.seconds() as i32)
+                            } else {
+                                Ok(())
+                            }
+                        });
+                        player_widget.borrow().timer.on_position_updated(pos)
+                    }
                 }
             }));
 

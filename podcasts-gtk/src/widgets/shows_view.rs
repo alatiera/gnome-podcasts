@@ -99,7 +99,7 @@ fn populate_flowbox(shows: &Rc<ShowsView>, vadj: Option<Adjustment>) -> Result<(
 
 fn on_child_activate(child: &gtk::FlowBoxChild, sender: &Sender<Action>) -> Result<()> {
     // This is such an ugly hack...
-    let id = child.get_widget_name().parse::<i32>()?;
+    let id = child.widget_name().parse::<i32>()?;
     let pd = Arc::new(dbqueries::get_podcast_from_id(id)?);
 
     send!(sender, Action::HeaderBarShowTile(pd.title().into()));

@@ -89,10 +89,10 @@ impl PopulatedStack {
 
     pub(crate) fn replace_shows(&mut self) -> Result<()> {
         let old = &self.populated.view.container().clone();
-        debug!("Name: {:?}", old.get_widget_name());
+        debug!("Name: {:?}", old.widget_name());
 
-        let vadj = self.populated.view.get_vadjustment();
-        let pop = ShowsView::new(self.sender.clone(), vadj);
+        let vadj = self.populated.view.vadjustment();
+        let pop = ShowsView::new(self.sender.clone(), Some(vadj));
         self.populated = pop;
         self.stack.remove(old);
         self.stack
@@ -110,10 +110,10 @@ impl PopulatedStack {
         let old = self.show.view.container().clone();
 
         // Get the ShowWidget vertical alignment
-        let vadj = self.show.view.get_vadjustment();
+        let vadj = self.show.view.vadjustment();
         let new = match self.show.show_id() {
             // If the previous show was the same, restore the alignment
-            Some(id) if id == pd.id() => ShowWidget::new(pd, self.sender.clone(), vadj),
+            Some(id) if id == pd.id() => ShowWidget::new(pd, self.sender.clone(), Some(vadj)),
             // else leave the valignemnt to default
             _ => ShowWidget::new(pd, self.sender.clone(), None),
         };

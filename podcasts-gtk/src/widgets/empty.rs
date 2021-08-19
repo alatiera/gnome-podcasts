@@ -34,8 +34,8 @@ impl Deref for EmptyView {
 impl Default for EmptyView {
     fn default() -> Self {
         let builder = gtk::Builder::from_resource("/org/gnome/Podcasts/gtk/empty_view.ui");
-        let view: gtk::Box = builder.get_object("empty_view").unwrap();
-        let image: gtk::Image = builder.get_object("image").unwrap();
+        let view: gtk::Box = builder.object("empty_view").unwrap();
+        let image: gtk::Image = builder.object("image").unwrap();
         image.set_from_icon_name(
             Some(format!("{}-symbolic", APP_ID).as_str()),
             gtk::IconSize::__Unknown(256),
@@ -57,7 +57,7 @@ impl Deref for EmptyShow {
 impl Default for EmptyShow {
     fn default() -> Self {
         let builder = gtk::Builder::from_resource("/org/gnome/Podcasts/gtk/empty_view.ui");
-        let box_: gtk::Box = builder.get_object("empty_show").unwrap();
+        let box_: gtk::Box = builder.object("empty_show").unwrap();
         EmptyShow(box_)
     }
 }

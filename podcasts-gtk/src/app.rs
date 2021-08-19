@@ -18,13 +18,11 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 use glib::clone;
+use glib::prelude::*;
 use glib::subclass::prelude::*;
-use glib::subclass::simple::{ClassStruct, InstanceStruct};
-use glib::translate::*;
-use glib::{glib_object_impl, glib_object_subclass, glib_wrapper};
 
-use gio::subclass::ApplicationImplExt;
-use gio::{self, prelude::*, ActionMapExt, ApplicationFlags, SettingsExt};
+use gio::subclass::prelude::ApplicationImplExt;
+use gio::{self, prelude::*, ApplicationFlags};
 
 use gtk::prelude::*;
 use libhandy::prelude::*;
@@ -52,6 +50,7 @@ use crate::config::{APP_ID, LOCALEDIR};
 use crate::i18n::i18n;
 
 // FIXME: port Optionals to OnceCell
+#[derive(Debug)]
 pub struct PdApplicationPrivate {
     sender: glib::Sender<Action>,
     receiver: RefCell<Option<glib::Receiver<Action>>>,
@@ -60,13 +59,12 @@ pub struct PdApplicationPrivate {
     inhibit_cookie: RefCell<u32>,
 }
 
+#[glib::object_subclass]
 impl ObjectSubclass for PdApplicationPrivate {
     const NAME: &'static str = "PdApplication";
+    type Type = PdApplication;
     type ParentType = gtk::Application;
-    type Instance = InstanceStruct<Self>;
-    type Class = ClassStruct<Self>;
-
-    glib_object_subclass!();
+    type Interfaces = ();
 
     fn new() -> Self {
         let (sender, r) = glib::MainContext::channel(glib::PRIORITY_DEFAULT);
@@ -82,12 +80,10 @@ impl ObjectSubclass for PdApplicationPrivate {
     }
 }
 
-impl ObjectImpl for PdApplicationPrivate {
-    glib_object_impl!();
-}
+impl ObjectImpl for PdApplicationPrivate {}
 
 impl gio::subclass::prelude::ApplicationImpl for PdApplicationPrivate {
-    fn activate(&self, app: &gio::Application) {
+    fn activate(&self, app: &PdApplication) {
         debug!("GtkApplication<PdApplication>::activate");
 
         if let Some(ref window) = *self.window.borrow() {
@@ -114,7 +110,7 @@ impl gio::subclass::prelude::ApplicationImpl for PdApplicationPrivate {
         receiver.attach(None, move |action| app.do_action(action));
     }
 
-    fn startup(&self, app: &gio::Application) {
+    fn startup(&self, app: &PdApplication) {
         debug!("GtkApplication<PdApplication>::startup");
 
         self.parent_startup(app);
@@ -134,12 +130,8 @@ impl gio::subclass::prelude::ApplicationImpl for PdApplicationPrivate {
 
 impl gtk::subclass::application::GtkApplicationImpl for PdApplicationPrivate {}
 
-glib_wrapper! {
-    pub struct PdApplication(Object<InstanceStruct<PdApplicationPrivate>, ClassStruct<PdApplicationPrivate>, PdApplicationClass>) @extends gio::Application, gtk::Application;
-
-    match fn {
-        get_type => || PdApplicationPrivate::get_type().to_glib(),
-    }
+glib::wrapper! {
+    pub struct PdApplication(ObjectSubclass<PdApplicationPrivate>) @extends gio::Application, gtk::Application;
 }
 
 #[derive(Debug, Clone)]
@@ -174,16 +166,11 @@ pub(crate) enum Action {
 
 impl PdApplication {
     pub(crate) fn new() -> Self {
-        let application = glib::Object::new(
-            PdApplication::static_type(),
-            &[
-                ("application-id", &Some(APP_ID)),
-                ("flags", &ApplicationFlags::empty()),
-            ],
-        )
-        .expect("Application initialization failed...")
-        .downcast::<PdApplication>()
-        .expect("Congrats, you have won a prize for triggering an impossible outcome");
+        let application = glib::Object::new::<PdApplication>(&[
+            ("application-id", &Some(APP_ID)),
+            ("flags", &ApplicationFlags::empty()),
+        ])
+        .expect("Application initialization failed...");
 
         application.set_resource_base_path(Some("/org/gnome/Podcasts"));
 
@@ -238,13 +225,15 @@ impl PdApplication {
     fn setup_dark_theme(&self) {
         let data = PdApplicationPrivate::from_instance(self);
         if let Some(ref settings) = *data.settings.borrow() {
-            let gtk_settings = gtk::Settings::get_default().unwrap();
-            settings.bind(
-                "dark-theme",
-                &gtk_settings,
-                "gtk-application-prefer-dark-theme",
-                gio::SettingsBindFlags::DEFAULT,
-            );
+            let gtk_settings = gtk::Settings::default().unwrap();
+            settings
+                .bind(
+                    "dark-theme",
+                    &gtk_settings,
+                    "gtk-application-prefer-dark-theme",
+                )
+                .flags(gio::SettingsBindFlags::DEFAULT)
+                .build();
         } else {
             debug_assert!(false, "Well how'd you manage that?");
         }
@@ -450,6 +439,6 @@ impl PdApplication {
         glib::set_prgname(Some("gnome-podcasts"));
         gtk::Window::set_default_icon_name(APP_ID);
         let args: Vec<String> = env::args().collect();
-        ApplicationExtManual::run(&application, &args);
+        ApplicationExtManual::run_with_args(&application, &args);
     }
 }

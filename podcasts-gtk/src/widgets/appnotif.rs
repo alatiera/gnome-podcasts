@@ -22,6 +22,7 @@ use gtk::prelude::*;
 
 use std::cell::RefCell;
 use std::rc::Rc;
+use std::time::Duration;
 
 #[derive(Debug, Clone, Copy)]
 #[allow(dead_code)]
@@ -50,11 +51,11 @@ impl Default for InAppNotification {
     fn default() -> Self {
         let builder = gtk::Builder::from_resource("/org/gnome/Podcasts/gtk/inapp_notif.ui");
 
-        let revealer: gtk::Revealer = builder.get_object("revealer").unwrap();
-        let text: gtk::Label = builder.get_object("text").unwrap();
-        let undo: gtk::Button = builder.get_object("undo").unwrap();
-        let close: gtk::Button = builder.get_object("close").unwrap();
-        let spinner = builder.get_object("spinner").unwrap();
+        let revealer: gtk::Revealer = builder.object("revealer").unwrap();
+        let text: gtk::Label = builder.object("text").unwrap();
+        let undo: gtk::Button = builder.object("undo").unwrap();
+        let close: gtk::Button = builder.object("close").unwrap();
+        let spinner = builder.object("spinner").unwrap();
 
         InAppNotification {
             revealer,
@@ -72,7 +73,7 @@ impl InAppNotification {
     /// # Arguments
     ///
     /// * `text` - Text which is displayed within the revealer
-    /// * `timer` - Time in ms until the callback is called
+    /// * `timer` - Time in ms until the callback is called, in milliseconds
     /// * `callback` - Function to call after `timer` is passed.
     ///                You will probably want to call `set_reveal_child(false)` within it
     /// * `undo_callback` - If undo_callback is `is_some()`, then the revealer will include an undo-button.
@@ -90,12 +91,12 @@ impl InAppNotification {
         let notif = InAppNotification::default();
         notif.text.set_text(&text);
 
-        let mut time = 0;
-        let interval = 250;
+        let mut time = Duration::from_millis(0);
+        let interval = Duration::from_millis(250);
         let id = glib::timeout_add_local(
             interval,
             clone!(@weak notif.revealer as revealer => @default-return glib::Continue(false), move || {
-                    if time < timer {
+                    if time.as_millis() < timer as u128 {
                         time += interval;
                         return glib::Continue(true);
                     };
@@ -139,8 +140,7 @@ impl InAppNotification {
     // Previously we where doing it in the constructor, which had the result
     // of the animation being skipped cause there was no parent widget to display it.
     pub(crate) fn show(&self, overlay: &gtk::Overlay, headerbar: &libhandy::HeaderBar) {
-        self.revealer
-            .set_margin_top(headerbar.get_preferred_height().1);
+        self.revealer.set_margin_top(headerbar.preferred_height().1);
         overlay.add_overlay(&self.revealer);
         // We need to display the notification after the widget is added to the overlay
         // so there will be a nice animation.

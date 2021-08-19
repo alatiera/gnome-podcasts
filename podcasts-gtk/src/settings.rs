@@ -16,8 +16,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
-use gio::{Settings, SettingsExt};
-use gtk::GtkWindowExt;
+use gio::{prelude::SettingsExt, Settings};
+use gtk::prelude::GtkWindowExt;
 
 use libhandy as hdy;
 
@@ -34,8 +34,8 @@ pub(crate) struct WindowGeometry {
 
 impl WindowGeometry {
     pub(crate) fn from_window(window: &hdy::ApplicationWindow) -> WindowGeometry {
-        let position = window.get_position();
-        let size = window.get_size();
+        let position = window.position();
+        let size = window.size();
         let left = position.0;
         let top = position.1;
         let width = size.0;
@@ -52,11 +52,11 @@ impl WindowGeometry {
     }
 
     pub(crate) fn from_settings(settings: &gio::Settings) -> WindowGeometry {
-        let top = settings.get_int("persist-window-geometry-top");
-        let left = settings.get_int("persist-window-geometry-left");
-        let width = settings.get_int("persist-window-geometry-width");
-        let height = settings.get_int("persist-window-geometry-height");
-        let is_maximized = settings.get_boolean("persist-window-geometry-maximized");
+        let top = settings.int("persist-window-geometry-top");
+        let left = settings.int("persist-window-geometry-left");
+        let width = settings.int("persist-window-geometry-width");
+        let height = settings.int("persist-window-geometry-height");
+        let is_maximized = settings.boolean("persist-window-geometry-maximized");
 
         WindowGeometry {
             left,
@@ -99,15 +99,15 @@ impl WindowGeometry {
 }
 
 pub(crate) fn get_refresh_interval(settings: &Settings) -> Duration {
-    let time = i64::from(settings.get_int("refresh-interval-time"));
-    let period = settings.get_string("refresh-interval-period").unwrap();
+    let time = i64::from(settings.int("refresh-interval-time"));
+    let period = settings.string("refresh-interval-period");
 
     time_period_to_duration(time, period.as_str())
 }
 
 pub(crate) fn get_cleanup_date(settings: &Settings) -> DateTime<Utc> {
-    let time = i64::from(settings.get_int("cleanup-age-time"));
-    let period = settings.get_string("cleanup-age-period").unwrap();
+    let time = i64::from(settings.int("cleanup-age-time"));
+    let period = settings.string("cleanup-age-period");
     let duration = time_period_to_duration(time, period.as_str());
 
     Utc::now() - duration

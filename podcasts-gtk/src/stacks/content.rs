@@ -91,7 +91,7 @@ impl Content {
     }
 
     pub(crate) fn update_home_if_background(&self) {
-        if self.stack.get_visible_child_name() != Some("home".into()) {
+        if self.stack.visible_child_name() != Some("home".into()) {
             self.update_home();
         }
     }

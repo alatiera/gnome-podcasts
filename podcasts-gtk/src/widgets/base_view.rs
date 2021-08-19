@@ -70,7 +70,7 @@ impl BaseView {
         }
     }
 
-    pub(crate) fn get_vadjustment(&self) -> Option<Adjustment> {
-        self.scrolled_window().get_vadjustment()
+    pub(crate) fn vadjustment(&self) -> Adjustment {
+        self.scrolled_window().vadjustment()
     }
 }

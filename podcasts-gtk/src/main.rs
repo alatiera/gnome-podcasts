@@ -95,7 +95,7 @@ async fn main() {
     let provider = gtk::CssProvider::new();
     gtk::CssProvider::load_from_resource(&provider, "/org/gnome/Podcasts/gtk/style.css");
     gtk::StyleContext::add_provider_for_screen(
-        &gdk::Screen::get_default().expect("Error initializing gtk css provider."),
+        &gdk::Screen::default().expect("Error initializing gtk css provider."),
         &provider,
         600,
     );
