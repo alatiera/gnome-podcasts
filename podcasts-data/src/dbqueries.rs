@@ -517,7 +517,7 @@ mod tests {
                    com/InterceptedWithJeremyScahill";
         let source = Source::from_url(url)?;
         let id = source.id();
-        let mut rt = tokio::runtime::Runtime::new()?;
+        let rt = tokio::runtime::Runtime::new()?;
         rt.block_on(pipeline(vec![source]));
         let pd = get_podcast_from_source_id(id)?;
 

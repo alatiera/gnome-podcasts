@@ -334,7 +334,7 @@ mod tests {
     fn test_into_feed() -> Result<()> {
         truncate_db()?;
 
-        let mut rt = tokio::runtime::Runtime::new()?;
+        let rt = tokio::runtime::Runtime::new()?;
         let https = HttpsConnector::new();
         let client = Client::builder().build::<_, Body>(https);
 

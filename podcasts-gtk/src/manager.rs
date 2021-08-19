@@ -151,7 +151,7 @@ mod tests {
         source.set_http_etag(None);
         source.set_last_modified(None);
         source.save()?;
-        let mut rt = tokio::runtime::Runtime::new()?;
+        let rt = tokio::runtime::Runtime::new()?;
         rt.block_on(pipeline(vec![source]));
 
         // Get the podcast
@@ -188,7 +188,7 @@ mod tests {
         source.set_http_etag(None);
         source.set_last_modified(None);
         source.save()?;
-        let mut rt = tokio::runtime::Runtime::new()?;
+        let rt = tokio::runtime::Runtime::new()?;
         rt.block_on(pipeline(vec![source]));
 
         // Get the podcast

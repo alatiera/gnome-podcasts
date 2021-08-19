@@ -98,7 +98,7 @@ mod tests {
         });
 
         let sources = dbqueries::get_sources()?;
-        let mut rt = tokio::runtime::Runtime::new()?;
+        let rt = tokio::runtime::Runtime::new()?;
         rt.block_on(pipeline(sources));
 
         let sources = dbqueries::get_sources()?;

@@ -724,7 +724,7 @@ mod tests {
         source.set_last_modified(None);
         let sid = source.save()?.id();
         println!("Made it here! (3)");
-        let mut rt = tokio::runtime::Runtime::new()?;
+        let rt = tokio::runtime::Runtime::new()?;
         rt.block_on(pipeline(vec![source]));
         println!("Made it here! (4)");
         println!("The source id is {}!", sid);
@@ -756,7 +756,7 @@ mod tests {
         source.set_last_modified(None);
         source.save()?;
         println!("Made it here! (7)");
-        let mut rt = tokio::runtime::Runtime::new()?;
+        let rt = tokio::runtime::Runtime::new()?;
         rt.block_on(pipeline(vec![source]));
 
         println!("Made it here! (8)");
