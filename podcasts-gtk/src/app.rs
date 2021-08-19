@@ -21,7 +21,7 @@ use glib::clone;
 use glib::subclass::prelude::*;
 use glib::subclass::simple::{ClassStruct, InstanceStruct};
 use glib::translate::*;
-use glib::{glib_object_impl, glib_object_subclass, glib_object_wrapper, glib_wrapper};
+use glib::{glib_object_impl, glib_object_subclass, glib_wrapper};
 
 use gio::subclass::ApplicationImplExt;
 use gio::{self, prelude::*, ActionMapExt, ApplicationFlags, SettingsExt};

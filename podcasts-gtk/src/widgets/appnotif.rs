@@ -92,7 +92,7 @@ impl InAppNotification {
 
         let mut time = 0;
         let interval = 250;
-        let id = timeout_add(
+        let id = glib::timeout_add_local(
             interval,
             clone!(@weak notif.revealer as revealer => @default-return glib::Continue(false), move || {
                     if time < timer {

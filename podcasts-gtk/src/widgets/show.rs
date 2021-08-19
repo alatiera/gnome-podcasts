@@ -188,7 +188,7 @@ fn populate_listbox(
 
     let show_weak = Rc::downgrade(&show);
     let list_weak = show.episodes.downgrade();
-    gtk::idle_add(move || {
+    glib::idle_add_local(move || {
         let episodes = match receiver.try_recv() {
             Ok(e) => e,
             Err(TryRecvError::Empty) => return glib::Continue(true),

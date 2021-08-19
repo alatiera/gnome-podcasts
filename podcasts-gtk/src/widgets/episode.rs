@@ -387,7 +387,7 @@ impl EpisodeWidget {
 
                 glib::Continue(true)
             });
-            gtk::timeout_add(250, callback);
+            glib::timeout_add_local(250, callback);
 
             // Wire the cancel button
             widget
@@ -400,7 +400,7 @@ impl EpisodeWidget {
                     }
 
                     // Cancel is not instant so we have to wait a bit
-                    timeout_add(50, clone!(@strong weak, @strong sender => move || {
+                    glib::timeout_add_local(50, clone!(@strong weak, @strong sender => move || {
                         if let Ok(thing) = active_dl() {
                             if thing.is_none() {
                                 // Recalculate the widget state
@@ -524,7 +524,7 @@ fn update_progressbar_callback(
         progress_bar_helper(&widget, &prog, episode_rowid)
             .unwrap_or(glib::Continue(false))
     });
-    timeout_add(100, callback);
+    glib::timeout_add_local(100, callback);
 }
 
 #[allow(clippy::if_same_then_else)]
@@ -592,7 +592,7 @@ fn update_total_size_callback(widget: &Weak<EpisodeWidget>, prog: &Arc<Mutex<man
     let callback = clone!(@strong prog, @strong widget => move || {
         total_size_helper(&widget, &prog).unwrap_or(glib::Continue(true))
     });
-    timeout_add(100, callback);
+    glib::timeout_add_local(100, callback);
 }
 
 fn total_size_helper(

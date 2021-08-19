@@ -123,7 +123,7 @@ impl MainWindow {
         let refresh_interval = settings::get_refresh_interval(&settings).num_seconds() as u32;
         info!("Auto-refresh every {:?} seconds.", refresh_interval);
 
-        gtk::timeout_add_seconds(
+        glib::timeout_add_seconds_local(
             refresh_interval,
             clone!(@strong sender => move || {
                     utils::schedule_refresh(None, sender.clone());
@@ -147,7 +147,6 @@ impl MainWindow {
     /// Define the `GAction`s.
     ///
     /// Used in menus and the keyboard shortcuts dialog.
-
     pub fn setup_gactions(&self) {
         let sender = &self.sender;
         // Create the `refresh` action.
@@ -157,7 +156,7 @@ impl MainWindow {
             &self.window,
             "refresh",
             clone!(@strong sender => move |_, _| {
-                    gtk::idle_add(
+                    glib::idle_add_local(
                         clone!(@strong sender => move || {
                             utils::schedule_refresh(None, sender.clone());
                             glib::Continue(false)

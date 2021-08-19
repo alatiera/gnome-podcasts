@@ -170,7 +170,7 @@ where
     U: Fn() + 'static,
 {
     let mut data = data.into_iter();
-    gtk::idle_add(move || {
+    glib::idle_add_local(move || {
         data.next()
             .map(|x| func(x))
             .map(|_| glib::Continue(true))
@@ -345,7 +345,7 @@ pub(crate) fn set_image_from_path(image: &gtk::Image, show_id: i32, size: u32) -
                  let _ = set_image_from_path(&image, show_id, size);
                  glib::Continue(false)
             });
-            gtk::timeout_add(250, callback);
+            glib::timeout_add_local(250, callback);
             return Ok(());
         }
     }
@@ -372,7 +372,7 @@ pub(crate) fn set_image_from_path(image: &gtk::Image, show_id: i32, size: u32) -
 
     let image = image.clone();
     let s = size as i32;
-    gtk::timeout_add(25, move || {
+    glib::timeout_add_local(25, move || {
         use crossbeam_channel::TryRecvError;
 
         match receiver.try_recv() {
