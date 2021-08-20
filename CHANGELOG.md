@@ -14,6 +14,25 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Removed:
 
+## [0.5.0-beta] - 2021-08-20
+
+### Added:
+- View the episode descriptions and show notes World/podcasts!178
+- Pick up the pace of an episode from where you left off World/podcasts!184
+- We now inhibit suspend during playback World/podcasts!188
+- Detect Soundcloud playlists and correctly add them as feeds World/podcasts!190
+- 0.75 and 0.9 playback rate options World/podcasts!187
+- Device form factor and input metadata World/podcasts!195
+
+### Changed:
+- Translation updates
+
+### Fixed:
+- HTTP authentication when the username might be an email World/podcasts!183
+- Correctly set a user agent while downloading in more places World/podcasts!194
+
+### Removed:
+
 ## [0.4.9] - 2021-03-11
 
 ### Added:
