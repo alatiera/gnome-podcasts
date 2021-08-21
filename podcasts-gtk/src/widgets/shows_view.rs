@@ -17,9 +17,10 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+use adw::{prelude::BinExt, subclass::prelude::*};
 use glib::clone;
 use gtk::glib;
-use gtk::{prelude::*, Adjustment, Align, SelectionMode};
+use gtk::{prelude::*, subclass::prelude::*, Adjustment, Align, SelectionMode};
 
 use anyhow::Result;
 use glib::Sender;
@@ -31,6 +32,7 @@ use crate::app::Action;
 use crate::utils::{get_ignored_shows, lazy_load_flowbox, set_image_from_path};
 use crate::widgets::BaseView;
 
+use std::cell::Cell;
 use std::rc::Rc;
 use std::sync::Arc;
 
@@ -99,7 +101,12 @@ fn populate_flowbox(shows: &Rc<ShowsView>, vadj: Option<Adjustment>) -> Result<(
 
 fn on_child_activate(child: &gtk::FlowBoxChild, sender: &Sender<Action>) -> Result<()> {
     // This is such an ugly hack...
-    let id = child.widget_name().parse::<i32>()?;
+    let id = child
+        .child()
+        .unwrap()
+        .downcast::<ShowCover>()
+        .expect("Could not downcast Widget to PdShowCover")
+        .id();
     let pd = Arc::new(dbqueries::get_podcast_from_id(id)?);
 
     send!(sender, Action::HeaderBarShowTile(pd.title().into()));
@@ -108,18 +115,76 @@ fn on_child_activate(child: &gtk::FlowBoxChild, sender: &Sender<Action>) -> Resu
     Ok(())
 }
 
+#[derive(Debug)]
+pub struct ShowCoverPrivate {
+    pub cover: gtk::Image,
+    pub show_id: Cell<i32>,
+}
+
+#[glib::object_subclass]
+impl ObjectSubclass for ShowCoverPrivate {
+    const NAME: &'static str = "PdShowCover";
+    type Type = ShowCover;
+    type ParentType = adw::Bin;
+
+    fn new() -> Self {
+        Self {
+            // FIXME: bundle the symbolic in resources
+            cover: gtk::Image::from_icon_name(Some("image-x-generic-symbolic")),
+            show_id: Cell::default(),
+        }
+    }
+}
+
+impl ObjectImpl for ShowCoverPrivate {
+    fn constructed(&self, obj: &Self::Type) {
+        self.parent_constructed(obj);
+        self.cover.set_pixel_size(256);
+
+        obj.set_child(Some(&self.cover));
+    }
+}
+
+impl WidgetImpl for ShowCoverPrivate {}
+impl BinImpl for ShowCoverPrivate {}
+
+glib::wrapper! {
+    pub struct ShowCover(ObjectSubclass<ShowCoverPrivate>)
+        @extends gtk::Widget, adw::Bin;
+}
+
+impl ShowCover {
+    fn new() -> Self {
+        glib::Object::new(&[]).expect("Failed to create PdShowCover")
+    }
+
+    fn set_id(&self, id: i32) {
+        let self_ = ShowCoverPrivate::from_instance(self);
+        self_.show_id.set(id);
+    }
+
+    fn id(&self) -> i32 {
+        self.imp().show_id.get()
+    }
+
+    fn load_image(&self) -> Result<()> {
+        let imp = self.imp();
+        set_image_from_path(&imp.cover, imp.show_id.get(), 256)?;
+        Ok(())
+    }
+}
+
 #[derive(Debug, Clone)]
 struct ShowsChild {
-    cover: gtk::Image,
+    cover: ShowCover,
     child: gtk::FlowBoxChild,
 }
 
 impl Default for ShowsChild {
     fn default() -> Self {
-        let cover = gtk::Image::from_icon_name(Some("image-x-generic-symbolic"));
+        let cover = ShowCover::new();
         let child = gtk::FlowBoxChild::new();
 
-        cover.set_pixel_size(256);
         child.set_child(Some(&cover));
 
         ShowsChild { cover, child }
@@ -128,20 +193,26 @@ impl Default for ShowsChild {
 
 impl ShowsChild {
     pub(crate) fn new(pd: &Show) -> ShowsChild {
-        let child = ShowsChild::default();
-        child.init(pd);
-        child
+        let cover = ShowCover::new();
+        let child = gtk::FlowBoxChild::new();
+
+        child.set_child(Some(&cover));
+
+        let shows_child = ShowsChild { cover, child };
+        shows_child.init(pd);
+        shows_child
     }
 
     fn init(&self, pd: &Show) {
         self.child.set_tooltip_text(Some(pd.title()));
-        self.child.set_widget_name(&pd.id().to_string());
 
-        self.set_cover(pd.id())
+        self.cover.set_id(pd.id());
+        self.set_cover();
     }
 
-    fn set_cover(&self, show_id: i32) {
-        set_image_from_path(&self.cover, show_id, 256)
+    fn set_cover(&self) {
+        self.cover
+            .load_image()
             .map_err(|err| error!("Failed to set a cover: {}", err))
             .ok();
     }
