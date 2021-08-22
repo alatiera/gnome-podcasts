@@ -24,11 +24,9 @@ use podcasts_data::{Episode, Show};
 
 use crate::app::Action;
 use crate::utils::{self};
-use crate::widgets::appnotif::InAppNotification;
 use crate::widgets::EpisodeMenu;
 
 use crate::episode_description_parser;
-use crate::i18n::i18n;
 use chrono::prelude::*;
 use std::rc::Rc;
 use std::sync::Arc;
@@ -140,15 +138,5 @@ impl EpisodeDescription {
         utils::set_image_from_path(&self.image, show_id, 64)
             .map_err(|err| error!("Failed to set a cover: {}", err))
             .ok();
-    }
-
-    pub(crate) fn copied_url_notif() -> InAppNotification {
-        let callback = move |revealer: gtk::Revealer| {
-            revealer.set_reveal_child(false);
-            glib::Continue(false)
-        };
-        let text = i18n("Copied URL to clipboard!");
-        let undo_callback: Option<fn()> = None;
-        InAppNotification::new(&text, 2000, callback, undo_callback)
     }
 }

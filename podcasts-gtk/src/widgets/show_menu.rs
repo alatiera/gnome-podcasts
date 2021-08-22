@@ -30,7 +30,6 @@ use podcasts_data::Show;
 
 use crate::app::Action;
 use crate::utils;
-use crate::widgets::appnotif::InAppNotification;
 
 use std::sync::Arc;
 
@@ -166,56 +165,59 @@ fn mark_all_watched(pd: &Show, sender: &Sender<Action>) -> Result<()> {
     Ok(())
 }
 
-pub(crate) fn mark_all_notif(pd: Arc<Show>, sender: &Sender<Action>) -> InAppNotification {
+pub(crate) fn mark_all_notif(pd: Arc<Show>, sender: &Sender<Action>) -> adw::Toast {
     let id = pd.id();
-    let sender_ = sender.clone();
-    let callback = move |revealer: gtk::Revealer| {
-        let res = mark_all_watched(&pd, &sender_);
-        debug_assert!(res.is_ok());
+    let toast = adw::Toast::new(&i18n("Marked all episodes as listened"));
+    toast.set_button_label(Some(&i18n("Undo")));
+    toast.set_action_target_value(Some(&id.to_variant()));
+    toast.set_action_name(Some("app.undo-mark-all"));
 
-        revealer.set_reveal_child(false);
-        glib::Continue(false)
-    };
+    toast.connect_dismissed(clone!(@strong sender => move |_| {
+        let app = gio::Application::default()
+            .expect("Could not get default application")
+            .downcast::<crate::PdApplication>()
+            .unwrap();
+        if app.is_show_marked_mark(&pd) {
+            let res = mark_all_watched(&pd, &sender);
+            debug_assert!(res.is_ok());
+        }
+    }));
 
-    let undo_callback = clone!(@strong sender => move || {
-        send!(sender, Action::RefreshWidgetIfSame(id));
-    });
-    let text = i18n("Marked all episodes as listened");
-    InAppNotification::new(&text, 6000, callback, Some(undo_callback))
+    toast
 }
 
-pub(crate) fn remove_show_notif(pd: Arc<Show>, sender: Sender<Action>) -> InAppNotification {
+pub(crate) fn remove_show_notif(pd: Arc<Show>, sender: Sender<Action>) -> adw::Toast {
     let text = i18n_f("Unsubscribed from {}", &[pd.title()]);
+    let id = pd.id();
 
-    let res = utils::ignore_show(pd.id());
+    let toast = adw::Toast::new(&text);
+    toast.set_button_label(Some(&i18n("Undo")));
+    toast.set_action_target_value(Some(&id.to_variant()));
+    toast.set_action_name(Some("app.undo-remove-show"));
+
+    let res = utils::ignore_show(id);
     debug_assert!(res.is_ok());
 
-    let sender_ = sender.clone();
-    let pd_ = pd.clone();
-    let callback = move |revealer: gtk::Revealer| {
-        let res = utils::unignore_show(pd_.id());
+    toast.connect_dismissed(clone!(@strong sender => move |_args| {
+        let res = utils::unignore_show(id);
         debug_assert!(res.is_ok());
 
         // Spawn a thread so it won't block the ui.
-        rayon::spawn(clone!(@strong pd_, @strong sender_ => move || {
-            delete_show(&pd_)
-                .map_err(|err| error!("Error: {}", err))
-                .map_err(|_| error!("Failed to delete {}", pd_.title()))
-                .ok();
+        rayon::spawn(clone!(@strong pd, @strong sender => move || {
+            let app = gio::Application::default()
+                .expect("Could not get default application")
+                .downcast::<crate::PdApplication>()
+                .unwrap();
+            if app.is_show_marked_delete(&pd) {
+                delete_show(&pd)
+                    .map_err(|err| error!("Error: {}", err))
+                    .map_err(|_| error!("Failed to delete {}", pd.title()))
+                    .ok();
 
-            send!(sender_, Action::RefreshEpisodesView);
+                send!(sender, Action::RefreshEpisodesView);
+            }
         }));
+    }));
 
-        revealer.set_reveal_child(false);
-        glib::Continue(false)
-    };
-
-    let undo_callback = move || {
-        let res = utils::unignore_show(pd.id());
-        debug_assert!(res.is_ok());
-        send!(sender, Action::RefreshShowsView);
-        send!(sender, Action::RefreshEpisodesView);
-    };
-
-    InAppNotification::new(&text, 6000, callback, Some(undo_callback))
+    toast
 }

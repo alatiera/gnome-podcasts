@@ -1892,6 +1892,7 @@ dependencies = [
  "log",
  "markup5ever_rcdom",
  "mpris-player",
+ "once_cell",
  "open",
  "podcasts-data",
  "pretty_assertions",

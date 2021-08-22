@@ -14,7 +14,6 @@ podcasts-gtk/resources/gtk/headerbar.ui
 podcasts-gtk/resources/gtk/help-overlay.ui
 podcasts-gtk/resources/gtk/home_episode.ui
 podcasts-gtk/resources/gtk/home_view.ui
-podcasts-gtk/resources/gtk/inapp_notif.ui
 podcasts-gtk/resources/gtk/player_dialog.ui
 podcasts-gtk/resources/gtk/player_rate.ui
 podcasts-gtk/resources/gtk/player_toolbar.ui
@@ -35,7 +34,6 @@ podcasts-gtk/src/stacks/populated.rs
 podcasts-gtk/src/stacks/show.rs
 podcasts-gtk/src/utils.rs
 podcasts-gtk/src/widgets/aboutdialog.rs
-podcasts-gtk/src/widgets/appnotif.rs
 podcasts-gtk/src/widgets/base_view.rs
 podcasts-gtk/src/widgets/empty.rs
 podcasts-gtk/src/widgets/episode.rs

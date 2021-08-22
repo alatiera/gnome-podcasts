@@ -29,7 +29,7 @@ use gtk::Widget;
 
 use anyhow::{anyhow, Result};
 use chrono::prelude::*;
-use crossbeam_channel::{bounded, unbounded};
+use crossbeam_channel::unbounded;
 use fragile::Fragile;
 use regex::Regex;
 use serde_json::Value;
@@ -297,27 +297,20 @@ pub(crate) fn schedule_refresh(source: Option<Vec<Source>>, sender: Sender<Actio
 /// Do not call this function directly unless you are sure no other updates are running.
 /// Use `schedule_refresh()` instead
 pub(crate) fn refresh_feed(source: Option<Vec<Source>>, sender: Sender<Action>) {
-    let (up_sender, up_receiver) = bounded(1);
-    send!(sender, Action::ShowUpdateNotif(up_receiver));
+    send!(sender, Action::ShowUpdateNotif);
 
-    if let Some(s) = source {
-        // Refresh only specified feeds
-        tokio::spawn(async move {
+    tokio::spawn(clone!(@strong sender => async move {
+        if let Some(s) = source {
+            // Refresh only specified feeds
             pipeline(s).await;
-            up_sender
-                .send(true)
-                .expect("Channel was dropped unexpectedly");
-        })
-    } else {
-        // Refresh all the feeds
-        tokio::spawn(async move {
+            send!(sender, Action::FeedRefreshed);
+        } else {
+            // Refresh all the feeds
             let sources = dbqueries::get_sources().map(|s| s.into_iter()).unwrap();
             pipeline(sources).await;
-            up_sender
-                .send(true)
-                .expect("Channel was dropped unexpectedly");
-        })
-    };
+            send!(sender, Action::FeedRefreshed);
+        }
+    }));
 }
 
 lazy_static! {

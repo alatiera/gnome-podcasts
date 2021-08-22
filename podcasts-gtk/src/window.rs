@@ -30,7 +30,6 @@ use crate::settings::{self, WindowGeometry};
 use crate::stacks::Content;
 use crate::utils::{self, make_action};
 use crate::widgets::about_dialog;
-use crate::widgets::appnotif::InAppNotification;
 use crate::widgets::player;
 
 use std::cell::{Cell, RefCell};
@@ -43,13 +42,14 @@ use crate::i18n::i18n;
 #[derive(Debug)]
 pub struct MainWindow {
     pub(crate) window: adw::ApplicationWindow,
-    pub(crate) overlay: gtk::Overlay,
     pub(crate) content: Rc<Content>,
     pub(crate) headerbar: Rc<Header>,
     pub(crate) player: player::PlayerWrapper,
     pub(crate) main_deck: adw::Leaflet,
+    pub(crate) toast_overlay: adw::ToastOverlay,
+    pub(crate) progress_bar: Rc<gtk::ProgressBar>,
+    pub(crate) updating_timeout: RefCell<Option<glib::source::SourceId>>,
     pub(crate) updating: Cell<bool>,
-    pub(crate) updater: RefCell<Option<InAppNotification>>,
     pub(crate) sender: Sender<Action>,
 }
 
@@ -58,6 +58,7 @@ impl MainWindow {
         let settings = gio::Settings::new(APP_ID);
 
         let window = adw::ApplicationWindow::new(app);
+        let toast_overlay = adw::ToastOverlay::new();
 
         window.set_title(Some(&i18n("Podcasts")));
         if APP_ID.ends_with("Devel") {
@@ -83,20 +84,22 @@ impl MainWindow {
         let header = Header::new(&content, &sender);
 
         // Add the content main stack to the overlay.
-        let overlay = gtk::Overlay::new();
         let main_deck = adw::Leaflet::new();
         main_deck.set_can_unfold(false);
         main_deck.set_can_navigate_forward(false);
         main_deck.append(&content.get_container());
-        overlay.set_child(Some(&main_deck));
 
         let wrap = gtk::Box::new(gtk::Orientation::Vertical, 0);
+        let progress_bar = gtk::ProgressBar::new();
+        progress_bar.hide();
+        progress_bar.add_css_class("osd");
 
+        content.get_container().prepend(&progress_bar);
         // Add the Headerbar to the window.
         content.get_container().prepend(&header.container);
 
-        // Add the overlay to the main Box
-        wrap.append(&overlay);
+        // Add the deck to the main Box
+        wrap.append(&main_deck);
 
         let player = player::PlayerWrapper::new(&sender);
         // Add the player to the main Box
@@ -104,7 +107,8 @@ impl MainWindow {
 
         wrap.append(&header.bottom_switcher);
 
-        adw::traits::ApplicationWindowExt::set_content(&window, Some(&wrap));
+        toast_overlay.set_child(Some(&wrap));
+        adw::traits::ApplicationWindowExt::set_content(&window, Some(&toast_overlay));
 
         // Retrieve the previous window position and size.
         WindowGeometry::from_settings(&settings).apply(&window);
@@ -128,13 +132,14 @@ impl MainWindow {
 
         Self {
             window,
-            overlay,
             headerbar: header,
             content,
             player,
             main_deck,
+            toast_overlay,
+            progress_bar: Rc::new(progress_bar),
             updating: Cell::new(false),
-            updater: RefCell::new(None),
+            updating_timeout: RefCell::new(None),
             sender: sender.clone(),
         }
     }

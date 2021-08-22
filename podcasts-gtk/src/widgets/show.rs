@@ -166,7 +166,7 @@ fn populate_listbox(
     let count = dbqueries::get_pd_episodes_count(&pd)?;
 
     let (sender_, receiver) = bounded(1);
-    rayon::spawn(clone!(@strong pd => move || {
+    tokio::spawn(clone!(@strong pd => async move {
         if let Ok(episodes) = dbqueries::get_pd_episodeswidgets(&pd) {
             // The receiver can be dropped if there's an early return
             // like on show without episodes for example.
@@ -182,6 +182,7 @@ fn populate_listbox(
 
     let show_weak = Rc::downgrade(&show);
     let list_weak = show.episodes.downgrade();
+
     glib::idle_add_local(move || {
         let episodes = match receiver.try_recv() {
             Ok(e) => e,

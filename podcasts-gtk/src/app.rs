@@ -34,7 +34,6 @@ use podcasts_data::{Episode, Show, Source};
 use crate::settings;
 use crate::stacks::PopulatedState;
 use crate::utils;
-use crate::widgets::appnotif::{InAppNotification, SpinnerState, State};
 use crate::widgets::show_menu::{mark_all_notif, remove_show_notif};
 use crate::widgets::EpisodeDescription;
 use crate::window::MainWindow;
@@ -54,6 +53,8 @@ pub struct PdApplicationPrivate {
     window: RefCell<Option<MainWindow>>,
     settings: RefCell<Option<gio::Settings>>,
     inhibit_cookie: RefCell<u32>,
+    undo_remove_ids: RefCell<Vec<i32>>,
+    undo_marked_ids: RefCell<Vec<i32>>,
 }
 
 #[glib::object_subclass]
@@ -73,6 +74,8 @@ impl ObjectSubclass for PdApplicationPrivate {
             window: RefCell::new(None),
             settings: RefCell::new(None),
             inhibit_cookie: RefCell::new(0),
+            undo_remove_ids: RefCell::new(vec![]),
+            undo_marked_ids: RefCell::new(vec![]),
         }
     }
 }
@@ -145,7 +148,8 @@ pub(crate) enum Action {
     CopiedUrlNotification,
     MarkAllPlayerNotification(Arc<Show>),
     UpdateFeed(Option<Vec<Source>>),
-    ShowUpdateNotif(crossbeam_channel::Receiver<bool>),
+    ShowUpdateNotif,
+    FeedRefreshed,
     StopUpdating,
     RemoveShow(Arc<Show>),
     ErrorNotification(String),
@@ -174,6 +178,7 @@ impl PdApplication {
 
     fn setup_gactions(&self) {
         let app = self.upcast_ref::<gtk::Application>();
+        let data = PdApplicationPrivate::from_instance(self);
         // Create the quit action
         utils::make_action(
             app,
@@ -191,6 +196,69 @@ impl PdApplication {
             }
         }));
         app.add_action(&show_episode);
+
+        let undo_mark_all = gio::SimpleAction::new("undo-mark-all", Some(&i32_variant_type));
+        undo_mark_all.connect_activate(
+            clone!(@weak self as app, @strong data.sender as sender => move |_, id_variant_option| {
+                let data = PdApplicationPrivate::from_instance(&app);
+                let id = id_variant_option.unwrap().get::<i32>().unwrap();
+                let mut ids = data.undo_marked_ids.borrow_mut();
+                if !ids.contains(&id) {
+                    ids.push(id);
+                }
+
+                send!(sender, Action::RefreshWidgetIfSame(id));
+            }),
+        );
+        app.add_action(&undo_mark_all);
+
+        let undo_remove_show = gio::SimpleAction::new("undo-remove-show", Some(&i32_variant_type));
+        undo_remove_show.connect_activate(
+            clone!(@weak self as app, @strong data.sender as sender => move |_, id_variant_option| {
+                let data = PdApplicationPrivate::from_instance(&app);
+                let id = id_variant_option.unwrap().get::<i32>().unwrap();
+                let mut ids = data.undo_remove_ids.borrow_mut();
+                if !ids.contains(&id) {
+                    ids.push(id);
+                }
+
+                let res = utils::unignore_show(id);
+                debug_assert!(res.is_ok());
+                send!(sender, Action::RefreshShowsView);
+                send!(sender, Action::RefreshEpisodesView);
+            }),
+        );
+        app.add_action(&undo_remove_show);
+    }
+
+    /// We check if the User pressed the Undo button, which would add
+    /// the id into undo_revove_ids.
+    pub fn is_show_marked_delete(&self, pd: &Show) -> bool {
+        let data = PdApplicationPrivate::from_instance(self);
+        let id = pd.id();
+        let mut undo_remove_ids = data.undo_remove_ids.borrow_mut();
+
+        if let Some(pos) = undo_remove_ids.iter().position(|x| *x == id) {
+            undo_remove_ids.remove(pos);
+
+            return false;
+        }
+
+        true
+    }
+
+    pub fn is_show_marked_mark(&self, pd: &Show) -> bool {
+        let data = PdApplicationPrivate::from_instance(self);
+        let id = pd.id();
+        let mut undo_marked_ids = data.undo_marked_ids.borrow_mut();
+
+        if let Some(pos) = undo_marked_ids.iter().position(|x| *x == id) {
+            undo_marked_ids.remove(pos);
+
+            return false;
+        }
+
+        true
     }
 
     fn go_to_episode(&self, id_variant_option: Option<&glib::Variant>) -> Result<()> {
@@ -286,26 +354,22 @@ impl PdApplication {
             Action::HeaderBarShowTile(title) => window.headerbar.switch_to_back(&title),
             Action::HeaderBarNormal => window.headerbar.switch_to_normal(),
             Action::CopiedUrlNotification => {
-                let notif = EpisodeDescription::copied_url_notif();
-                notif.show(&window.overlay);
+                let text = i18n("Copied URL to clipboard!");
+                let toast = adw::Toast::new(&text);
+                self.send_toast(&toast);
             }
             Action::MarkAllPlayerNotification(pd) => {
-                let notif = mark_all_notif(pd, &data.sender);
-                notif.show(&window.overlay);
+                let toast = mark_all_notif(pd, &data.sender);
+                self.send_toast(&toast);
             }
             Action::RemoveShow(pd) => {
-                let notif = remove_show_notif(pd, data.sender.clone());
-                notif.show(&window.overlay);
+                let toast = remove_show_notif(pd, data.sender.clone());
+                self.send_toast(&toast);
             }
             Action::ErrorNotification(err) => {
                 error!("An error notification was triggered: {}", err);
-                let callback = |revealer: gtk::Revealer| {
-                    revealer.set_reveal_child(false);
-                    glib::Continue(false)
-                };
-                let undo_cb: Option<fn()> = None;
-                let notif = InAppNotification::new(&err, 6000, callback, undo_cb);
-                notif.show(&window.overlay);
+                let toast = adw::Toast::new(&err);
+                window.toast_overlay.add_toast(&toast);
             }
             Action::UpdateFeed(source) => {
                 if window.updating.get() {
@@ -317,32 +381,28 @@ impl PdApplication {
             }
             Action::StopUpdating => {
                 window.updating.set(false);
-            }
-            Action::ShowUpdateNotif(receiver) => {
-                use crossbeam_channel::TryRecvError;
-
-                let sender = data.sender.clone();
-                let callback = move |revealer: gtk::Revealer| match receiver.try_recv() {
-                    Err(TryRecvError::Empty) => glib::Continue(true),
-                    Err(TryRecvError::Disconnected) => glib::Continue(false),
-                    Ok(_) => {
-                        revealer.set_reveal_child(false);
-
-                        send!(sender, Action::StopUpdating);
-                        send!(sender, Action::RefreshAllViews);
-
-                        glib::Continue(false)
-                    }
-                };
-                let txt = i18n("Fetching new episodes");
-                let undo_cb: Option<fn()> = None;
-                let updater = InAppNotification::new(&txt, 250, callback, undo_cb);
-                updater.set_close_state(State::Hidden);
-                updater.set_spinner_state(SpinnerState::Active);
-
-                if let Some(i) = window.updater.borrow().as_ref() {
-                    i.show(&window.overlay)
+                if let Some(timeout) = window.updating_timeout.replace(None) {
+                    glib::source_remove(timeout);
                 }
+                window.progress_bar.hide();
+            }
+            Action::ShowUpdateNotif => {
+                let updating_timeout = glib::timeout_add_local(
+                    std::time::Duration::from_millis(100),
+                    clone!(@weak window.progress_bar as progress => @default-return Continue(false), move || {
+                        progress.show();
+                        progress.pulse();
+                        Continue(true)
+                    }),
+                );
+                if let Some(old_timeout) = window.updating_timeout.replace(Some(updating_timeout)) {
+                    glib::source_remove(old_timeout);
+                }
+            }
+            Action::FeedRefreshed => {
+                let sender = data.sender.clone();
+                send!(sender, Action::StopUpdating);
+                send!(sender, Action::RefreshAllViews);
             }
             Action::InitEpisode(rowid) => {
                 let res = window.player.borrow_mut().initialize_episode(rowid);
@@ -418,5 +478,16 @@ impl PdApplication {
         gtk::Window::set_default_icon_name(APP_ID);
         let args: Vec<String> = env::args().collect();
         ApplicationExtManual::run_with_args(&application, &args);
+    }
+
+    pub(crate) fn send_toast(&self, toast: &adw::Toast) {
+        let self_ = PdApplicationPrivate::from_instance(self);
+        self_
+            .window
+            .borrow()
+            .as_ref()
+            .unwrap()
+            .toast_overlay
+            .add_toast(toast);
     }
 }
