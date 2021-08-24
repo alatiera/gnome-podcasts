@@ -17,7 +17,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [0.5.0-beta] - 2021-08-20
 
 ### Added:
-- View the episode descriptions and show notes World/podcasts!178
+- View episode descriptions and show notes World/podcasts!178
 - Pick up the pace of an episode from where you left off World/podcasts!184
 - We now inhibit suspend during playback World/podcasts!188
 - Detect Soundcloud playlists and correctly add them as feeds World/podcasts!190
