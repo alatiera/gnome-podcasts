@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: podcasts master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2020-11-14 00:16+0000\n"
-"PO-Revision-Date: 2020-12-05 12:29+0200\n"
+"POT-Creation-Date: 2021-06-19 18:35+0000\n"
+"PO-Revision-Date: 2021-09-04 15:18+0300\n"
 "Last-Translator: Jiri Grönroos <jiri.gronroos+l10n@iki.fi>\n"
 "Language-Team: Finnish <lokalisointi-lista@googlegroups.com>\n"
 "Language: fi\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 2.4.2\n"
+"X-Generator: Poedit 3.0\n"
 
 #: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:15
 msgid "Top position of the last open main window"
@@ -69,8 +69,8 @@ msgstr ""
 #. Weird magic I copy-pasted that sets the Application Name in the Shell.
 #: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:3
 #: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:4
-#: podcasts-gtk/resources/gtk/headerbar.ui:137 podcasts-gtk/src/app.rs:363
-#: podcasts-gtk/src/widgets/aboutdialog.rs:56 podcasts-gtk/src/window.rs:66
+#: podcasts-gtk/resources/gtk/headerbar.ui:137 podcasts-gtk/src/app.rs:364
+#: podcasts-gtk/src/widgets/aboutdialog.rs:63 podcasts-gtk/src/window.rs:64
 msgid "Podcasts"
 msgstr "Podcastit"
 
@@ -88,7 +88,7 @@ msgstr "Podcast;RSS;"
 msgid "Podcast app for GNOME"
 msgstr "Podcast-sovellus Gnomelle"
 
-#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:92
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:99
 msgid "Jordan Petridis"
 msgstr "Jordan Petridis"
 
@@ -229,7 +229,6 @@ msgid "1.00×"
 msgstr "1.00×"
 
 #: podcasts-gtk/resources/gtk/player_rate.ui:65
-#| msgid "1.00×"
 msgid "2.00×"
 msgstr "2.00×"
 
@@ -244,6 +243,15 @@ msgstr "1.50×"
 #: podcasts-gtk/resources/gtk/player_rate.ui:80
 msgid "1.25×"
 msgstr "1.25×"
+
+#: podcasts-gtk/resources/gtk/player_rate.ui:90
+msgid "0.90×"
+msgstr "0.90×"
+
+#: podcasts-gtk/resources/gtk/player_rate.ui:95
+#| msgid "1.75×"
+msgid "0.75×"
+msgstr "0.75×"
 
 #: podcasts-gtk/resources/gtk/player_toolbar.ui:97
 msgid "Rewind 10 seconds"
@@ -289,76 +297,76 @@ msgstr "Lopeta tilaus"
 msgid "Read More"
 msgstr "Lue lisää"
 
-#: podcasts-gtk/src/app.rs:300
+#: podcasts-gtk/src/app.rs:299
 msgid "Fetching new episodes"
 msgstr "Noudetaan uusia jaksoja"
 
-#: podcasts-gtk/src/stacks/content.rs:54
+#: podcasts-gtk/src/stacks/content.rs:53
 msgid "New"
 msgstr "Uudet"
 
-#: podcasts-gtk/src/stacks/content.rs:55
+#: podcasts-gtk/src/stacks/content.rs:54
 msgid "Shows"
 msgstr "Ohjelmat"
 
-#: podcasts-gtk/src/utils.rs:435
+#: podcasts-gtk/src/utils.rs:472
 msgid "Select the file from which to you want to import shows."
 msgstr "Valitse tiedosto, josta haluat tuoda ohjelmia."
 
-#: podcasts-gtk/src/utils.rs:438
+#: podcasts-gtk/src/utils.rs:475
 msgid "_Import"
 msgstr "_Tuo"
 
-#: podcasts-gtk/src/utils.rs:447 podcasts-gtk/src/utils.rs:496
+#: podcasts-gtk/src/utils.rs:484 podcasts-gtk/src/utils.rs:533
 msgid "OPML file"
 msgstr "OPML-tiedosto"
 
-#: podcasts-gtk/src/utils.rs:465
+#: podcasts-gtk/src/utils.rs:502
 msgid "Failed to parse the imported file"
 msgstr "Tuotua tiedostoa ei voitu jäsentää"
 
-#: podcasts-gtk/src/utils.rs:470 podcasts-gtk/src/utils.rs:515
+#: podcasts-gtk/src/utils.rs:507 podcasts-gtk/src/utils.rs:552
 msgid "Selected file could not be accessed."
 msgstr "Valittua tiedostoa ei voitu käyttää."
 
-#: podcasts-gtk/src/utils.rs:481
+#: podcasts-gtk/src/utils.rs:518
 msgid "Export shows to…"
 msgstr "Vie jaksot…"
 
-#: podcasts-gtk/src/utils.rs:484
+#: podcasts-gtk/src/utils.rs:521
 msgid "_Export"
 msgstr "_Vie"
 
-#: podcasts-gtk/src/utils.rs:485
+#: podcasts-gtk/src/utils.rs:522
 msgid "_Cancel"
 msgstr "_Peru"
 
 #. Translators: This is the string of the suggested name for the exported opml file
-#: podcasts-gtk/src/utils.rs:489
+#: podcasts-gtk/src/utils.rs:526
 msgid "gnome-podcasts-exported-shows"
 msgstr "gnome-podcasteista-viedyt-ohjelmat"
 
-#: podcasts-gtk/src/utils.rs:509
+#: podcasts-gtk/src/utils.rs:546
 msgid "GNOME Podcasts Subscriptions"
 msgstr "Gnomen podcastsovelluksen tilaukset"
 
-#: podcasts-gtk/src/utils.rs:510
+#: podcasts-gtk/src/utils.rs:547
 msgid "Failed to export podcasts"
 msgstr "Podcastien vienti epäonnistui"
 
-#: podcasts-gtk/src/widgets/aboutdialog.rs:51
+#: podcasts-gtk/src/widgets/aboutdialog.rs:58
 msgid "Podcast Client for the GNOME Desktop."
 msgstr "Podcast-sovellus Gnome-työpöydlle."
 
-#: podcasts-gtk/src/widgets/aboutdialog.rs:58
+#: podcasts-gtk/src/widgets/aboutdialog.rs:65
 msgid "Learn more about GNOME Podcasts"
 msgstr "Lisätietoja Gnomen podcast-sovelluksesta"
 
-#: podcasts-gtk/src/widgets/aboutdialog.rs:63
+#: podcasts-gtk/src/widgets/aboutdialog.rs:69
 msgid "translator-credits"
 msgstr "Jiri Grönroos"
 
-#: podcasts-gtk/src/widgets/episode.rs:149
+#: podcasts-gtk/src/widgets/episode.rs:144
 msgid "{} min"
 msgstr "{} min"
 
@@ -366,11 +374,11 @@ msgstr "{} min"
 msgid "The media player was unable to execute an action."
 msgstr "Mediasoitin ei kyennyt suorittamaan toimintoa."
 
-#: podcasts-gtk/src/widgets/show_menu.rs:186
+#: podcasts-gtk/src/widgets/show_menu.rs:198
 msgid "Marked all episodes as listened"
 msgstr "Merkitse kaikki jaksot toistetuiksi"
 
-#: podcasts-gtk/src/widgets/show_menu.rs:191
+#: podcasts-gtk/src/widgets/show_menu.rs:203
 msgid "Unsubscribed from {}"
 msgstr "Lopeta syötteen {} tilaus"
 
