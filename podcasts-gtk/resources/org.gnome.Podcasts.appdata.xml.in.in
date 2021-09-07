@@ -5,10 +5,12 @@
   <project_license>GPL-3.0</project_license>
   <metadata_license>CC0-1.0</metadata_license>
   <content_rating type="oars-1.1" />
-  <summary>Podcast app for GNOME</summary>
+  <summary>Listen to your favorite shows</summary>
   <description>
     <p>
-      Listen to your favorite podcasts, right from your desktop.
+      Play, update, and manage your podcasts from a lightweight interface that seamlessly integrates with GNOME.
+      Podcasts can play various audio formats and remember where you stopped listening.
+      You can subscribe to shows via RSS/Atom, iTunes, and Soundcloud links. Subscriptions from other apps can be imported via OPML files.
     </p>
   </description>
   <url type="homepage">https://gitlab.gnome.org/World/podcasts</url>
