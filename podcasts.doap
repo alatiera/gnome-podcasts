@@ -25,4 +25,11 @@
       <gnome:userid>jpetridis</gnome:userid>
     </foaf:Person>
   </maintainer>
+  <maintainer>
+    <foaf:Person>
+      <foaf:name>Julian Hofer</foaf:name>
+      <foaf:mbox rdf:resource="mailto:julianhofer@gnome.org" />
+      <gnome:userid>julianhofer</gnome:userid>
+    </foaf:Person>
+  </maintainer>
 </Project>

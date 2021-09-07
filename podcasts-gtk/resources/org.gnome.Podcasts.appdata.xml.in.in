@@ -113,6 +113,7 @@
   <project_group>GNOME</project_group>
   <update_contact>jpetridis@gnome.org</update_contact>
   <developer_name>Jordan Petridis</developer_name>
+  <developer_name>Julian Hofer</developer_name>
   <custom>
     <value key="Purism::form_factor">workstation</value>
     <value key="Purism::form_factor">mobile</value>
