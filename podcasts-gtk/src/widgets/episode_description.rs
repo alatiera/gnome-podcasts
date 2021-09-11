@@ -102,10 +102,10 @@ impl EpisodeDescription {
 
         if let Some(t) = ep.description() {
             let default_text = self.description_label.text();
+
             let markup = html2pango_markup(&t);
             self.description_label.set_markup(&markup);
-
-            // plaintext fallback if setting markup didn't work
+            // recover from invalid markup
             if self.description_label.text() == default_text {
                 self.description_label.set_text(&t);
             }
@@ -173,11 +173,30 @@ fn escape_amp(t: &str) -> String {
     t.replace("&", "&amp;")
 }
 
+/// Converts partial html text from podcast description tags into pango markup
 fn html2pango_markup(t: &str) -> String {
     // TODO maybe use html5ever directly in the future, since html2text adds * characters around itallic and bold
     // also &amp is not escaped by default
-    let rich = html2text::from_read_rich(t.as_bytes(), t.as_bytes().len());
-    let mut buffer = String::with_capacity(t.len());
+
+    // Some podcasts have manually set paragraphs, others use only \n to signal a newline
+    // html2text removes \n from the text, which would remove all newlines for those podcasts.
+    //
+    // This is a workaround to preserve them if
+    // the podcast description relies on \n for setting newlines.
+    // TODO remove this if a custom html5ever parser is written.
+    let has_paragraphs = t.contains("</p>");
+    let escaped_newlines_text = if has_paragraphs {
+        t.to_string()
+    } else {
+        t.replace("\n", "___PODCASTS_WORKAROUND__BREAK___")
+    };
+
+    let rich = html2text::from_read_rich(
+        escaped_newlines_text.as_bytes(),
+        escaped_newlines_text.as_bytes().len(),
+    );
+    let mut buffer = String::with_capacity(escaped_newlines_text.len());
+
     for mut v in rich {
         for fragment in v.drain_all() {
             match fragment {
@@ -201,6 +220,10 @@ fn html2pango_markup(t: &str) -> String {
                             // Preformatted; true if a continuation line for an overly-long line.
                             RichAnnotation::Preformat(_bool) => (),
                             RichAnnotation::Strikeout => buffer.push_str("<s>"),
+                        }
+                        match tag {
+                            RichAnnotation::Default => (),
+                            _ => (),
                         }
                     }
 
@@ -227,5 +250,9 @@ fn html2pango_markup(t: &str) -> String {
         }
         buffer.push('\n');
     }
-    buffer
+    if has_paragraphs {
+        buffer
+    } else {
+        buffer.replace("___PODCASTS_WORKAROUND__BREAK___", "\n")
+    }
 }
