@@ -6,6 +6,8 @@ podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in
 
 # ui files
 podcasts-gtk/resources/gtk/empty_view.ui
+podcasts-gtk/resources/gtk/episode_description.ui
+podcasts-gtk/resources/gtk/episode_menu.ui
 podcasts-gtk/resources/gtk/episode_widget.ui
 podcasts-gtk/resources/gtk/hamburger.ui
 podcasts-gtk/resources/gtk/headerbar.ui
@@ -37,6 +39,8 @@ podcasts-gtk/src/widgets/appnotif.rs
 podcasts-gtk/src/widgets/base_view.rs
 podcasts-gtk/src/widgets/empty.rs
 podcasts-gtk/src/widgets/episode.rs
+podcasts-gtk/src/widgets/episode_description.rs
+podcasts-gtk/src/widgets/episode_menu.rs
 podcasts-gtk/src/widgets/home_view.rs
 podcasts-gtk/src/widgets/mod.rs
 podcasts-gtk/src/widgets/player.rs
