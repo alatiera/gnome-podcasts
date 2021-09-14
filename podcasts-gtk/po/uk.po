@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: podcasts master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2021-09-07 14:56+0000\n"
-"PO-Revision-Date: 2021-09-08 12:57+0300\n"
+"POT-Creation-Date: 2021-09-14 16:55+0000\n"
+"PO-Revision-Date: 2021-09-14 20:34+0300\n"
 "Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
 "Language-Team: Ukrainian <trans-uk@lists.fedoraproject.org>\n"
 "Language: uk\n"
@@ -104,8 +104,7 @@ msgstr "Jordan Petridis"
 
 #: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:116
 msgid "Julian Hofer"
-msgstr ""
-"Julian Hofer"
+msgstr "Julian Hofer"
 
 #: podcasts-gtk/resources/gtk/empty_view.ui:46
 msgid "This show does not have episodes yet"
@@ -127,6 +126,41 @@ msgstr "Додайте нові шоу за допомогою адреси ст
 #: podcasts-gtk/resources/gtk/empty_view.ui:152
 msgid "Import shows from another device"
 msgstr "Імпортувати шоу з іншого пристрою"
+
+#: podcasts-gtk/resources/gtk/episode_description.ui:49
+msgid "Episode Details"
+msgstr ""
+"Подробиці щодо епізоду"
+
+#: podcasts-gtk/resources/gtk/episode_description.ui:64
+#: podcasts-gtk/resources/gtk/headerbar.ui:186
+msgid "Back"
+msgstr "Назад"
+
+#: podcasts-gtk/resources/gtk/episode_description.ui:148
+#| msgid "Podcasts"
+msgid "Podcast Title"
+msgstr "Заголовок подкаста"
+
+#: podcasts-gtk/resources/gtk/episode_description.ui:186
+msgid "Duration - Date"
+msgstr ""
+"Тривалість — Дата"
+
+#: podcasts-gtk/resources/gtk/episode_description.ui:241
+msgid "Episode Description"
+msgstr ""
+"Опис епізоду"
+
+#: podcasts-gtk/resources/gtk/episode_menu.ui:36
+#| msgid "_Import Shows"
+msgid "Go to Show"
+msgstr "Перейти до шоу"
+
+#: podcasts-gtk/resources/gtk/episode_menu.ui:40
+msgid "Copy Episode Url"
+msgstr ""
+"Копіювати адресу епізоду"
 
 #: podcasts-gtk/resources/gtk/episode_widget.ui:82
 msgid "You’ve already listened to this episode."
@@ -184,10 +218,6 @@ msgstr "Додати"
 #: podcasts-gtk/resources/gtk/headerbar.ui:150
 msgid "Show Title"
 msgstr "Показувати заголовок"
-
-#: podcasts-gtk/resources/gtk/headerbar.ui:186
-msgid "Back"
-msgstr "Назад"
 
 #: podcasts-gtk/resources/gtk/help-overlay.ui:12
 msgid "General"
@@ -384,6 +414,11 @@ msgstr "Юрій Чорноіван <yurchor@ukr.net>"
 #: podcasts-gtk/src/widgets/episode.rs:145
 msgid "{} min"
 msgstr "{} хв."
+
+#: podcasts-gtk/src/widgets/episode_description.rs:165
+msgid "Copied URL to clipboard!"
+msgstr ""
+"Адресу скопійовано до буфера обміну!"
 
 #: podcasts-gtk/src/widgets/player.rs:902
 msgid "The media player was unable to execute an action."
