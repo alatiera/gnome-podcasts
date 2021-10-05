@@ -27,9 +27,9 @@ use crate::utils::{self};
 use crate::widgets::appnotif::InAppNotification;
 use crate::widgets::EpisodeMenu;
 
+use crate::episode_description_parser;
 use crate::i18n::i18n;
 use chrono::prelude::*;
-use html2text::render::text_renderer::{RichAnnotation, TaggedLineElement};
 use std::cell::Cell;
 use std::rc::Rc;
 use std::sync::Arc;
@@ -103,11 +103,11 @@ impl EpisodeDescription {
         if let Some(t) = ep.description() {
             let default_text = self.description_label.text();
 
-            let markup = html2pango_markup(&t);
+            let markup = episode_description_parser::html2pango_markup(t);
             self.description_label.set_markup(&markup);
             // recover from invalid markup
             if self.description_label.text() == default_text {
-                self.description_label.set_text(&t);
+                self.description_label.set_text(t);
             }
         };
         let duration = ep.duration().map(|s| {
@@ -165,94 +165,5 @@ impl EpisodeDescription {
         let text = i18n("Copied URL to clipboard!");
         let undo_callback: Option<fn()> = None;
         InAppNotification::new(&text, 2000, callback, undo_callback)
-    }
-}
-
-fn escape_amp(t: &str) -> String {
-    // TODO prevent escaping escape-sequances
-    t.replace("&", "&amp;")
-}
-
-/// Converts partial html text from podcast description tags into pango markup
-fn html2pango_markup(t: &str) -> String {
-    // TODO maybe use html5ever directly in the future, since html2text adds * characters around itallic and bold
-    // also &amp is not escaped by default
-
-    // Some podcasts have manually set paragraphs, others use only \n to signal a newline
-    // html2text removes \n from the text, which would remove all newlines for those podcasts.
-    //
-    // This is a workaround to preserve them if
-    // the podcast description relies on \n for setting newlines.
-    // TODO remove this if a custom html5ever parser is written.
-    let has_paragraphs = t.contains("</p>");
-    let escaped_newlines_text = if has_paragraphs {
-        t.to_string()
-    } else {
-        t.replace("\n", "___PODCASTS_WORKAROUND__BREAK___")
-    };
-
-    let rich = html2text::from_read_rich(
-        escaped_newlines_text.as_bytes(),
-        escaped_newlines_text.as_bytes().len(),
-    );
-    let mut buffer = String::with_capacity(escaped_newlines_text.len());
-
-    for mut v in rich {
-        for fragment in v.drain_all() {
-            match fragment {
-                TaggedLineElement::Str(r) => {
-                    let mut trim_asterisk = false;
-                    for tag in &r.tag {
-                        match tag {
-                            RichAnnotation::Default => (),
-                            RichAnnotation::Link(target) => {
-                                buffer.push_str("<a href=\"");
-                                buffer.push_str(&escape_amp(target));
-                                buffer.push_str("\">");
-                            }
-                            RichAnnotation::Image => (),
-                            RichAnnotation::Emphasis => buffer.push_str("<i>"),
-                            RichAnnotation::Strong => {
-                                trim_asterisk = true;
-                                buffer.push_str("<b>")
-                            }
-                            RichAnnotation::Code => buffer.push_str("<tt>"),
-                            // Preformatted; true if a continuation line for an overly-long line.
-                            RichAnnotation::Preformat(_bool) => (),
-                            RichAnnotation::Strikeout => buffer.push_str("<s>"),
-                        }
-                        match tag {
-                            RichAnnotation::Default => (),
-                            _ => (),
-                        }
-                    }
-
-                    // remove the *bold*
-                    if trim_asterisk {
-                        buffer.push_str(&escape_amp(&r.s.trim_matches('*')));
-                    } else {
-                        buffer.push_str(&escape_amp(&r.s));
-                    }
-
-                    r.tag.iter().rev().for_each(|tag| match tag {
-                        RichAnnotation::Default => (),
-                        RichAnnotation::Link(_target) => buffer.push_str("</a>"),
-                        RichAnnotation::Image => (),
-                        RichAnnotation::Emphasis => buffer.push_str("</i>"),
-                        RichAnnotation::Strong => buffer.push_str("</b>"),
-                        RichAnnotation::Code => buffer.push_str("</tt>"),
-                        RichAnnotation::Preformat(_bool) => (),
-                        RichAnnotation::Strikeout => buffer.push_str("</s>"),
-                    });
-                }
-                TaggedLineElement::FragmentStart(name) => println!("fragment {}", name),
-            }
-        }
-        buffer.push('\n');
-    }
-    if has_paragraphs {
-        buffer
-    } else {
-        buffer.replace("___PODCASTS_WORKAROUND__BREAK___", "\n")
     }
 }

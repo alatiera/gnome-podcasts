@@ -44,6 +44,8 @@ extern crate log;
 #[cfg(test)]
 #[macro_use]
 extern crate pretty_assertions;
+#[macro_use]
+extern crate html5ever;
 
 use gtk::prelude::*;
 
@@ -63,6 +65,7 @@ mod window;
 mod manager;
 mod settings;
 
+mod episode_description_parser;
 mod i18n;
 
 use crate::app::PdApplication;
