@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: podcasts master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2021-09-07 14:56+0000\n"
-"PO-Revision-Date: 2021-09-12 17:32+0100\n"
+"POT-Creation-Date: 2021-09-14 16:55+0000\n"
+"PO-Revision-Date: 2021-10-31 09:39+0000\n"
 "Last-Translator: Hugo Carvalho <hugokarvalho@hotmail.com>\n"
 "Language-Team: Portuguese (https://l10n.gnome.org/teams/pt/)\n"
 "Language: pt\n"
@@ -117,6 +117,35 @@ msgstr "Adicionar novo podcast via fonte URL"
 msgid "Import shows from another device"
 msgstr "Importar podcasts de outros dispositivos"
 
+#: podcasts-gtk/resources/gtk/episode_description.ui:49
+msgid "Episode Details"
+msgstr "Detalhes do episódio"
+
+#: podcasts-gtk/resources/gtk/episode_description.ui:64
+#: podcasts-gtk/resources/gtk/headerbar.ui:186
+msgid "Back"
+msgstr "Voltar"
+
+#: podcasts-gtk/resources/gtk/episode_description.ui:148
+msgid "Podcast Title"
+msgstr "Título de Podcast"
+
+#: podcasts-gtk/resources/gtk/episode_description.ui:186
+msgid "Duration - Date"
+msgstr "Duração - Data"
+
+#: podcasts-gtk/resources/gtk/episode_description.ui:241
+msgid "Episode Description"
+msgstr "Descrição do episódio"
+
+#: podcasts-gtk/resources/gtk/episode_menu.ui:36
+msgid "Go to Show"
+msgstr "Ir para o podcast"
+
+#: podcasts-gtk/resources/gtk/episode_menu.ui:40
+msgid "Copy Episode Url"
+msgstr "Copiar URL do episódio"
+
 #: podcasts-gtk/resources/gtk/episode_widget.ui:82
 msgid "You’ve already listened to this episode."
 msgstr "Já ouviu este episódio."
@@ -127,7 +156,7 @@ msgstr "A calcular o tamanho do episódio…"
 
 #: podcasts-gtk/resources/gtk/episode_widget.ui:214
 msgid "Play this episode"
-msgstr "Reproduzir este espisódio"
+msgstr "Reproduzir este episódio"
 
 #: podcasts-gtk/resources/gtk/episode_widget.ui:230
 msgid "Cancel the download process"
@@ -173,10 +202,6 @@ msgstr "Adicionar"
 #: podcasts-gtk/resources/gtk/headerbar.ui:150
 msgid "Show Title"
 msgstr "Título do Podcast"
-
-#: podcasts-gtk/resources/gtk/headerbar.ui:186
-msgid "Back"
-msgstr "Voltar"
 
 #: podcasts-gtk/resources/gtk/help-overlay.ui:12
 msgid "General"
@@ -254,7 +279,6 @@ msgid "0.90×"
 msgstr "0.90×"
 
 #: podcasts-gtk/resources/gtk/player_rate.ui:95
-#| msgid "1.75×"
 msgid "0.75×"
 msgstr "0.75×"
 
@@ -376,6 +400,10 @@ msgstr ""
 #: podcasts-gtk/src/widgets/episode.rs:145
 msgid "{} min"
 msgstr "{} min"
+
+#: podcasts-gtk/src/widgets/episode_description.rs:165
+msgid "Copied URL to clipboard!"
+msgstr "URL copiado para área de transferência!"
 
 #: podcasts-gtk/src/widgets/player.rs:902
 msgid "The media player was unable to execute an action."
