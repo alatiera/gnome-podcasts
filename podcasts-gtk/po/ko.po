@@ -1,23 +1,23 @@
 # Korean translation for podcasts.
 # Copyright (C) 2018 podcasts's COPYRIGHT HOLDER
 # This file is distributed under the same license as the podcasts package.
-# Seong-ho Cho <shcho@gnome.org>, 2018.
+# Seong-ho Cho <shcho@gnome.org>, 2018-2021.
 # DaeHyun Sung <sungdh86+git@gmail.com>, 2020-2021.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: podcasts master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2021-06-19 18:35+0000\n"
-"PO-Revision-Date: 2021-09-05 12:21+0900\n"
-"Last-Translator: DaeHyun Sung <sungdh86+git@gmail.com>\n"
+"POT-Creation-Date: 2021-09-14 16:55+0000\n"
+"PO-Revision-Date: 2021-10-01 12:22+0900\n"
+"Last-Translator: Seong-ho Cho <darkcircle.0426@gmail.com>\n"
 "Language-Team: Korean <gnome-kr@googlegroups.com>\n"
 "Language: ko\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Poedit 3.0\n"
+"X-Generator: Poedit 2.3.1\n"
 
 #: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:15
 msgid "Top position of the last open main window"
@@ -70,8 +70,8 @@ msgstr "자동 정리 기다림 주기 시간"
 #. Weird magic I copy-pasted that sets the Application Name in the Shell.
 #: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:3
 #: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:4
-#: podcasts-gtk/resources/gtk/headerbar.ui:137 podcasts-gtk/src/app.rs:364
-#: podcasts-gtk/src/widgets/aboutdialog.rs:63 podcasts-gtk/src/window.rs:64
+#: podcasts-gtk/resources/gtk/headerbar.ui:137 podcasts-gtk/src/app.rs:438
+#: podcasts-gtk/src/widgets/aboutdialog.rs:63 podcasts-gtk/src/window.rs:66
 msgid "Podcasts"
 msgstr "팟캐스트"
 
@@ -89,13 +89,17 @@ msgstr "Podcast;팟캐스트;RSS;"
 msgid "Podcast app for GNOME"
 msgstr "그놈용 팟캐스트 앱"
 
-#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:99
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:115
 msgid "Jordan Petridis"
 msgstr "Jordan Petridis"
 
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:116
+msgid "Julian Hofer"
+msgstr "Julian Hofer"
+
 #: podcasts-gtk/resources/gtk/empty_view.ui:46
 msgid "This show does not have episodes yet"
-msgstr "아직 보여줄 에피소드가 없습니다"
+msgstr "이 쇼에는 아직 에피소드가 없습니다"
 
 #: podcasts-gtk/resources/gtk/empty_view.ui:57
 msgid "If you think this is an error, please consider writing a bug report."
@@ -112,6 +116,35 @@ msgstr "피드 URL 주소로 새 쇼 추가"
 #: podcasts-gtk/resources/gtk/empty_view.ui:152
 msgid "Import shows from another device"
 msgstr "다른 장치에서 쇼 가져오기"
+
+#: podcasts-gtk/resources/gtk/episode_description.ui:49
+msgid "Episode Details"
+msgstr "에피소드 내용"
+
+#: podcasts-gtk/resources/gtk/episode_description.ui:64
+#: podcasts-gtk/resources/gtk/headerbar.ui:186
+msgid "Back"
+msgstr "뒤로"
+
+#: podcasts-gtk/resources/gtk/episode_description.ui:148
+msgid "Podcast Title"
+msgstr "팟캐스트 제목"
+
+#: podcasts-gtk/resources/gtk/episode_description.ui:186
+msgid "Duration - Date"
+msgstr "방송시간 - 날짜"
+
+#: podcasts-gtk/resources/gtk/episode_description.ui:241
+msgid "Episode Description"
+msgstr "에피소드 설명"
+
+#: podcasts-gtk/resources/gtk/episode_menu.ui:36
+msgid "Go to Show"
+msgstr "쇼로 이동"
+
+#: podcasts-gtk/resources/gtk/episode_menu.ui:40
+msgid "Copy Episode Url"
+msgstr "에피소드 URL 주소 복사"
 
 #: podcasts-gtk/resources/gtk/episode_widget.ui:82
 msgid "You’ve already listened to this episode."
@@ -147,7 +180,7 @@ msgstr "쇼 내보내기(_E)"
 
 #: podcasts-gtk/resources/gtk/hamburger.ui:22
 msgid "_Keyboard Shortcuts"
-msgstr "키보드 바로 가기 키(_K)"
+msgstr "키보드 바로 가기(_K)"
 
 #: podcasts-gtk/resources/gtk/hamburger.ui:30
 msgid "_About Podcasts"
@@ -170,10 +203,6 @@ msgstr "추가"
 msgid "Show Title"
 msgstr "제목 표시"
 
-#: podcasts-gtk/resources/gtk/headerbar.ui:186
-msgid "Back"
-msgstr "뒤로"
-
 #: podcasts-gtk/resources/gtk/help-overlay.ui:12
 msgid "General"
 msgstr "일반"
@@ -192,19 +221,19 @@ msgstr "프로그램 끝내기"
 msgid "Today"
 msgstr "오늘"
 
-#: podcasts-gtk/resources/gtk/home_view.ui:88
+#: podcasts-gtk/resources/gtk/home_view.ui:89
 msgid "Yesterday"
 msgstr "어제"
 
-#: podcasts-gtk/resources/gtk/home_view.ui:120
+#: podcasts-gtk/resources/gtk/home_view.ui:122
 msgid "This Week"
 msgstr "금주"
 
-#: podcasts-gtk/resources/gtk/home_view.ui:152
+#: podcasts-gtk/resources/gtk/home_view.ui:155
 msgid "This Month"
 msgstr "이번 달"
 
-#: podcasts-gtk/resources/gtk/home_view.ui:185
+#: podcasts-gtk/resources/gtk/home_view.ui:189
 msgid "Older"
 msgstr "이전"
 
@@ -297,60 +326,60 @@ msgstr "가입 취소"
 msgid "Read More"
 msgstr "더 읽기"
 
-#: podcasts-gtk/src/app.rs:299
+#: podcasts-gtk/src/app.rs:353
 msgid "Fetching new episodes"
 msgstr "새 에피소드 가져오는 중"
 
-#: podcasts-gtk/src/stacks/content.rs:53
+#: podcasts-gtk/src/stacks/content.rs:58
 msgid "New"
 msgstr "새 항목"
 
-#: podcasts-gtk/src/stacks/content.rs:54
+#: podcasts-gtk/src/stacks/content.rs:59
 msgid "Shows"
 msgstr "쇼"
 
-#: podcasts-gtk/src/utils.rs:472
+#: podcasts-gtk/src/utils.rs:501
 msgid "Select the file from which to you want to import shows."
 msgstr "가져올 쇼의 파일을 선택하십시오."
 
-#: podcasts-gtk/src/utils.rs:475
+#: podcasts-gtk/src/utils.rs:504
 msgid "_Import"
 msgstr "가져오기(_I)"
 
-#: podcasts-gtk/src/utils.rs:484 podcasts-gtk/src/utils.rs:533
+#: podcasts-gtk/src/utils.rs:513 podcasts-gtk/src/utils.rs:562
 msgid "OPML file"
 msgstr "OPML 파일"
 
-#: podcasts-gtk/src/utils.rs:502
+#: podcasts-gtk/src/utils.rs:531
 msgid "Failed to parse the imported file"
 msgstr "가져온 파일 해석에 실패했습니다"
 
-#: podcasts-gtk/src/utils.rs:507 podcasts-gtk/src/utils.rs:552
+#: podcasts-gtk/src/utils.rs:536 podcasts-gtk/src/utils.rs:581
 msgid "Selected file could not be accessed."
 msgstr "선택한 파일에 접근할 수 없습니다."
 
-#: podcasts-gtk/src/utils.rs:518
+#: podcasts-gtk/src/utils.rs:547
 msgid "Export shows to…"
 msgstr "쇼 내보내기…"
 
-#: podcasts-gtk/src/utils.rs:521
+#: podcasts-gtk/src/utils.rs:550
 msgid "_Export"
 msgstr "내보내기(_E)"
 
-#: podcasts-gtk/src/utils.rs:522
+#: podcasts-gtk/src/utils.rs:551
 msgid "_Cancel"
 msgstr "취소(_C)"
 
 #. Translators: This is the string of the suggested name for the exported opml file
-#: podcasts-gtk/src/utils.rs:526
+#: podcasts-gtk/src/utils.rs:555
 msgid "gnome-podcasts-exported-shows"
 msgstr "gnome-podcasts-exported-shows"
 
-#: podcasts-gtk/src/utils.rs:546
+#: podcasts-gtk/src/utils.rs:575
 msgid "GNOME Podcasts Subscriptions"
 msgstr "그놈 팟캐스트 구독"
 
-#: podcasts-gtk/src/utils.rs:547
+#: podcasts-gtk/src/utils.rs:576
 msgid "Failed to export podcasts"
 msgstr "팟캐스트를 내보내지 못하였습니다"
 
@@ -368,19 +397,23 @@ msgstr ""
 "조성호 <shcho@gnome.org>, 2018\n"
 "성대현 <sungdh86+git@gmail.com>, 2020"
 
-#: podcasts-gtk/src/widgets/episode.rs:144
+#: podcasts-gtk/src/widgets/episode.rs:145
 msgid "{} min"
 msgstr "{}분"
 
-#: podcasts-gtk/src/widgets/player.rs:818
+#: podcasts-gtk/src/widgets/episode_description.rs:165
+msgid "Copied URL to clipboard!"
+msgstr "URL 주소를 클립보드에 복사했습니다!"
+
+#: podcasts-gtk/src/widgets/player.rs:902
 msgid "The media player was unable to execute an action."
 msgstr "미디어 재생기에서 이 동작을 수행할 수 없습니다."
 
-#: podcasts-gtk/src/widgets/show_menu.rs:198
+#: podcasts-gtk/src/widgets/show_menu.rs:194
 msgid "Marked all episodes as listened"
 msgstr "모든 에피소드를 감청 상태로 표시했습니다"
 
-#: podcasts-gtk/src/widgets/show_menu.rs:203
+#: podcasts-gtk/src/widgets/show_menu.rs:199
 msgid "Unsubscribed from {}"
 msgstr "{}에서 가입 취소했습니다"
 
