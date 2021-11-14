@@ -7,14 +7,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: podcasts master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2021-07-02 13:18+0000\n"
-"PO-Revision-Date: 2021-07-06 20:45+0200\n"
+"POT-Creation-Date: 2021-07-06 18:47+0000\n"
+"PO-Revision-Date: 2021-08-20 22:47+0200\n"
+"Last-Translator: Quentin PAGÈS\n"
 "Language-Team: Occitan <totenoc@gmail.com>\n"
 "Language: oc\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Last-Translator: Quentin PAGÈS\n"
 "X-Generator: Poedit 3.0\n"
 
 #: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:15
@@ -85,11 +85,11 @@ msgstr "Podcast;RSS;"
 
 #: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:8
 msgid "Podcast app for GNOME"
-msgstr ""
+msgstr "Aplicacion de podcast per GNOME"
 
 #: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:99
 msgid "Jordan Petridis"
-msgstr ""
+msgstr "Jordan Petridis"
 
 #: podcasts-gtk/resources/gtk/empty_view.ui:46
 msgid "This show does not have episodes yet"
@@ -121,7 +121,7 @@ msgstr ""
 
 #: podcasts-gtk/resources/gtk/episode_widget.ui:214
 msgid "Play this episode"
-msgstr ""
+msgstr "Legir aqueste episòdi"
 
 #: podcasts-gtk/resources/gtk/episode_widget.ui:230
 msgid "Cancel the download process"
@@ -149,7 +149,7 @@ msgstr "_Acorchis de clavièr"
 
 #: podcasts-gtk/resources/gtk/hamburger.ui:30
 msgid "_About Podcasts"
-msgstr ""
+msgstr "_A prepaus de Podcast"
 
 #: podcasts-gtk/resources/gtk/headerbar.ui:35
 #: podcasts-gtk/resources/gtk/headerbar.ui:165
@@ -317,7 +317,7 @@ msgstr "_Importar"
 
 #: podcasts-gtk/src/utils.rs:484 podcasts-gtk/src/utils.rs:533
 msgid "OPML file"
-msgstr ""
+msgstr "Fichièr OPML"
 
 #: podcasts-gtk/src/utils.rs:502
 msgid "Failed to parse the imported file"
