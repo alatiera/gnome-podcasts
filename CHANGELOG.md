@@ -14,6 +14,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Removed:
 
+## [0.5.0] - 2021-12-04
+
+### Changed:
+- Description metadata for app stores World/podcasts!202
+- Translation updates
+
+### Fixed:
+- Fix the wrong User-Agent header being sent World/podcasts!207
+- Make newlines display in episode descritpions display correctly World/podcasts!206
+
 ## [0.5.0-beta] - 2021-08-20
 
 ### Added:
