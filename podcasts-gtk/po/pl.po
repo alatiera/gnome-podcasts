@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: podcasts\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2021-09-14 16:55+0000\n"
-"PO-Revision-Date: 2021-09-14 19:52+0200\n"
+"POT-Creation-Date: 2021-11-28 07:07+0000\n"
+"PO-Revision-Date: 2021-11-28 15:10+0100\n"
 "Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
 "Language-Team: Polish <community-poland@mozilla.org>\n"
 "Language: pl\n"
@@ -76,9 +76,8 @@ msgid "Podcasts"
 msgstr "Podcasty"
 
 #: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:4
-#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:10
 msgid "Listen to your favorite podcasts, right from your desktop."
-msgstr "Słuchanie ulubionych podcastów prosto z komputera."
+msgstr "Słuchanie ulubionych podcastów prosto z komputera"
 
 #. Translators: Search terms to find this application. Do NOT translate or localize the semicolons! The list MUST also end with a semicolon!
 #: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:13
@@ -86,14 +85,28 @@ msgid "Podcast;RSS;"
 msgstr "Podcast;Podkasty;RSS;Atom;"
 
 #: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:8
-msgid "Podcast app for GNOME"
-msgstr "Aplikacja do słuchania podcastów w GNOME"
+msgid "Listen to your favorite shows"
+msgstr "Słuchaj ulubionych programów"
 
-#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:115
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:10
+msgid ""
+"Play, update, and manage your podcasts from a lightweight interface that "
+"seamlessly integrates with GNOME. Podcasts can play various audio formats "
+"and remember where you stopped listening. You can subscribe to shows via RSS/"
+"Atom, iTunes, and Soundcloud links. Subscriptions from other apps can be "
+"imported via OPML files."
+msgstr ""
+"Odtwarzanie, aktualizowanie i zarządzanie podcastami za pomocą lekkiego "
+"interfejsu zintegrowanego ze środowiskiem GNOME. Obsługuje różne formaty "
+"dźwięku i zapamiętuje miejsce, w którym wstrzymano słuchanie. Można "
+"subskrybować programy za pomocą odnośników RSS/Atom, iTunes i SoundCloud. Za "
+"pomocą plików OPML można także importować subskrypcje z innych programów."
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:117
 msgid "Jordan Petridis"
 msgstr "Jordan Petridis"
 
-#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:116
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:118
 msgid "Julian Hofer"
 msgstr "Julian Hofer"
 
