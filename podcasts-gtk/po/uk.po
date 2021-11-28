@@ -4,26 +4,29 @@
 #
 # Yuri Chornoivan <yurchor@ukr.net>, 2020, 2021.
 msgid ""
-msgstr "Project-Id-Version: podcasts master\n"
+msgstr ""
+"Project-Id-Version: podcasts master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2021-09-14 17:34+0000\n"
-"PO-Revision-Date: 2021-11-16 22:00+0300\n"
-"Last-Translator: Andrii Serbovets <serbovets.translation@gmail.com>\n"
+"POT-Creation-Date: 2021-11-28 07:07+0000\n"
+"PO-Revision-Date: 2021-11-28 18:38+0200\n"
+"Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
 "Language-Team: Ukrainian <trans-uk@lists.fedoraproject.org>\n"
 "Language: uk\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=4; plural=n==1 ? 3 : n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-"X-Generator: OmegaT 5.6.0\n"
+"X-Generator: Lokalize 20.12.0\n"
 
 #: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:15
 msgid "Top position of the last open main window"
-msgstr "Розташування останнього відкритого головного вікна за вертикаллю (згори)"
+msgstr ""
+"Розташування останнього відкритого головного вікна за вертикаллю (згори)"
 
 #: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:19
 msgid "Left position of the last open main window"
-msgstr "Розташування останнього відкритого головного вікна за горизонталлю (ліворуч)"
+msgstr ""
+"Розташування останнього відкритого головного вікна за горизонталлю (ліворуч)"
 
 #: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:23
 msgid "Height of the last open main window"
@@ -47,11 +50,14 @@ msgstr "Чи слід періодично оновлювати вміст"
 
 #: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:46
 msgid "How many periods of time to wait between automatic refreshes"
-msgstr "Тривалість інтервалу очікування між автоматичними оновленнями (в одиницях)"
+msgstr ""
+"Тривалість інтервалу очікування між автоматичними оновленнями (в одиницях)"
 
 #: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:50
 msgid "What period of time to wait between automatic refreshes"
-msgstr "У яких одиницях вимірювати інтервал очікування між автоматичними оновленнями (години, хвилини тощо)"
+msgstr ""
+"У яких одиницях вимірювати інтервал очікування між автоматичними оновленнями "
+"(години, хвилини тощо)"
 
 #: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:54
 msgid "Whether to refresh content after startup"
@@ -59,11 +65,14 @@ msgstr "Чи оновлювали вміст після запуску"
 
 #: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:60
 msgid "How many periods of time to wait between automatic cleanups"
-msgstr "Тривалість інтервалу очікування між автоматичними очищеннями (в одиницях)"
+msgstr ""
+"Тривалість інтервалу очікування між автоматичними очищеннями (в одиницях)"
 
 #: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:64
 msgid "What period of time to wait between automatic cleanups"
-msgstr "У яких одиницях вимірювати інтервал очікування між автоматичними очищеннями (години, хвилини тощо)"
+msgstr ""
+"У яких одиницях вимірювати інтервал очікування між автоматичними очищеннями "
+"(години, хвилини тощо)"
 
 #. Weird magic I copy-pasted that sets the Application Name in the Shell.
 #: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:3
@@ -74,9 +83,9 @@ msgid "Podcasts"
 msgstr "Подкасти"
 
 #: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:4
-#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:10
 msgid "Listen to your favorite podcasts, right from your desktop."
-msgstr "Програма для прослуховування подкастів для стільничного оточення GNOME."
+msgstr ""
+"Програма для прослуховування подкастів для стільничного оточення GNOME."
 
 #. Translators: Search terms to find this application. Do NOT translate or localize the semicolons! The list MUST also end with a semicolon!
 #: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:13
@@ -84,14 +93,26 @@ msgid "Podcast;RSS;"
 msgstr "Podcast;RSS;подкаст;рсс;"
 
 #: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:8
-msgid "Podcast app for GNOME"
-msgstr "Слухайте улюблені подкасти у GNOME"
+#| msgid "Listen to your favorite podcasts, right from your desktop."
+msgid "Listen to your favorite shows"
+msgstr ""
+"Слухайте ваші улюблені радіопрограми"
 
-#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:115
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:10
+msgid ""
+"Play, update, and manage your podcasts from a lightweight interface that "
+"seamlessly integrates with GNOME. Podcasts can play various audio formats "
+"and remember where you stopped listening. You can subscribe to shows via RSS/"
+"Atom, iTunes, and Soundcloud links. Subscriptions from other apps can be "
+"imported via OPML files."
+msgstr ""
+"Відтворюйте, оновлюйте і керуйте вашими подкастами за допомогою простого інтерфейсу, який чудово вбудовується у решту GNOME. «Подкасти» можуть відтворювати дані у різноманітних звукових форматах і запам'ятовувати позицію, на якій ви зупинили прослуховування. Ви можете підписуватися на програми за допомогою посилань RSS/Atom, iTunes та Soundcloud. Підписки з інших програм можна імпортувати за допомогою файлів OPML."
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:117
 msgid "Jordan Petridis"
 msgstr "Jordan Petridis"
 
-#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:116
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:118
 msgid "Julian Hofer"
 msgstr "Julian Hofer"
 
@@ -391,7 +412,8 @@ msgstr "Докладніше про «Подкасти» для GNOME"
 
 #: podcasts-gtk/src/widgets/aboutdialog.rs:69
 msgid "translator-credits"
-msgstr "Юрій Чорноіван <yurchor@ukr.net>\n"
+msgstr ""
+"Юрій Чорноіван <yurchor@ukr.net>\n"
 "Андрій Сербовець <serbovets.translation@gmail.com>"
 
 #: podcasts-gtk/src/widgets/episode.rs:145
@@ -413,6 +435,9 @@ msgstr "Усі випуски позначено як прослухані."
 #: podcasts-gtk/src/widgets/show_menu.rs:199
 msgid "Unsubscribed from {}"
 msgstr "Підписку на {} скасовано."
+
+#~ msgid "Podcast app for GNOME"
+#~ msgstr "Слухайте улюблені подкасти у GNOME"
 
 #~ msgid "Double speed rate"
 #~ msgstr "Подвоєна швидкість відтворення"
