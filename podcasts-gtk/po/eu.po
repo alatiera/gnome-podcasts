@@ -1,13 +1,13 @@
 # Basque translation for podcasts.
 # Copyright (C) 2019 podcasts's COPYRIGHT HOLDER
 # This file is distributed under the same license as the podcasts package.
-# Asier Sarasua Garmendia <asier.sarasua@gmail.com>, 2019.
+# Asier Sarasua Garmendia <asier.sarasua@gmail.com>, 2019, 2021.
 #
 msgid ""
 msgstr "Project-Id-Version: podcasts master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2019-10-10 13:08+0000\n"
-"PO-Revision-Date: 2019-10-18 10:00+0100\n"
+"POT-Creation-Date: 2021-09-14 16:55+0000\n"
+"PO-Revision-Date: 2021-11-29 10:00+0100\n"
 "Last-Translator: Asier Sarasua Garmendia <asier.sarasua@gmail.com>\n"
 "Language-Team: Basque <librezale@librezale.eus>\n"
 "Language: eu\n"
@@ -15,58 +15,59 @@ msgstr "Project-Id-Version: podcasts master\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml:15
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:15
 msgid "Top position of the last open main window"
 msgstr "Irekitako azken leiho nagusiaren goiko posizioa"
 
-#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml:19
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:19
 msgid "Left position of the last open main window"
 msgstr "Irekitako azken leiho nagusiaren ezkerreko posizioa"
 
-#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml:23
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:23
 msgid "Height of the last open main window"
 msgstr "Irekitako azken leiho nagusiaren altuera"
 
-#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml:27
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:27
 msgid "Width of the last open main window"
 msgstr "Irekitako azken leiho nagusiaren zabalera"
 
-#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml:31
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:31
 msgid "Maximized state of the last open main window"
 msgstr "Irekitako azken leiho nagusiaren egoera maximizatua"
 
-#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml:36
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:36
 msgid "Enable or disable dark theme"
 msgstr "Gaitu edo desgaitu gai iluna"
 
-#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml:41
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:41
 msgid "Whether to periodically refresh content"
 msgstr "Edukia aldizka freskatuko den ala ez"
 
-#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml:46
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:46
 msgid "How many periods of time to wait between automatic refreshes"
 msgstr "Zenbat denbora-tarte itxarongo den freskatze automatikoen artean"
 
-#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml:50
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:50
 msgid "What period of time to wait between automatic refreshes"
 msgstr "Zenbat denbora itxarongo den freskatze automatikoen artean"
 
-#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml:54
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:54
 msgid "Whether to refresh content after startup"
 msgstr "Abioaren ondoren edukia freskatuko den ala ez"
 
-#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml:60
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:60
 msgid "How many periods of time to wait between automatic cleanups"
 msgstr "Zenbat denbora-tarte itxarongo den garbitze automatikoen artean"
 
-#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml:64
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:64
 msgid "What period of time to wait between automatic cleanups"
 msgstr "Zenbat denbora itxarongo den garbitze automatikoen artean"
 
 #. Weird magic I copy-pasted that sets the Application Name in the Shell.
 #: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:3
 #: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:4
-#: podcasts-gtk/src/app.rs:327 podcasts-gtk/src/widgets/aboutdialog.rs:56
+#: podcasts-gtk/resources/gtk/headerbar.ui:137 podcasts-gtk/src/app.rs:438
+#: podcasts-gtk/src/widgets/aboutdialog.rs:63 podcasts-gtk/src/window.rs:66
 msgid "Podcasts"
 msgstr "Podcast-ak"
 
@@ -84,47 +85,80 @@ msgstr "Podcast;RSS;"
 msgid "Podcast app for GNOME"
 msgstr "Podcast-en aplikazioa GNOMErako"
 
-#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:77
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:115
 msgid "Jordan Petridis"
 msgstr "Jordan Petridis"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:116
+msgid "Julian Hofer"
+msgstr "Julian Hofer"
 
 #: podcasts-gtk/resources/gtk/empty_view.ui:46
 msgid "This show does not have episodes yet"
 msgstr "Saio honek ez du pasarterik oraindik"
 
-#: podcasts-gtk/resources/gtk/empty_view.ui:62
+#: podcasts-gtk/resources/gtk/empty_view.ui:57
 msgid "If you think this is an error, please consider writing a bug report."
 msgstr "Errorea dela uste baduzu, idatzi akatsaren jakinarazpen bat."
 
-#: podcasts-gtk/resources/gtk/empty_view.ui:106
+#: podcasts-gtk/resources/gtk/empty_view.ui:91
 msgid "Get some shows"
 msgstr "Eskuratu zenbait saio"
 
-#: podcasts-gtk/resources/gtk/empty_view.ui:143
+#: podcasts-gtk/resources/gtk/empty_view.ui:123
 msgid "Add new shows via feed URL"
 msgstr "Gehitu saio berriak jarioen URL baten bidez"
 
-#: podcasts-gtk/resources/gtk/empty_view.ui:172
+#: podcasts-gtk/resources/gtk/empty_view.ui:152
 msgid "Import shows from another device"
 msgstr "Inportatu saioak beste gailu batetik"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:79
+#: podcasts-gtk/resources/gtk/episode_description.ui:49
+msgid "Episode Details"
+msgstr "Pasartearen xehetasunak"
+
+#: podcasts-gtk/resources/gtk/episode_description.ui:64
+#: podcasts-gtk/resources/gtk/headerbar.ui:186
+msgid "Back"
+msgstr "Atzera"
+
+#: podcasts-gtk/resources/gtk/episode_description.ui:148
+msgid "Podcast Title"
+msgstr "Podcast-aren izenburua"
+
+#: podcasts-gtk/resources/gtk/episode_description.ui:186
+msgid "Duration - Date"
+msgstr "Iraupena - Data"
+
+#: podcasts-gtk/resources/gtk/episode_description.ui:241
+msgid "Episode Description"
+msgstr "Pasartearen deskribapena"
+
+#: podcasts-gtk/resources/gtk/episode_menu.ui:36
+msgid "Go to Show"
+msgstr "Joan aurkezpenera"
+
+#: podcasts-gtk/resources/gtk/episode_menu.ui:40
+msgid "Copy Episode Url"
+msgstr "Kopiatu pasartearen URLa"
+
+#: podcasts-gtk/resources/gtk/episode_widget.ui:82
 msgid "You’ve already listened to this episode."
 msgstr "Dagoeneko entzun duzu pasarte hau"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:208
+#: podcasts-gtk/resources/gtk/episode_widget.ui:187
 msgid "Calculating episode size…"
 msgstr "Pasartearen tamaina kalkulatzen…"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:248
+#: podcasts-gtk/resources/gtk/episode_widget.ui:214
 msgid "Play this episode"
 msgstr "Erreproduzitu pasarte hau"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:269
+#: podcasts-gtk/resources/gtk/episode_widget.ui:230
 msgid "Cancel the download process"
 msgstr "Utzi deskarga-prozesua"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:292
+#: podcasts-gtk/resources/gtk/episode_widget.ui:250
 msgid "Download this episode"
 msgstr "Deskargatu pasarte hau"
 
@@ -149,7 +183,7 @@ msgid "_About Podcasts"
 msgstr "Podcasts aplikazioari _buruz"
 
 #: podcasts-gtk/resources/gtk/headerbar.ui:35
-#: podcasts-gtk/resources/gtk/headerbar.ui:177
+#: podcasts-gtk/resources/gtk/headerbar.ui:165
 msgid "Add a new feed"
 msgstr "Gehitu jario berria"
 
@@ -157,17 +191,13 @@ msgstr "Gehitu jario berria"
 msgid "Enter feed address to add"
 msgstr "Sartu gehituko den jarioaren helbidea"
 
-#: podcasts-gtk/resources/gtk/headerbar.ui:89
+#: podcasts-gtk/resources/gtk/headerbar.ui:79
 msgid "Add"
 msgstr "Gehitu"
 
-#: podcasts-gtk/resources/gtk/headerbar.ui:157
+#: podcasts-gtk/resources/gtk/headerbar.ui:150
 msgid "Show Title"
 msgstr "Erakutsi titulua"
-
-#: podcasts-gtk/resources/gtk/headerbar.ui:198
-msgid "Back"
-msgstr "Atzera"
 
 #: podcasts-gtk/resources/gtk/help-overlay.ui:12
 msgid "General"
@@ -187,74 +217,82 @@ msgstr "Irten aplikaziotik"
 msgid "Today"
 msgstr "Gaur"
 
-#: podcasts-gtk/resources/gtk/home_view.ui:112
+#: podcasts-gtk/resources/gtk/home_view.ui:89
 msgid "Yesterday"
 msgstr "Atzo"
 
-#: podcasts-gtk/resources/gtk/home_view.ui:168
+#: podcasts-gtk/resources/gtk/home_view.ui:122
 msgid "This Week"
 msgstr "Aste honetan"
 
-#: podcasts-gtk/resources/gtk/home_view.ui:224
+#: podcasts-gtk/resources/gtk/home_view.ui:155
 msgid "This Month"
 msgstr "Hilabete honetan"
 
-#: podcasts-gtk/resources/gtk/home_view.ui:281
+#: podcasts-gtk/resources/gtk/home_view.ui:189
 msgid "Older"
 msgstr "Zaharragoa"
 
-#: podcasts-gtk/resources/gtk/inapp_notif.ui:101
+#: podcasts-gtk/resources/gtk/inapp_notif.ui:69
 msgid "An in-app action notification"
 msgstr "Aplikazioaren jakinarazpen bat"
 
-#: podcasts-gtk/resources/gtk/inapp_notif.ui:112
+#: podcasts-gtk/resources/gtk/inapp_notif.ui:75
 msgid "Undo"
 msgstr "Desegin"
 
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:72
-msgid "Rewind 10 seconds"
-msgstr "Joan 10 segundo atzera"
+#: podcasts-gtk/resources/gtk/player_dialog.ui:14
+msgid "Now Playing"
+msgstr "Orain erreproduzitzen"
 
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:87
-msgid "Play"
-msgstr "Erreproduzitu"
-
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:103
-msgid "Pause"
-msgstr "Pausatu"
-
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:119
-msgid "Fast forward 10 seconds"
-msgstr "Joan 10 segundo aurrera"
-
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:285
+#: podcasts-gtk/resources/gtk/player_rate.ui:32
 msgid "Change the playback speed"
 msgstr "Aldatu erreprodukzioaren abiadura"
 
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:300
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:380
+#: podcasts-gtk/resources/gtk/player_rate.ui:46
+#: podcasts-gtk/resources/gtk/player_rate.ui:85
 msgid "1.00×"
 msgstr "1.00×"
 
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:344
+#: podcasts-gtk/resources/gtk/player_rate.ui:65
+msgid "2.00×"
+msgstr "2.00×"
+
+#: podcasts-gtk/resources/gtk/player_rate.ui:70
+msgid "1.75×"
+msgstr "1.75×"
+
+#: podcasts-gtk/resources/gtk/player_rate.ui:75
 msgid "1.50×"
 msgstr "1.50×"
 
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:348
-msgid "1.5 speed rate"
-msgstr "1.5 abiadura-tasa"
-
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:362
+#: podcasts-gtk/resources/gtk/player_rate.ui:80
 msgid "1.25×"
 msgstr "1.25×"
 
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:366
-msgid "1.25 speed rate"
-msgstr "1.25 abiadura-tasa"
+#: podcasts-gtk/resources/gtk/player_rate.ui:90
+msgid "0.90×"
+msgstr "0.90×"
 
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:384
-msgid "Normal speed"
-msgstr "Abiadura normala"
+#: podcasts-gtk/resources/gtk/player_rate.ui:95
+msgid "0.75×"
+msgstr "0.75×"
+
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:97
+msgid "Rewind 10 seconds"
+msgstr "Joan 10 segundo atzera"
+
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:107
+msgid "Play"
+msgstr "Erreproduzitu"
+
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:118
+msgid "Pause"
+msgstr "Pausatu"
+
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:129
+msgid "Fast forward 10 seconds"
+msgstr "Joan 10 segundo aurrera"
 
 #: podcasts-gtk/resources/gtk/secondary_menu.ui:7
 msgid "_Mark All Episodes as Played"
@@ -268,95 +306,116 @@ msgstr "_Webgunea"
 msgid "_Unsubscribe"
 msgstr "Harpidetza _kendu"
 
-#: podcasts-gtk/resources/gtk/show_menu.ui:51
+#: podcasts-gtk/resources/gtk/show_menu.ui:36
 msgid "Open Website"
 msgstr "Ireki webgunea"
 
-#: podcasts-gtk/resources/gtk/show_menu.ui:64
+#: podcasts-gtk/resources/gtk/show_menu.ui:40
 msgid "Mark All as Played"
 msgstr "Markatu dena erreproduzitu gisa"
 
-#: podcasts-gtk/resources/gtk/show_menu.ui:89
+#: podcasts-gtk/resources/gtk/show_menu.ui:46
 msgid "Unsubscribe"
 msgstr "Harpidetza kendu"
 
-#: podcasts-gtk/src/app.rs:265
+#: podcasts-gtk/resources/gtk/show_widget.ui:98
+msgid "Read More"
+msgstr "Irakurri gehiago"
+
+#: podcasts-gtk/src/app.rs:353
 msgid "Fetching new episodes"
 msgstr "Pasarte berriak eskuratzen"
 
-#: podcasts-gtk/src/stacks/content.rs:54
+#: podcasts-gtk/src/stacks/content.rs:58
 msgid "New"
 msgstr "Berria"
 
-#: podcasts-gtk/src/stacks/content.rs:55
+#: podcasts-gtk/src/stacks/content.rs:59
 msgid "Shows"
 msgstr "Saioak"
 
-#: podcasts-gtk/src/utils.rs:396
+#: podcasts-gtk/src/utils.rs:501
 msgid "Select the file from which to you want to import shows."
 msgstr "Hautatu saioak inportatzeko erabiliko duzun fitxategia."
 
-#: podcasts-gtk/src/utils.rs:399
+#: podcasts-gtk/src/utils.rs:504
 msgid "_Import"
 msgstr "_Inportatu"
 
-#: podcasts-gtk/src/utils.rs:408 podcasts-gtk/src/utils.rs:456
+#: podcasts-gtk/src/utils.rs:513 podcasts-gtk/src/utils.rs:562
 msgid "OPML file"
 msgstr "OPML fitxategia"
 
-#: podcasts-gtk/src/utils.rs:425
+#: podcasts-gtk/src/utils.rs:531
 msgid "Failed to parse the imported file"
 msgstr "Huts egin du inportatuko fitxategia analizatzeak"
 
-#: podcasts-gtk/src/utils.rs:430 podcasts-gtk/src/utils.rs:474
+#: podcasts-gtk/src/utils.rs:536 podcasts-gtk/src/utils.rs:581
 msgid "Selected file could not be accessed."
 msgstr "Hautatutako fitxategia ezin da eskuratu."
 
-#: podcasts-gtk/src/utils.rs:444
+#: podcasts-gtk/src/utils.rs:547
 msgid "Export shows to…"
 msgstr "Esportatu saioak hona…"
 
-#: podcasts-gtk/src/utils.rs:447
+#: podcasts-gtk/src/utils.rs:550
 msgid "_Export"
 msgstr "_Esportatu"
 
-#: podcasts-gtk/src/utils.rs:448
+#: podcasts-gtk/src/utils.rs:551
 msgid "_Cancel"
 msgstr "_Utzi"
 
-#: podcasts-gtk/src/utils.rs:468
+#. Translators: This is the string of the suggested name for the exported opml file
+#: podcasts-gtk/src/utils.rs:555
+msgid "gnome-podcasts-exported-shows"
+msgstr "gnome-podcasts-exported-shows"
+
+#: podcasts-gtk/src/utils.rs:575
 msgid "GNOME Podcasts Subscriptions"
 msgstr "GNOME Podcasts harpidetzak"
 
-#: podcasts-gtk/src/utils.rs:469
+#: podcasts-gtk/src/utils.rs:576
 msgid "Failed to export podcasts"
 msgstr "Huts egin du podcast-ak esportatzeak"
 
-#: podcasts-gtk/src/widgets/aboutdialog.rs:51
+#: podcasts-gtk/src/widgets/aboutdialog.rs:58
 msgid "Podcast Client for the GNOME Desktop."
 msgstr "Podcast-en bezeroa GNOME mahaigainerako."
 
-#: podcasts-gtk/src/widgets/aboutdialog.rs:58
+#: podcasts-gtk/src/widgets/aboutdialog.rs:65
 msgid "Learn more about GNOME Podcasts"
 msgstr "Ikasi gehiago GNOME Podcasts aplikazioari buruz"
 
-#: podcasts-gtk/src/widgets/aboutdialog.rs:63
+#: podcasts-gtk/src/widgets/aboutdialog.rs:69
 msgid "translator-credits"
 msgstr "Asier Sarasua Garmendia <asier.sarasua@gmail.com>"
 
-#: podcasts-gtk/src/widgets/episode.rs:148
+#: podcasts-gtk/src/widgets/episode.rs:145
 msgid "{} min"
 msgstr "{} min"
 
-#. sender.send(Action::ErrorNotification(format!("Player Error: {}", error)));
-#: podcasts-gtk/src/widgets/player.rs:535
+#: podcasts-gtk/src/widgets/episode_description.rs:165
+msgid "Copied URL to clipboard!"
+msgstr "URLa arbelean kopiatu da!"
+
+#: podcasts-gtk/src/widgets/player.rs:902
 msgid "The media player was unable to execute an action."
 msgstr "Multimedia-erreproduzigailuak ezin izan da ekintza bat exekutatu."
 
-#: podcasts-gtk/src/widgets/show_menu.rs:179
+#: podcasts-gtk/src/widgets/show_menu.rs:194
 msgid "Marked all episodes as listened"
 msgstr "Markatu pasarte guztiak entzundako gisa"
 
-#: podcasts-gtk/src/widgets/show_menu.rs:184
+#: podcasts-gtk/src/widgets/show_menu.rs:199
 msgid "Unsubscribed from {}"
 msgstr "Kendu {} podcast-eko harpidetza"
+
+#~ msgid "1.5 speed rate"
+#~ msgstr "1.5 abiadura-tasa"
+
+#~ msgid "1.25 speed rate"
+#~ msgstr "1.25 abiadura-tasa"
+
+#~ msgid "Normal speed"
+#~ msgstr "Abiadura normala"
