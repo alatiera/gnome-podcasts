@@ -360,7 +360,7 @@ pub(crate) fn set_image_from_path(image: &gtk::Image, show_id: i32, size: u32) -
             // This operation is polling and will block the thread till the download is finished
             if let Ok(pd) = dbqueries::get_podcast_cover_from_id(show_id) {
                 sender
-                    .send(downloader::cache_image(&pd))
+                    .send(downloader::cache_image(&pd, true))
                     .expect("channel was dropped unexpectedly");
             }
 

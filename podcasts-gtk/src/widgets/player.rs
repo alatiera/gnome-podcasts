@@ -31,9 +31,9 @@ use anyhow::Result;
 use chrono::{prelude::*, NaiveTime};
 use fragile::Fragile;
 use glib::Sender;
+use url::Url;
 
-use podcasts_data::{dbqueries, USER_AGENT};
-use podcasts_data::{EpisodeWidgetModel, ShowCoverModel};
+use podcasts_data::{dbqueries, downloader, EpisodeWidgetModel, ShowCoverModel, USER_AGENT};
 
 use crate::app::Action;
 use crate::config::APP_ID;
@@ -109,9 +109,17 @@ impl PlayerInfo {
         let mut metadata = Metadata::new();
         metadata.artist = Some(vec![podcast.title().to_string()]);
         metadata.title = Some(episode.title().to_string());
-        // FIXME: .image_uri() returns an http url, we should instead
-        // pass it the local path to the downloaded cover image.
-        metadata.art_url = podcast.image_uri().clone().map(From::from);
+
+        // Set the cover if it is already cached.
+        if let Ok(path) = downloader::cache_image(&podcast, false) {
+            let url = Url::from_file_path(path);
+            metadata.art_url = url.map(From::from).ok();
+        } else {
+            // fallback: set the cover to the http url if it isn't cached, yet.
+            // TODO we could trigger an async download of the cover here
+            // and update the metadata when it's done.
+            metadata.art_url = podcast.image_uri().clone().map(From::from);
+        }
 
         self.mpris.set_metadata(metadata);
         self.mpris.set_can_play(true);

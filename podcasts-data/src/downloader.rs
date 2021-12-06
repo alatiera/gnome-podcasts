@@ -237,7 +237,7 @@ pub fn get_episode(
     Ok(())
 }
 
-pub fn cache_image(pd: &ShowCoverModel) -> Result<String, DownloadError> {
+pub fn cache_image(pd: &ShowCoverModel, download: bool) -> Result<String, DownloadError> {
     let url = pd
         .image_uri()
         .ok_or(DownloadError::NoImageLocation)?
@@ -252,7 +252,7 @@ pub fn cache_image(pd: &ShowCoverModel) -> Result<String, DownloadError> {
         .ok_or(DownloadError::InvalidCacheLocation)?;
     let cache_download_fold = format!("{}{}", cache_path, pd.title().to_owned());
 
-    // Weird glob magic.
+    // Retrive existing cover paths with any file extension
     if let Ok(mut paths) = glob(&format!("{}/cover.*", cache_download_fold)) {
         let path = paths.next().and_then(|x| x.ok());
         if let Some(p) = path {
@@ -268,9 +268,13 @@ pub fn cache_image(pd: &ShowCoverModel) -> Result<String, DownloadError> {
         .recursive(true)
         .create(&cache_download_fold)?;
 
-    let path = download_into(&cache_download_fold, "cover", &url, None)?;
-    info!("Cached img into: {}", &path);
-    Ok(path)
+    if download {
+        let path = download_into(&cache_download_fold, "cover", &url, None)?;
+        info!("Cached img into: {}", &path);
+        Ok(path)
+    } else {
+        Err(DownloadError::DownloadCancelled)
+    }
 }
 
 #[cfg(test)]
@@ -298,7 +302,7 @@ mod tests {
         // Get the Podcast
         let pd = dbqueries::get_podcast_from_source_id(sid)?.into();
 
-        let img_path = cache_image(&pd);
+        let img_path = cache_image(&pd, true);
         let foo_ = format!(
             "{}{}/cover.jpeg",
             PODCASTS_CACHE.to_str().unwrap(),
