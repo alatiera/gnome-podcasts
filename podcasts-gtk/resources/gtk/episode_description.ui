@@ -32,6 +32,7 @@ Tobias Bernard
   <object class="GtkBox" id="episode_container">
     <property name="height_request">64</property>
     <property name="vexpand">True</property>
+    <property name="hexpand">True</property>
     <property name="orientation">vertical</property>
     <child>
       <object class="AdwHeaderBar" id="header">
@@ -59,97 +60,93 @@ Tobias Bernard
       </object>
     </child>
     <child>
-      <object class="AdwClamp" id="clamp">
+      <object class="GtkScrolledWindow">
         <property name="vexpand">True</property>
-        <property name="maximum_size">700</property>
+        <property name="hexpand">True</property>
+        <property name="hscrollbar_policy">never</property>
         <child>
-          <object class="GtkBox" id="content">
+          <object class="AdwClamp" id="clamp">
             <property name="vexpand">True</property>
-            <property name="orientation">vertical</property>
-            <property name="baseline_position">top</property>
+            <property name="maximum_size">700</property>
             <child>
-              <object class="GtkBox" id="episode_info">
-                <property name="valign">start</property>
-                <property name="margin_top">18</property>
-                <property name="margin_bottom">18</property>
-                <property name="hexpand">True</property>
+              <object class="GtkBox" id="content">
+                <property name="vexpand">True</property>
                 <property name="orientation">vertical</property>
+                <property name="baseline_position">top</property>
                 <child>
-                  <object class="GtkBox">
-                    <property name="margin_start">18</property>
-                    <property name="margin_end">18</property>
-                    <child>
-                      <object class="GtkImage" id="cover">
-                        <property name="margin_end">12</property>
-                        <property name="hexpand">False</property>
-                        <property name="vexpand">False</property>
-                        <property name="pixel_size">64</property>
-                        <property name="icon_name">image-x-generic-symbolic</property>
-                      </object>
-                    </child>
+                  <object class="GtkBox" id="episode_info">
+                    <property name="valign">start</property>
+                    <property name="margin_top">18</property>
+                    <property name="margin_bottom">18</property>
+                    <property name="hexpand">True</property>
+                    <property name="orientation">vertical</property>
                     <child>
                       <object class="GtkBox">
-                        <property name="orientation">vertical</property>
+                        <property name="margin_start">18</property>
+                        <property name="margin_end">18</property>
                         <child>
-                          <object class="GtkLabel" id="podcast_title">
-                            <property name="label" translatable="yes">Podcast Title</property>
-                            <property name="wrap">True</property>
-                            <property name="wrap_mode">word-char</property>
-                            <property name="xalign">0</property>
-                            <style>
-                              <class name="podcast_title"/>
-                            </style>
+                          <object class="GtkImage" id="cover">
+                            <property name="margin_end">12</property>
+                            <property name="hexpand">False</property>
+                            <property name="vexpand">False</property>
+                            <property name="pixel_size">64</property>
+                            <property name="icon_name">image-x-generic-symbolic</property>
                           </object>
                         </child>
                         <child>
-                          <object class="GtkLabel" id="episode_title">
-                            <property name="label">Episode Title</property>
-                            <property name="wrap">True</property>
-                            <property name="wrap_mode">word-char</property>
-                            <property name="lines">1</property>
-                            <property name="xalign">0</property>
-                            <style>
-                              <class name="episode_title"/>
-                            </style>
-                          </object>
-                        </child>
-                        <child>
-                          <object class="GtkLabel" id="episode_duration_date">
-                            <property name="label" translatable="yes">Duration - Date</property>
-                            <property name="xalign">0</property>
-                            <style>
-                              <class name="episode_duration_date"/>
-                            </style>
+                          <object class="GtkBox">
+                            <property name="orientation">vertical</property>
+                            <child>
+                              <object class="GtkLabel" id="podcast_title">
+                                <property name="label" translatable="yes">Podcast Title</property>
+                                <property name="wrap">True</property>
+                                <property name="wrap_mode">word-char</property>
+                                <property name="xalign">0</property>
+                                <style>
+                                  <class name="podcast_title"/>
+                                </style>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="GtkLabel" id="episode_title">
+                                <property name="label">Episode Title</property>
+                                <property name="wrap">True</property>
+                                <property name="wrap_mode">word-char</property>
+                                <property name="lines">1</property>
+                                <property name="xalign">0</property>
+                                <style>
+                                  <class name="episode_title"/>
+                                </style>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="GtkLabel" id="episode_duration_date">
+                                <property name="label" translatable="yes">Duration - Date</property>
+                                <property name="xalign">0</property>
+                                <style>
+                                  <class name="episode_duration_date"/>
+                                </style>
+                              </object>
+                            </child>
                           </object>
                         </child>
                       </object>
                     </child>
                   </object>
                 </child>
-              </object>
-            </child>
-            <child>
-              <object class="GtkScrolledWindow">
-                <property name="vexpand">True</property>
-                <property name="hscrollbar_policy">never</property>
                 <child>
-                  <object class="GtkViewport">
+                  <object class="GtkLabel" id="episode_description">
+                    <property name="valign">start</property>
+                    <property name="margin_start">18</property>
+                    <property name="margin_end">18</property>
+                    <property name="margin_bottom">18</property>
                     <property name="vexpand">True</property>
-                    <child>
-                      <object class="GtkLabel" id="episode_description">
-                        <property name="valign">start</property>
-                        <property name="margin_start">18</property>
-                        <property name="margin_end">18</property>
-                        <property name="margin_bottom">18</property>
-                        <property name="vexpand">True</property>
-                        <property name="label" translatable="yes">Episode Description</property>
-                        <property name="wrap">True</property>
-                        <property name="xalign">0</property>
-                        <style>
-                          <class name="episode_description_label"/>
-                        </style>
-                      </object>
-                    </child>
+                    <property name="label" translatable="yes">Episode Description</property>
+                    <property name="wrap">True</property>
+                    <property name="xalign">0</property>
+                    <style>
+                      <class name="episode_description_label"/>
+                    </style>
                   </object>
                 </child>
               </object>
