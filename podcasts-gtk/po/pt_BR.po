@@ -9,9 +9,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: podcasts master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2021-09-14 16:55+0000\n"
-"PO-Revision-Date: 2021-09-23 14:12-0300\n"
-"Last-Translator: Enrico Nicoletto <liverig@gmail.com>\n"
+"POT-Creation-Date: 2021-11-28 07:07+0000\n"
+"PO-Revision-Date: 2021-12-10 06:28-0300\n"
+"Last-Translator: Rafael Fontenelle <rafaelff@gnome.org>\n"
 "Language-Team: Brazilian Portuguese <gnome-pt_br-list@gnome.org>\n"
 "Language: pt_BR\n"
 "MIME-Version: 1.0\n"
@@ -78,7 +78,6 @@ msgid "Podcasts"
 msgstr "Podcasts"
 
 #: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:4
-#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:10
 msgid "Listen to your favorite podcasts, right from your desktop."
 msgstr "Ouça seus podcasts favoritos diretamente da sua área de trabalho."
 
@@ -88,14 +87,29 @@ msgid "Podcast;RSS;"
 msgstr "Podcast;RSS;"
 
 #: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:8
-msgid "Podcast app for GNOME"
-msgstr "Aplicativo de podcast para o GNOME"
+msgid "Listen to your favorite shows"
+msgstr "Ouça seus podcasts favoritos"
 
-#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:115
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:10
+msgid ""
+"Play, update, and manage your podcasts from a lightweight interface that "
+"seamlessly integrates with GNOME. Podcasts can play various audio formats "
+"and remember where you stopped listening. You can subscribe to shows via RSS/"
+"Atom, iTunes, and Soundcloud links. Subscriptions from other apps can be "
+"imported via OPML files."
+msgstr ""
+"Reproduza, atualize e gerencie os seus podcasts a partir de uma interface "
+"leve que se integra perfeitamente com o GNOME. O Podcasts pode reproduzir "
+"vários formatos de áudio e lembrar onde parou de ouvir. Você pode se "
+"inscrever em podcasts via links RSS/Atom, iTunes e Soundcloud. As "
+"assinaturas de outros aplicativos podem ser importados através de arquivos "
+"OPML."
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:117
 msgid "Jordan Petridis"
 msgstr "Jordan Petridis"
 
-#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:116
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:118
 msgid "Julian Hofer"
 msgstr "Julian Hofer"
 
@@ -421,3 +435,6 @@ msgstr "Marcados todos os episódios como ouvidos"
 #: podcasts-gtk/src/widgets/show_menu.rs:199
 msgid "Unsubscribed from {}"
 msgstr "Desinscrito de {}"
+
+#~ msgid "Podcast app for GNOME"
+#~ msgstr "Aplicativo de podcast para o GNOME"
