@@ -23,11 +23,6 @@
             <summary>Maximized state of the last open main window</summary>
         </key>
 
-        <key name="dark-theme" type="b">
-            <default>false</default>
-            <summary>Enable or disable dark theme</summary>
-        </key>
-
         <key name="refresh-interval" type="b">
             <default>true</default>
             <summary>Whether to periodically refresh content</summary>

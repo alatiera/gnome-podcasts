@@ -120,9 +120,6 @@ impl ApplicationImpl for PdApplicationPrivate {
         utils::cleanup(cleanup_date);
 
         self.settings.replace(Some(settings));
-
-        let app = app.clone().downcast::<PdApplication>().expect("How?");
-        app.setup_timed_callbacks();
     }
 }
 
@@ -170,10 +167,6 @@ impl PdApplication {
             ("resource-base-path", &Some("/org/gnome/Podcasts")),
         ])
         .expect("Application initialization failed...")
-    }
-
-    fn setup_timed_callbacks(&self) {
-        self.setup_dark_theme();
     }
 
     fn setup_gactions(&self) {
@@ -279,23 +272,6 @@ impl PdApplication {
         // Bind the hamburger menu button to `F10`
         self.set_accels_for_action("win.menu", &["F10"]);
         self.set_accels_for_action("win.refresh", &["<primary>r"]);
-    }
-
-    fn setup_dark_theme(&self) {
-        let data = PdApplicationPrivate::from_instance(self);
-        if let Some(ref settings) = *data.settings.borrow() {
-            let gtk_settings = gtk::Settings::default().unwrap();
-            settings
-                .bind(
-                    "dark-theme",
-                    &gtk_settings,
-                    "gtk-application-prefer-dark-theme",
-                )
-                .flags(gio::SettingsBindFlags::DEFAULT)
-                .build();
-        } else {
-            debug_assert!(false, "Well how'd you manage that?");
-        }
     }
 
     fn do_action(&self, action: Action) -> glib::Continue {
