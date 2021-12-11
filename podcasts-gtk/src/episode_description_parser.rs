@@ -29,6 +29,8 @@ use markup5ever_rcdom::{
     RcDom,
 };
 
+const INDENT: i32 = 4; // used by li tags
+
 fn escape_amp(t: &str) -> String {
     // TODO prevent escaping escape-sequances
     t.replace("&", "&amp;")
@@ -38,13 +40,20 @@ fn remove_nl(t: &str) -> String {
     t.replace("\n", "")
 }
 
+// Does the description use \n Text newlines or <br> <p> Tag newlines
 enum NewlineStyle {
     Text,
     Tag,
 }
+enum ListStyle {
+    Ordered(i32),
+    Unordered,
+}
 struct ParserState {
     nl_style: NewlineStyle,
     skip_leading_spaces: bool,
+    indent: i32,
+    list_style: Vec<ListStyle>,
 }
 
 fn find_newline_style(node: &Handle) -> NewlineStyle {
@@ -91,6 +100,7 @@ fn handle_child(buffer: &mut String, node: &Handle, state: &mut ParserState) {
             let mut wrapper_href = None;
             let wrapper_tag;
             let mut is_p_tag = false;
+            let mut is_list_tag = false;
             match name.expanded() {
                 // Supported tags in pango markup
                 // https://docs.gtk.org/Pango/pango_markup.html
@@ -109,6 +119,37 @@ fn handle_child(buffer: &mut String, node: &Handle, state: &mut ParserState) {
                 }
                 expanded_name!(html "br") => {
                     buffer.push('\n');
+                    state.skip_leading_spaces = true;
+                    wrapper_tag = None
+                }
+                expanded_name!(html "ol") => {
+                    state.list_style.push(ListStyle::Ordered(1));
+                    state.indent += INDENT;
+                    is_list_tag = true;
+                    is_p_tag = true;
+                    wrapper_tag = None
+                }
+                expanded_name!(html "ul") => {
+                    state.list_style.push(ListStyle::Unordered);
+                    state.indent += INDENT;
+                    is_list_tag = true;
+                    is_p_tag = true;
+                    wrapper_tag = None
+                }
+                expanded_name!(html "li") => {
+                    buffer.push('\n');
+                    for _ in 0..state.indent {
+                        buffer.push(' ');
+                    }
+                    if let Some(style) = state.list_style.last_mut() {
+                        match style {
+                            ListStyle::Unordered => buffer.push_str("• "),
+                            ListStyle::Ordered(i) => {
+                                buffer.push_str(&format!("{}. ", i));
+                                *style = ListStyle::Ordered(*i + 1);
+                            }
+                        }
+                    }
                     state.skip_leading_spaces = true;
                     wrapper_tag = None
                 }
@@ -148,6 +189,10 @@ fn handle_child(buffer: &mut String, node: &Handle, state: &mut ParserState) {
                 if is_p_tag {
                     buffer.push_str("\n\n");
                     state.skip_leading_spaces = true;
+                }
+                if is_list_tag {
+                    state.indent -= INDENT;
+                    state.list_style.pop();
                 }
             }
         }
@@ -191,6 +236,8 @@ pub fn html2pango_markup(t: &str) -> String {
         &mut ParserState {
             nl_style,
             skip_leading_spaces: false,
+            indent: 0,
+            list_style: vec![],
         },
     );
 
@@ -231,6 +278,33 @@ mod tests {
     fn test_newline_based2() -> () {
         let description = "We’re back to a normal-style ep after a week of interviews. We’re taking a look at the fast-tracked aid package to intelligence agents suffering unreality issues, the Biden administration addressing just the optics at the border, and AOC addressing just the optics of the Iron Dome bill. Finally, we having a reading series that functions as a bit of a coda to Will and Matt’s visit to Ozy Fest way back in 2018.\n\nOne last time, go subscribe to https://www.youtube.com/chapotraphouse\n\nAnd go grab some of Simon Roy’s great posters over at https://shop.chapotraphouse.com/\nMore merch coming soon!";
         let expected = "We’re back to a normal-style ep after a week of interviews. We’re taking a look at the fast-tracked aid package to intelligence agents suffering unreality issues, the Biden administration addressing just the optics at the border, and AOC addressing just the optics of the Iron Dome bill. Finally, we having a reading series that functions as a bit of a coda to Will and Matt’s visit to Ozy Fest way back in 2018.\n\nOne last time, go subscribe to https://www.youtube.com/chapotraphouse\n\nAnd go grab some of Simon Roy’s great posters over at https://shop.chapotraphouse.com/\nMore merch coming soon!";
+        let markup = html2pango_markup(&description);
+
+        assert_eq!(expected, markup);
+    }
+
+    #[test]
+    fn test_list_ordered() -> () {
+        let description = "<ol><li>first</li><li>second</li><li>third</li></ol>";
+        let expected = "\n    1. first\n    2. second\n    3. third\n\n";
+        let markup = html2pango_markup(&description);
+
+        assert_eq!(expected, markup);
+    }
+
+    #[test]
+    fn test_list_unordered() -> () {
+        let description = "<ul><li>first</li><li>second</li><li>third</li></ul>";
+        let expected = "\n    • first\n    • second\n    • third\n\n";
+        let markup = html2pango_markup(&description);
+
+        assert_eq!(expected, markup);
+    }
+
+    #[test]
+    fn test_list_ordered_nested() -> () {
+        let description = "<ol><li>first</li><li>second<ol><li> sub list first</li><li> sub list second</li></li></ol><li>third</li></ol>";
+        let expected = "\n    1. first\n    2. second\n        1. sub list first\n        2. sub list second\n\n\n    3. third\n\n";
         let markup = html2pango_markup(&description);
 
         assert_eq!(expected, markup);
