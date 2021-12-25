@@ -6,8 +6,8 @@
 msgid ""
 msgstr "Project-Id-Version: podcasts master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2021-09-14 16:55+0000\n"
-"PO-Revision-Date: 2021-11-29 10:00+0100\n"
+"POT-Creation-Date: 2021-11-29 20:59+0000\n"
+"PO-Revision-Date: 2021-12-25 10:00+0100\n"
 "Last-Translator: Asier Sarasua Garmendia <asier.sarasua@gmail.com>\n"
 "Language-Team: Basque <librezale@librezale.eus>\n"
 "Language: eu\n"
@@ -69,10 +69,9 @@ msgstr "Zenbat denbora itxarongo den garbitze automatikoen artean"
 #: podcasts-gtk/resources/gtk/headerbar.ui:137 podcasts-gtk/src/app.rs:438
 #: podcasts-gtk/src/widgets/aboutdialog.rs:63 podcasts-gtk/src/window.rs:66
 msgid "Podcasts"
-msgstr "Podcast-ak"
+msgstr "Podcastak"
 
 #: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:4
-#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:10
 msgid "Listen to your favorite podcasts, right from your desktop."
 msgstr "Entzun zure podcast gogokoenak zuzenean zure mahaigainetik."
 
@@ -82,14 +81,23 @@ msgid "Podcast;RSS;"
 msgstr "Podcast;RSS;"
 
 #: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:8
-msgid "Podcast app for GNOME"
-msgstr "Podcast-en aplikazioa GNOMErako"
+msgid "Listen to your favorite shows"
+msgstr "Entzun zure saiorik gogokoenak"
 
-#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:115
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:10
+msgid ""
+"Play, update, and manage your podcasts from a lightweight interface that "
+"seamlessly integrates with GNOME. Podcasts can play various audio formats "
+"and remember where you stopped listening. You can subscribe to shows via RSS/"
+"Atom, iTunes, and Soundcloud links. Subscriptions from other apps can be "
+"imported via OPML files."
+msgstr "Erreproduzitu, eguneratu eta kudeatu zure podcastak GNOMEri primeran egokitzen zaion interfaze arin batetik. Podcastak aplikazioak hainbat audio-formatu erreproduzitu ditzake eta entzuteari non utzi zenion gogoratzen du. Saioen harpidetzak egin ditzakezu RSS/Atom, ITunes eta Soundcloud esteken bidez. Beste aplikazio batzuetako harpidetzak ere inportatu daitezke OPML fitxategien bidez."
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:117
 msgid "Jordan Petridis"
 msgstr "Jordan Petridis"
 
-#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:116
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:118
 msgid "Julian Hofer"
 msgstr "Julian Hofer"
 
@@ -124,7 +132,7 @@ msgstr "Atzera"
 
 #: podcasts-gtk/resources/gtk/episode_description.ui:148
 msgid "Podcast Title"
-msgstr "Podcast-aren izenburua"
+msgstr "Podcastaren izenburua"
 
 #: podcasts-gtk/resources/gtk/episode_description.ui:186
 msgid "Duration - Date"
@@ -180,7 +188,7 @@ msgstr "Las_ter-teklak"
 
 #: podcasts-gtk/resources/gtk/hamburger.ui:30
 msgid "_About Podcasts"
-msgstr "Podcasts aplikazioari _buruz"
+msgstr "Podcastak aplikazioari _buruz"
 
 #: podcasts-gtk/resources/gtk/headerbar.ui:35
 #: podcasts-gtk/resources/gtk/headerbar.ui:165
@@ -373,23 +381,23 @@ msgstr "gnome-podcasts-exported-shows"
 
 #: podcasts-gtk/src/utils.rs:575
 msgid "GNOME Podcasts Subscriptions"
-msgstr "GNOME Podcasts harpidetzak"
+msgstr "GNOME Podcastak harpidetzak"
 
 #: podcasts-gtk/src/utils.rs:576
 msgid "Failed to export podcasts"
-msgstr "Huts egin du podcast-ak esportatzeak"
+msgstr "Huts egin du podcastak esportatzeak"
 
 #: podcasts-gtk/src/widgets/aboutdialog.rs:58
 msgid "Podcast Client for the GNOME Desktop."
-msgstr "Podcast-en bezeroa GNOME mahaigainerako."
+msgstr "Podcasten bezeroa GNOME mahaigainerako."
 
 #: podcasts-gtk/src/widgets/aboutdialog.rs:65
 msgid "Learn more about GNOME Podcasts"
-msgstr "Ikasi gehiago GNOME Podcasts aplikazioari buruz"
+msgstr "Ikasi gehiago GNOME Podcastak aplikazioari buruz"
 
 #: podcasts-gtk/src/widgets/aboutdialog.rs:69
 msgid "translator-credits"
-msgstr "Asier Sarasua Garmendia <asier.sarasua@gmail.com>"
+msgstr "translator-credits"
 
 #: podcasts-gtk/src/widgets/episode.rs:145
 msgid "{} min"
@@ -410,6 +418,9 @@ msgstr "Markatu pasarte guztiak entzundako gisa"
 #: podcasts-gtk/src/widgets/show_menu.rs:199
 msgid "Unsubscribed from {}"
 msgstr "Kendu {} podcast-eko harpidetza"
+
+#~ msgid "Podcast app for GNOME"
+#~ msgstr "Podcast-en aplikazioa GNOMErako"
 
 #~ msgid "1.5 speed rate"
 #~ msgstr "1.5 abiadura-tasa"
