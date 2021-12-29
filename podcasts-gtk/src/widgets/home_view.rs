@@ -81,7 +81,7 @@ impl Default for HomeView {
         clamp.set_maximum_size(700);
 
         clamp.set_child(Some(&frame_parent));
-        view.set_child(&clamp);
+        view.set_content(&clamp);
 
         HomeView {
             view,

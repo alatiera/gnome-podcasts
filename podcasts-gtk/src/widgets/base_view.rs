@@ -18,41 +18,94 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 use crate::utils::smooth_scroll_to;
-use gtk::{prelude::*, Adjustment, Orientation, PolicyType};
 
-#[derive(Debug, Clone)]
-pub(crate) struct BaseView {
-    container: gtk::Box,
-    scrolled_window: gtk::ScrolledWindow,
+use gtk::glib;
+use gtk::prelude::*;
+use gtk::subclass::prelude::*;
+use gtk::{Adjustment, PolicyType};
+
+use adw::prelude::*;
+use adw::subclass::prelude::*;
+
+use once_cell::sync::Lazy;
+
+#[derive(Debug, Default)]
+pub struct BaseViewPriv {
+    pub scrolled_window: gtk::ScrolledWindow,
+}
+
+#[glib::object_subclass]
+impl ObjectSubclass for BaseViewPriv {
+    const NAME: &'static str = "PdBaseView";
+    type Type = super::BaseView;
+    type ParentType = adw::Bin;
+}
+
+impl ObjectImpl for BaseViewPriv {
+    fn constructed(&self, obj: &Self::Type) {
+        self.parent_constructed(obj);
+
+        self.scrolled_window
+            .set_policy(PolicyType::Never, PolicyType::Automatic);
+        obj.set_size_request(360, -1);
+        obj.set_child(Some(&self.scrolled_window));
+    }
+
+    fn properties() -> &'static [glib::ParamSpec] {
+        static PROPERTIES: Lazy<Vec<glib::ParamSpec>> = Lazy::new(|| {
+            vec![glib::ParamSpec::new_object(
+                "child",
+                "child",
+                "child",
+                gtk::Widget::static_type(),
+                glib::ParamFlags::READWRITE,
+            )]
+        });
+        PROPERTIES.as_ref()
+    }
+
+    fn property(&self, _obj: &Self::Type, _id: usize, pspec: &glib::ParamSpec) -> glib::Value {
+        match pspec.name() {
+            "child" => self.scrolled_window.child().to_value(),
+            _ => unimplemented!(),
+        }
+    }
+
+    fn set_property(
+        &self,
+        _obj: &Self::Type,
+        _id: usize,
+        value: &glib::Value,
+        pspec: &glib::ParamSpec,
+    ) {
+        match pspec.name() {
+            "child" => self
+                .scrolled_window
+                .set_child(value.get::<gtk::Widget>().ok().as_ref()),
+            _ => unimplemented!(),
+        };
+    }
+}
+
+impl WidgetImpl for BaseViewPriv {}
+impl BinImpl for BaseViewPriv {}
+
+glib::wrapper! {
+    pub struct BaseView(ObjectSubclass<BaseViewPriv>)
+        @extends gtk::Widget, adw::Bin;
 }
 
 impl Default for BaseView {
     fn default() -> Self {
-        let container = gtk::Box::new(Orientation::Horizontal, 0);
-        let scrolled_window = gtk::ScrolledWindow::new();
-
-        scrolled_window.set_policy(PolicyType::Never, PolicyType::Automatic);
-        container.set_size_request(360, -1);
-        container.append(&scrolled_window);
-
-        BaseView {
-            container,
-            scrolled_window,
-        }
+        glib::Object::new(&[]).unwrap()
     }
 }
 
 impl BaseView {
-    pub(crate) fn container(&self) -> &gtk::Box {
-        &self.container
-    }
+    pub(crate) fn set_content<T: IsA<gtk::Widget>>(&self, widget: &T) {
+        let self_ = BaseViewPriv::from_instance(&self);
 
-    pub(crate) fn scrolled_window(&self) -> &gtk::ScrolledWindow {
-        &self.scrolled_window
-    }
-
-    pub(crate) fn set_child<T: IsA<gtk::Widget>>(&self, widget: &T) {
-        self.scrolled_window.set_child(Some(widget));
+        self_.scrolled_window.set_child(Some(widget));
     }
 
     pub(crate) fn set_adjustments(
@@ -60,16 +113,20 @@ impl BaseView {
         hadjustment: Option<&Adjustment>,
         vadjustment: Option<&Adjustment>,
     ) {
+        let self_ = BaseViewPriv::from_instance(&self);
+
         if let Some(h) = hadjustment {
-            smooth_scroll_to(&self.scrolled_window, h);
+            smooth_scroll_to(&self_.scrolled_window, h);
         }
 
         if let Some(v) = vadjustment {
-            smooth_scroll_to(&self.scrolled_window, v);
+            smooth_scroll_to(&self_.scrolled_window, v);
         }
     }
 
     pub(crate) fn vadjustment(&self) -> Adjustment {
-        self.scrolled_window().vadjustment().unwrap()
+        let self_ = BaseViewPriv::from_instance(&self);
+
+        self_.scrolled_window.vadjustment().unwrap()
     }
 }

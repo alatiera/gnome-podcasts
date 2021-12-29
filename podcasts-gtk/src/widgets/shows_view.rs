@@ -59,7 +59,7 @@ impl Default for ShowsView {
         flowbox.set_valign(Align::Start);
         flowbox.set_halign(Align::Center);
         flowbox.set_selection_mode(SelectionMode::None);
-        view.set_child(&flowbox);
+        view.set_content(&flowbox);
 
         ShowsView { view, flowbox }
     }
@@ -164,12 +164,13 @@ impl ShowCover {
     }
 
     fn id(&self) -> i32 {
-        self.imp().show_id.get()
+        let self_ = ShowCoverPrivate::from_instance(self);
+        self_.show_id.get()
     }
 
     fn load_image(&self) -> Result<()> {
-        let imp = self.imp();
-        set_image_from_path(&imp.cover, imp.show_id.get(), 256)?;
+        let self_ = ShowCoverPrivate::from_instance(self);
+        set_image_from_path(&self_.cover, self_.show_id.get(), 256)?;
         Ok(())
     }
 }

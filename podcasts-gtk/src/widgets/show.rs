@@ -19,9 +19,8 @@
 
 use glib::clone;
 use glib::Sender;
-use gtk::{prelude::*, Adjustment};
+use gtk::Adjustment;
 
-use adw::Clamp;
 use anyhow::Result;
 use crossbeam_channel::bounded;
 use fragile::Fragile;
@@ -34,53 +33,69 @@ use crate::app::Action;
 use crate::utils::{self, lazy_load};
 use crate::widgets::{BaseView, EmptyShow, EpisodeWidget, ShowMenu};
 
+use std::cell::Cell;
 use std::ops::Deref;
-use std::rc::Rc;
 use std::sync::Arc;
 
-#[derive(Debug, Clone)]
-pub(crate) struct ShowWidget {
-    pub(crate) view: BaseView,
-    cover: gtk::Image,
-    description: gtk::Label,
-    description_short: gtk::Label,
-    description_stack: gtk::Stack,
-    description_button: gtk::Button,
-    description_button_revealer: gtk::Revealer,
-    episodes: gtk::ListBox,
-    show_id: Option<i32>,
+use gtk::glib;
+use gtk::subclass::prelude::*;
+use gtk::{prelude::*, CompositeTemplate};
+
+#[derive(Debug, Default, CompositeTemplate)]
+#[template(resource = "/org/gnome/Podcasts/gtk/show_widget.ui")]
+pub struct ShowWidgetPriv {
+    #[template_child]
+    pub cover: TemplateChild<gtk::Image>,
+    #[template_child]
+    pub description: TemplateChild<gtk::Label>,
+    #[template_child]
+    pub description_short: TemplateChild<gtk::Label>,
+    #[template_child]
+    pub description_stack: TemplateChild<gtk::Stack>,
+    #[template_child]
+    pub description_button: TemplateChild<gtk::Button>,
+    #[template_child]
+    pub description_button_revealer: TemplateChild<gtk::Revealer>,
+    #[template_child]
+    pub episodes: TemplateChild<gtk::ListBox>,
+    #[template_child]
+    pub(crate) view: TemplateChild<BaseView>,
+
+    pub show_id: Cell<Option<i32>>,
+}
+
+#[glib::object_subclass]
+impl ObjectSubclass for ShowWidgetPriv {
+    const NAME: &'static str = "PdShowWidget";
+    type Type = super::ShowWidget;
+    type ParentType = gtk::Widget;
+
+    fn class_init(klass: &mut Self::Class) {
+        Self::bind_template(klass);
+        klass.set_layout_manager_type::<gtk::BinLayout>();
+    }
+
+    fn instance_init(obj: &glib::subclass::InitializingObject<Self>) {
+        obj.init_template();
+    }
+}
+
+impl ObjectImpl for ShowWidgetPriv {
+    fn dispose(&self, _obj: &Self::Type) {
+        self.view.unparent();
+    }
+}
+
+impl WidgetImpl for ShowWidgetPriv {}
+
+glib::wrapper! {
+    pub struct ShowWidget(ObjectSubclass<ShowWidgetPriv>)
+        @extends gtk::Widget;
 }
 
 impl Default for ShowWidget {
     fn default() -> Self {
-        let builder = gtk::Builder::from_resource("/org/gnome/Podcasts/gtk/show_widget.ui");
-        let sub_cont: gtk::Box = builder.object("sub_container").unwrap();
-        let cover: gtk::Image = builder.object("cover").unwrap();
-        let description: gtk::Label = builder.object("description").unwrap();
-        let description_short: gtk::Label = builder.object("description_short").unwrap();
-        let description_stack: gtk::Stack = builder.object("description_stack").unwrap();
-        let description_button: gtk::Button = builder.object("description_button").unwrap();
-        let description_button_revealer = builder.object("description_button_revealer").unwrap();
-        let episodes: gtk::ListBox = builder.object("episodes").unwrap();
-        let view = BaseView::default();
-
-        let clamp = Clamp::new();
-        clamp.set_maximum_size(700);
-
-        clamp.set_child(Some(&sub_cont));
-        view.set_child(&clamp);
-
-        ShowWidget {
-            view,
-            cover,
-            description,
-            description_short,
-            description_stack,
-            description_button,
-            description_button_revealer,
-            episodes,
-            show_id: None,
-        }
+        glib::Object::new(&[]).unwrap()
     }
 }
 
@@ -89,74 +104,90 @@ impl ShowWidget {
         pd: Arc<Show>,
         sender: Sender<Action>,
         vadj: Option<Adjustment>,
-    ) -> Rc<ShowWidget> {
-        let mut pdw = ShowWidget::default();
+    ) -> ShowWidget {
+        let pdw = ShowWidget::default();
+        let pdw_ = ShowWidgetPriv::from_instance(&pdw);
         pdw.init(&pd);
 
-        let menu = ShowMenu::new(&pd, &pdw.episodes, &sender);
+        let menu = ShowMenu::new(&pd, &pdw_.episodes, &sender);
         send!(sender, Action::InitSecondaryMenu(Fragile::new(menu.menu)));
 
-        let pdw = Rc::new(pdw);
         let res = populate_listbox(&pdw, pd, sender, vadj);
         debug_assert!(res.is_ok());
 
-        pdw.update_read_more();
-
-        pdw.description_button
+        pdw_.description_button
             .connect_clicked(clone!(@weak pdw => move |_| {
-                pdw.description_stack.set_visible_child_name("full");
+                let pdw_ = ShowWidgetPriv::from_instance(&pdw);
+
+                pdw_.description_stack.set_visible_child_name("full");
             }));
 
         pdw
     }
 
-    pub(crate) fn init(&mut self, pd: &Arc<Show>) {
+    pub(crate) fn init(&self, pd: &Arc<Show>) {
+        let self_ = ShowWidgetPriv::from_instance(self);
+
         self.set_description(pd.description());
-        self.show_id = Some(pd.id());
+        self_.show_id.set(Some(pd.id()));
 
         let res = self.set_cover(&pd);
+
         debug_assert!(res.is_ok());
     }
 
     /// Set the show cover.
     fn set_cover(&self, pd: &Arc<Show>) -> Result<()> {
-        utils::set_image_from_path(&self.cover, pd.id(), 256)
+        let self_ = ShowWidgetPriv::from_instance(self);
+
+        utils::set_image_from_path(&self_.cover, pd.id(), 256)
     }
 
     fn update_read_more(&self) {
-        let layout = self.description_short.layout();
-        let more =
-            layout.is_ellipsized() || self.description.label() != self.description_short.label();
-        self.description_button_revealer.set_reveal_child(more);
+        let self_ = ShowWidgetPriv::from_instance(self);
+
+        let more = self_.description.label() != self_.description_short.label();
+        self_.description_button_revealer.set_reveal_child(more);
     }
 
     /// Set the description text.
     fn set_description(&self, text: &str) {
+        let self_ = ShowWidgetPriv::from_instance(self);
+
         let markup = html2text::from_read(text.as_bytes(), text.as_bytes().len());
         let markup = markup.trim();
         let lines: Vec<&str> = markup.lines().collect();
 
         if markup.is_empty() {
-            self.description_stack.set_visible(false);
+            self_.description_stack.set_visible(false);
         } else {
-            self.description_stack.set_visible(true);
+            self_.description_stack.set_visible(true);
 
-            self.description.set_markup(markup);
+            self_.description.set_markup(markup);
             debug_assert!(!lines.is_empty());
             if !lines.is_empty() {
-                self.description_short.set_markup(lines[0]);
+                self_.description_short.set_markup(lines[0]);
+                self.update_read_more()
             }
         }
     }
 
     pub(crate) fn show_id(&self) -> Option<i32> {
-        self.show_id
+        let self_ = ShowWidgetPriv::from_instance(self);
+
+        self_.show_id.get()
+    }
+
+    pub(crate) fn view(&self) -> BaseView {
+        let self_ = ShowWidgetPriv::from_instance(self);
+
+        self_.view.clone()
     }
 }
 
 /// Populate the listbox with the shows episodes.
 fn populate_listbox(
-    show: &Rc<ShowWidget>,
+    show: &ShowWidget,
     pd: Arc<Show>,
     sender: Sender<Action>,
     vadj: Option<Adjustment>,
@@ -164,6 +195,7 @@ fn populate_listbox(
     use crossbeam_channel::TryRecvError;
 
     let count = dbqueries::get_pd_episodes_count(&pd)?;
+    let show_ = ShowWidgetPriv::from_instance(show);
 
     let (sender_, receiver) = bounded(1);
     tokio::spawn(clone!(@strong pd => async move {
@@ -176,43 +208,43 @@ fn populate_listbox(
 
     if count == 0 {
         let empty = EmptyShow::default();
-        show.episodes.append(empty.deref());
+        show_.episodes.append(empty.deref());
         return Ok(());
     }
 
-    let show_weak = Rc::downgrade(&show);
-    let list_weak = show.episodes.downgrade();
+    let list_weak = show_.episodes.downgrade();
 
-    glib::idle_add_local(move || {
-        let episodes = match receiver.try_recv() {
-            Ok(e) => e,
-            Err(TryRecvError::Empty) => return glib::Continue(true),
-            Err(TryRecvError::Disconnected) => return glib::Continue(false),
-        };
+    glib::idle_add_local(
+        glib::clone!(@weak show => @default-return glib::Continue(false), move || {
+            let episodes = match receiver.try_recv() {
+                Ok(e) => e,
+                Err(TryRecvError::Empty) => return glib::Continue(true),
+                Err(TryRecvError::Disconnected) => return glib::Continue(false),
+            };
 
-        debug_assert!(episodes.len() as i64 == count);
+            debug_assert!(episodes.len() as i64 == count);
 
-        let constructor = clone!(@strong sender => move |ep: EpisodeWidgetModel| {
-            let id = ep.rowid();
-            let episode_widget = EpisodeWidget::new(ep, &sender).container.clone();
-            let row = gtk::ListBoxRow::new();
-            row.set_child(Some(&episode_widget));
-            row.set_action_name(Some("app.go-to-episode"));
-            row.set_action_target_value(Some(&id.to_variant()));
-            row
-        });
+            let constructor = clone!(@strong sender => move |ep: EpisodeWidgetModel| {
+                let id = ep.rowid();
+                let episode_widget = EpisodeWidget::new(ep, &sender).container.clone();
+                let row = gtk::ListBoxRow::new();
+                row.set_child(Some(&episode_widget));
+                row.set_action_name(Some("app.go-to-episode"));
+                row.set_action_target_value(Some(&id.to_variant()));
+                row
+            });
 
-        let callback = clone!(@strong show_weak, @strong vadj => move || {
-            if let (Some(ref shows), Some(ref v)) = (show_weak.upgrade(), &vadj)
-            {
-                shows.view.set_adjustments(None, Some(v))
-            }
-        });
+            let callback = clone!(@weak show, @strong vadj => move || {
+                let show_ = ShowWidgetPriv::from_instance(&show);
 
-        lazy_load(episodes, list_weak.clone(), constructor, callback);
+                show_.view.set_adjustments(None, vadj.as_ref());
+            });
 
-        glib::Continue(false)
-    });
+            lazy_load(episodes, list_weak.clone(), constructor, callback);
+
+            glib::Continue(false)
+        }),
+    );
 
     Ok(())
 }

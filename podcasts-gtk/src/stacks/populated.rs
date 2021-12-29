@@ -42,7 +42,7 @@ pub(crate) enum PopulatedState {
 pub(crate) struct PopulatedStack {
     container: gtk::Box,
     populated: Rc<ShowsView>,
-    show: Rc<ShowWidget>,
+    show: ShowWidget,
     stack: gtk::Stack,
     state: PopulatedState,
     sender: Sender<Action>,
@@ -53,11 +53,11 @@ impl PopulatedStack {
         let stack = gtk::Stack::new();
         let state = PopulatedState::View;
         let populated = ShowsView::new(sender.clone(), None);
-        let show = Rc::new(ShowWidget::default());
+        let show = ShowWidget::default();
         let container = gtk::Box::new(gtk::Orientation::Horizontal, 0);
 
-        stack.add_named(populated.view.container(), Some("shows"));
-        stack.add_named(show.view.container(), Some("widget"));
+        stack.add_named(&populated.view, Some("shows"));
+        stack.add_named(&show, Some("widget"));
         container.append(&stack);
 
         PopulatedStack {
@@ -87,24 +87,23 @@ impl PopulatedStack {
     }
 
     pub(crate) fn replace_shows(&mut self) -> Result<()> {
-        let old = &self.populated.view.container().clone();
+        let old = &self.populated.view.clone();
         debug!("Name: {:?}", old.widget_name());
 
         let vadj = self.populated.view.vadjustment();
         let pop = ShowsView::new(self.sender.clone(), Some(vadj));
         self.populated = pop;
         self.stack.remove(old);
-        self.stack
-            .add_named(self.populated.view.container(), Some("shows"));
+        self.stack.add_named(&self.populated.view, Some("shows"));
 
         Ok(())
     }
 
     pub(crate) fn replace_widget(&mut self, pd: Arc<Show>) -> Result<()> {
-        let old = self.show.view.container().clone();
+        let old = self.show.clone();
 
         // Get the ShowWidget vertical alignment
-        let vadj = self.show.view.vadjustment();
+        let vadj = self.show.view().vadjustment();
         let new = match self.show.show_id() {
             // If the previous show was the same, restore the alignment
             Some(id) if id == pd.id() => ShowWidget::new(pd, self.sender.clone(), Some(vadj)),
@@ -114,8 +113,7 @@ impl PopulatedStack {
 
         self.show = new;
         self.stack.remove(&old);
-        self.stack
-            .add_named(self.show.view.container(), Some("widget"));
+        self.stack.add_named(&self.show, Some("widget"));
 
         // The current visible child might change depending on
         // removal and insertion in the gtk::Stack, so we have

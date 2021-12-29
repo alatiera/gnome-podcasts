@@ -45,7 +45,7 @@ impl HomeStack {
         let stack = gtk::Stack::new();
         let state = State::Empty;
 
-        stack.add_named(episodes.view.container(), Some("home"));
+        stack.add_named(&episodes.view, Some("home"));
         stack.add_named(empty.deref(), Some("empty"));
 
         let home = HomeStack {
@@ -65,7 +65,7 @@ impl HomeStack {
 
     pub(crate) fn update(&mut self) -> Result<()> {
         // Get the container of the view
-        let old = &self.episodes.view.container().clone();
+        let old = &self.episodes.view;
 
         // Copy the vertical scrollbar adjustment from the old view.
         let vadj = self.episodes.view.vadjustment();
@@ -75,7 +75,7 @@ impl HomeStack {
         // during this the previous view is removed,
         // and the visible child falls back to empty view.
         self.stack.remove(old);
-        self.stack.add_named(eps.view.container(), Some("home"));
+        self.stack.add_named(&eps.view, Some("home"));
         // Keep the previous state.
         let s = self.state;
         // Set the visible child back to the previous one to avoid
