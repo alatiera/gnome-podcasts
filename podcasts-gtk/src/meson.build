@@ -34,6 +34,8 @@ podcasts_sources = files(
   'widgets/show.rs',
   'widgets/show_menu.rs',
   'widgets/shows_view.rs',
+  'widgets/short_desc.rs',
+  'widgets/short_desc_layout.rs',
   'app.rs',
   'episode_description_parser.rs',
   'headerbar.rs',

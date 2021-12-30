@@ -31,7 +31,7 @@ use podcasts_data::Show;
 
 use crate::app::Action;
 use crate::utils::{self, lazy_load};
-use crate::widgets::{BaseView, EmptyShow, EpisodeWidget, ShowMenu};
+use crate::widgets::{BaseView, EmptyShow, EpisodeWidget, ShortDesc, ShowMenu};
 
 use std::cell::Cell;
 use std::ops::Deref;
@@ -49,7 +49,7 @@ pub struct ShowWidgetPriv {
     #[template_child]
     pub description: TemplateChild<gtk::Label>,
     #[template_child]
-    pub description_short: TemplateChild<gtk::Label>,
+    pub description_short: TemplateChild<ShortDesc>,
     #[template_child]
     pub description_stack: TemplateChild<gtk::Stack>,
     #[template_child]
@@ -81,6 +81,21 @@ impl ObjectSubclass for ShowWidgetPriv {
 }
 
 impl ObjectImpl for ShowWidgetPriv {
+    fn constructed(&self, obj: &Self::Type) {
+        self.parent_constructed(obj);
+        self.description_short
+            .connect_local(
+                "is-ellipsized",
+                false,
+                clone!(@weak obj => @default-return None, move |args| {
+                    let is_ellipsized = args[1].get().unwrap();
+                    obj.update_read_more(is_ellipsized);
+                    None
+                }),
+            )
+            .unwrap();
+    }
+
     fn dispose(&self, _obj: &Self::Type) {
         self.view.unparent();
     }
@@ -143,10 +158,10 @@ impl ShowWidget {
         utils::set_image_from_path(&self_.cover, pd.id(), 256)
     }
 
-    fn update_read_more(&self) {
+    fn update_read_more(&self, is_ellipsized: bool) {
         let self_ = ShowWidgetPriv::from_instance(self);
 
-        let more = self_.description.label() != self_.description_short.label();
+        let more = is_ellipsized || self_.description.label() != self_.description_short.label();
         self_.description_button_revealer.set_reveal_child(more);
     }
 
@@ -166,8 +181,7 @@ impl ShowWidget {
             self_.description.set_markup(markup);
             debug_assert!(!lines.is_empty());
             if !lines.is_empty() {
-                self_.description_short.set_markup(lines[0]);
-                self.update_read_more()
+                self_.description_short.set_label(lines[0]);
             }
         }
     }

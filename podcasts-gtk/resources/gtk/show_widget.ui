@@ -73,17 +73,9 @@ Tobias Bernard
                                 <property name="name">short</property>
                                 <property name="child">
                                   <object class="GtkBox">
-                                    <property name="halign">fill</property>
                                     <property name="orientation">vertical</property>
                                     <child>
-                                      <object class="GtkLabel" id="description_short">
-                                        <property name="halign">center</property>
-                                        <property name="valign">center</property>
-                                        <property name="use_markup">True</property>
-                                        <property name="justify">center</property>
-                                        <property name="wrap">True</property>
-                                        <property name="wrap_mode">word-char</property>
-                                      </object>
+                                      <object class="PdShortDesc" id="description_short"/>
                                     </child>
                                     <child>
                                       <object class="GtkRevealer" id="description_button_revealer">
