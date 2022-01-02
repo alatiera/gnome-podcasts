@@ -42,3 +42,11 @@ popover modelbutton > box > label {
 .episode_description .episode_duration_date {
     color: @insensitive_fg_color;
 }
+
+.rounded-big {
+    border-radius: 8px;
+}
+
+.rounded-small {
+    border-radius: 4px;
+}

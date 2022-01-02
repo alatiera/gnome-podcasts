@@ -140,6 +140,8 @@ impl ObjectImpl for ShowCoverPrivate {
     fn constructed(&self, obj: &Self::Type) {
         self.parent_constructed(obj);
         self.cover.set_pixel_size(256);
+        self.cover.add_css_class("rounded-big");
+        self.cover.set_overflow(gtk::Overflow::Hidden);
 
         obj.set_child(Some(&self.cover));
     }

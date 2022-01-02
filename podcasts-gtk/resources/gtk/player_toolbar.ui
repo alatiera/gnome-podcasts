@@ -101,6 +101,10 @@ Tobias Bernard
                             <property name="valign">center</property>
                             <property name="pixel_size">34</property>
                             <property name="icon_name">image-x-generic-symbolic</property>
+                            <property name="overflow">hidden</property>
+                            <style>
+                              <class name="rounded-small"/>
+                            </style>
                           </object>
                         </child>
                         <child>
@@ -206,6 +210,10 @@ Tobias Bernard
                         <property name="valign">center</property>
                         <property name="pixel_size">34</property>
                         <property name="icon_name">image-x-generic-symbolic</property>
+                        <property name="overflow">hidden</property>
+                        <style>
+                          <class name="rounded-small"/>
+                        </style>
                       </object>
                     </child>
                     <child>

@@ -91,6 +91,10 @@ Tobias Bernard
                             <property name="vexpand">False</property>
                             <property name="pixel_size">64</property>
                             <property name="icon_name">image-x-generic-symbolic</property>
+                            <property name="overflow">hidden</property>
+                            <style>
+                              <class name="rounded-small"/>
+                            </style>
                           </object>
                         </child>
                         <child>

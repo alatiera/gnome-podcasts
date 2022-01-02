@@ -50,6 +50,10 @@
                     <property name="margin-bottom">6</property>
                     <property name="valign">center</property>
                     <property name="icon_name">gtk-missing-image</property>
+                    <property name="overflow">hidden</property>
+                    <style>
+                      <class name="rounded-big"/>
+                    </style>
                   </object>
                 </child>
               </object>

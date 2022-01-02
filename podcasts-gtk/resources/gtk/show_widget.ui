@@ -52,7 +52,12 @@ Tobias Bernard
                     <child>
                       <object class="GtkImage" id="cover">
                         <property name="pixel_size">256</property>
+                        <property name="halign">center</property>
                         <property name="icon_name">image-x-generic-symbolic</property>
+                        <property name="overflow">hidden</property>
+                        <style>
+                          <class name="rounded-big"/>
+                        </style>
                       </object>
                     </child>
                     <child>
