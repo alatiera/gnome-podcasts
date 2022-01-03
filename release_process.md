@@ -24,3 +24,9 @@ source /usr/lib/sdk/rust-stable/enable.sh
 meson dist
 ```
 
+### Option maintenance thingies
+
+- Update flatpak modules
+- Run `cargo update`, build and commit the new lockfile.
+- Check for [outdated](https://github.com/kbknapp/cargo-outdated) crates `cargo install cargo-outdate && cargo outdated -d 1`
+
