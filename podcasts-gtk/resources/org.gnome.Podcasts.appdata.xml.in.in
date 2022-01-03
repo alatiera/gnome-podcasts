@@ -26,6 +26,17 @@
     </screenshot>
   </screenshots>
   <releases>
+    <release version="0.5.1" date="2022-01-03">
+     <description>
+        <p>
+          The 0.5.1 includes a couple of bufixes and quality of life updates.
+        </p>
+        <ul>
+          <li>Render lists in episode descriptions.</li>
+          <li>Avoid reduntant network request for the mpris cover art.</li>
+        </ul>
+      </description>
+    </release>
     <release version="0.5.0" date="2021-12-04">
      <description>
         <p>

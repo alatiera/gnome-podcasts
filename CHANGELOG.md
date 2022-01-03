@@ -14,6 +14,18 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Removed:
 
+## [0.5.1] - 2022-01-03
+
+### Added:
+- Render lists in episode descriptions World/podcasts!210
+
+### Changed:
+- Translation updates
+
+### Fixed:
+- Pass a file uri to mpris for the cover art instead of http url World/podcasts!209
+- Fix itunes tests World/podcasts!207
+
 ## [0.5.0] - 2021-12-04
 
 ### Changed:
