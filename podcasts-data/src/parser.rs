@@ -59,40 +59,35 @@ mod tests {
         // Input is a String<Int>
         let extension = ITunesItemExtensionBuilder::default()
             .duration(Some("3370".into()))
-            .build()
-            .unwrap();
+            .build();
         let item = Some(&extension);
         assert_eq!(parse_itunes_duration(item), Some(3370));
 
         // Input is a String<M:SS>
         let extension = ITunesItemExtensionBuilder::default()
             .duration(Some("6:10".into()))
-            .build()
-            .unwrap();
+            .build();
         let item = Some(&extension);
         assert_eq!(parse_itunes_duration(item), Some(370));
 
         // Input is a String<MM:SS>
         let extension = ITunesItemExtensionBuilder::default()
             .duration(Some("56:10".into()))
-            .build()
-            .unwrap();
+            .build();
         let item = Some(&extension);
         assert_eq!(parse_itunes_duration(item), Some(3370));
 
         // Input is a String<H:MM:SS>
         let extension = ITunesItemExtensionBuilder::default()
             .duration(Some("1:56:10".into()))
-            .build()
-            .unwrap();
+            .build();
         let item = Some(&extension);
         assert_eq!(parse_itunes_duration(item), Some(6970));
 
         // Input is a String<HH:MM:SS>
         let extension = ITunesItemExtensionBuilder::default()
             .duration(Some("01:56:10".into()))
-            .build()
-            .unwrap();
+            .build();
         let item = Some(&extension);
         assert_eq!(parse_itunes_duration(item), Some(6970));
     }
