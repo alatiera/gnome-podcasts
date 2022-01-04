@@ -1,21 +1,21 @@
 # Indonesian translation for podcasts.
 # Copyright (C) 2018 podcasts's COPYRIGHT HOLDER
 # This file is distributed under the same license as the podcasts package.
-# Kukuh Syafaat <kukuhsyafaat@gnome.org>, 2018-2021.
+# Kukuh Syafaat <kukuhsyafaat@gnome.org>, 2018-2022.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: podcasts master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2021-09-14 16:55+0000\n"
-"PO-Revision-Date: 2021-09-20 18:02+0700\n"
-"Last-Translator: Andika Triwidada <andika@gmail.com>\n"
+"POT-Creation-Date: 2021-11-28 07:07+0000\n"
+"PO-Revision-Date: 2022-01-04 11:59+0700\n"
+"Last-Translator: Kukuh Syafaat <kukuhsyafaat@gnome.org>\n"
 "Language-Team: Indonesian <gnome-l10n-id@googlegroups.com>\n"
 "Language: id\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 2.4.3\n"
+"X-Generator: Poedit 3.0\n"
 
 #: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:15
 msgid "Top position of the last open main window"
@@ -74,7 +74,6 @@ msgid "Podcasts"
 msgstr "Siniar"
 
 #: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:4
-#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:10
 msgid "Listen to your favorite podcasts, right from your desktop."
 msgstr "Dengarkan siniar favorit Anda, langsung dari destop Anda."
 
@@ -84,14 +83,28 @@ msgid "Podcast;RSS;"
 msgstr "Siniar;RSS;"
 
 #: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:8
-msgid "Podcast app for GNOME"
-msgstr "Aplikasi Siniar untuk GNOME"
+msgid "Listen to your favorite shows"
+msgstr "Dengarkan acara favorit Anda"
 
-#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:115
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:10
+msgid ""
+"Play, update, and manage your podcasts from a lightweight interface that "
+"seamlessly integrates with GNOME. Podcasts can play various audio formats "
+"and remember where you stopped listening. You can subscribe to shows via RSS/"
+"Atom, iTunes, and Soundcloud links. Subscriptions from other apps can be "
+"imported via OPML files."
+msgstr ""
+"Putar, mutakhirkan, dan kelola siniar Anda dari antarmuka ringan yang "
+"terintegrasi dengan GNOME dengan mulus. Siniar dapat memutar berbagai format "
+"audio dan mengingat di mana Anda berhenti mendengarkan. Anda dapat "
+"berlangganan acara melalui tautan RSS/ Atom, iTunes, dan Soundcloud. "
+"Langganan dari aplikasi lain dapat diimpor melalui berkas OPML."
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:117
 msgid "Jordan Petridis"
 msgstr "Jordan Petridis"
 
-#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:116
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:118
 msgid "Julian Hofer"
 msgstr "Julian Hofer"
 
@@ -128,7 +141,7 @@ msgstr "Kembali"
 
 #: podcasts-gtk/resources/gtk/episode_description.ui:148
 msgid "Podcast Title"
-msgstr "Judul Podcast"
+msgstr "Judul Siniar"
 
 #: podcasts-gtk/resources/gtk/episode_description.ui:186
 msgid "Duration - Date"
@@ -394,7 +407,7 @@ msgstr "Pelajari lebih lanjut tentang GNOME Siniar"
 #: podcasts-gtk/src/widgets/aboutdialog.rs:69
 msgid "translator-credits"
 msgstr ""
-"Kukuh Syafaat <kukuhsyafaat@gnome.org>, 2018-2021.\n"
+"Kukuh Syafaat <kukuhsyafaat@gnome.org>, 2018-2022.\n"
 "Andika Triwidada <andika@gmail.com>, 2021."
 
 #: podcasts-gtk/src/widgets/episode.rs:145
@@ -416,3 +429,6 @@ msgstr "Tandai semua episode sebagai sudah didengarkan"
 #: podcasts-gtk/src/widgets/show_menu.rs:199
 msgid "Unsubscribed from {}"
 msgstr "Berhenti berlangganan dari {}"
+
+#~ msgid "Podcast app for GNOME"
+#~ msgstr "Aplikasi Siniar untuk GNOME"
