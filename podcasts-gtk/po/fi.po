@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: podcasts master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2021-09-14 16:55+0000\n"
-"PO-Revision-Date: 2021-09-21 09:48+0300\n"
+"POT-Creation-Date: 2021-11-28 07:07+0000\n"
+"PO-Revision-Date: 2022-02-02 20:53+0200\n"
 "Last-Translator: Jiri Grönroos <jiri.gronroos+l10n@iki.fi>\n"
 "Language-Team: Finnish <lokalisointi-lista@googlegroups.com>\n"
 "Language: fi\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 3.0\n"
+"X-Generator: Poedit 3.0.1\n"
 
 #: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:15
 msgid "Top position of the last open main window"
@@ -75,7 +75,6 @@ msgid "Podcasts"
 msgstr "Podcastit"
 
 #: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:4
-#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:10
 msgid "Listen to your favorite podcasts, right from your desktop."
 msgstr "Kuuntele suosikkipodcastejasi suoraan työpöydältäsi."
 
@@ -85,14 +84,28 @@ msgid "Podcast;RSS;"
 msgstr "Podcast;RSS;"
 
 #: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:8
-msgid "Podcast app for GNOME"
-msgstr "Podcast-sovellus Gnomelle"
+msgid "Listen to your favorite shows"
+msgstr "Kuuntele suosikkiohjelmiasi"
 
-#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:115
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:10
+msgid ""
+"Play, update, and manage your podcasts from a lightweight interface that "
+"seamlessly integrates with GNOME. Podcasts can play various audio formats "
+"and remember where you stopped listening. You can subscribe to shows via RSS/"
+"Atom, iTunes, and Soundcloud links. Subscriptions from other apps can be "
+"imported via OPML files."
+msgstr ""
+"Toista, päivitä ja hallitse podcasteja Gnome-työpöytään integroituvasta "
+"käyttöliittymästä. Podcastit kykenee toistamaan lukuisia äänimuotoja ja "
+"muistaa, missä kohtaa lopetit kuuntelun. Voit tilata ohjelmia RSS-/Atom-, "
+"iTunes ja Soundcloud-linkeillä. Tilauksia muista sovelluksista voi tuoda "
+"OPML-tiedostoista."
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:117
 msgid "Jordan Petridis"
 msgstr "Jordan Petridis"
 
-#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:116
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:118
 msgid "Julian Hofer"
 msgstr "Julian Hofer"
 
@@ -413,6 +426,9 @@ msgstr "Merkitse kaikki jaksot toistetuiksi"
 #: podcasts-gtk/src/widgets/show_menu.rs:199
 msgid "Unsubscribed from {}"
 msgstr "Lopeta syötteen {} tilaus"
+
+#~ msgid "Podcast app for GNOME"
+#~ msgstr "Podcast-sovellus Gnomelle"
 
 #~ msgid "Double speed rate"
 #~ msgstr "Tuplanopeus"
