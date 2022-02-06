@@ -1,0 +1,860 @@
+<?xml version="1.0" encoding="ISO-8859-1"?> <?xml-stylesheet type="text/xsl" href="https://dinamics.ccma.cat/public/podcast/catradio/xsl/master_tmpl_tematic.xsl" version="1.0"?> <rss xmlns:encoder="java.net.URLEncoder" xmlns:java="java" xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd" xmlns:ccma="http://www.w3.org/TR/html4/" version="2.0">
+<channel>
+<title>Sèries i Cinema</title>
+<link>https://www.ccma.cat/catradio/podcast/tematics/series-i-cinema/1334/</link>
+<description>Els clàssics, les novetats de la cartellera i les millors sèries, tot en un sol podcast.</description>
+<ttl>61</ttl>
+<pubDate>Sat, 05 Feb 2022 21:42:46 +0100</pubDate>
+<lastBuildDate>Sat, 05 Feb 2022 21:42:46 +0100</lastBuildDate>
+<language>ca-es</language>
+<copyright>Corporació Catalana de Mitjans Audiovisuals, SA</copyright>
+<managingEditor>Catalunya RÃ dio</managingEditor>
+<itunes:owner>
+<itunes:name>Corporació Catalana de Mitjans Audiovisuals, SA</itunes:name>
+<itunes:email>crpodcast@catradio.cat</itunes:email>
+</itunes:owner>
+<itunes:author>Catalunya Ràdio</itunes:author>
+<image>
+<title>Sèries i Cinema</title>
+<url>https://statics.ccma.cat/multimedia/png/2/3/1561467550332.png</url>
+<link>https://www.ccma.cat/catradio/podcast/tematics/series-i-cinema/1334/</link>
+</image>
+<itunes:image href="https://statics.ccma.cat/multimedia/png/2/3/1561467550332.png"/>
+<itunes:summary>Els clàssics, les novetats de la cartellera i les millors sèries, tot en un sol podcast.</itunes:summary>
+<itunes:explicit>no</itunes:explicit>
+<itunes:subtitle>Podcasting</itunes:subtitle>
+<category>TV &amp; Film</category>
+<itunes:category text="TV &amp; Film"/>
+<itunes:block>no</itunes:block>
+<item>
+<title>S'estrena, per fi, un dels millors films del 2021, "Drive my car"</title>
+<description>Després que molts crítics el consideressin, si no el millor, un dels millors films de l'any passat, ara arriba a les sales "Drive my car", de Ryûsuke Hamaguchi. També aterren "Moonfall" i "Los ojos de Tammy Faye". Directes a plataformes, s'estrenen "Old Henry", "A través de mi ventana" de Marçal Forés, "Se terminó el tiempo" i "The story of looking". I pel que fa a les sèries, destaquen "Pam y Tommy", "Reacher" i "Sospechosos". Totes, comentades pel nostre especialista, Marc Garriga.</description>
+<pubDate>Fri, 04 Feb 2022 17:20:00 +0100</pubDate>
+<itunes:subtitle>
+</itunes:subtitle>
+<itunes:summary>Després que molts crítics el consideressin, si no el millor, un dels millors films de l'any passat, ara arriba a les sales "Drive my car", de Ryûsuke Hamaguchi. També aterren "Moonfall" i "Los ojos de Tammy Faye". Directes a plataformes, s'estrenen "Old Henry", "A través de mi ventana" de Marçal Forés, "Se terminó el tiempo" i "The story of looking". I pel que fa a les sèries, destaquen "Pam y Tommy", "Reacher" i "Sospechosos". Totes, comentades pel nostre especialista, Marc Garriga.</itunes:summary>
+<itunes:explicit>no</itunes:explicit>
+<enclosure type="audio/mpeg" length="2585938" url="https://audios.ccma.cat/multimedia/mp3/5/2/1643994008925.mp3"/>
+<guid>https://audios.ccma.cat/multimedia/mp3/5/2/1643994008925.mp3</guid>
+<itunes:duration>00:05:31</itunes:duration>
+<ccma:data>04/02/2022</ccma:data>
+<ccma:url>//www.ccma.cat/catradio/alacarta/travelling/sestrena-per-fi-un-dels-millors-films-del-2021-drive-my-car/audio/1124621/</ccma:url>
+<ccma:imatge>//statics.ccma.cat/multimedia/jpg/0/0/1643994021500.jpg</ccma:imatge>
+<ccma:programa>Travelling</ccma:programa>
+</item>
+<item>
+<title>Wong Kar-Wai, per Joana Serrat: la sincronia de l'amor   </title>
+<description>Memento #192. El cinema profundament esteticista de Wong Kar-Wai no busca tant explicar-nos una història com fer-nos viure una experiència i recrear estats d'ànim. Els seus temes de fons solen ser la melangia de la solitud i l'amor vist com una qüestió d'atzar i sincronia. De l'autor d'una obra tan immortal com és "Desitjant estimar" ens en parla la Joana Serrat, que amb el seu últim disc, "Hardcore from the heart", ha recollit totes les lloances possibles i se segueix consolidant com un dels grans talents musicals del país. I resulta que, a més, és una cinèfila de primera.  
+</description>
+<pubDate>Thu, 03 Feb 2022 12:00:00 +0100</pubDate>
+<itunes:subtitle>
+</itunes:subtitle>
+<itunes:summary>Memento #192. El cinema profundament esteticista de Wong Kar-Wai no busca tant explicar-nos una història com fer-nos viure una experiència i recrear estats d'ànim. Els seus temes de fons solen ser la melangia de la solitud i l'amor vist com una qüestió d'atzar i sincronia. De l'autor d'una obra tan immortal com és "Desitjant estimar" ens en parla la Joana Serrat, que amb el seu últim disc, "Hardcore from the heart", ha recollit totes les lloances possibles i se segueix consolidant com un dels grans talents musicals del país. I resulta que, a més, és una cinèfila de primera.  
+</itunes:summary>
+<itunes:explicit>no</itunes:explicit>
+<enclosure type="audio/mpeg" length="30569728" url="https://audios.ccma.cat/multimedia/mp3/4/1/1643885431214.mp3"/>
+<guid>https://audios.ccma.cat/multimedia/mp3/4/1/1643885431214.mp3</guid>
+<itunes:duration>00:59:55</itunes:duration>
+<ccma:data>03/02/2022</ccma:data>
+<ccma:url>//www.ccma.cat/catradio/alacarta/memento/wong-karwai-per-joana-serrat-la-sincronia-de-lamor/audio/1124425/</ccma:url>
+<ccma:imatge>//statics.ccma.cat/multimedia/jpg/2/3/1643885434732.jpg</ccma:imatge>
+<ccma:programa>Memento</ccma:programa>
+</item>
+<item>
+<title>Sèries per mirar al febrer</title>
+<description>SerieSelektor #58 El mes més curt de l'any inclou una gran varietat de propostes per a tots els gustos, entre les quals destaquem "Pam &amp; Tommy" (Disney+), "¿Quién es Anna?" (Netflix), "Furia" (Filmin), "Separación" (Apple TV+) o "Super pumped" (Movistar+). A les recomanacions a la carta proposem "El visitante" (HBO Max) i "The after party" (Apple TV+).
+</description>
+<pubDate>Wed, 02 Feb 2022 22:30:00 +0100</pubDate>
+<itunes:subtitle>
+</itunes:subtitle>
+<itunes:summary>SerieSelektor #58 El mes més curt de l'any inclou una gran varietat de propostes per a tots els gustos, entre les quals destaquem "Pam &amp; Tommy" (Disney+), "¿Quién es Anna?" (Netflix), "Furia" (Filmin), "Separación" (Apple TV+) o "Super pumped" (Movistar+). A les recomanacions a la carta proposem "El visitante" (HBO Max) i "The after party" (Apple TV+).
+</itunes:summary>
+<itunes:explicit>no</itunes:explicit>
+<enclosure type="audio/mpeg" length="30561224" url="https://audios.ccma.cat/multimedia/mp3/8/6/1643864446168.mp3"/>
+<guid>https://audios.ccma.cat/multimedia/mp3/8/6/1643864446168.mp3</guid>
+<itunes:duration>00:59:54</itunes:duration>
+<ccma:data>02/02/2022</ccma:data>
+<ccma:url>//www.ccma.cat/catradio/alacarta/serieselektor/series-per-mirar-al-febrer/audio/1124386/</ccma:url>
+<ccma:imatge>//statics.ccma.cat/multimedia/jpg/4/7/1643864466274.jpg</ccma:imatge>
+<ccma:programa>SerieSelektor</ccma:programa>
+</item>
+<item>
+<title>Gran Gala del programa 600 d'El violí vermell</title>
+<description>Avui arribem als 600 programes d'"El violí vermell"! Cada dia no s'arriben als sis-cents programes setmanals! Per celebrar-ho, hem organitzat una Gran Gala amb públic, orquestra i convidats. Comptarem amb les actuacions de grans actors i actrius del cinema, amics del programa que ens interpretaran temes que han cantat en algunes de les seves pel·lícules. Un gran espectacle musical cinematogràfic i radiofònic per fer-vos gaudir de valent.</description>
+<pubDate>Sun, 30 Jan 2022 13:00:00 +0100</pubDate>
+<itunes:subtitle>
+</itunes:subtitle>
+<itunes:summary>Avui arribem als 600 programes d'"El violí vermell"! Cada dia no s'arriben als sis-cents programes setmanals! Per celebrar-ho, hem organitzat una Gran Gala amb públic, orquestra i convidats. Comptarem amb les actuacions de grans actors i actrius del cinema, amics del programa que ens interpretaran temes que han cantat en algunes de les seves pel·lícules. Un gran espectacle musical cinematogràfic i radiofònic per fer-vos gaudir de valent.</itunes:summary>
+<itunes:explicit>no</itunes:explicit>
+<enclosure type="audio/mpeg" length="27610544" url="https://audios.ccma.cat/multimedia/mp3/0/0/1643364624000.mp3"/>
+<guid>https://audios.ccma.cat/multimedia/mp3/0/0/1643364624000.mp3</guid>
+<itunes:duration>00:54:07</itunes:duration>
+<ccma:data>30/01/2022</ccma:data>
+<ccma:url>//www.ccma.cat/catradio/alacarta/el-violi-vermell/gran-gala-del-programa-600-del-violi-vermell/audio/1123767/</ccma:url>
+<ccma:imatge>//statics.ccma.cat/multimedia/jpg/5/1/1643364627915.jpg</ccma:imatge>
+<ccma:programa>El violí vermell</ccma:programa>
+</item>
+<item>
+<title>"Todos mienten" o la subversió del Cluedo</title>
+<description>Pau Freixas, el creador de "Polseres vermelles", "Cites" i "Benvinguts a la família" estrena a Movistar+ "Todos mienten", la seva nova sèrie, un thriller que barreja suspens, drama, humor negre i uns personatges absolutament imprevisibles. La sèrie està protagonitzada, entre d'altres, per Leonardo Sbaraglia i Eva Santolaria. El nostre company Marc Garriga ha parlat amb tots tres.</description>
+<pubDate>Fri, 28 Jan 2022 07:00:00 +0100</pubDate>
+<itunes:subtitle>
+</itunes:subtitle>
+<itunes:summary>Pau Freixas, el creador de "Polseres vermelles", "Cites" i "Benvinguts a la família" estrena a Movistar+ "Todos mienten", la seva nova sèrie, un thriller que barreja suspens, drama, humor negre i uns personatges absolutament imprevisibles. La sèrie està protagonitzada, entre d'altres, per Leonardo Sbaraglia i Eva Santolaria. El nostre company Marc Garriga ha parlat amb tots tres.</itunes:summary>
+<itunes:explicit>no</itunes:explicit>
+<enclosure type="audio/mpeg" length="1218750" url="https://audios.ccma.cat/multimedia/mp3/8/6/1643346071068.mp3"/>
+<guid>https://audios.ccma.cat/multimedia/mp3/8/6/1643346071068.mp3</guid>
+<itunes:duration>00:02:36</itunes:duration>
+<ccma:data>28/01/2022</ccma:data>
+<ccma:url>//www.ccma.cat/catradio/alacarta/travelling/todos-mienten-o-la-subversio-del-cluedo/audio/1123730/</ccma:url>
+<ccma:imatge>//statics.ccma.cat/multimedia/jpg/5/9/1643346086895.jpg</ccma:imatge>
+<ccma:programa>Travelling</ccma:programa>
+</item>
+<item>
+<title>"La abuela" i "Belfast", per gaudir del cinema</title>
+<description>Les pel·lícules de Paco Plaza i Kenneth Branagh són les dues novetats més destacades de la cartellera. També arriben "Todo ha ido bien", "En un muelle de Normandía", "El pacte", "Mira per mi", "La mama és pura pluja", "Prisioneros de Ghostland" i "No somos nada". A les plataformes s'estrenen directament "Ice Age: Las aventuras de Buck", "Swan Song", "La magia del sonido del cine", "El asesinato de Kenneth Chamberlain" i "Attica". I, pel que fa a sèries, "Todo es mentira", "Feria, la luz más oscura", "The afterparty", "La mujer de la casa de enfrente de la chica de la ventana" i "The responder". Totes, comentades pel nostre especialista, Marc Garriga.</description>
+<pubDate>Thu, 27 Jan 2022 20:30:00 +0100</pubDate>
+<itunes:subtitle>
+</itunes:subtitle>
+<itunes:summary>Les pel·lícules de Paco Plaza i Kenneth Branagh són les dues novetats més destacades de la cartellera. També arriben "Todo ha ido bien", "En un muelle de Normandía", "El pacte", "Mira per mi", "La mama és pura pluja", "Prisioneros de Ghostland" i "No somos nada". A les plataformes s'estrenen directament "Ice Age: Las aventuras de Buck", "Swan Song", "La magia del sonido del cine", "El asesinato de Kenneth Chamberlain" i "Attica". I, pel que fa a sèries, "Todo es mentira", "Feria, la luz más oscura", "The afterparty", "La mujer de la casa de enfrente de la chica de la ventana" i "The responder". Totes, comentades pel nostre especialista, Marc Garriga.</itunes:summary>
+<itunes:explicit>no</itunes:explicit>
+<enclosure type="audio/mpeg" length="2585938" url="https://audios.ccma.cat/multimedia/mp3/9/7/1643312442679.mp3"/>
+<guid>https://audios.ccma.cat/multimedia/mp3/9/7/1643312442679.mp3</guid>
+<itunes:duration>00:05:31</itunes:duration>
+<ccma:data>27/01/2022</ccma:data>
+<ccma:url>//www.ccma.cat/catradio/alacarta/travelling/la-abuela-i-belfast-per-gaudir-del-cinema/audio/1123713/</ccma:url>
+<ccma:imatge>//statics.ccma.cat/multimedia/jpg/4/9/1643312445494.jpg</ccma:imatge>
+<ccma:programa>Travelling</ccma:programa>
+</item>
+<item>
+<title>Andrei Tarkovsky, per Guillem Balart: esculpint la nostàlgia  </title>
+<description>Memento #191. Ens acompanya un actor amb una força escènica descomunal, que està posant a prova en l'espectacle "Hamlet Aribau". Guillem Balart s'ha deixat posseir pels versos de Shakespeare i ens ofereix una gran interpretació del príncep de Dinamarca, però avui ens proposa viatjar una mica més a l'est, fins a Rússia. Analitzem les claus del cinema poètic i oníric d'Andrei Tarkovsky, situat entre la nostàlgia pel paradís perdut i la recerca del sentit de la vida. Com els Monty Python, però més solemne...
+</description>
+<pubDate>Thu, 27 Jan 2022 12:00:00 +0100</pubDate>
+<itunes:subtitle>
+</itunes:subtitle>
+<itunes:summary>Memento #191. Ens acompanya un actor amb una força escènica descomunal, que està posant a prova en l'espectacle "Hamlet Aribau". Guillem Balart s'ha deixat posseir pels versos de Shakespeare i ens ofereix una gran interpretació del príncep de Dinamarca, però avui ens proposa viatjar una mica més a l'est, fins a Rússia. Analitzem les claus del cinema poètic i oníric d'Andrei Tarkovsky, situat entre la nostàlgia pel paradís perdut i la recerca del sentit de la vida. Com els Monty Python, però més solemne...
+</itunes:summary>
+<itunes:explicit>no</itunes:explicit>
+<enclosure type="audio/mpeg" length="30569728" url="https://audios.ccma.cat/multimedia/mp3/8/9/1643283052198.mp3"/>
+<guid>https://audios.ccma.cat/multimedia/mp3/8/9/1643283052198.mp3</guid>
+<itunes:duration>00:59:55</itunes:duration>
+<ccma:data>27/01/2022</ccma:data>
+<ccma:url>//www.ccma.cat/catradio/alacarta/memento/andrei-tarkovsky-per-guillem-balart-esculpint-la-nostalgia/audio/1123653/</ccma:url>
+<ccma:imatge>//statics.ccma.cat/multimedia/jpg/2/1/1643283060212.jpg</ccma:imatge>
+<ccma:programa>Memento</ccma:programa>
+</item>
+<item>
+<title>"Somebody somewhere" i les sex tapes</title>
+<description>SerieSelektor #57 Proposem algunes sèries que no estan centrant gaires converses però que paga la pena mirar com "As we see it" (Prime Video), "Red light" (Sundance TV) o "Los últimos tres días" (Filmin). A les sèries a la carta recomanem "Somebody somewhere" (HBO Max) i "Cortar por la línea de puntos" (Netflix). A més, conversem amb el creador, guionista i director, Pau Freixas, que aquest divendres estrena "Todos mienten" (Movistar+).</description>
+<pubDate>Wed, 26 Jan 2022 22:30:00 +0100</pubDate>
+<itunes:subtitle>
+</itunes:subtitle>
+<itunes:summary>SerieSelektor #57 Proposem algunes sèries que no estan centrant gaires converses però que paga la pena mirar com "As we see it" (Prime Video), "Red light" (Sundance TV) o "Los últimos tres días" (Filmin). A les sèries a la carta recomanem "Somebody somewhere" (HBO Max) i "Cortar por la línea de puntos" (Netflix). A més, conversem amb el creador, guionista i director, Pau Freixas, que aquest divendres estrena "Todos mienten" (Movistar+).</itunes:summary>
+<itunes:explicit>no</itunes:explicit>
+<enclosure type="audio/mpeg" length="31709184" url="https://audios.ccma.cat/multimedia/mp3/5/4/1643271648445.mp3"/>
+<guid>https://audios.ccma.cat/multimedia/mp3/5/4/1643271648445.mp3</guid>
+<itunes:duration>01:02:09</itunes:duration>
+<ccma:data>26/01/2022</ccma:data>
+<ccma:url>//www.ccma.cat/catradio/alacarta/serieselektor/somebody-somewhere-i-les-sex-tapes/audio/1123622/</ccma:url>
+<ccma:imatge>//statics.ccma.cat/multimedia/jpg/5/3/1643271047635.jpg</ccma:imatge>
+<ccma:programa>SerieSelektor</ccma:programa>
+</item>
+<item>
+<title>Pau Freixas: "'Todos mienten' no és un espòiler"</title>
+<description>Conversem amb el creador, guionista i director Pau Freixas sobre la seva nova sèrie, que es mou entre el suspens, el drama i l'humor negre. A través de les vides d'un grup de veïns d'una luxosa urbanització, on comença a córrer un vídeo sexual entre una professora i un alumne, s'aniran descobrint secrets i mentides. Freixas la defineix com una mena de "Cluedo" difícil de resoldre en què els personatges tenen una insatisfacció crònica. "Todos mienten" s'estrena aquest divendres a Movistar+.</description>
+<pubDate>Wed, 26 Jan 2022 22:29:00 +0100</pubDate>
+<itunes:subtitle>
+</itunes:subtitle>
+<itunes:summary>Conversem amb el creador, guionista i director Pau Freixas sobre la seva nova sèrie, que es mou entre el suspens, el drama i l'humor negre. A través de les vides d'un grup de veïns d'una luxosa urbanització, on comença a córrer un vídeo sexual entre una professora i un alumne, s'aniran descobrint secrets i mentides. Freixas la defineix com una mena de "Cluedo" difícil de resoldre en què els personatges tenen una insatisfacció crònica. "Todos mienten" s'estrena aquest divendres a Movistar+.</itunes:summary>
+<itunes:explicit>no</itunes:explicit>
+<enclosure type="audio/mpeg" length="7610544" url="https://audios.ccma.cat/multimedia/mp3/3/3/1643271044733.mp3"/>
+<guid>https://audios.ccma.cat/multimedia/mp3/3/3/1643271044733.mp3</guid>
+<itunes:duration>00:14:55</itunes:duration>
+<ccma:data>26/01/2022</ccma:data>
+<ccma:url>//www.ccma.cat/catradio/alacarta/serieselektor/pau-freixas-todos-mienten-no-es-un-espoiler/audio/1123619/</ccma:url>
+<ccma:imatge>//statics.ccma.cat/multimedia/jpg/2/8/1643271651582.jpg</ccma:imatge>
+<ccma:programa>SerieSelektor</ccma:programa>
+</item>
+<item>
+<title>Una "Cerdita" a Sundance</title>
+<description>Carlota Pereda presenta al festival de Sundance, als Estats Units, el seu llargmetratge "Cerdita". La cinta neix d'un curt que es va endur el 2018 nombrosos premis, com ara el Goya i el Forqué.  El nostre company Marc Garriga n'ha parlat amb ella.</description>
+<pubDate>Tue, 25 Jan 2022 08:00:00 +0100</pubDate>
+<itunes:subtitle>
+</itunes:subtitle>
+<itunes:summary>Carlota Pereda presenta al festival de Sundance, als Estats Units, el seu llargmetratge "Cerdita". La cinta neix d'un curt que es va endur el 2018 nombrosos premis, com ara el Goya i el Forqué.  El nostre company Marc Garriga n'ha parlat amb ella.</itunes:summary>
+<itunes:explicit>no</itunes:explicit>
+<enclosure type="audio/mpeg" length="1078125" url="https://audios.ccma.cat/multimedia/mp3/2/2/1643086854422.mp3"/>
+<guid>https://audios.ccma.cat/multimedia/mp3/2/2/1643086854422.mp3</guid>
+<itunes:duration>00:02:18</itunes:duration>
+<ccma:data>25/01/2022</ccma:data>
+<ccma:url>//www.ccma.cat/catradio/alacarta/travelling/una-cerdita-a-sundance/audio/1123340/</ccma:url>
+<ccma:imatge>//statics.ccma.cat/multimedia/jpg/5/3/1643086869535.jpg</ccma:imatge>
+<ccma:programa>Travelling</ccma:programa>
+</item>
+<item>
+<title>El minimalisme dels 80 i dels 90. De l'inici exultant a la domesticació</title>
+<description>En aquest programa volem mostrar l'evolució del minimalisme en la música de cinema en els seus primers vint anys, en aquest cas a través de les bandes sonores del compositor Michael Nyman. Sentirem música de films com "El contracte del dibuixant", "Prospero's Books", "El marit de la perruquera", "Gattaca", "Wonderland", "El piano"...</description>
+<pubDate>Sun, 23 Jan 2022 13:00:00 +0100</pubDate>
+<itunes:subtitle>
+</itunes:subtitle>
+<itunes:summary>En aquest programa volem mostrar l'evolució del minimalisme en la música de cinema en els seus primers vint anys, en aquest cas a través de les bandes sonores del compositor Michael Nyman. Sentirem música de films com "El contracte del dibuixant", "Prospero's Books", "El marit de la perruquera", "Gattaca", "Wonderland", "El piano"...</itunes:summary>
+<itunes:explicit>no</itunes:explicit>
+<enclosure type="audio/mpeg" length="30051020" url="https://audios.ccma.cat/multimedia/mp3/3/2/1642771563023.mp3"/>
+<guid>https://audios.ccma.cat/multimedia/mp3/3/2/1642771563023.mp3</guid>
+<itunes:duration>00:58:54</itunes:duration>
+<ccma:data>23/01/2022</ccma:data>
+<ccma:url>//www.ccma.cat/catradio/alacarta/el-violi-vermell/el-minimalisme-dels-80-i-dels-90-de-linici-exultant-a-la-domesticacio/audio/1122993/</ccma:url>
+<ccma:imatge>//statics.ccma.cat/multimedia/jpg/0/9/1642771565190.jpg</ccma:imatge>
+<ccma:programa>El violí vermell</ccma:programa>
+</item>
+<item>
+<title>"El callejón de las almas perdidas", una nova joia de Guillermo del Toro</title>
+<description>El nou film de Guillermo del Toro, "El callejón de las almas perdidas", sobresurt entre les estrenes cinematogràfiques de la setmana. També arriben a les sales "El método Williams", "Agentes 355", "One shot (Misión de rescate)", "El cas Villa Caprice" i "La meva mare és una goril·la". A les plataformes es poden veure "La casa de los conejos", "Munich en vísperas de una guerra", "Lizzie" i "Sin escapatoria", a banda de les sèries "La edad dorada", "Hit Monkey", "Los Fraguel: la diversión continúa", "As we see it" i "Los últimos tres días". Totes, seleccionades i comentades pel nostre especialista Marc Garriga.</description>
+<pubDate>Fri, 21 Jan 2022 22:00:00 +0100</pubDate>
+<itunes:subtitle>
+</itunes:subtitle>
+<itunes:summary>El nou film de Guillermo del Toro, "El callejón de las almas perdidas", sobresurt entre les estrenes cinematogràfiques de la setmana. També arriben a les sales "El método Williams", "Agentes 355", "One shot (Misión de rescate)", "El cas Villa Caprice" i "La meva mare és una goril·la". A les plataformes es poden veure "La casa de los conejos", "Munich en vísperas de una guerra", "Lizzie" i "Sin escapatoria", a banda de les sèries "La edad dorada", "Hit Monkey", "Los Fraguel: la diversión continúa", "As we see it" i "Los últimos tres días". Totes, seleccionades i comentades pel nostre especialista Marc Garriga.</itunes:summary>
+<itunes:explicit>no</itunes:explicit>
+<enclosure type="audio/mpeg" length="2507813" url="https://audios.ccma.cat/multimedia/mp3/1/7/1643086872471.mp3"/>
+<guid>https://audios.ccma.cat/multimedia/mp3/1/7/1643086872471.mp3</guid>
+<itunes:duration>00:05:21</itunes:duration>
+<ccma:data>21/01/2022</ccma:data>
+<ccma:url>//www.ccma.cat/catradio/alacarta/travelling/el-callejon-de-las-almas-perdidas-una-nova-joia-de-guillermo-del-toro/audio/1123348/</ccma:url>
+<ccma:imatge>//statics.ccma.cat/multimedia/jpg/5/9/1643086875795.jpg</ccma:imatge>
+<ccma:programa>Travelling</ccma:programa>
+</item>
+<item>
+<title>Mike Cahill, per Marc Rodríguez: viatge als confins de l'espai interior</title>
+<description>Memento #190. Amb pressupostos relativament reduïts i una estètica pròpia del cinema independent, Mike Cahill s'interroga sobre qui som, on anem i com hi volem anar amb històries de ciència-ficció de caire filosòfic com "Another Earth". En parlem amb un autèntic fan del seu cinema, l'actor Marc Rodríguez, que aquests dies podeu veure al "Polònia" i a la comèdia amb cançons "T'estimo si he begut", al Teatre Poliorama.</description>
+<pubDate>Thu, 20 Jan 2022 12:00:00 +0100</pubDate>
+<itunes:subtitle>
+</itunes:subtitle>
+<itunes:summary>Memento #190. Amb pressupostos relativament reduïts i una estètica pròpia del cinema independent, Mike Cahill s'interroga sobre qui som, on anem i com hi volem anar amb històries de ciència-ficció de caire filosòfic com "Another Earth". En parlem amb un autèntic fan del seu cinema, l'actor Marc Rodríguez, que aquests dies podeu veure al "Polònia" i a la comèdia amb cançons "T'estimo si he begut", al Teatre Poliorama.</itunes:summary>
+<itunes:explicit>no</itunes:explicit>
+<enclosure type="audio/mpeg" length="30569728" url="https://audios.ccma.cat/multimedia/mp3/8/3/1642506930938.mp3"/>
+<guid>https://audios.ccma.cat/multimedia/mp3/8/3/1642506930938.mp3</guid>
+<itunes:duration>00:59:55</itunes:duration>
+<ccma:data>20/01/2022</ccma:data>
+<ccma:url>//www.ccma.cat/catradio/alacarta/memento/mike-cahill-per-marc-rodriguez-viatge-als-confins-de-lespai-interior/audio/1122618/</ccma:url>
+<ccma:imatge>//statics.ccma.cat/multimedia/jpg/0/4/1642506932940.jpg</ccma:imatge>
+<ccma:programa>Memento</ccma:programa>
+</item>
+<item>
+<title>"After life" i altres sèries que acaben el 2022</title>
+<description>SerieSelektor #56. El geni de l'humor incòmode Ricky Gervais tanca amb encert la tercera i última temporada de la dramèdia sobre el dol i la depressió "After life" (Netflix). Repassem altres ficcions que també ens deixen aquest any com "Peaky Blinders" o "Killing Eve" i proposem comèdies com "Hacks" (HBO Max) o "The other two" (Movistar +) per alleugerir les quarantenes. A les recomanacions a la carta suggerim "Condena" (Movistar +) i "No man's land" (HBO Max)
+</description>
+<pubDate>Wed, 19 Jan 2022 22:30:00 +0100</pubDate>
+<itunes:subtitle>
+</itunes:subtitle>
+<itunes:summary>SerieSelektor #56. El geni de l'humor incòmode Ricky Gervais tanca amb encert la tercera i última temporada de la dramèdia sobre el dol i la depressió "After life" (Netflix). Repassem altres ficcions que també ens deixen aquest any com "Peaky Blinders" o "Killing Eve" i proposem comèdies com "Hacks" (HBO Max) o "The other two" (Movistar +) per alleugerir les quarantenes. A les recomanacions a la carta suggerim "Condena" (Movistar +) i "No man's land" (HBO Max)
+</itunes:summary>
+<itunes:explicit>no</itunes:explicit>
+<enclosure type="audio/mpeg" length="30952381" url="https://audios.ccma.cat/multimedia/mp3/7/1/1642664741617.mp3"/>
+<guid>https://audios.ccma.cat/multimedia/mp3/7/1/1642664741617.mp3</guid>
+<itunes:duration>01:00:40</itunes:duration>
+<ccma:data>19/01/2022</ccma:data>
+<ccma:url>//www.ccma.cat/catradio/alacarta/serieselektor/after-life-i-altres-series-que-acaben-el-2022/audio/1122825/</ccma:url>
+<ccma:imatge>//statics.ccma.cat/multimedia/jpg/5/9/1642664748095.jpg</ccma:imatge>
+<ccma:programa>SerieSelektor</ccma:programa>
+</item>
+<item>
+<title>Isaki Lacuesta: "Serà molt xulo competir a Berlín amb cineastes a qui admiro"</title>
+<description>Per primer cop a la història, coincideixen dues pel·lícules catalanes a la secció oficial de la Berlinale, el prestigiós festival de cinema de Berlín. "Un año, una noche", d'Isaki Lacuesta, n'és una. El nostre company Marc Garriga ha entrevistat el director gironí.</description>
+<pubDate>Wed, 19 Jan 2022 16:20:00 +0100</pubDate>
+<itunes:subtitle>
+</itunes:subtitle>
+<itunes:summary>Per primer cop a la història, coincideixen dues pel·lícules catalanes a la secció oficial de la Berlinale, el prestigiós festival de cinema de Berlín. "Un año, una noche", d'Isaki Lacuesta, n'és una. El nostre company Marc Garriga ha entrevistat el director gironí.</itunes:summary>
+<itunes:explicit>no</itunes:explicit>
+<enclosure type="audio/mpeg" length="2601563" url="https://audios.ccma.cat/multimedia/mp3/0/8/1642606824280.mp3"/>
+<guid>https://audios.ccma.cat/multimedia/mp3/0/8/1642606824280.mp3</guid>
+<itunes:duration>00:05:33</itunes:duration>
+<ccma:data>19/01/2022</ccma:data>
+<ccma:url>//www.ccma.cat/catradio/alacarta/travelling/isaki-lacuesta-sera-molt-xulo-competir-a-berlin-amb-cineastes-a-qui-admiro/audio/1122767/</ccma:url>
+<ccma:imatge>//statics.ccma.cat/multimedia/jpg/1/5/1642606827151.jpg</ccma:imatge>
+<ccma:programa>Travelling</ccma:programa>
+</item>
+<item>
+<title>Carla Simón: "Sento que a la pròxima Berlinale ja seuré a la taula dels grans"</title>
+<description>El cinema català està d'enhorabona. Per primer cop a la història, coincideixen dos films catalans a la secció oficial de la Berlinale, el prestigiós festival de cinema de Berlín. Un d'ells és "Alcarràs", de Carla Simón. El nostre company Marc Garriga ha entrevistat la directora barcelonina.</description>
+<pubDate>Wed, 19 Jan 2022 16:15:00 +0100</pubDate>
+<itunes:subtitle>
+</itunes:subtitle>
+<itunes:summary>El cinema català està d'enhorabona. Per primer cop a la història, coincideixen dos films catalans a la secció oficial de la Berlinale, el prestigiós festival de cinema de Berlín. Un d'ells és "Alcarràs", de Carla Simón. El nostre company Marc Garriga ha entrevistat la directora barcelonina.</itunes:summary>
+<itunes:explicit>no</itunes:explicit>
+<enclosure type="audio/mpeg" length="3015625" url="https://audios.ccma.cat/multimedia/mp3/9/0/1642606226109.mp3"/>
+<guid>https://audios.ccma.cat/multimedia/mp3/9/0/1642606226109.mp3</guid>
+<itunes:duration>00:06:26</itunes:duration>
+<ccma:data>19/01/2022</ccma:data>
+<ccma:url>//www.ccma.cat/catradio/alacarta/travelling/carla-simon-sento-que-a-la-proxima-berlinale-ja-seure-a-la-taula-dels-grans/audio/1122766/</ccma:url>
+<ccma:imatge>//statics.ccma.cat/multimedia/jpg/5/6/1642606237265.jpg</ccma:imatge>
+<ccma:programa>Travelling</ccma:programa>
+</item>
+<item>
+<title>La música de Vivaldi en la música de cinema</title>
+<description>Avui us volem mostrar diversos usos que la música del compositor Antonio Vivaldi ha tingut en el cinema. I també alguns casos curiosos relacionats amb la música vivaldiana i unes quantes versions i interpretacions que ha inspirat. Sentirem música de bandes sonores com: "All that jazz", "Barry Lyndon", "Tots els homes del president", "El talent de Mr. Ripley" o "John Wick 3 Parabellum", entre d'altres.</description>
+<pubDate>Sun, 16 Jan 2022 13:00:00 +0100</pubDate>
+<itunes:subtitle>
+</itunes:subtitle>
+<itunes:summary>Avui us volem mostrar diversos usos que la música del compositor Antonio Vivaldi ha tingut en el cinema. I també alguns casos curiosos relacionats amb la música vivaldiana i unes quantes versions i interpretacions que ha inspirat. Sentirem música de bandes sonores com: "All that jazz", "Barry Lyndon", "Tots els homes del president", "El talent de Mr. Ripley" o "John Wick 3 Parabellum", entre d'altres.</itunes:summary>
+<itunes:explicit>no</itunes:explicit>
+<enclosure type="audio/mpeg" length="30790816" url="https://audios.ccma.cat/multimedia/mp3/3/3/1642158024033.mp3"/>
+<guid>https://audios.ccma.cat/multimedia/mp3/3/3/1642158024033.mp3</guid>
+<itunes:duration>01:00:21</itunes:duration>
+<ccma:data>16/01/2022</ccma:data>
+<ccma:url>//www.ccma.cat/catradio/alacarta/el-violi-vermell/la-musica-de-vivaldi-en-la-musica-de-cinema/audio/1122216/</ccma:url>
+<ccma:imatge>//statics.ccma.cat/multimedia/jpg/1/0/1642158038201.jpg</ccma:imatge>
+<ccma:programa>El violí vermell</ccma:programa>
+</item>
+<item>
+<title>"Macbeth" il·lumina la cartellera</title>
+<description>L'adaptació del "Macbeth" de Shakespeare per part de Joel Coen és l'estrena més destacada de la setmana. També arriben a la cartellera "Madeleine Collins", "Buscant la màgica Doremi", "Llunàtics" i "Scream". De les novetats en plataformes, el nostre especialista, Marc Garriga, recomana "Help", "El pacificador" i "Hotel Transsilvània: Transformania", a banda de comentar "Archivo 81", "Raphaelismo", "Somebody somewhere", "Operación Búfalo", "Express", "In the Earth" i "Naomi".</description>
+<pubDate>Thu, 13 Jan 2022 21:30:00 +0100</pubDate>
+<itunes:subtitle>
+</itunes:subtitle>
+<itunes:summary>L'adaptació del "Macbeth" de Shakespeare per part de Joel Coen és l'estrena més destacada de la setmana. També arriben a la cartellera "Madeleine Collins", "Buscant la màgica Doremi", "Llunàtics" i "Scream". De les novetats en plataformes, el nostre especialista, Marc Garriga, recomana "Help", "El pacificador" i "Hotel Transsilvània: Transformania", a banda de comentar "Archivo 81", "Raphaelismo", "Somebody somewhere", "Operación Búfalo", "Express", "In the Earth" i "Naomi".</itunes:summary>
+<itunes:explicit>no</itunes:explicit>
+<enclosure type="audio/mpeg" length="2500000" url="https://audios.ccma.cat/multimedia/mp3/5/2/1642106425025.mp3"/>
+<guid>https://audios.ccma.cat/multimedia/mp3/5/2/1642106425025.mp3</guid>
+<itunes:duration>00:05:20</itunes:duration>
+<ccma:data>13/01/2022</ccma:data>
+<ccma:url>//www.ccma.cat/catradio/alacarta/travelling/macbeth-illumina-la-cartellera/audio/1122158/</ccma:url>
+<ccma:imatge>//statics.ccma.cat/multimedia/jpg/6/6/1642106428166.jpg</ccma:imatge>
+<ccma:programa>Travelling</ccma:programa>
+</item>
+<item>
+<title>L'amistat femenina al cinema, per Àngela Cervantes: fent camí juntes</title>
+<description>Memento #189. L'actriu Àngela Cervantes està nominada al Goya a la millor actriu revelació pel seu paper a "Chavalas", una història d'amistat entre quatre noies que van créixer a la mateixa barriada i mantenen el vincle tot i que la vida adulta les comença a portar per camins diferents. Amb ella volem repassar altres exemples de pel·lícules en què els personatges femenins no actuen com a rivals, ni estan subordinats als masculins. Digueu-li sororitat, complicitat o, senzillament, amistat. 
+</description>
+<pubDate>Thu, 13 Jan 2022 12:00:00 +0100</pubDate>
+<itunes:subtitle>
+</itunes:subtitle>
+<itunes:summary>Memento #189. L'actriu Àngela Cervantes està nominada al Goya a la millor actriu revelació pel seu paper a "Chavalas", una història d'amistat entre quatre noies que van créixer a la mateixa barriada i mantenen el vincle tot i que la vida adulta les comença a portar per camins diferents. Amb ella volem repassar altres exemples de pel·lícules en què els personatges femenins no actuen com a rivals, ni estan subordinats als masculins. Digueu-li sororitat, complicitat o, senzillament, amistat. 
+</itunes:summary>
+<itunes:explicit>no</itunes:explicit>
+<enclosure type="audio/mpeg" length="30569728" url="https://audios.ccma.cat/multimedia/mp3/7/4/1641815749947.mp3"/>
+<guid>https://audios.ccma.cat/multimedia/mp3/7/4/1641815749947.mp3</guid>
+<itunes:duration>00:59:55</itunes:duration>
+<ccma:data>13/01/2022</ccma:data>
+<ccma:url>//www.ccma.cat/catradio/alacarta/memento/lamistat-femenina-al-cinema-per-angela-cervantes-fent-cami-juntes/audio/1121695/</ccma:url>
+<ccma:imatge>//statics.ccma.cat/multimedia/jpg/4/0/1641815755804.jpg</ccma:imatge>
+<ccma:programa>Memento</ccma:programa>
+</item>
+<item>
+<title>Chucky es passa a la televisió</title>
+<description>Chucky, el ninot diabòlic, s'estrena a la televisió en format sèrie. Ha arribat aquesta setmana al canal Syfy, que està disponible a través de les plataformes Movistar+, Vodafone i Orange, entre d'altres. La sèrie, que es diu "Chucky", manté el mateix esperit de les vuit pel·lícules anteriors de la saga. És un reportatge de Marc Garriga.</description>
+<pubDate>Mon, 10 Jan 2022 11:00:00 +0100</pubDate>
+<itunes:subtitle>
+</itunes:subtitle>
+<itunes:summary>Chucky, el ninot diabòlic, s'estrena a la televisió en format sèrie. Ha arribat aquesta setmana al canal Syfy, que està disponible a través de les plataformes Movistar+, Vodafone i Orange, entre d'altres. La sèrie, que es diu "Chucky", manté el mateix esperit de les vuit pel·lícules anteriors de la saga. És un reportatge de Marc Garriga.</itunes:summary>
+<itunes:explicit>no</itunes:explicit>
+<enclosure type="audio/mpeg" length="1195313" url="https://audios.ccma.cat/multimedia/mp3/6/9/1642012264496.mp3"/>
+<guid>https://audios.ccma.cat/multimedia/mp3/6/9/1642012264496.mp3</guid>
+<itunes:duration>00:02:33</itunes:duration>
+<ccma:data>10/01/2022</ccma:data>
+<ccma:url>//www.ccma.cat/catradio/alacarta/travelling/chucky-es-passa-a-la-televisio/audio/1122018/</ccma:url>
+<ccma:imatge>//statics.ccma.cat/multimedia/jpg/3/1/1642012275313.jpg</ccma:imatge>
+<ccma:programa>Travelling</ccma:programa>
+</item>
+<item>
+<title>Quaranta anys del 1982: aquell gran any en la música de cinema</title>
+<description>Si repassem les bandes sonores de les pel·licules que es van estrenar el 1982, hi podem trobar tota l'herència rebuda fins aquell moment en la història de la música del cinema i, alhora, un bon grapat de tendències que marcarien el futur de la música cinematogràfica gairebé fins els nostres dies. El 1982 va ser un gran any, molt representatiu de la música de cinema. Us ho mostrarem.</description>
+<pubDate>Sun, 09 Jan 2022 13:00:00 +0100</pubDate>
+<itunes:subtitle>
+</itunes:subtitle>
+<itunes:summary>Si repassem les bandes sonores de les pel·licules que es van estrenar el 1982, hi podem trobar tota l'herència rebuda fins aquell moment en la història de la música del cinema i, alhora, un bon grapat de tendències que marcarien el futur de la música cinematogràfica gairebé fins els nostres dies. El 1982 va ser un gran any, molt representatiu de la música de cinema. Us ho mostrarem.</itunes:summary>
+<itunes:explicit>no</itunes:explicit>
+<enclosure type="audio/mpeg" length="32066327" url="https://audios.ccma.cat/multimedia/mp3/0/6/1641539734660.mp3"/>
+<guid>https://audios.ccma.cat/multimedia/mp3/0/6/1641539734660.mp3</guid>
+<itunes:duration>01:02:51</itunes:duration>
+<ccma:data>09/01/2022</ccma:data>
+<ccma:url>//www.ccma.cat/catradio/alacarta/el-violi-vermell/quaranta-anys-del-1982-aquell-gran-any-en-la-musica-de-cinema/audio/1121431/</ccma:url>
+<ccma:imatge>//statics.ccma.cat/multimedia/jpg/2/8/1641539741582.jpg</ccma:imatge>
+<ccma:programa>El violí vermell</ccma:programa>
+</item>
+<item>
+<title>Sean Penn encapçala una setmana fluixa d'estrenes</title>
+<description>Aquesta setmana arriba als cinemes "El dia de la bandera", dirigida i protagonitzada per Sean Penn. Ho fa amb opció d'àudio o subtitulat en català, igual com "Què veiem quan mirem cap al cel?", "L'espia honest" i "No ploro mai". Completen les novetats en cartellera el film francès "Delicioso". En plataformes destaca l'estrena del film "El páramo" i les sèries "Chucky", "Manhunt: The night stalke" i "Planeta verde". Totes, comentades pel nostre especialista, Marc Garriga. I amb intervencions de Fiona Dourif i David Casademunt.</description>
+<pubDate>Thu, 06 Jan 2022 22:45:00 +0100</pubDate>
+<itunes:subtitle>
+</itunes:subtitle>
+<itunes:summary>Aquesta setmana arriba als cinemes "El dia de la bandera", dirigida i protagonitzada per Sean Penn. Ho fa amb opció d'àudio o subtitulat en català, igual com "Què veiem quan mirem cap al cel?", "L'espia honest" i "No ploro mai". Completen les novetats en cartellera el film francès "Delicioso". En plataformes destaca l'estrena del film "El páramo" i les sèries "Chucky", "Manhunt: The night stalke" i "Planeta verde". Totes, comentades pel nostre especialista, Marc Garriga. I amb intervencions de Fiona Dourif i David Casademunt.</itunes:summary>
+<itunes:explicit>no</itunes:explicit>
+<enclosure type="audio/mpeg" length="2304688" url="https://audios.ccma.cat/multimedia/mp3/9/2/1641531624029.mp3"/>
+<guid>https://audios.ccma.cat/multimedia/mp3/9/2/1641531624029.mp3</guid>
+<itunes:duration>00:04:55</itunes:duration>
+<ccma:data>06/01/2022</ccma:data>
+<ccma:url>//www.ccma.cat/catradio/alacarta/travelling/sean-penn-encapcala-una-setmana-fluixa-destrenes/audio/1121417/</ccma:url>
+<ccma:imatge>//statics.ccma.cat/multimedia/jpg/7/4/1641531634347.jpg</ccma:imatge>
+<ccma:programa>Travelling</ccma:programa>
+</item>
+<item>
+<title>Les sèries més esperades del 2022</title>
+<description>Igual com passa amb el cinema, la petita pantalla també viurà, als pròxims mesos, dels superherois, de les preqüeles i de les noves temporades de les sèries d'èxit. Però el 2022, a més, reviurà històries ja conegudes i en capgirarà d'altres per sorprendre'ns com ara només ho fa la televisió. És un reportatge de Marc Garriga.</description>
+<pubDate>Thu, 06 Jan 2022 21:55:00 +0100</pubDate>
+<itunes:subtitle>
+</itunes:subtitle>
+<itunes:summary>Igual com passa amb el cinema, la petita pantalla també viurà, als pròxims mesos, dels superherois, de les preqüeles i de les noves temporades de les sèries d'èxit. Però el 2022, a més, reviurà històries ja conegudes i en capgirarà d'altres per sorprendre'ns com ara només ho fa la televisió. És un reportatge de Marc Garriga.</itunes:summary>
+<itunes:explicit>no</itunes:explicit>
+<enclosure type="audio/mpeg" length="1734375" url="https://audios.ccma.cat/multimedia/mp3/7/1/1641531617117.mp3"/>
+<guid>https://audios.ccma.cat/multimedia/mp3/7/1/1641531617117.mp3</guid>
+<itunes:duration>00:03:42</itunes:duration>
+<ccma:data>06/01/2022</ccma:data>
+<ccma:url>//www.ccma.cat/catradio/alacarta/travelling/les-series-mes-esperades-del-2022/audio/1121413/</ccma:url>
+<ccma:imatge>//statics.ccma.cat/multimedia/jpg/6/3/1641531632836.jpg</ccma:imatge>
+<ccma:programa>Travelling</ccma:programa>
+</item>
+<item>
+<title>El cinema del 2022: les pel·lícules més esperades</title>
+<description>Les sales de cinema confien, com ja és habitual, en el cinema de superherois i en les sagues per recuperar les xifres d'espectadors prepandèmiques. Aquest 2022 també tornaran grans directors i intèrprets de primera fila per animar el públic. Però les cintes més desitjades no són només les de Hollywood, sinó que també n'hi ha algunes de catalanes molt esperades. ¿És un reportatge de Marc Garriga.</description>
+<pubDate>Thu, 06 Jan 2022 21:50:00 +0100</pubDate>
+<itunes:subtitle>
+</itunes:subtitle>
+<itunes:summary>Les sales de cinema confien, com ja és habitual, en el cinema de superherois i en les sagues per recuperar les xifres d'espectadors prepandèmiques. Aquest 2022 també tornaran grans directors i intèrprets de primera fila per animar el públic. Però les cintes més desitjades no són només les de Hollywood, sinó que també n'hi ha algunes de catalanes molt esperades. ¿És un reportatge de Marc Garriga.</itunes:summary>
+<itunes:explicit>no</itunes:explicit>
+<enclosure type="audio/mpeg" length="1640625" url="https://audios.ccma.cat/multimedia/mp3/0/5/1641531619750.mp3"/>
+<guid>https://audios.ccma.cat/multimedia/mp3/0/5/1641531619750.mp3</guid>
+<itunes:duration>00:03:30</itunes:duration>
+<ccma:data>06/01/2022</ccma:data>
+<ccma:url>//www.ccma.cat/catradio/alacarta/travelling/el-cinema-del-2022-les-pellicules-mes-esperades/audio/1121415/</ccma:url>
+<ccma:imatge>//statics.ccma.cat/multimedia/jpg/5/6/1641531633965.jpg</ccma:imatge>
+<ccma:programa>Travelling</ccma:programa>
+</item>
+<item>
+<title>Steven Spielberg, per Quim Morales: l'autor més taquiller  </title>
+<description>Memento #188. No se'ns acut millor regal de Reis que dedicar-li el programa a un dels cineastes més taquillers de la història, el creador d'"ET", "Salvem el soldat Ryan" i tantes altres obres clau, que amb 75 anys acabats de fer ha tornat a encertar-la amb el seu remake de "West Side Story". Tot i les seves incursions en temes molt adults, l'aposta per un cinema amb vocació popular, en el millor sentit de la paraula, i una certa tendència a mirar la vida amb la ingenuïtat i els sentiments d'un nen gran, han fet que sovint no se'l consideri com el que és: més que un artesà aplicat, un autor fonamental del Hollywood dels últims cinquanta anys. En parlem amb un fill de la generació que va somiar poder tenir una bicicleta voladora, Quim Morales, director i presentador de "L'última hora del matí de Catalunya Ràdio".</description>
+<pubDate>Thu, 06 Jan 2022 12:00:00 +0100</pubDate>
+<itunes:subtitle>
+</itunes:subtitle>
+<itunes:summary>Memento #188. No se'ns acut millor regal de Reis que dedicar-li el programa a un dels cineastes més taquillers de la història, el creador d'"ET", "Salvem el soldat Ryan" i tantes altres obres clau, que amb 75 anys acabats de fer ha tornat a encertar-la amb el seu remake de "West Side Story". Tot i les seves incursions en temes molt adults, l'aposta per un cinema amb vocació popular, en el millor sentit de la paraula, i una certa tendència a mirar la vida amb la ingenuïtat i els sentiments d'un nen gran, han fet que sovint no se'l consideri com el que és: més que un artesà aplicat, un autor fonamental del Hollywood dels últims cinquanta anys. En parlem amb un fill de la generació que va somiar poder tenir una bicicleta voladora, Quim Morales, director i presentador de "L'última hora del matí de Catalunya Ràdio".</itunes:summary>
+<itunes:explicit>no</itunes:explicit>
+<enclosure type="audio/mpeg" length="30663265" url="https://audios.ccma.cat/multimedia/mp3/4/2/1641384319924.mp3"/>
+<guid>https://audios.ccma.cat/multimedia/mp3/4/2/1641384319924.mp3</guid>
+<itunes:duration>01:00:06</itunes:duration>
+<ccma:data>06/01/2022</ccma:data>
+<ccma:url>//www.ccma.cat/catradio/alacarta/memento/steven-spielberg-per-quim-morales-lautor-mes-taquiller/audio/1121303/</ccma:url>
+<ccma:imatge>//statics.ccma.cat/multimedia/jpg/4/4/1641384321944.jpg</ccma:imatge>
+<ccma:programa>Memento</ccma:programa>
+</item>
+<item>
+<title>Concerts, per començar l'any</title>
+<description>En l'edició d'avui d''"El violí vermell", us proposem una selecció d'audicions de bandes sonores en les quals la protagonista de la pel·lícula és una obra musical concreta de format o aparença clàssica, tot i que sigui composta originalment per a la pel·lícula per l'autor de la banda sonora, o en què un concert orquestral clàssic té un paper bàsic, cabdal, en l'argument de la pel·lícula, també originalment compost per al film.</description>
+<pubDate>Sun, 02 Jan 2022 13:00:00 +0100</pubDate>
+<itunes:subtitle>
+</itunes:subtitle>
+<itunes:summary>En l'edició d'avui d''"El violí vermell", us proposem una selecció d'audicions de bandes sonores en les quals la protagonista de la pel·lícula és una obra musical concreta de format o aparença clàssica, tot i que sigui composta originalment per a la pel·lícula per l'autor de la banda sonora, o en què un concert orquestral clàssic té un paper bàsic, cabdal, en l'argument de la pel·lícula, també originalment compost per al film.</itunes:summary>
+<itunes:explicit>no</itunes:explicit>
+<enclosure type="audio/mpeg" length="28086735" url="https://audios.ccma.cat/multimedia/mp3/5/9/1640964331595.mp3"/>
+<guid>https://audios.ccma.cat/multimedia/mp3/5/9/1640964331595.mp3</guid>
+<itunes:duration>00:55:03</itunes:duration>
+<ccma:data>02/01/2022</ccma:data>
+<ccma:url>//www.ccma.cat/catradio/alacarta/el-violi-vermell/concerts-per-comencar-lany/audio/1120897/</ccma:url>
+<ccma:imatge>//statics.ccma.cat/multimedia/jpg/7/3/1640964335937.jpg</ccma:imatge>
+<ccma:programa>El violí vermell</ccma:programa>
+</item>
+<item>
+<title>Sèries: Un any de fenòmens i drames intensos</title>
+<description>El recull de les sèries més destacades del 2021: les estrenes, els retorns, les que ja no tornaran mai més, els documentals i un record a les personalitats vinculades a la ficció televisiva que ens han deixat per sempre. Ha estat un any marcat pel boom inesperat d'"El juego del calamar" i altres fenòmens més previsibles com els "Bridgerton" o el final de "La casa de papel". Al rànquing de les millors, apostem per drames d'alta volada com "Mare of Easttown" o la tercera temporada de "Succession". Amb Sílvia Comet i Cristina Bordas.</description>
+<pubDate>Sat, 01 Jan 2022 12:10:00 +0100</pubDate>
+<itunes:subtitle>
+</itunes:subtitle>
+<itunes:summary>El recull de les sèries més destacades del 2021: les estrenes, els retorns, les que ja no tornaran mai més, els documentals i un record a les personalitats vinculades a la ficció televisiva que ens han deixat per sempre. Ha estat un any marcat pel boom inesperat d'"El juego del calamar" i altres fenòmens més previsibles com els "Bridgerton" o el final de "La casa de papel". Al rànquing de les millors, apostem per drames d'alta volada com "Mare of Easttown" o la tercera temporada de "Succession". Amb Sílvia Comet i Cristina Bordas.</itunes:summary>
+<itunes:explicit>no</itunes:explicit>
+<enclosure type="audio/mpeg" length="27851563" url="https://audios.ccma.cat/multimedia/mp3/5/1/1640016323715.mp3"/>
+<guid>https://audios.ccma.cat/multimedia/mp3/5/1/1640016323715.mp3</guid>
+<itunes:duration>00:59:25</itunes:duration>
+<ccma:data>01/01/2022</ccma:data>
+<ccma:url>//www.ccma.cat/catradio/alacarta/serieselektor/series-un-any-de-fenomens-i-drames-intensos/audio/1119792/</ccma:url>
+<ccma:imatge>//statics.ccma.cat/multimedia/jpg/2/2/1640018442622.jpg</ccma:imatge>
+<ccma:programa>SerieSelektor</ccma:programa>
+</item>
+<item>
+<title>El cinema del 2021, per Marta Ferrer i estrelles convidades: l'any de la reconstrucció</title>
+<description>Memento #187. Repassem algunes de les millors històries que ens han acompanyat des de diferents pantalles, com més grans millor, al llarg d'aquest any que ara s'acaba. Ha estat un any de moltes superproduccions que s'havien vist ajornades, de força cinema musical i de pel·lícules amb segell autoral que deconstrueixen els gèneres més populars, especialment el western. Per fer la tria comptem amb la col·laboració de Marta Ferrer, l'experta en cinema i sèries d'"El suplement" de Catalunya Ràdio, i amb tretze estrelles convidades que ja han passat pel programa. No patiu, que al "Tràiler sincer" ho compensarem analitzant una de les pel·lícules més mal valorades de l'any.</description>
+<pubDate>Thu, 30 Dec 2021 12:00:00 +0100</pubDate>
+<itunes:subtitle>
+</itunes:subtitle>
+<itunes:summary>Memento #187. Repassem algunes de les millors històries que ens han acompanyat des de diferents pantalles, com més grans millor, al llarg d'aquest any que ara s'acaba. Ha estat un any de moltes superproduccions que s'havien vist ajornades, de força cinema musical i de pel·lícules amb segell autoral que deconstrueixen els gèneres més populars, especialment el western. Per fer la tria comptem amb la col·laboració de Marta Ferrer, l'experta en cinema i sèries d'"El suplement" de Catalunya Ràdio, i amb tretze estrelles convidades que ja han passat pel programa. No patiu, que al "Tràiler sincer" ho compensarem analitzant una de les pel·lícules més mal valorades de l'any.</itunes:summary>
+<itunes:explicit>no</itunes:explicit>
+<enclosure type="audio/mpeg" length="30569728" url="https://audios.ccma.cat/multimedia/mp3/0/1/1640686511110.mp3"/>
+<guid>https://audios.ccma.cat/multimedia/mp3/0/1/1640686511110.mp3</guid>
+<itunes:duration>00:59:55</itunes:duration>
+<ccma:data>30/12/2021</ccma:data>
+<ccma:url>//www.ccma.cat/catradio/alacarta/memento/el-cinema-del-2021-per-marta-ferrer-i-estrelles-convidades-lany-de-la-reconstruccio/audio/1120549/</ccma:url>
+<ccma:imatge>//statics.ccma.cat/multimedia/jpg/5/3/1640686516735.jpg</ccma:imatge>
+<ccma:programa>Memento</ccma:programa>
+</item>
+<item>
+<title>Top 10 de les sèries de l'any</title>
+<description>SerieSelektor #55. El clàssic rànquing anual de les ficcions que ens han alegrat el 2021. El millor de l'any segons l'equip del "SerieSelektor" amb les aportacions de convidats especials com Cristina Bordas, de "Sèries i punt", i Lorenzo Mejino, especialista en sèries remotes i desconegudes, que ens acostarà el seu top de les millors sèries del 2021 que encara no tenen distribució a Espanya. 
+
+ </description>
+<pubDate>Wed, 29 Dec 2021 22:30:00 +0100</pubDate>
+<itunes:subtitle>
+</itunes:subtitle>
+<itunes:summary>SerieSelektor #55. El clàssic rànquing anual de les ficcions que ens han alegrat el 2021. El millor de l'any segons l'equip del "SerieSelektor" amb les aportacions de convidats especials com Cristina Bordas, de "Sèries i punt", i Lorenzo Mejino, especialista en sèries remotes i desconegudes, que ens acostarà el seu top de les millors sèries del 2021 que encara no tenen distribució a Espanya. 
+
+ </itunes:summary>
+<itunes:explicit>no</itunes:explicit>
+<enclosure type="audio/mpeg" length="30646259" url="https://audios.ccma.cat/multimedia/mp3/0/5/1640706039750.mp3"/>
+<guid>https://audios.ccma.cat/multimedia/mp3/0/5/1640706039750.mp3</guid>
+<itunes:duration>01:00:04</itunes:duration>
+<ccma:data>29/12/2021</ccma:data>
+<ccma:url>//www.ccma.cat/catradio/alacarta/serieselektor/top-10-de-les-series-de-lany/audio/1120582/</ccma:url>
+<ccma:imatge>//statics.ccma.cat/multimedia/jpg/6/5/1640706041956.jpg</ccma:imatge>
+<ccma:programa>SerieSelektor</ccma:programa>
+</item>
+<item>
+<title>"El contador de cartas" passa per sobre dels homes del rei</title>
+<description>Les estrenes de cinema es tornen a avançar a dimecres. Aquesta setmana destaquen "The King's Man: La primera misión" i "El contador de cartas", a banda de "100 días con la Tata" i "Vuelta a casa de mi madre". Pel que fa a les plataformes, l'1 de gener es presenta l'especial "Harry Potter: Regreso a Hogwarts". Abans, sèries com "El libro de Boba Fett", "Quédate a mi lado", "Un escándalo muy británico", "Upright" i "Los Larkin"; i films com "Rescate en las profundidades", "El silencio de los espías", "Stardust" i "John y el hoyo". Totes, comentades pel nostre especialista, Marc Garriga.  </description>
+<pubDate>Wed, 29 Dec 2021 06:20:00 +0100</pubDate>
+<itunes:subtitle>
+</itunes:subtitle>
+<itunes:summary>Les estrenes de cinema es tornen a avançar a dimecres. Aquesta setmana destaquen "The King's Man: La primera misión" i "El contador de cartas", a banda de "100 días con la Tata" i "Vuelta a casa de mi madre". Pel que fa a les plataformes, l'1 de gener es presenta l'especial "Harry Potter: Regreso a Hogwarts". Abans, sèries com "El libro de Boba Fett", "Quédate a mi lado", "Un escándalo muy británico", "Upright" i "Los Larkin"; i films com "Rescate en las profundidades", "El silencio de los espías", "Stardust" i "John y el hoyo". Totes, comentades pel nostre especialista, Marc Garriga.  </itunes:summary>
+<itunes:explicit>no</itunes:explicit>
+<enclosure type="audio/mpeg" length="2500000" url="https://audios.ccma.cat/multimedia/mp3/6/8/1640755523386.mp3"/>
+<guid>https://audios.ccma.cat/multimedia/mp3/6/8/1640755523386.mp3</guid>
+<itunes:duration>00:05:20</itunes:duration>
+<ccma:data>29/12/2021</ccma:data>
+<ccma:url>//www.ccma.cat/catradio/alacarta/travelling/el-contador-de-cartas-passa-per-sobre-dels-homes-del-rei/audio/1120639/</ccma:url>
+<ccma:imatge>//statics.ccma.cat/multimedia/jpg/7/8/1640755524287.jpg</ccma:imatge>
+<ccma:programa>Travelling</ccma:programa>
+</item>
+<item>
+<title>Per Sant Esteve, música nadalenca de cinema</title>
+<description>En un dia com avui, us oferim una selecció de musiques relacionades amb el Nadal; una selecció, naturalment, de música cinematogràfica, tot i que amb una obertura i un tancament clàssics, per agermanar la temàtica del programa amb la temàtica essencial de l'emissora. 
+
+</description>
+<pubDate>Sun, 26 Dec 2021 13:00:00 +0100</pubDate>
+<itunes:subtitle>
+</itunes:subtitle>
+<itunes:summary>En un dia com avui, us oferim una selecció de musiques relacionades amb el Nadal; una selecció, naturalment, de música cinematogràfica, tot i que amb una obertura i un tancament clàssics, per agermanar la temàtica del programa amb la temàtica essencial de l'emissora. 
+
+</itunes:summary>
+<itunes:explicit>no</itunes:explicit>
+<enclosure type="audio/mpeg" length="30374150" url="https://audios.ccma.cat/multimedia/mp3/4/6/1640334047264.mp3"/>
+<guid>https://audios.ccma.cat/multimedia/mp3/4/6/1640334047264.mp3</guid>
+<itunes:duration>00:59:32</itunes:duration>
+<ccma:data>26/12/2021</ccma:data>
+<ccma:url>//www.ccma.cat/catradio/alacarta/el-violi-vermell/per-sant-esteve-musica-nadalenca-de-cinema/audio/1120254/</ccma:url>
+<ccma:imatge>//statics.ccma.cat/multimedia/jpg/4/4/1640334049544.jpg</ccma:imatge>
+<ccma:programa>El violí vermell</ccma:programa>
+</item>
+<item>
+<title>La saga "Alien", per Luis Nostromo: crits a l'espai i molta mala bava</title>
+<description>Memento #186. Des que vam pujar a la nau Nostromo per primera vegada amb la tinent Ripley i la resta de la tripulació, ja fa més de 40 anys, aquest ésser d'estètica biomecànica anomenat Alien se'ns ha arrapat a la memòria igual que s'enganxava a la cara del pobre John Hurt. Repassem els moments culminants de la saga de ciència-ficció més terrorífica amb tota una autoritat en la matèria: Luis Escribano, conegut a les xarxes com a Luis Nostromo, és un fan i col·leccionista de tota mena d'objectes relacionats amb les pel·lícules, i ha acabat construint alguns dels decorats a escala real en el que ja s'ha convertit en el Museu Alien de Barcelona. 
+
+</description>
+<pubDate>Thu, 23 Dec 2021 12:00:00 +0100</pubDate>
+<itunes:subtitle>
+</itunes:subtitle>
+<itunes:summary>Memento #186. Des que vam pujar a la nau Nostromo per primera vegada amb la tinent Ripley i la resta de la tripulació, ja fa més de 40 anys, aquest ésser d'estètica biomecànica anomenat Alien se'ns ha arrapat a la memòria igual que s'enganxava a la cara del pobre John Hurt. Repassem els moments culminants de la saga de ciència-ficció més terrorífica amb tota una autoritat en la matèria: Luis Escribano, conegut a les xarxes com a Luis Nostromo, és un fan i col·leccionista de tota mena d'objectes relacionats amb les pel·lícules, i ha acabat construint alguns dels decorats a escala real en el que ja s'ha convertit en el Museu Alien de Barcelona. 
+
+</itunes:summary>
+<itunes:explicit>no</itunes:explicit>
+<enclosure type="audio/mpeg" length="30569728" url="https://audios.ccma.cat/multimedia/mp3/2/8/1640000140282.mp3"/>
+<guid>https://audios.ccma.cat/multimedia/mp3/2/8/1640000140282.mp3</guid>
+<itunes:duration>00:59:55</itunes:duration>
+<ccma:data>23/12/2021</ccma:data>
+<ccma:url>//www.ccma.cat/catradio/alacarta/memento/la-saga-alien-per-luis-nostromo-crits-a-lespai-i-molta-mala-bava/audio/1119767/</ccma:url>
+<ccma:imatge>//statics.ccma.cat/multimedia/jpg/2/2/1640000143422.jpg</ccma:imatge>
+<ccma:programa>Memento</ccma:programa>
+</item>
+<item>
+<title>Cagada de sèries</title>
+<description>SeriSelektor #54. Al "SerieSelektor" fem que el tió cagui les ficcions més decebedores de l'any. Les més avorrides, fallides o directament dolentes que és millor passar per alt i entre les quals destaquen "Nine perfect strangers", "Élite", "Al borde", "Hit and run" i "The morning show". Per contrarestar les hores perdudes davant la pantalla proposem "Homecoming" (Prime Video), "Cómo vender drogas online"(Netflix), "Perni" (Filmin), "Perdiendo a Alice" (Apple TV+) i "The hour" (Prime). 
+</description>
+<pubDate>Wed, 22 Dec 2021 22:30:00 +0100</pubDate>
+<itunes:subtitle>
+</itunes:subtitle>
+<itunes:summary>SeriSelektor #54. Al "SerieSelektor" fem que el tió cagui les ficcions més decebedores de l'any. Les més avorrides, fallides o directament dolentes que és millor passar per alt i entre les quals destaquen "Nine perfect strangers", "Élite", "Al borde", "Hit and run" i "The morning show". Per contrarestar les hores perdudes davant la pantalla proposem "Homecoming" (Prime Video), "Cómo vender drogas online"(Netflix), "Perni" (Filmin), "Perdiendo a Alice" (Apple TV+) i "The hour" (Prime). 
+</itunes:summary>
+<itunes:explicit>no</itunes:explicit>
+<enclosure type="audio/mpeg" length="31394558" url="https://audios.ccma.cat/multimedia/mp3/1/7/1640242833671.mp3"/>
+<guid>https://audios.ccma.cat/multimedia/mp3/1/7/1640242833671.mp3</guid>
+<itunes:duration>01:01:32</itunes:duration>
+<ccma:data>22/12/2021</ccma:data>
+<ccma:url>//www.ccma.cat/catradio/alacarta/serieselektor/cagada-de-series/audio/1120098/</ccma:url>
+<ccma:imatge>//statics.ccma.cat/multimedia/jpg/8/5/1640255988458.jpg</ccma:imatge>
+<ccma:programa>SerieSelektor</ccma:programa>
+</item>
+<item>
+<title>"West Side Story" i "Matrix Resurrections", dues cares d'una mateixa moneda</title>
+<description>Aquesta setmana s'estrenen dos exercicis de nostàlgia molt diferents. Arriba als cinemes la nova versió de "West Side Story", dirigida per Steven Spielberg, i també "Matrix Resurrections", una nova seqüela d'aquest univers creat per les germanes Wachowski. El nostre especialista en cinema i sèries les analitza, juntament amb les altres estrenes, "Silent night" i "Canta 2", en sales; "Hierve" i "La noche del fin de los tiempos", a Filmin; i les sèries "Mar de la tranquilidad" i "The wonder years".</description>
+<pubDate>Wed, 22 Dec 2021 18:50:00 +0100</pubDate>
+<itunes:subtitle>
+</itunes:subtitle>
+<itunes:summary>Aquesta setmana s'estrenen dos exercicis de nostàlgia molt diferents. Arriba als cinemes la nova versió de "West Side Story", dirigida per Steven Spielberg, i també "Matrix Resurrections", una nova seqüela d'aquest univers creat per les germanes Wachowski. El nostre especialista en cinema i sèries les analitza, juntament amb les altres estrenes, "Silent night" i "Canta 2", en sales; "Hierve" i "La noche del fin de los tiempos", a Filmin; i les sèries "Mar de la tranquilidad" i "The wonder years".</itunes:summary>
+<itunes:explicit>no</itunes:explicit>
+<enclosure type="audio/mpeg" length="2523438" url="https://audios.ccma.cat/multimedia/mp3/0/9/1640196317090.mp3"/>
+<guid>https://audios.ccma.cat/multimedia/mp3/0/9/1640196317090.mp3</guid>
+<itunes:duration>00:05:23</itunes:duration>
+<ccma:data>22/12/2021</ccma:data>
+<ccma:url>//www.ccma.cat/catradio/alacarta/travelling/west-side-story-i-matrix-resurrections-dues-cares-duna-mateixa-moneda/audio/1120055/</ccma:url>
+<ccma:imatge>//statics.ccma.cat/multimedia/jpg/2/3/1640196318632.jpg</ccma:imatge>
+<ccma:programa>Travelling</ccma:programa>
+</item>
+<item>
+<title>Agafem-nos-ho amb calma amb en Georges</title>
+<description>S'acosten les festes de Nadal i el final de l'any i tots sabem que són uns dies, que, més enllà de la festa, les celebracions i les trobades -si es pot i ens deixen- no deixen de ser dies plens de soroll i un cert atabalament ambiental. Per això hem pensat que des d'"El violí vermell", us podríem regalar, gairebé com si us el cagués el tió, una horeta de música tranquil·la i sentimental, quan no directament romàntica, obra d'un dels compositors més melòdics de la història de la música del cinema. Avui dediquem el programa a la música del compositor francès Georges Délerue.</description>
+<pubDate>Sun, 19 Dec 2021 13:00:00 +0100</pubDate>
+<itunes:subtitle>
+</itunes:subtitle>
+<itunes:summary>S'acosten les festes de Nadal i el final de l'any i tots sabem que són uns dies, que, més enllà de la festa, les celebracions i les trobades -si es pot i ens deixen- no deixen de ser dies plens de soroll i un cert atabalament ambiental. Per això hem pensat que des d'"El violí vermell", us podríem regalar, gairebé com si us el cagués el tió, una horeta de música tranquil·la i sentimental, quan no directament romàntica, obra d'un dels compositors més melòdics de la història de la música del cinema. Avui dediquem el programa a la música del compositor francès Georges Délerue.</itunes:summary>
+<itunes:explicit>no</itunes:explicit>
+<enclosure type="audio/mpeg" length="29328231" url="https://audios.ccma.cat/multimedia/mp3/3/7/1639755914173.mp3"/>
+<guid>https://audios.ccma.cat/multimedia/mp3/3/7/1639755914173.mp3</guid>
+<itunes:duration>00:57:29</itunes:duration>
+<ccma:data>19/12/2021</ccma:data>
+<ccma:url>//www.ccma.cat/catradio/alacarta/el-violi-vermell/agafemnosho-amb-calma-amb-en-georges/audio/1119515/</ccma:url>
+<ccma:imatge>//statics.ccma.cat/multimedia/jpg/9/7/1639755918879.jpg</ccma:imatge>
+<ccma:programa>El violí vermell</ccma:programa>
+</item>
+<item>
+<title>Spiderman torna per la porta gran</title>
+<description>"Spider-man: No way home" suposa no només el retorn de l'home aranya de Tom Holland, sinó el de molts altres personatges. És l'estrella de les estrenes d'aquesta setmana, juntament amb "Mamá o papá", de Dani de la Orden, i "Cerca de ti", d'Uberto Pasolini. També arriben als cinemes "La historia de mi mujer"; "15 horas", de Judith Colell, i "Una llibreria a París", entre d'altres. A les plataformes s'estrenen "Being the Ricardos", amb Nicole Kidman i Javier Bardem, "El canto del cisne" i "Cryptozoo". I en sèries, destaquen "Sin novedad", "Dan Brown: El símbolo perdido" i "Station Eleven". Totes, comentades pel nostre especialista, Marc Garriga.</description>
+<pubDate>Fri, 17 Dec 2021 09:30:00 +0100</pubDate>
+<itunes:subtitle>
+</itunes:subtitle>
+<itunes:summary>"Spider-man: No way home" suposa no només el retorn de l'home aranya de Tom Holland, sinó el de molts altres personatges. És l'estrella de les estrenes d'aquesta setmana, juntament amb "Mamá o papá", de Dani de la Orden, i "Cerca de ti", d'Uberto Pasolini. També arriben als cinemes "La historia de mi mujer"; "15 horas", de Judith Colell, i "Una llibreria a París", entre d'altres. A les plataformes s'estrenen "Being the Ricardos", amb Nicole Kidman i Javier Bardem, "El canto del cisne" i "Cryptozoo". I en sèries, destaquen "Sin novedad", "Dan Brown: El símbolo perdido" i "Station Eleven". Totes, comentades pel nostre especialista, Marc Garriga.</itunes:summary>
+<itunes:explicit>no</itunes:explicit>
+<enclosure type="audio/mpeg" length="2859375" url="https://audios.ccma.cat/multimedia/mp3/5/1/1639730452015.mp3"/>
+<guid>https://audios.ccma.cat/multimedia/mp3/5/1/1639730452015.mp3</guid>
+<itunes:duration>00:06:06</itunes:duration>
+<ccma:data>17/12/2021</ccma:data>
+<ccma:url>//www.ccma.cat/catradio/alacarta/travelling/spiderman-torna-per-la-porta-gran/audio/1119436/</ccma:url>
+<ccma:imatge>//statics.ccma.cat/multimedia/jpg/0/3/1639730453930.jpg</ccma:imatge>
+<ccma:programa>Travelling</ccma:programa>
+</item>
+<item>
+<title>Ulrich Seidl, per Núria Bendicho: l'entomòleg de les imatges</title>
+<description>Memento #185. L'escriptora Núria Bendicho ha debutat en la literatura amb una novel·la molt potent, tan sòrdida com ben escrita, "Terres mortes". Ens proposa analitzar l'obra del director austríac Ulrich Seidl, que des del documental o la ficció, en obres com la trilogia "Paradís", s'ha dedicat a retratar els elements més absurds, fràgils i extravagants de la societat europea moderna, allò que normalment s'intenta ocultar sota la catifa... o al soterrani.</description>
+<pubDate>Thu, 16 Dec 2021 12:00:00 +0100</pubDate>
+<itunes:subtitle>
+</itunes:subtitle>
+<itunes:summary>Memento #185. L'escriptora Núria Bendicho ha debutat en la literatura amb una novel·la molt potent, tan sòrdida com ben escrita, "Terres mortes". Ens proposa analitzar l'obra del director austríac Ulrich Seidl, que des del documental o la ficció, en obres com la trilogia "Paradís", s'ha dedicat a retratar els elements més absurds, fràgils i extravagants de la societat europea moderna, allò que normalment s'intenta ocultar sota la catifa... o al soterrani.</itunes:summary>
+<itunes:explicit>no</itunes:explicit>
+<enclosure type="audio/mpeg" length="30569728" url="https://audios.ccma.cat/multimedia/mp3/8/0/1639650353808.mp3"/>
+<guid>https://audios.ccma.cat/multimedia/mp3/8/0/1639650353808.mp3</guid>
+<itunes:duration>00:59:55</itunes:duration>
+<ccma:data>16/12/2021</ccma:data>
+<ccma:url>//www.ccma.cat/catradio/alacarta/memento/ulrich-seidl-per-nuria-bendicho-lentomoleg-de-les-imatges/audio/1119327/</ccma:url>
+<ccma:imatge>//statics.ccma.cat/multimedia/jpg/9/8/1639650355489.jpg</ccma:imatge>
+<ccma:programa>Memento</ccma:programa>
+</item>
+<item>
+<title>"Succession" i la nostàlgia norantera</title>
+<description>SerieSelektor #53. Ens desfem en elogis sobre el brillant final de la tercera temporada de "Succession" (HBO Max) sense fer ni un sol espòiler i acceptem amb resignació la febre de les plataformes per recuperar històries dels anys 90 com "And just like that", la seqüela de "Sexe a Nova York". A les recomanacions a la carta, proposem "Yellowjackets" (Movistar +) i "Good omens" (Prime Video).
+</description>
+<pubDate>Wed, 15 Dec 2021 22:30:00 +0100</pubDate>
+<itunes:subtitle>
+</itunes:subtitle>
+<itunes:summary>SerieSelektor #53. Ens desfem en elogis sobre el brillant final de la tercera temporada de "Succession" (HBO Max) sense fer ni un sol espòiler i acceptem amb resignació la febre de les plataformes per recuperar històries dels anys 90 com "And just like that", la seqüela de "Sexe a Nova York". A les recomanacions a la carta, proposem "Yellowjackets" (Movistar +) i "Good omens" (Prime Video).
+</itunes:summary>
+<itunes:explicit>no</itunes:explicit>
+<enclosure type="audio/mpeg" length="30578231" url="https://audios.ccma.cat/multimedia/mp3/6/5/1639640757956.mp3"/>
+<guid>https://audios.ccma.cat/multimedia/mp3/6/5/1639640757956.mp3</guid>
+<itunes:duration>00:59:56</itunes:duration>
+<ccma:data>15/12/2021</ccma:data>
+<ccma:url>//www.ccma.cat/catradio/alacarta/serieselektor/succession-i-la-nostalgia-norantera/audio/1119298/</ccma:url>
+<ccma:imatge>//statics.ccma.cat/multimedia/jpg/2/9/1639640763392.jpg</ccma:imatge>
+<ccma:programa>SerieSelektor</ccma:programa>
+</item>
+<item>
+<title>Música d'adaptacions de còmics (abans de l'univers de Marvel)</title>
+<description>Avui dediquem "El violí vermell" a oferir-vos fragments de bandes sonores de films que són adaptacions de còmics a la gran pantalla, abans de l'aparició dels films de l'univers cinematogràfic de Marvel (abans de tot el munt de pel·lis de superherois del còmic que ens han arribat des del 2008). Sentirem música de "El príncep valent", "Superman", "Batman", "Watchmen"...</description>
+<pubDate>Sun, 12 Dec 2021 13:00:00 +0100</pubDate>
+<itunes:subtitle>
+</itunes:subtitle>
+<itunes:summary>Avui dediquem "El violí vermell" a oferir-vos fragments de bandes sonores de films que són adaptacions de còmics a la gran pantalla, abans de l'aparició dels films de l'univers cinematogràfic de Marvel (abans de tot el munt de pel·lis de superherois del còmic que ens han arribat des del 2008). Sentirem música de "El príncep valent", "Superman", "Batman", "Watchmen"...</itunes:summary>
+<itunes:explicit>no</itunes:explicit>
+<enclosure type="audio/mpeg" length="30119048" url="https://audios.ccma.cat/multimedia/mp3/5/0/1638557717805.mp3"/>
+<guid>https://audios.ccma.cat/multimedia/mp3/5/0/1638557717805.mp3</guid>
+<itunes:duration>00:59:02</itunes:duration>
+<ccma:data>12/12/2021</ccma:data>
+<ccma:url>//www.ccma.cat/catradio/alacarta/el-violi-vermell/musica-dadaptacions-de-comics-abans-de-lunivers-de-marvel/audio/1118080/</ccma:url>
+<ccma:imatge>//statics.ccma.cat/multimedia/jpg/5/3/1638557720735.jpg</ccma:imatge>
+<ccma:programa>El violí vermell</ccma:programa>
+</item>
+<item>
+<title>Netflix dinamita la cartellera amb les seves estrenes de finals d'any</title>
+<description>La plataforma de "streaming" líder al món estrena grans films a finals d'any de cara a la temporada de premis. Aquesta setmana li toca a "No mires arriba" i "Imperdonable". Als cinemes, arriben, de moment, en exclusiva, "Querido Evan Hansen", "Tres pisos", "¿Qué hicimos mal?", "Demonic" i moltes altres. A les plataformes aterren dues sèries revival: "And just like that..." (hereva de "Sexo en Nueva York") i "CSI: Vegas". Tots els títols comentats pel nostre especialista, Marc Garriga.</description>
+<pubDate>Fri, 10 Dec 2021 07:15:00 +0100</pubDate>
+<itunes:subtitle>
+</itunes:subtitle>
+<itunes:summary>La plataforma de "streaming" líder al món estrena grans films a finals d'any de cara a la temporada de premis. Aquesta setmana li toca a "No mires arriba" i "Imperdonable". Als cinemes, arriben, de moment, en exclusiva, "Querido Evan Hansen", "Tres pisos", "¿Qué hicimos mal?", "Demonic" i moltes altres. A les plataformes aterren dues sèries revival: "And just like that..." (hereva de "Sexo en Nueva York") i "CSI: Vegas". Tots els títols comentats pel nostre especialista, Marc Garriga.</itunes:summary>
+<itunes:explicit>no</itunes:explicit>
+<enclosure type="audio/mpeg" length="3015625" url="https://audios.ccma.cat/multimedia/mp3/1/2/1639112702221.mp3"/>
+<guid>https://audios.ccma.cat/multimedia/mp3/1/2/1639112702221.mp3</guid>
+<itunes:duration>00:06:26</itunes:duration>
+<ccma:data>10/12/2021</ccma:data>
+<ccma:url>//www.ccma.cat/catradio/alacarta/travelling/netflix-dinamita-la-cartellera-amb-les-seves-estrenes-de-finals-dany/audio/1118599/</ccma:url>
+<ccma:imatge>//statics.ccma.cat/multimedia/jpg/7/4/1639112703147.jpg</ccma:imatge>
+<ccma:programa>Travelling</ccma:programa>
+</item>
+<item>
+<title>Julie Andrews, per Fiona Amargós: un pessic de sucre, un polsim de geni</title>
+<description>Memento #184. Una de les convidades més joves que han passat mai pel programa és la Fiona Amargós, actriu i cantant, escollida nova prescriptora cultural d'iCat. Curiosament, ens proposa parlar de tota una veterana que va marcar la seva infància i la d'unes quantes generacions anteriors a la seva: Julie Andrews. Repassem la carrera d'una actriu de veu prodigiosa que tot just debutar al cinema va encadenar dos èxits tan clamorosos com "Mary Poppins" i "Somriures i llàgrimes".</description>
+<pubDate>Thu, 09 Dec 2021 12:00:00 +0100</pubDate>
+<itunes:subtitle>
+</itunes:subtitle>
+<itunes:summary>Memento #184. Una de les convidades més joves que han passat mai pel programa és la Fiona Amargós, actriu i cantant, escollida nova prescriptora cultural d'iCat. Curiosament, ens proposa parlar de tota una veterana que va marcar la seva infància i la d'unes quantes generacions anteriors a la seva: Julie Andrews. Repassem la carrera d'una actriu de veu prodigiosa que tot just debutar al cinema va encadenar dos èxits tan clamorosos com "Mary Poppins" i "Somriures i llàgrimes".</itunes:summary>
+<itunes:explicit>no</itunes:explicit>
+<enclosure type="audio/mpeg" length="30561224" url="https://audios.ccma.cat/multimedia/mp3/7/7/1638971434977.mp3"/>
+<guid>https://audios.ccma.cat/multimedia/mp3/7/7/1638971434977.mp3</guid>
+<itunes:duration>00:59:54</itunes:duration>
+<ccma:data>09/12/2021</ccma:data>
+<ccma:url>//www.ccma.cat/catradio/alacarta/memento/julie-andrews-per-fiona-amargos-un-pessic-de-sucre-un-polsim-de-geni/audio/1118435/</ccma:url>
+<ccma:imatge>//statics.ccma.cat/multimedia/jpg/3/9/1638971436993.jpg</ccma:imatge>
+<ccma:programa>Memento</ccma:programa>
+</item>
+<item>
+<title>"Justified" i les paraulotes dels Beatles</title>
+<description>SerieSelektor #52. Ens fixem en una sèrie infravalorada, subtitulada com "La ley de Rylan", un drama policial amb tocs de western ambientat en l'àmbit rural dels Estats Units (Movistar+). A les recomanacions a mida també proposem "La ruta del dinero" (Filmin) i conversem sobre les notícies més destacades de la setmana, sobretot al voltant de la sèrie documental "The Beatles: Get back" (Disney +).</description>
+<pubDate>Wed, 08 Dec 2021 22:30:00 +0100</pubDate>
+<itunes:subtitle>
+</itunes:subtitle>
+<itunes:summary>SerieSelektor #52. Ens fixem en una sèrie infravalorada, subtitulada com "La ley de Rylan", un drama policial amb tocs de western ambientat en l'àmbit rural dels Estats Units (Movistar+). A les recomanacions a mida també proposem "La ruta del dinero" (Filmin) i conversem sobre les notícies més destacades de la setmana, sobretot al voltant de la sèrie documental "The Beatles: Get back" (Disney +).</itunes:summary>
+<itunes:explicit>no</itunes:explicit>
+<enclosure type="audio/mpeg" length="32006803" url="https://audios.ccma.cat/multimedia/mp3/0/7/1638883816770.mp3"/>
+<guid>https://audios.ccma.cat/multimedia/mp3/0/7/1638883816770.mp3</guid>
+<itunes:duration>01:02:44</itunes:duration>
+<ccma:data>08/12/2021</ccma:data>
+<ccma:url>//www.ccma.cat/catradio/alacarta/serieselektor/justified-i-les-paraulotes-dels-beatles/audio/1118347/</ccma:url>
+<ccma:imatge>//statics.ccma.cat/multimedia/jpg/8/9/1638883828298.jpg</ccma:imatge>
+<ccma:programa>SerieSelektor</ccma:programa>
+</item>
+<item>
+<title>Entre l'original i la còpia</title>
+<description>En el programa d'avui farem l'exercici de comparar fragments de bandes sonores entre parells de pel·lícules, essent, les segones pel·lícules, els remakes de les primeres. Sentirem música d'"Els set samurais" i "Els set magnífics", "La mort se'n va de vacances" i "Coneixes Joe Black?", "Sabrina i Sabrina"...</description>
+<pubDate>Sun, 05 Dec 2021 13:00:00 +0100</pubDate>
+<itunes:subtitle>
+</itunes:subtitle>
+<itunes:summary>En el programa d'avui farem l'exercici de comparar fragments de bandes sonores entre parells de pel·lícules, essent, les segones pel·lícules, els remakes de les primeres. Sentirem música d'"Els set samurais" i "Els set magnífics", "La mort se'n va de vacances" i "Coneixes Joe Black?", "Sabrina i Sabrina"...</itunes:summary>
+<itunes:explicit>no</itunes:explicit>
+<enclosure type="audio/mpeg" length="30195578" url="https://audios.ccma.cat/multimedia/mp3/8/6/1638557715968.mp3"/>
+<guid>https://audios.ccma.cat/multimedia/mp3/8/6/1638557715968.mp3</guid>
+<itunes:duration>00:59:11</itunes:duration>
+<ccma:data>05/12/2021</ccma:data>
+<ccma:url>//www.ccma.cat/catradio/alacarta/el-violi-vermell/entre-loriginal-i-la-copia/audio/1118079/</ccma:url>
+<ccma:imatge>//statics.ccma.cat/multimedia/jpg/3/4/1638557720543.jpg</ccma:imatge>
+<ccma:programa>El violí vermell</ccma:programa>
+</item>
+<item>
+<title>Arriba al cinema un pòquer d'estrenes guanyador</title>
+<description>4 pel·lícules excel·lents es poden veure ja en sales: "Cazafantasmas: Más allá", "Fue la mano de Dios" i les catalanes "Sis dies corrents" i "El amor en su lugar". A més, també arriben "La familia perfecta", "Clifford, el gran perro rojo", "Black box" i "Nido de víboras". I en sèries, "Harlem", "Los policías" i "Partisan". Totes, comentades pel nostre especialista, Marc Garriga.</description>
+<pubDate>Fri, 03 Dec 2021 22:00:00 +0100</pubDate>
+<itunes:subtitle>
+</itunes:subtitle>
+<itunes:summary>4 pel·lícules excel·lents es poden veure ja en sales: "Cazafantasmas: Más allá", "Fue la mano de Dios" i les catalanes "Sis dies corrents" i "El amor en su lugar". A més, també arriben "La familia perfecta", "Clifford, el gran perro rojo", "Black box" i "Nido de víboras". I en sèries, "Harlem", "Los policías" i "Partisan". Totes, comentades pel nostre especialista, Marc Garriga.</itunes:summary>
+<itunes:explicit>no</itunes:explicit>
+<enclosure type="audio/mpeg" length="2367188" url="https://audios.ccma.cat/multimedia/mp3/4/8/1638568214484.mp3"/>
+<guid>https://audios.ccma.cat/multimedia/mp3/4/8/1638568214484.mp3</guid>
+<itunes:duration>00:05:03</itunes:duration>
+<ccma:data>03/12/2021</ccma:data>
+<ccma:url>//www.ccma.cat/catradio/alacarta/travelling/arriba-al-cinema-un-poquer-destrenes-guanyador/audio/1118103/</ccma:url>
+<ccma:imatge>//statics.ccma.cat/multimedia/jpg/0/6/1638568216760.jpg</ccma:imatge>
+<ccma:programa>Travelling</ccma:programa>
+</item>
+<item>
+<title>Christopher Guest, per Carlo Padial: la vida en un gag</title>
+<description>Memento #183. Ens visita Carlo Padial en plena ressaca per l'èxit de la seva sèrie "Doctor Portuondo", basada en el llibre del mateix títol. Padial, algú a qui li agrada jugar amb els límits entre realitat i ficció, ens proposa parlar del còmic, guionista i director Christopher Guest, una autoritat a l'hora d'introduir l'humor en històries rodades com si fossin documentals, que parteixen d'una observació atenta de la realitat i la porten a l'extrem (o potser no tant). El seu guió més recordat és "This is Spinal Tap", un títol de culte dels 80 que va acabar provocant el naixement d'un grup de rock dur.</description>
+<pubDate>Thu, 02 Dec 2021 12:00:00 +0100</pubDate>
+<itunes:subtitle>
+</itunes:subtitle>
+<itunes:summary>Memento #183. Ens visita Carlo Padial en plena ressaca per l'èxit de la seva sèrie "Doctor Portuondo", basada en el llibre del mateix títol. Padial, algú a qui li agrada jugar amb els límits entre realitat i ficció, ens proposa parlar del còmic, guionista i director Christopher Guest, una autoritat a l'hora d'introduir l'humor en històries rodades com si fossin documentals, que parteixen d'una observació atenta de la realitat i la porten a l'extrem (o potser no tant). El seu guió més recordat és "This is Spinal Tap", un títol de culte dels 80 que va acabar provocant el naixement d'un grup de rock dur.</itunes:summary>
+<itunes:explicit>no</itunes:explicit>
+<enclosure type="audio/mpeg" length="30561224" url="https://audios.ccma.cat/multimedia/mp3/5/7/1638442823875.mp3"/>
+<guid>https://audios.ccma.cat/multimedia/mp3/5/7/1638442823875.mp3</guid>
+<itunes:duration>00:59:54</itunes:duration>
+<ccma:data>02/12/2021</ccma:data>
+<ccma:url>//www.ccma.cat/catradio/alacarta/memento/christopher-guest-per-carlo-padial-la-vida-en-un-gag/audio/1117843/</ccma:url>
+<ccma:imatge>//statics.ccma.cat/multimedia/jpg/8/6/1638442861068.jpg</ccma:imatge>
+<ccma:programa>Memento</ccma:programa>
+</item>
+<item>
+<title>Sèries per mirar al desembre</title>
+<description>SerieSeleketor #51. Calendari serièfil de la recta final de l'any. Proposem estrenes com "Voir"(Nexflix), "Los policias" (Filmin) o "El libro de Boba Fett"(Disney+) i retorns com "The Great" (Starzplay) o "Cobra Kai" (Netflix). També conversem amb Diego San José, el creador de la sàtira política "Venga Juan" (HBO Max). A les sèries a la carta recomanem "Watchmen" (HBO Max).
+</description>
+<pubDate>Wed, 01 Dec 2021 22:30:00 +0100</pubDate>
+<itunes:subtitle>
+</itunes:subtitle>
+<itunes:summary>SerieSeleketor #51. Calendari serièfil de la recta final de l'any. Proposem estrenes com "Voir"(Nexflix), "Los policias" (Filmin) o "El libro de Boba Fett"(Disney+) i retorns com "The Great" (Starzplay) o "Cobra Kai" (Netflix). També conversem amb Diego San José, el creador de la sàtira política "Venga Juan" (HBO Max). A les sèries a la carta recomanem "Watchmen" (HBO Max).
+</itunes:summary>
+<itunes:explicit>no</itunes:explicit>
+<enclosure type="audio/mpeg" length="32534014" url="https://audios.ccma.cat/multimedia/mp3/5/3/1638208234435.mp3"/>
+<guid>https://audios.ccma.cat/multimedia/mp3/5/3/1638208234435.mp3</guid>
+<itunes:duration>01:03:46</itunes:duration>
+<ccma:data>01/12/2021</ccma:data>
+<ccma:url>//www.ccma.cat/catradio/alacarta/serieselektor/series-per-mirar-al-desembre/audio/1117492/</ccma:url>
+<ccma:imatge>//statics.ccma.cat/multimedia/jpg/6/6/1638256175966.jpg</ccma:imatge>
+<ccma:programa>SerieSelektor</ccma:programa>
+</item>
+<item>
+<title>Diego San José: "No hi ha res més esperpèntic que la corrupció política espanyola"</title>
+<description>Conversem amb el creador de "Venga Juan", la tercera entrega de la sàtira política que protagonitza Javier Cámara. Aquesta temporada està marcada per la corrupció. El showrunner de la sèrie l'imagina com un polític sense ideologia i seguidor del Logronyès. Segons San José, a la vida real Juan Carrasco seria un personatge irrellevant que acabaria al Senat prenent decisions intranscendents.
+</description>
+<pubDate>Wed, 01 Dec 2021 22:29:00 +0100</pubDate>
+<itunes:subtitle>
+</itunes:subtitle>
+<itunes:summary>Conversem amb el creador de "Venga Juan", la tercera entrega de la sàtira política que protagonitza Javier Cámara. Aquesta temporada està marcada per la corrupció. El showrunner de la sèrie l'imagina com un polític sense ideologia i seguidor del Logronyès. Segons San José, a la vida real Juan Carrasco seria un personatge irrellevant que acabaria al Senat prenent decisions intranscendents.
+</itunes:summary>
+<itunes:explicit>no</itunes:explicit>
+<enclosure type="audio/mpeg" length="10110544" url="https://audios.ccma.cat/multimedia/mp3/7/5/1638207033157.mp3"/>
+<guid>https://audios.ccma.cat/multimedia/mp3/7/5/1638207033157.mp3</guid>
+<itunes:duration>00:19:49</itunes:duration>
+<ccma:data>01/12/2021</ccma:data>
+<ccma:url>//www.ccma.cat/catradio/alacarta/serieselektor/diego-san-jose-no-hi-ha-res-mes-esperpentic-que-la-corrupcio-politica-espanyola/audio/1117489/</ccma:url>
+<ccma:imatge>//statics.ccma.cat/multimedia/jpg/6/0/1638207044106.jpg</ccma:imatge>
+<ccma:programa>SerieSelektor</ccma:programa>
+</item>
+<item>
+<title>Recordant Kamen</title>
+<description>En el divuitè aniversari de la mort de Michael Kamen, recordem aquest compositor i les seves bandes sonores. Sentirem música de "Brazil", "La jungla de vidre", "Cercle d'amics", "Robin Hood: Príncep dels lladres" i d'altres.</description>
+<pubDate>Sun, 28 Nov 2021 13:00:00 +0100</pubDate>
+<itunes:subtitle>
+</itunes:subtitle>
+<itunes:summary>En el divuitè aniversari de la mort de Michael Kamen, recordem aquest compositor i les seves bandes sonores. Sentirem música de "Brazil", "La jungla de vidre", "Cercle d'amics", "Robin Hood: Príncep dels lladres" i d'altres.</itunes:summary>
+<itunes:explicit>no</itunes:explicit>
+<enclosure type="audio/mpeg" length="28146259" url="https://audios.ccma.cat/multimedia/mp3/8/5/1637918735458.mp3"/>
+<guid>https://audios.ccma.cat/multimedia/mp3/8/5/1637918735458.mp3</guid>
+<itunes:duration>00:55:10</itunes:duration>
+<ccma:data>28/11/2021</ccma:data>
+<ccma:url>//www.ccma.cat/catradio/alacarta/el-violi-vermell/recordant-kamen/audio/1117148/</ccma:url>
+<ccma:imatge>//statics.ccma.cat/multimedia/jpg/1/6/1637918737261.jpg</ccma:imatge>
+<ccma:programa>El violí vermell</ccma:programa>
+</item>
+<item>
+<title>"La casa Gucci" o el festival de la sobreactuació</title>
+<description>El film de Ridley Scott protagonitzat per Lady Gaga és l'estrena més destacada de la setmana. També arriben "Encanto", "La hija", "Lamb" i "Resident Evil: Bienvenidos a Raccoon City". A més, dins el camp més experimental, aterren dues cintes especials: "Magaluf Ghost Town" i "Espíritu sangrado". A les plataformes destaquen tres novetats: "Ojo de halcón", "The Beatles: Get Back" i "Possessions".</description>
+<pubDate>Fri, 26 Nov 2021 07:30:00 +0100</pubDate>
+<itunes:subtitle>
+</itunes:subtitle>
+<itunes:summary>El film de Ridley Scott protagonitzat per Lady Gaga és l'estrena més destacada de la setmana. També arriben "Encanto", "La hija", "Lamb" i "Resident Evil: Bienvenidos a Raccoon City". A més, dins el camp més experimental, aterren dues cintes especials: "Magaluf Ghost Town" i "Espíritu sangrado". A les plataformes destaquen tres novetats: "Ojo de halcón", "The Beatles: Get Back" i "Possessions".</itunes:summary>
+<itunes:explicit>no</itunes:explicit>
+<enclosure type="audio/mpeg" length="2468750" url="https://audios.ccma.cat/multimedia/mp3/0/9/1637902824490.mp3"/>
+<guid>https://audios.ccma.cat/multimedia/mp3/0/9/1637902824490.mp3</guid>
+<itunes:duration>00:05:16</itunes:duration>
+<ccma:data>26/11/2021</ccma:data>
+<ccma:url>//www.ccma.cat/catradio/alacarta/travelling/la-casa-gucci-o-el-festival-de-la-sobreactuacio/audio/1117113/</ccma:url>
+<ccma:imatge>//statics.ccma.cat/multimedia/jpg/1/4/1637902842041.jpg</ccma:imatge>
+<ccma:programa>Travelling</ccma:programa>
+</item>
+<item>
+<title>Metratge trobat, per Víctor Esquirol: les càmeres les carrega la bruixa</title>
+<description>Memento #182. En les dues últimes dècades, sobretot a partir de l'èxit d'"El projecte de la bruixa de Blair", un dels subgèneres terrorífics més fructífers ha estat el del metratge trobat ("found footage"), pel·lícules que juguen amb la confusió entre ficció i documental a través de gravacions inquietants fetes per persones que, normalment, se suposa que ja no són entre nosaltres. El crític de cinema Víctor Esquirol ens proposa repassar les arrels d'aquest tipus d'històries, i destriar el gra de la palla en un subgènere que ha acabat caient un pèl en la repetició.</description>
+<pubDate>Thu, 25 Nov 2021 12:00:00 +0100</pubDate>
+<itunes:subtitle>
+</itunes:subtitle>
+<itunes:summary>Memento #182. En les dues últimes dècades, sobretot a partir de l'èxit d'"El projecte de la bruixa de Blair", un dels subgèneres terrorífics més fructífers ha estat el del metratge trobat ("found footage"), pel·lícules que juguen amb la confusió entre ficció i documental a través de gravacions inquietants fetes per persones que, normalment, se suposa que ja no són entre nosaltres. El crític de cinema Víctor Esquirol ens proposa repassar les arrels d'aquest tipus d'històries, i destriar el gra de la palla en un subgènere que ha acabat caient un pèl en la repetició.</itunes:summary>
+<itunes:explicit>no</itunes:explicit>
+<enclosure type="audio/mpeg" length="30561224" url="https://audios.ccma.cat/multimedia/mp3/8/0/1637417418308.mp3"/>
+<guid>https://audios.ccma.cat/multimedia/mp3/8/0/1637417418308.mp3</guid>
+<itunes:duration>00:59:54</itunes:duration>
+<ccma:data>25/11/2021</ccma:data>
+<ccma:url>//www.ccma.cat/catradio/alacarta/memento/metratge-trobat-per-victor-esquirol-les-cameres-les-carrega-la-bruixa/audio/1116508/</ccma:url>
+<ccma:imatge>//statics.ccma.cat/multimedia/jpg/0/9/1637417421090.jpg</ccma:imatge>
+<ccma:programa>Memento</ccma:programa>
+</item>
+</channel>
+</rss>

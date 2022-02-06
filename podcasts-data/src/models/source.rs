@@ -21,6 +21,7 @@ use diesel::SaveChangesDsl;
 use rss::Channel;
 use url::Url;
 
+use hyper::body::Buf;
 use hyper::client::HttpConnector;
 use hyper::{Body, Client};
 use hyper_tls::HttpsConnector;
@@ -318,8 +319,11 @@ impl Source {
 
 async fn response_to_channel(res: Response<Body>) -> Result<Channel, DataError> {
     let chunk = hyper::body::to_bytes(res.into_body()).await?;
-    let buf = String::from_utf8_lossy(&chunk).into_owned();
-    Channel::from_str(&buf).map_err(From::from)
+
+    // Channel will do it's own decoding of strings
+    // based on what is specified in <?xml encoding="..."?>.
+    // So just pass it the raw byets.
+    Channel::read_from(chunk.reader()).map_err(From::from)
 }
 
 #[cfg(test)]
@@ -328,6 +332,7 @@ mod tests {
     use anyhow::Result;
 
     use crate::database::truncate_db;
+    use crate::dbqueries;
     use crate::utils::get_feed;
 
     #[test]
@@ -347,6 +352,34 @@ mod tests {
 
         let expected = get_feed("tests/feeds/2018-01-20-Intercepted.xml", id);
         assert_eq!(expected, feed);
+        Ok(())
+    }
+
+    #[test]
+    fn test_into_non_utf8() -> Result<()> {
+        truncate_db()?;
+
+        let rt = tokio::runtime::Runtime::new()?;
+        let https = HttpsConnector::new();
+        let client = Client::builder().build::<_, Body>(https);
+
+        let url = "https://web.archive.org/web/20220205205130if_/https://dinamics.ccma.\
+                   cat/public/podcast/catradio/xml/series-i-cinema.xml";
+        let source = Source::from_url(url)?;
+        let id = source.id();
+        let feed = source.into_feed(&client);
+        let feed = rt.block_on(feed)?;
+
+        let expected = get_feed("tests/feeds/2022-series-i-cinema.xml", id);
+        assert_eq!(expected, feed);
+
+        feed.index()?;
+        assert_eq!(dbqueries::get_podcasts()?.len(), 1);
+        assert_eq!(
+            dbqueries::get_podcasts()?[0].description(),
+            "Els clàssics, les novetats de la cartellera i les millors \
+                    sèries, tot en un sol podcast."
+        );
         Ok(())
     }
 }

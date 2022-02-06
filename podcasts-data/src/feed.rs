@@ -175,6 +175,11 @@ mod tests {
                 "https://web.archive.org/web/20180120104741if_/https://www.greaterthancode.\
                  com/feed/podcast",
             ),
+            (
+                "tests/feeds/2022-series-i-cinema.xml",
+                "https://web.archive.org/web/20220205205130_/https://dinamics.ccma.\
+                 cat/public/podcast/catradio/xml/series-i-cinema.xml",
+            ),
         ]
     };
 
@@ -197,9 +202,9 @@ mod tests {
         }
 
         // Assert the index rows equal the controlled results
-        assert_eq!(dbqueries::get_sources()?.len(), 5);
-        assert_eq!(dbqueries::get_podcasts()?.len(), 5);
-        assert_eq!(dbqueries::get_episodes()?.len(), 354);
+        assert_eq!(dbqueries::get_sources()?.len(), 6);
+        assert_eq!(dbqueries::get_podcasts()?.len(), 6);
+        assert_eq!(dbqueries::get_episodes()?.len(), 404);
         Ok(())
     }
 
@@ -229,6 +234,23 @@ mod tests {
         feed.index_channel_items(pd)?;
         assert_eq!(dbqueries::get_podcasts()?.len(), 1);
         assert_eq!(dbqueries::get_episodes()?.len(), 43);
+        Ok(())
+    }
+
+    #[test]
+    fn test_feed_non_utf8() -> Result<()> {
+        truncate_db()?;
+
+        let path = "tests/feeds/2022-series-i-cinema.xml";
+        let feed = get_feed(path, 42);
+
+        let file = fs::File::open(path)?;
+        let channel = Channel::read_from(BufReader::new(file))?;
+
+        let description = feed.channel.description();
+        assert_eq!(description, "Els clàssics, les novetats de la cartellera i les millors sèries, tot en un sol podcast.");
+        let pd = NewShow::new(&channel, 42);
+        assert_eq!(feed.parse_podcast(), pd);
         Ok(())
     }
 }
