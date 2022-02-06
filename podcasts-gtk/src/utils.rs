@@ -621,10 +621,11 @@ mod tests {
     #[tokio::test]
     async fn test_itunes_to_rss() -> Result<()> {
         let itunes_url = "https://itunes.apple.com/podcast/id1195206601";
-        let rss_url = String::from(
-            "https://feeds.acast.com/public/shows/f5b64019-68c3-57d4-b70b-043e63e5cbf6",
-        );
-        assert_eq!(rss_url, itunes_to_rss(itunes_url).await?);
+        // they keep changing the urls
+        let rss_url = "https://feeds.acast.com/public/shows/f5b64019-68c3-57d4-b70b-043e63e5cbf6";
+        let rss_url2 = "https://rss.acast.com/intercepted-with-jeremy-scahill";
+        let result_url = itunes_to_rss(itunes_url).await?;
+        assert!(result_url == rss_url || result_url == rss_url2);
 
         let itunes_url = "https://itunes.apple.com/podcast/id000000000000000";
         assert!(itunes_to_rss(itunes_url).await.is_err());
@@ -642,8 +643,11 @@ mod tests {
     #[tokio::test]
     async fn test_itunes_lookup_id() -> Result<()> {
         let id = 1195206601;
+        // they keep changing the urls
         let rss_url = "https://feeds.acast.com/public/shows/f5b64019-68c3-57d4-b70b-043e63e5cbf6";
-        assert_eq!(rss_url, itunes_lookup_id(id).await?);
+        let rss_url2 = "https://rss.acast.com/intercepted-with-jeremy-scahill";
+        let result_url = itunes_lookup_id(id).await?;
+        assert!(result_url == rss_url || result_url == rss_url2);
 
         let id = 000000000;
         assert!(itunes_lookup_id(id).await.is_err());
