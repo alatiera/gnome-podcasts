@@ -22,7 +22,7 @@ use glib::Sender;
 
 use gio::{self, prelude::*};
 
-use gtk::prelude::*;
+use adw::prelude::*;
 
 use crate::app::{Action, PdApplication};
 use crate::headerbar::Header;
@@ -108,7 +108,7 @@ impl MainWindow {
         wrap.append(&header.bottom_switcher);
 
         toast_overlay.set_child(Some(&wrap));
-        adw::traits::ApplicationWindowExt::set_content(&window, Some(&toast_overlay));
+        window.set_content(Some(&toast_overlay));
 
         // Retrieve the previous window position and size.
         WindowGeometry::from_settings(&settings).apply(&window);

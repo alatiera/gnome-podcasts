@@ -55,12 +55,9 @@ impl Content {
         // container will hold the header bar and the content
         container.set_widget_name("content");
         container.append(&stack);
-        let home_page = stack
-            .add_titled(&home.borrow().get_stack(), Some("home"), &i18n("New"))
-            .unwrap();
-        let shows_page = stack
-            .add_titled(&shows.borrow().get_stack(), Some("shows"), &i18n("Shows"))
-            .unwrap();
+        let home_page = stack.add_titled(&home.borrow().get_stack(), Some("home"), &i18n("New"));
+        let shows_page =
+            stack.add_titled(&shows.borrow().get_stack(), Some("shows"), &i18n("Shows"));
 
         home_page.set_icon_name(Some("document-open-recent-symbolic"));
         shows_page.set_icon_name(Some("audio-input-microphone-symbolic"));

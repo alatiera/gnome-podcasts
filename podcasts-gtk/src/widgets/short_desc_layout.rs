@@ -32,7 +32,7 @@ impl LayoutManagerImpl for ShortDescLayoutPriv {
                     .layout()
                     .is_ellipsized()
                     .to_value();
-                widget.emit_by_name("is-ellipsized", &[&value]).unwrap();
+                widget.emit_by_name::<()>("is-ellipsized", &[&value]);
             }
         }
     }

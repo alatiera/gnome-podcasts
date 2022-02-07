@@ -130,7 +130,7 @@ impl ObjectSubclass for ShowCoverPrivate {
     fn new() -> Self {
         Self {
             // FIXME: bundle the symbolic in resources
-            cover: gtk::Image::from_icon_name(Some("image-x-generic-symbolic")),
+            cover: gtk::Image::from_icon_name("image-x-generic-symbolic"),
             show_id: Cell::default(),
         }
     }

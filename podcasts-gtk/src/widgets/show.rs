@@ -83,17 +83,15 @@ impl ObjectSubclass for ShowWidgetPriv {
 impl ObjectImpl for ShowWidgetPriv {
     fn constructed(&self, obj: &Self::Type) {
         self.parent_constructed(obj);
-        self.description_short
-            .connect_local(
-                "is-ellipsized",
-                false,
-                clone!(@weak obj => @default-return None, move |args| {
-                    let is_ellipsized = args[1].get().unwrap();
-                    obj.update_read_more(is_ellipsized);
-                    None
-                }),
-            )
-            .unwrap();
+        self.description_short.connect_local(
+            "is-ellipsized",
+            false,
+            clone!(@weak obj => @default-return None, move |args| {
+                let is_ellipsized = args[1].get().unwrap();
+                obj.update_read_more(is_ellipsized);
+                None
+            }),
+        );
     }
 
     fn dispose(&self, _obj: &Self::Type) {
@@ -121,7 +119,7 @@ impl ShowWidget {
         vadj: Option<Adjustment>,
     ) -> ShowWidget {
         let pdw = ShowWidget::default();
-        let pdw_ = ShowWidgetPriv::from_instance(&pdw);
+        let pdw_ = pdw.imp();
         pdw.init(&pd);
 
         let menu = ShowMenu::new(&pd, &pdw_.episodes, &sender);
@@ -132,19 +130,15 @@ impl ShowWidget {
 
         pdw_.description_button
             .connect_clicked(clone!(@weak pdw => move |_| {
-                let pdw_ = ShowWidgetPriv::from_instance(&pdw);
-
-                pdw_.description_stack.set_visible_child_name("full");
+                pdw.imp().description_stack.set_visible_child_name("full");
             }));
 
         pdw
     }
 
     pub(crate) fn init(&self, pd: &Arc<Show>) {
-        let self_ = ShowWidgetPriv::from_instance(self);
-
         self.set_description(pd.description());
-        self_.show_id.set(Some(pd.id()));
+        self.imp().show_id.set(Some(pd.id()));
 
         let res = self.set_cover(&pd);
 
@@ -153,13 +147,11 @@ impl ShowWidget {
 
     /// Set the show cover.
     fn set_cover(&self, pd: &Arc<Show>) -> Result<()> {
-        let self_ = ShowWidgetPriv::from_instance(self);
-
-        utils::set_image_from_path(&self_.cover, pd.id(), 256)
+        utils::set_image_from_path(&self.imp().cover, pd.id(), 256)
     }
 
     fn update_read_more(&self, is_ellipsized: bool) {
-        let self_ = ShowWidgetPriv::from_instance(self);
+        let self_ = self.imp();
 
         let more = is_ellipsized || self_.description.label() != self_.description_short.label();
         self_.description_button_revealer.set_reveal_child(more);
@@ -167,7 +159,7 @@ impl ShowWidget {
 
     /// Set the description text.
     fn set_description(&self, text: &str) {
-        let self_ = ShowWidgetPriv::from_instance(self);
+        let self_ = self.imp();
 
         let markup = html2text::from_read(text.as_bytes(), text.as_bytes().len());
         let markup = markup.trim();
@@ -187,15 +179,11 @@ impl ShowWidget {
     }
 
     pub(crate) fn show_id(&self) -> Option<i32> {
-        let self_ = ShowWidgetPriv::from_instance(self);
-
-        self_.show_id.get()
+        self.imp().show_id.get()
     }
 
     pub(crate) fn view(&self) -> BaseView {
-        let self_ = ShowWidgetPriv::from_instance(self);
-
-        self_.view.clone()
+        self.imp().view.clone()
     }
 }
 
@@ -209,7 +197,7 @@ fn populate_listbox(
     use crossbeam_channel::TryRecvError;
 
     let count = dbqueries::get_pd_episodes_count(&pd)?;
-    let show_ = ShowWidgetPriv::from_instance(show);
+    let show_ = show.imp();
 
     let (sender_, receiver) = bounded(1);
     tokio::spawn(clone!(@strong pd => async move {
@@ -249,9 +237,7 @@ fn populate_listbox(
             });
 
             let callback = clone!(@weak show, @strong vadj => move || {
-                let show_ = ShowWidgetPriv::from_instance(&show);
-
-                show_.view.set_adjustments(None, vadj.as_ref());
+                show.imp().view.set_adjustments(None, vadj.as_ref());
             });
 
             lazy_load(episodes, list_weak.clone(), constructor, callback);

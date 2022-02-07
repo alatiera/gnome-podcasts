@@ -53,7 +53,7 @@ impl ObjectImpl for BaseViewPriv {
 
     fn properties() -> &'static [glib::ParamSpec] {
         static PROPERTIES: Lazy<Vec<glib::ParamSpec>> = Lazy::new(|| {
-            vec![glib::ParamSpec::new_object(
+            vec![glib::ParamSpecObject::new(
                 "child",
                 "child",
                 "child",
@@ -127,6 +127,6 @@ impl BaseView {
     pub(crate) fn vadjustment(&self) -> Adjustment {
         let self_ = BaseViewPriv::from_instance(&self);
 
-        self_.scrolled_window.vadjustment().unwrap()
+        self_.scrolled_window.vadjustment()
     }
 }

@@ -322,7 +322,6 @@ impl PdApplication {
                 window
                     .main_deck
                     .page(&description_widget.container)
-                    .unwrap()
                     .set_name(Some("description"));
                 window.main_deck.navigate(adw::NavigationDirection::Forward);
                 window.headerbar.reveal_bottom_switcher(false);
@@ -358,7 +357,7 @@ impl PdApplication {
             Action::StopUpdating => {
                 window.updating.set(false);
                 if let Some(timeout) = window.updating_timeout.replace(None) {
-                    glib::source_remove(timeout);
+                    timeout.remove();
                 }
                 window.progress_bar.hide();
             }
@@ -372,7 +371,7 @@ impl PdApplication {
                     }),
                 );
                 if let Some(old_timeout) = window.updating_timeout.replace(Some(updating_timeout)) {
-                    glib::source_remove(old_timeout);
+                    old_timeout.remove();
                 }
             }
             Action::FeedRefreshed => {

@@ -510,7 +510,7 @@ impl PlayerWidget {
 
                 // If it's not the same file load the uri, otherwise just unpause
                 if self.player.uri().map_or(true, |s| s != uri.as_str()) {
-                    self.player.set_uri(uri.as_str());
+                    self.player.set_uri(Some(uri.as_str()));
                 } else {
                     // just unpause, no restore required
                     self.info.finished_restore = true;

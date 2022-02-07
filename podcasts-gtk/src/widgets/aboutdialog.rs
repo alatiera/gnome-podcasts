@@ -26,40 +26,42 @@ use crate::i18n::i18n;
 pub(crate) fn about_dialog(window: &gtk::ApplicationWindow) {
     // Feel free to add yourself if you contributed.
     // Please keep it sorted alphabetically
-    let authors = [
-        "Alexandre Franke",
-        "Carlos Soriano",
-        "Constantin Nickel",
-        "Daniel García Moreno",
-        "Felix Häcker",
-        "Gabriele Musco",
-        "Ivan Augusto",
-        "James Wykeham-Martin",
-        "Jordan Petridis",
-        "Jordan Williams",
-        "Julian Hofer",
-        "Julian Sparber",
-        "Matthew Martin",
-        "Piotr Drąg",
-        "Rowan Lewis",
-        "Zander Brown",
+    let authors = vec![
+        String::from("Alexandre Franke"),
+        String::from("Carlos Soriano"),
+        String::from("Constantin Nickel"),
+        String::from("Daniel García Moreno"),
+        String::from("Felix Häcker"),
+        String::from("Gabriele Musco"),
+        String::from("Ivan Augusto"),
+        String::from("James Wykeham-Martin"),
+        String::from("Jordan Petridis"),
+        String::from("Jordan Williams"),
+        String::from("Julian Hofer"),
+        String::from("Julian Sparber"),
+        String::from("Matthew Martin"),
+        String::from("Piotr Drąg"),
+        String::from("Rowan Lewis"),
+        String::from("Zander Brown"),
     ];
 
-    let dialog = gtk::AboutDialog::new();
-    dialog.set_logo_icon_name(Some(APP_ID));
-    dialog.set_comments(Some(i18n("Podcast Client for the GNOME Desktop.").as_str()));
-    dialog.set_copyright(Some("© 2017, 2018 Jordan Petridis"));
-    dialog.set_license_type(gtk::License::Gpl30);
-    dialog.set_modal(true);
-    dialog.set_version(Some(VERSION));
-    dialog.set_program_name(Some(&i18n("Podcasts")));
-    dialog.set_website(Some("https://wiki.gnome.org/Apps/Podcasts"));
-    dialog.set_website_label(&i18n("Learn more about GNOME Podcasts"));
-    dialog.set_transient_for(Some(window));
+    let artists = vec![String::from("Tobias Bernard"), String::from("Sam Hewitt")];
 
-    dialog.set_artists(&["Tobias Bernard", "Sam Hewitt"]);
-    dialog.set_authors(&authors);
-    dialog.set_translator_credits(Some(i18n("translator-credits").as_str()));
+    let dialog = gtk::AboutDialog::builder()
+        .logo_icon_name(APP_ID)
+        .comments(i18n("Podcast Client for the GNOME Desktop.").as_str())
+        .copyright("© 2017-2021 Jordan Petridis")
+        .license_type(gtk::License::Gpl30)
+        .modal(true)
+        .version(VERSION)
+        .program_name(&i18n("Podcasts"))
+        .website("https://gitlab.gnome.org/World/podcasts")
+        .website_label(i18n("Learn more about GNOME Podcasts").as_str())
+        .transient_for(window)
+        .artists(artists)
+        .authors(authors)
+        .translator_credits(i18n("translator-credits").as_str())
+        .build();
 
     dialog.show();
 }

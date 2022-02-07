@@ -210,7 +210,7 @@ where
 // https://blogs.gnome.org/jsparber/2018/04/29/animate-a-scrolledwindow/
 #[allow(clippy::float_cmp)]
 pub(crate) fn smooth_scroll_to(view: &gtk::ScrolledWindow, target: &gtk::Adjustment) {
-    let adj = view.vadjustment().unwrap();
+    let adj = view.vadjustment();
     if let Some(clock) = view.frame_clock() {
         let duration = 200;
         let start = adj.value();
