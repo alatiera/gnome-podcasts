@@ -2,14 +2,14 @@
 # Copyright (C) 2020 podcasts's COPYRIGHT HOLDER
 # This file is distributed under the same license as the podcasts package.
 #
-# Matej Urbančič <mateju@src.gnome.org>, 2020–2021.
+# Matej Urbančič <mateju@src.gnome.org>, 2020–2022.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: podcasts master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2021-10-31 10:41+0000\n"
-"PO-Revision-Date: 2021-11-02 20:31+0100\n"
+"POT-Creation-Date: 2022-02-06 19:19+0000\n"
+"PO-Revision-Date: 2022-02-07 18:56+0100\n"
 "Last-Translator: Matej Urbančič <mateju@src.gnome.org>\n"
 "Language-Team: Slovenian GNOME Translation Team <gnome-si@googlegroups.com>\n"
 "Language: sl_SI\n"
@@ -78,7 +78,6 @@ msgid "Podcasts"
 msgstr "Podkasti"
 
 #: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:4
-#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:10
 msgid "Listen to your favorite podcasts, right from your desktop."
 msgstr "Spremljanje priljubljenih podkastov neposredno z namizja"
 
@@ -88,14 +87,28 @@ msgid "Podcast;RSS;"
 msgstr "Podcast;RSS;podkast;viri;"
 
 #: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:8
-msgid "Podcast app for GNOME"
-msgstr "Program Podkast za GNOME"
+msgid "Listen to your favorite shows"
+msgstr "Spremljanje priljubljenih oddaj"
 
-#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:115
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:10
+msgid ""
+"Play, update, and manage your podcasts from a lightweight interface that "
+"seamlessly integrates with GNOME. Podcasts can play various audio formats "
+"and remember where you stopped listening. You can subscribe to shows via RSS/"
+"Atom, iTunes, and Soundcloud links. Subscriptions from other apps can be "
+"imported via OPML files."
+msgstr ""
+"Predvajanje, posodabljanje in upravljanje zbirke podkastov v preglednem "
+"vmesniku, skladnem z namizjem GNOME. Program omogoča predvananje različnih "
+"zvočnih zapisov in podpira možnost pomnjenja zadnjega poslušanega mesta. Na "
+"oddaje se je mogoče naročiti po povezavah RSS/Atom, iTunes in Soundcloud. "
+"Naročnine iz drugih prigramov je mogoče uvoziti z uporabo izvoza OPML."
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:134
 msgid "Jordan Petridis"
 msgstr "Jordan Petridis"
 
-#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:116
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:135
 msgid "Julian Hofer"
 msgstr "Julian Hofer"
 
@@ -405,7 +418,7 @@ msgstr "{} min"
 msgid "Copied URL to clipboard!"
 msgstr "Naslov URL je kopiran v odložišče!"
 
-#: podcasts-gtk/src/widgets/player.rs:902
+#: podcasts-gtk/src/widgets/player.rs:910
 msgid "The media player was unable to execute an action."
 msgstr "S predvajalnikom ni mogoče izvesti zahtevanega dejanja."
 
@@ -416,6 +429,9 @@ msgstr "Vse epizode so označene kot poslušane"
 #: podcasts-gtk/src/widgets/show_menu.rs:199
 msgid "Unsubscribed from {}"
 msgstr "Odjavi {}"
+
+#~ msgid "Podcast app for GNOME"
+#~ msgstr "Program Podkast za GNOME"
 
 #~ msgid "Normal speed"
 #~ msgstr "Običajna hitrost"
