@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: podcasts master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
 "POT-Creation-Date: 2022-02-06 19:19+0000\n"
-"PO-Revision-Date: 2022-02-07 20:15+0200\n"
+"PO-Revision-Date: 2022-02-07 20:20+0200\n"
 "Last-Translator: Yosef Or Boczko <yoseforb@gmail.com>\n"
 "Language-Team: Hebrew <>\n"
 "Language: he\n"
@@ -96,9 +96,9 @@ msgid ""
 "Atom, iTunes, and Soundcloud links. Subscriptions from other apps can be "
 "imported via OPML files."
 msgstr ""
-"השמעה, עדכון וניהול ההסכתים ממשק קל המשתלב בצורה חלקה עם GNOME. הסכתים יכול "
+"השמעה, עדכון וניהול ההסכתים בממשק קל המשתלב בצורה חלקה עם GNOME. הסכתים יכול "
 "להשמיע סוגים שונים של תבניות שמע וזוכר את המקום האחרון בו עצרת את ההאזנה. "
-"נתן להירשם לתכניות באמצעות RSS/Atom, ‏iTunes וקישורי Soundcloud. נִתן ליבא "
+"נִתן להירשם לתכניות באמצעות RSS/Atom, ‏iTunes וקישורי Soundcloud. נִתן לייבא "
 "מנויים והרשמות מיישומים אחרים באמצעות קובצי OPML."
 
 #: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:134
@@ -140,7 +140,7 @@ msgstr "אחורה"
 
 #: podcasts-gtk/resources/gtk/episode_description.ui:148
 msgid "Podcast Title"
-msgstr "כותרת הסכת"
+msgstr "כותרת ההסכת"
 
 #: podcasts-gtk/resources/gtk/episode_description.ui:186
 msgid "Duration - Date"
@@ -164,7 +164,7 @@ msgstr "כבר האזנת לפרק זה."
 
 #: podcasts-gtk/resources/gtk/episode_widget.ui:187
 msgid "Calculating episode size…"
-msgstr "מחשב גודל פרק…"
+msgstr "מחשב את גודל הפרק…"
 
 #: podcasts-gtk/resources/gtk/episode_widget.ui:214
 msgid "Play this episode"
@@ -251,7 +251,7 @@ msgstr "ישן יותר"
 
 #: podcasts-gtk/resources/gtk/inapp_notif.ui:69
 msgid "An in-app action notification"
-msgstr "התרעותת על פעולות בתוך היישום"
+msgstr "התרעות על פעולות בתוך היישום"
 
 #: podcasts-gtk/resources/gtk/inapp_notif.ui:75
 msgid "Undo"
