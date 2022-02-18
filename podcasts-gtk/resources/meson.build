@@ -72,4 +72,3 @@ podcasts_resources = gnome.compile_resources(
   install_dir: pkgdatadir
 )
 
-meson.add_install_script('../../scripts/compile-gschema.py')

@@ -2,6 +2,7 @@ project(
   'gnome-podcasts', 'rust',
   version: '0.5.1',
   license: 'GPLv3',
+  meson_version: '>= 0.59',
 )
 
 dependency('sqlite3', version: '>= 3.20')
@@ -51,7 +52,7 @@ i18n = import('i18n')
 gnome = import('gnome')
 
 subdir('podcasts-gtk/po')
-podir = join_paths (meson.source_root (), 'podcasts-gtk', 'po')
+podir = join_paths (meson.project_source_root (), 'podcasts-gtk', 'po')
 
 podcasts_version = meson.project_version()
 
@@ -75,14 +76,20 @@ subdir('podcasts-gtk/src')
 
 meson.add_dist_script(
   'scripts/dist-vendor.sh',
-  meson.source_root(),
-  join_paths(meson.build_root(), 'meson-dist', meson.project_name() + '-' + podcasts_version)
+  meson.project_source_root(),
+  join_paths(meson.project_build_root(), 'meson-dist', meson.project_name() + '-' + podcasts_version)
 )
 
 test(
   'cargo-test',
   test_script,
-  args: meson.build_root(),
-  workdir: meson.source_root(),
+  args: meson.project_build_root(),
+  workdir: meson.project_source_root(),
   timeout: 3000
+)
+
+gnome.post_install(
+  gtk_update_icon_cache: true,
+  glib_compile_schemas: true,
+  update_desktop_database: true,
 )
