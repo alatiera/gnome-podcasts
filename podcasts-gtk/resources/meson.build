@@ -72,3 +72,7 @@ podcasts_resources = gnome.compile_resources(
   install_dir: pkgdatadir
 )
 
+# Validating schemas
+test('Validate schema file', gschemas,
+  args: ['--strict', '--dry-run', meson.current_source_dir()]
+)
