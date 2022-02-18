@@ -16,52 +16,32 @@ run_command(
   check: true
 )
 
-podcasts_sources = files(
-  'stacks/content.rs',
-  'stacks/home.rs',
-  'stacks/mod.rs',
-  'stacks/populated.rs',
-  'stacks/show.rs',
-  'widgets/aboutdialog.rs',
-  'widgets/base_view.rs',
-  'widgets/empty_view.rs',
-  'widgets/empty_show.rs',
-  'widgets/episode.rs',
-  'widgets/episode_menu.rs',
-  'widgets/episode_description.rs',
-  'widgets/home_view.rs',
-  'widgets/mod.rs',
-  'widgets/player.rs',
-  'widgets/show.rs',
-  'widgets/show_menu.rs',
-  'widgets/shows_view.rs',
-  'widgets/read_more_label.rs',
-  'app.rs',
-  'episode_description_parser.rs',
-  'headerbar.rs',
-  'i18n.rs',
-  'main.rs',
-  'manager.rs',
-  'settings.rs',
-  'utils.rs',
-  'window.rs',
-)
+cargo_options = [ '--manifest-path', meson.project_source_root() / 'Cargo.toml' ]
+cargo_options += [ '--target-dir', meson.project_build_root() / 'podcasts-gtk' / 'src' ]
+
+if get_option('profile') == 'default'
+  cargo_options += [ '--release' ]
+  rust_target = 'release'
+  message('Building in release mode')
+else
+  rust_target = 'debug'
+  message('Building in debug mode')
+endif
+
+cargo_env = [ 'CARGO_HOME=' + meson.project_build_root() / 'cargo-home' ]
 
 cargo_release = custom_target('cargo-build',
                         build_by_default: true,
-                        input: [
-                                podcast_toml,
-                                data_sources,
-                                podcasts_sources,
-                               ],
+                        build_always_stale: true,
                         output: ['gnome-podcasts'],
                         install: true,
                         install_dir: podcasts_bindir,
                         console: true,
                         depends: podcasts_resources,
-                        command: [cargo_script,
-                                  meson.project_build_root(),
-                                  meson.project_source_root(),
-                                  '@OUTPUT@',
-                                  profile,
+                        command: ['env',
+                                  cargo_env,
+                                  cargo, 'build',
+                                  cargo_options,
+                                  '&&',
+                                  'cp', 'podcasts-gtk' / 'src' / rust_target / 'podcasts-gtk', '@OUTPUT@',
                         ])
