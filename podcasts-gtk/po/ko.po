@@ -2,22 +2,22 @@
 # Copyright (C) 2018 podcasts's COPYRIGHT HOLDER
 # This file is distributed under the same license as the podcasts package.
 # Seong-ho Cho <shcho@gnome.org>, 2018-2021.
-# DaeHyun Sung <sungdh86+git@gmail.com>, 2020-2021.
+# DaeHyun Sung <sungdh86+git@gmail.com>, 2020-2022.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: podcasts master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2021-09-14 16:55+0000\n"
-"PO-Revision-Date: 2021-10-01 12:22+0900\n"
-"Last-Translator: Seong-ho Cho <darkcircle.0426@gmail.com>\n"
+"POT-Creation-Date: 2021-11-28 07:07+0000\n"
+"PO-Revision-Date: 2022-03-01 23:29+0900\n"
+"Last-Translator: DaeHyun Sung <sungdh86+git@gmail.com>\n"
 "Language-Team: Korean <gnome-kr@googlegroups.com>\n"
 "Language: ko\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Poedit 2.3.1\n"
+"X-Generator: Poedit 3.0.1\n"
 
 #: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:15
 msgid "Top position of the last open main window"
@@ -76,7 +76,6 @@ msgid "Podcasts"
 msgstr "팟캐스트"
 
 #: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:4
-#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:10
 msgid "Listen to your favorite podcasts, right from your desktop."
 msgstr "데스크톱에서 바로 원하는 팟캐스트를 듣습니다."
 
@@ -86,14 +85,27 @@ msgid "Podcast;RSS;"
 msgstr "Podcast;팟캐스트;RSS;"
 
 #: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:8
-msgid "Podcast app for GNOME"
-msgstr "그놈용 팟캐스트 앱"
+msgid "Listen to your favorite shows"
+msgstr "원하는 팟캐스트를 듣기를 보여줍니다"
 
-#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:115
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:10
+msgid ""
+"Play, update, and manage your podcasts from a lightweight interface that "
+"seamlessly integrates with GNOME. Podcasts can play various audio formats "
+"and remember where you stopped listening. You can subscribe to shows via RSS/"
+"Atom, iTunes, and Soundcloud links. Subscriptions from other apps can be "
+"imported via OPML files."
+msgstr ""
+"그놈과 매끄럽게 통합되는 가벼운 인터페이스로 팟캐스트를 재생, 업데이트 및 관"
+"리합니다. 팟캐스트는 다양한 오디오 형식을 재생할 수 있고 듣다가 멈춘 곳을 기"
+"억할 수 있습니다. RSS/Atom, iTunes 및 Soundcloud links를 통해 프로그램을 구독"
+"할 수 있습니다. 다른 앱으로 구독은 OPML파일을 통해 가져올 수 있습니다."
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:117
 msgid "Jordan Petridis"
 msgstr "Jordan Petridis"
 
-#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:116
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:118
 msgid "Julian Hofer"
 msgstr "Julian Hofer"
 
@@ -395,7 +407,7 @@ msgstr "그놈 팟캐스트에 대해 더 알아보세요"
 msgid "translator-credits"
 msgstr ""
 "조성호 <shcho@gnome.org>, 2018\n"
-"성대현 <sungdh86+git@gmail.com>, 2020"
+"성대현 <sungdh86+git@gmail.com>, 2020-2022"
 
 #: podcasts-gtk/src/widgets/episode.rs:145
 msgid "{} min"
@@ -416,6 +428,9 @@ msgstr "모든 에피소드를 감청 상태로 표시했습니다"
 #: podcasts-gtk/src/widgets/show_menu.rs:199
 msgid "Unsubscribed from {}"
 msgstr "{}에서 가입 취소했습니다"
+
+#~ msgid "Podcast app for GNOME"
+#~ msgstr "그놈용 팟캐스트 앱"
 
 #~ msgid "Double speed rate"
 #~ msgstr "2배 속도"
