@@ -7,17 +7,17 @@ msgid ""
 msgstr ""
 "Project-Id-Version: podcasts master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2021-09-14 16:55+0000\n"
-"PO-Revision-Date: 2021-10-01 18:50+0200\n"
+"POT-Creation-Date: 2021-11-28 07:07+0000\n"
+"PO-Revision-Date: 2022-03-11 21:15+0100\n"
 "Last-Translator: gogo <trebelnik2@gmail.com>\n"
 "Language-Team: Croatian <hr@li.org>\n"
 "Language: hr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
-"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
-"X-Generator: Poedit 2.3\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"X-Generator: Poedit 3.0.1\n"
 
 #: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:15
 msgid "Top position of the last open main window"
@@ -79,7 +79,6 @@ msgid "Podcasts"
 msgstr "Podcasti"
 
 #: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:4
-#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:10
 msgid "Listen to your favorite podcasts, right from your desktop."
 msgstr "Slušajte svoje omiljene podcaste."
 
@@ -89,14 +88,28 @@ msgid "Podcast;RSS;"
 msgstr "Podcast;RSS;"
 
 #: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:8
-msgid "Podcast app for GNOME"
-msgstr "Podcast aplikacija za GNOME"
+msgid "Listen to your favorite shows"
+msgstr "Slušajte svoje omiljene emisije"
 
-#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:115
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:10
+msgid ""
+"Play, update, and manage your podcasts from a lightweight interface that "
+"seamlessly integrates with GNOME. Podcasts can play various audio formats "
+"and remember where you stopped listening. You can subscribe to shows via RSS/"
+"Atom, iTunes, and Soundcloud links. Subscriptions from other apps can be "
+"imported via OPML files."
+msgstr ""
+"Slušajte, nadopunite i upravljajte svojim podcastima s jednostavnog sučelja "
+"koje se neprimjetno integrira s GNOMOM. Podcasti mogu reproducirati razne "
+"zvučne formate i zapamtiti gdje ste prestali slušati. Možete se pretplatiti "
+"na emisije putem RSS/Atom, iTunes, i Soundcloud poveznica. Pretplate s "
+"drugih aplikacija se mogu uvesti putem OPML datoteka."
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:117
 msgid "Jordan Petridis"
 msgstr "Jordan Petridis"
 
-#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:116
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:118
 msgid "Julian Hofer"
 msgstr "Julian Hofer"
 
@@ -419,6 +432,9 @@ msgstr "Označi sve epizodae kao odslušane"
 #: podcasts-gtk/src/widgets/show_menu.rs:199
 msgid "Unsubscribed from {}"
 msgstr "Ukini pretplatu za {}"
+
+#~ msgid "Podcast app for GNOME"
+#~ msgstr "Podcast aplikacija za GNOME"
 
 #~ msgid "Double speed rate"
 #~ msgstr "Dvostruko brže"
