@@ -58,6 +58,7 @@ mod stacks;
 mod widgets;
 
 mod app;
+#[rustfmt::skip]
 mod config;
 mod headerbar;
 mod window;
