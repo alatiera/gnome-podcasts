@@ -19,7 +19,8 @@
 
 use crate::config::APP_ID;
 
-use gtk::prelude::*;
+use adw::prelude::*;
+use adw::subclass::prelude::*;
 use gtk::subclass::prelude::*;
 use gtk::{glib, CompositeTemplate};
 
@@ -27,18 +28,18 @@ use gtk::{glib, CompositeTemplate};
 #[template(resource = "/org/gnome/Podcasts/gtk/empty_view.ui")]
 pub struct EmptyViewPriv {
     #[template_child]
-    pub image: TemplateChild<gtk::Image>,
+    pub status_page: TemplateChild<adw::StatusPage>,
 }
 
 #[glib::object_subclass]
 impl ObjectSubclass for EmptyViewPriv {
     const NAME: &'static str = "PdEmptyView";
     type Type = EmptyView;
-    type ParentType = gtk::Box;
+    type ParentType = adw::Bin;
 
     fn new() -> Self {
         Self {
-            image: TemplateChild::default(),
+            status_page: TemplateChild::default(),
         }
     }
 
@@ -55,17 +56,17 @@ impl ObjectSubclass for EmptyViewPriv {
 impl ObjectImpl for EmptyViewPriv {
     fn constructed(&self, obj: &Self::Type) {
         self.parent_constructed(obj);
-        self.image
+        self.status_page
             .set_icon_name(Some(&format!("{}-symbolic", APP_ID)));
     }
 }
 
 impl WidgetImpl for EmptyViewPriv {}
-impl BoxImpl for EmptyViewPriv {}
+impl BinImpl for EmptyViewPriv {}
 
 glib::wrapper! {
     pub struct EmptyView(ObjectSubclass<EmptyViewPriv>)
-        @extends gtk::Widget, gtk::Box;
+        @extends gtk::Widget, adw::Bin;
 }
 
 impl Default for EmptyView {

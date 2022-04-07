@@ -24,90 +24,58 @@ Tobias Bernard
 
 -->
 <interface>
-  <template class="PdEmptyView" parent="GtkBox">
-    <property name="halign">center</property>
-    <property name="valign">center</property>
-    <property name="hexpand">True</property>
-    <property name="vexpand">True</property>
-    <property name="orientation">vertical</property>
-    <property name="spacing">6</property>
-    <property name="margin_start">6</property>
-    <property name="margin_end">6</property>
-    <property name="margin_top">6</property>
-    <property name="margin_bottom">6</property>
+  <template class="PdEmptyView" parent="AdwBin">
     <child>
-      <object class="GtkImage" id="image">
-        <property name="halign">center</property>
-        <property name="valign">center</property>
-        <property name="pixel_size">256</property>
-        <style>
-          <class name="dim-label"/>
-        </style>
-      </object>
-    </child>
-    <child>
-      <object class="GtkLabel">
-        <property name="halign">center</property>
-        <property name="valign">center</property>
-        <property name="label" translatable="yes">Get some shows</property>
-        <attributes>
-          <attribute name="weight" value="bold"/>
-          <attribute name="scale" value="1.4399999999999999"/>
-        </attributes>
-      </object>
-    </child>
-    <child>
-      <object class="GtkGrid">
-        <property name="row_spacing">6</property>
-        <property name="column_spacing">12</property>
+      <object class="AdwStatusPage" id="status_page">
+        <property name="title" translatable="yes">Get some shows</property>
         <child>
-          <object class="GtkImage">
-            <property name="icon_name">list-add-symbolic</property>
-            <style>
-              <class name="dim-label"/>
-            </style>
-            <layout>
-              <property name="column">0</property>
-              <property name="row">0</property>
-            </layout>
-          </object>
-        </child>
-        <child>
-          <object class="GtkLabel">
-            <property name="halign">start</property>
-            <property name="label" translatable="yes">Add new shows via feed URL</property>
-            <style>
-              <class name="dim-label"/>
-            </style>
-            <layout>
-              <property name="column">1</property>
-              <property name="row">0</property>
-            </layout>
-          </object>
-        </child>
-        <child>
-          <object class="GtkImage">
-            <property name="icon_name">open-menu-symbolic</property>
-            <style>
-              <class name="dim-label"/>
-            </style>
-            <layout>
-              <property name="column">0</property>
-              <property name="row">1</property>
-            </layout>
-          </object>
-        </child>
-        <child>
-          <object class="GtkLabel">
-            <property name="halign">start</property>
-            <property name="label" translatable="yes">Import shows from another device</property>
-            <style>
-              <class name="dim-label"/>
-            </style>
-            <layout>
-              <property name="column">1</property>
-              <property name="row">1</property>
-            </layout>
+          <object class="GtkBox">
+            <property name="orientation">vertical</property>
+            <property name="halign">center</property>
+            <property name="spacing">6</property>
+            <child>
+              <object class="GtkBox">
+                <property name="spacing">12</property>
+                <child>
+                  <object class="GtkImage">
+                    <property name="icon_name">list-add-symbolic</property>
+                    <style>
+                      <class name="dim-label"/>
+                    </style>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="label" translatable="yes">Add new shows via feed URL</property>
+                    <style>
+                      <class name="dim-label"/>
+                    </style>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <child>
+              <object class="GtkBox">
+                <property name="spacing">12</property>
+                <child>
+                  <object class="GtkImage">
+                    <property name="icon_name">open-menu-symbolic</property>
+                    <style>
+                      <class name="dim-label"/>
+                    </style>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkLabel">
+                    <!-- <property name="halign">start</property> -->
+                    <property name="label" translatable="yes">Import shows from another device</property>
+                    <style>
+                      <class name="dim-label"/>
+                    </style>
+                  </object>
+                </child>
+              </object>
+            </child>
           </object>
         </child>
       </object>
