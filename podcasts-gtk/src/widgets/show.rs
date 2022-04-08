@@ -162,6 +162,7 @@ impl ShowWidget {
 
         let markup = html2text::from_read(text.as_bytes(), text.as_bytes().len());
         let markup = markup.trim();
+        let markup = glib::markup_escape_text(markup);
         let lines: Vec<&str> = markup.lines().collect();
 
         if markup.is_empty() {
@@ -169,7 +170,7 @@ impl ShowWidget {
         } else {
             self_.description_stack.set_visible(true);
 
-            self_.description.set_markup(markup);
+            self_.description.set_markup(&markup);
             debug_assert!(!lines.is_empty());
             if !lines.is_empty() {
                 self_.description_short.set_label(lines[0]);
