@@ -24,6 +24,7 @@ use anyhow::{anyhow, Result};
 use chrono::prelude::*;
 use glib::Sender;
 use humansize::{file_size_opts as size_opts, FileSize};
+use once_cell::sync::Lazy;
 
 use podcasts_data::dbqueries;
 use podcasts_data::downloader::DownloadProgress;
@@ -40,23 +41,21 @@ use std::time::Duration;
 
 use crate::i18n::i18n_f;
 
-lazy_static! {
-    static ref SIZE_OPTS: Arc<size_opts::FileSizeOpts> =  {
-        // Declare a custom humansize option struct
-        // See: https://docs.rs/humansize/1.0.2/humansize/file_size_opts/struct.FileSizeOpts.html
-        Arc::new(size_opts::FileSizeOpts {
-            divider: size_opts::Kilo::Binary,
-            units: size_opts::Kilo::Decimal,
-            decimal_places: 0,
-            decimal_zeroes: 0,
-            fixed_at: size_opts::FixedAt::No,
-            long_units: false,
-            space: true,
-            suffix: "",
-            allow_negative: false,
-        })
-    };
-}
+static SIZE_OPTS: Lazy<Arc<size_opts::FileSizeOpts>> = Lazy::new(|| {
+    // Declare a custom humansize option struct
+    // See: https://docs.rs/humansize/1.0.2/humansize/file_size_opts/struct.FileSizeOpts.html
+    Arc::new(size_opts::FileSizeOpts {
+        divider: size_opts::Kilo::Binary,
+        units: size_opts::Kilo::Decimal,
+        decimal_places: 0,
+        decimal_zeroes: 0,
+        fixed_at: size_opts::FixedAt::No,
+        long_units: false,
+        space: true,
+        suffix: "",
+        allow_negative: false,
+    })
+});
 
 #[derive(Clone, Debug)]
 pub(crate) struct EpisodeWidget {
@@ -117,9 +116,7 @@ impl InfoLabels {
 
     // Set the date label of the episode widget.
     fn set_date(&self, epoch: i32) {
-        lazy_static! {
-            static ref NOW: DateTime<Utc> = Utc::now();
-        };
+        static NOW: Lazy<DateTime<Utc>> = Lazy::new(|| Utc::now());
 
         let ts = Utc.timestamp(i64::from(epoch), 0);
 

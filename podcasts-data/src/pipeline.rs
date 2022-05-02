@@ -24,6 +24,8 @@ use hyper::client::connect::HttpConnector;
 use hyper::{Body, Client};
 use hyper_tls::HttpsConnector;
 
+use once_cell::sync::Lazy;
+
 use crate::errors::DataError;
 use crate::Source;
 
@@ -37,12 +39,10 @@ pub async fn pipeline<S>(sources: S)
 where
     S: IntoIterator<Item = Source>,
 {
-    lazy_static! {
-        static ref CLIENT: Client<HttpsConnector<HttpConnector>> = {
-            let https = HttpsConnector::new();
-            Client::builder().build::<_, Body>(https)
-        };
-    }
+    static CLIENT: Lazy<Client<HttpsConnector<HttpConnector>>> = Lazy::new(|| {
+        let https = HttpsConnector::new();
+        Client::builder().build::<_, Body>(https)
+    });
 
     let handles: Vec<_> = sources
         .into_iter()

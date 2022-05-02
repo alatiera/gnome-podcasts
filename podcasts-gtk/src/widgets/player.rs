@@ -29,6 +29,7 @@ use anyhow::Result;
 use chrono::{prelude::*, NaiveTime};
 use fragile::Fragile;
 use glib::Sender;
+use once_cell::sync::Lazy;
 use url::Url;
 
 use podcasts_data::{dbqueries, downloader, EpisodeWidgetModel, ShowCoverModel, USER_AGENT};
@@ -544,9 +545,7 @@ impl PlayerWidget {
     }
 
     fn smart_rewind(&self) -> Option<()> {
-        lazy_static! {
-            static ref LAST_KNOWN_EPISODE: Mutex<Option<i32>> = Mutex::new(None);
-        };
+        static LAST_KNOWN_EPISODE: Lazy<Mutex<Option<i32>>> = Lazy::new(|| Mutex::new(None));
 
         // Figure out the time delta, in seconds, between the last pause and now
         let now = Local::now();

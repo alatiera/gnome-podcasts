@@ -340,6 +340,7 @@ mod tests {
     use crate::models::new_episode::{NewEpisodeMinimal, NewEpisodeMinimalBuilder};
     use crate::models::*;
     use anyhow::Result;
+    use once_cell::sync::Lazy;
 
     use rss::Channel;
 
@@ -350,58 +351,57 @@ mod tests {
     // Especially if you find an *interesting* generated feed.
 
     // Known prebuilt expected objects.
-    lazy_static! {
-        static ref EXPECTED_MINIMAL_INTERCEPTED_1: NewEpisodeMinimal = {
-            NewEpisodeMinimalBuilder::default()
-                .title("The Super Bowl of Racism")
-                .uri(Some(String::from(
-                    "http://traffic.megaphone.fm/PPY6458293736.mp3",
-                )))
-                .guid(Some(String::from("7df4070a-9832-11e7-adac-cb37b05d5e24")))
-                .epoch(1505296800)
-                .length(Some(66738886))
-                .duration(Some(4171))
-                .show_id(42)
-                .build()
-                .unwrap()
-        };
-        static ref EXPECTED_MINIMAL_INTERCEPTED_2: NewEpisodeMinimal = {
-            NewEpisodeMinimalBuilder::default()
-                .title("Atlas Golfed — U.S.-Backed Think Tanks Target Latin America")
-                .uri(Some(String::from(
-                    "http://traffic.megaphone.fm/FL5331443769.mp3",
-                )))
-                .guid(Some(String::from("7c207a24-e33f-11e6-9438-eb45dcf36a1d")))
-                .epoch(1502272800)
-                .length(Some(67527575))
-                .duration(Some(4415))
-                .show_id(42)
-                .build()
-                .unwrap()
-        };
-        static ref EXPECTED_INTERCEPTED_1: NewEpisode = {
-            let descr = "NSA whistleblower Edward Snowden discusses the massive Equifax data \
+    static EXPECTED_MINIMAL_INTERCEPTED_1: Lazy<NewEpisodeMinimal> = Lazy::new(|| {
+        NewEpisodeMinimalBuilder::default()
+            .title("The Super Bowl of Racism")
+            .uri(Some(String::from(
+                "http://traffic.megaphone.fm/PPY6458293736.mp3",
+            )))
+            .guid(Some(String::from("7df4070a-9832-11e7-adac-cb37b05d5e24")))
+            .epoch(1505296800)
+            .length(Some(66738886))
+            .duration(Some(4171))
+            .show_id(42)
+            .build()
+            .unwrap()
+    });
+    static EXPECTED_MINIMAL_INTERCEPTED_2: Lazy<NewEpisodeMinimal> = Lazy::new(|| {
+        NewEpisodeMinimalBuilder::default()
+            .title("Atlas Golfed — U.S.-Backed Think Tanks Target Latin America")
+            .uri(Some(String::from(
+                "http://traffic.megaphone.fm/FL5331443769.mp3",
+            )))
+            .guid(Some(String::from("7c207a24-e33f-11e6-9438-eb45dcf36a1d")))
+            .epoch(1502272800)
+            .length(Some(67527575))
+            .duration(Some(4415))
+            .show_id(42)
+            .build()
+            .unwrap()
+    });
+    static EXPECTED_INTERCEPTED_1: Lazy<NewEpisode> = Lazy::new(|| {
+        let descr = "NSA whistleblower Edward Snowden discusses the massive Equifax data \
                          breach and allegations of Russian interference in the US election. \
                          Commentator Shaun King explains his call for a boycott of the NFL and \
                          talks about his campaign to bring violent neo-Nazis to justice. Rapper \
                          Open Mike Eagle performs.";
 
-            NewEpisodeBuilder::default()
-                .title("The Super Bowl of Racism")
-                .uri(Some(String::from(
-                    "http://traffic.megaphone.fm/PPY6458293736.mp3",
-                )))
-                .description(Some(String::from(descr)))
-                .guid(Some(String::from("7df4070a-9832-11e7-adac-cb37b05d5e24")))
-                .length(Some(66738886))
-                .epoch(1505296800)
-                .duration(Some(4171))
-                .show_id(42)
-                .build()
-                .unwrap()
-        };
-        static ref EXPECTED_INTERCEPTED_2: NewEpisode = {
-            let descr = "This week on Intercepted: Jeremy gives an update on the aftermath of \
+        NewEpisodeBuilder::default()
+            .title("The Super Bowl of Racism")
+            .uri(Some(String::from(
+                "http://traffic.megaphone.fm/PPY6458293736.mp3",
+            )))
+            .description(Some(String::from(descr)))
+            .guid(Some(String::from("7df4070a-9832-11e7-adac-cb37b05d5e24")))
+            .length(Some(66738886))
+            .epoch(1505296800)
+            .duration(Some(4171))
+            .show_id(42)
+            .build()
+            .unwrap()
+    });
+    static EXPECTED_INTERCEPTED_2: Lazy<NewEpisode> = Lazy::new(|| {
+        let descr = "This week on Intercepted: Jeremy gives an update on the aftermath of \
                          Blackwater’s 2007 massacre of Iraqi civilians. Intercept reporter Lee \
                          Fang lays out how a network of libertarian think tanks called the Atlas \
                          Network is insidiously shaping political infrastructure in Latin \
@@ -410,106 +410,105 @@ mod tests {
                          Lizardo of the Caracas-based band, La Pequeña Revancha, talk about her \
                          music and hopes for Venezuela.";
 
-            NewEpisodeBuilder::default()
-                .title("Atlas Golfed — U.S.-Backed Think Tanks Target Latin America")
-                .uri(Some(String::from(
-                    "http://traffic.megaphone.fm/FL5331443769.mp3",
-                )))
-                .description(Some(String::from(descr)))
-                .guid(Some(String::from("7c207a24-e33f-11e6-9438-eb45dcf36a1d")))
-                .length(Some(67527575))
-                .epoch(1502272800)
-                .duration(Some(4415))
-                .show_id(42)
-                .build()
-                .unwrap()
-        };
-        static ref UPDATED_DURATION_INTERCEPTED_1: NewEpisode = {
-            NewEpisodeBuilder::default()
-                .title("The Super Bowl of Racism")
-                .uri(Some(String::from(
-                    "http://traffic.megaphone.fm/PPY6458293736.mp3",
-                )))
-                .description(Some(String::from("New description")))
-                .guid(Some(String::from("7df4070a-9832-11e7-adac-cb37b05d5e24")))
-                .length(Some(66738886))
-                .epoch(1505296800)
-                .duration(Some(424242))
-                .show_id(42)
-                .build()
-                .unwrap()
-        };
-        static ref EXPECTED_MINIMAL_LUP_1: NewEpisodeMinimal = {
-            NewEpisodeMinimalBuilder::default()
-                .title("Hacking Devices with Kali Linux | LUP 214")
-                .uri(Some(String::from(
-                    "http://www.podtrac.com/pts/redirect.mp3/traffic.libsyn.com/jnite/lup-0214.mp3",
-                )))
-                .guid(Some(String::from("78A682B4-73E8-47B8-88C0-1BE62DD4EF9D")))
-                .length(Some(46479789))
-                .epoch(1505280282)
-                .duration(Some(5733))
-                .show_id(42)
-                .build()
-                .unwrap()
-        };
-        static ref EXPECTED_MINIMAL_LUP_2: NewEpisodeMinimal = {
-            NewEpisodeMinimalBuilder::default()
-                .title("Gnome Does it Again | LUP 213")
-                .uri(Some(String::from(
-                    "http://www.podtrac.com/pts/redirect.mp3/traffic.libsyn.com/jnite/lup-0213.mp3",
-                )))
-                .guid(Some(String::from("1CE57548-B36C-4F14-832A-5D5E0A24E35B")))
-                .epoch(1504670247)
-                .length(Some(36544272))
-                .duration(Some(4491))
-                .show_id(42)
-                .build()
-                .unwrap()
-        };
-        static ref EXPECTED_LUP_1: NewEpisode = {
-            let descr = "Audit your network with a couple of easy commands on Kali Linux. Chris \
+        NewEpisodeBuilder::default()
+            .title("Atlas Golfed — U.S.-Backed Think Tanks Target Latin America")
+            .uri(Some(String::from(
+                "http://traffic.megaphone.fm/FL5331443769.mp3",
+            )))
+            .description(Some(String::from(descr)))
+            .guid(Some(String::from("7c207a24-e33f-11e6-9438-eb45dcf36a1d")))
+            .length(Some(67527575))
+            .epoch(1502272800)
+            .duration(Some(4415))
+            .show_id(42)
+            .build()
+            .unwrap()
+    });
+    static UPDATED_DURATION_INTERCEPTED_1: Lazy<NewEpisode> = Lazy::new(|| {
+        NewEpisodeBuilder::default()
+            .title("The Super Bowl of Racism")
+            .uri(Some(String::from(
+                "http://traffic.megaphone.fm/PPY6458293736.mp3",
+            )))
+            .description(Some(String::from("New description")))
+            .guid(Some(String::from("7df4070a-9832-11e7-adac-cb37b05d5e24")))
+            .length(Some(66738886))
+            .epoch(1505296800)
+            .duration(Some(424242))
+            .show_id(42)
+            .build()
+            .unwrap()
+    });
+    static EXPECTED_MINIMAL_LUP_1: Lazy<NewEpisodeMinimal> = Lazy::new(|| {
+        NewEpisodeMinimalBuilder::default()
+            .title("Hacking Devices with Kali Linux | LUP 214")
+            .uri(Some(String::from(
+                "http://www.podtrac.com/pts/redirect.mp3/traffic.libsyn.com/jnite/lup-0214.mp3",
+            )))
+            .guid(Some(String::from("78A682B4-73E8-47B8-88C0-1BE62DD4EF9D")))
+            .length(Some(46479789))
+            .epoch(1505280282)
+            .duration(Some(5733))
+            .show_id(42)
+            .build()
+            .unwrap()
+    });
+    static EXPECTED_MINIMAL_LUP_2: Lazy<NewEpisodeMinimal> = Lazy::new(|| {
+        NewEpisodeMinimalBuilder::default()
+            .title("Gnome Does it Again | LUP 213")
+            .uri(Some(String::from(
+                "http://www.podtrac.com/pts/redirect.mp3/traffic.libsyn.com/jnite/lup-0213.mp3",
+            )))
+            .guid(Some(String::from("1CE57548-B36C-4F14-832A-5D5E0A24E35B")))
+            .epoch(1504670247)
+            .length(Some(36544272))
+            .duration(Some(4491))
+            .show_id(42)
+            .build()
+            .unwrap()
+    });
+    static EXPECTED_LUP_1: Lazy<NewEpisode> = Lazy::new(|| {
+        let descr = "Audit your network with a couple of easy commands on Kali Linux. Chris \
                          decides to blow off a little steam by attacking his IoT devices, Wes has \
                          the scope on Equifax blaming open source &amp; the Beard just saved the \
                          show. It’s a really packed episode!";
 
-            NewEpisodeBuilder::default()
-                .title("Hacking Devices with Kali Linux | LUP 214")
-                .uri(Some(String::from(
-                    "http://www.podtrac.com/pts/redirect.mp3/traffic.libsyn.com/jnite/lup-0214.mp3",
-                )))
-                .description(Some(String::from(descr)))
-                .guid(Some(String::from("78A682B4-73E8-47B8-88C0-1BE62DD4EF9D")))
-                .length(Some(46479789))
-                .epoch(1505280282)
-                .duration(Some(5733))
-                .show_id(42)
-                .build()
-                .unwrap()
-        };
-        static ref EXPECTED_LUP_2: NewEpisode = {
-            let descr =
-                "<p>The Gnome project is about to solve one of our audience's biggest Wayland’s \
+        NewEpisodeBuilder::default()
+            .title("Hacking Devices with Kali Linux | LUP 214")
+            .uri(Some(String::from(
+                "http://www.podtrac.com/pts/redirect.mp3/traffic.libsyn.com/jnite/lup-0214.mp3",
+            )))
+            .description(Some(String::from(descr)))
+            .guid(Some(String::from("78A682B4-73E8-47B8-88C0-1BE62DD4EF9D")))
+            .length(Some(46479789))
+            .epoch(1505280282)
+            .duration(Some(5733))
+            .show_id(42)
+            .build()
+            .unwrap()
+    });
+    static EXPECTED_LUP_2: Lazy<NewEpisode> = Lazy::new(|| {
+        let descr =
+            "<p>The Gnome project is about to solve one of our audience's biggest Wayland’s \
                  concerns. But as the project takes on a new level of relevance, decisions for \
                  the next version of Gnome have us worried about the future.</p>\n\n<p>Plus we \
                  chat with Wimpy about the Ubuntu Rally in NYC, Microsoft’s sneaky move to turn \
                  Windows 10 into the “ULTIMATE LINUX RUNTIME”, community news &amp; more!</p>";
 
-            NewEpisodeBuilder::default()
-                .title("Gnome Does it Again | LUP 213")
-                .uri(Some(String::from(
-                    "http://www.podtrac.com/pts/redirect.mp3/traffic.libsyn.com/jnite/lup-0213.mp3",
-                )))
-                .description(Some(String::from(descr)))
-                .guid(Some(String::from("1CE57548-B36C-4F14-832A-5D5E0A24E35B")))
-                .length(Some(36544272))
-                .epoch(1504670247)
-                .duration(Some(4491))
-                .show_id(42)
-                .build()
-                .unwrap()
-        };
-    }
+        NewEpisodeBuilder::default()
+            .title("Gnome Does it Again | LUP 213")
+            .uri(Some(String::from(
+                "http://www.podtrac.com/pts/redirect.mp3/traffic.libsyn.com/jnite/lup-0213.mp3",
+            )))
+            .description(Some(String::from(descr)))
+            .guid(Some(String::from("1CE57548-B36C-4F14-832A-5D5E0A24E35B")))
+            .length(Some(36544272))
+            .epoch(1504670247)
+            .duration(Some(4491))
+            .show_id(42)
+            .build()
+            .unwrap()
+    });
 
     #[test]
     fn test_new_episode_minimal_intercepted() -> Result<()> {

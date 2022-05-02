@@ -18,6 +18,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 use anyhow::{anyhow, Result};
+use once_cell::sync::Lazy;
 
 use podcasts_data::dbqueries;
 use podcasts_data::downloader::{get_episode, DownloadProgress};
@@ -27,6 +28,11 @@ use std::sync::{Arc, Mutex, RwLock};
 
 // This is messy, undocumented and hacky af.
 // I am terrible at writing downloaders and download managers.
+
+pub(crate) static ACTIVE_DOWNLOADS: Lazy<Arc<RwLock<HashMap<i32, Arc<Mutex<Progress>>>>>> =
+    Lazy::new(|| Arc::new(RwLock::new(HashMap::new())));
+static DLPOOL: Lazy<rayon::ThreadPool> =
+    Lazy::new(|| rayon::ThreadPoolBuilder::new().build().unwrap());
 
 #[derive(Debug)]
 pub(crate) struct Progress {
@@ -82,12 +88,6 @@ impl DownloadProgress for Progress {
     fn cancel(&mut self) {
         self.cancel = true;
     }
-}
-
-lazy_static! {
-    pub(crate) static ref ACTIVE_DOWNLOADS: Arc<RwLock<HashMap<i32, Arc<Mutex<Progress>>>>> =
-        Arc::new(RwLock::new(HashMap::new()));
-    static ref DLPOOL: rayon::ThreadPool = rayon::ThreadPoolBuilder::new().build().unwrap();
 }
 
 pub(crate) fn add(id: i32, directory: String) -> Result<()> {

@@ -30,6 +30,7 @@ use gtk::Widget;
 use anyhow::{anyhow, Result};
 use chrono::prelude::*;
 use crossbeam_channel::unbounded;
+use once_cell::sync::Lazy;
 use rayon;
 use regex::Regex;
 use serde_json::Value;
@@ -241,9 +242,8 @@ fn ease_out_cubic(t: f64) -> f64 {
     p * p * p + 1f64
 }
 
-lazy_static! {
-    static ref IGNORESHOWS: Arc<Mutex<HashSet<i32>>> = Arc::new(Mutex::new(HashSet::new()));
-}
+static IGNORESHOWS: Lazy<Arc<Mutex<HashSet<i32>>>> =
+    Lazy::new(|| Arc::new(Mutex::new(HashSet::new())));
 
 pub(crate) fn ignore_show(id: i32) -> Result<bool> {
     IGNORESHOWS
@@ -313,14 +313,14 @@ pub(crate) fn refresh_feed(source: Option<Vec<Source>>, sender: Sender<Action>) 
     }));
 }
 
-lazy_static! {
-    static ref COVER_DL_REGISTRY: RwLock<HashSet<i32>> = RwLock::new(HashSet::new());
-    static ref THREADPOOL: rayon::ThreadPool = rayon::ThreadPoolBuilder::new().build().unwrap();
-    static ref CACHE_VALID_DURATION: chrono::Duration = chrono::Duration::weeks(4);
-}
+static COVER_DL_REGISTRY: Lazy<RwLock<HashSet<i32>>> = Lazy::new(|| RwLock::new(HashSet::new()));
+static THREADPOOL: Lazy<rayon::ThreadPool> =
+    Lazy::new(|| rayon::ThreadPoolBuilder::new().build().unwrap());
+static CACHE_VALID_DURATION: Lazy<chrono::Duration> = Lazy::new(|| chrono::Duration::weeks(4));
 
 // GObjects do not implement Send trait, so Fragile is a way around that.
 // Also lazy_static requires Sync trait, so that's what the mutexes are.
+// FIXME: we can probably use unsync::Lazy now
 // TODO: maybe use something that would just scale to requested size?
 // todo Unit test.
 pub(crate) fn set_image_from_path(image: &gtk::Image, show_id: i32, size: u32) -> Result<()> {
@@ -413,9 +413,7 @@ pub(crate) async fn itunes_to_rss(url: &str) -> Result<String> {
 }
 
 fn itunes_id_from_url(url: &str) -> Option<u32> {
-    lazy_static! {
-        static ref RE: Regex = Regex::new(r"/id([0-9]+)").unwrap();
-    }
+    static RE: Lazy<Regex> = Lazy::new(|| Regex::new(r"/id([0-9]+)").unwrap());
 
     // Get the itunes id from the url
     let itunes_id = RE.captures_iter(url).next()?.get(1)?.as_str();
@@ -461,12 +459,10 @@ pub(crate) async fn soundcloud_to_rss(url: &Url) -> Result<Url> {
 /// The id's are 0 if none was found.
 /// If fetching the html page fails an Error is returned.
 async fn soundcloud_lookup_id(url: &Url) -> Option<(u64, u64)> {
-    lazy_static! {
-        static ref RE_U: Regex = Regex::new(r"soundcloud://users:([0-9]+)").unwrap();
-    }
-    lazy_static! {
-        static ref RE_P: Regex = Regex::new(r"soundcloud://playlists:([0-9]+)").unwrap();
-    }
+    static RE_U: Lazy<Regex> = Lazy::new(|| Regex::new(r"soundcloud://users:([0-9]+)").unwrap());
+    static RE_P: Lazy<Regex> =
+        Lazy::new(|| Regex::new(r"soundcloud://playlists:([0-9]+)").unwrap());
+
     let url_str = url.to_string();
     let response_text = reqwest::get(&url_str).await.ok()?.text().await.ok()?;
     let user_id = RE_U

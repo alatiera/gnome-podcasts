@@ -24,6 +24,8 @@ use diesel::prelude::*;
 use diesel::r2d2;
 use diesel::r2d2::ConnectionManager;
 
+use once_cell::sync::Lazy;
+
 use std::io;
 use std::path::PathBuf;
 
@@ -36,23 +38,21 @@ type Pool = r2d2::Pool<ConnectionManager<SqliteConnection>>;
 
 embed_migrations!("migrations/");
 
-lazy_static! {
-    static ref POOL: Pool = init_pool(DB_PATH.to_str().unwrap());
-}
+static POOL: Lazy<Pool> = Lazy::new(|| init_pool(DB_PATH.to_str().unwrap()));
 
 #[cfg(not(test))]
-lazy_static! {
-    static ref DB_PATH: PathBuf = xdg_dirs::PODCASTS_XDG
+static DB_PATH: Lazy<PathBuf> = Lazy::new(|| {
+    xdg_dirs::PODCASTS_XDG
         .place_data_file("podcasts.db")
-        .unwrap();
-}
+        .unwrap()
+});
 
 #[cfg(test)]
-lazy_static! {
-    pub(crate) static ref TEMPDIR: tempdir::TempDir =
-        tempdir::TempDir::new("podcasts_unit_test").unwrap();
-    static ref DB_PATH: PathBuf = TEMPDIR.path().join("podcasts.db");
-}
+pub(crate) static TEMPDIR: Lazy<tempdir::TempDir> =
+    Lazy::new(|| tempdir::TempDir::new("podcasts_unit_test").unwrap());
+
+#[cfg(test)]
+static DB_PATH: Lazy<PathBuf> = Lazy::new(|| TEMPDIR.path().join("podcasts.db"));
 
 /// Get an r2d2 `SqliteConnection`.
 pub(crate) fn connection() -> Pool {

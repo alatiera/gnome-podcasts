@@ -209,6 +209,7 @@ mod tests {
     use super::*;
 
     use anyhow::Result;
+    use once_cell::sync::Lazy;
     use rss::Channel;
 
     use crate::database::truncate_db;
@@ -218,46 +219,45 @@ mod tests {
     use std::io::BufReader;
 
     // Pre-built expected NewShow structs.
-    lazy_static! {
-        static ref EXPECTED_INTERCEPTED: NewShow = {
-            let descr = "The people behind The Intercept’s fearless reporting and incisive \
+    static EXPECTED_INTERCEPTED: Lazy<NewShow> = Lazy::new(|| {
+        let descr = "The people behind The Intercept’s fearless reporting and incisive \
                          commentary—Jeremy Scahill, Glenn Greenwald, Betsy Reed and \
                          others—discuss the crucial issues of our time: national security, civil \
                          liberties, foreign policy, and criminal justice.  Plus interviews with \
                          artists, thinkers, and newsmakers who challenge our preconceptions about \
                          the world we live in.";
 
-            NewShowBuilder::default()
-                .title("Intercepted with Jeremy Scahill")
-                .link("https://theintercept.com/podcasts")
-                .description(descr)
-                .image_uri(Some(String::from(
-                    "http://static.megaphone.fm/podcasts/d5735a50-d904-11e6-8532-73c7de466ea6/image/\
+        NewShowBuilder::default()
+            .title("Intercepted with Jeremy Scahill")
+            .link("https://theintercept.com/podcasts")
+            .description(descr)
+            .image_uri(Some(String::from(
+                "http://static.megaphone.fm/podcasts/d5735a50-d904-11e6-8532-73c7de466ea6/image/\
                      uploads_2F1484252190700-qhn5krasklbce3dh-a797539282700ea0298a3a26f7e49b0b_\
-                     2FIntercepted_COVER%2B_281_29.png")
-                ))
-                .source_id(42)
-                .build()
-                .unwrap()
-        };
-        static ref EXPECTED_LUP: NewShow = {
-            let descr = "An open show powered by community LINUX Unplugged takes the best \
+                     2FIntercepted_COVER%2B_281_29.png",
+            )))
+            .source_id(42)
+            .build()
+            .unwrap()
+    });
+    static EXPECTED_LUP: Lazy<NewShow> = Lazy::new(|| {
+        let descr = "An open show powered by community LINUX Unplugged takes the best \
                          attributes of open collaboration and focuses them into a weekly \
                          lifestyle show about Linux.";
 
-            NewShowBuilder::default()
-                .title("LINUX Unplugged Podcast")
-                .link("http://www.jupiterbroadcasting.com/")
-                .description(descr)
-                .image_uri(Some(String::from(
-                    "http://www.jupiterbroadcasting.com/images/LASUN-Badge1400.jpg",
-                )))
-                .source_id(42)
-                .build()
-                .unwrap()
-        };
-        static ref EXPECTED_TIPOFF: NewShow = {
-            let desc = "<p>Welcome to The Tip Off- the podcast where we take you behind the \
+        NewShowBuilder::default()
+            .title("LINUX Unplugged Podcast")
+            .link("http://www.jupiterbroadcasting.com/")
+            .description(descr)
+            .image_uri(Some(String::from(
+                "http://www.jupiterbroadcasting.com/images/LASUN-Badge1400.jpg",
+            )))
+            .source_id(42)
+            .build()
+            .unwrap()
+    });
+    static EXPECTED_TIPOFF: Lazy<NewShow> = Lazy::new(|| {
+        let desc = "<p>Welcome to The Tip Off- the podcast where we take you behind the \
                         scenes of some of the best investigative journalism from recent years. \
                         Each episode we’ll be digging into an investigative scoop- hearing from \
                         the journalists behind the work as they tell us about the leads, the \
@@ -267,78 +267,77 @@ mod tests {
                         complicated detective work that goes into doing great investigative \
                         journalism- then this is the podcast for you.</p>";
 
-            NewShowBuilder::default()
-                .title("The Tip Off")
-                .link("http://www.acast.com/thetipoff")
-                .description(desc)
-                .image_uri(Some(String::from(
-                    "https://imagecdn.acast.com/image?h=1500&w=1500&source=http%3A%2F%2Fi1.sndcdn.\
+        NewShowBuilder::default()
+            .title("The Tip Off")
+            .link("http://www.acast.com/thetipoff")
+            .description(desc)
+            .image_uri(Some(String::from(
+                "https://imagecdn.acast.com/image?h=1500&w=1500&source=http%3A%2F%2Fi1.sndcdn.\
                      com%2Favatars-000317856075-a2coqz-original.jpg",
-                )))
-                .source_id(42)
-                .build()
-                .unwrap()
-        };
-        static ref EXPECTED_STARS: NewShow = {
-            let descr = "<p>The first audio drama from Tor Labs and Gideon Media, Steal the Stars \
+            )))
+            .source_id(42)
+            .build()
+            .unwrap()
+    });
+    static EXPECTED_STARS: Lazy<NewShow> = Lazy::new(|| {
+        let descr = "<p>The first audio drama from Tor Labs and Gideon Media, Steal the Stars \
                          is a gripping noir science fiction thriller in 14 episodes: Forbidden \
                          love, a crashed UFO, an alien body, and an impossible heist unlike any \
                          ever attempted - scripted by Mac Rogers, the award-winning playwright \
                          and writer of the multi-million download The Message and LifeAfter.</p>";
-            let img = "https://dfkfj8j276wwv.cloudfront.net/images/2c/5f/a0/1a/2c5fa01a-ae78-4a8c-\
+        let img = "https://dfkfj8j276wwv.cloudfront.net/images/2c/5f/a0/1a/2c5fa01a-ae78-4a8c-\
                        b183-7311d2e436c3/b3a4aa57a576bb662191f2a6bc2a436c8c4ae256ecffaff5c4c54fd42e\
                        923914941c264d01efb1833234b52c9530e67d28a8cebbe3d11a4bc0fbbdf13ecdf1c3.jpeg";
 
-            NewShowBuilder::default()
-                .title("Steal the Stars")
-                .link("http://tor-labs.com/")
-                .description(descr)
-                .image_uri(Some(String::from(img)))
-                .source_id(42)
-                .build()
-                .unwrap()
-        };
-        static ref EXPECTED_CODE: NewShow = {
-            let descr = "A podcast about humans and technology. Panelists: Coraline Ada Ehmke, \
+        NewShowBuilder::default()
+            .title("Steal the Stars")
+            .link("http://tor-labs.com/")
+            .description(descr)
+            .image_uri(Some(String::from(img)))
+            .source_id(42)
+            .build()
+            .unwrap()
+    });
+    static EXPECTED_CODE: Lazy<NewShow> = Lazy::new(|| {
+        let descr = "A podcast about humans and technology. Panelists: Coraline Ada Ehmke, \
                          David Brady, Jessica Kerr, Jay Bobo, Astrid Countee and Sam \
                          Livingston-Gray. Brought to you by @therubyrep.";
 
-            NewShowBuilder::default()
-                .title("Greater Than Code")
-                .link("https://www.greaterthancode.com/")
-                .description(descr)
-                .image_uri(Some(String::from(
-                    "http://www.greaterthancode.com/wp-content/uploads/2016/10/code1400-4.jpg",
-                )))
-                .source_id(42)
-                .build()
-                .unwrap()
-        };
-        static ref EXPECTED_ELLINOFRENEIA: NewShow = {
-            NewShowBuilder::default()
-                .title("Ελληνοφρένεια")
-                .link("https://ellinofreneia.sealabs.net/feed.rss")
-                .description("Ανεπίσημο feed της Ελληνοφρένειας")
-                .image_uri(Some("https://ellinofreneia.sealabs.net/logo.png".into()))
-                .source_id(42)
-                .build()
-                .unwrap()
-        };
-        static ref UPDATED_DESC_INTERCEPTED: NewShow = {
-            NewShowBuilder::default()
-                .title("Intercepted with Jeremy Scahill")
-                .link("https://theintercept.com/podcasts")
-                .description("New Description")
-                .image_uri(Some(String::from(
-                    "http://static.megaphone.fm/podcasts/d5735a50-d904-11e6-8532-73c7de466ea6/image/\
+        NewShowBuilder::default()
+            .title("Greater Than Code")
+            .link("https://www.greaterthancode.com/")
+            .description(descr)
+            .image_uri(Some(String::from(
+                "http://www.greaterthancode.com/wp-content/uploads/2016/10/code1400-4.jpg",
+            )))
+            .source_id(42)
+            .build()
+            .unwrap()
+    });
+    static EXPECTED_ELLINOFRENEIA: Lazy<NewShow> = Lazy::new(|| {
+        NewShowBuilder::default()
+            .title("Ελληνοφρένεια")
+            .link("https://ellinofreneia.sealabs.net/feed.rss")
+            .description("Ανεπίσημο feed της Ελληνοφρένειας")
+            .image_uri(Some("https://ellinofreneia.sealabs.net/logo.png".into()))
+            .source_id(42)
+            .build()
+            .unwrap()
+    });
+    static UPDATED_DESC_INTERCEPTED: Lazy<NewShow> = Lazy::new(|| {
+        NewShowBuilder::default()
+            .title("Intercepted with Jeremy Scahill")
+            .link("https://theintercept.com/podcasts")
+            .description("New Description")
+            .image_uri(Some(String::from(
+                "http://static.megaphone.fm/podcasts/d5735a50-d904-11e6-8532-73c7de466ea6/image/\
                      uploads_2F1484252190700-qhn5krasklbce3dh-a797539282700ea0298a3a26f7e49b0b_\
-                     2FIntercepted_COVER%2B_281_29.png")
-                ))
-                .source_id(42)
-                .build()
-                .unwrap()
-        };
-    }
+                     2FIntercepted_COVER%2B_281_29.png",
+            )))
+            .source_id(42)
+            .build()
+            .unwrap()
+    });
 
     #[test]
     fn test_new_podcast_intercepted() -> Result<()> {

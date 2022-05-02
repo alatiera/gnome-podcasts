@@ -221,47 +221,46 @@ mod tests {
     use crate::dbqueries;
     use crate::models::{Insert, NewShow, NewShowBuilder, Update};
     use anyhow::Result;
+    use once_cell::sync::Lazy;
     use std::{thread, time};
 
-    lazy_static! {
-        static ref EXPECTED_INTERCEPTED: NewShow = {
-            let descr = "The people behind The Intercept’s fearless reporting and incisive \
+    static EXPECTED_INTERCEPTED: Lazy<NewShow> = Lazy::new(|| {
+        let descr = "The people behind The Intercept’s fearless reporting and incisive \
                          commentary—Jeremy Scahill, Glenn Greenwald, Betsy Reed and \
                          others—discuss the crucial issues of our time: national security, civil \
                          liberties, foreign policy, and criminal justice.  Plus interviews with \
                          artists, thinkers, and newsmakers who challenge our preconceptions about \
                          the world we live in.";
-            let image_uri =
-                "http://static.megaphone.fm/podcasts/d5735a50-d904-11e6-8532-73c7de466ea6/image/\
+        let image_uri =
+            "http://static.megaphone.fm/podcasts/d5735a50-d904-11e6-8532-73c7de466ea6/image/\
                  uploads_2F1484252190700-qhn5krasklbce3dh-a797539282700ea0298a3a26f7e49b0b_\
                  2FIntercepted_COVER%2B_281_29.png";
 
-            NewShowBuilder::default()
-                .title("Intercepted with Jeremy Scahill")
-                .link("https://theintercept.com/podcasts")
-                .description(descr)
-                .image_uri(String::from(image_uri))
-                .image_uri_hash(Some(vec![164, 62, 7, 221, 215, 202, 38, 41]))
-                .image_cached(Utc::now().naive_utc())
-                .source_id(42)
-                .build()
-                .unwrap()
-        };
-        static ref UPDATED_IMAGE_URI_INTERCEPTED: NewShow = {
-            let image_uri = "https://assets.fireside.fm/file/fireside-images/podcasts/images/f/f31a453c-fa15-491f-8618-3f71f1d565e5/cover.jpg?v=3";
+        NewShowBuilder::default()
+            .title("Intercepted with Jeremy Scahill")
+            .link("https://theintercept.com/podcasts")
+            .description(descr)
+            .image_uri(String::from(image_uri))
+            .image_uri_hash(Some(vec![164, 62, 7, 221, 215, 202, 38, 41]))
+            .image_cached(Utc::now().naive_utc())
+            .source_id(42)
+            .build()
+            .unwrap()
+    });
+    static UPDATED_IMAGE_URI_INTERCEPTED: Lazy<NewShow> = Lazy::new(|| {
+        let image_uri = "https://assets.fireside.fm/file/fireside-images/podcasts/images/f/f31a453c-fa15-491f-8618-3f71f1d565e5/cover.jpg?v=3";
 
-            NewShowBuilder::default()
-                .title("Intercepted with Jeremy Scahill")
-                .link("https://theintercept.com/podcasts")
-                .description(EXPECTED_INTERCEPTED.description())
-                .image_uri(String::from(image_uri))
-                .image_uri_hash(Some(vec![164, 62, 7, 221, 215, 202, 38, 41]))
-                .image_cached(EXPECTED_INTERCEPTED.image_cached().unwrap())
-                .source_id(42)
-                .build()
-                .unwrap()
-        };
-    }
+        NewShowBuilder::default()
+            .title("Intercepted with Jeremy Scahill")
+            .link("https://theintercept.com/podcasts")
+            .description(EXPECTED_INTERCEPTED.description())
+            .image_uri(String::from(image_uri))
+            .image_uri_hash(Some(vec![164, 62, 7, 221, 215, 202, 38, 41]))
+            .image_cached(EXPECTED_INTERCEPTED.image_cached().unwrap())
+            .source_id(42)
+            .build()
+            .unwrap()
+    });
 
     #[test]
     fn should_update_timestamp_when_update_image_cached_is_called_after_the_timestamp_has_expired(
