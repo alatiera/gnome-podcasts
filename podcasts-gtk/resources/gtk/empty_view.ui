@@ -67,7 +67,6 @@ Tobias Bernard
                 </child>
                 <child>
                   <object class="GtkLabel">
-                    <!-- <property name="halign">start</property> -->
                     <property name="label" translatable="yes">Import shows from another device</property>
                     <style>
                       <class name="dim-label"/>

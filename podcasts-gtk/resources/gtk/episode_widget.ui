@@ -128,7 +128,6 @@ Tobias Bernard
                 </child>
                 <child>
                   <object class="GtkLabel" id="local_size">
-                    <property name="halign">start</property>
                     <property name="visible">False</property>
                     <property name="label">0 MB</property>
                     <property name="ellipsize">end</property>
@@ -154,7 +153,6 @@ Tobias Bernard
                 </child>
                 <child>
                   <object class="GtkLabel" id="total_size">
-                    <property name="halign">start</property>
                     <property name="visible">False</property>
                     <property name="label" translatable="yes">Calculating episode size…</property>
                     <property name="ellipsize">end</property>

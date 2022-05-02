@@ -114,7 +114,6 @@ Tobias Bernard
                             <property name="orientation">vertical</property>
                             <child>
                               <object class="GtkLabel" id="show_label">
-                                <property name="halign">start</property>
                                 <property name="label">Show Title</property>
                                 <property name="wrap">True</property>
                                 <property name="ellipsize">end</property>
@@ -127,7 +126,6 @@ Tobias Bernard
                             </child>
                             <child>
                               <object class="GtkLabel" id="episode_label">
-                                <property name="halign">start</property>
                                 <property name="label">Episode Title</property>
                                 <property name="wrap">True</property>
                                 <property name="ellipsize">end</property>
@@ -224,7 +222,6 @@ Tobias Bernard
                         <property name="hexpand">True</property>
                         <child>
                           <object class="GtkLabel" id="show_label_small">
-                            <property name="halign">start</property>
                             <property name="label">Show Title</property>
                             <property name="ellipsize">end</property>
                             <property name="xalign">0</property>
@@ -235,7 +232,6 @@ Tobias Bernard
                         </child>
                         <child>
                           <object class="GtkLabel" id="episode_label_small">
-                            <property name="halign">start</property>
                             <property name="label">Episode Title</property>
                             <property name="ellipsize">end</property>
                             <property name="xalign">0</property>
