@@ -494,6 +494,8 @@ pub(crate) fn on_import_clicked(window: &gtk::ApplicationWindow, sender: &Sender
         None,
     );
 
+    dialog.set_modal(true);
+
     // Set a filter to show only xml files
     let filter = FileFilter::new();
     FileFilter::set_name(&filter, Some(i18n("OPML file").as_str()));
@@ -540,6 +542,8 @@ pub(crate) fn on_export_clicked(window: &gtk::ApplicationWindow, sender: &Sender
         Some(i18n("_Export").as_str()),
         Some(i18n("_Cancel").as_str()),
     );
+
+    dialog.set_modal(true);
 
     // Translators: This is the string of the suggested name for the exported opml file
     dialog.set_current_name(&format!("{}.opml", i18n("gnome-podcasts-exported-shows")));
