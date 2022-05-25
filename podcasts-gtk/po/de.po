@@ -9,16 +9,16 @@ msgid ""
 msgstr ""
 "Project-Id-Version: podcasts master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2021-09-14 16:55+0000\n"
-"PO-Revision-Date: 2021-09-20 01:04+0200\n"
-"Last-Translator: Philipp Kiemle <philipp.kiemle@gmail.com>\n"
+"POT-Creation-Date: 2022-05-02 17:16+0000\n"
+"PO-Revision-Date: 2022-05-24 23:02+0200\n"
+"Last-Translator: Jürgen Benvenuti <gastornis@posteo.org>\n"
 "Language-Team: Deutsch <gnome-de@gnome.org>\n"
 "Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 3.0\n"
+"X-Generator: Poedit 3.0.1\n"
 
 #: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:15
 msgid "Top position of the last open main window"
@@ -78,7 +78,6 @@ msgid "Podcasts"
 msgstr "Podcasts"
 
 #: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:4
-#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:10
 msgid "Listen to your favorite podcasts, right from your desktop."
 msgstr "Hören Sie Ihre Lieblings-Podcasts direkt in Ihrer Arbeitsumgebung."
 
@@ -88,14 +87,30 @@ msgid "Podcast;RSS;"
 msgstr "Podcast;RSS;"
 
 #: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:8
-msgid "Podcast app for GNOME"
-msgstr "Podcast-Anwendung für GNOME"
+msgid "Listen to your favorite shows"
+msgstr "Hören Sie Ihre Lieblingssendungen"
 
-#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:115
+# Ziemlich frei übersetzt, aber wenn ich "Play" hier mit "abspielen" oder "wiedergeben" übersetze, kommen mir das "ab" und "wieder" in die Quere.
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:10
+msgid ""
+"Play, update, and manage your podcasts from a lightweight interface that "
+"seamlessly integrates with GNOME. Podcasts can play various audio formats "
+"and remember where you stopped listening. You can subscribe to shows via RSS/"
+"Atom, iTunes, and Soundcloud links. Subscriptions from other apps can be "
+"imported via OPML files."
+msgstr ""
+"Hören, aktualisieren und verwalten Sie Ihre Podcasts aus einer "
+"leichtgewichtigen Oberfläche, die sich nahtlos in die GNOME-Umgebung "
+"einfügt. Podcasts kann verschiedene Audio-Formate abspielen und merkt sich, "
+"wo Sie beim Zuhören gestoppt haben. Sie können Sendungen via RSS/Atom, "
+"iTunes und Soundcloud-Verweisen abonnieren. Abonnements von anderen "
+"Programmen können via OPML-Datei importiert werden."
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:134
 msgid "Jordan Petridis"
 msgstr "Jordan Petridis"
 
-#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:116
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:135
 msgid "Julian Hofer"
 msgstr "Julian Hofer"
 
@@ -263,7 +278,6 @@ msgid "1.00×"
 msgstr "1,00×"
 
 #: podcasts-gtk/resources/gtk/player_rate.ui:65
-#| msgid "1.00×"
 msgid "2.00×"
 msgstr "2.00×"
 
@@ -412,7 +426,7 @@ msgstr "{} min"
 msgid "Copied URL to clipboard!"
 msgstr "Adresse in die Zwischenablage kopiert!"
 
-#: podcasts-gtk/src/widgets/player.rs:902
+#: podcasts-gtk/src/widgets/player.rs:910
 msgid "The media player was unable to execute an action."
 msgstr "Die Medienwiedergabe konnte eine Aktion nicht ausführen."
 
@@ -423,6 +437,9 @@ msgstr "Alle Folgen als angehört markieren"
 #: podcasts-gtk/src/widgets/show_menu.rs:199
 msgid "Unsubscribed from {}"
 msgstr "Abonnement von {} gekündigt"
+
+#~ msgid "Podcast app for GNOME"
+#~ msgstr "Podcast-Anwendung für GNOME"
 
 #~ msgid "Double speed rate"
 #~ msgstr "Doppelte Geschwindigkeit"
