@@ -181,6 +181,9 @@ Tobias Bernard
                 <property name="halign">center</property>
                 <property name="valign">center</property>
                 <property name="icon_name">media-playback-start-symbolic</property>
+                <style>
+                  <class name="flat"/>
+                </style>
               </object>
             </child>
             <child>
@@ -190,6 +193,9 @@ Tobias Bernard
                 <property name="halign">center</property>
                 <property name="valign">center</property>
                 <property name="icon_name">media-playback-stop-symbolic</property>
+                <style>
+                  <class name="flat"/>
+                </style>
               </object>
             </child>
             <child>
@@ -199,6 +205,9 @@ Tobias Bernard
                 <property name="halign">center</property>
                 <property name="valign">center</property>
                 <property name="icon_name">document-save-symbolic</property>
+                <style>
+                  <class name="flat"/>
+                </style>
               </object>
             </child>
           </object>
