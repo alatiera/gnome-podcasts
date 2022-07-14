@@ -21,6 +21,7 @@ use glib::clone;
 use glib::prelude::*;
 use glib::subclass::prelude::*;
 
+use adw::subclass::prelude::*;
 use gtk::prelude::*;
 use gtk::subclass::prelude::*;
 
@@ -61,8 +62,7 @@ pub struct PdApplicationPrivate {
 impl ObjectSubclass for PdApplicationPrivate {
     const NAME: &'static str = "PdApplication";
     type Type = PdApplication;
-    type ParentType = gtk::Application;
-    type Interfaces = ();
+    type ParentType = adw::Application;
 
     fn new() -> Self {
         let (sender, r) = glib::MainContext::channel(glib::PRIORITY_DEFAULT);
@@ -85,6 +85,8 @@ impl ObjectImpl for PdApplicationPrivate {}
 impl ApplicationImpl for PdApplicationPrivate {
     fn activate(&self, app: &PdApplication) {
         debug!("GtkApplication<PdApplication>::activate");
+
+        self.parent_activate(app);
 
         if let Some(ref window) = *self.window.borrow() {
             // Ideally Gtk4/GtkBuilder make this irrelvent
@@ -124,9 +126,10 @@ impl ApplicationImpl for PdApplicationPrivate {
 }
 
 impl GtkApplicationImpl for PdApplicationPrivate {}
+impl AdwApplicationImpl for PdApplicationPrivate {}
 
 glib::wrapper! {
-    pub struct PdApplication(ObjectSubclass<PdApplicationPrivate>) @extends gio::Application, gtk::Application;
+    pub struct PdApplication(ObjectSubclass<PdApplicationPrivate>) @extends gio::Application, gtk::Application, adw::Application;
 }
 
 #[derive(Debug, Clone)]

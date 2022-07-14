@@ -88,17 +88,7 @@ async fn main() {
     pretty_env_logger::init();
     gst::init().expect("Error initializing gstreamer");
     gtk::init().expect("Error initializing gtk.");
-    adw::init();
     register_resources().expect("Error registering resources");
-
-    // Add custom style
-    let provider = gtk::CssProvider::new();
-    provider.load_from_resource("/org/gnome/Podcasts/gtk/style.css");
-    gtk::StyleContext::add_provider_for_display(
-        &gtk::gdk::Display::default().expect("Error initializing gtk css provider."),
-        &provider,
-        gtk::STYLE_PROVIDER_PRIORITY_APPLICATION,
-    );
 
     PdApplication::run();
 }

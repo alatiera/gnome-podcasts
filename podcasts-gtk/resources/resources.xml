@@ -20,6 +20,6 @@
       <file compressed="true" preprocess="xml-stripblanks">icons/scalable/actions/skip-back-symbolic.svg</file>
       <file compressed="true" preprocess="xml-stripblanks">icons/scalable/actions/skip-forward-large-symbolic.svg</file>
       <file compressed="true" preprocess="xml-stripblanks">icons/scalable/actions/skip-forward-symbolic.svg</file>
-      <file compressed="true">gtk/style.css</file>
+      <file compressed="true" alias="style.css">gtk/style.css</file>
   </gresource>
 </gresources>
