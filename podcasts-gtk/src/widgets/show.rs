@@ -31,7 +31,7 @@ use podcasts_data::Show;
 
 use crate::app::Action;
 use crate::utils::{self, lazy_load};
-use crate::widgets::{BaseView, EmptyShow, EpisodeWidget, ShortDesc, ShowMenu};
+use crate::widgets::{BaseView, EmptyShow, EpisodeWidget, ReadMoreLabel, ShowMenu};
 
 use std::cell::Cell;
 use std::sync::Arc;
@@ -46,15 +46,7 @@ pub struct ShowWidgetPriv {
     #[template_child]
     pub cover: TemplateChild<gtk::Image>,
     #[template_child]
-    pub description: TemplateChild<gtk::Label>,
-    #[template_child]
-    pub description_short: TemplateChild<ShortDesc>,
-    #[template_child]
-    pub description_stack: TemplateChild<gtk::Stack>,
-    #[template_child]
-    pub description_button: TemplateChild<gtk::Button>,
-    #[template_child]
-    pub description_button_revealer: TemplateChild<gtk::Revealer>,
+    pub read_more_label: TemplateChild<ReadMoreLabel>,
     #[template_child]
     pub episodes: TemplateChild<gtk::ListBox>,
     #[template_child]
@@ -80,19 +72,6 @@ impl ObjectSubclass for ShowWidgetPriv {
 }
 
 impl ObjectImpl for ShowWidgetPriv {
-    fn constructed(&self, obj: &Self::Type) {
-        self.parent_constructed(obj);
-        self.description_short.connect_local(
-            "is-ellipsized",
-            false,
-            clone!(@weak obj => @default-return None, move |args| {
-                let is_ellipsized = args[1].get().unwrap();
-                obj.update_read_more(is_ellipsized);
-                None
-            }),
-        );
-    }
-
     fn dispose(&self, _obj: &Self::Type) {
         self.view.unparent();
     }
@@ -127,11 +106,6 @@ impl ShowWidget {
         let res = populate_listbox(&pdw, pd, sender, vadj);
         debug_assert!(res.is_ok());
 
-        pdw_.description_button
-            .connect_clicked(clone!(@weak pdw => move |_| {
-                pdw.imp().description_stack.set_visible_child_name("full");
-            }));
-
         pdw
     }
 
@@ -149,32 +123,15 @@ impl ShowWidget {
         utils::set_image_from_path(&self.imp().cover, pd.id(), 256)
     }
 
-    fn update_read_more(&self, is_ellipsized: bool) {
-        let self_ = self.imp();
-
-        let more = is_ellipsized || self_.description.label() != self_.description_short.label();
-        self_.description_button_revealer.set_reveal_child(more);
-    }
-
     /// Set the description text.
     fn set_description(&self, text: &str) {
         let self_ = self.imp();
 
         let markup = html2text::from_read(text.as_bytes(), text.as_bytes().len());
         let markup = markup.trim();
-        let markup = glib::markup_escape_text(markup);
-        let lines: Vec<&str> = markup.lines().collect();
 
-        if markup.is_empty() {
-            self_.description_stack.set_visible(false);
-        } else {
-            self_.description_stack.set_visible(true);
-
-            self_.description.set_markup(&markup);
-            debug_assert!(!lines.is_empty());
-            if !lines.is_empty() {
-                self_.description_short.set_label(lines[0]);
-            }
+        if !markup.is_empty() {
+            self_.read_more_label.set_label(markup);
         }
     }
 
