@@ -2,7 +2,6 @@ use gtk::glib;
 use gtk::prelude::*;
 use gtk::subclass::prelude::*;
 
-use once_cell::sync::Lazy;
 use std::cell::Cell;
 
 use crate::i18n::i18n;
@@ -31,7 +30,7 @@ impl ObjectImpl for ReadMoreLabelPriv {
         self.button.set_label(&i18n("Read More"));
         self.button.set_halign(gtk::Align::Center);
         self.button
-            .connect_clicked(glib::clone!(@weak obj => move |button| {
+            .connect_clicked(glib::clone!(@weak obj => move |_| {
                 obj.set_expanded(true);
             }));
 
@@ -75,7 +74,7 @@ impl ObjectImpl for ReadMoreLabelPriv {
 impl WidgetImpl for ReadMoreLabelPriv {
     fn measure(
         &self,
-        widget: &Self::Type,
+        _widget: &Self::Type,
         orientation: gtk::Orientation,
         for_size: i32,
     ) -> (i32, i32, i32, i32) {
@@ -91,7 +90,7 @@ impl WidgetImpl for ReadMoreLabelPriv {
         }
     }
 
-    fn request_mode(&self, widget: &Self::Type) -> gtk::SizeRequestMode {
+    fn request_mode(&self, _widget: &Self::Type) -> gtk::SizeRequestMode {
         gtk::SizeRequestMode::WidthForHeight
     }
 
