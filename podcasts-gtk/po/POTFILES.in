@@ -1,9 +1,5 @@
 # List of source files containing translatable strings.
 # Please keep this file sorted alphabetically.
-podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in
-podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in
-podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in
-
 # ui files
 podcasts-gtk/resources/gtk/empty_show.ui
 podcasts-gtk/resources/gtk/empty_view.ui
@@ -21,6 +17,11 @@ podcasts-gtk/resources/gtk/player_toolbar.ui
 podcasts-gtk/resources/gtk/secondary_menu.ui
 podcasts-gtk/resources/gtk/show_menu.ui
 podcasts-gtk/resources/gtk/show_widget.ui
+
+# resources
+podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in
+podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in
+podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in
 
 # rust files
 podcasts-gtk/src/app.rs
@@ -42,8 +43,8 @@ podcasts-gtk/src/widgets/episode_menu.rs
 podcasts-gtk/src/widgets/home_view.rs
 podcasts-gtk/src/widgets/mod.rs
 podcasts-gtk/src/widgets/player.rs
-podcasts-gtk/src/widgets/show_menu.rs
 podcasts-gtk/src/widgets/read_more_label.rs
 podcasts-gtk/src/widgets/show.rs
+podcasts-gtk/src/widgets/show_menu.rs
 podcasts-gtk/src/widgets/shows_view.rs
 podcasts-gtk/src/window.rs
