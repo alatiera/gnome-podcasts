@@ -12,7 +12,7 @@ dependency('glib-2.0', version: '>= 2.56')
 dependency('gio-2.0', version: '>= 2.56')
 dependency('gdk-pixbuf-2.0')
 dependency('gtk4', version: '>= 4.5.0')
-dependency('libadwaita-1', version :'>=1.0.0')
+dependency('libadwaita-1', version :'>=1.2.alpha')
 
 dependency('gstreamer-1.0', version: '>= 1.16')
 dependency('gstreamer-base-1.0', version: '>= 1.16')

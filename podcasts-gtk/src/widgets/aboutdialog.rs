@@ -22,11 +22,11 @@ use gtk::prelude::*;
 
 use crate::i18n::i18n;
 
-/// Takes a `window` and creates and attaches an `gtk::AboutDialog` to it.
+/// Takes a `window` and creates and attaches an `adw::AboutWindow` to it.
 pub(crate) fn about_dialog(window: &gtk::ApplicationWindow) {
     // Feel free to add yourself if you contributed.
     // Please keep it sorted alphabetically
-    let authors = vec![
+    let developers = vec![
         String::from("Alexandre Franke"),
         String::from("Carlos Soriano"),
         String::from("Constantin Nickel"),
@@ -45,21 +45,21 @@ pub(crate) fn about_dialog(window: &gtk::ApplicationWindow) {
         String::from("Zander Brown"),
     ];
 
-    let artists = vec![String::from("Tobias Bernard"), String::from("Sam Hewitt")];
+    let designers = vec![String::from("Tobias Bernard"), String::from("Sam Hewitt")];
 
-    let dialog = gtk::AboutDialog::builder()
-        .logo_icon_name(APP_ID)
+    let dialog = adw::AboutWindow::builder()
+        .application_icon(APP_ID)
         .comments(i18n("Podcast Client for the GNOME Desktop.").as_str())
         .copyright("© 2017-2021 Jordan Petridis")
         .license_type(gtk::License::Gpl30)
-        .modal(true)
         .version(VERSION)
-        .program_name(&i18n("Podcasts"))
+        .application_name(&i18n("Podcasts"))
         .website("https://gitlab.gnome.org/World/podcasts")
-        .website_label(i18n("Learn more about GNOME Podcasts").as_str())
+        .issue_url("https://gitlab.gnome.org/World/podcasts/-/issues")
         .transient_for(window)
-        .artists(artists)
-        .authors(authors)
+        .developer_name("Jordan Petridis, et al.")
+        .developers(developers)
+        .designers(designers)
         .translator_credits(i18n("translator-credits").as_str())
         .build();
 
