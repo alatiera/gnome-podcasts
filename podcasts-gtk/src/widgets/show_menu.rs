@@ -132,6 +132,7 @@ impl ShowMenu {
 // But now I can't think of a better way to do it than hardcoding the title
 // position relative to the EpisodeWidget container gtk::Box.
 fn dim_titles(episodes: &gtk::ListBox) -> Option<()> {
+    // FIXME This api should only be used for widget implementations.
     let listmodel = episodes.observe_children();
     for i in 0..listmodel.n_items() {
         let obj = listmodel.item(i)?;
@@ -142,6 +143,7 @@ fn dim_titles(episodes: &gtk::ListBox) -> Option<()> {
 }
 
 fn dim_row_title(row: &gtk::ListBoxRow) -> Option<()> {
+    // FIXME first_child should only be used for widget implementations.
     let container = row.first_child()?.downcast::<gtk::Box>().ok()?;
     let foo = container.first_child()?.downcast::<gtk::Box>().ok()?;
     let bar = foo.first_child()?.downcast::<gtk::Box>().ok()?;
@@ -150,6 +152,7 @@ fn dim_row_title(row: &gtk::ListBoxRow) -> Option<()> {
 
     title.add_css_class("dim-label");
 
+    // FIXME next_sibling should only be used for widget implementations.
     let checkmark = title.next_sibling()?.downcast::<gtk::Image>().ok()?;
     checkmark.show();
     Some(())
