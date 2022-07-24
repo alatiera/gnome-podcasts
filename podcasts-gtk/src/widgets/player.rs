@@ -77,6 +77,7 @@ struct PlayerInfo {
     episode_small: gtk::Label,
     cover_small: gtk::Image,
     mpris: Arc<MprisPlayer>,
+    restore_position: i32,
     finished_restore: bool,
     ep: Option<EpisodeWidgetModel>,
     episode_id: RefCell<Option<i32>>,
@@ -447,6 +448,7 @@ impl Default for PlayerWidget {
             show_small,
             episode_small,
             cover_small,
+            restore_position: 0,
             finished_restore: false,
             episode_id: RefCell::new(None),
         };
@@ -492,12 +494,13 @@ impl PlayerWidget {
         self.revealer.set_reveal_child(true);
     }
 
-    pub(crate) fn initialize_episode(&mut self, rowid: i32) -> Result<()> {
+    pub(crate) fn initialize_episode(&mut self, rowid: i32, second: Option<i32>) -> Result<()> {
         let ep = dbqueries::get_episode_widget_from_rowid(rowid)?;
         let pd = dbqueries::get_podcast_cover_from_id(ep.show_id())?;
 
         self.dialog.initialize_episode(&ep, &pd);
 
+        self.info.restore_position = second.unwrap_or(ep.play_position());
         self.info.finished_restore = false;
         self.info.init(&ep, &pd);
 
@@ -513,6 +516,9 @@ impl PlayerWidget {
                 // If it's not the same file load the uri, otherwise just unpause
                 if self.player.uri().map_or(true, |s| s != uri.as_str()) {
                     self.player.set_uri(Some(uri.as_str()));
+                } else if second.is_some() {
+                    // force a jump now if already playing and a jump is given
+                    self.restore_play_position();
                 } else {
                     // just unpause, no restore required
                     self.info.finished_restore = true;
@@ -575,8 +581,7 @@ impl PlayerWidget {
     /// Seek to the `play_position` stored in the episode.
     /// Returns Some(()) if the restore was successful and None otherwise.
     fn restore_play_position(&self) -> Option<()> {
-        let ep = self.info.ep.as_ref()?;
-        let pos = ep.play_position();
+        let pos = self.info.restore_position;
         let s: u64 = pos.try_into().ok()?;
         if pos != 0 {
             self.player.seek(ClockTime::from_seconds(s));
@@ -634,6 +639,7 @@ impl PlayerExt for PlayerWidget {
         self.controls.play.set_visible(true);
 
         self.info.ep = None;
+        self.info.restore_position = 0;
         self.player.stop();
         self.info.mpris.set_playback_status(PlaybackStatus::Paused);
 

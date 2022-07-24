@@ -1478,6 +1478,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "linkify"
+version = "0.10.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "f1dfa36d52c581e9ec783a7ce2a5e0143da6237be5811a0b3153fedfdbe9f780"
+dependencies = [
+ "memchr",
+]
+
+[[package]]
 name = "linux-raw-sys"
 version = "0.3.8"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2029,6 +2038,7 @@ dependencies = [
  "html5ever 0.25.2",
  "humansize",
  "libadwaita",
+ "linkify",
  "log",
  "markup5ever_rcdom",
  "mpris-player",

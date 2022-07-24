@@ -157,6 +157,7 @@ pub(crate) enum Action {
     RemoveShow(Arc<Show>),
     ErrorNotification(String),
     InitEpisode(i32),
+    InitEpisodeAt(i32, i32),
     InitSecondaryMenu(Fragile<gio::MenuModel>),
     EmptyState,
     PopulatedState,
@@ -395,7 +396,14 @@ impl PdApplication {
                 send!(sender, Action::RefreshAllViews);
             }
             Action::InitEpisode(rowid) => {
-                let res = window.player.borrow_mut().initialize_episode(rowid);
+                let res = window.player.borrow_mut().initialize_episode(rowid, None);
+                debug_assert!(res.is_ok());
+            }
+            Action::InitEpisodeAt(rowid, second) => {
+                let res = window
+                    .player
+                    .borrow_mut()
+                    .initialize_episode(rowid, Some(second));
                 debug_assert!(res.is_ok());
             }
             Action::InitSecondaryMenu(s) => {
