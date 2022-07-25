@@ -47,6 +47,7 @@ Tobias Bernard
                 <child>
                   <object class="GtkLabel">
                     <property name="label" translatable="yes">Add new shows via feed URL</property>
+                    <property name="wrap">True</property>
                     <style>
                       <class name="dim-label"/>
                     </style>
@@ -68,6 +69,7 @@ Tobias Bernard
                 <child>
                   <object class="GtkLabel">
                     <property name="label" translatable="yes">Import shows from another device</property>
+                    <property name="wrap">True</property>
                     <style>
                       <class name="dim-label"/>
                     </style>
