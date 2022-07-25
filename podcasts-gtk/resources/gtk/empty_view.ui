@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.22.0 
+<!-- Generated with glade 3.22.0
 
 Copyright (C) 2017 - 2018
 
@@ -27,7 +27,7 @@ Tobias Bernard
   <template class="PdEmptyView" parent="AdwBin">
     <child>
       <object class="AdwStatusPage" id="status_page">
-        <property name="title" translatable="yes">Get some shows</property>
+        <property name="title" translatable="yes">Get Some Shows</property>
         <child>
           <object class="GtkBox">
             <property name="orientation">vertical</property>

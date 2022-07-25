@@ -54,8 +54,7 @@ impl ObjectSubclass for EmptyViewPriv {
 impl ObjectImpl for EmptyViewPriv {
     fn constructed(&self) {
         self.parent_constructed();
-        self.status_page
-            .set_icon_name(Some(&format!("{}-symbolic", APP_ID)));
+        self.status_page.set_icon_name(Some(APP_ID));
     }
 }
 
