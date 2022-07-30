@@ -39,11 +39,11 @@ Tobias Bernard
         <property name="spacing">6</property>
         <child>
           <object class="GtkLabel" id="enter_address_label">
-            <property name="halign">start</property>
+            <property name="xalign">0</property>
             <property name="hexpand">False</property>
-            <property name="label" translatable="yes">Enter feed address to add</property>
+            <property name="label" translatable="yes">Enter Feed Address</property>
             <style>
-              <class name="dim-label"/>
+              <class name="heading"/>
             </style>
           </object>
         </child>
