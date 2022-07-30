@@ -40,6 +40,7 @@ pub(crate) enum State {
 #[derive(Debug, Clone)]
 pub(crate) struct Content {
     container: gtk::Box,
+    progress_bar: gtk::ProgressBar,
     stack: adw::ViewStack,
     shows: Rc<RefCell<ShowStack>>,
     home: Rc<RefCell<HomeStack>>,
@@ -52,10 +53,20 @@ impl Content {
         let stack = adw::ViewStack::new();
         let home = Rc::new(RefCell::new(HomeStack::new(sender.clone())?));
         let shows = Rc::new(RefCell::new(ShowStack::new(sender.clone())));
+        let progress_bar = gtk::ProgressBar::new();
+        let overlay = gtk::Overlay::new();
+
+        progress_bar.set_valign(gtk::Align::Start);
+        progress_bar.set_halign(gtk::Align::Center);
+        progress_bar.hide();
+        progress_bar.add_css_class("osd");
+
+        overlay.set_child(Some(&stack));
+        overlay.add_overlay(&progress_bar);
 
         // container will hold the header bar and the content
         container.set_widget_name("content");
-        container.append(&stack);
+        container.append(&overlay);
         let home_page = stack.add_titled(&home.borrow().get_stack(), Some("home"), &i18n("New"));
         let shows_page =
             stack.add_titled(&shows.borrow().get_stack(), Some("shows"), &i18n("Shows"));
@@ -65,6 +76,7 @@ impl Content {
 
         let con = Content {
             container,
+            progress_bar,
             stack,
             shows,
             home,
@@ -116,6 +128,9 @@ impl Content {
             .ok();
     }
 
+    pub(crate) fn get_progress_bar(&self) -> gtk::ProgressBar {
+        self.progress_bar.clone()
+    }
     pub(crate) fn get_stack(&self) -> adw::ViewStack {
         self.stack.clone()
     }

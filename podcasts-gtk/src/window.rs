@@ -80,7 +80,7 @@ impl MainWindow {
 
         // Create a content instance
         let content = Content::new(sender).expect("Content initialization failed.");
-
+        let progress_bar = content.get_progress_bar();
         // Create the headerbar
         let header = Header::new(&content, sender);
 
@@ -91,11 +91,7 @@ impl MainWindow {
         main_deck.append(&content.get_container());
 
         let wrap = gtk::Box::new(gtk::Orientation::Vertical, 0);
-        let progress_bar = gtk::ProgressBar::new();
-        progress_bar.hide();
-        progress_bar.add_css_class("osd");
 
-        content.get_container().prepend(&progress_bar);
         // Add the Headerbar to the window.
         content.get_container().prepend(&header.container);
 
