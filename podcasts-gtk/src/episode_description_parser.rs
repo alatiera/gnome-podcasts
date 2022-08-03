@@ -19,7 +19,6 @@
 
 use linkify::LinkFinder;
 use linkify::LinkKind;
-use regex::Matches;
 use regex::Regex;
 use std::default::Default;
 use std::string::String;
@@ -115,7 +114,9 @@ fn handle_child(buffer: &mut String, node: &Handle, state: &mut ParserState) {
                         .iter()
                         .find(|attr| attr.name.local == local_name)
                         .cloned();
-                    Some("a")
+                    // Pango does not support a tags without href,
+                    // so return a None in that case
+                    wrapper_href.as_ref().map(|_| "a")
                 }
                 expanded_name!(html "p") => {
                     is_p_tag = true;

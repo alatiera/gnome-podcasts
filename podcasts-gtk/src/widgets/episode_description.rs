@@ -52,7 +52,6 @@ pub struct EpisodeDescriptionPriv {
     description: TemplateChild<gtk::Label>,
 }
 
-
 impl EpisodeDescriptionPriv {
     fn init(&self, sender: Sender<Action>, ep: Arc<Episode>, show: Arc<Show>) {
         self.set_description(&ep);
@@ -67,19 +66,17 @@ impl EpisodeDescriptionPriv {
 
         let sender = sender.clone();
         self.description.connect_activate_link(move |_, url| {
-                if let Some(seconds_str) = url.strip_prefix("jump:") {
-                    if let Ok(seconds) = seconds_str.parse() {
-                        send!(sender, Action::InitEpisodeAt(id, seconds));
-                    } else {
-                        error!("failed to parse jump link: {}", url);
-                    }
-                    gtk::Inhibit(true)
+            if let Some(seconds_str) = url.strip_prefix("jump:") {
+                if let Ok(seconds) = seconds_str.parse() {
+                    send!(sender, Action::InitEpisodeAt(id, seconds));
                 } else {
-                    gtk::Inhibit(false)
+                    error!("failed to parse jump link: {}", url);
                 }
-            },
-        );
-
+                gtk::Inhibit(true)
+            } else {
+                gtk::Inhibit(false)
+            }
+        });
     }
 
     fn set_description(&self, ep: &Episode) {
