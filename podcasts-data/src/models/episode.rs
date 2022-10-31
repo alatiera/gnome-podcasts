@@ -28,10 +28,10 @@ use crate::models::{Save, Show};
 use crate::schema::episodes;
 
 #[derive(Queryable, Identifiable, AsChangeset, Associations, PartialEq)]
-#[table_name = "episodes"]
-#[changeset_options(treat_none_as_null = "true")]
-#[primary_key(title, show_id)]
-#[belongs_to(Show, foreign_key = "show_id")]
+#[diesel(table_name = episodes)]
+#[diesel(treat_none_as_null = true)]
+#[diesel(primary_key(title, show_id))]
+#[diesel(belongs_to(Show, foreign_key = show_id))]
 #[derive(Debug, Clone)]
 /// Diesel Model of the episode table.
 pub struct Episode {
@@ -56,9 +56,10 @@ impl Save<Episode> for Episode {
     /// Database.
     fn save(&self) -> Result<Episode, Self::Error> {
         let db = connection();
-        let tempdb = db.get()?;
+        let mut tempdb = db.get()?;
 
-        self.save_changes::<Episode>(&*tempdb).map_err(From::from)
+        self.save_changes::<Episode>(&mut tempdb)
+            .map_err(From::from)
     }
 }
 
@@ -142,9 +143,9 @@ impl Episode {
 }
 
 #[derive(Queryable, AsChangeset, PartialEq)]
-#[table_name = "episodes"]
-#[changeset_options(treat_none_as_null = "true")]
-#[primary_key(title, show_id)]
+#[diesel(table_name = episodes)]
+#[diesel(treat_none_as_null = true)]
+#[diesel(primary_key(title, show_id))]
 #[derive(Debug, Clone)]
 /// Diesel Model to be used for constructing `EpisodeWidgets`.
 pub struct EpisodeWidgetModel {
@@ -186,11 +187,11 @@ impl Save<usize> for EpisodeWidgetModel {
         use crate::schema::episodes::dsl::*;
 
         let db = connection();
-        let tempdb = db.get()?;
+        let mut tempdb = db.get()?;
 
         diesel::update(episodes.filter(rowid.eq(self.rowid)))
             .set(self)
-            .execute(&*tempdb)
+            .execute(&mut tempdb)
             .map_err(From::from)
     }
 }
@@ -306,9 +307,9 @@ impl EpisodeWidgetModel {
 }
 
 #[derive(Queryable, AsChangeset, PartialEq)]
-#[table_name = "episodes"]
-#[changeset_options(treat_none_as_null = "true")]
-#[primary_key(title, show_id)]
+#[diesel(table_name = episodes)]
+#[diesel(treat_none_as_null = true)]
+#[diesel(primary_key(title, show_id))]
 #[derive(Debug, Clone)]
 /// Diesel Model to be used internal with the `utils::checkup` function.
 pub struct EpisodeCleanerModel {
@@ -326,11 +327,11 @@ impl Save<usize> for EpisodeCleanerModel {
         use crate::schema::episodes::dsl::*;
 
         let db = connection();
-        let tempdb = db.get()?;
+        let mut tempdb = db.get()?;
 
         diesel::update(episodes.filter(rowid.eq(self.rowid)))
             .set(self)
-            .execute(&*tempdb)
+            .execute(&mut tempdb)
             .map_err(From::from)
     }
 }
@@ -378,9 +379,9 @@ impl EpisodeCleanerModel {
 }
 
 #[derive(Queryable, AsChangeset, PartialEq)]
-#[table_name = "episodes"]
-#[changeset_options(treat_none_as_null = "true")]
-#[primary_key(title, show_id)]
+#[diesel(table_name = episodes)]
+#[diesel(treat_none_as_null = true)]
+#[diesel(primary_key(title, show_id))]
 #[derive(Debug, Clone)]
 /// Diesel Model to be used for FIXME.
 pub struct EpisodeMinimal {

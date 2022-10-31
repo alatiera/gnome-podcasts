@@ -34,7 +34,7 @@ use crate::utils::vec_u8_to_u64;
 use chrono::{NaiveDateTime, Utc};
 
 #[derive(Insertable, AsChangeset)]
-#[table_name = "shows"]
+#[diesel(table_name = shows)]
 #[derive(Debug, Clone, Default, Builder)]
 #[builder(default)]
 #[builder(derive(Debug))]
@@ -55,11 +55,11 @@ impl Insert<()> for NewShow {
     fn insert(&self) -> Result<(), Self::Error> {
         use crate::schema::shows::dsl::*;
         let db = connection();
-        let con = db.get()?;
+        let mut con = db.get()?;
 
         diesel::insert_into(shows)
             .values(self)
-            .execute(&con)
+            .execute(&mut con)
             .map(|_| ())
             .map_err(From::from)
     }
@@ -71,12 +71,12 @@ impl Update<()> for NewShow {
     fn update(&self, show_id: i32) -> Result<(), Self::Error> {
         use crate::schema::shows::dsl::*;
         let db = connection();
-        let con = db.get()?;
+        let mut con = db.get()?;
 
         info!("Updating {}", self.title);
         diesel::update(shows.filter(id.eq(show_id)))
             .set(self)
-            .execute(&con)
+            .execute(&mut con)
             .map(|_| ())
             .map_err(From::from)
     }

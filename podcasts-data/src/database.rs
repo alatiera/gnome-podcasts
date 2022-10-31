@@ -24,6 +24,8 @@ use diesel::prelude::*;
 use diesel::r2d2;
 use diesel::r2d2::ConnectionManager;
 
+use diesel_migrations::{embed_migrations, EmbeddedMigrations, MigrationHarness};
+
 use once_cell::sync::Lazy;
 
 use std::io;
@@ -36,7 +38,7 @@ use crate::xdg_dirs;
 
 type Pool = r2d2::Pool<ConnectionManager<SqliteConnection>>;
 
-embed_migrations!("migrations/");
+pub const MIGRATIONS: EmbeddedMigrations = embed_migrations!("migrations/");
 
 static POOL: Lazy<Pool> = Lazy::new(|| init_pool(DB_PATH.to_str().unwrap()));
 
@@ -67,26 +69,27 @@ fn init_pool(db_path: &str) -> Pool {
         .expect("Failed to create pool.");
 
     {
-        let db = pool.get().expect("Failed to initialize pool.");
-        run_migration_on(&*db).expect("Failed to run migrations during init.");
+        let mut db = pool.get().expect("Failed to initialize pool.");
+        run_migration_on(&mut db).expect("Failed to run migrations during init.");
     }
     info!("Database pool initialized.");
     pool
 }
 
-fn run_migration_on(connection: &SqliteConnection) -> Result<(), DataError> {
+fn run_migration_on(
+    conn: &mut SqliteConnection,
+) -> Result<Vec<diesel::migration::MigrationVersion<'_>>, DataError> {
     info!("Running DB Migrations...");
-    // embedded_migrations::run(connection)?;
-    embedded_migrations::run_with_output(connection, &mut io::stdout()).map_err(From::from)
+    conn.run_pending_migrations(MIGRATIONS)
+        .map_err(|_| DataError::DieselMigrationError)
 }
 
 /// Reset the database into a clean state.
 // Test share a Temp file db.
 pub fn truncate_db() -> Result<(), DataError> {
+    use diesel::connection::SimpleConnection;
     let db = connection();
-    let con = db.get()?;
-    con.execute("DELETE FROM episodes")?;
-    con.execute("DELETE FROM shows")?;
-    con.execute("DELETE FROM source")?;
+    let mut con = db.get()?;
+    con.batch_execute("DELETE FROM episodes; DELETE FROM shows; DELETE FROM source")?;
     Ok(())
 }

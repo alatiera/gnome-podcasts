@@ -33,11 +33,11 @@ once_cell = "1.9"
 
 [dependencies.diesel]
 features = ["chrono", "sqlite", "r2d2"]
-version = "1.4"
+version = "2.0"
 
 [dependencies.diesel_migrations]
 features = ["sqlite"]
-version = "1.4"
+version = "2.0"
 
 [dependencies.tokio]
 features = ["rt-multi-thread", "macros"]

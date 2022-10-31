@@ -28,7 +28,7 @@ use crate::models::Source;
 use crate::schema::source;
 
 #[derive(Insertable)]
-#[table_name = "source"]
+#[diesel(table_name = source)]
 #[derive(Debug, Clone, Default, Builder, PartialEq)]
 #[builder(default)]
 #[builder(derive(Debug))]
@@ -51,11 +51,11 @@ impl NewSource {
     pub(crate) fn insert_or_ignore(&self) -> Result<(), DataError> {
         use crate::schema::source::dsl::*;
         let db = connection();
-        let con = db.get()?;
+        let mut con = db.get()?;
 
         diesel::insert_or_ignore_into(source)
             .values(self)
-            .execute(&con)
+            .execute(&mut con)
             .map(|_| ())
             .map_err(From::from)
     }

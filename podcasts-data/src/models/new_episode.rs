@@ -29,7 +29,7 @@ use crate::schema::episodes;
 use crate::utils::url_cleaner;
 
 #[derive(Insertable, AsChangeset)]
-#[table_name = "episodes"]
+#[diesel(table_name = episodes)]
 #[derive(Debug, Clone, Default, Builder, PartialEq)]
 #[builder(default)]
 #[builder(derive(Debug))]
@@ -66,12 +66,12 @@ impl Insert<()> for NewEpisode {
     fn insert(&self) -> Result<(), DataError> {
         use crate::schema::episodes::dsl::*;
         let db = connection();
-        let con = db.get()?;
+        let mut con = db.get()?;
 
         info!("Inserting {:?}", self.title);
         diesel::insert_into(episodes)
             .values(self)
-            .execute(&con)
+            .execute(&mut con)
             .map_err(From::from)
             .map(|_| ())
     }
@@ -83,12 +83,12 @@ impl Update<()> for NewEpisode {
     fn update(&self, episode_id: i32) -> Result<(), DataError> {
         use crate::schema::episodes::dsl::*;
         let db = connection();
-        let con = db.get()?;
+        let mut con = db.get()?;
 
         info!("Updating {:?}", self.title);
         diesel::update(episodes.filter(rowid.eq(episode_id)))
             .set(self)
-            .execute(&con)
+            .execute(&mut con)
             .map_err(From::from)
             .map(|_| ())
     }
@@ -195,7 +195,7 @@ impl NewEpisode {
 }
 
 #[derive(Insertable, AsChangeset)]
-#[table_name = "episodes"]
+#[diesel(table_name = episodes)]
 #[derive(Debug, Clone, Builder, PartialEq)]
 #[builder(derive(Debug))]
 #[builder(setter(into))]

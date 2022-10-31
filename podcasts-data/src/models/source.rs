@@ -44,8 +44,8 @@ use crate::USER_AGENT;
 use std::str::FromStr;
 
 #[derive(Queryable, Identifiable, AsChangeset, PartialEq)]
-#[table_name = "source"]
-#[changeset_options(treat_none_as_null = "true")]
+#[diesel(table_name = source)]
+#[diesel(treat_none_as_null = true)]
 #[derive(Debug, Clone)]
 /// Diesel Model of the source table.
 pub struct Source {
@@ -62,9 +62,9 @@ impl Save<Source> for Source {
     /// Database.
     fn save(&self) -> Result<Source, Self::Error> {
         let db = connection();
-        let con = db.get()?;
+        let mut con = db.get()?;
 
-        self.save_changes::<Source>(&*con).map_err(From::from)
+        self.save_changes::<Source>(&mut con).map_err(From::from)
     }
 }
 

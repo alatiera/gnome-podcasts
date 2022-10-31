@@ -18,7 +18,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 use diesel::r2d2;
-use diesel_migrations::RunMigrationsError;
 
 use std::io;
 
@@ -29,8 +28,8 @@ use thiserror::Error;
 pub enum DataError {
     #[error("SQL Query failed: {0}")]
     DieselResultError(#[from] diesel::result::Error),
-    #[error("Database Migration error: {0}")]
-    DieselMigrationError(#[from] RunMigrationsError),
+    #[error("Database Migration error")]
+    DieselMigrationError,
     #[error("R2D2 error: {0}")]
     R2D2Error(#[from] r2d2::Error),
     #[error("R2D2 Pool error: {0}")]

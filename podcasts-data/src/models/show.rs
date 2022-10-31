@@ -28,9 +28,9 @@ use diesel::query_dsl::filter_dsl::FilterDsl;
 use diesel::{ExpressionMethods, RunQueryDsl};
 
 #[derive(Queryable, Identifiable, AsChangeset, Associations, PartialEq)]
-#[belongs_to(Source, foreign_key = "source_id")]
-#[changeset_options(treat_none_as_null = "true")]
-#[table_name = "shows"]
+#[diesel(belongs_to(Source, foreign_key = source_id))]
+#[diesel(treat_none_as_null = true)]
+#[diesel(table_name = shows)]
 #[derive(Debug, Clone)]
 /// Diesel Model of the shows table.
 pub struct Show {
@@ -96,7 +96,7 @@ impl Show {
     pub fn update_image_uri_hash(&self) -> Result<(), DataError> {
         use crate::schema::shows::dsl::*;
         let db = connection();
-        let con = db.get()?;
+        let mut con = db.get()?;
 
         let mut hash: Option<Vec<u8>> = None;
         if let Some(i) = &self.image_uri {
@@ -105,7 +105,7 @@ impl Show {
 
         diesel::update(shows.filter(id.eq(self.id)))
             .set(image_uri_hash.eq(&hash))
-            .execute(&con)
+            .execute(&mut con)
             .map(|_| ())
             .map_err(From::from)
     }
@@ -114,10 +114,10 @@ impl Show {
     pub fn update_image_cached(&self) -> Result<(), DataError> {
         use crate::schema::shows::dsl::*;
         let db = connection();
-        let con = db.get()?;
+        let mut con = db.get()?;
         diesel::update(shows.filter(id.eq(self.id)))
             .set(image_cached.eq(Utc::now().naive_utc()))
-            .execute(&con)
+            .execute(&mut con)
             .map(|_| ())
             .map_err(From::from)
     }
