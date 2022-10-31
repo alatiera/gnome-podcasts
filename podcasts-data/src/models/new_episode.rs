@@ -277,7 +277,7 @@ impl NewEpisodeMinimal {
             .guid(guid)
             .show_id(parent_id)
             .build()
-            .map_err(DataError::BuilderError)
+            .map_err(|err| DataError::BuilderError(format!("{err}")))
     }
 
     // TODO: TryInto is stabilizing in rustc v1.26!

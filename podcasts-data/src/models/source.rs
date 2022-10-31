@@ -256,7 +256,7 @@ impl Source {
             .channel(chan)
             .source_id(id)
             .build()
-            .map_err(DataError::BuilderError)
+            .map_err(|err| DataError::BuilderError(format!("{err}")))
     }
 
     async fn get_response(
