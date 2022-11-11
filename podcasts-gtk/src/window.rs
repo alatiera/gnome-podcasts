@@ -165,10 +165,10 @@ impl ObjectSubclass for MainWindowPriv {
             win.imp().bottom_sheet.set_open(false);
         });
         klass.install_action("win.raise-playback-rate", None, move |win, _, _| {
-            win.player().change_playback_rate(0.25);
+            win.player_mut().change_playback_rate(0.25);
         });
         klass.install_action("win.lower-playback-rate", None, move |win, _, _| {
-            win.player().change_playback_rate(-0.25);
+            win.player_mut().change_playback_rate(-0.25);
         });
     }
 
