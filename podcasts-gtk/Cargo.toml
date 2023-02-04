@@ -54,4 +54,4 @@ pretty_assertions = "1.0.0"
 
 [dependencies.tokio]
 features = ["rt-multi-thread", "macros"]
-version = "1.10.0"
+version = "1.24.2"
