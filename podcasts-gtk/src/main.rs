@@ -84,13 +84,13 @@ fn init_gtk_tests() -> anyhow::Result<()> {
 }
 
 #[tokio::main]
-async fn main() {
+async fn main() -> glib::ExitCode {
     pretty_env_logger::init();
     gst::init().expect("Error initializing gstreamer");
     gtk::init().expect("Error initializing gtk.");
     register_resources().expect("Error registering resources");
 
-    PdApplication::run();
+    PdApplication::run()
 }
 
 fn register_resources() -> anyhow::Result<()> {

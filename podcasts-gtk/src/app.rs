@@ -443,7 +443,7 @@ impl PdApplication {
         glib::Continue(true)
     }
 
-    pub(crate) fn run() {
+    pub(crate) fn run() -> glib::ExitCode {
         // Set up the textdomain for gettext
         setlocale(LocaleCategory::LcAll, "");
         bindtextdomain("gnome-podcasts", LOCALEDIR);
@@ -458,7 +458,7 @@ impl PdApplication {
         glib::set_application_name(&i18n("Podcasts"));
         gtk::Window::set_default_icon_name(APP_ID);
         let args: Vec<String> = env::args().collect();
-        ApplicationExtManual::run_with_args(&application, &args);
+        ApplicationExtManual::run_with_args(&application, &args)
     }
 
     pub(crate) fn send_toast(&self, toast: adw::Toast) {
