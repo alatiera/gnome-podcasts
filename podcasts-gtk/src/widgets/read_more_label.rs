@@ -24,8 +24,10 @@ impl ObjectSubclass for ReadMoreLabelPriv {
 }
 
 impl ObjectImpl for ReadMoreLabelPriv {
-    fn constructed(&self, obj: &Self::Type) {
-        self.parent_constructed(obj);
+    fn constructed(&self) {
+        self.parent_constructed();
+
+        let obj = self.obj();
 
         self.button.set_label(&i18n("Read More"));
         self.button.set_halign(gtk::Align::Center);
@@ -61,23 +63,18 @@ impl ObjectImpl for ReadMoreLabelPriv {
         self.long_label.set_halign(gtk::Align::Center);
         self.long_label.set_child_visible(false);
 
-        self.long_label.set_parent(obj);
-        self.short_desc.set_parent(obj);
+        self.long_label.set_parent(obj.upcast_ref::<gtk::Widget>());
+        self.short_desc.set_parent(obj.upcast_ref::<gtk::Widget>());
     }
 
-    fn dispose(&self, _obj: &Self::Type) {
+    fn dispose(&self) {
         self.short_desc.unparent();
         self.long_label.unparent();
     }
 }
 
 impl WidgetImpl for ReadMoreLabelPriv {
-    fn measure(
-        &self,
-        _widget: &Self::Type,
-        orientation: gtk::Orientation,
-        for_size: i32,
-    ) -> (i32, i32, i32, i32) {
+    fn measure(&self, orientation: gtk::Orientation, for_size: i32) -> (i32, i32, i32, i32) {
         if self.expanded.get() {
             let (min_h, nat_h, min_b, nat_b) = self.long_label.measure(orientation, for_size);
             if orientation == gtk::Orientation::Vertical {
@@ -90,17 +87,17 @@ impl WidgetImpl for ReadMoreLabelPriv {
         }
     }
 
-    fn request_mode(&self, _widget: &Self::Type) -> gtk::SizeRequestMode {
+    fn request_mode(&self) -> gtk::SizeRequestMode {
         gtk::SizeRequestMode::WidthForHeight
     }
 
-    fn size_allocate(&self, widget: &Self::Type, width: i32, height: i32, baseline: i32) {
+    fn size_allocate(&self, width: i32, height: i32, baseline: i32) {
         let long_nat_h = self.long_label.measure(gtk::Orientation::Vertical, width).1;
 
         // If we have enough space to allocate the long label, we directly
         // allocate it.
         if long_nat_h < height {
-            widget.set_expanded_inner(true);
+            self.obj().set_expanded_inner(true);
         }
 
         if self.expanded.get() {
@@ -118,7 +115,7 @@ glib::wrapper! {
 
 impl Default for ReadMoreLabel {
     fn default() -> Self {
-        glib::Object::new(&[]).unwrap()
+        glib::Object::new()
     }
 }
 

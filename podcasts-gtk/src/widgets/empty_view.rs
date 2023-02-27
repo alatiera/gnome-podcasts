@@ -19,9 +19,7 @@
 
 use crate::config::APP_ID;
 
-use adw::prelude::*;
 use adw::subclass::prelude::*;
-use gtk::subclass::prelude::*;
 use gtk::{glib, CompositeTemplate};
 
 #[derive(Debug, CompositeTemplate)]
@@ -54,8 +52,8 @@ impl ObjectSubclass for EmptyViewPriv {
 }
 
 impl ObjectImpl for EmptyViewPriv {
-    fn constructed(&self, obj: &Self::Type) {
-        self.parent_constructed(obj);
+    fn constructed(&self) {
+        self.parent_constructed();
         self.status_page
             .set_icon_name(Some(&format!("{}-symbolic", APP_ID)));
     }
@@ -71,6 +69,6 @@ glib::wrapper! {
 
 impl Default for EmptyView {
     fn default() -> Self {
-        glib::Object::new(&[]).expect("Failed to create EmptyView Box")
+        glib::Object::new()
     }
 }

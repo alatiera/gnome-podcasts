@@ -17,7 +17,6 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-use gtk::prelude::*;
 use gtk::subclass::prelude::*;
 use gtk::{glib, CompositeTemplate};
 
@@ -53,6 +52,6 @@ glib::wrapper! {
 
 impl Default for EmptyShow {
     fn default() -> Self {
-        glib::Object::new(&[]).expect("Failed to create EmptyShow Box")
+        glib::Object::new()
     }
 }

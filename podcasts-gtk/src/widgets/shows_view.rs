@@ -20,7 +20,7 @@
 use adw::{prelude::BinExt, subclass::prelude::*};
 use glib::clone;
 use gtk::glib;
-use gtk::{prelude::*, subclass::prelude::*, Adjustment, Align, SelectionMode};
+use gtk::{prelude::*, Adjustment, Align, SelectionMode};
 
 use anyhow::Result;
 use glib::Sender;
@@ -138,13 +138,13 @@ impl ObjectSubclass for ShowCoverPrivate {
 }
 
 impl ObjectImpl for ShowCoverPrivate {
-    fn constructed(&self, obj: &Self::Type) {
-        self.parent_constructed(obj);
+    fn constructed(&self) {
+        self.parent_constructed();
         self.cover.set_pixel_size(256);
         self.cover.add_css_class("rounded-big");
         self.cover.set_overflow(gtk::Overflow::Hidden);
 
-        obj.set_child(Some(&self.cover));
+        self.obj().set_child(Some(&self.cover));
     }
 }
 
@@ -158,21 +158,19 @@ glib::wrapper! {
 
 impl ShowCover {
     fn new() -> Self {
-        glib::Object::new(&[]).expect("Failed to create PdShowCover")
+        glib::Object::new()
     }
 
     fn set_id(&self, id: i32) {
-        let self_ = ShowCoverPrivate::from_instance(self);
-        self_.show_id.set(id);
+        self.imp().show_id.set(id);
     }
 
     fn id(&self) -> i32 {
-        let self_ = ShowCoverPrivate::from_instance(self);
-        self_.show_id.get()
+        self.imp().show_id.get()
     }
 
     fn load_image(&self) -> Result<()> {
-        let self_ = ShowCoverPrivate::from_instance(self);
+        let self_ = self.imp();
         set_image_from_path(&self_.cover, self_.show_id.get(), 256)?;
         Ok(())
     }

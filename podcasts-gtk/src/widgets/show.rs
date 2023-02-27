@@ -72,7 +72,7 @@ impl ObjectSubclass for ShowWidgetPriv {
 }
 
 impl ObjectImpl for ShowWidgetPriv {
-    fn dispose(&self, _obj: &Self::Type) {
+    fn dispose(&self) {
         self.view.unparent();
     }
 }
@@ -86,7 +86,7 @@ glib::wrapper! {
 
 impl Default for ShowWidget {
     fn default() -> Self {
-        glib::Object::new(&[]).unwrap()
+        glib::Object::new()
     }
 }
 

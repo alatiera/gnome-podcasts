@@ -227,7 +227,7 @@ impl PlayerRate {
         // This needs to be a string to work with GMenuModel
         let variant_type = glib::VariantTy::new("s").expect("Could not parse variant type");
         let action =
-            gio::SimpleAction::new_stateful("set", Some(&variant_type), &"1.00".to_variant());
+            gio::SimpleAction::new_stateful("set", Some(&variant_type), "1.00".to_variant());
         let btn: gtk::MenuButton = builder.object("rate_button").unwrap();
 
         PlayerRate { action, btn }
@@ -238,7 +238,7 @@ impl PlayerRate {
         self.action
             .connect_activate(clone!(@weak widget => move |action, rate_v| {
                 let variant = rate_v.unwrap();
-                action.set_state(&variant);
+                action.set_state(variant.clone());
                 let rate = variant
                     .get::<String>()
                     .expect("Could not get rate from variant")
@@ -362,9 +362,9 @@ impl Default for PlayerWidget {
     fn default() -> Self {
         let dispatcher = gst_player::PlayerGMainContextSignalDispatcher::new(None);
         let player = gst_player::Player::new(
-            None,
+            None::<gst_player::PlayerVideoRenderer>,
             // Use the gtk main thread
-            Some(&dispatcher.upcast::<gst_player::PlayerSignalDispatcher>()),
+            Some(dispatcher.upcast::<gst_player::PlayerSignalDispatcher>()),
         );
 
         // A few podcasts have a video track of the thumbnail, which GStreamer displays in a new

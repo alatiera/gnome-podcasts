@@ -23,7 +23,6 @@ use glib::subclass::prelude::*;
 
 use adw::subclass::prelude::*;
 use gtk::prelude::*;
-use gtk::subclass::prelude::*;
 
 use gettextrs::{bindtextdomain, setlocale, textdomain, LocaleCategory};
 
@@ -83,10 +82,10 @@ impl ObjectSubclass for PdApplicationPrivate {
 impl ObjectImpl for PdApplicationPrivate {}
 
 impl ApplicationImpl for PdApplicationPrivate {
-    fn activate(&self, app: &PdApplication) {
+    fn activate(&self) {
         debug!("GtkApplication<PdApplication>::activate");
 
-        self.parent_activate(app);
+        self.parent_activate();
 
         if let Some(ref window) = *self.window.borrow() {
             // Ideally Gtk4/GtkBuilder make this irrelvent
@@ -95,7 +94,7 @@ impl ApplicationImpl for PdApplicationPrivate {
             return;
         }
 
-        let app = app.clone().downcast::<PdApplication>().expect("How?");
+        let app = self.obj();
         app.setup_gactions();
 
         let window = MainWindow::new(&app, &self.sender);
@@ -106,14 +105,19 @@ impl ApplicationImpl for PdApplicationPrivate {
         app.setup_accels();
 
         // Setup action channel
-        let receiver = self.receiver.borrow_mut().take().unwrap();
-        receiver.attach(None, move |action| app.do_action(action));
+        let receiver = self.receiver.take().unwrap();
+        receiver.attach(
+            None,
+            clone!(@weak app => @default-panic, move |action| {
+                app.do_action(action)
+            }),
+        );
     }
 
-    fn startup(&self, app: &PdApplication) {
+    fn startup(&self) {
         debug!("GtkApplication<PdApplication>::startup");
 
-        self.parent_startup(app);
+        self.parent_startup();
 
         let settings = gio::Settings::new(APP_ID);
 
@@ -165,16 +169,15 @@ pub(crate) enum Action {
 
 impl PdApplication {
     pub(crate) fn new() -> Self {
-        glib::Object::new(&[
-            ("application-id", &Some(APP_ID)),
-            ("resource-base-path", &Some("/org/gnome/Podcasts")),
-        ])
-        .expect("Application initialization failed...")
+        glib::Object::builder()
+            .property("application-id", APP_ID)
+            .property("resource-base-path", "/org/gnome/Podcasts")
+            .build()
     }
 
     fn setup_gactions(&self) {
         let app = self.upcast_ref::<gtk::Application>();
-        let data = PdApplicationPrivate::from_instance(self);
+        let data = self.imp();
         // Create the quit action
         utils::make_action(
             app,
@@ -196,7 +199,7 @@ impl PdApplication {
         let undo_mark_all = gio::SimpleAction::new("undo-mark-all", Some(&i32_variant_type));
         undo_mark_all.connect_activate(
             clone!(@weak self as app, @strong data.sender as sender => move |_, id_variant_option| {
-                let data = PdApplicationPrivate::from_instance(&app);
+                let data = app.imp();
                 let id = id_variant_option.unwrap().get::<i32>().unwrap();
                 let mut ids = data.undo_marked_ids.borrow_mut();
                 if !ids.contains(&id) {
@@ -211,7 +214,7 @@ impl PdApplication {
         let undo_remove_show = gio::SimpleAction::new("undo-remove-show", Some(&i32_variant_type));
         undo_remove_show.connect_activate(
             clone!(@weak self as app, @strong data.sender as sender => move |_, id_variant_option| {
-                let data = PdApplicationPrivate::from_instance(&app);
+                let data = app.imp();
                 let id = id_variant_option.unwrap().get::<i32>().unwrap();
                 let mut ids = data.undo_remove_ids.borrow_mut();
                 if !ids.contains(&id) {
@@ -230,7 +233,7 @@ impl PdApplication {
     /// We check if the User pressed the Undo button, which would add
     /// the id into undo_revove_ids.
     pub fn is_show_marked_delete(&self, pd: &Show) -> bool {
-        let data = PdApplicationPrivate::from_instance(self);
+        let data = self.imp();
         let id = pd.id();
         let mut undo_remove_ids = data.undo_remove_ids.borrow_mut();
 
@@ -244,7 +247,7 @@ impl PdApplication {
     }
 
     pub fn is_show_marked_mark(&self, pd: &Show) -> bool {
-        let data = PdApplicationPrivate::from_instance(self);
+        let data = self.imp();
         let id = pd.id();
         let mut undo_marked_ids = data.undo_marked_ids.borrow_mut();
 
@@ -262,7 +265,7 @@ impl PdApplication {
         let id = id_variant.get::<i32>().expect("invalid variant type");
         let ep = dbqueries::get_episode_from_rowid(id)?;
         let show = dbqueries::get_podcast_from_id(ep.show_id())?;
-        let data = PdApplicationPrivate::from_instance(self);
+        let data = self.imp();
         send!(
             data.sender,
             Action::GoToEpisodeDescription(Arc::new(show), Arc::new(ep))
@@ -278,7 +281,7 @@ impl PdApplication {
     }
 
     fn do_action(&self, action: Action) -> glib::Continue {
-        let data = PdApplicationPrivate::from_instance(self);
+        let data = self.imp();
         let w = data.window.borrow();
         let window = w.as_ref().expect("Window is not initialized");
 
@@ -334,20 +337,20 @@ impl PdApplication {
             Action::CopiedUrlNotification => {
                 let text = i18n("Copied URL to clipboard!");
                 let toast = adw::Toast::new(&text);
-                self.send_toast(&toast);
+                self.send_toast(toast);
             }
             Action::MarkAllPlayerNotification(pd) => {
                 let toast = mark_all_notif(pd, &data.sender);
-                self.send_toast(&toast);
+                self.send_toast(toast);
             }
             Action::RemoveShow(pd) => {
                 let toast = remove_show_notif(pd, data.sender.clone());
-                self.send_toast(&toast);
+                self.send_toast(toast);
             }
             Action::ErrorNotification(err) => {
                 error!("An error notification was triggered: {}", err);
                 let toast = adw::Toast::new(&err);
-                window.toast_overlay.add_toast(&toast);
+                window.toast_overlay.add_toast(toast);
             }
             Action::UpdateFeed(source) => {
                 if window.updating.get() {
@@ -458,9 +461,8 @@ impl PdApplication {
         ApplicationExtManual::run_with_args(&application, &args);
     }
 
-    pub(crate) fn send_toast(&self, toast: &adw::Toast) {
-        let self_ = PdApplicationPrivate::from_instance(self);
-        self_
+    pub(crate) fn send_toast(&self, toast: adw::Toast) {
+        self.imp()
             .window
             .borrow()
             .as_ref()

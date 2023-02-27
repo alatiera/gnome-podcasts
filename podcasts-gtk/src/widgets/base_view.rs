@@ -42,8 +42,10 @@ impl ObjectSubclass for BaseViewPriv {
 }
 
 impl ObjectImpl for BaseViewPriv {
-    fn constructed(&self, obj: &Self::Type) {
-        self.parent_constructed(obj);
+    fn constructed(&self) {
+        self.parent_constructed();
+
+        let obj = self.obj();
 
         self.scrolled_window
             .set_policy(PolicyType::Never, PolicyType::Automatic);
@@ -53,31 +55,21 @@ impl ObjectImpl for BaseViewPriv {
 
     fn properties() -> &'static [glib::ParamSpec] {
         static PROPERTIES: Lazy<Vec<glib::ParamSpec>> = Lazy::new(|| {
-            vec![glib::ParamSpecObject::new(
-                "child",
-                "child",
-                "child",
-                gtk::Widget::static_type(),
-                glib::ParamFlags::READWRITE,
-            )]
+            vec![glib::ParamSpecObject::builder::<gtk::Widget>("child")
+                .readwrite()
+                .build()]
         });
         PROPERTIES.as_ref()
     }
 
-    fn property(&self, _obj: &Self::Type, _id: usize, pspec: &glib::ParamSpec) -> glib::Value {
+    fn property(&self, _id: usize, pspec: &glib::ParamSpec) -> glib::Value {
         match pspec.name() {
             "child" => self.scrolled_window.child().to_value(),
             _ => unimplemented!(),
         }
     }
 
-    fn set_property(
-        &self,
-        _obj: &Self::Type,
-        _id: usize,
-        value: &glib::Value,
-        pspec: &glib::ParamSpec,
-    ) {
+    fn set_property(&self, _id: usize, value: &glib::Value, pspec: &glib::ParamSpec) {
         match pspec.name() {
             "child" => self
                 .scrolled_window
@@ -97,15 +89,13 @@ glib::wrapper! {
 
 impl Default for BaseView {
     fn default() -> Self {
-        glib::Object::new(&[]).unwrap()
+        glib::Object::new()
     }
 }
 
 impl BaseView {
     pub(crate) fn set_content<T: IsA<gtk::Widget>>(&self, widget: &T) {
-        let self_ = BaseViewPriv::from_instance(&self);
-
-        self_.scrolled_window.set_child(Some(widget));
+        self.imp().scrolled_window.set_child(Some(widget));
     }
 
     pub(crate) fn set_adjustments(
@@ -113,7 +103,7 @@ impl BaseView {
         hadjustment: Option<&Adjustment>,
         vadjustment: Option<&Adjustment>,
     ) {
-        let self_ = BaseViewPriv::from_instance(&self);
+        let self_ = self.imp();
 
         if let Some(h) = hadjustment {
             smooth_scroll_to(&self_.scrolled_window, h);
@@ -125,8 +115,6 @@ impl BaseView {
     }
 
     pub(crate) fn vadjustment(&self) -> Adjustment {
-        let self_ = BaseViewPriv::from_instance(&self);
-
-        self_.scrolled_window.vadjustment()
+        self.imp().scrolled_window.vadjustment()
     }
 }
