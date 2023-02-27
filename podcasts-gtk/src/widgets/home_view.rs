@@ -20,7 +20,7 @@
 use anyhow::Result;
 use chrono::prelude::*;
 
-use gtk::{prelude::*, Adjustment};
+use gtk::{glib, prelude::*, Adjustment};
 
 use glib::clone;
 

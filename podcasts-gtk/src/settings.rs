@@ -17,6 +17,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 use gio::{prelude::SettingsExt, Settings};
+use gtk::gio;
 use gtk::prelude::GtkWindowExt;
 
 use chrono::prelude::*;

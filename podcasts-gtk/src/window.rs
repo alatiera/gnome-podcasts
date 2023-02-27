@@ -19,8 +19,9 @@
 
 use glib::clone;
 use glib::Sender;
+use gtk::{gio, glib};
 
-use gio::{self, prelude::*};
+use gio::prelude::*;
 
 use adw::prelude::*;
 

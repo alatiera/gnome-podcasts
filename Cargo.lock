@@ -2029,8 +2029,6 @@ dependencies = [
  "crossbeam-channel",
  "fragile 1.2.2",
  "gettext-rs",
- "gio",
- "glib 0.17.2",
  "glob",
  "gstreamer",
  "gstreamer-player",

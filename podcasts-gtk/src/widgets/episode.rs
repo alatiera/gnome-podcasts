@@ -18,6 +18,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 use glib::clone;
+use gtk::glib;
 use gtk::prelude::*;
 
 use anyhow::{anyhow, Result};

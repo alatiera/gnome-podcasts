@@ -18,11 +18,10 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 use glib::clone;
-use glib::prelude::*;
-use glib::subclass::prelude::*;
 
 use adw::subclass::prelude::*;
 use gtk::prelude::*;
+use gtk::{gio, glib};
 
 use gettextrs::{bindtextdomain, setlocale, textdomain, LocaleCategory};
 

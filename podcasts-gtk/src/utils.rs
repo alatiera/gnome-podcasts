@@ -19,13 +19,14 @@
 
 use gio::prelude::ActionMapExt;
 use glib::clone;
+use glib::object::WeakRef;
 use glib::IsA;
 use glib::Sender;
 use glib::Variant;
-use glib::{self, object::WeakRef};
 use gtk::gdk_pixbuf::Pixbuf;
 use gtk::prelude::*;
 use gtk::Widget;
+use gtk::{gio, glib};
 
 use anyhow::{anyhow, Result};
 use chrono::prelude::*;

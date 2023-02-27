@@ -36,6 +36,8 @@
 )]
 #![allow(clippy::type_complexity)]
 
+use gtk::{gio, glib};
+
 #[macro_use]
 extern crate log;
 

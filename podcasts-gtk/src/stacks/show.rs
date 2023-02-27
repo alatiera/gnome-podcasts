@@ -19,6 +19,7 @@
 
 use anyhow::Result;
 use glib::Sender;
+use gtk::glib;
 use podcasts_data::dbqueries::is_episodes_populated;
 
 use crate::app::Action;

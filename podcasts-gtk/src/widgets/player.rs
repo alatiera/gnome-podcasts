@@ -20,6 +20,7 @@
 use gst::ClockTime;
 
 use gtk::prelude::*;
+use gtk::{gio, glib};
 
 use gio::File;
 use glib::clone;

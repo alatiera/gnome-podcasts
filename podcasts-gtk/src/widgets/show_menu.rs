@@ -20,6 +20,7 @@
 use gio::prelude::ActionMapExt;
 use glib::clone;
 use gtk::prelude::*;
+use gtk::{gio, glib};
 
 use anyhow::Result;
 use glib::Sender;
