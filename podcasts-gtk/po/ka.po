@@ -1,0 +1,404 @@
+# Georgian translation for podcasts.
+# Copyright (C) 2023 podcasts's authors.
+# This file is distributed under the same license as the podcasts package.
+# Ekaterine Papava <papava.e@gtu.ge>, 2023.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: podcasts master\n"
+"Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
+"POT-Creation-Date: 2023-02-27 20:20+0000\n"
+"PO-Revision-Date: 2023-03-22 04:24+0100\n"
+"Last-Translator: Ekaterine Papava <papava.e@gtu.ge>\n"
+"Language-Team: Georgian <ka@li.org>\n"
+"Language: ka\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.2.2\n"
+
+#: podcasts-gtk/resources/gtk/empty_show.ui:16
+msgid "This show does not have episodes yet"
+msgstr "ამ შოუს ჯერ ეპიზოდები არ აქვს"
+
+#: podcasts-gtk/resources/gtk/empty_show.ui:25
+msgid "If you think this is an error, please consider writing a bug report."
+msgstr ""
+
+#: podcasts-gtk/resources/gtk/empty_view.ui:30
+msgid "Get some shows"
+msgstr ""
+
+#: podcasts-gtk/resources/gtk/empty_view.ui:49
+msgid "Add new shows via feed URL"
+msgstr ""
+
+#: podcasts-gtk/resources/gtk/empty_view.ui:70
+msgid "Import shows from another device"
+msgstr ""
+
+#: podcasts-gtk/resources/gtk/episode_description.ui:41
+msgid "Episode Details"
+msgstr "ეპიზოდის დეტალები"
+
+#: podcasts-gtk/resources/gtk/episode_description.ui:51
+#: podcasts-gtk/resources/gtk/headerbar.ui:146
+msgid "Back"
+msgstr "უკან"
+
+#: podcasts-gtk/resources/gtk/episode_description.ui:105
+msgid "Podcast Title"
+msgstr "პოდკასტის სათაური"
+
+#: podcasts-gtk/resources/gtk/episode_description.ui:128
+msgid "Duration - Date"
+msgstr "ხანგრძლივობა - თარიღი"
+
+#: podcasts-gtk/resources/gtk/episode_description.ui:148
+msgid "Episode Description"
+msgstr "ეპიზოდის აღწერა"
+
+#: podcasts-gtk/resources/gtk/episode_menu.ui:35
+msgid "Go to Show"
+msgstr "სერიალზე გადასვლა"
+
+#: podcasts-gtk/resources/gtk/episode_menu.ui:39
+msgid "Copy Episode Url"
+msgstr "ეპიზოდის ბმულის კოპირება"
+
+#: podcasts-gtk/resources/gtk/episode_widget.ui:70
+msgid "You’ve already listened to this episode."
+msgstr "თქვენ უკვე მოუსმინეთ ამ ეპიზოდს."
+
+#: podcasts-gtk/resources/gtk/episode_widget.ui:157
+msgid "Calculating episode size…"
+msgstr "ეპიზოდის ზომის გამოთვლა…"
+
+#: podcasts-gtk/resources/gtk/episode_widget.ui:180
+msgid "Play this episode"
+msgstr "ამ ეპიზოდის დაკვრა"
+
+#: podcasts-gtk/resources/gtk/episode_widget.ui:192
+msgid "Cancel the download process"
+msgstr "გადმოწერის გაუქმება"
+
+#: podcasts-gtk/resources/gtk/episode_widget.ui:204
+msgid "Download this episode"
+msgstr "ამ ეპიზოდის გადმოწერა"
+
+#: podcasts-gtk/resources/gtk/hamburger.ui:7
+msgid "_Check for New Episodes"
+msgstr "_ახალი ეპიზოდების შემოწმება"
+
+#: podcasts-gtk/resources/gtk/hamburger.ui:12
+msgid "_Import Shows"
+msgstr "_სერიალების შემოტანა"
+
+#: podcasts-gtk/resources/gtk/hamburger.ui:16
+msgid "_Export Shows"
+msgstr "სერიალების _გატანა"
+
+#: podcasts-gtk/resources/gtk/hamburger.ui:22
+msgid "_Keyboard Shortcuts"
+msgstr "_კლავიატურის მალსახმობები"
+
+#: podcasts-gtk/resources/gtk/hamburger.ui:30
+msgid "_About Podcasts"
+msgstr "პოდკასტების _შესახებ"
+
+#: podcasts-gtk/resources/gtk/headerbar.ui:33
+#: podcasts-gtk/resources/gtk/headerbar.ui:133
+msgid "Add a new feed"
+msgstr "ახალი ლენტის დამატება"
+
+#: podcasts-gtk/resources/gtk/headerbar.ui:44
+msgid "Enter feed address to add"
+msgstr "შეიყვანეთ დასამატებელი მისამართი"
+
+#: podcasts-gtk/resources/gtk/headerbar.ui:67
+msgid "Add"
+msgstr "დამატება"
+
+#. Weird magic I copy-pasted that sets the Application Name in the Shell.
+#: podcasts-gtk/resources/gtk/headerbar.ui:111
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:4
+#: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:3
+#: podcasts-gtk/src/app.rs:457 podcasts-gtk/src/widgets/aboutdialog.rs:57
+#: podcasts-gtk/src/window.rs:64
+msgid "Podcasts"
+msgstr "პოდკასტები"
+
+#: podcasts-gtk/resources/gtk/headerbar.ui:121
+msgid "Show Title"
+msgstr "სათაურის ჩვენება"
+
+#: podcasts-gtk/resources/gtk/help-overlay.ui:11
+msgid "General"
+msgstr "ზოგადი"
+
+#: podcasts-gtk/resources/gtk/help-overlay.ui:15
+msgctxt "shortcut window"
+msgid "Check for new episodes"
+msgstr "ახალი ეპიზოდების შემოწმება"
+
+#: podcasts-gtk/resources/gtk/help-overlay.ui:21
+msgctxt "shortcut window"
+msgid "Quit the application"
+msgstr "აპლიკაციიდან გასვლა"
+
+#: podcasts-gtk/resources/gtk/home_view.ui:50
+msgid "Today"
+msgstr "დღეს"
+
+#: podcasts-gtk/resources/gtk/home_view.ui:78
+msgid "Yesterday"
+msgstr "გუშინ"
+
+#: podcasts-gtk/resources/gtk/home_view.ui:106
+msgid "This Week"
+msgstr "ამ კვირაში"
+
+#: podcasts-gtk/resources/gtk/home_view.ui:134
+msgid "This Month"
+msgstr "ამ თვეში"
+
+#: podcasts-gtk/resources/gtk/home_view.ui:163
+msgid "Older"
+msgstr "უფრო ძველია"
+
+#: podcasts-gtk/resources/gtk/player_dialog.ui:10
+msgid "Now Playing"
+msgstr "მიმდინარეობს დაკვრა"
+
+#: podcasts-gtk/resources/gtk/player_rate.ui:29
+msgid "Change the playback speed"
+msgstr "დაკვრის სიჩქარის შეცვლა"
+
+#: podcasts-gtk/resources/gtk/player_rate.ui:34
+#: podcasts-gtk/resources/gtk/player_rate.ui:59
+msgid "1.00×"
+msgstr "1.00×"
+
+#: podcasts-gtk/resources/gtk/player_rate.ui:39
+msgid "2.00×"
+msgstr "2.00×"
+
+#: podcasts-gtk/resources/gtk/player_rate.ui:44
+msgid "1.75×"
+msgstr "1.75×"
+
+#: podcasts-gtk/resources/gtk/player_rate.ui:49
+msgid "1.50×"
+msgstr "1.50×"
+
+#: podcasts-gtk/resources/gtk/player_rate.ui:54
+msgid "1.25×"
+msgstr "1.25×"
+
+#: podcasts-gtk/resources/gtk/player_rate.ui:64
+msgid "0.90×"
+msgstr "0.90×"
+
+#: podcasts-gtk/resources/gtk/player_rate.ui:69
+msgid "0.75×"
+msgstr "0.75×"
+
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:62
+msgid "Rewind 10 seconds"
+msgstr "10 წამით გადახვევა"
+
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:70
+msgid "Play"
+msgstr "დაკვრა"
+
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:78
+msgid "Pause"
+msgstr "პაუზა"
+
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:86
+msgid "Fast forward 10 seconds"
+msgstr "10 წამით წინ სწრაფი გადახვევა"
+
+#: podcasts-gtk/resources/gtk/secondary_menu.ui:7
+msgid "_Mark All Episodes as Played"
+msgstr "_მონიშნეთ ყველა ეპიზოდი, როგორც დაკრული"
+
+#: podcasts-gtk/resources/gtk/secondary_menu.ui:11
+msgid "_Website"
+msgstr "_ვებსაიტი"
+
+#: podcasts-gtk/resources/gtk/secondary_menu.ui:15
+msgid "_Unsubscribe"
+msgstr "გამოწერის _გაუქმება"
+
+#: podcasts-gtk/resources/gtk/show_menu.ui:35
+msgid "Open Website"
+msgstr "ვებგვერდის გახსნა"
+
+#: podcasts-gtk/resources/gtk/show_menu.ui:39
+msgid "Mark All as Played"
+msgstr "ყველას, როგორც დაკრულის მონიშვნა"
+
+#: podcasts-gtk/resources/gtk/show_menu.ui:45
+msgid "Unsubscribe"
+msgstr "გამოწერის გაუქმება"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:8
+msgid "Listen to your favorite shows"
+msgstr ""
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:10
+msgid ""
+"Play, update, and manage your podcasts from a lightweight interface that "
+"seamlessly integrates with GNOME. Podcasts can play various audio formats "
+"and remember where you stopped listening. You can subscribe to shows via RSS/"
+"Atom, iTunes, and Soundcloud links. Subscriptions from other apps can be "
+"imported via OPML files."
+msgstr ""
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:134
+msgid "Jordan Petridis"
+msgstr "იორდან პეტრიდისი"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:135
+msgid "Julian Hofer"
+msgstr "ჯულიან ჰოფერი"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:4
+msgid "Listen to your favorite podcasts, right from your desktop."
+msgstr ""
+
+#. Translators: Search terms to find this application. Do NOT translate or localize the semicolons! The list MUST also end with a semicolon!
+#: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:13
+msgid "Podcast;RSS;"
+msgstr "Podcast;RSS;პოდკასტი;"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:15
+msgid "Height of the last open main window"
+msgstr "ბოლოს გახსნილი მთავარი ფანჯრის სიმაღლე"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:19
+msgid "Width of the last open main window"
+msgstr "ბოლოს გახსნილი მთავარი ფანჯრის სიგანე"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:23
+msgid "Maximized state of the last open main window"
+msgstr "ბოლოს გახსნილი მთავარი ფანჯრის მთელ ეკრანზე გაშლილობა"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:28
+msgid "Whether to periodically refresh content"
+msgstr "პერდიოდულად განახლდება თუ არა შემცველობა"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:33
+msgid "How many periods of time to wait between automatic refreshes"
+msgstr ""
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:37
+msgid "What period of time to wait between automatic refreshes"
+msgstr ""
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:41
+msgid "Whether to refresh content after startup"
+msgstr ""
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:47
+msgid "How many periods of time to wait between automatic cleanups"
+msgstr ""
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:51
+msgid "What period of time to wait between automatic cleanups"
+msgstr ""
+
+#: podcasts-gtk/src/app.rs:337
+msgid "Copied URL to clipboard!"
+msgstr "ბმული დაკოპირდა გაცვლის ბაფერში!"
+
+#: podcasts-gtk/src/stacks/content.rs:59
+msgid "New"
+msgstr "ახალი"
+
+#: podcasts-gtk/src/stacks/content.rs:61
+msgid "Shows"
+msgstr "სერიალები"
+
+#: podcasts-gtk/src/utils.rs:491
+msgid "Select the file from which to you want to import shows."
+msgstr ""
+
+#: podcasts-gtk/src/utils.rs:494
+msgid "_Import"
+msgstr "_შემოტანა"
+
+#: podcasts-gtk/src/utils.rs:502 podcasts-gtk/src/utils.rs:554
+msgid "OPML file"
+msgstr "OPML ფაილი"
+
+#: podcasts-gtk/src/utils.rs:520
+msgid "Failed to parse the imported file"
+msgstr ""
+
+#: podcasts-gtk/src/utils.rs:526 podcasts-gtk/src/utils.rs:575
+msgid "Selected file could not be accessed."
+msgstr ""
+
+#: podcasts-gtk/src/utils.rs:540
+msgid "Export shows to…"
+msgstr ""
+
+#: podcasts-gtk/src/utils.rs:543
+msgid "_Export"
+msgstr "_გატანა"
+
+#: podcasts-gtk/src/utils.rs:544
+msgid "_Cancel"
+msgstr "_გაუქმება"
+
+#. Translators: This is the string of the suggested name for the exported opml file
+#: podcasts-gtk/src/utils.rs:550
+msgid "gnome-podcasts-exported-shows"
+msgstr ""
+
+#: podcasts-gtk/src/utils.rs:568
+msgid "GNOME Podcasts Subscriptions"
+msgstr ""
+
+#: podcasts-gtk/src/utils.rs:569
+msgid "Failed to export podcasts"
+msgstr ""
+
+#: podcasts-gtk/src/widgets/aboutdialog.rs:52
+msgid "Podcast Client for the GNOME Desktop."
+msgstr ""
+
+#: podcasts-gtk/src/widgets/aboutdialog.rs:59
+msgid "Learn more about GNOME Podcasts"
+msgstr ""
+
+#: podcasts-gtk/src/widgets/aboutdialog.rs:63
+msgid "translator-credits"
+msgstr "temuri Doghonadze"
+
+#: podcasts-gtk/src/widgets/episode.rs:143
+msgid "{} min"
+msgstr "{} წთ"
+
+#: podcasts-gtk/src/widgets/player.rs:891
+msgid "The media player was unable to execute an action."
+msgstr ""
+
+#: podcasts-gtk/src/widgets/read_more_label.rs:32
+msgid "Read More"
+msgstr "დაწვრილებით"
+
+#: podcasts-gtk/src/widgets/show_menu.rs:174
+msgid "Marked all episodes as listened"
+msgstr ""
+
+#: podcasts-gtk/src/widgets/show_menu.rs:175
+#: podcasts-gtk/src/widgets/show_menu.rs:198
+msgid "Undo"
+msgstr "დაბრუნება"
+
+#: podcasts-gtk/src/widgets/show_menu.rs:194
+msgid "Unsubscribed from {}"
+msgstr ""
