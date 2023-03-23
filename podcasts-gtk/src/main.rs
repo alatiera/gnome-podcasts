@@ -21,7 +21,6 @@
 #![warn(nonstandard_style, rust_2018_idioms, bad_style)]
 // standalone lints
 #![warn(
-    const_err,
     improper_ctypes,
     non_shorthand_field_patterns,
     no_mangle_generic_items,
@@ -31,8 +30,7 @@
     missing_debug_implementations,
     trivial_casts,
     trivial_numeric_casts,
-    elided_lifetimes_in_paths,
-    missing_copy_implementations
+    elided_lifetimes_in_paths
 )]
 #![allow(clippy::type_complexity)]
 

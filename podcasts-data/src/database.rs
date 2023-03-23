@@ -28,7 +28,6 @@ use diesel_migrations::{embed_migrations, EmbeddedMigrations, MigrationHarness};
 
 use once_cell::sync::Lazy;
 
-use std::io;
 use std::path::PathBuf;
 
 use crate::errors::DataError;
@@ -38,7 +37,7 @@ use crate::xdg_dirs;
 
 type Pool = r2d2::Pool<ConnectionManager<SqliteConnection>>;
 
-pub const MIGRATIONS: EmbeddedMigrations = embed_migrations!("migrations/");
+const MIGRATIONS: EmbeddedMigrations = embed_migrations!("migrations/");
 
 static POOL: Lazy<Pool> = Lazy::new(|| init_pool(DB_PATH.to_str().unwrap()));
 

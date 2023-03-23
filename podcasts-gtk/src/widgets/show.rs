@@ -113,7 +113,7 @@ impl ShowWidget {
         self.set_description(pd.description());
         self.imp().show_id.set(Some(pd.id()));
 
-        let res = self.set_cover(&pd);
+        let res = self.set_cover(pd);
 
         debug_assert!(res.is_ok());
     }

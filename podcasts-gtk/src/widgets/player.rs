@@ -107,14 +107,14 @@ impl PlayerInfo {
         metadata.title = Some(episode.title().to_string());
 
         // Set the cover if it is already cached.
-        if let Ok(path) = downloader::cache_image(&podcast, false) {
+        if let Ok(path) = downloader::cache_image(podcast, false) {
             let url = Url::from_file_path(path);
             metadata.art_url = url.map(From::from).ok();
         } else {
             // fallback: set the cover to the http url if it isn't cached, yet.
             // TODO we could trigger an async download of the cover here
             // and update the metadata when it's done.
-            metadata.art_url = podcast.image_uri().clone().map(From::from);
+            metadata.art_url = podcast.image_uri().map(From::from);
         }
 
         self.mpris.set_metadata(metadata);
@@ -228,7 +228,7 @@ impl PlayerRate {
         // This needs to be a string to work with GMenuModel
         let variant_type = glib::VariantTy::new("s").expect("Could not parse variant type");
         let action =
-            gio::SimpleAction::new_stateful("set", Some(&variant_type), "1.00".to_variant());
+            gio::SimpleAction::new_stateful("set", Some(variant_type), "1.00".to_variant());
         let btn: gtk::MenuButton = builder.object("rate_button").unwrap();
 
         PlayerRate { action, btn }

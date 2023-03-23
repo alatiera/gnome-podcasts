@@ -138,7 +138,7 @@ fn dim_titles(episodes: &gtk::ListBox) -> Option<()> {
     for i in 0..listmodel.n_items() {
         let obj = listmodel.item(i)?;
         let row = obj.downcast_ref::<gtk::ListBoxRow>()?;
-        dim_row_title(&row)?;
+        dim_row_title(row)?;
     }
     Some(())
 }
@@ -146,10 +146,16 @@ fn dim_titles(episodes: &gtk::ListBox) -> Option<()> {
 fn dim_row_title(row: &gtk::ListBoxRow) -> Option<()> {
     // FIXME first_child should only be used for widget implementations.
     let container = row.first_child()?.downcast::<gtk::Box>().ok()?;
-    let foo = container.first_child()?.downcast::<gtk::Box>().ok()?;
-    let bar = foo.first_child()?.downcast::<gtk::Box>().ok()?;
-    let baz = bar.first_child()?.downcast::<gtk::Box>().ok()?;
-    let title = baz.first_child()?.downcast::<gtk::Label>().ok()?;
+    let container_child = container.first_child()?.downcast::<gtk::Box>().ok()?;
+    let container_gradchild = container_child.first_child()?.downcast::<gtk::Box>().ok()?;
+    let container_great_gradchild = container_gradchild
+        .first_child()?
+        .downcast::<gtk::Box>()
+        .ok()?;
+    let title = container_great_gradchild
+        .first_child()?
+        .downcast::<gtk::Label>()
+        .ok()?;
 
     title.add_css_class("dim-label");
 

@@ -146,7 +146,7 @@ fn get_ext(content: Option<&str>) -> Option<String> {
     let type_ = iter.next()?;
     let subtype = iter.next()?;
     mime_guess::get_extensions(type_, subtype).and_then(|c| {
-        if c.contains(&&subtype) {
+        if c.contains(&subtype) {
             Some(subtype.to_string())
         } else {
             Some(c.first()?.to_string())
@@ -171,7 +171,7 @@ fn save_io(
         None => 1024, // default chunk size
     };
 
-    let mut writer = BufWriter::new(File::create(&file)?);
+    let mut writer = BufWriter::new(File::create(file)?);
 
     loop {
         let mut buffer = vec![0; chunk_size];
@@ -251,20 +251,20 @@ pub fn check_for_cached_cover(pd: &ShowCoverModel) -> Option<PathBuf> {
     // existing one instead of downloading the new one.
     // Should probably make sure that 'cover.*' is removed when we
     // download new files.
-    if let Ok(mut foo) = glob(&format!("{}/cover.*", cache_path.to_str().unwrap())) {
+    if let Ok(mut paths) = glob(&format!("{}/cover.*", cache_path.to_str().unwrap())) {
         // For some reason there is no .first() method so nth(0) is used
-        let path = foo.nth(0).and_then(|x| x.ok());
+        let path = paths.next().and_then(|x| x.ok());
         return path;
     }
 
-    return None;
+    None
 }
 
 pub fn cache_image(pd: &ShowCoverModel, download: bool) -> Result<String, DownloadError> {
     if let Some(path) = check_for_cached_cover(pd) {
         return Ok(path
             .to_str()
-            .ok_or_else(|| DownloadError::InvalidCachedImageLocation)?
+            .ok_or(DownloadError::InvalidCachedImageLocation)?
             .to_owned());
     }
 
@@ -279,7 +279,7 @@ pub fn cache_image(pd: &ShowCoverModel, download: bool) -> Result<String, Downlo
 
     let cache_path = determine_cover_dir(pd)
         .to_str()
-        .ok_or_else(|| DownloadError::InvalidCachedImageLocation)?
+        .ok_or(DownloadError::InvalidCachedImageLocation)?
         .to_owned();
 
     // Create the folders if they don't exist.

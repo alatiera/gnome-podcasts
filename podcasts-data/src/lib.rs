@@ -44,7 +44,6 @@
 #![warn(rust_2018_idioms)]
 // standalone lints
 #![warn(
-    const_err,
     improper_ctypes,
     non_shorthand_field_patterns,
     no_mangle_generic_items,
@@ -72,8 +71,6 @@ extern crate maplit;
 extern crate derive_builder;
 #[macro_use]
 extern crate diesel;
-#[macro_use]
-extern crate diesel_migrations;
 #[macro_use]
 extern crate log;
 

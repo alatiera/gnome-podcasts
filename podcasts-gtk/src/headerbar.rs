@@ -223,7 +223,7 @@ impl Default for Header {
 impl Header {
     pub(crate) fn new(content: &Content, sender: &Sender<Action>) -> Rc<Self> {
         let h = Rc::new(Header::default());
-        Self::init(&h, content, &sender);
+        Self::init(&h, content, sender);
         h
     }
 

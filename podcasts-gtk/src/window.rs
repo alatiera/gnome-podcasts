@@ -69,7 +69,7 @@ impl MainWindow {
         window.connect_close_request(
             clone!(@strong settings, @weak app => @default-return gtk::Inhibit(false), move |window| {
                     info!("Saving window position");
-                    WindowGeometry::from_window(&window).write(&settings);
+                    WindowGeometry::from_window(window).write(&settings);
 
                     info!("Application is exiting");
                     let app = app.upcast::<gio::Application>();
@@ -79,10 +79,10 @@ impl MainWindow {
         );
 
         // Create a content instance
-        let content = Content::new(&sender).expect("Content initialization failed.");
+        let content = Content::new(sender).expect("Content initialization failed.");
 
         // Create the headerbar
-        let header = Header::new(&content, &sender);
+        let header = Header::new(&content, sender);
 
         // Add the content main stack to the overlay.
         let main_deck = adw::Leaflet::new();
@@ -102,7 +102,7 @@ impl MainWindow {
         // Add the deck to the main Box
         wrap.append(&main_deck);
 
-        let player = player::PlayerWrapper::new(&sender);
+        let player = player::PlayerWrapper::new(sender);
         // Add the player to the main Box
         wrap.append(&player.borrow().container);
 

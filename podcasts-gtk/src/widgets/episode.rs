@@ -117,7 +117,7 @@ impl InfoLabels {
 
     // Set the date label of the episode widget.
     fn set_date(&self, epoch: i32) {
-        static NOW: Lazy<DateTime<Utc>> = Lazy::new(|| Utc::now());
+        static NOW: Lazy<DateTime<Utc>> = Lazy::new(Utc::now);
 
         let ts = Utc.timestamp(i64::from(epoch), 0);
 
@@ -230,7 +230,7 @@ impl EpisodeWidget {
         let widget = Rc::new(Self::default());
         let weak = Rc::downgrade(&widget);
         widget.info.init(&episode);
-        Self::determine_buttons_state(&weak, &episode, &sender)
+        Self::determine_buttons_state(&weak, &episode, sender)
             .map_err(|err| error!("Error: {}", err))
             .ok();
 
@@ -246,9 +246,9 @@ impl EpisodeWidget {
         // When the widget is detached from its parent view this
         // callback runs freeing the last reference we were holding.
         // FIXME This hack feels even worse for GTK4; Use subclassing for EpisodeWidget?
-        let foo = RefCell::new(Some(widget.clone()));
+        let widget_cloned = RefCell::new(Some(widget.clone()));
         widget.container.connect_destroy(move |_| {
-            foo.borrow_mut().take();
+            widget_cloned.borrow_mut().take();
         });
 
         widget
@@ -410,10 +410,10 @@ impl EpisodeWidget {
             // Setup a callback that will update the total_size label
             // with the http ContentLength header number rather than
             // relying to the RSS feed.
-            update_total_size_callback(&weak, &prog);
+            update_total_size_callback(weak, &prog);
 
             // Setup a callback that will update the progress bar.
-            update_progressbar_callback(&weak, &prog, id);
+            update_progressbar_callback(weak, &prog, id);
 
             // Change the widget layout/state
             widget.state_prog();
@@ -470,7 +470,7 @@ impl EpisodeWidget {
 
 fn on_download_clicked(ep: &EpisodeWidgetModel, sender: &Sender<Action>) -> Result<()> {
     let pd = dbqueries::get_podcast_from_id(ep.show_id())?;
-    let download_fold = get_download_folder(&pd.title())?;
+    let download_fold = get_download_folder(pd.title())?;
 
     // Start a new download.
     manager::add(ep.rowid(), download_fold)?;
@@ -490,7 +490,7 @@ fn on_play_bttn_clicked(
         .ok_or_else(|| anyhow!("Widget is already dropped"))?;
 
     // Grey out the title
-    widget.info.set_title(&episode);
+    widget.info.set_title(episode);
 
     // Play the episode
     send!(sender, Action::InitEpisode(episode.rowid()));

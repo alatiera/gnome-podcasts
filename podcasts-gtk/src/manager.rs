@@ -34,21 +34,11 @@ pub(crate) static ACTIVE_DOWNLOADS: Lazy<Arc<RwLock<HashMap<i32, Arc<Mutex<Progr
 static DLPOOL: Lazy<rayon::ThreadPool> =
     Lazy::new(|| rayon::ThreadPoolBuilder::new().build().unwrap());
 
-#[derive(Debug)]
+#[derive(Debug, Default)]
 pub(crate) struct Progress {
     total_bytes: u64,
     downloaded_bytes: u64,
     cancel: bool,
-}
-
-impl Default for Progress {
-    fn default() -> Self {
-        Progress {
-            total_bytes: 0,
-            downloaded_bytes: 0,
-            cancel: false,
-        }
-    }
 }
 
 impl Progress {
@@ -160,7 +150,7 @@ mod tests {
         // Get an episode
         let episode: Episode = dbqueries::get_episode_from_pk(title, pd.id())?;
 
-        let download_fold = get_download_folder(&pd.title())?;
+        let download_fold = get_download_folder(pd.title())?;
         let fold2 = download_fold.clone();
         add(episode.rowid(), download_fold)?;
         assert_eq!(ACTIVE_DOWNLOADS.read().unwrap().len(), 1);
@@ -196,7 +186,7 @@ mod tests {
         let title = "Introducing Steal the Stars";
         // Get an episode
         let mut episode = dbqueries::get_episode_from_pk(title, pd.id())?.into();
-        let download_fold = get_download_folder(&pd.title())?;
+        let download_fold = get_download_folder(pd.title())?;
 
         get_episode(&mut episode, &download_fold, None)?;
 

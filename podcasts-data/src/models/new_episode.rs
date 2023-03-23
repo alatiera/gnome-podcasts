@@ -516,11 +516,11 @@ mod tests {
         let channel = Channel::read_from(BufReader::new(file))?;
 
         let episode = channel.items().iter().nth(14).unwrap();
-        let ep = NewEpisodeMinimal::new(&episode, 42)?;
+        let ep = NewEpisodeMinimal::new(episode, 42)?;
         assert_eq!(ep, *EXPECTED_MINIMAL_INTERCEPTED_1);
 
         let episode = channel.items().iter().nth(15).unwrap();
-        let ep = NewEpisodeMinimal::new(&episode, 42)?;
+        let ep = NewEpisodeMinimal::new(episode, 42)?;
         assert_eq!(ep, *EXPECTED_MINIMAL_INTERCEPTED_2);
         Ok(())
     }
@@ -531,11 +531,11 @@ mod tests {
         let channel = Channel::read_from(BufReader::new(file))?;
 
         let episode = channel.items().iter().nth(14).unwrap();
-        let ep = NewEpisode::new(&episode, 42)?;
+        let ep = NewEpisode::new(episode, 42)?;
         assert_eq!(ep, *EXPECTED_INTERCEPTED_1);
 
         let episode = channel.items().iter().nth(15).unwrap();
-        let ep = NewEpisode::new(&episode, 42)?;
+        let ep = NewEpisode::new(episode, 42)?;
 
         assert_eq!(ep, *EXPECTED_INTERCEPTED_2);
         Ok(())
@@ -547,11 +547,11 @@ mod tests {
         let channel = Channel::read_from(BufReader::new(file))?;
 
         let episode = channel.items().iter().nth(18).unwrap();
-        let ep = NewEpisodeMinimal::new(&episode, 42)?;
+        let ep = NewEpisodeMinimal::new(episode, 42)?;
         assert_eq!(ep, *EXPECTED_MINIMAL_LUP_1);
 
         let episode = channel.items().iter().nth(19).unwrap();
-        let ep = NewEpisodeMinimal::new(&episode, 42)?;
+        let ep = NewEpisodeMinimal::new(episode, 42)?;
         assert_eq!(ep, *EXPECTED_MINIMAL_LUP_2);
         Ok(())
     }
@@ -562,11 +562,11 @@ mod tests {
         let channel = Channel::read_from(BufReader::new(file))?;
 
         let episode = channel.items().iter().nth(18).unwrap();
-        let ep = NewEpisode::new(&episode, 42)?;
+        let ep = NewEpisode::new(episode, 42)?;
         assert_eq!(ep, *EXPECTED_LUP_1);
 
         let episode = channel.items().iter().nth(19).unwrap();
-        let ep = NewEpisode::new(&episode, 42)?;
+        let ep = NewEpisode::new(episode, 42)?;
         assert_eq!(ep, *EXPECTED_LUP_2);
         Ok(())
     }
@@ -581,13 +581,13 @@ mod tests {
         let item = channel.items().iter().nth(14).unwrap();
         let ep = EXPECTED_MINIMAL_INTERCEPTED_1
             .clone()
-            .into_new_episode(&item);
+            .into_new_episode(item);
         assert_eq!(ep, *EXPECTED_INTERCEPTED_1);
 
         let item = channel.items().iter().nth(15).unwrap();
         let ep = EXPECTED_MINIMAL_INTERCEPTED_2
             .clone()
-            .into_new_episode(&item);
+            .into_new_episode(item);
         assert_eq!(ep, *EXPECTED_INTERCEPTED_2);
         Ok(())
     }
@@ -600,7 +600,7 @@ mod tests {
         let channel = Channel::read_from(BufReader::new(file))?;
 
         let episode = channel.items().iter().nth(14).unwrap();
-        let new_ep = NewEpisode::new(&episode, 42)?;
+        let new_ep = NewEpisode::new(episode, 42)?;
         new_ep.insert()?;
         let ep = dbqueries::get_episode_from_pk(new_ep.title(), new_ep.show_id())?;
 
@@ -609,7 +609,7 @@ mod tests {
         assert_eq!(&*EXPECTED_INTERCEPTED_1, &ep);
 
         let episode = channel.items().iter().nth(15).unwrap();
-        let new_ep = NewEpisode::new(&episode, 42)?;
+        let new_ep = NewEpisode::new(episode, 42)?;
         new_ep.insert()?;
         let ep = dbqueries::get_episode_from_pk(new_ep.title(), new_ep.show_id())?;
 

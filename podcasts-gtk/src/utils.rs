@@ -32,7 +32,6 @@ use anyhow::{anyhow, Result};
 use chrono::prelude::*;
 use crossbeam_channel::unbounded;
 use once_cell::sync::Lazy;
-use rayon;
 use regex::Regex;
 use serde_json::Value;
 use url::Url;
@@ -331,7 +330,7 @@ pub(crate) fn set_image_from_path(image: &gtk::Image, show_id: i32, size: u32) -
     // Check if the cover is already downloaded and set it
     if pd.is_cached_image_valid(&CACHE_VALID_DURATION) {
         if let Some(cached_path) = downloader::check_for_cached_cover(&pd) {
-            if let Ok(px) = Pixbuf::from_file_at_scale(&cached_path, size as i32, size as i32, true)
+            if let Ok(px) = Pixbuf::from_file_at_scale(cached_path, size as i32, size as i32, true)
             {
                 image.set_from_pixbuf(Some(&px));
             }
@@ -382,7 +381,7 @@ pub(crate) fn set_image_from_path(image: &gtk::Image, show_id: i32, size: u32) -
             Ok(path) => {
                 match path {
                     Ok(path) => {
-                        if let Ok(px) = Pixbuf::from_file_at_scale(&path, s, s, true) {
+                        if let Ok(px) = Pixbuf::from_file_at_scale(path, s, s, true) {
                             image.set_from_pixbuf(Some(&px));
                         }
                     }
@@ -740,7 +739,7 @@ mod tests {
         let original_image_uri = original.image_uri();
         let original_image_uri_hash = original.image_uri_hash();
         let original_image_cached = original.image_cached();
-        let download_folder = get_download_folder(&original.title())?;
+        let download_folder = get_download_folder(original.title())?;
         let image_path = download_folder + "/cover.jpeg";
         let original_image_file_size = fs::metadata(&image_path)?.len(); // 693,343
         println!("Made it here! (6)");
