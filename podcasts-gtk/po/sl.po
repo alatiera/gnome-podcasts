@@ -8,83 +8,244 @@ msgid ""
 msgstr ""
 "Project-Id-Version: podcasts master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2022-02-06 19:19+0000\n"
-"PO-Revision-Date: 2022-02-07 18:56+0100\n"
-"Last-Translator: Matej Urbančič <mateju@src.gnome.org>\n"
+"POT-Creation-Date: 2023-03-23 23:02+0000\n"
+"PO-Revision-Date: 2023-03-24 09:45+0100\n"
+"Last-Translator: Martin Srebotnjak <miles@filmsi.net>\n"
 "Language-Team: Slovenian GNOME Translation Team <gnome-si@googlegroups.com>\n"
 "Language: sl_SI\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=4; plural=(n%100==1 ? 1 : n%100==2 ? 2 : n%100==3 || n"
-"%100==4 ? 3 : 0);\n"
+"Plural-Forms: nplurals=4; plural=(n%100==1 ? 1 : n%100==2 ? 2 : n%100==3 || "
+"n%100==4 ? 3 : 0);\n"
 "X-Poedit-SourceCharset: utf-8\n"
-"X-Generator: Poedit 3.0\n"
+"X-Generator: Poedit 3.2.2\n"
 
-#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:15
-msgid "Top position of the last open main window"
-msgstr "Položaj zgoraj nazadnje odprtega okna"
+#: podcasts-gtk/resources/gtk/empty_show.ui:16
+msgid "This show does not have episodes yet"
+msgstr "Ta podkast še nima določenih epizod"
 
-#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:19
-msgid "Left position of the last open main window"
-msgstr "Položaj na levi nazadnje odprtega okna"
+#: podcasts-gtk/resources/gtk/empty_show.ui:25
+msgid "If you think this is an error, please consider writing a bug report."
+msgstr "Če ste mnenja, da je to napaka, razmislite o poročilu o napaki."
 
-#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:23
-msgid "Height of the last open main window"
-msgstr "Višina nazadnje odprtega glavnega okna"
+#: podcasts-gtk/resources/gtk/empty_view.ui:30
+msgid "Get Some Shows"
+msgstr "Pridobi oddaje"
 
-#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:27
-msgid "Width of the last open main window"
-msgstr "Širina nazadnje odprtega glavnega okna"
+#: podcasts-gtk/resources/gtk/empty_view.ui:49
+msgid "Add new shows via feed URL"
+msgstr "Dodaj nove posnetke kot naslov URL vira"
 
-#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:31
-msgid "Maximized state of the last open main window"
-msgstr "Stanje nazadnje razpetega odprtega glavne okna"
+#: podcasts-gtk/resources/gtk/empty_view.ui:71
+msgid "Import shows from another device"
+msgstr "Uvozi posnetke z druge naprave"
 
-#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:36
-msgid "Enable or disable dark theme"
-msgstr "Preklopi prikaz temne teme"
+#: podcasts-gtk/resources/gtk/episode_description.ui:41
+msgid "Episode Details"
+msgstr "Podrobnosti epizode"
 
-#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:41
-msgid "Whether to periodically refresh content"
-msgstr "Ali naj se vsebina periodično osvežuje"
+#: podcasts-gtk/resources/gtk/episode_description.ui:51
+#: podcasts-gtk/resources/gtk/headerbar.ui:146
+msgid "Back"
+msgstr "Nazaj"
 
-#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:46
-msgid "How many periods of time to wait between automatic refreshes"
-msgstr "Koliko ponovitev časa naj preteče med samodejnimi osveževanji"
+#: podcasts-gtk/resources/gtk/episode_description.ui:105
+msgid "Podcast Title"
+msgstr "Naslov podkasta"
 
-#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:50
-msgid "What period of time to wait between automatic refreshes"
-msgstr "Koliko časa naj preteče med izvajanjem samodejnega osveževanja"
+#: podcasts-gtk/resources/gtk/episode_description.ui:128
+msgid "Duration - Date"
+msgstr "Trajanje – Datum"
 
-#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:54
-msgid "Whether to refresh content after startup"
-msgstr "Ali naj se vsebina ob zagonu samodejno osveži"
+#: podcasts-gtk/resources/gtk/episode_description.ui:148
+msgid "Episode Description"
+msgstr "Opis epizode"
 
-#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:60
-msgid "How many periods of time to wait between automatic cleanups"
-msgstr "Koliko ponovitev časa naj preteče med samodejnim počiščenjem"
+#: podcasts-gtk/resources/gtk/episode_menu.ui:35
+msgid "Go to Show"
+msgstr "Skoči na posnetek"
 
-#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:64
-msgid "What period of time to wait between automatic cleanups"
-msgstr "Koliko časa naj preteče med izvajanjem samodejnega čiščenja"
+#: podcasts-gtk/resources/gtk/episode_menu.ui:39
+msgid "Copy Episode Url"
+msgstr "Kopiraj naslov URL epizode"
+
+#: podcasts-gtk/resources/gtk/episode_widget.ui:70
+msgid "You’ve already listened to this episode."
+msgstr "To epizodo ste že poslušali."
+
+#: podcasts-gtk/resources/gtk/episode_widget.ui:157
+msgid "Calculating episode size…"
+msgstr "Poteka preračunavanje velikosti izvoza …"
+
+#: podcasts-gtk/resources/gtk/episode_widget.ui:180
+msgid "Play this episode"
+msgstr "Predvajaj epizodo"
+
+#: podcasts-gtk/resources/gtk/episode_widget.ui:192
+msgid "Cancel the download process"
+msgstr "Prekliči prejem v teku"
+
+#: podcasts-gtk/resources/gtk/episode_widget.ui:204
+msgid "Download this episode"
+msgstr "Prejmi to epizodo"
+
+#: podcasts-gtk/resources/gtk/hamburger.ui:7
+msgid "_Check for New Episodes"
+msgstr "_Preveri za nove epizode"
+
+#: podcasts-gtk/resources/gtk/hamburger.ui:12
+msgid "_Import Shows"
+msgstr "_Uvozi posnetke"
+
+#: podcasts-gtk/resources/gtk/hamburger.ui:16
+msgid "_Export Shows"
+msgstr "_Izvozi posnetke"
+
+#: podcasts-gtk/resources/gtk/hamburger.ui:22
+msgid "_Keyboard Shortcuts"
+msgstr "_Tipkovne bližnjice"
+
+#: podcasts-gtk/resources/gtk/hamburger.ui:30
+msgid "_About Podcasts"
+msgstr "_O programu"
+
+#: podcasts-gtk/resources/gtk/headerbar.ui:33
+#: podcasts-gtk/resources/gtk/headerbar.ui:133
+msgid "Add a new feed"
+msgstr "Dodaj nov vir"
+
+#: podcasts-gtk/resources/gtk/headerbar.ui:44
+msgid "Enter Feed Address"
+msgstr "Vnesite naslov vira"
+
+#: podcasts-gtk/resources/gtk/headerbar.ui:67
+msgid "Add"
+msgstr "Dodaj"
 
 #. Weird magic I copy-pasted that sets the Application Name in the Shell.
-#: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:3
+#: podcasts-gtk/resources/gtk/headerbar.ui:111
 #: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:4
-#: podcasts-gtk/resources/gtk/headerbar.ui:137 podcasts-gtk/src/app.rs:438
-#: podcasts-gtk/src/widgets/aboutdialog.rs:63 podcasts-gtk/src/window.rs:66
+#: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:3
+#: podcasts-gtk/src/app.rs:457 podcasts-gtk/src/widgets/aboutdialog.rs:56
+#: podcasts-gtk/src/window.rs:64
 msgid "Podcasts"
 msgstr "Podkasti"
 
-#: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:4
-msgid "Listen to your favorite podcasts, right from your desktop."
-msgstr "Spremljanje priljubljenih podkastov neposredno z namizja"
+#: podcasts-gtk/resources/gtk/headerbar.ui:121
+msgid "Show Title"
+msgstr "Pokaži naslov"
 
-#. Translators: Search terms to find this application. Do NOT translate or localize the semicolons! The list MUST also end with a semicolon!
-#: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:13
-msgid "Podcast;RSS;"
-msgstr "Podcast;RSS;podkast;viri;"
+#: podcasts-gtk/resources/gtk/help-overlay.ui:11
+msgid "General"
+msgstr "Splošno"
+
+#: podcasts-gtk/resources/gtk/help-overlay.ui:15
+msgctxt "shortcut window"
+msgid "Check for new episodes"
+msgstr "Preveri za nove epizode"
+
+#: podcasts-gtk/resources/gtk/help-overlay.ui:21
+msgctxt "shortcut window"
+msgid "Quit the application"
+msgstr "Konča izvajanje programa"
+
+#: podcasts-gtk/resources/gtk/home_view.ui:50
+msgid "Today"
+msgstr "Danes"
+
+#: podcasts-gtk/resources/gtk/home_view.ui:78
+msgid "Yesterday"
+msgstr "Včeraj"
+
+#: podcasts-gtk/resources/gtk/home_view.ui:106
+msgid "This Week"
+msgstr "Ta teden"
+
+#: podcasts-gtk/resources/gtk/home_view.ui:134
+msgid "This Month"
+msgstr "Ta mesec"
+
+#: podcasts-gtk/resources/gtk/home_view.ui:163
+msgid "Older"
+msgstr "Starejše"
+
+#: podcasts-gtk/resources/gtk/player_dialog.ui:10
+msgid "Now Playing"
+msgstr "Se predvaja"
+
+#: podcasts-gtk/resources/gtk/player_rate.ui:29
+msgid "Change the playback speed"
+msgstr "Spremeni hitrost predvajanja"
+
+#: podcasts-gtk/resources/gtk/player_rate.ui:34
+#: podcasts-gtk/resources/gtk/player_rate.ui:59
+msgid "1.00×"
+msgstr "1.00×"
+
+#: podcasts-gtk/resources/gtk/player_rate.ui:39
+msgid "2.00×"
+msgstr "2.00×"
+
+#: podcasts-gtk/resources/gtk/player_rate.ui:44
+msgid "1.75×"
+msgstr "1.75×"
+
+#: podcasts-gtk/resources/gtk/player_rate.ui:49
+msgid "1.50×"
+msgstr "1.50×"
+
+#: podcasts-gtk/resources/gtk/player_rate.ui:54
+msgid "1.25×"
+msgstr "1.25×"
+
+#: podcasts-gtk/resources/gtk/player_rate.ui:64
+msgid "0.90×"
+msgstr "0.90×"
+
+#: podcasts-gtk/resources/gtk/player_rate.ui:69
+msgid "0.75×"
+msgstr "0.75×"
+
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:55
+msgid "Rewind 10 seconds"
+msgstr "Skoči nazaj za 10 sekund"
+
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:63
+msgid "Play"
+msgstr "Predvajaj"
+
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:71
+msgid "Pause"
+msgstr "Premor"
+
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:79
+msgid "Fast forward 10 seconds"
+msgstr "Skoči naprej za 10 sekund"
+
+#: podcasts-gtk/resources/gtk/secondary_menu.ui:7
+msgid "_Mark All Episodes as Played"
+msgstr "_Označi vse kot predvajane"
+
+#: podcasts-gtk/resources/gtk/secondary_menu.ui:11
+msgid "_Website"
+msgstr "_Spletišče"
+
+#: podcasts-gtk/resources/gtk/secondary_menu.ui:15
+msgid "_Unsubscribe"
+msgstr "_Prekliči naročnino"
+
+#: podcasts-gtk/resources/gtk/show_menu.ui:35
+msgid "Open Website"
+msgstr "Odpri spletišče"
+
+#: podcasts-gtk/resources/gtk/show_menu.ui:39
+msgid "Mark All as Played"
+msgstr "Označi vse kot predvajane"
+
+#: podcasts-gtk/resources/gtk/show_menu.ui:45
+msgid "Unsubscribe"
+msgstr "Prekliči naročnino"
 
 #: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:8
 msgid "Listen to your favorite shows"
@@ -112,326 +273,137 @@ msgstr "Jordan Petridis"
 msgid "Julian Hofer"
 msgstr "Julian Hofer"
 
-#: podcasts-gtk/resources/gtk/empty_view.ui:46
-msgid "This show does not have episodes yet"
-msgstr "Ta podkast še nima določenih epizod"
+#: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:4
+msgid "Listen to your favorite podcasts, right from your desktop."
+msgstr "Spremljanje priljubljenih podkastov neposredno z namizja"
 
-#: podcasts-gtk/resources/gtk/empty_view.ui:57
-msgid "If you think this is an error, please consider writing a bug report."
-msgstr "Če ste mnenja, da je to napaka, razmislite o poročilu o napaki."
+#. Translators: Search terms to find this application. Do NOT translate or localize the semicolons! The list MUST also end with a semicolon!
+#: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:13
+msgid "Podcast;RSS;"
+msgstr "Podcast;RSS;podkast;viri;"
 
-#: podcasts-gtk/resources/gtk/empty_view.ui:91
-msgid "Get some shows"
-msgstr "Pridobi posnetke"
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:15
+msgid "Height of the last open main window"
+msgstr "Višina nazadnje odprtega glavnega okna"
 
-#: podcasts-gtk/resources/gtk/empty_view.ui:123
-msgid "Add new shows via feed URL"
-msgstr "Dodaj nove posnetke kot naslov URL vira"
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:19
+msgid "Width of the last open main window"
+msgstr "Širina nazadnje odprtega glavnega okna"
 
-#: podcasts-gtk/resources/gtk/empty_view.ui:152
-msgid "Import shows from another device"
-msgstr "Uvozi posnetke z druge naprave"
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:23
+msgid "Maximized state of the last open main window"
+msgstr "Stanje nazadnje razpetega odprtega glavne okna"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:49
-msgid "Episode Details"
-msgstr "Podrobnosti epizode"
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:28
+msgid "Whether to periodically refresh content"
+msgstr "Ali naj se vsebina periodično osvežuje"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:64
-#: podcasts-gtk/resources/gtk/headerbar.ui:186
-msgid "Back"
-msgstr "Nazaj"
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:33
+msgid "How many periods of time to wait between automatic refreshes"
+msgstr "Koliko ponovitev časa naj preteče med samodejnimi osveževanji"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:148
-msgid "Podcast Title"
-msgstr "Naslov podkasta"
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:37
+msgid "What period of time to wait between automatic refreshes"
+msgstr "Koliko časa naj preteče med izvajanjem samodejnega osveževanja"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:186
-msgid "Duration - Date"
-msgstr "Trajanje – Datum"
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:41
+msgid "Whether to refresh content after startup"
+msgstr "Ali naj se vsebina ob zagonu samodejno osveži"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:241
-msgid "Episode Description"
-msgstr "Opis epizode"
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:47
+msgid "How many periods of time to wait between automatic cleanups"
+msgstr "Koliko ponovitev časa naj preteče med samodejnim počiščenjem"
 
-#: podcasts-gtk/resources/gtk/episode_menu.ui:36
-msgid "Go to Show"
-msgstr "Skoči na posnetek"
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:51
+msgid "What period of time to wait between automatic cleanups"
+msgstr "Koliko časa naj preteče med izvajanjem samodejnega čiščenja"
 
-#: podcasts-gtk/resources/gtk/episode_menu.ui:40
-msgid "Copy Episode Url"
-msgstr "Kopiraj naslov URL epizode"
+#: podcasts-gtk/src/app.rs:337
+msgid "Copied URL to clipboard!"
+msgstr "Naslov URL je kopiran v odložišče!"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:82
-msgid "You’ve already listened to this episode."
-msgstr "To epizodo ste že poslušali."
-
-#: podcasts-gtk/resources/gtk/episode_widget.ui:187
-msgid "Calculating episode size…"
-msgstr "Poteka preračunavanje velikosti izvoza …"
-
-#: podcasts-gtk/resources/gtk/episode_widget.ui:214
-msgid "Play this episode"
-msgstr "Predvajaj epizodo"
-
-#: podcasts-gtk/resources/gtk/episode_widget.ui:230
-msgid "Cancel the download process"
-msgstr "Prekliči prejem v teku"
-
-#: podcasts-gtk/resources/gtk/episode_widget.ui:250
-msgid "Download this episode"
-msgstr "Prejmi to epizodo"
-
-#: podcasts-gtk/resources/gtk/hamburger.ui:7
-msgid "_Check for New Episodes"
-msgstr "_Preveri za nove epizode"
-
-#: podcasts-gtk/resources/gtk/hamburger.ui:12
-msgid "_Import Shows"
-msgstr "_Uvozi posnetke"
-
-#: podcasts-gtk/resources/gtk/hamburger.ui:16
-msgid "_Export Shows"
-msgstr "_Izvozi posnetke"
-
-#: podcasts-gtk/resources/gtk/hamburger.ui:22
-msgid "_Keyboard Shortcuts"
-msgstr "_Tipkovne bližnjice"
-
-#: podcasts-gtk/resources/gtk/hamburger.ui:30
-msgid "_About Podcasts"
-msgstr "_O programu"
-
-#: podcasts-gtk/resources/gtk/headerbar.ui:35
-#: podcasts-gtk/resources/gtk/headerbar.ui:165
-msgid "Add a new feed"
-msgstr "Dodaj nov vir"
-
-#: podcasts-gtk/resources/gtk/headerbar.ui:53
-msgid "Enter feed address to add"
-msgstr "Vpis naslova vira za dodajanje"
-
-#: podcasts-gtk/resources/gtk/headerbar.ui:79
-msgid "Add"
-msgstr "Dodaj"
-
-#: podcasts-gtk/resources/gtk/headerbar.ui:150
-msgid "Show Title"
-msgstr "Pokaži naslov"
-
-#: podcasts-gtk/resources/gtk/help-overlay.ui:12
-msgid "General"
-msgstr "Splošno"
-
-#: podcasts-gtk/resources/gtk/help-overlay.ui:18
-msgctxt "shortcut window"
-msgid "Check for new episodes"
-msgstr "Preveri za nove epizode"
-
-#: podcasts-gtk/resources/gtk/help-overlay.ui:25
-msgctxt "shortcut window"
-msgid "Quit the application"
-msgstr "Konča izvajanje programa"
-
-#: podcasts-gtk/resources/gtk/home_view.ui:56
-msgid "Today"
-msgstr "Danes"
-
-#: podcasts-gtk/resources/gtk/home_view.ui:89
-msgid "Yesterday"
-msgstr "Včeraj"
-
-#: podcasts-gtk/resources/gtk/home_view.ui:122
-msgid "This Week"
-msgstr "Ta teden"
-
-#: podcasts-gtk/resources/gtk/home_view.ui:155
-msgid "This Month"
-msgstr "Ta mesec"
-
-#: podcasts-gtk/resources/gtk/home_view.ui:189
-msgid "Older"
-msgstr "Starejše"
-
-#: podcasts-gtk/resources/gtk/inapp_notif.ui:69
-msgid "An in-app action notification"
-msgstr "Obvestilo dejanja iz programa"
-
-#: podcasts-gtk/resources/gtk/inapp_notif.ui:75
-msgid "Undo"
-msgstr "Razveljavi"
-
-#: podcasts-gtk/resources/gtk/player_dialog.ui:14
-msgid "Now Playing"
-msgstr "Se predvaja"
-
-#: podcasts-gtk/resources/gtk/player_rate.ui:32
-msgid "Change the playback speed"
-msgstr "Spremeni hitrost predvajanja"
-
-#: podcasts-gtk/resources/gtk/player_rate.ui:46
-#: podcasts-gtk/resources/gtk/player_rate.ui:85
-msgid "1.00×"
-msgstr "1.00×"
-
-#: podcasts-gtk/resources/gtk/player_rate.ui:65
-msgid "2.00×"
-msgstr "2.00×"
-
-#: podcasts-gtk/resources/gtk/player_rate.ui:70
-msgid "1.75×"
-msgstr "1.75×"
-
-#: podcasts-gtk/resources/gtk/player_rate.ui:75
-msgid "1.50×"
-msgstr "1.50×"
-
-#: podcasts-gtk/resources/gtk/player_rate.ui:80
-msgid "1.25×"
-msgstr "1.25×"
-
-#: podcasts-gtk/resources/gtk/player_rate.ui:90
-msgid "0.90×"
-msgstr "0.90×"
-
-#: podcasts-gtk/resources/gtk/player_rate.ui:95
-msgid "0.75×"
-msgstr "0.75×"
-
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:97
-msgid "Rewind 10 seconds"
-msgstr "Skoči nazaj za 10 sekund"
-
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:107
-msgid "Play"
-msgstr "Predvajaj"
-
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:118
-msgid "Pause"
-msgstr "Premor"
-
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:129
-msgid "Fast forward 10 seconds"
-msgstr "Skoči naprej za 10 sekund"
-
-#: podcasts-gtk/resources/gtk/secondary_menu.ui:7
-msgid "_Mark All Episodes as Played"
-msgstr "_Označi vse kot predvajane"
-
-#: podcasts-gtk/resources/gtk/secondary_menu.ui:11
-msgid "_Website"
-msgstr "_Spletišče"
-
-#: podcasts-gtk/resources/gtk/secondary_menu.ui:15
-msgid "_Unsubscribe"
-msgstr "_Prekliči naročnino"
-
-#: podcasts-gtk/resources/gtk/show_menu.ui:36
-msgid "Open Website"
-msgstr "Odpri spletišče"
-
-#: podcasts-gtk/resources/gtk/show_menu.ui:40
-msgid "Mark All as Played"
-msgstr "Označi vse kot predvajane"
-
-#: podcasts-gtk/resources/gtk/show_menu.ui:46
-msgid "Unsubscribe"
-msgstr "Prekliči naročnino"
-
-#: podcasts-gtk/resources/gtk/show_widget.ui:98
-msgid "Read More"
-msgstr "Preberi več"
-
-#: podcasts-gtk/src/app.rs:353
-msgid "Fetching new episodes"
-msgstr "Pridobi nove epizode"
-
-#: podcasts-gtk/src/stacks/content.rs:58
+#: podcasts-gtk/src/stacks/content.rs:70
 msgid "New"
 msgstr "Novo"
 
-#: podcasts-gtk/src/stacks/content.rs:59
+#: podcasts-gtk/src/stacks/content.rs:72
 msgid "Shows"
 msgstr "Posnetki"
 
-#: podcasts-gtk/src/utils.rs:501
+#: podcasts-gtk/src/utils.rs:490
 msgid "Select the file from which to you want to import shows."
 msgstr "Izberite datoteko, iz katere želite uvoziti posnetke."
 
-#: podcasts-gtk/src/utils.rs:504
+#: podcasts-gtk/src/utils.rs:493
 msgid "_Import"
 msgstr "_Uvozi"
 
-#: podcasts-gtk/src/utils.rs:513 podcasts-gtk/src/utils.rs:562
+#: podcasts-gtk/src/utils.rs:501 podcasts-gtk/src/utils.rs:553
 msgid "OPML file"
 msgstr "Datoteka OPML"
 
-#: podcasts-gtk/src/utils.rs:531
+#: podcasts-gtk/src/utils.rs:519
 msgid "Failed to parse the imported file"
 msgstr "Razčlenjevanje uvožene datoteke je spodletelo"
 
-#: podcasts-gtk/src/utils.rs:536 podcasts-gtk/src/utils.rs:581
+#: podcasts-gtk/src/utils.rs:525 podcasts-gtk/src/utils.rs:574
 msgid "Selected file could not be accessed."
 msgstr "Do izbrane datoteke dostop ni mogoč."
 
-#: podcasts-gtk/src/utils.rs:547
+#: podcasts-gtk/src/utils.rs:539
 msgid "Export shows to…"
 msgstr "Izvozi posnetke v …"
 
-#: podcasts-gtk/src/utils.rs:550
+#: podcasts-gtk/src/utils.rs:542
 msgid "_Export"
 msgstr "_Izvozi"
 
-#: podcasts-gtk/src/utils.rs:551
+#: podcasts-gtk/src/utils.rs:543
 msgid "_Cancel"
 msgstr "_Prekliči"
 
 #. Translators: This is the string of the suggested name for the exported opml file
-#: podcasts-gtk/src/utils.rs:555
+#: podcasts-gtk/src/utils.rs:549
 msgid "gnome-podcasts-exported-shows"
 msgstr "gnome-podcasts-izvoz-posnetkov"
 
-#: podcasts-gtk/src/utils.rs:575
+#: podcasts-gtk/src/utils.rs:567
 msgid "GNOME Podcasts Subscriptions"
 msgstr "Naročila GNOME Podkast"
 
-#: podcasts-gtk/src/utils.rs:576
+#: podcasts-gtk/src/utils.rs:568
 msgid "Failed to export podcasts"
 msgstr "Izvoz podkastov je spodletel"
 
-#: podcasts-gtk/src/widgets/aboutdialog.rs:58
+#: podcasts-gtk/src/widgets/aboutdialog.rs:52
 msgid "Podcast Client for the GNOME Desktop."
 msgstr "Odjemalec posnetkov podkast za namizje GNOME."
 
-#: podcasts-gtk/src/widgets/aboutdialog.rs:65
-msgid "Learn more about GNOME Podcasts"
-msgstr "Več podrobnosti o programu GNOME Podkatsti"
-
-#: podcasts-gtk/src/widgets/aboutdialog.rs:69
+#: podcasts-gtk/src/widgets/aboutdialog.rs:63
 msgid "translator-credits"
 msgstr "Matej Urbančič <mateju@src.gnome.org>"
 
-#: podcasts-gtk/src/widgets/episode.rs:145
+#: podcasts-gtk/src/widgets/episode.rs:143
 msgid "{} min"
 msgstr "{} min"
 
-#: podcasts-gtk/src/widgets/episode_description.rs:165
-msgid "Copied URL to clipboard!"
-msgstr "Naslov URL je kopiran v odložišče!"
-
-#: podcasts-gtk/src/widgets/player.rs:910
+#: podcasts-gtk/src/widgets/player.rs:891
 msgid "The media player was unable to execute an action."
 msgstr "S predvajalnikom ni mogoče izvesti zahtevanega dejanja."
 
-#: podcasts-gtk/src/widgets/show_menu.rs:194
+#: podcasts-gtk/src/widgets/read_more_label.rs:32
+msgid "Read More"
+msgstr "Preberi več"
+
+#: podcasts-gtk/src/widgets/show_menu.rs:180
 msgid "Marked all episodes as listened"
 msgstr "Vse epizode so označene kot poslušane"
 
-#: podcasts-gtk/src/widgets/show_menu.rs:199
+#: podcasts-gtk/src/widgets/show_menu.rs:181
+#: podcasts-gtk/src/widgets/show_menu.rs:204
+msgid "Undo"
+msgstr "Razveljavi"
+
+#: podcasts-gtk/src/widgets/show_menu.rs:200
 msgid "Unsubscribed from {}"
 msgstr "Odjavi {}"
-
-#~ msgid "Podcast app for GNOME"
-#~ msgstr "Program Podkast za GNOME"
-
-#~ msgid "Normal speed"
-#~ msgstr "Običajna hitrost"
