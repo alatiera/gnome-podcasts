@@ -25,6 +25,7 @@ use glib::Sender;
 use glib::Variant;
 use gtk::gdk_pixbuf::Pixbuf;
 use gtk::prelude::*;
+use gtk::FileFilter;
 use gtk::Widget;
 use gtk::{gio, glib};
 
@@ -483,32 +484,30 @@ async fn soundcloud_lookup_id(url: &Url) -> Option<(u64, u64)> {
 }
 
 pub(crate) fn on_import_clicked(window: &gtk::ApplicationWindow, sender: &Sender<Action>) {
-    use gtk::{FileChooserAction, FileChooserNative, FileFilter, ResponseType};
-
-    // Create the FileChooser Dialog
-    let dialog = FileChooserNative::new(
-        Some(i18n("Select the file from which to you want to import shows.").as_str()),
-        Some(window),
-        FileChooserAction::Open,
-        Some(i18n("_Import").as_str()),
-        None,
-    );
-
-    dialog.set_modal(true);
-
     // Set a filter to show only xml files
     let filter = FileFilter::new();
     FileFilter::set_name(&filter, Some(i18n("OPML file").as_str()));
     filter.add_mime_type("application/xml");
     filter.add_mime_type("text/xml");
     filter.add_mime_type("text/x-opml");
-    dialog.add_filter(&filter);
 
-    dialog.connect_response(clone!(@strong sender, @strong dialog => move |_, resp| {
-        debug!("Dialog Response {}", resp);
-        dialog.destroy();
-        if resp == ResponseType::Accept {
-            if let Some(file) = dialog.file() {
+    let filters = gio::ListStore::new(gtk::FileFilter::static_type());
+    filters.append(&filter);
+
+    // Create the FileChooser Dialog
+    let dialog = gtk::FileDialog::builder()
+        .title(i18n(
+            "Select the file from which to you want to import shows.",
+        ))
+        .accept_label(i18n("_Import"))
+        .filters(&filters)
+        .build();
+
+    dialog.open(
+        Some(window),
+        gio::Cancellable::NONE,
+        clone!(@strong sender, @strong dialog => move |result| {
+            if let Ok(file) = result {
                 if let Some(path) = file.peek_path() {
                     rayon::spawn(clone!(@strong sender => move || {
                         // Parse the file and import the feeds
@@ -521,63 +520,47 @@ pub(crate) fn on_import_clicked(window: &gtk::ApplicationWindow, sender: &Sender
                         }
                     }))
                 }
-            } else {
-                let text = i18n("Selected file could not be accessed.");
-                send!(sender, Action::ErrorNotification(text))
             }
-        }
-    }));
-
-    dialog.show();
+        }),
+    );
 }
 
 pub(crate) fn on_export_clicked(window: &gtk::ApplicationWindow, sender: &Sender<Action>) {
-    use gtk::{FileChooserAction, FileChooserNative, FileFilter, ResponseType};
-
-    // Create the FileChooser Dialog
-    let dialog = FileChooserNative::new(
-        Some(i18n("Export shows to…").as_str()),
-        Some(window),
-        FileChooserAction::Save,
-        Some(i18n("_Export").as_str()),
-        Some(i18n("_Cancel").as_str()),
-    );
-
-    dialog.set_modal(true);
-
-    // Translators: This is the string of the suggested name for the exported opml file
-    dialog.set_current_name(&format!("{}.opml", i18n("gnome-podcasts-exported-shows")));
-
     // Set a filter to show only xml files
     let filter = FileFilter::new();
     FileFilter::set_name(&filter, Some(i18n("OPML file").as_str()));
     filter.add_mime_type("application/xml");
     filter.add_mime_type("text/xml");
     filter.add_mime_type("text/x-opml");
-    dialog.add_filter(&filter);
 
-    dialog.connect_response(clone!(@strong sender, @strong dialog => move |_, resp| {
-        debug!("Dialog Response {}", resp);
-        dialog.destroy();
-        if resp == ResponseType::Accept {
-            if let Some(file) = dialog.file() {
-                if let Some(path) = file.peek_path() {
-                    debug!("File selected: {:?}", path);
-                    rayon::spawn(clone!(@strong sender => move || {
-                        if opml::export_from_db(path, i18n("GNOME Podcasts Subscriptions").as_str()).is_err() {
-                            let text = i18n("Failed to export podcasts");
-                            send!(sender, Action::ErrorNotification(text));
-                        }
-                    }))
-                }
-            } else {
-                let text = i18n("Selected file could not be accessed.");
-                send!(sender, Action::ErrorNotification(text));
+    let filters = gio::ListStore::new(gtk::FileFilter::static_type());
+    filters.append(&filter);
+
+    // Create the FileChooser Dialog
+    let dialog = gtk::FileDialog::builder()
+        .title(i18n("Export shows to…"))
+        .accept_label(i18n("_Export"))
+        .initial_name(format!(
+            "{}.opml",
+            // Translators: This is the string of the suggested name for the exported opml file
+            i18n("gnome-podcasts-exported-shows")
+        ))
+        .filters(&filters)
+        .build();
+
+    dialog.save(Some(window), gio::Cancellable::NONE, clone!(@strong sender, @strong dialog => move |result| {
+        if let Ok(file) = result {
+            if let Some(path) = file.peek_path() {
+                debug!("File selected: {:?}", path);
+                rayon::spawn(clone!(@strong sender => move || {
+                    if opml::export_from_db(path, i18n("GNOME Podcasts Subscriptions").as_str()).is_err() {
+                        let text = i18n("Failed to export podcasts");
+                        send!(sender, Action::ErrorNotification(text));
+                    }
+                }))
             }
-        }
-    }));
-
-    dialog.show();
+        }}),
+    );
 }
 
 #[cfg(test)]
