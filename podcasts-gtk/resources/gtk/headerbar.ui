@@ -134,9 +134,6 @@ Tobias Bernard
         <property name="valign">center</property>
         <property name="popover">add_popover</property>
         <property name="icon_name">list-add-symbolic</property>
-        <style>
-          <class name="image-button"/>
-        </style>
       </object>
     </child>
     <child>
@@ -146,9 +143,6 @@ Tobias Bernard
         <property name="tooltip_text" translatable="yes">Back</property>
         <property name="valign">center</property>
         <property name="icon_name">go-previous-symbolic</property>
-        <style>
-          <class name="image-button"/>
-        </style>
       </object>
     </child>
     <child type="end">
@@ -158,9 +152,6 @@ Tobias Bernard
         <property name="icon_name">open-menu-symbolic</property>
         <property name="tooltip_text" translatable="yes">Main Menu</property>
         <property name="primary">True</property>
-        <style>
-          <class name="image-button"/>
-        </style>
       </object>
     </child>
     <child type="end">
@@ -169,9 +160,6 @@ Tobias Bernard
         <property name="visible">False</property>
         <property name="valign">center</property>
         <property name="icon_name">view-more-symbolic</property>
-        <style>
-          <class name="image-button"/>
-        </style>
       </object>
     </child>
   </object>
