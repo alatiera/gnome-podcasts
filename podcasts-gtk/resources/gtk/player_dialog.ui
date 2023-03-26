@@ -156,6 +156,7 @@
                       </object>
                     </child>
                     <style>
+                      <class name="image-button"/>
                       <class name="circular"/>
                     </style>
                   </object>
@@ -175,6 +176,7 @@
                         </child>
                         <style>
                           <class name="circular"/>
+                          <class name="image-button"/>
                         </style>
                       </object>
                     </child>
@@ -189,6 +191,7 @@
                           </object>
                         </child>
                         <style>
+                          <class name="image-button"/>
                           <class name="circular"/>
                         </style>
                       </object>
@@ -209,6 +212,7 @@
                       </object>
                     </child>
                     <style>
+                      <class name="image-button"/>
                       <class name="circular"/>
                     </style>
                   </object>
