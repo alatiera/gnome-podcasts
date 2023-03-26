@@ -275,7 +275,7 @@ struct PlayerControls {
 
 #[derive(Debug, Clone)]
 struct PlayerDialog {
-    dialog: gtk::Dialog,
+    dialog: gtk::Window,
     close: gtk::Button,
     headerbar: gtk::HeaderBar,
     cover: gtk::Image,
@@ -781,13 +781,6 @@ impl PlayerWrapper {
                 info!("showing dialog");
                 this.dialog.dialog.set_transient_for(Some(&parent));
                 this.dialog.dialog.present();
-            }));
-
-        widget
-            .dialog
-            .close
-            .connect_clicked(clone!(@weak this => move |_| {
-                    this.borrow().dialog.dialog.close();
             }));
     }
 

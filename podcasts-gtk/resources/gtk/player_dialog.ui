@@ -1,8 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
-  <object class="GtkDialog" id="dialog">
+  <object class="GtkWindow" id="dialog">
     <property name="modal">True</property>
-    <child type="titlebar">
+    <property name="hide_on_close">True</property>
+    <property name="destroy_with_parent">True</property>
+    <child>
+      <object class="GtkShortcutController">
+        <child>
+          <object class="GtkShortcut">
+            <property name="trigger">Escape</property>
+            <property name="action">action(window.close)</property>
+          </object>
+        </child>
+      </object>
+    </child>
+    <property name="titlebar">
       <object class="GtkHeaderBar" id="headerbar">
         <property name="show-title-buttons">False</property>
         <property name="title-widget">
@@ -13,11 +25,12 @@
         <child>
           <object class="GtkButton" id="close">
             <property name="icon_name">go-previous-symbolic</property>
+            <property name="action_name">window.close</property>
           </object>
         </child>
       </object>
-    </child>
-    <child internal-child="content_area">
+    </property>
+    <child>
       <object class="GtkBox">
         <property name="orientation">vertical</property>
         <property name="spacing">2</property>
