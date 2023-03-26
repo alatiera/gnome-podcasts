@@ -27,25 +27,25 @@ pub(crate) fn about_dialog(window: &gtk::ApplicationWindow) {
     // Feel free to add yourself if you contributed.
     // Please keep it sorted alphabetically
     let developers = vec![
-        String::from("Alexandre Franke"),
-        String::from("Carlos Soriano"),
-        String::from("Constantin Nickel"),
-        String::from("Daniel García Moreno"),
-        String::from("Felix Häcker"),
-        String::from("Gabriele Musco"),
-        String::from("Ivan Augusto"),
-        String::from("James Wykeham-Martin"),
-        String::from("Jordan Petridis"),
-        String::from("Jordan Williams"),
-        String::from("Julian Hofer"),
-        String::from("Julian Sparber"),
-        String::from("Matthew Martin"),
-        String::from("Piotr Drąg"),
-        String::from("Rowan Lewis"),
-        String::from("Zander Brown"),
+        "Alexandre Franke",
+        "Carlos Soriano",
+        "Constantin Nickel",
+        "Daniel García Moreno",
+        "Felix Häcker",
+        "Gabriele Musco",
+        "Ivan Augusto",
+        "James Wykeham-Martin",
+        "Jordan Petridis",
+        "Jordan Williams",
+        "Julian Hofer",
+        "Julian Sparber",
+        "Matthew Martin",
+        "Piotr Drąg",
+        "Rowan Lewis",
+        "Zander Brown",
     ];
 
-    let designers = vec![String::from("Tobias Bernard"), String::from("Sam Hewitt")];
+    let designers = vec!["Tobias Bernard", "Sam Hewitt"];
 
     let dialog = adw::AboutWindow::builder()
         .application_icon(APP_ID)
