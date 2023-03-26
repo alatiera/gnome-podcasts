@@ -2,7 +2,7 @@
 authors = ["Jordan Petridis <jpetridis@gnome.org>"]
 name = "podcasts-data"
 version = "0.1.0"
-edition = "2018"
+edition = "2021"
 
 [dependencies]
 ammonia = "3.1"
