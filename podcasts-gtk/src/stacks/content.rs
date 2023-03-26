@@ -58,7 +58,7 @@ impl Content {
 
         progress_bar.set_valign(gtk::Align::Start);
         progress_bar.set_halign(gtk::Align::Center);
-        progress_bar.hide();
+        progress_bar.set_visible(false);
         progress_bar.add_css_class("osd");
 
         overlay.set_child(Some(&stack));

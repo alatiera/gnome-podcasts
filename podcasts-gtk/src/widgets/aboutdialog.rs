@@ -63,5 +63,5 @@ pub(crate) fn about_dialog(window: &gtk::ApplicationWindow) {
         .translator_credits(i18n("translator-credits").as_str())
         .build();
 
-    dialog.show();
+    dialog.present();
 }

@@ -77,7 +77,7 @@ impl Default for HomeView {
         let rest_list: gtk::ListBox = builder.object("rest_list").unwrap();
 
         let clamp = Clamp::new();
-        clamp.show();
+        clamp.set_visible(true);
         clamp.set_maximum_size(700);
 
         clamp.set_child(Some(&frame_parent));
@@ -142,7 +142,7 @@ impl HomeView {
 
 fn add_to_box(widget: &HomeEpisode, listbox: &gtk::ListBox, box_: &gtk::Box) {
     listbox.append(&widget.row);
-    box_.show();
+    box_.set_visible(true);
 }
 
 fn split(now: &DateTime<Utc>, epoch: i64) -> ListSplit {
@@ -181,7 +181,7 @@ impl Default for HomeEpisode {
         container.append(&ep.container);
         let row = gtk::ListBoxRow::new();
         row.set_child(Some(&container));
-        row.show();
+        row.set_visible(true);
 
         HomeEpisode {
             row,
@@ -204,7 +204,7 @@ impl HomeEpisode {
         row.set_child(Some(&container));
         row.set_action_name(Some("app.go-to-episode"));
         row.set_action_target_value(Some(&id.to_variant()));
-        row.show();
+        row.set_visible(true);
 
         let view = HomeEpisode {
             row,

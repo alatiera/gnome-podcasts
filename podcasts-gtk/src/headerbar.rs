@@ -98,7 +98,7 @@ impl AddPopover {
             add_podcast_from_url(url.to_string(), &sender).await;
         }));
 
-        self.container.hide();
+        self.container.set_visible(false);
         Ok(())
     }
 
@@ -265,22 +265,22 @@ impl Header {
     }
 
     pub(crate) fn switch_to_back(&self, title: &str) {
-        self.add.toggle.hide();
-        self.back.show();
+        self.add.toggle.set_visible(false);
+        self.back.set_visible(true);
         self.set_show_title(title);
         self.title_stack.set_visible_child(&self.show_title);
         self.bottom_switcher.set_reveal(false);
-        self.hamburger.hide();
-        self.dots.show();
+        self.hamburger.set_visible(false);
+        self.dots.set_visible(true);
     }
 
     pub(crate) fn switch_to_normal(&self) {
-        self.add.toggle.show();
-        self.back.hide();
+        self.add.toggle.set_visible(true);
+        self.back.set_visible(false);
         self.title_stack.set_visible_child(&self.switch_squeezer);
-        self.hamburger.show();
+        self.hamburger.set_visible(true);
         self.update_bottom_switcher();
-        self.dots.hide();
+        self.dots.set_visible(false);
     }
 
     pub(crate) fn set_show_title(&self, title: &str) {

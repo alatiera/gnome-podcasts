@@ -593,8 +593,8 @@ impl PlayerExt for PlayerWidget {
 
         self.reveal();
 
-        self.controls.pause.show();
-        self.controls.play.hide();
+        self.controls.pause.set_visible(true);
+        self.controls.play.set_visible(false);
         self.controls
             .play_pause_small
             .set_visible_child(&self.controls.pause_small);
@@ -610,8 +610,8 @@ impl PlayerExt for PlayerWidget {
     fn pause(&mut self) {
         self.dialog.play_pause.set_visible_child(&self.dialog.play);
 
-        self.controls.pause.hide();
-        self.controls.play.show();
+        self.controls.pause.set_visible(false);
+        self.controls.play.set_visible(true);
         self.controls
             .play_pause_small
             .set_visible_child(&self.controls.play_small);
@@ -630,8 +630,8 @@ impl PlayerExt for PlayerWidget {
     }
 
     fn stop(&mut self) {
-        self.controls.pause.hide();
-        self.controls.play.show();
+        self.controls.pause.set_visible(false);
+        self.controls.play.set_visible(true);
 
         self.info.ep = None;
         self.player.stop();
@@ -780,14 +780,14 @@ impl PlayerWrapper {
 
                 info!("showing dialog");
                 this.dialog.dialog.set_transient_for(Some(&parent));
-                this.dialog.dialog.show();
+                this.dialog.dialog.present();
             }));
 
         widget
             .dialog
             .close
             .connect_clicked(clone!(@weak this => move |_| {
-                    this.borrow().dialog.dialog.hide();
+                    this.borrow().dialog.dialog.close();
             }));
     }
 

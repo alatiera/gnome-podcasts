@@ -161,7 +161,7 @@ fn dim_row_title(row: &gtk::ListBoxRow) -> Option<()> {
 
     // FIXME next_sibling should only be used for widget implementations.
     let checkmark = title.next_sibling()?.downcast::<gtk::Image>().ok()?;
-    checkmark.show();
+    checkmark.set_visible(true);
     Some(())
 }
 

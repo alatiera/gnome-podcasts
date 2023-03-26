@@ -63,7 +63,7 @@ impl MainWindow {
 
         window.set_title(Some(&i18n("Podcasts")));
         if APP_ID.ends_with("Devel") {
-            window.style_context().add_class("devel");
+            window.add_css_class("devel");
         }
 
         window.connect_close_request(

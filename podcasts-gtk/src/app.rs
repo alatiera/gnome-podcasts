@@ -364,13 +364,13 @@ impl PdApplication {
                 if let Some(timeout) = window.updating_timeout.replace(None) {
                     timeout.remove();
                 }
-                window.progress_bar.hide();
+                window.progress_bar.set_visible(false);
             }
             Action::ShowUpdateNotif => {
                 let updating_timeout = glib::timeout_add_local(
                     std::time::Duration::from_millis(100),
                     clone!(@weak window.progress_bar as progress => @default-return Continue(false), move || {
-                        progress.show();
+                        progress.set_visible(true);
                         progress.pulse();
                         Continue(true)
                     }),

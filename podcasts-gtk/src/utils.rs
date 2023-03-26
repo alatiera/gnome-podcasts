@@ -151,7 +151,7 @@ pub(crate) fn lazy_load<T, F, W, U>(
 
         let widget = constructor(x);
         container.append(&widget);
-        widget.show();
+        widget.set_visible(true);
     };
     lazy_load_full(data, func, callback);
 }
@@ -176,7 +176,7 @@ pub(crate) fn lazy_load_flowbox<T, F, W, U>(
 
         let widget = constructor(x);
         container.insert(&widget, -1);
-        widget.show();
+        widget.set_visible(true);
     };
     lazy_load_full(data, func, callback);
 }

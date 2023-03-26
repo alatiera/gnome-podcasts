@@ -107,11 +107,11 @@ impl InfoLabels {
         self.title.set_text(episode.title());
 
         if episode.played().is_some() {
-            self.title.style_context().add_class("dim-label");
-            self.played_checkmark.show();
+            self.title.add_css_class("dim-label");
+            self.played_checkmark.set_visible(true);
         } else {
-            self.title.style_context().remove_class("dim-label");
-            self.played_checkmark.hide();
+            self.title.remove_css_class("dim-label");
+            self.played_checkmark.set_visible(false);
         }
     }
 
@@ -141,15 +141,15 @@ impl InfoLabels {
                 // Set the label and show them.
                 self.duration
                     .set_text(&i18n_f("{} min", &[&minutes.to_string()]));
-                self.duration.show();
-                self.separator1.show();
+                self.duration.set_visible(true);
+                self.separator1.set_visible(true);
                 return;
             }
         }
 
         // Else hide the labels
-        self.separator1.hide();
-        self.duration.hide();
+        self.separator1.set_visible(false);
+        self.duration.set_visible(false);
     }
 
     // Set the size label of the episode widget.
@@ -166,11 +166,11 @@ impl InfoLabels {
 
         if let Some(s) = size() {
             self.total_size.set_text(&s);
-            self.total_size.show();
-            self.separator2.show();
+            self.total_size.set_visible(true);
+            self.separator2.set_visible(true);
         } else {
-            self.total_size.hide();
-            self.separator2.hide();
+            self.total_size.set_visible(false);
+            self.separator2.set_visible(false);
         }
     }
 }
@@ -261,15 +261,15 @@ impl EpisodeWidget {
     //   * Show `total_size`, `local_size` labels and `size_separator`.
     //   * Hide Download and Play Buttons
     fn state_prog(&self) {
-        self.progressbar.show();
-        self.buttons.cancel.show();
+        self.progressbar.set_visible(true);
+        self.buttons.cancel.set_visible(true);
 
-        self.info.total_size.show();
-        self.info.local_size.show();
-        self.info.size_separator.show();
+        self.info.total_size.set_visible(true);
+        self.info.local_size.set_visible(true);
+        self.info.size_separator.set_visible(true);
 
-        self.buttons.play.hide();
-        self.buttons.download.hide();
+        self.buttons.play.set_visible(false);
+        self.buttons.download.set_visible(false);
     }
 
     // Playable State:
@@ -277,14 +277,14 @@ impl EpisodeWidget {
     //   * Hide `local_size` labels and `size_separator`.
     //   * Show Play Button and `total_size` label
     fn state_playable(&self) {
-        self.progressbar.hide();
-        self.buttons.cancel.hide();
-        self.buttons.download.hide();
-        self.info.local_size.hide();
-        self.info.size_separator.hide();
+        self.progressbar.set_visible(false);
+        self.buttons.cancel.set_visible(false);
+        self.buttons.download.set_visible(false);
+        self.info.local_size.set_visible(false);
+        self.info.size_separator.set_visible(false);
 
-        self.info.total_size.show();
-        self.buttons.play.show();
+        self.info.total_size.set_visible(true);
+        self.buttons.play.set_visible(true);
     }
 
     // ToDownload State:
@@ -293,14 +293,14 @@ impl EpisodeWidget {
     //   * Show Download Button
     //   * Determine `total_size` label state (Comes from `episode.lenght`).
     fn state_download(&self) {
-        self.progressbar.hide();
-        self.buttons.cancel.hide();
-        self.buttons.play.hide();
+        self.progressbar.set_visible(false);
+        self.buttons.cancel.set_visible(false);
+        self.buttons.play.set_visible(false);
 
-        self.info.local_size.hide();
-        self.info.size_separator.hide();
+        self.info.local_size.set_visible(false);
+        self.info.size_separator.set_visible(false);
 
-        self.buttons.download.show();
+        self.buttons.download.set_visible(true);
     }
 
     fn update_progress(&self, local_size: &str, fraction: f64) {
@@ -344,9 +344,9 @@ impl EpisodeWidget {
             .ok_or_else(|| anyhow!("Widget is already dropped"))?;
         // Reset the buttons state no matter the glade file.
         // This is just to make it easier to port to relm in the future.
-        widget.buttons.cancel.hide();
-        widget.buttons.play.hide();
-        widget.buttons.download.hide();
+        widget.buttons.cancel.set_visible(false);
+        widget.buttons.play.set_visible(false);
+        widget.buttons.download.set_visible(false);
 
         // Check if the episode is being downloaded
         let id = episode.rowid();
@@ -563,7 +563,7 @@ fn progress_bar_helper(
             .parse::<i32>()
             .is_err()
         {
-            widget.info.total_size.hide();
+            widget.info.total_size.set_visible(false);
         }
         Ok(glib::Continue(false))
     } else {

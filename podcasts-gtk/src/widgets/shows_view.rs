@@ -47,7 +47,6 @@ impl Default for ShowsView {
         let view = BaseView::default();
         let flowbox = gtk::FlowBox::new();
 
-        flowbox.show();
         flowbox.set_vexpand(true);
         flowbox.set_hexpand(true);
         flowbox.set_row_spacing(12);
