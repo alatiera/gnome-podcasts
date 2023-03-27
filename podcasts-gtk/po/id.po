@@ -7,15 +7,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: podcasts master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2023-03-23 23:02+0000\n"
-"PO-Revision-Date: 2023-03-26 13:44+0700\n"
+"POT-Creation-Date: 2023-03-26 17:46+0000\n"
+"PO-Revision-Date: 2023-03-27 08:47+0700\n"
 "Last-Translator: Kukuh Syafaat <kukuhsyafaat@gnome.org>\n"
 "Language-Team: Indonesian <gnome-l10n-id@googlegroups.com>\n"
 "Language: id\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 3.1.1\n"
+"X-Generator: Poedit 3.2.2\n"
 
 #: podcasts-gtk/resources/gtk/empty_show.ui:16
 msgid "This show does not have episodes yet"
@@ -44,7 +44,7 @@ msgid "Episode Details"
 msgstr "Rincian Episode"
 
 #: podcasts-gtk/resources/gtk/episode_description.ui:51
-#: podcasts-gtk/resources/gtk/headerbar.ui:146
+#: podcasts-gtk/resources/gtk/headerbar.ui:143
 msgid "Back"
 msgstr "Kembali"
 
@@ -134,6 +134,10 @@ msgstr "Siniar"
 msgid "Show Title"
 msgstr "Tampilkan Judul"
 
+#: podcasts-gtk/resources/gtk/headerbar.ui:153
+msgid "Main Menu"
+msgstr "Menu Utama"
+
 #: podcasts-gtk/resources/gtk/help-overlay.ui:11
 msgid "General"
 msgstr "Umum"
@@ -168,7 +172,7 @@ msgstr "Bulan ini"
 msgid "Older"
 msgstr "Lebih lama"
 
-#: podcasts-gtk/resources/gtk/player_dialog.ui:10
+#: podcasts-gtk/resources/gtk/player_dialog.ui:22
 msgid "Now Playing"
 msgstr "Sedang Diputar"
 
@@ -328,27 +332,23 @@ msgstr "Baru"
 msgid "Shows"
 msgstr "Acara"
 
-#: podcasts-gtk/src/utils.rs:490
-msgid "Select the file from which to you want to import shows."
-msgstr "Pilih berkas dari mana Anda ingin mengimpor acara."
-
-#: podcasts-gtk/src/utils.rs:493
-msgid "_Import"
-msgstr "_Impor"
-
-#: podcasts-gtk/src/utils.rs:501 podcasts-gtk/src/utils.rs:553
+#: podcasts-gtk/src/utils.rs:489 podcasts-gtk/src/utils.rs:531
 msgid "OPML file"
 msgstr "Berkas OPML"
 
-#: podcasts-gtk/src/utils.rs:519
+#: podcasts-gtk/src/utils.rs:500
+msgid "Select the file from which to you want to import shows."
+msgstr "Pilih berkas dari mana Anda ingin mengimpor acara."
+
+#: podcasts-gtk/src/utils.rs:502
+msgid "_Import"
+msgstr "_Impor"
+
+#: podcasts-gtk/src/utils.rs:518
 msgid "Failed to parse the imported file"
 msgstr "Gagal mengurai berkas yang diimpor"
 
-#: podcasts-gtk/src/utils.rs:525 podcasts-gtk/src/utils.rs:574
-msgid "Selected file could not be accessed."
-msgstr "Berkas yang dipilih tidak dapat diakses."
-
-#: podcasts-gtk/src/utils.rs:539
+#: podcasts-gtk/src/utils.rs:541
 msgid "Export shows to…"
 msgstr "Ekspor acara ke…"
 
@@ -356,20 +356,16 @@ msgstr "Ekspor acara ke…"
 msgid "_Export"
 msgstr "_Ekspor"
 
-#: podcasts-gtk/src/utils.rs:543
-msgid "_Cancel"
-msgstr "_Batal"
-
 #. Translators: This is the string of the suggested name for the exported opml file
-#: podcasts-gtk/src/utils.rs:549
+#: podcasts-gtk/src/utils.rs:546
 msgid "gnome-podcasts-exported-shows"
 msgstr "gnome-podcasts-exported-shows"
 
-#: podcasts-gtk/src/utils.rs:567
+#: podcasts-gtk/src/utils.rs:556
 msgid "GNOME Podcasts Subscriptions"
 msgstr "Berlangganan GNOME Siniar"
 
-#: podcasts-gtk/src/utils.rs:568
+#: podcasts-gtk/src/utils.rs:557
 msgid "Failed to export podcasts"
 msgstr "Gagal mengekspor siniar"
 
@@ -387,7 +383,7 @@ msgstr ""
 msgid "{} min"
 msgstr "{} mnt"
 
-#: podcasts-gtk/src/widgets/player.rs:891
+#: podcasts-gtk/src/widgets/player.rs:884
 msgid "The media player was unable to execute an action."
 msgstr "Pemutar media tidak dapat melakukan aksi."
 
@@ -407,6 +403,12 @@ msgstr "Tak Jadi"
 #: podcasts-gtk/src/widgets/show_menu.rs:200
 msgid "Unsubscribed from {}"
 msgstr "Berhenti berlangganan dari {}"
+
+#~ msgid "Selected file could not be accessed."
+#~ msgstr "Berkas yang dipilih tidak dapat diakses."
+
+#~ msgid "_Cancel"
+#~ msgstr "_Batal"
 
 #~ msgid "Top position of the last open main window"
 #~ msgstr "Posisi atas dari jendela utama terbuka terakhir"
