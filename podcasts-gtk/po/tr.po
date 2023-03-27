@@ -9,185 +9,88 @@ msgid ""
 msgstr ""
 "Project-Id-Version: podcasts master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2021-11-28 07:07+0000\n"
-"PO-Revision-Date: 2021-12-17 18:15+0300\n"
+"POT-Creation-Date: 2023-03-26 17:46+0000\n"
+"PO-Revision-Date: 2023-03-27 15:20+0300\n"
 "Last-Translator: Emin Tufan Çetin <etcetin@gmail.com>\n"
 "Language-Team: Turkish <gnome-turk@gnome.org>\n"
 "Language: tr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=1; plural=0\n"
-"X-Generator: Gtranslator 41.0\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Poedit 3.0.1\n"
 "X-DL-Team: tr\n"
 "X-DL-Module: podcasts\n"
 "X-DL-Branch: master\n"
 "X-DL-Domain: po\n"
 "X-DL-State: Translating\n"
 
-#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:15
-msgid "Top position of the last open main window"
-msgstr "Son açılan ana pencerenin üst konumu"
-
-#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:19
-msgid "Left position of the last open main window"
-msgstr "Son açılan ana pencerenin sol konumu"
-
-#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:23
-msgid "Height of the last open main window"
-msgstr "Son açılan ana pencerenin yüksekliği"
-
-#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:27
-msgid "Width of the last open main window"
-msgstr "Son açılan ana pencerenin genişliği"
-
-#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:31
-msgid "Maximized state of the last open main window"
-msgstr "Son açılan ana pencerenin büyütülme durumu"
-
-#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:36
-msgid "Enable or disable dark theme"
-msgstr "Karanlık gövdeyi etkinleştir veya devre dışı bırak"
-
-#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:41
-msgid "Whether to periodically refresh content"
-msgstr "Belirli aralıklarla içeriğin yenilenmesi"
-
-#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:46
-msgid "How many periods of time to wait between automatic refreshes"
-msgstr "Kendiliğinden yenilemeler arasında kaç zaman aralığı beklenecek"
-
-#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:50
-msgid "What period of time to wait between automatic refreshes"
-msgstr "Kendiliğinden yenilemeler arasında beklenecek zaman aralığı"
-
-#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:54
-msgid "Whether to refresh content after startup"
-msgstr "Başlangıçtan sonra içeriğin yenilenmesi"
-
-#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:60
-msgid "How many periods of time to wait between automatic cleanups"
-msgstr "Kendiliğinden temizlemeler arasında kaç zaman aralığı beklenecek"
-
-#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:64
-msgid "What period of time to wait between automatic cleanups"
-msgstr "Kendiliğinden temizlemeler arasında beklenecek zaman aralığı"
-
-#. Weird magic I copy-pasted that sets the Application Name in the Shell.
-#: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:3
-#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:4
-#: podcasts-gtk/resources/gtk/headerbar.ui:137 podcasts-gtk/src/app.rs:438
-#: podcasts-gtk/src/widgets/aboutdialog.rs:63 podcasts-gtk/src/window.rs:66
-msgid "Podcasts"
-msgstr "Podcastler"
-
-#: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:4
-msgid "Listen to your favorite podcasts, right from your desktop."
-msgstr "Gözde podcastlerinizi masaüstünüzden dinleyin."
-
-#. Translators: Search terms to find this application. Do NOT translate or localize the semicolons! The list MUST also end with a semicolon!
-#: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:13
-msgid "Podcast;RSS;"
-msgstr "Podcast;RSS;Pod Yayını;"
-
-#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:8
-#| msgid "Listen to your favorite podcasts, right from your desktop."
-msgid "Listen to your favorite shows"
-msgstr "Gözde gösterilerinizi dinleyin"
-
-#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:10
-msgid ""
-"Play, update, and manage your podcasts from a lightweight interface that "
-"seamlessly integrates with GNOME. Podcasts can play various audio formats "
-"and remember where you stopped listening. You can subscribe to shows via RSS/"
-"Atom, iTunes, and Soundcloud links. Subscriptions from other apps can be "
-"imported via OPML files."
-msgstr ""
-"GNOME ile pürüzsüzce tümleşen hafif arayüzde podcastlerinizi oynatın, "
-"güncelleyin ve yönetin. Podcastler, türlü ses biçimlerini oynatır ve "
-"dinlemeyi nerede durdurduğunuzu anımsar. RSS/Atom, iTunes ve Soundcloud "
-"bağlantıları aracılığıyla gösterilere abone olabilirsiniz. Diğer "
-"uygulamalardaki abonelikler OPML dosyaları aracılığıyla içe aktarılabilir."
-
-#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:117
-msgid "Jordan Petridis"
-msgstr "Jordan Petridis"
-
-#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:118
-msgid "Julian Hofer"
-msgstr "Julian Hofer"
-
-#: podcasts-gtk/resources/gtk/empty_view.ui:46
+#: podcasts-gtk/resources/gtk/empty_show.ui:16
 msgid "This show does not have episodes yet"
 msgstr "Bu gösterinin henüz herhangi bir bölümü yok"
 
-#: podcasts-gtk/resources/gtk/empty_view.ui:57
+#: podcasts-gtk/resources/gtk/empty_show.ui:25
 msgid "If you think this is an error, please consider writing a bug report."
 msgstr "Bunun bir hata olduğunu düşünüyorsanız lütfen hata bildirimi yazın."
 
-#: podcasts-gtk/resources/gtk/empty_view.ui:91
-msgid "Get some shows"
-msgstr "Birkaç gösteri edinin"
+#: podcasts-gtk/resources/gtk/empty_view.ui:30
+msgid "Get Some Shows"
+msgstr "Birkaç Gösteri Edinin"
 
-#: podcasts-gtk/resources/gtk/empty_view.ui:123
+#: podcasts-gtk/resources/gtk/empty_view.ui:49
 msgid "Add new shows via feed URL"
 msgstr "Besleme URLʼsi ile yeni gösteriler ekle"
 
-#: podcasts-gtk/resources/gtk/empty_view.ui:152
+#: podcasts-gtk/resources/gtk/empty_view.ui:71
 msgid "Import shows from another device"
 msgstr "Gösterileri başka aygıttan içe aktar"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:49
-#| msgid "Episode Title"
+#: podcasts-gtk/resources/gtk/episode_description.ui:41
 msgid "Episode Details"
 msgstr "Bölüm Ayrıntıları"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:64
-#: podcasts-gtk/resources/gtk/headerbar.ui:186
+#: podcasts-gtk/resources/gtk/episode_description.ui:51
+#: podcasts-gtk/resources/gtk/headerbar.ui:143
 msgid "Back"
 msgstr "Geri"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:148
-#| msgid "Podcasts"
+#: podcasts-gtk/resources/gtk/episode_description.ui:105
 msgid "Podcast Title"
 msgstr "Podcast Başlığı"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:186
+#: podcasts-gtk/resources/gtk/episode_description.ui:128
 msgid "Duration - Date"
 msgstr "Süre - Tarih"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:241
-#| msgid "Episode Title"
+#: podcasts-gtk/resources/gtk/episode_description.ui:148
 msgid "Episode Description"
 msgstr "Bölüm Açıklaması"
 
-#: podcasts-gtk/resources/gtk/episode_menu.ui:36
-#| msgid "_Import Shows"
+#: podcasts-gtk/resources/gtk/episode_menu.ui:35
 msgid "Go to Show"
 msgstr "Gösteriye Git"
 
-#: podcasts-gtk/resources/gtk/episode_menu.ui:40
-#| msgid "Episode Title"
+#: podcasts-gtk/resources/gtk/episode_menu.ui:39
 msgid "Copy Episode Url"
 msgstr "Bölüm Adresini Kopyala"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:82
+#: podcasts-gtk/resources/gtk/episode_widget.ui:70
 msgid "You’ve already listened to this episode."
 msgstr "Bu bölümü zaten dinlediniz."
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:187
+#: podcasts-gtk/resources/gtk/episode_widget.ui:157
 msgid "Calculating episode size…"
 msgstr "Bölüm boyutu hesaplanıyor…"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:214
+#: podcasts-gtk/resources/gtk/episode_widget.ui:180
 msgid "Play this episode"
 msgstr "Bu bölümü oynat"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:230
+#: podcasts-gtk/resources/gtk/episode_widget.ui:192
 msgid "Cancel the download process"
 msgstr "İndirme sürecini iptal et"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:250
+#: podcasts-gtk/resources/gtk/episode_widget.ui:204
 msgid "Download this episode"
 msgstr "Bu bölümü indir"
 
@@ -211,115 +114,120 @@ msgstr "_Klavye Kısayolları"
 msgid "_About Podcasts"
 msgstr "Podcastler _Hakkında"
 
-#: podcasts-gtk/resources/gtk/headerbar.ui:35
-#: podcasts-gtk/resources/gtk/headerbar.ui:165
+#: podcasts-gtk/resources/gtk/headerbar.ui:33
+#: podcasts-gtk/resources/gtk/headerbar.ui:133
 msgid "Add a new feed"
 msgstr "Yeni besleme ekle"
 
-#: podcasts-gtk/resources/gtk/headerbar.ui:53
-msgid "Enter feed address to add"
-msgstr "Eklenecek besleme adresini gir"
+#: podcasts-gtk/resources/gtk/headerbar.ui:44
+msgid "Enter Feed Address"
+msgstr "Besleme Adresi Gir"
 
-#: podcasts-gtk/resources/gtk/headerbar.ui:79
+#: podcasts-gtk/resources/gtk/headerbar.ui:67
 msgid "Add"
 msgstr "Ekle"
 
-#: podcasts-gtk/resources/gtk/headerbar.ui:150
+#. Weird magic I copy-pasted that sets the Application Name in the Shell.
+#: podcasts-gtk/resources/gtk/headerbar.ui:111
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:4
+#: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:3
+#: podcasts-gtk/src/app.rs:457 podcasts-gtk/src/widgets/aboutdialog.rs:56
+#: podcasts-gtk/src/window.rs:64
+msgid "Podcasts"
+msgstr "Podcastler"
+
+#: podcasts-gtk/resources/gtk/headerbar.ui:121
 msgid "Show Title"
 msgstr "Gösteri Başlığı"
 
-#: podcasts-gtk/resources/gtk/help-overlay.ui:12
+#: podcasts-gtk/resources/gtk/headerbar.ui:153
+msgid "Main Menu"
+msgstr "Ana Menü"
+
+#: podcasts-gtk/resources/gtk/help-overlay.ui:11
 msgid "General"
 msgstr "Genel"
 
-#: podcasts-gtk/resources/gtk/help-overlay.ui:18
+#: podcasts-gtk/resources/gtk/help-overlay.ui:15
 msgctxt "shortcut window"
 msgid "Check for new episodes"
 msgstr "Yeni bölümleri denetle"
 
-#: podcasts-gtk/resources/gtk/help-overlay.ui:25
+#: podcasts-gtk/resources/gtk/help-overlay.ui:21
 msgctxt "shortcut window"
 msgid "Quit the application"
 msgstr "Uygulamadan çık"
 
-#: podcasts-gtk/resources/gtk/home_view.ui:56
+#: podcasts-gtk/resources/gtk/home_view.ui:50
 msgid "Today"
 msgstr "Bugün"
 
-#: podcasts-gtk/resources/gtk/home_view.ui:89
+#: podcasts-gtk/resources/gtk/home_view.ui:78
 msgid "Yesterday"
 msgstr "Dün"
 
-#: podcasts-gtk/resources/gtk/home_view.ui:122
+#: podcasts-gtk/resources/gtk/home_view.ui:106
 msgid "This Week"
 msgstr "Bu Hafta"
 
-#: podcasts-gtk/resources/gtk/home_view.ui:155
+#: podcasts-gtk/resources/gtk/home_view.ui:134
 msgid "This Month"
 msgstr "Bu Ay"
 
-#: podcasts-gtk/resources/gtk/home_view.ui:189
+#: podcasts-gtk/resources/gtk/home_view.ui:163
 msgid "Older"
 msgstr "Daha Eski"
 
-#: podcasts-gtk/resources/gtk/inapp_notif.ui:69
-msgid "An in-app action notification"
-msgstr "Uygulama içi eylem bildirimi"
-
-#: podcasts-gtk/resources/gtk/inapp_notif.ui:75
-msgid "Undo"
-msgstr "Geri al"
-
-#: podcasts-gtk/resources/gtk/player_dialog.ui:14
+#: podcasts-gtk/resources/gtk/player_dialog.ui:22
 msgid "Now Playing"
 msgstr "Şimdi Oynatılıyor"
 
-#: podcasts-gtk/resources/gtk/player_rate.ui:32
+#: podcasts-gtk/resources/gtk/player_rate.ui:29
 msgid "Change the playback speed"
 msgstr "Kayıttan yürütme hızını değiştir"
 
-#: podcasts-gtk/resources/gtk/player_rate.ui:46
-#: podcasts-gtk/resources/gtk/player_rate.ui:85
+#: podcasts-gtk/resources/gtk/player_rate.ui:34
+#: podcasts-gtk/resources/gtk/player_rate.ui:59
 msgid "1.00×"
 msgstr "1.00×"
 
-#: podcasts-gtk/resources/gtk/player_rate.ui:65
+#: podcasts-gtk/resources/gtk/player_rate.ui:39
 msgid "2.00×"
 msgstr "2.00×"
 
-#: podcasts-gtk/resources/gtk/player_rate.ui:70
+#: podcasts-gtk/resources/gtk/player_rate.ui:44
 msgid "1.75×"
 msgstr "1.75×"
 
-#: podcasts-gtk/resources/gtk/player_rate.ui:75
+#: podcasts-gtk/resources/gtk/player_rate.ui:49
 msgid "1.50×"
 msgstr "1.50×"
 
-#: podcasts-gtk/resources/gtk/player_rate.ui:80
+#: podcasts-gtk/resources/gtk/player_rate.ui:54
 msgid "1.25×"
 msgstr "1.25×"
 
-#: podcasts-gtk/resources/gtk/player_rate.ui:90
+#: podcasts-gtk/resources/gtk/player_rate.ui:64
 msgid "0.90×"
 msgstr "0.90×"
 
-#: podcasts-gtk/resources/gtk/player_rate.ui:95
+#: podcasts-gtk/resources/gtk/player_rate.ui:69
 msgid "0.75×"
 msgstr "0.75×"
 
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:97
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:55
 msgid "Rewind 10 seconds"
 msgstr "10 saniye geri sar"
 
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:107
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:63
 msgid "Play"
 msgstr "Oynat"
 
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:118
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:71
 msgid "Pause"
 msgstr "Duraklat"
 
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:129
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:79
 msgid "Fast forward 10 seconds"
 msgstr "10 saniye ileri sar"
 
@@ -335,112 +243,196 @@ msgstr "_Web Sitesi"
 msgid "_Unsubscribe"
 msgstr "_Abonelikten Çık"
 
-#: podcasts-gtk/resources/gtk/show_menu.ui:36
+#: podcasts-gtk/resources/gtk/show_menu.ui:35
 msgid "Open Website"
 msgstr "Web Sitesini Aç"
 
-#: podcasts-gtk/resources/gtk/show_menu.ui:40
+#: podcasts-gtk/resources/gtk/show_menu.ui:39
 msgid "Mark All as Played"
 msgstr "Tümünü Oynatıldı Olarak İmle"
 
-#: podcasts-gtk/resources/gtk/show_menu.ui:46
+#: podcasts-gtk/resources/gtk/show_menu.ui:45
 msgid "Unsubscribe"
 msgstr "Abonelikten Çık"
 
-#: podcasts-gtk/resources/gtk/show_widget.ui:98
-msgid "Read More"
-msgstr "Daha Çoğunu Oku"
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:8
+msgid "Listen to your favorite shows"
+msgstr "Gözde gösterilerinizi dinleyin"
 
-#: podcasts-gtk/src/app.rs:353
-msgid "Fetching new episodes"
-msgstr "Yeni bölümler alınıyor"
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:10
+msgid ""
+"Play, update, and manage your podcasts from a lightweight interface that "
+"seamlessly integrates with GNOME. Podcasts can play various audio formats "
+"and remember where you stopped listening. You can subscribe to shows via RSS/"
+"Atom, iTunes, and Soundcloud links. Subscriptions from other apps can be "
+"imported via OPML files."
+msgstr ""
+"GNOME ile pürüzsüzce tümleşen hafif arayüzde podcastlerinizi oynatın, "
+"güncelleyin ve yönetin. Podcastler, türlü ses biçimlerini oynatır ve "
+"dinlemeyi nerede durdurduğunuzu anımsar. RSS/Atom, iTunes ve Soundcloud "
+"bağlantıları aracılığıyla gösterilere abone olabilirsiniz. Diğer "
+"uygulamalardaki abonelikler OPML dosyaları aracılığıyla içe aktarılabilir."
 
-#: podcasts-gtk/src/stacks/content.rs:58
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:134
+msgid "Jordan Petridis"
+msgstr "Jordan Petridis"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:135
+msgid "Julian Hofer"
+msgstr "Julian Hofer"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:4
+msgid "Listen to your favorite podcasts, right from your desktop."
+msgstr "Gözde podcastlerinizi masaüstünüzden dinleyin."
+
+#. Translators: Search terms to find this application. Do NOT translate or localize the semicolons! The list MUST also end with a semicolon!
+#: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:13
+msgid "Podcast;RSS;"
+msgstr "Podcast;RSS;Pod Yayını;"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:15
+msgid "Height of the last open main window"
+msgstr "Son açılan ana pencerenin yüksekliği"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:19
+msgid "Width of the last open main window"
+msgstr "Son açılan ana pencerenin genişliği"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:23
+msgid "Maximized state of the last open main window"
+msgstr "Son açılan ana pencerenin büyütülme durumu"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:28
+msgid "Whether to periodically refresh content"
+msgstr "Belirli aralıklarla içeriğin yenilenmesi"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:33
+msgid "How many periods of time to wait between automatic refreshes"
+msgstr "Kendiliğinden yenilemeler arasında kaç zaman aralığı beklenecek"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:37
+msgid "What period of time to wait between automatic refreshes"
+msgstr "Kendiliğinden yenilemeler arasında beklenecek zaman aralığı"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:41
+msgid "Whether to refresh content after startup"
+msgstr "Başlangıçtan sonra içeriğin yenilenmesi"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:47
+msgid "How many periods of time to wait between automatic cleanups"
+msgstr "Kendiliğinden temizlemeler arasında kaç zaman aralığı beklenecek"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:51
+msgid "What period of time to wait between automatic cleanups"
+msgstr "Kendiliğinden temizlemeler arasında beklenecek zaman aralığı"
+
+#: podcasts-gtk/src/app.rs:337
+msgid "Copied URL to clipboard!"
+msgstr "URL panoya kopyalandı!"
+
+#: podcasts-gtk/src/stacks/content.rs:70
 msgid "New"
 msgstr "Yeni"
 
-#: podcasts-gtk/src/stacks/content.rs:59
+#: podcasts-gtk/src/stacks/content.rs:72
 msgid "Shows"
 msgstr "Gösteriler"
 
-#: podcasts-gtk/src/utils.rs:501
-msgid "Select the file from which to you want to import shows."
-msgstr "Gösterileri içe aktarmak istediğiniz dosyayı seçin."
-
-#: podcasts-gtk/src/utils.rs:504
-msgid "_Import"
-msgstr "_İçe Aktar"
-
-#: podcasts-gtk/src/utils.rs:513 podcasts-gtk/src/utils.rs:562
+#: podcasts-gtk/src/utils.rs:489 podcasts-gtk/src/utils.rs:531
 msgid "OPML file"
 msgstr "OPML dosyası"
 
-#: podcasts-gtk/src/utils.rs:531
+#: podcasts-gtk/src/utils.rs:500
+msgid "Select the file from which to you want to import shows."
+msgstr "Gösterileri içe aktarmak istediğiniz dosyayı seçin."
+
+#: podcasts-gtk/src/utils.rs:502
+msgid "_Import"
+msgstr "_İçe Aktar"
+
+#: podcasts-gtk/src/utils.rs:518
 msgid "Failed to parse the imported file"
 msgstr "İçe aktarılan dosya ayrıştırılamadı"
 
-#: podcasts-gtk/src/utils.rs:536 podcasts-gtk/src/utils.rs:581
-msgid "Selected file could not be accessed."
-msgstr "Seçilen dosyaya erişilemedi."
-
-#: podcasts-gtk/src/utils.rs:547
+#: podcasts-gtk/src/utils.rs:541
 msgid "Export shows to…"
 msgstr "Gösterileri dışa aktar…"
 
-#: podcasts-gtk/src/utils.rs:550
+#: podcasts-gtk/src/utils.rs:542
 msgid "_Export"
 msgstr "_Dışa Aktar"
 
-#: podcasts-gtk/src/utils.rs:551
-msgid "_Cancel"
-msgstr "_İptal"
-
 #. Translators: This is the string of the suggested name for the exported opml file
-#: podcasts-gtk/src/utils.rs:555
+#: podcasts-gtk/src/utils.rs:546
 msgid "gnome-podcasts-exported-shows"
 msgstr "gnome-podcasts-exported-shows"
 
-#: podcasts-gtk/src/utils.rs:575
+#: podcasts-gtk/src/utils.rs:556
 msgid "GNOME Podcasts Subscriptions"
 msgstr "GNOME Podcastler Abonelikleri"
 
-#: podcasts-gtk/src/utils.rs:576
+#: podcasts-gtk/src/utils.rs:557
 msgid "Failed to export podcasts"
 msgstr "Podcastler dışa aktarılamadı"
 
-#: podcasts-gtk/src/widgets/aboutdialog.rs:58
+#: podcasts-gtk/src/widgets/aboutdialog.rs:52
 msgid "Podcast Client for the GNOME Desktop."
 msgstr "GNOME Masaüstü için Podcast İstemcisi."
 
-#: podcasts-gtk/src/widgets/aboutdialog.rs:65
-msgid "Learn more about GNOME Podcasts"
-msgstr "GNOME Podcastler hakkında daha çoğunu öğrenin"
-
-#: podcasts-gtk/src/widgets/aboutdialog.rs:69
+#: podcasts-gtk/src/widgets/aboutdialog.rs:63
 msgid "translator-credits"
 msgstr ""
 "Emin Tufan Çetin <etcetin@gmail.com>\n"
 "Sabri Ünal <libreajans@gmail.com>"
 
-#: podcasts-gtk/src/widgets/episode.rs:145
+#: podcasts-gtk/src/widgets/episode.rs:143
 msgid "{} min"
 msgstr "{} dak"
 
-#: podcasts-gtk/src/widgets/episode_description.rs:165
-msgid "Copied URL to clipboard!"
-msgstr "URL panoya kopyalandı!"
-
-#: podcasts-gtk/src/widgets/player.rs:902
+#: podcasts-gtk/src/widgets/player.rs:884
 msgid "The media player was unable to execute an action."
 msgstr "Ortam oynatıcı eylemi yürütemiyor."
 
-#: podcasts-gtk/src/widgets/show_menu.rs:194
+#: podcasts-gtk/src/widgets/read_more_label.rs:32
+msgid "Read More"
+msgstr "Daha Çoğunu Oku"
+
+#: podcasts-gtk/src/widgets/show_menu.rs:180
 msgid "Marked all episodes as listened"
 msgstr "Tüm bölümler dinlendi olarak imlendi"
 
-#: podcasts-gtk/src/widgets/show_menu.rs:199
+#: podcasts-gtk/src/widgets/show_menu.rs:181
+#: podcasts-gtk/src/widgets/show_menu.rs:204
+msgid "Undo"
+msgstr "Geri al"
+
+#: podcasts-gtk/src/widgets/show_menu.rs:200
 msgid "Unsubscribed from {}"
 msgstr "{} aboneliğinden çıkıldı"
+
+#~ msgid "Top position of the last open main window"
+#~ msgstr "Son açılan ana pencerenin üst konumu"
+
+#~ msgid "Left position of the last open main window"
+#~ msgstr "Son açılan ana pencerenin sol konumu"
+
+#~ msgid "Enable or disable dark theme"
+#~ msgstr "Karanlık gövdeyi etkinleştir veya devre dışı bırak"
+
+#~ msgid "An in-app action notification"
+#~ msgstr "Uygulama içi eylem bildirimi"
+
+#~ msgid "Fetching new episodes"
+#~ msgstr "Yeni bölümler alınıyor"
+
+#~ msgid "Selected file could not be accessed."
+#~ msgstr "Seçilen dosyaya erişilemedi."
+
+#~ msgid "_Cancel"
+#~ msgstr "_İptal"
+
+#~ msgid "Learn more about GNOME Podcasts"
+#~ msgstr "GNOME Podcastler hakkında daha çoğunu öğrenin"
 
 #~ msgid "Podcast app for GNOME"
 #~ msgstr "GNOME için Podcast uygulaması"
