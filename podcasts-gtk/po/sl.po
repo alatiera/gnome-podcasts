@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: podcasts master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2023-03-23 23:02+0000\n"
-"PO-Revision-Date: 2023-03-24 09:45+0100\n"
+"POT-Creation-Date: 2023-03-26 17:46+0000\n"
+"PO-Revision-Date: 2023-03-28 10:03+0200\n"
 "Last-Translator: Martin Srebotnjak <miles@filmsi.net>\n"
 "Language-Team: Slovenian GNOME Translation Team <gnome-si@googlegroups.com>\n"
 "Language: sl_SI\n"
@@ -46,7 +46,7 @@ msgid "Episode Details"
 msgstr "Podrobnosti epizode"
 
 #: podcasts-gtk/resources/gtk/episode_description.ui:51
-#: podcasts-gtk/resources/gtk/headerbar.ui:146
+#: podcasts-gtk/resources/gtk/headerbar.ui:143
 msgid "Back"
 msgstr "Nazaj"
 
@@ -136,6 +136,10 @@ msgstr "Podkasti"
 msgid "Show Title"
 msgstr "Pokaži naslov"
 
+#: podcasts-gtk/resources/gtk/headerbar.ui:153
+msgid "Main Menu"
+msgstr "Glavni meni"
+
 #: podcasts-gtk/resources/gtk/help-overlay.ui:11
 msgid "General"
 msgstr "Splošno"
@@ -170,7 +174,7 @@ msgstr "Ta mesec"
 msgid "Older"
 msgstr "Starejše"
 
-#: podcasts-gtk/resources/gtk/player_dialog.ui:10
+#: podcasts-gtk/resources/gtk/player_dialog.ui:22
 msgid "Now Playing"
 msgstr "Se predvaja"
 
@@ -330,27 +334,23 @@ msgstr "Novo"
 msgid "Shows"
 msgstr "Posnetki"
 
-#: podcasts-gtk/src/utils.rs:490
-msgid "Select the file from which to you want to import shows."
-msgstr "Izberite datoteko, iz katere želite uvoziti posnetke."
-
-#: podcasts-gtk/src/utils.rs:493
-msgid "_Import"
-msgstr "_Uvozi"
-
-#: podcasts-gtk/src/utils.rs:501 podcasts-gtk/src/utils.rs:553
+#: podcasts-gtk/src/utils.rs:489 podcasts-gtk/src/utils.rs:531
 msgid "OPML file"
 msgstr "Datoteka OPML"
 
-#: podcasts-gtk/src/utils.rs:519
+#: podcasts-gtk/src/utils.rs:500
+msgid "Select the file from which to you want to import shows."
+msgstr "Izberite datoteko, iz katere želite uvoziti posnetke."
+
+#: podcasts-gtk/src/utils.rs:502
+msgid "_Import"
+msgstr "_Uvozi"
+
+#: podcasts-gtk/src/utils.rs:518
 msgid "Failed to parse the imported file"
 msgstr "Razčlenjevanje uvožene datoteke je spodletelo"
 
-#: podcasts-gtk/src/utils.rs:525 podcasts-gtk/src/utils.rs:574
-msgid "Selected file could not be accessed."
-msgstr "Do izbrane datoteke dostop ni mogoč."
-
-#: podcasts-gtk/src/utils.rs:539
+#: podcasts-gtk/src/utils.rs:541
 msgid "Export shows to…"
 msgstr "Izvozi posnetke v …"
 
@@ -358,20 +358,16 @@ msgstr "Izvozi posnetke v …"
 msgid "_Export"
 msgstr "_Izvozi"
 
-#: podcasts-gtk/src/utils.rs:543
-msgid "_Cancel"
-msgstr "_Prekliči"
-
 #. Translators: This is the string of the suggested name for the exported opml file
-#: podcasts-gtk/src/utils.rs:549
+#: podcasts-gtk/src/utils.rs:546
 msgid "gnome-podcasts-exported-shows"
 msgstr "gnome-podcasts-izvoz-posnetkov"
 
-#: podcasts-gtk/src/utils.rs:567
+#: podcasts-gtk/src/utils.rs:556
 msgid "GNOME Podcasts Subscriptions"
 msgstr "Naročila GNOME Podkast"
 
-#: podcasts-gtk/src/utils.rs:568
+#: podcasts-gtk/src/utils.rs:557
 msgid "Failed to export podcasts"
 msgstr "Izvoz podkastov je spodletel"
 
@@ -387,7 +383,7 @@ msgstr "Matej Urbančič <mateju@src.gnome.org>"
 msgid "{} min"
 msgstr "{} min"
 
-#: podcasts-gtk/src/widgets/player.rs:891
+#: podcasts-gtk/src/widgets/player.rs:884
 msgid "The media player was unable to execute an action."
 msgstr "S predvajalnikom ni mogoče izvesti zahtevanega dejanja."
 
