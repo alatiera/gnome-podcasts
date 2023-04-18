@@ -115,7 +115,7 @@ impl EpisodeDescription {
             format!("{:02}:{:02}:{:02}", hours, minutes, seconds)
         });
         let now_utc = Utc::now();
-        let ep_utc = Utc.timestamp(i64::from(ep.epoch()), 0);
+        let ep_utc = Utc.timestamp_opt(i64::from(ep.epoch()), 0).unwrap();
         // If the episode is from a different year, print year as well
         let date = if now_utc.year() != ep_utc.year() {
             ep_utc.format("%e %b %Y").to_string()

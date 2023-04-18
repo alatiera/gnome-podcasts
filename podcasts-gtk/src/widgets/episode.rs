@@ -119,7 +119,7 @@ impl InfoLabels {
     fn set_date(&self, epoch: i32) {
         static NOW: Lazy<DateTime<Utc>> = Lazy::new(Utc::now);
 
-        let ts = Utc.timestamp(i64::from(epoch), 0);
+        let ts = Utc.timestamp_opt(i64::from(epoch), 0).unwrap();
 
         // If the episode is from a different year, print year as well
         if NOW.year() != ts.year() {

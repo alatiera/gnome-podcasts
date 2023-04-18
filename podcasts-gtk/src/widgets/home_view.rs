@@ -146,7 +146,7 @@ fn add_to_box(widget: &HomeEpisode, listbox: &gtk::ListBox, box_: &gtk::Box) {
 }
 
 fn split(now: &DateTime<Utc>, epoch: i64) -> ListSplit {
-    let ep = Utc.timestamp(epoch, 0);
+    let ep = Utc.timestamp_opt(epoch, 0).unwrap();
     let days_now = now.num_days_from_ce();
     let days_ep = ep.num_days_from_ce();
     let weekday = now.weekday().num_days_from_monday() as i32;
