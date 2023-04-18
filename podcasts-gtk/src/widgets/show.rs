@@ -157,7 +157,7 @@ fn populate_listbox(
     let show_ = show.imp();
 
     let (sender_, receiver) = bounded(1);
-    tokio::spawn(clone!(@strong pd => async move {
+    crate::RUNTIME.spawn(clone!(@strong pd => async move {
         if let Ok(episodes) = dbqueries::get_pd_episodeswidgets(&pd) {
             // The receiver can be dropped if there's an early return
             // like on show without episodes for example.

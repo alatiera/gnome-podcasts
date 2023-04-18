@@ -300,7 +300,7 @@ pub(crate) fn schedule_refresh(source: Option<Vec<Source>>, sender: Sender<Actio
 pub(crate) fn refresh_feed(source: Option<Vec<Source>>, sender: Sender<Action>) {
     send!(sender, Action::ShowUpdateNotif);
 
-    tokio::spawn(clone!(@strong sender => async move {
+    crate::RUNTIME.spawn(clone!(@strong sender => async move {
         if let Some(s) = source {
             // Refresh only specified feeds
             pipeline(s).await;

@@ -49,5 +49,5 @@ path = "../podcasts-data"
 pretty_assertions = "1.0.0"
 
 [dependencies.tokio]
-features = ["rt-multi-thread", "macros"]
+features = ["rt-multi-thread"]
 version = "1.10.0"

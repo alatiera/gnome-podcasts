@@ -94,7 +94,7 @@ impl AddPopover {
     fn on_add_clicked(&self, sender: &Sender<Action>) -> Result<()> {
         let url = self.entry.text();
 
-        tokio::spawn(clone!(@strong sender => async move {
+        crate::RUNTIME.spawn(clone!(@strong sender => async move {
             add_podcast_from_url(url.to_string(), &sender).await;
         }));
 

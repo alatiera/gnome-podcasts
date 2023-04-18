@@ -67,6 +67,11 @@ mod i18n;
 
 use crate::app::PdApplication;
 
+use once_cell::sync::Lazy;
+
+pub static RUNTIME: Lazy<tokio::runtime::Runtime> =
+    Lazy::new(|| tokio::runtime::Runtime::new().unwrap());
+
 #[cfg(test)]
 fn init_gtk_tests() -> anyhow::Result<()> {
     // if gtk::is_initialized() {
@@ -83,8 +88,7 @@ fn init_gtk_tests() -> anyhow::Result<()> {
     Ok(())
 }
 
-#[tokio::main]
-async fn main() -> glib::ExitCode {
+fn main() -> glib::ExitCode {
     pretty_env_logger::init();
     gst::init().expect("Error initializing gstreamer");
     gtk::init().expect("Error initializing gtk.");
