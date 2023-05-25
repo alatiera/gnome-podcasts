@@ -12,86 +12,251 @@ msgid ""
 msgstr ""
 "Project-Id-Version: podcasts master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2022-01-25 07:24+0000\n"
-"PO-Revision-Date: 2022-05-02 18:29+0200\n"
-"Last-Translator: mathieu <mathieu.bousquet2@gmail.com>\n"
+"POT-Creation-Date: 2023-03-26 17:46+0000\n"
+"PO-Revision-Date: 2023-05-25 11:14+0900\n"
+"Last-Translator: Julien Humbert <julroy67@gmail.com>\n"
 "Language-Team: French <gnomefr@traduc.org>\n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n > 1)\n"
-"X-Generator: Gtranslator 42.0\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"X-Generator: Poedit 3.3.1\n"
 "X-DL-Team: fr\n"
 "X-DL-Module: podcasts\n"
 "X-DL-Branch: master\n"
 "X-DL-Domain: po\n"
 "X-DL-State: Translating\n"
 
-#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:15
-msgid "Top position of the last open main window"
-msgstr "Position supérieure de la dernière fenêtre principale ouverte"
+#: podcasts-gtk/resources/gtk/empty_show.ui:16
+msgid "This show does not have episodes yet"
+msgstr "Cette émission n’a pas encore d’épisode"
 
-#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:19
-msgid "Left position of the last open main window"
-msgstr "Position gauche de la dernière fenêtre principale ouverte"
+#: podcasts-gtk/resources/gtk/empty_show.ui:25
+msgid "If you think this is an error, please consider writing a bug report."
+msgstr "Si vous pensez qu’il s’agit d’une erreur, faites un rapport de bogue."
 
-#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:23
-msgid "Height of the last open main window"
-msgstr "Hauteur de la dernière fenêtre principale ouverte"
+#: podcasts-gtk/resources/gtk/empty_view.ui:30
+msgid "Get Some Shows"
+msgstr "Obtenir des émissions"
 
-#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:27
-msgid "Width of the last open main window"
-msgstr "Largeur de la dernière fenêtre principale ouverte"
+#: podcasts-gtk/resources/gtk/empty_view.ui:49
+msgid "Add new shows via feed URL"
+msgstr "Ajouter de nouvelles émissions via une URL de flux"
 
-#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:31
-msgid "Maximized state of the last open main window"
-msgstr "État maximisé de la dernière fenêtre principale ouverte"
+#: podcasts-gtk/resources/gtk/empty_view.ui:71
+msgid "Import shows from another device"
+msgstr "Importer des émissions à partir d’un autre appareil"
 
-#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:36
-msgid "Enable or disable dark theme"
-msgstr "Activer ou désactiver le thème sombre"
+#: podcasts-gtk/resources/gtk/episode_description.ui:41
+msgid "Episode Details"
+msgstr "Détails de l’épisode"
 
-#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:41
-msgid "Whether to periodically refresh content"
-msgstr "Indique s’il faut actualiser périodiquement le contenu"
+#: podcasts-gtk/resources/gtk/episode_description.ui:51
+#: podcasts-gtk/resources/gtk/headerbar.ui:143
+msgid "Back"
+msgstr "Retour"
 
-#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:46
-msgid "How many periods of time to wait between automatic refreshes"
-msgstr "Nombre de délais à attendre entre les actualisations automatiques"
+#: podcasts-gtk/resources/gtk/episode_description.ui:105
+msgid "Podcast Title"
+msgstr "Titre du podcast"
 
-#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:50
-msgid "What period of time to wait between automatic refreshes"
-msgstr "Délai entre les actualisations automatiques"
+#: podcasts-gtk/resources/gtk/episode_description.ui:128
+msgid "Duration - Date"
+msgstr "Durée - date"
 
-#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:54
-msgid "Whether to refresh content after startup"
-msgstr "Indique s’il faut actualiser le contenu au démarrage"
+#: podcasts-gtk/resources/gtk/episode_description.ui:148
+msgid "Episode Description"
+msgstr "Description de l’épisode"
 
-#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:60
-msgid "How many periods of time to wait between automatic cleanups"
-msgstr "Nombre de périodes de délai entre les nettoyages automatiques"
+#: podcasts-gtk/resources/gtk/episode_menu.ui:35
+msgid "Go to Show"
+msgstr "Aller à l’émission"
 
-#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:64
-msgid "What period of time to wait between automatic cleanups"
-msgstr "Délai entre les nettoyages automatiques"
+#: podcasts-gtk/resources/gtk/episode_menu.ui:39
+msgid "Copy Episode Url"
+msgstr "Copier l’URL de l’épisode"
+
+#: podcasts-gtk/resources/gtk/episode_widget.ui:70
+msgid "You’ve already listened to this episode."
+msgstr "Vous avez déjà écouté cet épisode."
+
+#: podcasts-gtk/resources/gtk/episode_widget.ui:157
+msgid "Calculating episode size…"
+msgstr "Calcul de la taille de l’épisode…"
+
+#: podcasts-gtk/resources/gtk/episode_widget.ui:180
+msgid "Play this episode"
+msgstr "Lire cet épisode"
+
+#: podcasts-gtk/resources/gtk/episode_widget.ui:192
+msgid "Cancel the download process"
+msgstr "Annuler le téléchargement"
+
+#: podcasts-gtk/resources/gtk/episode_widget.ui:204
+msgid "Download this episode"
+msgstr "Télécharger cet épisode"
+
+#: podcasts-gtk/resources/gtk/hamburger.ui:7
+msgid "_Check for New Episodes"
+msgstr "_Chercher de nouveaux épisodes"
+
+#: podcasts-gtk/resources/gtk/hamburger.ui:12
+msgid "_Import Shows"
+msgstr "_Importer les émissions"
+
+#: podcasts-gtk/resources/gtk/hamburger.ui:16
+msgid "_Export Shows"
+msgstr "_Exporter les émissions"
+
+#: podcasts-gtk/resources/gtk/hamburger.ui:22
+msgid "_Keyboard Shortcuts"
+msgstr "_Raccourcis clavier"
+
+#: podcasts-gtk/resources/gtk/hamburger.ui:30
+msgid "_About Podcasts"
+msgstr "À _propos de Podcasts"
+
+#: podcasts-gtk/resources/gtk/headerbar.ui:33
+#: podcasts-gtk/resources/gtk/headerbar.ui:133
+msgid "Add a new feed"
+msgstr "Ajouter un nouveau flux"
+
+#: podcasts-gtk/resources/gtk/headerbar.ui:44
+msgid "Enter Feed Address"
+msgstr "Entrer l’adresse du flux"
+
+#: podcasts-gtk/resources/gtk/headerbar.ui:67
+msgid "Add"
+msgstr "Ajouter"
 
 #. Weird magic I copy-pasted that sets the Application Name in the Shell.
-#: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:3
+#: podcasts-gtk/resources/gtk/headerbar.ui:111
 #: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:4
-#: podcasts-gtk/resources/gtk/headerbar.ui:137 podcasts-gtk/src/app.rs:438
-#: podcasts-gtk/src/widgets/aboutdialog.rs:63 podcasts-gtk/src/window.rs:66
+#: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:3
+#: podcasts-gtk/src/app.rs:457 podcasts-gtk/src/widgets/aboutdialog.rs:56
+#: podcasts-gtk/src/window.rs:64
 msgid "Podcasts"
 msgstr "Podcasts"
 
-#: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:4
-msgid "Listen to your favorite podcasts, right from your desktop."
-msgstr "Écouter vos podcasts favoris directement sur votre bureau."
+#: podcasts-gtk/resources/gtk/headerbar.ui:121
+msgid "Show Title"
+msgstr "Titre de l’émission"
 
-#. Translators: Search terms to find this application. Do NOT translate or localize the semicolons! The list MUST also end with a semicolon!
-#: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:13
-msgid "Podcast;RSS;"
-msgstr "Podcast;RSS;Baladodiffusion;Émissions;"
+#: podcasts-gtk/resources/gtk/headerbar.ui:153
+msgid "Main Menu"
+msgstr "Menu principal"
+
+#: podcasts-gtk/resources/gtk/help-overlay.ui:11
+msgid "General"
+msgstr "Général"
+
+#: podcasts-gtk/resources/gtk/help-overlay.ui:15
+msgctxt "shortcut window"
+msgid "Check for new episodes"
+msgstr "Chercher de nouveaux épisodes"
+
+#: podcasts-gtk/resources/gtk/help-overlay.ui:21
+msgctxt "shortcut window"
+msgid "Quit the application"
+msgstr "Quitter l’application"
+
+#: podcasts-gtk/resources/gtk/home_view.ui:50
+msgid "Today"
+msgstr "Aujourd’hui"
+
+#: podcasts-gtk/resources/gtk/home_view.ui:78
+msgid "Yesterday"
+msgstr "Hier"
+
+#: podcasts-gtk/resources/gtk/home_view.ui:106
+msgid "This Week"
+msgstr "Cette semaine"
+
+#: podcasts-gtk/resources/gtk/home_view.ui:134
+msgid "This Month"
+msgstr "Ce mois-ci"
+
+#: podcasts-gtk/resources/gtk/home_view.ui:163
+msgid "Older"
+msgstr "Plus ancien"
+
+#: podcasts-gtk/resources/gtk/player_dialog.ui:22
+msgid "Now Playing"
+msgstr "Lecture en cours"
+
+#: podcasts-gtk/resources/gtk/player_rate.ui:29
+msgid "Change the playback speed"
+msgstr "Changer la vitesse de lecture"
+
+#: podcasts-gtk/resources/gtk/player_rate.ui:34
+#: podcasts-gtk/resources/gtk/player_rate.ui:59
+msgid "1.00×"
+msgstr "1,00×"
+
+#: podcasts-gtk/resources/gtk/player_rate.ui:39
+msgid "2.00×"
+msgstr "2,00×"
+
+#: podcasts-gtk/resources/gtk/player_rate.ui:44
+msgid "1.75×"
+msgstr "1,75×"
+
+#: podcasts-gtk/resources/gtk/player_rate.ui:49
+msgid "1.50×"
+msgstr "1,50×"
+
+#: podcasts-gtk/resources/gtk/player_rate.ui:54
+msgid "1.25×"
+msgstr "1,25×"
+
+#: podcasts-gtk/resources/gtk/player_rate.ui:64
+msgid "0.90×"
+msgstr "0,90×"
+
+#: podcasts-gtk/resources/gtk/player_rate.ui:69
+msgid "0.75×"
+msgstr "0,75×"
+
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:55
+msgid "Rewind 10 seconds"
+msgstr "Reculer de 10 secondes"
+
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:63
+msgid "Play"
+msgstr "Lire"
+
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:71
+msgid "Pause"
+msgstr "Pause"
+
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:79
+msgid "Fast forward 10 seconds"
+msgstr "Avancer de 10 secondes"
+
+#: podcasts-gtk/resources/gtk/secondary_menu.ui:7
+msgid "_Mark All Episodes as Played"
+msgstr "_Marquer tous les épisodes comme lus"
+
+#: podcasts-gtk/resources/gtk/secondary_menu.ui:11
+msgid "_Website"
+msgstr "Site _Web"
+
+#: podcasts-gtk/resources/gtk/secondary_menu.ui:15
+msgid "_Unsubscribe"
+msgstr "Se _désabonner"
+
+#: podcasts-gtk/resources/gtk/show_menu.ui:35
+msgid "Open Website"
+msgstr "Aller sur le site Web"
+
+#: podcasts-gtk/resources/gtk/show_menu.ui:39
+msgid "Mark All as Played"
+msgstr "Tout marquer comme lu"
+
+#: podcasts-gtk/resources/gtk/show_menu.ui:45
+msgid "Unsubscribe"
+msgstr "Se désabonner"
 
 #: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:8
 msgid "Listen to your favorite shows"
@@ -120,326 +285,159 @@ msgstr "Jordan Petridis"
 msgid "Julian Hofer"
 msgstr "Julian Hofer"
 
-#: podcasts-gtk/resources/gtk/empty_view.ui:46
-msgid "This show does not have episodes yet"
-msgstr "Cette émission n’a pas encore d’épisode"
+#: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:4
+msgid "Listen to your favorite podcasts, right from your desktop."
+msgstr "Écouter vos podcasts favoris directement sur votre bureau."
 
-#: podcasts-gtk/resources/gtk/empty_view.ui:57
-msgid "If you think this is an error, please consider writing a bug report."
-msgstr "Si vous pensez qu’il s’agit d’une erreur, faites un rapport de bogue."
+#. Translators: Search terms to find this application. Do NOT translate or localize the semicolons! The list MUST also end with a semicolon!
+#: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:13
+msgid "Podcast;RSS;"
+msgstr "Podcast;RSS;Baladodiffusion;Émissions;"
 
-#: podcasts-gtk/resources/gtk/empty_view.ui:91
-msgid "Get some shows"
-msgstr "Obtenir des émissions"
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:15
+msgid "Height of the last open main window"
+msgstr "Hauteur de la dernière fenêtre principale ouverte"
 
-#: podcasts-gtk/resources/gtk/empty_view.ui:123
-msgid "Add new shows via feed URL"
-msgstr "Ajouter de nouvelles émissions via une URL de flux"
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:19
+msgid "Width of the last open main window"
+msgstr "Largeur de la dernière fenêtre principale ouverte"
 
-#: podcasts-gtk/resources/gtk/empty_view.ui:152
-msgid "Import shows from another device"
-msgstr "Importer des émissions à partir d’un autre appareil"
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:23
+msgid "Maximized state of the last open main window"
+msgstr "État maximisé de la dernière fenêtre principale ouverte"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:49
-msgid "Episode Details"
-msgstr "Détails de l’épisode"
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:28
+msgid "Whether to periodically refresh content"
+msgstr "Indique s’il faut actualiser périodiquement le contenu"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:64
-#: podcasts-gtk/resources/gtk/headerbar.ui:186
-msgid "Back"
-msgstr "Retour"
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:33
+msgid "How many periods of time to wait between automatic refreshes"
+msgstr "Nombre de délais à attendre entre les actualisations automatiques"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:148
-msgid "Podcast Title"
-msgstr "Titre du podcast"
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:37
+msgid "What period of time to wait between automatic refreshes"
+msgstr "Délai entre les actualisations automatiques"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:186
-msgid "Duration - Date"
-msgstr "Durée - date"
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:41
+msgid "Whether to refresh content after startup"
+msgstr "Indique s’il faut actualiser le contenu au démarrage"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:241
-msgid "Episode Description"
-msgstr "Description de l’épisode"
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:47
+msgid "How many periods of time to wait between automatic cleanups"
+msgstr "Nombre de périodes de délai entre les nettoyages automatiques"
 
-#: podcasts-gtk/resources/gtk/episode_menu.ui:36
-msgid "Go to Show"
-msgstr "Aller à l’émission"
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:51
+msgid "What period of time to wait between automatic cleanups"
+msgstr "Délai entre les nettoyages automatiques"
 
-#: podcasts-gtk/resources/gtk/episode_menu.ui:40
-msgid "Copy Episode Url"
-msgstr "Copier l’URL de l’épisode"
+#: podcasts-gtk/src/app.rs:337
+msgid "Copied URL to clipboard!"
+msgstr "URL copiée dans le presse-papiers !"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:82
-msgid "You’ve already listened to this episode."
-msgstr "Vous avez déjà écouté cet épisode."
-
-#: podcasts-gtk/resources/gtk/episode_widget.ui:187
-msgid "Calculating episode size…"
-msgstr "Calcul de la taille de l’épisode…"
-
-#: podcasts-gtk/resources/gtk/episode_widget.ui:214
-msgid "Play this episode"
-msgstr "Lire cet épisode"
-
-#: podcasts-gtk/resources/gtk/episode_widget.ui:230
-msgid "Cancel the download process"
-msgstr "Annuler le téléchargement"
-
-#: podcasts-gtk/resources/gtk/episode_widget.ui:250
-msgid "Download this episode"
-msgstr "Télécharger cet épisode"
-
-#: podcasts-gtk/resources/gtk/hamburger.ui:7
-msgid "_Check for New Episodes"
-msgstr "_Chercher de nouveaux épisodes"
-
-#: podcasts-gtk/resources/gtk/hamburger.ui:12
-msgid "_Import Shows"
-msgstr "_Importer les émissions"
-
-#: podcasts-gtk/resources/gtk/hamburger.ui:16
-msgid "_Export Shows"
-msgstr "_Exporter les émissions"
-
-#: podcasts-gtk/resources/gtk/hamburger.ui:22
-msgid "_Keyboard Shortcuts"
-msgstr "_Raccourcis clavier"
-
-#: podcasts-gtk/resources/gtk/hamburger.ui:30
-msgid "_About Podcasts"
-msgstr "À _propos de Podcasts"
-
-#: podcasts-gtk/resources/gtk/headerbar.ui:35
-#: podcasts-gtk/resources/gtk/headerbar.ui:165
-msgid "Add a new feed"
-msgstr "Ajouter un nouveau flux"
-
-#: podcasts-gtk/resources/gtk/headerbar.ui:53
-msgid "Enter feed address to add"
-msgstr "Entrer l’adresse du flux à ajouter"
-
-#: podcasts-gtk/resources/gtk/headerbar.ui:79
-msgid "Add"
-msgstr "Ajouter"
-
-#: podcasts-gtk/resources/gtk/headerbar.ui:150
-msgid "Show Title"
-msgstr "Titre de l’émission"
-
-#: podcasts-gtk/resources/gtk/help-overlay.ui:12
-msgid "General"
-msgstr "Général"
-
-#: podcasts-gtk/resources/gtk/help-overlay.ui:18
-msgctxt "shortcut window"
-msgid "Check for new episodes"
-msgstr "Chercher de nouveaux épisodes"
-
-#: podcasts-gtk/resources/gtk/help-overlay.ui:25
-msgctxt "shortcut window"
-msgid "Quit the application"
-msgstr "Quitter l’application"
-
-#: podcasts-gtk/resources/gtk/home_view.ui:56
-msgid "Today"
-msgstr "Aujourd’hui"
-
-#: podcasts-gtk/resources/gtk/home_view.ui:89
-msgid "Yesterday"
-msgstr "Hier"
-
-#: podcasts-gtk/resources/gtk/home_view.ui:122
-msgid "This Week"
-msgstr "Cette semaine"
-
-#: podcasts-gtk/resources/gtk/home_view.ui:155
-msgid "This Month"
-msgstr "Ce mois-ci"
-
-#: podcasts-gtk/resources/gtk/home_view.ui:189
-msgid "Older"
-msgstr "Plus ancien"
-
-#: podcasts-gtk/resources/gtk/inapp_notif.ui:69
-msgid "An in-app action notification"
-msgstr "Une notification d’action intégrée à l’application"
-
-#: podcasts-gtk/resources/gtk/inapp_notif.ui:75
-msgid "Undo"
-msgstr "Annuler"
-
-#: podcasts-gtk/resources/gtk/player_dialog.ui:14
-msgid "Now Playing"
-msgstr "Lecture en cours"
-
-#: podcasts-gtk/resources/gtk/player_rate.ui:32
-msgid "Change the playback speed"
-msgstr "Changer la vitesse de lecture"
-
-#: podcasts-gtk/resources/gtk/player_rate.ui:46
-#: podcasts-gtk/resources/gtk/player_rate.ui:85
-msgid "1.00×"
-msgstr "1,00×"
-
-#: podcasts-gtk/resources/gtk/player_rate.ui:65
-msgid "2.00×"
-msgstr "2,00×"
-
-#: podcasts-gtk/resources/gtk/player_rate.ui:70
-msgid "1.75×"
-msgstr "1,75×"
-
-#: podcasts-gtk/resources/gtk/player_rate.ui:75
-msgid "1.50×"
-msgstr "1,50×"
-
-#: podcasts-gtk/resources/gtk/player_rate.ui:80
-msgid "1.25×"
-msgstr "1,25×"
-
-#: podcasts-gtk/resources/gtk/player_rate.ui:90
-msgid "0.90×"
-msgstr "0,90×"
-
-#: podcasts-gtk/resources/gtk/player_rate.ui:95
-msgid "0.75×"
-msgstr "0,75×"
-
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:97
-msgid "Rewind 10 seconds"
-msgstr "Reculer de 10 secondes"
-
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:107
-msgid "Play"
-msgstr "Lire"
-
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:118
-msgid "Pause"
-msgstr "Pause"
-
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:129
-msgid "Fast forward 10 seconds"
-msgstr "Avancer de 10 secondes"
-
-#: podcasts-gtk/resources/gtk/secondary_menu.ui:7
-msgid "_Mark All Episodes as Played"
-msgstr "_Marquer tous les épisodes comme lus"
-
-#: podcasts-gtk/resources/gtk/secondary_menu.ui:11
-msgid "_Website"
-msgstr "Site _Web"
-
-#: podcasts-gtk/resources/gtk/secondary_menu.ui:15
-msgid "_Unsubscribe"
-msgstr "Se _désabonner"
-
-#: podcasts-gtk/resources/gtk/show_menu.ui:36
-msgid "Open Website"
-msgstr "Aller sur le site Web"
-
-#: podcasts-gtk/resources/gtk/show_menu.ui:40
-msgid "Mark All as Played"
-msgstr "Tout marquer comme lu"
-
-#: podcasts-gtk/resources/gtk/show_menu.ui:46
-msgid "Unsubscribe"
-msgstr "Se désabonner"
-
-#: podcasts-gtk/resources/gtk/show_widget.ui:98
-msgid "Read More"
-msgstr "En savoir plus"
-
-#: podcasts-gtk/src/app.rs:353
-msgid "Fetching new episodes"
-msgstr "Récupération des nouveaux épisodes"
-
-#: podcasts-gtk/src/stacks/content.rs:58
+#: podcasts-gtk/src/stacks/content.rs:70
 msgid "New"
 msgstr "Nouveau"
 
-#: podcasts-gtk/src/stacks/content.rs:59
+#: podcasts-gtk/src/stacks/content.rs:72
 msgid "Shows"
 msgstr "Émissions"
 
-#: podcasts-gtk/src/utils.rs:501
-msgid "Select the file from which to you want to import shows."
-msgstr "Sélectionnez le fichier à partir duquel importer les émissions."
-
-#: podcasts-gtk/src/utils.rs:504
-msgid "_Import"
-msgstr "_Importer"
-
-#: podcasts-gtk/src/utils.rs:513 podcasts-gtk/src/utils.rs:562
+#: podcasts-gtk/src/utils.rs:489 podcasts-gtk/src/utils.rs:531
 msgid "OPML file"
 msgstr "Fichier OPML"
 
-#: podcasts-gtk/src/utils.rs:531
+#: podcasts-gtk/src/utils.rs:500
+msgid "Select the file from which to you want to import shows."
+msgstr "Sélectionnez le fichier à partir duquel importer les émissions."
+
+#: podcasts-gtk/src/utils.rs:502
+msgid "_Import"
+msgstr "_Importer"
+
+#: podcasts-gtk/src/utils.rs:518
 msgid "Failed to parse the imported file"
 msgstr "Échec de l’analyse du fichier importé"
 
-#: podcasts-gtk/src/utils.rs:536 podcasts-gtk/src/utils.rs:581
-msgid "Selected file could not be accessed."
-msgstr "Le fichier sélectionné n’est pas accessible."
-
-#: podcasts-gtk/src/utils.rs:547
+#: podcasts-gtk/src/utils.rs:541
 msgid "Export shows to…"
 msgstr "Exporter les émissions vers…"
 
-#: podcasts-gtk/src/utils.rs:550
+#: podcasts-gtk/src/utils.rs:542
 msgid "_Export"
 msgstr "_Exporter"
 
-#: podcasts-gtk/src/utils.rs:551
-msgid "_Cancel"
-msgstr "A_nnuler"
-
 #. Translators: This is the string of the suggested name for the exported opml file
-#: podcasts-gtk/src/utils.rs:555
+#: podcasts-gtk/src/utils.rs:546
 msgid "gnome-podcasts-exported-shows"
 msgstr "gnome-podcasts-émissions-exportées"
 
-#: podcasts-gtk/src/utils.rs:575
+#: podcasts-gtk/src/utils.rs:556
 msgid "GNOME Podcasts Subscriptions"
 msgstr "Abonnements GNOME Podcasts"
 
-#: podcasts-gtk/src/utils.rs:576
+#: podcasts-gtk/src/utils.rs:557
 msgid "Failed to export podcasts"
 msgstr "Échec de l’exportation des podcasts"
 
-#: podcasts-gtk/src/widgets/aboutdialog.rs:58
+#: podcasts-gtk/src/widgets/aboutdialog.rs:52
 msgid "Podcast Client for the GNOME Desktop."
 msgstr "Client de podcast pour le bureau GNOME."
 
-#: podcasts-gtk/src/widgets/aboutdialog.rs:65
-msgid "Learn more about GNOME Podcasts"
-msgstr "En apprendre plus sur GNOME Podcasts"
-
-#: podcasts-gtk/src/widgets/aboutdialog.rs:69
+#: podcasts-gtk/src/widgets/aboutdialog.rs:63
 msgid "translator-credits"
 msgstr ""
 "Alexandre Franke\n"
 "Thibault Martin\n"
 "Charles Monzat"
 
-#: podcasts-gtk/src/widgets/episode.rs:145
+#: podcasts-gtk/src/widgets/episode.rs:143
 msgid "{} min"
 msgstr "{} min"
 
-#: podcasts-gtk/src/widgets/episode_description.rs:165
-msgid "Copied URL to clipboard!"
-msgstr "URL copiée dans le presse-papiers !"
-
-#: podcasts-gtk/src/widgets/player.rs:910
+#: podcasts-gtk/src/widgets/player.rs:884
 msgid "The media player was unable to execute an action."
 msgstr "Le lecteur n’a pas pu réaliser l’action."
 
-#: podcasts-gtk/src/widgets/show_menu.rs:194
+#: podcasts-gtk/src/widgets/read_more_label.rs:32
+msgid "Read More"
+msgstr "En savoir plus"
+
+#: podcasts-gtk/src/widgets/show_menu.rs:180
 msgid "Marked all episodes as listened"
 msgstr "Marquer tous les épisodes comme écoutés"
 
-#: podcasts-gtk/src/widgets/show_menu.rs:199
+#: podcasts-gtk/src/widgets/show_menu.rs:181
+#: podcasts-gtk/src/widgets/show_menu.rs:204
+msgid "Undo"
+msgstr "Annuler"
+
+#: podcasts-gtk/src/widgets/show_menu.rs:200
 msgid "Unsubscribed from {}"
 msgstr "Se désabonner de {}"
+
+#~ msgid "Top position of the last open main window"
+#~ msgstr "Position supérieure de la dernière fenêtre principale ouverte"
+
+#~ msgid "Left position of the last open main window"
+#~ msgstr "Position gauche de la dernière fenêtre principale ouverte"
+
+#~ msgid "Enable or disable dark theme"
+#~ msgstr "Activer ou désactiver le thème sombre"
+
+#~ msgid "An in-app action notification"
+#~ msgstr "Une notification d’action intégrée à l’application"
+
+#~ msgid "Fetching new episodes"
+#~ msgstr "Récupération des nouveaux épisodes"
+
+#~ msgid "Selected file could not be accessed."
+#~ msgstr "Le fichier sélectionné n’est pas accessible."
+
+#~ msgid "_Cancel"
+#~ msgstr "A_nnuler"
+
+#~ msgid "Learn more about GNOME Podcasts"
+#~ msgstr "En apprendre plus sur GNOME Podcasts"
 
 #~ msgid "Podcast app for GNOME"
 #~ msgstr "Application de podcast pour GNOME"
