@@ -24,59 +24,144 @@ use gtk::{gio, glib};
 use gio::prelude::*;
 
 use adw::prelude::*;
+use adw::subclass::prelude::*;
+use gtk::CompositeTemplate;
 
 use crate::app::{Action, PdApplication};
 use crate::headerbar::Header;
 use crate::settings::{self, WindowGeometry};
 use crate::stacks::Content;
-use crate::utils::{self, make_action};
+use crate::utils;
 use crate::widgets::about_dialog;
 use crate::widgets::player;
 
-use std::cell::{Cell, RefCell};
-use std::ops::Deref;
+use std::cell::{Cell, OnceCell, RefCell};
 use std::rc::Rc;
 
 use crate::config::APP_ID;
 use crate::i18n::i18n;
 
-#[derive(Debug)]
-pub struct MainWindow {
-    pub(crate) window: adw::ApplicationWindow,
-    pub(crate) content: Rc<Content>,
-    pub(crate) headerbar: Rc<Header>,
-    pub(crate) player: player::PlayerWrapper,
-    pub(crate) navigation_view: adw::NavigationView,
-    pub(crate) toast_overlay: adw::ToastOverlay,
-    pub(crate) progress_bar: Rc<gtk::ProgressBar>,
+#[derive(Debug, CompositeTemplate, glib::Properties)]
+#[template(resource = "/org/gnome/Podcasts/gtk/window.ui")]
+#[properties(wrapper_type = MainWindow)]
+pub struct MainWindowPriv {
+    pub(crate) content: OnceCell<Rc<Content>>,
+    pub(crate) headerbar: OnceCell<Rc<Header>>,
+    pub(crate) player: OnceCell<player::PlayerWrapper>,
+    pub(crate) progress_bar: OnceCell<gtk::ProgressBar>,
     pub(crate) updating_timeout: RefCell<Option<glib::source::SourceId>>,
+    pub(crate) settings: gio::Settings,
+
+    pub(crate) sender: OnceCell<Sender<Action>>,
+
+    #[template_child]
+    pub(crate) toolbar_view: TemplateChild<adw::ToolbarView>,
+    #[template_child]
+    pub(crate) toast_overlay: TemplateChild<adw::ToastOverlay>,
+    #[template_child]
+    pub(crate) navigation_view: TemplateChild<adw::NavigationView>,
+    #[template_child]
+    pub(crate) header_breakpoint: TemplateChild<adw::Breakpoint>,
+    #[template_child]
+    pub(crate) player_breakpoint: TemplateChild<adw::Breakpoint>,
+
+    #[property(set, get)]
     pub(crate) updating: Cell<bool>,
-    pub(crate) sender: Sender<Action>,
 }
 
-impl MainWindow {
-    pub(crate) fn new(app: &PdApplication, sender: &Sender<Action>) -> Self {
+#[glib::object_subclass]
+impl ObjectSubclass for MainWindowPriv {
+    const NAME: &'static str = "PdMainWindow";
+    type Type = MainWindow;
+    type ParentType = adw::ApplicationWindow;
+
+    fn new() -> Self {
         let settings = gio::Settings::new(APP_ID);
 
-        let window = adw::ApplicationWindow::new(app);
-        let toast_overlay = adw::ToastOverlay::new();
+        Self {
+            headerbar: OnceCell::new(),
+            content: OnceCell::new(),
+            player: OnceCell::new(),
+            navigation_view: TemplateChild::default(),
+            toast_overlay: TemplateChild::default(),
+            toolbar_view: TemplateChild::default(),
+            header_breakpoint: TemplateChild::default(),
+            player_breakpoint: TemplateChild::default(),
+            progress_bar: OnceCell::new(),
+            updating: Cell::new(false),
+            updating_timeout: RefCell::new(None),
+            sender: OnceCell::new(),
+            settings,
+        }
+    }
+
+    fn class_init(klass: &mut Self::Class) {
+        klass.bind_template();
+        klass.install_action("win.refresh", None, move |win, _, _| {
+            let sender = win.sender();
+            utils::schedule_refresh(None, sender.clone());
+        });
+        klass.install_action("win.import", None, move |win, _, _| {
+            let sender = win.sender();
+            utils::on_import_clicked(win.upcast_ref(), sender);
+        });
+        klass.install_action("win.export", None, move |win, _, _| {
+            let sender = win.sender();
+            utils::on_export_clicked(win.upcast_ref(), sender);
+        });
+        klass.install_action("win.about", None, move |win, _, _| {
+            about_dialog(win.upcast_ref());
+        });
+    }
+
+    fn instance_init(obj: &glib::subclass::InitializingObject<Self>) {
+        obj.init_template();
+    }
+}
+
+#[glib::derived_properties]
+impl ObjectImpl for MainWindowPriv {
+    fn constructed(&self) {
+        let window = self.obj();
+        self.parent_constructed();
 
         window.set_title(Some(&i18n("Podcasts")));
         if APP_ID.ends_with("Devel") {
             window.add_css_class("devel");
         }
 
-        window.connect_close_request(
-            clone!(@strong settings, @weak app => @default-return glib::Propagation::Stop, move |window| {
-                    info!("Saving window position");
-                    WindowGeometry::from_window(window).write(&settings);
+        // Retrieve the previous window position and size.
+        WindowGeometry::from_settings(&self.settings).apply(window.upcast_ref());
+    }
+}
 
-                    info!("Application is exiting");
-                    let app = app.upcast::<gio::Application>();
-                    app.quit();
-                    glib::Propagation::Stop
-            }),
-        );
+impl WidgetImpl for MainWindowPriv {}
+impl WindowImpl for MainWindowPriv {
+    // Save window state on delete event
+    fn close_request(&self) -> glib::Propagation {
+        let obj = self.obj();
+        info!("Saving window position");
+
+        WindowGeometry::from_window(obj.upcast_ref()).write(&self.settings);
+
+        self.parent_close_request()
+    }
+}
+impl ApplicationWindowImpl for MainWindowPriv {}
+impl AdwApplicationWindowImpl for MainWindowPriv {}
+
+glib::wrapper! {
+    pub struct MainWindow(ObjectSubclass<MainWindowPriv>)
+        @extends gtk::Widget, gtk::Window, gtk::ApplicationWindow, adw::ApplicationWindow,
+        @implements gio::ActionMap, gio::ActionGroup, gtk::Root;
+}
+
+impl MainWindow {
+    pub(crate) fn new(app: &PdApplication, sender: &Sender<Action>) -> Self {
+        let window: Self = glib::Object::builder().property("application", app).build();
+        let imp = window.imp();
+
+        imp.sender.set(sender.clone()).unwrap();
 
         // Create a content instance
         let content = Content::new(sender).expect("Content initialization failed.");
@@ -84,63 +169,39 @@ impl MainWindow {
         // Create the headerbar
         let header = Header::new(&content, sender);
 
-        // Add the content main stack to the overlay.
-        let navigation_view = adw::NavigationView::new();
-
-        let wrap = adw::ToolbarView::new();
-        let main_page = adw::NavigationPage::new(&wrap, &i18n("Podcasts"));
-
-        navigation_view.add(&main_page);
-
-        // Add the Headerbar to the window.
-        wrap.add_top_bar(&header.container);
-
-        // Add the deck to the main Box
-        wrap.set_content(Some(&content.get_container()));
+        imp.toolbar_view.add_top_bar(&header.container);
+        imp.toolbar_view.set_content(Some(&content.get_container()));
 
         let player = player::PlayerWrapper::new(sender);
-        // Add the player to the main Box
-        wrap.add_bottom_bar(&player.borrow().container);
-        wrap.add_bottom_bar(&header.bottom_switcher);
+        imp.toolbar_view.add_bottom_bar(&player.borrow().container);
 
-        toast_overlay.set_child(Some(&navigation_view));
-        window.set_content(Some(&toast_overlay));
-
-        // Set window title
-        window.set_width_request(360);
-        window.set_height_request(294);
-        let condition = adw::BreakpointCondition::parse("max-width: 550sp").unwrap();
-        let breakpoint = adw::Breakpoint::new(condition);
-        breakpoint.add_setter(&header.bottom_switcher, "reveal", &true.to_value());
-        breakpoint.add_setter(
+        // Setup breakpoints
+        imp.header_breakpoint
+            .add_setter(&header.bottom_switcher, "reveal", &true.to_value());
+        imp.header_breakpoint.add_setter(
             &header.container,
             "title-widget",
             &gtk::Widget::NONE.to_value(),
         );
-        window.add_breakpoint(breakpoint);
-
-        let condition = adw::BreakpointCondition::parse("min-width: 800sp").unwrap();
-        let breakpoint = adw::Breakpoint::new(condition);
-        breakpoint.connect_apply(clone!(@strong player => move |_| {
-            player.set_small(false);
-        }));
-        breakpoint.connect_unapply(clone!(@strong player => move |_| {
-            player.set_small(true);
-        }));
+        imp.player_breakpoint
+            .connect_apply(clone!(@strong player => move |_| {
+                player.set_small(false);
+            }));
+        imp.player_breakpoint
+            .connect_unapply(clone!(@strong player => move |_| {
+                player.set_small(true);
+            }));
+        let breakpoint = imp.player_breakpoint.get();
         let is_small = !window.current_breakpoint().is_some_and(|b| b == breakpoint);
-        window.add_breakpoint(breakpoint);
         player.set_small(is_small);
 
-        // Retrieve the previous window position and size.
-        WindowGeometry::from_settings(&settings).apply(&window);
-
         // Update the feeds right after the Window is initialized.
-        if settings.boolean("refresh-on-startup") {
+        if imp.settings.boolean("refresh-on-startup") {
             info!("Refresh on startup.");
             utils::schedule_refresh(None, sender.clone());
         }
 
-        let refresh_interval = settings::get_refresh_interval(&settings).num_seconds() as u32;
+        let refresh_interval = settings::get_refresh_interval(&imp.settings).num_seconds() as u32;
         info!("Auto-refresh every {:?} seconds.", refresh_interval);
 
         glib::timeout_add_seconds_local(
@@ -151,72 +212,54 @@ impl MainWindow {
             }),
         );
 
-        Self {
-            window,
-            headerbar: header,
-            content,
-            player,
-            navigation_view,
-            toast_overlay,
-            progress_bar: Rc::new(progress_bar),
-            updating: Cell::new(false),
-            updating_timeout: RefCell::new(None),
-            sender: sender.clone(),
+        imp.headerbar.set(header).unwrap();
+        imp.content.set(content).unwrap();
+        imp.player.set(player).unwrap();
+        imp.progress_bar.set(progress_bar).unwrap();
+
+        window
+    }
+
+    pub fn go_back(&self) -> bool {
+        self.imp().navigation_view.pop()
+    }
+
+    pub fn push_page<P: glib::IsA<adw::NavigationPage>>(&self, page: &P) {
+        self.imp().navigation_view.push(page);
+    }
+
+    pub(crate) fn init_episode(&self, rowid: i32, second: Option<i32>) -> anyhow::Result<()> {
+        self.imp()
+            .player
+            .get()
+            .unwrap()
+            .borrow_mut()
+            .initialize_episode(rowid, second)
+    }
+
+    pub(crate) fn add_toast(&self, toast: adw::Toast) {
+        self.imp().toast_overlay.add_toast(toast);
+    }
+
+    pub(crate) fn set_updating_timeout(&self, timeout: Option<glib::source::SourceId>) {
+        if let Some(old_timeout) = self.imp().updating_timeout.replace(timeout) {
+            old_timeout.remove();
         }
     }
 
-    /// Define the `GAction`s.
-    ///
-    /// Used in menus and the keyboard shortcuts dialog.
-    pub fn setup_gactions(&self) {
-        let sender = &self.sender;
-        // Create the `refresh` action.
-        //
-        // This will trigger a refresh of all the shows in the database.
-        make_action(
-            &self.window,
-            "refresh",
-            clone!(@strong sender => move |_, _| {
-                    glib::idle_add_local(
-                        clone!(@strong sender => move || {
-                            utils::schedule_refresh(None, sender.clone());
-                            glib::ControlFlow::Break
-                }));
-            }),
-        );
-
-        // Create the `OPML` import action
-        make_action(
-            &self.window,
-            "import",
-            clone!(@strong sender, @weak self.window as window => move |_, _| {
-                    utils::on_import_clicked(&window.upcast(), &sender);
-            }),
-        );
-
-        make_action(
-            &self.window,
-            "export",
-            clone!(@strong sender, @weak self.window as window => move |_, _| {
-                    utils::on_export_clicked(&window.upcast(), &sender);
-            }),
-        );
-
-        // Create the action that shows a `gtk::AboutDialog`
-        make_action(
-            &self.window,
-            "about",
-            clone!(@weak self.window as win => move |_, _| {
-                    about_dialog(&win.upcast());
-            }),
-        );
+    pub(crate) fn progress_bar(&self) -> &gtk::ProgressBar {
+        self.imp().progress_bar.get().unwrap()
     }
-}
 
-impl Deref for MainWindow {
-    type Target = adw::ApplicationWindow;
+    pub(crate) fn content(&self) -> &Content {
+        self.imp().content.get().unwrap()
+    }
 
-    fn deref(&self) -> &Self::Target {
-        &self.window
+    pub(crate) fn headerbar(&self) -> &Header {
+        self.imp().headerbar.get().unwrap()
+    }
+
+    pub(crate) fn sender(&self) -> &glib::Sender<Action> {
+        self.imp().sender.get().unwrap()
     }
 }

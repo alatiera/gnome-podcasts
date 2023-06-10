@@ -97,7 +97,6 @@ impl ApplicationImpl for PdApplicationPrivate {
         app.setup_gactions();
 
         let window = MainWindow::new(&app, &self.sender);
-        window.setup_gactions();
         window.present();
         self.window.replace(Some(window));
 
@@ -250,7 +249,7 @@ impl PdApplication {
             if app.go_back_on_deck() {
                 return;
             }
-            let shows = data.window.borrow().as_ref().unwrap().content.get_shows();
+            let shows = data.window.borrow().as_ref().unwrap().content().get_shows();
             let pop = shows.borrow().populated();
             let pop = pop.borrow();
             if let PopulatedState::Widget = pop.populated_state() {
@@ -317,7 +316,7 @@ impl PdApplication {
         let data = self.imp();
         let w = data.window.borrow();
         let window = w.as_ref().expect("Window is not initialized");
-        window.navigation_view.pop()
+        window.go_back()
     }
 
     fn setup_accels(&self) {
@@ -333,13 +332,13 @@ impl PdApplication {
 
         info!("Incoming channel action: {:?}", action);
         match action {
-            Action::RefreshAllViews => window.content.update(),
-            Action::RefreshShowsView => window.content.update_shows_view(),
-            Action::RefreshWidgetIfSame(id) => window.content.update_widget_if_same(id),
-            Action::RefreshEpisodesView => window.content.update_home(),
-            Action::RefreshEpisodesViewBGR => window.content.update_home_if_background(),
+            Action::RefreshAllViews => window.content().update(),
+            Action::RefreshShowsView => window.content().update_shows_view(),
+            Action::RefreshWidgetIfSame(id) => window.content().update_widget_if_same(id),
+            Action::RefreshEpisodesView => window.content().update_home(),
+            Action::RefreshEpisodesViewBGR => window.content().update_home_if_background(),
             Action::ReplaceWidget(pd) => {
-                let shows = window.content.get_shows();
+                let shows = window.content().get_shows();
                 let pop = shows.borrow().populated();
                 pop.borrow_mut()
                     .replace_widget(pd.clone())
@@ -348,23 +347,23 @@ impl PdApplication {
                     .ok();
             }
             Action::ShowWidgetAnimated => {
-                window.navigation_view.pop();
-                let shows = window.content.get_shows();
+                window.go_back();
+                let shows = window.content().get_shows();
                 let pop = shows.borrow().populated();
-                window.content.get_stack().set_visible_child_name("shows");
+                window.content().get_stack().set_visible_child_name("shows");
                 pop.borrow_mut()
                     .switch_visible(PopulatedState::Widget, gtk::StackTransitionType::SlideLeft);
             }
             Action::ShowShowsAnimated => {
-                window.navigation_view.pop();
-                let shows = window.content.get_shows();
+                window.go_back();
+                let shows = window.content().get_shows();
                 let pop = shows.borrow().populated();
                 pop.borrow_mut()
                     .switch_visible(PopulatedState::View, gtk::StackTransitionType::SlideRight);
             }
             Action::GoToEpisodeDescription(show, ep) => {
-                let description_widget = EpisodeDescription::new(ep, show, window.sender.clone());
-                window.navigation_view.push(&description_widget);
+                let description_widget = EpisodeDescription::new(ep, show, window.sender().clone());
+                window.push_page(&description_widget);
             }
             Action::GoToShow(pd) => {
                 self.do_action(Action::HeaderBarShowTile);
@@ -372,10 +371,10 @@ impl PdApplication {
                 self.do_action(Action::ShowWidgetAnimated);
             }
             Action::HeaderBarShowTile => {
-                window.headerbar.switch_to_back();
+                window.headerbar().switch_to_back();
             }
             Action::HeaderBarNormal => {
-                window.headerbar.switch_to_normal();
+                window.headerbar().switch_to_normal();
             }
             Action::CopiedUrlNotification => {
                 let text = i18n("Copied URL to clipboard!");
@@ -393,35 +392,32 @@ impl PdApplication {
             Action::ErrorNotification(err) => {
                 error!("An error notification was triggered: {}", err);
                 let toast = adw::Toast::new(&err);
-                window.toast_overlay.add_toast(toast);
+                window.add_toast(toast);
             }
             Action::UpdateFeed(source) => {
-                if window.updating.get() {
+                if window.updating() {
                     info!("Ignoring feed update request (another one is already running)")
                 } else {
-                    window.updating.set(true);
+                    window.set_updating(true);
                     utils::refresh_feed(source, data.sender.clone())
                 }
             }
             Action::StopUpdating => {
-                window.updating.set(false);
-                if let Some(timeout) = window.updating_timeout.replace(None) {
-                    timeout.remove();
-                }
-                window.progress_bar.set_visible(false);
+                window.set_updating(false);
+                window.set_updating_timeout(None);
+                window.progress_bar().set_visible(false);
             }
             Action::ShowUpdateNotif => {
+                let progress = window.progress_bar();
                 let updating_timeout = glib::timeout_add_local(
                     std::time::Duration::from_millis(100),
-                    clone!(@weak window.progress_bar as progress => @default-return glib::ControlFlow::Break, move || {
+                    clone!(@weak progress => @default-return glib::ControlFlow::Break, move || {
                         progress.set_visible(true);
                         progress.pulse();
                         glib::ControlFlow::Continue
                     }),
                 );
-                if let Some(old_timeout) = window.updating_timeout.replace(Some(updating_timeout)) {
-                    old_timeout.remove();
-                }
+                window.set_updating_timeout(Some(updating_timeout));
             }
             Action::FeedRefreshed => {
                 let sender = data.sender.clone();
@@ -429,45 +425,40 @@ impl PdApplication {
                 send!(sender, Action::RefreshAllViews);
             }
             Action::InitEpisode(rowid) => {
-                let res = window.player.borrow_mut().initialize_episode(rowid, None);
+                let res = window.init_episode(rowid, None);
                 debug_assert!(res.is_ok());
             }
             Action::InitEpisodeAt(rowid, second) => {
-                let res = window
-                    .player
-                    .borrow_mut()
-                    .initialize_episode(rowid, Some(second));
+                let res = window.init_episode(rowid, Some(second));
                 debug_assert!(res.is_ok());
             }
             Action::InitSecondaryMenu(s) => {
                 let menu = &s.get();
-                window.headerbar.set_secondary_menu(menu);
+                window.headerbar().set_secondary_menu(menu);
             }
             Action::EmptyState => {
                 if let Some(refresh_action) = window
-                    .window
                     .lookup_action("refresh")
                     .and_then(|action| action.downcast::<gio::SimpleAction>().ok())
                 {
                     refresh_action.set_enabled(false)
                 }
 
-                window.headerbar.switch.set_sensitive(false);
-                window.content.switch_to_empty_views();
+                window.headerbar().switch.set_sensitive(false);
+                window.content().switch_to_empty_views();
             }
             Action::PopulatedState => {
                 if let Some(refresh_action) = window
-                    .window
                     .lookup_action("refresh")
                     .and_then(|action| action.downcast::<gio::SimpleAction>().ok())
                 {
                     refresh_action.set_enabled(true)
                 }
 
-                window.headerbar.switch.set_sensitive(true);
-                window.content.switch_to_populated();
+                window.headerbar().switch.set_sensitive(true);
+                window.content().switch_to_populated();
             }
-            Action::RaiseWindow => window.window.present(),
+            Action::RaiseWindow => window.present(),
             Action::InhibitSuspend => {
                 let window: Option<&gtk::Window> = None;
                 let old_cookie = *data.inhibit_cookie.borrow();
@@ -517,7 +508,6 @@ impl PdApplication {
             .borrow()
             .as_ref()
             .unwrap()
-            .toast_overlay
             .add_toast(toast);
     }
 }
