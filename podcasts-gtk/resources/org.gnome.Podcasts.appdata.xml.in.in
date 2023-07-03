@@ -26,6 +26,14 @@
     </screenshot>
   </screenshots>
   <releases>
+    <release version="0.6.0" date="2023-07-04">
+     <description>
+        <p>
+          This version brings the long awaited GTK 4 port, dark mode support, a new Show decription widget
+          and a handful of fixes all around.
+        </p>
+      </description>
+    </release>
     <release version="0.5.1" date="2022-01-03">
      <description>
         <p>

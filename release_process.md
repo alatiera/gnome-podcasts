@@ -24,7 +24,7 @@ source /usr/lib/sdk/rust-stable/enable.sh
 meson dist
 ```
 
-### Option maintenance thingies
+### Optional maintenance thingies
 
 - Update flatpak modules
 - Run `cargo update`, build and commit the new lockfile.

@@ -14,6 +14,30 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Removed:
 
+## [0.6.0] - 2023-07-04
+
+### Added:
+- Support for Dark Mode World/podcasts!199
+- Introduce ReadMoreLabel widget World/podcasts!199
+
+### Changed:
+- Ported to GTK 4 World/podcasts!199
+- Port notifications to AdwToast World/podcasts!199
+- Round cover images World/podcasts!199
+- Make FileChooser dialogs modal World/podcasts!199
+- Port to AdwAboutWindow World/podcasts!219
+- Move the update ProgressBar to an Overlay World/podcasts!224
+- Switch to Rust 2021 edition World/podcasts!233
+- Require GNOME 44 features World/podcasts!233
+- Port from deprecated GTK apis World/podcasts!233
+- Translation updates
+
+### Fixed:
+- Correctly import non-utf8 encoded feeds World/podcasts!214
+- Escape markup from show descriptions World/podcasts!199
+- Fix action bar style World/podcasts!224
+- Use a dedicated tokio runtime instance World/podcasts!234
+
 ## [0.5.1] - 2022-01-03
 
 ### Added:
