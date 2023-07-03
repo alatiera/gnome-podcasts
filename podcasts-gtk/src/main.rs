@@ -83,7 +83,7 @@ fn init_gtk_tests() -> anyhow::Result<()> {
 
     gst::init()?;
     gtk::init()?;
-    adw::init();
+    adw::init()?;
     register_resources()?;
     Ok(())
 }
