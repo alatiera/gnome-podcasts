@@ -1,5 +1,5 @@
 {
-    "app-id": "org.gnome.Podcasts.Devel",
+    "id": "org.gnome.Podcasts.Devel",
     "runtime": "org.gnome.Platform",
     "runtime-version": "master",
     "sdk": "org.gnome.Sdk",
@@ -37,9 +37,19 @@
             "name": "gnome-podcasts",
             "buildsystem": "meson",
             "builddir": true,
+            "run-tests": true,
             "config-opts": [
                 "-Dprofile=development"
             ],
+            "build-options": {
+                "test-args": [
+                    "--device=dri",
+                    "--share=ipc",
+                    "--socket=fallback-x11",
+                    "--socket=wayland",
+                    "--share=network"
+                ]
+            },
             "sources": [
                 {
                     "type": "git",
