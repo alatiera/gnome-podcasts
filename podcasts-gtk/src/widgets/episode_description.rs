@@ -18,9 +18,10 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 use gtk::glib;
-use gtk::prelude::*;
+use gtk::CompositeTemplate;
 
-use glib::{clone, Sender};
+use glib::subclass::InitializingObject;
+use glib::Sender;
 use podcasts_data::{Episode, Show};
 
 use crate::app::Action;
@@ -28,86 +29,55 @@ use crate::utils::{self};
 use crate::widgets::EpisodeMenu;
 
 use crate::episode_description_parser;
+use adw::subclass::prelude::*;
 use chrono::prelude::*;
-use std::rc::Rc;
 use std::sync::Arc;
 
-#[derive(Debug, Clone)]
-pub(crate) struct EpisodeDescription {
-    pub(crate) container: gtk::Box,
-    back_button: gtk::Button,
-    menu_button: gtk::MenuButton,
-    image: gtk::Image,
-    podcast_title: gtk::Label,
-    title_label: gtk::Label,
-    duration_date_label: gtk::Label,
-    description_label: gtk::Label,
-    episode_id: Option<i32>,
+#[derive(Debug, CompositeTemplate, Default)]
+#[template(resource = "/org/gnome/Podcasts/gtk/episode_description.ui")]
+pub struct EpisodeDescriptionPriv {
+    #[template_child]
+    back_button: TemplateChild<gtk::Button>,
+    #[template_child]
+    menu_button: TemplateChild<gtk::MenuButton>,
+    #[template_child]
+    cover: TemplateChild<gtk::Image>,
+    #[template_child]
+    podcast_title: TemplateChild<gtk::Label>,
+    #[template_child]
+    episode_title: TemplateChild<gtk::Label>,
+    #[template_child]
+    episode_duration: TemplateChild<gtk::Label>,
+    #[template_child]
+    description: TemplateChild<gtk::Label>,
 }
 
-impl Default for EpisodeDescription {
-    fn default() -> Self {
-        let builder = gtk::Builder::from_resource("/org/gnome/Podcasts/gtk/episode_description.ui");
-        let container: gtk::Box = builder.object("episode_container").unwrap();
-        let back_button: gtk::Button = builder.object("back_button").unwrap();
-        let menu_button: gtk::MenuButton = builder.object("menu_button").unwrap();
-        let image = builder.object("cover").unwrap();
-        let podcast_title: gtk::Label = builder.object("podcast_title").unwrap();
-        let title: gtk::Label = builder.object("episode_title").unwrap();
-        let duration_date_label: gtk::Label = builder.object("episode_duration_date").unwrap();
-
-        let label: gtk::Label = builder.object("episode_description").unwrap();
-
-        EpisodeDescription {
-            container,
-            back_button,
-            menu_button,
-            image,
-            podcast_title,
-            title_label: title,
-            duration_date_label,
-            description_label: label,
-            episode_id: None,
-        }
-    }
-}
-
-impl EpisodeDescription {
-    pub(crate) fn new(
-        ep: Arc<Episode>,
-        show: Arc<Show>,
-        sender: Sender<Action>,
-    ) -> Rc<EpisodeDescription> {
-        let mut episode_description = EpisodeDescription::default();
-
-        episode_description.init(&ep, &show);
+impl EpisodeDescriptionPriv {
+    fn init(&self, sender: Sender<Action>, ep: Arc<Episode>, show: Arc<Show>) {
+        self.set_description(&ep);
+        self.set_duration(&ep);
+        self.episode_title.set_text(ep.title());
+        self.podcast_title.set_text(show.title());
+        self.set_cover(ep.show_id());
 
         let menu = EpisodeMenu::new(&sender, ep, show);
-        episode_description
-            .menu_button
-            .set_menu_model(Some(&menu.menu));
-        episode_description
-            .back_button
-            .connect_clicked(clone!(@strong sender => move |_| {
-                send!(sender, Action::MoveBackOnDeck);
-            }));
-
-        Rc::new(episode_description)
+        self.menu_button.set_menu_model(Some(&menu.menu));
     }
 
-    fn init(&mut self, ep: &Episode, show: &Show) {
-        self.episode_id = Some(ep.rowid());
-
+    fn set_description(&self, ep: &Episode) {
         if let Some(t) = ep.description() {
-            let default_text = self.description_label.text();
+            let default_text = self.description.text();
 
             let markup = episode_description_parser::html2pango_markup(t);
-            self.description_label.set_markup(&markup);
+            self.description.set_markup(&markup);
             // recover from invalid markup
-            if self.description_label.text() == default_text {
-                self.description_label.set_text(t);
+            if self.description.text() == default_text {
+                self.description.set_text(t);
             }
         };
+    }
+
+    fn set_duration(&self, ep: &Episode) {
         let duration = ep.duration().map(|s| {
             let seconds = s % 60;
             let minutes = (s / 60) % 60;
@@ -119,7 +89,7 @@ impl EpisodeDescription {
         // If the episode is from a different year, print year as well
         let date = if now_utc.year() != ep_utc.year() {
             ep_utc.format("%e %b %Y").to_string()
-        // Else omit the year from the label
+            // Else omit the year from the label
         } else {
             ep_utc.format("%e %b").to_string()
         };
@@ -128,16 +98,45 @@ impl EpisodeDescription {
             Some(duration) => format!("{} · {}", duration, date),
             None => date,
         };
-
-        self.title_label.set_text(ep.title());
-        self.podcast_title.set_text(show.title());
-        self.duration_date_label.set_text(&duration_date);
-        self.set_cover(ep.show_id());
+        self.episode_duration.set_text(&duration_date);
     }
 
     fn set_cover(&self, show_id: i32) {
-        utils::set_image_from_path(&self.image, show_id, 64)
+        utils::set_image_from_path(&self.cover, show_id, 64)
             .map_err(|err| error!("Failed to set a cover: {}", err))
             .ok();
+    }
+}
+
+#[glib::object_subclass]
+impl ObjectSubclass for EpisodeDescriptionPriv {
+    const NAME: &'static str = "PdEpisodeDescription";
+    type Type = EpisodeDescription;
+    type ParentType = gtk::Box;
+
+    fn class_init(klass: &mut Self::Class) {
+        klass.bind_template();
+    }
+
+    fn instance_init(obj: &InitializingObject<Self>) {
+        obj.init_template();
+    }
+}
+
+impl WidgetImpl for EpisodeDescriptionPriv {}
+impl ObjectImpl for EpisodeDescriptionPriv {}
+impl BoxImpl for EpisodeDescriptionPriv {}
+
+glib::wrapper! {
+    pub struct EpisodeDescription(ObjectSubclass<EpisodeDescriptionPriv>)
+        @extends gtk::Box, gtk::Widget,
+        @implements gtk::Accessible, gtk::Buildable, gtk::ConstraintTarget;
+}
+
+impl EpisodeDescription {
+    pub(crate) fn new(ep: Arc<Episode>, show: Arc<Show>, sender: Sender<Action>) -> Self {
+        let widget: Self = glib::Object::new();
+        widget.imp().init(sender, ep, show);
+        widget
     }
 }

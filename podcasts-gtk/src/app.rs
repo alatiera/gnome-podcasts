@@ -158,7 +158,6 @@ pub(crate) enum Action {
     ErrorNotification(String),
     InitEpisode(i32),
     InitSecondaryMenu(Fragile<gio::MenuModel>),
-    MoveBackOnDeck,
     EmptyState,
     PopulatedState,
     RaiseWindow,
@@ -227,6 +226,12 @@ impl PdApplication {
             }),
         );
         app.add_action(&undo_remove_show);
+
+        let go_back_on_deck = gio::SimpleAction::new("go-back-on-deck", None);
+        go_back_on_deck.connect_activate(clone!(@weak self as app => move |_, _| {
+            app.go_back_on_deck();
+        }));
+        app.add_action(&go_back_on_deck);
     }
 
     /// We check if the User pressed the Undo button, which would add
@@ -272,11 +277,21 @@ impl PdApplication {
         Ok(())
     }
 
+    fn go_back_on_deck(&self) {
+        let data = self.imp();
+        let w = data.window.borrow();
+        let window = w.as_ref().expect("Window is not initialized");
+        window.main_deck.navigate(adw::NavigationDirection::Back);
+        window.headerbar.reveal_bottom_switcher(true);
+        window.headerbar.update_bottom_switcher();
+    }
+
     fn setup_accels(&self) {
         self.set_accels_for_action("app.quit", &["<primary>q"]);
         // Bind the hamburger menu button to `F10`
         self.set_accels_for_action("win.menu", &["F10"]);
         self.set_accels_for_action("win.refresh", &["<primary>r"]);
+        self.set_accels_for_action("app.go-back-on-deck", &["<primary>Left"]);
     }
 
     fn do_action(&self, action: Action) -> glib::Continue {
@@ -315,18 +330,13 @@ impl PdApplication {
                 pop.borrow_mut()
                     .switch_visible(PopulatedState::View, gtk::StackTransitionType::SlideRight);
             }
-            Action::MoveBackOnDeck => {
-                window.main_deck.navigate(adw::NavigationDirection::Back);
-                window.headerbar.reveal_bottom_switcher(true);
-                window.headerbar.update_bottom_switcher();
-            }
             Action::GoToEpisodeDescription(show, ep) => {
                 window.clear_deck();
                 let description_widget = EpisodeDescription::new(ep, show, window.sender.clone());
-                window.main_deck.append(&description_widget.container);
+                window.main_deck.append(&description_widget);
                 window
                     .main_deck
-                    .page(&description_widget.container)
+                    .page(&description_widget)
                     .set_name(Some("description"));
                 window.main_deck.navigate(adw::NavigationDirection::Forward);
                 window.headerbar.reveal_bottom_switcher(false);
