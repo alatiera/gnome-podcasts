@@ -117,7 +117,6 @@ fn test_stuff() -> anyhow::Result<()> {
     Header::default();
     ShowsView::default();
     ShowWidget::default();
-    HomeView::default();
     HomeEpisode::default();
     EpisodeWidget::default();
 

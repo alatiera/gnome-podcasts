@@ -20,20 +20,18 @@
 use anyhow::Result;
 use chrono::prelude::*;
 
-use gtk::{glib, prelude::*, Adjustment};
-
+use adw::subclass::prelude::*;
 use glib::clone;
-
-use adw::Clamp;
+use glib::subclass::InitializingObject;
 use glib::Sender;
+use gtk::{glib, prelude::*, Adjustment, CompositeTemplate};
+
 use podcasts_data::dbqueries;
 use podcasts_data::EpisodeWidgetModel;
 
 use crate::app::Action;
 use crate::utils::{self, lazy_load_full};
 use crate::widgets::{BaseView, EpisodeWidget};
-
-use std::rc::Rc;
 
 #[derive(Debug, Clone)]
 enum ListSplit {
@@ -44,99 +42,94 @@ enum ListSplit {
     Rest,
 }
 
-#[derive(Debug, Clone)]
-pub(crate) struct HomeView {
-    pub(crate) view: BaseView,
-    frame_parent: gtk::Box,
-    today_box: gtk::Box,
-    yday_box: gtk::Box,
-    week_box: gtk::Box,
-    month_box: gtk::Box,
-    rest_box: gtk::Box,
-    today_list: gtk::ListBox,
-    yday_list: gtk::ListBox,
-    week_list: gtk::ListBox,
-    month_list: gtk::ListBox,
-    rest_list: gtk::ListBox,
+#[derive(Debug, CompositeTemplate, Default)]
+#[template(resource = "/org/gnome/Podcasts/gtk/home_view.ui")]
+pub struct HomeViewPriv {
+    #[template_child]
+    view: TemplateChild<BaseView>,
+    #[template_child]
+    today_box: TemplateChild<gtk::Box>,
+    #[template_child]
+    yday_box: TemplateChild<gtk::Box>,
+    #[template_child]
+    week_box: TemplateChild<gtk::Box>,
+    #[template_child]
+    month_box: TemplateChild<gtk::Box>,
+    #[template_child]
+    rest_box: TemplateChild<gtk::Box>,
+    #[template_child]
+    today_list: TemplateChild<gtk::ListBox>,
+    #[template_child]
+    yday_list: TemplateChild<gtk::ListBox>,
+    #[template_child]
+    week_list: TemplateChild<gtk::ListBox>,
+    #[template_child]
+    month_list: TemplateChild<gtk::ListBox>,
+    #[template_child]
+    rest_list: TemplateChild<gtk::ListBox>,
 }
 
-impl Default for HomeView {
-    fn default() -> Self {
-        let view = BaseView::default();
-        let builder = gtk::Builder::from_resource("/org/gnome/Podcasts/gtk/home_view.ui");
-        let frame_parent: gtk::Box = builder.object("frame_parent").unwrap();
-        let today_box: gtk::Box = builder.object("today_box").unwrap();
-        let yday_box: gtk::Box = builder.object("yday_box").unwrap();
-        let week_box: gtk::Box = builder.object("week_box").unwrap();
-        let month_box: gtk::Box = builder.object("month_box").unwrap();
-        let rest_box: gtk::Box = builder.object("rest_box").unwrap();
-        let today_list: gtk::ListBox = builder.object("today_list").unwrap();
-        let yday_list: gtk::ListBox = builder.object("yday_list").unwrap();
-        let week_list: gtk::ListBox = builder.object("week_list").unwrap();
-        let month_list: gtk::ListBox = builder.object("month_list").unwrap();
-        let rest_list: gtk::ListBox = builder.object("rest_list").unwrap();
+#[glib::object_subclass]
+impl ObjectSubclass for HomeViewPriv {
+    const NAME: &'static str = "PdHomeView";
+    type Type = HomeView;
+    type ParentType = adw::Bin;
 
-        let clamp = Clamp::new();
-        clamp.set_visible(true);
-        clamp.set_maximum_size(700);
+    fn class_init(klass: &mut Self::Class) {
+        BaseView::ensure_type();
+        klass.bind_template();
+    }
 
-        clamp.set_child(Some(&frame_parent));
-        view.set_content(&clamp);
-
-        HomeView {
-            view,
-            frame_parent,
-            today_box,
-            yday_box,
-            week_box,
-            month_box,
-            rest_box,
-            today_list,
-            yday_list,
-            week_list,
-            month_list,
-            rest_list,
-        }
+    fn instance_init(obj: &InitializingObject<Self>) {
+        obj.init_template();
     }
 }
 
-// TODO: REFACTOR ME
+impl WidgetImpl for HomeViewPriv {}
+impl ObjectImpl for HomeViewPriv {}
+impl BinImpl for HomeViewPriv {}
+
+glib::wrapper! {
+    pub struct HomeView(ObjectSubclass<HomeViewPriv>)
+        @extends BaseView, gtk::Widget,
+        @implements gtk::Accessible, gtk::Buildable, gtk::ConstraintTarget;
+}
+
 impl HomeView {
-    pub(crate) fn new(sender: Sender<Action>, vadj: Option<Adjustment>) -> Result<Rc<HomeView>> {
+    pub(crate) fn new(sender: Sender<Action>, vadj: Option<Adjustment>) -> Result<Self> {
         use self::ListSplit::*;
 
-        let home = Rc::new(HomeView::default());
+        let home: Self = glib::Object::new();
+
         let ignore = utils::get_ignored_shows()?;
         let episodes = dbqueries::get_episodes_widgets_filter_limit(&ignore, 100)?;
         let now_utc = Utc::now();
 
-        let home_weak = Rc::downgrade(&home);
-        let func = move |ep: EpisodeWidgetModel| {
-            let home = match home_weak.upgrade() {
-                Some(h) => h,
-                None => return,
-            };
-
+        let func = clone!(@weak home => move |ep: EpisodeWidgetModel| {
             let epoch = ep.epoch();
             let widget = HomeEpisode::new(ep, &sender);
 
             match split(&now_utc, i64::from(epoch)) {
-                Today => add_to_box(&widget, &home.today_list, &home.today_box),
-                Yday => add_to_box(&widget, &home.yday_list, &home.yday_box),
-                Week => add_to_box(&widget, &home.week_list, &home.week_box),
-                Month => add_to_box(&widget, &home.month_list, &home.month_box),
-                Rest => add_to_box(&widget, &home.rest_list, &home.rest_box),
+                Today => add_to_box(&widget, &home.imp().today_list, &home.imp().today_box),
+                Yday => add_to_box(&widget, &home.imp().yday_list, &home.imp().yday_box),
+                Week => add_to_box(&widget, &home.imp().week_list, &home.imp().week_box),
+                Month => add_to_box(&widget, &home.imp().month_list, &home.imp().month_box),
+                Rest => add_to_box(&widget, &home.imp().rest_list, &home.imp().rest_box),
             }
-        };
+        });
 
         let callback = clone!(@weak home => @default-return (), move || {
             if let Some(ref v) = vadj {
-                home.view.set_adjustments(None, Some(v))
+                home.imp().view.set_adjustments(None, Some(v))
             };
         });
 
         lazy_load_full(episodes, func, callback);
         Ok(home)
+    }
+
+    pub(crate) fn view(&self) -> &BaseView {
+        &self.imp().view
     }
 }
 

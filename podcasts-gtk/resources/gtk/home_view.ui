@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.22.0
+<!--
 
 Copyright (C) 2017 - 2018
 
@@ -29,155 +29,168 @@ Tobias Bernard
   <!-- interface-description A podcast client for the GNOME Desktop -->
   <!-- interface-copyright 2017 - 2018 -->
   <!-- interface-authors Jordan Petridis\nTobias Bernard -->
-  <object class="GtkBox" id="frame_parent">
-    <property name="margin_start">6</property>
-    <property name="margin_end">6</property>
-    <property name="margin_top">32</property>
-    <property name="margin_bottom">32</property>
-    <property name="hexpand">True</property>
-    <property name="orientation">vertical</property>
-    <property name="spacing">24</property>
+  <template class="PdHomeView" parent="AdwBin">
     <child>
-      <object class="GtkBox" id="today_box">
-        <property name="visible">False</property>
-        <property name="hexpand">True</property>
-        <property name="orientation">vertical</property>
-        <property name="spacing">6</property>
-        <child>
-          <object class="GtkLabel">
-            <property name="halign">start</property>
-            <property name="hexpand">True</property>
-            <property name="label" translatable="yes">Today</property>
-            <attributes>
-              <attribute name="weight" value="bold"/>
-              <attribute name="scale" value="1.5"/>
-            </attributes>
+      <object class="PdBaseView" id="view">
+        <property name="child">
+          <object class="AdwClamp">
+            <property name="maximum-size">700</property>
+            <child>
+              <object class="GtkBox" id="frame_parent">
+                <property name="margin-start">6</property>
+                <property name="margin-end">6</property>
+                <property name="margin-top">32</property>
+                <property name="margin-bottom">32</property>
+                <property name="hexpand">True</property>
+                <property name="orientation">vertical</property>
+                <property name="spacing">24</property>
+                <child>
+                  <object class="GtkBox" id="today_box">
+                    <property name="visible">False</property>
+                    <property name="hexpand">True</property>
+                    <property name="orientation">vertical</property>
+                    <property name="spacing">6</property>
+                    <child>
+                      <object class="GtkLabel">
+                        <property name="halign">start</property>
+                        <property name="hexpand">True</property>
+                        <property name="label" translatable="yes">Today</property>
+                        <attributes>
+                          <attribute name="weight" value="bold"/>
+                          <attribute name="scale" value="1.5"/>
+                        </attributes>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkListBox" id="today_list">
+                        <property name="hexpand">True</property>
+                        <property name="activate-on-single-click">True</property>
+                        <property name="selection-mode">none</property>
+                        <style>
+                          <class name="content"/>
+                        </style>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkBox" id="yday_box">
+                    <property name="visible">False</property>
+                    <property name="hexpand">True</property>
+                    <property name="orientation">vertical</property>
+                    <property name="spacing">6</property>
+                    <child>
+                      <object class="GtkLabel">
+                        <property name="halign">start</property>
+                        <property name="label" translatable="yes">Yesterday</property>
+                        <attributes>
+                          <attribute name="weight" value="bold"/>
+                          <attribute name="scale" value="1.5"/>
+                        </attributes>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkListBox" id="yday_list">
+                        <property name="hexpand">True</property>
+                        <property name="activate-on-single-click">True</property>
+                        <property name="selection-mode">none</property>
+                        <style>
+                          <class name="content"/>
+                        </style>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkBox" id="week_box">
+                    <property name="visible">False</property>
+                    <property name="hexpand">True</property>
+                    <property name="orientation">vertical</property>
+                    <property name="spacing">6</property>
+                    <child>
+                      <object class="GtkLabel">
+                        <property name="halign">start</property>
+                        <property name="label" translatable="yes">This Week</property>
+                        <attributes>
+                          <attribute name="weight" value="bold"/>
+                          <attribute name="scale" value="1.5"/>
+                        </attributes>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkListBox" id="week_list">
+                        <property name="hexpand">True</property>
+                        <property name="activate-on-single-click">True</property>
+                        <property name="selection-mode">none</property>
+                        <style>
+                          <class name="content"/>
+                        </style>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkBox" id="month_box">
+                    <property name="visible">False</property>
+                    <property name="hexpand">True</property>
+                    <property name="orientation">vertical</property>
+                    <property name="spacing">6</property>
+                    <child>
+                      <object class="GtkLabel">
+                        <property name="halign">start</property>
+                        <property name="label" translatable="yes">This Month</property>
+                        <attributes>
+                          <attribute name="weight" value="bold"/>
+                          <attribute name="scale" value="1.5"/>
+                        </attributes>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkListBox" id="month_list">
+                        <property name="hexpand">True</property>
+                        <property name="activate-on-single-click">True</property>
+                        <property name="selection-mode">none</property>
+                        <style>
+                          <class name="content"/>
+                        </style>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkBox" id="rest_box">
+                    <property name="visible">False</property>
+                    <property name="hexpand">True</property>
+                    <property name="orientation">vertical</property>
+                    <property name="spacing">6</property>
+                    <child>
+                      <object class="GtkLabel">
+                        <property name="halign">start</property>
+                        <property name="hexpand">True</property>
+                        <property name="label" translatable="yes">Older</property>
+                        <attributes>
+                          <attribute name="weight" value="bold"/>
+                          <attribute name="scale" value="1.5"/>
+                        </attributes>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkListBox" id="rest_list">
+                        <property name="hexpand">True</property>
+                        <property name="activate-on-single-click">True</property>
+                        <property name="selection-mode">none</property>
+                        <style>
+                          <class name="content"/>
+                        </style>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+              </object>
+            </child>
           </object>
-        </child>
-        <child>
-          <object class="GtkListBox" id="today_list">
-            <property name="hexpand">True</property>
-            <property name="activate_on_single_click">True</property>
-            <property name="selection_mode">none</property>
-            <style>
-              <class name="content"/>
-            </style>
-          </object>
-        </child>
+        </property>
       </object>
     </child>
-    <child>
-      <object class="GtkBox" id="yday_box">
-        <property name="visible">False</property>
-        <property name="hexpand">True</property>
-        <property name="orientation">vertical</property>
-        <property name="spacing">6</property>
-        <child>
-          <object class="GtkLabel">
-            <property name="halign">start</property>
-            <property name="label" translatable="yes">Yesterday</property>
-            <attributes>
-              <attribute name="weight" value="bold"/>
-              <attribute name="scale" value="1.5"/>
-            </attributes>
-          </object>
-        </child>
-        <child>
-          <object class="GtkListBox" id="yday_list">
-            <property name="hexpand">True</property>
-            <property name="activate_on_single_click">True</property>
-            <property name="selection_mode">none</property>
-            <style>
-              <class name="content"/>
-            </style>
-          </object>
-        </child>
-      </object>
-    </child>
-    <child>
-      <object class="GtkBox" id="week_box">
-        <property name="visible">False</property>
-        <property name="hexpand">True</property>
-        <property name="orientation">vertical</property>
-        <property name="spacing">6</property>
-        <child>
-          <object class="GtkLabel">
-            <property name="halign">start</property>
-            <property name="label" translatable="yes">This Week</property>
-            <attributes>
-              <attribute name="weight" value="bold"/>
-              <attribute name="scale" value="1.5"/>
-            </attributes>
-          </object>
-        </child>
-        <child>
-          <object class="GtkListBox" id="week_list">
-            <property name="hexpand">True</property>
-            <property name="activate_on_single_click">True</property>
-            <property name="selection_mode">none</property>
-            <style>
-              <class name="content"/>
-            </style>
-          </object>
-        </child>
-      </object>
-    </child>
-    <child>
-      <object class="GtkBox" id="month_box">
-        <property name="visible">False</property>
-        <property name="hexpand">True</property>
-        <property name="orientation">vertical</property>
-        <property name="spacing">6</property>
-        <child>
-          <object class="GtkLabel">
-            <property name="halign">start</property>
-            <property name="label" translatable="yes">This Month</property>
-            <attributes>
-              <attribute name="weight" value="bold"/>
-              <attribute name="scale" value="1.5"/>
-            </attributes>
-          </object>
-        </child>
-        <child>
-          <object class="GtkListBox" id="month_list">
-            <property name="hexpand">True</property>
-            <property name="activate_on_single_click">True</property>
-            <property name="selection_mode">none</property>
-            <style>
-              <class name="content"/>
-            </style>
-          </object>
-        </child>
-      </object>
-    </child>
-    <child>
-      <object class="GtkBox" id="rest_box">
-        <property name="visible">False</property>
-        <property name="hexpand">True</property>
-        <property name="orientation">vertical</property>
-        <property name="spacing">6</property>
-        <child>
-          <object class="GtkLabel">
-            <property name="halign">start</property>
-            <property name="hexpand">True</property>
-            <property name="label" translatable="yes">Older</property>
-            <attributes>
-              <attribute name="weight" value="bold"/>
-              <attribute name="scale" value="1.5"/>
-            </attributes>
-          </object>
-        </child>
-        <child>
-          <object class="GtkListBox" id="rest_list">
-            <property name="hexpand">True</property>
-            <property name="activate_on_single_click">True</property>
-            <property name="selection_mode">none</property>
-            <style>
-              <class name="content"/>
-            </style>
-          </object>
-        </child>
-      </object>
-    </child>
-  </object>
+  </template>
 </interface>

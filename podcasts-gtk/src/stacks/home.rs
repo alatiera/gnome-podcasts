@@ -27,12 +27,10 @@ use crate::app::Action;
 use crate::stacks::State;
 use crate::widgets::{EmptyView, HomeView};
 
-use std::rc::Rc;
-
 #[derive(Debug, Clone)]
 pub(crate) struct HomeStack {
     empty: EmptyView,
-    episodes: Rc<HomeView>,
+    episodes: HomeView,
     stack: gtk::Stack,
     state: State,
     sender: Sender<Action>,
@@ -45,7 +43,7 @@ impl HomeStack {
         let stack = gtk::Stack::new();
         let state = State::Empty;
 
-        stack.add_named(&episodes.view, Some("home"));
+        stack.add_named(&episodes, Some("home"));
         stack.add_named(&empty, Some("empty"));
 
         let home = HomeStack {
@@ -65,17 +63,17 @@ impl HomeStack {
 
     pub(crate) fn update(&mut self) -> Result<()> {
         // Get the container of the view
-        let old = &self.episodes.view;
+        let old = &self.episodes;
 
         // Copy the vertical scrollbar adjustment from the old view.
-        let vadj = self.episodes.view.vadjustment();
+        let vadj = self.episodes.view().vadjustment();
         let eps = HomeView::new(self.sender.clone(), Some(vadj))?;
 
         // Remove the old widget and add the new one
         // during this the previous view is removed,
         // and the visible child falls back to empty view.
         self.stack.remove(old);
-        self.stack.add_named(&eps.view, Some("home"));
+        self.stack.add_named(&eps, Some("home"));
         // Keep the previous state.
         let s = self.state;
         // Set the visible child back to the previous one to avoid
