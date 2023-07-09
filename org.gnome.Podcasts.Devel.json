@@ -29,6 +29,7 @@
         ],
         "cflags": "-DGDK_DISABLE_DEPRECATED -DGTK_DISABLE_DEPRECATED",
         "env": {
+            "RUSTFLAGS": "-C force-frame-pointers=yes",
             "CARGO_TARGET_X86_64_UNKNOWN_LINUX_GNU_LINKER": "clang",
             "CARGO_TARGET_AARCH64_UNKNOWN_LINUX_GNU_LINKER": "clang",
             "CARGO_TARGET_X86_64_UNKNOWN_LINUX_GNU_RUSTFLAGS": "-C link-arg=-fuse-ld=/usr/lib/sdk/rust-stable/bin/mold",
