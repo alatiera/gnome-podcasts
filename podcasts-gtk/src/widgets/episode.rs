@@ -29,7 +29,7 @@ use once_cell::sync::Lazy;
 
 use podcasts_data::dbqueries;
 use podcasts_data::downloader::DownloadProgress;
-use podcasts_data::utils::get_download_folder;
+use podcasts_data::utils::get_download_dir;
 use podcasts_data::EpisodeWidgetModel;
 
 use crate::app::Action;
@@ -470,10 +470,10 @@ impl EpisodeWidget {
 
 fn on_download_clicked(ep: &EpisodeWidgetModel, sender: &Sender<Action>) -> Result<()> {
     let pd = dbqueries::get_podcast_from_id(ep.show_id())?;
-    let download_fold = get_download_folder(pd.title())?;
+    let download_dir = get_download_dir(pd.title())?;
 
     // Start a new download.
-    manager::add(ep.rowid(), download_fold)?;
+    manager::add(ep.rowid(), download_dir)?;
 
     // Update Views
     send!(sender, Action::RefreshEpisodesViewBGR);

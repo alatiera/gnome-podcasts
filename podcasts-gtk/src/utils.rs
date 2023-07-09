@@ -570,7 +570,7 @@ mod tests {
     use podcasts_data::database::truncate_db;
     use podcasts_data::dbqueries;
     use podcasts_data::pipeline::pipeline;
-    use podcasts_data::utils::get_download_folder;
+    use podcasts_data::utils::get_download_dir;
     use podcasts_data::{Save, Source};
     use std::fs;
     use std::path::PathBuf;
@@ -722,8 +722,8 @@ mod tests {
         let original_image_uri = original.image_uri();
         let original_image_uri_hash = original.image_uri_hash();
         let original_image_cached = original.image_cached();
-        let download_folder = get_download_folder(original.title())?;
-        let image_path = download_folder + "/cover.jpeg";
+        let download_dir = get_download_dir(original.title())?;
+        let image_path = download_dir + "/cover.jpeg";
         let original_image_file_size = fs::metadata(&image_path)?.len(); // 693,343
         println!("Made it here! (6)");
 

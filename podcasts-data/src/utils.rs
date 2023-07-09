@@ -25,9 +25,9 @@ use rayon::prelude::*;
 use url::{Position, Url};
 
 use crate::dbqueries;
-use crate::errors::DataError;
+use crate::errors::{DataError, DownloadError};
 use crate::models::{EpisodeCleanerModel, Save, Show};
-use crate::xdg_dirs::DL_DIR;
+use crate::xdg_dirs::{DL_DIR, PODCASTS_CACHE};
 
 use std::fs;
 use std::path::Path;
@@ -158,28 +158,49 @@ pub fn url_cleaner(s: &str) -> String {
     }
 }
 
-/// Returns the URI of a Show Downloads given it's title.
-pub fn get_download_folder(pd_title: &str) -> Result<String, DataError> {
+/// Returns the URI of a Show' Download directory given it's title.
+pub fn get_download_dir(pd_title: &str) -> Result<String, DownloadError> {
     // It might be better to make it a hash of the title or the Show rowid
-    let download_fold = format!("{}/{}", DL_DIR.to_str().unwrap(), pd_title);
+    let mut dir = DL_DIR.clone();
+    dir.push(pd_title);
 
-    // Create the folder
-    fs::DirBuilder::new()
-        .recursive(true)
-        .create(&download_fold)?;
-    Ok(download_fold)
+    // Create the dir
+    fs::DirBuilder::new().recursive(true).create(&dir)?;
+    let dir_str = dir.to_str().ok_or(DownloadError::InvalidCacheLocation)?;
+    Ok(dir_str.to_owned())
+}
+
+/// Returns the URI of a Show's cover directory given it's title.
+pub fn get_cover_dir(pd_title: &str) -> Result<String, DownloadError> {
+    // It might be better to make it a hash of the title or the Show rowid
+    let mut dir = PODCASTS_CACHE.clone();
+    dir.push(pd_title);
+
+    // Create the dir
+    fs::DirBuilder::new().recursive(true).create(&dir)?;
+    let dir_str = dir
+        .to_str()
+        .ok_or(DownloadError::InvalidCachedImageLocation)?;
+    Ok(dir_str.to_owned())
 }
 
 /// Removes all the entries associated with the given show from the database,
 /// and deletes all of the downloaded content.
 // TODO: Write Tests
-pub fn delete_show(pd: &Show) -> Result<(), DataError> {
+pub fn delete_show(pd: &Show) -> Result<(), DownloadError> {
     dbqueries::remove_feed(pd)?;
     info!("{} was removed successfully.", pd.title());
 
-    let fold = get_download_folder(pd.title())?;
-    fs::remove_dir_all(&fold)?;
-    info!("All the content at, {} was removed successfully", &fold);
+    let download_dir = get_download_dir(pd.title())?;
+    fs::remove_dir_all(&download_dir)?;
+    info!(
+        "All the episodes at, {} was removed successfully",
+        &download_dir
+    );
+
+    let cover_dir = get_cover_dir(pd.title())?;
+    fs::remove_dir_all(&cover_dir)?;
+    info!("All the Covers at, {} was removed successfully", &cover_dir);
     Ok(())
 }
 
@@ -335,9 +356,9 @@ mod tests {
     #[test]
     // This test needs access to local system so we ignore it by default.
     #[ignore]
-    fn test_get_dl_folder() -> Result<()> {
+    fn test_get_dl_dir() -> Result<()> {
         let foo_ = format!("{}/{}", DL_DIR.to_str().unwrap(), "foo");
-        assert_eq!(get_download_folder("foo")?, foo_);
+        assert_eq!(get_download_dir("foo")?, foo_);
         let _ = fs::remove_dir_all(foo_);
         Ok(())
     }

@@ -23,12 +23,13 @@ use reqwest::redirect::Policy;
 use tempdir::TempDir;
 
 use std::fs;
-use std::fs::{copy, remove_file, DirBuilder, File};
+use std::fs::{copy, remove_file, File};
 use std::io::{BufWriter, Read, Write};
 use std::path::{Path, PathBuf};
 use std::sync::{Arc, Mutex};
 
 use crate::errors::DownloadError;
+use crate::utils;
 use crate::xdg_dirs::PODCASTS_CACHE;
 use crate::{EpisodeWidgetModel, Save, ShowCoverModel};
 
@@ -203,7 +204,7 @@ fn save_io(
 // TODO: Refactor
 pub fn get_episode(
     ep: &mut EpisodeWidgetModel,
-    download_folder: &str,
+    download_dir: &str,
     progress: Option<Arc<Mutex<dyn DownloadProgress>>>,
 ) -> Result<(), DownloadError> {
     // Check if its alrdy downloaded
@@ -218,7 +219,7 @@ pub fn get_episode(
     };
 
     let path = download_into(
-        download_folder,
+        download_dir,
         &ep.rowid().to_string(),
         ep.uri().unwrap(),
         progress,
@@ -237,21 +238,15 @@ pub fn get_episode(
     Ok(())
 }
 
-fn determine_cover_dir(pd: &ShowCoverModel) -> PathBuf {
-    let mut cache_path = PODCASTS_CACHE.clone();
-    cache_path.push(pd.title());
-    cache_path
-}
-
 pub fn check_for_cached_cover(pd: &ShowCoverModel) -> Option<PathBuf> {
-    let cache_path = determine_cover_dir(pd);
+    let cache_path = utils::get_cover_dir(pd.title()).ok()?;
 
     // try to match the cover file
     // FIXME: in case the cover changes filetype we will be matching the
     // existing one instead of downloading the new one.
     // Should probably make sure that 'cover.*' is removed when we
     // download new files.
-    if let Ok(mut paths) = glob(&format!("{}/cover.*", cache_path.to_str().unwrap())) {
+    if let Ok(mut paths) = glob(&format!("{}/cover.*", cache_path)) {
         // For some reason there is no .first() method so nth(0) is used
         let path = paths.next().and_then(|x| x.ok());
         return path;
@@ -277,13 +272,7 @@ pub fn cache_image(pd: &ShowCoverModel, download: bool) -> Result<String, Downlo
         return Err(DownloadError::NoImageLocation);
     }
 
-    let cache_path = determine_cover_dir(pd)
-        .to_str()
-        .ok_or(DownloadError::InvalidCachedImageLocation)?
-        .to_owned();
-
-    // Create the folders if they don't exist.
-    DirBuilder::new().recursive(true).create(&cache_path)?;
+    let cache_path = utils::get_cover_dir(pd.title())?;
 
     if download {
         let path = download_into(&cache_path, "cover", &url, None)?;

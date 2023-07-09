@@ -117,7 +117,7 @@ mod tests {
 
     use podcasts_data::dbqueries;
     use podcasts_data::pipeline::pipeline;
-    use podcasts_data::utils::get_download_folder;
+    use podcasts_data::utils::get_download_dir;
     use podcasts_data::{Episode, Save, Source};
 
     use podcasts_data::downloader::get_episode;
@@ -150,15 +150,15 @@ mod tests {
         // Get an episode
         let episode: Episode = dbqueries::get_episode_from_pk(title, pd.id())?;
 
-        let download_fold = get_download_folder(pd.title())?;
-        let fold2 = download_fold.clone();
-        add(episode.rowid(), download_fold)?;
+        let download_dir = get_download_dir(pd.title())?;
+        let dir2 = download_dir.clone();
+        add(episode.rowid(), download_dir)?;
         assert_eq!(ACTIVE_DOWNLOADS.read().unwrap().len(), 1);
 
         // Give it some time to download the file
         thread::sleep(time::Duration::from_secs(20));
 
-        let final_path = format!("{}/{}.mp3", &fold2, episode.rowid());
+        let final_path = format!("{}/{}.mp3", &dir2, episode.rowid());
         assert_eq!(ACTIVE_DOWNLOADS.read().unwrap().len(), 0);
         assert!(Path::new(&final_path).exists());
         fs::remove_file(final_path)?;
@@ -186,11 +186,11 @@ mod tests {
         let title = "Introducing Steal the Stars";
         // Get an episode
         let mut episode = dbqueries::get_episode_from_pk(title, pd.id())?.into();
-        let download_fold = get_download_folder(pd.title())?;
+        let download_dir = get_download_dir(pd.title())?;
 
-        get_episode(&mut episode, &download_fold, None)?;
+        get_episode(&mut episode, &download_dir, None)?;
 
-        let final_path = format!("{}/{}.mp3", &download_fold, episode.rowid());
+        let final_path = format!("{}/{}.mp3", &download_dir, episode.rowid());
         assert!(Path::new(&final_path).exists());
         fs::remove_file(final_path)?;
         Ok(())
