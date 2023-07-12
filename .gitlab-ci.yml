@@ -13,6 +13,10 @@ flatpak:
     BUNDLE: "org.gnome.Podcasts.Devel.flatpak"
   extends: '.flatpak'
 
+nightly@x86_64:
+  extends: '.publish_nightly'
+  needs: ['flatpak']
+
 # Configure and run rustfmt
 # Exits and builds fails if on bad format
 rustfmt:
