@@ -9,10 +9,10 @@ msgid ""
 msgstr ""
 "Project-Id-Version: podcasts master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2023-03-26 17:46+0000\n"
+"POT-Creation-Date: 2023-03-27 12:22+0000\n"
 "PO-Revision-Date: 2023-03-27 15:20+0300\n"
 "Last-Translator: Emin Tufan Çetin <etcetin@gmail.com>\n"
-"Language-Team: Turkish <gnome-turk@gnome.org>\n"
+"Language-Team: Turkish <takim@gnome.org.tr>\n"
 "Language: tr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -409,100 +409,3 @@ msgstr "Geri al"
 #: podcasts-gtk/src/widgets/show_menu.rs:200
 msgid "Unsubscribed from {}"
 msgstr "{} aboneliğinden çıkıldı"
-
-#~ msgid "Top position of the last open main window"
-#~ msgstr "Son açılan ana pencerenin üst konumu"
-
-#~ msgid "Left position of the last open main window"
-#~ msgstr "Son açılan ana pencerenin sol konumu"
-
-#~ msgid "Enable or disable dark theme"
-#~ msgstr "Karanlık gövdeyi etkinleştir veya devre dışı bırak"
-
-#~ msgid "An in-app action notification"
-#~ msgstr "Uygulama içi eylem bildirimi"
-
-#~ msgid "Fetching new episodes"
-#~ msgstr "Yeni bölümler alınıyor"
-
-#~ msgid "Selected file could not be accessed."
-#~ msgstr "Seçilen dosyaya erişilemedi."
-
-#~ msgid "_Cancel"
-#~ msgstr "_İptal"
-
-#~ msgid "Learn more about GNOME Podcasts"
-#~ msgstr "GNOME Podcastler hakkında daha çoğunu öğrenin"
-
-#~ msgid "Podcast app for GNOME"
-#~ msgstr "GNOME için Podcast uygulaması"
-
-#~ msgid "Double speed rate"
-#~ msgstr "İki kat hız oranı"
-
-#~ msgid "1.75 speed rate"
-#~ msgstr "1.75 hız oranı"
-
-#~ msgid "1.5 speed rate"
-#~ msgstr "1.5 hız oranı"
-
-#~ msgid "1.25 speed rate"
-#~ msgstr "1.25 hız oranı"
-
-#~ msgid "Normal speed"
-#~ msgstr "Olağan hız"
-
-#~ msgid "You are already subscribed to this show"
-#~ msgstr "Bu gösteriye zaten abonesiniz"
-
-#~ msgid "Invalid URL"
-#~ msgstr "Geçersiz URL"
-
-#~ msgid "@icon@"
-#~ msgstr "@icon@"
-
-#~ msgid "_Preferences"
-#~ msgstr "_Tercihler"
-
-#~ msgid "You are already subscribed to that feed!"
-#~ msgstr "Bu beslemeye zaten abonesiniz!"
-
-#~ msgctxt "shortcut window"
-#~ msgid "Preferences"
-#~ msgstr "Tercihler"
-
-#~ msgid "Preferences"
-#~ msgstr "Tercihler"
-
-#~ msgid "Appearance"
-#~ msgstr "Görünüm"
-
-#~ msgid "Dark Theme"
-#~ msgstr "Karanlık Gövde"
-
-#~ msgid "Delete played episodes"
-#~ msgstr "Oynatılan bölümleri sil"
-
-#~ msgid "After"
-#~ msgstr "Şundan Sonra"
-
-#~ msgid "Seconds"
-#~ msgstr "Saniye"
-
-#~ msgid "Minutes"
-#~ msgstr "Dakika"
-
-#~ msgid "Hours"
-#~ msgstr "Saat"
-
-#~ msgid "Days"
-#~ msgstr "Gün"
-
-#~ msgid "Weeks"
-#~ msgstr "Hafta"
-
-#~ msgid "_About"
-#~ msgstr "_Hakkında"
-
-#~ msgid "org.gnome.Podcasts"
-#~ msgstr "org.gnome.Podcasts"
