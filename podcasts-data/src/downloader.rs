@@ -64,7 +64,7 @@ fn download_into(
     // it has a loop back before giving correct url
     let policy = Policy::custom(|attempt| {
         info!("Redirect Attempt URL: {:?}", attempt.url());
-        if attempt.previous().len() > 5 {
+        if attempt.previous().len() > 20 {
             attempt.error("too many redirects")
         } else if Some(attempt.url()) == attempt.previous().last() {
             // avoid redirect loops
