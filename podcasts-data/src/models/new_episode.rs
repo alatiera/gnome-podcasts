@@ -38,6 +38,7 @@ pub(crate) struct NewEpisode {
     title: String,
     uri: Option<String>,
     description: Option<String>,
+    image_uri: Option<String>,
     length: Option<i32>,
     duration: Option<i32>,
     play_position: i32,
@@ -292,6 +293,11 @@ impl NewEpisodeMinimal {
             sanitized_html
         });
 
+        let image = item
+            .itunes_ext()
+            .and_then(|i| i.image())
+            .map(|s| s.to_owned());
+
         NewEpisodeBuilder::default()
             .title(self.title)
             .uri(self.uri)
@@ -301,6 +307,7 @@ impl NewEpisodeMinimal {
             .guid(self.guid)
             .length(self.length)
             .description(description)
+            .image_uri(image)
             .build()
             .unwrap()
     }

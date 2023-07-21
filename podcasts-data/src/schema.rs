@@ -7,6 +7,7 @@ table! {
         uri -> Nullable<Text>,
         local_uri -> Nullable<Text>,
         description -> Nullable<Text>,
+        image_uri -> Nullable<Text>,
         epoch -> Integer,
         length -> Nullable<Integer>,
         duration -> Nullable<Integer>,

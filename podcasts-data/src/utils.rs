@@ -56,7 +56,7 @@ pub fn vec_u8_to_u64(v: Vec<u8>) -> u64 {
 }
 
 /// Hash a given value.
-pub fn calculate_hash<T: Hash>(t: &T) -> u64 {
+pub fn calculate_hash<T: Hash + ?Sized>(t: &T) -> u64 {
     let mut s = DefaultHasher::new();
     t.hash(&mut s);
     s.finish()

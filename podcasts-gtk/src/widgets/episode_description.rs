@@ -21,7 +21,7 @@ use gtk::glib;
 use gtk::CompositeTemplate;
 
 use glib::subclass::InitializingObject;
-use glib::Sender;
+use glib::{clone, Sender};
 use podcasts_data::{Episode, Show};
 
 use crate::app::Action;
@@ -30,8 +30,14 @@ use crate::widgets::EpisodeMenu;
 
 use crate::episode_description_parser;
 use adw::subclass::prelude::*;
+use anyhow::Result;
 use chrono::prelude::*;
 use std::sync::Arc;
+
+use tokio::sync::oneshot::error::TryRecvError;
+use gtk::gdk_pixbuf::Pixbuf;
+use gtk::prelude::WidgetExt;
+use podcasts_data::{dbqueries, downloader};
 
 #[derive(Debug, CompositeTemplate, Default)]
 #[template(resource = "/org/gnome/Podcasts/gtk/episode_description.ui")]
@@ -48,6 +54,8 @@ pub struct EpisodeDescriptionPriv {
     episode_duration: TemplateChild<gtk::Label>,
     #[template_child]
     description: TemplateChild<gtk::Label>,
+    #[template_child]
+    episode_specific_cover: TemplateChild<gtk::Picture>,
 }
 
 impl EpisodeDescriptionPriv {
@@ -57,6 +65,12 @@ impl EpisodeDescriptionPriv {
         self.episode_title.set_text(ep.title());
         self.podcast_title.set_text(show.title());
         self.set_cover(ep.show_id());
+        if let Some(uri) = ep.image_uri().as_ref() {
+            // don't show if it's the same as the show cover
+            if *uri != show.image_uri().unwrap_or("") {
+                let _ = self.set_episode_specific_cover(ep.show_id(), uri);
+            }
+        }
 
         let id = ep.rowid();
         let menu = EpisodeMenu::new(&sender, ep, show);
@@ -118,6 +132,38 @@ impl EpisodeDescriptionPriv {
         utils::set_image_from_path(&self.cover, show_id, 64)
             .map_err(|err| error!("Failed to set a cover: {}", err))
             .ok();
+    }
+
+    fn set_episode_specific_cover(&self, show_id: i32, uri: &str) -> Result<()> {
+        let pd = dbqueries::get_podcast_cover_from_id(show_id)?;
+        let widget = self;
+
+        let (sender, mut receiver) = tokio::sync::oneshot::channel();
+        let callback = clone!(@weak widget =>  @default-return glib::ControlFlow::Break, move || {
+            match receiver.try_recv() {
+                Err(TryRecvError::Empty) => glib::ControlFlow::Continue,
+                Err(TryRecvError::Closed) => glib::ControlFlow::Break,
+                Ok(Ok(path)) => {
+                    if let Ok(px) = Pixbuf::from_file(path)
+                    {
+                        let texture = gtk::gdk::Texture::for_pixbuf(&px);
+                        widget.episode_specific_cover.set_paintable(Some(&texture));
+                        widget.episode_specific_cover.set_visible(true);
+                    }
+                    glib::ControlFlow::Break
+                },
+                _ => glib::ControlFlow::Break
+            }
+        });
+
+        let uri = uri.to_owned();
+        crate::RUNTIME.spawn(clone!(@strong pd => async move {
+            let path = downloader::cache_episode_image(&pd, &uri, true).await;
+            sender.send(path).expect("episode_specific_image: channel was dropped unexpectedly")
+        }));
+
+        glib::timeout_add_local(std::time::Duration::from_millis(25), callback);
+        Ok(())
     }
 }
 

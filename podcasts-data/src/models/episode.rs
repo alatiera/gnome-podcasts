@@ -40,6 +40,7 @@ pub struct Episode {
     uri: Option<String>,
     local_uri: Option<String>,
     description: Option<String>,
+    image_uri: Option<String>,
     epoch: i32,
     length: Option<i32>,
     duration: Option<i32>,
@@ -139,6 +140,14 @@ impl Episode {
     /// 0 means the episode was either not played or continued to play to the end.
     pub fn play_position(&self) -> i32 {
         self.play_position
+    }
+
+    /// Get image_uri
+    ///
+    /// The uri to the episode specific cover.
+    /// None means no itunes:image was set for this episode.
+    pub fn image_uri(&self) -> Option<&str> {
+        self.image_uri.as_deref()
     }
 }
 

@@ -254,6 +254,19 @@ pub fn check_for_cached_cover(pd: &ShowCoverModel) -> Option<PathBuf> {
     None
 }
 
+pub fn check_for_cached_image(pd: &ShowCoverModel, uri: &str) -> Option<PathBuf> {
+    let cache_path = utils::get_cover_dir(pd.title()).ok()?;
+    let hash = utils::calculate_hash(uri);
+
+    if let Ok(mut paths) = glob(&format!("{}/{}.*", hash, cache_path)) {
+        // For some reason there is no .first() method so nth(0) is used
+        let path = paths.next().and_then(|x| x.ok());
+        return path;
+    }
+
+    None
+}
+
 pub async fn cache_image(pd: &ShowCoverModel) -> Result<String, DownloadError> {
     if let Some(path) = check_for_cached_cover(pd) {
         return Ok(path
@@ -276,6 +289,34 @@ pub async fn cache_image(pd: &ShowCoverModel) -> Result<String, DownloadError> {
     let path = download_into(&cache_path, "cover", &url, None).await?;
     info!("Cached img into: {}", &path);
     Ok(path)
+}
+
+pub async fn cache_episode_image(
+    pd: &ShowCoverModel,
+    uri: &str,
+    download: bool,
+) -> Result<String, DownloadError> {
+    if let Some(path) = check_for_cached_image(pd, uri) {
+        return Ok(path
+            .to_str()
+            .ok_or(DownloadError::InvalidCachedImageLocation)?
+            .to_owned());
+    }
+
+    if uri.is_empty() {
+        return Err(DownloadError::NoImageLocation);
+    }
+
+    let cache_path = utils::get_cover_dir(pd.title())?;
+    let hash = utils::calculate_hash(uri);
+
+    if download {
+        let path = download_into(&cache_path, &format!("{}", hash), uri, None).await?;
+        info!("Cached img into: {}", &path);
+        Ok(path)
+    } else {
+        Err(DownloadError::DownloadCancelled)
+    }
 }
 
 #[cfg(test)]

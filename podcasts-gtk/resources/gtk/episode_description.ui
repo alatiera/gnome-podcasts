@@ -58,6 +58,7 @@ Tobias Bernard
                     <property name="vexpand">True</property>
                     <property name="orientation">vertical</property>
                     <property name="baseline-position">top</property>
+
                     <child>
                       <object class="GtkBox" id="episode_info">
                         <property name="valign">start</property>
@@ -123,13 +124,13 @@ Tobias Bernard
                         </child>
                       </object>
                     </child>
+
                     <child>
                       <object class="GtkLabel" id="description">
                         <property name="valign">start</property>
                         <property name="margin-start">18</property>
                         <property name="margin-end">18</property>
                         <property name="margin-bottom">18</property>
-                        <property name="vexpand">True</property>
                         <property name="label" translatable="yes">Episode Description</property>
                         <property name="wrap">True</property>
                         <property name="xalign">0</property>
@@ -138,8 +139,25 @@ Tobias Bernard
                         </style>
                       </object>
                     </child>
+
+                    <child>
+                      <object class="GtkPicture" id="episode_specific_cover">
+                        <property name="margin-start">18</property>
+                        <property name="margin-end">18</property>
+                        <property name="margin-bottom">18</property>
+                        <property name="hexpand">True</property>
+                        <property name="vexpand">True</property>
+                        <property name="visible">False</property>
+                        <property name="content-fit">scale-down</property>
+                        <property name="valign">start</property>
+                        <property name="halign">fill</property>
+                        <property name="height-request">300</property>
+                      </object>
+                    </child>
+
                   </object>
                 </child>
+
               </object>
             </child>
           </object>
