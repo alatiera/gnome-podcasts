@@ -2,184 +2,90 @@
 # Copyright (C) 2018, 2019, 2020, 2021, 2022 Free Software Foundation, Inc.
 # This file is distributed under the same license as the podcasts package.
 #
-# Meskó Balázs <mesko.balazs at fsf dot hu>, 2018.
+# Meskó Balázs <mesko.balazs at fsf dot hu>, 2018, 2023.
 # Balázs Úr <ur.balazs at fsf dot hu>, 2019, 2020, 2021, 2022.
 msgid ""
 msgstr ""
 "Project-Id-Version: podcasts master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2021-11-28 07:07+0000\n"
-"PO-Revision-Date: 2022-03-13 02:25+0100\n"
-"Last-Translator: Balázs Úr <ur.balazs at fsf dot hu>\n"
-"Language-Team: Hungarian <gnome-hu-list at gnome dot org>\n"
+"POT-Creation-Date: 2023-03-26 17:46+0000\n"
+"PO-Revision-Date: 2023-05-18 11:28+0200\n"
+"Last-Translator: Balázs Meskó <mesko.balazs at fsf dot hu>\n"
+"Language-Team: Hungarian <openscope at fsf dot hu>\n"
 "Language: hu\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Lokalize 19.12.3\n"
+"X-Generator: Lokalize 22.08.0\n"
 
-#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:15
-msgid "Top position of the last open main window"
-msgstr "A legutóbbi nyitott főablak fenti pozíciója"
-
-#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:19
-msgid "Left position of the last open main window"
-msgstr "A legutóbbi nyitott főablak bal oldali pozíciója"
-
-#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:23
-msgid "Height of the last open main window"
-msgstr "A legutóbbi nyitott főablak magassága"
-
-#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:27
-msgid "Width of the last open main window"
-msgstr "A legutóbbi nyitott főablak szélessége"
-
-#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:31
-msgid "Maximized state of the last open main window"
-msgstr "A legutóbbi nyitott főablak maximalizálási állapota"
-
-#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:36
-msgid "Enable or disable dark theme"
-msgstr "Sötét téma engedélyezése vagy letiltása"
-
-#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:41
-msgid "Whether to periodically refresh content"
-msgstr "Időközönként frissüljön-e a tartalom"
-
-#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:46
-msgid "How many periods of time to wait between automatic refreshes"
-msgstr "Mennyi időközt várjon az automatikus frissítések között"
-
-#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:50
-msgid "What period of time to wait between automatic refreshes"
-msgstr "Milyen időközöket várjon az automatikus frissítések között"
-
-#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:54
-msgid "Whether to refresh content after startup"
-msgstr "Indításkor frissüljön-e a tartalom"
-
-#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:60
-msgid "How many periods of time to wait between automatic cleanups"
-msgstr "Mennyi időközt várjon az automatikus tisztítások között"
-
-#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:64
-msgid "What period of time to wait between automatic cleanups"
-msgstr "Milyen időközöket várjon az automatikus tisztítások között"
-
-#. Weird magic I copy-pasted that sets the Application Name in the Shell.
-#: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:3
-#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:4
-#: podcasts-gtk/resources/gtk/headerbar.ui:137 podcasts-gtk/src/app.rs:438
-#: podcasts-gtk/src/widgets/aboutdialog.rs:63 podcasts-gtk/src/window.rs:66
-msgid "Podcasts"
-msgstr "Podcastok"
-
-#: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:4
-msgid "Listen to your favorite podcasts, right from your desktop."
-msgstr "Hallgassa kedvenc podcastjait, közvetlenül az asztalán."
-
-#. Translators: Search terms to find this application. Do NOT translate or localize the semicolons! The list MUST also end with a semicolon!
-#: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:13
-msgid "Podcast;RSS;"
-msgstr "Podcast;RSS;"
-
-#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:8
-#| msgid "Listen to your favorite podcasts, right from your desktop."
-msgid "Listen to your favorite shows"
-msgstr "Hallgassa kedvenc műsorait"
-
-#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:10
-msgid ""
-"Play, update, and manage your podcasts from a lightweight interface that "
-"seamlessly integrates with GNOME. Podcasts can play various audio formats "
-"and remember where you stopped listening. You can subscribe to shows via RSS/"
-"Atom, iTunes, and Soundcloud links. Subscriptions from other apps can be "
-"imported via OPML files."
-msgstr ""
-"Játssza le, frissítse és kezelje a podcastjait egy könnyűsúlyú felületről, "
-"amely zökkenőmentesen illeszkedik a GNOME-hoz. A Podcastok különböző "
-"hangformátumokat tud lejátszani, és megjegyzi, hogy hol hagyta abba a "
-"hallgatásukat. Feliratkozhat a műsorokra RSS/Atom hírcsatornákkal, iTunes és "
-"Soundcloud hivatkozásokkal. A más alkalmazásokban lévő feliratkozások is "
-"importálhatók OPML-fájlok segítségével."
-
-#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:117
-msgid "Jordan Petridis"
-msgstr "Jordan Petridis"
-
-#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:118
-msgid "Julian Hofer"
-msgstr "Julian Hofer"
-
-#: podcasts-gtk/resources/gtk/empty_view.ui:46
+#: podcasts-gtk/resources/gtk/empty_show.ui:16
 msgid "This show does not have episodes yet"
 msgstr "Ennek a műsornak még nincsenek epizódjai"
 
-#: podcasts-gtk/resources/gtk/empty_view.ui:57
+#: podcasts-gtk/resources/gtk/empty_show.ui:25
 msgid "If you think this is an error, please consider writing a bug report."
 msgstr "Ha úgy gondolja hogy ez hiba, akkor írjon egy hibajelentést."
 
-#: podcasts-gtk/resources/gtk/empty_view.ui:91
-msgid "Get some shows"
+#: podcasts-gtk/resources/gtk/empty_view.ui:30
+#| msgid "Get some shows"
+msgid "Get Some Shows"
 msgstr "Szerezzen be néhány műsort"
 
-#: podcasts-gtk/resources/gtk/empty_view.ui:123
+#: podcasts-gtk/resources/gtk/empty_view.ui:49
 msgid "Add new shows via feed URL"
 msgstr "Új műsorok hozzáadása csatorna URL-ből"
 
-#: podcasts-gtk/resources/gtk/empty_view.ui:152
+#: podcasts-gtk/resources/gtk/empty_view.ui:71
 msgid "Import shows from another device"
 msgstr "Műsorok importálása egy másik eszközről"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:49
+#: podcasts-gtk/resources/gtk/episode_description.ui:41
 msgid "Episode Details"
 msgstr "Epizód részletei"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:64
-#: podcasts-gtk/resources/gtk/headerbar.ui:186
+#: podcasts-gtk/resources/gtk/episode_description.ui:51
+#: podcasts-gtk/resources/gtk/headerbar.ui:143
 msgid "Back"
 msgstr "Vissza"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:148
-#| msgid "Podcasts"
+#: podcasts-gtk/resources/gtk/episode_description.ui:105
 msgid "Podcast Title"
 msgstr "Podcast címe"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:186
+#: podcasts-gtk/resources/gtk/episode_description.ui:128
 msgid "Duration - Date"
 msgstr "Hossz – Dátum"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:241
+#: podcasts-gtk/resources/gtk/episode_description.ui:148
 msgid "Episode Description"
 msgstr "Epizód leírása"
 
-#: podcasts-gtk/resources/gtk/episode_menu.ui:36
-#| msgid "_Import Shows"
+#: podcasts-gtk/resources/gtk/episode_menu.ui:35
 msgid "Go to Show"
 msgstr "Ugrás a műsorhoz"
 
-#: podcasts-gtk/resources/gtk/episode_menu.ui:40
+#: podcasts-gtk/resources/gtk/episode_menu.ui:39
 msgid "Copy Episode Url"
 msgstr "Epizód URL másolása"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:82
+#: podcasts-gtk/resources/gtk/episode_widget.ui:70
 msgid "You’ve already listened to this episode."
 msgstr "Már meghallgatta ezt az epizódot."
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:187
+#: podcasts-gtk/resources/gtk/episode_widget.ui:157
 msgid "Calculating episode size…"
 msgstr "Epizódméret kiszámítása…"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:214
+#: podcasts-gtk/resources/gtk/episode_widget.ui:180
 msgid "Play this episode"
 msgstr "Ezen epizód lejátszása"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:230
+#: podcasts-gtk/resources/gtk/episode_widget.ui:192
 msgid "Cancel the download process"
 msgstr "A letöltési folyamat megszakítása"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:250
+#: podcasts-gtk/resources/gtk/episode_widget.ui:204
 msgid "Download this episode"
 msgstr "Ezen epizód letöltése"
 
@@ -203,115 +109,121 @@ msgstr "Gyorsbille_ntyűk"
 msgid "_About Podcasts"
 msgstr "A Podcastok _névjegye"
 
-#: podcasts-gtk/resources/gtk/headerbar.ui:35
-#: podcasts-gtk/resources/gtk/headerbar.ui:165
+#: podcasts-gtk/resources/gtk/headerbar.ui:33
+#: podcasts-gtk/resources/gtk/headerbar.ui:133
 msgid "Add a new feed"
 msgstr "Új csatorna hozzáadása"
 
-#: podcasts-gtk/resources/gtk/headerbar.ui:53
-msgid "Enter feed address to add"
-msgstr "Adja meg a hozzáadandó csatorna címét"
+#: podcasts-gtk/resources/gtk/headerbar.ui:44
+#| msgid "Enter feed address to add"
+msgid "Enter Feed Address"
+msgstr "Adja meg a csatorna címét"
 
-#: podcasts-gtk/resources/gtk/headerbar.ui:79
+#: podcasts-gtk/resources/gtk/headerbar.ui:67
 msgid "Add"
 msgstr "Hozzáadás"
 
-#: podcasts-gtk/resources/gtk/headerbar.ui:150
+#. Weird magic I copy-pasted that sets the Application Name in the Shell.
+#: podcasts-gtk/resources/gtk/headerbar.ui:111
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:4
+#: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:3
+#: podcasts-gtk/src/app.rs:457 podcasts-gtk/src/widgets/aboutdialog.rs:56
+#: podcasts-gtk/src/window.rs:64
+msgid "Podcasts"
+msgstr "Podcastok"
+
+#: podcasts-gtk/resources/gtk/headerbar.ui:121
 msgid "Show Title"
 msgstr "Műsor címe"
 
-#: podcasts-gtk/resources/gtk/help-overlay.ui:12
+#: podcasts-gtk/resources/gtk/headerbar.ui:153
+msgid "Main Menu"
+msgstr "Főmenü"
+
+#: podcasts-gtk/resources/gtk/help-overlay.ui:11
 msgid "General"
 msgstr "Általános"
 
-#: podcasts-gtk/resources/gtk/help-overlay.ui:18
+#: podcasts-gtk/resources/gtk/help-overlay.ui:15
 msgctxt "shortcut window"
 msgid "Check for new episodes"
 msgstr "Új epizódok keresése"
 
-#: podcasts-gtk/resources/gtk/help-overlay.ui:25
+#: podcasts-gtk/resources/gtk/help-overlay.ui:21
 msgctxt "shortcut window"
 msgid "Quit the application"
 msgstr "Kilépés az alkalmazásból"
 
-#: podcasts-gtk/resources/gtk/home_view.ui:56
+#: podcasts-gtk/resources/gtk/home_view.ui:50
 msgid "Today"
 msgstr "Ma"
 
-#: podcasts-gtk/resources/gtk/home_view.ui:89
+#: podcasts-gtk/resources/gtk/home_view.ui:78
 msgid "Yesterday"
 msgstr "Tegnap"
 
-#: podcasts-gtk/resources/gtk/home_view.ui:122
+#: podcasts-gtk/resources/gtk/home_view.ui:106
 msgid "This Week"
 msgstr "Ezen a héten"
 
-#: podcasts-gtk/resources/gtk/home_view.ui:155
+#: podcasts-gtk/resources/gtk/home_view.ui:134
 msgid "This Month"
 msgstr "Ebben a hónapban"
 
-#: podcasts-gtk/resources/gtk/home_view.ui:189
+#: podcasts-gtk/resources/gtk/home_view.ui:163
 msgid "Older"
 msgstr "Régebbi"
 
-#: podcasts-gtk/resources/gtk/inapp_notif.ui:69
-msgid "An in-app action notification"
-msgstr "Alkalmazáson belüli műveletértesítések"
-
-#: podcasts-gtk/resources/gtk/inapp_notif.ui:75
-msgid "Undo"
-msgstr "Visszavonás"
-
-#: podcasts-gtk/resources/gtk/player_dialog.ui:14
+#: podcasts-gtk/resources/gtk/player_dialog.ui:22
 msgid "Now Playing"
 msgstr "Most játssza"
 
-#: podcasts-gtk/resources/gtk/player_rate.ui:32
+#: podcasts-gtk/resources/gtk/player_rate.ui:29
 msgid "Change the playback speed"
 msgstr "Lejátszási sebesség módosítása"
 
-#: podcasts-gtk/resources/gtk/player_rate.ui:46
-#: podcasts-gtk/resources/gtk/player_rate.ui:85
+#: podcasts-gtk/resources/gtk/player_rate.ui:34
+#: podcasts-gtk/resources/gtk/player_rate.ui:59
 msgid "1.00×"
 msgstr "1,00×"
 
-#: podcasts-gtk/resources/gtk/player_rate.ui:65
+#: podcasts-gtk/resources/gtk/player_rate.ui:39
 msgid "2.00×"
 msgstr "2,00×"
 
-#: podcasts-gtk/resources/gtk/player_rate.ui:70
+#: podcasts-gtk/resources/gtk/player_rate.ui:44
 msgid "1.75×"
 msgstr "1,75×"
 
-#: podcasts-gtk/resources/gtk/player_rate.ui:75
+#: podcasts-gtk/resources/gtk/player_rate.ui:49
 msgid "1.50×"
 msgstr "1,50×"
 
-#: podcasts-gtk/resources/gtk/player_rate.ui:80
+#: podcasts-gtk/resources/gtk/player_rate.ui:54
 msgid "1.25×"
 msgstr "1,25×"
 
-#: podcasts-gtk/resources/gtk/player_rate.ui:90
+#: podcasts-gtk/resources/gtk/player_rate.ui:64
 msgid "0.90×"
 msgstr "0,90×"
 
-#: podcasts-gtk/resources/gtk/player_rate.ui:95
+#: podcasts-gtk/resources/gtk/player_rate.ui:69
 msgid "0.75×"
 msgstr "0,75×"
 
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:97
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:55
 msgid "Rewind 10 seconds"
 msgstr "Visszatekerés 10 másodperccel"
 
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:107
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:63
 msgid "Play"
 msgstr "Lejátszás"
 
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:118
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:71
 msgid "Pause"
 msgstr "Szünet"
 
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:129
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:79
 msgid "Fast forward 10 seconds"
 msgstr "Előretekerés 10 másodperccel"
 
@@ -327,107 +239,192 @@ msgstr "_Webhely"
 msgid "_Unsubscribe"
 msgstr "_Leiratkozás"
 
-#: podcasts-gtk/resources/gtk/show_menu.ui:36
+#: podcasts-gtk/resources/gtk/show_menu.ui:35
 msgid "Open Website"
 msgstr "Webhely megnyitása"
 
-#: podcasts-gtk/resources/gtk/show_menu.ui:40
+#: podcasts-gtk/resources/gtk/show_menu.ui:39
 msgid "Mark All as Played"
 msgstr "Összes megjelölése lejátszottként"
 
-#: podcasts-gtk/resources/gtk/show_menu.ui:46
+#: podcasts-gtk/resources/gtk/show_menu.ui:45
 msgid "Unsubscribe"
 msgstr "Leiratkozás"
 
-#: podcasts-gtk/resources/gtk/show_widget.ui:98
-msgid "Read More"
-msgstr "Olvassa tovább"
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:8
+msgid "Listen to your favorite shows"
+msgstr "Hallgassa kedvenc műsorait"
 
-#: podcasts-gtk/src/app.rs:353
-msgid "Fetching new episodes"
-msgstr "Új epizódok lekérése"
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:10
+msgid ""
+"Play, update, and manage your podcasts from a lightweight interface that "
+"seamlessly integrates with GNOME. Podcasts can play various audio formats "
+"and remember where you stopped listening. You can subscribe to shows via RSS/"
+"Atom, iTunes, and Soundcloud links. Subscriptions from other apps can be "
+"imported via OPML files."
+msgstr ""
+"Játssza le, frissítse és kezelje a podcastjait egy könnyűsúlyú felületről, "
+"amely zökkenőmentesen illeszkedik a GNOME-hoz. A Podcastok különböző "
+"hangformátumokat tud lejátszani, és megjegyzi, hogy hol hagyta abba a "
+"hallgatásukat. Feliratkozhat a műsorokra RSS/Atom hírcsatornákkal, iTunes és "
+"Soundcloud hivatkozásokkal. A más alkalmazásokban lévő feliratkozások is "
+"importálhatók OPML-fájlok segítségével."
 
-#: podcasts-gtk/src/stacks/content.rs:58
-msgid "New"
-msgstr "Új"
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:134
+msgid "Jordan Petridis"
+msgstr "Jordan Petridis"
 
-#: podcasts-gtk/src/stacks/content.rs:59
-msgid "Shows"
-msgstr "Műsorok"
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:135
+msgid "Julian Hofer"
+msgstr "Julian Hofer"
 
-#: podcasts-gtk/src/utils.rs:501
-msgid "Select the file from which to you want to import shows."
-msgstr "Válasszon egy fájlt, amelyből műsorokat akar importálni."
+#: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:4
+msgid "Listen to your favorite podcasts, right from your desktop."
+msgstr "Hallgassa kedvenc podcastjait, közvetlenül az asztalán."
 
-#: podcasts-gtk/src/utils.rs:504
-msgid "_Import"
-msgstr "_Importálás"
+#. Translators: Search terms to find this application. Do NOT translate or localize the semicolons! The list MUST also end with a semicolon!
+#: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:13
+msgid "Podcast;RSS;"
+msgstr "Podcast;RSS;"
 
-#: podcasts-gtk/src/utils.rs:513 podcasts-gtk/src/utils.rs:562
-msgid "OPML file"
-msgstr "OPML fájl"
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:15
+msgid "Height of the last open main window"
+msgstr "A legutóbbi nyitott főablak magassága"
 
-#: podcasts-gtk/src/utils.rs:531
-msgid "Failed to parse the imported file"
-msgstr "Az importált fájl feldolgozása meghiúsult"
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:19
+msgid "Width of the last open main window"
+msgstr "A legutóbbi nyitott főablak szélessége"
 
-#: podcasts-gtk/src/utils.rs:536 podcasts-gtk/src/utils.rs:581
-msgid "Selected file could not be accessed."
-msgstr "A kiválasztott fájlok nem érhetőek el."
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:23
+msgid "Maximized state of the last open main window"
+msgstr "A legutóbbi nyitott főablak maximalizálási állapota"
 
-#: podcasts-gtk/src/utils.rs:547
-msgid "Export shows to…"
-msgstr "Műsorok exportálása ide…"
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:28
+msgid "Whether to periodically refresh content"
+msgstr "Időközönként frissüljön-e a tartalom"
 
-#: podcasts-gtk/src/utils.rs:550
-msgid "_Export"
-msgstr "_Exportálás"
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:33
+msgid "How many periods of time to wait between automatic refreshes"
+msgstr "Mennyi időközt várjon az automatikus frissítések között"
 
-#: podcasts-gtk/src/utils.rs:551
-msgid "_Cancel"
-msgstr "_Mégse"
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:37
+msgid "What period of time to wait between automatic refreshes"
+msgstr "Milyen időközöket várjon az automatikus frissítések között"
 
-#. Translators: This is the string of the suggested name for the exported opml file
-#: podcasts-gtk/src/utils.rs:555
-msgid "gnome-podcasts-exported-shows"
-msgstr "gnome-podcastok-exportált-műsorok"
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:41
+msgid "Whether to refresh content after startup"
+msgstr "Indításkor frissüljön-e a tartalom"
 
-#: podcasts-gtk/src/utils.rs:575
-msgid "GNOME Podcasts Subscriptions"
-msgstr "GNOME Podcastok feliratkozások"
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:47
+msgid "How many periods of time to wait between automatic cleanups"
+msgstr "Mennyi időközt várjon az automatikus tisztítások között"
 
-#: podcasts-gtk/src/utils.rs:576
-msgid "Failed to export podcasts"
-msgstr "A podcastok exportálása meghiúsult"
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:51
+msgid "What period of time to wait between automatic cleanups"
+msgstr "Milyen időközöket várjon az automatikus tisztítások között"
 
-#: podcasts-gtk/src/widgets/aboutdialog.rs:58
-msgid "Podcast Client for the GNOME Desktop."
-msgstr "Podcast-kliens a GNOME asztali környezethez."
-
-#: podcasts-gtk/src/widgets/aboutdialog.rs:65
-msgid "Learn more about GNOME Podcasts"
-msgstr "További tudnivalók a GNOME Podcastokról"
-
-#: podcasts-gtk/src/widgets/aboutdialog.rs:69
-msgid "translator-credits"
-msgstr "Meskó Balázs <mesko dot balazs at fsf dot hu>"
-
-#: podcasts-gtk/src/widgets/episode.rs:145
-msgid "{} min"
-msgstr "{} perc"
-
-#: podcasts-gtk/src/widgets/episode_description.rs:165
+#: podcasts-gtk/src/app.rs:337
 msgid "Copied URL to clipboard!"
 msgstr "URL a vágólapra másolva."
 
-#: podcasts-gtk/src/widgets/player.rs:902
+#: podcasts-gtk/src/stacks/content.rs:70
+msgid "New"
+msgstr "Új"
+
+#: podcasts-gtk/src/stacks/content.rs:72
+msgid "Shows"
+msgstr "Műsorok"
+
+#: podcasts-gtk/src/utils.rs:489 podcasts-gtk/src/utils.rs:531
+msgid "OPML file"
+msgstr "OPML fájl"
+
+#: podcasts-gtk/src/utils.rs:500
+msgid "Select the file from which to you want to import shows."
+msgstr "Válasszon egy fájlt, amelyből műsorokat akar importálni."
+
+#: podcasts-gtk/src/utils.rs:502
+msgid "_Import"
+msgstr "_Importálás"
+
+#: podcasts-gtk/src/utils.rs:518
+msgid "Failed to parse the imported file"
+msgstr "Az importált fájl feldolgozása meghiúsult"
+
+#: podcasts-gtk/src/utils.rs:541
+msgid "Export shows to…"
+msgstr "Műsorok exportálása ide…"
+
+#: podcasts-gtk/src/utils.rs:542
+msgid "_Export"
+msgstr "_Exportálás"
+
+#. Translators: This is the string of the suggested name for the exported opml file
+#: podcasts-gtk/src/utils.rs:546
+msgid "gnome-podcasts-exported-shows"
+msgstr "gnome-podcastok-exportált-műsorok"
+
+#: podcasts-gtk/src/utils.rs:556
+msgid "GNOME Podcasts Subscriptions"
+msgstr "GNOME Podcastok feliratkozások"
+
+#: podcasts-gtk/src/utils.rs:557
+msgid "Failed to export podcasts"
+msgstr "A podcastok exportálása meghiúsult"
+
+#: podcasts-gtk/src/widgets/aboutdialog.rs:52
+msgid "Podcast Client for the GNOME Desktop."
+msgstr "Podcast-kliens a GNOME asztali környezethez."
+
+#: podcasts-gtk/src/widgets/aboutdialog.rs:63
+msgid "translator-credits"
+msgstr "Meskó Balázs <mesko dot balazs at fsf dot hu>"
+
+#: podcasts-gtk/src/widgets/episode.rs:143
+msgid "{} min"
+msgstr "{} perc"
+
+#: podcasts-gtk/src/widgets/player.rs:884
 msgid "The media player was unable to execute an action."
 msgstr "A médialejátszó nem tudott végrehajtani egy műveletet."
 
-#: podcasts-gtk/src/widgets/show_menu.rs:194
+#: podcasts-gtk/src/widgets/read_more_label.rs:32
+msgid "Read More"
+msgstr "Olvassa tovább"
+
+#: podcasts-gtk/src/widgets/show_menu.rs:180
 msgid "Marked all episodes as listened"
 msgstr "Összes epizód megjelölve meghallgatottként"
 
-#: podcasts-gtk/src/widgets/show_menu.rs:199
+#: podcasts-gtk/src/widgets/show_menu.rs:181
+#: podcasts-gtk/src/widgets/show_menu.rs:204
+msgid "Undo"
+msgstr "Visszavonás"
+
+#: podcasts-gtk/src/widgets/show_menu.rs:200
 msgid "Unsubscribed from {}"
 msgstr "Leiratkozott innen: {}"
+
+#~ msgid "Top position of the last open main window"
+#~ msgstr "A legutóbbi nyitott főablak fenti pozíciója"
+
+#~ msgid "Left position of the last open main window"
+#~ msgstr "A legutóbbi nyitott főablak bal oldali pozíciója"
+
+#~ msgid "Enable or disable dark theme"
+#~ msgstr "Sötét téma engedélyezése vagy letiltása"
+
+#~ msgid "An in-app action notification"
+#~ msgstr "Alkalmazáson belüli műveletértesítések"
+
+#~ msgid "Fetching new episodes"
+#~ msgstr "Új epizódok lekérése"
+
+#~ msgid "Selected file could not be accessed."
+#~ msgstr "A kiválasztott fájlok nem érhetőek el."
+
+#~ msgid "_Cancel"
+#~ msgstr "_Mégse"
+
+#~ msgid "Learn more about GNOME Podcasts"
+#~ msgstr "További tudnivalók a GNOME Podcastokról"
