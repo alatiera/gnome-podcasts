@@ -24,7 +24,7 @@ use tempdir::TempDir;
 
 use std::fs;
 use std::fs::{copy, remove_file, File};
-use std::io::{BufWriter, Read, Write};
+use std::io::{BufWriter, Write};
 use std::path::{Path, PathBuf};
 use std::sync::{Arc, Mutex};
 
@@ -46,20 +46,7 @@ pub trait DownloadProgress {
     fn cancel(&mut self);
 }
 
-// Adapted from https://github.com/mattgathu/rget .
-// I never wanted to write a custom downloader.
-// Sorry to those who will have to work with that code.
-// Would much rather use a crate,
-// or bindings for a lib like youtube-dl(python),
-// But can't seem to find one.
-// TODO: Write unit-tests.
-fn download_into(
-    dir: &str,
-    file_title: &str,
-    url: &str,
-    progress: Option<Arc<Mutex<dyn DownloadProgress>>>,
-) -> Result<String, DownloadError> {
-    info!("GET request to: {}", url);
+pub fn client_builder() -> reqwest::ClientBuilder {
     // Haven't included the loop check as
     // Steal the Stars would trigger it as
     // it has a loop back before giving correct url
@@ -75,12 +62,29 @@ fn download_into(
         }
     });
 
-    let client = reqwest::blocking::Client::builder()
+    reqwest::Client::builder()
         .redirect(policy)
         .referer(false)
         .user_agent(crate::USER_AGENT)
-        .build()?;
-    let mut resp = client.get(url).send()?;
+}
+
+// Adapted from https://github.com/mattgathu/rget .
+// I never wanted to write a custom downloader.
+// Sorry to those who will have to work with that code.
+// Would much rather use a crate,
+// or bindings for a lib like youtube-dl(python),
+// But can't seem to find one.
+// TODO: Write unit-tests.
+async fn download_into(
+    dir: &str,
+    file_title: &str,
+    url: &str,
+    progress: Option<Arc<Mutex<dyn DownloadProgress + Send>>>,
+) -> Result<String, DownloadError> {
+    info!("GET request to: {}", url);
+
+    let client = client_builder().build()?;
+    let resp = client.get(url).send().await?;
     info!("Status Resp: {}", resp.status());
 
     if !resp.status().is_success() {
@@ -128,7 +132,7 @@ fn download_into(
     };
 
     // Save requested content into the file.
-    save_io(&out_file, &mut resp, ct_len, progress)?;
+    save_io(&out_file, resp, progress).await?;
 
     // Construct the desired path.
     let target = format!("{}/{}.{}", dir, file_title, ext);
@@ -160,26 +164,21 @@ fn get_ext(content: Option<&str>) -> Option<String> {
 /// Handles the I/O of fetching a remote file and saving into a Buffer and A
 /// File.
 #[allow(clippy::needless_pass_by_value)]
-fn save_io(
+async fn save_io(
     file: &str,
-    resp: &mut reqwest::blocking::Response,
-    content_lenght: Option<u64>,
-    progress: Option<Arc<Mutex<dyn DownloadProgress>>>,
+    resp: reqwest::Response,
+    progress: Option<Arc<Mutex<dyn DownloadProgress + Send>>>,
 ) -> Result<(), DownloadError> {
+    use futures::StreamExt;
+    use std::ops::Deref;
+
     info!("Downloading into: {}", file);
-    let chunk_size = match content_lenght {
-        Some(x) => x as usize / 99,
-        None => 1024, // default chunk size
-    };
-
     let mut writer = BufWriter::new(File::create(file)?);
+    let mut body_stream = resp.bytes_stream();
 
-    loop {
-        let mut buffer = vec![0; chunk_size];
-        let bcount = resp.read(&mut buffer[..])?;
-        buffer.truncate(bcount);
-        if !buffer.is_empty() {
-            writer.write_all(buffer.as_slice())?;
+    while let Some(chunk) = body_stream.next().await {
+        if let Ok(chunk) = chunk {
+            writer.write(chunk.deref())?;
             // This sucks.
             // Actually the whole download module is hack, so w/e.
             if let Some(prog) = progress.clone() {
@@ -202,10 +201,10 @@ fn save_io(
 }
 
 // TODO: Refactor
-pub fn get_episode(
+pub async fn get_episode(
     ep: &mut EpisodeWidgetModel,
     download_dir: &str,
-    progress: Option<Arc<Mutex<dyn DownloadProgress>>>,
+    progress: Option<Arc<Mutex<dyn DownloadProgress + Send>>>,
 ) -> Result<(), DownloadError> {
     // Check if its alrdy downloaded
     if ep.local_uri().is_some() {
@@ -223,7 +222,8 @@ pub fn get_episode(
         &ep.rowid().to_string(),
         ep.uri().unwrap(),
         progress,
-    )?;
+    )
+    .await?;
 
     // If download succeeds set episode local_uri to dlpath.
     ep.set_local_uri(Some(&path));
@@ -255,7 +255,7 @@ pub fn check_for_cached_cover(pd: &ShowCoverModel) -> Option<PathBuf> {
     None
 }
 
-pub fn cache_image(pd: &ShowCoverModel, download: bool) -> Result<String, DownloadError> {
+pub async fn cache_image(pd: &ShowCoverModel) -> Result<String, DownloadError> {
     if let Some(path) = check_for_cached_cover(pd) {
         return Ok(path
             .to_str()
@@ -274,13 +274,9 @@ pub fn cache_image(pd: &ShowCoverModel, download: bool) -> Result<String, Downlo
 
     let cache_path = utils::get_cover_dir(pd.title())?;
 
-    if download {
-        let path = download_into(&cache_path, "cover", &url, None)?;
-        info!("Cached img into: {}", &path);
-        Ok(path)
-    } else {
-        Err(DownloadError::DownloadCancelled)
-    }
+    let path = download_into(&cache_path, "cover", &url, None).await?;
+    info!("Cached img into: {}", &path);
+    Ok(path)
 }
 
 #[cfg(test)]
@@ -303,12 +299,12 @@ mod tests {
         let sid = source.id();
         // Convert Source it into a future Feed and index it
         let rt = tokio::runtime::Runtime::new()?;
-        rt.block_on(pipeline(vec![source]));
+        rt.block_on(pipeline(vec![source]))?;
 
         // Get the Podcast
         let pd = dbqueries::get_podcast_from_source_id(sid)?.into();
 
-        let img_path = cache_image(&pd, true);
+        let img_path = rt.block_on(cache_image(&pd));
         let foo_ = format!(
             "{}{}/cover.jpeg",
             PODCASTS_CACHE.to_str().unwrap(),

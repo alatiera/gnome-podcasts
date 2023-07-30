@@ -20,7 +20,7 @@
 //! Helper utilities for accomplishing various tasks.
 
 use chrono::prelude::*;
-use rayon::prelude::*;
+use rayon::prelude::*; // TODO FIXME still used for par_iter
 
 use url::{Position, Url};
 

@@ -34,14 +34,12 @@ pub enum DataError {
     R2D2Error(#[from] r2d2::Error),
     #[error("R2D2 Pool error: {0}")]
     R2D2PoolError(#[from] r2d2::PoolError),
-    #[error("Hyper Error: {0}")]
-    HyperError(#[from] hyper::Error),
     #[error("ToStr Error: {0}")]
     HttpToStr(#[from] http::header::ToStrError),
     #[error("Failed to parse a url: {0}")]
     UrlError(#[from] url::ParseError),
     #[error("TLS Error: {0}")]
-    TLSError(#[from] native_tls::Error),
+    ReqwestError(#[from] reqwest::Error),
     #[error("IO Error: {0}")]
     IOError(#[from] io::Error),
     #[error("RSS Error: {0}")]
@@ -53,7 +51,7 @@ pub enum DataError {
     #[error("Request to {url} returned {status_code}. Context: {context}")]
     HttpStatusGeneral {
         url: String,
-        status_code: hyper::StatusCode,
+        status_code: reqwest::StatusCode,
         context: String,
     },
     #[error("Source redirects to a new url")]

@@ -20,12 +20,7 @@
 // FIXME:
 //! Docs.
 
-use hyper::client::connect::HttpConnector;
-use hyper::{Body, Client};
-use hyper_tls::HttpsConnector;
-
-use once_cell::sync::Lazy;
-
+use crate::downloader::client_builder;
 use crate::errors::DataError;
 use crate::Source;
 
@@ -35,19 +30,16 @@ use crate::Source;
 /// Messy temp diagram:
 /// Source -> GET Request -> Update Etags -> Check Status -> Parse `xml/Rss` ->
 /// Convert `rss::Channel` into `Feed` -> Index Podcast -> Index Episodes.
-pub async fn pipeline<S>(sources: S)
+pub async fn pipeline<S>(sources: S) -> Result<(), reqwest::Error>
 where
     S: IntoIterator<Item = Source>,
 {
-    static CLIENT: Lazy<Client<HttpsConnector<HttpConnector>>> = Lazy::new(|| {
-        let https = HttpsConnector::new();
-        Client::builder().build::<_, Body>(https)
-    });
+    let client = client_builder().build()?;
 
     let handles: Vec<_> = sources
         .into_iter()
         .map(|source| async {
-            match source.into_feed(&CLIENT).await {
+            match source.into_feed(&client).await {
                 Ok(feed) => match feed.index() {
                     Ok(_) => (),
                     Err(err) => error!(
@@ -62,6 +54,7 @@ where
         })
         .collect();
     futures::future::join_all(handles).await;
+    Ok(())
 }
 
 #[cfg(test)]
@@ -70,7 +63,6 @@ mod tests {
     use crate::database::truncate_db;
     use crate::dbqueries;
     use crate::Source;
-    use anyhow::Result;
 
     // (path, url) tuples.
     const URLS: &[&str] = &[
@@ -85,7 +77,7 @@ mod tests {
 
     #[test]
     /// Insert feeds and update/index them.
-    fn test_pipeline() -> Result<()> {
+    fn test_pipeline() -> Result<(), DataError> {
         truncate_db()?;
         let bad_url = "https://gitlab.gnome.org/World/podcasts.atom";
         // if a stream returns error/None it stops
@@ -99,11 +91,11 @@ mod tests {
 
         let sources = dbqueries::get_sources()?;
         let rt = tokio::runtime::Runtime::new()?;
-        rt.block_on(pipeline(sources));
+        let _ = rt.block_on(pipeline(sources))?;
 
         let sources = dbqueries::get_sources()?;
         // Run again to cover Unique constrains errors.
-        rt.block_on(pipeline(sources));
+        let _ = rt.block_on(pipeline(sources))?;
 
         // Assert the index rows equal the controlled results
         assert_eq!(dbqueries::get_sources()?.len(), 6);

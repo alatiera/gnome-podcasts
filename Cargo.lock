@@ -399,9 +399,9 @@ dependencies = [
 
 [[package]]
 name = "either"
-version = "1.8.1"
+version = "1.9.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7fcaabb2fef8c910e7f4c7ce9f67a1283a1715879a7c230ca9d6d1ae31f16d91"
+checksum = "a26ae43d7bcc3b814de94796a5e736d4029efb0ee900c12e2d54c993ad1a1e07"
 
 [[package]]
 name = "encoding_rs"
@@ -1991,20 +1991,17 @@ dependencies = [
  "ammonia",
  "anyhow",
  "base64",
+ "bytes",
  "chrono",
- "crossbeam-channel",
  "derive_builder",
  "diesel",
  "diesel_migrations",
  "futures",
  "glob",
  "http",
- "hyper",
- "hyper-tls",
  "log",
  "maplit",
  "mime_guess",
- "native-tls",
  "num_cpus",
  "once_cell",
  "pretty_assertions",
@@ -2027,7 +2024,6 @@ version = "0.1.0"
 dependencies = [
  "anyhow",
  "chrono",
- "crossbeam-channel",
  "fragile",
  "gettext-rs",
  "glob",
@@ -2047,7 +2043,6 @@ dependencies = [
  "podcasts-data",
  "pretty_assertions",
  "pretty_env_logger",
- "rayon",
  "regex",
  "reqwest",
  "serde_json",
@@ -2372,10 +2367,12 @@ dependencies = [
  "serde_urlencoded",
  "tokio",
  "tokio-native-tls",
+ "tokio-util",
  "tower-service",
  "url",
  "wasm-bindgen",
  "wasm-bindgen-futures",
+ "wasm-streams",
  "web-sys",
  "winreg",
 ]
@@ -3059,6 +3056,19 @@ name = "wasm-bindgen-shared"
 version = "0.2.87"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "ca6ad05a4870b2bf5fe995117d3728437bd27d7cd5f06f13c17443ef369775a1"
+
+[[package]]
+name = "wasm-streams"
+version = "0.2.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "6bbae3363c08332cadccd13b67db371814cd214c2524020932f0804b8cf7c078"
+dependencies = [
+ "futures-util",
+ "js-sys",
+ "wasm-bindgen",
+ "wasm-bindgen-futures",
+ "web-sys",
+]
 
 [[package]]
 name = "web-sys"

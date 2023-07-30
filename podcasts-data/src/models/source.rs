@@ -21,16 +21,11 @@ use diesel::SaveChangesDsl;
 use rss::Channel;
 use url::Url;
 
-use hyper::body::Buf;
-use hyper::client::HttpConnector;
-use hyper::{Body, Client};
-use hyper_tls::HttpsConnector;
-
 use http::header::{
     HeaderValue, AUTHORIZATION, ETAG, IF_MODIFIED_SINCE, IF_NONE_MATCH, LAST_MODIFIED, LOCATION,
     USER_AGENT as USER_AGENT_HEADER,
 };
-use http::{Request, Response, StatusCode, Uri};
+use http::StatusCode;
 
 use base64::engine::general_purpose;
 use base64::prelude::*;
@@ -112,7 +107,7 @@ impl Source {
 
     /// Extract Etag and LastModifier from res, and update self and the
     /// corresponding db row.
-    fn update_etag(mut self, res: &Response<Body>) -> Result<Self, DataError> {
+    fn update_etag(mut self, res: &reqwest::Response) -> Result<Self, DataError> {
         let headers = res.headers();
 
         let etag = headers
@@ -160,7 +155,7 @@ impl Source {
     // 408: Timeout
     // 410: Feed deleted
     // TODO: Rething this api,
-    fn match_status(mut self, res: Response<Body>) -> Result<Response<Body>, DataError> {
+    fn match_status(mut self, res: reqwest::Response) -> Result<reqwest::Response, DataError> {
         let code = res.status();
 
         if code.is_success() {
@@ -204,7 +199,7 @@ impl Source {
         Ok(res)
     }
 
-    fn update_url(mut self, res: &Response<Body>) -> Result<Self, DataError> {
+    fn update_url(mut self, res: &reqwest::Response) -> Result<Self, DataError> {
         let code = res.status();
         let headers = res.headers();
         info!("HTTP StatusCode: {}", code);
@@ -244,10 +239,7 @@ impl Source {
     ///
     /// Consumes `self` and Returns the corresponding `Feed` Object.
     // Refactor into TryInto once it lands on stable.
-    pub async fn into_feed(
-        self,
-        client: &Client<HttpsConnector<HttpConnector>>,
-    ) -> Result<Feed, DataError> {
+    pub async fn into_feed(self, client: &reqwest::Client) -> Result<Feed, DataError> {
         let id = self.id();
 
         let resp = self.get_response(client).await?;
@@ -260,10 +252,7 @@ impl Source {
             .map_err(|err| DataError::BuilderError(format!("{err}")))
     }
 
-    async fn get_response(
-        self,
-        client: &Client<HttpsConnector<HttpConnector>>,
-    ) -> Result<Response<Body>, DataError> {
+    async fn get_response(self, client: &reqwest::Client) -> Result<reqwest::Response, DataError> {
         let mut source = self;
         loop {
             match source.request_constructor(client).await {
@@ -281,10 +270,10 @@ impl Source {
 
     async fn request_constructor(
         self,
-        client: &Client<HttpsConnector<HttpConnector>>,
-    ) -> Result<Response<Body>, DataError> {
-        let uri = Uri::from_str(self.uri())?;
-        let mut req = Request::get(uri).body(Body::empty()).unwrap();
+        client: &reqwest::Client,
+    ) -> Result<reqwest::Response, DataError> {
+        let uri = Url::from_str(self.uri())?;
+        let mut req = client.get(uri);
 
         if let Ok(url) = Url::parse(self.uri()) {
             if let Some(password) = url.password() {
@@ -293,32 +282,29 @@ impl Source {
                     //url.username() converts @ symbols to %40 automatically.  The "replace" undoes that.
                     format!("{}:{}", url.username().replace("%40", "@"), password),
                 ));
-                req.headers_mut()
-                    .insert(AUTHORIZATION, HeaderValue::from_str(&auth).unwrap());
+                req = req.header(AUTHORIZATION, HeaderValue::from_str(&auth).unwrap());
             }
         }
 
         // Set the UserAgent cause ppl still seem to check it for some reason...
-        req.headers_mut()
-            .insert(USER_AGENT_HEADER, HeaderValue::from_static(USER_AGENT));
+        req = req.header(USER_AGENT_HEADER, HeaderValue::from_static(USER_AGENT));
 
         if let Some(etag) = self.http_etag() {
-            req.headers_mut()
-                .insert(IF_NONE_MATCH, HeaderValue::from_str(etag).unwrap());
+            req = req.header(IF_NONE_MATCH, HeaderValue::from_str(etag).unwrap());
         }
 
         if let Some(lmod) = self.last_modified() {
-            req.headers_mut()
-                .insert(IF_MODIFIED_SINCE, HeaderValue::from_str(lmod).unwrap());
+            req = req.header(IF_MODIFIED_SINCE, HeaderValue::from_str(lmod).unwrap());
         }
 
-        let res = client.request(req).await?;
+        let res = req.send().await?;
         self.match_status(res)
     }
 }
 
-async fn response_to_channel(res: Response<Body>) -> Result<Channel, DataError> {
-    let chunk = hyper::body::to_bytes(res.into_body()).await?;
+async fn response_to_channel(res: reqwest::Response) -> Result<Channel, DataError> {
+    use bytes::buf::Buf;
+    let chunk = res.bytes().await?;
 
     // Channel will do it's own decoding of strings
     // based on what is specified in <?xml encoding="..."?>.
@@ -333,6 +319,7 @@ mod tests {
 
     use crate::database::truncate_db;
     use crate::dbqueries;
+    use crate::downloader::client_builder;
     use crate::utils::get_feed;
 
     #[test]
@@ -340,8 +327,7 @@ mod tests {
         truncate_db()?;
 
         let rt = tokio::runtime::Runtime::new()?;
-        let https = HttpsConnector::new();
-        let client = Client::builder().build::<_, Body>(https);
+        let client = client_builder().build()?;
 
         let url = "https://web.archive.org/web/20180120083840if_/https://feeds.feedburner.\
                    com/InterceptedWithJeremyScahill";
@@ -360,8 +346,7 @@ mod tests {
         truncate_db()?;
 
         let rt = tokio::runtime::Runtime::new()?;
-        let https = HttpsConnector::new();
-        let client = Client::builder().build::<_, Body>(https);
+        let client = client_builder().build()?;
 
         let url = "https://web.archive.org/web/20220205205130if_/https://dinamics.ccma.\
                    cat/public/podcast/catradio/xml/series-i-cinema.xml";

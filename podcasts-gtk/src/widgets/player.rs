@@ -108,7 +108,10 @@ impl PlayerInfo {
         metadata.title = Some(episode.title().to_string());
 
         // Set the cover if it is already cached.
-        if let Ok(path) = downloader::cache_image(podcast, false) {
+        if let Some(path) = downloader::check_for_cached_cover(podcast)
+            .as_ref()
+            .and_then(|p| p.to_str())
+        {
             let url = Url::from_file_path(path);
             metadata.art_url = url.map(From::from).ok();
         } else {

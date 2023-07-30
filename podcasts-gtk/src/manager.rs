@@ -31,8 +31,6 @@ use std::sync::{Arc, Mutex, RwLock};
 
 pub(crate) static ACTIVE_DOWNLOADS: Lazy<Arc<RwLock<HashMap<i32, Arc<Mutex<Progress>>>>>> =
     Lazy::new(|| Arc::new(RwLock::new(HashMap::new())));
-static DLPOOL: Lazy<rayon::ThreadPool> =
-    Lazy::new(|| rayon::ThreadPoolBuilder::new().build().unwrap());
 
 #[derive(Debug, Default)]
 pub(crate) struct Progress {
@@ -89,11 +87,12 @@ pub(crate) fn add(id: i32, directory: String) -> Result<()> {
         Err(err) => return Err(anyhow!("ActiveDownloads: {}.", err)),
     };
 
-    DLPOOL.spawn(move || {
+    crate::RUNTIME.spawn(async move {
         if let Ok(mut episode) = dbqueries::get_episode_widget_from_rowid(id) {
             let id = episode.rowid();
 
             get_episode(&mut episode, directory.as_str(), Some(prog))
+                .await
                 .map_err(|err| error!("Download Failed: {}", err))
                 .ok();
 
@@ -142,7 +141,7 @@ mod tests {
         source.set_last_modified(None);
         source.save()?;
         let rt = tokio::runtime::Runtime::new()?;
-        rt.block_on(pipeline(vec![source]));
+        rt.block_on(pipeline(vec![source]))?;
 
         // Get the podcast
         let pd = dbqueries::get_podcast_from_source_id(sid)?;
@@ -179,7 +178,7 @@ mod tests {
         source.set_last_modified(None);
         source.save()?;
         let rt = tokio::runtime::Runtime::new()?;
-        rt.block_on(pipeline(vec![source]));
+        rt.block_on(pipeline(vec![source]))?;
 
         // Get the podcast
         let pd = dbqueries::get_podcast_from_source_id(sid)?;
@@ -188,7 +187,7 @@ mod tests {
         let mut episode = dbqueries::get_episode_from_pk(title, pd.id())?.into();
         let download_dir = get_download_dir(pd.title())?;
 
-        get_episode(&mut episode, &download_dir, None)?;
+        let _ = rt.block_on(get_episode(&mut episode, &download_dir, None))?;
 
         let final_path = format!("{}/{}.mp3", &download_dir, episode.rowid());
         assert!(Path::new(&final_path).exists());

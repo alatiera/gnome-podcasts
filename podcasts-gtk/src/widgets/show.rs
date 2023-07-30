@@ -22,8 +22,8 @@ use glib::Sender;
 use gtk::Adjustment;
 
 use anyhow::Result;
-use crossbeam_channel::bounded;
 use fragile::Fragile;
+use tokio::sync::oneshot::error::TryRecvError;
 
 use podcasts_data::dbqueries;
 use podcasts_data::EpisodeWidgetModel;
@@ -151,12 +151,10 @@ fn populate_listbox(
     sender: Sender<Action>,
     vadj: Option<Adjustment>,
 ) -> Result<()> {
-    use crossbeam_channel::TryRecvError;
-
     let count = dbqueries::get_pd_episodes_count(&pd)?;
     let show_ = show.imp();
 
-    let (sender_, receiver) = bounded(1);
+    let (sender_, mut receiver) = tokio::sync::oneshot::channel();
     crate::RUNTIME.spawn(clone!(@strong pd => async move {
         if let Ok(episodes) = dbqueries::get_pd_episodeswidgets(&pd) {
             // The receiver can be dropped if there's an early return
@@ -178,7 +176,7 @@ fn populate_listbox(
             let episodes = match receiver.try_recv() {
                 Ok(e) => e,
                 Err(TryRecvError::Empty) => return glib::Continue(true),
-                Err(TryRecvError::Disconnected) => return glib::Continue(false),
+                Err(TryRecvError::Closed) => return glib::Continue(false),
             };
 
             debug_assert!(episodes.len() as i64 == count);

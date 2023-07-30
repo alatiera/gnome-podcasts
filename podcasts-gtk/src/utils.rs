@@ -31,10 +31,10 @@ use gtk::{gio, glib};
 
 use anyhow::{anyhow, Result};
 use chrono::prelude::*;
-use crossbeam_channel::unbounded;
 use once_cell::sync::Lazy;
 use regex::Regex;
 use serde_json::Value;
+use tokio::sync::oneshot::error::TryRecvError;
 use url::Url;
 
 use podcasts_data::dbqueries;
@@ -303,20 +303,22 @@ pub(crate) fn refresh_feed(source: Option<Vec<Source>>, sender: Sender<Action>) 
     crate::RUNTIME.spawn(clone!(@strong sender => async move {
         if let Some(s) = source {
             // Refresh only specified feeds
-            pipeline(s).await;
+            if let Err(err) = pipeline(s).await {
+                error!("failed to fetch feed {}", err);
+            }
             send!(sender, Action::FeedRefreshed);
         } else {
             // Refresh all the feeds
             let sources = dbqueries::get_sources().map(|s| s.into_iter()).unwrap();
-            pipeline(sources).await;
+            if let Err(err) = pipeline(sources).await {
+                error!("failed to fetch feed {}", err);
+            }
             send!(sender, Action::FeedRefreshed);
         }
     }));
 }
 
 static COVER_DL_REGISTRY: Lazy<RwLock<HashSet<i32>>> = Lazy::new(|| RwLock::new(HashSet::new()));
-static THREADPOOL: Lazy<rayon::ThreadPool> =
-    Lazy::new(|| rayon::ThreadPoolBuilder::new().build().unwrap());
 static CACHE_VALID_DURATION: Lazy<chrono::Duration> = Lazy::new(|| chrono::Duration::weeks(4));
 
 // GObjects do not implement Send trait, so Fragile is a way around that.
@@ -353,16 +355,16 @@ pub(crate) fn set_image_from_path(image: &gtk::Image, show_id: i32, size: u32) -
         }
     }
 
-    let (sender, receiver) = unbounded();
+    let (sender, mut receiver) = tokio::sync::oneshot::channel();
     if let Ok(mut guard) = COVER_DL_REGISTRY.write() {
         // Add the id to the hashmap from the main thread to avoid queuing more than one downloads.
         guard.insert(show_id);
         drop(guard);
 
-        THREADPOOL.spawn(move || {
+        crate::RUNTIME.spawn(async move {
             // This operation is polling and will block the thread till the download is finished
             sender
-                .send(downloader::cache_image(&pd, true))
+                .send(downloader::cache_image(&pd).await)
                 .expect("channel was dropped unexpectedly");
 
             if let Ok(mut guard) = COVER_DL_REGISTRY.write() {
@@ -374,11 +376,9 @@ pub(crate) fn set_image_from_path(image: &gtk::Image, show_id: i32, size: u32) -
     let image = image.clone();
     let s = size as i32;
     glib::timeout_add_local(Duration::from_millis(25), move || {
-        use crossbeam_channel::TryRecvError;
-
         match receiver.try_recv() {
             Err(TryRecvError::Empty) => glib::Continue(true),
-            Err(TryRecvError::Disconnected) => glib::Continue(false),
+            Err(TryRecvError::Closed) => glib::Continue(false),
             Ok(path) => {
                 match path {
                     Ok(path) => {
@@ -509,7 +509,7 @@ pub(crate) fn on_import_clicked(window: &gtk::ApplicationWindow, sender: &Sender
         clone!(@strong sender, @strong dialog => move |result| {
             if let Ok(file) = result {
                 if let Some(path) = file.peek_path() {
-                    rayon::spawn(clone!(@strong sender => move || {
+                    crate::RUNTIME.spawn(clone!(@strong sender => async move {
                         // Parse the file and import the feeds
                         if let Ok(sources) = opml::import_from_file(path) {
                             // Refresh the successfully parsed feeds to index them
@@ -518,7 +518,7 @@ pub(crate) fn on_import_clicked(window: &gtk::ApplicationWindow, sender: &Sender
                             let text = i18n("Failed to parse the imported file");
                             send!(sender, Action::ErrorNotification(text));
                         }
-                    }))
+                    }));
                 }
             }
         }),
@@ -552,12 +552,12 @@ pub(crate) fn on_export_clicked(window: &gtk::ApplicationWindow, sender: &Sender
         if let Ok(file) = result {
             if let Some(path) = file.peek_path() {
                 debug!("File selected: {:?}", path);
-                rayon::spawn(clone!(@strong sender => move || {
+                crate::RUNTIME.spawn(clone!(@strong sender => async move {
                     if opml::export_from_db(path, i18n("GNOME Podcasts Subscriptions").as_str()).is_err() {
                         let text = i18n("Failed to export podcasts");
                         send!(sender, Action::ErrorNotification(text));
                     }
-                }))
+                }));
             }
         }}),
     );
@@ -710,7 +710,7 @@ mod tests {
         let sid = source.save()?.id();
         println!("Made it here! (3)");
         let rt = tokio::runtime::Runtime::new()?;
-        rt.block_on(pipeline(vec![source]));
+        rt.block_on(pipeline(vec![source]))?;
         println!("Made it here! (4)");
         println!("The source id is {}!", sid);
         dbqueries::get_sources().unwrap().iter().for_each(|s| {
@@ -742,7 +742,7 @@ mod tests {
         source.save()?;
         println!("Made it here! (7)");
         let rt = tokio::runtime::Runtime::new()?;
-        rt.block_on(pipeline(vec![source]));
+        rt.block_on(pipeline(vec![source]))?;
 
         println!("Made it here! (8)");
         let new = dbqueries::get_podcast_from_source_id(sid)?;

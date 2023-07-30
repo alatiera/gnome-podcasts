@@ -6,21 +6,19 @@ edition = "2021"
 
 [dependencies]
 ammonia = "3.1"
+bytes = "1.4.0"
 chrono = "0.4"
 derive_builder = "0.12.0"
 log = "0.4"
 rayon = "1.3"
 rfc822_sanitizer = "0.3"
 rss = "2.0.0"
-reqwest = { version = "0.11.4", features = ["blocking", "json"] }
+reqwest = { version = "0.11.4", features = ["json", "stream"] }
 url = "2.1"
 xdg = "2.2"
 xml-rs = "0.8"
 futures = "0.3"
-hyper = "0.14.10"
 http = "0.2"
-hyper-tls = "0.5.0"
-native-tls = "0.2"
 num_cpus = "1.13"
 anyhow = "1.0"
 thiserror = "1.0"
@@ -28,7 +26,6 @@ base64 = "0.21.0"
 mime_guess = "2.0"
 tempdir = "0.3"
 glob = "0.3"
-crossbeam-channel = "0.5.1"
 once_cell = "1.9"
 
 [dependencies.diesel]
@@ -40,7 +37,7 @@ features = ["sqlite"]
 version = "2.0"
 
 [dependencies.tokio]
-features = ["rt-multi-thread", "macros"]
+features = ["rt-multi-thread", "macros", "sync"]
 version = "1.10.0"
 
 [dev-dependencies]

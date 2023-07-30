@@ -79,7 +79,7 @@ async fn add_podcast_from_url(url_input: String, sender: &Sender<Action>) -> Res
         url.to_owned()
     };
 
-    rayon::spawn(clone!(@strong sender => move || {
+    crate::RUNTIME.spawn(clone!(@strong sender => async move {
         if let Ok(source) = Source::from_url(&url) {
             schedule_refresh(Some(vec![source]), sender.clone());
         } else {
@@ -95,7 +95,9 @@ impl AddPopover {
         let url = self.entry.text();
 
         crate::RUNTIME.spawn(clone!(@strong sender => async move {
-            add_podcast_from_url(url.to_string(), &sender).await;
+            if let Err(err) = add_podcast_from_url(url.to_string(), &sender).await {
+                error!("failed to add podcast for url: {} {}", url, err);
+            }
         }));
 
         self.container.set_visible(false);

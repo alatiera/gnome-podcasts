@@ -518,7 +518,7 @@ mod tests {
         let source = Source::from_url(url)?;
         let id = source.id();
         let rt = tokio::runtime::Runtime::new()?;
-        rt.block_on(pipeline(vec![source]));
+        rt.block_on(pipeline(vec![source]))?;
         let pd = get_podcast_from_source_id(id)?;
 
         let eps_num = get_pd_unplayed_episodes(&pd)?.len();
