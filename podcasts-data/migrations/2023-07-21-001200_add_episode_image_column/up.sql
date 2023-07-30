@@ -17,7 +17,7 @@ CREATE TABLE episodes (
 );
 
 INSERT INTO episodes (title, uri, local_uri, description, image_uri, epoch, length, duration, guid, played, show_id, play_position)
-SELECT title, uri, local_uri, description, NULL as image_uri, epoch, length, duration, guid, played, show_id, 0 as play_position
+SELECT title, uri, local_uri, description, NULL as image_uri, epoch, length, duration, guid, played, show_id, play_position
 FROM old_table;
 Drop table old_table;
 

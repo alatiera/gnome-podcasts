@@ -24,12 +24,14 @@ use chrono::prelude::*;
 use url::{Position, Url};
 
 use crate::dbqueries;
-use crate::errors::{DataError, DownloadError};
+use crate::errors::DownloadError;
 use crate::models::{EpisodeCleanerModel, Save, Show};
 use crate::xdg_dirs::{DL_DIR, PODCASTS_CACHE};
 
+use glob::glob;
 use std::fs;
 use std::path::Path;
+use std::path::PathBuf;
 
 /// Convert a `u64` to a `Vec<u8>`.
 ///
@@ -64,7 +66,7 @@ pub fn calculate_hash<T: Hash + ?Sized>(t: &T) -> u64 {
 
 /// Scan downloaded `episode` entries that might have broken `local_uri`s and
 /// set them to `None`.
-fn download_checker() -> Result<(), DataError> {
+fn download_checker() -> Result<(), DownloadError> {
     let episodes = dbqueries::get_downloaded_episodes()?;
 
     episodes
@@ -89,7 +91,7 @@ fn update_download_status(mut ep: EpisodeCleanerModel) {
 }
 
 /// Delete watched `episodes` that have exceeded their lifetime after played.
-fn played_cleaner(cleanup_date: DateTime<Utc>) -> Result<(), DataError> {
+fn played_cleaner(cleanup_date: DateTime<Utc>) -> Result<(), DownloadError> {
     let episodes = dbqueries::get_played_cleaner_episodes()?;
     let now_utc = cleanup_date.timestamp() as i32;
 
@@ -112,7 +114,7 @@ fn clean_played(now_utc: i32, mut ep: EpisodeCleanerModel) {
 }
 
 /// Check `ep.local_uri` field and delete the file it points to.
-fn delete_local_content(ep: &mut EpisodeCleanerModel) -> Result<(), DataError> {
+fn delete_local_content(ep: &mut EpisodeCleanerModel) -> Result<(), DownloadError> {
     if ep.local_uri().is_some() {
         let uri = ep.local_uri().unwrap().to_owned();
         if Path::new(&uri).exists() {
@@ -134,17 +136,50 @@ fn delete_local_content(ep: &mut EpisodeCleanerModel) -> Result<(), DataError> {
     Ok(())
 }
 
+/// Deletes covers that were last modified before the last `cleanup_date`.
+fn cover_cleaner(cleanup_date: DateTime<Utc>) -> Result<(), DownloadError> {
+    let root_cover_dir = PODCASTS_CACHE
+        .to_str()
+        .ok_or(DownloadError::InvalidCachedImageLocation)?;
+    if let Ok(mut paths) = glob(&format!("{}/*/[0-9]*", root_cover_dir)) {
+        while let Some(path) = paths.next().and_then(|x| x.ok()) {
+            if let Err(err) = clean_cover_file(&path, &cleanup_date) {
+                error!("Could not cleanup cover image: {}", err);
+            }
+        }
+    }
+    Ok(())
+}
+
+fn clean_cover_file(path: &PathBuf, cleanup_date: &DateTime<Utc>) -> Result<(), DownloadError> {
+    let metadata = std::fs::metadata(path)?;
+    let mdate: DateTime<Utc> = metadata.modified().map(DateTime::from)?;
+    if &mdate < cleanup_date {
+        if let Err(err) = std::fs::remove_file(path) {
+            error!("Failed to std::remove cover image: {}", err);
+        }
+    }
+    Ok(())
+}
+
 /// Database cleaning tasks.
+///
+/// * `cleanup_date` is the date when the last cleanup was run
+/// it is before
 ///
 /// Runs a download checker which looks for `Episode.local_uri` entries that
 /// doesn't exist and sets them to None
 ///
-/// Runs a cleaner for played Episode's that are pass the lifetime limit and
+/// Runs a cleaner for played Episode's that are past the lifetime limit and
 /// scheduled for removal.
-pub fn checkup(cleanup_date: DateTime<Utc>) -> Result<(), DataError> {
+///
+/// Runs a cleaner for downloaded Episode covers that have been downloaded
+/// before the last cleanup and will likely not be viewed again.
+pub fn checkup(cleanup_date: DateTime<Utc>) -> Result<(), DownloadError> {
     info!("Running database checks.");
     download_checker()?;
     played_cleaner(cleanup_date)?;
+    cover_cleaner(cleanup_date)?;
     info!("Checks completed.");
     Ok(())
 }

@@ -246,7 +246,7 @@ pub fn check_for_cached_cover(pd: &ShowCoverModel) -> Option<PathBuf> {
     // Should probably make sure that 'cover.*' is removed when we
     // download new files.
     if let Ok(mut paths) = glob(&format!("{}/cover.*", cache_path)) {
-        // For some reason there is no .first() method so nth(0) is used
+        // Take the first file matching, disregard extension
         let path = paths.next().and_then(|x| x.ok());
         return path;
     }
@@ -259,7 +259,7 @@ pub fn check_for_cached_image(pd: &ShowCoverModel, uri: &str) -> Option<PathBuf>
     let hash = utils::calculate_hash(uri);
 
     if let Ok(mut paths) = glob(&format!("{}/{}.*", hash, cache_path)) {
-        // For some reason there is no .first() method so nth(0) is used
+        // Take the first file matching, disregard extension
         let path = paths.next().and_then(|x| x.ok());
         return path;
     }

@@ -34,10 +34,9 @@ use anyhow::Result;
 use chrono::prelude::*;
 use std::sync::Arc;
 
-use tokio::sync::oneshot::error::TryRecvError;
-use gtk::gdk_pixbuf::Pixbuf;
 use gtk::prelude::WidgetExt;
 use podcasts_data::{dbqueries, downloader};
+use tokio::sync::oneshot::error::TryRecvError;
 
 #[derive(Debug, CompositeTemplate, Default)]
 #[template(resource = "/org/gnome/Podcasts/gtk/episode_description.ui")]
@@ -143,13 +142,9 @@ impl EpisodeDescriptionPriv {
             match receiver.try_recv() {
                 Err(TryRecvError::Empty) => glib::ControlFlow::Continue,
                 Err(TryRecvError::Closed) => glib::ControlFlow::Break,
-                Ok(Ok(path)) => {
-                    if let Ok(px) = Pixbuf::from_file(path)
-                    {
-                        let texture = gtk::gdk::Texture::for_pixbuf(&px);
-                        widget.episode_specific_cover.set_paintable(Some(&texture));
-                        widget.episode_specific_cover.set_visible(true);
-                    }
+                Ok(Ok(texture)) => {
+                    widget.episode_specific_cover.set_paintable(Some(&texture));
+                    widget.episode_specific_cover.set_visible(true);
                     glib::ControlFlow::Break
                 },
                 _ => glib::ControlFlow::Break
@@ -158,8 +153,10 @@ impl EpisodeDescriptionPriv {
 
         let uri = uri.to_owned();
         crate::RUNTIME.spawn(clone!(@strong pd => async move {
-            let path = downloader::cache_episode_image(&pd, &uri, true).await;
-            sender.send(path).expect("episode_specific_image: channel was dropped unexpectedly")
+            let path = downloader::cache_episode_image(&pd, &uri, true).await?;
+            let texture = gtk::gdk::Texture::from_filename(path);
+            sender.send(texture).expect("episode_specific_image: channel was dropped unexpectedly");
+            Ok::<(), anyhow::Error>(())
         }));
 
         glib::timeout_add_local(std::time::Duration::from_millis(25), callback);
