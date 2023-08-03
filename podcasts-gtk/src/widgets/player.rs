@@ -1019,11 +1019,8 @@ impl PlayerWrapper {
             .mpris
             .connect_seek(clone!(@strong weak => move |offset: i64| {
                 if let Some(p) = weak.upgrade() {
-                    if offset > 0 {
-                        p.borrow().seek(ClockTime::from_useconds(offset as u64), SeekDirection::Forward);
-                    } else {
-                        p.borrow().seek(ClockTime::from_useconds((offset * -1) as u64), SeekDirection::Backwards);
-                    }
+                    let direction = if offset > 0 { SeekDirection::Forward } else { SeekDirection::Backwards };
+                    p.borrow().seek(ClockTime::from_useconds(offset.unsigned_abs()), direction);
                 }
             }));
 
