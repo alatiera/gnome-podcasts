@@ -120,6 +120,7 @@ impl PlayerInfo {
 
         self.mpris.set_metadata(metadata);
         self.mpris.set_can_play(true);
+        self.mpris.set_can_seek(true);
     }
 
     fn set_episode_title(&self, episode: &EpisodeWidgetModel) {
@@ -382,6 +383,8 @@ impl Default for PlayerWidget {
         mpris.set_can_play(false);
         mpris.set_can_seek(false);
         mpris.set_can_set_fullscreen(false);
+        mpris.set_can_go_next(false);
+        mpris.set_can_go_previous(false);
 
         let mut config = player.config();
         config.set_user_agent(USER_AGENT);
@@ -1014,18 +1017,13 @@ impl PlayerWrapper {
         widget
             .info
             .mpris
-            .connect_next(clone!(@strong weak => move || {
+            .connect_seek(clone!(@strong weak => move |offset: i64| {
                 if let Some(p) = weak.upgrade() {
-                    p.borrow().fast_forward()
-                }
-            }));
-
-        widget
-            .info
-            .mpris
-            .connect_previous(clone!(@strong weak => move || {
-                if let Some(p) = weak.upgrade() {
-                    p.borrow().rewind()
+                    if offset > 0 {
+                        p.borrow().seek(ClockTime::from_useconds(offset as u64), SeekDirection::Forward);
+                    } else {
+                        p.borrow().seek(ClockTime::from_useconds((offset * -1) as u64), SeekDirection::Backwards);
+                    }
                 }
             }));
 
