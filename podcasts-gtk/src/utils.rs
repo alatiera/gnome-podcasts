@@ -268,7 +268,8 @@ pub(crate) fn get_ignored_shows() -> Result<Vec<i32>> {
 }
 
 pub(crate) fn cleanup(cleanup_date: DateTime<Utc>) {
-    checkup(cleanup_date)
+    crate::RUNTIME
+        .block_on(checkup(&crate::RUNTIME, cleanup_date))
         .map_err(|err| error!("Check up failed: {}", err))
         .ok();
 }

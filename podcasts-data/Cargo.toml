@@ -10,7 +10,6 @@ bytes = "1.4.0"
 chrono = "0.4"
 derive_builder = "0.12.0"
 log = "0.4"
-rayon = "1.3"
 rfc822_sanitizer = "0.3"
 rss = "2.0.0"
 reqwest = { version = "0.11.4", features = ["json", "stream"] }
