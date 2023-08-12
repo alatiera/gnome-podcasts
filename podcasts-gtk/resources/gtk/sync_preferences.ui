@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+Copyright (C) 2023 - 2024
+
+This file is part of GNOME Podcasts.
+
+GNOME Podcasts is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+GNOME Podcasts is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with GNOME Podcasts.  If not, see <http://www.gnu.org/licenses/>.
+
+Authors:
+nee
+
+-->
+<interface>
+  <!-- interface-license-type gplv3 -->
+  <!-- interface-name GNOME Podcasts -->
+  <!-- interface-description A podcast client for the GNOME Desktop -->
+  <!-- interface-copyright 2023 - 2024 -->
+  <!-- interface-authors nee -->
+  <template class="PdSyncPreferences" parent="AdwNavigationPage">
+    <property name="title" translatable="yes">Sync Preferences</property>
+    <child>
+      <object class="AdwToolbarView">
+        <child type="top">
+          <object class="AdwHeaderBar" id="header">
+            <child type="end">
+              <object class="GtkButton" id="logout">
+                <style><class name="destructive-action"/></style>
+                <property name="label" translatable="yes">Logout</property>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="GtkScrolledWindow">
+            <property name="vexpand">True</property>
+            <property name="hexpand">True</property>
+            <property name="hscrollbar-policy">never</property>
+            <child>
+              <object class="AdwClamp" id="clamp">
+                <property name="vexpand">True</property>
+                <property name="maximum-size">700</property>
+                <child>
+                  <object class="GtkBox" id="content">
+                    <property name="margin-top">20</property>
+                    <property name="margin-bottom">20</property>
+                    <property name="margin-start">18</property>
+                    <property name="margin-end">18</property>
+                    <property name="vexpand">True</property>
+                    <property name="orientation">vertical</property>
+                    <property name="baseline-position">top</property>
+
+                    <child>
+                      <object class="AdwPreferencesGroup" id="connection_info">
+                        <property name="title" translatable="yes">Nextcloud Sync Connection</property>
+                        <property name="description" translatable="yes">Current connection for play position and subscription synchronization.</property>
+                        <property name="visible">False</property>
+                        <property name="margin-bottom">20</property>
+
+                        <child>
+                          <object class="AdwActionRow">
+                            <property name="title" translatable="yes">Last Sync</property>
+                            <child>
+                              <object class="GtkLabel" id="last_sync">
+                                <property name="xalign">1.0</property>
+                                <property name="hexpand">True</property>
+                              </object>
+                            </child>
+                          </object>
+                        </child>
+
+                        <child>
+                          <object class="AdwSwitchRow" id="active">
+                            <property name="title" translatable="yes">Active</property>
+                            <property name="subtitle" translatable="yes">Should data be synchronized</property>
+                          </object>
+                        </child>
+
+                        <child>
+                          <object class="AdwEntryRow" id="server_label">
+                            <property name="title" translatable="yes">Server</property>
+                            <property name="editable">False</property>
+                            <style><class name="no-edit-icon"/></style>
+                          </object>
+                        </child>
+
+                        <child>
+                          <object class="AdwEntryRow" id="user_label">
+                            <property name="title" translatable="yes">Username</property>
+                            <property name="editable">False</property>
+                            <style><class name="no-edit-icon"/></style>
+                          </object>
+                        </child>
+
+                        <child>
+                          <object class="GtkButton" id="sync_now">
+                            <property name="margin-top">20</property>
+                            <property name="label" translatable="yes">Sync Now</property>
+                            <property name="hexpand">False</property>
+                            <property name="halign">center</property>
+                            <style><class name="pill"/></style>
+                          </object>
+                        </child>
+
+                      </object>
+                    </child>
+
+
+                    <child>
+                      <object class="AdwPreferencesGroup" id="login_group">
+                        <property name="title" translatable="yes">Nextcloud Login</property>
+                        <property name="description" translatable="yes">Synchronize subscriptions and listening status with a Nextcloud server that has GPodder Sync installed.</property>
+                        <property name="visible">False</property>
+
+                        <child>
+                          <object class="AdwActionRow">
+                            <property name="title" translatable="yes">Login via</property>
+                            <child>
+                              <object class="GtkBox">
+                                <style><class name="linked"/></style>
+                                <property name="valign">center</property>
+                                <child>
+                                  <object class="GtkToggleButton" id="method_browser">
+                                    <property name="label" translatable="yes">Browser</property>
+                                    <property name="active">True</property>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="GtkToggleButton" id="method_password">
+                                    <property name="label" translatable="yes">Password</property>
+                                    <property name="group">method_browser</property>
+                                  </object>
+                                </child>
+                              </object>
+                            </child>
+                          </object>
+                        </child>
+
+                        <child>
+                          <object class="AdwEntryRow" id="server">
+                            <property name="title" translatable="yes">Server (cloud.example.com)</property>
+                            <property name="input-purpose">url</property>
+                          </object>
+                        </child>
+
+                        <child>
+                          <object class="AdwEntryRow" id="username">
+                            <property name="visible">False</property>
+                            <property name="title" translatable="yes">Username</property>
+                            <property name="input-purpose">name</property>
+                          </object>
+                        </child>
+
+                        <child>
+                          <object class="AdwPasswordEntryRow" id="password">
+                            <property name="visible">False</property>
+                            <property name="title" translatable="yes">Password</property>
+                            <property name="input-purpose">password</property>
+                          </object>
+                        </child>
+
+                        <child>
+                          <object class="GtkButton" id="login_password">
+                            <property name="margin-top">20</property>
+                            <property name="visible">False</property>
+                            <property name="label" translatable="yes">Login</property>
+                            <property name="hexpand">False</property>
+                            <property name="halign">center</property>
+                            <style><class name="pill"/></style>
+                          </object>
+                        </child>
+
+                        <child>
+                          <object class="GtkButton" id="login_browser">
+                            <property name="margin-top">20</property>
+                            <property name="label" translatable="yes">Login via Browser</property>
+                            <property name="hexpand">False</property>
+                            <property name="halign">center</property>
+                            <style><class name="pill"/></style>
+                          </object>
+                        </child>
+
+                      </object>
+                    </child>
+
+                    <child>
+                      <object class="GtkBox" id="loading_info">
+                        <property name="margin-top">20</property>
+                        <property name="hexpand">False</property>
+                        <property name="halign">center</property>
+                        <property name="visible">False</property>
+                        <property name="focusable">True</property>
+                        <child>
+                          <object class="GtkLabel" id="loading_label">
+                            <property name="selectable">True</property>
+                            <property name="label" translatable="yes">Loading...</property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkSpinner" id="loading_spinner">
+                            <property name="height_request">32</property>
+                            <property name="margin-start">5</property>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
+    <style>
+      <class name="sync_preferences"/>
+    </style>
+  </template>
+</interface>

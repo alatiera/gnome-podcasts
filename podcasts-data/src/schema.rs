@@ -47,4 +47,43 @@ table! {
     }
 }
 
-allow_tables_to_appear_in_same_query!(episodes, shows, source, discovery_settings);
+table! {
+    settings_sync(server) {
+        server -> Text,
+        user -> Text,
+        active -> Bool,
+        last_sync -> Nullable<BigInt>
+    }
+}
+
+table! {
+    episodes_sync (ep_id, action) {
+        ep_id -> Integer,
+        action -> Text,
+        timestamp -> BigInt,
+        start -> Nullable<Integer>,
+        position -> Nullable<Integer>,
+    }
+}
+
+table! {
+    shows_sync (uri) {
+        uri -> Text,
+        new_uri -> Nullable<Text>,
+        action -> Text,
+        timestamp -> BigInt,
+    }
+}
+
+diesel::joinable!(shows -> source (source_id));
+diesel::joinable!(episodes -> shows (show_id));
+
+allow_tables_to_appear_in_same_query!(
+    episodes,
+    shows,
+    source,
+    discovery_settings,
+    episodes_sync,
+    shows_sync,
+    settings_sync
+);

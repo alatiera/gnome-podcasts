@@ -40,6 +40,8 @@ pub mod downloader;
 pub mod errors;
 mod feed;
 pub(crate) mod models;
+/// Login and `sync` functions for nextcloud sychronization via the [GPodder sync addon API](https://github.com/thrillfall/nextcloud-gpodder)
+pub mod nextcloud_sync;
 pub mod opml;
 mod parser;
 pub mod pipeline;
@@ -47,6 +49,9 @@ mod schema;
 pub mod utils;
 
 pub use crate::feed::{Feed, FeedBuilder};
+/// Sync datatypes to store updates that still have to be sent out.
+/// This is mostly glue code for the DB, use store(), fetch(), delete() methods to interact.
+pub use crate::models::sync;
 pub use crate::models::Save;
 pub use crate::models::{
     Episode, EpisodeCleanerModel, EpisodeId, EpisodeModel, EpisodeWidgetModel, Show,
@@ -59,6 +64,9 @@ pub use crate::models::{
 /// It originates from the Tor-browser UA.
 pub const USER_AGENT: &str =
     "Mozilla/5.0 (X11; Linux x86_64; rv:128.0) Gecko/20100101 Firefox/128.0";
+/// Used by nextcloud to display the Client name in the password list.
+/// A proper name helps users to not revoke the wrong entry, when cleaning up passwords.
+pub const USER_AGENT_NEXTCLOUD: &str = "Gnome Podcasts - Nextcloud Sync";
 
 /// [XDG Base Directory](https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html) Paths.
 pub mod xdg_dirs {

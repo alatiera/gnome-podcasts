@@ -201,7 +201,7 @@ pub(crate) fn mark_all_notif(pd: Arc<Show>, sender: &Sender<Action>) -> adw::Toa
     toast
 }
 
-pub(crate) fn remove_show_notif(pd: Arc<Show>) -> adw::Toast {
+pub(crate) fn remove_show_notif(pd: Arc<Show>, sender: Sender<Action>) -> adw::Toast {
     let text = i18n_f("Unsubscribed from {}", &[pd.title()]);
     let id = pd.id();
 
@@ -221,6 +221,8 @@ pub(crate) fn remove_show_notif(pd: Arc<Show>) -> adw::Toast {
         gio::spawn_blocking(clone!(
             #[strong]
             pd,
+            #[strong]
+            sender,
             move || {
                 let app = gio::Application::default()
                     .expect("Could not get default application")
@@ -231,6 +233,12 @@ pub(crate) fn remove_show_notif(pd: Arc<Show>) -> adw::Toast {
                         error!("Error: {}", err);
                         error!("Failed to delete {}", pd.title());
                     }
+                }
+
+
+                if let Err(err) = podcasts_data::sync::Show::store(&pd, podcasts_data::sync::ShowAction::Removed) {
+                    // TODO okay to send_blocking here?
+                    send_blocking!(sender, Action::ErrorNotification(i18n_f("Failed to store Unsubscribe Action for Synchronization in database. {}", &[&err.to_string()])))
                 }
                 // No need to update the UI after remove.
                 // The "unsubscribe" action already updated the UI after ignoring the show.

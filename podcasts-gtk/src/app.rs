@@ -33,6 +33,7 @@ use crate::chapter_parser::Chapter;
 use crate::config::{APP_ID, LOCALEDIR};
 use crate::download_covers;
 use crate::feed_manager::FeedManager;
+use crate::feed_manager::FEED_MANAGER;
 use crate::i18n::i18n;
 use crate::settings;
 use crate::utils;
@@ -43,6 +44,7 @@ use crate::window::MainWindow;
 use podcasts_data::dbqueries;
 use podcasts_data::discovery::FoundPodcast;
 use podcasts_data::{Episode, EpisodeId, EpisodeModel, Show, ShowId};
+use podcasts_data::nextcloud_sync::{SyncError, SyncResult};
 
 // FIXME: port Optionals to OnceCell
 #[derive(Debug)]
@@ -176,6 +178,7 @@ pub(crate) enum Action {
     MarkAsPlayed(bool, EpisodeId),
     FeedRefreshed(u64),
     StartUpdating,
+    QuickSyncNextcloud,
     StopUpdating,
     RemoveShow(Arc<Show>),
     ErrorNotification(String),
@@ -404,6 +407,7 @@ impl PdApplication {
                             description.update_episode_menu(&data.sender, &ep, Arc::new(show));
                         }
                     }
+                    self.do_action(Action::QuickSyncNextcloud);
                     self.do_action(Action::RefreshEpisode(ep.id()));
                 }
             }
@@ -411,7 +415,7 @@ impl PdApplication {
                 window.pop_show_widget();
                 window.pop_page::<EpisodeDescription>();
                 data.todo_unsub_ids.borrow_mut().insert(pd.id());
-                let toast = remove_show_notif(pd);
+                let toast = remove_show_notif(pd, data.sender.clone());
                 self.send_toast(toast);
                 if let Err(e) = window.content().check_empty_state() {
                     error!("Failed to check for empty db state {e}");
@@ -421,6 +425,73 @@ impl PdApplication {
                 error!("An error notification was triggered: {}", err);
                 let toast = adw::Toast::new(&err);
                 window.add_toast(toast);
+            }
+            // Action::UpdateFeed(source) => {
+            //     if window.updating() {
+            //         info!("Ignoring feed update request (another one is already running)")
+            //     } else {
+            //         window.set_updating(true);
+            //         let sender = data.sender.clone();
+            //         send!(sender, Action::ShowUpdateNotif);
+            //         crate::RUNTIME.spawn(async move {
+            //             utils::refresh_feed(source).await;
+            //             match podcasts_data::nextcloud_sync::sync(true).await {
+            //                 Ok(sync_result) => info!("SYNC {sync_result:#?}"),
+            //                 Err(e) => send!(
+            //                     sender,
+            //                     Action::ErrorNotification(format!("Sync failed {e}"))
+            //                 ),
+            //             }
+            //             send!(sender, Action::FeedRefreshed);
+            //         });
+            //     }
+            // }
+            // sync without fetching feeds first, just to push out new stuff
+            // It will trigger a full feed fetch if an episode from nextcloud is missing
+            Action::QuickSyncNextcloud => {
+                if window.updating() {
+                    info!("Ignoring Nextcloud update request (another one is already running)")
+                } else {
+                    window.set_updating(true);
+                    let sender = data.sender.clone();
+                    crate::RUNTIME.spawn(async move {
+                        match podcasts_data::nextcloud_sync::sync(false).await {
+                            Ok(SyncResult::Done {
+                                episode_updates_downloaded,
+                                subscription_updates_downloaded,
+                            }) => {
+                                if episode_updates_downloaded > 0
+                                    || subscription_updates_downloaded > 0
+                                {
+                                    info!("SYNC SUCCESS, also downloaded upates");
+                                } else {
+                                    // No need to refresh the UI, we downloaded no changes
+                                    info!("SYNC SUCCESS, only pushed, no new changes downloaded");
+                                }
+                            }
+                            Ok(SyncResult::Skipped) => info!("SYNC SKIPPED"),
+                            Err(SyncError::DownloadedUpdateForEpisodeNotInDb) => {
+                                // Make a full sync, because an episode is on nextcloud,
+                                // but not yet fetched form a feed
+                                // TODO pass the missing feeds in the error and only update those
+                                FEED_MANAGER.full_refresh(&sender).await;
+                                match podcasts_data::nextcloud_sync::sync(true).await {
+                                    Ok(sync_result) => info!("SYNC {sync_result:#?}"),
+                                    Err(e) => send!(
+                                        sender,
+                                        Action::ErrorNotification(format!("Sync failed {e}"))
+                                    ),
+                                }
+                            }
+                            Err(e) => {
+                                send!(
+                                    sender,
+                                    Action::ErrorNotification(format!("Sync failed {e}"))
+                                );
+                            }
+                        }
+                    });
+                }
             }
             Action::StartUpdating => {
                 window.set_updating(true);
@@ -530,7 +601,15 @@ impl PdApplication {
         glib::set_application_name(&i18n("Podcasts"));
         gtk::Window::set_default_icon_name(APP_ID);
         let args: Vec<String> = env::args().collect();
-        ApplicationExtManual::run_with_args(&application, &args)
+        let result = ApplicationExtManual::run_with_args(&application, &args);
+        // sync on exit
+        crate::RUNTIME.block_on(async move {
+            match podcasts_data::nextcloud_sync::sync(false).await {
+                Ok(sync_result) => info!("SYNC {sync_result:#?}"),
+                Err(e) => error!("Sync failed {e}"),
+            }
+        });
+        result
     }
 
     pub(crate) fn send_toast(&self, toast: adw::Toast) {

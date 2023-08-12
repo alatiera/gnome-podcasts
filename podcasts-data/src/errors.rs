@@ -66,6 +66,10 @@ pub enum DataError {
     InvalidUri(#[from] http::uri::InvalidUri),
     #[error("Builder error: {0}")]
     BuilderError(String),
+    #[error("keyring error: {0}")]
+    KeyringError(#[from] oo7::Error),
+    #[error("from_utf8 error: {0}")]
+    Utf8Error(#[from] std::string::FromUtf8Error),
 }
 
 #[derive(Error, Debug)]

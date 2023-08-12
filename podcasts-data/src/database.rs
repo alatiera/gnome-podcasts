@@ -88,6 +88,6 @@ pub fn truncate_db() -> Result<(), DataError> {
     use diesel::connection::SimpleConnection;
     let db = connection();
     let mut con = db.get()?;
-    con.batch_execute("DELETE FROM episodes; DELETE FROM shows; DELETE FROM source")?;
+    con.batch_execute("DELETE FROM episodes; DELETE FROM shows; DELETE FROM source; DELETE FROM shows_sync; DELETE FROM episodes_sync; DELETE FROM settings_sync")?;
     Ok(())
 }

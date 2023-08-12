@@ -20,9 +20,8 @@
 //! Random CRUD helper functions.
 
 use chrono::prelude::*;
-use diesel::prelude::*;
-
 use diesel::dsl::exists;
+use diesel::prelude::*;
 use diesel::select;
 use std::collections::HashMap;
 
@@ -73,6 +72,32 @@ pub fn get_episodes() -> Result<Vec<Episode>, DataError> {
         .order(epoch.desc())
         .load::<Episode>(&mut con)
         .map_err(From::from)
+}
+
+fn get_episodes_unsorted() -> Result<Vec<Episode>, DataError> {
+    use crate::schema::episodes::dsl::*;
+    let db = connection();
+    let mut con = db.get()?;
+
+    episodes.load::<Episode>(&mut con).map_err(From::from)
+}
+
+pub fn get_episodes_by_urls_or_guids(
+    urls: Vec<&str>,
+    guids: Vec<&str>,
+) -> Result<Vec<Episode>, DataError> {
+    let eps = get_episodes_unsorted()?;
+    let filtered: Vec<Episode> = eps
+        .into_iter()
+        .filter(|ep| {
+            ep.uri().map(|uri| urls.contains(&uri)).unwrap_or_default()
+                || ep
+                    .guid()
+                    .map(|guid| guids.contains(&guid))
+                    .unwrap_or_default()
+        })
+        .collect();
+    Ok(filtered)
 }
 
 pub(crate) fn get_downloaded_episodes() -> Result<Vec<EpisodeCleanerModel>, DataError> {
@@ -253,6 +278,19 @@ pub fn get_podcast_from_source_id(sid: SourceId) -> Result<Show, DataError> {
         .map_err(From::from)
 }
 
+pub fn get_podcast_from_uri(uri_: &str) -> Result<(Source, Show), DataError> {
+    use crate::schema::shows::dsl::*;
+    use crate::schema::source::dsl::*;
+    let db = connection();
+    let mut con = db.get()?;
+
+    source
+        .inner_join(shows)
+        .filter(uri.eq(uri_))
+        .get_result::<(Source, Show)>(&mut con)
+        .map_err(From::from)
+}
+
 fn get_episode_from_title(title_: &str, pid: ShowId) -> Result<Episode, DataError> {
     use crate::schema::episodes::dsl::*;
     let db = connection();
@@ -364,6 +402,23 @@ pub fn remove_source(source: &Source) -> Result<(), DataError> {
     delete_source(&mut con, source.id())
         .map(|_| ())
         .map_err(From::from)
+}
+
+pub(crate) fn remove_feed_by_uri(uri: &str) -> Result<(), DataError> {
+    use crate::schema::shows::dsl::*;
+    let source = get_source_from_uri(uri)?;
+    let show = {
+        let db = connection();
+        let mut con = db.get()?;
+
+        shows
+            .filter(source_id.eq(source.id()))
+            .limit(1)
+            .get_result::<Show>(&mut con)?
+    };
+
+    remove_feed(&show)?;
+    Ok(())
 }
 
 fn delete_source(con: &mut SqliteConnection, source_id: SourceId) -> QueryResult<usize> {
@@ -540,6 +595,73 @@ pub fn set_discovery_setting(pid: &str, value: bool) -> Result<(), DataError> {
         .map_err(From::from)
 }
 
+pub fn update_episodes(eps: Vec<Episode>) -> Result<(), DataError> {
+    let db = connection();
+    let mut tempdb = db.get()?;
+
+    for e in eps {
+        let r: Result<Episode, DataError> =
+            e.save_changes::<Episode>(&mut tempdb).map_err(From::from);
+        r?;
+    }
+    Ok(())
+}
+
+// All the data required to make a delta sync
+#[allow(clippy::type_complexity)]
+pub(crate) fn get_sync_delta_data() -> Result<
+    (
+        Vec<(crate::sync::Show, Option<Source>, Option<Show>)>,
+        Vec<(crate::sync::Episode, Episode, Show, Source)>,
+    ),
+    DataError,
+> {
+    use crate::schema::episodes::dsl::*;
+    use crate::schema::episodes_sync::dsl::*;
+    use crate::schema::shows::dsl::*;
+    use crate::schema::shows_sync::dsl::uri as shows_uri;
+    use crate::schema::shows_sync::dsl::*;
+    use crate::schema::source::dsl::id as sources_id;
+    use crate::schema::source::dsl::uri as source_uri;
+    use crate::schema::source::dsl::*;
+    let db = connection();
+    let mut con = db.get()?;
+
+    let shows_data = shows_sync
+        .left_join(source.on(source_uri.eq(shows_uri)))
+        .left_join(shows.on(sources_id.eq(source_id)))
+        .load(&mut con)?;
+
+    let ep_data = episodes_sync
+        .inner_join(episodes.on(crate::schema::episodes::dsl::id.eq(ep_id)))
+        .inner_join(shows.on(crate::schema::shows::dsl::id.eq(show_id)))
+        .inner_join(source.on(crate::schema::source::dsl::id.eq(source_id)))
+        .load(&mut con)?;
+
+    Ok((shows_data, ep_data))
+}
+
+// Data required to apply episode changes downloaded from nextcloud.
+// pub(crate) fn get_episode_sync_update_data(ep_urls: Vec<&str>) -> Result<(HashMap<String, (Episode)>), DataError> {
+
+pub(crate) fn get_podcast_ids_to_uris() -> Result<HashMap<ShowId, String>, DataError> {
+    use crate::schema::shows::dsl::*;
+    use crate::schema::source::dsl::*;
+    let db = connection();
+    let mut con = db.get()?;
+
+    let pairs: Vec<(ShowId, String)> = shows
+        .inner_join(source)
+        .select((
+            crate::schema::shows::dsl::id,
+            crate::schema::source::dsl::uri,
+        ))
+        .load(&mut con)?;
+
+    let shows_data = HashMap::from_iter(pairs);
+    Ok(shows_data)
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -605,7 +727,45 @@ mod tests {
         assert!(!episode_exists(None, "wrong", TEST_SHOW_ID)?);
         assert!(!get_episode(None, "wrong", TEST_SHOW_ID).is_ok());
         assert!(!get_episode_minimal(None, "wrong", TEST_SHOW_ID).is_ok());
+        Ok(())
+    }
 
+    fn test_get_sync_delta_data() -> Result<()> {
+        truncate_db()?;
+
+        let (s, e) = get_sync_delta_data()?;
+        assert_eq!(0, s.len());
+        assert_eq!(0, e.len());
+
+        let url = "https://web.archive.org/web/20180120083840if_/https://feeds.feedburner.\
+                   com/InterceptedWithJeremyScahill";
+        let source = Source::from_url(url)?;
+        let id = source.id();
+        let rt = tokio::runtime::Runtime::new()?;
+        rt.block_on(pipeline(vec![source]))?;
+        let pd = get_podcast_from_source_id(id)?;
+
+        let eps_num = get_pd_unplayed_episodes(&pd)?.len();
+        assert_ne!(eps_num, 0);
+
+        crate::sync::test::init_settings()?;
+        let all_podcasts = get_podcasts()?;
+        let pd1 = all_podcasts.get(0).unwrap();
+        crate::sync::Show::store(pd1, crate::sync::ShowAction::Added)?;
+
+        assert_eq!(1, crate::sync::Show::fetch_all()?.len());
+
+        let (s, e) = get_sync_delta_data()?;
+        assert_eq!(1, s.len());
+        assert_eq!(0, e.len());
+
+        let mut all_eps = get_episodes()?;
+        let ep1 = all_eps.get_mut(0).unwrap();
+        crate::sync::Episode::store(ep1.id(), crate::sync::EpisodeAction::Play, Some((0, 30)))?;
+
+        let (s, e) = get_sync_delta_data()?;
+        assert_eq!(1, s.len());
+        assert_eq!(1, e.len());
         Ok(())
     }
 }

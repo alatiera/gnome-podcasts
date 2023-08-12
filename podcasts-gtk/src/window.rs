@@ -39,7 +39,7 @@ use crate::utils;
 use crate::widgets::about_dialog;
 use crate::widgets::player;
 use crate::widgets::player::{PlayerExt, PlayerWidget, SeekDirection, StreamMode};
-use crate::widgets::{Content, DiscoveryPage, EpisodeDescription, ShowWidget};
+use crate::widgets::{Content, DiscoveryPage, EpisodeDescription, ShowWidget, SyncPreferences};
 use podcasts_data::dbqueries;
 use podcasts_data::{EpisodeId, EpisodeWidgetModel, ShowId};
 
@@ -135,6 +135,10 @@ impl ObjectSubclass for MainWindowPriv {
         klass.install_action_async("win.export", None, |win, _, _| async move {
             let sender = win.sender();
             utils::on_export_clicked(win.upcast_ref(), sender).await;
+        });
+        klass.install_action("win.goto-sync-preferences", None, move |win, _, _| {
+            let widget = SyncPreferences::new(win.sender().clone());
+            win.push_page(&widget);
         });
         klass.install_action("win.about", None, move |win, _, _| {
             about_dialog(win.upcast_ref());

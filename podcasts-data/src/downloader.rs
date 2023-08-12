@@ -69,6 +69,8 @@ pub fn client_builder() -> reqwest::ClientBuilder {
         .redirect(policy)
         .referer(false)
         .user_agent(crate::USER_AGENT)
+        // required to keep dead feeds from blocking a refresh for multiple minutes
+        .connect_timeout(std::time::Duration::from_secs(20))
 }
 
 // Adapted from https://github.com/mattgathu/rget .

@@ -18,9 +18,11 @@ glob = "0.3"
 http = "1"
 log = { workspace = true }
 mime_guess = "2"
+oo7 = { version = "0.3", features = ["tokio", "native_crypto"], default-features = false }
 reqwest = { workspace = true, features = ["json", "stream"] }
 rfc822_sanitizer = "0.3"
 rss = "2"
+serde_json = "1"
 serde = { version = "1", features = ["derive"] }
 tempfile = "3"
 thiserror = "2"
@@ -31,4 +33,6 @@ xml-rs = "0.8"
 
 [dev-dependencies]
 serde_json = "1"
+rand = "0.8"
 maplit = "1"
+http-test-server = "2.1.1"

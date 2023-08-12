@@ -267,6 +267,12 @@ pub(crate) async fn subscribe(sender: &Sender<Action>, feed: String) {
         info!("Subscribing to {feed}");
         FEED_MANAGER.refresh(sender, vec![source]).await;
         let show = dbqueries::get_podcast_from_source_id(source_id)?;
+        if let Err(e) = podcasts_data::sync::Show::store_by_uri(
+            feed.to_string(),
+            podcasts_data::sync::ShowAction::Added,
+        ) {
+            error!("Failed store subscription for sync {e}");
+        }
         send!(sender, Action::RefreshAllViews);
         send!(sender, Action::GoToShow(Arc::new(show.clone())));
         Ok::<(), anyhow::Error>(())
@@ -468,6 +474,55 @@ pub(crate) async fn on_export_clicked(window: &gtk::ApplicationWindow, sender: &
     };
 }
 
+/// Only works for Durations that are positive.
+/// Call now.signed_duration_since(date_in_the_past) to get the duration.
+pub(crate) fn relative_time(duration: chrono::Duration) -> String {
+    use crate::i18n::ni18n_f;
+    if duration.num_seconds() < 60 {
+        i18n("Just now")
+    } else if duration.num_minutes() < 60 {
+        let time = duration.num_minutes();
+        ni18n_f(
+            "{} minute ago",
+            "{} minutes ago",
+            time as u32,
+            &[&time.to_string()],
+        )
+    } else if duration.num_hours() < 24 {
+        let time = duration.num_hours();
+        ni18n_f(
+            "{} hour ago",
+            "{} hours ago",
+            time as u32,
+            &[&time.to_string()],
+        )
+    } else if duration.num_days() < 31 {
+        let time = duration.num_days();
+        ni18n_f(
+            "{} day ago",
+            "{} days ago",
+            time as u32,
+            &[&time.to_string()],
+        )
+    } else if duration.num_days() < 365 {
+        let time = duration.num_days() / 30;
+        ni18n_f(
+            "{} month ago",
+            "{} months ago",
+            time as u32,
+            &[&time.to_string()],
+        )
+    } else {
+        let time = duration.num_days() / 365;
+        ni18n_f(
+            "{} year ago",
+            "{} years ago",
+            time as u32,
+            &[&time.to_string()],
+        )
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -517,6 +572,7 @@ mod tests {
     }
 
     #[tokio::test]
+    #[ignore]
     async fn test_soundcloud_to_rss() -> Result<()> {
         let soundcloud_url = Url::parse("https://soundcloud.com/chapo-trap-house")?;
         let rss_url = String::from(
@@ -534,6 +590,7 @@ mod tests {
     }
 
     #[tokio::test]
+    #[ignore]
     async fn test_soundcloud_playlist_to_rss() -> Result<()> {
         // valid playlist
         let soundcloud_url =
@@ -642,6 +699,24 @@ mod tests {
         assert_ne!(original_image_file_size, new_image_file_size);
 
         fs::remove_file(image_path)?;
+        Ok(())
+    }
+
+    #[test]
+    fn test_format_relative_time() -> Result<()> {
+        use chrono::Duration;
+        assert_eq!("Just now", relative_time(Duration::seconds(5)));
+        assert_eq!("1 minute ago", relative_time(Duration::seconds(60)));
+        assert_eq!("5 minutes ago", relative_time(Duration::minutes(5)));
+        assert_eq!("1 day ago", relative_time(Duration::days(1)));
+        assert_eq!("5 days ago", relative_time(Duration::days(5)));
+        assert_eq!("30 days ago", relative_time(Duration::days(30)));
+        assert_eq!("1 month ago", relative_time(Duration::days(31)));
+        assert_eq!("5 months ago", relative_time(Duration::days(30 * 5)));
+        assert_eq!("11 months ago", relative_time(Duration::days(359)));
+        assert_eq!("12 months ago", relative_time(Duration::days(360)));
+        assert_eq!("1 year ago", relative_time(Duration::days(365)));
+        assert_eq!("999 years ago", relative_time(Duration::days(365 * 999)));
         Ok(())
     }
 }

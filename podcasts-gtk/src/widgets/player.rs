@@ -632,6 +632,9 @@ impl PlayerWidget {
     fn init_uri(&mut self, sender: &Sender<Action>, id: EpisodeId, uri: &str, second: Option<i32>) {
         // If it's not the same file load the uri, otherwise just unpause
         if self.player.uri().is_none_or(|s| s != uri) {
+            if self.player.uri().is_some() {
+                self.set_position_and_sync();
+            }
             self.player.set_uri(Some(uri));
 
             // fetch chapters
@@ -780,6 +783,28 @@ impl PlayerWidget {
             }
         }
     }
+
+    fn set_position_and_sync(&mut self) {
+        let sender = self.sender.clone();
+        let pos = self.player.position();
+        self.info.ep.as_mut().map(|ep| {
+            let start_second = self.info.restore_position.unwrap_or(0);
+            let second = pos.and_then(|s| s.seconds().try_into().ok()).unwrap_or(0);
+            if let Err(e) = podcasts_data::sync::Episode::store(
+                ep.id(),
+                podcasts_data::sync::EpisodeAction::Play,
+                Some((start_second, second)),
+            ) {
+                error!("Failed to sync {e}");
+            }
+            if let Err(e) = ep.set_play_position_and_save(second) {
+                error!("failed to save episode position {e}");
+            }
+            if let Some(sender) = &sender {
+                send_blocking!(sender, Action::QuickSyncNextcloud);
+            }
+        });
+    }
 }
 
 impl PlayerExt for PlayerWidget {
@@ -860,10 +885,8 @@ impl PlayerExt for PlayerWidget {
         }
 
         self.controls.last_pause.replace(Some(Local::now()));
-        let pos = self.player.position();
-        self.info.ep.as_mut().map(|ep| {
-            ep.set_play_position(pos.and_then(|s| s.seconds().try_into().ok()).unwrap_or(0))
-        });
+
+        self.set_position_and_sync();
     }
 
     fn stop(&mut self) {
@@ -1176,8 +1199,18 @@ impl PlayerWrapper {
                 if let Some(player_widget) = weak.get().upgrade() {
                     // write postion to db
                     player_widget.borrow_mut().info.ep.as_mut().map(|ep| {
-                        ep.set_play_position(0)?;
+                        ep.set_play_position_and_save(0)?;
+
+                        if let Err(e) = podcasts_data::sync::Episode::store(
+                            ep.id(),
+                            podcasts_data::sync::EpisodeAction::Finished,
+                            None,
+                        ) {
+                            error!("Failed to sync {e}");
+                        }
+
                         send_blocking!(sender, Action::MarkAsPlayed(true, ep.id()));
+
                         let ok: Result<(), podcasts_data::errors::DataError> = Ok(());
                         ok
                     });

@@ -201,12 +201,21 @@ impl Source {
         info!("HTTP StatusCode: {}", code);
         debug!("Headers {:#?}", headers);
 
-        if let Some(url) = headers.get(LOCATION) {
+        if let Some(new_url) = headers.get(LOCATION) {
             debug!("Previous Source: {:#?}", &self);
+            let old_url = self.uri.clone();
+            let new_url: String = new_url.to_str()?.into();
 
-            self.set_uri(url.to_str()?.into());
+            self.set_uri(new_url.clone());
             self.clear_etags();
             self = self.save()?;
+
+            if let Err(err) = crate::sync::Show::store_by_uri(
+                old_url.clone(),
+                crate::sync::ShowAction::Moved(new_url.clone()),
+            ) {
+                error!("Failed to store sync item for Podcast URL Move {old_url} - to - {new_url}: {err}");
+            }
 
             debug!("Updated Source: {:#?}", &self);
             info!(

@@ -174,9 +174,14 @@ impl Episode {
     }
 
     /// Sets `play_position` and saves the record.
-    pub fn set_play_position(&mut self, seconds: i32) -> Result<(), DataError> {
+    pub fn set_play_position_and_save(&mut self, seconds: i32) -> Result<(), DataError> {
         self.play_position = seconds;
         self.save().map(|_| ())
+    }
+
+    /// Sets `play_position` without saving, used for nextcloud batch updates.
+    pub fn set_play_position_no_save(&mut self, seconds: i32) {
+        self.play_position = seconds;
     }
 
     /// Sets `play_position` if it diverges multiple seconds (10) from the last value.
@@ -184,12 +189,17 @@ impl Episode {
     pub fn set_play_position_if_divergent(&mut self, seconds: i32) -> Result<(), DataError> {
         if seconds != 0 && self.play_position != 0 {
             if (seconds - self.play_position).abs() > 10 {
-                return self.set_play_position(seconds);
+                return self.set_play_position_and_save(seconds);
             }
         } else {
-            return self.set_play_position(seconds);
+            return self.set_play_position_and_save(seconds);
         }
         Ok(())
+    }
+
+    /// Set the `played` value.
+    pub fn set_played(&mut self, value: Option<NaiveDateTime>) {
+        self.played = value;
     }
 }
 

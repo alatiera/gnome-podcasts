@@ -38,6 +38,7 @@ mod sheet_player;
 mod show;
 pub(crate) mod show_menu;
 mod shows_view;
+mod sync_preferences;
 
 pub(crate) use self::aboutdialog::about_dialog;
 pub(crate) use self::base_view::BaseView;
@@ -59,6 +60,7 @@ pub(crate) use self::sheet_player::SheetPlayer;
 pub(crate) use self::show::ShowWidget;
 pub(crate) use self::show_menu::ShowMenu;
 pub(crate) use self::shows_view::ShowsView;
+pub(crate) use self::sync_preferences::SyncPreferences;
 
 #[cfg(test)]
 pub(crate) use self::home_view::HomeEpisode;

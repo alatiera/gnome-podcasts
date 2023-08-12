@@ -25,6 +25,9 @@ mod discovery_settings;
 mod episode;
 mod show;
 mod source;
+/// Sync datatypes to store updates that still have to be sent out.
+/// This is mostly glue code for the DB, use store(), fetch(), delete() methods to interact.
+pub mod sync;
 
 pub(crate) use self::discovery_settings::DiscoverySetting;
 
@@ -75,6 +78,7 @@ pub trait Save<T> {
     type Error;
     /// Helper method to easily save/"sync" current state of a diesel model to
     /// the Database.
+    // TODO change this to save_to_connection and make a default impl for save() that opens the db/transaction
     fn save(&self) -> Result<T, Self::Error>;
 }
 
