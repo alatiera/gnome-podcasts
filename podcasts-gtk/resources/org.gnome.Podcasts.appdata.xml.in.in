@@ -136,6 +136,8 @@
   <url type="homepage">https://wiki.gnome.org/Apps/Podcasts</url>
   <url type="bugtracker">https://gitlab.gnome.org/World/podcasts/issues/</url>
   <url type="donation">https://www.gnome.org/donate/</url>
+  <url type="translate">https://gitlab.gnome.org/World/podcasts#translations</url>
+  <url type="vcs-browser">https://gitlab.gnome.org/World/podcasts</url>
   <translation type="gettext">gnome-podcasts</translation>
   <project_group>GNOME</project_group>
   <update_contact>jpetridis@gnome.org</update_contact>
