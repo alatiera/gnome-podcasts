@@ -1,0 +1,407 @@
+# Icelandic translation for podcasts.
+# Copyright (C) 2023 podcasts's COPYRIGHT HOLDER
+# This file is distributed under the same license as the podcasts package.
+#
+# Ingirafn <ingirafn@this.is>, 2023.
+# Sveinn í Felli <sv1@fellsnet.is>, 2023.
+msgid ""
+msgstr ""
+"Project-Id-Version: podcasts master\n"
+"Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
+"POT-Creation-Date: 2023-08-14 15:33+0000\n"
+"PO-Revision-Date: 2023-08-19 11:39+0000\n"
+"Last-Translator: Sveinn í Felli <sv1@fellsnet.is>\n"
+"Language-Team: Icelandic\n"
+"Language: is\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Lokalize 21.12.3\n"
+
+#: podcasts-gtk/resources/gtk/empty_show.ui:16
+msgid "This show does not have episodes yet"
+msgstr "Í þessum útvarpsþætti eru engir þættir ennþá."
+
+#: podcasts-gtk/resources/gtk/empty_show.ui:25
+msgid "If you think this is an error, please consider writing a bug report."
+msgstr ""
+"Ef þú heldur að þetta sé villa, vinsamlegast íhugaðu að senda inn villu "
+"skýrslu."
+
+#: podcasts-gtk/resources/gtk/empty_view.ui:30
+msgid "Get Some Shows"
+msgstr "Náðu í nokkra útvarpsþætti"
+
+#: podcasts-gtk/resources/gtk/empty_view.ui:49
+msgid "Add new shows via feed URL"
+msgstr "Bættu við nýjum útvarpsþáttum gegnum streymi-vefslóð"
+
+#: podcasts-gtk/resources/gtk/empty_view.ui:71
+msgid "Import shows from another device"
+msgstr "Flytja inn útvarsþætti úr öðru tæki"
+
+#: podcasts-gtk/resources/gtk/episode_description.ui:41
+msgid "Episode Details"
+msgstr "Upplýsingar um þátt"
+
+#: podcasts-gtk/resources/gtk/episode_description.ui:51
+#: podcasts-gtk/resources/gtk/headerbar.ui:143
+msgid "Back"
+msgstr "Til baka"
+
+#: podcasts-gtk/resources/gtk/episode_description.ui:106
+msgid "Podcast Title"
+msgstr "Titill hlaðvarps"
+
+#: podcasts-gtk/resources/gtk/episode_description.ui:129
+msgid "Duration - Date"
+msgstr "Lengd - Dagsetning"
+
+#: podcasts-gtk/resources/gtk/episode_description.ui:149
+msgid "Episode Description"
+msgstr "Lýsing á innihaldi þáttarins"
+
+#: podcasts-gtk/resources/gtk/episode_menu.ui:35
+msgid "Go to Show"
+msgstr "Fara á útvarpsþátt"
+
+#: podcasts-gtk/resources/gtk/episode_menu.ui:39
+msgid "Copy Episode Url"
+msgstr "Afrita vefslóð þáttar"
+
+#: podcasts-gtk/resources/gtk/episode_widget.ui:70
+msgid "You’ve already listened to this episode."
+msgstr "Þú er búin/n að hlusta á þennan þátt ."
+
+#: podcasts-gtk/resources/gtk/episode_widget.ui:157
+msgid "Calculating episode size…"
+msgstr "Reikna út stærð þáttar..."
+
+#: podcasts-gtk/resources/gtk/episode_widget.ui:180
+msgid "Play this episode"
+msgstr "Spila þennan þátt"
+
+#: podcasts-gtk/resources/gtk/episode_widget.ui:192
+msgid "Cancel the download process"
+msgstr "Hætta við niðurhal"
+
+#: podcasts-gtk/resources/gtk/episode_widget.ui:204
+msgid "Download this episode"
+msgstr "Hlaða niður þennan þátt"
+
+#: podcasts-gtk/resources/gtk/hamburger.ui:7
+msgid "_Check for New Episodes"
+msgstr "_Athuga með nýja þætti"
+
+#: podcasts-gtk/resources/gtk/hamburger.ui:12
+msgid "_Import Shows"
+msgstr "F_lytja inn þætti"
+
+#: podcasts-gtk/resources/gtk/hamburger.ui:16
+msgid "_Export Shows"
+msgstr "F_lytja út útvarpsþætti"
+
+#: podcasts-gtk/resources/gtk/hamburger.ui:22
+msgid "_Keyboard Shortcuts"
+msgstr "_Flýtilyklar"
+
+#: podcasts-gtk/resources/gtk/hamburger.ui:30
+msgid "_About Podcasts"
+msgstr "_Um Podcasts"
+
+#: podcasts-gtk/resources/gtk/headerbar.ui:33
+#: podcasts-gtk/resources/gtk/headerbar.ui:133
+msgid "Add a new feed"
+msgstr "Bæta við nýju streymi"
+
+#: podcasts-gtk/resources/gtk/headerbar.ui:44
+msgid "Enter Feed Address"
+msgstr "Færið inn vistfang streymi-slóðar"
+
+#: podcasts-gtk/resources/gtk/headerbar.ui:67
+msgid "Add"
+msgstr "Bæta við"
+
+#. Weird magic I copy-pasted that sets the Application Name in the Shell.
+#: podcasts-gtk/resources/gtk/headerbar.ui:111
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:4
+#: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:3
+#: podcasts-gtk/src/app.rs:477 podcasts-gtk/src/widgets/aboutdialog.rs:56
+#: podcasts-gtk/src/window.rs:64
+msgid "Podcasts"
+msgstr "Hlaðvörp (podcasts)"
+
+#: podcasts-gtk/resources/gtk/headerbar.ui:121
+msgid "Show Title"
+msgstr "Sýna titil"
+
+#: podcasts-gtk/resources/gtk/headerbar.ui:153
+msgid "Main Menu"
+msgstr "Aðalvalmynd"
+
+#: podcasts-gtk/resources/gtk/help-overlay.ui:11
+msgid "General"
+msgstr "Almennt"
+
+#: podcasts-gtk/resources/gtk/help-overlay.ui:15
+msgctxt "shortcut window"
+msgid "Check for new episodes"
+msgstr "Athuga með nýja þætti"
+
+#: podcasts-gtk/resources/gtk/help-overlay.ui:21
+msgctxt "shortcut window"
+msgid "Quit the application"
+msgstr "Slökkva á forritinu"
+
+#: podcasts-gtk/resources/gtk/home_view.ui:57
+msgid "Today"
+msgstr "\tÍ dag"
+
+#: podcasts-gtk/resources/gtk/home_view.ui:85
+msgid "Yesterday"
+msgstr "Í gær"
+
+#: podcasts-gtk/resources/gtk/home_view.ui:113
+msgid "This Week"
+msgstr "Þessa viku"
+
+#: podcasts-gtk/resources/gtk/home_view.ui:141
+msgid "This Month"
+msgstr "Þennan mánuð"
+
+#: podcasts-gtk/resources/gtk/home_view.ui:170
+msgid "Older"
+msgstr "Eldri"
+
+#: podcasts-gtk/resources/gtk/player_dialog.ui:22
+msgid "Now Playing"
+msgstr "Nú í afspilun"
+
+#: podcasts-gtk/resources/gtk/player_rate.ui:29
+msgid "Change the playback speed"
+msgstr "Breyta afspilunarhraða"
+
+#: podcasts-gtk/resources/gtk/player_rate.ui:34
+#: podcasts-gtk/resources/gtk/player_rate.ui:59
+msgid "1.00×"
+msgstr "1.00×"
+
+#: podcasts-gtk/resources/gtk/player_rate.ui:39
+msgid "2.00×"
+msgstr "2.00×"
+
+#: podcasts-gtk/resources/gtk/player_rate.ui:44
+msgid "1.75×"
+msgstr "1.75×"
+
+#: podcasts-gtk/resources/gtk/player_rate.ui:49
+msgid "1.50×"
+msgstr "1.50×"
+
+#: podcasts-gtk/resources/gtk/player_rate.ui:54
+msgid "1.25×"
+msgstr "1.25×"
+
+#: podcasts-gtk/resources/gtk/player_rate.ui:64
+msgid "0.90×"
+msgstr "0.90×"
+
+#: podcasts-gtk/resources/gtk/player_rate.ui:69
+msgid "0.75×"
+msgstr "0.75×"
+
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:55
+msgid "Rewind 10 seconds"
+msgstr "Vinda til baka 10 sek"
+
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:63
+msgid "Play"
+msgstr "Spila"
+
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:71
+msgid "Pause"
+msgstr "Hlé"
+
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:79
+msgid "Fast forward 10 seconds"
+msgstr "Framsenda um 10 sek"
+
+#: podcasts-gtk/resources/gtk/secondary_menu.ui:7
+msgid "_Mark All Episodes as Played"
+msgstr "_Merkja alla þætti sem spilað"
+
+#: podcasts-gtk/resources/gtk/secondary_menu.ui:11
+msgid "_Website"
+msgstr "_Vefsíða"
+
+#: podcasts-gtk/resources/gtk/secondary_menu.ui:15
+msgid "_Unsubscribe"
+msgstr "_Afskrá"
+
+#: podcasts-gtk/resources/gtk/show_menu.ui:35
+msgid "Open Website"
+msgstr "Opna vefsvæði"
+
+#: podcasts-gtk/resources/gtk/show_menu.ui:39
+msgid "Mark All as Played"
+msgstr "Merkja allt sem spilað"
+
+#: podcasts-gtk/resources/gtk/show_menu.ui:45
+msgid "Unsubscribe"
+msgstr "Segja upp áskrift"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:8
+msgid "Listen to your favorite shows"
+msgstr "Hlustaðu á uppáhalds útvarpsþættina þína"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:10
+msgid ""
+"Play, update, and manage your podcasts from a lightweight interface that "
+"seamlessly integrates with GNOME. Podcasts can play various audio formats "
+"and remember where you stopped listening. You can subscribe to shows via RSS/"
+"Atom, iTunes, and Soundcloud links. Subscriptions from other apps can be "
+"imported via OPML files."
+msgstr ""
+"Spila, endurnýja og halda utanum hlaðvörp með notendaviðmóti sem fellur "
+"hnökralaust inní  GNOME gluggaumhverfið. Podcasts getur spilað ýmis "
+"skráarsnið og haldið áfram þar sem frá var horfið í afspilun. Þú getur gerst "
+"áskrifandi að þáttum í gegnum RSS/Atom, ITunes og Soundcloud hlekki. "
+"Áskrftir úr öðrum forritum er hægt að hlaða inn með OPML skjölum."
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:144
+msgid "Jordan Petridis"
+msgstr "Jordan Petridis"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:145
+msgid "Julian Hofer"
+msgstr "Julian Hofer"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:4
+msgid "Listen to your favorite podcasts, right from your desktop."
+msgstr "Hlustaðu á uppáhalds hlaðvörpin þín, beint af tölvunni þinni"
+
+#. Translators: Search terms to find this application. Do NOT translate or localize the semicolons! The list MUST also end with a semicolon!
+#: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:13
+msgid "Podcast;RSS;"
+msgstr "Hlaðvarð;RSS;"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:15
+msgid "Height of the last open main window"
+msgstr "Hæð síðasta glugga sem var opin"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:19
+msgid "Width of the last open main window"
+msgstr "Breidd síðasta aðalglugga sem var opin"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:23
+msgid "Maximized state of the last open main window"
+msgstr "Hámörkun síðasta aðal glugga sem var opin"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:28
+msgid "Whether to periodically refresh content"
+msgstr "Hvort endurglæða skuli efnið með jöfnu millibil"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:33
+msgid "How many periods of time to wait between automatic refreshes"
+msgstr "Hve langt skuli bíða milli sjálfvirkrar endurglæðingar"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:37
+msgid "What period of time to wait between automatic refreshes"
+msgstr "Hve lengi skal bíða milli sjálfkrafa nýglæða."
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:41
+msgid "Whether to refresh content after startup"
+msgstr "Hvort skuli endurlesa efni eftir ræsingu"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:47
+msgid "How many periods of time to wait between automatic cleanups"
+msgstr "Hve langan tími skal bíða milli sjálfvirkra tiltekar"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:51
+msgid "What period of time to wait between automatic cleanups"
+msgstr "Hve langt tímabil skal líða milli sjáfvirkrar tiltektar"
+
+#: podcasts-gtk/src/app.rs:348
+msgid "Copied URL to clipboard!"
+msgstr "Afritaði vefslóð á klippiborð!"
+
+#: podcasts-gtk/src/stacks/content.rs:70
+msgid "New"
+msgstr "Nýtt"
+
+#: podcasts-gtk/src/stacks/content.rs:72
+msgid "Shows"
+msgstr "Útvarpsþættir"
+
+#: podcasts-gtk/src/utils.rs:489 podcasts-gtk/src/utils.rs:531
+msgid "OPML file"
+msgstr "OPML skjal"
+
+#: podcasts-gtk/src/utils.rs:500
+msgid "Select the file from which to you want to import shows."
+msgstr "Veldu skjalið sem þú vilt flytja inn útvarsþættina úr."
+
+#: podcasts-gtk/src/utils.rs:502
+msgid "_Import"
+msgstr "_Flytja inn"
+
+#: podcasts-gtk/src/utils.rs:518
+msgid "Failed to parse the imported file"
+msgstr "Tókst ekki að þátta innflutt skjal"
+
+#: podcasts-gtk/src/utils.rs:541
+msgid "Export shows to…"
+msgstr "Flytja útvarpsþætti út í..."
+
+#: podcasts-gtk/src/utils.rs:542
+msgid "_Export"
+msgstr "_Flytja út"
+
+#. Translators: This is the string of the suggested name for the exported opml file
+#: podcasts-gtk/src/utils.rs:546
+msgid "gnome-podcasts-exported-shows"
+msgstr "gnome-hlaðvörp-útflutt-útvarpsþættir"
+
+#: podcasts-gtk/src/utils.rs:556
+msgid "GNOME Podcasts Subscriptions"
+msgstr "GNOME hlaðvarps áskrift"
+
+#: podcasts-gtk/src/utils.rs:557
+msgid "Failed to export podcasts"
+msgstr "Tókst ekki að flytja út hlaðvörp"
+
+#: podcasts-gtk/src/widgets/aboutdialog.rs:52
+msgid "Podcast Client for the GNOME Desktop."
+msgstr "Hlaðvarps biðlari fyrir GNOME gluggakerfið."
+
+#: podcasts-gtk/src/widgets/aboutdialog.rs:63
+msgid "translator-credits"
+msgstr "Ingirafn, ingirafn at this dot is ,2023"
+
+#: podcasts-gtk/src/widgets/episode.rs:143
+msgid "{} min"
+msgstr "{} mín"
+
+#: podcasts-gtk/src/widgets/player.rs:893
+msgid "The media player was unable to execute an action."
+msgstr "Margliðlunarspilarinn gat ekki framkvæmt aðgerð."
+
+#: podcasts-gtk/src/widgets/read_more_label.rs:32
+msgid "Read More"
+msgstr "Lesa meira"
+
+#: podcasts-gtk/src/widgets/show_menu.rs:180
+msgid "Marked all episodes as listened"
+msgstr ""
+"Merkti alla þætti sem áhlustaða Hakað við alla þætti sem áhlustað Hakað við "
+"alla þætti sem búið að hlusta á Allir þættir merktir sem búið að hlusta á"
+
+#: podcasts-gtk/src/widgets/show_menu.rs:181
+#: podcasts-gtk/src/widgets/show_menu.rs:204
+msgid "Undo"
+msgstr "Afturkalla"
+
+#: podcasts-gtk/src/widgets/show_menu.rs:200
+msgid "Unsubscribed from {}"
+msgstr "Sagði upp áskrift að {}"
