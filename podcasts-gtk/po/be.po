@@ -7,19 +7,19 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2023-04-18 18:26+0000\n"
-"PO-Revision-Date: 2023-05-08 12:50+0300\n"
+"POT-Creation-Date: 2023-05-08 09:51+0000\n"
+"PO-Revision-Date: 2023-08-24 13:48+0300\n"
 "Last-Translator: Yuras Shumovich <shumovichy@gmail.com>\n"
 "Language-Team: Belarusian <LL@li.org>\n"
 "Language: be\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 3.2.2\n"
+"X-Generator: Poedit 3.3.2\n"
 
 #: podcasts-gtk/resources/gtk/empty_show.ui:16
 msgid "This show does not have episodes yet"
-msgstr "У гэтага шоу пакуль няма эпізодаў"
+msgstr "У гэтай перадачы пакуль няма эпізодаў"
 
 #: podcasts-gtk/resources/gtk/empty_show.ui:25
 msgid "If you think this is an error, please consider writing a bug report."
@@ -27,19 +27,19 @@ msgstr "Калі вы лічыце, што гэта памылка, напішы
 
 #: podcasts-gtk/resources/gtk/empty_view.ui:30
 msgid "Get Some Shows"
-msgstr "Атрымайце некалькі шоу"
+msgstr "Атрымайце перадачы"
 
 #: podcasts-gtk/resources/gtk/empty_view.ui:49
 msgid "Add new shows via feed URL"
-msgstr "Дадавайце новыя шоу праз URL-адрас канала"
+msgstr "Дадавайце новыя перадачы праз URL-адрас канала"
 
 #: podcasts-gtk/resources/gtk/empty_view.ui:71
 msgid "Import shows from another device"
-msgstr "Імпарт шоу з іншай прылады"
+msgstr "Імпартуйце перадачы з іншай прылады"
 
 #: podcasts-gtk/resources/gtk/episode_description.ui:41
 msgid "Episode Details"
-msgstr "Дэталі эпізоду"
+msgstr "Звесткі пра эпізод"
 
 #: podcasts-gtk/resources/gtk/episode_description.ui:51
 #: podcasts-gtk/resources/gtk/headerbar.ui:143
@@ -60,7 +60,7 @@ msgstr "Апісанне эпізоду"
 
 #: podcasts-gtk/resources/gtk/episode_menu.ui:35
 msgid "Go to Show"
-msgstr "Перайсці да шоу"
+msgstr "Перайсці да перадачы"
 
 #: podcasts-gtk/resources/gtk/episode_menu.ui:39
 msgid "Copy Episode Url"
@@ -92,11 +92,11 @@ msgstr "_Праверыць наяўнасць новых эпізодаў"
 
 #: podcasts-gtk/resources/gtk/hamburger.ui:12
 msgid "_Import Shows"
-msgstr "_Імпартаваць шоу"
+msgstr "_Імпартаваць перадачы"
 
 #: podcasts-gtk/resources/gtk/hamburger.ui:16
 msgid "_Export Shows"
-msgstr "_Экспартаваць шоу"
+msgstr "_Экспартаваць перадачы"
 
 #: podcasts-gtk/resources/gtk/hamburger.ui:22
 msgid "_Keyboard Shortcuts"
@@ -209,7 +209,7 @@ msgstr "0.75×"
 
 #: podcasts-gtk/resources/gtk/player_toolbar.ui:55
 msgid "Rewind 10 seconds"
-msgstr "Перамотка на 10 секунд"
+msgstr "Перамотка на 10 секунд назад"
 
 #: podcasts-gtk/resources/gtk/player_toolbar.ui:63
 msgid "Play"
@@ -260,7 +260,7 @@ msgid ""
 "imported via OPML files."
 msgstr ""
 "Прайгравайце, абнаўляйце і кіруйце сваімі падкастамі праз лёгкі інтэрфейс, "
-"які цалкам інтэгруецца ў GNOME. Падкасты можа прайграваць розныя "
+"які цалкам інтэгруецца ў GNOME. Праграма можа прайграваць розныя "
 "аўдыяфарматы і запамінаць, дзе вы спынілі праслухоўванне. Вы можаце "
 "падпісацца на перадачы праз спасылкі RSS/Atom,iTunes і Soundcloud. Падпіскі "
 "з іншых сэрвісаў могуць быць імпартаваны праз файлы OPML."
@@ -280,7 +280,7 @@ msgstr "Слухайце любыя падкасты проста са свай�
 #. Translators: Search terms to find this application. Do NOT translate or localize the semicolons! The list MUST also end with a semicolon!
 #: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:13
 msgid "Podcast;RSS;"
-msgstr "Падкаст;RSS;"
+msgstr "Podcast;Падкаст;RSS;"
 
 #: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:15
 msgid "Height of the last open main window"
@@ -328,7 +328,7 @@ msgstr "Новыя"
 
 #: podcasts-gtk/src/stacks/content.rs:72
 msgid "Shows"
-msgstr "Шоу"
+msgstr "Перадачы"
 
 #: podcasts-gtk/src/utils.rs:489 podcasts-gtk/src/utils.rs:531
 msgid "OPML file"
@@ -336,7 +336,7 @@ msgstr "OPML-файл"
 
 #: podcasts-gtk/src/utils.rs:500
 msgid "Select the file from which to you want to import shows."
-msgstr "Выберыце файл, з якога вы хочаце імпартаваць шоу."
+msgstr "Выберыце файл, з якога вы хочаце імпартаваць перадачы."
 
 #: podcasts-gtk/src/utils.rs:502
 msgid "_Import"
@@ -348,7 +348,7 @@ msgstr "Не ўдалося разабраць імпартаваны файл"
 
 #: podcasts-gtk/src/utils.rs:541
 msgid "Export shows to…"
-msgstr "_Экспарт шоу ў…"
+msgstr "Экспарт перадач ў…"
 
 #: podcasts-gtk/src/utils.rs:542
 msgid "_Export"
@@ -385,11 +385,11 @@ msgstr "Медыяплэер не змог выканаць дзеянне."
 
 #: podcasts-gtk/src/widgets/read_more_label.rs:32
 msgid "Read More"
-msgstr "Даведацца больш"
+msgstr "Чытаць далей"
 
 #: podcasts-gtk/src/widgets/show_menu.rs:180
 msgid "Marked all episodes as listened"
-msgstr "Адзначыў усе эпізоды як праслуханыя"
+msgstr "Усе эпізоды адзначаны як праслуханыя"
 
 #: podcasts-gtk/src/widgets/show_menu.rs:181
 #: podcasts-gtk/src/widgets/show_menu.rs:204
@@ -398,7 +398,7 @@ msgstr "Скасаваць"
 
 #: podcasts-gtk/src/widgets/show_menu.rs:200
 msgid "Unsubscribed from {}"
-msgstr "Адпісаўся ад {}"
+msgstr "Вы адпісаліся ад {}"
 
 #~ msgid "Get some shows"
 #~ msgstr "Атрымайце некалькі шоу"
