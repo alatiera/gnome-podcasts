@@ -66,3 +66,7 @@ popover modelbutton > box > label {
 .rounded-small {
     border-radius: 4px;
 }
+
+.show_button {
+    padding: 0px;
+}

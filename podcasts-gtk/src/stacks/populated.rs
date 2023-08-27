@@ -42,7 +42,7 @@ pub(crate) enum PopulatedState {
 #[derive(Debug, Clone)]
 pub(crate) struct PopulatedStack {
     container: gtk::Box,
-    populated: Rc<ShowsView>,
+    populated: ShowsView,
     show: ShowWidget,
     stack: gtk::Stack,
     state: PopulatedState,
@@ -53,7 +53,7 @@ impl PopulatedStack {
     pub(crate) fn new(sender: Sender<Action>) -> PopulatedStack {
         let stack = gtk::Stack::new();
         let state = PopulatedState::View;
-        let populated = ShowsView::new(sender.clone(), None);
+        let populated = ShowsView::new(None);
         let show = ShowWidget::default();
         let container = gtk::Box::new(gtk::Orientation::Horizontal, 0);
 
@@ -92,7 +92,7 @@ impl PopulatedStack {
         debug!("Name: {:?}", old.widget_name());
 
         let vadj = self.populated.view.vadjustment();
-        let pop = ShowsView::new(self.sender.clone(), Some(vadj));
+        let pop = ShowsView::new(Some(vadj));
         self.populated = pop;
         self.stack.remove(old);
         self.stack.add_named(&self.populated.view, Some("shows"));

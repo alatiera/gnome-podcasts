@@ -146,6 +146,7 @@ pub(crate) enum Action {
     ShowWidgetAnimated,
     ShowShowsAnimated,
     GoToEpisodeDescription(Arc<Show>, Arc<Episode>),
+    GoToShow(Arc<Show>),
     HeaderBarShowTile(String),
     HeaderBarNormal,
     CopiedUrlNotification,
@@ -186,14 +187,23 @@ impl PdApplication {
             }),
         );
         let i32_variant_type = i32::static_variant_type();
-        let show_episode = gio::SimpleAction::new("go-to-episode", Some(&i32_variant_type));
-        show_episode.connect_activate(clone!(@weak self as app => move |_, id_variant_option| {
+        let go_to_episode = gio::SimpleAction::new("go-to-episode", Some(&i32_variant_type));
+        go_to_episode.connect_activate(clone!(@weak self as app => move |_, id_variant_option| {
             match app.go_to_episode(id_variant_option) {
                 Ok(_) => (),
                 Err(e) => eprintln!("failed action app.go-to-episode: {}", e)
             }
         }));
-        app.add_action(&show_episode);
+        app.add_action(&go_to_episode);
+
+        let go_to_show = gio::SimpleAction::new("go-to-show", Some(&i32_variant_type));
+        go_to_show.connect_activate(clone!(@weak self as app => move |_, id_variant_option| {
+            match app.go_to_show(id_variant_option) {
+                Ok(_) => (),
+                Err(e) => eprintln!("failed action app.go-to-show: {}", e)
+            }
+        }));
+        app.add_action(&go_to_show);
 
         let undo_mark_all = gio::SimpleAction::new("undo-mark-all", Some(&i32_variant_type));
         undo_mark_all.connect_activate(
@@ -278,6 +288,15 @@ impl PdApplication {
         Ok(())
     }
 
+    fn go_to_show(&self, id_variant_option: Option<&glib::Variant>) -> Result<()> {
+        let id_variant = id_variant_option.expect("missing action_target_value");
+        let id = id_variant.get::<i32>().expect("invalid variant type");
+        let show = dbqueries::get_podcast_from_id(id)?;
+        let data = self.imp();
+        send!(data.sender, Action::GoToShow(Arc::new(show)));
+        Ok(())
+    }
+
     fn go_back_on_deck(&self) {
         let data = self.imp();
         let w = data.window.borrow();
@@ -341,6 +360,11 @@ impl PdApplication {
                     .set_name(Some("description"));
                 window.main_deck.navigate(adw::NavigationDirection::Forward);
                 window.headerbar.reveal_bottom_switcher(false);
+            }
+            Action::GoToShow(pd) => {
+                self.do_action(Action::HeaderBarShowTile(pd.title().into()));
+                self.do_action(Action::ReplaceWidget(pd));
+                self.do_action(Action::ShowWidgetAnimated);
             }
             Action::HeaderBarShowTile(title) => window.headerbar.switch_to_back(&title),
             Action::HeaderBarNormal => window.headerbar.switch_to_normal(),

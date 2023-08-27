@@ -23,7 +23,6 @@ use gtk::glib;
 use gtk::{prelude::*, Adjustment, Align, SelectionMode};
 
 use anyhow::Result;
-use glib::Sender;
 
 use podcasts_data::dbqueries;
 use podcasts_data::Show;
@@ -50,7 +49,7 @@ impl Default for ShowsView {
         flowbox.set_vexpand(true);
         flowbox.set_hexpand(true);
         flowbox.set_row_spacing(12);
-        flowbox.set_can_focus(false);
+        flowbox.set_can_focus(true);
         flowbox.set_margin_top(32);
         flowbox.set_margin_bottom(32);
         flowbox.set_homogeneous(true);
@@ -65,145 +64,53 @@ impl Default for ShowsView {
 }
 
 impl ShowsView {
-    pub(crate) fn new(sender: Sender<Action>, vadj: Option<Adjustment>) -> Rc<Self> {
-        let pop = Rc::new(ShowsView::default());
-        pop.init(sender);
-        // Populate the flowbox with the Shows.
+    pub(crate) fn new(vadj: Option<Adjustment>) -> Self {
+        let pop = ShowsView::default();
         let res = populate_flowbox(&pop, vadj);
         debug_assert!(res.is_ok());
         pop
     }
-
-    pub(crate) fn init(&self, sender: Sender<Action>) {
-        self.flowbox.connect_child_activated(move |_, child| {
-            let res = on_child_activate(child, &sender);
-            debug_assert!(res.is_ok());
-        });
-    }
 }
 
-fn populate_flowbox(shows: &Rc<ShowsView>, vadj: Option<Adjustment>) -> Result<()> {
+fn populate_flowbox(shows: &ShowsView, vadj: Option<Adjustment>) -> Result<()> {
     let ignore = get_ignored_shows()?;
     let podcasts = dbqueries::get_podcasts_filter(&ignore)?;
     let flowbox_weak = shows.flowbox.downgrade();
 
-    let constructor = move |parent| ShowsChild::new(&parent).row;
-    let callback = clone!(@weak shows => move || {
+    let constructor = move |podcast: Show| {
+        let widget = gtk::FlowBoxChild::new();
+        let button = gtk::Button::new();
+        let image = gtk::Image::from_icon_name("image-x-generic-symbolic");
+
+        image.set_pixel_size(256);
+        image.add_css_class("rounded-big");
+        image.set_overflow(gtk::Overflow::Hidden);
+
+        let result = crate::utils::set_image_from_path(&image, podcast.id(), 256);
+        if let Err(e) = result {
+            error!("Failed to load cover for {}: {e}", podcast.title());
+        }
+        button.set_child(Some(&image));
+        button.set_action_name(Some("app.go-to-show"));
+        button.set_action_target_value(Some(&podcast.id().to_variant()));
+        button.set_tooltip_text(Some(podcast.title()));
+        button.add_css_class("flat");
+        button.add_css_class("show_button");
+        button.set_can_focus(false);
+        widget.set_child(Some(&button));
+
+        widget.set_tooltip_text(Some(podcast.title()));
+        widget.connect_activate(clone!(@weak button => move |_| {
+            button.activate();
+        }));
+        widget
+    };
+    let callback = clone!(@weak shows.view as view => move || {
         if vadj.is_some() {
-            shows.view.set_adjustments(None, vadj.as_ref())
+            view.set_adjustments(None, vadj.as_ref())
         }
     });
 
     lazy_load_flowbox(podcasts, flowbox_weak, constructor, callback);
     Ok(())
-}
-
-fn on_child_activate(child: &gtk::FlowBoxChild, sender: &Sender<Action>) -> Result<()> {
-    // This is such an ugly hack...
-    let id = child
-        .child()
-        .unwrap()
-        .downcast::<ShowCover>()
-        .expect("Could not downcast Widget to PdShowCover")
-        .id();
-    let pd = Arc::new(dbqueries::get_podcast_from_id(id)?);
-
-    send!(sender, Action::HeaderBarShowTile(pd.title().into()));
-    send!(sender, Action::ReplaceWidget(pd));
-    send!(sender, Action::ShowWidgetAnimated);
-    Ok(())
-}
-
-#[derive(Debug)]
-pub struct ShowCoverPrivate {
-    pub cover: gtk::Image,
-    pub show_id: Cell<i32>,
-}
-
-#[glib::object_subclass]
-impl ObjectSubclass for ShowCoverPrivate {
-    const NAME: &'static str = "PdShowCover";
-    type Type = ShowCover;
-    type ParentType = adw::Bin;
-
-    fn new() -> Self {
-        Self {
-            // FIXME: bundle the symbolic in resources
-            cover: gtk::Image::from_icon_name("image-x-generic-symbolic"),
-            // cover: gtk::Picture::new(),
-            show_id: Cell::default(),
-        }
-    }
-}
-
-impl ObjectImpl for ShowCoverPrivate {
-    fn constructed(&self) {
-        self.parent_constructed();
-        self.cover.set_pixel_size(256);
-        self.cover.add_css_class("rounded-big");
-        self.cover.set_overflow(gtk::Overflow::Hidden);
-
-        self.obj().set_child(Some(&self.cover));
-    }
-}
-
-impl WidgetImpl for ShowCoverPrivate {}
-impl BinImpl for ShowCoverPrivate {}
-
-glib::wrapper! {
-    pub struct ShowCover(ObjectSubclass<ShowCoverPrivate>)
-        @extends gtk::Widget, adw::Bin;
-}
-
-impl ShowCover {
-    fn new() -> Self {
-        glib::Object::new()
-    }
-
-    fn set_id(&self, id: i32) {
-        self.imp().show_id.set(id);
-    }
-
-    fn id(&self) -> i32 {
-        self.imp().show_id.get()
-    }
-
-    fn load_image(&self) -> Result<()> {
-        let self_ = self.imp();
-        set_image_from_path(&self_.cover, self_.show_id.get(), 256)?;
-        Ok(())
-    }
-}
-
-#[derive(Debug)]
-struct ShowsChild {
-    cover: ShowCover,
-    row: gtk::FlowBoxChild,
-}
-
-impl ShowsChild {
-    fn new(pd: &Show) -> ShowsChild {
-        let cover = ShowCover::new();
-        let row = gtk::FlowBoxChild::new();
-        row.set_child(Some(&cover));
-
-        let child = ShowsChild { cover, row };
-        child.init(pd);
-        child
-    }
-
-    fn init(&self, pd: &Show) {
-        self.row.set_tooltip_text(Some(pd.title()));
-        self.cover.set_id(pd.id());
-
-        self.cover.set_id(pd.id());
-        self.set_cover();
-    }
-
-    fn set_cover(&self) {
-        self.cover
-            .load_image()
-            .map_err(|err| error!("Failed to set a cover: {}", err))
-            .ok();
-    }
 }
