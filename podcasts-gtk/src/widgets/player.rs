@@ -627,8 +627,27 @@ impl PlayerExt for PlayerWidget {
     }
 
     fn stop(&mut self) {
+        // hide pause buttons and restore focus for accessibility
+        let is_focus = self.controls.pause.is_focus();
         self.controls.pause.set_visible(false);
         self.controls.play.set_visible(true);
+        if is_focus {
+            self.controls.play.grab_focus();
+        }
+
+        let is_focus = self.controls.pause_small.is_focus();
+        self.controls.pause_small.set_visible(false);
+        self.controls.play_small.set_visible(true);
+        if is_focus {
+            self.controls.play_small.grab_focus();
+        }
+
+        let is_focus = self.dialog.pause.is_focus();
+        self.dialog.pause.set_visible(false);
+        self.dialog.play.set_visible(true);
+        if is_focus {
+            self.dialog.play.grab_focus();
+        }
 
         self.info.ep = None;
         self.info.restore_position = 0;
@@ -791,7 +810,8 @@ impl PlayerWrapper {
             .controls
             .play
             .connect_clicked(clone!(@weak this => move |_| {
-                     this.borrow().play();
+                this.borrow().play();
+                this.borrow().controls.pause.grab_focus(); // keep focus for accessibility
             }));
 
         // Connect the pause button to the gst Player.
@@ -800,6 +820,7 @@ impl PlayerWrapper {
             .pause
             .connect_clicked(clone!(@weak this => move |_| {
                 this.borrow_mut().pause();
+                this.borrow().controls.play.grab_focus(); // keep focus for accessibility
             }));
 
         // Connect the play button to the gst Player.
@@ -807,7 +828,8 @@ impl PlayerWrapper {
             .controls
             .play_small
             .connect_clicked(clone!(@weak this => move |_| {
-                 this.borrow().play();
+                this.borrow().play();
+                this.borrow().controls.pause_small.grab_focus(); // keep focus for accessibility
             }));
 
         // Connect the pause button to the gst Player.
@@ -816,6 +838,7 @@ impl PlayerWrapper {
             .pause_small
             .connect_clicked(clone!(@weak this => move |_| {
                 this.borrow_mut().pause();
+                this.borrow().controls.play_small.grab_focus(); // keep focus for accessibility
             }));
 
         // Connect the rewind button to the gst Player.
@@ -839,7 +862,8 @@ impl PlayerWrapper {
             .dialog
             .play
             .connect_clicked(clone!(@weak this => move |_| {
-                     this.borrow().play();
+                this.borrow().play();
+                this.borrow().dialog.pause.grab_focus(); // keep focus for accessibility
             }));
 
         // Connect the pause button to the gst Player.
@@ -847,7 +871,8 @@ impl PlayerWrapper {
             .dialog
             .pause
             .connect_clicked(clone!(@weak this => move |_| {
-                    this.borrow_mut().pause();
+                this.borrow_mut().pause();
+                this.borrow().dialog.play.grab_focus(); // keep focus for accessibility
             }));
 
         // Connect the rewind button to the gst Player.
