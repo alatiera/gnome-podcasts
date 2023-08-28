@@ -17,7 +17,6 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-use adw::{prelude::BinExt, subclass::prelude::*};
 use glib::clone;
 use gtk::glib;
 use gtk::{prelude::*, Adjustment, Align, SelectionMode};
@@ -27,13 +26,8 @@ use anyhow::Result;
 use podcasts_data::dbqueries;
 use podcasts_data::Show;
 
-use crate::app::Action;
-use crate::utils::{get_ignored_shows, lazy_load_flowbox, set_image_from_path};
+use crate::utils::{get_ignored_shows, lazy_load_flowbox};
 use crate::widgets::BaseView;
-
-use std::cell::Cell;
-use std::rc::Rc;
-use std::sync::Arc;
 
 #[derive(Debug, Clone)]
 pub(crate) struct ShowsView {

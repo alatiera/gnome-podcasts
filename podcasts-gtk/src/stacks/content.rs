@@ -44,7 +44,6 @@ pub(crate) struct Content {
     stack: adw::ViewStack,
     shows: Rc<RefCell<ShowStack>>,
     home: Rc<RefCell<HomeStack>>,
-    sender: Sender<Action>,
 }
 
 impl Content {
@@ -80,7 +79,6 @@ impl Content {
             stack,
             shows,
             home,
-            sender: sender.clone(),
         };
         Ok(Rc::new(con))
     }

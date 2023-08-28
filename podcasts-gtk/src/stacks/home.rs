@@ -29,7 +29,7 @@ use crate::widgets::{EmptyView, HomeView};
 
 #[derive(Debug, Clone)]
 pub(crate) struct HomeStack {
-    empty: EmptyView,
+    _empty: EmptyView,
     episodes: HomeView,
     stack: gtk::Stack,
     state: State,
@@ -47,7 +47,7 @@ impl HomeStack {
         stack.add_named(&empty, Some("empty"));
 
         let home = HomeStack {
-            empty,
+            _empty: empty,
             episodes,
             stack,
             state,

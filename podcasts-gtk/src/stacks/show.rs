@@ -33,7 +33,7 @@ use std::rc::Rc;
 
 #[derive(Debug, Clone)]
 pub(crate) struct ShowStack {
-    empty: EmptyView,
+    _empty: EmptyView,
     populated: Rc<RefCell<PopulatedStack>>,
     stack: gtk::Stack,
     state: State,
@@ -51,7 +51,7 @@ impl ShowStack {
         stack.add_named(&empty, Some("empty"));
 
         let mut show = ShowStack {
-            empty,
+            _empty: empty,
             populated,
             stack,
             state,

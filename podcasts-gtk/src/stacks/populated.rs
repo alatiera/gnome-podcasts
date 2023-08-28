@@ -30,7 +30,6 @@ use podcasts_data::Show;
 use crate::app::Action;
 use crate::widgets::{ShowWidget, ShowsView};
 
-use std::rc::Rc;
 use std::sync::Arc;
 
 #[derive(Debug, Clone, Copy)]

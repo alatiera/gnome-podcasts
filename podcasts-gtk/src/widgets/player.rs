@@ -151,7 +151,6 @@ struct PlayerTimes {
     container: gtk::Box,
     progressed: gtk::Label,
     duration: gtk::Label,
-    separator: gtk::Label,
     slider: gtk::Scale,
     slider_update: Rc<SignalHandlerId>,
     progress_bar: gtk::ProgressBar,
@@ -420,7 +419,6 @@ impl Default for PlayerWidget {
         let timer_container = builder.object("timer").unwrap();
         let progressed = builder.object("progress_time_label").unwrap();
         let duration = builder.object("total_duration_label").unwrap();
-        let separator = builder.object("separator").unwrap();
         let slider: gtk::Scale = builder.object("seek").unwrap();
         slider.set_range(0.0, 1.0);
         let player_weak = player.downgrade();
@@ -430,7 +428,6 @@ impl Default for PlayerWidget {
             container: timer_container,
             progressed,
             duration,
-            separator,
             slider,
             slider_update,
             progress_bar,
