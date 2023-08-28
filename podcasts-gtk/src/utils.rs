@@ -330,6 +330,7 @@ static CACHE_VALID_DURATION: Lazy<chrono::Duration> = Lazy::new(|| chrono::Durat
 pub(crate) fn set_image_from_path(image: &gtk::Image, show_id: i32, size: u32) -> Result<()> {
     // get the PodcastCover struct
     let pd = dbqueries::get_podcast_cover_from_id(show_id)?;
+    image.set_tooltip_text(Some(pd.title()));
 
     // Check if the cover is already downloaded and set it
     if pd.is_cached_image_valid(&CACHE_VALID_DURATION) {

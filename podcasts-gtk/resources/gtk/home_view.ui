@@ -66,6 +66,9 @@ Tobias Bernard
                         <property name="hexpand">True</property>
                         <property name="activate-on-single-click">True</property>
                         <property name="selection-mode">none</property>
+                        <accessibility>
+                          <property name="label" translatable="yes">Today</property>
+                        </accessibility>
                         <style>
                           <class name="content"/>
                         </style>
@@ -94,6 +97,9 @@ Tobias Bernard
                         <property name="hexpand">True</property>
                         <property name="activate-on-single-click">True</property>
                         <property name="selection-mode">none</property>
+                        <accessibility>
+                          <property name="label" translatable="yes">Yesterday</property>
+                        </accessibility>
                         <style>
                           <class name="content"/>
                         </style>
@@ -122,6 +128,9 @@ Tobias Bernard
                         <property name="hexpand">True</property>
                         <property name="activate-on-single-click">True</property>
                         <property name="selection-mode">none</property>
+                        <accessibility>
+                          <property name="label" translatable="yes">This Week</property>
+                        </accessibility>
                         <style>
                           <class name="content"/>
                         </style>
@@ -150,6 +159,9 @@ Tobias Bernard
                         <property name="hexpand">True</property>
                         <property name="activate-on-single-click">True</property>
                         <property name="selection-mode">none</property>
+                         <accessibility>
+                          <property name="label" translatable="yes">This Month</property>
+                        </accessibility>
                         <style>
                           <class name="content"/>
                         </style>
@@ -179,6 +191,9 @@ Tobias Bernard
                         <property name="hexpand">True</property>
                         <property name="activate-on-single-click">True</property>
                         <property name="selection-mode">none</property>
+                         <accessibility>
+                          <property name="label" translatable="yes">Older</property>
+                        </accessibility>
                         <style>
                           <class name="content"/>
                         </style>

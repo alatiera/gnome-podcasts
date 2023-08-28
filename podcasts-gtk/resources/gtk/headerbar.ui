@@ -160,6 +160,7 @@ Tobias Bernard
         <property name="visible">False</property>
         <property name="valign">center</property>
         <property name="icon_name">view-more-symbolic</property>
+        <property name="tooltip-text" translatable="yes">Podcast Menu</property>
       </object>
     </child>
   </object>

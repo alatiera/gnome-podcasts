@@ -51,6 +51,7 @@ impl Default for ShowsView {
         flowbox.set_valign(Align::Start);
         flowbox.set_halign(Align::Center);
         flowbox.set_selection_mode(SelectionMode::None);
+        flowbox.update_property(&[gtk::accessible::Property::Label("Shows")]);
         view.set_content(&flowbox);
 
         ShowsView { view, flowbox }

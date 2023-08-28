@@ -75,6 +75,9 @@ Tobias Bernard
                     <property name="valign">start</property>
                     <property name="selection_mode">none</property>
                     <property name="activate_on_single_click">True</property>
+                     <accessibility>
+                       <property name="label" translatable="yes">Episodes</property>
+                     </accessibility>
                     <style>
                       <class name="content"/>
                     </style>
