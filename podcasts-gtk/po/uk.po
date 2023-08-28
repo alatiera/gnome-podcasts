@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: podcasts master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2023-03-26 17:46+0000\n"
-"PO-Revision-Date: 2023-03-26 21:05+0300\n"
+"POT-Creation-Date: 2023-08-28 07:05+0000\n"
+"PO-Revision-Date: 2023-08-28 20:27+0300\n"
 "Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
 "Language-Team: Ukrainian <trans-uk@lists.fedoraproject.org>\n"
 "Language: uk\n"
@@ -49,15 +49,15 @@ msgstr "Докладно про випуск"
 msgid "Back"
 msgstr "Назад"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:105
+#: podcasts-gtk/resources/gtk/episode_description.ui:106
 msgid "Podcast Title"
 msgstr "Заголовок подкасту"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:128
+#: podcasts-gtk/resources/gtk/episode_description.ui:129
 msgid "Duration - Date"
 msgstr "Тривалість — Дата"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:148
+#: podcasts-gtk/resources/gtk/episode_description.ui:149
 msgid "Episode Description"
 msgstr "Опис випуску"
 
@@ -126,7 +126,7 @@ msgstr "Додати"
 #: podcasts-gtk/resources/gtk/headerbar.ui:111
 #: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:4
 #: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:3
-#: podcasts-gtk/src/app.rs:457 podcasts-gtk/src/widgets/aboutdialog.rs:56
+#: podcasts-gtk/src/app.rs:501 podcasts-gtk/src/widgets/aboutdialog.rs:56
 #: podcasts-gtk/src/window.rs:64
 msgid "Podcasts"
 msgstr "Подкасти"
@@ -153,23 +153,23 @@ msgctxt "shortcut window"
 msgid "Quit the application"
 msgstr "Вийти з програми"
 
-#: podcasts-gtk/resources/gtk/home_view.ui:50
+#: podcasts-gtk/resources/gtk/home_view.ui:57
 msgid "Today"
 msgstr "Сьогодні"
 
-#: podcasts-gtk/resources/gtk/home_view.ui:78
+#: podcasts-gtk/resources/gtk/home_view.ui:85
 msgid "Yesterday"
 msgstr "Вчора"
 
-#: podcasts-gtk/resources/gtk/home_view.ui:106
+#: podcasts-gtk/resources/gtk/home_view.ui:113
 msgid "This Week"
 msgstr "Цього тижня"
 
-#: podcasts-gtk/resources/gtk/home_view.ui:134
+#: podcasts-gtk/resources/gtk/home_view.ui:141
 msgid "This Month"
 msgstr "Цього місяця"
 
-#: podcasts-gtk/resources/gtk/home_view.ui:163
+#: podcasts-gtk/resources/gtk/home_view.ui:170
 msgid "Older"
 msgstr "Давніше"
 
@@ -269,13 +269,9 @@ msgstr ""
 "програми за допомогою посилань RSS/Atom, iTunes та Soundcloud. Підписки з "
 "інших програм можна імпортувати за допомогою файлів OPML."
 
-#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:134
-msgid "Jordan Petridis"
-msgstr "Jordan Petridis"
-
-#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:135
-msgid "Julian Hofer"
-msgstr "Julian Hofer"
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:143
+msgid "The Podcasts developers"
+msgstr "Розробники «Подкастів»"
 
 #: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:4
 msgid "Listen to your favorite podcasts, right from your desktop."
@@ -329,52 +325,52 @@ msgstr ""
 "У яких одиницях вимірювати інтервал очікування між автоматичними очищеннями "
 "(години, хвилини тощо)"
 
-#: podcasts-gtk/src/app.rs:337
+#: podcasts-gtk/src/app.rs:372
 msgid "Copied URL to clipboard!"
 msgstr "Адресу скопійовано до буфера обміну."
 
-#: podcasts-gtk/src/stacks/content.rs:70
+#: podcasts-gtk/src/stacks/content.rs:69
 msgid "New"
 msgstr "Нові випуски"
 
-#: podcasts-gtk/src/stacks/content.rs:72
+#: podcasts-gtk/src/stacks/content.rs:71
 msgid "Shows"
 msgstr "Подкасти"
 
-#: podcasts-gtk/src/utils.rs:489 podcasts-gtk/src/utils.rs:531
+#: podcasts-gtk/src/utils.rs:490 podcasts-gtk/src/utils.rs:532
 msgid "OPML file"
 msgstr "файл OPML"
 
-#: podcasts-gtk/src/utils.rs:500
+#: podcasts-gtk/src/utils.rs:501
 msgid "Select the file from which to you want to import shows."
 msgstr "Виберіть файл із подкастами, які треба імпортувати."
 
-#: podcasts-gtk/src/utils.rs:502
+#: podcasts-gtk/src/utils.rs:503
 msgid "_Import"
 msgstr "_Імпортувати"
 
-#: podcasts-gtk/src/utils.rs:518
+#: podcasts-gtk/src/utils.rs:519
 msgid "Failed to parse the imported file"
 msgstr "Не вдалося обробити файл під час імпортування"
 
-#: podcasts-gtk/src/utils.rs:541
+#: podcasts-gtk/src/utils.rs:542
 msgid "Export shows to…"
 msgstr "Експортувати подкасти…"
 
-#: podcasts-gtk/src/utils.rs:542
+#: podcasts-gtk/src/utils.rs:543
 msgid "_Export"
 msgstr "_Експортувати"
 
 #. Translators: This is the string of the suggested name for the exported opml file
-#: podcasts-gtk/src/utils.rs:546
+#: podcasts-gtk/src/utils.rs:547
 msgid "gnome-podcasts-exported-shows"
 msgstr "gnome-podcasts-exported-shows"
 
-#: podcasts-gtk/src/utils.rs:556
+#: podcasts-gtk/src/utils.rs:557
 msgid "GNOME Podcasts Subscriptions"
 msgstr "Підписки з «Подкастів» для GNOME"
 
-#: podcasts-gtk/src/utils.rs:557
+#: podcasts-gtk/src/utils.rs:558
 msgid "Failed to export podcasts"
 msgstr "Не вдалося експортувати подкасти"
 
@@ -392,7 +388,7 @@ msgstr ""
 msgid "{} min"
 msgstr "{} хв."
 
-#: podcasts-gtk/src/widgets/player.rs:884
+#: podcasts-gtk/src/widgets/player.rs:893
 msgid "The media player was unable to execute an action."
 msgstr "Програвачеві не вдалося виконати цю дію."
 
@@ -412,6 +408,12 @@ msgstr "Повернути"
 #: podcasts-gtk/src/widgets/show_menu.rs:200
 msgid "Unsubscribed from {}"
 msgstr "Підписку на {} скасовано."
+
+#~ msgid "Jordan Petridis"
+#~ msgstr "Jordan Petridis"
+
+#~ msgid "Julian Hofer"
+#~ msgstr "Julian Hofer"
 
 #~ msgid "Selected file could not be accessed."
 #~ msgstr "Не вдалося отримати доступ до вибраного файлу"
