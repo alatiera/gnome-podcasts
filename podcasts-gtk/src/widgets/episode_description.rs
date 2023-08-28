@@ -22,6 +22,7 @@ use gtk::CompositeTemplate;
 
 use glib::subclass::InitializingObject;
 use glib::Sender;
+use gtk::prelude::*;
 use podcasts_data::{Episode, Show};
 
 use crate::app::Action;
@@ -152,5 +153,9 @@ impl EpisodeDescription {
         let widget: Self = glib::Object::new();
         widget.imp().init(sender, ep, show);
         widget
+    }
+
+    pub(crate) fn open_menu(&self) {
+        self.imp().menu_button.activate();
     }
 }

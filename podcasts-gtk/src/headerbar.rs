@@ -297,6 +297,14 @@ impl Header {
         self.dots.set_menu_model(Some(menu))
     }
 
+    pub(crate) fn open_active_menu(&self) {
+        if self.dots.is_visible() {
+            self.dots.popup()
+        } else {
+            self.open_menu()
+        }
+    }
+
     pub(crate) fn reveal_bottom_switcher(&self, value: bool) {
         self.bottom_switcher.set_reveal(value);
     }
