@@ -243,6 +243,23 @@ impl PdApplication {
             app.go_back_on_deck();
         }));
         app.add_action(&go_back_on_deck);
+
+        // universal go back action
+        let go_back = gio::SimpleAction::new("go-back", None);
+        go_back.connect_activate(clone!(@weak self as app, @weak data => move |_, _| {
+            use crate::stacks::PopulatedStack;
+            if app.go_back_on_deck() {
+                return;
+            }
+            let shows = data.window.borrow().as_ref().unwrap().content.get_shows();
+            let pop = shows.borrow().populated();
+            let pop = pop.borrow();
+            if let PopulatedState::Widget = pop.populated_state() {
+                send!(data.sender, Action::HeaderBarNormal);
+                send!(data.sender, Action::ShowShowsAnimated);
+            }
+        }));
+        app.add_action(&go_back);
     }
 
     /// We check if the User pressed the Undo button, which would add
@@ -297,13 +314,14 @@ impl PdApplication {
         Ok(())
     }
 
-    fn go_back_on_deck(&self) {
+    fn go_back_on_deck(&self) -> bool {
         let data = self.imp();
         let w = data.window.borrow();
         let window = w.as_ref().expect("Window is not initialized");
-        window.main_deck.navigate(adw::NavigationDirection::Back);
+        let did_go_back = window.main_deck.navigate(adw::NavigationDirection::Back);
         window.headerbar.reveal_bottom_switcher(true);
         window.headerbar.update_bottom_switcher();
+        did_go_back
     }
 
     fn setup_accels(&self) {
@@ -311,7 +329,7 @@ impl PdApplication {
         // Bind the hamburger menu button to `F10`
         self.set_accels_for_action("win.menu", &["F10"]);
         self.set_accels_for_action("win.refresh", &["<primary>r"]);
-        self.set_accels_for_action("app.go-back-on-deck", &["<primary>Left"]);
+        self.set_accels_for_action("app.go-back", &["Escape"]);
     }
 
     fn do_action(&self, action: Action) -> glib::Continue {

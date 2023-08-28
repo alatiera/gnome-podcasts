@@ -170,4 +170,8 @@ impl PopulatedStack {
             }
         }
     }
+
+    pub(crate) fn populated_state(&self) -> PopulatedState {
+        self.state
+    }
 }
