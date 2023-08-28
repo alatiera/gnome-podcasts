@@ -13,9 +13,8 @@
       You can subscribe to shows via RSS/Atom, iTunes, and Soundcloud links. Subscriptions from other apps can be imported via OPML files.
     </p>
   </description>
-  <url type="homepage">https://gitlab.gnome.org/World/podcasts</url>
   <screenshots>
-    <screenshot>
+    <screenshot type="default">
       <image>https://gitlab.gnome.org/World/podcasts/raw/master/screenshots/home_view.png</image>
     </screenshot>
     <screenshot>
@@ -133,7 +132,7 @@
     <display_length compare="ge">small</display_length>
   </requires>
   <launchable type="desktop-id">@appid@.desktop</launchable>
-  <url type="homepage">https://wiki.gnome.org/Apps/Podcasts</url>
+  <url type="homepage">https://apps.gnome.org/app/org.gnome.Podcasts/</url>
   <url type="bugtracker">https://gitlab.gnome.org/World/podcasts/issues/</url>
   <url type="donation">https://www.gnome.org/donate/</url>
   <url type="translate">https://gitlab.gnome.org/World/podcasts#translations</url>
@@ -141,8 +140,7 @@
   <translation type="gettext">gnome-podcasts</translation>
   <project_group>GNOME</project_group>
   <update_contact>jpetridis@gnome.org</update_contact>
-  <developer_name>Jordan Petridis</developer_name>
-  <developer_name>Julian Hofer</developer_name>
+  <developer_name>The Podcasts developers</developer_name>
   <custom>
     <value key="Purism::form_factor">workstation</value>
     <value key="Purism::form_factor">mobile</value>
