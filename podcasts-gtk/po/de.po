@@ -4,21 +4,22 @@
 # Mario Blättermann <mario.blaettermann@gmail.com>, 2018.
 # Tim Sabsch <tim@sabsch.com>, 2018-2019.
 # Philipp Kiemle <philipp.kiemle@gmail.com>, 2021, 2023.
+# Jürgen Benvenuti <gastornis@posteo.org>, 2023.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: podcasts master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2023-03-27 01:48+0000\n"
-"PO-Revision-Date: 2023-03-27 13:54+0200\n"
-"Last-Translator: Philipp Kiemle <philipp.kiemle@gmail.com>\n"
+"POT-Creation-Date: 2023-08-28 07:05+0000\n"
+"PO-Revision-Date: 2023-08-28 09:55+0200\n"
+"Last-Translator: Jürgen Benvenuti <gastornis@posteo.org>\n"
 "Language-Team: Deutsch <gnome-de@gnome.org>\n"
 "Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 3.1.1\n"
+"X-Generator: Poedit 3.3.1\n"
 
 #: podcasts-gtk/resources/gtk/empty_show.ui:16
 msgid "This show does not have episodes yet"
@@ -52,21 +53,21 @@ msgstr "Folgendetails"
 msgid "Back"
 msgstr "Zurück"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:105
+#: podcasts-gtk/resources/gtk/episode_description.ui:106
 msgid "Podcast Title"
 msgstr "Podcast-Titel"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:128
+#: podcasts-gtk/resources/gtk/episode_description.ui:129
 msgid "Duration - Date"
 msgstr "Dauer - Datum"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:148
+#: podcasts-gtk/resources/gtk/episode_description.ui:149
 msgid "Episode Description"
 msgstr "Folgenbeschreibung"
 
 #: podcasts-gtk/resources/gtk/episode_menu.ui:35
 msgid "Go to Show"
-msgstr "Gehe zu Podcast"
+msgstr "Zum Podcast gehen"
 
 #: podcasts-gtk/resources/gtk/episode_menu.ui:39
 msgid "Copy Episode Url"
@@ -129,7 +130,7 @@ msgstr "Hinzufügen"
 #: podcasts-gtk/resources/gtk/headerbar.ui:111
 #: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:4
 #: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:3
-#: podcasts-gtk/src/app.rs:457 podcasts-gtk/src/widgets/aboutdialog.rs:56
+#: podcasts-gtk/src/app.rs:501 podcasts-gtk/src/widgets/aboutdialog.rs:56
 #: podcasts-gtk/src/window.rs:64
 msgid "Podcasts"
 msgstr "Podcasts"
@@ -156,23 +157,23 @@ msgctxt "shortcut window"
 msgid "Quit the application"
 msgstr "Die Anwendung beenden"
 
-#: podcasts-gtk/resources/gtk/home_view.ui:50
+#: podcasts-gtk/resources/gtk/home_view.ui:57
 msgid "Today"
 msgstr "Heute"
 
-#: podcasts-gtk/resources/gtk/home_view.ui:78
+#: podcasts-gtk/resources/gtk/home_view.ui:85
 msgid "Yesterday"
 msgstr "Gestern"
 
-#: podcasts-gtk/resources/gtk/home_view.ui:106
+#: podcasts-gtk/resources/gtk/home_view.ui:113
 msgid "This Week"
 msgstr "Diese Woche"
 
-#: podcasts-gtk/resources/gtk/home_view.ui:134
+#: podcasts-gtk/resources/gtk/home_view.ui:141
 msgid "This Month"
 msgstr "Diesen Monat"
 
-#: podcasts-gtk/resources/gtk/home_view.ui:163
+#: podcasts-gtk/resources/gtk/home_view.ui:170
 msgid "Older"
 msgstr "Älter"
 
@@ -191,11 +192,11 @@ msgstr "1,00×"
 
 #: podcasts-gtk/resources/gtk/player_rate.ui:39
 msgid "2.00×"
-msgstr "2.00×"
+msgstr "2,00×"
 
 #: podcasts-gtk/resources/gtk/player_rate.ui:44
 msgid "1.75×"
-msgstr "1.75×"
+msgstr "1,75×"
 
 #: podcasts-gtk/resources/gtk/player_rate.ui:49
 msgid "1.50×"
@@ -207,11 +208,11 @@ msgstr "1,25×"
 
 #: podcasts-gtk/resources/gtk/player_rate.ui:64
 msgid "0.90×"
-msgstr "0.90×"
+msgstr "0,90×"
 
 #: podcasts-gtk/resources/gtk/player_rate.ui:69
 msgid "0.75×"
-msgstr "0.75×"
+msgstr "0,75×"
 
 #: podcasts-gtk/resources/gtk/player_toolbar.ui:55
 msgid "Rewind 10 seconds"
@@ -273,13 +274,9 @@ msgstr ""
 "iTunes und Soundcloud-Verweisen abonnieren. Abonnements von anderen "
 "Programmen können via OPML-Datei importiert werden."
 
-#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:134
-msgid "Jordan Petridis"
-msgstr "Jordan Petridis"
-
-#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:135
-msgid "Julian Hofer"
-msgstr "Julian Hofer"
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:143
+msgid "The Podcasts developers"
+msgstr "Die Podcasts-Entwickler"
 
 #: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:4
 msgid "Listen to your favorite podcasts, right from your desktop."
@@ -327,58 +324,58 @@ msgstr "Zeitintervall zwischen automatischen Löschvorgängen"
 msgid "What period of time to wait between automatic cleanups"
 msgstr "Zeitintervall zwischen automatischen Löschvorgängen"
 
-#: podcasts-gtk/src/app.rs:337
+#: podcasts-gtk/src/app.rs:372
 msgid "Copied URL to clipboard!"
 msgstr "Adresse in die Zwischenablage kopiert!"
 
-#: podcasts-gtk/src/stacks/content.rs:70
+#: podcasts-gtk/src/stacks/content.rs:69
 msgid "New"
 msgstr "Neu"
 
-#: podcasts-gtk/src/stacks/content.rs:72
+#: podcasts-gtk/src/stacks/content.rs:71
 msgid "Shows"
 msgstr "Podcasts"
 
-#: podcasts-gtk/src/utils.rs:489 podcasts-gtk/src/utils.rs:531
+#: podcasts-gtk/src/utils.rs:490 podcasts-gtk/src/utils.rs:532
 msgid "OPML file"
 msgstr "OPML-Datei"
 
-#: podcasts-gtk/src/utils.rs:500
+#: podcasts-gtk/src/utils.rs:501
 msgid "Select the file from which to you want to import shows."
 msgstr "Wählen Sie die Datei aus, aus der Sie Podcasts importieren wollen."
 
-#: podcasts-gtk/src/utils.rs:502
+#: podcasts-gtk/src/utils.rs:503
 msgid "_Import"
 msgstr "_Importieren"
 
-#: podcasts-gtk/src/utils.rs:518
+#: podcasts-gtk/src/utils.rs:519
 msgid "Failed to parse the imported file"
 msgstr "Die importierte Datei konnte nicht ausgewertet werden"
 
-#: podcasts-gtk/src/utils.rs:541
+#: podcasts-gtk/src/utils.rs:542
 msgid "Export shows to…"
 msgstr "Podcasts exportieren nach …"
 
-#: podcasts-gtk/src/utils.rs:542
+#: podcasts-gtk/src/utils.rs:543
 msgid "_Export"
 msgstr "E_xportieren"
 
 #. Translators: This is the string of the suggested name for the exported opml file
-#: podcasts-gtk/src/utils.rs:546
+#: podcasts-gtk/src/utils.rs:547
 msgid "gnome-podcasts-exported-shows"
 msgstr "gnome-podcasts-sendungen-export"
 
-#: podcasts-gtk/src/utils.rs:556
+#: podcasts-gtk/src/utils.rs:557
 msgid "GNOME Podcasts Subscriptions"
 msgstr "GNOME Podcasts Abonnements"
 
-#: podcasts-gtk/src/utils.rs:557
+#: podcasts-gtk/src/utils.rs:558
 msgid "Failed to export podcasts"
 msgstr "Export der Podcasts ist fehlgeschlagen"
 
 #: podcasts-gtk/src/widgets/aboutdialog.rs:52
 msgid "Podcast Client for the GNOME Desktop."
-msgstr "Podcast-Client für die GNOME-Arbeitsumgebung."
+msgstr "Podcast-Anwendung für die GNOME-Arbeitsumgebung."
 
 #: podcasts-gtk/src/widgets/aboutdialog.rs:63
 msgid "translator-credits"
@@ -386,13 +383,14 @@ msgstr ""
 "Mario Blättermann <mario.blaettermann@gmail.com>\n"
 "Tim Sabsch <tim@sabsch.com>\n"
 "Onno Giesmann <nutzer3105@gmail.com>\n"
-"Philipp Kiemle <philipp.kiemle@gmail.com>"
+"Philipp Kiemle <philipp.kiemle@gmail.com>\n"
+"Jürgen Benvenuti <gastornis@posteo.org>"
 
 #: podcasts-gtk/src/widgets/episode.rs:143
 msgid "{} min"
 msgstr "{} min"
 
-#: podcasts-gtk/src/widgets/player.rs:884
+#: podcasts-gtk/src/widgets/player.rs:893
 msgid "The media player was unable to execute an action."
 msgstr "Die Medienwiedergabe konnte eine Aktion nicht ausführen."
 
@@ -412,6 +410,12 @@ msgstr "Rückgängig"
 #: podcasts-gtk/src/widgets/show_menu.rs:200
 msgid "Unsubscribed from {}"
 msgstr "Abonnement von {} gekündigt"
+
+#~ msgid "Jordan Petridis"
+#~ msgstr "Jordan Petridis"
+
+#~ msgid "Julian Hofer"
+#~ msgstr "Julian Hofer"
 
 #~ msgid "Top position of the last open main window"
 #~ msgstr "Obere Position des zuletzt geöffneten Hauptfensters"
