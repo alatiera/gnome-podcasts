@@ -100,7 +100,7 @@ async fn played_cleaner(
     let handles = episodes
         .into_iter()
         .filter(|ep| ep.local_uri().is_some() && ep.played().is_some())
-        .map(|ep| runtime.spawn(clean_played(now_utc.clone(), ep)));
+        .map(|ep| runtime.spawn(clean_played(now_utc, ep)));
     futures::future::join_all(handles).await;
     Ok(())
 }

@@ -53,7 +53,7 @@ pub(crate) fn about_dialog(window: &gtk::ApplicationWindow) {
         .copyright("© 2017-2021 Jordan Petridis")
         .license_type(gtk::License::Gpl30)
         .version(VERSION)
-        .application_name(&i18n("Podcasts"))
+        .application_name(i18n("Podcasts"))
         .website("https://gitlab.gnome.org/World/podcasts")
         .issue_url("https://gitlab.gnome.org/World/podcasts/-/issues")
         .transient_for(window)

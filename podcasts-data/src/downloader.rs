@@ -178,7 +178,7 @@ async fn save_io(
 
     while let Some(chunk) = body_stream.next().await {
         if let Ok(chunk) = chunk {
-            writer.write(chunk.deref())?;
+            writer.write_all(chunk.deref())?;
             // This sucks.
             // Actually the whole download module is hack, so w/e.
             if let Some(prog) = progress.clone() {

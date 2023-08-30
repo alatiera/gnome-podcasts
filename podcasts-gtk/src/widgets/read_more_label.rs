@@ -141,10 +141,6 @@ impl ReadMoreLabel {
         self.queue_resize();
     }
 
-    fn expanded(&self) -> bool {
-        self.imp().expanded.get()
-    }
-
     pub fn set_label(&self, label: &str) {
         let imp = self.imp();
         let markup = glib::markup_escape_text(label);

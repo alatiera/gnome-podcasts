@@ -69,7 +69,6 @@ trait PlayerExt {
 
 #[derive(Debug, Clone)]
 struct PlayerInfo {
-    container: gtk::Box,
     show: gtk::Label,
     episode: gtk::Label,
     cover: gtk::Image,
@@ -148,7 +147,6 @@ impl PlayerInfo {
 
 #[derive(Debug, Clone)]
 struct PlayerTimes {
-    container: gtk::Box,
     progressed: gtk::Label,
     duration: gtk::Label,
     slider: gtk::Scale,
@@ -210,7 +208,11 @@ impl PlayerTimes {
 }
 
 fn format_duration(seconds: u32) -> String {
-    let time = NaiveTime::from_num_seconds_from_midnight(seconds, 0);
+    let time = NaiveTime::from_num_seconds_from_midnight_opt(seconds, 0);
+    if time.is_none() {
+        return "-".to_string();
+    }
+    let time = time.unwrap();
 
     if seconds >= 3600 {
         time.format("%T").to_string()
@@ -266,7 +268,6 @@ impl PlayerRate {
 
 #[derive(Debug, Clone)]
 struct PlayerControls {
-    container: gtk::Box,
     play: gtk::Button,
     pause: gtk::Button,
     play_small: gtk::Button,
@@ -280,8 +281,6 @@ struct PlayerControls {
 #[derive(Debug, Clone)]
 struct PlayerDialog {
     dialog: gtk::Window,
-    close: gtk::Button,
-    headerbar: gtk::HeaderBar,
     cover: gtk::Image,
     play_pause: gtk::Stack,
     play: gtk::Button,
@@ -301,8 +300,6 @@ impl PlayerDialog {
         let builder = gtk::Builder::from_resource("/org/gnome/Podcasts/gtk/player_dialog.ui");
         let dialog = builder.object("dialog").unwrap();
 
-        let close = builder.object("close").unwrap();
-        let headerbar = builder.object("headerbar").unwrap();
         let cover = builder.object("cover").unwrap();
         let play_pause = builder.object("play_pause").unwrap();
         let play = builder.object("play").unwrap();
@@ -320,8 +317,6 @@ impl PlayerDialog {
 
         PlayerDialog {
             dialog,
-            close,
-            headerbar,
             cover,
             play_pause,
             play,
@@ -395,7 +390,6 @@ impl Default for PlayerWidget {
 
         let builder = gtk::Builder::from_resource("/org/gnome/Podcasts/gtk/player_toolbar.ui");
 
-        let buttons = builder.object("buttons").unwrap();
         let play = builder.object("play_button").unwrap();
         let pause = builder.object("pause_button").unwrap();
         let play_small = builder.object("play_button_small").unwrap();
@@ -405,7 +399,6 @@ impl Default for PlayerWidget {
         let play_pause_small = builder.object("play_pause_small").unwrap();
 
         let controls = PlayerControls {
-            container: buttons,
             play,
             pause,
             play_small,
@@ -416,7 +409,6 @@ impl Default for PlayerWidget {
             last_pause: RefCell::new(None),
         };
 
-        let timer_container = builder.object("timer").unwrap();
         let progressed = builder.object("progress_time_label").unwrap();
         let duration = builder.object("total_duration_label").unwrap();
         let slider: gtk::Scale = builder.object("seek").unwrap();
@@ -425,7 +417,6 @@ impl Default for PlayerWidget {
         let slider_update = Rc::new(Self::connect_update_slider(&slider, player_weak));
         let progress_bar = builder.object("progress_bar").unwrap();
         let timer = PlayerTimes {
-            container: timer_container,
             progressed,
             duration,
             slider,
@@ -433,7 +424,6 @@ impl Default for PlayerWidget {
             progress_bar,
         };
 
-        let labels = builder.object("info").unwrap();
         let show = builder.object("show_label").unwrap();
         let episode = builder.object("episode_label").unwrap();
         let cover = builder.object("show_cover").unwrap();
@@ -443,7 +433,6 @@ impl Default for PlayerWidget {
         let ep = None;
         let info = PlayerInfo {
             mpris,
-            container: labels,
             show,
             ep,
             episode,

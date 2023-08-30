@@ -68,7 +68,6 @@ pub(crate) struct EpisodeWidget {
 
 #[derive(Clone, Debug)]
 struct InfoLabels {
-    container: gtk::Box,
     title: gtk::Label,
     date: gtk::Label,
     separator1: gtk::Label,
@@ -82,7 +81,6 @@ struct InfoLabels {
 
 #[derive(Clone, Debug)]
 struct Buttons {
-    container: gtk::Box,
     play: gtk::Button,
     download: gtk::Button,
     cancel: gtk::Button,
@@ -182,12 +180,10 @@ impl Default for EpisodeWidget {
         let container = builder.object("episode_container").unwrap();
         let progressbar = builder.object("progress_bar").unwrap();
 
-        let buttons_container = builder.object("button_box").unwrap();
         let download = builder.object("download_button").unwrap();
         let play = builder.object("play_button").unwrap();
         let cancel = builder.object("cancel_button").unwrap();
 
-        let info_container = builder.object("info_container").unwrap();
         let title = builder.object("title_label").unwrap();
         let date = builder.object("date_label").unwrap();
         let duration = builder.object("duration_label").unwrap();
@@ -202,7 +198,6 @@ impl Default for EpisodeWidget {
 
         EpisodeWidget {
             info: InfoLabels {
-                container: info_container,
                 title,
                 date,
                 separator1,
@@ -214,7 +209,6 @@ impl Default for EpisodeWidget {
                 played_checkmark,
             },
             buttons: Buttons {
-                container: buttons_container,
                 play,
                 download,
                 cancel,

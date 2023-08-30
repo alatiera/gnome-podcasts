@@ -118,7 +118,7 @@ impl HomeView {
             }
         });
 
-        let callback = clone!(@weak home => @default-return (), move || {
+        let callback = clone!(@weak home => move || {
             if let Some(ref v) = vadj {
                 home.imp().view.set_adjustments(None, Some(v))
             };
