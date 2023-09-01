@@ -63,7 +63,7 @@ impl ObjectSubclass for PdApplicationPrivate {
     type ParentType = adw::Application;
 
     fn new() -> Self {
-        let (sender, r) = glib::MainContext::channel(glib::PRIORITY_DEFAULT);
+        let (sender, r) = glib::MainContext::channel(glib::Priority::default());
         let receiver = RefCell::new(Some(r));
 
         Self {
@@ -346,7 +346,7 @@ impl PdApplication {
         self.set_accels_for_action("app.go-back", &["Escape"]);
     }
 
-    fn do_action(&self, action: Action) -> glib::Continue {
+    fn do_action(&self, action: Action) -> glib::ControlFlow {
         let data = self.imp();
         let w = data.window.borrow();
         let window = w.as_ref().expect("Window is not initialized");
@@ -436,10 +436,10 @@ impl PdApplication {
             Action::ShowUpdateNotif => {
                 let updating_timeout = glib::timeout_add_local(
                     std::time::Duration::from_millis(100),
-                    clone!(@weak window.progress_bar as progress => @default-return Continue(false), move || {
+                    clone!(@weak window.progress_bar as progress => @default-return glib::ControlFlow::Break, move || {
                         progress.set_visible(true);
                         progress.pulse();
-                        Continue(true)
+                        glib::ControlFlow::Continue
                     }),
                 );
                 if let Some(old_timeout) = window.updating_timeout.replace(Some(updating_timeout)) {
@@ -513,7 +513,7 @@ impl PdApplication {
             }
         };
 
-        glib::Continue(true)
+        glib::ControlFlow::Continue
     }
 
     pub(crate) fn run() -> glib::ExitCode {

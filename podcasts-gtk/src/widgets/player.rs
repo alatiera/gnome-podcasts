@@ -234,7 +234,7 @@ impl PlayerRate {
         // This needs to be a string to work with GMenuModel
         let variant_type = glib::VariantTy::new("s").expect("Could not parse variant type");
         let action =
-            gio::SimpleAction::new_stateful("set", Some(variant_type), "1.00".to_variant());
+            gio::SimpleAction::new_stateful("set", Some(variant_type), &"1.00".to_variant());
         let btn: gtk::MenuButton = builder.object("rate_button").unwrap();
 
         PlayerRate { action, btn }
@@ -245,7 +245,7 @@ impl PlayerRate {
         self.action
             .connect_activate(clone!(@weak widget => move |action, rate_v| {
                 let variant = rate_v.unwrap();
-                action.set_state(variant.clone());
+                action.set_state(variant);
                 let rate = variant
                     .get::<String>()
                     .expect("Could not get rate from variant")

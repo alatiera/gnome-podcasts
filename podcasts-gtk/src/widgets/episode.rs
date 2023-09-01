@@ -204,7 +204,7 @@ impl EpisodeWidgetPriv {
         // State: InProgress
         if let Some(prog) = active_dl()? {
             // set a callback that will update the state when the download finishes
-            let callback = clone!(@weak self as this, @strong sender => @default-return glib::Continue(false), move || {
+            let callback = clone!(@weak self as this, @strong sender => @default-return glib::ControlFlow::Break, move || {
                 if let Ok(guard) = manager::ACTIVE_DOWNLOADS.read() {
                     if !guard.contains_key(&id) {
                         if let Ok(ep) = dbqueries::get_episode_widget_from_rowid(id) {
@@ -212,12 +212,12 @@ impl EpisodeWidgetPriv {
                                 .map_err(|err| error!("Error: {}", err))
                                 .ok();
 
-                            return glib::Continue(false)
+                            return glib::ControlFlow::Break
                         }
                     }
                 }
 
-                glib::Continue(true)
+                glib::ControlFlow::Continue
             });
             glib::timeout_add_local(Duration::from_millis(250), callback);
 
@@ -231,7 +231,7 @@ impl EpisodeWidgetPriv {
                     }
 
                     // Cancel is not instant so we have to wait a bit
-                    glib::timeout_add_local(Duration::from_millis(50), clone!(@weak this, @strong sender => @default-return glib::Continue(false), move || {
+                    glib::timeout_add_local(Duration::from_millis(50), clone!(@weak this, @strong sender => @default-return glib::ControlFlow::Break, move || {
                         if let Ok(thing) = active_dl() {
                             if thing.is_none() {
                                 // Recalculate the widget state
@@ -241,11 +241,11 @@ impl EpisodeWidgetPriv {
                                     .map_err(|err| error!("Error: {}", err))
                                     .ok();
 
-                                return glib::Continue(false)
+                                return glib::ControlFlow::Break
                             }
                         }
 
-                        glib::Continue(true)
+                        glib::ControlFlow::Continue
                     }));
                 }));
 
@@ -423,9 +423,9 @@ fn update_progressbar_callback(
     prog: &Arc<Mutex<manager::Progress>>,
     episode_rowid: i32,
 ) {
-    let callback = clone!(@weak widget, @strong prog => @default-return glib::Continue(false), move || {
+    let callback = clone!(@weak widget, @strong prog => @default-return glib::ControlFlow::Break, move || {
         progress_bar_helper(&widget, &prog, episode_rowid)
-            .unwrap_or(glib::Continue(false))
+            .unwrap_or(glib::ControlFlow::Break)
     });
     glib::timeout_add_local(Duration::from_millis(100), callback);
 }
@@ -434,14 +434,14 @@ fn progress_bar_helper(
     widget: &EpisodeWidgetPriv,
     prog: &Arc<Mutex<manager::Progress>>,
     episode_rowid: i32,
-) -> Result<glib::Continue> {
+) -> Result<glib::ControlFlow> {
     let (fraction, downloaded, cancel) = match prog.try_lock() {
         Ok(guard) => (
             guard.get_fraction(),
             guard.get_downloaded(),
             guard.should_cancel(),
         ),
-        Err(TryLockError::WouldBlock) => return Ok(glib::Continue(true)),
+        Err(TryLockError::WouldBlock) => return Ok(glib::ControlFlow::Continue),
         Err(TryLockError::Poisoned(_)) => return Err(anyhow!("Progress Mutex is poisoned")),
     };
 
@@ -462,7 +462,7 @@ fn progress_bar_helper(
     };
 
     if (fraction >= 1.0) && (!fraction.is_nan()) {
-        Ok(glib::Continue(false))
+        Ok(glib::ControlFlow::Break)
     } else if !active || cancel {
         // if the total size is not a number, hide it
         if widget
@@ -474,9 +474,9 @@ fn progress_bar_helper(
         {
             widget.total_size.set_visible(false);
         }
-        Ok(glib::Continue(false))
+        Ok(glib::ControlFlow::Break)
     } else {
-        Ok(glib::Continue(true))
+        Ok(glib::ControlFlow::Continue)
     }
 }
 
@@ -485,8 +485,8 @@ fn progress_bar_helper(
 // relying to the RSS feed.
 #[inline]
 fn update_total_size_callback(widget: &EpisodeWidgetPriv, prog: &Arc<Mutex<manager::Progress>>) {
-    let callback = clone!(@strong prog, @weak widget => @default-return glib::Continue(false), move || {
-        total_size_helper(&widget, &prog).unwrap_or(glib::Continue(true))
+    let callback = clone!(@strong prog, @weak widget => @default-return glib::ControlFlow::Break, move || {
+        total_size_helper(&widget, &prog).unwrap_or(glib::ControlFlow::Continue)
     });
     glib::timeout_add_local(Duration::from_millis(100), callback);
 }
@@ -494,11 +494,11 @@ fn update_total_size_callback(widget: &EpisodeWidgetPriv, prog: &Arc<Mutex<manag
 fn total_size_helper(
     widget: &EpisodeWidgetPriv,
     prog: &Arc<Mutex<manager::Progress>>,
-) -> Result<glib::Continue> {
+) -> Result<glib::ControlFlow> {
     // Get the total_bytes.
     let total_bytes = match prog.try_lock() {
         Ok(guard) => guard.get_size(),
-        Err(TryLockError::WouldBlock) => return Ok(glib::Continue(true)),
+        Err(TryLockError::WouldBlock) => return Ok(glib::ControlFlow::Continue),
         Err(TryLockError::Poisoned(_)) => return Err(anyhow!("Progress Mutex is poisoned")),
     };
 
@@ -508,9 +508,9 @@ fn total_size_helper(
         widget.set_size(Some(total_bytes as i32));
 
         // Do not call again the callback
-        Ok(glib::Continue(false))
+        Ok(glib::ControlFlow::Break)
     } else {
-        Ok(glib::Continue(true))
+        Ok(glib::ControlFlow::Continue)
     }
 }
 

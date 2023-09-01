@@ -67,14 +67,14 @@ impl MainWindow {
         }
 
         window.connect_close_request(
-            clone!(@strong settings, @weak app => @default-return gtk::Inhibit(false), move |window| {
+            clone!(@strong settings, @weak app => @default-return glib::Propagation::Stop, move |window| {
                     info!("Saving window position");
                     WindowGeometry::from_window(window).write(&settings);
 
                     info!("Application is exiting");
                     let app = app.upcast::<gio::Application>();
                     app.quit();
-                    gtk::Inhibit(false)
+                    glib::Propagation::Stop
             }),
         );
 
@@ -123,7 +123,7 @@ impl MainWindow {
             refresh_interval,
             clone!(@strong sender => move || {
                     utils::schedule_refresh(None, sender.clone());
-                    glib::Continue(true)
+                    glib::ControlFlow::Continue
             }),
         );
 
@@ -156,7 +156,7 @@ impl MainWindow {
                     glib::idle_add_local(
                         clone!(@strong sender => move || {
                             utils::schedule_refresh(None, sender.clone());
-                            glib::Continue(false)
+                            glib::ControlFlow::Break
                 }));
             }),
         );

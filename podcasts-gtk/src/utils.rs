@@ -200,10 +200,10 @@ where
     glib::idle_add_local(move || {
         data.next()
             .map(|x| func(x))
-            .map(|_| glib::Continue(true))
+            .map(|_| glib::ControlFlow::Continue)
             .unwrap_or_else(|| {
                 finish_callback();
-                glib::Continue(false)
+                glib::ControlFlow::Break
             })
     });
 }
@@ -227,10 +227,10 @@ pub(crate) fn smooth_scroll_to(view: &gtk::ScrolledWindow, target: &gtk::Adjustm
                 let mut t = (now - start_time) as f64 / (end_time - start_time) as f64;
                 t = ease_out_cubic(t);
                 adj.set_value(start + t * (end - start));
-                Continue(true)
+                glib::ControlFlow::Continue
             } else {
                 adj.set_value(end);
-                Continue(false)
+                glib::ControlFlow::Break
             }
         });
     }
@@ -348,9 +348,9 @@ pub(crate) fn set_image_from_path(image: &gtk::Image, show_id: i32, size: u32) -
     // If it fails another download will be scheduled. WTF??? how is this not downlaoding infinitly
     if let Ok(guard) = COVER_DL_REGISTRY.read() {
         if guard.contains(&show_id) {
-            let callback = clone!(@weak image => @default-return glib::Continue(false), move || {
+            let callback = clone!(@weak image => @default-return glib::ControlFlow::Break, move || {
                  let _ = set_image_from_path(&image, show_id, size);
-                 glib::Continue(false)
+                 glib::ControlFlow::Break
             });
             glib::timeout_add_local(Duration::from_millis(250), callback);
             return Ok(());
@@ -379,8 +379,8 @@ pub(crate) fn set_image_from_path(image: &gtk::Image, show_id: i32, size: u32) -
     let s = size as i32;
     glib::timeout_add_local(Duration::from_millis(25), move || {
         match receiver.try_recv() {
-            Err(TryRecvError::Empty) => glib::Continue(true),
-            Err(TryRecvError::Closed) => glib::Continue(false),
+            Err(TryRecvError::Empty) => glib::ControlFlow::Continue,
+            Err(TryRecvError::Closed) => glib::ControlFlow::Break,
             Ok(path) => {
                 match path {
                     Ok(path) => {
@@ -402,7 +402,7 @@ pub(crate) fn set_image_from_path(image: &gtk::Image, show_id: i32, size: u32) -
                         )
                     }
                 }
-                glib::Continue(false)
+                glib::ControlFlow::Break
             }
         }
     });
@@ -493,7 +493,7 @@ pub(crate) fn on_import_clicked(window: &gtk::ApplicationWindow, sender: &Sender
     filter.add_mime_type("text/xml");
     filter.add_mime_type("text/x-opml");
 
-    let filters = gio::ListStore::new(gtk::FileFilter::static_type());
+    let filters = gio::ListStore::new::<gtk::FileFilter>();
     filters.append(&filter);
 
     // Create the FileChooser Dialog
@@ -535,7 +535,7 @@ pub(crate) fn on_export_clicked(window: &gtk::ApplicationWindow, sender: &Sender
     filter.add_mime_type("text/xml");
     filter.add_mime_type("text/x-opml");
 
-    let filters = gio::ListStore::new(gtk::FileFilter::static_type());
+    let filters = gio::ListStore::new::<gtk::FileFilter>();
     filters.append(&filter);
 
     // Create the FileChooser Dialog

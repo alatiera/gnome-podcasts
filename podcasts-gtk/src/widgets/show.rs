@@ -172,11 +172,11 @@ fn populate_listbox(
     let list_weak = show_.episodes.downgrade();
 
     glib::idle_add_local(
-        glib::clone!(@weak show => @default-return glib::Continue(false), move || {
+        glib::clone!(@weak show => @default-return glib::ControlFlow::Break, move || {
             let episodes = match receiver.try_recv() {
                 Ok(e) => e,
-                Err(TryRecvError::Empty) => return glib::Continue(true),
-                Err(TryRecvError::Closed) => return glib::Continue(false),
+                Err(TryRecvError::Empty) => return glib::ControlFlow::Continue,
+                Err(TryRecvError::Closed) => return glib::ControlFlow::Break,
             };
 
             debug_assert!(episodes.len() as i64 == count);
@@ -197,7 +197,7 @@ fn populate_listbox(
 
             lazy_load(episodes, list_weak.clone(), constructor, callback);
 
-            glib::Continue(false)
+            glib::ControlFlow::Break
         }),
     );
 

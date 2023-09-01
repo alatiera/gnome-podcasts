@@ -72,9 +72,9 @@ impl EpisodeDescriptionPriv {
                 } else {
                     error!("failed to parse jump link: {}", url);
                 }
-                gtk::Inhibit(true)
+                glib::Propagation::Stop
             } else {
-                gtk::Inhibit(false)
+                glib::Propagation::Proceed
             }
         });
     }
