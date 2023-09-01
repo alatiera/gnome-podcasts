@@ -17,9 +17,12 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+use adw::subclass::prelude::*;
 use glib::clone;
+use glib::subclass::InitializingObject;
 use gtk::glib;
 use gtk::prelude::*;
+use gtk::CompositeTemplate;
 
 use anyhow::{anyhow, Result};
 use chrono::prelude::*;
@@ -35,8 +38,6 @@ use podcasts_data::EpisodeWidgetModel;
 use crate::app::Action;
 use crate::manager;
 
-use std::cell::RefCell;
-use std::rc::{Rc, Weak};
 use std::sync::{Arc, Mutex, TryLockError};
 use std::time::Duration;
 
@@ -58,36 +59,268 @@ static SIZE_OPTS: Lazy<Arc<size_opts::FileSizeOpts>> = Lazy::new(|| {
     })
 });
 
-#[derive(Clone, Debug)]
-pub(crate) struct EpisodeWidget {
-    pub(crate) container: gtk::Box,
-    info: InfoLabels,
-    buttons: Buttons,
-    progressbar: gtk::ProgressBar,
+#[derive(Debug, CompositeTemplate, Default)]
+#[template(resource = "/org/gnome/Podcasts/gtk/episode_widget.ui")]
+pub struct EpisodeWidgetPriv {
+    #[template_child]
+    progressbar: TemplateChild<gtk::ProgressBar>,
+
+    // InfoLabels
+    #[template_child]
+    title: TemplateChild<gtk::Label>,
+    #[template_child]
+    date: TemplateChild<gtk::Label>,
+    #[template_child]
+    separator1: TemplateChild<gtk::Label>,
+    #[template_child]
+    duration: TemplateChild<gtk::Label>,
+    #[template_child]
+    separator2: TemplateChild<gtk::Label>,
+    #[template_child]
+    local_size: TemplateChild<gtk::Label>,
+    #[template_child]
+    size_separator: TemplateChild<gtk::Label>,
+    #[template_child]
+    total_size: TemplateChild<gtk::Label>,
+    #[template_child]
+    played_checkmark: TemplateChild<gtk::Image>,
+
+    // Buttons
+    #[template_child]
+    play: TemplateChild<gtk::Button>,
+    #[template_child]
+    download: TemplateChild<gtk::Button>,
+    #[template_child]
+    cancel: TemplateChild<gtk::Button>,
 }
 
-#[derive(Clone, Debug)]
-struct InfoLabels {
-    title: gtk::Label,
-    date: gtk::Label,
-    separator1: gtk::Label,
-    duration: gtk::Label,
-    separator2: gtk::Label,
-    local_size: gtk::Label,
-    size_separator: gtk::Label,
-    total_size: gtk::Label,
-    played_checkmark: gtk::Image,
-}
+impl EpisodeWidgetPriv {
+    pub(crate) fn init(&self, sender: &Sender<Action>, episode: &EpisodeWidgetModel) {
+        self.init_info(episode);
+        self.determine_buttons_state(episode, sender)
+            .map_err(|err| error!("Error: {}", err))
+            .ok();
+    }
 
-#[derive(Clone, Debug)]
-struct Buttons {
-    play: gtk::Button,
-    download: gtk::Button,
-    cancel: gtk::Button,
-}
+    // InProgress State:
+    //   * Show ProgressBar and Cancel Button.
+    //   * Show `total_size`, `local_size` labels and `size_separator`.
+    //   * Hide Download and Play Buttons
+    fn state_prog(&self) {
+        self.progressbar.set_visible(true);
+        self.cancel.set_visible(true);
 
-impl InfoLabels {
-    fn init(&self, episode: &EpisodeWidgetModel) {
+        self.total_size.set_visible(true);
+        self.local_size.set_visible(true);
+        self.size_separator.set_visible(true);
+
+        self.play.set_visible(false);
+        self.download.set_visible(false);
+    }
+
+    // Playable State:
+    //   * Hide ProgressBar and Cancel, Download Buttons.
+    //   * Hide `local_size` labels and `size_separator`.
+    //   * Show Play Button and `total_size` label
+    fn state_playable(&self) {
+        self.progressbar.set_visible(false);
+        self.cancel.set_visible(false);
+        self.download.set_visible(false);
+        self.local_size.set_visible(false);
+        self.size_separator.set_visible(false);
+
+        self.total_size.set_visible(true);
+        self.play.set_visible(true);
+    }
+
+    // ToDownload State:
+    //   * Hide ProgressBar and Cancel, Play Buttons.
+    //   * Hide `local_size` labels and `size_separator`.
+    //   * Show Download Button
+    //   * Determine `total_size` label state (Comes from `episode.lenght`).
+    fn state_download(&self) {
+        self.progressbar.set_visible(false);
+        self.cancel.set_visible(false);
+        self.play.set_visible(false);
+
+        self.local_size.set_visible(false);
+        self.size_separator.set_visible(false);
+
+        self.download.set_visible(true);
+    }
+
+    fn update_progress(&self, local_size: &str, fraction: f64) {
+        self.local_size.set_text(local_size);
+        self.progressbar.set_fraction(fraction);
+    }
+
+    /// Change the state of the `EpisodeWidget`.
+    ///
+    /// Function Flowchart:
+    ///
+    /// -------------------       --------------
+    /// | Is the Episode  |  YES  |   State:   |
+    /// | currently being | ----> | InProgress |
+    /// |   downloaded?   |       |            |
+    /// -------------------       --------------
+    ///         |
+    ///         | NO
+    ///         |
+    ///        \_/
+    /// -------------------       --------------
+    /// | is the episode  |  YES  |   State:   |
+    /// |   downloaded    | ----> |  Playable  |
+    /// |    already?     |       |            |
+    /// -------------------       --------------
+    ///         |
+    ///         | NO
+    ///         |
+    ///        \_/
+    /// -------------------
+    /// |     State:      |
+    /// |   ToDownload    |
+    /// -------------------
+    fn determine_buttons_state(
+        &self,
+        episode: &EpisodeWidgetModel,
+        sender: &Sender<Action>,
+    ) -> Result<()> {
+        // Reset the buttons state no matter the glade file.
+        // This is just to make it easier to port to relm in the future.
+        self.cancel.set_visible(false);
+        self.play.set_visible(false);
+        self.download.set_visible(false);
+
+        // Check if the episode is being downloaded
+        let id = episode.rowid();
+        let active_dl = move || -> Result<Option<_>> {
+            let m = manager::ACTIVE_DOWNLOADS
+                .read()
+                .map_err(|_| anyhow!("Failed to get a lock on the mutex."))?;
+
+            Ok(m.get(&id).cloned())
+        };
+
+        // State: InProgress
+        if let Some(prog) = active_dl()? {
+            // set a callback that will update the state when the download finishes
+            let callback = clone!(@weak self as this, @strong sender => @default-return glib::Continue(false), move || {
+                if let Ok(guard) = manager::ACTIVE_DOWNLOADS.read() {
+                    if !guard.contains_key(&id) {
+                        if let Ok(ep) = dbqueries::get_episode_widget_from_rowid(id) {
+                            this.determine_buttons_state(&ep, &sender)
+                                .map_err(|err| error!("Error: {}", err))
+                                .ok();
+
+                            return glib::Continue(false)
+                        }
+                    }
+                }
+
+                glib::Continue(true)
+            });
+            glib::timeout_add_local(Duration::from_millis(250), callback);
+
+            // Wire the cancel button
+            self
+                .cancel
+                .connect_clicked(clone!(@strong prog, @weak self as this, @strong sender => move |_| {
+                    // Cancel the download
+                    if let Ok(mut m) = prog.lock() {
+                        m.cancel();
+                    }
+
+                    // Cancel is not instant so we have to wait a bit
+                    glib::timeout_add_local(Duration::from_millis(50), clone!(@weak this, @strong sender => @default-return glib::Continue(false), move || {
+                        if let Ok(thing) = active_dl() {
+                            if thing.is_none() {
+                                // Recalculate the widget state
+                                dbqueries::get_episode_widget_from_rowid(id)
+                                    .map_err(From::from)
+                                    .and_then(|ep| this.determine_buttons_state(&ep, &sender))
+                                    .map_err(|err| error!("Error: {}", err))
+                                    .ok();
+
+                                return glib::Continue(false)
+                            }
+                        }
+
+                        glib::Continue(true)
+                    }));
+                }));
+
+            // Setup a callback that will update the total_size label
+            // with the http ContentLength header number rather than
+            // relying to the RSS feed.
+            update_total_size_callback(self, &prog);
+
+            // Setup a callback that will update the progress bar.
+            update_progressbar_callback(self, &prog, id);
+
+            // Change the widget layout/state
+            self.state_prog();
+
+            return Ok(());
+        }
+
+        // State: Playable
+        if episode.local_uri().is_some() {
+            // Change the widget layout/state
+            self.state_playable();
+
+            // Wire the play button
+            self.play
+                .connect_clicked(clone!(@weak self as this, @strong sender => move |_| {
+                    if let Ok(mut ep) = dbqueries::get_episode_widget_from_rowid(id) {
+                        this.on_play_bttn_clicked(&mut ep, &sender)
+                            .map_err(|err| error!("Error: {}", err))
+                            .ok();
+                    }
+                }));
+
+            return Ok(());
+        }
+
+        // State: ToDownload
+        // Wire the download button
+        self.download
+            .connect_clicked(clone!(@weak self as this, @strong sender => move |dl| {
+                if let Ok(ep) = dbqueries::get_episode_widget_from_rowid(id) {
+                    on_download_clicked(&ep, &sender)
+                        .and_then(|_| {
+                            info!("Download started successfully.");
+                            this.determine_buttons_state(&ep, &sender)
+                        })
+                        .map_err(|err| error!("Error: {}", err))
+                        .ok();
+                }
+
+                // Restore sensitivity after operations above complete
+                dl.set_sensitive(true);
+            }));
+
+        // Change the widget state into `ToDownload`
+        self.state_download();
+
+        Ok(())
+    }
+
+    fn on_play_bttn_clicked(
+        &self,
+        episode: &mut EpisodeWidgetModel,
+        sender: &Sender<Action>,
+    ) -> Result<()> {
+        // Grey out the title
+        self.set_title(episode);
+
+        // Play the episode
+        send!(sender, Action::InitEpisode(episode.rowid()));
+        // Refresh background views to match the normal/greyout title state
+        send!(sender, Action::RefreshEpisodesViewBGR);
+        Ok(())
+    }
+
+    fn init_info(&self, episode: &EpisodeWidgetModel) {
         // Set the title label state.
         self.set_title(episode);
 
@@ -115,12 +348,12 @@ impl InfoLabels {
 
     // Set the date label of the episode widget.
     fn set_date(&self, epoch: i32) {
-        static NOW: Lazy<DateTime<Utc>> = Lazy::new(Utc::now);
+        let now: DateTime<Utc> = Utc::now();
 
         let ts = Utc.timestamp_opt(i64::from(epoch), 0).unwrap();
 
         // If the episode is from a different year, print year as well
-        if NOW.year() != ts.year() {
+        if now.year() != ts.year() {
             self.date.set_text(ts.format("%e %b %Y").to_string().trim());
         // Else omit the year from the label
         } else {
@@ -153,16 +386,15 @@ impl InfoLabels {
     // Set the size label of the episode widget.
     fn set_size(&self, bytes: Option<i32>) {
         // Convert the bytes to a String label
-        let size = || -> Option<String> {
-            let s = bytes?;
+        let size = bytes.and_then(|s| {
             if s == 0 {
-                return None;
+                None
+            } else {
+                s.file_size(SIZE_OPTS.clone()).ok()
             }
+        });
 
-            s.file_size(SIZE_OPTS.clone()).ok()
-        };
-
-        if let Some(s) = size() {
+        if let Some(s) = size {
             self.total_size.set_text(&s);
             self.total_size.set_visible(true);
             self.separator2.set_visible(true);
@@ -172,296 +404,6 @@ impl InfoLabels {
         }
     }
 }
-
-impl Default for EpisodeWidget {
-    fn default() -> Self {
-        let builder = gtk::Builder::from_resource("/org/gnome/Podcasts/gtk/episode_widget.ui");
-
-        let container = builder.object("episode_container").unwrap();
-        let progressbar = builder.object("progress_bar").unwrap();
-
-        let download = builder.object("download_button").unwrap();
-        let play = builder.object("play_button").unwrap();
-        let cancel = builder.object("cancel_button").unwrap();
-
-        let title = builder.object("title_label").unwrap();
-        let date = builder.object("date_label").unwrap();
-        let duration = builder.object("duration_label").unwrap();
-        let local_size = builder.object("local_size").unwrap();
-        let total_size = builder.object("total_size").unwrap();
-        let played_checkmark = builder.object("played_checkmark").unwrap();
-
-        let separator1 = builder.object("separator1").unwrap();
-        let separator2 = builder.object("separator2").unwrap();
-
-        let size_separator = builder.object("prog_separator").unwrap();
-
-        EpisodeWidget {
-            info: InfoLabels {
-                title,
-                date,
-                separator1,
-                duration,
-                separator2,
-                local_size,
-                total_size,
-                size_separator,
-                played_checkmark,
-            },
-            buttons: Buttons {
-                play,
-                download,
-                cancel,
-            },
-            progressbar,
-            container,
-        }
-    }
-}
-
-impl EpisodeWidget {
-    pub(crate) fn new(episode: EpisodeWidgetModel, sender: &Sender<Action>) -> Rc<Self> {
-        let widget = Rc::new(Self::default());
-        let weak = Rc::downgrade(&widget);
-        widget.info.init(&episode);
-        Self::determine_buttons_state(&weak, &episode, sender)
-            .map_err(|err| error!("Error: {}", err))
-            .ok();
-
-        // When the widget is attached to a parent,
-        // since it's a rust struct and not a widget the
-        // compiler drops the reference to it at the end of
-        // scope. That's cause we only attach the `self.container`
-        // to the parent.
-        //
-        // So this callback keeps a reference to the Rust Struct
-        // so the compiler won't drop it.
-        //
-        // When the widget is detached from its parent view this
-        // callback runs freeing the last reference we were holding.
-        // FIXME This hack feels even worse for GTK4; Use subclassing for EpisodeWidget?
-        let widget_cloned = RefCell::new(Some(widget.clone()));
-        widget.container.connect_destroy(move |_| {
-            widget_cloned.borrow_mut().take();
-        });
-
-        widget
-    }
-
-    // fn init(widget: Rc<Self>, sender: &Sender<Action>) {}
-
-    // InProgress State:
-    //   * Show ProgressBar and Cancel Button.
-    //   * Show `total_size`, `local_size` labels and `size_separator`.
-    //   * Hide Download and Play Buttons
-    fn state_prog(&self) {
-        self.progressbar.set_visible(true);
-        self.buttons.cancel.set_visible(true);
-
-        self.info.total_size.set_visible(true);
-        self.info.local_size.set_visible(true);
-        self.info.size_separator.set_visible(true);
-
-        self.buttons.play.set_visible(false);
-        self.buttons.download.set_visible(false);
-    }
-
-    // Playable State:
-    //   * Hide ProgressBar and Cancel, Download Buttons.
-    //   * Hide `local_size` labels and `size_separator`.
-    //   * Show Play Button and `total_size` label
-    fn state_playable(&self) {
-        self.progressbar.set_visible(false);
-        self.buttons.cancel.set_visible(false);
-        self.buttons.download.set_visible(false);
-        self.info.local_size.set_visible(false);
-        self.info.size_separator.set_visible(false);
-
-        self.info.total_size.set_visible(true);
-        self.buttons.play.set_visible(true);
-    }
-
-    // ToDownload State:
-    //   * Hide ProgressBar and Cancel, Play Buttons.
-    //   * Hide `local_size` labels and `size_separator`.
-    //   * Show Download Button
-    //   * Determine `total_size` label state (Comes from `episode.lenght`).
-    fn state_download(&self) {
-        self.progressbar.set_visible(false);
-        self.buttons.cancel.set_visible(false);
-        self.buttons.play.set_visible(false);
-
-        self.info.local_size.set_visible(false);
-        self.info.size_separator.set_visible(false);
-
-        self.buttons.download.set_visible(true);
-    }
-
-    fn update_progress(&self, local_size: &str, fraction: f64) {
-        self.info.local_size.set_text(local_size);
-        self.progressbar.set_fraction(fraction);
-    }
-
-    /// Change the state of the `EpisodeWidget`.
-    ///
-    /// Function Flowchart:
-    ///
-    /// -------------------       --------------
-    /// | Is the Episode  |  YES  |   State:   |
-    /// | currently being | ----> | InProgress |
-    /// |   downloaded?   |       |            |
-    /// -------------------       --------------
-    ///         |
-    ///         | NO
-    ///         |
-    ///        \_/
-    /// -------------------       --------------
-    /// | is the episode  |  YES  |   State:   |
-    /// |   downloaded    | ----> |  Playable  |
-    /// |    already?     |       |            |
-    /// -------------------       --------------
-    ///         |
-    ///         | NO
-    ///         |
-    ///        \_/
-    /// -------------------
-    /// |     State:      |
-    /// |   ToDownload    |
-    /// -------------------
-    fn determine_buttons_state(
-        weak: &Weak<Self>,
-        episode: &EpisodeWidgetModel,
-        sender: &Sender<Action>,
-    ) -> Result<()> {
-        let widget = weak
-            .upgrade()
-            .ok_or_else(|| anyhow!("Widget is already dropped"))?;
-        // Reset the buttons state no matter the glade file.
-        // This is just to make it easier to port to relm in the future.
-        widget.buttons.cancel.set_visible(false);
-        widget.buttons.play.set_visible(false);
-        widget.buttons.download.set_visible(false);
-
-        // Check if the episode is being downloaded
-        let id = episode.rowid();
-        let active_dl = move || -> Result<Option<_>> {
-            let m = manager::ACTIVE_DOWNLOADS
-                .read()
-                .map_err(|_| anyhow!("Failed to get a lock on the mutex."))?;
-
-            Ok(m.get(&id).cloned())
-        };
-
-        // State: InProgress
-        if let Some(prog) = active_dl()? {
-            // set a callback that will update the state when the download finishes
-            let callback = clone!(@strong weak, @strong sender => move || {
-                if let Ok(guard) = manager::ACTIVE_DOWNLOADS.read() {
-                    if !guard.contains_key(&id) {
-                        if let Ok(ep) = dbqueries::get_episode_widget_from_rowid(id) {
-                            Self::determine_buttons_state(&weak, &ep, &sender)
-                                .map_err(|err| error!("Error: {}", err))
-                                .ok();
-
-                            return glib::Continue(false)
-                        }
-                    }
-                }
-
-                glib::Continue(true)
-            });
-            glib::timeout_add_local(Duration::from_millis(250), callback);
-
-            // Wire the cancel button
-            widget
-                .buttons
-                .cancel
-                .connect_clicked(clone!(@strong prog, @strong weak, @strong sender => move |_| {
-                    // Cancel the download
-                    if let Ok(mut m) = prog.lock() {
-                        m.cancel();
-                    }
-
-                    // Cancel is not instant so we have to wait a bit
-                    glib::timeout_add_local(Duration::from_millis(50), clone!(@strong weak, @strong sender => move || {
-                        if let Ok(thing) = active_dl() {
-                            if thing.is_none() {
-                                // Recalculate the widget state
-                                dbqueries::get_episode_widget_from_rowid(id)
-                                    .map_err(From::from)
-                                    .and_then(|ep| Self::determine_buttons_state(&weak, &ep, &sender))
-                                    .map_err(|err| error!("Error: {}", err))
-                                    .ok();
-
-                                return glib::Continue(false)
-                            }
-                        }
-
-                        glib::Continue(true)
-                    }));
-            }));
-
-            // Setup a callback that will update the total_size label
-            // with the http ContentLength header number rather than
-            // relying to the RSS feed.
-            update_total_size_callback(weak, &prog);
-
-            // Setup a callback that will update the progress bar.
-            update_progressbar_callback(weak, &prog, id);
-
-            // Change the widget layout/state
-            widget.state_prog();
-
-            return Ok(());
-        }
-
-        // State: Playable
-        if episode.local_uri().is_some() {
-            // Change the widget layout/state
-            widget.state_playable();
-
-            // Wire the play button
-            widget
-                .buttons
-                .play
-                .connect_clicked(clone!(@strong weak, @strong sender => move |_| {
-                    if let Ok(mut ep) = dbqueries::get_episode_widget_from_rowid(id) {
-                        on_play_bttn_clicked(&weak, &mut ep, &sender)
-                            .map_err(|err| error!("Error: {}", err))
-                            .ok();
-                    }
-                }));
-
-            return Ok(());
-        }
-
-        // State: ToDownload
-        // Wire the download button
-        widget
-            .buttons
-            .download
-            .connect_clicked(clone!(@strong weak, @strong sender => move |dl| {
-                if let Ok(ep) = dbqueries::get_episode_widget_from_rowid(id) {
-                    on_download_clicked(&ep, &sender)
-                        .and_then(|_| {
-                            info!("Download started successfully.");
-                            Self::determine_buttons_state(&weak, &ep, &sender)
-                        })
-                        .map_err(|err| error!("Error: {}", err))
-                        .ok();
-                }
-
-                // Restore sensitivity after operations above complete
-                dl.set_sensitive(true);
-            }));
-
-        // Change the widget state into `ToDownload`
-        widget.state_download();
-
-        Ok(())
-    }
-}
-
 fn on_download_clicked(ep: &EpisodeWidgetModel, sender: &Sender<Action>) -> Result<()> {
     let pd = dbqueries::get_podcast_from_id(ep.show_id())?;
     let download_dir = get_download_dir(pd.title())?;
@@ -474,51 +416,25 @@ fn on_download_clicked(ep: &EpisodeWidgetModel, sender: &Sender<Action>) -> Resu
     Ok(())
 }
 
-fn on_play_bttn_clicked(
-    widget: &Weak<EpisodeWidget>,
-    episode: &mut EpisodeWidgetModel,
-    sender: &Sender<Action>,
-) -> Result<()> {
-    let widget = widget
-        .upgrade()
-        .ok_or_else(|| anyhow!("Widget is already dropped"))?;
-
-    // Grey out the title
-    widget.info.set_title(episode);
-
-    // Play the episode
-    send!(sender, Action::InitEpisode(episode.rowid()));
-    // Refresh background views to match the normal/greyout title state
-    send!(sender, Action::RefreshEpisodesViewBGR);
-    Ok(())
-}
-
 // Setup a callback that will update the progress bar.
 #[inline]
-#[allow(clippy::if_same_then_else)]
 fn update_progressbar_callback(
-    widget: &Weak<EpisodeWidget>,
+    widget: &EpisodeWidgetPriv,
     prog: &Arc<Mutex<manager::Progress>>,
     episode_rowid: i32,
 ) {
-    let callback = clone!(@strong widget,@strong prog => move || {
+    let callback = clone!(@weak widget, @strong prog => @default-return glib::Continue(false), move || {
         progress_bar_helper(&widget, &prog, episode_rowid)
             .unwrap_or(glib::Continue(false))
     });
     glib::timeout_add_local(Duration::from_millis(100), callback);
 }
 
-#[allow(clippy::if_same_then_else)]
 fn progress_bar_helper(
-    widget: &Weak<EpisodeWidget>,
+    widget: &EpisodeWidgetPriv,
     prog: &Arc<Mutex<manager::Progress>>,
     episode_rowid: i32,
 ) -> Result<glib::Continue> {
-    let widget = match widget.upgrade() {
-        Some(w) => w,
-        None => return Ok(glib::Continue(false)),
-    };
-
     let (fraction, downloaded, cancel) = match prog.try_lock() {
         Ok(guard) => (
             guard.get_fraction(),
@@ -550,14 +466,13 @@ fn progress_bar_helper(
     } else if !active || cancel {
         // if the total size is not a number, hide it
         if widget
-            .info
             .total_size
             .text()
             .trim_end_matches(" MB")
             .parse::<i32>()
             .is_err()
         {
-            widget.info.total_size.set_visible(false);
+            widget.total_size.set_visible(false);
         }
         Ok(glib::Continue(false))
     } else {
@@ -569,22 +484,17 @@ fn progress_bar_helper(
 // with the http ContentLength header number rather than
 // relying to the RSS feed.
 #[inline]
-fn update_total_size_callback(widget: &Weak<EpisodeWidget>, prog: &Arc<Mutex<manager::Progress>>) {
-    let callback = clone!(@strong prog, @strong widget => move || {
+fn update_total_size_callback(widget: &EpisodeWidgetPriv, prog: &Arc<Mutex<manager::Progress>>) {
+    let callback = clone!(@strong prog, @weak widget => @default-return glib::Continue(false), move || {
         total_size_helper(&widget, &prog).unwrap_or(glib::Continue(true))
     });
     glib::timeout_add_local(Duration::from_millis(100), callback);
 }
 
 fn total_size_helper(
-    widget: &Weak<EpisodeWidget>,
+    widget: &EpisodeWidgetPriv,
     prog: &Arc<Mutex<manager::Progress>>,
 ) -> Result<glib::Continue> {
-    let widget = match widget.upgrade() {
-        Some(w) => w,
-        None => return Ok(glib::Continue(false)),
-    };
-
     // Get the total_bytes.
     let total_bytes = match prog.try_lock() {
         Ok(guard) => guard.get_size(),
@@ -595,12 +505,52 @@ fn total_size_helper(
     debug!("Total Size: {}", total_bytes);
     if total_bytes != 0 {
         // Update the total_size label
-        widget.info.set_size(Some(total_bytes as i32));
+        widget.set_size(Some(total_bytes as i32));
 
         // Do not call again the callback
         Ok(glib::Continue(false))
     } else {
         Ok(glib::Continue(true))
+    }
+}
+
+#[glib::object_subclass]
+impl ObjectSubclass for EpisodeWidgetPriv {
+    const NAME: &'static str = "PdEpisode";
+    type Type = EpisodeWidget;
+    type ParentType = gtk::Box;
+
+    fn class_init(klass: &mut Self::Class) {
+        klass.bind_template();
+    }
+
+    fn instance_init(obj: &InitializingObject<Self>) {
+        obj.init_template();
+    }
+}
+
+impl WidgetImpl for EpisodeWidgetPriv {}
+impl ObjectImpl for EpisodeWidgetPriv {}
+impl BoxImpl for EpisodeWidgetPriv {}
+
+glib::wrapper! {
+    pub struct EpisodeWidget(ObjectSubclass<EpisodeWidgetPriv>)
+        @extends gtk::Box, gtk::Widget,
+        @implements gtk::Accessible, gtk::Buildable, gtk::ConstraintTarget;
+}
+
+impl EpisodeWidget {
+    pub(crate) fn new(sender: &Sender<Action>, episode: &EpisodeWidgetModel) -> Self {
+        let widget = Self::default();
+        widget.imp().init(sender, episode);
+        widget
+    }
+}
+
+impl Default for EpisodeWidget {
+    fn default() -> Self {
+        let widget: Self = glib::Object::new();
+        widget
     }
 }
 

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.22.0 
+<!--
 
 Copyright (C) 2017 - 2018
 
@@ -29,12 +29,13 @@ Tobias Bernard
   <!-- interface-description A podcast client for the GNOME Desktop -->
   <!-- interface-copyright 2017 - 2018 -->
   <!-- interface-authors Jordan Petridis\nTobias Bernard -->
-  <object class="GtkBox" id="episode_container">
+  <template class="PdEpisode" parent="GtkBox">
     <property name="height_request">64</property>
     <property name="valign">center</property>
     <property name="margin_start">6</property>
     <property name="margin_end">6</property>
     <property name="orientation">vertical</property>
+
     <child>
       <object class="GtkBox">
         <property name="margin_start">6</property>
@@ -57,7 +58,7 @@ Tobias Bernard
                 <property name="halign">start</property>
                 <property name="spacing">6</property>
                 <child>
-                  <object class="GtkLabel" id="title_label">
+                  <object class="GtkLabel" id="title">
                     <property name="label">Episode Title</property>
                     <property name="ellipsize">end</property>
                     <property name="single_line_mode">True</property>
@@ -80,7 +81,7 @@ Tobias Bernard
               <object class="GtkBox">
                 <property name="spacing">6</property>
                 <child>
-                  <object class="GtkLabel" id="date_label">
+                  <object class="GtkLabel" id="date">
                     <property name="halign">start</property>
                     <property name="label">3 Jan</property>
                     <property name="single_line_mode">True</property>
@@ -103,7 +104,7 @@ Tobias Bernard
                   </object>
                 </child>
                 <child>
-                  <object class="GtkLabel" id="duration_label">
+                  <object class="GtkLabel" id="duration">
                     <property name="halign">start</property>
                     <property name="visible">False</property>
                     <property name="label">42 min</property>
@@ -141,7 +142,7 @@ Tobias Bernard
                   </object>
                 </child>
                 <child>
-                  <object class="GtkLabel" id="prog_separator">
+                  <object class="GtkLabel" id="size_separator">
                     <property name="halign">start</property>
                     <property name="visible">False</property>
                     <property name="label">/</property>
@@ -174,7 +175,7 @@ Tobias Bernard
             <property name="halign">end</property>
             <property name="spacing">6</property>
             <child>
-              <object class="GtkButton" id="play_button">
+              <object class="GtkButton" id="play">
                 <property name="receives_default">True</property>
                 <property name="visible">False</property>
                 <property name="tooltip_text" translatable="yes">Play this episode</property>
@@ -187,7 +188,7 @@ Tobias Bernard
               </object>
             </child>
             <child>
-              <object class="GtkButton" id="cancel_button">
+              <object class="GtkButton" id="cancel">
                 <property name="receives_default">False</property>
                 <property name="tooltip_text" translatable="yes">Cancel the download process</property>
                 <property name="halign">center</property>
@@ -199,7 +200,7 @@ Tobias Bernard
               </object>
             </child>
             <child>
-              <object class="GtkButton" id="download_button">
+              <object class="GtkButton" id="download">
                 <property name="receives_default">True</property>
                 <property name="tooltip_text" translatable="yes">Download this episode</property>
                 <property name="halign">center</property>
@@ -215,7 +216,7 @@ Tobias Bernard
       </object>
     </child>
     <child>
-      <object class="GtkProgressBar" id="progress_bar">
+      <object class="GtkProgressBar" id="progressbar">
         <property name="visible">False</property>
         <property name="margin_start">6</property>
         <property name="margin_end">6</property>
@@ -225,5 +226,5 @@ Tobias Bernard
         <property name="pulse_step">0</property>
       </object>
     </child>
-  </object>
+  </template>
 </interface>

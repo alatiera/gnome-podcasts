@@ -247,7 +247,6 @@ impl PdApplication {
         // universal go back action
         let go_back = gio::SimpleAction::new("go-back", None);
         go_back.connect_activate(clone!(@weak self as app, @weak data => move |_, _| {
-            use crate::stacks::PopulatedStack;
             if app.go_back_on_deck() {
                 return;
             }
@@ -264,8 +263,6 @@ impl PdApplication {
         // universal open menu
         let open_menu = gio::SimpleAction::new("open-menu", None);
         open_menu.connect_activate(clone!(@weak self as app, @weak data => move |_, _| {
-            use crate::stacks::PopulatedStack;
-
             let window = data.window.borrow();
             let window = window.as_ref().unwrap();
             // TODO make the widgets impl an interface or somthing, rework this

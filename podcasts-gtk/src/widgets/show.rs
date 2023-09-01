@@ -183,7 +183,7 @@ fn populate_listbox(
 
             let constructor = clone!(@strong sender => move |ep: EpisodeWidgetModel| {
                 let id = ep.rowid();
-                let episode_widget = EpisodeWidget::new(ep, &sender).container.clone();
+                let episode_widget = EpisodeWidget::new(&sender, &ep);
                 let row = gtk::ListBoxRow::new();
                 row.set_child(Some(&episode_widget));
                 row.set_action_name(Some("app.go-to-episode"));

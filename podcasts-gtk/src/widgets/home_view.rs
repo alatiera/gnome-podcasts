@@ -160,9 +160,7 @@ fn split(now: &DateTime<Utc>, epoch: i64) -> ListSplit {
 #[derive(Debug, Clone)]
 pub(crate) struct HomeEpisode {
     row: gtk::ListBoxRow,
-    container: gtk::Box,
     image: gtk::Image,
-    episode: gtk::Box,
 }
 
 impl Default for HomeEpisode {
@@ -171,17 +169,12 @@ impl Default for HomeEpisode {
         let container: gtk::Box = builder.object("container").unwrap();
         let image: gtk::Image = builder.object("cover").unwrap();
         let ep = EpisodeWidget::default();
-        container.append(&ep.container);
+        container.append(&ep);
         let row = gtk::ListBoxRow::new();
         row.set_child(Some(&container));
         row.set_visible(true);
 
-        HomeEpisode {
-            row,
-            container,
-            image,
-            episode: ep.container,
-        }
+        HomeEpisode { row, image }
     }
 }
 
@@ -192,19 +185,15 @@ impl HomeEpisode {
         let image: gtk::Image = builder.object("cover").unwrap();
         let pid = episode.show_id();
         let id = episode.rowid();
-        let ep = EpisodeWidget::new(episode, sender);
+        let ep = EpisodeWidget::new(sender, &episode);
+        container.append(&ep);
         let row = gtk::ListBoxRow::new();
         row.set_child(Some(&container));
         row.set_action_name(Some("app.go-to-episode"));
         row.set_action_target_value(Some(&id.to_variant()));
         row.set_visible(true);
 
-        let view = HomeEpisode {
-            row,
-            container,
-            image,
-            episode: ep.container.clone(),
-        };
+        let view = HomeEpisode { row, image };
 
         view.init(pid);
         view
@@ -212,7 +201,6 @@ impl HomeEpisode {
 
     fn init(&self, show_id: i32) {
         self.set_cover(show_id);
-        self.container.append(&self.episode);
     }
 
     fn set_cover(&self, show_id: i32) {
