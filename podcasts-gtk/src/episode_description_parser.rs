@@ -214,7 +214,18 @@ fn handle_child(buffer: &mut String, node: &Handle, state: &mut ParserState) {
                 expanded_name!(html "sup") => Some("sup"),
                 _ => None,
             };
-            if let Some(tag) = wrapper_tag {
+            // Invalid link tag, links that point to # lead nowhere, skip the tag.
+            let skip_tag = if let Some(href) = wrapper_href.as_ref() {
+                wrapper_tag == Some("a")
+                    && (href.value.trim_start().starts_with('#')
+                        || href.value.trim().is_empty()
+                        || href.value.trim_start().starts_with("jump:"))
+            } else {
+                false
+            };
+            let wrote_tag = if skip_tag {
+                false
+            } else if let Some(tag) = wrapper_tag {
                 buffer.push('<');
                 buffer.push_str(tag);
                 let is_link;
@@ -241,7 +252,12 @@ fn handle_child(buffer: &mut String, node: &Handle, state: &mut ParserState) {
                 if is_link {
                     state.inside_link -= 1;
                 }
+                true
             } else {
+                false
+            };
+
+            if !wrote_tag {
                 let children = node.children.borrow();
                 for el in children.iter() {
                     handle_child(buffer, el, state);
@@ -602,6 +618,33 @@ Free as in Freedom is produced by <a href=\"http://danlynch.org/blog/\">Dan Lync
 </a>The content of this audcast, and the accompanying show notes and music are licensed under the <a href=\"https://creativecommons.org/licenses/by-sa/4.0/\">Creative Commons Attribution-Share-Alike 4.0 license (CC BY-SA 4.0)</a>. \n\n";
 
         let markup = html2pango_markup(&description);
+        assert_eq!(expected, markup);
+    }
+
+    #[test]
+    fn test_hash_invalid_link() {
+        let description = r##"<p><a href=" #whatever">🤷</a></p>"##;
+        let expected = "🤷\n\n";
+        let markup = html2pango_markup(description);
+
+        assert_eq!(expected, markup);
+    }
+
+    #[test]
+    fn test_empty_link() {
+        let description = r##"<p><a href="">🤷</a></p>"##;
+        let expected = "🤷\n\n";
+        let markup = html2pango_markup(description);
+
+        assert_eq!(expected, markup);
+    }
+
+    #[test]
+    fn test_hash_timestamp_link() {
+        let description = r##"<p><a href="#t=13:12">13:12</a></p>"##;
+        let expected = "<a href=\"jump:792\">13:12</a>\n\n";
+        let markup = html2pango_markup(description);
+
         assert_eq!(expected, markup);
     }
 }
