@@ -542,8 +542,12 @@ glib::wrapper! {
 impl EpisodeWidget {
     pub(crate) fn new(sender: &Sender<Action>, episode: &EpisodeWidgetModel) -> Self {
         let widget = Self::default();
-        widget.imp().init(sender, episode);
+        widget.init(sender, episode);
         widget
+    }
+
+    pub(crate) fn init(&self, sender: &Sender<Action>, episode: &EpisodeWidgetModel) {
+        self.imp().init(sender, episode);
     }
 }
 

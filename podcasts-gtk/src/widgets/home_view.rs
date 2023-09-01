@@ -107,7 +107,7 @@ impl HomeView {
 
         let func = clone!(@weak home => move |ep: EpisodeWidgetModel| {
             let epoch = ep.epoch();
-            let widget = HomeEpisode::new(ep, &sender);
+            let widget = HomeEpisode::new(&sender, &ep);
 
             match split(&now_utc, i64::from(epoch)) {
                 Today => add_to_box(&widget, &home.imp().today_list, &home.imp().today_box),
@@ -134,7 +134,7 @@ impl HomeView {
 }
 
 fn add_to_box(widget: &HomeEpisode, listbox: &gtk::ListBox, box_: &gtk::Box) {
-    listbox.append(&widget.row);
+    listbox.append(widget);
     box_.set_visible(true);
 }
 
@@ -157,55 +157,69 @@ fn split(now: &DateTime<Utc>, epoch: i64) -> ListSplit {
     }
 }
 
-#[derive(Debug, Clone)]
-pub(crate) struct HomeEpisode {
-    row: gtk::ListBoxRow,
-    image: gtk::Image,
+#[derive(Debug, CompositeTemplate, Default)]
+#[template(resource = "/org/gnome/Podcasts/gtk/home_episode.ui")]
+pub struct HomeEpisodePriv {
+    #[template_child]
+    cover: TemplateChild<gtk::Image>,
+    #[template_child]
+    episode: TemplateChild<EpisodeWidget>,
+}
+
+impl HomeEpisodePriv {
+    fn init(&self, sender: &Sender<Action>, episode: &EpisodeWidgetModel) {
+        let pid = episode.show_id();
+        self.set_cover(pid);
+        self.episode.init(sender, episode);
+        // Assure the image is read out along with the Episode title
+        self.cover.set_accessible_role(gtk::AccessibleRole::Label);
+    }
+
+    fn set_cover(&self, show_id: i32) {
+        if let Err(err) = utils::set_image_from_path(&self.cover, show_id, 64) {
+            error!("Failed to set a cover: {err}");
+        }
+    }
+}
+
+#[glib::object_subclass]
+impl ObjectSubclass for HomeEpisodePriv {
+    const NAME: &'static str = "PdHomeEpisode";
+    type Type = HomeEpisode;
+    type ParentType = gtk::ListBoxRow;
+
+    fn class_init(klass: &mut Self::Class) {
+        klass.bind_template();
+    }
+
+    fn instance_init(obj: &InitializingObject<Self>) {
+        obj.init_template();
+    }
+}
+
+impl WidgetImpl for HomeEpisodePriv {}
+impl ObjectImpl for HomeEpisodePriv {}
+impl ListBoxRowImpl for HomeEpisodePriv {}
+
+glib::wrapper! {
+    pub struct HomeEpisode(ObjectSubclass<HomeEpisodePriv>)
+        @extends gtk::ListBoxRow, gtk::Widget,
+        @implements gtk::Accessible, gtk::Actionable, gtk::Buildable, gtk::ConstraintTarget;
+}
+
+impl HomeEpisode {
+    pub(crate) fn new(sender: &Sender<Action>, episode: &EpisodeWidgetModel) -> Self {
+        let widget = Self::default();
+        widget.set_action_name(Some("app.go-to-episode"));
+        widget.set_action_target_value(Some(&episode.rowid().to_variant()));
+        widget.imp().init(sender, episode);
+        widget
+    }
 }
 
 impl Default for HomeEpisode {
     fn default() -> Self {
-        let builder = gtk::Builder::from_resource("/org/gnome/Podcasts/gtk/home_episode.ui");
-        let container: gtk::Box = builder.object("container").unwrap();
-        let image: gtk::Image = builder.object("cover").unwrap();
-        let ep = EpisodeWidget::default();
-        container.append(&ep);
-        let row = gtk::ListBoxRow::new();
-        row.set_child(Some(&container));
-        row.set_visible(true);
-
-        HomeEpisode { row, image }
-    }
-}
-
-impl HomeEpisode {
-    fn new(episode: EpisodeWidgetModel, sender: &Sender<Action>) -> HomeEpisode {
-        let builder = gtk::Builder::from_resource("/org/gnome/Podcasts/gtk/home_episode.ui");
-        let container: gtk::Box = builder.object("container").unwrap();
-        let image: gtk::Image = builder.object("cover").unwrap();
-        let pid = episode.show_id();
-        let id = episode.rowid();
-        let ep = EpisodeWidget::new(sender, &episode);
-        container.append(&ep);
-        let row = gtk::ListBoxRow::new();
-        row.set_child(Some(&container));
-        row.set_action_name(Some("app.go-to-episode"));
-        row.set_action_target_value(Some(&id.to_variant()));
-        row.set_visible(true);
-
-        let view = HomeEpisode { row, image };
-
-        view.init(pid);
-        view
-    }
-
-    fn init(&self, show_id: i32) {
-        self.set_cover(show_id);
-    }
-
-    fn set_cover(&self, show_id: i32) {
-        utils::set_image_from_path(&self.image, show_id, 64)
-            .map_err(|err| error!("Failed to set a cover: {}", err))
-            .ok();
+        let widget: Self = glib::Object::new();
+        widget
     }
 }
