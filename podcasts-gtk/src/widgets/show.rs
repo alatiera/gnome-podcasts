@@ -55,6 +55,25 @@ pub struct ShowWidgetPriv {
     pub show_id: Cell<Option<i32>>,
 }
 
+impl ShowWidgetPriv {
+    fn init(&self) {
+        self.read_more_label.init();
+        self.read_more_label
+            .update_property(&[gtk::accessible::Property::Description(
+                "Podcast Description",
+            )]);
+    }
+
+    /// Set the description text.
+    fn set_description(&self, text: &str) {
+        let markup = html2text::from_read(text.as_bytes(), text.as_bytes().len());
+        let markup = markup.trim();
+        if !markup.is_empty() {
+            self.read_more_label.set_label(markup);
+        }
+    }
+}
+
 #[glib::object_subclass]
 impl ObjectSubclass for ShowWidgetPriv {
     const NAME: &'static str = "PdShowWidget";
@@ -96,22 +115,23 @@ impl ShowWidget {
         sender: Sender<Action>,
         vadj: Option<Adjustment>,
     ) -> ShowWidget {
-        let pdw = ShowWidget::default();
-        let pdw_ = pdw.imp();
-        pdw.init(&pd);
+        let widget = ShowWidget::default();
+        widget.init(&pd);
 
-        let menu = ShowMenu::new(&pd, &pdw_.episodes, &sender);
+        let menu = ShowMenu::new(&pd, &widget.imp().episodes, &sender);
         send!(sender, Action::InitSecondaryMenu(Fragile::new(menu.menu)));
 
-        let res = populate_listbox(&pdw, pd, sender, vadj);
+        let res = populate_listbox(&widget, pd, sender, vadj);
         debug_assert!(res.is_ok());
 
-        pdw
+        widget
     }
 
     pub(crate) fn init(&self, pd: &Arc<Show>) {
-        self.set_description(pd.description());
-        self.imp().show_id.set(Some(pd.id()));
+        let self_ = self.imp();
+        self_.init();
+        self_.set_description(pd.description());
+        self_.show_id.set(Some(pd.id()));
 
         let res = self.set_cover(pd);
 
@@ -121,18 +141,6 @@ impl ShowWidget {
     /// Set the show cover.
     fn set_cover(&self, pd: &Arc<Show>) -> Result<()> {
         utils::set_image_from_path(&self.imp().cover, pd.id(), 256)
-    }
-
-    /// Set the description text.
-    fn set_description(&self, text: &str) {
-        let self_ = self.imp();
-
-        let markup = html2text::from_read(text.as_bytes(), text.as_bytes().len());
-        let markup = markup.trim();
-
-        if !markup.is_empty() {
-            self_.read_more_label.set_label(markup);
-        }
     }
 
     pub(crate) fn show_id(&self) -> Option<i32> {

@@ -55,6 +55,7 @@ Tobias Bernard
                         <property name="halign">center</property>
                         <property name="icon_name">image-x-generic-symbolic</property>
                         <property name="overflow">hidden</property>
+                        <property name="focusable">True</property>
                         <style>
                           <class name="rounded-big"/>
                         </style>

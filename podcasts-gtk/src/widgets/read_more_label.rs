@@ -29,6 +29,10 @@ impl ObjectImpl for ReadMoreLabelPriv {
 
         let obj = self.obj();
 
+        self.button
+            .update_property(&[gtk::accessible::Property::Description(&i18n(
+                "Visually expands this description",
+            ))]);
         self.button.set_label(&i18n("Read More"));
         self.button.set_halign(gtk::Align::Center);
         self.button
@@ -110,7 +114,8 @@ impl WidgetImpl for ReadMoreLabelPriv {
 
 glib::wrapper! {
     pub struct ReadMoreLabel(ObjectSubclass<ReadMoreLabelPriv>)
-        @extends gtk::Widget;
+        @extends gtk::Widget,
+    @implements gtk::Accessible;
 }
 
 impl Default for ReadMoreLabel {
@@ -120,6 +125,11 @@ impl Default for ReadMoreLabel {
 }
 
 impl ReadMoreLabel {
+    pub(crate) fn init(&self) {
+        self.set_focusable(true);
+        self.set_accessible_role(gtk::AccessibleRole::Label);
+    }
+
     fn set_expanded_inner(&self, expanded: bool) {
         let imp = self.imp();
         if expanded == imp.expanded.replace(expanded) {
@@ -151,5 +161,6 @@ impl ReadMoreLabel {
         }
 
         imp.long_label.set_markup(&markup);
+        self.update_property(&[gtk::accessible::Property::Label(label)]);
     }
 }
