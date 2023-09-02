@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.22.0 
+<!--
 
 Copyright (C) 2017 - 2018
 
@@ -54,6 +54,10 @@ Tobias Bernard
               <object class="GtkEntry" id="new_url">
                 <property name="width_chars">26</property>
                 <property name="input_purpose">url</property>
+                <accessibility>
+                  <relation name="labelled-by">enter_address_label</relation>
+                  <property name="description" translatable="yes">Popover menu (ESC to close)</property>
+                </accessibility>
               </object>
             </child>
             <child>
