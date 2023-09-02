@@ -2,14 +2,14 @@
 # Copyright (C) 2018 podcasts's COPYRIGHT HOLDER
 # This file is distributed under the same license as the podcasts package.
 # Seong-ho Cho <shcho@gnome.org>, 2018-2021.
-# DaeHyun Sung <sungdh86+git@gmail.com>, 2020-2022.
+# DaeHyun Sung <sungdh86+git@gmail.com>, 2020-2023.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: podcasts master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2021-11-28 07:07+0000\n"
-"PO-Revision-Date: 2022-03-01 23:29+0900\n"
+"POT-Creation-Date: 2023-03-26 17:46+0000\n"
+"PO-Revision-Date: 2023-08-27 01:17+0900\n"
 "Last-Translator: DaeHyun Sung <sungdh86+git@gmail.com>\n"
 "Language-Team: Korean <gnome-kr@googlegroups.com>\n"
 "Language: ko\n"
@@ -17,164 +17,74 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Poedit 3.0.1\n"
+"X-Generator: Poedit 3.3.2\n"
 
-#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:15
-msgid "Top position of the last open main window"
-msgstr "최근 연 메인 창 상단 위치"
-
-#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:19
-msgid "Left position of the last open main window"
-msgstr "최근 연 메인 창 좌측 위치"
-
-#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:23
-msgid "Height of the last open main window"
-msgstr "최근 연 메인 창 높이"
-
-#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:27
-msgid "Width of the last open main window"
-msgstr "최근 연 메인 창 너비"
-
-#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:31
-msgid "Maximized state of the last open main window"
-msgstr "최근 연 메인 창 최대화 상태"
-
-#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:36
-msgid "Enable or disable dark theme"
-msgstr "어두움 테마 사용 함/안함"
-
-#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:41
-msgid "Whether to periodically refresh content"
-msgstr "주기적으로 내용 새로 고침 여부"
-
-#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:46
-msgid "How many periods of time to wait between automatic refreshes"
-msgstr "자동 새로 고침 기다림 주기 시간 간격"
-
-#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:50
-msgid "What period of time to wait between automatic refreshes"
-msgstr "자동 새로 고침 기다림 주기 시간"
-
-#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:54
-msgid "Whether to refresh content after startup"
-msgstr "시작 후 내용 새로 고침 여부"
-
-#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:60
-msgid "How many periods of time to wait between automatic cleanups"
-msgstr "자동 정리 기다림 주기 시간 간격"
-
-#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:64
-msgid "What period of time to wait between automatic cleanups"
-msgstr "자동 정리 기다림 주기 시간"
-
-#. Weird magic I copy-pasted that sets the Application Name in the Shell.
-#: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:3
-#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:4
-#: podcasts-gtk/resources/gtk/headerbar.ui:137 podcasts-gtk/src/app.rs:438
-#: podcasts-gtk/src/widgets/aboutdialog.rs:63 podcasts-gtk/src/window.rs:66
-msgid "Podcasts"
-msgstr "팟캐스트"
-
-#: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:4
-msgid "Listen to your favorite podcasts, right from your desktop."
-msgstr "데스크톱에서 바로 원하는 팟캐스트를 듣습니다."
-
-#. Translators: Search terms to find this application. Do NOT translate or localize the semicolons! The list MUST also end with a semicolon!
-#: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:13
-msgid "Podcast;RSS;"
-msgstr "Podcast;팟캐스트;RSS;"
-
-#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:8
-msgid "Listen to your favorite shows"
-msgstr "원하는 팟캐스트를 듣기를 보여줍니다"
-
-#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:10
-msgid ""
-"Play, update, and manage your podcasts from a lightweight interface that "
-"seamlessly integrates with GNOME. Podcasts can play various audio formats "
-"and remember where you stopped listening. You can subscribe to shows via RSS/"
-"Atom, iTunes, and Soundcloud links. Subscriptions from other apps can be "
-"imported via OPML files."
-msgstr ""
-"그놈과 매끄럽게 통합되는 가벼운 인터페이스로 팟캐스트를 재생, 업데이트 및 관"
-"리합니다. 팟캐스트는 다양한 오디오 형식을 재생할 수 있고 듣다가 멈춘 곳을 기"
-"억할 수 있습니다. RSS/Atom, iTunes 및 Soundcloud links를 통해 프로그램을 구독"
-"할 수 있습니다. 다른 앱으로 구독은 OPML파일을 통해 가져올 수 있습니다."
-
-#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:117
-msgid "Jordan Petridis"
-msgstr "Jordan Petridis"
-
-#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:118
-msgid "Julian Hofer"
-msgstr "Julian Hofer"
-
-#: podcasts-gtk/resources/gtk/empty_view.ui:46
+#: podcasts-gtk/resources/gtk/empty_show.ui:16
 msgid "This show does not have episodes yet"
 msgstr "이 쇼에는 아직 에피소드가 없습니다"
 
-#: podcasts-gtk/resources/gtk/empty_view.ui:57
+#: podcasts-gtk/resources/gtk/empty_show.ui:25
 msgid "If you think this is an error, please consider writing a bug report."
 msgstr "오류인 것 같다면 오류 보고서 작성을 고려하십시오."
 
-#: podcasts-gtk/resources/gtk/empty_view.ui:91
-msgid "Get some shows"
+#: podcasts-gtk/resources/gtk/empty_view.ui:30
+msgid "Get Some Shows"
 msgstr "일부 쇼 가져오기"
 
-#: podcasts-gtk/resources/gtk/empty_view.ui:123
+#: podcasts-gtk/resources/gtk/empty_view.ui:49
 msgid "Add new shows via feed URL"
 msgstr "피드 URL 주소로 새 쇼 추가"
 
-#: podcasts-gtk/resources/gtk/empty_view.ui:152
+#: podcasts-gtk/resources/gtk/empty_view.ui:71
 msgid "Import shows from another device"
 msgstr "다른 장치에서 쇼 가져오기"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:49
+#: podcasts-gtk/resources/gtk/episode_description.ui:41
 msgid "Episode Details"
 msgstr "에피소드 내용"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:64
-#: podcasts-gtk/resources/gtk/headerbar.ui:186
+#: podcasts-gtk/resources/gtk/episode_description.ui:51
+#: podcasts-gtk/resources/gtk/headerbar.ui:143
 msgid "Back"
 msgstr "뒤로"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:148
+#: podcasts-gtk/resources/gtk/episode_description.ui:105
 msgid "Podcast Title"
 msgstr "팟캐스트 제목"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:186
+#: podcasts-gtk/resources/gtk/episode_description.ui:128
 msgid "Duration - Date"
 msgstr "방송시간 - 날짜"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:241
+#: podcasts-gtk/resources/gtk/episode_description.ui:148
 msgid "Episode Description"
 msgstr "에피소드 설명"
 
-#: podcasts-gtk/resources/gtk/episode_menu.ui:36
+#: podcasts-gtk/resources/gtk/episode_menu.ui:35
 msgid "Go to Show"
 msgstr "쇼로 이동"
 
-#: podcasts-gtk/resources/gtk/episode_menu.ui:40
+#: podcasts-gtk/resources/gtk/episode_menu.ui:39
 msgid "Copy Episode Url"
 msgstr "에피소드 URL 주소 복사"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:82
+#: podcasts-gtk/resources/gtk/episode_widget.ui:70
 msgid "You’ve already listened to this episode."
 msgstr "이미 에피소드를 들었습니다."
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:187
+#: podcasts-gtk/resources/gtk/episode_widget.ui:157
 msgid "Calculating episode size…"
 msgstr "에피소드 용량 계산 중…"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:214
+#: podcasts-gtk/resources/gtk/episode_widget.ui:180
 msgid "Play this episode"
 msgstr "이 에피소드 재생"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:230
+#: podcasts-gtk/resources/gtk/episode_widget.ui:192
 msgid "Cancel the download process"
 msgstr "다운로드 진행 취소"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:250
+#: podcasts-gtk/resources/gtk/episode_widget.ui:204
 msgid "Download this episode"
 msgstr "이 에피소드 다운로드"
 
@@ -198,115 +108,120 @@ msgstr "키보드 바로 가기(_K)"
 msgid "_About Podcasts"
 msgstr "팟캐스트 정보(_A)"
 
-#: podcasts-gtk/resources/gtk/headerbar.ui:35
-#: podcasts-gtk/resources/gtk/headerbar.ui:165
+#: podcasts-gtk/resources/gtk/headerbar.ui:33
+#: podcasts-gtk/resources/gtk/headerbar.ui:133
 msgid "Add a new feed"
 msgstr "새 피드 추가"
 
-#: podcasts-gtk/resources/gtk/headerbar.ui:53
-msgid "Enter feed address to add"
-msgstr "추가할 피드 주소를 입력하십시오"
+#: podcasts-gtk/resources/gtk/headerbar.ui:44
+msgid "Enter Feed Address"
+msgstr "피드 주소 입력"
 
-#: podcasts-gtk/resources/gtk/headerbar.ui:79
+#: podcasts-gtk/resources/gtk/headerbar.ui:67
 msgid "Add"
 msgstr "추가"
 
-#: podcasts-gtk/resources/gtk/headerbar.ui:150
+#. Weird magic I copy-pasted that sets the Application Name in the Shell.
+#: podcasts-gtk/resources/gtk/headerbar.ui:111
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:4
+#: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:3
+#: podcasts-gtk/src/app.rs:457 podcasts-gtk/src/widgets/aboutdialog.rs:56
+#: podcasts-gtk/src/window.rs:64
+msgid "Podcasts"
+msgstr "팟캐스트"
+
+#: podcasts-gtk/resources/gtk/headerbar.ui:121
 msgid "Show Title"
 msgstr "제목 표시"
 
-#: podcasts-gtk/resources/gtk/help-overlay.ui:12
+#: podcasts-gtk/resources/gtk/headerbar.ui:153
+msgid "Main Menu"
+msgstr "메인 메뉴"
+
+#: podcasts-gtk/resources/gtk/help-overlay.ui:11
 msgid "General"
 msgstr "일반"
 
-#: podcasts-gtk/resources/gtk/help-overlay.ui:18
+#: podcasts-gtk/resources/gtk/help-overlay.ui:15
 msgctxt "shortcut window"
 msgid "Check for new episodes"
 msgstr "새 에피소드 확인"
 
-#: podcasts-gtk/resources/gtk/help-overlay.ui:25
+#: podcasts-gtk/resources/gtk/help-overlay.ui:21
 msgctxt "shortcut window"
 msgid "Quit the application"
 msgstr "프로그램 끝내기"
 
-#: podcasts-gtk/resources/gtk/home_view.ui:56
+#: podcasts-gtk/resources/gtk/home_view.ui:50
 msgid "Today"
 msgstr "오늘"
 
-#: podcasts-gtk/resources/gtk/home_view.ui:89
+#: podcasts-gtk/resources/gtk/home_view.ui:78
 msgid "Yesterday"
 msgstr "어제"
 
-#: podcasts-gtk/resources/gtk/home_view.ui:122
+#: podcasts-gtk/resources/gtk/home_view.ui:106
 msgid "This Week"
 msgstr "금주"
 
-#: podcasts-gtk/resources/gtk/home_view.ui:155
+#: podcasts-gtk/resources/gtk/home_view.ui:134
 msgid "This Month"
 msgstr "이번 달"
 
-#: podcasts-gtk/resources/gtk/home_view.ui:189
+#: podcasts-gtk/resources/gtk/home_view.ui:163
 msgid "Older"
 msgstr "이전"
 
-#: podcasts-gtk/resources/gtk/inapp_notif.ui:69
-msgid "An in-app action notification"
-msgstr "앱 동작 알림"
-
-#: podcasts-gtk/resources/gtk/inapp_notif.ui:75
-msgid "Undo"
-msgstr "실행 취소"
-
-#: podcasts-gtk/resources/gtk/player_dialog.ui:14
+#: podcasts-gtk/resources/gtk/player_dialog.ui:22
 msgid "Now Playing"
 msgstr "지금 재생중"
 
-#: podcasts-gtk/resources/gtk/player_rate.ui:32
+#: podcasts-gtk/resources/gtk/player_rate.ui:29
 msgid "Change the playback speed"
 msgstr "재생 속도 조절"
 
-#: podcasts-gtk/resources/gtk/player_rate.ui:46
-#: podcasts-gtk/resources/gtk/player_rate.ui:85
+#: podcasts-gtk/resources/gtk/player_rate.ui:34
+#: podcasts-gtk/resources/gtk/player_rate.ui:59
 msgid "1.00×"
 msgstr "1.00×"
 
-#: podcasts-gtk/resources/gtk/player_rate.ui:65
+#: podcasts-gtk/resources/gtk/player_rate.ui:39
 msgid "2.00×"
 msgstr "2.00×"
 
-#: podcasts-gtk/resources/gtk/player_rate.ui:70
+#: podcasts-gtk/resources/gtk/player_rate.ui:44
 msgid "1.75×"
 msgstr "1.75×"
 
-#: podcasts-gtk/resources/gtk/player_rate.ui:75
+#: podcasts-gtk/resources/gtk/player_rate.ui:49
 msgid "1.50×"
 msgstr "1.50×"
 
-#: podcasts-gtk/resources/gtk/player_rate.ui:80
+#: podcasts-gtk/resources/gtk/player_rate.ui:54
 msgid "1.25×"
 msgstr "1.25×"
 
-#: podcasts-gtk/resources/gtk/player_rate.ui:90
+#: podcasts-gtk/resources/gtk/player_rate.ui:64
 msgid "0.90×"
 msgstr "0.90×"
 
-#: podcasts-gtk/resources/gtk/player_rate.ui:95
+#: podcasts-gtk/resources/gtk/player_rate.ui:69
 msgid "0.75×"
 msgstr "0.75×"
 
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:97
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:55
 msgid "Rewind 10 seconds"
 msgstr "10초 되감기"
 
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:107
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:63
 msgid "Play"
 msgstr "재생"
 
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:118
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:71
 msgid "Pause"
 msgstr "일시 정지"
 
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:129
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:79
 msgid "Fast forward 10 seconds"
 msgstr "10초 빨리감기"
 
@@ -322,112 +237,195 @@ msgstr "웹사이트(_W)"
 msgid "_Unsubscribe"
 msgstr "가입 취소(_U)"
 
-#: podcasts-gtk/resources/gtk/show_menu.ui:36
+#: podcasts-gtk/resources/gtk/show_menu.ui:35
 msgid "Open Website"
 msgstr "웹사이트 열기"
 
-#: podcasts-gtk/resources/gtk/show_menu.ui:40
+#: podcasts-gtk/resources/gtk/show_menu.ui:39
 msgid "Mark All as Played"
 msgstr "모두 재생한 항목으로 표시"
 
-#: podcasts-gtk/resources/gtk/show_menu.ui:46
+#: podcasts-gtk/resources/gtk/show_menu.ui:45
 msgid "Unsubscribe"
 msgstr "가입 취소"
 
-#: podcasts-gtk/resources/gtk/show_widget.ui:98
-msgid "Read More"
-msgstr "더 읽기"
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:8
+msgid "Listen to your favorite shows"
+msgstr "원하는 팟캐스트를 듣기를 보여줍니다"
 
-#: podcasts-gtk/src/app.rs:353
-msgid "Fetching new episodes"
-msgstr "새 에피소드 가져오는 중"
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:10
+msgid ""
+"Play, update, and manage your podcasts from a lightweight interface that "
+"seamlessly integrates with GNOME. Podcasts can play various audio formats "
+"and remember where you stopped listening. You can subscribe to shows via RSS/"
+"Atom, iTunes, and Soundcloud links. Subscriptions from other apps can be "
+"imported via OPML files."
+msgstr ""
+"그놈과 매끄럽게 통합되는 가벼운 인터페이스로 팟캐스트를 재생, 업데이트 및 관"
+"리합니다. 팟캐스트는 다양한 오디오 형식을 재생할 수 있고 듣다가 멈춘 곳을 기"
+"억할 수 있습니다. RSS/Atom, iTunes 및 Soundcloud links를 통해 프로그램을 구독"
+"할 수 있습니다. 다른 앱으로 구독은 OPML파일을 통해 가져올 수 있습니다."
 
-#: podcasts-gtk/src/stacks/content.rs:58
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:134
+msgid "Jordan Petridis"
+msgstr "Jordan Petridis"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:135
+msgid "Julian Hofer"
+msgstr "Julian Hofer"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:4
+msgid "Listen to your favorite podcasts, right from your desktop."
+msgstr "데스크톱에서 바로 원하는 팟캐스트를 듣습니다."
+
+#. Translators: Search terms to find this application. Do NOT translate or localize the semicolons! The list MUST also end with a semicolon!
+#: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:13
+msgid "Podcast;RSS;"
+msgstr "Podcast;팟캐스트;RSS;"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:15
+msgid "Height of the last open main window"
+msgstr "최근 연 메인 창 높이"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:19
+msgid "Width of the last open main window"
+msgstr "최근 연 메인 창 너비"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:23
+msgid "Maximized state of the last open main window"
+msgstr "최근 연 메인 창 최대화 상태"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:28
+msgid "Whether to periodically refresh content"
+msgstr "주기적으로 내용 새로 고침 여부"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:33
+msgid "How many periods of time to wait between automatic refreshes"
+msgstr "자동 새로 고침 기다림 주기 시간 간격"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:37
+msgid "What period of time to wait between automatic refreshes"
+msgstr "자동 새로 고침 기다림 주기 시간"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:41
+msgid "Whether to refresh content after startup"
+msgstr "시작 후 내용 새로 고침 여부"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:47
+msgid "How many periods of time to wait between automatic cleanups"
+msgstr "자동 정리 기다림 주기 시간 간격"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:51
+msgid "What period of time to wait between automatic cleanups"
+msgstr "자동 정리 기다림 주기 시간"
+
+#: podcasts-gtk/src/app.rs:337
+msgid "Copied URL to clipboard!"
+msgstr "URL 주소를 클립보드에 복사했습니다!"
+
+#: podcasts-gtk/src/stacks/content.rs:70
 msgid "New"
 msgstr "새 항목"
 
-#: podcasts-gtk/src/stacks/content.rs:59
+#: podcasts-gtk/src/stacks/content.rs:72
 msgid "Shows"
 msgstr "쇼"
 
-#: podcasts-gtk/src/utils.rs:501
-msgid "Select the file from which to you want to import shows."
-msgstr "가져올 쇼의 파일을 선택하십시오."
-
-#: podcasts-gtk/src/utils.rs:504
-msgid "_Import"
-msgstr "가져오기(_I)"
-
-#: podcasts-gtk/src/utils.rs:513 podcasts-gtk/src/utils.rs:562
+#: podcasts-gtk/src/utils.rs:489 podcasts-gtk/src/utils.rs:531
 msgid "OPML file"
 msgstr "OPML 파일"
 
-#: podcasts-gtk/src/utils.rs:531
+#: podcasts-gtk/src/utils.rs:500
+msgid "Select the file from which to you want to import shows."
+msgstr "가져올 쇼의 파일을 선택하십시오."
+
+#: podcasts-gtk/src/utils.rs:502
+msgid "_Import"
+msgstr "가져오기(_I)"
+
+#: podcasts-gtk/src/utils.rs:518
 msgid "Failed to parse the imported file"
 msgstr "가져온 파일 해석에 실패했습니다"
 
-#: podcasts-gtk/src/utils.rs:536 podcasts-gtk/src/utils.rs:581
-msgid "Selected file could not be accessed."
-msgstr "선택한 파일에 접근할 수 없습니다."
-
-#: podcasts-gtk/src/utils.rs:547
+#: podcasts-gtk/src/utils.rs:541
 msgid "Export shows to…"
 msgstr "쇼 내보내기…"
 
-#: podcasts-gtk/src/utils.rs:550
+#: podcasts-gtk/src/utils.rs:542
 msgid "_Export"
 msgstr "내보내기(_E)"
 
-#: podcasts-gtk/src/utils.rs:551
-msgid "_Cancel"
-msgstr "취소(_C)"
-
 #. Translators: This is the string of the suggested name for the exported opml file
-#: podcasts-gtk/src/utils.rs:555
+#: podcasts-gtk/src/utils.rs:546
 msgid "gnome-podcasts-exported-shows"
 msgstr "gnome-podcasts-exported-shows"
 
-#: podcasts-gtk/src/utils.rs:575
+#: podcasts-gtk/src/utils.rs:556
 msgid "GNOME Podcasts Subscriptions"
 msgstr "그놈 팟캐스트 구독"
 
-#: podcasts-gtk/src/utils.rs:576
+#: podcasts-gtk/src/utils.rs:557
 msgid "Failed to export podcasts"
 msgstr "팟캐스트를 내보내지 못하였습니다"
 
-#: podcasts-gtk/src/widgets/aboutdialog.rs:58
+#: podcasts-gtk/src/widgets/aboutdialog.rs:52
 msgid "Podcast Client for the GNOME Desktop."
 msgstr "그놈 데스크톱용 팟캐스트 클라이언트."
 
-#: podcasts-gtk/src/widgets/aboutdialog.rs:65
-msgid "Learn more about GNOME Podcasts"
-msgstr "그놈 팟캐스트에 대해 더 알아보세요"
-
-#: podcasts-gtk/src/widgets/aboutdialog.rs:69
+#: podcasts-gtk/src/widgets/aboutdialog.rs:63
 msgid "translator-credits"
 msgstr ""
 "조성호 <shcho@gnome.org>, 2018\n"
 "성대현 <sungdh86+git@gmail.com>, 2020-2022"
 
-#: podcasts-gtk/src/widgets/episode.rs:145
+#: podcasts-gtk/src/widgets/episode.rs:143
 msgid "{} min"
 msgstr "{}분"
 
-#: podcasts-gtk/src/widgets/episode_description.rs:165
-msgid "Copied URL to clipboard!"
-msgstr "URL 주소를 클립보드에 복사했습니다!"
-
-#: podcasts-gtk/src/widgets/player.rs:902
+#: podcasts-gtk/src/widgets/player.rs:884
 msgid "The media player was unable to execute an action."
 msgstr "미디어 재생기에서 이 동작을 수행할 수 없습니다."
 
-#: podcasts-gtk/src/widgets/show_menu.rs:194
+#: podcasts-gtk/src/widgets/read_more_label.rs:32
+msgid "Read More"
+msgstr "더 읽기"
+
+#: podcasts-gtk/src/widgets/show_menu.rs:180
 msgid "Marked all episodes as listened"
 msgstr "모든 에피소드를 감청 상태로 표시했습니다"
 
-#: podcasts-gtk/src/widgets/show_menu.rs:199
+#: podcasts-gtk/src/widgets/show_menu.rs:181
+#: podcasts-gtk/src/widgets/show_menu.rs:204
+msgid "Undo"
+msgstr "실행 취소"
+
+#: podcasts-gtk/src/widgets/show_menu.rs:200
 msgid "Unsubscribed from {}"
 msgstr "{}에서 가입 취소했습니다"
+
+#~ msgid "Top position of the last open main window"
+#~ msgstr "최근 연 메인 창 상단 위치"
+
+#~ msgid "Left position of the last open main window"
+#~ msgstr "최근 연 메인 창 좌측 위치"
+
+#~ msgid "Enable or disable dark theme"
+#~ msgstr "어두움 테마 사용 함/안함"
+
+#~ msgid "An in-app action notification"
+#~ msgstr "앱 동작 알림"
+
+#~ msgid "Fetching new episodes"
+#~ msgstr "새 에피소드 가져오는 중"
+
+#~ msgid "Selected file could not be accessed."
+#~ msgstr "선택한 파일에 접근할 수 없습니다."
+
+#~ msgid "_Cancel"
+#~ msgstr "취소(_C)"
+
+#~ msgid "Learn more about GNOME Podcasts"
+#~ msgstr "그놈 팟캐스트에 대해 더 알아보세요"
 
 #~ msgid "Podcast app for GNOME"
 #~ msgstr "그놈용 팟캐스트 앱"
