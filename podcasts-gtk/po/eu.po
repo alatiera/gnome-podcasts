@@ -6,7 +6,7 @@
 msgid ""
 msgstr "Project-Id-Version: podcasts master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2023-09-01 12:55+0000\n"
+"POT-Creation-Date: 2023-09-02 08:05+0000\n"
 "PO-Revision-Date: 2023-09-02 10:00+0100\n"
 "Last-Translator: Asier Sarasua Garmendia <asier.sarasua@gmail.com>\n"
 "Language-Team: Basque <librezale@librezale.eus>\n"
@@ -69,23 +69,23 @@ msgstr "Joan aurkezpenera"
 msgid "Copy Episode Url"
 msgstr "Kopiatu pasartearen URLa"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:70
+#: podcasts-gtk/resources/gtk/episode_widget.ui:71
 msgid "You’ve already listened to this episode."
 msgstr "Dagoeneko entzun duzu pasarte hau"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:157
+#: podcasts-gtk/resources/gtk/episode_widget.ui:158
 msgid "Calculating episode size…"
 msgstr "Pasartearen tamaina kalkulatzen…"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:180
+#: podcasts-gtk/resources/gtk/episode_widget.ui:181
 msgid "Play this episode"
 msgstr "Erreproduzitu pasarte hau"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:192
+#: podcasts-gtk/resources/gtk/episode_widget.ui:193
 msgid "Cancel the download process"
 msgstr "Utzi deskarga-prozesua"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:204
+#: podcasts-gtk/resources/gtk/episode_widget.ui:205
 msgid "Download this episode"
 msgstr "Deskargatu pasarte hau"
 
@@ -126,7 +126,7 @@ msgstr "Gehitu"
 #: podcasts-gtk/resources/gtk/headerbar.ui:111
 #: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:4
 #: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:3
-#: podcasts-gtk/src/app.rs:536 podcasts-gtk/src/widgets/aboutdialog.rs:56
+#: podcasts-gtk/src/app.rs:533 podcasts-gtk/src/widgets/aboutdialog.rs:56
 #: podcasts-gtk/src/window.rs:64
 msgid "Podcasts"
 msgstr "Podcastak"
@@ -261,7 +261,7 @@ msgstr "Harpidetza kendu"
 
 #: podcasts-gtk/resources/gtk/show_widget.ui:79
 msgid "Episodes"
-msgstr ""
+msgstr "Pasarteak"
 
 #: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:8
 msgid "Listen to your favorite shows"
@@ -278,7 +278,7 @@ msgstr "Erreproduzitu, eguneratu eta kudeatu zure podcastak GNOMEri primeran ego
 
 #: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:143
 msgid "The Podcasts developers"
-msgstr ""
+msgstr "Podcastak aplikazioaren garatzaileak"
 
 #: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:4
 msgid "Listen to your favorite podcasts, right from your desktop."
@@ -325,7 +325,7 @@ msgstr "Zenbat denbora-tarte itxarongo den garbitze automatikoen artean"
 msgid "What period of time to wait between automatic cleanups"
 msgstr "Zenbat denbora itxarongo den garbitze automatikoen artean"
 
-#: podcasts-gtk/src/app.rs:407
+#: podcasts-gtk/src/app.rs:404
 msgid "Copied URL to clipboard!"
 msgstr "URLa arbelean kopiatu da!"
 
@@ -382,7 +382,7 @@ msgstr "Podcasten bezeroa GNOME mahaigainerako."
 msgid "translator-credits"
 msgstr "translator-credits"
 
-#: podcasts-gtk/src/widgets/episode.rs:141
+#: podcasts-gtk/src/widgets/episode.rs:374
 msgid "{} min"
 msgstr "{} min"
 
