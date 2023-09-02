@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: podcasts\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2023-03-26 17:46+0000\n"
-"PO-Revision-Date: 2023-04-02 13:01+0200\n"
+"POT-Creation-Date: 2023-09-01 12:55+0000\n"
+"PO-Revision-Date: 2023-09-02 15:55+0200\n"
 "Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
 "Language-Team: Polish <community-poland@mozilla.org>\n"
 "Language: pl\n"
@@ -48,15 +48,20 @@ msgstr "Informacje o odcinku"
 msgid "Back"
 msgstr "Wstecz"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:105
+#: podcasts-gtk/resources/gtk/episode_description.ui:59
+msgid "Episode Menu"
+msgstr "Menu odcinka"
+
+#: podcasts-gtk/resources/gtk/episode_description.ui:107
 msgid "Podcast Title"
 msgstr "Tytuł podcastu"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:128
+#: podcasts-gtk/resources/gtk/episode_description.ui:130
 msgid "Duration - Date"
 msgstr "Czas trwania — data"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:148
+#: podcasts-gtk/resources/gtk/episode_description.ui:150
+#: podcasts-gtk/resources/gtk/episode_description.ui:154
 msgid "Episode Description"
 msgstr "Opis odcinka"
 
@@ -125,7 +130,7 @@ msgstr "Dodaj"
 #: podcasts-gtk/resources/gtk/headerbar.ui:111
 #: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:4
 #: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:3
-#: podcasts-gtk/src/app.rs:457 podcasts-gtk/src/widgets/aboutdialog.rs:56
+#: podcasts-gtk/src/app.rs:536 podcasts-gtk/src/widgets/aboutdialog.rs:56
 #: podcasts-gtk/src/window.rs:64
 msgid "Podcasts"
 msgstr "Podcasty"
@@ -137,6 +142,10 @@ msgstr "Tytuł programu"
 #: podcasts-gtk/resources/gtk/headerbar.ui:153
 msgid "Main Menu"
 msgstr "Menu główne"
+
+#: podcasts-gtk/resources/gtk/headerbar.ui:163
+msgid "Podcast Menu"
+msgstr "Menu podcastu"
 
 #: podcasts-gtk/resources/gtk/help-overlay.ui:11
 msgid "General"
@@ -152,23 +161,28 @@ msgctxt "shortcut window"
 msgid "Quit the application"
 msgstr "Zakończenie działania programu"
 
-#: podcasts-gtk/resources/gtk/home_view.ui:50
+#: podcasts-gtk/resources/gtk/home_view.ui:57
+#: podcasts-gtk/resources/gtk/home_view.ui:70
 msgid "Today"
 msgstr "Dzisiaj"
 
-#: podcasts-gtk/resources/gtk/home_view.ui:78
+#: podcasts-gtk/resources/gtk/home_view.ui:88
+#: podcasts-gtk/resources/gtk/home_view.ui:101
 msgid "Yesterday"
 msgstr "Wczoraj"
 
-#: podcasts-gtk/resources/gtk/home_view.ui:106
+#: podcasts-gtk/resources/gtk/home_view.ui:119
+#: podcasts-gtk/resources/gtk/home_view.ui:132
 msgid "This Week"
 msgstr "Ten tydzień"
 
-#: podcasts-gtk/resources/gtk/home_view.ui:134
+#: podcasts-gtk/resources/gtk/home_view.ui:150
+#: podcasts-gtk/resources/gtk/home_view.ui:163
 msgid "This Month"
 msgstr "Ten miesiąc"
 
-#: podcasts-gtk/resources/gtk/home_view.ui:163
+#: podcasts-gtk/resources/gtk/home_view.ui:182
+#: podcasts-gtk/resources/gtk/home_view.ui:195
 msgid "Older"
 msgstr "Starsze"
 
@@ -249,6 +263,10 @@ msgstr "Oznacz wszystkie jako odtworzone"
 msgid "Unsubscribe"
 msgstr "Zrezygnuj z subskrypcji"
 
+#: podcasts-gtk/resources/gtk/show_widget.ui:79
+msgid "Episodes"
+msgstr "Odcinki"
+
 #: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:8
 msgid "Listen to your favorite shows"
 msgstr "Słuchaj ulubionych programów"
@@ -267,13 +285,9 @@ msgstr ""
 "subskrybować programy za pomocą odnośników RSS/Atom, iTunes i SoundCloud. Za "
 "pomocą plików OPML można także importować subskrypcje z innych programów."
 
-#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:134
-msgid "Jordan Petridis"
-msgstr "Jordan Petridis"
-
-#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:135
-msgid "Julian Hofer"
-msgstr "Julian Hofer"
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:143
+msgid "The Podcasts developers"
+msgstr "Programiści projektu Podcasty"
 
 #: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:4
 msgid "Listen to your favorite podcasts, right from your desktop."
@@ -320,52 +334,52 @@ msgstr "Ile okresów czekać między automatycznym czyszczeniem"
 msgid "What period of time to wait between automatic cleanups"
 msgstr "Jaki okres czekać między automatycznym czyszczeniem"
 
-#: podcasts-gtk/src/app.rs:337
+#: podcasts-gtk/src/app.rs:407
 msgid "Copied URL to clipboard!"
 msgstr "Skopiowano adres do schowka"
 
-#: podcasts-gtk/src/stacks/content.rs:70
+#: podcasts-gtk/src/stacks/content.rs:69
 msgid "New"
 msgstr "Nowe"
 
-#: podcasts-gtk/src/stacks/content.rs:72
+#: podcasts-gtk/src/stacks/content.rs:71
 msgid "Shows"
 msgstr "Programy"
 
-#: podcasts-gtk/src/utils.rs:489 podcasts-gtk/src/utils.rs:531
+#: podcasts-gtk/src/utils.rs:491 podcasts-gtk/src/utils.rs:533
 msgid "OPML file"
 msgstr "Plik OPML"
 
-#: podcasts-gtk/src/utils.rs:500
+#: podcasts-gtk/src/utils.rs:502
 msgid "Select the file from which to you want to import shows."
 msgstr "Proszę wybrać plik, z którego zaimportować programy."
 
-#: podcasts-gtk/src/utils.rs:502
+#: podcasts-gtk/src/utils.rs:504
 msgid "_Import"
 msgstr "Zai_mportuj"
 
-#: podcasts-gtk/src/utils.rs:518
+#: podcasts-gtk/src/utils.rs:520
 msgid "Failed to parse the imported file"
 msgstr "Przetworzenie zaimportowanego pliku się nie powiodło"
 
-#: podcasts-gtk/src/utils.rs:541
+#: podcasts-gtk/src/utils.rs:543
 msgid "Export shows to…"
 msgstr "Eksport programów do…"
 
-#: podcasts-gtk/src/utils.rs:542
+#: podcasts-gtk/src/utils.rs:544
 msgid "_Export"
 msgstr "Wy_eksportuj"
 
 #. Translators: This is the string of the suggested name for the exported opml file
-#: podcasts-gtk/src/utils.rs:546
+#: podcasts-gtk/src/utils.rs:548
 msgid "gnome-podcasts-exported-shows"
 msgstr "gnome-podcasts-wyeksportowane-programy"
 
-#: podcasts-gtk/src/utils.rs:556
+#: podcasts-gtk/src/utils.rs:558
 msgid "GNOME Podcasts Subscriptions"
 msgstr "Subskrypcje Podcastów GNOME"
 
-#: podcasts-gtk/src/utils.rs:557
+#: podcasts-gtk/src/utils.rs:559
 msgid "Failed to export podcasts"
 msgstr "Wyeksportowanie podcastów się nie powiodło"
 
@@ -379,11 +393,11 @@ msgstr ""
 "Piotr Drąg <piotrdrag@gmail.com>, 2018-2023\n"
 "Aviary.pl <community-poland@mozilla.org>, 2018-2023"
 
-#: podcasts-gtk/src/widgets/episode.rs:143
+#: podcasts-gtk/src/widgets/episode.rs:141
 msgid "{} min"
 msgstr "{} min"
 
-#: podcasts-gtk/src/widgets/player.rs:884
+#: podcasts-gtk/src/widgets/player.rs:907
 msgid "The media player was unable to execute an action."
 msgstr "Odtwarzacz multimediów nie może wykonać działania."
 
