@@ -87,7 +87,8 @@ impl EpisodeDescriptionPriv {
             self.description.set_markup(&markup);
             // recover from invalid markup
             if self.description.text() == default_text {
-                self.description.set_text(t);
+                let plain = html2text::from_read(t.as_bytes(), t.as_bytes().len());
+                self.description.set_text(&plain);
             }
         };
     }

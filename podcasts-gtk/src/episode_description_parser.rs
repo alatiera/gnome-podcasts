@@ -23,6 +23,7 @@ use regex::Regex;
 use std::default::Default;
 use std::string::String;
 
+use crate::i18n::i18n_f;
 use html5ever::tendril::TendrilSink;
 use html5ever::tree_builder::TreeBuilderOpts;
 use html5ever::{expanded_name, parse_document, ParseOpts};
@@ -312,19 +313,36 @@ fn push_timestamped_text(buffer: &mut String, text: &str, nl_handling: NewlineHa
             let third: Option<i32> = captures.get(3).and_then(|c| c.as_str().parse().ok());
             if let (Some(hours), Some(minutes), Some(seconds)) = (first, second, third) {
                 let jump_time = (hours * 60 * 60) + (minutes * 60) + seconds;
+                // Jump to Hours:Minutes:Seconds
+                let title = i18n_f(
+                    "Jump to {}:{}:{}",
+                    &[
+                        &format!("{:02}", hours),
+                        &format!("{:02}", minutes),
+                        &format!("{:02}", seconds),
+                    ],
+                );
                 let range = captures.get(0).unwrap().range();
 
                 push_text_with_links(buffer, &text[position..range.start], nl_handling.clone());
-                buffer.push_str(format!("<a href=\"jump:{}\">", jump_time).as_str());
+                buffer
+                    .push_str(format!("<a href=\"jump:{jump_time}\" title=\"{title}\">").as_str());
                 buffer.push_str(&text[range.start..range.end]);
                 buffer.push_str("</a>");
                 position = range.end;
-            } else if let (Some(minutes), Some(seconds), _) = (first, second, third) {
+            } else if let (Some(minutes), Some(seconds)) = (first, second) {
                 let jump_time = (minutes * 60) + seconds;
+                // Jump to Minutes:Seconds
+                let title = i18n_f(
+                    "Jump to {}:{}",
+                    &[&format!("{:02}", minutes), &format!("{:02}", seconds)],
+                );
                 let range = captures.get(0).unwrap().range();
 
                 push_text_with_links(buffer, &text[position..range.start], nl_handling.clone());
-                buffer.push_str(format!("<a href=\"jump:{}\">", jump_time).as_str());
+                buffer.push_str(
+                    format!("<a href=\"jump:{}\" title=\"{title}\">", jump_time).as_str(),
+                );
                 buffer.push_str(&text[range.start..range.end]);
                 buffer.push_str("</a>");
                 position = range.end;
@@ -550,18 +568,18 @@ All of my links at https:// <a href=\"https:livagar.com\">livagar.com</a>";
 \x20   • Email: <a href=\"mailto:hello@rustacean-station.org\">hello@rustacean-station.org</a>\n\
 \n\
 Timestamps\n\
-\x20   • [@<a href=\"jump:33\">0:33</a>] - Daniel’s introduction\n\
-\x20   • [@<a href=\"jump:218\">3:38</a>] - Tauri’s focus on safety and security\n\
-\x20   • [@<a href=\"jump:410\">6:50</a>] - Tauri’s mission to reduce their footprint\n\
-\x20   • [@<a href=\"jump:888\">14:48</a>] - How does Tauri handles features that are not supported across different platforms\n\
-\x20   • [@<a href=\"jump:1436\">23:56</a>] - How does Tauri monetize to keep the project going?\n\
-\x20   • [@<a href=\"jump:1576\">26:16</a>] - Why choose Tauri over other solutions?\n\
-\x20   • [@<a href=\"jump:1737\">28:57</a>] - What are the tools being built with Tauri?\n\
-\x20   • [@<a href=\"jump:1869\">31:09</a>] - Tyler’s programming background\n\
-\x20   • [@<a href=\"jump:2111\">35:11</a>] - Tauri’s future release and features\n\
-\x20   • [@<a href=\"jump:2318\">38:38</a>] - ‘Tauri Foundations’ book by Daniel Thompson-Yvetot and Lucas Nogueira\n\
-\x20   • [@<a href=\"jump:2400\">40:00</a>] - Requirement on building a Tauri app\n\
-\x20   • [@<a href=\"jump:2593\">43:13</a>] - Parting thoughts\n\
+\x20   • [@<a href=\"jump:33\" title=\"Jump to 00:33\">0:33</a>] - Daniel’s introduction\n\
+\x20   • [@<a href=\"jump:218\" title=\"Jump to 03:38\">3:38</a>] - Tauri’s focus on safety and security\n\
+\x20   • [@<a href=\"jump:410\" title=\"Jump to 06:50\">6:50</a>] - Tauri’s mission to reduce their footprint\n\
+\x20   • [@<a href=\"jump:888\" title=\"Jump to 14:48\">14:48</a>] - How does Tauri handles features that are not supported across different platforms\n\
+\x20   • [@<a href=\"jump:1436\" title=\"Jump to 23:56\">23:56</a>] - How does Tauri monetize to keep the project going?\n\
+\x20   • [@<a href=\"jump:1576\" title=\"Jump to 26:16\">26:16</a>] - Why choose Tauri over other solutions?\n\
+\x20   • [@<a href=\"jump:1737\" title=\"Jump to 28:57\">28:57</a>] - What are the tools being built with Tauri?\n\
+\x20   • [@<a href=\"jump:1869\" title=\"Jump to 31:09\">31:09</a>] - Tyler’s programming background\n\
+\x20   • [@<a href=\"jump:2111\" title=\"Jump to 35:11\">35:11</a>] - Tauri’s future release and features\n\
+\x20   • [@<a href=\"jump:2318\" title=\"Jump to 38:38\">38:38</a>] - ‘Tauri Foundations’ book by Daniel Thompson-Yvetot and Lucas Nogueira\n\
+\x20   • [@<a href=\"jump:2400\" title=\"Jump to 40:00\">40:00</a>] - Requirement on building a Tauri app\n\
+\x20   • [@<a href=\"jump:2593\" title=\"Jump to 43:13\">43:13</a>] - Parting thoughts\n\
 \n\
 ";
         let markup = html2pango_markup(&description);
@@ -642,7 +660,7 @@ Free as in Freedom is produced by <a href=\"http://danlynch.org/blog/\">Dan Lync
     #[test]
     fn test_hash_timestamp_link() {
         let description = r##"<p><a href="#t=13:12">13:12</a></p>"##;
-        let expected = "<a href=\"jump:792\">13:12</a>\n\n";
+        let expected = "<a href=\"jump:792\" title=\"Jump to 13:12\">13:12</a>\n\n";
         let markup = html2pango_markup(description);
 
         assert_eq!(expected, markup);
