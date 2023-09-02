@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: podcasts master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2023-09-01 12:55+0000\n"
-"PO-Revision-Date: 2023-09-01 15:33+0200\n"
+"POT-Creation-Date: 2023-09-02 17:07+0000\n"
+"PO-Revision-Date: 2023-09-02 22:40+0200\n"
 "Last-Translator: Martin Srebotnjak <miles@filmsi.net>\n"
 "Language-Team: Slovenian GNOME Translation Team <gnome-si@googlegroups.com>\n"
 "Language: sl_SI\n"
@@ -46,7 +46,7 @@ msgid "Episode Details"
 msgstr "Podrobnosti epizode"
 
 #: podcasts-gtk/resources/gtk/episode_description.ui:51
-#: podcasts-gtk/resources/gtk/headerbar.ui:143
+#: podcasts-gtk/resources/gtk/headerbar.ui:147
 msgid "Back"
 msgstr "Nazaj"
 
@@ -75,23 +75,23 @@ msgstr "Skoči na posnetek"
 msgid "Copy Episode Url"
 msgstr "Kopiraj naslov URL epizode"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:70
+#: podcasts-gtk/resources/gtk/episode_widget.ui:71
 msgid "You’ve already listened to this episode."
 msgstr "To epizodo ste že poslušali."
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:157
+#: podcasts-gtk/resources/gtk/episode_widget.ui:158
 msgid "Calculating episode size…"
 msgstr "Poteka preračunavanje velikosti izvoza …"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:180
+#: podcasts-gtk/resources/gtk/episode_widget.ui:181
 msgid "Play this episode"
 msgstr "Predvajaj epizodo"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:192
+#: podcasts-gtk/resources/gtk/episode_widget.ui:193
 msgid "Cancel the download process"
 msgstr "Prekliči prejem v teku"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:204
+#: podcasts-gtk/resources/gtk/episode_widget.ui:205
 msgid "Download this episode"
 msgstr "Prejmi to epizodo"
 
@@ -116,7 +116,7 @@ msgid "_About Podcasts"
 msgstr "_O programu"
 
 #: podcasts-gtk/resources/gtk/headerbar.ui:33
-#: podcasts-gtk/resources/gtk/headerbar.ui:133
+#: podcasts-gtk/resources/gtk/headerbar.ui:137
 msgid "Add a new feed"
 msgstr "Dodaj nov vir"
 
@@ -124,28 +124,32 @@ msgstr "Dodaj nov vir"
 msgid "Enter Feed Address"
 msgstr "Vnesite naslov vira"
 
-#: podcasts-gtk/resources/gtk/headerbar.ui:67
+#: podcasts-gtk/resources/gtk/headerbar.ui:59
+msgid "Popover menu (ESC to close)"
+msgstr "Pojavni meni (ubežnica za zaprtje)"
+
+#: podcasts-gtk/resources/gtk/headerbar.ui:71
 msgid "Add"
 msgstr "Dodaj"
 
 #. Weird magic I copy-pasted that sets the Application Name in the Shell.
-#: podcasts-gtk/resources/gtk/headerbar.ui:111
+#: podcasts-gtk/resources/gtk/headerbar.ui:115
 #: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:4
 #: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:3
-#: podcasts-gtk/src/app.rs:536 podcasts-gtk/src/widgets/aboutdialog.rs:56
+#: podcasts-gtk/src/app.rs:533 podcasts-gtk/src/widgets/aboutdialog.rs:56
 #: podcasts-gtk/src/window.rs:64
 msgid "Podcasts"
 msgstr "Podkasti"
 
-#: podcasts-gtk/resources/gtk/headerbar.ui:121
+#: podcasts-gtk/resources/gtk/headerbar.ui:125
 msgid "Show Title"
 msgstr "Pokaži naslov"
 
-#: podcasts-gtk/resources/gtk/headerbar.ui:153
+#: podcasts-gtk/resources/gtk/headerbar.ui:157
 msgid "Main Menu"
 msgstr "Glavni meni"
 
-#: podcasts-gtk/resources/gtk/headerbar.ui:163
+#: podcasts-gtk/resources/gtk/headerbar.ui:167
 msgid "Podcast Menu"
 msgstr "Meni Podkast"
 
@@ -336,7 +340,7 @@ msgstr "Koliko ponovitev časa naj preteče med samodejnim počiščenjem"
 msgid "What period of time to wait between automatic cleanups"
 msgstr "Koliko časa naj preteče med izvajanjem samodejnega čiščenja"
 
-#: podcasts-gtk/src/app.rs:407
+#: podcasts-gtk/src/app.rs:404
 msgid "Copied URL to clipboard!"
 msgstr "Naslov URL je kopiran v odložišče!"
 
@@ -395,7 +399,7 @@ msgstr ""
 "Matej Urbančič <mateju@src.gnome.org>\n"
 "Martin Srebotnjak <miles@filmsi.net>"
 
-#: podcasts-gtk/src/widgets/episode.rs:141
+#: podcasts-gtk/src/widgets/episode.rs:374
 msgid "{} min"
 msgstr "{} min"
 
