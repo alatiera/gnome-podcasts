@@ -26,6 +26,7 @@ use anyhow::Result;
 use podcasts_data::dbqueries;
 use podcasts_data::Show;
 
+use crate::i18n::i18n;
 use crate::utils::{get_ignored_shows, lazy_load_flowbox};
 use crate::widgets::BaseView;
 
@@ -51,7 +52,7 @@ impl Default for ShowsView {
         flowbox.set_valign(Align::Start);
         flowbox.set_halign(Align::Center);
         flowbox.set_selection_mode(SelectionMode::None);
-        flowbox.update_property(&[gtk::accessible::Property::Label("Shows")]);
+        flowbox.update_property(&[gtk::accessible::Property::Label(&i18n("Shows"))]);
         view.set_content(&flowbox);
 
         ShowsView { view, flowbox }
