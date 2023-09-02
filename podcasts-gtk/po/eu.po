@@ -6,8 +6,8 @@
 msgid ""
 msgstr "Project-Id-Version: podcasts master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2023-03-23 23:02+0000\n"
-"PO-Revision-Date: 2023-03-26 10:00+0100\n"
+"POT-Creation-Date: 2023-09-01 12:55+0000\n"
+"PO-Revision-Date: 2023-09-02 10:00+0100\n"
 "Last-Translator: Asier Sarasua Garmendia <asier.sarasua@gmail.com>\n"
 "Language-Team: Basque <librezale@librezale.eus>\n"
 "Language: eu\n"
@@ -40,19 +40,24 @@ msgid "Episode Details"
 msgstr "Pasartearen xehetasunak"
 
 #: podcasts-gtk/resources/gtk/episode_description.ui:51
-#: podcasts-gtk/resources/gtk/headerbar.ui:146
+#: podcasts-gtk/resources/gtk/headerbar.ui:143
 msgid "Back"
 msgstr "Atzera"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:105
+#: podcasts-gtk/resources/gtk/episode_description.ui:59
+msgid "Episode Menu"
+msgstr "Pasarteen menua"
+
+#: podcasts-gtk/resources/gtk/episode_description.ui:107
 msgid "Podcast Title"
 msgstr "Podcastaren izenburua"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:128
+#: podcasts-gtk/resources/gtk/episode_description.ui:130
 msgid "Duration - Date"
 msgstr "Iraupena - Data"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:148
+#: podcasts-gtk/resources/gtk/episode_description.ui:150
+#: podcasts-gtk/resources/gtk/episode_description.ui:154
 msgid "Episode Description"
 msgstr "Pasartearen deskribapena"
 
@@ -121,7 +126,7 @@ msgstr "Gehitu"
 #: podcasts-gtk/resources/gtk/headerbar.ui:111
 #: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:4
 #: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:3
-#: podcasts-gtk/src/app.rs:457 podcasts-gtk/src/widgets/aboutdialog.rs:56
+#: podcasts-gtk/src/app.rs:536 podcasts-gtk/src/widgets/aboutdialog.rs:56
 #: podcasts-gtk/src/window.rs:64
 msgid "Podcasts"
 msgstr "Podcastak"
@@ -129,6 +134,14 @@ msgstr "Podcastak"
 #: podcasts-gtk/resources/gtk/headerbar.ui:121
 msgid "Show Title"
 msgstr "Erakutsi titulua"
+
+#: podcasts-gtk/resources/gtk/headerbar.ui:153
+msgid "Main Menu"
+msgstr "Menu nagusia"
+
+#: podcasts-gtk/resources/gtk/headerbar.ui:163
+msgid "Podcast Menu"
+msgstr "Podcasten menua"
 
 #: podcasts-gtk/resources/gtk/help-overlay.ui:11
 msgid "General"
@@ -144,27 +157,32 @@ msgctxt "shortcut window"
 msgid "Quit the application"
 msgstr "Irten aplikaziotik"
 
-#: podcasts-gtk/resources/gtk/home_view.ui:50
+#: podcasts-gtk/resources/gtk/home_view.ui:57
+#: podcasts-gtk/resources/gtk/home_view.ui:70
 msgid "Today"
 msgstr "Gaur"
 
-#: podcasts-gtk/resources/gtk/home_view.ui:78
+#: podcasts-gtk/resources/gtk/home_view.ui:88
+#: podcasts-gtk/resources/gtk/home_view.ui:101
 msgid "Yesterday"
 msgstr "Atzo"
 
-#: podcasts-gtk/resources/gtk/home_view.ui:106
+#: podcasts-gtk/resources/gtk/home_view.ui:119
+#: podcasts-gtk/resources/gtk/home_view.ui:132
 msgid "This Week"
 msgstr "Aste honetan"
 
-#: podcasts-gtk/resources/gtk/home_view.ui:134
+#: podcasts-gtk/resources/gtk/home_view.ui:150
+#: podcasts-gtk/resources/gtk/home_view.ui:163
 msgid "This Month"
 msgstr "Hilabete honetan"
 
-#: podcasts-gtk/resources/gtk/home_view.ui:163
+#: podcasts-gtk/resources/gtk/home_view.ui:182
+#: podcasts-gtk/resources/gtk/home_view.ui:195
 msgid "Older"
 msgstr "Zaharragoa"
 
-#: podcasts-gtk/resources/gtk/player_dialog.ui:10
+#: podcasts-gtk/resources/gtk/player_dialog.ui:22
 msgid "Now Playing"
 msgstr "Orain erreproduzitzen"
 
@@ -241,6 +259,10 @@ msgstr "Markatu dena erreproduzitu gisa"
 msgid "Unsubscribe"
 msgstr "Harpidetza kendu"
 
+#: podcasts-gtk/resources/gtk/show_widget.ui:79
+msgid "Episodes"
+msgstr ""
+
 #: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:8
 msgid "Listen to your favorite shows"
 msgstr "Entzun zure saiorik gogokoenak"
@@ -254,13 +276,9 @@ msgid ""
 "imported via OPML files."
 msgstr "Erreproduzitu, eguneratu eta kudeatu zure podcastak GNOMEri primeran egokitzen zaion interfaze arin batetik. Podcastak aplikazioak hainbat audio-formatu erreproduzitu ditzake eta entzuteari non utzi zenion gogoratzen du. Saioen harpidetzak egin ditzakezu RSS/Atom, ITunes eta Soundcloud esteken bidez. Beste aplikazio batzuetako harpidetzak ere inportatu daitezke OPML fitxategien bidez."
 
-#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:134
-msgid "Jordan Petridis"
-msgstr "Jordan Petridis"
-
-#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:135
-msgid "Julian Hofer"
-msgstr "Julian Hofer"
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:143
+msgid "The Podcasts developers"
+msgstr ""
 
 #: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:4
 msgid "Listen to your favorite podcasts, right from your desktop."
@@ -307,60 +325,52 @@ msgstr "Zenbat denbora-tarte itxarongo den garbitze automatikoen artean"
 msgid "What period of time to wait between automatic cleanups"
 msgstr "Zenbat denbora itxarongo den garbitze automatikoen artean"
 
-#: podcasts-gtk/src/app.rs:337
+#: podcasts-gtk/src/app.rs:407
 msgid "Copied URL to clipboard!"
 msgstr "URLa arbelean kopiatu da!"
 
-#: podcasts-gtk/src/stacks/content.rs:70
+#: podcasts-gtk/src/stacks/content.rs:69
 msgid "New"
 msgstr "Berria"
 
-#: podcasts-gtk/src/stacks/content.rs:72
+#: podcasts-gtk/src/stacks/content.rs:71
 msgid "Shows"
 msgstr "Saioak"
 
-#: podcasts-gtk/src/utils.rs:490
-msgid "Select the file from which to you want to import shows."
-msgstr "Hautatu saioak inportatzeko erabiliko duzun fitxategia."
-
-#: podcasts-gtk/src/utils.rs:493
-msgid "_Import"
-msgstr "_Inportatu"
-
-#: podcasts-gtk/src/utils.rs:501 podcasts-gtk/src/utils.rs:553
+#: podcasts-gtk/src/utils.rs:491 podcasts-gtk/src/utils.rs:533
 msgid "OPML file"
 msgstr "OPML fitxategia"
 
-#: podcasts-gtk/src/utils.rs:519
+#: podcasts-gtk/src/utils.rs:502
+msgid "Select the file from which to you want to import shows."
+msgstr "Hautatu saioak inportatzeko erabiliko duzun fitxategia."
+
+#: podcasts-gtk/src/utils.rs:504
+msgid "_Import"
+msgstr "_Inportatu"
+
+#: podcasts-gtk/src/utils.rs:520
 msgid "Failed to parse the imported file"
 msgstr "Huts egin du inportatuko fitxategia analizatzeak"
 
-#: podcasts-gtk/src/utils.rs:525 podcasts-gtk/src/utils.rs:574
-msgid "Selected file could not be accessed."
-msgstr "Hautatutako fitxategia ezin da eskuratu."
-
-#: podcasts-gtk/src/utils.rs:539
+#: podcasts-gtk/src/utils.rs:543
 msgid "Export shows to…"
 msgstr "Esportatu saioak hona…"
 
-#: podcasts-gtk/src/utils.rs:542
+#: podcasts-gtk/src/utils.rs:544
 msgid "_Export"
 msgstr "_Esportatu"
 
-#: podcasts-gtk/src/utils.rs:543
-msgid "_Cancel"
-msgstr "_Utzi"
-
 #. Translators: This is the string of the suggested name for the exported opml file
-#: podcasts-gtk/src/utils.rs:549
+#: podcasts-gtk/src/utils.rs:548
 msgid "gnome-podcasts-exported-shows"
 msgstr "gnome-podcasts-exported-shows"
 
-#: podcasts-gtk/src/utils.rs:567
+#: podcasts-gtk/src/utils.rs:558
 msgid "GNOME Podcasts Subscriptions"
 msgstr "GNOME Podcastak harpidetzak"
 
-#: podcasts-gtk/src/utils.rs:568
+#: podcasts-gtk/src/utils.rs:559
 msgid "Failed to export podcasts"
 msgstr "Huts egin du podcastak esportatzeak"
 
@@ -372,11 +382,11 @@ msgstr "Podcasten bezeroa GNOME mahaigainerako."
 msgid "translator-credits"
 msgstr "translator-credits"
 
-#: podcasts-gtk/src/widgets/episode.rs:143
+#: podcasts-gtk/src/widgets/episode.rs:141
 msgid "{} min"
 msgstr "{} min"
 
-#: podcasts-gtk/src/widgets/player.rs:891
+#: podcasts-gtk/src/widgets/player.rs:907
 msgid "The media player was unable to execute an action."
 msgstr "Multimedia-erreproduzigailuak ezin izan da ekintza bat exekutatu."
 
@@ -396,6 +406,18 @@ msgstr "Desegin"
 #: podcasts-gtk/src/widgets/show_menu.rs:200
 msgid "Unsubscribed from {}"
 msgstr "Kendu {} podcast-eko harpidetza"
+
+#~ msgid "Jordan Petridis"
+#~ msgstr "Jordan Petridis"
+
+#~ msgid "Julian Hofer"
+#~ msgstr "Julian Hofer"
+
+#~ msgid "Selected file could not be accessed."
+#~ msgstr "Hautatutako fitxategia ezin da eskuratu."
+
+#~ msgid "_Cancel"
+#~ msgstr "_Utzi"
 
 #~ msgid "Top position of the last open main window"
 #~ msgstr "Irekitako azken leiho nagusiaren goiko posizioa"
