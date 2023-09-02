@@ -1,0 +1,420 @@
+# Persian translation for podcasts.
+# Copyright (C) 2023 podcasts's COPYRIGHT HOLDER
+# This file is distributed under the same license as the podcasts package.
+# Danial Behzadi <dani.behzi@ubuntu.com>, 2023.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: podcasts master\n"
+"Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
+"POT-Creation-Date: 2023-09-02 19:11+0000\n"
+"PO-Revision-Date: 2023-09-02 23:56+0330\n"
+"Last-Translator: Danial Behzadi <dani.behzi@ubuntu.com>\n"
+"Language-Team: Persian <fa@li.org>\n"
+"Language: fa\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n==0 || n==1);\n"
+"X-Generator: Poedit 3.3.2\n"
+
+#: podcasts-gtk/resources/gtk/empty_show.ui:16
+msgid "This show does not have episodes yet"
+msgstr "این نمایش هنوز هیچ قسمتی ندارد"
+
+#: podcasts-gtk/resources/gtk/empty_show.ui:25
+msgid "If you think this is an error, please consider writing a bug report."
+msgstr "اگر فکر می‌کنید خطایی رخ داده، لطفاً گزارش اشکالی بنویسید."
+
+#: podcasts-gtk/resources/gtk/empty_view.ui:30
+msgid "Get Some Shows"
+msgstr "گرفتن نمایش‌ها"
+
+#: podcasts-gtk/resources/gtk/empty_view.ui:49
+msgid "Add new shows via feed URL"
+msgstr "افزودن نمایش‌های جدید با نشانی خوراک"
+
+#: podcasts-gtk/resources/gtk/empty_view.ui:71
+msgid "Import shows from another device"
+msgstr "درون‌ریزی نمایش‌ها از افزارهٔ دیگر"
+
+#: podcasts-gtk/resources/gtk/episode_description.ui:41
+msgid "Episode Details"
+msgstr "جزییات قسمت"
+
+#: podcasts-gtk/resources/gtk/episode_description.ui:51
+#: podcasts-gtk/resources/gtk/headerbar.ui:147
+msgid "Back"
+msgstr "بازگشت"
+
+#: podcasts-gtk/resources/gtk/episode_description.ui:59
+msgid "Episode Menu"
+msgstr "فهرست قسمت"
+
+#: podcasts-gtk/resources/gtk/episode_description.ui:107
+msgid "Podcast Title"
+msgstr "عنوان پادپخش"
+
+#: podcasts-gtk/resources/gtk/episode_description.ui:130
+msgid "Duration - Date"
+msgstr "طول - تاریخ"
+
+#: podcasts-gtk/resources/gtk/episode_description.ui:150
+#: podcasts-gtk/resources/gtk/episode_description.ui:154
+msgid "Episode Description"
+msgstr "شرح قسمت"
+
+#: podcasts-gtk/resources/gtk/episode_menu.ui:35
+msgid "Go to Show"
+msgstr "رفتن به نمایش"
+
+#: podcasts-gtk/resources/gtk/episode_menu.ui:39
+msgid "Copy Episode Url"
+msgstr "رونوشت از نشانی قسمت"
+
+#: podcasts-gtk/resources/gtk/episode_widget.ui:71
+msgid "You’ve already listened to this episode."
+msgstr "پیش‌تر این قسمت را گوش کرده بودید."
+
+#: podcasts-gtk/resources/gtk/episode_widget.ui:158
+msgid "Calculating episode size…"
+msgstr "محاسبهٔ اندازهٔ قسمت…"
+
+#: podcasts-gtk/resources/gtk/episode_widget.ui:181
+msgid "Play this episode"
+msgstr "پخش این قسمت"
+
+#: podcasts-gtk/resources/gtk/episode_widget.ui:193
+msgid "Cancel the download process"
+msgstr "لغو فرایند بارگیری"
+
+#: podcasts-gtk/resources/gtk/episode_widget.ui:205
+msgid "Download this episode"
+msgstr "بارگیری این قسمت"
+
+#: podcasts-gtk/resources/gtk/hamburger.ui:7
+msgid "_Check for New Episodes"
+msgstr "_بررسی برای قسمت‌های جدید"
+
+#: podcasts-gtk/resources/gtk/hamburger.ui:12
+msgid "_Import Shows"
+msgstr "_درون‌ریزی نمایش‌ها"
+
+#: podcasts-gtk/resources/gtk/hamburger.ui:16
+msgid "_Export Shows"
+msgstr "_برون‌ریزی نمایش‌ها"
+
+#: podcasts-gtk/resources/gtk/hamburger.ui:22
+msgid "_Keyboard Shortcuts"
+msgstr "میان‌برهای _صفحه‌کلید"
+
+#: podcasts-gtk/resources/gtk/hamburger.ui:30
+msgid "_About Podcasts"
+msgstr "_دربارهٔ پادپخش‌ها"
+
+#: podcasts-gtk/resources/gtk/headerbar.ui:33
+#: podcasts-gtk/resources/gtk/headerbar.ui:137
+msgid "Add a new feed"
+msgstr "افزودن خوراکی جدید"
+
+#: podcasts-gtk/resources/gtk/headerbar.ui:44
+msgid "Enter Feed Address"
+msgstr "ورود نشانی خوراک"
+
+#: podcasts-gtk/resources/gtk/headerbar.ui:59
+msgid "Popover menu (ESC to close)"
+msgstr "فهرست رو آمدنی (گریز برای خروج)"
+
+#: podcasts-gtk/resources/gtk/headerbar.ui:71
+msgid "Add"
+msgstr "افزودن"
+
+#. Weird magic I copy-pasted that sets the Application Name in the Shell.
+#: podcasts-gtk/resources/gtk/headerbar.ui:115
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:4
+#: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:3
+#: podcasts-gtk/src/app.rs:533 podcasts-gtk/src/widgets/aboutdialog.rs:56
+#: podcasts-gtk/src/window.rs:64
+msgid "Podcasts"
+msgstr "پادپخش‌ها"
+
+#: podcasts-gtk/resources/gtk/headerbar.ui:125
+msgid "Show Title"
+msgstr "عنوان نمایش"
+
+#: podcasts-gtk/resources/gtk/headerbar.ui:157
+msgid "Main Menu"
+msgstr "فهرست اصلی"
+
+#: podcasts-gtk/resources/gtk/headerbar.ui:167
+msgid "Podcast Menu"
+msgstr "فهرست پادپخش"
+
+#: podcasts-gtk/resources/gtk/help-overlay.ui:11
+msgid "General"
+msgstr "عمومی"
+
+#: podcasts-gtk/resources/gtk/help-overlay.ui:15
+msgctxt "shortcut window"
+msgid "Check for new episodes"
+msgstr "بررسی برای قسمت‌های جدید"
+
+#: podcasts-gtk/resources/gtk/help-overlay.ui:21
+msgctxt "shortcut window"
+msgid "Quit the application"
+msgstr "ترک برنامه"
+
+#: podcasts-gtk/resources/gtk/home_view.ui:57
+#: podcasts-gtk/resources/gtk/home_view.ui:70
+msgid "Today"
+msgstr "امروز"
+
+#: podcasts-gtk/resources/gtk/home_view.ui:88
+#: podcasts-gtk/resources/gtk/home_view.ui:101
+msgid "Yesterday"
+msgstr "دیروز"
+
+#: podcasts-gtk/resources/gtk/home_view.ui:119
+#: podcasts-gtk/resources/gtk/home_view.ui:132
+msgid "This Week"
+msgstr "این هفته"
+
+#: podcasts-gtk/resources/gtk/home_view.ui:150
+#: podcasts-gtk/resources/gtk/home_view.ui:163
+msgid "This Month"
+msgstr "این ماه"
+
+#: podcasts-gtk/resources/gtk/home_view.ui:182
+#: podcasts-gtk/resources/gtk/home_view.ui:195
+msgid "Older"
+msgstr "قدیمی‌تر"
+
+#: podcasts-gtk/resources/gtk/player_dialog.ui:22
+msgid "Now Playing"
+msgstr "در حال پخش"
+
+#: podcasts-gtk/resources/gtk/player_rate.ui:29
+msgid "Change the playback speed"
+msgstr "تغییر سرعت پخش"
+
+#: podcasts-gtk/resources/gtk/player_rate.ui:34
+#: podcasts-gtk/resources/gtk/player_rate.ui:59
+msgid "1.00×"
+msgstr "×۱٫۰۰"
+
+#: podcasts-gtk/resources/gtk/player_rate.ui:39
+msgid "2.00×"
+msgstr "×۲٫۰۰"
+
+#: podcasts-gtk/resources/gtk/player_rate.ui:44
+msgid "1.75×"
+msgstr "×۱٫۷۵"
+
+#: podcasts-gtk/resources/gtk/player_rate.ui:49
+msgid "1.50×"
+msgstr "×۱٫۵۰"
+
+#: podcasts-gtk/resources/gtk/player_rate.ui:54
+msgid "1.25×"
+msgstr "×۱٫۲۵"
+
+#: podcasts-gtk/resources/gtk/player_rate.ui:64
+msgid "0.90×"
+msgstr "×۰٫۹۰"
+
+#: podcasts-gtk/resources/gtk/player_rate.ui:69
+msgid "0.75×"
+msgstr "×۰٫۷۵"
+
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:55
+msgid "Rewind 10 seconds"
+msgstr "۱۰ ثانیه پس‌روی"
+
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:63
+msgid "Play"
+msgstr "پخش"
+
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:71
+msgid "Pause"
+msgstr "مکث"
+
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:79
+msgid "Fast forward 10 seconds"
+msgstr "۱۰ ثانیه پیشروی سریع"
+
+#: podcasts-gtk/resources/gtk/secondary_menu.ui:7
+msgid "_Mark All Episodes as Played"
+msgstr "_علامت زدن همهٔ قسمت‌ها به پخش شده"
+
+#: podcasts-gtk/resources/gtk/secondary_menu.ui:11
+msgid "_Website"
+msgstr "پایگاه _وب"
+
+#: podcasts-gtk/resources/gtk/secondary_menu.ui:15
+msgid "_Unsubscribe"
+msgstr "_قطع اشتراک"
+
+#: podcasts-gtk/resources/gtk/show_menu.ui:35
+msgid "Open Website"
+msgstr "گشوپن پایگاه وب"
+
+#: podcasts-gtk/resources/gtk/show_menu.ui:39
+msgid "Mark All as Played"
+msgstr "علامت زدن همه به پخش شده"
+
+#: podcasts-gtk/resources/gtk/show_menu.ui:45
+msgid "Unsubscribe"
+msgstr "قطع اشتراک"
+
+#: podcasts-gtk/resources/gtk/show_widget.ui:79
+msgid "Episodes"
+msgstr "قسمت‌ها"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:8
+msgid "Listen to your favorite shows"
+msgstr "شنیدن نمایش‌های محبوبتان"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:10
+msgid ""
+"Play, update, and manage your podcasts from a lightweight interface that "
+"seamlessly integrates with GNOME. Podcasts can play various audio formats "
+"and remember where you stopped listening. You can subscribe to shows via RSS/"
+"Atom, iTunes, and Soundcloud links. Subscriptions from other apps can be "
+"imported via OPML files."
+msgstr ""
+"پخش، به‌روز رسانی و مدیریت پادپخش‌هایتان از میانایی سبک که به طور بی‌نقصی با "
+"گنوم یکپارچه می‌شود. پادپخش‌ها می‌تواند قالب‌های صوتی مختلفی را پخش کرده و جایی "
+"که شنیدن را متوقّف کردید به خاطر بسپرد. می‌توانید با پیوندهای سوندکلود، آی‌تونز "
+"و خوراک وب مشترک نمایش‌ها شوید. اشتراک‌های دیگر برنامه‌ها می‌توانند از طریق "
+"پرونده‌های OPML درون ریخته شوند."
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:143
+msgid "The Podcasts developers"
+msgstr "توسعه‌دهندگان پادپخش‌ها"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:4
+msgid "Listen to your favorite podcasts, right from your desktop."
+msgstr "شنیدن پادپخش‌های محبوبتان از روی میزکارتان."
+
+#. Translators: Search terms to find this application. Do NOT translate or localize the semicolons! The list MUST also end with a semicolon!
+#: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:13
+msgid "Podcast;RSS;"
+msgstr "Podcast;RSS;پادکست;پادپخش;خوراک;صدا;وب‌آوا;"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:15
+msgid "Height of the last open main window"
+msgstr "بلندای آخرین پنجرهٔ اصلی باز"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:19
+msgid "Width of the last open main window"
+msgstr "پهنای آخرین پنجرهٔ اصلی باز"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:23
+msgid "Maximized state of the last open main window"
+msgstr "وضعیت بیشینگی آخرین پنجرهٔ اصلی باز"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:28
+msgid "Whether to periodically refresh content"
+msgstr "این که محتوا به صورت دوره‌ای تازه شود یا نه"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:33
+msgid "How many periods of time to wait between automatic refreshes"
+msgstr "مقدار زمان انتظار بین تازه سازی‌های خودکار"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:37
+msgid "What period of time to wait between automatic refreshes"
+msgstr "مقدار زمان انتظار بین تازه سازی‌های خودکار"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:41
+msgid "Whether to refresh content after startup"
+msgstr "این که محتوا پس از برپایی تازه شود یا نه"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:47
+msgid "How many periods of time to wait between automatic cleanups"
+msgstr "مقدار زمان انتظار بین پاک سازی‌های خودکار"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:51
+msgid "What period of time to wait between automatic cleanups"
+msgstr "مقدار زمان انتظار بین پاک سازی‌های خودکار"
+
+#: podcasts-gtk/src/app.rs:404
+msgid "Copied URL to clipboard!"
+msgstr "نشانی رونوشت شده در تخته‌گیره!"
+
+#: podcasts-gtk/src/stacks/content.rs:69
+msgid "New"
+msgstr "جدید"
+
+#: podcasts-gtk/src/stacks/content.rs:71
+msgid "Shows"
+msgstr "نمایش‌ها"
+
+#: podcasts-gtk/src/utils.rs:491 podcasts-gtk/src/utils.rs:533
+msgid "OPML file"
+msgstr "پروندهٔ OPML"
+
+#: podcasts-gtk/src/utils.rs:502
+msgid "Select the file from which to you want to import shows."
+msgstr "پرونده‌ای را که می‌خواهید نمایش‌ها را از آن درون‌ریزی کنید برگزینید."
+
+#: podcasts-gtk/src/utils.rs:504
+msgid "_Import"
+msgstr "_درون‌ریزی"
+
+#: podcasts-gtk/src/utils.rs:520
+msgid "Failed to parse the imported file"
+msgstr "شکست در تجزیهٔ پروندهٔ درون‌ریخته"
+
+#: podcasts-gtk/src/utils.rs:543
+msgid "Export shows to…"
+msgstr "برون‌ریزی نمایش‌ها به…"
+
+#: podcasts-gtk/src/utils.rs:544
+msgid "_Export"
+msgstr "_برون‌ریزی"
+
+#. Translators: This is the string of the suggested name for the exported opml file
+#: podcasts-gtk/src/utils.rs:548
+msgid "gnome-podcasts-exported-shows"
+msgstr "نمایش‌های-برون‌ریخته-پادپخش‌های-گنوم"
+
+#: podcasts-gtk/src/utils.rs:558
+msgid "GNOME Podcasts Subscriptions"
+msgstr "اشتراک‌های پادپخش‌های گنوم"
+
+#: podcasts-gtk/src/utils.rs:559
+msgid "Failed to export podcasts"
+msgstr "شکست در برون‌ریزی پادپخش‌ها"
+
+#: podcasts-gtk/src/widgets/aboutdialog.rs:52
+msgid "Podcast Client for the GNOME Desktop."
+msgstr "کارخواه پادپخش برای میزکار گنوم."
+
+#: podcasts-gtk/src/widgets/aboutdialog.rs:63
+msgid "translator-credits"
+msgstr "دانیال بهزادی <dani.behzi@ubuntu.com>"
+
+#: podcasts-gtk/src/widgets/episode.rs:374
+msgid "{} min"
+msgstr "{} دقیقه"
+
+#: podcasts-gtk/src/widgets/player.rs:907
+msgid "The media player was unable to execute an action."
+msgstr "پخش‌کنندهٔ رسانه در اجرای کنشی ناتوان بود."
+
+#: podcasts-gtk/src/widgets/read_more_label.rs:32
+msgid "Read More"
+msgstr "بیش‌تر بخوانید"
+
+#: podcasts-gtk/src/widgets/show_menu.rs:180
+msgid "Marked all episodes as listened"
+msgstr "همهٔ قسمت‌ها به شنیده شده علامت خورد"
+
+#: podcasts-gtk/src/widgets/show_menu.rs:181
+#: podcasts-gtk/src/widgets/show_menu.rs:204
+msgid "Undo"
+msgstr "برگردان"
+
+#: podcasts-gtk/src/widgets/show_menu.rs:200
+msgid "Unsubscribed from {}"
+msgstr "لغو اشتراک از {}"
