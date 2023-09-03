@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: podcasts master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2023-09-01 12:55+0000\n"
-"PO-Revision-Date: 2023-09-02 11:28+0800\n"
+"POT-Creation-Date: 2023-09-03 05:02+0000\n"
+"PO-Revision-Date: 2023-09-03 19:38+0800\n"
 "Last-Translator: lumingzh <lumingzh@qq.com>\n"
 "Language-Team: Chinese - China <i18n-zh@googlegroups.com>\n"
 "Language: zh_CN\n"
@@ -45,7 +45,7 @@ msgid "Episode Details"
 msgstr "剧集详情"
 
 #: podcasts-gtk/resources/gtk/episode_description.ui:51
-#: podcasts-gtk/resources/gtk/headerbar.ui:143
+#: podcasts-gtk/resources/gtk/headerbar.ui:147
 msgid "Back"
 msgstr "后退"
 
@@ -62,7 +62,7 @@ msgid "Duration - Date"
 msgstr "时长 - 日期"
 
 #: podcasts-gtk/resources/gtk/episode_description.ui:150
-#: podcasts-gtk/resources/gtk/episode_description.ui:154
+#: podcasts-gtk/resources/gtk/episode_description.ui:155
 msgid "Episode Description"
 msgstr "剧集描述"
 
@@ -74,23 +74,23 @@ msgstr "前往演出"
 msgid "Copy Episode Url"
 msgstr "复制剧集网址"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:70
+#: podcasts-gtk/resources/gtk/episode_widget.ui:71
 msgid "You’ve already listened to this episode."
 msgstr "您已经听过此节目了。"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:157
+#: podcasts-gtk/resources/gtk/episode_widget.ui:158
 msgid "Calculating episode size…"
 msgstr "正在计算剧集大小……"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:180
+#: podcasts-gtk/resources/gtk/episode_widget.ui:181
 msgid "Play this episode"
 msgstr "播放此剧集"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:192
+#: podcasts-gtk/resources/gtk/episode_widget.ui:193
 msgid "Cancel the download process"
 msgstr "取消下载进程"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:204
+#: podcasts-gtk/resources/gtk/episode_widget.ui:205
 msgid "Download this episode"
 msgstr "下载此剧集"
 
@@ -115,7 +115,7 @@ msgid "_About Podcasts"
 msgstr "关于播客(_A)"
 
 #: podcasts-gtk/resources/gtk/headerbar.ui:33
-#: podcasts-gtk/resources/gtk/headerbar.ui:133
+#: podcasts-gtk/resources/gtk/headerbar.ui:137
 msgid "Add a new feed"
 msgstr "添加新订阅源"
 
@@ -123,28 +123,32 @@ msgstr "添加新订阅源"
 msgid "Enter Feed Address"
 msgstr "输入订阅地址"
 
-#: podcasts-gtk/resources/gtk/headerbar.ui:67
+#: podcasts-gtk/resources/gtk/headerbar.ui:59
+msgid "Popover menu (ESC to close)"
+msgstr "弹出菜单（按 ESC 关闭）"
+
+#: podcasts-gtk/resources/gtk/headerbar.ui:71
 msgid "Add"
 msgstr "添加"
 
 #. Weird magic I copy-pasted that sets the Application Name in the Shell.
-#: podcasts-gtk/resources/gtk/headerbar.ui:111
+#: podcasts-gtk/resources/gtk/headerbar.ui:115
 #: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:4
 #: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:3
-#: podcasts-gtk/src/app.rs:536 podcasts-gtk/src/widgets/aboutdialog.rs:56
+#: podcasts-gtk/src/app.rs:533 podcasts-gtk/src/widgets/aboutdialog.rs:56
 #: podcasts-gtk/src/window.rs:64
 msgid "Podcasts"
 msgstr "播客"
 
-#: podcasts-gtk/resources/gtk/headerbar.ui:121
+#: podcasts-gtk/resources/gtk/headerbar.ui:125
 msgid "Show Title"
 msgstr "显示标题"
 
-#: podcasts-gtk/resources/gtk/headerbar.ui:153
+#: podcasts-gtk/resources/gtk/headerbar.ui:157
 msgid "Main Menu"
 msgstr "主菜单"
 
-#: podcasts-gtk/resources/gtk/headerbar.ui:163
+#: podcasts-gtk/resources/gtk/headerbar.ui:167
 msgid "Podcast Menu"
 msgstr "播客菜单"
 
@@ -264,7 +268,7 @@ msgstr "全部标记为已播放"
 msgid "Unsubscribe"
 msgstr "退订"
 
-#: podcasts-gtk/resources/gtk/show_widget.ui:79
+#: podcasts-gtk/resources/gtk/show_widget.ui:80
 msgid "Episodes"
 msgstr "剧集"
 
@@ -333,7 +337,7 @@ msgstr "自动清理之间要等待多久的时间"
 msgid "What period of time to wait between automatic cleanups"
 msgstr "自动清理之间要等待的时间段"
 
-#: podcasts-gtk/src/app.rs:407
+#: podcasts-gtk/src/app.rs:404
 msgid "Copied URL to clipboard!"
 msgstr "已将网址复制到剪贴板！"
 
@@ -342,6 +346,7 @@ msgid "New"
 msgstr "更新"
 
 #: podcasts-gtk/src/stacks/content.rs:71
+#: podcasts-gtk/src/widgets/shows_view.rs:55
 msgid "Shows"
 msgstr "节目"
 
@@ -393,7 +398,7 @@ msgstr ""
 "Tranquilo Chan <cdh4227@qq.com>, 2020.\n"
 "lumingzh <lumingzh@qq.com>, 2022-2023."
 
-#: podcasts-gtk/src/widgets/episode.rs:141
+#: podcasts-gtk/src/widgets/episode.rs:374
 msgid "{} min"
 msgstr "{} 分钟"
 
@@ -401,7 +406,11 @@ msgstr "{} 分钟"
 msgid "The media player was unable to execute an action."
 msgstr "媒体播放器无法执行此操作。"
 
-#: podcasts-gtk/src/widgets/read_more_label.rs:32
+#: podcasts-gtk/src/widgets/read_more_label.rs:34
+msgid "Visually expands this description"
+msgstr "直观展开该描述"
+
+#: podcasts-gtk/src/widgets/read_more_label.rs:36
 msgid "Read More"
 msgstr "阅读更多"
 
