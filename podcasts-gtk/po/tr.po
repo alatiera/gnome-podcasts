@@ -9,9 +9,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: podcasts master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2023-09-01 12:55+0000\n"
-"PO-Revision-Date: 2023-09-02 15:00+0300\n"
-"Last-Translator: Emin Tufan Çetin <etcetin@gmail.com>\n"
+"POT-Creation-Date: 2023-09-03 05:02+0000\n"
+"PO-Revision-Date: 2023-09-03 11:39+0300\n"
+"Last-Translator: Sabri Ünal <libreajans@gmail.com>\n"
 "Language-Team: Turkish <takim@gnome.org.tr>\n"
 "Language: tr\n"
 "MIME-Version: 1.0\n"
@@ -50,7 +50,7 @@ msgid "Episode Details"
 msgstr "Bölüm Ayrıntıları"
 
 #: podcasts-gtk/resources/gtk/episode_description.ui:51
-#: podcasts-gtk/resources/gtk/headerbar.ui:143
+#: podcasts-gtk/resources/gtk/headerbar.ui:147
 msgid "Back"
 msgstr "Geri"
 
@@ -67,7 +67,7 @@ msgid "Duration - Date"
 msgstr "Süre - Tarih"
 
 #: podcasts-gtk/resources/gtk/episode_description.ui:150
-#: podcasts-gtk/resources/gtk/episode_description.ui:154
+#: podcasts-gtk/resources/gtk/episode_description.ui:155
 msgid "Episode Description"
 msgstr "Bölüm Açıklaması"
 
@@ -79,23 +79,23 @@ msgstr "Gösteriye Git"
 msgid "Copy Episode Url"
 msgstr "Bölüm Adresini Kopyala"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:70
+#: podcasts-gtk/resources/gtk/episode_widget.ui:71
 msgid "You’ve already listened to this episode."
 msgstr "Bu bölümü zaten dinlediniz."
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:157
+#: podcasts-gtk/resources/gtk/episode_widget.ui:158
 msgid "Calculating episode size…"
 msgstr "Bölüm boyutu hesaplanıyor…"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:180
+#: podcasts-gtk/resources/gtk/episode_widget.ui:181
 msgid "Play this episode"
 msgstr "Bu bölümü oynat"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:192
+#: podcasts-gtk/resources/gtk/episode_widget.ui:193
 msgid "Cancel the download process"
 msgstr "İndirme sürecini iptal et"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:204
+#: podcasts-gtk/resources/gtk/episode_widget.ui:205
 msgid "Download this episode"
 msgstr "Bu bölümü indir"
 
@@ -120,7 +120,7 @@ msgid "_About Podcasts"
 msgstr "Podcastler _Hakkında"
 
 #: podcasts-gtk/resources/gtk/headerbar.ui:33
-#: podcasts-gtk/resources/gtk/headerbar.ui:133
+#: podcasts-gtk/resources/gtk/headerbar.ui:137
 msgid "Add a new feed"
 msgstr "Yeni besleme ekle"
 
@@ -128,28 +128,32 @@ msgstr "Yeni besleme ekle"
 msgid "Enter Feed Address"
 msgstr "Besleme Adresi Gir"
 
-#: podcasts-gtk/resources/gtk/headerbar.ui:67
+#: podcasts-gtk/resources/gtk/headerbar.ui:59
+msgid "Popover menu (ESC to close)"
+msgstr "Açılır Menü (kapatmak için ESC)"
+
+#: podcasts-gtk/resources/gtk/headerbar.ui:71
 msgid "Add"
 msgstr "Ekle"
 
 #. Weird magic I copy-pasted that sets the Application Name in the Shell.
-#: podcasts-gtk/resources/gtk/headerbar.ui:111
+#: podcasts-gtk/resources/gtk/headerbar.ui:115
 #: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:4
 #: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:3
-#: podcasts-gtk/src/app.rs:536 podcasts-gtk/src/widgets/aboutdialog.rs:56
+#: podcasts-gtk/src/app.rs:533 podcasts-gtk/src/widgets/aboutdialog.rs:56
 #: podcasts-gtk/src/window.rs:64
 msgid "Podcasts"
 msgstr "Podcastler"
 
-#: podcasts-gtk/resources/gtk/headerbar.ui:121
+#: podcasts-gtk/resources/gtk/headerbar.ui:125
 msgid "Show Title"
 msgstr "Gösteri Başlığı"
 
-#: podcasts-gtk/resources/gtk/headerbar.ui:153
+#: podcasts-gtk/resources/gtk/headerbar.ui:157
 msgid "Main Menu"
 msgstr "Ana Menü"
 
-#: podcasts-gtk/resources/gtk/headerbar.ui:163
+#: podcasts-gtk/resources/gtk/headerbar.ui:167
 msgid "Podcast Menu"
 msgstr "Podcast Menüsü"
 
@@ -269,7 +273,7 @@ msgstr "Tümünü Oynatıldı Olarak İmle"
 msgid "Unsubscribe"
 msgstr "Abonelikten Çık"
 
-#: podcasts-gtk/resources/gtk/show_widget.ui:79
+#: podcasts-gtk/resources/gtk/show_widget.ui:80
 msgid "Episodes"
 msgstr "Bölümler"
 
@@ -340,7 +344,7 @@ msgstr "Kendiliğinden temizlemeler arasında kaç zaman aralığı beklenecek"
 msgid "What period of time to wait between automatic cleanups"
 msgstr "Kendiliğinden temizlemeler arasında beklenecek zaman aralığı"
 
-#: podcasts-gtk/src/app.rs:407
+#: podcasts-gtk/src/app.rs:404
 msgid "Copied URL to clipboard!"
 msgstr "URL panoya kopyalandı!"
 
@@ -349,6 +353,7 @@ msgid "New"
 msgstr "Yeni"
 
 #: podcasts-gtk/src/stacks/content.rs:71
+#: podcasts-gtk/src/widgets/shows_view.rs:55
 msgid "Shows"
 msgstr "Gösteriler"
 
@@ -399,7 +404,7 @@ msgstr ""
 "Emin Tufan Çetin <etcetin@gmail.com>\n"
 "Sabri Ünal <libreajans@gmail.com>"
 
-#: podcasts-gtk/src/widgets/episode.rs:141
+#: podcasts-gtk/src/widgets/episode.rs:374
 msgid "{} min"
 msgstr "{} dak"
 
@@ -407,7 +412,11 @@ msgstr "{} dak"
 msgid "The media player was unable to execute an action."
 msgstr "Ortam oynatıcı eylemi yürütemiyor."
 
-#: podcasts-gtk/src/widgets/read_more_label.rs:32
+#: podcasts-gtk/src/widgets/read_more_label.rs:34
+msgid "Visually expands this description"
+msgstr "Bu açıklamayı görsel olarak genişletir"
+
+#: podcasts-gtk/src/widgets/read_more_label.rs:36
 msgid "Read More"
 msgstr "Daha Çoğunu Oku"
 
