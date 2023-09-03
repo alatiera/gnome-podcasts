@@ -519,8 +519,8 @@ impl PdApplication {
     pub(crate) fn run() -> glib::ExitCode {
         // Set up the textdomain for gettext
         setlocale(LocaleCategory::LcAll, "");
-        bindtextdomain("gnome-podcasts", LOCALEDIR);
-        textdomain("gnome-podcasts");
+        bindtextdomain("gnome-podcasts", LOCALEDIR).expect("Unable to bind the text domain");
+        textdomain("gnome-podcasts").expect("Unable to switch to the text domain");
 
         // Make sure the app icon shows up in PulseAudio settings
         env::set_var("PULSE_PROP_application.icon_name", APP_ID);
