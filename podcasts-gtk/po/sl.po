@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: podcasts master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2023-09-02 17:07+0000\n"
-"PO-Revision-Date: 2023-09-02 22:40+0200\n"
+"POT-Creation-Date: 2023-09-03 05:02+0000\n"
+"PO-Revision-Date: 2023-09-03 11:20+0200\n"
 "Last-Translator: Martin Srebotnjak <miles@filmsi.net>\n"
 "Language-Team: Slovenian GNOME Translation Team <gnome-si@googlegroups.com>\n"
 "Language: sl_SI\n"
@@ -63,7 +63,7 @@ msgid "Duration - Date"
 msgstr "Trajanje – Datum"
 
 #: podcasts-gtk/resources/gtk/episode_description.ui:150
-#: podcasts-gtk/resources/gtk/episode_description.ui:154
+#: podcasts-gtk/resources/gtk/episode_description.ui:155
 msgid "Episode Description"
 msgstr "Opis epizode"
 
@@ -269,7 +269,7 @@ msgstr "Označi vse kot predvajane"
 msgid "Unsubscribe"
 msgstr "Prekliči naročnino"
 
-#: podcasts-gtk/resources/gtk/show_widget.ui:79
+#: podcasts-gtk/resources/gtk/show_widget.ui:80
 msgid "Episodes"
 msgstr "Epizode"
 
@@ -349,6 +349,7 @@ msgid "New"
 msgstr "Novo"
 
 #: podcasts-gtk/src/stacks/content.rs:71
+#: podcasts-gtk/src/widgets/shows_view.rs:55
 msgid "Shows"
 msgstr "Posnetki"
 
@@ -407,7 +408,11 @@ msgstr "{} min"
 msgid "The media player was unable to execute an action."
 msgstr "S predvajalnikom ni mogoče izvesti zahtevanega dejanja."
 
-#: podcasts-gtk/src/widgets/read_more_label.rs:32
+#: podcasts-gtk/src/widgets/read_more_label.rs:34
+msgid "Visually expands this description"
+msgstr "Vizualno razširi ta opis"
+
+#: podcasts-gtk/src/widgets/read_more_label.rs:36
 msgid "Read More"
 msgstr "Preberi več"
 
