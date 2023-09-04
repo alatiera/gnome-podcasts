@@ -1,781 +1,458 @@
-# Hebrew translation for authenticator.
-# Copyright (C) 2021 authenticator's COPYRIGHT HOLDER
-# This file is distributed under the same license as the authenticator package.
-# Yaron Shahrabani <sh.yaron@gmail.com>, 2021.
+# Hebrew translation for podcasts.
+# Copyright (C) 2022 podcasts's COPYRIGHT HOLDER
+# This file is distributed under the same license as the podcasts package.
 # Yosef Or Boczko <yoseforb@gmail.com>, 2022-2023.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: authenticator master\n"
-"Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/Authenticator/issues\n"
-"POT-Creation-Date: 2023-08-30 07:57+0000\n"
-"PO-Revision-Date: 2023-09-04 15:34+0300\n"
+"Project-Id-Version: podcasts master\n"
+"Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
+"POT-Creation-Date: 2023-09-03 05:02+0000\n"
+"PO-Revision-Date: 2023-09-04 15:52+0300\n"
 "Last-Translator: Yosef Or Boczko <yoseforb@gmail.com>\n"
 "Language-Team: Hebrew <yoseforb@gmail.com>\n"
 "Language: he\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=4; plural=(n==1 ? 0 : n==2 ? 1 : n>10 && n%10==0 ? 2 : "
-"3);\n"
+"Plural-Forms: nplurals=4; plural=(n==1 ? 0 : n==2 ? 1 : n>10 && n%10==0 ? "
+"2 : 3);\n"
 "X-Generator: Poedit 3.3.2\n"
 
-#: data/com.belmoussaoui.Authenticator.desktop.in.in:3
-#: data/com.belmoussaoui.Authenticator.metainfo.xml.in.in:7
-#: data/resources/ui/window.ui:36 src/application.rs:86 src/main.rs:41
-msgid "Authenticator"
-msgstr "מאמת"
-
-#: data/com.belmoussaoui.Authenticator.desktop.in.in:4
-msgid "Two-Factor Authentication"
-msgstr "אימות דו־שלבי"
-
-#: data/com.belmoussaoui.Authenticator.desktop.in.in:5
-#: data/com.belmoussaoui.Authenticator.metainfo.xml.in.in:8 src/application.rs:89
-msgid "Generate Two-Factor Codes"
-msgstr "יצירת קודים לאימות דו־שלבי"
-
-#: data/com.belmoussaoui.Authenticator.desktop.in.in:10
-msgid "Gnome;GTK;Verification;2FA;Authentication;OTP;TOTP;"
-msgstr ""
-"‫Gnome;GTK;GNOME;אימות;וידוא;דו־שלבי;דו שלבי;דושלבי;חד־פעמי;חד פעמי;חדפעמי;קוד "
-"חד פעמי;"
-
-#: data/com.belmoussaoui.Authenticator.gschema.xml.in:6
-#: data/com.belmoussaoui.Authenticator.gschema.xml.in:7
-msgid "Default window width"
-msgstr "רוחב החלון כברירת מחדל"
-
-#: data/com.belmoussaoui.Authenticator.gschema.xml.in:11
-#: data/com.belmoussaoui.Authenticator.gschema.xml.in:12
-msgid "Default window height"
-msgstr "גובה החלון כברירת מחדל"
-
-#: data/com.belmoussaoui.Authenticator.gschema.xml.in:16
-msgid "Default window maximized behaviour"
-msgstr "התנהגות חלון מוגדל כברירת מחדל"
-
-#: data/com.belmoussaoui.Authenticator.gschema.xml.in:21
-msgid "Auto lock"
-msgstr "נעילה אוטומטית"
-
-#: data/com.belmoussaoui.Authenticator.gschema.xml.in:22
-msgid "Whether to auto lock the application or not"
-msgstr "האם לנעול את היישום אוטומטית או לא"
-
-#: data/com.belmoussaoui.Authenticator.gschema.xml.in:26
-msgid "Auto lock timeout"
-msgstr "זמן עד לנעילה אוטומטית"
-
-#: data/com.belmoussaoui.Authenticator.gschema.xml.in:27
-msgid "Lock the application on idle after X minutes"
-msgstr "לנעול את היישום אם אינו פעיל לאחר X דקות"
-
-#: data/com.belmoussaoui.Authenticator.gschema.xml.in:34
-msgid "Download Favicons"
-msgstr "Download Favicons"
-
-#: data/com.belmoussaoui.Authenticator.gschema.xml.in:35
-msgid "Whether the application should attempt to find an icon for the providers."
-msgstr ""
-"Whether the application should attempt to find an icon for the providers."
-
-#: data/com.belmoussaoui.Authenticator.gschema.xml.in:39
-msgid "Download Favicons over metered connections"
-msgstr "Download Favicons over metered connections"
-
-#: data/com.belmoussaoui.Authenticator.gschema.xml.in:40
-msgid ""
-"Whether the application should download favicons over a metered connection."
-msgstr ""
-"Whether the application should download favicons over a metered connection."
-
-#: data/com.belmoussaoui.Authenticator.metainfo.xml.in.in:10
-msgid "Simple application for generating Two-Factor Authentication Codes."
-msgstr "יישום פשוט ליצירת קודים לאימות דו־שלבי."
-
-#: data/com.belmoussaoui.Authenticator.metainfo.xml.in.in:11
-msgid "Features:"
-msgstr "יכולות:"
-
-#: data/com.belmoussaoui.Authenticator.metainfo.xml.in.in:13
-msgid "Time-based/Counter-based/Steam methods support"
-msgstr "תמיכה בשיטות מבוססות זמן/מבוססות מונה/Steam"
-
-#: data/com.belmoussaoui.Authenticator.metainfo.xml.in.in:14
-msgid "SHA-1/SHA-256/SHA-512 algorithms support"
-msgstr "תמיכה באלגוריתמים SHA-1/‏SHA-256/‏SHA-512"
-
-#: data/com.belmoussaoui.Authenticator.metainfo.xml.in.in:15
-msgid "QR code scanner using a camera or from a screenshot"
-msgstr "סורק קודים מסוג QR באמצעות מצלמה או מצילום מסך"
-
-#: data/com.belmoussaoui.Authenticator.metainfo.xml.in.in:16
-msgid "Lock the application with a password"
-msgstr "נעילת היישום עם ססמה"
-
-#: data/com.belmoussaoui.Authenticator.metainfo.xml.in.in:17
-msgid "Beautiful UI"
-msgstr "מנשק משתמש יפהפה"
-
-#: data/com.belmoussaoui.Authenticator.metainfo.xml.in.in:18
-msgid "GNOME Shell search provider"
-msgstr "ספק חיפוש למעטפת GNOME"
-
-#: data/com.belmoussaoui.Authenticator.metainfo.xml.in.in:19
-msgid ""
-"Backup/Restore from/into known applications like FreeOTP+, Aegis (encrypted / "
-"plain-text), andOTP, Google Authenticator"
-msgstr ""
-"גיבוי/שחזור מתוך/אל יישומים מוכרים כגון FreeOTP+‎, ‏Aegis (מוצפן / טקסט פשוט), "
-"andOTP ומאמת Google"
-
-#: data/com.belmoussaoui.Authenticator.metainfo.xml.in.in:25
-msgid "Main Window"
-msgstr "חלון ראשי"
-
-#: data/com.belmoussaoui.Authenticator.metainfo.xml.in.in:29
-#: data/resources/ui/account_add.ui:32 data/resources/ui/account_add.ui:49
-msgid "Add a New Account"
-msgstr "הוספת חשבון חדש"
-
-#: data/com.belmoussaoui.Authenticator.metainfo.xml.in.in:33
-msgid "Add a New Provider"
-msgstr "הוספת ספק חדש"
-
-#: data/com.belmoussaoui.Authenticator.metainfo.xml.in.in:37
-msgid "Account Details"
-msgstr "פרטי חשבון"
-
-#: data/com.belmoussaoui.Authenticator.metainfo.xml.in.in:41
-msgid "Backup/Restore formats support"
-msgstr "תמיכה בתצורות גיבוי/שחזור"
-
-#: data/com.belmoussaoui.Authenticator.metainfo.xml.in.in:296
-msgid "Bilal Elmoussaoui"
-msgstr "בילאל אלמוסאווי"
-
-#: data/resources/ui/account_add.ui:6 src/widgets/preferences/window.rs:297
-msgid "_Camera"
-msgstr "מ_צלמה"
-
-#: data/resources/ui/account_add.ui:10 src/widgets/preferences/window.rs:301
-msgid "_Screenshot"
-msgstr "צי_לום מסך"
-
-#: data/resources/ui/account_add.ui:14 src/widgets/preferences/window.rs:306
-msgid "_QR Code Image"
-msgstr "תמונת קוד _QR"
-
-#: data/resources/ui/account_add.ui:58
-msgid "Cancel"
-msgstr "ביטול"
-
-#: data/resources/ui/account_add.ui:64
-msgid "_Add"
-msgstr "הו_ספה"
-
-#: data/resources/ui/account_add.ui:76 src/widgets/preferences/window.rs:292
-msgid "Scan QR Code"
-msgstr "סריקת קוד QR"
-
-#: data/resources/ui/account_add.ui:114
-#: data/resources/ui/account_details_page.ui:95
-#: data/resources/ui/providers_dialog.ui:105
-msgid "Provider"
-msgstr "ספק"
-
-#: data/resources/ui/account_add.ui:115
-msgid "Token issuer"
-msgstr "מנפיק האסימון"
-
-#: data/resources/ui/account_add.ui:129
-#: data/resources/ui/account_details_page.ui:90
-msgid "Account"
-msgstr "חשבון"
-
-#: data/resources/ui/account_add.ui:135
-msgid "Token"
-msgstr "אסימון"
-
-#: data/resources/ui/account_add.ui:141
-#: data/resources/ui/account_details_page.ui:138
-#: data/resources/ui/provider_page.ui:157
-msgid "Counter"
-msgstr "מונה"
-
-#: data/resources/ui/account_add.ui:159
-#: data/resources/ui/account_details_page.ui:118
-#: data/resources/ui/provider_page.ui:132
-msgid "Algorithm"
-msgstr "אלגוריתם"
-
-#: data/resources/ui/account_add.ui:171
-#: data/resources/ui/account_details_page.ui:128
-#: data/resources/ui/provider_page.ui:117
-msgid "Computing Method"
-msgstr "שיטת חישוב"
-
-#: data/resources/ui/account_add.ui:183
-#: data/resources/ui/account_details_page.ui:147
-#: data/resources/ui/provider_page.ui:148
-msgid "Period"
-msgstr "תקופה"
-
-#: data/resources/ui/account_add.ui:184 data/resources/ui/provider_page.ui:149
-msgid "Duration in seconds until the next password update"
-msgstr "משך הזמן בשניות עד לעדכון הססמה הבאה"
-
-#: data/resources/ui/account_add.ui:196
-#: data/resources/ui/account_details_page.ui:157
-#: data/resources/ui/provider_page.ui:166
-msgid "Digits"
-msgstr "ספרות"
-
-#: data/resources/ui/account_add.ui:197 data/resources/ui/provider_page.ui:167
-msgid "Length of the generated code"
-msgstr "אורך הקוד שנוצר"
-
-#: data/resources/ui/account_add.ui:209
-#: data/resources/ui/account_details_page.ui:167
-#: data/resources/ui/provider_page.ui:111
-msgid "Website"
-msgstr "אתר"
-
-#: data/resources/ui/account_add.ui:214
-msgid "How to Set Up"
-msgstr "איך להקים"
-
-#: data/resources/ui/account_add.ui:234
-#: data/resources/ui/preferences_camera_page.ui:4
-msgid "Camera"
-msgstr "מצלמה"
-
-#: data/resources/ui/account_add.ui:247
-msgid "Create Provider"
-msgstr "יצירת ספק"
-
-#: data/resources/ui/account_details_page.ui:55
-#: data/resources/ui/preferences_password_page.ui:17
-#: data/resources/ui/provider_page.ui:28
-msgid "_Save"
-msgstr "_שמירה"
-
-#: data/resources/ui/account_details_page.ui:66
-#: data/resources/ui/provider_page.ui:184
-msgid "_Delete"
-msgstr "מ_חיקה"
-
-#: data/resources/ui/account_details_page.ui:172
-msgid "Help"
-msgstr "עזרה"
-
-#: data/resources/ui/account_row.ui:23
-msgid "Increment the counter"
-msgstr "הגדלת המונה"
-
-#: data/resources/ui/account_row.ui:34
-msgid "Copy PIN to clipboard"
-msgstr "העתקת קוד סודי ללוח הגזירים"
-
-#: data/resources/ui/account_row.ui:43
-msgid "Account details"
-msgstr "פרטי חשבון"
-
-#: data/resources/ui/camera.ui:36
-msgid "No Camera Found"
-msgstr "לא נמצאה מצלמה"
-
-#: data/resources/ui/camera.ui:39
-msgid "_From a Screenshot"
-msgstr "מצי_לום מסך"
-
-#: data/resources/ui/preferences_password_page.ui:4
-msgid "Create Password"
-msgstr "יצירת ססמה"
-
-#: data/resources/ui/preferences_password_page.ui:28
-msgid "Set up a Passphrase"
-msgstr "הקמת מילת צופן"
-
-#: data/resources/ui/preferences_password_page.ui:29
-msgid "Authenticator will start locked after a passphrase is set."
-msgstr "המאמת יתחיל נעול לאחר הגדרת מילת צופן."
-
-#: data/resources/ui/preferences_password_page.ui:50
-msgid "Current Passphrase"
-msgstr "מילת הצופן הנוכחית"
-
-#: data/resources/ui/preferences_password_page.ui:56
-msgid "New Passphrase"
-msgstr "מילת צופן חדשה"
-
-#: data/resources/ui/preferences_password_page.ui:62
-msgid "Repeat Passphrase"
-msgstr "חזרה על מילת הצופן"
-
-#: data/resources/ui/preferences_password_page.ui:76
-#: data/resources/ui/provider_page.ui:72
-msgid "_Reset"
-msgstr "_איפוס"
-
-#: data/resources/ui/preferences.ui:16
-msgid "General"
-msgstr "כללי"
-
-#: data/resources/ui/preferences.ui:19
-msgid "Privacy"
-msgstr "פרטיות"
-
-#: data/resources/ui/preferences.ui:22
-msgid "_Passphrase"
-msgstr "מילת _צופן"
-
-#: data/resources/ui/preferences.ui:24
-msgid "Set up a passphrase to lock the application with"
-msgstr "הקמת מילת צופן כדי לנעול בעזרתה את היישום"
-
-#: data/resources/ui/preferences.ui:36
-msgid "_Auto Lock the Application"
-msgstr "_נעילת היישום אוטומטית"
-
-#: data/resources/ui/preferences.ui:38
-msgid "Whether to automatically lock the application"
-msgstr "האם לנעול את היישום אוטומטית"
-
-#: data/resources/ui/preferences.ui:44
-msgid "Auto Lock _Timeout"
-msgstr "_זמן עד לנעילה אוטומטית"
-
-#: data/resources/ui/preferences.ui:45
-msgid "The time in minutes"
-msgstr "הזמן בשניות"
-
-#: data/resources/ui/preferences.ui:58
-msgid "Network"
-msgstr "רשת"
-
-#: data/resources/ui/preferences.ui:61
-msgid "_Download Favicons"
-msgstr "הור_דת צלמית מועדפים"
-
-#: data/resources/ui/preferences.ui:63
-msgid "Automatically attempt fetching a website icon"
-msgstr "ניסיון למשיכה אוטומטית של צלמית אתר אינטרנט"
-
-#: data/resources/ui/preferences.ui:68
-msgid "_Metered Connection"
-msgstr "רשת מו_גבלת"
-
-#: data/resources/ui/preferences.ui:70
-msgid "Fetch a website icon on a metered connection"
-msgstr "קבלת צלמית אתר אינטרנט ברשת מוגבלת"
-
-#: data/resources/ui/preferences.ui:80
-msgid "Backup/Restore"
-msgstr "גיבוי/שחזור"
-
-#: data/resources/ui/preferences.ui:83 src/widgets/preferences/window.rs:481
-msgid "Backup"
-msgstr "גיבוי"
-
-#: data/resources/ui/preferences.ui:88 src/widgets/preferences/window.rs:489
-msgid "Restore"
-msgstr "שחזור"
-
-#: data/resources/ui/provider_page.ui:82
-msgid "Select a _File"
-msgstr "_בחירת קובץ"
-
-#: data/resources/ui/provider_page.ui:105
-msgid "Name"
-msgstr "שם"
-
-#: data/resources/ui/provider_page.ui:158
-msgid "The by default value for counter-based computing method"
-msgstr "ערך ברירת המחדל לשיטת חישוב מבוססת מונה"
-
-#: data/resources/ui/provider_page.ui:176
-msgid "Help URL"
-msgstr "כתובת עזרה"
-
-#: data/resources/ui/providers_dialog.ui:20
-msgid "Providers"
-msgstr "ספקים"
-
-#: data/resources/ui/providers_dialog.ui:30 src/widgets/providers/page.rs:209
-msgid "New Provider"
-msgstr "ספק חדש"
-
-#: data/resources/ui/providers_dialog.ui:37 data/resources/ui/window.ui:218
-msgid "Search"
-msgstr "חיפוש"
-
-#: data/resources/ui/providers_dialog.ui:90
-#: data/resources/ui/providers_list.ui:38
-msgid "No Results"
-msgstr "אין תוצאות"
-
-#: data/resources/ui/providers_dialog.ui:91
-msgid "No providers matching the query were found."
-msgstr "לא נמצאו ספקים שתואמים את השאילתה."
-
-#: data/resources/ui/providers_dialog.ui:136
-msgid "No Provider Selected"
-msgstr "לא נבחר ספק"
-
-#: data/resources/ui/providers_dialog.ui:137
-msgid "Select a provider or create a new one"
-msgstr "יש לבחור ספק או ליצור אחד חדש"
-
-#: data/resources/ui/providers_list.ui:39
-msgid "No accounts or providers matching the query were found."
-msgstr "לא נמצאו חשבונות או ספקים שתואמים לשאילתה."
-
-#: data/resources/ui/shortcuts.ui:11
-msgctxt "shortcut window"
-msgid "General"
-msgstr "כללי"
-
-#: data/resources/ui/shortcuts.ui:14
-msgctxt "shortcut window"
-msgid "Keyboard Shortcuts"
-msgstr "קיצורי מקלדת"
-
-#: data/resources/ui/shortcuts.ui:20
-msgctxt "shortcut window"
-msgid "Lock"
-msgstr "נעילה"
-
-#: data/resources/ui/shortcuts.ui:26
-msgctxt "shortcut window"
-msgid "Preferences"
-msgstr "העדפות"
-
-#: data/resources/ui/shortcuts.ui:32
-msgctxt "shortcut window"
-msgid "Quit"
-msgstr "יציאה"
-
-#: data/resources/ui/shortcuts.ui:40
-msgctxt "shortcut window"
-msgid "Accounts"
-msgstr "חשבונות"
-
-#: data/resources/ui/shortcuts.ui:43
-msgctxt "shortcut window"
-msgid "New Account"
-msgstr "חשבון חדש"
-
-#: data/resources/ui/shortcuts.ui:49
-msgctxt "shortcut window"
-msgid "Search"
-msgstr "חיפוש"
-
-#: data/resources/ui/shortcuts.ui:55
-msgctxt "shortcut window"
-msgid "Show Providers List"
-msgstr "הצגת רשימת ספקים"
-
-#: data/resources/ui/window.ui:6
-msgid "_Lock the Application"
-msgstr "_נעילת היישום"
-
-#: data/resources/ui/window.ui:12
-msgid "P_roviders"
-msgstr "_ספקים"
-
-#: data/resources/ui/window.ui:16
-msgid "_Preferences"
-msgstr "ה_עדפות"
-
-#: data/resources/ui/window.ui:22
+#: podcasts-gtk/resources/gtk/empty_show.ui:16
+msgid "This show does not have episodes yet"
+msgstr "לתכנית זו עוד אין פרקים"
+
+#: podcasts-gtk/resources/gtk/empty_show.ui:25
+msgid "If you think this is an error, please consider writing a bug report."
+msgstr "אם נראה לך שזו שגיאה, בבקשה שִקלו לדווח על תקלה."
+
+#: podcasts-gtk/resources/gtk/empty_view.ui:30
+msgid "Get Some Shows"
+msgstr "לקבל כמה תכניות"
+
+#: podcasts-gtk/resources/gtk/empty_view.ui:49
+msgid "Add new shows via feed URL"
+msgstr "הוספת תכניות על ידי הזנת כתובת URL של הערוץ"
+
+#: podcasts-gtk/resources/gtk/empty_view.ui:71
+msgid "Import shows from another device"
+msgstr "ייבוא  תכניות מהתקן אחר"
+
+#: podcasts-gtk/resources/gtk/episode_description.ui:41
+msgid "Episode Details"
+msgstr "פרטים על הפרק"
+
+#: podcasts-gtk/resources/gtk/episode_description.ui:51
+#: podcasts-gtk/resources/gtk/headerbar.ui:147
+msgid "Back"
+msgstr "אחורה"
+
+#: podcasts-gtk/resources/gtk/episode_description.ui:59
+msgid "Episode Menu"
+msgstr "תפריט פרק"
+
+#: podcasts-gtk/resources/gtk/episode_description.ui:107
+msgid "Podcast Title"
+msgstr "כותרת ההסכת"
+
+#: podcasts-gtk/resources/gtk/episode_description.ui:130
+msgid "Duration - Date"
+msgstr "משך - תאריך"
+
+#: podcasts-gtk/resources/gtk/episode_description.ui:150
+#: podcasts-gtk/resources/gtk/episode_description.ui:155
+msgid "Episode Description"
+msgstr "תיאור פרק"
+
+#: podcasts-gtk/resources/gtk/episode_menu.ui:35
+msgid "Go to Show"
+msgstr "מעבר לתכנית"
+
+#: podcasts-gtk/resources/gtk/episode_menu.ui:39
+msgid "Copy Episode Url"
+msgstr "העתקת כתובת פרק"
+
+#: podcasts-gtk/resources/gtk/episode_widget.ui:71
+msgid "You’ve already listened to this episode."
+msgstr "כבר האזנת לפרק זה."
+
+#: podcasts-gtk/resources/gtk/episode_widget.ui:158
+msgid "Calculating episode size…"
+msgstr "מחשב את גודל הפרק…"
+
+#: podcasts-gtk/resources/gtk/episode_widget.ui:181
+msgid "Play this episode"
+msgstr "השמעת פרק זה"
+
+#: podcasts-gtk/resources/gtk/episode_widget.ui:193
+msgid "Cancel the download process"
+msgstr "ביטול תהליך ההורדה"
+
+#: podcasts-gtk/resources/gtk/episode_widget.ui:205
+msgid "Download this episode"
+msgstr "הורדת פרק זה"
+
+#: podcasts-gtk/resources/gtk/hamburger.ui:7
+msgid "_Check for New Episodes"
+msgstr "_בדיקה אם יש פרקים חדשים"
+
+#: podcasts-gtk/resources/gtk/hamburger.ui:12
+msgid "_Import Shows"
+msgstr "_ייבוא תכניות"
+
+#: podcasts-gtk/resources/gtk/hamburger.ui:16
+msgid "_Export Shows"
+msgstr "_ייצוא תכניות"
+
+#: podcasts-gtk/resources/gtk/hamburger.ui:22
 msgid "_Keyboard Shortcuts"
-msgstr "_קיצורי מקלדת"
+msgstr "_צירופי מקשים"
 
-#: data/resources/ui/window.ui:26
-msgid "_About Authenticator"
-msgstr "_על המאמת"
+#: podcasts-gtk/resources/gtk/hamburger.ui:30
+msgid "_About Podcasts"
+msgstr "על _אודות הסכתים"
 
-#: data/resources/ui/window.ui:66
-msgid "Authenticator is Locked"
-msgstr "המאמת נעול"
+#: podcasts-gtk/resources/gtk/headerbar.ui:33
+#: podcasts-gtk/resources/gtk/headerbar.ui:137
+msgid "Add a new feed"
+msgstr "הוספת ערוץ חדש"
 
-#: data/resources/ui/window.ui:89
-msgid "_Unlock"
-msgstr "_שחרור"
+#: podcasts-gtk/resources/gtk/headerbar.ui:44
+msgid "Enter Feed Address"
+msgstr "הזנת כתובת ערוץ"
 
-# msgctxt "shortcut window"
-#: data/resources/ui/window.ui:119
-msgid "Accounts"
-msgstr "חשבונות"
+#: podcasts-gtk/resources/gtk/headerbar.ui:59
+msgid "Popover menu (ESC to close)"
+msgstr "תפריט קופץ (ESC לסגירה)"
 
-#: data/resources/ui/window.ui:134 data/resources/ui/window.ui:170
-msgid "New Account"
-msgstr "חשבון חדש"
+#: podcasts-gtk/resources/gtk/headerbar.ui:71
+msgid "Add"
+msgstr "הוספה"
 
-#: data/resources/ui/window.ui:142 data/resources/ui/window.ui:212
+#. Weird magic I copy-pasted that sets the Application Name in the Shell.
+#: podcasts-gtk/resources/gtk/headerbar.ui:115
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:4
+#: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:3
+#: podcasts-gtk/src/app.rs:533 podcasts-gtk/src/widgets/aboutdialog.rs:56
+#: podcasts-gtk/src/window.rs:64
+msgid "Podcasts"
+msgstr "הסכתים"
+
+#: podcasts-gtk/resources/gtk/headerbar.ui:125
+msgid "Show Title"
+msgstr "הצגת כותרת"
+
+#: podcasts-gtk/resources/gtk/headerbar.ui:157
 msgid "Main Menu"
 msgstr "תפריט ראשי"
 
-#: data/resources/ui/window.ui:150
-msgid "No Accounts"
-msgstr "אין חשבונות"
+#: podcasts-gtk/resources/gtk/headerbar.ui:167
+msgid "Podcast Menu"
+msgstr "תפריט הסכת"
 
-#: data/resources/ui/window.ui:151
-msgid "Add an account or scan a QR code first."
-msgstr "יש להוסיף חשבון או לסרוק QR תחילה."
+#: podcasts-gtk/resources/gtk/help-overlay.ui:11
+msgid "General"
+msgstr "כללי"
 
-#: src/application.rs:72
-msgid "Accounts restored successfully"
-msgstr "חשבונות שוחזרו בהצלחה"
+#: podcasts-gtk/resources/gtk/help-overlay.ui:15
+msgctxt "shortcut window"
+msgid "Check for new episodes"
+msgstr "בדיקה אם יש פרקים חדשים"
 
-#: src/application.rs:98
+#: podcasts-gtk/resources/gtk/help-overlay.ui:21
+msgctxt "shortcut window"
+msgid "Quit the application"
+msgstr "יציאה מהיישום"
+
+#: podcasts-gtk/resources/gtk/home_view.ui:57
+#: podcasts-gtk/resources/gtk/home_view.ui:70
+msgid "Today"
+msgstr "היום"
+
+#: podcasts-gtk/resources/gtk/home_view.ui:88
+#: podcasts-gtk/resources/gtk/home_view.ui:101
+msgid "Yesterday"
+msgstr "אתמול"
+
+#: podcasts-gtk/resources/gtk/home_view.ui:119
+#: podcasts-gtk/resources/gtk/home_view.ui:132
+msgid "This Week"
+msgstr "השבוע"
+
+#: podcasts-gtk/resources/gtk/home_view.ui:150
+#: podcasts-gtk/resources/gtk/home_view.ui:163
+msgid "This Month"
+msgstr "החודש"
+
+#: podcasts-gtk/resources/gtk/home_view.ui:182
+#: podcasts-gtk/resources/gtk/home_view.ui:195
+msgid "Older"
+msgstr "ישן יותר"
+
+#: podcasts-gtk/resources/gtk/player_dialog.ui:22
+msgid "Now Playing"
+msgstr "מושמע כעת"
+
+#: podcasts-gtk/resources/gtk/player_rate.ui:29
+msgid "Change the playback speed"
+msgstr "שינוי מהירות השמעה"
+
+#: podcasts-gtk/resources/gtk/player_rate.ui:34
+#: podcasts-gtk/resources/gtk/player_rate.ui:59
+msgid "1.00×"
+msgstr "1.00×"
+
+#: podcasts-gtk/resources/gtk/player_rate.ui:39
+msgid "2.00×"
+msgstr "2.00×"
+
+#: podcasts-gtk/resources/gtk/player_rate.ui:44
+msgid "1.75×"
+msgstr "1.75×"
+
+#: podcasts-gtk/resources/gtk/player_rate.ui:49
+msgid "1.50×"
+msgstr "1.50×"
+
+#: podcasts-gtk/resources/gtk/player_rate.ui:54
+msgid "1.25×"
+msgstr "1.25×"
+
+#: podcasts-gtk/resources/gtk/player_rate.ui:64
+msgid "0.90×"
+msgstr "0.90×"
+
+#: podcasts-gtk/resources/gtk/player_rate.ui:69
+msgid "0.75×"
+msgstr "0.75×"
+
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:55
+msgid "Rewind 10 seconds"
+msgstr "חזרה 10 שניות לאחור"
+
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:63
+msgid "Play"
+msgstr "השמעה"
+
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:71
+msgid "Pause"
+msgstr "השהיה"
+
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:79
+msgid "Fast forward 10 seconds"
+msgstr "דילוג 10 שניות קדימה"
+
+#: podcasts-gtk/resources/gtk/secondary_menu.ui:7
+msgid "_Mark All Episodes as Played"
+msgstr "_סימון כל הפרקים כנוגנו"
+
+#: podcasts-gtk/resources/gtk/secondary_menu.ui:11
+msgid "_Website"
+msgstr "_אתר אינטרנט"
+
+#: podcasts-gtk/resources/gtk/secondary_menu.ui:15
+msgid "_Unsubscribe"
+msgstr "_ביטול מנוי"
+
+#: podcasts-gtk/resources/gtk/show_menu.ui:35
+msgid "Open Website"
+msgstr "פתיחת אתר אינטרנט"
+
+#: podcasts-gtk/resources/gtk/show_menu.ui:39
+msgid "Mark All as Played"
+msgstr "סימון הכל כנוגן"
+
+#: podcasts-gtk/resources/gtk/show_menu.ui:45
+msgid "Unsubscribe"
+msgstr "ביטול מנוי"
+
+#: podcasts-gtk/resources/gtk/show_widget.ui:80
+msgid "Episodes"
+msgstr "פרקים"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:8
+msgid "Listen to your favorite shows"
+msgstr "האזנה לתכניות המועדפות שלך"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:10
+msgid ""
+"Play, update, and manage your podcasts from a lightweight interface that "
+"seamlessly integrates with GNOME. Podcasts can play various audio formats "
+"and remember where you stopped listening. You can subscribe to shows via RSS/"
+"Atom, iTunes, and Soundcloud links. Subscriptions from other apps can be "
+"imported via OPML files."
+msgstr ""
+"השמעה, עדכון וניהול ההסכתים בממשק קל המשתלב בצורה חלקה עם GNOME. הסכתים יכול "
+"להשמיע סוגים שונים של תבניות שמע וזוכר את המקום האחרון בו עצרת את ההאזנה. "
+"נִתן להירשם לתכניות באמצעות RSS/Atom, ‏iTunes וקישורי Soundcloud. נִתן לייבא "
+"מנויים והרשמות מיישומים אחרים באמצעות קובצי OPML."
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:143
+msgid "The Podcasts developers"
+msgstr "מפתחי הסכתים"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:4
+msgid "Listen to your favorite podcasts, right from your desktop."
+msgstr "האזנה להסכתים האהובים עליך, ישירות משולחן העבודה שלך."
+
+#. Translators: Search terms to find this application. Do NOT translate or localize the semicolons! The list MUST also end with a semicolon!
+#: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:13
+msgid "Podcast;RSS;"
+msgstr "הסכתים;RSS;פודקאסט;פודקאסטים;"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:15
+msgid "Height of the last open main window"
+msgstr "Height of the last open main window"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:19
+msgid "Width of the last open main window"
+msgstr "Width of the last open main window"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:23
+msgid "Maximized state of the last open main window"
+msgstr "Maximized state of the last open main window"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:28
+msgid "Whether to periodically refresh content"
+msgstr "Whether to periodically refresh content"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:33
+msgid "How many periods of time to wait between automatic refreshes"
+msgstr "How many periods of time to wait between automatic refreshes"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:37
+msgid "What period of time to wait between automatic refreshes"
+msgstr "What period of time to wait between automatic refreshes"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:41
+msgid "Whether to refresh content after startup"
+msgstr "Whether to refresh content after startup"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:47
+msgid "How many periods of time to wait between automatic cleanups"
+msgstr "How many periods of time to wait between automatic cleanups"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:51
+msgid "What period of time to wait between automatic cleanups"
+msgstr "What period of time to wait between automatic cleanups"
+
+#: podcasts-gtk/src/app.rs:404
+msgid "Copied URL to clipboard!"
+msgstr "כתובת UTRL הועתקה ללוח הגזירים!"
+
+#: podcasts-gtk/src/stacks/content.rs:69
+msgid "New"
+msgstr "חדש"
+
+#: podcasts-gtk/src/stacks/content.rs:71
+#: podcasts-gtk/src/widgets/shows_view.rs:55
+msgid "Shows"
+msgstr "תכניות"
+
+#: podcasts-gtk/src/utils.rs:491 podcasts-gtk/src/utils.rs:533
+msgid "OPML file"
+msgstr "קובץ OPML"
+
+#: podcasts-gtk/src/utils.rs:502
+msgid "Select the file from which to you want to import shows."
+msgstr "בחירת הקובץ ממנו ברצונך לייבא תכניות."
+
+#: podcasts-gtk/src/utils.rs:504
+msgid "_Import"
+msgstr "_ייבוא"
+
+#: podcasts-gtk/src/utils.rs:520
+msgid "Failed to parse the imported file"
+msgstr "ניתוח הקובץ המיובא נכשל"
+
+#: podcasts-gtk/src/utils.rs:543
+msgid "Export shows to…"
+msgstr "ייצוא תכניות אל…"
+
+#: podcasts-gtk/src/utils.rs:544
+msgid "_Export"
+msgstr "_ייצוא"
+
+#. Translators: This is the string of the suggested name for the exported opml file
+#: podcasts-gtk/src/utils.rs:548
+msgid "gnome-podcasts-exported-shows"
+msgstr "קובץ-ייצוא-תכניות-הסכתים-גנום"
+
+#: podcasts-gtk/src/utils.rs:558
+msgid "GNOME Podcasts Subscriptions"
+msgstr "מנויי GNOME הסכתים"
+
+#: podcasts-gtk/src/utils.rs:559
+msgid "Failed to export podcasts"
+msgstr "ארע כשל בייצוא הסכתים"
+
+#: podcasts-gtk/src/widgets/aboutdialog.rs:52
+msgid "Podcast Client for the GNOME Desktop."
+msgstr "לקוח הסכתים עבור שולחן העבודה GNOME."
+
+#: podcasts-gtk/src/widgets/aboutdialog.rs:63
 msgid "translator-credits"
 msgstr ""
-"ירון שהרבני <sh.yaron@gmail.com>\n"
 "יוסף אור בוצ׳קו <yoseforb@gmail.com>\n"
-"מיזם תרגום GNOME לעברית https://l10n.gnome.org/teams/he/"
+"ירון שהרבני <sh.yaron@gmail.com>\n"
+"<a href=\"https://l10n.gnome.org/teams/he/\">מיזם תרגום GNOME לעברית</a>"
 
-#: src/application.rs:362 src/widgets/accounts/row.rs:46
-msgid "One-Time password copied"
-msgstr "הססמה החד־פעמית הועתקה"
+#: podcasts-gtk/src/widgets/episode.rs:374
+msgid "{} min"
+msgstr "‏{} דק"
 
-#: src/application.rs:363
-msgid "Password was copied successfully"
-msgstr "הססמה הועתקה בהצלחה"
+#: podcasts-gtk/src/widgets/player.rs:907
+msgid "The media player was unable to execute an action."
+msgstr "נגן המדיה לא הצליח לבצע את הפעולה."
 
-#. Translators: This is for making a backup for the aegis Android app.
-#. Translators: This is for restoring a backup from the aegis Android app.
-#: src/backup/aegis.rs:399 src/backup/aegis.rs:439
-msgid "Aegis"
-msgstr "Aegis"
+#: podcasts-gtk/src/widgets/read_more_label.rs:34
+msgid "Visually expands this description"
+msgstr "מרחיב את התיאור הזה חזותית"
 
-#: src/backup/aegis.rs:403
-msgid "Into a JSON file containing plain-text or encrypted fields"
-msgstr "לקובץ JSON המכיל טקסט פשוט או שדות מוצפנות"
+#: podcasts-gtk/src/widgets/read_more_label.rs:36
+msgid "Read More"
+msgstr "לקרוא עוד"
 
-#: src/backup/aegis.rs:443
-msgid "From a JSON file containing plain-text or encrypted fields"
-msgstr "מקובץ JSON המכיל טקסט פשוט או שדות מוצפנות"
+#: podcasts-gtk/src/widgets/show_menu.rs:180
+msgid "Marked all episodes as listened"
+msgstr "כל הפרקים סומנו כהואזנו"
 
-#. Translators: This is for making a backup for the andOTP Android app.
-#: src/backup/andotp.rs:79
-msgid "a_ndOTP"
-msgstr "a_ndOTP"
+#: podcasts-gtk/src/widgets/show_menu.rs:181
+#: podcasts-gtk/src/widgets/show_menu.rs:204
+msgid "Undo"
+msgstr "ביטול"
 
-#: src/backup/andotp.rs:83
-msgid "Into a plain-text JSON file"
-msgstr "לקובץ JSON בטקסט פשוט"
+#: podcasts-gtk/src/widgets/show_menu.rs:200
+msgid "Unsubscribed from {}"
+msgstr "בוטל המנוי מהתכנית {}"
 
-#. Translators: This is for restoring a backup from the andOTP Android app.
-#: src/backup/andotp.rs:127
-msgid "an_dOTP"
-msgstr "an_dOTP"
+#~ msgid "Jordan Petridis"
+#~ msgstr "Jordan Petridis"
 
-#: src/backup/andotp.rs:131 src/backup/bitwarden.rs:124 src/backup/legacy.rs:45
-msgid "From a plain-text JSON file"
-msgstr "מקובץ JSON בטקסט פשוט"
+#~ msgid "Julian Hofer"
+#~ msgstr "Julian Hofer"
 
-#: src/backup/bitwarden.rs:47
-msgid "Unknown account"
-msgstr "חשבון לא ידוע"
+#~ msgid "Top position of the last open main window"
+#~ msgstr "Top position of the last open main window"
 
-#: src/backup/bitwarden.rs:55
-msgid "Unknown issuer"
-msgstr "מנפיק לא ידוע"
+#~ msgid "Left position of the last open main window"
+#~ msgstr "Left position of the last open main window"
 
-#. Translators: This is for restoring a backup from Bitwarden.
-#: src/backup/bitwarden.rs:120
-msgid "_Bitwarden"
-msgstr "_Bitwarden"
+#~ msgid "Enable or disable dark theme"
+#~ msgstr "Enable or disable dark theme"
 
-#: src/backup/freeotp.rs:18
-msgid "_Authenticator"
-msgstr "מ_אמת"
+#~ msgid "An in-app action notification"
+#~ msgstr "התרעות על פעולות בתוך היישום"
 
-#: src/backup/freeotp.rs:22
-msgid "Into a plain-text file, compatible with FreeOTP+"
-msgstr "לקובץ טקסט פשוט, תואם ל־FreeOTP+‎"
+#~ msgid "Fetching new episodes"
+#~ msgstr "חיפוש פרקים חדשים"
 
-#: src/backup/freeotp.rs:51
-msgid "A_uthenticator"
-msgstr "מ_אמת"
+#~ msgid "Selected file could not be accessed."
+#~ msgstr "לא נתן לגשת לקובץ הנבחר."
 
-#: src/backup/freeotp.rs:55
-msgid "From a plain-text file, compatible with FreeOTP+"
-msgstr "מקובץ טקסט פשוט, תואם ל־FreeOTP+‎"
+#~ msgid "_Cancel"
+#~ msgstr "_ביטול"
 
-#: src/backup/freeotp_json.rs:87
-msgid "FreeOTP+"
-msgstr "FreeOTP+‏‎‎"
-
-#: src/backup/freeotp_json.rs:91
-msgid "From a plain-text JSON file, compatible with FreeOTP+"
-msgstr "מקובץ טקסט JSON, תואם ל־FreeOTP+‎"
-
-#: src/backup/google.rs:19
-msgid "Google Authenticator"
-msgstr "מאמת Google"
-
-#: src/backup/google.rs:23
-msgid "From a QR code generated by Google Authenticator"
-msgstr "מקוד QR שנוצר על ידי מאמת Google"
-
-#. Translators: this is for restoring a backup from the old Authenticator
-#. release
-#: src/backup/legacy.rs:41
-msgid "Au_thenticator (Legacy)"
-msgstr "מ_אמת (מדור קודם)"
-
-#: src/models/algorithm.rs:60
-msgid "Counter-based"
-msgstr "מבוסס מונה"
-
-#: src/models/algorithm.rs:61
-msgid "Time-based"
-msgstr "מבוסס זמן"
-
-#. Translators: Steam refers to the gaming application by Valve.
-#: src/models/algorithm.rs:63
-msgid "Steam"
-msgstr "‫Steam"
-
-#: src/models/algorithm.rs:126
-msgid "SHA-1"
-msgstr "SHA-1"
-
-#: src/models/algorithm.rs:127
-msgid "SHA-256"
-msgstr "SHA-256"
-
-#: src/models/algorithm.rs:128
-msgid "SHA-512"
-msgstr "SHA-512"
-
-#: src/widgets/accounts/add.rs:274 src/widgets/preferences/window.rs:419
-#: src/widgets/providers/page.rs:292
-msgid "Image"
-msgstr "תמונה"
-
-#: src/widgets/accounts/add.rs:282 src/widgets/preferences/window.rs:427
-msgid "Select QR Code"
-msgstr "בחירת קוד QR"
-
-#: src/widgets/accounts/add.rs:300
-msgid "Invalid Token"
-msgstr "אסימון שגוי"
-
-#: src/widgets/window.rs:115
-msgid "Wrong Password"
-msgstr "ססמה שגויה"
-
-#: src/widgets/preferences/password_page.rs:172
-#: src/widgets/preferences/password_page.rs:214
-msgid "Wrong Passphrase"
-msgstr "מילת צופן שגויה"
-
-#: src/widgets/preferences/window.rs:196 src/widgets/preferences/window.rs:268
-msgid "Key / Passphrase"
-msgstr "מפתח / מילת צופן"
-
-#: src/widgets/preferences/window.rs:207 src/widgets/preferences/window.rs:280
-msgid "Select File"
-msgstr "בחירת קובץ"
-
-#: src/widgets/preferences/window.rs:231
-msgid "Failed to create a backup"
-msgstr "אירע כשל ביצירת גיבוי"
-
-#: src/widgets/preferences/window.rs:343
-msgid "Failed to restore from camera"
-msgstr "אירע כשל בשחזור ממצלמה"
-
-#: src/widgets/preferences/window.rs:354
-msgid "Failed to restore from a screenshot"
-msgstr "אירע כשל בשחזור מצילום מסך"
-
-#: src/widgets/preferences/window.rs:364
-msgid "Failed to restore from an image"
-msgstr "אירע כשל משחזור מתוך תמונה"
-
-#: src/widgets/preferences/window.rs:377
-msgid "Failed to restore from a file"
-msgstr "אירע כשל משחזור מקובץ"
-
-#: src/widgets/providers/dialog.rs:235
-msgid "Provider created successfully"
-msgstr "ספק נוצר בהצלחה"
-
-#: src/widgets/providers/dialog.rs:245
-msgid "Provider updated successfully"
-msgstr "ספק עודכן בהצלחה"
-
-#: src/widgets/providers/dialog.rs:261
-msgid "Provider removed successfully"
-msgstr "ספק הוסר בהצלחה"
-
-#: src/widgets/providers/page.rs:186
-msgid "Editing Provider: {}"
-msgstr "עריכת ספק: {}"
-
-#: src/widgets/providers/page.rs:325
-msgid "The provider has accounts assigned to it, please remove them first"
-msgstr "יש חשבונות שמשויכים לספק, נא להסיר אותם תחילה"
-
-#~ msgid "Back"
-#~ msgstr "אחורה"
-
-#~ msgid "Dark Mode"
-#~ msgstr "ערכת עיצוב כהה"
-
-#~ msgid "Whether the application should use a dark mode."
-#~ msgstr "האם על היישום להשתמש בערכת עיצוב כהה."
-
-#~ msgid "Go Back"
-#~ msgstr "חזרה"
-
-#~ msgid "_Edit"
-#~ msgstr "_עריכה"
-
-#~ msgid "Appearance"
-#~ msgstr "מראה"
-
-#~ msgid "_Dark Mode"
-#~ msgstr "ערכת עיצוב _כהה"
-
-#~ msgid "Whether the application should use a dark mode"
-#~ msgstr "האם על היישום להשתמש בערכת עיצוב כהה"
-
-#~ msgid "The key that will be used to decrypt the vault"
-#~ msgstr "המפתח שישמש לפענוח הכספת"
-
-#~ msgid "The key used to encrypt the vault"
-#~ msgstr "המפתח ששימש להצפנת הכספת"
-
-#~ msgid "Unable to restore accounts"
-#~ msgstr "לא ניתן לשחזר את החשבונות"
-
-#~ msgid "Something went wrong"
-#~ msgstr "משהו השתבש"
-
-#~ msgid "Couldn't find a QR code"
-#~ msgstr "לא ניתן למצוא קוד QR"
-
-#~ msgid "Used to fetch the provider icon"
-#~ msgstr "משמש למשיכת סמל הספק"
-
-#~ msgid "Provider setup instructions"
-#~ msgstr "הנחיות הקמת ספק"
-
-#~ msgid "Select"
-#~ msgstr "בחירה"
-
-#~ msgid "D_etails"
-#~ msgstr "_פרטים"
-
-#~ msgid "_Rename"
-#~ msgstr "_שינוי שם"
-
-#~ msgid "More"
-#~ msgstr "עוד"
+#~ msgid "Learn more about GNOME Podcasts"
+#~ msgstr "ללמוד עוד על GNOME הסכתים"
