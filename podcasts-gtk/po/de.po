@@ -10,8 +10,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: podcasts master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2023-09-02 17:07+0000\n"
-"PO-Revision-Date: 2023-09-02 22:49+0200\n"
+"POT-Creation-Date: 2023-09-03 17:35+0000\n"
+"PO-Revision-Date: 2023-09-04 20:06+0200\n"
 "Last-Translator: Jürgen Benvenuti <gastornis@posteo.org>\n"
 "Language-Team: Deutsch <gnome-de@gnome.org>\n"
 "Language: de\n"
@@ -66,7 +66,7 @@ msgid "Duration - Date"
 msgstr "Dauer - Datum"
 
 #: podcasts-gtk/resources/gtk/episode_description.ui:150
-#: podcasts-gtk/resources/gtk/episode_description.ui:154
+#: podcasts-gtk/resources/gtk/episode_description.ui:155
 msgid "Episode Description"
 msgstr "Folgenbeschreibung"
 
@@ -272,7 +272,7 @@ msgstr "Alle als angehört markieren"
 msgid "Unsubscribe"
 msgstr "Abbestellen"
 
-#: podcasts-gtk/resources/gtk/show_widget.ui:79
+#: podcasts-gtk/resources/gtk/show_widget.ui:80
 msgid "Episodes"
 msgstr "Folgen"
 
@@ -355,6 +355,7 @@ msgid "New"
 msgstr "Neu"
 
 #: podcasts-gtk/src/stacks/content.rs:71
+#: podcasts-gtk/src/widgets/shows_view.rs:55
 msgid "Shows"
 msgstr "Podcasts"
 
@@ -416,7 +417,11 @@ msgstr "{} min"
 msgid "The media player was unable to execute an action."
 msgstr "Die Medienwiedergabe konnte eine Aktion nicht ausführen."
 
-#: podcasts-gtk/src/widgets/read_more_label.rs:32
+#: podcasts-gtk/src/widgets/read_more_label.rs:34
+msgid "Visually expands this description"
+msgstr "Erweitert diese Beschreibung visuell"
+
+#: podcasts-gtk/src/widgets/read_more_label.rs:36
 msgid "Read More"
 msgstr "Weiterlesen"
 
