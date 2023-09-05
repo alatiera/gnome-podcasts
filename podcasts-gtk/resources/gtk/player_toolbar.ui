@@ -241,11 +241,13 @@ Tobias Bernard
                         <child>
                           <object class="GtkButton" id="play_button_small">
                             <property name="icon_name">media-playback-start-symbolic</property>
+                            <property name="tooltip_text" translatable="yes">Play</property>
                           </object>
                         </child>
                         <child>
                           <object class="GtkButton" id="pause_button_small">
                             <property name="icon_name">media-playback-pause-symbolic</property>
+                            <property name="tooltip_text" translatable="yes">Pause</property>
                           </object>
                         </child>
                       </object>
