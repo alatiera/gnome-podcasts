@@ -4,6 +4,7 @@
     <property name="modal">True</property>
     <property name="hide_on_close">True</property>
     <property name="destroy_with_parent">True</property>
+    <property name="title" translatable="yes">Now Playing</property>
     <child>
       <object class="GtkShortcutController">
         <child>
@@ -17,15 +18,11 @@
     <property name="titlebar">
       <object class="GtkHeaderBar" id="headerbar">
         <property name="show-title-buttons">False</property>
-        <property name="title-widget">
-          <object class="AdwWindowTitle">
-            <property name="title" translatable="yes">Now Playing</property>
-          </object>
-        </property>
         <child>
           <object class="GtkButton" id="close">
             <property name="icon_name">go-previous-symbolic</property>
             <property name="action_name">window.close</property>
+            <property name="tooltip_text" translatable="yes">Close</property>
           </object>
         </child>
       </object>
@@ -149,10 +146,12 @@
                     <property name="height_request">60</property>
                     <property name="valign">center</property>
                     <property name="margin-end">12</property>
+                    <property name="tooltip_text" translatable="yes">Rewind</property>
                     <child>
                       <object class="GtkImage">
                         <property name="icon_name">skip-back-large-symbolic</property>
                         <property name="icon_size">2</property>
+                        <property name="accessible-role">presentation</property>
                       </object>
                     </child>
                     <style>
@@ -168,10 +167,12 @@
                         <property name="receives_default">True</property>
                         <property name="width_request">80</property>
                         <property name="height_request">80</property>
+                        <property name="tooltip_text" translatable="yes">Play</property>
                         <child>
                           <object class="GtkImage">
                             <property name="icon_name">media-playback-start-symbolic</property>
                             <property name="icon_size">2</property>
+                            <property name="accessible-role">presentation</property>
                           </object>
                         </child>
                         <style>
@@ -184,10 +185,12 @@
                       <object class="GtkButton" id="pause">
                         <property name="width_request">80</property>
                         <property name="height_request">80</property>
+                        <property name="tooltip_text" translatable="yes">Pause</property>
                         <child>
                           <object class="GtkImage">
                             <property name="icon_name">media-playback-pause-symbolic</property>
                             <property name="icon_size">2</property>
+                            <property name="accessible-role">presentation</property>
                           </object>
                         </child>
                         <style>
@@ -205,10 +208,12 @@
                     <property name="height_request">60</property>
                     <property name="valign">center</property>
                     <property name="margin-start">12</property>
+                    <property name="tooltip_text" translatable="yes">Forward</property>
                     <child>
                       <object class="GtkImage">
                         <property name="icon_name">skip-forward-large-symbolic</property>
                         <property name="icon_size">2</property>
+                        <property name="accessible-role">presentation</property>
                       </object>
                     </child>
                     <style>
