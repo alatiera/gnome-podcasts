@@ -217,7 +217,7 @@ fn format_duration(seconds: u32) -> String {
     if seconds >= 3600 {
         time.format("%T").to_string()
     } else {
-        time.format("%M∶%S").to_string()
+        time.format("%M:%S").to_string()
     }
 }
 
