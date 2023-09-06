@@ -527,8 +527,6 @@ impl PdApplication {
 
         let application = Self::new();
 
-        glib::set_prgname(Some(APP_ID));
-
         // Weird magic I copy-pasted that sets the Application Name in the Shell.
         glib::set_application_name(&i18n("Podcasts"));
         gtk::Window::set_default_icon_name(APP_ID);
