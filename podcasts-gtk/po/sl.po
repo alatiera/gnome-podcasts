@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: podcasts master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2023-09-03 05:02+0000\n"
-"PO-Revision-Date: 2023-09-03 11:20+0200\n"
+"POT-Creation-Date: 2023-09-06 01:04+0000\n"
+"PO-Revision-Date: 2023-09-07 09:31+0200\n"
 "Last-Translator: Martin Srebotnjak <miles@filmsi.net>\n"
 "Language-Team: Slovenian GNOME Translation Team <gnome-si@googlegroups.com>\n"
 "Language: sl_SI\n"
@@ -192,9 +192,33 @@ msgstr "Ta mesec"
 msgid "Older"
 msgstr "Starejše"
 
-#: podcasts-gtk/resources/gtk/player_dialog.ui:22
+#: podcasts-gtk/resources/gtk/player_dialog.ui:7
 msgid "Now Playing"
 msgstr "Se predvaja"
+
+#: podcasts-gtk/resources/gtk/player_dialog.ui:25
+msgid "Close"
+msgstr "Zapri"
+
+#: podcasts-gtk/resources/gtk/player_dialog.ui:149
+msgid "Rewind"
+msgstr "Previj nazaj"
+
+#: podcasts-gtk/resources/gtk/player_dialog.ui:170
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:63
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:244
+msgid "Play"
+msgstr "Predvajaj"
+
+#: podcasts-gtk/resources/gtk/player_dialog.ui:188
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:71
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:250
+msgid "Pause"
+msgstr "Premor"
+
+#: podcasts-gtk/resources/gtk/player_dialog.ui:211
+msgid "Forward"
+msgstr "Previj naprej"
 
 #: podcasts-gtk/resources/gtk/player_rate.ui:29
 msgid "Change the playback speed"
@@ -232,14 +256,6 @@ msgstr "0,75 ×"
 #: podcasts-gtk/resources/gtk/player_toolbar.ui:55
 msgid "Rewind 10 seconds"
 msgstr "Skoči nazaj za 10 sekund"
-
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:63
-msgid "Play"
-msgstr "Predvajaj"
-
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:71
-msgid "Pause"
-msgstr "Premor"
 
 #: podcasts-gtk/resources/gtk/player_toolbar.ui:79
 msgid "Fast forward 10 seconds"
