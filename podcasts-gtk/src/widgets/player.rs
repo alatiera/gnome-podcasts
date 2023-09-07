@@ -371,11 +371,7 @@ impl Default for PlayerWidget {
         // window. Make sure it doesn't do that.
         player.set_video_track_enabled(false);
 
-        let mpris = MprisPlayer::new(
-            APP_ID.to_string(),
-            "GNOME Podcasts".to_string(),
-            format!("{}.desktop", APP_ID),
-        );
+        let mpris = MprisPlayer::new(APP_ID.to_string(), i18n("Podcasts"), APP_ID.to_string());
         mpris.set_can_raise(true);
         mpris.set_can_play(false);
         mpris.set_can_seek(false);
