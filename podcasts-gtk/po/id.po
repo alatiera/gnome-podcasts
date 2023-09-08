@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: podcasts master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2023-08-28 07:05+0000\n"
-"PO-Revision-Date: 2023-08-30 11:41+0700\n"
+"POT-Creation-Date: 2023-09-06 01:04+0000\n"
+"PO-Revision-Date: 2023-09-08 11:12+0700\n"
 "Last-Translator: Kukuh Syafaat <kukuhsyafaat@gnome.org>\n"
 "Language-Team: Indonesian <gnome-l10n-id@googlegroups.com>\n"
 "Language: id\n"
@@ -44,19 +44,24 @@ msgid "Episode Details"
 msgstr "Rincian Episode"
 
 #: podcasts-gtk/resources/gtk/episode_description.ui:51
-#: podcasts-gtk/resources/gtk/headerbar.ui:143
+#: podcasts-gtk/resources/gtk/headerbar.ui:147
 msgid "Back"
 msgstr "Kembali"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:106
+#: podcasts-gtk/resources/gtk/episode_description.ui:59
+msgid "Episode Menu"
+msgstr "Menu Episode"
+
+#: podcasts-gtk/resources/gtk/episode_description.ui:107
 msgid "Podcast Title"
 msgstr "Judul Siniar"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:129
+#: podcasts-gtk/resources/gtk/episode_description.ui:130
 msgid "Duration - Date"
 msgstr "Durasi - Tanggal"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:149
+#: podcasts-gtk/resources/gtk/episode_description.ui:150
+#: podcasts-gtk/resources/gtk/episode_description.ui:155
 msgid "Episode Description"
 msgstr "Deskripsi Episode"
 
@@ -68,23 +73,23 @@ msgstr "Pergi ke Acara"
 msgid "Copy Episode Url"
 msgstr "Salin Url Episode"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:70
+#: podcasts-gtk/resources/gtk/episode_widget.ui:71
 msgid "You’ve already listened to this episode."
 msgstr "Anda sudah mendengarkan episode ini."
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:157
+#: podcasts-gtk/resources/gtk/episode_widget.ui:158
 msgid "Calculating episode size…"
 msgstr "Menghitung ukuran episode…"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:180
+#: podcasts-gtk/resources/gtk/episode_widget.ui:181
 msgid "Play this episode"
 msgstr "Putar episode ini"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:192
+#: podcasts-gtk/resources/gtk/episode_widget.ui:193
 msgid "Cancel the download process"
 msgstr "Batalkan proses pengunduhan"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:204
+#: podcasts-gtk/resources/gtk/episode_widget.ui:205
 msgid "Download this episode"
 msgstr "Unduh episode ini"
 
@@ -109,7 +114,7 @@ msgid "_About Podcasts"
 msgstr "Tent_ang Siniar"
 
 #: podcasts-gtk/resources/gtk/headerbar.ui:33
-#: podcasts-gtk/resources/gtk/headerbar.ui:133
+#: podcasts-gtk/resources/gtk/headerbar.ui:137
 msgid "Add a new feed"
 msgstr "Tambahkan asupan baru"
 
@@ -117,26 +122,34 @@ msgstr "Tambahkan asupan baru"
 msgid "Enter Feed Address"
 msgstr "Masukkan Alamat Asupan"
 
-#: podcasts-gtk/resources/gtk/headerbar.ui:67
+#: podcasts-gtk/resources/gtk/headerbar.ui:59
+msgid "Popover menu (ESC to close)"
+msgstr "Menu popover (ESC untuk menutup)"
+
+#: podcasts-gtk/resources/gtk/headerbar.ui:71
 msgid "Add"
 msgstr "Tambah"
 
 #. Weird magic I copy-pasted that sets the Application Name in the Shell.
-#: podcasts-gtk/resources/gtk/headerbar.ui:111
+#: podcasts-gtk/resources/gtk/headerbar.ui:115
 #: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:4
 #: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:3
-#: podcasts-gtk/src/app.rs:501 podcasts-gtk/src/widgets/aboutdialog.rs:56
+#: podcasts-gtk/src/app.rs:533 podcasts-gtk/src/widgets/aboutdialog.rs:56
 #: podcasts-gtk/src/window.rs:64
 msgid "Podcasts"
 msgstr "Siniar"
 
-#: podcasts-gtk/resources/gtk/headerbar.ui:121
+#: podcasts-gtk/resources/gtk/headerbar.ui:125
 msgid "Show Title"
 msgstr "Tampilkan Judul"
 
-#: podcasts-gtk/resources/gtk/headerbar.ui:153
+#: podcasts-gtk/resources/gtk/headerbar.ui:157
 msgid "Main Menu"
 msgstr "Menu Utama"
+
+#: podcasts-gtk/resources/gtk/headerbar.ui:167
+msgid "Podcast Menu"
+msgstr "Menu Siniar"
 
 #: podcasts-gtk/resources/gtk/help-overlay.ui:11
 msgid "General"
@@ -153,28 +166,57 @@ msgid "Quit the application"
 msgstr "Keluar dari aplikasi"
 
 #: podcasts-gtk/resources/gtk/home_view.ui:57
+#: podcasts-gtk/resources/gtk/home_view.ui:70
 msgid "Today"
 msgstr "Hari ini"
 
-#: podcasts-gtk/resources/gtk/home_view.ui:85
+#: podcasts-gtk/resources/gtk/home_view.ui:88
+#: podcasts-gtk/resources/gtk/home_view.ui:101
 msgid "Yesterday"
 msgstr "Kemarin"
 
-#: podcasts-gtk/resources/gtk/home_view.ui:113
+#: podcasts-gtk/resources/gtk/home_view.ui:119
+#: podcasts-gtk/resources/gtk/home_view.ui:132
 msgid "This Week"
 msgstr "Minggu Ini"
 
-#: podcasts-gtk/resources/gtk/home_view.ui:141
+#: podcasts-gtk/resources/gtk/home_view.ui:150
+#: podcasts-gtk/resources/gtk/home_view.ui:163
 msgid "This Month"
 msgstr "Bulan ini"
 
-#: podcasts-gtk/resources/gtk/home_view.ui:170
+#: podcasts-gtk/resources/gtk/home_view.ui:182
+#: podcasts-gtk/resources/gtk/home_view.ui:195
 msgid "Older"
 msgstr "Lebih lama"
 
-#: podcasts-gtk/resources/gtk/player_dialog.ui:22
+#: podcasts-gtk/resources/gtk/player_dialog.ui:7
 msgid "Now Playing"
 msgstr "Sedang Diputar"
+
+#: podcasts-gtk/resources/gtk/player_dialog.ui:25
+msgid "Close"
+msgstr "Tutup"
+
+#: podcasts-gtk/resources/gtk/player_dialog.ui:149
+msgid "Rewind"
+msgstr "Putar Balik"
+
+#: podcasts-gtk/resources/gtk/player_dialog.ui:170
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:63
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:244
+msgid "Play"
+msgstr "Putar"
+
+#: podcasts-gtk/resources/gtk/player_dialog.ui:188
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:71
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:250
+msgid "Pause"
+msgstr "Jeda"
+
+#: podcasts-gtk/resources/gtk/player_dialog.ui:211
+msgid "Forward"
+msgstr "Maju"
 
 #: podcasts-gtk/resources/gtk/player_rate.ui:29
 msgid "Change the playback speed"
@@ -213,14 +255,6 @@ msgstr "0.75×"
 msgid "Rewind 10 seconds"
 msgstr "Putar mundur 10 detik"
 
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:63
-msgid "Play"
-msgstr "Putar"
-
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:71
-msgid "Pause"
-msgstr "Jeda"
-
 #: podcasts-gtk/resources/gtk/player_toolbar.ui:79
 msgid "Fast forward 10 seconds"
 msgstr "Maju cepat 10 detik"
@@ -248,6 +282,10 @@ msgstr "Tandai Semua sebagai Sudah Diputar"
 #: podcasts-gtk/resources/gtk/show_menu.ui:45
 msgid "Unsubscribe"
 msgstr "Berhenti Berlangganan"
+
+#: podcasts-gtk/resources/gtk/show_widget.ui:80
+msgid "Episodes"
+msgstr "Episode"
 
 #: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:8
 msgid "Listen to your favorite shows"
@@ -316,7 +354,7 @@ msgstr "Berapa lama waktu menunggu antara pembersihan otomatis"
 msgid "What period of time to wait between automatic cleanups"
 msgstr "Berapa lama waktu untuk menunggu di antara pembersihan otomatis"
 
-#: podcasts-gtk/src/app.rs:372
+#: podcasts-gtk/src/app.rs:404
 msgid "Copied URL to clipboard!"
 msgstr "URL disalin ke papan klip!"
 
@@ -325,43 +363,44 @@ msgid "New"
 msgstr "Baru"
 
 #: podcasts-gtk/src/stacks/content.rs:71
+#: podcasts-gtk/src/widgets/shows_view.rs:55
 msgid "Shows"
 msgstr "Acara"
 
-#: podcasts-gtk/src/utils.rs:490 podcasts-gtk/src/utils.rs:532
+#: podcasts-gtk/src/utils.rs:491 podcasts-gtk/src/utils.rs:533
 msgid "OPML file"
 msgstr "Berkas OPML"
 
-#: podcasts-gtk/src/utils.rs:501
+#: podcasts-gtk/src/utils.rs:502
 msgid "Select the file from which to you want to import shows."
 msgstr "Pilih berkas dari mana Anda ingin mengimpor acara."
 
-#: podcasts-gtk/src/utils.rs:503
+#: podcasts-gtk/src/utils.rs:504
 msgid "_Import"
 msgstr "_Impor"
 
-#: podcasts-gtk/src/utils.rs:519
+#: podcasts-gtk/src/utils.rs:520
 msgid "Failed to parse the imported file"
 msgstr "Gagal mengurai berkas yang diimpor"
 
-#: podcasts-gtk/src/utils.rs:542
+#: podcasts-gtk/src/utils.rs:543
 msgid "Export shows to…"
 msgstr "Ekspor acara ke…"
 
-#: podcasts-gtk/src/utils.rs:543
+#: podcasts-gtk/src/utils.rs:544
 msgid "_Export"
 msgstr "_Ekspor"
 
 #. Translators: This is the string of the suggested name for the exported opml file
-#: podcasts-gtk/src/utils.rs:547
+#: podcasts-gtk/src/utils.rs:548
 msgid "gnome-podcasts-exported-shows"
 msgstr "gnome-podcasts-exported-shows"
 
-#: podcasts-gtk/src/utils.rs:557
+#: podcasts-gtk/src/utils.rs:558
 msgid "GNOME Podcasts Subscriptions"
 msgstr "Berlangganan GNOME Siniar"
 
-#: podcasts-gtk/src/utils.rs:558
+#: podcasts-gtk/src/utils.rs:559
 msgid "Failed to export podcasts"
 msgstr "Gagal mengekspor siniar"
 
@@ -375,15 +414,19 @@ msgstr ""
 "Kukuh Syafaat <kukuhsyafaat@gnome.org>, 2018-2023.\n"
 "Andika Triwidada <andika@gmail.com>, 2021."
 
-#: podcasts-gtk/src/widgets/episode.rs:143
+#: podcasts-gtk/src/widgets/episode.rs:374
 msgid "{} min"
 msgstr "{} mnt"
 
-#: podcasts-gtk/src/widgets/player.rs:893
+#: podcasts-gtk/src/widgets/player.rs:907
 msgid "The media player was unable to execute an action."
 msgstr "Pemutar media tidak dapat melakukan aksi."
 
-#: podcasts-gtk/src/widgets/read_more_label.rs:32
+#: podcasts-gtk/src/widgets/read_more_label.rs:34
+msgid "Visually expands this description"
+msgstr "Perluas deskripsi ini secara visual"
+
+#: podcasts-gtk/src/widgets/read_more_label.rs:36
 msgid "Read More"
 msgstr "Baca Lebih Lanjut"
 
