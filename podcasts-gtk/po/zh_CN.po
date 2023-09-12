@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: podcasts master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2023-09-03 05:02+0000\n"
-"PO-Revision-Date: 2023-09-03 19:38+0800\n"
+"POT-Creation-Date: 2023-09-06 01:04+0000\n"
+"PO-Revision-Date: 2023-09-11 16:28+0800\n"
 "Last-Translator: lumingzh <lumingzh@qq.com>\n"
 "Language-Team: Chinese - China <i18n-zh@googlegroups.com>\n"
 "Language: zh_CN\n"
@@ -191,9 +191,33 @@ msgstr "本月"
 msgid "Older"
 msgstr "更早"
 
-#: podcasts-gtk/resources/gtk/player_dialog.ui:22
+#: podcasts-gtk/resources/gtk/player_dialog.ui:7
 msgid "Now Playing"
 msgstr "正在播放"
+
+#: podcasts-gtk/resources/gtk/player_dialog.ui:25
+msgid "Close"
+msgstr "关闭"
+
+#: podcasts-gtk/resources/gtk/player_dialog.ui:149
+msgid "Rewind"
+msgstr "倒带"
+
+#: podcasts-gtk/resources/gtk/player_dialog.ui:170
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:63
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:244
+msgid "Play"
+msgstr "播放"
+
+#: podcasts-gtk/resources/gtk/player_dialog.ui:188
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:71
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:250
+msgid "Pause"
+msgstr "暂停"
+
+#: podcasts-gtk/resources/gtk/player_dialog.ui:211
+msgid "Forward"
+msgstr "前进"
 
 #: podcasts-gtk/resources/gtk/player_rate.ui:29
 msgid "Change the playback speed"
@@ -231,14 +255,6 @@ msgstr "0.75×"
 #: podcasts-gtk/resources/gtk/player_toolbar.ui:55
 msgid "Rewind 10 seconds"
 msgstr "后退 10 秒"
-
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:63
-msgid "Play"
-msgstr "播放"
-
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:71
-msgid "Pause"
-msgstr "暂停"
 
 #: podcasts-gtk/resources/gtk/player_toolbar.ui:79
 msgid "Fast forward 10 seconds"
