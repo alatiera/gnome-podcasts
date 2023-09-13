@@ -63,7 +63,7 @@ flatpak-builder --user --install --force-clean --repo=repo podcasts org.gnome.Po
 
 ```sh
 git clone https://gitlab.gnome.org/World/podcasts.git
-cd gnome-podcasts/
+cd podcasts/
 meson --prefix=/usr build
 ninja -C build
 sudo ninja -C build install
@@ -132,7 +132,7 @@ We also copied some elements from [GNOME News][news].
 
 And almost the entirety of the build system is copied from the [Fractal][fractal] project.
 
-[vendor]: https://github.com/alexcrichton/cargo-vendor
+[vendor]: https://doc.rust-lang.org/cargo/commands/cargo-vendor.html
 [irc]: irc://irc.gnome.org/#hammond
 [matrix]: https://matrix.to/#/#gnome-podcasts:matrix.org
 [flatpak_setup]: https://flatpak.org/setup/
