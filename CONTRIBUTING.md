@@ -7,7 +7,9 @@ When contributing to the development of GNOME Podcasts, please first discuss the
 If you have any questions regarding the use or development of GNOME Podcasts,
 want to discuss design or simply hang out, please join us in [#podcasts:gnome.org](https://matrix.to/#/#podcasts:gnome.org) or [#hammond on irc.gnome.org.](irc://irc.gnome.org/#hammond)
 
-Please note we have a [code of conduct](/code-of-conduct.md), please follow it in all your interactions with the project.
+## Code of Conduct
+
+Please note we follow the [GNOME Foundation Code of Conduct](/code-of-conduct.md), please adhere to it in all your interactions with the project.
 
 ## Source repository
 
@@ -16,7 +18,7 @@ the web interface [here](https://gitlab.gnome.org/World/podcasts)
 
 Development happens in the master branch.
 
-Note that we don't do bug tracking in the Github mirror.
+Note that we don't do bug tracking in the GitHub mirror.
 
 If you need to publish a branch, feel free to do it at any
 publically-accessible Git hosting service, although gitlab.gnome.org
@@ -44,7 +46,7 @@ cargo test -- --test-threads=1 && cargo fmt --all -- --check
 
 ## Running the test suite
 
-Running the tests requires an internet connection and it it will download some files from the [Internet Archive](archive.org)
+Running the tests requires an internet connection and will download some files from the [Internet Archive](archive.org)
 
 The test suite sets a temporary sqlite database in the `/tmp` folder.
 Due to that it's not possible to run them in parallel.
@@ -112,6 +114,3 @@ Steps to reproduce:
    ```
 6. You may merge the merge request once you have the sign-off of the maintainers, or if you
    do not have permission to do that, you may request the second reviewer to merge it for you.
-
-## Code of Conduct
-We follow the [GNOME Foundation Code of Conduct](/code-of-conduct.md).
