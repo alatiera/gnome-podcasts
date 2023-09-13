@@ -39,6 +39,7 @@ Tobias Bernard
                 <child>
                   <object class="GtkImage">
                     <property name="icon_name">list-add-symbolic</property>
+                    <property name="accessible_role">presentation</property>
                     <style>
                       <class name="dim-label"/>
                     </style>
@@ -61,6 +62,7 @@ Tobias Bernard
                 <child>
                   <object class="GtkImage">
                     <property name="icon_name">open-menu-symbolic</property>
+                    <property name="accessible_role">presentation</property>
                     <style>
                       <class name="dim-label"/>
                     </style>
