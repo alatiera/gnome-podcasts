@@ -2,7 +2,8 @@ global_conf = configuration_data()
 global_conf.set_quoted('APP_ID', application_id)
 global_conf.set_quoted('VERSION', podcasts_version + version_suffix)
 global_conf.set_quoted('LOCALEDIR', podcasts_localedir)
-global_conf.set_quoted('PKGDATADIR', pkgdatadir)
+# include_bytes! only takes a string literal
+global_conf.set_quoted('RESOURCEFILE', podcasts_resources.full_path())
 config_rs = configure_file(
   input: 'config.rs.in',
   output: 'config.rs',
