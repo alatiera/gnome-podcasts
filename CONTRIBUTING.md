@@ -24,34 +24,48 @@ If you need to publish a branch, feel free to do it at any
 publically-accessible Git hosting service, although gitlab.gnome.org
 makes things easier for the maintainers.
 
+## Development Builds
+
+Set up the project with the development profile with:
+
+```sh
+meson setup _build -Dprofile=development
+```
+
+You can compile the project with:
+
+
+```sh
+meson compile -C _build
+```
+
 ## Style
 
-We use [rustfmt](https://github.com/rust-lang-nursery/rustfmt) for code formatting and we enforce it on the gitlab-CI server.
+We use [rustfmt](https://github.com/rust-lang-nursery/rustfmt) for code formatting and we enforce it on the GitLab CI server.
 
-***Installing rustfmt*** As of 2019/Jan, our continuous integration
-pipeline assumes the version of rustfmt that is distributed through the
-stable channel of [rustup](rustup.rs).  You can install it with
+Our continuous integration pipeline assumes the version of rustfmt that is distributed through the
+stable channel of [rustup](rustup.rs).  You can install it with:
 
-```
+```sh
 rustup component add rustfmt
 cargo fmt --all
  ```
 
-It is recommended to add a pre-commit hook to run cargo test and `cargo fmt`.
+It is recommended to add a pre-commit hook to run tests and `cargo fmt`.
 Don't forget to `git add` again after `cargo fmt`.
 ```
 #!/bin/sh
-cargo test -- --test-threads=1 && cargo fmt --all -- --check
+meson test -C _build && cargo fmt --all -- --check
 ```
 
 ## Running the test suite
 
-Running the tests requires an internet connection and will download some files from the [Internet Archive](archive.org)
+Running the tests requires an internet connection and will download some files from the [Internet Archive](https://archive.org/).
 
 The test suite sets a temporary sqlite database in the `/tmp` folder.
 Due to that it's not possible to run them in parallel.
 
-In order to run the test suite use the following: `cargo test -- --test-threads=1`
+In order to run the test suite use the following: `meson test -C _build`
 
 # Issues, issues and more issues!
 
@@ -99,7 +113,7 @@ Steps to reproduce:
 ## Merge Request Process
 
 1. Ensure your code compiles. Run `meson` & `ninja` before creating the merge request.
-2. Ensure the test suit passes. Run `cargo test -- --test-threads=1`.
+2. Ensure the test suit passes. Run `meson test -C _build`.
 3. Ensure your code is properly formatted. Run `cargo fmt --all`.
 4. If you're adding new API, it must be properly documented.
 5. The commit message has to be formatted as follows:
