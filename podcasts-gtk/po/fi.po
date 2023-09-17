@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: podcasts master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2023-09-01 12:55+0000\n"
-"PO-Revision-Date: 2023-09-02 17:27+0300\n"
+"POT-Creation-Date: 2023-09-06 01:04+0000\n"
+"PO-Revision-Date: 2023-09-17 17:15+0300\n"
 "Last-Translator: Jiri Grönroos <jiri.gronroos+l10n@iki.fi>\n"
 "Language-Team: Finnish <lokalisointi-lista@googlegroups.com>\n"
 "Language: fi\n"
@@ -43,7 +43,7 @@ msgid "Episode Details"
 msgstr "Jakson tiedot"
 
 #: podcasts-gtk/resources/gtk/episode_description.ui:51
-#: podcasts-gtk/resources/gtk/headerbar.ui:143
+#: podcasts-gtk/resources/gtk/headerbar.ui:147
 msgid "Back"
 msgstr "Takaisin"
 
@@ -60,7 +60,7 @@ msgid "Duration - Date"
 msgstr "Kesto - Päiväys"
 
 #: podcasts-gtk/resources/gtk/episode_description.ui:150
-#: podcasts-gtk/resources/gtk/episode_description.ui:154
+#: podcasts-gtk/resources/gtk/episode_description.ui:155
 msgid "Episode Description"
 msgstr "Jakson kuvaus"
 
@@ -72,23 +72,23 @@ msgstr "Siirry ohjelmaan"
 msgid "Copy Episode Url"
 msgstr "Kopioi jakson verkko-osoite"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:70
+#: podcasts-gtk/resources/gtk/episode_widget.ui:71
 msgid "You’ve already listened to this episode."
 msgstr "Olet jo kuunnellut tämän jakson."
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:157
+#: podcasts-gtk/resources/gtk/episode_widget.ui:158
 msgid "Calculating episode size…"
 msgstr "Lasketaan jakson kokoa…"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:180
+#: podcasts-gtk/resources/gtk/episode_widget.ui:181
 msgid "Play this episode"
 msgstr "Toista tämä jakso"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:192
+#: podcasts-gtk/resources/gtk/episode_widget.ui:193
 msgid "Cancel the download process"
 msgstr "Peru lataaminen"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:204
+#: podcasts-gtk/resources/gtk/episode_widget.ui:205
 msgid "Download this episode"
 msgstr "Lataa tämä jakso"
 
@@ -113,7 +113,7 @@ msgid "_About Podcasts"
 msgstr "_Tietoja - Podcastit"
 
 #: podcasts-gtk/resources/gtk/headerbar.ui:33
-#: podcasts-gtk/resources/gtk/headerbar.ui:133
+#: podcasts-gtk/resources/gtk/headerbar.ui:137
 msgid "Add a new feed"
 msgstr "Lisää uusi syöte"
 
@@ -121,28 +121,32 @@ msgstr "Lisää uusi syöte"
 msgid "Enter Feed Address"
 msgstr "Anna syötteen osoite"
 
-#: podcasts-gtk/resources/gtk/headerbar.ui:67
+#: podcasts-gtk/resources/gtk/headerbar.ui:59
+msgid "Popover menu (ESC to close)"
+msgstr "Ponnahdusvalikko (ESC sulkee)"
+
+#: podcasts-gtk/resources/gtk/headerbar.ui:71
 msgid "Add"
 msgstr "Lisää"
 
 #. Weird magic I copy-pasted that sets the Application Name in the Shell.
-#: podcasts-gtk/resources/gtk/headerbar.ui:111
+#: podcasts-gtk/resources/gtk/headerbar.ui:115
 #: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:4
 #: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:3
-#: podcasts-gtk/src/app.rs:536 podcasts-gtk/src/widgets/aboutdialog.rs:56
+#: podcasts-gtk/src/app.rs:533 podcasts-gtk/src/widgets/aboutdialog.rs:56
 #: podcasts-gtk/src/window.rs:64
 msgid "Podcasts"
 msgstr "Podcastit"
 
-#: podcasts-gtk/resources/gtk/headerbar.ui:121
+#: podcasts-gtk/resources/gtk/headerbar.ui:125
 msgid "Show Title"
 msgstr "Ohjelman nimi"
 
-#: podcasts-gtk/resources/gtk/headerbar.ui:153
+#: podcasts-gtk/resources/gtk/headerbar.ui:157
 msgid "Main Menu"
 msgstr "Päävalikko"
 
-#: podcasts-gtk/resources/gtk/headerbar.ui:163
+#: podcasts-gtk/resources/gtk/headerbar.ui:167
 msgid "Podcast Menu"
 msgstr "Podcast-valikko"
 
@@ -185,9 +189,33 @@ msgstr "Tässä kuussa"
 msgid "Older"
 msgstr "Vanhemmat"
 
-#: podcasts-gtk/resources/gtk/player_dialog.ui:22
+#: podcasts-gtk/resources/gtk/player_dialog.ui:7
 msgid "Now Playing"
 msgstr "Nyt toistetaan"
+
+#: podcasts-gtk/resources/gtk/player_dialog.ui:25
+msgid "Close"
+msgstr "Sulje"
+
+#: podcasts-gtk/resources/gtk/player_dialog.ui:149
+msgid "Rewind"
+msgstr "Kelaa taakse"
+
+#: podcasts-gtk/resources/gtk/player_dialog.ui:170
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:63
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:244
+msgid "Play"
+msgstr "Toista"
+
+#: podcasts-gtk/resources/gtk/player_dialog.ui:188
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:71
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:250
+msgid "Pause"
+msgstr "Keskeytä"
+
+#: podcasts-gtk/resources/gtk/player_dialog.ui:211
+msgid "Forward"
+msgstr "Kelaa eteen"
 
 #: podcasts-gtk/resources/gtk/player_rate.ui:29
 msgid "Change the playback speed"
@@ -226,14 +254,6 @@ msgstr "0.75×"
 msgid "Rewind 10 seconds"
 msgstr "Siirry taakse 10 sekuntia"
 
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:63
-msgid "Play"
-msgstr "Toista"
-
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:71
-msgid "Pause"
-msgstr "Keskeytä"
-
 #: podcasts-gtk/resources/gtk/player_toolbar.ui:79
 msgid "Fast forward 10 seconds"
 msgstr "Siirry eteen 10 sekuntia"
@@ -262,7 +282,7 @@ msgstr "Merkitse kaikki toistetuiksi"
 msgid "Unsubscribe"
 msgstr "Lopeta tilaus"
 
-#: podcasts-gtk/resources/gtk/show_widget.ui:79
+#: podcasts-gtk/resources/gtk/show_widget.ui:80
 msgid "Episodes"
 msgstr "Jaksot"
 
@@ -333,7 +353,7 @@ msgstr ""
 msgid "What period of time to wait between automatic cleanups"
 msgstr ""
 
-#: podcasts-gtk/src/app.rs:407
+#: podcasts-gtk/src/app.rs:404
 msgid "Copied URL to clipboard!"
 msgstr "Verkko-osoite kopioitu leikepöydälle!"
 
@@ -342,6 +362,7 @@ msgid "New"
 msgstr "Uudet"
 
 #: podcasts-gtk/src/stacks/content.rs:71
+#: podcasts-gtk/src/widgets/shows_view.rs:55
 msgid "Shows"
 msgstr "Ohjelmat"
 
@@ -390,7 +411,7 @@ msgstr "Podcast-sovellus Gnome-työpöydlle."
 msgid "translator-credits"
 msgstr "Jiri Grönroos"
 
-#: podcasts-gtk/src/widgets/episode.rs:141
+#: podcasts-gtk/src/widgets/episode.rs:374
 msgid "{} min"
 msgstr "{} min"
 
@@ -398,7 +419,11 @@ msgstr "{} min"
 msgid "The media player was unable to execute an action."
 msgstr "Mediasoitin ei kyennyt suorittamaan toimintoa."
 
-#: podcasts-gtk/src/widgets/read_more_label.rs:32
+#: podcasts-gtk/src/widgets/read_more_label.rs:34
+msgid "Visually expands this description"
+msgstr "Laajentaa kuvausta"
+
+#: podcasts-gtk/src/widgets/read_more_label.rs:36
 msgid "Read More"
 msgstr "Lue lisää"
 
