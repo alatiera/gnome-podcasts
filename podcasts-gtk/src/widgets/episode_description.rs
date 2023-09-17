@@ -36,7 +36,10 @@ use std::sync::Arc;
 
 use gtk::prelude::WidgetExt;
 use podcasts_data::{dbqueries, downloader};
-use tokio::sync::oneshot::error::TryRecvError;
+
+pub enum EpisodeDescriptionAction {
+    EpisodeSpecificImage(gtk::gdk::Texture),
+}
 
 #[derive(Debug, CompositeTemplate, Default)]
 #[template(resource = "/org/gnome/Podcasts/gtk/episode_description.ui")]
@@ -59,6 +62,12 @@ pub struct EpisodeDescriptionPriv {
 
 impl EpisodeDescriptionPriv {
     fn init(&self, sender: Sender<Action>, ep: Arc<Episode>, show: Arc<Show>) {
+        let (ed_sender, r) = glib::MainContext::channel(glib::Priority::default());
+        r.attach(
+            None,
+            clone!(@weak self as this => @default-return glib::ControlFlow::Break, move |action| this.do_action(action)),
+        );
+
         self.set_description(&ep);
         self.set_duration(&ep);
         self.episode_title.set_text(ep.title());
@@ -67,7 +76,7 @@ impl EpisodeDescriptionPriv {
         if let Some(uri) = ep.image_uri().as_ref() {
             // don't show if it's the same as the show cover
             if *uri != show.image_uri().unwrap_or("") {
-                let _ = self.set_episode_specific_cover(ep.show_id(), uri);
+                let _ = self.set_episode_specific_cover(ed_sender, ep.show_id(), uri);
             }
         }
 
@@ -133,34 +142,35 @@ impl EpisodeDescriptionPriv {
             .ok();
     }
 
-    fn set_episode_specific_cover(&self, show_id: i32, uri: &str) -> Result<()> {
+    fn set_episode_specific_cover(
+        &self,
+        sender: Sender<EpisodeDescriptionAction>,
+        show_id: i32,
+        uri: &str,
+    ) -> Result<()> {
         let pd = dbqueries::get_podcast_cover_from_id(show_id)?;
-        let widget = self;
-
-        let (sender, mut receiver) = tokio::sync::oneshot::channel();
-        let callback = clone!(@weak widget =>  @default-return glib::ControlFlow::Break, move || {
-            match receiver.try_recv() {
-                Err(TryRecvError::Empty) => glib::ControlFlow::Continue,
-                Err(TryRecvError::Closed) => glib::ControlFlow::Break,
-                Ok(Ok(texture)) => {
-                    widget.episode_specific_cover.set_paintable(Some(&texture));
-                    widget.episode_specific_cover.set_visible(true);
-                    glib::ControlFlow::Break
-                },
-                _ => glib::ControlFlow::Break
-            }
-        });
-
         let uri = uri.to_owned();
         crate::RUNTIME.spawn(clone!(@strong pd => async move {
-            let path = downloader::cache_episode_image(&pd, &uri, true).await?;
-            let texture = gtk::gdk::Texture::from_filename(path);
-            sender.send(texture).expect("episode_specific_image: channel was dropped unexpectedly");
-            Ok::<(), anyhow::Error>(())
+            if let Err(e) = async move {
+                let path = downloader::cache_episode_image(&pd, &uri, true).await?;
+                let texture = gtk::gdk::Texture::from_filename(path)?;
+                send!(sender, EpisodeDescriptionAction::EpisodeSpecificImage(texture));
+                Ok::<(), anyhow::Error>(())
+            }.await {
+                error!("failed to get episode specific cover: {e}");
+            }
         }));
-
-        glib::timeout_add_local(std::time::Duration::from_millis(25), callback);
         Ok(())
+    }
+
+    fn do_action(&self, action: EpisodeDescriptionAction) -> glib::ControlFlow {
+        match action {
+            EpisodeDescriptionAction::EpisodeSpecificImage(texture) => {
+                self.episode_specific_cover.set_paintable(Some(&texture));
+                self.episode_specific_cover.set_visible(true);
+            }
+        }
+        glib::ControlFlow::Continue
     }
 }
 
@@ -197,6 +207,7 @@ impl EpisodeDescription {
     pub(crate) fn new(ep: Arc<Episode>, show: Arc<Show>, sender: Sender<Action>) -> Self {
         let widget: Self = glib::Object::new();
         widget.imp().init(sender, ep, show);
+
         widget
     }
 }
