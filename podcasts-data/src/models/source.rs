@@ -178,14 +178,13 @@ impl Source {
                 info!("304: Source, (id: {}), is up to date", self.id());
                 return Err(DataError::FeedNotModified(self));
             }
-            301 | 302 | 308 => {
-                warn!("Feed was moved permanently.");
+            301 | 308 => {
+                info!("Feed was moved permanently.");
                 self = self.update_url(&res)?;
                 return Err(DataError::FeedRedirect(self));
             }
-            307 => {
-                warn!("307: Temporary Redirect.");
-                // FIXME: How is it actually handling the redirect?
+            302 | 307 => {
+                info!("302/307: Temporary Redirect.");
                 return Err(DataError::FeedRedirect(self));
             }
             401 => return Err(self.make_err("401: Unauthorized.", code)),
