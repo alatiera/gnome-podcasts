@@ -99,7 +99,7 @@ fn main() -> glib::ExitCode {
 
 fn register_resources() -> anyhow::Result<()> {
     // Create Resource it will live as long the value lives.
-    let gbytes = glib::Bytes::from_static(crate::config::RESOURCEFILE.as_ref());
+    let gbytes = glib::Bytes::from_static(crate::config::RESOURCEFILE);
     let resource = gio::Resource::from_data(&gbytes)?;
 
     // Register the resource so it won't be dropped and will continue to live in
