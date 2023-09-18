@@ -61,10 +61,6 @@
 
 #[cfg(test)]
 #[macro_use]
-extern crate pretty_assertions;
-
-#[cfg(test)]
-#[macro_use]
 extern crate maplit;
 
 #[macro_use]

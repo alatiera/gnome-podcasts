@@ -39,9 +39,6 @@ use gtk::{gio, glib};
 #[macro_use]
 extern crate log;
 
-#[cfg(test)]
-#[macro_use]
-extern crate pretty_assertions;
 #[macro_use]
 extern crate html5ever;
 

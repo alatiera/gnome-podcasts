@@ -40,9 +40,6 @@ version = "0.6"
 [dependencies.podcasts-data]
 path = "../podcasts-data"
 
-[dev-dependencies]
-pretty_assertions = "1.0.0"
-
 [dependencies.tokio]
 features = ["rt-multi-thread", "sync"]
 version = "1.10.0"
