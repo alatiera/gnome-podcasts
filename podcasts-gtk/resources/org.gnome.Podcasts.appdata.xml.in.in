@@ -25,6 +25,13 @@
     </screenshot>
   </screenshots>
   <releases>
+    <release version="0.6.1" date="2023-09-18">
+     <description>
+        <p>
+          This release fixes a couple of accessibility bugs and includes behind-the-scenes improvements.
+        </p>
+      </description>
+    </release>
     <release version="0.6.0" date="2023-07-04">
      <description>
         <p>

@@ -14,6 +14,36 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Removed:
 
+## [0.6.1] - 2023-09-18
+
+### Added:
+- Add translation and source code links
+- Add escape as a universal go-back keybinding
+- Add missing accessibility labels to lists and menus
+- Add accessibility labels to the add feed popover
+- Make the description and cover image accessible
+- Episode description: make selectable, jump link titles, plaintext fallback
+
+### Changed:
+- Port episode_description to gtk composite template
+- Port home_view to gtk composite template
+- Delete the cover directory when removing a podcast
+- Downloader: raise the max-redirect-policy to 20 (from 5)
+- Move to reqwest async and stop using hyper directly.
+- Port episode_widget to gtk composite template
+- Upgrade to gtk4 crate to 0.7
+- Port home_episode to gtk composite template
+- Skip hash links and empty links
+
+### Fixed:
+- MPRIS: connect seek instead of prev/next
+- Simplify the whole view and make covers accessible
+- Keep focus on the play button when toggling play/pause
+- Use correct colons (U+003A instead of U+2236)
+- Use correct IDs in the MPRIS player
+- Set images role to presentation
+- Don't handle 302 as a permanent redirect
+
 ## [0.6.0] - 2023-07-04
 
 ### Added:
