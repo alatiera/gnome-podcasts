@@ -213,7 +213,7 @@ pub(crate) fn remove_show_notif(pd: Arc<Show>, sender: Sender<Action>) -> adw::T
         debug_assert!(res.is_ok());
 
         // Spawn a thread so it won't block the ui.
-        crate::RUNTIME.spawn(clone!(@strong pd, @strong sender => async move {
+        gio::spawn_blocking(clone!(@strong pd, @strong sender => move || {
             let app = gio::Application::default()
                 .expect("Could not get default application")
                 .downcast::<crate::PdApplication>()

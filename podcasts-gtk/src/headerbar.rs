@@ -79,7 +79,7 @@ async fn add_podcast_from_url(url_input: String, sender: &Sender<Action>) -> Res
         url.to_owned()
     };
 
-    crate::RUNTIME.spawn(clone!(@strong sender => async move {
+    gio::spawn_blocking(clone!(@strong sender => move || {
         if let Ok(source) = Source::from_url(&url) {
             schedule_refresh(Some(vec![source]), sender.clone());
         } else {

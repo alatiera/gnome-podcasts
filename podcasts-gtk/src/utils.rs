@@ -511,7 +511,7 @@ pub(crate) fn on_import_clicked(window: &gtk::ApplicationWindow, sender: &Sender
         clone!(@strong sender, @strong dialog => move |result| {
             if let Ok(file) = result {
                 if let Some(path) = file.peek_path() {
-                    crate::RUNTIME.spawn(clone!(@strong sender => async move {
+                    gio::spawn_blocking(clone!(@strong sender => move || {
                         // Parse the file and import the feeds
                         if let Ok(sources) = opml::import_from_file(path) {
                             // Refresh the successfully parsed feeds to index them
@@ -554,7 +554,7 @@ pub(crate) fn on_export_clicked(window: &gtk::ApplicationWindow, sender: &Sender
         if let Ok(file) = result {
             if let Some(path) = file.peek_path() {
                 debug!("File selected: {:?}", path);
-                crate::RUNTIME.spawn(clone!(@strong sender => async move {
+                gio::spawn_blocking(clone!(@strong sender => move || {
                     if opml::export_from_db(path, i18n("GNOME Podcasts Subscriptions").as_str()).is_err() {
                         let text = i18n("Failed to export podcasts");
                         send!(sender, Action::ErrorNotification(text));

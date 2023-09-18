@@ -23,6 +23,7 @@ use gtk::Adjustment;
 
 use anyhow::Result;
 use fragile::Fragile;
+use gtk::gio;
 use tokio::sync::oneshot::error::TryRecvError;
 
 use podcasts_data::dbqueries;
@@ -163,7 +164,7 @@ fn populate_listbox(
     let show_ = show.imp();
 
     let (sender_, mut receiver) = tokio::sync::oneshot::channel();
-    crate::RUNTIME.spawn(clone!(@strong pd => async move {
+    gio::spawn_blocking(clone!(@strong pd => move || {
         if let Ok(episodes) = dbqueries::get_pd_episodeswidgets(&pd) {
             // The receiver can be dropped if there's an early return
             // like on show without episodes for example.
