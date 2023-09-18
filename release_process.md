@@ -6,7 +6,7 @@
 * Update version in meson.build
 * commit and tag in git
 * make a tarball for flathub
-* Post-release version bump meson.build
+* Post-release version bump meson.build with a `-beta` prefix
 
 
 ### To make a tarball:
