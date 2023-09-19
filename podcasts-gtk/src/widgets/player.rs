@@ -347,7 +347,8 @@ pub(crate) struct PlayerWidget {
     pub(crate) container: gtk::Box,
     revealer: gtk::Revealer,
     gesture_click: gtk::GestureClick,
-    player: gst_player::Player,
+    player: gst_play::Play,
+    player_signals: gst_play::PlaySignalAdapter,
     controls: PlayerControls,
     dialog: PlayerDialog,
     full: gtk::Box,
@@ -360,12 +361,8 @@ pub(crate) struct PlayerWidget {
 
 impl Default for PlayerWidget {
     fn default() -> Self {
-        let dispatcher = gst_player::PlayerGMainContextSignalDispatcher::new(None);
-        let player = gst_player::Player::new(
-            None::<gst_player::PlayerVideoRenderer>,
-            // Use the gtk main thread
-            Some(dispatcher.upcast::<gst_player::PlayerSignalDispatcher>()),
-        );
+        let player = gst_play::Play::default();
+        let player_signals = gst_play::PlaySignalAdapter::new(&player);
 
         // A few podcasts have a video track of the thumbnail, which GStreamer displays in a new
         // window. Make sure it doesn't do that.
@@ -456,6 +453,7 @@ impl Default for PlayerWidget {
 
         PlayerWidget {
             player,
+            player_signals,
             container,
             revealer,
             gesture_click,
@@ -526,7 +524,7 @@ impl PlayerWidget {
 
     fn connect_update_slider(
         slider: &gtk::Scale,
-        player: WeakRef<gst_player::Player>,
+        player: WeakRef<gst_play::Play>,
     ) -> SignalHandlerId {
         slider.connect_value_changed(move |slider| {
             let player = match player.upgrade() {
@@ -876,7 +874,7 @@ impl PlayerWrapper {
             .dialog
             .rewind
             .connect_clicked(clone!(@weak this => move |_| {
-                    this.borrow().rewind();
+                this.borrow().rewind();
             }));
 
         // Connect the fast-forward button to the gst Player.
@@ -889,83 +887,74 @@ impl PlayerWrapper {
     }
 
     fn connect_gst_signals(&self, sender: &Sender<Action>) {
-        let widget = self.borrow();
+        let signal_adapter = &self.borrow().player_signals;
+
         // Log gst warnings.
-        widget
-            .player
-            .connect_warning(move |_, warn| warn!("gst warning: {}", warn));
+        signal_adapter
+            .connect_warning(move |_, warn, details| warn!("gst warning: {} {:#?}", warn, details));
 
         // Log gst errors.
-        widget
-            .player
-            .connect_error(clone!(@strong sender => move |_, _error| {
-                send!(sender, Action::ErrorNotification(format!("Player Error: {}", _error)));
-                let s = i18n("The media player was unable to execute an action.");
-                send!(sender, Action::ErrorNotification(s));
-            }));
+        signal_adapter.connect_error(clone!(@strong sender => move |_, _error, details| {
+            error!("gstreamer error: {} {:#?}",  _error, details);
+            send!(sender, Action::ErrorNotification(format!("Player Error: {}", _error)));
+            let s = i18n("The media player was unable to execute an action.");
+            send!(sender, Action::ErrorNotification(s));
+        }));
 
         // The following callbacks require `Send` but are handled by the gtk main loop
         let weak = Fragile::new(Rc::downgrade(self));
 
-        widget
-            .player
-            .connect_uri_loaded(clone!(@strong weak => move |_, _| {
-                if let Some(player_widget) = weak.get().upgrade() {
-                    player_widget.borrow().restore_play_position();
-                    player_widget.borrow_mut().info.finished_restore = true;
-                }
-            }));
+        signal_adapter.connect_uri_loaded(clone!(@strong weak => move |_, _| {
+            if let Some(player_widget) = weak.get().upgrade() {
+                player_widget.borrow().restore_play_position();
+                player_widget.borrow_mut().info.finished_restore = true;
+            }
+        }));
 
         // Update the duration label and the slider
-        widget
-            .player
-            .connect_duration_changed(clone!(@strong weak => move |_, clock| {
-                if let Some(player_widget) = weak.get().upgrade() {
-                    if let Some(c) = clock {
-                        player_widget.borrow().timer.on_duration_changed(Duration(c));
-                    }
+        signal_adapter.connect_duration_changed(clone!(@strong weak => move |_, clock| {
+            if let Some(player_widget) = weak.get().upgrade() {
+                if let Some(c) = clock {
+                    player_widget.borrow().timer.on_duration_changed(Duration(c));
                 }
-            }));
+            }
+        }));
 
         // Update the position label and the slider
-        widget
-            .player
-            .connect_position_updated(clone!(@strong weak => move |_, clock| {
-                if let Some(player_widget) = weak.get().upgrade() {
-                    // write to db
-                    if let Some(c) = clock {
-                        let pos = Position(c);
-                        let finished_restore = player_widget.borrow().info.finished_restore;
-                        player_widget.borrow_mut().info.ep.as_mut().map(|ep| {
-                            if finished_restore {
-                                ep.set_play_position_if_divergent(pos.seconds() as i32)
-                            } else {
-                                Ok(())
-                            }
-                        });
-                        player_widget.borrow().timer.on_position_updated(pos)
-                    }
+        signal_adapter.connect_position_updated(clone!(@strong weak => move |_, clock| {
+            if let Some(player_widget) = weak.get().upgrade() {
+                // write to db
+                if let Some(c) = clock {
+                    let pos = Position(c);
+                    let finished_restore = player_widget.borrow().info.finished_restore;
+                    player_widget.borrow_mut().info.ep.as_mut().map(|ep| {
+                        if finished_restore {
+                            ep.set_play_position_if_divergent(pos.seconds() as i32)
+                        } else {
+                            Ok(())
+                        }
+                    });
+                    player_widget.borrow().timer.on_position_updated(pos)
                 }
-            }));
+            }
+        }));
 
         // Reset the slider to 0 and show a play button
-        widget
-            .player
-            .connect_end_of_stream(clone!(@strong sender, @strong weak => move |_| {
-                if let Some(player_widget) = weak.get().upgrade() {
-                    // write postion to db
-                    player_widget.borrow_mut().info.ep.as_mut().map(|ep| {
-                        ep.set_play_position(0)?;
-                        ep.set_played_now()?;
-                        send!(sender, Action::RefreshEpisodesViewBGR);
-                        send!(sender, Action::RefreshWidgetIfSame(ep.show_id()));
-                        let ok : Result<(), podcasts_data::errors::DataError> = Ok(());
-                        ok
-                    });
+        signal_adapter.connect_end_of_stream(clone!(@strong sender, @strong weak => move |_| {
+            if let Some(player_widget) = weak.get().upgrade() {
+                // write postion to db
+                player_widget.borrow_mut().info.ep.as_mut().map(|ep| {
+                    ep.set_play_position(0)?;
+                    ep.set_played_now()?;
+                    send!(sender, Action::RefreshEpisodesViewBGR);
+                    send!(sender, Action::RefreshWidgetIfSame(ep.show_id()));
+                    let ok : Result<(), podcasts_data::errors::DataError> = Ok(());
+                    ok
+                });
 
-                    player_widget.borrow_mut().stop()
-                }
-            }));
+                player_widget.borrow_mut().stop()
+            }
+        }));
     }
 
     fn connect_rate_buttons(&self) {

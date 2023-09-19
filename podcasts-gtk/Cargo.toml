@@ -7,7 +7,7 @@ edition = "2021"
 [dependencies]
 chrono = "0.4"
 gst = { version = "0.21.0", package = "gstreamer" }
-gst-player = { version = "0.21.0", package = "gstreamer-player" }
+gst-play = { version = "0.21.0", package = "gstreamer-play" }
 glob = "0.3"
 humansize = "1.1"
 log = "0.4"
