@@ -64,10 +64,10 @@ pub fn calculate_hash<T: Hash>(t: &T) -> u64 {
 
 /// Scan downloaded `episode` entries that might have broken `local_uri`s and
 /// set them to `None`.
-async fn download_checker(runtime: &tokio::runtime::Runtime) -> Result<(), DataError> {
+fn download_checker() -> Result<(), DataError> {
     let episodes = dbqueries::get_downloaded_episodes()?;
 
-    let handles = episodes
+    episodes
         .into_iter()
         .filter_map(|ep| {
             if !Path::new(ep.local_uri()?).exists() {
@@ -75,13 +75,12 @@ async fn download_checker(runtime: &tokio::runtime::Runtime) -> Result<(), DataE
             }
             None
         })
-        .map(|ep| runtime.spawn(update_download_status(ep)));
+        .for_each(update_download_status);
 
-    futures::future::join_all(handles).await;
     Ok(())
 }
 
-async fn update_download_status(mut ep: EpisodeCleanerModel) {
+fn update_download_status(mut ep: EpisodeCleanerModel) {
     ep.set_local_uri(None);
     ep.save()
         .map_err(|err| error!("{}", err))
@@ -90,22 +89,18 @@ async fn update_download_status(mut ep: EpisodeCleanerModel) {
 }
 
 /// Delete watched `episodes` that have exceeded their lifetime after played.
-async fn played_cleaner(
-    runtime: &tokio::runtime::Runtime,
-    cleanup_date: DateTime<Utc>,
-) -> Result<(), DataError> {
+fn played_cleaner(cleanup_date: DateTime<Utc>) -> Result<(), DataError> {
     let episodes = dbqueries::get_played_cleaner_episodes()?;
     let now_utc = cleanup_date.timestamp() as i32;
 
-    let handles = episodes
+    episodes
         .into_iter()
         .filter(|ep| ep.local_uri().is_some() && ep.played().is_some())
-        .map(|ep| runtime.spawn(clean_played(now_utc, ep)));
-    futures::future::join_all(handles).await;
+        .for_each(|ep| clean_played(now_utc, ep));
     Ok(())
 }
 
-async fn clean_played(now_utc: i32, mut ep: EpisodeCleanerModel) {
+fn clean_played(now_utc: i32, mut ep: EpisodeCleanerModel) {
     let limit = ep.played().unwrap();
     if now_utc > limit {
         delete_local_content(&mut ep)
@@ -146,13 +141,10 @@ fn delete_local_content(ep: &mut EpisodeCleanerModel) -> Result<(), DataError> {
 ///
 /// Runs a cleaner for played Episode's that are pass the lifetime limit and
 /// scheduled for removal.
-pub async fn checkup(
-    runtime: &tokio::runtime::Runtime,
-    cleanup_date: DateTime<Utc>,
-) -> Result<(), DataError> {
+pub fn checkup(cleanup_date: DateTime<Utc>) -> Result<(), DataError> {
     info!("Running database checks.");
-    download_checker(runtime).await?;
-    played_cleaner(runtime, cleanup_date).await?;
+    download_checker()?;
+    played_cleaner(cleanup_date)?;
     info!("Checks completed.");
     Ok(())
 }
@@ -292,8 +284,7 @@ mod tests {
     #[test]
     fn test_download_checker() -> Result<()> {
         let tmp_dir = helper_db()?;
-        let rt = tokio::runtime::Runtime::new()?;
-        rt.block_on(download_checker(&rt))?;
+        download_checker()?;
         let episodes = dbqueries::get_downloaded_episodes()?;
         let valid_path = tmp_dir.path().join("virtual_dl.mp3");
 
@@ -304,7 +295,7 @@ mod tests {
         );
 
         let _tmp_dir = helper_db()?;
-        rt.block_on(download_checker(&rt))?;
+        download_checker()?;
         let episode = dbqueries::get_episode_cleaner_from_pk("bar_baz", 1)?;
         assert!(episode.local_uri().is_none());
         Ok(())
@@ -331,10 +322,9 @@ mod tests {
         episode.set_played(Some(epoch));
         episode.save()?;
         let valid_path = episode.local_uri().unwrap().to_owned();
-        let rt = tokio::runtime::Runtime::new()?;
 
         // This should delete the file
-        rt.block_on(played_cleaner(&rt, cleanup_date))?;
+        played_cleaner(cleanup_date)?;
         assert!(!Path::new(&valid_path).exists());
         Ok(())
     }
@@ -348,10 +338,9 @@ mod tests {
         episode.set_played(Some(epoch));
         episode.save()?;
         let valid_path = episode.local_uri().unwrap().to_owned();
-        let rt = tokio::runtime::Runtime::new()?;
 
         // This should not delete the file
-        rt.block_on(played_cleaner(&rt, cleanup_date))?;
+        played_cleaner(cleanup_date)?;
         assert!(Path::new(&valid_path).exists());
         Ok(())
     }
