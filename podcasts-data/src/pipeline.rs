@@ -91,11 +91,11 @@ mod tests {
 
         let sources = dbqueries::get_sources()?;
         let rt = tokio::runtime::Runtime::new()?;
-        let _ = rt.block_on(pipeline(sources))?;
+        rt.block_on(pipeline(sources))?;
 
         let sources = dbqueries::get_sources()?;
         // Run again to cover Unique constrains errors.
-        let _ = rt.block_on(pipeline(sources))?;
+        rt.block_on(pipeline(sources))?;
 
         // Assert the index rows equal the controlled results
         assert_eq!(dbqueries::get_sources()?.len(), 6);

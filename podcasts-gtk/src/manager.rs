@@ -187,7 +187,7 @@ mod tests {
         let mut episode = dbqueries::get_episode_from_pk(title, pd.id())?.into();
         let download_dir = get_download_dir(pd.title())?;
 
-        let _ = rt.block_on(get_episode(&mut episode, &download_dir, None))?;
+        rt.block_on(get_episode(&mut episode, &download_dir, None))?;
 
         let final_path = format!("{}/{}.mp3", &download_dir, episode.rowid());
         assert!(Path::new(&final_path).exists());

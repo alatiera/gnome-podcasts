@@ -318,7 +318,7 @@ mod tests {
 
         let valid_path = episode.local_uri().unwrap().to_owned();
         delete_local_content(&mut episode)?;
-        assert_eq!(Path::new(&valid_path).exists(), false);
+        assert!(!Path::new(&valid_path).exists());
         Ok(())
     }
 
@@ -335,7 +335,7 @@ mod tests {
 
         // This should delete the file
         rt.block_on(played_cleaner(&rt, cleanup_date))?;
-        assert_eq!(Path::new(&valid_path).exists(), false);
+        assert!(!Path::new(&valid_path).exists());
         Ok(())
     }
 
@@ -352,7 +352,7 @@ mod tests {
 
         // This should not delete the file
         rt.block_on(played_cleaner(&rt, cleanup_date))?;
-        assert_eq!(Path::new(&valid_path).exists(), true);
+        assert!(Path::new(&valid_path).exists());
         Ok(())
     }
 
