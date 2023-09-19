@@ -17,6 +17,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+use adw::subclass::prelude::*;
 use glib::clone;
 use gtk::glib;
 use gtk::{prelude::*, Adjustment, Align, SelectionMode};
@@ -30,83 +31,114 @@ use crate::i18n::i18n;
 use crate::utils::{get_ignored_shows, lazy_load_flowbox};
 use crate::widgets::BaseView;
 
-#[derive(Debug, Clone)]
-pub(crate) struct ShowsView {
-    pub(crate) view: BaseView,
+#[derive(Debug, Default)]
+pub struct ShowsViewPriv {
+    view: BaseView,
     flowbox: gtk::FlowBox,
+}
+
+#[glib::object_subclass]
+impl ObjectSubclass for ShowsViewPriv {
+    const NAME: &'static str = "PdShowsView";
+    type Type = super::ShowsView;
+    type ParentType = adw::Bin;
+}
+
+impl ObjectImpl for ShowsViewPriv {
+    fn constructed(&self) {
+        self.parent_constructed();
+
+        self.flowbox.set_vexpand(true);
+        self.flowbox.set_hexpand(true);
+        self.flowbox.set_row_spacing(12);
+        self.flowbox.set_can_focus(true);
+        self.flowbox.set_margin_top(32);
+        self.flowbox.set_margin_bottom(32);
+        self.flowbox.set_homogeneous(true);
+        self.flowbox.set_column_spacing(12);
+        self.flowbox.set_valign(Align::Start);
+        self.flowbox.set_halign(Align::Center);
+        self.flowbox.set_selection_mode(SelectionMode::None);
+        self.flowbox
+            .update_property(&[gtk::accessible::Property::Label(&i18n("Shows"))]);
+        self.view.set_content(&self.flowbox);
+    }
+}
+
+impl WidgetImpl for ShowsViewPriv {}
+impl BinImpl for ShowsViewPriv {}
+
+impl ShowsViewPriv {
+    fn populate_flowbox(&self, vadj: Option<Adjustment>) -> Result<()> {
+        let ignore = get_ignored_shows()?;
+        let podcasts = dbqueries::get_podcasts_filter(&ignore)?;
+        let flowbox_weak = self.flowbox.downgrade();
+
+        let callback = clone!(@weak self.view as view => move || {
+            if vadj.is_some() {
+                view.set_adjustments(None, vadj.as_ref())
+            }
+        });
+
+        lazy_load_flowbox(podcasts, flowbox_weak, populate_show_callback, callback);
+        Ok(())
+    }
+}
+
+fn populate_show_callback(podcast: Show) -> gtk::Widget {
+    let widget = gtk::FlowBoxChild::new();
+    let button = gtk::Button::new();
+    let image = gtk::Image::from_icon_name("image-x-generic-symbolic");
+
+    image.set_pixel_size(256);
+    image.add_css_class("rounded-big");
+    image.set_overflow(gtk::Overflow::Hidden);
+    button.set_child(Some(&image));
+
+    let pd = podcast.clone();
+    glib::idle_add_local(move || {
+        let result = crate::utils::set_image_from_path(&image, pd.id(), 256);
+        if let Err(e) = result {
+            error!("Failed to load cover for {}: {e}", pd.title());
+        }
+        glib::ControlFlow::Break
+    });
+
+    button.set_action_name(Some("app.go-to-show"));
+    button.set_action_target_value(Some(&podcast.id().to_variant()));
+    button.set_tooltip_text(Some(podcast.title()));
+    button.add_css_class("flat");
+    button.add_css_class("show_button");
+    button.set_can_focus(false);
+    widget.set_child(Some(&button));
+
+    widget.set_tooltip_text(Some(podcast.title()));
+    widget.connect_activate(clone!(@weak button => move |_| {
+        button.activate();
+    }));
+    widget.into()
+}
+
+glib::wrapper! {
+    pub struct ShowsView(ObjectSubclass<ShowsViewPriv>)
+        @extends gtk::Widget, adw::Bin;
 }
 
 impl Default for ShowsView {
     fn default() -> Self {
-        let view = BaseView::default();
-        let flowbox = gtk::FlowBox::new();
-
-        flowbox.set_vexpand(true);
-        flowbox.set_hexpand(true);
-        flowbox.set_row_spacing(12);
-        flowbox.set_can_focus(true);
-        flowbox.set_margin_top(32);
-        flowbox.set_margin_bottom(32);
-        flowbox.set_homogeneous(true);
-        flowbox.set_column_spacing(12);
-        flowbox.set_valign(Align::Start);
-        flowbox.set_halign(Align::Center);
-        flowbox.set_selection_mode(SelectionMode::None);
-        flowbox.update_property(&[gtk::accessible::Property::Label(&i18n("Shows"))]);
-        view.set_content(&flowbox);
-
-        ShowsView { view, flowbox }
+        glib::Object::new()
     }
 }
 
 impl ShowsView {
-    pub(crate) fn new(vadj: Option<Adjustment>) -> Self {
+    pub fn new(vadj: Option<Adjustment>) -> Self {
         let pop = ShowsView::default();
-        let res = populate_flowbox(&pop, vadj);
+        let res = pop.imp().populate_flowbox(vadj);
         debug_assert!(res.is_ok());
         pop
     }
-}
 
-fn populate_flowbox(shows: &ShowsView, vadj: Option<Adjustment>) -> Result<()> {
-    let ignore = get_ignored_shows()?;
-    let podcasts = dbqueries::get_podcasts_filter(&ignore)?;
-    let flowbox_weak = shows.flowbox.downgrade();
-
-    let constructor = move |podcast: Show| {
-        let widget = gtk::FlowBoxChild::new();
-        let button = gtk::Button::new();
-        let image = gtk::Image::from_icon_name("image-x-generic-symbolic");
-
-        image.set_pixel_size(256);
-        image.add_css_class("rounded-big");
-        image.set_overflow(gtk::Overflow::Hidden);
-
-        let result = crate::utils::set_image_from_path(&image, podcast.id(), 256);
-        if let Err(e) = result {
-            error!("Failed to load cover for {}: {e}", podcast.title());
-        }
-        button.set_child(Some(&image));
-        button.set_action_name(Some("app.go-to-show"));
-        button.set_action_target_value(Some(&podcast.id().to_variant()));
-        button.set_tooltip_text(Some(podcast.title()));
-        button.add_css_class("flat");
-        button.add_css_class("show_button");
-        button.set_can_focus(false);
-        widget.set_child(Some(&button));
-
-        widget.set_tooltip_text(Some(podcast.title()));
-        widget.connect_activate(clone!(@weak button => move |_| {
-            button.activate();
-        }));
-        widget
-    };
-    let callback = clone!(@weak shows.view as view => move || {
-        if vadj.is_some() {
-            view.set_adjustments(None, vadj.as_ref())
-        }
-    });
-
-    lazy_load_flowbox(podcasts, flowbox_weak, constructor, callback);
-    Ok(())
+    pub fn view(&self) -> &BaseView {
+        &self.imp().view
+    }
 }
