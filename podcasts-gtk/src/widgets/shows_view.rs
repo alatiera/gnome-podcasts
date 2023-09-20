@@ -168,22 +168,23 @@ impl ShowsView {
         self.imp().set_data();
     }
 }
-fn load_picture(picture: &gtk::Picture, podcast: podcasts_data::ShowCoverModel) {
-    let (sender, receiver) = async_channel::bounded(1);
-    crate::RUNTIME.spawn(async move {
-        let texture = crate::utils::cached_texture(podcast, 256).await;
-        send!(sender, texture);
-        anyhow::Ok(())
-    });
+// TODO impl in next commit, disabled due to conflicting rebase, next commit has an fn that returns a texture
+fn load_picture(_picture: &gtk::Picture, _podcast: podcasts_data::ShowCoverModel) {
+    // let (sender, receiver) = async_channel::bounded(1);
+    // crate::RUNTIME.spawn(async move {
+    //     let texture = crate::utils::cached_texture(podcast, 256).await;
+    //     send!(sender, texture);
+    //     anyhow::Ok(())
+    // });
 
-    let picture = picture.clone();
-    crate::MAINCONTEXT.spawn_local(clone!(@weak picture => async move {
-        // "image-x-generic-symbolic" is already the default for gtk::Picture
-        // So we don't need to set it in case of failure
-        if let Ok(Ok(texture)) = receiver.recv().await {
-            picture.set_paintable(Some(&texture));
-        }
-    }));
+    // let picture = picture.clone();
+    // crate::MAINCONTEXT.spawn_local(clone!(@weak picture => async move {
+    //     // "image-x-generic-symbolic" is already the default for gtk::Picture
+    //     // So we don't need to set it in case of failure
+    //     if let Ok(Ok(texture)) = receiver.recv().await {
+    //         picture.set_paintable(Some(&texture));
+    //     }
+    // }));
 }
 
 fn on_child_activate(gridview: &gtk::GridView, index: u32, sender: &Sender<Action>) -> Result<()> {

@@ -90,4 +90,8 @@ pub mod xdg_dirs {
     /// GNOME Podcasts Download Directory `PathBuf`.
     pub static DL_DIR: Lazy<PathBuf> =
         Lazy::new(|| PODCASTS_XDG.create_data_directory("Downloads").unwrap());
+
+    /// Directory for the Podcast covers and thumbnails
+    pub static CACHED_COVERS_DIR: Lazy<PathBuf> =
+        Lazy::new(|| PODCASTS_XDG.create_cache_directory("Covers").unwrap());
 }

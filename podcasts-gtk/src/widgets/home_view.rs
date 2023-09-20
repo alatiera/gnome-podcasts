@@ -240,9 +240,7 @@ impl HomeEpisodePriv {
     }
 
     fn set_cover(&self, show_id: i32) {
-        if let Err(err) = utils::set_image_from_path(&self.cover, show_id, 64) {
-            error!("Failed to set a cover: {err}");
-        }
+        crate::download_covers::load_image(&self.cover, show_id)
     }
 }
 

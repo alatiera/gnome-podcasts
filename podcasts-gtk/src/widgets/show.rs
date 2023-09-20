@@ -29,7 +29,7 @@ use std::cell::Cell;
 use std::sync::Arc;
 
 use crate::app::Action;
-use crate::utils::{self, lazy_load};
+use crate::utils::lazy_load;
 use crate::widgets::{EmptyShow, EpisodeWidget, ReadMoreLabel, ShowMenu};
 use podcasts_data::dbqueries;
 use podcasts_data::EpisodeWidgetModel;
@@ -125,15 +125,12 @@ impl ShowWidget {
         self_.init();
         self_.set_description(pd.description());
         self_.show_id.set(Some(pd.id()));
-
-        let res = self.set_cover(pd);
-
-        debug_assert!(res.is_ok());
+        self.set_cover(pd);
     }
 
     /// Set the show cover.
-    fn set_cover(&self, pd: &Arc<Show>) -> Result<()> {
-        utils::set_image_from_path(&self.imp().cover, pd.id(), 256)
+    fn set_cover(&self, pd: &Arc<Show>) {
+        crate::download_covers::load_image(&self.imp().cover, pd.id())
     }
 
     pub(crate) fn show_id(&self) -> Option<i32> {

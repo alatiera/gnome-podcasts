@@ -39,8 +39,8 @@ use url::Url;
 
 use crate::app::Action;
 use crate::config::APP_ID;
+use crate::download_covers::load_image;
 use crate::i18n::i18n;
-use crate::utils::set_image_from_path;
 use podcasts_data::{dbqueries, downloader, EpisodeWidgetModel, ShowCoverModel, USER_AGENT};
 
 #[derive(Debug, Clone, Copy)]
@@ -99,18 +99,20 @@ impl PlayerInfo {
         metadata.set_artist(Some(vec![podcast.title().to_string()]));
         metadata.set_title(Some(episode.title().to_string()));
 
+        // FIXME
         // Set the cover if it is already cached.
-        if let Some(path) = downloader::check_for_cached_cover(podcast)
-            .as_ref()
-            .and_then(|p| p.to_str())
-        {
-            metadata.set_art_url(Url::from_file_path(path).ok());
-        } else {
-            // fallback: set the cover to the http url if it isn't cached, yet.
-            // TODO we could trigger an async download of the cover here
-            // and update the metadata when it's done.
-            metadata.set_art_url(podcast.image_uri());
-        }
+        // if let Some(path) = downloader::check_for_cached_cover(podcast)
+        //     .as_ref()
+        //     .and_then(|p| p.to_str())
+        // {
+        //     metadata.set_art_url(Url::from_file_path(path).ok());
+        // } else {
+        //     // fallback: set the cover to the http url if it isn't cached, yet.
+        //     // TODO we could trigger an async download of the cover here
+        //     // and update the metadata when it's done.
+        //     metadata.set_art_url(podcast.image_uri());
+        // }
+        metadata.set_art_url(podcast.image_uri());
 
         if let Some(mpris) = self.mpris.as_ref() {
             crate::MAINCONTEXT.spawn_local_with_priority(
@@ -144,11 +146,8 @@ impl PlayerInfo {
     }
 
     fn set_cover_image(&self, show: &ShowCoverModel) {
-        for cover in [&self.cover, &self.cover_small] {
-            if let Err(err) = set_image_from_path(cover, show.id(), 34) {
-                error!("Player Cover: {}", err)
-            }
-        }
+        load_image(&self.cover, show.id());
+        load_image(&self.cover_small, show.id());
     }
 }
 
@@ -343,10 +342,7 @@ impl PlayerDialog {
     fn initialize_episode(&self, episode: &EpisodeWidgetModel, show: &ShowCoverModel) {
         self.episode.set_text(episode.title());
         self.show.set_text(show.title());
-
-        if let Err(err) = set_image_from_path(&self.cover, show.id(), 256) {
-            error!("Player Cover: {}", err)
-        }
+        load_image(&self.cover, show.id());
     }
 }
 

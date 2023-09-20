@@ -118,6 +118,9 @@ impl ApplicationImpl for PdApplicationPrivate {
         let cleanup_date = settings::get_cleanup_date(&settings);
         // Garbage collect watched episodes from the disk
         utils::cleanup(cleanup_date);
+        crate::MAINCONTEXT
+            .block_on(crate::download_covers::clean_zero_byte_files())
+            .unwrap();
 
         self.settings.replace(Some(settings));
     }
@@ -133,6 +136,11 @@ impl ApplicationImpl for PdApplicationPrivate {
                 }
             }
         }
+
+        crate::MAINCONTEXT
+            .block_on(crate::download_covers::clean_zero_byte_files())
+            .unwrap();
+
         self.parent_shutdown();
     }
 }

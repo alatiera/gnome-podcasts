@@ -17,7 +17,6 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-use glob::glob;
 use reqwest::header::*;
 use reqwest::redirect::Policy;
 use tempfile::TempDir;
@@ -25,13 +24,17 @@ use tempfile::TempDir;
 use std::fs;
 use std::fs::{copy, remove_file, File};
 use std::io::{BufWriter, Write};
-use std::path::{Path, PathBuf};
+use std::path::Path;
 use std::sync::{Arc, Mutex};
 
 use crate::errors::DownloadError;
-use crate::utils;
 use crate::xdg_dirs::PODCASTS_CACHE;
-use crate::{EpisodeWidgetModel, Save, ShowCoverModel};
+use crate::{EpisodeWidgetModel, Save};
+
+use crate::utils;
+use crate::ShowCoverModel;
+use glob::glob;
+use std::path::PathBuf;
 
 // TODO: Replace path that are of type &str with std::path.
 // TODO: Have a convention/document absolute/relative paths, if they should end
@@ -237,22 +240,7 @@ pub async fn get_episode(
     Ok(())
 }
 
-pub fn check_for_cached_cover(pd: &ShowCoverModel) -> Option<PathBuf> {
-    let cache_path = utils::get_cover_dir(pd.title()).ok()?;
-
-    // try to match the cover file
-    // FIXME: in case the cover changes filetype we will be matching the
-    // existing one instead of downloading the new one.
-    // Should probably make sure that 'cover.*' is removed when we
-    // download new files.
-    if let Ok(mut paths) = glob(&format!("{}/cover.*", cache_path)) {
-        // Take the first file matching, disregard extension
-        let path = paths.next().and_then(|x| x.ok());
-        return path;
-    }
-
-    None
-}
+// FIXME: this can be replaces by the new code but needed to rebase first
 
 pub fn check_for_cached_image(pd: &ShowCoverModel, uri: &str) -> Option<PathBuf> {
     let cache_path = utils::get_cover_dir(pd.title()).ok()?;
@@ -265,30 +253,6 @@ pub fn check_for_cached_image(pd: &ShowCoverModel, uri: &str) -> Option<PathBuf>
     }
 
     None
-}
-
-pub async fn cache_image(pd: &ShowCoverModel) -> Result<String, DownloadError> {
-    if let Some(path) = check_for_cached_cover(pd) {
-        return Ok(path
-            .to_str()
-            .ok_or(DownloadError::InvalidCachedImageLocation)?
-            .to_owned());
-    }
-
-    let url = pd
-        .image_uri()
-        .ok_or(DownloadError::NoImageLocation)?
-        .to_owned();
-
-    if url.is_empty() {
-        return Err(DownloadError::NoImageLocation);
-    }
-
-    let cache_path = utils::get_cover_dir(pd.title())?;
-
-    let path = download_into(&cache_path, "cover", &url, None).await?;
-    info!("Cached img into: {}", &path);
-    Ok(path)
 }
 
 pub async fn cache_episode_image(
@@ -316,42 +280,5 @@ pub async fn cache_episode_image(
         Ok(path)
     } else {
         Err(DownloadError::DownloadCancelled)
-    }
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-    use crate::pipeline::pipeline;
-    use crate::{dbqueries, Source};
-    use anyhow::Result;
-    use std::fs;
-
-    #[test]
-    // This test inserts an rss feed to your `XDG_DATA/podcasts/podcasts.db` so we make it explicit
-    // to run it.
-    #[ignore]
-    fn test_cache_image() -> Result<()> {
-        let url = "https://web.archive.org/web/20180120110727if_/https://rss.acast.com/thetipoff";
-        // Create and index a source
-        let source = Source::from_url(url)?;
-        // Copy it's id
-        let sid = source.id();
-        // Convert Source it into a future Feed and index it
-        let rt = tokio::runtime::Runtime::new()?;
-        rt.block_on(pipeline(vec![source]))?;
-
-        // Get the Podcast
-        let pd = dbqueries::get_podcast_from_source_id(sid)?.into();
-
-        let img_path = rt.block_on(cache_image(&pd));
-        let foo_ = format!(
-            "{}{}/cover.jpeg",
-            PODCASTS_CACHE.to_str().unwrap(),
-            pd.title()
-        );
-        assert_eq!(img_path?, foo_);
-        fs::remove_file(foo_)?;
-        Ok(())
     }
 }
