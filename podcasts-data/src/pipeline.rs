@@ -39,17 +39,21 @@ where
     let handles: Vec<_> = sources
         .into_iter()
         .map(|source| async {
+            let uri = source.uri().to_string();
             match source.into_feed(&client).await {
                 Ok(feed) => match feed.index() {
                     Ok(_) => (),
                     Err(err) => error!(
-                        "Error while indexing content feed into the database: {}",
-                        err
+                        "Error while indexing content feed into the database: {} - {}",
+                        uri, err
                     ),
                 },
                 // Avoid spamming the stderr when it's not an actual error
                 Err(DataError::FeedNotModified(_)) => (),
-                Err(err) => error!("Error while fetching the latest xml feed: {}", err),
+                Err(err) => error!(
+                    "Error while fetching the latest xml feed: {} - {}",
+                    uri, err
+                ),
             }
         })
         .collect();
