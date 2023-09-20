@@ -52,6 +52,7 @@ impl From<NewEpisodeMinimal> for NewEpisode {
         NewEpisodeBuilder::default()
             .title(e.title)
             .uri(e.uri)
+            .image_uri(e.image_uri)
             .duration(e.duration)
             .epoch(e.epoch)
             .show_id(e.show_id)
@@ -121,6 +122,7 @@ impl PartialEq<EpisodeMinimal> for NewEpisode {
     fn eq(&self, other: &EpisodeMinimal) -> bool {
         (self.title() == other.title())
             && (self.uri() == other.uri())
+            && (self.image_uri() == other.image_uri())
             && (self.duration() == other.duration())
             && (self.epoch() == other.epoch())
             && (self.guid() == other.guid())
@@ -132,6 +134,7 @@ impl PartialEq<Episode> for NewEpisode {
     fn eq(&self, other: &Episode) -> bool {
         (self.title() == other.title())
             && (self.uri() == other.uri())
+            && (self.image_uri() == other.image_uri())
             && (self.duration() == other.duration())
             && (self.play_position() == other.play_position())
             && (self.epoch() == other.epoch())
@@ -164,6 +167,9 @@ impl NewEpisode {
 
     pub(crate) fn uri(&self) -> Option<&str> {
         self.uri.as_deref()
+    }
+    pub(crate) fn image_uri(&self) -> Option<&str> {
+        self.image_uri.as_deref()
     }
 
     pub(crate) fn description(&self) -> Option<&str> {
@@ -203,6 +209,7 @@ impl NewEpisode {
 pub(crate) struct NewEpisodeMinimal {
     title: String,
     uri: Option<String>,
+    image_uri: Option<String>,
     length: Option<i32>,
     duration: Option<i32>,
     #[builder(default = "0")]
@@ -216,6 +223,7 @@ impl PartialEq<EpisodeMinimal> for NewEpisodeMinimal {
     fn eq(&self, other: &EpisodeMinimal) -> bool {
         (self.title() == other.title())
             && (self.uri() == other.uri())
+            && (self.image_uri() == other.image_uri())
             && (self.duration() == other.duration())
             && (self.epoch() == other.epoch())
             && (self.guid() == other.guid())
@@ -247,6 +255,11 @@ impl NewEpisodeMinimal {
             // Fallback to Rss.Item.link if enclosure is None.
             .or_else(|| item.link().map(|s| url_cleaner(s.trim())));
 
+        let image = item
+            .itunes_ext()
+            .and_then(|i| i.image())
+            .map(|s| s.to_owned());
+
         // Get the size of the content, it should be in bytes
         let length = enc.and_then(|x| x.length().parse().ok());
 
@@ -272,6 +285,7 @@ impl NewEpisodeMinimal {
         NewEpisodeMinimalBuilder::default()
             .title(title)
             .uri(uri)
+            .image_uri(image)
             .length(length)
             .duration(duration)
             .epoch(epoch)
@@ -293,21 +307,16 @@ impl NewEpisodeMinimal {
             sanitized_html
         });
 
-        let image = item
-            .itunes_ext()
-            .and_then(|i| i.image())
-            .map(|s| s.to_owned());
-
         NewEpisodeBuilder::default()
             .title(self.title)
             .uri(self.uri)
+            .image_uri(self.image_uri)
             .duration(self.duration)
             .epoch(self.epoch)
             .show_id(self.show_id)
             .guid(self.guid)
             .length(self.length)
             .description(description)
-            .image_uri(image)
             .build()
             .unwrap()
     }
@@ -321,6 +330,10 @@ impl NewEpisodeMinimal {
 
     pub(crate) fn uri(&self) -> Option<&str> {
         self.uri.as_deref()
+    }
+
+    pub(crate) fn image_uri(&self) -> Option<&str> {
+        self.image_uri.as_deref()
     }
 
     pub(crate) fn guid(&self) -> Option<&str> {
@@ -364,6 +377,7 @@ mod tests {
             .uri(Some(String::from(
                 "http://traffic.megaphone.fm/PPY6458293736.mp3",
             )))
+            .image_uri(None)
             .guid(Some(String::from("7df4070a-9832-11e7-adac-cb37b05d5e24")))
             .epoch(1505296800)
             .length(Some(66738886))
@@ -378,6 +392,7 @@ mod tests {
             .uri(Some(String::from(
                 "http://traffic.megaphone.fm/FL5331443769.mp3",
             )))
+            .image_uri(None)
             .guid(Some(String::from("7c207a24-e33f-11e6-9438-eb45dcf36a1d")))
             .epoch(1502272800)
             .length(Some(67527575))
@@ -398,6 +413,7 @@ mod tests {
             .uri(Some(String::from(
                 "http://traffic.megaphone.fm/PPY6458293736.mp3",
             )))
+            .image_uri(None)
             .description(Some(String::from(descr)))
             .guid(Some(String::from("7df4070a-9832-11e7-adac-cb37b05d5e24")))
             .length(Some(66738886))
@@ -422,6 +438,7 @@ mod tests {
             .uri(Some(String::from(
                 "http://traffic.megaphone.fm/FL5331443769.mp3",
             )))
+            .image_uri(None)
             .description(Some(String::from(descr)))
             .guid(Some(String::from("7c207a24-e33f-11e6-9438-eb45dcf36a1d")))
             .length(Some(67527575))
@@ -437,6 +454,7 @@ mod tests {
             .uri(Some(String::from(
                 "http://traffic.megaphone.fm/PPY6458293736.mp3",
             )))
+            .image_uri(None)
             .description(Some(String::from("New description")))
             .guid(Some(String::from("7df4070a-9832-11e7-adac-cb37b05d5e24")))
             .length(Some(66738886))
@@ -452,6 +470,7 @@ mod tests {
             .uri(Some(String::from(
                 "http://www.podtrac.com/pts/redirect.mp3/traffic.libsyn.com/jnite/lup-0214.mp3",
             )))
+            .image_uri(None)
             .guid(Some(String::from("78A682B4-73E8-47B8-88C0-1BE62DD4EF9D")))
             .length(Some(46479789))
             .epoch(1505280282)
@@ -466,6 +485,7 @@ mod tests {
             .uri(Some(String::from(
                 "http://www.podtrac.com/pts/redirect.mp3/traffic.libsyn.com/jnite/lup-0213.mp3",
             )))
+            .image_uri(None)
             .guid(Some(String::from("1CE57548-B36C-4F14-832A-5D5E0A24E35B")))
             .epoch(1504670247)
             .length(Some(36544272))
@@ -485,6 +505,7 @@ mod tests {
             .uri(Some(String::from(
                 "http://www.podtrac.com/pts/redirect.mp3/traffic.libsyn.com/jnite/lup-0214.mp3",
             )))
+            .image_uri(None)
             .description(Some(String::from(descr)))
             .guid(Some(String::from("78A682B4-73E8-47B8-88C0-1BE62DD4EF9D")))
             .length(Some(46479789))
@@ -507,6 +528,7 @@ mod tests {
             .uri(Some(String::from(
                 "http://www.podtrac.com/pts/redirect.mp3/traffic.libsyn.com/jnite/lup-0213.mp3",
             )))
+            .image_uri(None)
             .description(Some(String::from(descr)))
             .guid(Some(String::from("1CE57548-B36C-4F14-832A-5D5E0A24E35B")))
             .length(Some(36544272))

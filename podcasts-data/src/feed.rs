@@ -56,7 +56,7 @@ impl Feed {
             if ret.is_ok() {
                 Some(ret)
             } else {
-                error!("{:?}", ret);
+                error!("importing ep: {:?}", ret);
                 None
             }
         });

@@ -312,6 +312,7 @@ pub(crate) fn get_episode_minimal_from_pk(
             rowid,
             title,
             uri,
+            image_uri,
             epoch,
             length,
             duration,

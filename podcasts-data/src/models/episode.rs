@@ -397,6 +397,7 @@ pub struct EpisodeMinimal {
     rowid: i32,
     title: String,
     uri: Option<String>,
+    image_uri: Option<String>,
     epoch: i32,
     length: Option<i32>,
     duration: Option<i32>,
@@ -411,6 +412,7 @@ impl From<Episode> for EpisodeMinimal {
             rowid: e.rowid,
             title: e.title,
             uri: e.uri,
+            image_uri: e.image_uri,
             length: e.length,
             guid: e.guid,
             epoch: e.epoch,
@@ -437,6 +439,11 @@ impl EpisodeMinimal {
     /// Represents the url(usually) that the media file will be located at.
     pub fn uri(&self) -> Option<&str> {
         self.uri.as_deref()
+    }
+
+    /// A cover image for this specific episode.
+    pub fn image_uri(&self) -> Option<&str> {
+        self.image_uri.as_deref()
     }
 
     /// Get the Episode's `guid`.
