@@ -516,7 +516,12 @@ impl PlayerWidget {
         self.container.set_visible(true);
     }
 
-    pub(crate) fn initialize_episode(&mut self, id: i32, second: Option<i32>) -> Result<()> {
+    pub(crate) fn initialize_episode(
+        &mut self,
+        id: i32,
+        stream: bool,
+        second: Option<i32>,
+    ) -> Result<()> {
         let ep = dbqueries::get_episode_widget_from_id(id)?;
         let pd = dbqueries::get_podcast_cover_from_id(ep.show_id())?;
 
@@ -526,36 +531,48 @@ impl PlayerWidget {
         self.info.finished_restore = false;
         self.info.init(&ep, &pd);
 
+        if stream {
+            if let Some(uri) = ep.uri() {
+                self.init_uri(uri, second);
+                return Ok(());
+            } else {
+                error!("No uri for episode");
+            }
         // Currently that will always be the case since the play button is
         // only shown if the file is downloaded
-        if let Some(ref path) = ep.local_uri() {
+        } else if let Some(ref path) = ep.local_uri() {
             if Path::new(path).exists() {
                 // path is an absolute fs path ex. "foo/bar/baz".
                 // Convert it so it will have a "file:///"
                 // FIXME: convert it properly
                 let uri = File::for_path(path).uri();
-
-                // If it's not the same file load the uri, otherwise just unpause
-                if self.player.uri().map_or(true, |s| s != uri.as_str()) {
-                    self.player.set_uri(Some(uri.as_str()));
-                } else if second.is_some() {
-                    // force a jump now if already playing and a jump is given
-                    self.restore_play_position();
-                } else {
-                    // just unpause, no restore required
-                    self.info.finished_restore = true;
-                }
-                // play the file
-                self.play();
-
+                self.init_uri(uri.as_str(), second);
                 return Ok(());
+            } else {
+                error!("failed to create path for episode {:#?}", ep);
             }
-            // TODO: log an error
+        } else {
+            error!("Episode not downloaded yet.");
         }
 
         // FIXME: Stream stuff
         // unimplemented!()
         Ok(())
+    }
+
+    fn init_uri(&mut self, uri: &str, second: Option<i32>) {
+        // If it's not the same file load the uri, otherwise just unpause
+        if self.player.uri().map_or(true, |s| s != uri) {
+            self.player.set_uri(Some(uri));
+        } else if second.is_some() {
+            // force a jump now if already playing and a jump is given
+            self.restore_play_position();
+        } else {
+            // just unpause, no restore required
+            self.info.finished_restore = true;
+        }
+        // play the file
+        self.play();
     }
 
     fn connect_update_slider(

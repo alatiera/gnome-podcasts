@@ -29,7 +29,9 @@ use std::sync::{Arc, Mutex, RwLock};
 
 // This is messy, undocumented and hacky af.
 // I am terrible at writing downloaders and download managers.
-pub(crate) static ACTIVE_DOWNLOADS: Lazy<Arc<RwLock<HashMap<i32, Arc<Mutex<Progress>>>>>> =
+pub(crate) type ActiveProgress = Arc<Mutex<Progress>>;
+pub(crate) type DownloadProgressLock = Arc<RwLock<HashMap<i32, ActiveProgress>>>;
+pub(crate) static ACTIVE_DOWNLOADS: Lazy<DownloadProgressLock> =
     Lazy::new(|| Arc::new(RwLock::new(HashMap::new())));
 
 #[derive(Debug, Default)]

@@ -18,6 +18,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 use gtk::glib;
+use gtk::prelude::*;
 use gtk::CompositeTemplate;
 
 use glib::subclass::InitializingObject;
@@ -29,12 +30,15 @@ use crate::utils::{self};
 use crate::widgets::EpisodeMenu;
 
 use crate::episode_description_parser;
+use crate::widgets::DownloadProgressBar;
 use adw::subclass::prelude::*;
 use anyhow::Result;
 use chrono::prelude::*;
+use std::borrow::Borrow;
 use std::sync::Arc;
 
 use gtk::prelude::WidgetExt;
+use podcasts_data::EpisodeWidgetModel;
 use podcasts_data::{dbqueries, downloader};
 
 pub enum EpisodeDescriptionAction {
@@ -58,6 +62,20 @@ pub struct EpisodeDescriptionPriv {
     description: TemplateChild<gtk::Label>,
     #[template_child]
     episode_specific_cover: TemplateChild<gtk::Picture>,
+
+    #[template_child]
+    progressbar: TemplateChild<DownloadProgressBar>,
+
+    #[template_child]
+    stream_button: TemplateChild<gtk::Button>,
+    #[template_child]
+    download_button: TemplateChild<gtk::Button>,
+    #[template_child]
+    cancel_button: TemplateChild<gtk::Button>,
+    #[template_child]
+    play_button: TemplateChild<gtk::Button>,
+    #[template_child]
+    delete_button: TemplateChild<gtk::Button>,
 }
 
 impl EpisodeDescriptionPriv {
@@ -81,21 +99,98 @@ impl EpisodeDescriptionPriv {
         }
 
         let id = ep.id();
-        let menu = EpisodeMenu::new(&sender, ep, show);
+        let menu = EpisodeMenu::new(&sender, ep.clone(), show);
         self.menu_button.set_menu_model(Some(&menu.menu));
 
-        self.description.connect_activate_link(move |_, url| {
-            if let Some(seconds_str) = url.strip_prefix("jump:") {
-                if let Ok(seconds) = seconds_str.parse() {
-                    send!(sender, Action::InitEpisodeAt(id, seconds));
+        self.description
+            .connect_activate_link(clone!(@strong sender => move |_, url| {
+                if let Some(seconds_str) = url.strip_prefix("jump:") {
+                    if let Ok(seconds) = seconds_str.parse() {
+                        send!(sender, Action::InitEpisodeAt(id, seconds));
+                    } else {
+                        error!("failed to parse jump link: {}", url);
+                    }
+                    glib::Propagation::Stop
                 } else {
-                    error!("failed to parse jump link: {}", url);
+                    glib::Propagation::Proceed
                 }
-                glib::Propagation::Stop
-            } else {
-                glib::Propagation::Proceed
-            }
-        });
+            }));
+
+        let ep: &Episode = ep.borrow();
+
+        self.stream_button
+            .connect_clicked(clone!(@strong sender => move |_| {
+                send!(sender, Action::StreamEpisode(id));
+            }));
+
+        self.play_button
+            .connect_clicked(clone!(@strong sender => move |_| {
+                send!(sender, Action::InitEpisode(id));
+            }));
+
+        let show_id = ep.show_id();
+        self.download_button.connect_clicked(
+            clone!(@weak self as this, @strong sender => move |_| {
+                use podcasts_data::utils::get_download_dir;
+                if let Err(e) = (|| {
+                    let pd = dbqueries::get_podcast_from_id(show_id)?;
+                    let download_dir = get_download_dir(pd.title())?;
+                    crate::manager::add(id, download_dir)?;
+                    Ok::<(), anyhow::Error>(())
+                })() {
+                    error!("failed to start download {e}");
+                }
+                this.refresh_buttons(id);
+                this.progressbar.grab_focus();
+                send!(sender, Action::RefreshEpisodesView);
+                send!(sender, Action::RefreshWidgetIfSame(show_id));
+            }),
+        );
+
+        self.delete_button
+            .connect_clicked(clone!(@weak self as this, @strong sender => move |_| {
+                if let Ok(ep) = dbqueries::get_episode_from_id(id) {
+                    let mut cleaner_ep = podcasts_data::EpisodeCleanerModel::from(ep);
+                    if let Err(e) = podcasts_data::utils::delete_local_content(&mut cleaner_ep) {
+                        error!("failed to delete ep {e}");
+                    }
+                }
+                this.refresh_buttons(id);
+                send!(sender, Action::RefreshEpisodesView);
+                send!(sender, Action::RefreshWidgetIfSame(show_id));
+            }));
+
+        self.progressbar.init(ep.id());
+        self.progressbar
+            .connect_state_change(clone!(@weak self as this => move |_| {
+                this.refresh_buttons(id);
+            }));
+        self.cancel_button
+            .connect_clicked(clone!(@weak self as this => move |_| {
+                if let Err(e) = this.progressbar.cancel() {
+                    error!("failed to cancel download {e}");
+                }
+            }));
+
+        self.determine_button_state(&ep.clone().into());
+    }
+
+    fn refresh_buttons(&self, id: i32) {
+        match dbqueries::get_episode_widget_from_id(id) {
+            Ok(ep) => self.determine_button_state(&ep),
+            Err(e) => error!("failed to fetch episode for description refresh {e}"),
+        }
+    }
+
+    fn determine_button_state(&self, ep: &EpisodeWidgetModel) {
+        let is_downloading = self.progressbar.check_if_downloading().unwrap_or(false);
+        self.cancel_button.set_visible(is_downloading);
+        let is_downloaded = ep.local_uri().is_some();
+        self.download_button
+            .set_visible(!is_downloaded && !is_downloading);
+        self.stream_button.set_visible(!is_downloaded);
+        self.delete_button.set_visible(is_downloaded);
+        self.play_button.set_visible(is_downloaded);
     }
 
     fn set_description(&self, ep: &Episode) {

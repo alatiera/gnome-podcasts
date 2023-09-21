@@ -44,6 +44,16 @@ popover modelbutton > box > label {
     color: @insensitive_fg_color;
 }
 
+.episode_description .toolbar {
+    padding-left: 3px;
+    padding-right: 3px;
+}
+
+.episode_description progressbar {
+    padding-left: 12px;
+    padding-right: 12px;
+    padding-top: 15px;
+}
 
 .rounded-big {
     border-radius: 8px;

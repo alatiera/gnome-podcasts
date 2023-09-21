@@ -218,14 +218,7 @@ Tobias Bernard
       </object>
     </child>
     <child>
-      <object class="GtkProgressBar" id="progressbar">
-        <property name="visible">False</property>
-        <property name="margin_start">6</property>
-        <property name="margin_end">6</property>
-        <property name="margin_top">6</property>
-        <property name="margin_bottom">6</property>
-        <property name="hexpand">True</property>
-        <property name="pulse_step">0</property>
+      <object class="PdDownloadProgress" id="progressbar">
       </object>
     </child>
   </template>

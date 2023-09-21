@@ -172,6 +172,7 @@ pub(crate) enum Action {
     ErrorNotification(String),
     InitEpisode(i32),
     InitEpisodeAt(i32, i32),
+    StreamEpisode(i32),
     EmptyState,
     PopulatedState,
     Subscribe(String),
@@ -381,11 +382,15 @@ impl PdApplication {
                 send!(sender, Action::RefreshAllViews);
             }
             Action::InitEpisode(id) => {
-                let res = window.init_episode(id, None);
+                let res = window.init_episode(id, None, false);
                 debug_assert!(res.is_ok());
             }
             Action::InitEpisodeAt(id, second) => {
-                let res = window.init_episode(id, Some(second));
+                let res = window.init_episode(id, Some(second), false);
+                debug_assert!(res.is_ok());
+            }
+            Action::StreamEpisode(id) => {
+                let res = window.init_episode(id, None, true);
                 debug_assert!(res.is_ok());
             }
             Action::EmptyState => {

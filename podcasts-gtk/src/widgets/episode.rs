@@ -24,24 +24,21 @@ use gtk::glib;
 use gtk::prelude::*;
 use gtk::CompositeTemplate;
 
-use anyhow::{anyhow, Result};
+use anyhow::Result;
 use chrono::prelude::*;
 use glib::Sender;
 use humansize::{file_size_opts as size_opts, FileSize};
 use once_cell::sync::Lazy;
+use std::sync::Arc;
 
 use podcasts_data::dbqueries;
-use podcasts_data::downloader::DownloadProgress;
 use podcasts_data::utils::get_download_dir;
 use podcasts_data::EpisodeWidgetModel;
 
 use crate::app::Action;
-use crate::manager;
-
-use std::sync::{Arc, Mutex, TryLockError};
-use std::time::Duration;
-
 use crate::i18n::i18n_f;
+use crate::manager;
+use crate::widgets::DownloadProgressBar;
 
 static SIZE_OPTS: Lazy<Arc<size_opts::FileSizeOpts>> = Lazy::new(|| {
     // Declare a custom humansize option struct
@@ -63,7 +60,7 @@ static SIZE_OPTS: Lazy<Arc<size_opts::FileSizeOpts>> = Lazy::new(|| {
 #[template(resource = "/org/gnome/Podcasts/gtk/episode_widget.ui")]
 pub struct EpisodeWidgetPriv {
     #[template_child]
-    progressbar: TemplateChild<gtk::ProgressBar>,
+    progressbar: TemplateChild<DownloadProgressBar>,
 
     // InfoLabels
     #[template_child]
@@ -99,8 +96,11 @@ impl EpisodeWidgetPriv {
         crate::MAINCONTEXT.spawn_local_with_priority(
             glib::source::Priority::LOW,
             clone!(@weak self as this, @strong sender => async move {
+                let id = episode.id();
                 this.init_info(&episode);
-                if let Err(err) = this.determine_buttons_state(&episode, &sender) {
+                this.init_progressbar(id);
+                this.init_buttons(&sender, id);
+                if let Err(err) = this.determine_buttons_state(&episode) {
                     error!("Error: {}", err);
                 }
             }),
@@ -112,7 +112,6 @@ impl EpisodeWidgetPriv {
     //   * Show `total_size`, `local_size` labels and `size_separator`.
     //   * Hide Download and Play Buttons
     fn state_prog(&self) {
-        self.progressbar.set_visible(true);
         self.cancel.set_visible(true);
 
         self.total_size.set_visible(true);
@@ -128,7 +127,6 @@ impl EpisodeWidgetPriv {
     //   * Hide `local_size` labels and `size_separator`.
     //   * Show Play Button and `total_size` label
     fn state_playable(&self) {
-        self.progressbar.set_visible(false);
         self.cancel.set_visible(false);
         self.download.set_visible(false);
         self.local_size.set_visible(false);
@@ -138,13 +136,12 @@ impl EpisodeWidgetPriv {
         self.play.set_visible(true);
     }
 
-    // ToDownload State:
+    // NotDownloaded State:
     //   * Hide ProgressBar and Cancel, Play Buttons.
     //   * Hide `local_size` labels and `size_separator`.
     //   * Show Download Button
     //   * Determine `total_size` label state (Comes from `episode.lenght`).
     fn state_download(&self) {
-        self.progressbar.set_visible(false);
         self.cancel.set_visible(false);
         self.play.set_visible(false);
 
@@ -152,11 +149,6 @@ impl EpisodeWidgetPriv {
         self.size_separator.set_visible(false);
 
         self.download.set_visible(true);
-    }
-
-    fn update_progress(&self, local_size: &str, fraction: f64) {
-        self.local_size.set_text(local_size);
-        self.progressbar.set_fraction(fraction);
     }
 
     /// Change the state of the `EpisodeWidget`.
@@ -183,154 +175,28 @@ impl EpisodeWidgetPriv {
     ///        \_/
     /// -------------------
     /// |     State:      |
-    /// |   ToDownload    |
+    /// |  NotDownloaded  |
     /// -------------------
-    fn determine_buttons_state(
-        &self,
-        episode: &EpisodeWidgetModel,
-        sender: &Sender<Action>,
-    ) -> Result<()> {
-        // Check if the episode is being downloaded
-        let id = episode.id();
-        let active_dl = move || -> Result<Option<_>> {
-            let m = manager::ACTIVE_DOWNLOADS
-                .read()
-                .map_err(|_| anyhow!("Failed to get a lock on the mutex."))?;
-
-            Ok(m.get(&id).cloned())
-        };
-
-        // State: InProgress
-        if let Some(prog) = active_dl()? {
-            // set a callback that will update the state when the download finishes
-            let callback = clone!(@weak self as this, @strong sender => @default-return glib::ControlFlow::Break, move || {
-                if let Ok(guard) = manager::ACTIVE_DOWNLOADS.read() {
-                    if !guard.contains_key(&id) {
-                        if let Ok(ep) = dbqueries::get_episode_widget_from_id(id) {
-                            this.determine_buttons_state(&ep, &sender)
-                                .map_err(|err| error!("Error: {}", err))
-                                .ok();
-
-                            return glib::ControlFlow::Break
-                        }
-                    }
-                }
-
-                glib::ControlFlow::Continue
-            });
-            glib::timeout_add_local(Duration::from_millis(250), callback);
-
-            // Wire the cancel button
-            self
-                .cancel
-                .connect_clicked(clone!(@strong prog, @weak self as this, @strong sender => move |_| {
-                    // Cancel the download
-                    if let Ok(mut m) = prog.lock() {
-                        m.cancel();
-                    }
-
-                    // Cancel is not instant so we have to wait a bit
-                    glib::timeout_add_local(Duration::from_millis(50), clone!(@weak this, @strong sender => @default-return glib::ControlFlow::Break, move || {
-                        if let Ok(thing) = active_dl() {
-                            if thing.is_none() {
-                                // Recalculate the widget state
-                                if let Err(err) = dbqueries::get_episode_widget_from_id(id)
-                                    .map_err(From::from)
-                                    .and_then(|ep| this.determine_buttons_state(&ep, &sender)) {
-                                        error!("Error: {}", err);
-                                }
-
-                                return glib::ControlFlow::Break;
-                            }
-                        }
-
-                        glib::ControlFlow::Continue
-                    }));
-                }));
-
-            // Setup a callback that will update the total_size label
-            // with the http ContentLength header number rather than
-            // relying to the RSS feed.
-            update_total_size_callback(self, &prog);
-
-            // Setup a callback that will update the progress bar.
-            update_progressbar_callback(self, &prog, id);
-
-            // Change the widget layout/state
+    fn determine_buttons_state(&self, episode: &EpisodeWidgetModel) -> Result<()> {
+        let is_downloading = self.progressbar.check_if_downloading()?;
+        if is_downloading {
+            // State InProgress
             self.state_prog();
-
-            return Ok(());
-        }
-
-        // State: Playable
-        if episode.local_uri().is_some() {
-            // Change the widget layout/state
+        } else if episode.local_uri().is_some() {
+            // State: Playable
             self.state_playable();
-
-            // Wire the play button
-            self.play
-                .connect_clicked(clone!(@weak self as this, @strong sender => move |_| {
-                    if let Ok(mut ep) = dbqueries::get_episode_widget_from_id(id) {
-                        this.on_play_bttn_clicked(&mut ep, &sender)
-                            .map_err(|err| error!("Error: {}", err))
-                            .ok();
-                    }
-                }));
-
-            return Ok(());
+        } else {
+            // State: NotDownloaded
+            self.state_download();
         }
-
-        // State: ToDownload
-        // Wire the download button
-        self.download
-            .connect_clicked(clone!(@weak self as this, @strong sender => move |dl| {
-                if let Ok(ep) = dbqueries::get_episode_widget_from_id(id) {
-                    on_download_clicked(&ep, &sender)
-                        .and_then(|_| {
-                            info!("Download started successfully.");
-                            this.determine_buttons_state(&ep, &sender)
-                        })
-                        .map_err(|err| error!("Error: {}", err))
-                        .ok();
-                }
-
-                // Restore sensitivity after operations above complete
-                dl.set_sensitive(true);
-            }));
-
-        // Change the widget state into `ToDownload`
-        self.state_download();
-
-        Ok(())
-    }
-
-    fn on_play_bttn_clicked(
-        &self,
-        episode: &mut EpisodeWidgetModel,
-        sender: &Sender<Action>,
-    ) -> Result<()> {
-        // Grey out the title
-        self.set_title(episode);
-
-        // Play the episode
-        send!(sender, Action::InitEpisode(episode.id()));
-        // Refresh background views to match the normal/greyout title state
-        send!(sender, Action::RefreshEpisodesViewBGR);
         Ok(())
     }
 
     fn init_info(&self, episode: &EpisodeWidgetModel) {
-        // Set the title label state.
         self.set_title(episode);
-
-        // Set the date label.
         self.set_date(episode.epoch());
-
-        // Set the duration label.
         self.set_duration(episode.duration());
-
-        // Set the total_size label.
-        self.set_size(episode.length())
+        self.set_size(episode.length());
     }
 
     fn set_title(&self, episode: &EpisodeWidgetModel) {
@@ -402,6 +268,76 @@ impl EpisodeWidgetPriv {
             self.separator2.set_visible(false);
         }
     }
+
+    fn init_progressbar(&self, id: i32) {
+        self.progressbar.init(id);
+
+        self.progressbar
+            .connect_state_change(clone!(@weak self as this => move |_| {
+                if let Ok(ep) = dbqueries::get_episode_widget_from_id(id) {
+                    this.determine_buttons_state(&ep)
+                        .map_err(|err| error!("Error: {}", err))
+                        .ok();
+                }
+            }));
+
+        self.progressbar
+            .bind_property("local_size", &*self.local_size, "label")
+            .transform_to(move |_, downloaded: u64| {
+                downloaded
+                    .file_size(SIZE_OPTS.clone())
+                    .map_err(|err| error!("{}", err))
+                    .ok()
+            })
+            .flags(glib::BindingFlags::SYNC_CREATE)
+            .build();
+
+        self.progressbar
+            .connect_total_size_change(clone!(@weak self as this => move |_, _| {
+                // try_from should handle NaN case
+                this.set_size(i32::try_from(this.progressbar.total_size()).ok());
+            }));
+    }
+
+    fn init_buttons(&self, sender: &Sender<Action>, id: i32) {
+        self.cancel
+            .connect_clicked(clone!(@weak self as this, @strong sender => move |_| {
+                if let Err(e) = this.progressbar.cancel() {
+                    error!("failed to cancel download {e}");
+                }
+            }));
+
+        self.play
+            .connect_clicked(clone!(@weak self as this, @strong sender => move |_| {
+                if let Ok(episode) = dbqueries::get_episode_widget_from_id(id) {
+                    // Grey out the title
+                    this.set_title(&episode);
+                    // Play the episode
+                    send!(sender, Action::InitEpisode(episode.id()));
+                    // Refresh background views to match the normal/greyout title state
+                    send!(sender, Action::RefreshEpisodesViewBGR);
+                }
+            }));
+
+        self.download
+            .connect_clicked(clone!(@weak self as this, @strong sender => move |dl| {
+                if let Ok(ep) = dbqueries::get_episode_widget_from_id(id) {
+                    let result = on_download_clicked(&ep, &sender)
+                        .and_then(|_| {
+                            info!("Download started successfully.");
+                            this.determine_buttons_state(&ep)
+                        });
+                    if let Err(err) = result {
+                        error!("Failed to start download {err}");
+                    } else {
+                        this.progressbar.grab_focus();
+                    }
+                }
+
+                // Restore sensitivity after operations above complete
+                dl.set_sensitive(true);
+            }));
+    }
 }
 fn on_download_clicked(ep: &EpisodeWidgetModel, sender: &Sender<Action>) -> Result<()> {
     let pd = dbqueries::get_podcast_from_id(ep.show_id())?;
@@ -413,104 +349,6 @@ fn on_download_clicked(ep: &EpisodeWidgetModel, sender: &Sender<Action>) -> Resu
     // Update Views
     send!(sender, Action::RefreshEpisodesViewBGR);
     Ok(())
-}
-
-// Setup a callback that will update the progress bar.
-#[inline]
-fn update_progressbar_callback(
-    widget: &EpisodeWidgetPriv,
-    prog: &Arc<Mutex<manager::Progress>>,
-    episode_id: i32,
-) {
-    let callback = clone!(@weak widget, @strong prog => @default-return glib::ControlFlow::Break, move || {
-        progress_bar_helper(&widget, &prog, episode_id)
-            .unwrap_or(glib::ControlFlow::Break)
-    });
-    glib::timeout_add_local(Duration::from_millis(100), callback);
-}
-
-fn progress_bar_helper(
-    widget: &EpisodeWidgetPriv,
-    prog: &Arc<Mutex<manager::Progress>>,
-    episode_id: i32,
-) -> Result<glib::ControlFlow> {
-    let (fraction, downloaded, cancel) = match prog.try_lock() {
-        Ok(guard) => (
-            guard.get_fraction(),
-            guard.get_downloaded(),
-            guard.should_cancel(),
-        ),
-        Err(TryLockError::WouldBlock) => return Ok(glib::ControlFlow::Continue),
-        Err(TryLockError::Poisoned(_)) => return Err(anyhow!("Progress Mutex is poisoned")),
-    };
-
-    // Update the progress_bar.
-    if (0.0..=1.0).contains(&fraction) && (!fraction.is_nan()) {
-        // Update local_size label
-        let size = downloaded
-            .file_size(SIZE_OPTS.clone())
-            .map_err(|err| anyhow!("{}", err))?;
-
-        widget.update_progress(&size, fraction);
-    }
-
-    // Check if the download is still active
-    let active = match manager::ACTIVE_DOWNLOADS.read() {
-        Ok(guard) => guard.contains_key(&episode_id),
-        Err(_) => return Err(anyhow!("Failed to get a lock on the mutex.")),
-    };
-
-    if (fraction >= 1.0) && (!fraction.is_nan()) {
-        Ok(glib::ControlFlow::Break)
-    } else if !active || cancel {
-        // if the total size is not a number, hide it
-        if widget
-            .total_size
-            .text()
-            .trim_end_matches(" MB")
-            .parse::<i32>()
-            .is_err()
-        {
-            widget.total_size.set_visible(false);
-        }
-        Ok(glib::ControlFlow::Break)
-    } else {
-        Ok(glib::ControlFlow::Continue)
-    }
-}
-
-// Setup a callback that will update the total_size label
-// with the http ContentLength header number rather than
-// relying to the RSS feed.
-#[inline]
-fn update_total_size_callback(widget: &EpisodeWidgetPriv, prog: &Arc<Mutex<manager::Progress>>) {
-    let callback = clone!(@strong prog, @weak widget => @default-return glib::ControlFlow::Break, move || {
-        total_size_helper(&widget, &prog).unwrap_or(glib::ControlFlow::Continue)
-    });
-    glib::timeout_add_local(Duration::from_millis(100), callback);
-}
-
-fn total_size_helper(
-    widget: &EpisodeWidgetPriv,
-    prog: &Arc<Mutex<manager::Progress>>,
-) -> Result<glib::ControlFlow> {
-    // Get the total_bytes.
-    let total_bytes = match prog.try_lock() {
-        Ok(guard) => guard.get_size(),
-        Err(TryLockError::WouldBlock) => return Ok(glib::ControlFlow::Continue),
-        Err(TryLockError::Poisoned(_)) => return Err(anyhow!("Progress Mutex is poisoned")),
-    };
-
-    debug!("Total Size: {}", total_bytes);
-    if total_bytes != 0 {
-        // Update the total_size label
-        widget.set_size(Some(total_bytes as i32));
-
-        // Do not call again the callback
-        Ok(glib::ControlFlow::Break)
-    } else {
-        Ok(glib::ControlFlow::Continue)
-    }
 }
 
 #[glib::object_subclass]

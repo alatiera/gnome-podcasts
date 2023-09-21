@@ -26,8 +26,10 @@ mod episode;
 mod show;
 mod source;
 
+
 pub(crate) use self::discovery_settings::DiscoverySetting;
 pub(crate) use self::episode::EpisodeCleanerModel;
+
 pub(crate) use self::new_episode::{NewEpisode, NewEpisodeMinimal};
 pub(crate) use self::new_show::NewShow;
 pub(crate) use self::new_source::NewSource;
@@ -37,7 +39,7 @@ pub(crate) use self::new_episode::NewEpisodeBuilder;
 #[cfg(test)]
 pub(crate) use self::new_show::NewShowBuilder;
 
-pub use self::episode::{Episode, EpisodeMinimal, EpisodeWidgetModel};
+pub use self::episode::{Episode, EpisodeCleanerModel, EpisodeMinimal, EpisodeWidgetModel};
 pub use self::show::{Show, ShowCoverModel};
 pub use self::source::Source;
 

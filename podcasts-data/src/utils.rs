@@ -114,7 +114,7 @@ fn clean_played(now_utc: i32, mut ep: EpisodeCleanerModel) {
 }
 
 /// Check `ep.local_uri` field and delete the file it points to.
-fn delete_local_content(ep: &mut EpisodeCleanerModel) -> Result<(), DownloadError> {
+pub fn delete_local_content(ep: &mut EpisodeCleanerModel) -> Result<(), DownloadError> {
     if ep.local_uri().is_some() {
         let uri = ep.local_uri().unwrap().to_owned();
         if Path::new(&uri).exists() {

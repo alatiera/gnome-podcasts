@@ -53,6 +53,8 @@ Tobias Bernard
               <object class="AdwClamp" id="clamp">
                 <property name="vexpand">True</property>
                 <property name="maximum-size">700</property>
+
+
                 <child>
                   <object class="GtkBox" id="content">
                     <property name="vexpand">True</property>
@@ -61,20 +63,23 @@ Tobias Bernard
 
                     <child>
                       <object class="GtkBox" id="episode_info">
+
                         <property name="valign">start</property>
                         <property name="margin-top">18</property>
                         <property name="margin-bottom">18</property>
                         <property name="hexpand">True</property>
                         <property name="orientation">vertical</property>
                         <child>
-                          <object class="GtkBox">
+                          <object class="GtkBox" id="episode_info_horizontal">
                             <property name="margin-start">18</property>
-                            <property name="margin-end">18</property>
+                            <property name="margin-end">14</property>
                             <child>
                               <object class="GtkImage" id="cover">
+                                <property name="margin-top">4</property>
                                 <property name="margin-end">12</property>
                                 <property name="hexpand">False</property>
                                 <property name="vexpand">False</property>
+                                <property name="valign">start</property>
                                 <property name="pixel-size">64</property>
                                 <property name="icon-name">image-x-generic-symbolic</property>
                                 <property name="overflow">hidden</property>
@@ -120,10 +125,86 @@ Tobias Bernard
                                 </child>
                               </object>
                             </child>
+
+<child>
+                          <object class="GtkBox">
+                            <property name="margin-start">15</property>
+                            <property name="margin-top">15</property>
+                            <property name="valign">end</property>
+                            <property name="halign">end</property>
+                            <style><class name="toolbar"/></style>
+
+                            <child>
+                              <object class="GtkSeparator">
+                                <style><class name="spacer"/></style>
+                                <property name="hexpand">True</property>
+                              </object>
+                            </child>
+
+                            <child>
+                              <object class="GtkButton" id="download_button">
+                                <style><class name="suggested-action"/></style>
+                                <property name="tooltip-text" translatable="yes">Download</property>
+                                <property name="icon-name">document-save-symbolic</property>
+                              </object>
+                            </child>
+
+                            <child>
+                              <object class="GtkButton" id="cancel_button">
+                                <style><class name="destructive-action"/></style>
+                                <property name="tooltip-text" translatable="yes">Cancel</property>
+                                <property name="icon-name">process-stop-symbolic</property>
+                              </object>
+                            </child>
+
+                            <child>
+                              <object class="GtkButton" id="delete_button">
+                                <style><class name="destructive-action"/></style>
+                                <property name="visible">False</property>
+                                <property name="tooltip-text" translatable="yes">Delete File</property>
+                                <property name="icon-name">user-trash-symbolic</property>
+                              </object>
+                            </child>
+
+                            <child>
+                              <object class="GtkButton" id="stream_button">
+                                <style><class name="accent"/></style>
+                                <property name="tooltip-text" translatable="yes">Stream</property>
+                                <property name="icon-name">media-playback-start-symbolic</property>
+                              </object>
+                            </child>
+
+                            <child>
+                              <object class="GtkButton" id="play_button">
+                                <style><class name="suggested-action"/></style>
+                                <property name="visible">False</property>
+                                <property name="tooltip-text" translatable="yes">Play</property>
+                                <accessibility><property name="label" translatable="yes">Play</property></accessibility>
+                                <property name="icon-name">media-playback-start-symbolic</property>
+                              </object>
+                            </child>
+
                           </object>
                         </child>
+
+
+                          </object>
+                        </child>
+
+
+                        <child>
+                          <object class="PdDownloadProgress" id="progressbar">
+                            <property name="hexpand">True</property>
+                          </object>
+                        </child>
+
+
+
                       </object>
                     </child>
+
+
+
 
                     <child>
                       <object class="GtkLabel" id="description">
