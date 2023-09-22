@@ -38,6 +38,7 @@ use url::Url;
 
 use podcasts_data::dbqueries;
 use podcasts_data::downloader;
+use podcasts_data::downloader::client_builder;
 use podcasts_data::errors::DownloadError;
 use podcasts_data::opml;
 use podcasts_data::pipeline::pipeline;
@@ -419,7 +420,13 @@ fn itunes_id_from_url(url: &str) -> Option<u32> {
 
 async fn itunes_lookup_id(id: u32) -> Result<String> {
     let url = format!("https://itunes.apple.com/lookup?id={}&entity=podcast", id);
-    let req: Value = reqwest::get(&url).await?.json().await?;
+    let req: Value = client_builder()
+        .build()?
+        .get(&url)
+        .send()
+        .await?
+        .json()
+        .await?;
     let rssurl = || -> Option<&str> { req.get("results")?.get(0)?.get("feedUrl")?.as_str() };
     rssurl()
         .map(From::from)
@@ -460,7 +467,9 @@ async fn soundcloud_lookup_id(url: &Url) -> Option<(u64, u64)> {
         Lazy::new(|| Regex::new(r"soundcloud://playlists:([0-9]+)").unwrap());
 
     let url_str = url.to_string();
-    let response_text = reqwest::get(&url_str).await.ok()?.text().await.ok()?;
+    let client = client_builder().build().ok()?;
+    let response = client.get(&url_str).send();
+    let response_text = response.await.ok()?.text().await.ok()?;
     let user_id = RE_U
         .captures_iter(&response_text)
         .next()
