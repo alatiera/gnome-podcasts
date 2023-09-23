@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: podcasts master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2023-09-03 05:02+0000\n"
-"PO-Revision-Date: 2023-09-05 19:34+0200\n"
+"POT-Creation-Date: 2023-09-06 01:04+0000\n"
+"PO-Revision-Date: 2023-09-23 18:39+0200\n"
 "Last-Translator: Balázs Úr <ur.balazs at fsf dot hu>\n"
 "Language-Team: Hungarian <openscope at fsf dot hu>\n"
 "Language: hu\n"
@@ -49,7 +49,6 @@ msgid "Back"
 msgstr "Vissza"
 
 #: podcasts-gtk/resources/gtk/episode_description.ui:59
-#| msgid "Episode Details"
 msgid "Episode Menu"
 msgstr "Epizód menü"
 
@@ -149,7 +148,6 @@ msgid "Main Menu"
 msgstr "Főmenü"
 
 #: podcasts-gtk/resources/gtk/headerbar.ui:167
-#| msgid "Podcast Title"
 msgid "Podcast Menu"
 msgstr "Podcast menü"
 
@@ -192,9 +190,33 @@ msgstr "Ebben a hónapban"
 msgid "Older"
 msgstr "Régebbi"
 
-#: podcasts-gtk/resources/gtk/player_dialog.ui:22
+#: podcasts-gtk/resources/gtk/player_dialog.ui:7
 msgid "Now Playing"
 msgstr "Most játssza"
+
+#: podcasts-gtk/resources/gtk/player_dialog.ui:25
+msgid "Close"
+msgstr "Bezárás"
+
+#: podcasts-gtk/resources/gtk/player_dialog.ui:149
+msgid "Rewind"
+msgstr "Visszatekerés"
+
+#: podcasts-gtk/resources/gtk/player_dialog.ui:170
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:63
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:244
+msgid "Play"
+msgstr "Lejátszás"
+
+#: podcasts-gtk/resources/gtk/player_dialog.ui:188
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:71
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:250
+msgid "Pause"
+msgstr "Szünet"
+
+#: podcasts-gtk/resources/gtk/player_dialog.ui:211
+msgid "Forward"
+msgstr "Előretekerés"
 
 #: podcasts-gtk/resources/gtk/player_rate.ui:29
 msgid "Change the playback speed"
@@ -233,14 +255,6 @@ msgstr "0,75×"
 msgid "Rewind 10 seconds"
 msgstr "Visszatekerés 10 másodperccel"
 
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:63
-msgid "Play"
-msgstr "Lejátszás"
-
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:71
-msgid "Pause"
-msgstr "Szünet"
-
 #: podcasts-gtk/resources/gtk/player_toolbar.ui:79
 msgid "Fast forward 10 seconds"
 msgstr "Előretekerés 10 másodperccel"
@@ -270,7 +284,6 @@ msgid "Unsubscribe"
 msgstr "Leiratkozás"
 
 #: podcasts-gtk/resources/gtk/show_widget.ui:80
-#| msgid "Episode Details"
 msgid "Episodes"
 msgstr "Epizódok"
 
