@@ -23,6 +23,7 @@ use glib::object::WeakRef;
 use glib::IsA;
 use glib::Sender;
 use glib::Variant;
+use gtk::gdk_pixbuf::Pixbuf;
 use gtk::prelude::*;
 use gtk::FileFilter;
 use gtk::Widget;
@@ -326,7 +327,7 @@ static CACHE_VALID_DURATION: Lazy<chrono::Duration> = Lazy::new(|| chrono::Durat
 // FIXME: we can probably use unsync::Lazy now
 // TODO: maybe use something that would just scale to requested size?
 // todo Unit test.
-pub(crate) fn set_image_from_path(image: &gtk::Image, show_id: i32) -> Result<()> {
+pub(crate) fn set_image_from_path(image: &gtk::Image, show_id: i32, size: u32) -> Result<()> {
     // get the PodcastCover struct
     let pd = dbqueries::get_podcast_cover_from_id(show_id)?;
     image.set_tooltip_text(Some(pd.title()));
@@ -334,7 +335,10 @@ pub(crate) fn set_image_from_path(image: &gtk::Image, show_id: i32) -> Result<()
     // Check if the cover is already downloaded and set it
     if pd.is_cached_image_valid(&CACHE_VALID_DURATION) {
         if let Some(cached_path) = downloader::check_for_cached_cover(&pd) {
-            image.set_from_file(Some(cached_path));
+            if let Ok(px) = Pixbuf::from_file_at_scale(cached_path, size as i32, size as i32, true)
+            {
+                image.set_from_pixbuf(Some(&px));
+            }
             return Ok(());
         }
     }
@@ -345,7 +349,7 @@ pub(crate) fn set_image_from_path(image: &gtk::Image, show_id: i32) -> Result<()
     if let Ok(guard) = COVER_DL_REGISTRY.read() {
         if guard.contains(&show_id) {
             let callback = clone!(@weak image => @default-return glib::ControlFlow::Break, move || {
-                 let _ = set_image_from_path(&image, show_id);
+                 let _ = set_image_from_path(&image, show_id, size);
                  glib::ControlFlow::Break
             });
             glib::timeout_add_local(Duration::from_millis(250), callback);
@@ -372,6 +376,7 @@ pub(crate) fn set_image_from_path(image: &gtk::Image, show_id: i32) -> Result<()
     }
 
     let image = image.clone();
+    let s = size as i32;
     glib::timeout_add_local(Duration::from_millis(25), move || {
         match receiver.try_recv() {
             Err(TryRecvError::Empty) => glib::ControlFlow::Continue,
@@ -379,7 +384,9 @@ pub(crate) fn set_image_from_path(image: &gtk::Image, show_id: i32) -> Result<()
             Ok(path) => {
                 match path {
                     Ok(path) => {
-                        image.set_from_file(Some(path));
+                        if let Ok(px) = Pixbuf::from_file_at_scale(path, s, s, true) {
+                            image.set_from_pixbuf(Some(&px));
+                        }
                     }
                     Err(DownloadError::NoImageLocation) => {
                         image.set_from_icon_name(Some("image-x-generic-symbolic"));

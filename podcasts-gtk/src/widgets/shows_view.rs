@@ -82,7 +82,7 @@ fn populate_flowbox(shows: &ShowsView, vadj: Option<Adjustment>) -> Result<()> {
         image.add_css_class("rounded-big");
         image.set_overflow(gtk::Overflow::Hidden);
 
-        let result = crate::utils::set_image_from_path(&image, podcast.id());
+        let result = crate::utils::set_image_from_path(&image, podcast.id(), 256);
         if let Err(e) = result {
             error!("Failed to load cover for {}: {e}", podcast.title());
         }

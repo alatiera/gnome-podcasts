@@ -118,7 +118,7 @@ impl EpisodeDescriptionPriv {
     }
 
     fn set_cover(&self, show_id: i32) {
-        utils::set_image_from_path(&self.cover, show_id)
+        utils::set_image_from_path(&self.cover, show_id, 64)
             .map_err(|err| error!("Failed to set a cover: {}", err))
             .ok();
     }

@@ -141,7 +141,7 @@ impl ShowWidget {
 
     /// Set the show cover.
     fn set_cover(&self, pd: &Arc<Show>) -> Result<()> {
-        utils::set_image_from_path(&self.imp().cover, pd.id())
+        utils::set_image_from_path(&self.imp().cover, pd.id(), 256)
     }
 
     pub(crate) fn show_id(&self) -> Option<i32> {
