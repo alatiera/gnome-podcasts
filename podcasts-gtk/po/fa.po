@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: podcasts master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2023-09-02 19:11+0000\n"
-"PO-Revision-Date: 2023-09-02 23:56+0330\n"
+"POT-Creation-Date: 2023-09-06 01:04+0000\n"
+"PO-Revision-Date: 2023-10-06 16:39+0330\n"
 "Last-Translator: Danial Behzadi <dani.behzi@ubuntu.com>\n"
 "Language-Team: Persian <fa@li.org>\n"
 "Language: fa\n"
@@ -60,7 +60,7 @@ msgid "Duration - Date"
 msgstr "طول - تاریخ"
 
 #: podcasts-gtk/resources/gtk/episode_description.ui:150
-#: podcasts-gtk/resources/gtk/episode_description.ui:154
+#: podcasts-gtk/resources/gtk/episode_description.ui:155
 msgid "Episode Description"
 msgstr "شرح قسمت"
 
@@ -189,9 +189,33 @@ msgstr "این ماه"
 msgid "Older"
 msgstr "قدیمی‌تر"
 
-#: podcasts-gtk/resources/gtk/player_dialog.ui:22
+#: podcasts-gtk/resources/gtk/player_dialog.ui:7
 msgid "Now Playing"
 msgstr "در حال پخش"
+
+#: podcasts-gtk/resources/gtk/player_dialog.ui:25
+msgid "Close"
+msgstr "بستن"
+
+#: podcasts-gtk/resources/gtk/player_dialog.ui:149
+msgid "Rewind"
+msgstr "پس‌روی"
+
+#: podcasts-gtk/resources/gtk/player_dialog.ui:170
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:63
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:244
+msgid "Play"
+msgstr "پخش"
+
+#: podcasts-gtk/resources/gtk/player_dialog.ui:188
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:71
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:250
+msgid "Pause"
+msgstr "مکث"
+
+#: podcasts-gtk/resources/gtk/player_dialog.ui:211
+msgid "Forward"
+msgstr "پیش‌روی"
 
 #: podcasts-gtk/resources/gtk/player_rate.ui:29
 msgid "Change the playback speed"
@@ -230,14 +254,6 @@ msgstr "×۰٫۷۵"
 msgid "Rewind 10 seconds"
 msgstr "۱۰ ثانیه پس‌روی"
 
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:63
-msgid "Play"
-msgstr "پخش"
-
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:71
-msgid "Pause"
-msgstr "مکث"
-
 #: podcasts-gtk/resources/gtk/player_toolbar.ui:79
 msgid "Fast forward 10 seconds"
 msgstr "۱۰ ثانیه پیشروی سریع"
@@ -266,7 +282,7 @@ msgstr "علامت زدن همه به پخش شده"
 msgid "Unsubscribe"
 msgstr "قطع اشتراک"
 
-#: podcasts-gtk/resources/gtk/show_widget.ui:79
+#: podcasts-gtk/resources/gtk/show_widget.ui:80
 msgid "Episodes"
 msgstr "قسمت‌ها"
 
@@ -277,16 +293,16 @@ msgstr "شنیدن نمایش‌های محبوبتان"
 #: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:10
 msgid ""
 "Play, update, and manage your podcasts from a lightweight interface that "
-"seamlessly integrates with GNOME. Podcasts can play various audio formats "
-"and remember where you stopped listening. You can subscribe to shows via RSS/"
-"Atom, iTunes, and Soundcloud links. Subscriptions from other apps can be "
-"imported via OPML files."
+"seamlessly integrates with GNOME. Podcasts can play various audio formats and "
+"remember where you stopped listening. You can subscribe to shows via RSS/Atom, "
+"iTunes, and Soundcloud links. Subscriptions from other apps can be imported via "
+"OPML files."
 msgstr ""
-"پخش، به‌روز رسانی و مدیریت پادپخش‌هایتان از میانایی سبک که به طور بی‌نقصی با "
-"گنوم یکپارچه می‌شود. پادپخش‌ها می‌تواند قالب‌های صوتی مختلفی را پخش کرده و جایی "
-"که شنیدن را متوقّف کردید به خاطر بسپرد. می‌توانید با پیوندهای سوندکلود، آی‌تونز "
-"و خوراک وب مشترک نمایش‌ها شوید. اشتراک‌های دیگر برنامه‌ها می‌توانند از طریق "
-"پرونده‌های OPML درون ریخته شوند."
+"پخش، به‌روز رسانی و مدیریت پادپخش‌هایتان از میانایی سبک که به طور بی‌نقصی با گنوم "
+"یکپارچه می‌شود. پادپخش‌ها می‌تواند قالب‌های صوتی مختلفی را پخش کرده و جایی که شنیدن "
+"را متوقّف کردید به خاطر بسپرد. می‌توانید با پیوندهای سوندکلود، آی‌تونز و خوراک وب "
+"مشترک نمایش‌ها شوید. اشتراک‌های دیگر برنامه‌ها می‌توانند از طریق پرونده‌های OPML "
+"درون ریخته شوند."
 
 #: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:143
 msgid "The Podcasts developers"
@@ -345,7 +361,7 @@ msgstr "نشانی رونوشت شده در تخته‌گیره!"
 msgid "New"
 msgstr "جدید"
 
-#: podcasts-gtk/src/stacks/content.rs:71
+#: podcasts-gtk/src/stacks/content.rs:71 podcasts-gtk/src/widgets/shows_view.rs:55
 msgid "Shows"
 msgstr "نمایش‌ها"
 
@@ -402,7 +418,11 @@ msgstr "{} دقیقه"
 msgid "The media player was unable to execute an action."
 msgstr "پخش‌کنندهٔ رسانه در اجرای کنشی ناتوان بود."
 
-#: podcasts-gtk/src/widgets/read_more_label.rs:32
+#: podcasts-gtk/src/widgets/read_more_label.rs:34
+msgid "Visually expands this description"
+msgstr "گستردن بصری شرح"
+
+#: podcasts-gtk/src/widgets/read_more_label.rs:36
 msgid "Read More"
 msgstr "بیش‌تر بخوانید"
 
