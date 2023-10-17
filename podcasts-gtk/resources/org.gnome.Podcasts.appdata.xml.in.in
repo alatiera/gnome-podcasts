@@ -139,7 +139,7 @@
     <display_length compare="ge">small</display_length>
   </requires>
   <launchable type="desktop-id">@appid@.desktop</launchable>
-  <url type="homepage">https://apps.gnome.org/app/org.gnome.Podcasts/</url>
+  <url type="homepage">https://apps.gnome.org/Podcasts/</url>
   <url type="bugtracker">https://gitlab.gnome.org/World/podcasts/issues/</url>
   <url type="donation">https://www.gnome.org/donate/</url>
   <url type="translate">https://gitlab.gnome.org/World/podcasts#translations</url>
