@@ -29,134 +29,119 @@ Tobias Bernard
   <!-- interface-description A podcast client for the GNOME Desktop -->
   <!-- interface-copyright 2017 - 2018 -->
   <!-- interface-authors Jordan Petridis\nTobias Bernard -->
-  <template class="PdEpisodeDescription" parent="GtkBox">
-    <property name="height-request">64</property>
-    <property name="vexpand">True</property>
-    <property name="hexpand">True</property>
-    <property name="orientation">vertical</property>
+  <template class="PdEpisodeDescription" parent="AdwNavigationPage">
+    <property name="title" translatable="yes">Episode Details</property>
     <child>
-      <object class="AdwHeaderBar" id="header">
-        <child type="title">
-          <object class="GtkLabel" id="title">
-            <property name="label" translatable="yes">Episode Details</property>
-            <style>
-              <class name="title"/>
-            </style>
+      <object class="AdwToolbarView">
+        <child type="top">
+          <object class="AdwHeaderBar" id="header">
+            <child type="end">
+              <object class="GtkMenuButton" id="menu_button">
+                <property name="receives-default">True</property>
+                <property name="icon-name">view-more-symbolic</property>
+                <property name="tooltip-text" translatable="yes">Episode Menu</property>
+              </object>
+            </child>
           </object>
         </child>
         <child>
-          <object class="GtkButton" id="back_button">
-            <property name="receives-default">True</property>
-            <property name="icon-name">go-previous-symbolic</property>
-            <property name="tooltip-text" translatable="yes">Back</property>
-            <property name="action-name">app.go-back-on-deck</property>
-          </object>
-        </child>
-        <child type="end">
-          <object class="GtkMenuButton" id="menu_button">
-            <property name="receives-default">True</property>
-            <property name="icon-name">view-more-symbolic</property>
-            <property name="tooltip-text" translatable="yes">Episode Menu</property>
-          </object>
-        </child>
-      </object>
-    </child>
-    <child>
-      <object class="GtkScrolledWindow">
-        <property name="vexpand">True</property>
-        <property name="hexpand">True</property>
-        <property name="hscrollbar-policy">never</property>
-        <child>
-          <object class="AdwClamp" id="clamp">
+          <object class="GtkScrolledWindow">
             <property name="vexpand">True</property>
-            <property name="maximum-size">700</property>
+            <property name="hexpand">True</property>
+            <property name="hscrollbar-policy">never</property>
             <child>
-              <object class="GtkBox" id="content">
+              <object class="AdwClamp" id="clamp">
                 <property name="vexpand">True</property>
-                <property name="orientation">vertical</property>
-                <property name="baseline-position">top</property>
+                <property name="maximum-size">700</property>
                 <child>
-                  <object class="GtkBox" id="episode_info">
-                    <property name="valign">start</property>
-                    <property name="margin-top">18</property>
-                    <property name="margin-bottom">18</property>
-                    <property name="hexpand">True</property>
+                  <object class="GtkBox" id="content">
+                    <property name="vexpand">True</property>
                     <property name="orientation">vertical</property>
+                    <property name="baseline-position">top</property>
                     <child>
-                      <object class="GtkBox">
-                        <property name="margin-start">18</property>
-                        <property name="margin-end">18</property>
-                        <child>
-                          <object class="GtkImage" id="cover">
-                            <property name="margin-end">12</property>
-                            <property name="hexpand">False</property>
-                            <property name="vexpand">False</property>
-                            <property name="pixel-size">64</property>
-                            <property name="icon-name">image-x-generic-symbolic</property>
-                            <property name="overflow">hidden</property>
-                            <style>
-                              <class name="rounded-small"/>
-                            </style>
-                          </object>
-                        </child>
+                      <object class="GtkBox" id="episode_info">
+                        <property name="valign">start</property>
+                        <property name="margin-top">18</property>
+                        <property name="margin-bottom">18</property>
+                        <property name="hexpand">True</property>
+                        <property name="orientation">vertical</property>
                         <child>
                           <object class="GtkBox">
-                            <property name="orientation">vertical</property>
+                            <property name="margin-start">18</property>
+                            <property name="margin-end">18</property>
                             <child>
-                              <object class="GtkLabel" id="podcast_title">
-                                <property name="label" translatable="yes">Podcast Title</property>
-                                <property name="wrap">True</property>
-                                <property name="wrap-mode">word-char</property>
-                                <property name="xalign">0</property>
+                              <object class="GtkImage" id="cover">
+                                <property name="margin-end">12</property>
+                                <property name="hexpand">False</property>
+                                <property name="vexpand">False</property>
+                                <property name="pixel-size">64</property>
+                                <property name="icon-name">image-x-generic-symbolic</property>
+                                <property name="overflow">hidden</property>
                                 <style>
-                                  <class name="podcast_title"/>
+                                  <class name="rounded-small"/>
                                 </style>
                               </object>
                             </child>
                             <child>
-                              <object class="GtkLabel" id="episode_title">
-                                <property name="label">Episode Title</property>
-                                <property name="wrap">True</property>
-                                <property name="wrap-mode">word-char</property>
-                                <property name="lines">1</property>
-                                <property name="xalign">0</property>
-                                <style>
-                                  <class name="episode_title"/>
-                                </style>
-                              </object>
-                            </child>
-                            <child>
-                              <object class="GtkLabel" id="episode_duration">
-                                <property name="label" translatable="yes">Duration - Date</property>
-                                <property name="xalign">0</property>
-                                <style>
-                                  <class name="episode_duration"/>
-                                </style>
+                              <object class="GtkBox">
+                                <property name="orientation">vertical</property>
+                                <child>
+                                  <object class="GtkLabel" id="podcast_title">
+                                    <property name="label" translatable="yes">Podcast Title</property>
+                                    <property name="wrap">True</property>
+                                    <property name="wrap-mode">word-char</property>
+                                    <property name="xalign">0</property>
+                                    <style>
+                                      <class name="podcast_title"/>
+                                    </style>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="GtkLabel" id="episode_title">
+                                    <property name="label">Episode Title</property>
+                                    <property name="wrap">True</property>
+                                    <property name="wrap-mode">word-char</property>
+                                    <property name="lines">1</property>
+                                    <property name="xalign">0</property>
+                                    <style>
+                                      <class name="episode_title"/>
+                                    </style>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="GtkLabel" id="episode_duration">
+                                    <property name="label" translatable="yes">Duration - Date</property>
+                                    <property name="xalign">0</property>
+                                    <style>
+                                      <class name="episode_duration"/>
+                                    </style>
+                                  </object>
+                                </child>
                               </object>
                             </child>
                           </object>
                         </child>
                       </object>
                     </child>
-                  </object>
-                </child>
-                <child>
-                  <object class="GtkLabel" id="description">
-                    <property name="valign">start</property>
-                    <property name="margin-start">18</property>
-                    <property name="margin-end">18</property>
-                    <property name="margin-bottom">18</property>
-                    <property name="vexpand">True</property>
-                    <property name="label" translatable="yes">Episode Description</property>
-                    <property name="wrap">True</property>
-                    <property name="xalign">0</property>
-                    <property name="selectable">True</property>
-                     <accessibility>
-                       <property name="description" translatable="yes">Episode Description</property>
-                     </accessibility>
-                    <style>
-                      <class name="episode_description_label"/>
-                    </style>
+                    <child>
+                      <object class="GtkLabel" id="description">
+                        <property name="valign">start</property>
+                        <property name="margin-start">18</property>
+                        <property name="margin-end">18</property>
+                        <property name="margin-bottom">18</property>
+                        <property name="vexpand">True</property>
+                        <property name="label" translatable="yes">Episode Description</property>
+                        <property name="wrap">True</property>
+                        <property name="xalign">0</property>
+                        <property name="selectable">True</property>
+                        <accessibility>
+                          <property name="description" translatable="yes">Episode Description</property>
+                        </accessibility>
+                        <style>
+                          <class name="episode_description_label"/>
+                        </style>
+                      </object>
+                    </child>
                   </object>
                 </child>
               </object>

@@ -46,7 +46,7 @@ pub struct MainWindow {
     pub(crate) content: Rc<Content>,
     pub(crate) headerbar: Rc<Header>,
     pub(crate) player: player::PlayerWrapper,
-    pub(crate) main_deck: adw::Leaflet,
+    pub(crate) navigation_view: adw::NavigationView,
     pub(crate) toast_overlay: adw::ToastOverlay,
     pub(crate) progress_bar: Rc<gtk::ProgressBar>,
     pub(crate) updating_timeout: RefCell<Option<glib::source::SourceId>>,
@@ -85,26 +85,25 @@ impl MainWindow {
         let header = Header::new(&content, sender);
 
         // Add the content main stack to the overlay.
-        let main_deck = adw::Leaflet::new();
-        main_deck.set_can_unfold(false);
-        main_deck.set_can_navigate_forward(false);
-        main_deck.append(&content.get_container());
+        let navigation_view = adw::NavigationView::new();
 
-        let wrap = gtk::Box::new(gtk::Orientation::Vertical, 0);
+        let wrap = adw::ToolbarView::new();
+        let main_page = adw::NavigationPage::new(&wrap, &i18n("Podcasts"));
+
+        navigation_view.add(&main_page);
 
         // Add the Headerbar to the window.
-        content.get_container().prepend(&header.container);
+        wrap.add_top_bar(&header.container);
 
         // Add the deck to the main Box
-        wrap.append(&main_deck);
+        wrap.set_content(Some(&content.get_container()));
 
         let player = player::PlayerWrapper::new(sender);
         // Add the player to the main Box
-        wrap.append(&player.borrow().container);
+        wrap.add_bottom_bar(&player.borrow().container);
+        wrap.add_bottom_bar(&header.bottom_switcher);
 
-        wrap.append(&header.bottom_switcher);
-
-        toast_overlay.set_child(Some(&wrap));
+        toast_overlay.set_child(Some(&navigation_view));
         window.set_content(Some(&toast_overlay));
 
         // Set window title
@@ -141,7 +140,7 @@ impl MainWindow {
             headerbar: header,
             content,
             player,
-            main_deck,
+            navigation_view,
             toast_overlay,
             progress_bar: Rc::new(progress_bar),
             updating: Cell::new(false),
@@ -204,12 +203,6 @@ impl MainWindow {
                     headerbar.open_menu();
             }),
         );
-    }
-    /// Remove all items from the `main_deck` except from the content
-    pub fn clear_deck(&self) {
-        if let Some(page) = self.main_deck.child_by_name("description") {
-            self.main_deck.remove(&page);
-        }
     }
 }
 

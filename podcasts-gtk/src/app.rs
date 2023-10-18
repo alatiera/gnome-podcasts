@@ -265,11 +265,6 @@ impl PdApplication {
         open_menu.connect_activate(clone!(@weak self as app, @weak data => move |_, _| {
             let window = data.window.borrow();
             let window = window.as_ref().unwrap();
-            // TODO make the widgets impl an interface or somthing, rework this
-            if let Some("description") = window.main_deck.visible_child_name().as_ref().map(|s| s.as_str()) {
-                window.main_deck.visible_child().unwrap().downcast::<EpisodeDescription>().unwrap().open_menu();
-                return;
-            }
 
             window.headerbar.open_active_menu();
         }));
@@ -332,8 +327,7 @@ impl PdApplication {
         let data = self.imp();
         let w = data.window.borrow();
         let window = w.as_ref().expect("Window is not initialized");
-        let did_go_back = window.main_deck.navigate(adw::NavigationDirection::Back);
-        did_go_back
+        window.navigation_view.pop()
     }
 
     fn setup_accels(&self) {
@@ -366,7 +360,7 @@ impl PdApplication {
                     .ok();
             }
             Action::ShowWidgetAnimated => {
-                window.main_deck.navigate(adw::NavigationDirection::Back);
+                window.navigation_view.pop();
                 let shows = window.content.get_shows();
                 let pop = shows.borrow().populated();
                 window.content.get_stack().set_visible_child_name("shows");
@@ -374,21 +368,15 @@ impl PdApplication {
                     .switch_visible(PopulatedState::Widget, gtk::StackTransitionType::SlideLeft);
             }
             Action::ShowShowsAnimated => {
-                window.main_deck.navigate(adw::NavigationDirection::Back);
+                window.navigation_view.pop();
                 let shows = window.content.get_shows();
                 let pop = shows.borrow().populated();
                 pop.borrow_mut()
                     .switch_visible(PopulatedState::View, gtk::StackTransitionType::SlideRight);
             }
             Action::GoToEpisodeDescription(show, ep) => {
-                window.clear_deck();
                 let description_widget = EpisodeDescription::new(ep, show, window.sender.clone());
-                window.main_deck.append(&description_widget);
-                window
-                    .main_deck
-                    .page(&description_widget)
-                    .set_name(Some("description"));
-                window.main_deck.navigate(adw::NavigationDirection::Forward);
+                window.navigation_view.push(&description_widget);
             }
             Action::GoToShow(pd) => {
                 self.do_action(Action::HeaderBarShowTile(pd.title().into()));

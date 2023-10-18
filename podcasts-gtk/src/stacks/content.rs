@@ -64,7 +64,6 @@ impl Content {
         overlay.add_overlay(&progress_bar);
 
         // container will hold the header bar and the content
-        container.set_widget_name("content");
         container.append(&overlay);
         let home_page = stack.add_titled(&home.borrow().get_stack(), Some("home"), &i18n("New"));
         let shows_page =

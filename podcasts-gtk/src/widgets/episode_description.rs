@@ -22,7 +22,6 @@ use gtk::CompositeTemplate;
 
 use glib::subclass::InitializingObject;
 use glib::Sender;
-use gtk::prelude::*;
 use podcasts_data::{Episode, Show};
 
 use crate::app::Action;
@@ -37,8 +36,6 @@ use std::sync::Arc;
 #[derive(Debug, CompositeTemplate, Default)]
 #[template(resource = "/org/gnome/Podcasts/gtk/episode_description.ui")]
 pub struct EpisodeDescriptionPriv {
-    #[template_child]
-    back_button: TemplateChild<gtk::Button>,
     #[template_child]
     menu_button: TemplateChild<gtk::MenuButton>,
     #[template_child]
@@ -128,7 +125,7 @@ impl EpisodeDescriptionPriv {
 impl ObjectSubclass for EpisodeDescriptionPriv {
     const NAME: &'static str = "PdEpisodeDescription";
     type Type = EpisodeDescription;
-    type ParentType = gtk::Box;
+    type ParentType = adw::NavigationPage;
 
     fn class_init(klass: &mut Self::Class) {
         klass.bind_template();
@@ -141,11 +138,11 @@ impl ObjectSubclass for EpisodeDescriptionPriv {
 
 impl WidgetImpl for EpisodeDescriptionPriv {}
 impl ObjectImpl for EpisodeDescriptionPriv {}
-impl BoxImpl for EpisodeDescriptionPriv {}
+impl NavigationPageImpl for EpisodeDescriptionPriv {}
 
 glib::wrapper! {
     pub struct EpisodeDescription(ObjectSubclass<EpisodeDescriptionPriv>)
-        @extends gtk::Box, gtk::Widget,
+        @extends adw::NavigationPage, gtk::Widget,
         @implements gtk::Accessible, gtk::Buildable, gtk::ConstraintTarget;
 }
 
