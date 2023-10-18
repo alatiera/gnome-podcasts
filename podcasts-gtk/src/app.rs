@@ -259,16 +259,6 @@ impl PdApplication {
             }
         }));
         app.add_action(&go_back);
-
-        // universal open menu
-        let open_menu = gio::SimpleAction::new("open-menu", None);
-        open_menu.connect_activate(clone!(@weak self as app, @weak data => move |_, _| {
-            let window = data.window.borrow();
-            let window = window.as_ref().unwrap();
-
-            window.headerbar.open_active_menu();
-        }));
-        app.add_action(&open_menu);
     }
 
     /// We check if the User pressed the Undo button, which would add
@@ -332,8 +322,6 @@ impl PdApplication {
 
     fn setup_accels(&self) {
         self.set_accels_for_action("app.quit", &["<primary>q"]);
-        // Bind the hamburger menu button to `F10`
-        self.set_accels_for_action("app.open-menu", &["F10"]);
         self.set_accels_for_action("win.refresh", &["<primary>r"]);
         self.set_accels_for_action("app.go-back", &["Escape"]);
     }

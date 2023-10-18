@@ -265,19 +265,7 @@ impl Header {
         self.dots.set_visible(false);
     }
 
-    pub(crate) fn open_menu(&self) {
-        self.hamburger.popup();
-    }
-
     pub(crate) fn set_secondary_menu(&self, menu: &gio::MenuModel) {
         self.dots.set_menu_model(Some(menu))
-    }
-
-    pub(crate) fn open_active_menu(&self) {
-        if self.dots.is_visible() {
-            self.dots.popup()
-        } else {
-            self.open_menu()
-        }
     }
 }

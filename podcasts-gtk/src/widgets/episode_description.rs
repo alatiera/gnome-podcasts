@@ -152,8 +152,4 @@ impl EpisodeDescription {
         widget.imp().init(sender, ep, show);
         widget
     }
-
-    pub(crate) fn open_menu(&self) {
-        self.imp().menu_button.activate();
-    }
 }

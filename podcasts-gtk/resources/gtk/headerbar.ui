@@ -136,6 +136,7 @@ Tobias Bernard
         <property name="valign">center</property>
         <property name="icon_name">view-more-symbolic</property>
         <property name="tooltip-text" translatable="yes">Podcast Menu</property>
+        <property name="primary">True</property>
       </object>
     </child>
   </object>

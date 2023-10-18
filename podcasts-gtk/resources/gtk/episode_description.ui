@@ -37,7 +37,7 @@ Tobias Bernard
           <object class="AdwHeaderBar" id="header">
             <child type="end">
               <object class="GtkMenuButton" id="menu_button">
-                <property name="receives-default">True</property>
+                <property name="primary">True</property>
                 <property name="icon-name">view-more-symbolic</property>
                 <property name="tooltip-text" translatable="yes">Episode Menu</property>
               </object>

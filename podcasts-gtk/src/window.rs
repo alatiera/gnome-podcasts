@@ -208,15 +208,6 @@ impl MainWindow {
                     about_dialog(&win.upcast());
             }),
         );
-
-        // Create the menu actions
-        make_action(
-            &self.window,
-            "menu",
-            clone!(@weak self.headerbar as headerbar => move |_, _| {
-                    headerbar.open_menu();
-            }),
-        );
     }
 }
 
