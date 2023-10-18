@@ -16,16 +16,12 @@
 }
 
 progressbar.playback-progress trough {
-    border-radius: 0;
+    border-radius: 3px;
 }
 progressbar.playback-progress trough progress {
-    border-radius: 0;
+    border-radius: 3px;
     border-right: none;
     border-left: none;
-}
-
-actionbar.player-small revealer box {
-    border-top: none;
 }
 
 popover modelbutton > box > label {

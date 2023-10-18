@@ -345,14 +345,14 @@ impl PlayerDialog {
 #[derive(Debug, Clone)]
 pub(crate) struct PlayerWidget {
     pub(crate) container: gtk::Box,
-    revealer: gtk::Revealer,
     gesture_click: gtk::GestureClick,
     player: gst_play::Play,
     player_signals: gst_play::PlaySignalAdapter,
     controls: PlayerControls,
     dialog: PlayerDialog,
     full: gtk::Box,
-    squeezer: adw::Squeezer,
+    small: gtk::Box,
+    stack: gtk::Stack,
     timer: PlayerTimes,
     info: PlayerInfo,
     rate: PlayerRate,
@@ -443,10 +443,10 @@ impl Default for PlayerWidget {
         let dialog = PlayerDialog::new(dialog_rate);
 
         let container = builder.object("container").unwrap();
-        let revealer: gtk::Revealer = builder.object("revealer").unwrap();
         let gesture_click = builder.object("gesture_click").unwrap();
         let full: gtk::Box = builder.object("full").unwrap();
-        let squeezer = builder.object("squeezer").unwrap();
+        let small: gtk::Box = builder.object("small").unwrap();
+        let stack = builder.object("stack").unwrap();
 
         let rate = PlayerRate::new();
         full.append(&rate.btn);
@@ -455,12 +455,12 @@ impl Default for PlayerWidget {
             player,
             player_signals,
             container,
-            revealer,
             gesture_click,
             controls,
             dialog,
             full,
-            squeezer,
+            small,
+            stack,
             timer,
             info,
             rate,
@@ -477,7 +477,7 @@ impl PlayerWidget {
     }
 
     fn reveal(&self) {
-        self.revealer.set_reveal_child(true);
+        self.container.set_visible(true);
     }
 
     pub(crate) fn initialize_episode(&mut self, rowid: i32, second: Option<i32>) -> Result<()> {
@@ -749,19 +749,6 @@ impl PlayerWrapper {
     fn connect_dialog(&self) {
         let this = self.deref();
         let widget = self.borrow();
-        widget
-            .squeezer
-            .connect_visible_child_notify(clone!(@weak this => move |_| {
-                let widget = this.borrow();
-                if let Some(child) = widget.squeezer.visible_child() {
-                    let full = child == this.borrow().full;
-                    if full {
-                        this.borrow().revealer.remove_css_class("player-small");
-                    } else {
-                        this.borrow().revealer.add_css_class("player-small");
-                    }
-                }
-            }));
 
         widget
             .timer
@@ -1029,5 +1016,14 @@ impl PlayerWrapper {
             .connect_raise(clone!(@strong sender => move || {
                 send!(sender, Action::RaiseWindow);
             }));
+    }
+
+    pub fn set_small(&self, small: bool) {
+        let this = self.0.borrow();
+        if small {
+            this.stack.set_visible_child(&this.small);
+        } else {
+            this.stack.set_visible_child(&this.full);
+        }
     }
 }

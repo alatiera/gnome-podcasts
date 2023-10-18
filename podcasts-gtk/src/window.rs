@@ -112,7 +112,21 @@ impl MainWindow {
         let condition = adw::BreakpointCondition::parse("max-width: 550sp").unwrap();
         let breakpoint = adw::Breakpoint::new(condition);
         breakpoint.add_setter(&header.bottom_switcher, "reveal", &true.to_value());
-        breakpoint.add_setter(&header.container, "title-widget", &gtk::Widget::NONE.to_value());
+        breakpoint.add_setter(
+            &header.container,
+            "title-widget",
+            &gtk::Widget::NONE.to_value(),
+        );
+        window.add_breakpoint(breakpoint);
+
+        let condition = adw::BreakpointCondition::parse("max-width: 800sp").unwrap();
+        let breakpoint = adw::Breakpoint::new(condition);
+        breakpoint.connect_apply(clone!(@strong player => move |_| {
+            player.set_small(true);
+        }));
+        breakpoint.connect_unapply(clone!(@strong player => move |_| {
+            player.set_small(false);
+        }));
         window.add_breakpoint(breakpoint);
 
         // Retrieve the previous window position and size.
