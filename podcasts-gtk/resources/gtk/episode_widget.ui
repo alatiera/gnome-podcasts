@@ -47,7 +47,6 @@ Tobias Bernard
         <property name="spacing">12</property>
         <child>
           <object class="GtkBox" id="info_container">
-            <property name="width_request">200</property>
             <property name="halign">start</property>
             <property name="valign">center</property>
             <property name="orientation">vertical</property>

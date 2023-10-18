@@ -107,6 +107,15 @@ impl MainWindow {
         toast_overlay.set_child(Some(&wrap));
         window.set_content(Some(&toast_overlay));
 
+        // Set window title
+        window.set_width_request(360);
+        window.set_height_request(294);
+        let condition = adw::BreakpointCondition::parse("max-width: 550sp").unwrap();
+        let breakpoint = adw::Breakpoint::new(condition);
+        breakpoint.add_setter(&header.bottom_switcher, "reveal", &true.to_value());
+        breakpoint.add_setter(&header.container, "title-widget", &gtk::Widget::NONE.to_value());
+        window.add_breakpoint(breakpoint);
+
         // Retrieve the previous window position and size.
         WindowGeometry::from_settings(&settings).apply(&window);
 

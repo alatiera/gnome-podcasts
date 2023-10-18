@@ -333,8 +333,6 @@ impl PdApplication {
         let w = data.window.borrow();
         let window = w.as_ref().expect("Window is not initialized");
         let did_go_back = window.main_deck.navigate(adw::NavigationDirection::Back);
-        window.headerbar.reveal_bottom_switcher(true);
-        window.headerbar.update_bottom_switcher();
         did_go_back
     }
 
@@ -391,15 +389,20 @@ impl PdApplication {
                     .page(&description_widget)
                     .set_name(Some("description"));
                 window.main_deck.navigate(adw::NavigationDirection::Forward);
-                window.headerbar.reveal_bottom_switcher(false);
             }
             Action::GoToShow(pd) => {
                 self.do_action(Action::HeaderBarShowTile(pd.title().into()));
                 self.do_action(Action::ReplaceWidget(pd));
                 self.do_action(Action::ShowWidgetAnimated);
             }
-            Action::HeaderBarShowTile(title) => window.headerbar.switch_to_back(&title),
-            Action::HeaderBarNormal => window.headerbar.switch_to_normal(),
+            Action::HeaderBarShowTile(title) => {
+                window.headerbar.switch_to_back();
+                window.set_title(Some(&title));
+            }
+            Action::HeaderBarNormal => {
+                window.headerbar.switch_to_normal();
+                window.set_title(Some(&i18n("Podcasts")));
+            }
             Action::CopiedUrlNotification => {
                 let text = i18n("Copied URL to clipboard!");
                 let toast = adw::Toast::new(&text);

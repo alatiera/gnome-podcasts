@@ -97,40 +97,11 @@ Tobias Bernard
     </child>
   </object>
   <object class="AdwHeaderBar" id="headerbar">
-    <property name="centering-policy">strict</property>
-    <child type="title">
-      <object class="GtkStack" id="title_stack">
-        <property name="transition_type">crossfade</property>
-        <child>
-          <object class="AdwSqueezer" id="switch_squeezer">
-            <property name="transition_type">crossfade</property>
-            <child>
-              <object class="AdwViewSwitcher" id="switch">
-                <property name="halign">center</property>
-                <property name="policy">wide</property>
-              </object>
-            </child>
-            <child>
-              <object class="GtkLabel">
-                <property name="label" translatable="yes">Podcasts</property>
-                <style>
-                  <class name="title"/>
-                </style>
-              </object>
-            </child>
-          </object>
-        </child>
-        <child>
-          <object class="GtkLabel" id="show_title">
-            <property name="label" translatable="yes">Show Title</property>
-            <property name="ellipsize">end</property>
-            <style>
-              <class name="title" />
-            </style>
-          </object>
-        </child>
+    <property name="title-widget">
+      <object class="AdwViewSwitcher" id="switch">
+        <property name="policy">wide</property>
       </object>
-    </child>
+    </property>
     <child>
       <object class="GtkMenuButton" id="add_toggle">
         <property name="receives_default">True</property>

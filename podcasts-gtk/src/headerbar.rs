@@ -41,10 +41,7 @@ pub(crate) struct Header {
     pub(crate) container: adw::HeaderBar,
     pub(crate) switch: adw::ViewSwitcher,
     pub(crate) bottom_switcher: adw::ViewSwitcherBar,
-    switch_squeezer: adw::Squeezer,
     back: gtk::Button,
-    title_stack: gtk::Stack,
-    show_title: gtk::Label,
     hamburger: gtk::MenuButton,
     add: AddPopover,
     dots: gtk::MenuButton,
@@ -179,9 +176,6 @@ impl Default for Header {
         let header = builder.object("headerbar").unwrap();
         let switch: adw::ViewSwitcher = builder.object("switch").unwrap();
         let back = builder.object("back").unwrap();
-        let title_stack = builder.object("title_stack").unwrap();
-        let switch_squeezer: adw::Squeezer = builder.object("switch_squeezer").unwrap();
-        let show_title = builder.object("show_title").unwrap();
 
         // The hamburger menu
         let hamburger: gtk::MenuButton = builder.object("hamburger").unwrap();
@@ -210,10 +204,7 @@ impl Default for Header {
             container: header,
             switch,
             back,
-            title_stack,
-            switch_squeezer,
             bottom_switcher: switcher,
-            show_title,
             hamburger,
             add,
             dots,
@@ -255,23 +246,14 @@ impl Header {
 
         s.back
             .connect_clicked(clone!(@weak s, @strong sender => move |_| {
-                s.switch_to_normal();
+                send!(sender, Action::HeaderBarNormal);
                 send!(sender, Action::ShowShowsAnimated);
             }));
-
-        s.switch_squeezer
-            .connect_visible_child_notify(clone!(@weak s => move |_| {
-                s.update_bottom_switcher();
-            }));
-        s.update_bottom_switcher();
     }
 
-    pub(crate) fn switch_to_back(&self, title: &str) {
+    pub(crate) fn switch_to_back(&self) {
         self.add.toggle.set_visible(false);
         self.back.set_visible(true);
-        self.set_show_title(title);
-        self.title_stack.set_visible_child(&self.show_title);
-        self.bottom_switcher.set_reveal(false);
         self.hamburger.set_visible(false);
         self.dots.set_visible(true);
     }
@@ -279,14 +261,8 @@ impl Header {
     pub(crate) fn switch_to_normal(&self) {
         self.add.toggle.set_visible(true);
         self.back.set_visible(false);
-        self.title_stack.set_visible_child(&self.switch_squeezer);
         self.hamburger.set_visible(true);
-        self.update_bottom_switcher();
         self.dots.set_visible(false);
-    }
-
-    pub(crate) fn set_show_title(&self, title: &str) {
-        self.show_title.set_text(title)
     }
 
     pub(crate) fn open_menu(&self) {
@@ -302,19 +278,6 @@ impl Header {
             self.dots.popup()
         } else {
             self.open_menu()
-        }
-    }
-
-    pub(crate) fn reveal_bottom_switcher(&self, value: bool) {
-        self.bottom_switcher.set_reveal(value);
-    }
-
-    pub(crate) fn update_bottom_switcher(&self) {
-        if let Some(child) = self.switch_squeezer.visible_child() {
-            // only show the bottom switcher if we are on the current page
-            // and have no title menu customization (e.g.: ShowWidget)
-            let reveal = (child != self.switch) && self.hamburger.is_visible();
-            self.bottom_switcher.set_reveal(reveal);
         }
     }
 }
