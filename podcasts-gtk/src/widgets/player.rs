@@ -280,7 +280,7 @@ struct PlayerControls {
 
 #[derive(Debug, Clone)]
 struct PlayerDialog {
-    dialog: gtk::Window,
+    dialog: adw::Window,
     cover: gtk::Image,
     play_pause: gtk::Stack,
     play: gtk::Button,
