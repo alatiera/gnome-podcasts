@@ -38,10 +38,6 @@ Tobias Bernard
         <child>
           <object class="GtkBox" id="full">
             <property name="spacing">6</property>
-            <property name="margin_start">6</property>
-            <property name="margin_end">6</property>
-            <property name="margin_top">6</property>
-            <property name="margin_bottom">6</property>
             <child>
               <object class="GtkBox" id="buttons">
                 <property name="valign">center</property>
@@ -175,6 +171,7 @@ Tobias Bernard
         <child>
           <object class="GtkBox" id="small">
             <property name="orientation">vertical</property>
+            <property name="spacing">6</property>
             <child>
               <object class="GtkProgressBar" id="progress_bar">
                 <style>
@@ -185,10 +182,6 @@ Tobias Bernard
             <child>
               <object class="GtkBox">
                 <property name="spacing">6</property>
-                <property name="margin_start">6</property>
-                <property name="margin_end">6</property>
-                <property name="margin_top">6</property>
-                <property name="margin_bottom">6</property>
                 <child>
                   <object class="GtkImage" id="show_cover_small">
                     <property name="valign">center</property>
