@@ -138,7 +138,11 @@ impl ObjectSubclass for EpisodeDescriptionPriv {
 
 impl WidgetImpl for EpisodeDescriptionPriv {}
 impl ObjectImpl for EpisodeDescriptionPriv {}
-impl NavigationPageImpl for EpisodeDescriptionPriv {}
+impl NavigationPageImpl for EpisodeDescriptionPriv {
+    fn shown(&self) {
+        self.description.set_selectable(true);
+    }
+}
 
 glib::wrapper! {
     pub struct EpisodeDescription(ObjectSubclass<EpisodeDescriptionPriv>)

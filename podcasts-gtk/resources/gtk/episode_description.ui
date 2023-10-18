@@ -133,7 +133,6 @@ Tobias Bernard
                         <property name="label" translatable="yes">Episode Description</property>
                         <property name="wrap">True</property>
                         <property name="xalign">0</property>
-                        <property name="selectable">True</property>
                         <style>
                           <class name="episode_description_label"/>
                         </style>
