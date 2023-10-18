@@ -17,8 +17,8 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+use adw::prelude::*;
 use gtk::glib;
-use gtk::prelude::*;
 
 use anyhow::Result;
 use glib::Sender;
@@ -39,7 +39,7 @@ pub(crate) enum State {
 
 #[derive(Debug, Clone)]
 pub(crate) struct Content {
-    container: gtk::Box,
+    container: adw::Bin,
     progress_bar: gtk::ProgressBar,
     stack: adw::ViewStack,
     shows: Rc<RefCell<ShowStack>>,
@@ -48,7 +48,7 @@ pub(crate) struct Content {
 
 impl Content {
     pub(crate) fn new(sender: &Sender<Action>) -> Result<Rc<Content>> {
-        let container = gtk::Box::new(gtk::Orientation::Vertical, 0);
+        let container = adw::Bin::new();
         let stack = adw::ViewStack::new();
         let home = Rc::new(RefCell::new(HomeStack::new(sender.clone())?));
         let shows = Rc::new(RefCell::new(ShowStack::new(sender.clone())));
@@ -64,7 +64,7 @@ impl Content {
         overlay.add_overlay(&progress_bar);
 
         // container will hold the header bar and the content
-        container.append(&overlay);
+        container.set_child(Some(&overlay));
         let home_page = stack.add_titled(&home.borrow().get_stack(), Some("home"), &i18n("New"));
         let shows_page =
             stack.add_titled(&shows.borrow().get_stack(), Some("shows"), &i18n("Shows"));
@@ -131,7 +131,7 @@ impl Content {
     pub(crate) fn get_stack(&self) -> adw::ViewStack {
         self.stack.clone()
     }
-    pub(crate) fn get_container(&self) -> gtk::Box {
+    pub(crate) fn get_container(&self) -> adw::Bin {
         self.container.clone()
     }
 
