@@ -28,22 +28,6 @@ actionbar.player-small revealer box {
     border-top: none;
 }
 
-.player-actionbar {
-  background-color: @headerbar_bg_color;
-  color: @headerbar_fg_color;
-  box-shadow: inset 0 1px @headerbar_shade_color;
-}
-
-.player-actionbar:backdrop {
-  background-color: @headerbar_backdrop_color;
-  transition: 200ms ease-in-out;
-}
-
-.player-actionbar:backdrop > * {
-  filter: opacity(.5);
-  transition: 200ms ease-in-out;
-}
-
 popover modelbutton > box > label {
     font-feature-settings: "tnum";
 }

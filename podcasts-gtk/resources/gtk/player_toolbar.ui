@@ -268,10 +268,10 @@ Tobias Bernard
             </child>
           </object>
         </child>
-        <style>
-          <class name="player-actionbar"/>
-        </style>
       </object>
     </child>
+    <style>
+      <class name="toolbar"/>
+    </style>
   </object>
 </interface>
