@@ -198,14 +198,33 @@ where
     U: Fn() + 'static,
 {
     let mut data = data.into_iter();
-    glib::idle_add_local(move || {
-        data.next()
-            .map(|x| func(x))
-            .map(|_| glib::ControlFlow::Continue)
-            .unwrap_or_else(|| {
-                finish_callback();
-                glib::ControlFlow::Break
-            })
+    let mut count = 0;
+    let mut yield_before_finish = true;
+    glib::timeout_add_local(core::time::Duration::from_millis(100), move || {
+        loop {
+            if let Some(thing) = data.next() {
+                func(thing);
+                count += 1;
+            } else {
+                break;
+            }
+
+            if count >= 30 {
+                count = 0;
+                return glib::ControlFlow::Continue;
+            }
+
+            continue;
+        }
+
+        if yield_before_finish {
+            yield_before_finish = false;
+            return glib::ControlFlow::Continue;
+        }
+
+        finish_callback();
+
+        glib::ControlFlow::Break
     });
 }
 
