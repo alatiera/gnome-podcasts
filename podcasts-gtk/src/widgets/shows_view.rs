@@ -96,13 +96,15 @@ fn populate_show_callback(podcast: Show) -> gtk::Widget {
     button.set_child(Some(&image));
 
     let pd = podcast.clone();
-    glib::idle_add_local(move || {
-        let result = crate::utils::set_image_from_path(&image, pd.id(), 256);
-        if let Err(e) = result {
-            error!("Failed to load cover for {}: {e}", pd.title());
-        }
-        glib::ControlFlow::Break
-    });
+    glib::idle_add_local(
+        clone!(@weak image => @default-return glib::ControlFlow::Break, move || {
+            let result = crate::utils::set_image_from_path(&image, pd.id(), 256);
+            if let Err(e) = result {
+                error!("Failed to load cover for {}: {e}", pd.title());
+            }
+            glib::ControlFlow::Break
+        }),
+    );
 
     button.set_action_name(Some("app.go-to-show"));
     button.set_action_target_value(Some(&podcast.id().to_variant()));
