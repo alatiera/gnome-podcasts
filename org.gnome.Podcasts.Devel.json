@@ -17,7 +17,10 @@
         "--share=ipc",
         "--socket=fallback-x11",
         "--socket=wayland",
-        "--socket=pulseaudio"
+        "--socket=pulseaudio",
+        "--env=RUST_BACKTRACE=1",
+        "--env=RUST_LOG=podcasts_gtk=debug,podcasts_data=debug,glib=debug",
+        "--env=G_ENABLE_DIAGNOSTIC=1"
     ],
     "build-options": {
         "append-path": "/usr/lib/sdk/rust-stable/bin:/usr/lib/sdk/llvm16/bin",
@@ -26,11 +29,6 @@
         ],
         "cflags": "-DGDK_DISABLE_DEPRECATED -DGTK_DISABLE_DEPRECATED",
         "env": {
-            "RUSTFLAGS": "",
-            "RUST_BACKTRACE": "1",
-            "RUST_LOG": "podcasts_gtk=debug,podcasts_data=debug,glib=debug",
-            "G_MESSAGES_DEBUG": "none",
-            "G_ENABLE_DIAGNOSTIC": "1",
             "CARGO_TARGET_X86_64_UNKNOWN_LINUX_GNU_LINKER": "clang",
             "CARGO_TARGET_AARCH64_UNKNOWN_LINUX_GNU_LINKER": "clang",
             "CARGO_TARGET_X86_64_UNKNOWN_LINUX_GNU_RUSTFLAGS": "-C link-arg=-fuse-ld=/usr/lib/sdk/rust-stable/bin/mold",
