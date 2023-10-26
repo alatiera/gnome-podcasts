@@ -49,6 +49,7 @@ use podcasts_data::Source;
 use std::collections::HashSet;
 use std::sync::{Arc, Mutex, RwLock};
 use std::time::Duration;
+use std::time::Instant;
 
 use crate::app::Action;
 
@@ -201,15 +202,21 @@ where
     let mut count = 0;
     let mut yield_before_finish = true;
     glib::timeout_add_local(core::time::Duration::from_millis(100), move || {
+        let start = Instant::now();
         loop {
             if let Some(thing) = data.next() {
+                let w_start = Instant::now();
                 func(thing);
+                let w_duration = w_start.elapsed();
+                trace!("Inserted single widget in: {:?}", w_duration);
                 count += 1;
             } else {
                 break;
             }
 
             if count >= 30 {
+                let duration = start.elapsed();
+                debug!("Inserted batch of {} widgets in: {:?}", count, duration);
                 count = 0;
                 return glib::ControlFlow::Continue;
             }
@@ -218,6 +225,8 @@ where
         }
 
         if yield_before_finish {
+            let duration = start.elapsed();
+            debug!("Inserted {} widgets in: {:?}", count, duration);
             yield_before_finish = false;
             return glib::ControlFlow::Continue;
         }
