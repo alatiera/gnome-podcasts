@@ -28,7 +28,7 @@ use podcasts_data::dbqueries;
 use podcasts_data::Show;
 
 use crate::i18n::i18n;
-use crate::utils::{get_ignored_shows, lazy_load_flowbox};
+use crate::utils::{get_ignored_shows, lazy_load_full};
 use crate::widgets::BaseView;
 
 #[derive(Debug, Default)]
@@ -72,7 +72,6 @@ impl ShowsViewPriv {
     fn populate_flowbox(&self, vadj: Option<Adjustment>) -> Result<()> {
         let ignore = get_ignored_shows()?;
         let podcasts = dbqueries::get_podcasts_filter(&ignore)?;
-        let flowbox_weak = self.flowbox.downgrade();
 
         let callback = clone!(@weak self.view as view => move || {
             if vadj.is_some() {
@@ -80,12 +79,25 @@ impl ShowsViewPriv {
             }
         });
 
-        lazy_load_flowbox(podcasts, flowbox_weak, populate_show_callback, callback);
+        let container = self.flowbox.downgrade();
+        let insert = move |widget: gtk::Widget| {
+            let container = match container.upgrade() {
+                Some(c) => c,
+                None => return,
+            };
+
+            container.append(&widget);
+            widget.set_visible(true);
+        };
+
+        lazy_load_full(podcasts, create_show_child, insert, callback);
+
         Ok(())
     }
 }
 
-fn populate_show_callback(podcast: Show) -> gtk::Widget {
+// TODO: Make this a widget
+fn create_show_child(podcast: Show) -> gtk::Widget {
     let widget = gtk::FlowBoxChild::new();
     let button = gtk::Button::new();
     let image = gtk::Image::from_icon_name("image-x-generic-symbolic");

@@ -29,6 +29,8 @@ use gtk::{glib, prelude::*, Adjustment, CompositeTemplate};
 use podcasts_data::dbqueries;
 use podcasts_data::EpisodeWidgetModel;
 
+use std::cell::Cell;
+
 use crate::app::Action;
 use crate::utils::{self, lazy_load_full};
 use crate::widgets::{BaseView, EpisodeWidget};
@@ -105,9 +107,11 @@ impl HomeView {
         let episodes = dbqueries::get_episodes_widgets_filter_limit(&ignore, 100)?;
         let now_utc = Utc::now();
 
-        let func = clone!(@weak home => move |ep: EpisodeWidgetModel| {
-            let epoch = ep.epoch();
-            let widget = HomeEpisode::new(&sender, &ep);
+        let sender_2 = sender.clone();
+        let constructor = move |ep: EpisodeWidgetModel| HomeEpisode::new(&sender_2, &ep);
+
+        let insert = clone!(@weak home => move |widget: HomeEpisode| {
+            let epoch = widget.epoch();
 
             match split(&now_utc, i64::from(epoch)) {
                 Today => add_to_box(&widget, &home.imp().today_list, &home.imp().today_box),
@@ -124,7 +128,7 @@ impl HomeView {
             };
         });
 
-        lazy_load_full(episodes, func, callback);
+        lazy_load_full(episodes, constructor, insert, callback);
         Ok(home)
     }
 
@@ -164,11 +168,13 @@ pub struct HomeEpisodePriv {
     cover: TemplateChild<gtk::Image>,
     #[template_child]
     episode: TemplateChild<EpisodeWidget>,
+    epoch: Cell<i32>,
 }
 
 impl HomeEpisodePriv {
     fn init(&self, sender: &Sender<Action>, episode: &EpisodeWidgetModel) {
         let pid = episode.show_id();
+        self.epoch.set(episode.epoch());
         self.set_cover(pid);
         self.episode.init(sender, episode);
         // Assure the image is read out along with the Episode title
@@ -214,6 +220,10 @@ impl HomeEpisode {
         widget.set_action_target_value(Some(&episode.rowid().to_variant()));
         widget.imp().init(sender, episode);
         widget
+    }
+
+    fn epoch(&self) -> i32 {
+        self.imp().epoch.get()
     }
 }
 

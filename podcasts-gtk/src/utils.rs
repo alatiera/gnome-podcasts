@@ -30,6 +30,7 @@ use gtk::Widget;
 use gtk::{gio, glib};
 
 use anyhow::{anyhow, Result};
+use async_oneshot::oneshot;
 use chrono::prelude::*;
 use once_cell::sync::Lazy;
 use regex::Regex;
@@ -133,54 +134,27 @@ where
 /// let list = gtk::ListBox::new();
 /// lazy_load(widgets, list, |w| w, || {});
 /// ```
-pub(crate) fn lazy_load<T, F, W, U>(
-    data: T,
+pub(crate) fn lazy_load<C, W, T>(
+    data: Vec<T>,
     container: WeakRef<gtk::ListBox>,
-    mut constructor: F,
-    callback: U,
+    constructor: C,
+    finish_callback: impl Fn() + 'static,
 ) where
-    T: IntoIterator + 'static,
-    T::Item: 'static,
-    F: FnMut(T::Item) -> W + 'static,
-    W: IsA<Widget> + WidgetExt,
-    U: Fn() + 'static,
+    T: 'static,
+    W: IsA<Widget> + Sized,
+    C: Fn(T) -> W + 'static,
 {
-    let func = move |x| {
+    let insert = move |widget: W| {
         let container = match container.upgrade() {
             Some(c) => c,
             None => return,
         };
 
-        let widget = constructor(x);
         container.append(&widget);
         widget.set_visible(true);
     };
-    lazy_load_full(data, func, callback);
-}
 
-pub(crate) fn lazy_load_flowbox<T, F, W, U>(
-    data: T,
-    container: WeakRef<gtk::FlowBox>,
-    mut constructor: F,
-    callback: U,
-) where
-    T: IntoIterator + 'static,
-    T::Item: 'static,
-    F: FnMut(T::Item) -> W + 'static,
-    W: IsA<Widget> + WidgetExt,
-    U: Fn() + 'static,
-{
-    let func = move |x| {
-        let container = match container.upgrade() {
-            Some(c) => c,
-            None => return,
-        };
-
-        let widget = constructor(x);
-        container.insert(&widget, -1);
-        widget.set_visible(true);
-    };
-    lazy_load_full(data, func, callback);
+    lazy_load_full(data, constructor, insert, finish_callback);
 }
 
 /// Iterate over `data` and execute `func` using a `gtk::idle_add()`,
@@ -190,42 +164,72 @@ pub(crate) fn lazy_load_flowbox<T, F, W, U>(
 /// If you just want to lazy add `widgets` to a `container` check if
 /// `lazy_load` fits your needs first.
 #[allow(clippy::redundant_closure)]
-pub(crate) fn lazy_load_full<T, F, U>(data: T, mut func: F, finish_callback: U)
-where
-    T: IntoIterator + 'static,
-    T::Item: 'static,
-    F: FnMut(T::Item) + 'static,
-    U: Fn() + 'static,
+pub(crate) fn lazy_load_full<C, W, T>(
+    data: Vec<T>,
+    constructor: C,
+    insert: impl Fn(W) + 'static,
+    finish_callback: impl Fn() + 'static,
+) where
+    T: 'static,
+    W: IsA<Widget> + Sized,
+    C: Fn(T) -> W + 'static,
+{
+    let (mut sender, receiver) = oneshot();
+    let main_context = glib::MainContext::default();
+    let mut widgets = Vec::new();
+    let mut data = data.into_iter();
+    glib::idle_add_local(move || {
+        while let Some(item) = data.next() {
+            let w_start = Instant::now();
+            let widget = constructor(item);
+            let w_duration = w_start.elapsed();
+            trace!("Created single widget in: {:?}", w_duration);
+
+            widgets.push(widget);
+            return glib::ControlFlow::Continue;
+        }
+
+        let _ = sender.send(widgets.clone());
+        return glib::ControlFlow::Break;
+    });
+
+    main_context.spawn_local(async move {
+        let data = receiver.await.unwrap();
+        insert_widgets_idle(data, insert, finish_callback);
+    });
+}
+
+fn insert_widgets_idle<W>(
+    data: Vec<W>,
+    insert: impl Fn(W) + 'static,
+    finish_callback: impl Fn() + 'static,
+) where
+    W: IsA<Widget> + Sized,
 {
     let mut data = data.into_iter();
     let mut count = 0;
     let mut yield_before_finish = true;
     glib::idle_add_local(move || {
         let start = Instant::now();
-        loop {
-            if let Some(thing) = data.next() {
-                let w_start = Instant::now();
-                func(thing);
-                let w_duration = w_start.elapsed();
-                trace!("Inserted single widget in: {:?}", w_duration);
-                count += 1;
-            } else {
-                break;
-            }
+
+        while let Some(thing) = data.next() {
+            let w_start = Instant::now();
+            insert(thing);
+            let w_duration = w_start.elapsed();
+            trace!("Inserted single widget in: {:?}", w_duration);
+            count += 1;
 
             let duration = start.elapsed();
             if duration > Duration::from_millis(1) {
-                debug!("Inserted batch of {} widgets in: {:?}", count, duration);
+                trace!("Inserted batch of {} widgets in: {:?}", count, duration);
                 count = 0;
                 return glib::ControlFlow::Continue;
             }
-
-            continue;
         }
 
         if yield_before_finish {
             let duration = start.elapsed();
-            debug!("Inserted {} widgets in: {:?}", count, duration);
+            trace!("Inserted {} widgets in: {:?}", count, duration);
             yield_before_finish = false;
             return glib::ControlFlow::Continue;
         }
