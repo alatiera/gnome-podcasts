@@ -48,8 +48,7 @@ use podcasts_data::Source;
 
 use std::collections::HashSet;
 use std::sync::{Arc, Mutex, RwLock};
-use std::time::Duration;
-use std::time::Instant;
+use std::time::{Duration, Instant};
 
 use crate::app::Action;
 
@@ -214,8 +213,8 @@ where
                 break;
             }
 
-            if count >= 30 {
-                let duration = start.elapsed();
+            let duration = start.elapsed();
+            if duration > Duration::from_millis(1) {
                 debug!("Inserted batch of {} widgets in: {:?}", count, duration);
                 count = 0;
                 return glib::ControlFlow::Continue;
