@@ -201,7 +201,7 @@ where
     let mut data = data.into_iter();
     let mut count = 0;
     let mut yield_before_finish = true;
-    glib::timeout_add_local(core::time::Duration::from_millis(100), move || {
+    glib::idle_add_local(move || {
         let start = Instant::now();
         loop {
             if let Some(thing) = data.next() {
