@@ -28,7 +28,7 @@ use podcasts_data::dbqueries;
 use podcasts_data::Show;
 
 use crate::i18n::i18n;
-use crate::utils::{get_ignored_shows, lazy_load_full};
+use crate::utils::{get_ignored_shows, lazy_load};
 use crate::widgets::BaseView;
 
 #[derive(Debug, Default)]
@@ -73,18 +73,8 @@ impl ShowsViewPriv {
         let ignore = get_ignored_shows()?;
         let podcasts = dbqueries::get_podcasts_filter(&ignore)?;
 
-        let container = self.flowbox.downgrade();
-        let insert = move |widget: gtk::Widget| {
-            let container = match container.upgrade() {
-                Some(c) => c,
-                None => return,
-            };
-
-            container.append(&widget);
-            widget.set_visible(true);
-        };
-
-        lazy_load_full(podcasts, create_show_child, insert);
+        let flowbox = self.flowbox.clone().upcast_ref::<gtk::Widget>().downgrade();
+        lazy_load(podcasts, flowbox, create_show_child);
 
         Ok(())
     }

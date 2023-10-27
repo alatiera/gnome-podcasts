@@ -110,10 +110,7 @@ impl Default for ShowWidget {
 }
 
 impl ShowWidget {
-    pub(crate) fn new(
-        pd: Arc<Show>,
-        sender: Sender<Action>,
-    ) -> ShowWidget {
+    pub(crate) fn new(pd: Arc<Show>, sender: Sender<Action>) -> ShowWidget {
         let widget = ShowWidget::default();
         widget.init(&pd);
 
@@ -148,13 +145,8 @@ impl ShowWidget {
 }
 
 /// Populate the listbox with the shows episodes.
-fn populate_listbox(
-    show: &ShowWidget,
-    pd: Arc<Show>,
-    sender: Sender<Action>,
-) -> Result<()> {
+fn populate_listbox(show: &ShowWidget, pd: Arc<Show>, sender: Sender<Action>) -> Result<()> {
     let count = dbqueries::get_pd_episodes_count(&pd)?;
-    let show_ = show.imp();
 
     let (sender_, mut receiver) = tokio::sync::oneshot::channel();
     gio::spawn_blocking(clone!(@strong pd => move || {
@@ -167,11 +159,9 @@ fn populate_listbox(
 
     if count == 0 {
         let empty = EmptyShow::default();
-        show_.episodes.append(&empty);
+        show.imp().episodes.append(&empty);
         return Ok(());
     }
-
-    let list_weak = show_.episodes.downgrade();
 
     glib::idle_add_local(
         glib::clone!(@weak show => @default-return glib::ControlFlow::Break, move || {
@@ -190,10 +180,11 @@ fn populate_listbox(
                 row.set_child(Some(&episode_widget));
                 row.set_action_name(Some("app.go-to-episode"));
                 row.set_action_target_value(Some(&id.to_variant()));
-                row
+                row.upcast()
             });
 
-            lazy_load(episodes, list_weak.clone(), constructor);
+            let listbox = show.imp().episodes.upcast_ref::<gtk::Widget>().downgrade();
+            lazy_load(episodes, listbox, constructor);
 
             glib::ControlFlow::Break
         }),

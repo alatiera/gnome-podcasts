@@ -157,8 +157,12 @@ impl HomeView {
         box_.set_visible(true);
 
         let sender = sender.clone();
-        let constructor = move |ep: EpisodeWidgetModel| HomeEpisode::new(&sender, &ep);
-        lazy_load(model, list.downgrade(), constructor.clone());
+        let constructor = move |ep: EpisodeWidgetModel| HomeEpisode::new(&sender, &ep).upcast();
+        lazy_load(
+            model,
+            list.upcast_ref::<gtk::Widget>().downgrade(),
+            constructor.clone(),
+        );
     }
 }
 

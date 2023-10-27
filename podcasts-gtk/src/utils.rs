@@ -134,39 +134,9 @@ where
 /// let list = gtk::ListBox::new();
 /// lazy_load(widgets, list, |w| w, || {});
 /// ```
-pub(crate) fn lazy_load<C, W, T>(
-    data: Vec<T>,
-    container: WeakRef<gtk::ListBox>,
-    constructor: C,
-) where
-    T: 'static,
-    W: IsA<Widget> + Sized,
-    C: Fn(T) -> W + 'static,
-{
-    let insert = move |widget: W| {
-        let container = match container.upgrade() {
-            Some(c) => c,
-            None => return,
-        };
-
-        container.append(&widget);
-        widget.set_visible(true);
-    };
-
-    lazy_load_full(data, constructor, insert);
-}
-
-/// Iterate over `data` and execute `func` using a `gtk::idle_add()`,
-///
-/// This is a more flexible version of `lazy_load` with less constrains.
-/// If you just want to lazy add `widgets` to a `container` check if
-/// `lazy_load` fits your needs first.
 #[allow(clippy::redundant_closure)]
-pub(crate) fn lazy_load_full<C, W, T>(
-    data: Vec<T>,
-    constructor: C,
-    insert: impl Fn(W) + 'static,
-) where
+pub(crate) fn lazy_load<C, W, T>(data: Vec<T>, container: WeakRef<W>, constructor: C)
+where
     T: 'static,
     W: IsA<Widget> + Sized,
     C: Fn(T) -> W + 'static,
@@ -190,26 +160,26 @@ pub(crate) fn lazy_load_full<C, W, T>(
         return glib::ControlFlow::Break;
     });
 
+    let container = container.clone();
     main_context.spawn_local(async move {
         let data = receiver.await.unwrap();
-        insert_widgets_idle(data, insert);
+        insert_widgets_idle(data, container);
     });
 }
 
-fn insert_widgets_idle<W>(
-    data: Vec<W>,
-    insert: impl Fn(W) + 'static,
-) where
+fn insert_widgets_idle<W>(data: Vec<W>, container: WeakRef<W>)
+where
     W: IsA<Widget> + Sized,
 {
     let mut data = data.into_iter();
     let mut count = 0;
+    let container = container.clone();
     glib::idle_add_local(move || {
         let start = Instant::now();
 
-        while let Some(thing) = data.next() {
+        while let Some(widget) = data.next() {
             let w_start = Instant::now();
-            insert(thing);
+            insert_widget_dynamic(widget, &container);
             let w_duration = w_start.elapsed();
             trace!("Inserted single widget in: {:?}", w_duration);
             count += 1;
@@ -227,6 +197,23 @@ fn insert_widgets_idle<W>(
 
         glib::ControlFlow::Break
     });
+}
+
+fn insert_widget_dynamic<W: IsA<Widget> + Sized>(widget: W, container: &WeakRef<W>) {
+    let container = match container.upgrade() {
+        Some(c) => c,
+        None => return,
+    };
+
+    if let Some(listbox) = container.dynamic_cast_ref::<gtk::ListBox>() {
+        listbox.append(&widget);
+    } else if let Some(flowbox) = container.dynamic_cast_ref::<gtk::FlowBox>() {
+        flowbox.append(&widget);
+    } else {
+        unreachable!("Failed to downcast widget. {}", container.value_type());
+    }
+
+    widget.set_visible(true);
 }
 
 // Kudos to Julian Sparber
