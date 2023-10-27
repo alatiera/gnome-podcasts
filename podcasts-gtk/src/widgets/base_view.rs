@@ -17,12 +17,10 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-use crate::utils::smooth_scroll_to;
-
 use gtk::glib;
 use gtk::prelude::*;
 use gtk::subclass::prelude::*;
-use gtk::{Adjustment, PolicyType};
+use gtk::PolicyType;
 
 use adw::prelude::*;
 use adw::subclass::prelude::*;
@@ -96,25 +94,5 @@ impl Default for BaseView {
 impl BaseView {
     pub(crate) fn set_content<T: IsA<gtk::Widget>>(&self, widget: &T) {
         self.imp().scrolled_window.set_child(Some(widget));
-    }
-
-    pub(crate) fn set_adjustments(
-        &self,
-        hadjustment: Option<&Adjustment>,
-        vadjustment: Option<&Adjustment>,
-    ) {
-        let self_ = self.imp();
-
-        if let Some(h) = hadjustment {
-            smooth_scroll_to(&self_.scrolled_window, h);
-        }
-
-        if let Some(v) = vadjustment {
-            smooth_scroll_to(&self_.scrolled_window, v);
-        }
-    }
-
-    pub(crate) fn vadjustment(&self) -> Adjustment {
-        self.imp().scrolled_window.vadjustment()
     }
 }

@@ -20,7 +20,7 @@
 use adw::subclass::prelude::*;
 use glib::clone;
 use gtk::glib;
-use gtk::{prelude::*, Adjustment, Align, SelectionMode};
+use gtk::{prelude::*, Align, SelectionMode};
 
 use anyhow::Result;
 
@@ -69,15 +69,9 @@ impl WidgetImpl for ShowsViewPriv {}
 impl BinImpl for ShowsViewPriv {}
 
 impl ShowsViewPriv {
-    fn populate_flowbox(&self, vadj: Option<Adjustment>) -> Result<()> {
+    fn populate_flowbox(&self) -> Result<()> {
         let ignore = get_ignored_shows()?;
         let podcasts = dbqueries::get_podcasts_filter(&ignore)?;
-
-        let callback = clone!(@weak self.view as view => move || {
-            if vadj.is_some() {
-                view.set_adjustments(None, vadj.as_ref())
-            }
-        });
 
         let container = self.flowbox.downgrade();
         let insert = move |widget: gtk::Widget| {
@@ -90,7 +84,7 @@ impl ShowsViewPriv {
             widget.set_visible(true);
         };
 
-        lazy_load_full(podcasts, create_show_child, insert, callback);
+        lazy_load_full(podcasts, create_show_child, insert);
 
         Ok(())
     }
@@ -145,9 +139,9 @@ impl Default for ShowsView {
 }
 
 impl ShowsView {
-    pub fn new(vadj: Option<Adjustment>) -> Self {
+    pub fn new() -> Self {
         let pop = ShowsView::default();
-        let res = pop.imp().populate_flowbox(vadj);
+        let res = pop.imp().populate_flowbox();
         debug_assert!(res.is_ok());
         pop
     }

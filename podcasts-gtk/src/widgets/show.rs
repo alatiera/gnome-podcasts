@@ -19,7 +19,6 @@
 
 use glib::clone;
 use glib::Sender;
-use gtk::Adjustment;
 
 use anyhow::Result;
 use fragile::Fragile;
@@ -114,7 +113,6 @@ impl ShowWidget {
     pub(crate) fn new(
         pd: Arc<Show>,
         sender: Sender<Action>,
-        vadj: Option<Adjustment>,
     ) -> ShowWidget {
         let widget = ShowWidget::default();
         widget.init(&pd);
@@ -122,7 +120,7 @@ impl ShowWidget {
         let menu = ShowMenu::new(&pd, &widget.imp().episodes, &sender);
         send!(sender, Action::InitSecondaryMenu(Fragile::new(menu.menu)));
 
-        let res = populate_listbox(&widget, pd, sender, vadj);
+        let res = populate_listbox(&widget, pd, sender);
         debug_assert!(res.is_ok());
 
         widget
@@ -147,10 +145,6 @@ impl ShowWidget {
     pub(crate) fn show_id(&self) -> Option<i32> {
         self.imp().show_id.get()
     }
-
-    pub(crate) fn view(&self) -> BaseView {
-        self.imp().view.clone()
-    }
 }
 
 /// Populate the listbox with the shows episodes.
@@ -158,7 +152,6 @@ fn populate_listbox(
     show: &ShowWidget,
     pd: Arc<Show>,
     sender: Sender<Action>,
-    vadj: Option<Adjustment>,
 ) -> Result<()> {
     let count = dbqueries::get_pd_episodes_count(&pd)?;
     let show_ = show.imp();
@@ -200,11 +193,7 @@ fn populate_listbox(
                 row
             });
 
-            let callback = clone!(@weak show, @strong vadj => move || {
-                show.imp().view.set_adjustments(None, vadj.as_ref());
-            });
-
-            lazy_load(episodes, list_weak.clone(), constructor, callback);
+            lazy_load(episodes, list_weak.clone(), constructor);
 
             glib::ControlFlow::Break
         }),

@@ -38,7 +38,7 @@ pub(crate) struct HomeStack {
 
 impl HomeStack {
     pub(crate) fn new(sender: Sender<Action>) -> Result<HomeStack> {
-        let episodes = HomeView::new(sender.clone(), None)?;
+        let episodes = HomeView::new(sender.clone())?;
         let empty = EmptyView::default();
         let stack = gtk::Stack::new();
         let state = State::Empty;
@@ -65,9 +65,7 @@ impl HomeStack {
         // Get the container of the view
         let old = &self.episodes;
 
-        // Copy the vertical scrollbar adjustment from the old view.
-        let vadj = self.episodes.view().vadjustment();
-        let eps = HomeView::new(self.sender.clone(), Some(vadj))?;
+        let eps = HomeView::new(self.sender.clone())?;
 
         // Remove the old widget and add the new one
         // during this the previous view is removed,

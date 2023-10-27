@@ -138,7 +138,6 @@ pub(crate) fn lazy_load<C, W, T>(
     data: Vec<T>,
     container: WeakRef<gtk::ListBox>,
     constructor: C,
-    finish_callback: impl Fn() + 'static,
 ) where
     T: 'static,
     W: IsA<Widget> + Sized,
@@ -154,11 +153,10 @@ pub(crate) fn lazy_load<C, W, T>(
         widget.set_visible(true);
     };
 
-    lazy_load_full(data, constructor, insert, finish_callback);
+    lazy_load_full(data, constructor, insert);
 }
 
 /// Iterate over `data` and execute `func` using a `gtk::idle_add()`,
-/// when the iteration finishes, it executes `finish_callback`.
 ///
 /// This is a more flexible version of `lazy_load` with less constrains.
 /// If you just want to lazy add `widgets` to a `container` check if
@@ -168,7 +166,6 @@ pub(crate) fn lazy_load_full<C, W, T>(
     data: Vec<T>,
     constructor: C,
     insert: impl Fn(W) + 'static,
-    finish_callback: impl Fn() + 'static,
 ) where
     T: 'static,
     W: IsA<Widget> + Sized,
@@ -195,20 +192,18 @@ pub(crate) fn lazy_load_full<C, W, T>(
 
     main_context.spawn_local(async move {
         let data = receiver.await.unwrap();
-        insert_widgets_idle(data, insert, finish_callback);
+        insert_widgets_idle(data, insert);
     });
 }
 
 fn insert_widgets_idle<W>(
     data: Vec<W>,
     insert: impl Fn(W) + 'static,
-    finish_callback: impl Fn() + 'static,
 ) where
     W: IsA<Widget> + Sized,
 {
     let mut data = data.into_iter();
     let mut count = 0;
-    let mut yield_before_finish = true;
     glib::idle_add_local(move || {
         let start = Instant::now();
 
@@ -227,14 +222,8 @@ fn insert_widgets_idle<W>(
             }
         }
 
-        if yield_before_finish {
-            let duration = start.elapsed();
-            trace!("Inserted {} widgets in: {:?}", count, duration);
-            yield_before_finish = false;
-            return glib::ControlFlow::Continue;
-        }
-
-        finish_callback();
+        let duration = start.elapsed();
+        trace!("Inserted {} widgets in: {:?}", count, duration);
 
         glib::ControlFlow::Break
     });
@@ -243,7 +232,8 @@ fn insert_widgets_idle<W>(
 // Kudos to Julian Sparber
 // https://blogs.gnome.org/jsparber/2018/04/29/animate-a-scrolledwindow/
 #[allow(clippy::float_cmp)]
-pub(crate) fn smooth_scroll_to(view: &gtk::ScrolledWindow, target: &gtk::Adjustment) {
+#[allow(dead_code)]
+fn smooth_scroll_to(view: &gtk::ScrolledWindow, target: &gtk::Adjustment) {
     let adj = view.vadjustment();
     if let Some(clock) = view.frame_clock() {
         let duration = 200;

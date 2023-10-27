@@ -24,7 +24,7 @@ use adw::subclass::prelude::*;
 use glib::clone;
 use glib::subclass::InitializingObject;
 use glib::Sender;
-use gtk::{glib, prelude::*, Adjustment, CompositeTemplate};
+use gtk::{glib, prelude::*, CompositeTemplate};
 
 use podcasts_data::dbqueries;
 use podcasts_data::EpisodeWidgetModel;
@@ -98,7 +98,7 @@ glib::wrapper! {
 }
 
 impl HomeView {
-    pub(crate) fn new(sender: Sender<Action>, vadj: Option<Adjustment>) -> Result<Self> {
+    pub(crate) fn new(sender: Sender<Action>) -> Result<Self> {
         use self::ListSplit::*;
 
         let home: Self = glib::Object::new();
@@ -122,18 +122,8 @@ impl HomeView {
             }
         });
 
-        let callback = clone!(@weak home => move || {
-            if let Some(ref v) = vadj {
-                home.imp().view.set_adjustments(None, Some(v))
-            };
-        });
-
-        lazy_load_full(episodes, constructor, insert, callback);
+        lazy_load_full(episodes, constructor, insert);
         Ok(home)
-    }
-
-    pub(crate) fn view(&self) -> &BaseView {
-        &self.imp().view
     }
 }
 
