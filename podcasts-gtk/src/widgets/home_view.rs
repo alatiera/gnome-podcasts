@@ -21,18 +21,16 @@ use anyhow::Result;
 use chrono::prelude::*;
 
 use adw::subclass::prelude::*;
-use glib::clone;
 use glib::subclass::InitializingObject;
 use glib::Sender;
+use gtk::gio;
 use gtk::{glib, prelude::*, CompositeTemplate};
 
 use podcasts_data::dbqueries;
 use podcasts_data::EpisodeWidgetModel;
 
-use std::cell::Cell;
-
 use crate::app::Action;
-use crate::utils::{self, lazy_load_full};
+use crate::utils::{self, lazy_load};
 use crate::widgets::{BaseView, EpisodeWidget};
 
 #[derive(Debug, Clone)]
@@ -43,6 +41,9 @@ enum ListSplit {
     Month,
     Rest,
 }
+
+#[derive(Debug, Clone)]
+struct DateBox(ListSplit, Vec<EpisodeWidgetModel>);
 
 #[derive(Debug, CompositeTemplate, Default)]
 #[template(resource = "/org/gnome/Podcasts/gtk/home_view.ui")]
@@ -99,37 +100,66 @@ glib::wrapper! {
 
 impl HomeView {
     pub(crate) fn new(sender: Sender<Action>) -> Result<Self> {
-        use self::ListSplit::*;
-
         let home: Self = glib::Object::new();
 
         let ignore = utils::get_ignored_shows()?;
         let episodes = dbqueries::get_episodes_widgets_filter_limit(&ignore, 100)?;
-        let now_utc = Utc::now();
 
-        let sender_2 = sender.clone();
-        let constructor = move |ep: EpisodeWidgetModel| HomeEpisode::new(&sender_2, &ep);
+        let main_context = glib::MainContext::default();
 
-        let insert = clone!(@weak home => move |widget: HomeEpisode| {
-            let epoch = widget.epoch();
+        main_context.spawn_local_with_priority(
+            glib::source::Priority::DEFAULT_IDLE,
+            glib::clone!(@weak home => async move {
+                home.add_to_boxes(episodes, sender).await;
+            }),
+        );
 
-            match split(&now_utc, i64::from(epoch)) {
-                Today => add_to_box(&widget, &home.imp().today_list, &home.imp().today_box),
-                Yday => add_to_box(&widget, &home.imp().yday_list, &home.imp().yday_box),
-                Week => add_to_box(&widget, &home.imp().week_list, &home.imp().week_box),
-                Month => add_to_box(&widget, &home.imp().month_list, &home.imp().month_box),
-                Rest => add_to_box(&widget, &home.imp().rest_list, &home.imp().rest_box),
-            }
-        });
-
-        lazy_load_full(episodes, constructor, insert);
         Ok(home)
     }
-}
 
-fn add_to_box(widget: &HomeEpisode, listbox: &gtk::ListBox, box_: &gtk::Box) {
-    listbox.append(widget);
-    box_.set_visible(true);
+    async fn add_to_boxes(&self, episodes: Vec<EpisodeWidgetModel>, sender: Sender<Action>) {
+        let data = gio::spawn_blocking(move || split_model(episodes)).await;
+
+        if let Ok((today, yday, week, month, rest)) = data {
+            self.add_to_box(today, &sender);
+            self.add_to_box(yday, &sender);
+            self.add_to_box(week, &sender);
+            self.add_to_box(month, &sender);
+            self.add_to_box(rest, &sender);
+        }
+    }
+
+    fn add_to_box(&self, datebox: DateBox, sender: &Sender<Action>) {
+        use self::ListSplit::*;
+
+        let DateBox(date, model) = datebox;
+
+        if model.len() == 0 {
+            return;
+        }
+
+        let box_ = match &date {
+            Today => &self.imp().today_box,
+            Yday => &self.imp().yday_box,
+            Week => &self.imp().week_box,
+            Month => &self.imp().month_box,
+            Rest => &self.imp().rest_box,
+        };
+
+        let list = match &date {
+            Today => &self.imp().today_list,
+            Yday => &self.imp().yday_list,
+            Week => &self.imp().week_list,
+            Month => &self.imp().month_list,
+            Rest => &self.imp().rest_list,
+        };
+
+        box_.set_visible(true);
+
+        let sender = sender.clone();
+        let constructor = move |ep: EpisodeWidgetModel| HomeEpisode::new(&sender, &ep);
+        lazy_load(model, list.downgrade(), constructor.clone());
+    }
 }
 
 fn split(now: &DateTime<Utc>, epoch: i64) -> ListSplit {
@@ -151,6 +181,34 @@ fn split(now: &DateTime<Utc>, epoch: i64) -> ListSplit {
     }
 }
 
+fn split_model(model: Vec<EpisodeWidgetModel>) -> (DateBox, DateBox, DateBox, DateBox, DateBox) {
+    use self::ListSplit::*;
+
+    let now_utc = Utc::now();
+
+    let (mut today, mut yday, mut week, mut month, mut rest) =
+        (Vec::new(), Vec::new(), Vec::new(), Vec::new(), Vec::new());
+
+    for ep in model {
+        let epoch = ep.epoch();
+        match split(&now_utc, i64::from(epoch)) {
+            Today => today.push(ep),
+            Yday => yday.push(ep),
+            Week => week.push(ep),
+            Month => month.push(ep),
+            Rest => rest.push(ep),
+        }
+    }
+
+    (
+        DateBox(Today, today),
+        DateBox(Yday, yday),
+        DateBox(Week, week),
+        DateBox(Month, month),
+        DateBox(Rest, rest),
+    )
+}
+
 #[derive(Debug, CompositeTemplate, Default)]
 #[template(resource = "/org/gnome/Podcasts/gtk/home_episode.ui")]
 pub struct HomeEpisodePriv {
@@ -158,13 +216,11 @@ pub struct HomeEpisodePriv {
     cover: TemplateChild<gtk::Image>,
     #[template_child]
     episode: TemplateChild<EpisodeWidget>,
-    epoch: Cell<i32>,
 }
 
 impl HomeEpisodePriv {
     fn init(&self, sender: &Sender<Action>, episode: &EpisodeWidgetModel) {
         let pid = episode.show_id();
-        self.epoch.set(episode.epoch());
         self.set_cover(pid);
         self.episode.init(sender, episode);
         // Assure the image is read out along with the Episode title
@@ -210,10 +266,6 @@ impl HomeEpisode {
         widget.set_action_target_value(Some(&episode.rowid().to_variant()));
         widget.imp().init(sender, episode);
         widget
-    }
-
-    fn epoch(&self) -> i32 {
-        self.imp().epoch.get()
     }
 }
 
