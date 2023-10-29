@@ -160,7 +160,7 @@ impl HomeView {
         box_.set_visible(true);
 
         let sender = sender.clone();
-        let constructor = move |ep: EpisodeWidgetModel| HomeEpisode::new(&sender, &ep).upcast();
+        let constructor = move |ep: EpisodeWidgetModel| HomeEpisode::new(&sender, ep).upcast();
         let list = list.upcast_ref::<gtk::Widget>().downgrade();
         lazy_load(model, list, constructor.clone()).await
     }
@@ -229,7 +229,7 @@ pub struct HomeEpisodePriv {
 }
 
 impl HomeEpisodePriv {
-    fn init(&self, sender: &Sender<Action>, episode: &EpisodeWidgetModel) {
+    fn init(&self, sender: &Sender<Action>, episode: EpisodeWidgetModel) {
         let pid = episode.show_id();
         self.set_cover(pid);
         self.episode.init(sender, episode);
@@ -270,7 +270,7 @@ glib::wrapper! {
 }
 
 impl HomeEpisode {
-    pub(crate) fn new(sender: &Sender<Action>, episode: &EpisodeWidgetModel) -> Self {
+    pub(crate) fn new(sender: &Sender<Action>, episode: EpisodeWidgetModel) -> Self {
         let widget = Self::default();
         widget.set_action_name(Some("app.go-to-episode"));
         widget.set_action_target_value(Some(&episode.rowid().to_variant()));

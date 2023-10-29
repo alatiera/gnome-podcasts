@@ -95,11 +95,16 @@ pub struct EpisodeWidgetPriv {
 }
 
 impl EpisodeWidgetPriv {
-    pub(crate) fn init(&self, sender: &Sender<Action>, episode: &EpisodeWidgetModel) {
-        self.init_info(episode);
-        self.determine_buttons_state(episode, sender)
-            .map_err(|err| error!("Error: {}", err))
-            .ok();
+    pub(crate) fn init(&self, sender: &Sender<Action>, episode: EpisodeWidgetModel) {
+        crate::MAINCONTEXT.spawn_local_with_priority(
+            glib::source::Priority::LOW,
+            clone!(@weak self as this, @strong sender => async move {
+                this.init_info(&episode);
+                this.determine_buttons_state(&episode, &sender)
+                    .map_err(|err| error!("Error: {}", err))
+                    .ok();
+            }),
+        );
     }
 
     // InProgress State:
@@ -534,13 +539,13 @@ glib::wrapper! {
 }
 
 impl EpisodeWidget {
-    pub(crate) fn new(sender: &Sender<Action>, episode: &EpisodeWidgetModel) -> Self {
+    pub(crate) fn new(sender: &Sender<Action>, episode: EpisodeWidgetModel) -> Self {
         let widget = Self::default();
         widget.init(sender, episode);
         widget
     }
 
-    pub(crate) fn init(&self, sender: &Sender<Action>, episode: &EpisodeWidgetModel) {
+    pub(crate) fn init(&self, sender: &Sender<Action>, episode: EpisodeWidgetModel) {
         self.imp().init(sender, episode);
     }
 }
