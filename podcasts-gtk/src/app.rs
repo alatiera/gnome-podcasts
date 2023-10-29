@@ -372,9 +372,11 @@ impl PdApplication {
             }
             Action::HeaderBarShowTile => {
                 window.headerbar().switch_to_back();
+                window.set_toolbar_visible(false);
             }
             Action::HeaderBarNormal => {
                 window.headerbar().switch_to_normal();
+                window.set_toolbar_visible(true);
             }
             Action::CopiedUrlNotification => {
                 let text = i18n("Copied URL to clipboard!");

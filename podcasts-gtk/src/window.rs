@@ -263,4 +263,8 @@ impl MainWindow {
     pub(crate) fn sender(&self) -> &glib::Sender<Action> {
         self.imp().sender.get().unwrap()
     }
+
+    pub(crate) fn set_toolbar_visible(&self, visible: bool) {
+        self.imp().bottom_switcher.set_visible(visible);
+    }
 }
