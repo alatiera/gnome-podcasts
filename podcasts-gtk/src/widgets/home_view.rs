@@ -118,12 +118,10 @@ impl HomeView {
     async fn add_to_boxes(&self, episodes: Vec<EpisodeWidgetModel>, sender: Sender<Action>) {
         let data = gio::spawn_blocking(move || split_model(episodes)).await;
 
-        if let Ok((today, yday, week, month, rest)) = data {
-            self.add_to_box(today, &sender);
-            self.add_to_box(yday, &sender);
-            self.add_to_box(week, &sender);
-            self.add_to_box(month, &sender);
-            self.add_to_box(rest, &sender);
+        if let Ok(data) = data {
+            for datebox in data {
+                self.add_to_box(datebox, &sender);
+            }
         }
     }
 
@@ -156,10 +154,12 @@ impl HomeView {
 
         let sender = sender.clone();
         let constructor = move |ep: EpisodeWidgetModel| HomeEpisode::new(&sender, &ep).upcast();
-        lazy_load(
-            model,
-            list.upcast_ref::<gtk::Widget>().downgrade(),
-            constructor.clone(),
+        let list = list.upcast_ref::<gtk::Widget>().downgrade();
+        crate::MAINCONTEXT.spawn_local_with_priority(
+            glib::source::Priority::DEFAULT_IDLE,
+            async move {
+                let _ = lazy_load(model, list, constructor.clone()).await;
+            },
         );
     }
 }
@@ -183,7 +183,7 @@ fn split(now: &DateTime<Utc>, epoch: i64) -> ListSplit {
     }
 }
 
-fn split_model(model: Vec<EpisodeWidgetModel>) -> (DateBox, DateBox, DateBox, DateBox, DateBox) {
+fn split_model(model: Vec<EpisodeWidgetModel>) -> Vec<DateBox> {
     use self::ListSplit::*;
 
     let now_utc = Utc::now();
@@ -202,13 +202,13 @@ fn split_model(model: Vec<EpisodeWidgetModel>) -> (DateBox, DateBox, DateBox, Da
         }
     }
 
-    (
+    vec![
         DateBox(Today, today),
         DateBox(Yday, yday),
         DateBox(Week, week),
         DateBox(Month, month),
         DateBox(Rest, rest),
-    )
+    ]
 }
 
 #[derive(Debug, CompositeTemplate, Default)]

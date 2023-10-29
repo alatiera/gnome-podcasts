@@ -23,7 +23,6 @@ use glib::Sender;
 use anyhow::Result;
 use fragile::Fragile;
 use gtk::gio;
-use tokio::sync::oneshot::error::TryRecvError;
 
 use podcasts_data::dbqueries;
 use podcasts_data::EpisodeWidgetModel;
@@ -148,13 +147,8 @@ impl ShowWidget {
 fn populate_listbox(show: &ShowWidget, pd: Arc<Show>, sender: Sender<Action>) -> Result<()> {
     let count = dbqueries::get_pd_episodes_count(&pd)?;
 
-    let (sender_, mut receiver) = tokio::sync::oneshot::channel();
-    gio::spawn_blocking(clone!(@strong pd => move || {
-        if let Ok(episodes) = dbqueries::get_pd_episodeswidgets(&pd) {
-            // The receiver can be dropped if there's an early return
-            // like on show without episodes for example.
-            let _ = sender_.send(episodes);
-        }
+    let episodes = gio::spawn_blocking(clone!(@strong pd => move || {
+        dbqueries::get_pd_episodeswidgets(&pd)
     }));
 
     if count == 0 {
@@ -163,31 +157,24 @@ fn populate_listbox(show: &ShowWidget, pd: Arc<Show>, sender: Sender<Action>) ->
         return Ok(());
     }
 
-    glib::idle_add_local(
-        glib::clone!(@weak show => @default-return glib::ControlFlow::Break, move || {
-            let episodes = match receiver.try_recv() {
-                Ok(e) => e,
-                Err(TryRecvError::Empty) => return glib::ControlFlow::Continue,
-                Err(TryRecvError::Closed) => return glib::ControlFlow::Break,
-            };
+    let constructor = clone!(@strong sender => move |ep: EpisodeWidgetModel| {
+        let id = ep.rowid();
+        let episode_widget = EpisodeWidget::new(&sender, &ep);
+        let row = gtk::ListBoxRow::new();
+        row.set_child(Some(&episode_widget));
+        row.set_action_name(Some("app.go-to-episode"));
+        row.set_action_target_value(Some(&id.to_variant()));
+        row.upcast()
+    });
 
-            debug_assert!(episodes.len() as i64 == count);
-
-            let constructor = clone!(@strong sender => move |ep: EpisodeWidgetModel| {
-                let id = ep.rowid();
-                let episode_widget = EpisodeWidget::new(&sender, &ep);
-                let row = gtk::ListBoxRow::new();
-                row.set_child(Some(&episode_widget));
-                row.set_action_name(Some("app.go-to-episode"));
-                row.set_action_target_value(Some(&id.to_variant()));
-                row.upcast()
-            });
-
-            let listbox = show.imp().episodes.upcast_ref::<gtk::Widget>().downgrade();
-            lazy_load(episodes, listbox, constructor);
-
-            glib::ControlFlow::Break
-        }),
+    let listbox = show.imp().episodes.upcast_ref::<gtk::Widget>().downgrade();
+    crate::MAINCONTEXT.spawn_local_with_priority(
+        glib::source::Priority::DEFAULT_IDLE,
+        async move {
+            if let Ok(Ok(episodes)) = episodes.await {
+                let _ = lazy_load(episodes, listbox, constructor).await;
+            }
+        },
     );
 
     Ok(())

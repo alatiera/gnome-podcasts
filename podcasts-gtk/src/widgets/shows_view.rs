@@ -74,7 +74,12 @@ impl ShowsViewPriv {
         let podcasts = dbqueries::get_podcasts_filter(&ignore)?;
 
         let flowbox = self.flowbox.clone().upcast_ref::<gtk::Widget>().downgrade();
-        lazy_load(podcasts, flowbox, create_show_child);
+        crate::MAINCONTEXT.spawn_local_with_priority(
+            glib::source::Priority::DEFAULT_IDLE,
+            async move {
+                let _ = lazy_load(podcasts, flowbox, create_show_child).await;
+            },
+        );
 
         Ok(())
     }

@@ -32,6 +32,7 @@ use gtk::{gio, glib};
 use anyhow::{anyhow, Result};
 use async_channel::unbounded;
 use chrono::prelude::*;
+use futures::future::JoinAll;
 use futures::StreamExt;
 use once_cell::sync::Lazy;
 use regex::Regex;
@@ -136,7 +137,11 @@ where
 /// lazy_load(widgets, list, |w| w, || {});
 /// ```
 #[allow(clippy::redundant_closure)]
-pub(crate) fn lazy_load<C, W, T>(data: Vec<T>, container: WeakRef<W>, constructor: C)
+pub(crate) async fn lazy_load<C, W, T>(
+    data: Vec<T>,
+    container: WeakRef<W>,
+    constructor: C,
+) -> JoinAll<glib::JoinHandle<()>>
 where
     T: 'static,
     W: IsA<Widget> + Sized + 'static,
@@ -145,7 +150,7 @@ where
     let (sender, receiver) = unbounded::<W>();
     let mut data = data.into_iter();
 
-    crate::MAINCONTEXT.spawn_local_with_priority(
+    let h1 = crate::MAINCONTEXT.spawn_local_with_priority(
         glib::source::Priority::DEFAULT_IDLE,
         async move {
             while let Some(item) = data.next() {
@@ -163,7 +168,7 @@ where
         },
     );
 
-    crate::MAINCONTEXT.spawn_local_with_priority(
+    let h2 = crate::MAINCONTEXT.spawn_local_with_priority(
         glib::source::Priority::DEFAULT_IDLE,
         async move {
             receiver
@@ -175,6 +180,8 @@ where
                 .await
         },
     );
+
+    return futures::future::join_all([h1, h2]);
 }
 
 async fn insert_widgets_idle<W>(data: Vec<W>, container: WeakRef<W>)
