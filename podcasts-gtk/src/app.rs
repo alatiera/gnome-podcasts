@@ -131,7 +131,9 @@ impl GtkApplicationImpl for PdApplicationPrivate {}
 impl AdwApplicationImpl for PdApplicationPrivate {}
 
 glib::wrapper! {
-    pub struct PdApplication(ObjectSubclass<PdApplicationPrivate>) @extends gio::Application, gtk::Application, adw::Application;
+    pub struct PdApplication(ObjectSubclass<PdApplicationPrivate>)
+        @extends gio::Application, gtk::Application, adw::Application,
+        @implements gio::ActionMap, gio::ActionGroup;
 }
 
 #[derive(Debug, Clone)]
@@ -175,89 +177,83 @@ impl PdApplication {
     }
 
     fn setup_gactions(&self) {
-        let app = self.upcast_ref::<gtk::Application>();
-        let data = self.imp();
-        // Create the quit action
-        utils::make_action(
-            app,
-            "quit",
-            clone!(@weak self as app => move |_, _| {
+        let i32_variant_type = glib::VariantTy::INT32;
+        let actions = [
+            gio::ActionEntryBuilder::new("quit")
+                .activate(|app: &Self, _, _| {
                     app.quit();
-            }),
-        );
-        let i32_variant_type = i32::static_variant_type();
-        let go_to_episode = gio::SimpleAction::new("go-to-episode", Some(&i32_variant_type));
-        go_to_episode.connect_activate(clone!(@weak self as app => move |_, id_variant_option| {
-            match app.go_to_episode(id_variant_option) {
-                Ok(_) => (),
-                Err(e) => eprintln!("failed action app.go-to-episode: {}", e)
-            }
-        }));
-        app.add_action(&go_to_episode);
+                })
+                .build(),
+            gio::ActionEntryBuilder::new("go-to-episode")
+                .parameter_type(Some(i32_variant_type))
+                .activate(|app: &Self, _, id_variant_option| {
+                    match app.go_to_episode(id_variant_option) {
+                        Ok(_) => (),
+                        Err(e) => eprintln!("failed action app.go-to-episode: {}", e),
+                    }
+                })
+                .build(),
+            gio::ActionEntryBuilder::new("go-to-show")
+                .parameter_type(Some(i32_variant_type))
+                .activate(|app: &Self, _, id_variant_option| {
+                    match app.go_to_show(id_variant_option) {
+                        Ok(_) => (),
+                        Err(e) => eprintln!("failed action app.go-to-show: {}", e),
+                    }
+                })
+                .build(),
+            gio::ActionEntryBuilder::new("undo-mark-all")
+                .parameter_type(Some(i32_variant_type))
+                .activate(|app: &Self, _, id_variant_option| {
+                    let data = app.imp();
+                    let id = id_variant_option.unwrap().get::<i32>().unwrap();
+                    let mut ids = data.undo_marked_ids.borrow_mut();
+                    if !ids.contains(&id) {
+                        ids.push(id);
+                    }
 
-        let go_to_show = gio::SimpleAction::new("go-to-show", Some(&i32_variant_type));
-        go_to_show.connect_activate(clone!(@weak self as app => move |_, id_variant_option| {
-            match app.go_to_show(id_variant_option) {
-                Ok(_) => (),
-                Err(e) => eprintln!("failed action app.go-to-show: {}", e)
-            }
-        }));
-        app.add_action(&go_to_show);
+                    send!(data.sender, Action::RefreshWidgetIfSame(id));
+                })
+                .build(),
+            gio::ActionEntryBuilder::new("undo-remove-show")
+                .parameter_type(Some(i32_variant_type))
+                .activate(|app: &Self, _, id_variant_option| {
+                    let data = app.imp();
+                    let id = id_variant_option.unwrap().get::<i32>().unwrap();
+                    let mut ids = data.undo_remove_ids.borrow_mut();
+                    if !ids.contains(&id) {
+                        ids.push(id);
+                    }
 
-        let undo_mark_all = gio::SimpleAction::new("undo-mark-all", Some(&i32_variant_type));
-        undo_mark_all.connect_activate(
-            clone!(@weak self as app, @strong data.sender as sender => move |_, id_variant_option| {
-                let data = app.imp();
-                let id = id_variant_option.unwrap().get::<i32>().unwrap();
-                let mut ids = data.undo_marked_ids.borrow_mut();
-                if !ids.contains(&id) {
-                    ids.push(id);
-                }
-
-                send!(sender, Action::RefreshWidgetIfSame(id));
-            }),
-        );
-        app.add_action(&undo_mark_all);
-
-        let undo_remove_show = gio::SimpleAction::new("undo-remove-show", Some(&i32_variant_type));
-        undo_remove_show.connect_activate(
-            clone!(@weak self as app, @strong data.sender as sender => move |_, id_variant_option| {
-                let data = app.imp();
-                let id = id_variant_option.unwrap().get::<i32>().unwrap();
-                let mut ids = data.undo_remove_ids.borrow_mut();
-                if !ids.contains(&id) {
-                    ids.push(id);
-                }
-
-                let res = utils::unignore_show(id);
-                debug_assert!(res.is_ok());
-                send!(sender, Action::RefreshShowsView);
-                send!(sender, Action::RefreshEpisodesView);
-            }),
-        );
-        app.add_action(&undo_remove_show);
-
-        let go_back_on_deck = gio::SimpleAction::new("go-back-on-deck", None);
-        go_back_on_deck.connect_activate(clone!(@weak self as app => move |_, _| {
-            app.go_back_on_deck();
-        }));
-        app.add_action(&go_back_on_deck);
-
-        // universal go back action
-        let go_back = gio::SimpleAction::new("go-back", None);
-        go_back.connect_activate(clone!(@weak self as app, @weak data => move |_, _| {
-            if app.go_back_on_deck() {
-                return;
-            }
-            let shows = data.window.borrow().as_ref().unwrap().content().get_shows();
-            let pop = shows.borrow().populated();
-            let pop = pop.borrow();
-            if let PopulatedState::Widget = pop.populated_state() {
-                send!(data.sender, Action::HeaderBarNormal);
-                send!(data.sender, Action::ShowShowsAnimated);
-            }
-        }));
-        app.add_action(&go_back);
+                    let res = utils::unignore_show(id);
+                    debug_assert!(res.is_ok());
+                    send!(data.sender, Action::RefreshShowsView);
+                    send!(data.sender, Action::RefreshEpisodesView);
+                })
+                .build(),
+            gio::ActionEntryBuilder::new("go-back-on-deck")
+                .parameter_type(Some(i32_variant_type))
+                .activate(|app: &Self, _, _| {
+                    app.go_back_on_deck();
+                })
+                .build(),
+            gio::ActionEntryBuilder::new("go-back")
+                .activate(|app: &Self, _, _| {
+                    let data = app.imp();
+                    if app.go_back_on_deck() {
+                        return;
+                    }
+                    let shows = data.window.borrow().as_ref().unwrap().content().get_shows();
+                    let pop = shows.borrow().populated();
+                    let pop = pop.borrow();
+                    if let PopulatedState::Widget = pop.populated_state() {
+                        send!(data.sender, Action::HeaderBarNormal);
+                        send!(data.sender, Action::ShowShowsAnimated);
+                    }
+                })
+                .build(),
+        ];
+        self.add_action_entries(actions);
     }
 
     /// We check if the User pressed the Undo button, which would add
