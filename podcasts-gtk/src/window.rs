@@ -127,7 +127,9 @@ impl MainWindow {
         breakpoint.connect_unapply(clone!(@strong player => move |_| {
             player.set_small(true);
         }));
+        let is_small = !window.current_breakpoint().is_some_and(|b| b == breakpoint);
         window.add_breakpoint(breakpoint);
+        player.set_small(is_small);
 
         // Retrieve the previous window position and size.
         WindowGeometry::from_settings(&settings).apply(&window);
