@@ -187,18 +187,16 @@ impl PdApplication {
             gio::ActionEntryBuilder::new("go-to-episode")
                 .parameter_type(Some(i32_variant_type))
                 .activate(|app: &Self, _, id_variant_option| {
-                    match app.go_to_episode(id_variant_option) {
-                        Ok(_) => (),
-                        Err(e) => error!("failed action app.go-to-episode: {}", e),
+                    if let Err(e) = app.go_to_episode(id_variant_option) {
+                        error!("failed action app.go-to-episode: {e}");
                     }
                 })
                 .build(),
             gio::ActionEntryBuilder::new("go-to-show")
                 .parameter_type(Some(i32_variant_type))
                 .activate(|app: &Self, _, id_variant_option| {
-                    match app.go_to_show(id_variant_option) {
-                        Ok(_) => (),
-                        Err(e) => error!("failed action app.go-to-show: {}", e),
+                    if let Err(e) = app.go_to_show(id_variant_option) {
+                        error!("failed action app.go-to-show: {e}");
                     }
                 })
                 .build(),
