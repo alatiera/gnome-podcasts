@@ -64,6 +64,8 @@ pub struct MainWindowPriv {
     pub(crate) header_breakpoint: TemplateChild<adw::Breakpoint>,
     #[template_child]
     pub(crate) player_breakpoint: TemplateChild<adw::Breakpoint>,
+    #[template_child]
+    pub(crate) bottom_switcher: TemplateChild<adw::ViewSwitcherBar>,
 
     #[property(set, get)]
     pub(crate) updating: Cell<bool>,
@@ -87,6 +89,7 @@ impl ObjectSubclass for MainWindowPriv {
             toolbar_view: TemplateChild::default(),
             header_breakpoint: TemplateChild::default(),
             player_breakpoint: TemplateChild::default(),
+            bottom_switcher: TemplateChild::default(),
             progress_bar: OnceCell::new(),
             updating: Cell::new(false),
             updating_timeout: RefCell::new(None),
@@ -172,12 +175,12 @@ impl MainWindow {
         imp.toolbar_view.add_top_bar(&header.container);
         imp.toolbar_view.set_content(Some(&content.get_container()));
 
+        imp.bottom_switcher.set_stack(Some(&content.get_stack()));
+
         let player = player::PlayerWrapper::new(sender);
         imp.toolbar_view.add_bottom_bar(&player.borrow().container);
 
         // Setup breakpoints
-        imp.header_breakpoint
-            .add_setter(&header.bottom_switcher, "reveal", &true.to_value());
         imp.header_breakpoint.add_setter(
             &header.container,
             "title-widget",

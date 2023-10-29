@@ -12,6 +12,7 @@
     <child>
       <object class="AdwBreakpoint" id="header_breakpoint">
         <condition>max-width: 550sp</condition>
+        <setter object="bottom_switcher" property="reveal">True</setter>
       </object>
     </child>
     <property name="content">
@@ -22,7 +23,11 @@
               <object class="AdwNavigationPage">
                 <property name="title" translatable="yes">Podcasts</property>
                 <property name="child">
-                  <object class="AdwToolbarView" id="toolbar_view"/>
+                  <object class="AdwToolbarView" id="toolbar_view">
+                    <child type="bottom">
+                      <object class="AdwViewSwitcherBar" id="bottom_switcher"/>
+                    </child>
+                  </object>
                 </property>
               </object>
             </child>

@@ -40,7 +40,6 @@ use crate::i18n::i18n;
 pub(crate) struct Header {
     pub(crate) container: adw::HeaderBar,
     pub(crate) switch: adw::ViewSwitcher,
-    pub(crate) bottom_switcher: adw::ViewSwitcherBar,
     back: gtk::Button,
     hamburger: gtk::MenuButton,
     add: AddPopover,
@@ -196,15 +195,10 @@ impl Default for Header {
             add: add_button,
         };
 
-        // View switcher bar that goes at the bottom of the window
-        let switcher = adw::ViewSwitcherBar::new();
-        switcher.set_reveal(false);
-
         Header {
             container: header,
             switch,
             back,
-            bottom_switcher: switcher,
             hamburger,
             add,
             dots,
@@ -221,7 +215,6 @@ impl Header {
     }
 
     pub(crate) fn init(s: &Rc<Self>, content: &Content, sender: &Sender<Action>) {
-        s.bottom_switcher.set_stack(Some(&content.get_stack()));
         s.switch.set_stack(Some(&content.get_stack()));
 
         s.add.entry.connect_changed(clone!(@weak s => move |_| {
