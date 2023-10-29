@@ -189,7 +189,7 @@ impl PdApplication {
                 .activate(|app: &Self, _, id_variant_option| {
                     match app.go_to_episode(id_variant_option) {
                         Ok(_) => (),
-                        Err(e) => eprintln!("failed action app.go-to-episode: {}", e),
+                        Err(e) => error!("failed action app.go-to-episode: {}", e),
                     }
                 })
                 .build(),
@@ -198,7 +198,7 @@ impl PdApplication {
                 .activate(|app: &Self, _, id_variant_option| {
                     match app.go_to_show(id_variant_option) {
                         Ok(_) => (),
-                        Err(e) => eprintln!("failed action app.go-to-show: {}", e),
+                        Err(e) => error!("failed action app.go-to-show: {}", e),
                     }
                 })
                 .build(),
