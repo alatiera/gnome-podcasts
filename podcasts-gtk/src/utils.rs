@@ -142,61 +142,67 @@ where
     C: Fn(T) -> W + 'static,
 {
     let (mut sender, receiver) = oneshot();
-    let main_context = glib::MainContext::default();
     let mut widgets = Vec::new();
     let mut data = data.into_iter();
-    glib::idle_add_local(move || {
-        while let Some(item) = data.next() {
-            let w_start = Instant::now();
-            let widget = constructor(item);
-            let w_duration = w_start.elapsed();
-            trace!("Created single widget in: {:?}", w_duration);
+    crate::MAINCONTEXT.spawn_local_with_priority(
+        glib::source::Priority::DEFAULT_IDLE,
+        async move {
+            while let Some(item) = data.next() {
+                let start = Instant::now();
+                let widget = constructor(item);
+                trace!("Created single widget in: {:?}", start.elapsed());
 
-            widgets.push(widget);
-            return glib::ControlFlow::Continue;
-        }
+                widgets.push(widget);
+                tokio::task::yield_now().await;
+            }
 
-        let _ = sender.send(widgets.clone());
-        return glib::ControlFlow::Break;
-    });
+            let _ = sender.send(widgets.clone());
+        },
+    );
 
-    let container = container.clone();
-    main_context.spawn_local(async move {
-        let data = receiver.await.unwrap();
-        insert_widgets_idle(data, container);
-    });
+    crate::MAINCONTEXT.spawn_local_with_priority(
+        glib::source::Priority::DEFAULT_IDLE,
+        async move {
+            let data = receiver.await.unwrap();
+            insert_widgets_idle(data, container).await;
+        },
+    );
 }
 
-fn insert_widgets_idle<W>(data: Vec<W>, container: WeakRef<W>)
+async fn insert_widgets_idle<W>(data: Vec<W>, container: WeakRef<W>)
 where
-    W: IsA<Widget> + Sized,
+    W: IsA<Widget> + Sized + 'static,
 {
+    let widget_count = data.len();
+
     let mut data = data.into_iter();
     let mut count = 0;
-    let container = container.clone();
-    glib::idle_add_local(move || {
-        let start = Instant::now();
+    let mut start = Instant::now();
 
-        while let Some(widget) = data.next() {
-            let w_start = Instant::now();
-            insert_widget_dynamic(widget, &container);
-            let w_duration = w_start.elapsed();
-            trace!("Inserted single widget in: {:?}", w_duration);
-            count += 1;
+    let mut batch_construction_time_total = Duration::default();
 
-            let duration = start.elapsed();
-            if duration > Duration::from_millis(1) {
-                trace!("Inserted batch of {} widgets in: {:?}", count, duration);
-                count = 0;
-                return glib::ControlFlow::Continue;
-            }
-        }
+    while let Some(widget) = data.next() {
+        let w_start = Instant::now();
+        insert_widget_dynamic(widget, &container);
+        let w_duration = w_start.elapsed();
+        trace!("Inserted single widget in: {:?}", w_duration);
+        count += 1;
+        batch_construction_time_total += w_duration;
 
         let duration = start.elapsed();
-        trace!("Inserted {} widgets in: {:?}", count, duration);
+        if duration > Duration::from_millis(1) {
+            trace!("Inserted batch of {} widgets in: {:?}", count, duration);
+            tokio::task::yield_now().await;
+            count = 0;
+            start = Instant::now();
+        }
+    }
 
-        glib::ControlFlow::Break
-    });
+    trace!(
+        "Inserted {} widgets in: {:?}",
+        widget_count,
+        batch_construction_time_total
+    );
 }
 
 fn insert_widget_dynamic<W: IsA<Widget> + Sized>(widget: W, container: &WeakRef<W>) {

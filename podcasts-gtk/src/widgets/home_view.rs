@@ -105,9 +105,7 @@ impl HomeView {
         let ignore = utils::get_ignored_shows()?;
         let episodes = dbqueries::get_episodes_widgets_filter_limit(&ignore, 100)?;
 
-        let main_context = glib::MainContext::default();
-
-        main_context.spawn_local_with_priority(
+        crate::MAINCONTEXT.spawn_local_with_priority(
             glib::source::Priority::DEFAULT_IDLE,
             glib::clone!(@weak home => async move {
                 home.add_to_boxes(episodes, sender).await;

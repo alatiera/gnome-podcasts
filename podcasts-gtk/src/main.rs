@@ -69,6 +69,8 @@ use once_cell::sync::Lazy;
 pub static RUNTIME: Lazy<tokio::runtime::Runtime> =
     Lazy::new(|| tokio::runtime::Runtime::new().unwrap());
 
+pub static MAINCONTEXT: Lazy<glib::MainContext> = Lazy::new(|| glib::MainContext::default());
+
 #[cfg(test)]
 fn init_gtk_tests() -> anyhow::Result<()> {
     // if gtk::is_initialized() {
