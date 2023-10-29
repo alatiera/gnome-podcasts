@@ -73,6 +73,10 @@ Tobias Bernard
                 </child>
                 <child>
                   <object class="GtkListBox" id="episodes">
+                    <property name="margin-start">12</property>
+                    <property name="margin-end">12</property>
+                    <property name="margin-top">12</property>
+                    <property name="margin-bottom">12</property>
                     <property name="valign">start</property>
                     <property name="selection_mode">none</property>
                     <property name="activate_on_single_click">True</property>
