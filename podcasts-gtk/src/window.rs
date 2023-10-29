@@ -51,6 +51,7 @@ pub struct MainWindowPriv {
     pub(crate) progress_bar: OnceCell<gtk::ProgressBar>,
     pub(crate) updating_timeout: RefCell<Option<glib::source::SourceId>>,
     pub(crate) settings: gio::Settings,
+    pub(crate) bottom_switcher: adw::ViewSwitcherBar,
 
     pub(crate) sender: OnceCell<Sender<Action>>,
 
@@ -64,8 +65,6 @@ pub struct MainWindowPriv {
     pub(crate) header_breakpoint: TemplateChild<adw::Breakpoint>,
     #[template_child]
     pub(crate) player_breakpoint: TemplateChild<adw::Breakpoint>,
-    #[template_child]
-    pub(crate) bottom_switcher: TemplateChild<adw::ViewSwitcherBar>,
 
     #[property(set, get)]
     pub(crate) updating: Cell<bool>,
@@ -89,7 +88,7 @@ impl ObjectSubclass for MainWindowPriv {
             toolbar_view: TemplateChild::default(),
             header_breakpoint: TemplateChild::default(),
             player_breakpoint: TemplateChild::default(),
-            bottom_switcher: TemplateChild::default(),
+            bottom_switcher: adw::ViewSwitcherBar::new(),
             progress_bar: OnceCell::new(),
             updating: Cell::new(false),
             updating_timeout: RefCell::new(None),
@@ -178,6 +177,7 @@ impl MainWindow {
 
         let player = player::PlayerWrapper::new(sender);
         imp.toolbar_view.add_bottom_bar(&player.borrow().container);
+        imp.toolbar_view.add_bottom_bar(&imp.bottom_switcher);
 
         // Setup breakpoints
         imp.header_breakpoint.add_setter(
@@ -185,6 +185,8 @@ impl MainWindow {
             "title-widget",
             &gtk::Widget::NONE.to_value(),
         );
+        imp.header_breakpoint
+            .add_setter(&imp.bottom_switcher, "reveal", &true.to_value());
         let p = player.deref();
         imp.player_breakpoint
             .connect_apply(clone!(@weak p => move |_| {
