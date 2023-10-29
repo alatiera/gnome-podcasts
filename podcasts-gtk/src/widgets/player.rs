@@ -576,6 +576,14 @@ impl PlayerWidget {
             None
         }
     }
+
+    pub fn set_small(&self, small: bool) {
+        if small {
+            self.stack.set_visible_child(&self.small);
+        } else {
+            self.stack.set_visible_child(&self.full);
+        }
+    }
 }
 
 impl PlayerExt for PlayerWidget {
@@ -1016,14 +1024,5 @@ impl PlayerWrapper {
             .connect_raise(clone!(@strong sender => move || {
                 send!(sender, Action::RaiseWindow);
             }));
-    }
-
-    pub fn set_small(&self, small: bool) {
-        let this = self.0.borrow();
-        if small {
-            this.stack.set_visible_child(&this.small);
-        } else {
-            this.stack.set_visible_child(&this.full);
-        }
     }
 }

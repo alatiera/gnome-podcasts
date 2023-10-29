@@ -36,6 +36,7 @@ use crate::widgets::about_dialog;
 use crate::widgets::player;
 
 use std::cell::{Cell, OnceCell, RefCell};
+use std::ops::Deref;
 use std::rc::Rc;
 
 use crate::config::APP_ID;
@@ -184,17 +185,18 @@ impl MainWindow {
             "title-widget",
             &gtk::Widget::NONE.to_value(),
         );
+        let p = player.deref();
         imp.player_breakpoint
-            .connect_apply(clone!(@strong player => move |_| {
-                player.set_small(false);
+            .connect_apply(clone!(@weak p => move |_| {
+                p.borrow().set_small(false);
             }));
         imp.player_breakpoint
-            .connect_unapply(clone!(@strong player => move |_| {
-                player.set_small(true);
+            .connect_unapply(clone!(@weak p => move |_| {
+                p.borrow().set_small(true);
             }));
         let breakpoint = imp.player_breakpoint.get();
         let is_small = !window.current_breakpoint().is_some_and(|b| b == breakpoint);
-        player.set_small(is_small);
+        p.borrow().set_small(is_small);
 
         // Update the feeds right after the Window is initialized.
         if imp.settings.boolean("refresh-on-startup") {
