@@ -19,6 +19,7 @@
 
 use anyhow::Result;
 use chrono::prelude::*;
+use futures::future::JoinAll;
 
 use adw::subclass::prelude::*;
 use glib::subclass::InitializingObject;
@@ -108,31 +109,44 @@ impl HomeView {
         crate::MAINCONTEXT.spawn_local_with_priority(
             glib::source::Priority::DEFAULT_IDLE,
             glib::clone!(@weak home => async move {
-                home.add_to_boxes(episodes, sender).await;
+                let _ = home.add_to_boxes(episodes, sender).await;
             }),
         );
 
         Ok(home)
     }
 
-    async fn add_to_boxes(&self, episodes: Vec<EpisodeWidgetModel>, sender: Sender<Action>) {
+    // FIMXE: there has to be a way to flatten the handes here
+    async fn add_to_boxes(
+        &self,
+        episodes: Vec<EpisodeWidgetModel>,
+        sender: Sender<Action>,
+    ) -> JoinAll<JoinAll<glib::JoinHandle<()>>> {
         let data = gio::spawn_blocking(move || split_model(episodes)).await;
 
+        let mut handles = Vec::with_capacity(5);
         if let Ok(data) = data {
             for datebox in data {
-                self.add_to_box(datebox, &sender);
+                if datebox.1.is_empty() {
+                    continue;
+                }
+
+                let handle = self.add_to_box(datebox, &sender).await;
+                handles.push(handle);
             }
         }
+
+        futures::future::join_all(handles)
     }
 
-    fn add_to_box(&self, datebox: DateBox, sender: &Sender<Action>) {
+    async fn add_to_box(
+        &self,
+        datebox: DateBox,
+        sender: &Sender<Action>,
+    ) -> JoinAll<glib::JoinHandle<()>> {
         use self::ListSplit::*;
 
         let DateBox(date, model) = datebox;
-
-        if model.len() == 0 {
-            return;
-        }
 
         let box_ = match &date {
             Today => &self.imp().today_box,
@@ -155,12 +169,7 @@ impl HomeView {
         let sender = sender.clone();
         let constructor = move |ep: EpisodeWidgetModel| HomeEpisode::new(&sender, &ep).upcast();
         let list = list.upcast_ref::<gtk::Widget>().downgrade();
-        crate::MAINCONTEXT.spawn_local_with_priority(
-            glib::source::Priority::DEFAULT_IDLE,
-            async move {
-                let _ = lazy_load(model, list, constructor.clone()).await;
-            },
-        );
+        lazy_load(model, list, constructor.clone()).await
     }
 }
 
