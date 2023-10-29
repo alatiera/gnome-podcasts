@@ -48,4 +48,3 @@ podcasts-gtk/src/widgets/read_more_label.rs
 podcasts-gtk/src/widgets/show.rs
 podcasts-gtk/src/widgets/show_menu.rs
 podcasts-gtk/src/widgets/shows_view.rs
-podcasts-gtk/src/window.rs

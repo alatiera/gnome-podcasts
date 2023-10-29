@@ -39,7 +39,6 @@ use std::cell::{Cell, OnceCell, RefCell};
 use std::rc::Rc;
 
 use crate::config::APP_ID;
-use crate::i18n::i18n;
 
 #[derive(Debug, CompositeTemplate, glib::Properties)]
 #[template(resource = "/org/gnome/Podcasts/gtk/window.ui")]
@@ -128,7 +127,6 @@ impl ObjectImpl for MainWindowPriv {
         let window = self.obj();
         self.parent_constructed();
 
-        window.set_title(Some(&i18n("Podcasts")));
         if APP_ID.ends_with("Devel") {
             window.add_css_class("devel");
         }
