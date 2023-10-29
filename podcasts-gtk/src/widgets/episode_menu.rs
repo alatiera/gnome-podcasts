@@ -78,7 +78,7 @@ impl EpisodeMenu {
     fn connect_go_to_show(&self, sender: &Sender<Action>, show: Arc<Show>) {
         self.go_to_show
             .connect_activate(clone!(@strong sender, @strong show => move |_,_| {
-                send!(sender, Action::HeaderBarShowTile(show.title().into()));
+                send!(sender, Action::HeaderBarShowTile);
                 send!(sender, Action::ReplaceWidget(show.clone()));
                 send!(sender, Action::ShowWidgetAnimated);
             }));

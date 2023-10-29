@@ -147,7 +147,7 @@ pub(crate) enum Action {
     ShowShowsAnimated,
     GoToEpisodeDescription(Arc<Show>, Arc<Episode>),
     GoToShow(Arc<Show>),
-    HeaderBarShowTile(String),
+    HeaderBarShowTile,
     HeaderBarNormal,
     CopiedUrlNotification,
     MarkAllPlayerNotification(Arc<Show>),
@@ -367,17 +367,15 @@ impl PdApplication {
                 window.navigation_view.push(&description_widget);
             }
             Action::GoToShow(pd) => {
-                self.do_action(Action::HeaderBarShowTile(pd.title().into()));
+                self.do_action(Action::HeaderBarShowTile);
                 self.do_action(Action::ReplaceWidget(pd));
                 self.do_action(Action::ShowWidgetAnimated);
             }
-            Action::HeaderBarShowTile(title) => {
+            Action::HeaderBarShowTile => {
                 window.headerbar.switch_to_back();
-                window.set_title(Some(&title));
             }
             Action::HeaderBarNormal => {
                 window.headerbar.switch_to_normal();
-                window.set_title(Some(&i18n("Podcasts")));
             }
             Action::CopiedUrlNotification => {
                 let text = i18n("Copied URL to clipboard!");
