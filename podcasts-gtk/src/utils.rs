@@ -30,8 +30,9 @@ use gtk::Widget;
 use gtk::{gio, glib};
 
 use anyhow::{anyhow, Result};
-use async_oneshot::oneshot;
+use async_channel::unbounded;
 use chrono::prelude::*;
+use futures::StreamExt;
 use once_cell::sync::Lazy;
 use regex::Regex;
 use serde_json::Value;
@@ -138,12 +139,12 @@ where
 pub(crate) fn lazy_load<C, W, T>(data: Vec<T>, container: WeakRef<W>, constructor: C)
 where
     T: 'static,
-    W: IsA<Widget> + Sized,
+    W: IsA<Widget> + Sized + 'static,
     C: Fn(T) -> W + 'static,
 {
-    let (mut sender, receiver) = oneshot();
-    let mut widgets = Vec::new();
+    let (sender, receiver) = unbounded::<W>();
     let mut data = data.into_iter();
+
     crate::MAINCONTEXT.spawn_local_with_priority(
         glib::source::Priority::DEFAULT_IDLE,
         async move {
@@ -152,19 +153,26 @@ where
                 let widget = constructor(item);
                 trace!("Created single widget in: {:?}", start.elapsed());
 
-                widgets.push(widget);
+                if let Err(err) = sender.send(widget).await {
+                    debug!("Got SendError, Channel is closed: {}", err);
+                    return;
+                };
+
                 tokio::task::yield_now().await;
             }
-
-            let _ = sender.send(widgets.clone());
         },
     );
 
     crate::MAINCONTEXT.spawn_local_with_priority(
         glib::source::Priority::DEFAULT_IDLE,
         async move {
-            let data = receiver.await.unwrap();
-            insert_widgets_idle(data, container).await;
+            receiver
+                .chunks(25)
+                .for_each(move |widgets| {
+                    trace!("Received {} widgets", &widgets.len());
+                    insert_widgets_idle(widgets, container.clone())
+                })
+                .await
         },
     );
 }
