@@ -119,13 +119,13 @@ impl MainWindow {
         );
         window.add_breakpoint(breakpoint);
 
-        let condition = adw::BreakpointCondition::parse("max-width: 800sp").unwrap();
+        let condition = adw::BreakpointCondition::parse("min-width: 800sp").unwrap();
         let breakpoint = adw::Breakpoint::new(condition);
         breakpoint.connect_apply(clone!(@strong player => move |_| {
-            player.set_small(true);
+            player.set_small(false);
         }));
         breakpoint.connect_unapply(clone!(@strong player => move |_| {
-            player.set_small(false);
+            player.set_small(true);
         }));
         window.add_breakpoint(breakpoint);
 
