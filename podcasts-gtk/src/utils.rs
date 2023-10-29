@@ -153,10 +153,17 @@ where
     let h1 = crate::MAINCONTEXT.spawn_local_with_priority(
         glib::source::Priority::DEFAULT_IDLE,
         async move {
+            let mut total_duration = Duration::default();
+            let mut count = 0;
+
             while let Some(item) = data.next() {
                 let start = Instant::now();
                 let widget = constructor(item);
-                trace!("Created single widget in: {:?}", start.elapsed());
+
+                let duration = start.elapsed();
+                trace!("Created single widget in: {:?}", duration);
+                total_duration += duration;
+                count += 1;
 
                 if let Err(err) = sender.send(widget).await {
                     debug!("Got SendError, Channel is closed: {}", err);
@@ -165,6 +172,8 @@ where
 
                 tokio::task::yield_now().await;
             }
+
+            debug!("Created {} widgets in: {:?}", count, total_duration);
         },
     );
 
@@ -213,10 +222,9 @@ where
         }
     }
 
-    trace!(
+    debug!(
         "Inserted {} widgets in: {:?}",
-        widget_count,
-        batch_construction_time_total
+        widget_count, batch_construction_time_total
     );
 }
 
