@@ -404,37 +404,39 @@ pub(crate) fn set_image_from_path(image: &gtk::Image, show_id: i32, size: u32) -
         });
     }
 
-    let image = image.clone();
     let s = size as i32;
-    glib::timeout_add_local(Duration::from_millis(25), move || {
-        match receiver.try_recv() {
-            Err(TryRecvError::Empty) => glib::ControlFlow::Continue,
-            Err(TryRecvError::Closed) => glib::ControlFlow::Break,
-            Ok(path) => {
-                match path {
-                    Ok(path) => {
-                        if let Ok(px) = Pixbuf::from_file_at_scale(path, s, s, true) {
-                            image.set_from_pixbuf(Some(&px));
+    glib::timeout_add_local(
+        Duration::from_millis(25),
+        clone!(@weak image => @default-return glib::ControlFlow::Break, move || {
+            match receiver.try_recv() {
+                Err(TryRecvError::Empty) => glib::ControlFlow::Continue,
+                Err(TryRecvError::Closed) => glib::ControlFlow::Break,
+                Ok(path) => {
+                    match path {
+                        Ok(path) => {
+                            if let Ok(px) = Pixbuf::from_file_at_scale(path, s, s, true) {
+                                image.set_from_pixbuf(Some(&px));
+                            }
+                        }
+                        Err(DownloadError::NoImageLocation) => {
+                            image.set_from_icon_name(Some("image-x-generic-symbolic"));
+                        }
+                        _ => {}
+                    }
+                    if let Ok(pd) = dbqueries::get_podcast_from_id(show_id) {
+                        if let Err(err) = pd.update_image_cache_values() {
+                            error!(
+                                "Failed to update the image's cache values for podcast {}: {}",
+                                pd.title(),
+                                err
+                            )
                         }
                     }
-                    Err(DownloadError::NoImageLocation) => {
-                        image.set_from_icon_name(Some("image-x-generic-symbolic"));
-                    }
-                    _ => {}
+                    glib::ControlFlow::Break
                 }
-                if let Ok(pd) = dbqueries::get_podcast_from_id(show_id) {
-                    if let Err(err) = pd.update_image_cache_values() {
-                        error!(
-                            "Failed to update the image's cache values for podcast {}: {}",
-                            pd.title(),
-                            err
-                        )
-                    }
-                }
-                glib::ControlFlow::Break
             }
-        }
-    });
+        }),
+    );
     Ok(())
 }
 
