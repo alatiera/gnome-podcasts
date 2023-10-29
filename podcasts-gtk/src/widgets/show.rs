@@ -147,10 +147,6 @@ impl ShowWidget {
 fn populate_listbox(show: &ShowWidget, pd: Arc<Show>, sender: Sender<Action>) -> Result<()> {
     let count = dbqueries::get_pd_episodes_count(&pd)?;
 
-    let episodes = gio::spawn_blocking(clone!(@strong pd => move || {
-        dbqueries::get_pd_episodeswidgets(&pd)
-    }));
-
     if count == 0 {
         let empty = EmptyShow::default();
         show.imp().episodes.append(&empty);
@@ -171,6 +167,10 @@ fn populate_listbox(show: &ShowWidget, pd: Arc<Show>, sender: Sender<Action>) ->
     crate::MAINCONTEXT.spawn_local_with_priority(
         glib::source::Priority::DEFAULT_IDLE,
         async move {
+            let episodes = gio::spawn_blocking(clone!(@strong pd => move || {
+                dbqueries::get_pd_episodeswidgets(&pd)
+            }));
+
             if let Ok(Ok(episodes)) = episodes.await {
                 let _ = lazy_load(episodes, listbox, constructor).await;
             }

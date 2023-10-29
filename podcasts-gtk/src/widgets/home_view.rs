@@ -103,13 +103,10 @@ impl HomeView {
     pub(crate) fn new(sender: Sender<Action>) -> Result<Self> {
         let home: Self = glib::Object::new();
 
-        let ignore = utils::get_ignored_shows()?;
-        let episodes = dbqueries::get_episodes_widgets_filter_limit(&ignore, 100)?;
-
         crate::MAINCONTEXT.spawn_local_with_priority(
             glib::source::Priority::DEFAULT_IDLE,
             glib::clone!(@weak home => async move {
-                let _ = home.add_to_boxes(episodes, sender).await;
+                let _ = home.add_to_boxes(sender).await;
             }),
         );
 
@@ -117,15 +114,11 @@ impl HomeView {
     }
 
     // FIMXE: there has to be a way to flatten the handes here
-    async fn add_to_boxes(
-        &self,
-        episodes: Vec<EpisodeWidgetModel>,
-        sender: Sender<Action>,
-    ) -> JoinAll<JoinAll<glib::JoinHandle<()>>> {
-        let data = gio::spawn_blocking(move || split_model(episodes)).await;
+    async fn add_to_boxes(&self, sender: Sender<Action>) -> JoinAll<JoinAll<glib::JoinHandle<()>>> {
+        let data = gio::spawn_blocking(get_episodes).await;
 
         let mut handles = Vec::with_capacity(5);
-        if let Ok(data) = data {
+        if let Ok(Ok(data)) = data {
             for datebox in data {
                 if datebox.1.is_empty() {
                     continue;
@@ -171,6 +164,12 @@ impl HomeView {
         let list = list.upcast_ref::<gtk::Widget>().downgrade();
         lazy_load(model, list, constructor.clone()).await
     }
+}
+
+fn get_episodes() -> Result<Vec<DateBox>> {
+    let ignore = utils::get_ignored_shows()?;
+    let episodes = dbqueries::get_episodes_widgets_filter_limit(&ignore, 100)?;
+    Ok(split_model(episodes))
 }
 
 fn split(now: &DateTime<Utc>, epoch: i64) -> ListSplit {

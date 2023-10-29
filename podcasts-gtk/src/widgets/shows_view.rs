@@ -19,6 +19,7 @@
 
 use adw::subclass::prelude::*;
 use glib::clone;
+use gtk::gio;
 use gtk::glib;
 use gtk::{prelude::*, Align, SelectionMode};
 
@@ -70,19 +71,26 @@ impl BinImpl for ShowsViewPriv {}
 
 impl ShowsViewPriv {
     fn populate_flowbox(&self) -> Result<()> {
-        let ignore = get_ignored_shows()?;
-        let podcasts = dbqueries::get_podcasts_filter(&ignore)?;
-
         let flowbox = self.flowbox.clone().upcast_ref::<gtk::Widget>().downgrade();
         crate::MAINCONTEXT.spawn_local_with_priority(
             glib::source::Priority::DEFAULT_IDLE,
             async move {
-                let _ = lazy_load(podcasts, flowbox, create_show_child).await;
+                let data = gio::spawn_blocking(get_episodes).await;
+
+                if let Ok(Ok(podcasts)) = data {
+                    let _ = lazy_load(podcasts, flowbox, create_show_child).await;
+                }
             },
         );
 
         Ok(())
     }
+}
+
+fn get_episodes() -> Result<Vec<Show>> {
+    let ignore = get_ignored_shows()?;
+    let podcasts = dbqueries::get_podcasts_filter(&ignore)?;
+    Ok(podcasts)
 }
 
 // TODO: Make this a widget
