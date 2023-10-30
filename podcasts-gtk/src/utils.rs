@@ -150,9 +150,8 @@ where
     let (sender, receiver) = unbounded::<W>();
     let mut data = data.into_iter();
 
-    let h1 = crate::MAINCONTEXT.spawn_local_with_priority(
-        glib::source::Priority::DEFAULT_IDLE,
-        async move {
+    let h1 =
+        crate::MAINCONTEXT.spawn_local_with_priority(glib::source::Priority::LOW, async move {
             let mut total_duration = Duration::default();
             let mut count = 0;
 
@@ -174,8 +173,7 @@ where
             }
 
             debug!("Created {} widgets in: {:?}", count, total_duration);
-        },
-    );
+        });
 
     let h2 = crate::MAINCONTEXT.spawn_local_with_priority(
         glib::source::Priority::DEFAULT_IDLE,
