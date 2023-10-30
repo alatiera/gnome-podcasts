@@ -84,7 +84,7 @@ impl Content {
 
     pub(crate) fn update(&self) {
         self.update_home();
-        self.update_shows();
+        self.update_shows_view();
     }
 
     pub(crate) fn update_home(&self) {
@@ -99,14 +99,6 @@ impl Content {
         if self.stack.visible_child_name() != Some("home".into()) {
             self.update_home();
         }
-    }
-
-    fn update_shows(&self) {
-        self.shows
-            .borrow_mut()
-            .update()
-            .map_err(|err| error!("Failed to update ShowsView: {}", err))
-            .ok();
     }
 
     pub(crate) fn update_shows_view(&self) {
