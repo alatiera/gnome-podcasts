@@ -185,12 +185,6 @@ impl EpisodeWidgetPriv {
         episode: &EpisodeWidgetModel,
         sender: &Sender<Action>,
     ) -> Result<()> {
-        // Reset the buttons state no matter the glade file.
-        // This is just to make it easier to port to relm in the future.
-        self.cancel.set_visible(false);
-        self.play.set_visible(false);
-        self.download.set_visible(false);
-
         // Check if the episode is being downloaded
         let id = episode.rowid();
         let active_dl = move || -> Result<Option<_>> {

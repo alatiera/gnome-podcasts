@@ -69,6 +69,7 @@ Tobias Bernard
                   <object class="GtkImage" id="played_checkmark">
                     <property name="tooltip_text" translatable="yes">You’ve already listened to this episode.</property>
                     <property name="icon_name">object-select-symbolic</property>
+                    <property name="visible">False</property>
                     <style>
                       <class name="dim-label"/>
                     </style>
@@ -193,6 +194,7 @@ Tobias Bernard
                 <property name="halign">center</property>
                 <property name="valign">center</property>
                 <property name="icon_name">media-playback-stop-symbolic</property>
+                <property name="visible">False</property>
                 <style>
                   <class name="flat"/>
                 </style>
@@ -204,6 +206,7 @@ Tobias Bernard
                 <property name="tooltip_text" translatable="yes">Download this episode</property>
                 <property name="halign">center</property>
                 <property name="valign">center</property>
+                <property name="visible">False</property>
                 <property name="icon_name">document-save-symbolic</property>
                 <style>
                   <class name="flat"/>
