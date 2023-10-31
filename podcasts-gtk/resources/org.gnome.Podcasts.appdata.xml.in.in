@@ -148,8 +148,17 @@
   <project_group>GNOME</project_group>
   <update_contact>jpetridis@gnome.org</update_contact>
   <developer_name>The Podcasts developers</developer_name>
+  <categories>
+    <category>GNOME</category>
+    <category>GTK</category>
+    <category>AudioVideo</category>
+    <category>Audio</category>
+  </categories>
+  <keywords>
+    <keyword>Podcast</keyword>
+    <keyword>RSS</keyword>
+  </keywords>
   <custom>
-    <value key="Purism::form_factor">workstation</value>
     <value key="Purism::form_factor">mobile</value>
     <value key="GnomeSoftware::key-colors">[(250, 181, 174)]</value>
   </custom>
