@@ -151,7 +151,6 @@
   <categories>
     <category>GNOME</category>
     <category>GTK</category>
-    <category>AudioVideo</category>
     <category>Audio</category>
   </categories>
   <keywords>
@@ -159,7 +158,6 @@
     <keyword>RSS</keyword>
   </keywords>
   <custom>
-    <value key="Purism::form_factor">mobile</value>
     <value key="GnomeSoftware::key-colors">[(250, 181, 174)]</value>
   </custom>
 </component>
