@@ -32,7 +32,7 @@ Please [open an issue][new_issue] and choose the `BrokenFeed` template so we wil
 ## Getting in Touch
 
 If you have any questions regarding the use or development of GNOME Podcasts,
-want to discuss design or simply hang out, please join us on our [irc][irc] or [matrix][matrix] channel.
+want to discuss design or simply hang out, please join us on our [matrix][matrix] channel.
 
 ## Building
 
@@ -133,8 +133,7 @@ We also copied some elements from [GNOME News][news].
 And almost the entirety of the build system is copied from the [Fractal][fractal] project.
 
 [vendor]: https://doc.rust-lang.org/cargo/commands/cargo-vendor.html
-[irc]: irc://irc.gnome.org/#hammond
-[matrix]: https://matrix.to/#/#gnome-podcasts:matrix.org
+[matrix]: https://matrix.to/#/#podcasts:gnome.org
 [flatpak_setup]: https://flatpak.org/setup/
 [music]: https://wiki.gnome.org/Design/Apps/Music
 [vocal]: http://vocalproject.net/
