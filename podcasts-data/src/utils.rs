@@ -237,7 +237,7 @@ mod tests {
     use super::*;
     use anyhow::Result;
     use chrono::Duration;
-    use tempdir::TempDir;
+    use tempfile::TempDir;
 
     use crate::database::truncate_db;
     use crate::models::NewEpisodeBuilder;
@@ -249,7 +249,7 @@ mod tests {
         // Clean the db
         truncate_db()?;
         // Setup tmp file stuff
-        let tmp_dir = TempDir::new("podcasts_test")?;
+        let tmp_dir = TempDir::with_prefix("podcasts_test")?;
         let valid_path = tmp_dir.path().join("virtual_dl.mp3");
         let bad_path = tmp_dir.path().join("invalid_thing.mp3");
         let mut tmp_file = File::create(&valid_path)?;

@@ -49,8 +49,8 @@ static DB_PATH: Lazy<PathBuf> = Lazy::new(|| {
 });
 
 #[cfg(test)]
-pub(crate) static TEMPDIR: Lazy<tempdir::TempDir> =
-    Lazy::new(|| tempdir::TempDir::new("podcasts_unit_test").unwrap());
+pub(crate) static TEMPDIR: Lazy<tempfile::TempDir> =
+    Lazy::new(|| tempfile::TempDir::with_prefix("podcasts_unit_test").unwrap());
 
 #[cfg(test)]
 static DB_PATH: Lazy<PathBuf> = Lazy::new(|| TEMPDIR.path().join("podcasts.db"));

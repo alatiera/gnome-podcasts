@@ -20,7 +20,7 @@
 use glob::glob;
 use reqwest::header::*;
 use reqwest::redirect::Policy;
-use tempdir::TempDir;
+use tempfile::TempDir;
 
 use std::fs;
 use std::fs::{copy, remove_file, File};
@@ -120,7 +120,7 @@ async fn download_into(
     // Construct a temp file to save desired content.
     // It has to be a `new_in` instead of new cause rename can't move cross
     // filesystems.
-    let tempdir = TempDir::new_in(PODCASTS_CACHE.to_str().unwrap(), "temp_download")?;
+    let tempdir = TempDir::with_prefix_in("temp_download", PODCASTS_CACHE.to_str().unwrap())?;
     let out_file = format!("{}/temp.part", tempdir.path().to_str().unwrap(),);
 
     if let Some(ct_len) = ct_len {

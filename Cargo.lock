@@ -1952,7 +1952,7 @@ dependencies = [
  "reqwest",
  "rfc822_sanitizer",
  "rss",
- "tempdir",
+ "tempfile",
  "thiserror",
  "tokio",
  "url",
@@ -2529,16 +2529,6 @@ name = "temp-dir"
 version = "0.1.11"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "af547b166dd1ea4b472165569fc456cfb6818116f854690b0ff205e636523dab"
-
-[[package]]
-name = "tempdir"
-version = "0.3.7"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "15f2b5fb00ccdf689e0149d1b1b3c03fead81c2b37735d812fa8bddbbf41b6d8"
-dependencies = [
- "rand 0.4.6",
- "remove_dir_all",
-]
 
 [[package]]
 name = "tempfile"
