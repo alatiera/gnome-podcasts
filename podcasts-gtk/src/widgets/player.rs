@@ -48,8 +48,7 @@ use std::sync::Mutex;
 
 use crate::i18n::i18n;
 
-use mpris_player::{Metadata, MprisPlayer, OrgMprisMediaPlayer2Player, PlaybackStatus};
-use std::sync::Arc;
+use mpris_server::{Metadata, PlaybackStatus, Player};
 
 #[derive(Debug, Clone, Copy)]
 enum SeekDirection {
@@ -75,7 +74,7 @@ struct PlayerInfo {
     show_small: gtk::Label,
     episode_small: gtk::Label,
     cover_small: gtk::Image,
-    mpris: Arc<MprisPlayer>,
+    mpris: Rc<Player>,
     restore_position: i32,
     finished_restore: bool,
     ep: Option<EpisodeWidgetModel>,
@@ -103,26 +102,39 @@ impl PlayerInfo {
         self.set_episode_title(episode);
 
         let mut metadata = Metadata::new();
-        metadata.artist = Some(vec![podcast.title().to_string()]);
-        metadata.title = Some(episode.title().to_string());
+        metadata.set_artist(Some(vec![podcast.title().to_string()]));
+        metadata.set_title(Some(episode.title().to_string()));
 
         // Set the cover if it is already cached.
         if let Some(path) = downloader::check_for_cached_cover(podcast)
             .as_ref()
             .and_then(|p| p.to_str())
         {
-            let url = Url::from_file_path(path);
-            metadata.art_url = url.map(From::from).ok();
+            metadata.set_art_url(Url::from_file_path(path).ok());
         } else {
             // fallback: set the cover to the http url if it isn't cached, yet.
             // TODO we could trigger an async download of the cover here
             // and update the metadata when it's done.
-            metadata.art_url = podcast.image_uri().map(From::from);
+            metadata.set_art_url(podcast.image_uri());
         }
 
-        self.mpris.set_metadata(metadata);
-        self.mpris.set_can_play(true);
-        self.mpris.set_can_seek(true);
+        crate::MAINCONTEXT.spawn_local_with_priority(
+            glib::source::Priority::LOW,
+            clone!(@weak self.mpris as mpris => async move {
+                if let Err(err) = mpris.set_metadata(metadata).await {
+                    warn!("Failed to set MPRIS metadata: {err:?}");
+                }
+                if let Err(err) = mpris.set_can_pause(true).await {
+                    warn!("Failed to set MPRIS pause capability: {err:?}");
+                }
+                if let Err(err) = mpris.set_can_play(true).await {
+                    warn!("Failed to set MPRIS play capability: {err:?}");
+                }
+                if let Err(err) = mpris.set_can_seek(true).await {
+                    warn!("Failed to set MPRIS seek capability: {err:?}");
+                }
+            }),
+        );
     }
 
     fn set_episode_title(&self, episode: &EpisodeWidgetModel) {
@@ -368,13 +380,26 @@ impl Default for PlayerWidget {
         // window. Make sure it doesn't do that.
         player.set_video_track_enabled(false);
 
-        let mpris = MprisPlayer::new(APP_ID.to_string(), i18n("Podcasts"), APP_ID.to_string());
-        mpris.set_can_raise(true);
-        mpris.set_can_play(false);
-        mpris.set_can_seek(false);
-        mpris.set_can_set_fullscreen(false);
-        mpris.set_can_go_next(false);
-        mpris.set_can_go_previous(false);
+        let mpris = Rc::new(
+            Player::builder(APP_ID)
+                .identity(i18n("Podcasts"))
+                .desktop_entry(APP_ID)
+                .can_raise(true)
+                .can_pause(false)
+                .can_play(false)
+                .can_seek(false)
+                .can_set_fullscreen(false)
+                .can_go_next(false)
+                .can_go_previous(false)
+                .build(),
+        );
+
+        let mpris_task = mpris.init_and_run();
+        crate::MAINCONTEXT.spawn_local_with_priority(glib::source::Priority::LOW, async move {
+            if let Err(err) = mpris_task.await {
+                error!("Failed to run MPRIS server: {err:?}");
+            }
+        });
 
         let mut config = player.config();
         config.set_user_agent(USER_AGENT);
@@ -600,7 +625,14 @@ impl PlayerExt for PlayerWidget {
 
         self.smart_rewind();
         self.player.play();
-        self.info.mpris.set_playback_status(PlaybackStatus::Playing);
+        crate::MAINCONTEXT.spawn_local_with_priority(
+            glib::source::Priority::LOW,
+            clone!(@weak self.info.mpris as mpris => async move {
+                if let Err(err) = mpris.set_playback_status(PlaybackStatus::Playing).await {
+                    warn!("Failed to set MPRIS playback status: {err:?}");
+                }
+            }),
+        );
         if let Some(sender) = &self.sender {
             send!(sender, Action::InhibitSuspend);
         }
@@ -616,7 +648,14 @@ impl PlayerExt for PlayerWidget {
             .set_visible_child(&self.controls.play_small);
 
         self.player.pause();
-        self.info.mpris.set_playback_status(PlaybackStatus::Paused);
+        crate::MAINCONTEXT.spawn_local_with_priority(
+            glib::source::Priority::LOW,
+            clone!(@weak self.info.mpris as mpris => async move {
+                if let Err(err) = mpris.set_playback_status(PlaybackStatus::Paused).await {
+                    warn!("Failed to set MPRIS playback status: {err:?}");
+                }
+            }),
+        );
         if let Some(sender) = &self.sender {
             send!(sender, Action::UninhibitSuspend);
         }
@@ -654,7 +693,14 @@ impl PlayerExt for PlayerWidget {
         self.info.ep = None;
         self.info.restore_position = 0;
         self.player.stop();
-        self.info.mpris.set_playback_status(PlaybackStatus::Paused);
+        crate::MAINCONTEXT.spawn_local_with_priority(
+            glib::source::Priority::LOW,
+            clone!(@weak self.info.mpris as mpris => async move {
+                if let Err(err) = mpris.set_playback_status(PlaybackStatus::Paused).await {
+                    warn!("Failed to set MPRIS playback status: {err:?}");
+                }
+            }),
+        );
 
         // Reset the slider bar to the start
 
@@ -962,66 +1008,50 @@ impl PlayerWrapper {
     }
 
     fn connect_mpris_buttons(&self, sender: &Sender<Action>) {
-        let weak = Rc::downgrade(self);
         let widget = self.borrow();
 
-        // FIXME: Reference cycle with mpris
-        let mpris = widget.info.mpris.clone();
         widget
             .info
             .mpris
-            .connect_play_pause(clone!(@strong weak => move || {
-                let player = match weak.upgrade() {
-                    Some(s) => s,
-                    None => return
+            .connect_play_pause(clone!(@strong self as player => move |mpris| {
+                match mpris.playback_status() {
+                    PlaybackStatus::Paused => player.borrow().play(),
+                    PlaybackStatus::Stopped => player.borrow().play(),
+                    _ => player.borrow_mut().pause(),
                 };
-
-                if let Ok(status) = mpris.get_playback_status() {
-                    match status.as_ref() {
-                        "Paused" => player.borrow().play(),
-                        "Stopped" => player.borrow().play(),
-                        _ => player.borrow_mut().pause(),
-                    };
-                }
             }));
         widget
             .info
             .mpris
-            .connect_play(clone!(@strong weak => move || {
-                let player = match weak.upgrade() {
-                    Some(s) => s,
-                    None => return
-                };
-
+            .connect_play(clone!(@strong self as player => move |_| {
                 player.borrow().play();
             }));
 
         widget
             .info
             .mpris
-            .connect_pause(clone!(@strong weak => move || {
-                let player = match weak.upgrade() {
-                    Some(s) => s,
-                    None => return
-                };
-
+            .connect_pause(clone!(@strong self as player => move |_| {
                 player.borrow_mut().pause();
             }));
 
-        widget
-            .info
-            .mpris
-            .connect_seek(clone!(@strong weak => move |offset: i64| {
-                if let Some(p) = weak.upgrade() {
-                    let direction = if offset > 0 { SeekDirection::Forward } else { SeekDirection::Backwards };
-                    p.borrow().seek(ClockTime::from_useconds(offset.unsigned_abs()), direction);
-                }
-            }));
+        widget.info.mpris.connect_seek(
+            clone!(@strong self as player => move |_, offset: mpris_server::Time| {
+                let direction = if offset.is_positive() {
+                    SeekDirection::Forward
+                } else {
+                    SeekDirection::Backwards
+                };
+                player.borrow().seek(
+                    ClockTime::from_useconds(offset.as_micros().unsigned_abs()),
+                    direction,
+                );
+            }),
+        );
 
         widget
             .info
             .mpris
-            .connect_raise(clone!(@strong sender => move || {
+            .connect_raise(clone!(@strong sender => move |_| {
                 send!(sender, Action::RaiseWindow);
             }));
     }

@@ -35,10 +35,8 @@ package = "gtk4"
 version = "0.7.0"
 features = ["gnome_44"]
 
-[dependencies.mpris-player]
-# git = "https://gitlab.gnome.org/World/Rust/mpris-player.git"
-# rev = "42d17a430cd0df2ee03f97f65bbe5a0992b9f868"
-version = "0.6"
+[dependencies.mpris-server]
+version = "0.4"
 
 [dependencies.podcasts-data]
 path = "../podcasts-data"
