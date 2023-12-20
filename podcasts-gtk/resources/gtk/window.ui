@@ -12,7 +12,6 @@
     <child>
       <object class="AdwBreakpoint" id="header_breakpoint">
         <condition>max-width: 550sp</condition>
-        <setter object="bottom_switcher" property="reveal">True</setter>
       </object>
     </child>
     <property name="content">
