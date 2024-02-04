@@ -50,3 +50,8 @@ popover modelbutton > box > label {
 .show_button {
     padding: 0px;
 }
+
+.taller-button {
+    padding-top: 4px;
+    padding-bottom: 4px;
+}

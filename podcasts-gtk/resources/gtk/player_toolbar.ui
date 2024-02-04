@@ -41,28 +41,45 @@ Tobias Bernard
             <child>
               <object class="GtkBox" id="buttons">
                 <property name="valign">center</property>
+                <property name="margin-start">6</property>
+                <property name="margin-end">6</property>
                 <child>
                   <object class="GtkButton" id="rewind_button">
                     <property name="width_request">42</property>
                     <property name="receives_default">True</property>
                     <property name="tooltip_text" translatable="yes">Rewind 10 seconds</property>
                     <property name="icon_name">skip-back-symbolic</property>
+                    <style>
+                      <class name="flat"/>
+                      <class name="circular"/>
+                      <class name="taller-button"/>
+                    </style>
                   </object>
                 </child>
                 <child>
                   <object class="GtkButton" id="play_button">
-                    <property name="width_request">60</property>
+                    <property name="width_request">64</property>
                     <property name="receives_default">True</property>
                     <property name="tooltip_text" translatable="yes">Play</property>
                     <property name="icon_name">media-playback-start-symbolic</property>
+                    <style>
+                      <class name="flat"/>
+                      <class name="circular"/>
+                      <class name="taller-button"/>
+                    </style>
                   </object>
                 </child>
                 <child>
                   <object class="GtkButton" id="pause_button">
-                    <property name="width_request">60</property>
+                    <property name="width_request">70</property>
                     <property name="receives_default">True</property>
                     <property name="tooltip_text" translatable="yes">Pause</property>
                     <property name="icon_name">media-playback-pause-symbolic</property>
+                    <style>
+                      <class name="flat"/>
+                      <class name="circular"/>
+                      <class name="taller-button"/>
+                    </style>
                   </object>
                 </child>
                 <child>
@@ -71,10 +88,14 @@ Tobias Bernard
                     <property name="receives_default">True</property>
                     <property name="tooltip_text" translatable="yes">Fast forward 10 seconds</property>
                     <property name="icon_name">skip-forward-symbolic</property>
+                    <style>
+                      <class name="flat"/>
+                      <class name="circular"/>
+                      <class name="taller-button"/>
+                    </style>
                   </object>
                 </child>
                 <style>
-                  <class name="linked"/>
                 </style>
               </object>
             </child>
