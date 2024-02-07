@@ -23,7 +23,7 @@ Jordan Petridis
 Tobias Bernard
 
 -->
-<interface domain="">
+<interface>
   <!-- interface-license-type gplv3 -->
   <!-- interface-name GNOME Podcasts -->
   <!-- interface-description A podcast client for the GNOME Desktop -->
