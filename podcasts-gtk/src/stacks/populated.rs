@@ -19,7 +19,6 @@
 
 use gtk::glib;
 use gtk::prelude::*;
-use gtk::StackTransitionType;
 
 use anyhow::Result;
 use glib::Sender;
@@ -32,40 +31,25 @@ use crate::widgets::{ShowWidget, ShowsView};
 
 use std::sync::Arc;
 
-#[derive(Debug, Clone, Copy)]
-pub(crate) enum PopulatedState {
-    View,
-    Widget,
-}
-
 #[derive(Debug, Clone)]
 pub(crate) struct PopulatedStack {
     container: gtk::Box,
     populated: ShowsView,
     show: ShowWidget,
-    stack: gtk::Stack,
-    state: PopulatedState,
     sender: Sender<Action>,
 }
 
 impl PopulatedStack {
     pub(crate) fn new(sender: Sender<Action>) -> PopulatedStack {
-        let stack = gtk::Stack::new();
-        let state = PopulatedState::View;
         let populated = ShowsView::new();
         let show = ShowWidget::default();
         let container = gtk::Box::new(gtk::Orientation::Horizontal, 0);
-
-        stack.add_named(populated.view(), Some("shows"));
-        stack.add_named(&show, Some("widget"));
-        container.append(&stack);
+        container.append(populated.view());
 
         PopulatedStack {
             container,
-            stack,
             populated,
             show,
-            state,
             sender,
         }
     }
@@ -79,9 +63,7 @@ impl PopulatedStack {
         // The current visible child might change depending on
         // removal and insertion in the gtk::Stack, so we have
         // to make sure it will stay the same.
-        let s = self.state;
         self.replace_shows()?;
-        self.switch_visible(s, StackTransitionType::Crossfade);
 
         Ok(())
     }
@@ -90,30 +72,24 @@ impl PopulatedStack {
         let old = &self.populated.view().clone();
         debug!("Name: {:?}", old.widget_name());
 
-        let pop = ShowsView::new();
-        self.populated = pop;
-        self.stack.remove(old);
-        self.stack.add_named(self.populated.view(), Some("shows"));
+        self.populated = ShowsView::new();
+
+        // TODO In the main window go to the "show" navigation page, and remove
+        // its `child`.
 
         Ok(())
     }
 
-    pub(crate) fn replace_widget(&mut self, pd: Arc<Show>) -> Result<()> {
-        let old = self.show.clone();
-
+    pub(crate) fn replace_widget(&mut self, pd: Arc<Show>) -> Result<ShowWidget> {
         let new = ShowWidget::new(pd, self.sender.clone());
 
-        self.show = new;
-        self.stack.remove(&old);
-        self.stack.add_named(&self.show, Some("widget"));
+        self.show = new.clone();
 
-        // The current visible child might change depending on
-        // removal and insertion in the gtk::Stack, so we have
-        // to make sure it will stay the same.
-        let s = self.state;
-        self.switch_visible(s, StackTransitionType::None);
+        // TODO in the main window go to the "show" navigation page, and replace
+        // its `child` with `new`. We call this from window, avoid doing it
+        // twice.
 
-        Ok(())
+        Ok(new)
     }
 
     pub(crate) fn update_widget(&mut self) -> Result<()> {
@@ -124,12 +100,6 @@ impl PopulatedStack {
 
         let pd = dbqueries::get_podcast_from_id(id.unwrap_or_default())?;
         self.replace_widget(Arc::new(pd))?;
-
-        // The current visible child might change depending on
-        // removal and insertion in the gtk::Stack, so we have
-        // to make sure it will stay the same.
-        let s = self.state;
-        self.switch_visible(s, StackTransitionType::Crossfade);
 
         Ok(())
     }
@@ -146,24 +116,5 @@ impl PopulatedStack {
 
     pub(crate) fn container(&self) -> gtk::Box {
         self.container.clone()
-    }
-
-    pub(crate) fn switch_visible(&mut self, state: PopulatedState, animation: StackTransitionType) {
-        use self::PopulatedState::*;
-
-        match state {
-            View => {
-                self.stack.set_visible_child_full("shows", animation);
-                self.state = View;
-            }
-            Widget => {
-                self.stack.set_visible_child_full("widget", animation);
-                self.state = Widget;
-            }
-        }
-    }
-
-    pub(crate) fn populated_state(&self) -> PopulatedState {
-        self.state
     }
 }

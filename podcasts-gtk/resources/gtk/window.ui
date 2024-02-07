@@ -26,6 +26,12 @@
                 </property>
               </object>
             </child>
+            <child>
+              <object class="AdwNavigationPage" id="show_page">
+                <property name="title" translatable="yes">Show</property>
+                <property name="tag">show</property>
+              </object>
+            </child>
           </object>
         </property>
       </object>

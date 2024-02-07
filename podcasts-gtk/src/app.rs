@@ -26,12 +26,10 @@ use gtk::{gio, glib};
 use gettextrs::{bindtextdomain, setlocale, textdomain, LocaleCategory};
 
 use anyhow::Result;
-use fragile::Fragile;
 use podcasts_data::dbqueries;
 use podcasts_data::{Episode, Show, Source};
 
 use crate::settings;
-use crate::stacks::PopulatedState;
 use crate::utils;
 use crate::widgets::show_menu::{mark_all_notif, remove_show_notif};
 use crate::widgets::EpisodeDescription;
@@ -144,12 +142,8 @@ pub(crate) enum Action {
     RefreshShowsView,
     ReplaceWidget(Arc<Show>),
     RefreshWidgetIfSame(i32),
-    ShowWidgetAnimated,
-    ShowShowsAnimated,
     GoToEpisodeDescription(Arc<Show>, Arc<Episode>),
     GoToShow(Arc<Show>),
-    HeaderBarShowTile,
-    HeaderBarNormal,
     CopiedUrlNotification,
     MarkAllPlayerNotification(Arc<Show>),
     UpdateFeed(Option<Vec<Source>>),
@@ -160,7 +154,6 @@ pub(crate) enum Action {
     ErrorNotification(String),
     InitEpisode(i32),
     InitEpisodeAt(i32, i32),
-    InitSecondaryMenu(Fragile<gio::MenuModel>),
     EmptyState,
     PopulatedState,
     RaiseWindow,
@@ -237,16 +230,8 @@ impl PdApplication {
                 .build(),
             gio::ActionEntryBuilder::new("go-back")
                 .activate(|app: &Self, _, _| {
-                    let data = app.imp();
                     if app.go_back_on_deck() {
                         return;
-                    }
-                    let shows = data.window.borrow().as_ref().unwrap().content().get_shows();
-                    let pop = shows.borrow().populated();
-                    let pop = pop.borrow();
-                    if let PopulatedState::Widget = pop.populated_state() {
-                        send!(data.sender, Action::HeaderBarNormal);
-                        send!(data.sender, Action::ShowShowsAnimated);
                     }
                 })
                 .build(),
@@ -331,46 +316,13 @@ impl PdApplication {
             Action::RefreshWidgetIfSame(id) => window.content().update_widget_if_same(id),
             Action::RefreshEpisodesView => window.content().update_home(),
             Action::RefreshEpisodesViewBGR => window.content().update_home_if_background(),
-            Action::ReplaceWidget(pd) => {
-                let shows = window.content().get_shows();
-                let pop = shows.borrow().populated();
-                pop.borrow_mut()
-                    .replace_widget(pd.clone())
-                    .map_err(|err| error!("Failed to update ShowWidget: {}", err))
-                    .map_err(|_| error!("Failed to update ShowWidget {}", pd.title()))
-                    .ok();
-            }
-            Action::ShowWidgetAnimated => {
-                window.go_back();
-                let shows = window.content().get_shows();
-                let pop = shows.borrow().populated();
-                window.content().get_stack().set_visible_child_name("shows");
-                pop.borrow_mut()
-                    .switch_visible(PopulatedState::Widget, gtk::StackTransitionType::SlideLeft);
-            }
-            Action::ShowShowsAnimated => {
-                window.go_back();
-                let shows = window.content().get_shows();
-                let pop = shows.borrow().populated();
-                pop.borrow_mut()
-                    .switch_visible(PopulatedState::View, gtk::StackTransitionType::SlideRight);
-            }
+            Action::ReplaceWidget(pd) => window.replace_show_widget(Some(pd)),
             Action::GoToEpisodeDescription(show, ep) => {
                 let description_widget = EpisodeDescription::new(ep, show, window.sender().clone());
                 window.push_page(&description_widget);
             }
             Action::GoToShow(pd) => {
-                self.do_action(Action::HeaderBarShowTile);
                 self.do_action(Action::ReplaceWidget(pd));
-                self.do_action(Action::ShowWidgetAnimated);
-            }
-            Action::HeaderBarShowTile => {
-                window.headerbar().switch_to_back();
-                window.set_toolbar_visible(false);
-            }
-            Action::HeaderBarNormal => {
-                window.headerbar().switch_to_normal();
-                window.set_toolbar_visible(true);
             }
             Action::CopiedUrlNotification => {
                 let text = i18n("Copied URL to clipboard!");
@@ -427,10 +379,6 @@ impl PdApplication {
             Action::InitEpisodeAt(rowid, second) => {
                 let res = window.init_episode(rowid, Some(second));
                 debug_assert!(res.is_ok());
-            }
-            Action::InitSecondaryMenu(s) => {
-                let menu = &s.get();
-                window.headerbar().set_secondary_menu(menu);
             }
             Action::EmptyState => {
                 if let Some(refresh_action) = window

@@ -38,6 +38,7 @@ use crate::widgets::player;
 use std::cell::{Cell, OnceCell, RefCell};
 use std::ops::Deref;
 use std::rc::Rc;
+use std::sync::Arc;
 
 use crate::config::APP_ID;
 
@@ -65,6 +66,8 @@ pub struct MainWindowPriv {
     pub(crate) header_breakpoint: TemplateChild<adw::Breakpoint>,
     #[template_child]
     pub(crate) player_breakpoint: TemplateChild<adw::Breakpoint>,
+    #[template_child]
+    pub(crate) show_page: TemplateChild<adw::NavigationPage>,
 
     #[property(set, get)]
     pub(crate) updating: Cell<bool>,
@@ -88,6 +91,7 @@ impl ObjectSubclass for MainWindowPriv {
             toolbar_view: TemplateChild::default(),
             header_breakpoint: TemplateChild::default(),
             player_breakpoint: TemplateChild::default(),
+            show_page: TemplateChild::default(),
             bottom_switcher: adw::ViewSwitcherBar::new(),
             progress_bar: OnceCell::new(),
             updating: Cell::new(false),
@@ -268,7 +272,21 @@ impl MainWindow {
         self.imp().sender.get().unwrap()
     }
 
-    pub(crate) fn set_toolbar_visible(&self, visible: bool) {
-        self.imp().bottom_switcher.set_visible(visible);
+    pub(crate) fn replace_show_widget(&self, pd: Option<Arc<podcasts_data::Show>>) {
+        let imp = self.imp();
+        let shows = self.content().get_shows();
+        let pop = shows.borrow().populated();
+        if let Some(pd) = pd {
+            match pop.borrow_mut().replace_widget(pd.clone()) {
+                Ok(widget) => {
+                    imp.show_page.set_title(pd.title());
+                    imp.show_page.set_child(Some(&widget));
+                    imp.navigation_view.push_by_tag("show");
+                }
+                Err(err) => log::error!("Could not replace show: {err}"),
+            };
+        } else {
+            imp.show_page.set_child(gtk::Widget::NONE);
+        }
     }
 }

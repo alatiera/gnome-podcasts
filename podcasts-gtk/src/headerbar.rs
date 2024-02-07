@@ -40,10 +40,7 @@ use crate::i18n::i18n;
 pub(crate) struct Header {
     pub(crate) container: adw::HeaderBar,
     pub(crate) switch: adw::ViewSwitcher,
-    back: gtk::Button,
-    hamburger: gtk::MenuButton,
     add: AddPopover,
-    dots: gtk::MenuButton,
 }
 
 #[derive(Debug, Clone)]
@@ -51,7 +48,6 @@ struct AddPopover {
     container: gtk::Popover,
     entry: gtk::Entry,
     add: gtk::Button,
-    toggle: gtk::MenuButton,
 }
 
 async fn add_podcast_from_url(url_input: String, sender: &Sender<Action>) -> Result<()> {
@@ -174,34 +170,25 @@ impl Default for Header {
 
         let header = builder.object("headerbar").unwrap();
         let switch: adw::ViewSwitcher = builder.object("switch").unwrap();
-        let back = builder.object("back").unwrap();
 
         // The hamburger menu
         let hamburger: gtk::MenuButton = builder.object("hamburger").unwrap();
         let app_menu: gio::MenuModel = menus.object("menu").unwrap();
         hamburger.set_menu_model(Some(&app_menu));
 
-        // The 3 dots secondary menu
-        let dots = builder.object("secondary_menu").unwrap();
-
-        let add_toggle = builder.object("add_toggle").unwrap();
         let add_popover = builder.object("add_popover").unwrap();
         let new_url = builder.object("new_url").unwrap();
         let add_button = builder.object("add_button").unwrap();
         let add = AddPopover {
             container: add_popover,
             entry: new_url,
-            toggle: add_toggle,
             add: add_button,
         };
 
         Header {
             container: header,
             switch,
-            back,
-            hamburger,
             add,
-            dots,
         }
     }
 }
@@ -236,29 +223,5 @@ impl Header {
                         s.add.on_add_clicked(&sender).unwrap();
                     }
             }));
-
-        s.back
-            .connect_clicked(clone!(@weak s, @strong sender => move |_| {
-                send!(sender, Action::HeaderBarNormal);
-                send!(sender, Action::ShowShowsAnimated);
-            }));
-    }
-
-    pub(crate) fn switch_to_back(&self) {
-        self.add.toggle.set_visible(false);
-        self.back.set_visible(true);
-        self.hamburger.set_visible(false);
-        self.dots.set_visible(true);
-    }
-
-    pub(crate) fn switch_to_normal(&self) {
-        self.add.toggle.set_visible(true);
-        self.back.set_visible(false);
-        self.hamburger.set_visible(true);
-        self.dots.set_visible(false);
-    }
-
-    pub(crate) fn set_secondary_menu(&self, menu: &gio::MenuModel) {
-        self.dots.set_menu_model(Some(menu))
     }
 }

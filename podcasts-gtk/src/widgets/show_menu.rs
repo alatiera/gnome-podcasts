@@ -117,8 +117,6 @@ impl ShowMenu {
 
                 send!(sender, Action::RemoveShow(pd.clone()));
 
-                send!(sender, Action::HeaderBarNormal);
-                send!(sender, Action::ShowShowsAnimated);
                 // Queue a refresh after the switch to avoid blocking the db.
                 send!(sender, Action::RefreshShowsView);
                 send!(sender, Action::RefreshEpisodesView);

@@ -21,7 +21,6 @@ use glib::clone;
 use glib::Sender;
 
 use anyhow::Result;
-use fragile::Fragile;
 use gtk::gio;
 
 use podcasts_data::dbqueries;
@@ -30,14 +29,15 @@ use podcasts_data::Show;
 
 use crate::app::Action;
 use crate::utils::{self, lazy_load};
-use crate::widgets::{BaseView, EmptyShow, EpisodeWidget, ReadMoreLabel, ShowMenu};
+use crate::widgets::{EmptyShow, EpisodeWidget, ReadMoreLabel, ShowMenu};
 
 use std::cell::Cell;
 use std::sync::Arc;
 
+use adw::prelude::*;
+use adw::subclass::prelude::*;
 use gtk::glib;
-use gtk::subclass::prelude::*;
-use gtk::{prelude::*, CompositeTemplate};
+use gtk::CompositeTemplate;
 
 #[derive(Debug, Default, CompositeTemplate)]
 #[template(resource = "/org/gnome/Podcasts/gtk/show_widget.ui")]
@@ -49,7 +49,9 @@ pub struct ShowWidgetPriv {
     #[template_child]
     pub episodes: TemplateChild<gtk::ListBox>,
     #[template_child]
-    pub(crate) view: TemplateChild<BaseView>,
+    pub(crate) view: TemplateChild<gtk::Widget>,
+    #[template_child]
+    pub(crate) secondary_menu: TemplateChild<gtk::MenuButton>,
 
     pub show_id: Cell<Option<i32>>,
 }
@@ -114,7 +116,7 @@ impl ShowWidget {
         widget.init(&pd);
 
         let menu = ShowMenu::new(&pd, &widget.imp().episodes, &sender);
-        send!(sender, Action::InitSecondaryMenu(Fragile::new(menu.menu)));
+        widget.imp().secondary_menu.set_menu_model(Some(&menu.menu));
 
         let res = populate_listbox(&widget, pd, sender);
         debug_assert!(res.is_ok());
