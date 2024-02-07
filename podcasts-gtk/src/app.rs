@@ -316,7 +316,15 @@ impl PdApplication {
             Action::RefreshWidgetIfSame(id) => window.content().update_widget_if_same(id),
             Action::RefreshEpisodesView => window.content().update_home(),
             Action::RefreshEpisodesViewBGR => window.content().update_home_if_background(),
-            Action::ReplaceWidget(pd) => window.replace_show_widget(Some(pd)),
+            Action::ReplaceWidget(pd) => {
+                let shows = window.content().get_shows();
+                let pop = shows.borrow().populated();
+                pop.borrow_mut()
+                    .replace_widget(pd.clone())
+                    .map_err(|err| error!("Failed to update ShowWidget: {}", err))
+                    .map_err(|_| error!("Failed to update ShowWidget {}", pd.title()))
+                    .ok();
+            }
             Action::GoToEpisodeDescription(show, ep) => {
                 let description_widget = EpisodeDescription::new(ep, show, window.sender().clone());
                 window.push_page(&description_widget);

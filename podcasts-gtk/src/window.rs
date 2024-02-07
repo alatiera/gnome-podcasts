@@ -38,9 +38,9 @@ use crate::widgets::player;
 use std::cell::{Cell, OnceCell, RefCell};
 use std::ops::Deref;
 use std::rc::Rc;
-use std::sync::Arc;
 
 use crate::config::APP_ID;
+use crate::widgets::ShowWidget;
 
 #[derive(Debug, CompositeTemplate, glib::Properties)]
 #[template(resource = "/org/gnome/Podcasts/gtk/window.ui")]
@@ -170,6 +170,13 @@ impl MainWindow {
 
         // Create a content instance
         let content = Content::new(sender).expect("Content initialization failed.");
+        content
+            .get_shows()
+            .borrow()
+            .populated()
+            .borrow_mut()
+            .set_window(&window);
+
         let progress_bar = content.get_progress_bar();
         // Create the headerbar
         let header = Header::new(&content, sender);
@@ -272,21 +279,20 @@ impl MainWindow {
         self.imp().sender.get().unwrap()
     }
 
-    pub(crate) fn replace_show_widget(&self, pd: Option<Arc<podcasts_data::Show>>) {
+    pub(crate) fn replace_show_widget(&self, widget: Option<&ShowWidget>, title: &str) {
         let imp = self.imp();
-        let shows = self.content().get_shows();
-        let pop = shows.borrow().populated();
-        if let Some(pd) = pd {
-            match pop.borrow_mut().replace_widget(pd.clone()) {
-                Ok(widget) => {
-                    imp.show_page.set_title(pd.title());
-                    imp.show_page.set_child(Some(&widget));
-                    imp.navigation_view.push_by_tag("show");
-                }
-                Err(err) => log::error!("Could not replace show: {err}"),
-            };
-        } else {
-            imp.show_page.set_child(gtk::Widget::NONE);
+        let is_current_page = imp
+            .navigation_view
+            .visible_page()
+            .is_some_and(|p| p == *imp.show_page);
+        imp.show_page.set_child(widget);
+        if widget.is_some() {
+            imp.show_page.set_title(title);
+            if !is_current_page {
+                imp.navigation_view.push(&*imp.show_page);
+            }
+        } else if is_current_page {
+            imp.navigation_view.pop();
         }
     }
 }

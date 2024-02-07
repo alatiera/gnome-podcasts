@@ -22,12 +22,14 @@ use gtk::prelude::*;
 
 use anyhow::Result;
 use glib::Sender;
+use glib::WeakRef;
 
 use podcasts_data::dbqueries;
 use podcasts_data::Show;
 
 use crate::app::Action;
 use crate::widgets::{ShowWidget, ShowsView};
+use crate::window::MainWindow;
 
 use std::sync::Arc;
 
@@ -37,6 +39,7 @@ pub(crate) struct PopulatedStack {
     populated: ShowsView,
     show: ShowWidget,
     sender: Sender<Action>,
+    window: Option<WeakRef<MainWindow>>,
 }
 
 impl PopulatedStack {
@@ -51,6 +54,7 @@ impl PopulatedStack {
             populated,
             show,
             sender,
+            window: None,
         }
     }
 
@@ -74,22 +78,28 @@ impl PopulatedStack {
 
         self.populated = ShowsView::new();
 
-        // TODO In the main window go to the "show" navigation page, and remove
-        // its `child`.
+        if let Some(window) = self.window.as_ref().and_then(|w| w.upgrade()) {
+            window.replace_show_widget(None, "");
+        }
 
         Ok(())
     }
 
     pub(crate) fn replace_widget(&mut self, pd: Arc<Show>) -> Result<ShowWidget> {
+        let title = pd.title().to_owned();
         let new = ShowWidget::new(pd, self.sender.clone());
 
         self.show = new.clone();
 
-        // TODO in the main window go to the "show" navigation page, and replace
-        // its `child` with `new`. We call this from window, avoid doing it
-        // twice.
+        if let Some(window) = self.window.as_ref().and_then(|w| w.upgrade()) {
+            window.replace_show_widget(Some(&new), &title);
+        }
 
         Ok(new)
+    }
+
+    pub(crate) fn set_window(&mut self, window: &MainWindow) {
+        self.window = Some(window.downgrade())
     }
 
     pub(crate) fn update_widget(&mut self) -> Result<()> {
