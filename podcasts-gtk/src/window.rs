@@ -59,6 +59,8 @@ pub struct MainWindowPriv {
     #[template_child]
     pub(crate) toolbar_view: TemplateChild<adw::ToolbarView>,
     #[template_child]
+    pub(crate) player_toolbar_view: TemplateChild<adw::ToolbarView>,
+    #[template_child]
     pub(crate) toast_overlay: TemplateChild<adw::ToastOverlay>,
     #[template_child]
     pub(crate) navigation_view: TemplateChild<adw::NavigationView>,
@@ -89,6 +91,7 @@ impl ObjectSubclass for MainWindowPriv {
             navigation_view: TemplateChild::default(),
             toast_overlay: TemplateChild::default(),
             toolbar_view: TemplateChild::default(),
+            player_toolbar_view: TemplateChild::default(),
             header_breakpoint: TemplateChild::default(),
             player_breakpoint: TemplateChild::default(),
             show_page: TemplateChild::default(),
@@ -183,12 +186,13 @@ impl MainWindow {
 
         imp.toolbar_view.add_top_bar(&header.container);
         imp.toolbar_view.set_content(Some(&content.get_container()));
+        imp.toolbar_view.add_bottom_bar(&imp.bottom_switcher);
 
         imp.bottom_switcher.set_stack(Some(&content.get_stack()));
 
         let player = player::PlayerWrapper::new(sender);
-        imp.toolbar_view.add_bottom_bar(&player.borrow().container);
-        imp.toolbar_view.add_bottom_bar(&imp.bottom_switcher);
+        imp.player_toolbar_view
+            .add_bottom_bar(&player.borrow().container);
 
         // Setup breakpoints
         imp.header_breakpoint.add_setter(

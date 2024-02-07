@@ -17,18 +17,22 @@
     <property name="content">
       <object class="AdwToastOverlay" id="toast_overlay">
         <property name="child">
-          <object class="AdwNavigationView" id="navigation_view">
+          <object class="AdwToolbarView" id="player_toolbar_view">
             <child>
-              <object class="AdwNavigationPage">
-                <property name="title" translatable="yes">Podcasts</property>
-                <property name="child">
-                  <object class="AdwToolbarView" id="toolbar_view"/>
-                </property>
-              </object>
-            </child>
-            <child>
-              <object class="AdwNavigationPage" id="show_page">
-                <property name="title" translatable="yes">Show</property>
+              <object class="AdwNavigationView" id="navigation_view">
+                <child>
+                  <object class="AdwNavigationPage">
+                    <property name="title" translatable="yes">Podcasts</property>
+                    <property name="child">
+                      <object class="AdwToolbarView" id="toolbar_view"/>
+                    </property>
+                  </object>
+                </child>
+                <child>
+                  <object class="AdwNavigationPage" id="show_page">
+                    <property name="title" translatable="yes">Show</property>
+                  </object>
+                </child>
               </object>
             </child>
           </object>
