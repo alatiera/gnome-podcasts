@@ -236,10 +236,6 @@ impl MainWindow {
         window
     }
 
-    pub fn go_back(&self) -> bool {
-        self.imp().navigation_view.pop()
-    }
-
     pub fn push_page<P: glib::IsA<adw::NavigationPage>>(&self, page: &P) {
         self.imp().navigation_view.push(page);
     }

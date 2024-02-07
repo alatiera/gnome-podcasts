@@ -222,19 +222,6 @@ impl PdApplication {
                     send!(data.sender, Action::RefreshEpisodesView);
                 })
                 .build(),
-            gio::ActionEntryBuilder::new("go-back-on-deck")
-                .parameter_type(Some(i32_variant_type))
-                .activate(|app: &Self, _, _| {
-                    app.go_back_on_deck();
-                })
-                .build(),
-            gio::ActionEntryBuilder::new("go-back")
-                .activate(|app: &Self, _, _| {
-                    if app.go_back_on_deck() {
-                        return;
-                    }
-                })
-                .build(),
         ];
         self.add_action_entries(actions);
     }
@@ -291,17 +278,9 @@ impl PdApplication {
         Ok(())
     }
 
-    fn go_back_on_deck(&self) -> bool {
-        let data = self.imp();
-        let w = data.window.borrow();
-        let window = w.as_ref().expect("Window is not initialized");
-        window.go_back()
-    }
-
     fn setup_accels(&self) {
         self.set_accels_for_action("app.quit", &["<primary>q"]);
         self.set_accels_for_action("win.refresh", &["<primary>r"]);
-        self.set_accels_for_action("app.go-back", &["Escape"]);
     }
 
     fn do_action(&self, action: Action) -> glib::ControlFlow {
