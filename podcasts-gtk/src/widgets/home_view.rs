@@ -105,15 +105,19 @@ impl HomeView {
         crate::MAINCONTEXT.spawn_local_with_priority(
             glib::source::Priority::DEFAULT_IDLE,
             glib::clone!(@weak home => async move {
-                home.add_to_boxes(sender).await;
+                let results = home.add_to_boxes(sender).await;
+                for result in results {
+                    if let Err(e) = result {
+                        log::error!("Error: {:?}", e);
+                    }
+                }
             }),
         );
 
         Ok(home)
     }
 
-    // FIMXE: there has to be a way to flatten the handes here
-    async fn add_to_boxes(&self, sender: Sender<Action>) -> Vec<Vec<Result<(), glib::JoinError>>> {
+    async fn add_to_boxes(&self, sender: Sender<Action>) -> Vec<Result<(), glib::JoinError>> {
         let data = gio::spawn_blocking(get_episodes).await;
 
         let mut handles = Vec::with_capacity(5);
@@ -128,7 +132,8 @@ impl HomeView {
             }
         }
 
-        futures::future::join_all(handles).await
+        let results = futures::future::join_all(handles).await;
+        results.into_iter().flatten().collect()
     }
 
     async fn add_to_box(

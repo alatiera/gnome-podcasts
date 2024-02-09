@@ -78,7 +78,12 @@ impl ShowsViewPriv {
                 let data = gio::spawn_blocking(get_episodes).await;
 
                 if let Ok(Ok(podcasts)) = data {
-                    lazy_load(podcasts, flowbox, create_show_child).await;
+                    let results = lazy_load(podcasts, flowbox, create_show_child).await;
+                    for result in results {
+                        if let Err(e) = result {
+                            log::error!("Error: {:?}", e);
+                        }
+                    }
                 }
             },
         );

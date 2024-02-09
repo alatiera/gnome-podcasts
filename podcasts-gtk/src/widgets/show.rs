@@ -174,7 +174,12 @@ fn populate_listbox(show: &ShowWidget, pd: Arc<Show>, sender: Sender<Action>) ->
             }));
 
             if let Ok(Ok(episodes)) = episodes.await {
-                lazy_load(episodes, listbox, constructor).await;
+                let results = lazy_load(episodes, listbox, constructor).await;
+                for result in results {
+                    if let Err(e) = result {
+                        log::error!("Error: {:?}", e);
+                    }
+                }
             }
         },
     );
