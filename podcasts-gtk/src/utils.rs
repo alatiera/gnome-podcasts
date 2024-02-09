@@ -30,7 +30,6 @@ use gtk::{gio, glib};
 use anyhow::{anyhow, Result};
 use async_channel::unbounded;
 use chrono::prelude::*;
-use futures::future::JoinAll;
 use futures::StreamExt;
 use once_cell::sync::Lazy;
 use regex::Regex;
@@ -125,21 +124,20 @@ pub(crate) async fn lazy_load<C, W, T>(
     data: Vec<T>,
     container: WeakRef<W>,
     constructor: C,
-) -> JoinAll<glib::JoinHandle<()>>
+) -> Vec<Result<(), glib::JoinError>>
 where
     T: 'static,
     W: IsA<Widget> + Sized + 'static,
     C: Fn(T) -> W + 'static,
 {
     let (sender, receiver) = unbounded::<W>();
-    let mut data = data.into_iter();
 
     let h1 =
         crate::MAINCONTEXT.spawn_local_with_priority(glib::source::Priority::LOW, async move {
             let mut total_duration = Duration::default();
             let mut count = 0;
 
-            while let Some(item) = data.next() {
+            for item in data {
                 let start = Instant::now();
                 let widget = constructor(item);
 
@@ -172,7 +170,7 @@ where
         },
     );
 
-    return futures::future::join_all([h1, h2]);
+    futures::future::join_all([h1, h2]).await
 }
 
 async fn insert_widgets_idle<W>(data: Vec<W>, container: WeakRef<W>)
@@ -181,13 +179,12 @@ where
 {
     let widget_count = data.len();
 
-    let mut data = data.into_iter();
     let mut count = 0;
     let mut start = Instant::now();
 
     let mut batch_construction_time_total = Duration::default();
 
-    while let Some(widget) = data.next() {
+    for widget in data {
         let w_start = Instant::now();
         insert_widget_dynamic(widget, &container);
         let w_duration = w_start.elapsed();
@@ -605,28 +602,6 @@ mod tests {
     use podcasts_data::{Save, Source};
     use std::fs;
     use std::path::PathBuf;
-    // use podcasts_data::Source;
-    // use podcasts_data::dbqueries;
-
-    // #[test]
-    // This test inserts an rss feed to your `XDG_DATA/podcasts/podcasts.db` so we make it explicit
-    // to run it.
-    // #[ignore]
-    // Disabled till https://gitlab.gnome.org/World/podcasts/issues/56
-    // fn test_set_image_from_path() {
-    //     let url = "https://web.archive.org/web/20180120110727if_/https://rss.acast.com/thetipoff";
-    // Create and index a source
-    //     let source = Source::from_url(url).unwrap();
-    // Copy it's id
-    //     let sid = source.id();
-    //     pipeline::run(vec![source], true).unwrap();
-
-    // Get the Podcast
-    //     let img = gtk::Image::new();
-    //     let pd = dbqueries::get_podcast_from_source_id(sid).unwrap().into();
-    //     let pxbuf = set_image_from_path(&img, Arc::new(pd), 256);
-    //     assert!(pxbuf.is_ok());
-    // }
 
     #[tokio::test]
     async fn test_itunes_to_rss() -> Result<()> {

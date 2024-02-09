@@ -100,10 +100,6 @@ pub(crate) fn add(id: i32, directory: String) -> Result<()> {
                 let progress = m.remove(&id);
                 debug!("Removed: {:?}", progress);
             }
-
-            // if let Ok(m) = ACTIVE_DOWNLOADS.read() {
-            //     debug!("ACTIVE DOWNLOADS: {:#?}", m);
-            // }
         }
     });
 

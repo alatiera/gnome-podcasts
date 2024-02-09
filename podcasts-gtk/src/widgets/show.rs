@@ -174,7 +174,7 @@ fn populate_listbox(show: &ShowWidget, pd: Arc<Show>, sender: Sender<Action>) ->
             }));
 
             if let Ok(Ok(episodes)) = episodes.await {
-                let _ = lazy_load(episodes, listbox, constructor).await;
+                lazy_load(episodes, listbox, constructor).await;
             }
         },
     );

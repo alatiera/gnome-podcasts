@@ -19,7 +19,6 @@
 
 use anyhow::Result;
 use chrono::prelude::*;
-use futures::future::JoinAll;
 
 use adw::subclass::prelude::*;
 use glib::subclass::InitializingObject;
@@ -106,7 +105,7 @@ impl HomeView {
         crate::MAINCONTEXT.spawn_local_with_priority(
             glib::source::Priority::DEFAULT_IDLE,
             glib::clone!(@weak home => async move {
-                let _ = home.add_to_boxes(sender).await;
+                home.add_to_boxes(sender).await;
             }),
         );
 
@@ -114,7 +113,7 @@ impl HomeView {
     }
 
     // FIMXE: there has to be a way to flatten the handes here
-    async fn add_to_boxes(&self, sender: Sender<Action>) -> JoinAll<JoinAll<glib::JoinHandle<()>>> {
+    async fn add_to_boxes(&self, sender: Sender<Action>) -> Vec<Vec<Result<(), glib::JoinError>>> {
         let data = gio::spawn_blocking(get_episodes).await;
 
         let mut handles = Vec::with_capacity(5);
@@ -124,19 +123,19 @@ impl HomeView {
                     continue;
                 }
 
-                let handle = self.add_to_box(datebox, &sender).await;
+                let handle = self.add_to_box(datebox, &sender);
                 handles.push(handle);
             }
         }
 
-        futures::future::join_all(handles)
+        futures::future::join_all(handles).await
     }
 
     async fn add_to_box(
         &self,
         datebox: DateBox,
         sender: &Sender<Action>,
-    ) -> JoinAll<glib::JoinHandle<()>> {
+    ) -> Vec<Result<(), glib::JoinError>> {
         use self::ListSplit::*;
 
         let DateBox(date, model) = datebox;
