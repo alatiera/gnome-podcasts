@@ -25,9 +25,6 @@ mod episode;
 mod show;
 mod source;
 
-// use futures::prelude::*;
-// use futures::future::*;
-
 pub(crate) use self::episode::EpisodeCleanerModel;
 pub(crate) use self::new_episode::{NewEpisode, NewEpisodeMinimal};
 pub(crate) use self::new_show::NewShow;

@@ -16,7 +16,7 @@ reqwest = { version = "0.11.4", features = ["json", "stream"] }
 url = "2.1"
 xdg = "2.2"
 xml-rs = "0.8"
-futures = "0.3"
+futures-util = "0.3"
 http = "0.2"
 anyhow = "1.0"
 thiserror = "1.0"

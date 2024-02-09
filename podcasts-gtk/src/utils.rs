@@ -30,7 +30,7 @@ use gtk::{gio, glib};
 use anyhow::{anyhow, Result};
 use async_channel::unbounded;
 use chrono::prelude::*;
-use futures::StreamExt;
+use futures_util::StreamExt;
 use once_cell::sync::Lazy;
 use regex::Regex;
 use serde_json::Value;
@@ -170,7 +170,7 @@ where
         },
     );
 
-    futures::future::join_all([h1, h2]).await
+    futures_util::future::join_all([h1, h2]).await
 }
 
 async fn insert_widgets_idle<W>(data: Vec<W>, container: WeakRef<W>)

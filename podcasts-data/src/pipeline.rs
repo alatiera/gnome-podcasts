@@ -57,7 +57,7 @@ where
             }
         })
         .collect();
-    futures::future::join_all(handles).await;
+    futures_util::future::join_all(handles).await;
     Ok(())
 }
 

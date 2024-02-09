@@ -132,7 +132,7 @@ impl HomeView {
             }
         }
 
-        let results = futures::future::join_all(handles).await;
+        let results = futures_util::future::join_all(handles).await;
         results.into_iter().flatten().collect()
     }
 

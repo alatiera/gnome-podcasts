@@ -169,7 +169,7 @@ async fn save_io(
     resp: reqwest::Response,
     progress: Option<Arc<Mutex<dyn DownloadProgress + Send>>>,
 ) -> Result<(), DownloadError> {
-    use futures::StreamExt;
+    use futures_util::StreamExt;
     use std::ops::Deref;
 
     info!("Downloading into: {}", file);
