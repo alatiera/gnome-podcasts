@@ -82,10 +82,10 @@ fn download_checker() -> Result<(), DataError> {
 
 fn update_download_status(mut ep: EpisodeCleanerModel) {
     ep.set_local_uri(None);
-    ep.save()
-        .map_err(|err| error!("{}", err))
-        .map_err(|_| error!("Error while trying to update episode: {:#?}", ep))
-        .ok();
+    if let Err(err) = ep.save() {
+        error!("{}", err);
+        error!("Error while trying to update episode: {:#?}", ep);
+    }
 }
 
 /// Delete watched `episodes` that have exceeded their lifetime after played.

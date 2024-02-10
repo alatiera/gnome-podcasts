@@ -100,9 +100,9 @@ impl EpisodeWidgetPriv {
             glib::source::Priority::LOW,
             clone!(@weak self as this, @strong sender => async move {
                 this.init_info(&episode);
-                this.determine_buttons_state(&episode, &sender)
-                    .map_err(|err| error!("Error: {}", err))
-                    .ok();
+                if let Err(err) = this.determine_buttons_state(&episode, &sender) {
+                    error!("Error: {}", err);
+                }
             }),
         );
     }
@@ -234,13 +234,13 @@ impl EpisodeWidgetPriv {
                         if let Ok(thing) = active_dl() {
                             if thing.is_none() {
                                 // Recalculate the widget state
-                                dbqueries::get_episode_widget_from_rowid(id)
+                                if let Err(err) = dbqueries::get_episode_widget_from_rowid(id)
                                     .map_err(From::from)
-                                    .and_then(|ep| this.determine_buttons_state(&ep, &sender))
-                                    .map_err(|err| error!("Error: {}", err))
-                                    .ok();
+                                    .and_then(|ep| this.determine_buttons_state(&ep, &sender)) {
+                                        error!("Error: {}", err);
+                                }
 
-                                return glib::ControlFlow::Break
+                                return glib::ControlFlow::Break;
                             }
                         }
 
@@ -556,8 +556,3 @@ impl Default for EpisodeWidget {
         widget
     }
 }
-
-// fn on_delete_bttn_clicked(episode_id: i32) -> Result<()> {
-//     let mut ep = dbqueries::get_episode_from_rowid(episode_id)?.into();
-//     delete_local_content(&mut ep).map_err(From::from).map(|_| ())
-// }

@@ -217,10 +217,10 @@ pub(crate) fn remove_show_notif(pd: Arc<Show>, sender: Sender<Action>) -> adw::T
                 .downcast::<crate::PdApplication>()
                 .unwrap();
             if app.is_show_marked_delete(&pd) {
-                delete_show(&pd)
-                    .map_err(|err| error!("Error: {}", err))
-                    .map_err(|_| error!("Failed to delete {}", pd.title()))
-                    .ok();
+                if let Err(err) = delete_show(&pd) {
+                    error!("Error: {}", err);
+                    error!("Failed to delete {}", pd.title());
+                }
 
                 send!(sender, Action::RefreshEpisodesView);
             }

@@ -99,10 +99,10 @@ where
                 IndexState::NotChanged => None,
                 // Update individual rows, and filter them
                 IndexState::Update((ref ep, rowid)) => {
-                    ep.update(rowid)
-                        .map_err(|err| error!("{}", err))
-                        .map_err(|_| error!("Failed to index episode: {:?}.", ep.title()))
-                        .ok();
+                    if let Err(err) = ep.update(rowid) {
+                        error!("{}", err);
+                        error!("Failed to index episode: {:?}.", ep.title())
+                    }
                     None
                 }
                 IndexState::Index(s) => Some(s),
@@ -118,19 +118,17 @@ fn batch_insert_episodes(episodes: &[NewEpisode]) {
     };
 
     info!("Indexing {} episodes.", episodes.len());
-    dbqueries::index_new_episodes(episodes)
-        .map_err(|err| {
-            error!("Failed batch indexng: {}", err);
-            info!("Fallign back to individual indexing.");
-        })
-        .unwrap_or_else(|_| {
-            episodes.iter().for_each(|ep| {
-                ep.index()
-                    .map_err(|err| error!("Error: {}.", err))
-                    .map_err(|_| error!("Failed to index episode: {:?}.", ep.title()))
-                    .ok();
-            });
-        })
+    if let Err(err) = dbqueries::index_new_episodes(episodes) {
+        error!("Failed batch indexing: {}", err);
+        info!("Falling back to individual indexing.");
+    } else {
+        for ep in episodes {
+            if let Err(err) = ep.index() {
+                error!("Error: {}.", err);
+                error!("Failed to index episode: {:?}.", ep.title());
+            }
+        }
+    }
 }
 
 #[cfg(test)]

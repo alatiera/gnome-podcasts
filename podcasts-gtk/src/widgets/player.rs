@@ -148,12 +148,11 @@ impl PlayerInfo {
     }
 
     fn set_cover_image(&self, show: &ShowCoverModel) {
-        set_image_from_path(&self.cover, show.id(), 34)
-            .map_err(|err| error!("Player Cover: {}", err))
-            .ok();
-        set_image_from_path(&self.cover_small, show.id(), 34)
-            .map_err(|err| error!("Player Cover: {}", err))
-            .ok();
+        for cover in [&self.cover, &self.cover_small] {
+            if let Err(err) = set_image_from_path(cover, show.id(), 34) {
+                error!("Player Cover: {}", err)
+            }
+        }
     }
 }
 
@@ -348,9 +347,9 @@ impl PlayerDialog {
         self.episode.set_text(episode.title());
         self.show.set_text(show.title());
 
-        set_image_from_path(&self.cover, show.id(), 256)
-            .map_err(|err| error!("Player Cover: {}", err))
-            .ok();
+        if let Err(err) = set_image_from_path(&self.cover, show.id(), 256) {
+            error!("Player Cover: {}", err)
+        }
     }
 }
 

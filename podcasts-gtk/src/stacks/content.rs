@@ -88,11 +88,9 @@ impl Content {
     }
 
     pub(crate) fn update_home(&self) {
-        self.home
-            .borrow_mut()
-            .update()
-            .map_err(|err| error!("Failed to update HomeView: {}", err))
-            .ok();
+        if let Err(err) = self.home.borrow_mut().update() {
+            error!("Failed to update HomeView: {}", err);
+        }
     }
 
     pub(crate) fn update_home_if_background(&self) {
@@ -102,19 +100,21 @@ impl Content {
     }
 
     pub(crate) fn update_shows_view(&self) {
-        self.shows
-            .borrow_mut()
-            .update()
-            .map_err(|err| error!("Failed to update ShowsView: {}", err))
-            .ok();
+        if let Err(err) = self.shows.borrow_mut().update() {
+            error!("Failed to update ShowsView: {}", err);
+        }
     }
 
     pub(crate) fn update_widget_if_same(&self, pid: i32) {
-        let pop = self.shows.borrow().populated();
-        pop.borrow_mut()
+        if let Err(err) = self
+            .shows
+            .borrow()
+            .populated()
+            .borrow_mut()
             .update_widget_if_same(pid)
-            .map_err(|err| error!("Failed to update ShowsWidget: {}", err))
-            .ok();
+        {
+            error!("Failed to update ShowsWidget: {}", err);
+        }
     }
 
     pub(crate) fn get_progress_bar(&self) -> gtk::ProgressBar {

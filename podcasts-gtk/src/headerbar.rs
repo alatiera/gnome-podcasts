@@ -205,9 +205,9 @@ impl Header {
         s.switch.set_stack(Some(&content.get_stack()));
 
         s.add.entry.connect_changed(clone!(@weak s => move |_| {
-            s.add.on_entry_changed()
-            .map_err(|err| error!("Error: {}", err))
-            .ok();
+            if let Err(err) = s.add.on_entry_changed() {
+                error!("Error: {}", err)
+            }
         }));
 
         s.add
@@ -221,7 +221,7 @@ impl Header {
             .connect_activate(clone!(@weak s, @strong sender => move |_| {
                 if s.add.add.get_sensitive() {
                         s.add.on_add_clicked(&sender).unwrap();
-                    }
+                }
             }));
     }
 }

@@ -86,17 +86,6 @@ pub(crate) fn get_downloaded_episodes() -> Result<Vec<EpisodeCleanerModel>, Data
         .map_err(From::from)
 }
 
-// pub(crate) fn get_played_episodes() -> Result<Vec<Episode>, DataError> {
-//     use schema::episodes::dsl::*;
-
-//     let db = connection();
-//     let mut con = db.get()?;
-//     episodes
-//         .filter(played.is_not_null())
-//         .load::<Episode>(&mut con)
-//         .map_err(From::from)
-// }
-
 pub(crate) fn get_played_cleaner_episodes() -> Result<Vec<EpisodeCleanerModel>, DataError> {
     use crate::schema::episodes::dsl::*;
     let db = connection();
@@ -264,19 +253,6 @@ pub fn get_pd_unplayed_episodes(parent: &Show) -> Result<Vec<Episode>, DataError
         .load::<Episode>(&mut con)
         .map_err(From::from)
 }
-
-// pub(crate) fn get_pd_episodes_limit(parent: &Show, limit: u32) ->
-// Result<Vec<Episode>, DataError> {     use schema::episodes::dsl::*;
-
-//     let db = connection();
-//     let mut con = db.get()?;
-
-//     Episode::belonging_to(parent)
-//         .order(epoch.desc())
-//         .limit(i64::from(limit))
-//         .load::<Episode>(&mut con)
-//         .map_err(From::from)
-// }
 
 pub fn get_source_from_uri(uri_: &str) -> Result<Source, DataError> {
     use crate::schema::source::dsl::*;
