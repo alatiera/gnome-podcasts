@@ -1172,9 +1172,9 @@ dependencies = [
 
 [[package]]
 name = "gstreamer-base"
-version = "0.21.0"
+version = "0.21.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "0fe38a6d5c1e516ce3fd6069e972a540d315448ed69fdadad739e6c6c6eb2a01"
+checksum = "cb150b6904a49052237fede7cc2e6479df6ced5043d95e6af8134bc141a3167f"
 dependencies = [
  "atomic_refcell",
  "cfg-if",
@@ -1199,9 +1199,9 @@ dependencies = [
 
 [[package]]
 name = "gstreamer-play"
-version = "0.21.0"
+version = "0.21.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f55c41b4a9c101dff739f8230a2d92cd0fddb8313cc82887fbae0a723b240871"
+checksum = "ad2efa4c3f92fa5d5e51e95c83f3b847c9ad16e3498a65beaf721d324187f04a"
 dependencies = [
  "glib",
  "gstreamer",
@@ -1238,9 +1238,9 @@ dependencies = [
 
 [[package]]
 name = "gstreamer-video"
-version = "0.21.1"
+version = "0.21.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "01b4d3141362b3d44a684e697d2bc55fea73d023315449cda83f0f4324531d64"
+checksum = "e85b2a4d1d3b7a98ae03806c3ed5c2db89d6b37a5f138780b48de015d68715e5"
 dependencies = [
  "cfg-if",
  "futures-channel",
@@ -1249,13 +1249,14 @@ dependencies = [
  "gstreamer-base",
  "gstreamer-video-sys",
  "libc",
+ "thiserror",
 ]
 
 [[package]]
 name = "gstreamer-video-sys"
-version = "0.21.1"
+version = "0.21.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "09cdc36baab839921b05d2468524da649f373dccc5f966c75e564029dc135b1c"
+checksum = "0302318d98e6b054501e485b6bb4ee20225823218f4a8660c182f115a33b16ee"
 dependencies = [
  "glib-sys",
  "gobject-sys",
@@ -2251,7 +2252,6 @@ dependencies = [
  "fragile",
  "futures-util",
  "gettext-rs",
- "glob",
  "gstreamer",
  "gstreamer-play",
  "gtk4",
