@@ -119,7 +119,6 @@ macro_rules! send {
 /// let list = gtk::ListBox::new();
 /// lazy_load(widgets, list, |w| w, || {});
 /// ```
-#[allow(clippy::redundant_closure)]
 pub(crate) async fn lazy_load<C, W, T>(
     data: Vec<T>,
     container: WeakRef<W>,
@@ -222,42 +221,6 @@ fn insert_widget_dynamic<W: IsA<Widget> + Sized>(widget: W, container: &WeakRef<
     }
 
     widget.set_visible(true);
-}
-
-// Kudos to Julian Sparber
-// https://blogs.gnome.org/jsparber/2018/04/29/animate-a-scrolledwindow/
-#[allow(clippy::float_cmp)]
-#[allow(dead_code)]
-fn smooth_scroll_to(view: &gtk::ScrolledWindow, target: &gtk::Adjustment) {
-    let adj = view.vadjustment();
-    if let Some(clock) = view.frame_clock() {
-        let duration = 200;
-        let start = adj.value();
-        let end = target.value();
-        let start_time = clock.frame_time();
-        let end_time = start_time + 1000 * duration;
-
-        view.add_tick_callback(move |_, clock| {
-            let now = clock.frame_time();
-            // FIXME: `adj.get_value != end` is a float comparison...
-            if now < end_time && adj.value().abs() != end.abs() {
-                let mut t = (now - start_time) as f64 / (end_time - start_time) as f64;
-                t = ease_out_cubic(t);
-                adj.set_value(start + t * (end - start));
-                glib::ControlFlow::Continue
-            } else {
-                adj.set_value(end);
-                glib::ControlFlow::Break
-            }
-        });
-    }
-}
-
-// From clutter-easing.c, based on Robert Penner's
-// infamous easing equations, MIT license.
-fn ease_out_cubic(t: f64) -> f64 {
-    let p = t - 1f64;
-    p * p * p + 1f64
 }
 
 static IGNORESHOWS: Lazy<Arc<Mutex<HashSet<i32>>>> =

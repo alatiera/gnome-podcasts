@@ -18,46 +18,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #![recursion_limit = "1024"]
-#![cfg_attr(
-    all(test, feature = "clippy"),
-    allow(option_unwrap_used, result_unwrap_used)
-)]
-#![cfg_attr(
-    feature = "clippy",
-    warn(
-        option_unwrap_used,
-        result_unwrap_used,
-        print_stdout,
-        wrong_pub_self_convention,
-        mut_mut,
-        non_ascii_literal,
-        similar_names,
-        unicode_not_nfc,
-        enum_glob_use,
-        if_not_else,
-        items_after_statements,
-        used_underscore_binding
-    )
-)]
-// Enable lint group collections
-#![warn(nonstandard_style, bad_style, unused)]
-#![warn(rust_2018_idioms)]
-// standalone lints
-#![warn(
-    improper_ctypes,
-    non_shorthand_field_patterns,
-    no_mangle_generic_items,
-    overflowing_literals,
-    unconditional_recursion,
-    while_true,
-    missing_debug_implementations,
-    missing_docs,
-    trivial_casts,
-    trivial_numeric_casts,
-    missing_copy_implementations
-)]
-
-//! FIXME: Docs
 
 #[cfg(test)]
 #[macro_use]
@@ -96,7 +56,6 @@ pub use crate::models::{Episode, EpisodeWidgetModel, Show, ShowCoverModel, Sourc
 pub const USER_AGENT: &str = "Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101 Firefox/78.0";
 
 /// [XDG Base Directory](https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html) Paths.
-#[allow(missing_debug_implementations)]
 pub mod xdg_dirs {
     use once_cell::sync::Lazy;
     use std::path::PathBuf;

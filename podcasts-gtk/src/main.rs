@@ -17,23 +17,6 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-// Enable lint group collections
-#![warn(nonstandard_style, rust_2018_idioms, bad_style)]
-// standalone lints
-#![warn(
-    improper_ctypes,
-    non_shorthand_field_patterns,
-    no_mangle_generic_items,
-    overflowing_literals,
-    unconditional_recursion,
-    while_true,
-    missing_debug_implementations,
-    trivial_casts,
-    trivial_numeric_casts,
-    elided_lifetimes_in_paths
-)]
-#![allow(clippy::type_complexity)]
-
 use gtk::{gio, glib};
 
 #[macro_use]

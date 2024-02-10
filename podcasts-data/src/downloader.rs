@@ -163,7 +163,6 @@ fn get_ext(content: Option<&str>) -> Option<String> {
 // TODO: Refactor... Somehow.
 /// Handles the I/O of fetching a remote file and saving into a Buffer and A
 /// File.
-#[allow(clippy::needless_pass_by_value)]
 async fn save_io(
     file: &str,
     resp: reqwest::Response,

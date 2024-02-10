@@ -16,6 +16,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
+#![allow(clippy::type_complexity)]
 
 use anyhow::{anyhow, Result};
 use once_cell::sync::Lazy;
@@ -28,7 +29,6 @@ use std::sync::{Arc, Mutex, RwLock};
 
 // This is messy, undocumented and hacky af.
 // I am terrible at writing downloaders and download managers.
-
 pub(crate) static ACTIVE_DOWNLOADS: Lazy<Arc<RwLock<HashMap<i32, Arc<Mutex<Progress>>>>>> =
     Lazy::new(|| Arc::new(RwLock::new(HashMap::new())));
 
