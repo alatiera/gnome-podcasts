@@ -64,15 +64,6 @@ impl PopulatedStack {
     }
 
     pub(crate) fn update_shows(&mut self) -> Result<()> {
-        // The current visible child might change depending on
-        // removal and insertion in the gtk::Stack, so we have
-        // to make sure it will stay the same.
-        self.replace_shows()?;
-
-        Ok(())
-    }
-
-    pub(crate) fn replace_shows(&mut self) -> Result<()> {
         let old = &self.populated.view().clone();
         debug!("Name: {:?}", old.widget_name());
 
