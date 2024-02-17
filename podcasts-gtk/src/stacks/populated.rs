@@ -69,6 +69,9 @@ impl PopulatedStack {
 
         self.populated = ShowsView::new();
 
+        self.container.remove(old);
+        self.container.append(self.populated.view());
+
         if let Some(window) = self.window.as_ref().and_then(|w| w.upgrade()) {
             window.replace_show_widget(None, "");
         }
