@@ -65,6 +65,7 @@ impl From<NewEpisodeMinimal> for NewEpisode {
 impl Insert<()> for NewEpisode {
     type Error = DataError;
 
+    /// Should not be called directly, call index() instead.
     fn insert(&self) -> Result<(), DataError> {
         use crate::schema::episodes::dsl::*;
         let db = connection();
@@ -88,7 +89,7 @@ impl Update<()> for NewEpisode {
         let mut con = db.get()?;
 
         info!("Updating {:?}", self.title);
-        diesel::update(episodes.filter(rowid.eq(episode_id)))
+        diesel::update(episodes.filter(id.eq(episode_id)))
             .set(self)
             .execute(&mut con)
             .map_err(From::from)
@@ -102,13 +103,13 @@ impl Index<()> for NewEpisode {
     // Does not update the episode description if it's the only thing that has
     // changed.
     fn index(&self) -> Result<(), DataError> {
-        let exists = dbqueries::episode_exists(self.title(), self.show_id())?;
+        let exists = dbqueries::episode_exists(self.guid(), self.title(), self.show_id())?;
 
         if exists {
-            let other = dbqueries::get_episode_minimal_from_pk(self.title(), self.show_id())?;
+            let other = dbqueries::get_episode_minimal(self.guid(), self.title(), self.show_id())?;
 
             if self != &other {
-                self.update(other.rowid())
+                self.update(other.id())
             } else {
                 Ok(())
             }
@@ -155,7 +156,8 @@ impl NewEpisode {
     #[allow(dead_code)]
     pub(crate) fn to_episode(&self) -> Result<Episode, DataError> {
         self.index()?;
-        dbqueries::get_episode_from_pk(&self.title, self.show_id).map_err(From::from)
+
+        dbqueries::get_episode(self.guid(), self.title(), self.show_id).map_err(From::from)
     }
 }
 
@@ -367,6 +369,9 @@ mod tests {
     use std::fs::File;
     use std::io::BufReader;
 
+    /// randomly chosen
+    const TEST_SHOW_ID: i32 = 42;
+
     // TODO: Add tests for other feeds too.
     // Especially if you find an *interesting* generated feed.
 
@@ -382,7 +387,7 @@ mod tests {
             .epoch(1505296800)
             .length(Some(66738886))
             .duration(Some(4171))
-            .show_id(42)
+            .show_id(TEST_SHOW_ID)
             .build()
             .unwrap()
     });
@@ -397,7 +402,7 @@ mod tests {
             .epoch(1502272800)
             .length(Some(67527575))
             .duration(Some(4415))
-            .show_id(42)
+            .show_id(TEST_SHOW_ID)
             .build()
             .unwrap()
     });
@@ -419,7 +424,7 @@ mod tests {
             .length(Some(66738886))
             .epoch(1505296800)
             .duration(Some(4171))
-            .show_id(42)
+            .show_id(TEST_SHOW_ID)
             .build()
             .unwrap()
     });
@@ -444,7 +449,7 @@ mod tests {
             .length(Some(67527575))
             .epoch(1502272800)
             .duration(Some(4415))
-            .show_id(42)
+            .show_id(TEST_SHOW_ID)
             .build()
             .unwrap()
     });
@@ -460,7 +465,7 @@ mod tests {
             .length(Some(66738886))
             .epoch(1505296800)
             .duration(Some(424242))
-            .show_id(42)
+            .show_id(TEST_SHOW_ID)
             .build()
             .unwrap()
     });
@@ -475,7 +480,7 @@ mod tests {
             .length(Some(46479789))
             .epoch(1505280282)
             .duration(Some(5733))
-            .show_id(42)
+            .show_id(TEST_SHOW_ID)
             .build()
             .unwrap()
     });
@@ -490,7 +495,7 @@ mod tests {
             .epoch(1504670247)
             .length(Some(36544272))
             .duration(Some(4491))
-            .show_id(42)
+            .show_id(TEST_SHOW_ID)
             .build()
             .unwrap()
     });
@@ -511,7 +516,7 @@ mod tests {
             .length(Some(46479789))
             .epoch(1505280282)
             .duration(Some(5733))
-            .show_id(42)
+            .show_id(TEST_SHOW_ID)
             .build()
             .unwrap()
     });
@@ -534,7 +539,64 @@ mod tests {
             .length(Some(36544272))
             .epoch(1504670247)
             .duration(Some(4491))
-            .show_id(42)
+            .show_id(TEST_SHOW_ID)
+            .build()
+            .unwrap()
+    });
+
+    static EXPECTED_NDR_1: Lazy<NewEpisode> = Lazy::new(|| {
+        let descr = "Die aktuellen Meldungen aus der NDR Info Nachrichtenredaktion.";
+
+        NewEpisodeBuilder::default()
+            .title("Nachrichten")
+            .uri(Some(String::from(
+                "https://mediandr-a.akamaihd.net/download/podcasts/podcast4450/AU-20240313-2303-4300.mp3",
+            )))
+            .description(Some(String::from(descr)))
+            .guid(Some(String::from("AU-20240313-2303-4300-A")))
+            .length(None)
+            .epoch(1710367140)
+            .duration(Some(202))
+            .show_id(TEST_SHOW_ID)
+            .image_uri(Some("https://www.ndr.de/nachrichten/info/nachrichten660_v-quadratl.jpg".to_string()))
+            .build()
+            .unwrap()
+    });
+
+    static EXPECTED_NDR_2: Lazy<NewEpisode> = Lazy::new(|| {
+        let descr = "Die aktuellen Meldungen aus der NDR Info Nachrichtenredaktion.";
+
+        NewEpisodeBuilder::default()
+            .title("Nachrichten")
+            .uri(Some(String::from(
+                "https://mediandr-a.akamaihd.net/download/podcasts/podcast4450/AU-20240314-1705-4100.mp3",
+            )))
+            .description(Some(String::from(descr)))
+            .guid(Some(String::from("AU-20240314-1705-4100-A")))
+            .length(None)
+            .epoch(1710431940)
+            .duration(Some(300))
+            .show_id(TEST_SHOW_ID)
+            .image_uri(Some("https://www.ndr.de/nachrichten/info/nachrichten660_v-quadratl.jpg".to_string()))
+            .build()
+            .unwrap()
+    });
+
+    static EXPECTED_NDR_3: Lazy<NewEpisode> = Lazy::new(|| {
+        let descr = "Die aktuellen Meldungen aus der NDR Info Nachrichtenredaktion.";
+
+        NewEpisodeBuilder::default()
+            .title("TITLE_UPDATED")
+            .uri(Some(String::from(
+                "https://mediandr-a.akamaihd.net/download/podcasts/podcast4450/AU-20240314-1705-4100.mp3",
+            )))
+            .description(Some(String::from(descr)))
+            .guid(Some(String::from("AU-20240314-1705-4100-A")))
+            .length(None)
+            .epoch(2000000000)
+            .duration(Some(300))
+            .show_id(TEST_SHOW_ID)
+            .image_uri(Some("https://www.ndr.de/nachrichten/info/nachrichten660_v-quadratl.jpg".to_string()))
             .build()
             .unwrap()
     });
@@ -545,11 +607,11 @@ mod tests {
         let channel = Channel::read_from(BufReader::new(file))?;
 
         let episode = channel.items().iter().nth(14).unwrap();
-        let ep = NewEpisodeMinimal::new(episode, 42)?;
+        let ep = NewEpisodeMinimal::new(episode, TEST_SHOW_ID)?;
         assert_eq!(ep, *EXPECTED_MINIMAL_INTERCEPTED_1);
 
         let episode = channel.items().iter().nth(15).unwrap();
-        let ep = NewEpisodeMinimal::new(episode, 42)?;
+        let ep = NewEpisodeMinimal::new(episode, TEST_SHOW_ID)?;
         assert_eq!(ep, *EXPECTED_MINIMAL_INTERCEPTED_2);
         Ok(())
     }
@@ -560,11 +622,11 @@ mod tests {
         let channel = Channel::read_from(BufReader::new(file))?;
 
         let episode = channel.items().iter().nth(14).unwrap();
-        let ep = NewEpisode::new(episode, 42)?;
+        let ep = NewEpisode::new(episode, TEST_SHOW_ID)?;
         assert_eq!(ep, *EXPECTED_INTERCEPTED_1);
 
         let episode = channel.items().iter().nth(15).unwrap();
-        let ep = NewEpisode::new(episode, 42)?;
+        let ep = NewEpisode::new(episode, TEST_SHOW_ID)?;
 
         assert_eq!(ep, *EXPECTED_INTERCEPTED_2);
         Ok(())
@@ -576,11 +638,11 @@ mod tests {
         let channel = Channel::read_from(BufReader::new(file))?;
 
         let episode = channel.items().iter().nth(18).unwrap();
-        let ep = NewEpisodeMinimal::new(episode, 42)?;
+        let ep = NewEpisodeMinimal::new(episode, TEST_SHOW_ID)?;
         assert_eq!(ep, *EXPECTED_MINIMAL_LUP_1);
 
         let episode = channel.items().iter().nth(19).unwrap();
-        let ep = NewEpisodeMinimal::new(episode, 42)?;
+        let ep = NewEpisodeMinimal::new(episode, TEST_SHOW_ID)?;
         assert_eq!(ep, *EXPECTED_MINIMAL_LUP_2);
         Ok(())
     }
@@ -591,11 +653,11 @@ mod tests {
         let channel = Channel::read_from(BufReader::new(file))?;
 
         let episode = channel.items().iter().nth(18).unwrap();
-        let ep = NewEpisode::new(episode, 42)?;
+        let ep = NewEpisode::new(episode, TEST_SHOW_ID)?;
         assert_eq!(ep, *EXPECTED_LUP_1);
 
         let episode = channel.items().iter().nth(19).unwrap();
-        let ep = NewEpisode::new(episode, 42)?;
+        let ep = NewEpisode::new(episode, TEST_SHOW_ID)?;
         assert_eq!(ep, *EXPECTED_LUP_2);
         Ok(())
     }
@@ -629,18 +691,18 @@ mod tests {
         let channel = Channel::read_from(BufReader::new(file))?;
 
         let episode = channel.items().iter().nth(14).unwrap();
-        let new_ep = NewEpisode::new(episode, 42)?;
-        new_ep.insert()?;
-        let ep = dbqueries::get_episode_from_pk(new_ep.title(), new_ep.show_id())?;
+        let new_ep = NewEpisode::new(episode, TEST_SHOW_ID)?;
+        new_ep.index()?;
+        let ep = dbqueries::get_episode(new_ep.guid(), new_ep.title(), new_ep.show_id())?;
 
         assert_eq!(new_ep, ep);
         assert_eq!(&new_ep, &*EXPECTED_INTERCEPTED_1);
         assert_eq!(&*EXPECTED_INTERCEPTED_1, &ep);
 
         let episode = channel.items().iter().nth(15).unwrap();
-        let new_ep = NewEpisode::new(episode, 42)?;
-        new_ep.insert()?;
-        let ep = dbqueries::get_episode_from_pk(new_ep.title(), new_ep.show_id())?;
+        let new_ep = NewEpisode::new(episode, TEST_SHOW_ID)?;
+        new_ep.index()?;
+        let ep = dbqueries::get_episode(new_ep.guid(), new_ep.title(), new_ep.show_id())?;
 
         assert_eq!(new_ep, ep);
         assert_eq!(&new_ep, &*EXPECTED_INTERCEPTED_2);
@@ -654,12 +716,12 @@ mod tests {
         let old = EXPECTED_INTERCEPTED_1.clone().to_episode()?;
 
         let updated = &*UPDATED_DURATION_INTERCEPTED_1;
-        updated.update(old.rowid())?;
-        let new = dbqueries::get_episode_from_pk(old.title(), old.show_id())?;
+        updated.update(old.id())?;
+        let new = dbqueries::get_episode(old.guid(), old.title(), old.show_id())?;
 
-        // Assert that updating does not change the rowid and show_id
+        // Assert that updating does not change the id and show_id
         assert_ne!(old, new);
-        assert_eq!(old.rowid(), new.rowid());
+        assert_eq!(old.id(), new.id());
         assert_eq!(old.show_id(), new.show_id());
 
         assert_eq!(updated, &new);
@@ -677,7 +739,7 @@ mod tests {
         // Second identical, This should take the early return path
         assert!(expected.index().is_ok());
         // Get the episode
-        let old = dbqueries::get_episode_from_pk(expected.title(), expected.show_id())?;
+        let old = dbqueries::get_episode(expected.guid(), expected.title(), expected.show_id())?;
         // Assert that NewPodcast is equal to the Indexed one
         assert_eq!(*expected, old);
 
@@ -686,11 +748,11 @@ mod tests {
         // Update the podcast
         assert!(updated.index().is_ok());
         // Get the new Podcast
-        let new = dbqueries::get_episode_from_pk(expected.title(), expected.show_id())?;
+        let new = dbqueries::get_episode(expected.guid(), expected.title(), expected.show_id())?;
         // Assert it's diff from the old one.
         assert_ne!(new, old);
         assert_eq!(*updated, new);
-        assert_eq!(new.rowid(), old.rowid());
+        assert_eq!(new.id(), old.id());
         assert_eq!(new.show_id(), old.show_id());
         Ok(())
     }
@@ -701,18 +763,73 @@ mod tests {
 
         // Assert insert() produces the same result that you would get with to_podcast()
         truncate_db()?;
-        expected.insert()?;
-        let old = dbqueries::get_episode_from_pk(expected.title(), expected.show_id())?;
+        expected.index()?;
+        let old = dbqueries::get_episode(expected.guid(), expected.title(), expected.show_id())?;
         let ep = expected.to_episode()?;
         assert_eq!(old, ep);
 
         // Same as above, diff order
         truncate_db()?;
         let ep = expected.to_episode()?;
-        // This should error as a unique constrain violation
-        assert!(expected.insert().is_err());
-        let old = dbqueries::get_episode_from_pk(expected.title(), expected.show_id())?;
+
+        // did not make a new insert, updated
+        expected.index()?;
+        assert_eq!(dbqueries::get_episodes()?.len(), 1);
+
+        let old = dbqueries::get_episode(expected.guid(), expected.title(), expected.show_id())?;
         assert_eq!(old, ep);
+        Ok(())
+    }
+
+    // https://gitlab.gnome.org/World/podcasts/-/issues/216
+    // new episode is imported, always same title, different guid
+    #[test]
+    fn test_feed_ndr() -> Result<()> {
+        truncate_db()?;
+
+        let file = File::open("tests/feeds/2024-03-13-ndr.xml")?;
+        let channel = Channel::read_from(BufReader::new(file))?;
+
+        let episode = channel.items().iter().nth(1).unwrap();
+        let new_ep = NewEpisode::new(episode, TEST_SHOW_ID)?;
+        new_ep.index()?;
+        let ep = dbqueries::get_episode(new_ep.guid(), new_ep.title(), new_ep.show_id())?;
+
+        assert_eq!(new_ep, ep);
+        assert_eq!(&new_ep, &*EXPECTED_NDR_1);
+        assert_eq!(&*EXPECTED_NDR_1, &ep);
+
+        let file = File::open("tests/feeds/2024-03-14-ndr.xml")?;
+        let channel = Channel::read_from(BufReader::new(file))?;
+
+        let episode = channel.items().iter().nth(1).unwrap();
+        let new_ep = NewEpisode::new(episode, TEST_SHOW_ID)?;
+        new_ep.index()?;
+        let ep = dbqueries::get_episode(new_ep.guid(), new_ep.title(), new_ep.show_id())?;
+
+        assert_eq!(new_ep, ep);
+        assert_eq!(&new_ep, &*EXPECTED_NDR_2);
+        assert_eq!(&*EXPECTED_NDR_2, &ep);
+
+        let all_eps = dbqueries::get_episodes()?;
+        assert_eq!(2, all_eps.len());
+
+        // update one of the ep's title and epoch
+        let new_ep = &*EXPECTED_NDR_3;
+        new_ep.index()?;
+
+        // https://gitlab.gnome.org/World/podcasts/-/issues/151
+        // Title update
+        let ep = dbqueries::get_episode(new_ep.guid(), new_ep.title(), new_ep.show_id())?;
+        assert_eq!(new_ep, &ep);
+        assert_eq!(new_ep, &*EXPECTED_NDR_3);
+        assert_eq!(&*EXPECTED_NDR_3, &ep);
+        assert_eq!(2000000000, ep.epoch());
+        assert_eq!("TITLE_UPDATED", ep.title());
+
+        let all_eps = dbqueries::get_episodes()?;
+        assert_eq!(2, all_eps.len());
+
         Ok(())
     }
 }

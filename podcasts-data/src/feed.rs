@@ -72,16 +72,16 @@ fn determine_ep_state(
     item: &rss::Item,
 ) -> Result<IndexState<NewEpisode>, DataError> {
     // Check if feed exists
-    let exists = dbqueries::episode_exists(ep.title(), ep.show_id())?;
+    let exists = dbqueries::episode_exists(ep.guid(), ep.title(), ep.show_id())?;
 
     if !exists {
         Ok(IndexState::Index(ep.into_new_episode(item)))
     } else {
-        let old = dbqueries::get_episode_minimal_from_pk(ep.title(), ep.show_id())?;
-        let rowid = old.rowid();
+        let old = dbqueries::get_episode_minimal(ep.guid(), ep.title(), ep.show_id())?;
+        let id = old.id();
 
         if ep != old {
-            Ok(IndexState::Update((ep.into_new_episode(item), rowid)))
+            Ok(IndexState::Update((ep.into_new_episode(item), id)))
         } else {
             Ok(IndexState::NotChanged)
         }
@@ -92,14 +92,14 @@ fn filter_episodes<S>(stream: S) -> Vec<NewEpisode>
 where
     S: Iterator<Item = Result<IndexState<NewEpisode>, DataError>>,
 {
-    stream
+    let result: Vec<NewEpisode> = stream
         .filter_map(Result::ok)
         .filter_map(|state| {
             match state {
                 IndexState::NotChanged => None,
                 // Update individual rows, and filter them
-                IndexState::Update((ref ep, rowid)) => {
-                    if let Err(err) = ep.update(rowid) {
+                IndexState::Update((ref ep, id)) => {
+                    if let Err(err) = ep.update(id) {
                         error!("{}", err);
                         error!("Failed to index episode: {:?}.", ep.title())
                     }
@@ -109,6 +109,16 @@ where
             }
         })
         // only Index is left, collect them for batch index
+        .collect();
+
+    // filter out duplicates with same guid or title, they are assumed to be the same episode
+    let mut set = std::collections::HashSet::new();
+    result
+        .into_iter()
+        .filter(|ep| {
+            let id = ep.guid().unwrap_or(ep.title()).to_string();
+            set.insert(id)
+        })
         .collect()
 }
 
@@ -180,6 +190,8 @@ mod tests {
             ),
         ]
     };
+    /// randomly chosen
+    const TEST_SOURCE_ID: i32 = 42;
 
     #[test]
     fn test_complete_index() -> Result<()> {
@@ -211,12 +223,12 @@ mod tests {
         truncate_db()?;
 
         let path = "tests/feeds/2018-01-20-Intercepted.xml";
-        let feed = get_feed(path, 42);
+        let feed = get_feed(path, TEST_SOURCE_ID);
 
         let file = fs::File::open(path)?;
         let channel = Channel::read_from(BufReader::new(file))?;
 
-        let pd = NewShow::new(&channel, 42);
+        let pd = NewShow::new(&channel, TEST_SOURCE_ID);
         assert_eq!(feed.parse_podcast(), pd);
         Ok(())
     }
@@ -226,7 +238,7 @@ mod tests {
         truncate_db()?;
 
         let path = "tests/feeds/2018-01-20-Intercepted.xml";
-        let feed = get_feed(path, 42);
+        let feed = get_feed(path, TEST_SOURCE_ID);
         let pd = feed.parse_podcast().to_podcast()?;
 
         feed.index_channel_items(pd)?;
@@ -240,15 +252,207 @@ mod tests {
         truncate_db()?;
 
         let path = "tests/feeds/2022-series-i-cinema.xml";
-        let feed = get_feed(path, 42);
+        let feed = get_feed(path, TEST_SOURCE_ID);
 
         let file = fs::File::open(path)?;
         let channel = Channel::read_from(BufReader::new(file))?;
 
         let description = feed.channel.description();
         assert_eq!(description, "Els clàssics, les novetats de la cartellera i les millors sèries, tot en un sol podcast.");
-        let pd = NewShow::new(&channel, 42);
+        let pd = NewShow::new(&channel, TEST_SOURCE_ID);
         assert_eq!(feed.parse_podcast(), pd);
+        Ok(())
+    }
+
+    // https://gitlab.gnome.org/World/podcasts/-/issues/239
+    #[test]
+    fn test_feed_same_title_different_guid() -> Result<()> {
+        truncate_db()?;
+
+        let path = "tests/feeds/de-grote.xml";
+        let feed = get_feed(path, TEST_SOURCE_ID);
+        let pd = feed.parse_podcast().to_podcast()?;
+
+        feed.index_channel_items(pd)?;
+        assert_eq!(dbqueries::get_podcasts()?.len(), 1);
+        assert_eq!(dbqueries::get_episodes()?.len(), 12);
+        Ok(())
+    }
+
+    // https://gitlab.gnome.org/World/podcasts/-/issues/239
+    #[test]
+    fn test_feed_same_title_no_guid() -> Result<()> {
+        truncate_db()?;
+
+        let path = "tests/feeds/de-grote-no-guid.xml";
+        let feed = get_feed(path, TEST_SOURCE_ID);
+        let pd = feed.parse_podcast().to_podcast()?;
+
+        feed.index_channel_items(pd)?;
+
+        let eps = dbqueries::get_episodes()?;
+
+        assert_eq!(1, dbqueries::get_podcasts()?.len());
+        assert_eq!(2, eps.len());
+
+        // latest episode (latest item in feed), previous items with same title are ignored
+        let ep1 = eps.get(0).unwrap();
+        assert_eq!(Some("https://chtbl.com/track/11G3D/progressive-audio.vrt.be/public/output/aud-7478134e-7c0e-44d4-8d65-32aa87dc6a3a-PODCAST_1/aud-7478134e-7c0e-44d4-8d65-32aa87dc6a3a-PODCAST_1.mp3"), ep1.uri());
+
+        // teaser (first item in feed)
+        let ep2 = eps.get(1).unwrap();
+        assert_eq!(Some("https://chtbl.com/track/11G3D/progressive-audio.vrt.be/public/output/aud-6b925160-4400-4d50-bb54-0085b84643cd-PODCAST_1/aud-6b925160-4400-4d50-bb54-0085b84643cd-PODCAST_1.mp3"), ep2.uri());
+
+        Ok(())
+    }
+
+    // https://gitlab.gnome.org/World/podcasts/-/issues/204
+    #[test]
+    fn test_reruns() -> Result<()> {
+        truncate_db()?;
+
+        let path = "tests/feeds/2020-12-29-replyall.xml";
+        let feed = get_feed(path, TEST_SOURCE_ID);
+        let pd = feed.parse_podcast().to_podcast()?;
+        feed.index_channel_items(pd)?;
+        let show_id = dbqueries::get_podcasts()?.get(0).unwrap().id();
+
+        let eps = dbqueries::get_episodes()?;
+        let rerun_eps: Vec<_> = eps
+            .into_iter()
+            .filter(|e| e.title() == "#86 Man of the People")
+            .collect();
+
+        assert_eq!(rerun_eps.len(), 2);
+        // rerun
+        let ep1 = rerun_eps.get(0).unwrap();
+        assert_eq!("#86 Man of the People", ep1.title());
+        assert_eq!(Some("c16006fa-e2c3-11e9-be80-bf4954f39568"), ep1.guid());
+        assert_eq!(
+            Some("https://traffic.megaphone.fm/GLT8202680871.mp3?updated=1607019082"),
+            ep1.uri()
+        );
+        assert_eq!(
+            &dbqueries::get_episode(
+                Some("c16006fa-e2c3-11e9-be80-bf4954f39568"),
+                "#86 Man of the People",
+                show_id
+            )?,
+            ep1
+        );
+
+        // original run
+        let ep2 = rerun_eps.get(1).unwrap();
+        assert_eq!("#86 Man of the People", ep2.title());
+        assert_eq!(Some("3e7f1804-affc-11e6-892a-bb965a8b4a3f"), ep2.guid());
+        assert_eq!(
+            Some("https://traffic.megaphone.fm/GLT1103232835.mp3?updated=1486920888"),
+            ep2.uri()
+        );
+        assert_eq!(
+            &dbqueries::get_episode(
+                Some("3e7f1804-affc-11e6-892a-bb965a8b4a3f"),
+                "#86 Man of the People",
+                show_id
+            )?,
+            ep2
+        );
+
+        Ok(())
+    }
+
+    #[test]
+    // has same title and &amp; sign in title
+    fn test_same_title_streetfight() -> Result<()> {
+        truncate_db()?;
+
+        let path = "tests/feeds/2024-03-15-streetfightradio.xml";
+        let feed = get_feed(path, 1);
+        let pd = feed.parse_podcast().to_podcast()?;
+        feed.index_channel_items(pd)?;
+        let show_id = dbqueries::get_podcasts()?.get(0).unwrap().id();
+
+        let eps = dbqueries::get_episodes()?;
+        let same_title_eps: Vec<_> = eps
+            .clone()
+            .into_iter()
+            .filter(|e| e.title() == "Return Of The Macks")
+            .collect();
+
+        assert_eq!(2, same_title_eps.len());
+        let ep1 = same_title_eps.get(0).unwrap();
+        assert_eq!("Return Of The Macks", ep1.title());
+        assert_eq!(Some("tag:soundcloud,2010:tracks/501720369"), ep1.guid());
+        assert_eq!(
+            Some("https://feeds.soundcloud.com/stream/501720369-streetfightwcrs-return-of-the-macks-1.mp3"),
+            ep1.uri()
+        );
+        assert_eq!(
+            &dbqueries::get_episode(
+                Some("tag:soundcloud,2010:tracks/501720369"),
+                "Return Of The Macks",
+                show_id
+            )?,
+            ep1
+        );
+
+        let ep2 = same_title_eps.get(1).unwrap();
+        assert_eq!("Return Of The Macks", ep2.title());
+        assert_eq!(Some("tag:soundcloud,2010:tracks/430832790"), ep2.guid());
+        assert_eq!(
+            Some("https://feeds.soundcloud.com/stream/430832790-streetfightwcrs-return-of-the-macks.mp3"),
+            ep2.uri()
+        );
+        assert_eq!(
+            &dbqueries::get_episode(
+                Some("tag:soundcloud,2010:tracks/430832790"),
+                "Return Of The Macks",
+                show_id
+            )?,
+            ep2
+        );
+
+        // second title
+        let same_title_eps: Vec<_> = eps
+            .into_iter()
+            .filter(|e| e.title() == "Street Fight Q&A")
+            .collect();
+
+        assert_eq!(2, same_title_eps.len());
+        let ep1 = same_title_eps.get(0).unwrap();
+        assert_eq!("Street Fight Q&A", ep1.title());
+        assert_eq!(Some("tag:soundcloud,2010:tracks/658646834"), ep1.guid());
+        assert_eq!(
+            Some("https://feeds.soundcloud.com/stream/658646834-streetfightwcrs-street-fight-qa-1.mp3"),
+            ep1.uri()
+        );
+        assert_eq!(
+            &dbqueries::get_episode(
+                Some("tag:soundcloud,2010:tracks/658646834"),
+                "Street Fight Q&A",
+                show_id
+            )?,
+            ep1
+        );
+
+        let ep2 = same_title_eps.get(1).unwrap();
+        assert_eq!("Street Fight Q&A", ep2.title());
+        assert_eq!(Some("tag:soundcloud,2010:tracks/624834786"), ep2.guid());
+        assert_eq!(
+            Some(
+                "https://feeds.soundcloud.com/stream/624834786-streetfightwcrs-street-fight-qa.mp3"
+            ),
+            ep2.uri()
+        );
+        assert_eq!(
+            &dbqueries::get_episode(
+                Some("tag:soundcloud,2010:tracks/624834786"),
+                "Street Fight Q&A",
+                show_id
+            )?,
+            ep2
+        );
+
         Ok(())
     }
 }

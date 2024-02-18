@@ -46,7 +46,7 @@ pub enum IndexState<T> {
     NotChanged,
 }
 
-pub trait Insert<T> {
+pub(crate) trait Insert<T> {
     type Error;
 
     fn insert(&self) -> Result<T, Self::Error>;

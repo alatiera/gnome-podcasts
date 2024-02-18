@@ -96,7 +96,7 @@ impl PlayerInfo {
     // FIXME: create a Diesel Model of the joined episode and podcast query instead
     fn init(&mut self, episode: &EpisodeWidgetModel, podcast: &ShowCoverModel) {
         self.ep = Some(episode.clone());
-        self.episode_id.replace(Some(episode.rowid()));
+        self.episode_id.replace(Some(episode.id()));
         self.set_cover_image(podcast);
         self.set_show_title(podcast);
         self.set_episode_title(episode);
@@ -516,8 +516,8 @@ impl PlayerWidget {
         self.container.set_visible(true);
     }
 
-    pub(crate) fn initialize_episode(&mut self, rowid: i32, second: Option<i32>) -> Result<()> {
-        let ep = dbqueries::get_episode_widget_from_rowid(rowid)?;
+    pub(crate) fn initialize_episode(&mut self, id: i32, second: Option<i32>) -> Result<()> {
+        let ep = dbqueries::get_episode_widget_from_id(id)?;
         let pd = dbqueries::get_podcast_cover_from_id(ep.show_id())?;
 
         self.dialog.initialize_episode(&ep, &pd);

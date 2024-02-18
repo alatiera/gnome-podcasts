@@ -156,7 +156,7 @@ fn populate_listbox(show: &ShowWidget, pd: Arc<Show>, sender: Sender<Action>) ->
     }
 
     let constructor = clone!(@strong sender => move |ep: EpisodeWidgetModel| {
-        let id = ep.rowid();
+        let id = ep.id();
         let episode_widget = EpisodeWidget::new(&sender, ep);
         let row = gtk::ListBoxRow::new();
         row.set_child(Some(&episode_widget));

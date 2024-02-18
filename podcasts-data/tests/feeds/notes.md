@@ -49,3 +49,20 @@ Raw file: https://web.archive.org/web/20180328083913if_/https://ellinofreneia.se
 Web view: https://web.archive.org/web/20190127005213/https://anticapitalistchronicles.libsyn.com/rss
 
 Raw file: https://web.archive.org/web/20190127005213if_/https://anticapitalistchronicles.libsyn.com/rss
+
+### ndr
+
+2024-03-13: https://web.archive.org/web/20240313224040/https://www.ndr.de/nachrichten/info/podcast4450.xml
+2024-03-14: https://web.archive.org/web/20240314162839/https://www.ndr.de/nachrichten/info/podcast4450.xml
+
+### de-grote
+
+pasted from: https://gitlab.gnome.org/World/podcasts/-/issues/239
+
+### replyall
+
+2020-12-29 contains rerun episodes: https://web.archive.org/web/20201229032230if_/https://feeds.megaphone.fm/replyall
+
+### street fight radio
+
+2024-03-15: https://web.archive.org/web/20240315161304/https://feeds.feedburner.com/streetfightradio

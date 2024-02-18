@@ -1,8 +1,8 @@
 #![allow(warnings)]
 
 table! {
-    episodes (title, show_id) {
-        rowid -> Integer,
+    episodes (id) {
+        id -> Integer,
         title -> Text,
         uri -> Nullable<Text>,
         local_uri -> Nullable<Text>,
@@ -11,9 +11,9 @@ table! {
         epoch -> Integer,
         length -> Nullable<Integer>,
         duration -> Nullable<Integer>,
-        play_position -> Integer,
         guid -> Nullable<Text>,
         played -> Nullable<Integer>,
+        play_position -> Integer,
         show_id -> Integer,
     }
 }

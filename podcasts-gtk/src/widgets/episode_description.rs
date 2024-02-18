@@ -80,7 +80,7 @@ impl EpisodeDescriptionPriv {
             }
         }
 
-        let id = ep.rowid();
+        let id = ep.id();
         let menu = EpisodeMenu::new(&sender, ep, show);
         self.menu_button.set_menu_model(Some(&menu.menu));
 

@@ -259,7 +259,7 @@ impl PdApplication {
     fn go_to_episode(&self, id_variant_option: Option<&glib::Variant>) -> Result<()> {
         let id_variant = id_variant_option.expect("missing action_target_value");
         let id = id_variant.get::<i32>().expect("invalid variant type");
-        let ep = dbqueries::get_episode_from_rowid(id)?;
+        let ep = dbqueries::get_episode_from_id(id)?;
         let show = dbqueries::get_podcast_from_id(ep.show_id())?;
         let data = self.imp();
         send!(
@@ -359,12 +359,12 @@ impl PdApplication {
                 send!(sender, Action::StopUpdating);
                 send!(sender, Action::RefreshAllViews);
             }
-            Action::InitEpisode(rowid) => {
-                let res = window.init_episode(rowid, None);
+            Action::InitEpisode(id) => {
+                let res = window.init_episode(id, None);
                 debug_assert!(res.is_ok());
             }
-            Action::InitEpisodeAt(rowid, second) => {
-                let res = window.init_episode(rowid, Some(second));
+            Action::InitEpisodeAt(id, second) => {
+                let res = window.init_episode(id, Some(second));
                 debug_assert!(res.is_ok());
             }
             Action::EmptyState => {

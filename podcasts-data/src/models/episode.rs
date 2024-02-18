@@ -30,12 +30,11 @@ use crate::schema::episodes;
 #[derive(Queryable, Identifiable, AsChangeset, Associations, PartialEq)]
 #[diesel(table_name = episodes)]
 #[diesel(treat_none_as_null = true)]
-#[diesel(primary_key(title, show_id))]
 #[diesel(belongs_to(Show, foreign_key = show_id))]
 #[derive(Debug, Clone)]
 /// Diesel Model of the episode table.
 pub struct Episode {
-    rowid: i32,
+    id: i32,
     title: String,
     uri: Option<String>,
     local_uri: Option<String>,
@@ -44,9 +43,9 @@ pub struct Episode {
     epoch: i32,
     length: Option<i32>,
     duration: Option<i32>,
-    play_position: i32,
     guid: Option<String>,
     played: Option<i32>,
+    play_position: i32,
     show_id: i32,
 }
 
@@ -66,8 +65,8 @@ impl Save<Episode> for Episode {
 
 impl Episode {
     /// Get the value of the sqlite's `ROW_ID`
-    pub fn rowid(&self) -> i32 {
-        self.rowid
+    pub fn id(&self) -> i32 {
+        self.id
     }
 
     /// Get the value of the `title` field.
@@ -158,7 +157,7 @@ impl Episode {
 #[derive(Debug, Clone)]
 /// Diesel Model to be used for constructing `EpisodeWidgets`.
 pub struct EpisodeWidgetModel {
-    rowid: i32,
+    id: i32,
     title: String,
     uri: Option<String>,
     local_uri: Option<String>,
@@ -173,7 +172,7 @@ pub struct EpisodeWidgetModel {
 impl From<Episode> for EpisodeWidgetModel {
     fn from(e: Episode) -> EpisodeWidgetModel {
         EpisodeWidgetModel {
-            rowid: e.rowid,
+            id: e.id,
             title: e.title,
             uri: e.uri,
             local_uri: e.local_uri,
@@ -198,7 +197,7 @@ impl Save<usize> for EpisodeWidgetModel {
         let db = connection();
         let mut tempdb = db.get()?;
 
-        diesel::update(episodes.filter(rowid.eq(self.rowid)))
+        diesel::update(episodes.filter(id.eq(self.id)))
             .set(self)
             .execute(&mut tempdb)
             .map_err(From::from)
@@ -207,8 +206,8 @@ impl Save<usize> for EpisodeWidgetModel {
 
 impl EpisodeWidgetModel {
     /// Get the value of the sqlite's `ROW_ID`
-    pub fn rowid(&self) -> i32 {
-        self.rowid
+    pub fn id(&self) -> i32 {
+        self.id
     }
 
     /// Get the value of the `title` field.
@@ -322,7 +321,7 @@ impl EpisodeWidgetModel {
 #[derive(Debug, Clone)]
 /// Diesel Model to be used internal with the `utils::checkup` function.
 pub struct EpisodeCleanerModel {
-    rowid: i32,
+    id: i32,
     local_uri: Option<String>,
     played: Option<i32>,
 }
@@ -338,7 +337,7 @@ impl Save<usize> for EpisodeCleanerModel {
         let db = connection();
         let mut tempdb = db.get()?;
 
-        diesel::update(episodes.filter(rowid.eq(self.rowid)))
+        diesel::update(episodes.filter(id.eq(self.id)))
             .set(self)
             .execute(&mut tempdb)
             .map_err(From::from)
@@ -348,7 +347,7 @@ impl Save<usize> for EpisodeCleanerModel {
 impl From<Episode> for EpisodeCleanerModel {
     fn from(e: Episode) -> EpisodeCleanerModel {
         EpisodeCleanerModel {
-            rowid: e.rowid(),
+            id: e.id(),
             local_uri: e.local_uri,
             played: e.played,
         }
@@ -357,8 +356,8 @@ impl From<Episode> for EpisodeCleanerModel {
 
 impl EpisodeCleanerModel {
     /// Get the value of the sqlite's `ROW_ID`
-    pub fn rowid(&self) -> i32 {
-        self.rowid
+    pub fn id(&self) -> i32 {
+        self.id
     }
 
     /// Get the value of the `local_uri`.
@@ -394,7 +393,7 @@ impl EpisodeCleanerModel {
 #[derive(Debug, Clone)]
 /// Diesel Model to be used for FIXME.
 pub struct EpisodeMinimal {
-    rowid: i32,
+    id: i32,
     title: String,
     uri: Option<String>,
     image_uri: Option<String>,
@@ -409,7 +408,7 @@ pub struct EpisodeMinimal {
 impl From<Episode> for EpisodeMinimal {
     fn from(e: Episode) -> Self {
         EpisodeMinimal {
-            rowid: e.rowid,
+            id: e.id,
             title: e.title,
             uri: e.uri,
             image_uri: e.image_uri,
@@ -425,8 +424,8 @@ impl From<Episode> for EpisodeMinimal {
 
 impl EpisodeMinimal {
     /// Get the value of the sqlite's `ROW_ID`
-    pub fn rowid(&self) -> i32 {
-        self.rowid
+    pub fn id(&self) -> i32 {
+        self.id
     }
 
     /// Get the value of the `title` field.

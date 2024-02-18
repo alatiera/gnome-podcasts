@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0"
+xmlns:content="http://purl.org/rss/1.0/modules/content/"
+xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+xmlns:dc="http://purl.org/dc/elements/1.1/"
+xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd"
+>
+<channel>
+<title>Die Nachrichtenlage am Morgen</title>
+<link>https://www.ndr.de/nachrichten/info/podcast4450.html</link>
+<description>Das Wichtigste aus Norddeutschland und der Welt. Informiert und kompakt in den Tag starten - in nur fünf Minuten. Von Montag bis Sonntag.</description>
+<language>de</language>
+<copyright>Copyright Norddeutscher Rundfunk</copyright>
+<pubDate>Sun, 29 Oct 2023 02:29:05 +0100</pubDate>
+<lastBuildDate>Wed, 13 Mar 2024 23:04:35 +0100</lastBuildDate>
+<itunes:link rel="image" type="video/jpeg" href="https://www.ndr.de/mediathek/mediathekbild368_v-quadratxl.jpg">Liane Koßmann und Stefan Schlag</itunes:link>
+<image>
+<url>https://www.ndr.de/mediathek/mediathekbild368_v-quadratxl.jpg</url>
+<title>Liane Koßmann und Stefan Schlag</title>
+<link>http://www.ndr.de/info</link>
+</image>
+<itunes:image href="https://www.ndr.de/mediathek/mediathekbild418_v-quadratxl.jpg"/>
+<managingeditor>internet.podcast@ndr.de</managingeditor>
+<webmaster>internet.podcast@ndr.de</webmaster>
+<generator>manual</generator>
+<ttl>360</ttl>
+<category>News</category>
+<itunes:owner>
+<itunes:name>NDR Info</itunes:name>
+<itunes:email>internet.podcast@ndr.de</itunes:email>
+</itunes:owner>
+<itunes:category text="News">
+<itunes:category text="Daily News" />
+</itunes:category>
+<itunes:author>NDR Info</itunes:author>
+<itunes:explicit>No</itunes:explicit>
+<itunes:subtitle>Das Wichtigste aus Norddeutschland und der Welt. Informiert und kompakt in den Tag starten - in nur fünf Minuten. Von Montag bis Sonntag.</itunes:subtitle>
+<itunes:type>serial</itunes:type>
+<item>
+<title>Selenskyj sieht &#034;Vorwärtsbewegung&#034; im Süden</title>
+<description>Im Süden sei man in der Vorwärtsbewegung, sagte Selenskyj in seiner täglichen Videoansprache. Es gebe schwere Kämpfe, doch überall - auch im Osten, wo die ukrainischen Truppen in der Defensive seien - werde der Feind vernichtet.</description>
+<content:encoded><![CDATA[<p>Im Süden sei man in der Vorwärtsbewegung, sagte Selenskyj in seiner täglichen Videoansprache. Es gebe schwere Kämpfe, doch überall - auch im Osten, wo die ukrainischen Truppen in der Defensive seien - werde der Feind vernichtet.</p>]]></content:encoded>
+<pubDate>Thu, 22 Jun 2023 06:58:00 +0200</pubDate>
+<enclosure url="https://mediandr-a.akamaihd.net/download/podcasts/podcast4450/AU-20230622-0747-4100.mp3" type="audio/mpeg"  />
+<guid isPermaLink="false">AU-20230622-0747-4100-A</guid>
+<link>https://www.ndr.de/nachrichten/info/Selenskyj-sieht-Vorwaertsbewegung-im-Sueden,audio1407320.html</link>
+<itunes:image href="https://www.ndr.de/nachrichten/info/ukraine3568_v-quadratl.jpg"/>
+<category>Krieg in Europa</category>
+<category>Ukraine</category>
+<category>Selenskyj</category>
+<category>Saporischschja</category>
+<category>Wiederaufbau</category>
+<category>Bayer</category>
+<category>FIXIT</category>
+<category>Podcast</category>
+<itunes:duration>00:05:41</itunes:duration>
+</item>
+<item>
+<title>Nachrichten</title>
+<description>Die aktuellen Meldungen aus der NDR Info Nachrichtenredaktion.</description>
+<content:encoded><![CDATA[<p>Die aktuellen Meldungen aus der NDR Info Nachrichtenredaktion.</p>]]></content:encoded>
+<pubDate>Wed, 13 Mar 2024 22:59:00 +0100</pubDate>
+<enclosure url="https://mediandr-a.akamaihd.net/download/podcasts/podcast4450/AU-20240313-2303-4300.mp3" type="audio/mpeg"  />
+<guid isPermaLink="false">AU-20240313-2303-4300-A</guid>
+<link>https://www.ndr.de/nachrichten/info/Nachrichten,audio125473.html</link>
+<itunes:image href="https://www.ndr.de/nachrichten/info/nachrichten660_v-quadratl.jpg"/>
+<itunes:duration>00:03:22</itunes:duration>
+</item>
+</channel>
+</rss>

@@ -244,13 +244,13 @@ impl MainWindow {
         self.imp().navigation_view.push(page);
     }
 
-    pub(crate) fn init_episode(&self, rowid: i32, second: Option<i32>) -> anyhow::Result<()> {
+    pub(crate) fn init_episode(&self, id: i32, second: Option<i32>) -> anyhow::Result<()> {
         self.imp()
             .player
             .get()
             .unwrap()
             .borrow_mut()
-            .initialize_episode(rowid, second)
+            .initialize_episode(id, second)
     }
 
     pub(crate) fn add_toast(&self, toast: adw::Toast) {

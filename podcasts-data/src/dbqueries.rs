@@ -80,7 +80,7 @@ pub(crate) fn get_downloaded_episodes() -> Result<Vec<EpisodeCleanerModel>, Data
     let mut con = db.get()?;
 
     episodes
-        .select((rowid, local_uri, played))
+        .select((id, local_uri, played))
         .filter(local_uri.is_not_null())
         .load::<EpisodeCleanerModel>(&mut con)
         .map_err(From::from)
@@ -92,31 +92,31 @@ pub(crate) fn get_played_cleaner_episodes() -> Result<Vec<EpisodeCleanerModel>, 
     let mut con = db.get()?;
 
     episodes
-        .select((rowid, local_uri, played))
+        .select((id, local_uri, played))
         .filter(played.is_not_null())
         .load::<EpisodeCleanerModel>(&mut con)
         .map_err(From::from)
 }
 
-pub fn get_episode_from_rowid(ep_id: i32) -> Result<Episode, DataError> {
+pub fn get_episode_from_id(ep_id: i32) -> Result<Episode, DataError> {
     use crate::schema::episodes::dsl::*;
     let db = connection();
     let mut con = db.get()?;
 
     episodes
-        .filter(rowid.eq(ep_id))
+        .filter(id.eq(ep_id))
         .get_result::<Episode>(&mut con)
         .map_err(From::from)
 }
 
-pub fn get_episode_widget_from_rowid(ep_id: i32) -> Result<EpisodeWidgetModel, DataError> {
+pub fn get_episode_widget_from_id(ep_id: i32) -> Result<EpisodeWidgetModel, DataError> {
     use crate::schema::episodes::dsl::*;
     let db = connection();
     let mut con = db.get()?;
 
     episodes
         .select((
-            rowid,
+            id,
             title,
             uri,
             local_uri,
@@ -127,7 +127,7 @@ pub fn get_episode_widget_from_rowid(ep_id: i32) -> Result<EpisodeWidgetModel, D
             play_position,
             show_id,
         ))
-        .filter(rowid.eq(ep_id))
+        .filter(id.eq(ep_id))
         .get_result::<EpisodeWidgetModel>(&mut con)
         .map_err(From::from)
 }
@@ -138,7 +138,7 @@ pub fn get_episode_local_uri_from_id(ep_id: i32) -> Result<Option<String>, DataE
     let mut con = db.get()?;
 
     episodes
-        .filter(rowid.eq(ep_id))
+        .filter(id.eq(ep_id))
         .select(local_uri)
         .get_result::<Option<String>>(&mut con)
         .map_err(From::from)
@@ -152,7 +152,7 @@ pub fn get_episodes_widgets_filter_limit(
     let db = connection();
     let mut con = db.get()?;
     let columns = (
-        rowid,
+        id,
         title,
         uri,
         local_uri,
@@ -222,7 +222,7 @@ pub fn get_pd_episodeswidgets(parent: &Show) -> Result<Vec<EpisodeWidgetModel>, 
     let db = connection();
     let mut con = db.get()?;
     let columns = (
-        rowid,
+        id,
         title,
         uri,
         local_uri,
@@ -287,7 +287,7 @@ pub fn get_podcast_from_source_id(sid: i32) -> Result<Show, DataError> {
         .map_err(From::from)
 }
 
-pub fn get_episode_from_pk(title_: &str, pid: i32) -> Result<Episode, DataError> {
+fn get_episode_from_title(title_: &str, pid: i32) -> Result<Episode, DataError> {
     use crate::schema::episodes::dsl::*;
     let db = connection();
     let mut con = db.get()?;
@@ -299,17 +299,34 @@ pub fn get_episode_from_pk(title_: &str, pid: i32) -> Result<Episode, DataError>
         .map_err(From::from)
 }
 
-pub(crate) fn get_episode_minimal_from_pk(
-    title_: &str,
-    pid: i32,
-) -> Result<EpisodeMinimal, DataError> {
+pub fn get_episode(guid: Option<&str>, title: &str, show_id: i32) -> Result<Episode, DataError> {
+    if guid.is_some() {
+        get_episode_from_guid(guid, show_id)
+    } else {
+        get_episode_from_title(title, show_id)
+    }
+}
+
+fn get_episode_from_guid(guid_: Option<&str>, pid: i32) -> Result<Episode, DataError> {
+    use crate::schema::episodes::dsl::*;
+    let db = connection();
+    let mut con = db.get()?;
+
+    episodes
+        .filter(guid.eq(guid_))
+        .filter(show_id.eq(pid))
+        .get_result::<Episode>(&mut con)
+        .map_err(From::from)
+}
+
+fn get_episode_minimal_from_title(title_: &str, pid: i32) -> Result<EpisodeMinimal, DataError> {
     use crate::schema::episodes::dsl::*;
     let db = connection();
     let mut con = db.get()?;
 
     episodes
         .select((
-            rowid,
+            id,
             title,
             uri,
             image_uri,
@@ -326,8 +343,47 @@ pub(crate) fn get_episode_minimal_from_pk(
         .map_err(From::from)
 }
 
+pub(crate) fn get_episode_minimal(
+    guid: Option<&str>,
+    title: &str,
+    show_id: i32,
+) -> Result<EpisodeMinimal, DataError> {
+    if guid.is_some() {
+        get_episode_minimal_from_guid(&guid, show_id)
+    } else {
+        get_episode_minimal_from_title(title, show_id)
+    }
+}
+
+fn get_episode_minimal_from_guid(
+    guid_: &Option<&str>,
+    pid: i32,
+) -> Result<EpisodeMinimal, DataError> {
+    use crate::schema::episodes::dsl::*;
+    let db = connection();
+    let mut con = db.get()?;
+
+    episodes
+        .select((
+            id,
+            title,
+            uri,
+            image_uri,
+            epoch,
+            length,
+            duration,
+            play_position,
+            guid,
+            show_id,
+        ))
+        .filter(guid.eq(guid_))
+        .filter(show_id.eq(pid))
+        .get_result::<EpisodeMinimal>(&mut con)
+        .map_err(From::from)
+}
+
 #[cfg(test)]
-pub(crate) fn get_episode_cleaner_from_pk(
+pub(crate) fn get_episode_cleaner_from_title(
     title_: &str,
     pid: i32,
 ) -> Result<EpisodeCleanerModel, DataError> {
@@ -336,7 +392,7 @@ pub(crate) fn get_episode_cleaner_from_pk(
     let mut con = db.get()?;
 
     episodes
-        .select((rowid, local_uri, played))
+        .select((id, local_uri, played))
         .filter(title.eq(title_))
         .filter(show_id.eq(pid))
         .get_result::<EpisodeCleanerModel>(&mut con)
@@ -396,11 +452,23 @@ pub(crate) fn podcast_exists(source_id_: i32) -> Result<bool, DataError> {
         .map_err(From::from)
 }
 
-pub(crate) fn episode_exists(title_: &str, show_id_: i32) -> Result<bool, DataError> {
+pub(crate) fn episode_exists(
+    guid_: Option<&str>,
+    title_: &str,
+    show_id_: i32,
+) -> Result<bool, DataError> {
     use crate::schema::episodes::dsl::*;
 
     let db = connection();
     let mut con = db.get()?;
+
+    if guid_.is_some() {
+        return select(exists(
+            episodes.filter(show_id.eq(show_id_)).filter(guid.eq(guid_)),
+        ))
+        .get_result(&mut con)
+        .map_err(From::from);
+    }
 
     select(exists(
         episodes
@@ -482,8 +550,9 @@ pub fn update_none_to_played_now(parent: &Show) -> Result<usize, DataError> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::database::*;
+    use crate::database::truncate_db;
     use crate::pipeline::pipeline;
+    use crate::utils::get_feed;
     use anyhow::Result;
 
     #[test]
@@ -504,6 +573,45 @@ mod tests {
         update_none_to_played_now(&pd)?;
         let eps_num2 = get_pd_unplayed_episodes(&pd)?.len();
         assert_eq!(eps_num2, 0);
+        Ok(())
+    }
+
+    #[test]
+    fn test_episode_exists() -> Result<()> {
+        truncate_db()?;
+        const TEST_SHOW_ID: i32 = 1;
+
+        let path = "tests/feeds/2024-03-13-ndr.xml";
+        let feed = get_feed(path, TEST_SHOW_ID);
+        feed.index()?;
+
+        // only title given
+        assert!(episode_exists(None, "Nachrichten", TEST_SHOW_ID)?);
+        assert!(get_episode(None, "Nachrichten", TEST_SHOW_ID).is_ok());
+        assert!(get_episode_minimal(None, "Nachrichten", TEST_SHOW_ID).is_ok());
+
+        // only GUID matches, title is different
+        assert!(episode_exists(
+            Some("AU-20230622-0747-4100-A"),
+            "wrong",
+            TEST_SHOW_ID
+        )?);
+        assert!(get_episode(Some("AU-20230622-0747-4100-A"), "wrong", TEST_SHOW_ID).is_ok());
+        assert!(
+            get_episode_minimal(Some("AU-20230622-0747-4100-A"), "wrong", TEST_SHOW_ID).is_ok()
+        );
+
+        // wrong guid
+        // Should not find, different guid = assume it's a different episode
+        assert!(!episode_exists(Some("wrong"), "Nachrichten", TEST_SHOW_ID)?);
+        assert!(!get_episode(Some("wrong"), "Nachrichten", TEST_SHOW_ID).is_ok());
+        assert!(!get_episode_minimal(Some("wrong"), "Nachrichten", TEST_SHOW_ID).is_ok());
+
+        // no result
+        assert!(!episode_exists(None, "wrong", TEST_SHOW_ID)?);
+        assert!(!get_episode(None, "wrong", TEST_SHOW_ID).is_ok());
+        assert!(!get_episode_minimal(None, "wrong", TEST_SHOW_ID).is_ok());
+
         Ok(())
     }
 }

@@ -218,7 +218,7 @@ pub async fn get_episode(
 
     let path = download_into(
         download_dir,
-        &ep.rowid().to_string(),
+        &ep.id().to_string(),
         ep.uri().unwrap(),
         progress,
     )

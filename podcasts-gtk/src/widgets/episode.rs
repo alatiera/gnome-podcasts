@@ -191,7 +191,7 @@ impl EpisodeWidgetPriv {
         sender: &Sender<Action>,
     ) -> Result<()> {
         // Check if the episode is being downloaded
-        let id = episode.rowid();
+        let id = episode.id();
         let active_dl = move || -> Result<Option<_>> {
             let m = manager::ACTIVE_DOWNLOADS
                 .read()
@@ -206,7 +206,7 @@ impl EpisodeWidgetPriv {
             let callback = clone!(@weak self as this, @strong sender => @default-return glib::ControlFlow::Break, move || {
                 if let Ok(guard) = manager::ACTIVE_DOWNLOADS.read() {
                     if !guard.contains_key(&id) {
-                        if let Ok(ep) = dbqueries::get_episode_widget_from_rowid(id) {
+                        if let Ok(ep) = dbqueries::get_episode_widget_from_id(id) {
                             this.determine_buttons_state(&ep, &sender)
                                 .map_err(|err| error!("Error: {}", err))
                                 .ok();
@@ -234,7 +234,7 @@ impl EpisodeWidgetPriv {
                         if let Ok(thing) = active_dl() {
                             if thing.is_none() {
                                 // Recalculate the widget state
-                                if let Err(err) = dbqueries::get_episode_widget_from_rowid(id)
+                                if let Err(err) = dbqueries::get_episode_widget_from_id(id)
                                     .map_err(From::from)
                                     .and_then(|ep| this.determine_buttons_state(&ep, &sender)) {
                                         error!("Error: {}", err);
@@ -270,7 +270,7 @@ impl EpisodeWidgetPriv {
             // Wire the play button
             self.play
                 .connect_clicked(clone!(@weak self as this, @strong sender => move |_| {
-                    if let Ok(mut ep) = dbqueries::get_episode_widget_from_rowid(id) {
+                    if let Ok(mut ep) = dbqueries::get_episode_widget_from_id(id) {
                         this.on_play_bttn_clicked(&mut ep, &sender)
                             .map_err(|err| error!("Error: {}", err))
                             .ok();
@@ -284,7 +284,7 @@ impl EpisodeWidgetPriv {
         // Wire the download button
         self.download
             .connect_clicked(clone!(@weak self as this, @strong sender => move |dl| {
-                if let Ok(ep) = dbqueries::get_episode_widget_from_rowid(id) {
+                if let Ok(ep) = dbqueries::get_episode_widget_from_id(id) {
                     on_download_clicked(&ep, &sender)
                         .and_then(|_| {
                             info!("Download started successfully.");
@@ -313,7 +313,7 @@ impl EpisodeWidgetPriv {
         self.set_title(episode);
 
         // Play the episode
-        send!(sender, Action::InitEpisode(episode.rowid()));
+        send!(sender, Action::InitEpisode(episode.id()));
         // Refresh background views to match the normal/greyout title state
         send!(sender, Action::RefreshEpisodesViewBGR);
         Ok(())
@@ -408,7 +408,7 @@ fn on_download_clicked(ep: &EpisodeWidgetModel, sender: &Sender<Action>) -> Resu
     let download_dir = get_download_dir(pd.title())?;
 
     // Start a new download.
-    manager::add(ep.rowid(), download_dir)?;
+    manager::add(ep.id(), download_dir)?;
 
     // Update Views
     send!(sender, Action::RefreshEpisodesViewBGR);
@@ -420,10 +420,10 @@ fn on_download_clicked(ep: &EpisodeWidgetModel, sender: &Sender<Action>) -> Resu
 fn update_progressbar_callback(
     widget: &EpisodeWidgetPriv,
     prog: &Arc<Mutex<manager::Progress>>,
-    episode_rowid: i32,
+    episode_id: i32,
 ) {
     let callback = clone!(@weak widget, @strong prog => @default-return glib::ControlFlow::Break, move || {
-        progress_bar_helper(&widget, &prog, episode_rowid)
+        progress_bar_helper(&widget, &prog, episode_id)
             .unwrap_or(glib::ControlFlow::Break)
     });
     glib::timeout_add_local(Duration::from_millis(100), callback);
@@ -432,7 +432,7 @@ fn update_progressbar_callback(
 fn progress_bar_helper(
     widget: &EpisodeWidgetPriv,
     prog: &Arc<Mutex<manager::Progress>>,
-    episode_rowid: i32,
+    episode_id: i32,
 ) -> Result<glib::ControlFlow> {
     let (fraction, downloaded, cancel) = match prog.try_lock() {
         Ok(guard) => (
@@ -456,7 +456,7 @@ fn progress_bar_helper(
 
     // Check if the download is still active
     let active = match manager::ACTIVE_DOWNLOADS.read() {
-        Ok(guard) => guard.contains_key(&episode_rowid),
+        Ok(guard) => guard.contains_key(&episode_id),
         Err(_) => return Err(anyhow!("Failed to get a lock on the mutex.")),
     };
 

@@ -277,7 +277,7 @@ impl HomeEpisode {
     pub(crate) fn new(sender: &Sender<Action>, episode: EpisodeWidgetModel) -> Self {
         let widget = Self::default();
         widget.set_action_name(Some("app.go-to-episode"));
-        widget.set_action_target_value(Some(&episode.rowid().to_variant()));
+        widget.set_action_target_value(Some(&episode.id().to_variant()));
         widget.imp().init(sender, episode);
         widget
     }

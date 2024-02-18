@@ -88,8 +88,8 @@ pub(crate) fn add(id: i32, directory: String) -> Result<()> {
     };
 
     crate::RUNTIME.spawn(async move {
-        if let Ok(mut episode) = dbqueries::get_episode_widget_from_rowid(id) {
-            let id = episode.rowid();
+        if let Ok(mut episode) = dbqueries::get_episode_widget_from_id(id) {
+            let id = episode.id();
 
             get_episode(&mut episode, directory.as_str(), Some(prog))
                 .await
@@ -142,18 +142,19 @@ mod tests {
         // Get the podcast
         let pd = dbqueries::get_podcast_from_source_id(sid)?;
         let title = "Coming soon... The Tip Off";
+        let guid = "tag:soundcloud,2010:tracks/327539708";
         // Get an episode
-        let episode: Episode = dbqueries::get_episode_from_pk(title, pd.id())?;
+        let episode: Episode = dbqueries::get_episode(Some(guid), title, pd.id())?;
 
         let download_dir = get_download_dir(pd.title())?;
         let dir2 = download_dir.clone();
-        add(episode.rowid(), download_dir)?;
+        add(episode.id(), download_dir)?;
         assert_eq!(ACTIVE_DOWNLOADS.read().unwrap().len(), 1);
 
         // Give it some time to download the file
         thread::sleep(time::Duration::from_secs(20));
 
-        let final_path = format!("{}/{}.mp3", &dir2, episode.rowid());
+        let final_path = format!("{}/{}.mp3", &dir2, episode.id());
         assert_eq!(ACTIVE_DOWNLOADS.read().unwrap().len(), 0);
         assert!(Path::new(&final_path).exists());
         fs::remove_file(final_path)?;
@@ -179,13 +180,15 @@ mod tests {
         // Get the podcast
         let pd = dbqueries::get_podcast_from_source_id(sid)?;
         let title = "Introducing Steal the Stars";
+        let guid = "gid://art19-episode-locator/V0/S6kmOE2cviFS0HD-IUYOPRO0fvjTPYmCsMDe5bjABnA";
+
         // Get an episode
-        let mut episode = dbqueries::get_episode_from_pk(title, pd.id())?.into();
+        let mut episode = dbqueries::get_episode(Some(guid), title, pd.id())?.into();
         let download_dir = get_download_dir(pd.title())?;
 
         rt.block_on(get_episode(&mut episode, &download_dir, None))?;
 
-        let final_path = format!("{}/{}.mp3", &download_dir, episode.rowid());
+        let final_path = format!("{}/{}.mp3", &download_dir, episode.id());
         assert!(Path::new(&final_path).exists());
         fs::remove_file(final_path)?;
         Ok(())

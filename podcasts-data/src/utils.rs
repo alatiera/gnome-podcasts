@@ -198,7 +198,7 @@ pub fn url_cleaner(s: &str) -> String {
 
 /// Returns the URI of a Show' Download directory given it's title.
 pub fn get_download_dir(pd_title: &str) -> Result<String, DownloadError> {
-    // It might be better to make it a hash of the title or the Show rowid
+    // It might be better to make it a hash of the title or the Show id
     let mut dir = DL_DIR.clone();
     dir.push(pd_title);
 
@@ -210,7 +210,7 @@ pub fn get_download_dir(pd_title: &str) -> Result<String, DownloadError> {
 
 /// Returns the URI of a Show's cover directory given it's title.
 pub fn get_cover_dir(pd_title: &str) -> Result<String, DownloadError> {
-    // It might be better to make it a hash of the title or the Show rowid
+    // It might be better to make it a hash of the title or the Show id
     let mut dir = PODCASTS_CACHE.clone();
     dir.push(pd_title);
 
@@ -305,8 +305,8 @@ mod tests {
             .unwrap()
             .to_episode()?;
 
-        let mut ep1 = dbqueries::get_episode_cleaner_from_pk(n1.title(), n1.show_id())?;
-        let mut ep2 = dbqueries::get_episode_cleaner_from_pk(n2.title(), n2.show_id())?;
+        let mut ep1 = dbqueries::get_episode_cleaner_from_title(n1.title(), n1.show_id())?;
+        let mut ep2 = dbqueries::get_episode_cleaner_from_title(n2.title(), n2.show_id())?;
         ep1.set_local_uri(Some(valid_path.to_str().unwrap()));
         ep2.set_local_uri(Some(bad_path.to_str().unwrap()));
 
@@ -331,7 +331,7 @@ mod tests {
 
         let _tmp_dir = helper_db()?;
         download_checker()?;
-        let episode = dbqueries::get_episode_cleaner_from_pk("bar_baz", 1)?;
+        let episode = dbqueries::get_episode_cleaner_from_title("bar_baz", 1)?;
         assert!(episode.local_uri().is_none());
         Ok(())
     }
@@ -340,7 +340,7 @@ mod tests {
     fn test_download_cleaner() -> Result<()> {
         let _tmp_dir = helper_db()?;
         let mut episode: EpisodeCleanerModel =
-            dbqueries::get_episode_cleaner_from_pk("foo_bar", 0)?;
+            dbqueries::get_episode_cleaner_from_title("foo_bar", 0)?;
 
         let valid_path = episode.local_uri().unwrap().to_owned();
         delete_local_content(&mut episode)?;
@@ -351,7 +351,7 @@ mod tests {
     #[test]
     fn test_played_cleaner_expired() -> Result<()> {
         let _tmp_dir = helper_db()?;
-        let mut episode = dbqueries::get_episode_cleaner_from_pk("foo_bar", 0)?;
+        let mut episode = dbqueries::get_episode_cleaner_from_title("foo_bar", 0)?;
         let cleanup_date = Utc::now() - Duration::seconds(1000);
         let epoch = cleanup_date.timestamp() as i32 - 1;
         episode.set_played(Some(epoch));
@@ -367,7 +367,7 @@ mod tests {
     #[test]
     fn test_played_cleaner_none() -> Result<()> {
         let _tmp_dir = helper_db()?;
-        let mut episode = dbqueries::get_episode_cleaner_from_pk("foo_bar", 0)?;
+        let mut episode = dbqueries::get_episode_cleaner_from_title("foo_bar", 0)?;
         let cleanup_date = Utc::now() - Duration::seconds(1000);
         let epoch = cleanup_date.timestamp() as i32 + 1;
         episode.set_played(Some(epoch));
