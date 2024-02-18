@@ -22,7 +22,7 @@ humansize = "1"
 linkify = "0.10"
 log = { workspace = true }
 markup5ever_rcdom = "0.2"
-mpris-server = "0.4"
+mpris-server = "0.7"
 once_cell = { workspace = true }
 open = "5"
 podcasts-data = { path = "../podcasts-data" }
