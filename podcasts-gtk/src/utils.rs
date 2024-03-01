@@ -544,8 +544,9 @@ pub(crate) fn on_export_clicked(window: &gtk::ApplicationWindow, sender: &Sender
             if let Some(path) = file.peek_path() {
                 debug!("File selected: {:?}", path);
                 gio::spawn_blocking(clone!(@strong sender => move || {
-                    if opml::export_from_db(path, i18n("GNOME Podcasts Subscriptions").as_str()).is_err() {
+                    if let Err(err) = opml::export_from_db(path, &i18n("GNOME Podcasts Subscriptions")) {
                         let text = i18n("Failed to export podcasts");
+                        error!("Failed to export podcasts: {err}");
                         send!(sender, Action::ErrorNotification(text));
                     }
                 }));
