@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: podcasts master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2023-10-19 20:18+0000\n"
-"PO-Revision-Date: 2024-01-18 18:10+0100\n"
+"POT-Creation-Date: 2024-02-27 18:33+0000\n"
+"PO-Revision-Date: 2024-03-02 17:30+0100\n"
 "Last-Translator: Quentin PAGÈS\n"
 "Language-Team: Occitan <totenoc@gmail.com>\n"
 "Language: oc\n"
@@ -67,21 +67,21 @@ msgstr "Copiar l'URL de l'pisòdi"
 
 #: podcasts-gtk/resources/gtk/episode_widget.ui:70
 msgid "You’ve already listened to this episode."
-msgstr "Avètz ja escotat aqueste episòdi"
+msgstr "Avètz ja escotat aqueste episòdi."
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:157
+#: podcasts-gtk/resources/gtk/episode_widget.ui:158
 msgid "Calculating episode size…"
 msgstr "Calcul de la talha de l’episòdi…"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:180
+#: podcasts-gtk/resources/gtk/episode_widget.ui:181
 msgid "Play this episode"
 msgstr "Legir aqueste episòdi"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:192
+#: podcasts-gtk/resources/gtk/episode_widget.ui:193
 msgid "Cancel the download process"
 msgstr "Anullar lo telecargament"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:204
+#: podcasts-gtk/resources/gtk/episode_widget.ui:206
 msgid "Download this episode"
 msgstr "Telecargar aqueste episòdi"
 
@@ -103,7 +103,7 @@ msgstr "_Acorchis de clavièr"
 
 #: podcasts-gtk/resources/gtk/hamburger.ui:30
 msgid "_About Podcasts"
-msgstr "_A prepaus de Podcast"
+msgstr "_A prepaus de Podcasts"
 
 #: podcasts-gtk/resources/gtk/headerbar.ui:33
 #: podcasts-gtk/resources/gtk/headerbar.ui:108
@@ -122,17 +122,9 @@ msgstr ""
 msgid "Add"
 msgstr "Ajustar"
 
-#: podcasts-gtk/resources/gtk/headerbar.ui:118
-msgid "Back"
-msgstr "Tornar"
-
-#: podcasts-gtk/resources/gtk/headerbar.ui:128
+#: podcasts-gtk/resources/gtk/headerbar.ui:119
 msgid "Main Menu"
 msgstr "Menú principala"
-
-#: podcasts-gtk/resources/gtk/headerbar.ui:138
-msgid "Podcast Menu"
-msgstr "Menú podcast"
 
 #: podcasts-gtk/resources/gtk/help-overlay.ui:11
 msgid "General"
@@ -186,14 +178,14 @@ msgid "Rewind"
 msgstr "Recular"
 
 #: podcasts-gtk/resources/gtk/player_dialog.ui:173
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:56
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:232
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:63
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:253
 msgid "Play"
 msgstr "Lectura"
 
 #: podcasts-gtk/resources/gtk/player_dialog.ui:191
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:64
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:241
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:76
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:262
 msgid "Pause"
 msgstr "Pausa"
 
@@ -234,11 +226,11 @@ msgstr "0.90×"
 msgid "0.75×"
 msgstr "0.75×"
 
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:48
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:50
 msgid "Rewind 10 seconds"
 msgstr "Rembobinar de 10 segondas"
 
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:72
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:89
 msgid "Fast forward 10 seconds"
 msgstr "Avançar de 10 segondas"
 
@@ -266,19 +258,27 @@ msgstr "Tot marcar coma legits"
 msgid "Unsubscribe"
 msgstr "Se desabonar"
 
-#: podcasts-gtk/resources/gtk/show_widget.ui:80
+#: podcasts-gtk/resources/gtk/show_widget.ui:40
+msgid "Podcast Menu"
+msgstr "Menú podcast"
+
+#: podcasts-gtk/resources/gtk/show_widget.ui:97
 msgid "Episodes"
 msgstr "Episòdis"
 
 #. Weird magic I copy-pasted that sets the Application Name in the Shell.
+#: podcasts-gtk/resources/gtk/window.ui:6
+#: podcasts-gtk/resources/gtk/window.ui:25
 #: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:4
 #: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:3
-#: podcasts-gtk/src/app.rs:380 podcasts-gtk/src/app.rs:510
-#: podcasts-gtk/src/widgets/aboutdialog.rs:56
-#: podcasts-gtk/src/widgets/player.rs:371 podcasts-gtk/src/window.rs:64
-#: podcasts-gtk/src/window.rs:91
+#: podcasts-gtk/src/app.rs:430 podcasts-gtk/src/widgets/aboutdialog.rs:56
+#: podcasts-gtk/src/widgets/player.rs:384
 msgid "Podcasts"
 msgstr "Podcasts"
+
+#: podcasts-gtk/resources/gtk/window.ui:33
+msgid "Show"
+msgstr "Programa"
 
 #: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:8
 msgid "Listen to your favorite shows"
@@ -293,9 +293,10 @@ msgid ""
 "imported via OPML files."
 msgstr ""
 
-#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:150
+#. developer_name tag deprecated with Appstream 1.0
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:151
 msgid "The Podcasts developers"
-msgstr ""
+msgstr "Los desvolopaires de Podcasts"
 
 #: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:4
 msgid "Listen to your favorite podcasts, right from your desktop."
@@ -332,7 +333,7 @@ msgstr ""
 
 #: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:41
 msgid "Whether to refresh content after startup"
-msgstr ""
+msgstr "Indica se cal actualizar lo contengut aprèp l’aviada"
 
 #: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:47
 msgid "How many periods of time to wait between automatic cleanups"
@@ -342,7 +343,7 @@ msgstr ""
 msgid "What period of time to wait between automatic cleanups"
 msgstr ""
 
-#: podcasts-gtk/src/app.rs:383
+#: podcasts-gtk/src/app.rs:315
 msgid "Copied URL to clipboard!"
 msgstr "URL copiada del quichapapièrs !"
 
@@ -351,46 +352,46 @@ msgid "New"
 msgstr "Nòu"
 
 #: podcasts-gtk/src/stacks/content.rs:70
-#: podcasts-gtk/src/widgets/shows_view.rs:55
+#: podcasts-gtk/src/widgets/shows_view.rs:64
 msgid "Shows"
 msgstr "Programas"
 
-#: podcasts-gtk/src/utils.rs:499 podcasts-gtk/src/utils.rs:541
+#: podcasts-gtk/src/utils.rs:480 podcasts-gtk/src/utils.rs:522
 msgid "OPML file"
 msgstr "Fichièr OPML"
 
-#: podcasts-gtk/src/utils.rs:510
+#: podcasts-gtk/src/utils.rs:491
 msgid "Select the file from which to you want to import shows."
 msgstr ""
 
-#: podcasts-gtk/src/utils.rs:512
+#: podcasts-gtk/src/utils.rs:493
 msgid "_Import"
 msgstr "_Importar"
 
-#: podcasts-gtk/src/utils.rs:528
+#: podcasts-gtk/src/utils.rs:509
 msgid "Failed to parse the imported file"
-msgstr ""
+msgstr "Analisi impossibla del fichièr importat"
 
-#: podcasts-gtk/src/utils.rs:551
+#: podcasts-gtk/src/utils.rs:532
 msgid "Export shows to…"
 msgstr "Exportar los programas cap a…"
 
-#: podcasts-gtk/src/utils.rs:552
+#: podcasts-gtk/src/utils.rs:533
 msgid "_Export"
 msgstr "_Exportar"
 
 #. Translators: This is the string of the suggested name for the exported opml file
-#: podcasts-gtk/src/utils.rs:556
+#: podcasts-gtk/src/utils.rs:537
 msgid "gnome-podcasts-exported-shows"
-msgstr ""
+msgstr "programas-exportats-de-gnome-podcasts"
 
-#: podcasts-gtk/src/utils.rs:566
+#: podcasts-gtk/src/utils.rs:547
 msgid "GNOME Podcasts Subscriptions"
-msgstr ""
+msgstr "Abonaments GNOME Podcasts"
 
-#: podcasts-gtk/src/utils.rs:567
+#: podcasts-gtk/src/utils.rs:548
 msgid "Failed to export podcasts"
-msgstr ""
+msgstr "Fracàs de l’expòrt dels podcasts"
 
 #: podcasts-gtk/src/widgets/aboutdialog.rs:52
 msgid "Podcast Client for the GNOME Desktop."
@@ -400,34 +401,37 @@ msgstr "Un client de Podcast l’environament de burèu GNOME."
 msgid "translator-credits"
 msgstr "Quentin PAGÈS"
 
-#: podcasts-gtk/src/widgets/episode.rs:374
+#: podcasts-gtk/src/widgets/episode.rs:373
 msgid "{} min"
 msgstr "{} min"
 
-#: podcasts-gtk/src/widgets/player.rs:887
+#: podcasts-gtk/src/widgets/player.rs:940
 msgid "The media player was unable to execute an action."
-msgstr ""
+msgstr "Lo lector multimèdia a pas pogut executar una accion."
 
 #: podcasts-gtk/src/widgets/read_more_label.rs:34
 msgid "Visually expands this description"
-msgstr ""
+msgstr "Espandir visualament aquesta descripcion"
 
 #: podcasts-gtk/src/widgets/read_more_label.rs:36
 msgid "Read More"
 msgstr "Ne saber mai"
 
-#: podcasts-gtk/src/widgets/show_menu.rs:180
+#: podcasts-gtk/src/widgets/show_menu.rs:178
 msgid "Marked all episodes as listened"
 msgstr "Totes los episòdis marcats coma escotats"
 
-#: podcasts-gtk/src/widgets/show_menu.rs:181
-#: podcasts-gtk/src/widgets/show_menu.rs:204
+#: podcasts-gtk/src/widgets/show_menu.rs:179
+#: podcasts-gtk/src/widgets/show_menu.rs:202
 msgid "Undo"
 msgstr "Anullar"
 
-#: podcasts-gtk/src/widgets/show_menu.rs:200
+#: podcasts-gtk/src/widgets/show_menu.rs:198
 msgid "Unsubscribed from {}"
 msgstr "Desabonament de {}"
+
+#~ msgid "Back"
+#~ msgstr "Tornar"
 
 #~ msgid "Podcast app for GNOME"
 #~ msgstr "Aplicacion de podcast per GNOME"
