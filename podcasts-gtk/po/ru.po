@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: podcasts master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2023-09-06 01:04+0000\n"
-"PO-Revision-Date: 2023-09-06 13:10+0300\n"
+"POT-Creation-Date: 2024-02-27 18:33+0000\n"
+"PO-Revision-Date: 2024-02-27 22:55+0300\n"
 "Last-Translator: Artur So <arturios2005@mail.ru>\n"
 "Language-Team: Russian <gnome-cyr@gnome.org>\n"
 "Language: ru\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
-"X-Generator: Poedit 3.3.2\n"
+"X-Generator: Poedit 3.4.2\n"
 
 #: podcasts-gtk/resources/gtk/empty_show.ui:16
 msgid "This show does not have episodes yet"
@@ -32,37 +32,31 @@ msgstr ""
 msgid "Get Some Shows"
 msgstr "Получайте различные шоу"
 
-#: podcasts-gtk/resources/gtk/empty_view.ui:49
+#: podcasts-gtk/resources/gtk/empty_view.ui:50
 msgid "Add new shows via feed URL"
 msgstr "Добавляйте новые шоу через URL канала"
 
-#: podcasts-gtk/resources/gtk/empty_view.ui:71
+#: podcasts-gtk/resources/gtk/empty_view.ui:73
 msgid "Import shows from another device"
 msgstr "Импорт шоу с другого устройства"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:41
+#: podcasts-gtk/resources/gtk/episode_description.ui:33
 msgid "Episode Details"
 msgstr "Подробности эпизода"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:51
-#: podcasts-gtk/resources/gtk/headerbar.ui:147
-msgid "Back"
-msgstr "Назад"
-
-#: podcasts-gtk/resources/gtk/episode_description.ui:59
+#: podcasts-gtk/resources/gtk/episode_description.ui:42
 msgid "Episode Menu"
 msgstr "Меню эпизода"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:107
+#: podcasts-gtk/resources/gtk/episode_description.ui:90
 msgid "Podcast Title"
 msgstr "Заголовок подкаста"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:130
+#: podcasts-gtk/resources/gtk/episode_description.ui:113
 msgid "Duration - Date"
 msgstr "Продолжительность - Дата"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:150
-#: podcasts-gtk/resources/gtk/episode_description.ui:155
+#: podcasts-gtk/resources/gtk/episode_description.ui:133
 msgid "Episode Description"
 msgstr "Описание эпизода"
 
@@ -74,7 +68,7 @@ msgstr "Перейти к шоу"
 msgid "Copy Episode Url"
 msgstr "Копирование Url эпизода"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:71
+#: podcasts-gtk/resources/gtk/episode_widget.ui:70
 msgid "You’ve already listened to this episode."
 msgstr "Вы уже прослушали этот эпизод."
 
@@ -90,7 +84,7 @@ msgstr "Воспроизвести этот эпизод"
 msgid "Cancel the download process"
 msgstr "Отменить процесс загрузки"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:205
+#: podcasts-gtk/resources/gtk/episode_widget.ui:206
 msgid "Download this episode"
 msgstr "Скачать этот эпизод"
 
@@ -115,7 +109,7 @@ msgid "_About Podcasts"
 msgstr "_О приложении"
 
 #: podcasts-gtk/resources/gtk/headerbar.ui:33
-#: podcasts-gtk/resources/gtk/headerbar.ui:137
+#: podcasts-gtk/resources/gtk/headerbar.ui:108
 msgid "Add a new feed"
 msgstr "Добавить новый канал"
 
@@ -131,26 +125,9 @@ msgstr "Всплывающее меню (ESC для закрытия)"
 msgid "Add"
 msgstr "Добавить"
 
-#. Weird magic I copy-pasted that sets the Application Name in the Shell.
-#: podcasts-gtk/resources/gtk/headerbar.ui:115
-#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:4
-#: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:3
-#: podcasts-gtk/src/app.rs:533 podcasts-gtk/src/widgets/aboutdialog.rs:56
-#: podcasts-gtk/src/window.rs:64
-msgid "Podcasts"
-msgstr "Подкасты"
-
-#: podcasts-gtk/resources/gtk/headerbar.ui:125
-msgid "Show Title"
-msgstr "Показать заголовок"
-
-#: podcasts-gtk/resources/gtk/headerbar.ui:157
+#: podcasts-gtk/resources/gtk/headerbar.ui:119
 msgid "Main Menu"
 msgstr "Главное меню"
-
-#: podcasts-gtk/resources/gtk/headerbar.ui:167
-msgid "Podcast Menu"
-msgstr "Меню подкаста"
 
 #: podcasts-gtk/resources/gtk/help-overlay.ui:11
 msgid "General"
@@ -195,27 +172,27 @@ msgstr "Раньше"
 msgid "Now Playing"
 msgstr "Воспроизводится"
 
-#: podcasts-gtk/resources/gtk/player_dialog.ui:25
+#: podcasts-gtk/resources/gtk/player_dialog.ui:28
 msgid "Close"
 msgstr "Закрыть"
 
-#: podcasts-gtk/resources/gtk/player_dialog.ui:149
+#: podcasts-gtk/resources/gtk/player_dialog.ui:152
 msgid "Rewind"
 msgstr "Перемотка назад"
 
-#: podcasts-gtk/resources/gtk/player_dialog.ui:170
+#: podcasts-gtk/resources/gtk/player_dialog.ui:173
 #: podcasts-gtk/resources/gtk/player_toolbar.ui:63
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:244
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:253
 msgid "Play"
 msgstr "Воспроизвести"
 
-#: podcasts-gtk/resources/gtk/player_dialog.ui:188
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:71
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:250
+#: podcasts-gtk/resources/gtk/player_dialog.ui:191
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:76
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:262
 msgid "Pause"
 msgstr "Приостановить"
 
-#: podcasts-gtk/resources/gtk/player_dialog.ui:211
+#: podcasts-gtk/resources/gtk/player_dialog.ui:214
 msgid "Forward"
 msgstr "Перемотка вперед"
 
@@ -252,11 +229,11 @@ msgstr "0.90×"
 msgid "0.75×"
 msgstr "0.75×"
 
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:55
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:50
 msgid "Rewind 10 seconds"
 msgstr "Перемотка назад на 10 секунд"
 
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:79
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:89
 msgid "Fast forward 10 seconds"
 msgstr "Перемотка вперед на 10 секунд"
 
@@ -284,9 +261,27 @@ msgstr "Отметить все как прослушанные"
 msgid "Unsubscribe"
 msgstr "Отказаться от подписки"
 
-#: podcasts-gtk/resources/gtk/show_widget.ui:80
+#: podcasts-gtk/resources/gtk/show_widget.ui:40
+msgid "Podcast Menu"
+msgstr "Меню подкаста"
+
+#: podcasts-gtk/resources/gtk/show_widget.ui:97
 msgid "Episodes"
 msgstr "Эпизоды"
+
+#. Weird magic I copy-pasted that sets the Application Name in the Shell.
+#: podcasts-gtk/resources/gtk/window.ui:6
+#: podcasts-gtk/resources/gtk/window.ui:25
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:4
+#: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:3
+#: podcasts-gtk/src/app.rs:430 podcasts-gtk/src/widgets/aboutdialog.rs:56
+#: podcasts-gtk/src/widgets/player.rs:384
+msgid "Podcasts"
+msgstr "Подкасты"
+
+#: podcasts-gtk/resources/gtk/window.ui:33
+msgid "Show"
+msgstr "Шоу"
 
 #: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:8
 msgid "Listen to your favorite shows"
@@ -307,7 +302,8 @@ msgstr ""
 "Soundcloud. Подписки из других приложений могут быть импортированы через "
 "файлы OPML."
 
-#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:143
+#. developer_name tag deprecated with Appstream 1.0
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:151
 msgid "The Podcasts developers"
 msgstr "Разработчики приложения Подкасты"
 
@@ -357,53 +353,53 @@ msgstr "Сколько периодов времени должно пройти
 msgid "What period of time to wait between automatic cleanups"
 msgstr "Какой период времени должен пройти между автоматическими очистками"
 
-#: podcasts-gtk/src/app.rs:404
+#: podcasts-gtk/src/app.rs:315
 msgid "Copied URL to clipboard!"
 msgstr "URL скопирован в буфер обмена!"
 
-#: podcasts-gtk/src/stacks/content.rs:69
+#: podcasts-gtk/src/stacks/content.rs:68
 msgid "New"
 msgstr "Новые"
 
-#: podcasts-gtk/src/stacks/content.rs:71
-#: podcasts-gtk/src/widgets/shows_view.rs:55
+#: podcasts-gtk/src/stacks/content.rs:70
+#: podcasts-gtk/src/widgets/shows_view.rs:64
 msgid "Shows"
 msgstr "Шоу"
 
-#: podcasts-gtk/src/utils.rs:491 podcasts-gtk/src/utils.rs:533
+#: podcasts-gtk/src/utils.rs:480 podcasts-gtk/src/utils.rs:522
 msgid "OPML file"
 msgstr "OPML-файл"
 
-#: podcasts-gtk/src/utils.rs:502
+#: podcasts-gtk/src/utils.rs:491
 msgid "Select the file from which to you want to import shows."
 msgstr "Выберите файл, из которого вы хотите импортировать шоу."
 
-#: podcasts-gtk/src/utils.rs:504
+#: podcasts-gtk/src/utils.rs:493
 msgid "_Import"
 msgstr "_Импортировать"
 
-#: podcasts-gtk/src/utils.rs:520
+#: podcasts-gtk/src/utils.rs:509
 msgid "Failed to parse the imported file"
 msgstr "Не удалось разобрать импортированный файл"
 
-#: podcasts-gtk/src/utils.rs:543
+#: podcasts-gtk/src/utils.rs:532
 msgid "Export shows to…"
 msgstr "_Экспорт шоу в…"
 
-#: podcasts-gtk/src/utils.rs:544
+#: podcasts-gtk/src/utils.rs:533
 msgid "_Export"
 msgstr "_Экспортировать"
 
 #. Translators: This is the string of the suggested name for the exported opml file
-#: podcasts-gtk/src/utils.rs:548
+#: podcasts-gtk/src/utils.rs:537
 msgid "gnome-podcasts-exported-shows"
 msgstr "gnome-podcasts-exported-shows"
 
-#: podcasts-gtk/src/utils.rs:558
+#: podcasts-gtk/src/utils.rs:547
 msgid "GNOME Podcasts Subscriptions"
 msgstr "Подписки на подкасты GNOME"
 
-#: podcasts-gtk/src/utils.rs:559
+#: podcasts-gtk/src/utils.rs:548
 msgid "Failed to export podcasts"
 msgstr "Не удалось экспортировать подкасты"
 
@@ -417,11 +413,11 @@ msgstr ""
 "Alexey Rubtsov <rushills@gmail.com>, 2022\n"
 "Aleksandr Melman"
 
-#: podcasts-gtk/src/widgets/episode.rs:374
+#: podcasts-gtk/src/widgets/episode.rs:373
 msgid "{} min"
 msgstr "{} мин"
 
-#: podcasts-gtk/src/widgets/player.rs:907
+#: podcasts-gtk/src/widgets/player.rs:940
 msgid "The media player was unable to execute an action."
 msgstr "Медиаплеер не смог выполнить действие."
 
@@ -433,18 +429,24 @@ msgstr "Визуально расширяет данное описание"
 msgid "Read More"
 msgstr "Читать далее"
 
-#: podcasts-gtk/src/widgets/show_menu.rs:180
+#: podcasts-gtk/src/widgets/show_menu.rs:178
 msgid "Marked all episodes as listened"
 msgstr "Отмечены все эпизоды как прослушанные"
 
-#: podcasts-gtk/src/widgets/show_menu.rs:181
-#: podcasts-gtk/src/widgets/show_menu.rs:204
+#: podcasts-gtk/src/widgets/show_menu.rs:179
+#: podcasts-gtk/src/widgets/show_menu.rs:202
 msgid "Undo"
 msgstr "Отменить"
 
-#: podcasts-gtk/src/widgets/show_menu.rs:200
+#: podcasts-gtk/src/widgets/show_menu.rs:198
 msgid "Unsubscribed from {}"
 msgstr "Отменена подписка на {}"
+
+#~ msgid "Back"
+#~ msgstr "Назад"
+
+#~ msgid "Show Title"
+#~ msgstr "Показать заголовок"
 
 #~ msgid "Jordan Petridis"
 #~ msgstr "Джордан Петридис"
