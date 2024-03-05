@@ -23,6 +23,7 @@
                 <child>
                   <object class="AdwNavigationPage">
                     <property name="title" translatable="yes">Podcasts</property>
+                    <property name="tag">home</property>
                     <property name="child">
                       <object class="AdwToolbarView" id="toolbar_view"/>
                     </property>
@@ -32,6 +33,7 @@
                   <object class="AdwNavigationPage" id="show_page">
                     <!-- Translators: Show as a noun, meaning a Podcast-Show. -->
                     <property name="title" translatable="yes">Show</property>
+                    <property name="tag">show</property>
                   </object>
                 </child>
               </object>

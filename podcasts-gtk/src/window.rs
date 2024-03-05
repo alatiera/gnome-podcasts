@@ -244,6 +244,10 @@ impl MainWindow {
         self.imp().navigation_view.push(page);
     }
 
+    fn pop_to_show_widget(&self) {
+        self.imp().navigation_view.pop_to_tag("show");
+    }
+
     pub(crate) fn init_episode(
         &self,
         id: i32,
@@ -293,11 +297,20 @@ impl MainWindow {
         imp.show_page.set_child(widget);
         if widget.is_some() {
             imp.show_page.set_title(title);
-            if !is_current_page {
-                imp.navigation_view.push(&*imp.show_page);
-            }
         } else if is_current_page {
             imp.navigation_view.pop();
+        }
+    }
+
+    pub(crate) fn go_to_show_widget(&self) {
+        let imp = self.imp();
+        let is_current_page = imp
+            .navigation_view
+            .visible_page()
+            .is_some_and(|p| p == *imp.show_page);
+        if !is_current_page {
+            self.pop_to_show_widget();
+            imp.navigation_view.push(&*imp.show_page);
         }
     }
 }

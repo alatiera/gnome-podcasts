@@ -323,6 +323,7 @@ impl PdApplication {
             }
             Action::GoToShow(pd) => {
                 self.do_action(Action::ReplaceWidget(pd));
+                window.go_to_show_widget();
             }
             Action::GoToDiscovery => {
                 let widget = DiscoveryPage::new(window.sender());
