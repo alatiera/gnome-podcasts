@@ -3,21 +3,22 @@
 # This file is distributed under the same license as the podcasts package.
 # Zander Brown <zbrown@gnome.org>, 2018-2019.
 # Bruce Cowan <bruce@bcowan.me.uk>, 2023.
+# Andi Chandler <andi@gowling.com>, 2024.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: podcasts master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2023-11-06 17:15+0000\n"
-"PO-Revision-Date: 2023-12-06 12:59+0000\n"
-"Last-Translator: Bruce Cowan <bruce@bcowan.me.uk>\n"
+"POT-Creation-Date: 2024-03-04 18:30+0000\n"
+"PO-Revision-Date: 2024-03-06 15:32+0000\n"
+"Last-Translator: Andi Chandler <andi@gowling.com>\n"
 "Language-Team: English - United Kingdom <en_GB@li.org>\n"
 "Language: en_GB\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 3.4\n"
+"X-Generator: Poedit 3.4.2\n"
 
 #: podcasts-gtk/resources/gtk/empty_show.ui:16
 msgid "This show does not have episodes yet"
@@ -28,7 +29,6 @@ msgid "If you think this is an error, please consider writing a bug report."
 msgstr "If you think this is an error, please consider writing a bug report."
 
 #: podcasts-gtk/resources/gtk/empty_view.ui:30
-#| msgid "Get some shows"
 msgid "Get Some Shows"
 msgstr "Get Some Shows"
 
@@ -48,26 +48,25 @@ msgstr "Episode Details"
 msgid "Episode Menu"
 msgstr "Episode Menu"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:90
+#: podcasts-gtk/resources/gtk/episode_description.ui:91
 msgid "Podcast Title"
 msgstr "Podcast Title"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:113
+#: podcasts-gtk/resources/gtk/episode_description.ui:114
 msgid "Duration - Date"
 msgstr "Duration - Date"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:133
+#: podcasts-gtk/resources/gtk/episode_description.ui:134
 msgid "Episode Description"
 msgstr "Episode Description"
 
 #: podcasts-gtk/resources/gtk/episode_menu.ui:35
-#| msgid "_Import Shows"
 msgid "Go to Show"
 msgstr "Go to Show"
 
 #: podcasts-gtk/resources/gtk/episode_menu.ui:39
 msgid "Copy Episode Url"
-msgstr "Copy Episode Url"
+msgstr "Copy Episode URL"
 
 #: podcasts-gtk/resources/gtk/episode_widget.ui:70
 msgid "You’ve already listened to this episode."
@@ -115,7 +114,6 @@ msgid "Add a new feed"
 msgstr "Add a new feed"
 
 #: podcasts-gtk/resources/gtk/headerbar.ui:44
-#| msgid "Enter feed address to add"
 msgid "Enter Feed Address"
 msgstr "Enter Feed Address"
 
@@ -127,18 +125,9 @@ msgstr "Popover menu (ESC to close)"
 msgid "Add"
 msgstr "Add"
 
-#: podcasts-gtk/resources/gtk/headerbar.ui:118
-msgid "Back"
-msgstr "Back"
-
-#: podcasts-gtk/resources/gtk/headerbar.ui:128
+#: podcasts-gtk/resources/gtk/headerbar.ui:119
 msgid "Main Menu"
 msgstr "Main Menu"
-
-#: podcasts-gtk/resources/gtk/headerbar.ui:138
-#| msgid "Podcasts"
-msgid "Podcast Menu"
-msgstr "Podcast Menu"
 
 #: podcasts-gtk/resources/gtk/help-overlay.ui:11
 msgid "General"
@@ -192,14 +181,14 @@ msgid "Rewind"
 msgstr "Rewind"
 
 #: podcasts-gtk/resources/gtk/player_dialog.ui:173
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:56
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:232
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:63
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:253
 msgid "Play"
 msgstr "Play"
 
 #: podcasts-gtk/resources/gtk/player_dialog.ui:191
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:64
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:241
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:76
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:262
 msgid "Pause"
 msgstr "Pause"
 
@@ -217,7 +206,6 @@ msgid "1.00×"
 msgstr "1.00×"
 
 #: podcasts-gtk/resources/gtk/player_rate.ui:39
-#| msgid "1.00×"
 msgid "2.00×"
 msgstr "2.00×"
 
@@ -241,11 +229,11 @@ msgstr "0.90×"
 msgid "0.75×"
 msgstr "0.75×"
 
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:48
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:50
 msgid "Rewind 10 seconds"
 msgstr "Rewind 10 seconds"
 
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:72
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:89
 msgid "Fast forward 10 seconds"
 msgstr "Fast forward 10 seconds"
 
@@ -273,22 +261,29 @@ msgstr "Mark All as Played"
 msgid "Unsubscribe"
 msgstr "Unsubscribe"
 
-#: podcasts-gtk/resources/gtk/show_widget.ui:84
+#: podcasts-gtk/resources/gtk/show_widget.ui:40
+msgid "Podcast Menu"
+msgstr "Podcast Menu"
+
+#: podcasts-gtk/resources/gtk/show_widget.ui:97
 msgid "Episodes"
 msgstr "Episodes"
 
 #. Weird magic I copy-pasted that sets the Application Name in the Shell.
 #: podcasts-gtk/resources/gtk/window.ui:6
-#: podcasts-gtk/resources/gtk/window.ui:24
+#: podcasts-gtk/resources/gtk/window.ui:25
 #: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:4
 #: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:3
-#: podcasts-gtk/src/app.rs:501 podcasts-gtk/src/widgets/aboutdialog.rs:56
+#: podcasts-gtk/src/app.rs:430 podcasts-gtk/src/widgets/aboutdialog.rs:56
 #: podcasts-gtk/src/widgets/player.rs:385
 msgid "Podcasts"
 msgstr "Podcasts"
 
+#: podcasts-gtk/resources/gtk/window.ui:33
+msgid "Show"
+msgstr "Show"
+
 #: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:8
-#| msgid "Listen to your favorite podcasts, right from your desktop."
 msgid "Listen to your favorite shows"
 msgstr "Listen to your favourite shows"
 
@@ -306,7 +301,8 @@ msgstr ""
 "Atom, iTunes, and Soundcloud links. Subscriptions from other apps can be "
 "imported via OPML files."
 
-#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:150
+#. developer_name tag deprecated with Appstream 1.0
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:151
 msgid "The Podcasts developers"
 msgstr "The Podcasts developers"
 
@@ -355,7 +351,7 @@ msgstr "How many periods of time to wait between automatic cleanups"
 msgid "What period of time to wait between automatic cleanups"
 msgstr "What period of time to wait between automatic cleanups"
 
-#: podcasts-gtk/src/app.rs:382
+#: podcasts-gtk/src/app.rs:315
 msgid "Copied URL to clipboard!"
 msgstr "Copied URL to clipboard!"
 
@@ -368,40 +364,40 @@ msgstr "New"
 msgid "Shows"
 msgstr "Shows"
 
-#: podcasts-gtk/src/utils.rs:536 podcasts-gtk/src/utils.rs:578
+#: podcasts-gtk/src/utils.rs:480 podcasts-gtk/src/utils.rs:522
 msgid "OPML file"
 msgstr "OPML file"
 
-#: podcasts-gtk/src/utils.rs:547
+#: podcasts-gtk/src/utils.rs:491
 msgid "Select the file from which to you want to import shows."
 msgstr "Select the file from which to you want to import shows."
 
-#: podcasts-gtk/src/utils.rs:549
+#: podcasts-gtk/src/utils.rs:493
 msgid "_Import"
 msgstr "_Import"
 
-#: podcasts-gtk/src/utils.rs:565
+#: podcasts-gtk/src/utils.rs:509
 msgid "Failed to parse the imported file"
 msgstr "Failed to parse the imported file"
 
-#: podcasts-gtk/src/utils.rs:588
+#: podcasts-gtk/src/utils.rs:532
 msgid "Export shows to…"
 msgstr "Export shows to…"
 
-#: podcasts-gtk/src/utils.rs:589
+#: podcasts-gtk/src/utils.rs:533
 msgid "_Export"
 msgstr "_Export"
 
 #. Translators: This is the string of the suggested name for the exported opml file
-#: podcasts-gtk/src/utils.rs:593
+#: podcasts-gtk/src/utils.rs:537
 msgid "gnome-podcasts-exported-shows"
 msgstr "gnome-podcasts-exported-shows"
 
-#: podcasts-gtk/src/utils.rs:603
+#: podcasts-gtk/src/utils.rs:547
 msgid "GNOME Podcasts Subscriptions"
 msgstr "GNOME Podcasts Subscriptions"
 
-#: podcasts-gtk/src/utils.rs:604
+#: podcasts-gtk/src/utils.rs:548
 msgid "Failed to export podcasts"
 msgstr "Failed to export podcasts"
 
@@ -413,13 +409,14 @@ msgstr "Podcast Client for the GNOME Desktop."
 msgid "translator-credits"
 msgstr ""
 "Zander Brown <zbrown@gnome.org>\n"
-"Bruce Cowan <bruce@bcowan.me.uk>"
+"Bruce Cowan <bruce@bcowan.me.uk>\n"
+"Andi Chandler <andi@gowling.com>"
 
 #: podcasts-gtk/src/widgets/episode.rs:373
 msgid "{} min"
 msgstr "{} min"
 
-#: podcasts-gtk/src/widgets/player.rs:941
+#: podcasts-gtk/src/widgets/player.rs:958
 msgid "The media player was unable to execute an action."
 msgstr "The media player was unable to execute an action."
 
@@ -431,18 +428,21 @@ msgstr "Visually expands this description"
 msgid "Read More"
 msgstr "Read More"
 
-#: podcasts-gtk/src/widgets/show_menu.rs:180
+#: podcasts-gtk/src/widgets/show_menu.rs:178
 msgid "Marked all episodes as listened"
 msgstr "Marked all episodes as listened"
 
-#: podcasts-gtk/src/widgets/show_menu.rs:181
-#: podcasts-gtk/src/widgets/show_menu.rs:204
+#: podcasts-gtk/src/widgets/show_menu.rs:179
+#: podcasts-gtk/src/widgets/show_menu.rs:202
 msgid "Undo"
 msgstr "Undo"
 
-#: podcasts-gtk/src/widgets/show_menu.rs:200
+#: podcasts-gtk/src/widgets/show_menu.rs:198
 msgid "Unsubscribed from {}"
 msgstr "Unsubscribed from {}"
+
+#~ msgid "Back"
+#~ msgstr "Back"
 
 #~ msgid "Top position of the last open main window"
 #~ msgstr "Top position of the last open main window"
