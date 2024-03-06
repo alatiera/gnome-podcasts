@@ -1,0 +1,10 @@
+
+
+
+{
+ "resultCount":1,
+ "results": [
+{"wrapperType":"track", "kind":"podcast", "collectionId":1454202971, "trackId":1454202971, "artistName":"The Späti Boys", "collectionName":"Corner Späti", "trackName":"Corner Späti", "collectionCensoredName":"Corner Späti", "trackCensoredName":"Corner Späti", "collectionViewUrl":"https://podcasts.apple.com/us/podcast/corner-sp%C3%A4ti/id1454202971?uo=4", "feedUrl":"https://feeds.fireside.fm/cornerspaeti/rss", "trackViewUrl":"https://podcasts.apple.com/us/podcast/corner-sp%C3%A4ti/id1454202971?uo=4", "artworkUrl30":"https://is1-ssl.mzstatic.com/image/thumb/Podcasts122/v4/99/a7/0e/99a70e93-30a1-6fba-d936-6637d3114faf/mza_12553069992613760697.jpg/30x30bb.jpg", "artworkUrl60":"https://is1-ssl.mzstatic.com/image/thumb/Podcasts122/v4/99/a7/0e/99a70e93-30a1-6fba-d936-6637d3114faf/mza_12553069992613760697.jpg/60x60bb.jpg", "artworkUrl100":"https://is1-ssl.mzstatic.com/image/thumb/Podcasts122/v4/99/a7/0e/99a70e93-30a1-6fba-d936-6637d3114faf/mza_12553069992613760697.jpg/100x100bb.jpg", "collectionPrice":0.00, "trackPrice":0.00, "collectionHdPrice":0, "releaseDate":"2024-03-07T09:00:00Z", "collectionExplicitness":"notExplicit", "trackExplicitness":"cleaned", "trackCount":349, "trackTimeMillis":86, "country":"USA", "currency":"USD", "primaryGenreName":"News", "contentAdvisoryRating":"Clean", "artworkUrl600":"https://is1-ssl.mzstatic.com/image/thumb/Podcasts122/v4/99/a7/0e/99a70e93-30a1-6fba-d936-6637d3114faf/mza_12553069992613760697.jpg/600x600bb.jpg", "genreIds":["1489", "26", "1303"], "genres":["News", "Podcasts", "Comedy"]}]
+}
+
+

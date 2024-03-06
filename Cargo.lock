@@ -414,6 +414,7 @@ dependencies = [
  "iana-time-zone",
  "js-sys",
  "num-traits",
+ "serde",
  "wasm-bindgen",
  "windows-targets",
 ]
@@ -2220,6 +2221,8 @@ dependencies = [
  "reqwest",
  "rfc822_sanitizer",
  "rss",
+ "serde",
+ "serde_json",
  "tempfile",
  "thiserror",
  "tokio",

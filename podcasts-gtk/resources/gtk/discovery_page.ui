@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+Copyright (C) 2022 - 2024
+
+This file is part of GNOME Podcasts.
+
+GNOME Podcasts is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+GNOME Podcasts is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with GNOME Podcasts.  If not, see <http://www.gnu.org/licenses/>.
+
+Authors:
+nee <nee-git@patchouli.garden>
+
+-->
+<interface>
+  <!-- interface-license-type gplv3 -->
+  <!-- interface-name GNOME Podcasts -->
+  <!-- interface-description A podcast client for the GNOME Desktop -->
+  <!-- interface-copyright 2022 - 2024 -->
+  <!-- interface-authors nee -->
+  <template class="PdDiscoveryPage" parent="AdwNavigationPage">
+    <property name="title" translatable="yes">Add Podcasts</property>
+    <child>
+      <object class="AdwToolbarView">
+        <child type="top">
+          <object class="AdwHeaderBar" id="header">
+          </object>
+        </child>
+        <child>
+          <object class="GtkScrolledWindow">
+            <property name="vexpand">True</property>
+            <property name="hexpand">True</property>
+            <property name="hscrollbar-policy">never</property>
+            <child>
+              <object class="AdwClamp">
+                <property name="vexpand">True</property>
+                <property name="maximum-size">700</property>
+                <child>
+                  <object class="GtkBox">
+                    <property name="vexpand">True</property>
+                    <property name="orientation">vertical</property>
+                    <property name="margin-top">18</property>
+                    <property name="margin-bottom">18</property>
+                    <style>
+                      <class name="content"/>
+                    </style>
+                    <!-- Search -->
+                    <child>
+                      <object class="GtkLabel">
+                        <property name="halign">start</property>
+                        <property name="label" translatable="yes">Search</property>
+                        <style>
+                          <class name="heading"/>
+                        </style>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkLabel" id="entry_description">
+                        <property name="halign">start</property>
+                        <property name="margin-top">8</property>
+                        <property name="margin-bottom">8</property>
+                        <property name="label" translatable="yes">Enter a feed URL or search the selected platforms.</property>
+                        <style>
+                          <class name="dim-label"/>
+                        </style>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkBox">
+                        <property name="halign">fill</property>
+                        <property name="spacing">10</property>
+                        <child>
+                          <object class="GtkEntry" id="entry">
+                            <accessibility>
+                              <relation name="labelled-by">entry_description</relation>
+                            </accessibility>
+                            <!-- <property name="margin-end">20</property> -->
+                            <property name="hexpand">True</property>
+                            <property name="truncate-multiline">True</property>
+                            <property name="receives-default">True</property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkButton" id="search_button">
+                            <property name="tooltip-text" translatable="yes">Submit search</property>
+                            <property name="icon-name">system-search-symbolic</property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkSpinner" id="loading_spinner">
+                            <property name="tooltip-text" translatable="yes">Loading...</property>
+                            <property name="accessible-role">label</property>
+                            <accessibility>
+                              <property name="label" translatable="yes">Loading</property>
+                            </accessibility>
+                            <property name="can-focus">True</property>
+                            <property name="focusable">True</property>
+                            <property name="visible">False</property>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                    <!-- Platform switches -->
+                    <child>
+                      <object class="AdwPreferencesGroup" id="list">
+                        <property name="margin-top">18</property>
+                        <property name="title" translatable="yes">Search Platforms</property>
+                        <property name="description" translatable="yes">Search queries will be sent to these platforms.</property>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
+  </template>
+</interface>

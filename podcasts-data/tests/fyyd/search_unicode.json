@@ -1,0 +1,64 @@
+{
+    "status": 1,
+    "msg": "ok",
+    "meta": {
+        "paging": {
+            "count": 10,
+            "page": 0,
+            "first_page": 0,
+            "last_page": 0,
+            "next_page": null,
+            "prev_page": null
+        },
+        "API_INFO": {
+            "API_VERSION": "0.2"
+        },
+        "SERVER": "5.75.151.179",
+        "duration": 0
+    },
+    "data": [
+        {
+            "title": "Corner Sp\u00e4ti",
+            "id": 77182,
+            "xmlURL": "https:\/\/feeds.fireside.fm\/cornerspaeti\/rss",
+            "htmlURL": "https:\/\/www.operationglad.io",
+            "imgURL": "https:\/\/assets.fireside.fm\/file\/fireside-images\/podcasts\/images\/7\/77dd176a-f2a7-4ad0-a52b-9908d5d03ea8\/cover.jpg",
+            "status": 200,
+            "status_since": "2022-05-14 21:58:20",
+            "slug": "corner-spaeti",
+            "layoutImageURL": "https:\/\/img-1.fyyd.de\/pd\/layout\/77182e877ac679f9414148fab3dddb74782c2.jpg",
+            "thumbImageURL": "https:\/\/img-1.fyyd.de\/pd\/thumbs\/77182e877ac679f9414148fab3dddb74782c2.png",
+            "smallImageURL": "https:\/\/img-1.fyyd.de\/pd\/small\/77182e877ac679f9414148fab3dddb74782c2.jpg",
+            "microImageURL": "https:\/\/img-1.fyyd.de\/pd\/micro\/77182e877ac679f9414148fab3dddb74782c2.png",
+            "language": "en",
+            "generator": "Fireside (https:\/\/fireside.fm)",
+            "categories": [
+                155,
+                115,
+                181
+            ],
+            "lastpub": "2024-03-07T10:00:00+01:00",
+            "rank": 76,
+            "url_fyyd": "https:\/\/fyyd.de\/podcast\/corner-spaeti\/0",
+            "description": "Weekly discussions of a deteriorating world all from the comfort of your local smoke-filled Sp\u00e4tkauf.\nhttps:\/\/www.patreon.com\/cornerspaeti\nhttps:\/\/www.operationglad.io\/start\n",
+            "subtitle": "Discussions of a deteriorating world all from the comfort of your local smoke-filled Sp\u00e4tkauf.",
+            "tcolor": "#fff",
+            "color": "#ba3935",
+            "episode_count": 348,
+            "iflags": null,
+            "paymentURL": "https:\/\/www.patreon.com\/cornerspaeti",
+            "author": "The Sp\u00e4ti Boys",
+            "stats": {
+                "medianduration": 4416,
+                "medianduration_string": "1h13m",
+                "episodecount": 348,
+                "pubinterval_seconds": 558900,
+                "pubinterval": 6,
+                "complete_duration_value": 1359834,
+                "pubinterval_string": "w\u00f6chentlich",
+                "pubinterval_value": 7,
+                "pubinterval_type": 2
+            }
+        }
+    ]
+}

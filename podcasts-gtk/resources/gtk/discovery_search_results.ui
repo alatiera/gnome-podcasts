@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+Copyright (C) 2022 - 2024
+
+This file is part of GNOME Podcasts.
+
+GNOME Podcasts is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+GNOME Podcasts is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with GNOME Podcasts.  If not, see <http://www.gnu.org/licenses/>.
+
+Authors:
+nee <nee-git@patchouli.garden>
+
+-->
+<interface>
+  <!-- interface-license-type gplv3 -->
+  <!-- interface-name GNOME Podcasts -->
+  <!-- interface-description A podcast client for the GNOME Desktop -->
+  <!-- interface-copyright 2022 - 2024 -->
+  <!-- interface-authors nee -->
+  <template class="PdDiscoverySearchResults" parent="AdwNavigationPage">
+    <property name="title" translatable="yes">Search results</property>
+    <property name="tag">search_results</property>
+    <child>
+      <object class="AdwToolbarView">
+        <child type="top">
+          <object class="AdwHeaderBar" id="header">
+
+          </object>
+        </child>
+        <child>
+          <object class="GtkScrolledWindow">
+            <property name="vexpand">True</property>
+            <property name="hexpand">True</property>
+            <property name="hscrollbar_policy">never</property>
+            <child>
+              <object class="AdwClamp">
+                <property name="vexpand">True</property>
+                <property name="maximum_size">700</property>
+                <child>
+                  <object class="GtkBox">
+                    <property name="vexpand">True</property>
+                    <property name="margin-top">20</property>
+                    <property name="margin-bottom">20</property>
+                    <property name="spacing">5</property>
+                    <property name="orientation">vertical</property>
+                    <child>
+                      <object class="GtkListBox" id="list">
+                        <property name="selection-mode">none</property>
+                        <style>
+                          <class name="content"/>
+                        </style>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkLabel" id="no_results">
+                        <property name="visible">False</property>
+                        <property name="label" translatable="yes">No results found.</property>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
+  </template>
+</interface>

@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <gresources>
   <gresource prefix="/org/gnome/Podcasts/">
+      <file compressed="true" preprocess="xml-stripblanks">gtk/discovery_page.ui</file>
+      <file compressed="true" preprocess="xml-stripblanks">gtk/discovery_search_results.ui</file>
+      <file compressed="true" preprocess="xml-stripblanks">gtk/discovery_found_podcast.ui</file>
       <file compressed="true" preprocess="xml-stripblanks">gtk/episode_widget.ui</file>
       <file compressed="true" preprocess="xml-stripblanks">gtk/episode_menu.ui</file>
       <file compressed="true" preprocess="xml-stripblanks">gtk/episode_description.ui</file>

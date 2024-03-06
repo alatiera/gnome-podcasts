@@ -24,6 +24,7 @@ use diesel::prelude::*;
 
 use diesel::dsl::exists;
 use diesel::select;
+use std::collections::HashMap;
 
 use crate::database::connection;
 use crate::errors::DataError;
@@ -412,6 +413,16 @@ pub(crate) fn remove_feed(pd: &Show) -> Result<(), DataError> {
     })
 }
 
+/// use utils::delete_show if the podcast was fully imported
+pub fn remove_source(source: &Source) -> Result<(), DataError> {
+    let db = connection();
+    let mut con = db.get()?;
+
+    delete_source(&mut con, source.id())
+        .map(|_| ())
+        .map_err(From::from)
+}
+
 fn delete_source(con: &mut SqliteConnection, source_id: i32) -> QueryResult<usize> {
     use crate::schema::source::dsl::*;
 
@@ -545,6 +556,45 @@ pub fn update_none_to_played_now(parent: &Show) -> Result<usize, DataError> {
             .execute(conn)
             .map_err(From::from)
     })
+}
+
+fn get_discovery_settings_err() -> Result<HashMap<String, bool>, DataError> {
+    use crate::schema::discovery_settings::dsl::*;
+    let db = connection();
+    let mut con = db.get()?;
+
+    discovery_settings
+        .load::<DiscoverySetting>(&mut con)
+        .map(|v| {
+            v.into_iter()
+                .map(|ds| (ds.platform_id, ds.enabled))
+                .collect()
+        })
+        .map_err(From::from)
+}
+
+pub fn get_discovery_settings() -> HashMap<String, bool> {
+    get_discovery_settings_err().unwrap_or_default()
+}
+
+pub fn set_discovery_setting(pid: &str, value: bool) -> Result<(), DataError> {
+    use crate::schema::discovery_settings::dsl::*;
+    let db = connection();
+    let mut con = db.get()?;
+
+    let item = DiscoverySetting {
+        platform_id: pid.to_string(),
+        enabled: value,
+    };
+
+    diesel::insert_into(discovery_settings)
+        .values(&item)
+        .on_conflict(platform_id)
+        .do_update()
+        .set(&item)
+        .execute(&mut con)
+        .map(|_| ())
+        .map_err(From::from)
 }
 
 #[cfg(test)]

@@ -40,4 +40,11 @@ table! {
     }
 }
 
-allow_tables_to_appear_in_same_query!(episodes, shows, source);
+table! {
+    discovery_settings (platform_id) {
+        platform_id -> Text,
+        enabled -> Bool,
+    }
+}
+
+allow_tables_to_appear_in_same_query!(episodes, shows, source, discovery_settings);

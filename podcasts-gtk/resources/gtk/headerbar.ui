@@ -29,73 +29,6 @@ Tobias Bernard
   <!-- interface-description A podcast client for the GNOME Desktop -->
   <!-- interface-copyright 2017 - 2018 -->
   <!-- interface-authors Jordan Petridis\nTobias Bernard -->
-  <object class="GtkPopover" id="add_popover">
-    <property name="tooltip_text" translatable="yes">Add a new feed</property>
-    <property name="valign">center</property>
-    <child>
-      <object class="GtkBox" id="add_box">
-        <property name="valign">center</property>
-        <property name="orientation">vertical</property>
-        <property name="spacing">6</property>
-        <child>
-          <object class="GtkLabel" id="enter_address_label">
-            <property name="xalign">0</property>
-            <property name="hexpand">False</property>
-            <property name="label" translatable="yes">Enter Feed Address</property>
-            <style>
-              <class name="heading"/>
-            </style>
-          </object>
-        </child>
-        <child>
-          <object class="GtkBox" id="add_entry_box">
-            <property name="spacing">6</property>
-            <child>
-              <object class="GtkEntry" id="new_url">
-                <property name="width_chars">26</property>
-                <property name="input_purpose">url</property>
-                <accessibility>
-                  <relation name="labelled-by">enter_address_label</relation>
-                  <property name="description" translatable="yes">Popover menu (ESC to close)</property>
-                </accessibility>
-              </object>
-            </child>
-            <child>
-              <object class="GtkStack" id="add_button_stack">
-                <property name="interpolate_size">True</property>
-                <child>
-                  <object class="GtkStackPage">
-                    <property name="name">button</property>
-                    <property name="child">
-                      <object class="GtkButton" id="add_button">
-                        <property name="label" translatable="yes">Add</property>
-                        <property name="sensitive">False</property>
-                        <property name="receives_default">False</property>
-                        <style>
-                          <class name="suggested-action"/>
-                        </style>
-                      </object>
-                    </property>
-                  </object>
-                </child>
-                <child>
-                  <object class="GtkStackPage">
-                    <property name="name">spinner</property>
-                    <property name="child">
-                      <object class="GtkSpinner">
-                        <property name="halign">start</property>
-                        <property name="valign">center</property>
-                      </object>
-                    </property>
-                  </object>
-                </child>
-              </object>
-            </child>
-          </object>
-        </child>
-      </object>
-    </child>
-  </object>
   <object class="AdwHeaderBar" id="headerbar">
     <property name="title-widget">
       <object class="AdwViewSwitcher" id="switch">
@@ -103,11 +36,10 @@ Tobias Bernard
       </object>
     </property>
     <child>
-      <object class="GtkMenuButton" id="add_toggle">
+      <object class="GtkButton" id="add_button">
         <property name="receives_default">True</property>
         <property name="tooltip_text" translatable="yes">Add a new feed</property>
         <property name="valign">center</property>
-        <property name="popover">add_popover</property>
         <property name="icon_name">list-add-symbolic</property>
       </object>
     </child>

@@ -19,6 +19,8 @@
 
 mod aboutdialog;
 mod base_view;
+mod discovery_page;
+mod discovery_search_results;
 mod empty_show;
 mod empty_view;
 mod episode;
@@ -33,6 +35,8 @@ mod shows_view;
 
 pub(crate) use self::aboutdialog::about_dialog;
 pub(crate) use self::base_view::BaseView;
+pub(crate) use self::discovery_page::DiscoveryPage;
+pub(crate) use self::discovery_search_results::SearchResults;
 pub(crate) use self::empty_show::EmptyShow;
 pub(crate) use self::empty_view::EmptyView;
 pub(crate) use self::episode::EpisodeWidget;

@@ -1,0 +1,162 @@
+{
+    "status": 1,
+    "msg": "ok",
+    "meta": {
+        "paging": {
+            "count": 10,
+            "page": 0,
+            "first_page": 0,
+            "last_page": 0,
+            "next_page": null,
+            "prev_page": null
+        },
+        "API_INFO": {
+            "API_VERSION": "0.2"
+        },
+        "SERVER": "5.75.151.179",
+        "duration": 0
+    },
+    "data": [
+        {
+            "title": "The Deprogram",
+            "id": 77332,
+            "xmlURL": "https:\/\/feeds.buzzsprout.com\/1890340.rss",
+            "htmlURL": "https:\/\/art19.com\/shows\/the-deprogram",
+            "imgURL": "https:\/\/storage.buzzsprout.com\/variants\/97mqytse7beqmzez24paezscgnp3\/6861a7550229613e3387373f20ad829ba4bc5767dd8eb92e70a0abe304d4e657.jpeg",
+            "status": 200,
+            "status_since": "2023-10-20 01:23:30",
+            "slug": "the-deprogram",
+            "layoutImageURL": "https:\/\/img-1.fyyd.de\/pd\/layout\/7733270e232241983f50e3e88665b72cfa4f5.jpg",
+            "thumbImageURL": "https:\/\/img-1.fyyd.de\/pd\/thumbs\/7733270e232241983f50e3e88665b72cfa4f5.png",
+            "smallImageURL": "https:\/\/img-1.fyyd.de\/pd\/small\/7733270e232241983f50e3e88665b72cfa4f5.jpg",
+            "microImageURL": "https:\/\/img-1.fyyd.de\/pd\/micro\/7733270e232241983f50e3e88665b72cfa4f5.png",
+            "language": "en",
+            "generator": "ART19",
+            "categories": [
+                119
+            ],
+            "lastpub": "2024-03-08T13:00:00+01:00",
+            "rank": 54,
+            "url_fyyd": "https:\/\/fyyd.de\/podcast\/the-deprogram\/0",
+            "description": "      What do an Iraqi, a Balkan Slav and a Texan have in common? A burning hatred for the system. Oh, and a podcast. Say no to eating out of the trash can of ideology. Join us on a journey exploring and critically assessing the perceived \u201cnormalcy\u201d of late-stage capitalism. The only truly international, global, and anti-capitalist podcast you\u2019ll find. SUPPORT US on PATREON: https:\/\/www.patreon.com\/TheDeprogram FOLLOW US on Twitter @TheDeprogramPod    ",
+            "subtitle": "      What do an Iraqi, a Balkan Slav and a Texan have in common? A burning hatred for the system. Oh, and a podcast. Say no to eating out of the trash can of ideology. Join us on a journey exploring and critically assessing the perceived \u201cnormalcy\u201d of late-stage capitalism. The only truly international, global, and anti-capitalist podcast you\u2019ll find. SUPPORT US on PATREON: https:\/\/www.patreon.com\/TheDeprogram FOLLOW US on Twitter @TheDeprogramPod    ",
+            "tcolor": "#fff",
+            "color": "#0d0e12",
+            "episode_count": 242,
+            "iflags": null,
+            "paymentURL": "https:\/\/www.patreon.com\/TheDeprogram",
+            "author": "JT, Hakim, and Yugopnik",
+            "seasons": {
+                "1": [
+                    {
+                        "episode_id": 11413310,
+                        "episode_num": 101
+                    },
+                    {
+                        "episode_id": 11422939,
+                        "episode_num": 102
+                    },
+                    {
+                        "episode_id": 11440961,
+                        "episode_num": 102
+                    },
+                    {
+                        "episode_id": 11451130,
+                        "episode_num": 102
+                    },
+                    {
+                        "episode_id": 11471208,
+                        "episode_num": 103
+                    },
+                    {
+                        "episode_id": 11528517,
+                        "episode_num": 106
+                    },
+                    {
+                        "episode_id": 11537046,
+                        "episode_num": 106
+                    },
+                    {
+                        "episode_id": 11587387,
+                        "episode_num": 107
+                    },
+                    {
+                        "episode_id": 11617445,
+                        "episode_num": 108
+                    },
+                    {
+                        "episode_id": 11644139,
+                        "episode_num": 109
+                    },
+                    {
+                        "episode_id": 11671171,
+                        "episode_num": 110
+                    },
+                    {
+                        "episode_id": 11700438,
+                        "episode_num": 111
+                    },
+                    {
+                        "episode_id": 11719521,
+                        "episode_num": 112
+                    },
+                    {
+                        "episode_id": 11759510,
+                        "episode_num": 113
+                    },
+                    {
+                        "episode_id": 11789547,
+                        "episode_num": 114
+                    },
+                    {
+                        "episode_id": 11808851,
+                        "episode_num": 115
+                    },
+                    {
+                        "episode_id": 11826393,
+                        "episode_num": 115
+                    },
+                    {
+                        "episode_id": 11855821,
+                        "episode_num": 116
+                    },
+                    {
+                        "episode_id": 11897447,
+                        "episode_num": 117
+                    },
+                    {
+                        "episode_id": 11929464,
+                        "episode_num": 118
+                    },
+                    {
+                        "episode_id": 11944240,
+                        "episode_num": 118
+                    },
+                    {
+                        "episode_id": 11957600,
+                        "episode_num": 119
+                    },
+                    {
+                        "episode_id": 11989992,
+                        "episode_num": 120
+                    },
+                    {
+                        "episode_id": 12018071,
+                        "episode_num": 121
+                    }
+                ]
+            },
+            "stats": {
+                "medianduration": 1142,
+                "medianduration_string": "19m",
+                "episodecount": 242,
+                "pubinterval_seconds": 280800,
+                "pubinterval": 3,
+                "complete_duration_value": 599630,
+                "pubinterval_string": "alle 3 Tage",
+                "pubinterval_value": 3,
+                "pubinterval_type": 1
+            }
+        }
+    ]
+}

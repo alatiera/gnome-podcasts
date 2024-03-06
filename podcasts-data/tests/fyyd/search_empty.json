@@ -1,0 +1,20 @@
+{
+    "status": 1,
+    "msg": "ok",
+    "meta": {
+        "paging": {
+            "count": 10,
+            "page": 0,
+            "first_page": 0,
+            "last_page": -1,
+            "next_page": 1,
+            "prev_page": null
+        },
+        "API_INFO": {
+            "API_VERSION": "0.2"
+        },
+        "SERVER": "5.75.151.179",
+        "duration": 0
+    },
+    "data": []
+}

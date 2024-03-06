@@ -27,12 +27,14 @@ use gettextrs::{bindtextdomain, setlocale, textdomain, LocaleCategory};
 
 use anyhow::Result;
 use podcasts_data::dbqueries;
+use podcasts_data::discovery::FoundPodcast;
+use podcasts_data::pipeline::pipeline;
 use podcasts_data::{Episode, Show, Source};
 
 use crate::settings;
 use crate::utils;
 use crate::widgets::show_menu::{mark_all_notif, remove_show_notif};
-use crate::widgets::EpisodeDescription;
+use crate::widgets::{DiscoveryPage, EpisodeDescription, SearchResults};
 use crate::window::MainWindow;
 
 use std::cell::RefCell;
@@ -144,6 +146,8 @@ pub(crate) enum Action {
     RefreshWidgetIfSame(i32),
     GoToEpisodeDescription(Arc<Show>, Arc<Episode>),
     GoToShow(Arc<Show>),
+    GoToDiscovery,
+    GoToFoundPodcasts(Arc<Vec<FoundPodcast>>),
     CopiedUrlNotification,
     MarkAllPlayerNotification(Arc<Show>),
     UpdateFeed(Option<Vec<Source>>),
@@ -156,6 +160,7 @@ pub(crate) enum Action {
     InitEpisodeAt(i32, i32),
     EmptyState,
     PopulatedState,
+    Subscribe(String),
     RaiseWindow,
     InhibitSuspend,
     UninhibitSuspend,
@@ -311,6 +316,14 @@ impl PdApplication {
             Action::GoToShow(pd) => {
                 self.do_action(Action::ReplaceWidget(pd));
             }
+            Action::GoToDiscovery => {
+                let widget = DiscoveryPage::new(window.sender());
+                window.push_page(&widget);
+            }
+            Action::GoToFoundPodcasts(found) => {
+                let widget = SearchResults::new(&found, window.sender());
+                window.push_page(&widget);
+            }
             Action::CopiedUrlNotification => {
                 let text = i18n("Copied URL to clipboard!");
                 let toast = adw::Toast::new(&text);
@@ -390,6 +403,47 @@ impl PdApplication {
                 window.content().switch_to_populated();
             }
             Action::RaiseWindow => window.present(),
+            Action::Subscribe(feed) => {
+                let sender = data.sender.clone();
+                crate::RUNTIME.spawn(async move {
+                    let mut error_source = None; // <- auto unsub from this
+                    if let Err(e) = async {
+                        let source =
+                            dbqueries::get_source_from_uri(&feed).or(Source::from_url(&feed))?;
+                        error_source = Some(source.clone());
+                        let source_id = source.id();
+                        info!("Subscribing to {feed}");
+                        pipeline(vec![source]).await?;
+                        let show = dbqueries::get_podcast_from_source_id(source_id)?;
+                        send!(sender, Action::RefreshAllViews);
+                        send!(sender, Action::GoToShow(Arc::new(show.clone())));
+                        Ok::<(), anyhow::Error>(())
+                    }
+                    .await
+                    {
+                        error!("Failed to subscribe: {feed} {e}");
+                        // auto unsubscribe
+                        if let Some(error_source) = error_source {
+                            // only unsub if no Show was imported from the source.
+                            if dbqueries::get_podcast_from_source_id(error_source.id()).is_err() {
+                                if let Err(remove_err) = dbqueries::remove_source(&error_source) {
+                                    error!("failed to remove failed source! {remove_err} {feed}");
+                                } else {
+                                    info!("auto removed source that failed to import {feed}");
+                                }
+                            }
+                        }
+                        // TODO show the actual error (like "content didn't start with rss feed"),
+                        // but pipeline doesn't pass useful errors yet
+                        send!(
+                            sender,
+                            Action::ErrorNotification(format!(
+                                "Failed to subscribe to feed: {feed} "
+                            ))
+                        );
+                    }
+                });
+            }
             Action::InhibitSuspend => {
                 let window: Option<&gtk::Window> = None;
                 let old_cookie = *data.inhibit_cookie.borrow();

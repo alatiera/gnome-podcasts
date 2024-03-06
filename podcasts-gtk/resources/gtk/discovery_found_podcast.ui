@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+Copyright (C) 2022 - 2024
+
+This file is part of GNOME Podcasts.
+
+GNOME Podcasts is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+GNOME Podcasts is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with GNOME Podcasts.  If not, see <http://www.gnu.org/licenses/>.
+
+Authors:
+nee <nee-git@patchouli.garden>
+
+-->
+<interface>
+  <!-- interface-license-type gplv3 -->
+  <!-- interface-name GNOME Podcasts -->
+  <!-- interface-description A podcast client for the GNOME Desktop -->
+  <!-- interface-copyright 2022 - 2024 -->
+  <!-- interface-authors nee -->
+  <template class="PdDiscoveryFoundPodcast" parent="AdwPreferencesRow">
+    <style>
+      <class name="found-podcast"/>
+    </style>
+    <property name="selectable">False</property>
+    <child>
+      <object class="GtkBox">
+        <property name="margin-start">15</property>
+        <property name="margin-end">15</property>
+        <property name="margin-top">15</property>
+        <property name="margin-bottom">15</property>
+        <property name="vexpand">False</property>
+        <property name="hexpand">True</property>
+        <!-- left -->
+        <child type="prefix">
+          <object class="GtkImage" id="cover">
+            <property name="width-request">64</property>
+            <property name="height-request">64</property>
+            <property name="icon-name">image-x-generic-symbolic</property>
+            <property name="accessible_role">presentation</property>
+            <property name="valign">start</property>
+          </object>
+        </child>
+        <!-- center -->
+        <child>
+          <object class="GtkBox">
+            <property name="margin-start">15</property>
+            <property name="margin-end">15</property>
+            <property name="orientation">vertical</property>
+            <child>
+              <object class="GtkLabel" id="title">
+                <style>
+                  <class name="title"/>
+                </style>
+                <property name="halign">start</property>
+                <property name="wrap">True</property>
+                <property name="label" translatable="no">title</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkLabel" id="author">
+                <style>
+                  <class name="subtitle"/>
+                </style>
+                <property name="halign">start</property>
+                <property name="margin-bottom">10</property>
+                <property name="label" translatable="no">author</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkLabel" id="description">
+                <style>
+                  <class name="description"/>
+                </style>
+                <property name="label" translatable="no"/>
+                <property name="visible">False</property>
+                <property name="halign">start</property>
+                <property name="ellipsize">end</property>
+                <property name="vexpand">False</property>
+                <property name="single-line-mode">True</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkBox" id="episode_count">
+                <property name="hexpand">True</property>
+                <property name="valign">end</property>
+                <property name="visible">False</property>
+                <child>
+                  <object class="GtkLabel">
+                    <style>
+                      <class name="subtitle"/>
+                    </style>
+                    <property name="label" translatable="yes">Episodes: </property>
+                    <property name="justify">right</property>
+                    <property name="xalign">1</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="episode_count_label">
+                    <style>
+                      <class name="subtitle"/>
+                    </style>
+                    <property name="label" translatable="yes">0</property>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <child>
+              <object class="GtkBox">
+                <property name="spacing">15</property>
+                <child>
+                  <object class="GtkLabel" id="feed_url">
+                    <style>
+                      <class name="subtitle"/>
+                    </style>
+                    <property name="label" translatable="no"/>
+                    <property name="valign">end</property>
+                    <property name="halign">start</property>
+                    <property name="ellipsize">end</property>
+                    <property name="vexpand">False</property>
+                    <property name="margin-top">10</property>
+                    <property name="single-line-mode">True</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="last_publication">
+                    <style>
+                      <class name="subtitle"/>
+                    </style>
+                    <property name="visible">False</property>
+                    <property name="tooltip-text" translatable="yes">Last publication</property>
+                    <property name="label" translatable="no"/>
+                    <property name="valign">end</property>
+                    <property name="halign">end</property>
+                    <property name="vexpand">False</property>
+                    <property name="hexpand">True</property>
+                    <property name="margin-top">10</property>
+                    <property name="single-line-mode">True</property>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </child>
+        <!-- right -->
+        <child>
+          <object class="GtkButton" id="subscribe">
+            <property name="label" translatable="yes">Subscribe</property>
+            <property name="valign">center</property>
+            <property name="halign">end</property>
+            <property name="receives-default">True</property>
+          </object>
+        </child>
+      </object>
+    </child>
+  </template>
+</interface>

@@ -1,0 +1,2247 @@
+{
+    "status": 1,
+    "msg": "ok",
+    "meta": {
+        "paging": {
+            "count": 10,
+            "page": 0,
+            "first_page": 0,
+            "last_page": 0,
+            "next_page": null,
+            "prev_page": null
+        },
+        "API_INFO": {
+            "API_VERSION": "0.2"
+        },
+        "SERVER": "5.75.151.179",
+        "duration": 0
+    },
+    "data": [
+        {
+            "title": "Chapo",
+            "id": 83744,
+            "xmlURL": "https:\/\/feeds.acast.com\/public\/shows\/7540dfb3-3c5f-43ae-91d3-aad22b2ede46",
+            "htmlURL": "https:\/\/play.acast.com\/s\/chapo",
+            "imgURL": "https:\/\/assets.pippa.io\/shows\/61b79c781695620407e952a5\/show-cover.jpg",
+            "status": 200,
+            "status_since": "2023-10-31 22:12:05",
+            "slug": "chapo",
+            "layoutImageURL": "https:\/\/img-1.fyyd.de\/pd\/layout\/8374473344d689aada87d46655bb0d1e89028.jpg",
+            "thumbImageURL": "https:\/\/img-1.fyyd.de\/pd\/thumbs\/8374473344d689aada87d46655bb0d1e89028.png",
+            "smallImageURL": "https:\/\/img-1.fyyd.de\/pd\/small\/8374473344d689aada87d46655bb0d1e89028.jpg",
+            "microImageURL": "https:\/\/img-1.fyyd.de\/pd\/micro\/8374473344d689aada87d46655bb0d1e89028.png",
+            "language": "en",
+            "generator": "acast.com",
+            "categories": [
+                155
+            ],
+            "lastpub": "2019-02-22T23:19:05+01:00",
+            "rank": 0,
+            "url_fyyd": "https:\/\/fyyd.de\/podcast\/chapo\/0",
+            "description": "As Sinaloa cartel leader Joaqu\u00edn \u201cEl Chapo\u201d Guzm\u00e1n goes on trial, VICE News explores his&nbsp;high-stakes case through the stories of people caught up in the drug war in the U.S. and Mexico. Hosted on Acast. See acast.com\/privacy for more information.",
+            "subtitle": "As Sinaloa cartel leader Joaqu\u00edn \u201cEl Chapo\u201d Guzm\u00e1n goes on trial, VICE News explores his&amp;nbsp;high-stakes case through the stories of people caught up in the drug war in the U.S. and Mexico.",
+            "tcolor": "#fff",
+            "color": "#74736f",
+            "episode_count": 17,
+            "iflags": null,
+            "paymentURL": null,
+            "author": "VICE",
+            "stats": {
+                "medianduration": 1395,
+                "medianduration_string": "23m",
+                "episodecount": 17,
+                "pubinterval_seconds": 520200,
+                "pubinterval": 6,
+                "complete_duration_value": 24735,
+                "pubinterval_string": "w\u00f6chentlich",
+                "pubinterval_value": 7,
+                "pubinterval_type": 2
+            }
+        },
+        {
+            "title": "Chapo Trap House",
+            "id": 58282,
+            "xmlURL": "https:\/\/feeds.soundcloud.com\/users\/soundcloud:users:211911700\/sounds.rss",
+            "htmlURL": "https:\/\/www.patreon.com\/chapotraphouse",
+            "imgURL": "https:\/\/i1.sndcdn.com\/avatars-000230770726-ib4tc4-original.jpg",
+            "status": 200,
+            "status_since": "2023-12-05 08:44:35",
+            "slug": "chapo-trap-house",
+            "layoutImageURL": "https:\/\/img-1.fyyd.de\/pd\/layout\/58282c0c842fc16e73e519ff141e856b175f8.jpg",
+            "thumbImageURL": "https:\/\/img-1.fyyd.de\/pd\/thumbs\/58282c0c842fc16e73e519ff141e856b175f8.png",
+            "smallImageURL": "https:\/\/img-1.fyyd.de\/pd\/small\/58282c0c842fc16e73e519ff141e856b175f8.jpg",
+            "microImageURL": "https:\/\/img-1.fyyd.de\/pd\/micro\/58282c0c842fc16e73e519ff141e856b175f8.png",
+            "language": "en",
+            "generator": null,
+            "categories": [
+                155
+            ],
+            "lastpub": "2024-03-08T08:01:37+01:00",
+            "rank": 48,
+            "url_fyyd": "https:\/\/fyyd.de\/podcast\/chapo-trap-house\/0",
+            "description": "Podcast by Chapo Trap House",
+            "subtitle": "Podcast by Chapo Trap House",
+            "tcolor": "#fff",
+            "color": "#568da9",
+            "episode_count": 792,
+            "iflags": null,
+            "paymentURL": null,
+            "author": "Chapo Trap House",
+            "stats": {
+                "medianduration": 3758,
+                "medianduration_string": "1h2m",
+                "episodecount": 792,
+                "pubinterval_seconds": 300584,
+                "pubinterval": 3,
+                "complete_duration_value": 2365588,
+                "pubinterval_string": "alle 3 Tage",
+                "pubinterval_value": 3,
+                "pubinterval_type": 1
+            }
+        },
+        {
+            "title": "Surviving El Chapo: The Twins Who Brought Down A Drug Lord",
+            "id": 80419,
+            "xmlURL": "https:\/\/www.omnycontent.com\/d\/playlist\/e73c998e-6e60-432f-8610-ae210140c5b1\/a6b57093-81fe-4401-a963-af2000fe4e3a\/56b7926c-6bfd-4d8c-81f9-af2000ffad49\/podcast.rss",
+            "htmlURL": "https:\/\/www.iheart.com\/podcast\/1119-surviving-el-chapo-the-tw-102800182\/",
+            "imgURL": "https:\/\/www.omnycontent.com\/d\/programs\/e73c998e-6e60-432f-8610-ae210140c5b1\/a6b57093-81fe-4401-a963-af2000fe4e3a\/image.jpg?t=1687879551&size=Large",
+            "status": 200,
+            "status_since": "2024-02-04 19:14:36",
+            "slug": "surviving-el-chapo-the-twins-who-brought-down-a-drug-lord",
+            "layoutImageURL": "https:\/\/img-1.fyyd.de\/pd\/layout\/80419996d728f3c44a832def2cffbae93e380.jpg",
+            "thumbImageURL": "https:\/\/img-1.fyyd.de\/pd\/thumbs\/80419996d728f3c44a832def2cffbae93e380.png",
+            "smallImageURL": "https:\/\/img-1.fyyd.de\/pd\/small\/80419996d728f3c44a832def2cffbae93e380.jpg",
+            "microImageURL": "https:\/\/img-1.fyyd.de\/pd\/micro\/80419996d728f3c44a832def2cffbae93e380.png",
+            "language": "en",
+            "generator": null,
+            "categories": [
+                181,
+                182,
+                204,
+                129
+            ],
+            "lastpub": "2023-12-06T09:00:00+01:00",
+            "rank": 1,
+            "url_fyyd": "https:\/\/fyyd.de\/podcast\/surviving-el-chapo-the-twins-who-brought-down-a-drug-lord\/0",
+            "description": "Identical twins Jay and Pete Flores, who were once North America\u2019s biggest drug traffickers and El Chapo\u2019s right hand men, turned themselves into the U.S. government with the hopes of starting a new, safer life for their family. But after years of cooperating to get the world's most powerful drug kingpin behind bars, and finally gaining their freedom with a chance to start again, everything for the Flores family began to unravel. In Season 2 of Surviving El Chapo, hosts Curtis \"50 Cent\" Jackson and Charlie Webster hear Jay and Pete reveal for the first time what really happened during their turbulent 14-year prison journey and what it was like to come face-to-face in court with El Chapo. Plus, find out the shocking backstory to the prison sentence that the Flores wives are currently facing.\n\nHosted and executive produced by award-winning artist and producer Curtis \"50 Cent\" Jackson and critically acclaimed broadcast journalist and producer Charlie Webster. Brought to you by Lionsgate Sound as a world exclusive with iHeartPodcasts.",
+            "subtitle": "Identical twins Jay and Pete Flores, who were once North America\u2019s biggest drug traffickers and El Chapo\u2019s right hand men, turned themselves into the U.S. government with the hopes of starting a new, safer life for their family. But after years of cooperating to get the world's most powerful drug kingpin behind bars, and finally gaining their freedom with a chance to start again, everything for the Flores family began to unravel. In Season 2 of Surviving El Chapo, hosts Curtis \"50 Cent\" Jackson and Charlie Webster hear Jay and Pete reveal for the first time what really happened during their turbulent 14-year prison journey and what it was like to come face-to-face in court with El Chapo. Plus, find out the shocking backstory to the prison sentence that the Flores wives are currently facing.\n\nHosted and executive produced by award-winning artist and producer Curtis \"50 Cent\" Jackson and critically acclaimed broadcast journalist and producer Charlie Webster. Brought to you by Lionsgate Sound as a world exclusive with iHeartPodcasts.",
+            "tcolor": "#000",
+            "color": "#b5b3aa",
+            "episode_count": 26,
+            "iflags": null,
+            "paymentURL": null,
+            "author": "iHeartPodcasts",
+            "seasons": {
+                "1": [
+                    {
+                        "episode_id": 9523586,
+                        "episode_num": 1
+                    },
+                    {
+                        "episode_id": 9523587,
+                        "episode_num": 0
+                    },
+                    {
+                        "episode_id": 9523588,
+                        "episode_num": 2
+                    },
+                    {
+                        "episode_id": 9523602,
+                        "episode_num": 3
+                    },
+                    {
+                        "episode_id": 9523603,
+                        "episode_num": 4
+                    },
+                    {
+                        "episode_id": 9523604,
+                        "episode_num": 5
+                    },
+                    {
+                        "episode_id": 9542170,
+                        "episode_num": 6
+                    },
+                    {
+                        "episode_id": 9570924,
+                        "episode_num": 7
+                    },
+                    {
+                        "episode_id": 9597845,
+                        "episode_num": 8
+                    },
+                    {
+                        "episode_id": 9624260,
+                        "episode_num": 9
+                    },
+                    {
+                        "episode_id": 9657376,
+                        "episode_num": 10
+                    },
+                    {
+                        "episode_id": 9690552,
+                        "episode_num": 11
+                    },
+                    {
+                        "episode_id": 9715837,
+                        "episode_num": 12
+                    }
+                ],
+                "2": [
+                    {
+                        "episode_id": 10854621,
+                        "episode_num": 0
+                    },
+                    {
+                        "episode_id": 10854969,
+                        "episode_num": 0
+                    },
+                    {
+                        "episode_id": 10856531,
+                        "episode_num": 0
+                    },
+                    {
+                        "episode_id": 10882741,
+                        "episode_num": 1
+                    },
+                    {
+                        "episode_id": 10981848,
+                        "episode_num": 2
+                    },
+                    {
+                        "episode_id": 11353908,
+                        "episode_num": 3
+                    },
+                    {
+                        "episode_id": 11431643,
+                        "episode_num": 4
+                    },
+                    {
+                        "episode_id": 11459346,
+                        "episode_num": 5
+                    },
+                    {
+                        "episode_id": 11490396,
+                        "episode_num": 6
+                    },
+                    {
+                        "episode_id": 11517539,
+                        "episode_num": 7
+                    },
+                    {
+                        "episode_id": 11544988,
+                        "episode_num": 8
+                    },
+                    {
+                        "episode_id": 11571919,
+                        "episode_num": 9
+                    },
+                    {
+                        "episode_id": 11604520,
+                        "episode_num": 10
+                    }
+                ]
+            },
+            "stats": {
+                "medianduration": 2756,
+                "medianduration_string": "45m",
+                "episodecount": 26,
+                "pubinterval_seconds": 604800,
+                "pubinterval": 7,
+                "complete_duration_value": 67145,
+                "pubinterval_string": "w\u00f6chentlich",
+                "pubinterval_value": 7,
+                "pubinterval_type": 2
+            }
+        },
+        {
+            "title": "People's History of Ideas Podcast",
+            "id": 84425,
+            "xmlURL": "https:\/\/feeds.buzzsprout.com\/350771.rss",
+            "htmlURL": "https:\/\/peopleshistoryofideas.com\/",
+            "imgURL": "https:\/\/storage.buzzsprout.com\/variants\/L8JbJjTFbZ1QYtVDYbacyBQV\/60854458c4d1acdf4e1c2f79c4137142d85d78e379bdafbd69bd34c85f5819ad?.jpg",
+            "status": 200,
+            "status_since": "2024-01-22 08:20:02",
+            "slug": "people-s-history-of-ideas-podcast",
+            "layoutImageURL": "https:\/\/img-1.fyyd.de\/pd\/layout\/8442586e8539fdf80c9748cea30f43e638922.jpg",
+            "thumbImageURL": "https:\/\/img-1.fyyd.de\/pd\/thumbs\/8442586e8539fdf80c9748cea30f43e638922.png",
+            "smallImageURL": "https:\/\/img-1.fyyd.de\/pd\/small\/8442586e8539fdf80c9748cea30f43e638922.jpg",
+            "microImageURL": "https:\/\/img-1.fyyd.de\/pd\/micro\/8442586e8539fdf80c9748cea30f43e638922.png",
+            "language": "en",
+            "generator": null,
+            "categories": [
+                129,
+                181,
+                184
+            ],
+            "lastpub": "2024-02-04T21:00:00+01:00",
+            "rank": 20,
+            "url_fyyd": "https:\/\/fyyd.de\/podcast\/people-s-history-of-ideas-podcast\/0",
+            "description": "In this podcast, Matthew Rothwell, author of Transpacific Revolutionaries: The Chinese Revolution in Latin America, explores the global history of ideas related to rebellion and revolution. The main focus of this podcast for the near future will be on the history of the Chinese Revolution, going all the way back to its roots in the initial Chinese reactions to British imperialism during the Opium War of 1839-1842, and then following the development of the revolution and many of the ideas that were products of the revolution through to their transnational diffusion in the late 20th century.",
+            "subtitle": "In this podcast, Matthew Rothwell, author of Transpacific Revolutionaries: The Chinese Revolution in Latin America, explores the global history of ideas related to rebellion and revolution. The main focus of this podcast for the near future will be on the history of the Chinese Revolution, going all the way back to its roots in the initial Chinese reactions to British imperialism during the Opium War of 1839-1842, and then following the development of the revolution and many of the ideas that were products of the revolution through to their transnational diffusion in the late 20th century.",
+            "tcolor": "#000",
+            "color": "#d1c7b8",
+            "episode_count": 112,
+            "iflags": null,
+            "paymentURL": "https:\/\/www.paypal.com\/donate?hosted_button_id=DACDMMMEASJVJ",
+            "author": "Matthew Rothwell",
+            "seasons": {
+                "1": [
+                    {
+                        "episode_id": 11800990,
+                        "episode_num": 1
+                    },
+                    {
+                        "episode_id": 11800995,
+                        "episode_num": 2
+                    },
+                    {
+                        "episode_id": 11801001,
+                        "episode_num": 3
+                    },
+                    {
+                        "episode_id": 11801008,
+                        "episode_num": 4
+                    },
+                    {
+                        "episode_id": 11801013,
+                        "episode_num": 5
+                    },
+                    {
+                        "episode_id": 11801021,
+                        "episode_num": 6
+                    },
+                    {
+                        "episode_id": 11801027,
+                        "episode_num": 8
+                    },
+                    {
+                        "episode_id": 11801032,
+                        "episode_num": 7
+                    },
+                    {
+                        "episode_id": 11801038,
+                        "episode_num": 9
+                    },
+                    {
+                        "episode_id": 11801044,
+                        "episode_num": 61
+                    },
+                    {
+                        "episode_id": 11801049,
+                        "episode_num": 62
+                    },
+                    {
+                        "episode_id": 11801054,
+                        "episode_num": 63
+                    },
+                    {
+                        "episode_id": 11801060,
+                        "episode_num": 64
+                    },
+                    {
+                        "episode_id": 11801067,
+                        "episode_num": 66
+                    },
+                    {
+                        "episode_id": 11801073,
+                        "episode_num": 65
+                    },
+                    {
+                        "episode_id": 11801078,
+                        "episode_num": 67
+                    },
+                    {
+                        "episode_id": 11801084,
+                        "episode_num": 68
+                    },
+                    {
+                        "episode_id": 11801089,
+                        "episode_num": 69
+                    },
+                    {
+                        "episode_id": 11801095,
+                        "episode_num": 70
+                    },
+                    {
+                        "episode_id": 11801102,
+                        "episode_num": 71
+                    },
+                    {
+                        "episode_id": 11801107,
+                        "episode_num": 72
+                    },
+                    {
+                        "episode_id": 11801112,
+                        "episode_num": 73
+                    },
+                    {
+                        "episode_id": 11801117,
+                        "episode_num": 74
+                    },
+                    {
+                        "episode_id": 11801122,
+                        "episode_num": 75
+                    },
+                    {
+                        "episode_id": 11801128,
+                        "episode_num": 78
+                    },
+                    {
+                        "episode_id": 11801133,
+                        "episode_num": 77
+                    },
+                    {
+                        "episode_id": 11801139,
+                        "episode_num": 76
+                    },
+                    {
+                        "episode_id": 11801143,
+                        "episode_num": 47
+                    },
+                    {
+                        "episode_id": 11801148,
+                        "episode_num": 49
+                    },
+                    {
+                        "episode_id": 11801152,
+                        "episode_num": 50
+                    },
+                    {
+                        "episode_id": 11801156,
+                        "episode_num": 48
+                    },
+                    {
+                        "episode_id": 11801159,
+                        "episode_num": 51
+                    },
+                    {
+                        "episode_id": 11801162,
+                        "episode_num": 56
+                    },
+                    {
+                        "episode_id": 11801166,
+                        "episode_num": 55
+                    },
+                    {
+                        "episode_id": 11801169,
+                        "episode_num": 54
+                    },
+                    {
+                        "episode_id": 11801173,
+                        "episode_num": 53
+                    },
+                    {
+                        "episode_id": 11801176,
+                        "episode_num": 52
+                    },
+                    {
+                        "episode_id": 11801179,
+                        "episode_num": 58
+                    },
+                    {
+                        "episode_id": 11801184,
+                        "episode_num": 57
+                    },
+                    {
+                        "episode_id": 11801187,
+                        "episode_num": 59
+                    },
+                    {
+                        "episode_id": 11801190,
+                        "episode_num": 60
+                    },
+                    {
+                        "episode_id": 11801194,
+                        "episode_num": 11
+                    },
+                    {
+                        "episode_id": 11801198,
+                        "episode_num": 10
+                    },
+                    {
+                        "episode_id": 11801201,
+                        "episode_num": 12
+                    },
+                    {
+                        "episode_id": 11801204,
+                        "episode_num": 13
+                    },
+                    {
+                        "episode_id": 11801207,
+                        "episode_num": 14
+                    },
+                    {
+                        "episode_id": 11801211,
+                        "episode_num": 15
+                    },
+                    {
+                        "episode_id": 11801214,
+                        "episode_num": 16
+                    },
+                    {
+                        "episode_id": 11801217,
+                        "episode_num": 17
+                    },
+                    {
+                        "episode_id": 11801220,
+                        "episode_num": 18
+                    },
+                    {
+                        "episode_id": 11801223,
+                        "episode_num": 19
+                    },
+                    {
+                        "episode_id": 11801226,
+                        "episode_num": 20
+                    },
+                    {
+                        "episode_id": 11801229,
+                        "episode_num": 21
+                    },
+                    {
+                        "episode_id": 11801230,
+                        "episode_num": 22
+                    },
+                    {
+                        "episode_id": 11801233,
+                        "episode_num": 23
+                    },
+                    {
+                        "episode_id": 11801237,
+                        "episode_num": 24
+                    },
+                    {
+                        "episode_id": 11801240,
+                        "episode_num": 25
+                    },
+                    {
+                        "episode_id": 11801243,
+                        "episode_num": 26
+                    },
+                    {
+                        "episode_id": 11801246,
+                        "episode_num": 27
+                    },
+                    {
+                        "episode_id": 11801249,
+                        "episode_num": 28
+                    },
+                    {
+                        "episode_id": 11801252,
+                        "episode_num": 29
+                    },
+                    {
+                        "episode_id": 11801256,
+                        "episode_num": 30
+                    },
+                    {
+                        "episode_id": 11801259,
+                        "episode_num": 31
+                    },
+                    {
+                        "episode_id": 11801262,
+                        "episode_num": 32
+                    },
+                    {
+                        "episode_id": 11801264,
+                        "episode_num": 33
+                    },
+                    {
+                        "episode_id": 11801267,
+                        "episode_num": 34
+                    },
+                    {
+                        "episode_id": 11801270,
+                        "episode_num": 35
+                    },
+                    {
+                        "episode_id": 11801273,
+                        "episode_num": 36
+                    },
+                    {
+                        "episode_id": 11801276,
+                        "episode_num": 37
+                    },
+                    {
+                        "episode_id": 11801280,
+                        "episode_num": 38
+                    },
+                    {
+                        "episode_id": 11801283,
+                        "episode_num": 39
+                    },
+                    {
+                        "episode_id": 11801286,
+                        "episode_num": 40
+                    },
+                    {
+                        "episode_id": 11801289,
+                        "episode_num": 41
+                    },
+                    {
+                        "episode_id": 11801293,
+                        "episode_num": 42
+                    },
+                    {
+                        "episode_id": 11801296,
+                        "episode_num": 43
+                    },
+                    {
+                        "episode_id": 11801299,
+                        "episode_num": 44
+                    },
+                    {
+                        "episode_id": 11801303,
+                        "episode_num": 46
+                    },
+                    {
+                        "episode_id": 11801307,
+                        "episode_num": 45
+                    },
+                    {
+                        "episode_id": 11801310,
+                        "episode_num": 80
+                    },
+                    {
+                        "episode_id": 11801314,
+                        "episode_num": 79
+                    },
+                    {
+                        "episode_id": 11801317,
+                        "episode_num": 81
+                    },
+                    {
+                        "episode_id": 11801320,
+                        "episode_num": 82
+                    },
+                    {
+                        "episode_id": 11801324,
+                        "episode_num": 83
+                    },
+                    {
+                        "episode_id": 11801327,
+                        "episode_num": 84
+                    },
+                    {
+                        "episode_id": 11801330,
+                        "episode_num": 85
+                    },
+                    {
+                        "episode_id": 11801333,
+                        "episode_num": 86
+                    },
+                    {
+                        "episode_id": 11801335,
+                        "episode_num": 88
+                    },
+                    {
+                        "episode_id": 11801337,
+                        "episode_num": 87
+                    },
+                    {
+                        "episode_id": 11801339,
+                        "episode_num": 89
+                    },
+                    {
+                        "episode_id": 11801341,
+                        "episode_num": 90
+                    },
+                    {
+                        "episode_id": 11801342,
+                        "episode_num": 91
+                    },
+                    {
+                        "episode_id": 11801344,
+                        "episode_num": 92
+                    },
+                    {
+                        "episode_id": 11801346,
+                        "episode_num": 93
+                    },
+                    {
+                        "episode_id": 11801348,
+                        "episode_num": 94
+                    },
+                    {
+                        "episode_id": 11801350,
+                        "episode_num": 95
+                    },
+                    {
+                        "episode_id": 11801352,
+                        "episode_num": 96
+                    },
+                    {
+                        "episode_id": 11801354,
+                        "episode_num": 97
+                    },
+                    {
+                        "episode_id": 11801356,
+                        "episode_num": 98
+                    },
+                    {
+                        "episode_id": 11801358,
+                        "episode_num": 99
+                    },
+                    {
+                        "episode_id": 11801360,
+                        "episode_num": 100
+                    },
+                    {
+                        "episode_id": 11801362,
+                        "episode_num": 101
+                    },
+                    {
+                        "episode_id": 11801364,
+                        "episode_num": 102
+                    },
+                    {
+                        "episode_id": 11801366,
+                        "episode_num": 103
+                    },
+                    {
+                        "episode_id": 11801368,
+                        "episode_num": 104
+                    },
+                    {
+                        "episode_id": 11801370,
+                        "episode_num": 105
+                    },
+                    {
+                        "episode_id": 11801372,
+                        "episode_num": 106
+                    },
+                    {
+                        "episode_id": 11801374,
+                        "episode_num": 107
+                    },
+                    {
+                        "episode_id": 11801376,
+                        "episode_num": 108
+                    },
+                    {
+                        "episode_id": 11801378,
+                        "episode_num": 109
+                    },
+                    {
+                        "episode_id": 11801380,
+                        "episode_num": 110
+                    },
+                    {
+                        "episode_id": 11801382,
+                        "episode_num": 111
+                    },
+                    {
+                        "episode_id": 11862403,
+                        "episode_num": 112
+                    }
+                ]
+            },
+            "stats": {
+                "medianduration": 1519,
+                "medianduration_string": "25m",
+                "episodecount": 112,
+                "pubinterval_seconds": 604800,
+                "pubinterval": 7,
+                "complete_duration_value": 182894,
+                "pubinterval_string": "w\u00f6chentlich",
+                "pubinterval_value": 7,
+                "pubinterval_type": 2
+            }
+        },
+        {
+            "title": "Bad Faith",
+            "id": 61329,
+            "xmlURL": "https:\/\/badfaith.libsyn.com\/rss",
+            "htmlURL": "http:\/\/badfaithpodcast.com",
+            "imgURL": "https:\/\/static.libsyn.com\/p\/assets\/e\/d\/7\/3\/ed736acec77125fa\/BAD-FAITH_main_thumb_2000x2000.jpg",
+            "status": 200,
+            "status_since": "2022-11-30 17:20:14",
+            "slug": "bad-faith",
+            "layoutImageURL": "https:\/\/img-1.fyyd.de\/pd\/layout\/6132904ae864f41dbbb60eaf1054cbfcc6292.jpg",
+            "thumbImageURL": "https:\/\/img-1.fyyd.de\/pd\/thumbs\/6132904ae864f41dbbb60eaf1054cbfcc6292.png",
+            "smallImageURL": "https:\/\/img-1.fyyd.de\/pd\/small\/6132904ae864f41dbbb60eaf1054cbfcc6292.jpg",
+            "microImageURL": "https:\/\/img-1.fyyd.de\/pd\/micro\/6132904ae864f41dbbb60eaf1054cbfcc6292.png",
+            "language": "en",
+            "generator": "Libsyn WebEngine 2.0",
+            "categories": [
+                155,
+                160,
+                115
+            ],
+            "lastpub": "2024-03-07T11:44:00+01:00",
+            "rank": 64,
+            "url_fyyd": "https:\/\/fyyd.de\/podcast\/bad-faith\/0",
+            "description": "America's only podcast. \/\/\r\n\r\nwith Briahna Joy Gray, former National Press Secretary for Bernie Sanders' Presidential campaign \/\/\r\n\r\nand Virgil Texas \/\/\r\n\r\nSubscribe for exclusive premium episodes at patreon.com\/badfaithpodcast \/\r\n@badfaithpod \/ \r\nbadfaithpodcast at gmail dot com",
+            "subtitle": "America's only podcast. \/\/\r\n\r\nwith Briahna Joy Gray, former National Press Secretary for Bernie Sanders' Presidential campaign \/\/\r\n\r\nand Virgil Texas \/\/\r\n\r\nSubscribe for exclusive premium episodes at patreon.com\/badfaithpodcast \/\r\n@badfaithpod \/ \r\nbadfaithpodcast at gmail dot com",
+            "tcolor": "#fff",
+            "color": "#0a0d2d",
+            "episode_count": 372,
+            "iflags": null,
+            "paymentURL": null,
+            "author": "Briahna Joy Gray & Virgil Texas",
+            "seasons": {
+                "1": [
+                    {
+                        "episode_id": 5617631,
+                        "episode_num": 8
+                    },
+                    {
+                        "episode_id": 5617687,
+                        "episode_num": 8
+                    },
+                    {
+                        "episode_id": 5617699,
+                        "episode_num": 16
+                    },
+                    {
+                        "episode_id": 5617700,
+                        "episode_num": 9
+                    },
+                    {
+                        "episode_id": 5617701,
+                        "episode_num": 10
+                    },
+                    {
+                        "episode_id": 5617702,
+                        "episode_num": 11
+                    },
+                    {
+                        "episode_id": 5617703,
+                        "episode_num": 12
+                    },
+                    {
+                        "episode_id": 5617710,
+                        "episode_num": 14
+                    },
+                    {
+                        "episode_id": 5617711,
+                        "episode_num": 0
+                    },
+                    {
+                        "episode_id": 5617712,
+                        "episode_num": 13
+                    },
+                    {
+                        "episode_id": 5617723,
+                        "episode_num": 15
+                    },
+                    {
+                        "episode_id": 5617733,
+                        "episode_num": 17
+                    },
+                    {
+                        "episode_id": 5617749,
+                        "episode_num": 4
+                    },
+                    {
+                        "episode_id": 5617789,
+                        "episode_num": 1
+                    },
+                    {
+                        "episode_id": 5617790,
+                        "episode_num": 2
+                    },
+                    {
+                        "episode_id": 5617791,
+                        "episode_num": 3
+                    },
+                    {
+                        "episode_id": 5617797,
+                        "episode_num": 5
+                    },
+                    {
+                        "episode_id": 5617799,
+                        "episode_num": 6
+                    },
+                    {
+                        "episode_id": 5617802,
+                        "episode_num": 7
+                    },
+                    {
+                        "episode_id": 5619448,
+                        "episode_num": 18
+                    },
+                    {
+                        "episode_id": 5634216,
+                        "episode_num": 19
+                    },
+                    {
+                        "episode_id": 5647262,
+                        "episode_num": 20
+                    },
+                    {
+                        "episode_id": 5902224,
+                        "episode_num": 21
+                    },
+                    {
+                        "episode_id": 5933820,
+                        "episode_num": 0
+                    },
+                    {
+                        "episode_id": 5934658,
+                        "episode_num": 23
+                    },
+                    {
+                        "episode_id": 5951144,
+                        "episode_num": 24
+                    },
+                    {
+                        "episode_id": 5968428,
+                        "episode_num": 25
+                    },
+                    {
+                        "episode_id": 5990374,
+                        "episode_num": 26
+                    },
+                    {
+                        "episode_id": 6009685,
+                        "episode_num": 27
+                    },
+                    {
+                        "episode_id": 6031537,
+                        "episode_num": 28
+                    },
+                    {
+                        "episode_id": 6053740,
+                        "episode_num": 29
+                    },
+                    {
+                        "episode_id": 6074167,
+                        "episode_num": 30
+                    },
+                    {
+                        "episode_id": 6089543,
+                        "episode_num": 31
+                    },
+                    {
+                        "episode_id": 6095736,
+                        "episode_num": 30
+                    },
+                    {
+                        "episode_id": 6104856,
+                        "episode_num": 32
+                    },
+                    {
+                        "episode_id": 6106067,
+                        "episode_num": 32
+                    },
+                    {
+                        "episode_id": 6118339,
+                        "episode_num": 33
+                    },
+                    {
+                        "episode_id": 6132181,
+                        "episode_num": 34
+                    },
+                    {
+                        "episode_id": 6149614,
+                        "episode_num": 35
+                    },
+                    {
+                        "episode_id": 6167723,
+                        "episode_num": 36
+                    },
+                    {
+                        "episode_id": 6184906,
+                        "episode_num": 37
+                    },
+                    {
+                        "episode_id": 6207594,
+                        "episode_num": 38
+                    },
+                    {
+                        "episode_id": 6227170,
+                        "episode_num": 39
+                    },
+                    {
+                        "episode_id": 6253597,
+                        "episode_num": 40
+                    },
+                    {
+                        "episode_id": 6271522,
+                        "episode_num": 41
+                    },
+                    {
+                        "episode_id": 6291497,
+                        "episode_num": 42
+                    },
+                    {
+                        "episode_id": 6309441,
+                        "episode_num": 43
+                    },
+                    {
+                        "episode_id": 6332268,
+                        "episode_num": 44
+                    },
+                    {
+                        "episode_id": 6349904,
+                        "episode_num": 45
+                    },
+                    {
+                        "episode_id": 6371092,
+                        "episode_num": 46
+                    },
+                    {
+                        "episode_id": 6372416,
+                        "episode_num": 46
+                    },
+                    {
+                        "episode_id": 6386204,
+                        "episode_num": 47
+                    },
+                    {
+                        "episode_id": 6406070,
+                        "episode_num": 48
+                    },
+                    {
+                        "episode_id": 6424381,
+                        "episode_num": 49
+                    },
+                    {
+                        "episode_id": 6442759,
+                        "episode_num": 50
+                    },
+                    {
+                        "episode_id": 6460758,
+                        "episode_num": 51
+                    },
+                    {
+                        "episode_id": 6480598,
+                        "episode_num": 52
+                    },
+                    {
+                        "episode_id": 6495828,
+                        "episode_num": 0
+                    },
+                    {
+                        "episode_id": 6499286,
+                        "episode_num": 53
+                    },
+                    {
+                        "episode_id": 6521062,
+                        "episode_num": 54
+                    },
+                    {
+                        "episode_id": 6543472,
+                        "episode_num": 55
+                    },
+                    {
+                        "episode_id": 6572873,
+                        "episode_num": 56
+                    },
+                    {
+                        "episode_id": 6591963,
+                        "episode_num": 57
+                    },
+                    {
+                        "episode_id": 6614450,
+                        "episode_num": 58
+                    },
+                    {
+                        "episode_id": 6631759,
+                        "episode_num": 59
+                    },
+                    {
+                        "episode_id": 6649673,
+                        "episode_num": 60
+                    },
+                    {
+                        "episode_id": 6665248,
+                        "episode_num": 61
+                    },
+                    {
+                        "episode_id": 6682658,
+                        "episode_num": 62
+                    },
+                    {
+                        "episode_id": 6697017,
+                        "episode_num": 63
+                    },
+                    {
+                        "episode_id": 6715062,
+                        "episode_num": 64
+                    },
+                    {
+                        "episode_id": 6733228,
+                        "episode_num": 65
+                    },
+                    {
+                        "episode_id": 6756898,
+                        "episode_num": 66
+                    },
+                    {
+                        "episode_id": 6771215,
+                        "episode_num": 67
+                    },
+                    {
+                        "episode_id": 6788134,
+                        "episode_num": 68
+                    },
+                    {
+                        "episode_id": 6807334,
+                        "episode_num": 69
+                    },
+                    {
+                        "episode_id": 6824290,
+                        "episode_num": 70
+                    },
+                    {
+                        "episode_id": 6842954,
+                        "episode_num": 71
+                    },
+                    {
+                        "episode_id": 6859632,
+                        "episode_num": 72
+                    },
+                    {
+                        "episode_id": 6874379,
+                        "episode_num": 73
+                    },
+                    {
+                        "episode_id": 6893738,
+                        "episode_num": 74
+                    },
+                    {
+                        "episode_id": 6925474,
+                        "episode_num": 75
+                    },
+                    {
+                        "episode_id": 6944480,
+                        "episode_num": 76
+                    },
+                    {
+                        "episode_id": 6957654,
+                        "episode_num": 77
+                    },
+                    {
+                        "episode_id": 6976952,
+                        "episode_num": 78
+                    },
+                    {
+                        "episode_id": 6993396,
+                        "episode_num": 79
+                    },
+                    {
+                        "episode_id": 7012005,
+                        "episode_num": 80
+                    },
+                    {
+                        "episode_id": 7026885,
+                        "episode_num": 81
+                    },
+                    {
+                        "episode_id": 7044610,
+                        "episode_num": 82
+                    },
+                    {
+                        "episode_id": 7063132,
+                        "episode_num": 83
+                    },
+                    {
+                        "episode_id": 7081372,
+                        "episode_num": 84
+                    },
+                    {
+                        "episode_id": 7096878,
+                        "episode_num": 85
+                    },
+                    {
+                        "episode_id": 7114695,
+                        "episode_num": 24
+                    },
+                    {
+                        "episode_id": 7114918,
+                        "episode_num": 86
+                    },
+                    {
+                        "episode_id": 7131322,
+                        "episode_num": 87
+                    },
+                    {
+                        "episode_id": 7149489,
+                        "episode_num": 88
+                    },
+                    {
+                        "episode_id": 7168061,
+                        "episode_num": 89
+                    },
+                    {
+                        "episode_id": 7195618,
+                        "episode_num": 90
+                    },
+                    {
+                        "episode_id": 7208591,
+                        "episode_num": 91
+                    },
+                    {
+                        "episode_id": 7224885,
+                        "episode_num": 92
+                    },
+                    {
+                        "episode_id": 7240463,
+                        "episode_num": 93
+                    },
+                    {
+                        "episode_id": 7265401,
+                        "episode_num": 95
+                    },
+                    {
+                        "episode_id": 7281282,
+                        "episode_num": 96
+                    },
+                    {
+                        "episode_id": 7299880,
+                        "episode_num": 97
+                    },
+                    {
+                        "episode_id": 7315535,
+                        "episode_num": 94
+                    },
+                    {
+                        "episode_id": 7315920,
+                        "episode_num": 98
+                    },
+                    {
+                        "episode_id": 7333504,
+                        "episode_num": 99
+                    },
+                    {
+                        "episode_id": 7348882,
+                        "episode_num": 100
+                    },
+                    {
+                        "episode_id": 7369534,
+                        "episode_num": 101
+                    },
+                    {
+                        "episode_id": 7383160,
+                        "episode_num": 102
+                    },
+                    {
+                        "episode_id": 7399790,
+                        "episode_num": 103
+                    },
+                    {
+                        "episode_id": 7416654,
+                        "episode_num": 104
+                    },
+                    {
+                        "episode_id": 7431274,
+                        "episode_num": 105
+                    },
+                    {
+                        "episode_id": 7452592,
+                        "episode_num": 106
+                    },
+                    {
+                        "episode_id": 7463564,
+                        "episode_num": 107
+                    },
+                    {
+                        "episode_id": 7487587,
+                        "episode_num": 108
+                    },
+                    {
+                        "episode_id": 7503364,
+                        "episode_num": 109
+                    },
+                    {
+                        "episode_id": 7521164,
+                        "episode_num": 110
+                    },
+                    {
+                        "episode_id": 7536246,
+                        "episode_num": 111
+                    },
+                    {
+                        "episode_id": 7555717,
+                        "episode_num": 112
+                    },
+                    {
+                        "episode_id": 7571350,
+                        "episode_num": 113
+                    },
+                    {
+                        "episode_id": 7589364,
+                        "episode_num": 114
+                    },
+                    {
+                        "episode_id": 7607209,
+                        "episode_num": 115
+                    },
+                    {
+                        "episode_id": 7624378,
+                        "episode_num": 116
+                    },
+                    {
+                        "episode_id": 7639209,
+                        "episode_num": 117
+                    },
+                    {
+                        "episode_id": 7657241,
+                        "episode_num": 118
+                    },
+                    {
+                        "episode_id": 7673073,
+                        "episode_num": 119
+                    },
+                    {
+                        "episode_id": 7693028,
+                        "episode_num": 120
+                    },
+                    {
+                        "episode_id": 7711939,
+                        "episode_num": 121
+                    },
+                    {
+                        "episode_id": 7733832,
+                        "episode_num": 122
+                    },
+                    {
+                        "episode_id": 7751669,
+                        "episode_num": 123
+                    },
+                    {
+                        "episode_id": 7770276,
+                        "episode_num": 124
+                    },
+                    {
+                        "episode_id": 7804509,
+                        "episode_num": 125
+                    },
+                    {
+                        "episode_id": 7821372,
+                        "episode_num": 126
+                    },
+                    {
+                        "episode_id": 7833967,
+                        "episode_num": 127
+                    },
+                    {
+                        "episode_id": 7850765,
+                        "episode_num": 128
+                    },
+                    {
+                        "episode_id": 7864204,
+                        "episode_num": 129
+                    },
+                    {
+                        "episode_id": 7880602,
+                        "episode_num": 130
+                    },
+                    {
+                        "episode_id": 7898812,
+                        "episode_num": 131
+                    },
+                    {
+                        "episode_id": 7919956,
+                        "episode_num": 132
+                    },
+                    {
+                        "episode_id": 7938519,
+                        "episode_num": 133
+                    },
+                    {
+                        "episode_id": 7966099,
+                        "episode_num": 134
+                    },
+                    {
+                        "episode_id": 7985653,
+                        "episode_num": 135
+                    },
+                    {
+                        "episode_id": 8007810,
+                        "episode_num": 136
+                    },
+                    {
+                        "episode_id": 8021376,
+                        "episode_num": 137
+                    },
+                    {
+                        "episode_id": 8037098,
+                        "episode_num": 138
+                    },
+                    {
+                        "episode_id": 8052904,
+                        "episode_num": 139
+                    },
+                    {
+                        "episode_id": 8071195,
+                        "episode_num": 140
+                    },
+                    {
+                        "episode_id": 8094740,
+                        "episode_num": 141
+                    },
+                    {
+                        "episode_id": 8116919,
+                        "episode_num": 142
+                    },
+                    {
+                        "episode_id": 8155965,
+                        "episode_num": 144
+                    },
+                    {
+                        "episode_id": 8166469,
+                        "episode_num": 102
+                    },
+                    {
+                        "episode_id": 8174635,
+                        "episode_num": 145
+                    },
+                    {
+                        "episode_id": 8195240,
+                        "episode_num": 146
+                    },
+                    {
+                        "episode_id": 8218787,
+                        "episode_num": 147
+                    },
+                    {
+                        "episode_id": 8242523,
+                        "episode_num": 148
+                    },
+                    {
+                        "episode_id": 8259947,
+                        "episode_num": 149
+                    },
+                    {
+                        "episode_id": 8278095,
+                        "episode_num": 150
+                    },
+                    {
+                        "episode_id": 8295799,
+                        "episode_num": 151
+                    },
+                    {
+                        "episode_id": 8315519,
+                        "episode_num": 152
+                    },
+                    {
+                        "episode_id": 8332589,
+                        "episode_num": 153
+                    },
+                    {
+                        "episode_id": 8351811,
+                        "episode_num": 154
+                    },
+                    {
+                        "episode_id": 8368099,
+                        "episode_num": 155
+                    },
+                    {
+                        "episode_id": 8388351,
+                        "episode_num": 156
+                    },
+                    {
+                        "episode_id": 8406028,
+                        "episode_num": 157
+                    },
+                    {
+                        "episode_id": 8427751,
+                        "episode_num": 158
+                    },
+                    {
+                        "episode_id": 8444469,
+                        "episode_num": 159
+                    },
+                    {
+                        "episode_id": 8464298,
+                        "episode_num": 160
+                    },
+                    {
+                        "episode_id": 8490843,
+                        "episode_num": 161
+                    },
+                    {
+                        "episode_id": 8544725,
+                        "episode_num": 162
+                    },
+                    {
+                        "episode_id": 8561526,
+                        "episode_num": 163
+                    },
+                    {
+                        "episode_id": 8583289,
+                        "episode_num": 164
+                    },
+                    {
+                        "episode_id": 8599709,
+                        "episode_num": 165
+                    },
+                    {
+                        "episode_id": 8618360,
+                        "episode_num": 166
+                    },
+                    {
+                        "episode_id": 8656456,
+                        "episode_num": 167
+                    },
+                    {
+                        "episode_id": 8669171,
+                        "episode_num": 168
+                    },
+                    {
+                        "episode_id": 8682547,
+                        "episode_num": 169
+                    },
+                    {
+                        "episode_id": 8696670,
+                        "episode_num": 170
+                    },
+                    {
+                        "episode_id": 8710157,
+                        "episode_num": 171
+                    },
+                    {
+                        "episode_id": 8753214,
+                        "episode_num": 174
+                    },
+                    {
+                        "episode_id": 8765973,
+                        "episode_num": 175
+                    },
+                    {
+                        "episode_id": 8780669,
+                        "episode_num": 176
+                    },
+                    {
+                        "episode_id": 8809258,
+                        "episode_num": 178
+                    },
+                    {
+                        "episode_id": 8822987,
+                        "episode_num": 179
+                    },
+                    {
+                        "episode_id": 8837719,
+                        "episode_num": 180
+                    },
+                    {
+                        "episode_id": 8851218,
+                        "episode_num": 181
+                    },
+                    {
+                        "episode_id": 8868359,
+                        "episode_num": 182
+                    },
+                    {
+                        "episode_id": 8885928,
+                        "episode_num": 183
+                    },
+                    {
+                        "episode_id": 8901141,
+                        "episode_num": 184
+                    },
+                    {
+                        "episode_id": 8916165,
+                        "episode_num": 185
+                    },
+                    {
+                        "episode_id": 8928818,
+                        "episode_num": 186
+                    },
+                    {
+                        "episode_id": 8940712,
+                        "episode_num": 187
+                    },
+                    {
+                        "episode_id": 8955079,
+                        "episode_num": 188
+                    },
+                    {
+                        "episode_id": 8985161,
+                        "episode_num": 190
+                    },
+                    {
+                        "episode_id": 8999061,
+                        "episode_num": 158
+                    },
+                    {
+                        "episode_id": 9010760,
+                        "episode_num": 191
+                    },
+                    {
+                        "episode_id": 9022694,
+                        "episode_num": 192
+                    },
+                    {
+                        "episode_id": 9040366,
+                        "episode_num": 193
+                    },
+                    {
+                        "episode_id": 9053372,
+                        "episode_num": 194
+                    },
+                    {
+                        "episode_id": 9066969,
+                        "episode_num": 195
+                    },
+                    {
+                        "episode_id": 9079636,
+                        "episode_num": 196
+                    },
+                    {
+                        "episode_id": 9097589,
+                        "episode_num": 197
+                    },
+                    {
+                        "episode_id": 9113541,
+                        "episode_num": 198
+                    },
+                    {
+                        "episode_id": 9124592,
+                        "episode_num": 199
+                    },
+                    {
+                        "episode_id": 9133988,
+                        "episode_num": 200
+                    },
+                    {
+                        "episode_id": 9159294,
+                        "episode_num": 201
+                    },
+                    {
+                        "episode_id": 9202605,
+                        "episode_num": 202
+                    },
+                    {
+                        "episode_id": 9205405,
+                        "episode_num": 203
+                    },
+                    {
+                        "episode_id": 9231610,
+                        "episode_num": 205
+                    },
+                    {
+                        "episode_id": 9244424,
+                        "episode_num": 205
+                    },
+                    {
+                        "episode_id": 9257351,
+                        "episode_num": 206
+                    },
+                    {
+                        "episode_id": 9268122,
+                        "episode_num": 207
+                    },
+                    {
+                        "episode_id": 9286378,
+                        "episode_num": 208
+                    },
+                    {
+                        "episode_id": 9299003,
+                        "episode_num": 209
+                    },
+                    {
+                        "episode_id": 9313089,
+                        "episode_num": 210
+                    },
+                    {
+                        "episode_id": 9327023,
+                        "episode_num": 211
+                    },
+                    {
+                        "episode_id": 9341293,
+                        "episode_num": 212
+                    },
+                    {
+                        "episode_id": 9356955,
+                        "episode_num": 213
+                    },
+                    {
+                        "episode_id": 9372500,
+                        "episode_num": 214
+                    },
+                    {
+                        "episode_id": 9383706,
+                        "episode_num": 215
+                    },
+                    {
+                        "episode_id": 9398205,
+                        "episode_num": 216
+                    },
+                    {
+                        "episode_id": 9411842,
+                        "episode_num": 217
+                    },
+                    {
+                        "episode_id": 9441784,
+                        "episode_num": 219
+                    },
+                    {
+                        "episode_id": 9454496,
+                        "episode_num": 220
+                    },
+                    {
+                        "episode_id": 9472538,
+                        "episode_num": 221
+                    },
+                    {
+                        "episode_id": 9486968,
+                        "episode_num": 222
+                    },
+                    {
+                        "episode_id": 9502991,
+                        "episode_num": 223
+                    },
+                    {
+                        "episode_id": 9515872,
+                        "episode_num": 224
+                    },
+                    {
+                        "episode_id": 9532645,
+                        "episode_num": 225
+                    },
+                    {
+                        "episode_id": 9546066,
+                        "episode_num": 226
+                    },
+                    {
+                        "episode_id": 9559923,
+                        "episode_num": 227
+                    },
+                    {
+                        "episode_id": 9576391,
+                        "episode_num": 228
+                    },
+                    {
+                        "episode_id": 9604238,
+                        "episode_num": 223
+                    },
+                    {
+                        "episode_id": 9617387,
+                        "episode_num": 230
+                    },
+                    {
+                        "episode_id": 9633053,
+                        "episode_num": 231
+                    },
+                    {
+                        "episode_id": 9646999,
+                        "episode_num": 232
+                    },
+                    {
+                        "episode_id": 9664889,
+                        "episode_num": 233
+                    },
+                    {
+                        "episode_id": 9679677,
+                        "episode_num": 234
+                    },
+                    {
+                        "episode_id": 9694969,
+                        "episode_num": 235
+                    },
+                    {
+                        "episode_id": 9708410,
+                        "episode_num": 236
+                    },
+                    {
+                        "episode_id": 9720122,
+                        "episode_num": 237
+                    },
+                    {
+                        "episode_id": 9743365,
+                        "episode_num": 238
+                    },
+                    {
+                        "episode_id": 9755609,
+                        "episode_num": 239
+                    },
+                    {
+                        "episode_id": 9764897,
+                        "episode_num": 240
+                    },
+                    {
+                        "episode_id": 9779835,
+                        "episode_num": 241
+                    },
+                    {
+                        "episode_id": 9791306,
+                        "episode_num": 242
+                    },
+                    {
+                        "episode_id": 9809362,
+                        "episode_num": 243
+                    },
+                    {
+                        "episode_id": 9820901,
+                        "episode_num": 244
+                    },
+                    {
+                        "episode_id": 9836467,
+                        "episode_num": 245
+                    },
+                    {
+                        "episode_id": 9851349,
+                        "episode_num": 246
+                    },
+                    {
+                        "episode_id": 9864738,
+                        "episode_num": 247
+                    },
+                    {
+                        "episode_id": 9879259,
+                        "episode_num": 248
+                    },
+                    {
+                        "episode_id": 9892561,
+                        "episode_num": 249
+                    },
+                    {
+                        "episode_id": 9905131,
+                        "episode_num": 250
+                    },
+                    {
+                        "episode_id": 9938097,
+                        "episode_num": 251
+                    },
+                    {
+                        "episode_id": 9958652,
+                        "episode_num": 251
+                    },
+                    {
+                        "episode_id": 9972525,
+                        "episode_num": 253
+                    },
+                    {
+                        "episode_id": 9987485,
+                        "episode_num": 254
+                    },
+                    {
+                        "episode_id": 10001153,
+                        "episode_num": 255
+                    },
+                    {
+                        "episode_id": 10015849,
+                        "episode_num": 256
+                    },
+                    {
+                        "episode_id": 10028114,
+                        "episode_num": 257
+                    },
+                    {
+                        "episode_id": 10040651,
+                        "episode_num": 258
+                    },
+                    {
+                        "episode_id": 10054064,
+                        "episode_num": 259
+                    },
+                    {
+                        "episode_id": 10066571,
+                        "episode_num": 260
+                    },
+                    {
+                        "episode_id": 10080792,
+                        "episode_num": 261
+                    },
+                    {
+                        "episode_id": 10093011,
+                        "episode_num": 262
+                    },
+                    {
+                        "episode_id": 10107766,
+                        "episode_num": 263
+                    },
+                    {
+                        "episode_id": 10123041,
+                        "episode_num": 264
+                    },
+                    {
+                        "episode_id": 10138483,
+                        "episode_num": 265
+                    },
+                    {
+                        "episode_id": 10151607,
+                        "episode_num": 266
+                    },
+                    {
+                        "episode_id": 10165636,
+                        "episode_num": 267
+                    },
+                    {
+                        "episode_id": 10192964,
+                        "episode_num": 268
+                    },
+                    {
+                        "episode_id": 10192965,
+                        "episode_num": 269
+                    },
+                    {
+                        "episode_id": 10207430,
+                        "episode_num": 251
+                    },
+                    {
+                        "episode_id": 10220663,
+                        "episode_num": 270
+                    },
+                    {
+                        "episode_id": 10236000,
+                        "episode_num": 270
+                    },
+                    {
+                        "episode_id": 10250755,
+                        "episode_num": 271
+                    },
+                    {
+                        "episode_id": 10262144,
+                        "episode_num": 272
+                    },
+                    {
+                        "episode_id": 10279277,
+                        "episode_num": 272
+                    },
+                    {
+                        "episode_id": 10290819,
+                        "episode_num": 273
+                    },
+                    {
+                        "episode_id": 10304332,
+                        "episode_num": 274
+                    },
+                    {
+                        "episode_id": 10316615,
+                        "episode_num": 234
+                    },
+                    {
+                        "episode_id": 10329730,
+                        "episode_num": 275
+                    },
+                    {
+                        "episode_id": 10343276,
+                        "episode_num": 249
+                    },
+                    {
+                        "episode_id": 10353640,
+                        "episode_num": 276
+                    },
+                    {
+                        "episode_id": 10365177,
+                        "episode_num": 277
+                    },
+                    {
+                        "episode_id": 10378492,
+                        "episode_num": 278
+                    },
+                    {
+                        "episode_id": 10416231,
+                        "episode_num": 279
+                    },
+                    {
+                        "episode_id": 10435323,
+                        "episode_num": 280
+                    },
+                    {
+                        "episode_id": 10445545,
+                        "episode_num": 281
+                    },
+                    {
+                        "episode_id": 10461296,
+                        "episode_num": 282
+                    },
+                    {
+                        "episode_id": 10472938,
+                        "episode_num": 283
+                    },
+                    {
+                        "episode_id": 10493713,
+                        "episode_num": 284
+                    },
+                    {
+                        "episode_id": 10505587,
+                        "episode_num": 285
+                    },
+                    {
+                        "episode_id": 10527463,
+                        "episode_num": 286
+                    },
+                    {
+                        "episode_id": 10537502,
+                        "episode_num": 287
+                    },
+                    {
+                        "episode_id": 10551979,
+                        "episode_num": 288
+                    },
+                    {
+                        "episode_id": 10564510,
+                        "episode_num": 289
+                    },
+                    {
+                        "episode_id": 10575760,
+                        "episode_num": 290
+                    },
+                    {
+                        "episode_id": 10587582,
+                        "episode_num": 291
+                    },
+                    {
+                        "episode_id": 10613929,
+                        "episode_num": 292
+                    },
+                    {
+                        "episode_id": 10633654,
+                        "episode_num": 293
+                    },
+                    {
+                        "episode_id": 10648223,
+                        "episode_num": 294
+                    },
+                    {
+                        "episode_id": 10658994,
+                        "episode_num": 295
+                    },
+                    {
+                        "episode_id": 10668798,
+                        "episode_num": 296
+                    },
+                    {
+                        "episode_id": 10681105,
+                        "episode_num": 297
+                    },
+                    {
+                        "episode_id": 10692083,
+                        "episode_num": 298
+                    },
+                    {
+                        "episode_id": 10705027,
+                        "episode_num": 299
+                    },
+                    {
+                        "episode_id": 10715529,
+                        "episode_num": 300
+                    },
+                    {
+                        "episode_id": 10732824,
+                        "episode_num": 301
+                    },
+                    {
+                        "episode_id": 10752663,
+                        "episode_num": 302
+                    },
+                    {
+                        "episode_id": 10775930,
+                        "episode_num": 304
+                    },
+                    {
+                        "episode_id": 10786030,
+                        "episode_num": 0
+                    },
+                    {
+                        "episode_id": 10804955,
+                        "episode_num": 305
+                    },
+                    {
+                        "episode_id": 10820607,
+                        "episode_num": 306
+                    },
+                    {
+                        "episode_id": 10832723,
+                        "episode_num": 307
+                    },
+                    {
+                        "episode_id": 10846154,
+                        "episode_num": 308
+                    },
+                    {
+                        "episode_id": 10860463,
+                        "episode_num": 309
+                    },
+                    {
+                        "episode_id": 10873371,
+                        "episode_num": 310
+                    },
+                    {
+                        "episode_id": 10888188,
+                        "episode_num": 311
+                    },
+                    {
+                        "episode_id": 10909639,
+                        "episode_num": 312
+                    },
+                    {
+                        "episode_id": 11053018,
+                        "episode_num": 313
+                    },
+                    {
+                        "episode_id": 11260157,
+                        "episode_num": 314
+                    },
+                    {
+                        "episode_id": 11404886,
+                        "episode_num": 315
+                    },
+                    {
+                        "episode_id": 11423502,
+                        "episode_num": 316
+                    },
+                    {
+                        "episode_id": 11437941,
+                        "episode_num": 317
+                    },
+                    {
+                        "episode_id": 11451326,
+                        "episode_num": 318
+                    },
+                    {
+                        "episode_id": 11464488,
+                        "episode_num": 319
+                    },
+                    {
+                        "episode_id": 11481148,
+                        "episode_num": 320
+                    },
+                    {
+                        "episode_id": 11496700,
+                        "episode_num": 321
+                    },
+                    {
+                        "episode_id": 11510379,
+                        "episode_num": 322
+                    },
+                    {
+                        "episode_id": 11523565,
+                        "episode_num": 323
+                    },
+                    {
+                        "episode_id": 11537627,
+                        "episode_num": 324
+                    },
+                    {
+                        "episode_id": 11552207,
+                        "episode_num": 325
+                    },
+                    {
+                        "episode_id": 11565434,
+                        "episode_num": 326
+                    },
+                    {
+                        "episode_id": 11577829,
+                        "episode_num": 327
+                    },
+                    {
+                        "episode_id": 11596774,
+                        "episode_num": 328
+                    },
+                    {
+                        "episode_id": 11611348,
+                        "episode_num": 329
+                    },
+                    {
+                        "episode_id": 11627320,
+                        "episode_num": 330
+                    },
+                    {
+                        "episode_id": 11640949,
+                        "episode_num": 331
+                    },
+                    {
+                        "episode_id": 11667335,
+                        "episode_num": 333
+                    },
+                    {
+                        "episode_id": 11667339,
+                        "episode_num": 332
+                    },
+                    {
+                        "episode_id": 11691376,
+                        "episode_num": 332
+                    },
+                    {
+                        "episode_id": 11706826,
+                        "episode_num": 334
+                    },
+                    {
+                        "episode_id": 11715873,
+                        "episode_num": 335
+                    },
+                    {
+                        "episode_id": 11730651,
+                        "episode_num": 336
+                    },
+                    {
+                        "episode_id": 11755550,
+                        "episode_num": 337
+                    },
+                    {
+                        "episode_id": 11770080,
+                        "episode_num": 338
+                    },
+                    {
+                        "episode_id": 11786562,
+                        "episode_num": 339
+                    },
+                    {
+                        "episode_id": 11809812,
+                        "episode_num": 340
+                    },
+                    {
+                        "episode_id": 11822926,
+                        "episode_num": 341
+                    },
+                    {
+                        "episode_id": 11837784,
+                        "episode_num": 342
+                    },
+                    {
+                        "episode_id": 11851933,
+                        "episode_num": 343
+                    },
+                    {
+                        "episode_id": 11865377,
+                        "episode_num": 344
+                    },
+                    {
+                        "episode_id": 11893312,
+                        "episode_num": 345
+                    },
+                    {
+                        "episode_id": 11911318,
+                        "episode_num": 346
+                    },
+                    {
+                        "episode_id": 11925277,
+                        "episode_num": 347
+                    },
+                    {
+                        "episode_id": 11937813,
+                        "episode_num": 348
+                    },
+                    {
+                        "episode_id": 11956910,
+                        "episode_num": 344
+                    },
+                    {
+                        "episode_id": 11973065,
+                        "episode_num": 349
+                    },
+                    {
+                        "episode_id": 11983435,
+                        "episode_num": 350
+                    },
+                    {
+                        "episode_id": 11999886,
+                        "episode_num": 351
+                    },
+                    {
+                        "episode_id": 12013064,
+                        "episode_num": 352
+                    }
+                ]
+            },
+            "stats": {
+                "medianduration": 2820,
+                "medianduration_string": "47m",
+                "episodecount": 372,
+                "pubinterval_seconds": 295090,
+                "pubinterval": 3,
+                "complete_duration_value": 950965,
+                "pubinterval_string": "alle 3 Tage",
+                "pubinterval_value": 3,
+                "pubinterval_type": 1
+            }
+        }
+    ]
+}

@@ -39,6 +39,12 @@ popover modelbutton > box > label {
     color: @insensitive_fg_color;
 }
 
+/* Discovery Search */
+.found-podcast .description {
+    color: @insensitive_fg_color;
+}
+
+
 .rounded-big {
     border-radius: 8px;
 }

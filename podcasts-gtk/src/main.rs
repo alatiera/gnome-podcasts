@@ -49,6 +49,7 @@ use crate::app::PdApplication;
 
 use once_cell::sync::Lazy;
 
+// tokio should be used when doing http fetches, since reqwest depens on it.
 pub static RUNTIME: Lazy<tokio::runtime::Runtime> =
     Lazy::new(|| tokio::runtime::Runtime::new().unwrap());
 

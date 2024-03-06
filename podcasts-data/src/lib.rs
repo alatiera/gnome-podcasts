@@ -33,6 +33,7 @@ extern crate log;
 pub mod database;
 #[allow(missing_docs)]
 pub mod dbqueries;
+pub mod discovery;
 #[allow(missing_docs)]
 pub mod downloader;
 #[allow(missing_docs)]

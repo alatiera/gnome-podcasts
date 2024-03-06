@@ -1,0 +1,10 @@
+
+
+
+{
+ "resultCount":1,
+ "results": [
+{"wrapperType":"track", "kind":"podcast", "collectionId":1525269951, "trackId":1525269951, "artistName":"Jackson Jacker", "collectionName":"CushVlogs Audio - Matt Christman - Chapo Trap House", "trackName":"CushVlogs Audio - Matt Christman - Chapo Trap House", "collectionCensoredName":"CushVlogs Audio - Matt Christman - Chapo Trap House", "trackCensoredName":"CushVlogs Audio - Matt Christman - Chapo Trap House", "collectionViewUrl":"https://podcasts.apple.com/us/podcast/cushvlogs-audio-matt-christman-chapo-trap-house/id1525269951?uo=4", "feedUrl":"https://anchor.fm/s/19346b24/podcast/rss", "trackViewUrl":"https://podcasts.apple.com/us/podcast/cushvlogs-audio-matt-christman-chapo-trap-house/id1525269951?uo=4", "artworkUrl30":"https://is1-ssl.mzstatic.com/image/thumb/Podcasts124/v4/74/41/7c/74417c8a-151f-5090-5460-fe5e7ca0e671/mza_7528059777000521713.jpg/30x30bb.jpg", "artworkUrl60":"https://is1-ssl.mzstatic.com/image/thumb/Podcasts124/v4/74/41/7c/74417c8a-151f-5090-5460-fe5e7ca0e671/mza_7528059777000521713.jpg/60x60bb.jpg", "artworkUrl100":"https://is1-ssl.mzstatic.com/image/thumb/Podcasts124/v4/74/41/7c/74417c8a-151f-5090-5460-fe5e7ca0e671/mza_7528059777000521713.jpg/100x100bb.jpg", "collectionPrice":0.00, "trackPrice":0.00, "collectionHdPrice":0, "releaseDate":"2021-06-08T04:56:00Z", "collectionExplicitness":"notExplicit", "trackExplicitness":"cleaned", "trackCount":167, "trackTimeMillis":4052, "country":"USA", "currency":"USD", "primaryGenreName":"Spirituality", "contentAdvisoryRating":"Clean", "artworkUrl600":"https://is1-ssl.mzstatic.com/image/thumb/Podcasts124/v4/74/41/7c/74417c8a-151f-5090-5460-fe5e7ca0e671/mza_7528059777000521713.jpg/600x600bb.jpg", "genreIds":["1444", "26", "1314"], "genres":["Spirituality", "Podcasts", "Religion & Spirituality"]}]
+}
+
+
