@@ -26,7 +26,7 @@ use glib::Properties;
 use gtk::glib;
 use gtk::prelude::*;
 
-use anyhow::{anyhow, Result};
+use anyhow::{anyhow, bail, Result};
 
 use podcasts_data::dbqueries;
 use podcasts_data::downloader::DownloadProgress;
@@ -220,7 +220,7 @@ fn progress_bar_helper(
             guard.should_cancel(),
         ),
         Err(TryLockError::WouldBlock) => return Ok(glib::ControlFlow::Continue),
-        Err(TryLockError::Poisoned(_)) => return Err(anyhow!("Progress Mutex is poisoned")),
+        Err(TryLockError::Poisoned(_)) => bail!("Progress Mutex is poisoned"),
     };
 
     // Update the progress_bar.
@@ -260,7 +260,7 @@ fn total_size_helper(
     let total_bytes = match prog.try_lock() {
         Ok(guard) => guard.get_size(),
         Err(TryLockError::WouldBlock) => return Ok(glib::ControlFlow::Continue),
-        Err(TryLockError::Poisoned(_)) => return Err(anyhow!("Progress Mutex is poisoned")),
+        Err(TryLockError::Poisoned(_)) => bail!("Progress Mutex is poisoned"),
     };
 
     debug!("Total Size: {}", total_bytes);

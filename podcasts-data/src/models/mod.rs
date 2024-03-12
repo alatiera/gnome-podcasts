@@ -26,9 +26,7 @@ mod episode;
 mod show;
 mod source;
 
-
 pub(crate) use self::discovery_settings::DiscoverySetting;
-pub(crate) use self::episode::EpisodeCleanerModel;
 
 pub(crate) use self::new_episode::{NewEpisode, NewEpisodeMinimal};
 pub(crate) use self::new_show::NewShow;
