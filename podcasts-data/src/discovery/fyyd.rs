@@ -24,7 +24,6 @@ use serde::Deserialize;
 use url::Url;
 
 // curl "https://api.fyyd.de/0.2/search/podcast?term=chapo&count=10"
-#[allow(dead_code)]
 #[derive(Deserialize, Debug)]
 struct Response {
     data: Vec<Podcast>,
