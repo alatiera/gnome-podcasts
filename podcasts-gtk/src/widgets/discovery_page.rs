@@ -174,7 +174,7 @@ async fn add_podcast_from_url(url_input: String, sender: &Sender<Action>) -> Res
         url.to_owned()
     };
 
-    send!(sender, Action::Subscribe(url));
+    crate::utils::subscribe(sender, url).await;
     Ok(())
 }
 

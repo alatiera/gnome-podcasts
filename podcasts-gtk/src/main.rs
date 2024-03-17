@@ -39,6 +39,7 @@ mod config;
 mod headerbar;
 mod window;
 
+mod feed_manager;
 mod manager;
 mod settings;
 

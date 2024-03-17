@@ -31,6 +31,7 @@ use std::rc::Rc;
 
 use crate::app::{Action, PdApplication};
 use crate::config::APP_ID;
+use crate::feed_manager::FEED_MANAGER;
 use crate::headerbar::Header;
 use crate::settings::{self, WindowGeometry};
 use crate::stacks::Content;
@@ -106,7 +107,7 @@ impl ObjectSubclass for MainWindowPriv {
         klass.bind_template();
         klass.install_action("win.refresh", None, move |win, _, _| {
             let sender = win.sender();
-            utils::schedule_refresh(None, sender.clone());
+            FEED_MANAGER.schedule_full_refresh(sender);
         });
         klass.install_action_async("win.import", None, |win, _, _| async move {
             let sender = win.sender();
@@ -238,7 +239,7 @@ impl MainWindow {
         // Update the feeds right after the Window is initialized.
         if imp.settings.boolean("refresh-on-startup") {
             info!("Refresh on startup.");
-            utils::schedule_refresh(None, sender.clone());
+            FEED_MANAGER.schedule_full_refresh(sender);
         }
 
         let refresh_interval = settings::get_refresh_interval(&imp.settings).num_seconds() as u32;
@@ -247,8 +248,8 @@ impl MainWindow {
         glib::timeout_add_seconds_local(
             refresh_interval,
             clone!(@strong sender => move || {
-                    utils::schedule_refresh(None, sender.clone());
-                    glib::ControlFlow::Continue
+                FEED_MANAGER.schedule_full_refresh(&sender);
+                glib::ControlFlow::Continue
             }),
         );
 

@@ -38,13 +38,13 @@ use std::time::{Duration, Instant};
 use url::Url;
 
 use crate::app::Action;
+use crate::feed_manager::FEED_MANAGER;
 use crate::i18n::{i18n, i18n_f};
 use podcasts_data::dbqueries;
 use podcasts_data::downloader;
 use podcasts_data::downloader::client_builder;
 use podcasts_data::errors::DownloadError;
 use podcasts_data::opml;
-use podcasts_data::pipeline::pipeline;
 use podcasts_data::utils::checkup;
 use podcasts_data::Source;
 
@@ -262,48 +262,40 @@ pub(crate) fn cleanup(cleanup_date: DateTime<Utc>) {
     }
 }
 
-/// Schedule feed refresh
-/// If `source` is None, Refreshes all sources in the database.
-/// Current implementation ignores update request if another update is already running
-pub(crate) fn schedule_refresh(source: Option<Vec<Source>>, sender: Sender<Action>) {
-    // If we try to update the whole db,
-    // Exit early if `source` table is empty
-    if source.is_none() {
-        match dbqueries::is_source_populated(&[]) {
-            Ok(false) => {
-                info!("No source of feeds where found, returning");
-                return;
-            }
-            Err(err) => debug_assert!(false, "{}", err),
-            _ => (),
-        };
+pub(crate) async fn subscribe(sender: &Sender<Action>, feed: String) {
+    let mut error_source = None; // <- auto unsub from this
+    if let Err(e) = async {
+        let source = dbqueries::get_source_from_uri(&feed).or_else(|_| Source::from_url(&feed))?;
+        error_source = Some(source.clone());
+        let source_id = source.id();
+        info!("Subscribing to {feed}");
+        FEED_MANAGER.refresh(sender, vec![source]).await;
+        let show = dbqueries::get_podcast_from_source_id(source_id)?;
+        send!(sender, Action::RefreshAllViews);
+        send!(sender, Action::GoToShow(Arc::new(show.clone())));
+        Ok::<(), anyhow::Error>(())
     }
-
-    send_blocking!(sender, Action::UpdateFeed(source));
-}
-
-/// Update the rss feed(s) originating from `source`.
-/// If `source` is None, Fetches all the `Source` entries in the database and updates them.
-/// Do not call this function directly unless you are sure no other updates are running.
-/// Use `schedule_refresh()` instead
-pub(crate) fn refresh_feed(source: Option<Vec<Source>>, sender: Sender<Action>) {
-    crate::RUNTIME.spawn(async move {
-        send!(sender, Action::ShowUpdateNotif);
-        if let Some(s) = source {
-            // Refresh only specified feeds
-            if let Err(err) = pipeline(s).await {
-                error!("failed to fetch feed {}", err);
+    .await
+    {
+        error!("Failed to subscribe: {feed} {e}");
+        // auto unsubscribe
+        if let Some(error_source) = error_source {
+            // only unsub if no Show was imported from the source.
+            if dbqueries::get_podcast_from_source_id(error_source.id()).is_err() {
+                if let Err(remove_err) = dbqueries::remove_source(&error_source) {
+                    error!("failed to remove failed source! {remove_err} {feed}");
+                } else {
+                    info!("auto removed source that failed to import {feed}");
+                }
             }
-            send!(sender, Action::FeedRefreshed);
-        } else {
-            // Refresh all the feeds
-            let sources = dbqueries::get_sources().map(|s| s.into_iter()).unwrap();
-            if let Err(err) = pipeline(sources).await {
-                error!("failed to fetch feed {}", err);
-            }
-            send!(sender, Action::FeedRefreshed);
         }
-    });
+        // TODO show the actual error (like "content didn't start with rss feed"),
+        // but pipeline doesn't pass useful errors yet
+        send!(
+            sender,
+            Action::ErrorNotification(format!("Failed to subscribe to feed: {feed} "))
+        );
+    }
 }
 
 static COVER_DL_REGISTRY: Lazy<RwLock<HashSet<i32>>> = Lazy::new(|| RwLock::new(HashSet::new()));
@@ -503,7 +495,7 @@ pub(crate) async fn on_import_clicked(window: &gtk::ApplicationWindow, sender: &
                 // Parse the file and import the feeds
                 opml::import_from_file(path).map(|sources| {
                     // Refresh the successfully parsed feeds to index them
-                    schedule_refresh(Some(sources), sender)
+                    FEED_MANAGER.schedule_refresh(&sender, sources);
                 }).context("PARSE")
             }))
             .await;

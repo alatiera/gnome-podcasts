@@ -30,6 +30,7 @@ use std::env;
 use std::sync::Arc;
 
 use crate::config::{APP_ID, LOCALEDIR};
+use crate::feed_manager::FeedManager;
 use crate::i18n::i18n;
 use crate::settings;
 use crate::utils;
@@ -38,8 +39,7 @@ use crate::widgets::{EpisodeDescription, SearchResults};
 use crate::window::MainWindow;
 use podcasts_data::dbqueries;
 use podcasts_data::discovery::FoundPodcast;
-use podcasts_data::pipeline::pipeline;
-use podcasts_data::{Episode, Show, Source};
+use podcasts_data::{Episode, Show};
 
 // FIXME: port Optionals to OnceCell
 #[derive(Debug)]
@@ -64,7 +64,7 @@ impl ObjectSubclass for PdApplicationPrivate {
         let receiver = RefCell::new(Some(r));
 
         Self {
-            sender,
+            sender: sender.clone(),
             receiver,
             window: RefCell::new(None),
             settings: RefCell::new(None),
@@ -159,9 +159,8 @@ pub(crate) enum Action {
     GoToFoundPodcasts(Arc<Vec<FoundPodcast>>),
     CopiedUrlNotification,
     MarkAllPlayerNotification(Arc<Show>),
-    UpdateFeed(Option<Vec<Source>>),
-    ShowUpdateNotif,
-    FeedRefreshed,
+    FeedRefreshed(u64),
+    StartUpdating,
     StopUpdating,
     RemoveShow(Arc<Show>),
     ErrorNotification(String),
@@ -353,20 +352,8 @@ impl PdApplication {
                 let toast = adw::Toast::new(&err);
                 window.add_toast(toast);
             }
-            Action::UpdateFeed(source) => {
-                if window.updating() {
-                    info!("Ignoring feed update request (another one is already running)")
-                } else {
-                    window.set_updating(true);
-                    utils::refresh_feed(source, data.sender.clone())
-                }
-            }
-            Action::StopUpdating => {
-                window.set_updating(false);
-                window.set_updating_timeout(None);
-                window.progress_bar().set_visible(false);
-            }
-            Action::ShowUpdateNotif => {
+            Action::StartUpdating => {
+                window.set_updating(true);
                 let progress = window.progress_bar();
                 let updating_timeout = glib::timeout_add_local(
                     std::time::Duration::from_millis(100),
@@ -378,9 +365,13 @@ impl PdApplication {
                 );
                 window.set_updating_timeout(Some(updating_timeout));
             }
-            Action::FeedRefreshed => {
-                self.do_action(Action::StopUpdating);
-                self.do_action(Action::RefreshAllViews);
+            Action::StopUpdating => {
+                window.set_updating(false);
+                window.set_updating_timeout(None);
+                window.progress_bar().set_visible(false);
+            }
+            Action::FeedRefreshed(id) => {
+                FeedManager::refresh_done(data.sender.clone(), id);
             }
             Action::InitEpisode(id) => {
                 let res = window.init_episode(id, None, false);
@@ -419,44 +410,7 @@ impl PdApplication {
             Action::RaiseWindow => window.present(),
             Action::Subscribe(feed) => {
                 let sender = data.sender.clone();
-                crate::RUNTIME.spawn(async move {
-                    let mut error_source = None; // <- auto unsub from this
-                    if let Err(e) = async {
-                        let source =
-                            dbqueries::get_source_from_uri(&feed).or(Source::from_url(&feed))?;
-                        error_source = Some(source.clone());
-                        let source_id = source.id();
-                        info!("Subscribing to {feed}");
-                        pipeline(vec![source]).await?;
-                        let show = dbqueries::get_podcast_from_source_id(source_id)?;
-                        send!(sender, Action::RefreshAllViews);
-                        send!(sender, Action::GoToShow(Arc::new(show.clone())));
-                        Ok::<(), anyhow::Error>(())
-                    }
-                    .await
-                    {
-                        error!("Failed to subscribe: {feed} {e}");
-                        // auto unsubscribe
-                        if let Some(error_source) = error_source {
-                            // only unsub if no Show was imported from the source.
-                            if dbqueries::get_podcast_from_source_id(error_source.id()).is_err() {
-                                if let Err(remove_err) = dbqueries::remove_source(&error_source) {
-                                    error!("failed to remove failed source! {remove_err} {feed}");
-                                } else {
-                                    info!("auto removed source that failed to import {feed}");
-                                }
-                            }
-                        }
-                        // TODO show the actual error (like "content didn't start with rss feed"),
-                        // but pipeline doesn't pass useful errors yet
-                        send!(
-                            sender,
-                            Action::ErrorNotification(format!(
-                                "Failed to subscribe to feed: {feed} "
-                            ))
-                        );
-                    }
-                });
+                crate::RUNTIME.spawn(async move { utils::subscribe(&sender, feed).await });
             }
             Action::InhibitSuspend => {
                 let window: Option<&gtk::Window> = None;
