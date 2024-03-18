@@ -38,6 +38,7 @@ use crate::widgets::{DiscoveryPage, EpisodeDescription, SearchResults};
 use crate::window::MainWindow;
 
 use std::cell::RefCell;
+use std::collections::HashSet;
 use std::env;
 use std::sync::Arc;
 
@@ -52,7 +53,7 @@ pub struct PdApplicationPrivate {
     window: RefCell<Option<MainWindow>>,
     settings: RefCell<Option<gio::Settings>>,
     inhibit_cookie: RefCell<u32>,
-    undo_remove_ids: RefCell<Vec<i32>>,
+    todo_unsub_ids: RefCell<HashSet<i32>>,
     undo_marked_ids: RefCell<Vec<i32>>,
 }
 
@@ -72,7 +73,7 @@ impl ObjectSubclass for PdApplicationPrivate {
             window: RefCell::new(None),
             settings: RefCell::new(None),
             inhibit_cookie: RefCell::new(0),
-            undo_remove_ids: RefCell::new(vec![]),
+            todo_unsub_ids: RefCell::new(HashSet::default()),
             undo_marked_ids: RefCell::new(vec![]),
         }
     }
@@ -124,6 +125,19 @@ impl ApplicationImpl for PdApplicationPrivate {
         utils::cleanup(cleanup_date);
 
         self.settings.replace(Some(settings));
+    }
+
+    fn shutdown(&self) {
+        // complete any pending unsubscribe actions
+        let mut todo_unsub_ids = self.todo_unsub_ids.borrow_mut();
+        for id in todo_unsub_ids.drain() {
+            if let Ok(pd) = dbqueries::get_podcast_from_id(id) {
+                if let Err(err) = podcasts_data::utils::delete_show(&pd) {
+                    error!("Error: {}", err);
+                    error!("Failed to delete {}", pd.title());
+                }
+            }
+        }
     }
 }
 
@@ -216,10 +230,8 @@ impl PdApplication {
                 .activate(|app: &Self, _, id_variant_option| {
                     let data = app.imp();
                     let id = id_variant_option.unwrap().get::<i32>().unwrap();
-                    let mut ids = data.undo_remove_ids.borrow_mut();
-                    if !ids.contains(&id) {
-                        ids.push(id);
-                    }
+                    let mut ids = data.todo_unsub_ids.borrow_mut();
+                    ids.remove(&id);
 
                     let res = utils::unignore_show(id);
                     debug_assert!(res.is_ok());
@@ -231,20 +243,15 @@ impl PdApplication {
         self.add_action_entries(actions);
     }
 
-    /// We check if the User pressed the Undo button, which would add
-    /// the id into undo_revove_ids.
+    /// We check if a show is still on the todo_remove list.
+    /// Also removes it from the list,
+    /// as this should only be called before removal.
     pub fn is_show_marked_delete(&self, pd: &Show) -> bool {
         let data = self.imp();
         let id = pd.id();
-        let mut undo_remove_ids = data.undo_remove_ids.borrow_mut();
+        let mut todo_unsub_ids = data.todo_unsub_ids.borrow_mut();
 
-        if let Some(pos) = undo_remove_ids.iter().position(|x| *x == id) {
-            undo_remove_ids.remove(pos);
-
-            return false;
-        }
-
-        true
+        todo_unsub_ids.remove(&id)
     }
 
     pub fn is_show_marked_mark(&self, pd: &Show) -> bool {
@@ -334,6 +341,7 @@ impl PdApplication {
                 self.send_toast(toast);
             }
             Action::RemoveShow(pd) => {
+                data.todo_unsub_ids.borrow_mut().insert(pd.id());
                 let toast = remove_show_notif(pd, data.sender.clone());
                 self.send_toast(toast);
             }
