@@ -47,6 +47,7 @@ popover modelbutton > box > label {
 .episode_description .toolbar {
     padding-left: 3px;
     padding-right: 3px;
+    padding-bottom: 0px;
 }
 
 .episode_description progressbar {
