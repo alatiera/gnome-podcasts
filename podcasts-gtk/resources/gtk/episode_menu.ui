@@ -32,6 +32,7 @@ Tobias Bernard
   <menu id="episode_menu">
     <section>
       <item>
+        <!-- Translators: Show as a noun, meaning a Podcast-Show. -->
         <attribute name="label" translatable="yes">Go to Show</attribute>
         <attribute name="action">episode.go-to-show</attribute>
       </item>

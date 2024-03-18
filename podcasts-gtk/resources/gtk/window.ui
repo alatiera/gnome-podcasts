@@ -30,6 +30,7 @@
                 </child>
                 <child>
                   <object class="AdwNavigationPage" id="show_page">
+                    <!-- Translators: Show as a noun, meaning a Podcast-Show. -->
                     <property name="title" translatable="yes">Show</property>
                   </object>
                 </child>

@@ -27,6 +27,7 @@ Tobias Bernard
   <template class="PdEmptyView" parent="AdwBin">
     <child>
       <object class="AdwStatusPage" id="status_page">
+        <!-- Translators: Shows as a noun, meaning Podcast-Shows. -->
         <property name="title" translatable="yes">Get Some Shows</property>
         <child>
           <object class="GtkBox">
@@ -47,6 +48,7 @@ Tobias Bernard
                 </child>
                 <child>
                   <object class="GtkLabel">
+                    <!-- Translators: Shows as a noun, meaning Podcast-Shows. -->
                     <property name="label" translatable="yes">Add new shows via feed URL</property>
                     <property name="wrap">True</property>
                     <style>
@@ -70,6 +72,7 @@ Tobias Bernard
                 </child>
                 <child>
                   <object class="GtkLabel">
+                    <!-- Translators: Shows as a noun, meaning Podcast-Shows. -->
                     <property name="label" translatable="yes">Import shows from another device</property>
                     <property name="wrap">True</property>
                     <style>

@@ -61,6 +61,7 @@ impl ObjectImpl for ShowsViewPriv {
         self.flowbox.set_halign(Align::Center);
         self.flowbox.set_selection_mode(SelectionMode::None);
         self.flowbox
+            // Translators: Shows as a noun, meaning Podcast-Shows.
             .update_property(&[gtk::accessible::Property::Label(&i18n("Shows"))]);
         self.view.set_content(&self.flowbox);
     }

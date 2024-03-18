@@ -529,6 +529,7 @@ pub(crate) fn on_export_clicked(window: &gtk::ApplicationWindow, sender: &Sender
 
     // Create the FileChooser Dialog
     let dialog = gtk::FileDialog::builder()
+        // Translators: Show as a noun, meaning Podcast-Shows.
         .title(i18n("Export shows to…"))
         .accept_label(i18n("_Export"))
         .initial_name(format!(

@@ -13,6 +13,7 @@
     <property name="margin_bottom">6</property>
     <child>
       <object class="GtkLabel" id="label_1">
+        <!-- Translators: Show as a noun, meaning a Podcast-Show. -->
         <property name="label" translatable="yes">This show does not have episodes yet</property>
         <attributes>
           <attribute name="weight" value="bold"></attribute>
