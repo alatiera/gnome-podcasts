@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.22.0 
+<!-- Generated with glade 3.22.0
 
 Copyright (C) 2017 - 2018
 
@@ -149,8 +149,9 @@ Tobias Bernard
             <child>
               <object class="GtkScale" id="seek">
                 <property name="hexpand">True</property>
-                <property name="round_digits">1</property>
-                <property name="draw_value">False</property>
+                <property name="round-digits">1</property>
+                <property name="draw-value">False</property>
+                <property name="width-request">130</property>
               </object>
             </child>
             <child>
