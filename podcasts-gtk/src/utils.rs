@@ -34,7 +34,6 @@ use futures_util::StreamExt;
 use once_cell::sync::Lazy;
 use regex::Regex;
 use serde_json::Value;
-use tokio::sync::oneshot::error::TryRecvError;
 use url::Url;
 
 use podcasts_data::dbqueries;
@@ -336,7 +335,7 @@ pub(crate) fn set_image_from_path(image: &gtk::Image, show_id: i32, size: u32) -
         }
     }
 
-    let (sender, mut receiver) = tokio::sync::oneshot::channel();
+    let (sender, receiver) = async_channel::bounded(1);
     if let Ok(mut guard) = COVER_DL_REGISTRY.write() {
         // Add the id to the hashmap from the main thread to avoid queuing more than one downloads.
         guard.insert(show_id);
@@ -346,6 +345,7 @@ pub(crate) fn set_image_from_path(image: &gtk::Image, show_id: i32, size: u32) -
             // This operation is polling and will block the thread till the download is finished
             sender
                 .send(downloader::cache_image(&pd).await)
+                .await
                 .expect("channel was dropped unexpectedly");
 
             if let Ok(mut guard) = COVER_DL_REGISTRY.write() {
@@ -355,38 +355,31 @@ pub(crate) fn set_image_from_path(image: &gtk::Image, show_id: i32, size: u32) -
     }
 
     let s = size as i32;
-    glib::timeout_add_local(
-        Duration::from_millis(25),
-        clone!(@weak image => @default-return glib::ControlFlow::Break, move || {
-            match receiver.try_recv() {
-                Err(TryRecvError::Empty) => glib::ControlFlow::Continue,
-                Err(TryRecvError::Closed) => glib::ControlFlow::Break,
+    crate::MAINCONTEXT.spawn_local(clone!(@weak image => async move {
+        if let Ok(path) = receiver.recv().await {
+            match path {
                 Ok(path) => {
-                    match path {
-                        Ok(path) => {
-                            if let Ok(px) = Pixbuf::from_file_at_scale(path, s, s, true) {
-                                image.set_from_pixbuf(Some(&px));
-                            }
-                        }
-                        Err(DownloadError::NoImageLocation) => {
-                            image.set_from_icon_name(Some("image-x-generic-symbolic"));
-                        }
-                        _ => {}
+                    if let Ok(px) = Pixbuf::from_file_at_scale(path, s, s, true) {
+                        image.set_from_pixbuf(Some(&px));
                     }
-                    if let Ok(pd) = dbqueries::get_podcast_from_id(show_id) {
-                        if let Err(err) = pd.update_image_cache_values() {
-                            error!(
-                                "Failed to update the image's cache values for podcast {}: {}",
-                                pd.title(),
-                                err
-                            )
-                        }
-                    }
-                    glib::ControlFlow::Break
+                }
+                Err(DownloadError::NoImageLocation) => {
+                    image.set_from_icon_name(Some("image-x-generic-symbolic"));
+                }
+                _ => ()
+            }
+            if let Ok(pd) = dbqueries::get_podcast_from_id(show_id) {
+                if let Err(err) = pd.update_image_cache_values() {
+                    error!(
+                        "Failed to update the image's cache values for podcast {}: {}",
+                        pd.title(),
+                        err
+                    )
                 }
             }
-        }),
-    );
+        }
+    }));
+
     Ok(())
 }
 
