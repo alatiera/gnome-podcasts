@@ -138,6 +138,7 @@ impl ApplicationImpl for PdApplicationPrivate {
                 }
             }
         }
+        self.parent_shutdown();
     }
 }
 
