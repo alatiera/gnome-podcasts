@@ -19,13 +19,16 @@
 #![allow(clippy::type_complexity)]
 
 use anyhow::{anyhow, Result};
+use async_channel::Sender;
 use once_cell::sync::Lazy;
-
-use podcasts_data::dbqueries;
-use podcasts_data::downloader::{get_episode, DownloadProgress};
-
 use std::collections::HashMap;
 use std::sync::{Arc, Mutex, RwLock};
+
+use crate::app::Action;
+use crate::i18n::i18n_f;
+use podcasts_data::dbqueries;
+use podcasts_data::downloader::{get_episode, DownloadProgress};
+use podcasts_data::errors::DownloadError;
 
 // This is messy, undocumented and hacky af.
 // I am terrible at writing downloaders and download managers.
@@ -80,7 +83,7 @@ impl DownloadProgress for Progress {
     }
 }
 
-pub(crate) fn add(id: i32, directory: String) -> Result<()> {
+pub(crate) fn add(sender: Sender<Action>, id: i32, directory: String) -> Result<()> {
     // Create a new `Progress` struct to keep track of dl progress.
     let prog = Arc::new(Mutex::new(Progress::default()));
 
@@ -93,10 +96,16 @@ pub(crate) fn add(id: i32, directory: String) -> Result<()> {
         if let Ok(mut episode) = dbqueries::get_episode_widget_from_id(id) {
             let id = episode.id();
 
-            get_episode(&mut episode, directory.as_str(), Some(prog))
-                .await
-                .map_err(|err| error!("Download Failed: {}", err))
-                .ok();
+            match get_episode(&mut episode, directory.as_str(), Some(prog)).await {
+                Ok(_) => (),
+                Err(DownloadError::DownloadCancelled) => (),
+                Err(e) => {
+                    send!(
+                        sender,
+                        Action::ErrorNotification(i18n_f("Download failed: {}", &[&e.to_string()]))
+                    );
+                }
+            }
 
             if let Ok(mut m) = ACTIVE_DOWNLOADS.write() {
                 let progress = m.remove(&id);
@@ -150,7 +159,8 @@ mod tests {
 
         let download_dir = get_download_dir(pd.title())?;
         let dir2 = download_dir.clone();
-        add(episode.id(), download_dir)?;
+        let (sender, _) = async_channel::unbounded();
+        add(sender, episode.id(), download_dir)?;
         assert_eq!(ACTIVE_DOWNLOADS.read().unwrap().len(), 1);
 
         // Give it some time to download the file

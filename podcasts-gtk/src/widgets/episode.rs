@@ -373,7 +373,7 @@ fn on_download_clicked(ep: &EpisodeWidgetModel, sender: &Sender<Action>) -> Resu
     let download_dir = get_download_dir(pd.title())?;
 
     // Start a new download.
-    manager::add(ep.id(), download_dir)?;
+    manager::add(sender.clone(), ep.id(), download_dir)?;
     // Update Views
     send_blocking!(sender, Action::RefreshEpisodesViewBGR);
     Ok(())

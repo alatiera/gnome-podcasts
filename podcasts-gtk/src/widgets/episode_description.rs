@@ -139,7 +139,7 @@ impl EpisodeDescriptionPriv {
                 if let Err(e) = (|| {
                     let pd = dbqueries::get_podcast_from_id(show_id)?;
                     let download_dir = get_download_dir(pd.title())?;
-                    crate::manager::add(id, download_dir)?;
+                    crate::manager::add(sender.clone(), id, download_dir)?;
                     Ok::<(), anyhow::Error>(())
                 })() {
                     error!("failed to start download {e}");
