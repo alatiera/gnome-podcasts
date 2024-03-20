@@ -87,6 +87,8 @@ pub struct EpisodeWidgetPriv {
     download: TemplateChild<gtk::Button>,
     #[template_child]
     cancel: TemplateChild<gtk::Button>,
+    #[template_child]
+    text_only: TemplateChild<gtk::Button>,
 }
 
 impl EpisodeWidgetPriv {
@@ -96,6 +98,11 @@ impl EpisodeWidgetPriv {
             clone!(@weak self as this, @strong sender => async move {
                 let id = episode.id();
                 this.init_info(&episode);
+                if episode.uri().is_none() {
+                    this.state_no_uri(id);
+                    return;
+                }
+
                 this.init_progressbar(id);
                 this.init_buttons(&sender, id);
                 if let Err(err) = this.determine_buttons_state(&episode) {
@@ -103,6 +110,21 @@ impl EpisodeWidgetPriv {
                 }
             }),
         );
+    }
+
+    // Rare case when an episode does not have
+    // any audio files attached as enclosure tags.
+    fn state_no_uri(&self, id: i32) {
+        self.cancel.set_visible(false);
+        self.play.set_visible(false);
+
+        self.local_size.set_visible(false);
+        self.size_separator.set_visible(false);
+        self.download.set_visible(false);
+        self.text_only.set_visible(true);
+        self.text_only.set_action_name(Some("app.go-to-episode"));
+        self.text_only
+            .set_action_target_value(Some(&id.to_variant()));
     }
 
     // InProgress State:
@@ -153,6 +175,15 @@ impl EpisodeWidgetPriv {
     ///
     /// Function Flowchart:
     ///
+    /// -------------------       --------------
+    /// | Does the Episode|  YES  |   State:   |
+    /// |   not have a    | ----> |   NoUri    |
+    /// | download link?  |       |            |
+    /// -------------------       --------------
+    ///         |
+    ///         | NO
+    ///         |
+    ///        \_/
     /// -------------------       --------------
     /// | Is the Episode  |  YES  |   State:   |
     /// | currently being | ----> | InProgress |

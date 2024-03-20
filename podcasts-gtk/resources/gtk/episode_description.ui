@@ -143,6 +143,7 @@ Tobias Bernard
                                     <style>
                                       <class name="suggested-action"/>
                                     </style>
+                                    <property name="visible">False</property>
                                     <property name="tooltip-text" translatable="yes">Download</property>
                                     <property name="icon-name">document-save-symbolic</property>
                                   </object>
@@ -152,6 +153,7 @@ Tobias Bernard
                                     <style>
                                       <class name="destructive-action"/>
                                     </style>
+                                    <property name="visible">False</property>
                                     <property name="tooltip-text" translatable="yes">Cancel</property>
                                     <property name="icon-name">process-stop-symbolic</property>
                                   </object>
@@ -171,6 +173,7 @@ Tobias Bernard
                                     <style>
                                       <class name="accent"/>
                                     </style>
+                                    <property name="visible">False</property>
                                     <property name="tooltip-text" translatable="yes">Stream</property>
                                     <property name="icon-name">media-playback-start-symbolic</property>
                                   </object>

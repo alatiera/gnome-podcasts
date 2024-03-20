@@ -213,6 +213,19 @@ Tobias Bernard
                 </style>
               </object>
             </child>
+            <child>
+              <object class="GtkButton" id="text_only">
+                <property name="receives_default">True</property>
+                <property name="visible">False</property>
+                <property name="tooltip-text" translatable="yes">Episode without audio</property>
+                <property name="halign">center</property>
+                <property name="valign">center</property>
+                <property name="icon-name">accessories-text-editor-symbolic</property>
+                <style>
+                  <class name="flat"/>
+                </style>
+              </object>
+            </child>
           </object>
         </child>
       </object>

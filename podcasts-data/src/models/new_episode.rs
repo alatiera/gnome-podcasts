@@ -252,10 +252,7 @@ impl NewEpisodeMinimal {
         let enc = item.enclosure();
 
         // Get the url
-        let uri = enc
-            .map(|s| url_cleaner(s.url().trim()))
-            // Fallback to Rss.Item.link if enclosure is None.
-            .or_else(|| item.link().map(|s| url_cleaner(s.trim())));
+        let uri = enc.map(|s| url_cleaner(s.url().trim()));
 
         let image = item
             .itunes_ext()
@@ -264,17 +261,6 @@ impl NewEpisodeMinimal {
 
         // Get the size of the content, it should be in bytes
         let length = enc.and_then(|x| x.length().parse().ok());
-
-        // If url is still None return an Error as this behaviour is not
-        // compliant with the RSS Spec.
-        if uri.is_none() {
-            let err = DataError::ParseEpisodeError {
-                reason: "No url specified for the item.".into(),
-                parent_id,
-            };
-
-            return Err(err);
-        };
 
         // Default to rfc2822 representation of epoch 0.
         let date = parse_rfc822(item.pub_date().unwrap_or("Thu, 1 Jan 1970 00:00:00 +0000"));

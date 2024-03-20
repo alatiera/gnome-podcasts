@@ -115,7 +115,13 @@ impl EpisodeDescriptionPriv {
             }));
 
         let ep: &Episode = ep.borrow();
+        if ep.uri().is_some() {
+            self.init_buttons(sender, ep, id);
+            self.determine_button_state(&ep.clone().into());
+        }
+    }
 
+    fn init_buttons(&self, sender: Sender<Action>, ep: &Episode, id: i32) {
         self.stream_button
             .connect_clicked(clone!(@strong sender => move |_| {
                 send_blocking!(sender, Action::StreamEpisode(id));
@@ -169,8 +175,6 @@ impl EpisodeDescriptionPriv {
                     error!("failed to cancel download {e}");
                 }
             }));
-
-        self.determine_button_state(&ep.clone().into());
     }
 
     fn refresh_buttons(&self, id: i32) {
