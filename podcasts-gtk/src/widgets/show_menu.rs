@@ -17,24 +17,20 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+use anyhow::Result;
+use async_channel::Sender;
 use gio::prelude::ActionMapExt;
 use glib::clone;
 use gtk::prelude::*;
 use gtk::{gio, glib};
+use std::sync::Arc;
 
-use anyhow::Result;
-use glib::Sender;
-
+use crate::app::Action;
+use crate::i18n::{i18n, i18n_f};
+use crate::utils;
 use podcasts_data::dbqueries;
 use podcasts_data::utils::delete_show;
 use podcasts_data::Show;
-
-use crate::app::Action;
-use crate::utils;
-
-use std::sync::Arc;
-
-use crate::i18n::{i18n, i18n_f};
 
 #[derive(Debug, Clone)]
 pub(crate) struct ShowMenu {
@@ -104,8 +100,7 @@ impl ShowMenu {
             clone!(@strong pd, @strong sender, @weak episodes => move |_, _| {
                 let res = dim_titles(&episodes);
                 debug_assert!(res.is_some());
-
-                send!(sender, Action::MarkAllPlayerNotification(pd.clone()));
+                send_blocking!(sender, Action::MarkAllPlayerNotification(pd.clone()));
             }),
         );
     }
@@ -114,13 +109,10 @@ impl ShowMenu {
         self.unsub
             .connect_activate(clone!(@strong pd, @strong sender => move |unsub, _| {
                 unsub.set_enabled(false);
-
-                send!(sender, Action::RemoveShow(pd.clone()));
-
+                send_blocking!(sender, Action::RemoveShow(pd.clone()));
                 // Queue a refresh after the switch to avoid blocking the db.
-                send!(sender, Action::RefreshShowsView);
-                send!(sender, Action::RefreshEpisodesView);
-
+                send_blocking!(sender, Action::RefreshShowsView);
+                send_blocking!(sender, Action::RefreshEpisodesView);
                 unsub.set_enabled(true);
             }));
     }
@@ -168,8 +160,8 @@ fn mark_all_watched(pd: &Show, sender: &Sender<Action>) -> Result<()> {
     dbqueries::update_none_to_played_now(pd)?;
     // Not all widgets might have been loaded when the mark_all is hit
     // So we will need to refresh again after it's done.
-    send!(sender, Action::RefreshWidgetIfSame(pd.id()));
-    send!(sender, Action::RefreshEpisodesView);
+    send_blocking!(sender, Action::RefreshWidgetIfSame(pd.id()));
+    send_blocking!(sender, Action::RefreshEpisodesView);
     Ok(())
 }
 
@@ -222,7 +214,7 @@ pub(crate) fn remove_show_notif(pd: Arc<Show>, sender: Sender<Action>) -> adw::T
                     error!("Failed to delete {}", pd.title());
                 }
 
-                send!(sender, Action::RefreshEpisodesView);
+                send_blocking!(sender, Action::RefreshEpisodesView);
             }
         }));
     }));

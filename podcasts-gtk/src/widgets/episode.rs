@@ -18,27 +18,25 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 use adw::subclass::prelude::*;
+use anyhow::Result;
+use async_channel::Sender;
+use chrono::prelude::*;
 use glib::clone;
 use glib::subclass::InitializingObject;
 use gtk::glib;
 use gtk::prelude::*;
 use gtk::CompositeTemplate;
-
-use anyhow::Result;
-use chrono::prelude::*;
-use glib::Sender;
 use humansize::{file_size_opts as size_opts, FileSize};
 use once_cell::sync::Lazy;
 use std::sync::Arc;
-
-use podcasts_data::dbqueries;
-use podcasts_data::utils::get_download_dir;
-use podcasts_data::EpisodeWidgetModel;
 
 use crate::app::Action;
 use crate::i18n::i18n_f;
 use crate::manager;
 use crate::widgets::DownloadProgressBar;
+use podcasts_data::dbqueries;
+use podcasts_data::utils::get_download_dir;
+use podcasts_data::EpisodeWidgetModel;
 
 static SIZE_OPTS: Lazy<Arc<size_opts::FileSizeOpts>> = Lazy::new(|| {
     // Declare a custom humansize option struct
@@ -313,9 +311,9 @@ impl EpisodeWidgetPriv {
                     // Grey out the title
                     this.set_title(&episode);
                     // Play the episode
-                    send!(sender, Action::InitEpisode(episode.id()));
+                    send_blocking!(sender, Action::InitEpisode(episode.id()));
                     // Refresh background views to match the normal/greyout title state
-                    send!(sender, Action::RefreshEpisodesViewBGR);
+                    send_blocking!(sender, Action::RefreshEpisodesViewBGR);
                 }
             }));
 
@@ -345,9 +343,8 @@ fn on_download_clicked(ep: &EpisodeWidgetModel, sender: &Sender<Action>) -> Resu
 
     // Start a new download.
     manager::add(ep.id(), download_dir)?;
-
     // Update Views
-    send!(sender, Action::RefreshEpisodesViewBGR);
+    send_blocking!(sender, Action::RefreshEpisodesViewBGR);
     Ok(())
 }
 

@@ -20,8 +20,9 @@
 use adw::prelude::*;
 use adw::subclass::prelude::*;
 use anyhow::Result;
+use async_channel::Sender;
+use glib::clone;
 use glib::subclass::InitializingObject;
-use glib::{clone, Sender};
 use gtk::glib;
 use gtk::CompositeTemplate;
 use std::sync::Arc;

@@ -17,19 +17,16 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+use async_channel::Sender;
 use gio::prelude::ActionMapExt;
 use glib::clone;
 use gtk::prelude::*;
 use gtk::{gio, glib};
-
-use glib::Sender;
-
-use podcasts_data::Episode;
-use podcasts_data::Show;
+use std::sync::Arc;
 
 use crate::app::Action;
-
-use std::sync::Arc;
+use podcasts_data::Episode;
+use podcasts_data::Show;
 
 #[derive(Debug, Clone)]
 pub(crate) struct EpisodeMenu {
@@ -78,7 +75,7 @@ impl EpisodeMenu {
     fn connect_go_to_show(&self, sender: &Sender<Action>, show: Arc<Show>) {
         self.go_to_show
             .connect_activate(clone!(@strong sender, @strong show => move |_,_| {
-                send!(sender, Action::GoToShow(show.clone()));
+                send_blocking!(sender, Action::GoToShow(show.clone()));
             }));
         self.group.add_action(&self.go_to_show);
     }
@@ -88,7 +85,7 @@ impl EpisodeMenu {
             self.copy_episode_url
                 .connect_activate(clone!(@strong sender => move |_,_| {
                     copy_text(&uri);
-                    send!(sender, Action::CopiedUrlNotification);
+                    send_blocking!(sender, Action::CopiedUrlNotification);
                 }));
             self.group.add_action(&self.copy_episode_url);
         }

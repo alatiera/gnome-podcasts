@@ -19,8 +19,9 @@
 
 use adw::prelude::*;
 use adw::subclass::prelude::*;
+use async_channel::Sender;
+use glib::clone;
 use glib::subclass::InitializingObject;
-use glib::{clone, Sender};
 use gtk::glib;
 use gtk::CompositeTemplate;
 
@@ -129,7 +130,7 @@ impl PodcastPriv {
         let feed = p.feed.clone();
         let sender = sender.clone();
         self.subscribe.connect_clicked(move |_| {
-            send!(sender, Action::Subscribe(feed.clone()));
+            send_blocking!(sender, Action::Subscribe(feed.clone()));
         });
 
         let art = p.art.clone();

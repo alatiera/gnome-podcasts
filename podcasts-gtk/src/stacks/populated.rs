@@ -17,21 +17,18 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+use anyhow::Result;
+use async_channel::Sender;
+use glib::WeakRef;
 use gtk::glib;
 use gtk::prelude::*;
-
-use anyhow::Result;
-use glib::Sender;
-use glib::WeakRef;
-
-use podcasts_data::dbqueries;
-use podcasts_data::Show;
+use std::sync::Arc;
 
 use crate::app::Action;
 use crate::widgets::{ShowWidget, ShowsView};
 use crate::window::MainWindow;
-
-use std::sync::Arc;
+use podcasts_data::dbqueries;
+use podcasts_data::Show;
 
 #[derive(Debug, Clone)]
 pub(crate) struct PopulatedStack {

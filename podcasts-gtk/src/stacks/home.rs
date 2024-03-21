@@ -17,11 +17,9 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-use gtk::glib;
-use gtk::StackTransitionType;
-
 use anyhow::Result;
-use glib::Sender;
+use async_channel::Sender;
+use gtk::StackTransitionType;
 
 use crate::app::Action;
 use crate::stacks::State;

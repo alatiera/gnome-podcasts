@@ -17,38 +17,31 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-use gst::ClockTime;
-
-use gtk::prelude::*;
-use gtk::{gio, glib};
-
+use anyhow::Result;
+use async_channel::Sender;
+use chrono::{prelude::*, NaiveTime};
+use fragile::Fragile;
 use gio::File;
 use glib::clone;
 use glib::{SignalHandlerId, WeakRef};
-
-use anyhow::Result;
-use chrono::{prelude::*, NaiveTime};
-use fragile::Fragile;
-use glib::Sender;
+use gst::ClockTime;
+use gtk::prelude::*;
+use gtk::{gio, glib};
+use mpris_server::{Metadata, PlaybackStatus, Player};
 use once_cell::sync::Lazy;
-use url::Url;
-
-use podcasts_data::{dbqueries, downloader, EpisodeWidgetModel, ShowCoverModel, USER_AGENT};
-
-use crate::app::Action;
-use crate::config::APP_ID;
-use crate::utils::set_image_from_path;
-
 use std::cell::{RefCell, RefMut};
 use std::convert::TryInto;
 use std::ops::Deref;
 use std::path::Path;
 use std::rc::Rc;
 use std::sync::Mutex;
+use url::Url;
 
+use crate::app::Action;
+use crate::config::APP_ID;
 use crate::i18n::i18n;
-
-use mpris_server::{Metadata, PlaybackStatus, Player};
+use crate::utils::set_image_from_path;
+use podcasts_data::{dbqueries, downloader, EpisodeWidgetModel, ShowCoverModel, USER_AGENT};
 
 #[derive(Debug, Clone, Copy)]
 enum SeekDirection {
@@ -664,7 +657,7 @@ impl PlayerExt for PlayerWidget {
             );
         }
         if let Some(sender) = &self.sender {
-            send!(sender, Action::InhibitSuspend);
+            send_blocking!(sender, Action::InhibitSuspend);
         }
     }
 
@@ -689,7 +682,7 @@ impl PlayerExt for PlayerWidget {
             );
         }
         if let Some(sender) = &self.sender {
-            send!(sender, Action::UninhibitSuspend);
+            send_blocking!(sender, Action::UninhibitSuspend);
         }
 
         self.controls.last_pause.replace(Some(Local::now()));
@@ -741,7 +734,7 @@ impl PlayerExt for PlayerWidget {
         self.timer
             .on_position_updated(Position(ClockTime::from_seconds(0)));
         if let Some(sender) = &self.sender {
-            send!(sender, Action::UninhibitSuspend);
+            send_blocking!(sender, Action::UninhibitSuspend);
         }
     }
 
@@ -971,9 +964,9 @@ impl PlayerWrapper {
         // Log gst errors.
         signal_adapter.connect_error(clone!(@strong sender => move |_, _error, details| {
             error!("gstreamer error: {} {:#?}",  _error, details);
-            send!(sender, Action::ErrorNotification(format!("Player Error: {}", _error)));
+            send_blocking!(sender, Action::ErrorNotification(format!("Player Error: {}", _error)));
             let s = i18n("The media player was unable to execute an action.");
-            send!(sender, Action::ErrorNotification(s));
+            send_blocking!(sender, Action::ErrorNotification(s));
         }));
 
         // The following callbacks require `Send` but are handled by the gtk main loop
@@ -1021,8 +1014,8 @@ impl PlayerWrapper {
                 player_widget.borrow_mut().info.ep.as_mut().map(|ep| {
                     ep.set_play_position(0)?;
                     ep.set_played_now()?;
-                    send!(sender, Action::RefreshEpisodesViewBGR);
-                    send!(sender, Action::RefreshWidgetIfSame(ep.show_id()));
+                    send_blocking!(sender, Action::RefreshEpisodesViewBGR);
+                    send_blocking!(sender, Action::RefreshWidgetIfSame(ep.show_id()));
                     let ok : Result<(), podcasts_data::errors::DataError> = Ok(());
                     ok
                 });
@@ -1075,7 +1068,7 @@ impl PlayerWrapper {
             );
 
             mpris.connect_raise(clone!(@strong sender => move |_| {
-                send!(sender, Action::RaiseWindow);
+                send_blocking!(sender, Action::RaiseWindow);
             }));
         };
     }

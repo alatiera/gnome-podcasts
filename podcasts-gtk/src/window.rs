@@ -17,29 +17,24 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-use glib::clone;
-use glib::Sender;
-use gtk::{gio, glib};
-
-use gio::prelude::*;
-
 use adw::prelude::*;
 use adw::subclass::prelude::*;
+use async_channel::Sender;
+use glib::clone;
 use gtk::CompositeTemplate;
+use gtk::{gio, glib};
+use std::cell::{Cell, OnceCell, RefCell};
+use std::ops::Deref;
+use std::rc::Rc;
 
 use crate::app::{Action, PdApplication};
+use crate::config::APP_ID;
 use crate::headerbar::Header;
 use crate::settings::{self, WindowGeometry};
 use crate::stacks::Content;
 use crate::utils;
 use crate::widgets::about_dialog;
 use crate::widgets::player;
-
-use std::cell::{Cell, OnceCell, RefCell};
-use std::ops::Deref;
-use std::rc::Rc;
-
-use crate::config::APP_ID;
 use crate::widgets::ShowWidget;
 
 #[derive(Debug, CompositeTemplate, glib::Properties)]
@@ -240,7 +235,7 @@ impl MainWindow {
         window
     }
 
-    pub fn push_page<P: glib::IsA<adw::NavigationPage>>(&self, page: &P) {
+    pub fn push_page<P: IsA<adw::NavigationPage>>(&self, page: &P) {
         self.imp().navigation_view.push(page);
     }
 
@@ -284,7 +279,7 @@ impl MainWindow {
         self.imp().headerbar.get().unwrap()
     }
 
-    pub(crate) fn sender(&self) -> &glib::Sender<Action> {
+    pub(crate) fn sender(&self) -> &Sender<Action> {
         self.imp().sender.get().unwrap()
     }
 

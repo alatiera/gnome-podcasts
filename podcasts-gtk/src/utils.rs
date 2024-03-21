@@ -17,25 +17,28 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+use anyhow::{anyhow, Result};
+use async_channel::unbounded;
+use async_channel::Sender;
+use chrono::prelude::*;
+use futures_util::StreamExt;
 use glib::clone;
 use glib::object::WeakRef;
-use glib::IsA;
-use glib::Sender;
 use gtk::gdk_pixbuf::Pixbuf;
 use gtk::prelude::*;
 use gtk::FileFilter;
 use gtk::Widget;
 use gtk::{gio, glib};
-
-use anyhow::{anyhow, Result};
-use async_channel::unbounded;
-use chrono::prelude::*;
-use futures_util::StreamExt;
 use once_cell::sync::Lazy;
 use regex::Regex;
 use serde_json::Value;
+use std::collections::HashSet;
+use std::sync::{Arc, Mutex, RwLock};
+use std::time::{Duration, Instant};
 use url::Url;
 
+use crate::app::Action;
+use crate::i18n::i18n;
 use podcasts_data::dbqueries;
 use podcasts_data::downloader;
 use podcasts_data::downloader::client_builder;
@@ -45,17 +48,9 @@ use podcasts_data::pipeline::pipeline;
 use podcasts_data::utils::checkup;
 use podcasts_data::Source;
 
-use std::collections::HashSet;
-use std::sync::{Arc, Mutex, RwLock};
-use std::time::{Duration, Instant};
-
-use crate::app::Action;
-
-use crate::i18n::i18n;
-
 /// Copied from the gtk-macros crate
 ///
-/// Send an event through a glib::Sender
+/// Send an event through a async_channel::Sender
 ///
 /// - Before:
 ///
@@ -75,7 +70,21 @@ use crate::i18n::i18n;
 #[macro_export]
 macro_rules! send {
     ($sender:expr, $action:expr) => {
-        if let Err(err) = $sender.send($action) {
+        if let Err(err) = $sender.send($action).await {
+            panic!(
+                "Failed to send \"{}\" action due to {}",
+                stringify!($action),
+                err
+            );
+        }
+    };
+}
+
+/// same as send! but not async
+#[macro_export]
+macro_rules! send_blocking {
+    ($sender:expr, $action:expr) => {
+        if let Err(err) = $sender.send_blocking($action) {
             panic!(
                 "Failed to send \"{}\" action due to {}",
                 stringify!($action),
@@ -269,7 +278,7 @@ pub(crate) fn schedule_refresh(source: Option<Vec<Source>>, sender: Sender<Actio
         };
     }
 
-    send!(sender, Action::UpdateFeed(source));
+    send_blocking!(sender, Action::UpdateFeed(source));
 }
 
 /// Update the rss feed(s) originating from `source`.
@@ -277,9 +286,8 @@ pub(crate) fn schedule_refresh(source: Option<Vec<Source>>, sender: Sender<Actio
 /// Do not call this function directly unless you are sure no other updates are running.
 /// Use `schedule_refresh()` instead
 pub(crate) fn refresh_feed(source: Option<Vec<Source>>, sender: Sender<Action>) {
-    send!(sender, Action::ShowUpdateNotif);
-
-    crate::RUNTIME.spawn(clone!(@strong sender => async move {
+    crate::RUNTIME.spawn(async move {
+        send!(sender, Action::ShowUpdateNotif);
         if let Some(s) = source {
             // Refresh only specified feeds
             if let Err(err) = pipeline(s).await {
@@ -294,7 +302,7 @@ pub(crate) fn refresh_feed(source: Option<Vec<Source>>, sender: Sender<Action>) 
             }
             send!(sender, Action::FeedRefreshed);
         }
-    }));
+    });
 }
 
 static COVER_DL_REGISTRY: Lazy<RwLock<HashSet<i32>>> = Lazy::new(|| RwLock::new(HashSet::new()));
@@ -500,7 +508,7 @@ pub(crate) fn on_import_clicked(window: &gtk::ApplicationWindow, sender: &Sender
                             schedule_refresh(Some(sources), sender)
                         } else {
                             let text = i18n("Failed to parse the imported file");
-                            send!(sender, Action::ErrorNotification(text));
+                            send_blocking!(sender, Action::ErrorNotification(text));
                         }
                     }));
                 }
@@ -541,7 +549,7 @@ pub(crate) fn on_export_clicked(window: &gtk::ApplicationWindow, sender: &Sender
                     if let Err(err) = opml::export_from_db(path, &i18n("GNOME Podcasts Subscriptions")) {
                         let text = i18n("Failed to export podcasts");
                         error!("Failed to export podcasts: {err}");
-                        send!(sender, Action::ErrorNotification(text));
+                        send_blocking!(sender, Action::ErrorNotification(text));
                     }
                 }));
             }

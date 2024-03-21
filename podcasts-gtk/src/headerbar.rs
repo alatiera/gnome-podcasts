@@ -17,13 +17,13 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-use glib::clone;
-use glib::Sender;
+use crate::app::Action;
+use async_channel::Sender;
+use gtk::gio;
+use gtk::glib::clone;
 use gtk::prelude::*;
-use gtk::{gio, glib};
 use std::rc::Rc;
 
-use crate::app::Action;
 use crate::stacks::Content;
 
 #[derive(Debug, Clone)]
@@ -66,7 +66,7 @@ impl Header {
     pub(crate) fn init(s: &Rc<Self>, content: &Content, sender: &Sender<Action>) {
         s.switch.set_stack(Some(&content.get_stack()));
         s.add.connect_clicked(clone!(@strong sender => move |_| {
-            send!(sender, Action::GoToDiscovery);
+            send_blocking!(sender, Action::GoToDiscovery);
         }));
     }
 }

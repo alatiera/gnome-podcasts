@@ -17,29 +17,26 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+use adw::subclass::prelude::*;
+use anyhow::Result;
+use async_channel::Sender;
+use chrono::prelude::*;
+use glib::clone;
+use glib::subclass::InitializingObject;
 use gtk::glib;
 use gtk::prelude::*;
 use gtk::CompositeTemplate;
-
-use glib::subclass::InitializingObject;
-use glib::{clone, Sender};
-use podcasts_data::{Episode, Show};
-
-use crate::app::Action;
-use crate::utils::{self};
-use crate::widgets::EpisodeMenu;
-
-use crate::episode_description_parser;
-use crate::widgets::DownloadProgressBar;
-use adw::subclass::prelude::*;
-use anyhow::Result;
-use chrono::prelude::*;
 use std::borrow::Borrow;
 use std::sync::Arc;
 
-use gtk::prelude::WidgetExt;
+use crate::app::Action;
+use crate::episode_description_parser;
+use crate::utils::{self};
+use crate::widgets::DownloadProgressBar;
+use crate::widgets::EpisodeMenu;
 use podcasts_data::EpisodeWidgetModel;
 use podcasts_data::{dbqueries, downloader};
+use podcasts_data::{Episode, Show};
 
 pub enum EpisodeDescriptionAction {
     EpisodeSpecificImage(gtk::gdk::Texture),
@@ -80,11 +77,12 @@ pub struct EpisodeDescriptionPriv {
 
 impl EpisodeDescriptionPriv {
     fn init(&self, sender: Sender<Action>, ep: Arc<Episode>, show: Arc<Show>) {
-        let (ed_sender, r) = glib::MainContext::channel(glib::Priority::default());
-        r.attach(
-            None,
-            clone!(@weak self as this => @default-return glib::ControlFlow::Break, move |action| this.do_action(action)),
-        );
+        let (ed_sender, r) = async_channel::unbounded();
+        crate::MAINCONTEXT.spawn_local(clone!(@weak self as this => async move {
+            while let Ok(action) = r.recv().await {
+                this.do_action(action);
+            }
+        }));
 
         self.set_description(&ep);
         self.set_duration(&ep);
@@ -106,7 +104,7 @@ impl EpisodeDescriptionPriv {
             .connect_activate_link(clone!(@strong sender => move |_, url| {
                 if let Some(seconds_str) = url.strip_prefix("jump:") {
                     if let Ok(seconds) = seconds_str.parse() {
-                        send!(sender, Action::InitEpisodeAt(id, seconds));
+                        send_blocking!(sender, Action::InitEpisodeAt(id, seconds));
                     } else {
                         error!("failed to parse jump link: {}", url);
                     }
@@ -120,12 +118,12 @@ impl EpisodeDescriptionPriv {
 
         self.stream_button
             .connect_clicked(clone!(@strong sender => move |_| {
-                send!(sender, Action::StreamEpisode(id));
+                send_blocking!(sender, Action::StreamEpisode(id));
             }));
 
         self.play_button
             .connect_clicked(clone!(@strong sender => move |_| {
-                send!(sender, Action::InitEpisode(id));
+                send_blocking!(sender, Action::InitEpisode(id));
             }));
 
         let show_id = ep.show_id();
@@ -142,8 +140,8 @@ impl EpisodeDescriptionPriv {
                 }
                 this.refresh_buttons(id);
                 this.progressbar.grab_focus();
-                send!(sender, Action::RefreshEpisodesView);
-                send!(sender, Action::RefreshWidgetIfSame(show_id));
+                send_blocking!(sender, Action::RefreshEpisodesView);
+                send_blocking!(sender, Action::RefreshWidgetIfSame(show_id));
             }),
         );
 
@@ -156,8 +154,8 @@ impl EpisodeDescriptionPriv {
                     }
                 }
                 this.refresh_buttons(id);
-                send!(sender, Action::RefreshEpisodesView);
-                send!(sender, Action::RefreshWidgetIfSame(show_id));
+                send_blocking!(sender, Action::RefreshEpisodesView);
+                send_blocking!(sender, Action::RefreshWidgetIfSame(show_id));
             }));
 
         self.progressbar.init(ep.id());

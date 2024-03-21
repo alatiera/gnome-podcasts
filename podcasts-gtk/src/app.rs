@@ -17,26 +17,13 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-use glib::clone;
-
 use adw::subclass::prelude::*;
+use anyhow::Result;
+use async_channel::{Receiver, Sender};
+use gettextrs::{bindtextdomain, setlocale, textdomain, LocaleCategory};
+use glib::clone;
 use gtk::prelude::*;
 use gtk::{gio, glib};
-
-use gettextrs::{bindtextdomain, setlocale, textdomain, LocaleCategory};
-
-use anyhow::Result;
-use podcasts_data::dbqueries;
-use podcasts_data::discovery::FoundPodcast;
-use podcasts_data::pipeline::pipeline;
-use podcasts_data::{Episode, Show, Source};
-
-use crate::settings;
-use crate::utils;
-use crate::widgets::show_menu::{mark_all_notif, remove_show_notif};
-use crate::widgets::{DiscoveryPage, EpisodeDescription, SearchResults};
-use crate::window::MainWindow;
-
 use std::cell::RefCell;
 use std::collections::HashSet;
 use std::env;
@@ -44,12 +31,21 @@ use std::sync::Arc;
 
 use crate::config::{APP_ID, LOCALEDIR};
 use crate::i18n::i18n;
+use crate::settings;
+use crate::utils;
+use crate::widgets::show_menu::{mark_all_notif, remove_show_notif};
+use crate::widgets::{DiscoveryPage, EpisodeDescription, SearchResults};
+use crate::window::MainWindow;
+use podcasts_data::dbqueries;
+use podcasts_data::discovery::FoundPodcast;
+use podcasts_data::pipeline::pipeline;
+use podcasts_data::{Episode, Show, Source};
 
 // FIXME: port Optionals to OnceCell
 #[derive(Debug)]
 pub struct PdApplicationPrivate {
-    sender: glib::Sender<Action>,
-    receiver: RefCell<Option<glib::Receiver<Action>>>,
+    sender: Sender<Action>,
+    receiver: RefCell<Option<Receiver<Action>>>,
     window: RefCell<Option<MainWindow>>,
     settings: RefCell<Option<gio::Settings>>,
     inhibit_cookie: RefCell<u32>,
@@ -64,7 +60,7 @@ impl ObjectSubclass for PdApplicationPrivate {
     type ParentType = adw::Application;
 
     fn new() -> Self {
-        let (sender, r) = glib::MainContext::channel(glib::Priority::default());
+        let (sender, r) = async_channel::unbounded();
         let receiver = RefCell::new(Some(r));
 
         Self {
@@ -105,12 +101,11 @@ impl ApplicationImpl for PdApplicationPrivate {
 
         // Setup action channel
         let receiver = self.receiver.take().unwrap();
-        receiver.attach(
-            None,
-            clone!(@weak app => @default-panic, move |action| {
-                app.do_action(action)
-            }),
-        );
+        crate::MAINCONTEXT.spawn_local(clone!(@weak app => async move {
+            while let Ok(action) = receiver.recv().await {
+                app.do_action(action);
+            }
+        }));
     }
 
     fn startup(&self) {
@@ -161,8 +156,8 @@ pub(crate) enum Action {
     RefreshWidgetIfSame(i32),
     GoToEpisodeDescription(Arc<Show>, Arc<Episode>),
     GoToShow(Arc<Show>),
-    GoToDiscovery,
     GoToFoundPodcasts(Arc<Vec<FoundPodcast>>),
+    GoToDiscovery,
     CopiedUrlNotification,
     MarkAllPlayerNotification(Arc<Show>),
     UpdateFeed(Option<Vec<Source>>),
@@ -224,7 +219,7 @@ impl PdApplication {
                         ids.push(id);
                     }
 
-                    send!(data.sender, Action::RefreshWidgetIfSame(id));
+                    send_blocking!(data.sender, Action::RefreshWidgetIfSame(id));
                 })
                 .build(),
             gio::ActionEntryBuilder::new("undo-remove-show")
@@ -237,8 +232,8 @@ impl PdApplication {
 
                     let res = utils::unignore_show(id);
                     debug_assert!(res.is_ok());
-                    send!(data.sender, Action::RefreshShowsView);
-                    send!(data.sender, Action::RefreshEpisodesView);
+                    send_blocking!(data.sender, Action::RefreshShowsView);
+                    send_blocking!(data.sender, Action::RefreshEpisodesView);
                 })
                 .build(),
         ];
@@ -276,7 +271,7 @@ impl PdApplication {
         let ep = dbqueries::get_episode_from_id(id)?;
         let show = dbqueries::get_podcast_from_id(ep.show_id())?;
         let data = self.imp();
-        send!(
+        send_blocking!(
             data.sender,
             Action::GoToEpisodeDescription(Arc::new(show), Arc::new(ep))
         );
@@ -288,7 +283,7 @@ impl PdApplication {
         let id = id_variant.get::<i32>().expect("invalid variant type");
         let show = dbqueries::get_podcast_from_id(id)?;
         let data = self.imp();
-        send!(data.sender, Action::GoToShow(Arc::new(show)));
+        send_blocking!(data.sender, Action::GoToShow(Arc::new(show)));
         Ok(())
     }
 
@@ -297,7 +292,7 @@ impl PdApplication {
         self.set_accels_for_action("win.refresh", &["<primary>r"]);
     }
 
-    fn do_action(&self, action: Action) -> glib::ControlFlow {
+    fn do_action(&self, action: Action) {
         let data = self.imp();
         let w = data.window.borrow();
         let window = w.as_ref().expect("Window is not initialized");
@@ -326,12 +321,12 @@ impl PdApplication {
                 self.do_action(Action::ReplaceWidget(pd));
                 window.go_to_show_widget();
             }
-            Action::GoToDiscovery => {
-                let widget = DiscoveryPage::new(window.sender());
-                window.push_page(&widget);
-            }
             Action::GoToFoundPodcasts(found) => {
                 let widget = SearchResults::new(&found, window.sender());
+                window.push_page(&widget);
+            }
+            Action::GoToDiscovery => {
+                let widget = DiscoveryPage::new(window.sender());
                 window.push_page(&widget);
             }
             Action::CopiedUrlNotification => {
@@ -379,9 +374,8 @@ impl PdApplication {
                 window.set_updating_timeout(Some(updating_timeout));
             }
             Action::FeedRefreshed => {
-                let sender = data.sender.clone();
-                send!(sender, Action::StopUpdating);
-                send!(sender, Action::RefreshAllViews);
+                self.do_action(Action::StopUpdating);
+                self.do_action(Action::RefreshAllViews);
             }
             Action::InitEpisode(id) => {
                 let res = window.init_episode(id, None, false);
@@ -480,8 +474,6 @@ impl PdApplication {
                 }
             }
         };
-
-        glib::ControlFlow::Continue
     }
 
     pub(crate) fn run() -> glib::ExitCode {

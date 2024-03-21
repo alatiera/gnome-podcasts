@@ -17,21 +17,19 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-use anyhow::Result;
-use chrono::prelude::*;
-
 use adw::subclass::prelude::*;
+use anyhow::Result;
+use async_channel::Sender;
+use chrono::prelude::*;
 use glib::subclass::InitializingObject;
-use glib::Sender;
 use gtk::gio;
 use gtk::{glib, prelude::*, CompositeTemplate};
-
-use podcasts_data::dbqueries;
-use podcasts_data::EpisodeWidgetModel;
 
 use crate::app::Action;
 use crate::utils::{self, lazy_load};
 use crate::widgets::{BaseView, EpisodeWidget};
+use podcasts_data::dbqueries;
+use podcasts_data::EpisodeWidgetModel;
 
 #[derive(Debug, Clone)]
 enum ListSplit {

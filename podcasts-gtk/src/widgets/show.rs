@@ -17,27 +17,23 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-use glib::clone;
-use glib::Sender;
-
+use adw::prelude::*;
+use adw::subclass::prelude::*;
 use anyhow::Result;
+use async_channel::Sender;
+use glib::clone;
 use gtk::gio;
-
-use podcasts_data::dbqueries;
-use podcasts_data::EpisodeWidgetModel;
-use podcasts_data::Show;
+use gtk::glib;
+use gtk::CompositeTemplate;
+use std::cell::Cell;
+use std::sync::Arc;
 
 use crate::app::Action;
 use crate::utils::{self, lazy_load};
 use crate::widgets::{EmptyShow, EpisodeWidget, ReadMoreLabel, ShowMenu};
-
-use std::cell::Cell;
-use std::sync::Arc;
-
-use adw::prelude::*;
-use adw::subclass::prelude::*;
-use gtk::glib;
-use gtk::CompositeTemplate;
+use podcasts_data::dbqueries;
+use podcasts_data::EpisodeWidgetModel;
+use podcasts_data::Show;
 
 #[derive(Debug, Default, CompositeTemplate)]
 #[template(resource = "/org/gnome/Podcasts/gtk/show_widget.ui")]

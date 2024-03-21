@@ -18,10 +18,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 use adw::prelude::*;
-use gtk::glib;
-
 use anyhow::Result;
-use glib::Sender;
+use async_channel::Sender;
 
 use crate::app::Action;
 use crate::stacks::{HomeStack, ShowStack};
