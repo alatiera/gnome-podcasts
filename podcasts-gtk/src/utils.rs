@@ -17,7 +17,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-use anyhow::{anyhow, Result};
+use anyhow::{anyhow, bail, Context, Result};
 use async_channel::unbounded;
 use async_channel::Sender;
 use chrono::prelude::*;
@@ -38,7 +38,7 @@ use std::time::{Duration, Instant};
 use url::Url;
 
 use crate::app::Action;
-use crate::i18n::i18n;
+use crate::i18n::{i18n, i18n_f};
 use podcasts_data::dbqueries;
 use podcasts_data::downloader;
 use podcasts_data::downloader::client_builder;
@@ -80,7 +80,8 @@ macro_rules! send {
     };
 }
 
-/// same as send! but not async
+/// Same as send! but not async.
+/// Should not be used from async functions.
 #[macro_export]
 macro_rules! send_blocking {
     ($sender:expr, $action:expr) => {
@@ -475,7 +476,7 @@ async fn soundcloud_lookup_id(url: &Url) -> Option<(u64, u64)> {
     ))
 }
 
-pub(crate) fn on_import_clicked(window: &gtk::ApplicationWindow, sender: &Sender<Action>) {
+pub(crate) async fn on_import_clicked(window: &gtk::ApplicationWindow, sender: &Sender<Action>) {
     // Set a filter to show only xml files
     let filter = FileFilter::new();
     FileFilter::set_name(&filter, Some(i18n("OPML file").as_str()));
@@ -495,29 +496,27 @@ pub(crate) fn on_import_clicked(window: &gtk::ApplicationWindow, sender: &Sender
         .filters(&filters)
         .build();
 
-    dialog.open(
-        Some(window),
-        gio::Cancellable::NONE,
-        clone!(@strong sender, @strong dialog => move |result| {
-            if let Ok(file) = result {
-                if let Some(path) = file.peek_path() {
-                    gio::spawn_blocking(clone!(@strong sender => move || {
-                        // Parse the file and import the feeds
-                        if let Ok(sources) = opml::import_from_file(path) {
-                            // Refresh the successfully parsed feeds to index them
-                            schedule_refresh(Some(sources), sender)
-                        } else {
-                            let text = i18n("Failed to parse the imported file");
-                            send_blocking!(sender, Action::ErrorNotification(text));
-                        }
-                    }));
-                }
+    if let Ok(file) = dialog.open_future(Some(window)).await {
+        if let Some(path) = file.peek_path() {
+            // spawn a thread to avoid blocking ui during import
+            let result = gio::spawn_blocking(clone!(@strong sender => move || {
+                // Parse the file and import the feeds
+                opml::import_from_file(path).map(|sources| {
+                    // Refresh the successfully parsed feeds to index them
+                    schedule_refresh(Some(sources), sender)
+                }).context("PARSE")
+            }))
+            .await;
+
+            if let Err(err) = result.unwrap_or_else(|e| bail!("Import Thread Error {e:#?}")) {
+                let text = i18n_f("Failed to parse the imported file {}", &[&err.to_string()]);
+                send!(sender, Action::ErrorNotification(text));
             }
-        }),
-    );
+        }
+    };
 }
 
-pub(crate) fn on_export_clicked(window: &gtk::ApplicationWindow, sender: &Sender<Action>) {
+pub(crate) async fn on_export_clicked(window: &gtk::ApplicationWindow, sender: &Sender<Action>) {
     // Set a filter to show only xml files
     let filter = FileFilter::new();
     FileFilter::set_name(&filter, Some(i18n("OPML file").as_str()));
@@ -541,20 +540,20 @@ pub(crate) fn on_export_clicked(window: &gtk::ApplicationWindow, sender: &Sender
         .filters(&filters)
         .build();
 
-    dialog.save(Some(window), gio::Cancellable::NONE, clone!(@strong sender, @strong dialog => move |result| {
-        if let Ok(file) = result {
-            if let Some(path) = file.peek_path() {
-                debug!("File selected: {:?}", path);
-                gio::spawn_blocking(clone!(@strong sender => move || {
-                    if let Err(err) = opml::export_from_db(path, &i18n("GNOME Podcasts Subscriptions")) {
-                        let text = i18n("Failed to export podcasts");
-                        error!("Failed to export podcasts: {err}");
-                        send_blocking!(sender, Action::ErrorNotification(text));
-                    }
-                }));
+    if let Ok(file) = dialog.save_future(Some(window)).await {
+        if let Some(path) = file.peek_path() {
+            debug!("File selected: {:?}", path);
+            let result = gio::spawn_blocking(move || {
+                opml::export_from_db(path, &i18n("GNOME Podcasts Subscriptions"))
+            })
+            .await;
+            if let Ok(Err(err)) = result {
+                let text = i18n("Failed to export podcasts");
+                error!("Failed to export podcasts: {err}");
+                send!(sender, Action::ErrorNotification(text));
             }
-        }}),
-    );
+        }
+    };
 }
 
 #[cfg(test)]

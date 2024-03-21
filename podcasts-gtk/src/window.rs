@@ -105,13 +105,13 @@ impl ObjectSubclass for MainWindowPriv {
             let sender = win.sender();
             utils::schedule_refresh(None, sender.clone());
         });
-        klass.install_action("win.import", None, move |win, _, _| {
+        klass.install_action_async("win.import", None, |win, _, _| async move {
             let sender = win.sender();
-            utils::on_import_clicked(win.upcast_ref(), sender);
+            utils::on_import_clicked(win.upcast_ref(), sender).await;
         });
-        klass.install_action("win.export", None, move |win, _, _| {
+        klass.install_action_async("win.export", None, |win, _, _| async move {
             let sender = win.sender();
-            utils::on_export_clicked(win.upcast_ref(), sender);
+            utils::on_export_clicked(win.upcast_ref(), sender).await;
         });
         klass.install_action("win.about", None, move |win, _, _| {
             about_dialog(win.upcast_ref());

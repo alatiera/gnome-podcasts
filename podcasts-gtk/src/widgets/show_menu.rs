@@ -202,19 +202,25 @@ pub(crate) fn remove_show_notif(pd: Arc<Show>, sender: Sender<Action>) -> adw::T
         let res = utils::unignore_show(id);
         debug_assert!(res.is_ok());
 
-        // Spawn a thread so it won't block the ui.
-        gio::spawn_blocking(clone!(@strong pd, @strong sender => move || {
-            let app = gio::Application::default()
-                .expect("Could not get default application")
-                .downcast::<crate::PdApplication>()
-                .unwrap();
-            if app.is_show_marked_delete(&pd) {
-                if let Err(err) = delete_show(&pd) {
-                    error!("Error: {}", err);
-                    error!("Failed to delete {}", pd.title());
+        crate::MAINCONTEXT.spawn_local(clone!(@strong pd, @strong sender => async move {
+            // Spawn a thread so it won't block the ui.
+            let result = gio::spawn_blocking(move || {
+                let app = gio::Application::default()
+                    .expect("Could not get default application")
+                    .downcast::<crate::PdApplication>()
+                    .unwrap();
+                if app.is_show_marked_delete(&pd) {
+                    if let Err(err) = delete_show(&pd) {
+                        error!("Error: {}", err);
+                        error!("Failed to delete {}", pd.title());
+                    }
+                    true
+                } else {
+                    false
                 }
-
-                send_blocking!(sender, Action::RefreshEpisodesView);
+            }).await;
+            if let Ok(true) = result {
+                send!(sender, Action::RefreshEpisodesView);
             }
         }));
     }));
