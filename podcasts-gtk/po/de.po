@@ -10,8 +10,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: podcasts master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2024-03-16 15:12+0000\n"
-"PO-Revision-Date: 2024-03-19 20:34+0100\n"
+"POT-Creation-Date: 2024-03-20 12:29+0000\n"
+"PO-Revision-Date: 2024-03-20 20:54+0100\n"
 "Last-Translator: Jürgen Benvenuti <gastornis@posteo.org>\n"
 "Language-Team: Deutsch <gnome-de@gnome.org>\n"
 "Language: de\n"
@@ -21,26 +21,30 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Poedit 3.4.2\n"
 
-#: podcasts-gtk/resources/gtk/empty_show.ui:16
+#. Translators: Show as a noun, meaning a Podcast-Show.
+#: podcasts-gtk/resources/gtk/empty_show.ui:17
 msgid "This show does not have episodes yet"
 msgstr "Dieser Podcast hat noch keine Folgen"
 
-#: podcasts-gtk/resources/gtk/empty_show.ui:25
+#: podcasts-gtk/resources/gtk/empty_show.ui:26
 msgid "If you think this is an error, please consider writing a bug report."
 msgstr ""
 "Falls Sie meinen, dass es sich um einen Fehler handeln könnte, schreiben Sie "
 "bitte einen Fehlerbericht."
 
 # Das ist eine Überschrift für eine Ansicht, wenn noch keine Podcasts abonniert wurden. Darunter finden sich Hinweise, wie neue Podcasts hinzugefügt werden können - pk
-#: podcasts-gtk/resources/gtk/empty_view.ui:30
+#. Translators: Shows as a noun, meaning Podcast-Shows.
+#: podcasts-gtk/resources/gtk/empty_view.ui:31
 msgid "Get Some Shows"
 msgstr "Abonnieren Sie ein paar Podcasts"
 
-#: podcasts-gtk/resources/gtk/empty_view.ui:50
+#. Translators: Shows as a noun, meaning Podcast-Shows.
+#: podcasts-gtk/resources/gtk/empty_view.ui:52
 msgid "Add new shows via feed URL"
 msgstr "Neue Podcasts mittels Quellen-Adresse hinzufügen"
 
-#: podcasts-gtk/resources/gtk/empty_view.ui:73
+#. Translators: Shows as a noun, meaning Podcast-Shows.
+#: podcasts-gtk/resources/gtk/empty_view.ui:76
 msgid "Import shows from another device"
 msgstr "Podcasts von einem anderen Gerät importieren"
 
@@ -52,23 +56,48 @@ msgstr "Folgendetails"
 msgid "Episode Menu"
 msgstr "Folgenmenü"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:91
+#: podcasts-gtk/resources/gtk/episode_description.ui:92
 msgid "Podcast Title"
 msgstr "Podcast-Titel"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:114
+#: podcasts-gtk/resources/gtk/episode_description.ui:115
 msgid "Duration - Date"
 msgstr "Dauer - Datum"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:134
+#: podcasts-gtk/resources/gtk/episode_description.ui:146
+msgid "Download"
+msgstr "Herunterladen"
+
+#: podcasts-gtk/resources/gtk/episode_description.ui:155
+msgid "Cancel"
+msgstr "Abbrechen"
+
+#: podcasts-gtk/resources/gtk/episode_description.ui:165
+msgid "Delete File"
+msgstr "Datei löschen"
+
+#: podcasts-gtk/resources/gtk/episode_description.ui:174
+msgid "Stream"
+msgstr "Streamen"
+
+#: podcasts-gtk/resources/gtk/episode_description.ui:184
+#: podcasts-gtk/resources/gtk/episode_description.ui:186
+#: podcasts-gtk/resources/gtk/player_dialog.ui:173
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:63
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:254
+msgid "Play"
+msgstr "Wiedergeben"
+
+#: podcasts-gtk/resources/gtk/episode_description.ui:208
 msgid "Episode Description"
 msgstr "Folgenbeschreibung"
 
-#: podcasts-gtk/resources/gtk/episode_menu.ui:35
+#. Translators: Show as a noun, meaning a Podcast-Show.
+#: podcasts-gtk/resources/gtk/episode_menu.ui:36
 msgid "Go to Show"
 msgstr "Zum Podcast gehen"
 
-#: podcasts-gtk/resources/gtk/episode_menu.ui:39
+#: podcasts-gtk/resources/gtk/episode_menu.ui:40
 msgid "Copy Episode Url"
 msgstr "Adresse der Folge kopieren"
 
@@ -96,19 +125,21 @@ msgstr "Diese Folge herunterladen"
 msgid "_Check for New Episodes"
 msgstr "Auf neue Folgen _prüfen"
 
-#: podcasts-gtk/resources/gtk/hamburger.ui:12
+#. Translators: Show as a noun, meaning Podcast-Shows.
+#: podcasts-gtk/resources/gtk/hamburger.ui:13
 msgid "_Import Shows"
 msgstr "Podcasts _importieren"
 
-#: podcasts-gtk/resources/gtk/hamburger.ui:16
+#. Translators: Show as a noun, meaning Podcast-Shows.
+#: podcasts-gtk/resources/gtk/hamburger.ui:18
 msgid "_Export Shows"
 msgstr "Podcasts e_xportieren"
 
-#: podcasts-gtk/resources/gtk/hamburger.ui:22
+#: podcasts-gtk/resources/gtk/hamburger.ui:24
 msgid "_Keyboard Shortcuts"
 msgstr "Tasten_kürzel"
 
-#: podcasts-gtk/resources/gtk/hamburger.ui:30
+#: podcasts-gtk/resources/gtk/hamburger.ui:32
 msgid "_About Podcasts"
 msgstr "Info zu _Podcasts"
 
@@ -171,15 +202,9 @@ msgstr "Schließen"
 msgid "Rewind"
 msgstr "Zurückspulen"
 
-#: podcasts-gtk/resources/gtk/player_dialog.ui:173
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:63
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:253
-msgid "Play"
-msgstr "Wiedergeben"
-
 #: podcasts-gtk/resources/gtk/player_dialog.ui:191
 #: podcasts-gtk/resources/gtk/player_toolbar.ui:76
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:262
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:263
 msgid "Pause"
 msgstr "Pause"
 
@@ -265,12 +290,13 @@ msgstr "Folgen"
 #: podcasts-gtk/resources/gtk/window.ui:25
 #: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:4
 #: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:3
-#: podcasts-gtk/src/app.rs:484 podcasts-gtk/src/widgets/aboutdialog.rs:56
+#: podcasts-gtk/src/app.rs:498 podcasts-gtk/src/widgets/aboutdialog.rs:56
 #: podcasts-gtk/src/widgets/player.rs:385
 msgid "Podcasts"
 msgstr "Podcasts"
 
-#: podcasts-gtk/resources/gtk/window.ui:33
+#. Translators: Show as a noun, meaning a Podcast-Show.
+#: podcasts-gtk/resources/gtk/window.ui:35
 msgid "Show"
 msgstr "Podcast"
 
@@ -345,7 +371,7 @@ msgstr "Zeitintervall zwischen automatischen Löschvorgängen"
 msgid "What period of time to wait between automatic cleanups"
 msgstr "Zeitintervall zwischen automatischen Löschvorgängen"
 
-#: podcasts-gtk/src/app.rs:328
+#: podcasts-gtk/src/app.rs:337
 msgid "Copied URL to clipboard!"
 msgstr "Adresse in die Zwischenablage kopiert!"
 
@@ -353,45 +379,47 @@ msgstr "Adresse in die Zwischenablage kopiert!"
 msgid "New"
 msgstr "Neu"
 
+#. Translators: Shows as a noun, meaning Podcast-Shows.
 #: podcasts-gtk/src/stacks/content.rs:70
-#: podcasts-gtk/src/widgets/shows_view.rs:64
+#: podcasts-gtk/src/widgets/shows_view.rs:65
 msgid "Shows"
 msgstr "Podcasts"
 
-#: podcasts-gtk/src/utils.rs:480 podcasts-gtk/src/utils.rs:522
+#: podcasts-gtk/src/utils.rs:473 podcasts-gtk/src/utils.rs:515
 msgid "OPML file"
 msgstr "OPML-Datei"
 
-#: podcasts-gtk/src/utils.rs:491
+#: podcasts-gtk/src/utils.rs:484
 msgid "Select the file from which to you want to import shows."
 msgstr "Wählen Sie die Datei aus, aus der Sie Podcasts importieren wollen."
 
-#: podcasts-gtk/src/utils.rs:493
+#: podcasts-gtk/src/utils.rs:486
 msgid "_Import"
 msgstr "_Importieren"
 
-#: podcasts-gtk/src/utils.rs:509
+#: podcasts-gtk/src/utils.rs:502
 msgid "Failed to parse the imported file"
 msgstr "Die importierte Datei konnte nicht ausgewertet werden"
 
-#: podcasts-gtk/src/utils.rs:532
+#. Translators: Show as a noun, meaning Podcast-Shows.
+#: podcasts-gtk/src/utils.rs:526
 msgid "Export shows to…"
 msgstr "Podcasts exportieren nach …"
 
-#: podcasts-gtk/src/utils.rs:533
+#: podcasts-gtk/src/utils.rs:527
 msgid "_Export"
 msgstr "E_xportieren"
 
 #. Translators: This is the string of the suggested name for the exported opml file
-#: podcasts-gtk/src/utils.rs:537
+#: podcasts-gtk/src/utils.rs:531
 msgid "gnome-podcasts-exported-shows"
 msgstr "gnome-podcasts-sendungen-export"
 
-#: podcasts-gtk/src/utils.rs:547
+#: podcasts-gtk/src/utils.rs:541
 msgid "GNOME Podcasts Subscriptions"
 msgstr "GNOME Podcasts Abonnements"
 
-#: podcasts-gtk/src/utils.rs:548
+#: podcasts-gtk/src/utils.rs:542
 msgid "Failed to export podcasts"
 msgstr "Export der Podcasts ist fehlgeschlagen"
 
@@ -408,11 +436,11 @@ msgstr ""
 "Philipp Kiemle <philipp.kiemle@gmail.com>\n"
 "Jürgen Benvenuti <gastornis@posteo.org>"
 
-#: podcasts-gtk/src/widgets/episode.rs:373
+#: podcasts-gtk/src/widgets/episode.rs:239
 msgid "{} min"
 msgstr "{} min"
 
-#: podcasts-gtk/src/widgets/player.rs:958
+#: podcasts-gtk/src/widgets/player.rs:975
 msgid "The media player was unable to execute an action."
 msgstr "Die Medienwiedergabe konnte eine Aktion nicht ausführen."
 
@@ -475,9 +503,6 @@ msgstr "Abonnement von {} gekündigt"
 
 #~ msgid "Selected file could not be accessed."
 #~ msgstr "Auf die gewählte Datei konnte nicht zugegriffen werden."
-
-#~ msgid "_Cancel"
-#~ msgstr "A_bbrechen"
 
 #~ msgid "Learn more about GNOME Podcasts"
 #~ msgstr "Erfahren Sie mehr über GNOME Podcasts"
