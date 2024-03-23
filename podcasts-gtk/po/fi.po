@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: podcasts master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2024-02-27 18:33+0000\n"
-"PO-Revision-Date: 2024-03-09 16:57+0200\n"
+"POT-Creation-Date: 2024-03-20 12:29+0000\n"
+"PO-Revision-Date: 2024-03-23 13:19+0200\n"
 "Last-Translator: Jiri Grönroos <jiri.gronroos+l10n@iki.fi>\n"
 "Language-Team: Finnish <lokalisointi-lista@googlegroups.com>\n"
 "Language: fi\n"
@@ -18,23 +18,27 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Poedit 3.4.2\n"
 
-#: podcasts-gtk/resources/gtk/empty_show.ui:16
+#. Translators: Show as a noun, meaning a Podcast-Show.
+#: podcasts-gtk/resources/gtk/empty_show.ui:17
 msgid "This show does not have episodes yet"
 msgstr "Tässä ohjelmassa ei ole vielä yhtäkään jaksoa"
 
-#: podcasts-gtk/resources/gtk/empty_show.ui:25
+#: podcasts-gtk/resources/gtk/empty_show.ui:26
 msgid "If you think this is an error, please consider writing a bug report."
 msgstr "Jos tämä on mielestäsi virhe, teethän bugiraportin."
 
-#: podcasts-gtk/resources/gtk/empty_view.ui:30
+#. Translators: Shows as a noun, meaning Podcast-Shows.
+#: podcasts-gtk/resources/gtk/empty_view.ui:31
 msgid "Get Some Shows"
 msgstr "Hanki ohjelmia"
 
-#: podcasts-gtk/resources/gtk/empty_view.ui:50
+#. Translators: Shows as a noun, meaning Podcast-Shows.
+#: podcasts-gtk/resources/gtk/empty_view.ui:52
 msgid "Add new shows via feed URL"
 msgstr "Lisää uusia ohjelmia syötteen osoitteen avulla"
 
-#: podcasts-gtk/resources/gtk/empty_view.ui:73
+#. Translators: Shows as a noun, meaning Podcast-Shows.
+#: podcasts-gtk/resources/gtk/empty_view.ui:76
 msgid "Import shows from another device"
 msgstr "Tuo ohjelmia toiselta laitteelta"
 
@@ -46,23 +50,48 @@ msgstr "Jakson tiedot"
 msgid "Episode Menu"
 msgstr "Jaksovalikko"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:90
+#: podcasts-gtk/resources/gtk/episode_description.ui:92
 msgid "Podcast Title"
 msgstr "Podcastin nimi"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:113
+#: podcasts-gtk/resources/gtk/episode_description.ui:115
 msgid "Duration - Date"
 msgstr "Kesto - Päiväys"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:133
+#: podcasts-gtk/resources/gtk/episode_description.ui:146
+msgid "Download"
+msgstr "Lataa"
+
+#: podcasts-gtk/resources/gtk/episode_description.ui:155
+msgid "Cancel"
+msgstr "Peru"
+
+#: podcasts-gtk/resources/gtk/episode_description.ui:165
+msgid "Delete File"
+msgstr "Poista tiedosto"
+
+#: podcasts-gtk/resources/gtk/episode_description.ui:174
+msgid "Stream"
+msgstr "Suoratoisto"
+
+#: podcasts-gtk/resources/gtk/episode_description.ui:184
+#: podcasts-gtk/resources/gtk/episode_description.ui:186
+#: podcasts-gtk/resources/gtk/player_dialog.ui:173
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:63
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:254
+msgid "Play"
+msgstr "Toista"
+
+#: podcasts-gtk/resources/gtk/episode_description.ui:208
 msgid "Episode Description"
 msgstr "Jakson kuvaus"
 
-#: podcasts-gtk/resources/gtk/episode_menu.ui:35
+#. Translators: Show as a noun, meaning a Podcast-Show.
+#: podcasts-gtk/resources/gtk/episode_menu.ui:36
 msgid "Go to Show"
 msgstr "Siirry ohjelmaan"
 
-#: podcasts-gtk/resources/gtk/episode_menu.ui:39
+#: podcasts-gtk/resources/gtk/episode_menu.ui:40
 msgid "Copy Episode Url"
 msgstr "Kopioi jakson verkko-osoite"
 
@@ -90,40 +119,29 @@ msgstr "Lataa tämä jakso"
 msgid "_Check for New Episodes"
 msgstr "Ta_rkista uudet jaksot"
 
-#: podcasts-gtk/resources/gtk/hamburger.ui:12
+#. Translators: Show as a noun, meaning Podcast-Shows.
+#: podcasts-gtk/resources/gtk/hamburger.ui:13
 msgid "_Import Shows"
 msgstr "Tu_o jaksoja"
 
-#: podcasts-gtk/resources/gtk/hamburger.ui:16
+#. Translators: Show as a noun, meaning Podcast-Shows.
+#: podcasts-gtk/resources/gtk/hamburger.ui:18
 msgid "_Export Shows"
 msgstr "_Vie jaksoja"
 
-#: podcasts-gtk/resources/gtk/hamburger.ui:22
+#: podcasts-gtk/resources/gtk/hamburger.ui:24
 msgid "_Keyboard Shortcuts"
 msgstr "_Pikanäppäimet"
 
-#: podcasts-gtk/resources/gtk/hamburger.ui:30
+#: podcasts-gtk/resources/gtk/hamburger.ui:32
 msgid "_About Podcasts"
 msgstr "_Tietoja - Podcastit"
 
-#: podcasts-gtk/resources/gtk/headerbar.ui:33
-#: podcasts-gtk/resources/gtk/headerbar.ui:108
+#: podcasts-gtk/resources/gtk/headerbar.ui:41
 msgid "Add a new feed"
 msgstr "Lisää uusi syöte"
 
-#: podcasts-gtk/resources/gtk/headerbar.ui:44
-msgid "Enter Feed Address"
-msgstr "Anna syötteen osoite"
-
-#: podcasts-gtk/resources/gtk/headerbar.ui:59
-msgid "Popover menu (ESC to close)"
-msgstr "Ponnahdusvalikko (ESC sulkee)"
-
-#: podcasts-gtk/resources/gtk/headerbar.ui:71
-msgid "Add"
-msgstr "Lisää"
-
-#: podcasts-gtk/resources/gtk/headerbar.ui:119
+#: podcasts-gtk/resources/gtk/headerbar.ui:51
 msgid "Main Menu"
 msgstr "Päävalikko"
 
@@ -178,15 +196,9 @@ msgstr "Sulje"
 msgid "Rewind"
 msgstr "Kelaa taakse"
 
-#: podcasts-gtk/resources/gtk/player_dialog.ui:173
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:63
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:253
-msgid "Play"
-msgstr "Toista"
-
 #: podcasts-gtk/resources/gtk/player_dialog.ui:191
 #: podcasts-gtk/resources/gtk/player_toolbar.ui:76
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:262
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:263
 msgid "Pause"
 msgstr "Keskeytä"
 
@@ -272,12 +284,13 @@ msgstr "Jaksot"
 #: podcasts-gtk/resources/gtk/window.ui:25
 #: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:4
 #: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:3
-#: podcasts-gtk/src/app.rs:430 podcasts-gtk/src/widgets/aboutdialog.rs:56
-#: podcasts-gtk/src/widgets/player.rs:384
+#: podcasts-gtk/src/app.rs:498 podcasts-gtk/src/widgets/aboutdialog.rs:56
+#: podcasts-gtk/src/widgets/player.rs:385
 msgid "Podcasts"
 msgstr "Podcastit"
 
-#: podcasts-gtk/resources/gtk/window.ui:33
+#. Translators: Show as a noun, meaning a Podcast-Show.
+#: podcasts-gtk/resources/gtk/window.ui:35
 msgid "Show"
 msgstr "Ohjelma"
 
@@ -349,7 +362,7 @@ msgstr "Kuinka monta ajanjaksoa odottaa automaattisten siivousten välillä"
 msgid "What period of time to wait between automatic cleanups"
 msgstr "Kuinka pitkä ajanjakso odottaa automaattisten siivousten välillä"
 
-#: podcasts-gtk/src/app.rs:315
+#: podcasts-gtk/src/app.rs:337
 msgid "Copied URL to clipboard!"
 msgstr "Verkko-osoite kopioitu leikepöydälle!"
 
@@ -357,45 +370,47 @@ msgstr "Verkko-osoite kopioitu leikepöydälle!"
 msgid "New"
 msgstr "Uudet"
 
+#. Translators: Shows as a noun, meaning Podcast-Shows.
 #: podcasts-gtk/src/stacks/content.rs:70
-#: podcasts-gtk/src/widgets/shows_view.rs:64
+#: podcasts-gtk/src/widgets/shows_view.rs:65
 msgid "Shows"
 msgstr "Ohjelmat"
 
-#: podcasts-gtk/src/utils.rs:480 podcasts-gtk/src/utils.rs:522
+#: podcasts-gtk/src/utils.rs:473 podcasts-gtk/src/utils.rs:515
 msgid "OPML file"
 msgstr "OPML-tiedosto"
 
-#: podcasts-gtk/src/utils.rs:491
+#: podcasts-gtk/src/utils.rs:484
 msgid "Select the file from which to you want to import shows."
 msgstr "Valitse tiedosto, josta haluat tuoda ohjelmia."
 
-#: podcasts-gtk/src/utils.rs:493
+#: podcasts-gtk/src/utils.rs:486
 msgid "_Import"
 msgstr "_Tuo"
 
-#: podcasts-gtk/src/utils.rs:509
+#: podcasts-gtk/src/utils.rs:502
 msgid "Failed to parse the imported file"
 msgstr "Tuotua tiedostoa ei voitu jäsentää"
 
-#: podcasts-gtk/src/utils.rs:532
+#. Translators: Show as a noun, meaning Podcast-Shows.
+#: podcasts-gtk/src/utils.rs:526
 msgid "Export shows to…"
 msgstr "Vie jaksot…"
 
-#: podcasts-gtk/src/utils.rs:533
+#: podcasts-gtk/src/utils.rs:527
 msgid "_Export"
 msgstr "_Vie"
 
 #. Translators: This is the string of the suggested name for the exported opml file
-#: podcasts-gtk/src/utils.rs:537
+#: podcasts-gtk/src/utils.rs:531
 msgid "gnome-podcasts-exported-shows"
 msgstr "gnome-podcasteista-viedyt-ohjelmat"
 
-#: podcasts-gtk/src/utils.rs:547
+#: podcasts-gtk/src/utils.rs:541
 msgid "GNOME Podcasts Subscriptions"
 msgstr "Gnomen podcastsovelluksen tilaukset"
 
-#: podcasts-gtk/src/utils.rs:548
+#: podcasts-gtk/src/utils.rs:542
 msgid "Failed to export podcasts"
 msgstr "Podcastien vienti epäonnistui"
 
@@ -407,11 +422,11 @@ msgstr "Podcast-sovellus Gnome-työpöydlle."
 msgid "translator-credits"
 msgstr "Jiri Grönroos"
 
-#: podcasts-gtk/src/widgets/episode.rs:373
+#: podcasts-gtk/src/widgets/episode.rs:239
 msgid "{} min"
 msgstr "{} min"
 
-#: podcasts-gtk/src/widgets/player.rs:940
+#: podcasts-gtk/src/widgets/player.rs:975
 msgid "The media player was unable to execute an action."
 msgstr "Mediasoitin ei kyennyt suorittamaan toimintoa."
 
@@ -435,6 +450,15 @@ msgstr "Kumoa"
 #: podcasts-gtk/src/widgets/show_menu.rs:198
 msgid "Unsubscribed from {}"
 msgstr "Lopeta syötteen {} tilaus"
+
+#~ msgid "Enter Feed Address"
+#~ msgstr "Anna syötteen osoite"
+
+#~ msgid "Popover menu (ESC to close)"
+#~ msgstr "Ponnahdusvalikko (ESC sulkee)"
+
+#~ msgid "Add"
+#~ msgstr "Lisää"
 
 #~ msgid "Back"
 #~ msgstr "Takaisin"
@@ -465,9 +489,6 @@ msgstr "Lopeta syötteen {} tilaus"
 
 #~ msgid "Selected file could not be accessed."
 #~ msgstr "Valittua tiedostoa ei voitu käyttää."
-
-#~ msgid "_Cancel"
-#~ msgstr "_Peru"
 
 #~ msgid "Learn more about GNOME Podcasts"
 #~ msgstr "Lisätietoja Gnomen podcast-sovelluksesta"
