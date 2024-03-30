@@ -57,29 +57,35 @@ Tobias Bernard
                   </object>
                 </child>
                 <child>
-                  <object class="GtkButton" id="play_button">
-                    <property name="width_request">64</property>
-                    <property name="receives_default">True</property>
-                    <property name="tooltip_text" translatable="yes">Play</property>
-                    <property name="icon_name">media-playback-start-symbolic</property>
-                    <style>
-                      <class name="flat"/>
-                      <class name="circular"/>
-                      <class name="taller-button"/>
-                    </style>
-                  </object>
-                </child>
-                <child>
-                  <object class="GtkButton" id="pause_button">
-                    <property name="width_request">64</property>
-                    <property name="receives_default">True</property>
-                    <property name="tooltip_text" translatable="yes">Pause</property>
-                    <property name="icon_name">media-playback-pause-symbolic</property>
-                    <style>
-                      <class name="flat"/>
-                      <class name="circular"/>
-                      <class name="taller-button"/>
-                    </style>
+                  <object class="GtkStack" id="play_pause_big">
+                    <property name="hhomogeneous">True</property>
+                    <property name="vhomogeneous">True</property>
+                    <child>
+                      <object class="GtkButton" id="play_button">
+                        <property name="width_request">64</property>
+                        <property name="receives_default">True</property>
+                        <property name="tooltip_text" translatable="yes">Play</property>
+                        <property name="icon_name">media-playback-start-symbolic</property>
+                        <style>
+                          <class name="flat"/>
+                          <class name="circular"/>
+                          <class name="taller-button"/>
+                        </style>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkButton" id="pause_button">
+                        <property name="width_request">64</property>
+                        <property name="receives_default">True</property>
+                        <property name="tooltip_text" translatable="yes">Pause</property>
+                        <property name="icon_name">media-playback-pause-symbolic</property>
+                        <style>
+                          <class name="flat"/>
+                          <class name="circular"/>
+                          <class name="taller-button"/>
+                        </style>
+                      </object>
+                    </child>
                   </object>
                 </child>
                 <child>
@@ -245,6 +251,8 @@ Tobias Bernard
                 </child>
                 <child>
                   <object class="GtkStack" id="play_pause_small">
+                    <property name="hhomogeneous">True</property>
+                    <property name="vhomogeneous">True</property>
                     <property name="hexpand">True</property>
                     <property name="halign">end</property>
                     <property name="valign">center</property>

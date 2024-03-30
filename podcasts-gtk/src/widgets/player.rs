@@ -276,6 +276,7 @@ impl PlayerRate {
 struct PlayerControls {
     play: gtk::Button,
     pause: gtk::Button,
+    play_pause_big: gtk::Stack,
     play_small: gtk::Button,
     pause_small: gtk::Button,
     play_pause_small: gtk::Stack,
@@ -419,10 +420,12 @@ impl Default for PlayerWidget {
         let forward: gtk::Button = builder.object("ff_button").unwrap();
         let rewind: gtk::Button = builder.object("rewind_button").unwrap();
         let play_pause_small = builder.object("play_pause_small").unwrap();
+        let play_pause_big = builder.object("play_pause_big").unwrap();
 
         let controls = PlayerControls {
             play,
             pause,
+            play_pause_big,
             play_small,
             pause_small,
             play_pause_small,
@@ -638,8 +641,9 @@ impl PlayerExt for PlayerWidget {
 
         self.reveal();
 
-        self.controls.pause.set_visible(true);
-        self.controls.play.set_visible(false);
+        self.controls
+            .play_pause_big
+            .set_visible_child(&self.controls.pause);
         self.controls
             .play_pause_small
             .set_visible_child(&self.controls.pause_small);
@@ -664,8 +668,9 @@ impl PlayerExt for PlayerWidget {
     fn pause(&mut self) {
         self.dialog.play_pause.set_visible_child(&self.dialog.play);
 
-        self.controls.pause.set_visible(false);
-        self.controls.play.set_visible(true);
+        self.controls
+            .play_pause_big
+            .set_visible_child(&self.controls.play);
         self.controls
             .play_pause_small
             .set_visible_child(&self.controls.play_small);
@@ -695,22 +700,23 @@ impl PlayerExt for PlayerWidget {
     fn stop(&mut self) {
         // hide pause buttons and restore focus for accessibility
         let is_focus = self.controls.pause.is_focus();
-        self.controls.pause.set_visible(false);
-        self.controls.play.set_visible(true);
+        self.controls
+            .play_pause_big
+            .set_visible_child(&self.controls.play);
         if is_focus {
             self.controls.play.grab_focus();
         }
 
         let is_focus = self.controls.pause_small.is_focus();
-        self.controls.pause_small.set_visible(false);
-        self.controls.play_small.set_visible(true);
+        self.controls
+            .play_pause_small
+            .set_visible_child(&self.controls.play_small);
         if is_focus {
             self.controls.play_small.grab_focus();
         }
 
         let is_focus = self.dialog.pause.is_focus();
-        self.dialog.pause.set_visible(false);
-        self.dialog.play.set_visible(true);
+        self.dialog.play_pause.set_visible_child(&self.dialog.play);
         if is_focus {
             self.dialog.play.grab_focus();
         }
