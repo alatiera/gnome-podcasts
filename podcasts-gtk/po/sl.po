@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: podcasts master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2024-03-20 12:29+0000\n"
-"PO-Revision-Date: 2024-03-30 18:21+0100\n"
+"POT-Creation-Date: 2024-03-30 18:12+0000\n"
+"PO-Revision-Date: 2024-03-30 22:10+0100\n"
 "Last-Translator: Martin Srebotnjak <miles@filmsi.net>\n"
 "Language-Team: Slovenian GNOME Translation Team <gnome-si@googlegroups.com>\n"
 "Language: sl_SI\n"
@@ -287,8 +287,8 @@ msgstr "Epizode"
 #: podcasts-gtk/resources/gtk/window.ui:25
 #: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:4
 #: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:3
-#: podcasts-gtk/src/app.rs:498 podcasts-gtk/src/widgets/aboutdialog.rs:56
-#: podcasts-gtk/src/widgets/player.rs:385
+#: podcasts-gtk/src/app.rs:491 podcasts-gtk/src/widgets/aboutdialog.rs:56
+#: podcasts-gtk/src/widgets/player.rs:378
 msgid "Podcasts"
 msgstr "Podkasti"
 
@@ -365,55 +365,55 @@ msgstr "Koliko ponovitev časa naj preteče med samodejnim počiščenjem"
 msgid "What period of time to wait between automatic cleanups"
 msgstr "Koliko časa naj preteče med izvajanjem samodejnega čiščenja"
 
-#: podcasts-gtk/src/app.rs:337
+#: podcasts-gtk/src/app.rs:333
 msgid "Copied URL to clipboard!"
 msgstr "Naslov URL je kopiran v odložišče!"
 
-#: podcasts-gtk/src/stacks/content.rs:68
+#: podcasts-gtk/src/stacks/content.rs:66
 msgid "New"
 msgstr "Novo"
 
 #. Translators: Shows as a noun, meaning Podcast-Shows.
-#: podcasts-gtk/src/stacks/content.rs:70
+#: podcasts-gtk/src/stacks/content.rs:68
 #: podcasts-gtk/src/widgets/shows_view.rs:65
 msgid "Shows"
 msgstr "Posnetki"
 
-#: podcasts-gtk/src/utils.rs:473 podcasts-gtk/src/utils.rs:515
+#: podcasts-gtk/src/utils.rs:482 podcasts-gtk/src/utils.rs:522
 msgid "OPML file"
 msgstr "Datoteka OPML"
 
-#: podcasts-gtk/src/utils.rs:484
+#: podcasts-gtk/src/utils.rs:493
 msgid "Select the file from which to you want to import shows."
 msgstr "Izberite datoteko, iz katere želite uvoziti posnetke."
 
-#: podcasts-gtk/src/utils.rs:486
+#: podcasts-gtk/src/utils.rs:495
 msgid "_Import"
 msgstr "_Uvozi"
 
-#: podcasts-gtk/src/utils.rs:502
-msgid "Failed to parse the imported file"
-msgstr "Razčlenjevanje uvožene datoteke je spodletelo"
+#: podcasts-gtk/src/utils.rs:512
+msgid "Failed to parse the imported file {}"
+msgstr "Razčlenjevanje uvožene datoteke {} je spodletelo"
 
 #. Translators: Show as a noun, meaning Podcast-Shows.
-#: podcasts-gtk/src/utils.rs:526
+#: podcasts-gtk/src/utils.rs:533
 msgid "Export shows to…"
 msgstr "Izvozi posnetke v …"
 
-#: podcasts-gtk/src/utils.rs:527
+#: podcasts-gtk/src/utils.rs:534
 msgid "_Export"
 msgstr "_Izvozi"
 
 #. Translators: This is the string of the suggested name for the exported opml file
-#: podcasts-gtk/src/utils.rs:531
+#: podcasts-gtk/src/utils.rs:538
 msgid "gnome-podcasts-exported-shows"
 msgstr "gnome-podcasts-izvoz-posnetkov"
 
-#: podcasts-gtk/src/utils.rs:541
+#: podcasts-gtk/src/utils.rs:547
 msgid "GNOME Podcasts Subscriptions"
 msgstr "Naročila Podkast GNOME"
 
-#: podcasts-gtk/src/utils.rs:542
+#: podcasts-gtk/src/utils.rs:551
 msgid "Failed to export podcasts"
 msgstr "Izvoz podkastov je spodletel"
 
@@ -427,11 +427,11 @@ msgstr ""
 "Matej Urbančič <mateju@src.gnome.org>\n"
 "Martin Srebotnjak <miles@filmsi.net>"
 
-#: podcasts-gtk/src/widgets/episode.rs:239
+#: podcasts-gtk/src/widgets/episode.rs:237
 msgid "{} min"
 msgstr "{} min"
 
-#: podcasts-gtk/src/widgets/player.rs:975
+#: podcasts-gtk/src/widgets/player.rs:968
 msgid "The media player was unable to execute an action."
 msgstr "S predvajalnikom ni mogoče izvesti zahtevanega dejanja."
 
@@ -443,15 +443,15 @@ msgstr "Vizualno razširi ta opis"
 msgid "Read More"
 msgstr "Preberi več"
 
-#: podcasts-gtk/src/widgets/show_menu.rs:178
+#: podcasts-gtk/src/widgets/show_menu.rs:170
 msgid "Marked all episodes as listened"
 msgstr "Vse epizode so označene kot poslušane"
 
-#: podcasts-gtk/src/widgets/show_menu.rs:179
-#: podcasts-gtk/src/widgets/show_menu.rs:202
+#: podcasts-gtk/src/widgets/show_menu.rs:171
+#: podcasts-gtk/src/widgets/show_menu.rs:194
 msgid "Undo"
 msgstr "Razveljavi"
 
-#: podcasts-gtk/src/widgets/show_menu.rs:198
+#: podcasts-gtk/src/widgets/show_menu.rs:190
 msgid "Unsubscribed from {}"
 msgstr "Odjavi {}"
