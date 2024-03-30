@@ -7,10 +7,10 @@ msgid ""
 msgstr ""
 "Project-Id-Version: podcasts master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2024-03-20 12:29+0000\n"
-"PO-Revision-Date: 2024-03-20 20:40+0200\n"
+"POT-Creation-Date: 2024-03-30 18:12+0000\n"
+"PO-Revision-Date: 2024-03-30 22:15+0200\n"
 "Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
-"Language-Team: Ukrainian <trans-uk@lists.fedoraproject.org>\n"
+"Language-Team: Ukrainian\n"
 "Language: uk\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -65,7 +65,6 @@ msgid "Download"
 msgstr "Отримати"
 
 #: podcasts-gtk/resources/gtk/episode_description.ui:155
-#| msgid "_Cancel"
 msgid "Cancel"
 msgstr "Скасувати"
 
@@ -287,8 +286,8 @@ msgstr "Епізоди"
 #: podcasts-gtk/resources/gtk/window.ui:25
 #: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:4
 #: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:3
-#: podcasts-gtk/src/app.rs:498 podcasts-gtk/src/widgets/aboutdialog.rs:56
-#: podcasts-gtk/src/widgets/player.rs:385
+#: podcasts-gtk/src/app.rs:491 podcasts-gtk/src/widgets/aboutdialog.rs:56
+#: podcasts-gtk/src/widgets/player.rs:378
 msgid "Podcasts"
 msgstr "Подкасти"
 
@@ -373,55 +372,56 @@ msgstr ""
 "У яких одиницях вимірювати інтервал очікування між автоматичними очищеннями "
 "(години, хвилини тощо)"
 
-#: podcasts-gtk/src/app.rs:337
+#: podcasts-gtk/src/app.rs:333
 msgid "Copied URL to clipboard!"
 msgstr "Адресу скопійовано до буфера обміну."
 
-#: podcasts-gtk/src/stacks/content.rs:68
+#: podcasts-gtk/src/stacks/content.rs:66
 msgid "New"
 msgstr "Нові випуски"
 
 #. Translators: Shows as a noun, meaning Podcast-Shows.
-#: podcasts-gtk/src/stacks/content.rs:70
+#: podcasts-gtk/src/stacks/content.rs:68
 #: podcasts-gtk/src/widgets/shows_view.rs:65
 msgid "Shows"
 msgstr "Подкасти"
 
-#: podcasts-gtk/src/utils.rs:473 podcasts-gtk/src/utils.rs:515
+#: podcasts-gtk/src/utils.rs:482 podcasts-gtk/src/utils.rs:522
 msgid "OPML file"
 msgstr "файл OPML"
 
-#: podcasts-gtk/src/utils.rs:484
+#: podcasts-gtk/src/utils.rs:493
 msgid "Select the file from which to you want to import shows."
 msgstr "Виберіть файл із подкастами, які треба імпортувати."
 
-#: podcasts-gtk/src/utils.rs:486
+#: podcasts-gtk/src/utils.rs:495
 msgid "_Import"
 msgstr "_Імпортувати"
 
-#: podcasts-gtk/src/utils.rs:502
-msgid "Failed to parse the imported file"
-msgstr "Не вдалося обробити файл під час імпортування"
+#: podcasts-gtk/src/utils.rs:512
+#| msgid "Failed to parse the imported file"
+msgid "Failed to parse the imported file {}"
+msgstr "Не вдалося обробити файл {} під час імпортування"
 
 #. Translators: Show as a noun, meaning Podcast-Shows.
-#: podcasts-gtk/src/utils.rs:526
+#: podcasts-gtk/src/utils.rs:533
 msgid "Export shows to…"
 msgstr "Експортувати подкасти…"
 
-#: podcasts-gtk/src/utils.rs:527
+#: podcasts-gtk/src/utils.rs:534
 msgid "_Export"
 msgstr "_Експортувати"
 
 #. Translators: This is the string of the suggested name for the exported opml file
-#: podcasts-gtk/src/utils.rs:531
+#: podcasts-gtk/src/utils.rs:538
 msgid "gnome-podcasts-exported-shows"
 msgstr "gnome-podcasts-exported-shows"
 
-#: podcasts-gtk/src/utils.rs:541
+#: podcasts-gtk/src/utils.rs:547
 msgid "GNOME Podcasts Subscriptions"
 msgstr "Підписки з «Подкастів» для GNOME"
 
-#: podcasts-gtk/src/utils.rs:542
+#: podcasts-gtk/src/utils.rs:551
 msgid "Failed to export podcasts"
 msgstr "Не вдалося експортувати подкасти"
 
@@ -435,11 +435,11 @@ msgstr ""
 "Юрій Чорноіван <yurchor@ukr.net>\n"
 "Андрій Сербовець <serbovets.translation@gmail.com>"
 
-#: podcasts-gtk/src/widgets/episode.rs:239
+#: podcasts-gtk/src/widgets/episode.rs:237
 msgid "{} min"
 msgstr "{} хв."
 
-#: podcasts-gtk/src/widgets/player.rs:975
+#: podcasts-gtk/src/widgets/player.rs:968
 msgid "The media player was unable to execute an action."
 msgstr "Програвачеві не вдалося виконати цю дію."
 
@@ -451,16 +451,16 @@ msgstr "Візуально розгортає цей опис"
 msgid "Read More"
 msgstr "Докладніше"
 
-#: podcasts-gtk/src/widgets/show_menu.rs:178
+#: podcasts-gtk/src/widgets/show_menu.rs:170
 msgid "Marked all episodes as listened"
 msgstr "Усі випуски позначено як прослухані."
 
-#: podcasts-gtk/src/widgets/show_menu.rs:179
-#: podcasts-gtk/src/widgets/show_menu.rs:202
+#: podcasts-gtk/src/widgets/show_menu.rs:171
+#: podcasts-gtk/src/widgets/show_menu.rs:194
 msgid "Undo"
 msgstr "Повернути"
 
-#: podcasts-gtk/src/widgets/show_menu.rs:198
+#: podcasts-gtk/src/widgets/show_menu.rs:190
 msgid "Unsubscribed from {}"
 msgstr "Підписку на {} скасовано."
 
