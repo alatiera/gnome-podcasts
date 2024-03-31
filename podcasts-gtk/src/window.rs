@@ -351,4 +351,14 @@ impl MainWindow {
             imp.navigation_view.push(&*imp.show_page);
         }
     }
+    pub(crate) fn pop_show_widget(&self) {
+        let imp = self.imp();
+        let is_current_page = imp
+            .navigation_view
+            .visible_page()
+            .is_some_and(|p| p == *imp.show_page);
+        if is_current_page {
+            imp.navigation_view.pop();
+        }
+    }
 }
