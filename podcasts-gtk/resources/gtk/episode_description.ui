@@ -121,23 +121,29 @@ Tobias Bernard
                                 </child>
                               </object>
                             </child>
+                          </object>
+                        </child>
+                        <!-- Row for Download-bar + Stream/Play -->
+                        <child>
+                          <object class="GtkBox">
+                            <property name="hexpand">True</property>
+                            <style>
+                              <class name="toolbar"/>
+                            </style>
                             <child>
+                              <object class="PdDownloadProgress" id="progressbar">
+                                <property name="margin-start">3</property>
+                                <property name="margin-bottom">10</property>
+                                <property name="hexpand">True</property>
+                              </object>
+                            </child>
+                            <child>
+                              <!-- Download/Stream/Play buttons -->
                               <object class="GtkBox">
-                                <property name="margin-start">15</property>
-                                <property name="margin-top">15</property>
-                                <property name="valign">end</property>
+                                <property name="margin-start">10</property>
+                                <property name="margin-end">18</property>
                                 <property name="halign">end</property>
-                                <style>
-                                  <class name="toolbar"/>
-                                </style>
-                                <child>
-                                  <object class="GtkSeparator">
-                                    <style>
-                                      <class name="spacer"/>
-                                    </style>
-                                    <property name="hexpand">True</property>
-                                  </object>
-                                </child>
+                                <property name="spacing">10</property>
                                 <child>
                                   <object class="GtkButton" id="download_button">
                                     <style>
@@ -193,11 +199,6 @@ Tobias Bernard
                                 </child>
                               </object>
                             </child>
-                          </object>
-                        </child>
-                        <child>
-                          <object class="PdDownloadProgress" id="progressbar">
-                            <property name="hexpand">True</property>
                           </object>
                         </child>
                       </object>

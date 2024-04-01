@@ -232,6 +232,9 @@ Tobias Bernard
     </child>
     <child>
       <object class="PdDownloadProgress" id="progressbar">
+        <property name="margin-start">6</property>
+        <property name="margin-end">6</property>
+        <property name="margin-top">6</property>
       </object>
     </child>
   </template>

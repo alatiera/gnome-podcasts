@@ -64,9 +64,6 @@ impl ObjectImpl for DownloadProgressPriv {
     fn constructed(&self) {
         self.parent_constructed();
         self.progressbar.set_visible(false);
-        self.progressbar.set_margin_start(6);
-        self.progressbar.set_margin_end(6);
-        self.progressbar.set_margin_top(6);
         self.progressbar.set_hexpand(true);
         self.progressbar.set_pulse_step(0.0);
         self.progressbar
