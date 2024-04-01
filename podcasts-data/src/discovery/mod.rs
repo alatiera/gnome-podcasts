@@ -4,4 +4,4 @@ mod itunes;
 mod search;
 
 pub use data::*;
-pub use search::search;
+pub use search::*;

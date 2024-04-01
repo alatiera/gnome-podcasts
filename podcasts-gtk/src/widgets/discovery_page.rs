@@ -31,7 +31,8 @@ use url::Url;
 use crate::app::Action;
 use crate::utils::{itunes_to_rss, soundcloud_to_rss};
 use podcasts_data::dbqueries;
-use podcasts_data::discovery::{search, ALL_PLATFORM_IDS};
+use podcasts_data::discovery::SearchError::NoSearchPlatformsSelected;
+use podcasts_data::discovery::{search, SearchError, ALL_PLATFORM_IDS};
 
 #[derive(Debug, CompositeTemplate, Default)]
 #[template(resource = "/org/gnome/Podcasts/gtk/discovery_page.ui")]
@@ -44,13 +45,19 @@ pub struct DiscoveryPagePriv {
     search_button: TemplateChild<gtk::Button>,
     #[template_child]
     loading_spinner: TemplateChild<gtk::Spinner>,
+    #[template_child]
+    no_platforms_selected_label: TemplateChild<gtk::Label>,
 }
 
 impl DiscoveryPagePriv {
     fn init(&self, sender: &Sender<Action>) {
         let (loading_done, receiver) = async_channel::bounded(1);
         crate::MAINCONTEXT.spawn_local(clone!(@weak self as this => async move {
-            while receiver.recv().await.is_ok() {
+            while let Ok(result) = receiver.recv().await {
+                if let Err(NoSearchPlatformsSelected) = result {
+                    this.entry.add_css_class("error");
+                    this.no_platforms_selected_label.set_visible(true);
+                }
                 this.search_button.set_visible(true);
                 this.loading_spinner.set_visible(false);
                 this.loading_spinner.set_spinning(false);
@@ -65,11 +72,14 @@ impl DiscoveryPagePriv {
             switch.set_active(active);
             switch.set_title(id);
             switch.set_selectable(false);
-            switch.connect_active_notify(move |s| {
+            switch.connect_active_notify(clone!(@weak self as this => move |s| {
                 if let Err(e) = dbqueries::set_discovery_setting(id, s.is_active()) {
                     error!("failed setting search preference: {e}");
+                } else if s.is_active() {
+                    this.entry.remove_css_class("error");
+                    this.no_platforms_selected_label.set_visible(false);
                 }
-            });
+            }));
             self.list.add(&switch);
         }
 
@@ -82,16 +92,21 @@ impl DiscoveryPagePriv {
                 this.loading_spinner.set_visible(true);
                 this.loading_spinner.set_spinning(true);
                 this.loading_spinner.grab_focus();
+                this.entry.remove_css_class("error");
+                this.no_platforms_selected_label.set_visible(false);
                 let loading_done = loading_done.clone();
                 crate::RUNTIME.spawn(clone!(@strong sender => async move {
                     if let Err(e) = match url {
-                        Ok(url) => add_podcast_from_url(url.to_string(), &sender).await,
+                        Ok(url) => add_podcast_from_url(url.to_string(), &sender).await.map_err(SearchError::from),
                         Err(_) => search_podcasts(entry_text, &sender).await
                     } {
-                        send!(sender, Action::ErrorNotification(format!("{e}")));
-                    }
-                    if let Err(e) = loading_done.send(()).await {
-                        error!("failed to stop loading {e}");
+                        match e {
+                            NoSearchPlatformsSelected => (),
+                            _ => send!(sender, Action::ErrorNotification(format!("{e}"))),
+                        };
+                        send!(loading_done, Err(e));
+                    } else {
+                        send!(loading_done, Ok(()))
                     }
                 }));
             }));
@@ -159,7 +174,7 @@ async fn add_podcast_from_url(url_input: String, sender: &Sender<Action>) -> Res
     Ok(())
 }
 
-async fn search_podcasts(text: String, sender: &Sender<Action>) -> Result<()> {
+async fn search_podcasts(text: String, sender: &Sender<Action>) -> Result<(), SearchError> {
     let results = search(&text).await;
     send!(sender, Action::GoToFoundPodcasts(Arc::new(results?)));
     Ok(())

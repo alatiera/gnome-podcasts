@@ -22,18 +22,36 @@ use crate::discovery::data::*;
 use crate::discovery::fyyd;
 use crate::discovery::itunes;
 use anyhow::Result;
+use thiserror::Error;
 use tokio::join;
+
+#[derive(Error, Debug)]
+pub enum SearchError {
+    #[error("Network Error: {0}")]
+    ReqwestError(#[from] reqwest::Error),
+    #[error("Other Error: {0}")]
+    AnyhowError(#[from] anyhow::Error),
+    #[error("No Search Platform was selected.")]
+    NoSearchPlatformsSelected,
+}
 
 /// Sends a http search to all platforms that are active in the settings.
 /// It joins all results into a Vector and tries to filter out duplicates.
 /// Results are sorted as they are returned by the Search platforms.
-pub async fn search(query: &str) -> Result<Vec<FoundPodcast>> {
+pub async fn search(query: &str) -> Result<Vec<FoundPodcast>, SearchError> {
     // This looks like it could be abstracted more,
     // but traits with async fns are impossible to deal with.
     let settings = dbqueries::get_discovery_settings();
 
-    let fyyd = fyyd::search(query, *settings.get("fyyd.de").unwrap_or(&false));
-    let itunes = itunes::search(query, *settings.get("itunes.apple.com").unwrap_or(&false));
+    let fyyd_on = *settings.get("fyyd.de").unwrap_or(&false);
+    let itunes_on = *settings.get("itunes.apple.com").unwrap_or(&false);
+
+    if !fyyd_on && !itunes_on {
+        return Err(SearchError::NoSearchPlatformsSelected);
+    }
+
+    let fyyd = fyyd::search(query, fyyd_on);
+    let itunes = itunes::search(query, itunes_on);
     let (fyyd, itunes) = join!(fyyd, itunes);
 
     let fyyd: Vec<FoundPodcast> = fyyd.map_err(|e| error!("fyyd {e}")).unwrap_or_default();
