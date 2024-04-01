@@ -57,6 +57,10 @@ impl DiscoveryPagePriv {
                 if let Err(NoSearchPlatformsSelected) = result {
                     this.entry.add_css_class("error");
                     this.no_platforms_selected_label.set_visible(true);
+                    this.no_platforms_selected_label.announce(
+                        &this.no_platforms_selected_label.text(),
+                        gtk::AccessibleAnnouncementPriority::High
+                    );
                 }
                 this.search_button.set_visible(true);
                 this.loading_spinner.set_visible(false);
