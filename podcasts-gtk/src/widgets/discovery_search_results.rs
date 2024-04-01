@@ -103,6 +103,10 @@ pub struct PodcastPriv {
     episode_count_label: TemplateChild<gtk::Label>,
     #[template_child]
     last_publication: TemplateChild<gtk::Label>,
+    #[template_child]
+    loading_spinner: TemplateChild<gtk::Spinner>,
+    #[template_child]
+    subscribe_stack: TemplateChild<gtk::Stack>,
 }
 
 impl PodcastPriv {
@@ -127,11 +131,29 @@ impl PodcastPriv {
             self.last_publication.set_visible(true);
         }
 
-        let feed = p.feed.clone();
-        let sender = sender.clone();
-        self.subscribe.connect_clicked(move |_| {
-            send_blocking!(sender, Action::Subscribe(feed.clone()));
-        });
+        let url = p.feed.clone();
+        self.subscribe
+            .connect_clicked(clone!(@weak self as this, @strong sender => move |_| {
+                let (loading_done, receiver) = async_channel::bounded(1);
+
+                this.subscribe_stack.set_visible_child(&this.loading_spinner.get());
+                this.loading_spinner.set_spinning(true);
+                this.loading_spinner.announce(
+                    &this.loading_spinner.tooltip_text().unwrap_or("loading".into()),
+                    gtk::AccessibleAnnouncementPriority::High
+                );
+                crate::RUNTIME.spawn(clone!(@strong sender, @strong url => async move {
+                    crate::utils::subscribe(&sender, url).await;
+                    send!(loading_done, ());
+                }));
+
+                crate::MAINCONTEXT.spawn_local(clone!(@weak this => async move {
+                    while receiver.recv().await.is_ok() {
+                        this.subscribe_stack.set_visible_child(&this.subscribe.get());
+                        this.loading_spinner.set_spinning(false);
+                    }
+                }));
+            }));
 
         let art = p.art.clone();
         let (sender, receiver) = async_channel::bounded(1);

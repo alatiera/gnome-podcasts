@@ -169,7 +169,6 @@ pub(crate) enum Action {
     StreamEpisode(i32),
     EmptyState,
     PopulatedState,
-    Subscribe(String),
     RaiseWindow,
     InhibitSuspend,
     UninhibitSuspend,
@@ -409,10 +408,6 @@ impl PdApplication {
                 window.content().switch_to_populated();
             }
             Action::RaiseWindow => window.present(),
-            Action::Subscribe(feed) => {
-                let sender = data.sender.clone();
-                crate::RUNTIME.spawn(async move { utils::subscribe(&sender, feed).await });
-            }
             Action::InhibitSuspend => {
                 let window: Option<&gtk::Window> = None;
                 let old_cookie = *data.inhibit_cookie.borrow();

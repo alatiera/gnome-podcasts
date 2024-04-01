@@ -155,11 +155,25 @@ nee <nee-git@patchouli.garden>
         </child>
         <!-- right -->
         <child>
-          <object class="GtkButton" id="subscribe">
-            <property name="label" translatable="yes">Subscribe</property>
-            <property name="valign">center</property>
-            <property name="halign">end</property>
-            <property name="receives-default">True</property>
+          <object class="GtkStack" id="subscribe_stack">
+            <property name="hhomogeneous">True</property>
+            <property name="vhomogeneous">True</property>
+            <child>
+              <object class="GtkButton" id="subscribe">
+                <property name="label" translatable="yes">Subscribe</property>
+                <property name="valign">center</property>
+                <property name="halign">end</property>
+                <property name="receives-default">True</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkSpinner" id="loading_spinner">
+                <property name="tooltip-text" translatable="yes">Subscribing to feed...</property>
+                <property name="valign">center</property>
+                <property name="halign">center</property>
+                <property name="focusable">True</property>
+              </object>
+            </child>
           </object>
         </child>
       </object>
