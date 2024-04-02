@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: podcasts master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2024-03-30 18:12+0000\n"
-"PO-Revision-Date: 2024-03-30 22:10+0100\n"
+"POT-Creation-Date: 2024-04-02 07:25+0000\n"
+"PO-Revision-Date: 2024-04-02 10:34+0200\n"
 "Last-Translator: Martin Srebotnjak <miles@filmsi.net>\n"
 "Language-Team: Slovenian GNOME Translation Team <gnome-si@googlegroups.com>\n"
 "Language: sl_SI\n"
@@ -61,31 +61,31 @@ msgstr "Naslov podkasta"
 msgid "Duration - Date"
 msgstr "Trajanje – Datum"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:146
+#: podcasts-gtk/resources/gtk/episode_description.ui:147
 msgid "Download"
 msgstr "Prenesi"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:155
+#: podcasts-gtk/resources/gtk/episode_description.ui:157
 msgid "Cancel"
 msgstr "Prekliči"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:165
+#: podcasts-gtk/resources/gtk/episode_description.ui:167
 msgid "Delete File"
 msgstr "Izbriši datoteko"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:174
+#: podcasts-gtk/resources/gtk/episode_description.ui:177
 msgid "Stream"
 msgstr "Začni pretakanje"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:184
-#: podcasts-gtk/resources/gtk/episode_description.ui:186
+#: podcasts-gtk/resources/gtk/episode_description.ui:187
+#: podcasts-gtk/resources/gtk/episode_description.ui:189
 #: podcasts-gtk/resources/gtk/player_dialog.ui:173
 #: podcasts-gtk/resources/gtk/player_toolbar.ui:63
 #: podcasts-gtk/resources/gtk/player_toolbar.ui:254
 msgid "Play"
 msgstr "Predvajaj"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:208
+#: podcasts-gtk/resources/gtk/episode_description.ui:211
 msgid "Episode Description"
 msgstr "Opis epizode"
 
@@ -117,6 +117,10 @@ msgstr "Prekliči prejem v teku"
 #: podcasts-gtk/resources/gtk/episode_widget.ui:206
 msgid "Download this episode"
 msgstr "Prejmi to epizodo"
+
+#: podcasts-gtk/resources/gtk/episode_widget.ui:220
+msgid "Episode without audio"
+msgstr "Epizoda brez zvoka"
 
 #: podcasts-gtk/resources/gtk/hamburger.ui:7
 msgid "_Check for New Episodes"
@@ -369,6 +373,10 @@ msgstr "Koliko časa naj preteče med izvajanjem samodejnega čiščenja"
 msgid "Copied URL to clipboard!"
 msgstr "Naslov URL je kopiran v odložišče!"
 
+#: podcasts-gtk/src/manager.rs:105
+msgid "Download failed: {}"
+msgstr "Prejem ni uspel: {}"
+
 #: podcasts-gtk/src/stacks/content.rs:66
 msgid "New"
 msgstr "Novo"
@@ -427,7 +435,7 @@ msgstr ""
 "Matej Urbančič <mateju@src.gnome.org>\n"
 "Martin Srebotnjak <miles@filmsi.net>"
 
-#: podcasts-gtk/src/widgets/episode.rs:237
+#: podcasts-gtk/src/widgets/episode.rs:268
 msgid "{} min"
 msgstr "{} min"
 
