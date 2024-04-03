@@ -29,6 +29,7 @@ nee <nee-git@patchouli.garden>
   <!-- interface-copyright 2022 - 2024 -->
   <!-- interface-authors nee -->
   <template class="PdDiscoveryPage" parent="AdwNavigationPage">
+    <property name="tag">discovery</property>
     <property name="title" translatable="yes">Add Podcasts</property>
     <child>
       <object class="AdwToolbarView">

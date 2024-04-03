@@ -44,14 +44,15 @@ use crate::utils::set_image_from_path;
 use podcasts_data::{dbqueries, downloader, EpisodeWidgetModel, ShowCoverModel, USER_AGENT};
 
 #[derive(Debug, Clone, Copy)]
-enum SeekDirection {
+pub(crate) enum SeekDirection {
     Backwards,
     Forward,
 }
 
-trait PlayerExt {
+pub(crate) trait PlayerExt {
     fn play(&self);
     fn pause(&mut self);
+    fn toggle_pause(&mut self);
     fn stop(&mut self);
     fn seek(&self, offset: ClockTime, direction: SeekDirection) -> Option<()>;
     fn fast_forward(&self);
@@ -741,6 +742,16 @@ impl PlayerExt for PlayerWidget {
             .on_position_updated(Position(ClockTime::from_seconds(0)));
         if let Some(sender) = &self.sender {
             send_blocking!(sender, Action::UninhibitSuspend);
+        }
+    }
+
+    fn toggle_pause(&mut self) {
+        if let Some(mpris) = self.info.mpris.as_ref() {
+            match mpris.playback_status() {
+                PlaybackStatus::Paused => self.play(),
+                PlaybackStatus::Stopped => self.play(),
+                _ => self.pause(),
+            };
         }
     }
 

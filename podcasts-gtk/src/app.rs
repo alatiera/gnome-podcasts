@@ -34,7 +34,7 @@ use crate::i18n::i18n;
 use crate::settings;
 use crate::utils;
 use crate::widgets::show_menu::{mark_all_notif, remove_show_notif};
-use crate::widgets::{DiscoveryPage, EpisodeDescription, SearchResults};
+use crate::widgets::{EpisodeDescription, SearchResults};
 use crate::window::MainWindow;
 use podcasts_data::dbqueries;
 use podcasts_data::discovery::FoundPodcast;
@@ -157,7 +157,6 @@ pub(crate) enum Action {
     GoToEpisodeDescription(Arc<Show>, Arc<Episode>),
     GoToShow(Arc<Show>),
     GoToFoundPodcasts(Arc<Vec<FoundPodcast>>),
-    GoToDiscovery,
     CopiedUrlNotification,
     MarkAllPlayerNotification(Arc<Show>),
     UpdateFeed(Option<Vec<Source>>),
@@ -289,7 +288,17 @@ impl PdApplication {
 
     fn setup_accels(&self) {
         self.set_accels_for_action("app.quit", &["<primary>q"]);
-        self.set_accels_for_action("win.refresh", &["<primary>r"]);
+        self.set_accels_for_action("win.refresh", &["<primary>r", "F5"]);
+        self.set_accels_for_action("win.toggle-pause", &["<primary>space"]);
+        self.set_accels_for_action("win.seek-forwards", &["<primary>Right"]);
+        self.set_accels_for_action("win.seek-backwards", &["<primary>Left"]);
+        self.set_accels_for_action("win.go-to-home", &["F1"]);
+        self.set_accels_for_action("win.go-to-shows", &["F2"]);
+        // plan: use F3 for Queue page
+        self.set_accels_for_action("win.go-to-discovery", &["F4"]);
+        self.set_accels_for_action("win.import", &["<primary>o"]);
+        self.set_accels_for_action("win.export", &["<primary>e"]);
+        // Make sure to add new shortcuts to help-overlay.ui !!!
     }
 
     fn do_action(&self, action: Action) {
@@ -323,10 +332,6 @@ impl PdApplication {
             }
             Action::GoToFoundPodcasts(found) => {
                 let widget = SearchResults::new(&found, window.sender());
-                window.push_page(&widget);
-            }
-            Action::GoToDiscovery => {
-                let widget = DiscoveryPage::new(window.sender());
                 window.push_page(&widget);
             }
             Action::CopiedUrlNotification => {

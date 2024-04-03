@@ -21,9 +21,11 @@ use adw::prelude::*;
 use adw::subclass::prelude::*;
 use async_channel::Sender;
 use glib::clone;
+use gst::ClockTime;
 use gtk::CompositeTemplate;
 use gtk::{gio, glib};
 use std::cell::{Cell, OnceCell, RefCell};
+use std::cell::{Ref, RefMut};
 use std::ops::Deref;
 use std::rc::Rc;
 
@@ -35,7 +37,8 @@ use crate::stacks::Content;
 use crate::utils;
 use crate::widgets::about_dialog;
 use crate::widgets::player;
-use crate::widgets::ShowWidget;
+use crate::widgets::player::{PlayerExt, PlayerWidget, SeekDirection};
+use crate::widgets::{DiscoveryPage, ShowWidget};
 
 #[derive(Debug, CompositeTemplate, glib::Properties)]
 #[template(resource = "/org/gnome/Podcasts/gtk/window.ui")]
@@ -116,6 +119,28 @@ impl ObjectSubclass for MainWindowPriv {
         klass.install_action("win.about", None, move |win, _, _| {
             about_dialog(win.upcast_ref());
         });
+        klass.install_action("win.toggle-pause", None, move |win, _, _| {
+            win.player_mut().toggle_pause();
+        });
+        klass.install_action("win.seek-forwards", None, move |win, _, _| {
+            win.player()
+                .seek(ClockTime::from_seconds(10), SeekDirection::Forward);
+        });
+        klass.install_action("win.seek-backwards", None, move |win, _, _| {
+            win.player()
+                .seek(ClockTime::from_seconds(5), SeekDirection::Backwards);
+        });
+        klass.install_action("win.go-to-home", None, move |win, _, _| {
+            win.pop_to_home();
+            win.content().go_to_home();
+        });
+        klass.install_action("win.go-to-shows", None, move |win, _, _| {
+            win.pop_to_home();
+            win.content().go_to_shows();
+        });
+        klass.install_action("win.go-to-discovery", None, move |win, _, _| {
+            win.go_to_discovery();
+        });
     }
 
     fn instance_init(obj: &glib::subclass::InitializingObject<Self>) {
@@ -177,7 +202,7 @@ impl MainWindow {
 
         let progress_bar = content.get_progress_bar();
         // Create the headerbar
-        let header = Header::new(&content, sender);
+        let header = Header::new(&content);
 
         imp.toolbar_view.add_top_bar(&header.container);
         imp.toolbar_view.set_content(Some(&content.get_container()));
@@ -243,6 +268,10 @@ impl MainWindow {
         self.imp().navigation_view.pop_to_tag("show");
     }
 
+    fn pop_to_home(&self) {
+        self.imp().navigation_view.pop_to_tag("home");
+    }
+
     pub(crate) fn init_episode(
         &self,
         id: i32,
@@ -271,6 +300,14 @@ impl MainWindow {
         self.imp().progress_bar.get().unwrap()
     }
 
+    pub(crate) fn player(&self) -> Ref<'_, PlayerWidget> {
+        self.imp().player.get().unwrap().borrow()
+    }
+
+    pub(crate) fn player_mut(&self) -> RefMut<'_, PlayerWidget> {
+        self.imp().player.get().unwrap().borrow_mut()
+    }
+
     pub(crate) fn content(&self) -> &Content {
         self.imp().content.get().unwrap()
     }
@@ -281,6 +318,11 @@ impl MainWindow {
 
     pub(crate) fn sender(&self) -> &Sender<Action> {
         self.imp().sender.get().unwrap()
+    }
+
+    pub(crate) fn go_to_discovery(&self) {
+        let widget = DiscoveryPage::new(self.sender());
+        self.push_page(&widget);
     }
 
     pub(crate) fn replace_show_widget(&self, widget: Option<&ShowWidget>, title: &str) {

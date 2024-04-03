@@ -17,11 +17,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-use crate::app::Action;
-use async_channel::Sender;
 use gtk::gio;
-use gtk::glib::clone;
-use gtk::prelude::*;
 use std::rc::Rc;
 
 use crate::stacks::Content;
@@ -31,7 +27,6 @@ use crate::stacks::Content;
 pub(crate) struct Header {
     pub(crate) container: adw::HeaderBar,
     pub(crate) switch: adw::ViewSwitcher,
-    add: gtk::Button,
 }
 
 impl Default for Header {
@@ -47,26 +42,21 @@ impl Default for Header {
         let app_menu: gio::MenuModel = menus.object("menu").unwrap();
         hamburger.set_menu_model(Some(&app_menu));
 
-        let add = builder.object("add_button").unwrap();
         Header {
             container: header,
             switch,
-            add,
         }
     }
 }
 
 impl Header {
-    pub(crate) fn new(content: &Content, sender: &Sender<Action>) -> Rc<Self> {
+    pub(crate) fn new(content: &Content) -> Rc<Self> {
         let h = Rc::new(Header::default());
-        Self::init(&h, content, sender);
+        Self::init(&h, content);
         h
     }
 
-    pub(crate) fn init(s: &Rc<Self>, content: &Content, sender: &Sender<Action>) {
+    pub(crate) fn init(s: &Rc<Self>, content: &Content) {
         s.switch.set_stack(Some(&content.get_stack()));
-        s.add.connect_clicked(clone!(@strong sender => move |_| {
-            send_blocking!(sender, Action::GoToDiscovery);
-        }));
     }
 }

@@ -36,19 +36,20 @@ Tobias Bernard
       </object>
     </property>
     <child>
-      <object class="GtkButton" id="add_button">
-        <property name="receives_default">True</property>
-        <property name="tooltip_text" translatable="yes">Add a new feed</property>
+      <object class="GtkButton">
+        <property name="receives-default">True</property>
+        <property name="tooltip-text" translatable="yes">Add a new feed</property>
         <property name="valign">center</property>
-        <property name="icon_name">list-add-symbolic</property>
+        <property name="icon-name">list-add-symbolic</property>
+        <property name="action-name">win.go-to-discovery</property>
       </object>
     </child>
     <child type="end">
       <object class="GtkMenuButton" id="hamburger">
-        <property name="receives_default">False</property>
+        <property name="receives-default">False</property>
         <property name="valign">center</property>
-        <property name="icon_name">open-menu-symbolic</property>
-        <property name="tooltip_text" translatable="yes">Main Menu</property>
+        <property name="icon-name">open-menu-symbolic</property>
+        <property name="tooltip-text" translatable="yes">Main Menu</property>
         <property name="primary">True</property>
       </object>
     </child>

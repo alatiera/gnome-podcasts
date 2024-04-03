@@ -129,6 +129,14 @@ impl Content {
         self.shows.clone()
     }
 
+    pub(crate) fn go_to_home(&self) {
+        self.stack.set_visible_child_name("home");
+    }
+
+    pub(crate) fn go_to_shows(&self) {
+        self.stack.set_visible_child_name("shows");
+    }
+
     pub(crate) fn switch_to_empty_views(&self) {
         use gtk::StackTransitionType::*;
 
