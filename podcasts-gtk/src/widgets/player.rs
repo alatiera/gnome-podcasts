@@ -146,8 +146,8 @@ impl PlayerInfo {
     }
 
     fn set_cover_image(&self, show: &ShowCoverModel) {
-        load_image(&self.cover, show.id());
-        load_image(&self.cover_small, show.id());
+        load_image(&self.cover, show.id(), crate::Thumb64);
+        load_image(&self.cover_small, show.id(), crate::Thumb64);
     }
 }
 
@@ -342,7 +342,7 @@ impl PlayerDialog {
     fn initialize_episode(&self, episode: &EpisodeWidgetModel, show: &ShowCoverModel) {
         self.episode.set_text(episode.title());
         self.show.set_text(show.title());
-        load_image(&self.cover, show.id());
+        load_image(&self.cover, show.id(), crate::Thumb256);
     }
 }
 

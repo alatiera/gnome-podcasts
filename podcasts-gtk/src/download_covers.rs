@@ -1,10 +1,10 @@
-use anyhow::Error;
+use anyhow::{bail, Error};
 use once_cell::sync::Lazy;
 use std::collections::HashMap;
 use std::fs;
 use std::fs::File;
 use std::io::Cursor;
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 use tempdir::TempDir;
 use tokio::sync::oneshot::Sender;
 use tokio::sync::RwLock;
@@ -16,7 +16,9 @@ use glib::WeakRef;
 use gtk::gdk;
 use gtk::gio;
 use gtk::glib;
+use gtk::prelude::*;
 
+use crate::thumbnail_generator::ThumbSize;
 use podcasts_data::errors::DownloadError;
 use podcasts_data::xdg_dirs::CACHED_COVERS_DIR;
 use podcasts_data::xdg_dirs::PODCASTS_CACHE;
@@ -70,13 +72,18 @@ fn file_changed(event: gio::FileMonitorEvent, path: &PathBuf, image: &WeakRef<gt
     }
 }
 
-async fn create_file_monitor(path: &PathBuf, image: &WeakRef<gtk::Image>) -> Result<(), Error> {
+async fn create_file_monitor(
+    path: &PathBuf,
+    thumb: &PathBuf,
+    image: &WeakRef<gtk::Image>,
+) -> Result<(), Error> {
     let file = gio::File::for_path(path);
     let monitor = file.monitor_file(gio::FileMonitorFlags::WATCH_MOVES, None::<&Cancellable>)?;
     info!("Watching file for renames: '{}'", path.display());
-    let path = path.clone();
+    let thumb = thumb.clone();
     let image = image.clone();
-    let handler = monitor.connect_changed(move |_, _, _, event| file_changed(event, &path, &image));
+    let handler =
+        monitor.connect_changed(move |_, _, _, event| file_changed(event, &thumb, &image));
     // FIXME: we ain't getting any more events once it's dropped
     // FIXME: Keep the monitor around for a while. Probably
     // Start returning it upwards and making a tuple/struct of the Monitor/Image|Paintable
@@ -122,19 +129,23 @@ pub async fn clean_zero_byte_files() -> Result<(), Error> {
 }
 
 /// Returns the URI of a Show's cover directory given it's title.
-fn get_cover_file_path(hash: &str) -> Result<std::path::PathBuf, Error> {
+fn get_cover_file_path(hash: &str) -> PathBuf {
     let mut dir = CACHED_COVERS_DIR.clone();
     // Don't even bother setting a file extension as, we will
     // ultimately end up feeding it into the same loader regardless
     dir.push(hash);
     info!("Constructed cover path: '{}'", dir.display());
-    Ok(dir)
+    dir
 }
 
-fn determin_cover_path(pd: &ShowCoverModel) -> Result<PathBuf, Error> {
+pub fn determin_cover_path(pd: &ShowCoverModel, size: Option<ThumbSize>) -> PathBuf {
     // TODO: once we start storing them as strings
     // let hash = u64_to_vec_u8(pd.image_uri_hash().unwrap());
-    let hash = format!("{}", pd.id());
+    let hash = if let Some(size) = size {
+        format!("{}-{size}", pd.id())
+    } else {
+        format!("{}", pd.id())
+    };
     get_cover_file_path(&hash)
 }
 
@@ -158,13 +169,22 @@ async fn download_file(pd: ShowCoverModel, path: PathBuf) -> Result<(), Download
     dest.sync_all().await?;
     drop(dest);
 
+    // Generate thumbnails for the cover
+    let texture = tokio_make_texture(&filename.to_str().unwrap().to_string()).await?;
+    let _ = crate::thumbnail_generator::generate(&pd, texture).await;
+    // we only rename after thumbnails are generated,
+    // so thumbnails can be presumed to exist if the orginal file exists
     tokio::fs::rename(&filename, &path).await?;
     info!("Cached img into: '{}'", &path.display());
 
     Ok(())
 }
 
-async fn download_cover_image(pd: &ShowCoverModel, path: &PathBuf) -> Result<(), DownloadError> {
+async fn download_cover_image(
+    pd: &ShowCoverModel,
+    path: &PathBuf,
+    wait_for_finish: bool,
+) -> Result<(), DownloadError> {
     let url = pd
         .image_uri()
         .ok_or(DownloadError::NoImageLocation)?
@@ -179,15 +199,20 @@ async fn download_cover_image(pd: &ShowCoverModel, path: &PathBuf) -> Result<(),
     let path = path.clone();
     // FIXME: move the tokio spawn into the function
     // this needs tokio cause of reqwest
-    crate::RUNTIME.spawn(async move { download_file(pd, path).await.unwrap() });
+    let handle = crate::RUNTIME.spawn(async move { download_file(pd, path).await.unwrap() });
+    if wait_for_finish {
+        let _ = handle.await;
+    }
     Ok(())
 }
 
-pub async fn get_cover_file(
+async fn get_cover_file(
     pd: &ShowCoverModel,
     image: &WeakRef<gtk::Image>,
+    thumb_size: ThumbSize,
 ) -> Result<PathBuf, Error> {
-    let cover = determin_cover_path(&pd)?;
+    let cover = determin_cover_path(&pd, None);
+    let thumb = determin_cover_path(&pd, Some(thumb_size));
 
     // Check if the cover is already downloaded and set it
     if !pd.is_cached_image_valid(&CACHE_VALID_DURATION) {
@@ -198,7 +223,7 @@ pub async fn get_cover_file(
     if !cover.exists() {
         info!("Cover file does not exist, Starting download.");
         create_cover_lock(&cover).await?;
-        download_cover_image(&pd, &cover).await?;
+        download_cover_image(&pd, &cover, false).await?;
     }
 
     assert!(cover.is_file());
@@ -209,30 +234,41 @@ pub async fn get_cover_file(
     // and any size is a complete cover
     if size == 0 {
         info!("Found zero sized file, creating FileMonitor");
-        create_file_monitor(&cover, image).await?;
-    } else {
-        info!("Loading cover for '{}'", pd.title());
-        let path = cover.to_str().unwrap().to_string();
-        set_image_from_file_with_tokio(image, path).await.unwrap();
+        create_file_monitor(&cover, &thumb, image).await?;
+        return Ok(thumb);
+    } else if !thumb.exists() {
+        warn!("Cover exists, but no thumbs generated, redownloading it!");
+        fs::remove_file(&cover)?;
+        create_cover_lock(&cover).await?;
+        download_cover_image(&pd, &cover, true).await?;
     }
+    if !thumb.exists() {
+        bail!("Failed to generate thumbs");
+    }
+    info!("Loading cover for '{}'", pd.title());
+    let path = thumb.to_str().unwrap().to_string();
+    set_image_from_file_with_tokio(image, path).await.unwrap();
 
-    return Ok(cover);
+    return Ok(thumb);
 }
 
 // FIXME: this is ui code, doesn't really belong here
 // FIXME: should be taking a WeakRef Image
 // TODO: after loading, grab the Paintable and cache it to avoid creating
 // multiple textures for the same files
-pub fn load_image(image: &gtk::Image, podcast_id: i32) {
+pub fn load_image(image: &gtk::Image, podcast_id: i32, size: ThumbSize) {
+    // TODO Surface has scale() fn that returns a f64 dpi-scale, maybe use that?
+    // TODO maybe load the full size image when bigger than 512 is requested?
+    let size = size.hidpi(image.scale_factor()).unwrap_or(crate::Thumb512);
     crate::MAINCONTEXT.spawn_local_with_priority(
         glib::source::Priority::LOW,
         clone!(@weak image => async move {
-            load_image_async(&image, podcast_id).await
+            load_image_async(&image, podcast_id, size).await
         }),
     );
 }
 
-async fn load_image_async(image: &gtk::Image, podcast_id: i32) {
+async fn load_image_async(image: &gtk::Image, podcast_id: i32, size: ThumbSize) {
     use gtk::prelude::WidgetExt;
     use podcasts_data::dbqueries;
 
@@ -241,14 +277,13 @@ async fn load_image_async(image: &gtk::Image, podcast_id: i32) {
         .unwrap();
     image.set_tooltip_text(Some(pd.title()));
 
-    let path = crate::download_covers::get_cover_file(&pd, &image.downgrade())
-        .await
-        .unwrap();
-    let path = path.to_str().unwrap().to_string();
-
-    set_image_from_file_with_tokio(&image.downgrade(), path)
-        .await
-        .unwrap();
+    let _path = get_cover_file(&pd, &image.downgrade(), size).await.unwrap();
+    // Is this a double call? get_cover_file already calls this.
+    //
+    // let path = path.to_str().unwrap().to_string();
+    // set_image_from_file_with_tokio(&image.downgrade(), path)
+    //     .await
+    //     .unwrap();
 }
 
 // FIMXE: Attach the Texture to the ShowCover Widget and load it from there
@@ -259,7 +294,11 @@ async fn set_image_from_file_with_tokio(
     path: String,
 ) -> Result<(), Error> {
     let (sender, receiver) = tokio::sync::oneshot::channel();
-    crate::RUNTIME.spawn(async move { tokio_make_texture(&path, sender).await });
+    crate::RUNTIME.spawn(async move {
+        let texture = tokio_make_texture(&path).await?;
+        let _ = sender.send(texture);
+        Ok::<(), DownloadError>(())
+    });
 
     let image = match image.upgrade() {
         Some(i) => i,
@@ -273,25 +312,23 @@ async fn set_image_from_file_with_tokio(
     Ok(())
 }
 
-async fn tokio_make_texture(path: &str, sender: Sender<gdk::Texture>) {
+async fn tokio_make_texture(path: &String) -> Result<gdk::Texture, DownloadError> {
     let r = COVER_TEXTURES.read().await;
-    let texture = r.get(path).cloned();
-    drop(r);
-
-    if let Some(t) = texture {
-        let _ = sender.send(t);
-        return;
+    if let Some(t) = r.get(path).cloned() {
+        return Ok(t);
     };
+    drop(r);
 
     match gdk::Texture::from_filename(path) {
         Ok(texture) => {
             let mut w = COVER_TEXTURES.write().await;
             w.insert(path.to_string(), texture.clone());
-            let _ = sender.send(texture);
+            Ok(texture)
         }
         Err(err) => {
             error!("Error: {}", err);
             error!("Failed to load texture from: {}", path);
+            Err(DownloadError::FailedToLoadTexture)
         }
     }
 }

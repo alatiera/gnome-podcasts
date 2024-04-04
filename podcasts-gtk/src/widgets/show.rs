@@ -130,7 +130,7 @@ impl ShowWidget {
 
     /// Set the show cover.
     fn set_cover(&self, pd: &Arc<Show>) {
-        crate::download_covers::load_image(&self.imp().cover, pd.id())
+        crate::download_covers::load_image(&self.imp().cover, pd.id(), crate::Thumb256)
     }
 
     pub(crate) fn show_id(&self) -> Option<i32> {

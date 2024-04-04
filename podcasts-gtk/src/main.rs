@@ -42,10 +42,12 @@ mod headerbar;
 mod i18n;
 mod manager;
 mod settings;
+mod thumbnail_generator;
 mod widgets;
 mod window;
 
 use crate::app::PdApplication;
+pub use crate::thumbnail_generator::ThumbSize::*;
 
 use once_cell::sync::Lazy;
 

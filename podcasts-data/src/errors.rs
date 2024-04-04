@@ -86,4 +86,6 @@ pub enum DownloadError {
     InvalidCacheLocation,
     #[error("Failed to parse Cached Image Location.")]
     InvalidCachedImageLocation,
+    #[error("Failed to load texture from Image.")]
+    FailedToLoadTexture,
 }

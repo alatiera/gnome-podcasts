@@ -240,7 +240,7 @@ impl HomeEpisodePriv {
     }
 
     fn set_cover(&self, show_id: i32) {
-        crate::download_covers::load_image(&self.cover, show_id)
+        crate::download_covers::load_image(&self.cover, show_id, crate::Thumb64)
     }
 }
 
