@@ -32,6 +32,7 @@ use std::sync::Arc;
 use crate::app::Action;
 use crate::episode_description_parser;
 use crate::utils::{self};
+use crate::widgets::CoverImage;
 use crate::widgets::DownloadProgressBar;
 use crate::widgets::EpisodeMenu;
 use podcasts_data::EpisodeWidgetModel;
@@ -48,7 +49,7 @@ pub struct EpisodeDescriptionPriv {
     #[template_child]
     menu_button: TemplateChild<gtk::MenuButton>,
     #[template_child]
-    cover: TemplateChild<gtk::Image>,
+    cover: TemplateChild<CoverImage>,
     #[template_child]
     podcast_title: TemplateChild<gtk::Label>,
     #[template_child]
@@ -234,7 +235,7 @@ impl EpisodeDescriptionPriv {
     }
 
     fn set_cover(&self, show_id: i32) {
-        crate::download_covers::load_image(&self.cover, show_id, crate::Thumb64)
+        self.cover.init(show_id, crate::Thumb64)
     }
 
     fn set_episode_specific_cover(

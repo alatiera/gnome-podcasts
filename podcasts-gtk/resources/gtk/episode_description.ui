@@ -70,15 +70,11 @@ Tobias Bernard
                             <property name="margin-start">18</property>
                             <property name="margin-end">14</property>
                             <child>
-                              <object class="GtkImage" id="cover">
+                              <object class="PdCoverImage" id="cover">
                                 <property name="margin-top">4</property>
                                 <property name="margin-end">12</property>
-                                <property name="hexpand">False</property>
-                                <property name="vexpand">False</property>
                                 <property name="valign">start</property>
-                                <property name="pixel-size">64</property>
-                                <property name="icon-name">image-x-generic-symbolic</property>
-                                <property name="overflow">hidden</property>
+                                <property name="width-request">64</property>
                                 <style>
                                   <class name="rounded-small"/>
                                 </style>

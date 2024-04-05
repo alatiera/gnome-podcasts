@@ -38,10 +38,8 @@ Tobias Bernard
         <property name="margin-top">6</property>
         <property name="margin-bottom">6</property>
         <child>
-          <object class="GtkImage" id="cover">
-            <property name="pixel-size">64</property>
-            <property name="icon-name">image-x-generic-symbolic</property>
-            <property name="overflow">hidden</property>
+          <object class="PdCoverImage" id="cover">
+            <property name="width-request">64</property>
             <style>
               <class name="rounded-small" />
             </style>

@@ -31,7 +31,7 @@ use std::sync::Arc;
 
 use crate::app::Action;
 use crate::i18n::i18n;
-use crate::utils::get_ignored_shows;
+use crate::utils::{get_ignored_shows, lazy_load};
 use crate::widgets::BaseView;
 use podcasts_data::dbqueries;
 use podcasts_data::Show;

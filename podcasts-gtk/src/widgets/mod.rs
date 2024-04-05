@@ -20,6 +20,7 @@
 mod aboutdialog;
 mod base_view;
 mod content_stack;
+mod cover_image;
 mod discovery_page;
 mod discovery_search_results;
 mod download_progress_bar;
@@ -38,6 +39,7 @@ mod shows_view;
 pub(crate) use self::aboutdialog::about_dialog;
 pub(crate) use self::base_view::BaseView;
 pub(crate) use self::content_stack::Content;
+pub(crate) use self::cover_image::CoverImage;
 pub(crate) use self::discovery_page::DiscoveryPage;
 pub(crate) use self::discovery_search_results::SearchResults;
 pub(crate) use self::download_progress_bar::DownloadProgressBar;

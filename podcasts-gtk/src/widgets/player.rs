@@ -39,8 +39,8 @@ use url::Url;
 
 use crate::app::Action;
 use crate::config::APP_ID;
-use crate::download_covers::load_image;
 use crate::i18n::i18n;
+use crate::widgets::CoverImage;
 use podcasts_data::{dbqueries, downloader, EpisodeWidgetModel, ShowCoverModel, USER_AGENT};
 
 #[derive(Debug, Clone, Copy)]
@@ -64,10 +64,10 @@ pub(crate) trait PlayerExt {
 struct PlayerInfo {
     show: gtk::Label,
     episode: gtk::Label,
-    cover: gtk::Image,
+    cover: CoverImage,
     show_small: gtk::Label,
     episode_small: gtk::Label,
-    cover_small: gtk::Image,
+    cover_small: CoverImage,
     mpris: Option<Rc<Player>>,
     restore_position: i32,
     finished_restore: bool,
@@ -146,8 +146,8 @@ impl PlayerInfo {
     }
 
     fn set_cover_image(&self, show: &ShowCoverModel) {
-        load_image(&self.cover, show.id(), crate::Thumb64);
-        load_image(&self.cover_small, show.id(), crate::Thumb64);
+        self.cover.init(show.id(), crate::Thumb64);
+        self.cover_small.init(show.id(), crate::Thumb64);
     }
 }
 
@@ -288,7 +288,7 @@ struct PlayerControls {
 #[derive(Debug, Clone)]
 struct PlayerDialog {
     dialog: adw::Window,
-    cover: gtk::Image,
+    cover: CoverImage,
     play_pause: gtk::Stack,
     play: gtk::Button,
     pause: gtk::Button,
@@ -342,7 +342,7 @@ impl PlayerDialog {
     fn initialize_episode(&self, episode: &EpisodeWidgetModel, show: &ShowCoverModel) {
         self.episode.set_text(episode.title());
         self.show.set_text(show.title());
-        load_image(&self.cover, show.id(), crate::Thumb256);
+        self.cover.init(show.id(), crate::Thumb256);
     }
 }
 

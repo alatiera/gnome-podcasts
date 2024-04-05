@@ -9,7 +9,6 @@ use tempdir::TempDir;
 use tokio::sync::RwLock;
 
 use gio::Cancellable;
-use glib::clone;
 use glib::WeakRef;
 use gtk::gdk;
 use gtk::gio;
@@ -73,21 +72,14 @@ async fn create_file_monitor(
     path: &PathBuf,
     thumb: &PathBuf,
     image: &WeakRef<gtk::Image>,
-) -> Result<(), Error> {
+) -> Result<gio::FileMonitor, Error> {
     let file = gio::File::for_path(path);
     let monitor = file.monitor_file(gio::FileMonitorFlags::WATCH_MOVES, None::<&Cancellable>)?;
     info!("Watching file for renames: '{}'", path.display());
     let thumb = thumb.clone();
     let image = image.clone();
-    let handler =
-        monitor.connect_changed(move |_, _, _, event| file_changed(event, thumb.clone(), &image));
-    // FIXME: we ain't getting any more events once it's dropped
-    // FIXME: Keep the monitor around for a while. Probably
-    // Start returning it upwards and making a tuple/struct of the Monitor/Image|Paintable
-    std::mem::forget(monitor);
-    std::mem::forget(handler);
-
-    Ok(())
+    monitor.connect_changed(move |_, _, _, event| file_changed(event, thumb.clone(), &image));
+    Ok(monitor)
 }
 
 fn extract_file_extension(response: &reqwest::Response) -> &str {
@@ -207,7 +199,7 @@ async fn get_cover_file(
     pd: &ShowCoverModel,
     image: &WeakRef<gtk::Image>,
     thumb_size: ThumbSize,
-) -> Result<PathBuf, Error> {
+) -> Result<Option<gio::FileMonitor>, Error> {
     let cover = determin_cover_path(&pd, None);
     let thumb = determin_cover_path(&pd, Some(thumb_size));
 
@@ -218,7 +210,10 @@ async fn get_cover_file(
     }
 
     if !cover.exists() {
-        info!("Cover file does not exist, Starting download. {}", cover.display());
+        info!(
+            "Cover file does not exist, Starting download. {}",
+            cover.display()
+        );
         create_cover_lock(&cover).await?;
         download_cover_image(&pd, &cover, false).await?;
     }
@@ -231,8 +226,8 @@ async fn get_cover_file(
     // and any size is a complete cover
     if size == 0 {
         info!("Found zero sized file, creating FileMonitor");
-        create_file_monitor(&cover, &thumb, image).await?;
-        return Ok(thumb);
+        let monitor = create_file_monitor(&cover, &thumb, image).await?;
+        return Ok(Some(monitor));
     } else if !thumb.exists() {
         warn!("Cover exists, but thumb is missing, redownloading it!");
         fs::remove_file(&cover)?;
@@ -243,36 +238,31 @@ async fn get_cover_file(
         bail!("Failed to generate thumbs");
     }
     info!("Loading cover for '{}'", pd.title());
-    set_image_from_file_with_tokio(image, thumb.clone()).await.unwrap();
+    set_image_from_file_with_tokio(image, thumb.clone())
+        .await
+        .unwrap();
 
-    return Ok(thumb);
+    return Ok(None);
 }
 
-// FIXME: this is ui code, doesn't really belong here
-// FIXME: should be taking a WeakRef Image
-// TODO: after loading, grab the Paintable and cache it to avoid creating
-// multiple textures for the same files
-pub fn load_image(image: &gtk::Image, podcast_id: i32, size: ThumbSize) {
-    // TODO Surface has scale() fn that returns a f64 dpi-scale, maybe use that?
-    // TODO maybe load the full size image when bigger than 512 is requested?
-    let size = size.hidpi(image.scale_factor()).unwrap_or(crate::Thumb512);
-    crate::MAINCONTEXT.spawn_local_with_priority(
-        glib::source::Priority::LOW,
-        clone!(@weak image => async move {
-            load_image_async(&image, podcast_id, size).await
-        }),
-    );
-}
-
-async fn load_image_async(image: &gtk::Image, podcast_id: i32, size: ThumbSize) {
+pub async fn load_image_async(
+    image: &WeakRef<gtk::Image>,
+    podcast_id: i32,
+    size: ThumbSize,
+) -> Option<gio::FileMonitor> {
     use podcasts_data::dbqueries;
 
     let pd = gio::spawn_blocking(move || dbqueries::get_podcast_cover_from_id(podcast_id).unwrap())
         .await
         .unwrap();
-    image.set_tooltip_text(Some(pd.title()));
+    if let Some(image) = image.upgrade() {
+        image.set_tooltip_text(Some(pd.title()));
+    } else {
+        return None;
+    }
 
-    let _path = get_cover_file(&pd, &image.downgrade(), size).await.unwrap();
+    let monitor = get_cover_file(&pd, image, size).await.unwrap();
+    monitor
     // Is this a double call? get_cover_file already calls this.
     //
     // let path = path.to_str().unwrap().to_string();
