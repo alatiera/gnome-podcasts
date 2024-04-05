@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: podcasts master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2024-03-30 18:12+0000\n"
-"PO-Revision-Date: 2024-03-31 01:57+0100\n"
+"POT-Creation-Date: 2024-04-02 07:25+0000\n"
+"PO-Revision-Date: 2024-04-05 04:45+0200\n"
 "Last-Translator: Ekaterine Papava <papava.e@gtu.ge>\n"
 "Language-Team: Georgian <ka@li.org>\n"
 "Language: ka\n"
@@ -58,31 +58,31 @@ msgstr "პოდკასტის სათაური"
 msgid "Duration - Date"
 msgstr "ხანგრძლივობა - თარიღი"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:146
+#: podcasts-gtk/resources/gtk/episode_description.ui:147
 msgid "Download"
 msgstr "გადმოწერა"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:155
+#: podcasts-gtk/resources/gtk/episode_description.ui:157
 msgid "Cancel"
 msgstr "გაუქმება"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:165
+#: podcasts-gtk/resources/gtk/episode_description.ui:167
 msgid "Delete File"
 msgstr "ფაილის წაშლა"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:174
+#: podcasts-gtk/resources/gtk/episode_description.ui:177
 msgid "Stream"
 msgstr "ნაკადი"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:184
-#: podcasts-gtk/resources/gtk/episode_description.ui:186
+#: podcasts-gtk/resources/gtk/episode_description.ui:187
+#: podcasts-gtk/resources/gtk/episode_description.ui:189
 #: podcasts-gtk/resources/gtk/player_dialog.ui:173
 #: podcasts-gtk/resources/gtk/player_toolbar.ui:63
 #: podcasts-gtk/resources/gtk/player_toolbar.ui:254
 msgid "Play"
 msgstr "დაკვრა"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:208
+#: podcasts-gtk/resources/gtk/episode_description.ui:211
 msgid "Episode Description"
 msgstr "ეპიზოდის აღწერა"
 
@@ -114,6 +114,10 @@ msgstr "გადმოწერის გაუქმება"
 #: podcasts-gtk/resources/gtk/episode_widget.ui:206
 msgid "Download this episode"
 msgstr "ამ ეპიზოდის გადმოწერა"
+
+#: podcasts-gtk/resources/gtk/episode_widget.ui:220
+msgid "Episode without audio"
+msgstr "ეპიზოდის ხმის გარეშე"
 
 #: podcasts-gtk/resources/gtk/hamburger.ui:7
 msgid "_Check for New Episodes"
@@ -367,6 +371,10 @@ msgstr "რა პერიოდი უნდა დაველოდო ა�
 msgid "Copied URL to clipboard!"
 msgstr "ბმული დაკოპირდა გაცვლის ბაფერში!"
 
+#: podcasts-gtk/src/manager.rs:105
+msgid "Download failed: {}"
+msgstr "გადმოწერა ჩავარდა: {}"
+
 #: podcasts-gtk/src/stacks/content.rs:66
 msgid "New"
 msgstr "ახალი"
@@ -423,7 +431,7 @@ msgstr "პოდკასტების კლიენტი GNOME-სთვ�
 msgid "translator-credits"
 msgstr "temuri Doghonadze"
 
-#: podcasts-gtk/src/widgets/episode.rs:237
+#: podcasts-gtk/src/widgets/episode.rs:268
 msgid "{} min"
 msgstr "{} წთ"
 
