@@ -18,7 +18,6 @@ use gtk::prelude::*;
 use crate::thumbnail_generator::ThumbSize;
 use podcasts_data::errors::DownloadError;
 use podcasts_data::xdg_dirs::CACHED_COVERS_DIR;
-use podcasts_data::xdg_dirs::PODCASTS_CACHE;
 use podcasts_data::ShowCoverModel;
 
 // Downloader v2
@@ -82,7 +81,7 @@ async fn create_file_monitor(
     Ok(monitor)
 }
 
-fn extract_file_extension(response: &reqwest::Response) -> &str {
+fn filename_for_download(response: &reqwest::Response) -> &str {
     // Get filename from url if possible
     let ext = response
         .url()
@@ -97,23 +96,47 @@ fn extract_file_extension(response: &reqwest::Response) -> &str {
     ext
 }
 
-pub async fn clean_zero_byte_files() -> Result<(), Error> {
+pub fn clean_unfinished_downloads() -> Result<(), Error> {
     info!("Starting cover locks cleanup");
     let dir = CACHED_COVERS_DIR.clone();
 
     for entry in fs::read_dir(dir)? {
-        let path = entry?.path();
-        if path.is_file() {
-            let file = fs::File::open(&path)?;
-            let size = file.metadata()?.len();
-            if size == 0 {
-                drop(file);
-                info!("Found 0byte file at: '{}'", path.display());
-                fs::remove_file(&path)?;
+        // keep going if any one file fails
+        match entry.map(|e| e.path()) {
+            Ok(path) => {
+                if let Err(err) = cleanup_entry(&path) {
+                    error!("failed to cleanup {}", path.display());
+                }
             }
+            Err(err) => error!("failed to get path {err}"),
         }
     }
 
+    Ok(())
+}
+
+fn cleanup_entry(path: &PathBuf) -> Result<(), Error> {
+    if path.is_file() {
+        let file = fs::File::open(&path)?;
+        let size = file.metadata()?.len();
+        if size == 0 {
+            drop(file);
+            info!("Removing 0byte file: '{}'", path.display());
+            fs::remove_file(&path)?;
+        }
+    }
+    // remove tmp directories of unfinished downloads
+    if path.is_dir() {
+        if let Some(filename) = path.to_str() {
+            if filename.contains("-pdcover.part") {
+                info!("Removing unfinished download {filename}");
+                // remove_dir_all can be risky if xdg would break,
+                // but we are filtering for a "*-pdcover.part*" dir-name
+                // and in a "Covers/" subdir, so it should be fine.
+                fs::remove_dir_all(&path)?;
+            }
+        }
+    }
     Ok(())
 }
 
@@ -140,14 +163,14 @@ pub fn determin_cover_path(pd: &ShowCoverModel, size: Option<ThumbSize>) -> Path
 
 // FIXME: handle chunked downloads
 async fn download_file(pd: ShowCoverModel, path: PathBuf) -> Result<(), DownloadError> {
-    let tmp_dir = TempDir::new_in(&*PODCASTS_CACHE, &format!("cover-{}.part", pd.id()))?;
+    let tmp_dir = TempDir::new_in(&*CACHED_COVERS_DIR, &format!("{}-pdcover.part", pd.id()))?;
 
     let client = podcasts_data::downloader::client_builder().build()?;
     let response = client.get(pd.image_uri().unwrap()).send().await?;
     //FIXME: check for 200 or redirects, retry for 5xx
     debug!("Status Resp: {}", response.status());
 
-    let filename = extract_file_extension(&response);
+    let filename = filename_for_download(&response);
     let filename = tmp_dir.path().join(filename);
     info!("Downloading file into: '{:?}'", filename);
     let mut dest = tokio::fs::File::create(&filename).await?;
