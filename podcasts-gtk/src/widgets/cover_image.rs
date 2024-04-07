@@ -22,13 +22,11 @@ use adw::subclass::prelude::*;
 use gtk::glib;
 use std::cell::Cell;
 
-use crate::download_covers::load_image_async;
+use crate::download_covers::load_image;
 
 #[derive(Default)]
 pub struct CoverImagePriv {
     image: gtk::Image,
-    // Reference held when waiting for the downloader
-    monitor: Cell<Option<gtk::gio::FileMonitor>>,
 }
 
 #[glib::object_subclass]
@@ -82,13 +80,8 @@ impl CoverImage {
             .hidpi(self.imp().image.scale_factor())
             .unwrap_or(crate::Thumb512);
         let image = self.imp().image.downgrade();
-        let this = self.downgrade();
         crate::MAINCONTEXT.spawn_local_with_priority(glib::source::Priority::LOW, async move {
-            // TODO maybe pass self reference, so the file monitor can signal to drop itself
-            let monitor = load_image_async(&image, show_id, size).await;
-            if let Some(this) = this.upgrade() {
-                this.imp().monitor.set(monitor);
-            }
+            load_image(&image, show_id, size).await;
         });
     }
 }
