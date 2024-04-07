@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: podcasts master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2024-04-02 07:25+0000\n"
-"PO-Revision-Date: 2024-04-05 04:45+0200\n"
+"POT-Creation-Date: 2024-04-06 09:46+0000\n"
+"PO-Revision-Date: 2024-04-07 18:31+0200\n"
 "Last-Translator: Ekaterine Papava <papava.e@gtu.ge>\n"
 "Language-Team: Georgian <ka@li.org>\n"
 "Language: ka\n"
@@ -58,31 +58,31 @@ msgstr "პოდკასტის სათაური"
 msgid "Duration - Date"
 msgstr "ხანგრძლივობა - თარიღი"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:147
+#: podcasts-gtk/resources/gtk/episode_description.ui:153
 msgid "Download"
 msgstr "გადმოწერა"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:157
+#: podcasts-gtk/resources/gtk/episode_description.ui:163
 msgid "Cancel"
 msgstr "გაუქმება"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:167
+#: podcasts-gtk/resources/gtk/episode_description.ui:173
 msgid "Delete File"
 msgstr "ფაილის წაშლა"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:177
+#: podcasts-gtk/resources/gtk/episode_description.ui:183
 msgid "Stream"
 msgstr "ნაკადი"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:187
-#: podcasts-gtk/resources/gtk/episode_description.ui:189
+#: podcasts-gtk/resources/gtk/episode_description.ui:193
+#: podcasts-gtk/resources/gtk/episode_description.ui:195
 #: podcasts-gtk/resources/gtk/player_dialog.ui:173
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:63
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:254
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:67
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:262
 msgid "Play"
 msgstr "დაკვრა"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:211
+#: podcasts-gtk/resources/gtk/episode_description.ui:212
 msgid "Episode Description"
 msgstr "ეპიზოდის აღწერა"
 
@@ -145,23 +145,76 @@ msgstr "პოდკასტების _შესახებ"
 msgid "Add a new feed"
 msgstr "ახალი ლენტის დამატება"
 
-#: podcasts-gtk/resources/gtk/headerbar.ui:51
+#: podcasts-gtk/resources/gtk/headerbar.ui:52
 msgid "Main Menu"
 msgstr "მთავარი მენიუ"
 
-#: podcasts-gtk/resources/gtk/help-overlay.ui:11
+#: podcasts-gtk/resources/gtk/help-overlay.ui:12
+msgctxt "shortcut window"
+msgid "Navigation"
+msgstr "ნავიგაცია"
+
+#: podcasts-gtk/resources/gtk/help-overlay.ui:15
+msgctxt "shortcut window"
+msgid "Go to Home Page"
+msgstr "გადასვლა საწყის გვერდზე"
+
+#. Translators: Shows as a Noun
+#: podcasts-gtk/resources/gtk/help-overlay.ui:22
+msgctxt "shortcut window"
+msgid "Go to Shows Page"
+msgstr "გადასვლა სერიალების გვერდზე"
+
+#. Translators: 'Discovery' is a page where you can add new podcasts
+#: podcasts-gtk/resources/gtk/help-overlay.ui:29
+msgctxt "shortcut window"
+msgid "Go To Discovery Page"
+msgstr "გადასვლა აღმოჩენის გვერდზე"
+
+#: podcasts-gtk/resources/gtk/help-overlay.ui:38
+msgctxt "shortcut window"
+msgid "Player"
+msgstr "დამკვრელი"
+
+#: podcasts-gtk/resources/gtk/help-overlay.ui:41
+msgctxt "shortcut window"
+msgid "Toggle Pause"
+msgstr "პაუზის გადართვა"
+
+#: podcasts-gtk/resources/gtk/help-overlay.ui:47
+msgctxt "shortcut window"
+msgid "Seek Forwards"
+msgstr "წინ გადახვევა"
+
+#: podcasts-gtk/resources/gtk/help-overlay.ui:53
+msgctxt "shortcut window"
+msgid "Seek Backwards"
+msgstr "უკან გადახვევა"
+
+#: podcasts-gtk/resources/gtk/help-overlay.ui:62
+msgctxt "shortcut window"
 msgid "General"
 msgstr "ზოგადი"
 
-#: podcasts-gtk/resources/gtk/help-overlay.ui:15
+#: podcasts-gtk/resources/gtk/help-overlay.ui:65
 msgctxt "shortcut window"
 msgid "Check for new episodes"
 msgstr "ახალი ეპიზოდების შემოწმება"
 
-#: podcasts-gtk/resources/gtk/help-overlay.ui:21
+#: podcasts-gtk/resources/gtk/help-overlay.ui:71
 msgctxt "shortcut window"
 msgid "Quit the application"
 msgstr "აპლიკაციიდან გასვლა"
+
+#: podcasts-gtk/resources/gtk/help-overlay.ui:77
+msgctxt "shortcut window"
+msgid "Import Subscriptions"
+msgstr "გამოწერების შემოტანა"
+
+#: podcasts-gtk/resources/gtk/help-overlay.ui:83
+msgctxt "shortcut window"
+msgid "Export Subscriptions"
+msgstr "გამოწერების გატანა"
 
 #: podcasts-gtk/resources/gtk/home_view.ui:57
 #: podcasts-gtk/resources/gtk/home_view.ui:70
@@ -201,8 +254,8 @@ msgid "Rewind"
 msgstr "გადახვევა"
 
 #: podcasts-gtk/resources/gtk/player_dialog.ui:191
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:76
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:263
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:80
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:271
 msgid "Pause"
 msgstr "პაუზა"
 
@@ -247,7 +300,7 @@ msgstr "0.75×"
 msgid "Rewind 10 seconds"
 msgstr "10 წამით გადახვევა"
 
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:89
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:95
 msgid "Fast forward 10 seconds"
 msgstr "10 წამით წინ სწრაფი გადახვევა"
 
@@ -288,8 +341,8 @@ msgstr "ეპიზოდები"
 #: podcasts-gtk/resources/gtk/window.ui:25
 #: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:4
 #: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:3
-#: podcasts-gtk/src/app.rs:491 podcasts-gtk/src/widgets/aboutdialog.rs:56
-#: podcasts-gtk/src/widgets/player.rs:378
+#: podcasts-gtk/src/app.rs:496 podcasts-gtk/src/widgets/aboutdialog.rs:56
+#: podcasts-gtk/src/widgets/player.rs:380
 msgid "Podcasts"
 msgstr "პოდკასტები"
 
@@ -367,7 +420,7 @@ msgstr "რამდენი პერიოდი უნდა დაველ
 msgid "What period of time to wait between automatic cleanups"
 msgstr "რა პერიოდი უნდა დაველოდო ავტომატურ გაწმენდებს შორის"
 
-#: podcasts-gtk/src/app.rs:333
+#: podcasts-gtk/src/app.rs:338
 msgid "Copied URL to clipboard!"
 msgstr "ბმული დაკოპირდა გაცვლის ბაფერში!"
 
@@ -435,7 +488,7 @@ msgstr "temuri Doghonadze"
 msgid "{} min"
 msgstr "{} წთ"
 
-#: podcasts-gtk/src/widgets/player.rs:968
+#: podcasts-gtk/src/widgets/player.rs:985
 msgid "The media player was unable to execute an action."
 msgstr "მედიის დამკვრელმა ქმედების შესრულება ვერ შეძლო."
 
