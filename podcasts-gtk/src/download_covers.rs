@@ -1,7 +1,6 @@
 use anyhow::{anyhow, bail, Result};
 use once_cell::sync::Lazy;
 use std::collections::{HashMap, HashSet};
-use std::fs;
 use std::fs::File;
 use std::io::Cursor;
 use std::path::{Path, PathBuf};
@@ -72,7 +71,7 @@ pub fn clean_unfinished_downloads() -> Result<()> {
     info!("Starting cover locks cleanup");
     let dir = CACHED_COVERS_DIR.clone();
 
-    for entry in fs::read_dir(dir)? {
+    for entry in std::fs::read_dir(dir)? {
         // keep going if any one file fails
         match entry.map(|e| e.path()) {
             Ok(path) => {
@@ -90,7 +89,7 @@ pub fn clean_unfinished_downloads() -> Result<()> {
 fn cleanup_entry(path: &PathBuf) -> Result<()> {
     if path.is_file() {
         if path.ends_with(".part") {
-            fs::remove_file(&path)?;
+            std::fs::remove_file(&path)?;
         }
     }
     // remove tmp directories of unfinished downloads
@@ -101,7 +100,7 @@ fn cleanup_entry(path: &PathBuf) -> Result<()> {
                 // remove_dir_all can be risky if xdg would break,
                 // but we are filtering for a "*-pdcover.part*" dir-name
                 // and in a "Covers/" subdir, so it should be fine.
-                fs::remove_dir_all(&path)?;
+                std::fs::remove_dir_all(&path)?;
             }
         }
     }
@@ -129,7 +128,12 @@ fn determin_cover_path_for_update(pd: &ShowCoverModel) -> PathBuf {
     dir
 }
 
-async fn from_web(pd: &ShowCoverModel, cover_id: &CoverId, path: &PathBuf) -> Result<gdk::Texture> {
+async fn download(
+    pd: &ShowCoverModel,
+    cover_id: &CoverId,
+    path: &PathBuf,
+    just_download: bool,
+) -> Result<Option<gdk::Texture>> {
     let url = pd
         .image_uri()
         .ok_or(anyhow!("invalid cover uri"))?
@@ -165,6 +169,10 @@ async fn from_web(pd: &ShowCoverModel, cover_id: &CoverId, path: &PathBuf) -> Re
     });
 
     if let Ok(Ok(thumbs)) = receiver.await {
+        if just_download {
+            tokio::fs::rename(&filename, &path).await?;
+            return Ok(None);
+        }
         if let Some(thumb_texture) = thumbs.get(&cover_id.1) {
             info!("Cached img into: '{}'", &path.display());
             COVER_TEXTURES
@@ -175,10 +183,15 @@ async fn from_web(pd: &ShowCoverModel, cover_id: &CoverId, path: &PathBuf) -> Re
             // we only rename after thumbnails are generated,
             // so thumbnails can be presumed to exist if the orginal file exists
             tokio::fs::rename(&filename, &path).await?;
-            return Ok(thumb_texture.clone());
+            return Ok(Some(thumb_texture.clone()));
         }
     }
     bail!("failed to generate thumbnails");
+}
+
+async fn from_web(pd: &ShowCoverModel, cover_id: &CoverId, path: &PathBuf) -> Result<gdk::Texture> {
+    // the `false` for just_download gurantees it to be Some
+    Ok(download(pd, cover_id, path, false).await?.unwrap())
 }
 
 async fn cover_is_downloading(show_id: i32) -> bool {
@@ -268,6 +281,26 @@ async fn drop_dl_lock(show_id: i32) {
     COVER_DL_REGISTRY.write().await.remove(&show_id);
 }
 
+/// Only make sure cover is downloaded without caching any textures.
+pub async fn just_download(pd: &ShowCoverModel) -> Result<()> {
+    let show_id = pd.id();
+    if aquire_dl_lock(show_id).await {
+        let cover = determin_cover_path(pd, None);
+        // Won't be used because we pass `true` for just_download
+        let unused_cover_id = (show_id, crate::Thumb64);
+        let result = download(pd, &unused_cover_id, &cover, true).await;
+        drop_dl_lock(show_id).await;
+        result?;
+    } else {
+        while {
+            // wait for download to finish
+            tokio::time::sleep(std::time::Duration::from_millis(250)).await;
+            cover_is_downloading(show_id).await
+        } {}
+    }
+    Ok(())
+}
+/// Caches and returns the texture, may also download and update it.
 pub async fn load_texture(pd: &ShowCoverModel, thumb_size: ThumbSize) -> Result<gdk::Texture> {
     let show_id = pd.id();
     let cover_id = (show_id, thumb_size.clone());

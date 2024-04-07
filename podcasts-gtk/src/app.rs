@@ -172,6 +172,7 @@ pub(crate) enum Action {
     InitEpisode(i32),
     InitEpisodeAt(i32, i32),
     StreamEpisode(i32),
+    UpdateMprisCover(i32, bool), // bool = download success, use local file
     EmptyState,
     PopulatedState,
     RaiseWindow,
@@ -390,6 +391,10 @@ impl PdApplication {
             }
             Action::StreamEpisode(id) => {
                 let res = window.init_episode(id, None, true);
+                debug_assert!(res.is_ok());
+            }
+            Action::UpdateMprisCover(id, dl_success) => {
+                let res = window.player().update_mpris_cover(id, dl_success);
                 debug_assert!(res.is_ok());
             }
             Action::EmptyState => {

@@ -269,7 +269,7 @@ impl MainWindow {
             .get()
             .unwrap()
             .borrow_mut()
-            .initialize_episode(id, stream, second)
+            .initialize_episode(self.sender(), id, stream, second)
     }
 
     pub(crate) fn add_toast(&self, toast: adw::Toast) {

@@ -88,7 +88,12 @@ impl PlayerInfo {
     }
 
     // FIXME: create a Diesel Model of the joined episode and podcast query instead
-    fn init(&mut self, episode: &EpisodeWidgetModel, podcast: &ShowCoverModel) {
+    fn init(
+        &mut self,
+        sender: &Sender<Action>,
+        episode: &EpisodeWidgetModel,
+        podcast: &ShowCoverModel,
+    ) {
         self.ep = Some(episode.clone());
         self.episode_id.replace(Some(episode.id()));
         self.set_cover_image(podcast);
@@ -99,20 +104,24 @@ impl PlayerInfo {
         metadata.set_artist(Some(vec![podcast.title().to_string()]));
         metadata.set_title(Some(episode.title().to_string()));
 
-        // FIXME
         // Set the cover if it is already cached.
-        // if let Some(path) = downloader::check_for_cached_cover(podcast)
-        //     .as_ref()
-        //     .and_then(|p| p.to_str())
-        // {
-        //     metadata.set_art_url(Url::from_file_path(path).ok());
-        // } else {
-        //     // fallback: set the cover to the http url if it isn't cached, yet.
-        //     // TODO we could trigger an async download of the cover here
-        //     // and update the metadata when it's done.
-        //     metadata.set_art_url(podcast.image_uri());
-        // }
-        metadata.set_art_url(podcast.image_uri());
+        let art_path = crate::download_covers::determin_cover_path(podcast, None);
+        if art_path.exists() {
+            metadata.set_art_url(Url::from_file_path(art_path).ok());
+        } else {
+            // Also trigger a download it
+            let sender = sender.clone();
+            let podcast = podcast.clone();
+            crate::RUNTIME.spawn(async move {
+                let id = podcast.id();
+                if let Err(err) = crate::download_covers::just_download(&podcast).await {
+                    error!("Cover download failed {err}");
+                    send!(sender, Action::UpdateMprisCover(id, false));
+                } else {
+                    send!(sender, Action::UpdateMprisCover(id, true));
+                }
+            });
+        }
 
         if let Some(mpris) = self.mpris.as_ref() {
             crate::MAINCONTEXT.spawn_local_with_priority(
@@ -133,6 +142,53 @@ impl PlayerInfo {
                 }),
             );
         }
+    }
+
+    // hook for when the async download finished
+    fn update_mpris_cover(&self, show_id: i32, dl_success: bool) -> Result<()> {
+        if let Some(ep) = self.ep.as_ref() {
+            if ep.show_id() != show_id {
+                // Download took too long, we are no longer on the same show.
+                return Ok(());
+            }
+        }
+
+        if let Some(mpris) = self.mpris.as_ref() {
+            let pd = dbqueries::get_podcast_cover_from_id(show_id)?;
+            let mut metadata = mpris.metadata().clone();
+            if dl_success {
+                let art_path = crate::download_covers::determin_cover_path(&pd, None);
+                if art_path.exists() {
+                    metadata.set_art_url(Url::from_file_path(art_path).ok());
+                    crate::MAINCONTEXT.spawn_local_with_priority(
+                        glib::source::Priority::LOW,
+                        clone!(@weak mpris => async move {
+                            if let Err(err) = mpris.set_metadata(metadata).await {
+                                error!("failed to update mpris metadata {err}");
+                            }
+                        }),
+                    );
+                    return Ok(());
+                } else {
+                    error!(
+                        "cover does not exist after successful download? {}",
+                        art_path.display()
+                    );
+                }
+            }
+            // Fallback to web url, it could still work,
+            // because of different http agent or no disk space.
+            metadata.set_art_url(pd.image_uri());
+            crate::MAINCONTEXT.spawn_local_with_priority(
+                glib::source::Priority::LOW,
+                clone!(@weak mpris => async move {
+                    if let Err(err) = mpris.set_metadata(metadata).await {
+                        error!("failed to update mpris metadata {err}");
+                    }
+                }),
+            );
+        }
+        Ok(())
     }
 
     fn set_episode_title(&self, episode: &EpisodeWidgetModel) {
@@ -511,6 +567,7 @@ impl PlayerWidget {
 
     pub(crate) fn initialize_episode(
         &mut self,
+        sender: &Sender<Action>,
         id: i32,
         stream: bool,
         second: Option<i32>,
@@ -522,7 +579,7 @@ impl PlayerWidget {
 
         self.info.restore_position = second.unwrap_or(ep.play_position());
         self.info.finished_restore = false;
-        self.info.init(&ep, &pd);
+        self.info.init(sender, &ep, &pd);
 
         if stream {
             if let Some(uri) = ep.uri() {
@@ -581,6 +638,10 @@ impl PlayerWidget {
             let value = slider.value() as u64;
             player.seek(ClockTime::from_seconds(value));
         })
+    }
+
+    pub fn update_mpris_cover(&self, show_id: i32, dl_success: bool) -> Result<()> {
+        self.info.update_mpris_cover(show_id, dl_success)
     }
 
     fn smart_rewind(&self) -> Option<()> {
