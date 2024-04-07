@@ -88,4 +88,8 @@ pub enum DownloadError {
     InvalidCachedImageLocation,
     #[error("Failed to load texture from Image.")]
     FailedToLoadTexture,
+    #[error("Download Thread Error.")]
+    TokioError,
+    #[error("Thumbnail Generation Error.")]
+    ThumbnailError,
 }

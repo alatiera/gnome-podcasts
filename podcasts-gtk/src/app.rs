@@ -30,6 +30,7 @@ use std::env;
 use std::sync::Arc;
 
 use crate::config::{APP_ID, LOCALEDIR};
+use crate::download_covers;
 use crate::feed_manager::FeedManager;
 use crate::i18n::i18n;
 use crate::settings;
@@ -118,7 +119,9 @@ impl ApplicationImpl for PdApplicationPrivate {
         let cleanup_date = settings::get_cleanup_date(&settings);
         // Garbage collect watched episodes from the disk
         utils::cleanup(cleanup_date);
-        crate::download_covers::clean_unfinished_downloads();
+        if let Err(err) = download_covers::clean_unfinished_downloads() {
+            error!("Failed to cleanup downloads: {err}");
+        }
 
         self.settings.replace(Some(settings));
     }

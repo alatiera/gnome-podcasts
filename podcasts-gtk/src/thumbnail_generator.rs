@@ -9,7 +9,7 @@ use podcasts_data::ShowCoverModel;
 
 // we only generate a fixed amount of thumbnails
 // This enum is to avoid accidentally passing a thumb-size we didn't generate
-#[derive(Clone)]
+#[derive(Clone, Hash)]
 pub enum ThumbSize {
     Thumb64,
     Thumb128,
@@ -49,13 +49,13 @@ impl Display for ThumbSize {
 
 fn scaled_texture(
     renderer: &gtk::gsk::Renderer,
-    texture: gtk::gdk::Texture,
+    full_texture: &gtk::gdk::Texture,
     size: &ThumbSize,
 ) -> Result<gtk::gdk::Texture> {
     let snapshot = gtk::Snapshot::new();
     let pixels = size.pixels();
     snapshot.append_scaled_texture(
-        &texture,
+        full_texture,
         gtk::gsk::ScalingFilter::Trilinear,
         &gtk::graphene::Rect::new(0.0, 0.0, pixels, pixels),
     );
@@ -67,56 +67,70 @@ fn scaled_texture(
     Ok(renderer.render_texture(node, None))
 }
 
-pub async fn generate(pd: &ShowCoverModel, texture: gtk::gdk::Texture) -> Result<()> {
-    let pd = pd.clone();
-    crate::MAINCONTEXT
-        .spawn_with_priority(glib::source::Priority::DEFAULT_IDLE, async move {
-            let sizes: [ThumbSize; 4] = [Thumb64, Thumb128, Thumb256, Thumb512];
+fn render_thumbs(texture: &gtk::gdk::Texture) -> Result<Vec<(ThumbSize, gtk::gdk::Texture)>> {
+    let display = gtk::gdk::Display::default().context("can't get a display")?;
+    let surface = gtk::gdk::Surface::new_toplevel(&display);
+    let renderer = gtk::gsk::Renderer::for_surface(&surface).context("no renderer")?;
+    if !renderer.is_realized() {
+        renderer
+            .realize_for_display(&display)
+            .context("Failed to realize renderer")?;
+    }
 
-            let thumbs = {
-                let display = gtk::gdk::Display::default().context("can't get a display")?;
-                let surface = gtk::gdk::Surface::new_toplevel(&display);
-                let renderer = gtk::gsk::Renderer::for_surface(&surface).context("no renderer")?;
-                if !renderer.is_realized() {
-                    let _ = renderer
-                        .realize_for_display(&display)
-                        .context("Failed to realize renderer")?;
-                }
-
-                let thumbs: Vec<(ThumbSize, gtk::gdk::Texture)> = sizes
-                    .iter()
-                    .map(|size| {
-                        (
-                            size.clone(),
-                            scaled_texture(&renderer, texture.clone(), size).unwrap(),
-                        )
-                    })
-                    .collect();
-
-                if renderer.is_realized() {
-                    renderer.unrealize();
-                }
-                thumbs
-            };
-
-            let handles: Vec<_> = thumbs
-                .into_iter()
-                .map(|(size, texture)| {
-                    let thumb_path = determin_cover_path(&pd, Some(size));
-                    let bytes = texture.save_to_png_bytes();
-                    crate::RUNTIME.spawn(async move {
-                        let mut dest = tokio::fs::File::create(&thumb_path).await?;
-                        let mut content = std::io::Cursor::new(bytes);
-                        tokio::io::copy(&mut content, &mut dest).await?;
-                        dest.sync_all().await?;
-                        drop(dest);
-                        Ok::<(), anyhow::Error>(())
-                    })
-                })
-                .collect();
-            futures_util::future::join_all(handles).await;
-            Ok(())
+    let sizes: [ThumbSize; 4] = [Thumb64, Thumb128, Thumb256, Thumb512];
+    // All thumbs must generate, we rely on them existing if the main image exists.
+    let thumbs: Result<Vec<_>> = sizes
+        .into_iter()
+        .map(|size| {
+            let thumb_texture = scaled_texture(&renderer, texture, &size)?;
+            Ok((size, thumb_texture))
         })
+        .collect();
+
+    if renderer.is_realized() {
+        renderer.unrealize();
+    }
+
+    thumbs
+}
+
+async fn write_thumbs(
+    pd: &ShowCoverModel,
+    thumbs: &Vec<(ThumbSize, gtk::gdk::Texture)>,
+) -> Result<()> {
+    let handles: Vec<_> = thumbs
+        .iter()
+        .map(|(size, texture)| {
+            let thumb_path = determin_cover_path(&pd, Some(size.clone()));
+            let bytes = texture.save_to_png_bytes(); // must be read on gtk thread
+            crate::RUNTIME.spawn(async move {
+                let mut tmp_path = thumb_path.with_extension(".part");
+                let mut dest = tokio::fs::File::create(&tmp_path).await?;
+                let mut content = std::io::Cursor::new(bytes);
+                tokio::io::copy(&mut content, &mut dest).await?;
+                dest.sync_all().await?;
+                tokio::fs::rename(&tmp_path, &thumb_path).await?;
+                Ok::<(), anyhow::Error>(())
+            })
+        })
+        .collect();
+    // TODO can this error be unwrapped cleaner????
+    let result: Result<Vec<()>> = futures_util::future::join_all(handles)
         .await
-        .unwrap_or(Err(anyhow!("Failed to render snapshot on main thread")))
+        .into_iter()
+        .map(|r| r.unwrap_or(Err(anyhow!("Failed to write cover thumbnail."))))
+        .collect();
+    result?;
+    Ok(())
+}
+
+/// Must run on gtk thread
+pub async fn generate(
+    pd: &ShowCoverModel,
+    texture: gtk::gdk::Texture,
+) -> Result<Vec<(ThumbSize, gtk::gdk::Texture)>> {
+    let thumbs = render_thumbs(&texture)?;
+    write_thumbs(&pd, &thumbs).await?;
+    Ok(thumbs)
+    // Ok::<(), anyhow::Error>(())
 }

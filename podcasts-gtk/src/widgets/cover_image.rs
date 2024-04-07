@@ -27,6 +27,7 @@ use crate::download_covers::load_image_async;
 #[derive(Default)]
 pub struct CoverImagePriv {
     image: gtk::Image,
+    // Reference held when waiting for the downloader
     monitor: Cell<Option<gtk::gio::FileMonitor>>,
 }
 
@@ -41,13 +42,17 @@ impl ObjectImpl for CoverImagePriv {
     fn constructed(&self) {
         self.parent_constructed();
 
-        self.image.set_pixel_size(self.obj().width_request());
         self.obj()
             .bind_property("width_request", &self.image, "pixel_size")
             .flags(glib::BindingFlags::SYNC_CREATE)
             .build();
 
-        // TODO FIXME pass on rounded border classes to the image
+        // Must pass on classes for rounded borders on images to work.
+        self.obj()
+            .bind_property("css_classes", &self.image, "css_classes")
+            .flags(glib::BindingFlags::SYNC_CREATE)
+            .build();
+
         self.image.set_icon_name(Some("image-x-generic-symbolic"));
         self.image.set_overflow(gtk::Overflow::Hidden);
         self.obj().set_child(Some(&self.image));
