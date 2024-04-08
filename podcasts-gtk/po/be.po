@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2024-02-27 18:33+0000\n"
-"PO-Revision-Date: 2024-03-01 16:11+0300\n"
+"POT-Creation-Date: 2024-04-06 09:46+0000\n"
+"PO-Revision-Date: 2024-04-08 19:38+0300\n"
 "Last-Translator: Yuras Shumovich <shumovichy@gmail.com>\n"
 "Language-Team: Belarusian <LL@li.org>\n"
 "Language: be\n"
@@ -17,23 +17,27 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Poedit 3.4.2\n"
 
-#: podcasts-gtk/resources/gtk/empty_show.ui:16
+#. Translators: Show as a noun, meaning a Podcast-Show.
+#: podcasts-gtk/resources/gtk/empty_show.ui:17
 msgid "This show does not have episodes yet"
 msgstr "У гэтай перадачы пакуль няма эпізодаў"
 
-#: podcasts-gtk/resources/gtk/empty_show.ui:25
+#: podcasts-gtk/resources/gtk/empty_show.ui:26
 msgid "If you think this is an error, please consider writing a bug report."
 msgstr "Калі вы лічыце, што гэта памылка, напішыце паведамленне пра памылку."
 
-#: podcasts-gtk/resources/gtk/empty_view.ui:30
+#. Translators: Shows as a noun, meaning Podcast-Shows.
+#: podcasts-gtk/resources/gtk/empty_view.ui:31
 msgid "Get Some Shows"
 msgstr "Атрымайце перадачы"
 
-#: podcasts-gtk/resources/gtk/empty_view.ui:50
+#. Translators: Shows as a noun, meaning Podcast-Shows.
+#: podcasts-gtk/resources/gtk/empty_view.ui:52
 msgid "Add new shows via feed URL"
 msgstr "Дадавайце новыя перадачы праз URL-адрас канала"
 
-#: podcasts-gtk/resources/gtk/empty_view.ui:73
+#. Translators: Shows as a noun, meaning Podcast-Shows.
+#: podcasts-gtk/resources/gtk/empty_view.ui:76
 msgid "Import shows from another device"
 msgstr "Імпартуйце перадачы з іншай прылады"
 
@@ -45,23 +49,48 @@ msgstr "Звесткі пра эпізод"
 msgid "Episode Menu"
 msgstr "Меню эпізодаў"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:90
+#: podcasts-gtk/resources/gtk/episode_description.ui:92
 msgid "Podcast Title"
 msgstr "Назва падкасту"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:113
+#: podcasts-gtk/resources/gtk/episode_description.ui:115
 msgid "Duration - Date"
 msgstr "Працягласць - Дата"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:133
+#: podcasts-gtk/resources/gtk/episode_description.ui:153
+msgid "Download"
+msgstr "Спампаваць"
+
+#: podcasts-gtk/resources/gtk/episode_description.ui:163
+msgid "Cancel"
+msgstr "Скасаваць"
+
+#: podcasts-gtk/resources/gtk/episode_description.ui:173
+msgid "Delete File"
+msgstr "Выдаліць файл"
+
+#: podcasts-gtk/resources/gtk/episode_description.ui:183
+msgid "Stream"
+msgstr "Трансляцыя"
+
+#: podcasts-gtk/resources/gtk/episode_description.ui:193
+#: podcasts-gtk/resources/gtk/episode_description.ui:195
+#: podcasts-gtk/resources/gtk/player_dialog.ui:173
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:67
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:262
+msgid "Play"
+msgstr "Прайграць"
+
+#: podcasts-gtk/resources/gtk/episode_description.ui:212
 msgid "Episode Description"
 msgstr "Апісанне эпізоду"
 
-#: podcasts-gtk/resources/gtk/episode_menu.ui:35
+#. Translators: Show as a noun, meaning a Podcast-Show.
+#: podcasts-gtk/resources/gtk/episode_menu.ui:36
 msgid "Go to Show"
 msgstr "Перайсці да перадачы"
 
-#: podcasts-gtk/resources/gtk/episode_menu.ui:39
+#: podcasts-gtk/resources/gtk/episode_menu.ui:40
 msgid "Copy Episode Url"
 msgstr "Капіраваць Url эпізоду"
 
@@ -85,60 +114,106 @@ msgstr "Скасаваць спампоўванне"
 msgid "Download this episode"
 msgstr "Спампаваць гэты эпізод"
 
+#: podcasts-gtk/resources/gtk/episode_widget.ui:220
+msgid "Episode without audio"
+msgstr "Эпізод без аўдыя"
+
 #: podcasts-gtk/resources/gtk/hamburger.ui:7
 msgid "_Check for New Episodes"
 msgstr "_Праверыць наяўнасць новых эпізодаў"
 
-#: podcasts-gtk/resources/gtk/hamburger.ui:12
+#. Translators: Show as a noun, meaning Podcast-Shows.
+#: podcasts-gtk/resources/gtk/hamburger.ui:13
 msgid "_Import Shows"
 msgstr "_Імпартаваць перадачы"
 
-#: podcasts-gtk/resources/gtk/hamburger.ui:16
+#. Translators: Show as a noun, meaning Podcast-Shows.
+#: podcasts-gtk/resources/gtk/hamburger.ui:18
 msgid "_Export Shows"
 msgstr "_Экспартаваць перадачы"
 
-#: podcasts-gtk/resources/gtk/hamburger.ui:22
+#: podcasts-gtk/resources/gtk/hamburger.ui:24
 msgid "_Keyboard Shortcuts"
 msgstr "_Спалучэнні клавіш"
 
-#: podcasts-gtk/resources/gtk/hamburger.ui:30
+#: podcasts-gtk/resources/gtk/hamburger.ui:32
 msgid "_About Podcasts"
 msgstr "Пр_а Падкасты"
 
-#: podcasts-gtk/resources/gtk/headerbar.ui:33
-#: podcasts-gtk/resources/gtk/headerbar.ui:108
+#: podcasts-gtk/resources/gtk/headerbar.ui:41
 msgid "Add a new feed"
 msgstr "Дадаць новы канал"
 
-#: podcasts-gtk/resources/gtk/headerbar.ui:44
-msgid "Enter Feed Address"
-msgstr "Увядзіце адрас канала"
-
-#: podcasts-gtk/resources/gtk/headerbar.ui:59
-msgid "Popover menu (ESC to close)"
-msgstr "Усплывальнае меню ( ESC, каб закрыць)"
-
-#: podcasts-gtk/resources/gtk/headerbar.ui:71
-msgid "Add"
-msgstr "Дадаць"
-
-#: podcasts-gtk/resources/gtk/headerbar.ui:119
+#: podcasts-gtk/resources/gtk/headerbar.ui:52
 msgid "Main Menu"
 msgstr "Галоўнае меню"
 
-#: podcasts-gtk/resources/gtk/help-overlay.ui:11
+#: podcasts-gtk/resources/gtk/help-overlay.ui:12
+msgctxt "shortcut window"
+msgid "Navigation"
+msgstr "Навігацыя"
+
+#: podcasts-gtk/resources/gtk/help-overlay.ui:15
+msgctxt "shortcut window"
+msgid "Go to Home Page"
+msgstr "Перайсці на старонку «Хатняя»"
+
+#. Translators: Shows as a Noun
+#: podcasts-gtk/resources/gtk/help-overlay.ui:22
+msgctxt "shortcut window"
+msgid "Go to Shows Page"
+msgstr "Перайсці на старонку «Перадачы»"
+
+#. Translators: 'Discovery' is a page where you can add new podcasts
+#: podcasts-gtk/resources/gtk/help-overlay.ui:29
+msgctxt "shortcut window"
+msgid "Go To Discovery Page"
+msgstr "Перайсці на старонку «Агляд»"
+
+#: podcasts-gtk/resources/gtk/help-overlay.ui:38
+msgctxt "shortcut window"
+msgid "Player"
+msgstr "Прайгравальнік"
+
+#: podcasts-gtk/resources/gtk/help-overlay.ui:41
+msgctxt "shortcut window"
+msgid "Toggle Pause"
+msgstr "Паўза/прайграванне"
+
+#: podcasts-gtk/resources/gtk/help-overlay.ui:47
+msgctxt "shortcut window"
+msgid "Seek Forwards"
+msgstr "Пракруціць наперад"
+
+#: podcasts-gtk/resources/gtk/help-overlay.ui:53
+msgctxt "shortcut window"
+msgid "Seek Backwards"
+msgstr "Пракруціць назад"
+
+#: podcasts-gtk/resources/gtk/help-overlay.ui:62
+msgctxt "shortcut window"
 msgid "General"
 msgstr "Агульныя"
 
-#: podcasts-gtk/resources/gtk/help-overlay.ui:15
+#: podcasts-gtk/resources/gtk/help-overlay.ui:65
 msgctxt "shortcut window"
 msgid "Check for new episodes"
 msgstr "Праверыць наяўнасць новых эпізодаў"
 
-#: podcasts-gtk/resources/gtk/help-overlay.ui:21
+#: podcasts-gtk/resources/gtk/help-overlay.ui:71
 msgctxt "shortcut window"
 msgid "Quit the application"
 msgstr "Выйсці з праграмы"
+
+#: podcasts-gtk/resources/gtk/help-overlay.ui:77
+msgctxt "shortcut window"
+msgid "Import Subscriptions"
+msgstr "Імпартаваць падпіскі"
+
+#: podcasts-gtk/resources/gtk/help-overlay.ui:83
+msgctxt "shortcut window"
+msgid "Export Subscriptions"
+msgstr "Экспартаваць падпіскі"
 
 #: podcasts-gtk/resources/gtk/home_view.ui:57
 #: podcasts-gtk/resources/gtk/home_view.ui:70
@@ -177,15 +252,9 @@ msgstr "Закрыць"
 msgid "Rewind"
 msgstr "Назад"
 
-#: podcasts-gtk/resources/gtk/player_dialog.ui:173
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:63
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:253
-msgid "Play"
-msgstr "Прайграць"
-
 #: podcasts-gtk/resources/gtk/player_dialog.ui:191
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:76
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:262
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:80
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:271
 msgid "Pause"
 msgstr "Паўза"
 
@@ -230,7 +299,7 @@ msgstr "0.75×"
 msgid "Rewind 10 seconds"
 msgstr "Перамотка на 10 секунд назад"
 
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:89
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:95
 msgid "Fast forward 10 seconds"
 msgstr "Перамотка наперад на 10 секунд"
 
@@ -271,12 +340,13 @@ msgstr "Эпізоды"
 #: podcasts-gtk/resources/gtk/window.ui:25
 #: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:4
 #: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:3
-#: podcasts-gtk/src/app.rs:430 podcasts-gtk/src/widgets/aboutdialog.rs:56
-#: podcasts-gtk/src/widgets/player.rs:384
+#: podcasts-gtk/src/app.rs:496 podcasts-gtk/src/widgets/aboutdialog.rs:56
+#: podcasts-gtk/src/widgets/player.rs:380
 msgid "Podcasts"
 msgstr "Падкасты"
 
-#: podcasts-gtk/resources/gtk/window.ui:33
+#. Translators: Show as a noun, meaning a Podcast-Show.
+#: podcasts-gtk/resources/gtk/window.ui:35
 msgid "Show"
 msgstr "Перадача"
 
@@ -348,45 +418,51 @@ msgstr "Колькі перыядаў часу павінна прайсці п�
 msgid "What period of time to wait between automatic cleanups"
 msgstr "Колькі перыядаў часу павінна прайсці паміж аўтаматычнымі ачысткамі"
 
-#: podcasts-gtk/src/app.rs:315
+#: podcasts-gtk/src/app.rs:338
 msgid "Copied URL to clipboard!"
 msgstr "URL скапіяваны ў буфер абмену!"
 
-#: podcasts-gtk/src/stacks/content.rs:68
+#: podcasts-gtk/src/manager.rs:105
+msgid "Download failed: {}"
+msgstr "Не ўдалося спампаваць: {}"
+
+#: podcasts-gtk/src/stacks/content.rs:66
 msgid "New"
 msgstr "Новыя"
 
-#: podcasts-gtk/src/stacks/content.rs:70
-#: podcasts-gtk/src/widgets/shows_view.rs:64
+#. Translators: Shows as a noun, meaning Podcast-Shows.
+#: podcasts-gtk/src/stacks/content.rs:68
+#: podcasts-gtk/src/widgets/shows_view.rs:65
 msgid "Shows"
 msgstr "Перадачы"
 
-#: podcasts-gtk/src/utils.rs:480 podcasts-gtk/src/utils.rs:522
+#: podcasts-gtk/src/utils.rs:482 podcasts-gtk/src/utils.rs:522
 msgid "OPML file"
 msgstr "OPML-файл"
 
-#: podcasts-gtk/src/utils.rs:491
+#: podcasts-gtk/src/utils.rs:493
 msgid "Select the file from which to you want to import shows."
 msgstr "Выберыце файл, з якога вы хочаце імпартаваць перадачы."
 
-#: podcasts-gtk/src/utils.rs:493
+#: podcasts-gtk/src/utils.rs:495
 msgid "_Import"
 msgstr "_Імпартаваць"
 
-#: podcasts-gtk/src/utils.rs:509
-msgid "Failed to parse the imported file"
-msgstr "Не ўдалося разабраць імпартаваны файл"
+#: podcasts-gtk/src/utils.rs:512
+msgid "Failed to parse the imported file {}"
+msgstr "Не ўдалося разабраць імпартаваны файл {}"
 
-#: podcasts-gtk/src/utils.rs:532
+#. Translators: Show as a noun, meaning Podcast-Shows.
+#: podcasts-gtk/src/utils.rs:533
 msgid "Export shows to…"
 msgstr "Экспарт перадач ў…"
 
-#: podcasts-gtk/src/utils.rs:533
+#: podcasts-gtk/src/utils.rs:534
 msgid "_Export"
 msgstr "_Экспартаваць"
 
 #. Translators: This is the string of the suggested name for the exported opml file
-#: podcasts-gtk/src/utils.rs:537
+#: podcasts-gtk/src/utils.rs:538
 msgid "gnome-podcasts-exported-shows"
 msgstr "gnome-podcasts-exported-shows"
 
@@ -394,7 +470,7 @@ msgstr "gnome-podcasts-exported-shows"
 msgid "GNOME Podcasts Subscriptions"
 msgstr "Падпіскі на падкасты GNOME"
 
-#: podcasts-gtk/src/utils.rs:548
+#: podcasts-gtk/src/utils.rs:551
 msgid "Failed to export podcasts"
 msgstr "Не ўдалося экспартаваць падкасты"
 
@@ -406,11 +482,11 @@ msgstr "Кліент падкастаў для працоўнага стала G
 msgid "translator-credits"
 msgstr "Yahor Haurylenka <k1llo2810@gmail.com>, 2022"
 
-#: podcasts-gtk/src/widgets/episode.rs:373
+#: podcasts-gtk/src/widgets/episode.rs:268
 msgid "{} min"
 msgstr "{} хв"
 
-#: podcasts-gtk/src/widgets/player.rs:940
+#: podcasts-gtk/src/widgets/player.rs:985
 msgid "The media player was unable to execute an action."
 msgstr "Медыяплэер не змог выканаць дзеянне."
 
@@ -422,18 +498,27 @@ msgstr "Разгортвае гэта апісанне"
 msgid "Read More"
 msgstr "Чытаць далей"
 
-#: podcasts-gtk/src/widgets/show_menu.rs:178
+#: podcasts-gtk/src/widgets/show_menu.rs:170
 msgid "Marked all episodes as listened"
 msgstr "Усе эпізоды адзначаны як праслуханыя"
 
-#: podcasts-gtk/src/widgets/show_menu.rs:179
-#: podcasts-gtk/src/widgets/show_menu.rs:202
+#: podcasts-gtk/src/widgets/show_menu.rs:171
+#: podcasts-gtk/src/widgets/show_menu.rs:194
 msgid "Undo"
 msgstr "Скасаваць"
 
-#: podcasts-gtk/src/widgets/show_menu.rs:198
+#: podcasts-gtk/src/widgets/show_menu.rs:190
 msgid "Unsubscribed from {}"
 msgstr "Вы адпісаліся ад {}"
+
+#~ msgid "Enter Feed Address"
+#~ msgstr "Увядзіце адрас канала"
+
+#~ msgid "Popover menu (ESC to close)"
+#~ msgstr "Усплывальнае меню ( ESC, каб закрыць)"
+
+#~ msgid "Add"
+#~ msgstr "Дадаць"
 
 #~ msgid "Back"
 #~ msgstr "Назад"
@@ -455,9 +540,6 @@ msgstr "Вы адпісаліся ад {}"
 
 #~ msgid "Selected file could not be accessed."
 #~ msgstr "Не ўдалося атрымаць доступ да выбранага файла."
-
-#~ msgid "_Cancel"
-#~ msgstr "_Скасаваць"
 
 #~ msgid "Learn more about GNOME Podcasts"
 #~ msgstr "Даведайцеся больш пра падкасты GNOME"
