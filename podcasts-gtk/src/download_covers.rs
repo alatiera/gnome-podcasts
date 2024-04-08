@@ -1,4 +1,4 @@
-use anyhow::{anyhow, bail, Result};
+use anyhow::{anyhow, bail, Context, Result};
 use glib::WeakRef;
 use gtk::gdk;
 use gtk::glib;
@@ -49,7 +49,23 @@ static COVER_DL_REGISTRY: Lazy<RwLock<HashSet<i32>>> = Lazy::new(|| RwLock::new(
 static THUMB_LOAD_REGISTRY: Lazy<RwLock<HashSet<CoverId>>> =
     Lazy::new(|| RwLock::new(HashSet::new()));
 
-fn filename_for_download(response: &reqwest::Response) -> &str {
+#[allow(clippy::mutable_key_type)]
+fn filename_for_download(response: &reqwest::Response) -> String {
+    use reqwest::header::HeaderValue;
+    let mime = response.headers().get(reqwest::header::CONTENT_TYPE);
+
+    let headers = HashMap::from([
+        (HeaderValue::from_static("image/apng"), ".png"),
+        (HeaderValue::from_static("image/avif"), ".avif"),
+        (HeaderValue::from_static("image/gif"), ".gif"),
+        (HeaderValue::from_static("image/jpeg"), ".jpeg"),
+        (HeaderValue::from_static("image/png"), ".png"),
+        (HeaderValue::from_static("image/svg"), ".svg"),
+        (HeaderValue::from_static("image/webp"), ".webp"),
+    ]);
+
+    let mime_extension = mime.and_then(|m| headers.get(m)).unwrap_or(&"");
+
     // Get filename from url if possible
     let ext = response
         .url()
@@ -58,10 +74,10 @@ fn filename_for_download(response: &reqwest::Response) -> &str {
         .unwrap_or("tmp-donwload.bin");
 
     if ext.is_empty() {
-        return "tmp-donwload.bin";
+        return ["tmp-donwload", mime_extension].join("");
     }
 
-    ext
+    [ext, mime_extension].join("")
 }
 
 pub fn clean_unfinished_downloads() -> Result<()> {
@@ -156,35 +172,26 @@ async fn download(
     drop(dest);
 
     // Download done, lets generate thumbnails
-    let filename2 = filename.clone();
-    let texture = crate::RUNTIME
-        .spawn_blocking(move || gdk::Texture::from_filename(filename2))
-        .await??;
-    let (sender, receiver) = tokio::sync::oneshot::channel();
-    let pd = pd.clone();
-    crate::MAINCONTEXT.spawn_with_priority(glib::source::Priority::DEFAULT_IDLE, async move {
-        let thumbs = crate::thumbnail_generator::generate(&pd, texture).await;
-        let _ = sender.send(thumbs);
-    });
-
-    if let Ok(Ok(thumbs)) = receiver.await {
-        if just_download {
-            tokio::fs::rename(&filename, &path).await?;
-            return Ok(None);
-        }
-        if let Some(thumb_texture) = thumbs.get(&cover_id.1) {
-            info!("Cached img into: '{}'", &path.display());
-            COVER_TEXTURES
-                .write()
-                .await
-                .insert(*cover_id, thumb_texture.clone());
-            // Finalize
-            // we only rename after thumbnails are generated,
-            // so thumbnails can be presumed to exist if the orginal file exists
-            tokio::fs::rename(&filename, &path).await?;
-            return Ok(Some(thumb_texture.clone()));
-        }
+    let thumbs = crate::thumbnail_generator::generate(pd, &filename)
+        .await
+        .context(format!("For {}", filename.display()))?;
+    if just_download {
+        tokio::fs::rename(&filename, &path).await?;
+        return Ok(None);
     }
+    if let Some(thumb_texture) = thumbs.get(&cover_id.1) {
+        info!("Cached img into: '{}'", &path.display());
+        COVER_TEXTURES
+            .write()
+            .await
+            .insert(*cover_id, thumb_texture.clone());
+        // Finalize
+        // we only rename after thumbnails are generated,
+        // so thumbnails can be presumed to exist if the orginal file exists
+        tokio::fs::rename(&filename, &path).await?;
+        return Ok(Some(thumb_texture.clone()));
+    }
+
     bail!("failed to generate thumbnails");
 }
 
@@ -387,7 +394,7 @@ pub async fn load_image(
                 image.set_paintable(Some(&texture));
                 return Ok(());
             }
-            return Err(NoLongerNeeded.into());
+            Err(NoLongerNeeded.into())
         }
         Ok(Err(err)) => bail!("Failed to load Show Cover: {err}"),
         Err(err) => bail!("Failed to load Show Cover thread-error: {err}"),

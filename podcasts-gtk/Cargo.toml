@@ -19,6 +19,7 @@ gtk = { package = "gtk4", version = "0.8", features = ["gnome_46"] }
 html2text = "0.6"
 html5ever = "0.26"
 humansize = "1"
+image = {version = "0.25", features = [ "gif", "jpeg", "png", "webp"] }
 linkify = "0.10"
 log = { workspace = true }
 markup5ever_rcdom = "0.2"

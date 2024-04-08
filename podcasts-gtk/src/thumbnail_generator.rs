@@ -1,7 +1,8 @@
-use anyhow::{anyhow, bail, Context, Result};
-use gtk::prelude::*;
+use anyhow::{anyhow, Result};
+use image::imageops::FilterType;
 use std::collections::HashMap;
 use std::fmt::Display;
+use std::path::Path;
 
 use crate::download_covers::determin_cover_path;
 use podcasts_data::ShowCoverModel;
@@ -61,93 +62,41 @@ impl Display for ThumbSize {
     }
 }
 
-fn scaled_texture(
-    renderer: &gtk::gsk::Renderer,
-    full_texture: &gtk::gdk::Texture,
-    size: &ThumbSize,
-) -> Result<gtk::gdk::Texture> {
-    let snapshot = gtk::Snapshot::new();
-    let pixels = size.pixels();
-    snapshot.append_scaled_texture(
-        full_texture,
-        gtk::gsk::ScalingFilter::Trilinear,
-        &gtk::graphene::Rect::new(0.0, 0.0, pixels, pixels),
-    );
-
-    let node = snapshot
-        .to_node()
-        .context("can't turn snapshot into node")?;
-
-    Ok(renderer.render_texture(node, None))
-}
-
-fn render_thumbs(texture: &gtk::gdk::Texture) -> Result<HashMap<ThumbSize, gtk::gdk::Texture>> {
-    let display = gtk::gdk::Display::default().context("can't get a display")?;
-    let surface = gtk::gdk::Surface::new_toplevel(&display);
-    let renderer = gtk::gsk::Renderer::for_surface(&surface).context("no renderer")?;
-    // For some reason there sometimes is a warning that
-    // it's realized already if this isn't checked.
-    if !renderer.is_realized() {
-        renderer
-            .realize_for_display(&display)
-            .context("Failed to realize renderer")?;
-    }
-    if !renderer.is_realized() {
-        bail!("failed to realize renderer");
-    }
-
+pub async fn generate(
+    pd: &ShowCoverModel,
+    path: &Path,
+) -> Result<HashMap<ThumbSize, gtk::gdk::Texture>> {
     let sizes: [ThumbSize; 4] = [Thumb64, Thumb128, Thumb256, Thumb512];
     // All thumbs must generate, we rely on them existing if the main image exists.
-    let thumbs: Result<HashMap<_, _>> = sizes
+    let handles: Vec<_> = sizes
         .into_iter()
         .map(|size| {
-            let thumb_texture = scaled_texture(&renderer, texture, &size)?;
-            Ok((size, thumb_texture))
-        })
-        .collect();
-
-    if renderer.is_realized() {
-        renderer.unrealize();
-    }
-    thumbs
-}
-
-async fn write_thumbs(
-    pd: &ShowCoverModel,
-    thumbs: &HashMap<ThumbSize, gtk::gdk::Texture>,
-) -> Result<()> {
-    let handles: Vec<_> = thumbs
-        .iter()
-        .map(|(size, texture)| {
-            let thumb_path = determin_cover_path(pd, Some(*size));
-            let bytes = texture.save_to_png_bytes(); // must be read on gtk thread
+            let pixels = size.pixels();
+            let thumb_path = determin_cover_path(pd, Some(size));
+            let path = path.to_path_buf();
             crate::RUNTIME.spawn(async move {
                 let tmp_path = thumb_path.with_extension(".part");
-                let mut dest = tokio::fs::File::create(&tmp_path).await?;
-                let mut content = std::io::Cursor::new(bytes);
-                tokio::io::copy(&mut content, &mut dest).await?;
-                dest.sync_all().await?;
+                let tmp_path2 = tmp_path.clone();
+                // save and read gdk texture
+                let texture = crate::RUNTIME
+                    .spawn_blocking(move || {
+                        let image = image::io::Reader::open(path)?.decode()?;
+                        image.resize(pixels as u32, pixels as u32, FilterType::Lanczos3);
+                        image.save_with_format(&tmp_path2, image::ImageFormat::Png)?;
+                        gtk::gdk::Texture::from_filename(&tmp_path2)
+                            .map_err(|_| anyhow!("failed to read gtk texture"))
+                    })
+                    .await??;
                 tokio::fs::rename(&tmp_path, &thumb_path).await?;
-                Ok::<(), anyhow::Error>(())
+                Ok((size, texture))
             })
         })
         .collect();
-    // TODO can this error be unwrapped cleaner????
-    let result: Result<Vec<_>> = futures_util::future::join_all(handles)
-        .await
-        .into_iter()
-        .map(|r| r.unwrap_or(Err(anyhow!("Failed to write cover thumbnail."))))
-        .collect();
-    result?;
-    Ok(())
-}
-
-/// Must run on gtk thread
-pub async fn generate(
-    pd: &ShowCoverModel,
-    texture: gtk::gdk::Texture,
-) -> Result<HashMap<ThumbSize, gtk::gdk::Texture>> {
-    let thumbs = render_thumbs(&texture)?;
-    write_thumbs(pd, &thumbs).await?;
-    Ok(thumbs)
+    let result: Result<HashMap<ThumbSize, gtk::gdk::Texture>> =
+        futures_util::future::join_all(handles)
+            .await
+            .into_iter()
+            .map(|r| r.unwrap_or(Err(anyhow!("Failed to write cover thumbnail."))))
+            .collect();
+    result
 }
