@@ -10,8 +10,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: podcasts master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2024-03-30 18:12+0000\n"
-"PO-Revision-Date: 2024-03-30 23:13+0100\n"
+"POT-Creation-Date: 2024-04-06 09:46+0000\n"
+"PO-Revision-Date: 2024-04-08 20:14+0200\n"
 "Last-Translator: Jürgen Benvenuti <gastornis@posteo.org>\n"
 "Language-Team: Deutsch <gnome-de@gnome.org>\n"
 "Language: de\n"
@@ -64,31 +64,31 @@ msgstr "Podcast-Titel"
 msgid "Duration - Date"
 msgstr "Dauer - Datum"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:146
+#: podcasts-gtk/resources/gtk/episode_description.ui:153
 msgid "Download"
 msgstr "Herunterladen"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:155
+#: podcasts-gtk/resources/gtk/episode_description.ui:163
 msgid "Cancel"
 msgstr "Abbrechen"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:165
+#: podcasts-gtk/resources/gtk/episode_description.ui:173
 msgid "Delete File"
 msgstr "Datei löschen"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:174
+#: podcasts-gtk/resources/gtk/episode_description.ui:183
 msgid "Stream"
 msgstr "Streamen"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:184
-#: podcasts-gtk/resources/gtk/episode_description.ui:186
+#: podcasts-gtk/resources/gtk/episode_description.ui:193
+#: podcasts-gtk/resources/gtk/episode_description.ui:195
 #: podcasts-gtk/resources/gtk/player_dialog.ui:173
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:63
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:254
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:67
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:262
 msgid "Play"
 msgstr "Wiedergeben"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:208
+#: podcasts-gtk/resources/gtk/episode_description.ui:212
 msgid "Episode Description"
 msgstr "Folgenbeschreibung"
 
@@ -121,6 +121,10 @@ msgstr "Herunterladen abbrechen"
 msgid "Download this episode"
 msgstr "Diese Folge herunterladen"
 
+#: podcasts-gtk/resources/gtk/episode_widget.ui:220
+msgid "Episode without audio"
+msgstr "Folge ohne Ton"
+
 #: podcasts-gtk/resources/gtk/hamburger.ui:7
 msgid "_Check for New Episodes"
 msgstr "Auf neue Folgen _prüfen"
@@ -147,23 +151,76 @@ msgstr "Info zu _Podcasts"
 msgid "Add a new feed"
 msgstr "Neue Quelle hinzufügen"
 
-#: podcasts-gtk/resources/gtk/headerbar.ui:51
+#: podcasts-gtk/resources/gtk/headerbar.ui:52
 msgid "Main Menu"
 msgstr "Hauptmenü"
 
-#: podcasts-gtk/resources/gtk/help-overlay.ui:11
+#: podcasts-gtk/resources/gtk/help-overlay.ui:12
+msgctxt "shortcut window"
+msgid "Navigation"
+msgstr "Navigation"
+
+#: podcasts-gtk/resources/gtk/help-overlay.ui:15
+msgctxt "shortcut window"
+msgid "Go to Home Page"
+msgstr "Zur Startseite gehen"
+
+#. Translators: Shows as a Noun
+#: podcasts-gtk/resources/gtk/help-overlay.ui:22
+msgctxt "shortcut window"
+msgid "Go to Shows Page"
+msgstr "Zur Podcasts-Seite gehen"
+
+#. Translators: 'Discovery' is a page where you can add new podcasts
+#: podcasts-gtk/resources/gtk/help-overlay.ui:29
+msgctxt "shortcut window"
+msgid "Go To Discovery Page"
+msgstr "Zur Entdecken-Seite gehen"
+
+#: podcasts-gtk/resources/gtk/help-overlay.ui:38
+msgctxt "shortcut window"
+msgid "Player"
+msgstr "Medienwiedergabe"
+
+#: podcasts-gtk/resources/gtk/help-overlay.ui:41
+msgctxt "shortcut window"
+msgid "Toggle Pause"
+msgstr "Pause ein/ausschalten"
+
+#: podcasts-gtk/resources/gtk/help-overlay.ui:47
+msgctxt "shortcut window"
+msgid "Seek Forwards"
+msgstr "Vorspulen"
+
+#: podcasts-gtk/resources/gtk/help-overlay.ui:53
+msgctxt "shortcut window"
+msgid "Seek Backwards"
+msgstr "Zurückspulen"
+
+#: podcasts-gtk/resources/gtk/help-overlay.ui:62
+msgctxt "shortcut window"
 msgid "General"
 msgstr "Allgemein"
 
-#: podcasts-gtk/resources/gtk/help-overlay.ui:15
+#: podcasts-gtk/resources/gtk/help-overlay.ui:65
 msgctxt "shortcut window"
 msgid "Check for new episodes"
 msgstr "Auf neue Folgen prüfen"
 
-#: podcasts-gtk/resources/gtk/help-overlay.ui:21
+#: podcasts-gtk/resources/gtk/help-overlay.ui:71
 msgctxt "shortcut window"
 msgid "Quit the application"
 msgstr "Die Anwendung beenden"
+
+#: podcasts-gtk/resources/gtk/help-overlay.ui:77
+msgctxt "shortcut window"
+msgid "Import Subscriptions"
+msgstr "Abonnements importieren"
+
+#: podcasts-gtk/resources/gtk/help-overlay.ui:83
+msgctxt "shortcut window"
+msgid "Export Subscriptions"
+msgstr "Abonnements exportieren"
 
 #: podcasts-gtk/resources/gtk/home_view.ui:57
 #: podcasts-gtk/resources/gtk/home_view.ui:70
@@ -203,8 +260,8 @@ msgid "Rewind"
 msgstr "Zurückspulen"
 
 #: podcasts-gtk/resources/gtk/player_dialog.ui:191
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:76
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:263
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:80
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:271
 msgid "Pause"
 msgstr "Pause"
 
@@ -249,7 +306,7 @@ msgstr "0,75×"
 msgid "Rewind 10 seconds"
 msgstr "10 Sekunden zurückspulen"
 
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:89
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:95
 msgid "Fast forward 10 seconds"
 msgstr "10 Sekunden vorspulen"
 
@@ -290,8 +347,8 @@ msgstr "Folgen"
 #: podcasts-gtk/resources/gtk/window.ui:25
 #: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:4
 #: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:3
-#: podcasts-gtk/src/app.rs:491 podcasts-gtk/src/widgets/aboutdialog.rs:56
-#: podcasts-gtk/src/widgets/player.rs:378
+#: podcasts-gtk/src/app.rs:496 podcasts-gtk/src/widgets/aboutdialog.rs:56
+#: podcasts-gtk/src/widgets/player.rs:380
 msgid "Podcasts"
 msgstr "Podcasts"
 
@@ -371,9 +428,13 @@ msgstr "Zeitintervall zwischen automatischen Löschvorgängen"
 msgid "What period of time to wait between automatic cleanups"
 msgstr "Zeitintervall zwischen automatischen Löschvorgängen"
 
-#: podcasts-gtk/src/app.rs:333
+#: podcasts-gtk/src/app.rs:338
 msgid "Copied URL to clipboard!"
 msgstr "Adresse in die Zwischenablage kopiert!"
+
+#: podcasts-gtk/src/manager.rs:105
+msgid "Download failed: {}"
+msgstr "Herunterladen fehlgeschlagen: {}"
 
 #: podcasts-gtk/src/stacks/content.rs:66
 msgid "New"
@@ -436,11 +497,11 @@ msgstr ""
 "Philipp Kiemle <philipp.kiemle@gmail.com>\n"
 "Jürgen Benvenuti <gastornis@posteo.org>"
 
-#: podcasts-gtk/src/widgets/episode.rs:237
+#: podcasts-gtk/src/widgets/episode.rs:268
 msgid "{} min"
 msgstr "{} min"
 
-#: podcasts-gtk/src/widgets/player.rs:968
+#: podcasts-gtk/src/widgets/player.rs:985
 msgid "The media player was unable to execute an action."
 msgstr "Die Medienwiedergabe konnte eine Aktion nicht ausführen."
 
