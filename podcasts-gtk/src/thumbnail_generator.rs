@@ -1,4 +1,4 @@
-use anyhow::{anyhow, Context, Result};
+use anyhow::{anyhow, bail, Context, Result};
 use gtk::glib;
 use gtk::prelude::*;
 use std::collections::HashMap;
@@ -71,10 +71,15 @@ fn render_thumbs(texture: &gtk::gdk::Texture) -> Result<HashMap<ThumbSize, gtk::
     let display = gtk::gdk::Display::default().context("can't get a display")?;
     let surface = gtk::gdk::Surface::new_toplevel(&display);
     let renderer = gtk::gsk::Renderer::for_surface(&surface).context("no renderer")?;
+    // For some reason there sometimes is a warning that
+    // it's realized already if this isn't checked.
     if !renderer.is_realized() {
         renderer
             .realize_for_display(&display)
             .context("Failed to realize renderer")?;
+    }
+    if !renderer.is_realized() {
+        bail!("failed to realize renderer");
     }
 
     let sizes: [ThumbSize; 4] = [Thumb64, Thumb128, Thumb256, Thumb512];
