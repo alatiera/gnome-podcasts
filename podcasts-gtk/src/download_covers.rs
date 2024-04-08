@@ -144,7 +144,8 @@ async fn download(
 
     let tmp_dir = TempDir::new_in(&*CACHED_COVERS_DIR, &format!("{}-pdcover.part", pd.id()))?;
     let client = podcasts_data::downloader::client_builder().build()?;
-    let response = client.get(pd.image_uri().unwrap()).send().await?;
+    let uri = pd.image_uri().ok_or(anyhow!("No image uri for podcast"))?;
+    let response = client.get(uri).send().await?;
     //FIXME: check for 200 or redirects, retry for 5xx
     debug!("Status Resp: {}", response.status());
 
@@ -198,10 +199,17 @@ async fn cover_is_downloading(show_id: i32) -> bool {
     COVER_DL_REGISTRY.read().await.contains(&show_id)
 }
 
+const SLEEP_TIME: std::time::Duration = std::time::Duration::from_millis(250);
+const SLEEP_LIMIT: std::time::Duration = std::time::Duration::from_secs(30);
 async fn wait_for_download(pd: &ShowCoverModel, cover_id: &CoverId) -> Result<gdk::Texture> {
+    let mut time_waited = std::time::Duration::new(0, 0);
     while {
         // wait for download to finish
-        tokio::time::sleep(std::time::Duration::from_millis(250)).await;
+        tokio::time::sleep(SLEEP_TIME).await;
+        time_waited += SLEEP_TIME;
+        if time_waited > SLEEP_LIMIT {
+            bail!("Waited too long for download.");
+        }
         cover_is_downloading(cover_id.0).await
     } {}
     return from_cache_or_fs(pd, cover_id).await;
@@ -213,9 +221,14 @@ async fn from_cache_or_fs(pd: &ShowCoverModel, cover_id: &CoverId) -> Result<gdk
     } else {
         // check if someone else is load the thumb
         if THUMB_LOAD_REGISTRY.read().await.contains(cover_id) {
+            let mut time_waited = std::time::Duration::new(0, 0);
             while {
                 // wait for load to finish
                 tokio::time::sleep(std::time::Duration::from_millis(25)).await;
+                time_waited += SLEEP_TIME;
+                if time_waited > SLEEP_LIMIT {
+                    bail!("Waited too long for thumb read.");
+                }
                 THUMB_LOAD_REGISTRY.read().await.contains(cover_id)
             } {}
             return from_cache(cover_id)
@@ -302,6 +315,9 @@ pub async fn just_download(pd: &ShowCoverModel) -> Result<()> {
 }
 /// Caches and returns the texture, may also download and update it.
 pub async fn load_texture(pd: &ShowCoverModel, thumb_size: ThumbSize) -> Result<gdk::Texture> {
+    if pd.image_uri().is_none() {
+        bail!("no image_uri for this show: {}", pd.title());
+    }
     let show_id = pd.id();
     let cover_id = (show_id, thumb_size.clone());
     // early return from memory cache
@@ -354,25 +370,36 @@ pub async fn load_texture(pd: &ShowCoverModel, thumb_size: ThumbSize) -> Result<
     }
 }
 
-pub async fn load_image(image: &WeakRef<gtk::Image>, podcast_id: i32, size: ThumbSize) {
+pub async fn load_image(
+    image: &WeakRef<gtk::Image>,
+    podcast_id: i32,
+    size: ThumbSize,
+) -> Result<()> {
     use podcasts_data::dbqueries;
+
+    let pd = crate::RUNTIME
+        .spawn_blocking(move || dbqueries::get_podcast_cover_from_id(podcast_id).unwrap())
+        .await?;
+
+    if let Some(image) = image.upgrade() {
+        image.set_tooltip_text(Some(pd.title()));
+    } else {
+        bail!("gtk::Image no longer exists, skipped loading it.")
+    }
+
     let result = crate::RUNTIME
-        .spawn(async move {
-            let pd = crate::RUNTIME
-                .spawn_blocking(move || dbqueries::get_podcast_cover_from_id(podcast_id).unwrap())
-                .await?;
-            load_texture(&pd, size).await.map(|t| (pd, t))
-        })
+        .spawn(async move { load_texture(&pd, size).await })
         .await;
 
     match result {
-        Ok(Ok((pd, texture))) => {
+        Ok(Ok(texture)) => {
             if let Some(image) = image.upgrade() {
-                image.set_tooltip_text(Some(pd.title()));
                 image.set_paintable(Some(&texture));
+                return Ok(());
             }
+            bail!("gtk::Image no longer exists, after loading texture.")
         }
-        Ok(Err(err)) => error!("Failed to load Show Cover: {err}"),
-        Err(err) => error!("Failed to load Show Cover thread-error: {err}"),
+        Ok(Err(err)) => bail!("Failed to load Show Cover: {err}"),
+        Err(err) => bail!("Failed to load Show Cover thread-error: {err}"),
     }
 }

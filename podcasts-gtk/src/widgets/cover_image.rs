@@ -81,7 +81,8 @@ impl CoverImage {
             .unwrap_or(crate::Thumb512);
         let image = self.imp().image.downgrade();
         crate::MAINCONTEXT.spawn_local_with_priority(glib::source::Priority::LOW, async move {
-            load_image(&image, show_id, size).await;
+            // TODO print, but skip image.upgrade() errors
+            let _ = load_image(&image, show_id, size).await;
         });
     }
 }
