@@ -28,7 +28,22 @@ impl ThumbSize {
         }
     }
     pub fn hidpi(self, scale: i32) -> Option<ThumbSize> {
-        if scale >= 2 {
+        // meh code
+        if scale >= 5 {
+            match self {
+                Thumb64 => Some(Thumb512),
+                Thumb128 => None,
+                Thumb256 => None,
+                Thumb512 => None,
+            }
+        } else if scale >= 3 {
+            match self {
+                Thumb64 => Some(Thumb256),
+                Thumb128 => Some(Thumb512),
+                Thumb256 => None,
+                Thumb512 => None,
+            }
+        } else if scale >= 2 {
             match self {
                 Thumb64 => Some(Thumb128),
                 Thumb128 => Some(Thumb256),
