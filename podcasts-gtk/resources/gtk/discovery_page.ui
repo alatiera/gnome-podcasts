@@ -119,6 +119,7 @@ nee <nee-git@patchouli.garden>
                         <property name="halign">start</property>
                         <property name="margin-top">8</property>
                         <property name="label" translatable="yes">Please enable a Search Platform below, or enter a http(s) feed URL.</property>
+                        <property name="wrap">True</property>
                         <style>
                           <class name="error"/>
                         </style>
