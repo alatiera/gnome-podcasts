@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: podcasts master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2024-03-20 12:29+0000\n"
-"PO-Revision-Date: 2024-03-20 22:12+0300\n"
+"POT-Creation-Date: 2024-04-06 09:46+0000\n"
+"PO-Revision-Date: 2024-04-07 17:21+0300\n"
 "Last-Translator: Sabri Ünal <yakushabb@gmail.com>\n"
 "Language-Team: Turkish <takim@gnome.org.tr>\n"
 "Language: tr\n"
@@ -65,31 +65,31 @@ msgstr "Podcast Başlığı"
 msgid "Duration - Date"
 msgstr "Süre - Tarih"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:146
+#: podcasts-gtk/resources/gtk/episode_description.ui:153
 msgid "Download"
 msgstr "İndir"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:155
+#: podcasts-gtk/resources/gtk/episode_description.ui:163
 msgid "Cancel"
 msgstr "İptal"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:165
+#: podcasts-gtk/resources/gtk/episode_description.ui:173
 msgid "Delete File"
 msgstr "Dosyayı Sil"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:174
+#: podcasts-gtk/resources/gtk/episode_description.ui:183
 msgid "Stream"
 msgstr "Akış"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:184
-#: podcasts-gtk/resources/gtk/episode_description.ui:186
+#: podcasts-gtk/resources/gtk/episode_description.ui:193
+#: podcasts-gtk/resources/gtk/episode_description.ui:195
 #: podcasts-gtk/resources/gtk/player_dialog.ui:173
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:63
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:254
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:67
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:262
 msgid "Play"
 msgstr "Oynat"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:208
+#: podcasts-gtk/resources/gtk/episode_description.ui:212
 msgid "Episode Description"
 msgstr "Bölüm Açıklaması"
 
@@ -122,6 +122,10 @@ msgstr "İndirme sürecini iptal et"
 msgid "Download this episode"
 msgstr "Bu bölümü indir"
 
+#: podcasts-gtk/resources/gtk/episode_widget.ui:220
+msgid "Episode without audio"
+msgstr "Sesi olmayan bölüm"
+
 #: podcasts-gtk/resources/gtk/hamburger.ui:7
 msgid "_Check for New Episodes"
 msgstr "Yeni Bölümleri _Denetle"
@@ -148,23 +152,76 @@ msgstr "Podcastler _Hakkında"
 msgid "Add a new feed"
 msgstr "Yeni besleme ekle"
 
-#: podcasts-gtk/resources/gtk/headerbar.ui:51
+#: podcasts-gtk/resources/gtk/headerbar.ui:52
 msgid "Main Menu"
 msgstr "Ana Menü"
 
-#: podcasts-gtk/resources/gtk/help-overlay.ui:11
+#: podcasts-gtk/resources/gtk/help-overlay.ui:12
+msgctxt "shortcut window"
+msgid "Navigation"
+msgstr "Gezinti"
+
+#: podcasts-gtk/resources/gtk/help-overlay.ui:15
+msgctxt "shortcut window"
+msgid "Go to Home Page"
+msgstr "Ana Sayfaya Git"
+
+#. Translators: Shows as a Noun
+#: podcasts-gtk/resources/gtk/help-overlay.ui:22
+msgctxt "shortcut window"
+msgid "Go to Shows Page"
+msgstr "Gösteriler Sayfasına Git"
+
+#. Translators: 'Discovery' is a page where you can add new podcasts
+#: podcasts-gtk/resources/gtk/help-overlay.ui:29
+msgctxt "shortcut window"
+msgid "Go To Discovery Page"
+msgstr "Keşif Sayfasına Git"
+
+#: podcasts-gtk/resources/gtk/help-overlay.ui:38
+msgctxt "shortcut window"
+msgid "Player"
+msgstr "Oynatıcı"
+
+#: podcasts-gtk/resources/gtk/help-overlay.ui:41
+msgctxt "shortcut window"
+msgid "Toggle Pause"
+msgstr "Durdur/Başlat"
+
+#: podcasts-gtk/resources/gtk/help-overlay.ui:47
+msgctxt "shortcut window"
+msgid "Seek Forwards"
+msgstr "İleri Git"
+
+#: podcasts-gtk/resources/gtk/help-overlay.ui:53
+msgctxt "shortcut window"
+msgid "Seek Backwards"
+msgstr "Geri Git"
+
+#: podcasts-gtk/resources/gtk/help-overlay.ui:62
+msgctxt "shortcut window"
 msgid "General"
 msgstr "Genel"
 
-#: podcasts-gtk/resources/gtk/help-overlay.ui:15
+#: podcasts-gtk/resources/gtk/help-overlay.ui:65
 msgctxt "shortcut window"
 msgid "Check for new episodes"
 msgstr "Yeni bölümleri denetle"
 
-#: podcasts-gtk/resources/gtk/help-overlay.ui:21
+#: podcasts-gtk/resources/gtk/help-overlay.ui:71
 msgctxt "shortcut window"
 msgid "Quit the application"
 msgstr "Uygulamadan çık"
+
+#: podcasts-gtk/resources/gtk/help-overlay.ui:77
+msgctxt "shortcut window"
+msgid "Import Subscriptions"
+msgstr "Abonelikleri İçe Aktar"
+
+#: podcasts-gtk/resources/gtk/help-overlay.ui:83
+msgctxt "shortcut window"
+msgid "Export Subscriptions"
+msgstr "Abonelikleri Dışa Aktar"
 
 #: podcasts-gtk/resources/gtk/home_view.ui:57
 #: podcasts-gtk/resources/gtk/home_view.ui:70
@@ -204,8 +261,8 @@ msgid "Rewind"
 msgstr "Geri Sar"
 
 #: podcasts-gtk/resources/gtk/player_dialog.ui:191
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:76
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:263
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:80
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:271
 msgid "Pause"
 msgstr "Duraklat"
 
@@ -250,7 +307,7 @@ msgstr "0.75×"
 msgid "Rewind 10 seconds"
 msgstr "10 saniye geri sar"
 
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:89
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:95
 msgid "Fast forward 10 seconds"
 msgstr "10 saniye ileri sar"
 
@@ -291,8 +348,8 @@ msgstr "Bölümler"
 #: podcasts-gtk/resources/gtk/window.ui:25
 #: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:4
 #: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:3
-#: podcasts-gtk/src/app.rs:498 podcasts-gtk/src/widgets/aboutdialog.rs:56
-#: podcasts-gtk/src/widgets/player.rs:385
+#: podcasts-gtk/src/app.rs:496 podcasts-gtk/src/widgets/aboutdialog.rs:56
+#: podcasts-gtk/src/widgets/player.rs:380
 msgid "Podcasts"
 msgstr "Podcastler"
 
@@ -369,55 +426,59 @@ msgstr "Kendiliğinden temizlemeler arasında kaç zaman aralığı beklenecek"
 msgid "What period of time to wait between automatic cleanups"
 msgstr "Kendiliğinden temizlemeler arasında beklenecek zaman aralığı"
 
-#: podcasts-gtk/src/app.rs:337
+#: podcasts-gtk/src/app.rs:338
 msgid "Copied URL to clipboard!"
 msgstr "URL panoya kopyalandı!"
 
-#: podcasts-gtk/src/stacks/content.rs:68
+#: podcasts-gtk/src/manager.rs:105
+msgid "Download failed: {}"
+msgstr "İndirilemedi: {}"
+
+#: podcasts-gtk/src/stacks/content.rs:66
 msgid "New"
 msgstr "Yeni"
 
 #. Translators: Shows as a noun, meaning Podcast-Shows.
-#: podcasts-gtk/src/stacks/content.rs:70
+#: podcasts-gtk/src/stacks/content.rs:68
 #: podcasts-gtk/src/widgets/shows_view.rs:65
 msgid "Shows"
 msgstr "Gösteriler"
 
-#: podcasts-gtk/src/utils.rs:473 podcasts-gtk/src/utils.rs:515
+#: podcasts-gtk/src/utils.rs:482 podcasts-gtk/src/utils.rs:522
 msgid "OPML file"
 msgstr "OPML dosyası"
 
-#: podcasts-gtk/src/utils.rs:484
+#: podcasts-gtk/src/utils.rs:493
 msgid "Select the file from which to you want to import shows."
 msgstr "Gösterileri içe aktarmak istediğiniz dosyayı seçin."
 
-#: podcasts-gtk/src/utils.rs:486
+#: podcasts-gtk/src/utils.rs:495
 msgid "_Import"
 msgstr "_İçe Aktar"
 
-#: podcasts-gtk/src/utils.rs:502
-msgid "Failed to parse the imported file"
-msgstr "İçe aktarılan dosya ayrıştırılamadı"
+#: podcasts-gtk/src/utils.rs:512
+msgid "Failed to parse the imported file {}"
+msgstr "İçe aktarılan dosya ayrıştırılamadı: {}"
 
 #. Translators: Show as a noun, meaning Podcast-Shows.
-#: podcasts-gtk/src/utils.rs:526
+#: podcasts-gtk/src/utils.rs:533
 msgid "Export shows to…"
 msgstr "Gösterileri dışa aktar…"
 
-#: podcasts-gtk/src/utils.rs:527
+#: podcasts-gtk/src/utils.rs:534
 msgid "_Export"
 msgstr "_Dışa Aktar"
 
 #. Translators: This is the string of the suggested name for the exported opml file
-#: podcasts-gtk/src/utils.rs:531
+#: podcasts-gtk/src/utils.rs:538
 msgid "gnome-podcasts-exported-shows"
 msgstr "gnome-podcasts-exported-shows"
 
-#: podcasts-gtk/src/utils.rs:541
+#: podcasts-gtk/src/utils.rs:547
 msgid "GNOME Podcasts Subscriptions"
 msgstr "GNOME Podcastler Abonelikleri"
 
-#: podcasts-gtk/src/utils.rs:542
+#: podcasts-gtk/src/utils.rs:551
 msgid "Failed to export podcasts"
 msgstr "Podcastler dışa aktarılamadı"
 
@@ -429,13 +490,13 @@ msgstr "GNOME Masaüstü için Podcast İstemcisi."
 msgid "translator-credits"
 msgstr ""
 "Emin Tufan Çetin <etcetin@gmail.com>\n"
-"Sabri Ünal <libreajans@gmail.com>"
+"Sabri Ünal <yakushabb@gmail.com>"
 
-#: podcasts-gtk/src/widgets/episode.rs:239
+#: podcasts-gtk/src/widgets/episode.rs:268
 msgid "{} min"
 msgstr "{} dak"
 
-#: podcasts-gtk/src/widgets/player.rs:975
+#: podcasts-gtk/src/widgets/player.rs:985
 msgid "The media player was unable to execute an action."
 msgstr "Ortam oynatıcı eylemi yürütemiyor."
 
@@ -447,16 +508,16 @@ msgstr "Bu açıklamayı görsel olarak genişletir"
 msgid "Read More"
 msgstr "Daha Çoğunu Oku"
 
-#: podcasts-gtk/src/widgets/show_menu.rs:178
+#: podcasts-gtk/src/widgets/show_menu.rs:170
 msgid "Marked all episodes as listened"
 msgstr "Tüm bölümler dinlendi olarak imlendi"
 
-#: podcasts-gtk/src/widgets/show_menu.rs:179
-#: podcasts-gtk/src/widgets/show_menu.rs:202
+#: podcasts-gtk/src/widgets/show_menu.rs:171
+#: podcasts-gtk/src/widgets/show_menu.rs:194
 msgid "Undo"
 msgstr "Geri al"
 
-#: podcasts-gtk/src/widgets/show_menu.rs:198
+#: podcasts-gtk/src/widgets/show_menu.rs:190
 msgid "Unsubscribed from {}"
 msgstr "{} aboneliğinden çıkıldı"
 
