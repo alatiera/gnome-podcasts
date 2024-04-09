@@ -15,6 +15,8 @@
       <object class="GtkLabel" id="label_1">
         <!-- Translators: Show as a noun, meaning a Podcast-Show. -->
         <property name="label" translatable="yes">This show does not have episodes yet</property>
+        <property name="wrap">True</property>
+        <property name="justify">center</property>
         <attributes>
           <attribute name="weight" value="bold"></attribute>
           <attribute name="scale" value="1.4399999999999999"></attribute>
@@ -24,6 +26,8 @@
     <child>
       <object class="GtkLabel" id="label_2">
         <property name="label" translatable="yes">If you think this is an error, please consider writing a bug report.</property>
+        <property name="wrap">True</property>
+        <property name="justify">center</property>
         <style>
           <class name="dim-label"/>
         </style>
