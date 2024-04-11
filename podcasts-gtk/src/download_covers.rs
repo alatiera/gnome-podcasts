@@ -161,7 +161,10 @@ async fn download(
     drop(dest);
 
     // Download done, lets generate thumbnails
-    let texture = gdk::Texture::from_filename(&filename)?;
+    let filename2 = filename.clone();
+    let texture = crate::RUNTIME
+        .spawn_blocking(move || gdk::Texture::from_filename(&filename2))
+        .await??;
     let (sender, receiver) = tokio::sync::oneshot::channel();
     let pd = pd.clone();
     crate::MAINCONTEXT.spawn_with_priority(glib::source::Priority::DEFAULT_IDLE, async move {
@@ -278,14 +281,6 @@ async fn from_update(
     tokio::fs::rename(&update_path, &cover).await?;
     Ok(texture)
 }
-async fn delete_and_redownload(
-    pd: &ShowCoverModel,
-    cover_id: &CoverId,
-    target_path: &PathBuf,
-) -> Result<gdk::Texture> {
-    tokio::fs::remove_file(&target_path).await?;
-    from_web(pd, cover_id, &target_path).await
-}
 
 async fn aquire_dl_lock(show_id: i32) -> bool {
     COVER_DL_REGISTRY.write().await.insert(show_id)
@@ -354,7 +349,7 @@ pub async fn load_texture(pd: &ShowCoverModel, thumb_size: ThumbSize) -> Result<
         warn!(
             "Cover exists, but thumb is missing, Maybe Download was broken. Redownloading Cover!"
         );
-        let result = delete_and_redownload(pd, &cover_id, &cover).await;
+        let result = from_update(pd, &cover_id, &cover).await;
         drop_dl_lock(show_id).await;
         return result;
     }
