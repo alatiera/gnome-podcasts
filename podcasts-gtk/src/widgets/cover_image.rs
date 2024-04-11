@@ -20,7 +20,6 @@
 use adw::prelude::*;
 use adw::subclass::prelude::*;
 use gtk::glib;
-use std::cell::Cell;
 
 use crate::download_covers::load_image;
 

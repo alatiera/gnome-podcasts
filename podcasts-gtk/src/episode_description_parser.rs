@@ -20,15 +20,13 @@
 use linkify::LinkFinder;
 use linkify::LinkKind;
 use regex::Regex;
-use std::default::Default;
-use std::string::String;
 
 use crate::i18n::i18n_f;
 use html5ever::tendril::TendrilSink;
 use html5ever::tree_builder::TreeBuilderOpts;
 use html5ever::{expanded_name, parse_document, ParseOpts};
 use markup5ever_rcdom::{
-    self, Handle,
+    Handle,
     NodeData::{Document, Element, Text},
     RcDom,
 };

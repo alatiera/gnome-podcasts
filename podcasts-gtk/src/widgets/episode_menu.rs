@@ -18,7 +18,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 use async_channel::Sender;
-use gio::prelude::ActionMapExt;
 use glib::clone;
 use gtk::prelude::*;
 use gtk::{gio, glib};

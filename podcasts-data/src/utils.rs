@@ -245,7 +245,6 @@ pub fn delete_show(pd: &Show) -> Result<(), DownloadError> {
 #[cfg(test)]
 use crate::Feed;
 use std::collections::hash_map::DefaultHasher;
-use std::convert::TryInto;
 use std::hash::{Hash, Hasher};
 
 #[cfg(test)]

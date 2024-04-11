@@ -20,7 +20,6 @@
 use chrono::prelude::*;
 
 use diesel::prelude::*;
-use diesel::SaveChangesDsl;
 
 use crate::database::connection;
 use crate::errors::DataError;

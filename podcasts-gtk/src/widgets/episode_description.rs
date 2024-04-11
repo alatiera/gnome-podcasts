@@ -31,7 +31,6 @@ use std::sync::Arc;
 
 use crate::app::Action;
 use crate::episode_description_parser;
-use crate::utils::{self};
 use crate::widgets::CoverImage;
 use crate::widgets::DownloadProgressBar;
 use crate::widgets::EpisodeMenu;

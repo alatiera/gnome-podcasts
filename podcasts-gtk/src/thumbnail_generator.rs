@@ -1,5 +1,4 @@
 use anyhow::{anyhow, bail, Context, Result};
-use gtk::glib;
 use gtk::prelude::*;
 use std::collections::HashMap;
 use std::fmt::Display;
@@ -120,7 +119,7 @@ async fn write_thumbs(
     let handles: Vec<_> = thumbs
         .iter()
         .map(|(size, texture)| {
-            let thumb_path = determin_cover_path(&pd, Some(size.clone()));
+            let thumb_path = determin_cover_path(pd, Some(*size));
             let bytes = texture.save_to_png_bytes(); // must be read on gtk thread
             crate::RUNTIME.spawn(async move {
                 let tmp_path = thumb_path.with_extension(".part");
@@ -149,6 +148,6 @@ pub async fn generate(
     texture: gtk::gdk::Texture,
 ) -> Result<HashMap<ThumbSize, gtk::gdk::Texture>> {
     let thumbs = render_thumbs(&texture)?;
-    write_thumbs(&pd, &thumbs).await?;
+    write_thumbs(pd, &thumbs).await?;
     Ok(thumbs)
 }

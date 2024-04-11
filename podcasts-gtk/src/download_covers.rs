@@ -1,16 +1,13 @@
 use anyhow::{anyhow, bail, Result};
 use once_cell::sync::Lazy;
 use std::collections::{HashMap, HashSet};
-use std::fs::File;
 use std::io::Cursor;
-use std::path::{Path, PathBuf};
+use std::path::PathBuf;
 use tempdir::TempDir;
 use tokio::sync::RwLock; // also works from gtk, unlike tokio::fs
 
-use gio::Cancellable;
 use glib::WeakRef;
 use gtk::gdk;
-use gtk::gio;
 use gtk::glib;
 use gtk::prelude::*;
 
@@ -87,10 +84,8 @@ pub fn clean_unfinished_downloads() -> Result<()> {
 }
 
 fn cleanup_entry(path: &PathBuf) -> Result<()> {
-    if path.is_file() {
-        if path.ends_with(".part") {
-            std::fs::remove_file(&path)?;
-        }
+    if path.is_file() && path.ends_with(".part") {
+        std::fs::remove_file(path)?;
     }
     // remove tmp directories of unfinished downloads
     if path.is_dir() {
@@ -100,7 +95,7 @@ fn cleanup_entry(path: &PathBuf) -> Result<()> {
                 // remove_dir_all can be risky if xdg would break,
                 // but we are filtering for a "*-pdcover.part*" dir-name
                 // and in a "Covers/" subdir, so it should be fine.
-                std::fs::remove_dir_all(&path)?;
+                std::fs::remove_dir_all(path)?;
             }
         }
     }
@@ -163,7 +158,7 @@ async fn download(
     // Download done, lets generate thumbnails
     let filename2 = filename.clone();
     let texture = crate::RUNTIME
-        .spawn_blocking(move || gdk::Texture::from_filename(&filename2))
+        .spawn_blocking(move || gdk::Texture::from_filename(filename2))
         .await??;
     let (sender, receiver) = tokio::sync::oneshot::channel();
     let pd = pd.clone();
@@ -182,7 +177,7 @@ async fn download(
             COVER_TEXTURES
                 .write()
                 .await
-                .insert(cover_id.clone(), thumb_texture.clone());
+                .insert(*cover_id, thumb_texture.clone());
             // Finalize
             // we only rename after thumbnails are generated,
             // so thumbnails can be presumed to exist if the orginal file exists
@@ -215,7 +210,7 @@ async fn wait_for_download(pd: &ShowCoverModel, cover_id: &CoverId) -> Result<gd
         }
         cover_is_downloading(cover_id.0).await
     } {}
-    return from_cache_or_fs(pd, cover_id).await;
+    from_cache_or_fs(pd, cover_id).await
 }
 
 async fn from_cache_or_fs(pd: &ShowCoverModel, cover_id: &CoverId) -> Result<gdk::Texture> {
@@ -238,7 +233,7 @@ async fn from_cache_or_fs(pd: &ShowCoverModel, cover_id: &CoverId) -> Result<gdk
                 .await
                 .ok_or(anyhow!("Failed to wait for thumbnail form cache."));
         }
-        let got_lock = THUMB_LOAD_REGISTRY.write().await.insert(cover_id.clone());
+        let got_lock = THUMB_LOAD_REGISTRY.write().await.insert(*cover_id);
         if got_lock {
             let result = from_fs(pd, cover_id).await;
             THUMB_LOAD_REGISTRY.write().await.remove(cover_id);
@@ -256,12 +251,12 @@ async fn from_cache(cover_id: &CoverId) -> Option<gdk::Texture> {
 }
 
 async fn from_fs(pd: &ShowCoverModel, cover_id: &CoverId) -> Result<gdk::Texture> {
-    let thumb = determin_cover_path(pd, Some(cover_id.1.clone()));
+    let thumb = determin_cover_path(pd, Some(cover_id.1));
     if let Ok(texture) = gdk::Texture::from_filename(thumb) {
         COVER_TEXTURES
             .write()
             .await
-            .insert(cover_id.clone(), texture.clone());
+            .insert(*cover_id, texture.clone());
         Ok(texture)
     } else {
         bail!("failed to load texture")
@@ -314,7 +309,7 @@ pub async fn load_texture(pd: &ShowCoverModel, thumb_size: ThumbSize) -> Result<
         bail!("no image_uri for this show: {}", pd.title());
     }
     let show_id = pd.id();
-    let cover_id = (show_id, thumb_size.clone());
+    let cover_id = (show_id, thumb_size);
     // early return from memory cache
     if let Some(texture) = from_cache(&cover_id).await {
         return Ok(texture);

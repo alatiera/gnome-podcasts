@@ -19,7 +19,7 @@
 
 use anyhow::Result;
 use async_channel::Sender;
-use chrono::{prelude::*, NaiveTime};
+use chrono::prelude::*;
 use fragile::Fragile;
 use gio::File;
 use glib::clone;
@@ -30,7 +30,6 @@ use gtk::{gio, glib};
 use mpris_server::{Metadata, PlaybackStatus, Player};
 use once_cell::sync::Lazy;
 use std::cell::{RefCell, RefMut};
-use std::convert::TryInto;
 use std::ops::Deref;
 use std::path::Path;
 use std::rc::Rc;
@@ -41,7 +40,7 @@ use crate::app::Action;
 use crate::config::APP_ID;
 use crate::i18n::i18n;
 use crate::widgets::CoverImage;
-use podcasts_data::{dbqueries, downloader, EpisodeWidgetModel, ShowCoverModel, USER_AGENT};
+use podcasts_data::{dbqueries, EpisodeWidgetModel, ShowCoverModel, USER_AGENT};
 
 #[derive(Debug, Clone, Copy)]
 pub(crate) enum SeekDirection {

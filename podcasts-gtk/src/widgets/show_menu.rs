@@ -19,7 +19,6 @@
 
 use anyhow::Result;
 use async_channel::Sender;
-use gio::prelude::ActionMapExt;
 use glib::clone;
 use gtk::prelude::*;
 use gtk::{gio, glib};
