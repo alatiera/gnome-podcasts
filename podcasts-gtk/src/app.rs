@@ -119,9 +119,6 @@ impl ApplicationImpl for PdApplicationPrivate {
         let cleanup_date = settings::get_cleanup_date(&settings);
         // Garbage collect watched episodes from the disk
         utils::cleanup(cleanup_date);
-        if let Err(err) = download_covers::clean_unfinished_downloads() {
-            error!("Failed to cleanup downloads: {err}");
-        }
 
         self.settings.replace(Some(settings));
     }
@@ -136,6 +133,9 @@ impl ApplicationImpl for PdApplicationPrivate {
                     error!("Failed to delete {}", pd.title());
                 }
             }
+        }
+        if let Err(err) = download_covers::clean_unfinished_downloads() {
+            error!("Failed to cleanup downloads: {err}");
         }
 
         self.parent_shutdown();
