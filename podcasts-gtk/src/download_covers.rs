@@ -12,29 +12,29 @@ use gtk::glib;
 use gtk::prelude::*;
 
 use crate::thumbnail_generator::ThumbSize;
-// use podcasts_data::errors::DownloadError;
 use podcasts_data::xdg_dirs::CACHED_COVERS_DIR;
 use podcasts_data::ShowCoverModel;
 
 // Downloader v3
 // if a textures is in the COVER_TEXTURES cache:
-//     - Set the image to that texture.
-// if file doesn't exist:
-//     - Create 0byte placeholder file.
-//     - Start Download into tmp file.
-//     - Generate thumbnails.
-//     - Move the download to the final path.
-//     - goto: (if file exists) ↓
-// if 0byte exits:
-//     - Create FileMonitor
-//     - Register load callback on changed
-//     - Return the monitor for a widget to keep around until it sets the cover.
-//       TODO: drop the monitor after that happens
-// if file exists:
-//     - check COVER_TEXTURES cache, set image from it if any hits, else
-//     - Load the file's texture into the COVER_TEXTURES cache.
-//     - set the image to the texture
-//     - Only this needs the gtk widget, rest can be done off thread
+//     - return texture form HashMap cache.
+// if download lock is set:
+//     - sleep for 30 seconds in 250ms intervals
+//     - if the lock disapears check if the texture is in cache and return
+//     - else try to get a lock for loading it.
+//     - if the lock was aquired by another task,
+//           sleep for 30 seconds in 25ms intervals
+//     - if the lock disapears check if the texture is in cache and return
+//     - else bail! and return an error
+// if the image is outdated (past the 4 week cache date)
+//     - download a copy, then generate thumbnails for it and override the original
+// if the image file exists:
+//     - load it into cache form fs at the right thumb size and return it
+// if the thumb doesn't exist but the file exists:
+//     - download a copy, then generate thumbnails for it and override the original
+// if the file doesn't exist:
+//     - download it, then generate thumbs, cache the requested thumb size
+//           and return the texture.
 
 static CACHE_VALID_DURATION: Lazy<chrono::Duration> = Lazy::new(|| chrono::Duration::weeks(4));
 
