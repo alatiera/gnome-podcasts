@@ -1,0 +1,452 @@
+# Hindi translation for podcasts.
+# Copyright (C) 2024 podcasts's COPYRIGHT HOLDER
+# This file is distributed under the same license as the podcasts package.
+# Scrambled777 <weblate.scrambled777@simplelogin.com>, 2024.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: podcasts main\n"
+"Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
+"POT-Creation-Date: 2024-03-27 13:53+0000\n"
+"PO-Revision-Date: 2024-03-30 10:54+0530\n"
+"Last-Translator: Scrambled777 <weblate.scrambled777@simplelogin.com>\n"
+"Language-Team: Hindi\n"
+"Language: hi\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Gtranslator 46.0\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#. Translators: Show as a noun, meaning a Podcast-Show.
+#: podcasts-gtk/resources/gtk/empty_show.ui:17
+msgid "This show does not have episodes yet"
+msgstr "इस शो के अभी कोई एपिसोड नहीं हैं"
+
+#: podcasts-gtk/resources/gtk/empty_show.ui:26
+msgid "If you think this is an error, please consider writing a bug report."
+msgstr "यदि आपको लगता है कि यह एक त्रुटि है, तो कृपया बग रिपोर्ट लिखने पर विचार करें।"
+
+#. Translators: Shows as a noun, meaning Podcast-Shows.
+#: podcasts-gtk/resources/gtk/empty_view.ui:31
+msgid "Get Some Shows"
+msgstr "कुछ शो प्राप्त करें"
+
+#. Translators: Shows as a noun, meaning Podcast-Shows.
+#: podcasts-gtk/resources/gtk/empty_view.ui:52
+msgid "Add new shows via feed URL"
+msgstr "फ़ीड URL के माध्यम से नए शो जोड़ें"
+
+#. Translators: Shows as a noun, meaning Podcast-Shows.
+#: podcasts-gtk/resources/gtk/empty_view.ui:76
+msgid "Import shows from another device"
+msgstr "अन्य उपकरण से शो आयात करें"
+
+#: podcasts-gtk/resources/gtk/episode_description.ui:33
+msgid "Episode Details"
+msgstr "एपिसोड विवरण"
+
+#: podcasts-gtk/resources/gtk/episode_description.ui:42
+msgid "Episode Menu"
+msgstr "एपिसोड मेन्यू"
+
+#: podcasts-gtk/resources/gtk/episode_description.ui:92
+msgid "Podcast Title"
+msgstr "पॉडकास्ट शीर्षक"
+
+#: podcasts-gtk/resources/gtk/episode_description.ui:115
+msgid "Duration - Date"
+msgstr "अवधि - दिनांक"
+
+#: podcasts-gtk/resources/gtk/episode_description.ui:146
+msgid "Download"
+msgstr "डाउनलोड"
+
+#: podcasts-gtk/resources/gtk/episode_description.ui:155
+msgid "Cancel"
+msgstr "रद्द"
+
+#: podcasts-gtk/resources/gtk/episode_description.ui:165
+msgid "Delete File"
+msgstr "फाइल हटाएँ"
+
+#: podcasts-gtk/resources/gtk/episode_description.ui:174
+msgid "Stream"
+msgstr "स्ट्रीम"
+
+#: podcasts-gtk/resources/gtk/episode_description.ui:184
+#: podcasts-gtk/resources/gtk/episode_description.ui:186
+#: podcasts-gtk/resources/gtk/player_dialog.ui:173
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:63
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:254
+msgid "Play"
+msgstr "चलाएँ"
+
+#: podcasts-gtk/resources/gtk/episode_description.ui:208
+msgid "Episode Description"
+msgstr "एपिसोड विवरण"
+
+#. Translators: Show as a noun, meaning a Podcast-Show.
+#: podcasts-gtk/resources/gtk/episode_menu.ui:36
+msgid "Go to Show"
+msgstr "शो पर जाएँ"
+
+#: podcasts-gtk/resources/gtk/episode_menu.ui:40
+msgid "Copy Episode Url"
+msgstr "एपिसोड URL कॉपी करें"
+
+#: podcasts-gtk/resources/gtk/episode_widget.ui:70
+msgid "You’ve already listened to this episode."
+msgstr "आप यह एपिसोड पहले ही सुन चुके हैं।"
+
+#: podcasts-gtk/resources/gtk/episode_widget.ui:158
+msgid "Calculating episode size…"
+msgstr "एपिसोड आकार की गणना की जा रही है…"
+
+#: podcasts-gtk/resources/gtk/episode_widget.ui:181
+msgid "Play this episode"
+msgstr "यह एपिसोड चलायें"
+
+#: podcasts-gtk/resources/gtk/episode_widget.ui:193
+msgid "Cancel the download process"
+msgstr "डाउनलोड प्रक्रिया रद्द करें"
+
+#: podcasts-gtk/resources/gtk/episode_widget.ui:206
+msgid "Download this episode"
+msgstr "इस एपिसोड को डाउनलोड करें"
+
+#: podcasts-gtk/resources/gtk/hamburger.ui:7
+msgid "_Check for New Episodes"
+msgstr "नए एपिसोड की जाँच करें (_C)"
+
+#. Translators: Show as a noun, meaning Podcast-Shows.
+#: podcasts-gtk/resources/gtk/hamburger.ui:13
+msgid "_Import Shows"
+msgstr "शो आयात (_I)"
+
+#. Translators: Show as a noun, meaning Podcast-Shows.
+#: podcasts-gtk/resources/gtk/hamburger.ui:18
+msgid "_Export Shows"
+msgstr "शो निर्यात (_E)"
+
+#: podcasts-gtk/resources/gtk/hamburger.ui:24
+msgid "_Keyboard Shortcuts"
+msgstr "कीबोर्ड शॉर्टकट (_K)"
+
+#: podcasts-gtk/resources/gtk/hamburger.ui:32
+msgid "_About Podcasts"
+msgstr "Podcasts के बारे में (_A)"
+
+#: podcasts-gtk/resources/gtk/headerbar.ui:41
+msgid "Add a new feed"
+msgstr "नई फ़ीड जोड़ें"
+
+#: podcasts-gtk/resources/gtk/headerbar.ui:51
+msgid "Main Menu"
+msgstr "मुख्य मेन्यू"
+
+#: podcasts-gtk/resources/gtk/help-overlay.ui:11
+msgid "General"
+msgstr "जनरल"
+
+#: podcasts-gtk/resources/gtk/help-overlay.ui:15
+msgctxt "shortcut window"
+msgid "Check for new episodes"
+msgstr "नए एपिसोड की जाँच करें"
+
+#: podcasts-gtk/resources/gtk/help-overlay.ui:21
+msgctxt "shortcut window"
+msgid "Quit the application"
+msgstr "एप्लिकेशन छोड़ें"
+
+#: podcasts-gtk/resources/gtk/home_view.ui:57
+#: podcasts-gtk/resources/gtk/home_view.ui:70
+msgid "Today"
+msgstr "आज"
+
+#: podcasts-gtk/resources/gtk/home_view.ui:88
+#: podcasts-gtk/resources/gtk/home_view.ui:101
+msgid "Yesterday"
+msgstr "बिता कल"
+
+#: podcasts-gtk/resources/gtk/home_view.ui:119
+#: podcasts-gtk/resources/gtk/home_view.ui:132
+msgid "This Week"
+msgstr "इस सप्ताह"
+
+#: podcasts-gtk/resources/gtk/home_view.ui:150
+#: podcasts-gtk/resources/gtk/home_view.ui:163
+msgid "This Month"
+msgstr "इस महीने"
+
+#: podcasts-gtk/resources/gtk/home_view.ui:182
+#: podcasts-gtk/resources/gtk/home_view.ui:195
+msgid "Older"
+msgstr "पुराना"
+
+#: podcasts-gtk/resources/gtk/player_dialog.ui:7
+msgid "Now Playing"
+msgstr "अभी चल रहा है"
+
+#: podcasts-gtk/resources/gtk/player_dialog.ui:28
+msgid "Close"
+msgstr "बंद"
+
+#: podcasts-gtk/resources/gtk/player_dialog.ui:152
+msgid "Rewind"
+msgstr "पीछे"
+
+#: podcasts-gtk/resources/gtk/player_dialog.ui:191
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:76
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:263
+msgid "Pause"
+msgstr "विराम"
+
+#: podcasts-gtk/resources/gtk/player_dialog.ui:214
+msgid "Forward"
+msgstr "आगे"
+
+#: podcasts-gtk/resources/gtk/player_rate.ui:29
+msgid "Change the playback speed"
+msgstr "प्लेबैक गति बदलें"
+
+#: podcasts-gtk/resources/gtk/player_rate.ui:34
+#: podcasts-gtk/resources/gtk/player_rate.ui:59
+msgid "1.00×"
+msgstr "1.00×"
+
+#: podcasts-gtk/resources/gtk/player_rate.ui:39
+msgid "2.00×"
+msgstr "2.00×"
+
+#: podcasts-gtk/resources/gtk/player_rate.ui:44
+msgid "1.75×"
+msgstr "1.75×"
+
+#: podcasts-gtk/resources/gtk/player_rate.ui:49
+msgid "1.50×"
+msgstr "1.50×"
+
+#: podcasts-gtk/resources/gtk/player_rate.ui:54
+msgid "1.25×"
+msgstr "1.25×"
+
+#: podcasts-gtk/resources/gtk/player_rate.ui:64
+msgid "0.90×"
+msgstr "0.90×"
+
+#: podcasts-gtk/resources/gtk/player_rate.ui:69
+msgid "0.75×"
+msgstr "0.75×"
+
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:50
+msgid "Rewind 10 seconds"
+msgstr "10 सेकंड पीछे"
+
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:89
+msgid "Fast forward 10 seconds"
+msgstr "10 सेकंड आगे"
+
+#: podcasts-gtk/resources/gtk/secondary_menu.ui:7
+msgid "_Mark All Episodes as Played"
+msgstr "सभी एपिसोड को चलाये गये चिह्नित करें (_M)"
+
+#: podcasts-gtk/resources/gtk/secondary_menu.ui:11
+msgid "_Website"
+msgstr "वेबसाइट (_W)"
+
+#: podcasts-gtk/resources/gtk/secondary_menu.ui:15
+msgid "_Unsubscribe"
+msgstr "सदस्यता छोड़ें (_U)"
+
+#: podcasts-gtk/resources/gtk/show_menu.ui:35
+msgid "Open Website"
+msgstr "वेबसाइट खोलें"
+
+#: podcasts-gtk/resources/gtk/show_menu.ui:39
+msgid "Mark All as Played"
+msgstr "सभी को चलाये गये चिह्नित करें"
+
+#: podcasts-gtk/resources/gtk/show_menu.ui:45
+msgid "Unsubscribe"
+msgstr "सदस्यता छोड़ें"
+
+#: podcasts-gtk/resources/gtk/show_widget.ui:40
+msgid "Podcast Menu"
+msgstr "पॉडकास्ट मेन्यू"
+
+#: podcasts-gtk/resources/gtk/show_widget.ui:97
+msgid "Episodes"
+msgstr "एपिसोड"
+
+#. Weird magic I copy-pasted that sets the Application Name in the Shell.
+#: podcasts-gtk/resources/gtk/window.ui:6
+#: podcasts-gtk/resources/gtk/window.ui:25
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:4
+#: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:3
+#: podcasts-gtk/src/app.rs:499 podcasts-gtk/src/widgets/aboutdialog.rs:56
+#: podcasts-gtk/src/widgets/player.rs:385
+msgid "Podcasts"
+msgstr "Podcasts"
+
+#. Translators: Show as a noun, meaning a Podcast-Show.
+#: podcasts-gtk/resources/gtk/window.ui:35
+msgid "Show"
+msgstr "शो"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:8
+msgid "Listen to your favorite shows"
+msgstr "अपने पसंदीदा शो सुनें"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:10
+msgid ""
+"Play, update, and manage your podcasts from a lightweight interface that "
+"seamlessly integrates with GNOME. Podcasts can play various audio formats "
+"and remember where you stopped listening. You can subscribe to shows via RSS/"
+"Atom, iTunes, and Soundcloud links. Subscriptions from other apps can be "
+"imported via OPML files."
+msgstr ""
+"अपने पॉडकास्ट को एक हल्के इंटरफ़ेस से चलाएं, अपडेट करें और प्रबंधित करें जो GNOME के साथ "
+"सहजता से एकीकृत होता है। पॉडकास्ट विभिन्न ऑडियो प्रारूप चला सकते हैं और याद रख सकते हैं "
+"कि आपने कहाँ सुनना बंद किया था। आप RSS/Atom, iTunes और Soundcloud लिंक के माध्यम से "
+"शो की सदस्यता ले सकते हैं। अन्य ऐप्स से सदस्यता OPML फाइलों के माध्यम से आयात किया जा "
+"सकता है।"
+
+#. developer_name tag deprecated with Appstream 1.0
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:151
+msgid "The Podcasts developers"
+msgstr "Podcasts डेवलपर्स"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:4
+msgid "Listen to your favorite podcasts, right from your desktop."
+msgstr "सीधे अपने डेस्कटॉप से अपने पसंदीदा पॉडकास्ट सुनें।"
+
+#. Translators: Search terms to find this application. Do NOT translate or localize the semicolons! The list MUST also end with a semicolon!
+#: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:13
+msgid "Podcast;RSS;"
+msgstr "Podcast;RSS;पॉडकास्ट;"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:15
+msgid "Height of the last open main window"
+msgstr "अंतिम खुली मुख्य विंडो की ऊँचाई"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:19
+msgid "Width of the last open main window"
+msgstr "अंतिम खुली मुख्य विंडो की चौड़ाई"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:23
+msgid "Maximized state of the last open main window"
+msgstr "अंतिम खुली मुख्य विंडो की अधिकतम स्थिति"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:28
+msgid "Whether to periodically refresh content"
+msgstr "क्या सामग्री को समय-समय पर ताज़ा करना है"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:33
+msgid "How many periods of time to wait between automatic refreshes"
+msgstr "स्वचालित ताज़ा के बीच कितनी अवधि तक प्रतीक्षा करनी होगी"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:37
+msgid "What period of time to wait between automatic refreshes"
+msgstr "स्वचालित ताज़ा के बीच किस अवधि तक प्रतीक्षा करनी है"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:41
+msgid "Whether to refresh content after startup"
+msgstr "क्या स्टार्टअप के बाद सामग्री को ताज़ा करना है"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:47
+msgid "How many periods of time to wait between automatic cleanups"
+msgstr "स्वचालित सफाई के बीच कितनी अवधि तक प्रतीक्षा करनी होगी"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:51
+msgid "What period of time to wait between automatic cleanups"
+msgstr "स्वचालित सफाई के बीच किस अवधि तक प्रतीक्षा करनी है"
+
+#: podcasts-gtk/src/app.rs:338
+msgid "Copied URL to clipboard!"
+msgstr "क्लिपबोर्ड पर URL कॉपी किया गया!"
+
+#: podcasts-gtk/src/stacks/content.rs:68
+msgid "New"
+msgstr "नया"
+
+#. Translators: Shows as a noun, meaning Podcast-Shows.
+#: podcasts-gtk/src/stacks/content.rs:70
+#: podcasts-gtk/src/widgets/shows_view.rs:65
+msgid "Shows"
+msgstr "शो"
+
+#: podcasts-gtk/src/utils.rs:473 podcasts-gtk/src/utils.rs:515
+msgid "OPML file"
+msgstr "OPML फाइल"
+
+#: podcasts-gtk/src/utils.rs:484
+msgid "Select the file from which to you want to import shows."
+msgstr "उस फाइल का चयन करें जिससे आप शो आयात करना चाहते हैं।"
+
+#: podcasts-gtk/src/utils.rs:486
+msgid "_Import"
+msgstr "आयात (_I)"
+
+#: podcasts-gtk/src/utils.rs:502
+msgid "Failed to parse the imported file"
+msgstr "आयातित फाइल को पार्स करने में विफल"
+
+#. Translators: Show as a noun, meaning Podcast-Shows.
+#: podcasts-gtk/src/utils.rs:526
+msgid "Export shows to…"
+msgstr "यहाँ शो को निर्यात करें…"
+
+#: podcasts-gtk/src/utils.rs:527
+msgid "_Export"
+msgstr "निर्यात (_E)"
+
+#. Translators: This is the string of the suggested name for the exported opml file
+#: podcasts-gtk/src/utils.rs:531
+msgid "gnome-podcasts-exported-shows"
+msgstr "gnome-पॉडकास्ट-निर्यात-शो"
+
+#: podcasts-gtk/src/utils.rs:541
+msgid "GNOME Podcasts Subscriptions"
+msgstr "GNOME पॉडकास्ट सदस्यताएँ"
+
+#: podcasts-gtk/src/utils.rs:542
+msgid "Failed to export podcasts"
+msgstr "पॉडकास्ट निर्यात करने में विफल"
+
+#: podcasts-gtk/src/widgets/aboutdialog.rs:52
+msgid "Podcast Client for the GNOME Desktop."
+msgstr "GNOME डेस्कटॉप के लिए पॉडकास्ट क्लाइंट।"
+
+#: podcasts-gtk/src/widgets/aboutdialog.rs:63
+msgid "translator-credits"
+msgstr "Scrambled777 <weblate.scrambled777@simplelogin.com>"
+
+#: podcasts-gtk/src/widgets/episode.rs:239
+msgid "{} min"
+msgstr "{} मि"
+
+#: podcasts-gtk/src/widgets/player.rs:975
+msgid "The media player was unable to execute an action."
+msgstr "मीडिया प्लेयर कोई कार्रवाई निष्पादित करने में असमर्थ था।"
+
+#: podcasts-gtk/src/widgets/read_more_label.rs:34
+msgid "Visually expands this description"
+msgstr "इस विवरण को दृष्टिगत रूप से विस्तारित करता है"
+
+#: podcasts-gtk/src/widgets/read_more_label.rs:36
+msgid "Read More"
+msgstr "अधिक पढ़ें"
+
+#: podcasts-gtk/src/widgets/show_menu.rs:178
+msgid "Marked all episodes as listened"
+msgstr "सभी एपिसोड को सुने गए चिह्नित किया गया"
+
+#: podcasts-gtk/src/widgets/show_menu.rs:179
+#: podcasts-gtk/src/widgets/show_menu.rs:202
+msgid "Undo"
+msgstr "पूर्ववत"
+
+#: podcasts-gtk/src/widgets/show_menu.rs:198
+msgid "Unsubscribed from {}"
+msgstr "{} से सदस्यता समाप्त"
