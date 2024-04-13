@@ -22,6 +22,7 @@ use adw::subclass::prelude::*;
 use gtk::glib;
 
 use crate::download_covers::load_image;
+use podcasts_data::errors::DownloadError;
 
 #[derive(Default)]
 pub struct CoverImagePriv {
@@ -80,8 +81,13 @@ impl CoverImage {
             .unwrap_or(crate::Thumb512);
         let image = self.imp().image.downgrade();
         crate::MAINCONTEXT.spawn_local_with_priority(glib::source::Priority::LOW, async move {
-            // TODO print, but skip image.upgrade() errors
-            let _ = load_image(&image, show_id, size).await;
+            if let Err(err) = load_image(&image, show_id, size).await {
+                if let Some(DownloadError::NoLongerNeeded) = err.downcast_ref::<DownloadError>() {
+                    // weak image reference couldn't be upgraded, no need to print this
+                    return;
+                }
+                error!("Failed to load image: {err}");
+            }
         });
     }
 }

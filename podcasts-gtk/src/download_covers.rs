@@ -1,4 +1,8 @@
 use anyhow::{anyhow, bail, Result};
+use glib::WeakRef;
+use gtk::gdk;
+use gtk::glib;
+use gtk::prelude::*;
 use once_cell::sync::Lazy;
 use std::collections::{HashMap, HashSet};
 use std::io::Cursor;
@@ -6,12 +10,8 @@ use std::path::PathBuf;
 use tempdir::TempDir;
 use tokio::sync::RwLock; // also works from gtk, unlike tokio::fs
 
-use glib::WeakRef;
-use gtk::gdk;
-use gtk::glib;
-use gtk::prelude::*;
-
 use crate::thumbnail_generator::ThumbSize;
+use podcasts_data::errors::DownloadError::NoLongerNeeded;
 use podcasts_data::xdg_dirs::CACHED_COVERS_DIR;
 use podcasts_data::ShowCoverModel;
 
@@ -374,7 +374,7 @@ pub async fn load_image(
     if let Some(image) = image.upgrade() {
         image.set_tooltip_text(Some(pd.title()));
     } else {
-        bail!("gtk::Image no longer exists, skipped loading it.")
+        return Err(NoLongerNeeded.into());
     }
 
     let result = crate::RUNTIME
@@ -387,7 +387,7 @@ pub async fn load_image(
                 image.set_paintable(Some(&texture));
                 return Ok(());
             }
-            bail!("gtk::Image no longer exists, after loading texture.")
+            return Err(NoLongerNeeded.into());
         }
         Ok(Err(err)) => bail!("Failed to load Show Cover: {err}"),
         Err(err) => bail!("Failed to load Show Cover thread-error: {err}"),
