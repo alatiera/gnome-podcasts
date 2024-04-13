@@ -240,8 +240,6 @@ pub async fn get_episode(
     Ok(())
 }
 
-// FIXME: this can be replaces by the new code but needed to rebase first
-
 pub fn check_for_cached_image(pd: &ShowCoverModel, uri: &str) -> Option<PathBuf> {
     let cache_path = utils::get_cover_dir(pd.title()).ok()?;
     let hash = utils::calculate_hash(uri);
