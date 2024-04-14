@@ -24,6 +24,11 @@
       <image>https://gitlab.gnome.org/World/podcasts/raw/master/screenshots/show_widget.png</image>
     </screenshot>
   </screenshots>
+  <branding>
+    <color type="primary" scheme_preference="light">#fb6969</color>
+    <color type="primary" scheme_preference="dark">#7b1824</color>
+  </branding>
+
   <releases>
     <release version="0.6.1" date="2023-09-18">
      <description>
