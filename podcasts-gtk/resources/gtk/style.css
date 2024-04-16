@@ -38,6 +38,9 @@ popover modelbutton > box > label {
 .episode_description .episode_duration_date {
     color: @insensitive_fg_color;
 }
+.episode_description_label link {
+    text-decoration: none;
+}
 
 /* Discovery Search */
 .found-podcast .description {
