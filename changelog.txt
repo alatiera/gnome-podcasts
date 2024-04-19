@@ -1,0 +1,129 @@
+0eaf5cc2 Update links for new branch and screenshots
+af5d0c78 Rename screenshot
+1d09990b Add new screenshots
+a14f4ab0 discovery: add a spinner on the search result subscribe button.
+27500790 shows: Do not empty the ShowWidget on every shows refresh.
+6760b6af feed_manager: add a locked feed refresh manager
+909c521e metainfo: add brand colors
+f9116f9a empty_show: wrap labels, so they fit on a 360px mobile screen.
+9fb5c805 discovery_page: set the warning label to wrap.
+9d34824a Use gnome feature instead of adding a gtk feature
+7fa33896 discovery: Announce the search no provider error to screenreaders.
+215cd62c discovery: Show an error when no search provider was selected.
+5c8e69cf search_results: fix too wide podcast authors labels.
+123ebdb0 app: add keyboard shortcuts.
+03c0375f episode_description: move download/stream/play buttons down a row.
+4cadf996 player: use a homogeneous stack for each play/pause button pair.
+7aef8ef4 manager: send an ErrorNotification when download fails.
+cded6138 episode_widget: show a text-only icon for episodes without audio.
+46ce710d discovery: add margins to the page.
+b0d4596a gtk: don't call send_blocking! from gio threads.
+b12fb3de cargo: upgrade gtk, gst, adwaita, mpris-server.
+abbcc65d app: properly call shutdown_parent() to avoid gtk warning.
+8ee123ca episode_description/css: align the play buttons with the bottom of the cover
+d685e4d7 download_bar: improve code formatting
+f33fd4a7 window: pop pages before going to the Show widget page.
+84e2b5d8 episode_description: add stream/download/play/delete buttons.
+9501ffe5 app: finish all pending unsubscribes before quitting.
+0067c9e5 utils: use async_channel and await instead of a timeout.
+cf0b5ca6 player_toolbar: request a minimum width.
+09f511e4 Apply 1 suggestion(s) to 1 file(s)
+11c9c654 discovery: search itunes and fyyd on a new page.
+eb860dc0 data: Don't identify episodes by their title when they have a guid
+e2065300 metainfo: Use reverse DNS developer id
+2d315ce2 utils: Log errors on on_export_clicked
+2e710105 player: updated mpris-server
+fb798201 new_episode: always update image_uri
+37cb24be episode_description: use action/sender/receiver
+7ab5ab4b podcast-data: cleanup old episode-specific-cover files.
+28809bea episode_description: add episode_specific cover.
+4ed1494a shows: updated shows view never got appended to the ui
+cc7b6bd6 populated: Remove unused replace_shows function
+9e0babcd Reorganize dependencies
+a74ebe9c Sort dependencies
+0cefb8c3 Fix pause_button width
+05d7e7fe Use default clippy settings
+50033c29 Remove futures crate
+0fe7d379 General cleanup
+fed5e4fd Add error handling
+23d210bb Fix clippy warnings and remove dead code
+0d0df124 window: Add second AdwToolbarView
+d08d54db app: Remove go back actions
+e0b8baee Replace widget from window
+6b053c5f show_widget: Use to AdwNavigationPage
+08d5b81a show_widget: Remove empty domain
+5f7ed740 screenshots: update
+b07702dd style: improve playback button style
+49958842 appdata: Improve appdata for AppStream 1.0
+081c8768 appdata: remove categories and keywords
+20d734d3 window: Remove setter on header breakpoint
+e2c5a8e9 app: Simplify match
+d0e1ac94 app: Replace eprintln with error
+0c2de0da app: Port actions to ActionEntry
+402a1edd podcasts-gtk: player: replace "mpris_player" with "mpris_server"
+40adf6a5 podcasts-data: replace "tempdir" with "tempfile"
+87606915 README: fix link to matrix and nuke irc
+f0e64b79 data: remove AudioVideo and purism tags
+221bab58 appdata: Update appdata
+02523287 appdata: use appstreamcli for appdata validation
+82aa6fa7 content: Remove duplicate function
+2327a6ad lazy_load: Tweak the constructor callback priority
+c181a2ba widgets/episode: defer initialization of the widget
+17b5a0a9 widgets/episode: Treat the Widget Template as the default state
+64f14f52 views: Do not block when fetching sql models
+ec8d6c1e lazy_load: Log the total time it takes to construct widgets
+d80562d6 home_view: Make add_to_boxes async fn and return the handles
+6a19f9c5 utils: Pass weak ref of GtkImage in the callback
+dcff1581 lazy_load: Make it an async fn and return the joined handles
+4460b3fc lazy_load: Use the Receiver as a Stream and replace the Vec
+44ba4fe5 lazy_load: Replace idle_add with spawn_with_priority
+b34c295a lazy_load: Replace insert widget callback
+9044b413 home_view: Populate the listboxes in parallel
+df4fa8cf lazy_load: Remove finish_callback
+47760c06 gtk: Create the widgets in the background before inserting them
+679ec28e window: Define bottom switcher on code
+86ec1d82 window: Do not clone player in callback
+18cf7f10 window: Hide bottom switcher on show view
+eb60a260 window: Remove redundant title
+5ec7ba7f window: Move AdwBottomSwitcher to window
+89cc18f3 window: Use composite templates
+1bfc5607 window: Do not set title at runtime
+bb96b177 show_widget: Add margins to list box
+51b79dc3 window: Set player size at construct
+37df7a94 window: Fix breakpoint
+bb066d3b shows_view: Pass weak ref of GtkImage in the callback
+a92992df lazy_loading: Use a timewindwo instead of hardcoded batch number
+fa0111d7 lazy_load: Use an idle_add instead of timeout_add
+903cec50 lazy_load: Log how much it takes to create widgets
+af1c9d89 flatpak: fix env vars
+e98103c4 shows_view: Make the ShowsView struct a gtk widget
+762a9c47 lazy_load: Improve the loading of widgets
+44fe5ef3 chore: revise contribution guide
+b5fe3a9f player: Remove margins
+41731572 content: Subclass Bin instead of Box
+c710f958 episode_description: Set selectable after shown
+6dc49991 episode_description: Remove redundant a11y prop
+f15f0d9e Use primary in MenuButtons
+4ce0af61 player_dialog: Use AdwToolbarView
+909f703a player: Stop using AdwSqueezer
+08fa6599 Improve player
+10c199da Use AdwNavigationView
+35211d76 Stop using AdwSqueezer
+61b7d765 appdata: Update GNOME Circle URL
+5aadd5b4 Revert "utils: Load images from the path rather than pixbufs"
+93152d16 Only optimize dependencies
+664a343a pipeline: log the uri of the failed feed
+9587803c utils: Don't use async on fns that don't await
+b40de0eb meson: bump gst requirement to 1.22 from 1.16
+d8097b37 player: upgrade gstreamer-player to gstreamer-play
+affda1dd utils: set useragent for soundcloud/itunes requests
+9c64ed75 utils: Load images from the path rather than pixbufs
+c6548cff Fix clippy lints
+0eeacb9e Move to mold linker
+2480afdd Update release_process.md
+6a9c152b Remove pretty_assertions dep
+06795ec4 cargo: Always build optimized debug builds
+53989631 Move to gio::spawn_blocking
+0ec5b8f4 Switch to "new" resolver
+00139666 Bump meson.build post-release
+8f72cf85 Update release_process.md

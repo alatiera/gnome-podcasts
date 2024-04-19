@@ -37,6 +37,22 @@
   </branding>
 
   <releases>
+    <release version="0.7.0" date="2024-04-19">
+      <description>
+         <p>
+          Replace add button popover with dedicated page.
+         </p>
+         <p>
+          Allow streaming support.
+        </p>
+        <p>
+          Add additional keyboard shortcuts.
+        </p>
+        <p>
+          Several fixes and performance improvements.
+        </p>
+       </description>
+     </release>
     <release version="0.6.1" date="2023-09-18">
      <description>
         <p>

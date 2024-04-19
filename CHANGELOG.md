@@ -14,6 +14,25 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Removed:
 
+## [0.7.0] - 2024-04-19
+
+### Added:
+- Replace add button popover with dedicated page
+- discovery: add a spinner on the search result subscribe button.
+- feed_manager: add a locked feed refresh manager
+- app: add additional keyboard shortcuts.
+- episode_description: add stream/download/play/delete buttons. 
+
+### Changed:
+-  podcasts-gtk: player: replace "mpris_player" with "mpris_server" 
+-  gtk: Create the widgets in the background before inserting them 
+-  lazy_load: Improve the loading of widgets 
+-  Use newer libadwaita 1.4 widgets 
+
+### Fixed:
+- data: Don't identify episodes by their title when they have a guid 
+- player_toolbar: request a minimum width.
+
 ## [0.6.1] - 2023-09-18
 
 ### Added:
