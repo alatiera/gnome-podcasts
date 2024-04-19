@@ -16,7 +16,7 @@ Please note we follow the [GNOME Foundation Code of Conduct](/code-of-conduct.md
 GNOME Podcasts's main source repository is at gitlab.gnome.org.  You can view
 the web interface [here](https://gitlab.gnome.org/World/podcasts)
 
-Development happens in the master branch.
+Development happens in the main branch.
 
 Note that we don't do bug tracking in the GitHub mirror.
 

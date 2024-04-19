@@ -15,13 +15,20 @@
   </description>
   <screenshots>
     <screenshot type="default">
-      <image>https://gitlab.gnome.org/World/podcasts/raw/master/screenshots/home_view.png</image>
+      <caption>The home view displaying the newest episodes of your podcasts</caption>
+      <image>https://gitlab.gnome.org/World/podcasts/-/blob/af5d0c78f8e5d8d3398ad01178d248bbe64adf5b/screenshots/home_view.png</image>
     </screenshot>
     <screenshot>
-      <image>https://gitlab.gnome.org/World/podcasts/raw/master/screenshots/shows_view.png</image>
+      <caption>The shows view displaying the covers of your podcasts</caption>
+      <image>https://gitlab.gnome.org/World/podcasts/-/blob/af5d0c78f8e5d8d3398ad01178d248bbe64adf5b/screenshots/shows_view.png</image>
     </screenshot>
     <screenshot>
-      <image>https://gitlab.gnome.org/World/podcasts/raw/master/screenshots/show_widget.png</image>
+      <caption>The show widget displaying the cover and the latest episodes of a specific podcast</caption>
+      <image>https://gitlab.gnome.org/World/podcasts/-/blob/af5d0c78f8e5d8d3398ad01178d248bbe64adf5b/screenshots/show_widget.png</image>
+    </screenshot>
+    <screenshot>
+      <caption>The view where one can add a new podcast</caption>
+      <image>https://gitlab.gnome.org/World/podcasts/-/blob/af5d0c78f8e5d8d3398ad01178d248bbe64adf5b/screenshots/add_podcast.png</image>
     </screenshot>
   </screenshots>
   <branding>

@@ -87,7 +87,7 @@ The GNOME community prioritizes marginalized people's safety over privileged peo
  * Criticizing racist, sexist, cissexist, or otherwise oppressive behavior or assumptions
  * Communicating boundaries or criticizing oppressive behavior in a "tone" you don't find congenial
 
-The examples listed above are not against the Code of Conduct. If you have questions about the above statements, please [read this document](https://github.com/sagesharp/code-of-conduct-template/blob/master/code-of-conduct/example-reversisms.md#supporting-diversity).
+The examples listed above are not against the Code of Conduct. If you have questions about the above statements, please [read this document](https://github.com/sagesharp/code-of-conduct-template/blob/master/code-of-conduct/example-reversisms.md).
 
 If a participant engages in behavior that violates this code of conduct, the GNOME Code of Conduct committee may take any action they deem appropriate. Examples of consequences are outlined in the [Committee Procedures Guide](https://wiki.gnome.org/Foundation/CodeOfConduct/CommitteeProcedures).
 
@@ -123,4 +123,3 @@ Additional language was incorporated and modified from the following Codes of Co
  * [Mozilla Community Participation Guidelines](https://www.mozilla.org/en-US/about/governance/policies/participation/) is licensed [Creative Commons Attribution-ShareAlike 3.0 Unported License](https://creativecommons.org/licenses/by-sa/3.0/).
  * [Python Mentors Code of Conduct](http://pythonmentors.com/)
  * [Speak Up! Community Code of Conduct](http://web.archive.org/web/20141109123859/http://speakup.io/coc.html), licensed under a [Creative Commons Attribution 3.0 Unported License](http://creativecommons.org/licenses/by/3.0/)
-

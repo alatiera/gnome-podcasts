@@ -90,7 +90,7 @@ You can start by taking a look at [Issues][issues] or by opening a [New issue][n
 
 There are also some minor tasks tagged with `TODO:` and `FIXME:` in the source code.
 
-[contribution-guidelines]: https://gitlab.gnome.org/World/podcasts/blob/master/CONTRIBUTING.md
+[contribution-guidelines]: https://gitlab.gnome.org/World/podcasts/blob/main/CONTRIBUTING.md
 
 ### Translations
 

@@ -7,7 +7,7 @@
 
 ```
 git tag -a '0.4.9' -m '0.4.9'
-git push --atomic origin master 0.4.9
+git push --atomic origin main 0.4.9
 ```
 
 - Make a tarball for flathub
@@ -32,4 +32,3 @@ meson dist --no-tests
 - Update flatpak modules
 - Run `cargo update`, build and commit the new lockfile.
 - Check for [outdated](https://github.com/kbknapp/cargo-outdated) crates `cargo install cargo-outdate && cargo outdated -d 1`
-
