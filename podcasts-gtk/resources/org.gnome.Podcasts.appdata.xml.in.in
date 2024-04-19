@@ -16,19 +16,19 @@
   <screenshots>
     <screenshot type="default">
       <caption>The home view displaying the newest episodes of your podcasts</caption>
-      <image>https://gitlab.gnome.org/World/podcasts/-/blob/af5d0c78f8e5d8d3398ad01178d248bbe64adf5b/screenshots/home_view.png</image>
+      <image>https://gitlab.gnome.org/World/podcasts/-/raw/af5d0c78f8e5d8d3398ad01178d248bbe64adf5b/screenshots/home_view.png</image>
     </screenshot>
     <screenshot>
       <caption>The shows view displaying the covers of your podcasts</caption>
-      <image>https://gitlab.gnome.org/World/podcasts/-/blob/af5d0c78f8e5d8d3398ad01178d248bbe64adf5b/screenshots/shows_view.png</image>
+      <image>https://gitlab.gnome.org/World/podcasts/-/raw/af5d0c78f8e5d8d3398ad01178d248bbe64adf5b/screenshots/shows_view.png</image>
     </screenshot>
     <screenshot>
       <caption>The show widget displaying the cover and the latest episodes of a specific podcast</caption>
-      <image>https://gitlab.gnome.org/World/podcasts/-/blob/af5d0c78f8e5d8d3398ad01178d248bbe64adf5b/screenshots/show_widget.png</image>
+      <image>https://gitlab.gnome.org/World/podcasts/-/raw/af5d0c78f8e5d8d3398ad01178d248bbe64adf5b/screenshots/show_widget.png</image>
     </screenshot>
     <screenshot>
       <caption>The view where one can add a new podcast</caption>
-      <image>https://gitlab.gnome.org/World/podcasts/-/blob/af5d0c78f8e5d8d3398ad01178d248bbe64adf5b/screenshots/add_podcast.png</image>
+      <image>https://gitlab.gnome.org/World/podcasts/-/raw/af5d0c78f8e5d8d3398ad01178d248bbe64adf5b/screenshots/add_podcast.png</image>
     </screenshot>
   </screenshots>
   <branding>
@@ -37,6 +37,13 @@
   </branding>
 
   <releases>
+    <release version="0.7.0" date="2024-04-19">
+      <description>
+         <p>
+          Fix screenshot links.
+         </p>
+       </description>
+     </release>
     <release version="0.7.0" date="2024-04-19">
       <description>
          <p>

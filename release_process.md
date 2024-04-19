@@ -23,7 +23,6 @@ meson dist --no-tests
   - Add the same release notes as in CHANGELOG.md
   - At the very end, add tar.xz and sha256sum file 
 - Open a PR at https://github.com/flathub/org.gnome.Podcasts
-- Post-release version bump meson.build
 
 
 
