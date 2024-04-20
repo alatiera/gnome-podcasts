@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: podcasts master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2024-04-06 09:46+0000\n"
-"PO-Revision-Date: 2024-04-06 19:12+0300\n"
+"POT-Creation-Date: 2024-04-19 18:35+0000\n"
+"PO-Revision-Date: 2024-04-20 09:27+0300\n"
 "Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
 "Language-Team: Ukrainian\n"
 "Language: uk\n"
@@ -17,14 +17,14 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=4; plural=n==1 ? 3 : n%10==1 && n%100!=11 ? 0 : n"
 "%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-"X-Generator: Lokalize 23.04.1\n"
+"X-Generator: Lokalize 23.04.3\n"
 
 #. Translators: Show as a noun, meaning a Podcast-Show.
 #: podcasts-gtk/resources/gtk/empty_show.ui:17
 msgid "This show does not have episodes yet"
 msgstr "Випусків цього подкасту ще немає."
 
-#: podcasts-gtk/resources/gtk/empty_show.ui:26
+#: podcasts-gtk/resources/gtk/empty_show.ui:28
 msgid "If you think this is an error, please consider writing a bug report."
 msgstr ""
 "Якщо, на вашу думку, це помилка, варто повідомити про неї розробників."
@@ -163,7 +163,6 @@ msgstr "Перейти до домашньої сторінки"
 
 #. Translators: Shows as a Noun
 #: podcasts-gtk/resources/gtk/help-overlay.ui:22
-#| msgid "Go to Show"
 msgctxt "shortcut window"
 msgid "Go to Shows Page"
 msgstr "Перейти до сторінки передач"
@@ -175,7 +174,6 @@ msgid "Go To Discovery Page"
 msgstr "Перейти до сторінки ознайомлення"
 
 #: podcasts-gtk/resources/gtk/help-overlay.ui:38
-#| msgid "Play"
 msgctxt "shortcut window"
 msgid "Player"
 msgstr "Програвач"
@@ -186,7 +184,6 @@ msgid "Toggle Pause"
 msgstr "Увімкнути/Вимкнути призупинення"
 
 #: podcasts-gtk/resources/gtk/help-overlay.ui:47
-#| msgid "Forward"
 msgctxt "shortcut window"
 msgid "Seek Forwards"
 msgstr "Позиціювання вперед"
@@ -197,7 +194,6 @@ msgid "Seek Backwards"
 msgstr "Позиціювання назад"
 
 #: podcasts-gtk/resources/gtk/help-overlay.ui:62
-#| msgid "General"
 msgctxt "shortcut window"
 msgid "General"
 msgstr "Загальні"
@@ -213,13 +209,11 @@ msgid "Quit the application"
 msgstr "Вийти з програми"
 
 #: podcasts-gtk/resources/gtk/help-overlay.ui:77
-#| msgid "GNOME Podcasts Subscriptions"
 msgctxt "shortcut window"
 msgid "Import Subscriptions"
 msgstr "Імпортувати підписки"
 
 #: podcasts-gtk/resources/gtk/help-overlay.ui:83
-#| msgid "GNOME Podcasts Subscriptions"
 msgctxt "shortcut window"
 msgid "Export Subscriptions"
 msgstr "Експортувати підписки"
@@ -349,7 +343,7 @@ msgstr "Епізоди"
 #: podcasts-gtk/resources/gtk/window.ui:25
 #: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:4
 #: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:3
-#: podcasts-gtk/src/app.rs:496 podcasts-gtk/src/widgets/aboutdialog.rs:56
+#: podcasts-gtk/src/app.rs:446 podcasts-gtk/src/widgets/aboutdialog.rs:56
 #: podcasts-gtk/src/widgets/player.rs:380
 msgid "Podcasts"
 msgstr "Подкасти"
@@ -378,8 +372,28 @@ msgstr ""
 "програми за допомогою посилань RSS/Atom, iTunes та Soundcloud. Підписки з "
 "інших програм можна імпортувати за допомогою файлів OPML."
 
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:18
+msgid "The home view displaying the newest episodes of your podcasts"
+msgstr "Панель домівки із показаними найновішими епізодами ваших трансляцій"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:22
+msgid "The shows view displaying the covers of your podcasts"
+msgstr "Панель програм із показаними обкладинками ваших трансляцій"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:26
+msgid ""
+"The show widget displaying the cover and the latest episodes of a specific "
+"podcast"
+msgstr ""
+"Віджет програм із показаною обкладинкою та останніми епізодами певної"
+" трансляції"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:30
+msgid "The view where one can add a new podcast"
+msgstr "Панель, на якій можна додати нову трансляцію"
+
 #. developer_name tag deprecated with Appstream 1.0
-#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:151
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:163
 msgid "The Podcasts developers"
 msgstr "Розробники «Подкастів»"
 
@@ -435,7 +449,7 @@ msgstr ""
 "У яких одиницях вимірювати інтервал очікування між автоматичними очищеннями "
 "(години, хвилини тощо)"
 
-#: podcasts-gtk/src/app.rs:338
+#: podcasts-gtk/src/app.rs:336
 msgid "Copied URL to clipboard!"
 msgstr "Адресу скопійовано до буфера обміну."
 
@@ -453,41 +467,41 @@ msgstr "Нові випуски"
 msgid "Shows"
 msgstr "Подкасти"
 
-#: podcasts-gtk/src/utils.rs:482 podcasts-gtk/src/utils.rs:522
+#: podcasts-gtk/src/utils.rs:474 podcasts-gtk/src/utils.rs:514
 msgid "OPML file"
 msgstr "файл OPML"
 
-#: podcasts-gtk/src/utils.rs:493
+#: podcasts-gtk/src/utils.rs:485
 msgid "Select the file from which to you want to import shows."
 msgstr "Виберіть файл із подкастами, які треба імпортувати."
 
-#: podcasts-gtk/src/utils.rs:495
+#: podcasts-gtk/src/utils.rs:487
 msgid "_Import"
 msgstr "_Імпортувати"
 
-#: podcasts-gtk/src/utils.rs:512
+#: podcasts-gtk/src/utils.rs:504
 msgid "Failed to parse the imported file {}"
 msgstr "Не вдалося обробити файл {} під час імпортування"
 
 #. Translators: Show as a noun, meaning Podcast-Shows.
-#: podcasts-gtk/src/utils.rs:533
+#: podcasts-gtk/src/utils.rs:525
 msgid "Export shows to…"
 msgstr "Експортувати подкасти…"
 
-#: podcasts-gtk/src/utils.rs:534
+#: podcasts-gtk/src/utils.rs:526
 msgid "_Export"
 msgstr "_Експортувати"
 
 #. Translators: This is the string of the suggested name for the exported opml file
-#: podcasts-gtk/src/utils.rs:538
+#: podcasts-gtk/src/utils.rs:530
 msgid "gnome-podcasts-exported-shows"
 msgstr "gnome-podcasts-exported-shows"
 
-#: podcasts-gtk/src/utils.rs:547
+#: podcasts-gtk/src/utils.rs:539
 msgid "GNOME Podcasts Subscriptions"
 msgstr "Підписки з «Подкастів» для GNOME"
 
-#: podcasts-gtk/src/utils.rs:551
+#: podcasts-gtk/src/utils.rs:543
 msgid "Failed to export podcasts"
 msgstr "Не вдалося експортувати подкасти"
 
