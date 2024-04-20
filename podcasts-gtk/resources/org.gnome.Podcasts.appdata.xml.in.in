@@ -37,7 +37,7 @@
   </branding>
 
   <releases>
-    <release version="0.7.0" date="2024-04-19">
+    <release version="0.7.1" date="2024-04-19">
       <description>
          <p>
           Fix screenshot links.
