@@ -1,30 +1,30 @@
 # Hebrew translation for podcasts.
 # Copyright (C) 2022 podcasts's COPYRIGHT HOLDER
 # This file is distributed under the same license as the podcasts package.
-# Yosef Or Boczko <yoseforb@gmail.com>, 2022-2023.
+# Yosef Or Boczko <yoseforb@gmail.com>, 2022-2024.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: podcasts master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2024-04-06 09:46+0000\n"
-"PO-Revision-Date: 2024-04-06 22:17+0300\n"
-"Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
-"Language-Team: Hebrew <yoseforb@gmail.com>\n"
+"POT-Creation-Date: 2024-04-19 18:35+0000\n"
+"PO-Revision-Date: 2024-04-22 01:11+0300\n"
+"Last-Translator: Yosef Or Boczko <yoseforb@gmail.com>\n"
+"Language-Team: Hebrew\n"
 "Language: he\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=4; plural=(n==1 ? 0 : n==2 ? 1 : n>10 && n%10==0 ? "
-"2 : 3);\n"
-"X-Generator: Poedit 3.4.2\n"
+"2 : 3)\n"
+"X-Generator: Gtranslator 46.0\n"
 
 #. Translators: Show as a noun, meaning a Podcast-Show.
 #: podcasts-gtk/resources/gtk/empty_show.ui:17
 msgid "This show does not have episodes yet"
-msgstr "לתוכנית זו עוד אין פרקים"
+msgstr "לתכנית זו עוד אין פרקים"
 
-#: podcasts-gtk/resources/gtk/empty_show.ui:26
+#: podcasts-gtk/resources/gtk/empty_show.ui:28
 msgid "If you think this is an error, please consider writing a bug report."
 msgstr "אם נראה לך שזו שגיאה, נא לשקול לדווח על תקלה."
 
@@ -73,7 +73,7 @@ msgstr "מחיקת קובץ"
 
 #: podcasts-gtk/resources/gtk/episode_description.ui:183
 msgid "Stream"
-msgstr "תזרים"
+msgstr "הזרמה"
 
 #: podcasts-gtk/resources/gtk/episode_description.ui:193
 #: podcasts-gtk/resources/gtk/episode_description.ui:195
@@ -90,7 +90,7 @@ msgstr "תיאור פרק"
 #. Translators: Show as a noun, meaning a Podcast-Show.
 #: podcasts-gtk/resources/gtk/episode_menu.ui:36
 msgid "Go to Show"
-msgstr "מעבר לתוכנית"
+msgstr "מעבר לתכנית"
 
 #: podcasts-gtk/resources/gtk/episode_menu.ui:40
 msgid "Copy Episode Url"
@@ -164,7 +164,7 @@ msgstr "מעבר לדף הבית"
 #: podcasts-gtk/resources/gtk/help-overlay.ui:22
 msgctxt "shortcut window"
 msgid "Go to Shows Page"
-msgstr "מעבר לעמוד התוכנית"
+msgstr "מעבר לעמוד התכנית"
 
 #. Translators: 'Discovery' is a page where you can add new podcasts
 #: podcasts-gtk/resources/gtk/help-overlay.ui:29
@@ -342,7 +342,7 @@ msgstr "פרקים"
 #: podcasts-gtk/resources/gtk/window.ui:25
 #: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:4
 #: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:3
-#: podcasts-gtk/src/app.rs:496 podcasts-gtk/src/widgets/aboutdialog.rs:56
+#: podcasts-gtk/src/app.rs:446 podcasts-gtk/src/widgets/aboutdialog.rs:56
 #: podcasts-gtk/src/widgets/player.rs:380
 msgid "Podcasts"
 msgstr "הסכתים"
@@ -369,8 +369,26 @@ msgstr ""
 "נִתן להירשם לתכניות באמצעות RSS/Atom, ‏iTunes וקישורי Soundcloud. נִתן לייבא "
 "מנויים והרשמות מיישומים אחרים באמצעות קובצי OPML."
 
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:18
+msgid "The home view displaying the newest episodes of your podcasts"
+msgstr "תצוגת הבית מציגה את הפרקים החדשים בהסכתים שלך"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:22
+msgid "The shows view displaying the covers of your podcasts"
+msgstr "תצוגת התכניות מציגה את הכיסויים של ההסכתים שלך"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:26
+msgid ""
+"The show widget displaying the cover and the latest episodes of a specific "
+"podcast"
+msgstr "תצוגת היישום מציגה את הכיסוי והפרקים האחרונים של הסכת מסוים"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:30
+msgid "The view where one can add a new podcast"
+msgstr "התצוגה של המקום להוספת הסכת חדש"
+
 #. developer_name tag deprecated with Appstream 1.0
-#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:151
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:163
 msgid "The Podcasts developers"
 msgstr "מפתחי הסכתים"
 
@@ -419,7 +437,7 @@ msgstr "How many periods of time to wait between automatic cleanups"
 msgid "What period of time to wait between automatic cleanups"
 msgstr "What period of time to wait between automatic cleanups"
 
-#: podcasts-gtk/src/app.rs:338
+#: podcasts-gtk/src/app.rs:336
 msgid "Copied URL to clipboard!"
 msgstr "כתובת הועתקה ללוח הגזירים!"
 
@@ -437,41 +455,41 @@ msgstr "חדש"
 msgid "Shows"
 msgstr "תכניות"
 
-#: podcasts-gtk/src/utils.rs:482 podcasts-gtk/src/utils.rs:522
+#: podcasts-gtk/src/utils.rs:474 podcasts-gtk/src/utils.rs:514
 msgid "OPML file"
 msgstr "קובץ OPML"
 
-#: podcasts-gtk/src/utils.rs:493
+#: podcasts-gtk/src/utils.rs:485
 msgid "Select the file from which to you want to import shows."
-msgstr "בחירת הקובץ לייבוא תוכניות."
+msgstr "בחירת הקובץ לייבוא תכניות."
 
-#: podcasts-gtk/src/utils.rs:495
+#: podcasts-gtk/src/utils.rs:487
 msgid "_Import"
 msgstr "_ייבוא"
 
-#: podcasts-gtk/src/utils.rs:512
+#: podcasts-gtk/src/utils.rs:504
 msgid "Failed to parse the imported file {}"
 msgstr "פענוח הקובץ המיובא {} נכשל"
 
 #. Translators: Show as a noun, meaning Podcast-Shows.
-#: podcasts-gtk/src/utils.rs:533
+#: podcasts-gtk/src/utils.rs:525
 msgid "Export shows to…"
 msgstr "ייצוא תכניות אל…"
 
-#: podcasts-gtk/src/utils.rs:534
+#: podcasts-gtk/src/utils.rs:526
 msgid "_Export"
 msgstr "_ייצוא"
 
 #. Translators: This is the string of the suggested name for the exported opml file
-#: podcasts-gtk/src/utils.rs:538
+#: podcasts-gtk/src/utils.rs:530
 msgid "gnome-podcasts-exported-shows"
 msgstr "קובץ-ייצוא-תכניות-הסכתים-גנום"
 
-#: podcasts-gtk/src/utils.rs:547
+#: podcasts-gtk/src/utils.rs:539
 msgid "GNOME Podcasts Subscriptions"
 msgstr "מינויי GNOME הסכתים"
 
-#: podcasts-gtk/src/utils.rs:551
+#: podcasts-gtk/src/utils.rs:543
 msgid "Failed to export podcasts"
 msgstr "ייצוא ההסכתים נכשל"
 
@@ -513,7 +531,7 @@ msgstr "ביטול"
 
 #: podcasts-gtk/src/widgets/show_menu.rs:190
 msgid "Unsubscribed from {}"
-msgstr "בוטל המינוי מהתוכנית {}"
+msgstr "בוטל המינוי מהתכנית {}"
 
 #~ msgid "Enter Feed Address"
 #~ msgstr "הזנת כתובת ערוץ"
