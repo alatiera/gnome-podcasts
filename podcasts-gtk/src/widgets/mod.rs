@@ -19,6 +19,7 @@
 
 mod aboutdialog;
 mod base_view;
+mod chapters_page;
 mod content_stack;
 mod discovery_page;
 mod discovery_search_results;
@@ -37,6 +38,7 @@ mod shows_view;
 
 pub(crate) use self::aboutdialog::about_dialog;
 pub(crate) use self::base_view::BaseView;
+pub(crate) use self::chapters_page::ChaptersPage;
 pub(crate) use self::content_stack::Content;
 pub(crate) use self::discovery_page::DiscoveryPage;
 pub(crate) use self::discovery_search_results::SearchResults;

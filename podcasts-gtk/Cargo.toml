@@ -14,10 +14,12 @@ futures-util = "0.3"
 gettext-rs = { version = "0.7", features = ["gettext-system"] }
 gst = { version = "0.24", package = "gstreamer" }
 gst-play = { version = "0.24", package = "gstreamer-play" }
+gst-pbutils = { version = "0.24", package = "gstreamer-pbutils" }
 gtk = { package = "gtk4", version = "0.10", features = ["gnome_47"] }
 html2text = "0.12"
 html5ever = "0.27"
 humansize = "2"
+ucs2 = "0.3"
 image = { version = "0.25", features = ["gif", "jpeg", "png", "webp"] }
 linkify = "0.10"
 locale_config = "0.3"

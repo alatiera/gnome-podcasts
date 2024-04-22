@@ -29,6 +29,7 @@ use std::collections::HashSet;
 use std::env;
 use std::sync::Arc;
 
+use crate::chapter_parser::Chapter;
 use crate::config::{APP_ID, LOCALEDIR};
 use crate::download_covers;
 use crate::feed_manager::FeedManager;
@@ -37,7 +38,7 @@ use crate::settings;
 use crate::utils;
 use crate::widgets::player::StreamMode;
 use crate::widgets::show_menu::{mark_all_notif, remove_show_notif};
-use crate::widgets::{EpisodeDescription, SearchResults, ShowWidget};
+use crate::widgets::{ChaptersPage, EpisodeDescription, SearchResults, ShowWidget};
 use crate::window::MainWindow;
 use podcasts_data::dbqueries;
 use podcasts_data::discovery::FoundPodcast;
@@ -167,6 +168,8 @@ pub(crate) enum Action {
     GoToEpisodeDescription(Arc<Show>, Arc<Episode>),
     GoToShow(Arc<Show>),
     GoToFoundPodcasts(Arc<Vec<FoundPodcast>>),
+    GoToChaptersPage(EpisodeId, Vec<Chapter>),
+    ChaptersAvailable(EpisodeId, Vec<Chapter>),
     CopiedUrlNotification,
     CopyUrl(EpisodeId),
     MarkAllPlayerNotification(Arc<Show>),
@@ -351,7 +354,7 @@ impl PdApplication {
             }
             Action::GoToEpisodeDescription(show, ep) => {
                 let description_widget = EpisodeDescription::new(ep, show, window.sender().clone());
-                window.pop_episode_description();
+                window.pop_page::<EpisodeDescription>();
                 window.push_page(&description_widget);
             }
             Action::GoToShow(pd) => {
@@ -361,6 +364,14 @@ impl PdApplication {
             Action::GoToFoundPodcasts(found) => {
                 let widget = SearchResults::new(&found, window.sender());
                 window.push_page(&widget);
+            }
+            Action::GoToChaptersPage(ep, chapters) => {
+                let page = ChaptersPage::new(&data.sender, ep, chapters);
+                window.pop_page::<ChaptersPage>();
+                window.push_page(&page);
+            }
+            Action::ChaptersAvailable(ep, chapters) => {
+                window.player().chapters_available(ep, chapters);
             }
             Action::CopyUrl(id) => {
                 if let Some(uri) = dbqueries::get_episode_from_id(id)
@@ -398,7 +409,7 @@ impl PdApplication {
             }
             Action::RemoveShow(pd) => {
                 window.pop_show_widget();
-                window.pop_episode_description();
+                window.pop_page::<EpisodeDescription>();
                 data.todo_unsub_ids.borrow_mut().insert(pd.id());
                 let toast = remove_show_notif(pd);
                 self.send_toast(toast);

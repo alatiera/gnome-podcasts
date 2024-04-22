@@ -35,6 +35,7 @@ mod utils;
 mod config;
 
 mod app;
+mod chapter_parser;
 mod download_covers;
 mod episode_description_parser;
 mod feed_manager;

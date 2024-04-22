@@ -36,6 +36,7 @@ use std::sync::{LazyLock, Mutex};
 use url::Url;
 
 use crate::app::Action;
+use crate::chapter_parser::Chapter;
 use crate::config::APP_ID;
 use crate::download_covers::load_widget_texture;
 use crate::i18n::i18n;
@@ -76,6 +77,8 @@ struct PlayerInfo {
     finished_restore: bool,
     ep: Option<EpisodeWidgetModel>,
     episode_id: RefCell<Option<EpisodeId>>,
+    // TODO get rid of this once ported to Ui Templates and just weak borrow
+    chapters_signal_ids: RefCell<Option<Rc<(SignalHandlerId, SignalHandlerId)>>>,
 }
 
 impl PlayerInfo {
@@ -368,6 +371,7 @@ struct PlayerControls {
     forward: gtk::Button,
     rewind: gtk::Button,
     last_pause: RefCell<Option<DateTime<Local>>>,
+    chapters_button: gtk::Button,
 }
 
 #[derive(Debug, Clone)]
@@ -386,6 +390,7 @@ pub(crate) struct PlayerSheet {
     show: gtk::Label,
     episode: gtk::Label,
     go_to_episode: gtk::Button,
+    chapters_button: gtk::Button,
 }
 
 impl PlayerSheet {
@@ -406,6 +411,7 @@ impl PlayerSheet {
         let show = builder.object("show_label").unwrap();
         let episode = builder.object("episode_label").unwrap();
         let go_to_episode: gtk::Button = builder.object("go_to_episode").unwrap();
+        let chapters_button: gtk::Button = builder.object("chapters_button").unwrap();
 
         rate_container.set_child(Some(&rate.btn));
 
@@ -437,6 +443,7 @@ impl PlayerSheet {
             show,
             episode,
             go_to_episode,
+            chapters_button,
         }
     }
 
@@ -446,6 +453,7 @@ impl PlayerSheet {
         load_widget_texture(&self.cover, show.id(), crate::Thumb256);
         self.go_to_episode
             .set_action_target(Some::<gtk::glib::Variant>(episode.id().0.into()));
+        self.chapters_button.set_visible(false);
     }
 }
 
@@ -524,6 +532,7 @@ impl Default for PlayerWidget {
         let rewind: gtk::Button = builder.object("rewind_button").unwrap();
         let play_pause_small = builder.object("play_pause_small").unwrap();
         let play_pause_big = builder.object("play_pause_big").unwrap();
+        let chapters_button = builder.object("chapters_button").unwrap();
 
         let controls = PlayerControls {
             play,
@@ -535,6 +544,7 @@ impl Default for PlayerWidget {
             forward,
             rewind,
             last_pause: RefCell::new(None),
+            chapters_button,
         };
 
         let progressed = builder.object("progress_time_label").unwrap();
@@ -570,7 +580,8 @@ impl Default for PlayerWidget {
             cover_small,
             restore_position: None,
             finished_restore: false,
-            episode_id: RefCell::new(None),
+            episode_id: RefCell::default(),
+            chapters_signal_ids: RefCell::default(),
         };
         info.create_bindings();
 
@@ -656,7 +667,7 @@ impl PlayerWidget {
 
         if stream == StreamMode::StreamOnly {
             if let Some(uri) = ep.uri() {
-                self.init_uri(uri, second);
+                self.init_uri(sender, id, uri, second);
                 return Ok(());
             } else {
                 error!("No uri for episode");
@@ -669,14 +680,14 @@ impl PlayerWidget {
                 // Convert it so it will have a "file:///"
                 // FIXME: convert it properly
                 let uri = File::for_path(path).uri();
-                self.init_uri(uri.as_str(), second);
+                self.init_uri(sender, id, uri.as_str(), second);
                 return Ok(());
             } else {
                 error!("failed to create path for episode {:#?}", ep);
             }
         } else if stream == StreamMode::StreamFallback {
             if let Some(uri) = ep.uri() {
-                self.init_uri(uri, second);
+                self.init_uri(sender, id, uri, second);
                 return Ok(());
             } else {
                 error!("No uri for episode");
@@ -688,10 +699,25 @@ impl PlayerWidget {
         Ok(())
     }
 
-    fn init_uri(&mut self, uri: &str, second: Option<i32>) {
+    fn init_uri(&mut self, sender: &Sender<Action>, id: EpisodeId, uri: &str, second: Option<i32>) {
         // If it's not the same file load the uri, otherwise just unpause
         if self.player.uri().is_none_or(|s| s != uri) {
             self.player.set_uri(Some(uri));
+
+            // fetch chapters
+            let uri_string = uri.to_owned();
+            crate::RUNTIME.spawn_blocking(clone!(
+                #[strong]
+                sender,
+                move || match crate::chapter_parser::load_chapters(&uri_string) {
+                    Ok(chapters) => {
+                        send_blocking!(sender, Action::ChaptersAvailable(id, chapters));
+                    }
+                    Err(e) => {
+                        error!("Failed to get chapters: {e:#?}");
+                    }
+                }
+            ));
         } else if second.is_some() {
             // force a jump now if already playing and a jump is given
             self.restore_play_position();
@@ -780,6 +806,39 @@ impl PlayerWidget {
 
     pub(crate) fn is_playing(&self) -> bool {
         self.info.mpris.as_ref().map(|m| m.playback_status()) == Some(PlaybackStatus::Playing)
+    }
+
+    pub fn chapters_available(&self, id: EpisodeId, chapters: Vec<Chapter>) {
+        // TODO refactor after porting to Ui Templates.
+        // Then we can just store the chapters in the widget and bind once with a weakref.
+        self.controls
+            .chapters_button
+            .set_visible(!chapters.is_empty());
+        self.sheet.chapters_button.set_visible(!chapters.is_empty());
+        if let Some(sender) = self.sender.as_ref() {
+            // rebind the buttons with the new chapters
+            let sender2 = sender.clone();
+            let chapters2 = chapters.clone();
+            let new_controls_id = self.controls.chapters_button.connect_clicked(move |_| {
+                hide_sheet();
+                send_blocking!(sender2, Action::GoToChaptersPage(id, chapters2.clone()));
+            });
+            let sender = sender.clone();
+            let new_sheet_signal_id = self.sheet.chapters_button.connect_clicked(move |_| {
+                hide_sheet();
+                send_blocking!(sender, Action::GoToChaptersPage(id, chapters.clone()));
+            });
+            // unbind the old signals
+            let old_signal_id = self
+                .info
+                .chapters_signal_ids
+                .replace(Some(Rc::new((new_controls_id, new_sheet_signal_id))));
+            if let Some(chapters_signal_ids) = old_signal_id {
+                let (controls_signal, sheet_signal) = Rc::try_unwrap(chapters_signal_ids).unwrap();
+                self.controls.chapters_button.disconnect(controls_signal);
+                self.sheet.chapters_button.disconnect(sheet_signal);
+            }
+        }
     }
 }
 
@@ -1308,5 +1367,16 @@ impl PlayerWrapper {
                 }
             ));
         };
+    }
+}
+
+fn hide_sheet() {
+    let app = gio::Application::default()
+        .expect("Could not get default application")
+        .downcast::<gtk::Application>()
+        .unwrap();
+    let window = app.active_window().expect("No active window");
+    if let Err(e) = window.activate_action("win.close-bottom-sheet", None) {
+        warn!("Failed to win.close-bottom-sheet {e}");
     }
 }

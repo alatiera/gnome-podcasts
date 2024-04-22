@@ -452,12 +452,12 @@ impl MainWindow {
         }
     }
 
-    pub(crate) fn pop_episode_description(&self) {
+    pub(crate) fn pop_page<T: IsA<adw::NavigationPage>>(&self) {
         let imp = self.imp();
         let is_current_page = imp
             .navigation_view
             .visible_page()
-            .is_some_and(|p| p.downcast::<EpisodeDescription>().is_ok());
+            .is_some_and(|p| p.downcast::<T>().is_ok());
 
         if is_current_page {
             imp.navigation_view.pop();

@@ -195,6 +195,13 @@ Tobias Bernard
                     </attributes>
                   </object>
                 </child>
+                <child>
+                  <object class="GtkButton" id="chapters_button">
+                    <property name="visible">False</property>
+                    <property name="valign">center</property>
+                    <property name="icon-name">view-list-bullet-symbolic</property>
+                  </object>
+                </child>
               </object>
             </child>
           </object>

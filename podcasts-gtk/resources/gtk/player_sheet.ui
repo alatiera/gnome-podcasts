@@ -212,23 +212,28 @@
                   </object>
                 </child>
                 <child>
-                  <object class="GtkBox" id="bottom">
+                  <object class="GtkCenterBox" id="bottom">
                     <property name="margin_start">12</property>
                     <property name="margin_end">12</property>
                     <property name="margin_top">12</property>
                     <property name="margin_bottom">12</property>
-                    <child>
+                    <child type="start">
                       <object class="AdwBin" id="rate_container">
                       </object>
                     </child>
-                    <child>
-                      <object class="GtkBox" id="bottom_spacer">
-                        <property name="hexpand">True</property>
+                    <child type="center">
+                      <object class="GtkButton" id="chapters_button">
+                        <property name="visible">False</property>
+                        <property name="label" translatable="true">Chapters</property>
+                        <property name="margin_start">12</property>
+                        <property name="margin_end">12</property>
+                        <property name="can-shrink">True</property>
                       </object>
                     </child>
-                    <child>
+                    <child type="end">
                       <object class="GtkButton" id="go_to_episode">
                         <property name="label" translatable="true">Description</property>
+                        <property name="can-shrink">True</property>
                       </object>
                     </child>
                   </object>
