@@ -41,7 +41,7 @@ pub(crate) struct PopulatedStack {
 
 impl PopulatedStack {
     pub(crate) fn new(sender: Sender<Action>) -> PopulatedStack {
-        let populated = ShowsView::new();
+        let populated = ShowsView::new(sender.clone());
         let show = ShowWidget::default();
         let container = gtk::Box::new(gtk::Orientation::Horizontal, 0);
         container.append(populated.view());
@@ -64,7 +64,7 @@ impl PopulatedStack {
         let old = &self.populated.view().clone();
         debug!("Name: {:?}", old.widget_name());
 
-        self.populated = ShowsView::new();
+        self.populated = ShowsView::new(self.sender.clone());
 
         self.container.remove(old);
         self.container.append(self.populated.view());

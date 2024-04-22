@@ -46,6 +46,7 @@ use podcasts_data::downloader::client_builder;
 use podcasts_data::errors::DownloadError;
 use podcasts_data::opml;
 use podcasts_data::utils::checkup;
+use podcasts_data::ShowCoverModel;
 use podcasts_data::Source;
 
 /// Copied from the gtk-macros crate
@@ -382,6 +383,69 @@ pub(crate) fn set_image_from_path(image: &gtk::Image, show_id: i32, size: u32) -
     }));
 
     Ok(())
+}
+
+fn cover_is_downloading(show_id: i32) -> bool {
+    if let Ok(guard) = COVER_DL_REGISTRY.read() {
+        guard.contains(&show_id)
+    } else {
+        false
+    }
+}
+
+fn already_downloaded_texture(pd: &ShowCoverModel, size: u32) -> Result<gtk::gdk::Texture> {
+    if pd.is_cached_image_valid(&CACHE_VALID_DURATION) {
+        if let Some(cached_path) = downloader::check_for_cached_cover(pd) {
+            if let Ok(px) = Pixbuf::from_file_at_scale(cached_path, size as i32, size as i32, true)
+            {
+                return Ok(gtk::gdk::Texture::for_pixbuf(&px));
+            }
+        }
+    }
+    bail!("Not downloaded yet")
+}
+
+/// MUST run from tokio as download will use reqwest.
+/// size is the resolution that the texture will be downscaled to.
+pub(crate) async fn cached_texture(pd: ShowCoverModel, size: u32) -> Result<gtk::gdk::Texture> {
+    let show_id = pd.id();
+    // Return if the cover is already downloaded
+    if let Ok(texture) = already_downloaded_texture(&pd, size) {
+        return Ok(texture);
+    }
+
+    // download in proress?
+    if cover_is_downloading(show_id) {
+        while {
+            // wait for download to finish
+            tokio::time::sleep(std::time::Duration::from_millis(250)).await;
+            cover_is_downloading(show_id)
+        } {}
+        return already_downloaded_texture(&pd, size);
+    }
+
+    // Add the id to the hashmap from the main thread to avoid queuing more than one downloads.
+    if let Ok(mut guard) = COVER_DL_REGISTRY.write() {
+        guard.insert(show_id);
+    } else {
+        bail!("Failed to aquire COVER_DL_REGISTRY")
+    }
+    // actually download
+    let path = downloader::cache_image(&pd).await;
+    if let Ok(mut guard) = COVER_DL_REGISTRY.write() {
+        guard.remove(&show_id);
+    }
+
+    match path {
+        Ok(path) => match Pixbuf::from_file_at_scale(path, size as i32, size as i32, true) {
+            Ok(px) => Ok(gtk::gdk::Texture::for_pixbuf(&px)),
+            Err(err) => bail!("Failed to load show cover at scale {err}"),
+        },
+        Err(DownloadError::NoImageLocation) => {
+            bail!("Failed to download Texture. No image location.")
+        }
+        Err(err) => bail!("Failed to download show cover: {err}"),
+    }
 }
 
 // FIXME: the signature should be `fn foo(s: Url) -> Result<Url>`

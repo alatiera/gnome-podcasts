@@ -64,11 +64,24 @@ popover modelbutton > box > label {
     border-radius: 4px;
 }
 
-.show_button {
+.show-button {
     padding: 0px;
 }
 
 .taller-button {
     padding-top: 4px;
     padding-bottom: 4px;
+}
+
+.shows-grid {
+    background: transparent;
+    padding-top: 12px;
+    padding-bottom: 26px;
+    padding-left: 6px;
+    padding-right: 6px;
+}
+
+.shows-grid > * {
+    padding: 0px;
+    margin: 6px;
 }

@@ -98,7 +98,7 @@ fn test_stuff() -> anyhow::Result<()> {
 
     // If a widget does not exist in the `GtkBuilder`(.ui) file this should panic and fail.
     Header::default();
-    ShowsView::default();
+    BaseView::default();
     ShowWidget::default();
     HomeEpisode::default();
     EpisodeWidget::default();
