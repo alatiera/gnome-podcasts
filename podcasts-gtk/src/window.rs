@@ -19,6 +19,7 @@
 
 use adw::prelude::*;
 use adw::subclass::prelude::*;
+use anyhow::Result;
 use async_channel::Sender;
 use glib::clone;
 use gst::ClockTime;
@@ -28,30 +29,31 @@ use std::cell::{Cell, OnceCell, RefCell};
 use std::cell::{Ref, RefMut};
 use std::ops::Deref;
 use std::rc::Rc;
+use std::sync::Arc;
 
 use crate::app::{Action, PdApplication};
 use crate::config::APP_ID;
 use crate::feed_manager::FEED_MANAGER;
 use crate::headerbar::Header;
 use crate::settings::{self, WindowGeometry};
-use crate::stacks::Content;
 use crate::utils;
 use crate::widgets::about_dialog;
 use crate::widgets::player;
 use crate::widgets::player::{PlayerExt, PlayerWidget, SeekDirection};
-use crate::widgets::{DiscoveryPage, ShowWidget};
+use crate::widgets::{Content, DiscoveryPage, ShowWidget};
+use podcasts_data::dbqueries;
 
 #[derive(Debug, CompositeTemplate, glib::Properties)]
 #[template(resource = "/org/gnome/Podcasts/gtk/window.ui")]
 #[properties(wrapper_type = MainWindow)]
 pub struct MainWindowPriv {
     pub(crate) content: OnceCell<Rc<Content>>,
-    pub(crate) headerbar: OnceCell<Rc<Header>>,
+    pub(crate) headerbar: OnceCell<Header>,
     pub(crate) player: OnceCell<player::PlayerWrapper>,
-    pub(crate) progress_bar: OnceCell<gtk::ProgressBar>,
     pub(crate) updating_timeout: RefCell<Option<glib::source::SourceId>>,
     pub(crate) settings: gio::Settings,
     pub(crate) bottom_switcher: adw::ViewSwitcherBar,
+    pub(crate) show_widget: RefCell<Option<ShowWidget>>,
 
     pub(crate) sender: OnceCell<Sender<Action>>,
 
@@ -95,10 +97,10 @@ impl ObjectSubclass for MainWindowPriv {
             player_breakpoint: TemplateChild::default(),
             show_page: TemplateChild::default(),
             bottom_switcher: adw::ViewSwitcherBar::new(),
-            progress_bar: OnceCell::new(),
             updating: Cell::new(false),
             updating_timeout: RefCell::new(None),
             sender: OnceCell::new(),
+            show_widget: RefCell::new(None),
             settings,
         }
     }
@@ -189,27 +191,16 @@ impl MainWindow {
     pub(crate) fn new(app: &PdApplication, sender: &Sender<Action>) -> Self {
         let window: Self = glib::Object::builder().property("application", app).build();
         let imp = window.imp();
+        let content = Content::new(sender.clone());
+        let header = Header::new(&content);
 
         imp.sender.set(sender.clone()).unwrap();
 
-        // Create a content instance
-        let content = Content::new(sender).expect("Content initialization failed.");
-        content
-            .get_shows()
-            .borrow()
-            .populated()
-            .borrow_mut()
-            .set_window(&window);
-
-        let progress_bar = content.get_progress_bar();
-        // Create the headerbar
-        let header = Header::new(&content);
-
         imp.toolbar_view.add_top_bar(&header.container);
-        imp.toolbar_view.set_content(Some(&content.get_container()));
+        imp.toolbar_view.set_content(Some(content.overlay()));
         imp.toolbar_view.add_bottom_bar(&imp.bottom_switcher);
 
-        imp.bottom_switcher.set_stack(Some(&content.get_stack()));
+        imp.bottom_switcher.set_stack(Some(content.stack()));
 
         let player = player::PlayerWrapper::new(sender);
         imp.player_toolbar_view
@@ -256,7 +247,6 @@ impl MainWindow {
         imp.headerbar.set(header).unwrap();
         imp.content.set(content).unwrap();
         imp.player.set(player).unwrap();
-        imp.progress_bar.set(progress_bar).unwrap();
 
         window
     }
@@ -273,12 +263,7 @@ impl MainWindow {
         self.imp().navigation_view.pop_to_tag("home");
     }
 
-    pub(crate) fn init_episode(
-        &self,
-        id: i32,
-        second: Option<i32>,
-        stream: bool,
-    ) -> anyhow::Result<()> {
+    pub(crate) fn init_episode(&self, id: i32, second: Option<i32>, stream: bool) -> Result<()> {
         self.imp()
             .player
             .get()
@@ -298,7 +283,7 @@ impl MainWindow {
     }
 
     pub(crate) fn progress_bar(&self) -> &gtk::ProgressBar {
-        self.imp().progress_bar.get().unwrap()
+        self.content().progress_bar()
     }
 
     pub(crate) fn player(&self) -> Ref<'_, PlayerWidget> {
@@ -317,6 +302,10 @@ impl MainWindow {
         self.imp().headerbar.get().unwrap()
     }
 
+    pub(crate) fn bottom_switcher(&self) -> &adw::ViewSwitcherBar {
+        &self.imp().bottom_switcher
+    }
+
     pub(crate) fn sender(&self) -> &Sender<Action> {
         self.imp().sender.get().unwrap()
     }
@@ -326,18 +315,30 @@ impl MainWindow {
         self.push_page(&widget);
     }
 
-    pub(crate) fn replace_show_widget(&self, widget: Option<&ShowWidget>, title: &str) {
+    pub(crate) fn replace_show_widget(&self, widget: Option<ShowWidget>, title: &str) {
         let imp = self.imp();
         let is_current_page = imp
             .navigation_view
             .visible_page()
             .is_some_and(|p| p == *imp.show_page);
-        imp.show_page.set_child(widget);
+        imp.show_page.set_child(widget.as_ref());
         if widget.is_some() {
             imp.show_page.set_title(title);
         } else if is_current_page {
             imp.navigation_view.pop();
         }
+        imp.show_widget.set(widget);
+    }
+
+    pub(crate) fn update_show_widget(&self, show_id: i32) -> Result<()> {
+        let imp = self.imp();
+        let same = imp.show_widget.borrow().as_ref().and_then(|s| s.show_id()) == Some(show_id);
+        if same {
+            let pd = dbqueries::get_podcast_from_id(show_id)?;
+            let widget = ShowWidget::new(Arc::new(pd), self.sender());
+            self.replace_show_widget(Some(widget), &imp.show_page.title());
+        }
+        Ok(())
     }
 
     pub(crate) fn go_to_show_widget(&self) {

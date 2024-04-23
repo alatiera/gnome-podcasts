@@ -97,7 +97,7 @@ glib::wrapper! {
 }
 
 impl HomeView {
-    pub(crate) fn new(sender: Sender<Action>) -> Result<Self> {
+    pub(crate) fn new(sender: Sender<Action>) -> Self {
         let home: Self = glib::Object::new();
 
         crate::MAINCONTEXT.spawn_local_with_priority(
@@ -112,7 +112,7 @@ impl HomeView {
             }),
         );
 
-        Ok(home)
+        home
     }
 
     async fn add_to_boxes(&self, sender: Sender<Action>) -> Vec<Result<(), glib::JoinError>> {

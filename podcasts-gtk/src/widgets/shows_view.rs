@@ -18,6 +18,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+use adw::prelude::*;
 use adw::subclass::prelude::*;
 use anyhow::{anyhow, Result};
 use async_channel::Sender;
@@ -25,7 +26,6 @@ use glib::clone;
 use glib::object::Object;
 use gtk::gio;
 use gtk::glib;
-use gtk::prelude::*;
 use std::cell::Cell;
 use std::sync::Arc;
 
@@ -110,6 +110,7 @@ impl ObjectImpl for ShowsViewPriv {
             .maximum_size((256 + 6 + 6) * 7) // picture + paddings * max_columns
             .build();
         self.view.set_content(&clamp);
+        self.obj().set_child(Some(&self.view));
     }
 }
 
@@ -163,8 +164,8 @@ impl ShowsView {
         this
     }
 
-    pub fn view(&self) -> &BaseView {
-        &self.imp().view
+    pub fn update_model(&self) {
+        self.imp().set_data();
     }
 }
 fn load_picture(picture: &gtk::Picture, podcast: podcasts_data::ShowCoverModel) {

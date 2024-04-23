@@ -35,7 +35,7 @@ use crate::i18n::i18n;
 use crate::settings;
 use crate::utils;
 use crate::widgets::show_menu::{mark_all_notif, remove_show_notif};
-use crate::widgets::{EpisodeDescription, SearchResults};
+use crate::widgets::{EpisodeDescription, SearchResults, ShowWidget};
 use crate::window::MainWindow;
 use podcasts_data::dbqueries;
 use podcasts_data::discovery::FoundPodcast;
@@ -229,8 +229,7 @@ impl PdApplication {
 
                     let res = utils::unignore_show(id);
                     debug_assert!(res.is_ok());
-                    send_blocking!(data.sender, Action::RefreshShowsView);
-                    send_blocking!(data.sender, Action::RefreshEpisodesView);
+                    send_blocking!(data.sender, Action::RefreshAllViews);
                 })
                 .build(),
         ];
@@ -307,16 +306,17 @@ impl PdApplication {
         info!("Incoming channel action: {:?}", action);
         match action {
             Action::RefreshAllViews => window.content().update(),
-            Action::RefreshShowsView => window.content().update_shows_view(),
-            Action::RefreshWidgetIfSame(id) => window.content().update_widget_if_same(id),
+            Action::RefreshShowsView => window.content().update_shows(),
+            Action::RefreshWidgetIfSame(id) => {
+                if let Err(e) = window.update_show_widget(id) {
+                    error!("failed to refresh show {e}");
+                }
+            }
             Action::RefreshEpisodesView => window.content().update_home(),
             Action::RefreshEpisodesViewBGR => window.content().update_home_if_background(),
             Action::ReplaceWidget(pd) => {
-                let shows = window.content().get_shows();
-                let pop = shows.borrow().populated();
-                if let Err(err) = pop.borrow_mut().replace_widget(pd.clone()) {
-                    error!("Failed to update ShowWidget for {}: {err}", pd.title())
-                };
+                let widget = ShowWidget::new(pd.clone(), &data.sender);
+                window.replace_show_widget(Some(widget), pd.title());
             }
             Action::GoToEpisodeDescription(show, ep) => {
                 let description_widget = EpisodeDescription::new(ep, show, window.sender().clone());
@@ -344,6 +344,9 @@ impl PdApplication {
                 data.todo_unsub_ids.borrow_mut().insert(pd.id());
                 let toast = remove_show_notif(pd, data.sender.clone());
                 self.send_toast(toast);
+                if let Err(e) = window.content().check_empty_state() {
+                    error!("Failed to check for empty db state {e}");
+                }
             }
             Action::ErrorNotification(err) => {
                 error!("An error notification was triggered: {}", err);
@@ -392,6 +395,7 @@ impl PdApplication {
                 }
 
                 window.headerbar().switch.set_sensitive(false);
+                window.bottom_switcher().set_sensitive(false);
                 window.content().switch_to_empty_views();
             }
             Action::PopulatedState => {
@@ -403,6 +407,7 @@ impl PdApplication {
                 }
 
                 window.headerbar().switch.set_sensitive(true);
+                window.bottom_switcher().set_sensitive(true);
                 window.content().switch_to_populated();
             }
             Action::RaiseWindow => window.present(),

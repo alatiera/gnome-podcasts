@@ -18,9 +18,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 use gtk::gio;
-use std::rc::Rc;
 
-use crate::stacks::Content;
+use crate::widgets::Content;
 
 #[derive(Debug, Clone)]
 // TODO: Make a proper state machine for the headerbar states
@@ -50,13 +49,13 @@ impl Default for Header {
 }
 
 impl Header {
-    pub(crate) fn new(content: &Content) -> Rc<Self> {
-        let h = Rc::new(Header::default());
-        Self::init(&h, content);
-        h
+    pub(crate) fn new(content: &Content) -> Self {
+        let this = Header::default();
+        this.init(content);
+        this
     }
 
-    pub(crate) fn init(s: &Rc<Self>, content: &Content) {
-        s.switch.set_stack(Some(&content.get_stack()));
+    pub(crate) fn init(&self, content: &Content) {
+        self.switch.set_stack(Some(content.stack()));
     }
 }

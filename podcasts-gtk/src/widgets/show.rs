@@ -107,11 +107,11 @@ impl Default for ShowWidget {
 }
 
 impl ShowWidget {
-    pub(crate) fn new(pd: Arc<Show>, sender: Sender<Action>) -> ShowWidget {
+    pub(crate) fn new(pd: Arc<Show>, sender: &Sender<Action>) -> ShowWidget {
         let widget = ShowWidget::default();
         widget.init(&pd);
 
-        let menu = ShowMenu::new(&pd, &widget.imp().episodes, &sender);
+        let menu = ShowMenu::new(&pd, &widget.imp().episodes, sender);
         widget.imp().secondary_menu.set_menu_model(Some(&menu.menu));
 
         let res = populate_listbox(&widget, pd, sender);
@@ -142,7 +142,7 @@ impl ShowWidget {
 }
 
 /// Populate the listbox with the shows episodes.
-fn populate_listbox(show: &ShowWidget, pd: Arc<Show>, sender: Sender<Action>) -> Result<()> {
+fn populate_listbox(show: &ShowWidget, pd: Arc<Show>, sender: &Sender<Action>) -> Result<()> {
     let count = dbqueries::get_pd_episodes_count(&pd)?;
 
     if count == 0 {
