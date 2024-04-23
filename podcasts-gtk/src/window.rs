@@ -40,7 +40,7 @@ use crate::utils;
 use crate::widgets::about_dialog;
 use crate::widgets::player;
 use crate::widgets::player::{PlayerExt, PlayerWidget, SeekDirection};
-use crate::widgets::{Content, DiscoveryPage, ShowWidget};
+use crate::widgets::{Content, DiscoveryPage, EpisodeDescription, ShowWidget};
 use podcasts_data::dbqueries;
 
 #[derive(Debug, CompositeTemplate, glib::Properties)]
@@ -352,12 +352,25 @@ impl MainWindow {
             imp.navigation_view.push(&*imp.show_page);
         }
     }
+
     pub(crate) fn pop_show_widget(&self) {
         let imp = self.imp();
         let is_current_page = imp
             .navigation_view
             .visible_page()
             .is_some_and(|p| p == *imp.show_page);
+        if is_current_page {
+            imp.navigation_view.pop();
+        }
+    }
+
+    pub(crate) fn pop_episode_description(&self) {
+        let imp = self.imp();
+        let is_current_page = imp
+            .navigation_view
+            .visible_page()
+            .is_some_and(|p| p.downcast::<EpisodeDescription>().is_ok());
+
         if is_current_page {
             imp.navigation_view.pop();
         }

@@ -341,6 +341,7 @@ impl PdApplication {
             }
             Action::RemoveShow(pd) => {
                 window.pop_show_widget();
+                window.pop_episode_description();
                 data.todo_unsub_ids.borrow_mut().insert(pd.id());
                 let toast = remove_show_notif(pd, data.sender.clone());
                 self.send_toast(toast);
