@@ -22,7 +22,6 @@ use adw::prelude::*;
 use adw::subclass::prelude::*;
 use anyhow::{anyhow, Result};
 use async_channel::Sender;
-use glib::clone;
 use glib::object::Object;
 use gtk::gio;
 use gtk::glib;
@@ -30,8 +29,9 @@ use std::cell::Cell;
 use std::sync::Arc;
 
 use crate::app::Action;
+use crate::download_covers::load_widget_texture;
 use crate::i18n::i18n;
-use crate::utils::{get_ignored_shows, lazy_load};
+use crate::utils::get_ignored_shows;
 use crate::widgets::BaseView;
 use podcasts_data::dbqueries;
 use podcasts_data::Show;
@@ -74,13 +74,8 @@ impl ObjectImpl for ShowsViewPriv {
             let child = item.child().and_downcast::<gtk::Picture>().unwrap();
 
             let id = data.show_id();
-            match dbqueries::get_podcast_cover_from_id(id) {
-                Ok(podcast) => {
-                    child.set_tooltip_text(Some(podcast.title()));
-                    load_picture(&child, podcast);
-                }
-                Err(err) => error!("Failed to load podcast for id: {id} Error: {err}"),
-            }
+            // TODO cancel this on unbind
+            load_widget_texture(&child, id, crate::Thumb256);
         });
 
         self.grid.set_factory(Some(&factory));
@@ -167,24 +162,6 @@ impl ShowsView {
     pub fn update_model(&self) {
         self.imp().set_data();
     }
-}
-// TODO impl in next commit, disabled due to conflicting rebase, next commit has an fn that returns a texture
-fn load_picture(_picture: &gtk::Picture, _podcast: podcasts_data::ShowCoverModel) {
-    // let (sender, receiver) = async_channel::bounded(1);
-    // crate::RUNTIME.spawn(async move {
-    //     let texture = crate::utils::cached_texture(podcast, 256).await;
-    //     send!(sender, texture);
-    //     anyhow::Ok(())
-    // });
-
-    // let picture = picture.clone();
-    // crate::MAINCONTEXT.spawn_local(clone!(@weak picture => async move {
-    //     // "image-x-generic-symbolic" is already the default for gtk::Picture
-    //     // So we don't need to set it in case of failure
-    //     if let Ok(Ok(texture)) = receiver.recv().await {
-    //         picture.set_paintable(Some(&texture));
-    //     }
-    // }));
 }
 
 fn on_child_activate(gridview: &gtk::GridView, index: u32, sender: &Sender<Action>) -> Result<()> {

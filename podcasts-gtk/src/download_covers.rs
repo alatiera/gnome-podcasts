@@ -11,6 +11,7 @@ use tempdir::TempDir;
 use tokio::sync::RwLock; // also works from gtk, unlike tokio::fs
 
 use crate::thumbnail_generator::ThumbSize;
+use podcasts_data::errors::DownloadError;
 use podcasts_data::errors::DownloadError::NoLongerNeeded;
 use podcasts_data::xdg_dirs::CACHED_COVERS_DIR;
 use podcasts_data::ShowCoverModel;
@@ -367,11 +368,26 @@ pub async fn load_texture(pd: &ShowCoverModel, thumb_size: ThumbSize) -> Result<
     }
 }
 
-pub async fn load_image(
-    image: &WeakRef<gtk::Image>,
-    podcast_id: i32,
-    size: ThumbSize,
-) -> Result<()> {
+pub trait TextureWidget {
+    fn set_from_texture(&self, texture: &gdk::Texture);
+}
+
+impl TextureWidget for gtk::Image {
+    fn set_from_texture(&self, texture: &gdk::Texture) {
+        self.set_paintable(Some(texture));
+    }
+}
+
+impl TextureWidget for gtk::Picture {
+    fn set_from_texture(&self, texture: &gdk::Texture) {
+        self.set_paintable(Some(texture));
+    }
+}
+
+async fn load_paintable_async<T>(image: &WeakRef<T>, podcast_id: i32, size: ThumbSize) -> Result<()>
+where
+    T: TextureWidget + IsA<gtk::Widget>,
+{
     use podcasts_data::dbqueries;
 
     let pd = crate::RUNTIME
@@ -391,7 +407,7 @@ pub async fn load_image(
     match result {
         Ok(Ok(texture)) => {
             if let Some(image) = image.upgrade() {
-                image.set_paintable(Some(&texture));
+                image.set_from_texture(&texture);
                 return Ok(());
             }
             Err(NoLongerNeeded.into())
@@ -399,4 +415,23 @@ pub async fn load_image(
         Ok(Err(err)) => bail!("Failed to load Show Cover: {err}"),
         Err(err) => bail!("Failed to load Show Cover thread-error: {err}"),
     }
+}
+
+pub fn load_widget_texture<T>(widget: &T, show_id: i32, size: ThumbSize)
+where
+    T: TextureWidget + IsA<gtk::Widget>,
+{
+    // TODO Surface has scale() fn that returns a f64 dpi-scale, maybe use that?
+    // TODO maybe load the full size image when bigger than 512 is requested?
+    let size = size.hidpi(widget.scale_factor()).unwrap_or(crate::Thumb512);
+    let widget = widget.downgrade();
+    crate::MAINCONTEXT.spawn_local_with_priority(glib::source::Priority::LOW, async move {
+        if let Err(err) = load_paintable_async(&widget, show_id, size).await {
+            if let Some(DownloadError::NoLongerNeeded) = err.downcast_ref::<DownloadError>() {
+                // weak image reference couldn't be upgraded, no need to print this
+                return;
+            }
+            error!("Failed to load image: {err}");
+        }
+    });
 }

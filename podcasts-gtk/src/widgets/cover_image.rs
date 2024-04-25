@@ -21,8 +21,7 @@ use adw::prelude::*;
 use adw::subclass::prelude::*;
 use gtk::glib;
 
-use crate::download_covers::load_image;
-use podcasts_data::errors::DownloadError;
+use crate::download_covers::load_widget_texture;
 
 #[derive(Default)]
 pub struct CoverImagePriv {
@@ -67,27 +66,7 @@ glib::wrapper! {
 }
 
 impl CoverImage {
-    pub(crate) fn new(width: i32) -> Self {
-        let widget: Self = glib::Object::new();
-        widget.set_width_request(width);
-        widget
-    }
-
     pub(crate) fn init(&self, show_id: i32, size: crate::thumbnail_generator::ThumbSize) {
-        // TODO Surface has scale() fn that returns a f64 dpi-scale, maybe use that?
-        // TODO maybe load the full size image when bigger than 512 is requested?
-        let size = size
-            .hidpi(self.imp().image.scale_factor())
-            .unwrap_or(crate::Thumb512);
-        let image = self.imp().image.downgrade();
-        crate::MAINCONTEXT.spawn_local_with_priority(glib::source::Priority::LOW, async move {
-            if let Err(err) = load_image(&image, show_id, size).await {
-                if let Some(DownloadError::NoLongerNeeded) = err.downcast_ref::<DownloadError>() {
-                    // weak image reference couldn't be upgraded, no need to print this
-                    return;
-                }
-                error!("Failed to load image: {err}");
-            }
-        });
+        load_widget_texture(&self.imp().image, show_id, size);
     }
 }

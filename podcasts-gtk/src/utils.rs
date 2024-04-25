@@ -43,7 +43,6 @@ use podcasts_data::dbqueries;
 use podcasts_data::downloader::client_builder;
 use podcasts_data::opml;
 use podcasts_data::utils::checkup;
-use podcasts_data::ShowCoverModel;
 use podcasts_data::Source;
 
 /// Copied from the gtk-macros crate
