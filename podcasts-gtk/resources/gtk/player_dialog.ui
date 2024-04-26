@@ -52,9 +52,9 @@
                     <property name="vexpand">True</property>
                     <property name="orientation">vertical</property>
                     <child>
-                      <object class="PdCoverImage" id="cover">
-                        <property name="width-request">256</property>
-                        <property name="height-request">256</property>
+                      <object class="GtkImage" id="cover">
+                        <property name="width_request">256</property>
+                        <property name="height_request">256</property>
                         <property name="hexpand">True</property>
                         <property name="vexpand">True</property>
                         <property name="margin-start">18</property>
@@ -62,6 +62,8 @@
                         <property name="margin-top">36</property>
                         <property name="margin-bottom">6</property>
                         <property name="valign">center</property>
+                        <property name="icon_name">gtk-missing-image</property>
+                        <property name="overflow">hidden</property>
                         <style>
                           <class name="rounded-big"/>
                         </style>

@@ -30,7 +30,7 @@ use std::sync::Arc;
 
 use crate::app::Action;
 use crate::utils::lazy_load;
-use crate::widgets::{CoverImage, EmptyShow, EpisodeWidget, ReadMoreLabel, ShowMenu};
+use crate::widgets::{EmptyShow, EpisodeWidget, ReadMoreLabel, ShowMenu};
 use podcasts_data::dbqueries;
 use podcasts_data::EpisodeWidgetModel;
 use podcasts_data::Show;
@@ -39,7 +39,7 @@ use podcasts_data::Show;
 #[template(resource = "/org/gnome/Podcasts/gtk/show_widget.ui")]
 pub struct ShowWidgetPriv {
     #[template_child]
-    pub cover: TemplateChild<CoverImage>,
+    pub cover: TemplateChild<gtk::Image>,
     #[template_child]
     pub read_more_label: TemplateChild<ReadMoreLabel>,
     #[template_child]
@@ -130,7 +130,11 @@ impl ShowWidget {
 
     /// Set the show cover.
     fn set_cover(&self, pd: &Arc<Show>) {
-        self.imp().cover.init(pd.id(), crate::Thumb256)
+        crate::download_covers::load_widget_texture(
+            &self.imp().cover.get(),
+            pd.id(),
+            crate::Thumb256,
+        );
     }
 
     pub(crate) fn show_id(&self) -> Option<i32> {

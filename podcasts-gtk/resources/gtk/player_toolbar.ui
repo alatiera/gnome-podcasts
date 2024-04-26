@@ -109,9 +109,11 @@ Tobias Bernard
               <object class="GtkBox" id="info">
                 <property name="spacing">6</property>
                 <child>
-                  <object class="PdCoverImage" id="show_cover">
+                  <object class="GtkImage" id="show_cover">
                     <property name="valign">center</property>
-                    <property name="width-request">34</property>
+                    <property name="pixel_size">34</property>
+                    <property name="icon_name">image-x-generic-symbolic</property>
+                    <property name="overflow">hidden</property>
                     <style>
                       <class name="rounded-small"/>
                     </style>
@@ -209,9 +211,11 @@ Tobias Bernard
               <object class="GtkBox">
                 <property name="spacing">6</property>
                 <child>
-                  <object class="PdCoverImage" id="show_cover_small">
+                  <object class="GtkImage" id="show_cover_small">
                     <property name="valign">center</property>
-                    <property name="width-request">34</property>
+                    <property name="pixel_size">34</property>
+                    <property name="icon_name">image-x-generic-symbolic</property>
+                    <property name="overflow">hidden</property>
                     <style>
                       <class name="rounded-small"/>
                     </style>

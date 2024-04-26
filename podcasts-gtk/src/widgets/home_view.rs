@@ -27,7 +27,7 @@ use gtk::{glib, prelude::*, CompositeTemplate};
 
 use crate::app::Action;
 use crate::utils::{self, lazy_load};
-use crate::widgets::{BaseView, CoverImage, EpisodeWidget};
+use crate::widgets::{BaseView, EpisodeWidget};
 use podcasts_data::dbqueries;
 use podcasts_data::EpisodeWidgetModel;
 
@@ -225,7 +225,7 @@ fn split_model(model: Vec<EpisodeWidgetModel>) -> Vec<DateBox> {
 #[template(resource = "/org/gnome/Podcasts/gtk/home_episode.ui")]
 pub struct HomeEpisodePriv {
     #[template_child]
-    cover: TemplateChild<CoverImage>,
+    cover: TemplateChild<gtk::Image>,
     #[template_child]
     episode: TemplateChild<EpisodeWidget>,
 }
@@ -240,7 +240,7 @@ impl HomeEpisodePriv {
     }
 
     fn set_cover(&self, show_id: i32) {
-        self.cover.init(show_id, crate::Thumb64)
+        crate::download_covers::load_widget_texture(&self.cover.get(), show_id, crate::Thumb64);
     }
 }
 
