@@ -417,7 +417,7 @@ where
     }
 }
 
-pub fn load_widget_texture<T>(widget: &T, show_id: i32, size: ThumbSize)
+pub fn load_widget_texture<T>(widget: &T, show_id: i32, size: ThumbSize) -> glib::JoinHandle<()>
 where
     T: TextureWidget + IsA<gtk::Widget>,
 {
@@ -433,5 +433,5 @@ where
             }
             error!("Failed to load image: {err}");
         }
-    });
+    })
 }

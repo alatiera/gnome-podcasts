@@ -26,6 +26,8 @@ use glib::object::Object;
 use gtk::gio;
 use gtk::glib;
 use std::cell::Cell;
+use std::cell::RefCell;
+use std::cell::RefMut;
 use std::sync::Arc;
 
 use crate::app::Action;
@@ -74,8 +76,19 @@ impl ObjectImpl for ShowsViewPriv {
             let child = item.child().and_downcast::<gtk::Picture>().unwrap();
 
             let id = data.show_id();
-            // TODO cancel this on unbind
-            load_widget_texture(&child, id, crate::Thumb256);
+            let load_handle = load_widget_texture(&child, id, crate::Thumb256);
+            let mut load_handle_store = data.get_mut_load_handle();
+            *load_handle_store = Some(load_handle);
+        });
+        factory.connect_unbind(move |_factory, item| {
+            let item = item.downcast_ref::<gtk::ListItem>().unwrap();
+            let data = item.item().and_downcast::<ShowCoverModel>().unwrap();
+            let child = item.child().and_downcast::<gtk::Picture>().unwrap();
+            // cancel loading the picture
+            if let Some(handle) = data.get_mut_load_handle().take().take() {
+                handle.abort();
+            }
+            child.set_paintable(gtk::gdk::Paintable::NONE);
         });
 
         self.grid.set_factory(Some(&factory));
@@ -183,6 +196,7 @@ fn on_child_activate(gridview: &gtk::GridView, index: u32, sender: &Sender<Actio
 #[derive(Debug, Default)]
 pub struct ShowCoverModelPrivate {
     pub show_id: Cell<i32>,
+    pub load_handle: RefCell<Option<glib::JoinHandle<()>>>,
 }
 
 #[glib::object_subclass]
@@ -207,6 +221,10 @@ impl ShowCoverModel {
 
     fn show_id(&self) -> i32 {
         self.imp().show_id.get()
+    }
+
+    fn get_mut_load_handle(&self) -> RefMut<Option<glib::JoinHandle<()>>> {
+        self.imp().load_handle.borrow_mut()
     }
 }
 // -------------------------------------------------------------------
