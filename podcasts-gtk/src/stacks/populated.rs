@@ -56,8 +56,12 @@ impl PopulatedStack {
     }
 
     pub(crate) fn update(&mut self) {
-        self.update_widget().map_err(|err| format!("{}", err)).ok();
-        self.update_shows().map_err(|err| format!("{}", err)).ok();
+        if let Err(err) = self.update_widget() {
+            error!("Could not update widget: {err}");
+        }
+        if let Err(err) = self.update_shows() {
+            error!("Could not update shows: {err}");
+        }
     }
 
     pub(crate) fn update_shows(&mut self) -> Result<()> {

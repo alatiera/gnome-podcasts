@@ -870,9 +870,7 @@ impl PlayerWrapper {
             .connect_released(clone!(@weak this => move |_, _, _, _| {
                 let this = this.borrow();
 
-                let parent = this.container.root().and_then(|root| {
-                    root.downcast::<gtk::Window>().ok()
-                }).unwrap();
+                let parent = this.container.root().and_downcast::<gtk::Window>().unwrap();
 
                 info!("showing dialog");
                 this.dialog.dialog.set_transient_for(Some(&parent));

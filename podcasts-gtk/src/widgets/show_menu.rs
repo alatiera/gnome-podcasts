@@ -135,22 +135,20 @@ fn dim_titles(episodes: &gtk::ListBox) -> Option<()> {
 
 fn dim_row_title(row: &gtk::ListBoxRow) -> Option<()> {
     // FIXME first_child should only be used for widget implementations.
-    let container = row.first_child()?.downcast::<gtk::Box>().ok()?;
-    let container_child = container.first_child()?.downcast::<gtk::Box>().ok()?;
-    let container_gradchild = container_child.first_child()?.downcast::<gtk::Box>().ok()?;
+    let container = row.first_child().and_downcast::<gtk::Box>()?;
+    let container_child = container.first_child().and_downcast::<gtk::Box>()?;
+    let container_gradchild = container_child.first_child().and_downcast::<gtk::Box>()?;
     let container_great_gradchild = container_gradchild
-        .first_child()?
-        .downcast::<gtk::Box>()
-        .ok()?;
+        .first_child()
+        .and_downcast::<gtk::Box>()?;
     let title = container_great_gradchild
-        .first_child()?
-        .downcast::<gtk::Label>()
-        .ok()?;
+        .first_child()
+        .and_downcast::<gtk::Label>()?;
 
     title.add_css_class("dim-label");
 
     // FIXME next_sibling should only be used for widget implementations.
-    let checkmark = title.next_sibling()?.downcast::<gtk::Image>().ok()?;
+    let checkmark = title.next_sibling().and_downcast::<gtk::Image>()?;
     checkmark.set_visible(true);
     Some(())
 }

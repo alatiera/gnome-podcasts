@@ -240,21 +240,21 @@ pub(crate) fn ignore_show(id: i32) -> Result<bool> {
     IGNORESHOWS
         .lock()
         .map(|mut guard| guard.insert(id))
-        .map_err(|err| anyhow!("{}", err))
+        .map_err(|err| anyhow!("{err}"))
 }
 
 pub(crate) fn unignore_show(id: i32) -> Result<bool> {
     IGNORESHOWS
         .lock()
         .map(|mut guard| guard.remove(&id))
-        .map_err(|err| anyhow!("{}", err))
+        .map_err(|err| anyhow!("{err}"))
 }
 
 pub(crate) fn get_ignored_shows() -> Result<Vec<i32>> {
     IGNORESHOWS
         .lock()
         .map(|guard| guard.iter().cloned().collect::<Vec<_>>())
-        .map_err(|err| anyhow!("{}", err))
+        .map_err(|err| anyhow!("{err}"))
 }
 
 pub(crate) fn cleanup(cleanup_date: DateTime<Utc>) {

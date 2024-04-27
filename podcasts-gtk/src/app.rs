@@ -314,11 +314,9 @@ impl PdApplication {
             Action::ReplaceWidget(pd) => {
                 let shows = window.content().get_shows();
                 let pop = shows.borrow().populated();
-                pop.borrow_mut()
-                    .replace_widget(pd.clone())
-                    .map_err(|err| error!("Failed to update ShowWidget: {}", err))
-                    .map_err(|_| error!("Failed to update ShowWidget {}", pd.title()))
-                    .ok();
+                if let Err(err) = pop.borrow_mut().replace_widget(pd.clone()) {
+                    error!("Failed to update ShowWidget for {}: {err}", pd.title())
+                };
             }
             Action::GoToEpisodeDescription(show, ep) => {
                 let description_widget = EpisodeDescription::new(ep, show, window.sender().clone());

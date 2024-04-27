@@ -303,10 +303,8 @@ impl EpisodeWidgetPriv {
 
         self.progressbar
             .connect_state_change(clone!(@weak self as this => move |_| {
-                if let Ok(ep) = dbqueries::get_episode_widget_from_id(id) {
-                    this.determine_buttons_state(&ep)
-                        .map_err(|err| error!("Error: {}", err))
-                        .ok();
+                if let Err(err) = dbqueries::get_episode_widget_from_id(id).map(|ep| this.determine_buttons_state(&ep)) {
+                    error!("Could not get episode info: {err}");
                 }
             }));
 
@@ -315,7 +313,7 @@ impl EpisodeWidgetPriv {
             .transform_to(move |_, downloaded: u64| {
                 downloaded
                     .file_size(SIZE_OPTS.clone())
-                    .map_err(|err| error!("{}", err))
+                    .inspect_err(|err| error!("Error: {err}"))
                     .ok()
             })
             .flags(glib::BindingFlags::SYNC_CREATE)
