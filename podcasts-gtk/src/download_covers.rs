@@ -55,6 +55,8 @@ fn filename_for_download(response: &reqwest::Response) -> String {
     use reqwest::header::HeaderValue;
     let mime = response.headers().get(reqwest::header::CONTENT_TYPE);
 
+    // image-rs can get confused when the suffix is missing or wrong
+    // Appending the suffix from the mime fixes some covers from not generating.
     let headers = HashMap::from([
         (HeaderValue::from_static("image/apng"), ".png"),
         (HeaderValue::from_static("image/avif"), ".avif"),
