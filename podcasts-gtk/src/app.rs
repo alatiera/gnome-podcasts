@@ -22,6 +22,7 @@ use anyhow::Result;
 use async_channel::{Receiver, Sender};
 use gettextrs::{LocaleCategory, bindtextdomain, setlocale, textdomain};
 use glib::clone;
+use glib::Priority;
 use gtk::prelude::*;
 use gtk::{gio, glib};
 use std::cell::RefCell;
@@ -32,8 +33,6 @@ use std::sync::Arc;
 use crate::chapter_parser::Chapter;
 use crate::config::{APP_ID, LOCALEDIR};
 use crate::download_covers;
-use crate::feed_manager::FeedManager;
-use crate::feed_manager::FEED_MANAGER;
 use crate::i18n::i18n;
 use crate::settings;
 use crate::utils;
@@ -44,6 +43,7 @@ use crate::window::MainWindow;
 use podcasts_data::dbqueries;
 use podcasts_data::discovery::FoundPodcast;
 use podcasts_data::{Episode, EpisodeId, EpisodeModel, Show, ShowId};
+use podcasts_data::feed_manager::{FeedAction, FeedManager, FEED_MANAGER};
 use podcasts_data::nextcloud_sync::{SyncError, SyncResult};
 
 // FIXME: port Optionals to OnceCell
@@ -112,6 +112,19 @@ impl ApplicationImpl for PdApplicationPrivate {
             async move {
                 while let Ok(action) = receiver.recv().await {
                     app.do_action(action);
+                }
+            }
+        ));
+
+        crate::MAINCONTEXT.spawn_local(clone!(
+            #[weak]
+            app,
+            async move {
+                while let Ok(feed_action) = FEED_MANAGER.receiver.recv().await {
+                    match feed_action {
+                        FeedAction::FetchStarted => app.do_action(Action::StartUpdating),
+                        FeedAction::FetchDone(id) => app.do_action(Action::FeedRefreshed(id)),
+                    }
                 }
             }
         ));
@@ -474,7 +487,7 @@ impl PdApplication {
                                 // Make a full sync, because an episode is on nextcloud,
                                 // but not yet fetched form a feed
                                 // TODO pass the missing feeds in the error and only update those
-                                FEED_MANAGER.full_refresh(&sender).await;
+                                FEED_MANAGER.full_refresh().await;
                                 match podcasts_data::nextcloud_sync::sync(true).await {
                                     Ok(sync_result) => info!("SYNC {sync_result:#?}"),
                                     Err(e) => send!(
@@ -518,7 +531,7 @@ impl PdApplication {
                 window.progress_bar().set_visible(false);
             }
             Action::FeedRefreshed(id) => {
-                FeedManager::refresh_done(data.sender.clone(), id);
+                Self::refresh_done(data.sender.clone(), id);
             }
             Action::InitEpisode(id) => {
                 let res = window.init_episode(id, None, StreamMode::LocalOnly);
@@ -582,6 +595,17 @@ impl PdApplication {
                 }
             }
         };
+    }
+
+    /// Call when a feed update is done
+    pub(crate) fn refresh_done(sender: Sender<Action>, id: u64) {
+        crate::MAINCONTEXT.spawn_local_with_priority(Priority::LOW, async move {
+            let all_done = FeedManager::refresh_done(id);
+            if all_done {
+                send!(sender, Action::StopUpdating);
+                send!(sender, Action::RefreshAllViews);
+            }
+        });
     }
 
     pub(crate) fn run() -> glib::ExitCode {

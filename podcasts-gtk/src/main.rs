@@ -38,7 +38,6 @@ mod app;
 mod chapter_parser;
 mod download_covers;
 mod episode_description_parser;
-mod feed_manager;
 mod i18n;
 mod manager;
 mod settings;
@@ -75,6 +74,9 @@ fn init_gtk_tests() -> anyhow::Result<()> {
 }
 
 fn main() -> glib::ExitCode {
+    podcasts_data::feed_manager::RUNTIME
+        .set(&RUNTIME)
+        .expect("Failed to share RUNTIME with feed manager.");
     pretty_env_logger::init();
     gst::init().expect("Error initializing gstreamer");
     gtk::init().expect("Error initializing gtk.");

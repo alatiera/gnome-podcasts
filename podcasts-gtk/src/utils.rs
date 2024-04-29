@@ -22,7 +22,6 @@ use async_channel::Sender;
 use async_channel::unbounded;
 use chrono::prelude::*;
 use futures_util::StreamExt;
-use glib::clone;
 use glib::object::WeakRef;
 use gtk::FileFilter;
 use gtk::Widget;
@@ -36,10 +35,10 @@ use std::time::{Duration, Instant};
 use url::Url;
 
 use crate::app::Action;
-use crate::feed_manager::FEED_MANAGER;
 use crate::i18n::{i18n, i18n_f};
 use podcasts_data::dbqueries;
 use podcasts_data::downloader::client_builder;
+use podcasts_data::feed_manager::FEED_MANAGER;
 use podcasts_data::opml;
 use podcasts_data::utils::checkup;
 use podcasts_data::{ShowId, Source};
@@ -265,7 +264,7 @@ pub(crate) async fn subscribe(sender: &Sender<Action>, feed: String) {
         error_source = Some(source.clone());
         let source_id = source.id();
         info!("Subscribing to {feed}");
-        FEED_MANAGER.refresh(sender, vec![source]).await;
+        FEED_MANAGER.refresh(vec![source]).await;
         let show = dbqueries::get_podcast_from_source_id(source_id)?;
         if let Err(e) = podcasts_data::sync::Show::store_by_uri(
             feed.to_string(),
@@ -411,19 +410,15 @@ pub(crate) async fn on_import_clicked(window: &gtk::ApplicationWindow, sender: &
     if let Ok(file) = dialog.open_future(Some(window)).await {
         if let Some(path) = file.peek_path() {
             // spawn a thread to avoid blocking ui during import
-            let result = gio::spawn_blocking(clone!(
-                #[strong]
-                sender,
-                move || {
-                    // Parse the file and import the feeds
-                    opml::import_from_file(path)
-                        .map(|sources| {
-                            // Refresh the successfully parsed feeds to index them
-                            FEED_MANAGER.schedule_refresh(&sender, sources);
-                        })
-                        .context("PARSE")
-                }
-            ))
+            let result = gio::spawn_blocking(move || {
+                // Parse the file and import the feeds
+                opml::import_from_file(path)
+                    .map(|sources| {
+                        // Refresh the successfully parsed feeds to index them
+                        FEED_MANAGER.schedule_refresh(sources);
+                    })
+                    .context("PARSE")
+            })
             .await;
 
             if let Err(err) = result.unwrap_or_else(|e| bail!("Import Thread Error {e:#?}")) {

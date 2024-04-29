@@ -102,22 +102,21 @@ async fn sync_for_login(
 mod tests {
     use super::*;
     use crate::database::*;
+    use crate::nextcloud_sync::test::prepare;
     use anyhow::Result;
     use http_test_server::http::{Method, Status};
     use http_test_server::TestServer;
 
     #[test]
     fn test_skip() -> Result<()> {
-        truncate_db()?;
-        let rt = tokio::runtime::Runtime::new()?;
+        let rt = prepare()?;
         let result = rt.block_on(sync(false))?;
         assert_eq!(SyncResult::Skipped, result);
         Ok(())
     }
     #[test]
     fn test_pass() -> Result<()> {
-        truncate_db()?;
-        let rt = tokio::runtime::Runtime::new()?;
+        let rt = prepare()?;
         let server = mock_nextcloud_server()?;
         let address = format!("http://127.0.0.1:{}", server.port());
         crate::sync::Settings::store_entry(&address, "user")?;
@@ -133,8 +132,7 @@ mod tests {
 
     #[test]
     fn test_error() -> Result<()> {
-        truncate_db()?;
-        let rt = tokio::runtime::Runtime::new()?;
+        let rt = prepare()?;
         // no server started
         let address = format!("http://127.0.0.1:{}", 80);
         crate::sync::Settings::store_entry(&address, "user")?;
@@ -151,8 +149,7 @@ mod tests {
 
     #[test]
     fn test_error_missing_episodes() -> Result<()> {
-        truncate_db()?;
-        let rt = tokio::runtime::Runtime::new()?;
+        let rt = prepare()?;
         let server = mock_nextcloud_server_missing()?;
         let address = format!("http://127.0.0.1:{}", server.port());
         crate::sync::Settings::store_entry(&address, "user")?;
@@ -171,8 +168,7 @@ mod tests {
 
     #[test]
     fn test_skip_error_missing_episodes() -> Result<()> {
-        truncate_db()?;
-        let rt = tokio::runtime::Runtime::new()?;
+        let rt = prepare()?;
         let server = mock_nextcloud_server_missing()?;
         let address = format!("http://127.0.0.1:{}", server.port());
         crate::sync::Settings::store_entry(&address, "user")?;

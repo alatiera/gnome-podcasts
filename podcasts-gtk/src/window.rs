@@ -33,7 +33,6 @@ use std::sync::Arc;
 
 use crate::app::{Action, PdApplication};
 use crate::config::APP_ID;
-use crate::feed_manager::FEED_MANAGER;
 use crate::settings::{self, WindowGeometry};
 use crate::utils;
 use crate::widgets::about_dialog;
@@ -41,6 +40,7 @@ use crate::widgets::player;
 use crate::widgets::player::{PlayerExt, PlayerWidget, SeekDirection, StreamMode};
 use crate::widgets::{Content, DiscoveryPage, EpisodeDescription, ShowWidget, SyncPreferences};
 use podcasts_data::dbqueries;
+use podcasts_data::feed_manager::FEED_MANAGER;
 use podcasts_data::{EpisodeId, EpisodeWidgetModel, ShowId};
 
 #[derive(Debug, CompositeTemplate, glib::Properties)]
@@ -124,9 +124,8 @@ impl ObjectSubclass for MainWindowPriv {
 
     fn class_init(klass: &mut Self::Class) {
         klass.bind_template();
-        klass.install_action("win.refresh", None, move |win, _, _| {
-            let sender = win.sender();
-            FEED_MANAGER.schedule_full_refresh(sender);
+        klass.install_action("win.refresh", None, move |_, _, _| {
+            FEED_MANAGER.schedule_full_refresh();
         });
         klass.install_action_async("win.import", None, |win, _, _| async move {
             let sender = win.sender();
@@ -294,23 +293,16 @@ impl MainWindow {
         // Update the feeds right after the Window is initialized.
         if imp.settings.boolean("refresh-on-startup") {
             info!("Refresh on startup.");
-            FEED_MANAGER.schedule_full_refresh(sender);
+            FEED_MANAGER.schedule_full_refresh();
         }
 
         let refresh_interval = settings::get_refresh_interval(&imp.settings).num_seconds() as u32;
         info!("Auto-refresh every {:?} seconds.", refresh_interval);
 
-        glib::timeout_add_seconds_local(
-            refresh_interval,
-            clone!(
-                #[strong]
-                sender,
-                move || {
-                    FEED_MANAGER.schedule_full_refresh(&sender);
-                    glib::ControlFlow::Continue
-                }
-            ),
-        );
+        glib::timeout_add_seconds_local(refresh_interval, move || {
+            FEED_MANAGER.schedule_full_refresh();
+            glib::ControlFlow::Continue
+        });
 
         imp.content.set(content).unwrap();
         imp.player.set(player).unwrap();

@@ -28,8 +28,8 @@ use gtk::prelude::*;
 use gtk::CompositeTemplate;
 
 use crate::app::Action;
-use crate::feed_manager::FEED_MANAGER;
 use crate::i18n::i18n;
+use podcasts_data::feed_manager::FEED_MANAGER;
 
 pub enum WidgetAction {
     GotSettings(Result<(podcasts_data::sync::Settings, String)>),
@@ -291,7 +291,7 @@ impl SyncPreferencesPriv {
                     {
                         error!("failed to send {e}");
                     }
-                    FEED_MANAGER.full_refresh(&sender).await;
+                    FEED_MANAGER.full_refresh().await;
                     let result = podcasts_data::nextcloud_sync::sync(true).await;
                     match result {
                         Err(e) => send!(
@@ -328,7 +328,7 @@ impl SyncPreferencesPriv {
         {
             error!("failed to send {e}");
         }
-        FEED_MANAGER.full_refresh(&app_sender).await;
+        FEED_MANAGER.full_refresh().await;
         if let Err(e) = widget_sender
             .send(WidgetAction::LoadingMessage(i18n("Running first sync...")))
             .await

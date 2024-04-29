@@ -18,17 +18,22 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 use anyhow::Result;
 use async_channel::Sender;
-use podcasts_data::Source;
-use podcasts_data::dbqueries;
-use podcasts_data::pipeline::pipeline;
 use std::collections::HashMap;
-use std::sync::{LazyLock, RwLock};
+use std::sync::{LazyLock, RwLock, OnceLock};
 use tokio::sync::watch;
 
-use crate::app::Action;
-use crate::glib::Priority;
+use crate::dbqueries;
+use crate::pipeline::pipeline;
+use crate::Source;
 
-pub(crate) static FEED_MANAGER: LazyLock<FeedManager> = LazyLock::new(FeedManager::default);
+pub static FEED_MANAGER: LazyLock<FeedManager> = LazyLock::new(|| {
+    let (sender, receiver) = async_channel::unbounded();
+    FeedManager {
+        state: RwLock::default(),
+        sender,
+        receiver,
+    }
+});
 
 type RefreshId = u64;
 #[derive(Debug)]
@@ -43,16 +48,26 @@ struct State {
     currently_running: HashMap<RefreshId, RefreshBatch>,
 }
 
-#[derive(Debug, Default)]
+#[derive(Debug)]
 pub struct FeedManager {
     state: RwLock<State>,
+    sender: Sender<FeedAction>,
+    /// must be handled in main loop,
+    pub receiver: async_channel::Receiver<FeedAction>,
+}
+
+/// MUST be set in main before calling any feed_manger fns
+pub static RUNTIME: OnceLock<&'static tokio::runtime::Runtime> = OnceLock::new();
+
+pub enum FeedAction {
+    FetchStarted,
+    FetchDone(u64),
 }
 
 impl FeedManager {
     /// refresh all feeds, or waits for a running refresh to finish
-    #[allow(dead_code)]
-    pub async fn full_refresh(&self, sender: &Sender<Action>) {
-        if let Some(mut refresh_done) = self.schedule_full_refresh(sender) {
+    pub async fn full_refresh(&self) {
+        if let Some(mut refresh_done) = self.schedule_full_refresh() {
             if let Err(e) = refresh_done.wait_for(|v| *v).await {
                 error!("Failed to receive feed_manager {e}");
             }
@@ -61,7 +76,7 @@ impl FeedManager {
 
     /// The non-async variant of full_refresh
     /// returns None when skipped due to empty database
-    pub fn schedule_full_refresh(&self, sender: &Sender<Action>) -> Option<watch::Receiver<bool>> {
+    pub fn schedule_full_refresh(&self) -> Option<watch::Receiver<bool>> {
         // If we try to update the whole db, but the db is empty, exit early
         match dbqueries::is_source_populated(&[]) {
             Ok(false) => {
@@ -82,15 +97,15 @@ impl FeedManager {
             error!("Couldn't lock feed_manager state to schedule_full_refresh");
             return None;
         };
-        running_full_refresh.or_else(|| Some(self.add_refresh(sender, None)))
+        running_full_refresh.or_else(|| Some(self.add_refresh(None)))
     }
 
     /// Refresh only specific feeds,
     /// if a running refresh already contains a subset of the requested sources
     /// It will wait for these to complete while also starting new refresh batches for
     /// Feeds that don't have running updates yet.
-    pub async fn refresh(&self, sender: &Sender<Action>, source: Vec<Source>) {
-        let receivers = self.schedule_refresh(sender, source);
+    pub async fn refresh(&self, source: Vec<Source>) {
+        let receivers = self.schedule_refresh(source);
         let handles: Vec<_> = receivers
             .into_iter()
             .map(|mut r| async move {
@@ -101,11 +116,7 @@ impl FeedManager {
     }
 
     /// The non-async variant of schedule_refresh
-    pub fn schedule_refresh(
-        &self,
-        sender: &Sender<Action>,
-        source: Vec<Source>,
-    ) -> Vec<watch::Receiver<bool>> {
+    pub fn schedule_refresh(&self, source: Vec<Source>) -> Vec<watch::Receiver<bool>> {
         // figure out what part of the feeds are already scheduled
         let (mut receivers, not_scheduled) = if let Ok(state) = self.state.read() {
             let scheduled_or_not: Vec<Result<RefreshId, Source>> = source
@@ -143,16 +154,12 @@ impl FeedManager {
             return Vec::new();
         };
         if !not_scheduled.is_empty() {
-            receivers.push(self.add_refresh(sender, Some(not_scheduled)));
+            receivers.push(self.add_refresh(Some(not_scheduled)));
         }
         receivers
     }
 
-    fn add_refresh(
-        &self,
-        sender: &Sender<Action>,
-        source: Option<Vec<Source>>,
-    ) -> watch::Receiver<bool> {
+    fn add_refresh(&self, source: Option<Vec<Source>>) -> watch::Receiver<bool> {
         let (watch_sender, watch_receiver) = watch::channel(false);
         let (sources, is_all) = source
             .map(|s| (s, false))
@@ -174,17 +181,17 @@ impl FeedManager {
             None
         };
 
-        let sender = sender.clone();
+        let sender = self.sender.clone();
         if let Some(id) = id {
-            crate::RUNTIME.spawn(async move {
-                send!(sender, Action::StartUpdating);
+            RUNTIME.get().unwrap().spawn(async move {
+                let _ = sender.send(FeedAction::FetchStarted).await;
                 if let Err(err) = pipeline(sources.into_iter()).await {
                     error!("Failed to fetch feed: {err}");
                 }
                 if let Err(e) = watch_sender.send(true) {
                     error!("Failed to send feed done: {e}");
                 }
-                send!(sender, Action::FeedRefreshed(id));
+                let _ = sender.send(FeedAction::FetchDone(id)).await;
             });
         }
 
@@ -192,21 +199,16 @@ impl FeedManager {
     }
 
     /// Call this from app.rs when an update is done
-    pub(crate) fn refresh_done(sender: Sender<Action>, id: RefreshId) {
-        crate::MAINCONTEXT.spawn_local_with_priority(Priority::LOW, async move {
-            let all_done = if let Ok(mut state) = FEED_MANAGER.state.write() {
-                if state.currently_running.remove(&id).is_none() {
-                    error!("Failed to remove refreshId: {id}");
-                }
-                state.currently_running.is_empty()
-            } else {
-                error!("refresh_done: Failed to lock feed_manager state");
-                false
-            };
-            if all_done {
-                send!(sender, Action::StopUpdating);
-                send!(sender, Action::RefreshAllViews);
+    pub fn refresh_done(id: RefreshId) -> bool {
+        let all_done = if let Ok(mut state) = FEED_MANAGER.state.write() {
+            if state.currently_running.remove(&id).is_none() {
+                error!("Failed to remove refreshId: {id}");
             }
-        });
+            state.currently_running.is_empty()
+        } else {
+            error!("refresh_done: Failed to lock feed_manager state");
+            false
+        };
+        all_done
     }
 }

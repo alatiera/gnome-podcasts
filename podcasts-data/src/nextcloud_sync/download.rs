@@ -18,6 +18,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 use crate::dbqueries;
+use crate::feed_manager::FEED_MANAGER;
 use crate::models::Episode;
 use crate::models::EpisodeModel;
 use crate::models::Source;
@@ -175,11 +176,8 @@ async fn update_subscriptions(data: &SubscriptionGet) -> Result<(), SyncError> {
             Source::from_url(uri).ok()
         })
         .collect();
-    // TODO FIXME pass this to the FEED_MANAGER don't call pipeline yourself.
-    // OR: lock the feed manager before calling sync
-    if let Err(err) = crate::pipeline::pipeline(sources).await {
-        error!("Some feeds could not be fetched after being adding during a Nextcloud Sync. {err}");
-    }
+    // fetch the newly subscribed feeds
+    FEED_MANAGER.refresh(sources).await;
     Ok(())
 }
 
@@ -207,6 +205,7 @@ mod test {
     use super::*;
     use crate::database::*;
     use crate::dbqueries;
+    use crate::nextcloud_sync::test::prepare;
     use crate::pipeline::pipeline;
     use anyhow::Result;
     use http_test_server::http::Status;
@@ -214,7 +213,7 @@ mod test {
 
     #[test]
     fn test_download_changes() -> Result<()> {
-        truncate_db()?;
+        let rt = prepare()?;
         let server = mock_nextcloud_server()?;
         let address = format!("http://127.0.0.1:{}", server.port());
 
@@ -226,7 +225,7 @@ mod test {
 
         assert_eq!(0, dbqueries::get_podcasts()?.len());
         assert_eq!(0, dbqueries::get_episodes()?.len());
-        let rt = tokio::runtime::Runtime::new()?;
+
         rt.block_on(download_changes(&login, None, false))?;
         assert_eq!(1, dbqueries::get_podcasts()?.len());
         assert_ne!(0, dbqueries::get_episodes()?.len());
@@ -265,14 +264,13 @@ mod test {
 
     #[test]
     fn test_ignore_sub_remove_before_local_add() -> Result<()> {
-        truncate_db()?;
+        let rt = prepare()?;
         let get = SubscriptionGet {
             add: vec![],
             remove: vec!["https://rss.art19.com/the-deprogram".to_string()],
             timestamp: 0,
         };
 
-        let rt = tokio::runtime::Runtime::new()?;
         let url = "https://rss.art19.com/the-deprogram";
         let source = Source::from_url(url)?;
         rt.block_on(pipeline(vec![source]))?;
@@ -306,7 +304,7 @@ mod test {
 
     #[test]
     fn test_ignore_sub_add_before_local_remove() -> Result<()> {
-        truncate_db()?;
+        let rt = prepare()?;
         let get = SubscriptionGet {
             add: vec!["https://rss.art19.com/the-deprogram".to_string()],
             remove: vec![],
@@ -324,7 +322,6 @@ mod test {
         assert_eq!(1, crate::sync::Show::fetch_all()?.len());
 
         // remote add is ignored, because there is a local remove action
-        let rt = tokio::runtime::Runtime::new()?;
         rt.block_on(update_subscriptions(&get))?;
 
         let all_podcasts = dbqueries::get_podcasts()?;

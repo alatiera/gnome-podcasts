@@ -39,6 +39,7 @@ pub mod downloader;
 #[allow(missing_docs)]
 pub mod errors;
 mod feed;
+pub mod feed_manager;
 pub(crate) mod models;
 /// Login and `sync` functions for nextcloud sychronization via the [GPodder sync addon API](https://github.com/thrillfall/nextcloud-gpodder)
 pub mod nextcloud_sync;
@@ -49,6 +50,7 @@ mod schema;
 pub mod utils;
 
 pub use crate::feed::{Feed, FeedBuilder};
+pub use crate::feed_manager::*;
 /// Sync datatypes to store updates that still have to be sent out.
 /// This is mostly glue code for the DB, use store(), fetch(), delete() methods to interact.
 pub use crate::models::sync;

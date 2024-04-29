@@ -730,6 +730,7 @@ mod tests {
         Ok(())
     }
 
+    #[test]
     fn test_get_sync_delta_data() -> Result<()> {
         truncate_db()?;
 
