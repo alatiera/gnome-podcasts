@@ -140,12 +140,14 @@ impl Content {
 
     fn init_shows(&self) {
         if self.shows.get().is_none() {
-            let _ = self.shows.get_or_init(move || {
-                info!("Init Shows View");
-                let new_shows = ShowsView::new(self.sender.clone());
-                self.shows_bin.set_child(Some(&new_shows));
-                new_shows
-            });
+            self.shows
+                .set({
+                    info!("Init Shows View");
+                    let new_shows = ShowsView::new(self.sender.clone());
+                    self.shows_bin.set_child(Some(&new_shows));
+                    new_shows
+                })
+                .unwrap();
         }
     }
 
