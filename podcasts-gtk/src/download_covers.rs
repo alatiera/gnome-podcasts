@@ -18,11 +18,11 @@ use podcasts_data::ShowCoverModel;
 
 // Downloader v3
 // if a textures is in the COVER_TEXTURES cache:
-//     - return texture form HashMap cache.
+//     - return texture from HashMap cache.
 // if download lock is set:
 //     - sleep for 30 seconds in 250ms intervals
 //     - if the lock disapears check if the texture is in cache and return
-//     - else try to get a lock for loading it.
+//     - else try to get a lock for loading.
 //     - if the lock was aquired by another task,
 //           sleep for 30 seconds in 25ms intervals
 //     - if the lock disapears check if the texture is in cache and return
@@ -199,7 +199,7 @@ async fn download(
 }
 
 async fn from_web(pd: &ShowCoverModel, cover_id: &CoverId, path: &PathBuf) -> Result<gdk::Texture> {
-    // the `false` for just_download gurantees it to be Some
+    // the `false` for just_download guarantees it to be Some
     Ok(download(pd, cover_id, path, false).await?.unwrap())
 }
 
@@ -415,7 +415,7 @@ where
             Err(NoLongerNeeded.into())
         }
         Ok(Err(err)) => bail!("Failed to load Show Cover: {err}"),
-        Err(err) => bail!("Failed to load Show Cover thread-error: {err}"),
+        Err(err) => bail!("Failed to load Show Cover with thread-error: {err}"),
     }
 }
 

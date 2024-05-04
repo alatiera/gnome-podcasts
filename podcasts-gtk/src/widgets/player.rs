@@ -108,7 +108,7 @@ impl PlayerInfo {
         if art_path.exists() {
             metadata.set_art_url(Url::from_file_path(art_path).ok());
         } else {
-            // Also trigger a download it
+            // If the cover art doesn't already exist, download it
             let sender = sender.clone();
             let podcast = podcast.clone();
             crate::RUNTIME.spawn(async move {
