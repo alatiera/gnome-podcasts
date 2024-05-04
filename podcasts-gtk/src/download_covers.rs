@@ -177,13 +177,12 @@ async fn download(
     let filename = filename_for_download(&response);
     let filename = tmp_dir.path().join(filename);
     info!("Downloading file into: '{:?}'", filename);
-    let mut dest = tokio::fs::File::create(&filename).await?;
-
-    let mut content = Cursor::new(response.bytes().await?);
-    tokio::io::copy(&mut content, &mut dest).await?;
-
-    dest.sync_all().await?;
-    drop(dest);
+    {
+        let mut dest = tokio::fs::File::create(&filename).await?;
+        let mut content = Cursor::new(response.bytes().await?);
+        tokio::io::copy(&mut content, &mut dest).await?;
+        dest.sync_all().await?;
+    }
 
     // Download done, lets generate thumbnails
     let thumbs = crate::thumbnail_generator::generate(pd, &filename)
