@@ -7,7 +7,6 @@ use once_cell::sync::Lazy;
 use std::collections::{HashMap, HashSet};
 use std::io::Cursor;
 use std::path::PathBuf;
-use tempdir::TempDir;
 use tokio::sync::RwLock; // also works from gtk, unlike tokio::fs
 
 use crate::thumbnail_generator::ThumbSize;
@@ -165,7 +164,10 @@ async fn download(
         bail!("No download location");
     }
 
-    let tmp_dir = TempDir::new_in(&*CACHED_COVERS_DIR, &format!("{}-pdcover.part", pd.id()))?;
+    // download into tmp_dir and move to filename
+    let tmp_dir = tempfile::Builder::new()
+        .suffix(&format!("{}-pdcover.part", pd.id()))
+        .tempdir_in(&*CACHED_COVERS_DIR)?;
     let client = podcasts_data::downloader::client_builder().build()?;
     let uri = pd.image_uri().ok_or(anyhow!("No image uri for podcast"))?;
     let response = client.get(uri).send().await?;
