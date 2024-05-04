@@ -39,7 +39,15 @@ use podcasts_data::ShowCoverModel;
 
 static CACHE_VALID_DURATION: Lazy<chrono::Duration> = Lazy::new(|| chrono::Duration::weeks(4));
 
-type CoverId = (i32, ThumbSize);
+#[derive(Copy, Clone, Eq, Hash, PartialEq)]
+struct CoverId(i32, ThumbSize);
+
+impl From<CoverId> for (i32, ThumbSize) {
+    fn from(cover_id: CoverId) -> (i32, ThumbSize) {
+        let CoverId(id, size) = cover_id;
+        (id, size)
+    }
+}
 
 // Thumbs that are already loaded
 static COVER_TEXTURES: Lazy<RwLock<HashMap<CoverId, gdk::Texture>>> =
@@ -300,7 +308,7 @@ pub async fn just_download(pd: &ShowCoverModel) -> Result<()> {
     if aquire_dl_lock(show_id).await {
         let cover = determin_cover_path(pd, None);
         // Won't be used because we pass `true` for just_download
-        let unused_cover_id = (show_id, crate::Thumb64);
+        let unused_cover_id = CoverId(show_id, crate::Thumb64);
         let result = download(pd, &unused_cover_id, &cover, true).await;
         drop_dl_lock(show_id).await;
         result?;
@@ -319,7 +327,7 @@ pub async fn load_texture(pd: &ShowCoverModel, thumb_size: ThumbSize) -> Result<
         bail!("no image_uri for this show: {}", pd.title());
     }
     let show_id = pd.id();
-    let cover_id = (show_id, thumb_size);
+    let cover_id = CoverId(show_id, thumb_size);
     // early return from memory cache
     if let Some(texture) = from_cache(&cover_id).await {
         return Ok(texture);
