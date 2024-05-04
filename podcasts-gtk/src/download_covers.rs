@@ -58,24 +58,25 @@ static COVER_DL_REGISTRY: Lazy<RwLock<HashSet<i32>>> = Lazy::new(|| RwLock::new(
 static THUMB_LOAD_REGISTRY: Lazy<RwLock<HashSet<CoverId>>> =
     Lazy::new(|| RwLock::new(HashSet::new()));
 
-#[allow(clippy::mutable_key_type)]
 fn filename_for_download(response: &reqwest::Response) -> String {
-    use reqwest::header::HeaderValue;
     let mime = response.headers().get(reqwest::header::CONTENT_TYPE);
 
     // image-rs can get confused when the suffix is missing or wrong
     // Appending the suffix from the mime fixes some covers from not generating.
     let headers = HashMap::from([
-        (HeaderValue::from_static("image/apng"), ".png"),
-        (HeaderValue::from_static("image/avif"), ".avif"),
-        (HeaderValue::from_static("image/gif"), ".gif"),
-        (HeaderValue::from_static("image/jpeg"), ".jpeg"),
-        (HeaderValue::from_static("image/png"), ".png"),
-        (HeaderValue::from_static("image/svg"), ".svg"),
-        (HeaderValue::from_static("image/webp"), ".webp"),
+        ("image/apng", ".png"),
+        ("image/avif", ".avif"),
+        ("image/gif", ".gif"),
+        ("image/jpeg", ".jpeg"),
+        ("image/png", ".png"),
+        ("image/svg", ".svg"),
+        ("image/webp", ".webp"),
     ]);
 
-    let mime_extension = mime.and_then(|m| headers.get(m)).unwrap_or(&"");
+    let mime_extension = mime
+        .and_then(|m| m.to_str().ok())
+        .and_then(|m| headers.get(m))
+        .unwrap_or(&"");
 
     // Get filename from url if possible
     let ext = response
