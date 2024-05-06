@@ -12,8 +12,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-podcasts\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2024-04-27 10:57+0000\n"
-"PO-Revision-Date: 2024-04-29 19:41+0200\n"
+"POT-Creation-Date: 2024-04-30 09:06+0000\n"
+"PO-Revision-Date: 2024-05-03 22:21+0200\n"
 "Last-Translator: Julián Villodre <jvillodrede@gmail.com>\n"
 "Language-Team: Spanish - Spain <gnome-es-list@gnome.org>\n"
 "Language: es\n"
@@ -266,7 +266,7 @@ msgstr "Pausa"
 
 #: podcasts-gtk/resources/gtk/player_dialog.ui:214
 msgid "Forward"
-msgstr ""
+msgstr "Avanzar"
 
 #: podcasts-gtk/resources/gtk/player_rate.ui:29
 msgid "Change the playback speed"
@@ -377,26 +377,28 @@ msgstr ""
 
 #: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:18
 msgid "The home view displaying the newest episodes of your podcasts"
-msgstr ""
+msgstr "La vista de inicio muestra los episodios más recientes de sus podcasts"
 
 #: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:22
 msgid "The shows view displaying the covers of your podcasts"
-msgstr ""
+msgstr "La vista de programas muestra las portadas de sus podcasts"
 
 #: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:26
 msgid ""
 "The show widget displaying the cover and the latest episodes of a specific "
 "podcast"
 msgstr ""
+"El widget del programa muestra la portada y los últimos episodios de un "
+"podcast específico"
 
 #: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:30
 msgid "The view where one can add a new podcast"
-msgstr ""
+msgstr "La vista donde puede añadir un nuevo podcast"
 
 #. developer_name tag deprecated with Appstream 1.0
 #: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:186
 msgid "The Podcasts developers"
-msgstr ""
+msgstr "Los desarrolladores de Podcasts"
 
 #: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:4
 msgid "Listen to your favorite podcasts, right from your desktop."
@@ -450,10 +452,8 @@ msgid "Copied URL to clipboard!"
 msgstr "URL copiado al portapapeles."
 
 #: podcasts-gtk/src/manager.rs:105
-#, fuzzy
-#| msgid "Download this episode"
 msgid "Download failed: {}"
-msgstr "Descargar este episodio"
+msgstr "Falló la descarga: {}"
 
 #: podcasts-gtk/src/stacks/content.rs:66
 msgid "New"
@@ -478,10 +478,8 @@ msgid "_Import"
 msgstr "_Importar"
 
 #: podcasts-gtk/src/utils.rs:568
-#, fuzzy
-#| msgid "Failed to parse the imported file"
 msgid "Failed to parse the imported file {}"
-msgstr "Fallo al analizar el fichero importado"
+msgstr "Fallo al analizar el fichero importado {}"
 
 #. Translators: Show as a noun, meaning Podcast-Shows.
 #: podcasts-gtk/src/utils.rs:589
@@ -512,6 +510,7 @@ msgstr "Aplicación de Podcast para el escritorio GNOME."
 #: podcasts-gtk/src/widgets/aboutdialog.rs:63
 msgid "translator-credits"
 msgstr ""
+"Julián Villodre <jvillodrede@gmail.com>, 2024\n"
 "Daniel Mustieles <daniel.mustieles@gmail.com>, 2018-2019\n"
 "Daniel García Moreno <danigm@wadobo.com>"
 
@@ -525,7 +524,7 @@ msgstr "El reproductor no ha podido reproducir una acción."
 
 #: podcasts-gtk/src/widgets/read_more_label.rs:34
 msgid "Visually expands this description"
-msgstr ""
+msgstr "Amplíe visualmente esta descripción"
 
 #: podcasts-gtk/src/widgets/read_more_label.rs:36
 msgid "Read More"
