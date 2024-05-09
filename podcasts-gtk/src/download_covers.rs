@@ -346,6 +346,12 @@ pub async fn load_texture(pd: &ShowCoverModel, thumb_size: ThumbSize) -> Result<
     if !pd.is_cached_image_valid(&CACHE_VALID_DURATION) {
         let cover = determin_cover_path(pd, None);
         let result = from_update(pd, &cover_id, &cover).await;
+        let result = if let Err(err) = result {
+            warn!("Failed to update cover, reusing the already download one. {err}");
+            from_fs(pd, &cover_id).await
+        } else {
+            result
+        };
         drop_dl_lock(show_id).await;
         return result;
     }
