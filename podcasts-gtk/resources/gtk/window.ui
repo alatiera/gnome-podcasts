@@ -23,9 +23,9 @@
                 <child>
                   <object class="AdwNavigationPage">
                     <property name="title" translatable="yes">Podcasts</property>
-                    <property name="tag">home</property>
+                    <property name="tag">content</property>
                     <property name="child">
-                      <object class="AdwToolbarView" id="toolbar_view"/>
+                      <object class="AdwToolbarView" id="content_view"/>
                     </property>
                   </object>
                 </child>

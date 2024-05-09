@@ -58,7 +58,7 @@ pub struct MainWindowPriv {
     pub(crate) sender: OnceCell<Sender<Action>>,
 
     #[template_child]
-    pub(crate) toolbar_view: TemplateChild<adw::ToolbarView>,
+    pub(crate) content_view: TemplateChild<adw::ToolbarView>,
     #[template_child]
     pub(crate) player_toolbar_view: TemplateChild<adw::ToolbarView>,
     #[template_child]
@@ -91,7 +91,7 @@ impl ObjectSubclass for MainWindowPriv {
             player: OnceCell::new(),
             navigation_view: TemplateChild::default(),
             toast_overlay: TemplateChild::default(),
-            toolbar_view: TemplateChild::default(),
+            content_view: TemplateChild::default(),
             player_toolbar_view: TemplateChild::default(),
             header_breakpoint: TemplateChild::default(),
             player_breakpoint: TemplateChild::default(),
@@ -134,11 +134,11 @@ impl ObjectSubclass for MainWindowPriv {
                 .seek(ClockTime::from_seconds(5), SeekDirection::Backwards);
         });
         klass.install_action("win.go-to-home", None, move |win, _, _| {
-            win.pop_to_home();
+            win.pop_to_content();
             win.content().go_to_home();
         });
         klass.install_action("win.go-to-shows", None, move |win, _, _| {
-            win.pop_to_home();
+            win.pop_to_content();
             win.content().go_to_shows();
         });
         klass.install_action("win.go-to-discovery", None, move |win, _, _| {
@@ -196,15 +196,22 @@ impl MainWindow {
 
         imp.sender.set(sender.clone()).unwrap();
 
-        imp.toolbar_view.add_top_bar(&header.container);
-        imp.toolbar_view.set_content(Some(content.overlay()));
-        imp.toolbar_view.add_bottom_bar(&imp.bottom_switcher);
-
-        imp.bottom_switcher.set_stack(Some(content.stack()));
+        imp.content_view.add_top_bar(&header.container);
+        imp.content_view.set_content(Some(content.overlay()));
 
         let player = player::PlayerWrapper::new(sender);
         imp.player_toolbar_view
             .add_bottom_bar(&player.borrow().container);
+
+        imp.player_toolbar_view.add_bottom_bar(&imp.bottom_switcher);
+
+        imp.bottom_switcher.set_stack(Some(content.stack()));
+
+        imp.navigation_view.connect_popped(clone!(@weak imp => move |_,_| {
+            if imp.navigation_view.visible_page().map(|p| p.tag().as_ref().map(|s| s.as_str()) == Some("content")).unwrap_or(false) {
+                imp.bottom_switcher.set_visible(true);
+            }
+        }));
 
         // Setup breakpoints
         imp.header_breakpoint.add_setter(
@@ -253,14 +260,15 @@ impl MainWindow {
 
     pub fn push_page<P: IsA<adw::NavigationPage>>(&self, page: &P) {
         self.imp().navigation_view.push(page);
+        self.imp().bottom_switcher.set_visible(false);
     }
 
     fn pop_to_show_widget(&self) {
         self.imp().navigation_view.pop_to_tag("show");
     }
 
-    fn pop_to_home(&self) {
-        self.imp().navigation_view.pop_to_tag("home");
+    fn pop_to_content(&self) {
+        self.imp().navigation_view.pop_to_tag("content");
     }
 
     pub(crate) fn init_episode(&self, id: i32, second: Option<i32>, stream: bool) -> Result<()> {
@@ -350,6 +358,7 @@ impl MainWindow {
         if !is_current_page {
             self.pop_to_show_widget();
             imp.navigation_view.push(&*imp.show_page);
+            self.imp().bottom_switcher.set_visible(false);
         }
     }
 
