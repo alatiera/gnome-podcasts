@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: podcasts master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2024-02-27 18:33+0000\n"
-"PO-Revision-Date: 2024-03-11 00:08+0100\n"
+"POT-Creation-Date: 2024-04-19 18:35+0000\n"
+"PO-Revision-Date: 2024-05-19 15:15+0200\n"
 "Last-Translator: Balázs Úr <ur.balazs at fsf dot hu>\n"
 "Language-Team: Hungarian <openscope at fsf dot hu>\n"
 "Language: hu\n"
@@ -19,23 +19,27 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Lokalize 23.08.4\n"
 
-#: podcasts-gtk/resources/gtk/empty_show.ui:16
+#. Translators: Show as a noun, meaning a Podcast-Show.
+#: podcasts-gtk/resources/gtk/empty_show.ui:17
 msgid "This show does not have episodes yet"
 msgstr "Ennek a műsornak még nincsenek epizódjai"
 
-#: podcasts-gtk/resources/gtk/empty_show.ui:25
+#: podcasts-gtk/resources/gtk/empty_show.ui:28
 msgid "If you think this is an error, please consider writing a bug report."
 msgstr "Ha úgy gondolja hogy ez hiba, akkor írjon egy hibajelentést."
 
-#: podcasts-gtk/resources/gtk/empty_view.ui:30
+#. Translators: Shows as a noun, meaning Podcast-Shows.
+#: podcasts-gtk/resources/gtk/empty_view.ui:31
 msgid "Get Some Shows"
 msgstr "Szerezzen be néhány műsort"
 
-#: podcasts-gtk/resources/gtk/empty_view.ui:50
+#. Translators: Shows as a noun, meaning Podcast-Shows.
+#: podcasts-gtk/resources/gtk/empty_view.ui:52
 msgid "Add new shows via feed URL"
 msgstr "Új műsorok hozzáadása csatorna URL-ből"
 
-#: podcasts-gtk/resources/gtk/empty_view.ui:73
+#. Translators: Shows as a noun, meaning Podcast-Shows.
+#: podcasts-gtk/resources/gtk/empty_view.ui:76
 msgid "Import shows from another device"
 msgstr "Műsorok importálása egy másik eszközről"
 
@@ -47,23 +51,48 @@ msgstr "Epizód részletei"
 msgid "Episode Menu"
 msgstr "Epizód menü"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:90
+#: podcasts-gtk/resources/gtk/episode_description.ui:92
 msgid "Podcast Title"
 msgstr "Podcast címe"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:113
+#: podcasts-gtk/resources/gtk/episode_description.ui:115
 msgid "Duration - Date"
 msgstr "Hossz – Dátum"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:133
+#: podcasts-gtk/resources/gtk/episode_description.ui:153
+msgid "Download"
+msgstr "Letöltés"
+
+#: podcasts-gtk/resources/gtk/episode_description.ui:163
+msgid "Cancel"
+msgstr "Mégse"
+
+#: podcasts-gtk/resources/gtk/episode_description.ui:173
+msgid "Delete File"
+msgstr "Fájl törlése"
+
+#: podcasts-gtk/resources/gtk/episode_description.ui:183
+msgid "Stream"
+msgstr "Közvetítés"
+
+#: podcasts-gtk/resources/gtk/episode_description.ui:193
+#: podcasts-gtk/resources/gtk/episode_description.ui:195
+#: podcasts-gtk/resources/gtk/player_dialog.ui:173
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:67
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:262
+msgid "Play"
+msgstr "Lejátszás"
+
+#: podcasts-gtk/resources/gtk/episode_description.ui:212
 msgid "Episode Description"
 msgstr "Epizód leírása"
 
-#: podcasts-gtk/resources/gtk/episode_menu.ui:35
+#. Translators: Show as a noun, meaning a Podcast-Show.
+#: podcasts-gtk/resources/gtk/episode_menu.ui:36
 msgid "Go to Show"
 msgstr "Ugrás a műsorhoz"
 
-#: podcasts-gtk/resources/gtk/episode_menu.ui:39
+#: podcasts-gtk/resources/gtk/episode_menu.ui:40
 msgid "Copy Episode Url"
 msgstr "Epizód URL másolása"
 
@@ -87,60 +116,113 @@ msgstr "A letöltési folyamat megszakítása"
 msgid "Download this episode"
 msgstr "Ezen epizód letöltése"
 
+#: podcasts-gtk/resources/gtk/episode_widget.ui:220
+#| msgid "Episode Details"
+msgid "Episode without audio"
+msgstr "Hang nélküli epizód"
+
 #: podcasts-gtk/resources/gtk/hamburger.ui:7
 msgid "_Check for New Episodes"
 msgstr "Új epizódok _keresése"
 
-#: podcasts-gtk/resources/gtk/hamburger.ui:12
+#. Translators: Show as a noun, meaning Podcast-Shows.
+#: podcasts-gtk/resources/gtk/hamburger.ui:13
 msgid "_Import Shows"
 msgstr "Műsorok _importálása"
 
-#: podcasts-gtk/resources/gtk/hamburger.ui:16
+#. Translators: Show as a noun, meaning Podcast-Shows.
+#: podcasts-gtk/resources/gtk/hamburger.ui:18
 msgid "_Export Shows"
 msgstr "Műsorok _exportálása"
 
-#: podcasts-gtk/resources/gtk/hamburger.ui:22
+#: podcasts-gtk/resources/gtk/hamburger.ui:24
 msgid "_Keyboard Shortcuts"
 msgstr "Gyorsbille_ntyűk"
 
-#: podcasts-gtk/resources/gtk/hamburger.ui:30
+#: podcasts-gtk/resources/gtk/hamburger.ui:32
 msgid "_About Podcasts"
 msgstr "A Podcastok _névjegye"
 
-#: podcasts-gtk/resources/gtk/headerbar.ui:33
-#: podcasts-gtk/resources/gtk/headerbar.ui:108
+#: podcasts-gtk/resources/gtk/headerbar.ui:41
 msgid "Add a new feed"
 msgstr "Új csatorna hozzáadása"
 
-#: podcasts-gtk/resources/gtk/headerbar.ui:44
-msgid "Enter Feed Address"
-msgstr "Adja meg a csatorna címét"
-
-#: podcasts-gtk/resources/gtk/headerbar.ui:59
-msgid "Popover menu (ESC to close)"
-msgstr "Felbukkanó menü (ESC a bezáráshoz)"
-
-#: podcasts-gtk/resources/gtk/headerbar.ui:71
-msgid "Add"
-msgstr "Hozzáadás"
-
-#: podcasts-gtk/resources/gtk/headerbar.ui:119
+#: podcasts-gtk/resources/gtk/headerbar.ui:52
 msgid "Main Menu"
 msgstr "Főmenü"
 
-#: podcasts-gtk/resources/gtk/help-overlay.ui:11
+#: podcasts-gtk/resources/gtk/help-overlay.ui:12
+msgctxt "shortcut window"
+msgid "Navigation"
+msgstr "Navigáció"
+
+#: podcasts-gtk/resources/gtk/help-overlay.ui:15
+msgctxt "shortcut window"
+msgid "Go to Home Page"
+msgstr "Ugrás a kezdőoldalra"
+
+#. Translators: Shows as a Noun
+#: podcasts-gtk/resources/gtk/help-overlay.ui:22
+#| msgid "Go to Show"
+msgctxt "shortcut window"
+msgid "Go to Shows Page"
+msgstr "Ugrás a műsorok oldalra"
+
+#. Translators: 'Discovery' is a page where you can add new podcasts
+#: podcasts-gtk/resources/gtk/help-overlay.ui:29
+msgctxt "shortcut window"
+msgid "Go To Discovery Page"
+msgstr "Ugrás a felfedezés oldalra"
+
+#: podcasts-gtk/resources/gtk/help-overlay.ui:38
+#| msgid "Play"
+msgctxt "shortcut window"
+msgid "Player"
+msgstr "Lejátszó"
+
+#: podcasts-gtk/resources/gtk/help-overlay.ui:41
+msgctxt "shortcut window"
+msgid "Toggle Pause"
+msgstr "Szüneteltetés be- vagy kikapcsolása"
+
+#: podcasts-gtk/resources/gtk/help-overlay.ui:47
+#| msgid "Forward"
+msgctxt "shortcut window"
+msgid "Seek Forwards"
+msgstr "Előretekerés"
+
+#: podcasts-gtk/resources/gtk/help-overlay.ui:53
+msgctxt "shortcut window"
+msgid "Seek Backwards"
+msgstr "Visszatekerés"
+
+#: podcasts-gtk/resources/gtk/help-overlay.ui:62
+#| msgid "General"
+msgctxt "shortcut window"
 msgid "General"
 msgstr "Általános"
 
-#: podcasts-gtk/resources/gtk/help-overlay.ui:15
+#: podcasts-gtk/resources/gtk/help-overlay.ui:65
 msgctxt "shortcut window"
 msgid "Check for new episodes"
 msgstr "Új epizódok keresése"
 
-#: podcasts-gtk/resources/gtk/help-overlay.ui:21
+#: podcasts-gtk/resources/gtk/help-overlay.ui:71
 msgctxt "shortcut window"
 msgid "Quit the application"
 msgstr "Kilépés az alkalmazásból"
+
+#: podcasts-gtk/resources/gtk/help-overlay.ui:77
+#| msgid "GNOME Podcasts Subscriptions"
+msgctxt "shortcut window"
+msgid "Import Subscriptions"
+msgstr "Feliratkozások importálása"
+
+#: podcasts-gtk/resources/gtk/help-overlay.ui:83
+#| msgid "GNOME Podcasts Subscriptions"
+msgctxt "shortcut window"
+msgid "Export Subscriptions"
+msgstr "Feliratkozások exportálása"
 
 #: podcasts-gtk/resources/gtk/home_view.ui:57
 #: podcasts-gtk/resources/gtk/home_view.ui:70
@@ -179,15 +261,9 @@ msgstr "Bezárás"
 msgid "Rewind"
 msgstr "Visszatekerés"
 
-#: podcasts-gtk/resources/gtk/player_dialog.ui:173
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:63
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:253
-msgid "Play"
-msgstr "Lejátszás"
-
 #: podcasts-gtk/resources/gtk/player_dialog.ui:191
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:76
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:262
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:80
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:271
 msgid "Pause"
 msgstr "Szünet"
 
@@ -232,7 +308,7 @@ msgstr "0,75×"
 msgid "Rewind 10 seconds"
 msgstr "Visszatekerés 10 másodperccel"
 
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:89
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:95
 msgid "Fast forward 10 seconds"
 msgstr "Előretekerés 10 másodperccel"
 
@@ -273,13 +349,13 @@ msgstr "Epizódok"
 #: podcasts-gtk/resources/gtk/window.ui:25
 #: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:4
 #: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:3
-#: podcasts-gtk/src/app.rs:430 podcasts-gtk/src/widgets/aboutdialog.rs:56
-#: podcasts-gtk/src/widgets/player.rs:384
+#: podcasts-gtk/src/app.rs:446 podcasts-gtk/src/widgets/aboutdialog.rs:56
+#: podcasts-gtk/src/widgets/player.rs:380
 msgid "Podcasts"
 msgstr "Podcastok"
 
-#: podcasts-gtk/resources/gtk/window.ui:33
-#| msgid "Shows"
+#. Translators: Show as a noun, meaning a Podcast-Show.
+#: podcasts-gtk/resources/gtk/window.ui:35
 msgid "Show"
 msgstr "Műsor"
 
@@ -302,8 +378,28 @@ msgstr ""
 "Soundcloud hivatkozásokkal. A más alkalmazásokban lévő feliratkozások is "
 "importálhatók OPML-fájlok segítségével."
 
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:18
+msgid "The home view displaying the newest episodes of your podcasts"
+msgstr "A podcastok legújabb epizódjait megjelenítő kezdő nézet"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:22
+msgid "The shows view displaying the covers of your podcasts"
+msgstr "A podcastok borítóit megjelenítő műsorok nézet"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:26
+msgid ""
+"The show widget displaying the cover and the latest episodes of a specific "
+"podcast"
+msgstr ""
+"Egy adott podcast borítóját és legújabb epizódjait megjelenítő műsor felületi"
+" elem"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:30
+msgid "The view where one can add a new podcast"
+msgstr "Az a nézet, ahol új podcastot lehet hozzáadni"
+
 #. developer_name tag deprecated with Appstream 1.0
-#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:151
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:163
 msgid "The Podcasts developers"
 msgstr "A Podcastok fejlesztői"
 
@@ -352,55 +448,63 @@ msgstr "Mennyi időközt várjon az automatikus tisztítások között"
 msgid "What period of time to wait between automatic cleanups"
 msgstr "Milyen időközöket várjon az automatikus tisztítások között"
 
-#: podcasts-gtk/src/app.rs:315
+#: podcasts-gtk/src/app.rs:336
 msgid "Copied URL to clipboard!"
 msgstr "URL a vágólapra másolva."
 
-#: podcasts-gtk/src/stacks/content.rs:68
+#: podcasts-gtk/src/manager.rs:105
+#| msgid "Download this episode"
+msgid "Download failed: {}"
+msgstr "A letöltés sikertelen: {}"
+
+#: podcasts-gtk/src/stacks/content.rs:66
 msgid "New"
 msgstr "Új"
 
-#: podcasts-gtk/src/stacks/content.rs:70
-#: podcasts-gtk/src/widgets/shows_view.rs:64
+#. Translators: Shows as a noun, meaning Podcast-Shows.
+#: podcasts-gtk/src/stacks/content.rs:68
+#: podcasts-gtk/src/widgets/shows_view.rs:65
 msgid "Shows"
 msgstr "Műsorok"
 
-#: podcasts-gtk/src/utils.rs:480 podcasts-gtk/src/utils.rs:522
+#: podcasts-gtk/src/utils.rs:474 podcasts-gtk/src/utils.rs:514
 msgid "OPML file"
 msgstr "OPML fájl"
 
-#: podcasts-gtk/src/utils.rs:491
+#: podcasts-gtk/src/utils.rs:485
 msgid "Select the file from which to you want to import shows."
 msgstr "Válasszon egy fájlt, amelyből műsorokat akar importálni."
 
-#: podcasts-gtk/src/utils.rs:493
+#: podcasts-gtk/src/utils.rs:487
 msgid "_Import"
 msgstr "_Importálás"
 
-#: podcasts-gtk/src/utils.rs:509
-msgid "Failed to parse the imported file"
-msgstr "Az importált fájl feldolgozása meghiúsult"
+#: podcasts-gtk/src/utils.rs:504
+#| msgid "Failed to parse the imported file"
+msgid "Failed to parse the imported file {}"
+msgstr "Nem sikerült feldolgozni az importált fájlt: {}"
 
-#: podcasts-gtk/src/utils.rs:532
+#. Translators: Show as a noun, meaning Podcast-Shows.
+#: podcasts-gtk/src/utils.rs:525
 msgid "Export shows to…"
 msgstr "Műsorok exportálása ide…"
 
-#: podcasts-gtk/src/utils.rs:533
+#: podcasts-gtk/src/utils.rs:526
 msgid "_Export"
 msgstr "_Exportálás"
 
 #. Translators: This is the string of the suggested name for the exported opml file
-#: podcasts-gtk/src/utils.rs:537
+#: podcasts-gtk/src/utils.rs:530
 msgid "gnome-podcasts-exported-shows"
 msgstr "gnome-podcastok-exportált-műsorok"
 
-#: podcasts-gtk/src/utils.rs:547
+#: podcasts-gtk/src/utils.rs:539
 msgid "GNOME Podcasts Subscriptions"
 msgstr "GNOME Podcastok feliratkozások"
 
-#: podcasts-gtk/src/utils.rs:548
+#: podcasts-gtk/src/utils.rs:543
 msgid "Failed to export podcasts"
-msgstr "A podcastok exportálása meghiúsult"
+msgstr "Nem sikerült exportálni a podcastokat"
 
 #: podcasts-gtk/src/widgets/aboutdialog.rs:52
 msgid "Podcast Client for the GNOME Desktop."
@@ -410,11 +514,11 @@ msgstr "Podcast-kliens a GNOME asztali környezethez."
 msgid "translator-credits"
 msgstr "Meskó Balázs <mesko dot balazs at fsf dot hu>"
 
-#: podcasts-gtk/src/widgets/episode.rs:373
+#: podcasts-gtk/src/widgets/episode.rs:268
 msgid "{} min"
 msgstr "{} perc"
 
-#: podcasts-gtk/src/widgets/player.rs:940
+#: podcasts-gtk/src/widgets/player.rs:985
 msgid "The media player was unable to execute an action."
 msgstr "A médialejátszó nem tudott végrehajtani egy műveletet."
 
@@ -426,15 +530,15 @@ msgstr "Láthatóan kinyitja ezt a leírást"
 msgid "Read More"
 msgstr "Olvassa tovább"
 
-#: podcasts-gtk/src/widgets/show_menu.rs:178
+#: podcasts-gtk/src/widgets/show_menu.rs:170
 msgid "Marked all episodes as listened"
 msgstr "Összes epizód megjelölve meghallgatottként"
 
-#: podcasts-gtk/src/widgets/show_menu.rs:179
-#: podcasts-gtk/src/widgets/show_menu.rs:202
+#: podcasts-gtk/src/widgets/show_menu.rs:171
+#: podcasts-gtk/src/widgets/show_menu.rs:194
 msgid "Undo"
 msgstr "Visszavonás"
 
-#: podcasts-gtk/src/widgets/show_menu.rs:198
+#: podcasts-gtk/src/widgets/show_menu.rs:190
 msgid "Unsubscribed from {}"
 msgstr "Leiratkozott innen: {}"
