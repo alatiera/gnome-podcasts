@@ -7,21 +7,21 @@ msgid ""
 msgstr ""
 "Project-Id-Version: podcasts main\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2024-04-12 07:42+0000\n"
-"PO-Revision-Date: 2024-04-12 20:34+0530\n"
+"POT-Creation-Date: 2024-04-30 09:06+0000\n"
+"PO-Revision-Date: 2024-05-08 16:52+0530\n"
 "Last-Translator: Scrambled777 <weblate.scrambled777@simplelogin.com>\n"
-"Language-Team: Hindi\n"
+"Language-Team: Hindi <indlinux-hindi@lists.sourceforge.net>\n"
 "Language: hi\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Gtranslator 46.0\n"
+"X-Generator: Gtranslator 46.1\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
 #. Translators: Show as a noun, meaning a Podcast-Show.
 #: podcasts-gtk/resources/gtk/empty_show.ui:17
 msgid "This show does not have episodes yet"
-msgstr "इस शो के अभी कोई एपिसोड नहीं हैं"
+msgstr "इस कार्यक्रम के अभी कोई एपिसोड नहीं हैं"
 
 #: podcasts-gtk/resources/gtk/empty_show.ui:28
 msgid "If you think this is an error, please consider writing a bug report."
@@ -30,17 +30,17 @@ msgstr "यदि आपको लगता है कि यह एक त्�
 #. Translators: Shows as a noun, meaning Podcast-Shows.
 #: podcasts-gtk/resources/gtk/empty_view.ui:31
 msgid "Get Some Shows"
-msgstr "कुछ शो प्राप्त करें"
+msgstr "कुछ कार्यक्रम प्राप्त करें"
 
 #. Translators: Shows as a noun, meaning Podcast-Shows.
 #: podcasts-gtk/resources/gtk/empty_view.ui:52
 msgid "Add new shows via feed URL"
-msgstr "फ़ीड URL के माध्यम से नए शो जोड़ें"
+msgstr "फीड URL के माध्यम से नए कार्यक्रम जोड़ें"
 
 #. Translators: Shows as a noun, meaning Podcast-Shows.
 #: podcasts-gtk/resources/gtk/empty_view.ui:76
 msgid "Import shows from another device"
-msgstr "अन्य उपकरण से शो आयात करें"
+msgstr "अन्य उपकरण से कार्यक्रम आयात करें"
 
 #: podcasts-gtk/resources/gtk/episode_description.ui:33
 msgid "Episode Details"
@@ -48,7 +48,7 @@ msgstr "एपिसोड विवरण"
 
 #: podcasts-gtk/resources/gtk/episode_description.ui:42
 msgid "Episode Menu"
-msgstr "एपिसोड मेन्यू"
+msgstr "एपिसोड मेनू"
 
 #: podcasts-gtk/resources/gtk/episode_description.ui:92
 msgid "Podcast Title"
@@ -64,11 +64,11 @@ msgstr "डाउनलोड"
 
 #: podcasts-gtk/resources/gtk/episode_description.ui:163
 msgid "Cancel"
-msgstr "रद्द"
+msgstr "रद्द करें"
 
 #: podcasts-gtk/resources/gtk/episode_description.ui:173
 msgid "Delete File"
-msgstr "फाइल हटाएँ"
+msgstr "फाइल मिटाएं"
 
 #: podcasts-gtk/resources/gtk/episode_description.ui:183
 msgid "Stream"
@@ -80,7 +80,7 @@ msgstr "स्ट्रीम"
 #: podcasts-gtk/resources/gtk/player_toolbar.ui:67
 #: podcasts-gtk/resources/gtk/player_toolbar.ui:262
 msgid "Play"
-msgstr "चलाएँ"
+msgstr "चलाएं"
 
 #: podcasts-gtk/resources/gtk/episode_description.ui:212
 msgid "Episode Description"
@@ -89,7 +89,7 @@ msgstr "एपिसोड विवरण"
 #. Translators: Show as a noun, meaning a Podcast-Show.
 #: podcasts-gtk/resources/gtk/episode_menu.ui:36
 msgid "Go to Show"
-msgstr "शो पर जाएँ"
+msgstr "कार्यक्रम पर जाएं"
 
 #: podcasts-gtk/resources/gtk/episode_menu.ui:40
 msgid "Copy Episode Url"
@@ -121,17 +121,17 @@ msgstr "बिना ऑडियो वाला एपिसोड"
 
 #: podcasts-gtk/resources/gtk/hamburger.ui:7
 msgid "_Check for New Episodes"
-msgstr "नए एपिसोड की जाँच करें (_C)"
+msgstr "नए एपिसोड की जांच करें (_C)"
 
 #. Translators: Show as a noun, meaning Podcast-Shows.
 #: podcasts-gtk/resources/gtk/hamburger.ui:13
 msgid "_Import Shows"
-msgstr "शो आयात (_I)"
+msgstr "कार्यक्रम आयात करें (_I)"
 
 #. Translators: Show as a noun, meaning Podcast-Shows.
 #: podcasts-gtk/resources/gtk/hamburger.ui:18
 msgid "_Export Shows"
-msgstr "शो निर्यात (_E)"
+msgstr "कार्यक्रम निर्यात करें (_E)"
 
 #: podcasts-gtk/resources/gtk/hamburger.ui:24
 msgid "_Keyboard Shortcuts"
@@ -143,11 +143,11 @@ msgstr "Podcasts के बारे में (_A)"
 
 #: podcasts-gtk/resources/gtk/headerbar.ui:41
 msgid "Add a new feed"
-msgstr "नई फ़ीड जोड़ें"
+msgstr "नई फीड जोड़ें"
 
 #: podcasts-gtk/resources/gtk/headerbar.ui:52
 msgid "Main Menu"
-msgstr "मुख्य मेन्यू"
+msgstr "मुख्य मेनू"
 
 #: podcasts-gtk/resources/gtk/help-overlay.ui:12
 msgctxt "shortcut window"
@@ -157,19 +157,19 @@ msgstr "नेविगेशन"
 #: podcasts-gtk/resources/gtk/help-overlay.ui:15
 msgctxt "shortcut window"
 msgid "Go to Home Page"
-msgstr "मुखपृष्ठ पर जाएँ"
+msgstr "मुखपृष्ठ पर जाएं"
 
 #. Translators: Shows as a Noun
 #: podcasts-gtk/resources/gtk/help-overlay.ui:22
 msgctxt "shortcut window"
 msgid "Go to Shows Page"
-msgstr "शो के पृष्ठ पर जाएँ"
+msgstr "कार्यक्रम पृष्ठ पर जाएं"
 
 #. Translators: 'Discovery' is a page where you can add new podcasts
 #: podcasts-gtk/resources/gtk/help-overlay.ui:29
 msgctxt "shortcut window"
 msgid "Go To Discovery Page"
-msgstr "खोज पृष्ठ पर जाएँ"
+msgstr "खोज पृष्ठ पर जाएं"
 
 #: podcasts-gtk/resources/gtk/help-overlay.ui:38
 msgctxt "shortcut window"
@@ -199,22 +199,22 @@ msgstr "सामान्य"
 #: podcasts-gtk/resources/gtk/help-overlay.ui:65
 msgctxt "shortcut window"
 msgid "Check for new episodes"
-msgstr "नए एपिसोड की जाँच करें"
+msgstr "नए एपिसोड की जांच करें"
 
 #: podcasts-gtk/resources/gtk/help-overlay.ui:71
 msgctxt "shortcut window"
 msgid "Quit the application"
-msgstr "एप्लिकेशन छोड़ें"
+msgstr "अनुप्रयोग छोड़ें"
 
 #: podcasts-gtk/resources/gtk/help-overlay.ui:77
 msgctxt "shortcut window"
 msgid "Import Subscriptions"
-msgstr "सदस्यताएँ आयात करें"
+msgstr "सदस्यताएं आयात करें"
 
 #: podcasts-gtk/resources/gtk/help-overlay.ui:83
 msgctxt "shortcut window"
 msgid "Export Subscriptions"
-msgstr "सदस्यताएँ निर्यात करें"
+msgstr "सदस्यताएं निर्यात करें"
 
 #: podcasts-gtk/resources/gtk/home_view.ui:57
 #: podcasts-gtk/resources/gtk/home_view.ui:70
@@ -243,11 +243,11 @@ msgstr "पुराना"
 
 #: podcasts-gtk/resources/gtk/player_dialog.ui:7
 msgid "Now Playing"
-msgstr "अभी चल रहा है"
+msgstr "अभी चालू"
 
 #: podcasts-gtk/resources/gtk/player_dialog.ui:28
 msgid "Close"
-msgstr "बंद"
+msgstr "बंद करें"
 
 #: podcasts-gtk/resources/gtk/player_dialog.ui:152
 msgid "Rewind"
@@ -330,7 +330,7 @@ msgstr "सदस्यता छोड़ें"
 
 #: podcasts-gtk/resources/gtk/show_widget.ui:40
 msgid "Podcast Menu"
-msgstr "पॉडकास्ट मेन्यू"
+msgstr "पॉडकास्ट मेनू"
 
 #: podcasts-gtk/resources/gtk/show_widget.ui:97
 msgid "Episodes"
@@ -341,7 +341,7 @@ msgstr "एपिसोड"
 #: podcasts-gtk/resources/gtk/window.ui:25
 #: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:4
 #: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:3
-#: podcasts-gtk/src/app.rs:496 podcasts-gtk/src/widgets/aboutdialog.rs:56
+#: podcasts-gtk/src/app.rs:444 podcasts-gtk/src/widgets/aboutdialog.rs:56
 #: podcasts-gtk/src/widgets/player.rs:380
 msgid "Podcasts"
 msgstr "Podcasts"
@@ -349,11 +349,11 @@ msgstr "Podcasts"
 #. Translators: Show as a noun, meaning a Podcast-Show.
 #: podcasts-gtk/resources/gtk/window.ui:35
 msgid "Show"
-msgstr "शो"
+msgstr "कार्यक्रम"
 
 #: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:8
 msgid "Listen to your favorite shows"
-msgstr "अपने पसंदीदा शो सुनें"
+msgstr "अपना पसंदीदा कार्यक्रम सुनें"
 
 #: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:10
 msgid ""
@@ -366,11 +366,29 @@ msgstr ""
 "अपने पॉडकास्ट को एक हल्के इंटरफ़ेस से चलाएं, अपडेट करें और प्रबंधित करें जो GNOME के साथ "
 "सहजता से एकीकृत होता है। पॉडकास्ट विभिन्न ऑडियो प्रारूप चला सकते हैं और याद रख सकते हैं "
 "कि आपने कहाँ सुनना बंद किया था। आप RSS/Atom, iTunes और Soundcloud लिंक के माध्यम से "
-"शो की सदस्यता ले सकते हैं। अन्य ऐप्स से सदस्यता OPML फाइलों के माध्यम से आयात किया जा "
-"सकता है।"
+"कार्यक्रमों की सदस्यता ले सकते हैं। अन्य ऐप्स से सदस्यता OPML फाइलों के माध्यम से आयात किया "
+"जा सकता है।"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:18
+msgid "The home view displaying the newest episodes of your podcasts"
+msgstr "आपके पॉडकास्ट के नवीनतम एपिसोड प्रदर्शित करता हुआ होम दृश्य"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:22
+msgid "The shows view displaying the covers of your podcasts"
+msgstr "आपके पॉडकास्ट के कवर को प्रदर्शित करता हुआ कार्यक्रम दृश्य"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:26
+msgid ""
+"The show widget displaying the cover and the latest episodes of a specific "
+"podcast"
+msgstr "कार्यक्रम विजेट किसी विशिष्ट पॉडकास्ट के कवर और नवीनतम एपिसोड प्रदर्शित करता है"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:30
+msgid "The view where one can add a new podcast"
+msgstr "वह दृश्य जहां कोई नया पॉडकास्ट जोड़ सकता है"
 
 #. developer_name tag deprecated with Appstream 1.0
-#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:151
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:186
 msgid "The Podcasts developers"
 msgstr "Podcasts डेवलपर्स"
 
@@ -419,7 +437,7 @@ msgstr "स्वचालित सफाई के बीच कितनी �
 msgid "What period of time to wait between automatic cleanups"
 msgstr "स्वचालित सफाई के बीच किस अवधि तक प्रतीक्षा करनी है"
 
-#: podcasts-gtk/src/app.rs:338
+#: podcasts-gtk/src/app.rs:334
 msgid "Copied URL to clipboard!"
 msgstr "क्लिपबोर्ड पर URL कॉपी किया गया!"
 
@@ -433,45 +451,45 @@ msgstr "नया"
 
 #. Translators: Shows as a noun, meaning Podcast-Shows.
 #: podcasts-gtk/src/stacks/content.rs:68
-#: podcasts-gtk/src/widgets/shows_view.rs:65
+#: podcasts-gtk/src/widgets/shows_view.rs:102
 msgid "Shows"
-msgstr "शो"
+msgstr "कार्यक्रम"
 
-#: podcasts-gtk/src/utils.rs:482 podcasts-gtk/src/utils.rs:522
+#: podcasts-gtk/src/utils.rs:538 podcasts-gtk/src/utils.rs:578
 msgid "OPML file"
 msgstr "OPML फाइल"
 
-#: podcasts-gtk/src/utils.rs:493
+#: podcasts-gtk/src/utils.rs:549
 msgid "Select the file from which to you want to import shows."
-msgstr "उस फाइल का चयन करें जिससे आप शो आयात करना चाहते हैं।"
+msgstr "उस फाइल का चयन करें जिससे आप कार्यक्रम आयात करना चाहते हैं।"
 
-#: podcasts-gtk/src/utils.rs:495
+#: podcasts-gtk/src/utils.rs:551
 msgid "_Import"
 msgstr "आयात (_I)"
 
-#: podcasts-gtk/src/utils.rs:512
+#: podcasts-gtk/src/utils.rs:568
 msgid "Failed to parse the imported file {}"
 msgstr "आयातित फाइल का विश्लेषण करने में विफल {}"
 
 #. Translators: Show as a noun, meaning Podcast-Shows.
-#: podcasts-gtk/src/utils.rs:533
+#: podcasts-gtk/src/utils.rs:589
 msgid "Export shows to…"
-msgstr "यहाँ शो को निर्यात करें…"
+msgstr "यहां कार्यक्रम को निर्यात करें…"
 
-#: podcasts-gtk/src/utils.rs:534
+#: podcasts-gtk/src/utils.rs:590
 msgid "_Export"
 msgstr "निर्यात (_E)"
 
 #. Translators: This is the string of the suggested name for the exported opml file
-#: podcasts-gtk/src/utils.rs:538
+#: podcasts-gtk/src/utils.rs:594
 msgid "gnome-podcasts-exported-shows"
-msgstr "gnome-पॉडकास्ट-निर्यात-शो"
+msgstr "gnome-podcasts-exported-shows"
 
-#: podcasts-gtk/src/utils.rs:547
+#: podcasts-gtk/src/utils.rs:603
 msgid "GNOME Podcasts Subscriptions"
-msgstr "GNOME पॉडकास्ट सदस्यताएँ"
+msgstr "GNOME पॉडकास्ट सदस्यताएं"
 
-#: podcasts-gtk/src/utils.rs:551
+#: podcasts-gtk/src/utils.rs:607
 msgid "Failed to export podcasts"
 msgstr "पॉडकास्ट निर्यात करने में विफल"
 
@@ -485,9 +503,9 @@ msgstr "Scrambled777 <weblate.scrambled777@simplelogin.com>"
 
 #: podcasts-gtk/src/widgets/episode.rs:268
 msgid "{} min"
-msgstr "{} मि"
+msgstr "{} मिन"
 
-#: podcasts-gtk/src/widgets/player.rs:985
+#: podcasts-gtk/src/widgets/player.rs:983
 msgid "The media player was unable to execute an action."
 msgstr "मीडिया प्लेयर कोई कार्रवाई निष्पादित करने में असमर्थ था।"
 
@@ -499,15 +517,15 @@ msgstr "इस विवरण को दृष्टिगत रूप से 
 msgid "Read More"
 msgstr "अधिक पढ़ें"
 
-#: podcasts-gtk/src/widgets/show_menu.rs:170
+#: podcasts-gtk/src/widgets/show_menu.rs:168
 msgid "Marked all episodes as listened"
 msgstr "सभी एपिसोड को सुने गए चिह्नित किया गया"
 
-#: podcasts-gtk/src/widgets/show_menu.rs:171
-#: podcasts-gtk/src/widgets/show_menu.rs:194
+#: podcasts-gtk/src/widgets/show_menu.rs:169
+#: podcasts-gtk/src/widgets/show_menu.rs:192
 msgid "Undo"
-msgstr "पूर्ववत"
+msgstr "पूर्ववत करें"
 
-#: podcasts-gtk/src/widgets/show_menu.rs:190
+#: podcasts-gtk/src/widgets/show_menu.rs:188
 msgid "Unsubscribed from {}"
 msgstr "{} से सदस्यता समाप्त"
