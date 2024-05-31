@@ -22,6 +22,7 @@ use adw::prelude::*;
 use adw::subclass::prelude::*;
 use anyhow::{anyhow, Result};
 use async_channel::Sender;
+use glib::clone;
 use glib::object::Object;
 use gtk::gio;
 use gtk::glib;
@@ -54,9 +55,9 @@ impl ObjectSubclass for ShowsViewPriv {
 impl ObjectImpl for ShowsViewPriv {
     fn constructed(&self) {
         self.parent_constructed();
-
+        let missing_icon = load_missing_icon();
         let factory = gtk::SignalListItemFactory::new();
-        factory.connect_setup(move |_factory, item| {
+        factory.connect_setup(clone!(@strong missing_icon => move |_factory, item| {
             let item = item.downcast_ref::<gtk::ListItem>().unwrap();
             // TODO: Make this a widget with completed/fetch-error info overlays
             let picture = gtk::Picture::builder()
@@ -64,13 +65,15 @@ impl ObjectImpl for ShowsViewPriv {
                 .height_request(150)
                 .can_focus(false)
                 .build();
+            picture.set_paintable(missing_icon.as_ref());
             picture.add_css_class("flat");
             picture.add_css_class("rounded-big");
             picture.add_css_class("show-button");
             picture.add_css_class("shows-view-cover");
+            picture.set_content_fit(gtk::ContentFit::ScaleDown);
 
             item.set_child(Some(&picture));
-        });
+        }));
         factory.connect_bind(move |_factory, item| {
             let item = item.downcast_ref::<gtk::ListItem>().unwrap();
             let data = item.item().and_downcast::<ShowCoverModel>().unwrap();
@@ -89,7 +92,7 @@ impl ObjectImpl for ShowsViewPriv {
             if let Some(handle) = data.get_mut_load_handle().take().take() {
                 handle.abort();
             }
-            child.set_paintable(gtk::gdk::Paintable::NONE);
+            child.set_paintable(missing_icon.as_ref());
         });
 
         self.grid.set_factory(Some(&factory));
@@ -120,6 +123,29 @@ impl ObjectImpl for ShowsViewPriv {
             .build();
         self.view.set_content(&clamp);
         self.obj().set_child(Some(&self.view));
+    }
+}
+
+fn load_missing_icon() -> Option<gtk::IconPaintable> {
+    let display = gtk::gdk::Display::default()?;
+    // get the max scale form any of the monitors
+    let scale = display.monitors().into_iter().fold(1, |acc, m| {
+        let m_scale = (|| Some(m.ok()?.downcast::<gtk::gdk::Monitor>().ok()?.scale_factor()))()
+            .unwrap_or(acc);
+        std::cmp::max(acc, m_scale)
+    });
+    let theme = gtk::IconTheme::for_display(&display);
+    if theme.has_icon("image-x-generic-symbolic") {
+        Some(theme.lookup_icon(
+            "image-x-generic-symbolic",
+            &[],
+            128, // 1/2 size of picture to get padding
+            scale,
+            gtk::TextDirection::Ltr,
+            gtk::IconLookupFlags::FORCE_SYMBOLIC,
+        ))
+    } else {
+        None
     }
 }
 
