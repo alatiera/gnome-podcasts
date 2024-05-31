@@ -128,73 +128,150 @@ Tobias Bernard
                           <object class="GtkBox">
                             <property name="hexpand">True</property>
                             <style>
-                              <class name="toolbar"/>
+                              <class name="button-row"/>
                             </style>
-                            <child>
-                              <object class="PdDownloadProgress" id="progressbar">
-                                <property name="margin-start">3</property>
-                                <property name="margin-bottom">10</property>
-                                <property name="hexpand">True</property>
-                              </object>
-                            </child>
                             <child>
                               <!-- Download/Stream/Play buttons -->
                               <object class="GtkBox">
-                                <property name="margin-start">10</property>
+                                <property name="margin-start">18</property>
                                 <property name="margin-end">18</property>
-                                <property name="halign">end</property>
+                                <property name="halign">start</property>
                                 <property name="spacing">10</property>
-                                <child>
-                                  <object class="GtkButton" id="download_button">
-                                    <style>
-                                      <class name="suggested-action"/>
-                                    </style>
-                                    <property name="visible">False</property>
-                                    <property name="tooltip-text" translatable="yes">Download</property>
-                                    <property name="icon-name">document-save-symbolic</property>
-                                  </object>
-                                </child>
-                                <child>
-                                  <object class="GtkButton" id="cancel_button">
-                                    <style>
-                                      <class name="destructive-action"/>
-                                    </style>
-                                    <property name="visible">False</property>
-                                    <property name="tooltip-text" translatable="yes">Cancel</property>
-                                    <property name="icon-name">process-stop-symbolic</property>
-                                  </object>
-                                </child>
-                                <child>
-                                  <object class="GtkButton" id="delete_button">
-                                    <style>
-                                      <class name="destructive-action"/>
-                                    </style>
-                                    <property name="visible">False</property>
-                                    <property name="tooltip-text" translatable="yes">Delete File</property>
-                                    <property name="icon-name">user-trash-symbolic</property>
-                                  </object>
-                                </child>
+                                <property name="homogeneous">True</property>
+                                <!-- Stream -->
                                 <child>
                                   <object class="GtkButton" id="stream_button">
-                                    <style>
-                                      <class name="accent"/>
-                                    </style>
                                     <property name="visible">False</property>
-                                    <property name="tooltip-text" translatable="yes">Stream</property>
-                                    <property name="icon-name">media-playback-start-symbolic</property>
+                                    <property name="width-request">165</property>
+                                    <child>
+                                      <object class="GtkBox">
+                                        <property name="halign">center</property>
+                                        <child>
+                                          <object class="GtkImage">
+                                            <property name="pixel-size">16</property>
+                                            <property name="icon-name">media-playback-start-symbolic</property>
+                                          </object>
+                                        </child>
+                                        <child>
+                                          <object class="GtkLabel">
+                                            <property name="label" translatable="yes">Stream</property>
+                                          </object>
+                                        </child>
+                                      </object>
+                                    </child>
                                   </object>
                                 </child>
+                                <!-- Play -->
                                 <child>
                                   <object class="GtkButton" id="play_button">
                                     <style>
                                       <class name="suggested-action"/>
                                     </style>
                                     <property name="visible">False</property>
-                                    <property name="tooltip-text" translatable="yes">Play</property>
-                                    <accessibility>
-                                      <property name="label" translatable="yes">Play</property>
-                                    </accessibility>
-                                    <property name="icon-name">media-playback-start-symbolic</property>
+                                    <property name="width-request">165</property>
+                                    <child>
+                                      <object class="GtkBox">
+                                        <property name="halign">center</property>
+                                        <child>
+                                          <object class="GtkImage">
+                                            <property name="pixel-size">16</property>
+                                            <property name="icon-name">media-playback-start-symbolic</property>                                          </object>
+                                        </child>
+                                        <child>
+                                          <object class="GtkLabel">
+                                            <property name="label" translatable="yes">Play</property>
+                                          </object>
+                                        </child>
+                                      </object>
+                                    </child>
+                                  </object>
+                                </child>
+                                <!-- Download -->
+                                <child>
+                                  <object class="GtkButton" id="download_button">
+                                    <style>
+                                      <class name="suggested-action"/>
+                                    </style>
+                                    <property name="visible">False</property>
+                                    <property name="width-request">165</property>
+                                    <child>
+                                      <object class="GtkBox">
+                                        <property name="halign">center</property>
+                                        <child>
+                                          <object class="GtkImage">
+                                            <property name="pixel-size">16</property>
+                                            <property name="icon-name">document-save-symbolic</property>
+                                          </object>
+                                        </child>
+                                        <child>
+                                          <object class="GtkLabel">
+                                            <property name="label" translatable="yes">Download</property>
+                                          </object>
+                                        </child>
+                                      </object>
+                                    </child>
+                                  </object>
+                                </child>
+                                <!-- Cancel -->
+                                <child>
+                                  <object class="GtkButton" id="cancel_button">
+                                    <style>
+                                      <class name="cancel-button"/>
+                                    </style>
+                                    <property name="visible">False</property>
+                                    <property name="width-request">165</property>
+                                    <child>
+                                      <object class="GtkBox">
+                                        <property name="orientation">vertical</property>
+                                        <child>
+                                          <object class="GtkBox">
+                                            <style>
+                                              <class name="cancel-button-text"/>
+                                            </style>
+                                            <property name="halign">center</property>
+                                            <child>
+                                              <object class="GtkLabel">
+                                                <property name="label" translatable="yes">Cancel</property>
+                                              </object>
+                                            </child>
+                                          </object>
+                                        </child>
+                                        <child>
+                                          <object class="PdDownloadProgress" id="progressbar">
+                                            <property name="hexpand">True</property>
+                                            <property name="vexpand">False</property>
+                                            <property name="valign">end</property>
+                                            <property name="height-request">2</property>
+                                            <style>
+                                              <class name="in-button-progress"/>
+                                            </style>
+                                          </object>
+                                        </child>
+                                      </object>
+                                    </child>
+                                  </object>
+                                </child>
+                                <!-- Delete -->
+                                <child>
+                                  <object class="GtkButton" id="delete_button">
+                                    <property name="visible">False</property>
+                                    <property name="width-request">165</property>
+                                    <child>
+                                      <object class="GtkBox">
+                                        <property name="halign">center</property>
+                                        <child>
+                                          <object class="GtkImage">
+                                            <property name="pixel-size">16</property>
+                                            <property name="icon-name">user-trash-symbolic</property>
+                                          </object>
+                                        </child>
+                                        <child>
+                                          <object class="GtkLabel">
+                                            <property name="label" translatable="yes">Delete</property>
+                                          </object>
+                                        </child>
+                                      </object>
+                                    </child>
                                   </object>
                                 </child>
                               </object>

@@ -28,6 +28,8 @@ popover modelbutton > box > label {
     font-feature-settings: "tnum";
 }
 
+/* Episode description */
+
 .episode_description .podcast_title {
     color: @insensitive_fg_color;
 }
@@ -42,21 +44,50 @@ popover modelbutton > box > label {
     text-decoration: none;
 }
 
-/* Discovery Search */
-.found-podcast .description {
-    color: @insensitive_fg_color;
+.episode_description .button-row {
+    padding: 15px 0px;
 }
 
-.episode_description .toolbar {
-    padding-left: 3px;
-    padding-right: 3px;
-    padding-bottom: 0px;
+.episode_description .button-row button {
+    padding: 10px 32px;
+}
+
+.episode_description .button-row button image {
+    padding-right: 10px;
+}
+
+.episode_description .button-row .cancel-button {
+    padding: 0px 0px;
+}
+
+.episode_description .button-row .cancel-button .cancel-button-text {
+    padding: 12px 32px;
+    padding-bottom: 11px;
+}
+
+.episode_description .button-row .cancel-button progressbar {
+    padding: 0px;
 }
 
 .episode_description progressbar {
     padding-left: 12px;
     padding-right: 12px;
     padding-top: 15px;
+}
+
+.episode_description progressbar trough {
+    min-height: 3px;
+    border-top-left-radius: 0px;
+    border-top-right-radius: 0px;
+}
+.episode_description progressbar trough progress {
+    border-top-left-radius: 0px;
+    border-top-right-radius: 0px;
+}
+
+/* Discovery Search */
+.found-podcast .description {
+    color: @insensitive_fg_color;
 }
 
 .rounded-big {
