@@ -55,7 +55,7 @@ impl Content {
         let empty = EmptyView::default();
         let progress_bar = gtk::ProgressBar::builder()
             .valign(gtk::Align::Start)
-            .halign(gtk::Align::Center)
+            .halign(gtk::Align::Fill)
             .visible(false)
             .build();
         progress_bar.add_css_class("osd");
