@@ -320,7 +320,7 @@ impl EpisodeWidgetPriv {
             .build();
 
         self.progressbar
-            .connect_total_size_change(clone!(@weak self as this => move |_, _| {
+            .connect_total_size_notify(clone!(@weak self as this => move |_| {
                 // try_from should handle NaN case
                 this.set_size(i32::try_from(this.progressbar.total_size()).ok());
             }));

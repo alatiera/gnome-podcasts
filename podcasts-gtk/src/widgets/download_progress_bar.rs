@@ -21,7 +21,6 @@
 use adw::prelude::BinExt;
 use adw::subclass::prelude::*;
 use glib::clone;
-use glib::ParamSpec;
 use glib::Properties;
 use gtk::glib;
 use gtk::prelude::*;
@@ -90,13 +89,6 @@ impl DownloadProgressBar {
     /// Notifies when downloading started/stopped
     pub fn connect_state_change<F: Fn(&gtk::ProgressBar) + 'static>(&self, f: F) {
         self.imp().progressbar.connect_visible_notify(f);
-    }
-
-    pub fn connect_total_size_change<F>(&self, f: F)
-    where
-        F: Fn(&DownloadProgressBar, &ParamSpec) + 'static,
-    {
-        self.connect_notify_local(Some("total_size"), f);
     }
 
     pub fn id(&self) -> i32 {
