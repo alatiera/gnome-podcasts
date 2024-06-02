@@ -92,7 +92,7 @@ impl BinImpl for HomeViewPriv {}
 
 glib::wrapper! {
     pub struct HomeView(ObjectSubclass<HomeViewPriv>)
-        @extends BaseView, gtk::Widget,
+        @extends BaseView, gtk::Widget, adw::Bin,
         @implements gtk::Accessible, gtk::Buildable, gtk::ConstraintTarget;
 }
 
