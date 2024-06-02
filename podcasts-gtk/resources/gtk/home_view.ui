@@ -37,8 +37,8 @@ Tobias Bernard
             <property name="maximum-size">700</property>
             <child>
               <object class="GtkBox" id="frame_parent">
-                <property name="margin-start">6</property>
-                <property name="margin-end">6</property>
+                <property name="margin-start">12</property>
+                <property name="margin-end">12</property>
                 <property name="margin-top">32</property>
                 <property name="margin-bottom">32</property>
                 <property name="hexpand">True</property>
