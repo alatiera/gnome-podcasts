@@ -94,3 +94,7 @@ popover modelbutton > box > label {
     color: alpha(currentColor, .40);
 }
 
+.shows-view-cover {
+    background: alpha(currentColor, .15);
+}
+

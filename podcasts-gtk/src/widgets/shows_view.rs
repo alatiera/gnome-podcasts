@@ -67,6 +67,7 @@ impl ObjectImpl for ShowsViewPriv {
             picture.add_css_class("flat");
             picture.add_css_class("rounded-big");
             picture.add_css_class("show-button");
+            picture.add_css_class("shows-view-cover");
 
             item.set_child(Some(&picture));
         });
