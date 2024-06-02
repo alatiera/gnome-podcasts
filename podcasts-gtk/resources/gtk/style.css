@@ -88,3 +88,9 @@ popover modelbutton > box > label {
     padding: 0px;
     margin: 6px;
 }
+
+.home-view-episode-cover {
+    background: alpha(currentColor, .25);
+    color: alpha(currentColor, .40);
+}
+
