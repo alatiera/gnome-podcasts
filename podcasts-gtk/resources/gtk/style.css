@@ -49,7 +49,7 @@ popover modelbutton > box > label {
 }
 
 .episode_description .button-row button {
-    padding: 10px 32px;
+    padding: 10px 20px;
 }
 
 .episode_description .button-row button image {
@@ -61,7 +61,7 @@ popover modelbutton > box > label {
 }
 
 .episode_description .button-row .cancel-button .cancel-button-text {
-    padding: 12px 32px;
+    padding: 12px 20px;
     padding-bottom: 11px;
 }
 

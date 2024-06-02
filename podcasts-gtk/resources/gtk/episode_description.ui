@@ -142,7 +142,7 @@ Tobias Bernard
                                 <child>
                                   <object class="GtkButton" id="stream_button">
                                     <property name="visible">False</property>
-                                    <property name="width-request">165</property>
+                                    <property name="width-request">145</property>
                                     <child>
                                       <object class="GtkBox">
                                         <property name="halign">center</property>
@@ -168,7 +168,7 @@ Tobias Bernard
                                       <class name="suggested-action"/>
                                     </style>
                                     <property name="visible">False</property>
-                                    <property name="width-request">165</property>
+                                    <property name="width-request">145</property>
                                     <child>
                                       <object class="GtkBox">
                                         <property name="halign">center</property>
@@ -193,7 +193,7 @@ Tobias Bernard
                                       <class name="suggested-action"/>
                                     </style>
                                     <property name="visible">False</property>
-                                    <property name="width-request">165</property>
+                                    <property name="width-request">145</property>
                                     <child>
                                       <object class="GtkBox">
                                         <property name="halign">center</property>
@@ -219,7 +219,7 @@ Tobias Bernard
                                       <class name="cancel-button"/>
                                     </style>
                                     <property name="visible">False</property>
-                                    <property name="width-request">165</property>
+                                    <property name="width-request">145</property>
                                     <child>
                                       <object class="GtkBox">
                                         <property name="orientation">vertical</property>
@@ -255,7 +255,7 @@ Tobias Bernard
                                 <child>
                                   <object class="GtkButton" id="delete_button">
                                     <property name="visible">False</property>
-                                    <property name="width-request">165</property>
+                                    <property name="width-request">145</property>
                                     <child>
                                       <object class="GtkBox">
                                         <property name="halign">center</property>
