@@ -264,7 +264,15 @@ impl MainWindow {
     }
 
     fn pop_to_show_widget(&self) {
-        self.imp().navigation_view.pop_to_tag("show");
+        let imp = self.imp();
+        let is_current_page = imp
+            .navigation_view
+            .visible_page()
+            .and_then(|p| p.tag())
+            .is_some_and(|t| t != "show");
+        if !is_current_page {
+            imp.navigation_view.pop_to_tag("show");
+        }
     }
 
     fn pop_to_content(&self) {
