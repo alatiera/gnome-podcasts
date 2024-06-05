@@ -85,23 +85,16 @@ impl EpisodeMenu {
     }
 
     fn connect_copy_episode_url(&self, sender: &Sender<Action>, ep: Arc<Episode>) {
-        if let Some(uri) = ep.uri().map(|s| s.to_string()) {
+        let ep_id = ep.id();
+        if ep.uri().is_some() {
             self.copy_episode_url.connect_activate(clone!(
                 #[strong]
                 sender,
                 move |_, _| {
-                    copy_text(&uri);
-                    send_blocking!(sender, Action::CopiedUrlNotification);
+                    send_blocking!(sender, Action::CopyUrl(ep_id));
                 }
             ));
             self.group.add_action(&self.copy_episode_url);
         }
     }
-}
-
-fn copy_text(text: &str) -> Option<()> {
-    let display = gtk::gdk::Display::default()?;
-    let clipboard = display.clipboard();
-    clipboard.set_text(text);
-    Some(())
 }

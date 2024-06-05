@@ -167,6 +167,7 @@ pub(crate) enum Action {
     GoToShow(Arc<Show>),
     GoToFoundPodcasts(Arc<Vec<FoundPodcast>>),
     CopiedUrlNotification,
+    CopyUrl(EpisodeId),
     MarkAllPlayerNotification(Arc<Show>),
     FeedRefreshed(u64),
     StartUpdating,
@@ -340,6 +341,15 @@ impl PdApplication {
                 let widget = SearchResults::new(&found, window.sender());
                 window.push_page(&widget);
             }
+            Action::CopyUrl(id) => {
+                if let Some(uri) = dbqueries::get_episode_from_id(id)
+                    .ok()
+                    .and_then(|e| e.uri().map(|s| s.to_string()))
+                {
+                    copy_text(&uri);
+                    self.do_action(Action::CopiedUrlNotification);
+                }
+            }
             Action::CopiedUrlNotification => {
                 let text = i18n("Copied URL to clipboard!");
                 let toast = adw::Toast::new(&text);
@@ -481,4 +491,11 @@ impl PdApplication {
             .unwrap()
             .add_toast(toast);
     }
+}
+
+fn copy_text(text: &str) -> Option<()> {
+    let display = gtk::gdk::Display::default()?;
+    let clipboard = display.clipboard();
+    clipboard.set_text(text);
+    Some(())
 }
