@@ -32,7 +32,7 @@ pub(crate) struct EpisodeMenu {
     pub(crate) menu: gio::MenuModel,
     go_to_show: gio::SimpleAction,
     copy_episode_url: gio::SimpleAction,
-    group: gio::SimpleActionGroup,
+    pub(crate) group: gio::SimpleActionGroup,
 }
 
 impl Default for EpisodeMenu {
@@ -62,13 +62,6 @@ impl EpisodeMenu {
     fn init(&self, sender: &Sender<Action>, ep: &dyn EpisodeModel, show: Arc<Show>) {
         self.connect_go_to_show(sender, show);
         self.connect_copy_episode_url(sender, ep);
-
-        let app = gio::Application::default()
-            .expect("Could not get default application")
-            .downcast::<gtk::Application>()
-            .unwrap();
-        let win = app.active_window().expect("No active window");
-        win.insert_action_group("episode", Some(&self.group));
     }
 
     fn connect_go_to_show(&self, sender: &Sender<Action>, show: Arc<Show>) {

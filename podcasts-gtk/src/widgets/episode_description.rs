@@ -23,9 +23,9 @@ use async_channel::Sender;
 use chrono::prelude::*;
 use glib::clone;
 use glib::subclass::InitializingObject;
-use gtk::glib;
 use gtk::prelude::*;
 use gtk::CompositeTemplate;
+use gtk::{gio, glib};
 use std::borrow::Borrow;
 use std::sync::Arc;
 
@@ -102,6 +102,13 @@ impl EpisodeDescriptionPriv {
         let id = ep.id();
         let menu = EpisodeMenu::new(&sender, &*ep, show);
         self.menu_button.set_menu_model(Some(&menu.menu));
+
+        let app = gio::Application::default()
+            .expect("Could not get default application")
+            .downcast::<gtk::Application>()
+            .unwrap();
+        let win = app.active_window().expect("No active window");
+        win.insert_action_group("episode", Some(&menu.group));
 
         self.description.connect_activate_link(clone!(
             #[strong]
