@@ -40,6 +40,14 @@ Tobias Bernard
         <attribute name="label" translatable="yes">Copy Episode Url</attribute>
         <attribute name="action">episode.copy-episode-url</attribute>
       </item>
+      <item>
+        <attribute name="label" translatable="yes">Mark as Played</attribute>
+        <attribute name="action">episode.mark-as-played</attribute>
+      </item>
+      <item>
+        <attribute name="label" translatable="yes">Mark as Unplayed</attribute>
+        <attribute name="action">episode.mark-as-unplayed</attribute>
+      </item>
     </section>
   </menu>
 </interface>

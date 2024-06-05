@@ -169,6 +169,7 @@ pub(crate) enum Action {
     CopiedUrlNotification,
     CopyUrl(EpisodeId),
     MarkAllPlayerNotification(Arc<Show>),
+    MarkAsPlayed(bool, EpisodeId),
     FeedRefreshed(u64),
     StartUpdating,
     StopUpdating,
@@ -358,6 +359,19 @@ impl PdApplication {
             Action::MarkAllPlayerNotification(pd) => {
                 let toast = mark_all_notif(pd, &data.sender);
                 self.send_toast(toast);
+            }
+            Action::MarkAsPlayed(played, id) => {
+                if let Ok(mut ep) = dbqueries::get_episode_widget_from_id(id) {
+                    if played {
+                        let _ = ep.set_played_now();
+                    } else {
+                        let _ = ep.set_unplayed();
+                    }
+                    // This is slow. As it should only refresh the episode.
+                    self.do_action(Action::RefreshWidgetIfSame(ep.show_id()));
+                    self.do_action(Action::RefreshEpisodesView);
+                    self.do_action(Action::RefreshShowsView);
+                }
             }
             Action::RemoveShow(pd) => {
                 window.pop_show_widget();

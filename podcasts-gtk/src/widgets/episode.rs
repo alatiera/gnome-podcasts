@@ -31,7 +31,7 @@ use once_cell::sync::Lazy;
 use crate::app::Action;
 use crate::i18n::i18n_f;
 use crate::manager;
-use crate::widgets::DownloadProgressBar;
+use crate::widgets::{DownloadProgressBar, EpisodeMenu};
 use podcasts_data::dbqueries;
 use podcasts_data::utils::get_download_dir;
 use podcasts_data::EpisodeId;
@@ -78,10 +78,19 @@ pub struct EpisodeWidgetPriv {
     cancel: TemplateChild<gtk::Button>,
     #[template_child]
     text_only: TemplateChild<gtk::Button>,
+    #[template_child]
+    episode_menu: TemplateChild<gtk::MenuButton>,
 }
 
 impl EpisodeWidgetPriv {
     pub(crate) fn init(&self, sender: &Sender<Action>, episode: EpisodeWidgetModel) {
+        let pid = episode.show_id();
+        if let Ok(show) = dbqueries::get_podcast_from_id(pid) {
+            let menu = EpisodeMenu::new(sender, &episode, Arc::new(show));
+            self.episode_menu.set_menu_model(Some(&menu.menu));
+            self.obj().insert_action_group("episode", Some(&menu.group));
+        }
+
         crate::MAINCONTEXT.spawn_local_with_priority(
             glib::source::Priority::LOW,
             clone!(
@@ -221,12 +230,15 @@ impl EpisodeWidgetPriv {
         self.set_date(episode.epoch());
         self.set_duration(episode.duration());
         self.set_size(episode.length());
+        self.set_played(episode.played().is_some());
     }
 
     fn set_title(&self, episode: &EpisodeWidgetModel) {
         self.title.set_text(episode.title());
+    }
 
-        if episode.played().is_some() {
+    fn set_played(&self, played: bool) {
+        if played {
             self.title.add_css_class("dim-label");
             self.played_checkmark.set_visible(true);
         } else {

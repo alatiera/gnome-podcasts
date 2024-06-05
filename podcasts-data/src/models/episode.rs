@@ -305,6 +305,12 @@ impl EpisodeWidgetModel {
         self.show_id
     }
 
+    /// Set the `played` value to `None` and save it.
+    pub fn set_unplayed(&mut self) -> Result<(), DataError> {
+        self.set_played(None);
+        self.save().map(|_| ())
+    }
+
     /// Sets the `played` value with the current `epoch` timestap and save it.
     pub fn set_played_now(&mut self) -> Result<(), DataError> {
         self.set_played(Some(Utc::now().naive_utc()));
