@@ -29,7 +29,7 @@ use crate::i18n::i18n_f;
 use podcasts_data::dbqueries;
 use podcasts_data::downloader::{get_episode, DownloadProgress};
 use podcasts_data::errors::DownloadError;
-use podcasts_data::EpisodeId;
+use podcasts_data::{EpisodeId, EpisodeModel};
 
 // This is messy, undocumented and hacky af.
 // I am terrible at writing downloaders and download managers.
@@ -125,7 +125,7 @@ mod tests {
     use podcasts_data::dbqueries;
     use podcasts_data::pipeline::pipeline;
     use podcasts_data::utils::get_download_dir;
-    use podcasts_data::{Episode, Save, Source};
+    use podcasts_data::{Episode, EpisodeModel, Save, Source};
 
     use podcasts_data::downloader::get_episode;
 

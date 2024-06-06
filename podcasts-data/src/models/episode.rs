@@ -28,6 +28,22 @@ use crate::schema::episodes;
 
 make_id_wrapper!(EpisodeId);
 
+/// A trait to get Episode data regardless.
+pub trait EpisodeModel {
+    /// Get the model id. `id()` already exists in Diesel.
+    fn id(&self) -> EpisodeId;
+
+    /// Get the value of the `uri`.
+    ///
+    /// Represents the url(usually) that the media file will be located at.
+    fn uri(&self) -> Option<&str>;
+
+    /// Epoch representation of the last time the episode was played.
+    ///
+    /// None/Null for unplayed.
+    fn played(&self) -> Option<NaiveDateTime>;
+}
+
 #[derive(Queryable, Identifiable, AsChangeset, Associations, PartialEq, Selectable)]
 #[diesel(table_name = episodes)]
 #[diesel(treat_none_as_null = true)]
@@ -48,6 +64,27 @@ pub struct Episode {
     played: Option<NaiveDateTime>,
     play_position: i32,
     show_id: ShowId,
+}
+
+impl EpisodeModel for Episode {
+    /// Get the value of the sqlite's `ROW_ID`
+    fn id(&self) -> EpisodeId {
+        self.id
+    }
+
+    /// Get the value of the `uri`.
+    ///
+    /// Represents the url(usually) that the media file will be located at.
+    fn uri(&self) -> Option<&str> {
+        self.uri.as_deref()
+    }
+
+    /// Epoch representation of the last time the episode was played.
+    ///
+    /// None/Null for unplayed.
+    fn played(&self) -> Option<NaiveDateTime> {
+        self.played
+    }
 }
 
 impl Save<Episode> for Episode {
@@ -73,13 +110,6 @@ impl Episode {
     /// Get the value of the `title` field.
     pub fn title(&self) -> &str {
         &self.title
-    }
-
-    /// Get the value of the `uri`.
-    ///
-    /// Represents the url(usually) that the media file will be located at.
-    pub fn uri(&self) -> Option<&str> {
-        self.uri.as_deref()
     }
 
     /// Get the value of the `local_uri`.
@@ -120,13 +150,6 @@ impl Episode {
     /// The number represents the duration of the item/episode in seconds.
     pub fn duration(&self) -> Option<i32> {
         self.duration
-    }
-
-    /// Epoch representation of the last time the episode was played.
-    ///
-    /// None/Null for unplayed.
-    pub fn played(&self) -> Option<NaiveDateTime> {
-        self.played
     }
 
     /// `Show` table foreign key.
@@ -170,6 +193,27 @@ pub struct EpisodeWidgetModel {
     show_id: ShowId,
 }
 
+impl EpisodeModel for EpisodeWidgetModel {
+    /// Get the value of the sqlite's `ROW_ID`
+    fn id(&self) -> EpisodeId {
+        self.id
+    }
+
+    /// Get the value of the `uri`.
+    ///
+    /// Represents the url(usually) that the media file will be located at.
+    fn uri(&self) -> Option<&str> {
+        self.uri.as_deref()
+    }
+
+    /// Epoch representation of the last time the episode was played.
+    ///
+    /// None/Null for unplayed.
+    fn played(&self) -> Option<NaiveDateTime> {
+        self.played
+    }
+}
+
 impl From<Episode> for EpisodeWidgetModel {
     fn from(e: Episode) -> EpisodeWidgetModel {
         EpisodeWidgetModel {
@@ -206,21 +250,9 @@ impl Save<usize> for EpisodeWidgetModel {
 }
 
 impl EpisodeWidgetModel {
-    /// Get the value of the sqlite's `ROW_ID`
-    pub fn id(&self) -> EpisodeId {
-        self.id
-    }
-
     /// Get the value of the `title` field.
     pub fn title(&self) -> &str {
         &self.title
-    }
-
-    /// Get the value of the `uri`.
-    ///
-    /// Represents the url(usually) that the media file will be located at.
-    pub fn uri(&self) -> Option<&str> {
-        self.uri.as_deref()
     }
 
     /// Get the value of the `local_uri`.
@@ -261,13 +293,6 @@ impl EpisodeWidgetModel {
     /// The number represents the duration of the item/episode in seconds.
     pub fn duration(&self) -> Option<i32> {
         self.duration
-    }
-
-    /// Epoch representation of the last time the episode was played.
-    ///
-    /// None/Null for unplayed.
-    pub fn played(&self) -> Option<NaiveDateTime> {
-        self.played
     }
 
     /// Set the `played` value.

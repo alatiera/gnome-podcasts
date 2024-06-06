@@ -29,7 +29,7 @@ use crate::app::Action;
 use crate::utils::{self, lazy_load};
 use crate::widgets::{BaseView, EpisodeWidget};
 use podcasts_data::dbqueries;
-use podcasts_data::{EpisodeWidgetModel, ShowId};
+use podcasts_data::{EpisodeModel, EpisodeWidgetModel, ShowId};
 
 #[derive(Debug, Clone)]
 enum ListSplit {

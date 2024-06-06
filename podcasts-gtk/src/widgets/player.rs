@@ -40,7 +40,9 @@ use crate::app::Action;
 use crate::config::APP_ID;
 use crate::download_covers::load_widget_texture;
 use crate::i18n::i18n;
-use podcasts_data::{dbqueries, EpisodeId, EpisodeWidgetModel, ShowCoverModel, ShowId, USER_AGENT};
+use podcasts_data::{
+    dbqueries, EpisodeId, EpisodeModel, EpisodeWidgetModel, ShowCoverModel, ShowId, USER_AGENT,
+};
 
 #[derive(Debug, Clone, Copy)]
 pub(crate) enum SeekDirection {

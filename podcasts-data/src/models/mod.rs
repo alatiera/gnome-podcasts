@@ -38,7 +38,7 @@ pub(crate) use self::new_episode::NewEpisodeBuilder;
 pub(crate) use self::new_show::NewShowBuilder;
 
 pub use self::episode::{
-    Episode, EpisodeCleanerModel, EpisodeId, EpisodeMinimal, EpisodeWidgetModel,
+    Episode, EpisodeCleanerModel, EpisodeId, EpisodeMinimal, EpisodeModel, EpisodeWidgetModel,
 };
 pub use self::show::{Show, ShowCoverModel, ShowId};
 pub use self::source::{Source, SourceId};

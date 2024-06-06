@@ -149,6 +149,7 @@ mod tests {
     use crate::database::truncate_db;
     use crate::dbqueries;
     use crate::utils::get_feed;
+    use crate::EpisodeModel;
     use crate::Source;
 
     use std::fs;

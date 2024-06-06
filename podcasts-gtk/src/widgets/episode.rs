@@ -35,7 +35,7 @@ use crate::widgets::DownloadProgressBar;
 use podcasts_data::dbqueries;
 use podcasts_data::utils::get_download_dir;
 use podcasts_data::EpisodeId;
-use podcasts_data::EpisodeWidgetModel;
+use podcasts_data::{EpisodeModel, EpisodeWidgetModel};
 
 static SIZE_OPTS: Lazy<humansize::FormatSizeOptions> = Lazy::new(|| {
     // Declare a custom humansize option struct

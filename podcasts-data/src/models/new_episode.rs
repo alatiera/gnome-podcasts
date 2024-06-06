@@ -25,7 +25,7 @@ use crate::database::connection;
 use crate::dbqueries;
 use crate::errors::DataError;
 use crate::models::episode::EpisodeId;
-use crate::models::{Episode, EpisodeMinimal, Index, Insert, ShowId, Update};
+use crate::models::{Episode, EpisodeMinimal, EpisodeModel, Index, Insert, ShowId, Update};
 use crate::parser;
 use crate::schema::episodes;
 use crate::utils::url_cleaner;

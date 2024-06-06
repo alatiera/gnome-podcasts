@@ -49,8 +49,8 @@ pub mod utils;
 pub use crate::feed::{Feed, FeedBuilder};
 pub use crate::models::Save;
 pub use crate::models::{
-    Episode, EpisodeCleanerModel, EpisodeId, EpisodeWidgetModel, Show, ShowCoverModel, ShowId,
-    Source, SourceId,
+    Episode, EpisodeCleanerModel, EpisodeId, EpisodeModel, EpisodeWidgetModel, Show,
+    ShowCoverModel, ShowId, Source, SourceId,
 };
 
 // Set the user agent, See #53 for more

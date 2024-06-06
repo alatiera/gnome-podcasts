@@ -24,7 +24,7 @@ use gtk::{gio, glib};
 use std::sync::Arc;
 
 use crate::app::Action;
-use podcasts_data::Episode;
+use podcasts_data::EpisodeModel;
 use podcasts_data::Show;
 
 #[derive(Debug, Clone)]
@@ -53,13 +53,13 @@ impl Default for EpisodeMenu {
 }
 
 impl EpisodeMenu {
-    pub fn new(sender: &Sender<Action>, ep: Arc<Episode>, show: Arc<Show>) -> Self {
+    pub fn new(sender: &Sender<Action>, ep: &dyn EpisodeModel, show: Arc<Show>) -> Self {
         let s = Self::default();
         s.init(sender, ep, show);
         s
     }
 
-    fn init(&self, sender: &Sender<Action>, ep: Arc<Episode>, show: Arc<Show>) {
+    fn init(&self, sender: &Sender<Action>, ep: &dyn EpisodeModel, show: Arc<Show>) {
         self.connect_go_to_show(sender, show);
         self.connect_copy_episode_url(sender, ep);
 
@@ -84,7 +84,7 @@ impl EpisodeMenu {
         self.group.add_action(&self.go_to_show);
     }
 
-    fn connect_copy_episode_url(&self, sender: &Sender<Action>, ep: Arc<Episode>) {
+    fn connect_copy_episode_url(&self, sender: &Sender<Action>, ep: &dyn EpisodeModel) {
         let ep_id = ep.id();
         if ep.uri().is_some() {
             self.copy_episode_url.connect_activate(clone!(

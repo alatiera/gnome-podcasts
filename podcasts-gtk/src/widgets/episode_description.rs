@@ -35,7 +35,7 @@ use crate::widgets::DownloadProgressBar;
 use crate::widgets::EpisodeMenu;
 use podcasts_data::EpisodeWidgetModel;
 use podcasts_data::{dbqueries, downloader};
-use podcasts_data::{Episode, EpisodeId, Show, ShowId};
+use podcasts_data::{Episode, EpisodeId, EpisodeModel, Show, ShowId};
 
 pub enum EpisodeDescriptionAction {
     EpisodeSpecificImage(gtk::gdk::Texture),
@@ -100,7 +100,7 @@ impl EpisodeDescriptionPriv {
         }
 
         let id = ep.id();
-        let menu = EpisodeMenu::new(&sender, ep.clone(), show);
+        let menu = EpisodeMenu::new(&sender, &*ep, show);
         self.menu_button.set_menu_model(Some(&menu.menu));
 
         self.description.connect_activate_link(clone!(

@@ -32,7 +32,7 @@ use crate::app::Action;
 use crate::utils::lazy_load;
 use crate::widgets::{EmptyShow, EpisodeWidget, ReadMoreLabel, ShowMenu};
 use podcasts_data::dbqueries;
-use podcasts_data::{EpisodeWidgetModel, Show, ShowId};
+use podcasts_data::{EpisodeModel, EpisodeWidgetModel, Show, ShowId};
 
 #[derive(Debug, Default, CompositeTemplate)]
 #[template(resource = "/org/gnome/Podcasts/gtk/show_widget.ui")]

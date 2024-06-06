@@ -29,7 +29,7 @@ use std::sync::{Arc, Mutex};
 
 use crate::errors::DownloadError;
 use crate::xdg_dirs::PODCASTS_CACHE;
-use crate::{EpisodeWidgetModel, Save};
+use crate::{EpisodeModel, EpisodeWidgetModel, Save};
 
 use crate::utils;
 use crate::ShowCoverModel;

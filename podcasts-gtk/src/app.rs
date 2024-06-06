@@ -40,7 +40,7 @@ use crate::widgets::{EpisodeDescription, SearchResults, ShowWidget};
 use crate::window::MainWindow;
 use podcasts_data::dbqueries;
 use podcasts_data::discovery::FoundPodcast;
-use podcasts_data::{Episode, EpisodeId, Show, ShowId};
+use podcasts_data::{Episode, EpisodeId, EpisodeModel, Show, ShowId};
 
 // FIXME: port Optionals to OnceCell
 #[derive(Debug)]
