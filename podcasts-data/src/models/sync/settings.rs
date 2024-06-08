@@ -100,11 +100,13 @@ impl Settings {
         let keyring = oo7::Keyring::new()
             .await
             .map_err::<oo7::Error, _>(From::from)?;
+        keyring.unlock().await?;
         let attributes = HashMap::from([("nextcloud", "password")]);
         // Try update
         let items = keyring.search_items(&attributes).await?;
-        for i in items {
-            i.delete().await?;
+        for item in items {
+            item.unlock().await?;
+            item.delete().await?;
         }
 
         Ok(())
@@ -126,10 +128,12 @@ impl Settings {
         let keyring = oo7::Keyring::new()
             .await
             .map_err::<oo7::Error, _>(From::from)?;
+        keyring.unlock().await?;
         let attributes = HashMap::from([("nextcloud", "password")]);
         // Try update
         let items = keyring.search_items(&attributes).await?;
         if let Some(item) = items.first() {
+            item.unlock().await?;
             item.set_secret(password.as_bytes()).await?;
             return Ok(());
         }
@@ -144,10 +148,12 @@ impl Settings {
 
     async fn fetch_password() -> Result<String, DataError> {
         let keyring = oo7::Keyring::new().await?;
+        keyring.unlock().await?;
         let items = keyring
             .search_items(&HashMap::from([("nextcloud", "password")]))
             .await?;
         if let Some(item) = items.first() {
+            item.unlock().await?;
             let mut secret_bytes = item.secret().await?;
             let secret_vec: Vec<u8> = std::mem::take(&mut secret_bytes);
             let secret_str = String::from_utf8(secret_vec)?;
