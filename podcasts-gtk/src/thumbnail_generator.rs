@@ -81,7 +81,8 @@ pub async fn generate(
                 let texture = crate::RUNTIME
                     .spawn_blocking(move || {
                         let image = image::io::Reader::open(path)?.decode()?;
-                        image.resize(pixels as u32, pixels as u32, FilterType::Lanczos3);
+                        let image =
+                            image.resize(pixels as u32, pixels as u32, FilterType::Lanczos3);
                         image.save_with_format(&tmp_path2, image::ImageFormat::Png)?;
                         gtk::gdk::Texture::from_filename(&tmp_path2)
                             .map_err(|_| anyhow!("failed to read gtk texture"))
