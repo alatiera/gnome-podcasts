@@ -1,5 +1,34 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
+  <menu id="menu">
+    <section>
+      <item>
+        <attribute name="label" translatable="yes">_Check for New Episodes</attribute>
+        <attribute name="action">win.refresh</attribute>
+        <attribute name="accel">&lt;primary&gt;r</attribute>
+      </item>
+      <item>
+        <!-- Translators: Show as a noun, meaning Podcast-Shows. -->
+        <attribute name="label" translatable="yes">_Import Shows</attribute>
+        <attribute name="action">win.import</attribute>
+      </item>
+      <item>
+        <!-- Translators: Show as a noun, meaning Podcast-Shows. -->
+        <attribute name="label" translatable="yes">_Export Shows</attribute>
+        <attribute name="action">win.export</attribute>
+      </item>
+    </section>
+    <section>
+      <item>
+        <attribute name="label" translatable="yes">_Keyboard Shortcuts</attribute>
+        <attribute name="action">win.show-help-overlay</attribute>
+      </item>
+      <item>
+        <attribute name="label" translatable="yes">_About Podcasts</attribute>
+        <attribute name="action">win.about</attribute>
+      </item>
+    </section>
+  </menu>
   <template class="PdMainWindow" parent="AdwApplicationWindow">
     <property name="width-request">360</property>
     <property name="height-request">294</property>
@@ -12,6 +41,7 @@
     <child>
       <object class="AdwBreakpoint" id="header_breakpoint">
         <condition>max-width: 550sp</condition>
+        <setter object="main_header" property="title-widget"/>
       </object>
     </child>
     <property name="content">
@@ -25,7 +55,32 @@
                     <property name="title" translatable="yes">Podcasts</property>
                     <property name="tag">content</property>
                     <property name="child">
-                      <object class="AdwToolbarView" id="content_view"/>
+                      <object class="AdwToolbarView" id="content_view">
+                        <child type="top">
+                          <object class="AdwHeaderBar" id="main_header">
+                            <property name="title-widget">
+                              <object class="AdwViewSwitcher" id="top_switcher">
+                                <property name="policy">wide</property>
+                              </object>
+                            </property>
+                            <child>
+                              <object class="GtkButton">
+                                <property name="tooltip-text" translatable="yes">Add a New Feed</property>
+                                <property name="icon-name">list-add-symbolic</property>
+                                <property name="action-name">win.go-to-discovery</property>
+                              </object>
+                            </child>
+                            <child type="end">
+                              <object class="GtkMenuButton" id="hamburger">
+                                <property name="icon-name">open-menu-symbolic</property>
+                                <property name="tooltip-text" translatable="yes">Main Menu</property>
+                                <property name="primary">True</property>
+                                <property name="menu-model">menu</property>
+                              </object>
+                            </child>
+                          </object>
+                        </child>
+                      </object>
                     </property>
                   </object>
                 </child>

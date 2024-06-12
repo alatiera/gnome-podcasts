@@ -38,7 +38,6 @@ mod app;
 mod download_covers;
 mod episode_description_parser;
 mod feed_manager;
-mod headerbar;
 mod i18n;
 mod manager;
 mod settings;
@@ -92,13 +91,11 @@ fn register_resources() -> anyhow::Result<()> {
 // cargo seems to create new threads and gtk refuses to initialize again.
 // So we run every gtk related test here.
 fn test_stuff() -> anyhow::Result<()> {
-    use crate::headerbar::Header;
     use crate::widgets::*;
 
     init_gtk_tests()?;
 
     // If a widget does not exist in the `GtkBuilder`(.ui) file this should panic and fail.
-    Header::default();
     BaseView::default();
     ShowWidget::default();
     HomeEpisode::default();

@@ -405,7 +405,7 @@ impl PdApplication {
                     refresh_action.set_enabled(false)
                 }
 
-                window.headerbar().switch.set_sensitive(false);
+                window.top_switcher().set_sensitive(false);
                 window.bottom_switcher().set_sensitive(false);
                 window.content().switch_to_empty_views();
             }
@@ -417,7 +417,7 @@ impl PdApplication {
                     refresh_action.set_enabled(true)
                 }
 
-                window.headerbar().switch.set_sensitive(true);
+                window.top_switcher().set_sensitive(true);
                 window.bottom_switcher().set_sensitive(true);
                 window.content().switch_to_populated();
             }

@@ -34,7 +34,6 @@ use std::sync::Arc;
 use crate::app::{Action, PdApplication};
 use crate::config::APP_ID;
 use crate::feed_manager::FEED_MANAGER;
-use crate::headerbar::Header;
 use crate::settings::{self, WindowGeometry};
 use crate::utils;
 use crate::widgets::about_dialog;
@@ -48,7 +47,6 @@ use podcasts_data::dbqueries;
 #[properties(wrapper_type = MainWindow)]
 pub struct MainWindowPriv {
     pub(crate) content: OnceCell<Rc<Content>>,
-    pub(crate) headerbar: OnceCell<Header>,
     pub(crate) player: OnceCell<player::PlayerWrapper>,
     pub(crate) updating_timeout: RefCell<Option<glib::source::SourceId>>,
     pub(crate) settings: gio::Settings,
@@ -57,6 +55,8 @@ pub struct MainWindowPriv {
 
     pub(crate) sender: OnceCell<Sender<Action>>,
 
+    #[template_child]
+    pub(crate) top_switcher: TemplateChild<adw::ViewSwitcher>,
     #[template_child]
     pub(crate) content_view: TemplateChild<adw::ToolbarView>,
     #[template_child]
@@ -86,11 +86,11 @@ impl ObjectSubclass for MainWindowPriv {
         let settings = gio::Settings::new(APP_ID);
 
         Self {
-            headerbar: OnceCell::new(),
             content: OnceCell::new(),
             player: OnceCell::new(),
             navigation_view: TemplateChild::default(),
             toast_overlay: TemplateChild::default(),
+            top_switcher: TemplateChild::default(),
             content_view: TemplateChild::default(),
             player_toolbar_view: TemplateChild::default(),
             header_breakpoint: TemplateChild::default(),
@@ -192,11 +192,9 @@ impl MainWindow {
         let window: Self = glib::Object::builder().property("application", app).build();
         let imp = window.imp();
         let content = Content::new(sender.clone());
-        let header = Header::new(&content);
 
         imp.sender.set(sender.clone()).unwrap();
 
-        imp.content_view.add_top_bar(&header.container);
         imp.content_view.set_content(Some(content.overlay()));
 
         let player = player::PlayerWrapper::new(sender);
@@ -205,6 +203,7 @@ impl MainWindow {
 
         imp.player_toolbar_view.add_bottom_bar(&imp.bottom_switcher);
 
+        imp.top_switcher.set_stack(Some(content.stack()));
         imp.bottom_switcher.set_stack(Some(content.stack()));
 
         imp.navigation_view.connect_popped(clone!(@weak imp => move |_,_| {
@@ -214,11 +213,6 @@ impl MainWindow {
         }));
 
         // Setup breakpoints
-        imp.header_breakpoint.add_setter(
-            &header.container,
-            "title-widget",
-            &gtk::Widget::NONE.to_value(),
-        );
         imp.header_breakpoint
             .add_setter(&imp.bottom_switcher, "reveal", &true.to_value());
         let p = player.deref();
@@ -251,7 +245,6 @@ impl MainWindow {
             }),
         );
 
-        imp.headerbar.set(header).unwrap();
         imp.content.set(content).unwrap();
         imp.player.set(player).unwrap();
 
@@ -314,8 +307,8 @@ impl MainWindow {
         self.imp().content.get().unwrap()
     }
 
-    pub(crate) fn headerbar(&self) -> &Header {
-        self.imp().headerbar.get().unwrap()
+    pub(crate) fn top_switcher(&self) -> &adw::ViewSwitcher {
+        &self.imp().top_switcher
     }
 
     pub(crate) fn bottom_switcher(&self) -> &adw::ViewSwitcherBar {
