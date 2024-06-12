@@ -39,16 +39,63 @@
       </object>
     </child>
     <child>
+      <object class="AdwBreakpoint">
+        <condition>max-width: 800sp</condition>
+        <setter object="multi_layout_view" property="layout-name">narrow</setter>
+      </object>
+    </child>
+    <child>
       <object class="AdwBreakpoint" id="header_breakpoint">
         <condition>max-width: 550sp</condition>
         <setter object="main_header" property="title-widget"/>
+        <setter object="multi_layout_view" property="layout-name">narrow</setter>
       </object>
     </child>
     <property name="content">
       <object class="AdwToastOverlay" id="toast_overlay">
         <property name="child">
-          <object class="AdwToolbarView" id="player_toolbar_view">
+          <object class="AdwMultiLayoutView" id="multi_layout_view">
             <child>
+              <object class="AdwLayout">
+                <property name="name">wide</property>
+                <property name="content">
+                  <object class="AdwToolbarView" id="player_toolbar_view">
+                    <child>
+                      <object class="AdwLayoutSlot">
+                        <property name="id">content</property>
+                      </object>
+                    </child>
+                    <child type="bottom">
+                      <object class="AdwLayoutSlot">
+                        <property name="id">toolbar</property>
+                      </object>
+                    </child>
+                  </object>
+                </property>
+              </object>
+            </child>
+            <child>
+              <object class="AdwLayout">
+                <property name="name">narrow</property>
+                <property name="content">
+                  <object class="AdwBottomSheet" id="bottom_sheet">
+                    <property name="can-open">False</property>
+                    <property name="content">
+                      <object class="AdwLayoutSlot">
+                        <property name="id">content</property>
+                        <property name="margin-bottom" bind-source="bottom_sheet" bind-property="bottom-bar-height"/>
+                      </object>
+                    </property>
+                    <property name="bottom-bar">
+                      <object class="AdwLayoutSlot">
+                        <property name="id">toolbar</property>
+                      </object>
+                    </property>
+                  </object>
+                </property>
+              </object>
+            </child>
+            <child type="content">
               <object class="AdwNavigationView" id="navigation_view">
                 <child>
                   <object class="AdwNavigationPage">
@@ -89,6 +136,22 @@
                     <!-- Translators: Show as a noun, meaning a Podcast-Show. -->
                     <property name="title" translatable="yes">Show</property>
                     <property name="tag">show</property>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <child type="toolbar">
+              <object class="GtkBox" id="toolbar_box">
+                <property name="orientation">vertical</property>
+                <child>
+                  <object class="GtkCenterBox" id="bottom_switcher_bar">
+                    <property name="visible">False</property>
+                    <property name="center-widget">
+                      <object class="AdwViewSwitcher" id="bottom_switcher"/>
+                    </property>
+                    <style>
+                      <class name="toolbar"/>
+                    </style>
                   </object>
                 </child>
               </object>

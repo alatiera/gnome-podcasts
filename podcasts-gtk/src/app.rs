@@ -406,7 +406,7 @@ impl PdApplication {
                 }
 
                 window.top_switcher().set_sensitive(false);
-                window.bottom_switcher().set_sensitive(false);
+                window.bottom_switcher_bar().set_sensitive(false);
                 window.content().switch_to_empty_views();
             }
             Action::PopulatedState => {
@@ -418,7 +418,7 @@ impl PdApplication {
                 }
 
                 window.top_switcher().set_sensitive(true);
-                window.bottom_switcher().set_sensitive(true);
+                window.bottom_switcher_bar().set_sensitive(true);
                 window.content().switch_to_populated();
             }
             Action::RaiseWindow => window.present(),

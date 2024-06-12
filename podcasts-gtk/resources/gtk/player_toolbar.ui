@@ -278,10 +278,6 @@ Tobias Bernard
                 </child>
               </object>
             </child>
-            <child>
-              <object class="GtkGestureClick" id="gesture_click">
-              </object>
-            </child>
           </object>
         </child>
       </object>

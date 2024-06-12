@@ -50,7 +50,6 @@ pub struct MainWindowPriv {
     pub(crate) player: OnceCell<player::PlayerWrapper>,
     pub(crate) updating_timeout: RefCell<Option<glib::source::SourceId>>,
     pub(crate) settings: gio::Settings,
-    pub(crate) bottom_switcher: adw::ViewSwitcherBar,
     pub(crate) show_widget: RefCell<Option<ShowWidget>>,
 
     pub(crate) sender: OnceCell<Sender<Action>>,
@@ -61,6 +60,14 @@ pub struct MainWindowPriv {
     pub(crate) content_view: TemplateChild<adw::ToolbarView>,
     #[template_child]
     pub(crate) player_toolbar_view: TemplateChild<adw::ToolbarView>,
+    #[template_child]
+    pub(crate) bottom_sheet: TemplateChild<gtk::Widget>,
+    #[template_child]
+    pub(crate) bottom_switcher: TemplateChild<adw::ViewSwitcher>,
+    #[template_child]
+    pub(crate) bottom_switcher_bar: TemplateChild<gtk::CenterBox>,
+    #[template_child]
+    pub(crate) toolbar_box: TemplateChild<gtk::Box>,
     #[template_child]
     pub(crate) toast_overlay: TemplateChild<adw::ToastOverlay>,
     #[template_child]
@@ -93,10 +100,13 @@ impl ObjectSubclass for MainWindowPriv {
             top_switcher: TemplateChild::default(),
             content_view: TemplateChild::default(),
             player_toolbar_view: TemplateChild::default(),
+            bottom_sheet: TemplateChild::default(),
+            bottom_switcher: TemplateChild::default(),
+            bottom_switcher_bar: TemplateChild::default(),
+            toolbar_box: TemplateChild::default(),
             header_breakpoint: TemplateChild::default(),
             player_breakpoint: TemplateChild::default(),
             show_page: TemplateChild::default(),
-            bottom_switcher: adw::ViewSwitcherBar::new(),
             updating: Cell::new(false),
             updating_timeout: RefCell::new(None),
             sender: OnceCell::new(),
@@ -198,23 +208,26 @@ impl MainWindow {
         imp.content_view.set_content(Some(content.overlay()));
 
         let player = player::PlayerWrapper::new(sender);
-        imp.player_toolbar_view
-            .add_bottom_bar(&player.borrow().container);
+        imp.toolbar_box.prepend(&player.borrow().container);
 
-        imp.player_toolbar_view.add_bottom_bar(&imp.bottom_switcher);
+        imp.bottom_sheet
+            .set_property("sheet", &player.borrow().sheet.sheet);
 
         imp.top_switcher.set_stack(Some(content.stack()));
         imp.bottom_switcher.set_stack(Some(content.stack()));
 
         imp.navigation_view.connect_popped(clone!(@weak imp => move |_,_| {
             if imp.navigation_view.visible_page().map(|p| p.tag().as_ref().map(|s| s.as_str()) == Some("content")).unwrap_or(false) {
-                imp.bottom_switcher.set_visible(true);
+                imp.bottom_switcher_bar.set_visible(true);
             }
         }));
 
         // Setup breakpoints
-        imp.header_breakpoint
-            .add_setter(&imp.bottom_switcher, "reveal", &true.to_value());
+        imp.header_breakpoint.add_setter(
+            &imp.bottom_switcher_bar.get(),
+            "visible",
+            &true.to_value(),
+        );
         let p = player.deref();
         imp.player_breakpoint
             .connect_apply(clone!(@weak p => move |_| {
@@ -253,7 +266,7 @@ impl MainWindow {
 
     pub fn push_page<P: IsA<adw::NavigationPage>>(&self, page: &P) {
         self.imp().navigation_view.push(page);
-        self.imp().bottom_switcher.set_visible(false);
+        self.imp().bottom_switcher_bar.set_visible(false);
     }
 
     fn pop_to_show_widget(&self) {
@@ -273,6 +286,9 @@ impl MainWindow {
     }
 
     pub(crate) fn init_episode(&self, id: i32, second: Option<i32>, stream: bool) -> Result<()> {
+        self.imp()
+            .bottom_sheet
+            .set_property("can-open", true.to_value());
         self.imp()
             .player
             .get()
@@ -311,8 +327,8 @@ impl MainWindow {
         &self.imp().top_switcher
     }
 
-    pub(crate) fn bottom_switcher(&self) -> &adw::ViewSwitcherBar {
-        &self.imp().bottom_switcher
+    pub(crate) fn bottom_switcher_bar(&self) -> &gtk::CenterBox {
+        &self.imp().bottom_switcher_bar
     }
 
     pub(crate) fn sender(&self) -> &Sender<Action> {
@@ -359,7 +375,7 @@ impl MainWindow {
         if !is_current_page {
             self.pop_to_show_widget();
             imp.navigation_view.push(&*imp.show_page);
-            self.imp().bottom_switcher.set_visible(false);
+            self.imp().bottom_switcher_bar.set_visible(false);
         }
     }
 

@@ -321,8 +321,8 @@ impl PlayerRate {
             .insert_action_group("rate", Some(&group));
         widget
             .borrow()
-            .dialog
-            .dialog
+            .sheet
+            .sheet
             .insert_action_group("rate", Some(&group));
     }
 }
@@ -341,8 +341,8 @@ struct PlayerControls {
 }
 
 #[derive(Debug, Clone)]
-struct PlayerDialog {
-    dialog: adw::Window,
+pub(crate) struct PlayerSheet {
+    pub(crate) sheet: adw::Bin,
     cover: gtk::Image,
     play_pause: gtk::Stack,
     play: gtk::Button,
@@ -357,10 +357,10 @@ struct PlayerDialog {
     episode: gtk::Label,
 }
 
-impl PlayerDialog {
+impl PlayerSheet {
     fn new(rate: PlayerRate) -> Self {
-        let builder = gtk::Builder::from_resource("/org/gnome/Podcasts/gtk/player_dialog.ui");
-        let dialog = builder.object("dialog").unwrap();
+        let builder = gtk::Builder::from_resource("/org/gnome/Podcasts/gtk/player_sheet.ui");
+        let sheet = builder.object("sheet").unwrap();
 
         let cover = builder.object("cover").unwrap();
         let play_pause = builder.object("play_pause").unwrap();
@@ -377,8 +377,8 @@ impl PlayerDialog {
 
         bottom.prepend(&rate.btn);
 
-        PlayerDialog {
-            dialog,
+        PlayerSheet {
+            sheet,
             cover,
             play_pause,
             play,
@@ -404,11 +404,10 @@ impl PlayerDialog {
 #[derive(Debug, Clone)]
 pub(crate) struct PlayerWidget {
     pub(crate) container: gtk::Box,
-    gesture_click: gtk::GestureClick,
     player: gst_play::Play,
     player_signals: gst_play::PlaySignalAdapter,
     controls: PlayerControls,
-    dialog: PlayerDialog,
+    pub(crate) sheet: PlayerSheet,
     full: gtk::Box,
     small: gtk::Box,
     stack: gtk::Stack,
@@ -524,10 +523,9 @@ impl Default for PlayerWidget {
         info.create_bindings();
 
         let dialog_rate = PlayerRate::new();
-        let dialog = PlayerDialog::new(dialog_rate);
+        let dialog = PlayerSheet::new(dialog_rate);
 
         let container = builder.object("container").unwrap();
-        let gesture_click = builder.object("gesture_click").unwrap();
         let full: gtk::Box = builder.object("full").unwrap();
         let small: gtk::Box = builder.object("small").unwrap();
         let stack = builder.object("stack").unwrap();
@@ -539,9 +537,8 @@ impl Default for PlayerWidget {
             player,
             player_signals,
             container,
-            gesture_click,
             controls,
-            dialog,
+            sheet: dialog,
             full,
             small,
             stack,
@@ -557,7 +554,7 @@ impl PlayerWidget {
     fn on_rate_changed(&self, rate: f64) {
         self.set_playback_rate(rate);
         self.rate.btn.set_label(&format!("{:.2}×", rate));
-        self.dialog.rate.btn.set_label(&format!("{:.2}×", rate));
+        self.sheet.rate.btn.set_label(&format!("{:.2}×", rate));
     }
 
     fn reveal(&self) {
@@ -574,7 +571,7 @@ impl PlayerWidget {
         let ep = dbqueries::get_episode_widget_from_id(id)?;
         let pd = dbqueries::get_podcast_cover_from_id(ep.show_id())?;
 
-        self.dialog.initialize_episode(&ep, &pd);
+        self.sheet.initialize_episode(&ep, &pd);
 
         self.info.restore_position = second.unwrap_or(ep.play_position());
         self.info.finished_restore = false;
@@ -694,7 +691,7 @@ impl PlayerWidget {
 
 impl PlayerExt for PlayerWidget {
     fn play(&self) {
-        self.dialog.play_pause.set_visible_child(&self.dialog.pause);
+        self.sheet.play_pause.set_visible_child(&self.sheet.pause);
 
         self.reveal();
 
@@ -723,7 +720,7 @@ impl PlayerExt for PlayerWidget {
     }
 
     fn pause(&mut self) {
-        self.dialog.play_pause.set_visible_child(&self.dialog.play);
+        self.sheet.play_pause.set_visible_child(&self.sheet.play);
 
         self.controls
             .play_pause_big
@@ -772,10 +769,10 @@ impl PlayerExt for PlayerWidget {
             self.controls.play_small.grab_focus();
         }
 
-        let is_focus = self.dialog.pause.is_focus();
-        self.dialog.play_pause.set_visible_child(&self.dialog.play);
+        let is_focus = self.sheet.pause.is_focus();
+        self.sheet.play_pause.set_visible_child(&self.sheet.play);
         if is_focus {
-            self.dialog.play.grab_focus();
+            self.sheet.play.grab_focus();
         }
 
         self.info.ep = None;
@@ -897,41 +894,28 @@ impl PlayerWrapper {
         self.connect_rate_buttons();
         self.connect_mpris_buttons(sender);
         self.connect_gst_signals(sender);
-        self.connect_dialog();
+        self.connect_sheet();
     }
 
-    fn connect_dialog(&self) {
-        let this = self.deref();
+    fn connect_sheet(&self) {
         let widget = self.borrow();
 
         widget
             .timer
             .duration
-            .bind_property("label", &widget.dialog.duration, "label")
+            .bind_property("label", &widget.sheet.duration, "label")
             .flags(glib::BindingFlags::SYNC_CREATE)
             .build();
         widget
             .timer
             .progressed
-            .bind_property("label", &widget.dialog.progressed, "label")
+            .bind_property("label", &widget.sheet.progressed, "label")
             .flags(glib::BindingFlags::SYNC_CREATE)
             .build();
         widget
-            .dialog
+            .sheet
             .slider
             .set_adjustment(&widget.timer.slider.adjustment());
-
-        widget
-            .gesture_click
-            .connect_released(clone!(@weak this => move |_, _, _, _| {
-                let this = this.borrow();
-
-                let parent = this.container.root().and_downcast::<gtk::Window>().unwrap();
-
-                info!("showing dialog");
-                this.dialog.dialog.set_transient_for(Some(&parent));
-                this.dialog.dialog.present();
-            }));
     }
 
     /// Connect the `PlayerControls` buttons to the `PlayerExt` methods.
@@ -992,25 +976,25 @@ impl PlayerWrapper {
 
         // Connect the play button to the gst Player.
         widget
-            .dialog
+            .sheet
             .play
             .connect_clicked(clone!(@weak this => move |_| {
                 this.borrow().play();
-                this.borrow().dialog.pause.grab_focus(); // keep focus for accessibility
+                this.borrow().sheet.pause.grab_focus(); // keep focus for accessibility
             }));
 
         // Connect the pause button to the gst Player.
         widget
-            .dialog
+            .sheet
             .pause
             .connect_clicked(clone!(@weak this => move |_| {
                 this.borrow_mut().pause();
-                this.borrow().dialog.play.grab_focus(); // keep focus for accessibility
+                this.borrow().sheet.play.grab_focus(); // keep focus for accessibility
             }));
 
         // Connect the rewind button to the gst Player.
         widget
-            .dialog
+            .sheet
             .rewind
             .connect_clicked(clone!(@weak this => move |_| {
                 this.borrow().rewind();
@@ -1018,7 +1002,7 @@ impl PlayerWrapper {
 
         // Connect the fast-forward button to the gst Player.
         widget
-            .dialog
+            .sheet
             .forward
             .connect_clicked(clone!(@weak this => move |_| {
                 this.borrow().fast_forward();
@@ -1100,7 +1084,7 @@ impl PlayerWrapper {
         self.deref().borrow().rate.connect_signals(self.deref());
         self.deref()
             .borrow()
-            .dialog
+            .sheet
             .rate
             .connect_signals(self.deref());
     }

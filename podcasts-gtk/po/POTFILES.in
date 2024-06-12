@@ -11,8 +11,8 @@ podcasts-gtk/resources/gtk/headerbar.ui
 podcasts-gtk/resources/gtk/help-overlay.ui
 podcasts-gtk/resources/gtk/home_episode.ui
 podcasts-gtk/resources/gtk/home_view.ui
-podcasts-gtk/resources/gtk/player_dialog.ui
 podcasts-gtk/resources/gtk/player_rate.ui
+podcasts-gtk/resources/gtk/player_sheet.ui
 podcasts-gtk/resources/gtk/player_toolbar.ui
 podcasts-gtk/resources/gtk/secondary_menu.ui
 podcasts-gtk/resources/gtk/show_menu.ui
