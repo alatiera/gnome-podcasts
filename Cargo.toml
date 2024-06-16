@@ -13,9 +13,11 @@ reqwest = "0.12"
 
 [profile.release]
 debug = true
+lto = "thin"
 
 [profile.dev]
 opt-level = 1
+lto = "thin"
 
 [profile.dev.package."*"]
 opt-level = 3
