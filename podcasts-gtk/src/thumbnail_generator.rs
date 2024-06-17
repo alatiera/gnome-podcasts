@@ -20,12 +20,12 @@ pub enum ThumbSize {
 pub use self::ThumbSize::*;
 
 impl ThumbSize {
-    fn pixels(&self) -> f32 {
+    fn pixels(&self) -> u32 {
         match &self {
-            Thumb64 => 64.0,
-            Thumb128 => 128.0,
-            Thumb256 => 256.0,
-            Thumb512 => 512.0,
+            Thumb64 => 64,
+            Thumb128 => 128,
+            Thumb256 => 256,
+            Thumb512 => 512,
         }
     }
     pub fn hidpi(self, scale: i32) -> Option<ThumbSize> {
@@ -59,7 +59,7 @@ impl ThumbSize {
 
 impl Display for ThumbSize {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "{}", self.pixels() as i32)
+        write!(f, "{}", self.pixels())
     }
 }
 
@@ -87,11 +87,7 @@ pub async fn generate(
                 // save and read gdk texture
                 let texture = crate::RUNTIME
                     .spawn_blocking(move || {
-                        let image = image_full_size.resize(
-                            pixels as u32,
-                            pixels as u32,
-                            FilterType::Lanczos3,
-                        );
+                        let image = image_full_size.resize(pixels, pixels, FilterType::Lanczos3);
                         image.save_with_format(&tmp_path2, image::ImageFormat::Png)?;
                         gtk::gdk::Texture::from_filename(&tmp_path2)
                             .map_err(|_| anyhow!("failed to read gtk texture"))
