@@ -433,7 +433,8 @@ impl SyncPreferencesPriv {
         self.loading_info.set_visible(true);
         self.loading_spinner.set_spinning(true);
         self.loading_label.set_text(text);
-        self.loading_label.grab_focus();
+        self.loading_label
+            .announce(text, gtk::AccessibleAnnouncementPriority::High);
     }
 
     fn set_visibilities(
