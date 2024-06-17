@@ -229,19 +229,20 @@ pub(crate) fn remove_show_notif(pd: Arc<Show>, sender: Sender<Action>) -> adw::T
                     .downcast::<crate::PdApplication>()
                     .unwrap();
                 if app.is_show_marked_delete(&pd) {
+                    if let Err(err) = podcasts_data::sync::Show::store(&pd, podcasts_data::sync::ShowAction::Removed) {
+                        // TODO okay to send_blocking here?
+                        send_blocking!(sender, Action::ErrorNotification(i18n_f("Failed to store Unsubscribe Action for Synchronization in database. {}", &[&err.to_string()])))
+                    }
+
+
                     if let Err(err) = delete_show(&pd) {
                         error!("Error: {}", err);
                         error!("Failed to delete {}", pd.title());
                     }
-                }
 
-
-                if let Err(err) = podcasts_data::sync::Show::store(&pd, podcasts_data::sync::ShowAction::Removed) {
-                    // TODO okay to send_blocking here?
-                    send_blocking!(sender, Action::ErrorNotification(i18n_f("Failed to store Unsubscribe Action for Synchronization in database. {}", &[&err.to_string()])))
+                    // No need to update the UI after remove.
+                    // The "unsubscribe" action already updated the UI after ignoring the show.
                 }
-                // No need to update the UI after remove.
-                // The "unsubscribe" action already updated the UI after ignoring the show.
             }
         ));
     });
