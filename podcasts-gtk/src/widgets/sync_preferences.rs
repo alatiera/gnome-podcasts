@@ -256,6 +256,96 @@ impl SyncPreferencesPriv {
                         )
                         .await;
                         podcasts_data::sync::Settings::remove().await?;
+                        send!(widget_sender, WidgetAction::LogoutDone);
+                        anyhow::Ok(())
+                    }
+                    .await
+                    {
+                        send!(
+                            sender,
+                            Action::ErrorNotification(format!("Logout error: {e}"))
+                        );
+                        Self::fetch_settings(err_sender).await;
+                    }
+                });
+            }
+        ));
+
+        self.login_browser.connect_clicked(clone!(
+            #[strong]
+            sender,
+            #[strong]
+            widget_sender,
+            #[weak(rename_to = this)]
+            self,
+            move |_| {
+                let server = this.server.text();
+                let sender = sender.clone();
+                let widget_sender = widget_sender.clone();
+
+                this.enter_loading_state(&i18n("Waiting for browser login..."));
+
+                crate::RUNTIME.spawn(async move {
+                    let refresh_sender = sender.clone();
+                    let err_sender = widget_sender.clone();
+                    if let Err(e) = async move {
+                        let (server, user, app_password) =
+                            podcasts_data::nextcloud_sync::launch_browser_login_flow_v2(
+                                &server,
+                                |url| {
+                                    let launch_context: Option<&gtk::gio::AppLaunchContext> = None;
+                                    Ok(gtk::gio::AppInfo::launch_default_for_uri(
+                                        url,
+                                        launch_context,
+                                    )?)
+                                },
+                            )
+                            .await?;
+                        Self::do_first_sync(
+                            refresh_sender,
+                            widget_sender.clone(),
+                            &server,
+                            &user,
+                            &app_password,
+                        )
+                        .await
+                    }
+                    .await
+                    {
+                        send!(
+                            sender,
+                            Action::ErrorNotification(format!("Login error: {e}"))
+                        );
+                        Self::fetch_settings(err_sender).await;
+                    }
+                });
+            }
+        ));
+
+        self.logout.connect_clicked(clone!(
+            #[strong]
+            sender,
+            #[strong]
+            widget_sender,
+            #[weak(rename_to = this)]
+            self,
+            move |_| {
+                let sender = sender.clone();
+                let widget_sender = widget_sender.clone();
+
+                this.enter_loading_state(&i18n("Logging out..."));
+
+                crate::RUNTIME.spawn(async move {
+                    let err_sender = widget_sender.clone();
+                    if let Err(e) = async move {
+                        let (settings, password) = podcasts_data::sync::Settings::fetch().await?;
+                        podcasts_data::nextcloud_sync::logout(
+                            &settings.server,
+                            &settings.user,
+                            &password,
+                        )
+                        .await;
+                        podcasts_data::sync::Settings::remove().await?;
                         if let Err(e) = widget_sender.send(WidgetAction::LogoutDone).await {
                             error!("failed to send {e}");
                         }
@@ -285,12 +375,10 @@ impl SyncPreferencesPriv {
                 let widget_sender = widget_sender.clone();
                 this.enter_loading_state(&i18n("Synchronizing now..."));
                 crate::RUNTIME.spawn(async move {
-                    if let Err(e) = widget_sender
-                        .send(WidgetAction::LoadingMessage(i18n("Refreshing feeds...")))
-                        .await
-                    {
-                        error!("failed to send {e}");
-                    }
+                    send!(
+                        widget_sender,
+                        WidgetAction::LoadingMessage(i18n("Refreshing feeds..."))
+                    );
                     FEED_MANAGER.full_refresh().await;
                     let result = podcasts_data::nextcloud_sync::sync(true).await;
                     match result {
@@ -322,19 +410,16 @@ impl SyncPreferencesPriv {
         app_password: &str,
     ) -> Result<()> {
         podcasts_data::sync::Settings::store(server, user, app_password).await?;
-        if let Err(e) = widget_sender
-            .send(WidgetAction::LoadingMessage(i18n("Refreshing feeds...")))
-            .await
-        {
-            error!("failed to send {e}");
-        }
+        send!(
+            widget_sender,
+            WidgetAction::LoadingMessage(i18n("Refreshing feeds..."))
+        );
         FEED_MANAGER.full_refresh().await;
-        if let Err(e) = widget_sender
-            .send(WidgetAction::LoadingMessage(i18n("Running first sync...")))
-            .await
-        {
-            error!("failed to send {e}");
-        }
+        send!(
+            widget_sender,
+            WidgetAction::LoadingMessage(i18n("Running first sync..."))
+        );
+
         podcasts_data::nextcloud_sync::sync(true).await?;
         Self::fetch_settings(widget_sender).await;
         send!(app_sender, Action::RefreshAllViews);
@@ -401,14 +486,12 @@ impl SyncPreferencesPriv {
 
     async fn fetch_settings(widget_sender: Sender<WidgetAction>) {
         let result = podcasts_data::sync::Settings::fetch().await;
-        if let Err(e) = widget_sender
-            .send(WidgetAction::GotSettings(
-                result.map_err(|e| anyhow!("Failed to load settings {:#?}", e)),
-            ))
-            .await
-        {
-            error!("failed to send {e}");
-        }
+        send!(
+            widget_sender,
+            WidgetAction::GotSettings(
+                result.map_err(|e| anyhow!("Failed to load settings {:#?}", e))
+            )
+        );
     }
 
     fn do_action(&self, action: WidgetAction) {
