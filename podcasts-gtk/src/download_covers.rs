@@ -188,6 +188,14 @@ async fn download(
     let thumbs = crate::thumbnail_generator::generate(pd, &filename)
         .await
         .context(format!("For {}", filename.display()))?;
+
+    if let Err(err) = pd.update_image_cache_values() {
+        error!(
+            "Failed to update cache date on Cover image: {err} for {}",
+            path.display()
+        );
+    }
+
     if just_download {
         tokio::fs::rename(&filename, &path).await?;
         return Ok(None);

@@ -91,52 +91,6 @@ impl Show {
     pub fn source_id(&self) -> i32 {
         self.source_id
     }
-
-    /// Update the hash of the image's URI.
-    pub fn update_image_uri_hash(&self) -> Result<(), DataError> {
-        use crate::schema::shows::dsl::*;
-        let db = connection();
-        let mut con = db.get()?;
-
-        let mut hash: Option<Vec<u8>> = None;
-        if let Some(i) = &self.image_uri {
-            hash = Some(u64_to_vec_u8(calculate_hash(i)));
-        }
-
-        diesel::update(shows.filter(id.eq(self.id)))
-            .set(image_uri_hash.eq(&hash))
-            .execute(&mut con)
-            .map(|_| ())
-            .map_err(From::from)
-    }
-
-    /// Update the timestamp when the image has been cached.
-    pub fn update_image_cached(&self) -> Result<(), DataError> {
-        use crate::schema::shows::dsl::*;
-        let db = connection();
-        let mut con = db.get()?;
-        diesel::update(shows.filter(id.eq(self.id)))
-            .set(image_cached.eq(Utc::now().naive_utc()))
-            .execute(&mut con)
-            .map(|_| ())
-            .map_err(From::from)
-    }
-
-    /// Update the image's timestamp and URI hash value.
-    pub fn update_image_cache_values(&self) -> Result<(), DataError> {
-        match self.image_uri_hash() {
-            None => self.update_image_uri_hash()?,
-            Some(hash) => match self.image_uri() {
-                None => self.update_image_uri_hash()?,
-                Some(image_uri) => {
-                    if calculate_hash(&image_uri) != hash {
-                        self.update_image_uri_hash()?;
-                    }
-                }
-            },
-        }
-        self.update_image_cached()
-    }
 }
 
 #[derive(Queryable, Debug, Clone)]
@@ -212,6 +166,52 @@ impl ShowCoverModel {
         }
         false
     }
+
+    /// Update the timestamp when the image has been cached.
+    pub(crate) fn update_image_cached(&self) -> Result<(), DataError> {
+        use crate::schema::shows::dsl::*;
+        let db = connection();
+        let mut con = db.get()?;
+        diesel::update(shows.filter(id.eq(self.id)))
+            .set(image_cached.eq(Utc::now().naive_utc()))
+            .execute(&mut con)
+            .map(|_| ())
+            .map_err(From::from)
+    }
+
+    /// Update the hash of the image's URI.
+    fn update_image_uri_hash(&self) -> Result<(), DataError> {
+        use crate::schema::shows::dsl::*;
+        let db = connection();
+        let mut con = db.get()?;
+
+        let mut hash: Option<Vec<u8>> = None;
+        if let Some(i) = &self.image_uri {
+            hash = Some(u64_to_vec_u8(calculate_hash(i)));
+        }
+
+        diesel::update(shows.filter(id.eq(self.id)))
+            .set(image_uri_hash.eq(&hash))
+            .execute(&mut con)
+            .map(|_| ())
+            .map_err(From::from)
+    }
+
+    /// Update the image's timestamp and URI hash value.
+    pub fn update_image_cache_values(&self) -> Result<(), DataError> {
+        match self.image_uri_hash() {
+            None => self.update_image_uri_hash()?,
+            Some(hash) => match self.image_uri() {
+                None => self.update_image_uri_hash()?,
+                Some(image_uri) => {
+                    if calculate_hash(&image_uri) != hash {
+                        self.update_image_uri_hash()?;
+                    }
+                }
+            },
+        }
+        self.update_image_cached()
+    }
 }
 
 #[cfg(test)]
@@ -268,6 +268,7 @@ mod tests {
         truncate_db()?;
         EXPECTED_INTERCEPTED.insert()?;
         let show = EXPECTED_INTERCEPTED.to_podcast()?;
+        let show: ShowCoverModel = show.into();
         let original_timestamp = show.image_cached();
         show.update_image_cached().unwrap();
         let show = dbqueries::get_podcast_from_id(show.id())?;
@@ -294,7 +295,7 @@ mod tests {
         let original_hash: u64 = 2965280433145069220;
         let updated = &*UPDATED_IMAGE_URI_INTERCEPTED;
         updated.update(original.id())?;
-        let show = dbqueries::get_podcast_from_id(original.id())?;
+        let show = dbqueries::get_podcast_cover_from_id(original.id())?;
 
         let not_yet_updated_hash = updated.image_uri_hash().unwrap();
         assert_eq!(not_yet_updated_hash, original_hash);
@@ -317,6 +318,7 @@ mod tests {
         truncate_db()?;
         EXPECTED_INTERCEPTED.insert()?;
         let show = EXPECTED_INTERCEPTED.to_podcast()?;
+        let show: ShowCoverModel = show.into();
         let original_timestamp = show.image_cached();
         show.update_image_cache_values().unwrap();
         let show = dbqueries::get_podcast_from_id(show.id())?;
@@ -341,7 +343,7 @@ mod tests {
         let original_timestamp = original.image_cached();
         let updated = &*UPDATED_IMAGE_URI_INTERCEPTED;
         updated.update(original.id())?;
-        let show = dbqueries::get_podcast_from_id(original.id())?;
+        let show = dbqueries::get_podcast_cover_from_id(original.id())?;
 
         let not_yet_updated_hash = show.image_uri_hash().unwrap();
         let original_hash: u64 = 2965280433145069220;
