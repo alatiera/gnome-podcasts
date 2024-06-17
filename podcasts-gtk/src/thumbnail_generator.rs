@@ -6,6 +6,7 @@ use std::path::Path;
 
 use crate::download_covers::determin_cover_path;
 use podcasts_data::ShowCoverModel;
+use std::sync::Arc;
 
 // we only generate a fixed amount of thumbnails
 // This enum is to avoid accidentally passing a thumb-size we didn't generate
@@ -68,21 +69,29 @@ pub async fn generate(
 ) -> Result<HashMap<ThumbSize, gtk::gdk::Texture>> {
     let sizes: [ThumbSize; 4] = [Thumb64, Thumb128, Thumb256, Thumb512];
     // All thumbs must generate, we rely on them existing if the main image exists.
+
+    let path = path.to_path_buf();
+    let image_full_size = crate::RUNTIME
+        .spawn_blocking(move || anyhow::Ok(Arc::new(image::io::Reader::open(path)?.decode()?)))
+        .await??;
+
     let handles: Vec<_> = sizes
         .into_iter()
         .map(|size| {
             let pixels = size.pixels();
             let thumb_path = determin_cover_path(pd, Some(size));
-            let path = path.to_path_buf();
+            let image_full_size = image_full_size.clone();
             crate::RUNTIME.spawn(async move {
                 let tmp_path = thumb_path.with_extension(".part");
                 let tmp_path2 = tmp_path.clone();
                 // save and read gdk texture
                 let texture = crate::RUNTIME
                     .spawn_blocking(move || {
-                        let image = image::io::Reader::open(path)?.decode()?;
-                        let image =
-                            image.resize(pixels as u32, pixels as u32, FilterType::Lanczos3);
+                        let image = image_full_size.resize(
+                            pixels as u32,
+                            pixels as u32,
+                            FilterType::Lanczos3,
+                        );
                         image.save_with_format(&tmp_path2, image::ImageFormat::Png)?;
                         gtk::gdk::Texture::from_filename(&tmp_path2)
                             .map_err(|_| anyhow!("failed to read gtk texture"))
