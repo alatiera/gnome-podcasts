@@ -5,7 +5,7 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-adw = { package = "libadwaita", version = "0.6", features = ["v1_4"] }
+adw = { package = "libadwaita", version = "0.6", features = ["v1_5"] }
 anyhow = { workspace = true }
 async-channel = "2"
 async-oneshot = "0.5"

@@ -18,7 +18,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 use crate::config::{APP_ID, VERSION};
-use gtk::prelude::*;
+use adw::prelude::*;
 
 use crate::i18n::i18n;
 
@@ -47,7 +47,7 @@ pub(crate) fn about_dialog(window: &gtk::ApplicationWindow) {
 
     let designers = vec!["Tobias Bernard", "Sam Hewitt"];
 
-    let dialog = adw::AboutWindow::builder()
+    let dialog = adw::AboutDialog::builder()
         .application_icon(APP_ID)
         .comments(i18n("Podcast Client for the GNOME Desktop.").as_str())
         .copyright("© 2017-2021 Jordan Petridis")
@@ -56,12 +56,11 @@ pub(crate) fn about_dialog(window: &gtk::ApplicationWindow) {
         .application_name(i18n("Podcasts"))
         .website("https://gitlab.gnome.org/World/podcasts")
         .issue_url("https://gitlab.gnome.org/World/podcasts/-/issues")
-        .transient_for(window)
         .developer_name("Jordan Petridis, et al.")
         .developers(developers)
         .designers(designers)
         .translator_credits(i18n("translator-credits").as_str())
         .build();
 
-    dialog.present();
+    dialog.present(window);
 }
