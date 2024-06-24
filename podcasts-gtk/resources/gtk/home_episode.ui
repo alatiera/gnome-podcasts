@@ -49,7 +49,7 @@ Tobias Bernard
             <property name="halign">center</property>
             <property name="valign">center</property>
             <style>
-              <class name="rounded-small "/>
+              <class name="rounded-small"/>
               <class name="home-view-episode-cover" />
             </style>
           </object>
