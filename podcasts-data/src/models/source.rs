@@ -36,7 +36,6 @@ use crate::models::{NewSource, Save};
 use crate::schema::source;
 use crate::USER_AGENT;
 
-use crate::models::IdType;
 use diesel::backend::Backend;
 use diesel::deserialize::{self, FromSql};
 use diesel::serialize::{self, Output, ToSql};
@@ -59,12 +58,6 @@ where
 impl ToSql<diesel::sql_types::Integer, Sqlite> for SourceId {
     fn to_sql<'b>(&'b self, out: &mut Output<'b, '_, Sqlite>) -> serialize::Result {
         <i32 as ToSql<Integer, Sqlite>>::to_sql(&self.0, out)
-    }
-}
-
-impl IdType for SourceId {
-    fn to_int(&self) -> i32 {
-        self.0
     }
 }
 

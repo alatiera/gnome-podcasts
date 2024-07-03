@@ -26,7 +26,6 @@ use crate::errors::DataError;
 use crate::models::{Save, Show, ShowId};
 use crate::schema::episodes;
 
-use crate::models::IdType;
 use diesel::backend::Backend;
 use diesel::deserialize::{self, FromSql};
 use diesel::serialize::{self, Output, ToSql};
@@ -52,11 +51,6 @@ impl ToSql<diesel::sql_types::Integer, Sqlite> for EpisodeId {
     }
 }
 
-impl IdType for EpisodeId {
-    fn to_int(&self) -> i32 {
-        self.0
-    }
-}
 #[derive(Queryable, Identifiable, AsChangeset, Associations, PartialEq)]
 #[diesel(table_name = episodes)]
 #[diesel(treat_none_as_null = true)]

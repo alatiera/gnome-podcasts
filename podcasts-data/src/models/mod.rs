@@ -43,18 +43,8 @@ pub use self::episode::{
 pub use self::show::{Show, ShowCoverModel, ShowId};
 pub use self::source::{Source, SourceId};
 
-pub trait IdType {
-    fn to_int(&self) -> i32;
-}
-
-impl IdType for i32 {
-    fn to_int(&self) -> i32 {
-        *self
-    }
-}
-
 #[derive(Debug, Clone, PartialEq)]
-pub enum IndexState<T, ID: IdType> {
+pub enum IndexState<T, ID> {
     Index(T),
     Update((T, ID)),
     NotChanged,
@@ -66,14 +56,14 @@ pub(crate) trait Insert<T> {
     fn insert(&self) -> Result<T, Self::Error>;
 }
 
-pub trait Update<T, ID: IdType> {
+pub trait Update<T, ID> {
     type Error;
 
     fn update(&self, _: ID) -> Result<T, Self::Error>;
 }
 
 // This might need to change in the future
-pub trait Index<T, ID: IdType>: Insert<T> + Update<T, ID> {
+pub trait Index<T, ID>: Insert<T> + Update<T, ID> {
     type Error;
 
     fn index(&self) -> Result<T, <Self as Index<T, ID>>::Error>;

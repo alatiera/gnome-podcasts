@@ -27,7 +27,6 @@ use chrono::{Duration, NaiveDateTime, Utc};
 use diesel::query_dsl::filter_dsl::FilterDsl;
 use diesel::{ExpressionMethods, RunQueryDsl};
 
-use crate::models::IdType;
 use diesel::backend::Backend;
 use diesel::deserialize::{self, FromSql};
 use diesel::serialize::{self, Output, ToSql};
@@ -50,12 +49,6 @@ where
 impl ToSql<diesel::sql_types::Integer, Sqlite> for ShowId {
     fn to_sql<'b>(&'b self, out: &mut Output<'b, '_, Sqlite>) -> serialize::Result {
         <i32 as ToSql<Integer, Sqlite>>::to_sql(&self.0, out)
-    }
-}
-
-impl IdType for ShowId {
-    fn to_int(&self) -> i32 {
-        self.0
     }
 }
 
