@@ -223,7 +223,7 @@ impl EpisodeWidgetPriv {
 
     fn init_info(&self, episode: &EpisodeWidgetModel) {
         self.set_title(episode);
-        self.set_date(episode.epoch());
+        self.set_date(i64::from(episode.epoch()));
         self.set_duration(episode.duration());
         self.set_size(episode.length());
     }
@@ -241,10 +241,11 @@ impl EpisodeWidgetPriv {
     }
 
     // Set the date label of the episode widget.
-    fn set_date(&self, epoch: i32) {
-        let now: DateTime<Utc> = Utc::now();
+    fn set_date(&self, epoch: i64) {
+        let now: DateTime<Local> = Local::now();
 
-        let ts = Utc.timestamp_opt(i64::from(epoch), 0).unwrap();
+        let ts_utc = Utc.timestamp_opt(i64::from(epoch), 0).unwrap();
+        let ts = DateTime::<Local>::from(ts_utc);
 
         // If the episode is from a different year, print year as well
         if now.year() != ts.year() {

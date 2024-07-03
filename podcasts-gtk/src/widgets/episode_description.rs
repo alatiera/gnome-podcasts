@@ -215,14 +215,15 @@ impl EpisodeDescriptionPriv {
             let hours = (s / 60) / 60;
             format!("{:02}:{:02}:{:02}", hours, minutes, seconds)
         });
-        let now_utc = Utc::now();
+        let now = Local::now();
         let ep_utc = Utc.timestamp_opt(i64::from(ep.epoch()), 0).unwrap();
+        let ep_local = DateTime::<Local>::from(ep_utc);
         // If the episode is from a different year, print year as well
-        let date = if now_utc.year() != ep_utc.year() {
-            ep_utc.format("%e %b %Y").to_string()
+        let date = if now.year() != ep_local.year() {
+            ep_local.format("%e %b %Y").to_string()
             // Else omit the year from the label
         } else {
-            ep_utc.format("%e %b").to_string()
+            ep_local.format("%e %b").to_string()
         };
 
         let duration_date = match duration {

@@ -174,8 +174,7 @@ fn get_episodes() -> Result<Vec<DateBox>> {
     Ok(split_model(episodes))
 }
 
-fn split(now: &DateTime<Utc>, epoch: i64) -> ListSplit {
-    let ep = Utc.timestamp_opt(epoch, 0).unwrap();
+fn split(now: &DateTime<Local>, ep: &DateTime<Local>) -> ListSplit {
     let days_now = now.num_days_from_ce();
     let days_ep = ep.num_days_from_ce();
     let weekday = now.weekday().num_days_from_monday() as i32;
@@ -196,14 +195,15 @@ fn split(now: &DateTime<Utc>, epoch: i64) -> ListSplit {
 fn split_model(model: Vec<EpisodeWidgetModel>) -> Vec<DateBox> {
     use self::ListSplit::*;
 
-    let now_utc = Utc::now();
+    let now = Local::now();
 
     let (mut today, mut yday, mut week, mut month, mut rest) =
         (Vec::new(), Vec::new(), Vec::new(), Vec::new(), Vec::new());
 
     for ep in model {
-        let epoch = ep.epoch();
-        match split(&now_utc, i64::from(epoch)) {
+        let epoch_utc = DateTime::<Utc>::from_timestamp(i64::from(ep.epoch()), 0).unwrap();
+        let epoch_local = DateTime::<Local>::from(epoch_utc);
+        match split(&now, &epoch_local) {
             Today => today.push(ep),
             Yday => yday.push(ep),
             Week => week.push(ep),
