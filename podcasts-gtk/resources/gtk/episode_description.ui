@@ -293,6 +293,7 @@ Tobias Bernard
                         <property name="margin-bottom">18</property>
                         <property name="label" translatable="yes">Episode Description</property>
                         <property name="wrap">True</property>
+                        <property name="wrap-mode">word-char</property>
                         <property name="xalign">0</property>
                         <style>
                           <class name="episode_description_label"/>
