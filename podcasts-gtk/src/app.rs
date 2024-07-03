@@ -40,7 +40,7 @@ use crate::widgets::{EpisodeDescription, SearchResults, ShowWidget};
 use crate::window::MainWindow;
 use podcasts_data::dbqueries;
 use podcasts_data::discovery::FoundPodcast;
-use podcasts_data::{Episode, Show};
+use podcasts_data::{Episode, EpisodeId, Show};
 
 // FIXME: port Optionals to OnceCell
 #[derive(Debug)]
@@ -173,9 +173,9 @@ pub(crate) enum Action {
     StopUpdating,
     RemoveShow(Arc<Show>),
     ErrorNotification(String),
-    InitEpisode(i32),
-    InitEpisodeAt(i32, i32),
-    StreamEpisode(i32),
+    InitEpisode(EpisodeId),
+    InitEpisodeAt(EpisodeId, i32),
+    StreamEpisode(EpisodeId),
     UpdateMprisCover(i32, bool), // bool = download success, use local file
     EmptyState,
     PopulatedState,
@@ -274,7 +274,7 @@ impl PdApplication {
     fn go_to_episode(&self, id_variant_option: Option<&glib::Variant>) -> Result<()> {
         let id_variant = id_variant_option.expect("missing action_target_value");
         let id = id_variant.get::<i32>().expect("invalid variant type");
-        let ep = dbqueries::get_episode_from_id(id)?;
+        let ep = dbqueries::get_episode_from_id(EpisodeId(id))?;
         let show = dbqueries::get_podcast_from_id(ep.show_id())?;
         let data = self.imp();
         send_blocking!(

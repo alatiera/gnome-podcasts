@@ -35,7 +35,7 @@ use crate::widgets::DownloadProgressBar;
 use crate::widgets::EpisodeMenu;
 use podcasts_data::EpisodeWidgetModel;
 use podcasts_data::{dbqueries, downloader};
-use podcasts_data::{Episode, Show};
+use podcasts_data::{Episode, EpisodeId, Show};
 
 pub enum EpisodeDescriptionAction {
     EpisodeSpecificImage(gtk::gdk::Texture),
@@ -127,7 +127,7 @@ impl EpisodeDescriptionPriv {
         }
     }
 
-    fn init_buttons(&self, sender: Sender<Action>, ep: &Episode, id: i32) {
+    fn init_buttons(&self, sender: Sender<Action>, ep: &Episode, id: EpisodeId) {
         self.stream_button.connect_clicked(clone!(
             #[strong]
             sender,
@@ -204,7 +204,7 @@ impl EpisodeDescriptionPriv {
         ));
     }
 
-    fn refresh_buttons(&self, id: i32) {
+    fn refresh_buttons(&self, id: EpisodeId) {
         match dbqueries::get_episode_widget_from_id(id) {
             Ok(ep) => self.determine_button_state(&ep),
             Err(e) => error!("failed to fetch episode for description refresh {e}"),

@@ -29,11 +29,12 @@ use crate::i18n::i18n_f;
 use podcasts_data::dbqueries;
 use podcasts_data::downloader::{get_episode, DownloadProgress};
 use podcasts_data::errors::DownloadError;
+use podcasts_data::EpisodeId;
 
 // This is messy, undocumented and hacky af.
 // I am terrible at writing downloaders and download managers.
 pub(crate) type ActiveProgress = Arc<Mutex<Progress>>;
-pub(crate) type DownloadProgressLock = Arc<RwLock<HashMap<i32, ActiveProgress>>>;
+pub(crate) type DownloadProgressLock = Arc<RwLock<HashMap<EpisodeId, ActiveProgress>>>;
 pub(crate) static ACTIVE_DOWNLOADS: Lazy<DownloadProgressLock> =
     Lazy::new(|| Arc::new(RwLock::new(HashMap::new())));
 
@@ -83,7 +84,7 @@ impl DownloadProgress for Progress {
     }
 }
 
-pub(crate) fn add(sender: Sender<Action>, id: i32, directory: String) -> Result<()> {
+pub(crate) fn add(sender: Sender<Action>, id: EpisodeId, directory: String) -> Result<()> {
     // Create a new `Progress` struct to keep track of dl progress.
     let prog = Arc::new(Mutex::new(Progress::default()));
 

@@ -41,6 +41,7 @@ use crate::widgets::player;
 use crate::widgets::player::{PlayerExt, PlayerWidget, SeekDirection};
 use crate::widgets::{Content, DiscoveryPage, EpisodeDescription, ShowWidget};
 use podcasts_data::dbqueries;
+use podcasts_data::EpisodeId;
 
 #[derive(Debug, CompositeTemplate, glib::Properties)]
 #[template(resource = "/org/gnome/Podcasts/gtk/window.ui")]
@@ -304,7 +305,12 @@ impl MainWindow {
         self.imp().navigation_view.pop_to_tag("content");
     }
 
-    pub(crate) fn init_episode(&self, id: i32, second: Option<i32>, stream: bool) -> Result<()> {
+    pub(crate) fn init_episode(
+        &self,
+        id: EpisodeId,
+        second: Option<i32>,
+        stream: bool,
+    ) -> Result<()> {
         self.imp()
             .bottom_sheet
             .set_property("can-open", true.to_value());

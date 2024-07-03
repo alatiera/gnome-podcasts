@@ -26,6 +26,40 @@ use crate::errors::DataError;
 use crate::models::{Save, Show};
 use crate::schema::episodes;
 
+use crate::models::IdType;
+use diesel::backend::Backend;
+use diesel::deserialize::{self, FromSql};
+use diesel::serialize::{self, IsNull, Output, ToSql};
+use diesel::sql_types::Integer;
+use diesel::sqlite::Sqlite;
+use diesel::sqlite::SqliteValue;
+use std::io::Write;
+#[derive(AsExpression, FromSqlRow, Debug, PartialEq, Eq, Hash, Clone, Copy)]
+#[sql_type = "diesel::sql_types::Integer"]
+pub struct EpisodeId(pub i32);
+
+impl<DB> FromSql<Integer, DB> for EpisodeId
+where
+    DB: Backend,
+    i32: FromSql<Integer, DB>,
+{
+    fn from_sql(bytes: DB::RawValue<'_>) -> deserialize::Result<Self> {
+        i32::from_sql(bytes).map(EpisodeId)
+    }
+}
+
+impl ToSql<diesel::sql_types::Integer, Sqlite> for EpisodeId {
+    fn to_sql<'b>(&'b self, out: &mut Output<'b, '_, Sqlite>) -> serialize::Result {
+        <i32 as ToSql<Integer, Sqlite>>::to_sql(&self.0, out)
+    }
+}
+
+impl IdType for EpisodeId {
+    fn to_int(&self) -> i32 {
+        self.0
+    }
+}
+
 #[derive(Queryable, Identifiable, AsChangeset, Associations, PartialEq)]
 #[diesel(table_name = episodes)]
 #[diesel(treat_none_as_null = true)]
@@ -33,7 +67,7 @@ use crate::schema::episodes;
 #[derive(Debug, Clone)]
 /// Diesel Model of the episode table.
 pub struct Episode {
-    id: i32,
+    id: EpisodeId,
     title: String,
     uri: Option<String>,
     local_uri: Option<String>,
@@ -64,7 +98,7 @@ impl Save<Episode> for Episode {
 
 impl Episode {
     /// Get the value of the sqlite's `ROW_ID`
-    pub fn id(&self) -> i32 {
+    pub fn id(&self) -> EpisodeId {
         self.id
     }
 
@@ -156,7 +190,7 @@ impl Episode {
 #[derive(Debug, Clone)]
 /// Diesel Model to be used for constructing `EpisodeWidgets`.
 pub struct EpisodeWidgetModel {
-    id: i32,
+    id: EpisodeId,
     title: String,
     uri: Option<String>,
     local_uri: Option<String>,
@@ -205,7 +239,7 @@ impl Save<usize> for EpisodeWidgetModel {
 
 impl EpisodeWidgetModel {
     /// Get the value of the sqlite's `ROW_ID`
-    pub fn id(&self) -> i32 {
+    pub fn id(&self) -> EpisodeId {
         self.id
     }
 
@@ -320,7 +354,7 @@ impl EpisodeWidgetModel {
 #[derive(Debug, Clone)]
 /// Diesel Model to be used internal with the `utils::checkup` function.
 pub struct EpisodeCleanerModel {
-    id: i32,
+    id: EpisodeId,
     local_uri: Option<String>,
     played: Option<i32>,
 }
@@ -355,7 +389,7 @@ impl From<Episode> for EpisodeCleanerModel {
 
 impl EpisodeCleanerModel {
     /// Get the value of the sqlite's `ROW_ID`
-    pub fn id(&self) -> i32 {
+    pub fn id(&self) -> EpisodeId {
         self.id
     }
 
@@ -392,7 +426,7 @@ impl EpisodeCleanerModel {
 #[derive(Debug, Clone)]
 /// Diesel Model to be used for FIXME.
 pub struct EpisodeMinimal {
-    id: i32,
+    id: EpisodeId,
     title: String,
     uri: Option<String>,
     image_uri: Option<String>,
@@ -423,7 +457,7 @@ impl From<Episode> for EpisodeMinimal {
 
 impl EpisodeMinimal {
     /// Get the value of the sqlite's `ROW_ID`
-    pub fn id(&self) -> i32 {
+    pub fn id(&self) -> EpisodeId {
         self.id
     }
 

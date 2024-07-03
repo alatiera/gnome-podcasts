@@ -21,8 +21,8 @@
 
 use crate::dbqueries;
 use crate::errors::DataError;
+use crate::models::{EpisodeId, NewEpisode, NewEpisodeMinimal, NewShow, Show};
 use crate::models::{Index, IndexState, Update};
-use crate::models::{NewEpisode, NewEpisodeMinimal, NewShow, Show};
 
 /// Wrapper struct that hold a `Source` id and the `rss::Channel`
 /// that corresponds to the `Source.uri` field.
@@ -70,7 +70,7 @@ impl Feed {
 fn determine_ep_state(
     ep: NewEpisodeMinimal,
     item: &rss::Item,
-) -> Result<IndexState<NewEpisode>, DataError> {
+) -> Result<IndexState<NewEpisode, EpisodeId>, DataError> {
     // Check if feed exists
     let exists = dbqueries::episode_exists(ep.guid(), ep.title(), ep.show_id())?;
 
@@ -90,7 +90,7 @@ fn determine_ep_state(
 
 fn filter_episodes<S>(stream: S) -> Vec<NewEpisode>
 where
-    S: Iterator<Item = Result<IndexState<NewEpisode>, DataError>>,
+    S: Iterator<Item = Result<IndexState<NewEpisode, EpisodeId>, DataError>>,
 {
     let result: Vec<NewEpisode> = stream
         .filter_map(Result::ok)

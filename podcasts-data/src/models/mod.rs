@@ -37,14 +37,26 @@ pub(crate) use self::new_episode::NewEpisodeBuilder;
 #[cfg(test)]
 pub(crate) use self::new_show::NewShowBuilder;
 
-pub use self::episode::{Episode, EpisodeCleanerModel, EpisodeMinimal, EpisodeWidgetModel};
+pub use self::episode::{
+    Episode, EpisodeCleanerModel, EpisodeId, EpisodeMinimal, EpisodeWidgetModel,
+};
 pub use self::show::{Show, ShowCoverModel};
 pub use self::source::Source;
 
+pub trait IdType {
+    fn to_int(&self) -> i32;
+}
+
+impl IdType for i32 {
+    fn to_int(&self) -> i32 {
+        *self
+    }
+}
+
 #[derive(Debug, Clone, PartialEq)]
-pub enum IndexState<T> {
+pub enum IndexState<T, ID: IdType> {
     Index(T),
-    Update((T, i32)),
+    Update((T, ID)),
     NotChanged,
 }
 
@@ -54,17 +66,17 @@ pub(crate) trait Insert<T> {
     fn insert(&self) -> Result<T, Self::Error>;
 }
 
-pub trait Update<T> {
+pub trait Update<T, ID: IdType> {
     type Error;
 
-    fn update(&self, _: i32) -> Result<T, Self::Error>;
+    fn update(&self, _: ID) -> Result<T, Self::Error>;
 }
 
 // This might need to change in the future
-pub trait Index<T>: Insert<T> + Update<T> {
+pub trait Index<T, ID: IdType>: Insert<T> + Update<T, ID> {
     type Error;
 
-    fn index(&self) -> Result<T, <Self as Index<T>>::Error>;
+    fn index(&self) -> Result<T, <Self as Index<T, ID>>::Error>;
 }
 
 /// FIXME: DOCS

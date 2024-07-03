@@ -23,6 +23,7 @@ use rfc822_sanitizer::parse_from_rfc2822_with_fallback as parse_rfc822;
 use crate::database::connection;
 use crate::dbqueries;
 use crate::errors::DataError;
+use crate::models::episode::EpisodeId;
 use crate::models::{Episode, EpisodeMinimal, Index, Insert, Update};
 use crate::parser;
 use crate::schema::episodes;
@@ -80,10 +81,10 @@ impl Insert<()> for NewEpisode {
     }
 }
 
-impl Update<()> for NewEpisode {
+impl Update<(), EpisodeId> for NewEpisode {
     type Error = DataError;
 
-    fn update(&self, episode_id: i32) -> Result<(), DataError> {
+    fn update(&self, episode_id: EpisodeId) -> Result<(), DataError> {
         use crate::schema::episodes::dsl::*;
         let db = connection();
         let mut con = db.get()?;
@@ -97,7 +98,7 @@ impl Update<()> for NewEpisode {
     }
 }
 
-impl Index<()> for NewEpisode {
+impl Index<(), EpisodeId> for NewEpisode {
     type Error = DataError;
 
     // Does not update the episode description if it's the only thing that has

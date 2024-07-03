@@ -20,30 +20,28 @@
 
 use adw::prelude::BinExt;
 use adw::subclass::prelude::*;
+use anyhow::{anyhow, bail, Result};
 use glib::clone;
 use glib::Properties;
 use gtk::glib;
 use gtk::prelude::*;
-
-use anyhow::{anyhow, bail, Result};
-
-use podcasts_data::dbqueries;
-use podcasts_data::downloader::DownloadProgress;
-
-use crate::i18n::i18n;
-use crate::manager;
-use crate::manager::ActiveProgress;
-
 use once_cell::sync::OnceCell;
 use std::cell::Cell;
 use std::sync::{Arc, Mutex, TryLockError};
 use std::time::Duration;
 
+use crate::i18n::i18n;
+use crate::manager;
+use crate::manager::ActiveProgress;
+use podcasts_data::dbqueries;
+use podcasts_data::downloader::DownloadProgress;
+use podcasts_data::EpisodeId;
+
 #[derive(Debug, Default, Properties)]
 #[properties(wrapper_type = DownloadProgressBar)]
 pub struct DownloadProgressPriv {
     progressbar: gtk::ProgressBar,
-    id: OnceCell<i32>,    // episode ID
+    id: OnceCell<EpisodeId>,
     listener: Cell<bool>, // lock for update callback
     #[property(get, set)]
     local_size: Cell<u64>,
@@ -81,7 +79,7 @@ glib::wrapper! {
 }
 
 impl DownloadProgressBar {
-    pub fn init(&self, episode_id: i32) {
+    pub fn init(&self, episode_id: EpisodeId) {
         let _ = self.imp().id.set(episode_id);
         self.set_child(Some(&self.imp().progressbar));
     }
@@ -91,7 +89,7 @@ impl DownloadProgressBar {
         self.imp().progressbar.connect_visible_notify(f);
     }
 
-    pub fn id(&self) -> i32 {
+    pub fn id(&self) -> EpisodeId {
         *self.imp().id.get().unwrap()
     }
 
@@ -200,7 +198,7 @@ impl DownloadProgressBar {
 fn update_progressbar_callback(
     widget: &DownloadProgressBar,
     prog: &Arc<Mutex<manager::Progress>>,
-    episode_id: i32,
+    episode_id: EpisodeId,
 ) {
     let callback = clone!(
         #[weak]
@@ -219,7 +217,7 @@ fn update_progressbar_callback(
 fn progress_bar_helper(
     widget: &DownloadProgressBar,
     prog: &Arc<Mutex<manager::Progress>>,
-    episode_id: i32,
+    episode_id: EpisodeId,
 ) -> Result<glib::ControlFlow> {
     let (fraction, downloaded, cancel) = match prog.try_lock() {
         Ok(guard) => (

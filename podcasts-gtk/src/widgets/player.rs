@@ -40,7 +40,7 @@ use crate::app::Action;
 use crate::config::APP_ID;
 use crate::download_covers::load_widget_texture;
 use crate::i18n::i18n;
-use podcasts_data::{dbqueries, EpisodeWidgetModel, ShowCoverModel, USER_AGENT};
+use podcasts_data::{dbqueries, EpisodeId, EpisodeWidgetModel, ShowCoverModel, USER_AGENT};
 
 #[derive(Debug, Clone, Copy)]
 pub(crate) enum SeekDirection {
@@ -71,7 +71,7 @@ struct PlayerInfo {
     restore_position: i32,
     finished_restore: bool,
     ep: Option<EpisodeWidgetModel>,
-    episode_id: RefCell<Option<i32>>,
+    episode_id: RefCell<Option<EpisodeId>>,
 }
 
 impl PlayerInfo {
@@ -583,7 +583,7 @@ impl PlayerWidget {
     pub(crate) fn initialize_episode(
         &mut self,
         sender: &Sender<Action>,
-        id: i32,
+        id: EpisodeId,
         stream: bool,
         second: Option<i32>,
     ) -> Result<()> {
@@ -660,7 +660,7 @@ impl PlayerWidget {
     }
 
     fn smart_rewind(&self) -> Option<()> {
-        static LAST_KNOWN_EPISODE: Lazy<Mutex<Option<i32>>> = Lazy::new(|| Mutex::new(None));
+        static LAST_KNOWN_EPISODE: Lazy<Mutex<Option<EpisodeId>>> = Lazy::new(|| Mutex::new(None));
 
         // Figure out the time delta, in seconds, between the last pause and now
         let now = Local::now();

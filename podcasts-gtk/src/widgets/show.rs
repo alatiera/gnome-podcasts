@@ -161,7 +161,7 @@ fn populate_listbox(show: &ShowWidget, pd: Arc<Show>, sender: &Sender<Action>) -
             let row = gtk::ListBoxRow::new();
             row.set_child(Some(&episode_widget));
             row.set_action_name(Some("app.go-to-episode"));
-            row.set_action_target_value(Some(&id.to_variant()));
+            row.set_action_target_value(Some(&id.0.to_variant()));
             row.upcast()
         }
     );

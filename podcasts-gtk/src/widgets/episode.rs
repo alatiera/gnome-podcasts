@@ -36,6 +36,7 @@ use crate::manager;
 use crate::widgets::DownloadProgressBar;
 use podcasts_data::dbqueries;
 use podcasts_data::utils::get_download_dir;
+use podcasts_data::EpisodeId;
 use podcasts_data::EpisodeWidgetModel;
 
 static SIZE_OPTS: Lazy<Arc<size_opts::FileSizeOpts>> = Lazy::new(|| {
@@ -120,7 +121,7 @@ impl EpisodeWidgetPriv {
 
     // Rare case when an episode does not have
     // any audio files attached as enclosure tags.
-    fn state_no_uri(&self, id: i32) {
+    fn state_no_uri(&self, id: EpisodeId) {
         self.cancel.set_visible(false);
         self.play.set_visible(false);
 
@@ -130,7 +131,7 @@ impl EpisodeWidgetPriv {
         self.text_only.set_visible(true);
         self.text_only.set_action_name(Some("app.go-to-episode"));
         self.text_only
-            .set_action_target_value(Some(&id.to_variant()));
+            .set_action_target_value(Some(&id.0.to_variant()));
     }
 
     // InProgress State:
@@ -313,7 +314,7 @@ impl EpisodeWidgetPriv {
         }
     }
 
-    fn init_progressbar(&self, id: i32) {
+    fn init_progressbar(&self, id: EpisodeId) {
         self.progressbar.init(id);
 
         self.progressbar.connect_state_change(clone!(
@@ -349,11 +350,12 @@ impl EpisodeWidgetPriv {
         ));
     }
 
-    fn init_buttons(&self, sender: &Sender<Action>, id: i32) {
+    fn init_buttons(&self, sender: &Sender<Action>, id: EpisodeId) {
         self.cancel.connect_clicked(clone!(
             #[weak(rename_to = this)]
             self,
             move |_| {
+
                 if let Err(e) = this.progressbar.cancel() {
                     error!("failed to cancel download {e}");
                 }

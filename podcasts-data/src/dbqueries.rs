@@ -99,7 +99,7 @@ pub(crate) fn get_played_cleaner_episodes() -> Result<Vec<EpisodeCleanerModel>, 
         .map_err(From::from)
 }
 
-pub fn get_episode_from_id(ep_id: i32) -> Result<Episode, DataError> {
+pub fn get_episode_from_id(ep_id: EpisodeId) -> Result<Episode, DataError> {
     use crate::schema::episodes::dsl::*;
     let db = connection();
     let mut con = db.get()?;
@@ -110,7 +110,7 @@ pub fn get_episode_from_id(ep_id: i32) -> Result<Episode, DataError> {
         .map_err(From::from)
 }
 
-pub fn get_episode_widget_from_id(ep_id: i32) -> Result<EpisodeWidgetModel, DataError> {
+pub fn get_episode_widget_from_id(ep_id: EpisodeId) -> Result<EpisodeWidgetModel, DataError> {
     use crate::schema::episodes::dsl::*;
     let db = connection();
     let mut con = db.get()?;
@@ -133,7 +133,7 @@ pub fn get_episode_widget_from_id(ep_id: i32) -> Result<EpisodeWidgetModel, Data
         .map_err(From::from)
 }
 
-pub fn get_episode_local_uri_from_id(ep_id: i32) -> Result<Option<String>, DataError> {
+pub fn get_episode_local_uri_from_id(ep_id: EpisodeId) -> Result<Option<String>, DataError> {
     use crate::schema::episodes::dsl::*;
     let db = connection();
     let mut con = db.get()?;

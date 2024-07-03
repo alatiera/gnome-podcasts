@@ -65,7 +65,7 @@ impl Insert<()> for NewShow {
     }
 }
 
-impl Update<()> for NewShow {
+impl Update<(), i32> for NewShow {
     type Error = DataError;
 
     fn update(&self, show_id: i32) -> Result<(), Self::Error> {
@@ -84,7 +84,7 @@ impl Update<()> for NewShow {
 
 // TODO: Maybe return an Enum<Action(Resut)> Instead.
 // It would make unti testing better too.
-impl Index<()> for NewShow {
+impl Index<(), i32> for NewShow {
     type Error = DataError;
 
     fn index(&self) -> Result<(), DataError> {
