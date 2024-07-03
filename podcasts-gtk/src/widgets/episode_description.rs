@@ -35,7 +35,7 @@ use crate::widgets::DownloadProgressBar;
 use crate::widgets::EpisodeMenu;
 use podcasts_data::EpisodeWidgetModel;
 use podcasts_data::{dbqueries, downloader};
-use podcasts_data::{Episode, EpisodeId, Show};
+use podcasts_data::{Episode, EpisodeId, Show, ShowId};
 
 pub enum EpisodeDescriptionAction {
     EpisodeSpecificImage(gtk::gdk::Texture),
@@ -265,14 +265,14 @@ impl EpisodeDescriptionPriv {
         self.episode_duration.set_text(&duration_date);
     }
 
-    fn set_cover(&self, show_id: i32) {
+    fn set_cover(&self, show_id: ShowId) {
         crate::download_covers::load_widget_texture(&self.cover.get(), show_id, crate::Thumb64);
     }
 
     fn set_episode_specific_cover(
         &self,
         sender: Sender<EpisodeDescriptionAction>,
-        show_id: i32,
+        show_id: ShowId,
         uri: &str,
     ) -> Result<()> {
         let pd = dbqueries::get_podcast_cover_from_id(show_id)?;

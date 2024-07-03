@@ -43,7 +43,7 @@ use podcasts_data::dbqueries;
 use podcasts_data::downloader::client_builder;
 use podcasts_data::opml;
 use podcasts_data::utils::checkup;
-use podcasts_data::Source;
+use podcasts_data::{ShowId, Source};
 
 /// Copied from the gtk-macros crate
 ///
@@ -229,24 +229,24 @@ fn insert_widget_dynamic<W: IsA<Widget> + Sized>(widget: W, container: &WeakRef<
     widget.set_visible(true);
 }
 
-static IGNORESHOWS: Lazy<Arc<Mutex<HashSet<i32>>>> =
+static IGNORESHOWS: Lazy<Arc<Mutex<HashSet<ShowId>>>> =
     Lazy::new(|| Arc::new(Mutex::new(HashSet::new())));
 
-pub(crate) fn ignore_show(id: i32) -> Result<bool> {
+pub(crate) fn ignore_show(id: ShowId) -> Result<bool> {
     IGNORESHOWS
         .lock()
         .map(|mut guard| guard.insert(id))
         .map_err(|err| anyhow!("{err}"))
 }
 
-pub(crate) fn unignore_show(id: i32) -> Result<bool> {
+pub(crate) fn unignore_show(id: ShowId) -> Result<bool> {
     IGNORESHOWS
         .lock()
         .map(|mut guard| guard.remove(&id))
         .map_err(|err| anyhow!("{err}"))
 }
 
-pub(crate) fn get_ignored_shows() -> Result<Vec<i32>> {
+pub(crate) fn get_ignored_shows() -> Result<Vec<ShowId>> {
     IGNORESHOWS
         .lock()
         .map(|guard| guard.iter().cloned().collect::<Vec<_>>())

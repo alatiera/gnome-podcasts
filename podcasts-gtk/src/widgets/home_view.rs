@@ -29,7 +29,7 @@ use crate::app::Action;
 use crate::utils::{self, lazy_load};
 use crate::widgets::{BaseView, EpisodeWidget};
 use podcasts_data::dbqueries;
-use podcasts_data::EpisodeWidgetModel;
+use podcasts_data::{EpisodeWidgetModel, ShowId};
 
 #[derive(Debug, Clone)]
 enum ListSplit {
@@ -243,7 +243,7 @@ impl HomeEpisodePriv {
         self.cover.set_accessible_role(gtk::AccessibleRole::Label);
     }
 
-    fn set_cover(&self, show_id: i32) {
+    fn set_cover(&self, show_id: ShowId) {
         crate::download_covers::load_widget_texture(&self.cover.get(), show_id, crate::Thumb64);
     }
 }

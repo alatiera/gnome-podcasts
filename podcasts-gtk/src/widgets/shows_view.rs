@@ -37,7 +37,7 @@ use crate::i18n::i18n;
 use crate::utils::get_ignored_shows;
 use crate::widgets::BaseView;
 use podcasts_data::dbqueries;
-use podcasts_data::Show;
+use podcasts_data::{Show, ShowId};
 
 #[derive(Debug, Default)]
 pub struct ShowsViewPriv {
@@ -244,14 +244,14 @@ gtk::glib::wrapper! {
 }
 
 impl ShowCoverModel {
-    pub(crate) fn new(id: i32) -> Self {
+    pub(crate) fn new(id: ShowId) -> Self {
         let self_: Self = glib::Object::new();
-        self_.imp().show_id.set(id);
+        self_.imp().show_id.set(id.0);
         self_
     }
 
-    fn show_id(&self) -> i32 {
-        self.imp().show_id.get()
+    fn show_id(&self) -> ShowId {
+        ShowId(self.imp().show_id.get())
     }
 
     fn get_mut_load_handle(&self) -> RefMut<Option<glib::JoinHandle<()>>> {

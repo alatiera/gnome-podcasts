@@ -40,7 +40,7 @@ pub(crate) use self::new_show::NewShowBuilder;
 pub use self::episode::{
     Episode, EpisodeCleanerModel, EpisodeId, EpisodeMinimal, EpisodeWidgetModel,
 };
-pub use self::show::{Show, ShowCoverModel};
+pub use self::show::{Show, ShowCoverModel, ShowId};
 pub use self::source::Source;
 
 pub trait IdType {

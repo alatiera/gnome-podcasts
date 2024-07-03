@@ -40,7 +40,7 @@ use crate::app::Action;
 use crate::config::APP_ID;
 use crate::download_covers::load_widget_texture;
 use crate::i18n::i18n;
-use podcasts_data::{dbqueries, EpisodeId, EpisodeWidgetModel, ShowCoverModel, USER_AGENT};
+use podcasts_data::{dbqueries, EpisodeId, EpisodeWidgetModel, ShowCoverModel, ShowId, USER_AGENT};
 
 #[derive(Debug, Clone, Copy)]
 pub(crate) enum SeekDirection {
@@ -148,7 +148,7 @@ impl PlayerInfo {
     }
 
     // hook for when the async download finished
-    fn update_mpris_cover(&self, show_id: i32, dl_success: bool) -> Result<()> {
+    fn update_mpris_cover(&self, show_id: ShowId, dl_success: bool) -> Result<()> {
         if let Some(ep) = self.ep.as_ref() {
             if ep.show_id() != show_id {
                 // Download took too long, we are no longer on the same show.
@@ -655,7 +655,7 @@ impl PlayerWidget {
         })
     }
 
-    pub fn update_mpris_cover(&self, show_id: i32, dl_success: bool) -> Result<()> {
+    pub fn update_mpris_cover(&self, show_id: ShowId, dl_success: bool) -> Result<()> {
         self.info.update_mpris_cover(show_id, dl_success)
     }
 

@@ -21,7 +21,7 @@ use diesel::prelude::*;
 
 use crate::errors::DataError;
 use crate::models::Show;
-use crate::models::{Index, Insert, Update};
+use crate::models::{Index, Insert, ShowId, Update};
 use crate::schema::shows;
 
 use crate::database::connection;
@@ -65,10 +65,10 @@ impl Insert<()> for NewShow {
     }
 }
 
-impl Update<(), i32> for NewShow {
+impl Update<(), ShowId> for NewShow {
     type Error = DataError;
 
-    fn update(&self, show_id: i32) -> Result<(), Self::Error> {
+    fn update(&self, show_id: ShowId) -> Result<(), Self::Error> {
         use crate::schema::shows::dsl::*;
         let db = connection();
         let mut con = db.get()?;
@@ -84,7 +84,7 @@ impl Update<(), i32> for NewShow {
 
 // TODO: Maybe return an Enum<Action(Resut)> Instead.
 // It would make unti testing better too.
-impl Index<(), i32> for NewShow {
+impl Index<(), ShowId> for NewShow {
     type Error = DataError;
 
     fn index(&self) -> Result<(), DataError> {

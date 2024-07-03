@@ -14,7 +14,8 @@ use podcasts_data::errors::DownloadError;
 use podcasts_data::errors::DownloadError::NoLongerNeeded;
 use podcasts_data::utils::get_cover_dir_path;
 use podcasts_data::xdg_dirs::TMP_DIR;
-use podcasts_data::ShowCoverModel;
+use podcasts_data::{ShowCoverModel, ShowId};
+
 
 // Downloader v3
 // if a textures is in the COVER_TEXTURES cache:
@@ -40,10 +41,10 @@ use podcasts_data::ShowCoverModel;
 static CACHE_VALID_DURATION: Lazy<chrono::Duration> = Lazy::new(|| chrono::Duration::weeks(4));
 
 #[derive(Copy, Clone, Eq, Hash, PartialEq)]
-struct CoverId(i32, ThumbSize);
+struct CoverId(ShowId, ThumbSize);
 
-impl From<CoverId> for (i32, ThumbSize) {
-    fn from(cover_id: CoverId) -> (i32, ThumbSize) {
+impl From<CoverId> for (ShowId, ThumbSize) {
+    fn from(cover_id: CoverId) -> (ShowId, ThumbSize) {
         let CoverId(id, size) = cover_id;
         (id, size)
     }
@@ -53,7 +54,7 @@ impl From<CoverId> for (i32, ThumbSize) {
 static COVER_TEXTURES: Lazy<RwLock<HashMap<CoverId, gdk::Texture>>> =
     Lazy::new(|| RwLock::new(HashMap::new()));
 // Each cover should only be downloaded once
-static COVER_DL_REGISTRY: Lazy<RwLock<HashSet<i32>>> = Lazy::new(|| RwLock::new(HashSet::new()));
+static COVER_DL_REGISTRY: Lazy<RwLock<HashSet<ShowId>>> = Lazy::new(|| RwLock::new(HashSet::new()));
 // Each thumb should only be loaded once
 static THUMB_LOAD_REGISTRY: Lazy<RwLock<HashSet<CoverId>>> =
     Lazy::new(|| RwLock::new(HashSet::new()));
@@ -145,7 +146,7 @@ pub fn determin_cover_path(pd: &ShowCoverModel, size: Option<ThumbSize>) -> Path
 /// Updates are: XDG_CACHE/Covers/{show_id}-update
 fn determin_cover_path_for_update(pd: &ShowCoverModel) -> PathBuf {
     let mut dir = get_cover_dir_path(pd.title());
-    let filename = format!("{}-update", pd.id());
+    let filename = format!("{}-update", pd.id().0);
     dir.push(filename);
     dir
 }
@@ -166,7 +167,7 @@ async fn download(
 
     // download into tmp_dir and move to filename
     let tmp_dir = tempfile::Builder::new()
-        .suffix(&format!("{}-pdcover.part", pd.id()))
+        .suffix(&format!("{}-pdcover.part", pd.id().0))
         .tempdir_in(&*TMP_DIR)?;
     let client = podcasts_data::downloader::client_builder().build()?;
     let uri = pd.image_uri().ok_or(anyhow!("No image uri for podcast"))?;
@@ -221,7 +222,7 @@ async fn from_web(pd: &ShowCoverModel, cover_id: &CoverId, path: &PathBuf) -> Re
     Ok(download(pd, cover_id, path, false).await?.unwrap())
 }
 
-async fn cover_is_downloading(show_id: i32) -> bool {
+async fn cover_is_downloading(show_id: ShowId) -> bool {
     COVER_DL_REGISTRY.read().await.contains(&show_id)
 }
 
@@ -305,10 +306,10 @@ async fn from_update(
     Ok(texture)
 }
 
-async fn aquire_dl_lock(show_id: i32) -> bool {
+async fn aquire_dl_lock(show_id: ShowId) -> bool {
     COVER_DL_REGISTRY.write().await.insert(show_id)
 }
-async fn drop_dl_lock(show_id: i32) {
+async fn drop_dl_lock(show_id: ShowId) {
     COVER_DL_REGISTRY.write().await.remove(&show_id);
 }
 
@@ -410,7 +411,11 @@ impl TextureWidget for gtk::Picture {
     }
 }
 
-async fn load_paintable_async<T>(image: &WeakRef<T>, podcast_id: i32, size: ThumbSize) -> Result<()>
+async fn load_paintable_async<T>(
+    image: &WeakRef<T>,
+    podcast_id: ShowId,
+    size: ThumbSize,
+) -> Result<()>
 where
     T: TextureWidget + IsA<gtk::Widget>,
 {
@@ -443,7 +448,7 @@ where
     }
 }
 
-pub fn load_widget_texture<T>(widget: &T, show_id: i32, size: ThumbSize) -> glib::JoinHandle<()>
+pub fn load_widget_texture<T>(widget: &T, show_id: ShowId, size: ThumbSize) -> glib::JoinHandle<()>
 where
     T: TextureWidget + IsA<gtk::Widget>,
 {

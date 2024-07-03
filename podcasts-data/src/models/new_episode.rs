@@ -24,7 +24,7 @@ use crate::database::connection;
 use crate::dbqueries;
 use crate::errors::DataError;
 use crate::models::episode::EpisodeId;
-use crate::models::{Episode, EpisodeMinimal, Index, Insert, Update};
+use crate::models::{Episode, EpisodeMinimal, Index, Insert, ShowId, Update};
 use crate::parser;
 use crate::schema::episodes;
 use crate::utils::url_cleaner;
@@ -45,7 +45,7 @@ pub(crate) struct NewEpisode {
     play_position: i32,
     guid: Option<String>,
     epoch: i32,
-    show_id: i32,
+    show_id: ShowId,
 }
 
 impl From<NewEpisodeMinimal> for NewEpisode {
@@ -150,7 +150,7 @@ impl PartialEq<Episode> for NewEpisode {
 impl NewEpisode {
     /// Parses an `rss::Item` into a `NewEpisode` Struct.
     #[allow(dead_code)]
-    pub(crate) fn new(item: &rss::Item, show_id: i32) -> Result<Self, DataError> {
+    pub(crate) fn new(item: &rss::Item, show_id: ShowId) -> Result<Self, DataError> {
         NewEpisodeMinimal::new(item, show_id).map(|ep| ep.into_new_episode(item))
     }
 
@@ -199,7 +199,7 @@ impl NewEpisode {
         self.length
     }
 
-    pub(crate) fn show_id(&self) -> i32 {
+    pub(crate) fn show_id(&self) -> ShowId {
         self.show_id
     }
 }
@@ -219,7 +219,7 @@ pub(crate) struct NewEpisodeMinimal {
     play_position: i32,
     epoch: i32,
     guid: Option<String>,
-    show_id: i32,
+    show_id: ShowId,
 }
 
 impl PartialEq<EpisodeMinimal> for NewEpisodeMinimal {
@@ -235,7 +235,7 @@ impl PartialEq<EpisodeMinimal> for NewEpisodeMinimal {
 }
 
 impl NewEpisodeMinimal {
-    pub(crate) fn new(item: &rss::Item, parent_id: i32) -> Result<Self, DataError> {
+    pub(crate) fn new(item: &rss::Item, parent_id: ShowId) -> Result<Self, DataError> {
         if item.title().is_none() {
             let err = DataError::ParseEpisodeError {
                 reason: "No title specified for this Episode.".into(),
@@ -337,7 +337,7 @@ impl NewEpisodeMinimal {
         self.epoch
     }
 
-    pub(crate) fn show_id(&self) -> i32 {
+    pub(crate) fn show_id(&self) -> ShowId {
         self.show_id
     }
 }
@@ -357,7 +357,7 @@ mod tests {
     use std::io::BufReader;
 
     /// randomly chosen
-    const TEST_SHOW_ID: i32 = 42;
+    const TEST_SHOW_ID: ShowId = ShowId(42);
 
     // TODO: Add tests for other feeds too.
     // Especially if you find an *interesting* generated feed.

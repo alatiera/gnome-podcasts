@@ -52,7 +52,7 @@ pub fn get_podcasts() -> Result<Vec<Show>, DataError> {
         .map_err(From::from)
 }
 
-pub fn get_podcasts_filter(filter_ids: &[i32]) -> Result<Vec<Show>, DataError> {
+pub fn get_podcasts_filter(filter_ids: &[ShowId]) -> Result<Vec<Show>, DataError> {
     use crate::schema::shows::dsl::*;
     let db = connection();
     let mut con = db.get()?;
@@ -146,7 +146,7 @@ pub fn get_episode_local_uri_from_id(ep_id: EpisodeId) -> Result<Option<String>,
 }
 
 pub fn get_episodes_widgets_filter_limit(
-    filter_ids: &[i32],
+    filter_ids: &[ShowId],
     limit: u32,
 ) -> Result<Vec<EpisodeWidgetModel>, DataError> {
     use crate::schema::episodes::dsl::*;
@@ -174,7 +174,7 @@ pub fn get_episodes_widgets_filter_limit(
         .map_err(From::from)
 }
 
-pub fn get_podcast_from_id(pid: i32) -> Result<Show, DataError> {
+pub fn get_podcast_from_id(pid: ShowId) -> Result<Show, DataError> {
     use crate::schema::shows::dsl::*;
     let db = connection();
     let mut con = db.get()?;
@@ -185,7 +185,7 @@ pub fn get_podcast_from_id(pid: i32) -> Result<Show, DataError> {
         .map_err(From::from)
 }
 
-pub fn get_podcast_cover_from_id(pid: i32) -> Result<ShowCoverModel, DataError> {
+pub fn get_podcast_cover_from_id(pid: ShowId) -> Result<ShowCoverModel, DataError> {
     use crate::schema::shows::dsl::*;
     let db = connection();
     let mut con = db.get()?;
@@ -288,7 +288,7 @@ pub fn get_podcast_from_source_id(sid: i32) -> Result<Show, DataError> {
         .map_err(From::from)
 }
 
-fn get_episode_from_title(title_: &str, pid: i32) -> Result<Episode, DataError> {
+fn get_episode_from_title(title_: &str, pid: ShowId) -> Result<Episode, DataError> {
     use crate::schema::episodes::dsl::*;
     let db = connection();
     let mut con = db.get()?;
@@ -300,7 +300,7 @@ fn get_episode_from_title(title_: &str, pid: i32) -> Result<Episode, DataError> 
         .map_err(From::from)
 }
 
-pub fn get_episode(guid: Option<&str>, title: &str, show_id: i32) -> Result<Episode, DataError> {
+pub fn get_episode(guid: Option<&str>, title: &str, show_id: ShowId) -> Result<Episode, DataError> {
     if guid.is_some() {
         get_episode_from_guid(guid, show_id)
     } else {
@@ -308,7 +308,7 @@ pub fn get_episode(guid: Option<&str>, title: &str, show_id: i32) -> Result<Epis
     }
 }
 
-fn get_episode_from_guid(guid_: Option<&str>, pid: i32) -> Result<Episode, DataError> {
+fn get_episode_from_guid(guid_: Option<&str>, pid: ShowId) -> Result<Episode, DataError> {
     use crate::schema::episodes::dsl::*;
     let db = connection();
     let mut con = db.get()?;
@@ -320,7 +320,7 @@ fn get_episode_from_guid(guid_: Option<&str>, pid: i32) -> Result<Episode, DataE
         .map_err(From::from)
 }
 
-fn get_episode_minimal_from_title(title_: &str, pid: i32) -> Result<EpisodeMinimal, DataError> {
+fn get_episode_minimal_from_title(title_: &str, pid: ShowId) -> Result<EpisodeMinimal, DataError> {
     use crate::schema::episodes::dsl::*;
     let db = connection();
     let mut con = db.get()?;
@@ -347,7 +347,7 @@ fn get_episode_minimal_from_title(title_: &str, pid: i32) -> Result<EpisodeMinim
 pub(crate) fn get_episode_minimal(
     guid: Option<&str>,
     title: &str,
-    show_id: i32,
+    show_id: ShowId,
 ) -> Result<EpisodeMinimal, DataError> {
     if guid.is_some() {
         get_episode_minimal_from_guid(&guid, show_id)
@@ -358,7 +358,7 @@ pub(crate) fn get_episode_minimal(
 
 fn get_episode_minimal_from_guid(
     guid_: &Option<&str>,
-    pid: i32,
+    pid: ShowId,
 ) -> Result<EpisodeMinimal, DataError> {
     use crate::schema::episodes::dsl::*;
     let db = connection();
@@ -386,7 +386,7 @@ fn get_episode_minimal_from_guid(
 #[cfg(test)]
 pub(crate) fn get_episode_cleaner_from_title(
     title_: &str,
-    pid: i32,
+    pid: ShowId,
 ) -> Result<EpisodeCleanerModel, DataError> {
     use crate::schema::episodes::dsl::*;
     let db = connection();
@@ -429,13 +429,13 @@ fn delete_source(con: &mut SqliteConnection, source_id: i32) -> QueryResult<usiz
     diesel::delete(source.filter(id.eq(source_id))).execute(con)
 }
 
-fn delete_podcast(con: &mut SqliteConnection, show_id: i32) -> QueryResult<usize> {
+fn delete_podcast(con: &mut SqliteConnection, show_id: ShowId) -> QueryResult<usize> {
     use crate::schema::shows::dsl::*;
 
     diesel::delete(shows.filter(id.eq(show_id))).execute(con)
 }
 
-fn delete_podcast_episodes(con: &mut SqliteConnection, parent_id: i32) -> QueryResult<usize> {
+fn delete_podcast_episodes(con: &mut SqliteConnection, parent_id: ShowId) -> QueryResult<usize> {
     use crate::schema::episodes::dsl::*;
 
     diesel::delete(episodes.filter(show_id.eq(parent_id))).execute(con)
@@ -466,7 +466,7 @@ pub(crate) fn podcast_exists(source_id_: i32) -> Result<bool, DataError> {
 pub(crate) fn episode_exists(
     guid_: Option<&str>,
     title_: &str,
-    show_id_: i32,
+    show_id_: ShowId,
 ) -> Result<bool, DataError> {
     use crate::schema::episodes::dsl::*;
 
@@ -493,7 +493,7 @@ pub(crate) fn episode_exists(
 /// Check if the `episodes table contains any rows
 ///
 /// Return true if `episodes` table is populated.
-pub fn is_episodes_populated(filter_show_ids: &[i32]) -> Result<bool, DataError> {
+pub fn is_episodes_populated(filter_show_ids: &[ShowId]) -> Result<bool, DataError> {
     use crate::schema::episodes::dsl::*;
 
     let db = connection();
@@ -507,7 +507,7 @@ pub fn is_episodes_populated(filter_show_ids: &[i32]) -> Result<bool, DataError>
 /// Check if the `shows` table contains any rows
 ///
 /// Return true if `shows` table is populated.
-pub fn is_podcasts_populated(filter_ids: &[i32]) -> Result<bool, DataError> {
+pub fn is_podcasts_populated(filter_ids: &[ShowId]) -> Result<bool, DataError> {
     use crate::schema::shows::dsl::*;
 
     let db = connection();
@@ -521,7 +521,7 @@ pub fn is_podcasts_populated(filter_ids: &[i32]) -> Result<bool, DataError> {
 /// Check if the `source` table contains any rows
 ///
 /// Return true if `source` table is populated.
-pub fn is_source_populated(filter_ids: &[i32]) -> Result<bool, DataError> {
+pub fn is_source_populated(filter_ids: &[ShowId]) -> Result<bool, DataError> {
     use crate::schema::source::dsl::*;
 
     let db = connection();
@@ -629,7 +629,7 @@ mod tests {
     #[test]
     fn test_episode_exists() -> Result<()> {
         truncate_db()?;
-        const TEST_SHOW_ID: i32 = 1;
+        const TEST_SHOW_ID: ShowId = ShowId(1);
 
         let path = "tests/feeds/2024-03-13-ndr.xml";
         let feed = get_feed(path, TEST_SHOW_ID);

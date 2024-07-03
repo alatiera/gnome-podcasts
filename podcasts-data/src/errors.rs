@@ -21,7 +21,7 @@ use diesel::r2d2;
 
 use std::io;
 
-use crate::models::Source;
+use crate::models::{ShowId, Source};
 use thiserror::Error;
 
 #[derive(Error, Debug)]
@@ -59,7 +59,7 @@ pub enum DataError {
     #[error("Feed is up to date")]
     FeedNotModified(Source),
     #[error("Error occurred while Parsing an Episode. Reason: {}", reason)]
-    ParseEpisodeError { reason: String, parent_id: i32 },
+    ParseEpisodeError { reason: String, parent_id: ShowId },
     #[error("Episode was not changed and thus skipped.")]
     EpisodeNotChanged,
     #[error("Invalid Uri Error: {0}")]

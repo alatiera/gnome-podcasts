@@ -32,8 +32,7 @@ use crate::app::Action;
 use crate::utils::lazy_load;
 use crate::widgets::{EmptyShow, EpisodeWidget, ReadMoreLabel, ShowMenu};
 use podcasts_data::dbqueries;
-use podcasts_data::EpisodeWidgetModel;
-use podcasts_data::Show;
+use podcasts_data::{EpisodeWidgetModel, Show, ShowId};
 
 #[derive(Debug, Default, CompositeTemplate)]
 #[template(resource = "/org/gnome/Podcasts/gtk/show_widget.ui")]
@@ -49,7 +48,7 @@ pub struct ShowWidgetPriv {
     #[template_child]
     pub(crate) secondary_menu: TemplateChild<gtk::MenuButton>,
 
-    pub show_id: Cell<Option<i32>>,
+    pub show_id: Cell<Option<ShowId>>,
 }
 
 impl ShowWidgetPriv {
@@ -137,7 +136,7 @@ impl ShowWidget {
         );
     }
 
-    pub(crate) fn show_id(&self) -> Option<i32> {
+    pub(crate) fn show_id(&self) -> Option<ShowId> {
         self.imp().show_id.get()
     }
 }

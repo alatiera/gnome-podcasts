@@ -27,6 +27,38 @@ use chrono::{Duration, NaiveDateTime, Utc};
 use diesel::query_dsl::filter_dsl::FilterDsl;
 use diesel::{ExpressionMethods, RunQueryDsl};
 
+use crate::models::IdType;
+use diesel::backend::Backend;
+use diesel::deserialize::{self, FromSql};
+use diesel::serialize::{self, Output, ToSql};
+use diesel::sql_types::Integer;
+use diesel::sqlite::Sqlite;
+#[derive(AsExpression, FromSqlRow, Debug, PartialEq, Eq, Hash, Clone, Copy, Default)]
+#[diesel(sql_type = diesel::sql_types::Integer)]
+pub struct ShowId(pub i32);
+
+impl<DB> FromSql<Integer, DB> for ShowId
+where
+    DB: Backend,
+    i32: FromSql<Integer, DB>,
+{
+    fn from_sql(bytes: DB::RawValue<'_>) -> deserialize::Result<Self> {
+        i32::from_sql(bytes).map(ShowId)
+    }
+}
+
+impl ToSql<diesel::sql_types::Integer, Sqlite> for ShowId {
+    fn to_sql<'b>(&'b self, out: &mut Output<'b, '_, Sqlite>) -> serialize::Result {
+        <i32 as ToSql<Integer, Sqlite>>::to_sql(&self.0, out)
+    }
+}
+
+impl IdType for ShowId {
+    fn to_int(&self) -> i32 {
+        self.0
+    }
+}
+
 #[derive(Queryable, Identifiable, AsChangeset, Associations, PartialEq)]
 #[diesel(belongs_to(Source, foreign_key = source_id))]
 #[diesel(treat_none_as_null = true)]
@@ -34,7 +66,7 @@ use diesel::{ExpressionMethods, RunQueryDsl};
 #[derive(Debug, Clone)]
 /// Diesel Model of the shows table.
 pub struct Show {
-    id: i32,
+    id: ShowId,
     title: String,
     link: String,
     description: String,
@@ -46,7 +78,7 @@ pub struct Show {
 
 impl Show {
     /// Get the Feed `id`.
-    pub fn id(&self) -> i32 {
+    pub fn id(&self) -> ShowId {
         self.id
     }
 
@@ -97,7 +129,7 @@ impl Show {
 /// Diesel Model of the Show cover query.
 /// Used for fetching information about a Show's cover.
 pub struct ShowCoverModel {
-    id: i32,
+    id: ShowId,
     title: String,
     image_uri: Option<String>,
     image_uri_hash: Option<Vec<u8>>,
@@ -118,7 +150,7 @@ impl From<Show> for ShowCoverModel {
 
 impl ShowCoverModel {
     /// Get the Feed `id`.
-    pub fn id(&self) -> i32 {
+    pub fn id(&self) -> ShowId {
         self.id
     }
 

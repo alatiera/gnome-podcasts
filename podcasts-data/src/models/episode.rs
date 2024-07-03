@@ -23,19 +23,17 @@ use diesel::prelude::*;
 
 use crate::database::connection;
 use crate::errors::DataError;
-use crate::models::{Save, Show};
+use crate::models::{Save, Show, ShowId};
 use crate::schema::episodes;
 
 use crate::models::IdType;
 use diesel::backend::Backend;
 use diesel::deserialize::{self, FromSql};
-use diesel::serialize::{self, IsNull, Output, ToSql};
+use diesel::serialize::{self, Output, ToSql};
 use diesel::sql_types::Integer;
 use diesel::sqlite::Sqlite;
-use diesel::sqlite::SqliteValue;
-use std::io::Write;
 #[derive(AsExpression, FromSqlRow, Debug, PartialEq, Eq, Hash, Clone, Copy)]
-#[sql_type = "diesel::sql_types::Integer"]
+#[diesel(sql_type = diesel::sql_types::Integer)]
 pub struct EpisodeId(pub i32);
 
 impl<DB> FromSql<Integer, DB> for EpisodeId
@@ -59,7 +57,6 @@ impl IdType for EpisodeId {
         self.0
     }
 }
-
 #[derive(Queryable, Identifiable, AsChangeset, Associations, PartialEq)]
 #[diesel(table_name = episodes)]
 #[diesel(treat_none_as_null = true)]
@@ -79,7 +76,7 @@ pub struct Episode {
     guid: Option<String>,
     played: Option<i32>,
     play_position: i32,
-    show_id: i32,
+    show_id: ShowId,
 }
 
 impl Save<Episode> for Episode {
@@ -162,7 +159,7 @@ impl Episode {
     }
 
     /// `Show` table foreign key.
-    pub fn show_id(&self) -> i32 {
+    pub fn show_id(&self) -> ShowId {
         self.show_id
     }
 
@@ -199,7 +196,7 @@ pub struct EpisodeWidgetModel {
     duration: Option<i32>,
     played: Option<i32>,
     play_position: i32,
-    show_id: i32,
+    show_id: ShowId,
 }
 
 impl From<Episode> for EpisodeWidgetModel {
@@ -308,7 +305,7 @@ impl EpisodeWidgetModel {
     }
 
     /// `Show` table foreign key.
-    pub fn show_id(&self) -> i32 {
+    pub fn show_id(&self) -> ShowId {
         self.show_id
     }
 
@@ -435,7 +432,7 @@ pub struct EpisodeMinimal {
     duration: Option<i32>,
     play_position: i32,
     guid: Option<String>,
-    show_id: i32,
+    show_id: ShowId,
 }
 
 impl From<Episode> for EpisodeMinimal {
@@ -506,7 +503,7 @@ impl EpisodeMinimal {
     }
 
     /// `Show` table foreign key.
-    pub fn show_id(&self) -> i32 {
+    pub fn show_id(&self) -> ShowId {
         self.show_id
     }
 }

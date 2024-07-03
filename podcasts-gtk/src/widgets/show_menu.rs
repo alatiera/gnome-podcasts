@@ -180,7 +180,7 @@ pub(crate) fn mark_all_notif(pd: Arc<Show>, sender: &Sender<Action>) -> adw::Toa
     let id = pd.id();
     let toast = adw::Toast::new(&i18n("Marked all episodes as listened"));
     toast.set_button_label(Some(&i18n("Undo")));
-    toast.set_action_target_value(Some(&id.to_variant()));
+    toast.set_action_target_value(Some(&id.0.to_variant()));
     toast.set_action_name(Some("app.undo-mark-all"));
 
     toast.connect_dismissed(clone!(
@@ -207,7 +207,7 @@ pub(crate) fn remove_show_notif(pd: Arc<Show>) -> adw::Toast {
 
     let toast = adw::Toast::new(&text);
     toast.set_button_label(Some(&i18n("Undo")));
-    toast.set_action_target_value(Some(&id.to_variant()));
+    toast.set_action_target_value(Some(&id.0.to_variant()));
     toast.set_action_name(Some("app.undo-remove-show"));
 
     let res = utils::ignore_show(id);

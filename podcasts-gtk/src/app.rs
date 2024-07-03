@@ -40,7 +40,7 @@ use crate::widgets::{EpisodeDescription, SearchResults, ShowWidget};
 use crate::window::MainWindow;
 use podcasts_data::dbqueries;
 use podcasts_data::discovery::FoundPodcast;
-use podcasts_data::{Episode, EpisodeId, Show};
+use podcasts_data::{Episode, EpisodeId, Show, ShowId};
 
 // FIXME: port Optionals to OnceCell
 #[derive(Debug)]
@@ -50,8 +50,8 @@ pub struct PdApplicationPrivate {
     window: RefCell<Option<MainWindow>>,
     settings: RefCell<Option<gio::Settings>>,
     inhibit_cookie: RefCell<u32>,
-    todo_unsub_ids: RefCell<HashSet<i32>>,
-    undo_marked_ids: RefCell<Vec<i32>>,
+    todo_unsub_ids: RefCell<HashSet<ShowId>>,
+    undo_marked_ids: RefCell<Vec<ShowId>>,
 }
 
 #[glib::object_subclass]
@@ -162,7 +162,7 @@ pub(crate) enum Action {
     RefreshEpisodesViewBGR,
     RefreshShowsView,
     ReplaceWidget(Arc<Show>),
-    RefreshWidgetIfSame(i32),
+    RefreshWidgetIfSame(ShowId),
     GoToEpisodeDescription(Arc<Show>, Arc<Episode>),
     GoToShow(Arc<Show>),
     GoToFoundPodcasts(Arc<Vec<FoundPodcast>>),
@@ -176,7 +176,7 @@ pub(crate) enum Action {
     InitEpisode(EpisodeId),
     InitEpisodeAt(EpisodeId, i32),
     StreamEpisode(EpisodeId),
-    UpdateMprisCover(i32, bool), // bool = download success, use local file
+    UpdateMprisCover(ShowId, bool), // bool = download success, use local file
     EmptyState,
     PopulatedState,
     RaiseWindow,
@@ -220,7 +220,7 @@ impl PdApplication {
                 .parameter_type(Some(i32_variant_type))
                 .activate(|app: &Self, _, id_variant_option| {
                     let data = app.imp();
-                    let id = id_variant_option.unwrap().get::<i32>().unwrap();
+                    let id = ShowId(id_variant_option.unwrap().get::<i32>().unwrap());
                     let mut ids = data.undo_marked_ids.borrow_mut();
                     if !ids.contains(&id) {
                         ids.push(id);
@@ -233,7 +233,7 @@ impl PdApplication {
                 .parameter_type(Some(i32_variant_type))
                 .activate(|app: &Self, _, id_variant_option| {
                     let data = app.imp();
-                    let id = id_variant_option.unwrap().get::<i32>().unwrap();
+                    let id = ShowId(id_variant_option.unwrap().get::<i32>().unwrap());
                     let mut ids = data.todo_unsub_ids.borrow_mut();
                     ids.remove(&id);
 
@@ -287,7 +287,7 @@ impl PdApplication {
     fn go_to_show(&self, id_variant_option: Option<&glib::Variant>) -> Result<()> {
         let id_variant = id_variant_option.expect("missing action_target_value");
         let id = id_variant.get::<i32>().expect("invalid variant type");
-        let show = dbqueries::get_podcast_from_id(id)?;
+        let show = dbqueries::get_podcast_from_id(ShowId(id))?;
         let data = self.imp();
         send_blocking!(data.sender, Action::GoToShow(Arc::new(show)));
         Ok(())
