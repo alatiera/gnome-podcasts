@@ -21,7 +21,7 @@
 
 use crate::dbqueries;
 use crate::errors::DataError;
-use crate::models::{EpisodeId, NewEpisode, NewEpisodeMinimal, NewShow, Show};
+use crate::models::{EpisodeId, NewEpisode, NewEpisodeMinimal, NewShow, Show, SourceId};
 use crate::models::{Index, IndexState, Update};
 
 /// Wrapper struct that hold a `Source` id and the `rss::Channel`
@@ -33,7 +33,7 @@ pub struct Feed {
     /// The `rss::Channel` parsed from the `Source` uri.
     channel: rss::Channel,
     /// The `Source` id where the xml `rss::Channel` came from.
-    source_id: i32,
+    source_id: SourceId,
 }
 
 impl Feed {
@@ -191,7 +191,7 @@ mod tests {
         ]
     };
     /// randomly chosen
-    const TEST_SOURCE_ID: i32 = 42;
+    const TEST_SOURCE_ID: SourceId = SourceId(42);
 
     #[test]
     fn test_complete_index() -> Result<()> {

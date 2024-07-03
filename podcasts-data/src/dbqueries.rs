@@ -266,7 +266,7 @@ pub fn get_source_from_uri(uri_: &str) -> Result<Source, DataError> {
         .map_err(From::from)
 }
 
-pub fn get_source_from_id(id_: i32) -> Result<Source, DataError> {
+pub fn get_source_from_id(id_: SourceId) -> Result<Source, DataError> {
     use crate::schema::source::dsl::*;
     let db = connection();
     let mut con = db.get()?;
@@ -277,7 +277,7 @@ pub fn get_source_from_id(id_: i32) -> Result<Source, DataError> {
         .map_err(From::from)
 }
 
-pub fn get_podcast_from_source_id(sid: i32) -> Result<Show, DataError> {
+pub fn get_podcast_from_source_id(sid: SourceId) -> Result<Show, DataError> {
     use crate::schema::shows::dsl::*;
     let db = connection();
     let mut con = db.get()?;
@@ -423,7 +423,7 @@ pub fn remove_source(source: &Source) -> Result<(), DataError> {
         .map_err(From::from)
 }
 
-fn delete_source(con: &mut SqliteConnection, source_id: i32) -> QueryResult<usize> {
+fn delete_source(con: &mut SqliteConnection, source_id: SourceId) -> QueryResult<usize> {
     use crate::schema::source::dsl::*;
 
     diesel::delete(source.filter(id.eq(source_id))).execute(con)
@@ -452,7 +452,7 @@ pub fn source_exists(url: &str) -> Result<bool, DataError> {
         .map_err(From::from)
 }
 
-pub(crate) fn podcast_exists(source_id_: i32) -> Result<bool, DataError> {
+pub(crate) fn podcast_exists(source_id_: SourceId) -> Result<bool, DataError> {
     use crate::schema::shows::dsl::*;
 
     let db = connection();

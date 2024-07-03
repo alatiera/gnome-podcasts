@@ -41,7 +41,7 @@ pub use self::episode::{
     Episode, EpisodeCleanerModel, EpisodeId, EpisodeMinimal, EpisodeWidgetModel,
 };
 pub use self::show::{Show, ShowCoverModel, ShowId};
-pub use self::source::Source;
+pub use self::source::{Source, SourceId};
 
 pub trait IdType {
     fn to_int(&self) -> i32;

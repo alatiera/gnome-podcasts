@@ -20,8 +20,8 @@
 use diesel::prelude::*;
 
 use crate::errors::DataError;
-use crate::models::Show;
-use crate::models::{Index, Insert, ShowId, Update};
+use crate::models::{Index, Insert, Update};
+use crate::models::{Show, ShowId, SourceId};
 use crate::schema::shows;
 
 use crate::database::connection;
@@ -46,7 +46,7 @@ pub(crate) struct NewShow {
     image_uri: Option<String>,
     image_uri_hash: Option<Vec<u8>>,
     image_cached: Option<NaiveDateTime>,
-    source_id: i32,
+    source_id: SourceId,
 }
 
 impl Insert<()> for NewShow {
@@ -126,7 +126,7 @@ impl PartialEq<Show> for NewShow {
 
 impl NewShow {
     /// Parses a `rss::Channel` into a `NewShow` Struct.
-    pub(crate) fn new(chan: &rss::Channel, source_id: i32) -> NewShow {
+    pub(crate) fn new(chan: &rss::Channel, source_id: SourceId) -> NewShow {
         let title = chan.title().trim();
         let link = url_cleaner(chan.link().trim());
 
@@ -170,7 +170,7 @@ impl NewShow {
 
 // Ignore the following geters. They are used in unit tests mainly.
 impl NewShow {
-    pub(crate) fn source_id(&self) -> i32 {
+    pub(crate) fn source_id(&self) -> SourceId {
         self.source_id
     }
 

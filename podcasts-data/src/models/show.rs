@@ -18,7 +18,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 use crate::errors::DataError;
-use crate::models::Source;
+use crate::models::{Source, SourceId};
 use crate::schema::shows;
 
 use crate::database::connection;
@@ -73,7 +73,7 @@ pub struct Show {
     image_uri: Option<String>,
     image_uri_hash: Option<Vec<u8>>,
     image_cached: NaiveDateTime,
-    source_id: i32,
+    source_id: SourceId,
 }
 
 impl Show {
@@ -120,7 +120,7 @@ impl Show {
     }
 
     /// `Source` table foreign key.
-    pub fn source_id(&self) -> i32 {
+    pub fn source_id(&self) -> SourceId {
         self.source_id
     }
 }

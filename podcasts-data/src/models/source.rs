@@ -17,18 +17,17 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+use base64::engine::general_purpose;
+use base64::prelude::*;
 use diesel::SaveChangesDsl;
-use rss::Channel;
-use url::Url;
-
 use http::header::{
     HeaderValue, AUTHORIZATION, ETAG, IF_MODIFIED_SINCE, IF_NONE_MATCH, LAST_MODIFIED, LOCATION,
     USER_AGENT as USER_AGENT_HEADER,
 };
 use http::StatusCode;
-
-use base64::engine::general_purpose;
-use base64::prelude::*;
+use rss::Channel;
+use std::str::FromStr;
+use url::Url;
 
 use crate::database::connection;
 use crate::errors::*;
@@ -37,7 +36,37 @@ use crate::models::{NewSource, Save};
 use crate::schema::source;
 use crate::USER_AGENT;
 
-use std::str::FromStr;
+use crate::models::IdType;
+use diesel::backend::Backend;
+use diesel::deserialize::{self, FromSql};
+use diesel::serialize::{self, Output, ToSql};
+use diesel::sql_types::Integer;
+use diesel::sqlite::Sqlite;
+#[derive(AsExpression, FromSqlRow, Debug, PartialEq, Eq, Hash, Clone, Copy, Default)]
+#[diesel(sql_type = diesel::sql_types::Integer)]
+pub struct SourceId(pub i32);
+
+impl<DB> FromSql<Integer, DB> for SourceId
+where
+    DB: Backend,
+    i32: FromSql<Integer, DB>,
+{
+    fn from_sql(bytes: DB::RawValue<'_>) -> deserialize::Result<Self> {
+        i32::from_sql(bytes).map(SourceId)
+    }
+}
+
+impl ToSql<diesel::sql_types::Integer, Sqlite> for SourceId {
+    fn to_sql<'b>(&'b self, out: &mut Output<'b, '_, Sqlite>) -> serialize::Result {
+        <i32 as ToSql<Integer, Sqlite>>::to_sql(&self.0, out)
+    }
+}
+
+impl IdType for SourceId {
+    fn to_int(&self) -> i32 {
+        self.0
+    }
+}
 
 #[derive(Queryable, Identifiable, AsChangeset, PartialEq)]
 #[diesel(table_name = source)]
@@ -45,7 +74,7 @@ use std::str::FromStr;
 #[derive(Debug, Clone)]
 /// Diesel Model of the source table.
 pub struct Source {
-    id: i32,
+    id: SourceId,
     uri: String,
     last_modified: Option<String>,
     http_etag: Option<String>,
@@ -66,7 +95,7 @@ impl Save<Source> for Source {
 
 impl Source {
     /// Get the source `id` column.
-    pub fn id(&self) -> i32 {
+    pub fn id(&self) -> SourceId {
         self.id
     }
 
@@ -175,7 +204,7 @@ impl Source {
 
         match code.as_u16() {
             304 => {
-                info!("304: Source, (id: {}), is up to date", self.id());
+                info!("304: Source, {} is up to date", self.uri());
                 return Err(DataError::FeedNotModified(self));
             }
             301 | 308 => {
@@ -214,7 +243,7 @@ impl Source {
             debug!("Updated Source: {:#?}", &self);
             info!(
                 "Feed url of Source {}, was updated successfully.",
-                self.id()
+                self.uri()
             );
         }
 
