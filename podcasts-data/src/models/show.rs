@@ -249,6 +249,9 @@ mod tests {
     use once_cell::sync::Lazy;
     use std::{thread, time};
 
+    const TEST_SOURCE_ID: SourceId = SourceId(42);
+    const TEST_SHOW_ID: ShowId = ShowId(0);
+
     static EXPECTED_INTERCEPTED: Lazy<NewShow> = Lazy::new(|| {
         let descr = "The people behind The Intercept’s fearless reporting and incisive \
                          commentary—Jeremy Scahill, Glenn Greenwald, Betsy Reed and \
@@ -268,7 +271,7 @@ mod tests {
             .image_uri(String::from(image_uri))
             .image_uri_hash(Some(vec![164, 62, 7, 221, 215, 202, 38, 41]))
             .image_cached(Utc::now().naive_utc())
-            .source_id(42)
+            .source_id(TEST_SOURCE_ID)
             .build()
             .unwrap()
     });
@@ -282,7 +285,7 @@ mod tests {
             .image_uri(String::from(image_uri))
             .image_uri_hash(Some(vec![164, 62, 7, 221, 215, 202, 38, 41]))
             .image_cached(EXPECTED_INTERCEPTED.image_cached().unwrap())
-            .source_id(42)
+            .source_id(TEST_SOURCE_ID)
             .build()
             .unwrap()
     });
@@ -397,7 +400,7 @@ mod tests {
         );
         let hash = vec![191, 166, 24, 137, 178, 75, 5, 227];
         let cover = ShowCoverModel {
-            id: 0,
+            id: TEST_SHOW_ID,
             title: String::from("Linux Unplugged"),
             image_uri: Some(image_uri),
             image_uri_hash: Some(hash),
@@ -417,7 +420,7 @@ mod tests {
         );
         let hash = vec![191, 166, 24, 137, 178, 75, 5, 227];
         let cover = ShowCoverModel {
-            id: 0,
+            id: TEST_SHOW_ID,
             title: String::from("Linux Unplugged"),
             image_uri: Some(new_image_uri),
             image_uri_hash: Some(hash),
@@ -435,7 +438,7 @@ mod tests {
         );
         let hash = vec![191, 166, 24, 137, 178, 75, 5, 227];
         let cover = ShowCoverModel {
-            id: 0,
+            id: TEST_SHOW_ID,
             title: String::from("Linux Unplugged"),
             image_uri: Some(image_uri),
             image_uri_hash: Some(hash),

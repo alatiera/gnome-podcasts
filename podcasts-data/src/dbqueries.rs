@@ -630,9 +630,10 @@ mod tests {
     fn test_episode_exists() -> Result<()> {
         truncate_db()?;
         const TEST_SHOW_ID: ShowId = ShowId(1);
+        const TEST_SOURCE_ID: SourceId = SourceId(1);
 
         let path = "tests/feeds/2024-03-13-ndr.xml";
-        let feed = get_feed(path, TEST_SHOW_ID);
+        let feed = get_feed(path, TEST_SOURCE_ID);
         feed.index()?;
 
         // only title given

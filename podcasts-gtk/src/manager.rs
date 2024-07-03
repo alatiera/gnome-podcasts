@@ -167,7 +167,7 @@ mod tests {
         // Give it some time to download the file
         thread::sleep(time::Duration::from_secs(20));
 
-        let final_path = format!("{}/{}.mp3", &dir2, episode.id());
+        let final_path = format!("{}/{}.mp3", &dir2, episode.id().0);
         assert_eq!(ACTIVE_DOWNLOADS.read().unwrap().len(), 0);
         assert!(Path::new(&final_path).exists());
         fs::remove_file(final_path)?;
@@ -201,7 +201,7 @@ mod tests {
 
         rt.block_on(get_episode(&mut episode, &download_dir, None))?;
 
-        let final_path = format!("{}/{}.mp3", &download_dir, episode.id());
+        let final_path = format!("{}/{}.mp3", &download_dir, episode.id().0);
         assert!(Path::new(&final_path).exists());
         fs::remove_file(final_path)?;
         Ok(())

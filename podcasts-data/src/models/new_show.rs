@@ -218,6 +218,8 @@ mod tests {
     use std::fs::File;
     use std::io::BufReader;
 
+    const TEST_SOURCE_ID: SourceId = SourceId(42);
+
     // Pre-built expected NewShow structs.
     static EXPECTED_INTERCEPTED: Lazy<NewShow> = Lazy::new(|| {
         let descr = "The people behind The Intercept’s fearless reporting and incisive \
@@ -236,7 +238,7 @@ mod tests {
                      uploads_2F1484252190700-qhn5krasklbce3dh-a797539282700ea0298a3a26f7e49b0b_\
                      2FIntercepted_COVER%2B_281_29.png",
             )))
-            .source_id(42)
+            .source_id(TEST_SOURCE_ID)
             .build()
             .unwrap()
     });
@@ -252,7 +254,7 @@ mod tests {
             .image_uri(Some(String::from(
                 "http://www.jupiterbroadcasting.com/images/LASUN-Badge1400.jpg",
             )))
-            .source_id(42)
+            .source_id(TEST_SOURCE_ID)
             .build()
             .unwrap()
     });
@@ -275,7 +277,7 @@ mod tests {
                 "https://imagecdn.acast.com/image?h=1500&w=1500&source=http%3A%2F%2Fi1.sndcdn.\
                      com%2Favatars-000317856075-a2coqz-original.jpg",
             )))
-            .source_id(42)
+            .source_id(TEST_SOURCE_ID)
             .build()
             .unwrap()
     });
@@ -294,7 +296,7 @@ mod tests {
             .link("http://tor-labs.com/")
             .description(descr)
             .image_uri(Some(String::from(img)))
-            .source_id(42)
+            .source_id(TEST_SOURCE_ID)
             .build()
             .unwrap()
     });
@@ -310,7 +312,7 @@ mod tests {
             .image_uri(Some(String::from(
                 "http://www.greaterthancode.com/wp-content/uploads/2016/10/code1400-4.jpg",
             )))
-            .source_id(42)
+            .source_id(TEST_SOURCE_ID)
             .build()
             .unwrap()
     });
@@ -320,7 +322,7 @@ mod tests {
             .link("https://ellinofreneia.sealabs.net/feed.rss")
             .description("Ανεπίσημο feed της Ελληνοφρένειας")
             .image_uri(Some("https://ellinofreneia.sealabs.net/logo.png".into()))
-            .source_id(42)
+            .source_id(TEST_SOURCE_ID)
             .build()
             .unwrap()
     });
@@ -334,7 +336,7 @@ mod tests {
                      uploads_2F1484252190700-qhn5krasklbce3dh-a797539282700ea0298a3a26f7e49b0b_\
                      2FIntercepted_COVER%2B_281_29.png",
             )))
-            .source_id(42)
+            .source_id(TEST_SOURCE_ID)
             .build()
             .unwrap()
     });
@@ -344,7 +346,7 @@ mod tests {
         let file = File::open("tests/feeds/2018-01-20-Intercepted.xml")?;
         let channel = Channel::read_from(BufReader::new(file))?;
 
-        let pd = NewShow::new(&channel, 42);
+        let pd = NewShow::new(&channel, TEST_SOURCE_ID);
         assert_eq!(*EXPECTED_INTERCEPTED, pd);
         Ok(())
     }
@@ -354,7 +356,7 @@ mod tests {
         let file = File::open("tests/feeds/2018-01-20-LinuxUnplugged.xml")?;
         let channel = Channel::read_from(BufReader::new(file))?;
 
-        let pd = NewShow::new(&channel, 42);
+        let pd = NewShow::new(&channel, TEST_SOURCE_ID);
         assert_eq!(*EXPECTED_LUP, pd);
         Ok(())
     }
@@ -364,7 +366,7 @@ mod tests {
         let file = File::open("tests/feeds/2018-01-20-TheTipOff.xml")?;
         let channel = Channel::read_from(BufReader::new(file))?;
 
-        let pd = NewShow::new(&channel, 42);
+        let pd = NewShow::new(&channel, TEST_SOURCE_ID);
         assert_eq!(*EXPECTED_TIPOFF, pd);
         Ok(())
     }
@@ -374,7 +376,7 @@ mod tests {
         let file = File::open("tests/feeds/2018-01-20-StealTheStars.xml")?;
         let channel = Channel::read_from(BufReader::new(file))?;
 
-        let pd = NewShow::new(&channel, 42);
+        let pd = NewShow::new(&channel, TEST_SOURCE_ID);
         assert_eq!(*EXPECTED_STARS, pd);
         Ok(())
     }
@@ -384,7 +386,7 @@ mod tests {
         let file = File::open("tests/feeds/2018-01-20-GreaterThanCode.xml")?;
         let channel = Channel::read_from(BufReader::new(file))?;
 
-        let pd = NewShow::new(&channel, 42);
+        let pd = NewShow::new(&channel, TEST_SOURCE_ID);
         assert_eq!(*EXPECTED_CODE, pd);
         Ok(())
     }
@@ -394,7 +396,7 @@ mod tests {
         let file = File::open("tests/feeds/2018-03-28-Ellinofreneia.xml")?;
         let channel = Channel::read_from(BufReader::new(file))?;
 
-        let pd = NewShow::new(&channel, 42);
+        let pd = NewShow::new(&channel, TEST_SOURCE_ID);
         assert_eq!(*EXPECTED_ELLINOFRENEIA, pd);
         Ok(())
     }
@@ -406,9 +408,9 @@ mod tests {
         let file = File::open("tests/feeds/2018-01-20-Intercepted.xml")?;
         let channel = Channel::read_from(BufReader::new(file))?;
 
-        let npd = NewShow::new(&channel, 42);
+        let npd = NewShow::new(&channel, TEST_SOURCE_ID);
         npd.insert()?;
-        let pd = dbqueries::get_podcast_from_source_id(42)?;
+        let pd = dbqueries::get_podcast_from_source_id(TEST_SOURCE_ID)?;
 
         assert_eq!(npd, pd);
         assert_eq!(*EXPECTED_INTERCEPTED, npd);
@@ -427,7 +429,7 @@ mod tests {
 
         let updated = &*UPDATED_DESC_INTERCEPTED;
         updated.update(old.id())?;
-        let new = dbqueries::get_podcast_from_source_id(42)?;
+        let new = dbqueries::get_podcast_from_source_id(TEST_SOURCE_ID)?;
 
         assert_ne!(old, new);
         assert_eq!(old.id(), new.id());
@@ -446,7 +448,7 @@ mod tests {
         // Second identical, This should take the early return path
         assert!(EXPECTED_INTERCEPTED.index().is_ok());
         // Get the podcast
-        let old = dbqueries::get_podcast_from_source_id(42)?;
+        let old = dbqueries::get_podcast_from_source_id(TEST_SOURCE_ID)?;
         // Assert that NewShow is equal to the Indexed one
         assert_eq!(&*EXPECTED_INTERCEPTED, &old);
 
@@ -455,7 +457,7 @@ mod tests {
         // Update the podcast
         assert!(updated.index().is_ok());
         // Get the new Show
-        let new = dbqueries::get_podcast_from_source_id(42)?;
+        let new = dbqueries::get_podcast_from_source_id(TEST_SOURCE_ID)?;
         // Assert it's diff from the old one.
         assert_ne!(new, old);
         assert_eq!(new.id(), old.id());
@@ -468,7 +470,7 @@ mod tests {
         // Assert insert() produces the same result that you would get with to_podcast()
         truncate_db()?;
         EXPECTED_INTERCEPTED.insert()?;
-        let old = dbqueries::get_podcast_from_source_id(42)?;
+        let old = dbqueries::get_podcast_from_source_id(TEST_SOURCE_ID)?;
         let pd = EXPECTED_INTERCEPTED.to_podcast()?;
         assert_eq!(old, pd);
 
@@ -477,7 +479,7 @@ mod tests {
         let pd = EXPECTED_INTERCEPTED.to_podcast()?;
         // This should error as a unique constrain violation
         assert!(EXPECTED_INTERCEPTED.insert().is_err());
-        let old = dbqueries::get_podcast_from_source_id(42)?;
+        let old = dbqueries::get_podcast_from_source_id(TEST_SOURCE_ID)?;
         assert_eq!(old, pd);
         Ok(())
     }

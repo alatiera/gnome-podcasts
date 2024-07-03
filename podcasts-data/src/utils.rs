@@ -255,7 +255,7 @@ use std::hash::{Hash, Hasher};
 #[cfg(test)]
 /// Helper function that open a local file, parse the rss::Channel and gives back a Feed object.
 /// Alternative Feed constructor to be used for tests.
-pub fn get_feed(file_path: &str, id: i32) -> Feed {
+pub fn get_feed(file_path: &str, id: crate::SourceId) -> Feed {
     use crate::feed::FeedBuilder;
     use rss::Channel;
     use std::io::BufReader;
@@ -276,13 +276,13 @@ mod tests {
     use super::*;
     use anyhow::Result;
     use chrono::Duration;
+    use std::fs::File;
+    use std::io::Write;
     use tempfile::TempDir;
 
     use crate::database::truncate_db;
     use crate::models::NewEpisodeBuilder;
-
-    use std::fs::File;
-    use std::io::Write;
+    use crate::ShowId;
 
     fn helper_db() -> Result<TempDir> {
         // Clean the db
@@ -297,14 +297,14 @@ mod tests {
         // Setup episodes
         let n1 = NewEpisodeBuilder::default()
             .title("foo_bar".to_string())
-            .show_id(0)
+            .show_id(ShowId(0))
             .build()
             .unwrap()
             .to_episode()?;
 
         let n2 = NewEpisodeBuilder::default()
             .title("bar_baz".to_string())
-            .show_id(1)
+            .show_id(ShowId(1))
             .build()
             .unwrap()
             .to_episode()?;
@@ -335,7 +335,7 @@ mod tests {
 
         let _tmp_dir = helper_db()?;
         download_checker()?;
-        let episode = dbqueries::get_episode_cleaner_from_title("bar_baz", 1)?;
+        let episode = dbqueries::get_episode_cleaner_from_title("bar_baz", ShowId(1))?;
         assert!(episode.local_uri().is_none());
         Ok(())
     }
@@ -344,7 +344,7 @@ mod tests {
     fn test_download_cleaner() -> Result<()> {
         let _tmp_dir = helper_db()?;
         let mut episode: EpisodeCleanerModel =
-            dbqueries::get_episode_cleaner_from_title("foo_bar", 0)?;
+            dbqueries::get_episode_cleaner_from_title("foo_bar", ShowId(0))?;
 
         let valid_path = episode.local_uri().unwrap().to_owned();
         delete_local_content(&mut episode)?;
@@ -355,7 +355,7 @@ mod tests {
     #[test]
     fn test_played_cleaner_expired() -> Result<()> {
         let _tmp_dir = helper_db()?;
-        let mut episode = dbqueries::get_episode_cleaner_from_title("foo_bar", 0)?;
+        let mut episode = dbqueries::get_episode_cleaner_from_title("foo_bar", ShowId(0))?;
         let cleanup_date = Utc::now() - Duration::seconds(1000);
         let epoch = cleanup_date.timestamp() as i32 - 1;
         episode.set_played(Some(epoch));
@@ -371,7 +371,7 @@ mod tests {
     #[test]
     fn test_played_cleaner_none() -> Result<()> {
         let _tmp_dir = helper_db()?;
-        let mut episode = dbqueries::get_episode_cleaner_from_title("foo_bar", 0)?;
+        let mut episode = dbqueries::get_episode_cleaner_from_title("foo_bar", ShowId(0))?;
         let cleanup_date = Utc::now() - Duration::seconds(1000);
         let epoch = cleanup_date.timestamp() as i32 + 1;
         episode.set_played(Some(epoch));

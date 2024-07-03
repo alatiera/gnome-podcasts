@@ -592,9 +592,9 @@ mod tests {
         let rt = tokio::runtime::Runtime::new()?;
         rt.block_on(pipeline(vec![source]))?;
         println!("Made it here! (4)");
-        println!("The source id is {}!", sid);
+        println!("The source id is {}!", sid.0);
         dbqueries::get_sources().unwrap().iter().for_each(|s| {
-            println!("{}:{}", s.id(), s.uri());
+            println!("{}:{}", s.id().0, s.uri());
         });
 
         let original = dbqueries::get_podcast_from_source_id(sid)?;

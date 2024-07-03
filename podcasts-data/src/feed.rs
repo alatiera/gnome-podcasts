@@ -367,7 +367,7 @@ mod tests {
         truncate_db()?;
 
         let path = "tests/feeds/2024-03-15-streetfightradio.xml";
-        let feed = get_feed(path, 1);
+        let feed = get_feed(path, TEST_SOURCE_ID);
         let pd = feed.parse_podcast().to_podcast()?;
         feed.index_channel_items(pd)?;
         let show_id = dbqueries::get_podcasts()?.get(0).unwrap().id();
