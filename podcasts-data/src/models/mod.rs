@@ -77,3 +77,34 @@ pub trait Save<T> {
     /// the Database.
     fn save(&self) -> Result<T, Self::Error>;
 }
+
+/// Allows to use struct wrappers instead of i32 Id types.
+#[macro_export]
+macro_rules! make_id_wrapper {
+    ($type_name:ident) => {
+        use diesel::backend::Backend;
+        use diesel::deserialize::{self, FromSql};
+        use diesel::serialize::{self, Output, ToSql};
+        use diesel::sql_types::Integer;
+        use diesel::sqlite::Sqlite;
+        #[derive(AsExpression, FromSqlRow, Debug, PartialEq, Eq, Hash, Clone, Copy, Default)]
+        #[diesel(sql_type = diesel::sql_types::Integer)]
+        pub struct $type_name(pub i32);
+
+        impl<DB> FromSql<Integer, DB> for $type_name
+        where
+            DB: Backend,
+            i32: FromSql<Integer, DB>,
+        {
+            fn from_sql(bytes: DB::RawValue<'_>) -> deserialize::Result<Self> {
+                i32::from_sql(bytes).map($type_name)
+            }
+        }
+
+        impl ToSql<diesel::sql_types::Integer, Sqlite> for $type_name {
+            fn to_sql<'b>(&'b self, out: &mut Output<'b, '_, Sqlite>) -> serialize::Result {
+                <i32 as ToSql<Integer, Sqlite>>::to_sql(&self.0, out)
+            }
+        }
+    };
+}

@@ -18,38 +18,15 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 use chrono::prelude::*;
-
 use diesel::prelude::*;
 
 use crate::database::connection;
 use crate::errors::DataError;
+use crate::make_id_wrapper;
 use crate::models::{Save, Show, ShowId};
 use crate::schema::episodes;
 
-use diesel::backend::Backend;
-use diesel::deserialize::{self, FromSql};
-use diesel::serialize::{self, Output, ToSql};
-use diesel::sql_types::Integer;
-use diesel::sqlite::Sqlite;
-#[derive(AsExpression, FromSqlRow, Debug, PartialEq, Eq, Hash, Clone, Copy)]
-#[diesel(sql_type = diesel::sql_types::Integer)]
-pub struct EpisodeId(pub i32);
-
-impl<DB> FromSql<Integer, DB> for EpisodeId
-where
-    DB: Backend,
-    i32: FromSql<Integer, DB>,
-{
-    fn from_sql(bytes: DB::RawValue<'_>) -> deserialize::Result<Self> {
-        i32::from_sql(bytes).map(EpisodeId)
-    }
-}
-
-impl ToSql<diesel::sql_types::Integer, Sqlite> for EpisodeId {
-    fn to_sql<'b>(&'b self, out: &mut Output<'b, '_, Sqlite>) -> serialize::Result {
-        <i32 as ToSql<Integer, Sqlite>>::to_sql(&self.0, out)
-    }
-}
+make_id_wrapper!(EpisodeId);
 
 #[derive(Queryable, Identifiable, AsChangeset, Associations, PartialEq)]
 #[diesel(table_name = episodes)]

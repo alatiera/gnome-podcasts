@@ -17,40 +17,18 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-use crate::errors::DataError;
-use crate::models::{Source, SourceId};
-use crate::schema::shows;
-
-use crate::database::connection;
-use crate::utils::{calculate_hash, u64_to_vec_u8, vec_u8_to_u64};
 use chrono::{Duration, NaiveDateTime, Utc};
 use diesel::query_dsl::filter_dsl::FilterDsl;
 use diesel::{ExpressionMethods, RunQueryDsl};
 
-use diesel::backend::Backend;
-use diesel::deserialize::{self, FromSql};
-use diesel::serialize::{self, Output, ToSql};
-use diesel::sql_types::Integer;
-use diesel::sqlite::Sqlite;
-#[derive(AsExpression, FromSqlRow, Debug, PartialEq, Eq, Hash, Clone, Copy, Default)]
-#[diesel(sql_type = diesel::sql_types::Integer)]
-pub struct ShowId(pub i32);
+use crate::database::connection;
+use crate::errors::DataError;
+use crate::make_id_wrapper;
+use crate::models::{Source, SourceId};
+use crate::schema::shows;
+use crate::utils::{calculate_hash, u64_to_vec_u8, vec_u8_to_u64};
 
-impl<DB> FromSql<Integer, DB> for ShowId
-where
-    DB: Backend,
-    i32: FromSql<Integer, DB>,
-{
-    fn from_sql(bytes: DB::RawValue<'_>) -> deserialize::Result<Self> {
-        i32::from_sql(bytes).map(ShowId)
-    }
-}
-
-impl ToSql<diesel::sql_types::Integer, Sqlite> for ShowId {
-    fn to_sql<'b>(&'b self, out: &mut Output<'b, '_, Sqlite>) -> serialize::Result {
-        <i32 as ToSql<Integer, Sqlite>>::to_sql(&self.0, out)
-    }
-}
+make_id_wrapper!(ShowId);
 
 #[derive(Queryable, Identifiable, AsChangeset, Associations, PartialEq)]
 #[diesel(belongs_to(Source, foreign_key = source_id))]

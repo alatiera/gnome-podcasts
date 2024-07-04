@@ -32,34 +32,12 @@ use url::Url;
 use crate::database::connection;
 use crate::errors::*;
 use crate::feed::{Feed, FeedBuilder};
+use crate::make_id_wrapper;
 use crate::models::{NewSource, Save};
 use crate::schema::source;
 use crate::USER_AGENT;
 
-use diesel::backend::Backend;
-use diesel::deserialize::{self, FromSql};
-use diesel::serialize::{self, Output, ToSql};
-use diesel::sql_types::Integer;
-use diesel::sqlite::Sqlite;
-#[derive(AsExpression, FromSqlRow, Debug, PartialEq, Eq, Hash, Clone, Copy, Default)]
-#[diesel(sql_type = diesel::sql_types::Integer)]
-pub struct SourceId(pub i32);
-
-impl<DB> FromSql<Integer, DB> for SourceId
-where
-    DB: Backend,
-    i32: FromSql<Integer, DB>,
-{
-    fn from_sql(bytes: DB::RawValue<'_>) -> deserialize::Result<Self> {
-        i32::from_sql(bytes).map(SourceId)
-    }
-}
-
-impl ToSql<diesel::sql_types::Integer, Sqlite> for SourceId {
-    fn to_sql<'b>(&'b self, out: &mut Output<'b, '_, Sqlite>) -> serialize::Result {
-        <i32 as ToSql<Integer, Sqlite>>::to_sql(&self.0, out)
-    }
-}
+make_id_wrapper!(SourceId);
 
 #[derive(Queryable, Identifiable, AsChangeset, PartialEq)]
 #[diesel(table_name = source)]
