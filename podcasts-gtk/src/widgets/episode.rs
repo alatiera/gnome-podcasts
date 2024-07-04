@@ -244,7 +244,7 @@ impl EpisodeWidgetPriv {
     fn set_date(&self, epoch: i64) {
         let now: DateTime<Local> = Local::now();
 
-        let ts_utc = Utc.timestamp_opt(i64::from(epoch), 0).unwrap();
+        let ts_utc = Utc.timestamp_opt(epoch.into(), 0).unwrap();
         let ts = DateTime::<Local>::from(ts_utc);
 
         // If the episode is from a different year, print year as well
