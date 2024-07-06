@@ -30,7 +30,7 @@ use crate::utils::{calculate_hash, u64_to_vec_u8, vec_u8_to_u64};
 
 make_id_wrapper!(ShowId);
 
-#[derive(Queryable, Identifiable, AsChangeset, Associations, PartialEq)]
+#[derive(Queryable, Identifiable, AsChangeset, Associations, PartialEq, Selectable)]
 #[diesel(belongs_to(Source, foreign_key = source_id))]
 #[diesel(treat_none_as_null = true)]
 #[diesel(table_name = shows)]
@@ -96,7 +96,9 @@ impl Show {
     }
 }
 
-#[derive(Queryable, Debug, Clone)]
+#[derive(Queryable, Debug, Clone, Selectable)]
+#[diesel(treat_none_as_null = true)]
+#[diesel(table_name = shows)]
 /// Diesel Model of the Show cover query.
 /// Used for fetching information about a Show's cover.
 pub struct ShowCoverModel {

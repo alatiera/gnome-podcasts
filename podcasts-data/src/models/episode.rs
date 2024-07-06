@@ -28,7 +28,7 @@ use crate::schema::episodes;
 
 make_id_wrapper!(EpisodeId);
 
-#[derive(Queryable, Identifiable, AsChangeset, Associations, PartialEq)]
+#[derive(Queryable, Identifiable, AsChangeset, Associations, PartialEq, Selectable)]
 #[diesel(table_name = episodes)]
 #[diesel(treat_none_as_null = true)]
 #[diesel(belongs_to(Show, foreign_key = show_id))]
@@ -151,7 +151,7 @@ impl Episode {
     }
 }
 
-#[derive(Queryable, AsChangeset, PartialEq)]
+#[derive(Queryable, AsChangeset, PartialEq, Selectable)]
 #[diesel(table_name = episodes)]
 #[diesel(treat_none_as_null = true)]
 #[diesel(primary_key(title, show_id))]
@@ -314,7 +314,7 @@ impl EpisodeWidgetModel {
     }
 }
 
-#[derive(Queryable, AsChangeset, PartialEq)]
+#[derive(Queryable, AsChangeset, PartialEq, Selectable)]
 #[diesel(table_name = episodes)]
 #[diesel(treat_none_as_null = true)]
 #[diesel(primary_key(title, show_id))]
@@ -386,7 +386,7 @@ impl EpisodeCleanerModel {
     }
 }
 
-#[derive(Queryable, AsChangeset, PartialEq)]
+#[derive(Queryable, AsChangeset, PartialEq, Selectable)]
 #[diesel(table_name = episodes)]
 #[diesel(treat_none_as_null = true)]
 #[diesel(primary_key(title, show_id))]

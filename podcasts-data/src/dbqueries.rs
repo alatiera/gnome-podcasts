@@ -81,7 +81,7 @@ pub(crate) fn get_downloaded_episodes() -> Result<Vec<EpisodeCleanerModel>, Data
     let mut con = db.get()?;
 
     episodes
-        .select((id, local_uri, played))
+        .select(EpisodeCleanerModel::as_select())
         .filter(local_uri.is_not_null())
         .load::<EpisodeCleanerModel>(&mut con)
         .map_err(From::from)
@@ -93,7 +93,7 @@ pub(crate) fn get_played_cleaner_episodes() -> Result<Vec<EpisodeCleanerModel>, 
     let mut con = db.get()?;
 
     episodes
-        .select((id, local_uri, played))
+        .select(EpisodeCleanerModel::as_select())
         .filter(played.is_not_null())
         .load::<EpisodeCleanerModel>(&mut con)
         .map_err(From::from)
@@ -116,18 +116,7 @@ pub fn get_episode_widget_from_id(ep_id: EpisodeId) -> Result<EpisodeWidgetModel
     let mut con = db.get()?;
 
     episodes
-        .select((
-            id,
-            title,
-            uri,
-            local_uri,
-            epoch,
-            length,
-            duration,
-            played,
-            play_position,
-            show_id,
-        ))
+        .select(EpisodeWidgetModel::as_select())
         .filter(id.eq(ep_id))
         .get_result::<EpisodeWidgetModel>(&mut con)
         .map_err(From::from)
@@ -152,21 +141,9 @@ pub fn get_episodes_widgets_filter_limit(
     use crate::schema::episodes::dsl::*;
     let db = connection();
     let mut con = db.get()?;
-    let columns = (
-        id,
-        title,
-        uri,
-        local_uri,
-        epoch,
-        length,
-        duration,
-        played,
-        play_position,
-        show_id,
-    );
 
     episodes
-        .select(columns)
+        .select(EpisodeWidgetModel::as_select())
         .order(epoch.desc())
         .filter(show_id.ne_all(filter_ids))
         .limit(i64::from(limit))
@@ -191,7 +168,7 @@ pub fn get_podcast_cover_from_id(pid: ShowId) -> Result<ShowCoverModel, DataErro
     let mut con = db.get()?;
 
     shows
-        .select((id, title, image_uri, image_uri_hash, image_cached))
+        .select(ShowCoverModel::as_select())
         .filter(id.eq(pid))
         .get_result::<ShowCoverModel>(&mut con)
         .map_err(From::from)
@@ -222,21 +199,9 @@ pub fn get_pd_episodeswidgets(parent: &Show) -> Result<Vec<EpisodeWidgetModel>, 
     use crate::schema::episodes::dsl::*;
     let db = connection();
     let mut con = db.get()?;
-    let columns = (
-        id,
-        title,
-        uri,
-        local_uri,
-        epoch,
-        length,
-        duration,
-        played,
-        play_position,
-        show_id,
-    );
 
     episodes
-        .select(columns)
+        .select(EpisodeWidgetModel::as_select())
         .filter(show_id.eq(parent.id()))
         .order(epoch.desc())
         .load::<EpisodeWidgetModel>(&mut con)
@@ -326,18 +291,7 @@ fn get_episode_minimal_from_title(title_: &str, pid: ShowId) -> Result<EpisodeMi
     let mut con = db.get()?;
 
     episodes
-        .select((
-            id,
-            title,
-            uri,
-            image_uri,
-            epoch,
-            length,
-            duration,
-            play_position,
-            guid,
-            show_id,
-        ))
+        .select(EpisodeMinimal::as_select())
         .filter(title.eq(title_))
         .filter(show_id.eq(pid))
         .get_result::<EpisodeMinimal>(&mut con)
@@ -365,18 +319,7 @@ fn get_episode_minimal_from_guid(
     let mut con = db.get()?;
 
     episodes
-        .select((
-            id,
-            title,
-            uri,
-            image_uri,
-            epoch,
-            length,
-            duration,
-            play_position,
-            guid,
-            show_id,
-        ))
+        .select(EpisodeMinimal::as_select())
         .filter(guid.eq(guid_))
         .filter(show_id.eq(pid))
         .get_result::<EpisodeMinimal>(&mut con)
@@ -393,7 +336,7 @@ pub(crate) fn get_episode_cleaner_from_title(
     let mut con = db.get()?;
 
     episodes
-        .select((id, local_uri, played))
+        .select(EpisodeCleanerModel::as_select())
         .filter(title.eq(title_))
         .filter(show_id.eq(pid))
         .get_result::<EpisodeCleanerModel>(&mut con)

@@ -39,7 +39,7 @@ use crate::USER_AGENT;
 
 make_id_wrapper!(SourceId);
 
-#[derive(Queryable, Identifiable, AsChangeset, PartialEq)]
+#[derive(Queryable, Identifiable, AsChangeset, PartialEq, Selectable)]
 #[diesel(table_name = source)]
 #[diesel(treat_none_as_null = true)]
 #[derive(Debug, Clone)]
