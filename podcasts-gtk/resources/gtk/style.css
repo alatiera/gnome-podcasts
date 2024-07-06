@@ -1,20 +1,3 @@
-.player-episode-label {
-    font-weight: bold;
-    font-size: smaller;
-}
-
-.player-show-label {
-    font-size: smaller;
-}
-
-.small-label {
-    font-size: smaller;
-}
-
-.bold-label {
-    font-weight: bold;
-}
-
 progressbar.playback-progress trough {
     border-radius: 3px;
 }

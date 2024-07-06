@@ -132,7 +132,7 @@ Tobias Bernard
                         <property name="max_width_chars">20</property>
                         <property name="xalign">0</property>
                         <style>
-                          <class name="player-show-label"/>
+                          <class name="caption"/>
                         </style>
                       </object>
                     </child>
@@ -144,7 +144,7 @@ Tobias Bernard
                         <property name="max_width_chars">20</property>
                         <property name="xalign">0</property>
                         <style>
-                          <class name="player-episode-label"/>
+                          <class name="caption-heading"/>
                         </style>
                       </object>
                     </child>
@@ -233,7 +233,7 @@ Tobias Bernard
                         <property name="ellipsize">end</property>
                         <property name="xalign">0</property>
                         <style>
-                          <class name="player-show-label"/>
+                          <class name="caption"/>
                         </style>
                       </object>
                     </child>
@@ -243,7 +243,7 @@ Tobias Bernard
                         <property name="ellipsize">end</property>
                         <property name="xalign">0</property>
                         <style>
-                          <class name="player-episode-label"/>
+                          <class name="caption-heading"/>
                         </style>
                       </object>
                     </child>

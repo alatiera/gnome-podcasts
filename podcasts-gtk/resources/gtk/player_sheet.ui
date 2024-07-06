@@ -67,7 +67,7 @@
                             <property name="wrap">True</property>
                             <property name="justify">center</property>
                             <style>
-                              <class name="bold-label" />
+                              <class name="heading" />
                             </style>
                           </object>
                         </child>
@@ -94,8 +94,7 @@
                             <property name="xalign">1</property>
                             <style>
                               <class name="numeric"/>
-                              <class name="dim-label"/>
-                              <class name="small-label"/>
+                              <class name="caption"/>
                             </style>
                           </object>
                         </child>
@@ -111,8 +110,7 @@
                             <property name="width_chars">5</property>
                             <style>
                               <class name="numeric"/>
-                              <class name="dim-label"/>
-                              <class name="small-label"/>
+                              <class name="caption"/>
                             </style>
                           </object>
                         </child>
