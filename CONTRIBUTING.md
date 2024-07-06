@@ -9,7 +9,7 @@ want to discuss design or simply hang out, please join us in [#podcasts:gnome.or
 
 ## Code of Conduct
 
-Please note we follow the [GNOME Foundation Code of Conduct](/code-of-conduct.md), please adhere to it in all your interactions with the project.
+Please note we follow the [GNOME Foundation Code of Conduct](https://conduct.gnome.org/), please adhere to it in all your interactions with the project.
 
 ## Source repository
 
