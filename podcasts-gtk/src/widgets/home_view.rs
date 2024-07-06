@@ -205,8 +205,7 @@ fn split_model(model: Vec<EpisodeWidgetModel>) -> Vec<DateBox> {
         (Vec::new(), Vec::new(), Vec::new(), Vec::new(), Vec::new());
 
     for ep in model {
-        let epoch_utc = DateTime::<Utc>::from_timestamp(i64::from(ep.epoch()), 0).unwrap();
-        let epoch_local = DateTime::<Local>::from(epoch_utc);
+        let epoch_local = DateTime::<Local>::from(ep.epoch().and_utc());
         match split(&now, &epoch_local) {
             Today => today.push(ep),
             Yday => yday.push(ep),

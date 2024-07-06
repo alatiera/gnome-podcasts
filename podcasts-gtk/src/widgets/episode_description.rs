@@ -244,8 +244,7 @@ impl EpisodeDescriptionPriv {
             format!("{:02}:{:02}:{:02}", hours, minutes, seconds)
         });
         let now = Local::now();
-        let ep_utc = Utc.timestamp_opt(i64::from(ep.epoch()), 0).unwrap();
-        let ep_local = DateTime::<Local>::from(ep_utc);
+        let ep_local = DateTime::<Local>::from(ep.epoch().and_utc());
         // If the episode is from a different year, print year as well
         let date = if now.year() != ep_local.year() {
             ep_local

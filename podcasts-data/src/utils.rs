@@ -93,18 +93,17 @@ fn update_download_status(mut ep: EpisodeCleanerModel) {
 /// Delete watched `episodes` that have exceeded their lifetime after played.
 fn played_cleaner(cleanup_date: DateTime<Utc>) -> Result<(), DownloadError> {
     let episodes = dbqueries::get_played_cleaner_episodes()?;
-    let now_utc = cleanup_date.timestamp() as i32;
 
     episodes
         .into_iter()
         .filter(|ep| ep.local_uri().is_some() && ep.played().is_some())
-        .for_each(|ep| clean_played(now_utc, ep));
+        .for_each(|ep| clean_played(cleanup_date, ep));
     Ok(())
 }
 
-fn clean_played(now_utc: i32, mut ep: EpisodeCleanerModel) {
+fn clean_played(now_utc: DateTime<Utc>, mut ep: EpisodeCleanerModel) {
     let limit = ep.played().unwrap();
-    if now_utc > limit {
+    if now_utc > limit.and_utc() {
         delete_local_content(&mut ep)
             .map(|_| info!("Episode {:?} was deleted successfully.", ep.local_uri()))
             .map_err(|err| error!("Error: {}", err))
@@ -357,8 +356,8 @@ mod tests {
         let _tmp_dir = helper_db()?;
         let mut episode = dbqueries::get_episode_cleaner_from_title("foo_bar", ShowId(0))?;
         let cleanup_date = Utc::now() - Duration::seconds(1000);
-        let epoch = cleanup_date.timestamp() as i32 - 1;
-        episode.set_played(Some(epoch));
+        let epoch = DateTime::<Utc>::from_timestamp(cleanup_date.timestamp() - 1, 0);
+        episode.set_played(Some(epoch.unwrap().naive_utc()));
         episode.save()?;
         let valid_path = episode.local_uri().unwrap().to_owned();
 
@@ -373,8 +372,8 @@ mod tests {
         let _tmp_dir = helper_db()?;
         let mut episode = dbqueries::get_episode_cleaner_from_title("foo_bar", ShowId(0))?;
         let cleanup_date = Utc::now() - Duration::seconds(1000);
-        let epoch = cleanup_date.timestamp() as i32 + 1;
-        episode.set_played(Some(epoch));
+        let epoch = DateTime::<Utc>::from_timestamp(cleanup_date.timestamp() + 1, 0);
+        episode.set_played(Some(epoch.unwrap().naive_utc()));
         episode.save()?;
         let valid_path = episode.local_uri().unwrap().to_owned();
 

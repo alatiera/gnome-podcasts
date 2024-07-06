@@ -17,6 +17,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+use chrono::prelude::*;
 use diesel::prelude::*;
 use rfc822_sanitizer::parse_from_rfc2822_with_fallback as parse_rfc822;
 
@@ -44,7 +45,7 @@ pub(crate) struct NewEpisode {
     duration: Option<i32>,
     play_position: i32,
     guid: Option<String>,
-    epoch: i32,
+    epoch: NaiveDateTime,
     show_id: ShowId,
 }
 
@@ -183,7 +184,7 @@ impl NewEpisode {
         self.guid.as_deref()
     }
 
-    pub(crate) fn epoch(&self) -> i32 {
+    pub(crate) fn epoch(&self) -> NaiveDateTime {
         self.epoch
     }
 
@@ -217,7 +218,7 @@ pub(crate) struct NewEpisodeMinimal {
     duration: Option<i32>,
     #[builder(default = "0")]
     play_position: i32,
-    epoch: i32,
+    epoch: NaiveDateTime,
     guid: Option<String>,
     show_id: ShowId,
 }
@@ -267,7 +268,9 @@ impl NewEpisodeMinimal {
         let date = parse_rfc822(item.pub_date().unwrap_or("Thu, 1 Jan 1970 00:00:00 +0000"));
         // Should treat information from the rss feeds as invalid by default.
         // Case: "Thu, 05 Aug 2016 06:00:00 -0400" <-- Actually that was friday.
-        let epoch = date.map(|x| x.timestamp() as i32).unwrap_or(0);
+        let epoch = date
+            .map(|x| DateTime::<Utc>::from(x).naive_utc())
+            .unwrap_or_default();
 
         let duration = parser::parse_itunes_duration(item.itunes_ext());
 
@@ -333,7 +336,7 @@ impl NewEpisodeMinimal {
         self.duration
     }
 
-    pub(crate) fn epoch(&self) -> i32 {
+    pub(crate) fn epoch(&self) -> NaiveDateTime {
         self.epoch
     }
 
@@ -349,6 +352,7 @@ mod tests {
     use crate::models::new_episode::{NewEpisodeMinimal, NewEpisodeMinimalBuilder};
     use crate::models::*;
     use anyhow::Result;
+    use chrono::prelude::*;
     use once_cell::sync::Lazy;
 
     use rss::Channel;
@@ -371,7 +375,11 @@ mod tests {
             )))
             .image_uri(None)
             .guid(Some(String::from("7df4070a-9832-11e7-adac-cb37b05d5e24")))
-            .epoch(1505296800)
+            .epoch(
+                DateTime::<Utc>::from_timestamp(1505296800, 0)
+                    .unwrap()
+                    .naive_utc(),
+            )
             .length(Some(66738886))
             .duration(Some(4171))
             .show_id(TEST_SHOW_ID)
@@ -386,7 +394,11 @@ mod tests {
             )))
             .image_uri(None)
             .guid(Some(String::from("7c207a24-e33f-11e6-9438-eb45dcf36a1d")))
-            .epoch(1502272800)
+            .epoch(
+                DateTime::<Utc>::from_timestamp(1502272800, 0)
+                    .unwrap()
+                    .naive_utc(),
+            )
             .length(Some(67527575))
             .duration(Some(4415))
             .show_id(TEST_SHOW_ID)
@@ -409,7 +421,11 @@ mod tests {
             .description(Some(String::from(descr)))
             .guid(Some(String::from("7df4070a-9832-11e7-adac-cb37b05d5e24")))
             .length(Some(66738886))
-            .epoch(1505296800)
+            .epoch(
+                DateTime::<Utc>::from_timestamp(1505296800, 0)
+                    .unwrap()
+                    .naive_utc(),
+            )
             .duration(Some(4171))
             .show_id(TEST_SHOW_ID)
             .build()
@@ -434,7 +450,11 @@ mod tests {
             .description(Some(String::from(descr)))
             .guid(Some(String::from("7c207a24-e33f-11e6-9438-eb45dcf36a1d")))
             .length(Some(67527575))
-            .epoch(1502272800)
+            .epoch(
+                DateTime::<Utc>::from_timestamp(1502272800, 0)
+                    .unwrap()
+                    .naive_utc(),
+            )
             .duration(Some(4415))
             .show_id(TEST_SHOW_ID)
             .build()
@@ -450,7 +470,11 @@ mod tests {
             .description(Some(String::from("New description")))
             .guid(Some(String::from("7df4070a-9832-11e7-adac-cb37b05d5e24")))
             .length(Some(66738886))
-            .epoch(1505296800)
+            .epoch(
+                DateTime::<Utc>::from_timestamp(1505296800, 0)
+                    .unwrap()
+                    .naive_utc(),
+            )
             .duration(Some(424242))
             .show_id(TEST_SHOW_ID)
             .build()
@@ -465,7 +489,11 @@ mod tests {
             .image_uri(None)
             .guid(Some(String::from("78A682B4-73E8-47B8-88C0-1BE62DD4EF9D")))
             .length(Some(46479789))
-            .epoch(1505280282)
+            .epoch(
+                DateTime::<Utc>::from_timestamp(1505280282, 0)
+                    .unwrap()
+                    .naive_utc(),
+            )
             .duration(Some(5733))
             .show_id(TEST_SHOW_ID)
             .build()
@@ -479,7 +507,11 @@ mod tests {
             )))
             .image_uri(None)
             .guid(Some(String::from("1CE57548-B36C-4F14-832A-5D5E0A24E35B")))
-            .epoch(1504670247)
+            .epoch(
+                DateTime::<Utc>::from_timestamp(1504670247, 0)
+                    .unwrap()
+                    .naive_utc(),
+            )
             .length(Some(36544272))
             .duration(Some(4491))
             .show_id(TEST_SHOW_ID)
@@ -501,7 +533,11 @@ mod tests {
             .description(Some(String::from(descr)))
             .guid(Some(String::from("78A682B4-73E8-47B8-88C0-1BE62DD4EF9D")))
             .length(Some(46479789))
-            .epoch(1505280282)
+            .epoch(
+                DateTime::<Utc>::from_timestamp(1505280282, 0)
+                    .unwrap()
+                    .naive_utc(),
+            )
             .duration(Some(5733))
             .show_id(TEST_SHOW_ID)
             .build()
@@ -524,7 +560,11 @@ mod tests {
             .description(Some(String::from(descr)))
             .guid(Some(String::from("1CE57548-B36C-4F14-832A-5D5E0A24E35B")))
             .length(Some(36544272))
-            .epoch(1504670247)
+            .epoch(
+                DateTime::<Utc>::from_timestamp(1504670247, 0)
+                    .unwrap()
+                    .naive_utc(),
+            )
             .duration(Some(4491))
             .show_id(TEST_SHOW_ID)
             .build()
@@ -542,7 +582,7 @@ mod tests {
             .description(Some(String::from(descr)))
             .guid(Some(String::from("AU-20240313-2303-4300-A")))
             .length(None)
-            .epoch(1710367140)
+            .epoch(DateTime::<Utc>::from_timestamp(1710367140, 0).unwrap().naive_utc())
             .duration(Some(202))
             .show_id(TEST_SHOW_ID)
             .image_uri(Some("https://www.ndr.de/nachrichten/info/nachrichten660_v-quadratl.jpg".to_string()))
@@ -561,7 +601,7 @@ mod tests {
             .description(Some(String::from(descr)))
             .guid(Some(String::from("AU-20240314-1705-4100-A")))
             .length(None)
-            .epoch(1710431940)
+            .epoch(DateTime::<Utc>::from_timestamp(1710431940, 0).unwrap().naive_utc())
             .duration(Some(300))
             .show_id(TEST_SHOW_ID)
             .image_uri(Some("https://www.ndr.de/nachrichten/info/nachrichten660_v-quadratl.jpg".to_string()))
@@ -580,7 +620,7 @@ mod tests {
             .description(Some(String::from(descr)))
             .guid(Some(String::from("AU-20240314-1705-4100-A")))
             .length(None)
-            .epoch(2000000000)
+            .epoch(DateTime::<Utc>::from_timestamp(2000000000, 0).unwrap().naive_utc())
             .duration(Some(300))
             .show_id(TEST_SHOW_ID)
             .image_uri(Some("https://www.ndr.de/nachrichten/info/nachrichten660_v-quadratl.jpg".to_string()))
@@ -811,7 +851,12 @@ mod tests {
         assert_eq!(new_ep, &ep);
         assert_eq!(new_ep, &*EXPECTED_NDR_3);
         assert_eq!(&*EXPECTED_NDR_3, &ep);
-        assert_eq!(2000000000, ep.epoch());
+        assert_eq!(
+            DateTime::<Utc>::from_timestamp(2000000000, 0)
+                .unwrap()
+                .naive_utc(),
+            ep.epoch()
+        );
         assert_eq!("TITLE_UPDATED", ep.title());
 
         let all_eps = dbqueries::get_episodes()?;

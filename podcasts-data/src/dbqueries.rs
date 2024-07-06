@@ -549,7 +549,7 @@ pub fn update_none_to_played_now(parent: &Show) -> Result<usize, DataError> {
     let db = connection();
     let mut con = db.get()?;
 
-    let epoch_now = Utc::now().timestamp() as i32;
+    let epoch_now = Utc::now().naive_utc();
     con.transaction(|conn| {
         diesel::update(Episode::belonging_to(parent).filter(played.is_null()))
             .set(played.eq(Some(epoch_now)))

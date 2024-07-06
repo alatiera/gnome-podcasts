@@ -41,11 +41,11 @@ pub struct Episode {
     local_uri: Option<String>,
     description: Option<String>,
     image_uri: Option<String>,
-    epoch: i32,
+    epoch: NaiveDateTime,
     length: Option<i32>,
     duration: Option<i32>,
     guid: Option<String>,
-    played: Option<i32>,
+    played: Option<NaiveDateTime>,
     play_position: i32,
     show_id: ShowId,
 }
@@ -104,7 +104,7 @@ impl Episode {
     ///
     /// Retrieved from the rss Item publish date.
     /// Value is set to Utc whenever possible.
-    pub fn epoch(&self) -> i32 {
+    pub fn epoch(&self) -> NaiveDateTime {
         self.epoch
     }
 
@@ -125,7 +125,7 @@ impl Episode {
     /// Epoch representation of the last time the episode was played.
     ///
     /// None/Null for unplayed.
-    pub fn played(&self) -> Option<i32> {
+    pub fn played(&self) -> Option<NaiveDateTime> {
         self.played
     }
 
@@ -162,10 +162,10 @@ pub struct EpisodeWidgetModel {
     title: String,
     uri: Option<String>,
     local_uri: Option<String>,
-    epoch: i32,
+    epoch: NaiveDateTime,
     length: Option<i32>,
     duration: Option<i32>,
-    played: Option<i32>,
+    played: Option<NaiveDateTime>,
     play_position: i32,
     show_id: ShowId,
 }
@@ -240,7 +240,7 @@ impl EpisodeWidgetModel {
     ///
     /// Retrieved from the rss Item publish date.
     /// Value is set to Utc whenever possible.
-    pub fn epoch(&self) -> i32 {
+    pub fn epoch(&self) -> NaiveDateTime {
         self.epoch
     }
 
@@ -266,12 +266,12 @@ impl EpisodeWidgetModel {
     /// Epoch representation of the last time the episode was played.
     ///
     /// None/Null for unplayed.
-    pub fn played(&self) -> Option<i32> {
+    pub fn played(&self) -> Option<NaiveDateTime> {
         self.played
     }
 
     /// Set the `played` value.
-    fn set_played(&mut self, value: Option<i32>) {
+    fn set_played(&mut self, value: Option<NaiveDateTime>) {
         self.played = value;
     }
 
@@ -282,8 +282,7 @@ impl EpisodeWidgetModel {
 
     /// Sets the `played` value with the current `epoch` timestap and save it.
     pub fn set_played_now(&mut self) -> Result<(), DataError> {
-        let epoch = Utc::now().timestamp() as i32;
-        self.set_played(Some(epoch));
+        self.set_played(Some(Utc::now().naive_utc()));
         self.save().map(|_| ())
     }
 
@@ -324,7 +323,7 @@ impl EpisodeWidgetModel {
 pub struct EpisodeCleanerModel {
     id: EpisodeId,
     local_uri: Option<String>,
-    played: Option<i32>,
+    played: Option<NaiveDateTime>,
 }
 
 impl Save<usize> for EpisodeCleanerModel {
@@ -377,12 +376,12 @@ impl EpisodeCleanerModel {
     /// Epoch representation of the last time the episode was played.
     ///
     /// None/Null for unplayed.
-    pub fn played(&self) -> Option<i32> {
+    pub fn played(&self) -> Option<NaiveDateTime> {
         self.played
     }
 
     /// Set the `played` value.
-    pub fn set_played(&mut self, value: Option<i32>) {
+    pub fn set_played(&mut self, value: Option<NaiveDateTime>) {
         self.played = value;
     }
 }
@@ -398,7 +397,7 @@ pub struct EpisodeMinimal {
     title: String,
     uri: Option<String>,
     image_uri: Option<String>,
-    epoch: i32,
+    epoch: NaiveDateTime,
     length: Option<i32>,
     duration: Option<i32>,
     play_position: i32,
@@ -455,7 +454,7 @@ impl EpisodeMinimal {
     ///
     /// Retrieved from the rss Item publish date.
     /// Value is set to Utc whenever possible.
-    pub fn epoch(&self) -> i32 {
+    pub fn epoch(&self) -> NaiveDateTime {
         self.epoch
     }
 

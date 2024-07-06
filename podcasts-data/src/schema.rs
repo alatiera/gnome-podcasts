@@ -8,11 +8,11 @@ table! {
         local_uri -> Nullable<Text>,
         description -> Nullable<Text>,
         image_uri -> Nullable<Text>,
-        epoch -> Integer,
+        epoch -> Timestamp,
         length -> Nullable<Integer>,
         duration -> Nullable<Integer>,
         guid -> Nullable<Text>,
-        played -> Nullable<Integer>,
+        played -> Nullable<Timestamp>,
         play_position -> Integer,
         show_id -> Integer,
     }
