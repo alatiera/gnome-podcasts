@@ -1,13 +1,14 @@
 # List of source files containing translatable strings.
 # Please keep this file sorted alphabetically.
 # ui files
+podcasts-gtk/resources/gtk/discovery_found_podcast.ui
+podcasts-gtk/resources/gtk/discovery_page.ui
+podcasts-gtk/resources/gtk/discovery_search_results.ui
 podcasts-gtk/resources/gtk/empty_show.ui
 podcasts-gtk/resources/gtk/empty_view.ui
 podcasts-gtk/resources/gtk/episode_description.ui
 podcasts-gtk/resources/gtk/episode_menu.ui
 podcasts-gtk/resources/gtk/episode_widget.ui
-podcasts-gtk/resources/gtk/hamburger.ui
-podcasts-gtk/resources/gtk/headerbar.ui
 podcasts-gtk/resources/gtk/help-overlay.ui
 podcasts-gtk/resources/gtk/home_episode.ui
 podcasts-gtk/resources/gtk/home_view.ui
@@ -26,14 +27,23 @@ podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in
 
 # rust files
 podcasts-gtk/src/app.rs
-podcasts-gtk/src/headerbar.rs
+podcasts-gtk/src/download_covers.rs
+podcasts-gtk/src/episode_description_parser.rs
+podcasts-gtk/src/feed_manager.rs
 podcasts-gtk/src/main.rs
 podcasts-gtk/src/manager.rs
 podcasts-gtk/src/settings.rs
+podcasts-gtk/src/thumbnail_generator.rs
 podcasts-gtk/src/utils.rs
+podcasts-gtk/src/window.rs
 podcasts-gtk/src/widgets/aboutdialog.rs
 podcasts-gtk/src/widgets/base_view.rs
 podcasts-gtk/src/widgets/content_stack.rs
+podcasts-gtk/src/widgets/discovery_page.rs
+podcasts-gtk/src/widgets/discovery_search_results.rs
+podcasts-gtk/src/widgets/download_progress_bar.rs
+podcasts-gtk/src/widgets/empty_show.rs
+podcasts-gtk/src/widgets/empty_view.rs
 podcasts-gtk/src/widgets/episode.rs
 podcasts-gtk/src/widgets/episode_description.rs
 podcasts-gtk/src/widgets/episode_menu.rs
