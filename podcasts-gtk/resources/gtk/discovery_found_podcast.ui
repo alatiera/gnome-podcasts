@@ -81,7 +81,7 @@ nee <nee-git@patchouli.garden>
             <child>
               <object class="GtkLabel" id="description">
                 <style>
-                  <class name="description"/>
+                  <class name="dim-label"/>
                 </style>
                 <property name="label" translatable="no"/>
                 <property name="visible">False</property>

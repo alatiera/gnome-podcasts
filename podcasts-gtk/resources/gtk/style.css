@@ -29,17 +29,6 @@ popover modelbutton > box > label {
 }
 
 /* Episode description */
-
-.episode_description .podcast_title {
-    color: @insensitive_fg_color;
-}
-.episode_description .episode_title {
-    font-weight: bold;
-    font-size: larger;
-}
-.episode_description .episode_duration_date {
-    color: @insensitive_fg_color;
-}
 .episode_description_label link {
     text-decoration: none;
 }
@@ -86,10 +75,6 @@ popover modelbutton > box > label {
 }
 
 /* Discovery Search */
-.found-podcast .description {
-    color: @insensitive_fg_color;
-}
-
 .rounded-big {
     border-radius: 8px;
 }

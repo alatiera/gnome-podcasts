@@ -94,7 +94,7 @@ Tobias Bernard
                                     <property name="wrap-mode">word-char</property>
                                     <property name="xalign">0</property>
                                     <style>
-                                      <class name="podcast_title"/>
+                                      <class name="dim-label"/>
                                     </style>
                                   </object>
                                 </child>
@@ -106,7 +106,7 @@ Tobias Bernard
                                     <property name="lines">1</property>
                                     <property name="xalign">0</property>
                                     <style>
-                                      <class name="episode_title"/>
+                                      <class name="heading"/>
                                     </style>
                                   </object>
                                 </child>
