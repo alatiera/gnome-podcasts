@@ -106,11 +106,11 @@ popover modelbutton > box > label {
 }
 
 .home-view-episode-cover {
-    background: alpha(currentColor, .25);
-    color: alpha(currentColor, .40);
+    background: color-mix(in srgb, currentColor 25%, transparent);
+    color: color-mix(in srgb, currentColor 40%, transparent);
 }
 
 .shows-view-cover {
-    background: alpha(currentColor, .15);
+    background: color-mix(in srgb, currentColor 15%, transparent);
 }
 
