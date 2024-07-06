@@ -12,7 +12,7 @@
   <description xml:lang="en">
       Listen to your favorite podcasts, right from your desktop.
   </description>
-  <!-- <homepage rdf:resource="https://wiki.gnome.org/Apps/Podcasts" /> -->
+  <homepage rdf:resource="https://apps.gnome.org/Podcasts" />
   <bug-database rdf:resource="https://gitlab.gnome.org/World/podcasts/issues" />
 
   <category rdf:resource="http://api.gnome.org/doap-extensions#apps" />

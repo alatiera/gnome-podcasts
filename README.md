@@ -94,10 +94,9 @@ There are also some minor tasks tagged with `TODO:` and `FIXME:` in the source c
 
 ### Translations
 
-Translation of this project takes place on the GNOME translation platform,
-[Damned Lies](https://l10n.gnome.org/module/podcasts). For further
-information on how to join a language team, or even to create one, please see
-[GNOME Translation Project wiki page](https://wiki.gnome.org/TranslationProject).
+Helping to translate Podcasts or adding support to a new language is very
+welcome. You can find everything you need at:
+[l10n.gnome.org/module/podcasts/](https://l10n.gnome.org/module/podcasts/)
 
 
 ## Overview
@@ -135,12 +134,12 @@ And almost the entirety of the build system is copied from the [Fractal][fractal
 [vendor]: https://doc.rust-lang.org/cargo/commands/cargo-vendor.html
 [matrix]: https://matrix.to/#/#podcasts:gnome.org
 [flatpak_setup]: https://flatpak.org/setup/
-[music]: https://wiki.gnome.org/Design/Apps/Music
+[music]: https://apps.gnome.org/Music/
 [vocal]: http://vocalproject.net/
 [news]: https://wiki.gnome.org/Design/Apps/Potential/News
 [fractal]: https://gitlab.gnome.org/World/fractal
 [hammond]: https://en.wikipedia.org/wiki/Evey_Hammond
 [issues]: https://gitlab.gnome.org/World/podcasts/issues
 [new_issue]: https://gitlab.gnome.org/World/podcasts/issues/new
-[builder]: https://wiki.gnome.org/Apps/Builder
-[get_builder]: https://wiki.gnome.org/Apps/Builder/Downloads
+[builder]: https://apps.gnome.org/Builder/
+[get_builder]: https://flathub.org/apps/org.gnome.Builder
