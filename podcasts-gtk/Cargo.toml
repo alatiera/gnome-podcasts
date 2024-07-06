@@ -21,6 +21,7 @@ html5ever = "0.26"
 humansize = "1"
 image = { version = "0.25", features = ["gif", "jpeg", "png", "webp"] }
 linkify = "0.10"
+locale_config = "0.3"
 log = { workspace = true }
 markup5ever_rcdom = "0.2"
 mpris-server = "0.8"

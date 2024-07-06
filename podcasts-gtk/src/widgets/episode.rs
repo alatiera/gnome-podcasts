@@ -249,10 +249,18 @@ impl EpisodeWidgetPriv {
 
         // If the episode is from a different year, print year as well
         if now.year() != ts.year() {
-            self.date.set_text(ts.format("%e %b %Y").to_string().trim());
+            self.date.set_text(
+                ts.format_localized("%e %b %Y", *crate::CHRONO_LOCALE)
+                    .to_string()
+                    .trim(),
+            );
         // Else omit the year from the label
         } else {
-            self.date.set_text(ts.format("%e %b").to_string().trim());
+            self.date.set_text(
+                ts.format_localized("%e %b", *crate::CHRONO_LOCALE)
+                    .to_string()
+                    .trim(),
+            );
         }
     }
 

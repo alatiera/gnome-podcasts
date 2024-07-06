@@ -126,7 +126,9 @@ impl PodcastPriv {
             self.episode_count_label.set_visible(true);
         }
         if let Some(last_publication) = p.last_publication {
-            let date = last_publication.format("%e %b %Y").to_string();
+            let date = last_publication
+                .format_localized("%e %b %Y", *crate::CHRONO_LOCALE)
+                .to_string();
             self.last_publication.set_text(&date);
             self.last_publication.set_visible(true);
         }

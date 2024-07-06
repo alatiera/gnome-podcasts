@@ -55,6 +55,14 @@ pub static RUNTIME: Lazy<tokio::runtime::Runtime> =
     Lazy::new(|| tokio::runtime::Runtime::new().unwrap());
 
 pub static MAINCONTEXT: Lazy<glib::MainContext> = Lazy::new(glib::MainContext::default);
+pub static CHRONO_LOCALE: Lazy<chrono::Locale> = Lazy::new(|| {
+    use std::str::FromStr;
+    let system_locale = locale_config::Locale::current();
+    let time_locale = system_locale.tags_for("time").next();
+    let time_locale_str = time_locale.as_ref().map(|l| l.as_ref()).unwrap_or("C");
+    let unix_formatted = time_locale_str.replace('-', "_");
+    chrono::Locale::from_str(&unix_formatted).unwrap_or(chrono::Locale::POSIX)
+});
 
 #[cfg(test)]
 fn init_gtk_tests() -> anyhow::Result<()> {

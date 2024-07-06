@@ -220,10 +220,14 @@ impl EpisodeDescriptionPriv {
         let ep_local = DateTime::<Local>::from(ep_utc);
         // If the episode is from a different year, print year as well
         let date = if now.year() != ep_local.year() {
-            ep_local.format("%e %b %Y").to_string()
+            ep_local
+                .format_localized("%e %b %Y", *crate::CHRONO_LOCALE)
+                .to_string()
             // Else omit the year from the label
         } else {
-            ep_local.format("%e %b").to_string()
+            ep_local
+                .format_localized("%e %b", *crate::CHRONO_LOCALE)
+                .to_string()
         };
 
         let duration_date = match duration {
