@@ -43,6 +43,7 @@
                             <property name="margin-end">18</property>
                             <property name="margin-top">36</property>
                             <property name="margin-bottom">6</property>
+                            <property name="halign">center</property>
                             <property name="valign">center</property>
                             <property name="icon_name">gtk-missing-image</property>
                             <property name="overflow">hidden</property>
