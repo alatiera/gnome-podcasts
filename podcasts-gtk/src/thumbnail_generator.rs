@@ -5,6 +5,7 @@ use std::fmt::Display;
 use std::path::Path;
 
 use crate::download_covers::determin_cover_path;
+use podcasts_data::utils::get_cover_dir_path;
 use podcasts_data::ShowCoverModel;
 use std::sync::Arc;
 
@@ -75,12 +76,16 @@ pub async fn generate(
         .spawn_blocking(move || anyhow::Ok(Arc::new(image::io::Reader::open(path)?.decode()?)))
         .await??;
 
+    let dir = get_cover_dir_path(pd.title());
+    tokio::fs::create_dir_all(dir).await?;
+
     let handles: Vec<_> = sizes
         .into_iter()
         .map(|size| {
             let pixels = size.pixels();
             let thumb_path = determin_cover_path(pd, Some(size));
             let image_full_size = image_full_size.clone();
+
             crate::RUNTIME.spawn(async move {
                 let tmp_path = thumb_path.with_extension(".part");
                 let tmp_path2 = tmp_path.clone();

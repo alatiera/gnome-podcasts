@@ -210,16 +210,21 @@ pub fn get_download_dir(pd_title: &str) -> Result<String, DownloadError> {
 
 /// Returns the URI of a Show's cover directory given it's title.
 pub fn get_cover_dir(pd_title: &str) -> Result<String, DownloadError> {
-    // It might be better to make it a hash of the title or the Show id
-    let mut dir = PODCASTS_CACHE.clone();
-    dir.push(pd_title);
-
+    let dir = get_cover_dir_path(pd_title);
     // Create the dir
     fs::DirBuilder::new().recursive(true).create(&dir)?;
     let dir_str = dir
         .to_str()
         .ok_or(DownloadError::InvalidCachedImageLocation)?;
     Ok(dir_str.to_owned())
+}
+
+/// Returns cover dir for a show, does not create it.
+pub fn get_cover_dir_path(pd_title: &str) -> PathBuf {
+    // It might be better to make it a hash of the title or the Show id
+    let mut dir = PODCASTS_CACHE.clone();
+    dir.push(pd_title);
+    dir
 }
 
 /// Removes all the entries associated with the given show from the database,

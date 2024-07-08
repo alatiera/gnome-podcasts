@@ -12,7 +12,8 @@ use tokio::sync::RwLock; // also works from gtk, unlike tokio::fs
 use crate::thumbnail_generator::ThumbSize;
 use podcasts_data::errors::DownloadError;
 use podcasts_data::errors::DownloadError::NoLongerNeeded;
-use podcasts_data::xdg_dirs::CACHED_COVERS_DIR;
+use podcasts_data::utils::get_cover_dir_path;
+use podcasts_data::xdg_dirs::TMP_DIR;
 use podcasts_data::ShowCoverModel;
 
 // Downloader v3
@@ -93,7 +94,7 @@ fn filename_for_download(response: &reqwest::Response) -> String {
 
 pub fn clean_unfinished_downloads() -> Result<()> {
     info!("Starting cover locks cleanup");
-    let dir = CACHED_COVERS_DIR.clone();
+    let dir = TMP_DIR.clone();
 
     for entry in std::fs::read_dir(dir)? {
         // keep going if any one file fails
@@ -129,22 +130,21 @@ fn cleanup_entry(path: &PathBuf) -> Result<()> {
     Ok(())
 }
 
-/// Covers are: XDG_CACHE/Covers/{show_id}
-/// Thumbs are: XDG_CACHE/Covers/{show_id}-{size}
+/// Covers are: XDG_CACHE/{show_title}/cover
+/// Thumbs are: XDG_CACHE/{show_title}/cover-{size}
 /// Also updates (see `determin_cover_path_for_update`)
 pub fn determin_cover_path(pd: &ShowCoverModel, size: Option<ThumbSize>) -> PathBuf {
-    let mut dir = CACHED_COVERS_DIR.clone();
-    let filename = if let Some(size) = size {
-        format!("{}-{size}", pd.id())
+    let mut dir = get_cover_dir_path(pd.title());
+    if let Some(size) = size {
+        dir.push(format!("cover-{size}"));
     } else {
-        format!("{}", pd.id())
+        dir.push("cover");
     };
-    dir.push(filename);
     dir
 }
 /// Updates are: XDG_CACHE/Covers/{show_id}-update
 fn determin_cover_path_for_update(pd: &ShowCoverModel) -> PathBuf {
-    let mut dir = CACHED_COVERS_DIR.clone();
+    let mut dir = get_cover_dir_path(pd.title());
     let filename = format!("{}-update", pd.id());
     dir.push(filename);
     dir
@@ -167,7 +167,7 @@ async fn download(
     // download into tmp_dir and move to filename
     let tmp_dir = tempfile::Builder::new()
         .suffix(&format!("{}-pdcover.part", pd.id()))
-        .tempdir_in(&*CACHED_COVERS_DIR)?;
+        .tempdir_in(&*TMP_DIR)?;
     let client = podcasts_data::downloader::client_builder().build()?;
     let uri = pd.image_uri().ok_or(anyhow!("No image uri for podcast"))?;
     let response = client.get(uri).send().await?;
