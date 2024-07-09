@@ -9,7 +9,7 @@ Listen to your favorite podcasts, right from your desktop.
 
 ## Available on Flathub
 
-[![Get it from Flathub!](https://flathub.org/assets/badges/flathub-badge-en.svg)](https://flathub.org/apps/details/org.gnome.Podcasts)
+[![Get it from Flathub!](https://flathub.org/api/badge?svg&locale=en)](https://flathub.org/apps/details/org.gnome.Podcasts)
 
 ## Quick start
 
