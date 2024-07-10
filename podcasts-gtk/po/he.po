@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: podcasts master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2024-04-19 18:35+0000\n"
-"PO-Revision-Date: 2024-04-22 01:11+0300\n"
+"POT-Creation-Date: 2024-07-08 13:52+0000\n"
+"PO-Revision-Date: 2024-07-10 23:26+0300\n"
 "Last-Translator: Yosef Or Boczko <yoseforb@gmail.com>\n"
 "Language-Team: Hebrew\n"
 "Language: he\n"
@@ -17,7 +17,72 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=4; plural=(n==1 ? 0 : n==2 ? 1 : n>10 && n%10==0 ? "
 "2 : 3)\n"
-"X-Generator: Gtranslator 46.0\n"
+"X-Generator: Gtranslator 46.1\n"
+
+#: podcasts-gtk/resources/gtk/discovery_found_podcast.ui:104
+msgid "Episodes: "
+msgstr "פרקים: "
+
+#: podcasts-gtk/resources/gtk/discovery_found_podcast.ui:114
+msgid "0"
+msgstr "0"
+
+#: podcasts-gtk/resources/gtk/discovery_found_podcast.ui:142
+# msgctxt "shortcut window"
+msgid "Last publication"
+msgstr "פורסם לאחרונה"
+
+#: podcasts-gtk/resources/gtk/discovery_found_podcast.ui:163
+msgid "Subscribe"
+msgstr "הרשמה"
+
+#: podcasts-gtk/resources/gtk/discovery_found_podcast.ui:171
+msgid "Subscribing to feed..."
+msgstr "נרשם להזנה…"
+
+#: podcasts-gtk/resources/gtk/discovery_page.ui:33
+msgid "Add Podcasts"
+msgstr "הוספת הסכתים"
+
+#: podcasts-gtk/resources/gtk/discovery_page.ui:64
+msgid "Search"
+msgstr "חיפוש"
+
+#: podcasts-gtk/resources/gtk/discovery_page.ui:75
+msgid "Enter a feed URL or search the selected platforms."
+msgstr "יש להזין כתובת הזנה או לחפש בפלטפורמות הנבחרות."
+
+#: podcasts-gtk/resources/gtk/discovery_page.ui:98
+msgid "Submit search"
+msgstr "להתחיל את החיפוש"
+
+#: podcasts-gtk/resources/gtk/discovery_page.ui:104
+msgid "Loading..."
+msgstr "בטעינה…"
+
+#: podcasts-gtk/resources/gtk/discovery_page.ui:107
+msgid "Loading"
+msgstr "בטעינה"
+
+#: podcasts-gtk/resources/gtk/discovery_page.ui:121
+msgid "Please enable a Search Platform below, or enter a http(s) feed URL."
+msgstr "יש לאפשר את הפלטפורמות לחיפוש שלהלן, או להזין כתובת הזנה ‎http(s)."
+
+#: podcasts-gtk/resources/gtk/discovery_page.ui:133
+msgid "Search Platforms"
+msgstr "פלטפורמות לחיפוש"
+
+#: podcasts-gtk/resources/gtk/discovery_page.ui:134
+msgid "Search queries will be sent to these platforms."
+msgstr "שאילתות החיפוש ישלחו לפלטפורמות אלו."
+
+#: podcasts-gtk/resources/gtk/discovery_search_results.ui:32
+msgid "Search results"
+msgstr "תוצאות חיפוש"
+
+#: podcasts-gtk/resources/gtk/discovery_search_results.ui:68
+msgid "No results found."
+msgstr "לא נמצאו תוצאות."
 
 #. Translators: Show as a noun, meaning a Podcast-Show.
 #: podcasts-gtk/resources/gtk/empty_show.ui:17
@@ -59,31 +124,30 @@ msgstr "כותרת ההסכת"
 msgid "Duration - Date"
 msgstr "משך - תאריך"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:153
-msgid "Download"
-msgstr "הורדה"
-
-#: podcasts-gtk/resources/gtk/episode_description.ui:163
-msgid "Cancel"
-msgstr "ביטול"
-
-#: podcasts-gtk/resources/gtk/episode_description.ui:173
-msgid "Delete File"
-msgstr "מחיקת קובץ"
-
-#: podcasts-gtk/resources/gtk/episode_description.ui:183
+#: podcasts-gtk/resources/gtk/episode_description.ui:157
 msgid "Stream"
 msgstr "הזרמה"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:193
-#: podcasts-gtk/resources/gtk/episode_description.ui:195
-#: podcasts-gtk/resources/gtk/player_dialog.ui:173
+#: podcasts-gtk/resources/gtk/episode_description.ui:183
+#: podcasts-gtk/resources/gtk/player_sheet.ui:152
 #: podcasts-gtk/resources/gtk/player_toolbar.ui:67
 #: podcasts-gtk/resources/gtk/player_toolbar.ui:262
 msgid "Play"
 msgstr "השמעה"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:212
+#: podcasts-gtk/resources/gtk/episode_description.ui:210
+msgid "Download"
+msgstr "הורדה"
+
+#: podcasts-gtk/resources/gtk/episode_description.ui:237
+msgid "Cancel"
+msgstr "ביטול"
+
+#: podcasts-gtk/resources/gtk/episode_description.ui:274
+msgid "Delete"
+msgstr "מחיקה"
+
+#: podcasts-gtk/resources/gtk/episode_description.ui:294
 msgid "Episode Description"
 msgstr "תיאור פרק"
 
@@ -119,36 +183,6 @@ msgstr "הורדת פרק זה"
 #: podcasts-gtk/resources/gtk/episode_widget.ui:220
 msgid "Episode without audio"
 msgstr "פרק ללא שמע"
-
-#: podcasts-gtk/resources/gtk/hamburger.ui:7
-msgid "_Check for New Episodes"
-msgstr "_בדיקה אם יש פרקים חדשים"
-
-#. Translators: Show as a noun, meaning Podcast-Shows.
-#: podcasts-gtk/resources/gtk/hamburger.ui:13
-msgid "_Import Shows"
-msgstr "_ייבוא תכניות"
-
-#. Translators: Show as a noun, meaning Podcast-Shows.
-#: podcasts-gtk/resources/gtk/hamburger.ui:18
-msgid "_Export Shows"
-msgstr "_ייצוא תכניות"
-
-#: podcasts-gtk/resources/gtk/hamburger.ui:24
-msgid "_Keyboard Shortcuts"
-msgstr "_צירופי מקשים"
-
-#: podcasts-gtk/resources/gtk/hamburger.ui:32
-msgid "_About Podcasts"
-msgstr "על _אודות הסכתים"
-
-#: podcasts-gtk/resources/gtk/headerbar.ui:41
-msgid "Add a new feed"
-msgstr "הוספת ערוץ חדש"
-
-#: podcasts-gtk/resources/gtk/headerbar.ui:52
-msgid "Main Menu"
-msgstr "תפריט ראשי"
 
 #: podcasts-gtk/resources/gtk/help-overlay.ui:12
 msgctxt "shortcut window"
@@ -242,28 +276,6 @@ msgstr "החודש"
 msgid "Older"
 msgstr "ישן יותר"
 
-#: podcasts-gtk/resources/gtk/player_dialog.ui:7
-msgid "Now Playing"
-msgstr "מושמע כעת"
-
-#: podcasts-gtk/resources/gtk/player_dialog.ui:28
-msgid "Close"
-msgstr "סגירה"
-
-#: podcasts-gtk/resources/gtk/player_dialog.ui:152
-msgid "Rewind"
-msgstr "חזרה לאחור"
-
-#: podcasts-gtk/resources/gtk/player_dialog.ui:191
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:80
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:271
-msgid "Pause"
-msgstr "השהיה"
-
-#: podcasts-gtk/resources/gtk/player_dialog.ui:214
-msgid "Forward"
-msgstr "קפיצה קדימה"
-
 #: podcasts-gtk/resources/gtk/player_rate.ui:29
 msgid "Change the playback speed"
 msgstr "שינוי מהירות השמעה"
@@ -296,6 +308,20 @@ msgstr "0.90×"
 #: podcasts-gtk/resources/gtk/player_rate.ui:69
 msgid "0.75×"
 msgstr "0.75×"
+
+#: podcasts-gtk/resources/gtk/player_sheet.ui:131
+msgid "Rewind"
+msgstr "חזרה לאחור"
+
+#: podcasts-gtk/resources/gtk/player_sheet.ui:170
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:80
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:271
+msgid "Pause"
+msgstr "השהיה"
+
+#: podcasts-gtk/resources/gtk/player_sheet.ui:193
+msgid "Forward"
+msgstr "קפיצה קדימה"
 
 #: podcasts-gtk/resources/gtk/player_toolbar.ui:50
 msgid "Rewind 10 seconds"
@@ -337,18 +363,48 @@ msgstr "תפריט הסכת"
 msgid "Episodes"
 msgstr "פרקים"
 
-#. Weird magic I copy-pasted that sets the Application Name in the Shell.
 #: podcasts-gtk/resources/gtk/window.ui:6
-#: podcasts-gtk/resources/gtk/window.ui:25
+msgid "_Check for New Episodes"
+msgstr "_בדיקה אם יש פרקים חדשים"
+
+#. Translators: Show as a noun, meaning Podcast-Shows.
+#: podcasts-gtk/resources/gtk/window.ui:12
+msgid "_Import Shows"
+msgstr "_ייבוא תכניות"
+
+#. Translators: Show as a noun, meaning Podcast-Shows.
+#: podcasts-gtk/resources/gtk/window.ui:17
+msgid "_Export Shows"
+msgstr "_ייצוא תכניות"
+
+#: podcasts-gtk/resources/gtk/window.ui:23
+msgid "_Keyboard Shortcuts"
+msgstr "_צירופי מקשים"
+
+#: podcasts-gtk/resources/gtk/window.ui:27
+msgid "_About Podcasts"
+msgstr "_על הסכתים"
+
+#. Weird magic I copy-pasted that sets the Application Name in the Shell.
+#: podcasts-gtk/resources/gtk/window.ui:35
+#: podcasts-gtk/resources/gtk/window.ui:102
 #: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:4
 #: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:3
-#: podcasts-gtk/src/app.rs:446 podcasts-gtk/src/widgets/aboutdialog.rs:56
-#: podcasts-gtk/src/widgets/player.rs:380
+#: podcasts-gtk/src/app.rs:460 podcasts-gtk/src/widgets/aboutdialog.rs:56
+#: podcasts-gtk/src/widgets/player.rs:430
 msgid "Podcasts"
 msgstr "הסכתים"
 
+#: podcasts-gtk/resources/gtk/window.ui:115
+msgid "Add a New Feed"
+msgstr "הוספת ערוץ חדש"
+
+#: podcasts-gtk/resources/gtk/window.ui:123
+msgid "Main Menu"
+msgstr "תפריט ראשי"
+
 #. Translators: Show as a noun, meaning a Podcast-Show.
-#: podcasts-gtk/resources/gtk/window.ui:35
+#: podcasts-gtk/resources/gtk/window.ui:137
 msgid "Show"
 msgstr "הצגה"
 
@@ -388,7 +444,7 @@ msgid "The view where one can add a new podcast"
 msgstr "התצוגה של המקום להוספת הסכת חדש"
 
 #. developer_name tag deprecated with Appstream 1.0
-#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:163
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:186
 msgid "The Podcasts developers"
 msgstr "מפתחי הסכתים"
 
@@ -437,59 +493,57 @@ msgstr "How many periods of time to wait between automatic cleanups"
 msgid "What period of time to wait between automatic cleanups"
 msgstr "What period of time to wait between automatic cleanups"
 
-#: podcasts-gtk/src/app.rs:336
+#: podcasts-gtk/src/app.rs:340
 msgid "Copied URL to clipboard!"
 msgstr "כתובת הועתקה ללוח הגזירים!"
+
+#: podcasts-gtk/src/episode_description_parser.rs:316
+msgid "Jump to {}:{}:{}"
+msgstr "קפיצה אל ‎{}:{}:{}"
+
+#: podcasts-gtk/src/episode_description_parser.rs:335
+msgid "Jump to {}:{}"
+msgstr "קפיצה אל ‎{}:{}"
 
 #: podcasts-gtk/src/manager.rs:105
 msgid "Download failed: {}"
 msgstr "ההורדה נכשלה: {}"
 
-#: podcasts-gtk/src/stacks/content.rs:66
-msgid "New"
-msgstr "חדש"
-
-#. Translators: Shows as a noun, meaning Podcast-Shows.
-#: podcasts-gtk/src/stacks/content.rs:68
-#: podcasts-gtk/src/widgets/shows_view.rs:65
-msgid "Shows"
-msgstr "תכניות"
-
-#: podcasts-gtk/src/utils.rs:474 podcasts-gtk/src/utils.rs:514
+#: podcasts-gtk/src/utils.rs:385 podcasts-gtk/src/utils.rs:425
 msgid "OPML file"
 msgstr "קובץ OPML"
 
-#: podcasts-gtk/src/utils.rs:485
+#: podcasts-gtk/src/utils.rs:396
 msgid "Select the file from which to you want to import shows."
 msgstr "בחירת הקובץ לייבוא תכניות."
 
-#: podcasts-gtk/src/utils.rs:487
+#: podcasts-gtk/src/utils.rs:398
 msgid "_Import"
 msgstr "_ייבוא"
 
-#: podcasts-gtk/src/utils.rs:504
+#: podcasts-gtk/src/utils.rs:415
 msgid "Failed to parse the imported file {}"
 msgstr "פענוח הקובץ המיובא {} נכשל"
 
 #. Translators: Show as a noun, meaning Podcast-Shows.
-#: podcasts-gtk/src/utils.rs:525
+#: podcasts-gtk/src/utils.rs:436
 msgid "Export shows to…"
 msgstr "ייצוא תכניות אל…"
 
-#: podcasts-gtk/src/utils.rs:526
+#: podcasts-gtk/src/utils.rs:437
 msgid "_Export"
 msgstr "_ייצוא"
 
 #. Translators: This is the string of the suggested name for the exported opml file
-#: podcasts-gtk/src/utils.rs:530
+#: podcasts-gtk/src/utils.rs:441
 msgid "gnome-podcasts-exported-shows"
 msgstr "קובץ-ייצוא-תכניות-הסכתים-גנום"
 
-#: podcasts-gtk/src/utils.rs:539
+#: podcasts-gtk/src/utils.rs:450
 msgid "GNOME Podcasts Subscriptions"
 msgstr "מינויי GNOME הסכתים"
 
-#: podcasts-gtk/src/utils.rs:543
+#: podcasts-gtk/src/utils.rs:454
 msgid "Failed to export podcasts"
 msgstr "ייצוא ההסכתים נכשל"
 
@@ -497,18 +551,32 @@ msgstr "ייצוא ההסכתים נכשל"
 msgid "Podcast Client for the GNOME Desktop."
 msgstr "לקוח הסכתים עבור שולחן העבודה GNOME."
 
-#: podcasts-gtk/src/widgets/aboutdialog.rs:63
+#: podcasts-gtk/src/widgets/aboutdialog.rs:62
 msgid "translator-credits"
 msgstr ""
 "יוסף אור בוצ׳קו <yoseforb@gmail.com>\n"
 "ירון שהרבני <sh.yaron@gmail.com>\n"
-"<a href=\"https://l10n.gnome.org/teams/he/\">מיזם תרגום GNOME לעברית</a>"
+"מיזם תרגום GNOME לעברית https://l10n.gnome.org/teams/he/"
 
-#: podcasts-gtk/src/widgets/episode.rs:268
+#: podcasts-gtk/src/widgets/content_stack.rs:66
+msgid "New"
+msgstr "חדש"
+
+#. Translators: Shows as a noun, meaning Podcast-Shows.
+#: podcasts-gtk/src/widgets/content_stack.rs:67
+#: podcasts-gtk/src/widgets/shows_view.rs:114
+msgid "Shows"
+msgstr "תכניות"
+
+#: podcasts-gtk/src/widgets/download_progress_bar.rs:69
+msgid "Download progress"
+msgstr "התקדמות ההורדה"
+
+#: podcasts-gtk/src/widgets/episode.rs:277
 msgid "{} min"
 msgstr "‏{} דק׳"
 
-#: podcasts-gtk/src/widgets/player.rs:985
+#: podcasts-gtk/src/widgets/player.rs:1023
 msgid "The media player was unable to execute an action."
 msgstr "נגן המדיה לא הצליח לבצע את הפעולה."
 
@@ -520,18 +588,24 @@ msgstr "מרחיב את התיאור הזה חזותית"
 msgid "Read More"
 msgstr "לקרוא עוד"
 
-#: podcasts-gtk/src/widgets/show_menu.rs:170
+#: podcasts-gtk/src/widgets/show_menu.rs:167
 msgid "Marked all episodes as listened"
 msgstr "כל הפרקים סומנו כהואזנו"
 
-#: podcasts-gtk/src/widgets/show_menu.rs:171
-#: podcasts-gtk/src/widgets/show_menu.rs:194
+#: podcasts-gtk/src/widgets/show_menu.rs:168
+#: podcasts-gtk/src/widgets/show_menu.rs:191
 msgid "Undo"
 msgstr "ביטול"
 
-#: podcasts-gtk/src/widgets/show_menu.rs:190
+#: podcasts-gtk/src/widgets/show_menu.rs:187
 msgid "Unsubscribed from {}"
 msgstr "בוטל המינוי מהתכנית {}"
+
+#~ msgid "Now Playing"
+#~ msgstr "מושמע כעת"
+
+#~ msgid "Close"
+#~ msgstr "סגירה"
 
 #~ msgid "Enter Feed Address"
 #~ msgstr "הזנת כתובת ערוץ"
