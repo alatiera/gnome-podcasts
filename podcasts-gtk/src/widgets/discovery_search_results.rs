@@ -183,7 +183,7 @@ impl PodcastPriv {
 
         crate::MAINCONTEXT.spawn_local(clone!(@weak self as this => async move {
             if let Ok(texture) = receiver.recv().await {
-                this.cover.set_from_paintable(Some(&texture));
+                this.cover.set_paintable(Some(&texture));
             }
         }));
     }

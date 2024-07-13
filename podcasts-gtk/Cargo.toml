@@ -5,7 +5,7 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-adw = { package = "libadwaita", version = "0.6", features = ["v1_5"] }
+adw = { package = "libadwaita", version = "0.7", features = ["v1_6"] }
 anyhow = { workspace = true }
 async-channel = "2"
 async-oneshot = "0.5"
@@ -13,9 +13,9 @@ chrono = { workspace = true }
 fragile = "2"
 futures-util = "0.3"
 gettext-rs = { version = "0.7", features = ["gettext-system"] }
-gst = { version = "0.22", package = "gstreamer" }
-gst-play = { version = "0.22", package = "gstreamer-play" }
-gtk = { package = "gtk4", version = "0.8", features = ["gnome_46"] }
+gst = { version = "0.23", package = "gstreamer" }
+gst-play = { version = "0.23", package = "gstreamer-play" }
+gtk = { package = "gtk4", version = "0.9", features = ["gnome_47"] }
 html2text = "0.6"
 html5ever = "0.26"
 humansize = "1"

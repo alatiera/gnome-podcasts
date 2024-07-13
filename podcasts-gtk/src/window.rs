@@ -226,7 +226,7 @@ impl MainWindow {
         imp.header_breakpoint.add_setter(
             &imp.bottom_switcher_bar.get(),
             "visible",
-            &true.to_value(),
+            Some(&true.to_value()),
         );
         let p = player.deref();
         imp.player_breakpoint
