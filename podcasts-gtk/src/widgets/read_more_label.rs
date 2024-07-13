@@ -35,10 +35,13 @@ impl ObjectImpl for ReadMoreLabelPriv {
             ))]);
         self.button.set_label(&i18n("Read More"));
         self.button.set_halign(gtk::Align::Center);
-        self.button
-            .connect_clicked(glib::clone!(@weak obj => move |_| {
+        self.button.connect_clicked(glib::clone!(
+            #[weak]
+            obj,
+            move |_| {
                 obj.set_expanded(true);
-            }));
+            }
+        ));
 
         self.short_label.set_halign(gtk::Align::Center);
         self.short_label.set_valign(gtk::Align::Center);

@@ -125,20 +125,24 @@ impl PlayerInfo {
         if let Some(mpris) = self.mpris.as_ref() {
             crate::MAINCONTEXT.spawn_local_with_priority(
                 glib::source::Priority::LOW,
-                clone!(@weak mpris => async move {
-                    if let Err(err) = mpris.set_metadata(metadata).await {
-                        warn!("Failed to set MPRIS metadata: {err:?}");
+                clone!(
+                    #[weak]
+                    mpris,
+                    async move {
+                        if let Err(err) = mpris.set_metadata(metadata).await {
+                            warn!("Failed to set MPRIS metadata: {err:?}");
+                        }
+                        if let Err(err) = mpris.set_can_pause(true).await {
+                            warn!("Failed to set MPRIS pause capability: {err:?}");
+                        }
+                        if let Err(err) = mpris.set_can_play(true).await {
+                            warn!("Failed to set MPRIS play capability: {err:?}");
+                        }
+                        if let Err(err) = mpris.set_can_seek(true).await {
+                            warn!("Failed to set MPRIS seek capability: {err:?}");
+                        }
                     }
-                    if let Err(err) = mpris.set_can_pause(true).await {
-                        warn!("Failed to set MPRIS pause capability: {err:?}");
-                    }
-                    if let Err(err) = mpris.set_can_play(true).await {
-                        warn!("Failed to set MPRIS play capability: {err:?}");
-                    }
-                    if let Err(err) = mpris.set_can_seek(true).await {
-                        warn!("Failed to set MPRIS seek capability: {err:?}");
-                    }
-                }),
+                ),
             );
         }
     }
@@ -161,11 +165,15 @@ impl PlayerInfo {
                     metadata.set_art_url(Url::from_file_path(art_path).ok());
                     crate::MAINCONTEXT.spawn_local_with_priority(
                         glib::source::Priority::LOW,
-                        clone!(@weak mpris => async move {
-                            if let Err(err) = mpris.set_metadata(metadata).await {
-                                error!("failed to update mpris metadata {err}");
+                        clone!(
+                            #[weak]
+                            mpris,
+                            async move {
+                                if let Err(err) = mpris.set_metadata(metadata).await {
+                                    error!("failed to update mpris metadata {err}");
+                                }
                             }
-                        }),
+                        ),
                     );
                     return Ok(());
                 } else {
@@ -180,11 +188,15 @@ impl PlayerInfo {
             metadata.set_art_url(pd.image_uri());
             crate::MAINCONTEXT.spawn_local_with_priority(
                 glib::source::Priority::LOW,
-                clone!(@weak mpris => async move {
-                    if let Err(err) = mpris.set_metadata(metadata).await {
-                        error!("failed to update mpris metadata {err}");
+                clone!(
+                    #[weak]
+                    mpris,
+                    async move {
+                        if let Err(err) = mpris.set_metadata(metadata).await {
+                            error!("failed to update mpris metadata {err}");
+                        }
                     }
-                }),
+                ),
             );
         }
         Ok(())
@@ -303,8 +315,10 @@ impl PlayerRate {
 
     fn connect_signals(&self, widget: &Rc<RefCell<PlayerWidget>>) {
         let group = gio::SimpleActionGroup::new();
-        self.action
-            .connect_activate(clone!(@weak widget => move |action, rate_v| {
+        self.action.connect_activate(clone!(
+            #[weak]
+            widget,
+            move |action, rate_v| {
                 let variant = rate_v.unwrap();
                 action.set_state(variant);
                 let rate = variant
@@ -313,7 +327,8 @@ impl PlayerRate {
                     .parse::<f64>()
                     .expect("Could not parse float from variant string");
                 widget.borrow().on_rate_changed(rate);
-            }));
+            }
+        ));
         group.add_action(&self.action);
         widget
             .borrow()
@@ -450,10 +465,14 @@ impl Default for PlayerWidget {
         if let Some(mpris) = mpris.as_ref() {
             crate::MAINCONTEXT.spawn_local_with_priority(
                 glib::source::Priority::LOW,
-                clone!(@weak mpris => async move {
-                    let task = mpris.run();
-                    task.await;
-                }),
+                clone!(
+                    #[weak]
+                    mpris,
+                    async move {
+                        let task = mpris.run();
+                        task.await;
+                    }
+                ),
             );
         }
 
@@ -707,11 +726,15 @@ impl PlayerExt for PlayerWidget {
         if let Some(mpris) = self.info.mpris.as_ref() {
             crate::MAINCONTEXT.spawn_local_with_priority(
                 glib::source::Priority::LOW,
-                clone!(@weak mpris => async move {
-                    if let Err(err) = mpris.set_playback_status(PlaybackStatus::Playing).await {
-                        warn!("Failed to set MPRIS playback status: {err:?}");
+                clone!(
+                    #[weak]
+                    mpris,
+                    async move {
+                        if let Err(err) = mpris.set_playback_status(PlaybackStatus::Playing).await {
+                            warn!("Failed to set MPRIS playback status: {err:?}");
+                        }
                     }
-                }),
+                ),
             );
         }
         if let Some(sender) = &self.sender {
@@ -733,11 +756,15 @@ impl PlayerExt for PlayerWidget {
         if let Some(mpris) = self.info.mpris.as_ref() {
             crate::MAINCONTEXT.spawn_local_with_priority(
                 glib::source::Priority::LOW,
-                clone!(@weak mpris => async move {
-                    if let Err(err) = mpris.set_playback_status(PlaybackStatus::Paused).await {
-                        warn!("Failed to set MPRIS playback status: {err:?}");
+                clone!(
+                    #[weak]
+                    mpris,
+                    async move {
+                        if let Err(err) = mpris.set_playback_status(PlaybackStatus::Paused).await {
+                            warn!("Failed to set MPRIS playback status: {err:?}");
+                        }
                     }
-                }),
+                ),
             );
         }
         if let Some(sender) = &self.sender {
@@ -781,11 +808,15 @@ impl PlayerExt for PlayerWidget {
         if let Some(mpris) = self.info.mpris.as_ref() {
             crate::MAINCONTEXT.spawn_local_with_priority(
                 glib::source::Priority::LOW,
-                clone!(@weak mpris => async move {
-                    if let Err(err) = mpris.set_playback_status(PlaybackStatus::Paused).await {
-                        warn!("Failed to set MPRIS playback status: {err:?}");
+                clone!(
+                    #[weak]
+                    mpris,
+                    async move {
+                        if let Err(err) = mpris.set_playback_status(PlaybackStatus::Paused).await {
+                            warn!("Failed to set MPRIS playback status: {err:?}");
+                        }
                     }
-                }),
+                ),
             );
         }
 
@@ -923,90 +954,100 @@ impl PlayerWrapper {
         let this = self.deref();
         let widget = self.borrow();
         // Connect the play button to the gst Player.
-        widget
-            .controls
-            .play
-            .connect_clicked(clone!(@weak this => move |_| {
+        widget.controls.play.connect_clicked(clone!(
+            #[weak]
+            this,
+            move |_| {
                 this.borrow().play();
                 this.borrow().controls.pause.grab_focus(); // keep focus for accessibility
-            }));
+            }
+        ));
 
         // Connect the pause button to the gst Player.
-        widget
-            .controls
-            .pause
-            .connect_clicked(clone!(@weak this => move |_| {
+        widget.controls.pause.connect_clicked(clone!(
+            #[weak]
+            this,
+            move |_| {
                 this.borrow_mut().pause();
                 this.borrow().controls.play.grab_focus(); // keep focus for accessibility
-            }));
+            }
+        ));
 
         // Connect the play button to the gst Player.
-        widget
-            .controls
-            .play_small
-            .connect_clicked(clone!(@weak this => move |_| {
+        widget.controls.play_small.connect_clicked(clone!(
+            #[weak]
+            this,
+            move |_| {
                 this.borrow().play();
                 this.borrow().controls.pause_small.grab_focus(); // keep focus for accessibility
-            }));
+            }
+        ));
 
         // Connect the pause button to the gst Player.
-        widget
-            .controls
-            .pause_small
-            .connect_clicked(clone!(@weak this => move |_| {
+        widget.controls.pause_small.connect_clicked(clone!(
+            #[weak]
+            this,
+            move |_| {
                 this.borrow_mut().pause();
                 this.borrow().controls.play_small.grab_focus(); // keep focus for accessibility
-            }));
+            }
+        ));
 
         // Connect the rewind button to the gst Player.
-        widget
-            .controls
-            .rewind
-            .connect_clicked(clone!(@weak this => move |_| {
+        widget.controls.rewind.connect_clicked(clone!(
+            #[weak]
+            this,
+            move |_| {
                 this.borrow().rewind();
-            }));
+            }
+        ));
 
         // Connect the fast-forward button to the gst Player.
-        widget
-            .controls
-            .forward
-            .connect_clicked(clone!(@weak this => move |_| {
+        widget.controls.forward.connect_clicked(clone!(
+            #[weak]
+            this,
+            move |_| {
                 this.borrow().fast_forward();
-            }));
+            }
+        ));
 
         // Connect the play button to the gst Player.
-        widget
-            .sheet
-            .play
-            .connect_clicked(clone!(@weak this => move |_| {
+        widget.sheet.play.connect_clicked(clone!(
+            #[weak]
+            this,
+            move |_| {
                 this.borrow().play();
                 this.borrow().sheet.pause.grab_focus(); // keep focus for accessibility
-            }));
+            }
+        ));
 
         // Connect the pause button to the gst Player.
-        widget
-            .sheet
-            .pause
-            .connect_clicked(clone!(@weak this => move |_| {
+        widget.sheet.pause.connect_clicked(clone!(
+            #[weak]
+            this,
+            move |_| {
                 this.borrow_mut().pause();
                 this.borrow().sheet.play.grab_focus(); // keep focus for accessibility
-            }));
+            }
+        ));
 
         // Connect the rewind button to the gst Player.
-        widget
-            .sheet
-            .rewind
-            .connect_clicked(clone!(@weak this => move |_| {
+        widget.sheet.rewind.connect_clicked(clone!(
+            #[weak]
+            this,
+            move |_| {
                 this.borrow().rewind();
-            }));
+            }
+        ));
 
         // Connect the fast-forward button to the gst Player.
-        widget
-            .sheet
-            .forward
-            .connect_clicked(clone!(@weak this => move |_| {
+        widget.sheet.forward.connect_clicked(clone!(
+            #[weak]
+            this,
+            move |_| {
                 this.borrow().fast_forward();
-            }));
+            }
+        ));
     }
 
     fn connect_gst_signals(&self, sender: &Sender<Action>) {
@@ -1017,67 +1058,95 @@ impl PlayerWrapper {
             .connect_warning(move |_, warn, details| warn!("gst warning: {} {:#?}", warn, details));
 
         // Log gst errors.
-        signal_adapter.connect_error(clone!(@strong sender => move |_, _error, details| {
-            error!("gstreamer error: {} {:#?}",  _error, details);
-            send_blocking!(sender, Action::ErrorNotification(format!("Player Error: {}", _error)));
-            let s = i18n("The media player was unable to execute an action.");
-            send_blocking!(sender, Action::ErrorNotification(s));
-        }));
+        signal_adapter.connect_error(clone!(
+            #[strong]
+            sender,
+            move |_, _error, details| {
+                error!("gstreamer error: {} {:#?}", _error, details);
+                send_blocking!(
+                    sender,
+                    Action::ErrorNotification(format!("Player Error: {}", _error))
+                );
+                let s = i18n("The media player was unable to execute an action.");
+                send_blocking!(sender, Action::ErrorNotification(s));
+            }
+        ));
 
         // The following callbacks require `Send` but are handled by the gtk main loop
         let weak = Fragile::new(Rc::downgrade(self));
 
-        signal_adapter.connect_uri_loaded(clone!(@strong weak => move |_, _| {
-            if let Some(player_widget) = weak.get().upgrade() {
-                player_widget.borrow().restore_play_position();
-                player_widget.borrow_mut().info.finished_restore = true;
+        signal_adapter.connect_uri_loaded(clone!(
+            #[strong]
+            weak,
+            move |_, _| {
+                if let Some(player_widget) = weak.get().upgrade() {
+                    player_widget.borrow().restore_play_position();
+                    player_widget.borrow_mut().info.finished_restore = true;
+                }
             }
-        }));
+        ));
 
         // Update the duration label and the slider
-        signal_adapter.connect_duration_changed(clone!(@strong weak => move |_, clock| {
-            if let Some(player_widget) = weak.get().upgrade() {
-                if let Some(c) = clock {
-                    player_widget.borrow().timer.on_duration_changed(Duration(c));
+        signal_adapter.connect_duration_changed(clone!(
+            #[strong]
+            weak,
+            move |_, clock| {
+                if let Some(player_widget) = weak.get().upgrade() {
+                    if let Some(c) = clock {
+                        player_widget
+                            .borrow()
+                            .timer
+                            .on_duration_changed(Duration(c));
+                    }
                 }
             }
-        }));
+        ));
 
         // Update the position label and the slider
-        signal_adapter.connect_position_updated(clone!(@strong weak => move |_, clock| {
-            if let Some(player_widget) = weak.get().upgrade() {
-                // write to db
-                if let Some(c) = clock {
-                    let pos = Position(c);
-                    let finished_restore = player_widget.borrow().info.finished_restore;
-                    player_widget.borrow_mut().info.ep.as_mut().map(|ep| {
-                        if finished_restore {
-                            ep.set_play_position_if_divergent(pos.seconds() as i32)
-                        } else {
-                            Ok(())
-                        }
-                    });
-                    player_widget.borrow().timer.on_position_updated(pos)
+        signal_adapter.connect_position_updated(clone!(
+            #[strong]
+            weak,
+            move |_, clock| {
+                if let Some(player_widget) = weak.get().upgrade() {
+                    // write to db
+                    if let Some(c) = clock {
+                        let pos = Position(c);
+                        let finished_restore = player_widget.borrow().info.finished_restore;
+                        player_widget.borrow_mut().info.ep.as_mut().map(|ep| {
+                            if finished_restore {
+                                ep.set_play_position_if_divergent(pos.seconds() as i32)
+                            } else {
+                                Ok(())
+                            }
+                        });
+                        player_widget.borrow().timer.on_position_updated(pos)
+                    }
                 }
             }
-        }));
+        ));
 
         // Reset the slider to 0 and show a play button
-        signal_adapter.connect_end_of_stream(clone!(@strong sender, @strong weak => move |_| {
-            if let Some(player_widget) = weak.get().upgrade() {
-                // write postion to db
-                player_widget.borrow_mut().info.ep.as_mut().map(|ep| {
-                    ep.set_play_position(0)?;
-                    ep.set_played_now()?;
-                    send_blocking!(sender, Action::RefreshEpisodesViewBGR);
-                    send_blocking!(sender, Action::RefreshWidgetIfSame(ep.show_id()));
-                    let ok : Result<(), podcasts_data::errors::DataError> = Ok(());
-                    ok
-                });
+        signal_adapter.connect_end_of_stream(clone!(
+            #[strong]
+            sender,
+            #[strong]
+            weak,
+            move |_| {
+                if let Some(player_widget) = weak.get().upgrade() {
+                    // write postion to db
+                    player_widget.borrow_mut().info.ep.as_mut().map(|ep| {
+                        ep.set_play_position(0)?;
+                        ep.set_played_now()?;
+                        send_blocking!(sender, Action::RefreshEpisodesViewBGR);
+                        send_blocking!(sender, Action::RefreshWidgetIfSame(ep.show_id()));
+                        let ok: Result<(), podcasts_data::errors::DataError> = Ok(());
+                        ok
+                    });
 
-                player_widget.borrow_mut().stop()
+                    player_widget.borrow_mut().stop()
+                }
             }
-        }));
+        ));
     }
 
     fn connect_rate_buttons(&self) {
@@ -1093,23 +1162,37 @@ impl PlayerWrapper {
         let widget = self.borrow();
 
         if let Some(mpris) = widget.info.mpris.as_ref() {
-            mpris.connect_play_pause(clone!(@strong self as player => move |mpris| {
-                match mpris.playback_status() {
-                    PlaybackStatus::Paused => player.borrow().play(),
-                    PlaybackStatus::Stopped => player.borrow().play(),
-                    _ => player.borrow_mut().pause(),
-                };
-            }));
-            mpris.connect_play(clone!(@strong self as player => move |_| {
-                player.borrow().play();
-            }));
+            mpris.connect_play_pause(clone!(
+                #[strong(rename_to = player)]
+                self,
+                move |mpris| {
+                    match mpris.playback_status() {
+                        PlaybackStatus::Paused => player.borrow().play(),
+                        PlaybackStatus::Stopped => player.borrow().play(),
+                        _ => player.borrow_mut().pause(),
+                    };
+                }
+            ));
+            mpris.connect_play(clone!(
+                #[strong(rename_to = player)]
+                self,
+                move |_| {
+                    player.borrow().play();
+                }
+            ));
 
-            mpris.connect_pause(clone!(@strong self as player => move |_| {
-                player.borrow_mut().pause();
-            }));
+            mpris.connect_pause(clone!(
+                #[strong(rename_to = player)]
+                self,
+                move |_| {
+                    player.borrow_mut().pause();
+                }
+            ));
 
-            mpris.connect_seek(
-                clone!(@strong self as player => move |_, offset: mpris_server::Time| {
+            mpris.connect_seek(clone!(
+                #[strong(rename_to = player)]
+                self,
+                move |_, offset: mpris_server::Time| {
                     let direction = if offset.is_positive() {
                         SeekDirection::Forward
                     } else {
@@ -1119,12 +1202,16 @@ impl PlayerWrapper {
                         ClockTime::from_useconds(offset.as_micros().unsigned_abs()),
                         direction,
                     );
-                }),
-            );
+                }
+            ));
 
-            mpris.connect_raise(clone!(@strong sender => move |_| {
-                send_blocking!(sender, Action::RaiseWindow);
-            }));
+            mpris.connect_raise(clone!(
+                #[strong]
+                sender,
+                move |_| {
+                    send_blocking!(sender, Action::RaiseWindow);
+                }
+            ));
         };
     }
 }

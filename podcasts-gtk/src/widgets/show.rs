@@ -152,23 +152,29 @@ fn populate_listbox(show: &ShowWidget, pd: Arc<Show>, sender: &Sender<Action>) -
         return Ok(());
     }
 
-    let constructor = clone!(@strong sender => move |ep: EpisodeWidgetModel| {
-        let id = ep.id();
-        let episode_widget = EpisodeWidget::new(&sender, ep);
-        let row = gtk::ListBoxRow::new();
-        row.set_child(Some(&episode_widget));
-        row.set_action_name(Some("app.go-to-episode"));
-        row.set_action_target_value(Some(&id.to_variant()));
-        row.upcast()
-    });
+    let constructor = clone!(
+        #[strong]
+        sender,
+        move |ep: EpisodeWidgetModel| {
+            let id = ep.id();
+            let episode_widget = EpisodeWidget::new(&sender, ep);
+            let row = gtk::ListBoxRow::new();
+            row.set_child(Some(&episode_widget));
+            row.set_action_name(Some("app.go-to-episode"));
+            row.set_action_target_value(Some(&id.to_variant()));
+            row.upcast()
+        }
+    );
 
     let listbox = show.imp().episodes.upcast_ref::<gtk::Widget>().downgrade();
     crate::MAINCONTEXT.spawn_local_with_priority(
         glib::source::Priority::DEFAULT_IDLE,
         async move {
-            let episodes = gio::spawn_blocking(clone!(@strong pd => move || {
-                dbqueries::get_pd_episodeswidgets(&pd)
-            }));
+            let episodes = gio::spawn_blocking(clone!(
+                #[strong]
+                pd,
+                move || dbqueries::get_pd_episodeswidgets(&pd),
+            ));
 
             if let Ok(Ok(episodes)) = episodes.await {
                 let results = lazy_load(episodes, listbox, constructor).await;

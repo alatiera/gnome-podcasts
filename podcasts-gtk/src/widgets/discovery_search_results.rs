@@ -134,28 +134,48 @@ impl PodcastPriv {
         }
 
         let url = p.feed.clone();
-        self.subscribe
-            .connect_clicked(clone!(@weak self as this, @strong sender => move |_| {
+        self.subscribe.connect_clicked(clone!(
+            #[weak(rename_to = this)]
+            self,
+            #[strong]
+            sender,
+            move |_| {
                 let (loading_done, receiver) = async_channel::bounded(1);
 
-                this.subscribe_stack.set_visible_child(&this.loading_spinner.get());
+                this.subscribe_stack
+                    .set_visible_child(&this.loading_spinner.get());
                 this.loading_spinner.set_spinning(true);
                 this.loading_spinner.announce(
-                    &this.loading_spinner.tooltip_text().unwrap_or("loading".into()),
-                    gtk::AccessibleAnnouncementPriority::High
+                    &this
+                        .loading_spinner
+                        .tooltip_text()
+                        .unwrap_or("loading".into()),
+                    gtk::AccessibleAnnouncementPriority::High,
                 );
-                crate::RUNTIME.spawn(clone!(@strong sender, @strong url => async move {
-                    crate::utils::subscribe(&sender, url).await;
-                    send!(loading_done, ());
-                }));
-
-                crate::MAINCONTEXT.spawn_local(clone!(@weak this => async move {
-                    while receiver.recv().await.is_ok() {
-                        this.subscribe_stack.set_visible_child(&this.subscribe.get());
-                        this.loading_spinner.set_spinning(false);
+                crate::RUNTIME.spawn(clone!(
+                    #[strong]
+                    sender,
+                    #[strong]
+                    url,
+                    async move {
+                        crate::utils::subscribe(&sender, url).await;
+                        send!(loading_done, ());
                     }
-                }));
-            }));
+                ));
+
+                crate::MAINCONTEXT.spawn_local(clone!(
+                    #[weak]
+                    this,
+                    async move {
+                        while receiver.recv().await.is_ok() {
+                            this.subscribe_stack
+                                .set_visible_child(&this.subscribe.get());
+                            this.loading_spinner.set_spinning(false);
+                        }
+                    }
+                ));
+            }
+        ));
 
         let art = p.art.clone();
         let (sender, receiver) = async_channel::bounded(1);
@@ -181,11 +201,15 @@ impl PodcastPriv {
             }
         });
 
-        crate::MAINCONTEXT.spawn_local(clone!(@weak self as this => async move {
-            if let Ok(texture) = receiver.recv().await {
-                this.cover.set_paintable(Some(&texture));
+        crate::MAINCONTEXT.spawn_local(clone!(
+            #[weak(rename_to = this)]
+            self,
+            async move {
+                if let Ok(texture) = receiver.recv().await {
+                    this.cover.set_paintable(Some(&texture));
+                }
             }
-        }));
+        ));
     }
 }
 

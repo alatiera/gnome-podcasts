@@ -402,13 +402,19 @@ pub(crate) async fn on_import_clicked(window: &gtk::ApplicationWindow, sender: &
     if let Ok(file) = dialog.open_future(Some(window)).await {
         if let Some(path) = file.peek_path() {
             // spawn a thread to avoid blocking ui during import
-            let result = gio::spawn_blocking(clone!(@strong sender => move || {
-                // Parse the file and import the feeds
-                opml::import_from_file(path).map(|sources| {
-                    // Refresh the successfully parsed feeds to index them
-                    FEED_MANAGER.schedule_refresh(&sender, sources);
-                }).context("PARSE")
-            }))
+            let result = gio::spawn_blocking(clone!(
+                #[strong]
+                sender,
+                move || {
+                    // Parse the file and import the feeds
+                    opml::import_from_file(path)
+                        .map(|sources| {
+                            // Refresh the successfully parsed feeds to index them
+                            FEED_MANAGER.schedule_refresh(&sender, sources);
+                        })
+                        .context("PARSE")
+                }
+            ))
             .await;
 
             if let Err(err) = result.unwrap_or_else(|e| bail!("Import Thread Error {e:#?}")) {

@@ -102,14 +102,18 @@ impl HomeView {
 
         crate::MAINCONTEXT.spawn_local_with_priority(
             glib::source::Priority::DEFAULT_IDLE,
-            glib::clone!(@weak home => async move {
-                let results = home.add_to_boxes(sender).await;
-                for result in results {
-                    if let Err(e) = result {
-                        log::error!("Error: {:?}", e);
+            glib::clone!(
+                #[weak]
+                home,
+                async move {
+                    let results = home.add_to_boxes(sender).await;
+                    for result in results {
+                        if let Err(e) = result {
+                            log::error!("Error: {:?}", e);
+                        }
                     }
                 }
-            }),
+            ),
         );
 
         home

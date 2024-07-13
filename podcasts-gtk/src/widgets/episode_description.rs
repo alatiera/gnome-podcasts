@@ -77,11 +77,15 @@ pub struct EpisodeDescriptionPriv {
 impl EpisodeDescriptionPriv {
     fn init(&self, sender: Sender<Action>, ep: Arc<Episode>, show: Arc<Show>) {
         let (ed_sender, r) = async_channel::unbounded();
-        crate::MAINCONTEXT.spawn_local(clone!(@weak self as this => async move {
-            while let Ok(action) = r.recv().await {
-                this.do_action(action);
+        crate::MAINCONTEXT.spawn_local(clone!(
+            #[weak(rename_to = this)]
+            self,
+            async move {
+                while let Ok(action) = r.recv().await {
+                    this.do_action(action);
+                }
             }
-        }));
+        ));
 
         self.set_description(&ep);
         self.set_duration(&ep);
@@ -99,8 +103,10 @@ impl EpisodeDescriptionPriv {
         let menu = EpisodeMenu::new(&sender, ep.clone(), show);
         self.menu_button.set_menu_model(Some(&menu.menu));
 
-        self.description
-            .connect_activate_link(clone!(@strong sender => move |_, url| {
+        self.description.connect_activate_link(clone!(
+            #[strong]
+            sender,
+            move |_, url| {
                 if let Some(seconds_str) = url.strip_prefix("jump:") {
                     if let Ok(seconds) = seconds_str.parse() {
                         send_blocking!(sender, Action::InitEpisodeAt(id, seconds));
@@ -111,7 +117,8 @@ impl EpisodeDescriptionPriv {
                 } else {
                     glib::Propagation::Proceed
                 }
-            }));
+            }
+        ));
 
         let ep: &Episode = ep.borrow();
         if ep.uri().is_some() {
@@ -121,19 +128,29 @@ impl EpisodeDescriptionPriv {
     }
 
     fn init_buttons(&self, sender: Sender<Action>, ep: &Episode, id: i32) {
-        self.stream_button
-            .connect_clicked(clone!(@strong sender => move |_| {
+        self.stream_button.connect_clicked(clone!(
+            #[strong]
+            sender,
+            move |_| {
                 send_blocking!(sender, Action::StreamEpisode(id));
-            }));
+            }
+        ));
 
-        self.play_button
-            .connect_clicked(clone!(@strong sender => move |_| {
+        self.play_button.connect_clicked(clone!(
+            #[strong]
+            sender,
+            move |_| {
                 send_blocking!(sender, Action::InitEpisode(id));
-            }));
+            }
+        ));
 
         let show_id = ep.show_id();
-        self.download_button.connect_clicked(
-            clone!(@weak self as this, @strong sender => move |_| {
+        self.download_button.connect_clicked(clone!(
+            #[weak(rename_to = this)]
+            self,
+            #[strong]
+            sender,
+            move |_| {
                 use podcasts_data::utils::get_download_dir;
                 if let Err(e) = (|| {
                     let pd = dbqueries::get_podcast_from_id(show_id)?;
@@ -147,11 +164,15 @@ impl EpisodeDescriptionPriv {
                 this.progressbar.grab_focus();
                 send_blocking!(sender, Action::RefreshEpisodesView);
                 send_blocking!(sender, Action::RefreshWidgetIfSame(show_id));
-            }),
-        );
+            }
+        ));
 
-        self.delete_button
-            .connect_clicked(clone!(@weak self as this, @strong sender => move |_| {
+        self.delete_button.connect_clicked(clone!(
+            #[weak(rename_to = this)]
+            self,
+            #[strong]
+            sender,
+            move |_| {
                 if let Ok(ep) = dbqueries::get_episode_from_id(id) {
                     let mut cleaner_ep = podcasts_data::EpisodeCleanerModel::from(ep);
                     if let Err(e) = podcasts_data::utils::delete_local_content(&mut cleaner_ep) {
@@ -161,19 +182,26 @@ impl EpisodeDescriptionPriv {
                 this.refresh_buttons(id);
                 send_blocking!(sender, Action::RefreshEpisodesView);
                 send_blocking!(sender, Action::RefreshWidgetIfSame(show_id));
-            }));
+            }
+        ));
 
         self.progressbar.init(ep.id());
-        self.progressbar
-            .connect_state_change(clone!(@weak self as this => move |_| {
+        self.progressbar.connect_state_change(clone!(
+            #[weak(rename_to = this)]
+            self,
+            move |_| {
                 this.refresh_buttons(id);
-            }));
-        self.cancel_button
-            .connect_clicked(clone!(@weak self as this => move |_| {
+            }
+        ));
+        self.cancel_button.connect_clicked(clone!(
+            #[weak(rename_to = this)]
+            self,
+            move |_| {
                 if let Err(e) = this.progressbar.cancel() {
                     error!("failed to cancel download {e}");
                 }
-            }));
+            }
+        ));
     }
 
     fn refresh_buttons(&self, id: i32) {
@@ -249,16 +277,25 @@ impl EpisodeDescriptionPriv {
     ) -> Result<()> {
         let pd = dbqueries::get_podcast_cover_from_id(show_id)?;
         let uri = uri.to_owned();
-        crate::RUNTIME.spawn(clone!(@strong pd => async move {
-            if let Err(e) = async move {
-                let path = downloader::cache_episode_image(&pd, &uri, true).await?;
-                let texture = gtk::gdk::Texture::from_filename(path)?;
-                send!(sender, EpisodeDescriptionAction::EpisodeSpecificImage(texture));
-                Ok::<(), anyhow::Error>(())
-            }.await {
-                error!("failed to get episode specific cover: {e}");
+        crate::RUNTIME.spawn(clone!(
+            #[strong]
+            pd,
+            async move {
+                if let Err(e) = async move {
+                    let path = downloader::cache_episode_image(&pd, &uri, true).await?;
+                    let texture = gtk::gdk::Texture::from_filename(path)?;
+                    send!(
+                        sender,
+                        EpisodeDescriptionAction::EpisodeSpecificImage(texture)
+                    );
+                    Ok::<(), anyhow::Error>(())
+                }
+                .await
+                {
+                    error!("failed to get episode specific cover: {e}");
+                }
             }
-        }));
+        ));
         Ok(())
     }
 

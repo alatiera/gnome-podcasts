@@ -57,23 +57,27 @@ impl ObjectImpl for ShowsViewPriv {
         self.parent_constructed();
         let missing_icon = load_missing_icon();
         let factory = gtk::SignalListItemFactory::new();
-        factory.connect_setup(clone!(@strong missing_icon => move |_factory, item| {
-            let item = item.downcast_ref::<gtk::ListItem>().unwrap();
-            // TODO: Make this a widget with completed/fetch-error info overlays
-            let picture = gtk::Picture::builder()
-                .width_request(150)
-                .height_request(150)
-                .can_focus(false)
-                .build();
-            picture.set_paintable(missing_icon.as_ref());
-            picture.add_css_class("flat");
-            picture.add_css_class("rounded-big");
-            picture.add_css_class("show-button");
-            picture.add_css_class("shows-view-cover");
-            picture.set_content_fit(gtk::ContentFit::ScaleDown);
+        factory.connect_setup(clone!(
+            #[strong]
+            missing_icon,
+            move |_factory, item| {
+                let item = item.downcast_ref::<gtk::ListItem>().unwrap();
+                // TODO: Make this a widget with completed/fetch-error info overlays
+                let picture = gtk::Picture::builder()
+                    .width_request(150)
+                    .height_request(150)
+                    .can_focus(false)
+                    .build();
+                picture.set_paintable(missing_icon.as_ref());
+                picture.add_css_class("flat");
+                picture.add_css_class("rounded-big");
+                picture.add_css_class("show-button");
+                picture.add_css_class("shows-view-cover");
+                picture.set_content_fit(gtk::ContentFit::ScaleDown);
 
-            item.set_child(Some(&picture));
-        }));
+                item.set_child(Some(&picture));
+            }
+        ));
         factory.connect_bind(move |_factory, item| {
             let item = item.downcast_ref::<gtk::ListItem>().unwrap();
             let data = item.item().and_downcast::<ShowCoverModel>().unwrap();

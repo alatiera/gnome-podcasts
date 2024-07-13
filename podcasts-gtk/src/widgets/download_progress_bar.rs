@@ -109,18 +109,24 @@ impl DownloadProgressBar {
             }
             debug!("Download is happening, starting download bar.");
             // set a callback that will update the state when the download finishes
-            let callback = clone!(@weak self as this => @default-return glib::ControlFlow::Break, move || {
-                if let Ok(guard) = manager::ACTIVE_DOWNLOADS.read() {
-                    if !guard.contains_key(&id) {
-                        this.imp().progressbar.set_visible(false);
-                        this.imp().progressbar.set_fraction(0.0);
-                        this.imp().listener.set(false);
-                        debug!("Download bar done, hiding it now.");
-                        return glib::ControlFlow::Break
+            let callback = clone!(
+                #[weak(rename_to = this)]
+                self,
+                #[upgrade_or]
+                glib::ControlFlow::Break,
+                move || {
+                    if let Ok(guard) = manager::ACTIVE_DOWNLOADS.read() {
+                        if !guard.contains_key(&id) {
+                            this.imp().progressbar.set_visible(false);
+                            this.imp().progressbar.set_fraction(0.0);
+                            this.imp().listener.set(false);
+                            debug!("Download bar done, hiding it now.");
+                            return glib::ControlFlow::Break;
+                        }
                     }
+                    glib::ControlFlow::Continue
                 }
-                glib::ControlFlow::Continue
-            });
+            );
             glib::timeout_add_local(Duration::from_millis(250), callback);
             self.imp().listener.set(true);
             self.imp().progressbar.set_visible(true);
@@ -157,21 +163,27 @@ impl DownloadProgressBar {
             // Cancel is not instant so we have to wait a bit
             glib::timeout_add_local(
                 Duration::from_millis(50),
-                clone!(@weak self as this => @default-return glib::ControlFlow::Break, move || {
-                    if let Ok(thing) = this.active_dl() {
-                        if thing.is_none() {
-                            // Recalculate the widget state
-                            if let Err(err) = dbqueries::get_episode_widget_from_id(id) {
-                                error!("Error: {}", err);
+                clone!(
+                    #[weak(rename_to = this)]
+                    self,
+                    #[upgrade_or]
+                    glib::ControlFlow::Break,
+                    move || {
+                        if let Ok(thing) = this.active_dl() {
+                            if thing.is_none() {
+                                // Recalculate the widget state
+                                if let Err(err) = dbqueries::get_episode_widget_from_id(id) {
+                                    error!("Error: {}", err);
+                                }
+                                this.imp().progressbar.set_visible(false);
+                                this.imp().progressbar.set_fraction(0.0);
+                                return glib::ControlFlow::Break;
                             }
-                            this.imp().progressbar.set_visible(false);
-                            this.imp().progressbar.set_fraction(0.0);
-                            return glib::ControlFlow::Break
                         }
-                    }
 
-                    glib::ControlFlow::Continue
-                }),
+                        glib::ControlFlow::Continue
+                    }
+                ),
             );
         }
         Ok(())
@@ -190,10 +202,17 @@ fn update_progressbar_callback(
     prog: &Arc<Mutex<manager::Progress>>,
     episode_id: i32,
 ) {
-    let callback = clone!(@weak widget, @strong prog => @default-return glib::ControlFlow::Break, move || {
-        progress_bar_helper(&widget, &prog, episode_id)
-            .unwrap_or(glib::ControlFlow::Break)
-    });
+    let callback = clone!(
+        #[weak]
+        widget,
+        #[strong]
+        prog,
+        #[upgrade_or]
+        glib::ControlFlow::Break,
+        move || {
+            progress_bar_helper(&widget, &prog, episode_id).unwrap_or(glib::ControlFlow::Break)
+        }
+    );
     glib::timeout_add_local(Duration::from_millis(100), callback);
 }
 
@@ -235,9 +254,15 @@ fn progress_bar_helper(
 // relying to the RSS feed.
 #[inline]
 fn update_total_size_callback(widget: &DownloadProgressBar, prog: &Arc<Mutex<manager::Progress>>) {
-    let callback = clone!(@strong prog, @weak widget => @default-return glib::ControlFlow::Break, move || {
-        total_size_helper(&widget, &prog).unwrap_or(glib::ControlFlow::Continue)
-    });
+    let callback = clone!(
+        #[strong]
+        prog,
+        #[weak]
+        widget,
+        #[upgrade_or]
+        glib::ControlFlow::Break,
+        move || total_size_helper(&widget, &prog).unwrap_or(glib::ControlFlow::Continue),
+    );
     glib::timeout_add_local(Duration::from_millis(100), callback);
 }
 

@@ -95,20 +95,26 @@ impl EpisodeWidgetPriv {
     pub(crate) fn init(&self, sender: &Sender<Action>, episode: EpisodeWidgetModel) {
         crate::MAINCONTEXT.spawn_local_with_priority(
             glib::source::Priority::LOW,
-            clone!(@weak self as this, @strong sender => async move {
-                let id = episode.id();
-                this.init_info(&episode);
-                if episode.uri().is_none() {
-                    this.state_no_uri(id);
-                    return;
-                }
+            clone!(
+                #[weak(rename_to = this)]
+                self,
+                #[strong]
+                sender,
+                async move {
+                    let id = episode.id();
+                    this.init_info(&episode);
+                    if episode.uri().is_none() {
+                        this.state_no_uri(id);
+                        return;
+                    }
 
-                this.init_progressbar(id);
-                this.init_buttons(&sender, id);
-                if let Err(err) = this.determine_buttons_state(&episode) {
-                    error!("Error: {}", err);
+                    this.init_progressbar(id);
+                    this.init_buttons(&sender, id);
+                    if let Err(err) = this.determine_buttons_state(&episode) {
+                        error!("Error: {}", err);
+                    }
                 }
-            }),
+            ),
         );
     }
 
@@ -310,12 +316,17 @@ impl EpisodeWidgetPriv {
     fn init_progressbar(&self, id: i32) {
         self.progressbar.init(id);
 
-        self.progressbar
-            .connect_state_change(clone!(@weak self as this => move |_| {
-                if let Err(err) = dbqueries::get_episode_widget_from_id(id).map(|ep| this.determine_buttons_state(&ep)) {
+        self.progressbar.connect_state_change(clone!(
+            #[weak(rename_to = this)]
+            self,
+            move |_| {
+                if let Err(err) = dbqueries::get_episode_widget_from_id(id)
+                    .map(|ep| this.determine_buttons_state(&ep))
+                {
                     error!("Could not get episode info: {err}");
                 }
-            }));
+            }
+        ));
 
         self.progressbar
             .bind_property("local_size", &*self.local_size, "label")
@@ -328,23 +339,33 @@ impl EpisodeWidgetPriv {
             .flags(glib::BindingFlags::SYNC_CREATE)
             .build();
 
-        self.progressbar
-            .connect_total_size_notify(clone!(@weak self as this => move |_| {
+        self.progressbar.connect_total_size_notify(clone!(
+            #[weak(rename_to = this)]
+            self,
+            move |_| {
                 // try_from should handle NaN case
                 this.set_size(i32::try_from(this.progressbar.total_size()).ok());
-            }));
+            }
+        ));
     }
 
     fn init_buttons(&self, sender: &Sender<Action>, id: i32) {
-        self.cancel
-            .connect_clicked(clone!(@weak self as this, @strong sender => move |_| {
+        self.cancel.connect_clicked(clone!(
+            #[weak(rename_to = this)]
+            self,
+            move |_| {
                 if let Err(e) = this.progressbar.cancel() {
                     error!("failed to cancel download {e}");
                 }
-            }));
+            }
+        ));
 
-        self.play
-            .connect_clicked(clone!(@weak self as this, @strong sender => move |_| {
+        self.play.connect_clicked(clone!(
+            #[weak(rename_to = this)]
+            self,
+            #[strong]
+            sender,
+            move |_| {
                 if let Ok(episode) = dbqueries::get_episode_widget_from_id(id) {
                     // Grey out the title
                     this.set_title(&episode);
@@ -353,16 +374,20 @@ impl EpisodeWidgetPriv {
                     // Refresh background views to match the normal/greyout title state
                     send_blocking!(sender, Action::RefreshEpisodesViewBGR);
                 }
-            }));
+            }
+        ));
 
-        self.download
-            .connect_clicked(clone!(@weak self as this, @strong sender => move |dl| {
+        self.download.connect_clicked(clone!(
+            #[weak(rename_to = this)]
+            self,
+            #[strong]
+            sender,
+            move |dl| {
                 if let Ok(ep) = dbqueries::get_episode_widget_from_id(id) {
-                    let result = on_download_clicked(&ep, &sender)
-                        .and_then(|_| {
-                            info!("Download started successfully.");
-                            this.determine_buttons_state(&ep)
-                        });
+                    let result = on_download_clicked(&ep, &sender).and_then(|_| {
+                        info!("Download started successfully.");
+                        this.determine_buttons_state(&ep)
+                    });
                     if let Err(err) = result {
                         error!("Failed to start download {err}");
                     } else {
@@ -372,7 +397,8 @@ impl EpisodeWidgetPriv {
 
                 // Restore sensitivity after operations above complete
                 dl.set_sensitive(true);
-            }));
+            }
+        ));
     }
 }
 fn on_download_clicked(ep: &EpisodeWidgetModel, sender: &Sender<Action>) -> Result<()> {

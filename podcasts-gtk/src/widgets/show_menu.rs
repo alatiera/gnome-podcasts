@@ -85,35 +85,49 @@ impl ShowMenu {
 
     fn connect_website(&self, pd: &Arc<Show>) {
         // TODO: tooltips for actions?
-        self.website
-            .connect_activate(clone!(@strong pd => move |_, _| {
+        self.website.connect_activate(clone!(
+            #[strong]
+            pd,
+            move |_, _| {
                 let link = pd.link();
                 info!("Opening link: {}", link);
                 let res = open::that(link);
                 debug_assert!(res.is_ok());
-            }));
+            }
+        ));
     }
 
     fn connect_played(&self, pd: &Arc<Show>, episodes: &gtk::ListBox, sender: &Sender<Action>) {
-        self.played.connect_activate(
-            clone!(@strong pd, @strong sender, @weak episodes => move |_, _| {
+        self.played.connect_activate(clone!(
+            #[strong]
+            pd,
+            #[strong]
+            sender,
+            #[weak]
+            episodes,
+            move |_, _| {
                 let res = dim_titles(&episodes);
                 debug_assert!(res.is_some());
                 send_blocking!(sender, Action::MarkAllPlayerNotification(pd.clone()));
-            }),
-        );
+            }
+        ));
     }
 
     fn connect_unsub(&self, pd: &Arc<Show>, sender: &Sender<Action>) {
-        self.unsub
-            .connect_activate(clone!(@strong pd, @strong sender => move |unsub, _| {
+        self.unsub.connect_activate(clone!(
+            #[strong]
+            pd,
+            #[strong]
+            sender,
+            move |unsub, _| {
                 unsub.set_enabled(false);
                 send_blocking!(sender, Action::RemoveShow(pd.clone()));
                 // Queue a refresh after the switch to avoid blocking the db.
                 send_blocking!(sender, Action::RefreshShowsView);
                 send_blocking!(sender, Action::RefreshEpisodesView);
                 unsub.set_enabled(true);
-            }));
+            }
+        ));
     }
 }
 
@@ -169,21 +183,25 @@ pub(crate) fn mark_all_notif(pd: Arc<Show>, sender: &Sender<Action>) -> adw::Toa
     toast.set_action_target_value(Some(&id.to_variant()));
     toast.set_action_name(Some("app.undo-mark-all"));
 
-    toast.connect_dismissed(clone!(@strong sender => move |_| {
-        let app = gio::Application::default()
-            .expect("Could not get default application")
-            .downcast::<crate::PdApplication>()
-            .unwrap();
-        if app.is_show_marked_mark(&pd) {
-            let res = mark_all_watched(&pd, &sender);
-            debug_assert!(res.is_ok());
+    toast.connect_dismissed(clone!(
+        #[strong]
+        sender,
+        move |_| {
+            let app = gio::Application::default()
+                .expect("Could not get default application")
+                .downcast::<crate::PdApplication>()
+                .unwrap();
+            if app.is_show_marked_mark(&pd) {
+                let res = mark_all_watched(&pd, &sender);
+                debug_assert!(res.is_ok());
+            }
         }
-    }));
+    ));
 
     toast
 }
 
-pub(crate) fn remove_show_notif(pd: Arc<Show>, sender: Sender<Action>) -> adw::Toast {
+pub(crate) fn remove_show_notif(pd: Arc<Show>) -> adw::Toast {
     let text = i18n_f("Unsubscribed from {}", &[pd.title()]);
     let id = pd.id();
 
@@ -195,26 +213,30 @@ pub(crate) fn remove_show_notif(pd: Arc<Show>, sender: Sender<Action>) -> adw::T
     let res = utils::ignore_show(id);
     debug_assert!(res.is_ok());
 
-    toast.connect_dismissed(clone!(@strong sender => move |_args| {
+    toast.connect_dismissed(move |_args| {
         let res = utils::unignore_show(id);
         debug_assert!(res.is_ok());
 
         // Spawn a thread so it won't block the ui.
-        gio::spawn_blocking(clone!(@strong pd, @strong sender => move || {
-            let app = gio::Application::default()
-                .expect("Could not get default application")
-                .downcast::<crate::PdApplication>()
-                .unwrap();
-            if app.is_show_marked_delete(&pd) {
-                if let Err(err) = delete_show(&pd) {
-                    error!("Error: {}", err);
-                    error!("Failed to delete {}", pd.title());
+        gio::spawn_blocking(clone!(
+            #[strong]
+            pd,
+            move || {
+                let app = gio::Application::default()
+                    .expect("Could not get default application")
+                    .downcast::<crate::PdApplication>()
+                    .unwrap();
+                if app.is_show_marked_delete(&pd) {
+                    if let Err(err) = delete_show(&pd) {
+                        error!("Error: {}", err);
+                        error!("Failed to delete {}", pd.title());
+                    }
                 }
+                // No need to update the UI after remove.
+                // The "unsubscribe" action already updated the UI after ignoring the show.
             }
-            // No need to update the UI after remove.
-            // The "unsubscribe" action already updated the UI after ignoring the show.
-        }));
-    }));
+        ));
+    });
 
     toast
 }

@@ -52,21 +52,25 @@ pub struct DiscoveryPagePriv {
 impl DiscoveryPagePriv {
     fn init(&self, sender: &Sender<Action>) {
         let (loading_done, receiver) = async_channel::bounded(1);
-        crate::MAINCONTEXT.spawn_local(clone!(@weak self as this => async move {
-            while let Ok(result) = receiver.recv().await {
-                if let Err(NoSearchPlatformsSelected) = result {
-                    this.entry.add_css_class("error");
-                    this.no_platforms_selected_label.set_visible(true);
-                    this.no_platforms_selected_label.announce(
-                        &this.no_platforms_selected_label.text(),
-                        gtk::AccessibleAnnouncementPriority::High
-                    );
+        crate::MAINCONTEXT.spawn_local(clone!(
+            #[weak(rename_to = this)]
+            self,
+            async move {
+                while let Ok(result) = receiver.recv().await {
+                    if let Err(NoSearchPlatformsSelected) = result {
+                        this.entry.add_css_class("error");
+                        this.no_platforms_selected_label.set_visible(true);
+                        this.no_platforms_selected_label.announce(
+                            &this.no_platforms_selected_label.text(),
+                            gtk::AccessibleAnnouncementPriority::High,
+                        );
+                    }
+                    this.search_button.set_visible(true);
+                    this.loading_spinner.set_visible(false);
+                    this.loading_spinner.set_spinning(false);
                 }
-                this.search_button.set_visible(true);
-                this.loading_spinner.set_visible(false);
-                this.loading_spinner.set_spinning(false);
             }
-        }));
+        ));
 
         // create platform settings switches
         let settings = dbqueries::get_discovery_settings();
@@ -76,19 +80,27 @@ impl DiscoveryPagePriv {
             switch.set_active(active);
             switch.set_title(id);
             switch.set_selectable(false);
-            switch.connect_active_notify(clone!(@weak self as this => move |s| {
-                if let Err(e) = dbqueries::set_discovery_setting(id, s.is_active()) {
-                    error!("failed setting search preference: {e}");
-                } else if s.is_active() {
-                    this.entry.remove_css_class("error");
-                    this.no_platforms_selected_label.set_visible(false);
+            switch.connect_active_notify(clone!(
+                #[weak(rename_to = this)]
+                self,
+                move |s| {
+                    if let Err(e) = dbqueries::set_discovery_setting(id, s.is_active()) {
+                        error!("failed setting search preference: {e}");
+                    } else if s.is_active() {
+                        this.entry.remove_css_class("error");
+                        this.no_platforms_selected_label.set_visible(false);
+                    }
                 }
-            }));
+            ));
             self.list.add(&switch);
         }
 
-        self.entry
-            .connect_activate(clone!(@weak self as this, @strong sender => move |entry| {
+        self.entry.connect_activate(clone!(
+            #[weak(rename_to = this)]
+            self,
+            #[strong]
+            sender,
+            move |entry| {
                 let entry_text = entry.text().to_string();
                 let url = Url::parse(&entry_text);
                 let this = this.clone();
@@ -99,26 +111,36 @@ impl DiscoveryPagePriv {
                 this.entry.remove_css_class("error");
                 this.no_platforms_selected_label.set_visible(false);
                 let loading_done = loading_done.clone();
-                crate::RUNTIME.spawn(clone!(@strong sender => async move {
-                    if let Err(e) = match url {
-                        Ok(url) => add_podcast_from_url(url.to_string(), &sender).await.map_err(SearchError::from),
-                        Err(_) => search_podcasts(entry_text, &sender).await
-                    } {
-                        match e {
-                            NoSearchPlatformsSelected => (),
-                            _ => send!(sender, Action::ErrorNotification(format!("{e}"))),
-                        };
-                        send!(loading_done, Err(e));
-                    } else {
-                        send!(loading_done, Ok(()))
+                crate::RUNTIME.spawn(clone!(
+                    #[strong]
+                    sender,
+                    async move {
+                        if let Err(e) = match url {
+                            Ok(url) => add_podcast_from_url(url.to_string(), &sender)
+                                .await
+                                .map_err(SearchError::from),
+                            Err(_) => search_podcasts(entry_text, &sender).await,
+                        } {
+                            match e {
+                                NoSearchPlatformsSelected => (),
+                                _ => send!(sender, Action::ErrorNotification(format!("{e}"))),
+                            };
+                            send!(loading_done, Err(e));
+                        } else {
+                            send!(loading_done, Ok(()))
+                        }
                     }
-                }));
-            }));
+                ));
+            }
+        ));
 
-        self.search_button
-            .connect_clicked(clone!(@weak self as this => move |_| {
+        self.search_button.connect_clicked(clone!(
+            #[weak(rename_to = this)]
+            self,
+            move |_| {
                 this.entry.emit_activate();
-            }));
+            }
+        ));
     }
 }
 

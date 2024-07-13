@@ -102,11 +102,15 @@ impl ApplicationImpl for PdApplicationPrivate {
 
         // Setup action channel
         let receiver = self.receiver.take().unwrap();
-        crate::MAINCONTEXT.spawn_local(clone!(@weak app => async move {
-            while let Ok(action) = receiver.recv().await {
-                app.do_action(action);
+        crate::MAINCONTEXT.spawn_local(clone!(
+            #[weak]
+            app,
+            async move {
+                while let Ok(action) = receiver.recv().await {
+                    app.do_action(action);
+                }
             }
-        }));
+        ));
     }
 
     fn startup(&self) {
@@ -349,7 +353,7 @@ impl PdApplication {
                 window.pop_show_widget();
                 window.pop_episode_description();
                 data.todo_unsub_ids.borrow_mut().insert(pd.id());
-                let toast = remove_show_notif(pd, data.sender.clone());
+                let toast = remove_show_notif(pd);
                 self.send_toast(toast);
                 if let Err(e) = window.content().check_empty_state() {
                     error!("Failed to check for empty db state {e}");
@@ -365,11 +369,17 @@ impl PdApplication {
                 let progress = window.progress_bar();
                 let updating_timeout = glib::timeout_add_local(
                     std::time::Duration::from_millis(100),
-                    clone!(@weak progress => @default-return glib::ControlFlow::Break, move || {
-                        progress.set_visible(true);
-                        progress.pulse();
-                        glib::ControlFlow::Continue
-                    }),
+                    clone!(
+                        #[weak]
+                        progress,
+                        #[upgrade_or]
+                        glib::ControlFlow::Break,
+                        move || {
+                            progress.set_visible(true);
+                            progress.pulse();
+                            glib::ControlFlow::Continue
+                        }
+                    ),
                 );
                 window.set_updating_timeout(Some(updating_timeout));
             }

@@ -216,11 +216,20 @@ impl MainWindow {
         imp.top_switcher.set_stack(Some(content.stack()));
         imp.bottom_switcher.set_stack(Some(content.stack()));
 
-        imp.navigation_view.connect_popped(clone!(@weak imp => move |_,_| {
-            if imp.navigation_view.visible_page().map(|p| p.tag().as_ref().map(|s| s.as_str()) == Some("content")).unwrap_or(false) {
-                imp.bottom_switcher_bar.set_visible(true);
+        imp.navigation_view.connect_popped(clone!(
+            #[weak]
+            imp,
+            move |_, _| {
+                if imp
+                    .navigation_view
+                    .visible_page()
+                    .map(|p| p.tag().as_ref().map(|s| s.as_str()) == Some("content"))
+                    .unwrap_or(false)
+                {
+                    imp.bottom_switcher_bar.set_visible(true);
+                }
             }
-        }));
+        ));
 
         // Setup breakpoints
         imp.header_breakpoint.add_setter(
@@ -229,14 +238,20 @@ impl MainWindow {
             Some(&true.to_value()),
         );
         let p = player.deref();
-        imp.player_breakpoint
-            .connect_apply(clone!(@weak p => move |_| {
+        imp.player_breakpoint.connect_apply(clone!(
+            #[weak]
+            p,
+            move |_| {
                 p.borrow().set_small(false);
-            }));
-        imp.player_breakpoint
-            .connect_unapply(clone!(@weak p => move |_| {
+            }
+        ));
+        imp.player_breakpoint.connect_unapply(clone!(
+            #[weak]
+            p,
+            move |_| {
                 p.borrow().set_small(true);
-            }));
+            }
+        ));
         let breakpoint = imp.player_breakpoint.get();
         let is_small = !window.current_breakpoint().is_some_and(|b| b == breakpoint);
         p.borrow().set_small(is_small);
@@ -252,10 +267,14 @@ impl MainWindow {
 
         glib::timeout_add_seconds_local(
             refresh_interval,
-            clone!(@strong sender => move || {
-                FEED_MANAGER.schedule_full_refresh(&sender);
-                glib::ControlFlow::Continue
-            }),
+            clone!(
+                #[strong]
+                sender,
+                move || {
+                    FEED_MANAGER.schedule_full_refresh(&sender);
+                    glib::ControlFlow::Continue
+                }
+            ),
         );
 
         imp.content.set(content).unwrap();
