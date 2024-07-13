@@ -16,14 +16,14 @@ gettext-rs = { version = "0.7", features = ["gettext-system"] }
 gst = { version = "0.23", package = "gstreamer" }
 gst-play = { version = "0.23", package = "gstreamer-play" }
 gtk = { package = "gtk4", version = "0.9", features = ["gnome_47"] }
-html2text = "0.6"
-html5ever = "0.26"
+html2text = "0.12"
+html5ever = "0.27"
 humansize = "1"
 image = { version = "0.25", features = ["gif", "jpeg", "png", "webp"] }
 linkify = "0.10"
 locale_config = "0.3"
 log = { workspace = true }
-markup5ever_rcdom = "0.2"
+markup5ever_rcdom = "0.3"
 mpris-server = "0.8"
 once_cell = { workspace = true }
 open = "5"
