@@ -7,7 +7,7 @@ edition = "2021"
 [dependencies]
 ammonia = "3"
 anyhow = { workspace = true }
-base64 = "0.21"
+base64 = "0.22"
 bytes = "1"
 chrono = { workspace = true }
 derive_builder = "0.12"
@@ -15,7 +15,7 @@ diesel = { version = "2", features = ["chrono", "sqlite", "r2d2"] }
 diesel_migrations = { version = "2", features = ["sqlite"] }
 futures-util = "0.3"
 glob = "0.3"
-http = "0.2"
+http = "1"
 log = { workspace = true }
 mime_guess = "2"
 once_cell = { workspace = true }
