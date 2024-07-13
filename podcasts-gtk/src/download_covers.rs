@@ -16,7 +16,6 @@ use podcasts_data::utils::get_cover_dir_path;
 use podcasts_data::xdg_dirs::TMP_DIR;
 use podcasts_data::{ShowCoverModel, ShowId};
 
-
 // Downloader v3
 // if a textures is in the COVER_TEXTURES cache:
 //     - return texture from HashMap cache.

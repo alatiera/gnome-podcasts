@@ -355,7 +355,6 @@ impl EpisodeWidgetPriv {
             #[weak(rename_to = this)]
             self,
             move |_| {
-
                 if let Err(e) = this.progressbar.cancel() {
                     error!("failed to cancel download {e}");
                 }
