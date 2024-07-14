@@ -101,7 +101,6 @@ async fn sync_for_login(
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::database::*;
     use crate::nextcloud_sync::test::prepare;
     use anyhow::Result;
     use http_test_server::http::{Method, Status};

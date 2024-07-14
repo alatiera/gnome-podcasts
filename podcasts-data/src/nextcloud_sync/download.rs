@@ -85,12 +85,14 @@ fn update_episodes(data: &EpisodeGet, ignore_missing_episodes: bool) -> Result<(
     Ok(())
 }
 
+// Updates a local episode `ep` from the cloud state `ea`
 fn update_episode(ep: &mut Episode, ea: &EpisodeAction) {
     match ea.action {
         Action::Download => (),
         Action::Delete => (),
         Action::Play => {
             ep.set_play_position_no_save(ea.position);
+            // Make sure ep is marked as played in the local db.
             if ea.finished_play() {
                 ep.set_played(Some(ea.timestamp.naive_utc()));
             }
@@ -203,7 +205,6 @@ pub(crate) async fn download_changes(
 #[cfg(test)]
 mod test {
     use super::*;
-    use crate::database::*;
     use crate::dbqueries;
     use crate::nextcloud_sync::test::prepare;
     use crate::pipeline::pipeline;
