@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: podcasts main\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2024-04-27 10:57+0000\n"
-"PO-Revision-Date: 2024-04-29 22:37+0200\n"
+"POT-Creation-Date: 2024-07-08 13:52+0000\n"
+"PO-Revision-Date: 2024-07-15 14:37+0200\n"
 "Last-Translator: Anders Jonsson <anders.jonsson@norsjovallen.se>\n"
 "Language-Team: Swedish <tp-sv@listor.tp-sv.se>\n"
 "Language: sv\n"
@@ -17,7 +17,71 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 3.4.2\n"
+"X-Generator: Poedit 3.4.4\n"
+
+#: podcasts-gtk/resources/gtk/discovery_found_podcast.ui:104
+msgid "Episodes: "
+msgstr "Avsnitt: "
+
+#: podcasts-gtk/resources/gtk/discovery_found_podcast.ui:114
+msgid "0"
+msgstr "0"
+
+#: podcasts-gtk/resources/gtk/discovery_found_podcast.ui:142
+msgid "Last publication"
+msgstr "Senaste publicering"
+
+#: podcasts-gtk/resources/gtk/discovery_found_podcast.ui:163
+msgid "Subscribe"
+msgstr "Prenumerera"
+
+#: podcasts-gtk/resources/gtk/discovery_found_podcast.ui:171
+msgid "Subscribing to feed..."
+msgstr "Prenumererar på flöde…"
+
+#: podcasts-gtk/resources/gtk/discovery_page.ui:33
+msgid "Add Podcasts"
+msgstr "Lägg till poddsändningar"
+
+#: podcasts-gtk/resources/gtk/discovery_page.ui:64
+msgid "Search"
+msgstr "Sök"
+
+#: podcasts-gtk/resources/gtk/discovery_page.ui:75
+msgid "Enter a feed URL or search the selected platforms."
+msgstr "Ange en flödes-URL eller sök de valda plattformarna."
+
+#: podcasts-gtk/resources/gtk/discovery_page.ui:98
+msgid "Submit search"
+msgstr "Skicka sökning"
+
+#: podcasts-gtk/resources/gtk/discovery_page.ui:104
+msgid "Loading..."
+msgstr "Läser in…"
+
+#: podcasts-gtk/resources/gtk/discovery_page.ui:107
+msgid "Loading"
+msgstr "Läser in"
+
+#: podcasts-gtk/resources/gtk/discovery_page.ui:121
+msgid "Please enable a Search Platform below, or enter a http(s) feed URL."
+msgstr "Aktivera en sökplattform nedan, eller ange en http(s)-flödes-URL."
+
+#: podcasts-gtk/resources/gtk/discovery_page.ui:133
+msgid "Search Platforms"
+msgstr "Sökplattformar"
+
+#: podcasts-gtk/resources/gtk/discovery_page.ui:134
+msgid "Search queries will be sent to these platforms."
+msgstr "Sökfrågor kommer skickas till dessa plattformar."
+
+#: podcasts-gtk/resources/gtk/discovery_search_results.ui:32
+msgid "Search results"
+msgstr "Sökresultat"
+
+#: podcasts-gtk/resources/gtk/discovery_search_results.ui:68
+msgid "No results found."
+msgstr "Inga resultat hittades."
 
 #. Translators: Show as a noun, meaning a Podcast-Show.
 #: podcasts-gtk/resources/gtk/empty_show.ui:17
@@ -59,31 +123,30 @@ msgstr "Titel på poddsändning"
 msgid "Duration - Date"
 msgstr "Längd - Datum"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:153
-msgid "Download"
-msgstr "Hämta"
-
-#: podcasts-gtk/resources/gtk/episode_description.ui:163
-msgid "Cancel"
-msgstr "Avbryt"
-
-#: podcasts-gtk/resources/gtk/episode_description.ui:173
-msgid "Delete File"
-msgstr "Ta bort fil"
-
-#: podcasts-gtk/resources/gtk/episode_description.ui:183
+#: podcasts-gtk/resources/gtk/episode_description.ui:157
 msgid "Stream"
 msgstr "Strömma"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:193
-#: podcasts-gtk/resources/gtk/episode_description.ui:195
-#: podcasts-gtk/resources/gtk/player_dialog.ui:173
+#: podcasts-gtk/resources/gtk/episode_description.ui:183
+#: podcasts-gtk/resources/gtk/player_sheet.ui:152
 #: podcasts-gtk/resources/gtk/player_toolbar.ui:67
 #: podcasts-gtk/resources/gtk/player_toolbar.ui:262
 msgid "Play"
 msgstr "Spela"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:212
+#: podcasts-gtk/resources/gtk/episode_description.ui:210
+msgid "Download"
+msgstr "Hämta"
+
+#: podcasts-gtk/resources/gtk/episode_description.ui:237
+msgid "Cancel"
+msgstr "Avbryt"
+
+#: podcasts-gtk/resources/gtk/episode_description.ui:274
+msgid "Delete"
+msgstr "Ta bort"
+
+#: podcasts-gtk/resources/gtk/episode_description.ui:294
 msgid "Episode Description"
 msgstr "Avsnittsbeskrivning"
 
@@ -119,36 +182,6 @@ msgstr "Hämta detta avsnitt"
 #: podcasts-gtk/resources/gtk/episode_widget.ui:220
 msgid "Episode without audio"
 msgstr "Avsnitt utan ljud"
-
-#: podcasts-gtk/resources/gtk/hamburger.ui:7
-msgid "_Check for New Episodes"
-msgstr "Sö_k efter nya avsnitt"
-
-#. Translators: Show as a noun, meaning Podcast-Shows.
-#: podcasts-gtk/resources/gtk/hamburger.ui:13
-msgid "_Import Shows"
-msgstr "_Importera shower"
-
-#. Translators: Show as a noun, meaning Podcast-Shows.
-#: podcasts-gtk/resources/gtk/hamburger.ui:18
-msgid "_Export Shows"
-msgstr "_Exportera shower"
-
-#: podcasts-gtk/resources/gtk/hamburger.ui:24
-msgid "_Keyboard Shortcuts"
-msgstr "_Tangentbordsgenvägar"
-
-#: podcasts-gtk/resources/gtk/hamburger.ui:32
-msgid "_About Podcasts"
-msgstr "_Om Poddsändningar"
-
-#: podcasts-gtk/resources/gtk/headerbar.ui:41
-msgid "Add a new feed"
-msgstr "Lägg till ett nytt flöde"
-
-#: podcasts-gtk/resources/gtk/headerbar.ui:52
-msgid "Main Menu"
-msgstr "Huvudmeny"
 
 #: podcasts-gtk/resources/gtk/help-overlay.ui:12
 msgctxt "shortcut window"
@@ -242,28 +275,6 @@ msgstr "Denna månad"
 msgid "Older"
 msgstr "Äldre"
 
-#: podcasts-gtk/resources/gtk/player_dialog.ui:7
-msgid "Now Playing"
-msgstr "Spelar nu"
-
-#: podcasts-gtk/resources/gtk/player_dialog.ui:28
-msgid "Close"
-msgstr "Stäng"
-
-#: podcasts-gtk/resources/gtk/player_dialog.ui:152
-msgid "Rewind"
-msgstr "Spola tillbaka"
-
-#: podcasts-gtk/resources/gtk/player_dialog.ui:191
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:80
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:271
-msgid "Pause"
-msgstr "Pausa"
-
-#: podcasts-gtk/resources/gtk/player_dialog.ui:214
-msgid "Forward"
-msgstr "Spola framåt"
-
 #: podcasts-gtk/resources/gtk/player_rate.ui:29
 msgid "Change the playback speed"
 msgstr "Ändra uppspelningshastigheten"
@@ -296,6 +307,20 @@ msgstr "0,90×"
 #: podcasts-gtk/resources/gtk/player_rate.ui:69
 msgid "0.75×"
 msgstr "0,75×"
+
+#: podcasts-gtk/resources/gtk/player_sheet.ui:131
+msgid "Rewind"
+msgstr "Spola tillbaka"
+
+#: podcasts-gtk/resources/gtk/player_sheet.ui:170
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:80
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:271
+msgid "Pause"
+msgstr "Pausa"
+
+#: podcasts-gtk/resources/gtk/player_sheet.ui:193
+msgid "Forward"
+msgstr "Spola framåt"
 
 #: podcasts-gtk/resources/gtk/player_toolbar.ui:50
 msgid "Rewind 10 seconds"
@@ -337,18 +362,48 @@ msgstr "Poddsändningsmeny"
 msgid "Episodes"
 msgstr "Avsnitt"
 
-#. Weird magic I copy-pasted that sets the Application Name in the Shell.
 #: podcasts-gtk/resources/gtk/window.ui:6
-#: podcasts-gtk/resources/gtk/window.ui:25
+msgid "_Check for New Episodes"
+msgstr "Sö_k efter nya avsnitt"
+
+#. Translators: Show as a noun, meaning Podcast-Shows.
+#: podcasts-gtk/resources/gtk/window.ui:12
+msgid "_Import Shows"
+msgstr "_Importera shower"
+
+#. Translators: Show as a noun, meaning Podcast-Shows.
+#: podcasts-gtk/resources/gtk/window.ui:17
+msgid "_Export Shows"
+msgstr "_Exportera shower"
+
+#: podcasts-gtk/resources/gtk/window.ui:23
+msgid "_Keyboard Shortcuts"
+msgstr "_Tangentbordsgenvägar"
+
+#: podcasts-gtk/resources/gtk/window.ui:27
+msgid "_About Podcasts"
+msgstr "_Om Poddsändningar"
+
+#. Weird magic I copy-pasted that sets the Application Name in the Shell.
+#: podcasts-gtk/resources/gtk/window.ui:35
+#: podcasts-gtk/resources/gtk/window.ui:102
 #: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:4
 #: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:3
-#: podcasts-gtk/src/app.rs:444 podcasts-gtk/src/widgets/aboutdialog.rs:56
-#: podcasts-gtk/src/widgets/player.rs:380
+#: podcasts-gtk/src/app.rs:460 podcasts-gtk/src/widgets/aboutdialog.rs:56
+#: podcasts-gtk/src/widgets/player.rs:430
 msgid "Podcasts"
 msgstr "Poddsändningar"
 
+#: podcasts-gtk/resources/gtk/window.ui:115
+msgid "Add a New Feed"
+msgstr "Lägg till ett nytt flöde"
+
+#: podcasts-gtk/resources/gtk/window.ui:123
+msgid "Main Menu"
+msgstr "Huvudmeny"
+
 #. Translators: Show as a noun, meaning a Podcast-Show.
-#: podcasts-gtk/resources/gtk/window.ui:35
+#: podcasts-gtk/resources/gtk/window.ui:137
 msgid "Show"
 msgstr "Show"
 
@@ -440,59 +495,57 @@ msgstr "Hur många tidsperioder att vänta mellan automatiska upprensningar"
 msgid "What period of time to wait between automatic cleanups"
 msgstr "Vilken sorts tidsperiod att vänta mellan automatiska upprensningar"
 
-#: podcasts-gtk/src/app.rs:334
+#: podcasts-gtk/src/app.rs:340
 msgid "Copied URL to clipboard!"
 msgstr "Kopierade URL till urklipp!"
+
+#: podcasts-gtk/src/episode_description_parser.rs:316
+msgid "Jump to {}:{}:{}"
+msgstr "Hoppa till {}:{}:{}"
+
+#: podcasts-gtk/src/episode_description_parser.rs:335
+msgid "Jump to {}:{}"
+msgstr "Hoppa till {}:{}"
 
 #: podcasts-gtk/src/manager.rs:105
 msgid "Download failed: {}"
 msgstr "Hämtning misslyckades: {}"
 
-#: podcasts-gtk/src/stacks/content.rs:66
-msgid "New"
-msgstr "Nytt"
-
-#. Translators: Shows as a noun, meaning Podcast-Shows.
-#: podcasts-gtk/src/stacks/content.rs:68
-#: podcasts-gtk/src/widgets/shows_view.rs:102
-msgid "Shows"
-msgstr "Shower"
-
-#: podcasts-gtk/src/utils.rs:538 podcasts-gtk/src/utils.rs:578
+#: podcasts-gtk/src/utils.rs:385 podcasts-gtk/src/utils.rs:425
 msgid "OPML file"
 msgstr "OPML-fil"
 
-#: podcasts-gtk/src/utils.rs:549
+#: podcasts-gtk/src/utils.rs:396
 msgid "Select the file from which to you want to import shows."
 msgstr "Välj filen från vilken du vill importera shower."
 
-#: podcasts-gtk/src/utils.rs:551
+#: podcasts-gtk/src/utils.rs:398
 msgid "_Import"
 msgstr "_Importera"
 
-#: podcasts-gtk/src/utils.rs:568
+#: podcasts-gtk/src/utils.rs:415
 msgid "Failed to parse the imported file {}"
 msgstr "Misslyckades med att tolka den importerade filen {}"
 
 #. Translators: Show as a noun, meaning Podcast-Shows.
-#: podcasts-gtk/src/utils.rs:589
+#: podcasts-gtk/src/utils.rs:436
 msgid "Export shows to…"
 msgstr "Exportera shower till…"
 
-#: podcasts-gtk/src/utils.rs:590
+#: podcasts-gtk/src/utils.rs:437
 msgid "_Export"
 msgstr "_Exportera"
 
 #. Translators: This is the string of the suggested name for the exported opml file
-#: podcasts-gtk/src/utils.rs:594
+#: podcasts-gtk/src/utils.rs:441
 msgid "gnome-podcasts-exported-shows"
 msgstr "gnome-poddsändningar-exporterade-shower"
 
-#: podcasts-gtk/src/utils.rs:603
+#: podcasts-gtk/src/utils.rs:450
 msgid "GNOME Podcasts Subscriptions"
 msgstr "GNOME Poddsändningar-prenumerationer"
 
-#: podcasts-gtk/src/utils.rs:607
+#: podcasts-gtk/src/utils.rs:454
 msgid "Failed to export podcasts"
 msgstr "Misslyckades med att exportera poddsändningar"
 
@@ -500,7 +553,7 @@ msgstr "Misslyckades med att exportera poddsändningar"
 msgid "Podcast Client for the GNOME Desktop."
 msgstr "Poddsändningsklient för GNOME-skrivbordet."
 
-#: podcasts-gtk/src/widgets/aboutdialog.rs:63
+#: podcasts-gtk/src/widgets/aboutdialog.rs:62
 msgid "translator-credits"
 msgstr ""
 "Anders Jonsson <anders.jonsson@norsjovallen.se>\n"
@@ -509,11 +562,25 @@ msgstr ""
 "Skicka synpunkter på översättningen till\n"
 "<tp-sv@listor.tp-sv.se>."
 
-#: podcasts-gtk/src/widgets/episode.rs:268
+#: podcasts-gtk/src/widgets/content_stack.rs:66
+msgid "New"
+msgstr "Nytt"
+
+#. Translators: Shows as a noun, meaning Podcast-Shows.
+#: podcasts-gtk/src/widgets/content_stack.rs:67
+#: podcasts-gtk/src/widgets/shows_view.rs:114
+msgid "Shows"
+msgstr "Shower"
+
+#: podcasts-gtk/src/widgets/download_progress_bar.rs:69
+msgid "Download progress"
+msgstr "Hämtningsförlopp"
+
+#: podcasts-gtk/src/widgets/episode.rs:277
 msgid "{} min"
 msgstr "{} min"
 
-#: podcasts-gtk/src/widgets/player.rs:983
+#: podcasts-gtk/src/widgets/player.rs:1023
 msgid "The media player was unable to execute an action."
 msgstr "Mediaspelaren kunde inte utföra en åtgärd."
 
@@ -525,18 +592,24 @@ msgstr "Expanderar denna beskrivning visuellt"
 msgid "Read More"
 msgstr "Läs mer"
 
-#: podcasts-gtk/src/widgets/show_menu.rs:168
+#: podcasts-gtk/src/widgets/show_menu.rs:167
 msgid "Marked all episodes as listened"
 msgstr "Markerade alla avsnitt som lyssnade"
 
-#: podcasts-gtk/src/widgets/show_menu.rs:169
-#: podcasts-gtk/src/widgets/show_menu.rs:192
+#: podcasts-gtk/src/widgets/show_menu.rs:168
+#: podcasts-gtk/src/widgets/show_menu.rs:191
 msgid "Undo"
 msgstr "Ångra"
 
-#: podcasts-gtk/src/widgets/show_menu.rs:188
+#: podcasts-gtk/src/widgets/show_menu.rs:187
 msgid "Unsubscribed from {}"
 msgstr "Sade upp prenumeration från {}"
+
+#~ msgid "Now Playing"
+#~ msgstr "Spelar nu"
+
+#~ msgid "Close"
+#~ msgstr "Stäng"
 
 #~ msgid "Enter Feed Address"
 #~ msgstr "Ange flödesadress"
