@@ -30,7 +30,7 @@ use gtk::CompositeTemplate;
 use crate::app::Action;
 use crate::i18n::i18n;
 use podcasts_data::feed_manager::FEED_MANAGER;
-use podcasts_data::nextcloud_sync::{self, SyncPreferences};
+use podcasts_data::nextcloud_sync::{self, SyncPolicy};
 
 pub enum WidgetAction {
     GotSettings(Result<(podcasts_data::sync::Settings, String)>),

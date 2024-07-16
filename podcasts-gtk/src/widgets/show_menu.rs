@@ -240,6 +240,7 @@ pub(crate) fn remove_show_notif(pd: Arc<Show>, sender: Sender<Action>) -> adw::T
                         error!("Failed to delete {}", pd.title());
                     }
 
+                    send_blocking!(sender, Action::QuickSyncNextcloud);
                     // No need to update the UI after remove.
                     // The "unsubscribe" action already updated the UI after ignoring the show.
                 }
