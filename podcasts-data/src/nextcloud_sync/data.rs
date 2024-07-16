@@ -122,7 +122,7 @@ pub(crate) struct Login {
 }
 
 /// https://gpoddernet.readthedocs.io/en/latest/api/reference/events.html
-#[derive(Debug, PartialEq)]
+#[derive(Clone, Debug, PartialEq)]
 pub(crate) enum Action {
     /// Tell other devices that this was aleady downloaded.
     Download,
@@ -188,7 +188,7 @@ impl<'de> Deserialize<'de> for Action {
     }
 }
 
-#[derive(Deserialize, Serialize, Debug)]
+#[derive(Deserialize, Serialize, Clone, Debug)]
 pub(crate) struct EpisodeAction {
     pub(crate) podcast: String,
     pub(crate) episode: String,
@@ -412,6 +412,40 @@ pub(crate) mod test {
         assert_eq!("http://example.com/", url.to_string().as_str());
         let url = parse_url_without_scheme("http://example.com/")?;
         assert_eq!("http://example.com/", url.to_string().as_str());
+        Ok(())
+    }
+
+    #[test]
+    fn test_already_on_server() -> Result<()> {
+        let ea = EpisodeAction {
+            podcast: "test".to_string(),
+            episode: "test".to_string(),
+            guid: Some("test".to_string()),
+            action: Action::Play,
+            timestamp: chrono::Utc::now(),
+            started: 0,
+            position: 960,
+            total: 1000,
+        };
+        let server_actions = EpisodeGet {
+            actions: vec![ea.clone()],
+            timestamp: 0,
+        };
+
+        assert!(ea.already_on_server(&server_actions));
+
+        let ea2 = EpisodeAction {
+            podcast: "test2".to_string(),
+            episode: "test2".to_string(),
+            guid: Some("test2".to_string()),
+            action: Action::Play,
+            timestamp: chrono::Utc::now(),
+            started: 0,
+            position: 960,
+            total: 1000,
+        };
+
+        assert!(!ea2.already_on_server(&server_actions));
         Ok(())
     }
 }
