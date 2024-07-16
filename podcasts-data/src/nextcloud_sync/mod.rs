@@ -30,6 +30,15 @@ use crate::nextcloud_sync::upload::{make_delta_post, make_initial_post, upload_c
 
 use anyhow::{Context, Result};
 
+pub enum SyncPolicy {
+    /// Mark this Sync as done, even if some of the updates from the
+    /// server could not be applied locally.
+    IgnoreMissingEpisodes,
+    /// Report an error if episodes mentioned on the Server can't be
+    /// found locally. Do not mark the Sync as completed in the DB.
+    CancelOnMissingEpisodes,
+}
+
 /// Downloads all updates from the nextcloud server and applies them to the DB.
 /// Then it uploads all outstanding local changes to the server.
 /// If this is the first sync, it will try to generate an inital changeset from the DB.
@@ -45,7 +54,7 @@ use anyhow::{Context, Result};
 ///
 /// If sync is not configured, it will return Ok(false)
 
-pub async fn sync(ignore_missing_episodes: bool) -> Result<SyncResult, SyncError> {
+pub async fn sync(error_policy: SyncPolicy) -> Result<SyncResult, SyncError> {
     if let Ok((settings, password)) = crate::sync::Settings::fetch().await {
         if !settings.active {
             // sync is turned off, skip
@@ -58,7 +67,7 @@ pub async fn sync(ignore_missing_episodes: bool) -> Result<SyncResult, SyncError
             password,
         };
 
-        sync_for_login(login, settings, ignore_missing_episodes).await
+        sync_for_login(login, settings, error_policy).await
     } else {
         // sync is not configured, skip
         Ok(SyncResult::Skipped)
@@ -70,11 +79,11 @@ pub async fn sync(ignore_missing_episodes: bool) -> Result<SyncResult, SyncError
 async fn sync_for_login(
     login: Login,
     settings: crate::sync::Settings,
-    ignore_missing_episodes: bool,
+    error_policy: SyncPolicy,
 ) -> Result<SyncResult, SyncError> {
     let now = chrono::Utc::now();
     let (dl_sub_actions, dl_ep_actions) =
-        download_changes(&login, settings.last_sync, ignore_missing_episodes).await?;
+        download_changes(&login, settings.last_sync, error_policy).await?;
 
     let (sub_actions, ep_actions) = if settings.did_first_sync() {
         make_delta_post(&now, &dl_ep_actions)?
@@ -109,7 +118,7 @@ mod tests {
     #[test]
     fn test_skip() -> Result<()> {
         let rt = prepare()?;
-        let result = rt.block_on(sync(false))?;
+        let result = rt.block_on(sync(SyncPolicy::CancelOnMissingEpisodes))?;
         assert_eq!(SyncResult::Skipped, result);
         Ok(())
     }
@@ -125,7 +134,11 @@ mod tests {
             password: "test_password".to_string(),
         };
         let settings = crate::sync::Settings::fetch_entry()?;
-        rt.block_on(sync_for_login(login, settings, false))?;
+        rt.block_on(sync_for_login(
+            login,
+            settings,
+            SyncPolicy::CancelOnMissingEpisodes,
+        ))?;
         Ok(())
     }
 
@@ -141,7 +154,11 @@ mod tests {
             password: "test_password".to_string(),
         };
         let settings = crate::sync::Settings::fetch_entry()?;
-        let result = rt.block_on(sync_for_login(login, settings, false));
+        let result = rt.block_on(sync_for_login(
+            login,
+            settings,
+            SyncPolicy::CancelOnMissingEpisodes,
+        ));
         assert!(result.is_err());
         Ok(())
     }
@@ -158,7 +175,11 @@ mod tests {
             password: "test_password".to_string(),
         };
         let settings = crate::sync::Settings::fetch_entry()?;
-        match rt.block_on(sync_for_login(login, settings, false)) {
+        match rt.block_on(sync_for_login(
+            login,
+            settings,
+            SyncPolicy::CancelOnMissingEpisodes,
+        )) {
             Err(SyncError::DownloadedUpdateForEpisodeNotInDb) => (),
             _ => panic!(),
         }
@@ -178,9 +199,11 @@ mod tests {
         };
         let settings = crate::sync::Settings::fetch_entry()?;
         // check that we don't get DownloadedUpdateForEpisodeNotInDb errors when passing true here
-        if let Err(SyncError::DownloadedUpdateForEpisodeNotInDb) =
-            rt.block_on(sync_for_login(login, settings, true))
-        {
+        if let Err(SyncError::DownloadedUpdateForEpisodeNotInDb) = rt.block_on(sync_for_login(
+            login,
+            settings,
+            SyncPolicy::IgnoreMissingEpisodes,
+        )) {
             panic!();
         }
         Ok(())

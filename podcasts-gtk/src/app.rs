@@ -44,7 +44,8 @@ use podcasts_data::dbqueries;
 use podcasts_data::discovery::FoundPodcast;
 use podcasts_data::{Episode, EpisodeId, EpisodeModel, Show, ShowId};
 use podcasts_data::feed_manager::{FeedAction, FeedManager, FEED_MANAGER};
-use podcasts_data::nextcloud_sync::{SyncError, SyncResult};
+use podcasts_data::nextcloud_sync::{self, SyncError, SyncPolicy, SyncResult};
+
 
 // FIXME: port Optionals to OnceCell
 #[derive(Debug)]
@@ -448,7 +449,7 @@ impl PdApplication {
             //         send!(sender, Action::ShowUpdateNotif);
             //         crate::RUNTIME.spawn(async move {
             //             utils::refresh_feed(source).await;
-            //             match podcasts_data::nextcloud_sync::sync(true).await {
+            //             match nextcloud_sync::sync(true).await {
             //                 Ok(sync_result) => info!("SYNC {sync_result:#?}"),
             //                 Err(e) => send!(
             //                     sender,
@@ -468,7 +469,7 @@ impl PdApplication {
                     window.set_updating(true);
                     let sender = data.sender.clone();
                     crate::RUNTIME.spawn(async move {
-                        match podcasts_data::nextcloud_sync::sync(false).await {
+                        match nextcloud_sync::sync(SyncPolicy::CancelOnMissingEpisodes).await {
                             Ok(SyncResult::Done {
                                 episode_updates_downloaded,
                                 subscription_updates_downloaded,
@@ -488,7 +489,8 @@ impl PdApplication {
                                 // but not yet fetched form a feed
                                 // TODO pass the missing feeds in the error and only update those
                                 FEED_MANAGER.full_refresh().await;
-                                match podcasts_data::nextcloud_sync::sync(true).await {
+                                match nextcloud_sync::sync(SyncPolicy::IgnoreMissingEpisodes).await
+                                {
                                     Ok(sync_result) => info!("SYNC {sync_result:#?}"),
                                     Err(e) => send!(
                                         sender,
@@ -628,7 +630,7 @@ impl PdApplication {
         let result = ApplicationExtManual::run_with_args(&application, &args);
         // sync on exit
         crate::RUNTIME.block_on(async move {
-            match podcasts_data::nextcloud_sync::sync(false).await {
+            match nextcloud_sync::sync(SyncPolicy::CancelOnMissingEpisodes).await {
                 Ok(sync_result) => info!("SYNC {sync_result:#?}"),
                 Err(e) => error!("Sync failed {e}"),
             }

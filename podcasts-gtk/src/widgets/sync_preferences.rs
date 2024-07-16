@@ -30,6 +30,7 @@ use gtk::CompositeTemplate;
 use crate::app::Action;
 use crate::i18n::i18n;
 use podcasts_data::feed_manager::FEED_MANAGER;
+use podcasts_data::nextcloud_sync::{self, SyncPreferences};
 
 pub enum WidgetAction {
     GotSettings(Result<(podcasts_data::sync::Settings, String)>),
@@ -155,10 +156,9 @@ impl SyncPreferencesPriv {
                         let refresh_sender = sender.clone();
                         let err_sender = widget_sender.clone();
                         if let Err(e) = async move {
-                            let app_password = podcasts_data::nextcloud_sync::retrive_app_password(
-                                &server, &user, &password,
-                            )
-                            .await?;
+                            let app_password =
+                                nextcloud_sync::retrive_app_password(&server, &user, &password)
+                                    .await?;
                             Self::do_first_sync(
                                 refresh_sender,
                                 widget_sender.clone(),
@@ -200,16 +200,13 @@ impl SyncPreferencesPriv {
                     let err_sender = widget_sender.clone();
                     if let Err(e) = async move {
                         let (server, user, app_password) =
-                            podcasts_data::nextcloud_sync::launch_browser_login_flow_v2(
-                                &server,
-                                |url| {
-                                    let launch_context: Option<&gtk::gio::AppLaunchContext> = None;
-                                    Ok(gtk::gio::AppInfo::launch_default_for_uri(
-                                        url,
-                                        launch_context,
-                                    )?)
-                                },
-                            )
+                            nextcloud_sync::launch_browser_login_flow_v2(&server, |url| {
+                                let launch_context: Option<&gtk::gio::AppLaunchContext> = None;
+                                Ok(gtk::gio::AppInfo::launch_default_for_uri(
+                                    url,
+                                    launch_context,
+                                )?)
+                            })
                             .await?;
                         Self::do_first_sync(
                             refresh_sender,
@@ -249,12 +246,7 @@ impl SyncPreferencesPriv {
                     let err_sender = widget_sender.clone();
                     if let Err(e) = async move {
                         let (settings, password) = podcasts_data::sync::Settings::fetch().await?;
-                        podcasts_data::nextcloud_sync::logout(
-                            &settings.server,
-                            &settings.user,
-                            &password,
-                        )
-                        .await;
+                        nextcloud_sync::logout(&settings.server, &settings.user, &password).await;
                         podcasts_data::sync::Settings::remove().await?;
                         send!(widget_sender, WidgetAction::LogoutDone);
                         anyhow::Ok(())
@@ -290,16 +282,13 @@ impl SyncPreferencesPriv {
                     let err_sender = widget_sender.clone();
                     if let Err(e) = async move {
                         let (server, user, app_password) =
-                            podcasts_data::nextcloud_sync::launch_browser_login_flow_v2(
-                                &server,
-                                |url| {
-                                    let launch_context: Option<&gtk::gio::AppLaunchContext> = None;
-                                    Ok(gtk::gio::AppInfo::launch_default_for_uri(
-                                        url,
-                                        launch_context,
-                                    )?)
-                                },
-                            )
+                            nextcloud_sync::launch_browser_login_flow_v2(&server, |url| {
+                                let launch_context: Option<&gtk::gio::AppLaunchContext> = None;
+                                Ok(gtk::gio::AppInfo::launch_default_for_uri(
+                                    url,
+                                    launch_context,
+                                )?)
+                            })
                             .await?;
                         Self::do_first_sync(
                             refresh_sender,
@@ -339,12 +328,7 @@ impl SyncPreferencesPriv {
                     let err_sender = widget_sender.clone();
                     if let Err(e) = async move {
                         let (settings, password) = podcasts_data::sync::Settings::fetch().await?;
-                        podcasts_data::nextcloud_sync::logout(
-                            &settings.server,
-                            &settings.user,
-                            &password,
-                        )
-                        .await;
+                        nextcloud_sync::logout(&settings.server, &settings.user, &password).await;
                         podcasts_data::sync::Settings::remove().await?;
                         if let Err(e) = widget_sender.send(WidgetAction::LogoutDone).await {
                             error!("failed to send {e}");
@@ -380,7 +364,7 @@ impl SyncPreferencesPriv {
                         WidgetAction::LoadingMessage(i18n("Refreshing feeds..."))
                     );
                     FEED_MANAGER.full_refresh().await;
-                    let result = podcasts_data::nextcloud_sync::sync(true).await;
+                    let result = nextcloud_sync::sync(SyncPolicy::IgnoreMissingEpisodes).await;
                     match result {
                         Err(e) => send!(
                             sender,
@@ -419,8 +403,10 @@ impl SyncPreferencesPriv {
             widget_sender,
             WidgetAction::LoadingMessage(i18n("Running first sync..."))
         );
-
-        podcasts_data::nextcloud_sync::sync(true).await?;
+        // IgnoreMissingEpisodes, because we just did a full refresh.
+        // Also episodes might be missing if a feed 404s.
+        // And finishing the login/first sync is more important for UX.
+        nextcloud_sync::sync(SyncPolicy::IgnoreMissingEpisodes).await?;
         Self::fetch_settings(widget_sender).await;
         send!(app_sender, Action::RefreshAllViews);
         anyhow::Ok(())

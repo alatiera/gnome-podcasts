@@ -23,10 +23,11 @@ use crate::models::Episode;
 use crate::models::EpisodeModel;
 use crate::models::Source;
 use crate::nextcloud_sync::data::*;
+use crate::nextcloud_sync::SyncPolicy;
 
 use anyhow::{Context, Result};
 
-fn update_episodes(data: &EpisodeGet, ignore_missing_episodes: bool) -> Result<(), SyncError> {
+fn update_episodes(data: &EpisodeGet, error_policy: SyncPolicy) -> Result<(), SyncError> {
     let mut ep_urls: Vec<&str> = data.actions.iter().map(|e| e.episode.as_str()).collect();
     ep_urls.dedup();
     let mut ep_guids: Vec<&str> = data
@@ -68,7 +69,7 @@ fn update_episodes(data: &EpisodeGet, ignore_missing_episodes: bool) -> Result<(
                 "Sync: Episode not found locally, faild to update it. ACTION {:#?}",
                 ea
             );
-            if !ignore_missing_episodes {
+            if let SyncPolicy::CancelOnMissingEpisodes = error_policy {
                 Some(SyncError::DownloadedUpdateForEpisodeNotInDb)
             } else {
                 None
@@ -188,7 +189,7 @@ async fn update_subscriptions(data: &SubscriptionGet) -> Result<(), SyncError> {
 pub(crate) async fn download_changes(
     login: &Login,
     last_sync: Option<i64>,
-    ignore_missing_episodes: bool,
+    error_policy: SyncPolicy,
 ) -> Result<(SubscriptionGet, EpisodeGet), SyncError> {
     // fetch new feeds and their episodes first
     // to make sure we have all the episodes for `update_episodes`
@@ -198,7 +199,7 @@ pub(crate) async fn download_changes(
 
     let ep_actions = fetch_ep_actions(login, &last_sync).await?;
     debug!("EPAs: {:#?}", ep_actions);
-    update_episodes(&ep_actions, ignore_missing_episodes)?;
+    update_episodes(&ep_actions, error_policy)?;
     Ok((sub_actions, ep_actions))
 }
 
@@ -227,7 +228,11 @@ mod test {
         assert_eq!(0, dbqueries::get_podcasts()?.len());
         assert_eq!(0, dbqueries::get_episodes()?.len());
 
-        rt.block_on(download_changes(&login, None, false))?;
+        rt.block_on(download_changes(
+            &login,
+            None,
+            SyncPolicy::CancelOnMissingEpisodes,
+        ))?;
         assert_eq!(1, dbqueries::get_podcasts()?.len());
         assert_ne!(0, dbqueries::get_episodes()?.len());
         let all_podcasts = dbqueries::get_podcasts()?;
