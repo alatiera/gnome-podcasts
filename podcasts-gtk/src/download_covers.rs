@@ -49,8 +49,15 @@ impl From<CoverId> for (ShowId, ThumbSize) {
     }
 }
 
+// Enum to store failed loads in cache, to avoid repeated retry failures.
+#[derive(Clone, Eq, Hash, PartialEq)]
+enum CachedTexture {
+    Cached(gdk::Texture),
+    FailedToLoad,
+}
+
 // Thumbs that are already loaded
-static COVER_TEXTURES: Lazy<RwLock<HashMap<CoverId, gdk::Texture>>> =
+static COVER_TEXTURES: Lazy<RwLock<HashMap<CoverId, CachedTexture>>> =
     Lazy::new(|| RwLock::new(HashMap::new()));
 // Each cover should only be downloaded once
 static COVER_DL_REGISTRY: Lazy<RwLock<HashSet<ShowId>>> = Lazy::new(|| RwLock::new(HashSet::new()));
@@ -155,7 +162,7 @@ async fn download(
     cover_id: &CoverId,
     path: &PathBuf,
     just_download: bool,
-) -> Result<Option<gdk::Texture>> {
+) -> Result<Option<CachedTexture>> {
     let url = pd
         .image_uri()
         .ok_or(anyhow!("invalid cover uri"))?
@@ -202,23 +209,37 @@ async fn download(
     }
     if let Some(thumb_texture) = thumbs.get(&cover_id.1) {
         info!("Cached img into: '{}'", &path.display());
+        let cached = CachedTexture::Cached(thumb_texture.clone());
         COVER_TEXTURES
             .write()
             .await
-            .insert(*cover_id, thumb_texture.clone());
+            .insert(*cover_id, cached.clone());
         // Finalize
         // we only rename after thumbnails are generated,
         // so thumbnails can be presumed to exist if the orginal file exists
         tokio::fs::rename(&filename, &path).await?;
-        return Ok(Some(thumb_texture.clone()));
+        return Ok(Some(cached));
     }
 
     bail!("failed to generate thumbnails");
 }
 
-async fn from_web(pd: &ShowCoverModel, cover_id: &CoverId, path: &PathBuf) -> Result<gdk::Texture> {
-    // the `false` for just_download guarantees it to be Some
-    Ok(download(pd, cover_id, path, false).await?.unwrap())
+async fn from_web(
+    pd: &ShowCoverModel,
+    cover_id: &CoverId,
+    path: &PathBuf,
+) -> Result<CachedTexture> {
+    let result = download(pd, cover_id, path, false).await;
+    if let Ok(Some(texture)) = result {
+        Ok(texture)
+    } else {
+        // Avoid redownloading
+        COVER_TEXTURES
+            .write()
+            .await
+            .insert(*cover_id, CachedTexture::FailedToLoad);
+        result.map(|_| CachedTexture::FailedToLoad)
+    }
 }
 
 async fn cover_is_downloading(show_id: ShowId) -> bool {
@@ -227,7 +248,7 @@ async fn cover_is_downloading(show_id: ShowId) -> bool {
 
 const SLEEP_TIME: std::time::Duration = std::time::Duration::from_millis(250);
 const SLEEP_LIMIT: std::time::Duration = std::time::Duration::from_secs(30);
-async fn wait_for_download(pd: &ShowCoverModel, cover_id: &CoverId) -> Result<gdk::Texture> {
+async fn wait_for_download(pd: &ShowCoverModel, cover_id: &CoverId) -> Result<CachedTexture> {
     let mut time_waited = std::time::Duration::new(0, 0);
     while {
         // wait for download to finish
@@ -241,7 +262,7 @@ async fn wait_for_download(pd: &ShowCoverModel, cover_id: &CoverId) -> Result<gd
     from_cache_or_fs(pd, cover_id).await
 }
 
-async fn from_cache_or_fs(pd: &ShowCoverModel, cover_id: &CoverId) -> Result<gdk::Texture> {
+async fn from_cache_or_fs(pd: &ShowCoverModel, cover_id: &CoverId) -> Result<CachedTexture> {
     if let Some(texture) = from_cache(cover_id).await {
         Ok(texture)
     } else {
@@ -274,18 +295,19 @@ async fn from_cache_or_fs(pd: &ShowCoverModel, cover_id: &CoverId) -> Result<gdk
     }
 }
 
-async fn from_cache(cover_id: &CoverId) -> Option<gdk::Texture> {
+async fn from_cache(cover_id: &CoverId) -> Option<CachedTexture> {
     COVER_TEXTURES.read().await.get(cover_id).cloned()
 }
 
-async fn from_fs(pd: &ShowCoverModel, cover_id: &CoverId) -> Result<gdk::Texture> {
+async fn from_fs(pd: &ShowCoverModel, cover_id: &CoverId) -> Result<CachedTexture> {
     let thumb = determin_cover_path(pd, Some(cover_id.1));
     if let Ok(texture) = gdk::Texture::from_filename(thumb) {
+        let cached = CachedTexture::Cached(texture);
         COVER_TEXTURES
             .write()
             .await
-            .insert(*cover_id, texture.clone());
-        Ok(texture)
+            .insert(*cover_id, cached.clone());
+        Ok(cached)
     } else {
         bail!("failed to load texture")
     }
@@ -295,7 +317,7 @@ async fn from_update(
     pd: &ShowCoverModel,
     cover_id: &CoverId,
     cover: &PathBuf,
-) -> Result<gdk::Texture> {
+) -> Result<CachedTexture> {
     // Download a potentially updated cover and replace the old.
     // It won't update all images instantly,
     // but that shouldn't be a big problem.
@@ -332,7 +354,7 @@ pub async fn just_download(pd: &ShowCoverModel) -> Result<()> {
     Ok(())
 }
 /// Caches and returns the texture, may also download and update it.
-pub async fn load_texture(pd: &ShowCoverModel, thumb_size: ThumbSize) -> Result<gdk::Texture> {
+async fn load_texture(pd: &ShowCoverModel, thumb_size: ThumbSize) -> Result<CachedTexture> {
     if pd.image_uri().is_none() {
         bail!("no image_uri for this show: {}", pd.title());
     }
@@ -435,12 +457,15 @@ where
         .await;
 
     match result {
-        Ok(Ok(texture)) => {
+        Ok(Ok(CachedTexture::Cached(texture))) => {
             if let Some(image) = image.upgrade() {
                 image.set_from_texture(&texture);
                 return Ok(());
             }
             Err(NoLongerNeeded.into())
+        }
+        Ok(Ok(CachedTexture::FailedToLoad)) => {
+            bail!("Ignoring cover after failure to load. {podcast_id:#?}")
         }
         Ok(Err(err)) => bail!("Failed to load Show Cover: {err}"),
         Err(err) => bail!("Failed to load Show Cover with thread-error: {err}"),
