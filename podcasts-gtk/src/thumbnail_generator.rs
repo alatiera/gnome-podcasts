@@ -73,7 +73,13 @@ pub async fn generate(
 
     let path = path.to_path_buf();
     let image_full_size = crate::RUNTIME
-        .spawn_blocking(move || anyhow::Ok(Arc::new(image::io::Reader::open(path)?.decode()?)))
+        .spawn_blocking(move || {
+            anyhow::Ok(Arc::new(
+                image::io::Reader::open(path)?
+                    .with_guessed_format()?
+                    .decode()?,
+            ))
+        })
         .await??;
 
     let dir = get_cover_dir_path(pd.title());
