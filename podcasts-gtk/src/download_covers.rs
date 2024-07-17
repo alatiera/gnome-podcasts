@@ -1,4 +1,4 @@
-use anyhow::{anyhow, bail, Context, Result};
+use anyhow::{anyhow, bail, Result};
 use glib::WeakRef;
 use gtk::gdk;
 use gtk::glib;
@@ -192,9 +192,7 @@ async fn download(
     }
 
     // Download done, lets generate thumbnails
-    let thumbs = crate::thumbnail_generator::generate(pd, &filename)
-        .await
-        .context(format!("For {}", filename.display()))?;
+    let thumbs = crate::thumbnail_generator::generate(pd, &filename).await?;
 
     if let Err(err) = pd.update_image_cache_values() {
         error!(
