@@ -30,7 +30,7 @@ use crate::errors::DataError;
 /// Messy temp diagram:
 /// Source -> GET Request -> Update Etags -> Check Status -> Parse `xml/Rss` ->
 /// Convert `rss::Channel` into `Feed` -> Index Podcast -> Index Episodes.
-pub async fn pipeline<S>(sources: S) -> Result<(), reqwest::Error>
+pub async fn pipeline<S>(sources: S) -> Result<Vec<(Source, Result<(), DataError>)>, reqwest::Error>
 where
     S: IntoIterator<Item = Source>,
 {
@@ -40,25 +40,30 @@ where
         .into_iter()
         .map(|source| async {
             let uri = source.uri().to_string();
-            match source.into_feed(&client).await {
+            match source.clone().into_feed(&client).await {
                 Ok(feed) => match feed.index() {
-                    Ok(_) => (),
-                    Err(err) => error!(
-                        "Error while indexing content feed into the database: {} - {}",
-                        uri, err
-                    ),
+                    Ok(_) => (source, Ok(())),
+                    Err(err) => {
+                        error!(
+                            "Error while indexing content feed into the database: {} - {}",
+                            uri, err
+                        );
+                        (source, Err(err))
+                    }
                 },
                 // Avoid spamming the stderr when it's not an actual error
-                Err(DataError::FeedNotModified(_)) => (),
-                Err(err) => error!(
-                    "Error while fetching the latest xml feed: {} - {}",
-                    uri, err
-                ),
+                Err(DataError::FeedNotModified(_)) => (source, Ok(())),
+                Err(err) => {
+                    error!(
+                        "Error while fetching the latest xml feed: {} - {}",
+                        uri, err
+                    );
+                    (source, Err(err))
+                }
             }
         })
         .collect();
-    futures_util::future::join_all(handles).await;
-    Ok(())
+    Ok(futures_util::future::join_all(handles).await)
 }
 
 #[cfg(test)]

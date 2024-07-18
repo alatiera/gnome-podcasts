@@ -16,15 +16,17 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
-use anyhow::Result;
+use anyhow::{Context, Result, bail};
 use async_channel::Sender;
 use std::collections::HashMap;
-use std::sync::{LazyLock, RwLock, OnceLock};
+use std::ops::Deref;
+use std::sync::{Arc, LazyLock, OnceLock, RwLock};
 use tokio::sync::watch;
 
-use crate::dbqueries;
-use crate::pipeline::pipeline;
 use crate::Source;
+use crate::dbqueries;
+use crate::errors::DataError;
+use crate::pipeline::pipeline;
 
 pub static FEED_MANAGER: LazyLock<FeedManager> = LazyLock::new(|| {
     let (sender, receiver) = async_channel::unbounded();
@@ -35,12 +37,14 @@ pub static FEED_MANAGER: LazyLock<FeedManager> = LazyLock::new(|| {
     }
 });
 
+type RefreshResult = Vec<(Source, Arc<Result<(), DataError>>)>;
+type RefreshState = Option<RefreshResult>;
 type RefreshId = u64;
 #[derive(Debug)]
 struct RefreshBatch {
     represents_full_refresh: bool,
     feeds: Vec<Source>,
-    receiver: watch::Receiver<bool>,
+    receiver: watch::Receiver<RefreshState>,
 }
 #[derive(Debug, Default)]
 struct State {
@@ -66,17 +70,18 @@ pub enum FeedAction {
 
 impl FeedManager {
     /// refresh all feeds, or waits for a running refresh to finish
-    pub async fn full_refresh(&self) {
+    pub async fn full_refresh(&self) -> Result<RefreshResult> {
         if let Some(mut refresh_done) = self.schedule_full_refresh() {
-            if let Err(e) = refresh_done.wait_for(|v| *v).await {
-                error!("Failed to receive feed_manager {e}");
-            }
+            let result = refresh_done.wait_for(|v| v.is_some()).await?;
+            let done = result.deref().clone().context("Failed to get RefreshState");
+            return done;
         };
+        bail!("Failed ot refresh");
     }
 
     /// The non-async variant of full_refresh
     /// returns None when skipped due to empty database
-    pub fn schedule_full_refresh(&self) -> Option<watch::Receiver<bool>> {
+    pub fn schedule_full_refresh(&self) -> Option<watch::Receiver<RefreshState>> {
         // If we try to update the whole db, but the db is empty, exit early
         match dbqueries::is_source_populated(&[]) {
             Ok(false) => {
@@ -104,19 +109,31 @@ impl FeedManager {
     /// if a running refresh already contains a subset of the requested sources
     /// It will wait for these to complete while also starting new refresh batches for
     /// Feeds that don't have running updates yet.
-    pub async fn refresh(&self, source: Vec<Source>) {
+    pub async fn refresh(&self, source: Vec<Source>) -> Result<RefreshResult> {
         let receivers = self.schedule_refresh(source);
         let handles: Vec<_> = receivers
             .into_iter()
             .map(|mut r| async move {
-                let _ = r.wait_for(|v| *v).await;
+                // let result = r.wait_for(|v| v.is_some()).await?;
+                let result = r.wait_for(|v| v.is_some()).await?;
+                let done = result
+                    .deref()
+                    .clone()
+                    .context("Failed to unwrap RefreshState");
+                done
             })
             .collect();
-        futures_util::future::join_all(handles).await;
+        // Join the results from all handles into one Vec
+        Ok(futures_util::future::join_all(handles)
+            .await
+            .into_iter()
+            .filter_map(|v| v.ok())
+            .flatten()
+            .collect())
     }
 
     /// The non-async variant of schedule_refresh
-    pub fn schedule_refresh(&self, source: Vec<Source>) -> Vec<watch::Receiver<bool>> {
+    pub fn schedule_refresh(&self, source: Vec<Source>) -> Vec<watch::Receiver<RefreshState>> {
         // figure out what part of the feeds are already scheduled
         let (mut receivers, not_scheduled) = if let Ok(state) = self.state.read() {
             let scheduled_or_not: Vec<Result<RefreshId, Source>> = source
@@ -159,8 +176,8 @@ impl FeedManager {
         receivers
     }
 
-    fn add_refresh(&self, source: Option<Vec<Source>>) -> watch::Receiver<bool> {
-        let (watch_sender, watch_receiver) = watch::channel(false);
+    fn add_refresh(&self, source: Option<Vec<Source>>) -> watch::Receiver<RefreshState> {
+        let (watch_sender, watch_receiver) = watch::channel(None);
         let (sources, is_all) = source
             .map(|s| (s, false))
             .unwrap_or(dbqueries::get_sources().map(|s| (s, true)).unwrap());
@@ -185,10 +202,19 @@ impl FeedManager {
         if let Some(id) = id {
             RUNTIME.get().unwrap().spawn(async move {
                 let _ = sender.send(FeedAction::FetchStarted).await;
-                if let Err(err) = pipeline(sources.into_iter()).await {
+                let result = pipeline(sources.into_iter()).await;
+                if let Err(err) = result.as_ref() {
                     error!("Failed to fetch feed: {err}");
                 }
-                if let Err(e) = watch_sender.send(true) {
+                if let Err(e) = watch_sender.send(
+                    result
+                        .map(|v| {
+                            v.into_iter()
+                                .map(|(s, e)| (s, Arc::new(e)))
+                                .collect::<Vec<_>>()
+                        })
+                        .ok(),
+                ) {
                     error!("Failed to send feed done: {e}");
                 }
                 let _ = sender.send(FeedAction::FetchDone(id)).await;
@@ -196,6 +222,14 @@ impl FeedManager {
         }
 
         watch_receiver
+    }
+
+    pub async fn retry_errors(&self, last_result: RefreshResult) -> Result<RefreshResult> {
+        let sources = last_result
+            .into_iter()
+            .filter_map(|(source, error)| error.as_ref().as_ref().err().map(|_| source))
+            .collect();
+        self.refresh(sources).await
     }
 
     /// Call this from app.rs when an update is done
