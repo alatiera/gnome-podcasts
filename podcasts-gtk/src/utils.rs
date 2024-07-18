@@ -264,7 +264,7 @@ pub(crate) async fn subscribe(sender: &Sender<Action>, feed: String) {
         error_source = Some(source.clone());
         let source_id = source.id();
         info!("Subscribing to {feed}");
-        FEED_MANAGER.refresh(vec![source]).await;
+        let _ = FEED_MANAGER.refresh(vec![source]).await;
         let show = dbqueries::get_podcast_from_source_id(source_id)?;
         if let Err(e) = podcasts_data::sync::Show::store_by_uri(
             feed.to_string(),

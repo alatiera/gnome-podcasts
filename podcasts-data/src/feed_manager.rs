@@ -231,6 +231,18 @@ impl FeedManager {
             .collect();
         self.refresh(sources).await
     }
+    /// Does a full refresh if there was a more generic error
+    pub async fn retry_errors_full(&self, last_result: Result<RefreshResult>) -> Result<RefreshResult> {
+        if let Ok(last_result) = last_result {
+            let sources = last_result
+                .into_iter()
+                .filter_map(|(source, error)| error.as_ref().as_ref().err().map(|_| source))
+                .collect();
+            self.refresh(sources).await
+        } else {
+            self.full_refresh().await
+        }
+    }
 
     /// Call this from app.rs when an update is done
     pub fn refresh_done(id: RefreshId) -> bool {

@@ -363,7 +363,11 @@ impl SyncPreferencesPriv {
                         widget_sender,
                         WidgetAction::LoadingMessage(i18n("Refreshing feeds..."))
                     );
-                    FEED_MANAGER.full_refresh().await;
+                    // Fetch feeds to avoid getting updates that are missing locally.
+                    let errors = FEED_MANAGER.full_refresh().await;
+                    // Retry the failed ones twice.
+                    let errors = FEED_MANAGER.retry_errors_full(errors).await;
+                    let _ = FEED_MANAGER.retry_errors_full(errors).await;
                     let result = nextcloud_sync::sync(SyncPolicy::IgnoreMissingEpisodes).await;
                     match result {
                         Err(e) => send!(
@@ -394,11 +398,15 @@ impl SyncPreferencesPriv {
         app_password: &str,
     ) -> Result<()> {
         podcasts_data::sync::Settings::store(server, user, app_password).await?;
-        send!(
-            widget_sender,
-            WidgetAction::LoadingMessage(i18n("Refreshing feeds..."))
-        );
-        FEED_MANAGER.full_refresh().await;
+        // TODO can this be removed?
+        //      I don't think we need up2date feeds when we are only receiving?
+        //      nextcloud_sync::download should fetch the feeds we actually need already?
+        //
+        // send!(
+        //     widget_sender,
+        //     WidgetAction::LoadingMessage(i18n("Refreshing feeds..."))
+        // );
+        // FEED_MANAGER.full_refresh().await;
         send!(
             widget_sender,
             WidgetAction::LoadingMessage(i18n("Running first sync..."))

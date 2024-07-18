@@ -488,7 +488,10 @@ impl PdApplication {
                                 // Make a full sync, because an episode is on nextcloud,
                                 // but not yet fetched form a feed
                                 // TODO pass the missing feeds in the error and only update those
-                                FEED_MANAGER.full_refresh().await;
+                                let errors = FEED_MANAGER.full_refresh().await;
+                                // Retry the failed ones twice.
+                                let errors = FEED_MANAGER.retry_errors_full(errors).await;
+                                let _ = FEED_MANAGER.retry_errors_full(errors).await;
                                 match nextcloud_sync::sync(SyncPolicy::IgnoreMissingEpisodes).await
                                 {
                                     Ok(sync_result) => info!("SYNC {sync_result:#?}"),
