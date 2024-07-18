@@ -409,7 +409,7 @@ impl SyncPreferencesPriv {
         // FEED_MANAGER.full_refresh().await;
         send!(
             widget_sender,
-            WidgetAction::LoadingMessage(i18n("Running first sync..."))
+            WidgetAction::LoadingMessage(i18n("Running first sync. This can take a few minutes."))
         );
         // IgnoreMissingEpisodes, because we just did a full refresh.
         // Also episodes might be missing if a feed 404s.

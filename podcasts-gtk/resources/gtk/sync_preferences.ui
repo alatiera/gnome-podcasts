@@ -203,6 +203,7 @@ nee
                         <child>
                           <object class="GtkLabel" id="loading_label">
                             <property name="label" translatable="yes">Loading...</property>
+                            <property name="wrap">True</property>
                           </object>
                         </child>
                         <child>
