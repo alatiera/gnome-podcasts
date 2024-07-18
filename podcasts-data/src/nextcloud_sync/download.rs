@@ -180,7 +180,18 @@ async fn update_subscriptions(data: &SubscriptionGet) -> Result<(), SyncError> {
         })
         .collect();
     // fetch the newly subscribed feeds
-    FEED_MANAGER.refresh(sources).await;
+    let refresh_result = FEED_MANAGER.refresh(sources).await;
+    // retry failed feeds twice
+    let refresh_result = if let Ok(per_feed_errors) = refresh_result {
+        info!("RETRY 1 of {per_feed_errors:#?}");
+        FEED_MANAGER.retry_errors(per_feed_errors).await.ok()
+    } else {
+        None
+    };
+    if let Some(per_feed_errors) = refresh_result {
+        info!("RETRY 2 of {per_feed_errors:#?}");
+        let _ = FEED_MANAGER.retry_errors(per_feed_errors).await;
+    }
     Ok(())
 }
 
