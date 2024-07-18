@@ -232,7 +232,10 @@ impl FeedManager {
         self.refresh(sources).await
     }
     /// Does a full refresh if there was a more generic error
-    pub async fn retry_errors_full(&self, last_result: Result<RefreshResult>) -> Result<RefreshResult> {
+    pub async fn retry_errors_full(
+        &self,
+        last_result: Result<RefreshResult>,
+    ) -> Result<RefreshResult> {
         if let Ok(last_result) = last_result {
             let sources = last_result
                 .into_iter()
