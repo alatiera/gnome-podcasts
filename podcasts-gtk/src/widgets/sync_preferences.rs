@@ -449,6 +449,9 @@ impl SyncPreferencesPriv {
                     .set_text(&relative_time(now.signed_duration_since(last_sync)));
                 self.last_sync
                     .set_tooltip_text(Some(&format!("{}", last_sync.format("%x %X"))));
+            } else {
+                // Translators: reads as: "Last sync: Never"
+                self.last_sync.set_text(&i18n("Never"));
             }
             self.connection_info.set_visible(true);
             self.login_group.set_visible(false);
