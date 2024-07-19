@@ -290,7 +290,10 @@ pub(crate) async fn subscribe(sender: &Sender<Action>, feed: String) {
         // but pipeline doesn't pass useful errors yet
         send!(
             sender,
-            Action::ErrorNotification(format!("Failed to subscribe to feed: {feed} "))
+            Action::ErrorNotification(i18n_f(
+                "Failed to subscribe to feed: {}",
+                &[&feed.to_string()]
+            ))
         );
     }
 }
