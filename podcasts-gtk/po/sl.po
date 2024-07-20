@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: podcasts master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2024-07-08 13:52+0000\n"
-"PO-Revision-Date: 2024-07-09 06:07+0200\n"
+"POT-Creation-Date: 2024-07-20 04:39+0000\n"
+"PO-Revision-Date: 2024-07-20 12:54+0200\n"
 "Last-Translator: Martin Srebotnjak <miles@filmsi.net>\n"
 "Language-Team: Slovenian GNOME Translation Team <gnome-si@googlegroups.com>\n"
 "Language: sl_SI\n"
@@ -130,7 +130,7 @@ msgid "Stream"
 msgstr "Začni pretakanje"
 
 #: podcasts-gtk/resources/gtk/episode_description.ui:183
-#: podcasts-gtk/resources/gtk/player_sheet.ui:152
+#: podcasts-gtk/resources/gtk/player_sheet.ui:150
 #: podcasts-gtk/resources/gtk/player_toolbar.ui:67
 #: podcasts-gtk/resources/gtk/player_toolbar.ui:262
 msgid "Play"
@@ -310,17 +310,17 @@ msgstr "0,90 ×"
 msgid "0.75×"
 msgstr "0,75 ×"
 
-#: podcasts-gtk/resources/gtk/player_sheet.ui:131
+#: podcasts-gtk/resources/gtk/player_sheet.ui:129
 msgid "Rewind"
 msgstr "Previj nazaj"
 
-#: podcasts-gtk/resources/gtk/player_sheet.ui:170
+#: podcasts-gtk/resources/gtk/player_sheet.ui:168
 #: podcasts-gtk/resources/gtk/player_toolbar.ui:80
 #: podcasts-gtk/resources/gtk/player_toolbar.ui:271
 msgid "Pause"
 msgstr "Premor"
 
-#: podcasts-gtk/resources/gtk/player_sheet.ui:193
+#: podcasts-gtk/resources/gtk/player_sheet.ui:191
 msgid "Forward"
 msgstr "Previj naprej"
 
@@ -391,8 +391,8 @@ msgstr "_O programu"
 #: podcasts-gtk/resources/gtk/window.ui:102
 #: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:4
 #: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:3
-#: podcasts-gtk/src/app.rs:460 podcasts-gtk/src/widgets/aboutdialog.rs:56
-#: podcasts-gtk/src/widgets/player.rs:430
+#: podcasts-gtk/src/app.rs:470 podcasts-gtk/src/widgets/aboutdialog.rs:56
+#: podcasts-gtk/src/widgets/player.rs:445
 msgid "Podcasts"
 msgstr "Podkasti"
 
@@ -497,7 +497,7 @@ msgstr "Koliko ponovitev časa naj preteče med samodejnim počiščenjem"
 msgid "What period of time to wait between automatic cleanups"
 msgstr "Koliko časa naj preteče med izvajanjem samodejnega čiščenja"
 
-#: podcasts-gtk/src/app.rs:340
+#: podcasts-gtk/src/app.rs:344
 msgid "Copied URL to clipboard!"
 msgstr "Naslov URL je kopiran v odložišče!"
 
@@ -509,45 +509,49 @@ msgstr "Skok na {}:{}:{}"
 msgid "Jump to {}:{}"
 msgstr "Skok na {}:{}"
 
-#: podcasts-gtk/src/manager.rs:105
+#: podcasts-gtk/src/manager.rs:106
 msgid "Download failed: {}"
 msgstr "Prejem ni uspel: {}"
 
-#: podcasts-gtk/src/utils.rs:385 podcasts-gtk/src/utils.rs:425
+#: podcasts-gtk/src/utils.rs:294
+msgid "Failed to subscribe to feed: {}"
+msgstr "Naročanje na vir ni uspelo: {}"
+
+#: podcasts-gtk/src/utils.rs:388 podcasts-gtk/src/utils.rs:434
 msgid "OPML file"
 msgstr "Datoteka OPML"
 
-#: podcasts-gtk/src/utils.rs:396
+#: podcasts-gtk/src/utils.rs:399
 msgid "Select the file from which to you want to import shows."
 msgstr "Izberite datoteko, iz katere želite uvoziti posnetke."
 
-#: podcasts-gtk/src/utils.rs:398
+#: podcasts-gtk/src/utils.rs:401
 msgid "_Import"
 msgstr "_Uvozi"
 
-#: podcasts-gtk/src/utils.rs:415
+#: podcasts-gtk/src/utils.rs:424
 msgid "Failed to parse the imported file {}"
 msgstr "Razčlenjevanje uvožene datoteke {} je spodletelo"
 
 #. Translators: Show as a noun, meaning Podcast-Shows.
-#: podcasts-gtk/src/utils.rs:436
+#: podcasts-gtk/src/utils.rs:445
 msgid "Export shows to…"
 msgstr "Izvozi posnetke v …"
 
-#: podcasts-gtk/src/utils.rs:437
+#: podcasts-gtk/src/utils.rs:446
 msgid "_Export"
 msgstr "_Izvozi"
 
 #. Translators: This is the string of the suggested name for the exported opml file
-#: podcasts-gtk/src/utils.rs:441
+#: podcasts-gtk/src/utils.rs:450
 msgid "gnome-podcasts-exported-shows"
 msgstr "gnome-podcasts-izvoz-posnetkov"
 
-#: podcasts-gtk/src/utils.rs:450
+#: podcasts-gtk/src/utils.rs:459
 msgid "GNOME Podcasts Subscriptions"
 msgstr "Naročila Podkast GNOME"
 
-#: podcasts-gtk/src/utils.rs:454
+#: podcasts-gtk/src/utils.rs:463
 msgid "Failed to export podcasts"
 msgstr "Izvoz podkastov je spodletel"
 
@@ -567,19 +571,19 @@ msgstr "Novo"
 
 #. Translators: Shows as a noun, meaning Podcast-Shows.
 #: podcasts-gtk/src/widgets/content_stack.rs:67
-#: podcasts-gtk/src/widgets/shows_view.rs:114
+#: podcasts-gtk/src/widgets/shows_view.rs:118
 msgid "Shows"
 msgstr "Posnetki"
 
-#: podcasts-gtk/src/widgets/download_progress_bar.rs:69
+#: podcasts-gtk/src/widgets/download_progress_bar.rs:67
 msgid "Download progress"
 msgstr "Napredek prenosa"
 
-#: podcasts-gtk/src/widgets/episode.rs:277
+#: podcasts-gtk/src/widgets/episode.rs:282
 msgid "{} min"
 msgstr "{} min"
 
-#: podcasts-gtk/src/widgets/player.rs:1023
+#: podcasts-gtk/src/widgets/player.rs:1070
 msgid "The media player was unable to execute an action."
 msgstr "S predvajalnikom ni mogoče izvesti zahtevanega dejanja."
 
@@ -591,15 +595,15 @@ msgstr "Vizualno razširi ta opis"
 msgid "Read More"
 msgstr "Preberi več"
 
-#: podcasts-gtk/src/widgets/show_menu.rs:167
+#: podcasts-gtk/src/widgets/show_menu.rs:181
 msgid "Marked all episodes as listened"
 msgstr "Vse epizode so označene kot poslušane"
 
-#: podcasts-gtk/src/widgets/show_menu.rs:168
-#: podcasts-gtk/src/widgets/show_menu.rs:191
+#: podcasts-gtk/src/widgets/show_menu.rs:182
+#: podcasts-gtk/src/widgets/show_menu.rs:209
 msgid "Undo"
 msgstr "Razveljavi"
 
-#: podcasts-gtk/src/widgets/show_menu.rs:187
+#: podcasts-gtk/src/widgets/show_menu.rs:205
 msgid "Unsubscribed from {}"
 msgstr "Odjavi {}"
