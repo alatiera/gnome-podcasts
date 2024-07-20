@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: podcasts master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2024-07-08 13:52+0000\n"
-"PO-Revision-Date: 2024-07-09 19:01+0800\n"
+"POT-Creation-Date: 2024-07-20 04:39+0000\n"
+"PO-Revision-Date: 2024-07-20 18:23+0800\n"
 "Last-Translator: lumingzh <lumingzh@qq.com>\n"
 "Language-Team: Chinese (China) <i18n-zh@googlegroups.com>\n"
 "Language: zh_CN\n"
@@ -129,7 +129,7 @@ msgid "Stream"
 msgstr "流"
 
 #: podcasts-gtk/resources/gtk/episode_description.ui:183
-#: podcasts-gtk/resources/gtk/player_sheet.ui:152
+#: podcasts-gtk/resources/gtk/player_sheet.ui:150
 #: podcasts-gtk/resources/gtk/player_toolbar.ui:67
 #: podcasts-gtk/resources/gtk/player_toolbar.ui:262
 msgid "Play"
@@ -309,17 +309,17 @@ msgstr "0.90×"
 msgid "0.75×"
 msgstr "0.75×"
 
-#: podcasts-gtk/resources/gtk/player_sheet.ui:131
+#: podcasts-gtk/resources/gtk/player_sheet.ui:129
 msgid "Rewind"
 msgstr "倒带"
 
-#: podcasts-gtk/resources/gtk/player_sheet.ui:170
+#: podcasts-gtk/resources/gtk/player_sheet.ui:168
 #: podcasts-gtk/resources/gtk/player_toolbar.ui:80
 #: podcasts-gtk/resources/gtk/player_toolbar.ui:271
 msgid "Pause"
 msgstr "暂停"
 
-#: podcasts-gtk/resources/gtk/player_sheet.ui:193
+#: podcasts-gtk/resources/gtk/player_sheet.ui:191
 msgid "Forward"
 msgstr "前进"
 
@@ -390,8 +390,8 @@ msgstr "关于播客(_A)"
 #: podcasts-gtk/resources/gtk/window.ui:102
 #: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:4
 #: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:3
-#: podcasts-gtk/src/app.rs:460 podcasts-gtk/src/widgets/aboutdialog.rs:56
-#: podcasts-gtk/src/widgets/player.rs:430
+#: podcasts-gtk/src/app.rs:470 podcasts-gtk/src/widgets/aboutdialog.rs:56
+#: podcasts-gtk/src/widgets/player.rs:445
 msgid "Podcasts"
 msgstr "播客"
 
@@ -492,7 +492,7 @@ msgstr "自动清理之间要等待多久的时间"
 msgid "What period of time to wait between automatic cleanups"
 msgstr "自动清理之间要等待的时间段"
 
-#: podcasts-gtk/src/app.rs:340
+#: podcasts-gtk/src/app.rs:344
 msgid "Copied URL to clipboard!"
 msgstr "已将网址复制到剪贴板！"
 
@@ -504,45 +504,49 @@ msgstr "跳至 {}:{}:{}"
 msgid "Jump to {}:{}"
 msgstr "跳至 {}:{}"
 
-#: podcasts-gtk/src/manager.rs:105
+#: podcasts-gtk/src/manager.rs:106
 msgid "Download failed: {}"
 msgstr "下载失败：{}"
 
-#: podcasts-gtk/src/utils.rs:385 podcasts-gtk/src/utils.rs:425
+#: podcasts-gtk/src/utils.rs:294
+msgid "Failed to subscribe to feed: {}"
+msgstr "订阅失败：{}"
+
+#: podcasts-gtk/src/utils.rs:388 podcasts-gtk/src/utils.rs:434
 msgid "OPML file"
 msgstr "OPML 文件"
 
-#: podcasts-gtk/src/utils.rs:396
+#: podcasts-gtk/src/utils.rs:399
 msgid "Select the file from which to you want to import shows."
 msgstr "选择您想要从中导入节目的文件。"
 
-#: podcasts-gtk/src/utils.rs:398
+#: podcasts-gtk/src/utils.rs:401
 msgid "_Import"
 msgstr "导入(_I)"
 
-#: podcasts-gtk/src/utils.rs:415
+#: podcasts-gtk/src/utils.rs:424
 msgid "Failed to parse the imported file {}"
 msgstr "无法解析已导入的文件 {}"
 
 #. Translators: Show as a noun, meaning Podcast-Shows.
-#: podcasts-gtk/src/utils.rs:436
+#: podcasts-gtk/src/utils.rs:445
 msgid "Export shows to…"
 msgstr "导出节目到…"
 
-#: podcasts-gtk/src/utils.rs:437
+#: podcasts-gtk/src/utils.rs:446
 msgid "_Export"
 msgstr "导出(_E)"
 
 #. Translators: This is the string of the suggested name for the exported opml file
-#: podcasts-gtk/src/utils.rs:441
+#: podcasts-gtk/src/utils.rs:450
 msgid "gnome-podcasts-exported-shows"
 msgstr "gnome-podcasts-exported-shows"
 
-#: podcasts-gtk/src/utils.rs:450
+#: podcasts-gtk/src/utils.rs:459
 msgid "GNOME Podcasts Subscriptions"
 msgstr "GNOME 播客订阅"
 
-#: podcasts-gtk/src/utils.rs:454
+#: podcasts-gtk/src/utils.rs:463
 msgid "Failed to export podcasts"
 msgstr "播客导出失败"
 
@@ -564,19 +568,19 @@ msgstr "更新"
 
 #. Translators: Shows as a noun, meaning Podcast-Shows.
 #: podcasts-gtk/src/widgets/content_stack.rs:67
-#: podcasts-gtk/src/widgets/shows_view.rs:114
+#: podcasts-gtk/src/widgets/shows_view.rs:118
 msgid "Shows"
 msgstr "节目"
 
-#: podcasts-gtk/src/widgets/download_progress_bar.rs:69
+#: podcasts-gtk/src/widgets/download_progress_bar.rs:67
 msgid "Download progress"
 msgstr "下载进度"
 
-#: podcasts-gtk/src/widgets/episode.rs:277
+#: podcasts-gtk/src/widgets/episode.rs:282
 msgid "{} min"
 msgstr "{} 分钟"
 
-#: podcasts-gtk/src/widgets/player.rs:1023
+#: podcasts-gtk/src/widgets/player.rs:1070
 msgid "The media player was unable to execute an action."
 msgstr "媒体播放器无法执行此操作。"
 
@@ -588,16 +592,16 @@ msgstr "直观展开该描述"
 msgid "Read More"
 msgstr "阅读更多"
 
-#: podcasts-gtk/src/widgets/show_menu.rs:167
+#: podcasts-gtk/src/widgets/show_menu.rs:181
 msgid "Marked all episodes as listened"
 msgstr "标记所有剧集为已听过"
 
-#: podcasts-gtk/src/widgets/show_menu.rs:168
-#: podcasts-gtk/src/widgets/show_menu.rs:191
+#: podcasts-gtk/src/widgets/show_menu.rs:182
+#: podcasts-gtk/src/widgets/show_menu.rs:209
 msgid "Undo"
 msgstr "撤消"
 
-#: podcasts-gtk/src/widgets/show_menu.rs:187
+#: podcasts-gtk/src/widgets/show_menu.rs:205
 msgid "Unsubscribed from {}"
 msgstr "已退订 {}"
 
