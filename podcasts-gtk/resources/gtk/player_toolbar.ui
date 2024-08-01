@@ -158,6 +158,9 @@ Tobias Bernard
                 <property name="round-digits">1</property>
                 <property name="draw-value">False</property>
                 <property name="width-request">130</property>
+                <accessibility>
+                  <relation name="labelled-by">episode_label</relation>
+                </accessibility>
               </object>
             </child>
             <child>
@@ -205,6 +208,9 @@ Tobias Bernard
                 <style>
                   <class name="playback-progress"/>
                 </style>
+                <accessibility>
+                  <relation name="labelled-by">episode_label</relation>
+                </accessibility>
               </object>
             </child>
             <child>

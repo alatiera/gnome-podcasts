@@ -104,6 +104,9 @@
                             <property name="draw_value">False</property>
                             <property name="hexpand">True</property>
                             <property name="vexpand">True</property>
+                            <accessibility>
+                              <relation name="labelled-by">episode_label</relation>
+                            </accessibility>
                           </object>
                         </child>
                         <child>
