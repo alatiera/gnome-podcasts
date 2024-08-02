@@ -26,9 +26,7 @@ use glib::subclass::InitializingObject;
 use gtk::glib;
 use gtk::prelude::*;
 use gtk::CompositeTemplate;
-use humansize::{file_size_opts as size_opts, FileSize};
 use once_cell::sync::Lazy;
-use std::sync::Arc;
 
 use crate::app::Action;
 use crate::i18n::i18n_f;
@@ -39,20 +37,10 @@ use podcasts_data::utils::get_download_dir;
 use podcasts_data::EpisodeId;
 use podcasts_data::EpisodeWidgetModel;
 
-static SIZE_OPTS: Lazy<Arc<size_opts::FileSizeOpts>> = Lazy::new(|| {
+static SIZE_OPTS: Lazy<humansize::FormatSizeOptions> = Lazy::new(|| {
     // Declare a custom humansize option struct
-    // See: https://docs.rs/humansize/1.0.2/humansize/file_size_opts/struct.FileSizeOpts.html
-    Arc::new(size_opts::FileSizeOpts {
-        divider: size_opts::Kilo::Binary,
-        units: size_opts::Kilo::Decimal,
-        decimal_places: 0,
-        decimal_zeroes: 0,
-        fixed_at: size_opts::FixedAt::No,
-        long_units: false,
-        space: true,
-        suffix: "",
-        allow_negative: false,
-    })
+    // See: https://docs.rs/humansize/2.1.3/humansize/struct.FormatSizeOptions.html
+    humansize::FormatSizeOptions::from(humansize::WINDOWS).decimal_places(0)
 });
 
 #[derive(Debug, CompositeTemplate, Default)]
@@ -295,10 +283,10 @@ impl EpisodeWidgetPriv {
     fn set_size(&self, bytes: Option<i32>) {
         // Convert the bytes to a String label
         let size = bytes.and_then(|s| {
-            if s == 0 {
+            if s <= 0 {
                 None
             } else {
-                s.file_size(SIZE_OPTS.clone()).ok()
+                Some(humansize::format_size(s as u32, *SIZE_OPTS))
             }
         });
 
@@ -330,10 +318,7 @@ impl EpisodeWidgetPriv {
         self.progressbar
             .bind_property("local_size", &*self.local_size, "label")
             .transform_to(move |_, downloaded: u64| {
-                downloaded
-                    .file_size(SIZE_OPTS.clone())
-                    .inspect_err(|err| error!("Error: {err}"))
-                    .ok()
+                Some(humansize::format_size(downloaded, *SIZE_OPTS))
             })
             .flags(glib::BindingFlags::SYNC_CREATE)
             .build();
