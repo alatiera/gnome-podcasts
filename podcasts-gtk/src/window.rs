@@ -82,6 +82,10 @@ pub struct MainWindowPriv {
 
     #[property(set, get)]
     pub(crate) updating: Cell<bool>,
+    #[property(set, get)]
+    pub(crate) is_root_page: Cell<bool>, // for bottom switcher visibility
+    #[property(set, get)]
+    pub(crate) is_mobile_layout: Cell<bool>, // for bottom switcher visibility
 }
 
 #[glib::object_subclass]
@@ -112,6 +116,8 @@ impl ObjectSubclass for MainWindowPriv {
             updating_timeout: RefCell::new(None),
             sender: OnceCell::new(),
             show_widget: RefCell::new(None),
+            is_root_page: Cell::new(true),
+            is_mobile_layout: Cell::new(false),
             settings,
         }
     }
@@ -220,6 +226,8 @@ impl MainWindow {
         imp.navigation_view.connect_popped(clone!(
             #[weak]
             imp,
+            #[weak]
+            window,
             move |_, _| {
                 if imp
                     .navigation_view
@@ -227,17 +235,23 @@ impl MainWindow {
                     .map(|p| p.tag().as_ref().map(|s| s.as_str()) == Some("content"))
                     .unwrap_or(false)
                 {
-                    imp.bottom_switcher_bar.set_visible(true);
+                    window.set_is_root_page(true);
                 }
             }
         ));
 
+        // Update Bottom switcher visibility
+        let update_bottom_switcher_visible = move |window: &MainWindow| {
+            window
+                .bottom_switcher_bar()
+                .set_visible(window.is_root_page() && window.is_mobile_layout());
+        };
+        window.connect_is_root_page_notify(update_bottom_switcher_visible);
+        window.connect_is_mobile_layout_notify(update_bottom_switcher_visible);
+
         // Setup breakpoints
-        imp.header_breakpoint.add_setter(
-            &imp.bottom_switcher_bar.get(),
-            "visible",
-            Some(&true.to_value()),
-        );
+        imp.header_breakpoint
+            .add_setter(&window, "is_mobile_layout", Some(&true.to_value()));
         let p = player.deref();
         imp.player_breakpoint.connect_apply(clone!(
             #[weak]
@@ -286,7 +300,7 @@ impl MainWindow {
 
     pub fn push_page<P: IsA<adw::NavigationPage>>(&self, page: &P) {
         self.imp().navigation_view.push(page);
-        self.imp().bottom_switcher_bar.set_visible(false);
+        self.set_is_root_page(false);
     }
 
     fn pop_to_show_widget(&self) {
@@ -400,7 +414,7 @@ impl MainWindow {
         if !is_current_page {
             self.pop_to_show_widget();
             imp.navigation_view.push(&*imp.show_page);
-            self.imp().bottom_switcher_bar.set_visible(false);
+            self.set_is_root_page(false);
         }
     }
 
