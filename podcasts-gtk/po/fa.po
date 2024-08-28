@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: podcasts master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2024-07-20 04:39+0000\n"
-"PO-Revision-Date: 2024-07-26 14:40+0330\n"
+"POT-Creation-Date: 2024-08-28 20:03+0000\n"
+"PO-Revision-Date: 2024-08-29 01:52+0330\n"
 "Last-Translator: Danial Behzadi <dani.behzi@ubuntu.com>\n"
 "Language-Team: Persian <fa@li.org>\n"
 "Language: fa\n"
@@ -123,32 +123,36 @@ msgstr "عنوان پادپخش"
 msgid "Duration - Date"
 msgstr "طول - تاریخ"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:157
+#: podcasts-gtk/resources/gtk/episode_description.ui:158
 msgid "Stream"
 msgstr "جریان"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:183
-#: podcasts-gtk/resources/gtk/player_sheet.ui:150
+#: podcasts-gtk/resources/gtk/episode_description.ui:186
+#: podcasts-gtk/resources/gtk/player_sheet.ui:154
 #: podcasts-gtk/resources/gtk/player_toolbar.ui:67
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:262
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:268
 msgid "Play"
 msgstr "پخش"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:210
+#: podcasts-gtk/resources/gtk/episode_description.ui:214
 msgid "Download"
 msgstr "بارگیری"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:237
+#: podcasts-gtk/resources/gtk/episode_description.ui:241
 msgid "Cancel"
 msgstr "لغو"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:274
+#: podcasts-gtk/resources/gtk/episode_description.ui:279
 msgid "Delete"
 msgstr "حذف"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:294
+#: podcasts-gtk/resources/gtk/episode_description.ui:299
 msgid "Episode Description"
 msgstr "شرح قسمت"
+
+#: podcasts-gtk/resources/gtk/episode_description.ui:320
+msgid "Episode Cover"
+msgstr "طرح جلد قسمت"
 
 #. Translators: Show as a noun, meaning a Podcast-Show.
 #: podcasts-gtk/resources/gtk/episode_menu.ui:36
@@ -308,17 +312,17 @@ msgstr "×۰٫۹۰"
 msgid "0.75×"
 msgstr "×۰٫۷۵"
 
-#: podcasts-gtk/resources/gtk/player_sheet.ui:129
+#: podcasts-gtk/resources/gtk/player_sheet.ui:133
 msgid "Rewind"
 msgstr "پس‌روی"
 
-#: podcasts-gtk/resources/gtk/player_sheet.ui:168
+#: podcasts-gtk/resources/gtk/player_sheet.ui:172
 #: podcasts-gtk/resources/gtk/player_toolbar.ui:80
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:271
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:277
 msgid "Pause"
 msgstr "مکث"
 
-#: podcasts-gtk/resources/gtk/player_sheet.ui:191
+#: podcasts-gtk/resources/gtk/player_sheet.ui:195
 msgid "Forward"
 msgstr "پیش‌روی"
 
@@ -559,12 +563,16 @@ msgstr "کارخواه پادپخش برای میزکار گنوم."
 msgid "translator-credits"
 msgstr "دانیال بهزادی <dani.behzi@ubuntu.com>"
 
-#: podcasts-gtk/src/widgets/content_stack.rs:66
+#: podcasts-gtk/src/widgets/content_stack.rs:60
+msgid "Fetching feeds…"
+msgstr "واکشیدن خوراک‌ها…"
+
+#: podcasts-gtk/src/widgets/content_stack.rs:67
 msgid "New"
 msgstr "جدید"
 
 #. Translators: Shows as a noun, meaning Podcast-Shows.
-#: podcasts-gtk/src/widgets/content_stack.rs:67
+#: podcasts-gtk/src/widgets/content_stack.rs:68
 #: podcasts-gtk/src/widgets/shows_view.rs:118
 msgid "Shows"
 msgstr "نمایش‌ها"
