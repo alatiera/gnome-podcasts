@@ -2,25 +2,25 @@
 # Copyright (C) 2024 podcasts's COPYRIGHT HOLDER
 # This file is distributed under the same license as the podcasts package.
 # Yuri Otávio Lopes Gomes <yuriotavio@hotmail.com>, 2018, 2020.
-# Rafael Fontenelle <rafaelff@gnome.org>, 2018-2021.
 # Enrico Nicoletto <liverig@gmail.com>, 2020-2021.
 # Juliano de Souza Camargo <julianosc@pm.me>, 2023.
 # Leônidas Araújo <leorusvellt@hotmail.com>, 2023-2024.
+# Rafael Fontenelle <rafaelff@gnome.org>, 2018-2024.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: podcasts master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2024-07-20 14:15+0000\n"
-"PO-Revision-Date: 2024-07-25 20:24-0300\n"
-"Last-Translator: Leônidas Araújo <leorusvellt@hotmail.com>\n"
+"POT-Creation-Date: 2024-08-28 20:03+0000\n"
+"PO-Revision-Date: 2024-08-28 22:23-0300\n"
+"Last-Translator: Rafael Fontenelle <rafaelff@gnome.org>\n"
 "Language-Team: Brazilian Portuguese <https://br.gnome.org/traducao>\n"
 "Language: pt_BR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Poedit 3.4.2\n"
+"Plural-Forms: nplurals=2; plural=(n > 1)\n"
+"X-Generator: Gtranslator 46.1\n"
 "X-DL-Team: pt_BR\n"
 "X-DL-Module: podcasts\n"
 "X-DL-Branch: master\n"
@@ -134,32 +134,36 @@ msgstr "Título do podcast"
 msgid "Duration - Date"
 msgstr "Duração - Data"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:157
+#: podcasts-gtk/resources/gtk/episode_description.ui:158
 msgid "Stream"
 msgstr "Transmitir"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:183
-#: podcasts-gtk/resources/gtk/player_sheet.ui:150
+#: podcasts-gtk/resources/gtk/episode_description.ui:186
+#: podcasts-gtk/resources/gtk/player_sheet.ui:154
 #: podcasts-gtk/resources/gtk/player_toolbar.ui:67
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:262
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:268
 msgid "Play"
 msgstr "Reproduzir"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:210
+#: podcasts-gtk/resources/gtk/episode_description.ui:214
 msgid "Download"
 msgstr "Baixar"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:237
+#: podcasts-gtk/resources/gtk/episode_description.ui:241
 msgid "Cancel"
 msgstr "Cancelar"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:274
+#: podcasts-gtk/resources/gtk/episode_description.ui:279
 msgid "Delete"
 msgstr "Excluir"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:294
+#: podcasts-gtk/resources/gtk/episode_description.ui:299
 msgid "Episode Description"
 msgstr "Descrição do episódio"
+
+#: podcasts-gtk/resources/gtk/episode_description.ui:320
+msgid "Episode Cover"
+msgstr "Capa do episódio"
 
 #. Translators: Show as a noun, meaning a Podcast-Show.
 #: podcasts-gtk/resources/gtk/episode_menu.ui:36
@@ -319,17 +323,17 @@ msgstr "0,90×"
 msgid "0.75×"
 msgstr "0,75×"
 
-#: podcasts-gtk/resources/gtk/player_sheet.ui:129
+#: podcasts-gtk/resources/gtk/player_sheet.ui:133
 msgid "Rewind"
 msgstr "Rebobinar"
 
-#: podcasts-gtk/resources/gtk/player_sheet.ui:168
+#: podcasts-gtk/resources/gtk/player_sheet.ui:172
 #: podcasts-gtk/resources/gtk/player_toolbar.ui:80
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:271
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:277
 msgid "Pause"
 msgstr "Pausar"
 
-#: podcasts-gtk/resources/gtk/player_sheet.ui:191
+#: podcasts-gtk/resources/gtk/player_sheet.ui:195
 msgid "Forward"
 msgstr "Avançar"
 
@@ -579,12 +583,16 @@ msgstr ""
 "Juliano de Souza Camargo <julianosc@pm.me>\n"
 "Leônidas Araújo <leorusvellt@hotmail.com>"
 
-#: podcasts-gtk/src/widgets/content_stack.rs:66
+#: podcasts-gtk/src/widgets/content_stack.rs:60
+msgid "Fetching feeds…"
+msgstr "Buscando feed…"
+
+#: podcasts-gtk/src/widgets/content_stack.rs:67
 msgid "New"
 msgstr "Novo"
 
 #. Translators: Shows as a noun, meaning Podcast-Shows.
-#: podcasts-gtk/src/widgets/content_stack.rs:67
+#: podcasts-gtk/src/widgets/content_stack.rs:68
 #: podcasts-gtk/src/widgets/shows_view.rs:118
 msgid "Shows"
 msgstr "Podcasts"
@@ -660,9 +668,6 @@ msgstr "Cancelada a inscrição de {}"
 
 #~ msgid "An in-app action notification"
 #~ msgstr "Uma notificação de ação no aplicativo"
-
-#~ msgid "Fetching new episodes"
-#~ msgstr "Buscando novos episódios"
 
 #~ msgid "Selected file could not be accessed."
 #~ msgstr "O arquivo selecionado não pôde ser acessado."
