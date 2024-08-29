@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: podcasts master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2024-07-20 04:39+0000\n"
-"PO-Revision-Date: 2024-07-20 12:54+0200\n"
+"POT-Creation-Date: 2024-08-28 20:03+0000\n"
+"PO-Revision-Date: 2024-08-29 12:27+0200\n"
 "Last-Translator: Martin Srebotnjak <miles@filmsi.net>\n"
 "Language-Team: Slovenian GNOME Translation Team <gnome-si@googlegroups.com>\n"
 "Language: sl_SI\n"
@@ -125,32 +125,36 @@ msgstr "Naslov podkasta"
 msgid "Duration - Date"
 msgstr "Trajanje – Datum"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:157
+#: podcasts-gtk/resources/gtk/episode_description.ui:158
 msgid "Stream"
 msgstr "Začni pretakanje"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:183
-#: podcasts-gtk/resources/gtk/player_sheet.ui:150
+#: podcasts-gtk/resources/gtk/episode_description.ui:186
+#: podcasts-gtk/resources/gtk/player_sheet.ui:154
 #: podcasts-gtk/resources/gtk/player_toolbar.ui:67
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:262
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:268
 msgid "Play"
 msgstr "Predvajaj"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:210
+#: podcasts-gtk/resources/gtk/episode_description.ui:214
 msgid "Download"
 msgstr "Prenesi"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:237
+#: podcasts-gtk/resources/gtk/episode_description.ui:241
 msgid "Cancel"
 msgstr "Prekliči"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:274
+#: podcasts-gtk/resources/gtk/episode_description.ui:279
 msgid "Delete"
 msgstr "Izbriši"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:294
+#: podcasts-gtk/resources/gtk/episode_description.ui:299
 msgid "Episode Description"
 msgstr "Opis epizode"
+
+#: podcasts-gtk/resources/gtk/episode_description.ui:320
+msgid "Episode Cover"
+msgstr "Naslovnica epizode"
 
 #. Translators: Show as a noun, meaning a Podcast-Show.
 #: podcasts-gtk/resources/gtk/episode_menu.ui:36
@@ -310,17 +314,17 @@ msgstr "0,90 ×"
 msgid "0.75×"
 msgstr "0,75 ×"
 
-#: podcasts-gtk/resources/gtk/player_sheet.ui:129
+#: podcasts-gtk/resources/gtk/player_sheet.ui:133
 msgid "Rewind"
 msgstr "Previj nazaj"
 
-#: podcasts-gtk/resources/gtk/player_sheet.ui:168
+#: podcasts-gtk/resources/gtk/player_sheet.ui:172
 #: podcasts-gtk/resources/gtk/player_toolbar.ui:80
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:271
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:277
 msgid "Pause"
 msgstr "Premor"
 
-#: podcasts-gtk/resources/gtk/player_sheet.ui:191
+#: podcasts-gtk/resources/gtk/player_sheet.ui:195
 msgid "Forward"
 msgstr "Previj naprej"
 
@@ -565,12 +569,16 @@ msgstr ""
 "Matej Urbančič <mateju@src.gnome.org>\n"
 "Martin Srebotnjak <miles@filmsi.net>"
 
-#: podcasts-gtk/src/widgets/content_stack.rs:66
+#: podcasts-gtk/src/widgets/content_stack.rs:60
+msgid "Fetching feeds…"
+msgstr "Pridobivanje virov ..."
+
+#: podcasts-gtk/src/widgets/content_stack.rs:67
 msgid "New"
 msgstr "Novo"
 
 #. Translators: Shows as a noun, meaning Podcast-Shows.
-#: podcasts-gtk/src/widgets/content_stack.rs:67
+#: podcasts-gtk/src/widgets/content_stack.rs:68
 #: podcasts-gtk/src/widgets/shows_view.rs:118
 msgid "Shows"
 msgstr "Posnetki"
