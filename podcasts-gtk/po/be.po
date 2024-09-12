@@ -7,18 +7,17 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2024-07-26 11:10+0000\n"
-"PO-Revision-Date: 2024-08-16 15:21+0300\n"
-"Last-Translator: Yuras Shumovich <<shumovichy@gmail.com>>\n"
+"POT-Creation-Date: 2024-08-28 20:03+0000\n"
+"PO-Revision-Date: 2024-09-12 14:12+0300\n"
+"Last-Translator: Yuras Shumovich <shumovichy@gmail.com>\n"
 "Language-Team: Belarusian <LL@li.org>\n"
 "Language: be\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 3.4.4\n"
+"X-Generator: Poedit 3.5\n"
 
 #: podcasts-gtk/resources/gtk/discovery_found_podcast.ui:104
-#| msgid "Episodes"
 msgid "Episodes: "
 msgstr "Эпізоды: "
 
@@ -122,32 +121,36 @@ msgstr "Назва падкасту"
 msgid "Duration - Date"
 msgstr "Працягласць - Дата"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:157
+#: podcasts-gtk/resources/gtk/episode_description.ui:158
 msgid "Stream"
 msgstr "Трансляцыя"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:183
-#: podcasts-gtk/resources/gtk/player_sheet.ui:151
+#: podcasts-gtk/resources/gtk/episode_description.ui:186
+#: podcasts-gtk/resources/gtk/player_sheet.ui:154
 #: podcasts-gtk/resources/gtk/player_toolbar.ui:67
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:262
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:268
 msgid "Play"
 msgstr "Прайграць"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:210
+#: podcasts-gtk/resources/gtk/episode_description.ui:214
 msgid "Download"
 msgstr "Спампаваць"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:237
+#: podcasts-gtk/resources/gtk/episode_description.ui:241
 msgid "Cancel"
 msgstr "Скасаваць"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:274
+#: podcasts-gtk/resources/gtk/episode_description.ui:279
 msgid "Delete"
 msgstr "Выдаліць"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:294
+#: podcasts-gtk/resources/gtk/episode_description.ui:299
 msgid "Episode Description"
 msgstr "Апісанне эпізоду"
+
+#: podcasts-gtk/resources/gtk/episode_description.ui:320
+msgid "Episode Cover"
+msgstr "Вокладка эпізоду"
 
 #. Translators: Show as a noun, meaning a Podcast-Show.
 #: podcasts-gtk/resources/gtk/episode_menu.ui:36
@@ -307,17 +310,17 @@ msgstr "0.90×"
 msgid "0.75×"
 msgstr "0.75×"
 
-#: podcasts-gtk/resources/gtk/player_sheet.ui:130
+#: podcasts-gtk/resources/gtk/player_sheet.ui:133
 msgid "Rewind"
 msgstr "Назад"
 
-#: podcasts-gtk/resources/gtk/player_sheet.ui:169
+#: podcasts-gtk/resources/gtk/player_sheet.ui:172
 #: podcasts-gtk/resources/gtk/player_toolbar.ui:80
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:271
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:277
 msgid "Pause"
 msgstr "Паўза"
 
-#: podcasts-gtk/resources/gtk/player_sheet.ui:192
+#: podcasts-gtk/resources/gtk/player_sheet.ui:195
 msgid "Forward"
 msgstr "Наперад"
 
@@ -560,12 +563,16 @@ msgstr "Кліент падкастаў для працоўнага стала G
 msgid "translator-credits"
 msgstr "Yahor Haurylenka <k1llo2810@gmail.com>, 2022"
 
-#: podcasts-gtk/src/widgets/content_stack.rs:66
+#: podcasts-gtk/src/widgets/content_stack.rs:60
+msgid "Fetching feeds…"
+msgstr "Атрыманне новых эпізодаў…"
+
+#: podcasts-gtk/src/widgets/content_stack.rs:67
 msgid "New"
 msgstr "Новыя"
 
 #. Translators: Shows as a noun, meaning Podcast-Shows.
-#: podcasts-gtk/src/widgets/content_stack.rs:67
+#: podcasts-gtk/src/widgets/content_stack.rs:68
 #: podcasts-gtk/src/widgets/shows_view.rs:118
 msgid "Shows"
 msgstr "Перадачы"
@@ -653,6 +660,3 @@ msgstr "Вы адпісаліся ад {}"
 
 #~ msgid "An in-app action notification"
 #~ msgstr "Апавяшчэнне пра дзеянне ў дадатку"
-
-#~ msgid "Fetching new episodes"
-#~ msgstr "Атрыманне новых эпізодаў"
