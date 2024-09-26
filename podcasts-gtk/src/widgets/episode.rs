@@ -78,19 +78,10 @@ pub struct EpisodeWidgetPriv {
     cancel: TemplateChild<gtk::Button>,
     #[template_child]
     text_only: TemplateChild<gtk::Button>,
-    #[template_child]
-    episode_menu: TemplateChild<gtk::MenuButton>,
 }
 
 impl EpisodeWidgetPriv {
     pub(crate) fn init(&self, sender: &Sender<Action>, episode: EpisodeWidgetModel) {
-        let pid = episode.show_id();
-        if let Ok(show) = dbqueries::get_podcast_from_id(pid) {
-            let menu = EpisodeMenu::new(sender, &episode, Arc::new(show));
-            self.episode_menu.set_menu_model(Some(&menu.menu));
-            self.obj().insert_action_group("episode", Some(&menu.group));
-        }
-
         crate::MAINCONTEXT.spawn_local_with_priority(
             glib::source::Priority::LOW,
             clone!(
@@ -111,6 +102,7 @@ impl EpisodeWidgetPriv {
                     if let Err(err) = this.determine_buttons_state(&episode) {
                         error!("Error: {}", err);
                     }
+                    this.init_context_menu(sender, episode);
                 }
             ),
         );
@@ -395,6 +387,38 @@ impl EpisodeWidgetPriv {
                 dl.set_sensitive(true);
             }
         ));
+    }
+
+    fn init_context_menu(&self, sender: Sender<Action>, episode: EpisodeWidgetModel) {
+        let on_rightclick = clone!(
+            #[weak(rename_to = this)]
+            self,
+            move |(x, y)| {
+                let pid = episode.show_id();
+                if let Ok(show) = dbqueries::get_podcast_from_id(pid) {
+                    let menu = EpisodeMenu::new(&sender, &episode, Arc::new(show));
+                    let popover = gtk::PopoverMenu::from_model(Some(&menu.menu));
+                    popover.set_parent(&*this.obj());
+                    popover.insert_action_group("episode", Some(&menu.group));
+                    popover
+                        .set_pointing_to(Some(&gtk::gdk::Rectangle::new(x as i32, y as i32, 1, 1)));
+                    popover.popup();
+                }
+            }
+        );
+        let on_long_press = on_rightclick.clone();
+        let long_press = gtk::GestureLongPress::new();
+        long_press.connect_pressed(move |_, x, y| {
+            on_long_press((x, y));
+        });
+        let right_click = gtk::GestureClick::builder()
+            .button(gtk::gdk::BUTTON_SECONDARY)
+            .build();
+        right_click.connect_pressed(move |_, _, x, y| {
+            on_rightclick((x, y));
+        });
+        self.obj().add_controller(long_press);
+        self.obj().add_controller(right_click);
     }
 }
 fn on_download_clicked(ep: &EpisodeWidgetModel, sender: &Sender<Action>) -> Result<()> {
