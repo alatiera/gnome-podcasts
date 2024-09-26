@@ -43,10 +43,12 @@ Tobias Bernard
       <item>
         <attribute name="label" translatable="yes">Mark as Played</attribute>
         <attribute name="action">episode.mark-as-played</attribute>
+        <attribute name="hidden-when">action-disabled</attribute>
       </item>
       <item>
         <attribute name="label" translatable="yes">Mark as Unplayed</attribute>
         <attribute name="action">episode.mark-as-unplayed</attribute>
+        <attribute name="hidden-when">action-disabled</attribute>
       </item>
     </section>
   </menu>
