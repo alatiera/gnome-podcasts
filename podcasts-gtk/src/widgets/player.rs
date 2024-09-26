@@ -1138,9 +1138,7 @@ impl PlayerWrapper {
                     // write postion to db
                     player_widget.borrow_mut().info.ep.as_mut().map(|ep| {
                         ep.set_play_position(0)?;
-                        ep.set_played_now()?;
-                        send_blocking!(sender, Action::RefreshEpisodesViewBGR);
-                        send_blocking!(sender, Action::RefreshWidgetIfSame(ep.show_id()));
+                        send_blocking!(sender, Action::MarkAsPlayed(true, ep.id()));
                         let ok: Result<(), podcasts_data::errors::DataError> = Ok(());
                         ok
                     });

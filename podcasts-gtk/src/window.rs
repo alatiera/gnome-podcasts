@@ -440,4 +440,11 @@ impl MainWindow {
             imp.navigation_view.pop();
         }
     }
+
+    pub(crate) fn episode_description(&self) -> Option<EpisodeDescription> {
+        let imp = self.imp();
+        imp.navigation_view
+            .visible_page()
+            .and_then(|p| p.downcast::<EpisodeDescription>().ok())
+    }
 }

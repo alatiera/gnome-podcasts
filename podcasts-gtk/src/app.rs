@@ -367,6 +367,12 @@ impl PdApplication {
                     } else {
                         let _ = ep.set_unplayed();
                     }
+                    if let Some(description) = window.episode_description() {
+                        let pid = ep.show_id();
+                        if let Ok(show) = dbqueries::get_podcast_from_id(pid) {
+                            description.update_episode_menu(&data.sender, &ep, Arc::new(show));
+                        }
+                    }
                     // This is slow. As it should only refresh the episode.
                     self.do_action(Action::RefreshWidgetIfSame(ep.show_id()));
                     self.do_action(Action::RefreshEpisodesView);
