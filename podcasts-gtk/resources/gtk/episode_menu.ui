@@ -35,6 +35,7 @@ Tobias Bernard
         <!-- Translators: Show as a noun, meaning a Podcast-Show. -->
         <attribute name="label" translatable="yes">Go to Show</attribute>
         <attribute name="action">episode.go-to-show</attribute>
+        <attribute name="hidden-when">action-missing</attribute>
       </item>
       <item>
         <attribute name="label" translatable="yes">Copy Episode Url</attribute>

@@ -59,14 +59,16 @@ impl Default for EpisodeMenu {
 }
 
 impl EpisodeMenu {
-    pub fn new(sender: &Sender<Action>, ep: &dyn EpisodeModel, show: Arc<Show>) -> Self {
+    pub fn new(sender: &Sender<Action>, ep: &dyn EpisodeModel, show: Option<Arc<Show>>) -> Self {
         let s = Self::default();
         s.init(sender, ep, show);
         s
     }
 
-    fn init(&self, sender: &Sender<Action>, ep: &dyn EpisodeModel, show: Arc<Show>) {
-        self.connect_go_to_show(sender, show);
+    fn init(&self, sender: &Sender<Action>, ep: &dyn EpisodeModel, show: Option<Arc<Show>>) {
+        if let Some(show) = show {
+            self.connect_go_to_show(sender, show);
+        }
         self.connect_mark_as_played(sender, ep.id());
         self.update_played_state(ep);
         self.connect_copy_episode_url(sender, ep);

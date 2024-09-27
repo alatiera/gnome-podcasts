@@ -158,7 +158,7 @@ fn populate_listbox(show: &ShowWidget, pd: Arc<Show>, sender: &Sender<Action>) -
         sender,
         move |ep: EpisodeWidgetModel| {
             let id = ep.id();
-            let episode_widget = EpisodeWidget::new(&sender, ep);
+            let episode_widget = EpisodeWidget::new(&sender, ep, false);
             let row = gtk::ListBoxRow::new();
             row.set_child(Some(&episode_widget));
             row.set_action_name(Some("app.go-to-episode"));

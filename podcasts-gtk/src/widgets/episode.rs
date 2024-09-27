@@ -81,7 +81,12 @@ pub struct EpisodeWidgetPriv {
 }
 
 impl EpisodeWidgetPriv {
-    pub(crate) fn init(&self, sender: &Sender<Action>, episode: EpisodeWidgetModel) {
+    pub(crate) fn init(
+        &self,
+        sender: &Sender<Action>,
+        episode: EpisodeWidgetModel,
+        add_show_link: bool,
+    ) {
         crate::MAINCONTEXT.spawn_local_with_priority(
             glib::source::Priority::LOW,
             clone!(
@@ -102,7 +107,7 @@ impl EpisodeWidgetPriv {
                     if let Err(err) = this.determine_buttons_state(&episode) {
                         error!("Error: {}", err);
                     }
-                    this.init_context_menu(sender, episode);
+                    this.init_context_menu(sender, episode, add_show_link);
                 }
             ),
         );
@@ -389,21 +394,28 @@ impl EpisodeWidgetPriv {
         ));
     }
 
-    fn init_context_menu(&self, sender: Sender<Action>, episode: EpisodeWidgetModel) {
+    fn init_context_menu(
+        &self,
+        sender: Sender<Action>,
+        episode: EpisodeWidgetModel,
+        add_show_link: bool,
+    ) {
         let on_rightclick = clone!(
             #[weak(rename_to = this)]
             self,
             move |(x, y)| {
                 let pid = episode.show_id();
-                if let Ok(show) = dbqueries::get_podcast_from_id(pid) {
-                    let menu = EpisodeMenu::new(&sender, &episode, Arc::new(show));
-                    let popover = gtk::PopoverMenu::from_model(Some(&menu.menu));
-                    popover.set_parent(&*this.obj());
-                    popover.insert_action_group("episode", Some(&menu.group));
-                    popover
-                        .set_pointing_to(Some(&gtk::gdk::Rectangle::new(x as i32, y as i32, 1, 1)));
-                    popover.popup();
-                }
+                let show = if add_show_link {
+                    dbqueries::get_podcast_from_id(pid).ok().map(Arc::new)
+                } else {
+                    None
+                };
+                let menu = EpisodeMenu::new(&sender, &episode, show);
+                let popover = gtk::PopoverMenu::from_model(Some(&menu.menu));
+                popover.set_parent(&*this.obj());
+                popover.insert_action_group("episode", Some(&menu.group));
+                popover.set_pointing_to(Some(&gtk::gdk::Rectangle::new(x as i32, y as i32, 1, 1)));
+                popover.popup();
             }
         );
         let on_long_press = on_rightclick.clone();
@@ -458,14 +470,23 @@ glib::wrapper! {
 }
 
 impl EpisodeWidget {
-    pub(crate) fn new(sender: &Sender<Action>, episode: EpisodeWidgetModel) -> Self {
+    pub(crate) fn new(
+        sender: &Sender<Action>,
+        episode: EpisodeWidgetModel,
+        add_show_link: bool,
+    ) -> Self {
         let widget = Self::default();
-        widget.init(sender, episode);
+        widget.init(sender, episode, add_show_link);
         widget
     }
 
-    pub(crate) fn init(&self, sender: &Sender<Action>, episode: EpisodeWidgetModel) {
-        self.imp().init(sender, episode);
+    pub(crate) fn init(
+        &self,
+        sender: &Sender<Action>,
+        episode: EpisodeWidgetModel,
+        add_show_link: bool,
+    ) {
+        self.imp().init(sender, episode, add_show_link);
     }
 }
 

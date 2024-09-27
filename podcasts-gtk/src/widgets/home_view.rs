@@ -237,7 +237,7 @@ impl HomeEpisodePriv {
     fn init(&self, sender: &Sender<Action>, episode: EpisodeWidgetModel) {
         let pid = episode.show_id();
         self.set_cover(pid);
-        self.episode.init(sender, episode);
+        self.episode.init(sender, episode, true);
         // Assure the image is read out along with the Episode title
         self.cover.set_accessible_role(gtk::AccessibleRole::Label);
     }
