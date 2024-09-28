@@ -49,6 +49,8 @@ pub enum SyncError {
     UnexpectedResponse(reqwest::StatusCode),
     #[error("Downloaded update for episode that is not in db.")]
     DownloadedUpdateForEpisodeNotInDb,
+    #[error("API not found, GPodder Sync extension may not be active on the Nextcloud Server.")]
+    NoSubscriptionApi,
 }
 
 #[derive(PartialEq, Debug)]

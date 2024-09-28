@@ -123,6 +123,11 @@ async fn fetch_subscription_actions(
 
     debug!("sync: received response");
 
+    // 404 GPodder Sync API not found.
+    if resp.status() == reqwest::StatusCode::NOT_FOUND {
+        return Err(SyncError::NoSubscriptionApi);
+    }
+
     let subs = resp.json::<SubscriptionGet>().await?;
     Ok(subs)
 }
