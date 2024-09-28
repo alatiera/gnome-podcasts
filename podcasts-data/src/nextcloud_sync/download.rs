@@ -40,17 +40,17 @@ fn update_episodes(data: &EpisodeGet, error_policy: SyncPolicy) -> Result<(), Sy
     let mut episodes: Vec<Episode> = dbqueries::get_episodes_by_urls_or_guids(ep_urls, ep_guids)
         .context("failed to get episodes by guids")?;
     let update_error = data.actions.iter().find_map(|ea| {
-        //
         let none_updated = episodes
             .iter_mut()
+            // There can be multiple episodes with the same guid,
+            // so we need to filter, not find.
+            // Example: when following the paid&free feeds of a podcast and both publish free episodes
             .filter(|e| {
-                // there can be multiple episodes with the same guid,
-                // example: when following the paid&free feeds of a podcast and both publish free episodes
                 ea.guid.as_deref() == e.guid()
                     || (e.uri().is_some() && ea.episode == e.uri().unwrap())
             })
             .map(|ep| {
-                // ignore episode play action if it happened after a local play action and is not a finish
+                // ignore episode Play action if it happened after a local Play action and is not a finish
                 if let Some(la) = local_ep_actions.iter().find(|la| ep.id() == la.ep_id) {
                     if la.timestamp > ea.timestamp.timestamp()
                         && ea.action == Action::Play
@@ -66,7 +66,7 @@ fn update_episodes(data: &EpisodeGet, error_policy: SyncPolicy) -> Result<(), Sy
 
         if none_updated {
             error!(
-                "Sync: Episode not found locally, faild to update it. ACTION {:#?}",
+                "Sync: Episode not found locally, failed to update it. ACTION {:#?}",
                 ea
             );
             if let SyncPolicy::CancelOnMissingEpisodes = error_policy {
