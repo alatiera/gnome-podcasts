@@ -163,8 +163,7 @@ fn clean_cover_file(path: &PathBuf, cleanup_date: &DateTime<Utc>) -> Result<(), 
 
 /// Database cleaning tasks.
 ///
-/// * `cleanup_date` is the date when the last cleanup was run
-/// it is before
+/// * `cleanup_date` is the date when the last cleanup was run.
 ///
 /// Runs a download checker which looks for `Episode.local_uri` entries that
 /// doesn't exist and sets them to None
