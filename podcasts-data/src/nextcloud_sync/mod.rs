@@ -82,19 +82,27 @@ async fn sync_for_login(
     error_policy: SyncPolicy,
 ) -> Result<SyncResult, SyncError> {
     let now = chrono::Utc::now();
-    let (dl_sub_actions, dl_ep_actions) =
-        download_changes(&login, settings.last_sync, error_policy).await?;
+    let dl_sub_actions;
+    let dl_ep_actions;
 
     let (sub_actions, ep_actions) = if settings.did_first_sync() {
+        (dl_sub_actions, dl_ep_actions) =
+            download_changes(&login, settings.last_sync, error_policy).await?;
         make_delta_post(&now, &dl_ep_actions)?
     } else {
+        // Construct actions from the local db.
         let (mut sub_actions, ep_actions) = make_initial_post(&now)?;
+        // Download actions from the server, remove local action that were already on the server.
+        (dl_sub_actions, dl_ep_actions) =
+            download_changes(&login, settings.last_sync, error_policy).await?;
         sub_actions.remove_already_on_server(&dl_sub_actions);
         // only send actions that aren't already on the server.
         let ep_actions = ep_actions
             .into_iter()
             .filter(|e| !e.already_on_server(&dl_ep_actions))
             .collect();
+
+        debug!("Actions sent from Inital sync: {sub_actions:#?} {ep_actions:#?}");
 
         (sub_actions, ep_actions)
     };
