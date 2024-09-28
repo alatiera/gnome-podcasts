@@ -52,6 +52,7 @@ pub struct MainWindowPriv {
     pub(crate) updating_timeout: RefCell<Option<glib::source::SourceId>>,
     pub(crate) settings: gio::Settings,
     pub(crate) show_widget: RefCell<Option<ShowWidget>>,
+    pub(crate) sync_preferences: RefCell<Option<SyncPreferences>>,
 
     pub(crate) sender: OnceCell<Sender<Action>>,
 
@@ -118,6 +119,7 @@ impl ObjectSubclass for MainWindowPriv {
             show_widget: RefCell::new(None),
             is_root_page: Cell::new(true),
             is_mobile_layout: Cell::new(false),
+            sync_preferences: RefCell::new(None),
             settings,
         }
     }
@@ -136,8 +138,16 @@ impl ObjectSubclass for MainWindowPriv {
             utils::on_export_clicked(win.upcast_ref(), sender).await;
         });
         klass.install_action("win.goto-sync-preferences", None, move |win, _, _| {
-            let widget = SyncPreferences::new(win.sender().clone());
-            win.push_page(&widget);
+            // Keep only one sync_preferences instance to avoid running multiple login attempts.
+            let borrow = win.imp().sync_preferences.borrow();
+            if let Some(widget) = borrow.as_ref() {
+                win.push_page(widget);
+            } else {
+                drop(borrow);
+                let widget = SyncPreferences::new(win.sender().clone());
+                win.imp().sync_preferences.replace(Some(widget.clone()));
+                win.push_page(&widget);
+            };
         });
         klass.install_action("win.about", None, move |win, _, _| {
             about_dialog(win.upcast_ref());
