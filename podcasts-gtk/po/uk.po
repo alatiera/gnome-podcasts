@@ -7,10 +7,10 @@ msgid ""
 msgstr ""
 "Project-Id-Version: podcasts master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2024-08-28 20:03+0000\n"
-"PO-Revision-Date: 2024-08-29 09:31+0300\n"
-"Last-Translator: Fracture dept <yurchor@ukr.net>\n"
-"Language-Team: Ukrainian <kde-i18n-uk@kde.org>\n"
+"POT-Creation-Date: 2024-09-28 16:14+0000\n"
+"PO-Revision-Date: 2024-09-28 21:05+0300\n"
+"Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
+"Language-Team: Ukrainian <trans-uk@lists.fedoraproject.org>\n"
 "Language: uk\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -23,10 +23,6 @@ msgstr ""
 msgid "Episodes: "
 msgstr "Епізоди: "
 
-#: podcasts-gtk/resources/gtk/discovery_found_podcast.ui:114
-msgid "0"
-msgstr "0"
-
 #: podcasts-gtk/resources/gtk/discovery_found_podcast.ui:142
 msgid "Last publication"
 msgstr "Остання публікація"
@@ -36,7 +32,9 @@ msgid "Subscribe"
 msgstr "Підписатися"
 
 #: podcasts-gtk/resources/gtk/discovery_found_podcast.ui:171
-msgid "Subscribing to feed..."
+#: podcasts-gtk/src/widgets/discovery_search_results.rs:152
+#| msgid "Subscribing to feed..."
+msgid "Subscribing to feed…"
 msgstr "Підписуємося на подачу…"
 
 #: podcasts-gtk/resources/gtk/discovery_page.ui:33
@@ -56,24 +54,22 @@ msgid "Submit search"
 msgstr "Надіслати критерій пошуку"
 
 #: podcasts-gtk/resources/gtk/discovery_page.ui:104
-msgid "Loading..."
+#: podcasts-gtk/src/widgets/discovery_page.rs:113
+#| msgid "Loading"
+msgid "Loading…"
 msgstr "Завантаження…"
 
-#: podcasts-gtk/resources/gtk/discovery_page.ui:107
-msgid "Loading"
-msgstr "Завантаження"
-
-#: podcasts-gtk/resources/gtk/discovery_page.ui:121
+#: podcasts-gtk/resources/gtk/discovery_page.ui:115
 msgid "Please enable a Search Platform below, or enter a http(s) feed URL."
 msgstr ""
 "Будь ласка, увімкніть пошукову платформу нижче або введіть адресу подачі "
 "http(s)."
 
-#: podcasts-gtk/resources/gtk/discovery_page.ui:133
+#: podcasts-gtk/resources/gtk/discovery_page.ui:127
 msgid "Search Platforms"
 msgstr "Пошукові платформи"
 
-#: podcasts-gtk/resources/gtk/discovery_page.ui:134
+#: podcasts-gtk/resources/gtk/discovery_page.ui:128
 msgid "Search queries will be sent to these platforms."
 msgstr "Запити щодо пошуку буде надіслано на ці платформи."
 
@@ -154,7 +150,6 @@ msgid "Episode Description"
 msgstr "Опис випуску"
 
 #: podcasts-gtk/resources/gtk/episode_description.ui:320
-#| msgid "Episode Menu"
 msgid "Episode Cover"
 msgstr "Обкладинка епізоду"
 
@@ -580,7 +575,6 @@ msgstr ""
 "Андрій Сербовець <serbovets.translation@gmail.com>"
 
 #: podcasts-gtk/src/widgets/content_stack.rs:60
-#| msgid "Fetching new episodes"
 msgid "Fetching feeds…"
 msgstr "Отримання подач…"
 
@@ -626,6 +620,12 @@ msgstr "Повернути"
 #: podcasts-gtk/src/widgets/show_menu.rs:205
 msgid "Unsubscribed from {}"
 msgstr "Підписку на {} скасовано."
+
+#~ msgid "0"
+#~ msgstr "0"
+
+#~ msgid "Loading..."
+#~ msgstr "Завантаження…"
 
 #~ msgid "Now Playing"
 #~ msgstr "Зараз слухаєте"
