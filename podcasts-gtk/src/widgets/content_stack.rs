@@ -57,7 +57,7 @@ impl Content {
             .valign(gtk::Align::Start)
             .halign(gtk::Align::Fill)
             .visible(false)
-            .tooltip_text(&i18n("Fetching feeds…"))
+            .tooltip_text(i18n("Fetching feeds…"))
             .build();
         progress_bar.add_css_class("osd");
 
