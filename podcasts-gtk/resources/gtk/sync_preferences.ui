@@ -207,7 +207,7 @@ nee
                           </object>
                         </child>
                         <child>
-                          <object class="GtkSpinner" id="loading_spinner">
+                          <object class="AdwSpinner" id="loading_spinner">
                             <property name="accessible-role">presentation</property>
                             <property name="height_request">32</property>
                             <property name="margin-start">5</property>

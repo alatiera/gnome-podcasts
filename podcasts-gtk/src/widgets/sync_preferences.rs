@@ -82,7 +82,7 @@ pub struct SyncPreferencesPriv {
     #[template_child]
     loading_label: TemplateChild<gtk::Label>,
     #[template_child]
-    loading_spinner: TemplateChild<gtk::Spinner>,
+    loading_spinner: TemplateChild<adw::Spinner>,
 }
 
 impl SyncPreferencesPriv {
@@ -425,7 +425,6 @@ impl SyncPreferencesPriv {
         self.login_password.set_visible(false);
         self.login_browser.set_visible(false);
         self.loading_info.set_visible(true);
-        self.loading_spinner.set_spinning(true);
         self.loading_label.set_text(text);
         self.loading_label
             .announce(text, gtk::AccessibleAnnouncementPriority::High);
@@ -479,7 +478,6 @@ impl SyncPreferencesPriv {
             }
         }
         self.loading_info.set_visible(false);
-        self.loading_spinner.set_spinning(false);
     }
 
     async fn fetch_settings(widget_sender: Sender<WidgetAction>) {
