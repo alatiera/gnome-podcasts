@@ -26,6 +26,7 @@ use gtk::glib;
 use gtk::CompositeTemplate;
 
 use crate::app::Action;
+use crate::i18n::i18n;
 use podcasts_data::discovery::FoundPodcast;
 
 #[derive(Debug, CompositeTemplate, Default)]
@@ -104,7 +105,7 @@ pub struct PodcastPriv {
     #[template_child]
     last_publication: TemplateChild<gtk::Label>,
     #[template_child]
-    loading_spinner: TemplateChild<gtk::Spinner>,
+    loading_spinner: TemplateChild<adw::Spinner>,
     #[template_child]
     subscribe_stack: TemplateChild<gtk::Stack>,
 }
@@ -144,12 +145,11 @@ impl PodcastPriv {
 
                 this.subscribe_stack
                     .set_visible_child(&this.loading_spinner.get());
-                this.loading_spinner.set_spinning(true);
                 this.loading_spinner.announce(
                     &this
                         .loading_spinner
                         .tooltip_text()
-                        .unwrap_or("loading".into()),
+                        .unwrap_or(i18n("Subscribing to feed…").into()),
                     gtk::AccessibleAnnouncementPriority::High,
                 );
                 crate::RUNTIME.spawn(clone!(
@@ -170,7 +170,6 @@ impl PodcastPriv {
                         while receiver.recv().await.is_ok() {
                             this.subscribe_stack
                                 .set_visible_child(&this.subscribe.get());
-                            this.loading_spinner.set_spinning(false);
                         }
                     }
                 ));

@@ -29,6 +29,7 @@ use std::sync::Arc;
 use url::Url;
 
 use crate::app::Action;
+use crate::i18n::i18n;
 use crate::utils::{itunes_to_rss, soundcloud_to_rss};
 use podcasts_data::dbqueries;
 use podcasts_data::discovery::SearchError::NoSearchPlatformsSelected;
@@ -44,7 +45,7 @@ pub struct DiscoveryPagePriv {
     #[template_child]
     search_button: TemplateChild<gtk::Button>,
     #[template_child]
-    loading_spinner: TemplateChild<gtk::Spinner>,
+    loading_spinner: TemplateChild<adw::Spinner>,
     #[template_child]
     no_platforms_selected_label: TemplateChild<gtk::Label>,
 }
@@ -67,7 +68,6 @@ impl DiscoveryPagePriv {
                     }
                     this.search_button.set_visible(true);
                     this.loading_spinner.set_visible(false);
-                    this.loading_spinner.set_spinning(false);
                 }
             }
         ));
@@ -106,8 +106,13 @@ impl DiscoveryPagePriv {
                 let this = this.clone();
                 this.search_button.set_visible(false);
                 this.loading_spinner.set_visible(true);
-                this.loading_spinner.set_spinning(true);
-                this.loading_spinner.grab_focus();
+                this.loading_spinner.announce(
+                    &this
+                        .loading_spinner
+                        .tooltip_text()
+                        .unwrap_or(i18n("Loading…").into()),
+                    gtk::AccessibleAnnouncementPriority::High,
+                );
                 this.entry.remove_css_class("error");
                 this.no_platforms_selected_label.set_visible(false);
                 let loading_done = loading_done.clone();

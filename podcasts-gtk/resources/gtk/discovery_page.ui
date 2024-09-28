@@ -100,14 +100,8 @@ nee <nee-git@patchouli.garden>
                           </object>
                         </child>
                         <child>
-                          <object class="GtkSpinner" id="loading_spinner">
-                            <property name="tooltip-text" translatable="yes">Loading...</property>
-                            <property name="accessible-role">label</property>
-                            <accessibility>
-                              <property name="label" translatable="yes">Loading</property>
-                            </accessibility>
-                            <property name="can-focus">True</property>
-                            <property name="focusable">True</property>
+                          <object class="AdwSpinner" id="loading_spinner">
+                            <property name="tooltip-text" translatable="yes">Loading…</property>
                             <property name="visible">False</property>
                           </object>
                         </child>
