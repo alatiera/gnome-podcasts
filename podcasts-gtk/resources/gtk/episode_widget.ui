@@ -41,7 +41,6 @@ Tobias Bernard
         <property name="margin_start">6</property>
         <property name="margin_end">6</property>
         <property name="margin_top">6</property>
-        <property name="margin_bottom">6</property>
         <property name="hexpand">True</property>
         <property name="vexpand">True</property>
         <property name="spacing">12</property>
@@ -61,7 +60,9 @@ Tobias Bernard
                     <property name="label">Episode Title</property>
                     <property name="ellipsize">end</property>
                     <property name="single_line_mode">True</property>
-                    <property name="lines">1</property>
+                    <property name="lines">2</property>
+                    <property name="wrap">True</property>
+                    <property name="wrap-mode">word-char</property>
                     <property name="xalign">0</property>
                   </object>
                 </child>
@@ -173,9 +174,9 @@ Tobias Bernard
         <child>
           <object class="GtkBox" id="button_box">
             <property name="halign">end</property>
-            <property name="margin-top">8</property>
             <child>
               <object class="GtkButton" id="play">
+                <property name="margin-bottom">6</property>
                 <property name="receives_default">True</property>
                 <property name="visible">False</property>
                 <property name="tooltip_text" translatable="yes">Play this episode</property>
@@ -189,6 +190,7 @@ Tobias Bernard
             </child>
             <child>
               <object class="GtkButton" id="pause">
+                <property name="margin-bottom">6</property>
                 <property name="action-name">win.toggle-pause</property>
                 <property name="receives_default">True</property>
                 <property name="visible">False</property>
@@ -203,6 +205,8 @@ Tobias Bernard
             </child>
             <child>
               <object class="GtkButton" id="cancel">
+                <!-- margin-top, due to the progress bar pushing up the center -->
+                <property name="margin-top">2</property>
                 <property name="receives_default">False</property>
                 <property name="tooltip_text" translatable="yes">Cancel the download process</property>
                 <property name="halign">center</property>
@@ -216,6 +220,7 @@ Tobias Bernard
             </child>
             <child>
               <object class="GtkButton" id="download">
+                <property name="margin-bottom">6</property>
                 <property name="receives_default">True</property>
                 <property name="tooltip_text" translatable="yes">Download this episode</property>
                 <property name="halign">center</property>
@@ -229,6 +234,7 @@ Tobias Bernard
             </child>
             <child>
               <object class="GtkButton" id="text_only">
+                <property name="margin-bottom">6</property>
                 <property name="receives_default">True</property>
                 <property name="visible">False</property>
                 <property name="tooltip-text" translatable="yes">Episode without audio</property>

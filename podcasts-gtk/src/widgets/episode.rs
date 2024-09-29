@@ -109,6 +109,12 @@ impl EpisodeWidgetPriv {
                     }
 
                     this.init_progressbar(id);
+
+                    // Don't take progressbar space when invisible
+                    // so we can fit 2-line titles here.
+                    // We will disable 2-line titles when it becomes visible.
+                    this.progressbar.set_height_request(-1);
+
                     // long_press needs to be neutralized by play/pause/dl button clicks
                     let long_press = this.init_context_menu(&sender, add_show_link);
                     this.init_buttons(&sender, id, &long_press);
@@ -134,6 +140,7 @@ impl EpisodeWidgetPriv {
         self.text_only.set_action_name(Some("app.go-to-episode"));
         self.text_only
             .set_action_target_value(Some(&id.0.to_variant()));
+        self.update_progressbar_spacing(false);
     }
 
     // InProgress State:
@@ -155,6 +162,7 @@ impl EpisodeWidgetPriv {
         self.pause.set_visible(false);
         self.download.set_visible(false);
         self.update_separator2_visibility();
+        self.update_progressbar_spacing(true);
     }
 
     // Playable State:
@@ -175,6 +183,7 @@ impl EpisodeWidgetPriv {
         self.play.set_visible(true);
         self.pause.set_visible(false);
         self.update_separator2_visibility();
+        self.update_progressbar_spacing(false);
     }
 
     // Playing State:
@@ -195,6 +204,7 @@ impl EpisodeWidgetPriv {
         self.play.set_visible(false);
         self.pause.set_visible(true);
         self.update_separator2_visibility();
+        self.update_progressbar_spacing(false);
     }
 
     // NotDownloaded State:
@@ -216,6 +226,7 @@ impl EpisodeWidgetPriv {
 
         self.download.set_visible(true);
         self.update_separator2_visibility();
+        self.update_progressbar_spacing(false);
     }
 
     /// Change the state of the `EpisodeWidget`.
@@ -532,6 +543,22 @@ impl EpisodeWidgetPriv {
     fn update_separator2_visibility(&self) {
         self.separator2
             .set_visible(self.date.is_visible() && self.total_size.is_visible());
+    }
+
+    fn update_progressbar_spacing(&self, visible: bool) {
+        // only show 1 line of the title when the download bar comes in
+        // so we can avoid the widget jumping in height beyond 64px
+        if visible {
+            self.progressbar.set_margin_top(0);
+            self.progressbar.set_height_request(8);
+            self.title.set_wrap(false);
+            self.title.set_lines(1);
+        } else {
+            self.progressbar.set_margin_top(0);
+            self.progressbar.set_height_request(-1);
+            self.title.set_wrap(true);
+            self.title.set_lines(2);
+        }
     }
 }
 fn on_download_clicked(ep: &EpisodeWidgetModel, sender: &Sender<Action>) -> Result<()> {
