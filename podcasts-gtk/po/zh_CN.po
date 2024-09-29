@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: podcasts master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2024-08-28 20:03+0000\n"
-"PO-Revision-Date: 2024-08-29 08:07+0800\n"
+"POT-Creation-Date: 2024-09-28 16:14+0000\n"
+"PO-Revision-Date: 2024-09-29 08:34+0800\n"
 "Last-Translator: lumingzh <lumingzh@qq.com>\n"
 "Language-Team: Chinese (China) <i18n-zh@googlegroups.com>\n"
 "Language: zh_CN\n"
@@ -24,10 +24,6 @@ msgstr ""
 msgid "Episodes: "
 msgstr "剧集："
 
-#: podcasts-gtk/resources/gtk/discovery_found_podcast.ui:114
-msgid "0"
-msgstr "0"
-
 #: podcasts-gtk/resources/gtk/discovery_found_podcast.ui:142
 msgid "Last publication"
 msgstr "最新发行"
@@ -37,7 +33,8 @@ msgid "Subscribe"
 msgstr "订阅"
 
 #: podcasts-gtk/resources/gtk/discovery_found_podcast.ui:171
-msgid "Subscribing to feed..."
+#: podcasts-gtk/src/widgets/discovery_search_results.rs:152
+msgid "Subscribing to feed…"
 msgstr "订阅以获取更新…"
 
 #: podcasts-gtk/resources/gtk/discovery_page.ui:33
@@ -57,22 +54,19 @@ msgid "Submit search"
 msgstr "提交搜索"
 
 #: podcasts-gtk/resources/gtk/discovery_page.ui:104
-msgid "Loading..."
+#: podcasts-gtk/src/widgets/discovery_page.rs:113
+msgid "Loading…"
 msgstr "正在加载…"
 
-#: podcasts-gtk/resources/gtk/discovery_page.ui:107
-msgid "Loading"
-msgstr "正在加载"
-
-#: podcasts-gtk/resources/gtk/discovery_page.ui:121
+#: podcasts-gtk/resources/gtk/discovery_page.ui:115
 msgid "Please enable a Search Platform below, or enter a http(s) feed URL."
 msgstr "请启用下面的搜索平台，或输入 http(s) 订阅网址。"
 
-#: podcasts-gtk/resources/gtk/discovery_page.ui:133
+#: podcasts-gtk/resources/gtk/discovery_page.ui:127
 msgid "Search Platforms"
 msgstr "搜索平台"
 
-#: podcasts-gtk/resources/gtk/discovery_page.ui:134
+#: podcasts-gtk/resources/gtk/discovery_page.ui:128
 msgid "Search queries will be sent to these platforms."
 msgstr "搜索关键词将发送至这些平台。"
 
@@ -612,6 +606,12 @@ msgstr "撤消"
 #: podcasts-gtk/src/widgets/show_menu.rs:205
 msgid "Unsubscribed from {}"
 msgstr "已退订 {}"
+
+#~ msgid "0"
+#~ msgstr "0"
+
+#~ msgid "Loading..."
+#~ msgstr "正在加载…"
 
 #~ msgid "Now Playing"
 #~ msgstr "正在播放"
