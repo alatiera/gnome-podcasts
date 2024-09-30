@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: podcasts master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2024-08-28 20:03+0000\n"
-"PO-Revision-Date: 2024-08-29 01:52+0330\n"
+"POT-Creation-Date: 2024-09-28 16:14+0000\n"
+"PO-Revision-Date: 2024-09-30 19:21+0330\n"
 "Last-Translator: Danial Behzadi <dani.behzi@ubuntu.com>\n"
 "Language-Team: Persian <fa@li.org>\n"
 "Language: fa\n"
@@ -22,10 +22,6 @@ msgstr ""
 msgid "Episodes: "
 msgstr "قسمت‌ها: "
 
-#: podcasts-gtk/resources/gtk/discovery_found_podcast.ui:114
-msgid "0"
-msgstr "۰"
-
 #: podcasts-gtk/resources/gtk/discovery_found_podcast.ui:142
 msgid "Last publication"
 msgstr "آخرین انتشار"
@@ -35,7 +31,8 @@ msgid "Subscribe"
 msgstr "اشتراک"
 
 #: podcasts-gtk/resources/gtk/discovery_found_podcast.ui:171
-msgid "Subscribing to feed..."
+#: podcasts-gtk/src/widgets/discovery_search_results.rs:152
+msgid "Subscribing to feed…"
 msgstr "مشترک شدن خوراک…"
 
 #: podcasts-gtk/resources/gtk/discovery_page.ui:33
@@ -55,23 +52,20 @@ msgid "Submit search"
 msgstr "ثبت جست‌وجو"
 
 #: podcasts-gtk/resources/gtk/discovery_page.ui:104
-msgid "Loading..."
+#: podcasts-gtk/src/widgets/discovery_page.rs:113
+msgid "Loading…"
 msgstr "بار کردن…"
 
-#: podcasts-gtk/resources/gtk/discovery_page.ui:107
-msgid "Loading"
-msgstr "بار کردن"
-
-#: podcasts-gtk/resources/gtk/discovery_page.ui:121
+#: podcasts-gtk/resources/gtk/discovery_page.ui:115
 msgid "Please enable a Search Platform below, or enter a http(s) feed URL."
 msgstr ""
 "لطفاً بن‌سازهٔ جست‌وجویی را در زیر به کارانداخته یا نشانی خوراکی را وارد کنید."
 
-#: podcasts-gtk/resources/gtk/discovery_page.ui:133
+#: podcasts-gtk/resources/gtk/discovery_page.ui:127
 msgid "Search Platforms"
 msgstr "بن‌سازه‌های جست‌وجو"
 
-#: podcasts-gtk/resources/gtk/discovery_page.ui:134
+#: podcasts-gtk/resources/gtk/discovery_page.ui:128
 msgid "Search queries will be sent to these platforms."
 msgstr "پرس‌وجوهای جست‌وجو به این بن‌سازه‌ها فرستاده خواهند شد."
 
@@ -609,6 +603,12 @@ msgstr "برگردان"
 #: podcasts-gtk/src/widgets/show_menu.rs:205
 msgid "Unsubscribed from {}"
 msgstr "لغو اشتراک از {}"
+
+#~ msgid "0"
+#~ msgstr "۰"
+
+#~ msgid "Loading..."
+#~ msgstr "بار کردن…"
 
 #~ msgid "Now Playing"
 #~ msgstr "در حال پخش"
