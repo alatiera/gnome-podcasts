@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: podcasts master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2024-08-28 20:03+0000\n"
-"PO-Revision-Date: 2024-08-29 11:00+0300\n"
+"POT-Creation-Date: 2024-09-28 16:14+0000\n"
+"PO-Revision-Date: 2024-10-01 22:48+0300\n"
 "Last-Translator: Artur So <arturios2005@mail.ru>\n"
 "Language-Team: Russian <gnome-cyr@gnome.org>\n"
 "Language: ru\n"
@@ -17,15 +17,11 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
-"X-Generator: Poedit 3.4.4\n"
+"X-Generator: Poedit 3.5\n"
 
 #: podcasts-gtk/resources/gtk/discovery_found_podcast.ui:104
 msgid "Episodes: "
 msgstr "Эпизоды: "
-
-#: podcasts-gtk/resources/gtk/discovery_found_podcast.ui:114
-msgid "0"
-msgstr "0"
 
 #: podcasts-gtk/resources/gtk/discovery_found_podcast.ui:142
 msgid "Last publication"
@@ -36,8 +32,9 @@ msgid "Subscribe"
 msgstr "Подписаться"
 
 #: podcasts-gtk/resources/gtk/discovery_found_podcast.ui:171
-msgid "Subscribing to feed..."
-msgstr "Подписка на канал..."
+#: podcasts-gtk/src/widgets/discovery_search_results.rs:152
+msgid "Subscribing to feed…"
+msgstr "Подписка на канал…"
 
 #: podcasts-gtk/resources/gtk/discovery_page.ui:33
 msgid "Add Podcasts"
@@ -56,23 +53,20 @@ msgid "Submit search"
 msgstr "Отправить поисковый запрос"
 
 #: podcasts-gtk/resources/gtk/discovery_page.ui:104
-msgid "Loading..."
-msgstr "Загрузка..."
+#: podcasts-gtk/src/widgets/discovery_page.rs:113
+msgid "Loading…"
+msgstr "Загрузка…"
 
-#: podcasts-gtk/resources/gtk/discovery_page.ui:107
-msgid "Loading"
-msgstr "Загрузка"
-
-#: podcasts-gtk/resources/gtk/discovery_page.ui:121
+#: podcasts-gtk/resources/gtk/discovery_page.ui:115
 msgid "Please enable a Search Platform below, or enter a http(s) feed URL."
 msgstr ""
 "Пожалуйста, включите поисковую платформу ниже или введите URL http(s) канала."
 
-#: podcasts-gtk/resources/gtk/discovery_page.ui:133
+#: podcasts-gtk/resources/gtk/discovery_page.ui:127
 msgid "Search Platforms"
 msgstr "Поисковые платформы"
 
-#: podcasts-gtk/resources/gtk/discovery_page.ui:134
+#: podcasts-gtk/resources/gtk/discovery_page.ui:128
 msgid "Search queries will be sent to these platforms."
 msgstr "Поисковые запросы будут направляться на эти платформы."
 
@@ -616,6 +610,12 @@ msgstr "Отменить"
 #: podcasts-gtk/src/widgets/show_menu.rs:205
 msgid "Unsubscribed from {}"
 msgstr "Отменена подписка на {}"
+
+#~ msgid "0"
+#~ msgstr "0"
+
+#~ msgid "Loading..."
+#~ msgstr "Загрузка..."
 
 #~ msgid "Now Playing"
 #~ msgstr "Воспроизводится"
