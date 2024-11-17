@@ -75,7 +75,7 @@ pub async fn generate(
     let image_full_size = crate::RUNTIME
         .spawn_blocking(move || {
             anyhow::Ok(Arc::new(
-                image::io::Reader::open(path)?
+                image::ImageReader::open(path)?
                     .with_guessed_format()?
                     .decode()?,
             ))

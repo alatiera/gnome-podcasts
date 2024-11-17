@@ -391,7 +391,7 @@ impl MainWindow {
         } else if is_current_page {
             imp.navigation_view.pop();
         }
-        imp.show_widget.set(widget);
+        imp.show_widget.replace(widget);
     }
 
     pub(crate) fn update_show_widget(&self, show_id: ShowId) -> Result<()> {
