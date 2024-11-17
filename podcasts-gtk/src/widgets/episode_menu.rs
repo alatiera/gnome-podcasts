@@ -21,10 +21,9 @@ use async_channel::Sender;
 use glib::clone;
 use gtk::prelude::*;
 use gtk::{gio, glib};
-use std::sync::Arc;
 
 use crate::app::Action;
-use podcasts_data::Show;
+use podcasts_data::ShowId;
 use podcasts_data::{EpisodeId, EpisodeModel};
 
 #[derive(Debug, Clone)]
@@ -59,15 +58,15 @@ impl Default for EpisodeMenu {
 }
 
 impl EpisodeMenu {
-    pub fn new(sender: &Sender<Action>, ep: &dyn EpisodeModel, show: Option<Arc<Show>>) -> Self {
+    pub fn new(sender: &Sender<Action>, ep: &dyn EpisodeModel, show: Option<ShowId>) -> Self {
         let s = Self::default();
         s.init(sender, ep, show);
         s
     }
 
-    fn init(&self, sender: &Sender<Action>, ep: &dyn EpisodeModel, show: Option<Arc<Show>>) {
-        if let Some(show) = show {
-            self.connect_go_to_show(sender, show);
+    fn init(&self, sender: &Sender<Action>, ep: &dyn EpisodeModel, show: Option<ShowId>) {
+        if let Some(show_id) = show {
+            self.connect_go_to_show(show_id);
         }
         self.connect_mark_as_played(sender, ep.id());
         self.update_played_state(ep);
@@ -80,16 +79,12 @@ impl EpisodeMenu {
         self.mark_as_unplayed.set_enabled(played.is_some());
     }
 
-    fn connect_go_to_show(&self, sender: &Sender<Action>, show: Arc<Show>) {
-        self.go_to_show.connect_activate(clone!(
-            #[strong]
-            sender,
-            #[strong]
-            show,
-            move |_, _| {
-                send_blocking!(sender, Action::GoToShow(show.clone()));
+    fn connect_go_to_show(&self, id: ShowId) {
+        self.go_to_show.connect_activate(move |_, _| {
+            if let Some(app) = gio::Application::default() {
+                app.activate_action("go-to-show", Some(&id.0.into()));
             }
-        ));
+        });
         self.group.add_action(&self.go_to_show);
     }
 

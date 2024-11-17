@@ -352,7 +352,7 @@ impl EpisodeDescription {
         ep: &dyn EpisodeModel,
         show: Arc<Show>,
     ) {
-        let menu = EpisodeMenu::new(sender, ep, Some(show));
+        let menu = EpisodeMenu::new(sender, ep, Some(show.id()));
         self.imp().menu_button.set_menu_model(Some(&menu.menu));
         self.insert_action_group("episode", Some(&menu.group));
     }

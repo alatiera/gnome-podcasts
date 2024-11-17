@@ -405,11 +405,7 @@ impl EpisodeWidgetPriv {
             self,
             move |(x, y)| {
                 let pid = episode.show_id();
-                let show = if add_show_link {
-                    dbqueries::get_podcast_from_id(pid).ok().map(Arc::new)
-                } else {
-                    None
-                };
+                let show = if add_show_link { Some(pid) } else { None };
                 let menu = EpisodeMenu::new(&sender, &episode, show);
                 let popover = gtk::PopoverMenu::from_model(Some(&menu.menu));
                 popover.set_parent(&*this.obj());
