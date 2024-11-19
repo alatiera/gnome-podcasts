@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: podcasts master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2024-09-28 16:14+0000\n"
-"PO-Revision-Date: 2024-09-28 21:05+0300\n"
+"POT-Creation-Date: 2024-11-19 13:15+0000\n"
+"PO-Revision-Date: 2024-11-19 18:28+0200\n"
 "Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
 "Language-Team: Ukrainian <trans-uk@lists.fedoraproject.org>\n"
 "Language: uk\n"
@@ -33,7 +33,6 @@ msgstr "Підписатися"
 
 #: podcasts-gtk/resources/gtk/discovery_found_podcast.ui:171
 #: podcasts-gtk/src/widgets/discovery_search_results.rs:152
-#| msgid "Subscribing to feed..."
 msgid "Subscribing to feed…"
 msgstr "Підписуємося на подачу…"
 
@@ -55,7 +54,6 @@ msgstr "Надіслати критерій пошуку"
 
 #: podcasts-gtk/resources/gtk/discovery_page.ui:104
 #: podcasts-gtk/src/widgets/discovery_page.rs:113
-#| msgid "Loading"
 msgid "Loading…"
 msgstr "Завантаження…"
 
@@ -158,9 +156,19 @@ msgstr "Обкладинка епізоду"
 msgid "Go to Show"
 msgstr "Відкрити подкаст"
 
-#: podcasts-gtk/resources/gtk/episode_menu.ui:40
+#: podcasts-gtk/resources/gtk/episode_menu.ui:41
 msgid "Copy Episode Url"
 msgstr "Копіювати URL-адресу випуску"
+
+#: podcasts-gtk/resources/gtk/episode_menu.ui:45
+#| msgid "Mark All as Played"
+msgid "Mark as Played"
+msgstr "Позначити як відтворене"
+
+#: podcasts-gtk/resources/gtk/episode_menu.ui:50
+#| msgid "Mark All as Played"
+msgid "Mark as Unplayed"
+msgstr "Позначити як невідтворене"
 
 #: podcasts-gtk/resources/gtk/episode_widget.ui:70
 msgid "You’ve already listened to this episode."
@@ -392,8 +400,8 @@ msgstr "_Про «Подкасти»"
 #: podcasts-gtk/resources/gtk/window.ui:102
 #: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:4
 #: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:3
-#: podcasts-gtk/src/app.rs:470 podcasts-gtk/src/widgets/aboutdialog.rs:56
-#: podcasts-gtk/src/widgets/player.rs:445
+#: podcasts-gtk/src/app.rs:500 podcasts-gtk/src/widgets/aboutdialog.rs:56
+#: podcasts-gtk/src/widgets/player.rs:447
 msgid "Podcasts"
 msgstr "Подкасти"
 
@@ -506,7 +514,7 @@ msgstr ""
 "У яких одиницях вимірювати інтервал очікування між автоматичними очищеннями "
 "(години, хвилини тощо)"
 
-#: podcasts-gtk/src/app.rs:344
+#: podcasts-gtk/src/app.rs:355
 msgid "Copied URL to clipboard!"
 msgstr "Адресу скопійовано до буфера обміну."
 
@@ -592,11 +600,11 @@ msgstr "Подкасти"
 msgid "Download progress"
 msgstr "Поступ отримання"
 
-#: podcasts-gtk/src/widgets/episode.rs:282
+#: podcasts-gtk/src/widgets/episode.rs:279
 msgid "{} min"
 msgstr "{} хв."
 
-#: podcasts-gtk/src/widgets/player.rs:1070
+#: podcasts-gtk/src/widgets/player.rs:1072
 msgid "The media player was unable to execute an action."
 msgstr "Програвачеві не вдалося виконати цю дію."
 
