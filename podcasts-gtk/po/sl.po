@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: podcasts master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2024-09-28 16:14+0000\n"
-"PO-Revision-Date: 2024-09-29 20:52+0200\n"
+"POT-Creation-Date: 2024-11-19 13:15+0000\n"
+"PO-Revision-Date: 2024-11-20 16:06+0100\n"
 "Last-Translator: Martin Srebotnjak <miles@filmsi.net>\n"
 "Language-Team: Slovenian GNOME Translation Team <gnome-si@googlegroups.com>\n"
 "Language: sl_SI\n"
@@ -155,9 +155,17 @@ msgstr "Naslovnica epizode"
 msgid "Go to Show"
 msgstr "Skoči na posnetek"
 
-#: podcasts-gtk/resources/gtk/episode_menu.ui:40
+#: podcasts-gtk/resources/gtk/episode_menu.ui:41
 msgid "Copy Episode Url"
 msgstr "Kopiraj naslov URL epizode"
+
+#: podcasts-gtk/resources/gtk/episode_menu.ui:45
+msgid "Mark as Played"
+msgstr "Označi kot predvajano"
+
+#: podcasts-gtk/resources/gtk/episode_menu.ui:50
+msgid "Mark as Unplayed"
+msgstr "Označi kot nepredvajano"
 
 #: podcasts-gtk/resources/gtk/episode_widget.ui:70
 msgid "You’ve already listened to this episode."
@@ -389,8 +397,8 @@ msgstr "_O programu"
 #: podcasts-gtk/resources/gtk/window.ui:102
 #: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:4
 #: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:3
-#: podcasts-gtk/src/app.rs:470 podcasts-gtk/src/widgets/aboutdialog.rs:56
-#: podcasts-gtk/src/widgets/player.rs:445
+#: podcasts-gtk/src/app.rs:500 podcasts-gtk/src/widgets/aboutdialog.rs:56
+#: podcasts-gtk/src/widgets/player.rs:447
 msgid "Podcasts"
 msgstr "Podkasti"
 
@@ -495,7 +503,7 @@ msgstr "Koliko ponovitev časa naj preteče med samodejnim počiščenjem"
 msgid "What period of time to wait between automatic cleanups"
 msgstr "Koliko časa naj preteče med izvajanjem samodejnega čiščenja"
 
-#: podcasts-gtk/src/app.rs:344
+#: podcasts-gtk/src/app.rs:355
 msgid "Copied URL to clipboard!"
 msgstr "Naslov URL je kopiran v odložišče!"
 
@@ -581,11 +589,11 @@ msgstr "Posnetki"
 msgid "Download progress"
 msgstr "Napredek prenosa"
 
-#: podcasts-gtk/src/widgets/episode.rs:282
+#: podcasts-gtk/src/widgets/episode.rs:279
 msgid "{} min"
 msgstr "{} min"
 
-#: podcasts-gtk/src/widgets/player.rs:1070
+#: podcasts-gtk/src/widgets/player.rs:1072
 msgid "The media player was unable to execute an action."
 msgstr "S predvajalnikom ni mogoče izvesti zahtevanega dejanja."
 
