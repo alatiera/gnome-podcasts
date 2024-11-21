@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: podcasts master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2024-09-28 16:14+0000\n"
-"PO-Revision-Date: 2024-10-04 06:20+0200\n"
+"POT-Creation-Date: 2024-11-19 13:15+0000\n"
+"PO-Revision-Date: 2024-11-21 05:53+0100\n"
 "Last-Translator: Ekaterine Papava <papava.e@gtu.ge>\n"
 "Language-Team: Georgian <ka@li.org>\n"
 "Language: ka\n"
@@ -152,9 +152,17 @@ msgstr "ეპიზოდის ყდა"
 msgid "Go to Show"
 msgstr "სერიალზე გადასვლა"
 
-#: podcasts-gtk/resources/gtk/episode_menu.ui:40
+#: podcasts-gtk/resources/gtk/episode_menu.ui:41
 msgid "Copy Episode Url"
 msgstr "ეპიზოდის ბმულის კოპირება"
+
+#: podcasts-gtk/resources/gtk/episode_menu.ui:45
+msgid "Mark as Played"
+msgstr "დაკრულად მონიშვნა"
+
+#: podcasts-gtk/resources/gtk/episode_menu.ui:50
+msgid "Mark as Unplayed"
+msgstr "დაუკრავად მონიშვნა"
 
 #: podcasts-gtk/resources/gtk/episode_widget.ui:70
 msgid "You’ve already listened to this episode."
@@ -386,8 +394,8 @@ msgstr "პოდკასტების _შესახებ"
 #: podcasts-gtk/resources/gtk/window.ui:102
 #: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:4
 #: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:3
-#: podcasts-gtk/src/app.rs:470 podcasts-gtk/src/widgets/aboutdialog.rs:56
-#: podcasts-gtk/src/widgets/player.rs:445
+#: podcasts-gtk/src/app.rs:500 podcasts-gtk/src/widgets/aboutdialog.rs:56
+#: podcasts-gtk/src/widgets/player.rs:447
 msgid "Podcasts"
 msgstr "პოდკასტები"
 
@@ -493,7 +501,7 @@ msgstr "რამდენი პერიოდი უნდა დაველ
 msgid "What period of time to wait between automatic cleanups"
 msgstr "რა პერიოდი უნდა დაველოდო ავტომატურ გაწმენდებს შორის"
 
-#: podcasts-gtk/src/app.rs:344
+#: podcasts-gtk/src/app.rs:355
 msgid "Copied URL to clipboard!"
 msgstr "ბმული დაკოპირდა გაცვლის ბაფერში!"
 
@@ -577,11 +585,11 @@ msgstr "სერიალები"
 msgid "Download progress"
 msgstr "გადმოწერის მიმდინარეობა"
 
-#: podcasts-gtk/src/widgets/episode.rs:282
+#: podcasts-gtk/src/widgets/episode.rs:279
 msgid "{} min"
 msgstr "{} წთ"
 
-#: podcasts-gtk/src/widgets/player.rs:1070
+#: podcasts-gtk/src/widgets/player.rs:1072
 msgid "The media player was unable to execute an action."
 msgstr "მედიის დამკვრელმა ქმედების შესრულება ვერ შეძლო."
 
