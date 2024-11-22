@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: podcasts master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2024-09-28 16:14+0000\n"
-"PO-Revision-Date: 2024-09-29 08:34+0800\n"
+"POT-Creation-Date: 2024-11-19 13:15+0000\n"
+"PO-Revision-Date: 2024-11-22 18:33+0800\n"
 "Last-Translator: lumingzh <lumingzh@qq.com>\n"
 "Language-Team: Chinese (China) <i18n-zh@googlegroups.com>\n"
 "Language: zh_CN\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Gtranslator 46.1\n"
+"X-Generator: Gtranslator 47.0\n"
 
 #: podcasts-gtk/resources/gtk/discovery_found_podcast.ui:104
 msgid "Episodes: "
@@ -154,9 +154,17 @@ msgstr "剧集封面"
 msgid "Go to Show"
 msgstr "前往节目"
 
-#: podcasts-gtk/resources/gtk/episode_menu.ui:40
+#: podcasts-gtk/resources/gtk/episode_menu.ui:41
 msgid "Copy Episode Url"
 msgstr "复制剧集网址"
+
+#: podcasts-gtk/resources/gtk/episode_menu.ui:45
+msgid "Mark as Played"
+msgstr "标记为已播放"
+
+#: podcasts-gtk/resources/gtk/episode_menu.ui:50
+msgid "Mark as Unplayed"
+msgstr "标记为未播放"
 
 #: podcasts-gtk/resources/gtk/episode_widget.ui:70
 msgid "You’ve already listened to this episode."
@@ -388,8 +396,8 @@ msgstr "关于播客(_A)"
 #: podcasts-gtk/resources/gtk/window.ui:102
 #: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:4
 #: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:3
-#: podcasts-gtk/src/app.rs:470 podcasts-gtk/src/widgets/aboutdialog.rs:56
-#: podcasts-gtk/src/widgets/player.rs:445
+#: podcasts-gtk/src/app.rs:500 podcasts-gtk/src/widgets/aboutdialog.rs:56
+#: podcasts-gtk/src/widgets/player.rs:447
 msgid "Podcasts"
 msgstr "播客"
 
@@ -490,7 +498,7 @@ msgstr "自动清理之间要等待多久的时间"
 msgid "What period of time to wait between automatic cleanups"
 msgstr "自动清理之间要等待的时间段"
 
-#: podcasts-gtk/src/app.rs:344
+#: podcasts-gtk/src/app.rs:355
 msgid "Copied URL to clipboard!"
 msgstr "已将网址复制到剪贴板！"
 
@@ -578,11 +586,11 @@ msgstr "节目"
 msgid "Download progress"
 msgstr "下载进度"
 
-#: podcasts-gtk/src/widgets/episode.rs:282
+#: podcasts-gtk/src/widgets/episode.rs:279
 msgid "{} min"
 msgstr "{} 分钟"
 
-#: podcasts-gtk/src/widgets/player.rs:1070
+#: podcasts-gtk/src/widgets/player.rs:1072
 msgid "The media player was unable to execute an action."
 msgstr "媒体播放器无法执行此操作。"
 
