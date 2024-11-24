@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: podcasts master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2024-08-29 12:11+0000\n"
-"PO-Revision-Date: 2024-08-29 17:10+0300\n"
+"POT-Creation-Date: 2024-09-28 16:14+0000\n"
+"PO-Revision-Date: 2024-10-20 21:02+0300\n"
 "Last-Translator: Sabri Ünal <yakushabb@gmail.com>\n"
 "Language-Team: Turkish <takim@gnome.org.tr>\n"
 "Language: tr\n"
@@ -18,15 +18,11 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Poedit 3.4.3\n"
+"X-Generator: Poedit 3.4.4\n"
 
 #: podcasts-gtk/resources/gtk/discovery_found_podcast.ui:104
 msgid "Episodes: "
 msgstr "Bölümler: "
-
-#: podcasts-gtk/resources/gtk/discovery_found_podcast.ui:114
-msgid "0"
-msgstr "0"
 
 #: podcasts-gtk/resources/gtk/discovery_found_podcast.ui:142
 msgid "Last publication"
@@ -37,8 +33,9 @@ msgid "Subscribe"
 msgstr "Abone Ol"
 
 #: podcasts-gtk/resources/gtk/discovery_found_podcast.ui:171
-msgid "Subscribing to feed..."
-msgstr "Beslemeye abone ol..."
+#: podcasts-gtk/src/widgets/discovery_search_results.rs:152
+msgid "Subscribing to feed…"
+msgstr "Beslemeye abone ol…"
 
 #: podcasts-gtk/resources/gtk/discovery_page.ui:33
 msgid "Add Podcasts"
@@ -57,24 +54,21 @@ msgid "Submit search"
 msgstr "Aramayı gönder"
 
 #: podcasts-gtk/resources/gtk/discovery_page.ui:104
-msgid "Loading..."
-msgstr "Yükleniyor..."
+#: podcasts-gtk/src/widgets/discovery_page.rs:113
+msgid "Loading…"
+msgstr "Yükleniyor…"
 
-#: podcasts-gtk/resources/gtk/discovery_page.ui:107
-msgid "Loading"
-msgstr "Yükleniyor"
-
-#: podcasts-gtk/resources/gtk/discovery_page.ui:121
+#: podcasts-gtk/resources/gtk/discovery_page.ui:115
 msgid "Please enable a Search Platform below, or enter a http(s) feed URL."
 msgstr ""
 "Lütfen bir Arama Platformunu etkinleştirin ya da http(s) besleme URLʼsi "
 "girin."
 
-#: podcasts-gtk/resources/gtk/discovery_page.ui:133
+#: podcasts-gtk/resources/gtk/discovery_page.ui:127
 msgid "Search Platforms"
 msgstr "Arama Platformları"
 
-#: podcasts-gtk/resources/gtk/discovery_page.ui:134
+#: podcasts-gtk/resources/gtk/discovery_page.ui:128
 msgid "Search queries will be sent to these platforms."
 msgstr "Arama sorguları bu platformlara gönderilecek."
 
