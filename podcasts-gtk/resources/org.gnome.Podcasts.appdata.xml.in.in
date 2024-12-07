@@ -210,6 +210,7 @@
   <url type="donation">https://www.gnome.org/donate/</url>
   <url type="translate">https://gitlab.gnome.org/World/podcasts#translations</url>
   <url type="vcs-browser">https://gitlab.gnome.org/World/podcasts</url>
+  <url type="contribute">https://welcome.gnome.org/en/app/Podcasts/</url>
   <translation type="gettext">gnome-podcasts</translation>
   <project_group>GNOME</project_group>
   <update_contact>jpetridis@gnome.org</update_contact>
