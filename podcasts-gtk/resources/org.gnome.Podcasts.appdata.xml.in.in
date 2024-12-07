@@ -196,10 +196,6 @@
       </description>
     </release>
   </releases>
-  <kudos>
-    <kudo>ModernToolkit</kudo>
-    <kudo>HiDpiIcon</kudo>
-  </kudos>
   <recommends>
     <control>keyboard</control>
     <control>pointing</control>
