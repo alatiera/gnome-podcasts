@@ -12,8 +12,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-podcasts\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2024-09-28 16:14+0000\n"
-"PO-Revision-Date: 2024-10-12 17:35+0200\n"
+"POT-Creation-Date: 2024-11-24 11:10+0000\n"
+"PO-Revision-Date: 2024-12-08 13:24+0100\n"
 "Last-Translator: Julián Villodre <jvillodrede@gmail.com>\n"
 "Language-Team: Spanish - Spain <gnome-es-list@gnome.org>\n"
 "Language: es\n"
@@ -21,7 +21,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
-"X-Generator: Gtranslator 47.0\n"
+"X-Generator: Gtranslator 47.1\n"
 
 #: podcasts-gtk/resources/gtk/discovery_found_podcast.ui:104
 msgid "Episodes: "
@@ -158,9 +158,17 @@ msgstr "Portada del episodio"
 msgid "Go to Show"
 msgstr "Ir al programa"
 
-#: podcasts-gtk/resources/gtk/episode_menu.ui:40
+#: podcasts-gtk/resources/gtk/episode_menu.ui:41
 msgid "Copy Episode Url"
 msgstr "Copiar URL del episodio"
+
+#: podcasts-gtk/resources/gtk/episode_menu.ui:45
+msgid "Mark as Played"
+msgstr "Marcar como reproducido"
+
+#: podcasts-gtk/resources/gtk/episode_menu.ui:50
+msgid "Mark as Unplayed"
+msgstr "Marcar como no reproducido"
 
 #: podcasts-gtk/resources/gtk/episode_widget.ui:70
 msgid "You’ve already listened to this episode."
@@ -392,8 +400,8 @@ msgstr "_Acerca de Podcasts"
 #: podcasts-gtk/resources/gtk/window.ui:102
 #: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:4
 #: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:3
-#: podcasts-gtk/src/app.rs:470 podcasts-gtk/src/widgets/aboutdialog.rs:56
-#: podcasts-gtk/src/widgets/player.rs:445
+#: podcasts-gtk/src/app.rs:500 podcasts-gtk/src/widgets/aboutdialog.rs:56
+#: podcasts-gtk/src/widgets/player.rs:447
 msgid "Podcasts"
 msgstr "Podcasts"
 
@@ -501,7 +509,7 @@ msgstr "Cuántos periodos de tiempo hay que esperar entre limpiezas automáticas
 msgid "What period of time to wait between automatic cleanups"
 msgstr "Cuántos periodos de tiempo hay que esperar entre limpiezas automáticas"
 
-#: podcasts-gtk/src/app.rs:344
+#: podcasts-gtk/src/app.rs:355
 msgid "Copied URL to clipboard!"
 msgstr "URL copiado al portapapeles."
 
@@ -588,11 +596,11 @@ msgstr "Programas"
 msgid "Download progress"
 msgstr "Progreso de la descarga"
 
-#: podcasts-gtk/src/widgets/episode.rs:282
+#: podcasts-gtk/src/widgets/episode.rs:279
 msgid "{} min"
 msgstr "{} min"
 
-#: podcasts-gtk/src/widgets/player.rs:1070
+#: podcasts-gtk/src/widgets/player.rs:1072
 msgid "The media player was unable to execute an action."
 msgstr "El reproductor no ha podido reproducir una acción."
 
