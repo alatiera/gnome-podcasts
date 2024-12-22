@@ -144,21 +144,11 @@ Tobias Bernard
                                     <property name="visible">False</property>
                                     <property name="width-request">145</property>
                                     <child>
-                                      <object class="GtkBox">
-                                        <property name="halign">center</property>
-                                        <child>
-                                          <object class="GtkImage">
-                                            <property name="pixel-size">16</property>
-                                            <property name="icon-name">media-playback-start-symbolic</property>
-                                            <property name="accessible-role">presentation</property>
-                                          </object>
-                                        </child>
-                                        <child>
-                                          <object class="GtkLabel">
-                                            <property name="label" translatable="yes">Stream</property>
-                                            <property name="ellipsize">end</property>
-                                          </object>
-                                        </child>
+                                      <object class="AdwButtonContent">
+                                        <property name="icon-name">media-playback-start-symbolic</property>
+                                        <property name="label" translatable="yes">_Stream</property>
+                                        <property name="use-underline">True</property>
+                                        <property name="can-shrink">True</property>
                                       </object>
                                     </child>
                                   </object>
@@ -172,21 +162,11 @@ Tobias Bernard
                                     <property name="visible">False</property>
                                     <property name="width-request">145</property>
                                     <child>
-                                      <object class="GtkBox">
-                                        <property name="halign">center</property>
-                                        <child>
-                                          <object class="GtkImage">
-                                            <property name="pixel-size">16</property>
-                                            <property name="icon-name">media-playback-start-symbolic</property>
-                                            <property name="accessible-role">presentation</property>
-                                          </object>
-                                        </child>
-                                        <child>
-                                          <object class="GtkLabel">
-                                            <property name="label" translatable="yes">Play</property>
-                                            <property name="ellipsize">end</property>
-                                          </object>
-                                        </child>
+                                      <object class="AdwButtonContent">
+                                        <property name="icon-name">media-playback-start-symbolic</property>
+                                        <property name="label" translatable="yes">_Play</property>
+                                        <property name="use-underline">True</property>
+                                        <property name="can-shrink">True</property>
                                       </object>
                                     </child>
                                   </object>
@@ -200,21 +180,11 @@ Tobias Bernard
                                     <property name="visible">False</property>
                                     <property name="width-request">145</property>
                                     <child>
-                                      <object class="GtkBox">
-                                        <property name="halign">center</property>
-                                        <child>
-                                          <object class="GtkImage">
-                                            <property name="pixel-size">16</property>
-                                            <property name="icon-name">document-save-symbolic</property>
-                                            <property name="accessible-role">presentation</property>
-                                          </object>
-                                        </child>
-                                        <child>
-                                          <object class="GtkLabel">
-                                            <property name="label" translatable="yes">Download</property>
-                                            <property name="ellipsize">end</property>
-                                          </object>
-                                        </child>
+                                      <object class="AdwButtonContent">
+                                        <property name="icon-name">document-save-symbolic</property>
+                                        <property name="label" translatable="yes">_Download</property>
+                                        <property name="use-underline">True</property>
+                                        <property name="can-shrink">True</property>
                                       </object>
                                     </child>
                                   </object>
@@ -265,21 +235,11 @@ Tobias Bernard
                                     <property name="visible">False</property>
                                     <property name="width-request">145</property>
                                     <child>
-                                      <object class="GtkBox">
-                                        <property name="halign">center</property>
-                                        <child>
-                                          <object class="GtkImage">
-                                            <property name="pixel-size">16</property>
-                                            <property name="icon-name">user-trash-symbolic</property>
-                                            <property name="accessible-role">presentation</property>
-                                          </object>
-                                        </child>
-                                        <child>
-                                          <object class="GtkLabel">
-                                            <property name="label" translatable="yes">Delete</property>
-                                            <property name="ellipsize">end</property>
-                                          </object>
-                                        </child>
+                                      <object class="AdwButtonContent">
+                                        <property name="icon-name">user-trash-symbolic</property>
+                                        <property name="label" translatable="yes">Delete</property>
+                                        <property name="use-underline">True</property>
+                                        <property name="can-shrink">True</property>
                                       </object>
                                     </child>
                                   </object>

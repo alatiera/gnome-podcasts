@@ -160,7 +160,9 @@ nee <nee-git@patchouli.garden>
             <property name="vhomogeneous">True</property>
             <child>
               <object class="GtkButton" id="subscribe">
-                <property name="label" translatable="yes">Subscribe</property>
+                <property name="label" translatable="yes">_Subscribe</property>
+                <property name="use-underline">True</property>
+                <property name="can-shrink">True</property>
                 <property name="valign">center</property>
                 <property name="halign">end</property>
                 <property name="receives-default">True</property>
