@@ -97,3 +97,6 @@ popover modelbutton > box > label {
     background: color-mix(in srgb, currentColor 15%, transparent);
 }
 
+.in-button-progress {
+    border-radius: 0px;
+}

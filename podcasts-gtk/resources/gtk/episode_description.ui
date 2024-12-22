@@ -197,6 +197,7 @@ Tobias Bernard
                                     </style>
                                     <property name="visible">False</property>
                                     <property name="width-request">145</property>
+                                    <property name="overflow">hidden</property>
                                     <child>
                                       <object class="GtkBox">
                                         <property name="orientation">vertical</property>
