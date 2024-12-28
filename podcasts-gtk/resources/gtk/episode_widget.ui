@@ -82,7 +82,7 @@ Tobias Bernard
                 <property name="spacing">6</property>
                 <child>
                   <object class="GtkLabel" id="date">
-                    <property name="halign">start</property>
+                    <property name="xalign">0.0</property>
                     <property name="label">3 Jan</property>
                     <property name="single_line_mode">True</property>
                     <style>
@@ -95,7 +95,7 @@ Tobias Bernard
                 </child>
                 <child>
                   <object class="GtkLabel" id="separator1">
-                    <property name="halign">start</property>
+                    <property name="xalign">0.0</property>
                     <property name="visible">False</property>
                     <property name="label">·</property>
                     <style>
@@ -105,7 +105,7 @@ Tobias Bernard
                 </child>
                 <child>
                   <object class="GtkLabel" id="duration">
-                    <property name="halign">start</property>
+                    <property name="xalign">0.0</property>
                     <property name="visible">False</property>
                     <property name="label">42 min</property>
                     <property name="single_line_mode">True</property>
@@ -119,7 +119,7 @@ Tobias Bernard
                 </child>
                 <child>
                   <object class="GtkLabel" id="separator2">
-                    <property name="halign">start</property>
+                    <property name="xalign">0.0</property>
                     <property name="visible">False</property>
                     <property name="label">·</property>
                     <style>
@@ -143,7 +143,7 @@ Tobias Bernard
                 </child>
                 <child>
                   <object class="GtkLabel" id="size_separator">
-                    <property name="halign">start</property>
+                    <property name="xalign">0.0</property>
                     <property name="visible">False</property>
                     <property name="label">/</property>
                     <property name="single_line_mode">True</property>
