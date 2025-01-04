@@ -307,6 +307,7 @@ impl PdApplication {
         self.set_accels_for_action("win.go-to-discovery", &["F4"]);
         self.set_accels_for_action("win.import", &["<primary>o"]);
         self.set_accels_for_action("win.export", &["<primary>e"]);
+        self.set_accels_for_action("window.close", &["<primary>w"]);
         // Make sure to add new shortcuts to help-overlay.ui !!!
     }
 
