@@ -24,7 +24,7 @@ rfc822_sanitizer = "0.3"
 rss = "2"
 serde = { version = "1", features = ["derive"] }
 tempfile = "3"
-thiserror = "1"
+thiserror = "2"
 tokio = { workspace = true }
 url = { workspace = true }
 xdg = "2"
