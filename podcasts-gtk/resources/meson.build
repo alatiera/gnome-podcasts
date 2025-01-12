@@ -68,7 +68,7 @@ podcasts_resources = gnome.compile_resources(
   'resources.xml',
   gresource_bundle: true,
   source_dir: meson.current_build_dir()
-)
+)[0]
 
 # Validating schemas
 test('Validate schema file', gschemas,
