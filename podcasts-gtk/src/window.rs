@@ -38,7 +38,7 @@ use crate::settings::{self, WindowGeometry};
 use crate::utils;
 use crate::widgets::about_dialog;
 use crate::widgets::player;
-use crate::widgets::player::{PlayerExt, PlayerWidget, SeekDirection};
+use crate::widgets::player::{PlayerExt, PlayerWidget, SeekDirection, StreamMode};
 use crate::widgets::{Content, DiscoveryPage, EpisodeDescription, ShowWidget};
 use podcasts_data::dbqueries;
 use podcasts_data::{EpisodeId, ShowId};
@@ -323,7 +323,7 @@ impl MainWindow {
         &self,
         id: EpisodeId,
         second: Option<i32>,
-        stream: bool,
+        stream: StreamMode,
     ) -> Result<()> {
         self.imp()
             .bottom_sheet

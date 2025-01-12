@@ -571,6 +571,13 @@ impl Default for PlayerWidget {
     }
 }
 
+#[derive(PartialEq)]
+pub enum StreamMode {
+    LocalOnly,
+    StreamOnly,
+    StreamFallback,
+}
+
 impl PlayerWidget {
     fn on_rate_changed(&self, rate: f64) {
         self.set_playback_rate(rate);
@@ -586,7 +593,7 @@ impl PlayerWidget {
         &mut self,
         sender: &Sender<Action>,
         id: EpisodeId,
-        stream: bool,
+        stream: StreamMode,
         second: Option<i32>,
     ) -> Result<()> {
         let ep = dbqueries::get_episode_widget_from_id(id)?;
@@ -598,7 +605,7 @@ impl PlayerWidget {
         self.info.finished_restore = false;
         self.info.init(sender, &ep, &pd);
 
-        if stream {
+        if stream == StreamMode::StreamOnly {
             if let Some(uri) = ep.uri() {
                 self.init_uri(uri, second);
                 return Ok(());
@@ -618,12 +625,17 @@ impl PlayerWidget {
             } else {
                 error!("failed to create path for episode {:#?}", ep);
             }
+        } else if stream == StreamMode::StreamFallback {
+            if let Some(uri) = ep.uri() {
+                self.init_uri(uri, second);
+                return Ok(());
+            } else {
+                error!("No uri for episode");
+            }
         } else {
             error!("Episode not downloaded yet.");
         }
 
-        // FIXME: Stream stuff
-        // unimplemented!()
         Ok(())
     }
 

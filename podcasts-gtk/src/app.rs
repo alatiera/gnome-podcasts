@@ -35,6 +35,7 @@ use crate::feed_manager::FeedManager;
 use crate::i18n::i18n;
 use crate::settings;
 use crate::utils;
+use crate::widgets::player::StreamMode;
 use crate::widgets::show_menu::{mark_all_notif, remove_show_notif};
 use crate::widgets::{EpisodeDescription, SearchResults, ShowWidget};
 use crate::window::MainWindow;
@@ -423,15 +424,15 @@ impl PdApplication {
                 FeedManager::refresh_done(data.sender.clone(), id);
             }
             Action::InitEpisode(id) => {
-                let res = window.init_episode(id, None, false);
+                let res = window.init_episode(id, None, StreamMode::LocalOnly);
                 debug_assert!(res.is_ok());
             }
             Action::InitEpisodeAt(id, second) => {
-                let res = window.init_episode(id, Some(second), false);
+                let res = window.init_episode(id, Some(second), StreamMode::StreamFallback);
                 debug_assert!(res.is_ok());
             }
             Action::StreamEpisode(id) => {
-                let res = window.init_episode(id, None, true);
+                let res = window.init_episode(id, None, StreamMode::StreamOnly);
                 debug_assert!(res.is_ok());
             }
             Action::UpdateMprisCover(id, dl_success) => {
