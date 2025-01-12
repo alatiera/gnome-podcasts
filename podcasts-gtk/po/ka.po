@@ -1,14 +1,14 @@
 # Georgian translation for podcasts.
 # Copyright (C) 2023 podcasts's authors.
 # This file is distributed under the same license as the podcasts package.
-# Ekaterine Papava <papava.e@gtu.ge>, 2023-2024.
+# Ekaterine Papava <papava.e@gtu.ge>, 2023-2025.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: podcasts master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2024-11-19 13:15+0000\n"
-"PO-Revision-Date: 2024-11-21 05:53+0100\n"
+"POT-Creation-Date: 2025-01-12 16:19+0000\n"
+"PO-Revision-Date: 2025-01-12 20:38+0100\n"
 "Last-Translator: Ekaterine Papava <papava.e@gtu.ge>\n"
 "Language-Team: Georgian <ka@li.org>\n"
 "Language: ka\n"
@@ -27,10 +27,10 @@ msgid "Last publication"
 msgstr "ბოლო გამოცემა"
 
 #: podcasts-gtk/resources/gtk/discovery_found_podcast.ui:163
-msgid "Subscribe"
-msgstr "გამოწერა"
+msgid "_Subscribe"
+msgstr "_გამოწერა"
 
-#: podcasts-gtk/resources/gtk/discovery_found_podcast.ui:171
+#: podcasts-gtk/resources/gtk/discovery_found_podcast.ui:173
 #: podcasts-gtk/src/widgets/discovery_search_results.rs:152
 msgid "Subscribing to feed…"
 msgstr "ლენტის გამოწერა…"
@@ -116,34 +116,31 @@ msgstr "პოდკასტის სათაური"
 msgid "Duration - Date"
 msgstr "ხანგრძლივობა - თარიღი"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:158
-msgid "Stream"
-msgstr "ნაკადი"
+#: podcasts-gtk/resources/gtk/episode_description.ui:149
+msgid "_Stream"
+msgstr "_დასტრიმვა"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:186
-#: podcasts-gtk/resources/gtk/player_sheet.ui:154
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:67
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:268
-msgid "Play"
-msgstr "დაკვრა"
+#: podcasts-gtk/resources/gtk/episode_description.ui:167
+msgid "_Play"
+msgstr "_დაკვრა"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:214
-msgid "Download"
-msgstr "გადმოწერა"
+#: podcasts-gtk/resources/gtk/episode_description.ui:185
+msgid "_Download"
+msgstr "_გადმოწერა"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:241
+#: podcasts-gtk/resources/gtk/episode_description.ui:212
 msgid "Cancel"
 msgstr "გაუქმება"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:279
+#: podcasts-gtk/resources/gtk/episode_description.ui:241
 msgid "Delete"
 msgstr "წაშლა"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:299
+#: podcasts-gtk/resources/gtk/episode_description.ui:260
 msgid "Episode Description"
 msgstr "ეპიზოდის აღწერა"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:320
+#: podcasts-gtk/resources/gtk/episode_description.ui:281
 msgid "Episode Cover"
 msgstr "ეპიზოდის ყდა"
 
@@ -317,6 +314,12 @@ msgstr "0.75×"
 msgid "Rewind"
 msgstr "გადახვევა"
 
+#: podcasts-gtk/resources/gtk/player_sheet.ui:154
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:67
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:268
+msgid "Play"
+msgstr "დაკვრა"
+
 #: podcasts-gtk/resources/gtk/player_sheet.ui:172
 #: podcasts-gtk/resources/gtk/player_toolbar.ui:80
 #: podcasts-gtk/resources/gtk/player_toolbar.ui:277
@@ -394,7 +397,7 @@ msgstr "პოდკასტების _შესახებ"
 #: podcasts-gtk/resources/gtk/window.ui:102
 #: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:4
 #: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:3
-#: podcasts-gtk/src/app.rs:500 podcasts-gtk/src/widgets/aboutdialog.rs:56
+#: podcasts-gtk/src/app.rs:501 podcasts-gtk/src/widgets/aboutdialog.rs:56
 #: podcasts-gtk/src/widgets/player.rs:447
 msgid "Podcasts"
 msgstr "პოდკასტები"
@@ -451,7 +454,7 @@ msgid "The view where one can add a new podcast"
 msgstr "ხედი, სადაც მსურველს ახალი პოდკასტის დამატება შეუძლია"
 
 #. developer_name tag deprecated with Appstream 1.0
-#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:186
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:221
 msgid "The Podcasts developers"
 msgstr "Podcasts-ის პროგრამისტები"
 
@@ -501,7 +504,7 @@ msgstr "რამდენი პერიოდი უნდა დაველ
 msgid "What period of time to wait between automatic cleanups"
 msgstr "რა პერიოდი უნდა დაველოდო ავტომატურ გაწმენდებს შორის"
 
-#: podcasts-gtk/src/app.rs:355
+#: podcasts-gtk/src/app.rs:356
 msgid "Copied URL to clipboard!"
 msgstr "ბმული დაკოპირდა გაცვლის ბაფერში!"
 
