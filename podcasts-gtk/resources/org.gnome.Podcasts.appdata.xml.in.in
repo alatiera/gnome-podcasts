@@ -39,17 +39,17 @@
   <releases>
     <release version="0.7.1" date="2024-04-19">
       <description>
-         <p>
+        <p>
           Fix screenshot links.
-         </p>
-       </description>
-     </release>
+        </p>
+      </description>
+    </release>
     <release version="0.7.0" date="2024-04-19">
       <description>
-         <p>
+        <p>
           Replace add button popover with dedicated page.
-         </p>
-         <p>
+        </p>
+        <p>
           Allow streaming support.
         </p>
         <p>
@@ -58,25 +58,27 @@
         <p>
           Several fixes and performance improvements.
         </p>
-       </description>
-     </release>
+      </description>
+    </release>
     <release version="0.6.1" date="2023-09-18">
-     <description>
+      <description>
         <p>
-          This release fixes a couple of accessibility bugs and includes behind-the-scenes improvements.
+          This release fixes a couple of accessibility bugs and includes behind-the-scenes
+          improvements.
         </p>
       </description>
     </release>
     <release version="0.6.0" date="2023-07-04">
-     <description>
+      <description>
         <p>
-          This version brings the long awaited GTK 4 port, dark mode support, a new Show decription widget
+          This version brings the long awaited GTK 4 port, dark mode support, a new Show decription
+          widget
           and a handful of fixes all around.
         </p>
       </description>
     </release>
     <release version="0.5.1" date="2022-01-03">
-     <description>
+      <description>
         <p>
           The 0.5.1 includes a couple of bufixes and quality of life updates.
         </p>
@@ -87,7 +89,7 @@
       </description>
     </release>
     <release version="0.5.0" date="2021-12-04">
-     <description>
+      <description>
         <p>
           The 0.5.0 release brings a bunch of long awaited changes.
         </p>
