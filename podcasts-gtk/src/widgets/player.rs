@@ -70,7 +70,7 @@ struct PlayerInfo {
     episode_small: gtk::Label,
     cover_small: gtk::Image,
     mpris: Option<Rc<Player>>,
-    restore_position: i32,
+    restore_position: Option<i32>,
     finished_restore: bool,
     ep: Option<EpisodeWidgetModel>,
     episode_id: RefCell<Option<EpisodeId>>,
@@ -537,7 +537,7 @@ impl Default for PlayerWidget {
             show_small,
             episode_small,
             cover_small,
-            restore_position: 0,
+            restore_position: None,
             finished_restore: false,
             episode_id: RefCell::new(None),
         };
@@ -601,7 +601,14 @@ impl PlayerWidget {
 
         self.sheet.initialize_episode(&ep, &pd);
 
-        self.info.restore_position = second.unwrap_or(ep.play_position());
+        self.info.restore_position = second.or_else(|| {
+            let episode_position = ep.play_position();
+            if episode_position == 0 {
+                None
+            } else {
+                Some(episode_position)
+            }
+        });
         self.info.finished_restore = false;
         self.info.init(sender, &ep, &pd);
 
@@ -704,8 +711,8 @@ impl PlayerWidget {
     /// Returns Some(()) if the restore was successful and None otherwise.
     fn restore_play_position(&self) -> Option<()> {
         let pos = self.info.restore_position;
-        let s: u64 = pos.try_into().ok()?;
-        if pos != 0 {
+        if let Some(pos) = pos {
+            let s: u64 = pos.try_into().ok()?;
             self.player.seek(ClockTime::from_seconds(s));
             Some(())
         } else {
@@ -817,7 +824,7 @@ impl PlayerExt for PlayerWidget {
         }
 
         self.info.ep = None;
-        self.info.restore_position = 0;
+        self.info.restore_position = None;
         self.player.stop();
         if let Some(mpris) = self.info.mpris.as_ref() {
             crate::MAINCONTEXT.spawn_local_with_priority(
