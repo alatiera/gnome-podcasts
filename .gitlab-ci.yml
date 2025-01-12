@@ -2,6 +2,9 @@ include:
   - project: 'gnome/citemplates'
     file: 'flatpak/flatpak-ci-initiative-sdk-extensions.yml'
     # ref: ''
+  - component: "gitlab.gnome.org/GNOME/citemplates/basic-release@master"
+  - project: 'gnome/citemplates'
+    file: 'templates/default-rules.yml'
 
 .flatpak-vars:
   variables:
