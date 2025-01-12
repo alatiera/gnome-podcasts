@@ -35,8 +35,41 @@
     <color type="primary" scheme_preference="light">#fb6969</color>
     <color type="primary" scheme_preference="dark">#7b1824</color>
   </branding>
-
   <releases>
+    <release version="0.7.2" date="2025-01-12">
+      <description>
+        <p>
+          New year, New release 🎉!
+
+          This release brings lots of small improvements to make
+          everything a little bit better!
+
+          The following are now possible:
+        </p>
+        <ul>
+          <li>You can now mark individual episodes as played</li>
+          <li>The Shows will now scale based on the window size</li>
+          <li>You can close the window with the Control + W shortcut</li>
+        </ul>
+        <p>
+          While we also changed some internal things
+        </p>
+        <ul>
+          <li>Rework the download machinery to be faster and more efficient</li>
+          <li>Improved application startup times</li>
+        </ul>
+        <p>
+        And fixes a couple of pesky bugs
+        </p>
+        <ul>
+          <li>Automatically detect the image format for thumbnails</li>
+          <li>Dates are now displayed and calculated using localtime instead of sometimes using UTC</li>
+          <li>Fix accessibility warnings in the Episode Description</li>
+          <li>Correctly trigger a download when thumbnail cover for mpris is missing</li>
+          <li>Correctly calculate the episode download size if its missing from the xml metadata</li>
+        </ul>
+      </description>
+    </release>
     <release version="0.7.1" date="2024-04-19">
       <description>
         <p>
@@ -50,7 +83,7 @@
           Replace add button popover with dedicated page.
         </p>
         <p>
-          Allow streaming support.
+          Add streaming support.
         </p>
         <p>
           Add additional keyboard shortcuts.
@@ -71,7 +104,7 @@
     <release version="0.6.0" date="2023-07-04">
       <description>
         <p>
-          This version brings the long awaited GTK 4 port, dark mode support, a new Show decription
+          This version brings the long awaited GTK 4 port, dark mode support, a new Show description
           widget
           and a handful of fixes all around.
         </p>
@@ -80,11 +113,11 @@
     <release version="0.5.1" date="2022-01-03">
       <description>
         <p>
-          The 0.5.1 includes a couple of bufixes and quality of life updates.
+          The 0.5.1 includes a couple of bugfixes and quality of life updates.
         </p>
         <ul>
           <li>Render lists in episode descriptions.</li>
-          <li>Avoid reduntant network request for the mpris cover art.</li>
+          <li>Avoid redundant network request for the mpris cover art.</li>
         </ul>
       </description>
     </release>

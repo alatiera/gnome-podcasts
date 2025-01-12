@@ -1,8 +1,8 @@
 project(
   'gnome-podcasts', 'rust',
-  version: '0.7.1',
+  version: '0.7.2',
   license: 'GPLv3',
-  meson_version: '>= 0.59',
+  meson_version: '>= 1.4',
 )
 
 dependency('sqlite3', version: '>= 3.20')

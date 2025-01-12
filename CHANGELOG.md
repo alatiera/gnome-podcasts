@@ -14,6 +14,33 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Removed:
 
+## [0.7.2]
+
+### Added:
+- You can now mark individual episodes as played
+- The Shows will now scale based on the window size
+- You can close the window with the Control + W shortcut
+
+### Changed:
+- Rework the download machinery to be faster and more efficient
+- Rework the way thumbnails are saved on disk
+- Generate thumbnails in a dedicated thread
+- Use AdwAboutDialog instead of AdwAboutWindow
+- Only run cleanup at shutdown to improve application startup
+- Translation updates
+
+### Fixed:
+- Automatically detect the image format for thumbnails
+- Dates are now displayed and calculated using localtime instead of sometimes using UTC
+- Fix accessibility warnings in the Episode Description
+- Correctly trigger a download when thumbnail cover for mpris is missing
+- Handle hidpi values bigger than 2 for thumbnails
+- Correctly calculate the episode download size if its missing from the xml metadata
+- Fix a bug where thumbnails would not get downscaled properly
+
+### Removed:
+- Links in the Episode Description are no longer underlined
+
 ## [0.7.1] - 2024-04-19
 
 ### Fixed:

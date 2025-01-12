@@ -1,4 +1,4 @@
-## Podcasts release proccess
+## Podcasts release process
 
 - Ensure that the version in meson.build is correct
 - Update CHANGELOG.md
