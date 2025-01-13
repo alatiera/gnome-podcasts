@@ -334,6 +334,7 @@ impl PdApplication {
             }
             Action::GoToEpisodeDescription(show, ep) => {
                 let description_widget = EpisodeDescription::new(ep, show, window.sender().clone());
+                window.pop_episode_description();
                 window.push_page(&description_widget);
             }
             Action::GoToShow(pd) => {

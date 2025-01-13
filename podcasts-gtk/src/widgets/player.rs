@@ -17,6 +17,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+use adw::prelude::*;
 use anyhow::Result;
 use async_channel::Sender;
 use chrono::prelude::*;
@@ -25,7 +26,6 @@ use gio::File;
 use glib::clone;
 use glib::{SignalHandlerId, WeakRef};
 use gst::ClockTime;
-use gtk::prelude::*;
 use gtk::{gio, glib};
 use mpris_server::{Metadata, PlaybackStatus, Player};
 use once_cell::sync::Lazy;
@@ -372,6 +372,7 @@ pub(crate) struct PlayerSheet {
     rate: PlayerRate,
     show: gtk::Label,
     episode: gtk::Label,
+    go_to_episode: gtk::Button,
 }
 
 impl PlayerSheet {
@@ -388,11 +389,25 @@ impl PlayerSheet {
         let slider = builder.object("slider").unwrap();
         let rewind = builder.object("rewind").unwrap();
         let forward = builder.object("forward").unwrap();
-        let bottom: gtk::Box = builder.object("bottom").unwrap();
+        let rate_container: adw::Bin = builder.object("rate_container").unwrap();
         let show = builder.object("show_label").unwrap();
         let episode = builder.object("episode_label").unwrap();
+        let go_to_episode: gtk::Button = builder.object("go_to_episode").unwrap();
 
-        bottom.prepend(&rate.btn);
+        rate_container.set_child(Some(&rate.btn));
+
+        go_to_episode.connect_clicked(|button| {
+            let app = gio::Application::default()
+                .expect("Could not get default application")
+                .downcast::<gtk::Application>()
+                .unwrap();
+
+            app.activate_action("go-to-episode", button.action_target_value().as_ref());
+            let window = app.active_window().expect("No active window");
+            if let Err(e) = window.activate_action("win.close-bottom-sheet", None) {
+                warn!("Failed to win.close-bottom-sheet {e}");
+            }
+        });
 
         PlayerSheet {
             sheet,
@@ -408,6 +423,7 @@ impl PlayerSheet {
             rate,
             show,
             episode,
+            go_to_episode,
         }
     }
 
@@ -415,6 +431,8 @@ impl PlayerSheet {
         self.episode.set_text(episode.title());
         self.show.set_text(show.title());
         load_widget_texture(&self.cover, show.id(), crate::Thumb256);
+        self.go_to_episode
+            .set_action_target(Some::<gtk::glib::Variant>(episode.id().0.into()));
     }
 }
 

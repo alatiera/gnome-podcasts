@@ -62,7 +62,7 @@ pub struct MainWindowPriv {
     #[template_child]
     pub(crate) player_toolbar_view: TemplateChild<adw::ToolbarView>,
     #[template_child]
-    pub(crate) bottom_sheet: TemplateChild<gtk::Widget>,
+    pub(crate) bottom_sheet: TemplateChild<adw::BottomSheet>,
     #[template_child]
     pub(crate) bottom_switcher: TemplateChild<adw::ViewSwitcher>,
     #[template_child]
@@ -160,6 +160,9 @@ impl ObjectSubclass for MainWindowPriv {
         });
         klass.install_action("win.go-to-discovery", None, move |win, _, _| {
             win.go_to_discovery();
+        });
+        klass.install_action("win.close-bottom-sheet", None, move |win, _, _| {
+            win.imp().bottom_sheet.set_open(false);
         });
     }
 

@@ -216,6 +216,20 @@
                     <property name="margin_end">12</property>
                     <property name="margin_top">12</property>
                     <property name="margin_bottom">12</property>
+                    <child>
+                      <object class="AdwBin" id="rate_container">
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkBox" id="bottom_spacer">
+                        <property name="hexpand">True</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkButton" id="go_to_episode">
+                        <property name="label" translatable="true">Description</property>
+                      </object>
+                    </child>
                   </object>
                 </child>
               </object>
