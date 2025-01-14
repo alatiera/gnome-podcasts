@@ -3,14 +3,14 @@
 # This file is distributed under the same license as the podcasts package.
 # Tranquilo Chan <cdh4227@qq.com>, 2020.
 # Dingzhong Chen <wsxy162@gmail.com>, 2018-2021.
-# lumingzh <lumingzh@qq.com>, 2022-2024.
+# lumingzh <lumingzh@qq.com>, 2022-2025.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: podcasts master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2024-11-19 13:15+0000\n"
-"PO-Revision-Date: 2024-11-22 18:33+0800\n"
+"POT-Creation-Date: 2025-01-12 16:19+0000\n"
+"PO-Revision-Date: 2025-01-14 15:00+0800\n"
 "Last-Translator: lumingzh <lumingzh@qq.com>\n"
 "Language-Team: Chinese (China) <i18n-zh@googlegroups.com>\n"
 "Language: zh_CN\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Gtranslator 47.0\n"
+"X-Generator: Gtranslator 47.1\n"
 
 #: podcasts-gtk/resources/gtk/discovery_found_podcast.ui:104
 msgid "Episodes: "
@@ -29,10 +29,10 @@ msgid "Last publication"
 msgstr "最新发行"
 
 #: podcasts-gtk/resources/gtk/discovery_found_podcast.ui:163
-msgid "Subscribe"
-msgstr "订阅"
+msgid "_Subscribe"
+msgstr "订阅(_S)"
 
-#: podcasts-gtk/resources/gtk/discovery_found_podcast.ui:171
+#: podcasts-gtk/resources/gtk/discovery_found_podcast.ui:173
 #: podcasts-gtk/src/widgets/discovery_search_results.rs:152
 msgid "Subscribing to feed…"
 msgstr "订阅以获取更新…"
@@ -118,34 +118,31 @@ msgstr "播客标题"
 msgid "Duration - Date"
 msgstr "时长 - 日期"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:158
-msgid "Stream"
-msgstr "流"
+#: podcasts-gtk/resources/gtk/episode_description.ui:149
+msgid "_Stream"
+msgstr "媒体流(_S)"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:186
-#: podcasts-gtk/resources/gtk/player_sheet.ui:154
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:67
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:268
-msgid "Play"
-msgstr "播放"
+#: podcasts-gtk/resources/gtk/episode_description.ui:167
+msgid "_Play"
+msgstr "播放(_P)"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:214
-msgid "Download"
-msgstr "下载"
+#: podcasts-gtk/resources/gtk/episode_description.ui:185
+msgid "_Download"
+msgstr "下载(_D)"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:241
+#: podcasts-gtk/resources/gtk/episode_description.ui:212
 msgid "Cancel"
 msgstr "取消"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:279
+#: podcasts-gtk/resources/gtk/episode_description.ui:241
 msgid "Delete"
 msgstr "删除"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:299
+#: podcasts-gtk/resources/gtk/episode_description.ui:260
 msgid "Episode Description"
 msgstr "剧集描述"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:320
+#: podcasts-gtk/resources/gtk/episode_description.ui:281
 msgid "Episode Cover"
 msgstr "剧集封面"
 
@@ -319,6 +316,12 @@ msgstr "0.75×"
 msgid "Rewind"
 msgstr "倒带"
 
+#: podcasts-gtk/resources/gtk/player_sheet.ui:154
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:67
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:268
+msgid "Play"
+msgstr "播放"
+
 #: podcasts-gtk/resources/gtk/player_sheet.ui:172
 #: podcasts-gtk/resources/gtk/player_toolbar.ui:80
 #: podcasts-gtk/resources/gtk/player_toolbar.ui:277
@@ -396,7 +399,7 @@ msgstr "关于播客(_A)"
 #: podcasts-gtk/resources/gtk/window.ui:102
 #: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:4
 #: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:3
-#: podcasts-gtk/src/app.rs:500 podcasts-gtk/src/widgets/aboutdialog.rs:56
+#: podcasts-gtk/src/app.rs:501 podcasts-gtk/src/widgets/aboutdialog.rs:56
 #: podcasts-gtk/src/widgets/player.rs:447
 msgid "Podcasts"
 msgstr "播客"
@@ -449,7 +452,7 @@ msgid "The view where one can add a new podcast"
 msgstr "添加新播客的视图"
 
 #. developer_name tag deprecated with Appstream 1.0
-#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:186
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:221
 msgid "The Podcasts developers"
 msgstr "播客应用的开发者们"
 
@@ -498,7 +501,7 @@ msgstr "自动清理之间要等待多久的时间"
 msgid "What period of time to wait between automatic cleanups"
 msgstr "自动清理之间要等待的时间段"
 
-#: podcasts-gtk/src/app.rs:355
+#: podcasts-gtk/src/app.rs:356
 msgid "Copied URL to clipboard!"
 msgstr "已将网址复制到剪贴板！"
 
@@ -565,7 +568,7 @@ msgid "translator-credits"
 msgstr ""
 "Dingzhong Chen <wsxy162@gmail.com>, 2018.\n"
 "Tranquilo Chan <cdh4227@qq.com>, 2020.\n"
-"lumingzh <lumingzh@qq.com>, 2022-2024.\n"
+"lumingzh <lumingzh@qq.com>, 2022-2025.\n"
 "lch <lchh@fedoraproject.org>, 2024."
 
 #: podcasts-gtk/src/widgets/content_stack.rs:60
