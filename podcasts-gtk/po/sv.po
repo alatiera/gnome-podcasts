@@ -1,15 +1,15 @@
 # Swedish translation for podcasts.
-# Copyright © 2018-2024 podcasts's COPYRIGHT HOLDER
+# Copyright © 2018-2025 podcasts's COPYRIGHT HOLDER
 # This file is distributed under the same license as the podcasts package.
-# Anders Jonsson <anders.jonsson@norsjovallen.se>, 2018, 2019, 2020, 2021, 2023, 2024.
+# Anders Jonsson <anders.jonsson@norsjovallen.se>, 2018, 2019, 2020, 2021, 2023, 2024, 2025.
 # Luna Jernberg <droidbittin@gmail.com>, 2021.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: podcasts main\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2024-11-26 19:49+0000\n"
-"PO-Revision-Date: 2024-12-05 17:48+0100\n"
+"POT-Creation-Date: 2025-01-12 16:19+0000\n"
+"PO-Revision-Date: 2025-01-16 00:56+0100\n"
 "Last-Translator: Anders Jonsson <anders.jonsson@norsjovallen.se>\n"
 "Language-Team: Swedish <tp-sv@listor.tp-sv.se>\n"
 "Language: sv\n"
@@ -28,10 +28,10 @@ msgid "Last publication"
 msgstr "Senaste publicering"
 
 #: podcasts-gtk/resources/gtk/discovery_found_podcast.ui:163
-msgid "Subscribe"
-msgstr "Prenumerera"
+msgid "_Subscribe"
+msgstr "_Prenumerera"
 
-#: podcasts-gtk/resources/gtk/discovery_found_podcast.ui:171
+#: podcasts-gtk/resources/gtk/discovery_found_podcast.ui:173
 #: podcasts-gtk/src/widgets/discovery_search_results.rs:152
 msgid "Subscribing to feed…"
 msgstr "Prenumererar på flöde…"
@@ -117,34 +117,31 @@ msgstr "Titel på poddsändning"
 msgid "Duration - Date"
 msgstr "Längd - Datum"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:158
-msgid "Stream"
-msgstr "Strömma"
+#: podcasts-gtk/resources/gtk/episode_description.ui:149
+msgid "_Stream"
+msgstr "_Strömma"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:186
-#: podcasts-gtk/resources/gtk/player_sheet.ui:154
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:67
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:268
-msgid "Play"
-msgstr "Spela"
+#: podcasts-gtk/resources/gtk/episode_description.ui:167
+msgid "_Play"
+msgstr "S_pela"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:214
-msgid "Download"
-msgstr "Hämta"
+#: podcasts-gtk/resources/gtk/episode_description.ui:185
+msgid "_Download"
+msgstr "_Hämta"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:241
+#: podcasts-gtk/resources/gtk/episode_description.ui:212
 msgid "Cancel"
 msgstr "Avbryt"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:279
+#: podcasts-gtk/resources/gtk/episode_description.ui:241
 msgid "Delete"
 msgstr "Ta bort"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:299
+#: podcasts-gtk/resources/gtk/episode_description.ui:260
 msgid "Episode Description"
 msgstr "Avsnittsbeskrivning"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:320
+#: podcasts-gtk/resources/gtk/episode_description.ui:281
 msgid "Episode Cover"
 msgstr "Avsnittsomslag"
 
@@ -318,6 +315,12 @@ msgstr "0,75×"
 msgid "Rewind"
 msgstr "Spola tillbaka"
 
+#: podcasts-gtk/resources/gtk/player_sheet.ui:154
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:67
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:268
+msgid "Play"
+msgstr "Spela"
+
 #: podcasts-gtk/resources/gtk/player_sheet.ui:172
 #: podcasts-gtk/resources/gtk/player_toolbar.ui:80
 #: podcasts-gtk/resources/gtk/player_toolbar.ui:277
@@ -395,7 +398,7 @@ msgstr "_Om Poddsändningar"
 #: podcasts-gtk/resources/gtk/window.ui:102
 #: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:4
 #: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:3
-#: podcasts-gtk/src/app.rs:500 podcasts-gtk/src/widgets/aboutdialog.rs:56
+#: podcasts-gtk/src/app.rs:501 podcasts-gtk/src/widgets/aboutdialog.rs:56
 #: podcasts-gtk/src/widgets/player.rs:447
 msgid "Podcasts"
 msgstr "Poddsändningar"
@@ -452,7 +455,7 @@ msgid "The view where one can add a new podcast"
 msgstr "Vyn där man kan lägga till en ny poddsändning"
 
 #. developer_name tag deprecated with Appstream 1.0
-#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:186
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:221
 msgid "The Podcasts developers"
 msgstr "Poddsändningar-utvecklarna"
 
@@ -501,7 +504,7 @@ msgstr "Hur många tidsperioder att vänta mellan automatiska upprensningar"
 msgid "What period of time to wait between automatic cleanups"
 msgstr "Vilken sorts tidsperiod att vänta mellan automatiska upprensningar"
 
-#: podcasts-gtk/src/app.rs:355
+#: podcasts-gtk/src/app.rs:356
 msgid "Copied URL to clipboard!"
 msgstr "Kopierade URL till urklipp!"
 
