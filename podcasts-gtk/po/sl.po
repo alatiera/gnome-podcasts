@@ -3,23 +3,24 @@
 # This file is distributed under the same license as the podcasts package.
 #
 # Matej Urbančič <mateju@src.gnome.org>, 2020–2022.
+# Martin Srebotnjak <miles@filmsi.net>, 2024-2025.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: podcasts master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2024-11-19 13:15+0000\n"
-"PO-Revision-Date: 2024-11-20 16:06+0100\n"
+"POT-Creation-Date: 2025-01-12 16:19+0000\n"
+"PO-Revision-Date: 2025-01-17 10:20+0100\n"
 "Last-Translator: Martin Srebotnjak <miles@filmsi.net>\n"
 "Language-Team: Slovenian GNOME Translation Team <gnome-si@googlegroups.com>\n"
 "Language: sl_SI\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=4; plural=(n%100==1 ? 1 : n%100==2 ? 2 : n%100==3 || n"
-"%100==4 ? 3 : 0);\n"
+"Plural-Forms: nplurals=4; plural=(n%100==1 ? 1 : n%100==2 ? 2 : n%100==3 || "
+"n%100==4 ? 3 : 0);\n"
 "X-Poedit-SourceCharset: utf-8\n"
-"X-Generator: Poedit 2.2.1\n"
+"X-Generator: Poedit 3.4.2\n"
 
 #: podcasts-gtk/resources/gtk/discovery_found_podcast.ui:104
 msgid "Episodes: "
@@ -30,10 +31,10 @@ msgid "Last publication"
 msgstr "Zadnja objava"
 
 #: podcasts-gtk/resources/gtk/discovery_found_podcast.ui:163
-msgid "Subscribe"
-msgstr "Naroči se"
+msgid "_Subscribe"
+msgstr "_Naroči se"
 
-#: podcasts-gtk/resources/gtk/discovery_found_podcast.ui:171
+#: podcasts-gtk/resources/gtk/discovery_found_podcast.ui:173
 #: podcasts-gtk/src/widgets/discovery_search_results.rs:152
 msgid "Subscribing to feed…"
 msgstr "Naročanje na vir ..."
@@ -119,34 +120,31 @@ msgstr "Naslov podkasta"
 msgid "Duration - Date"
 msgstr "Trajanje – Datum"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:158
-msgid "Stream"
-msgstr "Začni pretakanje"
+#: podcasts-gtk/resources/gtk/episode_description.ui:149
+msgid "_Stream"
+msgstr "Preta_kaj"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:186
-#: podcasts-gtk/resources/gtk/player_sheet.ui:154
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:67
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:268
-msgid "Play"
-msgstr "Predvajaj"
+#: podcasts-gtk/resources/gtk/episode_description.ui:167
+msgid "_Play"
+msgstr "_Predvajaj"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:214
-msgid "Download"
-msgstr "Prenesi"
+#: podcasts-gtk/resources/gtk/episode_description.ui:185
+msgid "_Download"
+msgstr "Prej_mi"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:241
+#: podcasts-gtk/resources/gtk/episode_description.ui:212
 msgid "Cancel"
 msgstr "Prekliči"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:279
+#: podcasts-gtk/resources/gtk/episode_description.ui:241
 msgid "Delete"
 msgstr "Izbriši"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:299
+#: podcasts-gtk/resources/gtk/episode_description.ui:260
 msgid "Episode Description"
 msgstr "Opis epizode"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:320
+#: podcasts-gtk/resources/gtk/episode_description.ui:281
 msgid "Episode Cover"
 msgstr "Naslovnica epizode"
 
@@ -320,6 +318,12 @@ msgstr "0,75 ×"
 msgid "Rewind"
 msgstr "Previj nazaj"
 
+#: podcasts-gtk/resources/gtk/player_sheet.ui:154
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:67
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:268
+msgid "Play"
+msgstr "Predvajaj"
+
 #: podcasts-gtk/resources/gtk/player_sheet.ui:172
 #: podcasts-gtk/resources/gtk/player_toolbar.ui:80
 #: podcasts-gtk/resources/gtk/player_toolbar.ui:277
@@ -397,7 +401,7 @@ msgstr "_O programu"
 #: podcasts-gtk/resources/gtk/window.ui:102
 #: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:4
 #: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:3
-#: podcasts-gtk/src/app.rs:500 podcasts-gtk/src/widgets/aboutdialog.rs:56
+#: podcasts-gtk/src/app.rs:501 podcasts-gtk/src/widgets/aboutdialog.rs:56
 #: podcasts-gtk/src/widgets/player.rs:447
 msgid "Podcasts"
 msgstr "Podkasti"
@@ -454,7 +458,7 @@ msgid "The view where one can add a new podcast"
 msgstr "Pogled, kamor lahko dodate nov podkast"
 
 #. developer_name tag deprecated with Appstream 1.0
-#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:186
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:221
 msgid "The Podcasts developers"
 msgstr "Razvijalci Podkasta"
 
@@ -503,7 +507,7 @@ msgstr "Koliko ponovitev časa naj preteče med samodejnim počiščenjem"
 msgid "What period of time to wait between automatic cleanups"
 msgstr "Koliko časa naj preteče med izvajanjem samodejnega čiščenja"
 
-#: podcasts-gtk/src/app.rs:355
+#: podcasts-gtk/src/app.rs:356
 msgid "Copied URL to clipboard!"
 msgstr "Naslov URL je kopiran v odložišče!"
 
