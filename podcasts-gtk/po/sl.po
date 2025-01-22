@@ -9,18 +9,18 @@ msgid ""
 msgstr ""
 "Project-Id-Version: podcasts master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2025-01-12 16:19+0000\n"
-"PO-Revision-Date: 2025-01-17 10:20+0100\n"
+"POT-Creation-Date: 2025-01-21 18:33+0000\n"
+"PO-Revision-Date: 2025-01-22 20:06+0100\n"
 "Last-Translator: Martin Srebotnjak <miles@filmsi.net>\n"
 "Language-Team: Slovenian GNOME Translation Team <gnome-si@googlegroups.com>\n"
 "Language: sl_SI\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=4; plural=(n%100==1 ? 1 : n%100==2 ? 2 : n%100==3 || "
-"n%100==4 ? 3 : 0);\n"
+"Plural-Forms: nplurals=4; plural=(n%100==1 ? 1 : n%100==2 ? 2 : n%100==3 || n"
+"%100==4 ? 3 : 0);\n"
 "X-Poedit-SourceCharset: utf-8\n"
-"X-Generator: Poedit 3.4.2\n"
+"X-Generator: Poedit 2.2.1\n"
 
 #: podcasts-gtk/resources/gtk/discovery_found_podcast.ui:104
 msgid "Episodes: "
@@ -334,6 +334,10 @@ msgstr "Premor"
 msgid "Forward"
 msgstr "Previj naprej"
 
+#: podcasts-gtk/resources/gtk/player_sheet.ui:230
+msgid "Description"
+msgstr "Opis"
+
 #: podcasts-gtk/resources/gtk/player_toolbar.ui:50
 msgid "Rewind 10 seconds"
 msgstr "Skoči nazaj za 10 sekund"
@@ -401,8 +405,8 @@ msgstr "_O programu"
 #: podcasts-gtk/resources/gtk/window.ui:102
 #: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:4
 #: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:3
-#: podcasts-gtk/src/app.rs:501 podcasts-gtk/src/widgets/aboutdialog.rs:56
-#: podcasts-gtk/src/widgets/player.rs:447
+#: podcasts-gtk/src/app.rs:503 podcasts-gtk/src/widgets/aboutdialog.rs:56
+#: podcasts-gtk/src/widgets/player.rs:465
 msgid "Podcasts"
 msgstr "Podkasti"
 
@@ -507,7 +511,7 @@ msgstr "Koliko ponovitev časa naj preteče med samodejnim počiščenjem"
 msgid "What period of time to wait between automatic cleanups"
 msgstr "Koliko časa naj preteče med izvajanjem samodejnega čiščenja"
 
-#: podcasts-gtk/src/app.rs:356
+#: podcasts-gtk/src/app.rs:358
 msgid "Copied URL to clipboard!"
 msgstr "Naslov URL je kopiran v odložišče!"
 
@@ -597,7 +601,7 @@ msgstr "Napredek prenosa"
 msgid "{} min"
 msgstr "{} min"
 
-#: podcasts-gtk/src/widgets/player.rs:1072
+#: podcasts-gtk/src/widgets/player.rs:1109
 msgid "The media player was unable to execute an action."
 msgstr "S predvajalnikom ni mogoče izvesti zahtevanega dejanja."
 
