@@ -38,7 +38,7 @@ Tobias Bernard
         <attribute name="hidden-when">action-missing</attribute>
       </item>
       <item>
-        <attribute name="label" translatable="yes">Copy Episode Url</attribute>
+        <attribute name="label" translatable="yes">Copy Episode URL</attribute>
         <attribute name="action">episode.copy-episode-url</attribute>
       </item>
       <item>
