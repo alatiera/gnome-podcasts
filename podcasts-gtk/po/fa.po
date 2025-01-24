@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: podcasts master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2025-01-12 16:19+0000\n"
-"PO-Revision-Date: 2025-01-13 15:42+0330\n"
+"POT-Creation-Date: 2025-01-21 18:33+0000\n"
+"PO-Revision-Date: 2025-01-24 05:04+0330\n"
 "Last-Translator: Danial Behzadi <dani.behzi@ubuntu.com>\n"
 "Language-Team: Persian <fa@li.org>\n"
 "Language: fa\n"
@@ -331,6 +331,10 @@ msgstr "مکث"
 msgid "Forward"
 msgstr "پیش‌روی"
 
+#: podcasts-gtk/resources/gtk/player_sheet.ui:230
+msgid "Description"
+msgstr "شرح"
+
 #: podcasts-gtk/resources/gtk/player_toolbar.ui:50
 msgid "Rewind 10 seconds"
 msgstr "۱۰ ثانیه پس‌روی"
@@ -398,8 +402,8 @@ msgstr "_دربارهٔ پادپخش‌ها"
 #: podcasts-gtk/resources/gtk/window.ui:102
 #: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:4
 #: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:3
-#: podcasts-gtk/src/app.rs:501 podcasts-gtk/src/widgets/aboutdialog.rs:56
-#: podcasts-gtk/src/widgets/player.rs:447
+#: podcasts-gtk/src/app.rs:503 podcasts-gtk/src/widgets/aboutdialog.rs:56
+#: podcasts-gtk/src/widgets/player.rs:465
 msgid "Podcasts"
 msgstr "پادپخش‌ها"
 
@@ -502,7 +506,7 @@ msgstr "مقدار زمان انتظار بین پاک سازی‌های خود
 msgid "What period of time to wait between automatic cleanups"
 msgstr "مقدار زمان انتظار بین پاک سازی‌های خودکار"
 
-#: podcasts-gtk/src/app.rs:356
+#: podcasts-gtk/src/app.rs:358
 msgid "Copied URL to clipboard!"
 msgstr "نشانی رونوشت شده در تخته‌گیره!"
 
@@ -590,7 +594,7 @@ msgstr "پیشرفت بارگیری"
 msgid "{} min"
 msgstr "{} دقیقه"
 
-#: podcasts-gtk/src/widgets/player.rs:1072
+#: podcasts-gtk/src/widgets/player.rs:1109
 msgid "The media player was unable to execute an action."
 msgstr "پخش‌کنندهٔ رسانه در اجرای کنشی ناتوان بود."
 
