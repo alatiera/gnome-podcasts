@@ -7,9 +7,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: podcasts master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2025-01-12 16:19+0000\n"
-"PO-Revision-Date: 2025-01-12 20:38+0100\n"
-"Last-Translator: Ekaterine Papava <papava.e@gtu.ge>\n"
+"POT-Creation-Date: 2025-01-21 18:33+0000\n"
+"PO-Revision-Date: 2025-01-26 02:26+0100\n"
+"Last-Translator: Ekaterine Papava <papava.e@gtu.ge\n"
 "Language-Team: Georgian <ka@li.org>\n"
 "Language: ka\n"
 "MIME-Version: 1.0\n"
@@ -330,6 +330,10 @@ msgstr "პაუზა"
 msgid "Forward"
 msgstr "წინ"
 
+#: podcasts-gtk/resources/gtk/player_sheet.ui:230
+msgid "Description"
+msgstr "აღწერა"
+
 #: podcasts-gtk/resources/gtk/player_toolbar.ui:50
 msgid "Rewind 10 seconds"
 msgstr "10 წამით გადახვევა"
@@ -397,8 +401,8 @@ msgstr "პოდკასტების _შესახებ"
 #: podcasts-gtk/resources/gtk/window.ui:102
 #: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:4
 #: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:3
-#: podcasts-gtk/src/app.rs:501 podcasts-gtk/src/widgets/aboutdialog.rs:56
-#: podcasts-gtk/src/widgets/player.rs:447
+#: podcasts-gtk/src/app.rs:503 podcasts-gtk/src/widgets/aboutdialog.rs:56
+#: podcasts-gtk/src/widgets/player.rs:465
 msgid "Podcasts"
 msgstr "პოდკასტები"
 
@@ -504,7 +508,7 @@ msgstr "რამდენი პერიოდი უნდა დაველ
 msgid "What period of time to wait between automatic cleanups"
 msgstr "რა პერიოდი უნდა დაველოდო ავტომატურ გაწმენდებს შორის"
 
-#: podcasts-gtk/src/app.rs:356
+#: podcasts-gtk/src/app.rs:358
 msgid "Copied URL to clipboard!"
 msgstr "ბმული დაკოპირდა გაცვლის ბაფერში!"
 
@@ -592,7 +596,7 @@ msgstr "გადმოწერის მიმდინარეობა"
 msgid "{} min"
 msgstr "{} წთ"
 
-#: podcasts-gtk/src/widgets/player.rs:1072
+#: podcasts-gtk/src/widgets/player.rs:1109
 msgid "The media player was unable to execute an action."
 msgstr "მედიის დამკვრელმა ქმედების შესრულება ვერ შეძლო."
 
