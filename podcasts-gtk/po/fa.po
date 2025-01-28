@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: podcasts master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2025-01-21 18:33+0000\n"
-"PO-Revision-Date: 2025-01-24 05:04+0330\n"
+"POT-Creation-Date: 2025-01-27 10:12+0000\n"
+"PO-Revision-Date: 2025-01-28 16:56+0330\n"
 "Last-Translator: Danial Behzadi <dani.behzi@ubuntu.com>\n"
 "Language-Team: Persian <fa@li.org>\n"
 "Language: fa\n"
@@ -151,7 +151,7 @@ msgid "Go to Show"
 msgstr "رفتن به نمایش"
 
 #: podcasts-gtk/resources/gtk/episode_menu.ui:41
-msgid "Copy Episode Url"
+msgid "Copy Episode URL"
 msgstr "رونوشت از نشانی قسمت"
 
 #: podcasts-gtk/resources/gtk/episode_menu.ui:45
