@@ -2,16 +2,16 @@
 # Copyright (C) 2018-2024 podcasts's COPYRIGHT HOLDER
 # This file is distributed under the same license as the podcasts package.
 #
-# Sabri Ünal <yakushabb@gmail.com>, 2019, 2023, 2024.
-# Emin Tufan Çetin <etcetin@gmail.com>, 2018-2024.
+# Sabri Ünal <yakushabb@gmail.com>, 2019, 2023, 2024, 2025.
+# Emin Tufan Çetin <etcetin@gmail.com>, 2018-2025.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: podcasts master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2024-11-24 11:10+0000\n"
-"PO-Revision-Date: 2024-11-30 23:43+0300\n"
-"Last-Translator: Sabri Ünal <yakushabb@gmail.com>\n"
+"POT-Creation-Date: 2025-01-27 10:12+0000\n"
+"PO-Revision-Date: 2025-01-30 08:00+0300\n"
+"Last-Translator: Emin Tufan Çetin <etcetin@gmail.com>\n"
 "Language-Team: Turkish <takim@gnome.org.tr>\n"
 "Language: tr\n"
 "MIME-Version: 1.0\n"
@@ -29,10 +29,10 @@ msgid "Last publication"
 msgstr "Son yayın"
 
 #: podcasts-gtk/resources/gtk/discovery_found_podcast.ui:163
-msgid "Subscribe"
-msgstr "Abone Ol"
+msgid "_Subscribe"
+msgstr "_Abone Ol"
 
-#: podcasts-gtk/resources/gtk/discovery_found_podcast.ui:171
+#: podcasts-gtk/resources/gtk/discovery_found_podcast.ui:173
 #: podcasts-gtk/src/widgets/discovery_search_results.rs:152
 msgid "Subscribing to feed…"
 msgstr "Beslemeye abone ol…"
@@ -120,34 +120,31 @@ msgstr "Podcast Başlığı"
 msgid "Duration - Date"
 msgstr "Süre - Tarih"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:158
-msgid "Stream"
-msgstr "Akış"
+#: podcasts-gtk/resources/gtk/episode_description.ui:149
+msgid "_Stream"
+msgstr "_Akış"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:186
-#: podcasts-gtk/resources/gtk/player_sheet.ui:154
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:67
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:268
-msgid "Play"
-msgstr "Oynat"
+#: podcasts-gtk/resources/gtk/episode_description.ui:167
+msgid "_Play"
+msgstr "_Oynat"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:214
-msgid "Download"
-msgstr "İndir"
+#: podcasts-gtk/resources/gtk/episode_description.ui:185
+msgid "_Download"
+msgstr "İ_ndir"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:241
+#: podcasts-gtk/resources/gtk/episode_description.ui:212
 msgid "Cancel"
 msgstr "İptal"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:279
+#: podcasts-gtk/resources/gtk/episode_description.ui:241
 msgid "Delete"
 msgstr "Sil"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:299
+#: podcasts-gtk/resources/gtk/episode_description.ui:260
 msgid "Episode Description"
 msgstr "Bölüm Açıklaması"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:320
+#: podcasts-gtk/resources/gtk/episode_description.ui:281
 msgid "Episode Cover"
 msgstr "Bölüm Kapağı"
 
@@ -157,7 +154,7 @@ msgid "Go to Show"
 msgstr "Gösteriye Git"
 
 #: podcasts-gtk/resources/gtk/episode_menu.ui:41
-msgid "Copy Episode Url"
+msgid "Copy Episode URL"
 msgstr "Bölüm Adresini Kopyala"
 
 #: podcasts-gtk/resources/gtk/episode_menu.ui:45
@@ -321,6 +318,12 @@ msgstr "0.75×"
 msgid "Rewind"
 msgstr "Geri Sar"
 
+#: podcasts-gtk/resources/gtk/player_sheet.ui:154
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:67
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:268
+msgid "Play"
+msgstr "Oynat"
+
 #: podcasts-gtk/resources/gtk/player_sheet.ui:172
 #: podcasts-gtk/resources/gtk/player_toolbar.ui:80
 #: podcasts-gtk/resources/gtk/player_toolbar.ui:277
@@ -330,6 +333,10 @@ msgstr "Duraklat"
 #: podcasts-gtk/resources/gtk/player_sheet.ui:195
 msgid "Forward"
 msgstr "İleri"
+
+#: podcasts-gtk/resources/gtk/player_sheet.ui:230
+msgid "Description"
+msgstr "Açıklama"
 
 #: podcasts-gtk/resources/gtk/player_toolbar.ui:50
 msgid "Rewind 10 seconds"
@@ -399,8 +406,8 @@ msgstr "Podcastler _Hakkında"
 #: podcasts-gtk/resources/gtk/window.ui:102
 #: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:4
 #: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:3
-#: podcasts-gtk/src/app.rs:500 podcasts-gtk/src/widgets/aboutdialog.rs:56
-#: podcasts-gtk/src/widgets/player.rs:447
+#: podcasts-gtk/src/app.rs:503 podcasts-gtk/src/widgets/aboutdialog.rs:56
+#: podcasts-gtk/src/widgets/player.rs:465
 msgid "Podcasts"
 msgstr "Podcastler"
 
@@ -454,7 +461,7 @@ msgid "The view where one can add a new podcast"
 msgstr "Yeni podcast eklenebilecek görünüm"
 
 #. developer_name tag deprecated with Appstream 1.0
-#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:186
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:221
 msgid "The Podcasts developers"
 msgstr "Podcasts Geliştiricileri"
 
@@ -503,7 +510,7 @@ msgstr "Kendiliğinden temizlemeler arasında kaç zaman aralığı beklenecek"
 msgid "What period of time to wait between automatic cleanups"
 msgstr "Kendiliğinden temizlemeler arasında beklenecek zaman aralığı"
 
-#: podcasts-gtk/src/app.rs:355
+#: podcasts-gtk/src/app.rs:358
 msgid "Copied URL to clipboard!"
 msgstr "URL panoya kopyalandı!"
 
@@ -593,7 +600,7 @@ msgstr "İndirme süreci"
 msgid "{} min"
 msgstr "{} dk"
 
-#: podcasts-gtk/src/widgets/player.rs:1072
+#: podcasts-gtk/src/widgets/player.rs:1109
 msgid "The media player was unable to execute an action."
 msgstr "Ortam oynatıcı eylemi yürütemiyor."
 
