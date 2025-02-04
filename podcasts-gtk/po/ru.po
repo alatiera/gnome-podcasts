@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: podcasts master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2024-11-24 11:10+0000\n"
-"PO-Revision-Date: 2024-11-26 13:20+0300\n"
+"POT-Creation-Date: 2025-01-27 10:12+0000\n"
+"PO-Revision-Date: 2025-01-28 22:44+0300\n"
 "Last-Translator: Artur So <arturios2005@mail.ru>\n"
 "Language-Team: Russian <gnome-cyr@gnome.org>\n"
 "Language: ru\n"
@@ -28,10 +28,10 @@ msgid "Last publication"
 msgstr "Последняя публикация"
 
 #: podcasts-gtk/resources/gtk/discovery_found_podcast.ui:163
-msgid "Subscribe"
-msgstr "Подписаться"
+msgid "_Subscribe"
+msgstr "_Подписаться"
 
-#: podcasts-gtk/resources/gtk/discovery_found_podcast.ui:171
+#: podcasts-gtk/resources/gtk/discovery_found_podcast.ui:173
 #: podcasts-gtk/src/widgets/discovery_search_results.rs:152
 msgid "Subscribing to feed…"
 msgstr "Подписка на канал…"
@@ -119,34 +119,31 @@ msgstr "Заголовок подкаста"
 msgid "Duration - Date"
 msgstr "Продолжительность - Дата"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:158
-msgid "Stream"
-msgstr "Транслировать"
+#: podcasts-gtk/resources/gtk/episode_description.ui:149
+msgid "_Stream"
+msgstr "_Транслировать"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:186
-#: podcasts-gtk/resources/gtk/player_sheet.ui:154
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:67
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:268
-msgid "Play"
-msgstr "Воспроизвести"
+#: podcasts-gtk/resources/gtk/episode_description.ui:167
+msgid "_Play"
+msgstr "_Воспроизвести"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:214
-msgid "Download"
-msgstr "Скачать"
+#: podcasts-gtk/resources/gtk/episode_description.ui:185
+msgid "_Download"
+msgstr "_Скачать"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:241
+#: podcasts-gtk/resources/gtk/episode_description.ui:212
 msgid "Cancel"
 msgstr "Отменить"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:279
+#: podcasts-gtk/resources/gtk/episode_description.ui:241
 msgid "Delete"
 msgstr "Удалить"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:299
+#: podcasts-gtk/resources/gtk/episode_description.ui:260
 msgid "Episode Description"
 msgstr "Описание эпизода"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:320
+#: podcasts-gtk/resources/gtk/episode_description.ui:281
 msgid "Episode Cover"
 msgstr "Обложка эпизода"
 
@@ -156,7 +153,7 @@ msgid "Go to Show"
 msgstr "Перейти к шоу"
 
 #: podcasts-gtk/resources/gtk/episode_menu.ui:41
-msgid "Copy Episode Url"
+msgid "Copy Episode URL"
 msgstr "Копировать URL эпизода"
 
 #: podcasts-gtk/resources/gtk/episode_menu.ui:45
@@ -320,6 +317,12 @@ msgstr "0.75×"
 msgid "Rewind"
 msgstr "Перемотка назад"
 
+#: podcasts-gtk/resources/gtk/player_sheet.ui:154
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:67
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:268
+msgid "Play"
+msgstr "Воспроизвести"
+
 #: podcasts-gtk/resources/gtk/player_sheet.ui:172
 #: podcasts-gtk/resources/gtk/player_toolbar.ui:80
 #: podcasts-gtk/resources/gtk/player_toolbar.ui:277
@@ -329,6 +332,10 @@ msgstr "Приостановить"
 #: podcasts-gtk/resources/gtk/player_sheet.ui:195
 msgid "Forward"
 msgstr "Перемотка вперед"
+
+#: podcasts-gtk/resources/gtk/player_sheet.ui:230
+msgid "Description"
+msgstr "Описание"
 
 #: podcasts-gtk/resources/gtk/player_toolbar.ui:50
 msgid "Rewind 10 seconds"
@@ -397,8 +404,8 @@ msgstr "_О приложении"
 #: podcasts-gtk/resources/gtk/window.ui:102
 #: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:4
 #: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:3
-#: podcasts-gtk/src/app.rs:500 podcasts-gtk/src/widgets/aboutdialog.rs:56
-#: podcasts-gtk/src/widgets/player.rs:447
+#: podcasts-gtk/src/app.rs:503 podcasts-gtk/src/widgets/aboutdialog.rs:56
+#: podcasts-gtk/src/widgets/player.rs:465
 msgid "Podcasts"
 msgstr "Подкасты"
 
@@ -454,7 +461,7 @@ msgid "The view where one can add a new podcast"
 msgstr "Страница, на которой можно добавить новый подкаст"
 
 #. developer_name tag deprecated with Appstream 1.0
-#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:186
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:221
 msgid "The Podcasts developers"
 msgstr "Разработчики приложения Подкасты"
 
@@ -504,7 +511,7 @@ msgstr "Сколько периодов времени должно пройти
 msgid "What period of time to wait between automatic cleanups"
 msgstr "Какой период времени должен пройти между автоматическими очистками"
 
-#: podcasts-gtk/src/app.rs:355
+#: podcasts-gtk/src/app.rs:358
 msgid "Copied URL to clipboard!"
 msgstr "URL скопирован в буфер обмена!"
 
@@ -594,7 +601,7 @@ msgstr "Прогресс скачивания"
 msgid "{} min"
 msgstr "{} мин"
 
-#: podcasts-gtk/src/widgets/player.rs:1072
+#: podcasts-gtk/src/widgets/player.rs:1109
 msgid "The media player was unable to execute an action."
 msgstr "Медиаплеер не смог выполнить действие."
 
