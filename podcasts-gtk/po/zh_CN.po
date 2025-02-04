@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: podcasts master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2025-01-12 16:19+0000\n"
-"PO-Revision-Date: 2025-01-14 15:00+0800\n"
+"POT-Creation-Date: 2025-01-27 10:12+0000\n"
+"PO-Revision-Date: 2025-02-04 09:55+0800\n"
 "Last-Translator: lumingzh <lumingzh@qq.com>\n"
 "Language-Team: Chinese (China) <i18n-zh@googlegroups.com>\n"
 "Language: zh_CN\n"
@@ -152,7 +152,7 @@ msgid "Go to Show"
 msgstr "前往节目"
 
 #: podcasts-gtk/resources/gtk/episode_menu.ui:41
-msgid "Copy Episode Url"
+msgid "Copy Episode URL"
 msgstr "复制剧集网址"
 
 #: podcasts-gtk/resources/gtk/episode_menu.ui:45
@@ -169,7 +169,7 @@ msgstr "您已经听过此节目了。"
 
 #: podcasts-gtk/resources/gtk/episode_widget.ui:158
 msgid "Calculating episode size…"
-msgstr "正在计算剧集大小……"
+msgstr "正在计算剧集大小…"
 
 #: podcasts-gtk/resources/gtk/episode_widget.ui:181
 msgid "Play this episode"
@@ -332,6 +332,10 @@ msgstr "暂停"
 msgid "Forward"
 msgstr "前进"
 
+#: podcasts-gtk/resources/gtk/player_sheet.ui:230
+msgid "Description"
+msgstr "描述"
+
 #: podcasts-gtk/resources/gtk/player_toolbar.ui:50
 msgid "Rewind 10 seconds"
 msgstr "后退 10 秒"
@@ -399,8 +403,8 @@ msgstr "关于播客(_A)"
 #: podcasts-gtk/resources/gtk/window.ui:102
 #: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:4
 #: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:3
-#: podcasts-gtk/src/app.rs:501 podcasts-gtk/src/widgets/aboutdialog.rs:56
-#: podcasts-gtk/src/widgets/player.rs:447
+#: podcasts-gtk/src/app.rs:503 podcasts-gtk/src/widgets/aboutdialog.rs:56
+#: podcasts-gtk/src/widgets/player.rs:465
 msgid "Podcasts"
 msgstr "播客"
 
@@ -501,7 +505,7 @@ msgstr "自动清理之间要等待多久的时间"
 msgid "What period of time to wait between automatic cleanups"
 msgstr "自动清理之间要等待的时间段"
 
-#: podcasts-gtk/src/app.rs:356
+#: podcasts-gtk/src/app.rs:358
 msgid "Copied URL to clipboard!"
 msgstr "已将网址复制到剪贴板！"
 
@@ -593,7 +597,7 @@ msgstr "下载进度"
 msgid "{} min"
 msgstr "{} 分钟"
 
-#: podcasts-gtk/src/widgets/player.rs:1072
+#: podcasts-gtk/src/widgets/player.rs:1109
 msgid "The media player was unable to execute an action."
 msgstr "媒体播放器无法执行此操作。"
 
