@@ -21,8 +21,8 @@ use adw::subclass::prelude::*;
 use anyhow::Result;
 use async_channel::{Receiver, Sender};
 use gettextrs::{LocaleCategory, bindtextdomain, setlocale, textdomain};
-use glib::clone;
 use glib::Priority;
+use glib::clone;
 use gtk::prelude::*;
 use gtk::{gio, glib};
 use std::cell::RefCell;
@@ -42,10 +42,9 @@ use crate::widgets::{Chapters, EpisodeDescription, SearchResults, ShowWidget};
 use crate::window::MainWindow;
 use podcasts_data::dbqueries;
 use podcasts_data::discovery::FoundPodcast;
-use podcasts_data::{Episode, EpisodeId, EpisodeModel, Show, ShowId};
-use podcasts_data::feed_manager::{FeedAction, FeedManager, FEED_MANAGER};
+use podcasts_data::feed_manager::{FEED_MANAGER, FeedAction, FeedManager};
 use podcasts_data::nextcloud_sync::{self, SyncError, SyncPolicy, SyncResult};
-
+use podcasts_data::{Episode, EpisodeId, EpisodeModel, Show, ShowId};
 
 // FIXME: port Optionals to OnceCell
 #[derive(Debug)]

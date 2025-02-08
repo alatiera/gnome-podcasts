@@ -19,7 +19,7 @@
 
 use crate::nextcloud_sync::data::{client_builder, parse_url_without_scheme};
 
-use anyhow::{bail, Result};
+use anyhow::{Result, bail};
 use reqwest;
 use reqwest::Url;
 use serde::Deserialize;
@@ -86,7 +86,7 @@ where
                     let success = resp.json::<LoginFlowV2Success>().await;
                     match success {
                         Ok(success) => {
-                            return Ok((success.server, success.loginName, success.appPassword))
+                            return Ok((success.server, success.loginName, success.appPassword));
                         }
                         Err(e) => {
                             bail!("Failed to parse nextcloud login flow v2 code 200 response {e}")
@@ -200,8 +200,8 @@ pub async fn logout(server: &str, user: &str, app_password: &str) -> bool {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use http_test_server::http::{Method, Status};
     use http_test_server::TestServer;
+    use http_test_server::http::{Method, Status};
 
     #[test]
     fn test_parse_apppassword_xml() -> Result<()> {

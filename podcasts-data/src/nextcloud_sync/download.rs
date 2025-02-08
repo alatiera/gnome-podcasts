@@ -22,8 +22,8 @@ use crate::feed_manager::FEED_MANAGER;
 use crate::models::Episode;
 use crate::models::EpisodeModel;
 use crate::models::Source;
-use crate::nextcloud_sync::data::*;
 use crate::nextcloud_sync::SyncPolicy;
+use crate::nextcloud_sync::data::*;
 
 use anyhow::{Context, Result};
 
@@ -226,8 +226,8 @@ mod test {
     use crate::nextcloud_sync::test::prepare;
     use crate::pipeline::pipeline;
     use anyhow::Result;
-    use http_test_server::http::Status;
     use http_test_server::TestServer;
+    use http_test_server::http::Status;
 
     #[test]
     fn test_download_changes() -> Result<()> {

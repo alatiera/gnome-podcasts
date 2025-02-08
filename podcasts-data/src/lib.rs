@@ -51,10 +51,10 @@ pub mod utils;
 
 pub use crate::feed::{Feed, FeedBuilder};
 pub use crate::feed_manager::*;
+pub use crate::models::Save;
 /// Sync datatypes to store updates that still have to be sent out.
 /// This is mostly glue code for the DB, use store(), fetch(), delete() methods to interact.
 pub use crate::models::sync;
-pub use crate::models::Save;
 pub use crate::models::{
     Episode, EpisodeCleanerModel, EpisodeId, EpisodeModel, EpisodeWidgetModel, Show,
     ShowCoverModel, ShowId, Source, SourceId,

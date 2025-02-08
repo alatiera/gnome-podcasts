@@ -18,14 +18,14 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 use adw::subclass::prelude::*;
-use anyhow::{anyhow, Result};
+use anyhow::{Result, anyhow};
 use async_channel::Sender;
 use glib::clone;
 use glib::subclass::InitializingObject;
+use gtk::CompositeTemplate;
 use gtk::gio;
 use gtk::glib;
 use gtk::prelude::*;
-use gtk::CompositeTemplate;
 
 use crate::app::Action;
 use crate::i18n::i18n;

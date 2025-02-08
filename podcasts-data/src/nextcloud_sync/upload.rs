@@ -17,9 +17,9 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+use crate::EpisodeModel;
 use crate::dbqueries;
 use crate::nextcloud_sync::data::*;
-use crate::EpisodeModel;
 
 use anyhow::{Context, Result};
 use serde::Serialize;
@@ -299,8 +299,8 @@ mod test {
     use crate::models::Source;
     use crate::pipeline::pipeline;
     use anyhow::Result;
-    use http_test_server::http::{Method, Status};
     use http_test_server::TestServer;
+    use http_test_server::http::{Method, Status};
 
     fn ep_get() -> EpisodeGet {
         EpisodeGet {

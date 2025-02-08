@@ -214,7 +214,9 @@ impl Source {
                 old_url.clone(),
                 crate::sync::ShowAction::Moved(new_url.clone()),
             ) {
-                error!("Failed to store sync item for Podcast URL Move {old_url} - to - {new_url}: {err}");
+                error!(
+                    "Failed to store sync item for Podcast URL Move {old_url} - to - {new_url}: {err}"
+                );
             }
 
             debug!("Updated Source: {:#?}", &self);

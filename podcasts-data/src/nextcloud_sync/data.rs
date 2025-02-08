@@ -17,7 +17,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-use anyhow::{bail, Result};
+use anyhow::{Result, bail};
 use reqwest;
 use reqwest::Url;
 use serde::de::Deserializer;

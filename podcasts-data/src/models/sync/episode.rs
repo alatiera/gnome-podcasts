@@ -19,11 +19,11 @@
 
 use diesel::prelude::*;
 
+use crate::EpisodeId;
 use crate::database::connection;
 use crate::errors::DataError;
 use crate::models::sync::settings::Settings;
 use crate::schema::episodes_sync;
-use crate::EpisodeId;
 
 #[derive(Insertable, Queryable, Identifiable, AsChangeset, PartialEq)]
 #[diesel(table_name = episodes_sync)]

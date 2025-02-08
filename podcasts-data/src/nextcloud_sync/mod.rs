@@ -120,8 +120,8 @@ mod tests {
     use super::*;
     use crate::nextcloud_sync::test::prepare;
     use anyhow::Result;
-    use http_test_server::http::{Method, Status};
     use http_test_server::TestServer;
+    use http_test_server::http::{Method, Status};
 
     #[test]
     fn test_skip() -> Result<()> {
