@@ -290,7 +290,7 @@ impl NewEpisodeMinimal {
     // TODO: TryInto is stabilizing in rustc v1.26!
     // ^ Jokes on you past self!
     pub(crate) fn into_new_episode(self, item: &rss::Item) -> NewEpisode {
-        let description = item.description().map(|s| {
+        let description = item.content().or(item.description()).map(|s| {
             let sanitized_html = ammonia::Builder::new()
                 // Remove `rel` attributes from `<a>` tags
                 .link_rel(None)
@@ -571,7 +571,7 @@ mod tests {
     });
 
     static EXPECTED_NDR_1: Lazy<NewEpisode> = Lazy::new(|| {
-        let descr = "Die aktuellen Meldungen aus der NDR Info Nachrichtenredaktion.";
+        let descr = "<p>Die aktuellen Meldungen aus der NDR Info Nachrichtenredaktion.</p>";
 
         NewEpisodeBuilder::default()
             .title("Nachrichten")
@@ -590,7 +590,7 @@ mod tests {
     });
 
     static EXPECTED_NDR_2: Lazy<NewEpisode> = Lazy::new(|| {
-        let descr = "Die aktuellen Meldungen aus der NDR Info Nachrichtenredaktion.";
+        let descr = "<p>Die aktuellen Meldungen aus der NDR Info Nachrichtenredaktion.</p>";
 
         NewEpisodeBuilder::default()
             .title("Nachrichten")
@@ -609,7 +609,7 @@ mod tests {
     });
 
     static EXPECTED_NDR_3: Lazy<NewEpisode> = Lazy::new(|| {
-        let descr = "Die aktuellen Meldungen aus der NDR Info Nachrichtenredaktion.";
+        let descr = "<p>Die aktuellen Meldungen aus der NDR Info Nachrichtenredaktion.</p>";
 
         NewEpisodeBuilder::default()
             .title("TITLE_UPDATED")
