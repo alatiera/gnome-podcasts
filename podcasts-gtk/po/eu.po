@@ -1,13 +1,13 @@
 # Basque translation for podcasts.
 # Copyright (C) 2019 podcasts's COPYRIGHT HOLDER
 # This file is distributed under the same license as the podcasts package.
-# Asier Sarasua Garmendia <asier.sarasua@gmail.com>, 2019, 2021, 2023, 2024.
+# Asier Sarasua Garmendia <asier.sarasua@gmail.com>, 2019, 2021, 2023, 2024, 2025.
 #
 msgid ""
 msgstr "Project-Id-Version: podcasts master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2024-08-28 20:03+0000\n"
-"PO-Revision-Date: 2024-09-14 10:00+0100\n"
+"POT-Creation-Date: 2025-01-27 10:12+0000\n"
+"PO-Revision-Date: 2025-02-15 10:00+0100\n"
 "Last-Translator: Asier Sarasua Garmendia <asier.sarasua@gmail.com>\n"
 "Language-Team: Basque <librezale@librezale.eus>\n"
 "Language: eu\n"
@@ -19,21 +19,18 @@ msgstr "Project-Id-Version: podcasts master\n"
 msgid "Episodes: "
 msgstr "Pasarteak: "
 
-#: podcasts-gtk/resources/gtk/discovery_found_podcast.ui:114
-msgid "0"
-msgstr "0"
-
 #: podcasts-gtk/resources/gtk/discovery_found_podcast.ui:142
 msgid "Last publication"
 msgstr "Azken argitalpena"
 
 #: podcasts-gtk/resources/gtk/discovery_found_podcast.ui:163
-msgid "Subscribe"
-msgstr "Harpidetu"
+msgid "_Subscribe"
+msgstr "_Harpidetu"
 
-#: podcasts-gtk/resources/gtk/discovery_found_podcast.ui:171
-msgid "Subscribing to feed..."
-msgstr "Jariora harpidetzen..."
+#: podcasts-gtk/resources/gtk/discovery_found_podcast.ui:173
+#: podcasts-gtk/src/widgets/discovery_search_results.rs:152
+msgid "Subscribing to feed…"
+msgstr "Jariora harpidetzen…"
 
 #: podcasts-gtk/resources/gtk/discovery_page.ui:33
 msgid "Add Podcasts"
@@ -52,22 +49,19 @@ msgid "Submit search"
 msgstr "Bidali bilaketa"
 
 #: podcasts-gtk/resources/gtk/discovery_page.ui:104
-msgid "Loading..."
+#: podcasts-gtk/src/widgets/discovery_page.rs:113
+msgid "Loading…"
 msgstr "Kargatzen…"
 
-#: podcasts-gtk/resources/gtk/discovery_page.ui:107
-msgid "Loading"
-msgstr "Kargatzen"
-
-#: podcasts-gtk/resources/gtk/discovery_page.ui:121
+#: podcasts-gtk/resources/gtk/discovery_page.ui:115
 msgid "Please enable a Search Platform below, or enter a http(s) feed URL."
 msgstr "Gaitu plataformetan bilatzea behean, edo sartu jario baten http(s) URLa"
 
-#: podcasts-gtk/resources/gtk/discovery_page.ui:133
+#: podcasts-gtk/resources/gtk/discovery_page.ui:127
 msgid "Search Platforms"
 msgstr "Bilatu plataformetan"
 
-#: podcasts-gtk/resources/gtk/discovery_page.ui:134
+#: podcasts-gtk/resources/gtk/discovery_page.ui:128
 msgid "Search queries will be sent to these platforms."
 msgstr "Bilaketa-kontsultak plataforma horietara bidaliko da."
 
@@ -119,34 +113,31 @@ msgstr "Podcastaren izenburua"
 msgid "Duration - Date"
 msgstr "Iraupena - Data"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:158
-msgid "Stream"
-msgstr "Korrontea"
+#: podcasts-gtk/resources/gtk/episode_description.ui:149
+msgid "_Stream"
+msgstr "_Transmititu"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:186
-#: podcasts-gtk/resources/gtk/player_sheet.ui:154
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:67
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:268
-msgid "Play"
-msgstr "Erreproduzitu"
+#: podcasts-gtk/resources/gtk/episode_description.ui:167
+msgid "_Play"
+msgstr "_Erreproduzitu"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:214
-msgid "Download"
-msgstr "Deskargatu"
+#: podcasts-gtk/resources/gtk/episode_description.ui:185
+msgid "_Download"
+msgstr "_Deskargatu"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:241
+#: podcasts-gtk/resources/gtk/episode_description.ui:212
 msgid "Cancel"
 msgstr "Utzi"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:279
+#: podcasts-gtk/resources/gtk/episode_description.ui:241
 msgid "Delete"
 msgstr "Ezabatu"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:299
+#: podcasts-gtk/resources/gtk/episode_description.ui:260
 msgid "Episode Description"
 msgstr "Pasartearen deskribapena"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:320
+#: podcasts-gtk/resources/gtk/episode_description.ui:281
 msgid "Episode Cover"
 msgstr "Pasartearen azala"
 
@@ -155,9 +146,17 @@ msgstr "Pasartearen azala"
 msgid "Go to Show"
 msgstr "Joan aurkezpenera"
 
-#: podcasts-gtk/resources/gtk/episode_menu.ui:40
-msgid "Copy Episode Url"
+#: podcasts-gtk/resources/gtk/episode_menu.ui:41
+msgid "Copy Episode URL"
 msgstr "Kopiatu pasartearen URLa"
+
+#: podcasts-gtk/resources/gtk/episode_menu.ui:45
+msgid "Mark as Played"
+msgstr "Markatu irakurri gisa"
+
+#: podcasts-gtk/resources/gtk/episode_menu.ui:50
+msgid "Mark as Unplayed"
+msgstr "Markatu erreproduzitu gabe gisa"
 
 #: podcasts-gtk/resources/gtk/episode_widget.ui:70
 msgid "You’ve already listened to this episode."
@@ -312,6 +311,12 @@ msgstr "0.75×"
 msgid "Rewind"
 msgstr "Birbobinatu"
 
+#: podcasts-gtk/resources/gtk/player_sheet.ui:154
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:67
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:268
+msgid "Play"
+msgstr "Erreproduzitu"
+
 #: podcasts-gtk/resources/gtk/player_sheet.ui:172
 #: podcasts-gtk/resources/gtk/player_toolbar.ui:80
 #: podcasts-gtk/resources/gtk/player_toolbar.ui:277
@@ -321,6 +326,10 @@ msgstr "Pausatu"
 #: podcasts-gtk/resources/gtk/player_sheet.ui:195
 msgid "Forward"
 msgstr "Aurrera"
+
+#: podcasts-gtk/resources/gtk/player_sheet.ui:230
+msgid "Description"
+msgstr "Azalpena"
 
 #: podcasts-gtk/resources/gtk/player_toolbar.ui:50
 msgid "Rewind 10 seconds"
@@ -389,8 +398,8 @@ msgstr "Podcastak aplikazioari _buruz"
 #: podcasts-gtk/resources/gtk/window.ui:102
 #: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:4
 #: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:3
-#: podcasts-gtk/src/app.rs:470 podcasts-gtk/src/widgets/aboutdialog.rs:56
-#: podcasts-gtk/src/widgets/player.rs:445
+#: podcasts-gtk/src/app.rs:503 podcasts-gtk/src/widgets/aboutdialog.rs:56
+#: podcasts-gtk/src/widgets/player.rs:465
 msgid "Podcasts"
 msgstr "Podcast-ak"
 
@@ -439,7 +448,7 @@ msgid "The view where one can add a new podcast"
 msgstr "Podcast berriak gehitzea ahalbidetzen duen ikuspegia"
 
 #. developer_name tag deprecated with Appstream 1.0
-#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:186
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:221
 msgid "The Podcasts developers"
 msgstr "Podcastak aplikazioaren garatzaileak"
 
@@ -488,7 +497,7 @@ msgstr "Zenbat denbora-tarte itxarongo den garbitze automatikoen artean"
 msgid "What period of time to wait between automatic cleanups"
 msgstr "Zenbat denbora itxarongo den garbitze automatikoen artean"
 
-#: podcasts-gtk/src/app.rs:344
+#: podcasts-gtk/src/app.rs:358
 msgid "Copied URL to clipboard!"
 msgstr "URLa arbelean kopiatu da!"
 
@@ -572,11 +581,11 @@ msgstr "Saioak"
 msgid "Download progress"
 msgstr "Deskargaren aurrerapena"
 
-#: podcasts-gtk/src/widgets/episode.rs:282
+#: podcasts-gtk/src/widgets/episode.rs:279
 msgid "{} min"
 msgstr "{} min"
 
-#: podcasts-gtk/src/widgets/player.rs:1070
+#: podcasts-gtk/src/widgets/player.rs:1109
 msgid "The media player was unable to execute an action."
 msgstr "Multimedia-erreproduzigailuak ezin izan da ekintza bat exekutatu."
 
@@ -600,6 +609,12 @@ msgstr "Desegin"
 #: podcasts-gtk/src/widgets/show_menu.rs:205
 msgid "Unsubscribed from {}"
 msgstr "Kendu {} podcast-eko harpidetza"
+
+#~ msgid "0"
+#~ msgstr "0"
+
+#~ msgid "Loading..."
+#~ msgstr "Kargatzen…"
 
 #~ msgid "Now Playing"
 #~ msgstr "Orain erreproduzitzen"
