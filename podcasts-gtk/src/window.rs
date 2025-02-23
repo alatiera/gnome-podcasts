@@ -271,7 +271,7 @@ impl MainWindow {
             }
         ));
         let breakpoint = imp.player_breakpoint.get();
-        let is_small = !window.current_breakpoint().is_some_and(|b| b == breakpoint);
+        let is_small = window.current_breakpoint().is_none_or(|b| b != breakpoint);
         p.borrow().set_small(is_small);
 
         // Update the feeds right after the Window is initialized.

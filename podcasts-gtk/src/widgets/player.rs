@@ -666,7 +666,7 @@ impl PlayerWidget {
 
     fn init_uri(&mut self, uri: &str, second: Option<i32>) {
         // If it's not the same file load the uri, otherwise just unpause
-        if self.player.uri().map_or(true, |s| s != uri) {
+        if self.player.uri().is_none_or(|s| s != uri) {
             self.player.set_uri(Some(uri));
         } else if second.is_some() {
             // force a jump now if already playing and a jump is given

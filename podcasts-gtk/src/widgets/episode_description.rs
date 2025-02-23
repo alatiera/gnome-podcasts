@@ -228,7 +228,7 @@ impl EpisodeDescriptionPriv {
             // recover from invalid markup
             if self.description.text() == default_text {
                 let plain = html2text::config::plain()
-                    .string_from_read(t.as_bytes(), t.as_bytes().len())
+                    .string_from_read(t.as_bytes(), t.len())
                     .unwrap_or_else(|_| t.to_string());
                 self.description.set_text(&plain);
             }

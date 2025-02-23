@@ -93,7 +93,7 @@ impl ObjectImpl for ShowsViewPriv {
             let data = item.item().and_downcast::<ShowCoverModel>().unwrap();
             let child = item.child().and_downcast::<gtk::Picture>().unwrap();
             // cancel loading the picture
-            if let Some(handle) = data.get_mut_load_handle().take().take() {
+            if let Some(handle) = data.get_mut_load_handle().take() {
                 handle.abort();
             }
             child.set_paintable(missing_icon.as_ref());

@@ -63,7 +63,7 @@ impl ShowWidgetPriv {
     /// Set the description text.
     fn set_description(&self, text: &str) {
         let markup = html2text::config::plain()
-            .string_from_read(text.as_bytes(), text.as_bytes().len())
+            .string_from_read(text.as_bytes(), text.len())
             .unwrap_or_else(|_| text.to_string());
         let markup = markup.trim();
         if !markup.is_empty() {

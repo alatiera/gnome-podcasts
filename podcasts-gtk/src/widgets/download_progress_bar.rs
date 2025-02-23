@@ -148,7 +148,7 @@ impl DownloadProgressBar {
             .read()
             .map_err(|_| anyhow!("Failed to get a lock on the mutex."))?;
 
-        return Ok(m.get(&id).cloned());
+        Ok(m.get(&id).cloned())
     }
 
     pub fn cancel(&self) -> Result<()> {
