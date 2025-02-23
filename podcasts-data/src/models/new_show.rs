@@ -164,7 +164,7 @@ impl NewShow {
     // Look out for when tryinto lands into stable.
     pub(crate) fn to_podcast(&self) -> Result<Show, DataError> {
         self.index()?;
-        dbqueries::get_podcast_from_source_id(self.source_id).map_err(From::from)
+        dbqueries::get_podcast_from_source_id(self.source_id)
     }
 }
 

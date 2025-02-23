@@ -112,8 +112,7 @@ impl Source {
 
         let etag = headers
             .get(ETAG)
-            .and_then(|h| h.to_str().ok())
-            .map(From::from);
+            .and_then(|h| h.to_str().ok());
         let lmod = headers
             .get(LAST_MODIFIED)
             .and_then(|h| h.to_str().ok())

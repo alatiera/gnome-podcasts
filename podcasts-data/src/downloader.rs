@@ -107,8 +107,7 @@ async fn download_into(
         .and_then(|len| len.parse().ok());
     let ct_type = headers
         .get(CONTENT_TYPE)
-        .and_then(|h| h.to_str().ok())
-        .map(From::from);
+        .and_then(|h| h.to_str().ok());
 
     if let Some(ct_len) = ct_len {
         info!("File Length: {}", ct_len);

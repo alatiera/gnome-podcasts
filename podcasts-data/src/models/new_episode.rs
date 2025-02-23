@@ -159,7 +159,7 @@ impl NewEpisode {
     pub(crate) fn to_episode(&self) -> Result<Episode, DataError> {
         self.index()?;
 
-        dbqueries::get_episode(self.guid(), self.title(), self.show_id).map_err(From::from)
+        dbqueries::get_episode(self.guid(), self.title(), self.show_id)
     }
 }
 
