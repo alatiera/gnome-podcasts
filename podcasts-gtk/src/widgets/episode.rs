@@ -23,18 +23,18 @@ use async_channel::Sender;
 use chrono::prelude::*;
 use glib::clone;
 use glib::subclass::InitializingObject;
+use gtk::CompositeTemplate;
 use gtk::glib;
 use gtk::prelude::*;
-use gtk::CompositeTemplate;
 use once_cell::sync::Lazy;
 
 use crate::app::Action;
 use crate::i18n::i18n_f;
 use crate::manager;
 use crate::widgets::{DownloadProgressBar, EpisodeMenu};
+use podcasts_data::EpisodeId;
 use podcasts_data::dbqueries;
 use podcasts_data::utils::get_download_dir;
-use podcasts_data::EpisodeId;
 use podcasts_data::{EpisodeModel, EpisodeWidgetModel};
 
 static SIZE_OPTS: Lazy<humansize::FormatSizeOptions> = Lazy::new(|| {

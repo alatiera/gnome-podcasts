@@ -146,11 +146,11 @@ mod tests {
     use anyhow::Result;
     use rss::Channel;
 
+    use crate::EpisodeModel;
+    use crate::Source;
     use crate::database::truncate_db;
     use crate::dbqueries;
     use crate::utils::get_feed;
-    use crate::EpisodeModel;
-    use crate::Source;
 
     use std::fs;
     use std::io::BufReader;
@@ -259,7 +259,10 @@ mod tests {
         let channel = Channel::read_from(BufReader::new(file))?;
 
         let description = feed.channel.description();
-        assert_eq!(description, "Els clàssics, les novetats de la cartellera i les millors sèries, tot en un sol podcast.");
+        assert_eq!(
+            description,
+            "Els clàssics, les novetats de la cartellera i les millors sèries, tot en un sol podcast."
+        );
         let pd = NewShow::new(&channel, TEST_SOURCE_ID);
         assert_eq!(feed.parse_podcast(), pd);
         Ok(())
@@ -298,11 +301,21 @@ mod tests {
 
         // latest episode (latest item in feed), previous items with same title are ignored
         let ep1 = eps.get(0).unwrap();
-        assert_eq!(Some("https://chtbl.com/track/11G3D/progressive-audio.vrt.be/public/output/aud-7478134e-7c0e-44d4-8d65-32aa87dc6a3a-PODCAST_1/aud-7478134e-7c0e-44d4-8d65-32aa87dc6a3a-PODCAST_1.mp3"), ep1.uri());
+        assert_eq!(
+            Some(
+                "https://chtbl.com/track/11G3D/progressive-audio.vrt.be/public/output/aud-7478134e-7c0e-44d4-8d65-32aa87dc6a3a-PODCAST_1/aud-7478134e-7c0e-44d4-8d65-32aa87dc6a3a-PODCAST_1.mp3"
+            ),
+            ep1.uri()
+        );
 
         // teaser (first item in feed)
         let ep2 = eps.get(1).unwrap();
-        assert_eq!(Some("https://chtbl.com/track/11G3D/progressive-audio.vrt.be/public/output/aud-6b925160-4400-4d50-bb54-0085b84643cd-PODCAST_1/aud-6b925160-4400-4d50-bb54-0085b84643cd-PODCAST_1.mp3"), ep2.uri());
+        assert_eq!(
+            Some(
+                "https://chtbl.com/track/11G3D/progressive-audio.vrt.be/public/output/aud-6b925160-4400-4d50-bb54-0085b84643cd-PODCAST_1/aud-6b925160-4400-4d50-bb54-0085b84643cd-PODCAST_1.mp3"
+            ),
+            ep2.uri()
+        );
 
         Ok(())
     }
@@ -385,7 +398,9 @@ mod tests {
         assert_eq!("Return Of The Macks", ep1.title());
         assert_eq!(Some("tag:soundcloud,2010:tracks/501720369"), ep1.guid());
         assert_eq!(
-            Some("https://feeds.soundcloud.com/stream/501720369-streetfightwcrs-return-of-the-macks-1.mp3"),
+            Some(
+                "https://feeds.soundcloud.com/stream/501720369-streetfightwcrs-return-of-the-macks-1.mp3"
+            ),
             ep1.uri()
         );
         assert_eq!(
@@ -401,7 +416,9 @@ mod tests {
         assert_eq!("Return Of The Macks", ep2.title());
         assert_eq!(Some("tag:soundcloud,2010:tracks/430832790"), ep2.guid());
         assert_eq!(
-            Some("https://feeds.soundcloud.com/stream/430832790-streetfightwcrs-return-of-the-macks.mp3"),
+            Some(
+                "https://feeds.soundcloud.com/stream/430832790-streetfightwcrs-return-of-the-macks.mp3"
+            ),
             ep2.uri()
         );
         assert_eq!(
@@ -424,7 +441,9 @@ mod tests {
         assert_eq!("Street Fight Q&A", ep1.title());
         assert_eq!(Some("tag:soundcloud,2010:tracks/658646834"), ep1.guid());
         assert_eq!(
-            Some("https://feeds.soundcloud.com/stream/658646834-streetfightwcrs-street-fight-qa-1.mp3"),
+            Some(
+                "https://feeds.soundcloud.com/stream/658646834-streetfightwcrs-street-fight-qa-1.mp3"
+            ),
             ep1.uri()
         );
         assert_eq!(

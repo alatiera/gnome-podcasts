@@ -20,22 +20,22 @@
 use base64::engine::general_purpose;
 use base64::prelude::*;
 use diesel::SaveChangesDsl;
+use http::StatusCode;
 use http::header::{
-    HeaderValue, AUTHORIZATION, ETAG, IF_MODIFIED_SINCE, IF_NONE_MATCH, LAST_MODIFIED, LOCATION,
+    AUTHORIZATION, ETAG, HeaderValue, IF_MODIFIED_SINCE, IF_NONE_MATCH, LAST_MODIFIED, LOCATION,
     USER_AGENT as USER_AGENT_HEADER,
 };
-use http::StatusCode;
 use rss::Channel;
 use std::str::FromStr;
 use url::Url;
 
+use crate::USER_AGENT;
 use crate::database::connection;
 use crate::errors::*;
 use crate::feed::{Feed, FeedBuilder};
 use crate::make_id_wrapper;
 use crate::models::{NewSource, Save};
 use crate::schema::source;
-use crate::USER_AGENT;
 
 make_id_wrapper!(SourceId);
 
@@ -110,9 +110,7 @@ impl Source {
     fn update_etag(mut self, res: &reqwest::Response) -> Result<Self, DataError> {
         let headers = res.headers();
 
-        let etag = headers
-            .get(ETAG)
-            .and_then(|h| h.to_str().ok());
+        let etag = headers.get(ETAG).and_then(|h| h.to_str().ok());
         let lmod = headers
             .get(LAST_MODIFIED)
             .and_then(|h| h.to_str().ok())

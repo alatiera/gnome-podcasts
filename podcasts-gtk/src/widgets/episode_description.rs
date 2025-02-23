@@ -23,9 +23,9 @@ use async_channel::Sender;
 use chrono::prelude::*;
 use glib::clone;
 use glib::subclass::InitializingObject;
+use gtk::CompositeTemplate;
 use gtk::glib;
 use gtk::prelude::*;
-use gtk::CompositeTemplate;
 use std::borrow::Borrow;
 use std::sync::Arc;
 
@@ -34,8 +34,8 @@ use crate::episode_description_parser;
 use crate::widgets::DownloadProgressBar;
 use crate::widgets::EpisodeMenu;
 use podcasts_data::EpisodeWidgetModel;
-use podcasts_data::{dbqueries, downloader};
 use podcasts_data::{Episode, EpisodeId, EpisodeModel, Show, ShowId};
+use podcasts_data::{dbqueries, downloader};
 
 pub enum EpisodeDescriptionAction {
     EpisodeSpecificImage(gtk::gdk::Texture),

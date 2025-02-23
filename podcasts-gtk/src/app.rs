@@ -20,7 +20,7 @@
 use adw::subclass::prelude::*;
 use anyhow::Result;
 use async_channel::{Receiver, Sender};
-use gettextrs::{bindtextdomain, setlocale, textdomain, LocaleCategory};
+use gettextrs::{LocaleCategory, bindtextdomain, setlocale, textdomain};
 use glib::clone;
 use gtk::prelude::*;
 use gtk::{gio, glib};
@@ -495,7 +495,9 @@ impl PdApplication {
         textdomain("gnome-podcasts").expect("Unable to switch to the text domain");
 
         // Make sure the app icon shows up in PulseAudio settings
-        unsafe { env::set_var("PULSE_PROP_application.icon_name", APP_ID); }
+        unsafe {
+            env::set_var("PULSE_PROP_application.icon_name", APP_ID);
+        }
 
         let application = Self::new();
 

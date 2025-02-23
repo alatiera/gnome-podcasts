@@ -27,9 +27,9 @@ use std::sync::Arc;
 use crate::app::Action;
 use crate::i18n::{i18n, i18n_f};
 use crate::utils;
+use podcasts_data::Show;
 use podcasts_data::dbqueries;
 use podcasts_data::utils::delete_show;
-use podcasts_data::Show;
 
 #[derive(Debug, Clone)]
 pub(crate) struct ShowMenu {

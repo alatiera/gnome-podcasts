@@ -22,8 +22,8 @@ use adw::subclass::prelude::*;
 use async_channel::Sender;
 use glib::clone;
 use glib::subclass::InitializingObject;
-use gtk::glib;
 use gtk::CompositeTemplate;
+use gtk::glib;
 
 use crate::app::Action;
 use crate::i18n::i18n;

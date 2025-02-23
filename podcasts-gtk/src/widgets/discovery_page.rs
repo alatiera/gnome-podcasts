@@ -23,8 +23,8 @@ use anyhow::Result;
 use async_channel::Sender;
 use glib::clone;
 use glib::subclass::InitializingObject;
-use gtk::glib;
 use gtk::CompositeTemplate;
+use gtk::glib;
 use std::sync::Arc;
 use url::Url;
 
@@ -33,7 +33,7 @@ use crate::i18n::i18n;
 use crate::utils::{itunes_to_rss, soundcloud_to_rss};
 use podcasts_data::dbqueries;
 use podcasts_data::discovery::SearchError::NoSearchPlatformsSelected;
-use podcasts_data::discovery::{search, SearchError, ALL_PLATFORM_IDS};
+use podcasts_data::discovery::{ALL_PLATFORM_IDS, SearchError, search};
 
 #[derive(Debug, CompositeTemplate, Default)]
 #[template(resource = "/org/gnome/Podcasts/gtk/discovery_page.ui")]

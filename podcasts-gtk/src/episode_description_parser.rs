@@ -24,7 +24,7 @@ use regex::Regex;
 use crate::i18n::i18n_f;
 use html5ever::tendril::TendrilSink;
 use html5ever::tree_builder::TreeBuilderOpts;
-use html5ever::{expanded_name, parse_document, ParseOpts};
+use html5ever::{ParseOpts, expanded_name, parse_document};
 use markup5ever_rcdom::{
     Handle,
     NodeData::{Document, Element, Text},

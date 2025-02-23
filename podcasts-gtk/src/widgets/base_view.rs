@@ -17,10 +17,10 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+use gtk::PolicyType;
 use gtk::glib;
 use gtk::prelude::*;
 use gtk::subclass::prelude::*;
-use gtk::PolicyType;
 
 use adw::prelude::*;
 use adw::subclass::prelude::*;
@@ -53,9 +53,11 @@ impl ObjectImpl for BaseViewPriv {
 
     fn properties() -> &'static [glib::ParamSpec] {
         static PROPERTIES: Lazy<Vec<glib::ParamSpec>> = Lazy::new(|| {
-            vec![glib::ParamSpecObject::builder::<gtk::Widget>("child")
-                .readwrite()
-                .build()]
+            vec![
+                glib::ParamSpecObject::builder::<gtk::Widget>("child")
+                    .readwrite()
+                    .build(),
+            ]
         });
         PROPERTIES.as_ref()
     }

@@ -20,7 +20,7 @@
 use crate::config::APP_ID;
 
 use adw::subclass::prelude::*;
-use gtk::{glib, CompositeTemplate};
+use gtk::{CompositeTemplate, glib};
 
 #[derive(Debug, CompositeTemplate)]
 #[template(resource = "/org/gnome/Podcasts/gtk/empty_view.ui")]

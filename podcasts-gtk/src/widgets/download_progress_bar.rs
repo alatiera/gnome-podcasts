@@ -20,9 +20,9 @@
 
 use adw::prelude::BinExt;
 use adw::subclass::prelude::*;
-use anyhow::{anyhow, bail, Result};
-use glib::clone;
+use anyhow::{Result, anyhow, bail};
 use glib::Properties;
+use glib::clone;
 use gtk::glib;
 use gtk::prelude::*;
 use once_cell::sync::OnceCell;
@@ -33,9 +33,9 @@ use std::time::Duration;
 use crate::i18n::i18n;
 use crate::manager;
 use crate::manager::ActiveProgress;
+use podcasts_data::EpisodeId;
 use podcasts_data::dbqueries;
 use podcasts_data::downloader::DownloadProgress;
-use podcasts_data::EpisodeId;
 
 #[derive(Debug, Default, Properties)]
 #[properties(wrapper_type = DownloadProgressBar)]

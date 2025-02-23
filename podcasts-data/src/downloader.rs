@@ -22,7 +22,7 @@ use reqwest::redirect::Policy;
 use tempfile::TempDir;
 
 use std::fs;
-use std::fs::{copy, remove_file, File};
+use std::fs::{File, copy, remove_file};
 use std::io::{BufWriter, Write};
 use std::path::Path;
 use std::sync::{Arc, Mutex};
@@ -31,8 +31,8 @@ use crate::errors::DownloadError;
 use crate::xdg_dirs::PODCASTS_CACHE;
 use crate::{EpisodeModel, EpisodeWidgetModel, Save};
 
-use crate::utils;
 use crate::ShowCoverModel;
+use crate::utils;
 use glob::glob;
 use std::path::PathBuf;
 
@@ -105,9 +105,7 @@ async fn download_into(
         .get(CONTENT_LENGTH)
         .and_then(|h| h.to_str().ok())
         .and_then(|len| len.parse().ok());
-    let ct_type = headers
-        .get(CONTENT_TYPE)
-        .and_then(|h| h.to_str().ok());
+    let ct_type = headers.get(CONTENT_TYPE).and_then(|h| h.to_str().ok());
 
     if let Some(ct_len) = ct_len {
         info!("File Length: {}", ct_len);

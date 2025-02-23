@@ -18,7 +18,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 use gtk::subclass::prelude::*;
-use gtk::{glib, CompositeTemplate};
+use gtk::{CompositeTemplate, glib};
 
 #[derive(Debug, Default, CompositeTemplate)]
 #[template(resource = "/org/gnome/Podcasts/gtk/empty_show.ui")]

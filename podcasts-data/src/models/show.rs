@@ -239,8 +239,7 @@ mod tests {
                          liberties, foreign policy, and criminal justice.  Plus interviews with \
                          artists, thinkers, and newsmakers who challenge our preconceptions about \
                          the world we live in.";
-        let image_uri =
-            "http://static.megaphone.fm/podcasts/d5735a50-d904-11e6-8532-73c7de466ea6/image/\
+        let image_uri = "http://static.megaphone.fm/podcasts/d5735a50-d904-11e6-8532-73c7de466ea6/image/\
                  uploads_2F1484252190700-qhn5krasklbce3dh-a797539282700ea0298a3a26f7e49b0b_\
                  2FIntercepted_COVER%2B_281_29.png";
 
@@ -271,8 +270,8 @@ mod tests {
     });
 
     #[test]
-    fn should_update_timestamp_when_update_image_cached_is_called_after_the_timestamp_has_expired(
-    ) -> Result<()> {
+    fn should_update_timestamp_when_update_image_cached_is_called_after_the_timestamp_has_expired()
+    -> Result<()> {
         truncate_db()?;
         EXPECTED_INTERCEPTED.insert()?;
         let show = EXPECTED_INTERCEPTED.to_podcast()?;
@@ -295,8 +294,8 @@ mod tests {
     }
 
     #[test]
-    fn should_update_hash_when_update_image_uri_hash_is_called_when_the_hash_is_invalid(
-    ) -> Result<()> {
+    fn should_update_hash_when_update_image_uri_hash_is_called_when_the_hash_is_invalid()
+    -> Result<()> {
         truncate_db()?;
         EXPECTED_INTERCEPTED.insert()?;
         let original = EXPECTED_INTERCEPTED.to_podcast()?;
@@ -321,8 +320,8 @@ mod tests {
     }
 
     #[test]
-    fn should_update_timestamp_only_when_update_image_cached_values_is_called_after_the_timestamp_has_expired(
-    ) -> Result<()> {
+    fn should_update_timestamp_only_when_update_image_cached_values_is_called_after_the_timestamp_has_expired()
+    -> Result<()> {
         truncate_db()?;
         EXPECTED_INTERCEPTED.insert()?;
         let show = EXPECTED_INTERCEPTED.to_podcast()?;
@@ -343,8 +342,8 @@ mod tests {
     }
 
     #[test]
-    fn should_update_timestamp_and_hash_when_update_image_cached_values_is_called_when_hash_is_invalid(
-    ) -> Result<()> {
+    fn should_update_timestamp_and_hash_when_update_image_cached_values_is_called_when_hash_is_invalid()
+    -> Result<()> {
         truncate_db()?;
         EXPECTED_INTERCEPTED.insert()?;
         let original = EXPECTED_INTERCEPTED.to_podcast()?;

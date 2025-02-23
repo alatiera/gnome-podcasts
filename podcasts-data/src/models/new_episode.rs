@@ -544,8 +544,7 @@ mod tests {
             .unwrap()
     });
     static EXPECTED_LUP_2: Lazy<NewEpisode> = Lazy::new(|| {
-        let descr =
-            "<p>The Gnome project is about to solve one of our audience's biggest Wayland’s \
+        let descr = "<p>The Gnome project is about to solve one of our audience's biggest Wayland’s \
                  concerns. But as the project takes on a new level of relevance, decisions for \
                  the next version of Gnome have us worried about the future.</p>\n\n<p>Plus we \
                  chat with Wimpy about the Ubuntu Rally in NYC, Microsoft’s sneaky move to turn \

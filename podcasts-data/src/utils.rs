@@ -278,9 +278,9 @@ mod tests {
     use std::io::Write;
     use tempfile::TempDir;
 
+    use crate::ShowId;
     use crate::database::truncate_db;
     use crate::models::NewEpisodeBuilder;
-    use crate::ShowId;
 
     fn helper_db() -> Result<TempDir> {
         // Clean the db
@@ -426,8 +426,7 @@ mod tests {
 
     #[test]
     fn hash_should_be_different_for_similar_inputs() -> Result<()> {
-        let image_uri_v2 =
-            "https://assets.fireside.fm/file/fireside-images/podcasts/images/f/f31a453c-fa15-491f-8618-3f71f1d565e5/cover.jpg?v=2";
+        let image_uri_v2 = "https://assets.fireside.fm/file/fireside-images/podcasts/images/f/f31a453c-fa15-491f-8618-3f71f1d565e5/cover.jpg?v=2";
         let image_uri_v3 = "https://assets.fireside.fm/file/fireside-images/podcasts/images/f/f31a453c-fa15-491f-8618-3f71f1d565e5/cover.jpg?v=3";
         let v2_hash = calculate_hash(&image_uri_v2);
         let v3_hash = calculate_hash(&image_uri_v3);

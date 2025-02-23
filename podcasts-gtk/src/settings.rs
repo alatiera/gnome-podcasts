@@ -16,12 +16,12 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
-use gio::{prelude::SettingsExt, Settings};
+use gio::{Settings, prelude::SettingsExt};
 use gtk::gio;
 use gtk::prelude::GtkWindowExt;
 
-use chrono::prelude::*;
 use chrono::Duration;
+use chrono::prelude::*;
 
 pub(crate) struct WindowGeometry {
     width: i32,

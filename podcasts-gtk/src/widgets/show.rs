@@ -22,9 +22,9 @@ use adw::subclass::prelude::*;
 use anyhow::Result;
 use async_channel::Sender;
 use glib::clone;
+use gtk::CompositeTemplate;
 use gtk::gio;
 use gtk::glib;
-use gtk::CompositeTemplate;
 use std::cell::Cell;
 use std::sync::Arc;
 

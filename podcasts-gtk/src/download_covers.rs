@@ -1,4 +1,4 @@
-use anyhow::{anyhow, bail, Result};
+use anyhow::{Result, anyhow, bail};
 use glib::WeakRef;
 use gtk::gdk;
 use gtk::glib;

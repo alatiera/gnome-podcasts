@@ -19,9 +19,9 @@
 use anyhow::Result;
 use async_channel::Sender;
 use once_cell::sync::Lazy;
+use podcasts_data::Source;
 use podcasts_data::dbqueries;
 use podcasts_data::pipeline::pipeline;
-use podcasts_data::Source;
 use std::collections::HashMap;
 use std::sync::RwLock;
 use tokio::sync::watch;

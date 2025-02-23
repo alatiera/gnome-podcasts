@@ -18,7 +18,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #![allow(clippy::type_complexity)]
 
-use anyhow::{anyhow, Result};
+use anyhow::{Result, anyhow};
 use async_channel::Sender;
 use once_cell::sync::Lazy;
 use std::collections::HashMap;
@@ -27,7 +27,7 @@ use std::sync::{Arc, Mutex, RwLock};
 use crate::app::Action;
 use crate::i18n::i18n_f;
 use podcasts_data::dbqueries;
-use podcasts_data::downloader::{get_episode, DownloadProgress};
+use podcasts_data::downloader::{DownloadProgress, get_episode};
 use podcasts_data::errors::DownloadError;
 use podcasts_data::{EpisodeId, EpisodeModel};
 

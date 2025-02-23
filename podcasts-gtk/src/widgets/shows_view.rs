@@ -20,7 +20,7 @@
 
 use adw::prelude::*;
 use adw::subclass::prelude::*;
-use anyhow::{anyhow, Result};
+use anyhow::{Result, anyhow};
 use async_channel::Sender;
 use glib::clone;
 use glib::object::Object;

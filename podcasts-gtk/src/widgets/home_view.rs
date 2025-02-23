@@ -23,7 +23,7 @@ use async_channel::Sender;
 use chrono::prelude::*;
 use glib::subclass::InitializingObject;
 use gtk::gio;
-use gtk::{glib, prelude::*, CompositeTemplate};
+use gtk::{CompositeTemplate, glib, prelude::*};
 
 use crate::app::Action;
 use crate::utils::{self, lazy_load};

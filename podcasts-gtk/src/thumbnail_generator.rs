@@ -1,12 +1,12 @@
-use anyhow::{anyhow, Result};
+use anyhow::{Result, anyhow};
 use image::imageops::FilterType;
 use std::collections::HashMap;
 use std::fmt::Display;
 use std::path::Path;
 
 use crate::download_covers::determin_cover_path;
-use podcasts_data::utils::get_cover_dir_path;
 use podcasts_data::ShowCoverModel;
+use podcasts_data::utils::get_cover_dir_path;
 use std::sync::Arc;
 
 // we only generate a fixed amount of thumbnails

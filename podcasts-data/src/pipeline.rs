@@ -20,9 +20,9 @@
 // FIXME:
 //! Docs.
 
+use crate::Source;
 use crate::downloader::client_builder;
 use crate::errors::DataError;
-use crate::Source;
 
 /// The pipline to be run for indexing and updating a Podcast feed that originates from
 /// `Source.uri`.
@@ -64,9 +64,9 @@ where
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::Source;
     use crate::database::truncate_db;
     use crate::dbqueries;
-    use crate::Source;
 
     // (path, url) tuples.
     const URLS: &[&str] = &[

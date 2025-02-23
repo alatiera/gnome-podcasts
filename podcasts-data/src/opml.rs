@@ -25,7 +25,7 @@ use crate::models::Source;
 use xml::{
     common::XmlVersion,
     reader,
-    writer::{events::XmlEvent, EmitterConfig},
+    writer::{EmitterConfig, events::XmlEvent},
 };
 
 use std::collections::HashSet;
@@ -209,7 +209,7 @@ mod tests {
     use anyhow::Result;
     use chrono::Local;
 
-    use crate::database::{truncate_db, TEMPDIR};
+    use crate::database::{TEMPDIR, truncate_db};
     use crate::utils::get_feed;
 
     const URLS: &[(&str, &str)] = {
@@ -240,7 +240,7 @@ mod tests {
             ),
             (
                 "tests/feeds/2019-01-27-ACC.xml",
-                "https://web.archive.org/web/20190127005213if_/https://anticapitalistchronicles.libsyn.com/rss"
+                "https://web.archive.org/web/20190127005213if_/https://anticapitalistchronicles.libsyn.com/rss",
             ),
         ]
     };

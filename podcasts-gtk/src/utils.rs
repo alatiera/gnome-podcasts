@@ -17,16 +17,16 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-use anyhow::{anyhow, bail, Context, Result};
-use async_channel::unbounded;
+use anyhow::{Context, Result, anyhow, bail};
 use async_channel::Sender;
+use async_channel::unbounded;
 use chrono::prelude::*;
 use futures_util::StreamExt;
 use glib::clone;
 use glib::object::WeakRef;
-use gtk::prelude::*;
 use gtk::FileFilter;
 use gtk::Widget;
+use gtk::prelude::*;
 use gtk::{gio, glib};
 use once_cell::sync::Lazy;
 use regex::Regex;
