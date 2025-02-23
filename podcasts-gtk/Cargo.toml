@@ -2,7 +2,7 @@
 authors = ["Jordan Petridis <jpetridis@gnome.com>"]
 name = "podcasts-gtk"
 version = "0.1.0"
-edition = "2021"
+edition.workspace = true
 
 [dependencies]
 adw = { package = "libadwaita", version = "0.7", features = ["v1_6"] }

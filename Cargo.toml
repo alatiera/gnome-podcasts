@@ -2,6 +2,9 @@
 resolver = "2"
 members = ["podcasts-data", "podcasts-gtk"]
 
+[workspace.package]
+edition = "2021"
+
 [workspace.dependencies]
 anyhow = "1"
 chrono = {version = "0.4", features = ["serde", "unstable-locales"] }
