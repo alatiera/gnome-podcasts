@@ -3,7 +3,7 @@ resolver = "2"
 members = ["podcasts-data", "podcasts-gtk"]
 
 [workspace.package]
-edition = "2021"
+edition = "2024"
 
 [workspace.dependencies]
 anyhow = "1"
