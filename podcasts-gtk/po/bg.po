@@ -1,5 +1,5 @@
 # Bulgarian translation for podcasts.
-# Copyright (C) 2024 podcasts's COPYRIGHT HOLDER
+# Copyright (C) 2024, 2025 twlvnn kraftwerk <kraft_werk@tutanota.com>
 # This file is distributed under the same license as the podcasts package.
 # twlvnn kraftwerk <kraft_werk@tutanota.com>, 2024, 2025.
 #
@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: podcasts main\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2025-01-13 12:14+0000\n"
-"PO-Revision-Date: 2025-01-13 18:09+0100\n"
+"POT-Creation-Date: 2025-02-23 08:07+0000\n"
+"PO-Revision-Date: 2025-02-05 21:12+0100\n"
 "Last-Translator: twlvnn kraftwerk <kraft_werk@tutanota.com>\n"
 "Language-Team: Bulgarian <dict-notifications@fsa-bg.org>\n"
 "Language: bg\n"
@@ -151,7 +151,7 @@ msgid "Go to Show"
 msgstr "Към подкаст"
 
 #: podcasts-gtk/resources/gtk/episode_menu.ui:41
-msgid "Copy Episode Url"
+msgid "Copy Episode URL"
 msgstr "Копиране на адреса на епизода"
 
 #: podcasts-gtk/resources/gtk/episode_menu.ui:45
@@ -331,6 +331,10 @@ msgstr "Пауза"
 msgid "Forward"
 msgstr "Напред"
 
+#: podcasts-gtk/resources/gtk/player_sheet.ui:230
+msgid "Description"
+msgstr "Описание"
+
 #: podcasts-gtk/resources/gtk/player_toolbar.ui:50
 msgid "Rewind 10 seconds"
 msgstr "Назад с 10 секунди"
@@ -398,8 +402,8 @@ msgstr "_Относно „Подкасти“"
 #: podcasts-gtk/resources/gtk/window.ui:102
 #: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:4
 #: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:3
-#: podcasts-gtk/src/app.rs:501 podcasts-gtk/src/widgets/aboutdialog.rs:56
-#: podcasts-gtk/src/widgets/player.rs:447
+#: podcasts-gtk/src/app.rs:505 podcasts-gtk/src/widgets/aboutdialog.rs:56
+#: podcasts-gtk/src/widgets/player.rs:465
 msgid "Podcasts"
 msgstr "Подкасти"
 
@@ -504,7 +508,7 @@ msgstr "Брой периоди от време между автоматичн�
 msgid "What period of time to wait between automatic cleanups"
 msgstr "Период от време между автоматичните почиствания"
 
-#: podcasts-gtk/src/app.rs:356
+#: podcasts-gtk/src/app.rs:358
 msgid "Copied URL to clipboard!"
 msgstr "Адресът е копиран в буфера за обмен!"
 
@@ -600,7 +604,7 @@ msgstr "Напредък на изтегляне"
 msgid "{} min"
 msgstr "{} мин"
 
-#: podcasts-gtk/src/widgets/player.rs:1072
+#: podcasts-gtk/src/widgets/player.rs:1109
 msgid "The media player was unable to execute an action."
 msgstr "Медийната програма не успя да изпълни действие."
 
