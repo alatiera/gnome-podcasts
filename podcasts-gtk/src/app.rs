@@ -302,10 +302,12 @@ impl PdApplication {
         self.set_accels_for_action("win.toggle-pause", &["<primary>space"]);
         self.set_accels_for_action("win.seek-forwards", &["<primary>Right"]);
         self.set_accels_for_action("win.seek-backwards", &["<primary>Left"]);
-        self.set_accels_for_action("win.go-to-home", &["F1"]);
-        self.set_accels_for_action("win.go-to-shows", &["F2"]);
+        self.set_accels_for_action("win.raise-playback-rate", &["<primary>greater"]);
+        self.set_accels_for_action("win.lower-playback-rate", &["<primary>less"]);
+        self.set_accels_for_action("win.go-to-home", &["F1", "<alt>1"]);
+        self.set_accels_for_action("win.go-to-shows", &["F2", "<alt>2"]);
         // plan: use F3 for Queue page
-        self.set_accels_for_action("win.go-to-discovery", &["F4"]);
+        self.set_accels_for_action("win.go-to-discovery", &["F4", "<alt>4", "<primary>n"]);
         self.set_accels_for_action("win.import", &["<primary>o"]);
         self.set_accels_for_action("win.export", &["<primary>e"]);
         self.set_accels_for_action("window.close", &["<primary>w"]);

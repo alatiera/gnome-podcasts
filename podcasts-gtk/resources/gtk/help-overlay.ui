@@ -54,6 +54,18 @@
                 <property name="action-name">win.seek-backwards</property>
               </object>
             </child>
+            <child>
+              <object class="GtkShortcutsShortcut">
+                <property name="title" translatable="yes" context="shortcut window">Raise Playback Speed</property>
+                <property name="action-name">win.raise-playback-rate</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkShortcutsShortcut">
+                <property name="title" translatable="yes" context="shortcut window">Lower Playback Speed</property>
+                <property name="action-name">win.lower-playback-rate</property>
+              </object>
+            </child>
           </object>
         </child>
         <!-- General -->

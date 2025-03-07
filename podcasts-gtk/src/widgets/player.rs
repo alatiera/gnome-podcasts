@@ -44,6 +44,9 @@ use podcasts_data::{
     EpisodeId, EpisodeModel, EpisodeWidgetModel, ShowCoverModel, ShowId, USER_AGENT, dbqueries,
 };
 
+const RATE_MIN: f64 = 0.75;
+const RATE_MAX: f64 = 2.0;
+
 #[derive(Debug, Clone, Copy)]
 pub(crate) enum SeekDirection {
     Backwards,
@@ -612,6 +615,11 @@ impl PlayerWidget {
         self.set_playback_rate(rate);
         self.rate.btn.set_label(&format!("{:.2}×", rate));
         self.sheet.rate.btn.set_label(&format!("{:.2}×", rate));
+    }
+
+    pub fn change_playback_rate(&self, difference: f64) {
+        let rate = (self.player.rate() + difference).clamp(RATE_MIN, RATE_MAX);
+        self.on_rate_changed(rate);
     }
 
     fn reveal(&self) {
