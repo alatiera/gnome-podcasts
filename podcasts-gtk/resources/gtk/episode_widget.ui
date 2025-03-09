@@ -173,7 +173,7 @@ Tobias Bernard
         <child>
           <object class="GtkBox" id="button_box">
             <property name="halign">end</property>
-            <property name="spacing">6</property>
+            <property name="margin-top">8</property>
             <child>
               <object class="GtkButton" id="play">
                 <property name="receives_default">True</property>
@@ -234,7 +234,7 @@ Tobias Bernard
       <object class="PdDownloadProgress" id="progressbar">
         <property name="margin-start">6</property>
         <property name="margin-end">6</property>
-        <property name="margin-top">6</property>
+        <property name="height-request">8</property>
       </object>
     </child>
   </template>
