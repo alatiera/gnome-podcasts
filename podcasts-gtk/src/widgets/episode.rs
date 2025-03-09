@@ -131,6 +131,7 @@ impl EpisodeWidgetPriv {
     // InProgress State:
     //   * Show ProgressBar and Cancel Button.
     //   * Show `total_size`, `local_size` labels and `size_separator`.
+    //   * Hide `date`, `duration` labels and `separator1`.
     //   * Hide Download and Play Buttons
     fn state_prog(&self) {
         self.cancel.set_visible(true);
@@ -139,13 +140,19 @@ impl EpisodeWidgetPriv {
         self.local_size.set_visible(true);
         self.size_separator.set_visible(true);
 
+        self.date.set_visible(false);
+        self.separator1.set_visible(false);
+        self.duration.set_visible(false);
+
         self.play.set_visible(false);
         self.download.set_visible(false);
+        self.update_separator2_visibility();
     }
 
     // Playable State:
     //   * Hide ProgressBar and Cancel, Download Buttons.
     //   * Hide `local_size` labels and `size_separator`.
+    //   * Show `date`, `duration` labels and `separator1`.
     //   * Show Play Button and `total_size` label
     fn state_playable(&self) {
         self.cancel.set_visible(false);
@@ -153,14 +160,20 @@ impl EpisodeWidgetPriv {
         self.local_size.set_visible(false);
         self.size_separator.set_visible(false);
 
+        self.date.set_visible(true);
+        self.separator1.set_visible(true);
+        self.duration.set_visible(true);
+
         self.total_size.set_visible(true);
         self.play.set_visible(true);
+        self.update_separator2_visibility();
     }
 
     // NotDownloaded State:
     //   * Hide ProgressBar and Cancel, Play Buttons.
     //   * Hide `local_size` labels and `size_separator`.
     //   * Show Download Button
+    //   * Show `date`, `duration` labels and `separator1`.
     //   * Determine `total_size` label state (Comes from `episode.lenght`).
     fn state_download(&self) {
         self.cancel.set_visible(false);
@@ -169,7 +182,12 @@ impl EpisodeWidgetPriv {
         self.local_size.set_visible(false);
         self.size_separator.set_visible(false);
 
+        self.date.set_visible(true);
+        self.separator1.set_visible(true);
+        self.duration.set_visible(true);
+
         self.download.set_visible(true);
+        self.update_separator2_visibility();
     }
 
     /// Change the state of the `EpisodeWidget`.
@@ -302,10 +320,8 @@ impl EpisodeWidgetPriv {
         if let Some(s) = size {
             self.total_size.set_text(&s);
             self.total_size.set_visible(true);
-            self.separator2.set_visible(true);
         } else {
             self.total_size.set_visible(false);
-            self.separator2.set_visible(false);
         }
     }
 
@@ -428,6 +444,11 @@ impl EpisodeWidgetPriv {
         });
         self.obj().add_controller(long_press);
         self.obj().add_controller(right_click);
+    }
+
+    fn update_separator2_visibility(&self) {
+        self.separator2
+            .set_visible(self.date.is_visible() && self.total_size.is_visible());
     }
 }
 fn on_download_clicked(ep: &EpisodeWidgetModel, sender: &Sender<Action>) -> Result<()> {
