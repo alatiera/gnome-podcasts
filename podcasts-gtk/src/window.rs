@@ -395,8 +395,11 @@ impl MainWindow {
             .visible_page()
             .is_some_and(|p| p == *imp.show_page);
         imp.show_page.set_child(widget.as_ref());
-        if widget.is_some() {
+        if let Some(widget) = widget.as_ref() {
             imp.show_page.set_title(title);
+            self.bind_property("is_mobile_layout", widget, "is_mobile_layout")
+                .flags(glib::BindingFlags::SYNC_CREATE)
+                .build();
         } else if is_current_page {
             imp.navigation_view.pop();
         }

@@ -76,7 +76,10 @@ Tobias Bernard
                         </child>
                         <child>
                           <object class="AdwClamp">
-                            <property name="maximum_size">600</property>
+                            <property name="maximum-size"
+                                      bind-source="PdShowWidget"
+                                      bind-property="description-width"
+                                      bind-flags="sync-create">600</property>
                             <child>
                               <object class="PdReadMoreLabel" id="read_more_label"/>
                             </child>

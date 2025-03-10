@@ -34,8 +34,9 @@ use crate::widgets::{EmptyShow, EpisodeWidget, ReadMoreLabel, ShowMenu};
 use podcasts_data::dbqueries;
 use podcasts_data::{EpisodeModel, EpisodeWidgetModel, Show, ShowId};
 
-#[derive(Debug, Default, CompositeTemplate)]
+#[derive(Debug, Default, CompositeTemplate, glib::Properties)]
 #[template(resource = "/org/gnome/Podcasts/gtk/show_widget.ui")]
+#[properties(wrapper_type = ShowWidget)]
 pub struct ShowWidgetPriv {
     #[template_child]
     pub cover: TemplateChild<gtk::Image>,
@@ -49,6 +50,11 @@ pub struct ShowWidgetPriv {
     pub(crate) secondary_menu: TemplateChild<gtk::MenuButton>,
 
     pub show_id: Cell<Option<ShowId>>,
+
+    #[property(set, get)]
+    pub(crate) is_mobile_layout: Cell<bool>,
+    #[property(set, get)]
+    pub(crate) description_width: Cell<i32>,
 }
 
 impl ShowWidgetPriv {
@@ -88,6 +94,7 @@ impl ObjectSubclass for ShowWidgetPriv {
     }
 }
 
+#[glib::derived_properties]
 impl ObjectImpl for ShowWidgetPriv {
     fn dispose(&self) {
         self.view.unparent();
@@ -128,6 +135,11 @@ impl ShowWidget {
         self_.set_description(pd.description());
         self_.show_id.set(Some(pd.id()));
         self.set_cover(pd);
+
+        self.bind_property("is_mobile_layout", self, "description_width")
+            .transform_to(move |_, is_mobile: bool| Some(if is_mobile { 320 } else { 600 }))
+            .flags(glib::BindingFlags::SYNC_CREATE)
+            .build();
     }
 
     /// Set the show cover.
