@@ -69,7 +69,9 @@ nee <nee-git@patchouli.garden>
                     </child>
                     <child>
                       <object class="GtkLabel" id="entry_description">
-                        <property name="halign">start</property>
+                        <property name="xalign">0</property>
+                        <property name="wrap">True</property>
+                        <property name="justify">Start</property>
                         <property name="margin-top">8</property>
                         <property name="margin-bottom">8</property>
                         <property name="label" translatable="yes">Enter a feed URL or search the selected platforms.</property>
