@@ -105,6 +105,8 @@ nee <nee-git@patchouli.garden>
                           <object class="AdwSpinner" id="loading_spinner">
                             <property name="tooltip-text" translatable="yes">Loading…</property>
                             <property name="visible">False</property>
+                            <property name="width-request">24</property>
+                            <property name="margin-start">10</property>
                           </object>
                         </child>
                       </object>
