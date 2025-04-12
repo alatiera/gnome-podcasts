@@ -104,6 +104,11 @@ impl PlayerInfo {
         let mut metadata = Metadata::new();
         metadata.set_artist(Some(vec![podcast.title().to_string()]));
         metadata.set_title(Some(episode.title().to_string()));
+        metadata.set_length(
+            episode
+                .duration()
+                .map(|s| mpris_server::Time::from_secs(s as i64)),
+        );
 
         // Set the cover if it is already cached.
         let art_path = crate::download_covers::determin_cover_path(podcast, None);
@@ -217,6 +222,12 @@ impl PlayerInfo {
     fn set_cover_image(&self, show: &ShowCoverModel) {
         load_widget_texture(&self.cover, show.id(), crate::Thumb64);
         load_widget_texture(&self.cover_small, show.id(), crate::Thumb64);
+    }
+
+    fn update_mpris_position(&self, position: Position) -> Option<()> {
+        let time = mpris_server::Time::from_secs(position.seconds() as i64);
+        self.mpris.as_ref()?.set_position(time);
+        Some(())
     }
 }
 
@@ -1158,7 +1169,8 @@ impl PlayerWrapper {
                                 Ok(())
                             }
                         });
-                        player_widget.borrow().timer.on_position_updated(pos)
+                        player_widget.borrow().timer.on_position_updated(pos);
+                        player_widget.borrow().info.update_mpris_position(pos);
                     }
                 }
             }
