@@ -73,8 +73,8 @@ subdir('podcasts-gtk/src')
 
 meson.add_dist_script(
   'scripts/dist-vendor.sh',
-  meson.project_source_root(),
-  join_paths(meson.project_build_root(), 'meson-dist', meson.project_name() + '-' + podcasts_version)
+  meson.project_build_root() / 'meson-dist' / meson.project_name() + '-' + podcasts_version,
+  meson.project_source_root()
 )
 
 test(
