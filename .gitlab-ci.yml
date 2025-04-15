@@ -2,7 +2,9 @@ include:
   - project: 'gnome/citemplates'
     file: 'flatpak/flatpak-ci-initiative-sdk-extensions.yml'
     # ref: ''
-  - component: "gitlab.gnome.org/GNOME/citemplates/basic-release@master"
+  - component: "gitlab.gnome.org/GNOME/citemplates/basic-release-with-dist@25.4"
+    inputs:
+      dist-job-name: "flatpak@x86_64"
   - project: 'gnome/citemplates'
     file: 'templates/default-rules.yml'
 

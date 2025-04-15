@@ -4,26 +4,14 @@
 - Update CHANGELOG.md
 - Edit appdata.xml with the correct version and release notes
 - Commit and tag in git
+  - In the tag message add the same release notes as in CHANGELOG.md
 
 ```
-git tag -a '0.4.9' -m '0.4.9'
+git tag -a '0.4.9'
 git push --atomic origin main 0.4.9
 ```
 
-- Make a tarball for flathub
-  - Open a Build Terminal in Builder. Shift+Control+Alt+T
-  - Run the following commands
-```
-source /usr/lib/sdk/rust-stable/enable.sh
-meson dist --no-tests
-```
-  - Copy the created tar.xz and sha256sum to ~/Downloads
-
-- Make a release on GitLab
-  - Add the same release notes as in CHANGELOG.md
-  - At the very end, add tar.xz and sha256sum file 
-- Open a PR at https://github.com/flathub/org.gnome.Podcasts
-
+- Open a PR at [Flathub](https://github.com/flathub/org.gnome.Podcasts) with the new tarball from the gitlab release
 
 
 ### Optional maintenance thingies
