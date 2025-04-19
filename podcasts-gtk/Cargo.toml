@@ -8,7 +8,6 @@ edition.workspace = true
 adw = { package = "libadwaita", version = "0.7", features = ["v1_6"] }
 anyhow = { workspace = true }
 async-channel = "2"
-async-oneshot = "0.5"
 chrono = { workspace = true }
 fragile = "2"
 futures-util = "0.3"
