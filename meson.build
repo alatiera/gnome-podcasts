@@ -1,6 +1,6 @@
 project(
   'gnome-podcasts', 'rust',
-  version: '25.2',
+  version: '25.3',
   license: 'GPLv3',
   meson_version: '>= 1.4',
 )
