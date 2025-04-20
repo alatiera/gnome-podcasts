@@ -10,6 +10,8 @@
 git tag -a '0.4.9'
 git push --atomic origin main 0.4.9
 ```
+- Do a post-version release bump
+- Open an MR in gitlab and once merged, push the tag
 
 - Open a PR at [Flathub](https://github.com/flathub/org.gnome.Podcasts) with the new tarball from the gitlab release
 
