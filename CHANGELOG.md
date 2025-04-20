@@ -7,14 +7,22 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [Unreleased]
 
 ### Added:
+- Add a Description button to the Episode Sheet
+- Set current position and track length in mpris  World/podcasts!417
 
 ### Changed:
+- Update rust edition to 2024 World/podcasts!412
 
 ### Fixed:
 
+- Miscellaneous fixes for AdwButtonContent World/podcasts!401
+- Cosmetic fixes for the Episode Menu World/podcasts!408
+- Timestamp links work again with Streamed episodes World/podcasts#372
+- Improve rendering and sizing of episode widgets World/podcasts!414
+
 ### Removed:
 
-## [0.7.2]
+## [0.7.2] - 2025-01-12
 
 ### Added:
 - You can now mark individual episodes as played
