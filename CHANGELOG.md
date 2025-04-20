@@ -7,11 +7,22 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [Unreleased]
 
 ### Added:
-- Add a Description button to the Episode Sheet
+
+### Changed:
+
+### Fixed:
+
+### Removed:
+
+## [25.2] - 2025-04-20
+
+### Added:
+- Add a Description button to the Episode Sheet World/podcasts!407
 - Set current position and track length in mpris  World/podcasts!417
 
 ### Changed:
 - Update rust edition to 2024 World/podcasts!412
+- Translation updates
 
 ### Fixed:
 
@@ -19,8 +30,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Cosmetic fixes for the Episode Menu World/podcasts!408
 - Timestamp links work again with Streamed episodes World/podcasts#372
 - Improve rendering and sizing of episode widgets World/podcasts!414
-
-### Removed:
 
 ## [0.7.2] - 2025-01-12
 

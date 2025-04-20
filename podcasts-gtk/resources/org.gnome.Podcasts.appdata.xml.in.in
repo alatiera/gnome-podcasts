@@ -36,6 +36,18 @@
     <color type="primary" scheme_preference="dark">#7b1824</color>
   </branding>
   <releases>
+    <release version="25.2" date="2025-04-20">
+      <description>
+        <p>Small release with a couple of bugfixes and quality of life improvements!</p>
+        <p>We also changed the version scheme!</p>
+        <ul>
+          <li>We added a description button to the Episode Sheet</li>
+          <li>The position of the episode and length are now reported in MPRIS</li>
+          <li>Timestamp links work again if you are streaming an episode</li>
+          <li>And we also fixed a couple of pesky bugs!</li>
+        </ul>
+      </description>
+    </release>
     <release version="0.7.2" date="2025-01-12">
       <description>
         <p>
