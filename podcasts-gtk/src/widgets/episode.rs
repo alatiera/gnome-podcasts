@@ -427,6 +427,7 @@ impl EpisodeWidgetPriv {
                 popover.set_parent(&*this.obj());
                 popover.insert_action_group("episode", Some(&menu.group));
                 popover.set_pointing_to(Some(&gtk::gdk::Rectangle::new(x as i32, y as i32, 1, 1)));
+                popover.set_halign(gtk::Align::Start);
                 popover.set_has_arrow(false);
                 popover.popup();
             }
