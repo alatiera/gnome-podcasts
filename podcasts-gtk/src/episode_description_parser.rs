@@ -41,11 +41,14 @@ enum NewlineHandling {
 }
 
 fn escape_text(t: &str, newline_handling: NewlineHandling) -> String {
-    // TODO prevent escaping escape-sequances
     let escaped = t
         .replace('&', "&amp;")
         .replace('<', "&lt;")
-        .replace('>', "&gt;");
+        .replace('>', "&gt;")
+        // prevent escaping escape-sequances
+        .replace("&amp;amp;", "&amp;")
+        .replace("&lt;lt;", "&lt;")
+        .replace("&gt;gt;", "&gt;");
     let newlined_text = match newline_handling {
         NewlineHandling::ToSpace => escaped.replace('\n', " "),
         NewlineHandling::Remove => escaped.replace('\n', ""),
@@ -659,6 +662,19 @@ Free as in Freedom is produced by <a href=\"http://danlynch.org/blog/\">Dan Lync
     fn test_hash_timestamp_link() {
         let description = r##"<p><a href="#t=13:12">13:12</a></p>"##;
         let expected = "<a href=\"jump:792\" title=\"Jump to 13:12\">13:12</a>\n\n";
+        let markup = html2pango_markup(description);
+
+        assert_eq!(expected, markup);
+    }
+
+    #[test]
+    fn test_do_not_double_escape_sequences() {
+        let description = r##"Will &amp; Felix catch up on Democrats’ commitment to burning millions of dollars in search of a crumb of clout from the pod-mano-sphere, and John Fetterman’s chronic senate absenteeism as he searches for good vibes. Then, we’re joined by Lever News’ David Sirota &amp; Arjun Singh to discuss their new podcast series Tax Revolt &amp; the “Big Beautiful Bill” working its way through congress. We look at the devastating consequences of GOP tax policies, the increasing unpopularity of such drastic cuts, and how they fit in with the 50 year conservative war against taxes.
+
+Find all things Lever News at: https://www.levernews.com/
+
+And listen to Tax Revolt here or wherever you get pods: https://the.levernews.com/tax-revolt/"##;
+        let expected = "Will &amp; Felix catch up on Democrats’ commitment to burning millions of dollars in search of a crumb of clout from the pod-mano-sphere, and John Fetterman’s chronic senate absenteeism as he searches for good vibes. Then, we’re joined by Lever News’ David Sirota &amp; Arjun Singh to discuss their new podcast series Tax Revolt &amp; the “Big Beautiful Bill” working its way through congress. We look at the devastating consequences of GOP tax policies, the increasing unpopularity of such drastic cuts, and how they fit in with the 50 year conservative war against taxes.\n\nFind all things Lever News at: <a href=\"https://www.levernews.com/\">https://www.levernews.com/</a>\n\nAnd listen to Tax Revolt here or wherever you get pods: <a href=\"https://the.levernews.com/tax-revolt/\">https://the.levernews.com/tax-revolt/</a>";
         let markup = html2pango_markup(description);
 
         assert_eq!(expected, markup);
