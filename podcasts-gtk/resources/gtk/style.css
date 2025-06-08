@@ -88,15 +88,6 @@ popover modelbutton > box > label {
     margin: 6px;
 }
 
-.home-view-episode-cover {
-    background: color-mix(in srgb, currentColor 25%, transparent);
-    color: color-mix(in srgb, currentColor 40%, transparent);
-}
-
-.shows-view-cover {
-    background: color-mix(in srgb, currentColor 15%, transparent);
-}
-
 .in-button-progress > progressbar > trough {
     background-color: transparent;
 }

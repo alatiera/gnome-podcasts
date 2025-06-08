@@ -39,10 +39,10 @@ Tobias Bernard
         <property name="margin-bottom">6</property>
         <child>
           <object class="GtkImage" id="cover">
-            <property name="pixel-size">32</property>
+            <property name="pixel-size">64</property>
             <property name="width_request">64</property>
             <property name="height_request">64</property>
-            <property name="icon-name">image-x-generic-symbolic</property>
+            <property name="icon-name">image-missing-symbolic</property>
             <property name="overflow">hidden</property>
             <property name="hexpand">false</property>
             <property name="vexpand">false</property>
@@ -50,7 +50,6 @@ Tobias Bernard
             <property name="valign">center</property>
             <style>
               <class name="rounded-small"/>
-              <class name="home-view-episode-cover" />
             </style>
           </object>
         </child>

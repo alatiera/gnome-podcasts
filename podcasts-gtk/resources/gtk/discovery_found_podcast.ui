@@ -44,9 +44,10 @@ nee <nee-git@patchouli.garden>
         <!-- left -->
         <child type="prefix">
           <object class="GtkImage" id="cover">
+            <property name="pixel-size">64</property>
             <property name="width-request">64</property>
             <property name="height-request">64</property>
-            <property name="icon-name">image-x-generic-symbolic</property>
+            <property name="icon-name">image-missing-symbolic</property>
             <property name="accessible_role">presentation</property>
             <property name="valign">start</property>
           </object>

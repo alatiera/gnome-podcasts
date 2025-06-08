@@ -72,7 +72,6 @@ impl ObjectImpl for ShowsViewPriv {
                 picture.add_css_class("flat");
                 picture.add_css_class("rounded-big");
                 picture.add_css_class("show-button");
-                picture.add_css_class("shows-view-cover");
                 picture.set_content_fit(gtk::ContentFit::ScaleDown);
 
                 item.set_child(Some(&picture));
@@ -139,9 +138,9 @@ fn load_missing_icon() -> Option<gtk::IconPaintable> {
         std::cmp::max(acc, m_scale)
     });
     let theme = gtk::IconTheme::for_display(&display);
-    if theme.has_icon("image-x-generic-symbolic") {
+    if theme.has_icon("image-missing-symbolic") {
         Some(theme.lookup_icon(
-            "image-x-generic-symbolic",
+            "image-missing-symbolic",
             &[],
             128, // 1/2 size of picture to get padding
             scale,

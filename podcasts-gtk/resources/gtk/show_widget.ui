@@ -66,7 +66,7 @@ Tobias Bernard
                           <object class="GtkImage" id="cover">
                             <property name="pixel_size">256</property>
                             <property name="halign">center</property>
-                            <property name="icon_name">image-x-generic-symbolic</property>
+                            <property name="icon-name">image-missing-symbolic</property>
                             <property name="overflow">hidden</property>
                             <property name="focusable">True</property>
                             <style>
