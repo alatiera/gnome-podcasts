@@ -36,6 +36,7 @@
                         <property name="orientation">vertical</property>
                         <child>
                           <object class="GtkImage" id="cover">
+                            <property name="pixel-size">256</property>
                             <property name="width_request">256</property>
                             <property name="height_request">256</property>
                             <property name="hexpand">True</property>
