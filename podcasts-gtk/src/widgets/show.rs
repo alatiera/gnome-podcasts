@@ -148,6 +148,7 @@ impl ShowWidget {
             &self.imp().cover.get(),
             pd.id(),
             crate::Thumb256,
+            true,
         );
     }
 

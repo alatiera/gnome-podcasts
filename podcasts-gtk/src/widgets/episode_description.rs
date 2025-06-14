@@ -276,7 +276,12 @@ impl EpisodeDescriptionPriv {
     }
 
     fn set_cover(&self, show_id: ShowId) {
-        crate::download_covers::load_widget_texture(&self.cover.get(), show_id, crate::Thumb64);
+        crate::download_covers::load_widget_texture(
+            &self.cover.get(),
+            show_id,
+            crate::Thumb64,
+            true,
+        );
     }
 
     fn set_episode_specific_cover(

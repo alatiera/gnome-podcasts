@@ -83,7 +83,7 @@ impl ObjectImpl for ShowsViewPriv {
             let child = item.child().and_downcast::<gtk::Picture>().unwrap();
 
             let id = data.show_id();
-            let load_handle = load_widget_texture(&child, id, crate::Thumb256);
+            let load_handle = load_widget_texture(&child, id, crate::Thumb256, true);
             let mut load_handle_store = data.get_mut_load_handle();
             *load_handle_store = Some(load_handle);
         });

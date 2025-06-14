@@ -436,6 +436,7 @@ async fn load_paintable_async<T>(
     image: &WeakRef<T>,
     podcast_id: ShowId,
     size: ThumbSize,
+    set_tooltip: bool,
 ) -> Result<()>
 where
     T: TextureWidget + IsA<gtk::Widget>,
@@ -446,10 +447,12 @@ where
         .spawn_blocking(move || dbqueries::get_podcast_cover_from_id(podcast_id).unwrap())
         .await?;
 
-    if let Some(image) = image.upgrade() {
-        image.set_tooltip_text(Some(pd.title()));
-    } else {
-        return Err(NoLongerNeeded.into());
+    if set_tooltip {
+        if let Some(image) = image.upgrade() {
+            image.set_tooltip_text(Some(pd.title()));
+        } else {
+            return Err(NoLongerNeeded.into());
+        }
     }
 
     let result = crate::RUNTIME
@@ -472,7 +475,12 @@ where
     }
 }
 
-pub fn load_widget_texture<T>(widget: &T, show_id: ShowId, size: ThumbSize) -> glib::JoinHandle<()>
+pub fn load_widget_texture<T>(
+    widget: &T,
+    show_id: ShowId,
+    size: ThumbSize,
+    set_tooltip: bool,
+) -> glib::JoinHandle<()>
 where
     T: TextureWidget + IsA<gtk::Widget>,
 {
@@ -481,7 +489,7 @@ where
     let size = size.hidpi(widget.scale_factor()).unwrap_or(crate::Thumb512);
     let widget = widget.downgrade();
     crate::MAINCONTEXT.spawn_local_with_priority(glib::source::Priority::LOW, async move {
-        if let Err(err) = load_paintable_async(&widget, show_id, size).await {
+        if let Err(err) = load_paintable_async(&widget, show_id, size, set_tooltip).await {
             if let Some(DownloadError::NoLongerNeeded) = err.downcast_ref::<DownloadError>() {
                 // weak image reference couldn't be upgraded, no need to print this
                 return;

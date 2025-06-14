@@ -109,14 +109,22 @@ Tobias Bernard
               <object class="GtkBox" id="info">
                 <property name="spacing">6</property>
                 <child>
-                  <object class="GtkImage" id="show_cover">
-                    <property name="valign">center</property>
-                    <property name="pixel_size">34</property>
-                    <property name="icon-name">image-missing-symbolic</property>
-                    <property name="overflow">hidden</property>
+                  <object class="GtkButton" id="cover_button">
+                    <property name="tooltip-text" translatable="yes">Go to the description for this episode.</property>
                     <style>
-                      <class name="rounded-small"/>
+                      <class name="flat"/>
                     </style>
+                    <child>
+                      <object class="GtkImage" id="show_cover">
+                        <property name="valign">center</property>
+                        <property name="pixel_size">34</property>
+                        <property name="icon-name">image-missing-symbolic</property>
+                        <property name="overflow">hidden</property>
+                        <style>
+                          <class name="rounded-small"/>
+                        </style>
+                      </object>
+                    </child>
                   </object>
                 </child>
                 <child>
@@ -225,14 +233,22 @@ Tobias Bernard
               <object class="GtkBox">
                 <property name="spacing">6</property>
                 <child>
-                  <object class="GtkImage" id="show_cover_small">
-                    <property name="valign">center</property>
-                    <property name="pixel_size">34</property>
-                    <property name="icon-name">image-missing-symbolic</property>
-                    <property name="overflow">hidden</property>
+                  <object class="GtkButton" id="cover_button_small">
+                    <property name="tooltip-text" translatable="yes">Go to the description for this episode.</property>
                     <style>
-                      <class name="rounded-small"/>
+                      <class name="flat"/>
                     </style>
+                    <child>
+                      <object class="GtkImage" id="show_cover_small">
+                        <property name="valign">center</property>
+                        <property name="pixel_size">34</property>
+                        <property name="icon-name">image-missing-symbolic</property>
+                        <property name="overflow">hidden</property>
+                        <style>
+                          <class name="rounded-small"/>
+                        </style>
+                      </object>
+                    </child>
                   </object>
                 </child>
                 <child>

@@ -69,9 +69,11 @@ struct PlayerInfo {
     show: gtk::Label,
     episode: gtk::Label,
     cover: gtk::Image,
+    cover_button: gtk::Button,
     show_small: gtk::Label,
     episode_small: gtk::Label,
     cover_small: gtk::Image,
+    cover_button_small: gtk::Button,
     mpris: Option<Rc<Player>>,
     restore_position: Option<i32>,
     finished_restore: bool,
@@ -102,6 +104,7 @@ impl PlayerInfo {
     ) {
         self.ep = Some(episode.clone());
         self.episode_id.replace(Some(episode.id()));
+        self.init_cover_buttons(episode.id());
         self.set_cover_image(podcast);
         self.set_show_title(podcast);
         self.set_episode_title(episode);
@@ -224,9 +227,19 @@ impl PlayerInfo {
         self.show.set_tooltip_text(Some(show.title()));
     }
 
+    fn init_cover_buttons(&self, id: EpisodeId) {
+        self.cover_button.set_action_name(Some("app.go-to-episode"));
+        self.cover_button
+            .set_action_target_value(Some(&id.0.into()));
+        self.cover_button_small
+            .set_action_name(Some("app.go-to-episode"));
+        self.cover_button_small
+            .set_action_target_value(Some(&id.0.into()));
+    }
+
     fn set_cover_image(&self, show: &ShowCoverModel) {
-        load_widget_texture(&self.cover, show.id(), crate::Thumb64);
-        load_widget_texture(&self.cover_small, show.id(), crate::Thumb64);
+        load_widget_texture(&self.cover, show.id(), crate::Thumb64, false);
+        load_widget_texture(&self.cover_small, show.id(), crate::Thumb64, false);
     }
 
     fn update_mpris_position(&self, position: Position) -> Option<()> {
@@ -450,7 +463,7 @@ impl PlayerSheet {
     fn initialize_episode(&self, episode: &EpisodeWidgetModel, show: &ShowCoverModel) {
         self.episode.set_text(episode.title());
         self.show.set_text(show.title());
-        load_widget_texture(&self.cover, show.id(), crate::Thumb256);
+        load_widget_texture(&self.cover, show.id(), crate::Thumb256, true);
         self.go_to_episode
             .set_action_target(Some::<gtk::glib::Variant>(episode.id().0.into()));
         self.chapters_button.set_visible(false);
@@ -565,9 +578,11 @@ impl Default for PlayerWidget {
         let show = builder.object("show_label").unwrap();
         let episode = builder.object("episode_label").unwrap();
         let cover = builder.object("show_cover").unwrap();
+        let cover_button = builder.object("cover_button").unwrap();
         let show_small = builder.object("show_label_small").unwrap();
         let episode_small = builder.object("episode_label_small").unwrap();
         let cover_small = builder.object("show_cover_small").unwrap();
+        let cover_button_small = builder.object("cover_button_small").unwrap();
         let ep = None;
         let info = PlayerInfo {
             mpris,
@@ -575,9 +590,11 @@ impl Default for PlayerWidget {
             ep,
             episode,
             cover,
+            cover_button,
             show_small,
             episode_small,
             cover_small,
+            cover_button_small,
             restore_position: None,
             finished_restore: false,
             episode_id: RefCell::default(),
