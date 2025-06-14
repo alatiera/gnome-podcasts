@@ -197,6 +197,7 @@ Tobias Bernard
                 </child>
                 <child>
                   <object class="GtkButton" id="chapters_button">
+                    <property name="tooltip-text" translatable="yes">Go to the Chapters list.</property>
                     <property name="visible">False</property>
                     <property name="valign">center</property>
                     <property name="icon-name">view-list-bullet-symbolic</property>
