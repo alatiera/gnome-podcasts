@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: podcasts main\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2025-01-27 10:12+0000\n"
-"PO-Revision-Date: 2025-01-27 12:32+0100\n"
+"POT-Creation-Date: 2025-06-08 20:41+0000\n"
+"PO-Revision-Date: 2025-06-08 23:24+0200\n"
 "Last-Translator: Anders Jonsson <anders.jonsson@norsjovallen.se>\n"
 "Language-Team: Swedish <tp-sv@listor.tp-sv.se>\n"
 "Language: sv\n"
@@ -17,21 +17,21 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 3.5\n"
+"X-Generator: Poedit 3.6\n"
 
-#: podcasts-gtk/resources/gtk/discovery_found_podcast.ui:104
+#: podcasts-gtk/resources/gtk/discovery_found_podcast.ui:105
 msgid "Episodes: "
 msgstr "Avsnitt: "
 
-#: podcasts-gtk/resources/gtk/discovery_found_podcast.ui:142
+#: podcasts-gtk/resources/gtk/discovery_found_podcast.ui:143
 msgid "Last publication"
 msgstr "Senaste publicering"
 
-#: podcasts-gtk/resources/gtk/discovery_found_podcast.ui:163
+#: podcasts-gtk/resources/gtk/discovery_found_podcast.ui:164
 msgid "_Subscribe"
 msgstr "_Prenumerera"
 
-#: podcasts-gtk/resources/gtk/discovery_found_podcast.ui:173
+#: podcasts-gtk/resources/gtk/discovery_found_podcast.ui:174
 #: podcasts-gtk/src/widgets/discovery_search_results.rs:152
 msgid "Subscribing to feed…"
 msgstr "Prenumererar på flöde…"
@@ -228,27 +228,37 @@ msgctxt "shortcut window"
 msgid "Seek Backwards"
 msgstr "Spola bakåt"
 
-#: podcasts-gtk/resources/gtk/help-overlay.ui:62
+#: podcasts-gtk/resources/gtk/help-overlay.ui:59
+msgctxt "shortcut window"
+msgid "Raise Playback Speed"
+msgstr "Höj uppspelningshastighet"
+
+#: podcasts-gtk/resources/gtk/help-overlay.ui:65
+msgctxt "shortcut window"
+msgid "Lower Playback Speed"
+msgstr "Sänk uppspelningshastighet"
+
+#: podcasts-gtk/resources/gtk/help-overlay.ui:74
 msgctxt "shortcut window"
 msgid "General"
 msgstr "Allmänt"
 
-#: podcasts-gtk/resources/gtk/help-overlay.ui:65
+#: podcasts-gtk/resources/gtk/help-overlay.ui:77
 msgctxt "shortcut window"
 msgid "Check for new episodes"
 msgstr "Sök efter nya avsnitt"
 
-#: podcasts-gtk/resources/gtk/help-overlay.ui:71
+#: podcasts-gtk/resources/gtk/help-overlay.ui:83
 msgctxt "shortcut window"
 msgid "Quit the application"
 msgstr "Avsluta programmet"
 
-#: podcasts-gtk/resources/gtk/help-overlay.ui:77
+#: podcasts-gtk/resources/gtk/help-overlay.ui:89
 msgctxt "shortcut window"
 msgid "Import Subscriptions"
 msgstr "Importera prenumerationer"
 
-#: podcasts-gtk/resources/gtk/help-overlay.ui:83
+#: podcasts-gtk/resources/gtk/help-overlay.ui:95
 msgctxt "shortcut window"
 msgid "Export Subscriptions"
 msgstr "Exportera prenumerationer"
@@ -402,8 +412,8 @@ msgstr "_Om Poddsändningar"
 #: podcasts-gtk/resources/gtk/window.ui:102
 #: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:4
 #: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:3
-#: podcasts-gtk/src/app.rs:503 podcasts-gtk/src/widgets/aboutdialog.rs:56
-#: podcasts-gtk/src/widgets/player.rs:465
+#: podcasts-gtk/src/app.rs:507 podcasts-gtk/src/widgets/aboutdialog.rs:56
+#: podcasts-gtk/src/widgets/player.rs:479
 msgid "Podcasts"
 msgstr "Poddsändningar"
 
@@ -459,7 +469,7 @@ msgid "The view where one can add a new podcast"
 msgstr "Vyn där man kan lägga till en ny poddsändning"
 
 #. developer_name tag deprecated with Appstream 1.0
-#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:221
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:230
 msgid "The Podcasts developers"
 msgstr "Poddsändningar-utvecklarna"
 
@@ -508,7 +518,7 @@ msgstr "Hur många tidsperioder att vänta mellan automatiska upprensningar"
 msgid "What period of time to wait between automatic cleanups"
 msgstr "Vilken sorts tidsperiod att vänta mellan automatiska upprensningar"
 
-#: podcasts-gtk/src/app.rs:358
+#: podcasts-gtk/src/app.rs:360
 msgid "Copied URL to clipboard!"
 msgstr "Kopierade URL till urklipp!"
 
@@ -589,7 +599,7 @@ msgstr "Nytt"
 
 #. Translators: Shows as a noun, meaning Podcast-Shows.
 #: podcasts-gtk/src/widgets/content_stack.rs:68
-#: podcasts-gtk/src/widgets/shows_view.rs:118
+#: podcasts-gtk/src/widgets/shows_view.rs:117
 msgid "Shows"
 msgstr "Shower"
 
@@ -597,11 +607,11 @@ msgstr "Shower"
 msgid "Download progress"
 msgstr "Hämtningsförlopp"
 
-#: podcasts-gtk/src/widgets/episode.rs:279
+#: podcasts-gtk/src/widgets/episode.rs:297
 msgid "{} min"
 msgstr "{} min"
 
-#: podcasts-gtk/src/widgets/player.rs:1109
+#: podcasts-gtk/src/widgets/player.rs:1128
 msgid "The media player was unable to execute an action."
 msgstr "Mediaspelaren kunde inte utföra en åtgärd."
 
