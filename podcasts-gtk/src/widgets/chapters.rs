@@ -1,4 +1,4 @@
-// chapters_page.rs
+// chapters.rs
 //
 // Copyright 2025 nee <nee-git@patchouli.garden>
 //
@@ -28,30 +28,35 @@ use std::cell::{Cell, RefCell};
 
 use crate::app::Action;
 use crate::chapter_parser::Chapter;
+use crate::i18n::i18n;
 use podcasts_data::EpisodeId;
 use podcasts_data::dbqueries;
 
 #[derive(Debug, CompositeTemplate, Default)]
-#[template(resource = "/org/gnome/Podcasts/gtk/chapters_page.ui")]
-pub struct ChaptersPagePriv {
+#[template(resource = "/org/gnome/Podcasts/gtk/chapters.ui")]
+pub struct ChaptersPriv {
     #[template_child]
-    title: TemplateChild<gtk::Label>,
+    episode: TemplateChild<gtk::Label>,
+    #[template_child]
+    show: TemplateChild<gtk::Label>,
     #[template_child]
     listbox: TemplateChild<gtk::ListBox>,
     episode_id: Cell<Option<EpisodeId>>,
     sender: RefCell<Option<Sender<Action>>>,
 }
 
-impl ChaptersPagePriv {
-    fn init(&self, id: EpisodeId) -> Result<()> {
+impl ChaptersPriv {
+    fn set_labels(&self, id: EpisodeId) -> Result<()> {
         let ep = dbqueries::get_episode_widget_from_id(id)?;
+        self.episode.set_text(ep.title());
+
         let show = dbqueries::get_podcast_from_id(ep.show_id())?;
-        self.title
-            .set_text(&format!("{} - {}", show.title(), ep.title()));
+        self.show.set_text(show.title());
         Ok(())
     }
 
     fn fill_chapters_list(&self, chapters: Vec<Chapter>) {
+        self.listbox.remove_all();
         for c in chapters.into_iter() {
             let item = gtk::Box::new(gtk::Orientation::Horizontal, 10);
             item.set_margin_top(15);
@@ -88,10 +93,10 @@ impl ChaptersPagePriv {
 }
 
 #[glib::object_subclass]
-impl ObjectSubclass for ChaptersPagePriv {
-    const NAME: &'static str = "PdChaptersPage";
-    type Type = ChaptersPage;
-    type ParentType = adw::NavigationPage;
+impl ObjectSubclass for ChaptersPriv {
+    const NAME: &'static str = "PdChapters";
+    type Type = Chapters;
+    type ParentType = adw::Bin;
 
     fn class_init(klass: &mut Self::Class) {
         klass.bind_template();
@@ -111,25 +116,37 @@ impl ObjectSubclass for ChaptersPagePriv {
     }
 }
 
-impl WidgetImpl for ChaptersPagePriv {}
-impl ObjectImpl for ChaptersPagePriv {}
-impl NavigationPageImpl for ChaptersPagePriv {}
+impl WidgetImpl for ChaptersPriv {}
+impl ObjectImpl for ChaptersPriv {}
+impl BinImpl for ChaptersPriv {}
 
 glib::wrapper! {
-    pub struct ChaptersPage(ObjectSubclass<ChaptersPagePriv>)
-        @extends adw::NavigationPage, gtk::Widget,
+    pub struct Chapters(ObjectSubclass<ChaptersPriv>)
+        @extends adw::Bin, gtk::Widget,
         @implements gtk::Accessible, gtk::Buildable, gtk::ConstraintTarget;
 }
 
-impl ChaptersPage {
-    pub(crate) fn new(sender: &Sender<Action>, id: EpisodeId, chapters: Vec<Chapter>) -> Self {
+impl Chapters {
+    pub(crate) fn new(sender: &Sender<Action>, ep: EpisodeId, chapters: Vec<Chapter>) -> Self {
         let this: Self = glib::Object::new();
-        this.imp().fill_chapters_list(chapters);
-        let _ = this.imp().init(id);
-        this.imp().episode_id.set(Some(id));
-        this.imp().sender.replace(Some(sender.clone()));
-
+        this.init(sender);
+        this.set_chapters(ep, chapters);
         this
+    }
+
+    pub(crate) fn new_page(
+        sender: &Sender<Action>,
+        ep: EpisodeId,
+        chapters: Vec<Chapter>,
+    ) -> adw::NavigationPage {
+        let widget = Self::new(sender, ep, chapters);
+        let view = adw::ToolbarView::builder().content(&widget).build();
+        view.add_top_bar(&adw::HeaderBar::new());
+        adw::NavigationPage::with_tag(&view, &i18n("Chapters"), "chapters")
+    }
+
+    pub(crate) fn init(&self, sender: &Sender<Action>) {
+        self.imp().sender.replace(Some(sender.clone()));
     }
 
     fn jump_to_second(&self, second: i32) {
@@ -137,5 +154,12 @@ impl ChaptersPage {
         if let (Some(id), Some(sender)) = (self.imp().episode_id.get(), sender.clone()) {
             send_blocking!(sender, Action::InitEpisodeAt(id, second));
         }
+    }
+
+    pub(crate) fn set_chapters(&self, ep: EpisodeId, chapters: Vec<Chapter>) {
+        let imp = self.imp();
+        imp.episode_id.set(Some(ep));
+        let _ = imp.set_labels(ep);
+        imp.fill_chapters_list(chapters);
     }
 }

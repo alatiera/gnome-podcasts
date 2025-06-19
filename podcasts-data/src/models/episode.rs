@@ -172,6 +172,25 @@ impl Episode {
     pub fn image_uri(&self) -> Option<&str> {
         self.image_uri.as_deref()
     }
+
+    /// Sets `play_position` and saves the record.
+    pub fn set_play_position(&mut self, seconds: i32) -> Result<(), DataError> {
+        self.play_position = seconds;
+        self.save().map(|_| ())
+    }
+
+    /// Sets `play_position` if it diverges multiple seconds (10) from the last value.
+    /// If it doesn't diverge Ok(()) is returned, nothing is written.
+    pub fn set_play_position_if_divergent(&mut self, seconds: i32) -> Result<(), DataError> {
+        if seconds != 0 && self.play_position != 0 {
+            if (seconds - self.play_position).abs() > 10 {
+                return self.set_play_position(seconds);
+            }
+        } else {
+            return self.set_play_position(seconds);
+        }
+        Ok(())
+    }
 }
 
 #[derive(Queryable, AsChangeset, PartialEq, Selectable)]
@@ -323,25 +342,6 @@ impl EpisodeWidgetModel {
     /// `0` means the episode was either not played or continued to play to the end.
     pub fn play_position(&self) -> i32 {
         self.play_position
-    }
-
-    /// Sets `play_position` and saves the record.
-    pub fn set_play_position(&mut self, seconds: i32) -> Result<(), DataError> {
-        self.play_position = seconds;
-        self.save().map(|_| ())
-    }
-
-    /// Sets `play_position` if it diverges multiple seconds (10) from the last value.
-    /// If it doesn't diverge Ok(()) is returned, nothing is written.
-    pub fn set_play_position_if_divergent(&mut self, seconds: i32) -> Result<(), DataError> {
-        if seconds != 0 && self.play_position != 0 {
-            if (seconds - self.play_position).abs() > 10 {
-                return self.set_play_position(seconds);
-            }
-        } else {
-            return self.set_play_position(seconds);
-        }
-        Ok(())
     }
 }
 

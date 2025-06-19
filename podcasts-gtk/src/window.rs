@@ -227,7 +227,7 @@ impl MainWindow {
         imp.toolbar_box.prepend(&player.borrow().container);
 
         imp.bottom_sheet
-            .set_property("sheet", &player.borrow().sheet.sheet);
+            .set_property("sheet", &player.borrow().sheet);
 
         imp.top_switcher.set_stack(Some(content.stack()));
         imp.bottom_switcher.set_stack(Some(content.stack()));
@@ -458,6 +458,19 @@ impl MainWindow {
             .navigation_view
             .visible_page()
             .is_some_and(|p| p.downcast::<T>().is_ok());
+
+        if is_current_page {
+            imp.navigation_view.pop();
+        }
+    }
+
+    pub(crate) fn pop_page_by_tag(&self, tag: &str) {
+        let imp = self.imp();
+        let is_current_page = imp
+            .navigation_view
+            .visible_page()
+            .and_then(|p| p.tag().map(|s| s == tag))
+            .unwrap_or(false);
 
         if is_current_page {
             imp.navigation_view.pop();

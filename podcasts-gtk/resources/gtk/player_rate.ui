@@ -32,6 +32,9 @@ Tobias Bernard
     <property name="direction">up</property>
     <property name="menu_model">rate_menu</property>
     <property name="label" translatable="yes">1.00×</property>
+    <style>
+      <class name="flat"/>
+    </style>
   </object>
   <menu id="rate_menu">
     <section>

@@ -1,7 +1,7 @@
 # List of source files containing translatable strings.
 # Please keep this file sorted alphabetically.
 # ui files
-podcasts-gtk/resources/gtk/chapters_page.ui
+podcasts-gtk/resources/gtk/chapters.ui
 podcasts-gtk/resources/gtk/discovery_found_podcast.ui
 podcasts-gtk/resources/gtk/discovery_page.ui
 podcasts-gtk/resources/gtk/discovery_search_results.ui
@@ -13,9 +13,11 @@ podcasts-gtk/resources/gtk/episode_widget.ui
 podcasts-gtk/resources/gtk/home_episode.ui
 podcasts-gtk/resources/gtk/home_view.ui
 podcasts-gtk/resources/gtk/player_rate.ui
-podcasts-gtk/resources/gtk/player_sheet.ui
 podcasts-gtk/resources/gtk/player_toolbar.ui
 podcasts-gtk/resources/gtk/secondary_menu.ui
+podcasts-gtk/resources/gtk/sheet_base.ui
+podcasts-gtk/resources/gtk/sheet_description.ui
+podcasts-gtk/resources/gtk/sheet_player.ui
 podcasts-gtk/resources/gtk/shortcuts-dialog.ui
 podcasts-gtk/resources/gtk/show_menu.ui
 podcasts-gtk/resources/gtk/show_widget.ui
@@ -42,7 +44,7 @@ podcasts-gtk/src/utils.rs
 podcasts-gtk/src/window.rs
 podcasts-gtk/src/widgets/aboutdialog.rs
 podcasts-gtk/src/widgets/base_view.rs
-podcasts-gtk/src/widgets/chapters_page.rs
+podcasts-gtk/src/widgets/chapters.rs
 podcasts-gtk/src/widgets/content_stack.rs
 podcasts-gtk/src/widgets/discovery_page.rs
 podcasts-gtk/src/widgets/discovery_search_results.rs
@@ -56,6 +58,9 @@ podcasts-gtk/src/widgets/home_view.rs
 podcasts-gtk/src/widgets/mod.rs
 podcasts-gtk/src/widgets/player.rs
 podcasts-gtk/src/widgets/read_more_label.rs
+podcasts-gtk/src/widgets/sheet_base.rs
+podcasts-gtk/src/widgets/sheet_description.rs
+podcasts-gtk/src/widgets/sheet_player.rs
 podcasts-gtk/src/widgets/show.rs
 podcasts-gtk/src/widgets/show_menu.rs
 podcasts-gtk/src/widgets/shows_view.rs

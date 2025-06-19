@@ -19,7 +19,7 @@
 
 mod aboutdialog;
 mod base_view;
-mod chapters_page;
+mod chapters;
 mod content_stack;
 mod discovery_page;
 mod discovery_search_results;
@@ -32,13 +32,16 @@ pub(crate) mod episode_menu;
 mod home_view;
 pub(crate) mod player;
 mod read_more_label;
+mod sheet_base;
+mod sheet_description;
+mod sheet_player;
 mod show;
 pub(crate) mod show_menu;
 mod shows_view;
 
 pub(crate) use self::aboutdialog::about_dialog;
 pub(crate) use self::base_view::BaseView;
-pub(crate) use self::chapters_page::ChaptersPage;
+pub(crate) use self::chapters::Chapters;
 pub(crate) use self::content_stack::Content;
 pub(crate) use self::discovery_page::DiscoveryPage;
 pub(crate) use self::discovery_search_results::SearchResults;
@@ -50,6 +53,9 @@ pub(crate) use self::episode_description::EpisodeDescription;
 pub(crate) use self::episode_menu::EpisodeMenu;
 pub(crate) use self::home_view::HomeView;
 pub(crate) use self::read_more_label::ReadMoreLabel;
+pub(crate) use self::sheet_base::SheetBase;
+pub(crate) use self::sheet_description::SheetDescription;
+pub(crate) use self::sheet_player::SheetPlayer;
 pub(crate) use self::show::ShowWidget;
 pub(crate) use self::show_menu::ShowMenu;
 pub(crate) use self::shows_view::ShowsView;

@@ -38,7 +38,7 @@ use crate::settings;
 use crate::utils;
 use crate::widgets::player::StreamMode;
 use crate::widgets::show_menu::{mark_all_notif, remove_show_notif};
-use crate::widgets::{ChaptersPage, EpisodeDescription, SearchResults, ShowWidget};
+use crate::widgets::{Chapters, EpisodeDescription, SearchResults, ShowWidget};
 use crate::window::MainWindow;
 use podcasts_data::dbqueries;
 use podcasts_data::discovery::FoundPodcast;
@@ -366,8 +366,8 @@ impl PdApplication {
                 window.push_page(&widget);
             }
             Action::GoToChaptersPage(ep, chapters) => {
-                let page = ChaptersPage::new(&data.sender, ep, chapters);
-                window.pop_page::<ChaptersPage>();
+                let page = Chapters::new_page(&data.sender, ep, chapters);
+                window.pop_page_by_tag("chapters");
                 window.push_page(&page);
             }
             Action::ChaptersAvailable(ep, chapters) => {

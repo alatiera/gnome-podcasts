@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <gresources>
   <gresource prefix="/org/gnome/Podcasts/">
-      <file compressed="true" preprocess="xml-stripblanks">gtk/chapters_page.ui</file>
+      <file compressed="true" preprocess="xml-stripblanks">gtk/chapters.ui</file>
       <file compressed="true" preprocess="xml-stripblanks">gtk/discovery_page.ui</file>
       <file compressed="true" preprocess="xml-stripblanks">gtk/discovery_search_results.ui</file>
       <file compressed="true" preprocess="xml-stripblanks">gtk/discovery_found_podcast.ui</file>
@@ -13,16 +13,20 @@
       <file compressed="true" preprocess="xml-stripblanks">gtk/empty_show.ui</file>
       <file compressed="true" preprocess="xml-stripblanks">gtk/home_view.ui</file>
       <file compressed="true" preprocess="xml-stripblanks">gtk/home_episode.ui</file>
+      <file compressed="true" preprocess="xml-stripblanks">gtk/sheet_base.ui</file>
+      <file compressed="true" preprocess="xml-stripblanks">gtk/sheet_player.ui</file>
+      <file compressed="true" preprocess="xml-stripblanks">gtk/sheet_description.ui</file>
       <file compressed="true" preprocess="xml-stripblanks">gtk/show_menu.ui</file>
       <file compressed="true" preprocess="xml-stripblanks" alias="shortcuts-dialog.ui">gtk/shortcuts-dialog.ui</file>
       <file compressed="true" preprocess="xml-stripblanks">gtk/player_rate.ui</file>
-      <file compressed="true" preprocess="xml-stripblanks">gtk/player_sheet.ui</file>
       <file compressed="true" preprocess="xml-stripblanks">gtk/player_toolbar.ui</file>
       <file compressed="true" preprocess="xml-stripblanks">gtk/window.ui</file>
+      <file compressed="true" preprocess="xml-stripblanks">icons/scalable/actions/info-outline-symbolic.svg</file>
       <file compressed="true" preprocess="xml-stripblanks">icons/scalable/actions/skip-back-large-symbolic.svg</file>
       <file compressed="true" preprocess="xml-stripblanks">icons/scalable/actions/skip-back-symbolic.svg</file>
       <file compressed="true" preprocess="xml-stripblanks">icons/scalable/actions/skip-forward-large-symbolic.svg</file>
       <file compressed="true" preprocess="xml-stripblanks">icons/scalable/actions/skip-forward-symbolic.svg</file>
+      <file compressed="true" preprocess="xml-stripblanks">icons/scalable/actions/sound-symbolic.svg</file>
       <file compressed="true" alias="style.css">gtk/style.css</file>
   </gresource>
 </gresources>

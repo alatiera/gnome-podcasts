@@ -40,8 +40,9 @@ use crate::chapter_parser::Chapter;
 use crate::config::APP_ID;
 use crate::download_covers::load_widget_texture;
 use crate::i18n::i18n;
+use crate::widgets::SheetBase;
 use podcasts_data::{
-    EpisodeId, EpisodeModel, EpisodeWidgetModel, ShowCoverModel, ShowId, USER_AGENT, dbqueries,
+    Episode, EpisodeId, EpisodeModel, ShowCoverModel, ShowId, USER_AGENT, dbqueries,
 };
 
 const RATE_MIN: f64 = 0.75;
@@ -77,10 +78,10 @@ struct PlayerInfo {
     mpris: Option<Rc<Player>>,
     restore_position: Option<i32>,
     finished_restore: bool,
-    ep: Option<EpisodeWidgetModel>,
+    ep: Option<Episode>,
     episode_id: RefCell<Option<EpisodeId>>,
     // TODO get rid of this once ported to Ui Templates and just weak borrow
-    chapters_signal_ids: RefCell<Option<Rc<(SignalHandlerId, SignalHandlerId)>>>,
+    chapters_signal_id: RefCell<Option<Rc<SignalHandlerId>>>,
 }
 
 impl PlayerInfo {
@@ -96,12 +97,7 @@ impl PlayerInfo {
     }
 
     // FIXME: create a Diesel Model of the joined episode and podcast query instead
-    fn init(
-        &mut self,
-        sender: &Sender<Action>,
-        episode: &EpisodeWidgetModel,
-        podcast: &ShowCoverModel,
-    ) {
+    fn init(&mut self, sender: &Sender<Action>, episode: &Episode, podcast: &ShowCoverModel) {
         self.ep = Some(episode.clone());
         self.episode_id.replace(Some(episode.id()));
         self.init_cover_buttons(episode.id());
@@ -217,7 +213,7 @@ impl PlayerInfo {
         Ok(())
     }
 
-    fn set_episode_title(&self, episode: &EpisodeWidgetModel) {
+    fn set_episode_title(&self, episode: &Episode) {
         self.episode.set_text(episode.title());
         self.episode.set_tooltip_text(Some(episode.title()));
     }
@@ -250,16 +246,16 @@ impl PlayerInfo {
 }
 
 #[derive(Debug, Clone)]
-struct PlayerTimes {
-    progressed: gtk::Label,
-    duration: gtk::Label,
-    slider: gtk::Scale,
-    slider_update: Rc<SignalHandlerId>,
-    progress_bar: gtk::ProgressBar,
+pub(crate) struct PlayerTimes {
+    pub(crate) progressed: gtk::Label,
+    pub(crate) duration: gtk::Label,
+    pub(crate) slider: gtk::Scale,
+    pub(crate) slider_update: Rc<SignalHandlerId>,
+    pub(crate) progress_bar: gtk::ProgressBar,
 }
 
 #[derive(Debug, Clone, Copy)]
-struct Duration(ClockTime);
+pub(crate) struct Duration(ClockTime);
 
 impl Deref for Duration {
     type Target = ClockTime;
@@ -269,7 +265,7 @@ impl Deref for Duration {
 }
 
 #[derive(Debug, Clone, Copy)]
-struct Position(ClockTime);
+pub(crate) struct Position(ClockTime);
 
 impl Deref for Position {
     type Target = ClockTime;
@@ -326,9 +322,9 @@ fn format_duration(seconds: u32) -> String {
 }
 
 #[derive(Debug, Clone)]
-struct PlayerRate {
-    action: gio::SimpleAction,
-    btn: gtk::MenuButton,
+pub(crate) struct PlayerRate {
+    pub(crate) action: gio::SimpleAction,
+    pub(crate) btn: gtk::MenuButton,
 }
 
 impl PlayerRate {
@@ -365,11 +361,7 @@ impl PlayerRate {
             .borrow()
             .container
             .insert_action_group("rate", Some(&group));
-        widget
-            .borrow()
-            .sheet
-            .sheet
-            .insert_action_group("rate", Some(&group));
+        widget.borrow().sheet.connect_rate_actions(&group);
     }
 }
 
@@ -388,95 +380,12 @@ struct PlayerControls {
 }
 
 #[derive(Debug, Clone)]
-pub(crate) struct PlayerSheet {
-    pub(crate) sheet: adw::Bin,
-    cover: gtk::Image,
-    play_pause: gtk::Stack,
-    play: gtk::Button,
-    pause: gtk::Button,
-    duration: gtk::Label,
-    progressed: gtk::Label,
-    slider: gtk::Scale,
-    forward: gtk::Button,
-    rewind: gtk::Button,
-    rate: PlayerRate,
-    show: gtk::Label,
-    episode: gtk::Label,
-    go_to_episode: gtk::Button,
-    chapters_button: gtk::Button,
-}
-
-impl PlayerSheet {
-    fn new(rate: PlayerRate) -> Self {
-        let builder = gtk::Builder::from_resource("/org/gnome/Podcasts/gtk/player_sheet.ui");
-        let sheet = builder.object("sheet").unwrap();
-
-        let cover = builder.object("cover").unwrap();
-        let play_pause = builder.object("play_pause").unwrap();
-        let play = builder.object("play").unwrap();
-        let pause = builder.object("pause").unwrap();
-        let duration = builder.object("duration").unwrap();
-        let progressed = builder.object("progressed").unwrap();
-        let slider = builder.object("slider").unwrap();
-        let rewind = builder.object("rewind").unwrap();
-        let forward = builder.object("forward").unwrap();
-        let rate_container: adw::Bin = builder.object("rate_container").unwrap();
-        let show = builder.object("show_label").unwrap();
-        let episode = builder.object("episode_label").unwrap();
-        let go_to_episode: gtk::Button = builder.object("go_to_episode").unwrap();
-        let chapters_button: gtk::Button = builder.object("chapters_button").unwrap();
-
-        rate_container.set_child(Some(&rate.btn));
-
-        go_to_episode.connect_clicked(|button| {
-            let app = gio::Application::default()
-                .expect("Could not get default application")
-                .downcast::<gtk::Application>()
-                .unwrap();
-
-            app.activate_action("go-to-episode", button.action_target_value().as_ref());
-            let window = app.active_window().expect("No active window");
-            if let Err(e) = window.activate_action("win.close-bottom-sheet", None) {
-                warn!("Failed to win.close-bottom-sheet {e}");
-            }
-        });
-
-        PlayerSheet {
-            sheet,
-            cover,
-            play_pause,
-            play,
-            pause,
-            duration,
-            progressed,
-            slider,
-            forward,
-            rewind,
-            rate,
-            show,
-            episode,
-            go_to_episode,
-            chapters_button,
-        }
-    }
-
-    fn initialize_episode(&self, episode: &EpisodeWidgetModel, show: &ShowCoverModel) {
-        self.episode.set_text(episode.title());
-        self.show.set_text(show.title());
-        load_widget_texture(&self.cover, show.id(), crate::Thumb256, true);
-        self.go_to_episode
-            .set_action_target(Some::<gtk::glib::Variant>(episode.id().0.into()));
-        self.chapters_button.set_visible(false);
-    }
-}
-
-#[derive(Debug, Clone)]
 pub(crate) struct PlayerWidget {
     pub(crate) container: gtk::Box,
     player: gst_play::Play,
     player_signals: gst_play::PlaySignalAdapter,
     controls: PlayerControls,
-    pub(crate) sheet: PlayerSheet,
+    pub(crate) sheet: SheetBase,
     full: gtk::Box,
     small: gtk::Box,
     stack: gtk::Stack,
@@ -598,12 +507,12 @@ impl Default for PlayerWidget {
             restore_position: None,
             finished_restore: false,
             episode_id: RefCell::default(),
-            chapters_signal_ids: RefCell::default(),
+            chapters_signal_id: RefCell::default(),
         };
         info.create_bindings();
 
         let dialog_rate = PlayerRate::new();
-        let dialog = PlayerSheet::new(dialog_rate);
+        let dialog = SheetBase::new(dialog_rate);
 
         let container = builder.object("container").unwrap();
         let full: gtk::Box = builder.object("full").unwrap();
@@ -641,7 +550,7 @@ impl PlayerWidget {
     fn on_rate_changed(&self, rate: f64) {
         self.set_playback_rate(rate);
         self.rate.btn.set_label(&format!("{:.2}×", rate));
-        self.sheet.rate.btn.set_label(&format!("{:.2}×", rate));
+        self.sheet.on_rate_changed(rate);
     }
 
     pub fn change_playback_rate(&self, difference: f64) {
@@ -660,10 +569,14 @@ impl PlayerWidget {
         stream: StreamMode,
         second: Option<i32>,
     ) -> Result<()> {
-        let ep = dbqueries::get_episode_widget_from_id(id)?;
+        let ep = dbqueries::get_episode_from_id(id)?;
         let pd = dbqueries::get_podcast_cover_from_id(ep.show_id())?;
+        let is_different_ep = self.info.episode_id.borrow().as_ref() != Some(&id);
 
-        self.sheet.initialize_episode(&ep, &pd);
+        // avoid rebuilding the sheet when we're just jumping in the same ep.
+        if is_different_ep {
+            self.sheet.initialize_episode(&ep, &pd);
+        }
 
         self.info.restore_position = second.or_else(|| {
             let episode_position = ep.play_position();
@@ -831,29 +744,24 @@ impl PlayerWidget {
         self.controls
             .chapters_button
             .set_visible(!chapters.is_empty());
-        self.sheet.chapters_button.set_visible(!chapters.is_empty());
+
+        self.sheet.chapters_available(id, chapters.clone());
+
         if let Some(sender) = self.sender.as_ref() {
             // rebind the buttons with the new chapters
             let sender2 = sender.clone();
-            let chapters2 = chapters.clone();
             let new_controls_id = self.controls.chapters_button.connect_clicked(move |_| {
-                hide_sheet();
-                send_blocking!(sender2, Action::GoToChaptersPage(id, chapters2.clone()));
+                send_blocking!(sender2, Action::GoToChaptersPage(id, chapters.clone()));
             });
-            let sender = sender.clone();
-            let new_sheet_signal_id = self.sheet.chapters_button.connect_clicked(move |_| {
-                hide_sheet();
-                send_blocking!(sender, Action::GoToChaptersPage(id, chapters.clone()));
-            });
+
             // unbind the old signals
             let old_signal_id = self
                 .info
-                .chapters_signal_ids
-                .replace(Some(Rc::new((new_controls_id, new_sheet_signal_id))));
-            if let Some(chapters_signal_ids) = old_signal_id {
-                let (controls_signal, sheet_signal) = Rc::try_unwrap(chapters_signal_ids).unwrap();
+                .chapters_signal_id
+                .replace(Some(Rc::new(new_controls_id)));
+            if let Some(chapters_signal_id) = old_signal_id {
+                let controls_signal = Rc::try_unwrap(chapters_signal_id).unwrap();
                 self.controls.chapters_button.disconnect(controls_signal);
-                self.sheet.chapters_button.disconnect(sheet_signal);
             }
         }
     }
@@ -861,7 +769,7 @@ impl PlayerWidget {
 
 impl PlayerExt for PlayerWidget {
     fn play(&self) {
-        self.sheet.play_pause.set_visible_child(&self.sheet.pause);
+        self.sheet.on_play();
 
         self.reveal();
 
@@ -901,7 +809,7 @@ impl PlayerExt for PlayerWidget {
     }
 
     fn pause(&mut self) {
-        self.sheet.play_pause.set_visible_child(&self.sheet.play);
+        self.sheet.on_pause();
 
         self.controls
             .play_pause_big
@@ -961,11 +869,7 @@ impl PlayerExt for PlayerWidget {
             self.controls.play_small.grab_focus();
         }
 
-        let is_focus = self.sheet.pause.is_focus();
-        self.sheet.play_pause.set_visible_child(&self.sheet.play);
-        if is_focus {
-            self.sheet.play.grab_focus();
-        }
+        self.sheet.on_stop();
 
         self.info.ep = None;
         self.info.restore_position = None;
@@ -1097,28 +1001,13 @@ impl PlayerWrapper {
         self.connect_rate_buttons();
         self.connect_mpris_buttons(sender);
         self.connect_gst_signals(sender);
-        self.connect_sheet();
+        self.connect_sheet(sender);
     }
 
-    fn connect_sheet(&self) {
+    fn connect_sheet(&self, sender: &Sender<Action>) {
         let widget = self.borrow();
-
-        widget
-            .timer
-            .duration
-            .bind_property("label", &widget.sheet.duration, "label")
-            .flags(glib::BindingFlags::SYNC_CREATE)
-            .build();
-        widget
-            .timer
-            .progressed
-            .bind_property("label", &widget.sheet.progressed, "label")
-            .flags(glib::BindingFlags::SYNC_CREATE)
-            .build();
-        widget
-            .sheet
-            .slider
-            .set_adjustment(&widget.timer.slider.adjustment());
+        widget.sheet.init(sender);
+        widget.sheet.connect(&self.borrow().timer);
     }
 
     /// Connect the `PlayerControls` buttons to the `PlayerExt` methods.
@@ -1183,43 +1072,7 @@ impl PlayerWrapper {
             }
         ));
 
-        // Connect the play button to the gst Player.
-        widget.sheet.play.connect_clicked(clone!(
-            #[weak]
-            this,
-            move |_| {
-                this.borrow().play();
-                this.borrow().sheet.pause.grab_focus(); // keep focus for accessibility
-            }
-        ));
-
-        // Connect the pause button to the gst Player.
-        widget.sheet.pause.connect_clicked(clone!(
-            #[weak]
-            this,
-            move |_| {
-                this.borrow_mut().pause();
-                this.borrow().sheet.play.grab_focus(); // keep focus for accessibility
-            }
-        ));
-
-        // Connect the rewind button to the gst Player.
-        widget.sheet.rewind.connect_clicked(clone!(
-            #[weak]
-            this,
-            move |_| {
-                this.borrow().rewind();
-            }
-        ));
-
-        // Connect the fast-forward button to the gst Player.
-        widget.sheet.forward.connect_clicked(clone!(
-            #[weak]
-            this,
-            move |_| {
-                this.borrow().fast_forward();
-            }
-        ));
+        widget.sheet.connect_control_buttons(this);
     }
 
     fn connect_gst_signals(&self, sender: &Sender<Action>) {
@@ -1325,7 +1178,7 @@ impl PlayerWrapper {
         self.deref()
             .borrow()
             .sheet
-            .rate
+            .rate()
             .connect_signals(self.deref());
     }
 
@@ -1384,16 +1237,5 @@ impl PlayerWrapper {
                 }
             ));
         };
-    }
-}
-
-fn hide_sheet() {
-    let app = gio::Application::default()
-        .expect("Could not get default application")
-        .downcast::<gtk::Application>()
-        .unwrap();
-    let window = app.active_window().expect("No active window");
-    if let Err(e) = window.activate_action("win.close-bottom-sheet", None) {
-        warn!("Failed to win.close-bottom-sheet {e}");
     }
 }
