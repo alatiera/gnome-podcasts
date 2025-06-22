@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2025-03-09 19:07+0000\n"
-"PO-Revision-Date: 2025-03-22 07:35+0300\n"
+"POT-Creation-Date: 2025-06-09 04:22+0000\n"
+"PO-Revision-Date: 2025-06-22 15:00+0300\n"
 "Last-Translator: Yuras Shumovich <shumovichy@gmail.com>\n"
 "Language-Team: Belarusian <LL@li.org>\n"
 "Language: be\n"
@@ -17,19 +17,19 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Poedit 3.5\n"
 
-#: podcasts-gtk/resources/gtk/discovery_found_podcast.ui:104
+#: podcasts-gtk/resources/gtk/discovery_found_podcast.ui:105
 msgid "Episodes: "
 msgstr "Эпізоды: "
 
-#: podcasts-gtk/resources/gtk/discovery_found_podcast.ui:142
+#: podcasts-gtk/resources/gtk/discovery_found_podcast.ui:143
 msgid "Last publication"
 msgstr "Апошняя публікацыя"
 
-#: podcasts-gtk/resources/gtk/discovery_found_podcast.ui:163
+#: podcasts-gtk/resources/gtk/discovery_found_podcast.ui:164
 msgid "_Subscribe"
 msgstr "_Падпісацца"
 
-#: podcasts-gtk/resources/gtk/discovery_found_podcast.ui:173
+#: podcasts-gtk/resources/gtk/discovery_found_podcast.ui:174
 #: podcasts-gtk/src/widgets/discovery_search_results.rs:152
 msgid "Subscribing to feed…"
 msgstr "Падпісацца на канал…"
@@ -219,34 +219,44 @@ msgstr "Паўза/прайграванне"
 #: podcasts-gtk/resources/gtk/help-overlay.ui:47
 msgctxt "shortcut window"
 msgid "Seek Forwards"
-msgstr "Пракруціць наперад"
+msgstr "Пераматаць уперад"
 
 #: podcasts-gtk/resources/gtk/help-overlay.ui:53
 msgctxt "shortcut window"
 msgid "Seek Backwards"
-msgstr "Пракруціць назад"
+msgstr "Пераматаць назад"
 
-#: podcasts-gtk/resources/gtk/help-overlay.ui:62
+#: podcasts-gtk/resources/gtk/help-overlay.ui:59
+msgctxt "shortcut window"
+msgid "Raise Playback Speed"
+msgstr "Павялічыць хуткасць прайгравання"
+
+#: podcasts-gtk/resources/gtk/help-overlay.ui:65
+msgctxt "shortcut window"
+msgid "Lower Playback Speed"
+msgstr "Паменшышь хуткасць прайгравання"
+
+#: podcasts-gtk/resources/gtk/help-overlay.ui:74
 msgctxt "shortcut window"
 msgid "General"
 msgstr "Агульныя"
 
-#: podcasts-gtk/resources/gtk/help-overlay.ui:65
+#: podcasts-gtk/resources/gtk/help-overlay.ui:77
 msgctxt "shortcut window"
 msgid "Check for new episodes"
 msgstr "Праверыць наяўнасць новых эпізодаў"
 
-#: podcasts-gtk/resources/gtk/help-overlay.ui:71
+#: podcasts-gtk/resources/gtk/help-overlay.ui:83
 msgctxt "shortcut window"
 msgid "Quit the application"
 msgstr "Выйсці з праграмы"
 
-#: podcasts-gtk/resources/gtk/help-overlay.ui:77
+#: podcasts-gtk/resources/gtk/help-overlay.ui:89
 msgctxt "shortcut window"
 msgid "Import Subscriptions"
 msgstr "Імпартаваць падпіскі"
 
-#: podcasts-gtk/resources/gtk/help-overlay.ui:83
+#: podcasts-gtk/resources/gtk/help-overlay.ui:95
 msgctxt "shortcut window"
 msgid "Export Subscriptions"
 msgstr "Экспартаваць падпіскі"
@@ -339,7 +349,7 @@ msgstr "Перамотка на 10 секунд назад"
 
 #: podcasts-gtk/resources/gtk/player_toolbar.ui:95
 msgid "Fast forward 10 seconds"
-msgstr "Перамотка наперад на 10 секунд"
+msgstr "Перамотка на 10 секунд уперад"
 
 #: podcasts-gtk/resources/gtk/secondary_menu.ui:7
 msgid "_Mark All Episodes as Played"
@@ -400,8 +410,8 @@ msgstr "Пр_а Падкасты"
 #: podcasts-gtk/resources/gtk/window.ui:102
 #: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:4
 #: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:3
-#: podcasts-gtk/src/app.rs:505 podcasts-gtk/src/widgets/aboutdialog.rs:56
-#: podcasts-gtk/src/widgets/player.rs:465
+#: podcasts-gtk/src/app.rs:507 podcasts-gtk/src/widgets/aboutdialog.rs:56
+#: podcasts-gtk/src/widgets/player.rs:479
 msgid "Podcasts"
 msgstr "Падкасты"
 
@@ -457,7 +467,7 @@ msgid "The view where one can add a new podcast"
 msgstr "Старонка, на якой можна дадаць новы падкаст"
 
 #. developer_name tag deprecated with Appstream 1.0
-#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:221
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:230
 msgid "The Podcasts developers"
 msgstr "Распрацоўшчыкі Podcasts"
 
@@ -506,15 +516,15 @@ msgstr "Колькі перыядаў часу павінна прайсці п�
 msgid "What period of time to wait between automatic cleanups"
 msgstr "Колькі перыядаў часу павінна прайсці паміж аўтаматычнымі ачысткамі"
 
-#: podcasts-gtk/src/app.rs:358
+#: podcasts-gtk/src/app.rs:360
 msgid "Copied URL to clipboard!"
 msgstr "URL скапіяваны ў буфер абмену!"
 
-#: podcasts-gtk/src/episode_description_parser.rs:316
+#: podcasts-gtk/src/episode_description_parser.rs:319
 msgid "Jump to {}:{}:{}"
 msgstr "Перайсці на {}:{}:{}"
 
-#: podcasts-gtk/src/episode_description_parser.rs:335
+#: podcasts-gtk/src/episode_description_parser.rs:338
 msgid "Jump to {}:{}"
 msgstr "Перайсці на {}:{}"
 
@@ -582,7 +592,7 @@ msgstr "Новыя"
 
 #. Translators: Shows as a noun, meaning Podcast-Shows.
 #: podcasts-gtk/src/widgets/content_stack.rs:68
-#: podcasts-gtk/src/widgets/shows_view.rs:118
+#: podcasts-gtk/src/widgets/shows_view.rs:117
 msgid "Shows"
 msgstr "Перадачы"
 
@@ -594,7 +604,7 @@ msgstr "Ход выканання спампоўвання"
 msgid "{} min"
 msgstr "{} хв"
 
-#: podcasts-gtk/src/widgets/player.rs:1109
+#: podcasts-gtk/src/widgets/player.rs:1128
 msgid "The media player was unable to execute an action."
 msgstr "Медыяплэер не змог выканаць дзеянне."
 
