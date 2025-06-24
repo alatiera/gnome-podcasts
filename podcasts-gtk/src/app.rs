@@ -530,6 +530,14 @@ impl PdApplication {
             .unwrap()
             .add_toast(toast);
     }
+
+    /// Is currently playing this episode (and not paused/stopped).
+    pub(crate) fn is_playing(&self, id: EpisodeId) -> bool {
+        let w = self.imp().window.borrow();
+        let window = w.as_ref().expect("Window is not initialized");
+        let playing_id = window.player().id();
+        playing_id == Some(id) && window.player().is_playing()
+    }
 }
 
 fn copy_text(text: &str) -> Option<()> {

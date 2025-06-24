@@ -171,6 +171,25 @@ Tobias Bernard
                                     </child>
                                   </object>
                                 </child>
+                                <!-- Pause -->
+                                <child>
+                                  <object class="GtkButton" id="pause_button">
+                                    <style>
+                                      <class name="suggested-action"/>
+                                    </style>
+                                    <property name="visible">False</property>
+                                    <property name="width-request">145</property>
+                                    <property name="action-name">win.toggle-pause</property>
+                                    <child>
+                                      <object class="AdwButtonContent">
+                                        <property name="icon-name">media-playback-pause-symbolic</property>
+                                        <property name="label" translatable="yes">_Pause</property>
+                                        <property name="use-underline">True</property>
+                                        <property name="can-shrink">True</property>
+                                      </object>
+                                    </child>
+                                  </object>
+                                </child>
                                 <!-- Download -->
                                 <child>
                                   <object class="GtkButton" id="download_button">

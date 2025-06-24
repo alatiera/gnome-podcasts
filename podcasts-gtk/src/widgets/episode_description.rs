@@ -24,8 +24,8 @@ use chrono::prelude::*;
 use glib::clone;
 use glib::subclass::InitializingObject;
 use gtk::CompositeTemplate;
-use gtk::glib;
 use gtk::prelude::*;
+use gtk::{gio, glib};
 use std::borrow::Borrow;
 use std::cell::Cell;
 use std::sync::Arc;
@@ -71,6 +71,8 @@ pub struct EpisodeDescriptionPriv {
     cancel_button: TemplateChild<gtk::Button>,
     #[template_child]
     play_button: TemplateChild<gtk::Button>,
+    #[template_child]
+    pause_button: TemplateChild<gtk::Button>,
     #[template_child]
     delete_button: TemplateChild<gtk::Button>,
 
@@ -211,14 +213,22 @@ impl EpisodeDescriptionPriv {
     }
 
     fn determine_button_state(&self, ep: &EpisodeWidgetModel) {
+        let app = gio::Application::default()
+            .expect("Could not get default application")
+            .downcast::<crate::PdApplication>()
+            .unwrap();
+        let is_playing = app.is_playing(ep.id());
+        self.pause_button.set_visible(is_playing);
+
         let is_downloading = self.progressbar.check_if_downloading().unwrap_or(false);
         self.cancel_button.set_visible(is_downloading);
         let is_downloaded = ep.local_uri().is_some();
         self.download_button
             .set_visible(!is_downloaded && !is_downloading);
-        self.stream_button.set_visible(!is_downloaded);
+        self.stream_button
+            .set_visible(!is_playing && !is_downloaded);
         self.delete_button.set_visible(is_downloaded);
-        self.play_button.set_visible(is_downloaded);
+        self.play_button.set_visible(!is_playing && is_downloaded);
     }
 
     fn set_description(&self, ep: &Episode) {

@@ -24,8 +24,8 @@ use chrono::prelude::*;
 use glib::clone;
 use glib::subclass::InitializingObject;
 use gtk::CompositeTemplate;
-use gtk::glib;
 use gtk::prelude::*;
+use gtk::{gio, glib};
 use once_cell::sync::Lazy;
 use std::cell::Cell;
 
@@ -73,6 +73,8 @@ pub struct EpisodeWidgetPriv {
     // Buttons
     #[template_child]
     play: TemplateChild<gtk::Button>,
+    #[template_child]
+    pause: TemplateChild<gtk::Button>,
     #[template_child]
     download: TemplateChild<gtk::Button>,
     #[template_child]
@@ -122,6 +124,7 @@ impl EpisodeWidgetPriv {
     fn state_no_uri(&self, id: EpisodeId) {
         self.cancel.set_visible(false);
         self.play.set_visible(false);
+        self.pause.set_visible(false);
 
         self.local_size.set_visible(false);
         self.size_separator.set_visible(false);
@@ -149,6 +152,7 @@ impl EpisodeWidgetPriv {
         self.duration.set_visible(false);
 
         self.play.set_visible(false);
+        self.pause.set_visible(false);
         self.download.set_visible(false);
         self.update_separator2_visibility();
     }
@@ -170,6 +174,28 @@ impl EpisodeWidgetPriv {
 
         self.total_size.set_visible(true);
         self.play.set_visible(true);
+        self.pause.set_visible(false);
+        self.update_separator2_visibility();
+    }
+
+    // Playing State:
+    //   * Hide ProgressBar and Cancel, Download Buttons.
+    //   * Hide `local_size` labels and `size_separator`.
+    //   * Show `date`, `duration` labels and `separator1`.
+    //   * Show Pause Button and `total_size` label
+    fn state_playing(&self) {
+        self.cancel.set_visible(false);
+        self.download.set_visible(false);
+        self.local_size.set_visible(false);
+        self.size_separator.set_visible(false);
+
+        self.date.set_visible(true);
+        self.separator1.set_visible(true);
+        self.duration.set_visible(true);
+
+        self.total_size.set_visible(true);
+        self.play.set_visible(false);
+        self.pause.set_visible(true);
         self.update_separator2_visibility();
     }
 
@@ -182,6 +208,7 @@ impl EpisodeWidgetPriv {
     fn state_download(&self) {
         self.cancel.set_visible(false);
         self.play.set_visible(false);
+        self.pause.set_visible(false);
 
         self.local_size.set_visible(false);
         self.size_separator.set_visible(false);
@@ -198,6 +225,16 @@ impl EpisodeWidgetPriv {
     ///
     /// Function Flowchart:
     ///
+    ///
+    /// -------------------       --------------
+    /// |  Is the Episode |  YES  |   State:   |
+    /// |   being played  | ----> |  Playing   |
+    /// |    right now?   |       |            |
+    /// -------------------       --------------
+    ///         |
+    ///         | NO
+    ///         |
+    ///        \_/
     /// -------------------       --------------
     /// | Does the Episode|  YES  |   State:   |
     /// |   not have a    | ----> |   NoUri    |
@@ -231,7 +268,15 @@ impl EpisodeWidgetPriv {
     /// -------------------
     fn determine_buttons_state(&self, episode: &EpisodeWidgetModel) -> Result<()> {
         let is_downloading = self.progressbar.check_if_downloading()?;
-        if is_downloading {
+        let app = gio::Application::default()
+            .expect("Could not get default application")
+            .downcast::<crate::PdApplication>()
+            .unwrap();
+        let is_playing = app.is_playing(episode.id());
+        if is_playing {
+            // State Playing
+            self.state_playing();
+        } else if is_downloading {
             // State InProgress
             self.state_prog();
         } else if episode.local_uri().is_some() {

@@ -646,8 +646,14 @@ impl PlayerWidget {
                 Some(episode_position)
             }
         });
+        let last_id = self.id();
         self.info.finished_restore = false;
         self.info.init(sender, &ep, &pd);
+
+        if let Some(id) = last_id {
+            // refresh the last episode, so it can remove it's playing state
+            send_blocking!(sender, Action::RefreshEpisode(id));
+        }
 
         if stream == StreamMode::StreamOnly {
             if let Some(uri) = ep.uri() {
@@ -764,6 +770,14 @@ impl PlayerWidget {
             self.stack.set_visible_child(&self.full);
         }
     }
+
+    pub(crate) fn id(&self) -> Option<EpisodeId> {
+        *self.info.episode_id.borrow()
+    }
+
+    pub(crate) fn is_playing(&self) -> bool {
+        self.info.mpris.as_ref().map(|m| m.playback_status()) == Some(PlaybackStatus::Playing)
+    }
 }
 
 impl PlayerExt for PlayerWidget {
@@ -787,9 +801,16 @@ impl PlayerExt for PlayerWidget {
                 clone!(
                     #[weak]
                     mpris,
+                    #[strong(rename_to = this)]
+                    self,
                     async move {
                         if let Err(err) = mpris.set_playback_status(PlaybackStatus::Playing).await {
                             warn!("Failed to set MPRIS playback status: {err:?}");
+                        }
+                        if let Some(sender) = &this.sender {
+                            if let Some(id) = this.id() {
+                                send!(sender, Action::RefreshEpisode(id));
+                            }
                         }
                     }
                 ),
@@ -817,9 +838,16 @@ impl PlayerExt for PlayerWidget {
                 clone!(
                     #[weak]
                     mpris,
+                    #[strong(rename_to = this)]
+                    self,
                     async move {
                         if let Err(err) = mpris.set_playback_status(PlaybackStatus::Paused).await {
                             warn!("Failed to set MPRIS playback status: {err:?}");
+                        }
+                        if let Some(sender) = &this.sender {
+                            if let Some(id) = this.id() {
+                                send!(sender, Action::RefreshEpisode(id));
+                            }
                         }
                     }
                 ),
@@ -869,9 +897,16 @@ impl PlayerExt for PlayerWidget {
                 clone!(
                     #[weak]
                     mpris,
+                    #[strong(rename_to = this)]
+                    self,
                     async move {
                         if let Err(err) = mpris.set_playback_status(PlaybackStatus::Paused).await {
                             warn!("Failed to set MPRIS playback status: {err:?}");
+                        }
+                        if let Some(sender) = &this.sender {
+                            if let Some(id) = this.id() {
+                                send!(sender, Action::RefreshEpisode(id));
+                            }
                         }
                     }
                 ),

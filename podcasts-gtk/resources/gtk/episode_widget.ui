@@ -188,6 +188,20 @@ Tobias Bernard
               </object>
             </child>
             <child>
+              <object class="GtkButton" id="pause">
+                <property name="action-name">win.toggle-pause</property>
+                <property name="receives_default">True</property>
+                <property name="visible">False</property>
+                <property name="tooltip_text" translatable="yes">Pause playback</property>
+                <property name="halign">center</property>
+                <property name="valign">center</property>
+                <property name="icon_name">media-playback-pause-symbolic</property>
+                <style>
+                  <class name="flat"/>
+                </style>
+              </object>
+            </child>
+            <child>
               <object class="GtkButton" id="cancel">
                 <property name="receives_default">False</property>
                 <property name="tooltip_text" translatable="yes">Cancel the download process</property>
