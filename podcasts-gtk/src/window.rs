@@ -41,7 +41,7 @@ use crate::widgets::player;
 use crate::widgets::player::{PlayerExt, PlayerWidget, SeekDirection, StreamMode};
 use crate::widgets::{Content, DiscoveryPage, EpisodeDescription, ShowWidget};
 use podcasts_data::dbqueries;
-use podcasts_data::{EpisodeId, ShowId};
+use podcasts_data::{EpisodeId, EpisodeWidgetModel, ShowId};
 
 #[derive(Debug, CompositeTemplate, glib::Properties)]
 #[template(resource = "/org/gnome/Podcasts/gtk/window.ui")]
@@ -412,6 +412,17 @@ impl MainWindow {
             self.replace_show_widget(Some(widget), &imp.show_page.title());
         }
         Ok(())
+    }
+
+    pub(crate) fn update_show_widget_episode(&self, ep: &EpisodeWidgetModel) {
+        let imp = self.imp();
+        let show_id = ep.show_id();
+        let same = imp.show_widget.borrow().as_ref().and_then(|s| s.show_id()) == Some(show_id);
+        if same {
+            if let Some(show_widget) = imp.show_widget.borrow().as_ref() {
+                show_widget.update_episode(ep);
+            }
+        }
     }
 
     pub(crate) fn go_to_show_widget(&self) {

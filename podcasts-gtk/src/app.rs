@@ -160,7 +160,7 @@ glib::wrapper! {
 pub(crate) enum Action {
     RefreshAllViews,
     RefreshEpisodesView,
-    RefreshEpisodesViewBGR,
+    RefreshEpisode(EpisodeId),
     RefreshShowsView,
     ReplaceWidget(Arc<Show>),
     RefreshWidgetIfSame(ShowId),
@@ -328,8 +328,23 @@ impl PdApplication {
                     error!("failed to refresh show {e}");
                 }
             }
+            Action::RefreshEpisode(id) => {
+                let ep = match dbqueries::get_episode_widget_from_id(id) {
+                    Ok(ep) => ep,
+                    Err(e) => {
+                        error!("failed to fetch episode for description refresh {e}");
+                        return;
+                    }
+                };
+                window.content().update_home_episode(&ep);
+                window.update_show_widget_episode(&ep);
+                if let Some(description) = window.episode_description() {
+                    if description.id() == id {
+                        description.update_episode(&ep);
+                    }
+                }
+            }
             Action::RefreshEpisodesView => window.content().update_home(),
-            Action::RefreshEpisodesViewBGR => window.content().update_home_if_background(),
             Action::ReplaceWidget(pd) => {
                 let widget = ShowWidget::new(pd.clone(), &data.sender);
                 window.replace_show_widget(Some(widget), pd.title());
@@ -378,10 +393,7 @@ impl PdApplication {
                             description.update_episode_menu(&data.sender, &ep, Arc::new(show));
                         }
                     }
-                    // This is slow. As it should only refresh the episode.
-                    self.do_action(Action::RefreshWidgetIfSame(ep.show_id()));
-                    self.do_action(Action::RefreshEpisodesView);
-                    self.do_action(Action::RefreshShowsView);
+                    self.do_action(Action::RefreshEpisode(ep.id()));
                 }
             }
             Action::RemoveShow(pd) => {

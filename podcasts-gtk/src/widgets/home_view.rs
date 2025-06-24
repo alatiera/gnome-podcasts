@@ -29,7 +29,7 @@ use crate::app::Action;
 use crate::utils::{self, lazy_load};
 use crate::widgets::{BaseView, EpisodeWidget};
 use podcasts_data::dbqueries;
-use podcasts_data::{EpisodeModel, EpisodeWidgetModel, ShowId};
+use podcasts_data::{EpisodeId, EpisodeModel, EpisodeWidgetModel, ShowId};
 
 #[derive(Debug, Clone)]
 enum ListSplit {
@@ -170,6 +170,30 @@ impl HomeView {
         let list = list.upcast_ref::<gtk::Widget>().downgrade();
         lazy_load(model, list, constructor.clone()).await
     }
+
+    pub(crate) fn update_episode(&self, ep: &EpisodeWidgetModel) {
+        let imp = self.imp();
+        let id = ep.id();
+        let lists = [
+            &imp.today_list,
+            &imp.yday_list,
+            &imp.week_list,
+            &imp.month_list,
+            &imp.rest_list,
+        ];
+        for list in lists {
+            let mut i = 0;
+            while let Some(row) = list.row_at_index(i) {
+                if let Ok(home_episode) = row.downcast::<HomeEpisode>() {
+                    if home_episode.id() == id {
+                        home_episode.update(ep);
+                        return;
+                    }
+                }
+                i += 1;
+            }
+        }
+    }
 }
 
 fn get_episodes() -> Result<Vec<DateBox>> {
@@ -279,6 +303,14 @@ impl HomeEpisode {
         widget.set_action_target_value(Some(&episode.id().0.to_variant()));
         widget.imp().init(sender, episode);
         widget
+    }
+
+    pub(crate) fn id(&self) -> EpisodeId {
+        self.imp().episode.id()
+    }
+
+    pub(crate) fn update(&self, ep: &EpisodeWidgetModel) {
+        self.imp().episode.update_episode_state(ep);
     }
 }
 

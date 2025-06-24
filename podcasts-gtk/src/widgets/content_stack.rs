@@ -28,6 +28,7 @@ use crate::app::Action;
 use crate::i18n::i18n;
 use crate::utils::get_ignored_shows;
 use crate::widgets::{EmptyView, HomeView, ShowsView};
+use podcasts_data::EpisodeWidgetModel;
 use podcasts_data::dbqueries::is_episodes_populated;
 
 #[derive(Debug, Clone)]
@@ -115,9 +116,9 @@ impl Content {
         self.home_bin.set_child(Some(&home));
     }
 
-    pub(crate) fn update_home_if_background(&self) {
-        if self.stack.visible_child_name() != Some("home".into()) {
-            self.update_home();
+    pub(crate) fn update_home_episode(&self, ep: &EpisodeWidgetModel) {
+        if let Some(Ok(home)) = self.home_bin.child().map(|w| w.downcast::<HomeView>()) {
+            home.update_episode(ep);
         }
     }
 

@@ -27,6 +27,7 @@ use gtk::CompositeTemplate;
 use gtk::glib;
 use gtk::prelude::*;
 use once_cell::sync::Lazy;
+use std::cell::Cell;
 
 use crate::app::Action;
 use crate::i18n::i18n_f;
@@ -78,6 +79,8 @@ pub struct EpisodeWidgetPriv {
     cancel: TemplateChild<gtk::Button>,
     #[template_child]
     text_only: TemplateChild<gtk::Button>,
+
+    episode_id: Cell<Option<EpisodeId>>,
 }
 
 impl EpisodeWidgetPriv {
@@ -96,6 +99,7 @@ impl EpisodeWidgetPriv {
                 sender,
                 async move {
                     let id = episode.id();
+                    this.episode_id.set(Some(id));
                     this.init_info(&episode);
                     if episode.uri().is_none() {
                         this.state_no_uri(id);
@@ -107,7 +111,7 @@ impl EpisodeWidgetPriv {
                     if let Err(err) = this.determine_buttons_state(&episode) {
                         error!("Error: {}", err);
                     }
-                    this.init_context_menu(sender, episode, add_show_link);
+                    this.init_context_menu(sender, add_show_link);
                 }
             ),
         );
@@ -370,18 +374,12 @@ impl EpisodeWidgetPriv {
         ));
 
         self.play.connect_clicked(clone!(
-            #[weak(rename_to = this)]
-            self,
             #[strong]
             sender,
             move |_| {
                 if let Ok(episode) = dbqueries::get_episode_widget_from_id(id) {
-                    // Grey out the title
-                    this.set_title(&episode);
                     // Play the episode
                     send_blocking!(sender, Action::InitEpisode(episode.id()));
-                    // Refresh background views to match the normal/greyout title state
-                    send_blocking!(sender, Action::RefreshEpisodesViewBGR);
                 }
             }
         ));
@@ -410,16 +408,19 @@ impl EpisodeWidgetPriv {
         ));
     }
 
-    fn init_context_menu(
-        &self,
-        sender: Sender<Action>,
-        episode: EpisodeWidgetModel,
-        add_show_link: bool,
-    ) {
+    fn init_context_menu(&self, sender: Sender<Action>, add_show_link: bool) {
         let on_rightclick = clone!(
             #[weak(rename_to = this)]
             self,
             move |(x, y)| {
+                let id = this.episode_id.get().unwrap();
+                let episode = match dbqueries::get_episode_widget_from_id(id) {
+                    Ok(ep) => ep,
+                    Err(err) => {
+                        error!("Could not get episode info: {err}");
+                        return;
+                    }
+                };
                 let pid = episode.show_id();
                 let show = if add_show_link { Some(pid) } else { None };
                 let menu = EpisodeMenu::new(&sender, &episode, show);
@@ -459,7 +460,7 @@ fn on_download_clicked(ep: &EpisodeWidgetModel, sender: &Sender<Action>) -> Resu
     // Start a new download.
     manager::add(sender.clone(), ep.id(), download_dir)?;
     // Update Views
-    send_blocking!(sender, Action::RefreshEpisodesViewBGR);
+    send_blocking!(sender, Action::RefreshEpisode(ep.id()));
     Ok(())
 }
 
@@ -506,6 +507,18 @@ impl EpisodeWidget {
         add_show_link: bool,
     ) {
         self.imp().init(sender, episode, add_show_link);
+    }
+
+    pub(crate) fn id(&self) -> EpisodeId {
+        self.imp().episode_id.get().unwrap()
+    }
+
+    pub(crate) fn update_episode_state(&self, ep: &EpisodeWidgetModel) {
+        let imp = self.imp();
+        if let Err(err) = imp.determine_buttons_state(ep) {
+            error!("Failed to update episode widget buttons {err}");
+        }
+        imp.set_played(ep.played().is_some())
     }
 }
 

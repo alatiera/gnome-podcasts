@@ -27,6 +27,7 @@ use gtk::CompositeTemplate;
 use gtk::glib;
 use gtk::prelude::*;
 use std::borrow::Borrow;
+use std::cell::Cell;
 use std::sync::Arc;
 
 use crate::app::Action;
@@ -72,6 +73,8 @@ pub struct EpisodeDescriptionPriv {
     play_button: TemplateChild<gtk::Button>,
     #[template_child]
     delete_button: TemplateChild<gtk::Button>,
+
+    episode: Cell<Option<EpisodeId>>,
 }
 
 impl EpisodeDescriptionPriv {
@@ -100,6 +103,7 @@ impl EpisodeDescriptionPriv {
         }
 
         let id = ep.id();
+        self.episode.set(Some(id));
         self.description.connect_activate_link(clone!(
             #[strong]
             sender,
@@ -159,8 +163,7 @@ impl EpisodeDescriptionPriv {
                 }
                 this.refresh_buttons(id);
                 this.progressbar.grab_focus();
-                send_blocking!(sender, Action::RefreshEpisodesView);
-                send_blocking!(sender, Action::RefreshWidgetIfSame(show_id));
+                send_blocking!(sender, Action::RefreshEpisode(id));
             }
         ));
 
@@ -177,8 +180,7 @@ impl EpisodeDescriptionPriv {
                     }
                 }
                 this.refresh_buttons(id);
-                send_blocking!(sender, Action::RefreshEpisodesView);
-                send_blocking!(sender, Action::RefreshWidgetIfSame(show_id));
+                send_blocking!(sender, Action::RefreshEpisode(id));
             }
         ));
 
@@ -355,5 +357,13 @@ impl EpisodeDescription {
         let menu = EpisodeMenu::new(sender, ep, Some(show.id()));
         self.imp().menu_button.set_menu_model(Some(&menu.menu));
         self.insert_action_group("episode", Some(&menu.group));
+    }
+
+    pub(crate) fn id(&self) -> EpisodeId {
+        self.imp().episode.get().unwrap()
+    }
+
+    pub(crate) fn update_episode(&self, ep: &EpisodeWidgetModel) {
+        self.imp().determine_button_state(ep);
     }
 }
