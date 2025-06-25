@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: podcasts master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2025-01-27 10:12+0000\n"
-"PO-Revision-Date: 2025-02-07 16:27+0200\n"
+"POT-Creation-Date: 2025-06-09 04:22+0000\n"
+"PO-Revision-Date: 2025-06-25 19:20+0300\n"
 "Last-Translator: Jiri Grönroos <jiri.gronroos+l10n@iki.fi>\n"
 "Language-Team: Finnish <lokalisointi-lista@googlegroups.com>\n"
 "Language: fi\n"
@@ -16,21 +16,21 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 3.4.4\n"
+"X-Generator: Poedit 3.6\n"
 
-#: podcasts-gtk/resources/gtk/discovery_found_podcast.ui:104
+#: podcasts-gtk/resources/gtk/discovery_found_podcast.ui:105
 msgid "Episodes: "
 msgstr "Jaksot: "
 
-#: podcasts-gtk/resources/gtk/discovery_found_podcast.ui:142
+#: podcasts-gtk/resources/gtk/discovery_found_podcast.ui:143
 msgid "Last publication"
 msgstr "Viimeisin julkaisu"
 
-#: podcasts-gtk/resources/gtk/discovery_found_podcast.ui:163
+#: podcasts-gtk/resources/gtk/discovery_found_podcast.ui:164
 msgid "_Subscribe"
 msgstr "T_ilaa"
 
-#: podcasts-gtk/resources/gtk/discovery_found_podcast.ui:173
+#: podcasts-gtk/resources/gtk/discovery_found_podcast.ui:174
 #: podcasts-gtk/src/widgets/discovery_search_results.rs:152
 msgid "Subscribing to feed…"
 msgstr "Tilataan syöte…"
@@ -227,27 +227,37 @@ msgctxt "shortcut window"
 msgid "Seek Backwards"
 msgstr "Kelaa taaksepäin"
 
-#: podcasts-gtk/resources/gtk/help-overlay.ui:62
+#: podcasts-gtk/resources/gtk/help-overlay.ui:59
+msgctxt "shortcut window"
+msgid "Raise Playback Speed"
+msgstr "Lisää toistonopeutta"
+
+#: podcasts-gtk/resources/gtk/help-overlay.ui:65
+msgctxt "shortcut window"
+msgid "Lower Playback Speed"
+msgstr "Vähennä toistonopeutta"
+
+#: podcasts-gtk/resources/gtk/help-overlay.ui:74
 msgctxt "shortcut window"
 msgid "General"
 msgstr "Yleiset"
 
-#: podcasts-gtk/resources/gtk/help-overlay.ui:65
+#: podcasts-gtk/resources/gtk/help-overlay.ui:77
 msgctxt "shortcut window"
 msgid "Check for new episodes"
 msgstr "Tarkista uudet jaksot"
 
-#: podcasts-gtk/resources/gtk/help-overlay.ui:71
+#: podcasts-gtk/resources/gtk/help-overlay.ui:83
 msgctxt "shortcut window"
 msgid "Quit the application"
 msgstr "Lopeta sovellus"
 
-#: podcasts-gtk/resources/gtk/help-overlay.ui:77
+#: podcasts-gtk/resources/gtk/help-overlay.ui:89
 msgctxt "shortcut window"
 msgid "Import Subscriptions"
 msgstr "Tuo tilaukset"
 
-#: podcasts-gtk/resources/gtk/help-overlay.ui:83
+#: podcasts-gtk/resources/gtk/help-overlay.ui:95
 msgctxt "shortcut window"
 msgid "Export Subscriptions"
 msgstr "Vie tilaukset"
@@ -401,8 +411,8 @@ msgstr "_Tietoja - Podcastit"
 #: podcasts-gtk/resources/gtk/window.ui:102
 #: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:4
 #: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:3
-#: podcasts-gtk/src/app.rs:503 podcasts-gtk/src/widgets/aboutdialog.rs:56
-#: podcasts-gtk/src/widgets/player.rs:465
+#: podcasts-gtk/src/app.rs:507 podcasts-gtk/src/widgets/aboutdialog.rs:56
+#: podcasts-gtk/src/widgets/player.rs:479
 msgid "Podcasts"
 msgstr "Podcastit"
 
@@ -456,7 +466,7 @@ msgid "The view where one can add a new podcast"
 msgstr "Näkymä podcastin lisäämiseksi"
 
 #. developer_name tag deprecated with Appstream 1.0
-#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:221
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:230
 msgid "The Podcasts developers"
 msgstr "Podcasts-kehittäjät"
 
@@ -505,15 +515,15 @@ msgstr "Kuinka monta ajanjaksoa odottaa automaattisten siivousten välillä"
 msgid "What period of time to wait between automatic cleanups"
 msgstr "Kuinka pitkä ajanjakso odottaa automaattisten siivousten välillä"
 
-#: podcasts-gtk/src/app.rs:358
+#: podcasts-gtk/src/app.rs:360
 msgid "Copied URL to clipboard!"
 msgstr "Verkko-osoite kopioitu leikepöydälle!"
 
-#: podcasts-gtk/src/episode_description_parser.rs:316
+#: podcasts-gtk/src/episode_description_parser.rs:319
 msgid "Jump to {}:{}:{}"
 msgstr "Siirry kohtaan {}:{}:{}"
 
-#: podcasts-gtk/src/episode_description_parser.rs:335
+#: podcasts-gtk/src/episode_description_parser.rs:338
 msgid "Jump to {}:{}"
 msgstr "Siirry kohtaan {}:{}"
 
@@ -581,7 +591,7 @@ msgstr "Uudet"
 
 #. Translators: Shows as a noun, meaning Podcast-Shows.
 #: podcasts-gtk/src/widgets/content_stack.rs:68
-#: podcasts-gtk/src/widgets/shows_view.rs:118
+#: podcasts-gtk/src/widgets/shows_view.rs:117
 msgid "Shows"
 msgstr "Ohjelmat"
 
@@ -589,11 +599,11 @@ msgstr "Ohjelmat"
 msgid "Download progress"
 msgstr "Latauksen edistyminen"
 
-#: podcasts-gtk/src/widgets/episode.rs:279
+#: podcasts-gtk/src/widgets/episode.rs:297
 msgid "{} min"
 msgstr "{} min"
 
-#: podcasts-gtk/src/widgets/player.rs:1109
+#: podcasts-gtk/src/widgets/player.rs:1128
 msgid "The media player was unable to execute an action."
 msgstr "Mediasoitin ei kyennyt suorittamaan toimintoa."
 
