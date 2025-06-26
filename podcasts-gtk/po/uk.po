@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2025-06-09 04:22+0000\n"
-"PO-Revision-Date: 2025-06-09 18:55+0300\n"
+"POT-Creation-Date: 2025-06-26 11:37+0000\n"
+"PO-Revision-Date: 2025-06-26 21:03+0300\n"
 "Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
 "Language-Team: Ukrainian <trans-uk@lists.fedoraproject.org>\n"
 "Language: uk\n"
@@ -128,23 +128,28 @@ msgstr "_Потік даних"
 msgid "_Play"
 msgstr "_Відтворити"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:185
+#: podcasts-gtk/resources/gtk/episode_description.ui:186
+#| msgid "Pause"
+msgid "_Pause"
+msgstr "П_ризупинити"
+
+#: podcasts-gtk/resources/gtk/episode_description.ui:204
 msgid "_Download"
 msgstr "_Отримати"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:212
+#: podcasts-gtk/resources/gtk/episode_description.ui:231
 msgid "Cancel"
 msgstr "Скасувати"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:241
+#: podcasts-gtk/resources/gtk/episode_description.ui:260
 msgid "Delete"
 msgstr "Видалити"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:260
+#: podcasts-gtk/resources/gtk/episode_description.ui:279
 msgid "Episode Description"
 msgstr "Опис випуску"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:281
+#: podcasts-gtk/resources/gtk/episode_description.ui:300
 msgid "Episode Cover"
 msgstr "Обкладинка випуску"
 
@@ -177,15 +182,21 @@ msgstr "Визначається розмір випуску…"
 msgid "Play this episode"
 msgstr "Слухати цей випуск"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:193
+#: podcasts-gtk/resources/gtk/episode_widget.ui:195
+#| msgctxt "shortcut window"
+#| msgid "Raise Playback Speed"
+msgid "Pause playback"
+msgstr "Призупинити відтворення"
+
+#: podcasts-gtk/resources/gtk/episode_widget.ui:207
 msgid "Cancel the download process"
 msgstr "Скасувати завантаження"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:206
+#: podcasts-gtk/resources/gtk/episode_widget.ui:220
 msgid "Download this episode"
 msgstr "Завантажити цей випуск"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:220
+#: podcasts-gtk/resources/gtk/episode_widget.ui:234
 msgid "Episode without audio"
 msgstr "Випуск без звуку"
 
@@ -232,13 +243,11 @@ msgid "Seek Backwards"
 msgstr "Відмотати назад"
 
 #: podcasts-gtk/resources/gtk/help-overlay.ui:59
-#| msgid "Change the playback speed"
 msgctxt "shortcut window"
 msgid "Raise Playback Speed"
 msgstr "Збільшити швидкість відтворення"
 
 #: podcasts-gtk/resources/gtk/help-overlay.ui:65
-#| msgid "Change the playback speed"
 msgctxt "shortcut window"
 msgid "Lower Playback Speed"
 msgstr "Зменшити швидкість відтворення"
@@ -417,7 +426,7 @@ msgstr "_Про «Подкасти»"
 #: podcasts-gtk/resources/gtk/window.ui:102
 #: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:4
 #: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:3
-#: podcasts-gtk/src/app.rs:507 podcasts-gtk/src/widgets/aboutdialog.rs:56
+#: podcasts-gtk/src/app.rs:519 podcasts-gtk/src/widgets/aboutdialog.rs:56
 #: podcasts-gtk/src/widgets/player.rs:479
 msgid "Podcasts"
 msgstr "Подкасти"
@@ -527,7 +536,7 @@ msgstr ""
 "Одиниці, в яких вимірюється інтервал автоматичного очищення (години, хвилини "
 "тощо)"
 
-#: podcasts-gtk/src/app.rs:360
+#: podcasts-gtk/src/app.rs:375
 msgid "Copied URL to clipboard!"
 msgstr "URL-адресу скопійовано до буфера обміну!"
 
@@ -595,16 +604,16 @@ msgstr ""
 "Юрій Чорноіван <yurchor@ukr.net>\n"
 "Андрій Сербовець <serbovets.translation@gmail.com>"
 
-#: podcasts-gtk/src/widgets/content_stack.rs:60
+#: podcasts-gtk/src/widgets/content_stack.rs:61
 msgid "Fetching feeds…"
 msgstr "Отримання стрічок…"
 
-#: podcasts-gtk/src/widgets/content_stack.rs:67
+#: podcasts-gtk/src/widgets/content_stack.rs:68
 msgid "New"
 msgstr "Нові випуски"
 
 #. Translators: Shows as a noun, meaning Podcast-Shows.
-#: podcasts-gtk/src/widgets/content_stack.rs:68
+#: podcasts-gtk/src/widgets/content_stack.rs:69
 #: podcasts-gtk/src/widgets/shows_view.rs:117
 msgid "Shows"
 msgstr "Подкасти"
@@ -613,11 +622,11 @@ msgstr "Подкасти"
 msgid "Download progress"
 msgstr "Поступ завантаження"
 
-#: podcasts-gtk/src/widgets/episode.rs:297
+#: podcasts-gtk/src/widgets/episode.rs:346
 msgid "{} min"
 msgstr "{} хв."
 
-#: podcasts-gtk/src/widgets/player.rs:1128
+#: podcasts-gtk/src/widgets/player.rs:1163
 msgid "The media player was unable to execute an action."
 msgstr "Програвачеві не вдалося виконати цю дію."
 
