@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: podcasts master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2025-06-09 04:22+0000\n"
-"PO-Revision-Date: 2025-06-11 08:56+0800\n"
+"POT-Creation-Date: 2025-06-26 11:37+0000\n"
+"PO-Revision-Date: 2025-06-28 07:51+0800\n"
 "Last-Translator: lumingzh <lumingzh@qq.com>\n"
 "Language-Team: Chinese (China) <i18n-zh@googlegroups.com>\n"
 "Language: zh_CN\n"
@@ -126,23 +126,27 @@ msgstr "媒体流(_S)"
 msgid "_Play"
 msgstr "播放(_P)"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:185
+#: podcasts-gtk/resources/gtk/episode_description.ui:186
+msgid "_Pause"
+msgstr "暂停(_P)"
+
+#: podcasts-gtk/resources/gtk/episode_description.ui:204
 msgid "_Download"
 msgstr "下载(_D)"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:212
+#: podcasts-gtk/resources/gtk/episode_description.ui:231
 msgid "Cancel"
 msgstr "取消"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:241
+#: podcasts-gtk/resources/gtk/episode_description.ui:260
 msgid "Delete"
 msgstr "删除"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:260
+#: podcasts-gtk/resources/gtk/episode_description.ui:279
 msgid "Episode Description"
 msgstr "剧集描述"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:281
+#: podcasts-gtk/resources/gtk/episode_description.ui:300
 msgid "Episode Cover"
 msgstr "剧集封面"
 
@@ -175,15 +179,19 @@ msgstr "正在计算剧集大小…"
 msgid "Play this episode"
 msgstr "播放此剧集"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:193
+#: podcasts-gtk/resources/gtk/episode_widget.ui:195
+msgid "Pause playback"
+msgstr "暂停播放"
+
+#: podcasts-gtk/resources/gtk/episode_widget.ui:207
 msgid "Cancel the download process"
 msgstr "取消下载进程"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:206
+#: podcasts-gtk/resources/gtk/episode_widget.ui:220
 msgid "Download this episode"
 msgstr "下载此剧集"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:220
+#: podcasts-gtk/resources/gtk/episode_widget.ui:234
 msgid "Episode without audio"
 msgstr "无音频剧集"
 
@@ -413,7 +421,7 @@ msgstr "关于播客(_A)"
 #: podcasts-gtk/resources/gtk/window.ui:102
 #: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:4
 #: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:3
-#: podcasts-gtk/src/app.rs:507 podcasts-gtk/src/widgets/aboutdialog.rs:56
+#: podcasts-gtk/src/app.rs:519 podcasts-gtk/src/widgets/aboutdialog.rs:56
 #: podcasts-gtk/src/widgets/player.rs:479
 msgid "Podcasts"
 msgstr "播客"
@@ -515,7 +523,7 @@ msgstr "自动清理之间要等待多久的时间"
 msgid "What period of time to wait between automatic cleanups"
 msgstr "自动清理之间要等待的时间段"
 
-#: podcasts-gtk/src/app.rs:360
+#: podcasts-gtk/src/app.rs:375
 msgid "Copied URL to clipboard!"
 msgstr "已将网址复制到剪贴板！"
 
@@ -585,16 +593,16 @@ msgstr ""
 "lumingzh <lumingzh@qq.com>, 2022-2025.\n"
 "lch <lchh@fedoraproject.org>, 2024."
 
-#: podcasts-gtk/src/widgets/content_stack.rs:60
+#: podcasts-gtk/src/widgets/content_stack.rs:61
 msgid "Fetching feeds…"
 msgstr "正在获取订阅…"
 
-#: podcasts-gtk/src/widgets/content_stack.rs:67
+#: podcasts-gtk/src/widgets/content_stack.rs:68
 msgid "New"
 msgstr "更新"
 
 #. Translators: Shows as a noun, meaning Podcast-Shows.
-#: podcasts-gtk/src/widgets/content_stack.rs:68
+#: podcasts-gtk/src/widgets/content_stack.rs:69
 #: podcasts-gtk/src/widgets/shows_view.rs:117
 msgid "Shows"
 msgstr "节目"
@@ -603,11 +611,11 @@ msgstr "节目"
 msgid "Download progress"
 msgstr "下载进度"
 
-#: podcasts-gtk/src/widgets/episode.rs:297
+#: podcasts-gtk/src/widgets/episode.rs:346
 msgid "{} min"
 msgstr "{} 分钟"
 
-#: podcasts-gtk/src/widgets/player.rs:1128
+#: podcasts-gtk/src/widgets/player.rs:1163
 msgid "The media player was unable to execute an action."
 msgstr "媒体播放器无法执行此操作。"
 
