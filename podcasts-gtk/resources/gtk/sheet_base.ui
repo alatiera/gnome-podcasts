@@ -9,97 +9,93 @@
             <property name="show-start-title-buttons">False</property>
           </object>
         </child>
-        <child>
-          <object class="GtkScrolledWindow">
-            <property name="propagate-natural-height">True</property>
-            <property name="hscrollbar-policy">never</property>
-            <property name="child">
+        <property name="content">
 
-              <object class="GtkBox">
-                <property name="orientation">vertical</property>
+          <object class="GtkBox">
+            <property name="orientation">vertical</property>
 
+            <child>
+              <object class="AdwViewStack" id="stack">
                 <child>
-                  <object class="AdwViewStack" id="stack">
-                    <child>
-                      <object class="AdwViewStackPage">
-                        <property name="name">player</property>
-                        <property name="title">Player</property>
-                        <property name="child">
-                          <object class="PdSheetPlayer" id="player">
-                          </object>
-                        </property>
+                  <object class="AdwViewStackPage">
+                    <property name="name">player</property>
+                    <property name="title">Player</property>
+                    <property name="child">
+                      <object class="PdSheetPlayer" id="player">
                       </object>
-                    </child>
-
-                    <child>
-                      <object class="AdwViewStackPage">
-                        <property name="name">description</property>
-                        <property name="title">Description</property>
-                        <property name="child">
-                          <object class="PdSheetDescription" id="description">
-                          </object>
-                        </property>
-                      </object>
-                    </child>
-
-                    <child>
-                      <object class="AdwViewStackPage">
-                        <property name="name">chapters</property>
-                        <property name="title">Chapters</property>
-                        <property name="child">
-                          <object class="PdChapters" id="chapters">
-                          </object>
-                        </property>
-                      </object>
-                    </child>
-
+                    </property>
                   </object>
                 </child>
 
                 <child>
-                  <object class="GtkCenterBox">
-                    <property name="margin_start">12</property>
-                    <property name="margin_end">12</property>
-                    <property name="margin_top">12</property>
-                    <property name="margin_bottom">12</property>
-                    <child type="start">
-                      <object class="AdwBin" id="rate_container"></object>
-                    </child>
-
-                    <child type="center">
-                      <object class="AdwToggleGroup" id="toggle_group">
-                        <property name="active-name">player</property>
-                        <child>
-                          <object class="AdwToggle">
-                            <property name="icon-name">sound-symbolic</property>
-                            <property name="tooltip" translatable="yes">Player</property>
-                            <property name="name">player</property>
-                          </object>
-                        </child>
-                        <child>
-                          <object class="AdwToggle">
-                            <property name="icon-name">info-outline-symbolic</property>
-                            <property name="tooltip" translatable="yes">Description</property>
-                            <property name="name">description</property>
-                          </object>
-                        </child>
-                        <child>
-                          <object class="AdwToggle" id="chapters_toggle">
-                            <property name="icon-name">view-list-bullet-symbolic</property>
-                            <property name="tooltip" translatable="yes">Chapters</property>
-                            <property name="name">chapters</property>
-                          </object>
-                        </child>
+                  <object class="AdwViewStackPage">
+                    <property name="name">description</property>
+                    <property name="title">Description</property>
+                    <property name="child">
+                      <object class="PdSheetDescription" id="description">
                       </object>
-                    </child>
+                    </property>
+                  </object>
+                </child>
 
+                <child>
+                  <object class="AdwViewStackPage">
+                    <property name="name">chapters</property>
+                    <property name="title">Chapters</property>
+                    <property name="child">
+                      <object class="PdChapters" id="chapters">
+                      </object>
+                    </property>
+                  </object>
+                </child>
+
+              </object>
+            </child>
+
+          </object>
+
+        </property>
+
+        <child type="bottom">
+          <object class="GtkCenterBox">
+            <property name="margin_start">12</property>
+            <property name="margin_end">12</property>
+            <property name="margin_top">12</property>
+            <property name="margin_bottom">12</property>
+            <child type="start">
+              <object class="AdwBin" id="rate_container"></object>
+            </child>
+
+            <child type="center">
+              <object class="AdwToggleGroup" id="toggle_group">
+                <property name="active-name">player</property>
+                <child>
+                  <object class="AdwToggle">
+                    <property name="icon-name">sound-symbolic</property>
+                    <property name="tooltip" translatable="yes">Player</property>
+                    <property name="name">player</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="AdwToggle">
+                    <property name="icon-name">info-outline-symbolic</property>
+                    <property name="tooltip" translatable="yes">Description</property>
+                    <property name="name">description</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="AdwToggle" id="chapters_toggle">
+                    <property name="icon-name">view-list-bullet-symbolic</property>
+                    <property name="tooltip" translatable="yes">Chapters</property>
+                    <property name="name">chapters</property>
                   </object>
                 </child>
               </object>
-            </property>
-            </object>
-          </child>
-        </object>
-      </property>
+            </child>
+
+          </object>
+        </child>
+      </object>
+    </property>
   </template>
 </interface>

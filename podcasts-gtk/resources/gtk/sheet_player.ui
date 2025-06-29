@@ -2,197 +2,205 @@
 <interface>
   <template class="PdSheetPlayer" parent="AdwBin">
     <property name="child">
-      <object class="GtkBox">
-        <property name="orientation">vertical</property>
-        <property name="spacing">2</property>
+      <object class="GtkScrolledWindow">
+        <property name="vexpand">True</property>
+        <property name="hexpand">True</property>
+        <property name="propagate-natural-height">True</property>
+        <property name="hscrollbar-policy">never</property>
         <child>
           <object class="GtkBox">
-            <property name="margin-start">6</property>
-            <property name="margin-end">6</property>
-            <property name="margin-top">6</property>
-            <property name="margin-bottom">6</property>
             <property name="orientation">vertical</property>
-            <property name="spacing">18</property>
-            <property name="hexpand">True</property>
-            <property name="vexpand">True</property>
-            <property name="valign">center</property>
+            <property name="spacing">2</property>
             <child>
               <object class="GtkBox">
-                <property name="valign">center</property>
-                <property name="hexpand">True</property>
-                <property name="vexpand">True</property>
-                <property name="orientation">vertical</property>
-                <child>
-                  <object class="GtkImage" id="cover">
-                    <property name="pixel-size">256</property>
-                    <property name="width-request">256</property>
-                    <property name="height-request">256</property>
-                    <property name="hexpand">True</property>
-                    <property name="vexpand">True</property>
-                    <property name="margin-start">18</property>
-                    <property name="margin-end">18</property>
-                    <property name="margin-top">6</property>
-                    <property name="margin-bottom">6</property>
-                    <property name="halign">center</property>
-                    <property name="valign">center</property>
-                    <property name="icon-name">gtk-missing-image</property>
-                    <property name="overflow">hidden</property>
-                    <style>
-                      <class name="rounded-big"/>
-                    </style>
-                  </object>
-                </child>
-              </object>
-            </child>
-            <child>
-              <object class="GtkBox">
-                <property name="spacing">6</property>
-                <property name="orientation">vertical</property>
                 <property name="margin-start">6</property>
                 <property name="margin-end">6</property>
+                <property name="margin-top">6</property>
+                <property name="margin-bottom">6</property>
+                <property name="orientation">vertical</property>
+                <property name="spacing">18</property>
+                <property name="hexpand">True</property>
+                <property name="vexpand">True</property>
+                <property name="valign">center</property>
                 <child>
-                  <object class="GtkLabel" id="episode">
-                    <property name="halign">center</property>
-                    <property name="label">Episode Title</property>
-                    <property name="wrap">True</property>
-                    <property name="justify">center</property>
-                    <style>
-                      <class name="heading"/>
-                    </style>
-                  </object>
-                </child>
-                <child>
-                  <object class="GtkLabel" id="show">
-                    <property name="halign">center</property>
-                    <property name="label">Show Title</property>
-                    <property name="wrap">True</property>
-                    <property name="ellipsize">end</property>
-                    <style>
-                      <class name="dim-label"/>
-                    </style>
-                  </object>
-                </child>
-              </object>
-            </child>
-            <child>
-              <object class="GtkBox">
-                <property name="margin-start">12</property>
-                <property name="margin-end">12</property>
-                <child>
-                  <object class="GtkLabel" id="progressed">
-                    <property name="width-chars">5</property>
-                    <property name="xalign">1</property>
-                    <style>
-                      <class name="numeric"/>
-                      <class name="caption"/>
-                    </style>
-                  </object>
-                </child>
-                <child>
-                  <object class="GtkScale" id="slider">
-                    <property name="draw-value">False</property>
+                  <object class="GtkBox">
+                    <property name="valign">center</property>
                     <property name="hexpand">True</property>
                     <property name="vexpand">True</property>
-                    <accessibility>
-                      <relation name="labelled-by">episode</relation>
-                    </accessibility>
-                  </object>
-                </child>
-                <child>
-                  <object class="GtkLabel" id="duration">
-                    <property name="width-chars">5</property>
-                    <style>
-                      <class name="numeric"/>
-                      <class name="caption"/>
-                    </style>
-                  </object>
-                </child>
-              </object>
-            </child>
-            <child>
-              <object class="GtkBox">
-                <property name="halign">center</property>
-                <property name="spacing">12</property>
-                <child>
-                  <object class="GtkButton" id="rewind">
-                    <property name="width-request">60</property>
-                    <property name="height-request">60</property>
-                    <property name="valign">center</property>
-                    <property name="margin-end">12</property>
-                    <property name="tooltip-text" translatable="yes">Rewind</property>
+                    <property name="orientation">vertical</property>
                     <child>
-                      <object class="GtkImage">
-                        <property name="icon-name">skip-back-large-symbolic</property>
-                        <property name="icon-size">2</property>
-                        <property name="accessible-role">presentation</property>
-                      </object>
-                    </child>
-                    <style>
-                      <class name="image-button"/>
-                      <class name="circular"/>
-                    </style>
-                  </object>
-                </child>
-                <child>
-                  <object class="GtkStack" id="play_pause">
-                    <child>
-                      <object class="GtkButton" id="play">
-                        <property name="receives-default">True</property>
-                        <property name="width-request">80</property>
-                        <property name="height-request">80</property>
-                        <property name="tooltip-text" translatable="yes">Play</property>
-                        <child>
-                          <object class="GtkImage">
-                            <property name="icon-name">media-playback-start-symbolic</property>
-                            <property name="icon-size">2</property>
-                            <property name="accessible-role">presentation</property>
-                          </object>
-                        </child>
+                      <object class="GtkImage" id="cover">
+                        <property name="pixel-size">256</property>
+                        <property name="width-request">256</property>
+                        <property name="height-request">256</property>
+                        <property name="hexpand">True</property>
+                        <property name="vexpand">True</property>
+                        <property name="margin-start">18</property>
+                        <property name="margin-end">18</property>
+                        <property name="margin-top">6</property>
+                        <property name="margin-bottom">6</property>
+                        <property name="halign">center</property>
+                        <property name="valign">center</property>
+                        <property name="icon-name">gtk-missing-image</property>
+                        <property name="overflow">hidden</property>
                         <style>
-                          <class name="circular"/>
-                          <class name="image-button"/>
-                        </style>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="GtkButton" id="pause">
-                        <property name="width-request">80</property>
-                        <property name="height-request">80</property>
-                        <property name="tooltip-text" translatable="yes">Pause</property>
-                        <child>
-                          <object class="GtkImage">
-                            <property name="icon-name">media-playback-pause-symbolic</property>
-                            <property name="icon-size">2</property>
-                            <property name="accessible-role">presentation</property>
-                          </object>
-                        </child>
-                        <style>
-                          <class name="image-button"/>
-                          <class name="circular"/>
+                          <class name="rounded-big"/>
                         </style>
                       </object>
                     </child>
                   </object>
                 </child>
                 <child>
-                  <object class="GtkButton" id="forward">
-                    <property name="receives-default">True</property>
-                    <property name="width-request">60</property>
-                    <property name="height-request">60</property>
-                    <property name="valign">center</property>
+                  <object class="GtkBox">
+                    <property name="spacing">6</property>
+                    <property name="orientation">vertical</property>
+                    <property name="margin-start">6</property>
+                    <property name="margin-end">6</property>
+                    <child>
+                      <object class="GtkLabel" id="episode">
+                        <property name="halign">center</property>
+                        <property name="label">Episode Title</property>
+                        <property name="wrap">True</property>
+                        <property name="justify">center</property>
+                        <style>
+                          <class name="heading"/>
+                        </style>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkLabel" id="show">
+                        <property name="halign">center</property>
+                        <property name="label">Show Title</property>
+                        <property name="wrap">True</property>
+                        <property name="ellipsize">end</property>
+                        <style>
+                          <class name="dim-label"/>
+                        </style>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkBox">
                     <property name="margin-start">12</property>
-                    <property name="tooltip-text" translatable="yes">Forward</property>
+                    <property name="margin-end">12</property>
                     <child>
-                      <object class="GtkImage">
-                        <property name="icon-name">skip-forward-large-symbolic</property>
-                        <property name="icon-size">2</property>
-                        <property name="accessible-role">presentation</property>
+                      <object class="GtkLabel" id="progressed">
+                        <property name="width-chars">5</property>
+                        <property name="xalign">1</property>
+                        <style>
+                          <class name="numeric"/>
+                          <class name="caption"/>
+                        </style>
                       </object>
                     </child>
-                    <style>
-                      <class name="image-button"/>
-                      <class name="circular"/>
-                    </style>
+                    <child>
+                      <object class="GtkScale" id="slider">
+                        <property name="draw-value">False</property>
+                        <property name="hexpand">True</property>
+                        <property name="vexpand">True</property>
+                        <accessibility>
+                          <relation name="labelled-by">episode</relation>
+                        </accessibility>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkLabel" id="duration">
+                        <property name="width-chars">5</property>
+                        <style>
+                          <class name="numeric"/>
+                          <class name="caption"/>
+                        </style>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkBox">
+                    <property name="halign">center</property>
+                    <property name="spacing">12</property>
+                    <child>
+                      <object class="GtkButton" id="rewind">
+                        <property name="width-request">60</property>
+                        <property name="height-request">60</property>
+                        <property name="valign">center</property>
+                        <property name="margin-end">12</property>
+                        <property name="tooltip-text" translatable="yes">Rewind</property>
+                        <child>
+                          <object class="GtkImage">
+                            <property name="icon-name">skip-back-large-symbolic</property>
+                            <property name="icon-size">2</property>
+                            <property name="accessible-role">presentation</property>
+                          </object>
+                        </child>
+                        <style>
+                          <class name="image-button"/>
+                          <class name="circular"/>
+                        </style>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkStack" id="play_pause">
+                        <child>
+                          <object class="GtkButton" id="play">
+                            <property name="receives-default">True</property>
+                            <property name="width-request">80</property>
+                            <property name="height-request">80</property>
+                            <property name="tooltip-text" translatable="yes">Play</property>
+                            <child>
+                              <object class="GtkImage">
+                                <property name="icon-name">media-playback-start-symbolic</property>
+                                <property name="icon-size">2</property>
+                                <property name="accessible-role">presentation</property>
+                              </object>
+                            </child>
+                            <style>
+                              <class name="circular"/>
+                              <class name="image-button"/>
+                            </style>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkButton" id="pause">
+                            <property name="width-request">80</property>
+                            <property name="height-request">80</property>
+                            <property name="tooltip-text" translatable="yes">Pause</property>
+                            <child>
+                              <object class="GtkImage">
+                                <property name="icon-name">media-playback-pause-symbolic</property>
+                                <property name="icon-size">2</property>
+                                <property name="accessible-role">presentation</property>
+                              </object>
+                            </child>
+                            <style>
+                              <class name="image-button"/>
+                              <class name="circular"/>
+                            </style>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkButton" id="forward">
+                        <property name="receives-default">True</property>
+                        <property name="width-request">60</property>
+                        <property name="height-request">60</property>
+                        <property name="valign">center</property>
+                        <property name="margin-start">12</property>
+                        <property name="tooltip-text" translatable="yes">Forward</property>
+                        <child>
+                          <object class="GtkImage">
+                            <property name="icon-name">skip-forward-large-symbolic</property>
+                            <property name="icon-size">2</property>
+                            <property name="accessible-role">presentation</property>
+                          </object>
+                        </child>
+                        <style>
+                          <class name="image-button"/>
+                          <class name="circular"/>
+                        </style>
+                      </object>
+                    </child>
                   </object>
                 </child>
               </object>
