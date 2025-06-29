@@ -17,13 +17,13 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+use adw::prelude::*;
 use adw::subclass::prelude::*;
 use anyhow::Result;
 use async_channel::Sender;
 use glib::subclass::InitializingObject;
 use gtk::CompositeTemplate;
 use gtk::glib;
-use gtk::prelude::*;
 use std::cell::{Cell, RefCell};
 
 use crate::app::Action;
@@ -58,12 +58,6 @@ impl ChaptersPriv {
     fn fill_chapters_list(&self, chapters: Vec<Chapter>) {
         self.listbox.remove_all();
         for c in chapters.into_iter() {
-            let item = gtk::Box::new(gtk::Orientation::Horizontal, 10);
-            item.set_margin_top(15);
-            item.set_margin_bottom(15);
-            item.set_margin_start(15);
-            item.set_margin_end(15);
-
             let s = c.start.num_seconds();
             let duration = {
                 let seconds = s % 60;
@@ -71,19 +65,14 @@ impl ChaptersPriv {
                 let hours = (s / 60) / 60;
                 format!("{:02}:{:02}:{:02}", hours, minutes, seconds)
             };
-            let time = gtk::Label::new(Some(&duration));
-            time.set_margin_end(15);
-            item.append(&time);
 
-            let title = gtk::Label::new(Some(&c.title));
-            title.set_wrap(true);
-            title.set_wrap_mode(gtk::pango::WrapMode::WordChar);
-            item.append(&title);
-
-            let row = gtk::ListBoxRow::new();
+            let row = adw::ActionRow::new();
             row.set_action_name(Some("jump-to-second"));
             row.set_action_target_value(Some(&(s as i32).to_variant()));
-            row.set_child(Some(&item));
+            row.set_activatable(true);
+            row.set_title(&duration);
+            row.set_subtitle(&c.title);
+            row.add_css_class("property");
             if !c.description.is_empty() {
                 row.set_tooltip_text(Some(&c.description));
             }
