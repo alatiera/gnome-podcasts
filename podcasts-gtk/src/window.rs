@@ -228,6 +228,13 @@ impl MainWindow {
 
         imp.bottom_sheet
             .set_property("sheet", &player.borrow().sheet);
+        imp.bottom_sheet.connect_open_notify(clone!(
+            #[weak]
+            window,
+            move |sheet| {
+                window.player().sheet().on_open_changed(sheet.is_open());
+            }
+        ));
 
         imp.top_switcher.set_stack(Some(content.stack()));
         imp.bottom_switcher.set_stack(Some(content.stack()));

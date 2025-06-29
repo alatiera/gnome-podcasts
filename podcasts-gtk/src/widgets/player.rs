@@ -738,6 +738,10 @@ impl PlayerWidget {
         self.info.mpris.as_ref().map(|m| m.playback_status()) == Some(PlaybackStatus::Playing)
     }
 
+    pub(crate) fn sheet(&self) -> &SheetBase {
+        &self.sheet
+    }
+
     pub fn chapters_available(&self, id: EpisodeId, chapters: Vec<Chapter>) {
         // TODO refactor after porting to Ui Templates.
         // Then we can just store the chapters in the widget and bind once with a weakref.

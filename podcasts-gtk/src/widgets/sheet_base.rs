@@ -119,6 +119,12 @@ impl SheetBase {
         self.rate().btn.set_label(&format!("{:.2}×", rate));
     }
 
+    pub(crate) fn on_open_changed(&self, is_open: bool) {
+        if !is_open {
+            self.imp().toggle_group.set_active_name(Some("player"));
+        }
+    }
+
     pub(crate) fn chapters_available(&self, id: EpisodeId, chapters: Vec<Chapter>) {
         if chapters.is_empty() {
             return;
