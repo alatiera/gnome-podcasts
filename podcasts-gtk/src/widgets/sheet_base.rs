@@ -101,9 +101,9 @@ impl SheetBase {
         this
     }
 
-    pub(crate) fn init(&self, sender: &Sender<Action>) {
+    pub(crate) fn init(&self, sender: &Sender<Action>, progress: &gtk::Scale) {
         self.imp().description.init(sender);
-        self.imp().chapters.init(sender);
+        self.imp().chapters.init(sender, progress);
     }
 
     pub(crate) fn initialize_episode(&self, episode: &Episode, show: &ShowCoverModel) {

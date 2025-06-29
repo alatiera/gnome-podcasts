@@ -366,7 +366,7 @@ impl PdApplication {
                 window.push_page(&widget);
             }
             Action::GoToChaptersPage(ep, chapters) => {
-                let page = Chapters::new_page(&data.sender, ep, chapters);
+                let page = Chapters::new_page(&data.sender, window.player().slider(), ep, chapters);
                 window.pop_page_by_tag("chapters");
                 window.push_page(&page);
             }

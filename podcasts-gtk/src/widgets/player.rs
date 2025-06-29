@@ -742,6 +742,10 @@ impl PlayerWidget {
         &self.sheet
     }
 
+    pub(crate) fn slider(&self) -> &gtk::Scale {
+        &self.timer.slider
+    }
+
     pub fn chapters_available(&self, id: EpisodeId, chapters: Vec<Chapter>) {
         // TODO refactor after porting to Ui Templates.
         // Then we can just store the chapters in the widget and bind once with a weakref.
@@ -1010,7 +1014,7 @@ impl PlayerWrapper {
 
     fn connect_sheet(&self, sender: &Sender<Action>) {
         let widget = self.borrow();
-        widget.sheet.init(sender);
+        widget.sheet.init(sender, &self.borrow().timer.slider);
         widget.sheet.connect(&self.borrow().timer);
     }
 
