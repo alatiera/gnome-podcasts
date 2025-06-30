@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: podcasts master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2025-06-09 04:22+0000\n"
-"PO-Revision-Date: 2025-06-09 11:20+0330\n"
+"POT-Creation-Date: 2025-06-26 11:37+0000\n"
+"PO-Revision-Date: 2025-06-30 11:04+0330\n"
 "Last-Translator: Danial Behzadi <dani.behzi@ubuntu.com>\n"
 "Language-Team: Persian <fa@li.org>\n"
 "Language: fa\n"
@@ -125,23 +125,27 @@ msgstr "_جریان"
 msgid "_Play"
 msgstr "_پخش"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:185
+#: podcasts-gtk/resources/gtk/episode_description.ui:186
+msgid "_Pause"
+msgstr "_مکث"
+
+#: podcasts-gtk/resources/gtk/episode_description.ui:204
 msgid "_Download"
 msgstr "_بارگیری"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:212
+#: podcasts-gtk/resources/gtk/episode_description.ui:231
 msgid "Cancel"
 msgstr "لغو"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:241
+#: podcasts-gtk/resources/gtk/episode_description.ui:260
 msgid "Delete"
 msgstr "حذف"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:260
+#: podcasts-gtk/resources/gtk/episode_description.ui:279
 msgid "Episode Description"
 msgstr "شرح قسمت"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:281
+#: podcasts-gtk/resources/gtk/episode_description.ui:300
 msgid "Episode Cover"
 msgstr "طرح جلد قسمت"
 
@@ -174,15 +178,19 @@ msgstr "محاسبهٔ اندازهٔ قسمت…"
 msgid "Play this episode"
 msgstr "پخش این قسمت"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:193
+#: podcasts-gtk/resources/gtk/episode_widget.ui:195
+msgid "Pause playback"
+msgstr "مکث پخش"
+
+#: podcasts-gtk/resources/gtk/episode_widget.ui:207
 msgid "Cancel the download process"
 msgstr "لغو فرایند بارگیری"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:206
+#: podcasts-gtk/resources/gtk/episode_widget.ui:220
 msgid "Download this episode"
 msgstr "بارگیری این قسمت"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:220
+#: podcasts-gtk/resources/gtk/episode_widget.ui:234
 msgid "Episode without audio"
 msgstr "قسمت بدون صدا"
 
@@ -367,7 +375,7 @@ msgstr "_قطع اشتراک"
 
 #: podcasts-gtk/resources/gtk/show_menu.ui:35
 msgid "Open Website"
-msgstr "گشوپن پایگاه وب"
+msgstr "گشودن پایگاه وب"
 
 #: podcasts-gtk/resources/gtk/show_menu.ui:39
 msgid "Mark All as Played"
@@ -412,7 +420,7 @@ msgstr "_دربارهٔ پادپخش‌ها"
 #: podcasts-gtk/resources/gtk/window.ui:102
 #: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:4
 #: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:3
-#: podcasts-gtk/src/app.rs:507 podcasts-gtk/src/widgets/aboutdialog.rs:56
+#: podcasts-gtk/src/app.rs:519 podcasts-gtk/src/widgets/aboutdialog.rs:56
 #: podcasts-gtk/src/widgets/player.rs:479
 msgid "Podcasts"
 msgstr "پادپخش‌ها"
@@ -516,7 +524,7 @@ msgstr "مقدار زمان انتظار بین پاک سازی‌های خود
 msgid "What period of time to wait between automatic cleanups"
 msgstr "مقدار زمان انتظار بین پاک سازی‌های خودکار"
 
-#: podcasts-gtk/src/app.rs:360
+#: podcasts-gtk/src/app.rs:375
 msgid "Copied URL to clipboard!"
 msgstr "نشانی رونوشت شده در تخته‌گیره!"
 
@@ -582,16 +590,16 @@ msgstr "کارخواه پادپخش برای میزکار گنوم."
 msgid "translator-credits"
 msgstr "دانیال بهزادی <dani.behzi@ubuntu.com>"
 
-#: podcasts-gtk/src/widgets/content_stack.rs:60
+#: podcasts-gtk/src/widgets/content_stack.rs:61
 msgid "Fetching feeds…"
 msgstr "واکشیدن خوراک‌ها…"
 
-#: podcasts-gtk/src/widgets/content_stack.rs:67
+#: podcasts-gtk/src/widgets/content_stack.rs:68
 msgid "New"
 msgstr "جدید"
 
 #. Translators: Shows as a noun, meaning Podcast-Shows.
-#: podcasts-gtk/src/widgets/content_stack.rs:68
+#: podcasts-gtk/src/widgets/content_stack.rs:69
 #: podcasts-gtk/src/widgets/shows_view.rs:117
 msgid "Shows"
 msgstr "نمایش‌ها"
@@ -600,11 +608,11 @@ msgstr "نمایش‌ها"
 msgid "Download progress"
 msgstr "پیشرفت بارگیری"
 
-#: podcasts-gtk/src/widgets/episode.rs:297
+#: podcasts-gtk/src/widgets/episode.rs:346
 msgid "{} min"
 msgstr "{} دقیقه"
 
-#: podcasts-gtk/src/widgets/player.rs:1128
+#: podcasts-gtk/src/widgets/player.rs:1163
 msgid "The media player was unable to execute an action."
 msgstr "پخش‌کنندهٔ رسانه در اجرای کنشی ناتوان بود."
 
