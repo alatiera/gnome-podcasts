@@ -749,6 +749,12 @@ impl PlayerWidget {
     pub fn chapters_available(&self, id: EpisodeId, chapters: Vec<Chapter>) {
         // TODO refactor after porting to Ui Templates.
         // Then we can just store the chapters in the widget and bind once with a weakref.
+
+        // cancel if the chapters don't match the currently playing episode anymore.
+        if self.id() != Some(id) {
+            return;
+        }
+
         self.controls
             .chapters_button
             .set_visible(!chapters.is_empty());
@@ -768,8 +774,9 @@ impl PlayerWidget {
                 .chapters_signal_id
                 .replace(Some(Rc::new(new_controls_id)));
             if let Some(chapters_signal_id) = old_signal_id {
-                let controls_signal = Rc::try_unwrap(chapters_signal_id).unwrap();
-                self.controls.chapters_button.disconnect(controls_signal);
+                if let Ok(controls_signal) = Rc::try_unwrap(chapters_signal_id) {
+                    self.controls.chapters_button.disconnect(controls_signal);
+                }
             }
         }
     }
