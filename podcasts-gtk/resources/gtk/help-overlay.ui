@@ -1,101 +1,94 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
-  <object class="GtkShortcutsWindow" id="help_overlay">
-    <property name="modal">True</property>
+  <object class="AdwShortcutsDialog" id="shortcuts_dialog">
+    <!-- Navigation -->
     <child>
-      <object class="GtkShortcutsSection">
-        <property name="section-name">shortcuts</property>
-        <property name="max-height">12</property>
-        <!-- Navigation -->
+      <object class="AdwShortcutsSection">
+        <property name="title" translatable="yes" context="shortcut window">Navigation</property>
         <child>
-          <object class="GtkShortcutsGroup">
-            <property name="title" translatable="yes" context="shortcut window">Navigation</property>
-            <child>
-              <object class="GtkShortcutsShortcut">
-                <property name="title" translatable="yes" context="shortcut window">Go to Home Page</property>
-                <property name="action-name">win.go-to-home</property>
-              </object>
-            </child>
-            <child>
-              <object class="GtkShortcutsShortcut">
-                <!-- Translators: Shows as a Noun -->
-                <property name="title" translatable="yes" context="shortcut window">Go to Shows Page</property>
-                <property name="action-name">win.go-to-shows</property>
-              </object>
-            </child>
-            <child>
-              <object class="GtkShortcutsShortcut">
-                <!-- Translators: 'Discovery' is a page where you can add new podcasts -->
-                <property name="title" translatable="yes" context="shortcut window">Go To Discovery Page</property>
-                <property name="action-name">win.go-to-discovery</property>
-              </object>
-            </child>
+          <object class="AdwShortcutsItem">
+            <property name="title" translatable="yes" context="shortcut window">Go to Home Page</property>
+            <property name="action-name">win.go-to-home</property>
           </object>
         </child>
-        <!-- Player -->
         <child>
-          <object class="GtkShortcutsGroup">
-            <property name="title" translatable="yes" context="shortcut window">Player</property>
-            <child>
-              <object class="GtkShortcutsShortcut">
-                <property name="title" translatable="yes" context="shortcut window">Toggle Pause</property>
-                <property name="action-name">win.toggle-pause</property>
-              </object>
-            </child>
-            <child>
-              <object class="GtkShortcutsShortcut">
-                <property name="title" translatable="yes" context="shortcut window">Seek Forwards</property>
-                <property name="action-name">win.seek-forwards</property>
-              </object>
-            </child>
-            <child>
-              <object class="GtkShortcutsShortcut">
-                <property name="title" translatable="yes" context="shortcut window">Seek Backwards</property>
-                <property name="action-name">win.seek-backwards</property>
-              </object>
-            </child>
-            <child>
-              <object class="GtkShortcutsShortcut">
-                <property name="title" translatable="yes" context="shortcut window">Raise Playback Speed</property>
-                <property name="action-name">win.raise-playback-rate</property>
-              </object>
-            </child>
-            <child>
-              <object class="GtkShortcutsShortcut">
-                <property name="title" translatable="yes" context="shortcut window">Lower Playback Speed</property>
-                <property name="action-name">win.lower-playback-rate</property>
-              </object>
-            </child>
+          <object class="AdwShortcutsItem">
+            <!-- Translators: Shows as a Noun -->
+            <property name="title" translatable="yes" context="shortcut window">Go to Shows Page</property>
+            <property name="action-name">win.go-to-shows</property>
           </object>
         </child>
-        <!-- General -->
         <child>
-          <object class="GtkShortcutsGroup">
-            <property name="title" translatable="yes" context="shortcut window">General</property>
-            <child>
-              <object class="GtkShortcutsShortcut">
-                <property name="title" translatable="yes" context="shortcut window">Check for new episodes</property>
-                <property name="action-name">win.refresh</property>
-              </object>
-            </child>
-            <child>
-              <object class="GtkShortcutsShortcut">
-                <property name="title" translatable="yes" context="shortcut window">Quit the application</property>
-                <property name="action-name">app.quit</property>
-              </object>
-            </child>
-            <child>
-              <object class="GtkShortcutsShortcut">
-                <property name="title" translatable="yes" context="shortcut window">Import Subscriptions</property>
-                <property name="action-name">win.import</property>
-              </object>
-            </child>
-            <child>
-              <object class="GtkShortcutsShortcut">
-                <property name="title" translatable="yes" context="shortcut window">Export Subscriptions</property>
-                <property name="action-name">win.export</property>
-              </object>
-            </child>
+          <object class="AdwShortcutsItem">
+            <!-- Translators: 'Discovery' is a page where you can add new podcasts -->
+            <property name="title" translatable="yes" context="shortcut window">Go To Discovery Page</property>
+            <property name="action-name">win.go-to-discovery</property>
+          </object>
+        </child>
+      </object>
+    </child>
+    <!-- Player -->
+    <child>
+      <object class="AdwShortcutsSection">
+        <property name="title" translatable="yes" context="shortcut window">Player</property>
+        <child>
+          <object class="AdwShortcutsItem">
+            <property name="title" translatable="yes" context="shortcut window">Toggle Pause</property>
+            <property name="action-name">win.toggle-pause</property>
+          </object>
+        </child>
+        <child>
+          <object class="AdwShortcutsItem">
+            <property name="title" translatable="yes" context="shortcut window">Seek Forwards</property>
+            <property name="action-name">win.seek-forwards</property>
+          </object>
+        </child>
+        <child>
+          <object class="AdwShortcutsItem">
+            <property name="title" translatable="yes" context="shortcut window">Seek Backwards</property>
+            <property name="action-name">win.seek-backwards</property>
+          </object>
+        </child>
+        <child>
+          <object class="AdwShortcutsItem">
+            <property name="title" translatable="yes" context="shortcut window">Raise Playback Speed</property>
+            <property name="action-name">win.raise-playback-rate</property>
+          </object>
+        </child>
+        <child>
+          <object class="AdwShortcutsItem">
+            <property name="title" translatable="yes" context="shortcut window">Lower Playback Speed</property>
+            <property name="action-name">win.lower-playback-rate</property>
+          </object>
+        </child>
+      </object>
+    </child>
+    <!-- General -->
+    <child>
+      <object class="AdwShortcutsSection">
+        <property name="title" translatable="yes" context="shortcut window">General</property>
+        <child>
+          <object class="AdwShortcutsItem">
+            <property name="title" translatable="yes" context="shortcut window">Check for new episodes</property>
+            <property name="action-name">win.refresh</property>
+          </object>
+        </child>
+        <child>
+          <object class="AdwShortcutsItem">
+            <property name="title" translatable="yes" context="shortcut window">Quit the application</property>
+            <property name="action-name">app.quit</property>
+          </object>
+        </child>
+        <child>
+          <object class="AdwShortcutsItem">
+            <property name="title" translatable="yes" context="shortcut window">Import Subscriptions</property>
+            <property name="action-name">win.import</property>
+          </object>
+        </child>
+        <child>
+          <object class="AdwShortcutsItem">
+            <property name="title" translatable="yes" context="shortcut window">Export Subscriptions</property>
+            <property name="action-name">win.export</property>
           </object>
         </child>
       </object>
