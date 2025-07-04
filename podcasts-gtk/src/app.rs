@@ -311,7 +311,7 @@ impl PdApplication {
         self.set_accels_for_action("win.import", &["<primary>o"]);
         self.set_accels_for_action("win.export", &["<primary>e"]);
         self.set_accels_for_action("window.close", &["<primary>w"]);
-        // Make sure to add new shortcuts to help-overlay.ui !!!
+        // Make sure to add new shortcuts to shortcuts-dialog.ui !!!
     }
 
     fn do_action(&self, action: Action) {
