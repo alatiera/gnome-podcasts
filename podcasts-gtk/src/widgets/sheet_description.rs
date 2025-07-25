@@ -94,6 +94,7 @@ impl SheetDescription {
     }
 
     pub fn initialize_episode(&self, ep: &Episode, show: &ShowCoverModel) {
+        self.imp().id.set(Some(ep.id()));
         self.imp().episode.set_label(ep.title());
         self.imp().show.set_label(show.title());
         self.set_description(ep);
