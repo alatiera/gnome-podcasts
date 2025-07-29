@@ -7,30 +7,30 @@ msgid ""
 msgstr ""
 "Project-Id-Version: podcasts main\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2025-02-23 08:07+0000\n"
-"PO-Revision-Date: 2025-02-05 21:12+0100\n"
+"POT-Creation-Date: 2025-07-10 20:29+0000\n"
+"PO-Revision-Date: 2025-07-29 13:57+0200\n"
 "Last-Translator: twlvnn kraftwerk <kraft_werk@tutanota.com>\n"
 "Language-Team: Bulgarian <dict-notifications@fsa-bg.org>\n"
 "Language: bg\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1)\n"
-"X-Generator: Gtranslator 47.1\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 3.6\n"
 
-#: podcasts-gtk/resources/gtk/discovery_found_podcast.ui:104
+#: podcasts-gtk/resources/gtk/discovery_found_podcast.ui:105
 msgid "Episodes: "
 msgstr "Епизоди: "
 
-#: podcasts-gtk/resources/gtk/discovery_found_podcast.ui:142
+#: podcasts-gtk/resources/gtk/discovery_found_podcast.ui:143
 msgid "Last publication"
 msgstr "Последна публикация"
 
-#: podcasts-gtk/resources/gtk/discovery_found_podcast.ui:163
+#: podcasts-gtk/resources/gtk/discovery_found_podcast.ui:164
 msgid "_Subscribe"
 msgstr "_Абониране"
 
-#: podcasts-gtk/resources/gtk/discovery_found_podcast.ui:173
+#: podcasts-gtk/resources/gtk/discovery_found_podcast.ui:174
 #: podcasts-gtk/src/widgets/discovery_search_results.rs:152
 msgid "Subscribing to feed…"
 msgstr "Абониране за поток…"
@@ -125,23 +125,27 @@ msgstr "_Предаване"
 msgid "_Play"
 msgstr "_Изпълнение"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:185
+#: podcasts-gtk/resources/gtk/episode_description.ui:186
+msgid "_Pause"
+msgstr "_Пауза"
+
+#: podcasts-gtk/resources/gtk/episode_description.ui:204
 msgid "_Download"
 msgstr "Из_тегляне"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:212
+#: podcasts-gtk/resources/gtk/episode_description.ui:231
 msgid "Cancel"
 msgstr "Отказване"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:241
+#: podcasts-gtk/resources/gtk/episode_description.ui:260
 msgid "Delete"
 msgstr "Изтриване"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:260
+#: podcasts-gtk/resources/gtk/episode_description.ui:279
 msgid "Episode Description"
 msgstr "Описание на епизода"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:281
+#: podcasts-gtk/resources/gtk/episode_description.ui:300
 msgid "Episode Cover"
 msgstr "Корица на епизод"
 
@@ -174,15 +178,19 @@ msgstr "Изчисляване на размера на епизода…"
 msgid "Play this episode"
 msgstr "Пускане на епизода"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:193
+#: podcasts-gtk/resources/gtk/episode_widget.ui:195
+msgid "Pause playback"
+msgstr "Пауза на възпроизвеждането"
+
+#: podcasts-gtk/resources/gtk/episode_widget.ui:207
 msgid "Cancel the download process"
 msgstr "Отмяна на изтеглянето"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:206
+#: podcasts-gtk/resources/gtk/episode_widget.ui:220
 msgid "Download this episode"
 msgstr "Изтегляне на епизода"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:220
+#: podcasts-gtk/resources/gtk/episode_widget.ui:234
 msgid "Episode without audio"
 msgstr "Епизод без звук"
 
@@ -228,27 +236,37 @@ msgctxt "shortcut window"
 msgid "Seek Backwards"
 msgstr "Превъртане назад"
 
-#: podcasts-gtk/resources/gtk/help-overlay.ui:62
+#: podcasts-gtk/resources/gtk/help-overlay.ui:59
+msgctxt "shortcut window"
+msgid "Raise Playback Speed"
+msgstr "Увеличаване на скоростта на възпроизвеждане"
+
+#: podcasts-gtk/resources/gtk/help-overlay.ui:65
+msgctxt "shortcut window"
+msgid "Lower Playback Speed"
+msgstr "Намаляване на скоростта на възпроизвеждане"
+
+#: podcasts-gtk/resources/gtk/help-overlay.ui:74
 msgctxt "shortcut window"
 msgid "General"
 msgstr "Общи"
 
-#: podcasts-gtk/resources/gtk/help-overlay.ui:65
+#: podcasts-gtk/resources/gtk/help-overlay.ui:77
 msgctxt "shortcut window"
 msgid "Check for new episodes"
 msgstr "Проверка за нови епизоди"
 
-#: podcasts-gtk/resources/gtk/help-overlay.ui:71
+#: podcasts-gtk/resources/gtk/help-overlay.ui:83
 msgctxt "shortcut window"
 msgid "Quit the application"
 msgstr "Спиране на програмата"
 
-#: podcasts-gtk/resources/gtk/help-overlay.ui:77
+#: podcasts-gtk/resources/gtk/help-overlay.ui:89
 msgctxt "shortcut window"
 msgid "Import Subscriptions"
 msgstr "Внасяне на абонаменти"
 
-#: podcasts-gtk/resources/gtk/help-overlay.ui:83
+#: podcasts-gtk/resources/gtk/help-overlay.ui:95
 msgctxt "shortcut window"
 msgid "Export Subscriptions"
 msgstr "Изнасяне на абонаменти"
@@ -402,8 +420,8 @@ msgstr "_Относно „Подкасти“"
 #: podcasts-gtk/resources/gtk/window.ui:102
 #: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:4
 #: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:3
-#: podcasts-gtk/src/app.rs:505 podcasts-gtk/src/widgets/aboutdialog.rs:56
-#: podcasts-gtk/src/widgets/player.rs:465
+#: podcasts-gtk/src/app.rs:519 podcasts-gtk/src/widgets/aboutdialog.rs:56
+#: podcasts-gtk/src/widgets/player.rs:479
 msgid "Podcasts"
 msgstr "Подкасти"
 
@@ -459,7 +477,7 @@ msgid "The view where one can add a new podcast"
 msgstr "Изгледът, в който може да се добави нов подкаст"
 
 #. developer_name tag deprecated with Appstream 1.0
-#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:221
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:230
 msgid "The Podcasts developers"
 msgstr "Разработчици на „Подкасти“"
 
@@ -508,15 +526,15 @@ msgstr "Брой периоди от време между автоматичн�
 msgid "What period of time to wait between automatic cleanups"
 msgstr "Период от време между автоматичните почиствания"
 
-#: podcasts-gtk/src/app.rs:358
+#: podcasts-gtk/src/app.rs:375
 msgid "Copied URL to clipboard!"
 msgstr "Адресът е копиран в буфера за обмен!"
 
-#: podcasts-gtk/src/episode_description_parser.rs:316
+#: podcasts-gtk/src/episode_description_parser.rs:319
 msgid "Jump to {}:{}:{}"
 msgstr "Към {}:{}:{}"
 
-#: podcasts-gtk/src/episode_description_parser.rs:335
+#: podcasts-gtk/src/episode_description_parser.rs:338
 msgid "Jump to {}:{}"
 msgstr "Към {}:{}"
 
@@ -582,17 +600,17 @@ msgstr ""
 "Докладвайте за грешки в превода в <a href='https://fsa-bg.org/project/gtp/"
 "newticket'>съответния раздел</a>."
 
-#: podcasts-gtk/src/widgets/content_stack.rs:60
+#: podcasts-gtk/src/widgets/content_stack.rs:61
 msgid "Fetching feeds…"
 msgstr "Изтегляне на потоци…"
 
-#: podcasts-gtk/src/widgets/content_stack.rs:67
+#: podcasts-gtk/src/widgets/content_stack.rs:68
 msgid "New"
 msgstr "Ново"
 
 #. Translators: Shows as a noun, meaning Podcast-Shows.
-#: podcasts-gtk/src/widgets/content_stack.rs:68
-#: podcasts-gtk/src/widgets/shows_view.rs:118
+#: podcasts-gtk/src/widgets/content_stack.rs:69
+#: podcasts-gtk/src/widgets/shows_view.rs:117
 msgid "Shows"
 msgstr "Подкасти"
 
@@ -600,11 +618,11 @@ msgstr "Подкасти"
 msgid "Download progress"
 msgstr "Напредък на изтегляне"
 
-#: podcasts-gtk/src/widgets/episode.rs:279
+#: podcasts-gtk/src/widgets/episode.rs:346
 msgid "{} min"
 msgstr "{} мин"
 
-#: podcasts-gtk/src/widgets/player.rs:1109
+#: podcasts-gtk/src/widgets/player.rs:1163
 msgid "The media player was unable to execute an action."
 msgstr "Медийната програма не успя да изпълни действие."
 
