@@ -57,7 +57,7 @@
             "sources": [
                 {
                     "type": "git",
-                    "brach": "main",
+                    "branch": "main",
                     "url": "https://gitlab.gnome.org/World/podcasts.git"
                 }
             ]
