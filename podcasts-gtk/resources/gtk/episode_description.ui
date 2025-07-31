@@ -282,6 +282,7 @@ Tobias Bernard
                         <property name="xalign">0</property>
                         <style>
                           <class name="episode_description_label"/>
+                          <class name="document"/>
                         </style>
                       </object>
                     </child>
