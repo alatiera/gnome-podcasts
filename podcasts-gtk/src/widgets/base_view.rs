@@ -84,7 +84,8 @@ impl BinImpl for BaseViewPriv {}
 
 glib::wrapper! {
     pub struct BaseView(ObjectSubclass<BaseViewPriv>)
-        @extends gtk::Widget, adw::Bin;
+        @extends gtk::Widget, adw::Bin,
+        @implements gtk::ConstraintTarget, gtk::Buildable, gtk::Accessible;
 }
 
 impl Default for BaseView {

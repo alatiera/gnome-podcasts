@@ -63,7 +63,8 @@ impl BinImpl for EmptyViewPriv {}
 
 glib::wrapper! {
     pub struct EmptyView(ObjectSubclass<EmptyViewPriv>)
-        @extends gtk::Widget, adw::Bin;
+        @extends gtk::Widget, adw::Bin,
+        @implements gtk::ConstraintTarget, gtk::Buildable, gtk::Accessible;
 }
 
 impl Default for EmptyView {

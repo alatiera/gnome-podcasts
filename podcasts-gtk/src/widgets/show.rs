@@ -98,7 +98,8 @@ impl WidgetImpl for ShowWidgetPriv {}
 
 glib::wrapper! {
     pub struct ShowWidget(ObjectSubclass<ShowWidgetPriv>)
-        @extends gtk::Widget;
+        @extends gtk::Widget,
+        @implements gtk::ConstraintTarget, gtk::Buildable, gtk::Accessible;
 }
 
 impl Default for ShowWidget {

@@ -186,7 +186,8 @@ fn get_episodes() -> Result<Vec<Show>> {
 
 glib::wrapper! {
     pub struct ShowsView(ObjectSubclass<ShowsViewPriv>)
-        @extends gtk::Widget, adw::Bin;
+        @extends gtk::Widget, adw::Bin,
+        @implements gtk::ConstraintTarget, gtk::Buildable, gtk::Accessible;
 }
 
 impl ShowsView {

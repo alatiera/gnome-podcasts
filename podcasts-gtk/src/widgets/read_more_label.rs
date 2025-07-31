@@ -118,7 +118,7 @@ impl WidgetImpl for ReadMoreLabelPriv {
 glib::wrapper! {
     pub struct ReadMoreLabel(ObjectSubclass<ReadMoreLabelPriv>)
         @extends gtk::Widget,
-    @implements gtk::Accessible;
+        @implements gtk::ConstraintTarget, gtk::Buildable, gtk::Accessible;
 }
 
 impl Default for ReadMoreLabel {

@@ -47,7 +47,8 @@ impl BoxImpl for EmptyShowPriv {}
 
 glib::wrapper! {
     pub struct EmptyShow(ObjectSubclass<EmptyShowPriv>)
-        @extends gtk::Widget, gtk::Box;
+        @extends gtk::Widget, gtk::Box,
+        @implements gtk::ConstraintTarget, gtk::Buildable, gtk::Accessible;
 }
 
 impl Default for EmptyShow {

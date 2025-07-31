@@ -210,7 +210,7 @@ impl AdwApplicationWindowImpl for MainWindowPriv {}
 glib::wrapper! {
     pub struct MainWindow(ObjectSubclass<MainWindowPriv>)
         @extends gtk::Widget, gtk::Window, gtk::ApplicationWindow, adw::ApplicationWindow,
-        @implements gio::ActionMap, gio::ActionGroup, gtk::Root;
+        @implements gio::ActionMap, gio::ActionGroup, gtk::ConstraintTarget, gtk::Accessible, gtk::Buildable, gtk::ShortcutManager, gtk::Native, gtk::Root;
 }
 
 impl MainWindow {
