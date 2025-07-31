@@ -353,12 +353,12 @@ mod tests {
     use crate::models::*;
     use anyhow::Result;
     use chrono::prelude::*;
-    use once_cell::sync::Lazy;
 
     use rss::Channel;
 
     use std::fs::File;
     use std::io::BufReader;
+    use std::sync::LazyLock;
 
     /// randomly chosen
     const TEST_SHOW_ID: ShowId = ShowId(42);
@@ -367,7 +367,7 @@ mod tests {
     // Especially if you find an *interesting* generated feed.
 
     // Known prebuilt expected objects.
-    static EXPECTED_MINIMAL_INTERCEPTED_1: Lazy<NewEpisodeMinimal> = Lazy::new(|| {
+    static EXPECTED_MINIMAL_INTERCEPTED_1: LazyLock<NewEpisodeMinimal> = LazyLock::new(|| {
         NewEpisodeMinimalBuilder::default()
             .title("The Super Bowl of Racism")
             .uri(Some(String::from(
@@ -386,7 +386,7 @@ mod tests {
             .build()
             .unwrap()
     });
-    static EXPECTED_MINIMAL_INTERCEPTED_2: Lazy<NewEpisodeMinimal> = Lazy::new(|| {
+    static EXPECTED_MINIMAL_INTERCEPTED_2: LazyLock<NewEpisodeMinimal> = LazyLock::new(|| {
         NewEpisodeMinimalBuilder::default()
             .title("Atlas Golfed — U.S.-Backed Think Tanks Target Latin America")
             .uri(Some(String::from(
@@ -405,7 +405,7 @@ mod tests {
             .build()
             .unwrap()
     });
-    static EXPECTED_INTERCEPTED_1: Lazy<NewEpisode> = Lazy::new(|| {
+    static EXPECTED_INTERCEPTED_1: LazyLock<NewEpisode> = LazyLock::new(|| {
         let descr = "NSA whistleblower Edward Snowden discusses the massive Equifax data \
                          breach and allegations of Russian interference in the US election. \
                          Commentator Shaun King explains his call for a boycott of the NFL and \
@@ -431,7 +431,7 @@ mod tests {
             .build()
             .unwrap()
     });
-    static EXPECTED_INTERCEPTED_2: Lazy<NewEpisode> = Lazy::new(|| {
+    static EXPECTED_INTERCEPTED_2: LazyLock<NewEpisode> = LazyLock::new(|| {
         let descr = "This week on Intercepted: Jeremy gives an update on the aftermath of \
                          Blackwater’s 2007 massacre of Iraqi civilians. Intercept reporter Lee \
                          Fang lays out how a network of libertarian think tanks called the Atlas \
@@ -460,7 +460,7 @@ mod tests {
             .build()
             .unwrap()
     });
-    static UPDATED_DURATION_INTERCEPTED_1: Lazy<NewEpisode> = Lazy::new(|| {
+    static UPDATED_DURATION_INTERCEPTED_1: LazyLock<NewEpisode> = LazyLock::new(|| {
         NewEpisodeBuilder::default()
             .title("The Super Bowl of Racism")
             .uri(Some(String::from(
@@ -480,7 +480,7 @@ mod tests {
             .build()
             .unwrap()
     });
-    static EXPECTED_MINIMAL_LUP_1: Lazy<NewEpisodeMinimal> = Lazy::new(|| {
+    static EXPECTED_MINIMAL_LUP_1: LazyLock<NewEpisodeMinimal> = LazyLock::new(|| {
         NewEpisodeMinimalBuilder::default()
             .title("Hacking Devices with Kali Linux | LUP 214")
             .uri(Some(String::from(
@@ -499,7 +499,7 @@ mod tests {
             .build()
             .unwrap()
     });
-    static EXPECTED_MINIMAL_LUP_2: Lazy<NewEpisodeMinimal> = Lazy::new(|| {
+    static EXPECTED_MINIMAL_LUP_2: LazyLock<NewEpisodeMinimal> = LazyLock::new(|| {
         NewEpisodeMinimalBuilder::default()
             .title("Gnome Does it Again | LUP 213")
             .uri(Some(String::from(
@@ -518,7 +518,7 @@ mod tests {
             .build()
             .unwrap()
     });
-    static EXPECTED_LUP_1: Lazy<NewEpisode> = Lazy::new(|| {
+    static EXPECTED_LUP_1: LazyLock<NewEpisode> = LazyLock::new(|| {
         let descr = "Audit your network with a couple of easy commands on Kali Linux. Chris \
                          decides to blow off a little steam by attacking his IoT devices, Wes has \
                          the scope on Equifax blaming open source &amp; the Beard just saved the \
@@ -543,7 +543,7 @@ mod tests {
             .build()
             .unwrap()
     });
-    static EXPECTED_LUP_2: Lazy<NewEpisode> = Lazy::new(|| {
+    static EXPECTED_LUP_2: LazyLock<NewEpisode> = LazyLock::new(|| {
         let descr = "<p>The Gnome project is about to solve one of our audience's biggest Wayland’s \
                  concerns. But as the project takes on a new level of relevance, decisions for \
                  the next version of Gnome have us worried about the future.</p>\n\n<p>Plus we \
@@ -570,7 +570,7 @@ mod tests {
             .unwrap()
     });
 
-    static EXPECTED_NDR_1: Lazy<NewEpisode> = Lazy::new(|| {
+    static EXPECTED_NDR_1: LazyLock<NewEpisode> = LazyLock::new(|| {
         let descr = "<p>Die aktuellen Meldungen aus der NDR Info Nachrichtenredaktion.</p>";
 
         NewEpisodeBuilder::default()
@@ -589,7 +589,7 @@ mod tests {
             .unwrap()
     });
 
-    static EXPECTED_NDR_2: Lazy<NewEpisode> = Lazy::new(|| {
+    static EXPECTED_NDR_2: LazyLock<NewEpisode> = LazyLock::new(|| {
         let descr = "<p>Die aktuellen Meldungen aus der NDR Info Nachrichtenredaktion.</p>";
 
         NewEpisodeBuilder::default()
@@ -608,7 +608,7 @@ mod tests {
             .unwrap()
     });
 
-    static EXPECTED_NDR_3: Lazy<NewEpisode> = Lazy::new(|| {
+    static EXPECTED_NDR_3: LazyLock<NewEpisode> = LazyLock::new(|| {
         let descr = "<p>Die aktuellen Meldungen aus der NDR Info Nachrichtenredaktion.</p>";
 
         NewEpisodeBuilder::default()

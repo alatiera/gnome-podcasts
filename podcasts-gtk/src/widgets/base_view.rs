@@ -25,7 +25,7 @@ use gtk::subclass::prelude::*;
 use adw::prelude::*;
 use adw::subclass::prelude::*;
 
-use once_cell::sync::Lazy;
+use std::sync::LazyLock;
 
 #[derive(Debug, Default)]
 pub struct BaseViewPriv {
@@ -52,7 +52,7 @@ impl ObjectImpl for BaseViewPriv {
     }
 
     fn properties() -> &'static [glib::ParamSpec] {
-        static PROPERTIES: Lazy<Vec<glib::ParamSpec>> = Lazy::new(|| {
+        static PROPERTIES: LazyLock<Vec<glib::ParamSpec>> = LazyLock::new(|| {
             vec![
                 glib::ParamSpecObject::builder::<gtk::Widget>("child")
                     .readwrite()

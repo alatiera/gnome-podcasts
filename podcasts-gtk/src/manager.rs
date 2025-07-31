@@ -20,9 +20,8 @@
 
 use anyhow::{Result, anyhow};
 use async_channel::Sender;
-use once_cell::sync::Lazy;
 use std::collections::HashMap;
-use std::sync::{Arc, Mutex, RwLock};
+use std::sync::{Arc, LazyLock, Mutex, RwLock};
 
 use crate::app::Action;
 use crate::i18n::i18n_f;
@@ -35,8 +34,8 @@ use podcasts_data::{EpisodeId, EpisodeModel};
 // I am terrible at writing downloaders and download managers.
 pub(crate) type ActiveProgress = Arc<Mutex<Progress>>;
 pub(crate) type DownloadProgressLock = Arc<RwLock<HashMap<EpisodeId, ActiveProgress>>>;
-pub(crate) static ACTIVE_DOWNLOADS: Lazy<DownloadProgressLock> =
-    Lazy::new(|| Arc::new(RwLock::new(HashMap::new())));
+pub(crate) static ACTIVE_DOWNLOADS: LazyLock<DownloadProgressLock> =
+    LazyLock::new(|| Arc::new(RwLock::new(HashMap::new())));
 
 #[derive(Debug, Default)]
 pub(crate) struct Progress {

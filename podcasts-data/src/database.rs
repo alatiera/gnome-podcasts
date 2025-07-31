@@ -26,9 +26,8 @@ use diesel::r2d2::ConnectionManager;
 
 use diesel_migrations::{EmbeddedMigrations, MigrationHarness, embed_migrations};
 
-use once_cell::sync::Lazy;
-
 use std::path::PathBuf;
+use std::sync::LazyLock;
 
 use crate::errors::DataError;
 
@@ -39,21 +38,21 @@ type Pool = r2d2::Pool<ConnectionManager<SqliteConnection>>;
 
 const MIGRATIONS: EmbeddedMigrations = embed_migrations!("migrations/");
 
-static POOL: Lazy<Pool> = Lazy::new(|| init_pool(DB_PATH.to_str().unwrap()));
+static POOL: LazyLock<Pool> = LazyLock::new(|| init_pool(DB_PATH.to_str().unwrap()));
 
 #[cfg(not(test))]
-static DB_PATH: Lazy<PathBuf> = Lazy::new(|| {
+static DB_PATH: LazyLock<PathBuf> = LazyLock::new(|| {
     xdg_dirs::PODCASTS_XDG
         .place_data_file("podcasts.db")
         .unwrap()
 });
 
 #[cfg(test)]
-pub(crate) static TEMPDIR: Lazy<tempfile::TempDir> =
-    Lazy::new(|| tempfile::TempDir::with_prefix("podcasts_unit_test").unwrap());
+pub(crate) static TEMPDIR: LazyLock<tempfile::TempDir> =
+    LazyLock::new(|| tempfile::TempDir::with_prefix("podcasts_unit_test").unwrap());
 
 #[cfg(test)]
-static DB_PATH: Lazy<PathBuf> = Lazy::new(|| TEMPDIR.path().join("podcasts.db"));
+static DB_PATH: LazyLock<PathBuf> = LazyLock::new(|| TEMPDIR.path().join("podcasts.db"));
 
 /// Get an r2d2 `SqliteConnection`.
 pub(crate) fn connection() -> Pool {

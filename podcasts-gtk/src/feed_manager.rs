@@ -18,18 +18,17 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 use anyhow::Result;
 use async_channel::Sender;
-use once_cell::sync::Lazy;
 use podcasts_data::Source;
 use podcasts_data::dbqueries;
 use podcasts_data::pipeline::pipeline;
 use std::collections::HashMap;
-use std::sync::RwLock;
+use std::sync::{LazyLock, RwLock};
 use tokio::sync::watch;
 
 use crate::app::Action;
 use crate::glib::Priority;
 
-pub(crate) static FEED_MANAGER: Lazy<FeedManager> = Lazy::new(FeedManager::default);
+pub(crate) static FEED_MANAGER: LazyLock<FeedManager> = LazyLock::new(FeedManager::default);
 
 type RefreshId = u64;
 #[derive(Debug)]

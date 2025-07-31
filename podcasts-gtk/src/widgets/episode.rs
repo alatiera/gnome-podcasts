@@ -26,8 +26,8 @@ use glib::subclass::InitializingObject;
 use gtk::CompositeTemplate;
 use gtk::prelude::*;
 use gtk::{gio, glib};
-use once_cell::sync::Lazy;
 use std::cell::Cell;
+use std::sync::LazyLock;
 
 use crate::app::Action;
 use crate::i18n::i18n_f;
@@ -38,7 +38,7 @@ use podcasts_data::dbqueries;
 use podcasts_data::utils::get_download_dir;
 use podcasts_data::{EpisodeModel, EpisodeWidgetModel};
 
-static SIZE_OPTS: Lazy<humansize::FormatSizeOptions> = Lazy::new(|| {
+static SIZE_OPTS: LazyLock<humansize::FormatSizeOptions> = LazyLock::new(|| {
     // Declare a custom humansize option struct
     // See: https://docs.rs/humansize/2.1.3/humansize/struct.FormatSizeOptions.html
     humansize::FormatSizeOptions::from(humansize::WINDOWS).decimal_places(0)

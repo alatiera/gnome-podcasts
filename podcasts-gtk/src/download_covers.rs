@@ -3,10 +3,10 @@ use glib::WeakRef;
 use gtk::gdk;
 use gtk::glib;
 use gtk::prelude::*;
-use once_cell::sync::Lazy;
 use std::collections::{HashMap, HashSet};
 use std::io::Cursor;
 use std::path::PathBuf;
+use std::sync::LazyLock;
 use tokio::sync::RwLock; // also works from gtk, unlike tokio::fs
 
 use crate::thumbnail_generator::ThumbSize;
@@ -37,7 +37,8 @@ use podcasts_data::{ShowCoverModel, ShowId};
 //     - download it, then generate thumbs, cache the requested thumb size
 //           and return the texture.
 
-static CACHE_VALID_DURATION: Lazy<chrono::Duration> = Lazy::new(|| chrono::Duration::weeks(4));
+static CACHE_VALID_DURATION: LazyLock<chrono::Duration> =
+    LazyLock::new(|| chrono::Duration::weeks(4));
 
 #[derive(Copy, Clone, Eq, Hash, PartialEq)]
 struct CoverId(ShowId, ThumbSize);
@@ -57,13 +58,14 @@ enum CachedTexture {
 }
 
 // Thumbs that are already loaded
-static COVER_TEXTURES: Lazy<RwLock<HashMap<CoverId, CachedTexture>>> =
-    Lazy::new(|| RwLock::new(HashMap::new()));
+static COVER_TEXTURES: LazyLock<RwLock<HashMap<CoverId, CachedTexture>>> =
+    LazyLock::new(|| RwLock::new(HashMap::new()));
 // Each cover should only be downloaded once
-static COVER_DL_REGISTRY: Lazy<RwLock<HashSet<ShowId>>> = Lazy::new(|| RwLock::new(HashSet::new()));
+static COVER_DL_REGISTRY: LazyLock<RwLock<HashSet<ShowId>>> =
+    LazyLock::new(|| RwLock::new(HashSet::new()));
 // Each thumb should only be loaded once
-static THUMB_LOAD_REGISTRY: Lazy<RwLock<HashSet<CoverId>>> =
-    Lazy::new(|| RwLock::new(HashSet::new()));
+static THUMB_LOAD_REGISTRY: LazyLock<RwLock<HashSet<CoverId>>> =
+    LazyLock::new(|| RwLock::new(HashSet::new()));
 
 fn filename_for_download(response: &reqwest::Response) -> String {
     let mime = response.headers().get(reqwest::header::CONTENT_TYPE);

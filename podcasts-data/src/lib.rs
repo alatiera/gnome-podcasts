@@ -61,38 +61,38 @@ pub const USER_AGENT: &str = "Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100
 
 /// [XDG Base Directory](https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html) Paths.
 pub mod xdg_dirs {
-    use once_cell::sync::Lazy;
     use std::path::PathBuf;
+    use std::sync::LazyLock;
 
-    pub(crate) static PODCASTS_XDG: Lazy<xdg::BaseDirectories> =
-        Lazy::new(|| xdg::BaseDirectories::with_prefix("gnome-podcasts").unwrap());
+    pub(crate) static PODCASTS_XDG: LazyLock<xdg::BaseDirectories> =
+        LazyLock::new(|| xdg::BaseDirectories::with_prefix("gnome-podcasts").unwrap());
 
     /// XDG_DATA Directory `Pathbuf`.
-    pub static PODCASTS_DATA: Lazy<PathBuf> = Lazy::new(|| {
+    pub static PODCASTS_DATA: LazyLock<PathBuf> = LazyLock::new(|| {
         PODCASTS_XDG
             .create_data_directory(PODCASTS_XDG.get_data_home())
             .unwrap()
     });
 
     /// XDG_CONFIG Directory `Pathbuf`.
-    pub static PODCASTS_CONFIG: Lazy<PathBuf> = Lazy::new(|| {
+    pub static PODCASTS_CONFIG: LazyLock<PathBuf> = LazyLock::new(|| {
         PODCASTS_XDG
             .create_config_directory(PODCASTS_XDG.get_config_home())
             .unwrap()
     });
 
     /// XDG_CACHE Directory `Pathbuf`.
-    pub static PODCASTS_CACHE: Lazy<PathBuf> = Lazy::new(|| {
+    pub static PODCASTS_CACHE: LazyLock<PathBuf> = LazyLock::new(|| {
         PODCASTS_XDG
             .create_cache_directory(PODCASTS_XDG.get_cache_home())
             .unwrap()
     });
 
     /// GNOME Podcasts Download Directory `PathBuf`.
-    pub static DL_DIR: Lazy<PathBuf> =
-        Lazy::new(|| PODCASTS_XDG.create_data_directory("Downloads").unwrap());
+    pub static DL_DIR: LazyLock<PathBuf> =
+        LazyLock::new(|| PODCASTS_XDG.create_data_directory("Downloads").unwrap());
 
     /// GNOME Podcasts Tmp Directory `PathBuf`.
-    pub static TMP_DIR: Lazy<PathBuf> =
-        Lazy::new(|| PODCASTS_XDG.create_data_directory("tmp").unwrap());
+    pub static TMP_DIR: LazyLock<PathBuf> =
+        LazyLock::new(|| PODCASTS_XDG.create_data_directory("tmp").unwrap());
 }

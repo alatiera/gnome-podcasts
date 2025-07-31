@@ -28,11 +28,10 @@ use gtk::FileFilter;
 use gtk::Widget;
 use gtk::prelude::*;
 use gtk::{gio, glib};
-use once_cell::sync::Lazy;
 use regex::Regex;
 use serde_json::Value;
 use std::collections::HashSet;
-use std::sync::{Arc, Mutex};
+use std::sync::{Arc, LazyLock, Mutex};
 use std::time::{Duration, Instant};
 use url::Url;
 
@@ -229,8 +228,8 @@ fn insert_widget_dynamic<W: IsA<Widget> + Sized>(widget: W, container: &WeakRef<
     widget.set_visible(true);
 }
 
-static IGNORESHOWS: Lazy<Arc<Mutex<HashSet<ShowId>>>> =
-    Lazy::new(|| Arc::new(Mutex::new(HashSet::new())));
+static IGNORESHOWS: LazyLock<Arc<Mutex<HashSet<ShowId>>>> =
+    LazyLock::new(|| Arc::new(Mutex::new(HashSet::new())));
 
 pub(crate) fn ignore_show(id: ShowId) -> Result<bool> {
     IGNORESHOWS
@@ -305,7 +304,7 @@ pub(crate) async fn itunes_to_rss(url: &str) -> Result<String> {
 }
 
 fn itunes_id_from_url(url: &str) -> Option<u32> {
-    static RE: Lazy<Regex> = Lazy::new(|| Regex::new(r"/id([0-9]+)").unwrap());
+    static RE: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"/id([0-9]+)").unwrap());
 
     // Get the itunes id from the url
     let itunes_id = RE.captures_iter(url).next()?.get(1)?.as_str();
@@ -357,9 +356,10 @@ pub(crate) async fn soundcloud_to_rss(url: &Url) -> Result<Url> {
 /// The id's are 0 if none was found.
 /// If fetching the html page fails an Error is returned.
 async fn soundcloud_lookup_id(url: &Url) -> Option<(u64, u64)> {
-    static RE_U: Lazy<Regex> = Lazy::new(|| Regex::new(r"soundcloud://users:([0-9]+)").unwrap());
-    static RE_P: Lazy<Regex> =
-        Lazy::new(|| Regex::new(r"soundcloud://playlists:([0-9]+)").unwrap());
+    static RE_U: LazyLock<Regex> =
+        LazyLock::new(|| Regex::new(r"soundcloud://users:([0-9]+)").unwrap());
+    static RE_P: LazyLock<Regex> =
+        LazyLock::new(|| Regex::new(r"soundcloud://playlists:([0-9]+)").unwrap());
 
     let url_str = url.to_string();
     let client = client_builder().build().ok()?;

@@ -226,13 +226,13 @@ mod tests {
     use crate::dbqueries;
     use crate::models::{Insert, NewShow, NewShowBuilder, Update};
     use anyhow::Result;
-    use once_cell::sync::Lazy;
+    use std::sync::LazyLock;
     use std::{thread, time};
 
     const TEST_SOURCE_ID: SourceId = SourceId(42);
     const TEST_SHOW_ID: ShowId = ShowId(0);
 
-    static EXPECTED_INTERCEPTED: Lazy<NewShow> = Lazy::new(|| {
+    static EXPECTED_INTERCEPTED: LazyLock<NewShow> = LazyLock::new(|| {
         let descr = "The people behind The Intercept’s fearless reporting and incisive \
                          commentary—Jeremy Scahill, Glenn Greenwald, Betsy Reed and \
                          others—discuss the crucial issues of our time: national security, civil \
@@ -254,7 +254,7 @@ mod tests {
             .build()
             .unwrap()
     });
-    static UPDATED_IMAGE_URI_INTERCEPTED: Lazy<NewShow> = Lazy::new(|| {
+    static UPDATED_IMAGE_URI_INTERCEPTED: LazyLock<NewShow> = LazyLock::new(|| {
         let image_uri = "https://assets.fireside.fm/file/fireside-images/podcasts/images/f/f31a453c-fa15-491f-8618-3f71f1d565e5/cover.jpg?v=3";
 
         NewShowBuilder::default()

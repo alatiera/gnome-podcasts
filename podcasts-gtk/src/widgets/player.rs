@@ -28,12 +28,11 @@ use glib::{SignalHandlerId, WeakRef};
 use gst::ClockTime;
 use gtk::{gio, glib};
 use mpris_server::{Metadata, PlaybackStatus, Player};
-use once_cell::sync::Lazy;
 use std::cell::{RefCell, RefMut};
 use std::ops::Deref;
 use std::path::Path;
 use std::rc::Rc;
-use std::sync::Mutex;
+use std::sync::{LazyLock, Mutex};
 use url::Url;
 
 use crate::app::Action;
@@ -724,7 +723,8 @@ impl PlayerWidget {
     }
 
     fn smart_rewind(&self) -> Option<()> {
-        static LAST_KNOWN_EPISODE: Lazy<Mutex<Option<EpisodeId>>> = Lazy::new(|| Mutex::new(None));
+        static LAST_KNOWN_EPISODE: LazyLock<Mutex<Option<EpisodeId>>> =
+            LazyLock::new(|| Mutex::new(None));
 
         // Figure out the time delta, in seconds, between the last pause and now
         let now = Local::now();

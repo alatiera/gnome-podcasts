@@ -48,14 +48,14 @@ mod window;
 use crate::app::PdApplication;
 pub use crate::thumbnail_generator::ThumbSize::*;
 
-use once_cell::sync::Lazy;
+use std::sync::LazyLock;
 
 // tokio should be used when doing http fetches, since reqwest depens on it.
-pub static RUNTIME: Lazy<tokio::runtime::Runtime> =
-    Lazy::new(|| tokio::runtime::Runtime::new().unwrap());
+pub static RUNTIME: LazyLock<tokio::runtime::Runtime> =
+    LazyLock::new(|| tokio::runtime::Runtime::new().unwrap());
 
-pub static MAINCONTEXT: Lazy<glib::MainContext> = Lazy::new(glib::MainContext::default);
-pub static CHRONO_LOCALE: Lazy<chrono::Locale> = Lazy::new(|| {
+pub static MAINCONTEXT: LazyLock<glib::MainContext> = LazyLock::new(glib::MainContext::default);
+pub static CHRONO_LOCALE: LazyLock<chrono::Locale> = LazyLock::new(|| {
     use std::str::FromStr;
     let system_locale = locale_config::Locale::current();
     let time_locale = system_locale.tags_for("time").next();

@@ -209,7 +209,6 @@ mod tests {
     use super::*;
 
     use anyhow::Result;
-    use once_cell::sync::Lazy;
     use rss::Channel;
 
     use crate::database::truncate_db;
@@ -217,11 +216,12 @@ mod tests {
 
     use std::fs::File;
     use std::io::BufReader;
+    use std::sync::LazyLock;
 
     const TEST_SOURCE_ID: SourceId = SourceId(42);
 
     // Pre-built expected NewShow structs.
-    static EXPECTED_INTERCEPTED: Lazy<NewShow> = Lazy::new(|| {
+    static EXPECTED_INTERCEPTED: LazyLock<NewShow> = LazyLock::new(|| {
         let descr = "The people behind The Intercept’s fearless reporting and incisive \
                          commentary—Jeremy Scahill, Glenn Greenwald, Betsy Reed and \
                          others—discuss the crucial issues of our time: national security, civil \
@@ -242,7 +242,7 @@ mod tests {
             .build()
             .unwrap()
     });
-    static EXPECTED_LUP: Lazy<NewShow> = Lazy::new(|| {
+    static EXPECTED_LUP: LazyLock<NewShow> = LazyLock::new(|| {
         let descr = "An open show powered by community LINUX Unplugged takes the best \
                          attributes of open collaboration and focuses them into a weekly \
                          lifestyle show about Linux.";
@@ -258,7 +258,7 @@ mod tests {
             .build()
             .unwrap()
     });
-    static EXPECTED_TIPOFF: Lazy<NewShow> = Lazy::new(|| {
+    static EXPECTED_TIPOFF: LazyLock<NewShow> = LazyLock::new(|| {
         let desc = "<p>Welcome to The Tip Off- the podcast where we take you behind the \
                         scenes of some of the best investigative journalism from recent years. \
                         Each episode we’ll be digging into an investigative scoop- hearing from \
@@ -281,7 +281,7 @@ mod tests {
             .build()
             .unwrap()
     });
-    static EXPECTED_STARS: Lazy<NewShow> = Lazy::new(|| {
+    static EXPECTED_STARS: LazyLock<NewShow> = LazyLock::new(|| {
         let descr = "<p>The first audio drama from Tor Labs and Gideon Media, Steal the Stars \
                          is a gripping noir science fiction thriller in 14 episodes: Forbidden \
                          love, a crashed UFO, an alien body, and an impossible heist unlike any \
@@ -300,7 +300,7 @@ mod tests {
             .build()
             .unwrap()
     });
-    static EXPECTED_CODE: Lazy<NewShow> = Lazy::new(|| {
+    static EXPECTED_CODE: LazyLock<NewShow> = LazyLock::new(|| {
         let descr = "A podcast about humans and technology. Panelists: Coraline Ada Ehmke, \
                          David Brady, Jessica Kerr, Jay Bobo, Astrid Countee and Sam \
                          Livingston-Gray. Brought to you by @therubyrep.";
@@ -316,7 +316,7 @@ mod tests {
             .build()
             .unwrap()
     });
-    static EXPECTED_ELLINOFRENEIA: Lazy<NewShow> = Lazy::new(|| {
+    static EXPECTED_ELLINOFRENEIA: LazyLock<NewShow> = LazyLock::new(|| {
         NewShowBuilder::default()
             .title("Ελληνοφρένεια")
             .link("https://ellinofreneia.sealabs.net/feed.rss")
@@ -326,7 +326,7 @@ mod tests {
             .build()
             .unwrap()
     });
-    static UPDATED_DESC_INTERCEPTED: Lazy<NewShow> = Lazy::new(|| {
+    static UPDATED_DESC_INTERCEPTED: LazyLock<NewShow> = LazyLock::new(|| {
         NewShowBuilder::default()
             .title("Intercepted with Jeremy Scahill")
             .link("https://theintercept.com/podcasts")

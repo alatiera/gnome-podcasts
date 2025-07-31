@@ -25,9 +25,8 @@ use glib::Properties;
 use glib::clone;
 use gtk::glib;
 use gtk::prelude::*;
-use once_cell::sync::OnceCell;
 use std::cell::Cell;
-use std::sync::{Arc, Mutex, TryLockError};
+use std::sync::{Arc, Mutex, OnceLock, TryLockError};
 use std::time::Duration;
 
 use crate::i18n::i18n;
@@ -41,7 +40,7 @@ use podcasts_data::downloader::DownloadProgress;
 #[properties(wrapper_type = DownloadProgressBar)]
 pub struct DownloadProgressPriv {
     progressbar: gtk::ProgressBar,
-    id: OnceCell<EpisodeId>,
+    id: OnceLock<EpisodeId>,
     listener: Cell<bool>, // lock for update callback
     #[property(get, set)]
     local_size: Cell<u64>,
