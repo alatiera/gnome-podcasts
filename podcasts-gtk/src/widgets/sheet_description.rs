@@ -83,7 +83,7 @@ impl SheetDescription {
                             send_blocking!(sender, Action::InitEpisodeAt(id, seconds));
                         }
                     } else {
-                        error!("failed to parse jump link: {}", url);
+                        error!("failed to parse jump link: {url}");
                     }
                     glib::Propagation::Stop
                 } else {

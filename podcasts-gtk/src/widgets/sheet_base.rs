@@ -116,7 +116,7 @@ impl SheetBase {
     }
 
     pub(crate) fn on_rate_changed(&self, rate: f64) {
-        self.rate().btn.set_label(&format!("{:.2}×", rate));
+        self.rate().btn.set_label(&format!("{rate:.2}×"));
     }
 
     pub(crate) fn on_open_changed(&self, is_open: bool) {
