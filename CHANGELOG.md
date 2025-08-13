@@ -7,10 +7,29 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [Unreleased]
 
 ### Added:
+- Episode Chapters are here 🎉 World/podcasts!410
+- Added alternative hotkeys and new playback-rate hotkeys World/podcasts!413
+- Port to AdwShortcutsDialog  World/podcasts!427
 
 ### Changed:
+- Use rss content:encoded tag before description tag World/podcasts!411
+- Align the context menu to the cursor World/podcasts!421
+- Change the default icon when there is no show icon World/podcasts!422
+- Make episode widget updates more efficient World/podcasts!425
+- Use document font for the episode description World/podcasts!429
+- Update gtk4-rs to 0.10 World/podcasts!430
+- Updated the user-agent used for downloads World/podcasts!436
+- Use document font for the sheet description World/podcasts!437
+- Hide duration label when its not available World/podcasts!438
+- Translation updates
 
 ### Fixed:
+- Adapt to GTK 4.20 behavior changes World/podcasts!422 World/podcasts!424
+- Adapt Discovery page to not overflow on mobile layout World/podcasts!415
+- Fix rendering of escape-sequences in description World/podcasts!423
+- All play buttons now turn into pause buttons when currently playing World/podcasts!426
+- Prevent long_press from triggering on episode widget buttons World/podcasts!435
+- Fix Wrapping of episode descriptions World/podcasts!439
 
 ### Removed:
 
