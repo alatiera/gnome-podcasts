@@ -9,13 +9,13 @@ podcasts-gtk/resources/gtk/empty_view.ui
 podcasts-gtk/resources/gtk/episode_description.ui
 podcasts-gtk/resources/gtk/episode_menu.ui
 podcasts-gtk/resources/gtk/episode_widget.ui
-podcasts-gtk/resources/gtk/help-overlay.ui
 podcasts-gtk/resources/gtk/home_episode.ui
 podcasts-gtk/resources/gtk/home_view.ui
 podcasts-gtk/resources/gtk/player_rate.ui
 podcasts-gtk/resources/gtk/player_sheet.ui
 podcasts-gtk/resources/gtk/player_toolbar.ui
 podcasts-gtk/resources/gtk/secondary_menu.ui
+podcasts-gtk/resources/gtk/shortcuts-dialog.ui
 podcasts-gtk/resources/gtk/show_menu.ui
 podcasts-gtk/resources/gtk/show_widget.ui
 podcasts-gtk/resources/gtk/window.ui
