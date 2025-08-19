@@ -1,14 +1,15 @@
 # Dutch translation for podcasts.
 # Copyright (C) 2019 podcasts's COPYRIGHT HOLDER
 # This file is distributed under the same license as the podcasts package.
-# Nathan Follens <nfollens@gnome.org>, 2019-2023.
+# Nathan Follens <nfollens@gnome.org>, 2019-2023, 2025.
+# Dick Groskamp <dikgro@yahoo.co.uk>, 2025.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: podcasts master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2023-09-03 05:02+0000\n"
-"PO-Revision-Date: 2023-09-04 21:16+0200\n"
+"POT-Creation-Date: 2025-08-16 15:04+0000\n"
+"PO-Revision-Date: 2025-08-19 18:59+0200\n"
 "Last-Translator: Nathan Follens <nfollens@gnome.org>\n"
 "Language-Team: GNOME-NL https://matrix.to/#/#nl:gnome.org\n"
 "Language: nl\n"
@@ -16,66 +17,160 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 3.3.2\n"
+"X-Generator: Poedit 3.6\n"
 
-#: podcasts-gtk/resources/gtk/empty_show.ui:16
+#: podcasts-gtk/resources/gtk/discovery_found_podcast.ui:105
+msgid "Episodes: "
+msgstr "Afleveringen: "
+
+#: podcasts-gtk/resources/gtk/discovery_found_podcast.ui:143
+msgid "Last publication"
+msgstr "Laatste publicatie"
+
+#: podcasts-gtk/resources/gtk/discovery_found_podcast.ui:164
+msgid "_Subscribe"
+msgstr "_Abonneren"
+
+#: podcasts-gtk/resources/gtk/discovery_found_podcast.ui:174
+#: podcasts-gtk/src/widgets/discovery_search_results.rs:152
+msgid "Subscribing to feed…"
+msgstr "Abonneren op feed…"
+
+#: podcasts-gtk/resources/gtk/discovery_page.ui:33
+msgid "Add Podcasts"
+msgstr "Podcasts toevoegen"
+
+#: podcasts-gtk/resources/gtk/discovery_page.ui:64
+msgid "Search"
+msgstr "Zoeken"
+
+#: podcasts-gtk/resources/gtk/discovery_page.ui:75
+msgid "Enter a feed URL or search the selected platforms."
+msgstr "Voer een URL voor de feed in of zoek naar de geselecteerde platforms."
+
+#: podcasts-gtk/resources/gtk/discovery_page.ui:98
+msgid "Submit search"
+msgstr "Zoekactie invoeren"
+
+#: podcasts-gtk/resources/gtk/discovery_page.ui:104
+#: podcasts-gtk/src/widgets/discovery_page.rs:113
+msgid "Loading…"
+msgstr "Bezig met laden…"
+
+#: podcasts-gtk/resources/gtk/discovery_page.ui:115
+msgid "Please enable a Search Platform below, or enter a http(s) feed URL."
+msgstr ""
+"Voer hieronder een zoekplatform in, of voer een http(s)-URL voor de feed in."
+
+#: podcasts-gtk/resources/gtk/discovery_page.ui:127
+msgid "Search Platforms"
+msgstr "Zoekplatforms"
+
+#: podcasts-gtk/resources/gtk/discovery_page.ui:128
+msgid "Search queries will be sent to these platforms."
+msgstr "Zoekopdrachten zullen naar deze platforms worden verzonden."
+
+#: podcasts-gtk/resources/gtk/discovery_search_results.ui:32
+msgid "Search results"
+msgstr "Zoekresultaten"
+
+#: podcasts-gtk/resources/gtk/discovery_search_results.ui:68
+msgid "No results found."
+msgstr "Geen resultaten gevonden"
+
+#. Translators: Show as a noun, meaning a Podcast-Show.
+#: podcasts-gtk/resources/gtk/empty_show.ui:17
 msgid "This show does not have episodes yet"
 msgstr "Deze show heeft nog geen afleveringen"
 
-#: podcasts-gtk/resources/gtk/empty_show.ui:25
+#: podcasts-gtk/resources/gtk/empty_show.ui:28
 msgid "If you think this is an error, please consider writing a bug report."
 msgstr ""
 "Als u denkt dat dit een fout is, overweeg dan een foutmelding in te dienen."
 
-#: podcasts-gtk/resources/gtk/empty_view.ui:30
+#. Translators: Shows as a noun, meaning Podcast-Shows.
+#: podcasts-gtk/resources/gtk/empty_view.ui:31
 msgid "Get Some Shows"
 msgstr "Haal enkele shows op"
 
-#: podcasts-gtk/resources/gtk/empty_view.ui:49
+#. Translators: Shows as a noun, meaning Podcast-Shows.
+#: podcasts-gtk/resources/gtk/empty_view.ui:52
 msgid "Add new shows via feed URL"
 msgstr "Nieuwe shows toevoegen via feed-URL"
 
-#: podcasts-gtk/resources/gtk/empty_view.ui:71
+#. Translators: Shows as a noun, meaning Podcast-Shows.
+#: podcasts-gtk/resources/gtk/empty_view.ui:76
 msgid "Import shows from another device"
 msgstr "Shows importeren van een ander apparaat"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:41
+#: podcasts-gtk/resources/gtk/episode_description.ui:33
 msgid "Episode Details"
 msgstr "Informatie over aflevering"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:51
-#: podcasts-gtk/resources/gtk/headerbar.ui:147
-msgid "Back"
-msgstr "Terug"
-
-#: podcasts-gtk/resources/gtk/episode_description.ui:59
+#: podcasts-gtk/resources/gtk/episode_description.ui:42
 msgid "Episode Menu"
-msgstr "Afleveringsmenu"
+msgstr "Menu Aflevering"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:107
+#: podcasts-gtk/resources/gtk/episode_description.ui:92
 msgid "Podcast Title"
-msgstr "Podcasttitel"
+msgstr "Titel podcast"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:130
+#: podcasts-gtk/resources/gtk/episode_description.ui:115
 msgid "Duration - Date"
 msgstr "Duur - datum"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:150
-#: podcasts-gtk/resources/gtk/episode_description.ui:155
-msgid "Episode Description"
-msgstr "Afleveringsbeschrijving"
+#: podcasts-gtk/resources/gtk/episode_description.ui:149
+msgid "_Stream"
+msgstr "_Streamen"
 
-#: podcasts-gtk/resources/gtk/episode_menu.ui:35
+#: podcasts-gtk/resources/gtk/episode_description.ui:167
+msgid "_Play"
+msgstr "_Afspelen"
+
+#: podcasts-gtk/resources/gtk/episode_description.ui:186
+msgid "_Pause"
+msgstr "_Pauzeren"
+
+#: podcasts-gtk/resources/gtk/episode_description.ui:204
+msgid "_Download"
+msgstr "_Downloaden"
+
+#: podcasts-gtk/resources/gtk/episode_description.ui:231
+msgid "Cancel"
+msgstr "Annuleren"
+
+#: podcasts-gtk/resources/gtk/episode_description.ui:260
+msgid "Delete"
+msgstr "Verwijderen"
+
+#: podcasts-gtk/resources/gtk/episode_description.ui:279
+msgid "Episode Description"
+msgstr "Beschrijving aflevering"
+
+#: podcasts-gtk/resources/gtk/episode_description.ui:301
+msgid "Episode Cover"
+msgstr "Voorblad aflevering"
+
+#. Translators: Show as a noun, meaning a Podcast-Show.
+#: podcasts-gtk/resources/gtk/episode_menu.ui:36
 msgid "Go to Show"
 msgstr "Ga naar show"
 
-#: podcasts-gtk/resources/gtk/episode_menu.ui:39
-msgid "Copy Episode Url"
-msgstr "Afleverings-URL kopiëren"
+#: podcasts-gtk/resources/gtk/episode_menu.ui:41
+msgid "Copy Episode URL"
+msgstr "URL van aflevering kopiëren"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:71
+#: podcasts-gtk/resources/gtk/episode_menu.ui:45
+msgid "Mark as Played"
+msgstr "Markeren als Afgespeeld"
+
+#: podcasts-gtk/resources/gtk/episode_menu.ui:50
+msgid "Mark as Unplayed"
+msgstr "Markeren als Niet afgespeeld"
+
+#: podcasts-gtk/resources/gtk/episode_widget.ui:70
 msgid "You’ve already listened to this episode."
-msgstr "U hebt deze aflevering reeds beluisterd."
+msgstr "U hebt deze aflevering al beluisterd."
 
 #: podcasts-gtk/resources/gtk/episode_widget.ui:158
 msgid "Calculating episode size…"
@@ -85,85 +180,21 @@ msgstr "Grootte van aflevering berekenen…"
 msgid "Play this episode"
 msgstr "Deze aflevering afspelen"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:193
+#: podcasts-gtk/resources/gtk/episode_widget.ui:195
+msgid "Pause playback"
+msgstr "Afspelen pauzeren"
+
+#: podcasts-gtk/resources/gtk/episode_widget.ui:207
 msgid "Cancel the download process"
 msgstr "Downloadproces annuleren"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:205
+#: podcasts-gtk/resources/gtk/episode_widget.ui:220
 msgid "Download this episode"
 msgstr "Deze aflevering downloaden"
 
-#: podcasts-gtk/resources/gtk/hamburger.ui:7
-msgid "_Check for New Episodes"
-msgstr "_Controleren op nieuwe afleveringen"
-
-#: podcasts-gtk/resources/gtk/hamburger.ui:12
-msgid "_Import Shows"
-msgstr "Shows _importeren"
-
-#: podcasts-gtk/resources/gtk/hamburger.ui:16
-msgid "_Export Shows"
-msgstr "Shows _exporteren"
-
-#: podcasts-gtk/resources/gtk/hamburger.ui:22
-msgid "_Keyboard Shortcuts"
-msgstr "_Sneltoetsen"
-
-#: podcasts-gtk/resources/gtk/hamburger.ui:30
-msgid "_About Podcasts"
-msgstr "_Over Podcasts"
-
-#: podcasts-gtk/resources/gtk/headerbar.ui:33
-#: podcasts-gtk/resources/gtk/headerbar.ui:137
-msgid "Add a new feed"
-msgstr "Nieuwe feed toevoegen"
-
-#: podcasts-gtk/resources/gtk/headerbar.ui:44
-msgid "Enter Feed Address"
-msgstr "Voer feedadres in"
-
-#: podcasts-gtk/resources/gtk/headerbar.ui:59
-msgid "Popover menu (ESC to close)"
-msgstr "Popovermenu (druk op Esc om te sluiten)"
-
-#: podcasts-gtk/resources/gtk/headerbar.ui:71
-msgid "Add"
-msgstr "Toevoegen"
-
-#. Weird magic I copy-pasted that sets the Application Name in the Shell.
-#: podcasts-gtk/resources/gtk/headerbar.ui:115
-#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:4
-#: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:3
-#: podcasts-gtk/src/app.rs:533 podcasts-gtk/src/widgets/aboutdialog.rs:56
-#: podcasts-gtk/src/window.rs:64
-msgid "Podcasts"
-msgstr "Podcasts"
-
-#: podcasts-gtk/resources/gtk/headerbar.ui:125
-msgid "Show Title"
-msgstr "Titel tonen"
-
-#: podcasts-gtk/resources/gtk/headerbar.ui:157
-msgid "Main Menu"
-msgstr "Hoofdmenu"
-
-#: podcasts-gtk/resources/gtk/headerbar.ui:167
-msgid "Podcast Menu"
-msgstr "Podcastmenu"
-
-#: podcasts-gtk/resources/gtk/help-overlay.ui:11
-msgid "General"
-msgstr "Algemeen"
-
-#: podcasts-gtk/resources/gtk/help-overlay.ui:15
-msgctxt "shortcut window"
-msgid "Check for new episodes"
-msgstr "Controleren op nieuwe afleveringen"
-
-#: podcasts-gtk/resources/gtk/help-overlay.ui:21
-msgctxt "shortcut window"
-msgid "Quit the application"
-msgstr "De toepassing afsluiten"
+#: podcasts-gtk/resources/gtk/episode_widget.ui:234
+msgid "Episode without audio"
+msgstr "Aflevering zonder audio"
 
 #: podcasts-gtk/resources/gtk/home_view.ui:57
 #: podcasts-gtk/resources/gtk/home_view.ui:70
@@ -189,10 +220,6 @@ msgstr "Deze maand"
 #: podcasts-gtk/resources/gtk/home_view.ui:195
 msgid "Older"
 msgstr "Ouder"
-
-#: podcasts-gtk/resources/gtk/player_dialog.ui:22
-msgid "Now Playing"
-msgstr "U luistert naar"
 
 #: podcasts-gtk/resources/gtk/player_rate.ui:29
 msgid "Change the playback speed"
@@ -227,25 +254,41 @@ msgstr "0.90×"
 msgid "0.75×"
 msgstr "0.75×"
 
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:55
-msgid "Rewind 10 seconds"
-msgstr "10 seconden terugspoelen"
+#: podcasts-gtk/resources/gtk/player_sheet.ui:133
+msgid "Rewind"
+msgstr "Terugspoelen"
 
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:63
+#: podcasts-gtk/resources/gtk/player_sheet.ui:154
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:67
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:268
 msgid "Play"
-msgstr "Afspelen"
+msgstr "Spelen"
 
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:71
+#: podcasts-gtk/resources/gtk/player_sheet.ui:172
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:80
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:277
 msgid "Pause"
 msgstr "Pauzeren"
 
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:79
+#: podcasts-gtk/resources/gtk/player_sheet.ui:195
+msgid "Forward"
+msgstr "Vooruitspoelen"
+
+#: podcasts-gtk/resources/gtk/player_sheet.ui:230
+msgid "Description"
+msgstr "Beschrijving"
+
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:50
+msgid "Rewind 10 seconds"
+msgstr "10 seconden terugspoelen"
+
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:95
 msgid "Fast forward 10 seconds"
-msgstr "10 seconden doorspoelen"
+msgstr "10 seconden vooruitspoelen"
 
 #: podcasts-gtk/resources/gtk/secondary_menu.ui:7
 msgid "_Mark All Episodes as Played"
-msgstr "Alle afleveringen _markeren als afgespeeld"
+msgstr "Alle afleveringen _markeren als Afgespeeld"
 
 #: podcasts-gtk/resources/gtk/secondary_menu.ui:11
 msgid "_Website"
@@ -255,21 +298,147 @@ msgstr "_Website"
 msgid "_Unsubscribe"
 msgstr "_Opzeggen"
 
+#: podcasts-gtk/resources/gtk/shortcuts-dialog.ui:7
+msgctxt "shortcut window"
+msgid "Navigation"
+msgstr "Navigatie"
+
+#: podcasts-gtk/resources/gtk/shortcuts-dialog.ui:10
+msgctxt "shortcut window"
+msgid "Go to Home Page"
+msgstr "Ga naar thuispagina"
+
+#. Translators: Shows as a Noun
+#: podcasts-gtk/resources/gtk/shortcuts-dialog.ui:17
+msgctxt "shortcut window"
+msgid "Go to Shows Page"
+msgstr "Ga naar pagina Shows"
+
+#. Translators: 'Discovery' is a page where you can add new podcasts
+#: podcasts-gtk/resources/gtk/shortcuts-dialog.ui:24
+msgctxt "shortcut window"
+msgid "Go To Discovery Page"
+msgstr "Ga naar pagina Ontdekken"
+
+#: podcasts-gtk/resources/gtk/shortcuts-dialog.ui:33
+msgctxt "shortcut window"
+msgid "Player"
+msgstr "Speler"
+
+#: podcasts-gtk/resources/gtk/shortcuts-dialog.ui:36
+msgctxt "shortcut window"
+msgid "Toggle Pause"
+msgstr "Pauzeren/spelen"
+
+#: podcasts-gtk/resources/gtk/shortcuts-dialog.ui:42
+msgctxt "shortcut window"
+msgid "Seek Forwards"
+msgstr "Vooruitspoelen"
+
+#: podcasts-gtk/resources/gtk/shortcuts-dialog.ui:48
+msgctxt "shortcut window"
+msgid "Seek Backwards"
+msgstr "Terugspoelen"
+
+#: podcasts-gtk/resources/gtk/shortcuts-dialog.ui:54
+msgctxt "shortcut window"
+msgid "Raise Playback Speed"
+msgstr "Afspeelsnelheid verhogen"
+
+#: podcasts-gtk/resources/gtk/shortcuts-dialog.ui:60
+msgctxt "shortcut window"
+msgid "Lower Playback Speed"
+msgstr "Afspeelsnelheid verlagen"
+
+#: podcasts-gtk/resources/gtk/shortcuts-dialog.ui:69
+msgctxt "shortcut window"
+msgid "General"
+msgstr "Algemeen"
+
+#: podcasts-gtk/resources/gtk/shortcuts-dialog.ui:72
+msgctxt "shortcut window"
+msgid "Check for new episodes"
+msgstr "Controleren op nieuwe afleveringen"
+
+#: podcasts-gtk/resources/gtk/shortcuts-dialog.ui:78
+msgctxt "shortcut window"
+msgid "Quit the application"
+msgstr "De toepassing afsluiten"
+
+#: podcasts-gtk/resources/gtk/shortcuts-dialog.ui:84
+msgctxt "shortcut window"
+msgid "Import Subscriptions"
+msgstr "Abonnementen importeren"
+
+#: podcasts-gtk/resources/gtk/shortcuts-dialog.ui:90
+msgctxt "shortcut window"
+msgid "Export Subscriptions"
+msgstr "Abonnementen exporteren"
+
 #: podcasts-gtk/resources/gtk/show_menu.ui:35
 msgid "Open Website"
 msgstr "Website openen"
 
 #: podcasts-gtk/resources/gtk/show_menu.ui:39
 msgid "Mark All as Played"
-msgstr "Alles markeren als afgespeeld"
+msgstr "Alles markeren als Afgespeeld"
 
 #: podcasts-gtk/resources/gtk/show_menu.ui:45
 msgid "Unsubscribe"
 msgstr "Opzeggen"
 
-#: podcasts-gtk/resources/gtk/show_widget.ui:80
+#: podcasts-gtk/resources/gtk/show_widget.ui:40
+msgid "Podcast Menu"
+msgstr "Podcastmenu"
+
+#: podcasts-gtk/resources/gtk/show_widget.ui:97
 msgid "Episodes"
 msgstr "Afleveringen"
+
+#: podcasts-gtk/resources/gtk/window.ui:6
+msgid "_Check for New Episodes"
+msgstr "_Controleren op nieuwe afleveringen"
+
+#. Translators: Show as a noun, meaning Podcast-Shows.
+#: podcasts-gtk/resources/gtk/window.ui:12
+msgid "_Import Shows"
+msgstr "Shows _importeren"
+
+#. Translators: Show as a noun, meaning Podcast-Shows.
+#: podcasts-gtk/resources/gtk/window.ui:17
+msgid "_Export Shows"
+msgstr "Shows _exporteren"
+
+#: podcasts-gtk/resources/gtk/window.ui:23
+msgid "_Keyboard Shortcuts"
+msgstr "_Sneltoetsen"
+
+#: podcasts-gtk/resources/gtk/window.ui:27
+msgid "_About Podcasts"
+msgstr "_Over Podcasts"
+
+#. Weird magic I copy-pasted that sets the Application Name in the Shell.
+#: podcasts-gtk/resources/gtk/window.ui:35
+#: podcasts-gtk/resources/gtk/window.ui:102
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:4
+#: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:2
+#: podcasts-gtk/src/app.rs:519 podcasts-gtk/src/widgets/aboutdialog.rs:56
+#: podcasts-gtk/src/widgets/player.rs:478
+msgid "Podcasts"
+msgstr "Podcasts"
+
+#: podcasts-gtk/resources/gtk/window.ui:115
+msgid "Add a New Feed"
+msgstr "Nieuwe feed toevoegen"
+
+#: podcasts-gtk/resources/gtk/window.ui:123
+msgid "Main Menu"
+msgstr "Hoofdmenu"
+
+#. Translators: Show as a noun, meaning a Podcast-Show.
+#: podcasts-gtk/resources/gtk/window.ui:137
+msgid "Show"
+msgstr "Tonen"
 
 #: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:8
 msgid "Listen to your favorite shows"
@@ -290,30 +459,51 @@ msgstr ""
 "Abonnementen van andere toepassingen kunnen geïmporteerd worden via OPML-"
 "bestanden."
 
-#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:143
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:18
+msgid "The home view displaying the newest episodes of your podcasts"
+msgstr "De weergave Thuis geeft de nieuwste afleveringen van uw podcasts weer"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:22
+msgid "The shows view displaying the covers of your podcasts"
+msgstr "De weergave Shows geeft de voorbladen van uw podcasts weer"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:26
+msgid ""
+"The show widget displaying the cover and the latest episodes of a specific "
+"podcast"
+msgstr ""
+"De widget Show geeft het voorblad en de laatste afleveringen van een "
+"specifieke podcast weer"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:30
+msgid "The view where one can add a new podcast"
+msgstr "De weergave waar men een nieuwe podcast kan toevoegen"
+
+#. developer_name tag deprecated with Appstream 1.0
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:230
 msgid "The Podcasts developers"
 msgstr "De ontwikkelaars van Podcasts"
 
-#: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:4
+#: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:3
 msgid "Listen to your favorite podcasts, right from your desktop."
-msgstr "Luister naar uw favoriete podcasts, rechtstreeks vanop uw bureaublad."
+msgstr "Luister naar uw favoriete podcasts, rechtstreeks vanaf uw bureaublad."
 
 #. Translators: Search terms to find this application. Do NOT translate or localize the semicolons! The list MUST also end with a semicolon!
-#: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:13
+#: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:12
 msgid "Podcast;RSS;"
 msgstr "Podcast;RSS;"
 
 #: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:15
 msgid "Height of the last open main window"
-msgstr "Hoogte van laatst geopend hoofdvenster"
+msgstr "Hoogte van laatst geopende hoofdvenster"
 
 #: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:19
 msgid "Width of the last open main window"
-msgstr "Breedte van laatst geopend hoofdvenster"
+msgstr "Breedte van laatst geopende hoofdvenster"
 
 #: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:23
 msgid "Maximized state of the last open main window"
-msgstr "Gemaximaliseerde status van laatst geopend hoofdvenster"
+msgstr "Gemaximaliseerde status van laatst geopende hoofdvenster"
 
 #: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:28
 msgid "Whether to periodically refresh content"
@@ -333,59 +523,67 @@ msgstr "Of inhoud vernieuwd moet worden na opstarten"
 
 #: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:47
 msgid "How many periods of time to wait between automatic cleanups"
-msgstr "Hoeveel tijd te wachten tussen automatische opruimbeurten"
+msgstr "Hoeveel tijdsperioden te wachten tussen automatische opruimbeurten"
 
 #: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:51
 msgid "What period of time to wait between automatic cleanups"
 msgstr "Hoe lang te wachten tussen automatische opruimbeurten"
 
-#: podcasts-gtk/src/app.rs:404
+#: podcasts-gtk/src/app.rs:375
 msgid "Copied URL to clipboard!"
 msgstr "URL gekopieerd naar klembord!"
 
-#: podcasts-gtk/src/stacks/content.rs:69
-msgid "New"
-msgstr "Nieuw"
+#: podcasts-gtk/src/episode_description_parser.rs:319
+msgid "Jump to {}:{}:{}"
+msgstr "Spring naar {}:{}:{}"
 
-#: podcasts-gtk/src/stacks/content.rs:71
-#: podcasts-gtk/src/widgets/shows_view.rs:55
-msgid "Shows"
-msgstr "Shows"
+#: podcasts-gtk/src/episode_description_parser.rs:338
+msgid "Jump to {}:{}"
+msgstr "Spring naar {}:{}"
 
-#: podcasts-gtk/src/utils.rs:491 podcasts-gtk/src/utils.rs:533
+#: podcasts-gtk/src/manager.rs:105
+msgid "Download failed: {}"
+msgstr "Downloaden mislukt: {}"
+
+#: podcasts-gtk/src/utils.rs:293
+msgid "Failed to subscribe to feed: {}"
+msgstr "Abonneren mislukt voor feed: {}"
+
+#: podcasts-gtk/src/utils.rs:388 podcasts-gtk/src/utils.rs:434
 msgid "OPML file"
 msgstr "OPML-bestand"
 
-#: podcasts-gtk/src/utils.rs:502
+#: podcasts-gtk/src/utils.rs:399
 msgid "Select the file from which to you want to import shows."
 msgstr "Selecteer het bestand waaruit u shows wilt importeren."
 
-#: podcasts-gtk/src/utils.rs:504
+#: podcasts-gtk/src/utils.rs:401
 msgid "_Import"
 msgstr "_Importeren"
 
-#: podcasts-gtk/src/utils.rs:520
-msgid "Failed to parse the imported file"
-msgstr "Verwerken van geïmporteerd bestand mislukt"
+#: podcasts-gtk/src/utils.rs:424
+msgid "Failed to parse the imported file {}"
+msgstr "Verwerken van geïmporteerd bestand mislukt {}"
 
-#: podcasts-gtk/src/utils.rs:543
+#. Translators: Show as a noun, meaning Podcast-Shows.
+#: podcasts-gtk/src/utils.rs:445
 msgid "Export shows to…"
 msgstr "Shows exporteren naar…"
 
-#: podcasts-gtk/src/utils.rs:544
+#: podcasts-gtk/src/utils.rs:446
 msgid "_Export"
 msgstr "_Exporteren"
 
 #. Translators: This is the string of the suggested name for the exported opml file
-#: podcasts-gtk/src/utils.rs:548
+#: podcasts-gtk/src/utils.rs:450
 msgid "gnome-podcasts-exported-shows"
 msgstr "gnome-podcasts-geëxporteerde-shows"
 
-#: podcasts-gtk/src/utils.rs:558
+#: podcasts-gtk/src/utils.rs:459
 msgid "GNOME Podcasts Subscriptions"
 msgstr "GNOME Podcasts-abonnementen"
 
-#: podcasts-gtk/src/utils.rs:559
+#: podcasts-gtk/src/utils.rs:463
 msgid "Failed to export podcasts"
 msgstr "Exporteren van podcasts mislukt"
 
@@ -393,40 +591,77 @@ msgstr "Exporteren van podcasts mislukt"
 msgid "Podcast Client for the GNOME Desktop."
 msgstr "Podcastcliënt voor het GNOME-bureaublad."
 
-#: podcasts-gtk/src/widgets/aboutdialog.rs:63
+#: podcasts-gtk/src/widgets/aboutdialog.rs:62
 msgid "translator-credits"
 msgstr ""
 "Nathan Follens <nfollens@gnome.org>\n"
-"Meer info over GNOME-NL https://nl.gnome.org/"
+"Dick Groskamp <dikgro@yahoo.co.uk>\n"
+"Meer info over GNOME-NL https://nl.gnome.org"
 
-#: podcasts-gtk/src/widgets/episode.rs:374
+#: podcasts-gtk/src/widgets/content_stack.rs:61
+msgid "Fetching feeds…"
+msgstr "Feeds ophalen…"
+
+#: podcasts-gtk/src/widgets/content_stack.rs:68
+msgid "New"
+msgstr "Nieuw"
+
+#. Translators: Shows as a noun, meaning Podcast-Shows.
+#: podcasts-gtk/src/widgets/content_stack.rs:69
+#: podcasts-gtk/src/widgets/shows_view.rs:117
+msgid "Shows"
+msgstr "Shows"
+
+#: podcasts-gtk/src/widgets/download_progress_bar.rs:66
+msgid "Download progress"
+msgstr "Downloadvoortgang"
+
+#: podcasts-gtk/src/widgets/episode.rs:346
 msgid "{} min"
 msgstr "{} min"
 
-#: podcasts-gtk/src/widgets/player.rs:907
+#: podcasts-gtk/src/widgets/player.rs:1163
 msgid "The media player was unable to execute an action."
 msgstr "De mediaspeler kon een handeling niet uitvoeren."
 
 #: podcasts-gtk/src/widgets/read_more_label.rs:34
 msgid "Visually expands this description"
-msgstr "Opent deze beschrijving visueel"
+msgstr "Vergroot deze beschrijving visueel"
 
 #: podcasts-gtk/src/widgets/read_more_label.rs:36
 msgid "Read More"
 msgstr "Lees meer"
 
-#: podcasts-gtk/src/widgets/show_menu.rs:180
+#: podcasts-gtk/src/widgets/show_menu.rs:181
 msgid "Marked all episodes as listened"
 msgstr "Alle afleveringen markeren als beluisterd"
 
-#: podcasts-gtk/src/widgets/show_menu.rs:181
-#: podcasts-gtk/src/widgets/show_menu.rs:204
+#: podcasts-gtk/src/widgets/show_menu.rs:182
+#: podcasts-gtk/src/widgets/show_menu.rs:209
 msgid "Undo"
 msgstr "Ongedaan maken"
 
-#: podcasts-gtk/src/widgets/show_menu.rs:200
+#: podcasts-gtk/src/widgets/show_menu.rs:205
 msgid "Unsubscribed from {}"
 msgstr "Abonnement op {} opgezegd"
+
+#~ msgid "Back"
+#~ msgstr "Terug"
+
+#~ msgid "Enter Feed Address"
+#~ msgstr "Voer feedadres in"
+
+#~ msgid "Popover menu (ESC to close)"
+#~ msgstr "Popovermenu (druk op Esc om te sluiten)"
+
+#~ msgid "Add"
+#~ msgstr "Toevoegen"
+
+#~ msgid "Show Title"
+#~ msgstr "Titel tonen"
+
+#~ msgid "Now Playing"
+#~ msgstr "U luistert naar"
 
 #~ msgid "Jordan Petridis"
 #~ msgstr "Jordan Petridis"
@@ -446,14 +681,8 @@ msgstr "Abonnement op {} opgezegd"
 #~ msgid "An in-app action notification"
 #~ msgstr "Een in-app-actiemelding"
 
-#~ msgid "Fetching new episodes"
-#~ msgstr "Nieuwe afleveringen worden opgehaald"
-
 #~ msgid "Selected file could not be accessed."
 #~ msgstr "Kon geen toegang verkrijgen tot geselecteerd bestand."
-
-#~ msgid "_Cancel"
-#~ msgstr "_Annuleren"
 
 #~ msgid "Learn more about GNOME Podcasts"
 #~ msgstr "Kom meer te weten over Gnome Podcasts"
@@ -481,9 +710,6 @@ msgstr "Abonnement op {} opgezegd"
 
 #~ msgid "_Preferences"
 #~ msgstr "_Voorkeuren"
-
-#~ msgid "You are already subscribed to that feed!"
-#~ msgstr "U bent reeds geabonneerd op die feed!"
 
 #~ msgctxt "shortcut window"
 #~ msgid "Preferences"
