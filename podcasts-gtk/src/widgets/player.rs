@@ -313,7 +313,6 @@ fn format_duration(seconds: u32) -> String {
 struct PlayerRate {
     action: gio::SimpleAction,
     btn: gtk::MenuButton,
-    rate: f64,
 }
 
 impl PlayerRate {
@@ -326,12 +325,7 @@ impl PlayerRate {
             gio::SimpleAction::new_stateful("set", Some(variant_type), &"1.00".to_variant());
         let btn: gtk::MenuButton = builder.object("rate_button").unwrap();
 
-        // Default playback rate is 1.0
-        PlayerRate {
-            action,
-            btn,
-            rate: 1.0,
-        }
+        PlayerRate { action, btn }
     }
 
     fn connect_signals(&self, widget: &Rc<RefCell<PlayerWidget>>) {
@@ -347,7 +341,7 @@ impl PlayerRate {
                     .expect("Could not get rate from variant")
                     .parse::<f64>()
                     .expect("Could not parse float from variant string");
-                widget.borrow_mut().on_rate_changed(rate);
+                widget.borrow().on_rate_changed(rate);
             }
         ));
         group.add_action(&self.action);
@@ -616,14 +610,13 @@ pub enum StreamMode {
 }
 
 impl PlayerWidget {
-    fn on_rate_changed(&mut self, rate: f64) {
+    fn on_rate_changed(&self, rate: f64) {
         self.set_playback_rate(rate);
-        self.rate.rate = rate;
         self.rate.btn.set_label(&format!("{:.2}×", rate));
         self.sheet.rate.btn.set_label(&format!("{:.2}×", rate));
     }
 
-    pub fn change_playback_rate(&mut self, difference: f64) {
+    pub fn change_playback_rate(&self, difference: f64) {
         let rate = (self.player.rate() + difference).clamp(RATE_MIN, RATE_MAX);
         self.on_rate_changed(rate);
     }
@@ -1183,10 +1176,6 @@ impl PlayerWrapper {
             weak,
             move |_, _| {
                 if let Some(player_widget) = weak.get().upgrade() {
-                    // Set the currently selected playback rate for the new uri
-                    player_widget
-                        .borrow()
-                        .set_playback_rate(player_widget.borrow().rate.rate);
                     player_widget.borrow().restore_play_position();
                     player_widget.borrow_mut().info.finished_restore = true;
                 }
