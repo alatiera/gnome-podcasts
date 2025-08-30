@@ -760,14 +760,17 @@ impl PlayerWidget {
     /// Seek to the `play_position` stored in the episode.
     /// Returns Some(()) if the restore was successful and None otherwise.
     fn restore_play_position(&self) -> Option<()> {
+        debug!("Attempting to restore playback position");
         let pos = self.info.restore_position;
         if let Some(pos) = pos {
             let s: u64 = pos.try_into().ok()?;
+            debug!("Seeking stream at second: {}", s);
             self.player.seek(ClockTime::from_seconds(s));
-            Some(())
-        } else {
-            None
+            return Some(());
         }
+
+        debug!("No playback position to restore");
+        None
     }
 
     pub fn set_small(&self, small: bool) {
