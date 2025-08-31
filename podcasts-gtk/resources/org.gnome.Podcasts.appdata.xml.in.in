@@ -16,19 +16,23 @@
   <screenshots>
     <screenshot type="default">
       <caption>The home view displaying the newest episodes of your podcasts</caption>
-      <image>https://gitlab.gnome.org/World/podcasts/-/raw/af5d0c78f8e5d8d3398ad01178d248bbe64adf5b/screenshots/home_view.png</image>
+      <image>https://gitlab.gnome.org/World/podcasts/-/raw/df2002c0f2656ee96a733f3b4a3a3457f8cb044b/screenshots/home_view.png</image>
     </screenshot>
     <screenshot>
       <caption>The shows view displaying the covers of your podcasts</caption>
-      <image>https://gitlab.gnome.org/World/podcasts/-/raw/af5d0c78f8e5d8d3398ad01178d248bbe64adf5b/screenshots/shows_view.png</image>
+      <image>https://gitlab.gnome.org/World/podcasts/-/raw/df2002c0f2656ee96a733f3b4a3a3457f8cb044b/screenshots/shows_view.png</image>
     </screenshot>
     <screenshot>
       <caption>The show widget displaying the cover and the latest episodes of a specific podcast</caption>
-      <image>https://gitlab.gnome.org/World/podcasts/-/raw/af5d0c78f8e5d8d3398ad01178d248bbe64adf5b/screenshots/show_widget.png</image>
+      <image>https://gitlab.gnome.org/World/podcasts/-/raw/df2002c0f2656ee96a733f3b4a3a3457f8cb044b/screenshots/show_widget.png</image>
+    </screenshot>
+    <screenshot>
+      <caption>The chapters available in an episode</caption>
+      <image>https://gitlab.gnome.org/World/podcasts/-/raw/df2002c0f2656ee96a733f3b4a3a3457f8cb044b/screenshots/episooe_chapters.png</image>
     </screenshot>
     <screenshot>
       <caption>The view where one can add a new podcast</caption>
-      <image>https://gitlab.gnome.org/World/podcasts/-/raw/af5d0c78f8e5d8d3398ad01178d248bbe64adf5b/screenshots/add_podcast.png</image>
+      <image>https://gitlab.gnome.org/World/podcasts/-/raw/df2002c0f2656ee96a733f3b4a3a3457f8cb044b/screenshots/add_podcast.png</image>
     </screenshot>
   </screenshots>
   <branding>
@@ -36,6 +40,13 @@
     <color type="primary" scheme_preference="dark">#7b1824</color>
   </branding>
   <releases>
+    <release version="25.3" date="2025-10-17">
+      <description>
+        <p>
+          Episode chapters are here! Additionally this release comes with minor performance improvements, and interface polish including description styling and the new shortcuts dialog.
+        </p>
+      </description>
+    </release>
     <release version="25.2" date="2025-04-20">
       <description>
         <p>Small release with a couple of bugfixes and quality of life improvements!</p>

@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [Unreleased]
 
 ### Added:
+
+### Changed:
+
+### Fixed:
+
+### Removed:
+
+## [25.3] - 2025-10-17
+
+### Added:
 - Episode Chapters are here 🎉 World/podcasts!410
 - Added alternative hotkeys and new playback-rate hotkeys World/podcasts!413
 - Port to AdwShortcutsDialog  World/podcasts!427
@@ -30,8 +40,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - All play buttons now turn into pause buttons when currently playing World/podcasts!426
 - Prevent long_press from triggering on episode widget buttons World/podcasts!435
 - Fix Wrapping of episode descriptions World/podcasts!439
-
-### Removed:
 
 ## [25.2] - 2025-04-20
 
