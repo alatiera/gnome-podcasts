@@ -57,7 +57,8 @@ pub use crate::models::{
 // Keep this in sync with Tor-browser releases
 /// The user-agent to be used for all the requests.
 /// It originates from the Tor-browser UA.
-pub const USER_AGENT: &str = "Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101 Firefox/78.0";
+pub const USER_AGENT: &str =
+    "Mozilla/5.0 (X11; Linux x86_64; rv:128.0) Gecko/20100101 Firefox/128.0";
 
 /// [XDG Base Directory](https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html) Paths.
 pub mod xdg_dirs {
