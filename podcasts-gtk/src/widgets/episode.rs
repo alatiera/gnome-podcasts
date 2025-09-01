@@ -109,11 +109,12 @@ impl EpisodeWidgetPriv {
                     }
 
                     this.init_progressbar(id);
-                    this.init_buttons(&sender, id);
+                    // long_press needs to be neutralized by play/pause/dl button clicks
+                    let long_press = this.init_context_menu(&sender, add_show_link);
+                    this.init_buttons(&sender, id, &long_press);
                     if let Err(err) = this.determine_buttons_state(&episode) {
                         error!("Error: {}", err);
                     }
-                    this.init_context_menu(sender, add_show_link);
                 }
             ),
         );
@@ -413,21 +414,40 @@ impl EpisodeWidgetPriv {
         ));
     }
 
-    fn init_buttons(&self, sender: &Sender<Action>, id: EpisodeId) {
+    fn init_buttons(
+        &self,
+        sender: &Sender<Action>,
+        id: EpisodeId,
+        long_press: &gtk::GestureLongPress,
+    ) {
         self.cancel.connect_clicked(clone!(
+            #[weak]
+            long_press,
             #[weak(rename_to = this)]
             self,
             move |_| {
+                long_press.set_state(gtk::EventSequenceState::Claimed);
                 if let Err(e) = this.progressbar.cancel() {
                     error!("failed to cancel download {e}");
                 }
             }
         ));
 
+        self.pause.connect_clicked(clone!(
+            #[weak]
+            long_press,
+            move |_| {
+                long_press.set_state(gtk::EventSequenceState::Claimed);
+            }
+        ));
+
         self.play.connect_clicked(clone!(
+            #[weak]
+            long_press,
             #[strong]
             sender,
             move |_| {
+                long_press.set_state(gtk::EventSequenceState::Claimed);
                 if let Ok(episode) = dbqueries::get_episode_widget_from_id(id) {
                     // Play the episode
                     send_blocking!(sender, Action::InitEpisode(episode.id()));
@@ -436,11 +456,14 @@ impl EpisodeWidgetPriv {
         ));
 
         self.download.connect_clicked(clone!(
+            #[weak]
+            long_press,
             #[weak(rename_to = this)]
             self,
             #[strong]
             sender,
             move |dl| {
+                long_press.set_state(gtk::EventSequenceState::Claimed);
                 if let Ok(ep) = dbqueries::get_episode_widget_from_id(id) {
                     let result = on_download_clicked(&ep, &sender).and_then(|_| {
                         info!("Download started successfully.");
@@ -459,8 +482,14 @@ impl EpisodeWidgetPriv {
         ));
     }
 
-    fn init_context_menu(&self, sender: Sender<Action>, add_show_link: bool) {
+    fn init_context_menu(
+        &self,
+        sender: &Sender<Action>,
+        add_show_link: bool,
+    ) -> gtk::GestureLongPress {
         let on_rightclick = clone!(
+            #[strong]
+            sender,
             #[weak(rename_to = this)]
             self,
             move |(x, y)| {
@@ -495,8 +524,9 @@ impl EpisodeWidgetPriv {
         right_click.connect_pressed(move |_, _, x, y| {
             on_rightclick((x, y));
         });
-        self.obj().add_controller(long_press);
+        self.obj().add_controller(long_press.clone());
         self.obj().add_controller(right_click);
+        long_press
     }
 
     fn update_separator2_visibility(&self) {
