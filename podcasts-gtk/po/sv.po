@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: podcasts main\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2025-06-26 13:02+0000\n"
-"PO-Revision-Date: 2025-07-02 23:50+0200\n"
+"POT-Creation-Date: 2025-09-01 10:46+0000\n"
+"PO-Revision-Date: 2025-09-02 22:54+0200\n"
 "Last-Translator: Anders Jonsson <anders.jonsson@norsjovallen.se>\n"
 "Language-Team: Swedish <tp-sv@listor.tp-sv.se>\n"
 "Language: sv\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 3.6\n"
+"X-Generator: Poedit 3.7\n"
 
 #: podcasts-gtk/resources/gtk/discovery_found_podcast.ui:105
 msgid "Episodes: "
@@ -44,28 +44,28 @@ msgstr "Lägg till poddsändningar"
 msgid "Search"
 msgstr "Sök"
 
-#: podcasts-gtk/resources/gtk/discovery_page.ui:75
+#: podcasts-gtk/resources/gtk/discovery_page.ui:77
 msgid "Enter a feed URL or search the selected platforms."
 msgstr "Ange en flödes-URL eller sök de valda plattformarna."
 
-#: podcasts-gtk/resources/gtk/discovery_page.ui:98
+#: podcasts-gtk/resources/gtk/discovery_page.ui:100
 msgid "Submit search"
 msgstr "Skicka sökning"
 
-#: podcasts-gtk/resources/gtk/discovery_page.ui:104
+#: podcasts-gtk/resources/gtk/discovery_page.ui:106
 #: podcasts-gtk/src/widgets/discovery_page.rs:113
 msgid "Loading…"
 msgstr "Läser in…"
 
-#: podcasts-gtk/resources/gtk/discovery_page.ui:115
+#: podcasts-gtk/resources/gtk/discovery_page.ui:119
 msgid "Please enable a Search Platform below, or enter a http(s) feed URL."
 msgstr "Aktivera en sökplattform nedan, eller ange en http(s)-flödes-URL."
 
-#: podcasts-gtk/resources/gtk/discovery_page.ui:127
+#: podcasts-gtk/resources/gtk/discovery_page.ui:131
 msgid "Search Platforms"
 msgstr "Sökplattformar"
 
-#: podcasts-gtk/resources/gtk/discovery_page.ui:128
+#: podcasts-gtk/resources/gtk/discovery_page.ui:132
 msgid "Search queries will be sent to these platforms."
 msgstr "Sökfrågor kommer skickas till dessa plattformar."
 
@@ -73,7 +73,7 @@ msgstr "Sökfrågor kommer skickas till dessa plattformar."
 msgid "Search results"
 msgstr "Sökresultat"
 
-#: podcasts-gtk/resources/gtk/discovery_search_results.ui:68
+#: podcasts-gtk/resources/gtk/discovery_search_results.ui:70
 msgid "No results found."
 msgstr "Inga resultat hittades."
 
@@ -142,10 +142,11 @@ msgid "Delete"
 msgstr "Ta bort"
 
 #: podcasts-gtk/resources/gtk/episode_description.ui:279
+#: podcasts-gtk/resources/gtk/sheet_description.ui:49
 msgid "Episode Description"
 msgstr "Avsnittsbeskrivning"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:300
+#: podcasts-gtk/resources/gtk/episode_description.ui:301
 msgid "Episode Cover"
 msgstr "Avsnittsomslag"
 
@@ -194,83 +195,6 @@ msgstr "Hämta detta avsnitt"
 msgid "Episode without audio"
 msgstr "Avsnitt utan ljud"
 
-#: podcasts-gtk/resources/gtk/help-overlay.ui:12
-msgctxt "shortcut window"
-msgid "Navigation"
-msgstr "Navigering"
-
-#: podcasts-gtk/resources/gtk/help-overlay.ui:15
-msgctxt "shortcut window"
-msgid "Go to Home Page"
-msgstr "Gå till startsida"
-
-#. Translators: Shows as a Noun
-#: podcasts-gtk/resources/gtk/help-overlay.ui:22
-msgctxt "shortcut window"
-msgid "Go to Shows Page"
-msgstr "Gå till showsida"
-
-#. Translators: 'Discovery' is a page where you can add new podcasts
-#: podcasts-gtk/resources/gtk/help-overlay.ui:29
-msgctxt "shortcut window"
-msgid "Go To Discovery Page"
-msgstr "Gå till upptäcktssida"
-
-#: podcasts-gtk/resources/gtk/help-overlay.ui:38
-msgctxt "shortcut window"
-msgid "Player"
-msgstr "Spelare"
-
-#: podcasts-gtk/resources/gtk/help-overlay.ui:41
-msgctxt "shortcut window"
-msgid "Toggle Pause"
-msgstr "Pausa/fortsätt"
-
-#: podcasts-gtk/resources/gtk/help-overlay.ui:47
-msgctxt "shortcut window"
-msgid "Seek Forwards"
-msgstr "Spola framåt"
-
-#: podcasts-gtk/resources/gtk/help-overlay.ui:53
-msgctxt "shortcut window"
-msgid "Seek Backwards"
-msgstr "Spola bakåt"
-
-#: podcasts-gtk/resources/gtk/help-overlay.ui:59
-msgctxt "shortcut window"
-msgid "Raise Playback Speed"
-msgstr "Höj uppspelningshastighet"
-
-#: podcasts-gtk/resources/gtk/help-overlay.ui:65
-msgctxt "shortcut window"
-msgid "Lower Playback Speed"
-msgstr "Sänk uppspelningshastighet"
-
-#: podcasts-gtk/resources/gtk/help-overlay.ui:74
-msgctxt "shortcut window"
-msgid "General"
-msgstr "Allmänt"
-
-#: podcasts-gtk/resources/gtk/help-overlay.ui:77
-msgctxt "shortcut window"
-msgid "Check for new episodes"
-msgstr "Sök efter nya avsnitt"
-
-#: podcasts-gtk/resources/gtk/help-overlay.ui:83
-msgctxt "shortcut window"
-msgid "Quit the application"
-msgstr "Avsluta programmet"
-
-#: podcasts-gtk/resources/gtk/help-overlay.ui:89
-msgctxt "shortcut window"
-msgid "Import Subscriptions"
-msgstr "Importera prenumerationer"
-
-#: podcasts-gtk/resources/gtk/help-overlay.ui:95
-msgctxt "shortcut window"
-msgid "Export Subscriptions"
-msgstr "Exportera prenumerationer"
-
 #: podcasts-gtk/resources/gtk/home_view.ui:57
 #: podcasts-gtk/resources/gtk/home_view.ui:70
 msgid "Today"
@@ -301,65 +225,62 @@ msgid "Change the playback speed"
 msgstr "Ändra uppspelningshastigheten"
 
 #: podcasts-gtk/resources/gtk/player_rate.ui:34
-#: podcasts-gtk/resources/gtk/player_rate.ui:59
+#: podcasts-gtk/resources/gtk/player_rate.ui:62
 msgid "1.00×"
 msgstr "1,00×"
 
-#: podcasts-gtk/resources/gtk/player_rate.ui:39
+#: podcasts-gtk/resources/gtk/player_rate.ui:42
 msgid "2.00×"
 msgstr "2,00×"
 
-#: podcasts-gtk/resources/gtk/player_rate.ui:44
+#: podcasts-gtk/resources/gtk/player_rate.ui:47
 msgid "1.75×"
 msgstr "1,75×"
 
-#: podcasts-gtk/resources/gtk/player_rate.ui:49
+#: podcasts-gtk/resources/gtk/player_rate.ui:52
 msgid "1.50×"
 msgstr "1,50×"
 
-#: podcasts-gtk/resources/gtk/player_rate.ui:54
+#: podcasts-gtk/resources/gtk/player_rate.ui:57
 msgid "1.25×"
 msgstr "1,25×"
 
-#: podcasts-gtk/resources/gtk/player_rate.ui:64
+#: podcasts-gtk/resources/gtk/player_rate.ui:67
 msgid "0.90×"
 msgstr "0,90×"
 
-#: podcasts-gtk/resources/gtk/player_rate.ui:69
+#: podcasts-gtk/resources/gtk/player_rate.ui:72
 msgid "0.75×"
 msgstr "0,75×"
-
-#: podcasts-gtk/resources/gtk/player_sheet.ui:133
-msgid "Rewind"
-msgstr "Spola tillbaka"
-
-#: podcasts-gtk/resources/gtk/player_sheet.ui:154
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:67
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:268
-msgid "Play"
-msgstr "Spela"
-
-#: podcasts-gtk/resources/gtk/player_sheet.ui:172
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:80
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:277
-msgid "Pause"
-msgstr "Pausa"
-
-#: podcasts-gtk/resources/gtk/player_sheet.ui:195
-msgid "Forward"
-msgstr "Spola framåt"
-
-#: podcasts-gtk/resources/gtk/player_sheet.ui:230
-msgid "Description"
-msgstr "Beskrivning"
 
 #: podcasts-gtk/resources/gtk/player_toolbar.ui:50
 msgid "Rewind 10 seconds"
 msgstr "Spola tillbaka 10 sekunder"
 
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:67
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:292
+#: podcasts-gtk/resources/gtk/sheet_player.ui:149
+msgid "Play"
+msgstr "Spela"
+
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:80
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:301
+#: podcasts-gtk/resources/gtk/sheet_player.ui:167
+msgid "Pause"
+msgstr "Pausa"
+
 #: podcasts-gtk/resources/gtk/player_toolbar.ui:95
 msgid "Fast forward 10 seconds"
 msgstr "Spola framåt 10 sekunder"
+
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:113
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:237
+msgid "Go to the description for this episode."
+msgstr "Gå till beskrivningen för detta avsnitt."
+
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:208
+msgid "Go to the Chapters list."
+msgstr "Gå till kapitellistan."
 
 #: podcasts-gtk/resources/gtk/secondary_menu.ui:7
 msgid "_Mark All Episodes as Played"
@@ -372,6 +293,104 @@ msgstr "_Webbplats"
 #: podcasts-gtk/resources/gtk/secondary_menu.ui:15
 msgid "_Unsubscribe"
 msgstr "Säg _upp prenumeration"
+
+#: podcasts-gtk/resources/gtk/sheet_base.ui:75
+msgid "Player"
+msgstr "Spelare"
+
+#: podcasts-gtk/resources/gtk/sheet_base.ui:82
+msgid "Description"
+msgstr "Beskrivning"
+
+#: podcasts-gtk/resources/gtk/sheet_base.ui:89
+#: podcasts-gtk/src/widgets/chapters.rs:194
+msgid "Chapters"
+msgstr "Kapitel"
+
+#: podcasts-gtk/resources/gtk/sheet_player.ui:128
+msgid "Rewind"
+msgstr "Spola tillbaka"
+
+#: podcasts-gtk/resources/gtk/sheet_player.ui:190
+msgid "Forward"
+msgstr "Spola framåt"
+
+#: podcasts-gtk/resources/gtk/shortcuts-dialog.ui:7
+msgctxt "shortcut window"
+msgid "Navigation"
+msgstr "Navigering"
+
+#: podcasts-gtk/resources/gtk/shortcuts-dialog.ui:10
+msgctxt "shortcut window"
+msgid "Go to Home Page"
+msgstr "Gå till startsida"
+
+#. Translators: Shows as a Noun
+#: podcasts-gtk/resources/gtk/shortcuts-dialog.ui:17
+msgctxt "shortcut window"
+msgid "Go to Shows Page"
+msgstr "Gå till showsida"
+
+#. Translators: 'Discovery' is a page where you can add new podcasts
+#: podcasts-gtk/resources/gtk/shortcuts-dialog.ui:24
+msgctxt "shortcut window"
+msgid "Go To Discovery Page"
+msgstr "Gå till upptäcktssida"
+
+#: podcasts-gtk/resources/gtk/shortcuts-dialog.ui:33
+msgctxt "shortcut window"
+msgid "Player"
+msgstr "Spelare"
+
+#: podcasts-gtk/resources/gtk/shortcuts-dialog.ui:36
+msgctxt "shortcut window"
+msgid "Toggle Pause"
+msgstr "Pausa/fortsätt"
+
+#: podcasts-gtk/resources/gtk/shortcuts-dialog.ui:42
+msgctxt "shortcut window"
+msgid "Seek Forwards"
+msgstr "Spola framåt"
+
+#: podcasts-gtk/resources/gtk/shortcuts-dialog.ui:48
+msgctxt "shortcut window"
+msgid "Seek Backwards"
+msgstr "Spola bakåt"
+
+#: podcasts-gtk/resources/gtk/shortcuts-dialog.ui:54
+msgctxt "shortcut window"
+msgid "Raise Playback Speed"
+msgstr "Höj uppspelningshastighet"
+
+#: podcasts-gtk/resources/gtk/shortcuts-dialog.ui:60
+msgctxt "shortcut window"
+msgid "Lower Playback Speed"
+msgstr "Sänk uppspelningshastighet"
+
+#: podcasts-gtk/resources/gtk/shortcuts-dialog.ui:69
+msgctxt "shortcut window"
+msgid "General"
+msgstr "Allmänt"
+
+#: podcasts-gtk/resources/gtk/shortcuts-dialog.ui:72
+msgctxt "shortcut window"
+msgid "Check for new episodes"
+msgstr "Sök efter nya avsnitt"
+
+#: podcasts-gtk/resources/gtk/shortcuts-dialog.ui:78
+msgctxt "shortcut window"
+msgid "Quit the application"
+msgstr "Avsluta programmet"
+
+#: podcasts-gtk/resources/gtk/shortcuts-dialog.ui:84
+msgctxt "shortcut window"
+msgid "Import Subscriptions"
+msgstr "Importera prenumerationer"
+
+#: podcasts-gtk/resources/gtk/shortcuts-dialog.ui:90
+msgctxt "shortcut window"
+msgid "Export Subscriptions"
+msgstr "Exportera prenumerationer"
 
 #: podcasts-gtk/resources/gtk/show_menu.ui:35
 msgid "Open Website"
@@ -389,7 +408,7 @@ msgstr "Säg upp prenumeration"
 msgid "Podcast Menu"
 msgstr "Poddsändningsmeny"
 
-#: podcasts-gtk/resources/gtk/show_widget.ui:97
+#: podcasts-gtk/resources/gtk/show_widget.ui:100
 msgid "Episodes"
 msgstr "Avsnitt"
 
@@ -419,9 +438,9 @@ msgstr "_Om Poddsändningar"
 #: podcasts-gtk/resources/gtk/window.ui:35
 #: podcasts-gtk/resources/gtk/window.ui:102
 #: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:4
-#: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:3
-#: podcasts-gtk/src/app.rs:519 podcasts-gtk/src/widgets/aboutdialog.rs:56
-#: podcasts-gtk/src/widgets/player.rs:479
+#: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:2
+#: podcasts-gtk/src/app.rs:530 podcasts-gtk/src/widgets/aboutdialog.rs:56
+#: podcasts-gtk/src/widgets/player.rs:408
 msgid "Podcasts"
 msgstr "Poddsändningar"
 
@@ -481,12 +500,12 @@ msgstr "Vyn där man kan lägga till en ny poddsändning"
 msgid "The Podcasts developers"
 msgstr "Poddsändningar-utvecklarna"
 
-#: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:4
+#: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:3
 msgid "Listen to your favorite podcasts, right from your desktop."
 msgstr "Lyssna på dina favoritpoddsändningar, direkt från ditt skrivbord."
 
 #. Translators: Search terms to find this application. Do NOT translate or localize the semicolons! The list MUST also end with a semicolon!
-#: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:13
+#: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:12
 msgid "Podcast;RSS;"
 msgstr "Poddsändning;Podcast;RSS;"
 
@@ -526,7 +545,7 @@ msgstr "Hur många tidsperioder att vänta mellan automatiska upprensningar"
 msgid "What period of time to wait between automatic cleanups"
 msgstr "Vilken sorts tidsperiod att vänta mellan automatiska upprensningar"
 
-#: podcasts-gtk/src/app.rs:375
+#: podcasts-gtk/src/app.rs:386
 msgid "Copied URL to clipboard!"
 msgstr "Kopierade URL till urklipp!"
 
@@ -538,11 +557,11 @@ msgstr "Hoppa till {}:{}:{}"
 msgid "Jump to {}:{}"
 msgstr "Hoppa till {}:{}"
 
-#: podcasts-gtk/src/manager.rs:106
+#: podcasts-gtk/src/manager.rs:105
 msgid "Download failed: {}"
 msgstr "Hämtning misslyckades: {}"
 
-#: podcasts-gtk/src/utils.rs:294
+#: podcasts-gtk/src/utils.rs:293
 msgid "Failed to subscribe to feed: {}"
 msgstr "Misslyckades med att prenumerera på flöde: {}"
 
@@ -597,6 +616,10 @@ msgstr ""
 "Skicka synpunkter på översättningen till\n"
 "<tp-sv@listor.tp-sv.se>."
 
+#: podcasts-gtk/src/widgets/chapters.rs:130
+msgid "Currently playing chapter"
+msgstr "Kapitel som spelas nu"
+
 #: podcasts-gtk/src/widgets/content_stack.rs:61
 msgid "Fetching feeds…"
 msgstr "Hämtar flöden…"
@@ -611,7 +634,7 @@ msgstr "Nytt"
 msgid "Shows"
 msgstr "Shower"
 
-#: podcasts-gtk/src/widgets/download_progress_bar.rs:67
+#: podcasts-gtk/src/widgets/download_progress_bar.rs:66
 msgid "Download progress"
 msgstr "Hämtningsförlopp"
 
@@ -619,7 +642,7 @@ msgstr "Hämtningsförlopp"
 msgid "{} min"
 msgstr "{} min"
 
-#: podcasts-gtk/src/widgets/player.rs:1163
+#: podcasts-gtk/src/widgets/player.rs:1110
 msgid "The media player was unable to execute an action."
 msgstr "Mediaspelaren kunde inte utföra en åtgärd."
 
