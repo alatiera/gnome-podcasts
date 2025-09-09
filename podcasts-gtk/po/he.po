@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: podcasts master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2025-06-26 11:37+0000\n"
-"PO-Revision-Date: 2025-06-27 22:40+0300\n"
+"POT-Creation-Date: 2025-09-07 13:09+0000\n"
+"PO-Revision-Date: 2025-09-08 15:05+0300\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
 "Language-Team: Hebrew\n"
 "Language: he\n"
@@ -45,28 +45,28 @@ msgstr "הוספת הסכתים"
 msgid "Search"
 msgstr "חיפוש"
 
-#: podcasts-gtk/resources/gtk/discovery_page.ui:75
+#: podcasts-gtk/resources/gtk/discovery_page.ui:77
 msgid "Enter a feed URL or search the selected platforms."
 msgstr "יש להזין כתובת הזנה או לחפש בפלטפורמות הנבחרות."
 
-#: podcasts-gtk/resources/gtk/discovery_page.ui:98
+#: podcasts-gtk/resources/gtk/discovery_page.ui:100
 msgid "Submit search"
 msgstr "להתחיל את החיפוש"
 
-#: podcasts-gtk/resources/gtk/discovery_page.ui:104
+#: podcasts-gtk/resources/gtk/discovery_page.ui:106
 #: podcasts-gtk/src/widgets/discovery_page.rs:113
 msgid "Loading…"
 msgstr "בטעינה…"
 
-#: podcasts-gtk/resources/gtk/discovery_page.ui:115
+#: podcasts-gtk/resources/gtk/discovery_page.ui:119
 msgid "Please enable a Search Platform below, or enter a http(s) feed URL."
 msgstr "יש לאפשר את הפלטפורמות לחיפוש שלהלן, או להזין כתובת הזנה ‎http(s)."
 
-#: podcasts-gtk/resources/gtk/discovery_page.ui:127
+#: podcasts-gtk/resources/gtk/discovery_page.ui:131
 msgid "Search Platforms"
 msgstr "פלטפורמות לחיפוש"
 
-#: podcasts-gtk/resources/gtk/discovery_page.ui:128
+#: podcasts-gtk/resources/gtk/discovery_page.ui:132
 msgid "Search queries will be sent to these platforms."
 msgstr "שאילתות החיפוש ישלחו לפלטפורמות אלו."
 
@@ -74,7 +74,7 @@ msgstr "שאילתות החיפוש ישלחו לפלטפורמות אלו."
 msgid "Search results"
 msgstr "תוצאות חיפוש"
 
-#: podcasts-gtk/resources/gtk/discovery_search_results.ui:68
+#: podcasts-gtk/resources/gtk/discovery_search_results.ui:70
 msgid "No results found."
 msgstr "לא נמצאו תוצאות."
 
@@ -143,10 +143,11 @@ msgid "Delete"
 msgstr "מחיקה"
 
 #: podcasts-gtk/resources/gtk/episode_description.ui:279
+#: podcasts-gtk/resources/gtk/sheet_description.ui:49
 msgid "Episode Description"
 msgstr "תיאור פרק"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:300
+#: podcasts-gtk/resources/gtk/episode_description.ui:301
 msgid "Episode Cover"
 msgstr "תמונת נושא של פרק"
 
@@ -195,83 +196,6 @@ msgstr "הורדת פרק זה"
 msgid "Episode without audio"
 msgstr "פרק ללא שמע"
 
-#: podcasts-gtk/resources/gtk/help-overlay.ui:12
-msgctxt "shortcut window"
-msgid "Navigation"
-msgstr "ניווט"
-
-#: podcasts-gtk/resources/gtk/help-overlay.ui:15
-msgctxt "shortcut window"
-msgid "Go to Home Page"
-msgstr "מעבר לדף הבית"
-
-#. Translators: Shows as a Noun
-#: podcasts-gtk/resources/gtk/help-overlay.ui:22
-msgctxt "shortcut window"
-msgid "Go to Shows Page"
-msgstr "מעבר לעמוד התכנית"
-
-#. Translators: 'Discovery' is a page where you can add new podcasts
-#: podcasts-gtk/resources/gtk/help-overlay.ui:29
-msgctxt "shortcut window"
-msgid "Go To Discovery Page"
-msgstr "מעבר לעמוד החשיפה"
-
-#: podcasts-gtk/resources/gtk/help-overlay.ui:38
-msgctxt "shortcut window"
-msgid "Player"
-msgstr "נגן"
-
-#: podcasts-gtk/resources/gtk/help-overlay.ui:41
-msgctxt "shortcut window"
-msgid "Toggle Pause"
-msgstr "החלפת מצב השהיה"
-
-#: podcasts-gtk/resources/gtk/help-overlay.ui:47
-msgctxt "shortcut window"
-msgid "Seek Forwards"
-msgstr "חתירה קדימה"
-
-#: podcasts-gtk/resources/gtk/help-overlay.ui:53
-msgctxt "shortcut window"
-msgid "Seek Backwards"
-msgstr "חתירה לאחור"
-
-#: podcasts-gtk/resources/gtk/help-overlay.ui:59
-msgctxt "shortcut window"
-msgid "Raise Playback Speed"
-msgstr "האצת מהירות השמעה"
-
-#: podcasts-gtk/resources/gtk/help-overlay.ui:65
-msgctxt "shortcut window"
-msgid "Lower Playback Speed"
-msgstr "האטת מהירות השמעה"
-
-#: podcasts-gtk/resources/gtk/help-overlay.ui:74
-msgctxt "shortcut window"
-msgid "General"
-msgstr "כללי"
-
-#: podcasts-gtk/resources/gtk/help-overlay.ui:77
-msgctxt "shortcut window"
-msgid "Check for new episodes"
-msgstr "בדיקה אם יש פרקים חדשים"
-
-#: podcasts-gtk/resources/gtk/help-overlay.ui:83
-msgctxt "shortcut window"
-msgid "Quit the application"
-msgstr "יציאה מהיישום"
-
-#: podcasts-gtk/resources/gtk/help-overlay.ui:89
-msgctxt "shortcut window"
-msgid "Import Subscriptions"
-msgstr "ייבוא מינויים"
-
-#: podcasts-gtk/resources/gtk/help-overlay.ui:95
-msgctxt "shortcut window"
-msgid "Export Subscriptions"
-msgstr "ייצוא מינויים"
-
 #: podcasts-gtk/resources/gtk/home_view.ui:57
 #: podcasts-gtk/resources/gtk/home_view.ui:70
 msgid "Today"
@@ -302,65 +226,62 @@ msgid "Change the playback speed"
 msgstr "שינוי מהירות השמעה"
 
 #: podcasts-gtk/resources/gtk/player_rate.ui:34
-#: podcasts-gtk/resources/gtk/player_rate.ui:59
+#: podcasts-gtk/resources/gtk/player_rate.ui:62
 msgid "1.00×"
 msgstr "1.00×"
 
-#: podcasts-gtk/resources/gtk/player_rate.ui:39
+#: podcasts-gtk/resources/gtk/player_rate.ui:42
 msgid "2.00×"
 msgstr "2.00×"
 
-#: podcasts-gtk/resources/gtk/player_rate.ui:44
+#: podcasts-gtk/resources/gtk/player_rate.ui:47
 msgid "1.75×"
 msgstr "1.75×"
 
-#: podcasts-gtk/resources/gtk/player_rate.ui:49
+#: podcasts-gtk/resources/gtk/player_rate.ui:52
 msgid "1.50×"
 msgstr "1.50×"
 
-#: podcasts-gtk/resources/gtk/player_rate.ui:54
+#: podcasts-gtk/resources/gtk/player_rate.ui:57
 msgid "1.25×"
 msgstr "1.25×"
 
-#: podcasts-gtk/resources/gtk/player_rate.ui:64
+#: podcasts-gtk/resources/gtk/player_rate.ui:67
 msgid "0.90×"
 msgstr "0.90×"
 
-#: podcasts-gtk/resources/gtk/player_rate.ui:69
+#: podcasts-gtk/resources/gtk/player_rate.ui:72
 msgid "0.75×"
 msgstr "0.75×"
-
-#: podcasts-gtk/resources/gtk/player_sheet.ui:133
-msgid "Rewind"
-msgstr "חזרה לאחור"
-
-#: podcasts-gtk/resources/gtk/player_sheet.ui:154
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:67
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:268
-msgid "Play"
-msgstr "השמעה"
-
-#: podcasts-gtk/resources/gtk/player_sheet.ui:172
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:80
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:277
-msgid "Pause"
-msgstr "השהיה"
-
-#: podcasts-gtk/resources/gtk/player_sheet.ui:195
-msgid "Forward"
-msgstr "קפיצה קדימה"
-
-#: podcasts-gtk/resources/gtk/player_sheet.ui:230
-msgid "Description"
-msgstr "תיאור"
 
 #: podcasts-gtk/resources/gtk/player_toolbar.ui:50
 msgid "Rewind 10 seconds"
 msgstr "חזרה 10 שניות לאחור"
 
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:67
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:292
+#: podcasts-gtk/resources/gtk/sheet_player.ui:149
+msgid "Play"
+msgstr "השמעה"
+
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:80
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:301
+#: podcasts-gtk/resources/gtk/sheet_player.ui:167
+msgid "Pause"
+msgstr "השהיה"
+
 #: podcasts-gtk/resources/gtk/player_toolbar.ui:95
 msgid "Fast forward 10 seconds"
 msgstr "דילוג 10 שניות קדימה"
+
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:113
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:237
+msgid "Go to the description for this episode."
+msgstr "מעבר לתיאור על הפרק הזה."
+
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:208
+msgid "Go to the Chapters list."
+msgstr "מעבר לרשימת הפרקים."
 
 #: podcasts-gtk/resources/gtk/secondary_menu.ui:7
 msgid "_Mark All Episodes as Played"
@@ -373,6 +294,104 @@ msgstr "_אתר אינטרנט"
 #: podcasts-gtk/resources/gtk/secondary_menu.ui:15
 msgid "_Unsubscribe"
 msgstr "_ביטול מינוי"
+
+#: podcasts-gtk/resources/gtk/sheet_base.ui:75
+msgid "Player"
+msgstr "נגן"
+
+#: podcasts-gtk/resources/gtk/sheet_base.ui:82
+msgid "Description"
+msgstr "תיאור"
+
+#: podcasts-gtk/resources/gtk/sheet_base.ui:89
+#: podcasts-gtk/src/widgets/chapters.rs:194
+msgid "Chapters"
+msgstr "פרקים"
+
+#: podcasts-gtk/resources/gtk/sheet_player.ui:128
+msgid "Rewind"
+msgstr "חזרה לאחור"
+
+#: podcasts-gtk/resources/gtk/sheet_player.ui:190
+msgid "Forward"
+msgstr "קפיצה קדימה"
+
+#: podcasts-gtk/resources/gtk/shortcuts-dialog.ui:7
+msgctxt "shortcut window"
+msgid "Navigation"
+msgstr "ניווט"
+
+#: podcasts-gtk/resources/gtk/shortcuts-dialog.ui:10
+msgctxt "shortcut window"
+msgid "Go to Home Page"
+msgstr "מעבר לדף הבית"
+
+#. Translators: Shows as a Noun
+#: podcasts-gtk/resources/gtk/shortcuts-dialog.ui:17
+msgctxt "shortcut window"
+msgid "Go to Shows Page"
+msgstr "מעבר לעמוד התכנית"
+
+#. Translators: 'Discovery' is a page where you can add new podcasts
+#: podcasts-gtk/resources/gtk/shortcuts-dialog.ui:24
+msgctxt "shortcut window"
+msgid "Go To Discovery Page"
+msgstr "מעבר לעמוד החשיפה"
+
+#: podcasts-gtk/resources/gtk/shortcuts-dialog.ui:33
+msgctxt "shortcut window"
+msgid "Player"
+msgstr "נגן"
+
+#: podcasts-gtk/resources/gtk/shortcuts-dialog.ui:36
+msgctxt "shortcut window"
+msgid "Toggle Pause"
+msgstr "החלפת מצב השהיה"
+
+#: podcasts-gtk/resources/gtk/shortcuts-dialog.ui:42
+msgctxt "shortcut window"
+msgid "Seek Forwards"
+msgstr "חתירה קדימה"
+
+#: podcasts-gtk/resources/gtk/shortcuts-dialog.ui:48
+msgctxt "shortcut window"
+msgid "Seek Backwards"
+msgstr "חתירה לאחור"
+
+#: podcasts-gtk/resources/gtk/shortcuts-dialog.ui:54
+msgctxt "shortcut window"
+msgid "Raise Playback Speed"
+msgstr "האצת מהירות השמעה"
+
+#: podcasts-gtk/resources/gtk/shortcuts-dialog.ui:60
+msgctxt "shortcut window"
+msgid "Lower Playback Speed"
+msgstr "האטת מהירות השמעה"
+
+#: podcasts-gtk/resources/gtk/shortcuts-dialog.ui:69
+msgctxt "shortcut window"
+msgid "General"
+msgstr "כללי"
+
+#: podcasts-gtk/resources/gtk/shortcuts-dialog.ui:72
+msgctxt "shortcut window"
+msgid "Check for new episodes"
+msgstr "בדיקה אם יש פרקים חדשים"
+
+#: podcasts-gtk/resources/gtk/shortcuts-dialog.ui:78
+msgctxt "shortcut window"
+msgid "Quit the application"
+msgstr "יציאה מהיישום"
+
+#: podcasts-gtk/resources/gtk/shortcuts-dialog.ui:84
+msgctxt "shortcut window"
+msgid "Import Subscriptions"
+msgstr "ייבוא מינויים"
+
+#: podcasts-gtk/resources/gtk/shortcuts-dialog.ui:90
+msgctxt "shortcut window"
+msgid "Export Subscriptions"
+msgstr "ייצוא מינויים"
 
 #: podcasts-gtk/resources/gtk/show_menu.ui:35
 msgid "Open Website"
@@ -390,7 +409,7 @@ msgstr "ביטול מינוי"
 msgid "Podcast Menu"
 msgstr "תפריט הסכת"
 
-#: podcasts-gtk/resources/gtk/show_widget.ui:97
+#: podcasts-gtk/resources/gtk/show_widget.ui:100
 msgid "Episodes"
 msgstr "פרקים"
 
@@ -420,9 +439,9 @@ msgstr "_על הסכתים"
 #: podcasts-gtk/resources/gtk/window.ui:35
 #: podcasts-gtk/resources/gtk/window.ui:102
 #: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:4
-#: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:3
-#: podcasts-gtk/src/app.rs:519 podcasts-gtk/src/widgets/aboutdialog.rs:56
-#: podcasts-gtk/src/widgets/player.rs:479
+#: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:2
+#: podcasts-gtk/src/app.rs:530 podcasts-gtk/src/widgets/aboutdialog.rs:56
+#: podcasts-gtk/src/widgets/player.rs:408
 msgid "Podcasts"
 msgstr "הסכתים"
 
@@ -479,12 +498,12 @@ msgstr "התצוגה של המקום להוספת הסכת חדש"
 msgid "The Podcasts developers"
 msgstr "מפתחי הסכתים"
 
-#: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:4
+#: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:3
 msgid "Listen to your favorite podcasts, right from your desktop."
 msgstr "האזנה להסכתים האהובים עליך, ישירות משולחן העבודה שלך."
 
 #. Translators: Search terms to find this application. Do NOT translate or localize the semicolons! The list MUST also end with a semicolon!
-#: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:13
+#: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:12
 msgid "Podcast;RSS;"
 msgstr "הסכתים;RSS;פודקאסט;פודקאסטים;"
 
@@ -524,7 +543,7 @@ msgstr "How many periods of time to wait between automatic cleanups"
 msgid "What period of time to wait between automatic cleanups"
 msgstr "What period of time to wait between automatic cleanups"
 
-#: podcasts-gtk/src/app.rs:375
+#: podcasts-gtk/src/app.rs:386
 msgid "Copied URL to clipboard!"
 msgstr "כתובת הועתקה ללוח הגזירים!"
 
@@ -536,11 +555,11 @@ msgstr "קפיצה אל ‎{}:{}:{}"
 msgid "Jump to {}:{}"
 msgstr "קפיצה אל ‎{}:{}"
 
-#: podcasts-gtk/src/manager.rs:106
+#: podcasts-gtk/src/manager.rs:105
 msgid "Download failed: {}"
 msgstr "ההורדה נכשלה: {}"
 
-#: podcasts-gtk/src/utils.rs:294
+#: podcasts-gtk/src/utils.rs:293
 msgid "Failed to subscribe to feed: {}"
 msgstr "ההרשמה להזנה נכשלה: {}"
 
@@ -593,6 +612,10 @@ msgstr ""
 "ירון שהרבני <sh.yaron@gmail.com>\n"
 "מיזם תרגום GNOME לעברית https://l10n.gnome.org/teams/he/"
 
+#: podcasts-gtk/src/widgets/chapters.rs:130
+msgid "Currently playing chapter"
+msgstr "הפרק שמתנגן כרגע"
+
 #: podcasts-gtk/src/widgets/content_stack.rs:61
 msgid "Fetching feeds…"
 msgstr "הערוצים מתקבלים…"
@@ -607,7 +630,7 @@ msgstr "חדש"
 msgid "Shows"
 msgstr "תכניות"
 
-#: podcasts-gtk/src/widgets/download_progress_bar.rs:67
+#: podcasts-gtk/src/widgets/download_progress_bar.rs:66
 msgid "Download progress"
 msgstr "התקדמות ההורדה"
 
@@ -615,7 +638,7 @@ msgstr "התקדמות ההורדה"
 msgid "{} min"
 msgstr "‏{} דק׳"
 
-#: podcasts-gtk/src/widgets/player.rs:1163
+#: podcasts-gtk/src/widgets/player.rs:1110
 msgid "The media player was unable to execute an action."
 msgstr "נגן המדיה לא הצליח לבצע את הפעולה."
 
