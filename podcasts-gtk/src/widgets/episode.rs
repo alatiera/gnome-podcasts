@@ -138,7 +138,7 @@ impl EpisodeWidgetPriv {
     // InProgress State:
     //   * Show ProgressBar and Cancel Button.
     //   * Show `total_size`, `local_size` labels and `size_separator`.
-    //   * Hide `date`, `duration` labels and `separator1`.
+    //   * Hide `date`, `duration` labels
     //   * Hide Download and Play Buttons
     fn state_prog(&self) {
         self.cancel.set_visible(true);
@@ -148,8 +148,7 @@ impl EpisodeWidgetPriv {
         self.size_separator.set_visible(true);
 
         self.date.set_visible(false);
-        self.separator1.set_visible(false);
-        self.duration.set_visible(false);
+        self.set_duration_visible(false);
 
         self.play.set_visible(false);
         self.pause.set_visible(false);
@@ -160,7 +159,7 @@ impl EpisodeWidgetPriv {
     // Playable State:
     //   * Hide ProgressBar and Cancel, Download Buttons.
     //   * Hide `local_size` labels and `size_separator`.
-    //   * Show `date`, `duration` labels and `separator1`.
+    //   * Show `date`, `duration` labels
     //   * Show Play Button and `total_size` label
     fn state_playable(&self) {
         self.cancel.set_visible(false);
@@ -169,8 +168,7 @@ impl EpisodeWidgetPriv {
         self.size_separator.set_visible(false);
 
         self.date.set_visible(true);
-        self.separator1.set_visible(true);
-        self.duration.set_visible(true);
+        self.set_duration_visible(true);
 
         self.total_size.set_visible(true);
         self.play.set_visible(true);
@@ -181,7 +179,7 @@ impl EpisodeWidgetPriv {
     // Playing State:
     //   * Hide ProgressBar and Cancel, Download Buttons.
     //   * Hide `local_size` labels and `size_separator`.
-    //   * Show `date`, `duration` labels and `separator1`.
+    //   * Show `date`, `duration` labels
     //   * Show Pause Button and `total_size` label
     fn state_playing(&self) {
         self.cancel.set_visible(false);
@@ -190,8 +188,7 @@ impl EpisodeWidgetPriv {
         self.size_separator.set_visible(false);
 
         self.date.set_visible(true);
-        self.separator1.set_visible(true);
-        self.duration.set_visible(true);
+        self.set_duration_visible(true);
 
         self.total_size.set_visible(true);
         self.play.set_visible(false);
@@ -203,7 +200,7 @@ impl EpisodeWidgetPriv {
     //   * Hide ProgressBar and Cancel, Play Buttons.
     //   * Hide `local_size` labels and `size_separator`.
     //   * Show Download Button
-    //   * Show `date`, `duration` labels and `separator1`.
+    //   * Show `date`, `duration` labels
     //   * Determine `total_size` label state (Comes from `episode.lenght`).
     fn state_download(&self) {
         self.cancel.set_visible(false);
@@ -214,8 +211,7 @@ impl EpisodeWidgetPriv {
         self.size_separator.set_visible(false);
 
         self.date.set_visible(true);
-        self.separator1.set_visible(true);
-        self.duration.set_visible(true);
+        self.set_duration_visible(true);
 
         self.download.set_visible(true);
         self.update_separator2_visibility();
@@ -344,15 +340,25 @@ impl EpisodeWidgetPriv {
                 // Set the label and show them.
                 self.duration
                     .set_text(&i18n_f("{} min", &[&minutes.to_string()]));
-                self.duration.set_visible(true);
-                self.separator1.set_visible(true);
+                self.set_duration_visible(true);
                 return;
             }
         }
 
-        // Else hide the labels
-        self.separator1.set_visible(false);
-        self.duration.set_visible(false);
+        // Else empty and hide the label
+        self.duration.set_text("");
+        self.set_duration_visible(false);
+    }
+
+    fn set_duration_visible(&self, visible: bool) {
+        // check if there is no duration, hide in that case.
+        if visible && self.duration.text().is_empty() {
+            self.separator1.set_visible(false);
+            self.duration.set_visible(false);
+        } else {
+            self.separator1.set_visible(visible);
+            self.duration.set_visible(visible);
+        }
     }
 
     // Set the size label of the episode widget.
