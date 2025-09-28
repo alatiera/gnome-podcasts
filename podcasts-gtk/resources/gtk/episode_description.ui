@@ -48,7 +48,6 @@ Tobias Bernard
           <object class="GtkScrolledWindow">
             <property name="vexpand">True</property>
             <property name="hexpand">True</property>
-            <property name="hscrollbar-policy">never</property>
             <child>
               <object class="AdwClamp" id="clamp">
                 <property name="vexpand">True</property>
