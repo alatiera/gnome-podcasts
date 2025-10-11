@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: podcasts master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2025-08-16 15:04+0000\n"
-"PO-Revision-Date: 2025-08-19 18:59+0200\n"
+"POT-Creation-Date: 2025-10-11 02:20+0000\n"
+"PO-Revision-Date: 2025-10-11 23:15+0200\n"
 "Last-Translator: Nathan Follens <nfollens@gnome.org>\n"
 "Language-Team: GNOME-NL https://matrix.to/#/#nl:gnome.org\n"
 "Language: nl\n"
@@ -44,29 +44,29 @@ msgstr "Podcasts toevoegen"
 msgid "Search"
 msgstr "Zoeken"
 
-#: podcasts-gtk/resources/gtk/discovery_page.ui:75
+#: podcasts-gtk/resources/gtk/discovery_page.ui:77
 msgid "Enter a feed URL or search the selected platforms."
 msgstr "Voer een URL voor de feed in of zoek naar de geselecteerde platforms."
 
-#: podcasts-gtk/resources/gtk/discovery_page.ui:98
+#: podcasts-gtk/resources/gtk/discovery_page.ui:100
 msgid "Submit search"
 msgstr "Zoekactie invoeren"
 
-#: podcasts-gtk/resources/gtk/discovery_page.ui:104
+#: podcasts-gtk/resources/gtk/discovery_page.ui:106
 #: podcasts-gtk/src/widgets/discovery_page.rs:113
 msgid "Loading…"
 msgstr "Bezig met laden…"
 
-#: podcasts-gtk/resources/gtk/discovery_page.ui:115
+#: podcasts-gtk/resources/gtk/discovery_page.ui:119
 msgid "Please enable a Search Platform below, or enter a http(s) feed URL."
 msgstr ""
 "Voer hieronder een zoekplatform in, of voer een http(s)-URL voor de feed in."
 
-#: podcasts-gtk/resources/gtk/discovery_page.ui:127
+#: podcasts-gtk/resources/gtk/discovery_page.ui:131
 msgid "Search Platforms"
 msgstr "Zoekplatforms"
 
-#: podcasts-gtk/resources/gtk/discovery_page.ui:128
+#: podcasts-gtk/resources/gtk/discovery_page.ui:132
 msgid "Search queries will be sent to these platforms."
 msgstr "Zoekopdrachten zullen naar deze platforms worden verzonden."
 
@@ -74,9 +74,9 @@ msgstr "Zoekopdrachten zullen naar deze platforms worden verzonden."
 msgid "Search results"
 msgstr "Zoekresultaten"
 
-#: podcasts-gtk/resources/gtk/discovery_search_results.ui:68
+#: podcasts-gtk/resources/gtk/discovery_search_results.ui:70
 msgid "No results found."
-msgstr "Geen resultaten gevonden"
+msgstr "Geen resultaten gevonden."
 
 #. Translators: Show as a noun, meaning a Podcast-Show.
 #: podcasts-gtk/resources/gtk/empty_show.ui:17
@@ -111,43 +111,44 @@ msgstr "Informatie over aflevering"
 msgid "Episode Menu"
 msgstr "Menu Aflevering"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:92
+#: podcasts-gtk/resources/gtk/episode_description.ui:91
 msgid "Podcast Title"
 msgstr "Titel podcast"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:115
+#: podcasts-gtk/resources/gtk/episode_description.ui:114
 msgid "Duration - Date"
 msgstr "Duur - datum"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:149
+#: podcasts-gtk/resources/gtk/episode_description.ui:148
 msgid "_Stream"
 msgstr "_Streamen"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:167
+#: podcasts-gtk/resources/gtk/episode_description.ui:166
 msgid "_Play"
 msgstr "_Afspelen"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:186
+#: podcasts-gtk/resources/gtk/episode_description.ui:185
 msgid "_Pause"
 msgstr "_Pauzeren"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:204
+#: podcasts-gtk/resources/gtk/episode_description.ui:203
 msgid "_Download"
 msgstr "_Downloaden"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:231
+#: podcasts-gtk/resources/gtk/episode_description.ui:230
 msgid "Cancel"
 msgstr "Annuleren"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:260
+#: podcasts-gtk/resources/gtk/episode_description.ui:259
 msgid "Delete"
 msgstr "Verwijderen"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:279
+#: podcasts-gtk/resources/gtk/episode_description.ui:278
+#: podcasts-gtk/resources/gtk/sheet_description.ui:48
 msgid "Episode Description"
 msgstr "Beschrijving aflevering"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:301
+#: podcasts-gtk/resources/gtk/episode_description.ui:300
 msgid "Episode Cover"
 msgstr "Voorblad aflevering"
 
@@ -226,65 +227,62 @@ msgid "Change the playback speed"
 msgstr "De afspeelsnelheid wijzigen"
 
 #: podcasts-gtk/resources/gtk/player_rate.ui:34
-#: podcasts-gtk/resources/gtk/player_rate.ui:59
+#: podcasts-gtk/resources/gtk/player_rate.ui:62
 msgid "1.00×"
 msgstr "1,00×"
 
-#: podcasts-gtk/resources/gtk/player_rate.ui:39
+#: podcasts-gtk/resources/gtk/player_rate.ui:42
 msgid "2.00×"
 msgstr "2.00×"
 
-#: podcasts-gtk/resources/gtk/player_rate.ui:44
+#: podcasts-gtk/resources/gtk/player_rate.ui:47
 msgid "1.75×"
 msgstr "1.75×"
 
-#: podcasts-gtk/resources/gtk/player_rate.ui:49
+#: podcasts-gtk/resources/gtk/player_rate.ui:52
 msgid "1.50×"
 msgstr "1,50×"
 
-#: podcasts-gtk/resources/gtk/player_rate.ui:54
+#: podcasts-gtk/resources/gtk/player_rate.ui:57
 msgid "1.25×"
 msgstr "1,25×"
 
-#: podcasts-gtk/resources/gtk/player_rate.ui:64
+#: podcasts-gtk/resources/gtk/player_rate.ui:67
 msgid "0.90×"
 msgstr "0.90×"
 
-#: podcasts-gtk/resources/gtk/player_rate.ui:69
+#: podcasts-gtk/resources/gtk/player_rate.ui:72
 msgid "0.75×"
 msgstr "0.75×"
-
-#: podcasts-gtk/resources/gtk/player_sheet.ui:133
-msgid "Rewind"
-msgstr "Terugspoelen"
-
-#: podcasts-gtk/resources/gtk/player_sheet.ui:154
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:67
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:268
-msgid "Play"
-msgstr "Spelen"
-
-#: podcasts-gtk/resources/gtk/player_sheet.ui:172
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:80
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:277
-msgid "Pause"
-msgstr "Pauzeren"
-
-#: podcasts-gtk/resources/gtk/player_sheet.ui:195
-msgid "Forward"
-msgstr "Vooruitspoelen"
-
-#: podcasts-gtk/resources/gtk/player_sheet.ui:230
-msgid "Description"
-msgstr "Beschrijving"
 
 #: podcasts-gtk/resources/gtk/player_toolbar.ui:50
 msgid "Rewind 10 seconds"
 msgstr "10 seconden terugspoelen"
 
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:67
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:292
+#: podcasts-gtk/resources/gtk/sheet_player.ui:149
+msgid "Play"
+msgstr "Spelen"
+
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:80
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:301
+#: podcasts-gtk/resources/gtk/sheet_player.ui:167
+msgid "Pause"
+msgstr "Pauzeren"
+
 #: podcasts-gtk/resources/gtk/player_toolbar.ui:95
 msgid "Fast forward 10 seconds"
 msgstr "10 seconden vooruitspoelen"
+
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:113
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:237
+msgid "Go to the description for this episode."
+msgstr "Ga naar de beschrijving van deze aflevering."
+
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:208
+msgid "Go to the Chapters list."
+msgstr "Ga naar de lijst met hoofdstukken."
 
 #: podcasts-gtk/resources/gtk/secondary_menu.ui:7
 msgid "_Mark All Episodes as Played"
@@ -297,6 +295,27 @@ msgstr "_Website"
 #: podcasts-gtk/resources/gtk/secondary_menu.ui:15
 msgid "_Unsubscribe"
 msgstr "_Opzeggen"
+
+#: podcasts-gtk/resources/gtk/sheet_base.ui:75
+msgid "Player"
+msgstr "Speler"
+
+#: podcasts-gtk/resources/gtk/sheet_base.ui:82
+msgid "Description"
+msgstr "Beschrijving"
+
+#: podcasts-gtk/resources/gtk/sheet_base.ui:89
+#: podcasts-gtk/src/widgets/chapters.rs:194
+msgid "Chapters"
+msgstr "Hoofdstukken"
+
+#: podcasts-gtk/resources/gtk/sheet_player.ui:128
+msgid "Rewind"
+msgstr "Terugspoelen"
+
+#: podcasts-gtk/resources/gtk/sheet_player.ui:190
+msgid "Forward"
+msgstr "Vooruitspoelen"
 
 #: podcasts-gtk/resources/gtk/shortcuts-dialog.ui:7
 msgctxt "shortcut window"
@@ -391,7 +410,7 @@ msgstr "Opzeggen"
 msgid "Podcast Menu"
 msgstr "Podcastmenu"
 
-#: podcasts-gtk/resources/gtk/show_widget.ui:97
+#: podcasts-gtk/resources/gtk/show_widget.ui:100
 msgid "Episodes"
 msgstr "Afleveringen"
 
@@ -422,8 +441,8 @@ msgstr "_Over Podcasts"
 #: podcasts-gtk/resources/gtk/window.ui:102
 #: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:4
 #: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:2
-#: podcasts-gtk/src/app.rs:519 podcasts-gtk/src/widgets/aboutdialog.rs:56
-#: podcasts-gtk/src/widgets/player.rs:478
+#: podcasts-gtk/src/app.rs:530 podcasts-gtk/src/widgets/aboutdialog.rs:56
+#: podcasts-gtk/src/widgets/player.rs:408
 msgid "Podcasts"
 msgstr "Podcasts"
 
@@ -529,7 +548,7 @@ msgstr "Hoeveel tijdsperioden te wachten tussen automatische opruimbeurten"
 msgid "What period of time to wait between automatic cleanups"
 msgstr "Hoe lang te wachten tussen automatische opruimbeurten"
 
-#: podcasts-gtk/src/app.rs:375
+#: podcasts-gtk/src/app.rs:386
 msgid "Copied URL to clipboard!"
 msgstr "URL gekopieerd naar klembord!"
 
@@ -598,6 +617,10 @@ msgstr ""
 "Dick Groskamp <dikgro@yahoo.co.uk>\n"
 "Meer info over GNOME-NL https://nl.gnome.org"
 
+#: podcasts-gtk/src/widgets/chapters.rs:130
+msgid "Currently playing chapter"
+msgstr "Hoofdstuk dat nu afgespeeld wordt"
+
 #: podcasts-gtk/src/widgets/content_stack.rs:61
 msgid "Fetching feeds…"
 msgstr "Feeds ophalen…"
@@ -616,11 +639,11 @@ msgstr "Shows"
 msgid "Download progress"
 msgstr "Downloadvoortgang"
 
-#: podcasts-gtk/src/widgets/episode.rs:346
+#: podcasts-gtk/src/widgets/episode.rs:343
 msgid "{} min"
 msgstr "{} min"
 
-#: podcasts-gtk/src/widgets/player.rs:1163
+#: podcasts-gtk/src/widgets/player.rs:1110
 msgid "The media player was unable to execute an action."
 msgstr "De mediaspeler kon een handeling niet uitvoeren."
 
