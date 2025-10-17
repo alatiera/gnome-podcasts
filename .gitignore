@@ -1,6 +1,7 @@
 target/
 **/*.rs.bk
 .vscode
+.foundry
 resources.gresource
 _build/
 build/
