@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2025-09-01 12:53+0000\n"
-"PO-Revision-Date: 2025-09-01 16:06+0300\n"
+"POT-Creation-Date: 2025-10-17 13:06+0000\n"
+"PO-Revision-Date: 2025-10-17 20:30+0300\n"
 "Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
 "Language-Team: Ukrainian <trans-uk@lists.fedoraproject.org>\n"
 "Language: uk\n"
@@ -112,44 +112,44 @@ msgstr "Докладно про випуск"
 msgid "Episode Menu"
 msgstr "Меню випуску"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:92
+#: podcasts-gtk/resources/gtk/episode_description.ui:91
 msgid "Podcast Title"
 msgstr "Заголовок подкасту"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:115
+#: podcasts-gtk/resources/gtk/episode_description.ui:114
 msgid "Duration - Date"
 msgstr "Тривалість — Дата"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:149
+#: podcasts-gtk/resources/gtk/episode_description.ui:148
 msgid "_Stream"
 msgstr "_Потік даних"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:167
+#: podcasts-gtk/resources/gtk/episode_description.ui:166
 msgid "_Play"
 msgstr "_Відтворити"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:186
+#: podcasts-gtk/resources/gtk/episode_description.ui:185
 msgid "_Pause"
 msgstr "П_ризупинити"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:204
+#: podcasts-gtk/resources/gtk/episode_description.ui:203
 msgid "_Download"
 msgstr "_Отримати"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:231
+#: podcasts-gtk/resources/gtk/episode_description.ui:230
 msgid "Cancel"
 msgstr "Скасувати"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:260
+#: podcasts-gtk/resources/gtk/episode_description.ui:259
 msgid "Delete"
 msgstr "Видалити"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:279
-#: podcasts-gtk/resources/gtk/sheet_description.ui:49
+#: podcasts-gtk/resources/gtk/episode_description.ui:278
+#: podcasts-gtk/resources/gtk/sheet_description.ui:48
 msgid "Episode Description"
 msgstr "Опис випуску"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:301
+#: podcasts-gtk/resources/gtk/episode_description.ui:300
 msgid "Episode Cover"
 msgstr "Обкладинка випуску"
 
@@ -298,8 +298,6 @@ msgid "_Unsubscribe"
 msgstr "_Вилучити"
 
 #: podcasts-gtk/resources/gtk/sheet_base.ui:75
-#| msgctxt "shortcut window"
-#| msgid "Player"
 msgid "Player"
 msgstr "Програвач"
 
@@ -497,11 +495,15 @@ msgid ""
 msgstr "Віджет подкасту з його обкладинкою та найновішими випусками"
 
 #: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:30
+msgid "The chapters available in an episode"
+msgstr "В епізоді реалізовано глави"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:34
 msgid "The view where one can add a new podcast"
 msgstr "Сторінка пошуку нових подкастів"
 
 #. developer_name tag deprecated with Appstream 1.0
-#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:230
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:241
 msgid "The Podcasts developers"
 msgstr "Розробники «Подкастів»"
 
@@ -644,7 +646,7 @@ msgstr "Подкасти"
 msgid "Download progress"
 msgstr "Поступ завантаження"
 
-#: podcasts-gtk/src/widgets/episode.rs:346
+#: podcasts-gtk/src/widgets/episode.rs:343
 msgid "{} min"
 msgstr "{} хв."
 
