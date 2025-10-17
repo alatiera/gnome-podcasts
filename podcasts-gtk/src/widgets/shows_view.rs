@@ -254,7 +254,7 @@ impl ShowCoverModel {
         ShowId(self.imp().show_id.get())
     }
 
-    fn get_mut_load_handle(&self) -> RefMut<Option<glib::JoinHandle<()>>> {
+    fn get_mut_load_handle(&self) -> RefMut<'_, Option<glib::JoinHandle<()>>> {
         self.imp().load_handle.borrow_mut()
     }
 }
