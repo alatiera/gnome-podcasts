@@ -1,5 +1,5 @@
 {
-    "id": "org.gnome.Podcasts",
+    "id": "org.gnome.Podcasts.Devel",
     "runtime": "org.gnome.Platform",
     "runtime-version": "master",
     "sdk": "org.gnome.Sdk",
@@ -43,7 +43,7 @@
             "builddir": true,
             "run-tests": true,
             "config-opts": [
-                "-Dprofile=default"
+                "-Dprofile=development"
             ],
             "build-options": {
                 "test-args": [
