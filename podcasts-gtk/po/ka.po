@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: podcasts master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2025-09-02 20:55+0000\n"
-"PO-Revision-Date: 2025-09-04 09:09+0200\n"
+"POT-Creation-Date: 2025-10-17 23:48+0000\n"
+"PO-Revision-Date: 2025-10-18 06:17+0200\n"
 "Last-Translator: Ekaterine Papava <papava.e@gtu.ge>\n"
 "Language-Team: Georgian <ka@li.org>\n"
 "Language: ka\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 3.7\n"
+"X-Generator: Poedit 3.8\n"
 
 #: podcasts-gtk/resources/gtk/discovery_found_podcast.ui:105
 msgid "Episodes: "
@@ -108,44 +108,44 @@ msgstr "ეპიზოდის დეტალები"
 msgid "Episode Menu"
 msgstr "ეპიზოდის მენიუ"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:92
+#: podcasts-gtk/resources/gtk/episode_description.ui:91
 msgid "Podcast Title"
 msgstr "პოდკასტის სათაური"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:115
+#: podcasts-gtk/resources/gtk/episode_description.ui:114
 msgid "Duration - Date"
 msgstr "ხანგრძლივობა - თარიღი"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:149
+#: podcasts-gtk/resources/gtk/episode_description.ui:148
 msgid "_Stream"
 msgstr "_დასტრიმვა"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:167
+#: podcasts-gtk/resources/gtk/episode_description.ui:166
 msgid "_Play"
 msgstr "_დაკვრა"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:186
+#: podcasts-gtk/resources/gtk/episode_description.ui:185
 msgid "_Pause"
 msgstr "_შეჩერება"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:204
+#: podcasts-gtk/resources/gtk/episode_description.ui:203
 msgid "_Download"
 msgstr "_გადმოწერა"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:231
+#: podcasts-gtk/resources/gtk/episode_description.ui:230
 msgid "Cancel"
 msgstr "გაუქმება"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:260
+#: podcasts-gtk/resources/gtk/episode_description.ui:259
 msgid "Delete"
 msgstr "წაშლა"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:279
-#: podcasts-gtk/resources/gtk/sheet_description.ui:49
+#: podcasts-gtk/resources/gtk/episode_description.ui:278
+#: podcasts-gtk/resources/gtk/sheet_description.ui:48
 msgid "Episode Description"
 msgstr "ეპიზოდის აღწერა"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:301
+#: podcasts-gtk/resources/gtk/episode_description.ui:300
 msgid "Episode Cover"
 msgstr "ეპიზოდის ყდა"
 
@@ -491,11 +491,15 @@ msgstr ""
 "აჩვენებს"
 
 #: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:30
+msgid "The chapters available in an episode"
+msgstr "ეპიზოდში ხელმისაწვდომი თავები"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:34
 msgid "The view where one can add a new podcast"
 msgstr "ხედი, სადაც მსურველს ახალი პოდკასტის დამატება შეუძლია"
 
 #. developer_name tag deprecated with Appstream 1.0
-#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:230
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:241
 msgid "The Podcasts developers"
 msgstr "Podcasts-ის პროგრამისტები"
 
@@ -633,7 +637,7 @@ msgstr "სერიალები"
 msgid "Download progress"
 msgstr "გადმოწერის მიმდინარეობა"
 
-#: podcasts-gtk/src/widgets/episode.rs:346
+#: podcasts-gtk/src/widgets/episode.rs:343
 msgid "{} min"
 msgstr "{} წთ"
 
