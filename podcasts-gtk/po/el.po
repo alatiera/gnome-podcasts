@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: podcasts master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2023-10-19 20:18+0000\n"
-"PO-Revision-Date: 2024-01-02 00:39+0200\n"
+"POT-Creation-Date: 2025-06-26 11:37+0000\n"
+"PO-Revision-Date: 2025-07-10 12:53+0300\n"
 "Last-Translator: Efstathios Iosifidis <eiosifidis@gnome.org>\n"
 "Language-Team: Greek <gnome-el-list@gnome.org>\n"
 "Language: el\n"
@@ -16,189 +16,295 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 3.4\n"
+"X-Generator: Poedit 3.6\n"
 
-#: podcasts-gtk/resources/gtk/empty_show.ui:16
+#: podcasts-gtk/resources/gtk/discovery_found_podcast.ui:105
+msgid "Episodes: "
+msgstr "Επεισόδια: "
+
+#: podcasts-gtk/resources/gtk/discovery_found_podcast.ui:143
+msgid "Last publication"
+msgstr "Τελευταία δημοσίευση"
+
+#: podcasts-gtk/resources/gtk/discovery_found_podcast.ui:164
+msgid "_Subscribe"
+msgstr "_Συνδρομή"
+
+#: podcasts-gtk/resources/gtk/discovery_found_podcast.ui:174
+#: podcasts-gtk/src/widgets/discovery_search_results.rs:152
+msgid "Subscribing to feed…"
+msgstr "Συνδρομή σε ροή…"
+
+#: podcasts-gtk/resources/gtk/discovery_page.ui:33
+msgid "Add Podcasts"
+msgstr "Προσθήκη podcast"
+
+#: podcasts-gtk/resources/gtk/discovery_page.ui:64
+msgid "Search"
+msgstr "Αναζήτηση"
+
+#: podcasts-gtk/resources/gtk/discovery_page.ui:75
+msgid "Enter a feed URL or search the selected platforms."
+msgstr "Εισαγάγετε ένα URL ροής ή κάντε αναζήτηση στις επιλεγμένες πλατφόρμες."
+
+#: podcasts-gtk/resources/gtk/discovery_page.ui:98
+msgid "Submit search"
+msgstr "Υποβολή αναζήτησης"
+
+#: podcasts-gtk/resources/gtk/discovery_page.ui:104
+#: podcasts-gtk/src/widgets/discovery_page.rs:113
+msgid "Loading…"
+msgstr "Φόρτωση…"
+
+#: podcasts-gtk/resources/gtk/discovery_page.ui:115
+msgid "Please enable a Search Platform below, or enter a http(s) feed URL."
+msgstr ""
+"Ενεργοποιήστε μια πλατφόρμα αναζήτησης παρακάτω ή εισαγάγετε ένα URL τύπου "
+"http(s) για μια ροή."
+
+#: podcasts-gtk/resources/gtk/discovery_page.ui:127
+msgid "Search Platforms"
+msgstr "Πλατφόρμες αναζήτησης"
+
+#: podcasts-gtk/resources/gtk/discovery_page.ui:128
+msgid "Search queries will be sent to these platforms."
+msgstr "Οι όροι αναζήτησης θα αποστέλλονται σε αυτές τις πλατφόρμες."
+
+#: podcasts-gtk/resources/gtk/discovery_search_results.ui:32
+msgid "Search results"
+msgstr "Αποτελέσματα αναζήτησης"
+
+#: podcasts-gtk/resources/gtk/discovery_search_results.ui:68
+msgid "No results found."
+msgstr "Δεν βρέθηκαν αποτελέσματα."
+
+#. Translators: Show as a noun, meaning a Podcast-Show.
+#: podcasts-gtk/resources/gtk/empty_show.ui:17
 msgid "This show does not have episodes yet"
 msgstr "Αυτή η εκπομπή δεν έχει ακόμα επεισόδια"
 
-#: podcasts-gtk/resources/gtk/empty_show.ui:25
+#: podcasts-gtk/resources/gtk/empty_show.ui:28
 msgid "If you think this is an error, please consider writing a bug report."
-msgstr "Αν πιστεύετε ότι αυτό είναι ένα σφάλμα, παρακαλούμε σκεφτείτε να γράψετε μια αναφορά σφάλματος."
+msgstr ""
+"Εάν πιστεύετε ότι αυτό είναι ένα σφάλμα, εξετάστε το ενδεχόμενο να υποβάλετε "
+"μια αναφορά σφάλματος."
 
-#: podcasts-gtk/resources/gtk/empty_view.ui:30
+#. Translators: Shows as a noun, meaning Podcast-Shows.
+#: podcasts-gtk/resources/gtk/empty_view.ui:31
 msgid "Get Some Shows"
-msgstr "Αποκτήστε μερικές εκπομπές"
+msgstr "Προσθέστε μερικές εκπομπές"
 
-#: podcasts-gtk/resources/gtk/empty_view.ui:50
+#. Translators: Shows as a noun, meaning Podcast-Shows.
+#: podcasts-gtk/resources/gtk/empty_view.ui:52
 msgid "Add new shows via feed URL"
-msgstr "Προσθέστε νέες εκπομπές μέσω URL τροφοδοσίας"
+msgstr "Προσθήκη νέων εκπομπών μέσω URL ροής"
 
-#: podcasts-gtk/resources/gtk/empty_view.ui:73
+#. Translators: Shows as a noun, meaning Podcast-Shows.
+#: podcasts-gtk/resources/gtk/empty_view.ui:76
 msgid "Import shows from another device"
 msgstr "Εισαγωγή εκπομπών από άλλη συσκευή"
 
 #: podcasts-gtk/resources/gtk/episode_description.ui:33
 msgid "Episode Details"
-msgstr "Λεπτομέρειες Επεισοδίου"
+msgstr "Λεπτομέρειες επεισοδίου"
 
 #: podcasts-gtk/resources/gtk/episode_description.ui:42
 msgid "Episode Menu"
 msgstr "Μενού επεισοδίου"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:90
+#: podcasts-gtk/resources/gtk/episode_description.ui:92
 msgid "Podcast Title"
-msgstr "Τίτλος Podcast"
+msgstr "Τίτλος podcast"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:113
+#: podcasts-gtk/resources/gtk/episode_description.ui:115
 msgid "Duration - Date"
 msgstr "Διάρκεια - Ημερομηνία"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:133
+#: podcasts-gtk/resources/gtk/episode_description.ui:149
+msgid "_Stream"
+msgstr "_Μετάδοση"
+
+#: podcasts-gtk/resources/gtk/episode_description.ui:167
+msgid "_Play"
+msgstr "_Αναπαραγωγή"
+
+#: podcasts-gtk/resources/gtk/episode_description.ui:186
+msgid "_Pause"
+msgstr "_Παύση"
+
+#: podcasts-gtk/resources/gtk/episode_description.ui:204
+msgid "_Download"
+msgstr "_Λήψη"
+
+#: podcasts-gtk/resources/gtk/episode_description.ui:231
+msgid "Cancel"
+msgstr "Ακύρωση"
+
+#: podcasts-gtk/resources/gtk/episode_description.ui:260
+msgid "Delete"
+msgstr "Διαγραφή"
+
+#: podcasts-gtk/resources/gtk/episode_description.ui:279
 msgid "Episode Description"
 msgstr "Περιγραφή επεισοδίου"
 
-#: podcasts-gtk/resources/gtk/episode_menu.ui:35
+#: podcasts-gtk/resources/gtk/episode_description.ui:300
+msgid "Episode Cover"
+msgstr "Εξώφυλλο επεισοδίου"
+
+#. Translators: Show as a noun, meaning a Podcast-Show.
+#: podcasts-gtk/resources/gtk/episode_menu.ui:36
 msgid "Go to Show"
 msgstr "Μετάβαση στην εκπομπή"
 
-#: podcasts-gtk/resources/gtk/episode_menu.ui:39
-msgid "Copy Episode Url"
+#: podcasts-gtk/resources/gtk/episode_menu.ui:41
+msgid "Copy Episode URL"
 msgstr "Αντιγραφή URL επεισοδίου"
+
+#: podcasts-gtk/resources/gtk/episode_menu.ui:45
+msgid "Mark as Played"
+msgstr "Σήμανση ως αναπαραγμένο"
+
+#: podcasts-gtk/resources/gtk/episode_menu.ui:50
+msgid "Mark as Unplayed"
+msgstr "Σήμανση ως μη αναπαραγμένο"
 
 #: podcasts-gtk/resources/gtk/episode_widget.ui:70
 msgid "You’ve already listened to this episode."
 msgstr "Έχετε ήδη ακούσει αυτό το επεισόδιο."
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:157
+#: podcasts-gtk/resources/gtk/episode_widget.ui:158
 msgid "Calculating episode size…"
 msgstr "Υπολογισμός μεγέθους επεισοδίου…"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:180
+#: podcasts-gtk/resources/gtk/episode_widget.ui:181
 msgid "Play this episode"
 msgstr "Αναπαραγωγή αυτού του επεισοδίου"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:192
-msgid "Cancel the download process"
-msgstr "Ακύρωση διαδικασίας λήψης"
+#: podcasts-gtk/resources/gtk/episode_widget.ui:195
+msgid "Pause playback"
+msgstr "Παύση αναπαραγωγής"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:204
+#: podcasts-gtk/resources/gtk/episode_widget.ui:207
+msgid "Cancel the download process"
+msgstr "Ακύρωση της διαδικασίας λήψης"
+
+#: podcasts-gtk/resources/gtk/episode_widget.ui:220
 msgid "Download this episode"
 msgstr "Λήψη αυτού του επεισοδίου"
 
-#: podcasts-gtk/resources/gtk/hamburger.ui:7
-msgid "_Check for New Episodes"
-msgstr "_Έλεγχος για νέα επεισόδια"
+#: podcasts-gtk/resources/gtk/episode_widget.ui:234
+msgid "Episode without audio"
+msgstr "Επεισόδιο χωρίς ήχο"
 
-#: podcasts-gtk/resources/gtk/hamburger.ui:12
-msgid "_Import Shows"
-msgstr "_Εισαγωγή εκπομπών"
-
-#: podcasts-gtk/resources/gtk/hamburger.ui:16
-msgid "_Export Shows"
-msgstr "_Εξαγωγή εκπομπών"
-
-#: podcasts-gtk/resources/gtk/hamburger.ui:22
-msgid "_Keyboard Shortcuts"
-msgstr "_Συντομεύσεις πληκτρολογίου"
-
-#: podcasts-gtk/resources/gtk/hamburger.ui:30
-msgid "_About Podcasts"
-msgstr "_Περί Podcasts"
-
-#: podcasts-gtk/resources/gtk/headerbar.ui:33 podcasts-gtk/resources/gtk/headerbar.ui:108
-msgid "Add a new feed"
-msgstr "Προσθήκη νέας τροφοδοσίας"
-
-#: podcasts-gtk/resources/gtk/headerbar.ui:44
-msgid "Enter Feed Address"
-msgstr "Εισαγωγή διεύθυνσης τροφοδοσίας"
-
-#: podcasts-gtk/resources/gtk/headerbar.ui:59
-msgid "Popover menu (ESC to close)"
-msgstr "Μενού αναδυόμενου παραθύρου (ESC για κλείσιμο)"
-
-#: podcasts-gtk/resources/gtk/headerbar.ui:71
-msgid "Add"
-msgstr "Προσθήκη"
-
-#: podcasts-gtk/resources/gtk/headerbar.ui:118
-msgid "Back"
-msgstr "Πίσω"
-
-#: podcasts-gtk/resources/gtk/headerbar.ui:128
-msgid "Main Menu"
-msgstr "Κυρίως μενού"
-
-#: podcasts-gtk/resources/gtk/headerbar.ui:138
-msgid "Podcast Menu"
-msgstr "Μενού Podcast"
-
-#: podcasts-gtk/resources/gtk/help-overlay.ui:11
-msgid "General"
-msgstr "Γενικά"
+#: podcasts-gtk/resources/gtk/help-overlay.ui:12
+msgctxt "shortcut window"
+msgid "Navigation"
+msgstr "Πλοήγηση"
 
 #: podcasts-gtk/resources/gtk/help-overlay.ui:15
 msgctxt "shortcut window"
-msgid "Check for new episodes"
-msgstr "Έλεγχος για νέα επισόδεια"
+msgid "Go to Home Page"
+msgstr "Μετάβαση στην αρχική σελίδα"
 
-#: podcasts-gtk/resources/gtk/help-overlay.ui:21
+#. Translators: Shows as a Noun
+#: podcasts-gtk/resources/gtk/help-overlay.ui:22
+msgctxt "shortcut window"
+msgid "Go to Shows Page"
+msgstr "Μετάβαση στη σελίδα «Εκπομπές»"
+
+#. Translators: 'Discovery' is a page where you can add new podcasts
+#: podcasts-gtk/resources/gtk/help-overlay.ui:29
+msgctxt "shortcut window"
+msgid "Go To Discovery Page"
+msgstr "Μετάβαση στη σελίδα «Ανακάλυψη»"
+
+#: podcasts-gtk/resources/gtk/help-overlay.ui:38
+msgctxt "shortcut window"
+msgid "Player"
+msgstr "Πρόγραμμα αναπαραγωγής"
+
+#: podcasts-gtk/resources/gtk/help-overlay.ui:41
+msgctxt "shortcut window"
+msgid "Toggle Pause"
+msgstr "Εναλλαγή παύσης"
+
+#: podcasts-gtk/resources/gtk/help-overlay.ui:47
+msgctxt "shortcut window"
+msgid "Seek Forwards"
+msgstr "Μετακίνηση προς τα εμπρός"
+
+#: podcasts-gtk/resources/gtk/help-overlay.ui:53
+msgctxt "shortcut window"
+msgid "Seek Backwards"
+msgstr "Μετακίνηση προς τα πίσω"
+
+#: podcasts-gtk/resources/gtk/help-overlay.ui:59
+msgctxt "shortcut window"
+msgid "Raise Playback Speed"
+msgstr "Αύξηση ταχύτητας αναπαραγωγής"
+
+#: podcasts-gtk/resources/gtk/help-overlay.ui:65
+msgctxt "shortcut window"
+msgid "Lower Playback Speed"
+msgstr "Μείωση ταχύτητας αναπαραγωγής"
+
+#: podcasts-gtk/resources/gtk/help-overlay.ui:74
+msgctxt "shortcut window"
+msgid "General"
+msgstr "Γενικά"
+
+#: podcasts-gtk/resources/gtk/help-overlay.ui:77
+msgctxt "shortcut window"
+msgid "Check for new episodes"
+msgstr "Έλεγχος για νέα επεισόδια"
+
+#: podcasts-gtk/resources/gtk/help-overlay.ui:83
 msgctxt "shortcut window"
 msgid "Quit the application"
 msgstr "Έξοδος από την εφαρμογή"
 
-#: podcasts-gtk/resources/gtk/home_view.ui:57 podcasts-gtk/resources/gtk/home_view.ui:70
+#: podcasts-gtk/resources/gtk/help-overlay.ui:89
+msgctxt "shortcut window"
+msgid "Import Subscriptions"
+msgstr "Εισαγωγή συνδρομών"
+
+#: podcasts-gtk/resources/gtk/help-overlay.ui:95
+msgctxt "shortcut window"
+msgid "Export Subscriptions"
+msgstr "Εξαγωγή συνδρομών"
+
+#: podcasts-gtk/resources/gtk/home_view.ui:57
+#: podcasts-gtk/resources/gtk/home_view.ui:70
 msgid "Today"
 msgstr "Σήμερα"
 
-#: podcasts-gtk/resources/gtk/home_view.ui:88 podcasts-gtk/resources/gtk/home_view.ui:101
+#: podcasts-gtk/resources/gtk/home_view.ui:88
+#: podcasts-gtk/resources/gtk/home_view.ui:101
 msgid "Yesterday"
 msgstr "Χθες"
 
-#: podcasts-gtk/resources/gtk/home_view.ui:119 podcasts-gtk/resources/gtk/home_view.ui:132
+#: podcasts-gtk/resources/gtk/home_view.ui:119
+#: podcasts-gtk/resources/gtk/home_view.ui:132
 msgid "This Week"
 msgstr "Αυτήν την εβδομάδα"
 
-#: podcasts-gtk/resources/gtk/home_view.ui:150 podcasts-gtk/resources/gtk/home_view.ui:163
+#: podcasts-gtk/resources/gtk/home_view.ui:150
+#: podcasts-gtk/resources/gtk/home_view.ui:163
 msgid "This Month"
-msgstr "Αυτό το μήνα"
+msgstr "Αυτόν τον μήνα"
 
-#: podcasts-gtk/resources/gtk/home_view.ui:182 podcasts-gtk/resources/gtk/home_view.ui:195
+#: podcasts-gtk/resources/gtk/home_view.ui:182
+#: podcasts-gtk/resources/gtk/home_view.ui:195
 msgid "Older"
 msgstr "Παλαιότερα"
 
-#: podcasts-gtk/resources/gtk/player_dialog.ui:7
-msgid "Now Playing"
-msgstr "Αναπαράγεται τώρα"
-
-#: podcasts-gtk/resources/gtk/player_dialog.ui:28
-msgid "Close"
-msgstr "Κλείσιμο"
-
-#: podcasts-gtk/resources/gtk/player_dialog.ui:152
-msgid "Rewind"
-msgstr "Μεταφορά πίσω"
-
-#: podcasts-gtk/resources/gtk/player_dialog.ui:173 podcasts-gtk/resources/gtk/player_toolbar.ui:56
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:232
-msgid "Play"
-msgstr "Αναπαραγωγή"
-
-#: podcasts-gtk/resources/gtk/player_dialog.ui:191 podcasts-gtk/resources/gtk/player_toolbar.ui:64
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:241
-msgid "Pause"
-msgstr "Παύση"
-
-#: podcasts-gtk/resources/gtk/player_dialog.ui:214
-msgid "Forward"
-msgstr "Μπροστά"
-
 #: podcasts-gtk/resources/gtk/player_rate.ui:29
 msgid "Change the playback speed"
-msgstr "Αλλαγή ταχύτητας αναπαραγωγής"
+msgstr "Αλλαγή της ταχύτητας αναπαραγωγής"
 
-#: podcasts-gtk/resources/gtk/player_rate.ui:34 podcasts-gtk/resources/gtk/player_rate.ui:59
+#: podcasts-gtk/resources/gtk/player_rate.ui:34
+#: podcasts-gtk/resources/gtk/player_rate.ui:59
 msgid "1.00×"
 msgstr "1.00×"
 
@@ -226,17 +332,41 @@ msgstr "0.90×"
 msgid "0.75×"
 msgstr "0.75×"
 
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:48
-msgid "Rewind 10 seconds"
-msgstr "Μετάβαση πίσω κατά 10 δευτερόλεπτα"
+#: podcasts-gtk/resources/gtk/player_sheet.ui:133
+msgid "Rewind"
+msgstr "Μετακίνηση προς τα πίσω"
 
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:72
+#: podcasts-gtk/resources/gtk/player_sheet.ui:154
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:67
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:268
+msgid "Play"
+msgstr "Αναπαραγωγή"
+
+#: podcasts-gtk/resources/gtk/player_sheet.ui:172
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:80
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:277
+msgid "Pause"
+msgstr "Παύση"
+
+#: podcasts-gtk/resources/gtk/player_sheet.ui:195
+msgid "Forward"
+msgstr "Μετακίνηση προς τα εμπρός"
+
+#: podcasts-gtk/resources/gtk/player_sheet.ui:230
+msgid "Description"
+msgstr "Περιγραφή"
+
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:50
+msgid "Rewind 10 seconds"
+msgstr "Μετακίνηση προς τα πίσω κατά 10 δευτερόλεπτα"
+
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:95
 msgid "Fast forward 10 seconds"
-msgstr "Μετακίνηση μπροστά κατά 10 δευτερόλεπτα"
+msgstr "Μετακίνηση προς τα εμπρός κατά 10 δευτερόλεπτα"
 
 #: podcasts-gtk/resources/gtk/secondary_menu.ui:7
 msgid "_Mark All Episodes as Played"
-msgstr "_Σήμανση όλων των επεισοδίων ως αναπαραγμένα"
+msgstr "_Σήμανση όλων των επεισοδίων ως αναπαραγμένων"
 
 #: podcasts-gtk/resources/gtk/secondary_menu.ui:11
 msgid "_Website"
@@ -252,23 +382,64 @@ msgstr "Άνοιγμα ιστοτόπου"
 
 #: podcasts-gtk/resources/gtk/show_menu.ui:39
 msgid "Mark All as Played"
-msgstr "Σήμανση όλων ως αναπαραγμένα"
+msgstr "Σήμανση όλων ως αναπαραγμένων"
 
 #: podcasts-gtk/resources/gtk/show_menu.ui:45
 msgid "Unsubscribe"
-msgstr "Κατάργηση εγγραφής"
+msgstr "Κατάργηση συνδρομής"
 
-#: podcasts-gtk/resources/gtk/show_widget.ui:80
+#: podcasts-gtk/resources/gtk/show_widget.ui:40
+msgid "Podcast Menu"
+msgstr "Μενού της εφαρμογής «Podcast»"
+
+#: podcasts-gtk/resources/gtk/show_widget.ui:97
 msgid "Episodes"
 msgstr "Επεισόδια"
 
+#: podcasts-gtk/resources/gtk/window.ui:6
+msgid "_Check for New Episodes"
+msgstr "Έλεγ_χος για νέα επεισόδια"
+
+#. Translators: Show as a noun, meaning Podcast-Shows.
+#: podcasts-gtk/resources/gtk/window.ui:12
+msgid "_Import Shows"
+msgstr "Ε_ισαγωγή εκπομπών"
+
+#. Translators: Show as a noun, meaning Podcast-Shows.
+#: podcasts-gtk/resources/gtk/window.ui:17
+msgid "_Export Shows"
+msgstr "Ε_ξαγωγή εκπομπών"
+
+#: podcasts-gtk/resources/gtk/window.ui:23
+msgid "_Keyboard Shortcuts"
+msgstr "Συντομεύσεις _πληκτρολογίου"
+
+#: podcasts-gtk/resources/gtk/window.ui:27
+msgid "_About Podcasts"
+msgstr "_Σχετικά με τα Podcast"
+
 #. Weird magic I copy-pasted that sets the Application Name in the Shell.
+#: podcasts-gtk/resources/gtk/window.ui:35
+#: podcasts-gtk/resources/gtk/window.ui:102
 #: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:4
-#: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:3 podcasts-gtk/src/app.rs:380
-#: podcasts-gtk/src/app.rs:510 podcasts-gtk/src/widgets/aboutdialog.rs:56
-#: podcasts-gtk/src/widgets/player.rs:371 podcasts-gtk/src/window.rs:64 podcasts-gtk/src/window.rs:91
+#: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:3
+#: podcasts-gtk/src/app.rs:519 podcasts-gtk/src/widgets/aboutdialog.rs:56
+#: podcasts-gtk/src/widgets/player.rs:479
 msgid "Podcasts"
-msgstr "Podcasts"
+msgstr "Podcast"
+
+#: podcasts-gtk/resources/gtk/window.ui:115
+msgid "Add a New Feed"
+msgstr "Προσθήκη νέας ροής"
+
+#: podcasts-gtk/resources/gtk/window.ui:123
+msgid "Main Menu"
+msgstr "Κύριο μενού"
+
+#. Translators: Show as a noun, meaning a Podcast-Show.
+#: podcasts-gtk/resources/gtk/window.ui:137
+msgid "Show"
+msgstr "Εκπομπή"
 
 #: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:8
 msgid "Listen to your favorite shows"
@@ -276,151 +447,222 @@ msgstr "Ακούστε τις αγαπημένες σας εκπομπές"
 
 #: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:10
 msgid ""
-"Play, update, and manage your podcasts from a lightweight interface that seamlessly integrates with "
-"GNOME. Podcasts can play various audio formats and remember where you stopped listening. You can "
-"subscribe to shows via RSS/Atom, iTunes, and Soundcloud links. Subscriptions from other apps can be "
+"Play, update, and manage your podcasts from a lightweight interface that "
+"seamlessly integrates with GNOME. Podcasts can play various audio formats "
+"and remember where you stopped listening. You can subscribe to shows via RSS/"
+"Atom, iTunes, and Soundcloud links. Subscriptions from other apps can be "
 "imported via OPML files."
 msgstr ""
-"Αναπαραγωγή, ενημέρωση και διαχείριση των podcast σας από μια ελαφριά διεπαφή που συνδυάζεται "
-"αρμονικά με το GNOME. Η εφαρμογή Podcasts μπορεί να αναπαράγει διάφορες μορφές ήχου και να θυμάται "
-"πού σταματήσατε την ακρόαση. Μπορείτε να εγγραφείτε σε εκπομπές μέσω συνδέσμων RSS/Atom, iTunes και "
-"Soundcloud. Οι εγγραφές από άλλες εφαρμογές μπορούν να εισαχθούν μέσω αρχείων OPML."
+"Αναπαραγωγή, ενημέρωση και διαχείριση των podcast σας από ένα λιτό "
+"περιβάλλον χρήστη που ενσωματώνεται αρμονικά στο GNOME. Η εφαρμογή «Podcast» "
+"μπορεί να αναπαράγει διάφορες μορφές ήχου και να απομνημονεύει πού διακόψατε "
+"την ακρόαση. Μπορείτε να εγγραφείτε σε εκπομπές μέσω συνδέσμων RSS/Atom, "
+"iTunes και Soundcloud. Μπορείτε να εισάγετε συνδρομές από άλλες εφαρμογές "
+"μέσω αρχείων OPML."
 
-#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:150
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:18
+msgid "The home view displaying the newest episodes of your podcasts"
+msgstr "Η αρχική προβολή που εμφανίζει τα νεότερα επεισόδια των podcast σας"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:22
+msgid "The shows view displaying the covers of your podcasts"
+msgstr "Η προβολή εκπομπών που εμφανίζει τα εξώφυλλα των podcast σας"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:26
+msgid ""
+"The show widget displaying the cover and the latest episodes of a specific "
+"podcast"
+msgstr ""
+"Το γραφικό στοιχείο εκπομπών που εμφανίζει το εξώφυλλο και τα πιο πρόσφατα "
+"επεισόδια ενός συγκεκριμένου podcast"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:30
+msgid "The view where one can add a new podcast"
+msgstr "Η προβολή όπου ο χρήστης μπορεί να προσθέσει ένα νέο podcast"
+
+#. developer_name tag deprecated with Appstream 1.0
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:230
 msgid "The Podcasts developers"
-msgstr "Οι προγραμματιστές του Podcasts"
+msgstr "Οι δημιουργοί του Podcast"
 
 #: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:4
 msgid "Listen to your favorite podcasts, right from your desktop."
-msgstr "Ακούστε τα αγαπημένα σας podcasts απευθείας από τον υπολογιστή σας."
+msgstr "Ακούστε τα αγαπημένα σας podcast, απευθείας από τον υπολογιστή σας."
 
 #. Translators: Search terms to find this application. Do NOT translate or localize the semicolons! The list MUST also end with a semicolon!
 #: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:13
 msgid "Podcast;RSS;"
-msgstr "Podcast;RSS;"
+msgstr "Ροή;ακρόαση;εκπομπές;Podcast;RSS;"
 
 #: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:15
 msgid "Height of the last open main window"
-msgstr "Ύψος του τελευταίου ανοιχτού κύριου παραθύρου"
+msgstr "Ύψος του τελευταίου ανοικτού κύριου παραθύρου"
 
 #: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:19
 msgid "Width of the last open main window"
-msgstr "Πλάτος του τελευταίου ανοιχτού κύριου παραθύρου"
+msgstr "Πλάτος του τελευταίου ανοικτού κύριου παραθύρου"
 
 #: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:23
 msgid "Maximized state of the last open main window"
-msgstr "Μεγιστοποιημένη κατάσταση του τελευταίου ανοιχτού κύριου παραθύρου"
+msgstr "Μεγιστοποιημένη κατάσταση του τελευταίου ανοικτού κύριου παραθύρου"
 
 #: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:28
 msgid "Whether to periodically refresh content"
-msgstr "Εάν να ανανεώνεται τακτικά το περιεχόμενο"
+msgstr "Εάν θα γίνεται τακτικά ανανέωση του περιεχομένου"
 
 #: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:33
 msgid "How many periods of time to wait between automatic refreshes"
-msgstr "Πόσα χρονικά διαστήματα να περιμένει ανάμεσα στις αυτόματες ανανεώσεις"
+msgstr "Ποσότητα χρονικών διαστημάτων αναμονής μεταξύ των αυτόματων ανανεώσεων"
 
 #: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:37
 msgid "What period of time to wait between automatic refreshes"
-msgstr "Ποιο χρονικό διάστημα να περιμένει ανάμεσα στις αυτόματες ανανεώσεις"
+msgstr "Διάρκεια χρονικού διαστήματος αναμονής μεταξύ των αυτόματων ανανεώσεων"
 
 #: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:41
 msgid "Whether to refresh content after startup"
-msgstr "Εάν να ανανεώνεται το περιεχόμενο μετά την εκκίνηση"
+msgstr "Εάν θα γίνεται ανανέωση του περιεχομένου μετά την εκκίνηση"
 
 #: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:47
 msgid "How many periods of time to wait between automatic cleanups"
-msgstr "Πόσα χρονικά διαστήματα να περιμένει ανάμεσα στις αυτόματες εκκαθαρίσεις"
+msgstr ""
+"Ποσότητα χρονικών διαστημάτων αναμονής μεταξύ των αυτόματων εκκαθαρίσεων"
 
 #: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:51
 msgid "What period of time to wait between automatic cleanups"
-msgstr "Ποιο χρονικό διάστημα να περιμένει ανάμεσα στις αυτόματες εκκαθαρίσεις"
+msgstr ""
+"Διάρκεια χρονικού διαστήματος αναμονής μεταξύ των αυτόματων εκκαθαρίσεων"
 
-#: podcasts-gtk/src/app.rs:383
+#: podcasts-gtk/src/app.rs:375
 msgid "Copied URL to clipboard!"
-msgstr "Αντιγράφηκε ο σύνδεσμος στο πρόχειρο!"
+msgstr "Το URL αντιγράφηκε στο πρόχειρο!"
 
-#: podcasts-gtk/src/stacks/content.rs:68
-msgid "New"
-msgstr "Νέα"
+#: podcasts-gtk/src/episode_description_parser.rs:319
+msgid "Jump to {}:{}:{}"
+msgstr "Μετάβαση στο {}:{}:{}"
 
-#: podcasts-gtk/src/stacks/content.rs:70 podcasts-gtk/src/widgets/shows_view.rs:55
-msgid "Shows"
-msgstr "Εκπομπές"
+#: podcasts-gtk/src/episode_description_parser.rs:338
+msgid "Jump to {}:{}"
+msgstr "Μετάβαση στο {}:{}"
 
-#: podcasts-gtk/src/utils.rs:499 podcasts-gtk/src/utils.rs:541
+#: podcasts-gtk/src/manager.rs:106
+msgid "Download failed: {}"
+msgstr "Αποτυχία λήψης: {}"
+
+#: podcasts-gtk/src/utils.rs:294
+msgid "Failed to subscribe to feed: {}"
+msgstr "Αποτυχία συνδρομής στη ροή: {}"
+
+#: podcasts-gtk/src/utils.rs:388 podcasts-gtk/src/utils.rs:434
 msgid "OPML file"
 msgstr "Αρχείο OPML"
 
-#: podcasts-gtk/src/utils.rs:510
-msgid "Select the file from which you want to import shows."
+#: podcasts-gtk/src/utils.rs:399
+msgid "Select the file from which to you want to import shows."
 msgstr "Επιλέξτε το αρχείο από το οποίο θέλετε να εισαγάγετε εκπομπές."
 
-#: podcasts-gtk/src/utils.rs:512
+#: podcasts-gtk/src/utils.rs:401
 msgid "_Import"
-msgstr "_Εισαγωγή"
+msgstr "Ε_ισαγωγή"
 
-#: podcasts-gtk/src/utils.rs:528
-msgid "Failed to parse the imported file"
-msgstr "Απέτυχε η ανάλυση του εισαχθέντος αρχείου"
+#: podcasts-gtk/src/utils.rs:424
+msgid "Failed to parse the imported file {}"
+msgstr "Αποτυχία ανάλυσης του εισαχθέντος αρχείου «{}»"
 
-#: podcasts-gtk/src/utils.rs:551
+#. Translators: Show as a noun, meaning Podcast-Shows.
+#: podcasts-gtk/src/utils.rs:445
 msgid "Export shows to…"
-msgstr "Εξαγωγή εκπομπών προς…"
+msgstr "Εξαγωγή εκπομπών σε…"
 
-#: podcasts-gtk/src/utils.rs:552
+#: podcasts-gtk/src/utils.rs:446
 msgid "_Export"
-msgstr "_Εξαγωγή"
+msgstr "Ε_ξαγωγή"
 
 #. Translators: This is the string of the suggested name for the exported opml file
-#: podcasts-gtk/src/utils.rs:556
+#: podcasts-gtk/src/utils.rs:450
 msgid "gnome-podcasts-exported-shows"
 msgstr "gnome-podcasts-exported-shows"
 
-#: podcasts-gtk/src/utils.rs:566
+#: podcasts-gtk/src/utils.rs:459
 msgid "GNOME Podcasts Subscriptions"
-msgstr "Εγγραφές GNOME Podcasts"
+msgstr "Συνδρομές του Podcast GNOME"
 
-#: podcasts-gtk/src/utils.rs:567
+#: podcasts-gtk/src/utils.rs:463
 msgid "Failed to export podcasts"
-msgstr "Απέτυχε η εξαγωγή των podcasts"
+msgstr "Αποτυχία εξαγωγής των podcast"
 
 #: podcasts-gtk/src/widgets/aboutdialog.rs:52
 msgid "Podcast Client for the GNOME Desktop."
-msgstr "Πελάτης Podcast για το Γραφικό Περιβάλλον GNOME."
+msgstr "Εφαρμογή podcast για το γραφικό περιβάλλον GNOME."
 
-#: podcasts-gtk/src/widgets/aboutdialog.rs:63
+#: podcasts-gtk/src/widgets/aboutdialog.rs:62
 msgid "translator-credits"
 msgstr ""
 "Ελληνική μεταφραστική ομάδα GNOME\n"
 " Ευστάθιος Ιωσηφίδης <iosifidis@opensuse.org>\n"
-"\n"
-"Για περισσότερες πληροφορίες, επισκεφθείτε τη σελίδα\n"
-"http://gnome.gr/"
+" Δημήτρης Σπέντζος <jimspentzos2000@gmail.com>"
 
-#: podcasts-gtk/src/widgets/episode.rs:374
+#: podcasts-gtk/src/widgets/content_stack.rs:61
+msgid "Fetching feeds…"
+msgstr "Λήψη ροών…"
+
+#: podcasts-gtk/src/widgets/content_stack.rs:68
+msgid "New"
+msgstr "Νέα"
+
+#. Translators: Shows as a noun, meaning Podcast-Shows.
+#: podcasts-gtk/src/widgets/content_stack.rs:69
+#: podcasts-gtk/src/widgets/shows_view.rs:117
+msgid "Shows"
+msgstr "Εκπομπές"
+
+#: podcasts-gtk/src/widgets/download_progress_bar.rs:67
+msgid "Download progress"
+msgstr "Πρόοδος λήψης"
+
+#: podcasts-gtk/src/widgets/episode.rs:346
 msgid "{} min"
 msgstr "{} λεπτά"
 
-#: podcasts-gtk/src/widgets/player.rs:887
+#: podcasts-gtk/src/widgets/player.rs:1163
 msgid "The media player was unable to execute an action."
-msgstr "Ο αναπαραγωγέας πολυμέσων δεν μπόρεσε να εκτελέσει μια ενέργεια."
+msgstr ""
+"Το πρόγραμμα αναπαραγωγής πολυμέσων δεν μπόρεσε να εκτελέσει μια ενέργεια."
 
 #: podcasts-gtk/src/widgets/read_more_label.rs:34
 msgid "Visually expands this description"
-msgstr "Αυξάνει οπτικά αυτήν την περιγραφή"
+msgstr "Αναπτύσσει οπτικά αυτήν την περιγραφή"
 
 #: podcasts-gtk/src/widgets/read_more_label.rs:36
 msgid "Read More"
-msgstr "Διαβάστε Περισσότερα"
+msgstr "Διαβάστε περισσότερα"
 
-#: podcasts-gtk/src/widgets/show_menu.rs:180
+#: podcasts-gtk/src/widgets/show_menu.rs:181
 msgid "Marked all episodes as listened"
-msgstr "Σήμανση όλων των επεισοδίων ως αναπαραγμένα"
+msgstr "Έγινε σήμανση όλων των επεισοδίων ως αναπαραγμένων"
 
-#: podcasts-gtk/src/widgets/show_menu.rs:181 podcasts-gtk/src/widgets/show_menu.rs:204
+#: podcasts-gtk/src/widgets/show_menu.rs:182
+#: podcasts-gtk/src/widgets/show_menu.rs:209
 msgid "Undo"
 msgstr "Αναίρεση"
 
-#: podcasts-gtk/src/widgets/show_menu.rs:200
+#: podcasts-gtk/src/widgets/show_menu.rs:205
 msgid "Unsubscribed from {}"
-msgstr "Καταργήθηκε η εγγραφή από {}"
+msgstr "Καταργήθηκε η συνδρομή από την εκπομπή «{}»"
+
+#~ msgid "Enter Feed Address"
+#~ msgstr "Εισαγωγή διεύθυνσης τροφοδοσίας"
+
+#~ msgid "Popover menu (ESC to close)"
+#~ msgstr "Μενού αναδυόμενου παραθύρου (ESC για κλείσιμο)"
+
+#~ msgid "Add"
+#~ msgstr "Προσθήκη"
+
+#~ msgid "Back"
+#~ msgstr "Πίσω"
+
+#~ msgid "Now Playing"
+#~ msgstr "Αναπαράγεται τώρα"
+
+#~ msgid "Close"
+#~ msgstr "Κλείσιμο"
