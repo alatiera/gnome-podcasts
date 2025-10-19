@@ -1,23 +1,28 @@
 # Persian translation for podcasts.
 # Copyright (C) 2023 podcasts's COPYRIGHT HOLDER
 # This file is distributed under the same license as the podcasts package.
-# Danial Behzadi <dani.behzi@ubuntu.com>, 2023-2025.
 # Goudarz Jafari <me@goudarzjafari.com>, 2025.
+# Danial Behzadi <dani.behzi@ubuntu.com>, 2023-2025.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: podcasts master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2025-09-02 20:55+0000\n"
-"PO-Revision-Date: 2025-09-04 16:34+0330\n"
+"POT-Creation-Date: 2025-10-18 22:02+0000\n"
+"PO-Revision-Date: 2025-10-19 12:36+0330\n"
 "Last-Translator: Danial Behzadi <dani.behzi@ubuntu.com>\n"
-"Language-Team: Persian <fa@li.org>\n"
+"Language-Team: Persian\n"
 "Language: fa\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n==0 || n==1);\n"
-"X-Generator: Poedit 3.7\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"X-Generator: Gtranslator 48.0\n"
+"X-DL-Lang: fa\n"
+"X-DL-Module: podcasts\n"
+"X-DL-Branch: main\n"
+"X-DL-Domain: po\n"
+"X-DL-State: Translating\n"
 
 #: podcasts-gtk/resources/gtk/discovery_found_podcast.ui:105
 msgid "Episodes: "
@@ -110,44 +115,44 @@ msgstr "جزییات قسمت"
 msgid "Episode Menu"
 msgstr "فهرست قسمت"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:92
+#: podcasts-gtk/resources/gtk/episode_description.ui:91
 msgid "Podcast Title"
 msgstr "عنوان پادپخش"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:115
+#: podcasts-gtk/resources/gtk/episode_description.ui:114
 msgid "Duration - Date"
 msgstr "طول - تاریخ"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:149
+#: podcasts-gtk/resources/gtk/episode_description.ui:148
 msgid "_Stream"
 msgstr "_جریان"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:167
+#: podcasts-gtk/resources/gtk/episode_description.ui:166
 msgid "_Play"
 msgstr "_پخش"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:186
+#: podcasts-gtk/resources/gtk/episode_description.ui:185
 msgid "_Pause"
 msgstr "_مکث"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:204
+#: podcasts-gtk/resources/gtk/episode_description.ui:203
 msgid "_Download"
 msgstr "_بارگیری"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:231
+#: podcasts-gtk/resources/gtk/episode_description.ui:230
 msgid "Cancel"
 msgstr "لغو"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:260
+#: podcasts-gtk/resources/gtk/episode_description.ui:259
 msgid "Delete"
 msgstr "حذف"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:279
-#: podcasts-gtk/resources/gtk/sheet_description.ui:49
+#: podcasts-gtk/resources/gtk/episode_description.ui:278
+#: podcasts-gtk/resources/gtk/sheet_description.ui:48
 msgid "Episode Description"
 msgstr "شرح قسمت"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:301
+#: podcasts-gtk/resources/gtk/episode_description.ui:300
 msgid "Episode Cover"
 msgstr "طرح جلد قسمت"
 
@@ -465,16 +470,16 @@ msgstr "شنیدن نمایش‌های محبوبتان"
 #: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:10
 msgid ""
 "Play, update, and manage your podcasts from a lightweight interface that "
-"seamlessly integrates with GNOME. Podcasts can play various audio formats and "
-"remember where you stopped listening. You can subscribe to shows via RSS/Atom, "
-"iTunes, and Soundcloud links. Subscriptions from other apps can be imported via "
-"OPML files."
+"seamlessly integrates with GNOME. Podcasts can play various audio formats "
+"and remember where you stopped listening. You can subscribe to shows via RSS/"
+"Atom, iTunes, and Soundcloud links. Subscriptions from other apps can be "
+"imported via OPML files."
 msgstr ""
-"پخش، به‌روز رسانی و مدیریت پادپخش‌هایتان از میانایی سبک که به طور بی‌نقصی با گنوم "
-"یکپارچه می‌شود. پادپخش‌ها می‌تواند قالب‌های صوتی مختلفی را پخش کرده و جایی که شنیدن "
-"را متوقّف کردید به خاطر بسپرد. می‌توانید با پیوندهای سوندکلود، آی‌تونز و خوراک وب "
-"مشترک نمایش‌ها شوید. اشتراک‌های دیگر برنامه‌ها می‌توانند از طریق پرونده‌های OPML "
-"درون ریخته شوند."
+"پخش، به‌روز رسانی و مدیریت پادپخش‌هایتان از میانایی سبک که به طور بی‌نقصی با "
+"گنوم یکپارچه می‌شود. پادپخش‌ها می‌تواند قالب‌های صوتی مختلفی را پخش کرده و جایی "
+"که شنیدن را متوقّف کردید به خاطر بسپرد. می‌توانید با پیوندهای سوندکلود، آی‌تونز "
+"و خوراک وب مشترک نمایش‌ها شوید. اشتراک‌های دیگر برنامه‌ها می‌توانند از طریق "
+"پرونده‌های OPML درون ریخته شوند."
 
 #: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:18
 msgid "The home view displaying the newest episodes of your podcasts"
@@ -491,11 +496,15 @@ msgid ""
 msgstr "ابزارک نمایش در حال نشان دادن جلد و جدیدترین قسمت‌های پادپخشی خاص"
 
 #: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:30
+msgid "The chapters available in an episode"
+msgstr "قسمتی بخش‌بندی دارد"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:34
 msgid "The view where one can add a new podcast"
 msgstr "نمایی که در آن می‌توان پادپخشی جدید افزود"
 
 #. developer_name tag deprecated with Appstream 1.0
-#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:230
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:241
 msgid "The Podcasts developers"
 msgstr "توسعه‌دهندگان پادپخش‌ها"
 
@@ -634,7 +643,7 @@ msgstr "نمایش‌ها"
 msgid "Download progress"
 msgstr "پیشرفت بارگیری"
 
-#: podcasts-gtk/src/widgets/episode.rs:346
+#: podcasts-gtk/src/widgets/episode.rs:343
 msgid "{} min"
 msgstr "{} دقیقه"
 
@@ -662,30 +671,3 @@ msgstr "برگردان"
 #: podcasts-gtk/src/widgets/show_menu.rs:205
 msgid "Unsubscribed from {}"
 msgstr "لغو اشتراک از {}"
-
-#~ msgid "0"
-#~ msgstr "۰"
-
-#~ msgid "Loading..."
-#~ msgstr "بار کردن…"
-
-#~ msgid "Now Playing"
-#~ msgstr "در حال پخش"
-
-#~ msgid "Close"
-#~ msgstr "بستن"
-
-#~ msgid "Enter Feed Address"
-#~ msgstr "ورود نشانی خوراک"
-
-#~ msgid "Popover menu (ESC to close)"
-#~ msgstr "فهرست رو آمدنی (گریز برای خروج)"
-
-#~ msgid "Add"
-#~ msgstr "افزودن"
-
-#~ msgid "Back"
-#~ msgstr "بازگشت"
-
-#~ msgid "Show Title"
-#~ msgstr "عنوان نمایش"
