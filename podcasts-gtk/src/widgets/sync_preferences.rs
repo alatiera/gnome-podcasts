@@ -482,12 +482,20 @@ impl SyncPreferencesPriv {
 
     async fn fetch_settings(widget_sender: Sender<WidgetAction>) {
         let result = podcasts_data::sync::Settings::fetch().await;
-        send!(
-            widget_sender,
-            WidgetAction::GotSettings(
-                result.map_err(|e| anyhow!("Failed to load settings {:#?}", e))
-            )
-        );
+
+        if let Err(podcasts_data::errors::DataError::KeyringError(e)) = &result {
+            // TODO represent in gui
+            //      this might happen on unconfigured minimal Desktops
+            //      when no Keyring service is running.
+            error!("Failed to Retrive password from keyring {e:#?}");
+        } else {
+            send!(
+                widget_sender,
+                WidgetAction::GotSettings(
+                    result.map_err(|e| anyhow!("Failed to load settings {:#?}", e))
+                )
+            );
+        }
     }
 
     fn do_action(&self, action: WidgetAction) {
