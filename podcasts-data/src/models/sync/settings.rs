@@ -139,7 +139,7 @@ impl Settings {
         }
         // create a new one
         keyring
-            .create_item("Nextcloud Password", &attributes, password.as_bytes(), true)
+            .create_item("Nextcloud Password", &attributes, password, true)
             .await
             .map_err::<oo7::Error, _>(From::from)?;
         debug!("password stored");
@@ -154,10 +154,15 @@ impl Settings {
             .await?;
         if let Some(item) = items.first() {
             item.unlock().await?;
-            let mut secret_bytes = item.secret().await?;
-            let secret_vec: Vec<u8> = std::mem::take(&mut secret_bytes);
-            let secret_str = String::from_utf8(secret_vec)?;
-            Ok(secret_str)
+            let secret = item.secret().await?;
+            match &secret {
+                oo7::Secret::Text(s) => return Ok(s.clone()),
+                oo7::Secret::Blob(bytes) => {
+                    let secret_vec = std::mem::take(&mut bytes.clone());
+                    let secret_str = String::from_utf8(secret_vec)?;
+                    Ok(secret_str)
+                }
+            }
         } else {
             Err(DataError::Bail("No password in keyring".to_owned()))
         }
