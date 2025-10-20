@@ -18,6 +18,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 use anyhow::{Result, bail};
+use chrono::{DateTime, Utc};
 use reqwest;
 use reqwest::Url;
 use serde::de::Deserializer;
@@ -26,9 +27,6 @@ use serde::{Deserialize, Serialize};
 use std::str::FromStr;
 use thiserror::Error;
 
-/// A date stored in a String format similiar to a IsoDateTime
-/// Simliar to RFC3339 format, but it can not handle timezone data
-type IsoDateTime = chrono::DateTime<chrono::Utc>;
 /// A date stored as UTC+0 seconds since 1970
 type UnixTime = i64;
 /// A number where -1 means None
@@ -198,28 +196,35 @@ pub(crate) struct EpisodeAction {
     pub(crate) action: Action,
     #[serde(serialize_with = "to_iso")]
     #[serde(deserialize_with = "from_iso")]
-    pub(crate) timestamp: IsoDateTime,
+    pub(crate) timestamp: DateTime<Utc>,
     // Only valid for “play”. the position (in seconds) at which the client started playback. Requires position and total to be set.
     pub(crate) started: OptionalNumber,  // where PLAY started
     pub(crate) position: OptionalNumber, // where PLAY ended
     pub(crate) total: OptionalNumber,    // total file duration
 }
 
-fn to_iso<S>(dt: &IsoDateTime, serializer: S) -> Result<S::Ok, S::Error>
+fn to_iso<S>(dt: &DateTime<Utc>, serializer: S) -> Result<S::Ok, S::Error>
 where
     S: Serializer,
 {
+    // For Old versions:
     // NOT ACTUALLY ISO RFC3339 format, CAN NOT HANDLE TIMEZONE DATA
     serializer.serialize_str(&format!("{}", dt.format("%Y-%m-%dT%H:%M:%S")))
 }
-fn from_iso<'de, D>(deserializer: D) -> Result<IsoDateTime, D::Error>
+fn from_iso<'de, D>(deserializer: D) -> Result<DateTime<Utc>, D::Error>
 where
     D: Deserializer<'de>,
 {
+    // Old format without Timestamp. Kept around in case it will be useful
+    // for Gpodder Server Sync, or old nextcloud versions for now.
     let buf = String::deserialize(deserializer)?;
     let naive = chrono::NaiveDateTime::parse_from_str(&buf, "%Y-%m-%dT%H:%M:%S");
     naive
         .map(|d| chrono::DateTime::from_naive_utc_and_offset(d, chrono::Utc))
+        .or_else(|_| {
+            // New versions use rfc3339 dates.
+            chrono::DateTime::parse_from_rfc3339(&buf).map(|dt| dt.with_timezone(&chrono::Utc))
+        })
         .map_err(serde::de::Error::custom)
 }
 
