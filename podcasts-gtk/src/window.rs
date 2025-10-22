@@ -33,7 +33,7 @@ use std::rc::Rc;
 use crate::app::{Action, PdApplication};
 use crate::config::APP_ID;
 use crate::player::{Player, PlayerExt, SeekDirection, StreamMode};
-use crate::settings::{self, WindowGeometry};
+use crate::settings::{self, WindowGeometry, get_last_played_id, store_last_played_id};
 use crate::utils;
 use crate::widgets::about_dialog;
 use crate::widgets::{
@@ -274,6 +274,13 @@ impl WindowImpl for MainWindowPriv {
 
         WindowGeometry::from_window(obj.upcast_ref()).write(&self.settings);
 
+        // Store currently playing
+        if !self.obj().player().is_stopped() {
+            store_last_played_id(&self.settings, self.obj().player().episode_id())
+        } else {
+            store_last_played_id(&self.settings, None)
+        }
+
         self.parent_close_request()
     }
 }
@@ -427,12 +434,26 @@ impl MainWindow {
         id: EpisodeId,
         second: Option<i32>,
         stream: StreamMode,
+        should_play: bool,
     ) -> Result<()> {
         self.imp()
             .bottom_sheet
             .set_property("can-open", true.to_value());
         self.player()
-            .initialize_episode(self.sender(), id, stream, second)
+            .initialize_episode(self.sender(), id, stream, second, should_play)
+    }
+
+    pub(crate) fn restore_last_episode(&self) {
+        // restore last played
+        if let Some(id) = get_last_played_id(&self.imp().settings) {
+            if let Err(e) = self.init_episode(id, None, StreamMode::StreamFallback, false) {
+                error!("Failed to init last-played-episode {e:#?}");
+                return;
+            }
+            if let Err(e) = self.player().restore_as_paused() {
+                error!("Failed to restore last-played-episode's position/duration {e:#?}");
+            }
+        }
     }
 
     pub(crate) fn add_toast(&self, toast: adw::Toast) {

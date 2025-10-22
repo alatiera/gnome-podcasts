@@ -407,6 +407,7 @@ impl Player {
                             &uri,
                             *this.imp().restore_position.borrow(),
                             false,
+                            true,
                         );
                     }
                 ),
@@ -647,6 +648,7 @@ impl Player {
         id: EpisodeId,
         stream: StreamMode,
         second: Option<i32>,
+        should_play: bool,
     ) -> Result<()> {
         let ep = dbqueries::get_episode_from_id(id)?;
         let pd = dbqueries::get_podcast_cover_from_id(ep.show_id())?;
@@ -689,7 +691,7 @@ impl Player {
 
         if stream == StreamMode::StreamOnly {
             if let Some(uri) = ep.uri() {
-                self.init_uri(sender, id, uri, second, true);
+                self.init_uri(sender, id, uri, second, true, should_play);
                 return Ok(());
             } else {
                 error!("No uri for episode");
@@ -702,14 +704,14 @@ impl Player {
                 // Convert it so it will have a "file:///"
                 // FIXME: convert it properly
                 let uri = File::for_path(path).uri();
-                self.init_uri(sender, id, uri.as_str(), second, false);
+                self.init_uri(sender, id, uri.as_str(), second, false, should_play);
                 return Ok(());
             } else {
                 error!("failed to create path for episode {:#?}", ep);
             }
         } else if stream == StreamMode::StreamFallback {
             if let Some(uri) = ep.uri() {
-                self.init_uri(sender, id, uri, second, true);
+                self.init_uri(sender, id, uri, second, true, should_play);
                 return Ok(());
             } else {
                 error!("No uri for episode");
@@ -743,6 +745,7 @@ impl Player {
         uri: &str,
         second: Option<i32>,
         reset_stream: bool,
+        should_play: bool,
     ) {
         // If it's not the same file load the uri, otherwise just unpause
         let current_uri = self.imp().player.uri();
@@ -755,7 +758,6 @@ impl Player {
                 self.init_as_stream(uri.to_owned())
             } else {
                 self.imp().player.set_uri(Some(uri));
-                self.play();
             }
 
             // fetch chapters
@@ -775,12 +777,42 @@ impl Player {
         } else if second.is_some() {
             // force a jump now if already playing and a jump is given
             self.restore_play_position();
-            self.play();
         } else {
             // just unpause, no restore required
             self.imp().finished_restore.set(true);
+        }
+        // play the file
+        if should_play {
             self.play();
         }
+    }
+
+    // This is called to manually load duration and position for files
+    // not loaded/played by gst yet. As when restoring the last played file on startup.
+    pub fn restore_as_paused(&self) -> Result<()> {
+        // ensure duration is set
+        use gst_pbutils::Discoverer;
+        let timeout = ClockTime::try_from_seconds_f32(5.0)?;
+        let discoverer = Discoverer::new(timeout)?;
+        if let Some(uri) = self.imp().player.uri() {
+            let info = discoverer.discover_uri(&uri)?;
+            if let Some(c) = info.duration() {
+                let c = Duration(c);
+                self.emit_by_name::<()>("duration-changed", &[&glib::Value::from(c.seconds())]);
+            }
+        }
+
+        // usually position is communicated after the file is played,
+        // because we get a certain duration only after it loaded.
+        // So starting in paused state we need to manually push this to the UI.
+        if let Some(pos) = *self.imp().restore_position.borrow() {
+            self.on_position_updated(Position(ClockTime::from_seconds(pos.max(0) as u64)));
+        }
+
+        self.imp().status.set(PlaybackStatus::Paused);
+        self.emit_by_name::<()>("status-changed", &[]);
+
+        Ok(())
     }
 
     // hook for when the async download finished
@@ -858,6 +890,10 @@ impl Player {
 
     pub(crate) fn is_playing(&self) -> bool {
         self.status() == PlaybackStatus::Playing
+    }
+
+    pub(crate) fn is_stopped(&self) -> bool {
+        self.status() == PlaybackStatus::Stopped
     }
 
     pub(crate) fn status(&self) -> PlaybackStatus {

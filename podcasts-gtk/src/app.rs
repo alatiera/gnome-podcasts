@@ -129,6 +129,11 @@ impl ApplicationImpl for PdApplicationPrivate {
                 }
             }
         ));
+
+        // Some more setups after everything is connected
+        let window2 = self.window.borrow();
+        let window2 = window2.as_ref().expect("Window is not initialized");
+        window2.restore_last_episode();
     }
 
     fn startup(&self) {
@@ -571,15 +576,15 @@ impl PdApplication {
                 Self::refresh_done(data.sender.clone(), id);
             }
             Action::InitEpisode(id) => {
-                let res = window.init_episode(id, None, StreamMode::StreamFallback);
+                let res = window.init_episode(id, None, StreamMode::StreamFallback, true);
                 debug_assert!(res.is_ok());
             }
             Action::InitEpisodeAt(id, second) => {
-                let res = window.init_episode(id, Some(second), StreamMode::StreamFallback);
+                let res = window.init_episode(id, Some(second), StreamMode::StreamFallback, true);
                 debug_assert!(res.is_ok());
             }
             Action::StreamEpisode(id) => {
-                let res = window.init_episode(id, None, StreamMode::StreamOnly);
+                let res = window.init_episode(id, None, StreamMode::StreamOnly, true);
                 debug_assert!(res.is_ok());
             }
             Action::StreamAttemptAlternateUserAgent => {

@@ -22,6 +22,10 @@
             <default>false</default>
             <summary>Maximized state of the last open main window</summary>
         </key>
+        <key name="last-played-id" type="i">
+            <default>0</default>
+            <summary>Database id of the last episode that was playing</summary>
+        </key>
 
         <key name="refresh-interval" type="b">
             <default>true</default>

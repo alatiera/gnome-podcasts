@@ -16,12 +16,13 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
+use chrono::Duration;
+use chrono::prelude::*;
 use gio::{Settings, prelude::SettingsExt};
 use gtk::gio;
 use gtk::prelude::GtkWindowExt;
 
-use chrono::Duration;
-use chrono::prelude::*;
+use podcasts_data::EpisodeId;
 
 pub(crate) struct WindowGeometry {
     width: i32,
@@ -91,6 +92,22 @@ pub(crate) fn get_cleanup_date(settings: &Settings) -> DateTime<Utc> {
     let duration = time_period_to_duration(time, period.as_str());
 
     Utc::now() - duration
+}
+
+pub(crate) fn get_last_played_id(settings: &Settings) -> Option<EpisodeId> {
+    let id = i64::from(settings.int("last-played-id"));
+    if id != 0 {
+        Some(EpisodeId(id as i32))
+    } else {
+        None
+    }
+}
+pub(crate) fn store_last_played_id(settings: &Settings, id: Option<EpisodeId>) {
+    if let Some(id) = id {
+        settings.set_int("last-played-id", id.0).unwrap();
+    } else {
+        settings.set_int("last-played-id", 0).unwrap();
+    }
 }
 
 pub(crate) fn time_period_to_duration(time: i64, period: &str) -> Duration {
