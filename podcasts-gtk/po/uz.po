@@ -1,0 +1,669 @@
+# Uzbek (Latin) translation for podcasts.
+# Copyright (C) 2025 podcasts's COPYRIGHT HOLDER
+# This file is distributed under the same license as the podcasts package.
+# BeMeritus <bemerituss@gmail.com>,  2025.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: podcasts main\n"
+"Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
+"POT-Creation-Date: 2025-10-21 20:46+0000\n"
+"PO-Revision-Date: 2025-10-24 13:39+0500\n"
+"Last-Translator: Baxrom Raxmatov <https://t.me/bahrom04>\n"
+"Language-Team: Uzbek (Latin) <Uzbek>\n"
+"Language: uz\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.5\n"
+
+#: podcasts-gtk/resources/gtk/discovery_found_podcast.ui:105
+msgid "Episodes: "
+msgstr "Epizodlar: "
+
+#: podcasts-gtk/resources/gtk/discovery_found_podcast.ui:143
+msgid "Last publication"
+msgstr "Oxirgi nashr"
+
+#: podcasts-gtk/resources/gtk/discovery_found_podcast.ui:164
+msgid "_Subscribe"
+msgstr "Obuna bo‘lish"
+
+#: podcasts-gtk/resources/gtk/discovery_found_podcast.ui:174
+#: podcasts-gtk/src/widgets/discovery_search_results.rs:152
+msgid "Subscribing to feed…"
+msgstr "Tasmaga obuna qilinmoqda..."
+
+#: podcasts-gtk/resources/gtk/discovery_page.ui:33
+msgid "Add Podcasts"
+msgstr "Podkastlar qo‘shish"
+
+#: podcasts-gtk/resources/gtk/discovery_page.ui:64
+msgid "Search"
+msgstr "Qidirish"
+
+#: podcasts-gtk/resources/gtk/discovery_page.ui:77
+msgid "Enter a feed URL or search the selected platforms."
+msgstr "Tasma URL manzilini kiriting yoki tanlangan platformalarni qidiring."
+
+#: podcasts-gtk/resources/gtk/discovery_page.ui:100
+msgid "Submit search"
+msgstr "Qidiruvni jo‘natish"
+
+#: podcasts-gtk/resources/gtk/discovery_page.ui:106
+#: podcasts-gtk/src/widgets/discovery_page.rs:113
+msgid "Loading…"
+msgstr "Yuklanmoqda…"
+
+#: podcasts-gtk/resources/gtk/discovery_page.ui:119
+msgid "Please enable a Search Platform below, or enter a http(s) feed URL."
+msgstr ""
+"Quyida Qidiruv platformasini yoqing yoki http(s) tasmasi URL manzilini "
+"kiriting."
+
+#: podcasts-gtk/resources/gtk/discovery_page.ui:131
+msgid "Search Platforms"
+msgstr "Qidiruv platformalari"
+
+#: podcasts-gtk/resources/gtk/discovery_page.ui:132
+msgid "Search queries will be sent to these platforms."
+msgstr "Qidiruv so‘rovlari ushbu platformalarga yuboriladi."
+
+#: podcasts-gtk/resources/gtk/discovery_search_results.ui:32
+msgid "Search results"
+msgstr "Qidiruv natijalari"
+
+#: podcasts-gtk/resources/gtk/discovery_search_results.ui:70
+msgid "No results found."
+msgstr "Hech qanday natija topilmadi."
+
+#. Translators: Show as a noun, meaning a Podcast-Show.
+#: podcasts-gtk/resources/gtk/empty_show.ui:17
+msgid "This show does not have episodes yet"
+msgstr "Bu shouda hali hech qanday qism yo‘q"
+
+#: podcasts-gtk/resources/gtk/empty_show.ui:28
+msgid "If you think this is an error, please consider writing a bug report."
+msgstr "Agar buni xato deb hisoblasangiz, xatolik haqida hisobot yozing."
+
+#. Translators: Shows as a noun, meaning Podcast-Shows.
+#: podcasts-gtk/resources/gtk/empty_view.ui:31
+msgid "Get Some Shows"
+msgstr "Ayrim ko‘rsatuvlarni olish"
+
+#. Translators: Shows as a noun, meaning Podcast-Shows.
+#: podcasts-gtk/resources/gtk/empty_view.ui:52
+msgid "Add new shows via feed URL"
+msgstr "Tasma URL manzili orqali yangi shou qo‘shish"
+
+#. Translators: Shows as a noun, meaning Podcast-Shows.
+#: podcasts-gtk/resources/gtk/empty_view.ui:76
+msgid "Import shows from another device"
+msgstr "Boshqa qurilmadan ko‘rsatuvlarni import qilish"
+
+#: podcasts-gtk/resources/gtk/episode_description.ui:33
+msgid "Episode Details"
+msgstr "Epizod tafsilotlari"
+
+#: podcasts-gtk/resources/gtk/episode_description.ui:42
+msgid "Episode Menu"
+msgstr "Epizod menyusi"
+
+#: podcasts-gtk/resources/gtk/episode_description.ui:91
+msgid "Podcast Title"
+msgstr "Podkast sarlavhasi"
+
+#: podcasts-gtk/resources/gtk/episode_description.ui:114
+msgid "Duration - Date"
+msgstr "Davomiyligi - Sana"
+
+#: podcasts-gtk/resources/gtk/episode_description.ui:148
+msgid "_Stream"
+msgstr "Oqim"
+
+#: podcasts-gtk/resources/gtk/episode_description.ui:166
+msgid "_Play"
+msgstr "Ijro etish"
+
+#: podcasts-gtk/resources/gtk/episode_description.ui:185
+msgid "_Pause"
+msgstr "Pauza"
+
+#: podcasts-gtk/resources/gtk/episode_description.ui:203
+msgid "_Download"
+msgstr "Yuklab olish"
+
+#: podcasts-gtk/resources/gtk/episode_description.ui:230
+msgid "Cancel"
+msgstr "Bekor qilish"
+
+#: podcasts-gtk/resources/gtk/episode_description.ui:259
+msgid "Delete"
+msgstr "Oʻchirish"
+
+#: podcasts-gtk/resources/gtk/episode_description.ui:278
+#: podcasts-gtk/resources/gtk/sheet_description.ui:48
+msgid "Episode Description"
+msgstr "Epizod tavsifi"
+
+#: podcasts-gtk/resources/gtk/episode_description.ui:300
+msgid "Episode Cover"
+msgstr "Epizod muqovasi"
+
+#. Translators: Show as a noun, meaning a Podcast-Show.
+#: podcasts-gtk/resources/gtk/episode_menu.ui:36
+msgid "Go to Show"
+msgstr ""
+
+#: podcasts-gtk/resources/gtk/episode_menu.ui:41
+msgid "Copy Episode URL"
+msgstr "Epizod URL manzilini nusxalash"
+
+#: podcasts-gtk/resources/gtk/episode_menu.ui:45
+msgid "Mark as Played"
+msgstr "Ijro etilgan deb belgilash"
+
+#: podcasts-gtk/resources/gtk/episode_menu.ui:50
+msgid "Mark as Unplayed"
+msgstr "Mark as Unplayed"
+
+#: podcasts-gtk/resources/gtk/episode_widget.ui:70
+msgid "You’ve already listened to this episode."
+msgstr "Bu qismni allaqachon tinglagansiz."
+
+#: podcasts-gtk/resources/gtk/episode_widget.ui:158
+msgid "Calculating episode size…"
+msgstr "Epizod hajmi hisoblanmoqda…"
+
+#: podcasts-gtk/resources/gtk/episode_widget.ui:181
+msgid "Play this episode"
+msgstr "Bu epizodni ijro qilish"
+
+#: podcasts-gtk/resources/gtk/episode_widget.ui:195
+msgid "Pause playback"
+msgstr "Ijroni toʻxtatib turish"
+
+#: podcasts-gtk/resources/gtk/episode_widget.ui:207
+msgid "Cancel the download process"
+msgstr "Yuklab olish jarayonini bekor qilish"
+
+#: podcasts-gtk/resources/gtk/episode_widget.ui:220
+msgid "Download this episode"
+msgstr "Ushbu epizodni yuklab olish"
+
+#: podcasts-gtk/resources/gtk/episode_widget.ui:234
+msgid "Episode without audio"
+msgstr "Ovozsiz epizod"
+
+#: podcasts-gtk/resources/gtk/home_view.ui:57
+#: podcasts-gtk/resources/gtk/home_view.ui:70
+msgid "Today"
+msgstr "Bugun"
+
+#: podcasts-gtk/resources/gtk/home_view.ui:88
+#: podcasts-gtk/resources/gtk/home_view.ui:101
+msgid "Yesterday"
+msgstr "Kecha"
+
+#: podcasts-gtk/resources/gtk/home_view.ui:119
+#: podcasts-gtk/resources/gtk/home_view.ui:132
+msgid "This Week"
+msgstr "Bu hafta"
+
+#: podcasts-gtk/resources/gtk/home_view.ui:150
+#: podcasts-gtk/resources/gtk/home_view.ui:163
+msgid "This Month"
+msgstr "Bu oy"
+
+#: podcasts-gtk/resources/gtk/home_view.ui:182
+#: podcasts-gtk/resources/gtk/home_view.ui:195
+msgid "Older"
+msgstr "Eskiroq"
+
+#: podcasts-gtk/resources/gtk/player_rate.ui:29
+msgid "Change the playback speed"
+msgstr "Ijro tezligini o‘zgartirish"
+
+#: podcasts-gtk/resources/gtk/player_rate.ui:34
+#: podcasts-gtk/resources/gtk/player_rate.ui:62
+msgid "1.00×"
+msgstr "1.00×"
+
+#: podcasts-gtk/resources/gtk/player_rate.ui:42
+msgid "2.00×"
+msgstr "2.00×"
+
+#: podcasts-gtk/resources/gtk/player_rate.ui:47
+msgid "1.75×"
+msgstr "1.75×"
+
+#: podcasts-gtk/resources/gtk/player_rate.ui:52
+msgid "1.50×"
+msgstr "1.50×"
+
+#: podcasts-gtk/resources/gtk/player_rate.ui:57
+msgid "1.25×"
+msgstr "1.25×"
+
+#: podcasts-gtk/resources/gtk/player_rate.ui:67
+msgid "0.90×"
+msgstr "0.90×"
+
+#: podcasts-gtk/resources/gtk/player_rate.ui:72
+msgid "0.75×"
+msgstr "0.75×"
+
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:50
+msgid "Rewind 10 seconds"
+msgstr "10 soniya aylantiring"
+
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:67
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:292
+#: podcasts-gtk/resources/gtk/sheet_player.ui:149
+msgid "Play"
+msgstr "Ijro"
+
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:80
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:301
+#: podcasts-gtk/resources/gtk/sheet_player.ui:167
+msgid "Pause"
+msgstr "Pauza"
+
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:95
+msgid "Fast forward 10 seconds"
+msgstr "Oldinga tezkor 10 soniya"
+
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:113
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:237
+msgid "Go to the description for this episode."
+msgstr "Ushbu epizod tavsifiga kiring."
+
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:208
+msgid "Go to the Chapters list."
+msgstr "Boblar ro‘yxatiga kiring."
+
+#: podcasts-gtk/resources/gtk/secondary_menu.ui:7
+msgid "_Mark All Episodes as Played"
+msgstr "Barcha epizodlarni ijro etilgan deb belgilash"
+
+#: podcasts-gtk/resources/gtk/secondary_menu.ui:11
+msgid "_Website"
+msgstr "Vebsayt"
+
+#: podcasts-gtk/resources/gtk/secondary_menu.ui:15
+msgid "_Unsubscribe"
+msgstr "Obunani bekor qilish"
+
+#: podcasts-gtk/resources/gtk/sheet_base.ui:75
+msgid "Player"
+msgstr "Pleyer"
+
+#: podcasts-gtk/resources/gtk/sheet_base.ui:82
+msgid "Description"
+msgstr "Taʼrif"
+
+#: podcasts-gtk/resources/gtk/sheet_base.ui:89
+#: podcasts-gtk/src/widgets/chapters.rs:194
+msgid "Chapters"
+msgstr "Boblar"
+
+#: podcasts-gtk/resources/gtk/sheet_player.ui:128
+msgid "Rewind"
+msgstr "Qayta aylantirish"
+
+#: podcasts-gtk/resources/gtk/sheet_player.ui:190
+msgid "Forward"
+msgstr "Oldinga oʼtish"
+
+#: podcasts-gtk/resources/gtk/shortcuts-dialog.ui:7
+msgctxt "shortcut window"
+msgid "Navigation"
+msgstr "Navigatsiya"
+
+#: podcasts-gtk/resources/gtk/shortcuts-dialog.ui:10
+msgctxt "shortcut window"
+msgid "Go to Home Page"
+msgstr "Bosh sahifaga o‘tish"
+
+#. Translators: Shows as a Noun
+#: podcasts-gtk/resources/gtk/shortcuts-dialog.ui:17
+msgctxt "shortcut window"
+msgid "Go to Shows Page"
+msgstr "Shows sahifasiga oʻtish"
+
+#. Translators: 'Discovery' is a page where you can add new podcasts
+#: podcasts-gtk/resources/gtk/shortcuts-dialog.ui:24
+msgctxt "shortcut window"
+msgid "Go To Discovery Page"
+msgstr "Discovery sahifasiga oʻtish"
+
+#: podcasts-gtk/resources/gtk/shortcuts-dialog.ui:33
+msgctxt "shortcut window"
+msgid "Player"
+msgstr "Pleyer"
+
+#: podcasts-gtk/resources/gtk/shortcuts-dialog.ui:36
+msgctxt "shortcut window"
+msgid "Toggle Pause"
+msgstr "Toʻxtatib turish"
+
+#: podcasts-gtk/resources/gtk/shortcuts-dialog.ui:42
+msgctxt "shortcut window"
+msgid "Seek Forwards"
+msgstr "Oldinga intilish"
+
+#: podcasts-gtk/resources/gtk/shortcuts-dialog.ui:48
+msgctxt "shortcut window"
+msgid "Seek Backwards"
+msgstr "Orqaga qaytish"
+
+#: podcasts-gtk/resources/gtk/shortcuts-dialog.ui:54
+msgctxt "shortcut window"
+msgid "Raise Playback Speed"
+msgstr "Ijro tezligini oshirish"
+
+#: podcasts-gtk/resources/gtk/shortcuts-dialog.ui:60
+msgctxt "shortcut window"
+msgid "Lower Playback Speed"
+msgstr "Ijro tezligini pasaytirish"
+
+#: podcasts-gtk/resources/gtk/shortcuts-dialog.ui:69
+msgctxt "shortcut window"
+msgid "General"
+msgstr "Umumiy"
+
+#: podcasts-gtk/resources/gtk/shortcuts-dialog.ui:72
+msgctxt "shortcut window"
+msgid "Check for new episodes"
+msgstr "Yangi epizodlarni tekshirish"
+
+#: podcasts-gtk/resources/gtk/shortcuts-dialog.ui:78
+msgctxt "shortcut window"
+msgid "Quit the application"
+msgstr "Ilovadan chiqish"
+
+#: podcasts-gtk/resources/gtk/shortcuts-dialog.ui:84
+msgctxt "shortcut window"
+msgid "Import Subscriptions"
+msgstr "Obunalarni import qilish"
+
+#: podcasts-gtk/resources/gtk/shortcuts-dialog.ui:90
+msgctxt "shortcut window"
+msgid "Export Subscriptions"
+msgstr "Obunalarni eksport qilish"
+
+#: podcasts-gtk/resources/gtk/show_menu.ui:35
+msgid "Open Website"
+msgstr "Vebsaytni ochish"
+
+#: podcasts-gtk/resources/gtk/show_menu.ui:39
+msgid "Mark All as Played"
+msgstr "Hammasi o‘ynalgan deb belgilash"
+
+#: podcasts-gtk/resources/gtk/show_menu.ui:45
+msgid "Unsubscribe"
+msgstr "Obunani bekor qilish"
+
+#: podcasts-gtk/resources/gtk/show_widget.ui:40
+msgid "Podcast Menu"
+msgstr "Podkast menyusi"
+
+#: podcasts-gtk/resources/gtk/show_widget.ui:100
+msgid "Episodes"
+msgstr "Epizodlar"
+
+#: podcasts-gtk/resources/gtk/window.ui:6
+msgid "_Check for New Episodes"
+msgstr "Yangi qismlarni tekshirish"
+
+#. Translators: Show as a noun, meaning Podcast-Shows.
+#: podcasts-gtk/resources/gtk/window.ui:12
+msgid "_Import Shows"
+msgstr "Ko‘rsatuvlarni import qilish"
+
+#. Translators: Show as a noun, meaning Podcast-Shows.
+#: podcasts-gtk/resources/gtk/window.ui:17
+msgid "_Export Shows"
+msgstr "Ko‘rsatuvlarni eksport qilish"
+
+#: podcasts-gtk/resources/gtk/window.ui:23
+msgid "_Keyboard Shortcuts"
+msgstr "Klaviatura yorliqlari"
+
+#: podcasts-gtk/resources/gtk/window.ui:27
+msgid "_About Podcasts"
+msgstr "Podkastlar haqida"
+
+#. Weird magic I copy-pasted that sets the Application Name in the Shell.
+#: podcasts-gtk/resources/gtk/window.ui:35
+#: podcasts-gtk/resources/gtk/window.ui:102
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:4
+#: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:2
+#: podcasts-gtk/src/app.rs:530 podcasts-gtk/src/widgets/aboutdialog.rs:56
+#: podcasts-gtk/src/widgets/player.rs:408
+msgid "Podcasts"
+msgstr "Podkastlar"
+
+#: podcasts-gtk/resources/gtk/window.ui:115
+msgid "Add a New Feed"
+msgstr "Yangi tasma qo‘shish"
+
+#: podcasts-gtk/resources/gtk/window.ui:123
+msgid "Main Menu"
+msgstr "Asosiy Menyu"
+
+#. Translators: Show as a noun, meaning a Podcast-Show.
+#: podcasts-gtk/resources/gtk/window.ui:137
+msgid "Show"
+msgstr "Koʻrsatish"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:8
+msgid "Listen to your favorite shows"
+msgstr "Sevimli shoularingizni tinglang"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:10
+msgid ""
+"Play, update, and manage your podcasts from a lightweight interface that "
+"seamlessly integrates with GNOME. Podcasts can play various audio formats "
+"and remember where you stopped listening. You can subscribe to shows via RSS/"
+"Atom, iTunes, and Soundcloud links. Subscriptions from other apps can be "
+"imported via OPML files."
+msgstr ""
+"Podkastlaringizni GNOME bilan uzluksiz integratsiyalashgan yengil "
+"interfeysdan tinglang, yangilang va boshqaring. Podkastlar turli audio "
+"formatlarni ijro etishi va qayerda tinglashni to‘xtatganingizni eslab "
+"qolishi mumkin. Ko‘rsatuvlarga RSS/Atom, iTunes va Soundcloud havolalari "
+"orqali obuna bo‘lishingiz mumkin. Boshqa ilovalardan obunalarni OPML "
+"fayllari orqali import qilish mumkin."
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:18
+msgid "The home view displaying the newest episodes of your podcasts"
+msgstr "Podkastlaringizning eng yangi qismlari aks etgan bosh sahifa"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:22
+msgid "The shows view displaying the covers of your podcasts"
+msgstr "Podkastlaringiz muqovalarini ko‘rsatadigan ko‘rinish"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:26
+msgid ""
+"The show widget displaying the cover and the latest episodes of a specific "
+"podcast"
+msgstr ""
+"Muqova va ma’lum bir podkastning so‘nggi epizodlarni aks ettiruvchi shou "
+"vidjeti"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:30
+msgid "The chapters available in an episode"
+msgstr "Bir epizodda mavjud bo‘lgan boblar"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:34
+msgid "The view where one can add a new podcast"
+msgstr "Yangi podkast qo‘shish mumkin bo‘lgan joy"
+
+#. developer_name tag deprecated with Appstream 1.0
+#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:241
+msgid "The Podcasts developers"
+msgstr "Podkastlar ishlab chiquvchilari"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:3
+msgid "Listen to your favorite podcasts, right from your desktop."
+msgstr ""
+"Sevimli podkastlaringizni to‘g‘ridan-to‘g‘ri kompyuteringizdan tinglang."
+
+#. Translators: Search terms to find this application. Do NOT translate or localize the semicolons! The list MUST also end with a semicolon!
+#: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:12
+msgid "Podcast;RSS;"
+msgstr "Podkast;RSS;"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:15
+msgid "Height of the last open main window"
+msgstr "Oxirgi ochiq asosiy oynaning balandligi"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:19
+msgid "Width of the last open main window"
+msgstr "Oxirgi ochiq asosiy oynaning kengligi"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:23
+msgid "Maximized state of the last open main window"
+msgstr "Oxirgi ochiq asosiy oynaning maksimal holati"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:28
+msgid "Whether to periodically refresh content"
+msgstr "Kontentni vaqti-vaqti bilan yangilash"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:33
+msgid "How many periods of time to wait between automatic refreshes"
+msgstr "Avtomatik yangilashlar orasida qancha vaqt kutish kerak"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:37
+msgid "What period of time to wait between automatic refreshes"
+msgstr "Avtomatik yangilashlar orasida qancha vaqt kutish kerak"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:41
+msgid "Whether to refresh content after startup"
+msgstr "Ishga tushirilgandan keyin kontent yangilanadimi"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:47
+msgid "How many periods of time to wait between automatic cleanups"
+msgstr "Avtomatik tozalashlar orasida qancha vaqt kutish kerakligi"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:51
+msgid "What period of time to wait between automatic cleanups"
+msgstr "Avtomatik tozalashlar orasida qancha vaqt kutish kerakligi"
+
+#: podcasts-gtk/src/app.rs:386
+msgid "Copied URL to clipboard!"
+msgstr "URL manzili vaqtinchalik xotiraga nusxalandi!"
+
+#: podcasts-gtk/src/episode_description_parser.rs:319
+msgid "Jump to {}:{}:{}"
+msgstr "{}:{}:{} ga sakrash"
+
+#: podcasts-gtk/src/episode_description_parser.rs:338
+msgid "Jump to {}:{}"
+msgstr "{}:{} ga sakrash"
+
+#: podcasts-gtk/src/manager.rs:105
+msgid "Download failed: {}"
+msgstr "Yuklab olinmadi: {}"
+
+#: podcasts-gtk/src/utils.rs:293
+msgid "Failed to subscribe to feed: {}"
+msgstr "Tasmaga obuna qilinmadi: {}"
+
+#: podcasts-gtk/src/utils.rs:388 podcasts-gtk/src/utils.rs:434
+msgid "OPML file"
+msgstr "OPML fayli"
+
+#: podcasts-gtk/src/utils.rs:399
+msgid "Select the file from which to you want to import shows."
+msgstr "Ko‘rsatuvlarni import qilmoqchi bo‘lgan faylni tanlang."
+
+#: podcasts-gtk/src/utils.rs:401
+msgid "_Import"
+msgstr "Import qilish"
+
+#: podcasts-gtk/src/utils.rs:424
+msgid "Failed to parse the imported file {}"
+msgstr "Import qilingan fayl {} tahlil qilinmadi"
+
+#. Translators: Show as a noun, meaning Podcast-Shows.
+#: podcasts-gtk/src/utils.rs:445
+msgid "Export shows to…"
+msgstr "Ko‘rsatuvlarni eksport qilish…"
+
+#: podcasts-gtk/src/utils.rs:446
+msgid "_Export"
+msgstr "Eksport"
+
+#. Translators: This is the string of the suggested name for the exported opml file
+#: podcasts-gtk/src/utils.rs:450
+msgid "gnome-podcasts-exported-shows"
+msgstr "gnome-podcasts-exported-shows"
+
+#: podcasts-gtk/src/utils.rs:459
+msgid "GNOME Podcasts Subscriptions"
+msgstr "GNOME Podkastlar obunalari"
+
+#: podcasts-gtk/src/utils.rs:463
+msgid "Failed to export podcasts"
+msgstr "Podkastlar eksport qilinmadi"
+
+#: podcasts-gtk/src/widgets/aboutdialog.rs:52
+msgid "Podcast Client for the GNOME Desktop."
+msgstr "GNOME ish stoli uchun podkast dasturi."
+
+#: podcasts-gtk/src/widgets/aboutdialog.rs:62
+msgid "translator-credits"
+msgstr "BeMeritus <bemerituss@gmail.com>"
+
+#: podcasts-gtk/src/widgets/chapters.rs:130
+msgid "Currently playing chapter"
+msgstr "Hozirda bob ijro etilmoqda"
+
+#: podcasts-gtk/src/widgets/content_stack.rs:61
+msgid "Fetching feeds…"
+msgstr "Tasmalar olinmoqda…"
+
+#: podcasts-gtk/src/widgets/content_stack.rs:68
+msgid "New"
+msgstr "Yangi"
+
+#. Translators: Shows as a noun, meaning Podcast-Shows.
+#: podcasts-gtk/src/widgets/content_stack.rs:69
+#: podcasts-gtk/src/widgets/shows_view.rs:117
+msgid "Shows"
+msgstr "Ko‘rsatuvlar"
+
+#: podcasts-gtk/src/widgets/download_progress_bar.rs:66
+msgid "Download progress"
+msgstr "Yuklab olish jarayoni"
+
+#: podcasts-gtk/src/widgets/episode.rs:343
+msgid "{} min"
+msgstr "{} daq"
+
+#: podcasts-gtk/src/widgets/player.rs:1110
+msgid "The media player was unable to execute an action."
+msgstr "Media pleyer amalni bajara olmadi."
+
+#: podcasts-gtk/src/widgets/read_more_label.rs:34
+msgid "Visually expands this description"
+msgstr "Bu tavsifni vizual kengaytiradi"
+
+#: podcasts-gtk/src/widgets/read_more_label.rs:36
+msgid "Read More"
+msgstr "Batafsil"
+
+#: podcasts-gtk/src/widgets/show_menu.rs:181
+msgid "Marked all episodes as listened"
+msgstr "Barcha qismlarni tinglangan deb belgiladi"
+
+#: podcasts-gtk/src/widgets/show_menu.rs:182
+#: podcasts-gtk/src/widgets/show_menu.rs:209
+msgid "Undo"
+msgstr "Bekor qilish"
+
+#: podcasts-gtk/src/widgets/show_menu.rs:205
+msgid "Unsubscribed from {}"
+msgstr "{} obunasini bekor qildi"
