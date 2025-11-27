@@ -28,7 +28,7 @@ use glib::object::WeakRef;
 use gtk::FileFilter;
 use gtk::Widget;
 use gtk::prelude::*;
-use gtk::{gio, glib};
+use gtk::{gdk, gio, glib};
 use regex::Regex;
 use serde_json::Value;
 use std::collections::HashSet;
@@ -511,6 +511,59 @@ pub(crate) fn relative_time(duration: chrono::Duration) -> String {
         formatx!(ngettext("{} year ago", "{} years ago", time as u32), time)
             .expect("Could not format translatable string")
     }
+}
+
+pub async fn texture(
+    path: &impl AsRef<std::path::Path>,
+) -> Result<gdk::Texture, image::error::ImageError> {
+    let path = std::path::PathBuf::from(path.as_ref());
+    crate::RUNTIME
+        .spawn_blocking(move || {
+            let image = image::ImageReader::open(path)?
+                .with_guessed_format()?
+                .decode()?;
+
+            texture_from_image(image)
+        })
+        .await
+        .expect("Could not spawn blocking to load image")
+}
+
+pub async fn texture_from_bytes<R: 'static + std::io::BufRead + std::io::Seek + Send>(
+    cursor: R,
+) -> Result<gdk::Texture, image::error::ImageError> {
+    crate::RUNTIME
+        .spawn_blocking(move || {
+            let image = image::ImageReader::new(cursor)
+                .with_guessed_format()?
+                .decode()?;
+
+            texture_from_image(image)
+        })
+        .await
+        .expect("Could not spawn blocking to load image")
+}
+
+pub fn texture_from_image(
+    image: image::DynamicImage,
+) -> Result<gdk::Texture, image::error::ImageError> {
+    let width = image.width() as i32;
+    let height = image.height() as i32;
+    // 3 == ["r", "g", "b"].len()
+    let stride = (width * 3) as usize;
+    let format = gdk::MemoryFormat::R8g8b8;
+
+    let bytes = image.into_rgb8().into_vec();
+
+    let texture = gdk::MemoryTexture::new(
+        width,
+        height,
+        format,
+        &glib::Bytes::from_owned(bytes),
+        stride,
+    );
+
+    Ok(texture.upcast())
 }
 
 #[cfg(test)]

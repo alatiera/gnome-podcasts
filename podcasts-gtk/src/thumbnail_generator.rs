@@ -100,8 +100,7 @@ pub async fn generate(
                     .spawn_blocking(move || {
                         let image = image_full_size.resize(pixels, pixels, FilterType::Lanczos3);
                         image.save_with_format(&tmp_path2, image::ImageFormat::Png)?;
-                        gtk::gdk::Texture::from_filename(&tmp_path2)
-                            .map_err(|_| anyhow!("failed to read gtk texture"))
+                        crate::utils::texture_from_image(image)
                     })
                     .await??;
                 tokio::fs::rename(&tmp_path, &thumb_path).await?;

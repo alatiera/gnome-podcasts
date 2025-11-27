@@ -298,7 +298,7 @@ impl EpisodeDescriptionPriv {
             async move {
                 if let Err(e) = async move {
                     let path = downloader::cache_episode_image(&pd, &uri, true).await?;
-                    let texture = gtk::gdk::Texture::from_filename(path)?;
+                    let texture = crate::utils::texture(&path).await?;
                     send!(
                         sender,
                         EpisodeDescriptionAction::EpisodeSpecificImage(texture)

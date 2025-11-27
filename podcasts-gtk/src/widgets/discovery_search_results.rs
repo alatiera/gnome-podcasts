@@ -182,12 +182,8 @@ impl PodcastPriv {
             if let Err(e) = async {
                 let response = reqwest::get(&art).await?;
                 let bytes = response.bytes().await?;
-                let texture = {
-                    let strm = gtk::gio::MemoryInputStream::from_bytes(&glib::Bytes::from(&bytes));
-                    let pixbuf =
-                        gtk::gdk_pixbuf::Pixbuf::from_stream(&strm, gtk::gio::Cancellable::NONE)?;
-                    gtk::gdk::Texture::for_pixbuf(&pixbuf)
-                };
+                let cursor = std::io::Cursor::new(bytes);
+                let texture = crate::utils::texture_from_bytes(cursor).await?;
                 sender
                     .send(texture)
                     .await

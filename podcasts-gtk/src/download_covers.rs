@@ -301,7 +301,7 @@ async fn from_cache(cover_id: &CoverId) -> Option<CachedTexture> {
 
 async fn from_fs(pd: &ShowCoverModel, cover_id: &CoverId) -> Result<CachedTexture> {
     let thumb = determin_cover_path(pd, Some(cover_id.1));
-    if let Ok(texture) = gdk::Texture::from_filename(thumb) {
+    if let Ok(texture) = crate::utils::texture(&thumb).await {
         let cached = CachedTexture::Cached(texture);
         COVER_TEXTURES
             .write()
