@@ -92,8 +92,9 @@ popover modelbutton > box > label {
     background-color: transparent;
 }
 
-.in-button-progress > progressbar > trough > progress{
+.in-button-progress > progressbar > trough > progress {
     border-radius: 0px;
+}
 
 .no-edit-icon .edit-icon {
     opacity: 0;
