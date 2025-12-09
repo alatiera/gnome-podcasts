@@ -29,19 +29,18 @@ podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in
 podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in
 
 # rust files
+podcasts-data/src/feed_manager.rs
 podcasts-gtk/src/app.rs
 podcasts-gtk/src/chapter_parser/extended_comment.rs
 podcasts-gtk/src/chapter_parser/id3.rs
 podcasts-gtk/src/chapter_parser/mod.rs
 podcasts-gtk/src/download_covers.rs
 podcasts-gtk/src/episode_description_parser.rs
-podcasts-gtk/src/feed_manager.rs
 podcasts-gtk/src/main.rs
 podcasts-gtk/src/manager.rs
 podcasts-gtk/src/settings.rs
 podcasts-gtk/src/thumbnail_generator.rs
 podcasts-gtk/src/utils.rs
-podcasts-gtk/src/window.rs
 podcasts-gtk/src/widgets/aboutdialog.rs
 podcasts-gtk/src/widgets/base_view.rs
 podcasts-gtk/src/widgets/chapters.rs
@@ -64,3 +63,4 @@ podcasts-gtk/src/widgets/sheet_player.rs
 podcasts-gtk/src/widgets/show.rs
 podcasts-gtk/src/widgets/show_menu.rs
 podcasts-gtk/src/widgets/shows_view.rs
+podcasts-gtk/src/window.rs
