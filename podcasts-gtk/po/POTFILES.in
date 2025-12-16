@@ -23,9 +23,9 @@ podcasts-gtk/resources/gtk/sync_preferences.ui
 podcasts-gtk/resources/gtk/window.ui
 
 # resources
-podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in
 podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in
 podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in
+podcasts-gtk/resources/org.gnome.Podcasts.metainfo.xml.in.in
 
 # rust files
 podcasts-gtk/src/app.rs

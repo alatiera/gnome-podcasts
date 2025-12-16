@@ -2,7 +2,7 @@
 
 - Ensure that the version in meson.build is correct
 - Update CHANGELOG.md
-- Edit appdata.xml with the correct version and release notes
+- Edit metainfo.xml with the correct version and release notes
 - Commit and tag in git
   - In the tag message add the same release notes as in CHANGELOG.md
 
