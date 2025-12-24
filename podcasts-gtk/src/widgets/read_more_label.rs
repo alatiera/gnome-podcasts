@@ -1,10 +1,9 @@
+use gettextrs::gettext;
 use gtk::glib;
 use gtk::prelude::*;
 use gtk::subclass::prelude::*;
 
 use std::cell::Cell;
-
-use crate::i18n::i18n;
 
 #[derive(Debug, Default)]
 pub struct ReadMoreLabelPriv {
@@ -30,10 +29,10 @@ impl ObjectImpl for ReadMoreLabelPriv {
         let obj = self.obj();
 
         self.button
-            .update_property(&[gtk::accessible::Property::Description(&i18n(
+            .update_property(&[gtk::accessible::Property::Description(&gettext(
                 "Visually expands this description",
             ))]);
-        self.button.set_label(&i18n("Read More"));
+        self.button.set_label(&gettext("Read More"));
         self.button.set_halign(gtk::Align::Center);
         self.button.connect_clicked(glib::clone!(
             #[weak]

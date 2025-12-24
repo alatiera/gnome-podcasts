@@ -22,6 +22,7 @@ use adw::prelude::*;
 use adw::subclass::prelude::*;
 use anyhow::{Result, anyhow};
 use async_channel::Sender;
+use gettextrs::gettext;
 use glib::clone;
 use glib::object::Object;
 use gtk::gio;
@@ -33,7 +34,6 @@ use std::sync::Arc;
 
 use crate::app::Action;
 use crate::download_covers::load_widget_texture;
-use crate::i18n::i18n;
 use crate::utils::get_ignored_shows;
 use crate::widgets::BaseView;
 use podcasts_data::dbqueries;
@@ -114,7 +114,7 @@ impl ObjectImpl for ShowsViewPriv {
         self.grid.set_vscroll_policy(gtk::ScrollablePolicy::Natural);
         self.grid
             // Translators: Shows as a noun, meaning Podcast-Shows.
-            .update_property(&[gtk::accessible::Property::Label(&i18n("Shows"))]);
+            .update_property(&[gtk::accessible::Property::Label(&gettext("Shows"))]);
 
         let clamp = adw::ClampScrollable::builder()
             .child(&self.grid)

@@ -21,6 +21,7 @@ use adw::prelude::*;
 use adw::subclass::prelude::*;
 use anyhow::Result;
 use async_channel::Sender;
+use gettextrs::gettext;
 use glib::Properties;
 use glib::clone;
 use glib::subclass::InitializingObject;
@@ -30,7 +31,6 @@ use std::cell::{Cell, RefCell};
 
 use crate::app::Action;
 use crate::chapter_parser::Chapter;
-use crate::i18n::i18n;
 use podcasts_data::EpisodeId;
 use podcasts_data::dbqueries;
 
@@ -127,7 +127,7 @@ impl ChaptersPriv {
         {
             let icon = gtk::Image::from_icon_name("media-playback-start-symbolic");
             icon.set_pixel_size(12);
-            icon.set_tooltip_text(Some(&i18n("Currently playing chapter")));
+            icon.set_tooltip_text(Some(&gettext("Currently playing chapter")));
             row.add_suffix(&icon);
             self.active_chapter_icon.replace(Some(icon));
         }
@@ -191,7 +191,7 @@ impl Chapters {
         let widget = Self::new(sender, slider, ep, chapters);
         let view = adw::ToolbarView::builder().content(&widget).build();
         view.add_top_bar(&adw::HeaderBar::new());
-        adw::NavigationPage::with_tag(&view, &i18n("Chapters"), "chapters")
+        adw::NavigationPage::with_tag(&view, &gettext("Chapters"), "chapters")
     }
 
     pub(crate) fn init(&self, sender: &Sender<Action>, slider: &gtk::Scale) {

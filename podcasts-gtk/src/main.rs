@@ -38,7 +38,6 @@ mod app;
 mod chapter_parser;
 mod download_covers;
 mod episode_description_parser;
-mod i18n;
 mod manager;
 mod settings;
 mod thumbnail_generator;

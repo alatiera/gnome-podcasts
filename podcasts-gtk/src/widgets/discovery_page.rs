@@ -21,6 +21,7 @@ use adw::prelude::*;
 use adw::subclass::prelude::*;
 use anyhow::Result;
 use async_channel::Sender;
+use gettextrs::gettext;
 use glib::clone;
 use glib::subclass::InitializingObject;
 use gtk::CompositeTemplate;
@@ -29,7 +30,6 @@ use std::sync::Arc;
 use url::Url;
 
 use crate::app::Action;
-use crate::i18n::i18n;
 use crate::utils::{itunes_to_rss, soundcloud_to_rss};
 use podcasts_data::dbqueries;
 use podcasts_data::discovery::SearchError::NoSearchPlatformsSelected;
@@ -110,7 +110,7 @@ impl DiscoveryPagePriv {
                     &this
                         .loading_spinner
                         .tooltip_text()
-                        .unwrap_or(i18n("Loading…").into()),
+                        .unwrap_or(gettext("Loading…").into()),
                     gtk::AccessibleAnnouncementPriority::High,
                 );
                 this.entry.remove_css_class("error");

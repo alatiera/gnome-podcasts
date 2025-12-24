@@ -21,7 +21,9 @@ use anyhow::{Context, Result, anyhow, bail};
 use async_channel::Sender;
 use async_channel::unbounded;
 use chrono::prelude::*;
+use formatx::formatx;
 use futures_util::StreamExt;
+use gettextrs::{gettext, ngettext};
 use glib::object::WeakRef;
 use gtk::FileFilter;
 use gtk::Widget;
@@ -35,7 +37,6 @@ use std::time::{Duration, Instant};
 use url::Url;
 
 use crate::app::Action;
-use crate::i18n::{i18n, i18n_f};
 use podcasts_data::dbqueries;
 use podcasts_data::downloader::client_builder;
 use podcasts_data::feed_manager::FEED_MANAGER;
@@ -294,10 +295,10 @@ pub(crate) async fn subscribe(sender: &Sender<Action>, feed: String) {
         // but pipeline doesn't pass useful errors yet
         send!(
             sender,
-            Action::ErrorNotification(i18n_f(
-                "Failed to subscribe to feed: {}",
-                &[&feed.to_string()]
-            ))
+            Action::ErrorNotification(
+                formatx!(gettext("Failed to subscribe to feed: {}"), feed)
+                    .expect("Could not format translatable string")
+            )
         );
     }
 }
@@ -390,7 +391,7 @@ async fn soundcloud_lookup_id(url: &Url) -> Option<(u64, u64)> {
 pub(crate) async fn on_import_clicked(window: &gtk::ApplicationWindow, sender: &Sender<Action>) {
     // Set a filter to show only xml files
     let filter = FileFilter::new();
-    FileFilter::set_name(&filter, Some(i18n("OPML file").as_str()));
+    FileFilter::set_name(&filter, Some(gettext("OPML file").as_str()));
     filter.add_mime_type("application/xml");
     filter.add_mime_type("text/xml");
     filter.add_mime_type("text/x-opml");
@@ -400,10 +401,10 @@ pub(crate) async fn on_import_clicked(window: &gtk::ApplicationWindow, sender: &
 
     // Create the FileChooser Dialog
     let dialog = gtk::FileDialog::builder()
-        .title(i18n(
+        .title(gettext(
             "Select the file from which to you want to import shows.",
         ))
-        .accept_label(i18n("_Import"))
+        .accept_label(gettext("_Import"))
         .filters(&filters)
         .build();
 
@@ -422,7 +423,8 @@ pub(crate) async fn on_import_clicked(window: &gtk::ApplicationWindow, sender: &
             .await;
 
             if let Err(err) = result.unwrap_or_else(|e| bail!("Import Thread Error {e:#?}")) {
-                let text = i18n_f("Failed to parse the imported file {}", &[&err.to_string()]);
+                let text = formatx!(gettext("Failed to parse the imported file {}",), err,)
+                    .expect("Could not format translatable string");
                 send!(sender, Action::ErrorNotification(text));
             }
         }
@@ -432,7 +434,7 @@ pub(crate) async fn on_import_clicked(window: &gtk::ApplicationWindow, sender: &
 pub(crate) async fn on_export_clicked(window: &gtk::ApplicationWindow, sender: &Sender<Action>) {
     // Set a filter to show only xml files
     let filter = FileFilter::new();
-    FileFilter::set_name(&filter, Some(i18n("OPML file").as_str()));
+    FileFilter::set_name(&filter, Some(&gettext("OPML file")));
     filter.add_mime_type("application/xml");
     filter.add_mime_type("text/xml");
     filter.add_mime_type("text/x-opml");
@@ -443,12 +445,12 @@ pub(crate) async fn on_export_clicked(window: &gtk::ApplicationWindow, sender: &
     // Create the FileChooser Dialog
     let dialog = gtk::FileDialog::builder()
         // Translators: Show as a noun, meaning Podcast-Shows.
-        .title(i18n("Export shows to…"))
-        .accept_label(i18n("_Export"))
+        .title(gettext("Export shows to…"))
+        .accept_label(gettext("_Export"))
         .initial_name(format!(
             "{}.opml",
             // Translators: This is the string of the suggested name for the exported opml file
-            i18n("gnome-podcasts-exported-shows")
+            gettext("gnome-podcasts-exported-shows")
         ))
         .filters(&filters)
         .build();
@@ -457,11 +459,11 @@ pub(crate) async fn on_export_clicked(window: &gtk::ApplicationWindow, sender: &
         if let Some(path) = file.peek_path() {
             debug!("File selected: {:?}", path);
             let result = gio::spawn_blocking(move || {
-                opml::export_from_db(path, &i18n("GNOME Podcasts Subscriptions"))
+                opml::export_from_db(path, &gettext("GNOME Podcasts Subscriptions"))
             })
             .await;
             if let Ok(Err(err)) = result {
-                let text = i18n("Failed to export podcasts");
+                let text = gettext("Failed to export podcasts");
                 error!("Failed to export podcasts: {err}");
                 send!(sender, Action::ErrorNotification(text));
             }
@@ -472,49 +474,31 @@ pub(crate) async fn on_export_clicked(window: &gtk::ApplicationWindow, sender: &
 /// Only works for Durations that are positive.
 /// Call now.signed_duration_since(date_in_the_past) to get the duration.
 pub(crate) fn relative_time(duration: chrono::Duration) -> String {
-    use crate::i18n::ni18n_f;
     if duration.num_seconds() < 60 {
-        i18n("Just now")
+        gettext("Just now")
     } else if duration.num_minutes() < 60 {
         let time = duration.num_minutes();
-        ni18n_f(
-            "{} minute ago",
-            "{} minutes ago",
-            time as u32,
-            &[&time.to_string()],
+        formatx!(
+            ngettext("{} minute ago", "{} minutes ago", time as u32),
+            time,
         )
+        .expect("Could not format translatable string")
     } else if duration.num_hours() < 24 {
         let time = duration.num_hours();
-        ni18n_f(
-            "{} hour ago",
-            "{} hours ago",
-            time as u32,
-            &[&time.to_string()],
-        )
+        formatx!(ngettext("{} hour ago", "{} hours ago", time as u32), time)
+            .expect("Could not format translatable string")
     } else if duration.num_days() < 31 {
         let time = duration.num_days();
-        ni18n_f(
-            "{} day ago",
-            "{} days ago",
-            time as u32,
-            &[&time.to_string()],
-        )
+        formatx!(ngettext("{} day ago", "{} days ago", time as u32), time)
+            .expect("Could not format translatable string")
     } else if duration.num_days() < 365 {
         let time = duration.num_days() / 30;
-        ni18n_f(
-            "{} month ago",
-            "{} months ago",
-            time as u32,
-            &[&time.to_string()],
-        )
+        formatx!(ngettext("{} month ago", "{} months ago", time as u32), time)
+            .expect("Could not format translatable string")
     } else {
         let time = duration.num_days() / 365;
-        ni18n_f(
-            "{} year ago",
-            "{} years ago",
-            time as u32,
-            &[&time.to_string()],
-        )
+        formatx!(ngettext("{} year ago", "{} years ago", time as u32), time)
+            .expect("Could not format translatable string")
     }
 }
 

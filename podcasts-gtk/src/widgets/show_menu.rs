@@ -19,13 +19,14 @@
 
 use anyhow::Result;
 use async_channel::Sender;
+use formatx::formatx;
+use gettextrs::gettext;
 use glib::clone;
 use gtk::prelude::*;
 use gtk::{gio, glib};
 use std::sync::Arc;
 
 use crate::app::Action;
-use crate::i18n::{i18n, i18n_f};
 use crate::utils;
 use podcasts_data::Show;
 use podcasts_data::dbqueries;
@@ -178,8 +179,8 @@ fn mark_all_watched(pd: &Show, sender: &Sender<Action>) -> Result<()> {
 
 pub(crate) fn mark_all_notif(pd: Arc<Show>, sender: &Sender<Action>) -> adw::Toast {
     let id = pd.id();
-    let toast = adw::Toast::new(&i18n("Marked all episodes as listened"));
-    toast.set_button_label(Some(&i18n("Undo")));
+    let toast = adw::Toast::new(&gettext("Marked all episodes as listened"));
+    toast.set_button_label(Some(&gettext("Undo")));
     toast.set_action_target_value(Some(&id.0.to_variant()));
     toast.set_action_name(Some("app.undo-mark-all"));
 
@@ -202,11 +203,12 @@ pub(crate) fn mark_all_notif(pd: Arc<Show>, sender: &Sender<Action>) -> adw::Toa
 }
 
 pub(crate) fn remove_show_notif(pd: Arc<Show>, sender: Sender<Action>) -> adw::Toast {
-    let text = i18n_f("Unsubscribed from {}", &[pd.title()]);
+    let text = formatx!(gettext("Unsubscribed from {}"), pd.title())
+        .expect("Could not format translatable string");
     let id = pd.id();
 
     let toast = adw::Toast::new(&text);
-    toast.set_button_label(Some(&i18n("Undo")));
+    toast.set_button_label(Some(&gettext("Undo")));
     toast.set_action_target_value(Some(&id.0.to_variant()));
     toast.set_action_name(Some("app.undo-remove-show"));
 
@@ -231,7 +233,10 @@ pub(crate) fn remove_show_notif(pd: Arc<Show>, sender: Sender<Action>) -> adw::T
                 if app.is_show_marked_delete(&pd) {
                     if let Err(err) = podcasts_data::sync::Show::store(&pd, podcasts_data::sync::ShowAction::Removed) {
                         // TODO okay to send_blocking here?
-                        send_blocking!(sender, Action::ErrorNotification(i18n_f("Failed to store Unsubscribe Action for Synchronization in database. {}", &[&err.to_string()])))
+                        send_blocking!(sender, Action::ErrorNotification(
+                            formatx!(gettext("Failed to store Unsubscribe Action for Synchronization in database. {}"), err)
+                                .expect("Could not format translatable string"))
+                        )
                     }
 
 

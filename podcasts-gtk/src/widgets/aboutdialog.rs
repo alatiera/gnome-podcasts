@@ -17,10 +17,10 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+use gettextrs::gettext;
+
 use crate::config::{APP_ID, VERSION};
 use adw::prelude::*;
-
-use crate::i18n::i18n;
 
 /// Takes a `window` and creates and attaches an `adw::AboutWindow` to it.
 pub(crate) fn about_dialog(window: &gtk::ApplicationWindow) {
@@ -49,17 +49,17 @@ pub(crate) fn about_dialog(window: &gtk::ApplicationWindow) {
 
     let dialog = adw::AboutDialog::builder()
         .application_icon(APP_ID)
-        .comments(i18n("Podcast Client for the GNOME Desktop.").as_str())
+        .comments(gettext("Podcast Client for the GNOME Desktop.").as_str())
         .copyright("© 2017-2021 Jordan Petridis")
         .license_type(gtk::License::Gpl30)
         .version(VERSION)
-        .application_name(i18n("Podcasts"))
+        .application_name(gettext("Podcasts"))
         .website("https://gitlab.gnome.org/World/podcasts")
         .issue_url("https://gitlab.gnome.org/World/podcasts/-/issues")
         .developer_name("Jordan Petridis, et al.")
         .developers(developers)
         .designers(designers)
-        .translator_credits(i18n("translator-credits").as_str())
+        .translator_credits(gettext("translator-credits").as_str())
         .build();
 
     dialog.present(Some(window));

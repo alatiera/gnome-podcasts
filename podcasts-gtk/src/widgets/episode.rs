@@ -21,6 +21,8 @@ use adw::subclass::prelude::*;
 use anyhow::Result;
 use async_channel::Sender;
 use chrono::prelude::*;
+use formatx::formatx;
+use gettextrs::gettext;
 use glib::clone;
 use glib::subclass::InitializingObject;
 use gtk::CompositeTemplate;
@@ -30,7 +32,6 @@ use std::cell::Cell;
 use std::sync::LazyLock;
 
 use crate::app::Action;
-use crate::i18n::i18n_f;
 use crate::manager;
 use crate::widgets::{DownloadProgressBar, EpisodeMenu};
 use podcasts_data::EpisodeId;
@@ -350,8 +351,10 @@ impl EpisodeWidgetPriv {
             // If the length is 1 or more minutes
             if minutes != 0 {
                 // Set the label and show them.
-                self.duration
-                    .set_text(&i18n_f("{} min", &[&minutes.to_string()]));
+                self.duration.set_text(
+                    &formatx!(gettext("{} min"), minutes)
+                        .expect("Could not format translatable string"),
+                );
                 self.set_duration_visible(true);
                 return;
             }

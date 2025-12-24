@@ -20,6 +20,7 @@
 use adw::subclass::prelude::*;
 use anyhow::{Result, anyhow};
 use async_channel::Sender;
+use gettextrs::gettext;
 use glib::clone;
 use glib::subclass::InitializingObject;
 use gtk::CompositeTemplate;
@@ -28,7 +29,6 @@ use gtk::glib;
 use gtk::prelude::*;
 
 use crate::app::Action;
-use crate::i18n::i18n;
 use podcasts_data::feed_manager::FEED_MANAGER;
 use podcasts_data::nextcloud_sync::{self, SyncPolicy};
 
@@ -123,7 +123,7 @@ impl SyncPreferencesPriv {
                 let user = this.username.text();
                 let password = this.password.text();
 
-                this.enter_loading_state(&i18n("Logging in..."));
+                this.enter_loading_state(&gettext("Logging in..."));
 
                 crate::RUNTIME.spawn(clone!(
                     #[strong]
@@ -177,7 +177,7 @@ impl SyncPreferencesPriv {
                 let sender = sender.clone();
                 let widget_sender = widget_sender.clone();
 
-                this.enter_loading_state(&i18n("Waiting for browser login..."));
+                this.enter_loading_state(&gettext("Waiting for browser login..."));
 
                 crate::RUNTIME.spawn(async move {
                     let refresh_sender = sender.clone();
@@ -224,7 +224,7 @@ impl SyncPreferencesPriv {
                 let sender = sender.clone();
                 let widget_sender = widget_sender.clone();
 
-                this.enter_loading_state(&i18n("Logging out..."));
+                this.enter_loading_state(&gettext("Logging out..."));
 
                 crate::RUNTIME.spawn(async move {
                     let err_sender = widget_sender.clone();
@@ -259,7 +259,7 @@ impl SyncPreferencesPriv {
                 let sender = sender.clone();
                 let widget_sender = widget_sender.clone();
 
-                this.enter_loading_state(&i18n("Waiting for browser login..."));
+                this.enter_loading_state(&gettext("Waiting for browser login..."));
 
                 crate::RUNTIME.spawn(async move {
                     let refresh_sender = sender.clone();
@@ -306,7 +306,7 @@ impl SyncPreferencesPriv {
                 let sender = sender.clone();
                 let widget_sender = widget_sender.clone();
 
-                this.enter_loading_state(&i18n("Logging out..."));
+                this.enter_loading_state(&gettext("Logging out..."));
 
                 crate::RUNTIME.spawn(async move {
                     let err_sender = widget_sender.clone();
@@ -341,11 +341,11 @@ impl SyncPreferencesPriv {
             move |_| {
                 let sender = sender.clone();
                 let widget_sender = widget_sender.clone();
-                this.enter_loading_state(&i18n("Synchronizing now..."));
+                this.enter_loading_state(&gettext("Synchronizing now..."));
                 crate::RUNTIME.spawn(async move {
                     send!(
                         widget_sender,
-                        WidgetAction::LoadingMessage(i18n("Refreshing feeds..."))
+                        WidgetAction::LoadingMessage(gettext("Refreshing feeds..."))
                     );
                     // Fetch feeds to avoid getting updates that are missing locally.
                     let errors = FEED_MANAGER.full_refresh().await;
@@ -388,12 +388,14 @@ impl SyncPreferencesPriv {
         //
         // send!(
         //     widget_sender,
-        //     WidgetAction::LoadingMessage(i18n("Refreshing feeds..."))
+        //     WidgetAction::LoadingMessage(gettext("Refreshing feeds..."))
         // );
         // FEED_MANAGER.full_refresh().await;
         send!(
             widget_sender,
-            WidgetAction::LoadingMessage(i18n("Running first sync. This can take a few minutes."))
+            WidgetAction::LoadingMessage(gettext(
+                "Running first sync. This can take a few minutes."
+            ))
         );
         // IgnoreMissingEpisodes, because we just did a full refresh.
         // Also episodes might be missing if a feed 404s.
@@ -434,7 +436,7 @@ impl SyncPreferencesPriv {
                     .set_tooltip_text(Some(&format!("{}", last_sync.format("%x %X"))));
             } else {
                 // Translators: reads as: "Last sync: Never"
-                self.last_sync.set_text(&i18n("Never"));
+                self.last_sync.set_text(&gettext("Never"));
             }
             self.connection_info.set_visible(true);
             self.login_group.set_visible(false);

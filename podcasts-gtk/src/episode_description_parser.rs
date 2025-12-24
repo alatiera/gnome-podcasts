@@ -17,11 +17,12 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+use formatx::formatx;
+use gettextrs::gettext;
 use linkify::LinkFinder;
 use linkify::LinkKind;
 use regex::Regex;
 
-use crate::i18n::i18n_f;
 use html5ever::tendril::TendrilSink;
 use html5ever::tree_builder::TreeBuilderOpts;
 use html5ever::{ParseOpts, expanded_name, parse_document};
@@ -315,14 +316,13 @@ fn push_timestamped_text(buffer: &mut String, text: &str, nl_handling: NewlineHa
             if let (Some(hours), Some(minutes), Some(seconds)) = (first, second, third) {
                 let jump_time = (hours * 60 * 60) + (minutes * 60) + seconds;
                 // Jump to Hours:Minutes:Seconds
-                let title = i18n_f(
-                    "Jump to {}:{}:{}",
-                    &[
-                        &format!("{:02}", hours),
-                        &format!("{:02}", minutes),
-                        &format!("{:02}", seconds),
-                    ],
-                );
+                let title = formatx!(
+                    gettext("Jump to {hours}:{minutes}:{seconds}"),
+                    hours = format!("{:02}", hours),
+                    minutes = format!("{:02}", minutes),
+                    seconds = format!("{:02}", seconds),
+                )
+                .expect("Could not format translatable string");
                 let range = captures.get(0).unwrap().range();
 
                 push_text_with_links(buffer, &text[position..range.start], nl_handling.clone());
@@ -334,10 +334,12 @@ fn push_timestamped_text(buffer: &mut String, text: &str, nl_handling: NewlineHa
             } else if let (Some(minutes), Some(seconds)) = (first, second) {
                 let jump_time = (minutes * 60) + seconds;
                 // Jump to Minutes:Seconds
-                let title = i18n_f(
-                    "Jump to {}:{}",
-                    &[&format!("{:02}", minutes), &format!("{:02}", seconds)],
-                );
+                let title = formatx!(
+                    gettext("Jump to {minutes}:{seconds}"),
+                    minutes = format!("{:02}", minutes),
+                    seconds = format!("{:02}", seconds),
+                )
+                .expect("Could not format translatable string");
                 let range = captures.get(0).unwrap().range();
 
                 push_text_with_links(buffer, &text[position..range.start], nl_handling.clone());

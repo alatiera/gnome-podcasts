@@ -21,6 +21,7 @@
 use adw::prelude::BinExt;
 use adw::subclass::prelude::*;
 use anyhow::{Result, anyhow, bail};
+use gettextrs::gettext;
 use glib::Properties;
 use glib::clone;
 use gtk::glib;
@@ -29,7 +30,6 @@ use std::cell::Cell;
 use std::sync::{Arc, Mutex, OnceLock, TryLockError};
 use std::time::Duration;
 
-use crate::i18n::i18n;
 use crate::manager;
 use crate::manager::ActiveProgress;
 use podcasts_data::EpisodeId;
@@ -63,7 +63,9 @@ impl ObjectImpl for DownloadProgressPriv {
         self.progressbar.set_hexpand(true);
         self.progressbar.set_pulse_step(0.0);
         self.progressbar
-            .update_property(&[gtk::accessible::Property::Label(&i18n("Download progress"))]);
+            .update_property(&[gtk::accessible::Property::Label(&gettext(
+                "Download progress",
+            ))]);
     }
 }
 impl WidgetImpl for DownloadProgressPriv {}

@@ -21,11 +21,11 @@
 use adw::prelude::*;
 use anyhow::Result;
 use async_channel::Sender;
+use gettextrs::gettext;
 use std::cell::OnceCell;
 use std::rc::Rc;
 
 use crate::app::Action;
-use crate::i18n::i18n;
 use crate::utils::get_ignored_shows;
 use crate::widgets::{EmptyView, HomeView, ShowsView};
 use podcasts_data::EpisodeWidgetModel;
@@ -58,15 +58,15 @@ impl Content {
             .valign(gtk::Align::Start)
             .halign(gtk::Align::Fill)
             .visible(false)
-            .tooltip_text(i18n("Fetching feeds…"))
+            .tooltip_text(gettext("Fetching feeds…"))
             .build();
         progress_bar.add_css_class("osd");
 
         overlay.set_child(Some(&stack));
         overlay.add_overlay(&progress_bar);
 
-        let home_page = stack.add_titled(&home_bin, Some("home"), &i18n("New"));
-        let shows_page = stack.add_titled(&shows_bin, Some("shows"), &i18n("Shows"));
+        let home_page = stack.add_titled(&home_bin, Some("home"), &gettext("New"));
+        let shows_page = stack.add_titled(&shows_bin, Some("shows"), &gettext("Shows"));
         stack.add_named(&empty, Some("empty"));
 
         home_page.set_icon_name(Some("document-open-recent-symbolic"));

@@ -20,11 +20,12 @@
 
 use anyhow::{Result, anyhow};
 use async_channel::Sender;
+use formatx::formatx;
+use gettextrs::gettext;
 use std::collections::HashMap;
 use std::sync::{Arc, LazyLock, Mutex, RwLock};
 
 use crate::app::Action;
-use crate::i18n::i18n_f;
 use podcasts_data::dbqueries;
 use podcasts_data::downloader::{DownloadProgress, get_episode};
 use podcasts_data::errors::DownloadError;
@@ -102,7 +103,10 @@ pub(crate) fn add(sender: Sender<Action>, id: EpisodeId, directory: String) -> R
                 Err(e) => {
                     send!(
                         sender,
-                        Action::ErrorNotification(i18n_f("Download failed: {}", &[&e.to_string()]))
+                        Action::ErrorNotification(
+                            formatx!(gettext("Download failed: {}"), e)
+                                .expect("Could not format translatable string")
+                        )
                     );
                 }
             }

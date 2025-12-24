@@ -20,6 +20,7 @@
 use adw::subclass::prelude::*;
 use anyhow::Result;
 use async_channel::{Receiver, Sender};
+use gettextrs::gettext;
 use gettextrs::{LocaleCategory, bindtextdomain, setlocale, textdomain};
 use glib::Priority;
 use glib::clone;
@@ -33,7 +34,6 @@ use std::sync::Arc;
 use crate::chapter_parser::Chapter;
 use crate::config::{APP_ID, LOCALEDIR};
 use crate::download_covers;
-use crate::i18n::i18n;
 use crate::settings;
 use crate::utils;
 use crate::widgets::player::StreamMode;
@@ -399,7 +399,7 @@ impl PdApplication {
                 }
             }
             Action::CopiedUrlNotification => {
-                let text = i18n("Copied URL to clipboard!");
+                let text = gettext("Copied URL to clipboard!");
                 let toast = adw::Toast::new(&text);
                 self.send_toast(toast);
             }
@@ -626,7 +626,7 @@ impl PdApplication {
         let application = Self::new();
 
         // Weird magic I copy-pasted that sets the Application Name in the Shell.
-        glib::set_application_name(&i18n("Podcasts"));
+        glib::set_application_name(&gettext("Podcasts"));
         gtk::Window::set_default_icon_name(APP_ID);
         let args: Vec<String> = env::args().collect();
         let result = ApplicationExtManual::run_with_args(&application, &args);

@@ -22,6 +22,7 @@ use anyhow::Result;
 use async_channel::Sender;
 use chrono::prelude::*;
 use fragile::Fragile;
+use gettextrs::gettext;
 use gio::File;
 use glib::clone;
 use glib::{SignalHandlerId, WeakRef};
@@ -39,7 +40,6 @@ use crate::app::Action;
 use crate::chapter_parser::Chapter;
 use crate::config::APP_ID;
 use crate::download_covers::load_widget_texture;
-use crate::i18n::i18n;
 use crate::widgets::SheetBase;
 use podcasts_data::{
     Episode, EpisodeId, EpisodeModel, ShowCoverModel, ShowId, USER_AGENT, dbqueries,
@@ -405,7 +405,7 @@ impl Default for PlayerWidget {
         player.set_video_track_enabled(false);
         let mpris = crate::RUNTIME.block_on(async move {
             let mpris_result = Player::builder(APP_ID)
-                .identity(i18n("Podcasts"))
+                .identity(gettext("Podcasts"))
                 .desktop_entry(APP_ID)
                 .can_raise(true)
                 .can_pause(false)
@@ -1130,7 +1130,7 @@ impl PlayerWrapper {
                     sender,
                     Action::ErrorNotification(format!("Player Error: {}", _error))
                 );
-                let s = i18n("The media player was unable to execute an action.");
+                let s = gettext("The media player was unable to execute an action.");
                 send_blocking!(sender, Action::ErrorNotification(s));
             }
         ));

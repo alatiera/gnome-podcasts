@@ -20,13 +20,13 @@
 use adw::prelude::*;
 use adw::subclass::prelude::*;
 use async_channel::Sender;
+use gettextrs::gettext;
 use glib::clone;
 use glib::subclass::InitializingObject;
 use gtk::CompositeTemplate;
 use gtk::glib;
 
 use crate::app::Action;
-use crate::i18n::i18n;
 use podcasts_data::discovery::FoundPodcast;
 
 #[derive(Debug, CompositeTemplate, Default)]
@@ -149,7 +149,7 @@ impl PodcastPriv {
                     &this
                         .loading_spinner
                         .tooltip_text()
-                        .unwrap_or(i18n("Subscribing to feed…").into()),
+                        .unwrap_or(gettext("Subscribing to feed…").into()),
                     gtk::AccessibleAnnouncementPriority::High,
                 );
                 crate::RUNTIME.spawn(clone!(
