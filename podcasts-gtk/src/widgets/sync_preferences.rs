@@ -61,9 +61,7 @@ pub struct SyncPreferencesPriv {
     logout: TemplateChild<gtk::Button>,
 
     #[template_child]
-    method_browser: TemplateChild<gtk::ToggleButton>,
-    #[template_child]
-    method_password: TemplateChild<gtk::ToggleButton>,
+    method_toggle_group: TemplateChild<adw::ToggleGroup>,
 
     #[template_child]
     connection_info: TemplateChild<adw::PreferencesGroup>,
@@ -101,29 +99,15 @@ impl SyncPreferencesPriv {
         // inital load
         crate::RUNTIME.spawn(Self::fetch_settings(widget_sender.clone()));
 
-        self.method_browser.connect_toggled(clone!(
+        self.method_toggle_group.connect_active_notify(clone!(
             #[weak(rename_to = this)]
             self,
-            move |b| {
-                if b.is_active() {
-                    this.username.set_visible(false);
-                    this.password.set_visible(false);
-                    this.login_password.set_visible(false);
-                    this.login_browser.set_visible(true);
-                }
-            }
-        ));
-
-        self.method_password.connect_toggled(clone!(
-            #[weak(rename_to = this)]
-            self,
-            move |b| {
-                if b.is_active() {
-                    this.username.set_visible(true);
-                    this.password.set_visible(true);
-                    this.login_password.set_visible(true);
-                    this.login_browser.set_visible(false);
-                }
+            move |group| {
+                let is_browser = group.active_name().is_some_and(|n| n == "browser");
+                this.username.set_visible(!is_browser);
+                this.password.set_visible(!is_browser);
+                this.login_password.set_visible(!is_browser);
+                this.login_browser.set_visible(is_browser);
             }
         ));
 
@@ -469,7 +453,11 @@ impl SyncPreferencesPriv {
             self.logout.set_visible(false);
             self.sync_now.set_visible(false);
 
-            if self.method_browser.is_active() {
+            if self
+                .method_toggle_group
+                .active_name()
+                .is_some_and(|n| n == "browser")
+            {
                 self.login_browser.set_visible(false);
                 self.login_browser.set_visible(true);
             } else {

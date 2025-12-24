@@ -127,19 +127,19 @@ nee
                           <object class="AdwActionRow">
                             <property name="title" translatable="yes">Login via</property>
                             <child>
-                              <object class="GtkBox">
-                                <style><class name="linked"/></style>
+                              <object class="AdwToggleGroup" id="method_toggle_group">
                                 <property name="valign">center</property>
+                                <property name="active-name">browser</property>
                                 <child>
-                                  <object class="GtkToggleButton" id="method_browser">
+                                  <object class="AdwToggle">
                                     <property name="label" translatable="yes">Browser</property>
-                                    <property name="active">True</property>
+                                    <property name="name">browser</property>
                                   </object>
                                 </child>
                                 <child>
-                                  <object class="GtkToggleButton" id="method_password">
+                                  <object class="AdwToggle">
                                     <property name="label" translatable="yes">Password</property>
-                                    <property name="group">method_browser</property>
+                                    <property name="name">password</property>
                                   </object>
                                 </child>
                               </object>
