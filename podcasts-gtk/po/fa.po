@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: podcasts master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2025-10-18 22:02+0000\n"
-"PO-Revision-Date: 2025-10-19 12:36+0330\n"
+"POT-Creation-Date: 2025-12-24 13:13+0000\n"
+"PO-Revision-Date: 2025-12-25 13:30+0330\n"
 "Last-Translator: Danial Behzadi <dani.behzi@ubuntu.com>\n"
 "Language-Team: Persian\n"
 "Language: fa\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Gtranslator 48.0\n"
+"X-Generator: Poedit 3.8\n"
 "X-DL-Lang: fa\n"
 "X-DL-Module: podcasts\n"
 "X-DL-Branch: main\n"
@@ -173,31 +173,31 @@ msgstr "علامت به پخش شده"
 msgid "Mark as Unplayed"
 msgstr "علامت به پخش نشده"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:70
+#: podcasts-gtk/resources/gtk/episode_widget.ui:71
 msgid "You’ve already listened to this episode."
 msgstr "پیش‌تر این قسمت را گوش کرده بودید."
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:158
+#: podcasts-gtk/resources/gtk/episode_widget.ui:159
 msgid "Calculating episode size…"
 msgstr "محاسبهٔ اندازهٔ قسمت…"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:181
+#: podcasts-gtk/resources/gtk/episode_widget.ui:182
 msgid "Play this episode"
 msgstr "پخش این قسمت"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:195
+#: podcasts-gtk/resources/gtk/episode_widget.ui:197
 msgid "Pause playback"
 msgstr "مکث پخش"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:207
+#: podcasts-gtk/resources/gtk/episode_widget.ui:211
 msgid "Cancel the download process"
 msgstr "لغو فرایند بارگیری"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:220
+#: podcasts-gtk/resources/gtk/episode_widget.ui:225
 msgid "Download this episode"
 msgstr "بارگیری این قسمت"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:234
+#: podcasts-gtk/resources/gtk/episode_widget.ui:240
 msgid "Episode without audio"
 msgstr "قسمت بدون صدا"
 
@@ -432,34 +432,38 @@ msgstr "_درون‌ریزی نمایش‌ها"
 msgid "_Export Shows"
 msgstr "_برون‌ریزی نمایش‌ها"
 
-#: podcasts-gtk/resources/gtk/window.ui:23
+#: podcasts-gtk/resources/gtk/window.ui:21
+msgid "Sync Preferences"
+msgstr "هم‌گام سازی ترجیحات"
+
+#: podcasts-gtk/resources/gtk/window.ui:27
 msgid "_Keyboard Shortcuts"
 msgstr "میان‌برهای _صفحه‌کلید"
 
-#: podcasts-gtk/resources/gtk/window.ui:27
+#: podcasts-gtk/resources/gtk/window.ui:31
 msgid "_About Podcasts"
 msgstr "_دربارهٔ پادپخش‌ها"
 
 #. Weird magic I copy-pasted that sets the Application Name in the Shell.
-#: podcasts-gtk/resources/gtk/window.ui:35
-#: podcasts-gtk/resources/gtk/window.ui:102
+#: podcasts-gtk/resources/gtk/window.ui:39
+#: podcasts-gtk/resources/gtk/window.ui:106
 #: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:4
 #: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:2
-#: podcasts-gtk/src/app.rs:530 podcasts-gtk/src/widgets/aboutdialog.rs:56
+#: podcasts-gtk/src/app.rs:629 podcasts-gtk/src/widgets/aboutdialog.rs:56
 #: podcasts-gtk/src/widgets/player.rs:408
 msgid "Podcasts"
 msgstr "پادپخش‌ها"
 
-#: podcasts-gtk/resources/gtk/window.ui:115
+#: podcasts-gtk/resources/gtk/window.ui:119
 msgid "Add a New Feed"
 msgstr "افزودن خوراکی جدید"
 
-#: podcasts-gtk/resources/gtk/window.ui:123
+#: podcasts-gtk/resources/gtk/window.ui:127
 msgid "Main Menu"
 msgstr "فهرست اصلی"
 
 #. Translators: Show as a noun, meaning a Podcast-Show.
-#: podcasts-gtk/resources/gtk/window.ui:137
+#: podcasts-gtk/resources/gtk/window.ui:141
 msgid "Show"
 msgstr "نمایش"
 
@@ -470,16 +474,16 @@ msgstr "شنیدن نمایش‌های محبوبتان"
 #: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:10
 msgid ""
 "Play, update, and manage your podcasts from a lightweight interface that "
-"seamlessly integrates with GNOME. Podcasts can play various audio formats "
-"and remember where you stopped listening. You can subscribe to shows via RSS/"
-"Atom, iTunes, and Soundcloud links. Subscriptions from other apps can be "
-"imported via OPML files."
+"seamlessly integrates with GNOME. Podcasts can play various audio formats and "
+"remember where you stopped listening. You can subscribe to shows via RSS/Atom, "
+"iTunes, and Soundcloud links. Subscriptions from other apps can be imported via "
+"OPML files."
 msgstr ""
-"پخش، به‌روز رسانی و مدیریت پادپخش‌هایتان از میانایی سبک که به طور بی‌نقصی با "
-"گنوم یکپارچه می‌شود. پادپخش‌ها می‌تواند قالب‌های صوتی مختلفی را پخش کرده و جایی "
-"که شنیدن را متوقّف کردید به خاطر بسپرد. می‌توانید با پیوندهای سوندکلود، آی‌تونز "
-"و خوراک وب مشترک نمایش‌ها شوید. اشتراک‌های دیگر برنامه‌ها می‌توانند از طریق "
-"پرونده‌های OPML درون ریخته شوند."
+"پخش، به‌روز رسانی و مدیریت پادپخش‌هایتان از میانایی سبک که به طور بی‌نقصی با گنوم "
+"یکپارچه می‌شود. پادپخش‌ها می‌تواند قالب‌های صوتی مختلفی را پخش کرده و جایی که شنیدن "
+"را متوقّف کردید به خاطر بسپرد. می‌توانید با پیوندهای سوندکلود، آی‌تونز و خوراک وب "
+"مشترک نمایش‌ها شوید. اشتراک‌های دیگر برنامه‌ها می‌توانند از طریق پرونده‌های OPML "
+"درون ریخته شوند."
 
 #: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:18
 msgid "The home view displaying the newest episodes of your podcasts"
@@ -553,7 +557,7 @@ msgstr "مقدار زمان انتظار بین پاک سازی‌های خود
 msgid "What period of time to wait between automatic cleanups"
 msgstr "مقدار زمان انتظار بین پاک سازی‌های خودکار"
 
-#: podcasts-gtk/src/app.rs:386
+#: podcasts-gtk/src/app.rs:402
 msgid "Copied URL to clipboard!"
 msgstr "نشانی رونوشت شده در تخته‌گیره!"
 
@@ -569,47 +573,81 @@ msgstr "پرش به {}:{}"
 msgid "Download failed: {}"
 msgstr "بارگیری شکست خورد: {}"
 
-#: podcasts-gtk/src/utils.rs:293
+#: podcasts-gtk/src/utils.rs:298
 msgid "Failed to subscribe to feed: {}"
 msgstr "شکست در اشتراک خوراک: {}"
 
-#: podcasts-gtk/src/utils.rs:388 podcasts-gtk/src/utils.rs:434
+#: podcasts-gtk/src/utils.rs:393 podcasts-gtk/src/utils.rs:435
 msgid "OPML file"
 msgstr "پروندهٔ OPML"
 
-#: podcasts-gtk/src/utils.rs:399
+#: podcasts-gtk/src/utils.rs:404
 msgid "Select the file from which to you want to import shows."
 msgstr "پرونده‌ای را که می‌خواهید نمایش‌ها را از آن درون‌ریزی کنید برگزینید."
 
-#: podcasts-gtk/src/utils.rs:401
+#: podcasts-gtk/src/utils.rs:406
 msgid "_Import"
 msgstr "_درون‌ریزی"
 
-#: podcasts-gtk/src/utils.rs:424
+#: podcasts-gtk/src/utils.rs:425
 msgid "Failed to parse the imported file {}"
 msgstr "شکست در تجزیهٔ پروندهٔ درون‌ریختهٔ {}"
 
 #. Translators: Show as a noun, meaning Podcast-Shows.
-#: podcasts-gtk/src/utils.rs:445
+#: podcasts-gtk/src/utils.rs:446
 msgid "Export shows to…"
 msgstr "برون‌ریزی نمایش‌ها به…"
 
-#: podcasts-gtk/src/utils.rs:446
+#: podcasts-gtk/src/utils.rs:447
 msgid "_Export"
 msgstr "_برون‌ریزی"
 
 #. Translators: This is the string of the suggested name for the exported opml file
-#: podcasts-gtk/src/utils.rs:450
+#: podcasts-gtk/src/utils.rs:451
 msgid "gnome-podcasts-exported-shows"
 msgstr "نمایش‌های-برون‌ریخته-پادپخش‌های-گنوم"
 
-#: podcasts-gtk/src/utils.rs:459
+#: podcasts-gtk/src/utils.rs:460
 msgid "GNOME Podcasts Subscriptions"
 msgstr "اشتراک‌های پادپخش‌های گنوم"
 
-#: podcasts-gtk/src/utils.rs:463
+#: podcasts-gtk/src/utils.rs:464
 msgid "Failed to export podcasts"
 msgstr "شکست در برون‌ریزی پادپخش‌ها"
+
+#: podcasts-gtk/src/utils.rs:477
+msgid "Just now"
+msgstr "هم‌اکنون"
+
+#: podcasts-gtk/src/utils.rs:481
+msgid "{} minute ago"
+msgid_plural "{} minutes ago"
+msgstr[0] "{} دقیق پیش"
+msgstr[1] "{} دقیق پیش"
+
+#: podcasts-gtk/src/utils.rs:489
+msgid "{} hour ago"
+msgid_plural "{} hours ago"
+msgstr[0] "‏{} ساعت پیش"
+msgstr[1] "{} ساعت پیش"
+
+#: podcasts-gtk/src/utils.rs:497
+msgid "{} day ago"
+msgid_plural "{} days ago"
+msgstr[0] "{} روز پیش"
+msgstr[1] "{} روز پیش"
+
+#: podcasts-gtk/src/utils.rs:505
+msgid "{} month ago"
+msgid_plural "{} months ago"
+msgstr[0] "{} ماه پیش"
+msgstr[1] "{} ماه پیش"
+
+#: podcasts-gtk/src/utils.rs:513
+msgid "{} year ago"
+msgid_plural "{} years ago"
+msgstr[0] "{} سال پیش"
+msgstr[1] "{} سال پیش"
 
 #: podcasts-gtk/src/widgets/aboutdialog.rs:52
 msgid "Podcast Client for the GNOME Desktop."
@@ -643,11 +681,11 @@ msgstr "نمایش‌ها"
 msgid "Download progress"
 msgstr "پیشرفت بارگیری"
 
-#: podcasts-gtk/src/widgets/episode.rs:343
+#: podcasts-gtk/src/widgets/episode.rs:354
 msgid "{} min"
 msgstr "{} دقیقه"
 
-#: podcasts-gtk/src/widgets/player.rs:1110
+#: podcasts-gtk/src/widgets/player.rs:1133
 msgid "The media player was unable to execute an action."
 msgstr "پخش کنندهٔ رسانه در اجرای کنشی ناتوان بود."
 
@@ -671,3 +709,8 @@ msgstr "برگردان"
 #: podcasts-gtk/src/widgets/show_menu.rs:205
 msgid "Unsubscribed from {}"
 msgstr "لغو اشتراک از {}"
+
+#. TODO okay to send_blocking here?
+#: podcasts-gtk/src/widgets/show_menu.rs:234
+msgid "Failed to store Unsubscribe Action for Synchronization in database. {}"
+msgstr "شکست در ذخیرهٔ کنش لغو اشتراک برای هم‌گام سازی با پایگاه داد. {}"
