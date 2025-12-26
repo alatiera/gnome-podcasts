@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2025-12-24 13:13+0000\n"
-"PO-Revision-Date: 2025-12-25 21:14+0200\n"
+"POT-Creation-Date: 2025-12-26 12:54+0000\n"
+"PO-Revision-Date: 2025-12-26 21:29+0200\n"
 "Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
 "Language-Team: Ukrainian <trans-uk@lists.fedoraproject.org>\n"
 "Language: uk\n"
@@ -415,6 +415,90 @@ msgstr "Меню подкасту"
 msgid "Episodes"
 msgstr "Випуски"
 
+#: podcasts-gtk/resources/gtk/sync_preferences.ui:32
+#: podcasts-gtk/resources/gtk/window.ui:21
+msgid "Sync Preferences"
+msgstr "Параметри синхронізації"
+
+#: podcasts-gtk/resources/gtk/sync_preferences.ui:40
+msgid "Logout"
+msgstr "Вийти"
+
+#: podcasts-gtk/resources/gtk/sync_preferences.ui:66
+msgid "Nextcloud Sync Connection"
+msgstr "З'єднання синхронізації з Nextcloud"
+
+#: podcasts-gtk/resources/gtk/sync_preferences.ui:67
+msgid "Current connection for play position and subscription synchronization."
+msgstr ""
+"Поточне з'єднання для синхронізації позиції відтворення та передплати."
+
+#: podcasts-gtk/resources/gtk/sync_preferences.ui:73
+msgid "Last Sync"
+msgstr "Остання синхронізація"
+
+#: podcasts-gtk/resources/gtk/sync_preferences.ui:85
+msgid "Active"
+msgstr "Активне"
+
+#: podcasts-gtk/resources/gtk/sync_preferences.ui:86
+msgid "Should data be synchronized"
+msgstr "Чи має бути синхронізовано дані"
+
+#: podcasts-gtk/resources/gtk/sync_preferences.ui:92
+msgid "Server"
+msgstr "Сервер"
+
+#: podcasts-gtk/resources/gtk/sync_preferences.ui:100
+#: podcasts-gtk/resources/gtk/sync_preferences.ui:160
+msgid "Username"
+msgstr "Користувач"
+
+#: podcasts-gtk/resources/gtk/sync_preferences.ui:109
+msgid "Sync Now"
+msgstr "Синхронізувати"
+
+#: podcasts-gtk/resources/gtk/sync_preferences.ui:122
+msgid "Nextcloud Login"
+msgstr "Обліковий запис Nextcloud"
+
+#: podcasts-gtk/resources/gtk/sync_preferences.ui:123
+msgid ""
+"Synchronize subscriptions and listening status with a Nextcloud server that "
+"has GPodder Sync installed."
+msgstr ""
+"Синхронізувати передплати та стан прослуховування з сервером Nextcloud, на"
+" якому встановлено GPodder Sync."
+
+#: podcasts-gtk/resources/gtk/sync_preferences.ui:128
+msgid "Login via"
+msgstr "Вхід за допомогою"
+
+#: podcasts-gtk/resources/gtk/sync_preferences.ui:135
+msgid "Browser"
+msgstr "Браузера"
+
+#: podcasts-gtk/resources/gtk/sync_preferences.ui:141
+#: podcasts-gtk/resources/gtk/sync_preferences.ui:168
+msgid "Password"
+msgstr "Пароля"
+
+#: podcasts-gtk/resources/gtk/sync_preferences.ui:152
+msgid "Server (cloud.example.com)"
+msgstr "Сервера (cloud.example.com)"
+
+#: podcasts-gtk/resources/gtk/sync_preferences.ui:177
+msgid "Login"
+msgstr "Увійти"
+
+#: podcasts-gtk/resources/gtk/sync_preferences.ui:187
+msgid "Login via Browser"
+msgstr "Вхід за допомогою браузера"
+
+#: podcasts-gtk/resources/gtk/sync_preferences.ui:205
+msgid "Loading..."
+msgstr "Завантаження…"
+
 #: podcasts-gtk/resources/gtk/window.ui:6
 msgid "_Check for New Episodes"
 msgstr "_Отримати список нових випусків"
@@ -428,10 +512,6 @@ msgstr "_Імпортувати список подкастів"
 #: podcasts-gtk/resources/gtk/window.ui:17
 msgid "_Export Shows"
 msgstr "_Експортувати список подкастів"
-
-#: podcasts-gtk/resources/gtk/window.ui:21
-msgid "Sync Preferences"
-msgstr "Параметри синхронізації"
 
 #: podcasts-gtk/resources/gtk/window.ui:27
 msgid "_Keyboard Shortcuts"
@@ -564,72 +644,73 @@ msgstr ""
 msgid "Copied URL to clipboard!"
 msgstr "URL-адресу скопійовано до буфера обміну!"
 
-#: podcasts-gtk/src/episode_description_parser.rs:319
+#: podcasts-gtk/src/episode_description_parser.rs:320
 #, rust-format
-msgid "Jump to {}:{}:{}"
-msgstr "Перейти до {}:{}:{}"
+#| msgid "Jump to {}:{}:{}"
+msgid "Jump to {hours}:{minutes}:{seconds}"
+msgstr "Перейти до {hours}:{minutes}:{seconds}"
 
 #: podcasts-gtk/src/episode_description_parser.rs:338
 #, rust-format
-msgid "Jump to {}:{}"
-msgstr "Перейти до {}:{}"
+#| msgid "Jump to {}:{}"
+msgid "Jump to {minutes}:{seconds}"
+msgstr "Перейти до {minutes}:{seconds}"
 
-#: podcasts-gtk/src/manager.rs:105
+#: podcasts-gtk/src/manager.rs:107
 #, rust-format
 msgid "Download failed: {}"
 msgstr "Не вдалося завантажити: {}"
 
-#: podcasts-gtk/src/utils.rs:298
+#: podcasts-gtk/src/utils.rs:299
 #, rust-format
 msgid "Failed to subscribe to feed: {}"
 msgstr "Не вдалося додати стрічку: {}"
 
-#: podcasts-gtk/src/utils.rs:393 podcasts-gtk/src/utils.rs:435
+#: podcasts-gtk/src/utils.rs:394 podcasts-gtk/src/utils.rs:437
 msgid "OPML file"
 msgstr "файл OPML"
 
-#: podcasts-gtk/src/utils.rs:404
+#: podcasts-gtk/src/utils.rs:405
 msgid "Select the file from which to you want to import shows."
 msgstr "Виберіть файл зі списком подкастів, які треба імпортувати."
 
-#: podcasts-gtk/src/utils.rs:406
+#: podcasts-gtk/src/utils.rs:407
 msgid "_Import"
 msgstr "_Імпортувати"
 
-#: podcasts-gtk/src/utils.rs:425
+#: podcasts-gtk/src/utils.rs:426
 #, rust-format
 msgid "Failed to parse the imported file {}"
 msgstr "Не вдалося обробити файл {} під час імпортування"
 
 #. Translators: Show as a noun, meaning Podcast-Shows.
-#: podcasts-gtk/src/utils.rs:446
+#: podcasts-gtk/src/utils.rs:448
 msgid "Export shows to…"
 msgstr "Експортувати подкасти…"
 
-#: podcasts-gtk/src/utils.rs:447
+#: podcasts-gtk/src/utils.rs:449
 msgid "_Export"
 msgstr "_Експортувати"
 
 #. Translators: This is the string of the suggested name for the exported opml file
-#: podcasts-gtk/src/utils.rs:451
+#: podcasts-gtk/src/utils.rs:453
 msgid "gnome-podcasts-exported-shows"
 msgstr "gnome-podcasts-exported-shows"
 
-#: podcasts-gtk/src/utils.rs:460
+#: podcasts-gtk/src/utils.rs:462
 msgid "GNOME Podcasts Subscriptions"
 msgstr "Список подкастів із застосунку «Подкасти»"
 
-#: podcasts-gtk/src/utils.rs:464
+#: podcasts-gtk/src/utils.rs:466
 msgid "Failed to export podcasts"
 msgstr "Не вдалося експортувати подкасти"
 
-#: podcasts-gtk/src/utils.rs:477
+#: podcasts-gtk/src/utils.rs:478
 msgid "Just now"
 msgstr "Просто зараз"
 
-#: podcasts-gtk/src/utils.rs:481
+#: podcasts-gtk/src/utils.rs:482
 #, rust-format
-#| msgid "{} min"
 msgid "{} minute ago"
 msgid_plural "{} minutes ago"
 msgstr[0] "{} хв. тому"
@@ -637,7 +718,7 @@ msgstr[1] "{} хв. тому"
 msgstr[2] "{} хв. тому"
 msgstr[3] "{} хв. тому"
 
-#: podcasts-gtk/src/utils.rs:489
+#: podcasts-gtk/src/utils.rs:488
 #, rust-format
 msgid "{} hour ago"
 msgid_plural "{} hours ago"
@@ -646,7 +727,7 @@ msgstr[1] "{} години тому"
 msgstr[2] "{} годин тому"
 msgstr[3] "{} годину тому"
 
-#: podcasts-gtk/src/utils.rs:497
+#: podcasts-gtk/src/utils.rs:492
 #, rust-format
 msgid "{} day ago"
 msgid_plural "{} days ago"
@@ -655,7 +736,7 @@ msgstr[1] "{} дні тому"
 msgstr[2] "{} днів тому"
 msgstr[3] "{} день тому"
 
-#: podcasts-gtk/src/utils.rs:505
+#: podcasts-gtk/src/utils.rs:496
 #, rust-format
 msgid "{} month ago"
 msgid_plural "{} months ago"
@@ -664,7 +745,7 @@ msgstr[1] "{} місяці тому"
 msgstr[2] "{} місяців тому"
 msgstr[3] "{} місяць тому"
 
-#: podcasts-gtk/src/utils.rs:513
+#: podcasts-gtk/src/utils.rs:500
 #, rust-format
 msgid "{} year ago"
 msgid_plural "{} years ago"
@@ -701,11 +782,11 @@ msgstr "Нові випуски"
 msgid "Shows"
 msgstr "Подкасти"
 
-#: podcasts-gtk/src/widgets/download_progress_bar.rs:66
+#: podcasts-gtk/src/widgets/download_progress_bar.rs:67
 msgid "Download progress"
 msgstr "Поступ завантаження"
 
-#: podcasts-gtk/src/widgets/episode.rs:354
+#: podcasts-gtk/src/widgets/episode.rs:355
 #, rust-format
 msgid "{} min"
 msgstr "{} хв."
@@ -714,41 +795,69 @@ msgstr "{} хв."
 msgid "The media player was unable to execute an action."
 msgstr "Програвачеві не вдалося виконати цю дію."
 
-#: podcasts-gtk/src/widgets/read_more_label.rs:34
+#: podcasts-gtk/src/widgets/read_more_label.rs:33
 msgid "Visually expands this description"
 msgstr "Візуально розгортає цей опис"
 
-#: podcasts-gtk/src/widgets/read_more_label.rs:36
+#: podcasts-gtk/src/widgets/read_more_label.rs:35
 msgid "Read More"
 msgstr "Докладніше"
 
-#: podcasts-gtk/src/widgets/show_menu.rs:181
+#: podcasts-gtk/src/widgets/show_menu.rs:182
 msgid "Marked all episodes as listened"
 msgstr "Усі випуски позначено як прослухані."
 
-#: podcasts-gtk/src/widgets/show_menu.rs:182
-#: podcasts-gtk/src/widgets/show_menu.rs:209
+#: podcasts-gtk/src/widgets/show_menu.rs:183
+#: podcasts-gtk/src/widgets/show_menu.rs:211
 msgid "Undo"
 msgstr "Повернути"
 
-#: podcasts-gtk/src/widgets/show_menu.rs:205
+#: podcasts-gtk/src/widgets/show_menu.rs:206
 #, rust-format
 msgid "Unsubscribed from {}"
 msgstr "Подкаст «{}» вилучено."
 
-#. TODO okay to send_blocking here?
-#: podcasts-gtk/src/widgets/show_menu.rs:234
+#: podcasts-gtk/src/widgets/show_menu.rs:237
 #, rust-format
 msgid "Failed to store Unsubscribe Action for Synchronization in database. {}"
 msgstr ""
-"Не вдалося зберегти дію зі скасування передплати для синхронізації у базі"
-" даних. {}"
+"Не вдалося зберегти дію зі скасування передплати для синхронізації у базі "
+"даних. {}"
+
+#: podcasts-gtk/src/widgets/sync_preferences.rs:126
+msgid "Logging in..."
+msgstr "Вхід до системи…"
+
+#: podcasts-gtk/src/widgets/sync_preferences.rs:180
+#: podcasts-gtk/src/widgets/sync_preferences.rs:262
+msgid "Waiting for browser login..."
+msgstr "Очікування на вхід з браузера…"
+
+#: podcasts-gtk/src/widgets/sync_preferences.rs:227
+#: podcasts-gtk/src/widgets/sync_preferences.rs:309
+msgid "Logging out..."
+msgstr "Вихід…"
+
+#: podcasts-gtk/src/widgets/sync_preferences.rs:344
+msgid "Synchronizing now..."
+msgstr "Синхронізація…"
+
+#: podcasts-gtk/src/widgets/sync_preferences.rs:348
+#| msgid "Fetching feeds…"
+msgid "Refreshing feeds..."
+msgstr "Освіження стрічок…"
+
+#: podcasts-gtk/src/widgets/sync_preferences.rs:397
+msgid "Running first sync. This can take a few minutes."
+msgstr "Виконуємо першу синхронізацію. Вона може тривати декілька хвилин."
+
+#. Translators: reads as: "Last sync: Never"
+#: podcasts-gtk/src/widgets/sync_preferences.rs:439
+msgid "Never"
+msgstr "Ніколи"
 
 #~ msgid "0"
 #~ msgstr "0"
-
-#~ msgid "Loading..."
-#~ msgstr "Завантаження…"
 
 #~ msgid "Now Playing"
 #~ msgstr "Зараз слухаєте"
