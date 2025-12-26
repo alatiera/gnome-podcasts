@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: podcasts master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2025-12-24 13:13+0000\n"
-"PO-Revision-Date: 2025-12-24 14:31+0100\n"
+"POT-Creation-Date: 2025-12-26 12:54+0000\n"
+"PO-Revision-Date: 2025-12-26 20:09+0100\n"
 "Last-Translator: Martin Srebotnjak <miles@filmsi.net>\n"
 "Language-Team: Slovenian GNOME Translation Team <gnome-si@googlegroups.com>\n"
 "Language: sl_SI\n"
@@ -415,6 +415,89 @@ msgstr "Meni Podkast"
 msgid "Episodes"
 msgstr "Epizode"
 
+#: podcasts-gtk/resources/gtk/sync_preferences.ui:32
+#: podcasts-gtk/resources/gtk/window.ui:21
+msgid "Sync Preferences"
+msgstr "Nastavitve usklajevanja"
+
+#: podcasts-gtk/resources/gtk/sync_preferences.ui:40
+msgid "Logout"
+msgstr "Odjava"
+
+#: podcasts-gtk/resources/gtk/sync_preferences.ui:66
+msgid "Nextcloud Sync Connection"
+msgstr "Povezava usklajevanja z Nextcloud"
+
+#: podcasts-gtk/resources/gtk/sync_preferences.ui:67
+msgid "Current connection for play position and subscription synchronization."
+msgstr "Trenutna povezava za položaj predvajanja in usklajevanje naročnine."
+
+#: podcasts-gtk/resources/gtk/sync_preferences.ui:73
+msgid "Last Sync"
+msgstr "Zadnja uskladitev"
+
+#: podcasts-gtk/resources/gtk/sync_preferences.ui:85
+msgid "Active"
+msgstr "Dejavno"
+
+#: podcasts-gtk/resources/gtk/sync_preferences.ui:86
+msgid "Should data be synchronized"
+msgstr "Ali naj se podatki uskladijo"
+
+#: podcasts-gtk/resources/gtk/sync_preferences.ui:92
+msgid "Server"
+msgstr "Strežnik"
+
+#: podcasts-gtk/resources/gtk/sync_preferences.ui:100
+#: podcasts-gtk/resources/gtk/sync_preferences.ui:160
+msgid "Username"
+msgstr "Uporabniško ime"
+
+#: podcasts-gtk/resources/gtk/sync_preferences.ui:109
+msgid "Sync Now"
+msgstr "Uskladi takoj"
+
+#: podcasts-gtk/resources/gtk/sync_preferences.ui:122
+msgid "Nextcloud Login"
+msgstr "Prijava v Nextcloud"
+
+#: podcasts-gtk/resources/gtk/sync_preferences.ui:123
+msgid ""
+"Synchronize subscriptions and listening status with a Nextcloud server that "
+"has GPodder Sync installed."
+msgstr ""
+"Uskladite naročnine in stanje poslušanja s strežnikom Nextcloud, ki ima "
+"nameščen GPodder Sync."
+
+#: podcasts-gtk/resources/gtk/sync_preferences.ui:128
+msgid "Login via"
+msgstr "Prijava prek"
+
+#: podcasts-gtk/resources/gtk/sync_preferences.ui:135
+msgid "Browser"
+msgstr "Brskalnik"
+
+#: podcasts-gtk/resources/gtk/sync_preferences.ui:141
+#: podcasts-gtk/resources/gtk/sync_preferences.ui:168
+msgid "Password"
+msgstr "Geslo"
+
+#: podcasts-gtk/resources/gtk/sync_preferences.ui:152
+msgid "Server (cloud.example.com)"
+msgstr "Strežnik (oblak.primer.si)"
+
+#: podcasts-gtk/resources/gtk/sync_preferences.ui:177
+msgid "Login"
+msgstr "Prijava"
+
+#: podcasts-gtk/resources/gtk/sync_preferences.ui:187
+msgid "Login via Browser"
+msgstr "Prijava prek brskalnika"
+
+#: podcasts-gtk/resources/gtk/sync_preferences.ui:205
+msgid "Loading..."
+msgstr "Nalaganje ..."
+
 #: podcasts-gtk/resources/gtk/window.ui:6
 msgid "_Check for New Episodes"
 msgstr "_Preveri za nove epizode"
@@ -428,10 +511,6 @@ msgstr "_Uvozi posnetke"
 #: podcasts-gtk/resources/gtk/window.ui:17
 msgid "_Export Shows"
 msgstr "_Izvozi posnetke"
-
-#: podcasts-gtk/resources/gtk/window.ui:21
-msgid "Sync Preferences"
-msgstr "Nastavitve usklajevanja"
 
 #: podcasts-gtk/resources/gtk/window.ui:27
 msgid "_Keyboard Shortcuts"
@@ -560,70 +639,70 @@ msgstr "Koliko časa naj preteče med izvajanjem samodejnega čiščenja"
 msgid "Copied URL to clipboard!"
 msgstr "Naslov URL je kopiran v odložišče!"
 
-#: podcasts-gtk/src/episode_description_parser.rs:319
+#: podcasts-gtk/src/episode_description_parser.rs:320
 #, rust-format
-msgid "Jump to {}:{}:{}"
-msgstr "Skok na {}:{}:{}"
+msgid "Jump to {hours}:{minutes}:{seconds}"
+msgstr "Skok na {hours}:{minutes}:{seconds}"
 
 #: podcasts-gtk/src/episode_description_parser.rs:338
 #, rust-format
-msgid "Jump to {}:{}"
-msgstr "Skok na {}:{}"
+msgid "Jump to {minutes}:{seconds}"
+msgstr "Skok na {minutes}:{seconds}"
 
-#: podcasts-gtk/src/manager.rs:105
+#: podcasts-gtk/src/manager.rs:107
 #, rust-format
 msgid "Download failed: {}"
 msgstr "Prejem ni uspel: {}"
 
-#: podcasts-gtk/src/utils.rs:298
+#: podcasts-gtk/src/utils.rs:299
 #, rust-format
 msgid "Failed to subscribe to feed: {}"
 msgstr "Naročanje na vir ni uspelo: {}"
 
-#: podcasts-gtk/src/utils.rs:393 podcasts-gtk/src/utils.rs:435
+#: podcasts-gtk/src/utils.rs:394 podcasts-gtk/src/utils.rs:437
 msgid "OPML file"
 msgstr "Datoteka OPML"
 
-#: podcasts-gtk/src/utils.rs:404
+#: podcasts-gtk/src/utils.rs:405
 msgid "Select the file from which to you want to import shows."
 msgstr "Izberite datoteko, iz katere želite uvoziti posnetke."
 
-#: podcasts-gtk/src/utils.rs:406
+#: podcasts-gtk/src/utils.rs:407
 msgid "_Import"
 msgstr "_Uvozi"
 
-#: podcasts-gtk/src/utils.rs:425
+#: podcasts-gtk/src/utils.rs:426
 #, rust-format
 msgid "Failed to parse the imported file {}"
 msgstr "Razčlenjevanje uvožene datoteke {} je spodletelo"
 
 #. Translators: Show as a noun, meaning Podcast-Shows.
-#: podcasts-gtk/src/utils.rs:446
+#: podcasts-gtk/src/utils.rs:448
 msgid "Export shows to…"
 msgstr "Izvozi posnetke v …"
 
-#: podcasts-gtk/src/utils.rs:447
+#: podcasts-gtk/src/utils.rs:449
 msgid "_Export"
 msgstr "_Izvozi"
 
 #. Translators: This is the string of the suggested name for the exported opml file
-#: podcasts-gtk/src/utils.rs:451
+#: podcasts-gtk/src/utils.rs:453
 msgid "gnome-podcasts-exported-shows"
 msgstr "gnome-podcasts-izvoz-posnetkov"
 
-#: podcasts-gtk/src/utils.rs:460
+#: podcasts-gtk/src/utils.rs:462
 msgid "GNOME Podcasts Subscriptions"
 msgstr "Naročila Podkast GNOME"
 
-#: podcasts-gtk/src/utils.rs:464
+#: podcasts-gtk/src/utils.rs:466
 msgid "Failed to export podcasts"
 msgstr "Izvoz podkastov je spodletel"
 
-#: podcasts-gtk/src/utils.rs:477
+#: podcasts-gtk/src/utils.rs:478
 msgid "Just now"
 msgstr "Ravnokar"
 
-#: podcasts-gtk/src/utils.rs:481
+#: podcasts-gtk/src/utils.rs:482
 #, rust-format
 msgid "{} minute ago"
 msgid_plural "{} minutes ago"
@@ -632,7 +711,7 @@ msgstr[1] "pred {} minuto"
 msgstr[2] "pred {} minutama"
 msgstr[3] "pred {} minutami"
 
-#: podcasts-gtk/src/utils.rs:489
+#: podcasts-gtk/src/utils.rs:488
 #, rust-format
 msgid "{} hour ago"
 msgid_plural "{} hours ago"
@@ -641,7 +720,7 @@ msgstr[1] "pred {} uro"
 msgstr[2] "pred {} urama"
 msgstr[3] "pred {} urami"
 
-#: podcasts-gtk/src/utils.rs:497
+#: podcasts-gtk/src/utils.rs:492
 #, rust-format
 msgid "{} day ago"
 msgid_plural "{} days ago"
@@ -650,7 +729,7 @@ msgstr[1] "pred {} dnem"
 msgstr[2] "pred {} dnevoma"
 msgstr[3] "pred {} dnevi"
 
-#: podcasts-gtk/src/utils.rs:505
+#: podcasts-gtk/src/utils.rs:496
 #, rust-format
 msgid "{} month ago"
 msgid_plural "{} months ago"
@@ -659,7 +738,7 @@ msgstr[1] "pred {} mesecem"
 msgstr[2] "pred {} mesecema"
 msgstr[3] "pred {} meseci"
 
-#: podcasts-gtk/src/utils.rs:513
+#: podcasts-gtk/src/utils.rs:500
 #, rust-format
 msgid "{} year ago"
 msgid_plural "{} years ago"
@@ -696,11 +775,11 @@ msgstr "Novo"
 msgid "Shows"
 msgstr "Posnetki"
 
-#: podcasts-gtk/src/widgets/download_progress_bar.rs:66
+#: podcasts-gtk/src/widgets/download_progress_bar.rs:67
 msgid "Download progress"
 msgstr "Napredek prenosa"
 
-#: podcasts-gtk/src/widgets/episode.rs:354
+#: podcasts-gtk/src/widgets/episode.rs:355
 #, rust-format
 msgid "{} min"
 msgstr "{} min"
@@ -709,32 +788,62 @@ msgstr "{} min"
 msgid "The media player was unable to execute an action."
 msgstr "S predvajalnikom ni mogoče izvesti zahtevanega dejanja."
 
-#: podcasts-gtk/src/widgets/read_more_label.rs:34
+#: podcasts-gtk/src/widgets/read_more_label.rs:33
 msgid "Visually expands this description"
 msgstr "Vizualno razširi ta opis"
 
-#: podcasts-gtk/src/widgets/read_more_label.rs:36
+#: podcasts-gtk/src/widgets/read_more_label.rs:35
 msgid "Read More"
 msgstr "Preberi več"
 
-#: podcasts-gtk/src/widgets/show_menu.rs:181
+#: podcasts-gtk/src/widgets/show_menu.rs:182
 msgid "Marked all episodes as listened"
 msgstr "Vse epizode so označene kot poslušane"
 
-#: podcasts-gtk/src/widgets/show_menu.rs:182
-#: podcasts-gtk/src/widgets/show_menu.rs:209
+#: podcasts-gtk/src/widgets/show_menu.rs:183
+#: podcasts-gtk/src/widgets/show_menu.rs:211
 msgid "Undo"
 msgstr "Razveljavi"
 
-#: podcasts-gtk/src/widgets/show_menu.rs:205
+#: podcasts-gtk/src/widgets/show_menu.rs:206
 #, rust-format
 msgid "Unsubscribed from {}"
 msgstr "Odjavi {}"
 
-#. TODO okay to send_blocking here?
-#: podcasts-gtk/src/widgets/show_menu.rs:234
+#: podcasts-gtk/src/widgets/show_menu.rs:237
 #, rust-format
 msgid "Failed to store Unsubscribe Action for Synchronization in database. {}"
 msgstr ""
 "Shranjevanje dejanja odjave naročila za usklajevanje v zbirko podatkov ni "
 "uspelo. {}"
+
+#: podcasts-gtk/src/widgets/sync_preferences.rs:126
+msgid "Logging in..."
+msgstr "Prijavljanje …"
+
+#: podcasts-gtk/src/widgets/sync_preferences.rs:180
+#: podcasts-gtk/src/widgets/sync_preferences.rs:262
+msgid "Waiting for browser login..."
+msgstr "Čakanje na prijavo prek brskalnika …"
+
+#: podcasts-gtk/src/widgets/sync_preferences.rs:227
+#: podcasts-gtk/src/widgets/sync_preferences.rs:309
+msgid "Logging out..."
+msgstr "Odjavljanje …"
+
+#: podcasts-gtk/src/widgets/sync_preferences.rs:344
+msgid "Synchronizing now..."
+msgstr "Usklajevanje poteka …"
+
+#: podcasts-gtk/src/widgets/sync_preferences.rs:348
+msgid "Refreshing feeds..."
+msgstr "Osveževanje virov ..."
+
+#: podcasts-gtk/src/widgets/sync_preferences.rs:397
+msgid "Running first sync. This can take a few minutes."
+msgstr "Poteka prva uskladitev. To lahko traja več minut."
+
+#. Translators: reads as: "Last sync: Never"
+#: podcasts-gtk/src/widgets/sync_preferences.rs:439
+msgid "Never"
+msgstr "Nikoli"
