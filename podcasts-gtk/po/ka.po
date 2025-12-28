@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: podcasts master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2025-12-24 13:13+0000\n"
-"PO-Revision-Date: 2025-12-25 03:42+0100\n"
+"POT-Creation-Date: 2025-12-26 12:54+0000\n"
+"PO-Revision-Date: 2025-12-27 04:38+0100\n"
 "Last-Translator: Ekaterine Papava <papava.e@gtu.ge>\n"
 "Language-Team: Georgian <ka@li.org>\n"
 "Language: ka\n"
@@ -411,6 +411,90 @@ msgstr "პოდკასტის მენიუ"
 msgid "Episodes"
 msgstr "ეპიზოდები"
 
+#: podcasts-gtk/resources/gtk/sync_preferences.ui:32
+#: podcasts-gtk/resources/gtk/window.ui:21
+msgid "Sync Preferences"
+msgstr "სინქრონიზაციის პარამეტრები"
+
+#: podcasts-gtk/resources/gtk/sync_preferences.ui:40
+msgid "Logout"
+msgstr "გასვლა"
+
+#: podcasts-gtk/resources/gtk/sync_preferences.ui:66
+msgid "Nextcloud Sync Connection"
+msgstr "Nextcloud-თან სინქრონიზაციის კავშირი"
+
+#: podcasts-gtk/resources/gtk/sync_preferences.ui:67
+msgid "Current connection for play position and subscription synchronization."
+msgstr ""
+"მიმდინარე კავშირი დაკვრის მდებარეობისა და გამოწერის სინქრონიზაციისთვის."
+
+#: podcasts-gtk/resources/gtk/sync_preferences.ui:73
+msgid "Last Sync"
+msgstr "ბოლო სინქრონიზაცია"
+
+#: podcasts-gtk/resources/gtk/sync_preferences.ui:85
+msgid "Active"
+msgstr "აქტიური"
+
+#: podcasts-gtk/resources/gtk/sync_preferences.ui:86
+msgid "Should data be synchronized"
+msgstr "მოხდეს თუ არა მონაცემების სინქრონიზაცია"
+
+#: podcasts-gtk/resources/gtk/sync_preferences.ui:92
+msgid "Server"
+msgstr "სერვერი"
+
+#: podcasts-gtk/resources/gtk/sync_preferences.ui:100
+#: podcasts-gtk/resources/gtk/sync_preferences.ui:160
+msgid "Username"
+msgstr "მომხმარებლის სახელი"
+
+#: podcasts-gtk/resources/gtk/sync_preferences.ui:109
+msgid "Sync Now"
+msgstr "სინქრონიზაცია ახლავე"
+
+#: podcasts-gtk/resources/gtk/sync_preferences.ui:122
+msgid "Nextcloud Login"
+msgstr "Nextcloud-ში შესვლა"
+
+#: podcasts-gtk/resources/gtk/sync_preferences.ui:123
+msgid ""
+"Synchronize subscriptions and listening status with a Nextcloud server that "
+"has GPodder Sync installed."
+msgstr ""
+"მოახდინეთ გამოწერებისა და მოსმენის სტატუსის სინქრონიზაცია Nextcloud-ის "
+"სერვერთან, რომელზეც GPodder Sync აყენია."
+
+#: podcasts-gtk/resources/gtk/sync_preferences.ui:128
+msgid "Login via"
+msgstr "შესვლა საშუალებით"
+
+#: podcasts-gtk/resources/gtk/sync_preferences.ui:135
+msgid "Browser"
+msgstr "ბრაუზერი"
+
+#: podcasts-gtk/resources/gtk/sync_preferences.ui:141
+#: podcasts-gtk/resources/gtk/sync_preferences.ui:168
+msgid "Password"
+msgstr "პაროლი"
+
+#: podcasts-gtk/resources/gtk/sync_preferences.ui:152
+msgid "Server (cloud.example.com)"
+msgstr "სერვერი (cloud.example.com)"
+
+#: podcasts-gtk/resources/gtk/sync_preferences.ui:177
+msgid "Login"
+msgstr "შესვლა"
+
+#: podcasts-gtk/resources/gtk/sync_preferences.ui:187
+msgid "Login via Browser"
+msgstr "შესვლა ბრაუზერის საშუალებით"
+
+#: podcasts-gtk/resources/gtk/sync_preferences.ui:205
+msgid "Loading..."
+msgstr "იტვირთება..."
+
 #: podcasts-gtk/resources/gtk/window.ui:6
 msgid "_Check for New Episodes"
 msgstr "_ახალი ეპიზოდების შემოწმება"
@@ -424,10 +508,6 @@ msgstr "_სერიალების შემოტანა"
 #: podcasts-gtk/resources/gtk/window.ui:17
 msgid "_Export Shows"
 msgstr "სერიალების _გატანა"
-
-#: podcasts-gtk/resources/gtk/window.ui:21
-msgid "Sync Preferences"
-msgstr "სინქრონიზაციის პარამეტრები"
 
 #: podcasts-gtk/resources/gtk/window.ui:27
 msgid "_Keyboard Shortcuts"
@@ -557,99 +637,100 @@ msgstr "რა პერიოდი უნდა დაველოდო ა�
 msgid "Copied URL to clipboard!"
 msgstr "ბმული დაკოპირდა გაცვლის ბაფერში!"
 
-#: podcasts-gtk/src/episode_description_parser.rs:319
+#: podcasts-gtk/src/episode_description_parser.rs:320
 #, rust-format
-msgid "Jump to {}:{}:{}"
-msgstr "{}:{}:{}-ზე გადასვლა"
+#| msgid "Jump to {}:{}:{}"
+msgid "Jump to {hours}:{minutes}:{seconds}"
+msgstr "გადასვლა დროზე {hours}:{minutes}:{seconds}"
 
 #: podcasts-gtk/src/episode_description_parser.rs:338
 #, rust-format
-msgid "Jump to {}:{}"
-msgstr "{}:{}-ზე გადასვლა"
+#| msgid "Jump to {}:{}"
+msgid "Jump to {minutes}:{seconds}"
+msgstr "გადასვლა დროზე {minutes}:{seconds}"
 
-#: podcasts-gtk/src/manager.rs:105
+#: podcasts-gtk/src/manager.rs:107
 #, rust-format
 msgid "Download failed: {}"
 msgstr "გადმოწერა ჩავარდა: {}"
 
-#: podcasts-gtk/src/utils.rs:298
+#: podcasts-gtk/src/utils.rs:299
 #, rust-format
 msgid "Failed to subscribe to feed: {}"
 msgstr "ჩავარდა გამოწერა ლენტისთვის: {}"
 
-#: podcasts-gtk/src/utils.rs:393 podcasts-gtk/src/utils.rs:435
+#: podcasts-gtk/src/utils.rs:394 podcasts-gtk/src/utils.rs:437
 msgid "OPML file"
 msgstr "OPML ფაილი"
 
-#: podcasts-gtk/src/utils.rs:404
+#: podcasts-gtk/src/utils.rs:405
 msgid "Select the file from which to you want to import shows."
 msgstr "აირჩიეთ ფაილი, საიდანაც გნებავთ, შოუები შემოიტანოთ."
 
-#: podcasts-gtk/src/utils.rs:406
+#: podcasts-gtk/src/utils.rs:407
 msgid "_Import"
 msgstr "_შემოტანა"
 
-#: podcasts-gtk/src/utils.rs:425
+#: podcasts-gtk/src/utils.rs:426
 #, rust-format
 msgid "Failed to parse the imported file {}"
 msgstr "შემოტანილი ფაილის {} დამუშავება ჩავარდა"
 
 #. Translators: Show as a noun, meaning Podcast-Shows.
-#: podcasts-gtk/src/utils.rs:446
+#: podcasts-gtk/src/utils.rs:448
 msgid "Export shows to…"
 msgstr "შოუების გატანა…"
 
-#: podcasts-gtk/src/utils.rs:447
+#: podcasts-gtk/src/utils.rs:449
 msgid "_Export"
 msgstr "_გატანა"
 
 #. Translators: This is the string of the suggested name for the exported opml file
-#: podcasts-gtk/src/utils.rs:451
+#: podcasts-gtk/src/utils.rs:453
 msgid "gnome-podcasts-exported-shows"
 msgstr "gnome-podcasts-exported-shows"
 
-#: podcasts-gtk/src/utils.rs:460
+#: podcasts-gtk/src/utils.rs:462
 msgid "GNOME Podcasts Subscriptions"
 msgstr "GNOME Podcasts-ის გამოწერები"
 
-#: podcasts-gtk/src/utils.rs:464
+#: podcasts-gtk/src/utils.rs:466
 msgid "Failed to export podcasts"
 msgstr "პოდკასტების გატანის შეცდომა"
 
-#: podcasts-gtk/src/utils.rs:477
+#: podcasts-gtk/src/utils.rs:478
 msgid "Just now"
 msgstr "ახლა"
 
-#: podcasts-gtk/src/utils.rs:481
+#: podcasts-gtk/src/utils.rs:482
 #, rust-format
-#| msgid "{} min"
 msgid "{} minute ago"
 msgid_plural "{} minutes ago"
 msgstr[0] "{} წუთის წინ"
 msgstr[1] "{} წუთის წინ"
 
-#: podcasts-gtk/src/utils.rs:489
+#: podcasts-gtk/src/utils.rs:488
 #, rust-format
 msgid "{} hour ago"
 msgid_plural "{} hours ago"
 msgstr[0] "{} საათის წინ"
 msgstr[1] "{} საათის წინ"
 
-#: podcasts-gtk/src/utils.rs:497
+#: podcasts-gtk/src/utils.rs:492
 #, rust-format
 msgid "{} day ago"
 msgid_plural "{} days ago"
 msgstr[0] "{} დღის წინ"
 msgstr[1] "{} დღის წინ"
 
-#: podcasts-gtk/src/utils.rs:505
+#: podcasts-gtk/src/utils.rs:496
 #, rust-format
 msgid "{} month ago"
 msgid_plural "{} months ago"
 msgstr[0] "{} თვის წინ"
 msgstr[1] "{} თვის წინ"
 
-#: podcasts-gtk/src/utils.rs:513
+#: podcasts-gtk/src/utils.rs:500
 #, rust-format
 msgid "{} year ago"
 msgid_plural "{} years ago"
@@ -682,11 +763,11 @@ msgstr "ახალი"
 msgid "Shows"
 msgstr "სერიალები"
 
-#: podcasts-gtk/src/widgets/download_progress_bar.rs:66
+#: podcasts-gtk/src/widgets/download_progress_bar.rs:67
 msgid "Download progress"
 msgstr "გადმოწერის მიმდინარეობა"
 
-#: podcasts-gtk/src/widgets/episode.rs:354
+#: podcasts-gtk/src/widgets/episode.rs:355
 #, rust-format
 msgid "{} min"
 msgstr "{} წთ"
@@ -695,41 +776,69 @@ msgstr "{} წთ"
 msgid "The media player was unable to execute an action."
 msgstr "მედიის დამკვრელმა ქმედების შესრულება ვერ შეძლო."
 
-#: podcasts-gtk/src/widgets/read_more_label.rs:34
+#: podcasts-gtk/src/widgets/read_more_label.rs:33
 msgid "Visually expands this description"
 msgstr "ვიზუალურად გაშლის ამ აღწერას"
 
-#: podcasts-gtk/src/widgets/read_more_label.rs:36
+#: podcasts-gtk/src/widgets/read_more_label.rs:35
 msgid "Read More"
 msgstr "დაწვრილებით"
 
-#: podcasts-gtk/src/widgets/show_menu.rs:181
+#: podcasts-gtk/src/widgets/show_menu.rs:182
 msgid "Marked all episodes as listened"
 msgstr "ყველა ეპიზოდის, როგორც მოსმენილის, მონიშვნა"
 
-#: podcasts-gtk/src/widgets/show_menu.rs:182
-#: podcasts-gtk/src/widgets/show_menu.rs:209
+#: podcasts-gtk/src/widgets/show_menu.rs:183
+#: podcasts-gtk/src/widgets/show_menu.rs:211
 msgid "Undo"
 msgstr "დაბრუნება"
 
-#: podcasts-gtk/src/widgets/show_menu.rs:205
+#: podcasts-gtk/src/widgets/show_menu.rs:206
 #, rust-format
 msgid "Unsubscribed from {}"
 msgstr "{}-ის გამოწერის გაუქმება"
 
-#. TODO okay to send_blocking here?
-#: podcasts-gtk/src/widgets/show_menu.rs:234
+#: podcasts-gtk/src/widgets/show_menu.rs:237
 #, rust-format
 msgid "Failed to store Unsubscribe Action for Synchronization in database. {}"
 msgstr ""
 "გამოწერის გაუქმების ქმედების მონაცემთა ბაზაში დამახსოვრების შეცდომა "
 "სინქრონიზაციისთვის. {}"
 
+#: podcasts-gtk/src/widgets/sync_preferences.rs:126
+msgid "Logging in..."
+msgstr "შესვლა..."
+
+#: podcasts-gtk/src/widgets/sync_preferences.rs:180
+#: podcasts-gtk/src/widgets/sync_preferences.rs:262
+msgid "Waiting for browser login..."
+msgstr "ბრაუზერით შესვლის მოლოდინი..."
+
+#: podcasts-gtk/src/widgets/sync_preferences.rs:227
+#: podcasts-gtk/src/widgets/sync_preferences.rs:309
+msgid "Logging out..."
+msgstr "გასვლა..."
+
+#: podcasts-gtk/src/widgets/sync_preferences.rs:344
+msgid "Synchronizing now..."
+msgstr "მიმდინარეობს სინქრონიზაცია..."
+
+#: podcasts-gtk/src/widgets/sync_preferences.rs:348
+msgid "Refreshing feeds..."
+msgstr "ლენტების განახლება…"
+
+#: podcasts-gtk/src/widgets/sync_preferences.rs:397
+msgid "Running first sync. This can take a few minutes."
+msgstr ""
+"მიმდინარეობს პირველი სინქრონიზაცია. ამას რამდენიმე წუთი შეიძლება, დასჭირდეს."
+
+#. Translators: reads as: "Last sync: Never"
+#: podcasts-gtk/src/widgets/sync_preferences.rs:439
+msgid "Never"
+msgstr "არასდროს"
+
 #~ msgid "0"
 #~ msgstr "0"
-
-#~ msgid "Loading..."
-#~ msgstr "იტვირთება..."
 
 #~ msgid "Now Playing"
 #~ msgstr "მიმდინარეობს დაკვრა"
