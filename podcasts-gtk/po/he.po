@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: podcasts master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2025-10-21 20:46+0000\n"
-"PO-Revision-Date: 2025-11-05 08:37+0200\n"
+"POT-Creation-Date: 2025-12-28 11:27+0000\n"
+"PO-Revision-Date: 2025-12-30 18:56+0200\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
 "Language-Team: Hebrew\n"
 "Language: he\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=4; plural=(n==1 ? 0 : n==2 ? 1 : n>10 && n%10==0 ? "
 "2 : 3);\n"
-"X-Generator: Poedit 3.7\n"
+"X-Generator: Poedit 3.8\n"
 
 #: podcasts-gtk/resources/gtk/discovery_found_podcast.ui:105
 msgid "Episodes: "
@@ -26,7 +26,7 @@ msgstr "פרקים: "
 # msgctxt "shortcut window"
 #: podcasts-gtk/resources/gtk/discovery_found_podcast.ui:143
 msgid "Last publication"
-msgstr "פורסם לאחרונה"
+msgstr "פרסום אחרון"
 
 #: podcasts-gtk/resources/gtk/discovery_found_podcast.ui:164
 msgid "_Subscribe"
@@ -168,31 +168,31 @@ msgstr "סימון כנוגן"
 msgid "Mark as Unplayed"
 msgstr "סימון כלאנוגן"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:70
+#: podcasts-gtk/resources/gtk/episode_widget.ui:71
 msgid "You’ve already listened to this episode."
 msgstr "כבר האזנת לפרק זה."
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:158
+#: podcasts-gtk/resources/gtk/episode_widget.ui:159
 msgid "Calculating episode size…"
 msgstr "גודל הפרק מחושב…"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:181
+#: podcasts-gtk/resources/gtk/episode_widget.ui:182
 msgid "Play this episode"
 msgstr "השמעת פרק זה"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:195
+#: podcasts-gtk/resources/gtk/episode_widget.ui:197
 msgid "Pause playback"
 msgstr "השהיית הנגינה"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:207
+#: podcasts-gtk/resources/gtk/episode_widget.ui:211
 msgid "Cancel the download process"
 msgstr "ביטול תהליך ההורדה"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:220
+#: podcasts-gtk/resources/gtk/episode_widget.ui:225
 msgid "Download this episode"
 msgstr "הורדת פרק זה"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:234
+#: podcasts-gtk/resources/gtk/episode_widget.ui:240
 msgid "Episode without audio"
 msgstr "פרק ללא שמע"
 
@@ -413,6 +413,88 @@ msgstr "תפריט הסכת"
 msgid "Episodes"
 msgstr "פרקים"
 
+#: podcasts-gtk/resources/gtk/sync_preferences.ui:32
+#: podcasts-gtk/resources/gtk/window.ui:21
+msgid "Sync Preferences"
+msgstr "העדפות סנכרון"
+
+#: podcasts-gtk/resources/gtk/sync_preferences.ui:40
+msgid "Logout"
+msgstr "יציאה"
+
+#: podcasts-gtk/resources/gtk/sync_preferences.ui:66
+msgid "Nextcloud Sync Connection"
+msgstr "חיבור לסנכרון מול Nextcloud"
+
+#: podcasts-gtk/resources/gtk/sync_preferences.ui:67
+msgid "Current connection for play position and subscription synchronization."
+msgstr "החיבור הנוכחי לסנכרון נקודות נגינה ומינוי."
+
+#: podcasts-gtk/resources/gtk/sync_preferences.ui:73
+msgid "Last Sync"
+msgstr "סנכרון אחרון"
+
+#: podcasts-gtk/resources/gtk/sync_preferences.ui:85
+msgid "Active"
+msgstr "פעיל"
+
+#: podcasts-gtk/resources/gtk/sync_preferences.ui:86
+msgid "Should data be synchronized"
+msgstr "האם לסנכרן נתונים"
+
+#: podcasts-gtk/resources/gtk/sync_preferences.ui:92
+msgid "Server"
+msgstr "שרת"
+
+#: podcasts-gtk/resources/gtk/sync_preferences.ui:100
+#: podcasts-gtk/resources/gtk/sync_preferences.ui:160
+msgid "Username"
+msgstr "שם משתמש"
+
+#: podcasts-gtk/resources/gtk/sync_preferences.ui:109
+msgid "Sync Now"
+msgstr "לסנכרן עכשיו"
+
+#: podcasts-gtk/resources/gtk/sync_preferences.ui:122
+msgid "Nextcloud Login"
+msgstr "כניסה ל־Nextcloud"
+
+#: podcasts-gtk/resources/gtk/sync_preferences.ui:123
+msgid ""
+"Synchronize subscriptions and listening status with a Nextcloud server that "
+"has GPodder Sync installed."
+msgstr ""
+"סנכרון המינויים ומצב ההאזנה מול שרת Nextcloud שמותקן עליו סנכרון GPodder."
+
+#: podcasts-gtk/resources/gtk/sync_preferences.ui:128
+msgid "Login via"
+msgstr "כניסה דרך"
+
+#: podcasts-gtk/resources/gtk/sync_preferences.ui:135
+msgid "Browser"
+msgstr "דפדפן"
+
+#: podcasts-gtk/resources/gtk/sync_preferences.ui:141
+#: podcasts-gtk/resources/gtk/sync_preferences.ui:168
+msgid "Password"
+msgstr "סיסמה"
+
+#: podcasts-gtk/resources/gtk/sync_preferences.ui:152
+msgid "Server (cloud.example.com)"
+msgstr "שרת (cloud.example.com)"
+
+#: podcasts-gtk/resources/gtk/sync_preferences.ui:177
+msgid "Login"
+msgstr "כניסה"
+
+#: podcasts-gtk/resources/gtk/sync_preferences.ui:187
+msgid "Login via Browser"
+msgstr "כניסה דרך דפדפן"
+
+#: podcasts-gtk/resources/gtk/sync_preferences.ui:205
+msgid "Loading..."
+msgstr "בטעינה…"
+
 #: podcasts-gtk/resources/gtk/window.ui:6
 msgid "_Check for New Episodes"
 msgstr "_בדיקה אם יש פרקים חדשים"
@@ -427,80 +509,36 @@ msgstr "_ייבוא תכניות"
 msgid "_Export Shows"
 msgstr "_ייצוא תכניות"
 
-#: podcasts-gtk/resources/gtk/window.ui:23
+#: podcasts-gtk/resources/gtk/window.ui:27
 msgid "_Keyboard Shortcuts"
 msgstr "_צירופי מקשים"
 
-#: podcasts-gtk/resources/gtk/window.ui:27
+#: podcasts-gtk/resources/gtk/window.ui:31
 msgid "_About Podcasts"
 msgstr "_על הסכתים"
 
 #. Weird magic I copy-pasted that sets the Application Name in the Shell.
-#: podcasts-gtk/resources/gtk/window.ui:35
-#: podcasts-gtk/resources/gtk/window.ui:102
-#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:4
+#: podcasts-gtk/resources/gtk/window.ui:39
+#: podcasts-gtk/resources/gtk/window.ui:106
 #: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:2
-#: podcasts-gtk/src/app.rs:530 podcasts-gtk/src/widgets/aboutdialog.rs:56
+#: podcasts-gtk/resources/org.gnome.Podcasts.metainfo.xml.in.in:4
+#: podcasts-gtk/src/app.rs:629 podcasts-gtk/src/widgets/aboutdialog.rs:56
 #: podcasts-gtk/src/widgets/player.rs:408
 msgid "Podcasts"
 msgstr "הסכתים"
 
-#: podcasts-gtk/resources/gtk/window.ui:115
+#: podcasts-gtk/resources/gtk/window.ui:119
 msgid "Add a New Feed"
 msgstr "הוספת ערוץ חדש"
 
-#: podcasts-gtk/resources/gtk/window.ui:123
+#: podcasts-gtk/resources/gtk/window.ui:127
 msgid "Main Menu"
 msgstr "תפריט ראשי"
 
 #. Translators: Show as a noun, meaning a Podcast-Show.
-#: podcasts-gtk/resources/gtk/window.ui:137
+#: podcasts-gtk/resources/gtk/window.ui:141
 msgid "Show"
 msgstr "הצגה"
-
-#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:8
-msgid "Listen to your favorite shows"
-msgstr "האזנה לתכניות המועדפות שלך"
-
-#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:10
-msgid ""
-"Play, update, and manage your podcasts from a lightweight interface that "
-"seamlessly integrates with GNOME. Podcasts can play various audio formats "
-"and remember where you stopped listening. You can subscribe to shows via RSS/"
-"Atom, iTunes, and Soundcloud links. Subscriptions from other apps can be "
-"imported via OPML files."
-msgstr ""
-"השמעה, עדכון וניהול ההסכתים בממשק קל המשתלב בצורה חלקה עם GNOME. הסכתים יכול "
-"להשמיע סוגים שונים של תבניות שמע וזוכר את המקום האחרון בו עצרת את ההאזנה. "
-"נִתן להירשם לתכניות באמצעות RSS/Atom, ‏iTunes וקישורי Soundcloud. נִתן לייבא "
-"מנויים והרשמות מיישומים אחרים באמצעות קובצי OPML."
-
-#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:18
-msgid "The home view displaying the newest episodes of your podcasts"
-msgstr "תצוגת הבית מציגה את הפרקים החדשים בהסכתים שלך"
-
-#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:22
-msgid "The shows view displaying the covers of your podcasts"
-msgstr "תצוגת התכניות מציגה את הכיסויים של ההסכתים שלך"
-
-#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:26
-msgid ""
-"The show widget displaying the cover and the latest episodes of a specific "
-"podcast"
-msgstr "תצוגת היישום מציגה את הכיסוי והפרקים האחרונים של הסכת מסוים"
-
-#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:30
-msgid "The chapters available in an episode"
-msgstr "הקטעים זמינים בפרק"
-
-#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:34
-msgid "The view where one can add a new podcast"
-msgstr "התצוגה של המקום להוספת הסכת חדש"
-
-#. developer_name tag deprecated with Appstream 1.0
-#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:241
-msgid "The Podcasts developers"
-msgstr "מפתחי הסכתים"
 
 #: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:3
 msgid "Listen to your favorite podcasts, right from your desktop."
@@ -547,63 +585,163 @@ msgstr "How many periods of time to wait between automatic cleanups"
 msgid "What period of time to wait between automatic cleanups"
 msgstr "What period of time to wait between automatic cleanups"
 
-#: podcasts-gtk/src/app.rs:386
+#: podcasts-gtk/resources/org.gnome.Podcasts.metainfo.xml.in.in:8
+msgid "Listen to your favorite shows"
+msgstr "האזנה לתכניות המועדפות שלך"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.metainfo.xml.in.in:10
+msgid ""
+"Play, update, and manage your podcasts from a lightweight interface that "
+"seamlessly integrates with GNOME. Podcasts can play various audio formats "
+"and remember where you stopped listening. You can subscribe to shows via RSS/"
+"Atom, iTunes, and Soundcloud links. Subscriptions from other apps can be "
+"imported via OPML files."
+msgstr ""
+"השמעה, עדכון וניהול ההסכתים בממשק קל המשתלב בצורה חלקה עם GNOME. הסכתים יכול "
+"להשמיע סוגים שונים של תבניות שמע וזוכר את המקום האחרון בו עצרת את ההאזנה. "
+"נִתן להירשם לתכניות באמצעות RSS/Atom, ‏iTunes וקישורי Soundcloud. נִתן לייבא "
+"מנויים והרשמות מיישומים אחרים באמצעות קובצי OPML."
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.metainfo.xml.in.in:18
+msgid "The home view displaying the newest episodes of your podcasts"
+msgstr "תצוגת הבית מציגה את הפרקים החדשים בהסכתים שלך"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.metainfo.xml.in.in:22
+msgid "The shows view displaying the covers of your podcasts"
+msgstr "תצוגת התכניות מציגה את הכיסויים של ההסכתים שלך"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.metainfo.xml.in.in:26
+msgid ""
+"The show widget displaying the cover and the latest episodes of a specific "
+"podcast"
+msgstr "תצוגת היישום מציגה את הכיסוי והפרקים האחרונים של הסכת מסוים"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.metainfo.xml.in.in:30
+msgid "The chapters available in an episode"
+msgstr "הקטעים זמינים בפרק"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.metainfo.xml.in.in:34
+msgid "The view where one can add a new podcast"
+msgstr "התצוגה של המקום להוספת הסכת חדש"
+
+#. developer_name tag deprecated with Appstream 1.0
+#: podcasts-gtk/resources/org.gnome.Podcasts.metainfo.xml.in.in:241
+msgid "The Podcasts developers"
+msgstr "מפתחי הסכתים"
+
+#: podcasts-gtk/src/app.rs:402
 msgid "Copied URL to clipboard!"
 msgstr "כתובת הועתקה ללוח הגזירים!"
 
-#: podcasts-gtk/src/episode_description_parser.rs:319
-msgid "Jump to {}:{}:{}"
-msgstr "קפיצה אל ‎{}:{}:{}"
+#: podcasts-gtk/src/episode_description_parser.rs:320
+#, rust-format
+#| msgid "Jump to {}:{}:{}"
+msgid "Jump to {hours}:{minutes}:{seconds}"
+msgstr "קפיצה אל {hours}:{minutes}:{seconds}"
 
 #: podcasts-gtk/src/episode_description_parser.rs:338
-msgid "Jump to {}:{}"
-msgstr "קפיצה אל ‎{}:{}"
+#, rust-format
+#| msgid "Jump to {}:{}"
+msgid "Jump to {minutes}:{seconds}"
+msgstr "קפיצה אל {minutes}:{seconds}"
 
-#: podcasts-gtk/src/manager.rs:105
+#: podcasts-gtk/src/manager.rs:107
+#, rust-format
 msgid "Download failed: {}"
 msgstr "ההורדה נכשלה: {}"
 
-#: podcasts-gtk/src/utils.rs:293
+#: podcasts-gtk/src/utils.rs:299
+#, rust-format
 msgid "Failed to subscribe to feed: {}"
 msgstr "ההרשמה להזנה נכשלה: {}"
 
-#: podcasts-gtk/src/utils.rs:388 podcasts-gtk/src/utils.rs:434
+#: podcasts-gtk/src/utils.rs:394 podcasts-gtk/src/utils.rs:437
 msgid "OPML file"
 msgstr "קובץ OPML"
 
-#: podcasts-gtk/src/utils.rs:399
+#: podcasts-gtk/src/utils.rs:405
 msgid "Select the file from which to you want to import shows."
 msgstr "בחירת הקובץ לייבוא תכניות."
 
-#: podcasts-gtk/src/utils.rs:401
+#: podcasts-gtk/src/utils.rs:407
 msgid "_Import"
 msgstr "יי_בוא"
 
-#: podcasts-gtk/src/utils.rs:424
+#: podcasts-gtk/src/utils.rs:426
+#, rust-format
 msgid "Failed to parse the imported file {}"
 msgstr "פענוח הקובץ המיובא {} נכשל"
 
 #. Translators: Show as a noun, meaning Podcast-Shows.
-#: podcasts-gtk/src/utils.rs:445
+#: podcasts-gtk/src/utils.rs:448
 msgid "Export shows to…"
 msgstr "ייצוא תכניות אל…"
 
-#: podcasts-gtk/src/utils.rs:446
+#: podcasts-gtk/src/utils.rs:449
 msgid "_Export"
 msgstr "יי_צוא"
 
 #. Translators: This is the string of the suggested name for the exported opml file
-#: podcasts-gtk/src/utils.rs:450
+#: podcasts-gtk/src/utils.rs:453
 msgid "gnome-podcasts-exported-shows"
 msgstr "קובץ-ייצוא-תכניות-הסכתים-גנום"
 
-#: podcasts-gtk/src/utils.rs:459
+#: podcasts-gtk/src/utils.rs:462
 msgid "GNOME Podcasts Subscriptions"
 msgstr "מינויי GNOME הסכתים"
 
-#: podcasts-gtk/src/utils.rs:463
+#: podcasts-gtk/src/utils.rs:466
 msgid "Failed to export podcasts"
 msgstr "ייצוא ההסכתים נכשל"
+
+#: podcasts-gtk/src/utils.rs:478
+msgid "Just now"
+msgstr "ממש עכשיו"
+
+#: podcasts-gtk/src/utils.rs:482
+#, rust-format
+msgid "{} minute ago"
+msgid_plural "{} minutes ago"
+msgstr[0] "לפני ‏דקה"
+msgstr[1] "לפני שתי דקות"
+msgstr[2] "לפני ‏{} דקות"
+msgstr[3] "לפני ‏{} דקות"
+
+#: podcasts-gtk/src/utils.rs:488
+#, rust-format
+msgid "{} hour ago"
+msgid_plural "{} hours ago"
+msgstr[0] "לפני שעה"
+msgstr[1] "לפני שעתיים"
+msgstr[2] "לפני {} שעות"
+msgstr[3] "לפני {} שעות"
+
+#: podcasts-gtk/src/utils.rs:492
+#, rust-format
+msgid "{} day ago"
+msgid_plural "{} days ago"
+msgstr[0] "אתמול"
+msgstr[1] "שלשום"
+msgstr[2] "לפני {} ימים"
+msgstr[3] "לפני {} ימים"
+
+#: podcasts-gtk/src/utils.rs:496
+#, rust-format
+msgid "{} month ago"
+msgid_plural "{} months ago"
+msgstr[0] "לפני חודש"
+msgstr[1] "לפני חודשיים"
+msgstr[2] "לפני {} חודשים"
+msgstr[3] "לפני {} חודשים"
+
+#: podcasts-gtk/src/utils.rs:500
+#, rust-format
+msgid "{} year ago"
+msgid_plural "{} years ago"
+msgstr[0] "לפני שנה"
+msgstr[1] "לפני שנתיים"
+msgstr[2] "לפני {} שנה"
+msgstr[3] "לפני {} שנים"
 
 #: podcasts-gtk/src/widgets/aboutdialog.rs:52
 msgid "Podcast Client for the GNOME Desktop."
@@ -634,44 +772,79 @@ msgstr "חדש"
 msgid "Shows"
 msgstr "תכניות"
 
-#: podcasts-gtk/src/widgets/download_progress_bar.rs:66
+#: podcasts-gtk/src/widgets/download_progress_bar.rs:67
 msgid "Download progress"
 msgstr "התקדמות ההורדה"
 
-#: podcasts-gtk/src/widgets/episode.rs:343
+#: podcasts-gtk/src/widgets/episode.rs:355
+#, rust-format
 msgid "{} min"
 msgstr "‏{} דק׳"
 
-#: podcasts-gtk/src/widgets/player.rs:1110
+#: podcasts-gtk/src/widgets/player.rs:1133
 msgid "The media player was unable to execute an action."
 msgstr "נגן המדיה לא הצליח לבצע את הפעולה."
 
-#: podcasts-gtk/src/widgets/read_more_label.rs:34
+#: podcasts-gtk/src/widgets/read_more_label.rs:33
 msgid "Visually expands this description"
 msgstr "מרחיב את התיאור הזה חזותית"
 
-#: podcasts-gtk/src/widgets/read_more_label.rs:36
+#: podcasts-gtk/src/widgets/read_more_label.rs:35
 msgid "Read More"
 msgstr "לקרוא עוד"
 
-#: podcasts-gtk/src/widgets/show_menu.rs:181
+#: podcasts-gtk/src/widgets/show_menu.rs:182
 msgid "Marked all episodes as listened"
 msgstr "כל הפרקים סומנו כהואזנו"
 
-#: podcasts-gtk/src/widgets/show_menu.rs:182
-#: podcasts-gtk/src/widgets/show_menu.rs:209
+#: podcasts-gtk/src/widgets/show_menu.rs:183
+#: podcasts-gtk/src/widgets/show_menu.rs:211
 msgid "Undo"
 msgstr "ביטול"
 
-#: podcasts-gtk/src/widgets/show_menu.rs:205
+#: podcasts-gtk/src/widgets/show_menu.rs:206
+#, rust-format
 msgid "Unsubscribed from {}"
 msgstr "בוטל המינוי מהתכנית {}"
 
+#: podcasts-gtk/src/widgets/show_menu.rs:237
+#, rust-format
+msgid "Failed to store Unsubscribe Action for Synchronization in database. {}"
+msgstr "אחסון פעולת ביטול מינוי לסנכרון במסד הנתונים נכשל. {}"
+
+#: podcasts-gtk/src/widgets/sync_preferences.rs:126
+msgid "Logging in..."
+msgstr "מתבצעת כניסה…"
+
+#: podcasts-gtk/src/widgets/sync_preferences.rs:180
+#: podcasts-gtk/src/widgets/sync_preferences.rs:262
+msgid "Waiting for browser login..."
+msgstr "בהמתנה לכניסה דרך הדפדפן…"
+
+#: podcasts-gtk/src/widgets/sync_preferences.rs:227
+#: podcasts-gtk/src/widgets/sync_preferences.rs:309
+msgid "Logging out..."
+msgstr "מתבצעת יציאה…"
+
+#: podcasts-gtk/src/widgets/sync_preferences.rs:344
+msgid "Synchronizing now..."
+msgstr "מסתנכרן כעת…"
+
+#: podcasts-gtk/src/widgets/sync_preferences.rs:348
+msgid "Refreshing feeds..."
+msgstr "הערוצים מתרעננים…"
+
+#: podcasts-gtk/src/widgets/sync_preferences.rs:397
+msgid "Running first sync. This can take a few minutes."
+msgstr "הסנכרון הראשון מופעל. הפעולה הזאת יכולה לארוך כמה דקות."
+
+#. Translators: reads as: "Last sync: Never"
+#: podcasts-gtk/src/widgets/sync_preferences.rs:439
+msgid "Never"
+msgstr "אף פעם לא"
+
 #~ msgid "0"
 #~ msgstr "0"
-
-#~ msgid "Loading..."
-#~ msgstr "בטעינה…"
 
 #~ msgid "Now Playing"
 #~ msgstr "מושמע כעת"
