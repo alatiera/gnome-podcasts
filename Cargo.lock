@@ -3090,7 +3090,6 @@ dependencies = [
  "maplit",
  "mime_guess",
  "oo7",
- "rand 0.8.5",
  "reqwest",
  "rfc822_sanitizer",
  "rss",
