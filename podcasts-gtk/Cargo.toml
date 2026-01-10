@@ -26,7 +26,7 @@ linkify = "0.10"
 locale_config = "0.3"
 log = { workspace = true }
 markup5ever_rcdom = "0.3"
-mpris-server = "0.8"
+mpris-server = "0.9"
 open = "5"
 podcasts-data = { path = "../podcasts-data" }
 pretty_env_logger = "0.5"
