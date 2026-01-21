@@ -19,7 +19,7 @@ glob = "0.3"
 http = "1"
 log = { workspace = true }
 mime_guess = "2"
-oo7 = "0.5"
+oo7 = "0.6.0-alpha"
 reqwest = { workspace = true, features = ["json", "stream"] }
 rfc822_sanitizer = "0.3"
 rss = "2"
