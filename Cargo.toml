@@ -12,7 +12,7 @@ chrono = {version = "0.4", features = ["serde", "unstable-locales"] }
 log = "0.4"
 tokio = { version = "1", features = ["rt-multi-thread", "macros", "sync"] }
 url = "2"
-reqwest = "0.12"
+reqwest = { version = "0.13", features = ["form"] }
 
 [profile.release]
 debug = true
