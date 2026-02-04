@@ -29,6 +29,9 @@ use crate::schema::shows_sync;
 #[diesel(treat_none_as_null = true)]
 #[diesel(primary_key(uri))]
 #[derive(Debug, Clone)]
+// required for batch upsert on sqlite
+// https://github.com/diesel-rs/diesel/discussions/4545#discussioncomment-12568645
+#[diesel(treat_none_as_default_value = false)]
 /// Stores Show subscription updates that sill have to be sent to the server.
 pub struct Show {
     /// Uri/url of the podcast.
@@ -91,6 +94,49 @@ impl Show {
         s.upsert()?;
         debug!("DONE UPSERTING");
         Ok(())
+    }
+
+    /// Store multiple Show Added Actions to be synced between devices.
+    /// Will not store anything if sync isn't configured.
+    pub fn store_multiple_subscriptions(uris: &[String]) -> Result<(), DataError> {
+        if !Settings::fetch_entry()
+            .ok()
+            .map(|s| s.did_first_sync())
+            .unwrap_or(false)
+        {
+            debug!("sync: NOT STORING CHANGE, sync is not configured");
+            return Ok(());
+        }
+        let now = chrono::Utc::now();
+
+        let shows: Vec<_> = uris
+            .iter()
+            .map(|u| Show {
+                uri: u.to_string(),
+                new_uri: None,
+                action: "A".to_owned(),
+                timestamp: now.timestamp(),
+            })
+            .collect();
+
+        use crate::schema::shows_sync::dsl::*;
+        use diesel::upsert::excluded;
+        let db = connection();
+        let mut con = db.get()?;
+
+        info!("Upserting multiple sync subscriptions {:?}", uris);
+        diesel::insert_into(shows_sync)
+            .values(&shows)
+            .on_conflict(uri)
+            .do_update()
+            .set((
+                uri.eq(excluded(uri)),
+                action.eq(excluded(action)),
+                timestamp.eq(excluded(timestamp)),
+            ))
+            .execute(&mut con)
+            .map_err(From::from)
+            .map(|_| ())
     }
 
     /// May return None if invalid data is in the database.

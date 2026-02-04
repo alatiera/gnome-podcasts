@@ -273,6 +273,7 @@ pub(crate) async fn subscribe(sender: &Sender<Action>, feed: String) {
         ) {
             error!("Failed store subscription for sync {e}");
         }
+        send!(sender, Action::QuickSyncNextcloud);
         send!(sender, Action::RefreshAllViews);
         send!(sender, Action::GoToShow(Arc::new(show.clone())));
         Ok::<(), anyhow::Error>(())
@@ -415,12 +416,22 @@ pub(crate) async fn on_import_clicked(window: &gtk::ApplicationWindow, sender: &
                 // Parse the file and import the feeds
                 opml::import_from_file(path)
                     .map(|sources| {
+                        let sync_urls: Vec<_> =
+                            sources.iter().map(|s| s.uri().to_owned()).collect();
+                        if let Err(e) =
+                            podcasts_data::sync::Show::store_multiple_subscriptions(&sync_urls[..])
+                        {
+                            error!("Failed store subscriptions for sync from import {e}");
+                        }
+
                         // Refresh the successfully parsed feeds to index them
                         FEED_MANAGER.schedule_refresh(sources);
                     })
                     .context("PARSE")
             })
             .await;
+
+            send!(sender, Action::QuickSyncNextcloud);
 
             if let Err(err) = result.unwrap_or_else(|e| bail!("Import Thread Error {e:#?}")) {
                 let text = formatx!(gettext("Failed to parse the imported file {}",), err,)
