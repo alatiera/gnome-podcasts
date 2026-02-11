@@ -209,7 +209,7 @@ mod tests {
     use anyhow::Result;
     use chrono::Local;
 
-    use crate::database::{TEMPDIR, truncate_db};
+    use crate::database::truncate_db;
     use crate::utils::get_feed;
 
     const URLS: &[(&str, &str)] = {
@@ -336,13 +336,13 @@ mod tests {
             });
         }
 
-        let opml_path = TEMPDIR.path().join("podcasts.opml");
-        export_from_db(opml_path.as_path(), "GNOME Podcasts Subscriptions")?;
-        let opml_file = File::open(opml_path.as_path())?;
+        let opml_path = tempfile::NamedTempFile::with_suffix("-podcasts.opml")?;
+        export_from_db(opml_path.path(), "GNOME Podcasts Subscriptions")?;
+        let opml_file = File::open(opml_path.path())?;
         assert_eq!(extract_sources(&opml_file)?, map);
 
         // extract_sources drains the reader its passed
-        let mut opml_file = File::open(opml_path.as_path())?;
+        let mut opml_file = File::open(opml_path.path())?;
         let mut opml_str = String::new();
         opml_file.read_to_string(&mut opml_str)?;
         assert_eq!(opml_str, include_str!("../tests/export_test.opml"));

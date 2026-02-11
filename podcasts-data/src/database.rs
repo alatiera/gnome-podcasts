@@ -26,7 +26,6 @@ use diesel::r2d2::ConnectionManager;
 
 use diesel_migrations::{EmbeddedMigrations, MigrationHarness, embed_migrations};
 
-use std::path::PathBuf;
 use std::sync::LazyLock;
 
 use crate::errors::DataError;
@@ -38,28 +37,28 @@ type Pool = r2d2::Pool<ConnectionManager<SqliteConnection>>;
 
 const MIGRATIONS: EmbeddedMigrations = embed_migrations!("migrations/");
 
-static POOL: LazyLock<Pool> = LazyLock::new(|| init_pool(DB_PATH.to_str().unwrap()));
-
-#[cfg(not(test))]
-static DB_PATH: LazyLock<PathBuf> = LazyLock::new(|| {
-    xdg_dirs::PODCASTS_XDG
-        .place_data_file("podcasts.db")
-        .unwrap()
-});
+static POOL: LazyLock<Pool> = LazyLock::new(|| init_pool());
 
 #[cfg(test)]
-pub(crate) static TEMPDIR: LazyLock<tempfile::TempDir> =
-    LazyLock::new(|| tempfile::TempDir::with_prefix("podcasts_unit_test").unwrap());
-
-#[cfg(test)]
-static DB_PATH: LazyLock<PathBuf> = LazyLock::new(|| TEMPDIR.path().join("podcasts.db"));
+static TEMPFILE: LazyLock<tempfile::NamedTempFile> =
+    LazyLock::new(|| tempfile::NamedTempFile::with_suffix("-podcasts.db").unwrap());
 
 /// Get an r2d2 `SqliteConnection`.
 pub(crate) fn connection() -> Pool {
     POOL.clone()
 }
 
-fn init_pool(db_path: &str) -> Pool {
+fn init_pool() -> Pool {
+    #[cfg(not(test))]
+    let pathbuf = xdg_dirs::PODCASTS_XDG
+        .place_data_file("podcasts.db")
+        .unwrap();
+    #[cfg(not(test))]
+    let db_path = pathbuf.to_str().unwrap();
+
+    #[cfg(test)]
+    let db_path = TEMPFILE.path().to_str().unwrap();
+
     let manager = ConnectionManager::<SqliteConnection>::new(db_path);
     let pool = r2d2::Pool::builder()
         .max_size(1)
