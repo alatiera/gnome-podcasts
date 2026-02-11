@@ -347,7 +347,7 @@ impl NewEpisodeMinimal {
 
 #[cfg(test)]
 mod tests {
-    use crate::database::truncate_db;
+    use crate::database::reset_db;
     use crate::dbqueries;
     use crate::models::new_episode::{NewEpisodeMinimal, NewEpisodeMinimalBuilder};
     use crate::models::*;
@@ -690,7 +690,7 @@ mod tests {
 
     #[test]
     fn test_minimal_into_new_episode() -> Result<()> {
-        truncate_db()?;
+        let _tempfile = reset_db()?;
 
         let file = File::open("tests/feeds/2018-01-20-Intercepted.xml")?;
         let channel = Channel::read_from(BufReader::new(file))?;
@@ -711,7 +711,7 @@ mod tests {
 
     #[test]
     fn test_new_episode_insert() -> Result<()> {
-        truncate_db()?;
+        let _tempfile = reset_db()?;
 
         let file = File::open("tests/feeds/2018-01-20-Intercepted.xml")?;
         let channel = Channel::read_from(BufReader::new(file))?;
@@ -738,7 +738,7 @@ mod tests {
 
     #[test]
     fn test_new_episode_update() -> Result<()> {
-        truncate_db()?;
+        let _tempfile = reset_db()?;
         let old = EXPECTED_INTERCEPTED_1.clone().to_episode()?;
 
         let updated = &*UPDATED_DURATION_INTERCEPTED_1;
@@ -757,7 +757,7 @@ mod tests {
 
     #[test]
     fn test_new_episode_index() -> Result<()> {
-        truncate_db()?;
+        let _tempfile = reset_db()?;
         let expected = &*EXPECTED_INTERCEPTED_1;
 
         // First insert
@@ -788,14 +788,14 @@ mod tests {
         let expected = &*EXPECTED_INTERCEPTED_1;
 
         // Assert insert() produces the same result that you would get with to_podcast()
-        truncate_db()?;
+        let _tempfile = reset_db()?;
         expected.index()?;
         let old = dbqueries::get_episode(expected.guid(), expected.title(), expected.show_id())?;
         let ep = expected.to_episode()?;
         assert_eq!(old, ep);
 
         // Same as above, diff order
-        truncate_db()?;
+        let _tempfile = reset_db()?;
         let ep = expected.to_episode()?;
 
         // did not make a new insert, updated
@@ -811,7 +811,7 @@ mod tests {
     // new episode is imported, always same title, different guid
     #[test]
     fn test_feed_ndr() -> Result<()> {
-        truncate_db()?;
+        let _tempfile = reset_db()?;
 
         let file = File::open("tests/feeds/2024-03-13-ndr.xml")?;
         let channel = Channel::read_from(BufReader::new(file))?;

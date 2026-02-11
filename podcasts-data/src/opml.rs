@@ -209,7 +209,7 @@ mod tests {
     use anyhow::Result;
     use chrono::Local;
 
-    use crate::database::truncate_db;
+    use crate::database::reset_db;
     use crate::utils::get_feed;
 
     const URLS: &[(&str, &str)] = {
@@ -308,7 +308,7 @@ mod tests {
 
     #[test]
     fn text_export() -> Result<()> {
-        truncate_db()?;
+        let _tempfile = reset_db()?;
 
         URLS.iter().for_each(|&(path, url)| {
             // Create and insert a Source into db

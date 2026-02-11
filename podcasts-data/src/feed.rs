@@ -148,7 +148,7 @@ mod tests {
 
     use crate::EpisodeModel;
     use crate::Source;
-    use crate::database::truncate_db;
+    use crate::database::reset_db;
     use crate::dbqueries;
     use crate::utils::get_feed;
 
@@ -196,7 +196,7 @@ mod tests {
 
     #[test]
     fn test_complete_index() -> Result<()> {
-        truncate_db()?;
+        let _tempfile = reset_db()?;
 
         let feeds: Vec<_> = URLS
             .iter()
@@ -221,7 +221,7 @@ mod tests {
 
     #[test]
     fn test_feed_parse_podcast() -> Result<()> {
-        truncate_db()?;
+        let _tempfile = reset_db()?;
 
         let path = "tests/feeds/2018-01-20-Intercepted.xml";
         let feed = get_feed(path, TEST_SOURCE_ID);
@@ -236,7 +236,7 @@ mod tests {
 
     #[test]
     fn test_feed_index_channel_items() -> Result<()> {
-        truncate_db()?;
+        let _tempfile = reset_db()?;
 
         let path = "tests/feeds/2018-01-20-Intercepted.xml";
         let feed = get_feed(path, TEST_SOURCE_ID);
@@ -250,7 +250,7 @@ mod tests {
 
     #[test]
     fn test_feed_non_utf8() -> Result<()> {
-        truncate_db()?;
+        let _tempfile = reset_db()?;
 
         let path = "tests/feeds/2022-series-i-cinema.xml";
         let feed = get_feed(path, TEST_SOURCE_ID);
@@ -271,7 +271,7 @@ mod tests {
     // https://gitlab.gnome.org/World/podcasts/-/issues/239
     #[test]
     fn test_feed_same_title_different_guid() -> Result<()> {
-        truncate_db()?;
+        let _tempfile = reset_db()?;
 
         let path = "tests/feeds/de-grote.xml";
         let feed = get_feed(path, TEST_SOURCE_ID);
@@ -286,7 +286,7 @@ mod tests {
     // https://gitlab.gnome.org/World/podcasts/-/issues/239
     #[test]
     fn test_feed_same_title_no_guid() -> Result<()> {
-        truncate_db()?;
+        let _tempfile = reset_db()?;
 
         let path = "tests/feeds/de-grote-no-guid.xml";
         let feed = get_feed(path, TEST_SOURCE_ID);
@@ -323,7 +323,7 @@ mod tests {
     // https://gitlab.gnome.org/World/podcasts/-/issues/204
     #[test]
     fn test_reruns() -> Result<()> {
-        truncate_db()?;
+        let _tempfile = reset_db()?;
 
         let path = "tests/feeds/2020-12-29-replyall.xml";
         let feed = get_feed(path, TEST_SOURCE_ID);
@@ -378,7 +378,7 @@ mod tests {
     #[test]
     // has same title and &amp; sign in title
     fn test_same_title_streetfight() -> Result<()> {
-        truncate_db()?;
+        let _tempfile = reset_db()?;
 
         let path = "tests/feeds/2024-03-15-streetfightradio.xml";
         let feed = get_feed(path, TEST_SOURCE_ID);

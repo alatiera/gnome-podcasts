@@ -63,7 +63,7 @@ meson test -C _build && cargo fmt --all -- --check
 Running the tests requires an internet connection and will download some files from the [Internet Archive](https://archive.org/).
 
 The test suite sets a temporary sqlite database in the `/tmp` folder.
-Due to that it's not possible to run them in parallel.
+Due to that it's not possible to run them in parallel, unless you've installed [nextest](https://nexte.st/).
 
 In order to run the test suite use the following: `meson test -C _build`
 

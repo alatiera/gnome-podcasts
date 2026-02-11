@@ -276,15 +276,15 @@ mod tests {
     use chrono::Duration;
     use std::fs::File;
     use std::io::Write;
-    use tempfile::TempDir;
+    use tempfile::{NamedTempFile, TempDir};
 
     use crate::ShowId;
-    use crate::database::truncate_db;
+    use crate::database::reset_db;
     use crate::models::NewEpisodeBuilder;
 
-    fn helper_db() -> Result<TempDir> {
+    fn helper_db() -> Result<(NamedTempFile, TempDir)> {
         // Clean the db
-        truncate_db()?;
+        let tempfile = reset_db()?;
         // Setup tmp file stuff
         let tmp_dir = TempDir::with_prefix("podcasts_test")?;
         let valid_path = tmp_dir.path().join("virtual_dl.mp3");
@@ -315,12 +315,12 @@ mod tests {
         ep1.save()?;
         ep2.save()?;
 
-        Ok(tmp_dir)
+        Ok((tempfile, tmp_dir))
     }
 
     #[test]
     fn test_download_checker() -> Result<()> {
-        let tmp_dir = helper_db()?;
+        let (_tempfile, tmp_dir) = helper_db()?;
         download_checker()?;
         let episodes = dbqueries::get_downloaded_episodes()?;
         let valid_path = tmp_dir.path().join("virtual_dl.mp3");
@@ -331,7 +331,7 @@ mod tests {
             episodes.first().unwrap().local_uri()
         );
 
-        let _tmp_dir = helper_db()?;
+        let (_tempfile, _tmp_dir) = helper_db()?;
         download_checker()?;
         let episode = dbqueries::get_episode_cleaner_from_title("bar_baz", ShowId(1))?;
         assert!(episode.local_uri().is_none());
@@ -340,7 +340,7 @@ mod tests {
 
     #[test]
     fn test_download_cleaner() -> Result<()> {
-        let _tmp_dir = helper_db()?;
+        let (_tempfile, _tmp_dir) = helper_db()?;
         let mut episode: EpisodeCleanerModel =
             dbqueries::get_episode_cleaner_from_title("foo_bar", ShowId(0))?;
 
@@ -352,7 +352,7 @@ mod tests {
 
     #[test]
     fn test_played_cleaner_expired() -> Result<()> {
-        let _tmp_dir = helper_db()?;
+        let (_tempfile, _tmp_dir) = helper_db()?;
         let mut episode = dbqueries::get_episode_cleaner_from_title("foo_bar", ShowId(0))?;
         let cleanup_date = Utc::now() - Duration::seconds(1000);
         let epoch = DateTime::<Utc>::from_timestamp(cleanup_date.timestamp() - 1, 0);
@@ -368,7 +368,7 @@ mod tests {
 
     #[test]
     fn test_played_cleaner_none() -> Result<()> {
-        let _tmp_dir = helper_db()?;
+        let (_tempfile, _tmp_dir) = helper_db()?;
         let mut episode = dbqueries::get_episode_cleaner_from_title("foo_bar", ShowId(0))?;
         let cleanup_date = Utc::now() - Duration::seconds(1000);
         let epoch = DateTime::<Utc>::from_timestamp(cleanup_date.timestamp() + 1, 0);

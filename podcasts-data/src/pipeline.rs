@@ -70,7 +70,7 @@ where
 mod tests {
     use super::*;
     use crate::Source;
-    use crate::database::truncate_db;
+    use crate::database::reset_db;
     use crate::dbqueries;
 
     // (path, url) tuples.
@@ -87,7 +87,7 @@ mod tests {
     #[test]
     /// Insert feeds and update/index them.
     fn test_pipeline() -> Result<(), DataError> {
-        truncate_db()?;
+        let _tempfile = reset_db()?;
         let bad_url = "https://gitlab.gnome.org/World/podcasts.atom";
         // if a stream returns error/None it stops
         // bad we want to parse all feeds regardless if one fails

@@ -26,39 +26,36 @@ use diesel::r2d2::ConnectionManager;
 
 use diesel_migrations::{EmbeddedMigrations, MigrationHarness, embed_migrations};
 
+use crate::xdg_dirs;
 use std::sync::LazyLock;
+use std::sync::Mutex;
 
 use crate::errors::DataError;
-
-#[cfg(not(test))]
-use crate::xdg_dirs;
 
 type Pool = r2d2::Pool<ConnectionManager<SqliteConnection>>;
 
 const MIGRATIONS: EmbeddedMigrations = embed_migrations!("migrations/");
 
-static POOL: LazyLock<Pool> = LazyLock::new(|| init_pool());
-
-#[cfg(test)]
-static TEMPFILE: LazyLock<tempfile::NamedTempFile> =
-    LazyLock::new(|| tempfile::NamedTempFile::with_suffix("-podcasts.db").unwrap());
-
-/// Get an r2d2 `SqliteConnection`.
-pub(crate) fn connection() -> Pool {
-    POOL.clone()
-}
-
-fn init_pool() -> Pool {
-    #[cfg(not(test))]
+// When using nextest this will only run once, and we
+// could initialize a cfg(test) db here.
+// However with cargo test, this is shared between each
+// [test] and instead we need to reset_db() at
+// the begging of each test.
+// This is why we have reset_db as opposed to initialize_test_db
+static POOL: LazyLock<Mutex<Pool>> = LazyLock::new(|| {
     let pathbuf = xdg_dirs::PODCASTS_XDG
         .place_data_file("podcasts.db")
         .unwrap();
-    #[cfg(not(test))]
     let db_path = pathbuf.to_str().unwrap();
+    Mutex::new(init_pool(db_path))
+});
 
-    #[cfg(test)]
-    let db_path = TEMPFILE.path().to_str().unwrap();
+/// Get an r2d2 `SqliteConnection`.
+pub(crate) fn connection() -> Pool {
+    POOL.lock().unwrap().clone()
+}
 
+fn init_pool(db_path: &str) -> Pool {
     let manager = ConnectionManager::<SqliteConnection>::new(db_path);
     let pool = r2d2::Pool::builder()
         .max_size(1)
@@ -83,10 +80,18 @@ fn run_migration_on(
 
 /// Reset the database into a clean state.
 // Test share a Temp file db.
-pub fn truncate_db() -> Result<(), DataError> {
-    use diesel::connection::SimpleConnection;
-    let db = connection();
-    let mut con = db.get()?;
-    con.batch_execute("DELETE FROM episodes; DELETE FROM shows; DELETE FROM source; DELETE FROM shows_sync; DELETE FROM episodes_sync; DELETE FROM settings_sync")?;
-    Ok(())
+#[allow(unused)]
+pub fn reset_db() -> Result<tempfile::NamedTempFile, DataError> {
+    let db = tempfile::Builder::new()
+        .suffix("-podcasts.db")
+        .tempfile()
+        .unwrap();
+    let db_path = db.path().to_str().unwrap();
+
+    let pool = init_pool(db_path);
+    let mut lock = POOL.lock().unwrap();
+    *lock = pool;
+    drop(lock);
+
+    Ok(db)
 }

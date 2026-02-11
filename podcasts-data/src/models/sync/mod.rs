@@ -75,7 +75,7 @@ pub(crate) mod test {
 
     #[test]
     fn test_delete_deltas() -> Result<()> {
-        truncate_db()?;
+        let _tempfile = reset_db()?;
 
         // starts empty
         assert!(Settings::fetch_entry().is_err());

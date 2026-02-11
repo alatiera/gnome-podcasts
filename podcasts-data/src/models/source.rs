@@ -324,14 +324,14 @@ mod tests {
     use super::*;
     use anyhow::Result;
 
-    use crate::database::truncate_db;
+    use crate::database::reset_db;
     use crate::dbqueries;
     use crate::downloader::client_builder;
     use crate::utils::get_feed;
 
     #[test]
     fn test_into_feed() -> Result<()> {
-        truncate_db()?;
+        let _tempfile = reset_db()?;
 
         let rt = tokio::runtime::Runtime::new()?;
         let client = client_builder().build()?;
@@ -350,7 +350,7 @@ mod tests {
 
     #[test]
     fn test_into_non_utf8() -> Result<()> {
-        truncate_db()?;
+        let _tempfile = reset_db()?;
 
         let rt = tokio::runtime::Runtime::new()?;
         let client = client_builder().build()?;

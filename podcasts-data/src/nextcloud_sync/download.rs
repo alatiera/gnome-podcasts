@@ -231,7 +231,7 @@ mod test {
 
     #[test]
     fn test_download_changes() -> Result<()> {
-        let rt = prepare()?;
+        let (rt, _tempfile) = prepare()?;
         let server = mock_nextcloud_server()?;
         let address = format!("http://127.0.0.1:{}", server.port());
 
@@ -286,7 +286,7 @@ mod test {
 
     #[test]
     fn test_ignore_sub_remove_before_local_add() -> Result<()> {
-        let rt = prepare()?;
+        let (rt, _tempfile) = prepare()?;
         let get = SubscriptionGet {
             add: vec![],
             remove: vec!["https://rss.art19.com/the-deprogram".to_string()],
@@ -326,7 +326,7 @@ mod test {
 
     #[test]
     fn test_ignore_sub_add_before_local_remove() -> Result<()> {
-        let rt = prepare()?;
+        let (rt, _tempfile) = prepare()?;
         let get = SubscriptionGet {
             add: vec!["https://rss.art19.com/the-deprogram".to_string()],
             remove: vec![],

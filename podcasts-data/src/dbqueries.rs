@@ -665,14 +665,14 @@ pub(crate) fn get_podcast_ids_to_uris() -> Result<HashMap<ShowId, String>, DataE
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::database::truncate_db;
+    use crate::database::reset_db;
     use crate::pipeline::pipeline;
     use crate::utils::get_feed;
     use anyhow::Result;
 
     #[test]
     fn test_update_none_to_played_now() -> Result<()> {
-        truncate_db()?;
+        let _tempfile = reset_db()?;
 
         let url = "https://web.archive.org/web/20180120083840if_/https://feeds.feedburner.\
                    com/InterceptedWithJeremyScahill";
@@ -693,7 +693,7 @@ mod tests {
 
     #[test]
     fn test_episode_exists() -> Result<()> {
-        truncate_db()?;
+        let _tempfile = reset_db()?;
         const TEST_SHOW_ID: ShowId = ShowId(1);
         const TEST_SOURCE_ID: SourceId = SourceId(1);
 
@@ -732,7 +732,7 @@ mod tests {
 
     #[test]
     fn test_get_sync_delta_data() -> Result<()> {
-        truncate_db()?;
+        let _tempfile = reset_db()?;
 
         let (s, e) = get_sync_delta_data()?;
         assert_eq!(0, s.len());

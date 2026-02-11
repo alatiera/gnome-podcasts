@@ -284,10 +284,10 @@ pub(crate) mod test {
     static RUNTIME: LazyLock<tokio::runtime::Runtime> =
         LazyLock::new(|| tokio::runtime::Runtime::new().unwrap());
 
-    pub fn prepare() -> Result<&'static tokio::runtime::Runtime> {
-        crate::database::truncate_db()?;
+    pub fn prepare() -> Result<(&'static tokio::runtime::Runtime, tempfile::NamedTempFile)> {
+        let tempfile = crate::database::reset_db()?;
         let _ = crate::feed_manager::RUNTIME.set(&RUNTIME);
-        Ok(&RUNTIME)
+        Ok((&RUNTIME, tempfile))
     }
 
     #[test]

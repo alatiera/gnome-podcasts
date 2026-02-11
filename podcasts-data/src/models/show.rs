@@ -222,7 +222,7 @@ impl ShowCoverModel {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::database::truncate_db;
+    use crate::database::reset_db;
     use crate::dbqueries;
     use crate::models::{Insert, NewShow, NewShowBuilder, Update};
     use anyhow::Result;
@@ -272,7 +272,7 @@ mod tests {
     #[test]
     fn should_update_timestamp_when_update_image_cached_is_called_after_the_timestamp_has_expired()
     -> Result<()> {
-        truncate_db()?;
+        let _tempfile = reset_db()?;
         EXPECTED_INTERCEPTED.insert()?;
         let show = EXPECTED_INTERCEPTED.to_podcast()?;
         let show: ShowCoverModel = show.into();
@@ -296,7 +296,7 @@ mod tests {
     #[test]
     fn should_update_hash_when_update_image_uri_hash_is_called_when_the_hash_is_invalid()
     -> Result<()> {
-        truncate_db()?;
+        let _tempfile = reset_db()?;
         EXPECTED_INTERCEPTED.insert()?;
         let original = EXPECTED_INTERCEPTED.to_podcast()?;
         let original_hash: u64 = 2965280433145069220;
@@ -322,7 +322,7 @@ mod tests {
     #[test]
     fn should_update_timestamp_only_when_update_image_cached_values_is_called_after_the_timestamp_has_expired()
     -> Result<()> {
-        truncate_db()?;
+        let _tempfile = reset_db()?;
         EXPECTED_INTERCEPTED.insert()?;
         let show = EXPECTED_INTERCEPTED.to_podcast()?;
         let show: ShowCoverModel = show.into();
@@ -344,7 +344,7 @@ mod tests {
     #[test]
     fn should_update_timestamp_and_hash_when_update_image_cached_values_is_called_when_hash_is_invalid()
     -> Result<()> {
-        truncate_db()?;
+        let _tempfile = reset_db()?;
         EXPECTED_INTERCEPTED.insert()?;
         let original = EXPECTED_INTERCEPTED.to_podcast()?;
         let original_timestamp = original.image_cached();

@@ -211,7 +211,7 @@ mod tests {
     use anyhow::Result;
     use rss::Channel;
 
-    use crate::database::truncate_db;
+    use crate::database::reset_db;
     use crate::models::NewShowBuilder;
 
     use std::fs::File;
@@ -404,7 +404,7 @@ mod tests {
     #[test]
     // This maybe could be a doc test on insert.
     fn test_new_podcast_insert() -> Result<()> {
-        truncate_db()?;
+        let _tempfile = reset_db()?;
         let file = File::open("tests/feeds/2018-01-20-Intercepted.xml")?;
         let channel = Channel::read_from(BufReader::new(file))?;
 
@@ -424,7 +424,7 @@ mod tests {
     // If you have time and want to help, implement the test for the other fields
     // too.
     fn test_new_podcast_update() -> Result<()> {
-        truncate_db()?;
+        let _tempfile = reset_db()?;
         let old = EXPECTED_INTERCEPTED.to_podcast()?;
 
         let updated = &*UPDATED_DESC_INTERCEPTED;
@@ -441,7 +441,7 @@ mod tests {
 
     #[test]
     fn test_new_podcast_index() -> Result<()> {
-        truncate_db()?;
+        let _tempfile = reset_db()?;
 
         // First insert
         assert!(EXPECTED_INTERCEPTED.index().is_ok());
@@ -468,14 +468,14 @@ mod tests {
     #[test]
     fn test_to_podcast() -> Result<()> {
         // Assert insert() produces the same result that you would get with to_podcast()
-        truncate_db()?;
+        let _tempfile = reset_db()?;
         EXPECTED_INTERCEPTED.insert()?;
         let old = dbqueries::get_podcast_from_source_id(TEST_SOURCE_ID)?;
         let pd = EXPECTED_INTERCEPTED.to_podcast()?;
         assert_eq!(old, pd);
 
         // Same as above, diff order
-        truncate_db()?;
+        let _tempfile = reset_db()?;
         let pd = EXPECTED_INTERCEPTED.to_podcast()?;
         // This should error as a unique constrain violation
         assert!(EXPECTED_INTERCEPTED.insert().is_err());

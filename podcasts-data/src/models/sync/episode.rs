@@ -152,7 +152,7 @@ pub(crate) mod test {
 
     #[test]
     fn test_episode_deltas() -> Result<()> {
-        truncate_db()?;
+        let _tempfile = reset_db()?;
         crate::models::sync::test::init_settings()?;
         let rt = tokio::runtime::Runtime::new()?;
         let url = "https://rss.art19.com/the-deprogram";

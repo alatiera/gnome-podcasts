@@ -125,14 +125,14 @@ mod tests {
 
     #[test]
     fn test_skip() -> Result<()> {
-        let rt = prepare()?;
+        let (rt, _tempfile) = prepare()?;
         let result = rt.block_on(sync(SyncPolicy::CancelOnMissingEpisodes))?;
         assert_eq!(SyncResult::Skipped, result);
         Ok(())
     }
     #[test]
     fn test_pass() -> Result<()> {
-        let rt = prepare()?;
+        let (rt, _tempfile) = prepare()?;
         let server = mock_nextcloud_server()?;
         let address = format!("http://127.0.0.1:{}", server.port());
         crate::sync::Settings::store_entry(&address, "user")?;
@@ -152,7 +152,7 @@ mod tests {
 
     #[test]
     fn test_error() -> Result<()> {
-        let rt = prepare()?;
+        let (rt, _tempfile) = prepare()?;
         // no server started
         let address = format!("http://127.0.0.1:{}", 80);
         crate::sync::Settings::store_entry(&address, "user")?;
@@ -173,7 +173,7 @@ mod tests {
 
     #[test]
     fn test_error_missing_episodes() -> Result<()> {
-        let rt = prepare()?;
+        let (rt, _tempfile) = prepare()?;
         let server = mock_nextcloud_server_missing()?;
         let address = format!("http://127.0.0.1:{}", server.port());
         crate::sync::Settings::store_entry(&address, "user")?;
@@ -196,7 +196,7 @@ mod tests {
 
     #[test]
     fn test_skip_error_missing_episodes() -> Result<()> {
-        let rt = prepare()?;
+        let (rt, _tempfile) = prepare()?;
         let server = mock_nextcloud_server_missing()?;
         let address = format!("http://127.0.0.1:{}", server.port());
         crate::sync::Settings::store_entry(&address, "user")?;

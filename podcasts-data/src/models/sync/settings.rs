@@ -189,7 +189,7 @@ pub(crate) mod test {
 
     #[test]
     fn test_episode_deltas() -> Result<()> {
-        truncate_db()?;
+        let _tempfile = reset_db()?;
         assert!(Settings::fetch_entry().is_err());
         Settings::store_entry("127.0.0.1", "test_user")?;
         assert!(Settings::fetch_entry().is_ok());

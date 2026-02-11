@@ -570,7 +570,7 @@ pub fn texture_from_image(
 mod tests {
     use super::*;
     use anyhow::Result;
-    use podcasts_data::database::truncate_db;
+    use podcasts_data::database::reset_db;
     use podcasts_data::dbqueries;
     use podcasts_data::pipeline::pipeline;
     use podcasts_data::utils::get_download_dir;
@@ -677,7 +677,7 @@ mod tests {
     #[test]
     #[ignore]
     fn should_refresh_cached_image_when_the_image_uri_changes() -> Result<()> {
-        truncate_db()?;
+        let _tempfile = reset_db()?;
         let mut original_feed = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
         original_feed.push("resources/test/feeds/2018-01-20-LinuxUnplugged.xml");
         let original_url = format!(

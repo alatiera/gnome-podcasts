@@ -311,7 +311,7 @@ mod test {
 
     #[test]
     fn test_inital_post_empty() -> Result<()> {
-        truncate_db()?;
+        let _tempfile = reset_db()?;
         let now = chrono::Utc::now();
         let (s, e) = make_initial_post(&now)?;
         assert!(s.is_empty());
@@ -320,7 +320,7 @@ mod test {
     }
     #[test]
     fn test_inital_post() -> Result<()> {
-        truncate_db()?;
+        let _tempfile = reset_db()?;
         let rt = tokio::runtime::Runtime::new()?;
         let url = "https://rss.art19.com/the-deprogram";
         let source = Source::from_url(url)?;
@@ -356,7 +356,7 @@ mod test {
     }
     #[test]
     fn test_delta_post() -> Result<()> {
-        truncate_db()?;
+        let _tempfile = reset_db()?;
 
         let now = chrono::Utc::now();
         let (s, e) = make_delta_post(&now, &ep_get())?;
@@ -397,7 +397,7 @@ mod test {
     }
     #[test]
     fn test_show_moved_post() -> Result<()> {
-        truncate_db()?;
+        let _tempfile = reset_db()?;
 
         let now = chrono::Utc::now();
         let (s, e) = make_delta_post(&now, &ep_get())?;
@@ -451,7 +451,7 @@ mod test {
 
     #[test]
     fn test_upload_changes() -> Result<()> {
-        truncate_db()?;
+        let _tempfile = reset_db()?;
         let server = mock_nextcloud_server()?;
         let address = format!("http://127.0.0.1:{}", server.port());
 
