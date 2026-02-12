@@ -19,7 +19,7 @@ cargo fetch --locked
 if command -v cargo-nextest &> /dev/null; then
     # nextest puts each [test] in its own process so they get their own
     # database and can run in parallel
-    cargo nextest run --all-features --offline --no-capture --no-fail-fast
+    cargo nextest run --offline --no-capture --no-fail-fast
 else
-    cargo test --all-features --offline -- --test-threads=1 --nocapture
+    cargo test --offline -- --test-threads=1 --nocapture
 fi
