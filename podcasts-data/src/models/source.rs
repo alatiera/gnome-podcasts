@@ -330,6 +330,7 @@ mod tests {
     use crate::utils::get_feed;
 
     #[test]
+    #[ignore = "Does http calls to the internet archive. They often fail due to anti-scraping limits"]
     fn test_into_feed() -> Result<()> {
         let _tempfile = reset_db()?;
 
@@ -349,6 +350,7 @@ mod tests {
     }
 
     #[test]
+    #[ignore = "Does http calls to the internet archive. They often fail due to anti-scraping limits"]
     fn test_into_non_utf8() -> Result<()> {
         let _tempfile = reset_db()?;
 

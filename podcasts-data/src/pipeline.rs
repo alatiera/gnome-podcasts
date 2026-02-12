@@ -86,6 +86,7 @@ mod tests {
 
     #[test]
     /// Insert feeds and update/index them.
+    #[ignore = "Does http calls to the internet archive. They often fail due to anti-scraping limits"]
     fn test_pipeline() -> Result<(), DataError> {
         let _tempfile = reset_db()?;
         let bad_url = "https://gitlab.gnome.org/World/podcasts.atom";

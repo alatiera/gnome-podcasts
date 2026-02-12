@@ -396,6 +396,7 @@ mod test {
         Ok(())
     }
     #[test]
+    #[ignore = "Does http calls to the internet archive. They often fail due to anti-scraping limits"]
     fn test_show_moved_post() -> Result<()> {
         let _tempfile = reset_db()?;
 

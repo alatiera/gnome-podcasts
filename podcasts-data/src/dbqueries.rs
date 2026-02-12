@@ -671,6 +671,7 @@ mod tests {
     use anyhow::Result;
 
     #[test]
+    #[ignore = "Does http calls to the internet archive. They often fail due to anti-scraping limits"]
     fn test_update_none_to_played_now() -> Result<()> {
         let _tempfile = reset_db()?;
 
@@ -731,6 +732,7 @@ mod tests {
     }
 
     #[test]
+    #[ignore = "Does http calls to the internet archive. They often fail due to anti-scraping limits"]
     fn test_get_sync_delta_data() -> Result<()> {
         let _tempfile = reset_db()?;
 
