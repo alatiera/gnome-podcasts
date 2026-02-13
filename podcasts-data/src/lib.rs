@@ -47,6 +47,8 @@ pub mod opml;
 mod parser;
 pub mod pipeline;
 mod schema;
+#[cfg(test)]
+pub mod test_feeds;
 pub mod utils;
 
 pub use crate::feed::{Feed, FeedBuilder};

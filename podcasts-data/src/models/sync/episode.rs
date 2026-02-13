@@ -148,6 +148,7 @@ pub(crate) mod test {
     use crate::dbqueries;
     use crate::models::Source;
     use crate::pipeline::pipeline;
+    use crate::test_feeds::*;
     use anyhow::Result;
 
     #[test]
@@ -155,8 +156,9 @@ pub(crate) mod test {
         let _tempfile = reset_db()?;
         crate::models::sync::test::init_settings()?;
         let rt = tokio::runtime::Runtime::new()?;
-        let url = "https://rss.art19.com/the-deprogram";
-        let source = Source::from_url(url)?;
+        let server = mock_feed_server()?;
+        let feed_url = mock_feed_url(&server, MOCK_FEED_DEPROGRAM);
+        let source = Source::from_url(&feed_url)?;
         rt.block_on(pipeline(vec![source]))?;
 
         // insert ep delta

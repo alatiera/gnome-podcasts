@@ -298,6 +298,7 @@ mod test {
     use crate::models::Save;
     use crate::models::Source;
     use crate::pipeline::pipeline;
+    use crate::test_feeds::*;
     use anyhow::Result;
     use http_test_server::TestServer;
     use http_test_server::http::{Method, Status};
@@ -322,8 +323,9 @@ mod test {
     fn test_inital_post() -> Result<()> {
         let _tempfile = reset_db()?;
         let rt = tokio::runtime::Runtime::new()?;
-        let url = "https://rss.art19.com/the-deprogram";
-        let source = Source::from_url(url)?;
+        let server = mock_feed_server()?;
+        let feed_url = mock_feed_url(&server, MOCK_FEED_DEPROGRAM);
+        let source = Source::from_url(&feed_url)?;
         rt.block_on(pipeline(vec![source]))?;
         let mut all_eps = dbqueries::get_episodes()?;
         assert_ne!(0, all_eps.len());
@@ -364,8 +366,9 @@ mod test {
         assert!(e.is_empty());
 
         let rt = tokio::runtime::Runtime::new()?;
-        let url = "https://rss.art19.com/the-deprogram";
-        let source = Source::from_url(url)?;
+        let server = mock_feed_server()?;
+        let feed_url = mock_feed_url(&server, MOCK_FEED_DEPROGRAM);
+        let source = Source::from_url(&feed_url)?;
         rt.block_on(pipeline(vec![source]))?;
         let mut all_eps = dbqueries::get_episodes()?;
         assert_ne!(0, all_eps.len());
@@ -396,7 +399,6 @@ mod test {
         Ok(())
     }
     #[test]
-    #[ignore = "Does http calls to the internet archive. They often fail due to anti-scraping limits"]
     fn test_show_moved_post() -> Result<()> {
         let _tempfile = reset_db()?;
 
@@ -406,12 +408,11 @@ mod test {
         assert!(e.is_empty());
 
         let rt = tokio::runtime::Runtime::new()?;
-        let url1 = "https://web.archive.org/web/20220110083840if_/\
-                   https://rss.art19.com/the-deprogram";
-        let url2 = "https://web.archive.org/web/20220120083840if_/\
-                   https://rss.art19.com/the-deprogram";
+        let server = mock_feed_server()?;
+        let url1 = mock_feed_url(&server, MOCK_FEED_DEPROGRAM_OLD);
+        let url2 = mock_feed_url(&server, MOCK_FEED_DEPROGRAM);
 
-        let source = Source::from_url(url1)?;
+        let source = Source::from_url(&url1)?;
         rt.block_on(pipeline(vec![source]))?;
         let mut all_eps = dbqueries::get_episodes()?;
         assert_ne!(0, all_eps.len());
@@ -429,8 +430,8 @@ mod test {
         assert_eq!(1, s.remove.len());
         assert_eq!(0, e.len());
 
-        assert_eq!(url1, s.remove.get(0).unwrap());
-        assert_eq!(url2, s.add.get(0).unwrap());
+        assert_eq!(&url1, s.remove.get(0).unwrap());
+        assert_eq!(&url2, s.add.get(0).unwrap());
 
         let ep1 = all_eps.get_mut(0).unwrap();
         ep1.set_play_position_and_save(15)?;
@@ -440,8 +441,8 @@ mod test {
         assert_eq!(1, s.remove.len());
         assert_eq!(1, e.len());
 
-        assert_eq!(url1, s.remove.get(0).unwrap());
-        assert_eq!(url2, s.add.get(0).unwrap());
+        assert_eq!(&url1, s.remove.get(0).unwrap());
+        assert_eq!(&url2, s.add.get(0).unwrap());
 
         // resending the ep action to move it
         assert_eq!(15, e.get(0).unwrap().position);

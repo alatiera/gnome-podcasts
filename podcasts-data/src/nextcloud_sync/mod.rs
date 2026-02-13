@@ -119,6 +119,7 @@ async fn sync_for_login(
 mod tests {
     use super::*;
     use crate::nextcloud_sync::test::prepare;
+    use crate::test_feeds::*;
     use anyhow::Result;
     use http_test_server::TestServer;
     use http_test_server::http::{Method, Status};
@@ -218,23 +219,24 @@ mod tests {
     }
 
     fn mock_nextcloud_server() -> Result<TestServer> {
-        let server = TestServer::new()?;
+        let server = mock_feed_server()?;
 
+        let feed_url = mock_feed_url(&server, MOCK_FEED_DEPROGRAM);
+        let body = format!("{{\"add\": [\"{feed_url}\"], \"remove\": [], \"timestamp\": 0}}");
         server
             .create_resource("/index.php/apps/gpoddersync/subscriptions")
             .status(Status::OK)
             .header("Content-Type", "application/json")
             .header("Cache-Control", "no-cache")
-            .body(
-                r#"{"add": ["https://rss.art19.com/the-deprogram"], "remove": [], "timestamp": 0}"#,
-            );
+            .body_fn(move |_| body.clone());
 
+        let actions_response = crate::nextcloud_sync::data::test::actions_response(&server);
         server
             .create_resource("/index.php/apps/gpoddersync/episode_action")
             .status(Status::OK)
             .header("Content-Type", "application/json")
             .header("Cache-Control", "no-cache")
-            .body(crate::nextcloud_sync::data::test::TEST_ACTIONS);
+            .body_fn(move |_| actions_response.clone());
 
         server
             .create_resource("/index.php/apps/gpoddersync/subscription_change/create")
@@ -255,7 +257,7 @@ mod tests {
     }
 
     fn mock_nextcloud_server_missing() -> Result<TestServer> {
-        let server = TestServer::new()?;
+        let server = mock_feed_server()?;
 
         server
             .create_resource("/index.php/apps/gpoddersync/subscriptions")
@@ -266,12 +268,13 @@ mod tests {
                 r#"{"add": ["https://rss.art19.com/the-deprogram", ""], "remove": [], "timestamp": 0}"#,
             );
 
+        let actions_response = crate::nextcloud_sync::data::test::actions_with_missing_sub(&server);
         server
             .create_resource("/index.php/apps/gpoddersync/episode_action")
             .status(Status::OK)
             .header("Content-Type", "application/json")
             .header("Cache-Control", "no-cache")
-            .body(crate::nextcloud_sync::data::test::TEST_ACTIONS_WITH_MISSING_SUB);
+            .body_fn(move |_| actions_response.clone());
 
         server
             .create_resource("/index.php/apps/gpoddersync/subscription_change/create")

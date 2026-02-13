@@ -275,11 +275,22 @@ pub(crate) fn client_builder() -> reqwest::ClientBuilder {
 #[cfg(test)]
 pub(crate) mod test {
     use super::*;
+    use crate::test_feeds::*;
+    use http_test_server::TestServer;
     use std::sync::LazyLock;
-    // TODO replace urls with local test server urls
-    pub const TEST_ACTIONS: &str = "{\"actions\":[{\"podcast\":\"https:\\/\\/rss.art19.com\\/the-deprogram\",\"episode\":\"https:\\/\\/rss.art19.com\\/episodes\\/cb0144a0-8070-462c-a3b6-29e345ea1afd.mp3?rss_browser=BAhJIgxGaXJlZm94BjoGRVQ%3D--e1fe8381133ee436d645c9120f2b13f7c307fd4d\",\"timestamp\":\"2023-08-13T16:22:46\",\"guid\":\"gid:\\/\\/art19-episode-locator\\/V0\\/TFLkxe86qMUDMGRQneCIDsFLiqX2Q3ZZHrT63N4FpEU\",\"position\":173,\"started\":0,\"total\":326,\"action\":\"PLAY\"},{\"podcast\":\"https:\\/\\/rss.art19.com\\/the-deprogram\",\"episode\":\"https:\\/\\/rss.art19.com\\/episodes\\/a8413b71-1ae4-466d-a56f-3dd20dabe76e.mp3?rss_browser=BAhJIgxGaXJlZm94BjoGRVQ%3D--e1fe8381133ee436d645c9120f2b13f7c307fd4d\",\"timestamp\":\"2023-08-13T16:22:46\",\"guid\":\"gid:\\/\\/art19-episode-locator\\/V0\\/t6uIB-2DTTR8nwxR36XLHQMi9ajPfpsTPKBSDWBWsyE\",\"position\":17,\"started\":0,\"total\":4083,\"action\":\"PLAY\"}],\"timestamp\":1691945556}";
 
-    pub const TEST_ACTIONS_WITH_MISSING_SUB: &str = "{\"actions\":[{\"podcast\":\"https:\\/\\/rss.art19.com\\/the-deprogram\",\"episode\":\"https:\\/\\/rss.art19.com\\/episodes\\/cb0144a0-8070-462c-a3b6-29e345ea1afd.mp3?rss_browser=BAhJIgxGaXJlZm94BjoGRVQ%3D--e1fe8381133ee436d645c9120f2b13f7c307fd4d\",\"timestamp\":\"2023-08-13T16:22:46\",\"guid\":\"gid:\\/\\/art19-episode-locator\\/V0\\/TFLkxe86qMUDMGRQneCIDsFLiqX2Q3ZZHrT63N4FpEU\",\"position\":173,\"started\":0,\"total\":326,\"action\":\"PLAY\"},{\"podcast\":\"https:\\/\\/rss.art19.com\\/the-deprogram\",\"episode\":\"https:\\/\\/rss.art19.com\\/episodes\\/a8413b71-1ae4-466d-a56f-3dd20dabe76e.mp3?rss_browser=BAhJIgxGaXJlZm94BjoGRVQ%3D--e1fe8381133ee436d645c9120f2b13f7c307fd4d\",\"timestamp\":\"2023-08-13T16:22:46\",\"guid\":\"gid:\\/\\/art19-episode-locator\\/V0\\/t6uIB-2DTTR8nwxR36XLHQMi9ajPfpsTPKBSDWBWsyE\",\"position\":17,\"started\":0,\"total\":4083,\"action\":\"PLAY\"},{\"podcast\":\"https:\\/\\/feed.syntax.fm\\/rss\",\"episode\":\"https:\\/\\/traffic.libsyn.com\\/secure\\/syntax\\/Syntax_-_646.mp3?dest-id=532671\",\"timestamp\":\"2023-08-13T16:22:46\",\"guid\":\"gid://art19-episode-locator/V0/t6uIB-2DTTR8nwxR36XLHQMi9ajPfpsTPKBSDWBWsyE\",\"position\":-1,\"started\":-1,\"total\":-1,\"action\":\"DOWNLOAD\"},{\"podcast\":\"https:\\/\\/feeds.soundcloud.com\\/users\\/soundcloud:users:211911700\\/sounds.rss\",\"episode\":\"https:\\/\\/dts.podtrac.com\\/redirect.mp3\\/feeds.soundcloud.com\\/stream\\/1576320649-chapo-trap-house-753-teaser-a-dog-called-battleship.mp3\",\"timestamp\":\"2023-08-13T16:22:46\",\"guid\":\"tag:soundcloud,2010:tracks\\/1576320649\",\"position\":133,\"started\":0,\"total\":207,\"action\":\"PLAY\"},{\"podcast\":\"https:\\/\\/api.substack.com\\/feed\\/podcast\\/28705.rss\",\"episode\":\"https:\\/\\/api.substack.com\\/feed\\/podcast\\/135508405\\/4683d9df3c7d6ab0a67fd15213cd4b88.mp3\",\"timestamp\":\"2023-08-13T16:22:46\",\"guid\":\"substack:post:135508405\",\"position\":5,\"started\":0,\"total\":3101,\"action\":\"PLAY\"},{\"podcast\":\"https:\\/\\/feeds.soundcloud.com\\/users\\/soundcloud:users:125332894\\/sounds.rss\",\"episode\":\"https:\\/\\/feeds.soundcloud.com\\/stream\\/1575956563-jimquisition-podquisition-448-wet-around-the-collar.mp3\",\"timestamp\":\"2023-08-13T16:22:46\",\"guid\":\"tag:soundcloud,2010:tracks\\/1575956563\",\"position\":-1,\"started\":-1,\"total\":-1,\"action\":\"DOWNLOAD\"},{\"podcast\":\"https:\\/\\/audioboom.com\\/channels\\/5094626.rss\",\"episode\":\"https:\\/\\/pscrb.fm\\/rss\\/p\\/pdst.fm\\/e\\/pfx.vpixl.com\\/ejC8r\\/clrtpod.com\\/m\\/audioboom.com\\/posts\\/8333581.mp3?modified=1689131724&sid=5094626&source=rss\",\"timestamp\":\"2023-08-13T16:22:46\",\"guid\":\"tag:audioboom.com,2023-07-12:\\/posts\\/8333581\",\"position\":-1,\"started\":-1,\"total\":-1,\"action\":\"DOWNLOAD\"},{\"podcast\":\"https:\\/\\/audioboom.com\\/channels\\/5094626.rss\",\"episode\":\"https:\\/\\/pscrb.fm\\/rss\\/p\\/pdst.fm\\/e\\/pfx.vpixl.com\\/ejC8r\\/clrtpod.com\\/m\\/audioboom.com\\/posts\\/8328053.mp3?modified=1688532917&sid=5094626&source=rss\",\"timestamp\":\"2023-08-13T16:22:46\",\"guid\":\"tag:audioboom.com,2023-07-05:\\/posts\\/8328053\",\"position\":-1,\"started\":-1,\"total\":-1,\"action\":\"DOWNLOAD\"},{\"podcast\":\"https:\\/\\/rustacean-station.org\\/podcast.rss\",\"episode\":\"https:\\/\\/dts.podtrac.com\\/redirect.mp3\\/audio.rustacean-station.org\\/file\\/rustacean-station\\/2023-06-30-ivan-cernja.mp3\",\"timestamp\":\"2023-08-13T16:22:46\",\"guid\":\"rustacean-station\\/episode\\/ivan-cernja\\/\",\"position\":8,\"started\":0,\"total\":2329,\"action\":\"PLAY\"},{\"podcast\":\"https:\\/\\/anchor.fm\\/s\\/4d855a8c\\/podcast\\/rss\",\"episode\":\"https:\\/\\/anchor.fm\\/s\\/4d855a8c\\/podcast\\/play\\/72417203\\/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2023-5-21%2F336132292-44100-2-b9d328310f771.m4a\",\"timestamp\":\"2023-08-13T16:22:46\",\"guid\":\"e332c35a-4b68-4b8f-9864-586c32b63475\",\"position\":4695,\"started\":0,\"total\":4695,\"action\":\"PLAY\"}],\"timestamp\":1691945556}";
+    pub fn actions_response(server: &TestServer) -> String {
+        let template = include_str!("../../tests/sync/nextcloud_actions_template.json");
+        let server_url = format!("http://127.0.0.1:{}", server.port());
+        template.replace("%TEST_SERVER%", &server_url)
+    }
+
+    pub fn actions_with_missing_sub(server: &TestServer) -> String {
+        let template =
+            include_str!("../../tests/sync/nextcloud_actions_with_missing_sub_template.json");
+        let server_url = format!("http://127.0.0.1:{}", server.port());
+        template.replace("%TEST_SERVER%", &server_url)
+    }
 
     static RUNTIME: LazyLock<tokio::runtime::Runtime> =
         LazyLock::new(|| tokio::runtime::Runtime::new().unwrap());
@@ -318,10 +329,11 @@ pub(crate) mod test {
     }
 
     #[test]
-    fn test_parse_ep_actions() {
-        let s = TEST_ACTIONS;
-
-        let _: EpisodeGet = serde_json::from_str(s).unwrap();
+    fn test_parse_ep_actions() -> Result<()> {
+        let server = mock_feed_server()?;
+        let s = actions_response(&server);
+        let _: EpisodeGet = serde_json::from_str(&s).unwrap();
+        Ok(())
     }
 
     #[test]

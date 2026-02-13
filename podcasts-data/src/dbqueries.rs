@@ -667,17 +667,17 @@ mod tests {
     use super::*;
     use crate::database::reset_db;
     use crate::pipeline::pipeline;
+    use crate::test_feeds::*;
     use crate::utils::get_feed;
     use anyhow::Result;
 
     #[test]
-    #[ignore = "Does http calls to the internet archive. They often fail due to anti-scraping limits"]
     fn test_update_none_to_played_now() -> Result<()> {
         let _tempfile = reset_db()?;
 
-        let url = "https://web.archive.org/web/20180120083840if_/https://feeds.feedburner.\
-                   com/InterceptedWithJeremyScahill";
-        let source = Source::from_url(url)?;
+        let server = mock_feed_server()?;
+        let feed_url = mock_feed_url(&server, MOCK_FEED_INTERCEPTED);
+        let source = Source::from_url(&feed_url)?;
         let id = source.id();
         let rt = tokio::runtime::Runtime::new()?;
         rt.block_on(pipeline(vec![source]))?;
@@ -732,7 +732,6 @@ mod tests {
     }
 
     #[test]
-    #[ignore = "Does http calls to the internet archive. They often fail due to anti-scraping limits"]
     fn test_get_sync_delta_data() -> Result<()> {
         let _tempfile = reset_db()?;
 
@@ -740,9 +739,9 @@ mod tests {
         assert_eq!(0, s.len());
         assert_eq!(0, e.len());
 
-        let url = "https://web.archive.org/web/20180120083840if_/https://feeds.feedburner.\
-                   com/InterceptedWithJeremyScahill";
-        let source = Source::from_url(url)?;
+        let server = mock_feed_server()?;
+        let feed_url = mock_feed_url(&server, MOCK_FEED_INTERCEPTED);
+        let source = Source::from_url(&feed_url)?;
         let id = source.id();
         let rt = tokio::runtime::Runtime::new()?;
         rt.block_on(pipeline(vec![source]))?;

@@ -327,19 +327,19 @@ mod tests {
     use crate::database::reset_db;
     use crate::dbqueries;
     use crate::downloader::client_builder;
+    use crate::test_feeds::*;
     use crate::utils::get_feed;
 
     #[test]
-    #[ignore = "Does http calls to the internet archive. They often fail due to anti-scraping limits"]
     fn test_into_feed() -> Result<()> {
         let _tempfile = reset_db()?;
 
         let rt = tokio::runtime::Runtime::new()?;
         let client = client_builder().build()?;
 
-        let url = "https://web.archive.org/web/20180120083840if_/https://feeds.feedburner.\
-                   com/InterceptedWithJeremyScahill";
-        let source = Source::from_url(url)?;
+        let server = mock_feed_server()?;
+        let feed_url = mock_feed_url(&server, MOCK_FEED_INTERCEPTED);
+        let source = Source::from_url(&feed_url)?;
         let id = source.id();
         let feed = source.into_feed(&client);
         let feed = rt.block_on(feed)?;
@@ -350,16 +350,15 @@ mod tests {
     }
 
     #[test]
-    #[ignore = "Does http calls to the internet archive. They often fail due to anti-scraping limits"]
     fn test_into_non_utf8() -> Result<()> {
         let _tempfile = reset_db()?;
 
         let rt = tokio::runtime::Runtime::new()?;
         let client = client_builder().build()?;
 
-        let url = "https://web.archive.org/web/20220205205130if_/https://dinamics.ccma.\
-                   cat/public/podcast/catradio/xml/series-i-cinema.xml";
-        let source = Source::from_url(url)?;
+        let server = unsafe { iso_encoded_mock_server() }?;
+        let feed_url = mock_feed_url(&server, MOCK_FEED_SERIES_I_CINEMA);
+        let source = Source::from_url(&feed_url)?;
         let id = source.id();
         let feed = source.into_feed(&client);
         let feed = rt.block_on(feed)?;

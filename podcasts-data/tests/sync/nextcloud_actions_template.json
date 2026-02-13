@@ -1,0 +1,25 @@
+{
+  "actions": [
+    {
+      "podcast": "%TEST_SERVER%/the-deprogram",
+      "episode": "%TEST_SERVER%/episodes/cb0144a0-8070-462c-a3b6-29e345ea1afd.mp3?rss_browser=BAhJIgxGaXJlZm94BjoGRVQ%3D--e1fe8381133ee436d645c9120f2b13f7c307fd4d",
+      "timestamp": "2023-08-13T16:22:46",
+      "guid": "gid://art19-episode-locator/V0/TFLkxe86qMUDMGRQneCIDsFLiqX2Q3ZZHrT63N4FpEU",
+      "position": 173,
+      "started": 0,
+      "total": 326,
+      "action": "PLAY"
+    },
+    {
+      "podcast": "%TEST_SERVER%/the-deprogram",
+      "episode": "%TEST_SERVER%/episodes/a8413b71-1ae4-466d-a56f-3dd20dabe76e.mp3?rss_browser=BAhJIgxGaXJlZm94BjoGRVQ%3D--e1fe8381133ee436d645c9120f2b13f7c307fd4d",
+      "timestamp": "2023-08-13T16:22:46",
+      "guid": "gid://art19-episode-locator/V0/t6uIB-2DTTR8nwxR36XLHQMi9ajPfpsTPKBSDWBWsyE",
+      "position": 17,
+      "started": 0,
+      "total": 4083,
+      "action": "PLAY"
+    }
+  ],
+  "timestamp": 1691945556
+}

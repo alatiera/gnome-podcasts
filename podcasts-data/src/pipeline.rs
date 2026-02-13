@@ -72,29 +72,28 @@ mod tests {
     use crate::Source;
     use crate::database::reset_db;
     use crate::dbqueries;
-
-    // (path, url) tuples.
-    const URLS: &[&str] = &[
-        "https://web.archive.org/web/20180120083840if_/https://feeds.feedburner.\
-         com/InterceptedWithJeremyScahill",
-        "https://web.archive.org/web/20180120110314if_/https://feeds.feedburner.com/linuxunplugged",
-        "https://web.archive.org/web/20180120110727if_/https://rss.acast.com/thetipoff",
-        "https://web.archive.org/web/20180120104957if_/https://rss.art19.com/steal-the-stars",
-        "https://web.archive.org/web/20180120104741if_/https://www.greaterthancode.\
-         com/feed/podcast",
-    ];
+    use crate::test_feeds::*;
+    use anyhow::Result;
 
     #[test]
     /// Insert feeds and update/index them.
-    #[ignore = "Does http calls to the internet archive. They often fail due to anti-scraping limits"]
-    fn test_pipeline() -> Result<(), DataError> {
+    fn test_pipeline() -> Result<()> {
         let _tempfile = reset_db()?;
         let bad_url = "https://gitlab.gnome.org/World/podcasts.atom";
         // if a stream returns error/None it stops
         // bad we want to parse all feeds regardless if one fails
         Source::from_url(bad_url)?;
 
-        URLS.iter().for_each(|url| {
+        let server = mock_feed_server()?;
+        let urls = vec![
+            mock_feed_url(&server, MOCK_FEED_INTERCEPTED),
+            mock_feed_url(&server, MOCK_FEED_LINUX_UNPLUGGED),
+            mock_feed_url(&server, MOCK_FEED_THE_TIP_OFF),
+            mock_feed_url(&server, MOCK_FEED_THE_STEAL_THE_STARS),
+            mock_feed_url(&server, MOCK_FEED_GREATER_THAN_CODE),
+        ];
+
+        urls.iter().for_each(|url| {
             // Index the urls into the source table.
             Source::from_url(url).unwrap();
         });

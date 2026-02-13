@@ -225,6 +225,7 @@ mod test {
     use crate::dbqueries;
     use crate::nextcloud_sync::test::prepare;
     use crate::pipeline::pipeline;
+    use crate::test_feeds::*;
     use anyhow::Result;
     use http_test_server::TestServer;
     use http_test_server::http::Status;
@@ -263,23 +264,24 @@ mod test {
     }
 
     fn mock_nextcloud_server() -> Result<TestServer> {
-        let server = TestServer::new()?;
+        let server = mock_feed_server()?;
+        let feed_url = mock_feed_url(&server, MOCK_FEED_DEPROGRAM);
 
+        let body = format!("{{\"add\": [\"{feed_url}\"], \"remove\": [], \"timestamp\": 0}}");
         server
             .create_resource("/index.php/apps/gpoddersync/subscriptions")
             .status(Status::OK)
             .header("Content-Type", "application/json")
             .header("Cache-Control", "no-cache")
-            .body(
-                r#"{"add": ["https://rss.art19.com/the-deprogram"], "remove": [], "timestamp": 0}"#,
-            );
+            .body_fn(move |_| body.clone());
 
+        let test_actions = crate::nextcloud_sync::data::test::actions_response(&server);
         server
             .create_resource("/index.php/apps/gpoddersync/episode_action")
             .status(Status::OK)
             .header("Content-Type", "application/json")
             .header("Cache-Control", "no-cache")
-            .body(crate::nextcloud_sync::data::test::TEST_ACTIONS);
+            .body_fn(move |_| test_actions.clone());
 
         Ok(server)
     }
@@ -287,14 +289,15 @@ mod test {
     #[test]
     fn test_ignore_sub_remove_before_local_add() -> Result<()> {
         let (rt, _tempfile) = prepare()?;
+        let server = mock_feed_server()?;
+        let feed_url = mock_feed_url(&server, MOCK_FEED_DEPROGRAM);
         let get = SubscriptionGet {
             add: vec![],
-            remove: vec!["https://rss.art19.com/the-deprogram".to_string()],
+            remove: vec![feed_url.to_string()],
             timestamp: 0,
         };
 
-        let url = "https://rss.art19.com/the-deprogram";
-        let source = Source::from_url(url)?;
+        let source = Source::from_url(&feed_url)?;
         rt.block_on(pipeline(vec![source]))?;
 
         let all_podcasts = dbqueries::get_podcasts()?;
@@ -312,7 +315,7 @@ mod test {
 
         let get = SubscriptionGet {
             add: vec![],
-            remove: vec!["https://rss.art19.com/the-deprogram".to_string()],
+            remove: vec![feed_url.to_string()],
             timestamp: i64::MAX,
         };
 
@@ -327,8 +330,10 @@ mod test {
     #[test]
     fn test_ignore_sub_add_before_local_remove() -> Result<()> {
         let (rt, _tempfile) = prepare()?;
+        let server = mock_feed_server()?;
+        let feed_url = mock_feed_url(&server, MOCK_FEED_DEPROGRAM);
         let get = SubscriptionGet {
-            add: vec!["https://rss.art19.com/the-deprogram".to_string()],
+            add: vec![feed_url.to_string()],
             remove: vec![],
             timestamp: 0,
         };
@@ -337,10 +342,7 @@ mod test {
         assert!(all_podcasts.get(0).is_none());
 
         crate::sync::test::init_settings()?;
-        crate::sync::Show::store_by_uri(
-            "https://rss.art19.com/the-deprogram".to_string(),
-            crate::sync::ShowAction::Removed,
-        )?;
+        crate::sync::Show::store_by_uri(feed_url.to_string(), crate::sync::ShowAction::Removed)?;
         assert_eq!(1, crate::sync::Show::fetch_all()?.len());
 
         // remote add is ignored, because there is a local remove action
@@ -350,7 +352,7 @@ mod test {
         assert!(all_podcasts.get(0).is_none());
 
         let get = SubscriptionGet {
-            add: vec!["https://rss.art19.com/the-deprogram".to_string()],
+            add: vec![feed_url.to_string()],
             remove: vec![],
             timestamp: i64::MAX,
         };
