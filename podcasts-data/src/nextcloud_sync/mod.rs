@@ -53,7 +53,6 @@ pub enum SyncPolicy {
 /// and having the Error provides an option to fall back and update all feeds form a quick sync.
 ///
 /// If sync is not configured, it will return Ok(false)
-
 pub async fn sync(error_policy: SyncPolicy) -> Result<SyncResult, SyncError> {
     if let Ok((settings, password)) = crate::sync::Settings::fetch().await {
         if !settings.active {

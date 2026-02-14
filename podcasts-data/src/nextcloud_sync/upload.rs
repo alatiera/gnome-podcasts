@@ -213,15 +213,14 @@ pub(crate) fn make_delta_post(
     let mut move_eps_action = show_deltas
         .iter()
         .flat_map(|(s, _, show)| {
-            if let Some(crate::sync::ShowAction::Moved(show_uri)) = s.action() {
-                if let Some(show) = show {
-                    if let Ok(eps) = dbqueries::get_pd_episodes(show) {
-                        return eps
-                            .into_iter()
-                            .flat_map(|e| actions_for_ep(now, &e, Some(show_uri.as_str())))
-                            .collect();
-                    }
-                }
+            if let Some(crate::sync::ShowAction::Moved(show_uri)) = s.action()
+                && let Some(show) = show
+                && let Ok(eps) = dbqueries::get_pd_episodes(show)
+            {
+                return eps
+                    .into_iter()
+                    .flat_map(|e| actions_for_ep(now, &e, Some(show_uri.as_str())))
+                    .collect();
             }
             vec![]
         })

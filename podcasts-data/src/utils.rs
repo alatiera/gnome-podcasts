@@ -118,13 +118,13 @@ pub fn delete_local_content(ep: &mut EpisodeCleanerModel) -> Result<(), Download
         let uri = ep.local_uri().unwrap().to_owned();
         if Path::new(&uri).exists() {
             let res = fs::remove_file(&uri);
-            if res.is_ok() {
+            if let Err(err) = res {
+                error!("Error while trying to delete file: {}", uri);
+                error!("{}", err);
+            } else {
                 ep.set_local_uri(None);
                 ep.save()?;
-            } else {
-                error!("Error while trying to delete file: {}", uri);
-                error!("{}", res.unwrap_err());
-            };
+            }
         }
     } else {
         error!(
@@ -153,10 +153,10 @@ fn cover_cleaner(cleanup_date: DateTime<Utc>) -> Result<(), DownloadError> {
 fn clean_cover_file(path: &PathBuf, cleanup_date: &DateTime<Utc>) -> Result<(), DownloadError> {
     let metadata = std::fs::metadata(path)?;
     let mdate: DateTime<Utc> = metadata.modified().map(DateTime::from)?;
-    if &mdate < cleanup_date {
-        if let Err(err) = std::fs::remove_file(path) {
-            error!("Failed to std::remove cover image: {}", err);
-        }
+    if &mdate < cleanup_date
+        && let Err(err) = std::fs::remove_file(path)
+    {
+        error!("Failed to std::remove cover image: {}", err);
     }
     Ok(())
 }

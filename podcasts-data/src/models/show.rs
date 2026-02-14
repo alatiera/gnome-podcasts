@@ -164,10 +164,10 @@ impl ShowCoverModel {
         {
             return false;
         }
-        if let Some(new) = &self.image_uri() {
-            if let Some(orig) = self.image_uri_hash() {
-                return calculate_hash(new) == orig;
-            }
+        if let Some(new) = &self.image_uri()
+            && let Some(orig) = self.image_uri_hash()
+        {
+            return calculate_hash(new) == orig;
         }
         false
     }

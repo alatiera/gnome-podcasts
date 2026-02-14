@@ -434,10 +434,8 @@ impl MainWindow {
         let imp = self.imp();
         let show_id = ep.show_id();
         let same = imp.show_widget.borrow().as_ref().and_then(|s| s.show_id()) == Some(show_id);
-        if same {
-            if let Some(show_widget) = imp.show_widget.borrow().as_ref() {
-                show_widget.update_episode(ep);
-            }
+        if same && let Some(show_widget) = imp.show_widget.borrow().as_ref() {
+            show_widget.update_episode(ep);
         }
     }
 

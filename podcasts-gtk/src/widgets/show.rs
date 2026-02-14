@@ -161,11 +161,11 @@ impl ShowWidget {
         let id = ep.id();
         let mut i = 0;
         while let Some(row) = imp.episodes.row_at_index(i) {
-            if let Some(Ok(episode)) = row.child().map(|w| w.downcast::<EpisodeWidget>()) {
-                if episode.id() == id {
-                    episode.update_episode_state(ep);
-                    return;
-                }
+            if let Some(Ok(episode)) = row.child().map(|w| w.downcast::<EpisodeWidget>())
+                && episode.id() == id
+            {
+                episode.update_episode_state(ep);
+                return;
             }
             i += 1;
         }

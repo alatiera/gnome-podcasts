@@ -148,11 +148,11 @@ impl ApplicationImpl for PdApplicationPrivate {
         // complete any pending unsubscribe actions
         let mut todo_unsub_ids = self.todo_unsub_ids.borrow_mut();
         for id in todo_unsub_ids.drain() {
-            if let Ok(pd) = dbqueries::get_podcast_from_id(id) {
-                if let Err(err) = podcasts_data::utils::delete_show(&pd) {
-                    error!("Error: {}", err);
-                    error!("Failed to delete {}", pd.title());
-                }
+            if let Ok(pd) = dbqueries::get_podcast_from_id(id)
+                && let Err(err) = podcasts_data::utils::delete_show(&pd)
+            {
+                error!("Error: {}", err);
+                error!("Failed to delete {}", pd.title());
             }
         }
         if let Err(err) = download_covers::clean_unfinished_downloads() {
@@ -357,10 +357,10 @@ impl PdApplication {
                 };
                 window.content().update_home_episode(&ep);
                 window.update_show_widget_episode(&ep);
-                if let Some(description) = window.episode_description() {
-                    if description.id() == id {
-                        description.update_episode(&ep);
-                    }
+                if let Some(description) = window.episode_description()
+                    && description.id() == id
+                {
+                    description.update_episode(&ep);
                 }
             }
             Action::RefreshEpisodesView => window.content().update_home(),

@@ -93,10 +93,10 @@ async fn download_into(
     info!("Status Resp: {}", resp.status());
 
     if !resp.status().is_success() {
-        if let Some(ref prog) = progress {
-            if let Ok(mut m) = prog.lock() {
-                m.cancel();
-            }
+        if let Some(ref prog) = progress
+            && let Ok(mut m) = prog.lock()
+        {
+            m.cancel();
         }
 
         return Err(DownloadError::UnexpectedResponse(resp.status()));
@@ -125,12 +125,11 @@ async fn download_into(
     let tempdir = TempDir::with_prefix_in("temp_download", PODCASTS_CACHE.to_str().unwrap())?;
     let out_file = format!("{}/temp.part", tempdir.path().to_str().unwrap(),);
 
-    if let Some(ct_len) = ct_len {
-        if let Some(ref p) = progress {
-            if let Ok(mut m) = p.lock() {
-                m.set_size(ct_len);
-            }
-        }
+    if let Some(ct_len) = ct_len
+        && let Some(ref p) = progress
+        && let Ok(mut m) = p.lock()
+    {
+        m.set_size(ct_len);
     };
 
     // Save requested content into the file.
@@ -184,13 +183,13 @@ async fn save_io(
             // Actually the whole download module is hack, so w/e.
             if let Some(prog) = progress.clone() {
                 let len = writer.get_ref().metadata().map(|x| x.len());
-                if let Ok(l) = len {
-                    if let Ok(mut m) = prog.lock() {
-                        if m.should_cancel() {
-                            return Err(DownloadError::DownloadCancelled);
-                        }
-                        m.set_downloaded(l);
+                if let Ok(l) = len
+                    && let Ok(mut m) = prog.lock()
+                {
+                    if m.should_cancel() {
+                        return Err(DownloadError::DownloadCancelled);
                     }
+                    m.set_downloaded(l);
                 }
             }
         } else {

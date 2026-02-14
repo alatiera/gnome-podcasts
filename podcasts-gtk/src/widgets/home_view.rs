@@ -184,11 +184,11 @@ impl HomeView {
         for list in lists {
             let mut i = 0;
             while let Some(row) = list.row_at_index(i) {
-                if let Ok(home_episode) = row.downcast::<HomeEpisode>() {
-                    if home_episode.id() == id {
-                        home_episode.update(ep);
-                        return;
-                    }
+                if let Ok(home_episode) = row.downcast::<HomeEpisode>()
+                    && home_episode.id() == id
+                {
+                    home_episode.update(ep);
+                    return;
                 }
                 i += 1;
             }

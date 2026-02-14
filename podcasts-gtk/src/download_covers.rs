@@ -91,7 +91,7 @@ fn filename_for_download(response: &reqwest::Response) -> String {
     let ext = response
         .url()
         .path_segments()
-        .and_then(|segments| segments.last())
+        .and_then(|mut segments| segments.next_back())
         .unwrap_or("tmp-donwload.bin");
 
     if ext.is_empty() {
@@ -125,16 +125,15 @@ fn cleanup_entry(path: &PathBuf) -> Result<()> {
         std::fs::remove_file(path)?;
     }
     // remove tmp directories of unfinished downloads
-    if path.is_dir() {
-        if let Some(filename) = path.to_str() {
-            if filename.contains("-pdcover.part") {
-                info!("Removing unfinished download: {}", path.display());
-                // remove_dir_all can be risky if xdg would break,
-                // but we are filtering for a "*-pdcover.part*" dir-name
-                // and in a "Covers/" subdir, so it should be fine.
-                std::fs::remove_dir_all(path)?;
-            }
-        }
+    if path.is_dir()
+        && let Some(filename) = path.to_str()
+        && filename.contains("-pdcover.part")
+    {
+        info!("Removing unfinished download: {}", path.display());
+        // remove_dir_all can be risky if xdg would break,
+        // but we are filtering for a "*-pdcover.part*" dir-name
+        // and in a "Covers/" subdir, so it should be fine.
+        std::fs::remove_dir_all(path)?;
     }
     Ok(())
 }

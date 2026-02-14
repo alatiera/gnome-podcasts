@@ -114,14 +114,14 @@ impl DownloadProgressBar {
                 #[upgrade_or]
                 glib::ControlFlow::Break,
                 move || {
-                    if let Ok(guard) = manager::ACTIVE_DOWNLOADS.read() {
-                        if !guard.contains_key(&id) {
-                            this.imp().progressbar.set_visible(false);
-                            this.imp().progressbar.set_fraction(0.0);
-                            this.imp().listener.set(false);
-                            debug!("Download bar done, hiding it now.");
-                            return glib::ControlFlow::Break;
-                        }
+                    if let Ok(guard) = manager::ACTIVE_DOWNLOADS.read()
+                        && !guard.contains_key(&id)
+                    {
+                        this.imp().progressbar.set_visible(false);
+                        this.imp().progressbar.set_fraction(0.0);
+                        this.imp().listener.set(false);
+                        debug!("Download bar done, hiding it now.");
+                        return glib::ControlFlow::Break;
                     }
                     glib::ControlFlow::Continue
                 }
@@ -168,16 +168,16 @@ impl DownloadProgressBar {
                     #[upgrade_or]
                     glib::ControlFlow::Break,
                     move || {
-                        if let Ok(thing) = this.active_dl() {
-                            if thing.is_none() {
-                                // Recalculate the widget state
-                                if let Err(err) = dbqueries::get_episode_widget_from_id(id) {
-                                    error!("Error: {}", err);
-                                }
-                                this.imp().progressbar.set_visible(false);
-                                this.imp().progressbar.set_fraction(0.0);
-                                return glib::ControlFlow::Break;
+                        if let Ok(thing) = this.active_dl()
+                            && thing.is_none()
+                        {
+                            // Recalculate the widget state
+                            if let Err(err) = dbqueries::get_episode_widget_from_id(id) {
+                                error!("Error: {}", err);
                             }
+                            this.imp().progressbar.set_visible(false);
+                            this.imp().progressbar.set_fraction(0.0);
+                            return glib::ControlFlow::Break;
                         }
 
                         glib::ControlFlow::Continue

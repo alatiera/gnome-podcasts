@@ -111,14 +111,13 @@ impl ChaptersPriv {
 
     fn active_chapter_changed(&self, old_index: i32) {
         println!("CHAP {}", self.active_chapter_index.get());
-        if let Some(icon) = self.active_chapter_icon.borrow().as_ref() {
-            if let Some(row) = self
+        if let Some(icon) = self.active_chapter_icon.borrow().as_ref()
+            && let Some(row) = self
                 .listbox
                 .row_at_index(old_index)
                 .and_then(|r| r.downcast::<adw::ActionRow>().ok())
-            {
-                row.remove(icon);
-            }
+        {
+            row.remove(icon);
         }
         if let Some(row) = self
             .listbox

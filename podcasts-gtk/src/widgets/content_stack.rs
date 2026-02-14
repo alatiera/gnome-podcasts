@@ -87,12 +87,11 @@ impl Content {
 
         let weak = Rc::downgrade(&this);
         stack.connect_visible_child_notify(move |s| {
-            if let Some(name) = s.visible_child_name() {
-                if name == "shows" {
-                    if let Some(this) = weak.upgrade() {
-                        this.init_shows();
-                    }
-                }
+            if let Some(name) = s.visible_child_name()
+                && name == "shows"
+                && let Some(this) = weak.upgrade()
+            {
+                this.init_shows();
             }
         });
 

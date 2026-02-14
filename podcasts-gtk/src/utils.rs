@@ -409,35 +409,34 @@ pub(crate) async fn on_import_clicked(window: &gtk::ApplicationWindow, sender: &
         .filters(&filters)
         .build();
 
-    if let Ok(file) = dialog.open_future(Some(window)).await {
-        if let Some(path) = file.peek_path() {
-            // spawn a thread to avoid blocking ui during import
-            let result = gio::spawn_blocking(move || {
-                // Parse the file and import the feeds
-                opml::import_from_file(path)
-                    .map(|sources| {
-                        let sync_urls: Vec<_> =
-                            sources.iter().map(|s| s.uri().to_owned()).collect();
-                        if let Err(e) =
-                            podcasts_data::sync::Show::store_multiple_subscriptions(&sync_urls[..])
-                        {
-                            error!("Failed store subscriptions for sync from import {e}");
-                        }
+    if let Ok(file) = dialog.open_future(Some(window)).await
+        && let Some(path) = file.peek_path()
+    {
+        // spawn a thread to avoid blocking ui during import
+        let result = gio::spawn_blocking(move || {
+            // Parse the file and import the feeds
+            opml::import_from_file(path)
+                .map(|sources| {
+                    let sync_urls: Vec<_> = sources.iter().map(|s| s.uri().to_owned()).collect();
+                    if let Err(e) =
+                        podcasts_data::sync::Show::store_multiple_subscriptions(&sync_urls[..])
+                    {
+                        error!("Failed store subscriptions for sync from import {e}");
+                    }
 
-                        // Refresh the successfully parsed feeds to index them
-                        FEED_MANAGER.schedule_refresh(sources);
-                    })
-                    .context("PARSE")
-            })
-            .await;
+                    // Refresh the successfully parsed feeds to index them
+                    FEED_MANAGER.schedule_refresh(sources);
+                })
+                .context("PARSE")
+        })
+        .await;
 
-            send!(sender, Action::QuickSyncNextcloud);
+        send!(sender, Action::QuickSyncNextcloud);
 
-            if let Err(err) = result.unwrap_or_else(|e| bail!("Import Thread Error {e:#?}")) {
-                let text = formatx!(gettext("Failed to parse the imported file {}",), err,)
-                    .expect("Could not format translatable string");
-                send!(sender, Action::ErrorNotification(text));
-            }
+        if let Err(err) = result.unwrap_or_else(|e| bail!("Import Thread Error {e:#?}")) {
+            let text = formatx!(gettext("Failed to parse the imported file {}",), err,)
+                .expect("Could not format translatable string");
+            send!(sender, Action::ErrorNotification(text));
         }
     };
 }
@@ -466,18 +465,18 @@ pub(crate) async fn on_export_clicked(window: &gtk::ApplicationWindow, sender: &
         .filters(&filters)
         .build();
 
-    if let Ok(file) = dialog.save_future(Some(window)).await {
-        if let Some(path) = file.peek_path() {
-            debug!("File selected: {:?}", path);
-            let result = gio::spawn_blocking(move || {
-                opml::export_from_db(path, &gettext("GNOME Podcasts Subscriptions"))
-            })
-            .await;
-            if let Ok(Err(err)) = result {
-                let text = gettext("Failed to export podcasts");
-                error!("Failed to export podcasts: {err}");
-                send!(sender, Action::ErrorNotification(text));
-            }
+    if let Ok(file) = dialog.save_future(Some(window)).await
+        && let Some(path) = file.peek_path()
+    {
+        debug!("File selected: {:?}", path);
+        let result = gio::spawn_blocking(move || {
+            opml::export_from_db(path, &gettext("GNOME Podcasts Subscriptions"))
+        })
+        .await;
+        if let Ok(Err(err)) = result {
+            let text = gettext("Failed to export podcasts");
+            error!("Failed to export podcasts: {err}");
+            send!(sender, Action::ErrorNotification(text));
         }
     };
 }

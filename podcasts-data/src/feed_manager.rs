@@ -116,11 +116,11 @@ impl FeedManager {
             .map(|mut r| async move {
                 // let result = r.wait_for(|v| v.is_some()).await?;
                 let result = r.wait_for(|v| v.is_some()).await?;
-                let done = result
+
+                result
                     .deref()
                     .clone()
-                    .context("Failed to unwrap RefreshState");
-                done
+                    .context("Failed to unwrap RefreshState")
             })
             .collect();
         // Join the results from all handles into one Vec
@@ -249,7 +249,7 @@ impl FeedManager {
 
     /// Call this from app.rs when an update is done
     pub fn refresh_done(id: RefreshId) -> bool {
-        let all_done = if let Ok(mut state) = FEED_MANAGER.state.write() {
+        if let Ok(mut state) = FEED_MANAGER.state.write() {
             if state.currently_running.remove(&id).is_none() {
                 error!("Failed to remove refreshId: {id}");
             }
@@ -257,7 +257,6 @@ impl FeedManager {
         } else {
             error!("refresh_done: Failed to lock feed_manager state");
             false
-        };
-        all_done
+        }
     }
 }

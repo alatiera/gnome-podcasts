@@ -97,9 +97,7 @@ impl Settings {
 
         diesel::delete(settings_sync).execute(&mut con)?;
 
-        let keyring = oo7::Keyring::new()
-            .await
-            .map_err::<oo7::Error, _>(From::from)?;
+        let keyring = oo7::Keyring::new().await?;
         keyring.unlock().await?;
         let attributes = HashMap::from([("nextcloud", "password")]);
         // Try update
@@ -125,9 +123,7 @@ impl Settings {
     }
 
     async fn store_password(password: &str) -> Result<(), DataError> {
-        let keyring = oo7::Keyring::new()
-            .await
-            .map_err::<oo7::Error, _>(From::from)?;
+        let keyring = oo7::Keyring::new().await?;
         keyring.unlock().await?;
         let attributes = HashMap::from([("nextcloud", "password")]);
         // Try update
@@ -140,8 +136,7 @@ impl Settings {
         // create a new one
         keyring
             .create_item("Nextcloud Password", &attributes, password, true)
-            .await
-            .map_err::<oo7::Error, _>(From::from)?;
+            .await?;
         debug!("password stored");
         Ok(())
     }
@@ -156,7 +151,7 @@ impl Settings {
             item.unlock().await?;
             let secret = item.secret().await?;
             match &secret {
-                oo7::Secret::Text(s) => return Ok(s.clone()),
+                oo7::Secret::Text(s) => Ok(s.clone()),
                 oo7::Secret::Blob(bytes) => {
                     let secret_vec = std::mem::take(&mut bytes.clone());
                     let secret_str = String::from_utf8(secret_vec)?;

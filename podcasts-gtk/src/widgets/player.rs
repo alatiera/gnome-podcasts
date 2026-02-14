@@ -160,11 +160,11 @@ impl PlayerInfo {
 
     // hook for when the async download finished
     fn update_mpris_cover(&self, show_id: ShowId, dl_success: bool) -> Result<()> {
-        if let Some(ep) = self.ep.as_ref() {
-            if ep.show_id() != show_id {
-                // Download took too long, we are no longer on the same show.
-                return Ok(());
-            }
+        if let Some(ep) = self.ep.as_ref()
+            && ep.show_id() != show_id
+        {
+            // Download took too long, we are no longer on the same show.
+            return Ok(());
         }
 
         if let Some(mpris) = self.mpris.as_ref() {
@@ -776,10 +776,10 @@ impl PlayerWidget {
                 .info
                 .chapters_signal_id
                 .replace(Some(Rc::new(new_controls_id)));
-            if let Some(chapters_signal_id) = old_signal_id {
-                if let Ok(controls_signal) = Rc::try_unwrap(chapters_signal_id) {
-                    self.controls.chapters_button.disconnect(controls_signal);
-                }
+            if let Some(chapters_signal_id) = old_signal_id
+                && let Ok(controls_signal) = Rc::try_unwrap(chapters_signal_id)
+            {
+                self.controls.chapters_button.disconnect(controls_signal);
             }
         }
     }
@@ -787,7 +787,7 @@ impl PlayerWidget {
     fn set_position_and_sync(&mut self) {
         let sender = self.sender.clone();
         let pos = self.player.position();
-        self.info.ep.as_mut().map(|ep| {
+        if let Some(ep) = self.info.ep.as_mut() {
             let start_second = self.info.restore_position.unwrap_or(0);
             let second = pos.and_then(|s| s.seconds().try_into().ok()).unwrap_or(0);
             if let Err(e) = podcasts_data::sync::Episode::store(
@@ -803,7 +803,7 @@ impl PlayerWidget {
             if let Some(sender) = &sender {
                 send_blocking!(sender, Action::QuickSyncNextcloud);
             }
-        });
+        };
     }
 }
 
@@ -834,10 +834,10 @@ impl PlayerExt for PlayerWidget {
                         if let Err(err) = mpris.set_playback_status(PlaybackStatus::Playing).await {
                             warn!("Failed to set MPRIS playback status: {err:?}");
                         }
-                        if let Some(sender) = &this.sender {
-                            if let Some(id) = this.id() {
-                                send!(sender, Action::RefreshEpisode(id));
-                            }
+                        if let Some(sender) = &this.sender
+                            && let Some(id) = this.id()
+                        {
+                            send!(sender, Action::RefreshEpisode(id));
                         }
                     }
                 ),
@@ -871,10 +871,10 @@ impl PlayerExt for PlayerWidget {
                         if let Err(err) = mpris.set_playback_status(PlaybackStatus::Paused).await {
                             warn!("Failed to set MPRIS playback status: {err:?}");
                         }
-                        if let Some(sender) = &this.sender {
-                            if let Some(id) = this.id() {
-                                send!(sender, Action::RefreshEpisode(id));
-                            }
+                        if let Some(sender) = &this.sender
+                            && let Some(id) = this.id()
+                        {
+                            send!(sender, Action::RefreshEpisode(id));
                         }
                     }
                 ),
@@ -924,10 +924,10 @@ impl PlayerExt for PlayerWidget {
                         if let Err(err) = mpris.set_playback_status(PlaybackStatus::Paused).await {
                             warn!("Failed to set MPRIS playback status: {err:?}");
                         }
-                        if let Some(sender) = &this.sender {
-                            if let Some(id) = this.id() {
-                                send!(sender, Action::RefreshEpisode(id));
-                            }
+                        if let Some(sender) = &this.sender
+                            && let Some(id) = this.id()
+                        {
+                            send!(sender, Action::RefreshEpisode(id));
                         }
                     }
                 ),
@@ -1154,13 +1154,13 @@ impl PlayerWrapper {
             #[strong]
             weak,
             move |_, clock| {
-                if let Some(player_widget) = weak.get().upgrade() {
-                    if let Some(c) = clock {
-                        player_widget
-                            .borrow()
-                            .timer
-                            .on_duration_changed(Duration(c));
-                    }
+                if let Some(player_widget) = weak.get().upgrade()
+                    && let Some(c) = clock
+                {
+                    player_widget
+                        .borrow()
+                        .timer
+                        .on_duration_changed(Duration(c));
                 }
             }
         ));

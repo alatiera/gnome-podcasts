@@ -51,13 +51,12 @@ fn update_episodes(data: &EpisodeGet, error_policy: SyncPolicy) -> Result<(), Sy
             })
             .map(|ep| {
                 // ignore episode Play action if it happened after a local Play action and is not a finish
-                if let Some(la) = local_ep_actions.iter().find(|la| ep.id() == la.ep_id) {
-                    if la.timestamp > ea.timestamp.timestamp()
-                        && ea.action == Action::Play
-                        && !ea.finished_play()
-                    {
-                        return;
-                    }
+                if let Some(la) = local_ep_actions.iter().find(|la| ep.id() == la.ep_id)
+                    && la.timestamp > ea.timestamp.timestamp()
+                    && ea.action == Action::Play
+                    && !ea.finished_play()
+                {
+                    return;
                 }
                 update_episode(ep, ea);
             })
@@ -161,10 +160,10 @@ async fn update_subscriptions(data: &SubscriptionGet) -> Result<(), SyncError> {
     // remove
     data.remove.iter().for_each(|uri| {
         // ignore removes if an add happened later locally
-        if let Some(sa) = local_showactions.iter().find(|sa| uri == &sa.uri) {
-            if sa.timestamp > data.timestamp {
-                return;
-            }
+        if let Some(sa) = local_showactions.iter().find(|sa| uri == &sa.uri)
+            && sa.timestamp > data.timestamp
+        {
+            return;
         }
         if let Err(e) = dbqueries::remove_feed_by_uri(uri) {
             debug!("failed to unsubscribe from {uri}: {e}");
@@ -176,10 +175,10 @@ async fn update_subscriptions(data: &SubscriptionGet) -> Result<(), SyncError> {
         .iter()
         .filter_map(|uri| {
             // ignore remote subs if they were unsubbed locally at a later timestamp
-            if let Some(sa) = local_showactions.iter().find(|sa| uri == &sa.uri) {
-                if sa.timestamp > data.timestamp {
-                    return None;
-                }
+            if let Some(sa) = local_showactions.iter().find(|sa| uri == &sa.uri)
+                && sa.timestamp > data.timestamp
+            {
+                return None;
             }
             Source::from_url(uri).ok()
         })

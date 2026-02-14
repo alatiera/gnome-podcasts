@@ -282,15 +282,15 @@ impl Source {
         let uri = Url::from_str(self.uri())?;
         let mut req = client.get(uri);
 
-        if let Ok(url) = Url::parse(self.uri()) {
-            if let Some(password) = url.password() {
-                let mut auth = "Basic ".to_owned();
-                auth.push_str(&general_purpose::URL_SAFE.encode(
-                    //url.username() converts @ symbols to %40 automatically.  The "replace" undoes that.
-                    format!("{}:{}", url.username().replace("%40", "@"), password),
-                ));
-                req = req.header(AUTHORIZATION, HeaderValue::from_str(&auth).unwrap());
-            }
+        if let Ok(url) = Url::parse(self.uri())
+            && let Some(password) = url.password()
+        {
+            let mut auth = "Basic ".to_owned();
+            auth.push_str(&general_purpose::URL_SAFE.encode(
+                //url.username() converts @ symbols to %40 automatically.  The "replace" undoes that.
+                format!("{}:{}", url.username().replace("%40", "@"), password),
+            ));
+            req = req.header(AUTHORIZATION, HeaderValue::from_str(&auth).unwrap());
         }
 
         // Set the UserAgent cause ppl still seem to check it for some reason...

@@ -291,12 +291,11 @@ impl NewEpisodeMinimal {
     // ^ Jokes on you past self!
     pub(crate) fn into_new_episode(self, item: &rss::Item) -> NewEpisode {
         let description = item.content().or(item.description()).map(|s| {
-            let sanitized_html = ammonia::Builder::new()
+            ammonia::Builder::new()
                 // Remove `rel` attributes from `<a>` tags
                 .link_rel(None)
                 .clean(s.trim())
-                .to_string();
-            sanitized_html
+                .to_string()
         });
 
         NewEpisodeBuilder::default()
