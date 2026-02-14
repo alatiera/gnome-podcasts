@@ -78,26 +78,26 @@ pub mod xdg_dirs {
     use std::sync::LazyLock;
 
     pub(crate) static PODCASTS_XDG: LazyLock<xdg::BaseDirectories> =
-        LazyLock::new(|| xdg::BaseDirectories::with_prefix("gnome-podcasts").unwrap());
+        LazyLock::new(|| xdg::BaseDirectories::with_prefix("gnome-podcasts"));
 
     /// XDG_DATA Directory `Pathbuf`.
     pub static PODCASTS_DATA: LazyLock<PathBuf> = LazyLock::new(|| {
         PODCASTS_XDG
-            .create_data_directory(PODCASTS_XDG.get_data_home())
+            .create_data_directory(PODCASTS_XDG.get_data_home().unwrap())
             .unwrap()
     });
 
     /// XDG_CONFIG Directory `Pathbuf`.
     pub static PODCASTS_CONFIG: LazyLock<PathBuf> = LazyLock::new(|| {
         PODCASTS_XDG
-            .create_config_directory(PODCASTS_XDG.get_config_home())
+            .create_config_directory(PODCASTS_XDG.get_config_home().unwrap())
             .unwrap()
     });
 
     /// XDG_CACHE Directory `Pathbuf`.
     pub static PODCASTS_CACHE: LazyLock<PathBuf> = LazyLock::new(|| {
         PODCASTS_XDG
-            .create_cache_directory(PODCASTS_XDG.get_cache_home())
+            .create_cache_directory(PODCASTS_XDG.get_cache_home().unwrap())
             .unwrap()
     });
 
