@@ -5,7 +5,7 @@ version = "0.1.0"
 edition.workspace = true
 
 [dependencies]
-adw = { package = "libadwaita", version = "0.9.0-alpha", features = ["v1_8"] }
+adw = { package = "libadwaita", version = "0.9.0-alpha.0", features = ["v1_8"] }
 anyhow = { workspace = true }
 async-channel = { workspace = true }
 chrono = { workspace = true }
@@ -13,10 +13,10 @@ fragile = "2"
 formatx = "0.2"
 futures-util = "0.3"
 gettext-rs = { version = "0.7", features = ["gettext-system"] }
-gst = { version = "0.25.0-alpha", package = "gstreamer" }
-gst-play = { version = "0.25.0-alpha", package = "gstreamer-play" }
-gst-pbutils = { version = "0.25.0-alpha", package = "gstreamer-pbutils" }
-gtk = { package = "gtk4", version = "0.11.0-alpha", features = ["gnome_47"] }
+gst = { version = "0.25.0-alpha.2", package = "gstreamer" }
+gst-play = { version = "0.25.0-alpha.2", package = "gstreamer-play" }
+gst-pbutils = { version = "0.25.0-alpha.2", package = "gstreamer-pbutils" }
+gtk = { package = "gtk4", version = "0.11.0-alpha.3", features = ["gnome_47"] }
 html2text = "0.12"
 html5ever = "0.27"
 humansize = "2"
