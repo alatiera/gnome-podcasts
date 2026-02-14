@@ -26,8 +26,11 @@ use diesel::r2d2::ConnectionManager;
 
 use diesel_migrations::{EmbeddedMigrations, MigrationHarness, embed_migrations};
 
-use crate::xdg_dirs;
 use std::sync::LazyLock;
+
+#[cfg(not(test))]
+use crate::xdg_dirs;
+#[cfg(test)]
 use std::sync::Mutex;
 
 use crate::errors::DataError;
@@ -42,15 +45,33 @@ const MIGRATIONS: EmbeddedMigrations = embed_migrations!("migrations/");
 // [test] and instead we need to reset_db() at
 // the begging of each test.
 // This is why we have reset_db as opposed to initialize_test_db
-static POOL: LazyLock<Mutex<Pool>> = LazyLock::new(|| {
+#[cfg(not(test))]
+static POOL: LazyLock<Pool> = LazyLock::new(|| {
     let pathbuf = xdg_dirs::PODCASTS_XDG
         .place_data_file("podcasts.db")
         .unwrap();
     let db_path = pathbuf.to_str().unwrap();
+    init_pool(db_path)
+});
+
+// Every test should have reset_db at the top
+// As-is this initializes a db and then removes the file
+// causing every test that will not have a reset_db to
+// fail cause the file no longer exists.
+#[cfg(test)]
+static POOL: LazyLock<Mutex<Pool>> = LazyLock::new(|| {
+    let db = tempfile::Builder::new().tempfile().unwrap();
+    let db_path = db.path().to_str().unwrap();
     Mutex::new(init_pool(db_path))
 });
 
 /// Get an r2d2 `SqliteConnection`.
+#[cfg(not(test))]
+pub(crate) fn connection() -> Pool {
+    POOL.clone()
+}
+
+#[cfg(test)]
 pub(crate) fn connection() -> Pool {
     POOL.lock().unwrap().clone()
 }
@@ -80,7 +101,9 @@ fn run_migration_on(
 
 /// Reset the database into a clean state.
 // Test share a Temp file db.
-#[allow(unused)]
+// This is a test-only function but it's public cause we use it
+// in the podcast-gtk tests as well and thus need to export it
+#[cfg(test)]
 pub fn reset_db() -> Result<tempfile::NamedTempFile, DataError> {
     let db = tempfile::Builder::new()
         .suffix("-podcasts.db")
@@ -94,4 +117,9 @@ pub fn reset_db() -> Result<tempfile::NamedTempFile, DataError> {
     drop(lock);
 
     Ok(db)
+}
+
+#[cfg(not(test))]
+pub fn reset_db() -> Result<tempfile::NamedTempFile, DataError> {
+    panic!("Should not be called outside of #[test] cases");
 }
