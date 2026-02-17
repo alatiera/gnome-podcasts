@@ -17,19 +17,10 @@ run_command(
   check: true
 )
 
-cargo_options = [ '--manifest-path', meson.project_source_root() / 'Cargo.toml' ]
-cargo_options += [ '--target-dir', meson.project_build_root() / 'podcasts-gtk' / 'src' ]
-
-if get_option('profile') == 'default'
-  cargo_options += [ '--release' ]
-  rust_target = 'release'
-  message('Building in release mode')
-else
-  rust_target = 'debug'
-  message('Building in debug mode')
-endif
-
-cargo_env = [ 'CARGO_HOME=' + meson.project_build_root() / 'cargo-home' ]
+cargo_build_options = [ 
+  '--manifest-path', meson.project_source_root() / 'Cargo.toml',
+  cargo_release_option
+]
 
 cargo_release = custom_target('cargo-build',
                         build_by_default: true,
@@ -39,10 +30,9 @@ cargo_release = custom_target('cargo-build',
                         install_dir: podcasts_bindir,
                         console: true,
                         depends: podcasts_resources,
-                        command: ['env',
-                                  cargo_env,
-                                  cargo, 'build',
-                                  cargo_options,
+                        env: cargo_env,
+                        command: [cargo, 'build',
+                                  cargo_build_options,
                                   '&&',
-                                  'cp', 'podcasts-gtk' / 'src' / rust_target / 'podcasts-gtk', '@OUTPUT@',
+                                  'cp', cargo_target / rust_target / 'podcasts-gtk', '@OUTPUT@',
                         ])

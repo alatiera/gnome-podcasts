@@ -27,6 +27,7 @@ gresource = find_program('glib-compile-resources', required: true)
 gschemas = find_program('glib-compile-schemas', required: true)
 
 if get_option('profile') == 'development'
+  message('Building in debug mode')
   profile = '.Devel'
   vcs_tag = run_command('git', 'rev-parse', '--short', 'HEAD').stdout().strip()
   if vcs_tag == ''
@@ -34,9 +35,16 @@ if get_option('profile') == 'development'
   else
     version_suffix = '-@0@'.format (vcs_tag)
   endif
+
+  rust_target = 'debug'
+  cargo_release_option = []
 else
+  message('Building in release mode')
   profile = ''
   version_suffix = ''
+
+  rust_target = 'release'
+  cargo_release_option = [ '--release' ]
 endif
 
 podcast_toml = files(
@@ -66,20 +74,33 @@ podcasts_conf.set('bindir', podcasts_bindir)
 datadir = get_option('datadir')
 subdir('podcasts-gtk/resources')
 
-test_script = find_program('scripts/test.sh')
+cargo_home = meson.project_build_root() / 'cargo-home'
+cargo_target = meson.project_build_root() / 'cargo-target'
+cargo_env = environment()
+cargo_env.set('CARGO_HOME', cargo_home)
+cargo_env.set('CARGO_TARGET_DIR', cargo_target)
+meson.add_devenv(cargo_env)
+
+test_script = find_program('scripts/test.sh', required: true)
 
 subdir('podcasts-gtk/src')
 
+cargo = find_program('cargo-vendor-filterer', required: true)
 meson.add_dist_script(
   'scripts/dist-vendor.sh',
-  meson.project_build_root() / 'meson-dist' / meson.project_name() + '-' + podcasts_version,
-  meson.project_source_root()
+  cargo_home,
+  cargo_target,
 )
 
 test(
   'cargo-test',
   test_script,
-  args: meson.project_build_root(),
+  args: [
+    cargo_release_option,
+    '--all-targets',
+    '--workspace',
+  ],
+  env: cargo_env,
   workdir: meson.project_source_root(),
   timeout: 3000
 )
