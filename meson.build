@@ -101,6 +101,7 @@ test(
     '--workspace',
   ],
   env: cargo_env,
+  depends: podcasts_resources,
   workdir: meson.project_source_root(),
   timeout: 3000
 )
