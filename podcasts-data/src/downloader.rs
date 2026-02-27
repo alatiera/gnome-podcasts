@@ -22,7 +22,7 @@ use reqwest::redirect::Policy;
 use tempfile::TempDir;
 
 use std::fs;
-use std::fs::{File, copy, remove_file};
+use std::fs::File;
 use std::io::{BufWriter, Write};
 use std::path::Path;
 use std::sync::{Arc, Mutex};
@@ -137,11 +137,13 @@ async fn download_into(
 
     // Construct the desired path.
     let target = format!("{}/{}.{}", dir, file_title, ext);
-    // Rename/move the tempfile into a permanent place upon success.
-    // Unlike rename(), copy() + remove_file() works even when the
-    // temp dir is on a different mount point than the target dir.
-    copy(&out_file, &target)?;
-    remove_file(out_file)?;
+    // Try to rename/move the tempfile into a permanent place upon success.
+    if let Err(_) = fs::rename(&out_file, &target) {
+        // Unlike rename(), copy() + remove_file() works even when the
+        // temp dir is on a different mount point than the target dir.
+        fs::copy(&out_file, &target)?;
+        fs::remove_file(out_file)?;
+    }
     info!("Downloading of {} completed successfully.", &target);
     Ok(target)
 }
