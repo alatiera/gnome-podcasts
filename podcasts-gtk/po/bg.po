@@ -1,5 +1,5 @@
-# Bulgarian translation for podcasts.
-# Copyright (C) 2024, 2025 twlvnn kraftwerk <kraft_werk@tutanota.com>
+# Bulgarian translation of podcasts po-file.
+# Copyright (C) 2024, 2025, 2026 twlvnn kraftwerk <kraft_werk@tutanota.com>
 # This file is distributed under the same license as the podcasts package.
 # twlvnn kraftwerk <kraft_werk@tutanota.com>, 2024, 2025, 2026.
 #
@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: podcasts main\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2025-12-28 11:27+0000\n"
-"PO-Revision-Date: 2026-01-23 17:04+0100\n"
+"POT-Creation-Date: 2026-02-14 11:31+0000\n"
+"PO-Revision-Date: 2026-03-01 17:49+0100\n"
 "Last-Translator: twlvnn kraftwerk <kraft_werk@tutanota.com>\n"
 "Language-Team: Bulgarian <dict-notifications@fsa-bg.org>\n"
 "Language: bg\n"
@@ -303,7 +303,7 @@ msgid "Description"
 msgstr "Описание"
 
 #: podcasts-gtk/resources/gtk/sheet_base.ui:89
-#: podcasts-gtk/src/widgets/chapters.rs:194
+#: podcasts-gtk/src/widgets/chapters.rs:193
 msgid "Chapters"
 msgstr "Глави"
 
@@ -495,7 +495,7 @@ msgstr "Вписване чрез браузър"
 
 #: podcasts-gtk/resources/gtk/sync_preferences.ui:205
 msgid "Loading..."
-msgstr "Зареждане..."
+msgstr "Зареждане…"
 
 #: podcasts-gtk/resources/gtk/window.ui:6
 msgid "_Check for New Episodes"
@@ -653,83 +653,83 @@ msgstr "Към {minutes}:{seconds}"
 msgid "Download failed: {}"
 msgstr "Неуспешно изтегляне: {}"
 
-#: podcasts-gtk/src/utils.rs:299
+#: podcasts-gtk/src/utils.rs:300
 #, rust-format
 msgid "Failed to subscribe to feed: {}"
 msgstr "Неуспешно абониране за потока: {}"
 
-#: podcasts-gtk/src/utils.rs:394 podcasts-gtk/src/utils.rs:437
+#: podcasts-gtk/src/utils.rs:395 podcasts-gtk/src/utils.rs:447
 msgid "OPML file"
 msgstr "Файл OPML"
 
-#: podcasts-gtk/src/utils.rs:405
+#: podcasts-gtk/src/utils.rs:406
 msgid "Select the file from which to you want to import shows."
 msgstr "Изберете файла, от който искате да внесете подскасти."
 
-#: podcasts-gtk/src/utils.rs:407
+#: podcasts-gtk/src/utils.rs:408
 msgid "_Import"
 msgstr "_Внасяне"
 
-#: podcasts-gtk/src/utils.rs:426
+#: podcasts-gtk/src/utils.rs:437
 #, rust-format
 msgid "Failed to parse the imported file {}"
 msgstr "Неуспешно зареждане на внесения файл {}"
 
 #. Translators: Show as a noun, meaning Podcast-Shows.
-#: podcasts-gtk/src/utils.rs:448
+#: podcasts-gtk/src/utils.rs:458
 msgid "Export shows to…"
 msgstr "Изнасяне на подкастите към…"
 
-#: podcasts-gtk/src/utils.rs:449
+#: podcasts-gtk/src/utils.rs:459
 msgid "_Export"
 msgstr "_Изнасяне"
 
 #. Translators: This is the string of the suggested name for the exported opml file
-#: podcasts-gtk/src/utils.rs:453
+#: podcasts-gtk/src/utils.rs:463
 msgid "gnome-podcasts-exported-shows"
 msgstr "gnome-podcasts-изнесени-подкасти"
 
-#: podcasts-gtk/src/utils.rs:462
+#: podcasts-gtk/src/utils.rs:473
 msgid "GNOME Podcasts Subscriptions"
 msgstr "Абонаменти на „Подкасти“"
 
-#: podcasts-gtk/src/utils.rs:466
+#: podcasts-gtk/src/utils.rs:477
 msgid "Failed to export podcasts"
 msgstr "Неуспешно изтегляне на подкастите"
 
-#: podcasts-gtk/src/utils.rs:478
+#: podcasts-gtk/src/utils.rs:488
 msgid "Just now"
 msgstr "Току-що"
 
-#: podcasts-gtk/src/utils.rs:482
+#: podcasts-gtk/src/utils.rs:492
 #, rust-format
 msgid "{} minute ago"
 msgid_plural "{} minutes ago"
 msgstr[0] "преди {} минута"
 msgstr[1] "преди {} минути"
 
-#: podcasts-gtk/src/utils.rs:488
+#: podcasts-gtk/src/utils.rs:498
 #, rust-format
 msgid "{} hour ago"
 msgid_plural "{} hours ago"
 msgstr[0] "преди {} час"
 msgstr[1] "преди {} часа"
 
-#: podcasts-gtk/src/utils.rs:492
+#: podcasts-gtk/src/utils.rs:502
 #, rust-format
 msgid "{} day ago"
 msgid_plural "{} days ago"
 msgstr[0] "преди {} ден"
 msgstr[1] "преди {} дена"
 
-#: podcasts-gtk/src/utils.rs:496
+#: podcasts-gtk/src/utils.rs:506
 #, rust-format
 msgid "{} month ago"
 msgid_plural "{} months ago"
 msgstr[0] "преди {} месец"
 msgstr[1] "преди {} месеца"
 
-#: podcasts-gtk/src/utils.rs:500
+#: podcasts-gtk/src/utils.rs:510
 #, rust-format
 msgid "{} year ago"
 msgid_plural "{} years ago"
@@ -752,7 +752,7 @@ msgstr ""
 "Докладвайте за грешки в превода в <a href='https://fsa-bg.org/project/gtp/"
 "newticket'>съответния раздел</a>."
 
-#: podcasts-gtk/src/widgets/chapters.rs:130
+#: podcasts-gtk/src/widgets/chapters.rs:129
 msgid "Currently playing chapter"
 msgstr "В момента слушате главата"
 
@@ -814,21 +814,21 @@ msgstr ""
 
 #: podcasts-gtk/src/widgets/sync_preferences.rs:126
 msgid "Logging in..."
-msgstr "Вписване..."
+msgstr "Вписване…"
 
 #: podcasts-gtk/src/widgets/sync_preferences.rs:180
 #: podcasts-gtk/src/widgets/sync_preferences.rs:262
 msgid "Waiting for browser login..."
-msgstr "Изчакване за вписване чрез браузъра..."
+msgstr "Изчакване за вписване чрез браузъра…"
 
 #: podcasts-gtk/src/widgets/sync_preferences.rs:227
 #: podcasts-gtk/src/widgets/sync_preferences.rs:309
 msgid "Logging out..."
-msgstr "Излизане..."
+msgstr "Излизане…"
 
 #: podcasts-gtk/src/widgets/sync_preferences.rs:344
 msgid "Synchronizing now..."
-msgstr "Синхронизиране..."
+msgstr "Синхронизиране…"
 
 #: podcasts-gtk/src/widgets/sync_preferences.rs:348
 msgid "Refreshing feeds..."
