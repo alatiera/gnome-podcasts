@@ -79,6 +79,7 @@ pub(crate) fn connection() -> Pool {
 fn init_pool(db_path: &str) -> Pool {
     let manager = ConnectionManager::<SqliteConnection>::new(db_path);
     let pool = r2d2::Pool::builder()
+        .max_size(1)
         .build(manager)
         .expect("Failed to create pool.");
 
