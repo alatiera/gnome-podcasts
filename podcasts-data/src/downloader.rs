@@ -20,10 +20,8 @@
 use reqwest::header::*;
 use reqwest::redirect::Policy;
 use tempfile::TempDir;
+use tokio::io::AsyncWriteExt;
 
-use std::fs;
-use std::fs::File;
-use std::io::{BufWriter, Write};
 use std::path::Path;
 use std::sync::{Arc, Mutex};
 
@@ -138,11 +136,11 @@ async fn download_into(
     // Construct the desired path.
     let target = format!("{}/{}.{}", dir, file_title, ext);
     // Try to rename/move the tempfile into a permanent place upon success.
-    if let Err(_) = fs::rename(&out_file, &target) {
+    if let Err(_) = tokio::fs::rename(&out_file, &target).await {
         // Unlike rename(), copy() + remove_file() works even when the
         // temp dir is on a different mount point than the target dir.
-        fs::copy(&out_file, &target)?;
-        fs::remove_file(out_file)?;
+        tokio::fs::copy(&out_file, &target).await?;
+        tokio::fs::remove_file(out_file).await?;
     }
     info!("Downloading of {} completed successfully.", &target);
     Ok(target)
@@ -175,16 +173,17 @@ async fn save_io(
     use std::ops::Deref;
 
     info!("Downloading into: {}", file);
-    let mut writer = BufWriter::new(File::create(file)?);
+    let file = tokio::fs::File::create(file).await?;
+    let mut writer = tokio::io::BufWriter::new(file);
     let mut body_stream = resp.bytes_stream();
 
     while let Some(chunk) = body_stream.next().await {
         if let Ok(chunk) = chunk {
-            writer.write_all(chunk.deref())?;
+            writer.write_all(chunk.deref()).await?;
             // This sucks.
             // Actually the whole download module is hack, so w/e.
             if let Some(prog) = progress.clone() {
-                let len = writer.get_ref().metadata().map(|x| x.len());
+                let len = writer.get_ref().metadata().await.map(|x| x.len());
                 if let Ok(l) = len
                     && let Ok(mut m) = prog.lock()
                 {
@@ -203,12 +202,13 @@ async fn save_io(
 }
 
 // TODO: Refactor
+/// Must be run from tokio, due to tokio::io.
 pub async fn get_episode(
     ep: &mut EpisodeWidgetModel,
     download_dir: &str,
     progress: Option<Arc<Mutex<dyn DownloadProgress + Send>>>,
 ) -> Result<(), DownloadError> {
-    // Check if its alrdy downloaded
+    // Check if its already downloaded
     if ep.local_uri().is_some() {
         if Path::new(ep.local_uri().unwrap()).exists() {
             return Ok(());
@@ -231,7 +231,7 @@ pub async fn get_episode(
     ep.set_local_uri(Some(&path));
 
     // Over-write episode length
-    let size = fs::metadata(path);
+    let size = tokio::fs::metadata(path).await;
     if let Ok(s) = size {
         ep.set_length(Some(s.len() as i32))
     };
