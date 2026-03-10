@@ -2,7 +2,7 @@
 # Copyright (C) 2019 podcasts's COPYRIGHT HOLDER
 # This file is distributed under the same license as the podcasts package.
 # scootergrisen, 2019.
-# Alan Mortensen <alanmortensen.am@gmail.com>, 2022–25.
+# Alan Mortensen <alanmortensen.am@gmail.com>, 2022–26.
 #
 # Show = udsendelse
 # Podcasts = Podcasts (programmet) eller podcast (flertalsform for ikke at forveksle med programmets navn)
@@ -10,8 +10,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: podcasts master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2025-08-16 15:20+0000\n"
-"PO-Revision-Date: 2025-08-18 18:01+0200\n"
+"POT-Creation-Date: 2026-02-14 11:31+0000\n"
+"PO-Revision-Date: 2026-03-10 18:49+0100\n"
 "Last-Translator: Alan Mortensen <alanmortensen.am@gmail.com>\n"
 "Language-Team: Danish <dansk@dansk-gruppen.dk>\n"
 "Language: da\n"
@@ -46,29 +46,29 @@ msgstr "Tilføj podcasts"
 msgid "Search"
 msgstr "Søg"
 
-#: podcasts-gtk/resources/gtk/discovery_page.ui:75
+#: podcasts-gtk/resources/gtk/discovery_page.ui:77
 msgid "Enter a feed URL or search the selected platforms."
 msgstr "Indtast URL til feed eller søg på de valgte platforme."
 
-#: podcasts-gtk/resources/gtk/discovery_page.ui:98
+#: podcasts-gtk/resources/gtk/discovery_page.ui:100
 msgid "Submit search"
 msgstr "Send søgning"
 
-#: podcasts-gtk/resources/gtk/discovery_page.ui:104
+#: podcasts-gtk/resources/gtk/discovery_page.ui:106
 #: podcasts-gtk/src/widgets/discovery_page.rs:113
 msgid "Loading…"
 msgstr "Indlæser …"
 
-#: podcasts-gtk/resources/gtk/discovery_page.ui:115
+#: podcasts-gtk/resources/gtk/discovery_page.ui:119
 msgid "Please enable a Search Platform below, or enter a http(s) feed URL."
 msgstr ""
 "Aktivér en søgeplatform nedenfor eller indtast en http(s)-URL til feedet."
 
-#: podcasts-gtk/resources/gtk/discovery_page.ui:127
+#: podcasts-gtk/resources/gtk/discovery_page.ui:131
 msgid "Search Platforms"
 msgstr "Søg platforme"
 
-#: podcasts-gtk/resources/gtk/discovery_page.ui:128
+#: podcasts-gtk/resources/gtk/discovery_page.ui:132
 msgid "Search queries will be sent to these platforms."
 msgstr "Søgninger vil blive sendt til disse platforme."
 
@@ -76,7 +76,7 @@ msgstr "Søgninger vil blive sendt til disse platforme."
 msgid "Search results"
 msgstr "Søgeresultater"
 
-#: podcasts-gtk/resources/gtk/discovery_search_results.ui:68
+#: podcasts-gtk/resources/gtk/discovery_search_results.ui:70
 msgid "No results found."
 msgstr "Ingen resultater fundet."
 
@@ -113,43 +113,44 @@ msgstr "Episodedetaljer"
 msgid "Episode Menu"
 msgstr "Episodemenu"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:92
+#: podcasts-gtk/resources/gtk/episode_description.ui:91
 msgid "Podcast Title"
 msgstr "Podcasttitel"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:115
+#: podcasts-gtk/resources/gtk/episode_description.ui:114
 msgid "Duration - Date"
 msgstr "Varighed — dato"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:149
+#: podcasts-gtk/resources/gtk/episode_description.ui:148
 msgid "_Stream"
 msgstr "_Stream"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:167
+#: podcasts-gtk/resources/gtk/episode_description.ui:166
 msgid "_Play"
 msgstr "A_fspil"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:186
+#: podcasts-gtk/resources/gtk/episode_description.ui:185
 msgid "_Pause"
 msgstr "_Pause"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:204
+#: podcasts-gtk/resources/gtk/episode_description.ui:203
 msgid "_Download"
 msgstr "_Download"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:231
+#: podcasts-gtk/resources/gtk/episode_description.ui:230
 msgid "Cancel"
 msgstr "Annullér"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:260
+#: podcasts-gtk/resources/gtk/episode_description.ui:259
 msgid "Delete"
 msgstr "Slet"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:279
+#: podcasts-gtk/resources/gtk/episode_description.ui:278
+#: podcasts-gtk/resources/gtk/sheet_description.ui:48
 msgid "Episode Description"
 msgstr "Episodebeskrivelse"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:301
+#: podcasts-gtk/resources/gtk/episode_description.ui:300
 msgid "Episode Cover"
 msgstr "Episodegrafik"
 
@@ -170,31 +171,31 @@ msgstr "Markér som afspillet"
 msgid "Mark as Unplayed"
 msgstr "Markér som ikke afspillet"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:70
+#: podcasts-gtk/resources/gtk/episode_widget.ui:71
 msgid "You’ve already listened to this episode."
 msgstr "Du har allerede lyttet til episoden."
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:158
+#: podcasts-gtk/resources/gtk/episode_widget.ui:159
 msgid "Calculating episode size…"
 msgstr "Udregner episodestørrelse …"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:181
+#: podcasts-gtk/resources/gtk/episode_widget.ui:182
 msgid "Play this episode"
 msgstr "Afspil episoden"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:195
+#: podcasts-gtk/resources/gtk/episode_widget.ui:197
 msgid "Pause playback"
 msgstr "Sæt afspilning på pause"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:207
+#: podcasts-gtk/resources/gtk/episode_widget.ui:211
 msgid "Cancel the download process"
 msgstr "Annuller downloadprocessen"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:220
+#: podcasts-gtk/resources/gtk/episode_widget.ui:225
 msgid "Download this episode"
 msgstr "Download episoden"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:234
+#: podcasts-gtk/resources/gtk/episode_widget.ui:240
 msgid "Episode without audio"
 msgstr "Episode uden lyd"
 
@@ -228,65 +229,62 @@ msgid "Change the playback speed"
 msgstr "Skift afspilningshastigheden"
 
 #: podcasts-gtk/resources/gtk/player_rate.ui:34
-#: podcasts-gtk/resources/gtk/player_rate.ui:59
+#: podcasts-gtk/resources/gtk/player_rate.ui:62
 msgid "1.00×"
 msgstr "1,00×"
 
-#: podcasts-gtk/resources/gtk/player_rate.ui:39
+#: podcasts-gtk/resources/gtk/player_rate.ui:42
 msgid "2.00×"
 msgstr "2,00×"
 
-#: podcasts-gtk/resources/gtk/player_rate.ui:44
+#: podcasts-gtk/resources/gtk/player_rate.ui:47
 msgid "1.75×"
 msgstr "1,75×"
 
-#: podcasts-gtk/resources/gtk/player_rate.ui:49
+#: podcasts-gtk/resources/gtk/player_rate.ui:52
 msgid "1.50×"
 msgstr "1,50×"
 
-#: podcasts-gtk/resources/gtk/player_rate.ui:54
+#: podcasts-gtk/resources/gtk/player_rate.ui:57
 msgid "1.25×"
 msgstr "1,25×"
 
-#: podcasts-gtk/resources/gtk/player_rate.ui:64
+#: podcasts-gtk/resources/gtk/player_rate.ui:67
 msgid "0.90×"
 msgstr "0,90×"
 
-#: podcasts-gtk/resources/gtk/player_rate.ui:69
+#: podcasts-gtk/resources/gtk/player_rate.ui:72
 msgid "0.75×"
 msgstr "0,75×"
-
-#: podcasts-gtk/resources/gtk/player_sheet.ui:133
-msgid "Rewind"
-msgstr "Spol tilbage"
-
-#: podcasts-gtk/resources/gtk/player_sheet.ui:154
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:67
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:268
-msgid "Play"
-msgstr "Afspil"
-
-#: podcasts-gtk/resources/gtk/player_sheet.ui:172
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:80
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:277
-msgid "Pause"
-msgstr "Pause"
-
-#: podcasts-gtk/resources/gtk/player_sheet.ui:195
-msgid "Forward"
-msgstr "Spol frem"
-
-#: podcasts-gtk/resources/gtk/player_sheet.ui:230
-msgid "Description"
-msgstr "Beskrivelse"
 
 #: podcasts-gtk/resources/gtk/player_toolbar.ui:50
 msgid "Rewind 10 seconds"
 msgstr "Spol 10 sekunder tilbage"
 
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:67
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:292
+#: podcasts-gtk/resources/gtk/sheet_player.ui:149
+msgid "Play"
+msgstr "Afspil"
+
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:80
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:301
+#: podcasts-gtk/resources/gtk/sheet_player.ui:167
+msgid "Pause"
+msgstr "Pause"
+
 #: podcasts-gtk/resources/gtk/player_toolbar.ui:95
 msgid "Fast forward 10 seconds"
 msgstr "Spol 10 sekunder fremad"
+
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:113
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:237
+msgid "Go to the description for this episode."
+msgstr "Gå til beskrivelsen af denne episode."
+
+#: podcasts-gtk/resources/gtk/player_toolbar.ui:208
+msgid "Go to the Chapters list."
+msgstr "Gå til listen over kapitler."
 
 #: podcasts-gtk/resources/gtk/secondary_menu.ui:7
 msgid "_Mark All Episodes as Played"
@@ -299,6 +297,27 @@ msgstr "_Websted"
 #: podcasts-gtk/resources/gtk/secondary_menu.ui:15
 msgid "_Unsubscribe"
 msgstr "_Afmeld abonnement"
+
+#: podcasts-gtk/resources/gtk/sheet_base.ui:75
+msgid "Player"
+msgstr "Afspiller"
+
+#: podcasts-gtk/resources/gtk/sheet_base.ui:82
+msgid "Description"
+msgstr "Beskrivelse"
+
+#: podcasts-gtk/resources/gtk/sheet_base.ui:89
+#: podcasts-gtk/src/widgets/chapters.rs:193
+msgid "Chapters"
+msgstr "Kapitler"
+
+#: podcasts-gtk/resources/gtk/sheet_player.ui:128
+msgid "Rewind"
+msgstr "Spol tilbage"
+
+#: podcasts-gtk/resources/gtk/sheet_player.ui:190
+msgid "Forward"
+msgstr "Spol frem"
 
 #: podcasts-gtk/resources/gtk/shortcuts-dialog.ui:7
 msgctxt "shortcut window"
@@ -393,9 +412,93 @@ msgstr "Afmeld abonnement"
 msgid "Podcast Menu"
 msgstr "Podcastmenu"
 
-#: podcasts-gtk/resources/gtk/show_widget.ui:97
+#: podcasts-gtk/resources/gtk/show_widget.ui:100
 msgid "Episodes"
 msgstr "Episoder"
+
+#: podcasts-gtk/resources/gtk/sync_preferences.ui:32
+#: podcasts-gtk/resources/gtk/window.ui:21
+msgid "Sync Preferences"
+msgstr "Synkroniseringsindstillinger"
+
+#: podcasts-gtk/resources/gtk/sync_preferences.ui:40
+msgid "Logout"
+msgstr "Log ud"
+
+#: podcasts-gtk/resources/gtk/sync_preferences.ui:66
+msgid "Nextcloud Sync Connection"
+msgstr "Nextcloud-synkroniseringsforbindelse"
+
+#: podcasts-gtk/resources/gtk/sync_preferences.ui:67
+msgid "Current connection for play position and subscription synchronization."
+msgstr ""
+"Aktuel forbindelse til afspilningsposition og abonnementssynkronisering."
+
+#: podcasts-gtk/resources/gtk/sync_preferences.ui:73
+msgid "Last Sync"
+msgstr "Seneste synkronisering"
+
+#: podcasts-gtk/resources/gtk/sync_preferences.ui:85
+msgid "Active"
+msgstr "Aktiv"
+
+#: podcasts-gtk/resources/gtk/sync_preferences.ui:86
+msgid "Should data be synchronized"
+msgstr "Skal data synkroniseres"
+
+#: podcasts-gtk/resources/gtk/sync_preferences.ui:92
+msgid "Server"
+msgstr "Server"
+
+#: podcasts-gtk/resources/gtk/sync_preferences.ui:100
+#: podcasts-gtk/resources/gtk/sync_preferences.ui:160
+msgid "Username"
+msgstr "Brugernavn"
+
+#: podcasts-gtk/resources/gtk/sync_preferences.ui:109
+msgid "Sync Now"
+msgstr "Synkronisér nu"
+
+#: podcasts-gtk/resources/gtk/sync_preferences.ui:122
+msgid "Nextcloud Login"
+msgstr "Nextcloud-login"
+
+#: podcasts-gtk/resources/gtk/sync_preferences.ui:123
+msgid ""
+"Synchronize subscriptions and listening status with a Nextcloud server that "
+"has GPodder Sync installed."
+msgstr ""
+"Synkronisér abonnementer og lyttestatus med en Nextcloud-server, der har "
+"GPodder Sync installeret."
+
+#: podcasts-gtk/resources/gtk/sync_preferences.ui:128
+msgid "Login via"
+msgstr "Login via"
+
+#: podcasts-gtk/resources/gtk/sync_preferences.ui:135
+msgid "Browser"
+msgstr "Browser"
+
+#: podcasts-gtk/resources/gtk/sync_preferences.ui:141
+#: podcasts-gtk/resources/gtk/sync_preferences.ui:168
+msgid "Password"
+msgstr "Adgangskode"
+
+#: podcasts-gtk/resources/gtk/sync_preferences.ui:152
+msgid "Server (cloud.example.com)"
+msgstr "Server (sky.eksempel.dk)"
+
+#: podcasts-gtk/resources/gtk/sync_preferences.ui:177
+msgid "Login"
+msgstr "Login"
+
+#: podcasts-gtk/resources/gtk/sync_preferences.ui:187
+msgid "Login via Browser"
+msgstr "Login via browser"
+
+#: podcasts-gtk/resources/gtk/sync_preferences.ui:205
+msgid "Loading..."
+msgstr "Indlæser …"
 
 #: podcasts-gtk/resources/gtk/window.ui:6
 msgid "_Check for New Episodes"
@@ -411,79 +514,36 @@ msgstr "_Importér udsendelser"
 msgid "_Export Shows"
 msgstr "_Eksportér udsendelser"
 
-#: podcasts-gtk/resources/gtk/window.ui:23
+#: podcasts-gtk/resources/gtk/window.ui:27
 msgid "_Keyboard Shortcuts"
 msgstr "_Tastaturgenveje"
 
-#: podcasts-gtk/resources/gtk/window.ui:27
+#: podcasts-gtk/resources/gtk/window.ui:31
 msgid "_About Podcasts"
 msgstr "_Om Podcasts"
 
 #. Weird magic I copy-pasted that sets the Application Name in the Shell.
-#: podcasts-gtk/resources/gtk/window.ui:35
-#: podcasts-gtk/resources/gtk/window.ui:102
-#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:4
+#: podcasts-gtk/resources/gtk/window.ui:39
+#: podcasts-gtk/resources/gtk/window.ui:106
 #: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:2
-#: podcasts-gtk/src/app.rs:519 podcasts-gtk/src/widgets/aboutdialog.rs:56
-#: podcasts-gtk/src/widgets/player.rs:478
+#: podcasts-gtk/resources/org.gnome.Podcasts.metainfo.xml.in.in:4
+#: podcasts-gtk/src/app.rs:629 podcasts-gtk/src/widgets/aboutdialog.rs:56
+#: podcasts-gtk/src/widgets/player.rs:408
 msgid "Podcasts"
 msgstr "Podcasts"
 
-#: podcasts-gtk/resources/gtk/window.ui:115
+#: podcasts-gtk/resources/gtk/window.ui:119
 msgid "Add a New Feed"
 msgstr "Tilføj et nyt feed"
 
-#: podcasts-gtk/resources/gtk/window.ui:123
+#: podcasts-gtk/resources/gtk/window.ui:127
 msgid "Main Menu"
 msgstr "Hovedmenu"
 
 #. Translators: Show as a noun, meaning a Podcast-Show.
-#: podcasts-gtk/resources/gtk/window.ui:137
+#: podcasts-gtk/resources/gtk/window.ui:141
 msgid "Show"
 msgstr "Udsendelse"
-
-#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:8
-msgid "Listen to your favorite shows"
-msgstr "Lyt til dine yndlingsudsendelser"
-
-#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:10
-msgid ""
-"Play, update, and manage your podcasts from a lightweight interface that "
-"seamlessly integrates with GNOME. Podcasts can play various audio formats "
-"and remember where you stopped listening. You can subscribe to shows via RSS/"
-"Atom, iTunes, and Soundcloud links. Subscriptions from other apps can be "
-"imported via OPML files."
-msgstr ""
-"Afspil, opdatér og håndtér dine podcast fra en enkel grænseflade som sømløst "
-"integrerer med GNOME. Podcasts kan afspille forskellige lydformater og "
-"huske, hvor du nåede til i din lytning. Du kan abonnere på udsendelser via "
-"RSS/Atom, iTunes og Soundcloud-links. Abonnementer fra andre programmer kan "
-"importeres via OPML-filer."
-
-#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:18
-msgid "The home view displaying the newest episodes of your podcasts"
-msgstr "Hjemmeoversigten viser dine podcasts' nyeste episoder"
-
-#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:22
-msgid "The shows view displaying the covers of your podcasts"
-msgstr "Udsendelsesoversigten viser grafik for dine podcasts"
-
-#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:26
-msgid ""
-"The show widget displaying the cover and the latest episodes of a specific "
-"podcast"
-msgstr ""
-"Udsendelseskontrollen viser grafik og seneste episoder for en specifik "
-"podcast"
-
-#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:30
-msgid "The view where one can add a new podcast"
-msgstr "Oversigten hvor man kan tilføje en ny podcast"
-
-#. developer_name tag deprecated with Appstream 1.0
-#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:230
-msgid "The Podcasts developers"
-msgstr "Udviklerne af Podcasts"
 
 #: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:3
 msgid "Listen to your favorite podcasts, right from your desktop."
@@ -530,63 +590,146 @@ msgstr "Hvor lang tid der skal gå mellem automatiske oprydninger"
 msgid "What period of time to wait between automatic cleanups"
 msgstr "Hvor lang tid der skal gå mellem automatiske oprydninger"
 
-#: podcasts-gtk/src/app.rs:375
+#: podcasts-gtk/resources/org.gnome.Podcasts.metainfo.xml.in.in:8
+msgid "Listen to your favorite shows"
+msgstr "Lyt til dine yndlingsudsendelser"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.metainfo.xml.in.in:10
+msgid ""
+"Play, update, and manage your podcasts from a lightweight interface that "
+"seamlessly integrates with GNOME. Podcasts can play various audio formats "
+"and remember where you stopped listening. You can subscribe to shows via RSS/"
+"Atom, iTunes, and Soundcloud links. Subscriptions from other apps can be "
+"imported via OPML files."
+msgstr ""
+"Afspil, opdatér og håndtér dine podcast fra en enkel grænseflade som sømløst "
+"integrerer med GNOME. Podcasts kan afspille forskellige lydformater og "
+"huske, hvor du nåede til i din lytning. Du kan abonnere på udsendelser via "
+"RSS/Atom, iTunes og Soundcloud-links. Abonnementer fra andre programmer kan "
+"importeres via OPML-filer."
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.metainfo.xml.in.in:18
+msgid "The home view displaying the newest episodes of your podcasts"
+msgstr "Hjemmeoversigten viser dine podcasts' nyeste episoder"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.metainfo.xml.in.in:22
+msgid "The shows view displaying the covers of your podcasts"
+msgstr "Udsendelsesoversigten viser grafik for dine podcasts"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.metainfo.xml.in.in:26
+msgid ""
+"The show widget displaying the cover and the latest episodes of a specific "
+"podcast"
+msgstr ""
+"Udsendelseskontrollen viser grafik og seneste episoder for en specifik "
+"podcast"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.metainfo.xml.in.in:30
+msgid "The chapters available in an episode"
+msgstr "De tilgængelige kapitler i en episode"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.metainfo.xml.in.in:34
+msgid "The view where one can add a new podcast"
+msgstr "Oversigten hvor man kan tilføje en ny podcast"
+
+#. developer_name tag deprecated with Appstream 1.0
+#: podcasts-gtk/resources/org.gnome.Podcasts.metainfo.xml.in.in:241
+msgid "The Podcasts developers"
+msgstr "Udviklerne af Podcasts"
+
+#: podcasts-gtk/src/app.rs:402
 msgid "Copied URL to clipboard!"
 msgstr "Kopierede URL'en til udklipsholderen!"
 
-#: podcasts-gtk/src/episode_description_parser.rs:319
-msgid "Jump to {}:{}:{}"
-msgstr "Hop til {}:{}:{}"
+#: podcasts-gtk/src/episode_description_parser.rs:320
+#| msgid "Jump to {}:{}:{}"
+msgid "Jump to {hours}:{minutes}:{seconds}"
+msgstr "Hop til {hours}:{minutes}:{seconds}"
 
 #: podcasts-gtk/src/episode_description_parser.rs:338
-msgid "Jump to {}:{}"
-msgstr "Hop til {}:{}"
+#| msgid "Jump to {}:{}"
+msgid "Jump to {minutes}:{seconds}"
+msgstr "Hop til {minutes}:{seconds}"
 
-#: podcasts-gtk/src/manager.rs:105
+#: podcasts-gtk/src/manager.rs:107
 msgid "Download failed: {}"
 msgstr "Download mislykkedes: {}"
 
-#: podcasts-gtk/src/utils.rs:293
+#: podcasts-gtk/src/utils.rs:300
 msgid "Failed to subscribe to feed: {}"
 msgstr "Kunne ikke abonnere på feed: {}"
 
-#: podcasts-gtk/src/utils.rs:388 podcasts-gtk/src/utils.rs:434
+#: podcasts-gtk/src/utils.rs:395 podcasts-gtk/src/utils.rs:447
 msgid "OPML file"
 msgstr "OPML-fil"
 
-#: podcasts-gtk/src/utils.rs:399
+#: podcasts-gtk/src/utils.rs:406
 msgid "Select the file from which to you want to import shows."
 msgstr "Vælg den fil du vil importere udsendelser fra."
 
-#: podcasts-gtk/src/utils.rs:401
+#: podcasts-gtk/src/utils.rs:408
 msgid "_Import"
 msgstr "_Importér"
 
-#: podcasts-gtk/src/utils.rs:424
+#: podcasts-gtk/src/utils.rs:437
 msgid "Failed to parse the imported file {}"
 msgstr "Kunne ikke fortolke den importerede fil {}"
 
 #. Translators: Show as a noun, meaning Podcast-Shows.
-#: podcasts-gtk/src/utils.rs:445
+#: podcasts-gtk/src/utils.rs:458
 msgid "Export shows to…"
 msgstr "Eksportér udsendelser til …"
 
-#: podcasts-gtk/src/utils.rs:446
+#: podcasts-gtk/src/utils.rs:459
 msgid "_Export"
 msgstr "_Eksportér"
 
 #. Translators: This is the string of the suggested name for the exported opml file
-#: podcasts-gtk/src/utils.rs:450
+#: podcasts-gtk/src/utils.rs:463
 msgid "gnome-podcasts-exported-shows"
 msgstr "gnome-podcasts-eksporterede-udsendelser"
 
-#: podcasts-gtk/src/utils.rs:459
+#: podcasts-gtk/src/utils.rs:473
 msgid "GNOME Podcasts Subscriptions"
 msgstr "Abonneringer for GNOME Podcasts"
 
-#: podcasts-gtk/src/utils.rs:463
+#: podcasts-gtk/src/utils.rs:477
 msgid "Failed to export podcasts"
 msgstr "Kunne ikke eksportere podcasts"
+
+#: podcasts-gtk/src/utils.rs:488
+msgid "Just now"
+msgstr "Lige nu"
+
+#: podcasts-gtk/src/utils.rs:492
+msgid "{} minute ago"
+msgid_plural "{} minutes ago"
+msgstr[0] "{} minut siden"
+msgstr[1] "{} minutter siden"
+
+#: podcasts-gtk/src/utils.rs:498
+msgid "{} hour ago"
+msgid_plural "{} hours ago"
+msgstr[0] "{} time siden"
+msgstr[1] "{} timer siden"
+
+#: podcasts-gtk/src/utils.rs:502
+msgid "{} day ago"
+msgid_plural "{} days ago"
+msgstr[0] "{} dag siden"
+msgstr[1] "{} dage siden"
+
+#: podcasts-gtk/src/utils.rs:506
+msgid "{} month ago"
+msgid_plural "{} months ago"
+msgstr[0] "{} måned siden"
+msgstr[1] "{} måneder siden"
+
+#: podcasts-gtk/src/utils.rs:510
+msgid "{} year ago"
+msgid_plural "{} years ago"
+msgstr[0] "{} år siden"
+msgstr[1] "{} år siden"
 
 #: podcasts-gtk/src/widgets/aboutdialog.rs:52
 msgid "Podcast Client for the GNOME Desktop."
@@ -602,6 +745,10 @@ msgstr ""
 "Websted http://dansk-gruppen.dk\n"
 "E-mail <dansk@dansk-gruppen.dk>"
 
+#: podcasts-gtk/src/widgets/chapters.rs:129
+msgid "Currently playing chapter"
+msgstr "Afspiller kapitel"
+
 #: podcasts-gtk/src/widgets/content_stack.rs:61
 msgid "Fetching feeds…"
 msgstr "Henter feed …"
@@ -616,44 +763,78 @@ msgstr "Nyt"
 msgid "Shows"
 msgstr "Udsendelser"
 
-#: podcasts-gtk/src/widgets/download_progress_bar.rs:66
+#: podcasts-gtk/src/widgets/download_progress_bar.rs:67
 msgid "Download progress"
 msgstr "Downloadstatus"
 
-#: podcasts-gtk/src/widgets/episode.rs:346
+#: podcasts-gtk/src/widgets/episode.rs:355
 msgid "{} min"
 msgstr "{} min"
 
-#: podcasts-gtk/src/widgets/player.rs:1163
+#: podcasts-gtk/src/widgets/player.rs:1133
 msgid "The media player was unable to execute an action."
 msgstr "Medieafspilleren kunne ikke udføre en handling."
 
-#: podcasts-gtk/src/widgets/read_more_label.rs:34
+#: podcasts-gtk/src/widgets/read_more_label.rs:33
 msgid "Visually expands this description"
 msgstr "Udvider denne beskrivelse visuelt"
 
-#: podcasts-gtk/src/widgets/read_more_label.rs:36
+#: podcasts-gtk/src/widgets/read_more_label.rs:35
 msgid "Read More"
 msgstr "Læs mere"
 
-#: podcasts-gtk/src/widgets/show_menu.rs:181
+#: podcasts-gtk/src/widgets/show_menu.rs:182
 msgid "Marked all episodes as listened"
 msgstr "Markerede alle episoder som hørt"
 
-#: podcasts-gtk/src/widgets/show_menu.rs:182
-#: podcasts-gtk/src/widgets/show_menu.rs:209
+#: podcasts-gtk/src/widgets/show_menu.rs:183
+#: podcasts-gtk/src/widgets/show_menu.rs:211
 msgid "Undo"
 msgstr "Fortryd"
 
-#: podcasts-gtk/src/widgets/show_menu.rs:205
+#: podcasts-gtk/src/widgets/show_menu.rs:206
 msgid "Unsubscribed from {}"
 msgstr "Afmeldte abonnement fra {}"
 
+#: podcasts-gtk/src/widgets/show_menu.rs:237
+msgid "Failed to store Unsubscribe Action for Synchronization in database. {}"
+msgstr ""
+"Det lykkedes ikke at gemme afmeldingshandlingen til synkronisering i "
+"databasen. {}"
+
+#: podcasts-gtk/src/widgets/sync_preferences.rs:126
+msgid "Logging in..."
+msgstr "Logger ind …"
+
+#: podcasts-gtk/src/widgets/sync_preferences.rs:180
+#: podcasts-gtk/src/widgets/sync_preferences.rs:262
+msgid "Waiting for browser login..."
+msgstr "Venter på browserlogin …"
+
+#: podcasts-gtk/src/widgets/sync_preferences.rs:227
+#: podcasts-gtk/src/widgets/sync_preferences.rs:309
+msgid "Logging out..."
+msgstr "Logger ud …"
+
+#: podcasts-gtk/src/widgets/sync_preferences.rs:344
+msgid "Synchronizing now..."
+msgstr "Synkroniserer nu …"
+
+#: podcasts-gtk/src/widgets/sync_preferences.rs:348
+msgid "Refreshing feeds..."
+msgstr "Opdaterer feed …"
+
+#: podcasts-gtk/src/widgets/sync_preferences.rs:397
+msgid "Running first sync. This can take a few minutes."
+msgstr "Kører første synkronisering. Det kan tage nogle minutter."
+
+#. Translators: reads as: "Last sync: Never"
+#: podcasts-gtk/src/widgets/sync_preferences.rs:439
+msgid "Never"
+msgstr "Aldrig"
+
 #~ msgid "0"
 #~ msgstr "0"
-
-#~ msgid "Loading..."
-#~ msgstr "Indlæser …"
 
 #~ msgid "Enter Feed Address"
 #~ msgstr "Indtast adresse på feed"
