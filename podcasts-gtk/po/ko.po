@@ -2,14 +2,14 @@
 # Copyright (C) 2018 podcasts's COPYRIGHT HOLDER
 # This file is distributed under the same license as the podcasts package.
 # Seong-ho Cho <shcho@gnome.org>, 2018-2021.
-# DaeHyun Sung <sungdh86+git@gmail.com>, 2020-2025.
+# DaeHyun Sung <sungdh86+git@gmail.com>, 2020-2026.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: podcasts master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2025-09-05 11:37+0000\n"
-"PO-Revision-Date: 2025-09-07 17:38+0900\n"
+"POT-Creation-Date: 2026-02-14 11:31+0000\n"
+"PO-Revision-Date: 2026-03-03 03:22+0900\n"
 "Last-Translator: DaeHyun Sung <sungdh86+git@gmail.com>\n"
 "Language-Team: Korean <gnome-kr@googlegroups.com>\n"
 "Language: ko\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Poedit 3.7\n"
+"X-Generator: Poedit 3.8\n"
 
 #: podcasts-gtk/resources/gtk/discovery_found_podcast.ui:105
 msgid "Episodes: "
@@ -109,44 +109,45 @@ msgstr "에피소드 내용"
 msgid "Episode Menu"
 msgstr "에피소드 메뉴"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:92
+#: podcasts-gtk/resources/gtk/episode_description.ui:91
 msgid "Podcast Title"
 msgstr "팟캐스트 제목"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:115
+#: podcasts-gtk/resources/gtk/episode_description.ui:114
 msgid "Duration - Date"
 msgstr "방송시간 - 날짜"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:149
+# 팟캐스트을 서버에서 스트림 받아서 실행시에 "스트림"으로 표기보다 "재생"이 매끄러움
+#: podcasts-gtk/resources/gtk/episode_description.ui:148
 msgid "_Stream"
-msgstr "스트림(_S)"
+msgstr "재생(_S)"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:167
+#: podcasts-gtk/resources/gtk/episode_description.ui:166
 msgid "_Play"
 msgstr "재생(_P)"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:186
+#: podcasts-gtk/resources/gtk/episode_description.ui:185
 msgid "_Pause"
 msgstr "일시 정지(_P)"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:204
+#: podcasts-gtk/resources/gtk/episode_description.ui:203
 msgid "_Download"
 msgstr "다운로드(_D)"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:231
+#: podcasts-gtk/resources/gtk/episode_description.ui:230
 msgid "Cancel"
 msgstr "취소"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:260
+#: podcasts-gtk/resources/gtk/episode_description.ui:259
 msgid "Delete"
 msgstr "삭제"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:279
-#: podcasts-gtk/resources/gtk/sheet_description.ui:49
+#: podcasts-gtk/resources/gtk/episode_description.ui:278
+#: podcasts-gtk/resources/gtk/sheet_description.ui:48
 msgid "Episode Description"
 msgstr "에피소드 설명"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:301
+#: podcasts-gtk/resources/gtk/episode_description.ui:300
 msgid "Episode Cover"
 msgstr "에피소드 표지"
 
@@ -167,31 +168,31 @@ msgstr "재생됨으로 표시"
 msgid "Mark as Unplayed"
 msgstr "재생되지 않음으로 표시"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:70
+#: podcasts-gtk/resources/gtk/episode_widget.ui:71
 msgid "You’ve already listened to this episode."
 msgstr "이미 에피소드를 들었습니다."
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:158
+#: podcasts-gtk/resources/gtk/episode_widget.ui:159
 msgid "Calculating episode size…"
 msgstr "에피소드 용량 계산 중…"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:181
+#: podcasts-gtk/resources/gtk/episode_widget.ui:182
 msgid "Play this episode"
 msgstr "이 에피소드 재생"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:195
+#: podcasts-gtk/resources/gtk/episode_widget.ui:197
 msgid "Pause playback"
 msgstr "일시 재생 중지"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:207
+#: podcasts-gtk/resources/gtk/episode_widget.ui:211
 msgid "Cancel the download process"
 msgstr "다운로드 진행 취소"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:220
+#: podcasts-gtk/resources/gtk/episode_widget.ui:225
 msgid "Download this episode"
 msgstr "이 에피소드 다운로드"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:234
+#: podcasts-gtk/resources/gtk/episode_widget.ui:240
 msgid "Episode without audio"
 msgstr "오디오 없는 에피소드"
 
@@ -276,11 +277,11 @@ msgstr "10초 빨리감기"
 #: podcasts-gtk/resources/gtk/player_toolbar.ui:113
 #: podcasts-gtk/resources/gtk/player_toolbar.ui:237
 msgid "Go to the description for this episode."
-msgstr ""
+msgstr "에피소드 설명으로 이동."
 
 #: podcasts-gtk/resources/gtk/player_toolbar.ui:208
 msgid "Go to the Chapters list."
-msgstr ""
+msgstr "챕터 목록으로 이동."
 
 #: podcasts-gtk/resources/gtk/secondary_menu.ui:7
 msgid "_Mark All Episodes as Played"
@@ -303,9 +304,9 @@ msgid "Description"
 msgstr "설명"
 
 #: podcasts-gtk/resources/gtk/sheet_base.ui:89
-#: podcasts-gtk/src/widgets/chapters.rs:194
+#: podcasts-gtk/src/widgets/chapters.rs:193
 msgid "Chapters"
-msgstr ""
+msgstr "챕터"
 
 #: podcasts-gtk/resources/gtk/sheet_player.ui:128
 msgid "Rewind"
@@ -358,18 +359,14 @@ msgid "Seek Backwards"
 msgstr "뒤로 찾기"
 
 #: podcasts-gtk/resources/gtk/shortcuts-dialog.ui:54
-#, fuzzy
-#| msgid "Change the playback speed"
 msgctxt "shortcut window"
 msgid "Raise Playback Speed"
-msgstr "재생 속도 조절"
+msgstr "재생 속도 올리기"
 
 #: podcasts-gtk/resources/gtk/shortcuts-dialog.ui:60
-#, fuzzy
-#| msgid "Change the playback speed"
 msgctxt "shortcut window"
 msgid "Lower Playback Speed"
-msgstr "재생 속도 조절"
+msgstr "재생 속도 내리기"
 
 #: podcasts-gtk/resources/gtk/shortcuts-dialog.ui:69
 msgctxt "shortcut window"
@@ -416,6 +413,88 @@ msgstr "팟캐스트 메뉴"
 msgid "Episodes"
 msgstr "에피소드"
 
+#: podcasts-gtk/resources/gtk/sync_preferences.ui:32
+#: podcasts-gtk/resources/gtk/window.ui:21
+msgid "Sync Preferences"
+msgstr "동기화 설정"
+
+#: podcasts-gtk/resources/gtk/sync_preferences.ui:40
+msgid "Logout"
+msgstr "로그아웃"
+
+#: podcasts-gtk/resources/gtk/sync_preferences.ui:66
+msgid "Nextcloud Sync Connection"
+msgstr "Nextcloud 동기화 연결"
+
+#: podcasts-gtk/resources/gtk/sync_preferences.ui:67
+msgid "Current connection for play position and subscription synchronization."
+msgstr "현재 재생 위치 및 구독 동기화 연결."
+
+#: podcasts-gtk/resources/gtk/sync_preferences.ui:73
+msgid "Last Sync"
+msgstr "마지막 동기화"
+
+#: podcasts-gtk/resources/gtk/sync_preferences.ui:85
+msgid "Active"
+msgstr "활성화"
+
+#: podcasts-gtk/resources/gtk/sync_preferences.ui:86
+msgid "Should data be synchronized"
+msgstr "데이터를 동기화합니다"
+
+#: podcasts-gtk/resources/gtk/sync_preferences.ui:92
+msgid "Server"
+msgstr "서버"
+
+#: podcasts-gtk/resources/gtk/sync_preferences.ui:100
+#: podcasts-gtk/resources/gtk/sync_preferences.ui:160
+msgid "Username"
+msgstr "사용자 이름"
+
+#: podcasts-gtk/resources/gtk/sync_preferences.ui:109
+msgid "Sync Now"
+msgstr "지금 동기화"
+
+#: podcasts-gtk/resources/gtk/sync_preferences.ui:122
+msgid "Nextcloud Login"
+msgstr "Nextcloud 로그인"
+
+#: podcasts-gtk/resources/gtk/sync_preferences.ui:123
+msgid ""
+"Synchronize subscriptions and listening status with a Nextcloud server that "
+"has GPodder Sync installed."
+msgstr ""
+"구독 정보와 재생 상태를 GPodder Sync가 설치된 Nextcloud 서버로 동기화합니다."
+
+#: podcasts-gtk/resources/gtk/sync_preferences.ui:128
+msgid "Login via"
+msgstr "로그인 방식"
+
+#: podcasts-gtk/resources/gtk/sync_preferences.ui:135
+msgid "Browser"
+msgstr "브라우저"
+
+#: podcasts-gtk/resources/gtk/sync_preferences.ui:141
+#: podcasts-gtk/resources/gtk/sync_preferences.ui:168
+msgid "Password"
+msgstr "암호"
+
+#: podcasts-gtk/resources/gtk/sync_preferences.ui:152
+msgid "Server (cloud.example.com)"
+msgstr "서버 (cloud.example.com)"
+
+#: podcasts-gtk/resources/gtk/sync_preferences.ui:177
+msgid "Login"
+msgstr "로그인"
+
+#: podcasts-gtk/resources/gtk/sync_preferences.ui:187
+msgid "Login via Browser"
+msgstr "브라우저를 통해 로그인"
+
+#: podcasts-gtk/resources/gtk/sync_preferences.ui:205
+msgid "Loading..."
+msgstr "로드 중..."
+
 #: podcasts-gtk/resources/gtk/window.ui:6
 msgid "_Check for New Episodes"
 msgstr "새 에피소드 확인(_C)"
@@ -430,76 +509,36 @@ msgstr "쇼 가져오기(_I)"
 msgid "_Export Shows"
 msgstr "쇼 내보내기(_E)"
 
-#: podcasts-gtk/resources/gtk/window.ui:23
+#: podcasts-gtk/resources/gtk/window.ui:27
 msgid "_Keyboard Shortcuts"
 msgstr "키보드 바로 가기(_K)"
 
-#: podcasts-gtk/resources/gtk/window.ui:27
+#: podcasts-gtk/resources/gtk/window.ui:31
 msgid "_About Podcasts"
 msgstr "팟캐스트 정보(_A)"
 
 #. Weird magic I copy-pasted that sets the Application Name in the Shell.
-#: podcasts-gtk/resources/gtk/window.ui:35
-#: podcasts-gtk/resources/gtk/window.ui:102
-#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:4
+#: podcasts-gtk/resources/gtk/window.ui:39
+#: podcasts-gtk/resources/gtk/window.ui:106
 #: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:2
-#: podcasts-gtk/src/app.rs:530 podcasts-gtk/src/widgets/aboutdialog.rs:56
+#: podcasts-gtk/resources/org.gnome.Podcasts.metainfo.xml.in.in:4
+#: podcasts-gtk/src/app.rs:629 podcasts-gtk/src/widgets/aboutdialog.rs:56
 #: podcasts-gtk/src/widgets/player.rs:408
 msgid "Podcasts"
 msgstr "팟캐스트"
 
-#: podcasts-gtk/resources/gtk/window.ui:115
+#: podcasts-gtk/resources/gtk/window.ui:119
 msgid "Add a New Feed"
 msgstr "새로운 피드 추가"
 
-#: podcasts-gtk/resources/gtk/window.ui:123
+#: podcasts-gtk/resources/gtk/window.ui:127
 msgid "Main Menu"
 msgstr "메인 메뉴"
 
 #. Translators: Show as a noun, meaning a Podcast-Show.
-#: podcasts-gtk/resources/gtk/window.ui:137
+#: podcasts-gtk/resources/gtk/window.ui:141
 msgid "Show"
 msgstr "쇼"
-
-#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:8
-msgid "Listen to your favorite shows"
-msgstr "원하는 팟캐스트를 듣기를 보여줍니다"
-
-#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:10
-msgid ""
-"Play, update, and manage your podcasts from a lightweight interface that "
-"seamlessly integrates with GNOME. Podcasts can play various audio formats "
-"and remember where you stopped listening. You can subscribe to shows via RSS/"
-"Atom, iTunes, and Soundcloud links. Subscriptions from other apps can be "
-"imported via OPML files."
-msgstr ""
-"그놈과 매끄럽게 통합되는 가벼운 인터페이스로 팟캐스트를 재생, 업데이트 및 관"
-"리합니다. 팟캐스트는 다양한 오디오 형식을 재생할 수 있고 듣다가 멈춘 곳을 기"
-"억할 수 있습니다. RSS/Atom, iTunes 및 Soundcloud links를 통해 프로그램을 구독"
-"할 수 있습니다. 다른 앱으로 구독은 OPML파일을 통해 가져올 수 있습니다."
-
-#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:18
-msgid "The home view displaying the newest episodes of your podcasts"
-msgstr "팟캐스트의 새로운 에피소드를 표시하는 홈 보기"
-
-#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:22
-msgid "The shows view displaying the covers of your podcasts"
-msgstr "팟캐스트의 표지를 보여주는 쇼 보기"
-
-#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:26
-msgid ""
-"The show widget displaying the cover and the latest episodes of a specific "
-"podcast"
-msgstr "특정 팟캐스트의 최신 에피소드와 표지를 표시하는 쇼 위젯"
-
-#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:30
-msgid "The view where one can add a new podcast"
-msgstr "새로운 팟캐스트를 추가할 수 있는 보기"
-
-#. developer_name tag deprecated with Appstream 1.0
-#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:230
-msgid "The Podcasts developers"
-msgstr "팟캐스트 개발자"
 
 #: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:3
 msgid "Listen to your favorite podcasts, right from your desktop."
@@ -546,63 +585,146 @@ msgstr "자동 정리 기다림 주기 시간 간격"
 msgid "What period of time to wait between automatic cleanups"
 msgstr "자동 정리 기다림 주기 시간"
 
-#: podcasts-gtk/src/app.rs:386
+#: podcasts-gtk/resources/org.gnome.Podcasts.metainfo.xml.in.in:8
+msgid "Listen to your favorite shows"
+msgstr "원하는 팟캐스트를 듣기를 보여줍니다"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.metainfo.xml.in.in:10
+msgid ""
+"Play, update, and manage your podcasts from a lightweight interface that "
+"seamlessly integrates with GNOME. Podcasts can play various audio formats "
+"and remember where you stopped listening. You can subscribe to shows via RSS/"
+"Atom, iTunes, and Soundcloud links. Subscriptions from other apps can be "
+"imported via OPML files."
+msgstr ""
+"그놈과 매끄럽게 통합되는 가벼운 인터페이스로 팟캐스트를 재생, 업데이트 및 관"
+"리합니다. 팟캐스트는 다양한 오디오 형식을 재생할 수 있고 듣다가 멈춘 곳을 기"
+"억할 수 있습니다. RSS/Atom, iTunes 및 Soundcloud links를 통해 프로그램을 구독"
+"할 수 있습니다. 다른 앱으로 구독은 OPML파일을 통해 가져올 수 있습니다."
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.metainfo.xml.in.in:18
+msgid "The home view displaying the newest episodes of your podcasts"
+msgstr "팟캐스트의 새로운 에피소드를 표시하는 홈 보기"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.metainfo.xml.in.in:22
+msgid "The shows view displaying the covers of your podcasts"
+msgstr "팟캐스트의 표지를 보여주는 쇼 보기"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.metainfo.xml.in.in:26
+msgid ""
+"The show widget displaying the cover and the latest episodes of a specific "
+"podcast"
+msgstr "특정 팟캐스트의 최신 에피소드와 표지를 표시하는 쇼 위젯"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.metainfo.xml.in.in:30
+msgid "The chapters available in an episode"
+msgstr "에피소드의 사용 가능한 챕터"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.metainfo.xml.in.in:34
+msgid "The view where one can add a new podcast"
+msgstr "새로운 팟캐스트를 추가할 수 있는 보기"
+
+#. developer_name tag deprecated with Appstream 1.0
+#: podcasts-gtk/resources/org.gnome.Podcasts.metainfo.xml.in.in:241
+msgid "The Podcasts developers"
+msgstr "팟캐스트 개발자"
+
+#: podcasts-gtk/src/app.rs:402
 msgid "Copied URL to clipboard!"
 msgstr "URL 주소를 클립보드에 복사했습니다!"
 
-#: podcasts-gtk/src/episode_description_parser.rs:319
-msgid "Jump to {}:{}:{}"
-msgstr "{}:{}:{} (으)로 이동"
+#: podcasts-gtk/src/episode_description_parser.rs:320
+#, rust-format
+msgid "Jump to {hours}:{minutes}:{seconds}"
+msgstr "{hours}:{minutes}:{seconds} (으)로 이동"
 
 #: podcasts-gtk/src/episode_description_parser.rs:338
-msgid "Jump to {}:{}"
-msgstr "{}:{} (으)로 이동"
+#, rust-format
+msgid "Jump to {minutes}:{seconds}"
+msgstr "{minutes}:{seconds} (으)로 이동"
 
-#: podcasts-gtk/src/manager.rs:105
+#: podcasts-gtk/src/manager.rs:107
+#, rust-format
 msgid "Download failed: {}"
 msgstr "다운로드 실패: {}"
 
-#: podcasts-gtk/src/utils.rs:293
+#: podcasts-gtk/src/utils.rs:300
+#, rust-format
 msgid "Failed to subscribe to feed: {}"
-msgstr "피드 구독에 실패했습니다: {}"
+msgstr "피드 구독이 실패했습니다: {}"
 
-#: podcasts-gtk/src/utils.rs:388 podcasts-gtk/src/utils.rs:434
+#: podcasts-gtk/src/utils.rs:395 podcasts-gtk/src/utils.rs:447
 msgid "OPML file"
 msgstr "OPML 파일"
 
-#: podcasts-gtk/src/utils.rs:399
+#: podcasts-gtk/src/utils.rs:406
 msgid "Select the file from which to you want to import shows."
 msgstr "가져올 쇼의 파일을 선택하십시오."
 
-#: podcasts-gtk/src/utils.rs:401
+#: podcasts-gtk/src/utils.rs:408
 msgid "_Import"
 msgstr "가져오기(_I)"
 
-#: podcasts-gtk/src/utils.rs:424
+#: podcasts-gtk/src/utils.rs:437
+#, rust-format
 msgid "Failed to parse the imported file {}"
 msgstr "가져온 파일 {} 해석에 실패했습니다"
 
 #. Translators: Show as a noun, meaning Podcast-Shows.
-#: podcasts-gtk/src/utils.rs:445
+#: podcasts-gtk/src/utils.rs:458
 msgid "Export shows to…"
 msgstr "쇼 내보내기…"
 
-#: podcasts-gtk/src/utils.rs:446
+#: podcasts-gtk/src/utils.rs:459
 msgid "_Export"
 msgstr "내보내기(_E)"
 
 #. Translators: This is the string of the suggested name for the exported opml file
-#: podcasts-gtk/src/utils.rs:450
+#: podcasts-gtk/src/utils.rs:463
 msgid "gnome-podcasts-exported-shows"
 msgstr "gnome-podcasts-exported-shows"
 
-#: podcasts-gtk/src/utils.rs:459
+#: podcasts-gtk/src/utils.rs:473
 msgid "GNOME Podcasts Subscriptions"
 msgstr "그놈 팟캐스트 구독"
 
-#: podcasts-gtk/src/utils.rs:463
+#: podcasts-gtk/src/utils.rs:477
 msgid "Failed to export podcasts"
 msgstr "팟캐스트를 내보내지 못하였습니다"
+
+#: podcasts-gtk/src/utils.rs:488
+msgid "Just now"
+msgstr "지금"
+
+#: podcasts-gtk/src/utils.rs:492
+#, rust-format
+msgid "{} minute ago"
+msgid_plural "{} minutes ago"
+msgstr[0] "{}분 전"
+
+#: podcasts-gtk/src/utils.rs:498
+#, rust-format
+msgid "{} hour ago"
+msgid_plural "{} hours ago"
+msgstr[0] "{}시간 전"
+
+#: podcasts-gtk/src/utils.rs:502
+#, rust-format
+msgid "{} day ago"
+msgid_plural "{} days ago"
+msgstr[0] "{}일 전"
+
+#: podcasts-gtk/src/utils.rs:506
+#, rust-format
+msgid "{} month ago"
+msgid_plural "{} months ago"
+msgstr[0] "{}개월 전"
+
+#: podcasts-gtk/src/utils.rs:510
+#, rust-format
+msgid "{} year ago"
+msgid_plural "{} years ago"
+msgstr[0] "{}년 전"
 
 #: podcasts-gtk/src/widgets/aboutdialog.rs:52
 msgid "Podcast Client for the GNOME Desktop."
@@ -612,11 +734,11 @@ msgstr "그놈 데스크톱용 팟캐스트 클라이언트."
 msgid "translator-credits"
 msgstr ""
 "조성호 <shcho@gnome.org>, 2018\n"
-"성대현 <sungdh86+git@gmail.com>, 2020-2025"
+"성대현 <sungdh86+git@gmail.com>, 2020-2026"
 
-#: podcasts-gtk/src/widgets/chapters.rs:130
+#: podcasts-gtk/src/widgets/chapters.rs:129
 msgid "Currently playing chapter"
-msgstr ""
+msgstr "현재 재생 중인 챕터"
 
 #: podcasts-gtk/src/widgets/content_stack.rs:61
 msgid "Fetching feeds…"
@@ -632,38 +754,76 @@ msgstr "새 항목"
 msgid "Shows"
 msgstr "쇼"
 
-#: podcasts-gtk/src/widgets/download_progress_bar.rs:66
+#: podcasts-gtk/src/widgets/download_progress_bar.rs:67
 msgid "Download progress"
 msgstr "다운로드 진행 상황"
 
-#: podcasts-gtk/src/widgets/episode.rs:346
+#: podcasts-gtk/src/widgets/episode.rs:355
+#, rust-format
 msgid "{} min"
 msgstr "{}분"
 
-#: podcasts-gtk/src/widgets/player.rs:1110
+#: podcasts-gtk/src/widgets/player.rs:1133
 msgid "The media player was unable to execute an action."
 msgstr "미디어 재생기에서 이 동작을 수행할 수 없습니다."
 
-#: podcasts-gtk/src/widgets/read_more_label.rs:34
+#: podcasts-gtk/src/widgets/read_more_label.rs:33
 msgid "Visually expands this description"
 msgstr "설명을 시각적으로 확장"
 
-#: podcasts-gtk/src/widgets/read_more_label.rs:36
+#: podcasts-gtk/src/widgets/read_more_label.rs:35
 msgid "Read More"
 msgstr "더 읽기"
 
-#: podcasts-gtk/src/widgets/show_menu.rs:181
+#: podcasts-gtk/src/widgets/show_menu.rs:182
 msgid "Marked all episodes as listened"
 msgstr "모든 에피소드를 감청 상태로 표시했습니다"
 
-#: podcasts-gtk/src/widgets/show_menu.rs:182
-#: podcasts-gtk/src/widgets/show_menu.rs:209
+#: podcasts-gtk/src/widgets/show_menu.rs:183
+#: podcasts-gtk/src/widgets/show_menu.rs:211
 msgid "Undo"
 msgstr "실행 취소"
 
-#: podcasts-gtk/src/widgets/show_menu.rs:205
+#: podcasts-gtk/src/widgets/show_menu.rs:206
+#, rust-format
 msgid "Unsubscribed from {}"
-msgstr "{}에서 구독 취소했습니다"
+msgstr "{} 을(를) 구독 취소했습니다"
+
+#: podcasts-gtk/src/widgets/show_menu.rs:237
+#, rust-format
+msgid "Failed to store Unsubscribe Action for Synchronization in database. {}"
+msgstr "동기화 중 구독 해지 작업을 데이터베이스에 저장하지 못했습니다. {}"
+
+#: podcasts-gtk/src/widgets/sync_preferences.rs:126
+msgid "Logging in..."
+msgstr "로그인하는 중..."
+
+#: podcasts-gtk/src/widgets/sync_preferences.rs:180
+#: podcasts-gtk/src/widgets/sync_preferences.rs:262
+msgid "Waiting for browser login..."
+msgstr "브라우저 로그인 대기 중..."
+
+#: podcasts-gtk/src/widgets/sync_preferences.rs:227
+#: podcasts-gtk/src/widgets/sync_preferences.rs:309
+msgid "Logging out..."
+msgstr "로그아웃 하는 중..."
+
+#: podcasts-gtk/src/widgets/sync_preferences.rs:344
+msgid "Synchronizing now..."
+msgstr "현재 동기화 중..."
+
+#: podcasts-gtk/src/widgets/sync_preferences.rs:348
+msgid "Refreshing feeds..."
+msgstr "피드 새로 고치는 중..."
+
+#: podcasts-gtk/src/widgets/sync_preferences.rs:397
+msgid "Running first sync. This can take a few minutes."
+msgstr "첫 번째 동기화 중입니다. 몇 분 정도 걸릴 수 있습니다."
+
+#. Translators: reads as: "Last sync: Never"
+#: podcasts-gtk/src/widgets/sync_preferences.rs:439
+msgid "Never"
+msgstr "안 함"
 
 #~ msgid "Back"
 #~ msgstr "뒤로"
@@ -732,9 +892,6 @@ msgstr "{}에서 구독 취소했습니다"
 #~ msgstr "정보(_A)"
 
 #~ msgctxt "shortcut window"
-#~ msgid "Preferences"
-#~ msgstr "기본 설정"
-
 #~ msgid "Preferences"
 #~ msgstr "기본 설정"
 
