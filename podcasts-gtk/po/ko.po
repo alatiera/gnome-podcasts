@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: podcasts master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2026-02-14 11:31+0000\n"
-"PO-Revision-Date: 2026-03-03 03:22+0900\n"
+"POT-Creation-Date: 2026-03-03 05:02+0000\n"
+"PO-Revision-Date: 2026-03-11 11:19+0900\n"
 "Last-Translator: DaeHyun Sung <sungdh86+git@gmail.com>\n"
 "Language-Team: Korean <gnome-kr@googlegroups.com>\n"
 "Language: ko\n"
@@ -120,7 +120,7 @@ msgstr "방송시간 - 날짜"
 # 팟캐스트을 서버에서 스트림 받아서 실행시에 "스트림"으로 표기보다 "재생"이 매끄러움
 #: podcasts-gtk/resources/gtk/episode_description.ui:148
 msgid "_Stream"
-msgstr "재생(_S)"
+msgstr "스트림(_S)"
 
 #: podcasts-gtk/resources/gtk/episode_description.ui:166
 msgid "_Play"
