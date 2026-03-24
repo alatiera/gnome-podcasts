@@ -199,7 +199,7 @@ pub(crate) enum Action {
     InitEpisode(EpisodeId),
     InitEpisodeAt(EpisodeId, i32),
     StreamEpisode(EpisodeId),
-    UpdateMprisCover(ShowId, bool), // bool = download success, use local file
+    UpdateCover(ShowId),
     EmptyState,
     PopulatedState,
     RaiseWindow,
@@ -571,8 +571,8 @@ impl PdApplication {
                 let res = window.init_episode(id, None, StreamMode::StreamOnly);
                 debug_assert!(res.is_ok());
             }
-            Action::UpdateMprisCover(id, dl_success) => {
-                let res = window.player().update_mpris_cover(id, dl_success);
+            Action::UpdateCover(id) => {
+                let res = window.player().update_cover(id);
                 debug_assert!(res.is_ok());
             }
             Action::EmptyState => {

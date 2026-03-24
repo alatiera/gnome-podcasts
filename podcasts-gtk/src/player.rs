@@ -30,17 +30,15 @@ use glib::clone;
 use glib::subclass::Signal;
 use gst::ClockTime;
 use gtk::{gio, glib};
-use mpris_server::{self, Metadata, PlaybackStatus};
+use mpris_server::{self, PlaybackStatus};
 use std::cell::{Cell, Ref, RefCell};
 use std::ops::Deref;
 use std::path::Path;
-use std::rc::Rc;
 use std::sync::{LazyLock, Mutex};
-use url::Url;
 
 use crate::app::Action;
 use crate::chapter_parser::Chapter;
-use crate::config::APP_ID;
+use crate::player_mpris::PlayerMpris;
 use podcasts_data::{
     Episode, EpisodeId, EpisodeModel, ShowCoverModel, ShowId, USER_AGENT, dbqueries,
 };
@@ -63,7 +61,7 @@ pub struct PlayerPriv {
     player: gst_play::Play,
     // reference needs to be kept, or signals stop firing
     player_signals: gst_play::PlaySignalAdapter,
-    mpris: RefCell<Option<Rc<mpris_server::Player>>>,
+    mpris: PlayerMpris,
     // currently played episode
     ep: RefCell<Option<Episode>>,
     show: RefCell<Option<ShowCoverModel>>,
@@ -91,46 +89,13 @@ impl Default for PlayerPriv {
         // window. Make sure it doesn't do that.
         player.set_video_track_enabled(false);
 
-        let mpris = crate::RUNTIME.block_on(async move {
-            let mpris_result = mpris_server::Player::builder(APP_ID)
-                .identity(gettext("Podcasts"))
-                .desktop_entry(APP_ID)
-                .can_raise(true)
-                .can_pause(false)
-                .can_play(false)
-                .can_seek(false)
-                .can_set_fullscreen(false)
-                .can_go_next(false)
-                .can_go_previous(false)
-                .build()
-                .await;
-            match mpris_result {
-                Err(e) => {
-                    error!("mpris initialization: {e}");
-                    None
-                }
-                Ok(mpris) => Some(Rc::new(mpris)),
-            }
-        });
+        let mpris = PlayerMpris::default();
 
-        if let Some(mpris) = mpris.as_ref() {
-            crate::MAINCONTEXT.spawn_local_with_priority(
-                glib::source::Priority::LOW,
-                clone!(
-                    #[weak]
-                    mpris,
-                    async move {
-                        let task = mpris.run();
-                        task.await;
-                    }
-                ),
-            );
-        }
         let player_signals = gst_play::PlaySignalAdapter::new(&player);
         PlayerPriv {
             player,
             player_signals,
-            mpris: RefCell::new(mpris),
+            mpris,
             // currently played episode
             ep: RefCell::new(None),
             show: RefCell::new(None),
@@ -246,12 +211,14 @@ impl Default for Player {
 impl Player {
     pub(crate) fn init(&self, sender: &Sender<Action>) {
         self.connect_gst_signals(sender);
-        self.connect_mpris_buttons(sender);
+        self.imp().mpris.init(self, sender);
         self.imp().sender.replace(Some(sender.clone()));
     }
 
-    pub(crate) fn bind_ui<T: IsA<gtk::Widget> + PlayerUi>(&self, ui: &T) {
+    pub(crate) fn bind_ui<T: IsA<glib::Object> + PlayerUi>(&self, ui: &T) {
         let this = &self;
+        // TODO If anyone knows a better <T> definition that fixes #[weak] clone,
+        // go ahead and remove `let weak` here
         let weak = ui.downgrade();
         self.connect_local(
             "show-changed",
@@ -393,7 +360,6 @@ impl Player {
                     if let Some(ui) = weak.upgrade() {
                         ui.chapters_changed(!this.imp().chapters.borrow().is_empty());
                     }
-
                     None
                 }
             ),
@@ -465,7 +431,6 @@ impl Player {
                             }
                         });
                         this.on_position_updated(pos);
-                        this.update_mpris_position(pos);
                     }
                 }
             }
@@ -502,61 +467,6 @@ impl Player {
         ));
     }
 
-    fn connect_mpris_buttons(&self, sender: &Sender<Action>) {
-        if let Some(mpris) = self.imp().mpris.borrow().as_ref() {
-            mpris.connect_play_pause(clone!(
-                #[strong(rename_to = player)]
-                self,
-                move |mpris| {
-                    match mpris.playback_status() {
-                        PlaybackStatus::Paused => player.play(),
-                        PlaybackStatus::Stopped => player.play(),
-                        _ => player.pause(),
-                    };
-                }
-            ));
-            mpris.connect_play(clone!(
-                #[strong(rename_to = player)]
-                self,
-                move |_| {
-                    player.play();
-                }
-            ));
-
-            mpris.connect_pause(clone!(
-                #[strong(rename_to = player)]
-                self,
-                move |_| {
-                    player.pause();
-                }
-            ));
-
-            mpris.connect_seek(clone!(
-                #[strong(rename_to = player)]
-                self,
-                move |_, offset: mpris_server::Time| {
-                    let direction = if offset.is_positive() {
-                        SeekDirection::Forward
-                    } else {
-                        SeekDirection::Backwards
-                    };
-                    player.seek(
-                        ClockTime::from_useconds(offset.as_micros().unsigned_abs()),
-                        direction,
-                    );
-                }
-            ));
-
-            mpris.connect_raise(clone!(
-                #[strong]
-                sender,
-                move |_| {
-                    send_blocking!(sender, Action::RaiseWindow);
-                }
-            ));
-        };
-    }
-
     // FIXME: create a Diesel Model of the joined episode and podcast query instead
     fn set_episode_data(
         &self,
@@ -570,28 +480,9 @@ impl Player {
         self.emit_by_name::<()>("episode-changed", &[]);
         self.emit_by_name::<()>("show-changed", &[]);
         self.emit_by_name::<()>("chapters-changed", &[]);
-        self.set_episode_mpris(sender, episode, podcast);
-    }
-
-    fn set_episode_mpris(
-        &self,
-        sender: &Sender<Action>,
-        episode: &Episode,
-        podcast: &ShowCoverModel,
-    ) {
-        let mut metadata = Metadata::new();
-        metadata.set_artist(Some(vec![podcast.title().to_string()]));
-        metadata.set_title(Some(episode.title().to_string()));
-        metadata.set_length(
-            episode
-                .duration()
-                .map(|s| mpris_server::Time::from_secs(s as i64)),
-        );
-
-        // Set the cover if it is already cached.
+        // cover
         let art_path = crate::download_covers::determin_cover_path(podcast, None);
         if art_path.exists() {
-            metadata.set_art_url(Url::from_file_path(art_path).ok());
             self.emit_by_name::<()>("cover-changed", &[]);
         } else {
             // If the cover art doesn't already exist, download it
@@ -602,35 +493,11 @@ impl Player {
                 let id = podcast.id();
                 if let Err(err) = crate::download_covers::just_download(&podcast).await {
                     error!("Cover download failed {err}");
-                    send!(sender, Action::UpdateMprisCover(id, false));
+                    send!(sender, Action::UpdateCover(id));
                 } else {
-                    send!(sender, Action::UpdateMprisCover(id, true));
+                    send!(sender, Action::UpdateCover(id));
                 }
             });
-        }
-
-        if let Some(mpris) = self.imp().mpris.borrow().as_ref() {
-            crate::MAINCONTEXT.spawn_local_with_priority(
-                glib::source::Priority::LOW,
-                clone!(
-                    #[weak]
-                    mpris,
-                    async move {
-                        if let Err(err) = mpris.set_metadata(metadata).await {
-                            warn!("Failed to set MPRIS metadata: {err:?}");
-                        }
-                        if let Err(err) = mpris.set_can_pause(true).await {
-                            warn!("Failed to set MPRIS pause capability: {err:?}");
-                        }
-                        if let Err(err) = mpris.set_can_play(true).await {
-                            warn!("Failed to set MPRIS play capability: {err:?}");
-                        }
-                        if let Err(err) = mpris.set_can_seek(true).await {
-                            warn!("Failed to set MPRIS seek capability: {err:?}");
-                        }
-                    }
-                ),
-            );
         }
     }
 
@@ -749,7 +616,7 @@ impl Player {
     }
 
     // hook for when the async download finished
-    pub fn update_mpris_cover(&self, show_id: ShowId, dl_success: bool) -> Result<()> {
+    pub fn update_cover(&self, show_id: ShowId) -> Result<()> {
         if let Some(ep) = self.imp().ep.borrow().as_ref()
             && ep.show_id() != show_id
         {
@@ -760,48 +627,6 @@ impl Player {
         let pd = dbqueries::get_podcast_cover_from_id(show_id)?;
         self.imp().show.replace(Some(pd.clone()));
         self.emit_by_name::<()>("cover-changed", &[]);
-        if let Some(mpris) = self.imp().mpris.borrow().as_ref() {
-            let mut metadata = mpris.metadata().clone();
-            if dl_success {
-                let art_path = crate::download_covers::determin_cover_path(&pd, None);
-                if art_path.exists() {
-                    metadata.set_art_url(Url::from_file_path(art_path).ok());
-                    crate::MAINCONTEXT.spawn_local_with_priority(
-                        glib::source::Priority::LOW,
-                        clone!(
-                            #[weak]
-                            mpris,
-                            async move {
-                                if let Err(err) = mpris.set_metadata(metadata).await {
-                                    error!("failed to update mpris metadata {err}");
-                                }
-                            }
-                        ),
-                    );
-                    return Ok(());
-                } else {
-                    error!(
-                        "cover does not exist after successful download? {}",
-                        art_path.display()
-                    );
-                }
-            }
-            // Fallback to web url, it could still work,
-            // because of different http agent or no disk space.
-            metadata.set_art_url(pd.image_uri());
-            crate::MAINCONTEXT.spawn_local_with_priority(
-                glib::source::Priority::LOW,
-                clone!(
-                    #[weak]
-                    mpris,
-                    async move {
-                        if let Err(err) = mpris.set_metadata(metadata).await {
-                            error!("failed to update mpris metadata {err}");
-                        }
-                    }
-                ),
-            );
-        }
         Ok(())
     }
 
@@ -899,12 +724,6 @@ impl Player {
         );
     }
 
-    fn update_mpris_position(&self, position: Position) -> Option<()> {
-        let time = mpris_server::Time::from_secs(position.seconds() as i64);
-        self.imp().mpris.borrow().as_ref()?.set_position(time);
-        Some(())
-    }
-
     fn store_position_and_sync(&self) {
         let pos = self.imp().player.position();
         if let Some(ep) = self.imp().ep.borrow_mut().as_mut() {
@@ -940,20 +759,6 @@ impl PlayerExt for Player {
     fn play(&self) {
         self.smart_rewind();
         self.imp().player.play();
-        if let Some(mpris) = self.imp().mpris.borrow().as_ref() {
-            crate::MAINCONTEXT.spawn_local_with_priority(
-                glib::source::Priority::LOW,
-                clone!(
-                    #[weak]
-                    mpris,
-                    async move {
-                        if let Err(err) = mpris.set_playback_status(PlaybackStatus::Playing).await {
-                            warn!("Failed to set MPRIS playback status: {err:?}");
-                        }
-                    }
-                ),
-            );
-        }
         if let Some(sender) = self.sender() {
             send_blocking!(sender, Action::InhibitSuspend);
             if let Some(id) = self.episode_id() {
@@ -966,21 +771,6 @@ impl PlayerExt for Player {
 
     fn pause(&self) {
         self.imp().player.pause();
-
-        if let Some(mpris) = self.imp().mpris.borrow().as_ref() {
-            crate::MAINCONTEXT.spawn_local_with_priority(
-                glib::source::Priority::LOW,
-                clone!(
-                    #[weak]
-                    mpris,
-                    async move {
-                        if let Err(err) = mpris.set_playback_status(PlaybackStatus::Paused).await {
-                            warn!("Failed to set MPRIS playback status: {err:?}");
-                        }
-                    }
-                ),
-            );
-        }
         self.imp().last_pause.replace(Some(Local::now()));
 
         self.store_position_and_sync();
@@ -998,20 +788,6 @@ impl PlayerExt for Player {
         self.imp().ep.replace(None);
         self.imp().restore_position.replace(None);
         self.imp().player.stop();
-        if let Some(mpris) = self.imp().mpris.borrow().as_ref() {
-            crate::MAINCONTEXT.spawn_local_with_priority(
-                glib::source::Priority::LOW,
-                clone!(
-                    #[weak]
-                    mpris,
-                    async move {
-                        if let Err(err) = mpris.set_playback_status(PlaybackStatus::Paused).await {
-                            warn!("Failed to set MPRIS playback status: {err:?}");
-                        }
-                    }
-                ),
-            );
-        }
 
         // Reset the slider bar to the start
         self.on_position_updated(Position(ClockTime::from_seconds(0)));

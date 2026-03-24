@@ -40,6 +40,7 @@ mod download_covers;
 mod episode_description_parser;
 mod manager;
 mod player;
+mod player_mpris;
 mod settings;
 mod thumbnail_generator;
 mod widgets;

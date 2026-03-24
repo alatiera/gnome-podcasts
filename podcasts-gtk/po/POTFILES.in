@@ -34,6 +34,7 @@ podcasts-gtk/src/app.rs
 podcasts-gtk/src/episode_description_parser.rs
 podcasts-gtk/src/manager.rs
 podcasts-gtk/src/player.rs
+podcasts-gtk/src/player_mpris.rs
 podcasts-gtk/src/utils.rs
 podcasts-gtk/src/widgets/aboutdialog.rs
 podcasts-gtk/src/widgets/chapters.rs
