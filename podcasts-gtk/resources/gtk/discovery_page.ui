@@ -61,6 +61,7 @@ nee <nee-git@patchouli.garden>
                     <child>
                       <object class="GtkLabel">
                         <property name="halign">start</property>
+                        <!-- Translators: Noun, Headline for a page on that you search on iTunes/fyyd -->
                         <property name="label" translatable="yes">Search</property>
                         <style>
                           <class name="heading"/>
@@ -89,7 +90,6 @@ nee <nee-git@patchouli.garden>
                             <accessibility>
                               <relation name="labelled-by">entry_description</relation>
                             </accessibility>
-                            <!-- <property name="margin-end">20</property> -->
                             <property name="hexpand">True</property>
                             <property name="truncate-multiline">True</property>
                             <property name="receives-default">True</property>
@@ -128,6 +128,7 @@ nee <nee-git@patchouli.garden>
                     <child>
                       <object class="AdwPreferencesGroup" id="list">
                         <property name="margin-top">18</property>
+                        <!-- Translators: Headline for a list of services to search new podcasts like iTunes, fyyd, etc., ... -->
                         <property name="title" translatable="yes">Search Platforms</property>
                         <property name="description" translatable="yes">Search queries will be sent to these platforms.</property>
                       </object>
