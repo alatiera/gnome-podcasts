@@ -29,7 +29,7 @@ use glib::{SignalHandlerId, WeakRef};
 use gst::ClockTime;
 use gtk::{gio, glib};
 use mpris_server::{Metadata, PlaybackStatus, Player};
-use std::cell::{RefCell, RefMut};
+use std::cell::{Cell, RefCell, RefMut};
 use std::ops::Deref;
 use std::path::Path;
 use std::rc::Rc;
@@ -325,6 +325,7 @@ fn format_duration(seconds: u32) -> String {
 pub(crate) struct PlayerRate {
     pub(crate) action: gio::SimpleAction,
     pub(crate) btn: gtk::MenuButton,
+    pub(crate) current_rate: Cell<f64>,
 }
 
 impl PlayerRate {
@@ -337,7 +338,11 @@ impl PlayerRate {
             gio::SimpleAction::new_stateful("set", Some(variant_type), &"1.00".to_variant());
         let btn: gtk::MenuButton = builder.object("rate_button").unwrap();
 
-        PlayerRate { action, btn }
+        PlayerRate {
+            action,
+            btn,
+            current_rate: Cell::new(1.0),
+        }
     }
 
     fn connect_signals(&self, widget: &Rc<RefCell<PlayerWidget>>) {
@@ -550,6 +555,7 @@ impl PlayerWidget {
     fn on_rate_changed(&self, rate: f64) {
         self.set_playback_rate(rate);
         self.rate.btn.set_label(&format!("{:.2}×", rate));
+        self.rate.current_rate.set(rate);
         self.sheet.on_rate_changed(rate);
     }
 
@@ -598,7 +604,6 @@ impl PlayerWidget {
         if stream == StreamMode::StreamOnly {
             if let Some(uri) = ep.uri() {
                 self.init_uri(sender, id, uri, second);
-                return Ok(());
             } else {
                 error!("No uri for episode");
             }
@@ -611,21 +616,32 @@ impl PlayerWidget {
                 // FIXME: convert it properly
                 let uri = File::for_path(path).uri();
                 self.init_uri(sender, id, uri.as_str(), second);
-                return Ok(());
             } else {
                 error!("failed to create path for episode {:#?}", ep);
             }
         } else if stream == StreamMode::StreamFallback {
             if let Some(uri) = ep.uri() {
                 self.init_uri(sender, id, uri, second);
-                return Ok(());
             } else {
                 error!("No uri for episode");
             }
         } else {
             error!("Episode not downloaded yet.");
         }
-
+        if is_different_ep {
+            crate::MAINCONTEXT.spawn_local_with_priority(
+                glib::source::Priority::LOW,
+                clone!(
+                    #[strong(rename_to = this)]
+                    self,
+                    async move {
+                        // When changing episode, gstreamer resets the playback rate to 1.0 asynchronously, so we need to have a short delay and then set it to the correct rate to avoid race conditions
+                        glib::timeout_future(std::time::Duration::from_millis(100)).await;
+                        this.set_playback_rate(this.rate.current_rate.get());
+                    }
+                ),
+            );
+        }
         Ok(())
     }
 
