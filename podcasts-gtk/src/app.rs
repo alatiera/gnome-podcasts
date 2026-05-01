@@ -770,10 +770,22 @@ impl PdApplication {
 
     /// Is currently playing this episode (and not paused/stopped).
     pub(crate) fn is_playing(&self, id: EpisodeId) -> bool {
+        self.is_in_player(id) && self.is_anything_playing()
+    }
+
+    /// The episode is currently loaded in the player, but can be paused
+    pub(crate) fn is_in_player(&self, id: EpisodeId) -> bool {
         let w = self.imp().window.borrow();
         let window = w.as_ref().expect("Window is not initialized");
         let playing_id = window.player().episode_id();
-        playing_id == Some(id) && window.player().is_playing()
+        playing_id == Some(id)
+    }
+
+    /// Is the player playing anyhthing and not paused?
+    pub(crate) fn is_anything_playing(&self) -> bool {
+        let w = self.imp().window.borrow();
+        let window = w.as_ref().expect("Window is not initialized");
+        window.player().is_playing()
     }
 }
 

@@ -218,7 +218,9 @@ impl EpisodeDescriptionPriv {
             .expect("Could not get default application")
             .downcast::<crate::PdApplication>()
             .unwrap();
-        let is_playing = app.is_playing(ep.id());
+        let is_in_player = app.is_in_player(ep.id());
+        let is_playback = app.is_anything_playing();
+        let is_playing = is_in_player && is_playback;
         self.pause_button.set_visible(is_playing);
 
         let is_downloading = self.progressbar.check_if_downloading().unwrap_or(false);
@@ -230,6 +232,19 @@ impl EpisodeDescriptionPriv {
             .set_visible(!is_playing && !is_downloaded);
         self.delete_button.set_visible(is_downloaded);
         self.play_button.set_visible(!is_playing && is_downloaded);
+
+        // only have .suggested-action on download, when not streaming
+        if is_in_player && !is_downloaded {
+            self.download_button.remove_css_class("suggested-action");
+        } else {
+            self.download_button.add_css_class("suggested-action");
+        }
+        // suggest streaming when we paused a stream of this
+        if is_in_player && !is_playback {
+            self.stream_button.add_css_class("suggested-action");
+        } else {
+            self.stream_button.remove_css_class("suggested-action");
+        }
     }
 
     fn set_description(&self, ep: &Episode) {
