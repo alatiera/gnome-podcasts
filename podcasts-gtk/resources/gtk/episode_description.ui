@@ -140,6 +140,9 @@ Tobias Bernard
                                 <!-- Stream -->
                                 <child>
                                   <object class="GtkButton" id="stream_button">
+                                    <style>
+                                      <class name="pill"/>
+                                    </style>
                                     <property name="visible">False</property>
                                     <property name="width-request">145</property>
                                     <child>
@@ -157,6 +160,7 @@ Tobias Bernard
                                   <object class="GtkButton" id="play_button">
                                     <style>
                                       <class name="suggested-action"/>
+                                      <class name="pill"/>
                                     </style>
                                     <property name="visible">False</property>
                                     <property name="width-request">145</property>
@@ -175,6 +179,7 @@ Tobias Bernard
                                   <object class="GtkButton" id="pause_button">
                                     <style>
                                       <class name="suggested-action"/>
+                                      <class name="pill"/>
                                     </style>
                                     <property name="visible">False</property>
                                     <property name="width-request">145</property>
@@ -194,6 +199,7 @@ Tobias Bernard
                                   <object class="GtkButton" id="download_button">
                                     <style>
                                       <class name="suggested-action"/>
+                                      <class name="pill"/>
                                     </style>
                                     <property name="visible">False</property>
                                     <property name="width-request">145</property>
@@ -212,6 +218,7 @@ Tobias Bernard
                                   <object class="GtkButton" id="cancel_button">
                                     <style>
                                       <class name="cancel-button"/>
+                                      <class name="pill"/>
                                     </style>
                                     <property name="visible">False</property>
                                     <property name="width-request">145</property>
@@ -251,6 +258,9 @@ Tobias Bernard
                                 <!-- Delete -->
                                 <child>
                                   <object class="GtkButton" id="delete_button">
+                                    <style>
+                                      <class name="pill"/>
+                                    </style>
                                     <property name="visible">False</property>
                                     <property name="width-request">145</property>
                                     <child>
