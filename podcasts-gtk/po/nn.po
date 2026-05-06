@@ -1,21 +1,22 @@
 # Norwegian Nynorsk translation for podcasts.
 # Copyright (C) 2025 podcasts's COPYRIGHT HOLDER
 # This file is distributed under the same license as the podcasts package.
-# Bjørn Mørkedal <gnome@morkedal.com>,  2025.
+# Bjørn Mørkedal <gnome@morkedal.com>, 2025-2026.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: podcasts main\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2025-09-30 07:48+0000\n"
-"PO-Revision-Date: 2025-09-30 07:48+0000\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2026-02-14 11:31+0000\n"
+"PO-Revision-Date: 2026-02-21 18:57+0100\n"
+"Last-Translator: Bjørn Mørkedal <gnome@morkedal.com>\n"
 "Language-Team: Norwegian Nynorsk <nn@li.org>\n"
 "Language: nn\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Gtranslator 49.0\n"
 
 #: podcasts-gtk/resources/gtk/discovery_found_podcast.ui:105
 msgid "Episodes: "
@@ -57,7 +58,8 @@ msgstr "Lastar …"
 
 #: podcasts-gtk/resources/gtk/discovery_page.ui:119
 msgid "Please enable a Search Platform below, or enter a http(s) feed URL."
-msgstr "Slå på ei søkjeplattform nedanfor, eller skriv inn ei http(s)-kjeldeadresse."
+msgstr ""
+"Slå på ei søkjeplattform nedanfor, eller skriv inn ei http(s)-kjeldeadresse."
 
 #: podcasts-gtk/resources/gtk/discovery_page.ui:131
 msgid "Search Platforms"
@@ -165,31 +167,31 @@ msgstr "Merk som avspelt"
 msgid "Mark as Unplayed"
 msgstr "Merk som ikkje avspelt"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:70
+#: podcasts-gtk/resources/gtk/episode_widget.ui:71
 msgid "You’ve already listened to this episode."
 msgstr "Du har alt høyrt denne episoden."
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:158
+#: podcasts-gtk/resources/gtk/episode_widget.ui:159
 msgid "Calculating episode size…"
 msgstr "Reknar ut storleik på episode …"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:181
+#: podcasts-gtk/resources/gtk/episode_widget.ui:182
 msgid "Play this episode"
 msgstr "Spel av denne episoden"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:195
+#: podcasts-gtk/resources/gtk/episode_widget.ui:197
 msgid "Pause playback"
 msgstr "Pause avspeling"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:207
+#: podcasts-gtk/resources/gtk/episode_widget.ui:211
 msgid "Cancel the download process"
 msgstr "Avbryt nedlasting"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:220
+#: podcasts-gtk/resources/gtk/episode_widget.ui:225
 msgid "Download this episode"
 msgstr "Last ned denne episoden"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:234
+#: podcasts-gtk/resources/gtk/episode_widget.ui:240
 msgid "Episode without audio"
 msgstr "Episode utan lyd"
 
@@ -301,7 +303,7 @@ msgid "Description"
 msgstr "Skildring"
 
 #: podcasts-gtk/resources/gtk/sheet_base.ui:89
-#: podcasts-gtk/src/widgets/chapters.rs:194
+#: podcasts-gtk/src/widgets/chapters.rs:193
 msgid "Chapters"
 msgstr "Kapittel"
 
@@ -410,6 +412,89 @@ msgstr "Podkastmeny"
 msgid "Episodes"
 msgstr "Episodar"
 
+#: podcasts-gtk/resources/gtk/sync_preferences.ui:32
+#: podcasts-gtk/resources/gtk/window.ui:21
+msgid "Sync Preferences"
+msgstr "Synkroniser innstillingar"
+
+#: podcasts-gtk/resources/gtk/sync_preferences.ui:40
+msgid "Logout"
+msgstr "Utlogging"
+
+#: podcasts-gtk/resources/gtk/sync_preferences.ui:66
+msgid "Nextcloud Sync Connection"
+msgstr "Synkroniser med Nextcloud"
+
+#: podcasts-gtk/resources/gtk/sync_preferences.ui:67
+msgid "Current connection for play position and subscription synchronization."
+msgstr "Gjeldande kopling for avspelingsposisjon og abonnementsynkronisering"
+
+#: podcasts-gtk/resources/gtk/sync_preferences.ui:73
+msgid "Last Sync"
+msgstr "Siste synkronisering"
+
+#: podcasts-gtk/resources/gtk/sync_preferences.ui:85
+msgid "Active"
+msgstr "Aktiv"
+
+#: podcasts-gtk/resources/gtk/sync_preferences.ui:86
+msgid "Should data be synchronized"
+msgstr "Skal data synkroniserast"
+
+#: podcasts-gtk/resources/gtk/sync_preferences.ui:92
+msgid "Server"
+msgstr "Tenar"
+
+#: podcasts-gtk/resources/gtk/sync_preferences.ui:100
+#: podcasts-gtk/resources/gtk/sync_preferences.ui:160
+msgid "Username"
+msgstr "Brukarnamn"
+
+#: podcasts-gtk/resources/gtk/sync_preferences.ui:109
+msgid "Sync Now"
+msgstr "Synkroniser no"
+
+#: podcasts-gtk/resources/gtk/sync_preferences.ui:122
+msgid "Nextcloud Login"
+msgstr "Innlogging Nextcloud"
+
+#: podcasts-gtk/resources/gtk/sync_preferences.ui:123
+msgid ""
+"Synchronize subscriptions and listening status with a Nextcloud server that "
+"has GPodder Sync installed."
+msgstr ""
+"Synkroniser abonnement og lyttestatus med Nextcloud-tenar som har GPodder "
+"Sync installert"
+
+#: podcasts-gtk/resources/gtk/sync_preferences.ui:128
+msgid "Login via"
+msgstr "Innlogging frå"
+
+#: podcasts-gtk/resources/gtk/sync_preferences.ui:135
+msgid "Browser"
+msgstr "Nettlesar"
+
+#: podcasts-gtk/resources/gtk/sync_preferences.ui:141
+#: podcasts-gtk/resources/gtk/sync_preferences.ui:168
+msgid "Password"
+msgstr "Passord"
+
+#: podcasts-gtk/resources/gtk/sync_preferences.ui:152
+msgid "Server (cloud.example.com)"
+msgstr "Tenar (cloud.example.com)"
+
+#: podcasts-gtk/resources/gtk/sync_preferences.ui:177
+msgid "Login"
+msgstr "Innlogging"
+
+#: podcasts-gtk/resources/gtk/sync_preferences.ui:187
+msgid "Login via Browser"
+msgstr "Innlogging via nettlesar"
+
+#: podcasts-gtk/resources/gtk/sync_preferences.ui:205
+msgid "Loading..."
+msgstr "Lastar…"
+
 #: podcasts-gtk/resources/gtk/window.ui:6
 msgid "_Check for New Episodes"
 msgstr "_Sjå etter nye episodar"
@@ -424,75 +509,36 @@ msgstr "_Importer program"
 msgid "_Export Shows"
 msgstr "_Eksporter program"
 
-#: podcasts-gtk/resources/gtk/window.ui:23
+#: podcasts-gtk/resources/gtk/window.ui:27
 msgid "_Keyboard Shortcuts"
 msgstr "_Tastatursnarvegar"
 
-#: podcasts-gtk/resources/gtk/window.ui:27
+#: podcasts-gtk/resources/gtk/window.ui:31
 msgid "_About Podcasts"
 msgstr "_Om Podkastar"
 
 #. Weird magic I copy-pasted that sets the Application Name in the Shell.
-#: podcasts-gtk/resources/gtk/window.ui:35
-#: podcasts-gtk/resources/gtk/window.ui:102
-#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:4
+#: podcasts-gtk/resources/gtk/window.ui:39
+#: podcasts-gtk/resources/gtk/window.ui:106
 #: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:2
-#: podcasts-gtk/src/app.rs:530 podcasts-gtk/src/widgets/aboutdialog.rs:56
+#: podcasts-gtk/resources/org.gnome.Podcasts.metainfo.xml.in.in:4
+#: podcasts-gtk/src/app.rs:629 podcasts-gtk/src/widgets/aboutdialog.rs:56
 #: podcasts-gtk/src/widgets/player.rs:408
 msgid "Podcasts"
 msgstr "Podkastar"
 
-#: podcasts-gtk/resources/gtk/window.ui:115
+#: podcasts-gtk/resources/gtk/window.ui:119
 msgid "Add a New Feed"
 msgstr "Legg til ny kjelde"
 
-#: podcasts-gtk/resources/gtk/window.ui:123
+#: podcasts-gtk/resources/gtk/window.ui:127
 msgid "Main Menu"
 msgstr "Hovudmeny"
 
 #. Translators: Show as a noun, meaning a Podcast-Show.
-#: podcasts-gtk/resources/gtk/window.ui:137
+#: podcasts-gtk/resources/gtk/window.ui:141
 msgid "Show"
 msgstr "Program"
-
-#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:8
-msgid "Listen to your favorite shows"
-msgstr "Høyr på favorittprogramma dine"
-
-#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:10
-msgid ""
-"Play, update, and manage your podcasts from a lightweight interface that "
-"seamlessly integrates with GNOME. Podcasts can play various audio formats "
-"and remember where you stopped listening. You can subscribe to shows via RSS/"
-"Atom, iTunes, and Soundcloud links. Subscriptions from other apps can be "
-"imported via OPML files."
-msgstr ""
-"integrerer saumlaust med GNOME. Podkastar kan spela ulike lydformat og hugsa "
-"kor du stoppa. Du kan abonnere på program via RSS/Atom, iTunes og Soundcloud-"
-"lenkjer. Abonnement frå andre appar kan importerast via OPML-filer."
-
-#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:18
-msgid "The home view displaying the newest episodes of your podcasts"
-msgstr "Heimesida som viser dei nyaste episodane av podkastane dine"
-
-#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:22
-msgid "The shows view displaying the covers of your podcasts"
-msgstr "Programvisinga som viser omslaga til podkastane dine"
-
-#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:26
-msgid ""
-"The show widget displaying the cover and the latest episodes of a specific "
-"podcast"
-msgstr "Program­elementet som viser omslag og dei nyaste episodane av ein podkast"
-
-#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:30
-msgid "The view where one can add a new podcast"
-msgstr "Visinga der du kan leggja til ein ny podkast"
-
-#. developer_name tag deprecated with Appstream 1.0
-#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:230
-msgid "The Podcasts developers"
-msgstr "Podkast-utviklarane"
 
 #: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:3
 msgid "Listen to your favorite podcasts, right from your desktop."
@@ -539,63 +585,151 @@ msgstr "Kor mange tidsperiodar å venta mellom automatiske oppryddingar"
 msgid "What period of time to wait between automatic cleanups"
 msgstr "Kva tidsperiode å venta mellom automatiske oppryddingar"
 
-#: podcasts-gtk/src/app.rs:386
+#: podcasts-gtk/resources/org.gnome.Podcasts.metainfo.xml.in.in:8
+msgid "Listen to your favorite shows"
+msgstr "Høyr på favorittprogramma dine"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.metainfo.xml.in.in:10
+msgid ""
+"Play, update, and manage your podcasts from a lightweight interface that "
+"seamlessly integrates with GNOME. Podcasts can play various audio formats "
+"and remember where you stopped listening. You can subscribe to shows via RSS/"
+"Atom, iTunes, and Soundcloud links. Subscriptions from other apps can be "
+"imported via OPML files."
+msgstr ""
+"integrerer saumlaust med GNOME. Podkastar kan spela ulike lydformat og hugsa "
+"kor du stoppa. Du kan abonnere på program via RSS/Atom, iTunes og Soundcloud-"
+"lenkjer. Abonnement frå andre appar kan importerast via OPML-filer."
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.metainfo.xml.in.in:18
+msgid "The home view displaying the newest episodes of your podcasts"
+msgstr "Heimesida som viser dei nyaste episodane av podkastane dine"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.metainfo.xml.in.in:22
+msgid "The shows view displaying the covers of your podcasts"
+msgstr "Programvisinga som viser omslaga til podkastane dine"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.metainfo.xml.in.in:26
+msgid ""
+"The show widget displaying the cover and the latest episodes of a specific "
+"podcast"
+msgstr ""
+"Program­elementet som viser omslag og dei nyaste episodane av ein podkast"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.metainfo.xml.in.in:30
+msgid "The chapters available in an episode"
+msgstr "Kapitla tilgjengelege i ei episode"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.metainfo.xml.in.in:34
+msgid "The view where one can add a new podcast"
+msgstr "Visinga der du kan leggja til ein ny podkast"
+
+#. developer_name tag deprecated with Appstream 1.0
+#: podcasts-gtk/resources/org.gnome.Podcasts.metainfo.xml.in.in:241
+msgid "The Podcasts developers"
+msgstr "Podkast-utviklarane"
+
+#: podcasts-gtk/src/app.rs:402
 msgid "Copied URL to clipboard!"
 msgstr "Kopierte adresse til utklippstavla!"
 
-#: podcasts-gtk/src/episode_description_parser.rs:319
-msgid "Jump to {}:{}:{}"
-msgstr "Hopp til {}:{}:{}"
+#: podcasts-gtk/src/episode_description_parser.rs:320
+#, rust-format
+msgid "Jump to {hours}:{minutes}:{seconds}"
+msgstr "Hopp til {hours}:{minutes}:{seconds}"
 
 #: podcasts-gtk/src/episode_description_parser.rs:338
-msgid "Jump to {}:{}"
-msgstr "Hopp til {}:{}"
+#, rust-format
+msgid "Jump to {minutes}:{seconds}"
+msgstr "Hopp til {minutes}:{seconds}"
 
-#: podcasts-gtk/src/manager.rs:105
+#: podcasts-gtk/src/manager.rs:107
+#, rust-format
 msgid "Download failed: {}"
 msgstr "Nedlasting feila: {}"
 
-#: podcasts-gtk/src/utils.rs:293
+#: podcasts-gtk/src/utils.rs:300
+#, rust-format
 msgid "Failed to subscribe to feed: {}"
 msgstr "Klarte ikkje å abonnere på kjelde: {}"
 
-#: podcasts-gtk/src/utils.rs:388 podcasts-gtk/src/utils.rs:434
+#: podcasts-gtk/src/utils.rs:395 podcasts-gtk/src/utils.rs:447
 msgid "OPML file"
 msgstr "OPML-fil"
 
-#: podcasts-gtk/src/utils.rs:399
+#: podcasts-gtk/src/utils.rs:406
 msgid "Select the file from which to you want to import shows."
 msgstr "Vel fila du vil importere program frå."
 
-#: podcasts-gtk/src/utils.rs:401
+#: podcasts-gtk/src/utils.rs:408
 msgid "_Import"
 msgstr "_Importer"
 
-#: podcasts-gtk/src/utils.rs:424
+#: podcasts-gtk/src/utils.rs:437
+#, rust-format
 msgid "Failed to parse the imported file {}"
 msgstr "Klarte ikkje å tolka den importerte fila {}"
 
 #. Translators: Show as a noun, meaning Podcast-Shows.
-#: podcasts-gtk/src/utils.rs:445
+#: podcasts-gtk/src/utils.rs:458
 msgid "Export shows to…"
 msgstr "Eksporter program til …"
 
-#: podcasts-gtk/src/utils.rs:446
+#: podcasts-gtk/src/utils.rs:459
 msgid "_Export"
 msgstr "_Eksporter"
 
 #. Translators: This is the string of the suggested name for the exported opml file
-#: podcasts-gtk/src/utils.rs:450
+#: podcasts-gtk/src/utils.rs:463
 msgid "gnome-podcasts-exported-shows"
 msgstr "gnome-podcasts-eksporterte-program"
 
-#: podcasts-gtk/src/utils.rs:459
+#: podcasts-gtk/src/utils.rs:473
 msgid "GNOME Podcasts Subscriptions"
 msgstr "GNOME Podkast-abonnement"
 
-#: podcasts-gtk/src/utils.rs:463
+#: podcasts-gtk/src/utils.rs:477
 msgid "Failed to export podcasts"
 msgstr "Klarte ikkje å eksportere podkastar"
+
+#: podcasts-gtk/src/utils.rs:488
+msgid "Just now"
+msgstr "Nett no"
+
+#: podcasts-gtk/src/utils.rs:492
+#, rust-format
+msgid "{} minute ago"
+msgid_plural "{} minutes ago"
+msgstr[0] "{} minutt sida"
+msgstr[1] "{} minutt sida"
+
+#: podcasts-gtk/src/utils.rs:498
+#, rust-format
+msgid "{} hour ago"
+msgid_plural "{} hours ago"
+msgstr[0] "{} time sida"
+msgstr[1] "{} timar sida"
+
+#: podcasts-gtk/src/utils.rs:502
+#, rust-format
+msgid "{} day ago"
+msgid_plural "{} days ago"
+msgstr[0] "{} dag sida"
+msgstr[1] "{} dagar sida"
+
+#: podcasts-gtk/src/utils.rs:506
+#, rust-format
+msgid "{} month ago"
+msgid_plural "{} months ago"
+msgstr[0] "{} månad sida"
+msgstr[1] "{} månader sida"
+
+#: podcasts-gtk/src/utils.rs:510
+#, rust-format
+msgid "{} year ago"
+msgid_plural "{} years ago"
+msgstr[0] "{} år sida"
+msgstr[1] "{} år sida"
 
 #: podcasts-gtk/src/widgets/aboutdialog.rs:52
 msgid "Podcast Client for the GNOME Desktop."
@@ -605,7 +739,7 @@ msgstr "Podkastklient for GNOME-skrivebordet."
 msgid "translator-credits"
 msgstr "Bjørn Mørkedal"
 
-#: podcasts-gtk/src/widgets/chapters.rs:130
+#: podcasts-gtk/src/widgets/chapters.rs:129
 msgid "Currently playing chapter"
 msgstr "Kapittelet som spelar no"
 
@@ -623,35 +757,73 @@ msgstr "Nytt"
 msgid "Shows"
 msgstr "Program"
 
-#: podcasts-gtk/src/widgets/download_progress_bar.rs:66
+#: podcasts-gtk/src/widgets/download_progress_bar.rs:67
 msgid "Download progress"
 msgstr "Framdrift for nedlasting"
 
-#: podcasts-gtk/src/widgets/episode.rs:343
+#: podcasts-gtk/src/widgets/episode.rs:355
+#, rust-format
 msgid "{} min"
 msgstr "{} min"
 
-#: podcasts-gtk/src/widgets/player.rs:1110
+#: podcasts-gtk/src/widgets/player.rs:1133
 msgid "The media player was unable to execute an action."
 msgstr "Mediespelaren klarte ikkje å utføra ei handling."
 
-#: podcasts-gtk/src/widgets/read_more_label.rs:34
+#: podcasts-gtk/src/widgets/read_more_label.rs:33
 msgid "Visually expands this description"
 msgstr "Utvidar denne skildringa visuelt"
 
-#: podcasts-gtk/src/widgets/read_more_label.rs:36
+#: podcasts-gtk/src/widgets/read_more_label.rs:35
 msgid "Read More"
 msgstr "Les meir"
 
-#: podcasts-gtk/src/widgets/show_menu.rs:181
+#: podcasts-gtk/src/widgets/show_menu.rs:182
 msgid "Marked all episodes as listened"
 msgstr "Merka alle episodar som høyrde"
 
-#: podcasts-gtk/src/widgets/show_menu.rs:182
-#: podcasts-gtk/src/widgets/show_menu.rs:209
+#: podcasts-gtk/src/widgets/show_menu.rs:183
+#: podcasts-gtk/src/widgets/show_menu.rs:211
 msgid "Undo"
 msgstr "Angra"
 
-#: podcasts-gtk/src/widgets/show_menu.rs:205
+#: podcasts-gtk/src/widgets/show_menu.rs:206
+#, rust-format
 msgid "Unsubscribed from {}"
 msgstr "Avslutta abonnement på {}"
+
+#: podcasts-gtk/src/widgets/show_menu.rs:237
+#, rust-format
+msgid "Failed to store Unsubscribe Action for Synchronization in database. {}"
+msgstr "Klarte ikke å lagre avslutting av abonnement i database. {}"
+
+#: podcasts-gtk/src/widgets/sync_preferences.rs:126
+msgid "Logging in..."
+msgstr "Loggar inn..."
+
+#: podcasts-gtk/src/widgets/sync_preferences.rs:180
+#: podcasts-gtk/src/widgets/sync_preferences.rs:262
+msgid "Waiting for browser login..."
+msgstr "Ventar på nettlesarinnlogging..."
+
+#: podcasts-gtk/src/widgets/sync_preferences.rs:227
+#: podcasts-gtk/src/widgets/sync_preferences.rs:309
+msgid "Logging out..."
+msgstr "Loggar ut..."
+
+#: podcasts-gtk/src/widgets/sync_preferences.rs:344
+msgid "Synchronizing now..."
+msgstr "Synkroniserer..."
+
+#: podcasts-gtk/src/widgets/sync_preferences.rs:348
+msgid "Refreshing feeds..."
+msgstr "Hentar kjelder…"
+
+#: podcasts-gtk/src/widgets/sync_preferences.rs:397
+msgid "Running first sync. This can take a few minutes."
+msgstr "Køyrer første synkronisering. Dette kan ta nokon minutt."
+
+#. Translators: reads as: "Last sync: Never"
+#: podcasts-gtk/src/widgets/sync_preferences.rs:439
+msgid "Never"
+msgstr "Aldri"
