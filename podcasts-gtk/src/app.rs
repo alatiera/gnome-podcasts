@@ -199,6 +199,7 @@ pub(crate) enum Action {
     InitEpisode(EpisodeId),
     InitEpisodeAt(EpisodeId, i32),
     StreamEpisode(EpisodeId),
+    StreamAttemptAlternateUserAgent,
     UpdateCover(ShowId),
     EmptyState,
     PopulatedState,
@@ -570,6 +571,9 @@ impl PdApplication {
             Action::StreamEpisode(id) => {
                 let res = window.init_episode(id, None, StreamMode::StreamOnly);
                 debug_assert!(res.is_ok());
+            }
+            Action::StreamAttemptAlternateUserAgent => {
+                window.player().attempt_alternate_user_agent();
             }
             Action::UpdateCover(id) => {
                 let res = window.player().update_cover(id);

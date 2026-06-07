@@ -17,22 +17,22 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+use glob::glob;
 use reqwest::header::*;
-use reqwest::redirect::Policy;
+use std::path::Path;
+use std::path::PathBuf;
+use std::str::FromStr;
+use std::sync::{Arc, Mutex};
 use tempfile::TempDir;
 use tokio::io::AsyncWriteExt;
-
-use std::path::Path;
-use std::sync::{Arc, Mutex};
-
-use crate::errors::DownloadError;
-use crate::xdg_dirs::PODCASTS_CACHE;
-use crate::{EpisodeModel, EpisodeWidgetModel, Save};
+use url::Url;
 
 use crate::ShowCoverModel;
+use crate::errors::DownloadError;
+use crate::http::RetryContext;
 use crate::utils;
-use glob::glob;
-use std::path::PathBuf;
+use crate::xdg_dirs::PODCASTS_CACHE;
+use crate::{EpisodeModel, EpisodeWidgetModel, Save};
 
 // TODO: Replace path that are of type &str with std::path.
 // TODO: Have a convention/document absolute/relative paths, if they should end
@@ -45,30 +45,6 @@ pub trait DownloadProgress {
     fn set_size(&mut self, bytes: u64);
     fn should_cancel(&self) -> bool;
     fn cancel(&mut self);
-}
-
-pub fn client_builder() -> reqwest::ClientBuilder {
-    // Haven't included the loop check as
-    // Steal the Stars would trigger it as
-    // it has a loop back before giving correct url
-    let policy = Policy::custom(|attempt| {
-        info!("Redirect Attempt URL: {:?}", attempt.url());
-        if attempt.previous().len() > 20 {
-            attempt.error("too many redirects")
-        } else if Some(attempt.url()) == attempt.previous().last() {
-            // avoid redirect loops
-            attempt.stop()
-        } else {
-            attempt.follow()
-        }
-    });
-
-    reqwest::Client::builder()
-        .redirect(policy)
-        .referer(false)
-        .user_agent(crate::USER_AGENT)
-        // required to keep dead feeds from blocking a refresh for multiple minutes
-        .connect_timeout(std::time::Duration::from_secs(20))
 }
 
 // Adapted from https://github.com/mattgathu/rget .
@@ -86,8 +62,9 @@ async fn download_into(
 ) -> Result<String, DownloadError> {
     info!("GET request to: {}", url);
 
-    let client = client_builder().build()?;
-    let resp = client.get(url).send().await?;
+    let mut retry_context = RetryContext::default();
+    let url = Url::from_str(url)?;
+    let resp = retry_context.prepared_send(url, |req| req).await?;
     info!("Status Resp: {}", resp.status());
 
     if !resp.status().is_success() {

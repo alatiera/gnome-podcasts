@@ -10,8 +10,10 @@ use std::sync::LazyLock;
 use tokio::sync::RwLock; // also works from gtk, unlike tokio::fs
 
 use crate::thumbnail_generator::ThumbSize;
+use podcasts_data::USER_AGENT_GENERIC;
 use podcasts_data::errors::DownloadError;
 use podcasts_data::errors::DownloadError::NoLongerNeeded;
+use podcasts_data::http::client_builder;
 use podcasts_data::utils::get_cover_dir_path;
 use podcasts_data::xdg_dirs::TMP_DIR;
 use podcasts_data::{ShowCoverModel, ShowId};
@@ -176,7 +178,7 @@ async fn download(
     let tmp_dir = tempfile::Builder::new()
         .suffix(&format!("{}-pdcover.part", pd.id().0))
         .tempdir_in(&*TMP_DIR)?;
-    let client = podcasts_data::downloader::client_builder().build()?;
+    let client = client_builder().user_agent(USER_AGENT_GENERIC).build()?;
     let uri = pd.image_uri().ok_or(anyhow!("No image uri for podcast"))?;
     let response = client.get(uri).send().await?;
     //FIXME: check for 200 or redirects, retry for 5xx

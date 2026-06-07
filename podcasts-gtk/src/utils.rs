@@ -37,9 +37,10 @@ use std::time::{Duration, Instant};
 use url::Url;
 
 use crate::app::Action;
+use podcasts_data::USER_AGENT_GENERIC;
 use podcasts_data::dbqueries;
-use podcasts_data::downloader::client_builder;
 use podcasts_data::feed_manager::FEED_MANAGER;
+use podcasts_data::http::client_builder;
 use podcasts_data::opml;
 use podcasts_data::utils::checkup;
 use podcasts_data::{ShowId, Source};
@@ -322,6 +323,7 @@ fn itunes_id_from_url(url: &str) -> Option<u32> {
 async fn itunes_lookup_id(id: u32) -> Result<String> {
     let url = format!("https://itunes.apple.com/lookup?id={}&entity=podcast", id);
     let req: Value = client_builder()
+        .user_agent(USER_AGENT_GENERIC)
         .build()?
         .get(&url)
         .send()
@@ -369,7 +371,10 @@ async fn soundcloud_lookup_id(url: &Url) -> Option<(u64, u64)> {
         LazyLock::new(|| Regex::new(r"soundcloud://playlists:([0-9]+)").unwrap());
 
     let url_str = url.to_string();
-    let client = client_builder().build().ok()?;
+    let client = client_builder()
+        .user_agent(USER_AGENT_GENERIC)
+        .build()
+        .ok()?;
     let response = client.get(&url_str).send();
     let response_text = response.await.ok()?.text().await.ok()?;
     let user_id = RE_U

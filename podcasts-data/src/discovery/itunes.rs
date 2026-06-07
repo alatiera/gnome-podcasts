@@ -67,7 +67,7 @@ pub async fn search(query: &str, enabled: bool) -> Result<Vec<FoundPodcast>> {
         "https://itunes.apple.com/search?entity=podcast&limit=10",
         &[("term", query)],
     )?;
-    let client = crate::downloader::client_builder().build()?;
+    let client = crate::http::client_builder().build()?;
     let result: SearchResult = client.get(url).send().await?.json().await?;
     Ok(result.results.into_iter().map(|p| p.into()).collect())
 }

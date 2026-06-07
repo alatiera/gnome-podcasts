@@ -21,26 +21,24 @@
 //! Docs.
 
 use crate::Source;
-use crate::downloader::client_builder;
 use crate::errors::DataError;
 
 /// The pipline to be run for indexing and updating a Podcast feed that originates from
 /// `Source.uri`.
 ///
 /// Messy temp diagram:
-/// Source -> GET Request -> Update Etags -> Check Status -> Parse `xml/Rss` ->
-/// Convert `rss::Channel` into `Feed` -> Index Podcast -> Index Episodes.
+/// Source -> RetryContext -> GET Request -> Update Etags -> Check Status
+/// -> Parse `xml/Rss` -> Convert `rss::Channel` into `Feed` -> Index Podcast
+/// -> Index Episodes.
 pub async fn pipeline<S>(sources: S) -> Result<Vec<(Source, Result<(), DataError>)>, reqwest::Error>
 where
     S: IntoIterator<Item = Source>,
 {
-    let client = client_builder().build()?;
-
     let handles: Vec<_> = sources
         .into_iter()
         .map(|source| async {
             let uri = source.uri().to_string();
-            match source.clone().into_feed(&client).await {
+            match source.clone().into_feed().await {
                 Ok(feed) => match feed.index() {
                     Ok(_) => (source, Ok(())),
                     Err(err) => {

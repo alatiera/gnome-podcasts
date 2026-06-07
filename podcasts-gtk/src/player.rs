@@ -40,11 +40,29 @@ use crate::app::Action;
 use crate::chapter_parser::Chapter;
 use crate::player_mpris::PlayerMpris;
 use podcasts_data::{
-    Episode, EpisodeId, EpisodeModel, ShowCoverModel, ShowId, USER_AGENT, dbqueries,
+    Episode, EpisodeId, EpisodeModel, ShowCoverModel, ShowId, USER_AGENT_CUSTOM,
+    USER_AGENT_GENERIC, dbqueries,
 };
+
+// can be swapped for testing
+const USER_AGENT_INITIAL: &str = USER_AGENT_CUSTOM;
+const USER_AGENT_FINAL: &str = USER_AGENT_GENERIC;
 
 const RATE_MIN: f64 = 0.75;
 const RATE_MAX: f64 = 2.0;
+
+#[derive(Debug)]
+struct ChangeUserAgentTask {
+    target: &'static str,
+    sender: Sender<()>,
+}
+
+impl ChangeUserAgentTask {
+    fn new(target: &'static str) -> (async_channel::Receiver<()>, Self) {
+        let (sender, receiver) = async_channel::unbounded();
+        (receiver, ChangeUserAgentTask { target, sender })
+    }
+}
 
 /// A Gui independent player.
 /// Connect Gui objects to it's signals.
@@ -75,6 +93,8 @@ pub struct PlayerPriv {
     status: Cell<PlaybackStatus>,
     playback_rate: Cell<f64>,
 
+    change_user_agent_task: RefCell<Option<ChangeUserAgentTask>>,
+
     sender: RefCell<Option<Sender<Action>>>,
 }
 
@@ -82,7 +102,7 @@ impl Default for PlayerPriv {
     fn default() -> Self {
         let player = gst_play::Play::default();
         let mut config = player.config();
-        config.set_user_agent(USER_AGENT);
+        config.set_user_agent(USER_AGENT_INITIAL);
         config.set_position_update_interval(250);
         player.set_config(config).unwrap();
         // A few podcasts have a video track of the thumbnail, which GStreamer displays in a new
@@ -108,6 +128,7 @@ impl Default for PlayerPriv {
             sender: RefCell::new(None),
             status: Cell::new(PlaybackStatus::Stopped),
             playback_rate: Cell::new(1.0),
+            change_user_agent_task: RefCell::new(None),
         }
     }
 }
@@ -366,21 +387,114 @@ impl Player {
         );
     }
 
+    // will stop and restart the stream with another user-agent
+    // could be expanded to test more user agents than just 2
+    pub fn attempt_alternate_user_agent(&self) {
+        if let Some(id) = self.episode_id()
+            && let Some(sender) = self.sender()
+            && let Some(uri) = self.imp().player.uri()
+        {
+            crate::MAINCONTEXT.spawn_local_with_priority(
+                glib::source::Priority::LOW,
+                clone!(
+                    #[strong(rename_to = this)]
+                    self,
+                    async move {
+                        this.stop_and_switch_user_agent(USER_AGENT_FINAL).await;
+
+                        this.init_uri(
+                            &sender,
+                            id,
+                            &uri,
+                            *this.imp().restore_position.borrow(),
+                            false,
+                        );
+                    }
+                ),
+            );
+        }
+    }
+
+    // will stop the player if changing the config right now fails.
+    // changing the config in gstreamer is a massive pain
+    // connect_state_changed does not report the actual state, but the future state, so there is no point to using signals, as we can also not check the current state.
+    async fn stop_and_switch_user_agent(&self, target: &'static str) {
+        let already_at_target = self.imp().player.config().user_agent().as_deref() == Some(target);
+        if already_at_target {
+            return;
+        }
+
+        let mut config = self.imp().player.config().clone();
+        config.set_user_agent(target);
+        if self.imp().player.set_config(config).is_ok() {
+            self.imp().change_user_agent_task.replace(None);
+            debug!("could immediately reset user-agent");
+            return;
+        }
+
+        // TODO take the actual current UA
+        let (receiver, task) = ChangeUserAgentTask::new(target);
+        self.imp().change_user_agent_task.replace(Some(task));
+        debug!("waiting for user agent reset");
+        self.imp().player.stop();
+
+        if receiver.recv().await.is_err() {
+            error!("failed to await user agent change");
+        }
+    }
+
+    // will consume the outstanding task if it successfully changes the user agent
+    // will also consume it if we already have the target user agent.
+    fn handle_change_user_agent_task(&self) {
+        let imp = self.imp();
+        if let Some(task) = imp.change_user_agent_task.take() {
+            let has_target_user_agent =
+                imp.player.config().user_agent().as_deref() == Some(task.target);
+            if has_target_user_agent {
+                return;
+            }
+
+            let mut config = imp.player.config().clone();
+            config.set_user_agent(task.target);
+            if imp.player.set_config(config).is_err() {
+                imp.change_user_agent_task.replace(Some(task));
+            } else {
+                task.sender.send_blocking(()).unwrap();
+                debug!("reset user-agent");
+            }
+        }
+    }
+
     fn connect_gst_signals(&self, sender: &Sender<Action>) {
         let player_signals = &self.imp().player_signals;
         // Log gst warnings.
         player_signals
             .connect_warning(move |_, warn, details| warn!("gst warning: {} {:#?}", warn, details));
 
-        // Log gst errors.
+        // Log gst errors. Needs Send
         player_signals.connect_error(clone!(
             #[strong]
             sender,
-            move |_, _error, details| {
-                error!("gstreamer error: {} {:#?}", _error, details);
+            move |signals, error, details| {
+                let is_http_uri = signals
+                    .play()
+                    .uri()
+                    .map(|u| u.to_lowercase().starts_with("http"))
+                    .unwrap_or_default();
+                let had_final_user_agent =
+                    signals.play().config().user_agent().as_deref() == Some(USER_AGENT_FINAL);
+                let could_be_stream_user_agent_error = is_http_uri && !had_final_user_agent;
+                //
+                if could_be_stream_user_agent_error {
+                    debug!("Attempting other UserAgent after error {error:#?}");
+                    send_blocking!(sender, Action::StreamAttemptAlternateUserAgent);
+                    return;
+                }
+
+                error!("gstreamer error: {} {:#?}", error, details);
                 send_blocking!(
                     sender,
-                    Action::ErrorNotification(format!("Player Error: {}", _error))
+                    Action::ErrorNotification(format!("Player Error: {}", error))
                 );
                 let s = gettext("The media player was unable to execute an action.");
                 send_blocking!(sender, Action::ErrorNotification(s));
@@ -389,6 +503,20 @@ impl Player {
 
         // The following callbacks require `Send` but are handled by the gtk main loop
         let weak = Fragile::new(self.downgrade());
+
+        player_signals.connect_state_changed(clone!(
+            #[strong]
+            weak,
+            move |_signals, state| {
+                debug!("state change {state:#?}");
+                if state == gst_play::PlayState::Stopped {
+                    // reset user agent
+                    if let Some(this) = weak.get().upgrade() {
+                        this.handle_change_user_agent_task();
+                    }
+                }
+            }
+        ));
 
         player_signals.connect_uri_loaded(clone!(
             #[strong]
@@ -442,7 +570,7 @@ impl Player {
             sender,
             #[strong]
             weak,
-            move |_| {
+            move |_signals| {
                 if let Some(this) = weak.get().upgrade() {
                     // write postion to db
                     this.imp().ep.borrow_mut().as_mut().map(|ep| {
@@ -549,7 +677,7 @@ impl Player {
 
         if stream == StreamMode::StreamOnly {
             if let Some(uri) = ep.uri() {
-                self.init_uri(sender, id, uri, second);
+                self.init_uri(sender, id, uri, second, true);
                 return Ok(());
             } else {
                 error!("No uri for episode");
@@ -562,14 +690,14 @@ impl Player {
                 // Convert it so it will have a "file:///"
                 // FIXME: convert it properly
                 let uri = File::for_path(path).uri();
-                self.init_uri(sender, id, uri.as_str(), second);
+                self.init_uri(sender, id, uri.as_str(), second, false);
                 return Ok(());
             } else {
                 error!("failed to create path for episode {:#?}", ep);
             }
         } else if stream == StreamMode::StreamFallback {
             if let Some(uri) = ep.uri() {
-                self.init_uri(sender, id, uri, second);
+                self.init_uri(sender, id, uri, second, true);
                 return Ok(());
             } else {
                 error!("No uri for episode");
@@ -581,14 +709,42 @@ impl Player {
         Ok(())
     }
 
-    fn init_uri(&self, sender: &Sender<Action>, id: EpisodeId, uri: &str, second: Option<i32>) {
+    fn init_as_stream(&self, uri: String) {
+        crate::MAINCONTEXT.spawn_local_with_priority(
+            glib::source::Priority::LOW,
+            clone!(
+                #[strong(rename_to = this)]
+                self,
+                async move {
+                    this.stop_and_switch_user_agent(USER_AGENT_INITIAL).await;
+                    this.imp().player.set_uri(Some(&uri));
+                    this.play();
+                }
+            ),
+        );
+    }
+
+    fn init_uri(
+        &self,
+        sender: &Sender<Action>,
+        id: EpisodeId,
+        uri: &str,
+        second: Option<i32>,
+        reset_stream: bool,
+    ) {
         // If it's not the same file load the uri, otherwise just unpause
         let current_uri = self.imp().player.uri();
         if current_uri.as_ref().is_none_or(|s| s != uri) {
             if current_uri.is_some() {
                 self.store_position_and_sync();
             }
-            self.imp().player.set_uri(Some(uri));
+
+            if reset_stream {
+                self.init_as_stream(uri.to_owned())
+            } else {
+                self.imp().player.set_uri(Some(uri));
+                self.play();
+            }
 
             // fetch chapters
             let uri_string = uri.to_owned();
@@ -607,12 +763,12 @@ impl Player {
         } else if second.is_some() {
             // force a jump now if already playing and a jump is given
             self.restore_play_position();
+            self.play();
         } else {
             // just unpause, no restore required
             self.imp().finished_restore.set(true);
+            self.play();
         }
-        // play the file
-        self.play();
     }
 
     // hook for when the async download finished

@@ -23,16 +23,15 @@ use diesel::SaveChangesDsl;
 use http::StatusCode;
 use http::header::{
     AUTHORIZATION, ETAG, HeaderValue, IF_MODIFIED_SINCE, IF_NONE_MATCH, LAST_MODIFIED, LOCATION,
-    USER_AGENT as USER_AGENT_HEADER,
 };
 use rss::Channel;
 use std::str::FromStr;
 use url::Url;
 
-use crate::USER_AGENT;
 use crate::database::connection;
 use crate::errors::*;
 use crate::feed::{Feed, FeedBuilder};
+use crate::http::RetryContext;
 use crate::make_id_wrapper;
 use crate::models::{NewSource, Save};
 use crate::schema::source;
@@ -246,10 +245,10 @@ impl Source {
     ///
     /// Consumes `self` and Returns the corresponding `Feed` Object.
     // Refactor into TryInto once it lands on stable.
-    pub async fn into_feed(self, client: &reqwest::Client) -> Result<Feed, DataError> {
+    pub async fn into_feed(self) -> Result<Feed, DataError> {
         let id = self.id();
 
-        let resp = self.get_response(client).await?;
+        let resp = self.get_response().await?;
         let chan = response_to_channel(resp).await?;
 
         FeedBuilder::default()
@@ -259,10 +258,11 @@ impl Source {
             .map_err(|err| DataError::BuilderError(format!("{err}")))
     }
 
-    async fn get_response(self, client: &reqwest::Client) -> Result<reqwest::Response, DataError> {
+    async fn get_response(self) -> Result<reqwest::Response, DataError> {
+        let mut retry_context = RetryContext::default();
         let mut source = self;
         loop {
-            match source.request_constructor(client).await {
+            match source.send_request(&mut retry_context).await {
                 Ok(response) => return Ok(response),
                 Err(err) => match err {
                     DataError::FeedRedirect(s) => {
@@ -275,13 +275,8 @@ impl Source {
         }
     }
 
-    async fn request_constructor(
-        self,
-        client: &reqwest::Client,
-    ) -> Result<reqwest::Response, DataError> {
-        let uri = Url::from_str(self.uri())?;
-        let mut req = client.get(uri);
-
+    /// adds auth/cache headers
+    fn add_request_headers(&self, mut req: reqwest::RequestBuilder) -> reqwest::RequestBuilder {
         if let Ok(url) = Url::parse(self.uri())
             && let Some(password) = url.password()
         {
@@ -293,9 +288,6 @@ impl Source {
             req = req.header(AUTHORIZATION, HeaderValue::from_str(&auth).unwrap());
         }
 
-        // Set the UserAgent cause ppl still seem to check it for some reason...
-        req = req.header(USER_AGENT_HEADER, HeaderValue::from_static(USER_AGENT));
-
         if let Some(etag) = self.http_etag() {
             req = req.header(IF_NONE_MATCH, HeaderValue::from_str(etag).unwrap());
         }
@@ -303,8 +295,17 @@ impl Source {
         if let Some(lmod) = self.last_modified() {
             req = req.header(IF_MODIFIED_SINCE, HeaderValue::from_str(lmod).unwrap());
         }
+        req
+    }
 
-        let res = req.send().await?;
+    async fn send_request(
+        self,
+        retry_context: &mut RetryContext,
+    ) -> Result<reqwest::Response, DataError> {
+        let uri = Url::from_str(self.uri())?;
+        let res = retry_context
+            .prepared_send(uri, |req| self.add_request_headers(req))
+            .await?;
         self.match_status(res)
     }
 }
@@ -326,7 +327,6 @@ mod tests {
 
     use crate::database::reset_db;
     use crate::dbqueries;
-    use crate::downloader::client_builder;
     use crate::test_feeds::*;
     use crate::utils::get_feed;
 
@@ -335,13 +335,12 @@ mod tests {
         let _tempfile = reset_db()?;
 
         let rt = tokio::runtime::Runtime::new()?;
-        let client = client_builder().build()?;
 
         let server = mock_feed_server()?;
         let feed_url = mock_feed_url(&server, MOCK_FEED_INTERCEPTED);
         let source = Source::from_url(&feed_url)?;
         let id = source.id();
-        let feed = source.into_feed(&client);
+        let feed = source.into_feed();
         let feed = rt.block_on(feed)?;
 
         let expected = get_feed("tests/feeds/2018-01-20-Intercepted.xml", id);
@@ -354,13 +353,12 @@ mod tests {
         let _tempfile = reset_db()?;
 
         let rt = tokio::runtime::Runtime::new()?;
-        let client = client_builder().build()?;
 
         let server = unsafe { iso_encoded_mock_server() }?;
         let feed_url = mock_feed_url(&server, MOCK_FEED_SERIES_I_CINEMA);
         let source = Source::from_url(&feed_url)?;
         let id = source.id();
-        let feed = source.into_feed(&client);
+        let feed = source.into_feed();
         let feed = rt.block_on(feed)?;
 
         let expected = get_feed("tests/feeds/2022-series-i-cinema.xml", id);

@@ -92,4 +92,6 @@ pub enum DownloadError {
     InvalidCachedImageLocation,
     #[error("Download no longer needed.")]
     NoLongerNeeded,
+    #[error("Failed to parse a url: {0}")]
+    UrlError(#[from] url::ParseError),
 }

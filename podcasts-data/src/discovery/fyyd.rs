@@ -64,7 +64,7 @@ pub async fn search(query: &str, enabled: bool) -> Result<Vec<FoundPodcast>> {
         "https://api.fyyd.de/0.2/search/podcast?count=10",
         &[("term", query)],
     )?;
-    let client = crate::downloader::client_builder().build()?;
+    let client = crate::http::client_builder().build()?;
     let result: Response = client.get(url).send().await?.json().await?;
     Ok(result.data.into_iter().map(|p| p.into()).collect())
 }
