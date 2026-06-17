@@ -512,6 +512,21 @@ pub(crate) fn relative_time(duration: chrono::Duration) -> String {
     }
 }
 
+/// Prints hour:minute:seconds or just minute:seconds or "-" if 0
+pub(crate) fn format_duration(seconds: u32) -> String {
+    let time = NaiveTime::from_num_seconds_from_midnight_opt(seconds, 0);
+    if time.is_none() {
+        return "-".to_string();
+    }
+    let time = time.unwrap();
+
+    if seconds >= 3600 {
+        time.format("%T").to_string()
+    } else {
+        time.format("%M:%S").to_string()
+    }
+}
+
 pub async fn texture(
     path: &impl AsRef<std::path::Path>,
 ) -> Result<gdk::Texture, image::error::ImageError> {

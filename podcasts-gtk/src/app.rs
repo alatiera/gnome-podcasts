@@ -35,9 +35,9 @@ use std::sync::Arc;
 use crate::chapter_parser::Chapter;
 use crate::config::{APP_ID, LOCALEDIR};
 use crate::download_covers;
+use crate::player::StreamMode;
 use crate::settings;
 use crate::utils;
-use crate::widgets::player::StreamMode;
 use crate::widgets::show_menu::{mark_all_notif, remove_show_notif};
 use crate::widgets::{Chapters, EpisodeDescription, SearchResults, ShowWidget};
 use crate::window::MainWindow;
@@ -239,6 +239,12 @@ impl PdApplication {
                     }
                 })
                 .build(),
+            // Goes to the chapters the player has currently stored
+            gio::ActionEntryBuilder::new("go-to-chapters")
+                .activate(|app: &Self, _, _| {
+                    app.go_to_chapters();
+                })
+                .build(),
             gio::ActionEntryBuilder::new("undo-mark-all")
                 .parameter_type(Some(i32_variant_type))
                 .activate(|app: &Self, _, id_variant_option| {
@@ -316,6 +322,20 @@ impl PdApplication {
         Ok(())
     }
 
+    fn go_to_chapters(&self) -> Option<()> {
+        let data = self.imp();
+        let w = data.window.borrow();
+        let window = w.as_ref()?;
+        let ep_id = window.player().episode_id();
+        let chapters = window.player().chapters();
+        if let Some(ep_id) = ep_id
+            && !chapters.is_empty()
+        {
+            send_blocking!(data.sender, Action::GoToChaptersPage(ep_id, chapters));
+        }
+        Some(())
+    }
+
     fn setup_accels(&self) {
         self.set_accels_for_action("app.quit", &["<primary>q"]);
         self.set_accels_for_action("win.open-search", &["<primary>f"]);
@@ -384,7 +404,7 @@ impl PdApplication {
                 window.push_page(&widget);
             }
             Action::GoToChaptersPage(ep, chapters) => {
-                let page = Chapters::new_page(&data.sender, window.player().slider(), ep, chapters);
+                let page = Chapters::new_page(&window.player(), &data.sender, ep, chapters);
                 window.pop_page_by_tag("chapters");
                 window.push_page(&page);
             }
@@ -657,7 +677,7 @@ impl PdApplication {
     pub(crate) fn is_playing(&self, id: EpisodeId) -> bool {
         let w = self.imp().window.borrow();
         let window = w.as_ref().expect("Window is not initialized");
-        let playing_id = window.player().id();
+        let playing_id = window.player().episode_id();
         playing_id == Some(id) && window.player().is_playing()
     }
 }

@@ -63,7 +63,7 @@
             <property name="margin_top">12</property>
             <property name="margin_bottom">12</property>
             <child type="start">
-              <object class="AdwBin" id="rate_container"></object>
+              <object class="PdPlayerRate" id="rate"></object>
             </child>
 
             <child type="center">

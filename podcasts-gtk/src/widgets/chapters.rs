@@ -1,6 +1,6 @@
 // chapters.rs
 //
-// Copyright 2025 nee <nee-git@patchouli.garden>
+// Copyright 2025-2026 nee <nee-git@patchouli.garden>
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -31,6 +31,7 @@ use std::cell::{Cell, RefCell};
 
 use crate::app::Action;
 use crate::chapter_parser::Chapter;
+use crate::player::Player;
 use podcasts_data::EpisodeId;
 use podcasts_data::dbqueries;
 
@@ -110,7 +111,6 @@ impl ChaptersPriv {
     }
 
     fn active_chapter_changed(&self, old_index: i32) {
-        println!("CHAP {}", self.active_chapter_index.get());
         if let Some(icon) = self.active_chapter_icon.borrow().as_ref()
             && let Some(row) = self
                 .listbox
@@ -170,43 +170,50 @@ glib::wrapper! {
 
 impl Chapters {
     pub(crate) fn new(
+        player: &Player,
         sender: &Sender<Action>,
-        slider: &gtk::Scale,
         ep: EpisodeId,
         chapters: Vec<Chapter>,
     ) -> Self {
         let this: Self = glib::Object::new();
-        this.init(sender, slider);
+        this.init(player, sender);
         this.set_chapters(ep, chapters);
         this
     }
 
     pub(crate) fn new_page(
+        player: &Player,
         sender: &Sender<Action>,
-        slider: &gtk::Scale,
         ep: EpisodeId,
         chapters: Vec<Chapter>,
     ) -> adw::NavigationPage {
-        let widget = Self::new(sender, slider, ep, chapters);
+        let widget = Self::new(player, sender, ep, chapters);
         let view = adw::ToolbarView::builder().content(&widget).build();
         view.add_top_bar(&adw::HeaderBar::new());
         adw::NavigationPage::with_tag(&view, &gettext("Chapters"), "chapters")
     }
 
-    pub(crate) fn init(&self, sender: &Sender<Action>, slider: &gtk::Scale) {
+    pub(crate) fn init(&self, player: &Player, sender: &Sender<Action>) {
         let imp = self.imp();
         imp.sender.replace(Some(sender.clone()));
 
-        slider.connect_value_changed(clone!(
-            #[weak]
-            imp,
-            move |slider| {
-                let seconds = slider.value();
-                imp.progress.set(seconds);
-                imp.update_active_chapter();
-            }
-        ));
-        imp.progress.set(slider.value());
+        player.connect_local(
+            "position-changed",
+            false,
+            clone!(
+                #[weak]
+                imp,
+                #[upgrade_or_default]
+                move |value| {
+                    let seconds: u64 = value[1].get().unwrap_or_default();
+                    imp.progress.set(seconds as f64);
+                    imp.update_active_chapter();
+                    None
+                }
+            ),
+        );
+        imp.progress
+            .set(player.position().map(|p| p.seconds()).unwrap_or_default() as f64);
         imp.update_active_chapter();
     }
 

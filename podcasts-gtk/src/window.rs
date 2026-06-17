@@ -26,21 +26,19 @@ use glib::clone;
 use gst::ClockTime;
 use gtk::CompositeTemplate;
 use gtk::{gio, glib};
+use std::cell::Ref;
 use std::cell::{Cell, OnceCell, RefCell};
-use std::cell::{Ref, RefMut};
-use std::ops::Deref;
 use std::rc::Rc;
 
 use crate::app::{Action, PdApplication};
 use crate::config::APP_ID;
+use crate::player::{Player, PlayerExt, SeekDirection, StreamMode};
 use crate::settings::{self, WindowGeometry};
 use crate::utils;
 use crate::widgets::about_dialog;
-use crate::widgets::player;
-use crate::widgets::player::{PlayerExt, PlayerWidget, SeekDirection, StreamMode};
 use crate::widgets::{
-    Content, DiscoveryPage, EpisodeDescription, FilterMenu, FilterMenuMode, ShowWidget,
-    SyncPreferences,
+    Content, DiscoveryPage, EpisodeDescription, FilterMenu, FilterMenuMode, PlayerWrapper,
+    SheetBase, ShowWidget, SyncPreferences,
 };
 use podcasts_data::feed_manager::FEED_MANAGER;
 use podcasts_data::{EpisodeId, EpisodeWidgetModel, ShowId};
@@ -50,11 +48,11 @@ use podcasts_data::{EpisodeId, EpisodeWidgetModel, ShowId};
 #[properties(wrapper_type = MainWindow)]
 pub struct MainWindowPriv {
     pub(crate) content: OnceCell<Rc<Content>>,
-    pub(crate) player: OnceCell<player::PlayerWrapper>,
     pub(crate) updating_timeout: RefCell<Option<glib::source::SourceId>>,
     pub(crate) settings: gio::Settings,
     pub(crate) show_widget: RefCell<Option<ShowWidget>>,
     pub(crate) sync_preferences: RefCell<Option<SyncPreferences>>,
+    pub(crate) player: RefCell<Player>,
 
     pub(crate) sender: OnceCell<Sender<Action>>,
 
@@ -88,6 +86,10 @@ pub struct MainWindowPriv {
     pub(crate) filter_shows: TemplateChild<FilterMenu>,
     #[template_child]
     pub(crate) filter_stack: TemplateChild<adw::ViewStack>,
+    #[template_child]
+    pub(crate) player_wrapper: TemplateChild<PlayerWrapper>,
+    #[template_child]
+    pub(crate) sheet_base: TemplateChild<SheetBase>,
 
     #[property(set, get)]
     pub(crate) updating: Cell<bool>,
@@ -108,7 +110,7 @@ impl ObjectSubclass for MainWindowPriv {
 
         Self {
             content: OnceCell::new(),
-            player: OnceCell::new(),
+            player_wrapper: TemplateChild::default(),
             navigation_view: TemplateChild::default(),
             toast_overlay: TemplateChild::default(),
             top_switcher: TemplateChild::default(),
@@ -130,12 +132,16 @@ impl ObjectSubclass for MainWindowPriv {
             show_widget: RefCell::new(None),
             is_root_page: Cell::new(true),
             is_mobile_layout: Cell::new(false),
+            player: RefCell::new(Player::default()),
             sync_preferences: RefCell::new(None),
+            sheet_base: TemplateChild::default(),
             settings,
         }
     }
 
     fn class_init(klass: &mut Self::Class) {
+        PlayerWrapper::ensure_type();
+        SheetBase::ensure_type();
         klass.bind_template();
         klass.install_action("win.refresh", None, move |_, _, _| {
             FEED_MANAGER.schedule_full_refresh();
@@ -163,8 +169,14 @@ impl ObjectSubclass for MainWindowPriv {
         klass.install_action("win.about", None, move |win, _, _| {
             about_dialog(win.upcast_ref());
         });
+        klass.install_action("win.play", None, move |win, _, _| {
+            win.player().play();
+        });
+        klass.install_action("win.pause", None, move |win, _, _| {
+            win.player().pause();
+        });
         klass.install_action("win.toggle-pause", None, move |win, _, _| {
-            win.player_mut().toggle_pause();
+            win.player().toggle_pause();
         });
         klass.install_action("win.seek-forwards", None, move |win, _, _| {
             win.player()
@@ -174,6 +186,20 @@ impl ObjectSubclass for MainWindowPriv {
             win.player()
                 .seek(ClockTime::from_seconds(5), SeekDirection::Backwards);
         });
+        klass.install_action(
+            "win.seek-by",
+            Some(glib::VariantTy::INT32),
+            move |win, _, value| {
+                let seconds: i32 = value.unwrap().get().unwrap_or_default();
+                if seconds < 0 {
+                    let clock = ClockTime::from_seconds(seconds.unsigned_abs() as u64);
+                    win.player().seek(clock, SeekDirection::Backwards);
+                } else if seconds > 0 {
+                    let clock = ClockTime::from_seconds(seconds as u64);
+                    win.player().seek(clock, SeekDirection::Forward);
+                }
+            },
+        );
         klass.install_action("win.go-to-home", None, move |win, _, _| {
             win.pop_to_content();
             win.content().go_to_home();
@@ -197,6 +223,19 @@ impl ObjectSubclass for MainWindowPriv {
         klass.install_action("win.open-search", None, move |win, _, _| {
             win.open_search();
         });
+        klass.install_action(
+            "win.set-rate",
+            Some(glib::VariantTy::STRING),
+            move |win, _, value| {
+                let rate = value
+                    .unwrap()
+                    .get::<String>()
+                    .expect("Could not get rate from variant")
+                    .parse::<f64>()
+                    .expect("Could not parse float from variant string");
+                win.player().set_playback_rate(rate);
+            },
+        );
     }
 
     fn instance_init(obj: &glib::subclass::InitializingObject<Self>) {
@@ -257,16 +296,14 @@ impl MainWindow {
 
         imp.content_view.set_content(Some(content.overlay()));
 
-        let player = player::PlayerWrapper::new(sender);
-        imp.toolbar_box.prepend(&player.borrow().container);
-
-        imp.bottom_sheet
-            .set_property("sheet", &player.borrow().sheet);
+        imp.player.borrow().init(sender);
+        imp.player_wrapper.init(&imp.player.borrow());
+        imp.sheet_base.init(&imp.player.borrow(), sender);
         imp.bottom_sheet.connect_open_notify(clone!(
             #[weak]
             window,
             move |sheet| {
-                window.player().sheet().on_open_changed(sheet.is_open());
+                window.imp().sheet_base.on_open_changed(sheet.is_open());
             }
         ));
 
@@ -302,24 +339,24 @@ impl MainWindow {
         // Setup breakpoints
         imp.header_breakpoint
             .add_setter(&window, "is_mobile_layout", Some(&true.to_value()));
-        let p = player.deref();
+        let p = imp.player_wrapper.get();
         imp.player_breakpoint.connect_apply(clone!(
             #[weak]
             p,
             move |_| {
-                p.borrow().set_small(false);
+                p.set_small(false);
             }
         ));
         imp.player_breakpoint.connect_unapply(clone!(
             #[weak]
             p,
             move |_| {
-                p.borrow().set_small(true);
+                p.set_small(true);
             }
         ));
         let breakpoint = imp.player_breakpoint.get();
         let is_small = window.current_breakpoint().is_none_or(|b| b != breakpoint);
-        p.borrow().set_small(is_small);
+        p.set_small(is_small);
 
         // Update the feeds right after the Window is initialized.
         if imp.settings.boolean("refresh-on-startup") {
@@ -336,7 +373,6 @@ impl MainWindow {
         });
 
         imp.content.set(content).unwrap();
-        imp.player.set(player).unwrap();
 
         window
     }
@@ -387,11 +423,7 @@ impl MainWindow {
         self.imp()
             .bottom_sheet
             .set_property("can-open", true.to_value());
-        self.imp()
-            .player
-            .get()
-            .unwrap()
-            .borrow_mut()
+        self.player()
             .initialize_episode(self.sender(), id, stream, second)
     }
 
@@ -409,12 +441,8 @@ impl MainWindow {
         self.content().progress_bar()
     }
 
-    pub(crate) fn player(&self) -> Ref<'_, PlayerWidget> {
-        self.imp().player.get().unwrap().borrow()
-    }
-
-    pub(crate) fn player_mut(&self) -> RefMut<'_, PlayerWidget> {
-        self.imp().player.get().unwrap().borrow_mut()
+    pub(crate) fn player(&self) -> Ref<'_, Player> {
+        self.imp().player.borrow()
     }
 
     pub(crate) fn content(&self) -> &Content {

@@ -23,22 +23,18 @@ use async_channel::Sender;
 use glib::clone;
 use glib::subclass::InitializingObject;
 use gtk::CompositeTemplate;
-use gtk::gio;
 use gtk::glib;
-use std::cell::RefCell;
-use std::rc::Rc;
 
 use crate::app::Action;
 use crate::chapter_parser::Chapter;
-use crate::widgets::player::{PlayerRate, PlayerTimes, PlayerWidget};
+use crate::player::Player;
+use crate::widgets::PlayerRate;
 use crate::widgets::{Chapters, SheetDescription, SheetPlayer};
-use podcasts_data::{Episode, EpisodeId, ShowCoverModel};
+use podcasts_data::EpisodeId;
 
 #[derive(Debug, CompositeTemplate, Default)]
 #[template(resource = "/org/gnome/Podcasts/gtk/sheet_base.ui")]
 pub(crate) struct SheetBasePriv {
-    #[template_child]
-    pub(crate) rate_container: TemplateChild<adw::Bin>,
     #[template_child]
     pub(crate) stack: TemplateChild<adw::ViewStack>,
     #[template_child]
@@ -51,8 +47,8 @@ pub(crate) struct SheetBasePriv {
     pub(crate) chapters: TemplateChild<Chapters>,
     #[template_child]
     pub(crate) chapters_toggle: TemplateChild<adw::Toggle>,
-
-    rate: RefCell<Option<PlayerRate>>,
+    #[template_child]
+    pub(crate) rate: TemplateChild<PlayerRate>,
 }
 
 #[glib::object_subclass]
@@ -65,6 +61,7 @@ impl ObjectSubclass for SheetBasePriv {
         SheetPlayer::ensure_type();
         SheetDescription::ensure_type();
         Chapters::ensure_type();
+        PlayerRate::ensure_type();
         klass.bind_template();
     }
 
@@ -84,39 +81,60 @@ glib::wrapper! {
 }
 
 impl SheetBase {
-    pub(crate) fn new(rate: PlayerRate) -> Self {
-        let this: Self = glib::Object::new();
-        let imp = this.imp();
-        imp.rate_container.set_child(Some(&rate.btn));
-        imp.rate.replace(Some(rate));
-
+    pub(crate) fn init(&self, player: &Player, sender: &Sender<Action>) {
+        let imp = self.imp();
         imp.toggle_group.connect_active_name_notify(clone!(
-            #[weak]
-            this,
+            #[weak(rename_to = this)]
+            self,
             move |group| if let Some(name) = group.active_name() {
                 this.imp().stack.set_visible_child_name(&name)
             },
         ));
+        imp.description.init(sender);
+        imp.chapters.init(player, sender);
+        imp.rate.init(player);
+        imp.player.init(player);
 
-        this
-    }
+        player.connect_local(
+            "episode-changed",
+            false,
+            clone!(
+                #[weak(rename_to = this)]
+                self,
+                #[weak]
+                player,
+                #[upgrade_or_default]
+                move |_| {
+                    if let Some(episode) = player.episode().as_ref()
+                        && let Some(show) = player.show().as_ref()
+                    {
+                        this.imp().description.initialize_episode(episode, show);
+                    }
+                    this.imp().toggle_group.set_active_name(Some("player"));
+                    None
+                }
+            ),
+        );
 
-    pub(crate) fn init(&self, sender: &Sender<Action>, progress: &gtk::Scale) {
-        self.imp().description.init(sender);
-        self.imp().chapters.init(sender, progress);
-    }
-
-    pub(crate) fn initialize_episode(&self, episode: &Episode, show: &ShowCoverModel) {
-        let imp = self.imp();
-
-        imp.chapters_toggle.set_enabled(false);
-        imp.player.initialize_episode(episode, show);
-        imp.description.initialize_episode(episode, show);
-        imp.toggle_group.set_active_name(Some("player"));
-    }
-
-    pub(crate) fn on_rate_changed(&self, rate: f64) {
-        self.rate().btn.set_label(&format!("{rate:.2}×"));
+        player.connect_local(
+            "chapters-changed",
+            false,
+            clone!(
+                #[weak(rename_to = this)]
+                self,
+                #[weak]
+                player,
+                #[upgrade_or_default]
+                move |_| {
+                    if let Some(id) = player.episode_id() {
+                        this.chapters_changed(id, player.chapters());
+                    } else {
+                        this.imp().chapters_toggle.set_enabled(false);
+                    }
+                    None
+                }
+            ),
+        );
     }
 
     pub(crate) fn on_open_changed(&self, is_open: bool) {
@@ -125,40 +143,12 @@ impl SheetBase {
         }
     }
 
-    pub(crate) fn chapters_available(&self, id: EpisodeId, chapters: Vec<Chapter>) {
-        if chapters.is_empty() {
-            return;
-        }
+    pub(crate) fn chapters_changed(&self, id: EpisodeId, chapters: Vec<Chapter>) {
         let imp = self.imp();
-        imp.chapters_toggle.set_enabled(true);
-        imp.chapters.set_chapters(id, chapters);
-    }
-
-    pub(crate) fn on_play(&self) {
-        self.imp().player.on_play();
-    }
-
-    pub(crate) fn on_pause(&self) {
-        self.imp().player.on_pause();
-    }
-
-    pub(crate) fn on_stop(&self) {
-        self.imp().player.on_stop();
-    }
-
-    pub(crate) fn connect(&self, timer: &PlayerTimes) {
-        self.imp().player.connect(timer);
-    }
-
-    pub(crate) fn connect_rate_actions(&self, group: &gio::SimpleActionGroup) {
-        self.insert_action_group("rate", Some(group));
-    }
-
-    pub(crate) fn connect_control_buttons(&self, player: &Rc<RefCell<PlayerWidget>>) {
-        self.imp().player.connect_control_buttons(player);
-    }
-
-    pub(crate) fn rate(&self) -> PlayerRate {
-        self.imp().rate.borrow().as_ref().unwrap().clone()
+        let has_chapters = !chapters.is_empty();
+        imp.chapters_toggle.set_enabled(has_chapters);
+        if has_chapters {
+            imp.chapters.set_chapters(id, chapters);
+        }
     }
 }

@@ -10,8 +10,10 @@ podcasts-gtk/resources/gtk/episode_description.ui
 podcasts-gtk/resources/gtk/episode_menu.ui
 podcasts-gtk/resources/gtk/episode_widget.ui
 podcasts-gtk/resources/gtk/home_view.ui
+podcasts-gtk/resources/gtk/player_big.ui
+podcasts-gtk/resources/gtk/player_small.ui
 podcasts-gtk/resources/gtk/player_rate.ui
-podcasts-gtk/resources/gtk/player_toolbar.ui
+podcasts-gtk/resources/gtk/player_wrapper.ui
 podcasts-gtk/resources/gtk/secondary_menu.ui
 podcasts-gtk/resources/gtk/sheet_base.ui
 podcasts-gtk/resources/gtk/sheet_description.ui
@@ -31,6 +33,7 @@ podcasts-gtk/resources/org.gnome.Podcasts.metainfo.xml.in.in
 podcasts-gtk/src/app.rs
 podcasts-gtk/src/episode_description_parser.rs
 podcasts-gtk/src/manager.rs
+podcasts-gtk/src/player.rs
 podcasts-gtk/src/utils.rs
 podcasts-gtk/src/widgets/aboutdialog.rs
 podcasts-gtk/src/widgets/chapters.rs
@@ -39,7 +42,10 @@ podcasts-gtk/src/widgets/discovery_page.rs
 podcasts-gtk/src/widgets/discovery_search_results.rs
 podcasts-gtk/src/widgets/download_progress_bar.rs
 podcasts-gtk/src/widgets/episode.rs
-podcasts-gtk/src/widgets/player.rs
+podcasts-gtk/src/widgets/player_big.rs
+podcasts-gtk/src/widgets/player_small.rs
+podcasts-gtk/src/widgets/player_rate.rs
+podcasts-gtk/src/widgets/player_wrapper.rs
 podcasts-gtk/src/widgets/read_more_label.rs
 podcasts-gtk/src/widgets/show_menu.rs
 podcasts-gtk/src/widgets/shows_view.rs

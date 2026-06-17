@@ -20,8 +20,10 @@
       <file compressed="true" preprocess="xml-stripblanks">gtk/sheet_description.ui</file>
       <file compressed="true" preprocess="xml-stripblanks">gtk/show_menu.ui</file>
       <file compressed="true" preprocess="xml-stripblanks" alias="shortcuts-dialog.ui">gtk/shortcuts-dialog.ui</file>
+      <file compressed="true" preprocess="xml-stripblanks">gtk/player_big.ui</file>
+      <file compressed="true" preprocess="xml-stripblanks">gtk/player_small.ui</file>
       <file compressed="true" preprocess="xml-stripblanks">gtk/player_rate.ui</file>
-      <file compressed="true" preprocess="xml-stripblanks">gtk/player_toolbar.ui</file>
+      <file compressed="true" preprocess="xml-stripblanks">gtk/player_wrapper.ui</file>
       <file compressed="true" preprocess="xml-stripblanks">gtk/window.ui</file>
       <file compressed="true" preprocess="xml-stripblanks">gtk/sync_preferences.ui</file>
       <file compressed="true" preprocess="xml-stripblanks">icons/scalable/actions/info-outline-symbolic.svg</file>

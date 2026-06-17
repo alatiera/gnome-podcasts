@@ -39,6 +39,7 @@ mod chapter_parser;
 mod download_covers;
 mod episode_description_parser;
 mod manager;
+mod player;
 mod settings;
 mod thumbnail_generator;
 mod widgets;

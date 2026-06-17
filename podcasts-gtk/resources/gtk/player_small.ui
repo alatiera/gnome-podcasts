@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Generated with glade 3.22.0
+
+Copyright (C) 2017 - 2026
+
+This file is part of GNOME Podcast.
+
+GNOME Podcast is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+GNOME Podcast is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with GNOME Podcast.  If not, see <http://www.gnu.org/licenses/>.
+
+Authors:
+Jordan Petridis
+Tobias Bernard
+
+-->
+<interface>
+  <!-- interface-license-type gplv3 -->
+  <!-- interface-name GNOME Podcast -->
+  <!-- interface-description A podcast client for the GNOME Desktop -->
+  <!-- interface-copyright 2017 - 2026 -->
+  <!-- interface-authors Jordan Petridis\nTobias Bernard -->
+  <template class="PdPlayerSmall" parent="GtkBox">
+    <property name="orientation">vertical</property>
+    <property name="spacing">6</property>
+    <child>
+      <object class="GtkProgressBar" id="progress_bar">
+        <style>
+          <class name="playback-progress"/>
+        </style>
+        <accessibility>
+          <relation name="labelled-by">episode</relation>
+        </accessibility>
+      </object>
+    </child>
+    <child>
+      <object class="GtkBox">
+        <property name="spacing">6</property>
+        <child>
+          <object class="GtkButton" id="cover_button">
+            <property name="tooltip-text" translatable="yes">Go to the description for this episode.</property>
+            <style>
+              <class name="flat"/>
+            </style>
+            <child>
+              <object class="GtkImage" id="cover">
+                <property name="valign">center</property>
+                <property name="pixel_size">34</property>
+                <property name="icon-name">image-missing-symbolic</property>
+                <property name="overflow">hidden</property>
+                <style>
+                  <class name="rounded-small"/>
+                </style>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="GtkBox">
+            <property name="receives_default">True</property>
+            <property name="valign">center</property>
+            <property name="orientation">vertical</property>
+            <property name="hexpand">True</property>
+            <child>
+              <object class="GtkLabel" id="show">
+                <property name="label">Show Title</property>
+                <property name="ellipsize">end</property>
+                <property name="xalign">0</property>
+                <style>
+                  <class name="caption"/>
+                </style>
+              </object>
+            </child>
+            <child>
+              <object class="GtkLabel" id="episode">
+                <property name="label">Episode Title</property>
+                <property name="ellipsize">end</property>
+                <property name="xalign">0</property>
+                <style>
+                  <class name="caption-heading"/>
+                </style>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="GtkStack" id="play_pause">
+            <property name="hhomogeneous">True</property>
+            <property name="vhomogeneous">True</property>
+            <property name="hexpand">True</property>
+            <property name="halign">end</property>
+            <property name="valign">center</property>
+            <child>
+              <object class="GtkButton" id="play">
+                <property name="icon_name">media-playback-start-symbolic</property>
+                <property name="tooltip_text" translatable="yes">Play</property>
+                <property name="action-name">win.play</property>
+                <style>
+                  <class name="flat"/>
+                </style>
+              </object>
+            </child>
+            <child>
+              <object class="GtkButton" id="pause">
+                <property name="icon_name">media-playback-pause-symbolic</property>
+                <property name="tooltip_text" translatable="yes">Pause</property>
+                <property name="action-name">win.pause</property>
+                <style>
+                  <class name="flat"/>
+                </style>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
+  </template>
+</interface>

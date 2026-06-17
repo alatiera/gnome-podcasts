@@ -85,6 +85,9 @@
                 <property name="content">
                   <object class="AdwBottomSheet" id="bottom_sheet">
                     <property name="can-open">False</property>
+                    <property name="sheet">
+                      <object class="PdSheetBase" id="sheet_base"></object>
+                    </property>
                     <property name="content">
                       <object class="AdwLayoutSlot">
                         <property name="id">content</property>
@@ -176,6 +179,9 @@
             <child type="toolbar">
               <object class="GtkBox" id="toolbar_box">
                 <property name="orientation">vertical</property>
+                <child>
+                  <object class="PdPlayerWrapper" id="player_wrapper"></object>
+                </child>
                 <child>
                   <object class="GtkCenterBox" id="bottom_switcher_bar">
                     <property name="visible">False</property>

@@ -1,6 +1,7 @@
-// chapters_page.rs
+// player_big.rs
 //
-// Copyright 2025-2026 nee <nee-git@patchouli.garden>
+// Copyright 2018 Jordan Petridis <jpetridis@gnome.org>
+// Copyright 2021-2026 nee <nee-git@patchouli.garden>
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -19,10 +20,11 @@
 
 use adw::prelude::*;
 use adw::subclass::prelude::*;
-use glib::subclass::InitializingObject;
-use glib::{SignalHandlerId, clone};
+use glib::SignalHandlerId;
+use glib::clone;
 use gst::ClockTime;
 use gtk::CompositeTemplate;
+use gtk::TemplateChild;
 use gtk::glib;
 use mpris_server::PlaybackStatus;
 use std::cell::RefCell;
@@ -30,34 +32,43 @@ use std::cell::RefCell;
 use crate::download_covers::load_widget_texture;
 use crate::player::{Duration, Player, PlayerUi, Position};
 use crate::utils::format_duration;
-use podcasts_data::Episode;
-use podcasts_data::ShowCoverModel;
+use crate::widgets::PlayerRate;
+use podcasts_data::{Episode, ShowCoverModel};
 
-#[derive(Debug, CompositeTemplate, Default)]
-#[template(resource = "/org/gnome/Podcasts/gtk/sheet_player.ui")]
-pub(crate) struct SheetPlayerPriv {
-    #[template_child]
-    cover: TemplateChild<gtk::Image>,
-    #[template_child]
-    play_pause: TemplateChild<gtk::Stack>,
+#[derive(Debug, Default, CompositeTemplate, glib::Properties)]
+#[template(resource = "/org/gnome/Podcasts/gtk/player_big.ui")]
+#[properties(wrapper_type = PlayerBig)]
+pub struct PlayerBigPriv {
     #[template_child]
     play: TemplateChild<gtk::Button>,
     #[template_child]
     pause: TemplateChild<gtk::Button>,
     #[template_child]
-    duration: TemplateChild<gtk::Label>,
-    #[template_child]
-    progressed: TemplateChild<gtk::Label>,
-    #[template_child]
-    slider: TemplateChild<gtk::Scale>,
+    play_pause: TemplateChild<gtk::Stack>,
     #[template_child]
     forward: TemplateChild<gtk::Button>,
     #[template_child]
     rewind: TemplateChild<gtk::Button>,
     #[template_child]
+    chapters_button: TemplateChild<gtk::Button>,
+
+    #[template_child]
     show: TemplateChild<gtk::Label>,
     #[template_child]
     episode: TemplateChild<gtk::Label>,
+    #[template_child]
+    cover: TemplateChild<gtk::Image>,
+    #[template_child]
+    cover_button: TemplateChild<gtk::Button>,
+
+    #[template_child]
+    progressed: TemplateChild<gtk::Label>,
+    #[template_child]
+    duration: TemplateChild<gtk::Label>,
+    #[template_child]
+    slider: TemplateChild<gtk::Scale>,
+    #[template_child]
+    rate: TemplateChild<PlayerRate>,
 
     // for blocking the signal during duration/position updates
     // as the signal is used to jump when the slider is dragged by a user
@@ -65,37 +76,39 @@ pub(crate) struct SheetPlayerPriv {
 }
 
 #[glib::object_subclass]
-impl ObjectSubclass for SheetPlayerPriv {
-    const NAME: &'static str = "PdSheetPlayer";
-    type Type = SheetPlayer;
-    type ParentType = adw::Bin;
+impl ObjectSubclass for PlayerBigPriv {
+    const NAME: &'static str = "PdPlayerBig";
+    type Type = super::PlayerBig;
+    type ParentType = gtk::Box;
 
     fn class_init(klass: &mut Self::Class) {
+        PlayerRate::ensure_type();
         klass.bind_template();
     }
 
-    fn instance_init(obj: &InitializingObject<Self>) {
+    fn instance_init(obj: &glib::subclass::InitializingObject<Self>) {
         obj.init_template();
     }
 }
 
-impl WidgetImpl for SheetPlayerPriv {}
-impl ObjectImpl for SheetPlayerPriv {}
-impl BinImpl for SheetPlayerPriv {}
-
+#[glib::derived_properties]
+impl ObjectImpl for PlayerBigPriv {}
+impl WidgetImpl for PlayerBigPriv {}
+impl BoxImpl for PlayerBigPriv {}
 glib::wrapper! {
-    pub(crate) struct SheetPlayer(ObjectSubclass<SheetPlayerPriv>)
-        @extends adw::Bin, gtk::Widget,
-        @implements gtk::Accessible, gtk::Buildable, gtk::ConstraintTarget;
+    pub struct PlayerBig(ObjectSubclass<PlayerBigPriv>)
+        @extends gtk::Box, gtk::Widget,
+        @implements gtk::ConstraintTarget, gtk::Buildable, gtk::Accessible, gtk::Orientable;
 }
 
-impl SheetPlayer {
+impl PlayerBig {
     pub fn init(&self, player: &Player) {
         let imp = self.imp();
         imp.slider.set_range(0.0, 1.0);
         let slider_update = Self::connect_update_slider(&imp.slider, player);
         imp.slider_update.replace(Some(slider_update));
 
+        imp.rate.init(player);
         player.bind_ui(self);
     }
 
@@ -111,23 +124,30 @@ impl SheetPlayer {
     }
 }
 
-impl PlayerUi for SheetPlayer {
+impl PlayerUi for PlayerBig {
     fn show_cover_changed(&self, show: &ShowCoverModel) {
-        load_widget_texture(&self.imp().cover.get(), show.id(), crate::Thumb256, true);
+        load_widget_texture(&self.imp().cover.get(), show.id(), crate::Thumb64, false);
     }
 
-    fn show_cover_reset(&self) {}
+    fn show_cover_reset(&self) {
+        self.imp()
+            .cover
+            .set_icon_name(Some("image-missing-symbolic"));
+    }
 
     fn show_changed(&self, show: &ShowCoverModel) {
-        let imp = self.imp();
-        imp.show.set_text(show.title());
-        imp.show.set_tooltip_text(Some(show.title()));
+        self.imp().show.set_text(show.title());
+        self.imp().show.set_tooltip_text(Some(show.title()));
     }
 
     fn episode_changed(&self, ep: &Episode) {
         let imp = self.imp();
         imp.episode.set_text(ep.title());
         imp.episode.set_tooltip_text(Some(ep.title()));
+
+        imp.cover_button
+            .set_action_target_value(Some(&ep.id().0.into()));
+        imp.cover_button.set_action_name(Some("app.go-to-episode"));
     }
 
     fn status_changed(&self, status: PlaybackStatus) {
@@ -159,7 +179,6 @@ impl PlayerUi for SheetPlayer {
 
         imp.progressed.set_text(&format_duration(seconds as u32));
     }
-
     fn duration_changed(&self, duration: Duration) {
         let seconds = duration.seconds();
         let imp = self.imp();
@@ -170,5 +189,9 @@ impl PlayerUi for SheetPlayer {
             .unblock_signal(imp.slider_update.borrow().as_ref().unwrap());
 
         imp.duration.set_text(&format_duration(seconds as u32));
+    }
+
+    fn chapters_changed(&self, has_chapters: bool) {
+        self.imp().chapters_button.set_visible(has_chapters);
     }
 }

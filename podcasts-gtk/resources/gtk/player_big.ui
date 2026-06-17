@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Generated with glade 3.22.0
+
+Copyright (C) 2017 - 2018
+
+This file is part of GNOME Podcast.
+
+GNOME Podcast is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+GNOME Podcast is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with GNOME Podcast.  If not, see <http://www.gnu.org/licenses/>.
+
+Authors:
+Jordan Petridis
+Tobias Bernard
+
+-->
+<interface>
+  <!-- interface-license-type gplv3 -->
+  <!-- interface-name GNOME Podcast -->
+  <!-- interface-description A podcast client for the GNOME Desktop -->
+  <!-- interface-copyright 2017 - 2018 -->
+  <!-- interface-authors Jordan Petridis\nTobias Bernard -->
+  <template class="PdPlayerBig" parent="GtkBox">
+    <property name="spacing">6</property>
+    <child>
+      <object class="GtkBox" id="buttons">
+        <property name="valign">center</property>
+        <property name="margin-start">6</property>
+        <property name="margin-end">6</property>
+        <child>
+          <object class="GtkButton" id="rewind">
+            <property name="width-request">42</property>
+            <property name="receives-default">True</property>
+            <property name="tooltip-text" translatable="yes">Rewind 10 seconds</property>
+            <property name="icon-name">skip-back-symbolic</property>
+            <property name="action-name">win.seek-by</property>
+            <property name="action-target">-10</property>
+            <style>
+              <class name="flat"/>
+              <class name="circular"/>
+              <class name="taller-button"/>
+            </style>
+          </object>
+        </child>
+        <child>
+          <object class="GtkStack" id="play_pause">
+            <property name="hhomogeneous">True</property>
+            <property name="vhomogeneous">True</property>
+            <child>
+              <object class="GtkButton" id="play">
+                <property name="width-request">64</property>
+                <property name="receives-default">True</property>
+                <property name="tooltip-text" translatable="yes">Play</property>
+                <property name="icon-name">media-playback-start-symbolic</property>
+                <property name="action-name">win.play</property>
+                <style>
+                  <class name="flat"/>
+                  <class name="circular"/>
+                  <class name="taller-button"/>
+                </style>
+              </object>
+            </child>
+            <child>
+              <object class="GtkButton" id="pause">
+                <property name="width-request">64</property>
+                <property name="receives-default">True</property>
+                <property name="tooltip-text" translatable="yes">Pause</property>
+                <property name="icon-name">media-playback-pause-symbolic</property>
+                <property name="action-name">win.pause</property>
+                <style>
+                  <class name="flat"/>
+                  <class name="circular"/>
+                  <class name="taller-button"/>
+                </style>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="GtkButton" id="forward">
+            <property name="width-request">42</property>
+            <property name="receives-default">True</property>
+            <property name="tooltip-text" translatable="yes">Fast forward 10 seconds</property>
+            <property name="icon-name">skip-forward-symbolic</property>
+            <property name="action-name">win.seek-by</property>
+            <property name="action-target">10</property>
+            <style>
+              <class name="flat"/>
+              <class name="circular"/>
+              <class name="taller-button"/>
+            </style>
+          </object>
+        </child>
+        <style>
+        </style>
+      </object>
+    </child>
+    <child>
+      <object class="GtkBox" id="info">
+        <property name="spacing">6</property>
+        <child>
+          <object class="GtkButton" id="cover_button">
+            <property name="tooltip-text" translatable="yes">Go to the description for this episode.</property>
+            <style>
+              <class name="flat"/>
+            </style>
+            <child>
+              <object class="GtkImage" id="cover">
+                <property name="valign">center</property>
+                <property name="pixel-size">34</property>
+                <property name="icon-name">image-missing-symbolic</property>
+                <property name="overflow">hidden</property>
+                <style>
+                  <class name="rounded-small"/>
+                </style>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="GtkBox">
+            <property name="receives_default">True</property>
+            <property name="valign">center</property>
+            <property name="orientation">vertical</property>
+            <child>
+              <object class="GtkLabel" id="show">
+                <property name="label">Show Title</property>
+                <property name="wrap">True</property>
+                <property name="ellipsize">end</property>
+                <property name="max-width-chars">20</property>
+                <property name="xalign">0</property>
+                <style>
+                  <class name="caption"/>
+                </style>
+              </object>
+            </child>
+            <child>
+              <object class="GtkLabel" id="episode">
+                <property name="label">Episode Title</property>
+                <property name="wrap">True</property>
+                <property name="ellipsize">end</property>
+                <property name="max-width-chars">20</property>
+                <property name="xalign">0</property>
+                <style>
+                  <class name="caption-heading"/>
+                </style>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
+    <child>
+      <object class="GtkScale" id="slider">
+        <property name="hexpand">True</property>
+        <property name="round-digits">1</property>
+        <property name="draw-value">False</property>
+        <property name="width-request">130</property>
+        <accessibility>
+          <relation name="labelled-by">episode</relation>
+        </accessibility>
+      </object>
+    </child>
+    <child>
+      <object class="GtkBox" id="timer">
+        <property name="halign">start</property>
+        <property name="valign">center</property>
+        <property name="spacing">6</property>
+        <child>
+          <object class="GtkLabel" id="progressed">
+            <property name="halign">start</property>
+            <property name="valign">center</property>
+            <property name="label">0:00</property>
+            <attributes>
+              <attribute name="font-features" value="tnum=1"/>
+            </attributes>
+          </object>
+        </child>
+        <child>
+          <object class="GtkLabel" id="separator">
+            <property name="halign">start</property>
+            <property name="valign">center</property>
+            <property name="label">/</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkLabel" id="duration">
+            <property name="halign">start</property>
+            <property name="valign">center</property>
+            <property name="label">0:00</property>
+            <attributes>
+              <attribute name="font-features" value="tnum=1"/>
+            </attributes>
+          </object>
+        </child>
+        <child>
+          <object class="GtkButton" id="chapters_button">
+            <property name="tooltip-text" translatable="yes">Go to the Chapters list.</property>
+            <property name="visible">False</property>
+            <property name="valign">center</property>
+            <property name="icon-name">view-list-bullet-symbolic</property>
+          </object>
+        </child>
+        <child>
+          <object class="PdPlayerRate" id="rate"></object>
+        </child>
+      </object>
+    </child>
+  </template>
+</interface>

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Generated with glade 3.22.0
+
+Copyright (C) 2017 - 2018
+
+This file is part of GNOME Podcast.
+
+GNOME Podcast is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+GNOME Podcast is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with GNOME Podcast.  If not, see <http://www.gnu.org/licenses/>.
+
+Authors:
+Jordan Petridis
+Tobias Bernard
+
+-->
+<interface>
+  <!-- interface-license-type gplv3 -->
+  <!-- interface-name GNOME Podcast -->
+  <!-- interface-description A podcast client for the GNOME Desktop -->
+  <!-- interface-copyright 2017 - 2018 -->
+  <!-- interface-authors Jordan Petridis\nTobias Bernard -->
+  <template class="PdPlayerWrapper" parent="AdwBin">
+    <property name="visible">False</property>
+    <child>
+      <object class="GtkStack" id="stack">
+        <property name="transition_type">crossfade</property>
+        <property name="hhomogeneous">False</property>
+        <child>
+          <object class="PdPlayerBig" id="big"></object>
+        </child>
+        <child>
+          <object class="PdPlayerSmall" id="small"></object>
+        </child>
+      </object>
+    </child>
+    <style>
+      <class name="toolbar"/>
+    </style>
+  </template>
+</interface>

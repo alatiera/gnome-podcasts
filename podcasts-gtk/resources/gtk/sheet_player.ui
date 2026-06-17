@@ -126,6 +126,8 @@
                         <property name="valign">center</property>
                         <property name="margin-end">12</property>
                         <property name="tooltip-text" translatable="yes">Rewind</property>
+                        <property name="action-name">win.seek-by</property>
+                        <property name="action-target">-10</property>
                         <child>
                           <object class="GtkImage">
                             <property name="icon-name">skip-back-large-symbolic</property>
@@ -147,6 +149,7 @@
                             <property name="width-request">80</property>
                             <property name="height-request">80</property>
                             <property name="tooltip-text" translatable="yes">Play</property>
+                            <property name="action-name">win.play</property>
                             <child>
                               <object class="GtkImage">
                                 <property name="icon-name">media-playback-start-symbolic</property>
@@ -165,6 +168,7 @@
                             <property name="width-request">80</property>
                             <property name="height-request">80</property>
                             <property name="tooltip-text" translatable="yes">Pause</property>
+                            <property name="action-name">win.pause</property>
                             <child>
                               <object class="GtkImage">
                                 <property name="icon-name">media-playback-pause-symbolic</property>
@@ -188,6 +192,8 @@
                         <property name="valign">center</property>
                         <property name="margin-start">12</property>
                         <property name="tooltip-text" translatable="yes">Forward</property>
+                        <property name="action-name">win.seek-by</property>
+                        <property name="action-target">10</property>
                         <child>
                           <object class="GtkImage">
                             <property name="icon-name">skip-forward-large-symbolic</property>
