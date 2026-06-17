@@ -99,3 +99,14 @@ popover modelbutton > box > label {
 .no-edit-icon .edit-icon {
     opacity: 0;
 }
+
+.circle-overlay {
+    border-radius: 50px;
+    background-color: var(--accent-bg-color);
+    padding: 4px;
+}
+
+searchbar box {
+    background-color: var(--window-bg-color);
+    padding-top: 0px; /* header-bar already provides spacing */
+}

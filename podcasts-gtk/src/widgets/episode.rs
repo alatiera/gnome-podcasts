@@ -631,6 +631,10 @@ impl EpisodeWidget {
         }
         imp.set_played(ep.played().is_some())
     }
+
+    pub(crate) fn set_played(&self, value: bool) {
+        self.imp().set_played(value);
+    }
 }
 
 impl Default for EpisodeWidget {

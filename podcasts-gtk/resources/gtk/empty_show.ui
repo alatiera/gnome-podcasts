@@ -12,7 +12,7 @@
     <property name="margin_top">6</property>
     <property name="margin_bottom">6</property>
     <child>
-      <object class="GtkLabel" id="label_1">
+      <object class="GtkLabel" id="title">
         <!-- Translators: Show as a noun, meaning a Podcast-Show. -->
         <property name="label" translatable="yes">This show does not have episodes yet</property>
         <property name="wrap">True</property>
@@ -24,7 +24,7 @@
       </object>
     </child>
     <child>
-      <object class="GtkLabel" id="label_2">
+      <object class="GtkLabel" id="subtitle">
         <property name="label" translatable="yes">If you think this is an error, please consider writing a bug report.</property>
         <property name="wrap">True</property>
         <property name="justify">center</property>

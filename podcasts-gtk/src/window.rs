@@ -1,6 +1,7 @@
 // window.rs
 //
 // Copyright 2019 Jordan Petridis <jpetridis@gnome.org>
+// Copyright 2021-2026 nee <nee-git@patchouli.garden>
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -29,7 +30,6 @@ use std::cell::{Cell, OnceCell, RefCell};
 use std::cell::{Ref, RefMut};
 use std::ops::Deref;
 use std::rc::Rc;
-use std::sync::Arc;
 
 use crate::app::{Action, PdApplication};
 use crate::config::APP_ID;
@@ -38,8 +38,10 @@ use crate::utils;
 use crate::widgets::about_dialog;
 use crate::widgets::player;
 use crate::widgets::player::{PlayerExt, PlayerWidget, SeekDirection, StreamMode};
-use crate::widgets::{Content, DiscoveryPage, EpisodeDescription, ShowWidget, SyncPreferences};
-use podcasts_data::dbqueries;
+use crate::widgets::{
+    Content, DiscoveryPage, EpisodeDescription, FilterMenu, FilterMenuMode, ShowWidget,
+    SyncPreferences,
+};
 use podcasts_data::feed_manager::FEED_MANAGER;
 use podcasts_data::{EpisodeId, EpisodeWidgetModel, ShowId};
 
@@ -80,6 +82,12 @@ pub struct MainWindowPriv {
     pub(crate) player_breakpoint: TemplateChild<adw::Breakpoint>,
     #[template_child]
     pub(crate) show_page: TemplateChild<adw::NavigationPage>,
+    #[template_child]
+    pub(crate) filter_home: TemplateChild<FilterMenu>,
+    #[template_child]
+    pub(crate) filter_shows: TemplateChild<FilterMenu>,
+    #[template_child]
+    pub(crate) filter_stack: TemplateChild<adw::ViewStack>,
 
     #[property(set, get)]
     pub(crate) updating: Cell<bool>,
@@ -113,6 +121,9 @@ impl ObjectSubclass for MainWindowPriv {
             header_breakpoint: TemplateChild::default(),
             player_breakpoint: TemplateChild::default(),
             show_page: TemplateChild::default(),
+            filter_home: TemplateChild::default(),
+            filter_shows: TemplateChild::default(),
+            filter_stack: TemplateChild::default(),
             updating: Cell::new(false),
             updating_timeout: RefCell::new(None),
             sender: OnceCell::new(),
@@ -183,6 +194,9 @@ impl ObjectSubclass for MainWindowPriv {
         klass.install_action("win.lower-playback-rate", None, move |win, _, _| {
             win.player().change_playback_rate(-0.25);
         });
+        klass.install_action("win.open-search", None, move |win, _, _| {
+            win.open_search();
+        });
     }
 
     fn instance_init(obj: &glib::subclass::InitializingObject<Self>) {
@@ -230,7 +244,14 @@ impl MainWindow {
     pub(crate) fn new(app: &PdApplication, sender: &Sender<Action>) -> Self {
         let window: Self = glib::Object::builder().property("application", app).build();
         let imp = window.imp();
-        let content = Content::new(sender.clone());
+        imp.filter_home.init(FilterMenuMode::Episode);
+        imp.filter_shows.init(FilterMenuMode::Show);
+        let content = Content::new(
+            sender.clone(),
+            imp.filter_home.clone(),
+            imp.filter_shows.clone(),
+            imp.filter_stack.clone(),
+        );
 
         imp.sender.set(sender.clone()).unwrap();
 
@@ -341,6 +362,22 @@ impl MainWindow {
         self.imp().navigation_view.pop_to_tag("content");
     }
 
+    fn open_search(&self) {
+        if let Some(show) = self.imp().show_widget.borrow().as_ref() {
+            let imp = self.imp();
+            let is_current_page = imp
+                .navigation_view
+                .visible_page()
+                .and_then(|p| p.tag())
+                .is_some_and(|t| t == "show");
+            if is_current_page {
+                show.open_search();
+                return;
+            }
+        }
+        self.content().open_search();
+    }
+
     pub(crate) fn init_episode(
         &self,
         id: EpisodeId,
@@ -392,6 +429,10 @@ impl MainWindow {
         &self.imp().bottom_switcher_bar
     }
 
+    pub(crate) fn filter_stack(&self) -> &adw::ViewStack {
+        &self.imp().filter_stack
+    }
+
     pub(crate) fn sender(&self) -> &Sender<Action> {
         self.imp().sender.get().unwrap()
     }
@@ -419,17 +460,17 @@ impl MainWindow {
         imp.show_widget.replace(widget);
     }
 
+    /// Reloads all episodes in the Show Widget
     pub(crate) fn update_show_widget(&self, show_id: ShowId) -> Result<()> {
         let imp = self.imp();
         let same = imp.show_widget.borrow().as_ref().and_then(|s| s.show_id()) == Some(show_id);
-        if same {
-            let pd = dbqueries::get_podcast_from_id(show_id)?;
-            let widget = ShowWidget::new(Arc::new(pd), self.sender());
-            self.replace_show_widget(Some(widget), &imp.show_page.title());
+        if same && let Some(widget) = imp.show_widget.borrow().as_ref() {
+            widget.reload(self.sender());
         }
         Ok(())
     }
 
+    /// Updates a single episode
     pub(crate) fn update_show_widget_episode(&self, ep: &EpisodeWidgetModel) {
         let imp = self.imp();
         let show_id = ep.show_id();

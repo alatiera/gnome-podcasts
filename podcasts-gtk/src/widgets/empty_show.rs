@@ -1,6 +1,7 @@
 // empty_show.rs
 //
 // Copyright 2022 Jordan Petridis <jpetridis@gnome.org>
+// Copyright 2026 nee <nee-git@patchouli.garden>
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -17,12 +18,19 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+use gettextrs::gettext;
+use gtk::prelude::*;
 use gtk::subclass::prelude::*;
 use gtk::{CompositeTemplate, glib};
 
 #[derive(Debug, Default, CompositeTemplate)]
 #[template(resource = "/org/gnome/Podcasts/gtk/empty_show.ui")]
-pub struct EmptyShowPriv {}
+pub struct EmptyShowPriv {
+    #[template_child]
+    pub title: TemplateChild<gtk::Label>,
+    #[template_child]
+    pub subtitle: TemplateChild<gtk::Label>,
+}
 
 #[glib::object_subclass]
 impl ObjectSubclass for EmptyShowPriv {
@@ -54,5 +62,14 @@ glib::wrapper! {
 impl Default for EmptyShow {
     fn default() -> Self {
         glib::Object::new()
+    }
+}
+
+impl EmptyShow {
+    pub fn set_empty_because_of_filter(&self) {
+        let imp = self.imp();
+        imp.title
+            .set_label(&gettext("No results for the active filter."));
+        imp.subtitle.set_visible(false);
     }
 }

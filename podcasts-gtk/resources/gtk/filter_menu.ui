@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Copyright (C) 2026
+
+This file is part of GNOME Podcasts.
+
+GNOME Podcasts is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+GNOME Podcasts is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with GNOME Podcasts.  If not, see <http://www.gnu.org/licenses/>.
+
+Authors:
+nee
+-->
+<interface>
+  <menu id="filter_menu_episodes">
+    <section>
+      <item>
+        <!-- Translators: (in a filter menu) sort "Newest" episodes on top of the list -->
+        <attribute name="label" translatable="yes">Newest First</attribute>
+        <attribute name="action">filter.order</attribute>
+        <attribute name="target">default</attribute>
+      </item>
+      <item>
+        <!-- Translators: (in a filter menu) sort "Oldest" episodes on top of the list -->
+        <attribute name="label" translatable="yes">Oldest First</attribute>
+        <attribute name="action">filter.order</attribute>
+        <attribute name="target">reversed</attribute>
+      </item>
+    </section>
+
+    <section>
+      <item>
+        <!-- Translators: (in a filter menu) list "All" episodes regardless of play status -->
+        <attribute name="label" translatable="yes">All</attribute>
+        <attribute name="action">filter.played</attribute>
+        <attribute name="target">all</attribute>
+      </item>
+      <item>
+        <!-- Translators: (in a filter menu) list only "Played" episodes -->
+        <attribute name="label" translatable="yes">Played</attribute>
+        <attribute name="action">filter.played</attribute>
+        <attribute name="target">yes</attribute>
+      </item>
+      <item>
+        <!-- Translators: (in a filter menu) list only "Not Played" episodes -->
+        <attribute name="label" translatable="yes">Not Played</attribute>
+        <attribute name="action">filter.played</attribute>
+        <attribute name="target">no</attribute>
+      </item>
+    </section>
+
+    <section>
+      <item>
+        <!-- Translators: (in a filter menu) list "All" episodes regardless of download status -->
+        <attribute name="label" translatable="yes">All</attribute>
+        <attribute name="action">filter.downloaded</attribute>
+        <attribute name="target">all</attribute>
+      </item>
+      <item>
+        <!-- Translators: (in a filter menu) list only "Downloaded" episodes -->
+        <attribute name="label" translatable="yes">Downloaded</attribute>
+        <attribute name="action">filter.downloaded</attribute>
+        <attribute name="target">yes</attribute>
+      </item>
+      <item>
+        <!-- Translators: (in a filter menu) list only "Not Downloaded" episodes -->
+        <attribute name="label" translatable="yes">Not Downloaded</attribute>
+        <attribute name="action">filter.downloaded</attribute>
+        <attribute name="target">no</attribute>
+      </item>
+    </section>
+
+  </menu>
+
+
+  <menu id="filter_menu_shows">
+    <section>
+      <item>
+        <!-- Translators: (in a filter menu) Sorting Shows in alphabetical -->
+        <attribute name="label" translatable="yes">Alphabetical</attribute>
+        <attribute name="action">filter.order</attribute>
+        <attribute name="target">default</attribute>
+      </item>
+      <item>
+        <!-- Translators: (in a filter menu) Sorting Shows in reverse alphabetical -->
+        <attribute name="label" translatable="yes">Reversed</attribute>
+        <attribute name="action">filter.order</attribute>
+        <attribute name="target">reversed</attribute>
+      </item>
+    </section>
+
+    <section>
+      <item>
+        <!-- Translators: (in a filter menu) list "All" Shows regardless of completion status -->
+        <attribute name="label" translatable="yes">All</attribute>
+        <attribute name="action">filter.played</attribute>
+        <attribute name="target">all</attribute>
+      </item>
+      <item>
+        <!-- Translators: (in a filter menu) filter for Shows where all episodes were played -->
+        <attribute name="label" translatable="yes">Completed</attribute>
+        <attribute name="action">filter.played</attribute>
+        <attribute name="target">yes</attribute>
+      </item>
+      <item>
+        <!-- Translators: (in a filter menu) filter for Shows with unplayed episodes -->
+        <attribute name="label" translatable="yes">Not Completed</attribute>
+        <attribute name="action">filter.played</attribute>
+        <attribute name="target">no</attribute>
+      </item>
+    </section>
+
+    <section>
+      <item>
+        <!-- Translators: (in a filter menu) list "All" Shows regardless if they have downloaded episodes -->
+        <attribute name="label" translatable="yes">All</attribute>
+        <attribute name="action">filter.downloaded</attribute>
+        <attribute name="target">all</attribute>
+      </item>
+      <item>
+        <!-- Translators: (in a filter menu) filter for Shows with "Downloaded" episodes -->
+        <attribute name="label" translatable="yes">Downloaded</attribute>
+        <attribute name="action">filter.downloaded</attribute>
+        <attribute name="target">yes</attribute>
+      </item>
+      <item>
+        <!-- Translators: (in a filter menu) filter for Shows with no "Downloaded" episodes -->
+        <attribute name="label" translatable="yes">Not Downloaded</attribute>
+        <attribute name="action">filter.downloaded</attribute>
+        <attribute name="target">no</attribute>
+      </item>
+    </section>
+  </menu>
+
+  <template class="PdFilterMenu" parent="AdwBin">
+    <child>
+      <object class="GtkBox">
+        <property name="spacing">6</property>
+        <child>
+          <object class="GtkToggleButton" id="search_button">
+            <property name="icon-name">system-search-symbolic</property>
+            <!-- Translators: Tooltip text for a button that toggles the search bar -->
+            <property name="tooltip-text" translatable="yes">Toggle Search</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkOverlay">
+            <child type="overlay">
+              <object class="GtkBox" id="is_active_circle">
+                <property name="halign">end</property>
+                <property name="valign">start</property>
+                <property name="margin-end">5</property>
+                <property name="margin-top">5</property>
+                <property name="can-focus">False</property>
+                <property name="can-target">False</property>
+                <property name="visible">False</property>
+                <style>
+                  <class name="circle-overlay"/>
+                </style>
+              </object>
+            </child>
+            <child>
+              <object class="GtkMenuButton" id="button">
+                <property name="icon-name">funnel-outline-symbolic</property>
+                <!-- Translators: Tooltip text for a menu button that has filter, sorting, and search options -->
+                <property name="tooltip-text" translatable="yes">Filter</property>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
+  </template>
+</interface>

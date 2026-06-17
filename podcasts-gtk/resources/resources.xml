@@ -8,11 +8,13 @@
       <file compressed="true" preprocess="xml-stripblanks">gtk/episode_widget.ui</file>
       <file compressed="true" preprocess="xml-stripblanks">gtk/episode_menu.ui</file>
       <file compressed="true" preprocess="xml-stripblanks">gtk/episode_description.ui</file>
+      <file compressed="true" preprocess="xml-stripblanks">gtk/filter_menu.ui</file>
       <file compressed="true" preprocess="xml-stripblanks">gtk/show_widget.ui</file>
       <file compressed="true" preprocess="xml-stripblanks">gtk/empty_view.ui</file>
       <file compressed="true" preprocess="xml-stripblanks">gtk/empty_show.ui</file>
       <file compressed="true" preprocess="xml-stripblanks">gtk/home_view.ui</file>
       <file compressed="true" preprocess="xml-stripblanks">gtk/home_episode.ui</file>
+      <file compressed="true" preprocess="xml-stripblanks">gtk/home_episode_list.ui</file>
       <file compressed="true" preprocess="xml-stripblanks">gtk/sheet_base.ui</file>
       <file compressed="true" preprocess="xml-stripblanks">gtk/sheet_player.ui</file>
       <file compressed="true" preprocess="xml-stripblanks">gtk/sheet_description.ui</file>
@@ -23,11 +25,13 @@
       <file compressed="true" preprocess="xml-stripblanks">gtk/window.ui</file>
       <file compressed="true" preprocess="xml-stripblanks">gtk/sync_preferences.ui</file>
       <file compressed="true" preprocess="xml-stripblanks">icons/scalable/actions/info-outline-symbolic.svg</file>
+      <!-- icons -->
       <file compressed="true" preprocess="xml-stripblanks">icons/scalable/actions/skip-back-large-symbolic.svg</file>
       <file compressed="true" preprocess="xml-stripblanks">icons/scalable/actions/skip-back-symbolic.svg</file>
       <file compressed="true" preprocess="xml-stripblanks">icons/scalable/actions/skip-forward-large-symbolic.svg</file>
       <file compressed="true" preprocess="xml-stripblanks">icons/scalable/actions/skip-forward-symbolic.svg</file>
       <file compressed="true" preprocess="xml-stripblanks">icons/scalable/actions/sound-symbolic.svg</file>
+      <file compressed="true" preprocess="xml-stripblanks">icons/scalable/actions/funnel-outline-symbolic.svg</file>
       <file compressed="true" alias="style.css">gtk/style.css</file>
   </gresource>
 </gresources>

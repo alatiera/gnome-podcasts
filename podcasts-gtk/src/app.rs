@@ -1,6 +1,7 @@
 // app.rs
 //
 // Copyright 2017 Jordan Petridis <jpetridis@gnome.org>
+// Copyright 2021-2026 nee <nee-git@patchouli.garden>
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -317,6 +318,7 @@ impl PdApplication {
 
     fn setup_accels(&self) {
         self.set_accels_for_action("app.quit", &["<primary>q"]);
+        self.set_accels_for_action("win.open-search", &["<primary>f"]);
         self.set_accels_for_action("win.refresh", &["<primary>r", "F5"]);
         self.set_accels_for_action("win.toggle-pause", &["<primary>space"]);
         self.set_accels_for_action("win.seek-forwards", &["<primary>Right"]);
@@ -563,6 +565,7 @@ impl PdApplication {
 
                 window.top_switcher().set_sensitive(false);
                 window.bottom_switcher_bar().set_sensitive(false);
+                window.filter_stack().set_visible(false);
                 window.content().switch_to_empty_views();
             }
             Action::PopulatedState => {
@@ -575,6 +578,7 @@ impl PdApplication {
 
                 window.top_switcher().set_sensitive(true);
                 window.bottom_switcher_bar().set_sensitive(true);
+                window.filter_stack().set_visible(true);
                 window.content().switch_to_populated();
             }
             Action::RaiseWindow => window.present(),

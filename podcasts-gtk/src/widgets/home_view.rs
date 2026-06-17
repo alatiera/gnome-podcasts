@@ -1,6 +1,7 @@
 // home_view.rs
 //
 // Copyright 2017 Jordan Petridis <jpetridis@gnome.org>
+// Copyright 2020-2026 nee <nee-git@patchouli.garden>
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -17,57 +18,42 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+use adw::prelude::BinExt;
 use adw::subclass::prelude::*;
 use anyhow::Result;
 use async_channel::Sender;
 use chrono::prelude::*;
+use gettextrs::gettext;
+use glib::clone;
 use glib::subclass::InitializingObject;
 use gtk::gio;
 use gtk::{CompositeTemplate, glib, prelude::*};
+use std::cell::RefCell;
 
 use crate::app::Action;
 use crate::utils::{self, lazy_load};
-use crate::widgets::{BaseView, EpisodeWidget};
+use crate::widgets::{BaseView, EpisodeWidget, FilterMenu};
 use podcasts_data::dbqueries;
+use podcasts_data::dbqueries::EpisodeFilter;
 use podcasts_data::{EpisodeId, EpisodeModel, EpisodeWidgetModel, ShowId};
 
-#[derive(Debug, Clone)]
-enum ListSplit {
-    Today,
-    Yday,
-    Week,
-    Month,
-    Rest,
-}
-
-#[derive(Debug, Clone)]
-struct DateBox(ListSplit, Vec<EpisodeWidgetModel>);
-
+/// The main page
 #[derive(Debug, CompositeTemplate, Default)]
 #[template(resource = "/org/gnome/Podcasts/gtk/home_view.ui")]
 pub struct HomeViewPriv {
     #[template_child]
     view: TemplateChild<BaseView>,
     #[template_child]
-    today_box: TemplateChild<gtk::Box>,
+    search_bar: TemplateChild<gtk::SearchBar>,
     #[template_child]
-    yday_box: TemplateChild<gtk::Box>,
+    search_entry: TemplateChild<gtk::SearchEntry>,
+
     #[template_child]
-    week_box: TemplateChild<gtk::Box>,
-    #[template_child]
-    month_box: TemplateChild<gtk::Box>,
-    #[template_child]
-    rest_box: TemplateChild<gtk::Box>,
-    #[template_child]
-    today_list: TemplateChild<gtk::ListBox>,
-    #[template_child]
-    yday_list: TemplateChild<gtk::ListBox>,
-    #[template_child]
-    week_list: TemplateChild<gtk::ListBox>,
-    #[template_child]
-    month_list: TemplateChild<gtk::ListBox>,
-    #[template_child]
-    rest_list: TemplateChild<gtk::ListBox>,
+    episode_list_container: TemplateChild<adw::Bin>,
+
+    episode_list: RefCell<HomeEpisodeList>,
+    // Reference to the menu, owned by window.
+    filter_menu: RefCell<Option<FilterMenu>>,
 }
 
 #[glib::object_subclass]
@@ -97,16 +83,166 @@ glib::wrapper! {
 }
 
 impl HomeView {
-    pub(crate) fn new(sender: Sender<Action>) -> Self {
-        let home: Self = glib::Object::new();
+    pub(crate) fn new(sender: Sender<Action>, filter_menu: FilterMenu) -> Self {
+        let this: Self = glib::Object::new();
 
+        this.imp()
+            .search_bar
+            .set_key_capture_widget(Some(&this.imp().view.get()));
+
+        this.imp().search_entry.connect_search_changed(clone!(
+            #[strong]
+            sender,
+            #[weak]
+            this,
+            move |_| this.reload(sender.clone())
+        ));
+
+        filter_menu.connect_filter_changed(clone!(
+            #[strong]
+            sender,
+            #[weak]
+            this,
+            move |_| this.reload(sender.clone())
+        ));
+        filter_menu
+            .search_button()
+            .bind_property(
+                "active",
+                &this.imp().search_bar.get(),
+                "search-mode-enabled",
+            )
+            .flags(glib::BindingFlags::SYNC_CREATE | glib::BindingFlags::BIDIRECTIONAL)
+            .build();
+
+        this.imp().filter_menu.replace(Some(filter_menu));
+
+        this.reload(sender);
+
+        this
+    }
+
+    /// Replaces the episode_list and loads new episodes for the current filter.
+    /// The old list should stop loading due to it's weak reference.
+    pub(crate) fn reload(&self, sender: Sender<Action>) {
+        let list = HomeEpisodeList::default();
+        self.imp().episode_list_container.set_child(Some(&list));
+        let filter = self.episode_filter().unwrap_or_default();
+        list.load(sender, filter);
+        self.imp().episode_list.replace(list);
+    }
+
+    pub(crate) fn open_search(&self) {
+        self.imp().search_bar.set_search_mode(true);
+    }
+
+    fn episode_filter(&self) -> Option<EpisodeFilter> {
+        let filter = self
+            .imp()
+            .filter_menu
+            .borrow()
+            .as_ref()
+            .map(|f| f.episode_filter());
+        filter.map(|mut f| {
+            let search = self.imp().search_entry.text();
+            if !search.is_empty() {
+                f.search = Some(search.to_string());
+            }
+            f
+        })
+    }
+
+    pub(crate) fn update_episode(&self, ep: &EpisodeWidgetModel) {
+        self.imp().episode_list.borrow().update_episode(ep);
+    }
+}
+
+#[derive(Debug, Clone)]
+enum ListSplit {
+    Today,
+    Yday,
+    Week,
+    Month,
+    Rest,
+}
+
+#[derive(Debug, Clone)]
+struct DateBox(ListSplit, Vec<EpisodeWidgetModel>);
+
+/// Episode list as separate widget, so we can replace it while searching.
+/// In the future this could be replaced by a GtkListView with separators,
+/// but right now that can't reproduce the separate list boxes styling.
+#[derive(Debug, CompositeTemplate, Default)]
+#[template(resource = "/org/gnome/Podcasts/gtk/home_episode_list.ui")]
+pub struct HomeEpisodeListPriv {
+    #[template_child]
+    frame_parent: TemplateChild<gtk::Box>,
+
+    #[template_child]
+    today_box: TemplateChild<gtk::Box>,
+    #[template_child]
+    yday_box: TemplateChild<gtk::Box>,
+    #[template_child]
+    week_box: TemplateChild<gtk::Box>,
+    #[template_child]
+    month_box: TemplateChild<gtk::Box>,
+    #[template_child]
+    rest_box: TemplateChild<gtk::Box>,
+
+    #[template_child]
+    today_list: TemplateChild<gtk::ListBox>,
+    #[template_child]
+    yday_list: TemplateChild<gtk::ListBox>,
+    #[template_child]
+    week_list: TemplateChild<gtk::ListBox>,
+    #[template_child]
+    month_list: TemplateChild<gtk::ListBox>,
+    #[template_child]
+    rest_list: TemplateChild<gtk::ListBox>,
+}
+
+#[glib::object_subclass]
+impl ObjectSubclass for HomeEpisodeListPriv {
+    const NAME: &'static str = "PdHomeEpisodeList";
+    type Type = HomeEpisodeList;
+    type ParentType = adw::Bin;
+
+    fn class_init(klass: &mut Self::Class) {
+        BaseView::ensure_type();
+        klass.bind_template();
+    }
+
+    fn instance_init(obj: &InitializingObject<Self>) {
+        obj.init_template();
+    }
+}
+
+impl WidgetImpl for HomeEpisodeListPriv {}
+impl ObjectImpl for HomeEpisodeListPriv {}
+impl BinImpl for HomeEpisodeListPriv {}
+
+glib::wrapper! {
+    pub struct HomeEpisodeList(ObjectSubclass<HomeEpisodeListPriv>)
+        @extends BaseView, gtk::Widget, adw::Bin,
+        @implements gtk::Accessible, gtk::Buildable, gtk::ConstraintTarget;
+}
+
+impl Default for HomeEpisodeList {
+    fn default() -> Self {
+        let this: Self = glib::Object::new();
+        this
+    }
+}
+
+impl HomeEpisodeList {
+    fn load(&self, sender: Sender<Action>, filter: EpisodeFilter) {
         crate::MAINCONTEXT.spawn_local_with_priority(
             glib::source::Priority::DEFAULT_IDLE,
             glib::clone!(
-                #[weak]
-                home,
+                #[weak(rename_to = this)]
+                self,
                 async move {
-                    let results = home.add_to_boxes(sender).await;
+                    let results = this.add_to_boxes(sender, filter).await;
                     for result in results {
                         if let Err(e) = result {
                             log::error!("Error: {:?}", e);
@@ -115,15 +251,31 @@ impl HomeView {
                 }
             ),
         );
-
-        home
     }
 
-    async fn add_to_boxes(&self, sender: Sender<Action>) -> Vec<Result<(), glib::JoinError>> {
-        let data = gio::spawn_blocking(get_episodes).await;
+    async fn add_to_boxes(
+        &self,
+        sender: Sender<Action>,
+        filter: EpisodeFilter,
+    ) -> Vec<Result<(), glib::JoinError>> {
+        let data = gio::spawn_blocking(move || get_episodes(&filter)).await;
 
         let mut handles = Vec::with_capacity(5);
         if let Ok(Ok(data)) = data {
+            let empty = data.iter().find(|d| !d.1.is_empty()).is_none();
+            if empty {
+                let empty_page = adw::StatusPage::builder()
+                    .title(gettext("No Results Found"))
+                    .description(gettext("Try a different search or filters"))
+                    .icon_name("system-search-symbolic")
+                    .valign(gtk::Align::Center)
+                    .vexpand(true)
+                    .build();
+                self.set_child(Some(&empty_page));
+            } else {
+                self.set_child(Some(&self.imp().frame_parent.get()));
+            }
+
             for datebox in data {
                 if datebox.1.is_empty() {
                     continue;
@@ -196,9 +348,9 @@ impl HomeView {
     }
 }
 
-fn get_episodes() -> Result<Vec<DateBox>> {
+fn get_episodes(filter: &EpisodeFilter) -> Result<Vec<DateBox>> {
     let ignore = utils::get_ignored_shows()?;
-    let episodes = dbqueries::get_episodes_widgets_filter_limit(&ignore, 100)?;
+    let episodes = dbqueries::get_episodes_widgets_page(ignore.as_slice(), filter, 0, 100)?;
     Ok(split_model(episodes))
 }
 

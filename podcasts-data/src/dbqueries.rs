@@ -1,6 +1,7 @@
 // dbqueries.rs
 //
 // Copyright 2017 Jordan Petridis <jpetridis@gnome.org>
+// Copyright 2021-2026 nee <nee-git@patchouli.garden>
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -29,6 +30,8 @@ use crate::database::connection;
 use crate::errors::DataError;
 use crate::models::*;
 
+type DB = diesel::sqlite::Sqlite;
+
 pub fn get_sources() -> Result<Vec<Source>, DataError> {
     use crate::schema::source::dsl::*;
     let db = connection();
@@ -51,14 +54,93 @@ pub fn get_podcasts() -> Result<Vec<Show>, DataError> {
         .map_err(From::from)
 }
 
-pub fn get_podcasts_filter(filter_ids: &[ShowId]) -> Result<Vec<Show>, DataError> {
+#[derive(Debug, Default, Clone)]
+pub struct ShowFilter {
+    pub any_downloaded: Option<bool>,
+    pub completed: Option<bool>,
+    pub title_or_description: Option<String>,
+    pub reverse_order: bool,
+}
+
+impl ShowFilter {
+    fn query(&self) -> crate::schema::shows::BoxedQuery<'_, DB> {
+        use crate::schema::episodes;
+        use crate::schema::shows::dsl::*;
+        let query = if self.reverse_order {
+            crate::schema::shows::table.order(title.desc()).into_boxed()
+        } else {
+            crate::schema::shows::table.order(title.asc()).into_boxed()
+        };
+
+        let query = if let Some(text) = &self.title_or_description {
+            let like_query = user_input_to_like_query(text);
+            query.filter(
+                title
+                    .like(like_query.clone())
+                    .or(description.like(like_query)),
+            )
+        } else {
+            query
+        };
+
+        let query = match self.completed {
+            // Show IS completed = no unplayed episodes
+            Some(true) => {
+                // list of unplayed episodes
+                let sub_query = episodes::table
+                    .filter(episodes::show_id.eq(id))
+                    .filter(episodes::played.is_null());
+                // check that none exist in this show
+                query.filter(diesel::dsl::not(diesel::dsl::exists(sub_query)))
+            }
+            // Show is NOT completed = some unplayed episodes
+            Some(false) => {
+                // list of unplayed episodes
+                let sub_query = episodes::table
+                    .filter(episodes::show_id.eq(id))
+                    .filter(episodes::played.is_null());
+                // check that some DO exist in this show
+                query.filter(diesel::dsl::exists(sub_query))
+            }
+            None => query,
+        };
+
+        match self.any_downloaded {
+            // Show HAS downloaded files
+            Some(true) => {
+                // list of downloaded files
+                let sub_query = episodes::table
+                    .filter(episodes::show_id.eq(id))
+                    .filter(episodes::local_uri.is_not_null());
+                // check that some DO exist in this show
+                query.filter(diesel::dsl::exists(sub_query))
+            }
+            // Show LACKS downloaded files
+            Some(false) => {
+                // list of downloaded files
+                let sub_query = episodes::table
+                    .filter(episodes::show_id.eq(id))
+                    .filter(episodes::local_uri.is_not_null());
+                // check that NONE exist in this show
+                query.filter(diesel::dsl::not(diesel::dsl::exists(sub_query)))
+            }
+            None => query,
+        }
+    }
+}
+
+pub fn get_podcasts_filter(
+    filter_ids: &[ShowId],
+    filter: &ShowFilter,
+) -> Result<Vec<Show>, DataError> {
     use crate::schema::shows::dsl::*;
     let db = connection();
     let mut con = db.get()?;
 
-    shows
-        .order(title.asc())
+    filter
+        .query()
         .filter(id.ne_all(filter_ids))
+        .select(Show::as_select())
         .load::<Show>(&mut con)
         .map_err(From::from)
 }
@@ -159,18 +241,77 @@ pub fn get_episode_local_uri_from_id(ep_id: EpisodeId) -> Result<Option<String>,
         .map_err(From::from)
 }
 
-pub fn get_episodes_widgets_filter_limit(
+#[derive(Debug, Default, Clone)]
+pub struct EpisodeFilter {
+    pub downloaded: Option<bool>,
+    pub played: Option<bool>,
+    pub search: Option<String>,
+    pub reverse_order: bool,
+}
+
+impl EpisodeFilter {
+    pub fn is_default(&self) -> bool {
+        self.downloaded.is_none()
+            && self.played.is_none()
+            && self.search.is_none()
+            && !self.reverse_order
+    }
+}
+
+impl EpisodeFilter {
+    fn query(&self) -> crate::schema::episodes::BoxedQuery<'_, DB> {
+        use crate::schema::episodes;
+        use crate::schema::episodes::dsl::*;
+
+        let query = if self.reverse_order {
+            episodes::table.order(epoch.asc()).into_boxed()
+        } else {
+            episodes::table.order(epoch.desc()).into_boxed()
+        };
+
+        let query = match self.downloaded {
+            Some(true) => query.filter(local_uri.is_not_null()),
+            Some(false) => query.filter(local_uri.is_null()),
+            None => query,
+        };
+        let query = match self.played {
+            Some(true) => query.filter(played.is_not_null()),
+            Some(false) => query.filter(played.is_null()),
+            None => query,
+        };
+        if let Some(text) = &self.search {
+            let like_query = user_input_to_like_query(text);
+            query.filter(
+                title
+                    .like(like_query.clone())
+                    .escape('\\')
+                    .or(description.like(like_query).escape('\\')),
+            )
+        } else {
+            query
+        }
+    }
+}
+
+pub fn get_episodes_widgets_page(
     filter_ids: &[ShowId],
+    search_filter: &EpisodeFilter,
+    offset: u32,
     limit: u32,
 ) -> Result<Vec<EpisodeWidgetModel>, DataError> {
     use crate::schema::episodes::dsl::*;
     let db = connection();
     let mut con = db.get()?;
 
-    episodes
+    info!("FILTER: {:#?}", search_filter);
+
+    let query = search_filter
+        .query()
         .select(EpisodeWidgetModel::as_select())
-        .order(epoch.desc())
-        .filter(show_id.ne_all(filter_ids))
+        .filter(show_id.ne_all(filter_ids));
+
+    query
+        .offset(i64::from(offset))
         .limit(i64::from(limit))
         .load::<EpisodeWidgetModel>(&mut con)
         .map_err(From::from)
@@ -220,15 +361,20 @@ pub fn get_pd_episodes_count(parent: &Show) -> Result<i64, DataError> {
         .map_err(From::from)
 }
 
-pub fn get_pd_episodeswidgets(parent: &Show) -> Result<Vec<EpisodeWidgetModel>, DataError> {
+pub fn get_pd_episode_widgets(
+    parent: &Show,
+    filter: &EpisodeFilter,
+) -> Result<Vec<EpisodeWidgetModel>, DataError> {
     use crate::schema::episodes::dsl::*;
     let db = connection();
     let mut con = db.get()?;
 
-    episodes
+    let query = filter
+        .query()
         .select(EpisodeWidgetModel::as_select())
-        .filter(show_id.eq(parent.id()))
-        .order(epoch.desc())
+        .filter(show_id.eq(parent.id()));
+
+    query
         .load::<EpisodeWidgetModel>(&mut con)
         .map_err(From::from)
 }
@@ -605,6 +751,21 @@ pub fn update_episodes(eps: Vec<Episode>) -> Result<(), DataError> {
         r?;
     }
     Ok(())
+}
+
+/// Turn user input into an escaped sql like query
+/// xy -> %xy%
+///
+/// Use it like this:
+/// let l = user_input_to_like_query()
+/// query.like(l).escape('\\')
+///
+/// It is mandetory to add .escape('\\')
+/// because sqlite has not default escape sequence.
+fn user_input_to_like_query(text: &str) -> String {
+    // % is an any character-sequence wildcard
+    // _ is a single character wildcard
+    format!("%{}%", text.replace("%", "\\%").replace("_", "\\_"))
 }
 
 // All the data required to make a delta sync

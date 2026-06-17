@@ -1,7 +1,7 @@
 // content_stack.rs
 //
 // Copyright 2017 Jordan Petridis <jpetridis@gnome.org>
-// Copyright 2024 nee <nee-git@patchouli.garden>
+// Copyright 2024-2026 nee <nee-git@patchouli.garden>
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -18,16 +18,19 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+use adw::glib::prelude::*;
 use adw::prelude::*;
 use anyhow::Result;
 use async_channel::Sender;
 use gettextrs::gettext;
-use std::cell::OnceCell;
+use glib::clone;
+use gtk::glib;
+use std::cell::{OnceCell, RefCell};
 use std::rc::Rc;
 
 use crate::app::Action;
 use crate::utils::get_ignored_shows;
-use crate::widgets::{EmptyView, HomeView, ShowsView};
+use crate::widgets::{EmptyView, FilterMenu, HomeView, ShowsView};
 use podcasts_data::EpisodeWidgetModel;
 use podcasts_data::dbqueries::is_episodes_populated;
 
@@ -39,19 +42,22 @@ pub(crate) struct Content {
     stack: adw::ViewStack,
     shows_bin: adw::Bin,
     shows: OnceCell<ShowsView>,
-    // TODO drop the home_bin and just update the model
-    //      of HomeView once ported to ListView
-    home_bin: adw::Bin,
+    home: HomeView,
     empty: EmptyView,
+    filter_menu_stack: RefCell<adw::ViewStack>,
 }
 
 impl Content {
-    pub(crate) fn new(sender: Sender<Action>) -> Rc<Self> {
+    pub(crate) fn new(
+        sender: Sender<Action>,
+        filter_menu_home: FilterMenu,
+        filter_menu_shows: FilterMenu,
+        filter_menu_stack: adw::ViewStack,
+    ) -> Rc<Self> {
         let stack = adw::ViewStack::new();
         let shows_bin = adw::Bin::new();
         let shows = OnceCell::new();
-        let home_bin = adw::Bin::new();
-        let home = HomeView::new(sender.clone());
+        let home = HomeView::new(sender.clone(), filter_menu_home.clone());
         let overlay = gtk::Overlay::new();
         let empty = EmptyView::default();
         let progress_bar = gtk::ProgressBar::builder()
@@ -65,14 +71,12 @@ impl Content {
         overlay.set_child(Some(&stack));
         overlay.add_overlay(&progress_bar);
 
-        let home_page = stack.add_titled(&home_bin, Some("home"), &gettext("New"));
+        let home_page = stack.add_titled(&home, Some("home"), &gettext("New"));
         let shows_page = stack.add_titled(&shows_bin, Some("shows"), &gettext("Shows"));
         stack.add_named(&empty, Some("empty"));
 
         home_page.set_icon_name(Some("document-open-recent-symbolic"));
         shows_page.set_icon_name(Some("audio-input-microphone-symbolic"));
-
-        home_bin.set_child(Some(&home));
 
         let this = Rc::new(Self {
             overlay,
@@ -80,20 +84,33 @@ impl Content {
             progress_bar,
             stack: stack.clone(),
             shows_bin,
+            home,
             shows,
-            home_bin,
             empty,
+            filter_menu_stack: RefCell::new(filter_menu_stack),
         });
 
-        let weak = Rc::downgrade(&this);
-        stack.connect_visible_child_notify(move |s| {
-            if let Some(name) = s.visible_child_name()
-                && name == "shows"
-                && let Some(this) = weak.upgrade()
-            {
-                this.init_shows();
+        stack.connect_visible_child_notify(clone!(
+            #[weak]
+            filter_menu_shows,
+            #[weak]
+            this,
+            move |s| {
+                if let Some(name) = s.visible_child_name() {
+                    if name == "shows" {
+                        this.filter_menu_stack
+                            .borrow()
+                            .set_visible_child_name("shows");
+                        this.init_shows(filter_menu_shows);
+                    }
+                    if name == "home" {
+                        this.filter_menu_stack
+                            .borrow()
+                            .set_visible_child_name("home");
+                    }
+                }
             }
-        });
+        ));
 
         if let Err(e) = this.check_empty_state() {
             error!("Failed to check for empty db state {e}");
@@ -111,12 +128,13 @@ impl Content {
     }
 
     pub(crate) fn update_home(&self) {
-        let home = HomeView::new(self.sender.clone());
-        self.home_bin.set_child(Some(&home));
+        if let Ok(home) = self.home.clone().downcast::<HomeView>() {
+            home.reload(self.sender.clone())
+        }
     }
 
     pub(crate) fn update_home_episode(&self, ep: &EpisodeWidgetModel) {
-        if let Some(Ok(home)) = self.home_bin.child().map(|w| w.downcast::<HomeView>()) {
+        if let Ok(home) = self.home.clone().downcast::<HomeView>() {
             home.update_episode(ep);
         }
     }
@@ -139,12 +157,12 @@ impl Content {
         &self.overlay
     }
 
-    fn init_shows(&self) {
+    fn init_shows(&self, filter_menu: FilterMenu) {
         if self.shows.get().is_none() {
             self.shows
                 .set({
                     info!("Init Shows View");
-                    let new_shows = ShowsView::new(self.sender.clone());
+                    let new_shows = ShowsView::new(self.sender.clone(), filter_menu);
                     self.shows_bin.set_child(Some(&new_shows));
                     new_shows
                 })
@@ -169,7 +187,7 @@ impl Content {
     }
 
     pub(crate) fn switch_to_populated(&self) {
-        self.stack.set_visible_child(&self.home_bin);
+        self.stack.set_visible_child(&self.home);
     }
 
     pub(crate) fn is_in_empty_view(&self) -> bool {
@@ -187,5 +205,15 @@ impl Content {
             send_blocking!(self.sender, Action::EmptyState)
         };
         Ok(())
+    }
+
+    pub(crate) fn open_search(&self) {
+        if let Some(name) = self.stack.visible_child_name() {
+            if name == "shows" {
+                self.shows.get().unwrap().open_search();
+            } else if name == "home" {
+                self.home.open_search();
+            }
+        }
     }
 }

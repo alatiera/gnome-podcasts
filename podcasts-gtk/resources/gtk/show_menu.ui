@@ -40,6 +40,7 @@ Tobias Bernard
         <attribute name="action">show.mark-played</attribute>
       </item>
     </section>
+
     <section>
       <item>
         <attribute name="label" translatable="yes">Unsubscribe</attribute>

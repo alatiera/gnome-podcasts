@@ -1,6 +1,7 @@
 // show_menu.rs
 //
 // Copyright 2017 Jordan Petridis <jpetridis@gnome.org>
+// Copyright 2023-2026 nee <nee-git@patchouli.garden>
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -28,6 +29,7 @@ use std::sync::Arc;
 
 use crate::app::Action;
 use crate::utils;
+use crate::widgets::ShowWidget;
 use podcasts_data::Show;
 use podcasts_data::dbqueries;
 use podcasts_data::utils::delete_show;
@@ -65,15 +67,15 @@ impl Default for ShowMenu {
 }
 
 impl ShowMenu {
-    pub(crate) fn new(pd: &Arc<Show>, episodes: &gtk::ListBox, sender: &Sender<Action>) -> Self {
+    pub(crate) fn new(pd: &Arc<Show>, widget: &ShowWidget, sender: &Sender<Action>) -> Self {
         let s = Self::default();
-        s.init(pd, episodes, sender);
+        s.init(pd, widget, sender);
         s
     }
 
-    fn init(&self, pd: &Arc<Show>, episodes: &gtk::ListBox, sender: &Sender<Action>) {
+    fn init(&self, pd: &Arc<Show>, widget: &ShowWidget, sender: &Sender<Action>) {
         self.connect_website(pd);
-        self.connect_played(pd, episodes, sender);
+        self.connect_played(pd, widget, sender);
         self.connect_unsub(pd, sender);
 
         let app = gio::Application::default()
@@ -98,17 +100,16 @@ impl ShowMenu {
         ));
     }
 
-    fn connect_played(&self, pd: &Arc<Show>, episodes: &gtk::ListBox, sender: &Sender<Action>) {
+    fn connect_played(&self, pd: &Arc<Show>, widget: &ShowWidget, sender: &Sender<Action>) {
         self.played.connect_activate(clone!(
             #[strong]
             pd,
             #[strong]
             sender,
             #[weak]
-            episodes,
+            widget,
             move |_, _| {
-                let res = dim_titles(&episodes);
-                debug_assert!(res.is_some());
+                widget.mark_all_played();
                 send_blocking!(sender, Action::MarkAllPlayerNotification(pd.clone()));
             }
         ));
@@ -130,41 +131,6 @@ impl ShowMenu {
             }
         ));
     }
-}
-
-// Ideally if we had a custom widget this would have been as simple as:
-// `for row in listbox { ep = row.get_episode(); ep.dim_title(); }`
-// But now I can't think of a better way to do it than hardcoding the title
-// position relative to the EpisodeWidget container gtk::Box.
-fn dim_titles(episodes: &gtk::ListBox) -> Option<()> {
-    // FIXME This api should only be used for widget implementations.
-    let listmodel = episodes.observe_children();
-    for i in 0..listmodel.n_items() {
-        let obj = listmodel.item(i)?;
-        let row = obj.downcast_ref::<gtk::ListBoxRow>()?;
-        dim_row_title(row)?;
-    }
-    Some(())
-}
-
-fn dim_row_title(row: &gtk::ListBoxRow) -> Option<()> {
-    // FIXME first_child should only be used for widget implementations.
-    let container = row.first_child().and_downcast::<gtk::Box>()?;
-    let container_child = container.first_child().and_downcast::<gtk::Box>()?;
-    let container_gradchild = container_child.first_child().and_downcast::<gtk::Box>()?;
-    let container_great_gradchild = container_gradchild
-        .first_child()
-        .and_downcast::<gtk::Box>()?;
-    let title = container_great_gradchild
-        .first_child()
-        .and_downcast::<gtk::Label>()?;
-
-    title.add_css_class("dim-label");
-
-    // FIXME next_sibling should only be used for widget implementations.
-    let checkmark = title.next_sibling().and_downcast::<gtk::Image>()?;
-    checkmark.set_visible(true);
-    Some(())
 }
 
 fn mark_all_watched(pd: &Show, sender: &Sender<Action>) -> Result<()> {

@@ -1,7 +1,7 @@
 // shows_view.rs
 //
 // Copyright 2017 Jordan Petridis <jpetridis@gnome.org>
-// Copyright 2024 nee <nee-git@patchouli.garden>
+// Copyright 2024-2026 nee <nee-git@patchouli.garden>
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -35,14 +35,20 @@ use std::sync::Arc;
 use crate::app::Action;
 use crate::download_covers::load_widget_texture;
 use crate::utils::get_ignored_shows;
-use crate::widgets::BaseView;
+use crate::widgets::{BaseView, FilterMenu, FilterMenuMode};
 use podcasts_data::dbqueries;
+use podcasts_data::dbqueries::ShowFilter;
 use podcasts_data::{Show, ShowId};
 
 #[derive(Debug, Default)]
 pub struct ShowsViewPriv {
     view: BaseView,
     grid: gtk::GridView,
+    search_bar: gtk::SearchBar,
+    search_entry: gtk::SearchEntry,
+    empty_filter_page: adw::StatusPage,
+
+    filter_menu: RefCell<Option<FilterMenu>>,
 }
 
 #[glib::object_subclass]
@@ -50,6 +56,10 @@ impl ObjectSubclass for ShowsViewPriv {
     const NAME: &'static str = "PdShowsView";
     type Type = super::ShowsView;
     type ParentType = adw::Bin;
+
+    fn class_init(_klass: &mut Self::Class) {
+        FilterMenu::ensure_type();
+    }
 }
 
 impl ObjectImpl for ShowsViewPriv {
@@ -125,7 +135,31 @@ impl ObjectImpl for ShowsViewPriv {
             .maximum_size((256 + 6 + 6) * 7) // picture + paddings * max_columns
             .build();
         self.view.set_content(&clamp);
-        self.obj().set_child(Some(&self.view));
+
+        self.search_entry.set_width_request(300);
+        self.search_bar.set_child(Some(&self.search_entry));
+        self.search_bar.set_key_capture_widget(Some(&self.view));
+
+        self.empty_filter_page
+            .set_title(&gettext("No Results Found"));
+        self.empty_filter_page
+            .set_description(Some(&gettext("Try a different search or filters")));
+        self.empty_filter_page
+            .set_icon_name(Some("system-search-symbolic"));
+        self.empty_filter_page.set_valign(gtk::Align::Center);
+        self.empty_filter_page.set_vexpand(true);
+        self.empty_filter_page.set_visible(false);
+
+        let content = gtk::Box::new(gtk::Orientation::Vertical, 5);
+        content.append(&self.empty_filter_page);
+        content.append(&self.view);
+        content.set_vexpand(true);
+
+        let container = adw::ToolbarView::new();
+        container.add_top_bar(&self.search_bar);
+        container.set_content(Some(&content));
+
+        self.obj().set_child(Some(&container));
     }
 }
 
@@ -158,17 +192,22 @@ impl BinImpl for ShowsViewPriv {}
 impl ShowsViewPriv {
     fn set_data(&self) {
         let this = self.downgrade();
+        let filter = self.obj().show_filter();
         crate::MAINCONTEXT.spawn_local_with_priority(
             glib::source::Priority::DEFAULT_IDLE,
             async move {
-                let data = gio::spawn_blocking(get_episodes).await;
+                let data = gio::spawn_blocking(move || get_podcasts(&filter)).await;
                 if let Ok(Ok(podcasts)) = data {
+                    let empty = podcasts.is_empty();
                     let model = gio::ListStore::new::<ShowCoverModel>();
                     for pod in podcasts {
                         let item = ShowCoverModel::new(pod.id());
                         model.append(&item);
                     }
                     if let Some(this) = this.upgrade() {
+                        this.empty_filter_page.set_visible(empty);
+                        this.view.set_visible(!empty);
+
                         let selection_model = gtk::NoSelection::new(Some(model));
                         this.grid.set_model(Some(&selection_model));
                     }
@@ -178,9 +217,9 @@ impl ShowsViewPriv {
     }
 }
 
-fn get_episodes() -> Result<Vec<Show>> {
+fn get_podcasts(filter: &ShowFilter) -> Result<Vec<Show>> {
     let ignore = get_ignored_shows()?;
-    let podcasts = dbqueries::get_podcasts_filter(&ignore)?;
+    let podcasts = dbqueries::get_podcasts_filter(&ignore, filter)?;
     Ok(podcasts)
 }
 
@@ -191,7 +230,7 @@ glib::wrapper! {
 }
 
 impl ShowsView {
-    pub(crate) fn new(sender: Sender<Action>) -> Self {
+    pub(crate) fn new(sender: Sender<Action>, filter_menu: FilterMenu) -> Self {
         let this: Self = glib::Object::new();
         this.imp().set_data();
         this.imp().grid.connect_activate(move |gridview, index| {
@@ -200,11 +239,52 @@ impl ShowsView {
             }
         });
 
+        filter_menu.init(FilterMenuMode::Show);
+        filter_menu.connect_filter_changed(glib::clone!(
+            #[weak]
+            this,
+            move |_| this.update_model()
+        ));
+        filter_menu
+            .search_button()
+            .bind_property("active", &this.imp().search_bar, "search-mode-enabled")
+            .flags(glib::BindingFlags::SYNC_CREATE | glib::BindingFlags::BIDIRECTIONAL)
+            .build();
+        this.imp().filter_menu.replace(Some(filter_menu));
+
+        this.imp().search_entry.connect_search_changed(glib::clone!(
+            #[weak]
+            this,
+            move |_| this.update_model()
+        ));
+
         this
     }
 
     pub fn update_model(&self) {
         self.imp().set_data();
+    }
+
+    pub(crate) fn open_search(&self) {
+        self.imp().search_bar.set_search_mode(true);
+    }
+
+    fn show_filter(&self) -> ShowFilter {
+        let filter = self
+            .imp()
+            .filter_menu
+            .borrow()
+            .as_ref()
+            .map(|f| f.show_filter());
+        filter
+            .map(|mut f| {
+                let search = self.imp().search_entry.text();
+                if !search.is_empty() {
+                    f.title_or_description = Some(search.to_string());
+                }
+                f
+            })
+            .unwrap_or_default()
     }
 }
 

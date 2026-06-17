@@ -22,6 +22,7 @@
         <attribute name="action">win.goto-sync-preferences</attribute>
       </item>
     </section>
+
     <section>
       <item>
         <attribute name="label" translatable="yes">_Keyboard Shortcuts</attribute>
@@ -129,6 +130,34 @@
                                 <property name="menu-model">menu</property>
                               </object>
                             </child>
+
+
+                            <!-- Filter Button -->
+                            <child type="end">
+                              <object class="AdwViewStack" id="filter_stack">
+                                <child>
+                                  <object class="AdwViewStackPage">
+                                    <property name="name">home</property>
+                                    <property name="title">Home</property>
+                                    <property name="child">
+                                      <object class="PdFilterMenu" id="filter_home"></object>
+                                    </property>
+                                  </object>
+                                </child>
+
+                                <child>
+                                  <object class="AdwViewStackPage">
+                                    <property name="name">shows</property>
+                                    <property name="title">Shows</property>
+                                    <property name="child">
+                                      <object class="PdFilterMenu" id="filter_shows"></object>
+                                    </property>
+                                  </object>
+                                </child>
+
+                              </object>
+                            </child>
+
                           </object>
                         </child>
                       </object>
