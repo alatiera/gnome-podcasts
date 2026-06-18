@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: podcasts master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2025-12-26 12:54+0000\n"
-"PO-Revision-Date: 2025-12-26 20:09+0100\n"
+"POT-Creation-Date: 2026-06-17 04:06+0000\n"
+"PO-Revision-Date: 2026-06-18 17:16+0200\n"
 "Last-Translator: Martin Srebotnjak <miles@filmsi.net>\n"
 "Language-Team: Slovenian GNOME Translation Team <gnome-si@googlegroups.com>\n"
 "Language: sl_SI\n"
@@ -43,11 +43,12 @@ msgstr "Naročanje na vir ..."
 msgid "Add Podcasts"
 msgstr "Dodaj podkaste"
 
-#: podcasts-gtk/resources/gtk/discovery_page.ui:64
+#. Translators: Noun, Headline for a page on that you search on iTunes/fyyd
+#: podcasts-gtk/resources/gtk/discovery_page.ui:65
 msgid "Search"
 msgstr "Išči"
 
-#: podcasts-gtk/resources/gtk/discovery_page.ui:77
+#: podcasts-gtk/resources/gtk/discovery_page.ui:78
 msgid "Enter a feed URL or search the selected platforms."
 msgstr "Vnesite URL vira ali poiščite na izbranih platformah."
 
@@ -64,11 +65,12 @@ msgstr "Poteka nalaganje …"
 msgid "Please enable a Search Platform below, or enter a http(s) feed URL."
 msgstr "Spodaj omogočite iskalno platformo ali vnesite URL vira http(s)."
 
-#: podcasts-gtk/resources/gtk/discovery_page.ui:131
+#. Translators: Headline for a list of services to search new podcasts like iTunes, fyyd, etc., ...
+#: podcasts-gtk/resources/gtk/discovery_page.ui:132
 msgid "Search Platforms"
 msgstr "Iskalne platforme"
 
-#: podcasts-gtk/resources/gtk/discovery_page.ui:132
+#: podcasts-gtk/resources/gtk/discovery_page.ui:133
 msgid "Search queries will be sent to these platforms."
 msgstr "Iskalne poizvedbe bodo poslane tem platformam."
 
@@ -198,31 +200,6 @@ msgstr "Prejmi to epizodo"
 msgid "Episode without audio"
 msgstr "Epizoda brez zvoka"
 
-#: podcasts-gtk/resources/gtk/home_view.ui:57
-#: podcasts-gtk/resources/gtk/home_view.ui:70
-msgid "Today"
-msgstr "Danes"
-
-#: podcasts-gtk/resources/gtk/home_view.ui:88
-#: podcasts-gtk/resources/gtk/home_view.ui:101
-msgid "Yesterday"
-msgstr "Včeraj"
-
-#: podcasts-gtk/resources/gtk/home_view.ui:119
-#: podcasts-gtk/resources/gtk/home_view.ui:132
-msgid "This Week"
-msgstr "Ta teden"
-
-#: podcasts-gtk/resources/gtk/home_view.ui:150
-#: podcasts-gtk/resources/gtk/home_view.ui:163
-msgid "This Month"
-msgstr "Ta mesec"
-
-#: podcasts-gtk/resources/gtk/home_view.ui:182
-#: podcasts-gtk/resources/gtk/home_view.ui:195
-msgid "Older"
-msgstr "Starejše"
-
 #: podcasts-gtk/resources/gtk/player_rate.ui:29
 msgid "Change the playback speed"
 msgstr "Spremeni hitrost predvajanja"
@@ -306,7 +283,7 @@ msgid "Description"
 msgstr "Opis"
 
 #: podcasts-gtk/resources/gtk/sheet_base.ui:89
-#: podcasts-gtk/src/widgets/chapters.rs:194
+#: podcasts-gtk/src/widgets/chapters.rs:193
 msgid "Chapters"
 msgstr "Poglavja"
 
@@ -395,6 +372,11 @@ msgctxt "shortcut window"
 msgid "Export Subscriptions"
 msgstr "Izvoz naročnin"
 
+#: podcasts-gtk/resources/gtk/shortcuts-dialog.ui:96
+msgctxt "shortcut window"
+msgid "Search"
+msgstr "Poišči"
+
 #: podcasts-gtk/resources/gtk/show_menu.ui:35
 msgid "Open Website"
 msgstr "Odpri spletišče"
@@ -403,15 +385,15 @@ msgstr "Odpri spletišče"
 msgid "Mark All as Played"
 msgstr "Označi vse kot predvajane"
 
-#: podcasts-gtk/resources/gtk/show_menu.ui:45
+#: podcasts-gtk/resources/gtk/show_menu.ui:46
 msgid "Unsubscribe"
 msgstr "Prekliči naročnino"
 
-#: podcasts-gtk/resources/gtk/show_widget.ui:40
+#: podcasts-gtk/resources/gtk/show_widget.ui:42
 msgid "Podcast Menu"
 msgstr "Meni Podkast"
 
-#: podcasts-gtk/resources/gtk/show_widget.ui:100
+#: podcasts-gtk/resources/gtk/show_widget.ui:112
 msgid "Episodes"
 msgstr "Epizode"
 
@@ -512,83 +494,36 @@ msgstr "_Uvozi posnetke"
 msgid "_Export Shows"
 msgstr "_Izvozi posnetke"
 
-#: podcasts-gtk/resources/gtk/window.ui:27
+#: podcasts-gtk/resources/gtk/window.ui:28
 msgid "_Keyboard Shortcuts"
 msgstr "_Tipkovne bližnjice"
 
-#: podcasts-gtk/resources/gtk/window.ui:31
+#: podcasts-gtk/resources/gtk/window.ui:32
 msgid "_About Podcasts"
 msgstr "_O programu"
 
 #. Weird magic I copy-pasted that sets the Application Name in the Shell.
-#: podcasts-gtk/resources/gtk/window.ui:39
-#: podcasts-gtk/resources/gtk/window.ui:106
-#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:4
+#: podcasts-gtk/resources/gtk/window.ui:40
+#: podcasts-gtk/resources/gtk/window.ui:107
 #: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:2
-#: podcasts-gtk/src/app.rs:629 podcasts-gtk/src/widgets/aboutdialog.rs:56
-#: podcasts-gtk/src/widgets/player.rs:408
+#: podcasts-gtk/resources/org.gnome.Podcasts.metainfo.xml.in.in:4
+#: podcasts-gtk/src/app.rs:633 podcasts-gtk/src/widgets/aboutdialog.rs:56
+#: podcasts-gtk/src/widgets/player.rs:413
 msgid "Podcasts"
 msgstr "Podkasti"
 
-#: podcasts-gtk/resources/gtk/window.ui:119
+#: podcasts-gtk/resources/gtk/window.ui:120
 msgid "Add a New Feed"
 msgstr "Dodaj nov vir"
 
-#: podcasts-gtk/resources/gtk/window.ui:127
+#: podcasts-gtk/resources/gtk/window.ui:128
 msgid "Main Menu"
 msgstr "Glavni meni"
 
 #. Translators: Show as a noun, meaning a Podcast-Show.
-#: podcasts-gtk/resources/gtk/window.ui:141
+#: podcasts-gtk/resources/gtk/window.ui:170
 msgid "Show"
 msgstr "Pokaži"
-
-#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:8
-msgid "Listen to your favorite shows"
-msgstr "Spremljanje priljubljenih oddaj"
-
-#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:10
-msgid ""
-"Play, update, and manage your podcasts from a lightweight interface that "
-"seamlessly integrates with GNOME. Podcasts can play various audio formats "
-"and remember where you stopped listening. You can subscribe to shows via RSS/"
-"Atom, iTunes, and Soundcloud links. Subscriptions from other apps can be "
-"imported via OPML files."
-msgstr ""
-"Predvajanje, posodabljanje in upravljanje zbirke podkastov v preglednem "
-"vmesniku, skladnem z namizjem GNOME. Program omogoča predvananje različnih "
-"zvočnih zapisov in podpira možnost pomnjenja zadnjega poslušanega mesta. Na "
-"oddaje se je mogoče naročiti po povezavah RSS/Atom, iTunes in Soundcloud. "
-"Naročnine iz drugih prigramov je mogoče uvoziti z uporabo izvoza OPML."
-
-#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:18
-msgid "The home view displaying the newest episodes of your podcasts"
-msgstr "Domači pogled z najnovejšimi epizodami podkastov"
-
-#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:22
-msgid "The shows view displaying the covers of your podcasts"
-msgstr "Pogled oddaj, ki prikazuje naslovnice vaših podkastov"
-
-#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:26
-msgid ""
-"The show widget displaying the cover and the latest episodes of a specific "
-"podcast"
-msgstr ""
-"Pripomoček za oddajo, ki prikazuje naslovnico in najnovejše epizode "
-"določenega podkasta"
-
-#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:30
-msgid "The chapters available in an episode"
-msgstr "Poglavja, ki so na voljo v epizodi"
-
-#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:34
-msgid "The view where one can add a new podcast"
-msgstr "Pogled, kamor lahko dodate nov podkast"
-
-#. developer_name tag deprecated with Appstream 1.0
-#: podcasts-gtk/resources/org.gnome.Podcasts.appdata.xml.in.in:241
-msgid "The Podcasts developers"
-msgstr "Razvijalci Podkasta"
 
 #: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:3
 msgid "Listen to your favorite podcasts, right from your desktop."
@@ -635,7 +570,54 @@ msgstr "Koliko ponovitev časa naj preteče med samodejnim počiščenjem"
 msgid "What period of time to wait between automatic cleanups"
 msgstr "Koliko časa naj preteče med izvajanjem samodejnega čiščenja"
 
-#: podcasts-gtk/src/app.rs:402
+#: podcasts-gtk/resources/org.gnome.Podcasts.metainfo.xml.in.in:8
+msgid "Listen to your favorite shows"
+msgstr "Spremljanje priljubljenih oddaj"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.metainfo.xml.in.in:10
+msgid ""
+"Play, update, and manage your podcasts from a lightweight interface that "
+"seamlessly integrates with GNOME. Podcasts can play various audio formats "
+"and remember where you stopped listening. You can subscribe to shows via RSS/"
+"Atom, iTunes, and Soundcloud links. Subscriptions from other apps can be "
+"imported via OPML files."
+msgstr ""
+"Predvajanje, posodabljanje in upravljanje zbirke podkastov v preglednem "
+"vmesniku, skladnem z namizjem GNOME. Program omogoča predvananje različnih "
+"zvočnih zapisov in podpira možnost pomnjenja zadnjega poslušanega mesta. Na "
+"oddaje se je mogoče naročiti po povezavah RSS/Atom, iTunes in Soundcloud. "
+"Naročnine iz drugih prigramov je mogoče uvoziti z uporabo izvoza OPML."
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.metainfo.xml.in.in:18
+msgid "The home view displaying the newest episodes of your podcasts"
+msgstr "Domači pogled z najnovejšimi epizodami podkastov"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.metainfo.xml.in.in:22
+msgid "The shows view displaying the covers of your podcasts"
+msgstr "Pogled oddaj, ki prikazuje naslovnice vaših podkastov"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.metainfo.xml.in.in:26
+msgid ""
+"The show widget displaying the cover and the latest episodes of a specific "
+"podcast"
+msgstr ""
+"Pripomoček za oddajo, ki prikazuje naslovnico in najnovejše epizode "
+"določenega podkasta"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.metainfo.xml.in.in:30
+msgid "The chapters available in an episode"
+msgstr "Poglavja, ki so na voljo v epizodi"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.metainfo.xml.in.in:34
+msgid "The view where one can add a new podcast"
+msgstr "Pogled, kamor lahko dodate nov podkast"
+
+#. developer_name tag deprecated with Appstream 1.0
+#: podcasts-gtk/resources/org.gnome.Podcasts.metainfo.xml.in.in:241
+msgid "The Podcasts developers"
+msgstr "Razvijalci Podkasta"
+
+#: podcasts-gtk/src/app.rs:404
 msgid "Copied URL to clipboard!"
 msgstr "Naslov URL je kopiran v odložišče!"
 
@@ -654,55 +636,55 @@ msgstr "Skok na {minutes}:{seconds}"
 msgid "Download failed: {}"
 msgstr "Prejem ni uspel: {}"
 
-#: podcasts-gtk/src/utils.rs:299
+#: podcasts-gtk/src/utils.rs:300
 #, rust-format
 msgid "Failed to subscribe to feed: {}"
 msgstr "Naročanje na vir ni uspelo: {}"
 
-#: podcasts-gtk/src/utils.rs:394 podcasts-gtk/src/utils.rs:437
+#: podcasts-gtk/src/utils.rs:395 podcasts-gtk/src/utils.rs:447
 msgid "OPML file"
 msgstr "Datoteka OPML"
 
-#: podcasts-gtk/src/utils.rs:405
+#: podcasts-gtk/src/utils.rs:406
 msgid "Select the file from which to you want to import shows."
 msgstr "Izberite datoteko, iz katere želite uvoziti posnetke."
 
-#: podcasts-gtk/src/utils.rs:407
+#: podcasts-gtk/src/utils.rs:408
 msgid "_Import"
 msgstr "_Uvozi"
 
-#: podcasts-gtk/src/utils.rs:426
+#: podcasts-gtk/src/utils.rs:437
 #, rust-format
 msgid "Failed to parse the imported file {}"
 msgstr "Razčlenjevanje uvožene datoteke {} je spodletelo"
 
 #. Translators: Show as a noun, meaning Podcast-Shows.
-#: podcasts-gtk/src/utils.rs:448
+#: podcasts-gtk/src/utils.rs:458
 msgid "Export shows to…"
 msgstr "Izvozi posnetke v …"
 
-#: podcasts-gtk/src/utils.rs:449
+#: podcasts-gtk/src/utils.rs:459
 msgid "_Export"
 msgstr "_Izvozi"
 
 #. Translators: This is the string of the suggested name for the exported opml file
-#: podcasts-gtk/src/utils.rs:453
+#: podcasts-gtk/src/utils.rs:463
 msgid "gnome-podcasts-exported-shows"
 msgstr "gnome-podcasts-izvoz-posnetkov"
 
-#: podcasts-gtk/src/utils.rs:462
+#: podcasts-gtk/src/utils.rs:473
 msgid "GNOME Podcasts Subscriptions"
 msgstr "Naročila Podkast GNOME"
 
-#: podcasts-gtk/src/utils.rs:466
+#: podcasts-gtk/src/utils.rs:477
 msgid "Failed to export podcasts"
 msgstr "Izvoz podkastov je spodletel"
 
-#: podcasts-gtk/src/utils.rs:478
+#: podcasts-gtk/src/utils.rs:488
 msgid "Just now"
 msgstr "Ravnokar"
 
-#: podcasts-gtk/src/utils.rs:482
+#: podcasts-gtk/src/utils.rs:492
 #, rust-format
 msgid "{} minute ago"
 msgid_plural "{} minutes ago"
@@ -711,7 +693,7 @@ msgstr[1] "pred {} minuto"
 msgstr[2] "pred {} minutama"
 msgstr[3] "pred {} minutami"
 
-#: podcasts-gtk/src/utils.rs:488
+#: podcasts-gtk/src/utils.rs:498
 #, rust-format
 msgid "{} hour ago"
 msgid_plural "{} hours ago"
@@ -720,7 +702,7 @@ msgstr[1] "pred {} uro"
 msgstr[2] "pred {} urama"
 msgstr[3] "pred {} urami"
 
-#: podcasts-gtk/src/utils.rs:492
+#: podcasts-gtk/src/utils.rs:502
 #, rust-format
 msgid "{} day ago"
 msgid_plural "{} days ago"
@@ -729,7 +711,7 @@ msgstr[1] "pred {} dnem"
 msgstr[2] "pred {} dnevoma"
 msgstr[3] "pred {} dnevi"
 
-#: podcasts-gtk/src/utils.rs:496
+#: podcasts-gtk/src/utils.rs:506
 #, rust-format
 msgid "{} month ago"
 msgid_plural "{} months ago"
@@ -738,7 +720,7 @@ msgstr[1] "pred {} mesecem"
 msgstr[2] "pred {} mesecema"
 msgstr[3] "pred {} meseci"
 
-#: podcasts-gtk/src/utils.rs:500
+#: podcasts-gtk/src/utils.rs:510
 #, rust-format
 msgid "{} year ago"
 msgid_plural "{} years ago"
@@ -757,21 +739,21 @@ msgstr ""
 "Matej Urbančič <mateju@src.gnome.org>\n"
 "Martin Srebotnjak <miles@filmsi.net>"
 
-#: podcasts-gtk/src/widgets/chapters.rs:130
+#: podcasts-gtk/src/widgets/chapters.rs:129
 msgid "Currently playing chapter"
 msgstr "Trenutno se predvaja poglavje"
 
-#: podcasts-gtk/src/widgets/content_stack.rs:61
+#: podcasts-gtk/src/widgets/content_stack.rs:67
 msgid "Fetching feeds…"
 msgstr "Pridobivanje virov ..."
 
-#: podcasts-gtk/src/widgets/content_stack.rs:68
+#: podcasts-gtk/src/widgets/content_stack.rs:74
 msgid "New"
 msgstr "Novo"
 
 #. Translators: Shows as a noun, meaning Podcast-Shows.
-#: podcasts-gtk/src/widgets/content_stack.rs:69
-#: podcasts-gtk/src/widgets/shows_view.rs:117
+#: podcasts-gtk/src/widgets/content_stack.rs:75
+#: podcasts-gtk/src/widgets/shows_view.rs:127
 msgid "Shows"
 msgstr "Posnetki"
 
@@ -784,7 +766,7 @@ msgstr "Napredek prenosa"
 msgid "{} min"
 msgstr "{} min"
 
-#: podcasts-gtk/src/widgets/player.rs:1133
+#: podcasts-gtk/src/widgets/player.rs:1149
 msgid "The media player was unable to execute an action."
 msgstr "S predvajalnikom ni mogoče izvesti zahtevanega dejanja."
 
@@ -796,26 +778,34 @@ msgstr "Vizualno razširi ta opis"
 msgid "Read More"
 msgstr "Preberi več"
 
-#: podcasts-gtk/src/widgets/show_menu.rs:182
+#: podcasts-gtk/src/widgets/show_menu.rs:148
 msgid "Marked all episodes as listened"
 msgstr "Vse epizode so označene kot poslušane"
 
-#: podcasts-gtk/src/widgets/show_menu.rs:183
-#: podcasts-gtk/src/widgets/show_menu.rs:211
+#: podcasts-gtk/src/widgets/show_menu.rs:149
+#: podcasts-gtk/src/widgets/show_menu.rs:177
 msgid "Undo"
 msgstr "Razveljavi"
 
-#: podcasts-gtk/src/widgets/show_menu.rs:206
+#: podcasts-gtk/src/widgets/show_menu.rs:172
 #, rust-format
 msgid "Unsubscribed from {}"
 msgstr "Odjavi {}"
 
-#: podcasts-gtk/src/widgets/show_menu.rs:237
+#: podcasts-gtk/src/widgets/show_menu.rs:203
 #, rust-format
 msgid "Failed to store Unsubscribe Action for Synchronization in database. {}"
 msgstr ""
 "Shranjevanje dejanja odjave naročila za usklajevanje v zbirko podatkov ni "
 "uspelo. {}"
+
+#: podcasts-gtk/src/widgets/shows_view.rs:144
+msgid "No Results Found"
+msgstr "Ni najdenih zadetkov."
+
+#: podcasts-gtk/src/widgets/shows_view.rs:146
+msgid "Try a different search or filters"
+msgstr "Poskusite z drugačnim iskalnim nizom ali filtri"
 
 #: podcasts-gtk/src/widgets/sync_preferences.rs:126
 msgid "Logging in..."
