@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: podcasts master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2026-06-17 04:06+0000\n"
-"PO-Revision-Date: 2026-06-18 07:53+0800\n"
+"POT-Creation-Date: 2026-06-20 10:05+0000\n"
+"PO-Revision-Date: 2026-06-22 07:46+0800\n"
 "Last-Translator: lumingzh <lumingzh@qq.com>\n"
 "Language-Team: Chinese (China) <i18n-zh@googlegroups.com>\n"
 "Language: zh_CN\n"
@@ -198,67 +198,67 @@ msgstr "下载此剧集"
 msgid "Episode without audio"
 msgstr "无音频剧集"
 
-#: podcasts-gtk/resources/gtk/player_rate.ui:29
-msgid "Change the playback speed"
-msgstr "更改播放速度"
-
-#: podcasts-gtk/resources/gtk/player_rate.ui:34
-#: podcasts-gtk/resources/gtk/player_rate.ui:62
-msgid "1.00×"
-msgstr "1.00×"
-
-#: podcasts-gtk/resources/gtk/player_rate.ui:42
-msgid "2.00×"
-msgstr "2.00×"
-
-#: podcasts-gtk/resources/gtk/player_rate.ui:47
-msgid "1.75×"
-msgstr "1.75×"
-
-#: podcasts-gtk/resources/gtk/player_rate.ui:52
-msgid "1.50×"
-msgstr "1.50×"
-
-#: podcasts-gtk/resources/gtk/player_rate.ui:57
-msgid "1.25×"
-msgstr "1.25×"
-
-#: podcasts-gtk/resources/gtk/player_rate.ui:67
-msgid "0.90×"
-msgstr "0.90×"
-
-#: podcasts-gtk/resources/gtk/player_rate.ui:72
-msgid "0.75×"
-msgstr "0.75×"
-
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:50
+#: podcasts-gtk/resources/gtk/player_big.ui:43
 msgid "Rewind 10 seconds"
 msgstr "后退 10 秒"
 
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:67
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:292
-#: podcasts-gtk/resources/gtk/sheet_player.ui:149
+#: podcasts-gtk/resources/gtk/player_big.ui:62
+#: podcasts-gtk/resources/gtk/player_small.ui:105
+#: podcasts-gtk/resources/gtk/sheet_player.ui:151
 msgid "Play"
 msgstr "播放"
 
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:80
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:301
-#: podcasts-gtk/resources/gtk/sheet_player.ui:167
+#: podcasts-gtk/resources/gtk/player_big.ui:76
+#: podcasts-gtk/resources/gtk/player_small.ui:115
+#: podcasts-gtk/resources/gtk/sheet_player.ui:170
 msgid "Pause"
 msgstr "暂停"
 
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:95
+#: podcasts-gtk/resources/gtk/player_big.ui:92
 msgid "Fast forward 10 seconds"
 msgstr "快进 10 秒"
 
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:113
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:237
+#: podcasts-gtk/resources/gtk/player_big.ui:112
+#: podcasts-gtk/resources/gtk/player_small.ui:50
 msgid "Go to the description for this episode."
 msgstr "前往此剧集的描述。"
 
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:208
+#: podcasts-gtk/resources/gtk/player_big.ui:207
 msgid "Go to the Chapters list."
 msgstr "前往剧幕列表。"
+
+#: podcasts-gtk/resources/gtk/player_rate.ui:31
+msgid "2.00×"
+msgstr "2.00×"
+
+#: podcasts-gtk/resources/gtk/player_rate.ui:36
+msgid "1.75×"
+msgstr "1.75×"
+
+#: podcasts-gtk/resources/gtk/player_rate.ui:41
+msgid "1.50×"
+msgstr "1.50×"
+
+#: podcasts-gtk/resources/gtk/player_rate.ui:46
+msgid "1.25×"
+msgstr "1.25×"
+
+#: podcasts-gtk/resources/gtk/player_rate.ui:51
+#: podcasts-gtk/resources/gtk/player_rate.ui:77
+msgid "1.00×"
+msgstr "1.00×"
+
+#: podcasts-gtk/resources/gtk/player_rate.ui:56
+msgid "0.90×"
+msgstr "0.90×"
+
+#: podcasts-gtk/resources/gtk/player_rate.ui:61
+msgid "0.75×"
+msgstr "0.75×"
+
+#: podcasts-gtk/resources/gtk/player_rate.ui:72
+msgid "Change the playback speed"
+msgstr "更改播放速度"
 
 #: podcasts-gtk/resources/gtk/secondary_menu.ui:7
 msgid "_Mark All Episodes as Played"
@@ -289,7 +289,7 @@ msgstr "剧幕"
 msgid "Rewind"
 msgstr "倒带"
 
-#: podcasts-gtk/resources/gtk/sheet_player.ui:190
+#: podcasts-gtk/resources/gtk/sheet_player.ui:194
 msgid "Forward"
 msgstr "前进"
 
@@ -500,24 +500,24 @@ msgstr "关于播客(_A)"
 
 #. Weird magic I copy-pasted that sets the Application Name in the Shell.
 #: podcasts-gtk/resources/gtk/window.ui:40
-#: podcasts-gtk/resources/gtk/window.ui:107
+#: podcasts-gtk/resources/gtk/window.ui:110
 #: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:2
 #: podcasts-gtk/resources/org.gnome.Podcasts.metainfo.xml.in.in:4
-#: podcasts-gtk/src/app.rs:633 podcasts-gtk/src/widgets/aboutdialog.rs:56
-#: podcasts-gtk/src/widgets/player.rs:413
+#: podcasts-gtk/src/app.rs:653 podcasts-gtk/src/player_mpris.rs:50
+#: podcasts-gtk/src/widgets/aboutdialog.rs:56
 msgid "Podcasts"
 msgstr "播客"
 
-#: podcasts-gtk/resources/gtk/window.ui:120
+#: podcasts-gtk/resources/gtk/window.ui:123
 msgid "Add a New Feed"
 msgstr "添加新订阅源"
 
-#: podcasts-gtk/resources/gtk/window.ui:128
+#: podcasts-gtk/resources/gtk/window.ui:131
 msgid "Main Menu"
 msgstr "主菜单"
 
 #. Translators: Show as a noun, meaning a Podcast-Show.
-#: podcasts-gtk/resources/gtk/window.ui:170
+#: podcasts-gtk/resources/gtk/window.ui:173
 msgid "Show"
 msgstr "节目"
 
@@ -609,7 +609,7 @@ msgstr "添加新播客的视图"
 msgid "The Podcasts developers"
 msgstr "播客应用的开发者们"
 
-#: podcasts-gtk/src/app.rs:404
+#: podcasts-gtk/src/app.rs:424
 msgid "Copied URL to clipboard!"
 msgstr "已将网址复制到剪贴板！"
 
@@ -627,6 +627,10 @@ msgstr "跳至 {minutes}:{seconds}"
 #, rust-format
 msgid "Download failed: {}"
 msgstr "下载失败：{}"
+
+#: podcasts-gtk/src/player.rs:385
+msgid "The media player was unable to execute an action."
+msgstr "媒体播放器无法执行此操作。"
 
 #: podcasts-gtk/src/utils.rs:300
 #, rust-format
@@ -745,9 +749,12 @@ msgstr "下载进度"
 msgid "{} min"
 msgstr "{} 分钟"
 
-#: podcasts-gtk/src/widgets/player.rs:1149
-msgid "The media player was unable to execute an action."
-msgstr "媒体播放器无法执行此操作。"
+#. Translators: This will show as something like: "1.25×"
+#. inside a menu-button that shows/sets playback speed.
+#: podcasts-gtk/src/widgets/player_rate.rs:79
+#, rust-format
+msgid "{:.2}×"
+msgstr "{:.2}×"
 
 #: podcasts-gtk/src/widgets/read_more_label.rs:33
 msgid "Visually expands this description"
