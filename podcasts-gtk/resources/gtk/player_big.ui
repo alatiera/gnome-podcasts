@@ -208,6 +208,7 @@ Tobias Bernard
             <property name="visible">False</property>
             <property name="valign">center</property>
             <property name="icon-name">view-list-bullet-symbolic</property>
+            <property name="action-name">app.go-to-chapters</property>
           </object>
         </child>
         <child>
