@@ -4,14 +4,15 @@
 # Piotr Drąg <piotrdrag@gmail.com>, 2018-2023.
 # Aviary.pl <community-poland@mozilla.org>, 2018-2023.
 # Łukasz Horodecki <dakilla@gmail.com>, 2026.
+# Victoria Niedzielska <victorian@gnome.org>, 2026.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: podcasts\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2026-02-14 11:31+0000\n"
-"PO-Revision-Date: 2026-02-18 17:01+0100\n"
-"Last-Translator: Łukasz Horodecki <dakilla@gmail.com>\n"
+"POT-Creation-Date: 2026-06-22 11:00+0000\n"
+"PO-Revision-Date: 2026-06-23 19:57+0200\n"
+"Last-Translator: Victoria Niedzielska <victorian@gnome.org>\n"
 "Language-Team: Polish <https://l10n.gnome.org/teams/pl/>\n"
 "Language: pl\n"
 "MIME-Version: 1.0\n"
@@ -19,7 +20,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 "
 "|| n%100>=20) ? 1 : 2);\n"
-"X-Generator: Gtranslator 49.0\n"
+"X-Generator: Gtranslator 50.0\n"
 
 #: podcasts-gtk/resources/gtk/discovery_found_podcast.ui:105
 msgid "Episodes: "
@@ -42,11 +43,12 @@ msgstr "Subskrybowanie kanału…"
 msgid "Add Podcasts"
 msgstr "Dodaj podcasty"
 
-#: podcasts-gtk/resources/gtk/discovery_page.ui:64
+#. Translators: Noun, Headline for a page on that you search on iTunes/fyyd
+#: podcasts-gtk/resources/gtk/discovery_page.ui:65
 msgid "Search"
 msgstr "Wyszukiwanie"
 
-#: podcasts-gtk/resources/gtk/discovery_page.ui:77
+#: podcasts-gtk/resources/gtk/discovery_page.ui:78
 msgid "Enter a feed URL or search the selected platforms."
 msgstr "Wprowadź adres URL kanału lub przeszukaj wybrane platformy."
 
@@ -65,11 +67,12 @@ msgstr ""
 "Proszę włączyć platformę wyszukiwania poniżej lub wprowadzić adres http(s) "
 "kanału."
 
-#: podcasts-gtk/resources/gtk/discovery_page.ui:131
+#. Translators: Headline for a list of services to search new podcasts like iTunes, fyyd, etc., ...
+#: podcasts-gtk/resources/gtk/discovery_page.ui:132
 msgid "Search Platforms"
 msgstr "Platformy wyszukiwania"
 
-#: podcasts-gtk/resources/gtk/discovery_page.ui:132
+#: podcasts-gtk/resources/gtk/discovery_page.ui:133
 msgid "Search queries will be sent to these platforms."
 msgstr "Zapytania zostaną wysłane do tych platform."
 
@@ -88,7 +91,9 @@ msgstr "Ten program nie ma jeszcze odcinków"
 
 #: podcasts-gtk/resources/gtk/empty_show.ui:28
 msgid "If you think this is an error, please consider writing a bug report."
-msgstr "Jeśli uważasz, że to błąd, to prosimy o rozważenie zgłoszenia go (po angielsku)."
+msgstr ""
+"Jeśli uważasz, że to błąd, to prosimy o rozważenie zgłoszenia go (po "
+"angielsku)."
 
 #. Translators: Shows as a noun, meaning Podcast-Shows.
 #: podcasts-gtk/resources/gtk/empty_view.ui:31
@@ -199,92 +204,67 @@ msgstr "Pobiera ten odcinek"
 msgid "Episode without audio"
 msgstr "Odcinek bez dźwięku"
 
-#: podcasts-gtk/resources/gtk/home_view.ui:57
-#: podcasts-gtk/resources/gtk/home_view.ui:70
-msgid "Today"
-msgstr "Dzisiaj"
-
-#: podcasts-gtk/resources/gtk/home_view.ui:88
-#: podcasts-gtk/resources/gtk/home_view.ui:101
-msgid "Yesterday"
-msgstr "Wczoraj"
-
-#: podcasts-gtk/resources/gtk/home_view.ui:119
-#: podcasts-gtk/resources/gtk/home_view.ui:132
-msgid "This Week"
-msgstr "Ten tydzień"
-
-#: podcasts-gtk/resources/gtk/home_view.ui:150
-#: podcasts-gtk/resources/gtk/home_view.ui:163
-msgid "This Month"
-msgstr "Ten miesiąc"
-
-#: podcasts-gtk/resources/gtk/home_view.ui:182
-#: podcasts-gtk/resources/gtk/home_view.ui:195
-msgid "Older"
-msgstr "Starsze"
-
-#: podcasts-gtk/resources/gtk/player_rate.ui:29
-msgid "Change the playback speed"
-msgstr "Zmienia prędkość odtwarzania"
-
-#: podcasts-gtk/resources/gtk/player_rate.ui:34
-#: podcasts-gtk/resources/gtk/player_rate.ui:62
-msgid "1.00×"
-msgstr "1,00×"
-
-#: podcasts-gtk/resources/gtk/player_rate.ui:42
-msgid "2.00×"
-msgstr "2,00×"
-
-#: podcasts-gtk/resources/gtk/player_rate.ui:47
-msgid "1.75×"
-msgstr "1,75×"
-
-#: podcasts-gtk/resources/gtk/player_rate.ui:52
-msgid "1.50×"
-msgstr "1,50×"
-
-#: podcasts-gtk/resources/gtk/player_rate.ui:57
-msgid "1.25×"
-msgstr "1,25×"
-
-#: podcasts-gtk/resources/gtk/player_rate.ui:67
-msgid "0.90×"
-msgstr "0,90×"
-
-#: podcasts-gtk/resources/gtk/player_rate.ui:72
-msgid "0.75×"
-msgstr "0,75×"
-
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:50
+#: podcasts-gtk/resources/gtk/player_big.ui:43
 msgid "Rewind 10 seconds"
 msgstr "Przewija wstecz o 10 sekund"
 
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:67
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:292
-#: podcasts-gtk/resources/gtk/sheet_player.ui:149
+#: podcasts-gtk/resources/gtk/player_big.ui:62
+#: podcasts-gtk/resources/gtk/player_small.ui:105
+#: podcasts-gtk/resources/gtk/sheet_player.ui:151
 msgid "Play"
 msgstr "Odtwarza"
 
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:80
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:301
-#: podcasts-gtk/resources/gtk/sheet_player.ui:167
+#: podcasts-gtk/resources/gtk/player_big.ui:76
+#: podcasts-gtk/resources/gtk/player_small.ui:115
+#: podcasts-gtk/resources/gtk/sheet_player.ui:170
 msgid "Pause"
 msgstr "Wstrzymuje"
 
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:95
+#: podcasts-gtk/resources/gtk/player_big.ui:92
 msgid "Fast forward 10 seconds"
 msgstr "Przewija wprzód o 10 sekund"
 
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:113
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:237
+#: podcasts-gtk/resources/gtk/player_big.ui:112
+#: podcasts-gtk/resources/gtk/player_small.ui:50
 msgid "Go to the description for this episode."
 msgstr "Przechodzi do opisu tego odcinka."
 
-#: podcasts-gtk/resources/gtk/player_toolbar.ui:208
+#: podcasts-gtk/resources/gtk/player_big.ui:207
 msgid "Go to the Chapters list."
 msgstr "Przechodzi do listy rozdziałów."
+
+#: podcasts-gtk/resources/gtk/player_rate.ui:31
+msgid "2.00×"
+msgstr "2,00×"
+
+#: podcasts-gtk/resources/gtk/player_rate.ui:36
+msgid "1.75×"
+msgstr "1,75×"
+
+#: podcasts-gtk/resources/gtk/player_rate.ui:41
+msgid "1.50×"
+msgstr "1,50×"
+
+#: podcasts-gtk/resources/gtk/player_rate.ui:46
+msgid "1.25×"
+msgstr "1,25×"
+
+#: podcasts-gtk/resources/gtk/player_rate.ui:51
+#: podcasts-gtk/resources/gtk/player_rate.ui:77
+msgid "1.00×"
+msgstr "1,00×"
+
+#: podcasts-gtk/resources/gtk/player_rate.ui:56
+msgid "0.90×"
+msgstr "0,90×"
+
+#: podcasts-gtk/resources/gtk/player_rate.ui:61
+msgid "0.75×"
+msgstr "0,75×"
+
+#: podcasts-gtk/resources/gtk/player_rate.ui:72
+msgid "Change the playback speed"
+msgstr "Zmienia prędkość odtwarzania"
 
 #: podcasts-gtk/resources/gtk/secondary_menu.ui:7
 msgid "_Mark All Episodes as Played"
@@ -315,7 +295,7 @@ msgstr "Rodziały"
 msgid "Rewind"
 msgstr "Przewija"
 
-#: podcasts-gtk/resources/gtk/sheet_player.ui:190
+#: podcasts-gtk/resources/gtk/sheet_player.ui:194
 msgid "Forward"
 msgstr "Do przodu"
 
@@ -396,6 +376,11 @@ msgctxt "shortcut window"
 msgid "Export Subscriptions"
 msgstr "Eksportowanie subskrypcji"
 
+#: podcasts-gtk/resources/gtk/shortcuts-dialog.ui:96
+msgctxt "shortcut window"
+msgid "Search"
+msgstr "Wyszukiwanie"
+
 #: podcasts-gtk/resources/gtk/show_menu.ui:35
 msgid "Open Website"
 msgstr "Otwórz witrynę"
@@ -404,15 +389,15 @@ msgstr "Otwórz witrynę"
 msgid "Mark All as Played"
 msgstr "Oznacz wszystkie jako odtworzone"
 
-#: podcasts-gtk/resources/gtk/show_menu.ui:45
+#: podcasts-gtk/resources/gtk/show_menu.ui:46
 msgid "Unsubscribe"
 msgstr "Zrezygnuj z subskrypcji"
 
-#: podcasts-gtk/resources/gtk/show_widget.ui:40
+#: podcasts-gtk/resources/gtk/show_widget.ui:42
 msgid "Podcast Menu"
 msgstr "Menu podcastu"
 
-#: podcasts-gtk/resources/gtk/show_widget.ui:100
+#: podcasts-gtk/resources/gtk/show_widget.ui:112
 msgid "Episodes"
 msgstr "Odcinki"
 
@@ -453,7 +438,7 @@ msgstr "Serwer"
 #: podcasts-gtk/resources/gtk/sync_preferences.ui:100
 #: podcasts-gtk/resources/gtk/sync_preferences.ui:160
 msgid "Username"
-msgstr "Nazwa osoby"
+msgstr "Nazwa użytkownika"
 
 #: podcasts-gtk/resources/gtk/sync_preferences.ui:109
 msgid "Sync Now"
@@ -468,8 +453,8 @@ msgid ""
 "Synchronize subscriptions and listening status with a Nextcloud server that "
 "has GPodder Sync installed."
 msgstr ""
-"Synchronizowuj subskrypcje i status słuchania z serwerem Nextcould z "
-"zainstalowaną usługą GPodder Sync."
+"Synchronizowuj subskrypcje i status słuchania z serwerem Nextcould "
+"z zainstalowaną usługą GPodder Sync."
 
 #: podcasts-gtk/resources/gtk/sync_preferences.ui:128
 msgid "Login via"
@@ -514,34 +499,34 @@ msgstr "Zai_mportuj programy"
 msgid "_Export Shows"
 msgstr "Wy_eksportuj programy"
 
-#: podcasts-gtk/resources/gtk/window.ui:27
+#: podcasts-gtk/resources/gtk/window.ui:28
 msgid "_Keyboard Shortcuts"
 msgstr "_Skróty klawiszowe"
 
-#: podcasts-gtk/resources/gtk/window.ui:31
+#: podcasts-gtk/resources/gtk/window.ui:32
 msgid "_About Podcasts"
 msgstr "_O programie"
 
 #. Weird magic I copy-pasted that sets the Application Name in the Shell.
-#: podcasts-gtk/resources/gtk/window.ui:39
-#: podcasts-gtk/resources/gtk/window.ui:106
+#: podcasts-gtk/resources/gtk/window.ui:40
+#: podcasts-gtk/resources/gtk/window.ui:110
 #: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:2
 #: podcasts-gtk/resources/org.gnome.Podcasts.metainfo.xml.in.in:4
-#: podcasts-gtk/src/app.rs:629 podcasts-gtk/src/widgets/aboutdialog.rs:56
-#: podcasts-gtk/src/widgets/player.rs:408
+#: podcasts-gtk/src/app.rs:653 podcasts-gtk/src/player_mpris.rs:50
+#: podcasts-gtk/src/widgets/aboutdialog.rs:56
 msgid "Podcasts"
 msgstr "Podcasty"
 
-#: podcasts-gtk/resources/gtk/window.ui:119
+#: podcasts-gtk/resources/gtk/window.ui:123
 msgid "Add a New Feed"
 msgstr "Dodaje nowy kanał"
 
-#: podcasts-gtk/resources/gtk/window.ui:127
+#: podcasts-gtk/resources/gtk/window.ui:131
 msgid "Main Menu"
 msgstr "Menu główne"
 
 #. Translators: Show as a noun, meaning a Podcast-Show.
-#: podcasts-gtk/resources/gtk/window.ui:141
+#: podcasts-gtk/resources/gtk/window.ui:173
 msgid "Show"
 msgstr "Program"
 
@@ -634,9 +619,9 @@ msgstr "Widok dodawania nowego podcastu"
 #. developer_name tag deprecated with Appstream 1.0
 #: podcasts-gtk/resources/org.gnome.Podcasts.metainfo.xml.in.in:241
 msgid "The Podcasts developers"
-msgstr "Osoby tworzące projekt Podcasty"
+msgstr "Programiści projektu Podcasty"
 
-#: podcasts-gtk/src/app.rs:402
+#: podcasts-gtk/src/app.rs:424
 msgid "Copied URL to clipboard!"
 msgstr "Skopiowano adres do schowka"
 
@@ -654,6 +639,10 @@ msgstr "Przeskocz do {minutes}:{seconds}"
 #, rust-format
 msgid "Download failed: {}"
 msgstr "Nie udało się pobrać: {}"
+
+#: podcasts-gtk/src/player.rs:385
+msgid "The media player was unable to execute an action."
+msgstr "Odtwarzacz multimediów nie mógł wykonać działania."
 
 #: podcasts-gtk/src/utils.rs:300
 #, rust-format
@@ -752,23 +741,24 @@ msgid "translator-credits"
 msgstr ""
 "Piotr Drąg <piotrdrag@gmail.com>, 2018-2023\n"
 "Aviary.pl <community-poland@mozilla.org>, 2018-2023\n"
-"Łukasz Horodecki <dakilla@gmail.com>, 2026"
+"Łukasz Horodecki <dakilla@gmail.com>, 2026\n"
+"Victoria Niedzielska <victorian@gnome.org>, 2026"
 
 #: podcasts-gtk/src/widgets/chapters.rs:129
 msgid "Currently playing chapter"
 msgstr "Obecnie odtwarzany rozdział"
 
-#: podcasts-gtk/src/widgets/content_stack.rs:61
+#: podcasts-gtk/src/widgets/content_stack.rs:67
 msgid "Fetching feeds…"
 msgstr "Pobieranie kanałów…"
 
-#: podcasts-gtk/src/widgets/content_stack.rs:68
+#: podcasts-gtk/src/widgets/content_stack.rs:74
 msgid "New"
 msgstr "Nowe"
 
 #. Translators: Shows as a noun, meaning Podcast-Shows.
-#: podcasts-gtk/src/widgets/content_stack.rs:69
-#: podcasts-gtk/src/widgets/shows_view.rs:117
+#: podcasts-gtk/src/widgets/content_stack.rs:75
+#: podcasts-gtk/src/widgets/shows_view.rs:127
 msgid "Shows"
 msgstr "Programy"
 
@@ -781,9 +771,12 @@ msgstr "Postęp pobierania"
 msgid "{} min"
 msgstr "{} min"
 
-#: podcasts-gtk/src/widgets/player.rs:1133
-msgid "The media player was unable to execute an action."
-msgstr "Odtwarzacz multimediów nie mógł wykonać działania."
+#. Translators: This will show as something like: "1.25×"
+#. inside a menu-button that shows/sets playback speed.
+#: podcasts-gtk/src/widgets/player_rate.rs:79
+#, rust-format
+msgid "{:.2}×"
+msgstr "{:.2}×"
 
 #: podcasts-gtk/src/widgets/read_more_label.rs:33
 msgid "Visually expands this description"
@@ -793,25 +786,32 @@ msgstr "Wizualnie rozwija ten opis"
 msgid "Read More"
 msgstr "Czytaj dalej"
 
-#: podcasts-gtk/src/widgets/show_menu.rs:182
+#: podcasts-gtk/src/widgets/show_menu.rs:148
 msgid "Marked all episodes as listened"
 msgstr "Oznaczono wszystkie odcinki jako odsłuchane"
 
-#: podcasts-gtk/src/widgets/show_menu.rs:183
-#: podcasts-gtk/src/widgets/show_menu.rs:211
+#: podcasts-gtk/src/widgets/show_menu.rs:149
+#: podcasts-gtk/src/widgets/show_menu.rs:177
 msgid "Undo"
 msgstr "Cofnij"
 
-#: podcasts-gtk/src/widgets/show_menu.rs:206
+#: podcasts-gtk/src/widgets/show_menu.rs:172
 #, rust-format
 msgid "Unsubscribed from {}"
 msgstr "Zrezygnowano z subskrypcji „{}”"
 
-#: podcasts-gtk/src/widgets/show_menu.rs:237
+#: podcasts-gtk/src/widgets/show_menu.rs:203
 #, rust-format
 msgid "Failed to store Unsubscribe Action for Synchronization in database. {}"
-msgstr ""
-"Nie udało się zachować akcji anulowania subskrypcji w bazie danych. {}"
+msgstr "Nie udało się zachować akcji anulowania subskrypcji w bazie danych. {}"
+
+#: podcasts-gtk/src/widgets/shows_view.rs:144
+msgid "No Results Found"
+msgstr "Brak wyników"
+
+#: podcasts-gtk/src/widgets/shows_view.rs:146
+msgid "Try a different search or filters"
+msgstr "Proszę spróbować ponownie z innym wyszukiwanym terminem lub filtrami"
 
 #: podcasts-gtk/src/widgets/sync_preferences.rs:126
 msgid "Logging in..."
@@ -843,3 +843,18 @@ msgstr "Trwa pierwsze synchronizowanie. To może potrwać kilka minut."
 #: podcasts-gtk/src/widgets/sync_preferences.rs:439
 msgid "Never"
 msgstr "Nigdy"
+
+#~ msgid "Today"
+#~ msgstr "Dzisiaj"
+
+#~ msgid "Yesterday"
+#~ msgstr "Wczoraj"
+
+#~ msgid "This Week"
+#~ msgstr "Ten tydzień"
+
+#~ msgid "This Month"
+#~ msgstr "Ten miesiąc"
+
+#~ msgid "Older"
+#~ msgstr "Starsze"
