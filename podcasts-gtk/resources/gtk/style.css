@@ -25,7 +25,7 @@ popover modelbutton > box > label {
 }
 
 .episode_description .button-row button image {
-    padding-right: 10px;
+    padding-right: 5px;
 }
 
 .episode_description .button-row .cancel-button {
