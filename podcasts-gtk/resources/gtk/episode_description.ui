@@ -159,7 +159,6 @@ Tobias Bernard
                                 <child>
                                   <object class="GtkButton" id="play_button">
                                     <style>
-                                      <class name="suggested-action"/>
                                       <class name="pill"/>
                                     </style>
                                     <property name="visible">False</property>
@@ -178,7 +177,6 @@ Tobias Bernard
                                 <child>
                                   <object class="GtkButton" id="pause_button">
                                     <style>
-                                      <class name="suggested-action"/>
                                       <class name="pill"/>
                                     </style>
                                     <property name="visible">False</property>
@@ -198,7 +196,6 @@ Tobias Bernard
                                 <child>
                                   <object class="GtkButton" id="download_button">
                                     <style>
-                                      <class name="suggested-action"/>
                                       <class name="pill"/>
                                     </style>
                                     <property name="visible">False</property>
