@@ -42,6 +42,9 @@ pub trait EpisodeModel {
     ///
     /// None/Null for unplayed.
     fn played(&self) -> Option<NaiveDateTime>;
+
+    /// Get whether the episode has been downloaded
+    fn is_downloaded(&self) -> bool;
 }
 
 #[derive(Queryable, Identifiable, AsChangeset, Associations, PartialEq, Selectable)]
@@ -84,6 +87,11 @@ impl EpisodeModel for Episode {
     /// None/Null for unplayed.
     fn played(&self) -> Option<NaiveDateTime> {
         self.played
+    }
+
+    /// Get whether the episode has been downloaded
+    fn is_downloaded(&self) -> bool {
+        self.local_uri.is_some()
     }
 }
 
@@ -240,6 +248,11 @@ impl EpisodeModel for EpisodeWidgetModel {
     /// None/Null for unplayed.
     fn played(&self) -> Option<NaiveDateTime> {
         self.played
+    }
+
+    /// Get whether the episode has been downloaded
+    fn is_downloaded(&self) -> bool {
+        self.local_uri.is_some()
     }
 }
 

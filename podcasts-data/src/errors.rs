@@ -70,6 +70,8 @@ pub enum DataError {
     KeyringError(#[from] oo7::Error),
     #[error("from_utf8 error: {0}")]
     Utf8Error(#[from] std::string::FromUtf8Error),
+    #[error("The given episode ID didn't match any in the database")]
+    EpisodeIdNotFoundError,
 }
 
 #[derive(Error, Debug)]

@@ -23,6 +23,8 @@ mod new_source;
 
 mod discovery_settings;
 mod episode;
+mod new_queue_item;
+mod queue_item;
 mod show;
 mod source;
 /// Sync datatypes to store updates that still have to be sent out.
@@ -32,6 +34,7 @@ pub mod sync;
 pub(crate) use self::discovery_settings::DiscoverySetting;
 
 pub(crate) use self::new_episode::{NewEpisode, NewEpisodeMinimal};
+pub(crate) use self::new_queue_item::NewQueueItem;
 pub(crate) use self::new_show::NewShow;
 pub(crate) use self::new_source::NewSource;
 
@@ -43,6 +46,7 @@ pub(crate) use self::new_show::NewShowBuilder;
 pub use self::episode::{
     Episode, EpisodeCleanerModel, EpisodeId, EpisodeMinimal, EpisodeModel, EpisodeWidgetModel,
 };
+pub use self::queue_item::QueueItem;
 pub use self::show::{Show, ShowCoverModel, ShowId};
 pub use self::source::{Source, SourceId};
 

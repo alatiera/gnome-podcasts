@@ -20,6 +20,13 @@
         </child>
         <child>
           <object class="AdwShortcutsItem">
+            <!-- Translators: Queue as a Noun -->
+            <property name="title" translatable="yes" context="shortcut window">Go to Queue Page</property>
+            <property name="action-name">win.go-to-queue</property>
+          </object>
+        </child>
+        <child>
+          <object class="AdwShortcutsItem">
             <!-- Translators: 'Discovery' is a page where you can add new podcasts -->
             <property name="title" translatable="yes" context="shortcut window">Go To Discovery Page</property>
             <property name="action-name">win.go-to-discovery</property>

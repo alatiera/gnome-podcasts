@@ -29,232 +29,328 @@ Tobias Bernard
   <!-- interface-description A podcast client for the GNOME Desktop -->
   <!-- interface-copyright 2017 - 2018 -->
   <!-- interface-authors Jordan Petridis\nTobias Bernard -->
-  <template class="PdEpisode" parent="GtkBox">
-    <property name="height_request">64</property>
-    <property name="valign">center</property>
-    <property name="margin_start">6</property>
-    <property name="margin_end">6</property>
-    <property name="orientation">vertical</property>
-
+  <template class="PdEpisode" parent="GtkListBoxRow">
     <child>
-      <object class="GtkBox">
-        <property name="margin_start">6</property>
-        <property name="margin_end">6</property>
-        <property name="margin_top">6</property>
-        <property name="hexpand">True</property>
-        <property name="vexpand">True</property>
-        <property name="spacing">12</property>
+      <object class="GtkRevealer" id="main_revealer">
+        <property name="reveal-child">True</property>
+        <property name="transition-type">slide-down</property>
         <child>
-          <object class="GtkBox" id="info_container">
-            <property name="halign">start</property>
-            <property name="valign">center</property>
+          <object class="GtkBox">
             <property name="orientation">vertical</property>
-            <property name="spacing">6</property>
-            <property name="hexpand">True</property>
             <child>
-              <object class="GtkBox">
-                <property name="halign">start</property>
-                <property name="spacing">6</property>
+              <object class="GtkRevealer" id="motion_top_revealer">
+                <property name="reveal-child">False</property>
+                <property name="transition-type">slide-up</property>
+                <property name="transition-duration">150</property>
                 <child>
-                  <object class="GtkLabel" id="title">
-                    <property name="label">Episode Title</property>
-                    <property name="ellipsize">end</property>
-                    <property name="single_line_mode">True</property>
-                    <property name="lines">2</property>
-                    <property name="wrap">True</property>
-                    <property name="wrap-mode">word-char</property>
-                    <property name="xalign">0</property>
-                  </object>
-                </child>
-                <child>
-                  <object class="GtkImage" id="played_checkmark">
-                    <property name="tooltip_text" translatable="yes">You’ve already listened to this episode.</property>
-                    <property name="icon_name">object-select-symbolic</property>
-                    <property name="visible">False</property>
+                  <object class="AdwBin" id="motion_top_grid">
+                    <!-- cover image is 64, plus top and bottom margins of 6 each -->
+                    <property name="height-request">76</property>
                     <style>
-                      <class name="dim-label"/>
+                      <class name="drop-target"/>
+                      <class name="drop-target-top"/>
                     </style>
                   </object>
                 </child>
               </object>
             </child>
             <child>
-              <object class="GtkBox">
-                <property name="spacing">6</property>
+              <object class="GtkBox" id="content_box">
+                <property name="valign">center</property>
+                <property name="margin-start">6</property>
+                <property name="margin-end">6</property>
+                <property name="margin-top">6</property>
+                <property name="margin-bottom">6</property>
                 <child>
-                  <object class="GtkLabel" id="date">
-                    <property name="xalign">0.0</property>
-                    <property name="label">3 Jan</property>
-                    <property name="single_line_mode">True</property>
-                    <style>
-                      <class name="dim-label"/>
-                    </style>
-                    <attributes>
-                      <attribute name="font-features" value="tnum=1"/>
-                    </attributes>
+                  <object class="GtkBox" id="drag_handle">
+                    <property name="vexpand">true</property>
+                    <child>
+                      <object class="GtkImage">
+                        <property name="pixel-size">16</property>
+                        <property name="height_request">16</property>
+                        <property name="icon-name">list-drag-handle-symbolic</property>
+                        <property name="overflow">hidden</property>
+                        <property name="hexpand">false</property>
+                        <property name="vexpand">false</property>
+                        <property name="halign">center</property>
+                        <property name="valign">center</property>
+                        <property name="margin_end">6</property>
+                        <property name="accessible-role">none</property>
+                        <style>
+                          <class name="dimmed"/>
+                        </style>
+                      </object>
+                    </child>
                   </object>
                 </child>
                 <child>
-                  <object class="GtkLabel" id="separator1">
-                    <property name="xalign">0.0</property>
-                    <property name="visible">False</property>
-                    <property name="label">·</property>
+                  <object class="GtkImage" id="cover">
+                    <property name="pixel-size">64</property>
+                    <property name="width_request">64</property>
+                    <property name="height_request">64</property>
+                    <property name="icon-name">image-missing-symbolic</property>
+                    <property name="overflow">hidden</property>
+                    <property name="hexpand">false</property>
+                    <property name="vexpand">false</property>
+                    <property name="halign">center</property>
+                    <property name="valign">center</property>
                     <style>
-                      <class name="dim-label"/>
-                    </style>
-                  </object>
-                </child>
-                <child>
-                  <object class="GtkLabel" id="duration">
-                    <property name="xalign">0.0</property>
-                    <property name="visible">False</property>
-                    <property name="label">42 min</property>
-                    <property name="single_line_mode">True</property>
-                    <style>
-                      <class name="dim-label"/>
-                    </style>
-                    <attributes>
-                      <attribute name="font-features" value="tnum=1"/>
-                    </attributes>
-                  </object>
-                </child>
-                <child>
-                  <object class="GtkLabel" id="separator2">
-                    <property name="xalign">0.0</property>
-                    <property name="visible">False</property>
-                    <property name="label">·</property>
-                    <style>
-                      <class name="dim-label"/>
+                      <class name="rounded-small"/>
                     </style>
                   </object>
                 </child>
                 <child>
-                  <object class="GtkLabel" id="local_size">
-                    <property name="visible">False</property>
-                    <property name="label">0 MB</property>
-                    <property name="ellipsize">end</property>
-                    <property name="single_line_mode">True</property>
-                    <style>
-                      <class name="dim-label"/>
-                    </style>
-                    <attributes>
-                      <attribute name="font-features" value="tnum=1"/>
-                    </attributes>
+                  <object class="GtkBox">
+                    <property name="height_request">64</property>
+                    <property name="valign">center</property>
+                    <property name="margin_start">6</property>
+                    <property name="margin_end">6</property>
+                    <property name="orientation">vertical</property>
+
+                    <child>
+                      <object class="GtkBox">
+                        <property name="margin_start">6</property>
+                        <property name="margin_end">6</property>
+                        <property name="margin_top">6</property>
+                        <property name="hexpand">True</property>
+                        <property name="vexpand">True</property>
+                        <property name="spacing">12</property>
+                        <child>
+                          <object class="GtkBox" id="info_container">
+                            <property name="halign">start</property>
+                            <property name="valign">center</property>
+                            <property name="orientation">vertical</property>
+                            <property name="spacing">6</property>
+                            <property name="hexpand">True</property>
+                            <child>
+                              <object class="GtkBox">
+                                <property name="halign">start</property>
+                                <property name="spacing">6</property>
+                                <child>
+                                  <object class="GtkLabel" id="title">
+                                    <property name="label">Episode Title</property>
+                                    <property name="ellipsize">end</property>
+                                    <property name="single_line_mode">True</property>
+                                    <property name="lines">2</property>
+                                    <property name="wrap">True</property>
+                                    <property name="wrap-mode">word-char</property>
+                                    <property name="xalign">0</property>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="GtkImage" id="played_checkmark">
+                                    <property name="tooltip_text" translatable="yes">You’ve already listened to this episode.</property>
+                                    <property name="icon_name">object-select-symbolic</property>
+                                    <property name="visible">False</property>
+                                    <style>
+                                      <class name="dim-label"/>
+                                    </style>
+                                  </object>
+                                </child>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="GtkBox">
+                                <property name="spacing">6</property>
+                                <child>
+                                  <object class="GtkLabel" id="date">
+                                    <property name="xalign">0.0</property>
+                                    <property name="label">3 Jan</property>
+                                    <property name="single_line_mode">True</property>
+                                    <style>
+                                      <class name="dim-label"/>
+                                    </style>
+                                    <attributes>
+                                      <attribute name="font-features" value="tnum=1"/>
+                                    </attributes>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="GtkLabel" id="separator1">
+                                    <property name="xalign">0.0</property>
+                                    <property name="visible">False</property>
+                                    <property name="label">·</property>
+                                    <style>
+                                      <class name="dim-label"/>
+                                    </style>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="GtkLabel" id="duration">
+                                    <property name="xalign">0.0</property>
+                                    <property name="visible">False</property>
+                                    <property name="label">42 min</property>
+                                    <property name="single_line_mode">True</property>
+                                    <style>
+                                      <class name="dim-label"/>
+                                    </style>
+                                    <attributes>
+                                      <attribute name="font-features" value="tnum=1"/>
+                                    </attributes>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="GtkLabel" id="separator2">
+                                    <property name="xalign">0.0</property>
+                                    <property name="visible">False</property>
+                                    <property name="label">·</property>
+                                    <style>
+                                      <class name="dim-label"/>
+                                    </style>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="GtkLabel" id="local_size">
+                                    <property name="visible">False</property>
+                                    <property name="label">0 MB</property>
+                                    <property name="ellipsize">end</property>
+                                    <property name="single_line_mode">True</property>
+                                    <style>
+                                      <class name="dim-label"/>
+                                    </style>
+                                    <attributes>
+                                      <attribute name="font-features" value="tnum=1"/>
+                                    </attributes>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="GtkLabel" id="size_separator">
+                                    <property name="xalign">0.0</property>
+                                    <property name="visible">False</property>
+                                    <property name="label">/</property>
+                                    <property name="single_line_mode">True</property>
+                                    <style>
+                                      <class name="dim-label"/>
+                                    </style>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="GtkLabel" id="total_size">
+                                    <property name="visible">False</property>
+                                    <property name="label" translatable="yes">Calculating episode size…</property>
+                                    <property name="ellipsize">end</property>
+                                    <property name="single_line_mode">True</property>
+                                    <style>
+                                      <class name="dim-label"/>
+                                    </style>
+                                    <attributes>
+                                      <attribute name="font-features" value="tnum=1"/>
+                                    </attributes>
+                                  </object>
+                                </child>
+                              </object>
+                            </child>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkBox" id="button_box">
+                            <property name="halign">end</property>
+                            <child>
+                              <object class="GtkButton" id="play">
+                                <property name="margin-bottom">6</property>
+                                <property name="receives_default">True</property>
+                                <property name="visible">False</property>
+                                <property name="tooltip_text" translatable="yes">Play this episode</property>
+                                <property name="halign">center</property>
+                                <property name="valign">center</property>
+                                <property name="icon_name">media-playback-start-symbolic</property>
+                                <style>
+                                  <class name="flat"/>
+                                </style>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="GtkButton" id="pause">
+                                <property name="margin-bottom">6</property>
+                                <property name="action-name">win.toggle-pause</property>
+                                <property name="receives_default">True</property>
+                                <property name="visible">False</property>
+                                <property name="tooltip_text" translatable="yes">Pause playback</property>
+                                <property name="halign">center</property>
+                                <property name="valign">center</property>
+                                <property name="icon_name">media-playback-pause-symbolic</property>
+                                <style>
+                                  <class name="flat"/>
+                                </style>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="GtkButton" id="cancel">
+                                <!-- margin-top, due to the progress bar pushing up the center -->
+                                <property name="margin-top">2</property>
+                                <property name="receives_default">False</property>
+                                <property name="tooltip_text" translatable="yes">Cancel the download process</property>
+                                <property name="halign">center</property>
+                                <property name="valign">center</property>
+                                <property name="icon_name">media-playback-stop-symbolic</property>
+                                <property name="visible">False</property>
+                                <style>
+                                  <class name="flat"/>
+                                </style>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="GtkButton" id="add_to_queue">
+                                <property name="margin-bottom">6</property>
+                                <property name="receives_default">True</property>
+                                <property name="tooltip_text" translatable="yes">Add to Queue</property>
+                                <property name="halign">center</property>
+                                <property name="valign">center</property>
+                                <property name="visible">False</property>
+                                <property name="icon_name">list-add</property>
+                                <style>
+                                  <class name="flat"/>
+                                </style>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="GtkButton" id="text_only">
+                                <property name="margin-bottom">6</property>
+                                <property name="receives_default">True</property>
+                                <property name="visible">False</property>
+                                <property name="tooltip-text" translatable="yes">Episode without audio</property>
+                                <property name="halign">center</property>
+                                <property name="valign">center</property>
+                                <property name="icon-name">accessories-text-editor-symbolic</property>
+                                <style>
+                                  <class name="flat"/>
+                                </style>
+                              </object>
+                            </child>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="PdDownloadProgress" id="progressbar">
+                        <property name="margin-start">6</property>
+                        <property name="margin-end">6</property>
+                        <property name="height-request">8</property>
+                      </object>
+                    </child>
                   </object>
                 </child>
+              </object>
+            </child>
+            <child>
+              <object class="GtkRevealer" id="motion_bottom_revealer">
+                <property name="reveal-child">False</property>
+                <property name="transition-type">slide-down</property>
+                <property name="transition-duration">150</property>
                 <child>
-                  <object class="GtkLabel" id="size_separator">
-                    <property name="xalign">0.0</property>
-                    <property name="visible">False</property>
-                    <property name="label">/</property>
-                    <property name="single_line_mode">True</property>
+                  <object class="AdwBin" id="motion_bottom_grid">
+                    <!-- cover image is 64, plus top and bottom margins of 6 each -->
+                    <property name="height-request">76</property>
                     <style>
-                      <class name="dim-label"/>
+                      <class name="drop-target"/>
+                      <class name="drop-target-bottom"/>
                     </style>
-                  </object>
-                </child>
-                <child>
-                  <object class="GtkLabel" id="total_size">
-                    <property name="visible">False</property>
-                    <property name="label" translatable="yes">Calculating episode size…</property>
-                    <property name="ellipsize">end</property>
-                    <property name="single_line_mode">True</property>
-                    <style>
-                      <class name="dim-label"/>
-                    </style>
-                    <attributes>
-                      <attribute name="font-features" value="tnum=1"/>
-                    </attributes>
                   </object>
                 </child>
               </object>
             </child>
           </object>
         </child>
-        <child>
-          <object class="GtkBox" id="button_box">
-            <property name="halign">end</property>
-            <child>
-              <object class="GtkButton" id="play">
-                <property name="margin-bottom">6</property>
-                <property name="receives_default">True</property>
-                <property name="visible">False</property>
-                <property name="tooltip_text" translatable="yes">Play this episode</property>
-                <property name="halign">center</property>
-                <property name="valign">center</property>
-                <property name="icon_name">media-playback-start-symbolic</property>
-                <style>
-                  <class name="flat"/>
-                </style>
-              </object>
-            </child>
-            <child>
-              <object class="GtkButton" id="pause">
-                <property name="margin-bottom">6</property>
-                <property name="action-name">win.toggle-pause</property>
-                <property name="receives_default">True</property>
-                <property name="visible">False</property>
-                <property name="tooltip_text" translatable="yes">Pause playback</property>
-                <property name="halign">center</property>
-                <property name="valign">center</property>
-                <property name="icon_name">media-playback-pause-symbolic</property>
-                <style>
-                  <class name="flat"/>
-                </style>
-              </object>
-            </child>
-            <child>
-              <object class="GtkButton" id="cancel">
-                <!-- margin-top, due to the progress bar pushing up the center -->
-                <property name="margin-top">2</property>
-                <property name="receives_default">False</property>
-                <property name="tooltip_text" translatable="yes">Cancel the download process</property>
-                <property name="halign">center</property>
-                <property name="valign">center</property>
-                <property name="icon_name">media-playback-stop-symbolic</property>
-                <property name="visible">False</property>
-                <style>
-                  <class name="flat"/>
-                </style>
-              </object>
-            </child>
-            <child>
-              <object class="GtkButton" id="download">
-                <property name="margin-bottom">6</property>
-                <property name="receives_default">True</property>
-                <property name="tooltip_text" translatable="yes">Download this episode</property>
-                <property name="halign">center</property>
-                <property name="valign">center</property>
-                <property name="visible">False</property>
-                <property name="icon_name">document-save-symbolic</property>
-                <style>
-                  <class name="flat"/>
-                </style>
-              </object>
-            </child>
-            <child>
-              <object class="GtkButton" id="text_only">
-                <property name="margin-bottom">6</property>
-                <property name="receives_default">True</property>
-                <property name="visible">False</property>
-                <property name="tooltip-text" translatable="yes">Episode without audio</property>
-                <property name="halign">center</property>
-                <property name="valign">center</property>
-                <property name="icon-name">accessories-text-editor-symbolic</property>
-                <style>
-                  <class name="flat"/>
-                </style>
-              </object>
-            </child>
-          </object>
-        </child>
-      </object>
-    </child>
-    <child>
-      <object class="PdDownloadProgress" id="progressbar">
-        <property name="margin-start">6</property>
-        <property name="margin-end">6</property>
-        <property name="height-request">8</property>
       </object>
     </child>
   </template>

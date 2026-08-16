@@ -182,6 +182,7 @@ impl EpisodeDescriptionPriv {
                     }
                 }
                 this.refresh_buttons(id);
+                send_blocking!(sender, Action::RemoveFromQueue(id));
                 send_blocking!(sender, Action::RefreshEpisode(id));
             }
         ));
@@ -369,7 +370,7 @@ impl EpisodeDescription {
         ep: &dyn EpisodeModel,
         show: Arc<Show>,
     ) {
-        let menu = EpisodeMenu::new(sender, ep, Some(show.id()));
+        let menu = EpisodeMenu::new(sender, ep, Some(show.id()), false);
         self.imp().menu_button.set_menu_model(Some(&menu.menu));
         self.insert_action_group("episode", Some(&menu.group));
     }

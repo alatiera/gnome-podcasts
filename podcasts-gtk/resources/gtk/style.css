@@ -110,3 +110,38 @@ searchbar box {
     background-color: var(--window-bg-color);
     padding-top: 0px; /* header-bar already provides spacing */
 }
+
+.drop-target {
+    background-color: color-mix(in srgb, var(--accent-bg-color) 30%, transparent);
+    padding: 2px;
+    border-radius: 2px;
+}
+
+/* Keep first drop target border radius concentric, 12px is the card_radius in libadwaita */
+.boxed-list row:first-child .drop-target-top {
+    border-top-left-radius: 12px; 
+    border-top-right-radius: 12px;
+}
+
+/* Keep last drop target border radius concentric, 12px is the card_radius in libadwaita */
+.boxed-list row:last-child .drop-target-bottom {
+    border-bottom-left-radius: 12px;
+    border-bottom-right-radius: 12px;
+}
+
+
+.dragged-episode-icon {
+  background-color: white;
+}
+
+@media (prefers-color-scheme: dark) {
+  .dragged-episode-icon {
+    background-color: color-mix(in srgb, white 8%, var(--window-bg-color));
+  }
+}
+
+row:drop(active) {
+    outline: none;
+    box-shadow: none;
+    border: none;
+}

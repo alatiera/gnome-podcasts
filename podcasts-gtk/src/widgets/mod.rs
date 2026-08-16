@@ -35,6 +35,7 @@ mod player_big;
 mod player_rate;
 mod player_small;
 pub(crate) mod player_wrapper;
+mod queue_view;
 mod read_more_label;
 mod sheet_base;
 mod sheet_description;
@@ -63,6 +64,7 @@ pub(crate) use self::player_big::PlayerBig;
 pub(crate) use self::player_rate::PlayerRate;
 pub(crate) use self::player_small::PlayerSmall;
 pub(crate) use self::player_wrapper::PlayerWrapper;
+pub(crate) use self::queue_view::QueueView;
 pub(crate) use self::read_more_label::ReadMoreLabel;
 pub(crate) use self::sheet_base::SheetBase;
 pub(crate) use self::sheet_description::SheetDescription;
@@ -71,6 +73,3 @@ pub(crate) use self::show::ShowWidget;
 pub(crate) use self::show_menu::ShowMenu;
 pub(crate) use self::shows_view::ShowsView;
 pub(crate) use self::sync_preferences::SyncPreferences;
-
-#[cfg(test)]
-pub(crate) use self::home_view::HomeEpisode;

@@ -35,7 +35,7 @@ use crate::utils::{self, lazy_load};
 use crate::widgets::{BaseView, EpisodeWidget, FilterMenu};
 use podcasts_data::dbqueries;
 use podcasts_data::dbqueries::EpisodeFilter;
-use podcasts_data::{EpisodeId, EpisodeModel, EpisodeWidgetModel, ShowId};
+use podcasts_data::{EpisodeModel, EpisodeWidgetModel};
 
 /// The main page
 #[derive(Debug, CompositeTemplate, Default)]
@@ -318,12 +318,13 @@ impl HomeEpisodeList {
         box_.set_visible(true);
 
         let sender = sender.clone();
-        let constructor = move |ep: EpisodeWidgetModel| HomeEpisode::new(&sender, ep).upcast();
+        let constructor =
+            move |ep: EpisodeWidgetModel| EpisodeWidget::new(&sender, ep, true, false).upcast();
         let list = list.upcast_ref::<gtk::Widget>().downgrade();
         lazy_load(model, list, constructor.clone()).await
     }
 
-    pub(crate) fn update_episode(&self, ep: &EpisodeWidgetModel) {
+    pub(crate) fn get_episode_widget(&self, ep: &EpisodeWidgetModel) -> Option<EpisodeWidget> {
         let imp = self.imp();
         let id = ep.id();
         let lists = [
@@ -336,14 +337,20 @@ impl HomeEpisodeList {
         for list in lists {
             let mut i = 0;
             while let Some(row) = list.row_at_index(i) {
-                if let Ok(home_episode) = row.downcast::<HomeEpisode>()
+                if let Ok(home_episode) = row.downcast::<EpisodeWidget>()
                     && home_episode.id() == id
                 {
-                    home_episode.update(ep);
-                    return;
+                    return Some(home_episode);
                 }
                 i += 1;
             }
+        }
+        None
+    }
+
+    pub(crate) fn update_episode(&self, ep: &EpisodeWidgetModel) {
+        if let Some(home_episode) = self.get_episode_widget(ep) {
+            home_episode.update_episode_state(ep);
         }
     }
 }
@@ -398,82 +405,4 @@ fn split_model(model: Vec<EpisodeWidgetModel>) -> Vec<DateBox> {
         DateBox(Month, month),
         DateBox(Rest, rest),
     ]
-}
-
-#[derive(Debug, CompositeTemplate, Default)]
-#[template(resource = "/org/gnome/Podcasts/gtk/home_episode.ui")]
-pub struct HomeEpisodePriv {
-    #[template_child]
-    cover: TemplateChild<gtk::Image>,
-    #[template_child]
-    episode: TemplateChild<EpisodeWidget>,
-}
-
-impl HomeEpisodePriv {
-    fn init(&self, sender: &Sender<Action>, episode: EpisodeWidgetModel) {
-        let pid = episode.show_id();
-        self.set_cover(pid);
-        self.episode.init(sender, episode, true);
-        // Assure the image is read out along with the Episode title
-        self.cover.set_accessible_role(gtk::AccessibleRole::Label);
-    }
-
-    fn set_cover(&self, show_id: ShowId) {
-        crate::download_covers::load_widget_texture(
-            &self.cover.get(),
-            show_id,
-            crate::Thumb64,
-            true,
-        );
-    }
-}
-
-#[glib::object_subclass]
-impl ObjectSubclass for HomeEpisodePriv {
-    const NAME: &'static str = "PdHomeEpisode";
-    type Type = HomeEpisode;
-    type ParentType = gtk::ListBoxRow;
-
-    fn class_init(klass: &mut Self::Class) {
-        klass.bind_template();
-    }
-
-    fn instance_init(obj: &InitializingObject<Self>) {
-        obj.init_template();
-    }
-}
-
-impl WidgetImpl for HomeEpisodePriv {}
-impl ObjectImpl for HomeEpisodePriv {}
-impl ListBoxRowImpl for HomeEpisodePriv {}
-
-glib::wrapper! {
-    pub struct HomeEpisode(ObjectSubclass<HomeEpisodePriv>)
-        @extends gtk::ListBoxRow, gtk::Widget,
-        @implements gtk::Accessible, gtk::Actionable, gtk::Buildable, gtk::ConstraintTarget;
-}
-
-impl HomeEpisode {
-    pub(crate) fn new(sender: &Sender<Action>, episode: EpisodeWidgetModel) -> Self {
-        let widget = Self::default();
-        widget.set_action_name(Some("app.go-to-episode"));
-        widget.set_action_target_value(Some(&episode.id().0.to_variant()));
-        widget.imp().init(sender, episode);
-        widget
-    }
-
-    pub(crate) fn id(&self) -> EpisodeId {
-        self.imp().episode.id()
-    }
-
-    pub(crate) fn update(&self, ep: &EpisodeWidgetModel) {
-        self.imp().episode.update_episode_state(ep);
-    }
-}
-
-impl Default for HomeEpisode {
-    fn default() -> Self {
-        let widget: Self = glib::Object::new();
-        widget
-    }
 }

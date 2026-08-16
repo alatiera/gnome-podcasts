@@ -182,7 +182,7 @@ mod tests {
         ];
         let mut chapters_map: HashMap<String, Chapter> = HashMap::new();
         for s in comments {
-            parse_extended_comment(&mut chapters_map, &s);
+            parse_extended_comment(&mut chapters_map, s);
         }
 
         let mut result: Vec<_> = chapters_map.into_values().collect();

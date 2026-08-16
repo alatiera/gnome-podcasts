@@ -11,9 +11,11 @@ podcasts-gtk/resources/gtk/episode_menu.ui
 podcasts-gtk/resources/gtk/episode_widget.ui
 podcasts-gtk/resources/gtk/home_view.ui
 podcasts-gtk/resources/gtk/player_big.ui
-podcasts-gtk/resources/gtk/player_small.ui
 podcasts-gtk/resources/gtk/player_rate.ui
+podcasts-gtk/resources/gtk/player_small.ui
+podcasts-gtk/resources/gtk/player_toolbar.ui
 podcasts-gtk/resources/gtk/player_wrapper.ui
+podcasts-gtk/resources/gtk/queue_view.ui
 podcasts-gtk/resources/gtk/secondary_menu.ui
 podcasts-gtk/resources/gtk/sheet_base.ui
 podcasts-gtk/resources/gtk/sheet_description.ui
@@ -47,6 +49,7 @@ podcasts-gtk/src/widgets/player_big.rs
 podcasts-gtk/src/widgets/player_small.rs
 podcasts-gtk/src/widgets/player_rate.rs
 podcasts-gtk/src/widgets/player_wrapper.rs
+podcasts-gtk/src/widgets/queue_view.rs
 podcasts-gtk/src/widgets/read_more_label.rs
 podcasts-gtk/src/widgets/show_menu.rs
 podcasts-gtk/src/widgets/shows_view.rs

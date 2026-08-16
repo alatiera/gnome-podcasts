@@ -206,6 +206,15 @@ pub(crate) enum Action {
     RaiseWindow,
     InhibitSuspend,
     UninhibitSuspend,
+    AddToQueue(EpisodeId),
+    RemoveFromQueue(EpisodeId),
+    MoveUpInQueue(EpisodeId),
+    MoveDownInQueue(EpisodeId),
+    MoveToPositionInQueue {
+        episode_to_move: EpisodeId,
+        target_episode: EpisodeId,
+        is_bottom_target: bool,
+    },
 }
 
 impl PdApplication {
@@ -348,7 +357,7 @@ impl PdApplication {
         self.set_accels_for_action("win.lower-playback-rate", &["<primary>less"]);
         self.set_accels_for_action("win.go-to-home", &["F1", "<alt>1"]);
         self.set_accels_for_action("win.go-to-shows", &["F2", "<alt>2"]);
-        // plan: use F3 for Queue page
+        self.set_accels_for_action("win.go-to-queue", &["F3", "<alt>3"]);
         self.set_accels_for_action("win.go-to-discovery", &["F4", "<alt>4", "<primary>n"]);
         self.set_accels_for_action("win.import", &["<primary>o"]);
         self.set_accels_for_action("win.export", &["<primary>e"]);
@@ -379,6 +388,7 @@ impl PdApplication {
                     }
                 };
                 window.content().update_home_episode(&ep);
+                window.content().update_queue_episode(&ep);
                 window.update_show_widget_episode(&ep);
                 if let Some(description) = window.episode_description()
                     && description.id() == id
@@ -561,7 +571,7 @@ impl PdApplication {
                 Self::refresh_done(data.sender.clone(), id);
             }
             Action::InitEpisode(id) => {
-                let res = window.init_episode(id, None, StreamMode::LocalOnly);
+                let res = window.init_episode(id, None, StreamMode::StreamFallback);
                 debug_assert!(res.is_ok());
             }
             Action::InitEpisodeAt(id, second) => {
@@ -624,6 +634,87 @@ impl PdApplication {
                 if cookie != 0 {
                     self.uninhibit(cookie);
                     *data.inhibit_cookie.borrow_mut() = 0;
+                }
+            }
+            Action::AddToQueue(episode_id) => {
+                if let Err(e) = dbqueries::add_episode_to_queue(episode_id) {
+                    error!("failed action AddToQueue: {e}");
+                } else {
+                    window.content().update_queue();
+                    if let Ok(ep) = dbqueries::get_episode_widget_from_id(episode_id) {
+                        window.content().update_home_episode(&ep);
+                    };
+                }
+            }
+            Action::RemoveFromQueue(episode_id) => {
+                if let Ok(queue_item) = dbqueries::get_queue_item(episode_id) {
+                    if let Err(e) = dbqueries::remove_queue_item(&queue_item) {
+                        error!("Failed to remove episode from queue: {e}");
+                    } else {
+                        window.content().update_queue_after_removal(episode_id);
+                        if let Ok(ep) = dbqueries::get_episode_widget_from_id(episode_id) {
+                            window.content().update_home_episode(&ep);
+                        };
+                    }
+                }
+            }
+            Action::MoveUpInQueue(episode_id) => {
+                if let Err(e) = dbqueries::move_episode_up_in_queue(episode_id) {
+                    error!("Failed to move episode {episode_id:?} up in the queue: {e}");
+                } else {
+                    match dbqueries::get_queue_index_after_move(episode_id) {
+                        Ok(new_queue_index) => {
+                            window
+                                .content()
+                                .update_queue_after_move(episode_id, new_queue_index);
+                        }
+                        Err(err) => {
+                            error!("Error when refreshing queue UI: {err}");
+                            window.content().update_queue();
+                        }
+                    }
+                }
+            }
+            Action::MoveDownInQueue(episode_id) => {
+                if let Err(e) = dbqueries::move_episode_down_in_queue(episode_id) {
+                    error!("Failed to move episode {episode_id:?} down in the queue: {e}");
+                } else {
+                    match dbqueries::get_queue_index_after_move(episode_id) {
+                        Ok(new_queue_index) => {
+                            window
+                                .content()
+                                .update_queue_after_move(episode_id, new_queue_index);
+                        }
+                        Err(err) => {
+                            error!("Error when refreshing queue UI: {err}");
+                            window.content().update_queue();
+                        }
+                    }
+                }
+            }
+            Action::MoveToPositionInQueue {
+                episode_to_move,
+                target_episode,
+                is_bottom_target,
+            } => {
+                if let Err(err) = dbqueries::move_episode_to_position_in_queue(
+                    episode_to_move,
+                    target_episode,
+                    is_bottom_target,
+                ) {
+                    error!("Failed to persist queue reorder: {err}");
+                } else {
+                    match dbqueries::get_queue_index_after_move(episode_to_move) {
+                        Ok(new_queue_index) => {
+                            window
+                                .content()
+                                .update_queue_after_move(episode_to_move, new_queue_index);
+                        }
+                        Err(err) => {
+                            error!("Error when refreshing queue UI: {err}");
+                            window.content().update_queue();
+                        }
+                    }
                 }
             }
         };

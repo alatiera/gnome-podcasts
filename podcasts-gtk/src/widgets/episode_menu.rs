@@ -23,8 +23,9 @@ use gtk::prelude::*;
 use gtk::{gio, glib};
 
 use crate::app::Action;
-use podcasts_data::ShowId;
+use crate::widgets::episode::on_download_clicked;
 use podcasts_data::{EpisodeId, EpisodeModel};
+use podcasts_data::{ShowId, dbqueries};
 
 #[derive(Debug, Clone)]
 pub(crate) struct EpisodeMenu {
@@ -33,6 +34,10 @@ pub(crate) struct EpisodeMenu {
     copy_episode_url: gio::SimpleAction,
     mark_as_played: gio::SimpleAction,
     mark_as_unplayed: gio::SimpleAction,
+    download: gio::SimpleAction,
+    delete: gio::SimpleAction,
+    move_up_in_queue: gio::SimpleAction,
+    move_down_in_queue: gio::SimpleAction,
     pub(crate) group: gio::SimpleActionGroup,
 }
 
@@ -44,6 +49,10 @@ impl Default for EpisodeMenu {
         let copy_episode_url = gio::SimpleAction::new("copy-episode-url", None);
         let mark_as_played = gio::SimpleAction::new("mark-as-played", None);
         let mark_as_unplayed = gio::SimpleAction::new("mark-as-unplayed", None);
+        let download = gio::SimpleAction::new("download", None);
+        let delete = gio::SimpleAction::new("delete", None);
+        let move_up_in_queue = gio::SimpleAction::new("move-up-in-queue", None);
+        let move_down_in_queue = gio::SimpleAction::new("move-down-in-queue", None);
         let group = gio::SimpleActionGroup::new();
 
         EpisodeMenu {
@@ -52,25 +61,54 @@ impl Default for EpisodeMenu {
             copy_episode_url,
             mark_as_played,
             mark_as_unplayed,
+            download,
+            delete,
+            move_up_in_queue,
+            move_down_in_queue,
             group,
         }
     }
 }
 
 impl EpisodeMenu {
-    pub fn new(sender: &Sender<Action>, ep: &dyn EpisodeModel, show: Option<ShowId>) -> Self {
+    pub fn new(
+        sender: &Sender<Action>,
+        ep: &dyn EpisodeModel,
+        show: Option<ShowId>,
+        is_queue_view: bool,
+    ) -> Self {
         let s = Self::default();
-        s.init(sender, ep, show);
+        s.init(sender, ep, show, is_queue_view);
         s
     }
 
-    fn init(&self, sender: &Sender<Action>, ep: &dyn EpisodeModel, show: Option<ShowId>) {
+    fn init(
+        &self,
+        sender: &Sender<Action>,
+        ep: &dyn EpisodeModel,
+        show: Option<ShowId>,
+        is_queue_view: bool,
+    ) {
         if let Some(show_id) = show {
             self.connect_go_to_show(show_id);
         }
         self.connect_mark_as_played(sender, ep.id());
         self.update_played_state(ep);
         self.connect_copy_episode_url(sender, ep);
+        let is_downloaded = ep.is_downloaded();
+        if !is_downloaded {
+            self.connect_download(sender, ep);
+        } else {
+            self.connect_delete(sender, ep);
+            if is_queue_view {
+                if matches!(dbqueries::is_last_position_in_queue(ep.id()), Ok(false)) {
+                    self.connect_move_down_in_queue(sender, ep);
+                }
+                if matches!(dbqueries::is_first_position_in_queue(ep.id()), Ok(false)) {
+                    self.connect_move_up_in_queue(sender, ep);
+                }
+            }
+        }
     }
 
     fn update_played_state(&self, ep: &dyn EpisodeModel) {
@@ -99,6 +137,84 @@ impl EpisodeMenu {
                 }
             ));
             self.group.add_action(&self.copy_episode_url);
+        }
+    }
+
+    fn connect_download(&self, sender: &Sender<Action>, ep: &dyn EpisodeModel) {
+        let ep_id = ep.id();
+        if ep.uri().is_some() {
+            self.download.connect_activate(clone!(
+                #[strong]
+                sender,
+                move |_, _| {
+                    if let Ok(ep) = dbqueries::get_episode_widget_from_id(ep_id) {
+                        if let Err(e) = on_download_clicked(&ep, &sender) {
+                            error!("Failed to start download: {e}");
+                        }
+                    } else {
+                        error!("Failed to start download, no episode found with id: {ep_id:?}");
+                    }
+                }
+            ));
+            self.group.add_action(&self.download);
+        }
+    }
+
+    fn connect_delete(&self, sender: &Sender<Action>, ep: &dyn EpisodeModel) {
+        let ep_id = ep.id();
+        if ep.uri().is_some() {
+            self.delete.connect_activate(clone!(
+                #[strong]
+                sender,
+                move |_, _| {
+                    if let Ok(episode) = dbqueries::get_episode_from_id(ep_id) {
+                        let mut cleaner_ep = podcasts_data::EpisodeCleanerModel::from(episode);
+                        if let Err(e) = podcasts_data::utils::delete_local_content(&mut cleaner_ep)
+                        {
+                            error!("failed to delete ep {e}");
+                        } else {
+                            // Remove the episode from the queue
+                            send_blocking!(sender, Action::RemoveFromQueue(ep_id));
+                            send_blocking!(sender, Action::RefreshEpisode(ep_id));
+                        }
+                    }
+                }
+            ));
+            self.group.add_action(&self.delete);
+        }
+    }
+
+    fn connect_move_up_in_queue(&self, sender: &Sender<Action>, ep: &dyn EpisodeModel) {
+        let ep_id = ep.id();
+        if ep.uri().is_some() {
+            self.move_up_in_queue.connect_activate(clone!(
+                #[strong]
+                sender,
+                move |_, _| {
+                    if let Ok(episode) = dbqueries::get_episode_widget_from_id(ep_id) {
+                        // Move the episode up in the queue
+                        send_blocking!(sender, Action::MoveUpInQueue(episode.id()));
+                    }
+                }
+            ));
+            self.group.add_action(&self.move_up_in_queue);
+        }
+    }
+
+    fn connect_move_down_in_queue(&self, sender: &Sender<Action>, ep: &dyn EpisodeModel) {
+        let ep_id = ep.id();
+        if ep.uri().is_some() {
+            self.move_down_in_queue.connect_activate(clone!(
+                #[strong]
+                sender,
+                move |_, _| {
+                    if let Ok(episode) = dbqueries::get_episode_widget_from_id(ep_id) {
+                        // Move the episode down in the queue
+                        send_blocking!(sender, Action::MoveDownInQueue(episode.id()));
+                    }
+                }
+            ));
+            self.group.add_action(&self.move_down_in_queue);
         }
     }
 

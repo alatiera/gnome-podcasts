@@ -59,7 +59,7 @@ pub use crate::models::Save;
 /// This is mostly glue code for the DB, use store(), fetch(), delete() methods to interact.
 pub use crate::models::sync;
 pub use crate::models::{
-    Episode, EpisodeCleanerModel, EpisodeId, EpisodeModel, EpisodeWidgetModel, Show,
+    Episode, EpisodeCleanerModel, EpisodeId, EpisodeModel, EpisodeWidgetModel, QueueItem, Show,
     ShowCoverModel, ShowId, Source, SourceId,
 };
 

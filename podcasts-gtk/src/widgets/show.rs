@@ -214,7 +214,7 @@ impl ShowWidget {
         self.imp().show_id.get()
     }
 
-    pub(crate) fn update_episode(&self, ep: &EpisodeWidgetModel) {
+    pub(crate) fn get_episode_widget(&self, ep: &EpisodeWidgetModel) -> Option<EpisodeWidget> {
         let imp = self.imp();
         let id = ep.id();
         let mut i = 0;
@@ -222,10 +222,16 @@ impl ShowWidget {
             if let Some(Ok(episode)) = row.child().map(|w| w.downcast::<EpisodeWidget>())
                 && episode.id() == id
             {
-                episode.update_episode_state(ep);
-                return;
+                return Some(episode);
             }
             i += 1;
+        }
+        None
+    }
+
+    pub(crate) fn update_episode(&self, ep: &EpisodeWidgetModel) {
+        if let Some(episode) = self.get_episode_widget(ep) {
+            episode.update_episode_state(ep);
         }
     }
 
@@ -265,7 +271,7 @@ impl ShowWidget {
             sender,
             move |ep: EpisodeWidgetModel| {
                 let id = ep.id();
-                let episode_widget = EpisodeWidget::new(&sender, ep, false);
+                let episode_widget = EpisodeWidget::new(&sender, ep, false, false);
                 let row = gtk::ListBoxRow::new();
                 row.set_child(Some(&episode_widget));
                 row.set_action_name(Some("app.go-to-episode"));

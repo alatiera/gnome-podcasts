@@ -26,8 +26,14 @@ use gettextrs::gettext;
 use glib::clone;
 use glib::subclass::InitializingObject;
 use gtk::CompositeTemplate;
+use gtk::DragSource;
+use gtk::DropControllerMotion;
+use gtk::DropTarget;
+use gtk::gdk::ContentProvider;
+use gtk::gdk::DragAction;
 use gtk::prelude::*;
 use gtk::{gio, glib};
+use podcasts_data::ShowId;
 use std::cell::Cell;
 use std::sync::LazyLock;
 
@@ -39,7 +45,7 @@ use podcasts_data::dbqueries;
 use podcasts_data::utils::get_download_dir;
 use podcasts_data::{EpisodeModel, EpisodeWidgetModel};
 
-static SIZE_OPTS: LazyLock<humansize::FormatSizeOptions> = LazyLock::new(|| {
+pub(crate) static SIZE_OPTS: LazyLock<humansize::FormatSizeOptions> = LazyLock::new(|| {
     // Declare a custom humansize option struct
     // See: https://docs.rs/humansize/2.1.3/humansize/struct.FormatSizeOptions.html
     humansize::FormatSizeOptions::from(humansize::WINDOWS).decimal_places(0)
@@ -48,6 +54,10 @@ static SIZE_OPTS: LazyLock<humansize::FormatSizeOptions> = LazyLock::new(|| {
 #[derive(Debug, CompositeTemplate, Default)]
 #[template(resource = "/org/gnome/Podcasts/gtk/episode_widget.ui")]
 pub struct EpisodeWidgetPriv {
+    #[template_child]
+    content_box: TemplateChild<gtk::Box>,
+    #[template_child]
+    cover: TemplateChild<gtk::Image>,
     #[template_child]
     progressbar: TemplateChild<DownloadProgressBar>,
 
@@ -77,13 +87,24 @@ pub struct EpisodeWidgetPriv {
     #[template_child]
     pause: TemplateChild<gtk::Button>,
     #[template_child]
-    download: TemplateChild<gtk::Button>,
+    add_to_queue: TemplateChild<gtk::Button>,
     #[template_child]
     cancel: TemplateChild<gtk::Button>,
     #[template_child]
     text_only: TemplateChild<gtk::Button>,
 
+    // Drag and drop elements
+    #[template_child]
+    drag_handle: TemplateChild<gtk::Box>,
+    #[template_child]
+    main_revealer: TemplateChild<gtk::Revealer>,
+    #[template_child]
+    motion_top_revealer: TemplateChild<gtk::Revealer>,
+    #[template_child]
+    motion_bottom_revealer: TemplateChild<gtk::Revealer>,
+
     episode_id: Cell<Option<EpisodeId>>,
+    is_queue_view: Cell<bool>,
 }
 
 impl EpisodeWidgetPriv {
@@ -92,7 +113,13 @@ impl EpisodeWidgetPriv {
         sender: &Sender<Action>,
         episode: EpisodeWidgetModel,
         add_show_link: bool,
+        is_queue_view: bool,
     ) {
+        let pid = episode.show_id();
+        self.set_cover(pid);
+        self.is_queue_view.set(is_queue_view);
+        // Assure the image is read out along with the Episode title
+        self.cover.set_accessible_role(gtk::AccessibleRole::Label);
         crate::MAINCONTEXT.spawn_local_with_priority(
             glib::source::Priority::LOW,
             clone!(
@@ -117,13 +144,163 @@ impl EpisodeWidgetPriv {
                     this.progressbar.set_height_request(-1);
 
                     // long_press needs to be neutralized by play/pause/dl button clicks
-                    let long_press = this.init_context_menu(&sender, add_show_link);
+                    let long_press = this.init_context_menu(&sender, add_show_link, is_queue_view);
+                    this.init_drag_and_drop(is_queue_view, &sender);
                     this.init_buttons(&sender, id, &long_press);
                     if let Err(err) = this.determine_buttons_state(&episode) {
                         error!("Error: {}", err);
                     }
                 }
             ),
+        );
+    }
+
+    fn init_drag_and_drop(&self, is_queue_view: bool, sender: &Sender<Action>) {
+        if !is_queue_view {
+            self.drag_handle.set_visible(false);
+            return;
+        }
+        let drag_source = DragSource::builder().actions(DragAction::MOVE).build();
+        drag_source.connect_prepare(clone!(
+            #[weak(rename_to = this)]
+            self,
+            #[upgrade_or_default]
+            move |_, _, _| {
+                this.episode_id
+                    .get()
+                    .map(|id| ContentProvider::for_value(&id.0.to_value()))
+            }
+        ));
+
+        drag_source.connect_drag_begin(clone!(
+            #[weak(rename_to = this)]
+            self,
+            move |_source, drag| {
+                let widget = this.obj();
+
+                // create a new widget for rendering as an icon for the drag.
+                let drag_copy =
+                    EpisodeWidget::new_as_icon(widget.id(), widget.width(), widget.height());
+
+                drag.set_hotspot(25, 40);
+
+                let icon = gtk::DragIcon::for_drag(drag);
+                icon.set_child(Some(&drag_copy));
+
+                this.main_revealer.set_reveal_child(false);
+            }
+        ));
+
+        self.main_revealer.connect_child_revealed_notify(clone!(
+            #[weak(rename_to = this)]
+            self,
+            move |revealer| {
+                if !revealer.is_child_revealed() {
+                    this.obj().set_visible(false);
+                }
+            }
+        ));
+
+        drag_source.connect_drag_end(clone!(
+            #[weak(rename_to = this)]
+            self,
+            move |_, _, _| {
+                this.drag_end();
+            }
+        ));
+
+        drag_source.connect_drag_cancel(clone!(
+            #[weak(rename_to = this)]
+            self,
+            #[upgrade_or_default]
+            move |_, _, _| {
+                this.drag_end();
+                false
+            }
+        ));
+
+        self.drag_handle.add_controller(drag_source);
+
+        let drop_target = DropTarget::new(i32::static_type(), DragAction::MOVE);
+        drop_target.connect_drop(clone!(
+            #[strong]
+            sender,
+            #[weak(rename_to = this)]
+            self,
+            #[upgrade_or_default]
+            move |_, selected_widget_value, _x, y| {
+                let row_height = this.obj().height() as f64;
+                let is_top_half = y < row_height / 2.0;
+                this.on_drop(selected_widget_value, &sender, !is_top_half)
+            }
+        ));
+        self.obj().add_controller(drop_target);
+
+        let drop_motion_ctrl = DropControllerMotion::new();
+
+        drop_motion_ctrl.connect_motion(clone!(
+            #[weak(rename_to = this)]
+            self,
+            move |_, _x, y| {
+                let row_height = this.obj().height() as f64;
+                let is_top_half = y < row_height / 2.0;
+
+                this.motion_top_revealer.set_reveal_child(is_top_half);
+                this.motion_bottom_revealer.set_reveal_child(!is_top_half);
+            }
+        ));
+
+        drop_motion_ctrl.connect_leave(clone!(
+            #[weak(rename_to = this)]
+            self,
+            move |_| {
+                this.clear_motion_revealers();
+            }
+        ));
+
+        self.obj().add_controller(drop_motion_ctrl);
+    }
+
+    fn clear_motion_revealers(&self) {
+        self.motion_top_revealer.set_reveal_child(false);
+        self.motion_bottom_revealer.set_reveal_child(false);
+    }
+
+    fn drag_end(&self) {
+        self.main_revealer.set_reveal_child(true);
+        self.obj().set_visible(true);
+    }
+
+    fn on_drop(
+        &self,
+        selected_widget_value: &glib::Value,
+        sender: &Sender<Action>,
+        is_bottom_target: bool,
+    ) -> bool {
+        let picked_id = match selected_widget_value.get::<i32>() {
+            Ok(id) => EpisodeId(id),
+            Err(_) => return false,
+        };
+
+        let target_episode_id = self.episode_id.get().unwrap();
+        send_blocking!(
+            sender,
+            Action::MoveToPositionInQueue {
+                episode_to_move: picked_id,
+                target_episode: target_episode_id,
+                is_bottom_target
+            }
+        );
+        self.clear_motion_revealers();
+        true
+    }
+
+    fn set_cover(&self, show_id: ShowId) {
+        crate::download_covers::load_widget_texture(
+            &self.cover.get(),
+            show_id,
+            crate::Thumb64,
+            true,
         );
     }
 
@@ -136,7 +313,7 @@ impl EpisodeWidgetPriv {
 
         self.local_size.set_visible(false);
         self.size_separator.set_visible(false);
-        self.download.set_visible(false);
+        self.add_to_queue.set_visible(false);
         self.text_only.set_visible(true);
         self.text_only.set_action_name(Some("app.go-to-episode"));
         self.text_only
@@ -148,7 +325,7 @@ impl EpisodeWidgetPriv {
     //   * Show ProgressBar and Cancel Button.
     //   * Show `total_size`, `local_size` labels and `size_separator`.
     //   * Hide `date`, `duration` labels
-    //   * Hide Download and Play Buttons
+    //   * Hide Add to Queue and Play Buttons
     fn state_prog(&self) {
         self.cancel.set_visible(true);
 
@@ -161,19 +338,19 @@ impl EpisodeWidgetPriv {
 
         self.play.set_visible(false);
         self.pause.set_visible(false);
-        self.download.set_visible(false);
+        self.add_to_queue.set_visible(false);
         self.update_separator2_visibility();
         self.update_progressbar_spacing(true);
     }
 
     // Playable State:
-    //   * Hide ProgressBar and Cancel, Download Buttons.
+    //   * Hide ProgressBar and Cancel, Add to Queue Buttons.
     //   * Hide `local_size` labels and `size_separator`.
     //   * Show `date`, `duration` labels
     //   * Show Play Button and `total_size` label
     fn state_playable(&self) {
         self.cancel.set_visible(false);
-        self.download.set_visible(false);
+        self.add_to_queue.set_visible(false);
         self.local_size.set_visible(false);
         self.size_separator.set_visible(false);
 
@@ -188,13 +365,13 @@ impl EpisodeWidgetPriv {
     }
 
     // Playing State:
-    //   * Hide ProgressBar and Cancel, Download Buttons.
+    //   * Hide ProgressBar and Cancel, Add to Queue Buttons.
     //   * Hide `local_size` labels and `size_separator`.
     //   * Show `date`, `duration` labels
     //   * Show Pause Button and `total_size` label
     fn state_playing(&self) {
         self.cancel.set_visible(false);
-        self.download.set_visible(false);
+        self.add_to_queue.set_visible(false);
         self.local_size.set_visible(false);
         self.size_separator.set_visible(false);
 
@@ -209,14 +386,20 @@ impl EpisodeWidgetPriv {
     }
 
     // NotDownloaded State:
-    //   * Hide ProgressBar and Cancel, Play Buttons.
+    //   * Hide ProgressBar and Cancel, Play Buttons, unless its in the queue, in which case show the Play button.
     //   * Hide `local_size` labels and `size_separator`.
-    //   * Show Download Button
+    //   * Show Add to Queue Button if this widget isn't part of a QueueView
     //   * Show `date`, `duration` labels
-    //   * Determine `total_size` label state (Comes from `episode.lenght`).
+    //   * Determine `total_size` label state (Comes from `episode.length`).
     fn state_download(&self) {
+        if self.is_queue_view.get() {
+            self.play.set_visible(true);
+            self.add_to_queue.set_visible(false);
+        } else {
+            self.play.set_visible(false);
+            self.add_to_queue.set_visible(true);
+        }
         self.cancel.set_visible(false);
-        self.play.set_visible(false);
         self.pause.set_visible(false);
 
         self.local_size.set_visible(false);
@@ -225,7 +408,6 @@ impl EpisodeWidgetPriv {
         self.date.set_visible(true);
         self.set_duration_visible(true);
 
-        self.download.set_visible(true);
         self.update_separator2_visibility();
         self.update_progressbar_spacing(false);
     }
@@ -402,10 +584,9 @@ impl EpisodeWidgetPriv {
             #[weak(rename_to = this)]
             self,
             move |_| {
-                if let Err(err) = dbqueries::get_episode_widget_from_id(id)
-                    .map(|ep| this.determine_buttons_state(&ep))
-                {
-                    error!("Could not get episode info: {err}");
+                match dbqueries::get_episode_widget_from_id(id) {
+                    Ok(ep) => this.obj().update_episode_state(&ep),
+                    Err(err) => error!("Could not get episode info: {err}"),
                 }
             }
         ));
@@ -469,29 +650,24 @@ impl EpisodeWidgetPriv {
             }
         ));
 
-        self.download.connect_clicked(clone!(
+        self.add_to_queue.connect_clicked(clone!(
             #[weak]
             long_press,
-            #[weak(rename_to = this)]
-            self,
             #[strong]
             sender,
-            move |dl| {
+            move |bt| {
                 long_press.set_state(gtk::EventSequenceState::Claimed);
+                send_blocking!(sender, Action::AddToQueue(id));
                 if let Ok(ep) = dbqueries::get_episode_widget_from_id(id) {
-                    let result = on_download_clicked(&ep, &sender).and_then(|_| {
-                        info!("Download started successfully.");
-                        this.determine_buttons_state(&ep)
-                    });
-                    if let Err(err) = result {
-                        error!("Failed to start download {err}");
-                    } else {
-                        this.progressbar.grab_focus();
+                    if let Err(e) = on_download_clicked(&ep, &sender) {
+                        error!("Failed to start download: {e}");
                     }
+                } else {
+                    error!("Failed to start download, no episode found with id: {id:?}");
                 }
 
                 // Restore sensitivity after operations above complete
-                dl.set_sensitive(true);
+                bt.set_sensitive(true);
             }
         ));
     }
@@ -500,6 +676,7 @@ impl EpisodeWidgetPriv {
         &self,
         sender: &Sender<Action>,
         add_show_link: bool,
+        is_queue_view: bool,
     ) -> gtk::GestureLongPress {
         let on_rightclick = clone!(
             #[strong]
@@ -517,7 +694,7 @@ impl EpisodeWidgetPriv {
                 };
                 let pid = episode.show_id();
                 let show = if add_show_link { Some(pid) } else { None };
-                let menu = EpisodeMenu::new(&sender, &episode, show);
+                let menu = EpisodeMenu::new(&sender, &episode, show, is_queue_view);
                 let popover = gtk::PopoverMenu::from_model(Some(&menu.menu));
                 popover.set_parent(&*this.obj());
                 popover.insert_action_group("episode", Some(&menu.group));
@@ -532,6 +709,15 @@ impl EpisodeWidgetPriv {
         long_press.connect_pressed(move |_, x, y| {
             on_long_press((x, y));
         });
+        let on_menu_key = on_rightclick.clone();
+        let menu_key = gtk::EventControllerKey::builder()
+            .name("menu-key-controller")
+            .build();
+        menu_key.connect_key_released(move |_, key, _code, _modifier| {
+            if key == gtk::gdk::Key::Menu {
+                on_menu_key((25.0, 40.0));
+            }
+        });
         let right_click = gtk::GestureClick::builder()
             .button(gtk::gdk::BUTTON_SECONDARY)
             .build();
@@ -540,6 +726,7 @@ impl EpisodeWidgetPriv {
         });
         self.obj().add_controller(long_press.clone());
         self.obj().add_controller(right_click);
+        self.obj().add_controller(menu_key);
         long_press
     }
 
@@ -564,7 +751,7 @@ impl EpisodeWidgetPriv {
         }
     }
 }
-fn on_download_clicked(ep: &EpisodeWidgetModel, sender: &Sender<Action>) -> Result<()> {
+pub fn on_download_clicked(ep: &EpisodeWidgetModel, sender: &Sender<Action>) -> Result<()> {
     let pd = dbqueries::get_podcast_from_id(ep.show_id())?;
     let download_dir = get_download_dir(pd.title())?;
 
@@ -579,7 +766,7 @@ fn on_download_clicked(ep: &EpisodeWidgetModel, sender: &Sender<Action>) -> Resu
 impl ObjectSubclass for EpisodeWidgetPriv {
     const NAME: &'static str = "PdEpisode";
     type Type = EpisodeWidget;
-    type ParentType = gtk::Box;
+    type ParentType = gtk::ListBoxRow;
 
     fn class_init(klass: &mut Self::Class) {
         klass.bind_template();
@@ -592,12 +779,12 @@ impl ObjectSubclass for EpisodeWidgetPriv {
 
 impl WidgetImpl for EpisodeWidgetPriv {}
 impl ObjectImpl for EpisodeWidgetPriv {}
-impl BoxImpl for EpisodeWidgetPriv {}
+impl ListBoxRowImpl for EpisodeWidgetPriv {}
 
 glib::wrapper! {
     pub struct EpisodeWidget(ObjectSubclass<EpisodeWidgetPriv>)
-        @extends gtk::Box, gtk::Widget,
-        @implements gtk::Accessible, gtk::Buildable, gtk::ConstraintTarget;
+        @extends gtk::ListBoxRow, gtk::Widget,
+        @implements gtk::Accessible, gtk::Actionable, gtk::Buildable, gtk::ConstraintTarget;
 }
 
 impl EpisodeWidget {
@@ -605,9 +792,12 @@ impl EpisodeWidget {
         sender: &Sender<Action>,
         episode: EpisodeWidgetModel,
         add_show_link: bool,
+        is_queue_view: bool,
     ) -> Self {
         let widget = Self::default();
-        widget.init(sender, episode, add_show_link);
+        widget.set_action_name(Some("app.go-to-episode"));
+        widget.set_action_target_value(Some(&episode.id().0.to_variant()));
+        widget.init(sender, episode, add_show_link, is_queue_view);
         widget
     }
 
@@ -616,8 +806,36 @@ impl EpisodeWidget {
         sender: &Sender<Action>,
         episode: EpisodeWidgetModel,
         add_show_link: bool,
+        is_queue_view: bool,
     ) {
-        self.imp().init(sender, episode, add_show_link);
+        self.imp()
+            .init(sender, episode, add_show_link, is_queue_view);
+    }
+
+    pub(crate) fn new_as_icon(id: EpisodeId, width: i32, height: i32) -> Self {
+        let widget = Self::default();
+        let episode = match dbqueries::get_episode_widget_from_id(id) {
+            Ok(ep) => ep,
+            Err(err) => {
+                error!("Could not get episode info: {err}");
+                return widget;
+            }
+        };
+        widget.imp().init_info(&episode);
+        widget.imp().set_cover(episode.show_id());
+        widget.add_css_class("card");
+        widget.add_css_class("dragged-episode-icon");
+
+        widget.set_width_request(width);
+        widget.set_height_request(height);
+
+        // for shadow
+        widget.set_margin_start(12);
+        widget.set_margin_end(12);
+        widget.set_margin_top(12);
+        widget.set_margin_bottom(12);
+
+        widget
     }
 
     pub(crate) fn id(&self) -> EpisodeId {
@@ -626,9 +844,26 @@ impl EpisodeWidget {
 
     pub(crate) fn update_episode_state(&self, ep: &EpisodeWidgetModel) {
         let imp = self.imp();
+        let button_had_focus = imp.play.has_focus()
+            || imp.pause.has_focus()
+            || imp.add_to_queue.has_focus()
+            || imp.cancel.has_focus()
+            || imp.text_only.has_focus();
+
         if let Err(err) = imp.determine_buttons_state(ep) {
             error!("Failed to update episode widget buttons {err}");
         }
+
+        #[cfg_attr(any(), rustfmt::skip)]
+        // good focus management is mandetory for screen reader
+        if button_had_focus {
+            if imp.play.is_visible() { imp.play.grab_focus(); }
+            else if imp.pause.is_visible() { imp.pause.grab_focus(); }
+            else if imp.add_to_queue.is_visible() { imp.add_to_queue.grab_focus(); }
+            else if imp.cancel.is_visible() { imp.cancel.grab_focus(); }
+            else if imp.text_only.is_visible() { imp.text_only.grab_focus(); }
+        }
+
         imp.set_played(ep.played().is_some())
     }
 

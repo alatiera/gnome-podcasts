@@ -208,6 +208,10 @@ impl ObjectSubclass for MainWindowPriv {
             win.pop_to_content();
             win.content().go_to_shows();
         });
+        klass.install_action("win.go-to-queue", None, move |win, _, _| {
+            win.pop_to_content();
+            win.content().go_to_queue();
+        });
         klass.install_action("win.go-to-discovery", None, move |win, _, _| {
             win.go_to_discovery();
         });

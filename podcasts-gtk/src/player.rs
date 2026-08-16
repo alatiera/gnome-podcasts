@@ -218,7 +218,6 @@ impl Deref for Position {
 
 #[derive(PartialEq)]
 pub enum StreamMode {
-    LocalOnly,
     StreamOnly,
     StreamFallback,
 }
@@ -576,6 +575,19 @@ impl Player {
                     this.imp().ep.borrow_mut().as_mut().map(|ep| {
                         ep.set_play_position_and_save(0)?;
 
+                        // Check if the episode that just finished is in the queue, if so, play the next episode from the queue and remove this one from the queue
+                        if let Ok(current_queue_item) = dbqueries::get_queue_item(ep.id()) {
+                            if let Ok(next_queue_item) =
+                                dbqueries::get_next_item_in_queue(&current_queue_item)
+                            {
+                                send_blocking!(
+                                    sender,
+                                    Action::InitEpisode(next_queue_item.episode_id())
+                                );
+                            }
+                            send_blocking!(sender, Action::RemoveFromQueue(ep.id()));
+                        }
+
                         if let Err(e) = podcasts_data::sync::Episode::store(
                             ep.id(),
                             podcasts_data::sync::EpisodeAction::Finished,
@@ -585,10 +597,10 @@ impl Player {
                         }
 
                         send_blocking!(sender, Action::MarkAsPlayed(true, ep.id()));
+
                         let ok: Result<(), podcasts_data::errors::DataError> = Ok(());
                         ok
                     });
-
                     this.stop()
                 }
             }

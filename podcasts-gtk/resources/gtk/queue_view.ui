@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+Copyright (C) 2017 - 2018
+
+This file is part of GNOME Podcasts.
+
+GNOME Podcasts is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+GNOME Podcasts is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with GNOME Podcasts.  If not, see <http://www.gnu.org/licenses/>.
+
+Authors:
+Jordan Petridis
+Tobias Bernard
+
+-->
+<interface>
+  <!-- interface-license-type gplv3 -->
+  <!-- interface-name GNOME Podcasts -->
+  <!-- interface-description A podcast client for the GNOME Desktop -->
+  <!-- interface-copyright 2017 - 2018 -->
+  <!-- interface-authors Jordan Petridis\nTobias Bernard -->
+  <template class="PdQueueView" parent="AdwBin">
+    <child>
+      <object class="PdBaseView" id="view">
+        <property name="child">
+          <object class="AdwClamp">
+            <property name="maximum-size">700</property>
+            <child>
+              <object class="GtkBox" id="frame_parent">
+                <property name="margin-start">12</property>
+                <property name="margin-end">12</property>
+                <property name="margin-top">32</property>
+                <property name="margin-bottom">32</property>
+                <property name="hexpand">True</property>
+                <property name="orientation">vertical</property>
+                <property name="spacing">24</property>
+                <child>
+                  <object class="AdwStatusPage" id="empty_queue_status_page">
+                    <property name="hexpand">True</property>
+                    <property name="vexpand">True</property>
+                    <property name="visible">False</property>
+                    <property name="title" translatable="yes">Queue Is Empty</property>
+                    <property name="description" translatable="yes">Add episodes from the New view or Shows views</property>
+                    <property name="icon-name">view-list-symbolic</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkListBox" id="queue_list">
+                    <property name="hexpand">True</property>
+                    <property name="activate-on-single-click">True</property>
+                    <property name="selection-mode">none</property>
+                    <accessibility>
+                      <property name="label" translatable="yes">Queue</property>
+                    </accessibility>
+                    <style>
+                      <class name="boxed-list"/>
+                    </style>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </property>
+      </object>
+    </child>
+  </template>
+</interface>

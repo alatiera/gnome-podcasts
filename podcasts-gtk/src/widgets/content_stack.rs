@@ -30,9 +30,9 @@ use std::rc::Rc;
 
 use crate::app::Action;
 use crate::utils::get_ignored_shows;
-use crate::widgets::{EmptyView, FilterMenu, HomeView, ShowsView};
-use podcasts_data::EpisodeWidgetModel;
+use crate::widgets::{EmptyView, FilterMenu, HomeView, QueueView, ShowsView};
 use podcasts_data::dbqueries::is_episodes_populated;
+use podcasts_data::{EpisodeId, EpisodeWidgetModel};
 
 #[derive(Debug, Clone)]
 pub(crate) struct Content {
@@ -42,6 +42,7 @@ pub(crate) struct Content {
     stack: adw::ViewStack,
     shows_bin: adw::Bin,
     shows: OnceCell<ShowsView>,
+    queue_bin: adw::Bin,
     home: HomeView,
     empty: EmptyView,
     filter_menu_stack: RefCell<adw::ViewStack>,
@@ -57,6 +58,7 @@ impl Content {
         let stack = adw::ViewStack::new();
         let shows_bin = adw::Bin::new();
         let shows = OnceCell::new();
+        let queue_bin = adw::Bin::new();
         let home = HomeView::new(sender.clone(), filter_menu_home.clone());
         let overlay = gtk::Overlay::new();
         let empty = EmptyView::default();
@@ -73,10 +75,12 @@ impl Content {
 
         let home_page = stack.add_titled(&home, Some("home"), &gettext("New"));
         let shows_page = stack.add_titled(&shows_bin, Some("shows"), &gettext("Shows"));
+        let queue_page = stack.add_titled(&queue_bin, Some("queue"), &gettext("Queue"));
         stack.add_named(&empty, Some("empty"));
 
         home_page.set_icon_name(Some("document-open-recent-symbolic"));
         shows_page.set_icon_name(Some("audio-input-microphone-symbolic"));
+        queue_page.set_icon_name(Some("view-list-symbolic"));
 
         let this = Rc::new(Self {
             overlay,
@@ -86,8 +90,19 @@ impl Content {
             shows_bin,
             home,
             shows,
+            queue_bin,
             empty,
             filter_menu_stack: RefCell::new(filter_menu_stack),
+        });
+
+        let weak = Rc::downgrade(&this);
+        stack.connect_visible_child_notify(move |s| {
+            if let Some(name) = s.visible_child_name()
+                && name == "queue"
+                && let Some(this) = weak.upgrade()
+            {
+                this.init_queue();
+            }
         });
 
         stack.connect_visible_child_notify(clone!(
@@ -121,6 +136,7 @@ impl Content {
 
     pub(crate) fn update(&self) {
         self.update_home();
+        self.update_queue();
         self.update_shows();
         if let Err(e) = self.check_empty_state() {
             error!("Failed to check for empty db state {e}");
@@ -133,9 +149,40 @@ impl Content {
         }
     }
 
+    pub(crate) fn update_queue(&self) {
+        let queue = QueueView::new(self.sender.clone());
+        self.queue_bin.set_child(Some(&queue));
+    }
+
+    pub(crate) fn update_queue_after_removal(&self, removed_episode: EpisodeId) {
+        if !self
+            .queue()
+            .map(|q| q.update_queue_after_removal(removed_episode))
+            .unwrap_or(true)
+        {
+            self.update_queue();
+        }
+    }
+
+    pub(crate) fn update_queue_after_move(&self, moved_episode: EpisodeId, new_index: usize) {
+        if !self
+            .queue()
+            .map(|q| q.update_queue_after_move(moved_episode, new_index))
+            .unwrap_or(true)
+        {
+            self.update_queue();
+        }
+    }
+
     pub(crate) fn update_home_episode(&self, ep: &EpisodeWidgetModel) {
         if let Ok(home) = self.home.clone().downcast::<HomeView>() {
             home.update_episode(ep);
+        }
+    }
+
+    pub(crate) fn update_queue_episode(&self, ep: &EpisodeWidgetModel) {
+        if let Some(queue) = self.queue() {
+            queue.update_episode(ep);
         }
     }
 
@@ -157,6 +204,12 @@ impl Content {
         &self.overlay
     }
 
+    fn queue(&self) -> Option<QueueView> {
+        self.queue_bin
+            .child()
+            .and_then(|w| w.downcast::<QueueView>().ok())
+    }
+
     fn init_shows(&self, filter_menu: FilterMenu) {
         if self.shows.get().is_none() {
             self.shows
@@ -170,6 +223,14 @@ impl Content {
         }
     }
 
+    fn init_queue(&self) {
+        if self.queue().is_none() {
+            info!("Init Queue View");
+            let new_queue = QueueView::new(self.sender.clone());
+            self.queue_bin.set_child(Some(&new_queue));
+        }
+    }
+
     pub(crate) fn go_to_home(&self) {
         if !self.is_in_empty_view() {
             self.stack.set_visible_child_name("home");
@@ -179,6 +240,12 @@ impl Content {
     pub(crate) fn go_to_shows(&self) {
         if !self.is_in_empty_view() {
             self.stack.set_visible_child_name("shows");
+        }
+    }
+
+    pub(crate) fn go_to_queue(&self) {
+        if !self.is_in_empty_view() {
+            self.stack.set_visible_child_name("queue");
         }
     }
 

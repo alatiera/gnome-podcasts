@@ -145,6 +145,243 @@ pub fn get_podcasts_filter(
         .map_err(From::from)
 }
 
+pub fn get_queue() -> Result<Vec<QueueItem>, DataError> {
+    use crate::schema::queue::dsl::*;
+    let db = connection();
+    let mut con = db.get()?;
+
+    queue
+        .order(position.asc())
+        .load::<QueueItem>(&mut con)
+        .map_err(From::from)
+}
+
+pub fn get_next_item_in_queue(queue_item: &QueueItem) -> Result<QueueItem, DataError> {
+    use crate::schema::queue::dsl::*;
+    let db = connection();
+    let mut con = db.get()?;
+    // Filter the queue list to just items with a higher position than the current item, order it ascending, and take the first item to get the next item in the queue
+    queue
+        .filter(position.gt(queue_item.position()))
+        .order(position.asc())
+        .first::<QueueItem>(&mut con)
+        .map_err(From::from)
+}
+
+pub fn remove_queue_item(queue_item: &QueueItem) -> Result<(), DataError> {
+    use crate::schema::queue::dsl::*;
+
+    let db = connection();
+    let mut con = db.get()?;
+    diesel::delete(queue.filter(id.eq(queue_item.id())))
+        .execute(&mut con)
+        .map(|_| ())
+        .map_err(From::from)
+}
+
+pub fn get_queue_item(episode_to_check: EpisodeId) -> Result<QueueItem, DataError> {
+    use crate::schema::queue::dsl::*;
+    let db = connection();
+    let mut con = db.get()?;
+    queue
+        .filter(episode_id.eq(episode_to_check))
+        .first::<QueueItem>(&mut con)
+        .map_err(From::from)
+}
+
+pub fn add_episode_to_queue(episode_for_queue: EpisodeId) -> Result<(), DataError> {
+    use crate::schema::queue::dsl::*;
+    let db = connection();
+    let mut con = db.get()?;
+    // The position of a new item is one higher than the highest position value in the queue, or 0 if the queue is empty
+    let new_position = queue
+        .order(position.desc())
+        .first::<QueueItem>(&mut con)
+        .map_or(0.0, |last_item_in_queue| {
+            last_item_in_queue.position() + 1.0
+        });
+    let new_queue_item = NewQueueItem::new(episode_for_queue, new_position);
+    diesel::insert_into(queue)
+        .values(new_queue_item)
+        .execute(&mut con)
+        .map_err(From::from)
+        .map(|_| ())
+}
+
+pub fn move_episode_up_in_queue(episode_to_move: EpisodeId) -> Result<(), DataError> {
+    use crate::schema::queue::dsl::*;
+
+    let db = connection();
+    let mut con = db.get()?;
+
+    con.transaction(|con| {
+        let current = queue
+            .filter(episode_id.eq(episode_to_move))
+            .first::<QueueItem>(con)?;
+
+        let maybe_above = queue
+            .filter(position.lt(current.position()))
+            .order(position.desc())
+            .first::<QueueItem>(con)
+            .optional()?;
+
+        if let Some(above) = maybe_above {
+            let temp_position = i32::MIN as f64; // The episodes position gets set to a temp value to satisfy the Unique constraint
+
+            diesel::update(queue.filter(id.eq(current.id())))
+                .set(position.eq(temp_position))
+                .execute(con)?;
+
+            diesel::update(queue.filter(id.eq(above.id())))
+                .set(position.eq(current.position()))
+                .execute(con)?;
+
+            diesel::update(queue.filter(id.eq(current.id())))
+                .set(position.eq(above.position()))
+                .execute(con)?;
+        }
+
+        Ok(())
+    })
+}
+
+pub fn move_episode_down_in_queue(episode_to_move: EpisodeId) -> Result<(), DataError> {
+    use crate::schema::queue::dsl::*;
+
+    let db = connection();
+    let mut con = db.get()?;
+
+    con.transaction(|con| {
+        let current = queue
+            .filter(episode_id.eq(episode_to_move))
+            .first::<QueueItem>(con)?;
+
+        let maybe_below = queue
+            .filter(position.gt(current.position()))
+            .order(position.asc())
+            .first::<QueueItem>(con)
+            .optional()?;
+
+        if let Some(below) = maybe_below {
+            let temp_position = i32::MIN as f64; // The episodes position gets set to a temp value to satisfy the Unique constraint
+
+            diesel::update(queue.filter(id.eq(current.id())))
+                .set(position.eq(temp_position))
+                .execute(con)?;
+
+            diesel::update(queue.filter(id.eq(below.id())))
+                .set(position.eq(current.position()))
+                .execute(con)?;
+
+            diesel::update(queue.filter(id.eq(current.id())))
+                .set(position.eq(below.position()))
+                .execute(con)?;
+        }
+
+        Ok(())
+    })
+}
+
+/// Returns true if the episode has the lowest position value in the queue, so it's first to be played
+pub fn is_first_position_in_queue(episode_to_check: EpisodeId) -> Result<bool, DataError> {
+    use crate::schema::queue::dsl::*;
+    let db = connection();
+    let mut con = db.get()?;
+
+    let current = queue
+        .filter(episode_id.eq(episode_to_check))
+        .first::<QueueItem>(&mut con)?;
+
+    let first_item = queue.order(position.asc()).first::<QueueItem>(&mut con)?;
+
+    Ok(current.position() == first_item.position())
+}
+
+/// Returns true if the episode has the highest position value in the queue, so it's last to be played
+pub fn is_last_position_in_queue(episode_to_check: EpisodeId) -> Result<bool, DataError> {
+    use crate::schema::queue::dsl::*;
+    let db = connection();
+    let mut con = db.get()?;
+
+    let current = queue
+        .filter(episode_id.eq(episode_to_check))
+        .first::<QueueItem>(&mut con)?;
+
+    let last_item = queue.order(position.desc()).first::<QueueItem>(&mut con)?;
+
+    Ok(current.position() == last_item.position())
+}
+
+pub fn move_episode_to_position_in_queue(
+    episode_to_move: EpisodeId,
+    target_episode: EpisodeId,
+    is_below: bool,
+) -> Result<(), DataError> {
+    use crate::schema::queue::dsl::*;
+
+    let db = connection();
+    let mut con = db.get()?;
+
+    con.transaction(|con| {
+        if episode_to_move == target_episode {
+            return Ok(());
+        }
+
+        let target = queue
+            .filter(episode_id.eq(target_episode))
+            .first::<QueueItem>(con)?;
+
+        let neighbour = if is_below {
+            queue
+                .filter(position.gt(target.position()))
+                .filter(episode_id.ne(episode_to_move))
+                .order(position.asc())
+                .first::<QueueItem>(con)
+                .optional()?
+        } else {
+            queue
+                .filter(position.lt(target.position()))
+                .filter(episode_id.ne(episode_to_move))
+                .order(position.desc())
+                .first::<QueueItem>(con)
+                .optional()?
+        };
+
+        let new_position = match neighbour {
+            Some(n) => (target.position() + n.position()) / 2.0,
+            None if is_below => target.position() + 1.0,
+            None => target.position() - 1.0,
+        };
+
+        diesel::update(queue.filter(episode_id.eq(episode_to_move)))
+            .set(position.eq(new_position))
+            .execute(con)?;
+
+        Ok(())
+    })
+}
+
+pub fn get_queue_index_after_move(moved_episode: EpisodeId) -> Result<usize, DataError> {
+    use crate::schema::queue::dsl::*;
+
+    let db = connection();
+    let mut con = db.get()?;
+
+    con.transaction(|con| {
+        let queue_items = queue
+            .order(position.asc())
+            .select(episode_id)
+            .load::<EpisodeId>(con)?;
+
+        let moved_episode_index = queue_items
+            .iter()
+            .position(|&current_id| current_id == moved_episode)
+            .ok_or(DataError::EpisodeIdNotFoundError)?;
+
+        Ok(moved_episode_index)
+    })
+}
+
 pub fn get_episodes() -> Result<Vec<Episode>, DataError> {
     use crate::schema::episodes::dsl::*;
     let db = connection();

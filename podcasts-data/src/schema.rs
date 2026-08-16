@@ -75,8 +75,17 @@ table! {
     }
 }
 
+table! {
+    queue (id) {
+        id -> Integer,
+        episode_id -> Integer,
+        position -> Double
+    }
+}
+
 diesel::joinable!(shows -> source (source_id));
 diesel::joinable!(episodes -> shows (show_id));
+diesel::joinable!(queue -> episodes (episode_id));
 
 allow_tables_to_appear_in_same_query!(
     episodes,
@@ -85,5 +94,6 @@ allow_tables_to_appear_in_same_query!(
     discovery_settings,
     episodes_sync,
     shows_sync,
-    settings_sync
+    settings_sync,
+    queue
 );

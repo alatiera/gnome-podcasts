@@ -51,6 +51,28 @@ Tobias Bernard
         <attribute name="action">episode.mark-as-unplayed</attribute>
         <attribute name="hidden-when">action-disabled</attribute>
       </item>
+      <item>
+        <attribute name="label" translatable="yes">Download</attribute>
+        <attribute name="action">episode.download</attribute>
+        <attribute name="hidden-when">action-disabled</attribute>
+      </item>
+      <item>
+        <attribute name="label" translatable="yes">Delete</attribute>
+        <attribute name="action">episode.delete</attribute>
+        <attribute name="hidden-when">action-disabled</attribute>
+      </item>
+      </section>
+      <section>
+      <item>
+        <attribute name="label" translatable="yes">Move Up in Queue</attribute>
+        <attribute name="action">episode.move-up-in-queue</attribute>
+        <attribute name="hidden-when">action-disabled</attribute>
+      </item>
+      <item>
+        <attribute name="label" translatable="yes">Move Down in Queue</attribute>
+        <attribute name="action">episode.move-down-in-queue</attribute>
+        <attribute name="hidden-when">action-disabled</attribute>
+      </item>
     </section>
   </menu>
 </interface>
