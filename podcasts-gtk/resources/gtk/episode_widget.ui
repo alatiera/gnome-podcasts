@@ -151,14 +151,12 @@ Tobias Bernard
                             </child>
                             <child>
                               <object class="GtkBox">
-                                <property name="spacing">6</property>
                                 <child>
-                                  <object class="GtkLabel" id="date">
+                                  <object class="GtkLabel" id="subtitle">
                                     <property name="xalign">0.0</property>
-                                    <property name="label">3 Jan</property>
                                     <property name="single_line_mode">True</property>
                                     <style>
-                                      <class name="dim-label"/>
+                                      <class name="caption"/>
                                     </style>
                                     <attributes>
                                       <attribute name="font-features" value="tnum=1"/>
@@ -166,72 +164,11 @@ Tobias Bernard
                                   </object>
                                 </child>
                                 <child>
-                                  <object class="GtkLabel" id="separator1">
+                                  <object class="GtkLabel" id="download_progress">
                                     <property name="xalign">0.0</property>
-                                    <property name="visible">False</property>
-                                    <property name="label">•</property>
-                                    <style>
-                                      <class name="dim-label"/>
-                                    </style>
-                                  </object>
-                                </child>
-                                <child>
-                                  <object class="GtkLabel" id="duration">
-                                    <property name="xalign">0.0</property>
-                                    <property name="visible">False</property>
-                                    <property name="label">42 min</property>
                                     <property name="single_line_mode">True</property>
                                     <style>
-                                      <class name="dim-label"/>
-                                    </style>
-                                    <attributes>
-                                      <attribute name="font-features" value="tnum=1"/>
-                                    </attributes>
-                                  </object>
-                                </child>
-                                <child>
-                                  <object class="GtkLabel" id="separator2">
-                                    <property name="xalign">0.0</property>
-                                    <property name="visible">False</property>
-                                    <property name="label">•</property>
-                                    <style>
-                                      <class name="dim-label"/>
-                                    </style>
-                                  </object>
-                                </child>
-                                <child>
-                                  <object class="GtkLabel" id="local_size">
-                                    <property name="visible">False</property>
-                                    <property name="label">0 MB</property>
-                                    <property name="ellipsize">end</property>
-                                    <property name="single_line_mode">True</property>
-                                    <style>
-                                      <class name="dim-label"/>
-                                    </style>
-                                    <attributes>
-                                      <attribute name="font-features" value="tnum=1"/>
-                                    </attributes>
-                                  </object>
-                                </child>
-                                <child>
-                                  <object class="GtkLabel" id="size_separator">
-                                    <property name="xalign">0.0</property>
-                                    <property name="visible">False</property>
-                                    <property name="label">/</property>
-                                    <property name="single_line_mode">True</property>
-                                    <style>
-                                      <class name="dim-label"/>
-                                    </style>
-                                  </object>
-                                </child>
-                                <child>
-                                  <object class="GtkLabel" id="total_size">
-                                    <property name="visible">False</property>
-                                    <property name="label" translatable="yes">Calculating episode size…</property>
-                                    <property name="ellipsize">end</property>
-                                    <property name="single_line_mode">True</property>
-                                    <style>
-                                      <class name="dim-label"/>
+                                      <class name="caption"/>
                                     </style>
                                     <attributes>
                                       <attribute name="font-features" value="tnum=1"/>

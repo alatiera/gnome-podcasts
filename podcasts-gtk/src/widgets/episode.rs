@@ -35,7 +35,9 @@ use gtk::prelude::*;
 use gtk::{gio, glib};
 use podcasts_data::ShowId;
 use std::cell::Cell;
+use std::sync::Arc;
 use std::sync::LazyLock;
+use std::sync::RwLock;
 
 use crate::app::Action;
 use crate::manager;
@@ -65,19 +67,9 @@ pub struct EpisodeWidgetPriv {
     #[template_child]
     title: TemplateChild<gtk::Label>,
     #[template_child]
-    date: TemplateChild<gtk::Label>,
+    subtitle: TemplateChild<gtk::Label>,
     #[template_child]
-    separator1: TemplateChild<gtk::Label>,
-    #[template_child]
-    duration: TemplateChild<gtk::Label>,
-    #[template_child]
-    separator2: TemplateChild<gtk::Label>,
-    #[template_child]
-    local_size: TemplateChild<gtk::Label>,
-    #[template_child]
-    size_separator: TemplateChild<gtk::Label>,
-    #[template_child]
-    total_size: TemplateChild<gtk::Label>,
+    download_progress: TemplateChild<gtk::Label>,
     #[template_child]
     played_checkmark: TemplateChild<gtk::Image>,
 
@@ -104,6 +96,7 @@ pub struct EpisodeWidgetPriv {
     motion_bottom_revealer: TemplateChild<gtk::Revealer>,
 
     episode_id: Cell<Option<EpisodeId>>,
+    ep_total_size: Arc<RwLock<i32>>,
     is_queue_view: Cell<bool>,
 }
 
@@ -120,6 +113,9 @@ impl EpisodeWidgetPriv {
         self.is_queue_view.set(is_queue_view);
         // Assure the image is read out along with the Episode title
         self.cover.set_accessible_role(gtk::AccessibleRole::Label);
+        if let Ok(mut ep_total_size) = self.ep_total_size.try_write() {
+            *ep_total_size = episode.length().unwrap_or_default();
+        }
         crate::MAINCONTEXT.spawn_local_with_priority(
             glib::source::Priority::LOW,
             clone!(
@@ -311,8 +307,7 @@ impl EpisodeWidgetPriv {
         self.play.set_visible(false);
         self.pause.set_visible(false);
 
-        self.local_size.set_visible(false);
-        self.size_separator.set_visible(false);
+        self.download_progress.set_visible(false);
         self.add_to_queue.set_visible(false);
         self.text_only.set_visible(true);
         self.text_only.set_action_name(Some("app.go-to-episode"));
@@ -323,74 +318,57 @@ impl EpisodeWidgetPriv {
 
     // InProgress State:
     //   * Show ProgressBar and Cancel Button.
-    //   * Show `total_size`, `local_size` labels and `size_separator`.
-    //   * Hide `date`, `duration` labels
+    //   * Show `download_progress` label
+    //   * Hide `subtitle` label
     //   * Hide Add to Queue and Play Buttons
     fn state_prog(&self) {
         self.cancel.set_visible(true);
+        self.download_progress.set_visible(true);
 
-        self.total_size.set_visible(true);
-        self.local_size.set_visible(true);
-        self.size_separator.set_visible(true);
-
-        self.date.set_visible(false);
-        self.set_duration_visible(false);
-
+        self.subtitle.set_visible(false);
         self.play.set_visible(false);
         self.pause.set_visible(false);
         self.add_to_queue.set_visible(false);
-        self.update_separator2_visibility();
         self.update_progressbar_spacing(true);
     }
 
     // Playable State:
     //   * Hide ProgressBar and Cancel, Add to Queue Buttons.
-    //   * Hide `local_size` labels and `size_separator`.
-    //   * Show `date`, `duration` labels
-    //   * Show Play Button and `total_size` label
+    //   * Hide `download_progress` label.
+    //   * Show `subtitle` label
+    //   * Show Play Button
     fn state_playable(&self) {
         self.cancel.set_visible(false);
         self.add_to_queue.set_visible(false);
-        self.local_size.set_visible(false);
-        self.size_separator.set_visible(false);
 
-        self.date.set_visible(true);
-        self.set_duration_visible(true);
-
-        self.total_size.set_visible(true);
+        self.download_progress.set_visible(false);
+        self.subtitle.set_visible(true);
         self.play.set_visible(true);
         self.pause.set_visible(false);
-        self.update_separator2_visibility();
         self.update_progressbar_spacing(false);
     }
 
     // Playing State:
     //   * Hide ProgressBar and Cancel, Add to Queue Buttons.
-    //   * Hide `local_size` labels and `size_separator`.
-    //   * Show `date`, `duration` labels
+    //   * Hide `download_progress` label.
+    //   * Show `subtitle` labels
     //   * Show Pause Button and `total_size` label
     fn state_playing(&self) {
         self.cancel.set_visible(false);
         self.add_to_queue.set_visible(false);
-        self.local_size.set_visible(false);
-        self.size_separator.set_visible(false);
 
-        self.date.set_visible(true);
-        self.set_duration_visible(true);
-
-        self.total_size.set_visible(true);
+        self.subtitle.set_visible(true);
+        self.download_progress.set_visible(false);
         self.play.set_visible(false);
         self.pause.set_visible(true);
-        self.update_separator2_visibility();
         self.update_progressbar_spacing(false);
     }
 
     // NotDownloaded State:
     //   * Hide ProgressBar and Cancel, Play Buttons, unless its in the queue, in which case show the Play button.
-    //   * Hide `local_size` labels and `size_separator`.
+    //   * Hide `download_progress` label.
     //   * Show Add to Queue Button if this widget isn't part of a QueueView
-    //   * Show `date`, `duration` labels
-    //   * Determine `total_size` label state (Comes from `episode.length`).
+    //   * Show `subtitle` label
     fn state_download(&self) {
         if self.is_queue_view.get() {
             self.play.set_visible(true);
@@ -401,14 +379,9 @@ impl EpisodeWidgetPriv {
         }
         self.cancel.set_visible(false);
         self.pause.set_visible(false);
+        self.subtitle.set_visible(true);
+        self.download_progress.set_visible(false);
 
-        self.local_size.set_visible(false);
-        self.size_separator.set_visible(false);
-
-        self.date.set_visible(true);
-        self.set_duration_visible(true);
-
-        self.update_separator2_visibility();
         self.update_progressbar_spacing(false);
     }
 
@@ -482,14 +455,23 @@ impl EpisodeWidgetPriv {
 
     fn init_info(&self, episode: &EpisodeWidgetModel) {
         self.set_title(episode);
-        self.set_date(episode.epoch());
-        self.set_duration(episode.duration());
-        self.set_size(episode.length());
+        self.set_subtitle(episode);
         self.set_played(episode.played().is_some());
     }
 
     fn set_title(&self, episode: &EpisodeWidgetModel) {
         self.title.set_text(episode.title());
+    }
+
+    fn set_subtitle(&self, episode: &EpisodeWidgetModel) {
+        let mut subtitle_content = self.get_date(episode.epoch());
+        if let Some(ep_duration) = self.get_duration(episode.duration()) {
+            subtitle_content.push_str(&format!(" • {ep_duration}"));
+        }
+        if let Some(ep_size) = self.get_size(episode.length()) {
+            subtitle_content.push_str(&format!(" • {ep_size}"));
+        }
+        self.subtitle.set_text(&subtitle_content);
     }
 
     fn set_played(&self, played: bool) {
@@ -502,30 +484,28 @@ impl EpisodeWidgetPriv {
         }
     }
 
-    // Set the date label of the episode widget.
-    fn set_date(&self, epoch: NaiveDateTime) {
+    // Get the date label of the episode widget.
+    fn get_date(&self, epoch: NaiveDateTime) -> String {
         let now: DateTime<Local> = Local::now();
         let ts = DateTime::<Local>::from(epoch.and_utc());
 
         // If the episode is from a different year, print year as well
         if now.year() != ts.year() {
-            self.date.set_text(
-                ts.format_localized("%e %b %Y", *crate::CHRONO_LOCALE)
-                    .to_string()
-                    .trim(),
-            );
+            ts.format_localized("%e %b %Y", *crate::CHRONO_LOCALE)
+                .to_string()
+                .trim()
+                .to_string()
         // Else omit the year from the label
         } else {
-            self.date.set_text(
-                ts.format_localized("%e %b", *crate::CHRONO_LOCALE)
-                    .to_string()
-                    .trim(),
-            );
+            ts.format_localized("%e %b", *crate::CHRONO_LOCALE)
+                .to_string()
+                .trim()
+                .to_string()
         }
     }
 
-    // Set the duration label of the episode widget.
-    fn set_duration(&self, seconds: Option<i32>) {
+    // Get the duration label of the episode widget.
+    fn get_duration(&self, seconds: Option<i32>) -> Option<String> {
         // If length is provided
         if let Some(s) = seconds {
             // Convert seconds to minutes
@@ -533,48 +513,26 @@ impl EpisodeWidgetPriv {
             // If the length is 1 or more minutes
             if minutes != 0 {
                 // Set the label and show them.
-                self.duration.set_text(
-                    &formatx!(gettext("{} min"), minutes)
+                return Some(
+                    formatx!(gettext("{} min"), minutes)
                         .expect("Could not format translatable string"),
                 );
-                self.set_duration_visible(true);
-                return;
             }
         }
 
-        // Else empty and hide the label
-        self.duration.set_text("");
-        self.set_duration_visible(false);
+        None
     }
 
-    fn set_duration_visible(&self, visible: bool) {
-        // check if there is no duration, hide in that case.
-        if visible && self.duration.text().is_empty() {
-            self.separator1.set_visible(false);
-            self.duration.set_visible(false);
-        } else {
-            self.separator1.set_visible(visible);
-            self.duration.set_visible(visible);
-        }
-    }
-
-    // Set the size label of the episode widget.
-    fn set_size(&self, bytes: Option<i32>) {
+    // Get the size label of the episode widget.
+    fn get_size(&self, bytes: Option<i32>) -> Option<String> {
         // Convert the bytes to a String label
-        let size = bytes.and_then(|s| {
+        bytes.and_then(|s| {
             if s <= 0 {
                 None
             } else {
                 Some(humansize::format_size(s as u32, *SIZE_OPTS))
             }
-        });
-
-        if let Some(s) = size {
-            self.total_size.set_text(&s);
-            self.total_size.set_visible(true);
-        } else {
-            self.total_size.set_visible(false);
-        }
+        })
     }
 
     fn init_progressbar(&self, id: EpisodeId) {
@@ -591,11 +549,25 @@ impl EpisodeWidgetPriv {
             }
         ));
 
+        let ep_total_size_ref = Arc::clone(&self.ep_total_size);
         self.progressbar
-            .bind_property("local_size", &*self.local_size, "label")
-            .transform_to(move |_, downloaded: u64| {
-                Some(humansize::format_size(downloaded, *SIZE_OPTS))
-            })
+            .bind_property("local_size", &*self.download_progress, "label")
+            .transform_to(clone!(
+                #[weak]
+                ep_total_size_ref,
+                #[upgrade_or_panic]
+                move |_, downloaded: u64| {
+                    let current = humansize::format_size(downloaded, *SIZE_OPTS);
+                    let total = humansize::format_size(
+                        ep_total_size_ref
+                            .read()
+                            .map(|size| *size)
+                            .unwrap_or_default() as u32,
+                        *SIZE_OPTS,
+                    );
+                    Some(format!("{} / {}", current, total,))
+                }
+            ))
             .flags(glib::BindingFlags::SYNC_CREATE)
             .build();
 
@@ -604,7 +576,11 @@ impl EpisodeWidgetPriv {
             self,
             move |_| {
                 // try_from should handle NaN case
-                this.set_size(i32::try_from(this.progressbar.total_size()).ok());
+                if let Ok(size) = i32::try_from(this.progressbar.total_size())
+                    && let Ok(mut ep_total_size) = this.ep_total_size.try_write()
+                {
+                    *ep_total_size = size;
+                }
             }
         ));
     }
@@ -728,11 +704,6 @@ impl EpisodeWidgetPriv {
         self.obj().add_controller(right_click);
         self.obj().add_controller(menu_key);
         long_press
-    }
-
-    fn update_separator2_visibility(&self) {
-        self.separator2
-            .set_visible(self.date.is_visible() && self.total_size.is_visible());
     }
 
     fn update_progressbar_spacing(&self, visible: bool) {
