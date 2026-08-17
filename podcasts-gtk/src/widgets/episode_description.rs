@@ -270,7 +270,7 @@ impl EpisodeDescriptionPriv {
         };
 
         let duration_date = match duration {
-            Some(duration) => format!("{} · {}", duration, date),
+            Some(duration) => format!("{} • {}", duration, date),
             None => date,
         };
         self.episode_duration.set_text(&duration_date);

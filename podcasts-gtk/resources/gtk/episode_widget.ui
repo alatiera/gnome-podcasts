@@ -169,7 +169,7 @@ Tobias Bernard
                                   <object class="GtkLabel" id="separator1">
                                     <property name="xalign">0.0</property>
                                     <property name="visible">False</property>
-                                    <property name="label">·</property>
+                                    <property name="label">•</property>
                                     <style>
                                       <class name="dim-label"/>
                                     </style>
@@ -193,7 +193,7 @@ Tobias Bernard
                                   <object class="GtkLabel" id="separator2">
                                     <property name="xalign">0.0</property>
                                     <property name="visible">False</property>
-                                    <property name="label">·</property>
+                                    <property name="label">•</property>
                                     <style>
                                       <class name="dim-label"/>
                                     </style>
