@@ -55,6 +55,8 @@ pub struct ShowWidgetPriv {
     #[template_child]
     pub(crate) filter_menu: TemplateChild<FilterMenu>,
     #[template_child]
+    pub(crate) search_button: TemplateChild<gtk::ToggleButton>,
+    #[template_child]
     search_bar: TemplateChild<gtk::SearchBar>,
     #[template_child]
     search_entry: TemplateChild<gtk::SearchEntry>,
@@ -156,8 +158,7 @@ impl ShowWidget {
             self,
             move |_| this.reload(&sender)
         ));
-        imp.filter_menu
-            .search_button()
+        imp.search_button
             .bind_property("active", &imp.search_bar.get(), "search-mode-enabled")
             .flags(glib::BindingFlags::SYNC_CREATE | glib::BindingFlags::BIDIRECTIONAL)
             .build();

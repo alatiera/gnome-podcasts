@@ -230,7 +230,11 @@ glib::wrapper! {
 }
 
 impl ShowsView {
-    pub(crate) fn new(sender: Sender<Action>, filter_menu: FilterMenu) -> Self {
+    pub(crate) fn new(
+        sender: Sender<Action>,
+        filter_menu: FilterMenu,
+        search_button: gtk::ToggleButton,
+    ) -> Self {
         let this: Self = glib::Object::new();
         this.imp().set_data();
         this.imp().grid.connect_activate(move |gridview, index| {
@@ -245,8 +249,7 @@ impl ShowsView {
             this,
             move |_| this.update_model()
         ));
-        filter_menu
-            .search_button()
+        search_button
             .bind_property("active", &this.imp().search_bar, "search-mode-enabled")
             .flags(glib::BindingFlags::SYNC_CREATE | glib::BindingFlags::BIDIRECTIONAL)
             .build();

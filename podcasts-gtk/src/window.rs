@@ -90,6 +90,8 @@ pub struct MainWindowPriv {
     pub(crate) player_wrapper: TemplateChild<PlayerWrapper>,
     #[template_child]
     pub(crate) sheet_base: TemplateChild<SheetBase>,
+    #[template_child]
+    pub(crate) search_button: TemplateChild<gtk::ToggleButton>,
 
     #[property(set, get)]
     pub(crate) updating: Cell<bool>,
@@ -135,6 +137,7 @@ impl ObjectSubclass for MainWindowPriv {
             player: RefCell::new(Player::default()),
             sync_preferences: RefCell::new(None),
             sheet_base: TemplateChild::default(),
+            search_button: TemplateChild::default(),
             settings,
         }
     }
@@ -291,6 +294,7 @@ impl MainWindow {
         imp.filter_shows.init(FilterMenuMode::Show);
         let content = Content::new(
             sender.clone(),
+            imp.search_button.clone(),
             imp.filter_home.clone(),
             imp.filter_shows.clone(),
             imp.filter_stack.clone(),

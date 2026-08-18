@@ -44,8 +44,6 @@ pub struct FilterMenuPriv {
     button: TemplateChild<gtk::MenuButton>,
     #[template_child]
     is_active_circle: TemplateChild<gtk::Box>,
-    #[template_child]
-    search_button: TemplateChild<gtk::ToggleButton>,
 
     group: RefCell<gio::SimpleActionGroup>,
 }
@@ -188,10 +186,6 @@ impl FilterMenu {
             completed: ep_filter.played,
             title_or_description: ep_filter.search,
         }
-    }
-
-    pub fn search_button(&self) -> &gtk::ToggleButton {
-        &self.imp().search_button
     }
 
     fn get_action_state(&self, key: &'static str) -> String {

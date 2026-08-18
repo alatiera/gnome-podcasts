@@ -51,6 +51,7 @@ pub(crate) struct Content {
 impl Content {
     pub(crate) fn new(
         sender: Sender<Action>,
+        search_button: gtk::ToggleButton,
         filter_menu_home: FilterMenu,
         filter_menu_shows: FilterMenu,
         filter_menu_stack: adw::ViewStack,
@@ -59,7 +60,11 @@ impl Content {
         let shows_bin = adw::Bin::new();
         let shows = OnceCell::new();
         let queue_bin = adw::Bin::new();
-        let home = HomeView::new(sender.clone(), filter_menu_home.clone());
+        let home = HomeView::new(
+            sender.clone(),
+            filter_menu_home.clone(),
+            search_button.clone(),
+        );
         let overlay = gtk::Overlay::new();
         let empty = EmptyView::default();
         let progress_bar = gtk::ProgressBar::builder()
@@ -109,6 +114,8 @@ impl Content {
             #[weak]
             filter_menu_shows,
             #[weak]
+            search_button,
+            #[weak]
             this,
             move |s| {
                 if let Some(name) = s.visible_child_name() {
@@ -116,7 +123,7 @@ impl Content {
                         this.filter_menu_stack
                             .borrow()
                             .set_visible_child_name("shows");
-                        this.init_shows(filter_menu_shows);
+                        this.init_shows(filter_menu_shows, search_button);
                     }
                     if name == "home" {
                         this.filter_menu_stack
@@ -210,12 +217,12 @@ impl Content {
             .and_then(|w| w.downcast::<QueueView>().ok())
     }
 
-    fn init_shows(&self, filter_menu: FilterMenu) {
+    fn init_shows(&self, filter_menu: FilterMenu, search_button: gtk::ToggleButton) {
         if self.shows.get().is_none() {
             self.shows
                 .set({
                     info!("Init Shows View");
-                    let new_shows = ShowsView::new(self.sender.clone(), filter_menu);
+                    let new_shows = ShowsView::new(self.sender.clone(), filter_menu, search_button);
                     self.shows_bin.set_child(Some(&new_shows));
                     new_shows
                 })

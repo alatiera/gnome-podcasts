@@ -143,38 +143,26 @@ nee
 
   <template class="PdFilterMenu" parent="AdwBin">
     <child>
-      <object class="GtkBox">
-        <property name="spacing">6</property>
-        <child>
-          <object class="GtkToggleButton" id="search_button">
-            <property name="icon-name">system-search-symbolic</property>
-            <!-- Translators: Tooltip text for a button that toggles the search bar -->
-            <property name="tooltip-text" translatable="yes">Toggle Search</property>
+      <object class="GtkOverlay">
+        <child type="overlay">
+          <object class="GtkBox" id="is_active_circle">
+            <property name="halign">end</property>
+            <property name="valign">start</property>
+            <property name="margin-end">5</property>
+            <property name="margin-top">5</property>
+            <property name="can-focus">False</property>
+            <property name="can-target">False</property>
+            <property name="visible">False</property>
+            <style>
+              <class name="circle-overlay"/>
+            </style>
           </object>
         </child>
         <child>
-          <object class="GtkOverlay">
-            <child type="overlay">
-              <object class="GtkBox" id="is_active_circle">
-                <property name="halign">end</property>
-                <property name="valign">start</property>
-                <property name="margin-end">5</property>
-                <property name="margin-top">5</property>
-                <property name="can-focus">False</property>
-                <property name="can-target">False</property>
-                <property name="visible">False</property>
-                <style>
-                  <class name="circle-overlay"/>
-                </style>
-              </object>
-            </child>
-            <child>
-              <object class="GtkMenuButton" id="button">
-                <property name="icon-name">funnel-outline-symbolic</property>
-                <!-- Translators: Tooltip text for a menu button that has filter, sorting, and search options -->
-                <property name="tooltip-text" translatable="yes">Filter</property>
-              </object>
-            </child>
+          <object class="GtkMenuButton" id="button">
+            <property name="icon-name">funnel-outline-symbolic</property>
+            <!-- Translators: Tooltip text for a menu button that has filter, sorting, and search options -->
+            <property name="tooltip-text" translatable="yes">Filter</property>
           </object>
         </child>
       </object>

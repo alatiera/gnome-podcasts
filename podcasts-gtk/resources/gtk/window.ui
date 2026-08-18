@@ -125,18 +125,8 @@
                                 <property name="action-name">win.go-to-discovery</property>
                               </object>
                             </child>
-                            <child type="end">
-                              <object class="GtkMenuButton" id="hamburger">
-                                <property name="icon-name">open-menu-symbolic</property>
-                                <property name="tooltip-text" translatable="yes">Main Menu</property>
-                                <property name="primary">True</property>
-                                <property name="menu-model">menu</property>
-                              </object>
-                            </child>
-
-
                             <!-- Filter Button -->
-                            <child type="end">
+                            <child>
                               <object class="AdwViewStack" id="filter_stack">
                                 <child>
                                   <object class="AdwViewStackPage">
@@ -161,6 +151,21 @@
                               </object>
                             </child>
 
+                            <child type="end">
+                              <object class="GtkMenuButton" id="hamburger">
+                                <property name="icon-name">open-menu-symbolic</property>
+                                <property name="tooltip-text" translatable="yes">Main Menu</property>
+                                <property name="primary">True</property>
+                                <property name="menu-model">menu</property>
+                              </object>
+                            </child>
+                            <child type="end">
+                              <object class="GtkToggleButton" id="search_button">
+                                <property name="icon-name">system-search-symbolic</property>
+                                <!-- Translators: Tooltip text for a button that toggles the search bar -->
+                                <property name="tooltip-text" translatable="yes">Toggle Search</property>
+                              </object>
+                            </child>
                           </object>
                         </child>
                       </object>

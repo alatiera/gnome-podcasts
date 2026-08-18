@@ -83,7 +83,11 @@ glib::wrapper! {
 }
 
 impl HomeView {
-    pub(crate) fn new(sender: Sender<Action>, filter_menu: FilterMenu) -> Self {
+    pub(crate) fn new(
+        sender: Sender<Action>,
+        filter_menu: FilterMenu,
+        search_button: gtk::ToggleButton,
+    ) -> Self {
         let this: Self = glib::Object::new();
 
         this.imp()
@@ -105,8 +109,7 @@ impl HomeView {
             this,
             move |_| this.reload(sender.clone())
         ));
-        filter_menu
-            .search_button()
+        search_button
             .bind_property(
                 "active",
                 &this.imp().search_bar.get(),

@@ -36,6 +36,9 @@ nee
       <object class="AdwToolbarView" id="view">
         <child type="top">
           <object class="AdwHeaderBar">
+            <child>
+              <object class="PdFilterMenu" id="filter_menu"></object>
+            </child>
             <child type="end">
               <object class="GtkMenuButton" id="secondary_menu">
                 <property name="icon_name">view-more-symbolic</property>
@@ -44,7 +47,11 @@ nee
               </object>
             </child>
             <child type="end">
-              <object class="PdFilterMenu" id="filter_menu"></object>
+              <object class="GtkToggleButton" id="search_button">
+                <property name="icon-name">system-search-symbolic</property>
+                <!-- Translators: Tooltip text for a button that toggles the search bar -->
+                <property name="tooltip-text" translatable="yes">Toggle Search</property>
+              </object>
             </child>
           </object>
         </child>
