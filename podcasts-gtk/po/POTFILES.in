@@ -13,7 +13,6 @@ podcasts-gtk/resources/gtk/home_view.ui
 podcasts-gtk/resources/gtk/player_big.ui
 podcasts-gtk/resources/gtk/player_rate.ui
 podcasts-gtk/resources/gtk/player_small.ui
-podcasts-gtk/resources/gtk/player_toolbar.ui
 podcasts-gtk/resources/gtk/player_wrapper.ui
 podcasts-gtk/resources/gtk/queue_view.ui
 podcasts-gtk/resources/gtk/secondary_menu.ui
