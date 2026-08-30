@@ -2,13 +2,13 @@
 # Copyright (C) 2020 podcasts's COPYRIGHT HOLDER
 # This file is distributed under the same license as the podcasts package.
 #
-# Yuri Chornoivan <yurchor@ukr.net>, 2020, 2021, 2023, 2024, 2025, 2026.
+# SPDX-FileCopyrightText: 2020, 2021, 2023, 2024, 2025, 2026 Yuri Chornoivan <yurchor@ukr.net>
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2026-06-20 10:05+0000\n"
-"PO-Revision-Date: 2026-06-20 21:41+0300\n"
+"POT-Creation-Date: 2026-08-29 20:11+0000\n"
+"PO-Revision-Date: 2026-08-30 20:36+0300\n"
 "Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
 "Language-Team: Ukrainian <trans-uk@lists.fedoraproject.org>\n"
 "Language: uk\n"
@@ -16,9 +16,9 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "[!]Project-Id-Version: podcasts master\n"
-"Plural-Forms: nplurals=4; plural=n==1 ? 3 : n%10==1 && n%100!=11 ? 0 : n"
-"%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-"X-Generator: Lokalize 23.04.3\n"
+"Plural-Forms: nplurals=4; plural=n==1 ? 3 : n%10==1 && n%100!=11 ? 0 : n%10>="
+"2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+"X-Generator: Lokalize 25.12.1\n"
 
 #: podcasts-gtk/resources/gtk/discovery_found_podcast.ui:105
 msgid "Episodes: "
@@ -122,36 +122,37 @@ msgstr "Заголовок подкасту"
 msgid "Duration - Date"
 msgstr "Тривалість — Дата"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:148
+#: podcasts-gtk/resources/gtk/episode_description.ui:151
 msgid "_Stream"
 msgstr "_Потік даних"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:166
+#: podcasts-gtk/resources/gtk/episode_description.ui:169
 msgid "_Play"
 msgstr "_Відтворити"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:185
+#: podcasts-gtk/resources/gtk/episode_description.ui:188
 msgid "_Pause"
 msgstr "П_ризупинити"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:203
+#: podcasts-gtk/resources/gtk/episode_description.ui:206
 msgid "_Download"
 msgstr "_Отримати"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:230
+#: podcasts-gtk/resources/gtk/episode_description.ui:234
 msgid "Cancel"
 msgstr "Скасувати"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:259
+#: podcasts-gtk/resources/gtk/episode_description.ui:266
+#: podcasts-gtk/resources/gtk/episode_menu.ui:60
 msgid "Delete"
 msgstr "Видалити"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:278
+#: podcasts-gtk/resources/gtk/episode_description.ui:285
 #: podcasts-gtk/resources/gtk/sheet_description.ui:48
 msgid "Episode Description"
 msgstr "Опис випуску"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:300
+#: podcasts-gtk/resources/gtk/episode_description.ui:307
 msgid "Episode Cover"
 msgstr "Обкладинка випуску"
 
@@ -172,31 +173,44 @@ msgstr "Позначити як прослуханий"
 msgid "Mark as Unplayed"
 msgstr "Позначити як непрослуханий"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:71
+#: podcasts-gtk/resources/gtk/episode_menu.ui:55
+#| msgid "_Download"
+msgid "Download"
+msgstr "Отримати"
+
+#: podcasts-gtk/resources/gtk/episode_menu.ui:67
+msgid "Move Up in Queue"
+msgstr "Пересунути вище у черзі"
+
+#: podcasts-gtk/resources/gtk/episode_menu.ui:72
+msgid "Move Down in Queue"
+msgstr "Пересунути нижче у черзі"
+
+#: podcasts-gtk/resources/gtk/episode_widget.ui:142
 msgid "You’ve already listened to this episode."
 msgstr "Ви вже прослухали цей випуск."
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:159
+#: podcasts-gtk/resources/gtk/episode_widget.ui:230
 msgid "Calculating episode size…"
 msgstr "Визначається розмір випуску…"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:182
+#: podcasts-gtk/resources/gtk/episode_widget.ui:253
 msgid "Play this episode"
 msgstr "Слухати цей випуск"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:197
+#: podcasts-gtk/resources/gtk/episode_widget.ui:268
 msgid "Pause playback"
 msgstr "Призупинити відтворення"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:211
+#: podcasts-gtk/resources/gtk/episode_widget.ui:282
 msgid "Cancel the download process"
 msgstr "Скасувати завантаження"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:225
-msgid "Download this episode"
-msgstr "Завантажити цей випуск"
+#: podcasts-gtk/resources/gtk/episode_widget.ui:296
+msgid "Add to Queue"
+msgstr "Додати до черги"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:240
+#: podcasts-gtk/resources/gtk/episode_widget.ui:311
 msgid "Episode without audio"
 msgstr "Випуск без звуку"
 
@@ -262,6 +276,19 @@ msgstr "75%"
 msgid "Change the playback speed"
 msgstr "Змінити швидкість відтворення"
 
+#: podcasts-gtk/resources/gtk/queue_view.ui:52
+msgid "Queue Is Empty"
+msgstr "Черга порожня"
+
+#: podcasts-gtk/resources/gtk/queue_view.ui:53
+msgid "Add episodes from the New view or Shows views"
+msgstr "Додати епізоди з перегляду «Нові» або перегляду «Подкаст»"
+
+#: podcasts-gtk/resources/gtk/queue_view.ui:63
+#: podcasts-gtk/src/widgets/content_stack.rs:78
+msgid "Queue"
+msgstr "Черга"
+
 #: podcasts-gtk/resources/gtk/secondary_menu.ui:7
 msgid "_Mark All Episodes as Played"
 msgstr "П_означити всі випуски як прослухані"
@@ -311,69 +338,76 @@ msgctxt "shortcut window"
 msgid "Go to Shows Page"
 msgstr "Сторінка «Подкасти»"
 
-#. Translators: 'Discovery' is a page where you can add new podcasts
+#. Translators: Queue as a Noun
 #: podcasts-gtk/resources/gtk/shortcuts-dialog.ui:24
+#| msgctxt "shortcut window"
+#| msgid "Go to Home Page"
+msgctxt "shortcut window"
+msgid "Go to Queue Page"
+msgstr "Перейти до сторінки «Черга»"
+
+#. Translators: 'Discovery' is a page where you can add new podcasts
+#: podcasts-gtk/resources/gtk/shortcuts-dialog.ui:31
 msgctxt "shortcut window"
 msgid "Go To Discovery Page"
 msgstr "Сторінка «Додати подкаст»"
 
-#: podcasts-gtk/resources/gtk/shortcuts-dialog.ui:33
+#: podcasts-gtk/resources/gtk/shortcuts-dialog.ui:40
 msgctxt "shortcut window"
 msgid "Player"
 msgstr "Програвач"
 
-#: podcasts-gtk/resources/gtk/shortcuts-dialog.ui:36
+#: podcasts-gtk/resources/gtk/shortcuts-dialog.ui:43
 msgctxt "shortcut window"
 msgid "Toggle Pause"
 msgstr "Слухати/Зупинити"
 
-#: podcasts-gtk/resources/gtk/shortcuts-dialog.ui:42
+#: podcasts-gtk/resources/gtk/shortcuts-dialog.ui:49
 msgctxt "shortcut window"
 msgid "Seek Forwards"
 msgstr "Промотати вперед"
 
-#: podcasts-gtk/resources/gtk/shortcuts-dialog.ui:48
+#: podcasts-gtk/resources/gtk/shortcuts-dialog.ui:55
 msgctxt "shortcut window"
 msgid "Seek Backwards"
 msgstr "Відмотати назад"
 
-#: podcasts-gtk/resources/gtk/shortcuts-dialog.ui:54
+#: podcasts-gtk/resources/gtk/shortcuts-dialog.ui:61
 msgctxt "shortcut window"
 msgid "Raise Playback Speed"
 msgstr "Збільшити швидкість відтворення"
 
-#: podcasts-gtk/resources/gtk/shortcuts-dialog.ui:60
+#: podcasts-gtk/resources/gtk/shortcuts-dialog.ui:67
 msgctxt "shortcut window"
 msgid "Lower Playback Speed"
 msgstr "Зменшити швидкість відтворення"
 
-#: podcasts-gtk/resources/gtk/shortcuts-dialog.ui:69
+#: podcasts-gtk/resources/gtk/shortcuts-dialog.ui:76
 msgctxt "shortcut window"
 msgid "General"
 msgstr "Загальні"
 
-#: podcasts-gtk/resources/gtk/shortcuts-dialog.ui:72
+#: podcasts-gtk/resources/gtk/shortcuts-dialog.ui:79
 msgctxt "shortcut window"
 msgid "Check for new episodes"
 msgstr "Отримати список нових випусків"
 
-#: podcasts-gtk/resources/gtk/shortcuts-dialog.ui:78
+#: podcasts-gtk/resources/gtk/shortcuts-dialog.ui:85
 msgctxt "shortcut window"
 msgid "Quit the application"
 msgstr "Вийти із застосунку"
 
-#: podcasts-gtk/resources/gtk/shortcuts-dialog.ui:84
+#: podcasts-gtk/resources/gtk/shortcuts-dialog.ui:91
 msgctxt "shortcut window"
 msgid "Import Subscriptions"
 msgstr "Імпортувати список подкастів"
 
-#: podcasts-gtk/resources/gtk/shortcuts-dialog.ui:90
+#: podcasts-gtk/resources/gtk/shortcuts-dialog.ui:97
 msgctxt "shortcut window"
 msgid "Export Subscriptions"
 msgstr "Експортувати список подкастів"
 
-#: podcasts-gtk/resources/gtk/shortcuts-dialog.ui:96
-#| msgid "Search"
+#: podcasts-gtk/resources/gtk/shortcuts-dialog.ui:103
 msgctxt "shortcut window"
 msgid "Search"
 msgstr "Пошук"
@@ -509,7 +543,7 @@ msgstr "_Про «Подкасти»"
 #: podcasts-gtk/resources/gtk/window.ui:110
 #: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:2
 #: podcasts-gtk/resources/org.gnome.Podcasts.metainfo.xml.in.in:4
-#: podcasts-gtk/src/app.rs:653 podcasts-gtk/src/player_mpris.rs:50
+#: podcasts-gtk/src/app.rs:748 podcasts-gtk/src/player_mpris.rs:50
 #: podcasts-gtk/src/widgets/aboutdialog.rs:56
 msgid "Podcasts"
 msgstr "Подкасти"
@@ -620,10 +654,11 @@ msgstr "Сторінка пошуку нових подкастів"
 
 #. developer_name tag deprecated with Appstream 1.0
 #: podcasts-gtk/resources/org.gnome.Podcasts.metainfo.xml.in.in:241
+#: podcasts-gtk/resources/org.gnome.Podcasts.metainfo.xml.in.in:243
 msgid "The Podcasts developers"
 msgstr "Розробники «Подкастів»"
 
-#: podcasts-gtk/src/app.rs:424
+#: podcasts-gtk/src/app.rs:435
 msgid "Copied URL to clipboard!"
 msgstr "URL-адресу скопійовано до буфера обміну!"
 
@@ -642,59 +677,59 @@ msgstr "Перейти до {minutes}:{seconds}"
 msgid "Download failed: {}"
 msgstr "Не вдалося завантажити: {}"
 
-#: podcasts-gtk/src/player.rs:385
+#: podcasts-gtk/src/player.rs:498
 msgid "The media player was unable to execute an action."
 msgstr "Програвачеві не вдалося виконати цю дію."
 
-#: podcasts-gtk/src/utils.rs:300
+#: podcasts-gtk/src/utils.rs:301
 #, rust-format
 msgid "Failed to subscribe to feed: {}"
 msgstr "Не вдалося додати стрічку: {}"
 
-#: podcasts-gtk/src/utils.rs:395 podcasts-gtk/src/utils.rs:447
+#: podcasts-gtk/src/utils.rs:400 podcasts-gtk/src/utils.rs:452
 msgid "OPML file"
 msgstr "файл OPML"
 
-#: podcasts-gtk/src/utils.rs:406
+#: podcasts-gtk/src/utils.rs:411
 msgid "Select the file from which to you want to import shows."
 msgstr "Виберіть файл зі списком подкастів, які треба імпортувати."
 
-#: podcasts-gtk/src/utils.rs:408
+#: podcasts-gtk/src/utils.rs:413
 msgid "_Import"
 msgstr "_Імпортувати"
 
-#: podcasts-gtk/src/utils.rs:437
+#: podcasts-gtk/src/utils.rs:442
 #, rust-format
 msgid "Failed to parse the imported file {}"
 msgstr "Не вдалося обробити файл {} під час імпортування"
 
 #. Translators: Show as a noun, meaning Podcast-Shows.
-#: podcasts-gtk/src/utils.rs:458
+#: podcasts-gtk/src/utils.rs:463
 msgid "Export shows to…"
 msgstr "Експортувати подкасти…"
 
-#: podcasts-gtk/src/utils.rs:459
+#: podcasts-gtk/src/utils.rs:464
 msgid "_Export"
 msgstr "_Експортувати"
 
 #. Translators: This is the string of the suggested name for the exported opml file
-#: podcasts-gtk/src/utils.rs:463
+#: podcasts-gtk/src/utils.rs:468
 msgid "gnome-podcasts-exported-shows"
 msgstr "gnome-podcasts-exported-shows"
 
-#: podcasts-gtk/src/utils.rs:473
+#: podcasts-gtk/src/utils.rs:478
 msgid "GNOME Podcasts Subscriptions"
 msgstr "Список подкастів із застосунку «Подкасти»"
 
-#: podcasts-gtk/src/utils.rs:477
+#: podcasts-gtk/src/utils.rs:482
 msgid "Failed to export podcasts"
 msgstr "Не вдалося експортувати подкасти"
 
-#: podcasts-gtk/src/utils.rs:488
+#: podcasts-gtk/src/utils.rs:493
 msgid "Just now"
 msgstr "Просто зараз"
 
-#: podcasts-gtk/src/utils.rs:492
+#: podcasts-gtk/src/utils.rs:497
 #, rust-format
 msgid "{} minute ago"
 msgid_plural "{} minutes ago"
@@ -703,7 +738,7 @@ msgstr[1] "{} хв. тому"
 msgstr[2] "{} хв. тому"
 msgstr[3] "{} хв. тому"
 
-#: podcasts-gtk/src/utils.rs:498
+#: podcasts-gtk/src/utils.rs:503
 #, rust-format
 msgid "{} hour ago"
 msgid_plural "{} hours ago"
@@ -712,7 +747,7 @@ msgstr[1] "{} години тому"
 msgstr[2] "{} годин тому"
 msgstr[3] "{} годину тому"
 
-#: podcasts-gtk/src/utils.rs:502
+#: podcasts-gtk/src/utils.rs:507
 #, rust-format
 msgid "{} day ago"
 msgid_plural "{} days ago"
@@ -721,7 +756,7 @@ msgstr[1] "{} дні тому"
 msgstr[2] "{} днів тому"
 msgstr[3] "{} день тому"
 
-#: podcasts-gtk/src/utils.rs:506
+#: podcasts-gtk/src/utils.rs:511
 #, rust-format
 msgid "{} month ago"
 msgid_plural "{} months ago"
@@ -730,7 +765,7 @@ msgstr[1] "{} місяці тому"
 msgstr[2] "{} місяців тому"
 msgstr[3] "{} місяць тому"
 
-#: podcasts-gtk/src/utils.rs:510
+#: podcasts-gtk/src/utils.rs:515
 #, rust-format
 msgid "{} year ago"
 msgid_plural "{} years ago"
@@ -753,16 +788,16 @@ msgstr ""
 msgid "Currently playing chapter"
 msgstr "Поточна відтворювана глава"
 
-#: podcasts-gtk/src/widgets/content_stack.rs:67
+#: podcasts-gtk/src/widgets/content_stack.rs:69
 msgid "Fetching feeds…"
 msgstr "Отримання стрічок…"
 
-#: podcasts-gtk/src/widgets/content_stack.rs:74
+#: podcasts-gtk/src/widgets/content_stack.rs:76
 msgid "New"
 msgstr "Нові випуски"
 
 #. Translators: Shows as a noun, meaning Podcast-Shows.
-#: podcasts-gtk/src/widgets/content_stack.rs:75
+#: podcasts-gtk/src/widgets/content_stack.rs:77
 #: podcasts-gtk/src/widgets/shows_view.rs:127
 msgid "Shows"
 msgstr "Подкасти"
@@ -771,7 +806,7 @@ msgstr "Подкасти"
 msgid "Download progress"
 msgstr "Поступ завантаження"
 
-#: podcasts-gtk/src/widgets/episode.rs:355
+#: podcasts-gtk/src/widgets/episode.rs:537
 #, rust-format
 msgid "{} min"
 msgstr "{} хв."
@@ -813,7 +848,6 @@ msgstr ""
 "даних. {}"
 
 #: podcasts-gtk/src/widgets/shows_view.rs:144
-#| msgid "No results found."
 msgid "No Results Found"
 msgstr "Нічого не знайдено"
 
@@ -851,6 +885,9 @@ msgstr "Виконуємо першу синхронізацію. Вона мо�
 #: podcasts-gtk/src/widgets/sync_preferences.rs:439
 msgid "Never"
 msgstr "Ніколи"
+
+#~ msgid "Download this episode"
+#~ msgstr "Завантажити цей випуск"
 
 #~ msgid "Today"
 #~ msgstr "Сьогоднішні"
