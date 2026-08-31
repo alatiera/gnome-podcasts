@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: podcasts master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2026-08-07 03:08+0000\n"
-"PO-Revision-Date: 2026-08-08 01:55+0330\n"
+"POT-Creation-Date: 2026-08-29 20:11+0000\n"
+"PO-Revision-Date: 2026-08-31 20:08+0330\n"
 "Last-Translator: Danial Behzadi <dani.behzi@ubuntu.com>\n"
 "Language-Team: Persian\n"
 "Language: fa\n"
@@ -125,36 +125,37 @@ msgstr "عنوان پادپخش"
 msgid "Duration - Date"
 msgstr "طول - تاریخ"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:148
+#: podcasts-gtk/resources/gtk/episode_description.ui:151
 msgid "_Stream"
 msgstr "_جریان"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:166
+#: podcasts-gtk/resources/gtk/episode_description.ui:169
 msgid "_Play"
 msgstr "_پخش"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:185
+#: podcasts-gtk/resources/gtk/episode_description.ui:188
 msgid "_Pause"
 msgstr "_مکث"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:203
+#: podcasts-gtk/resources/gtk/episode_description.ui:206
 msgid "_Download"
 msgstr "_بارگیری"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:230
+#: podcasts-gtk/resources/gtk/episode_description.ui:234
 msgid "Cancel"
 msgstr "لغو"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:259
+#: podcasts-gtk/resources/gtk/episode_description.ui:266
+#: podcasts-gtk/resources/gtk/episode_menu.ui:60
 msgid "Delete"
 msgstr "حذف"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:278
+#: podcasts-gtk/resources/gtk/episode_description.ui:285
 #: podcasts-gtk/resources/gtk/sheet_description.ui:48
 msgid "Episode Description"
 msgstr "شرح قسمت"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:300
+#: podcasts-gtk/resources/gtk/episode_description.ui:307
 msgid "Episode Cover"
 msgstr "طرح جلد قسمت"
 
@@ -175,31 +176,43 @@ msgstr "علامت به پخش شده"
 msgid "Mark as Unplayed"
 msgstr "علامت به پخش نشده"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:71
+#: podcasts-gtk/resources/gtk/episode_menu.ui:55
+msgid "Download"
+msgstr "بارگیری"
+
+#: podcasts-gtk/resources/gtk/episode_menu.ui:67
+msgid "Move Up in Queue"
+msgstr "بالا بردن در صف"
+
+#: podcasts-gtk/resources/gtk/episode_menu.ui:72
+msgid "Move Down in Queue"
+msgstr "پایین بردن در صف"
+
+#: podcasts-gtk/resources/gtk/episode_widget.ui:142
 msgid "You’ve already listened to this episode."
 msgstr "پیش‌تر این قسمت را گوش کرده بودید."
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:159
+#: podcasts-gtk/resources/gtk/episode_widget.ui:230
 msgid "Calculating episode size…"
 msgstr "محاسبهٔ اندازهٔ قسمت…"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:182
+#: podcasts-gtk/resources/gtk/episode_widget.ui:253
 msgid "Play this episode"
 msgstr "پخش این قسمت"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:197
+#: podcasts-gtk/resources/gtk/episode_widget.ui:268
 msgid "Pause playback"
 msgstr "مکث پخش"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:211
+#: podcasts-gtk/resources/gtk/episode_widget.ui:282
 msgid "Cancel the download process"
 msgstr "لغو فرایند بارگیری"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:225
-msgid "Download this episode"
-msgstr "بارگیری این قسمت"
+#: podcasts-gtk/resources/gtk/episode_widget.ui:296
+msgid "Add to Queue"
+msgstr "افزودن به صف"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:240
+#: podcasts-gtk/resources/gtk/episode_widget.ui:311
 msgid "Episode without audio"
 msgstr "قسمت بدون صدا"
 
@@ -265,6 +278,19 @@ msgstr "×۰٫۷۵"
 msgid "Change the playback speed"
 msgstr "تغییر سرعت پخش"
 
+#: podcasts-gtk/resources/gtk/queue_view.ui:52
+msgid "Queue Is Empty"
+msgstr "صف خالیست"
+
+#: podcasts-gtk/resources/gtk/queue_view.ui:53
+msgid "Add episodes from the New view or Shows views"
+msgstr "افزودن قسمت‌ها از نمای جدید یا نمایش‌ها"
+
+#: podcasts-gtk/resources/gtk/queue_view.ui:63
+#: podcasts-gtk/src/widgets/content_stack.rs:78
+msgid "Queue"
+msgstr "صف"
+
 #: podcasts-gtk/resources/gtk/secondary_menu.ui:7
 msgid "_Mark All Episodes as Played"
 msgstr "_علامت زدن همهٔ قسمت‌ها به پخش شده"
@@ -314,68 +340,74 @@ msgctxt "shortcut window"
 msgid "Go to Shows Page"
 msgstr "رفتن به صفحهٔ نمایش‌ها"
 
-#. Translators: 'Discovery' is a page where you can add new podcasts
+#. Translators: Queue as a Noun
 #: podcasts-gtk/resources/gtk/shortcuts-dialog.ui:24
+msgctxt "shortcut window"
+msgid "Go to Queue Page"
+msgstr "رفتن به صفحهٔ صف"
+
+#. Translators: 'Discovery' is a page where you can add new podcasts
+#: podcasts-gtk/resources/gtk/shortcuts-dialog.ui:31
 msgctxt "shortcut window"
 msgid "Go To Discovery Page"
 msgstr "رفتن به صفحهٔ کشف"
 
-#: podcasts-gtk/resources/gtk/shortcuts-dialog.ui:33
+#: podcasts-gtk/resources/gtk/shortcuts-dialog.ui:40
 msgctxt "shortcut window"
 msgid "Player"
 msgstr "پخش کننده"
 
-#: podcasts-gtk/resources/gtk/shortcuts-dialog.ui:36
+#: podcasts-gtk/resources/gtk/shortcuts-dialog.ui:43
 msgctxt "shortcut window"
 msgid "Toggle Pause"
 msgstr "تغییر حالت مکث"
 
-#: podcasts-gtk/resources/gtk/shortcuts-dialog.ui:42
+#: podcasts-gtk/resources/gtk/shortcuts-dialog.ui:49
 msgctxt "shortcut window"
 msgid "Seek Forwards"
 msgstr "جویش به پیش"
 
-#: podcasts-gtk/resources/gtk/shortcuts-dialog.ui:48
+#: podcasts-gtk/resources/gtk/shortcuts-dialog.ui:55
 msgctxt "shortcut window"
 msgid "Seek Backwards"
 msgstr "جویش به پس"
 
-#: podcasts-gtk/resources/gtk/shortcuts-dialog.ui:54
+#: podcasts-gtk/resources/gtk/shortcuts-dialog.ui:61
 msgctxt "shortcut window"
 msgid "Raise Playback Speed"
 msgstr "افزایش سرعت پخش"
 
-#: podcasts-gtk/resources/gtk/shortcuts-dialog.ui:60
+#: podcasts-gtk/resources/gtk/shortcuts-dialog.ui:67
 msgctxt "shortcut window"
 msgid "Lower Playback Speed"
 msgstr "کاهش سرعت پخش"
 
-#: podcasts-gtk/resources/gtk/shortcuts-dialog.ui:69
+#: podcasts-gtk/resources/gtk/shortcuts-dialog.ui:76
 msgctxt "shortcut window"
 msgid "General"
 msgstr "عمومی"
 
-#: podcasts-gtk/resources/gtk/shortcuts-dialog.ui:72
+#: podcasts-gtk/resources/gtk/shortcuts-dialog.ui:79
 msgctxt "shortcut window"
 msgid "Check for new episodes"
 msgstr "بررسی برای قسمت‌های جدید"
 
-#: podcasts-gtk/resources/gtk/shortcuts-dialog.ui:78
+#: podcasts-gtk/resources/gtk/shortcuts-dialog.ui:85
 msgctxt "shortcut window"
 msgid "Quit the application"
 msgstr "ترک برنامه"
 
-#: podcasts-gtk/resources/gtk/shortcuts-dialog.ui:84
+#: podcasts-gtk/resources/gtk/shortcuts-dialog.ui:91
 msgctxt "shortcut window"
 msgid "Import Subscriptions"
 msgstr "درون‌ریزی اشتراک‌ها"
 
-#: podcasts-gtk/resources/gtk/shortcuts-dialog.ui:90
+#: podcasts-gtk/resources/gtk/shortcuts-dialog.ui:97
 msgctxt "shortcut window"
 msgid "Export Subscriptions"
 msgstr "برون‌ریزی اشتراک‌ها"
 
-#: podcasts-gtk/resources/gtk/shortcuts-dialog.ui:96
+#: podcasts-gtk/resources/gtk/shortcuts-dialog.ui:103
 msgctxt "shortcut window"
 msgid "Search"
 msgstr "جست‌وجو"
@@ -510,7 +542,7 @@ msgstr "_دربارهٔ پادپخش‌ها"
 #: podcasts-gtk/resources/gtk/window.ui:110
 #: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:2
 #: podcasts-gtk/resources/org.gnome.Podcasts.metainfo.xml.in.in:4
-#: podcasts-gtk/src/app.rs:657 podcasts-gtk/src/player_mpris.rs:50
+#: podcasts-gtk/src/app.rs:748 podcasts-gtk/src/player_mpris.rs:50
 #: podcasts-gtk/src/widgets/aboutdialog.rs:56
 msgid "Podcasts"
 msgstr "پادپخش‌ها"
@@ -619,7 +651,7 @@ msgstr "نمایی که در آن می‌توان پادپخشی جدید افز
 msgid "The Podcasts developers"
 msgstr "توسعه‌دهندگان پادپخش‌ها"
 
-#: podcasts-gtk/src/app.rs:425
+#: podcasts-gtk/src/app.rs:435
 msgid "Copied URL to clipboard!"
 msgstr "نشانی رونوشت شده در تخته‌گیره!"
 
@@ -638,7 +670,7 @@ msgstr "پرش به ‪{minutes}:{seconds}"
 msgid "Download failed: {}"
 msgstr "بارگیری شکست خورد: {}"
 
-#: podcasts-gtk/src/player.rs:499
+#: podcasts-gtk/src/player.rs:498
 msgid "The media player was unable to execute an action."
 msgstr "پخش کنندهٔ رسانه در اجرای کنشی ناتوان بود."
 
@@ -739,16 +771,16 @@ msgstr ""
 msgid "Currently playing chapter"
 msgstr "فصل در حال پخش"
 
-#: podcasts-gtk/src/widgets/content_stack.rs:67
+#: podcasts-gtk/src/widgets/content_stack.rs:69
 msgid "Fetching feeds…"
 msgstr "واکشیدن خوراک‌ها…"
 
-#: podcasts-gtk/src/widgets/content_stack.rs:74
+#: podcasts-gtk/src/widgets/content_stack.rs:76
 msgid "New"
 msgstr "جدید"
 
 #. Translators: Shows as a noun, meaning Podcast-Shows.
-#: podcasts-gtk/src/widgets/content_stack.rs:75
+#: podcasts-gtk/src/widgets/content_stack.rs:77
 #: podcasts-gtk/src/widgets/shows_view.rs:127
 msgid "Shows"
 msgstr "نمایش‌ها"
@@ -757,7 +789,7 @@ msgstr "نمایش‌ها"
 msgid "Download progress"
 msgstr "پیشرفت بارگیری"
 
-#: podcasts-gtk/src/widgets/episode.rs:355
+#: podcasts-gtk/src/widgets/episode.rs:537
 #, rust-format
 msgid "{} min"
 msgstr "{} دقیقه"
@@ -834,6 +866,9 @@ msgstr "اجرا کردن نخستین هم‌گام سازی. ممکن است 
 #: podcasts-gtk/src/widgets/sync_preferences.rs:439
 msgid "Never"
 msgstr "هرگز"
+
+#~ msgid "Download this episode"
+#~ msgstr "بارگیری این قسمت"
 
 #~ msgid "Today"
 #~ msgstr "امروز"
