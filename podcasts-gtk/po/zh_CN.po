@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: podcasts master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2026-08-29 20:11+0000\n"
-"PO-Revision-Date: 2026-09-01 08:03+0800\n"
+"POT-Creation-Date: 2026-09-09 19:02+0000\n"
+"PO-Revision-Date: 2026-09-10 07:53+0800\n"
 "Last-Translator: lumingzh <lumingzh@qq.com>\n"
 "Language-Team: Chinese (China) <i18n-zh@googlegroups.com>\n"
 "Language: zh_CN\n"
@@ -104,6 +104,81 @@ msgstr "通过订阅源 URL 添加新节目"
 msgid "Import shows from another device"
 msgstr "从另一设备导入节目"
 
+#. Translators: (in a filter menu) sort "Newest" episodes on top of the list
+#: podcasts-gtk/resources/gtk/filter_menu.ui:28
+msgid "Newest First"
+msgstr "最新的优先"
+
+#. Translators: (in a filter menu) sort "Oldest" episodes on top of the list
+#: podcasts-gtk/resources/gtk/filter_menu.ui:34
+msgid "Oldest First"
+msgstr "最旧的优先"
+
+#. Translators: (in a filter menu) list "All" episodes regardless of play status
+#. Translators: (in a filter menu) list "All" episodes regardless of download status
+#. Translators: (in a filter menu) list "All" Shows regardless of completion status
+#. Translators: (in a filter menu) list "All" Shows regardless if they have downloaded episodes
+#: podcasts-gtk/resources/gtk/filter_menu.ui:43
+#: podcasts-gtk/resources/gtk/filter_menu.ui:64
+#: podcasts-gtk/resources/gtk/filter_menu.ui:104
+#: podcasts-gtk/resources/gtk/filter_menu.ui:125
+msgid "All"
+msgstr "全部"
+
+#. Translators: (in a filter menu) list only "Played" episodes
+#: podcasts-gtk/resources/gtk/filter_menu.ui:49
+msgid "Played"
+msgstr "已播放"
+
+#. Translators: (in a filter menu) list only "Not Played" episodes
+#: podcasts-gtk/resources/gtk/filter_menu.ui:55
+msgid "Not Played"
+msgstr "未播放"
+
+#. Translators: (in a filter menu) list only "Downloaded" episodes
+#. Translators: (in a filter menu) filter for Shows with "Downloaded" episodes
+#: podcasts-gtk/resources/gtk/filter_menu.ui:70
+#: podcasts-gtk/resources/gtk/filter_menu.ui:131
+msgid "Downloaded"
+msgstr "已下载"
+
+#. Translators: (in a filter menu) list only "Not Downloaded" episodes
+#. Translators: (in a filter menu) filter for Shows with no "Downloaded" episodes
+#: podcasts-gtk/resources/gtk/filter_menu.ui:76
+#: podcasts-gtk/resources/gtk/filter_menu.ui:137
+msgid "Not Downloaded"
+msgstr "未下载"
+
+#. Translators: (in a filter menu) Sorting Shows in alphabetical
+#: podcasts-gtk/resources/gtk/filter_menu.ui:89
+msgid "Alphabetical"
+msgstr "字母表顺序"
+
+#. Translators: (in a filter menu) Sorting Shows in reverse alphabetical
+#: podcasts-gtk/resources/gtk/filter_menu.ui:95
+msgid "Reversed"
+msgstr "逆序"
+
+#. Translators: (in a filter menu) filter for Shows where all episodes were played
+#: podcasts-gtk/resources/gtk/filter_menu.ui:110
+msgid "Completed"
+msgstr "已完成"
+
+#. Translators: (in a filter menu) filter for Shows with unplayed episodes
+#: podcasts-gtk/resources/gtk/filter_menu.ui:116
+msgid "Not Completed"
+msgstr "未完成"
+
+#. Translators: Tooltip text for a button that toggles the search bar
+#: podcasts-gtk/resources/gtk/filter_menu.ui:152
+msgid "Toggle Search"
+msgstr "切换搜索"
+
+#. Translators: Tooltip text for a menu button that has filter, sorting, and search options
+#: podcasts-gtk/resources/gtk/filter_menu.ui:175
+msgid "Filter"
+msgstr "筛选器"
+
 #: podcasts-gtk/resources/gtk/episode_description.ui:33
 msgid "Episode Details"
 msgstr "剧集详情"
@@ -187,29 +262,50 @@ msgstr "队列下移"
 msgid "You’ve already listened to this episode."
 msgstr "您已经听过此节目了。"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:230
-msgid "Calculating episode size…"
-msgstr "正在计算剧集大小…"
-
-#: podcasts-gtk/resources/gtk/episode_widget.ui:253
+#: podcasts-gtk/resources/gtk/episode_widget.ui:190
 msgid "Play this episode"
 msgstr "播放此剧集"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:268
+#: podcasts-gtk/resources/gtk/episode_widget.ui:205
 msgid "Pause playback"
 msgstr "暂停播放"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:282
+#: podcasts-gtk/resources/gtk/episode_widget.ui:219
 msgid "Cancel the download process"
 msgstr "取消下载进程"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:296
+#: podcasts-gtk/resources/gtk/episode_widget.ui:233
 msgid "Add to Queue"
 msgstr "添加到队列"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:311
+#: podcasts-gtk/resources/gtk/episode_widget.ui:248
 msgid "Episode without audio"
 msgstr "无音频剧集"
+
+#: podcasts-gtk/resources/gtk/home_episode_list.ui:53
+#: podcasts-gtk/resources/gtk/home_episode_list.ui:66
+msgid "Today"
+msgstr "今天"
+
+#: podcasts-gtk/resources/gtk/home_episode_list.ui:84
+#: podcasts-gtk/resources/gtk/home_episode_list.ui:97
+msgid "Yesterday"
+msgstr "昨天"
+
+#: podcasts-gtk/resources/gtk/home_episode_list.ui:115
+#: podcasts-gtk/resources/gtk/home_episode_list.ui:128
+msgid "This Week"
+msgstr "本周"
+
+#: podcasts-gtk/resources/gtk/home_episode_list.ui:146
+#: podcasts-gtk/resources/gtk/home_episode_list.ui:159
+msgid "This Month"
+msgstr "本月"
+
+#: podcasts-gtk/resources/gtk/home_episode_list.ui:178
+#: podcasts-gtk/resources/gtk/home_episode_list.ui:191
+msgid "Older"
+msgstr "更早"
 
 #: podcasts-gtk/resources/gtk/player_big.ui:43
 msgid "Rewind 10 seconds"
@@ -355,7 +451,7 @@ msgstr "播放器"
 #: podcasts-gtk/resources/gtk/shortcuts-dialog.ui:43
 msgctxt "shortcut window"
 msgid "Toggle Pause"
-msgstr "开关暂停"
+msgstr "切换暂停"
 
 #: podcasts-gtk/resources/gtk/shortcuts-dialog.ui:49
 msgctxt "shortcut window"
@@ -777,7 +873,7 @@ msgstr "节目"
 msgid "Download progress"
 msgstr "下载进度"
 
-#: podcasts-gtk/src/widgets/episode.rs:537
+#: podcasts-gtk/src/widgets/episode.rs:517
 #, rust-format
 msgid "{} min"
 msgstr "{} 分钟"
@@ -855,29 +951,14 @@ msgstr "正在运行首次同步。这可能会花费几分钟。"
 msgid "Never"
 msgstr "永不"
 
+#~ msgid "Calculating episode size…"
+#~ msgstr "正在计算剧集大小…"
+
 #~ msgid "Download this episode"
 #~ msgstr "下载此剧集"
 
-#~ msgid "Today"
-#~ msgstr "今天"
-
-#~ msgid "Yesterday"
-#~ msgstr "昨天"
-
-#~ msgid "This Week"
-#~ msgstr "本周"
-
-#~ msgid "This Month"
-#~ msgstr "本月"
-
-#~ msgid "Older"
-#~ msgstr "更早"
-
 #~ msgid "0"
 #~ msgstr "0"
-
-#~ msgid "Now Playing"
-#~ msgstr "正在播放"
 
 #~ msgid "Close"
 #~ msgstr "关闭"
