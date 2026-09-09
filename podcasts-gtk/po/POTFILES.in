@@ -6,9 +6,11 @@ podcasts-gtk/resources/gtk/discovery_page.ui
 podcasts-gtk/resources/gtk/discovery_search_results.ui
 podcasts-gtk/resources/gtk/empty_show.ui
 podcasts-gtk/resources/gtk/empty_view.ui
+podcasts-gtk/resources/gtk/filter_menu.ui
 podcasts-gtk/resources/gtk/episode_description.ui
 podcasts-gtk/resources/gtk/episode_menu.ui
 podcasts-gtk/resources/gtk/episode_widget.ui
+podcasts-gtk/resources/gtk/home_episode_list.ui
 podcasts-gtk/resources/gtk/home_view.ui
 podcasts-gtk/resources/gtk/player_big.ui
 podcasts-gtk/resources/gtk/player_rate.ui
