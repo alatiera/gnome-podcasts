@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2026-08-29 20:11+0000\n"
-"PO-Revision-Date: 2026-08-30 20:36+0300\n"
+"POT-Creation-Date: 2026-09-09 19:02+0000\n"
+"PO-Revision-Date: 2026-09-10 20:32+0300\n"
 "Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
 "Language-Team: Ukrainian <trans-uk@lists.fedoraproject.org>\n"
 "Language: uk\n"
@@ -106,6 +106,88 @@ msgstr "За URL-адресою стрічки"
 msgid "Import shows from another device"
 msgstr "Імпортувати з іншого пристрою"
 
+#. Translators: (in a filter menu) sort "Newest" episodes on top of the list
+#: podcasts-gtk/resources/gtk/filter_menu.ui:28
+msgid "Newest First"
+msgstr "Найновіші першими"
+
+#. Translators: (in a filter menu) sort "Oldest" episodes on top of the list
+#: podcasts-gtk/resources/gtk/filter_menu.ui:34
+msgid "Oldest First"
+msgstr "Найстаріші першими"
+
+#. Translators: (in a filter menu) list "All" episodes regardless of play status
+#. Translators: (in a filter menu) list "All" episodes regardless of download status
+#. Translators: (in a filter menu) list "All" Shows regardless of completion status
+#. Translators: (in a filter menu) list "All" Shows regardless if they have downloaded episodes
+#: podcasts-gtk/resources/gtk/filter_menu.ui:43
+#: podcasts-gtk/resources/gtk/filter_menu.ui:64
+#: podcasts-gtk/resources/gtk/filter_menu.ui:104
+#: podcasts-gtk/resources/gtk/filter_menu.ui:125
+msgid "All"
+msgstr "Усі"
+
+#. Translators: (in a filter menu) list only "Played" episodes
+#: podcasts-gtk/resources/gtk/filter_menu.ui:49
+#| msgid "Player"
+msgid "Played"
+msgstr "Відтворено"
+
+#. Translators: (in a filter menu) list only "Not Played" episodes
+#: podcasts-gtk/resources/gtk/filter_menu.ui:55
+#| msgid "Now Playing"
+msgid "Not Played"
+msgstr "Не відтворювалися"
+
+#. Translators: (in a filter menu) list only "Downloaded" episodes
+#. Translators: (in a filter menu) filter for Shows with "Downloaded" episodes
+#: podcasts-gtk/resources/gtk/filter_menu.ui:70
+#: podcasts-gtk/resources/gtk/filter_menu.ui:131
+#| msgid "Download"
+msgid "Downloaded"
+msgstr "Отримано"
+
+#. Translators: (in a filter menu) list only "Not Downloaded" episodes
+#. Translators: (in a filter menu) filter for Shows with no "Downloaded" episodes
+#: podcasts-gtk/resources/gtk/filter_menu.ui:76
+#: podcasts-gtk/resources/gtk/filter_menu.ui:137
+#| msgid "Download"
+msgid "Not Downloaded"
+msgstr "Не отримано"
+
+#. Translators: (in a filter menu) Sorting Shows in alphabetical
+#: podcasts-gtk/resources/gtk/filter_menu.ui:89
+msgid "Alphabetical"
+msgstr "За абеткою"
+
+#. Translators: (in a filter menu) Sorting Shows in reverse alphabetical
+#: podcasts-gtk/resources/gtk/filter_menu.ui:95
+#| msgid "Never"
+msgid "Reversed"
+msgstr "Зворотний"
+
+#. Translators: (in a filter menu) filter for Shows where all episodes were played
+#: podcasts-gtk/resources/gtk/filter_menu.ui:110
+msgid "Completed"
+msgstr "Завершено"
+
+#. Translators: (in a filter menu) filter for Shows with unplayed episodes
+#: podcasts-gtk/resources/gtk/filter_menu.ui:116
+msgid "Not Completed"
+msgstr "Не завершено"
+
+#. Translators: Tooltip text for a button that toggles the search bar
+#: podcasts-gtk/resources/gtk/filter_menu.ui:152
+#| msgctxt "shortcut window"
+#| msgid "Toggle Pause"
+msgid "Toggle Search"
+msgstr "Увімкнути чи вимкнути пошук"
+
+#. Translators: Tooltip text for a menu button that has filter, sorting, and search options
+#: podcasts-gtk/resources/gtk/filter_menu.ui:175
+msgid "Filter"
+msgstr "Фільтр"
+
 #: podcasts-gtk/resources/gtk/episode_description.ui:33
 msgid "Episode Details"
 msgstr "Докладно про випуск"
@@ -174,7 +256,6 @@ msgid "Mark as Unplayed"
 msgstr "Позначити як непрослуханий"
 
 #: podcasts-gtk/resources/gtk/episode_menu.ui:55
-#| msgid "_Download"
 msgid "Download"
 msgstr "Отримати"
 
@@ -190,29 +271,50 @@ msgstr "Пересунути нижче у черзі"
 msgid "You’ve already listened to this episode."
 msgstr "Ви вже прослухали цей випуск."
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:230
-msgid "Calculating episode size…"
-msgstr "Визначається розмір випуску…"
-
-#: podcasts-gtk/resources/gtk/episode_widget.ui:253
+#: podcasts-gtk/resources/gtk/episode_widget.ui:190
 msgid "Play this episode"
 msgstr "Слухати цей випуск"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:268
+#: podcasts-gtk/resources/gtk/episode_widget.ui:205
 msgid "Pause playback"
 msgstr "Призупинити відтворення"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:282
+#: podcasts-gtk/resources/gtk/episode_widget.ui:219
 msgid "Cancel the download process"
 msgstr "Скасувати завантаження"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:296
+#: podcasts-gtk/resources/gtk/episode_widget.ui:233
 msgid "Add to Queue"
 msgstr "Додати до черги"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:311
+#: podcasts-gtk/resources/gtk/episode_widget.ui:248
 msgid "Episode without audio"
 msgstr "Випуск без звуку"
+
+#: podcasts-gtk/resources/gtk/home_episode_list.ui:53
+#: podcasts-gtk/resources/gtk/home_episode_list.ui:66
+msgid "Today"
+msgstr "Сьогоднішні"
+
+#: podcasts-gtk/resources/gtk/home_episode_list.ui:84
+#: podcasts-gtk/resources/gtk/home_episode_list.ui:97
+msgid "Yesterday"
+msgstr "Вчорашні"
+
+#: podcasts-gtk/resources/gtk/home_episode_list.ui:115
+#: podcasts-gtk/resources/gtk/home_episode_list.ui:128
+msgid "This Week"
+msgstr "Цього тижня"
+
+#: podcasts-gtk/resources/gtk/home_episode_list.ui:146
+#: podcasts-gtk/resources/gtk/home_episode_list.ui:159
+msgid "This Month"
+msgstr "Цього місяця"
+
+#: podcasts-gtk/resources/gtk/home_episode_list.ui:178
+#: podcasts-gtk/resources/gtk/home_episode_list.ui:191
+msgid "Older"
+msgstr "Давніші"
 
 #: podcasts-gtk/resources/gtk/player_big.ui:43
 msgid "Rewind 10 seconds"
@@ -340,8 +442,6 @@ msgstr "Сторінка «Подкасти»"
 
 #. Translators: Queue as a Noun
 #: podcasts-gtk/resources/gtk/shortcuts-dialog.ui:24
-#| msgctxt "shortcut window"
-#| msgid "Go to Home Page"
 msgctxt "shortcut window"
 msgid "Go to Queue Page"
 msgstr "Перейти до сторінки «Черга»"
@@ -806,7 +906,7 @@ msgstr "Подкасти"
 msgid "Download progress"
 msgstr "Поступ завантаження"
 
-#: podcasts-gtk/src/widgets/episode.rs:537
+#: podcasts-gtk/src/widgets/episode.rs:517
 #, rust-format
 msgid "{} min"
 msgstr "{} хв."
@@ -886,29 +986,14 @@ msgstr "Виконуємо першу синхронізацію. Вона мо�
 msgid "Never"
 msgstr "Ніколи"
 
+#~ msgid "Calculating episode size…"
+#~ msgstr "Визначається розмір випуску…"
+
 #~ msgid "Download this episode"
 #~ msgstr "Завантажити цей випуск"
 
-#~ msgid "Today"
-#~ msgstr "Сьогоднішні"
-
-#~ msgid "Yesterday"
-#~ msgstr "Вчорашні"
-
-#~ msgid "This Week"
-#~ msgstr "Цього тижня"
-
-#~ msgid "This Month"
-#~ msgstr "Цього місяця"
-
-#~ msgid "Older"
-#~ msgstr "Давніші"
-
 #~ msgid "0"
 #~ msgstr "0"
-
-#~ msgid "Now Playing"
-#~ msgstr "Зараз слухаєте"
 
 #~ msgid "Close"
 #~ msgstr "Закрити"
