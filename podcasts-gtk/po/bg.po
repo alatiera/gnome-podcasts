@@ -1,14 +1,15 @@
 # Bulgarian translation of podcasts po-file.
-# Copyright (C) 2024, 2025, 2026 twlvnn kraftwerk <kraft_werk@tutanota.com>
+# Copyright (C) 2024, 2025, 2026 twlvnn kraftwerk <kraft_werk@tutanota.com>.
+# Copyright (C) 2026 Alexander Shopov <ash@kambanaria.org>.
 # This file is distributed under the same license as the podcasts package.
 # twlvnn kraftwerk <kraft_werk@tutanota.com>, 2024, 2025, 2026.
-#
+# Alexander Shopov <ash@kambanaria.org>, 2026.
 msgid ""
 msgstr ""
 "Project-Id-Version: podcasts main\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2026-09-02 11:29+0000\n"
-"PO-Revision-Date: 2026-09-06 13:10+0200\n"
+"POT-Creation-Date: 2026-09-09 19:02+0000\n"
+"PO-Revision-Date: 2026-09-10 10:58+0200\n"
 "Last-Translator: twlvnn kraftwerk <kraft_werk@tutanota.com>\n"
 "Language-Team: Bulgarian <dict-notifications@fsa-bg.org>\n"
 "Language: bg\n"
@@ -102,6 +103,81 @@ msgstr "Добавяне на нов подкаст чрез адреса на �
 #: podcasts-gtk/resources/gtk/empty_view.ui:76
 msgid "Import shows from another device"
 msgstr "Внасяне на подкасти от друго устройство"
+
+#. Translators: (in a filter menu) sort "Newest" episodes on top of the list
+#: podcasts-gtk/resources/gtk/filter_menu.ui:28
+msgid "Newest First"
+msgstr "Първо най-новите"
+
+#. Translators: (in a filter menu) sort "Oldest" episodes on top of the list
+#: podcasts-gtk/resources/gtk/filter_menu.ui:34
+msgid "Oldest First"
+msgstr "Първо най-старите"
+
+#. Translators: (in a filter menu) list "All" episodes regardless of play status
+#. Translators: (in a filter menu) list "All" episodes regardless of download status
+#. Translators: (in a filter menu) list "All" Shows regardless of completion status
+#. Translators: (in a filter menu) list "All" Shows regardless if they have downloaded episodes
+#: podcasts-gtk/resources/gtk/filter_menu.ui:43
+#: podcasts-gtk/resources/gtk/filter_menu.ui:64
+#: podcasts-gtk/resources/gtk/filter_menu.ui:104
+#: podcasts-gtk/resources/gtk/filter_menu.ui:125
+msgid "All"
+msgstr "Всички"
+
+#. Translators: (in a filter menu) list only "Played" episodes
+#: podcasts-gtk/resources/gtk/filter_menu.ui:49
+msgid "Played"
+msgstr "Слушани"
+
+#. Translators: (in a filter menu) list only "Not Played" episodes
+#: podcasts-gtk/resources/gtk/filter_menu.ui:55
+msgid "Not Played"
+msgstr "Неслушани"
+
+#. Translators: (in a filter menu) list only "Downloaded" episodes
+#. Translators: (in a filter menu) filter for Shows with "Downloaded" episodes
+#: podcasts-gtk/resources/gtk/filter_menu.ui:70
+#: podcasts-gtk/resources/gtk/filter_menu.ui:131
+msgid "Downloaded"
+msgstr "Изтеглени"
+
+#. Translators: (in a filter menu) list only "Not Downloaded" episodes
+#. Translators: (in a filter menu) filter for Shows with no "Downloaded" episodes
+#: podcasts-gtk/resources/gtk/filter_menu.ui:76
+#: podcasts-gtk/resources/gtk/filter_menu.ui:137
+msgid "Not Downloaded"
+msgstr "Неизтеглени"
+
+#. Translators: (in a filter menu) Sorting Shows in alphabetical
+#: podcasts-gtk/resources/gtk/filter_menu.ui:89
+msgid "Alphabetical"
+msgstr "Азбучно"
+
+#. Translators: (in a filter menu) Sorting Shows in reverse alphabetical
+#: podcasts-gtk/resources/gtk/filter_menu.ui:95
+msgid "Reversed"
+msgstr "Обратно"
+
+#. Translators: (in a filter menu) filter for Shows where all episodes were played
+#: podcasts-gtk/resources/gtk/filter_menu.ui:110
+msgid "Completed"
+msgstr "Завършени"
+
+#. Translators: (in a filter menu) filter for Shows with unplayed episodes
+#: podcasts-gtk/resources/gtk/filter_menu.ui:116
+msgid "Not Completed"
+msgstr "Незавършени"
+
+#. Translators: Tooltip text for a button that toggles the search bar
+#: podcasts-gtk/resources/gtk/filter_menu.ui:152
+msgid "Toggle Search"
+msgstr "Превключване на търсенето"
+
+#. Translators: Tooltip text for a menu button that has filter, sorting, and search options
+#: podcasts-gtk/resources/gtk/filter_menu.ui:175
+msgid "Filter"
+msgstr "Филтър"
 
 #: podcasts-gtk/resources/gtk/episode_description.ui:33
 msgid "Episode Details"
@@ -205,6 +281,31 @@ msgstr "Добавяне към опашката"
 #: podcasts-gtk/resources/gtk/episode_widget.ui:248
 msgid "Episode without audio"
 msgstr "Епизод без звук"
+
+#: podcasts-gtk/resources/gtk/home_episode_list.ui:53
+#: podcasts-gtk/resources/gtk/home_episode_list.ui:66
+msgid "Today"
+msgstr "Днес"
+
+#: podcasts-gtk/resources/gtk/home_episode_list.ui:84
+#: podcasts-gtk/resources/gtk/home_episode_list.ui:97
+msgid "Yesterday"
+msgstr "Вчера"
+
+#: podcasts-gtk/resources/gtk/home_episode_list.ui:115
+#: podcasts-gtk/resources/gtk/home_episode_list.ui:128
+msgid "This Week"
+msgstr "Тази седмица"
+
+#: podcasts-gtk/resources/gtk/home_episode_list.ui:146
+#: podcasts-gtk/resources/gtk/home_episode_list.ui:159
+msgid "This Month"
+msgstr "Този месец"
+
+#: podcasts-gtk/resources/gtk/home_episode_list.ui:178
+#: podcasts-gtk/resources/gtk/home_episode_list.ui:191
+msgid "Older"
+msgstr "Стари"
 
 #: podcasts-gtk/resources/gtk/player_big.ui:43
 msgid "Rewind 10 seconds"
@@ -869,24 +970,3 @@ msgstr ""
 #: podcasts-gtk/src/widgets/sync_preferences.rs:439
 msgid "Never"
 msgstr "Никога"
-
-#~ msgid "Calculating episode size…"
-#~ msgstr "Изчисляване на размера на епизода…"
-
-#~ msgid "Download this episode"
-#~ msgstr "Изтегляне на епизода"
-
-#~ msgid "Today"
-#~ msgstr "Днес"
-
-#~ msgid "Yesterday"
-#~ msgstr "Вчера"
-
-#~ msgid "This Week"
-#~ msgstr "Тази седмица"
-
-#~ msgid "This Month"
-#~ msgstr "Този месец"
-
-#~ msgid "Older"
-#~ msgstr "Стари"
