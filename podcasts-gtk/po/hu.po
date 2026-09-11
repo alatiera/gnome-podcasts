@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: podcasts master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2026-09-02 11:29+0000\n"
-"PO-Revision-Date: 2026-09-09 18:47+0200\n"
+"POT-Creation-Date: 2026-09-09 19:02+0000\n"
+"PO-Revision-Date: 2026-09-11 13:15+0200\n"
 "Last-Translator: Balázs Úr <ur.balazs at fsf dot hu>\n"
 "Language-Team: Hungarian <openscope at fsf dot hu>\n"
 "Language: hu\n"
@@ -106,6 +106,88 @@ msgstr "Új műsorok hozzáadása hírforrás URL-ből"
 msgid "Import shows from another device"
 msgstr "Műsorok importálása egy másik eszközről"
 
+#. Translators: (in a filter menu) sort "Newest" episodes on top of the list
+#: podcasts-gtk/resources/gtk/filter_menu.ui:28
+msgid "Newest First"
+msgstr "Legújabb először"
+
+#. Translators: (in a filter menu) sort "Oldest" episodes on top of the list
+#: podcasts-gtk/resources/gtk/filter_menu.ui:34
+msgid "Oldest First"
+msgstr "Legrégebbi először"
+
+#. Translators: (in a filter menu) list "All" episodes regardless of play status
+#. Translators: (in a filter menu) list "All" episodes regardless of download status
+#. Translators: (in a filter menu) list "All" Shows regardless of completion status
+#. Translators: (in a filter menu) list "All" Shows regardless if they have downloaded episodes
+#: podcasts-gtk/resources/gtk/filter_menu.ui:43
+#: podcasts-gtk/resources/gtk/filter_menu.ui:64
+#: podcasts-gtk/resources/gtk/filter_menu.ui:104
+#: podcasts-gtk/resources/gtk/filter_menu.ui:125
+msgid "All"
+msgstr "Összes"
+
+#. Translators: (in a filter menu) list only "Played" episodes
+#: podcasts-gtk/resources/gtk/filter_menu.ui:49
+#| msgid "Player"
+msgid "Played"
+msgstr "Lejátszott"
+
+#. Translators: (in a filter menu) list only "Not Played" episodes
+#: podcasts-gtk/resources/gtk/filter_menu.ui:55
+#| msgid "Player"
+msgid "Not Played"
+msgstr "Nem lejátszott"
+
+#. Translators: (in a filter menu) list only "Downloaded" episodes
+#. Translators: (in a filter menu) filter for Shows with "Downloaded" episodes
+#: podcasts-gtk/resources/gtk/filter_menu.ui:70
+#: podcasts-gtk/resources/gtk/filter_menu.ui:131
+#| msgid "Download"
+msgid "Downloaded"
+msgstr "Letöltve"
+
+#. Translators: (in a filter menu) list only "Not Downloaded" episodes
+#. Translators: (in a filter menu) filter for Shows with no "Downloaded" episodes
+#: podcasts-gtk/resources/gtk/filter_menu.ui:76
+#: podcasts-gtk/resources/gtk/filter_menu.ui:137
+#| msgid "Download"
+msgid "Not Downloaded"
+msgstr "Nincs letöltve"
+
+#. Translators: (in a filter menu) Sorting Shows in alphabetical
+#: podcasts-gtk/resources/gtk/filter_menu.ui:89
+msgid "Alphabetical"
+msgstr "Ábécé-sorrend"
+
+#. Translators: (in a filter menu) Sorting Shows in reverse alphabetical
+#: podcasts-gtk/resources/gtk/filter_menu.ui:95
+#| msgid "Never"
+msgid "Reversed"
+msgstr "Fordított"
+
+#. Translators: (in a filter menu) filter for Shows where all episodes were played
+#: podcasts-gtk/resources/gtk/filter_menu.ui:110
+msgid "Completed"
+msgstr "Befejezett"
+
+#. Translators: (in a filter menu) filter for Shows with unplayed episodes
+#: podcasts-gtk/resources/gtk/filter_menu.ui:116
+msgid "Not Completed"
+msgstr "Nem befejezett"
+
+#. Translators: Tooltip text for a button that toggles the search bar
+#: podcasts-gtk/resources/gtk/filter_menu.ui:152
+#| msgctxt "shortcut window"
+#| msgid "Toggle Pause"
+msgid "Toggle Search"
+msgstr "Keresés be- vagy kikapcsolása"
+
+#. Translators: Tooltip text for a menu button that has filter, sorting, and search options
+#: podcasts-gtk/resources/gtk/filter_menu.ui:175
+msgid "Filter"
+msgstr "Szűrő"
+
 #: podcasts-gtk/resources/gtk/episode_description.ui:33
 msgid "Episode Details"
 msgstr "Epizód részletei"
@@ -174,7 +256,6 @@ msgid "Mark as Unplayed"
 msgstr "Megjelölés lejátszatlanként"
 
 #: podcasts-gtk/resources/gtk/episode_menu.ui:55
-#| msgid "_Download"
 msgid "Download"
 msgstr "Letöltés"
 
@@ -209,6 +290,31 @@ msgstr "Hozzáadás a sorhoz"
 #: podcasts-gtk/resources/gtk/episode_widget.ui:248
 msgid "Episode without audio"
 msgstr "Hang nélküli epizód"
+
+#: podcasts-gtk/resources/gtk/home_episode_list.ui:53
+#: podcasts-gtk/resources/gtk/home_episode_list.ui:66
+msgid "Today"
+msgstr "Ma"
+
+#: podcasts-gtk/resources/gtk/home_episode_list.ui:84
+#: podcasts-gtk/resources/gtk/home_episode_list.ui:97
+msgid "Yesterday"
+msgstr "Tegnap"
+
+#: podcasts-gtk/resources/gtk/home_episode_list.ui:115
+#: podcasts-gtk/resources/gtk/home_episode_list.ui:128
+msgid "This Week"
+msgstr "Ezen a héten"
+
+#: podcasts-gtk/resources/gtk/home_episode_list.ui:146
+#: podcasts-gtk/resources/gtk/home_episode_list.ui:159
+msgid "This Month"
+msgstr "Ebben a hónapban"
+
+#: podcasts-gtk/resources/gtk/home_episode_list.ui:178
+#: podcasts-gtk/resources/gtk/home_episode_list.ui:191
+msgid "Older"
+msgstr "Régebbi"
 
 #: podcasts-gtk/resources/gtk/player_big.ui:43
 msgid "Rewind 10 seconds"
@@ -336,8 +442,6 @@ msgstr "Ugrás a műsorok oldalra"
 
 #. Translators: Queue as a Noun
 #: podcasts-gtk/resources/gtk/shortcuts-dialog.ui:24
-#| msgctxt "shortcut window"
-#| msgid "Go to Home Page"
 msgctxt "shortcut window"
 msgid "Go to Queue Page"
 msgstr "Ugrás a sor oldalra"
@@ -404,7 +508,6 @@ msgid "Export Subscriptions"
 msgstr "Feliratkozások exportálása"
 
 #: podcasts-gtk/resources/gtk/shortcuts-dialog.ui:103
-#| msgid "Search"
 msgctxt "shortcut window"
 msgid "Search"
 msgstr "Keresés"
@@ -831,7 +934,6 @@ msgstr ""
 "adatbázisban. {}"
 
 #: podcasts-gtk/src/widgets/shows_view.rs:144
-#| msgid "No results found."
 msgid "No Results Found"
 msgstr "Nem találhatók eredmények"
 
