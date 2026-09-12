@@ -1,22 +1,21 @@
 # Catalan translation for podcasts.
 # Copyright (C) 2018 podcasts's COPYRIGHT HOLDER
 # This file is distributed under the same license as the podcasts package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-#
+# Xavi Ivars <xavi.ivars@gmail.com>, 2026.
 msgid ""
 msgstr ""
 "Project-Id-Version: podcasts master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2026-06-22 11:00+0000\n"
-"PO-Revision-Date: 2026-07-09 16:58+0200\n"
-"Last-Translator: maite guix <maite.guix@me.com>\n"
+"POT-Creation-Date: 2026-09-09 19:02+0000\n"
+"PO-Revision-Date: 2026-09-12 15:18+0000\n"
+"Last-Translator: Xavi Ivars <xavi.ivars@gmail.com>\n"
 "Language-Team: Catalan <gnome@llistes.softcatala.org>\n"
 "Language: ca\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 3.6\n"
+"X-Generator: Minairó 1.4.0\n"
 
 #: podcasts-gtk/resources/gtk/discovery_found_podcast.ui:105
 msgid "Episodes: "
@@ -104,6 +103,81 @@ msgstr "Afegeix programes nous mitjançant l'URL del canal"
 msgid "Import shows from another device"
 msgstr "Importa programes des d'un altre dispositiu"
 
+#. Translators: (in a filter menu) sort "Newest" episodes on top of the list
+#: podcasts-gtk/resources/gtk/filter_menu.ui:28
+msgid "Newest First"
+msgstr "Les noves primer"
+
+#. Translators: (in a filter menu) sort "Oldest" episodes on top of the list
+#: podcasts-gtk/resources/gtk/filter_menu.ui:34
+msgid "Oldest First"
+msgstr "El més antic primer"
+
+#. Translators: (in a filter menu) list "All" episodes regardless of play status
+#. Translators: (in a filter menu) list "All" episodes regardless of download status
+#. Translators: (in a filter menu) list "All" Shows regardless of completion status
+#. Translators: (in a filter menu) list "All" Shows regardless if they have downloaded episodes
+#: podcasts-gtk/resources/gtk/filter_menu.ui:43
+#: podcasts-gtk/resources/gtk/filter_menu.ui:64
+#: podcasts-gtk/resources/gtk/filter_menu.ui:104
+#: podcasts-gtk/resources/gtk/filter_menu.ui:125
+msgid "All"
+msgstr "Tot"
+
+#. Translators: (in a filter menu) list only "Played" episodes
+#: podcasts-gtk/resources/gtk/filter_menu.ui:49
+msgid "Played"
+msgstr "Escoltat"
+
+#. Translators: (in a filter menu) list only "Not Played" episodes
+#: podcasts-gtk/resources/gtk/filter_menu.ui:55
+msgid "Not Played"
+msgstr "No s'ha escoltat"
+
+#. Translators: (in a filter menu) list only "Downloaded" episodes
+#. Translators: (in a filter menu) filter for Shows with "Downloaded" episodes
+#: podcasts-gtk/resources/gtk/filter_menu.ui:70
+#: podcasts-gtk/resources/gtk/filter_menu.ui:131
+msgid "Downloaded"
+msgstr "S'ha baixat"
+
+#. Translators: (in a filter menu) list only "Not Downloaded" episodes
+#. Translators: (in a filter menu) filter for Shows with no "Downloaded" episodes
+#: podcasts-gtk/resources/gtk/filter_menu.ui:76
+#: podcasts-gtk/resources/gtk/filter_menu.ui:137
+msgid "Not Downloaded"
+msgstr "No baixat"
+
+#. Translators: (in a filter menu) Sorting Shows in alphabetical
+#: podcasts-gtk/resources/gtk/filter_menu.ui:89
+msgid "Alphabetical"
+msgstr "Alfabètic"
+
+#. Translators: (in a filter menu) Sorting Shows in reverse alphabetical
+#: podcasts-gtk/resources/gtk/filter_menu.ui:95
+msgid "Reversed"
+msgstr "Invertit"
+
+#. Translators: (in a filter menu) filter for Shows where all episodes were played
+#: podcasts-gtk/resources/gtk/filter_menu.ui:110
+msgid "Completed"
+msgstr "Completat"
+
+#. Translators: (in a filter menu) filter for Shows with unplayed episodes
+#: podcasts-gtk/resources/gtk/filter_menu.ui:116
+msgid "Not Completed"
+msgstr "No completat"
+
+#. Translators: Tooltip text for a button that toggles the search bar
+#: podcasts-gtk/resources/gtk/filter_menu.ui:152
+msgid "Toggle Search"
+msgstr "Commuta la cerca"
+
+#. Translators: Tooltip text for a menu button that has filter, sorting, and search options
+#: podcasts-gtk/resources/gtk/filter_menu.ui:175
+msgid "Filter"
+msgstr "Filtre"
+
 #: podcasts-gtk/resources/gtk/episode_description.ui:33
 msgid "Episode Details"
 msgstr "Detalls de l'episodi"
@@ -120,36 +194,37 @@ msgstr "Títol del podcast"
 msgid "Duration - Date"
 msgstr "Durada - Data"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:148
+#: podcasts-gtk/resources/gtk/episode_description.ui:151
 msgid "_Stream"
 msgstr "_Reprodueix"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:166
+#: podcasts-gtk/resources/gtk/episode_description.ui:169
 msgid "_Play"
 msgstr "_Reprodueix"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:185
+#: podcasts-gtk/resources/gtk/episode_description.ui:188
 msgid "_Pause"
 msgstr "_Pausa"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:203
+#: podcasts-gtk/resources/gtk/episode_description.ui:206
 msgid "_Download"
 msgstr "_Baixa"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:230
+#: podcasts-gtk/resources/gtk/episode_description.ui:234
 msgid "Cancel"
 msgstr "Cancel·la"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:259
+#: podcasts-gtk/resources/gtk/episode_description.ui:266
+#: podcasts-gtk/resources/gtk/episode_menu.ui:60
 msgid "Delete"
 msgstr "Suprimeix"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:278
+#: podcasts-gtk/resources/gtk/episode_description.ui:285
 #: podcasts-gtk/resources/gtk/sheet_description.ui:48
 msgid "Episode Description"
 msgstr "Descripció de l'episodi"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:300
+#: podcasts-gtk/resources/gtk/episode_description.ui:307
 msgid "Episode Cover"
 msgstr "Portada de l'episodi"
 
@@ -170,33 +245,66 @@ msgstr "Marca com a reproduït"
 msgid "Mark as Unplayed"
 msgstr "Marca com a no reproduït"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:71
+#: podcasts-gtk/resources/gtk/episode_menu.ui:55
+msgid "Download"
+msgstr "Baixa"
+
+#: podcasts-gtk/resources/gtk/episode_menu.ui:67
+msgid "Move Up in Queue"
+msgstr "Mou amunt a la cua"
+
+#: podcasts-gtk/resources/gtk/episode_menu.ui:72
+msgid "Move Down in Queue"
+msgstr "Mou avall a la cua"
+
+#: podcasts-gtk/resources/gtk/episode_widget.ui:142
 msgid "You’ve already listened to this episode."
 msgstr "Ja heu escoltat aquest episodi."
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:159
-msgid "Calculating episode size…"
-msgstr "S'està calculant la mida de l'episodi…"
-
-#: podcasts-gtk/resources/gtk/episode_widget.ui:182
+#: podcasts-gtk/resources/gtk/episode_widget.ui:190
 msgid "Play this episode"
 msgstr "Reprodueix aquest episodi"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:197
+#: podcasts-gtk/resources/gtk/episode_widget.ui:205
 msgid "Pause playback"
 msgstr "Pausa la reproducció"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:211
+#: podcasts-gtk/resources/gtk/episode_widget.ui:219
 msgid "Cancel the download process"
 msgstr "Cancel·la el procés de baixada"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:225
-msgid "Download this episode"
-msgstr "Baixa aquest episodi"
+#: podcasts-gtk/resources/gtk/episode_widget.ui:233
+msgid "Add to Queue"
+msgstr "Afegeix a la cua de reproducció"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:240
+#: podcasts-gtk/resources/gtk/episode_widget.ui:248
 msgid "Episode without audio"
 msgstr "Episodi sense àudio"
+
+#: podcasts-gtk/resources/gtk/home_episode_list.ui:53
+#: podcasts-gtk/resources/gtk/home_episode_list.ui:66
+msgid "Today"
+msgstr "Avui"
+
+#: podcasts-gtk/resources/gtk/home_episode_list.ui:84
+#: podcasts-gtk/resources/gtk/home_episode_list.ui:97
+msgid "Yesterday"
+msgstr "Ahir"
+
+#: podcasts-gtk/resources/gtk/home_episode_list.ui:115
+#: podcasts-gtk/resources/gtk/home_episode_list.ui:128
+msgid "This Week"
+msgstr "Aquesta setmana"
+
+#: podcasts-gtk/resources/gtk/home_episode_list.ui:146
+#: podcasts-gtk/resources/gtk/home_episode_list.ui:159
+msgid "This Month"
+msgstr "Aquest mes"
+
+#: podcasts-gtk/resources/gtk/home_episode_list.ui:178
+#: podcasts-gtk/resources/gtk/home_episode_list.ui:191
+msgid "Older"
+msgstr "Més antics"
 
 #: podcasts-gtk/resources/gtk/player_big.ui:43
 msgid "Rewind 10 seconds"
@@ -260,6 +368,19 @@ msgstr "0,75 ×"
 msgid "Change the playback speed"
 msgstr "Canvia la velocitat de la reproducció"
 
+#: podcasts-gtk/resources/gtk/queue_view.ui:52
+msgid "Queue Is Empty"
+msgstr "La cua està buida"
+
+#: podcasts-gtk/resources/gtk/queue_view.ui:53
+msgid "Add episodes from the New view or Shows views"
+msgstr "Afegeix episodis des de la vista Nou o les vistes Programes"
+
+#: podcasts-gtk/resources/gtk/queue_view.ui:63
+#: podcasts-gtk/src/widgets/content_stack.rs:78
+msgid "Queue"
+msgstr "Posa a la cua"
+
 #: podcasts-gtk/resources/gtk/secondary_menu.ui:7
 msgid "_Mark All Episodes as Played"
 msgstr "_Marca tots els episodis com a reproduïts"
@@ -309,68 +430,74 @@ msgctxt "shortcut window"
 msgid "Go to Shows Page"
 msgstr "Ves a la pàgina dels programes"
 
-#. Translators: 'Discovery' is a page where you can add new podcasts
+#. Translators: Queue as a Noun
 #: podcasts-gtk/resources/gtk/shortcuts-dialog.ui:24
+msgctxt "shortcut window"
+msgid "Go to Queue Page"
+msgstr "Ves a la pàgina de la cua"
+
+#. Translators: 'Discovery' is a page where you can add new podcasts
+#: podcasts-gtk/resources/gtk/shortcuts-dialog.ui:31
 msgctxt "shortcut window"
 msgid "Go To Discovery Page"
 msgstr "Ves a la pàgina de descobriment"
 
-#: podcasts-gtk/resources/gtk/shortcuts-dialog.ui:33
+#: podcasts-gtk/resources/gtk/shortcuts-dialog.ui:40
 msgctxt "shortcut window"
 msgid "Player"
 msgstr "Reproductor"
 
-#: podcasts-gtk/resources/gtk/shortcuts-dialog.ui:36
+#: podcasts-gtk/resources/gtk/shortcuts-dialog.ui:43
 msgctxt "shortcut window"
 msgid "Toggle Pause"
 msgstr "Commuta la pausa"
 
-#: podcasts-gtk/resources/gtk/shortcuts-dialog.ui:42
+#: podcasts-gtk/resources/gtk/shortcuts-dialog.ui:49
 msgctxt "shortcut window"
 msgid "Seek Forwards"
 msgstr "Avança"
 
-#: podcasts-gtk/resources/gtk/shortcuts-dialog.ui:48
+#: podcasts-gtk/resources/gtk/shortcuts-dialog.ui:55
 msgctxt "shortcut window"
 msgid "Seek Backwards"
 msgstr "Retrocedeix"
 
-#: podcasts-gtk/resources/gtk/shortcuts-dialog.ui:54
+#: podcasts-gtk/resources/gtk/shortcuts-dialog.ui:61
 msgctxt "shortcut window"
 msgid "Raise Playback Speed"
 msgstr "Apuja la velocitat de la reproducció"
 
-#: podcasts-gtk/resources/gtk/shortcuts-dialog.ui:60
+#: podcasts-gtk/resources/gtk/shortcuts-dialog.ui:67
 msgctxt "shortcut window"
 msgid "Lower Playback Speed"
 msgstr "Abaixa la velocitat de la reproducció"
 
-#: podcasts-gtk/resources/gtk/shortcuts-dialog.ui:69
+#: podcasts-gtk/resources/gtk/shortcuts-dialog.ui:76
 msgctxt "shortcut window"
 msgid "General"
 msgstr "General"
 
-#: podcasts-gtk/resources/gtk/shortcuts-dialog.ui:72
+#: podcasts-gtk/resources/gtk/shortcuts-dialog.ui:79
 msgctxt "shortcut window"
 msgid "Check for new episodes"
 msgstr "Comprova si hi ha episodis nous"
 
-#: podcasts-gtk/resources/gtk/shortcuts-dialog.ui:78
+#: podcasts-gtk/resources/gtk/shortcuts-dialog.ui:85
 msgctxt "shortcut window"
 msgid "Quit the application"
 msgstr "Surt de l'aplicació"
 
-#: podcasts-gtk/resources/gtk/shortcuts-dialog.ui:84
+#: podcasts-gtk/resources/gtk/shortcuts-dialog.ui:91
 msgctxt "shortcut window"
 msgid "Import Subscriptions"
 msgstr "Importa les subscripcions"
 
-#: podcasts-gtk/resources/gtk/shortcuts-dialog.ui:90
+#: podcasts-gtk/resources/gtk/shortcuts-dialog.ui:97
 msgctxt "shortcut window"
 msgid "Export Subscriptions"
 msgstr "Exporta les subscripcions"
 
-#: podcasts-gtk/resources/gtk/shortcuts-dialog.ui:96
+#: podcasts-gtk/resources/gtk/shortcuts-dialog.ui:103
 msgctxt "shortcut window"
 msgid "Search"
 msgstr "Cerca"
@@ -507,7 +634,7 @@ msgstr "_Quant a Podcasts"
 #: podcasts-gtk/resources/gtk/window.ui:110
 #: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:2
 #: podcasts-gtk/resources/org.gnome.Podcasts.metainfo.xml.in.in:4
-#: podcasts-gtk/src/app.rs:653 podcasts-gtk/src/player_mpris.rs:50
+#: podcasts-gtk/src/app.rs:748 podcasts-gtk/src/player_mpris.rs:50
 #: podcasts-gtk/src/widgets/aboutdialog.rs:56
 msgid "Podcasts"
 msgstr "Podcasts"
@@ -618,100 +745,111 @@ msgstr "La vista on es pot afegir un nou podcast"
 
 #. developer_name tag deprecated with Appstream 1.0
 #: podcasts-gtk/resources/org.gnome.Podcasts.metainfo.xml.in.in:241
+#: podcasts-gtk/resources/org.gnome.Podcasts.metainfo.xml.in.in:243
 msgid "The Podcasts developers"
 msgstr "Els desenvolupadors del Podcasts"
 
-#: podcasts-gtk/src/app.rs:424
+#: podcasts-gtk/src/app.rs:435
 msgid "Copied URL to clipboard!"
 msgstr "URL copiat al porta-retalls!"
 
 #: podcasts-gtk/src/episode_description_parser.rs:320
+#, rust-format
 msgid "Jump to {hours}:{minutes}:{seconds}"
 msgstr "Salta a {hours}:{minutes}:{seconds}"
 
 #: podcasts-gtk/src/episode_description_parser.rs:338
+#, rust-format
 msgid "Jump to {minutes}:{seconds}"
 msgstr "Salta a {minutes}:{seconds}"
 
 #: podcasts-gtk/src/manager.rs:107
+#, rust-format
 msgid "Download failed: {}"
 msgstr "Ha fallat la baixada: {}"
 
-#: podcasts-gtk/src/player.rs:385
+#: podcasts-gtk/src/player.rs:498
 msgid "The media player was unable to execute an action."
 msgstr "El reproductor multimèdia ha sigut incapaç d'executar cap acció."
 
-#: podcasts-gtk/src/utils.rs:300
+#: podcasts-gtk/src/utils.rs:301
+#, rust-format
 msgid "Failed to subscribe to feed: {}"
 msgstr "La subscripció al canal ha fallat: {}"
 
-#: podcasts-gtk/src/utils.rs:395 podcasts-gtk/src/utils.rs:447
+#: podcasts-gtk/src/utils.rs:400 podcasts-gtk/src/utils.rs:452
 msgid "OPML file"
 msgstr "Fitxer OPML"
 
-#: podcasts-gtk/src/utils.rs:406
+#: podcasts-gtk/src/utils.rs:411
 msgid "Select the file from which to you want to import shows."
 msgstr "Seleccioneu el fitxer des del qual voleu importar els programes."
 
-#: podcasts-gtk/src/utils.rs:408
+#: podcasts-gtk/src/utils.rs:413
 msgid "_Import"
 msgstr "_Importa"
 
-#: podcasts-gtk/src/utils.rs:437
+#: podcasts-gtk/src/utils.rs:442
+#, rust-format
 msgid "Failed to parse the imported file {}"
 msgstr "No s'ha pogut analitzar el fitxer importat {}"
 
 #. Translators: Show as a noun, meaning Podcast-Shows.
-#: podcasts-gtk/src/utils.rs:458
+#: podcasts-gtk/src/utils.rs:463
 msgid "Export shows to…"
 msgstr "Exporta programes a…"
 
-#: podcasts-gtk/src/utils.rs:459
+#: podcasts-gtk/src/utils.rs:464
 msgid "_Export"
 msgstr "_Exporta"
 
 #. Translators: This is the string of the suggested name for the exported opml file
-#: podcasts-gtk/src/utils.rs:463
+#: podcasts-gtk/src/utils.rs:468
 msgid "gnome-podcasts-exported-shows"
 msgstr "gnome-podcasts-programes-exportats"
 
-#: podcasts-gtk/src/utils.rs:473
+#: podcasts-gtk/src/utils.rs:478
 msgid "GNOME Podcasts Subscriptions"
 msgstr "Subscripcions als podcasts del GNOME"
 
-#: podcasts-gtk/src/utils.rs:477
+#: podcasts-gtk/src/utils.rs:482
 msgid "Failed to export podcasts"
 msgstr "No s'han pogut exportar podcasts"
 
-#: podcasts-gtk/src/utils.rs:488
+#: podcasts-gtk/src/utils.rs:493
 msgid "Just now"
 msgstr "Ara"
 
-#: podcasts-gtk/src/utils.rs:492
+#: podcasts-gtk/src/utils.rs:497
+#, rust-format
 msgid "{} minute ago"
 msgid_plural "{} minutes ago"
 msgstr[0] "fa {} minut"
 msgstr[1] "fa {} minuts"
 
-#: podcasts-gtk/src/utils.rs:498
+#: podcasts-gtk/src/utils.rs:503
+#, rust-format
 msgid "{} hour ago"
 msgid_plural "{} hours ago"
 msgstr[0] "fa {} hora"
 msgstr[1] "fa {} hores"
 
-#: podcasts-gtk/src/utils.rs:502
+#: podcasts-gtk/src/utils.rs:507
+#, rust-format
 msgid "{} day ago"
 msgid_plural "{} days ago"
 msgstr[0] "fa {} dia"
 msgstr[1] "fa {} dies"
 
-#: podcasts-gtk/src/utils.rs:506
+#: podcasts-gtk/src/utils.rs:511
+#, rust-format
 msgid "{} month ago"
 msgid_plural "{} months ago"
 msgstr[0] "fa {} mes"
 msgstr[1] "fa {} mesos"
 
-#: podcasts-gtk/src/utils.rs:510
+#: podcasts-gtk/src/utils.rs:515
+#, rust-format
 msgid "{} year ago"
 msgid_plural "{} years ago"
 msgstr[0] "fa {} any"
@@ -732,16 +870,16 @@ msgstr ""
 msgid "Currently playing chapter"
 msgstr "Capítol que s'està reproduint actualment"
 
-#: podcasts-gtk/src/widgets/content_stack.rs:67
+#: podcasts-gtk/src/widgets/content_stack.rs:69
 msgid "Fetching feeds…"
 msgstr "S'estan recuperant els canals…"
 
-#: podcasts-gtk/src/widgets/content_stack.rs:74
+#: podcasts-gtk/src/widgets/content_stack.rs:76
 msgid "New"
 msgstr "Nou"
 
 #. Translators: Shows as a noun, meaning Podcast-Shows.
-#: podcasts-gtk/src/widgets/content_stack.rs:75
+#: podcasts-gtk/src/widgets/content_stack.rs:77
 #: podcasts-gtk/src/widgets/shows_view.rs:127
 msgid "Shows"
 msgstr "Programes"
@@ -750,13 +888,15 @@ msgstr "Programes"
 msgid "Download progress"
 msgstr "Progrés de la baixada"
 
-#: podcasts-gtk/src/widgets/episode.rs:355
+#: podcasts-gtk/src/widgets/episode.rs:517
+#, rust-format
 msgid "{} min"
 msgstr "{} m"
 
 #. Translators: This will show as something like: "1.25×"
 #. inside a menu-button that shows/sets playback speed.
 #: podcasts-gtk/src/widgets/player_rate.rs:79
+#, rust-format
 msgid "{:.2}×"
 msgstr "{:.2}×"
 
@@ -778,10 +918,12 @@ msgid "Undo"
 msgstr "Desfés"
 
 #: podcasts-gtk/src/widgets/show_menu.rs:172
+#, rust-format
 msgid "Unsubscribed from {}"
 msgstr "S'ha cancel·lat la subscripció a {}"
 
 #: podcasts-gtk/src/widgets/show_menu.rs:203
+#, rust-format
 msgid "Failed to store Unsubscribe Action for Synchronization in database. {}"
 msgstr ""
 "No s'ha pogut emmagatzemar l'acció de cancel·lar la subscripció per a la "
@@ -826,112 +968,3 @@ msgstr ""
 #: podcasts-gtk/src/widgets/sync_preferences.rs:439
 msgid "Never"
 msgstr "Mai"
-
-#~ msgid "Today"
-#~ msgstr "Avui"
-
-#~ msgid "Yesterday"
-#~ msgstr "Ahir"
-
-#~ msgid "This Week"
-#~ msgstr "Aquesta setmana"
-
-#~ msgid "This Month"
-#~ msgstr "Aquest mes"
-
-#~ msgid "Older"
-#~ msgstr "Més antics"
-
-#~ msgid "Back"
-#~ msgstr "Enrere"
-
-#~ msgid "Enter feed address to add"
-#~ msgstr "Introduïu l'adreça del canal que s'ha d'afegir"
-
-#~ msgid "Add"
-#~ msgstr "Afegeix"
-
-#~ msgid "Show Title"
-#~ msgstr "Títol del programa"
-
-#~ msgid "Now Playing"
-#~ msgstr "Ara jugant"
-
-#~ msgid "Jordan Petridis"
-#~ msgstr "Jordan Petridis"
-
-#~ msgid "Julian Hofer"
-#~ msgstr "Julian Hofer"
-
-#~ msgid "Selected file could not be accessed."
-#~ msgstr "No s'ha pogut accedir al fitxer seleccionat."
-
-#~ msgid "Learn more about GNOME Podcasts"
-#~ msgstr "Més informació sobre el GNOME Podcasts"
-
-#~ msgid "Top position of the last open main window"
-#~ msgstr "Posició superior de l'última finestra principal oberta"
-
-#~ msgid "Left position of the last open main window"
-#~ msgstr "Posició esquerra de l'última finestra principal oberta"
-
-#~ msgid "Enable or disable dark theme"
-#~ msgstr "Habilita o inhabilita el tema fosc"
-
-#~ msgid "@icon@"
-#~ msgstr "@icon@"
-
-#~ msgid "Podcast app for GNOME"
-#~ msgstr "Aplicació de podcasts per al GNOME"
-
-#~ msgid "_Preferences"
-#~ msgstr "_Preferències"
-
-#~ msgid "_About"
-#~ msgstr "_Quant a"
-
-#~ msgctxt "shortcut window"
-#~ msgid "Preferences"
-#~ msgstr "Preferències"
-
-#~ msgid "An in-app action notification"
-#~ msgstr "Una notificació d'acció dins l'aplicació"
-
-#~ msgid "1.5 speed rate"
-#~ msgstr "Velocitat d'1,5"
-
-#~ msgid "1.25 speed rate"
-#~ msgstr "Velocitat d'1,25"
-
-#~ msgid "Normal speed"
-#~ msgstr "Velocitat normal"
-
-#~ msgid "Appearance"
-#~ msgstr "Aparença"
-
-#~ msgid "Dark Theme"
-#~ msgstr "Tema fosc"
-
-#~ msgid "Delete played episodes"
-#~ msgstr "Suprimeix els episodis reproduïts"
-
-#~ msgid "After"
-#~ msgstr "Després"
-
-#~ msgid "Invalid URL"
-#~ msgstr "L'URL no és vàlid"
-
-#~ msgid "Seconds"
-#~ msgstr "Segons"
-
-#~ msgid "Minutes"
-#~ msgstr "Minuts"
-
-#~ msgid "Hours"
-#~ msgstr "Hores"
-
-#~ msgid "Days"
-#~ msgstr "Dies"
-
-#~ msgid "Weeks"
-#~ msgstr "Setmanes"
