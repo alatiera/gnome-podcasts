@@ -4,21 +4,22 @@
 #
 # Sabri Ünal <yakushabb@gmail.com>, 2019, 2023, 2024, 2025.
 # Emin Tufan Çetin <etcetin@gmail.com>, 2018-2026.
+# Muhammet Kara <muhammetk@gmail.com>, 2026.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: podcasts master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2026-09-02 11:29+0000\n"
-"PO-Revision-Date: 2026-09-03 19:01+0300\n"
-"Last-Translator: Emin Tufan Çetin <etcetin@gmail.com>\n"
+"POT-Creation-Date: 2026-09-09 19:02+0000\n"
+"PO-Revision-Date: 2026-09-14 00:54+0300\n"
+"Last-Translator: Muhammet Kara <muhammetk@gmail.com>\n"
 "Language-Team: Turkish <takim@gnome.org.tr>\n"
 "Language: tr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Poedit 3.9\n"
+"X-Generator: Gtranslator 49.0\n"
 
 #: podcasts-gtk/resources/gtk/discovery_found_podcast.ui:105
 msgid "Episodes: "
@@ -105,6 +106,81 @@ msgstr "Besleme URLʼsi ile yeni gösteriler ekle"
 #: podcasts-gtk/resources/gtk/empty_view.ui:76
 msgid "Import shows from another device"
 msgstr "Gösterileri başka aygıttan içe aktar"
+
+#. Translators: (in a filter menu) sort "Newest" episodes on top of the list
+#: podcasts-gtk/resources/gtk/filter_menu.ui:28
+msgid "Newest First"
+msgstr "En Yeni En Üstte"
+
+#. Translators: (in a filter menu) sort "Oldest" episodes on top of the list
+#: podcasts-gtk/resources/gtk/filter_menu.ui:34
+msgid "Oldest First"
+msgstr "En Eski En Üstte"
+
+#. Translators: (in a filter menu) list "All" episodes regardless of play status
+#. Translators: (in a filter menu) list "All" episodes regardless of download status
+#. Translators: (in a filter menu) list "All" Shows regardless of completion status
+#. Translators: (in a filter menu) list "All" Shows regardless if they have downloaded episodes
+#: podcasts-gtk/resources/gtk/filter_menu.ui:43
+#: podcasts-gtk/resources/gtk/filter_menu.ui:64
+#: podcasts-gtk/resources/gtk/filter_menu.ui:104
+#: podcasts-gtk/resources/gtk/filter_menu.ui:125
+msgid "All"
+msgstr "Tümü"
+
+#. Translators: (in a filter menu) list only "Played" episodes
+#: podcasts-gtk/resources/gtk/filter_menu.ui:49
+msgid "Played"
+msgstr "Oynatıldı"
+
+#. Translators: (in a filter menu) list only "Not Played" episodes
+#: podcasts-gtk/resources/gtk/filter_menu.ui:55
+msgid "Not Played"
+msgstr "Oynatılmadı"
+
+#. Translators: (in a filter menu) list only "Downloaded" episodes
+#. Translators: (in a filter menu) filter for Shows with "Downloaded" episodes
+#: podcasts-gtk/resources/gtk/filter_menu.ui:70
+#: podcasts-gtk/resources/gtk/filter_menu.ui:131
+msgid "Downloaded"
+msgstr "İndirildi"
+
+#. Translators: (in a filter menu) list only "Not Downloaded" episodes
+#. Translators: (in a filter menu) filter for Shows with no "Downloaded" episodes
+#: podcasts-gtk/resources/gtk/filter_menu.ui:76
+#: podcasts-gtk/resources/gtk/filter_menu.ui:137
+msgid "Not Downloaded"
+msgstr "İndirilmedi"
+
+#. Translators: (in a filter menu) Sorting Shows in alphabetical
+#: podcasts-gtk/resources/gtk/filter_menu.ui:89
+msgid "Alphabetical"
+msgstr "Alfabetik"
+
+#. Translators: (in a filter menu) Sorting Shows in reverse alphabetical
+#: podcasts-gtk/resources/gtk/filter_menu.ui:95
+msgid "Reversed"
+msgstr "Ters Sırada"
+
+#. Translators: (in a filter menu) filter for Shows where all episodes were played
+#: podcasts-gtk/resources/gtk/filter_menu.ui:110
+msgid "Completed"
+msgstr "Tamamlandı"
+
+#. Translators: (in a filter menu) filter for Shows with unplayed episodes
+#: podcasts-gtk/resources/gtk/filter_menu.ui:116
+msgid "Not Completed"
+msgstr "Tamamlanmadı"
+
+#. Translators: Tooltip text for a button that toggles the search bar
+#: podcasts-gtk/resources/gtk/filter_menu.ui:152
+msgid "Toggle Search"
+msgstr "Arama Çubuğunu Aç/Kapat"
+
+#. Translators: Tooltip text for a menu button that has filter, sorting, and search options
+#: podcasts-gtk/resources/gtk/filter_menu.ui:175
+msgid "Filter"
+msgstr "Süz"
 
 #: podcasts-gtk/resources/gtk/episode_description.ui:33
 msgid "Episode Details"
@@ -208,6 +284,31 @@ msgstr "Kuyruğa Ekle"
 #: podcasts-gtk/resources/gtk/episode_widget.ui:248
 msgid "Episode without audio"
 msgstr "Sesi olmayan bölüm"
+
+#: podcasts-gtk/resources/gtk/home_episode_list.ui:53
+#: podcasts-gtk/resources/gtk/home_episode_list.ui:66
+msgid "Today"
+msgstr "Bugün"
+
+#: podcasts-gtk/resources/gtk/home_episode_list.ui:84
+#: podcasts-gtk/resources/gtk/home_episode_list.ui:97
+msgid "Yesterday"
+msgstr "Dün"
+
+#: podcasts-gtk/resources/gtk/home_episode_list.ui:115
+#: podcasts-gtk/resources/gtk/home_episode_list.ui:128
+msgid "This Week"
+msgstr "Bu Hafta"
+
+#: podcasts-gtk/resources/gtk/home_episode_list.ui:146
+#: podcasts-gtk/resources/gtk/home_episode_list.ui:159
+msgid "This Month"
+msgstr "Bu Ay"
+
+#: podcasts-gtk/resources/gtk/home_episode_list.ui:178
+#: podcasts-gtk/resources/gtk/home_episode_list.ui:191
+msgid "Older"
+msgstr "Daha Eski"
 
 #: podcasts-gtk/resources/gtk/player_big.ui:43
 msgid "Rewind 10 seconds"
