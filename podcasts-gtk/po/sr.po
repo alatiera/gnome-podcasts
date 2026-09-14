@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: podcasts master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2026-09-02 11:29+0000\n"
+"POT-Creation-Date: 2026-09-09 19:02+0000\n"
 "PO-Revision-Date: 2026-03-21 00:10+0100\n"
 "Last-Translator: Марко М. Костић <marko.m.kostic@gmail.com>\n"
 "Language-Team: Serbian <(nothing)>\n"
@@ -103,6 +103,81 @@ msgstr "Додај нове емисије путем УРЛ-адресе дов
 #: podcasts-gtk/resources/gtk/empty_view.ui:76
 msgid "Import shows from another device"
 msgstr "Увези емисије са другог уређаја"
+
+#. Translators: (in a filter menu) sort "Newest" episodes on top of the list
+#: podcasts-gtk/resources/gtk/filter_menu.ui:28
+msgid "Newest First"
+msgstr "Најновије прво"
+
+#. Translators: (in a filter menu) sort "Oldest" episodes on top of the list
+#: podcasts-gtk/resources/gtk/filter_menu.ui:34
+msgid "Oldest First"
+msgstr "Најстарије прво"
+
+#. Translators: (in a filter menu) list "All" episodes regardless of play status
+#. Translators: (in a filter menu) list "All" episodes regardless of download status
+#. Translators: (in a filter menu) list "All" Shows regardless of completion status
+#. Translators: (in a filter menu) list "All" Shows regardless if they have downloaded episodes
+#: podcasts-gtk/resources/gtk/filter_menu.ui:43
+#: podcasts-gtk/resources/gtk/filter_menu.ui:64
+#: podcasts-gtk/resources/gtk/filter_menu.ui:104
+#: podcasts-gtk/resources/gtk/filter_menu.ui:125
+msgid "All"
+msgstr "Све"
+
+#. Translators: (in a filter menu) list only "Played" episodes
+#: podcasts-gtk/resources/gtk/filter_menu.ui:49
+msgid "Played"
+msgstr "Слушане"
+
+#. Translators: (in a filter menu) list only "Not Played" episodes
+#: podcasts-gtk/resources/gtk/filter_menu.ui:55
+msgid "Not Played"
+msgstr "Неслушане"
+
+#. Translators: (in a filter menu) list only "Downloaded" episodes
+#. Translators: (in a filter menu) filter for Shows with "Downloaded" episodes
+#: podcasts-gtk/resources/gtk/filter_menu.ui:70
+#: podcasts-gtk/resources/gtk/filter_menu.ui:131
+msgid "Downloaded"
+msgstr "Преузето"
+
+#. Translators: (in a filter menu) list only "Not Downloaded" episodes
+#. Translators: (in a filter menu) filter for Shows with no "Downloaded" episodes
+#: podcasts-gtk/resources/gtk/filter_menu.ui:76
+#: podcasts-gtk/resources/gtk/filter_menu.ui:137
+msgid "Not Downloaded"
+msgstr "Није преузето"
+
+#. Translators: (in a filter menu) Sorting Shows in alphabetical
+#: podcasts-gtk/resources/gtk/filter_menu.ui:89
+msgid "Alphabetical"
+msgstr "Абецедно"
+
+#. Translators: (in a filter menu) Sorting Shows in reverse alphabetical
+#: podcasts-gtk/resources/gtk/filter_menu.ui:95
+msgid "Reversed"
+msgstr "Обрнут"
+
+#. Translators: (in a filter menu) filter for Shows where all episodes were played
+#: podcasts-gtk/resources/gtk/filter_menu.ui:110
+msgid "Completed"
+msgstr "Завршено"
+
+#. Translators: (in a filter menu) filter for Shows with unplayed episodes
+#: podcasts-gtk/resources/gtk/filter_menu.ui:116
+msgid "Not Completed"
+msgstr "Није завршено"
+
+#. Translators: Tooltip text for a button that toggles the search bar
+#: podcasts-gtk/resources/gtk/filter_menu.ui:152
+msgid "Toggle Search"
+msgstr "Окини претрагу"
+
+#. Translators: Tooltip text for a menu button that has filter, sorting, and search options
+#: podcasts-gtk/resources/gtk/filter_menu.ui:175
+msgid "Filter"
+msgstr "Филтер"
 
 #: podcasts-gtk/resources/gtk/episode_description.ui:33
 msgid "Episode Details"
@@ -206,6 +281,31 @@ msgstr "Додај у ред"
 #: podcasts-gtk/resources/gtk/episode_widget.ui:248
 msgid "Episode without audio"
 msgstr "Епизода без звука"
+
+#: podcasts-gtk/resources/gtk/home_episode_list.ui:53
+#: podcasts-gtk/resources/gtk/home_episode_list.ui:66
+msgid "Today"
+msgstr "Данас"
+
+#: podcasts-gtk/resources/gtk/home_episode_list.ui:84
+#: podcasts-gtk/resources/gtk/home_episode_list.ui:97
+msgid "Yesterday"
+msgstr "Јуче"
+
+#: podcasts-gtk/resources/gtk/home_episode_list.ui:115
+#: podcasts-gtk/resources/gtk/home_episode_list.ui:128
+msgid "This Week"
+msgstr "Ове седмице"
+
+#: podcasts-gtk/resources/gtk/home_episode_list.ui:146
+#: podcasts-gtk/resources/gtk/home_episode_list.ui:159
+msgid "This Month"
+msgstr "Овог месеца"
+
+#: podcasts-gtk/resources/gtk/home_episode_list.ui:178
+#: podcasts-gtk/resources/gtk/home_episode_list.ui:191
+msgid "Older"
+msgstr "Старије"
 
 #: podcasts-gtk/resources/gtk/player_big.ui:43
 msgid "Rewind 10 seconds"
@@ -473,7 +573,9 @@ msgstr "Некстклауд пријава"
 msgid ""
 "Synchronize subscriptions and listening status with a Nextcloud server that "
 "has GPodder Sync installed."
-msgstr "Ускладите претплате и статус слушања са Некстклауд сервером који има инсталиран GPodder Sync."
+msgstr ""
+"Ускладите претплате и статус слушања са Некстклауд сервером који има "
+"инсталиран GPodder Sync."
 
 #: podcasts-gtk/resources/gtk/sync_preferences.ui:128
 msgid "Login via"
@@ -605,7 +707,12 @@ msgid ""
 "and remember where you stopped listening. You can subscribe to shows via RSS/"
 "Atom, iTunes, and Soundcloud links. Subscriptions from other apps can be "
 "imported via OPML files."
-msgstr "Пуштајте, ажурирајте и управљајте својим подкастима из лаганог прочеља које се неприметно интегрише са Гномом. Подкасти могу да пуштају разне аудио формате и памте где сте стали са слушањем. Можете се претплатити на емисије путем „RSS/Atom“, „iTunes“ и „Soundcloud“ веза. Претплате из других програма могу се увести путем „OPML“ датотека."
+msgstr ""
+"Пуштајте, ажурирајте и управљајте својим подкастима из лаганог прочеља које "
+"се неприметно интегрише са Гномом. Подкасти могу да пуштају разне аудио "
+"формате и памте где сте стали са слушањем. Можете се претплатити на емисије "
+"путем „RSS/Atom“, „iTunes“ и „Soundcloud“ веза. Претплате из других програма "
+"могу се увести путем „OPML“ датотека."
 
 #: podcasts-gtk/resources/org.gnome.Podcasts.metainfo.xml.in.in:18
 msgid "The home view displaying the newest episodes of your podcasts"
@@ -619,7 +726,9 @@ msgstr "Преглед емисија који приказује омоте в�
 msgid ""
 "The show widget displaying the cover and the latest episodes of a specific "
 "podcast"
-msgstr "Елемент емисије који приказује насловницу и најновије епизоде одређеног подкаста"
+msgstr ""
+"Елемент емисије који приказује насловницу и најновије епизоде одређеног "
+"подкаста"
 
 #: podcasts-gtk/resources/org.gnome.Podcasts.metainfo.xml.in.in:30
 msgid "The chapters available in an episode"
@@ -821,7 +930,9 @@ msgstr "Отказали сте претплату на „{}“"
 #: podcasts-gtk/src/widgets/show_menu.rs:203
 #, rust-format
 msgid "Failed to store Unsubscribe Action for Synchronization in database. {}"
-msgstr "Нисам успео да сачувам радњу за отказање претплате за усклађивање у бази података. {}"
+msgstr ""
+"Нисам успео да сачувам радњу за отказање претплате за усклађивање у бази "
+"података. {}"
 
 #: podcasts-gtk/src/widgets/shows_view.rs:144
 msgid "No Results Found"
