@@ -12,8 +12,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: podcasts master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2026-08-29 20:11+0000\n"
-"PO-Revision-Date: 2026-08-30 19:26-0300\n"
+"POT-Creation-Date: 2026-09-09 19:02+0000\n"
+"PO-Revision-Date: 2026-09-13 10:06-0300\n"
 "Last-Translator: Álvaro Burns <>\n"
 "Language-Team: Brazilian Portuguese <https://br.gnome.org/traducao/>\n"
 "Language: pt_BR\n"
@@ -115,6 +115,81 @@ msgstr "Adicionar novos podcasts via URL da fonte"
 msgid "Import shows from another device"
 msgstr "Importar podcasts de outro dispositivo"
 
+#. Translators: (in a filter menu) sort "Newest" episodes on top of the list
+#: podcasts-gtk/resources/gtk/filter_menu.ui:28
+msgid "Newest First"
+msgstr "Novos primeiro"
+
+#. Translators: (in a filter menu) sort "Oldest" episodes on top of the list
+#: podcasts-gtk/resources/gtk/filter_menu.ui:34
+msgid "Oldest First"
+msgstr "Mais velhos primeiro"
+
+#. Translators: (in a filter menu) list "All" episodes regardless of play status
+#. Translators: (in a filter menu) list "All" episodes regardless of download status
+#. Translators: (in a filter menu) list "All" Shows regardless of completion status
+#. Translators: (in a filter menu) list "All" Shows regardless if they have downloaded episodes
+#: podcasts-gtk/resources/gtk/filter_menu.ui:43
+#: podcasts-gtk/resources/gtk/filter_menu.ui:64
+#: podcasts-gtk/resources/gtk/filter_menu.ui:104
+#: podcasts-gtk/resources/gtk/filter_menu.ui:125
+msgid "All"
+msgstr "Todos"
+
+#. Translators: (in a filter menu) list only "Played" episodes
+#: podcasts-gtk/resources/gtk/filter_menu.ui:49
+msgid "Played"
+msgstr "Reproduzido"
+
+#. Translators: (in a filter menu) list only "Not Played" episodes
+#: podcasts-gtk/resources/gtk/filter_menu.ui:55
+msgid "Not Played"
+msgstr "Não reproduzido"
+
+#. Translators: (in a filter menu) list only "Downloaded" episodes
+#. Translators: (in a filter menu) filter for Shows with "Downloaded" episodes
+#: podcasts-gtk/resources/gtk/filter_menu.ui:70
+#: podcasts-gtk/resources/gtk/filter_menu.ui:131
+msgid "Downloaded"
+msgstr "Baixado"
+
+#. Translators: (in a filter menu) list only "Not Downloaded" episodes
+#. Translators: (in a filter menu) filter for Shows with no "Downloaded" episodes
+#: podcasts-gtk/resources/gtk/filter_menu.ui:76
+#: podcasts-gtk/resources/gtk/filter_menu.ui:137
+msgid "Not Downloaded"
+msgstr "Não baixado"
+
+#. Translators: (in a filter menu) Sorting Shows in alphabetical
+#: podcasts-gtk/resources/gtk/filter_menu.ui:89
+msgid "Alphabetical"
+msgstr "Alfabético"
+
+#. Translators: (in a filter menu) Sorting Shows in reverse alphabetical
+#: podcasts-gtk/resources/gtk/filter_menu.ui:95
+msgid "Reversed"
+msgstr "Reversa"
+
+#. Translators: (in a filter menu) filter for Shows where all episodes were played
+#: podcasts-gtk/resources/gtk/filter_menu.ui:110
+msgid "Completed"
+msgstr "Completado"
+
+#. Translators: (in a filter menu) filter for Shows with unplayed episodes
+#: podcasts-gtk/resources/gtk/filter_menu.ui:116
+msgid "Not Completed"
+msgstr "Não completado"
+
+#. Translators: Tooltip text for a button that toggles the search bar
+#: podcasts-gtk/resources/gtk/filter_menu.ui:152
+msgid "Toggle Search"
+msgstr "Alterna pesquisa"
+
+#. Translators: Tooltip text for a menu button that has filter, sorting, and search options
+#: podcasts-gtk/resources/gtk/filter_menu.ui:175
+msgid "Filter"
+msgstr "Filtro"
+
 #: podcasts-gtk/resources/gtk/episode_description.ui:33
 msgid "Episode Details"
 msgstr "Detalhes do episódio"
@@ -198,29 +273,50 @@ msgstr "Mover para baixo na fila"
 msgid "You’ve already listened to this episode."
 msgstr "Você já ouviu este episódio."
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:230
-msgid "Calculating episode size…"
-msgstr "Calculando o tamanho do episódio…"
-
-#: podcasts-gtk/resources/gtk/episode_widget.ui:253
+#: podcasts-gtk/resources/gtk/episode_widget.ui:190
 msgid "Play this episode"
 msgstr "Reproduzir este episódio"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:268
+#: podcasts-gtk/resources/gtk/episode_widget.ui:205
 msgid "Pause playback"
 msgstr "Pausar a reprodução"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:282
+#: podcasts-gtk/resources/gtk/episode_widget.ui:219
 msgid "Cancel the download process"
 msgstr "Cancelar o processo de download"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:296
+#: podcasts-gtk/resources/gtk/episode_widget.ui:233
 msgid "Add to Queue"
 msgstr "Adicionar à fila"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:311
+#: podcasts-gtk/resources/gtk/episode_widget.ui:248
 msgid "Episode without audio"
 msgstr "Episódio sem áudio"
+
+#: podcasts-gtk/resources/gtk/home_episode_list.ui:53
+#: podcasts-gtk/resources/gtk/home_episode_list.ui:66
+msgid "Today"
+msgstr "Hoje"
+
+#: podcasts-gtk/resources/gtk/home_episode_list.ui:84
+#: podcasts-gtk/resources/gtk/home_episode_list.ui:97
+msgid "Yesterday"
+msgstr "Ontem"
+
+#: podcasts-gtk/resources/gtk/home_episode_list.ui:115
+#: podcasts-gtk/resources/gtk/home_episode_list.ui:128
+msgid "This Week"
+msgstr "Esta semana"
+
+#: podcasts-gtk/resources/gtk/home_episode_list.ui:146
+#: podcasts-gtk/resources/gtk/home_episode_list.ui:159
+msgid "This Month"
+msgstr "Este mês"
+
+#: podcasts-gtk/resources/gtk/home_episode_list.ui:178
+#: podcasts-gtk/resources/gtk/home_episode_list.ui:191
+msgid "Older"
+msgstr "Antigos"
 
 #: podcasts-gtk/resources/gtk/player_big.ui:43
 msgid "Rewind 10 seconds"
@@ -802,7 +898,7 @@ msgstr "Podcasts"
 msgid "Download progress"
 msgstr "Progresso do download"
 
-#: podcasts-gtk/src/widgets/episode.rs:537
+#: podcasts-gtk/src/widgets/episode.rs:517
 #, rust-format
 msgid "{} min"
 msgstr "{} min"
@@ -882,29 +978,14 @@ msgstr "Rodando a primeira sincronização. Isto pode levar alguns minutos."
 msgid "Never"
 msgstr "Nunca"
 
+#~ msgid "Calculating episode size…"
+#~ msgstr "Calculando o tamanho do episódio…"
+
 #~ msgid "Download this episode"
 #~ msgstr "Fazer download deste episódio"
 
-#~ msgid "Today"
-#~ msgstr "Hoje"
-
-#~ msgid "Yesterday"
-#~ msgstr "Ontem"
-
-#~ msgid "This Week"
-#~ msgstr "Esta semana"
-
-#~ msgid "This Month"
-#~ msgstr "Este mês"
-
-#~ msgid "Older"
-#~ msgstr "Antigos"
-
 #~ msgid "0"
 #~ msgstr "0"
-
-#~ msgid "Now Playing"
-#~ msgstr "Reproduzindo agora"
 
 #~ msgid "Close"
 #~ msgstr "Fechar"
