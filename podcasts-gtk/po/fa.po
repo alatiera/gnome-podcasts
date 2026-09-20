@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: podcasts master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2026-08-29 20:11+0000\n"
-"PO-Revision-Date: 2026-08-31 20:08+0330\n"
+"POT-Creation-Date: 2026-09-09 19:02+0000\n"
+"PO-Revision-Date: 2026-09-20 16:07+0330\n"
 "Last-Translator: Danial Behzadi <dani.behzi@ubuntu.com>\n"
 "Language-Team: Persian\n"
 "Language: fa\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Poedit 3.9\n"
+"X-Generator: Poedit 3.6\n"
 "X-DL-Lang: fa\n"
 "X-DL-Module: podcasts\n"
 "X-DL-Branch: main\n"
@@ -109,6 +109,81 @@ msgstr "افزودن نمایش‌های جدید با نشانی خوراک"
 msgid "Import shows from another device"
 msgstr "درون‌ریزی نمایش‌ها از افزارهٔ دیگر"
 
+#. Translators: (in a filter menu) sort "Newest" episodes on top of the list
+#: podcasts-gtk/resources/gtk/filter_menu.ui:28
+msgid "Newest First"
+msgstr "نخست جدید‌ترین"
+
+#. Translators: (in a filter menu) sort "Oldest" episodes on top of the list
+#: podcasts-gtk/resources/gtk/filter_menu.ui:34
+msgid "Oldest First"
+msgstr "نخست قدیمی‌ترین"
+
+#. Translators: (in a filter menu) list "All" episodes regardless of play status
+#. Translators: (in a filter menu) list "All" episodes regardless of download status
+#. Translators: (in a filter menu) list "All" Shows regardless of completion status
+#. Translators: (in a filter menu) list "All" Shows regardless if they have downloaded episodes
+#: podcasts-gtk/resources/gtk/filter_menu.ui:43
+#: podcasts-gtk/resources/gtk/filter_menu.ui:64
+#: podcasts-gtk/resources/gtk/filter_menu.ui:104
+#: podcasts-gtk/resources/gtk/filter_menu.ui:125
+msgid "All"
+msgstr "همه"
+
+#. Translators: (in a filter menu) list only "Played" episodes
+#: podcasts-gtk/resources/gtk/filter_menu.ui:49
+msgid "Played"
+msgstr "پخش شده"
+
+#. Translators: (in a filter menu) list only "Not Played" episodes
+#: podcasts-gtk/resources/gtk/filter_menu.ui:55
+msgid "Not Played"
+msgstr "پخش نشده"
+
+#. Translators: (in a filter menu) list only "Downloaded" episodes
+#. Translators: (in a filter menu) filter for Shows with "Downloaded" episodes
+#: podcasts-gtk/resources/gtk/filter_menu.ui:70
+#: podcasts-gtk/resources/gtk/filter_menu.ui:131
+msgid "Downloaded"
+msgstr "بار گرفته"
+
+#. Translators: (in a filter menu) list only "Not Downloaded" episodes
+#. Translators: (in a filter menu) filter for Shows with no "Downloaded" episodes
+#: podcasts-gtk/resources/gtk/filter_menu.ui:76
+#: podcasts-gtk/resources/gtk/filter_menu.ui:137
+msgid "Not Downloaded"
+msgstr "بار نگرفته"
+
+#. Translators: (in a filter menu) Sorting Shows in alphabetical
+#: podcasts-gtk/resources/gtk/filter_menu.ui:89
+msgid "Alphabetical"
+msgstr "الفبایی"
+
+#. Translators: (in a filter menu) Sorting Shows in reverse alphabetical
+#: podcasts-gtk/resources/gtk/filter_menu.ui:95
+msgid "Reversed"
+msgstr "معکوس"
+
+#. Translators: (in a filter menu) filter for Shows where all episodes were played
+#: podcasts-gtk/resources/gtk/filter_menu.ui:110
+msgid "Completed"
+msgstr "کامل"
+
+#. Translators: (in a filter menu) filter for Shows with unplayed episodes
+#: podcasts-gtk/resources/gtk/filter_menu.ui:116
+msgid "Not Completed"
+msgstr "کامل نشده"
+
+#. Translators: Tooltip text for a button that toggles the search bar
+#: podcasts-gtk/resources/gtk/filter_menu.ui:152
+msgid "Toggle Search"
+msgstr "تغییر حالت جست‌وجو"
+
+#. Translators: Tooltip text for a menu button that has filter, sorting, and search options
+#: podcasts-gtk/resources/gtk/filter_menu.ui:175
+msgid "Filter"
+msgstr "پالایش"
+
 #: podcasts-gtk/resources/gtk/episode_description.ui:33
 msgid "Episode Details"
 msgstr "جزییات قسمت"
@@ -192,29 +267,50 @@ msgstr "پایین بردن در صف"
 msgid "You’ve already listened to this episode."
 msgstr "پیش‌تر این قسمت را گوش کرده بودید."
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:230
-msgid "Calculating episode size…"
-msgstr "محاسبهٔ اندازهٔ قسمت…"
-
-#: podcasts-gtk/resources/gtk/episode_widget.ui:253
+#: podcasts-gtk/resources/gtk/episode_widget.ui:190
 msgid "Play this episode"
 msgstr "پخش این قسمت"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:268
+#: podcasts-gtk/resources/gtk/episode_widget.ui:205
 msgid "Pause playback"
 msgstr "مکث پخش"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:282
+#: podcasts-gtk/resources/gtk/episode_widget.ui:219
 msgid "Cancel the download process"
 msgstr "لغو فرایند بارگیری"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:296
+#: podcasts-gtk/resources/gtk/episode_widget.ui:233
 msgid "Add to Queue"
 msgstr "افزودن به صف"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:311
+#: podcasts-gtk/resources/gtk/episode_widget.ui:248
 msgid "Episode without audio"
 msgstr "قسمت بدون صدا"
+
+#: podcasts-gtk/resources/gtk/home_episode_list.ui:53
+#: podcasts-gtk/resources/gtk/home_episode_list.ui:66
+msgid "Today"
+msgstr "امروز"
+
+#: podcasts-gtk/resources/gtk/home_episode_list.ui:84
+#: podcasts-gtk/resources/gtk/home_episode_list.ui:97
+msgid "Yesterday"
+msgstr "دیروز"
+
+#: podcasts-gtk/resources/gtk/home_episode_list.ui:115
+#: podcasts-gtk/resources/gtk/home_episode_list.ui:128
+msgid "This Week"
+msgstr "این هفته"
+
+#: podcasts-gtk/resources/gtk/home_episode_list.ui:146
+#: podcasts-gtk/resources/gtk/home_episode_list.ui:159
+msgid "This Month"
+msgstr "این ماه"
+
+#: podcasts-gtk/resources/gtk/home_episode_list.ui:178
+#: podcasts-gtk/resources/gtk/home_episode_list.ui:191
+msgid "Older"
+msgstr "قدیمی‌تر"
 
 #: podcasts-gtk/resources/gtk/player_big.ui:43
 msgid "Rewind 10 seconds"
@@ -656,17 +752,14 @@ msgid "Copied URL to clipboard!"
 msgstr "نشانی رونوشت شده در تخته‌گیره!"
 
 #: podcasts-gtk/src/episode_description_parser.rs:320
-#, rust-format
 msgid "Jump to {hours}:{minutes}:{seconds}"
 msgstr "پرش به ‪{hours}:{minutes}:{seconds}"
 
 #: podcasts-gtk/src/episode_description_parser.rs:338
-#, rust-format
 msgid "Jump to {minutes}:{seconds}"
 msgstr "پرش به ‪{minutes}:{seconds}"
 
 #: podcasts-gtk/src/manager.rs:107
-#, rust-format
 msgid "Download failed: {}"
 msgstr "بارگیری شکست خورد: {}"
 
@@ -675,7 +768,6 @@ msgid "The media player was unable to execute an action."
 msgstr "پخش کنندهٔ رسانه در اجرای کنشی ناتوان بود."
 
 #: podcasts-gtk/src/utils.rs:301
-#, rust-format
 msgid "Failed to subscribe to feed: {}"
 msgstr "شکست در اشتراک خوراک: {}"
 
@@ -692,7 +784,6 @@ msgid "_Import"
 msgstr "_درون‌ریزی"
 
 #: podcasts-gtk/src/utils.rs:442
-#, rust-format
 msgid "Failed to parse the imported file {}"
 msgstr "شکست در تجزیهٔ پروندهٔ درون‌ریختهٔ {}"
 
@@ -723,35 +814,30 @@ msgid "Just now"
 msgstr "هم‌اکنون"
 
 #: podcasts-gtk/src/utils.rs:497
-#, rust-format
 msgid "{} minute ago"
 msgid_plural "{} minutes ago"
 msgstr[0] "{} دقیق پیش"
 msgstr[1] "{} دقیق پیش"
 
 #: podcasts-gtk/src/utils.rs:503
-#, rust-format
 msgid "{} hour ago"
 msgid_plural "{} hours ago"
 msgstr[0] "‏{} ساعت پیش"
 msgstr[1] "{} ساعت پیش"
 
 #: podcasts-gtk/src/utils.rs:507
-#, rust-format
 msgid "{} day ago"
 msgid_plural "{} days ago"
 msgstr[0] "{} روز پیش"
 msgstr[1] "{} روز پیش"
 
 #: podcasts-gtk/src/utils.rs:511
-#, rust-format
 msgid "{} month ago"
 msgid_plural "{} months ago"
 msgstr[0] "{} ماه پیش"
 msgstr[1] "{} ماه پیش"
 
 #: podcasts-gtk/src/utils.rs:515
-#, rust-format
 msgid "{} year ago"
 msgid_plural "{} years ago"
 msgstr[0] "{} سال پیش"
@@ -789,15 +875,13 @@ msgstr "نمایش‌ها"
 msgid "Download progress"
 msgstr "پیشرفت بارگیری"
 
-#: podcasts-gtk/src/widgets/episode.rs:537
-#, rust-format
+#: podcasts-gtk/src/widgets/episode.rs:517
 msgid "{} min"
 msgstr "{} دقیقه"
 
 #. Translators: This will show as something like: "1.25×"
 #. inside a menu-button that shows/sets playback speed.
 #: podcasts-gtk/src/widgets/player_rate.rs:79
-#, rust-format
 msgid "{:.2}×"
 msgstr "{:.2}×"
 
@@ -819,12 +903,10 @@ msgid "Undo"
 msgstr "برگردان"
 
 #: podcasts-gtk/src/widgets/show_menu.rs:172
-#, rust-format
 msgid "Unsubscribed from {}"
 msgstr "لغو اشتراک از {}"
 
 #: podcasts-gtk/src/widgets/show_menu.rs:203
-#, rust-format
 msgid "Failed to store Unsubscribe Action for Synchronization in database. {}"
 msgstr "شکست در ذخیرهٔ کنش لغو اشتراک برای هم‌گام سازی با پایگاه داد. {}"
 
@@ -867,20 +949,8 @@ msgstr "اجرا کردن نخستین هم‌گام سازی. ممکن است 
 msgid "Never"
 msgstr "هرگز"
 
+#~ msgid "Calculating episode size…"
+#~ msgstr "محاسبهٔ اندازهٔ قسمت…"
+
 #~ msgid "Download this episode"
 #~ msgstr "بارگیری این قسمت"
-
-#~ msgid "Today"
-#~ msgstr "امروز"
-
-#~ msgid "Yesterday"
-#~ msgstr "دیروز"
-
-#~ msgid "This Week"
-#~ msgstr "این هفته"
-
-#~ msgid "This Month"
-#~ msgstr "این ماه"
-
-#~ msgid "Older"
-#~ msgstr "قدیمی‌تر"
