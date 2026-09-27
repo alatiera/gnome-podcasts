@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: podcasts main\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2026-08-29 20:11+0000\n"
-"PO-Revision-Date: 2026-08-30 20:54+0500\n"
+"POT-Creation-Date: 2026-09-09 19:02+0000\n"
+"PO-Revision-Date: 2026-09-27 16:40+0500\n"
 "Last-Translator: Baurzhan Muftakhidinov <baurthefirst@gmail.com>\n"
 "Language-Team: Kazakh <Kazakh>\n"
 "Language: kk\n"
@@ -105,6 +105,81 @@ msgstr "Жаңа шоуларды таспа URL адресі арқылы қо�
 msgid "Import shows from another device"
 msgstr "Шоуларды басқа құрылғыдан импорттау"
 
+#. Translators: (in a filter menu) sort "Newest" episodes on top of the list
+#: podcasts-gtk/resources/gtk/filter_menu.ui:28
+msgid "Newest First"
+msgstr "Алдымен жаңадары"
+
+#. Translators: (in a filter menu) sort "Oldest" episodes on top of the list
+#: podcasts-gtk/resources/gtk/filter_menu.ui:34
+msgid "Oldest First"
+msgstr "Алдымен ескілері"
+
+#. Translators: (in a filter menu) list "All" episodes regardless of play status
+#. Translators: (in a filter menu) list "All" episodes regardless of download status
+#. Translators: (in a filter menu) list "All" Shows regardless of completion status
+#. Translators: (in a filter menu) list "All" Shows regardless if they have downloaded episodes
+#: podcasts-gtk/resources/gtk/filter_menu.ui:43
+#: podcasts-gtk/resources/gtk/filter_menu.ui:64
+#: podcasts-gtk/resources/gtk/filter_menu.ui:104
+#: podcasts-gtk/resources/gtk/filter_menu.ui:125
+msgid "All"
+msgstr "Барлығы"
+
+#. Translators: (in a filter menu) list only "Played" episodes
+#: podcasts-gtk/resources/gtk/filter_menu.ui:49
+msgid "Played"
+msgstr "Ойнатылған"
+
+#. Translators: (in a filter menu) list only "Not Played" episodes
+#: podcasts-gtk/resources/gtk/filter_menu.ui:55
+msgid "Not Played"
+msgstr "Ойнатылмаған"
+
+#. Translators: (in a filter menu) list only "Downloaded" episodes
+#. Translators: (in a filter menu) filter for Shows with "Downloaded" episodes
+#: podcasts-gtk/resources/gtk/filter_menu.ui:70
+#: podcasts-gtk/resources/gtk/filter_menu.ui:131
+msgid "Downloaded"
+msgstr "Жүктеп алынған"
+
+#. Translators: (in a filter menu) list only "Not Downloaded" episodes
+#. Translators: (in a filter menu) filter for Shows with no "Downloaded" episodes
+#: podcasts-gtk/resources/gtk/filter_menu.ui:76
+#: podcasts-gtk/resources/gtk/filter_menu.ui:137
+msgid "Not Downloaded"
+msgstr "Жүктеп алынбаған"
+
+#. Translators: (in a filter menu) Sorting Shows in alphabetical
+#: podcasts-gtk/resources/gtk/filter_menu.ui:89
+msgid "Alphabetical"
+msgstr "Алфавит ретімен"
+
+#. Translators: (in a filter menu) Sorting Shows in reverse alphabetical
+#: podcasts-gtk/resources/gtk/filter_menu.ui:95
+msgid "Reversed"
+msgstr "Кері ретпен"
+
+#. Translators: (in a filter menu) filter for Shows where all episodes were played
+#: podcasts-gtk/resources/gtk/filter_menu.ui:110
+msgid "Completed"
+msgstr "Аяқталған"
+
+#. Translators: (in a filter menu) filter for Shows with unplayed episodes
+#: podcasts-gtk/resources/gtk/filter_menu.ui:116
+msgid "Not Completed"
+msgstr "Аяқталмаған"
+
+#. Translators: Tooltip text for a button that toggles the search bar
+#: podcasts-gtk/resources/gtk/filter_menu.ui:152
+msgid "Toggle Search"
+msgstr "Іздеуді іске қосу/сөндіру"
+
+#. Translators: Tooltip text for a menu button that has filter, sorting, and search options
+#: podcasts-gtk/resources/gtk/filter_menu.ui:175
+msgid "Filter"
+msgstr "Сүзгі"
+
 #: podcasts-gtk/resources/gtk/episode_description.ui:33
 msgid "Episode Details"
 msgstr "Эпизод мәліметтері"
@@ -188,29 +263,50 @@ msgstr "Кезекте төмен жылжу"
 msgid "You’ve already listened to this episode."
 msgstr "Сіз бұл эпизодты тыңдап қойғансыз."
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:230
-msgid "Calculating episode size…"
-msgstr "Эпизод өлшемін есептеу…"
-
-#: podcasts-gtk/resources/gtk/episode_widget.ui:253
+#: podcasts-gtk/resources/gtk/episode_widget.ui:190
 msgid "Play this episode"
 msgstr "Бұл эпизодты ойнату"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:268
+#: podcasts-gtk/resources/gtk/episode_widget.ui:205
 msgid "Pause playback"
 msgstr "Ойнатуды аялдату"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:282
+#: podcasts-gtk/resources/gtk/episode_widget.ui:219
 msgid "Cancel the download process"
 msgstr "Жүктеп алу процесінен бас тарту"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:296
+#: podcasts-gtk/resources/gtk/episode_widget.ui:233
 msgid "Add to Queue"
 msgstr "Кезекке қосу"
 
-#: podcasts-gtk/resources/gtk/episode_widget.ui:311
+#: podcasts-gtk/resources/gtk/episode_widget.ui:248
 msgid "Episode without audio"
 msgstr "Аудиосы жоқ эпизод"
+
+#: podcasts-gtk/resources/gtk/home_episode_list.ui:53
+#: podcasts-gtk/resources/gtk/home_episode_list.ui:66
+msgid "Today"
+msgstr "Бүгін"
+
+#: podcasts-gtk/resources/gtk/home_episode_list.ui:84
+#: podcasts-gtk/resources/gtk/home_episode_list.ui:97
+msgid "Yesterday"
+msgstr "Кеше"
+
+#: podcasts-gtk/resources/gtk/home_episode_list.ui:115
+#: podcasts-gtk/resources/gtk/home_episode_list.ui:128
+msgid "This Week"
+msgstr "Осы аптада"
+
+#: podcasts-gtk/resources/gtk/home_episode_list.ui:146
+#: podcasts-gtk/resources/gtk/home_episode_list.ui:159
+msgid "This Month"
+msgstr "Осы айда"
+
+#: podcasts-gtk/resources/gtk/home_episode_list.ui:178
+#: podcasts-gtk/resources/gtk/home_episode_list.ui:191
+msgid "Older"
+msgstr "Ескілеу"
 
 #: podcasts-gtk/resources/gtk/player_big.ui:43
 msgid "Rewind 10 seconds"
@@ -780,7 +876,7 @@ msgstr "Шоулар"
 msgid "Download progress"
 msgstr "Жүктеп алу барысы"
 
-#: podcasts-gtk/src/widgets/episode.rs:537
+#: podcasts-gtk/src/widgets/episode.rs:517
 #, rust-format
 msgid "{} min"
 msgstr "{} мин"
@@ -860,20 +956,8 @@ msgstr "Бірінші синхрондау орындалуда. Бұл бір�
 msgid "Never"
 msgstr "Ешқашан"
 
+#~ msgid "Calculating episode size…"
+#~ msgstr "Эпизод өлшемін есептеу…"
+
 #~ msgid "Download this episode"
 #~ msgstr "Бұл эпизодты жүктеп алу"
-
-#~ msgid "Today"
-#~ msgstr "Бүгін"
-
-#~ msgid "Yesterday"
-#~ msgstr "Кеше"
-
-#~ msgid "This Week"
-#~ msgstr "Осы аптада"
-
-#~ msgid "This Month"
-#~ msgstr "Осы айда"
-
-#~ msgid "Older"
-#~ msgstr "Ескілеу"
