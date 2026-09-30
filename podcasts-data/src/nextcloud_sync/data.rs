@@ -269,7 +269,16 @@ pub(crate) fn parse_url_without_scheme(s: &str) -> Result<Url, url::ParseError> 
 }
 
 pub(crate) fn client_builder() -> reqwest::ClientBuilder {
-    reqwest::Client::builder().user_agent(crate::USER_AGENT_NEXTCLOUD)
+    let agent_string = if let Ok(hostname) = std::fs::read_to_string("/proc/sys/kernel/hostname") {
+        format!(
+            "{} - {}",
+            crate::USER_AGENT_NEXTCLOUD,
+            hostname.trim().to_string()
+        )
+    } else {
+        crate::USER_AGENT_NEXTCLOUD.to_string()
+    };
+    reqwest::Client::builder().user_agent(agent_string)
 }
 
 #[cfg(test)]
