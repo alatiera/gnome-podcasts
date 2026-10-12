@@ -99,7 +99,6 @@ fn register_resources() -> anyhow::Result<()> {
 }
 
 #[test]
-#[ignore]
 // Even while running the tests with -j 1 and --test-threads=1,
 // cargo seems to create new threads and gtk refuses to initialize again.
 // So we run every gtk related test here.
