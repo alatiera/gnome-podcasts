@@ -3,21 +3,21 @@
 # This file is distributed under the same license as the podcasts package.
 #
 # SPDX-FileCopyrightText: 2023, 2024, 2025, 2026 Sveinn í Felli <sv1@fellsnet.is>
-# Ingirafn <ingirafn@this.is>, 2023, 2024, 2025.
+# SPDX-FileCopyrightText: 2023-2026 Ingirafn <ingirafn@this.is>
 msgid ""
 msgstr ""
 "Project-Id-Version: podcasts master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
 "POT-Creation-Date: 2026-09-09 19:02+0000\n"
-"PO-Revision-Date: 2026-10-08 19:00+0000\n"
-"Last-Translator: Sveinn í Felli <sv1@fellsnet.is>\n"
-"Language-Team: Icelandic\n"
+"PO-Revision-Date: 2026-11-08 21:53+0000\n"
+"Last-Translator: Ingir <ingirafn@this.is>\n"
+"Language-Team: Icelandic <kde-i18n-doc@kde.org>\n"
 "Language: is\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Lokalize 23.08.5\n"
+"X-Generator: Lokalize 26.08.3\n"
 
 #: podcasts-gtk/resources/gtk/discovery_found_podcast.ui:105
 msgid "Episodes: "
@@ -375,7 +375,7 @@ msgstr "Biðröð er tóm"
 
 #: podcasts-gtk/resources/gtk/queue_view.ui:53
 msgid "Add episodes from the New view or Shows views"
-msgstr ""
+msgstr "Bæta við þætti úr nýja Nýja glugganum eða Þættir glugganum"
 
 #: podcasts-gtk/resources/gtk/queue_view.ui:63
 #: podcasts-gtk/src/widgets/content_stack.rs:78
@@ -539,6 +539,7 @@ msgstr "Nextcloud samstillingartenging"
 #: podcasts-gtk/resources/gtk/sync_preferences.ui:67
 msgid "Current connection for play position and subscription synchronization."
 msgstr ""
+"Núverandi  tenging fyrir afspilun og samþættun á upplýsingar um áskrift. "
 
 #: podcasts-gtk/resources/gtk/sync_preferences.ui:73
 msgid "Last Sync"
@@ -574,6 +575,8 @@ msgid ""
 "Synchronize subscriptions and listening status with a Nextcloud server that "
 "has GPodder Sync installed."
 msgstr ""
+"Samstilla  áskriftir og ferli á spilunum í gegnum Nexcloud þjón sem hefur Gpod"
+"der samsæmi forrit uppsett."
 
 #: podcasts-gtk/resources/gtk/sync_preferences.ui:128
 msgid "Login via"
@@ -916,6 +919,8 @@ msgstr "Sagði upp áskrift að {}"
 #, rust-format
 msgid "Failed to store Unsubscribe Action for Synchronization in database. {}"
 msgstr ""
+"Tókst ekki að vista skipun um að segja upp áskrift til uppfærslu á gagnagrunni"
+". {}"
 
 #: podcasts-gtk/src/widgets/shows_view.rs:144
 msgid "No Results Found"
@@ -985,4 +990,3 @@ msgstr "Aldrei"
 
 #~ msgid "Julian Hofer"
 #~ msgstr "Julian Hofer"
-
