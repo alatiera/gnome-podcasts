@@ -723,7 +723,7 @@ impl Player {
         Ok(())
     }
 
-    fn init_as_stream(&self, uri: String) {
+    fn init_as_stream(&self, uri: String, should_play: bool) {
         crate::MAINCONTEXT.spawn_local_with_priority(
             glib::source::Priority::LOW,
             clone!(
@@ -732,7 +732,9 @@ impl Player {
                 async move {
                     this.stop_and_switch_user_agent(USER_AGENT_INITIAL).await;
                     this.imp().player.set_uri(Some(&uri));
-                    this.play();
+                    if should_play {
+                        this.play();
+                    }
                 }
             ),
         );
@@ -755,7 +757,7 @@ impl Player {
             }
 
             if reset_stream {
-                self.init_as_stream(uri.to_owned())
+                self.init_as_stream(uri.to_owned(), should_play)
             } else {
                 self.imp().player.set_uri(Some(uri));
             }
