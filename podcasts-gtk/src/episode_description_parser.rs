@@ -50,6 +50,15 @@ fn escape_text(t: &str, newline_handling: NewlineHandling) -> String {
         .replace("&amp;amp;", "&amp;")
         .replace("&lt;lt;", "&lt;")
         .replace("&gt;gt;", "&gt;");
+    // HTML treats tabs, carriage returns and form feeds as whitespace, but Pango
+    // has no break opportunities for tabs. A run of tabs inside a wrapping
+    // GtkLabel forces a huge minimum width, which makes the whole episode view
+    // wider than the window. Normalize them to spaces so they can be collapsed
+    // and wrapped like any other whitespace.
+    let escaped = escaped
+        .replace('\t', " ")
+        .replace('\r', " ")
+        .replace('\u{0c}', " ");
     let newlined_text = match newline_handling {
         NewlineHandling::ToSpace => escaped.replace('\n', " "),
         NewlineHandling::Remove => escaped.replace('\n', ""),
@@ -667,6 +676,23 @@ Free as in Freedom is produced by <a href=\"http://danlynch.org/blog/\">Dan Lync
         let markup = html2pango_markup(description);
 
         assert_eq!(expected, markup);
+    }
+
+    #[test]
+    fn test_tabs_and_other_whitespace() {
+        let description = "<p>first\tsecond\r\nthird\u{0c}fourth</p>";
+        let expected = "first second third fourth\n\n";
+        assert_eq!(expected, html2pango_markup(description));
+    }
+
+    #[test]
+    fn test_no_tabs_in_markup() {
+        // Indented HTML (and feeds that embed whitespace-heavy HTML) must not
+        // leak tabs into the markup: Pango cannot wrap them, which makes the
+        // description demand a much larger width than the window.
+        let description = "<p>Intro</p>\n<ul>\n\t<li>first\titem</li>\n\t<li>second</li>\n</ul>";
+        let markup = html2pango_markup(description);
+        assert!(!markup.contains('\t'), "markup contains tabs: {markup:?}");
     }
 
     #[test]
