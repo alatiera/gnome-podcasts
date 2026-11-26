@@ -6,22 +6,22 @@
 # Leônidas Araújo <leorusvellt@hotmail.com>, 2023-2024.
 # Rafael Fontenelle <rafaelff@gnome.org>, 2018-2025.
 # Juliano de Souza Camargo <julianosc@pm.me>, 2023-2026.
-# Álvaro Burns <>, 2025-2026.
+# Álvaro Burns <(null)>, 2025-2026.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: podcasts master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/World/podcasts/issues\n"
-"POT-Creation-Date: 2026-09-09 19:02+0000\n"
-"PO-Revision-Date: 2026-09-13 10:06-0300\n"
-"Last-Translator: Álvaro Burns <>\n"
+"POT-Creation-Date: 2026-11-22 19:54+0000\n"
+"PO-Revision-Date: 2026-11-23 19:48-0300\n"
+"Last-Translator: Álvaro Burns <\n"
 "Language-Team: Brazilian Portuguese <https://br.gnome.org/traducao/>\n"
 "Language: pt_BR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Gtranslator 50.0\n"
+"X-Generator: Gtranslator 51.0\n"
 "X-DL-Team: pt_BR\n"
 "X-DL-Module: podcasts\n"
 "X-DL-Branch: master\n"
@@ -180,13 +180,8 @@ msgstr "Completado"
 msgid "Not Completed"
 msgstr "Não completado"
 
-#. Translators: Tooltip text for a button that toggles the search bar
-#: podcasts-gtk/resources/gtk/filter_menu.ui:152
-msgid "Toggle Search"
-msgstr "Alterna pesquisa"
-
 #. Translators: Tooltip text for a menu button that has filter, sorting, and search options
-#: podcasts-gtk/resources/gtk/filter_menu.ui:175
+#: podcasts-gtk/resources/gtk/filter_menu.ui:165
 msgid "Filter"
 msgstr "Filtro"
 
@@ -202,41 +197,41 @@ msgstr "Menu do episódio"
 msgid "Podcast Title"
 msgstr "Título do podcast"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:114
+#: podcasts-gtk/resources/gtk/episode_description.ui:115
 msgid "Duration - Date"
 msgstr "Duração - Data"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:151
+#: podcasts-gtk/resources/gtk/episode_description.ui:152
 msgid "_Stream"
 msgstr "_Transmitir"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:169
+#: podcasts-gtk/resources/gtk/episode_description.ui:170
 msgid "_Play"
 msgstr "_Reproduzir"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:188
+#: podcasts-gtk/resources/gtk/episode_description.ui:189
 msgid "_Pause"
 msgstr "_Pausar"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:206
+#: podcasts-gtk/resources/gtk/episode_description.ui:207
 msgid "_Download"
 msgstr "_Baixar"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:234
+#: podcasts-gtk/resources/gtk/episode_description.ui:235
 msgid "Cancel"
 msgstr "Cancelar"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:266
+#: podcasts-gtk/resources/gtk/episode_description.ui:267
 #: podcasts-gtk/resources/gtk/episode_menu.ui:60
 msgid "Delete"
 msgstr "Excluir"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:285
+#: podcasts-gtk/resources/gtk/episode_description.ui:286
 #: podcasts-gtk/resources/gtk/sheet_description.ui:48
 msgid "Episode Description"
 msgstr "Descrição do episódio"
 
-#: podcasts-gtk/resources/gtk/episode_description.ui:307
+#: podcasts-gtk/resources/gtk/episode_description.ui:308
 msgid "Episode Cover"
 msgstr "Capa do episódio"
 
@@ -389,7 +384,7 @@ msgid "Add episodes from the New view or Shows views"
 msgstr "Adicionar episódios da aba Novo ou da aba Podcasts"
 
 #: podcasts-gtk/resources/gtk/queue_view.ui:63
-#: podcasts-gtk/src/widgets/content_stack.rs:78
+#: podcasts-gtk/src/widgets/content_stack.rs:83
 msgid "Queue"
 msgstr "Fila"
 
@@ -526,11 +521,17 @@ msgstr "Marcar todos como reproduzidos"
 msgid "Unsubscribe"
 msgstr "Cancelar inscrição"
 
-#: podcasts-gtk/resources/gtk/show_widget.ui:42
+#: podcasts-gtk/resources/gtk/show_widget.ui:45
 msgid "Podcast Menu"
 msgstr "Menu do podcast"
 
-#: podcasts-gtk/resources/gtk/show_widget.ui:112
+#. Translators: Tooltip text for a button that toggles the search bar
+#: podcasts-gtk/resources/gtk/show_widget.ui:53
+#: podcasts-gtk/resources/gtk/window.ui:166
+msgid "Toggle Search"
+msgstr "Alterna pesquisa"
+
+#: podcasts-gtk/resources/gtk/show_widget.ui:119
 msgid "Episodes"
 msgstr "Episódios"
 
@@ -644,7 +645,7 @@ msgstr "_Sobre Podcasts"
 #: podcasts-gtk/resources/gtk/window.ui:110
 #: podcasts-gtk/resources/org.gnome.Podcasts.desktop.in.in:2
 #: podcasts-gtk/resources/org.gnome.Podcasts.metainfo.xml.in.in:4
-#: podcasts-gtk/src/app.rs:748 podcasts-gtk/src/player_mpris.rs:50
+#: podcasts-gtk/src/app.rs:753 podcasts-gtk/src/player_mpris.rs:50
 #: podcasts-gtk/src/widgets/aboutdialog.rs:56
 msgid "Podcasts"
 msgstr "Podcasts"
@@ -653,12 +654,12 @@ msgstr "Podcasts"
 msgid "Add a New Feed"
 msgstr "Adicionar um nova feed"
 
-#: podcasts-gtk/resources/gtk/window.ui:131
+#: podcasts-gtk/resources/gtk/window.ui:157
 msgid "Main Menu"
 msgstr "Menu principal"
 
 #. Translators: Show as a noun, meaning a Podcast-Show.
-#: podcasts-gtk/resources/gtk/window.ui:173
+#: podcasts-gtk/resources/gtk/window.ui:178
 msgid "Show"
 msgstr "Show"
 
@@ -683,28 +684,32 @@ msgstr "Largura da última janela principal aberta"
 msgid "Maximized state of the last open main window"
 msgstr "Estado maximizado da última janela principal aberta"
 
-#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:28
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:27
+msgid "Database id of the last episode that was playing"
+msgstr "Identificação do banco de dados do último episódio que estava tocando"
+
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:32
 msgid "Whether to periodically refresh content"
 msgstr "Se deve atualizar periodicamente o conteúdo"
 
-#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:33
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:37
 msgid "How many periods of time to wait between automatic refreshes"
 msgstr ""
 "Quantos períodos de tempo deve esperar entre as atualizações automáticas"
 
-#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:37
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:41
 msgid "What period of time to wait between automatic refreshes"
 msgstr "Qual período de tempo deve esperar entre as atualizações automáticas"
 
-#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:41
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:45
 msgid "Whether to refresh content after startup"
 msgstr "Se deve atualizar o conteúdo após a inicialização"
 
-#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:47
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:51
 msgid "How many periods of time to wait between automatic cleanups"
 msgstr "Quantos períodos de tempo deve esperar entre limpezas automáticas"
 
-#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:51
+#: podcasts-gtk/resources/org.gnome.Podcasts.gschema.xml.in:55
 msgid "What period of time to wait between automatic cleanups"
 msgstr "Qual período de tempo deve esperar entre limpezas automáticas"
 
@@ -757,16 +762,16 @@ msgstr "A visualização onde se pode adicionar um novo podcast"
 msgid "The Podcasts developers"
 msgstr "Os desenvolvedores do Podcasts"
 
-#: podcasts-gtk/src/app.rs:435
+#: podcasts-gtk/src/app.rs:440
 msgid "Copied URL to clipboard!"
 msgstr "URL copiada para área de transferência!"
 
-#: podcasts-gtk/src/episode_description_parser.rs:320
+#: podcasts-gtk/src/episode_description_parser.rs:329
 #, rust-format
 msgid "Jump to {hours}:{minutes}:{seconds}"
 msgstr "Pular para {hours}:{minutes}:{seconds}"
 
-#: podcasts-gtk/src/episode_description_parser.rs:338
+#: podcasts-gtk/src/episode_description_parser.rs:347
 #, rust-format
 msgid "Jump to {minutes}:{seconds}"
 msgstr "Pular para {minutes}:{seconds}"
@@ -776,7 +781,7 @@ msgstr "Pular para {minutes}:{seconds}"
 msgid "Download failed: {}"
 msgstr "Download falhou: {}"
 
-#: podcasts-gtk/src/player.rs:498
+#: podcasts-gtk/src/player.rs:499
 msgid "The media player was unable to execute an action."
 msgstr "O reprodutor de mídia não conseguiu executar uma ação."
 
@@ -880,16 +885,16 @@ msgstr ""
 msgid "Currently playing chapter"
 msgstr "Atualmente reproduzindo capítulo"
 
-#: podcasts-gtk/src/widgets/content_stack.rs:69
+#: podcasts-gtk/src/widgets/content_stack.rs:74
 msgid "Fetching feeds…"
 msgstr "Buscando feed…"
 
-#: podcasts-gtk/src/widgets/content_stack.rs:76
+#: podcasts-gtk/src/widgets/content_stack.rs:81
 msgid "New"
 msgstr "Novo"
 
 #. Translators: Shows as a noun, meaning Podcast-Shows.
-#: podcasts-gtk/src/widgets/content_stack.rs:77
+#: podcasts-gtk/src/widgets/content_stack.rs:82
 #: podcasts-gtk/src/widgets/shows_view.rs:127
 msgid "Shows"
 msgstr "Podcasts"
